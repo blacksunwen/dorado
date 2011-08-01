@@ -1,0 +1,28 @@
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.bstek.dorado</groupId>
+	<artifactId>dorado-parent</artifactId>
+	<version>%product.revision%</version>
+	<packaging>pom</packaging>
+	<name>Dorado Parent</name>
+	<url>http://bsdn.org/projects/dorado7</url>
+	<issueManagement>
+		<system>JIRA</system>
+		<url>http://jira.bsdn.org/browse/DORADOSEVEN</url>
+	</issueManagement>
+	<organization>
+		<name>BSTEK</name>
+		<url>http://www.bstek.com</url>
+	</organization>
+	<distributionManagement>
+		<repository>
+			<id>dorado_release</id>
+			<url>http://nexus.bsdn.org:82/content/repositories/dorado_release</url>
+		</repository>
+		<snapshotRepository>
+			<id>dorado_snapshots</id>
+			<url>http://nexus.bsdn.org:82/content/repositories/dorado_snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
+</project>

@@ -1,0 +1,23 @@
+<ivysettings>
+	<properties file="${ivy.settings.dir}/ivysettings.properties" />
+
+	<settings defaultResolver="${default-resolver}" />
+	<caches defaultCacheDir="${cache.dir}" />
+	<credentials host="nexus.bsdn.org" realm="Sonatype Nexus Repository Manager" username="${bsdn.nexus.user}" passwd="${bsdn.nexus.password}" />
+
+	<include file="${ivy.settings.dir}/ivysettings-include.xml" />
+
+	<resolvers>
+		<filesystem name="temp">
+			<ivy pattern="${temp-repository.dir}/${temp-repository.ivy-pattern}" />
+			<artifact pattern="${temp-repository.dir}/${temp-repository.pattern}" />
+		</filesystem>
+
+		<chain name="building" returnFirst="true">
+			<resolver ref="temp" />
+			<resolver ref="local" />
+			<resolver ref="bsdn" />
+			<resolver ref="global" />
+		</chain>
+	</resolvers>
+</ivysettings>
