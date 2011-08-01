@@ -1,0 +1,211 @@
+package com.bstek.dorado.view.widget.base.tab;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
+
+import com.bstek.dorado.annotation.ViewAttribute;
+import com.bstek.dorado.annotation.ViewObject;
+import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.XmlProperty;
+import com.bstek.dorado.common.Ignorable;
+import com.bstek.dorado.common.MetaDataSupport;
+import com.bstek.dorado.common.TagSupport;
+import com.bstek.dorado.view.View;
+import com.bstek.dorado.view.ViewElement;
+import com.bstek.dorado.view.ViewElementUtils;
+import com.bstek.dorado.view.widget.RenderableElement;
+
+/**
+ * @author Benny Bao (mailto:benny.bao@bstek.com)
+ * @since 2009-11-4
+ */
+@XmlNode(nodeName = "Tab")
+@ViewObject(prototype = "dorado.widget.tab.Tab", shortTypeName = "Tab")
+public class Tab implements RenderableElement, Ignorable, TagSupport,
+		MetaDataSupport, ViewElement {
+	private ViewElement parent;
+	private String name;
+	private String caption;
+	private boolean closeable;
+	private String icon;
+	private boolean disabled;
+	private String width;
+	private String height;
+	private String className;
+	private String exClassName;
+	private Map<String, Object> style;
+	private boolean visible = true;
+	private String tip;
+	private boolean ignored;
+	private Object userData;
+	private String tags;
+	private Map<String, Object> metaData;
+
+	private Collection<ViewElement> innerElements;
+
+	public ViewElement getParent() {
+		return parent;
+	}
+
+	public void setParent(ViewElement parent) {
+		ViewElementUtils.clearParentViewElement(this, this.parent);
+
+		this.parent = parent;
+
+		View view = ViewElementUtils.getParentView(parent);
+		if (view != null) {
+			ViewElementUtils.setParentViewElement(this, parent);
+		}
+	}
+
+	public void registerInnerElement(ViewElement element) {
+		if (innerElements == null) {
+			innerElements = new HashSet<ViewElement>();
+		}
+		innerElements.add(element);
+	}
+
+	public void unregisterInnerElement(ViewElement element) {
+		if (innerElements != null) {
+			innerElements.remove(element);
+		}
+	}
+
+	public Collection<ViewElement> getInnerElements() {
+		return innerElements;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getCaption() {
+		return caption;
+	}
+
+	public void setCaption(String caption) {
+		this.caption = caption;
+	}
+
+	public boolean isCloseable() {
+		return closeable;
+	}
+
+	public void setCloseable(boolean closeable) {
+		this.closeable = closeable;
+	}
+
+	public String getIcon() {
+		return icon;
+	}
+
+	public void setIcon(String icon) {
+		this.icon = icon;
+	}
+
+	public boolean isDisabled() {
+		return disabled;
+	}
+
+	public void setDisabled(boolean disabled) {
+		this.disabled = disabled;
+	}
+
+	public String getWidth() {
+		return width;
+	}
+
+	public void setWidth(String width) {
+		this.width = width;
+	}
+
+	public String getHeight() {
+		return height;
+	}
+
+	public void setHeight(String height) {
+		this.height = height;
+	}
+
+	public String getClassName() {
+		return className;
+	}
+
+	public void setClassName(String className) {
+		this.className = className;
+	}
+
+	public String getExClassName() {
+		return exClassName;
+	}
+
+	public void setExClassName(String exClassName) {
+		this.exClassName = exClassName;
+	}
+
+	@XmlProperty(composite = true)
+	public Map<String, Object> getStyle() {
+		return style;
+	}
+
+	public void setStyle(Map<String, Object> style) {
+		this.style = style;
+	}
+
+	@ViewAttribute(defaultValue = "true")
+	public boolean isVisible() {
+		return visible;
+	}
+
+	public void setVisible(boolean visible) {
+		this.visible = visible;
+	}
+
+	public String getTip() {
+		return tip;
+	}
+
+	public void setTip(String tip) {
+		this.tip = tip;
+	}
+
+	public boolean isIgnored() {
+		return ignored;
+	}
+
+	public void setIgnored(boolean ignored) {
+		this.ignored = ignored;
+	}
+
+	@ViewAttribute(editor = "any")
+	public Object getUserData() {
+		return userData;
+	}
+
+	public void setUserData(Object userData) {
+		this.userData = userData;
+	}
+
+	public String getTags() {
+		return tags;
+	}
+
+	public void setTags(String tags) {
+		this.tags = tags;
+	}
+
+	@XmlProperty(composite = true)
+	@ViewAttribute(outputter = "#ignore")
+	public Map<String, Object> getMetaData() {
+		return metaData;
+	}
+
+	public void setMetaData(Map<String, Object> metaData) {
+		this.metaData = metaData;
+	}
+}

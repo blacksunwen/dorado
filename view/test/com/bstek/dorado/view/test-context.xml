@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN 2.0//EN" "http://www.springframework.org/dtd/spring-beans-2.0.dtd">
+<beans>
+	<bean id="com.bstek.dorado.view.MockView" parent="com.bstek.dorado.view.View" />
+	<bean id="dorado.component.TestDataSet" parent="com.bstek.dorado.view.widget.data.DataSet">
+		<property name="classType" value="com.bstek.dorado.view.widget.MockDataSet" />
+	</bean>
+</beans>

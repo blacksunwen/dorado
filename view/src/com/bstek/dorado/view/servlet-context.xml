@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:d="http://www.bstek.com/dorado/schema"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	<bean parent="dorado.resolverRegister">
+		<property name="order" value="10" />
+		<property name="url" value="/dorado/client/**/*.dpkg" />
+		<property name="resolver">
+			<bean class="com.bstek.dorado.view.resolver.LibraryFileResolver">
+				<property name="localeResolver">
+					<bean
+						class="org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver" />
+				</property>
+				<property name="resourcePrefix" value="${view.librayRoot}" />
+			</bean>
+		</property>
+	</bean>
+	<bean parent="dorado.resolverRegister">
+		<property name="order" value="20" />
+		<property name="url" value="/dorado/client/boot.dpkg" />
+		<property name="resolver">
+			<bean class="com.bstek.dorado.view.resolver.BootPackagesResolver">
+				<property name="bootFile" value="scripts/dorado/boot" />
+				<property name="resourcePrefix" value="${view.librayRoot}" />
+			</bean>
+		</property>
+	</bean>
+	<bean parent="dorado.resolverRegister">
+		<property name="order" value="30" />
+		<property name="url" value="/dorado/client/skins/**" />
+		<property name="resolver">
+			<bean class="com.bstek.dorado.view.resolver.SkinFileResolver">
+				<property name="baseUri" value="/dorado/client" />
+				<property name="resourcePrefix" value="${view.librayRoot}" />
+			</bean>
+		</property>
+	</bean>
+	<bean parent="dorado.resolverRegister">
+		<property name="order" value="40" />
+		<property name="url" value="/dorado/client/resources/**" />
+		<property name="resolver">
+			<bean class="com.bstek.dorado.web.resolver.WebFileResolver">
+				<property name="baseUri" value="/dorado/client" />
+				<property name="resourcePrefix" value="${view.librayRoot}" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="dorado.resourcesResolverRegister" parent="dorado.resolverRegister">
+		<property name="order" value="50" />
+		<property name="url" value="/dorado/res/**" />
+		<property name="resolver">
+			<bean class="com.bstek.dorado.web.resolver.WebFileResolver">
+				<property name="baseUri" value="/dorado/res" />
+				<property name="resourcePrefix" value="classpath:" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="dorado.viewServiceResolverRegister" parent="dorado.resolverRegister">
+		<property name="order" value="60" />
+		<property name="url" value="/dorado/view-service" />
+		<property name="resolver" ref="dorado.viewServiceResolver" />
+	</bean>
+	<bean id="dorado.directW3cHtml4ViewResolverRegister" parent="dorado.resolverRegister">
+		<property name="order" value="70" />
+		<property name="url" value="**/*.d" />
+		<property name="resolver">
+			<bean class="com.bstek.dorado.view.resolver.DirectW3cHtml4ViewResolver">
+				<property name="velocityHelper" ref="dorado.velocityHelper" />
+				<property name="uriSuffix" value=".d" />
+			</bean>
+		</property>
+	</bean>
+</beans>

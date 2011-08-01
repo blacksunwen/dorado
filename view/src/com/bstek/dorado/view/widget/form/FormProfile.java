@@ -1,0 +1,237 @@
+package com.bstek.dorado.view.widget.form;
+
+import java.util.Properties;
+
+import com.bstek.dorado.annotation.ViewAttribute;
+import com.bstek.dorado.annotation.ViewObject;
+import com.bstek.dorado.annotation.Widget;
+import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.view.widget.Align;
+import com.bstek.dorado.view.widget.Component;
+
+/**
+ * @author Benny Bao (mailto:benny.bao@bstek.com)
+ * @since 2010-8-10
+ */
+@Widget(name = "FormProfile", category = "Form", dependsPackage = "base-widget")
+@ViewObject(prototype = "dorado.widget.FormProfile", shortTypeName = "FormProfile")
+@XmlNode(nodeName = "FormProfile")
+public class FormProfile extends Component implements FormConfig {
+	private String width;
+	private String height;
+	private String className;
+	private String exClassName;
+	private FormElementType type = FormElementType.text;
+	private String trigger;
+	private String labelSeperator;
+	private boolean showLabel = true;
+	private int labelWidth;
+	private int labelSpacing;
+	private FormElementLabelPosition labelPosition = FormElementLabelPosition.left;
+	private Align labelAlign = Align.left;
+	private int editorWidth;
+	private Properties editorConfig;
+	private boolean showHint = true;
+	private boolean showValidHint = true;
+	private int hintWidth;
+	private int hintSpacing;
+	private boolean showHintMessage;
+	private FormElementHintPosition hintPosition;
+	private boolean readOnly;
+
+	private String dataSet;
+	private String dataPath;
+
+	public String getWidth() {
+		return width;
+	}
+
+	public void setWidth(String width) {
+		this.width = width;
+	}
+
+	public String getHeight() {
+		return height;
+	}
+
+	public void setHeight(String height) {
+		this.height = height;
+	}
+
+	public String getClassName() {
+		return className;
+	}
+
+	public void setClassName(String className) {
+		this.className = className;
+	}
+
+	public String getExClassName() {
+		return exClassName;
+	}
+
+	public void setExClassName(String exClassName) {
+		this.exClassName = exClassName;
+	}
+
+	@ViewAttribute(defaultValue = "text")
+	public FormElementType getType() {
+		return type;
+	}
+
+	public void setType(FormElementType type) {
+		this.type = type;
+	}
+
+	@ViewAttribute(referenceComponentName = "Trigger", enumValues = "triggerClear,autoMappingDropDown1,autoMappingDropDown2,defaultDateDropDown")
+	public String getTrigger() {
+		return trigger;
+	}
+
+	public void setTrigger(String trigger) {
+		this.trigger = trigger;
+	}
+
+	public String getLabelSeperator() {
+		return labelSeperator;
+	}
+
+	public void setLabelSeperator(String labelSeperator) {
+		this.labelSeperator = labelSeperator;
+	}
+
+	@ViewAttribute(defaultValue = "true")
+	public boolean isShowLabel() {
+		return showLabel;
+	}
+
+	public void setShowLabel(boolean showLabel) {
+		this.showLabel = showLabel;
+	}
+
+	public int getLabelWidth() {
+		return labelWidth;
+	}
+
+	public void setLabelWidth(int labelWidth) {
+		this.labelWidth = labelWidth;
+	}
+
+	public int getLabelSpacing() {
+		return labelSpacing;
+	}
+
+	public void setLabelSpacing(int labelSpacing) {
+		this.labelSpacing = labelSpacing;
+	}
+
+	@ViewAttribute(defaultValue = "left")
+	public FormElementLabelPosition getLabelPosition() {
+		return labelPosition;
+	}
+
+	public void setLabelPosition(FormElementLabelPosition labelPosition) {
+		this.labelPosition = labelPosition;
+	}
+
+	@ViewAttribute(defaultValue = "left")
+	public Align getLabelAlign() {
+		return labelAlign;
+	}
+
+	public void setLabelAlign(Align labelAlign) {
+		this.labelAlign = labelAlign;
+	}
+
+	public int getEditorWidth() {
+		return editorWidth;
+	}
+
+	public void setEditorWidth(int editorWidth) {
+		this.editorWidth = editorWidth;
+	}
+
+	public Properties getEditorConfig() {
+		return editorConfig;
+	}
+
+	public void setEditorConfig(Properties editorConfig) {
+		this.editorConfig = editorConfig;
+	}
+
+	@ViewAttribute(defaultValue = "true")
+	public boolean isShowHint() {
+		return showHint;
+	}
+
+	public void setShowHint(boolean showHint) {
+		this.showHint = showHint;
+	}
+
+	@ViewAttribute(defaultValue = "true")
+	public boolean isShowValidHint() {
+		return showValidHint;
+	}
+
+	public void setShowValidHint(boolean showValidHint) {
+		this.showValidHint = showValidHint;
+	}
+
+	public int getHintWidth() {
+		return hintWidth;
+	}
+
+	public void setHintWidth(int hintWidth) {
+		this.hintWidth = hintWidth;
+	}
+
+	public int getHintSpacing() {
+		return hintSpacing;
+	}
+
+	public void setHintSpacing(int hintSpacing) {
+		this.hintSpacing = hintSpacing;
+	}
+
+	public boolean isShowHintMessage() {
+		return showHintMessage;
+	}
+
+	public void setShowHintMessage(boolean showHintMessage) {
+		this.showHintMessage = showHintMessage;
+	}
+
+	public FormElementHintPosition getHintPosition() {
+		return hintPosition;
+	}
+
+	public void setHintPosition(FormElementHintPosition hintPosition) {
+		this.hintPosition = hintPosition;
+	}
+
+	public boolean isReadOnly() {
+		return readOnly;
+	}
+
+	public void setReadOnly(boolean readOnly) {
+		this.readOnly = readOnly;
+	}
+
+	@ViewAttribute(referenceComponentName = "DataSet")
+	public String getDataSet() {
+		return dataSet;
+	}
+
+	public void setDataSet(String dataSet) {
+		this.dataSet = dataSet;
+	}
+
+	public String getDataPath() {
+		return dataPath;
+	}
+
+	public void setDataPath(String dataPath) {
+		this.dataPath = dataPath;
+	}
+
+}
