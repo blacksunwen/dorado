@@ -1,0 +1,105 @@
+package com.bstek.dorado.common.event;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.collections.list.UnmodifiableList;
+
+/**
+ * 用于实现单个对象对客户端事件的管理，简化事件管理的辅助类。
+ * 
+ * @author Benny Bao (mailto:benny.bao@bstek.com)
+ * @since Apr 10, 2008
+ */
+public class ClientEventHolder {
+	private Class<? extends ClientEventSupported> ownerType;
+	private Map<String, List<ClientEvent>> eventMap = new HashMap<String, List<ClientEvent>>();
+
+	/**
+	 * @param ownerType
+	 *            宿主对象的Class类型
+	 */
+	public ClientEventHolder(Class<? extends ClientEventSupported> ownerType) {
+		this.ownerType = ownerType;
+	}
+
+	/**
+	 * @param owner
+	 *            宿主对象
+	 */
+	public ClientEventHolder(ClientEventSupported owner) {
+		this(owner.getClass());
+	}
+
+	private List<ClientEvent> getClientEventListenersInternal(String eventName) {
+		return eventMap.get(eventName);
+	}
+
+	/**
+	 * 添加一个事件监听器。
+	 * 
+	 * @param eventName
+	 *            事件名
+	 * @param eventListener
+	 *            事件监听器
+	 */
+	public void addClientEventListener(String eventName,
+			ClientEvent eventListener) {
+		ClientEventRegisterInfo clientEventRegisterInfo = ClientEventRegistry
+				.getClientEventRegisterInfo(ownerType, eventName);
+		if (clientEventRegisterInfo == null) {
+			throw new IllegalArgumentException("Unrecognized client event ["
+					+ ownerType.getName() + "," + eventName + "].");
+		}
+
+		List<ClientEvent> events = getClientEventListenersInternal(eventName);
+		if (events == null) {
+			events = new ArrayList<ClientEvent>();
+			eventMap.put(eventName, events);
+		}
+		events.add(eventListener);
+	}
+
+	/**
+	 * 根据事件名返回所有已添加的事件监听器。
+	 * 
+	 * @param eventName
+	 *            事件名
+	 * @return 事件监听器的列表结合
+	 */
+	@SuppressWarnings("unchecked")
+	public List<ClientEvent> getClientEventListeners(String eventName) {
+		List<ClientEvent> events = getClientEventListenersInternal(eventName);
+		if (events != null) {
+			return UnmodifiableList.decorate(events);
+		} else {
+			return Collections.emptyList();
+		}
+	}
+
+	/**
+	 * 清除所有某事件中的监听器。
+	 * 
+	 * @param eventName
+	 *            事件名
+	 */
+	public void clearClientEventListeners(String eventName) {
+		List<ClientEvent> events = getClientEventListenersInternal(eventName);
+		if (events != null) {
+			events.clear();
+		}
+	}
+
+	/**
+	 * 返回所有已添加的事件监听器。
+	 * 
+	 * @return 包含各种事件下所有事件监听器的Map集合。
+	 */
+	public Map<String, List<ClientEvent>> getAllClientEventListeners() {
+		return eventMap;
+	}
+
+}
