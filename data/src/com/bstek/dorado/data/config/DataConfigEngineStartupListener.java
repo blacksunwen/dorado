@@ -1,0 +1,26 @@
+package com.bstek.dorado.data.config;
+
+import com.bstek.dorado.core.EngineStartupListener;
+
+/**
+ * 用与在Dorado引擎启动时自动完成数据模型配置文件的初始装载过程的监听类。
+ * 
+ * @author Benny Bao (mailto:benny.bao@bstek.com)
+ * @since Dec 12, 2007
+ * @see com.bstek.dorado.core.EngineStartupListener
+ */
+public class DataConfigEngineStartupListener extends EngineStartupListener {
+	private DataConfigManager dataConfigManager;
+
+	/**
+	 * 设置数据配置文件的管理器。
+	 */
+	public void setDataConfigManager(DataConfigManager dataConfigManager) {
+		this.dataConfigManager = dataConfigManager;
+	}
+
+	@Override
+	public void onStartup() throws Exception {
+		dataConfigManager.initialize();
+	}
+}

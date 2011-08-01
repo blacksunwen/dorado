@@ -1,0 +1,59 @@
+package com.bstek.dorado.data.config.xml;
+
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+
+import com.bstek.dorado.config.ParseContext;
+import com.bstek.dorado.config.definition.CreationContext;
+import com.bstek.dorado.config.definition.DefinitionInitOperation;
+import com.bstek.dorado.config.definition.DefinitionReference;
+import com.bstek.dorado.config.definition.ObjectDefinition;
+import com.bstek.dorado.data.config.definition.GenericObjectDefinition;
+import com.bstek.dorado.data.config.definition.DataTypeDefinition;
+
+/**
+ * EntityDataType中属性声明对象的解析器。
+ * 
+ * @author Benny Bao (mailto:benny.bao@bstek.com)
+ * @since Mar 13, 2008
+ */
+public class PropertyDefParser extends GenericObjectParser {
+
+	private static class AddPropertyDefOperation implements
+			DefinitionInitOperation {
+		private GenericObjectDefinition propertyDef;
+
+		public AddPropertyDefOperation(GenericObjectDefinition propertyDef) {
+			this.propertyDef = propertyDef;
+		}
+
+		public void execute(Object object, CreationContext context)
+				throws Exception {
+			DataTypeDefinition dataType = (DataTypeDefinition) object;
+			String name = (String) propertyDef.getProperties().get("name");
+			dataType.addPropertyDef(name, propertyDef);
+		}
+	}
+
+	@Override
+	protected void initDefinition(ObjectDefinition definition, Element element,
+			ParseContext context) throws Exception {
+		DataParseContext dataContext = (DataParseContext) context;
+		DefinitionReference<DataTypeDefinition> dataTypeRef = dataObjectParseHelper
+				.getReferencedDataType(DataXmlConstants.ATTRIBUTE_DATA_TYPE,
+						DataXmlConstants.DATA_TYPE, element, dataContext);
+		if (dataTypeRef != null) {
+			definition.getProperties().put(
+					DataXmlConstants.ATTRIBUTE_DATA_TYPE, dataTypeRef);
+		}
+		super.initDefinition(definition, element, context);
+	}
+
+	@Override
+	protected Object doParse(Node node, ParseContext context) throws Exception {
+		GenericObjectDefinition definition = (GenericObjectDefinition) super.doParse(
+				node, context);
+		return new AddPropertyDefOperation(definition);
+	}
+
+}
