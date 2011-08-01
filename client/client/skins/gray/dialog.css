@@ -1,0 +1,287 @@
+.d-dialog {
+    position: absolute;
+    margin: 0;
+    overflow: hidden;
+    padding: 0;
+    left: 0;
+    top: 0;
+}
+
+.d-dialog-caption-bar {
+    height: 23px;
+    background: url(base/dialog-hori-bg.png) 0 -24px repeat-x;
+	margin: 0 1px;
+    border-bottom: 1px solid #b1b1b1;
+    position: relative;
+    z-index: 10;
+}
+
+.d-dialog-caption-bar .caption {
+    padding-left: 6px;
+    vertical-align: text-top;
+}
+
+.d-dialog-caption-bar .button-group {
+    float: right;
+    height: 20px;
+    margin: 0 6px 0 0;
+    padding: 0;
+}
+
+.d-dialog-caption-bar .button-group div {
+    float: left;
+}
+
+.d-dialog-caption-bar .caption-bar-icon{
+    float: left;
+    width: 20px;
+    height: 20px;
+	margin-left: 6px;
+	margin-top: 0;
+    background: transparent 0 top no-repeat;
+}
+
+.d-dialog .dialog-header {
+    font-size: 0%;
+    height: 6px;
+    position: relative;
+}
+
+.d-dialog .dialog-header .dialog-header-left {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 6px;
+    height: 6px;
+    margin: 0;
+    background: url(base/dialog-hori-bg.png);
+}
+
+.d-dialog .dialog-header .dialog-header-right {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 6px;
+    height: 6px;
+    margin: 0;
+    background: url(base/dialog-hori-bg.png) right 0;
+}
+
+.d-dialog .dialog-header .dialog-header-center {
+    margin: 0 6px 0 6px;
+    height: 6px;
+    background: url(base/dialog-hori-bg.png) 0 -12px;
+}
+
+.d-dialog-resizeable .dialog-header .dialog-header-left {
+    cursor: nw-resize;
+}
+
+.d-dialog-resizeable .dialog-header .dialog-header-right {
+    cursor: ne-resize;
+}
+
+.d-dialog-resizeable .dialog-header .dialog-header-center {
+    cursor: n-resize;
+}
+
+.d-dialog .dialog-body-wrap {
+    position: relative;
+    overflow: hidden;
+}
+
+.d-dialog .dialog-body-wrap .dialog-body-left {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 6px;
+    height: 100%;
+    background: url(base/dialog-vert-bg.png);
+    padding-bottom: 3000px;
+    margin-bottom: -3000px;
+}
+
+.d-dialog .dialog-body-wrap .dialog-body-right {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 6px;
+    height: 100%;
+    background: url(base/dialog-vert-bg.png) -6px 0;
+    padding-bottom: 3000px;
+    margin-bottom: -3000px;
+}
+
+.d-dialog .dialog-body-wrap .dialog-body {
+    padding: 0;
+    margin: 0 6px 0 6px;
+    background-color: #efefef;
+}
+
+.d-dialog-resizeable .dialog-body-wrap .dialog-body-left {
+    cursor: w-resize;
+}
+
+.d-dialog-resizeable .dialog-body-wrap .dialog-body-right {
+    cursor: e-resize;
+}
+
+.d-dialog .dialog-body-wrap .dialog-body .content-panel {
+    padding-top: 6px;
+}
+
+.d-dialog .dialog-footer {
+    font-size: 0%;
+    height: 6px;
+    position: relative;
+}
+
+.d-dialog .dialog-footer .dialog-footer-left {
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: url(base/dialog-hori-bg.png) 0 -6px;
+	width: 6px;
+	height: 6px;
+}
+
+.d-dialog .dialog-footer .dialog-footer-right {
+    position: absolute;
+    right: 0;
+    top: 0;
+    background: url(base/dialog-hori-bg.png) right -6px;
+	width: 6px;
+	height: 6px;
+}
+
+.d-dialog .dialog-footer .dialog-footer-center {
+    background: url(base/dialog-hori-bg.png) 0 -18px;
+    height: 6px;
+    margin: 0 6px 0 6px;
+}
+
+.d-dialog .dialog-body-wrap .dialog-body .content-panel {
+}
+
+.d-dialog .dialog-body-wrap .dialog-body .button-panel {
+    padding: 2px 4px 0 4px;
+    text-align: center;
+    height: 24px;
+}
+
+.d-dialog .dialog-body-wrap .dialog-body .button-panel-left{
+	text-align: left;
+}
+
+.d-dialog .dialog-body-wrap .dialog-body .button-panel-right{
+	text-align: right;
+}
+
+.d-dialog .dialog-body-wrap .dialog-body .button-panel .d-button {
+    margin-right: 3px;
+}
+
+.d-dialog .dialog-body-wrap .dialog-body .button-panel-left{
+	text-align: left;
+}
+
+.d-dialog .dialog-body-wrap .dialog-body .button-panel-right{
+	text-align: right;
+}
+
+.d-dialog .collapse-icon {
+    background: url(common/icons.gif) -20px -280px;
+}
+
+.d-dialog .expand-icon{
+    background: url(common/icons.gif) 0 -280px;
+}
+
+.d-dialog-resizeable .dialog-footer .dialog-footer-left {
+    cursor: sw-resize;
+}
+
+.d-dialog-resizeable .dialog-footer .dialog-footer-right {
+    cursor: se-resize;
+}
+
+.d-dialog-resizeable .dialog-footer .dialog-footer-center {
+    cursor: s-resize;
+}
+
+.d-dialog-dragging {
+}
+
+.d-dialog-draggable .d-dialog-caption-bar {
+    cursor: move;
+}
+
+.d-dialog-drag-proxy {
+    position: absolute;
+    border: 1px dotted #3B5A82;
+}
+
+.d-close-button {
+    background: url(base/dialog-buttons.png) no-repeat -180px 0;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.d-close-button-hover {
+    background-position: -200px 0;
+}
+
+.d-close-button-click {
+    background-position: -220px 0;
+}
+
+.d-minimize-button {
+    background: url(base/dialog-buttons.png) no-repeat 0 0;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.d-minimize-button-hover {
+    background-position: -20px 0;
+}
+
+.d-minimize-button-click {
+    background-position: -40px 0;
+}
+
+.d-maximize-button {
+    background: url(base/dialog-buttons.png) no-repeat -60px 0;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.d-maximize-button-hover {
+    background-position: -80px 0;
+}
+
+.d-maximize-button-click {
+    background-position: -100px 0;
+}
+
+.d-restore-button {
+    background: url(base/dialog-buttons.gif) no-repeat -120px 0;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.d-restore-button-hover {
+    background-position: -140px 0;
+}
+
+.d-restore-button-click {
+    background-position: -160px 0;
+}
+
+.d-dialog-helper {
+	left: -9999px;
+	top: -9999px;
+}

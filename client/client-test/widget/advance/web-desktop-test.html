@@ -1,0 +1,731 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html style="overflow: hidden;">
+<head>
+    <title>Web Desktop Test Page</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <script type="text/javascript" src="../../include-all.js"></script>
+	<link href="web-desktop.css" rel="stylesheet" />
+    <script type="text/javascript">
+        var view = new dorado.widget.View({
+            layout: new dorado.widget.layout.DockLayout({
+                padding: 0
+            })
+        });
+
+        var menu = new dorado.widget.Menu({
+            items: [{
+                name: "close",
+                caption: "Close",
+                listener: {
+                    onClick: function() {
+                        var tabbar = this.id("tabbar1");
+                        if (tabbar) {
+                            var tab = tabbar.get("contextMenuTab");
+                            tab.close();
+                        }
+                    }
+                }
+            }, "-", {
+                name: "closeAll",
+                caption: "Close All",
+                listener: {
+                    onClick: function() {
+                        var tabbar = this.id("tabbar1");
+                        if (tabbar) {
+                            var tabs = tabbar.get("tabs").toArray();
+                            jQuery.each(tabs, function(index, tab){
+                                if (!tab._disabled && tab._closeable) {
+                                    tab.close();
+                                }
+                            });
+                        }
+                    }
+                }
+            }, {
+                name: "closeOthers",
+                caption: "Close Others",
+                listener: {
+                    onClick: function() {
+                        var tabbar = this.id("tabbar1");
+                        if (tabbar) {
+                            var contextMenuTab = tabbar.get("contextMenuTab");
+                            var tabs = tabbar.get("tabs").toArray();
+                            jQuery.each(tabs, function(index, tab){
+                                if (tab != contextMenuTab && !tab._disabled && tab._closeable) {
+                                    tab.close();
+                                }
+                            });
+                        }
+                    }
+                }
+            }]
+        });
+
+        var startMenuPanel = new dorado.widget.FloatContainer({
+            width: 330,
+            height: 300,
+            animateType: "fade",
+            style: {
+                position: "absolute"
+            },
+			layout: {
+				$type: "Anchor"
+			},
+            children: [{
+                $type: "Panel",
+                exClassName: "start-menu-panel",
+                caption: "Frank Zhang",
+                closeable: false,
+				layout: {
+					$type: "Anchor"
+				},
+                layoutConstraint: {
+                    width: "100%",
+                    height: "100%"
+                },
+                children: [{
+                    $type: "Menu",
+                    exClassName: "left-menu",
+                    floating: false,
+                    layoutConstraint: {
+                        width: 150,
+                        height: "100%"
+                    },
+					listener: {
+						onHideTopMenu: function() {
+							startMenuPanel.hide();
+						}
+					},
+                    items: [{
+                        caption: "Settings",
+                        icon: "images/left-default-menu-icon.png"
+                    }, {
+                        caption: "Logout",
+                        icon: "images/left-default-menu-icon.png"
+                    }]
+                }, {
+                    $type: "Menu",
+                    exClassName: "right-menu",
+                    floating: false,
+                    layoutConstraint: {
+                        height: "100%",
+                        anchorLeft: "previous",
+                        top: 0,
+                        bottom: 0,
+                        left: 5,
+                        right: 0
+                    },
+					listener: {
+						onHideTopMenu: function() {
+							startMenuPanel.hide();
+						}
+					},
+                    items: [{
+                        caption: "Demo",
+                        items: [{
+                            caption: "Writer"
+                        }, {
+                            caption: "Phone Manage"
+                        }, {
+                            caption: "WallPaper"
+                        }, {
+							caption: "Google"
+						}]
+                    }, {
+                        caption: "Chart",
+						items: [{
+							caption: "Column Chart"
+						}, {
+							caption: "Bar Chart"
+						}, {
+							caption: "Line Chart"
+						}, {
+							caption: "Area Chart"
+						}, {
+							caption: "Radar Chart"
+						}, {
+							caption: "Pie Chart"
+						}]
+                    }, {
+                        caption: "Widget",
+						items: [{
+							caption: "Click"
+						}, {
+							caption: "Guitar"
+						}]
+                    }]
+                }]
+            }, {
+                $type: "Control",
+                layoutConstraint: {
+                    width: 32,
+                    height: 8,
+                    bottom: 0,
+                    //background: "url(images/start-button.png) 0 -64px",
+                    zIndex: 10
+                }
+            }]
+        });
+
+        startMenuPanel.doOnBlur = function() {
+            startMenuPanel.hide();
+        };
+
+		var startButton = new dorado.widget.SimpleButton({
+			className: "start-button",
+			listener: {
+				onClick: function(self) {
+					startMenuPanel.addListener("onShow", function() {
+						self.set("toggled", true);
+						startMenuPanel.addListener("onHide", function() {
+							self.set("toggled", false);
+						}, {once: true});
+					}, {once: true});
+					startMenuPanel.show({
+						anchorTarget: self,
+						vAlign: "top",
+						align: "innerleft",
+                        offsetTop: 8
+					});
+				}
+			}
+		});
+
+        var taskbar = new dorado.widget.desktop.Taskbar({
+			startButton: startButton,
+			showTimeLabel: false,
+			quickButtons: [{
+				//icon: "images/writer-small.png",
+                appId: "app2",
+				listener: {
+					onClick: function() {
+						//shell.launchApp("writer");
+					}
+				}
+			}, {
+				icon: "images/column-small.png",
+				listener: {
+					onClick: function() {
+						shell.launchApp("chart1");
+					}
+				}
+			}],
+			trayButtons1: [{
+				icon: "image_icons/negative.png",
+				listener: {
+					onClick: function() {
+						taskbar.addTrayButton({ icon: "image_icons/negative.png" });
+					}
+				}
+			}, {
+				icon: "image_icons/negative.png",
+				listener: {
+					onClick: function() {
+						taskbar.removeTrayButton(0);
+					}
+				}
+			}],
+            listener: {
+                onTaskButtonContextMenu: function(event, arg) {
+                    var taskButton = arg.taskButton;
+                    menu.show({event: arg.event});
+                }
+            }
+        });
+
+        var desktop = new dorado.widget.desktop.Desktop({
+			iconSize: "small",
+            items: [{
+                icon: "images/writer.png",
+                caption: "Writer",
+                appId: "writer"
+            }, {
+                appId: "app2"
+            }, {
+				icon: "images/desktop-wallpaper.png",
+				caption: "Wallpaper",
+                appId: "app4"
+			}, {
+                icon: "images/google.jpeg",
+                caption: "Google",
+				appId: "app10"
+            }]
+        });
+
+		var desktop2 = new dorado.widget.desktop.Desktop({
+			iconSize: "small",
+            items: [{
+                icon: "images/column.png",
+                caption: "Column Chart",
+                appId: "chart1"
+            }, {
+                icon: "images/bar.png",
+                caption: "Bar Chart",
+                appId: "chart2"
+            }, {
+				icon: "images/line.png",
+				caption: "Line Chart",
+                appId: "chart3"
+			}, {
+                icon: "images/area.png",
+                caption: "Area Chart",
+				appId: "chart4"
+            }, {
+                icon: "images/radar.png",
+                caption: "Radar Chart",
+				appId: "chart5"
+            }, {
+				icon: "images/pie.png",
+                caption: "Pie Chart",
+				appId: "chart6"
+			}]
+        });
+
+		var desktop3 = new dorado.widget.desktop.Desktop({
+			iconSize: "small",
+            items: [{
+                icon: "images/clock.png",
+                caption: "Clock",
+                appId: "clock"
+            }, {
+                icon: "images/guitar.png",
+                caption: "Guitar",
+                appId: "guitar"
+            }]
+        });
+
+		var card = new dorado.widget.desktop.DesktopCarousel({
+			controls: [desktop, desktop2, desktop3]
+		});
+
+		var shell = new dorado.widget.desktop.Shell({
+			wallpaper: "wallpapers/Sea Mist.jpg",
+			taskbar: taskbar,
+			desktop: card
+		});
+
+		view.addChild(shell);
+
+		var factory = shell, app0 = factory.registerApp({
+			id: "app0",
+			doCreateControl: function() {
+				return new dorado.widget.Dialog({
+					caption: "Test",
+					center: true,
+					width: 600,
+					height: 500,
+					layout: {
+						$type: "Dock"
+					},
+					minimizeable: true,
+					maximizeable: true
+				});
+			}
+		}, false), app2 = factory.registerApp({
+			id: "app2",
+			$type: "IFrame",
+            icon32: "images/phone.png",
+            icon16: "images/phone.png",
+			attrs: {
+				path: "phone-manage.html",
+				caption: "Phone Manage"
+			}
+		}), app3 = factory.registerApp({
+			id: "app4",
+			doCreateControl: function() {
+				var canvas = new dorado.widget.ImageCanvas({
+					zoomMode: "fitWidth"
+				}), dialog = new dorado.widget.Dialog({
+					caption: "Wallpaper Select",
+					center: true,
+					width: 800,
+					height: 600,
+					layout: {
+						$type: "Dock"
+					},
+					minimizeable: true,
+					maximizeable: true,
+					children: [{
+						$type: "SplitPanel",
+						sideControl: {
+							$type: "BlockView",
+							scrollMode: "viewport",
+            				blockHeight: 80,
+            				lineSize: 1,
+            				fillLine: true,
+            				renderer: new dorado.widget.blockview.ImageBlockRenderer({
+            					captionProperty: "label"
+            				}),
+							items: [{
+								label: "Lightning",
+								image: "wallpapers/Lightning.jpg"
+							}, {
+								label: "Mojave",
+								image: "wallpapers/Mojave.jpg"
+							}, {
+								label: "Pier",
+								image: "wallpapers/Pier.jpg"
+							}, {
+								label: "Sea Mist.jpg",
+								image: "wallpapers/Sea Mist.jpg"
+							}, {
+								label: "Wave",
+								image: "wallpapers/Wave.jpg"
+							}, {
+								label: "Winter Sunrise",
+								image: "wallpapers/Winter Sunrise.jpg"
+							}],
+							listener: {
+								onBlockClick: function(self, arg) {
+									canvas.set("image", arg.data.image);
+								}
+							}
+						},
+						mainControl: {
+							$type: "Container",
+							layout: {
+								$type: "Dock"
+							},
+							children: [{
+								$type: "ToolBar",
+								exClassName: "image-canvas-toolbar",
+								layoutConstraint: "top",
+								items: [{
+									$type: "SimpleIconButton",
+									iconClass: "zoom-in",
+									listener: {
+										onClick: function() {
+											canvas.zoomIn();
+										}
+									}
+								}, {
+									$type: "SimpleIconButton",
+									iconClass: "zoom-out",
+									listener: {
+										onClick: function() {
+											canvas.zoomOut();
+										}
+									}
+								}, {
+									$type: "SimpleIconButton",
+									iconClass: "zoom",
+									listener: {
+										onClick: function() {
+											canvas.set("zoomMagnifier", !canvas.get("zoomMagnifier"));
+										}
+									}
+								}, "-", {
+									$type: "SimpleIconButton",
+									iconClass: "zoom-selection",
+									listener: {
+										onClick: function() {
+											canvas.set("selection", !canvas.get("selection"));
+											canvas.set("selectionOperation", "zoomSelect");
+										}
+									}
+								}, {
+									$type: "SimpleIconButton",
+									iconClass: "select-rect",
+									listener: {
+										onClick: function() {
+											canvas.set("selection", !canvas.get("selection"));
+											canvas.set("selectionOperation", "getCoordinate");
+										}
+									}
+								}, "-", {
+									$type: "SimpleIconButton",
+									iconClass: "zoom-original",
+									listener: {
+										onClick: function() {
+											canvas.zoom(1.0);
+										}
+									}
+								}, {
+									$type: "SimpleIconButton",
+									iconClass: "zoom-fit-width",
+									listener: {
+										onClick: function() {
+											canvas.set("zoomMode", "fitWidth");
+										}
+									}
+								}, {
+									$type: "SimpleIconButton",
+									iconClass: "zoom-fit-height",
+									listener: {
+										onClick: function() {
+											canvas.set("zoomMode", "fitHeight");
+										}
+									}
+								}, {
+									$type: "SimpleIconButton",
+									iconClass: "zoom-best-fit",
+									listener: {
+										onClick: function() {
+											canvas.set("zoomMode", "fitWindow");
+										}
+									}
+								}, "-", {
+									$type: "SimpleIconButton",
+									iconClass: "rotate-anticlockwise",
+									listener: {
+										onClick: function() {
+											canvas.rotateLeft();
+										}
+									}
+								}, {
+									$type: "SimpleIconButton",
+									iconClass: "rotate-clockwise",
+									listener: {
+										onClick: function() {
+											canvas.rotateRight();
+										}
+									}
+								}, {
+									$type: "SimpleIconButton",
+									iconClass: "rotate-half",
+									listener: {
+										onClick: function() {
+											canvas.rotateHalfCircle();
+										}
+									}
+								}, "-", {
+									$type: "SimpleIconButton",
+									iconClass: "flip-horizontal",
+									listener: {
+										onClick: function() {
+											canvas.flipHorizental();
+										}
+									}
+								}, {
+									$type: "SimpleIconButton",
+									iconClass: "flip-vertical",
+									listener: {
+										onClick: function() {
+											canvas.flipVertical();
+										}
+									}
+								}, {
+									$type: "SimpleIconButton",
+									iconClass: "negative",
+									listener: {
+										onClick: function() {
+											canvas.invertColor();
+										}
+									}
+								}]
+							}, canvas]
+						}
+					}],
+					buttonAlign: "right",
+					buttons: [{
+						caption: "OK",
+						width: 80,
+						listener: {
+							onClick: function() {
+								var image = canvas.get("image");
+								if (image) {
+									shell.set("wallpaper", image);
+								}
+								dialog.hide();
+							}
+						}
+					}, {
+						caption: "Cancel",
+						width: 80,
+						listener: {
+							onClick: function() {
+								dialog.hide();
+							}
+						}
+					}]
+				});
+
+				return dialog;
+			}
+		});
+
+		var app4 = factory.registerApp({
+			id: "app10",
+			$type: "IFrame",
+			attrs: {
+				width: 700,
+				height: 500,
+				caption: "Google",
+				path: "http://www.google.com.hk"
+			}
+		});
+
+		var writer = factory.registerApp({
+			id: "writer",
+			$type: "IFrame",
+			attrs: {
+				caption: "Writer",
+				path: "html-editor-test.html"
+			}
+		});
+
+		var app5 = factory.registerApp({
+			id: "app11",
+			$type: "Widget",
+			doCreateControl: function() {
+				var dataTypeSketchData = new dorado.EntityDataType({
+					name: "SketchData",
+					propertyDefs: [
+						{ name: "value", label: "Value" }
+					]
+				});
+				$dataTypeRepository.register(dataTypeSketchData);
+
+				var dataSet = new dorado.widget.DataSet({
+					data: [{
+						value: 4
+					}, {
+						value: 2
+					}, {
+						value: 1
+					}, {
+						value: 5
+					}, {
+						value: 2
+					}],
+					dataType: "SketchData"
+				});
+
+				var sketchChart = new dorado.widget.ofc.OpenFlashChart({
+					width: 400,
+					height: 300,
+					title: {
+						"text": "How many pies were eaten?",
+						"style": "font-size: 14px; font-family: Verdana; text-align: center;"
+					},
+					xAxis: {
+						labels: {
+							labels: ["John","Frank","Mary","Andy","Mike"]
+						}
+					},
+					elements: [{
+						$type: "ofc.SketchColumn",
+						dataSet: dataSet,
+						toolTip: "#val# pies",
+						outlineColor: "#009900",
+						offset: 6,
+						color: "#00aa00",
+						bindingConfig: {
+							valueProperty: "value"
+						}
+					}]
+				});
+
+				return sketchChart
+			}
+		});
+
+		var chart1 = factory.registerApp({
+			id: "chart1",
+			$type: "IFrame",
+			attrs: {
+                icon16: "images/column-small.png",
+                icon32: "images/column.png",
+				caption: "Column Chart",
+				path: "../chart/column-chart-test.html"
+			}
+		});
+
+		var chart2 = factory.registerApp({
+			id: "chart2",
+			$type: "IFrame",
+			attrs: {
+				caption: "Bar Chart",
+				path: "../chart/bar-chart-test.html"
+			}
+		});
+
+		var chart3 = factory.registerApp({
+			id: "chart3",
+			$type: "IFrame",
+			attrs: {
+				caption: "Line Chart",
+				path: "../chart/line-chart-test.html"
+			}
+		});
+
+		var chart4 = factory.registerApp({
+			id: "chart4",
+			$type: "IFrame",
+			attrs: {
+				caption: "Area Chart",
+				path: "../chart/area-chart-test.html"
+			}
+		});
+
+		var chart5 = factory.registerApp({
+			id: "chart5",
+			$type: "IFrame",
+			attrs: {
+				caption: "Radar Chart",
+				path: "../chart/radar-chart-test.html"
+			}
+		});
+
+		var chart6 = factory.registerApp({
+			id: "chart6",
+			$type: "IFrame",
+			attrs: {
+				caption: "Pie Chart",
+				path: "../chart/pie-chart-test.html"
+			}
+		});
+
+		var Flash = $extend(dorado.widget.Control, {
+			ATTRIBUTES: {
+				path: {}
+			},
+			onAttachToDocument: function() {
+				$invokeSuper.call(this, arguments);
+
+				jQuery(this._dom).flash({
+					swf: this._path,
+					wmode: "transparent",
+					width: "100%",
+					height: "100%"
+				});
+			}
+		});
+
+		var clock =factory.registerApp({
+			id: "clock",
+			$type: "Widget",
+			doCreateControl: function() {
+				return new Flash({
+					path: "black_clock.swf",
+					width: 150,
+					height: 150
+				})
+			}
+		});
+
+		var guitar = factory.registerApp({
+			id: "guitar",
+			$type: "Widget",
+			doCreateControl: function() {
+				return new dorado.widget.Container({
+					width: 500,
+					height: 200,
+					children: [{
+						$type: "IFrame",
+						path: "guitar/index.html"
+					}]
+				});
+			}
+		});
+
+        view.addChild(startMenuPanel);
+
+        $(document).ready(function() {
+            view.render(document.body);
+        });
+    </script>
+</head>
+<body style="margin: 0;padding: 0;overflow: hidden;">
+</body>
+</html>

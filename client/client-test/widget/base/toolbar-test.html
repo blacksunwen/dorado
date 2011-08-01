@@ -1,0 +1,188 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <title>ToolBar Test Page</title>
+    <script type="text/javascript" src="../../include-all.js">
+    </script>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <script type="text/javascript">
+        var view = new dorado.widget.View({ layout: "Anchor" });
+
+        view.addChild(new dorado.widget.Container({
+            height: 180
+        }));
+
+        var panel = new dorado.widget.FloatPanel({
+            id: "floatpanel",
+            width: 300,
+            height: 150,
+            style: {
+                backgroundColor: "yellow"
+            },
+            buttons: [new dorado.widget.Button({
+                caption: "确定",
+                width: 80,
+                listener: {
+                    onClick: function(self) {
+                        var opener = panel.opener;
+                        if (opener) {
+                            opener.onSelect();
+                        }
+                    }
+                }
+            })]
+        });
+
+        var testMenu2 = new dorado.widget.Menu({
+            items: [{
+                caption: "菜单项2菜单项2"
+            }, "-", {
+                $type: "Control",
+                caption: "Control Menu Item",
+                control: panel
+            }, {
+                caption: "菜单项3"
+            }, {
+                caption: "菜单项4"
+            }, {
+                caption: "菜单项5"
+            }]
+        });
+
+        var testMenu3 = new dorado.widget.Menu({
+            items: [{
+                caption: "菜单项2菜单项2"
+            }, "-", {
+                $type: "Control",
+                caption: "Control Menu Item",
+                control: panel
+            }, {
+                caption: "菜单项3"
+            }, {
+                caption: "菜单项4"
+            }, {
+                caption: "菜单项5"
+            }]
+        });
+
+        var toolbar = new dorado.widget.ToolBar({
+            fixRight: true,
+            items: [{
+                caption: "Button1",
+                disabled: true
+            }, {
+                caption: "Button2",
+                menu: testMenu2
+            }, "-", {
+                caption: "菜单栏1",
+                toggleable: true
+            }, {
+                caption: "菜单栏",
+                icon: "del.gif",
+                menu: testMenu3
+            }, "-", {
+                caption: "菜单栏3"
+            }, {
+                caption: "菜单栏4"
+            }, {
+                caption: "菜单栏5"
+            }, "-", {
+                caption: "菜单栏6"
+            }, {
+                caption: "菜单栏0",
+                menu: new dorado.widget.Menu({
+                    items: [
+                        {
+                            items: [
+                                {
+                                    caption: "菜单项11"
+                                },
+                                {
+                                    $type: "Control",
+                                    caption: "Control Menu Item",
+                                    control: panel
+                                },
+                                {
+                                    items: [
+                                        {
+                                            caption: "菜单项121"
+                                        },
+                                        {
+                                            caption: "菜单项122"
+                                        },
+                                        {
+                                            caption: "菜单项123"
+                                        }
+                                    ],
+
+                                    caption: "菜单项12"
+                                },
+                                {
+                                    caption: "菜单项13"
+                                }
+                            ],
+                            caption: "菜单项1"
+                        },
+                        {
+                            caption: "菜单项2"
+                        },
+                        {
+                            items: [
+                                {
+                                    caption: "菜单项31"
+                                },
+                                {
+                                    caption: "菜单项32"
+                                },
+                                {
+                                    caption: "菜单项33"
+                                }
+                            ],
+
+                            caption: "菜单项3"
+                        },
+                        {
+                            caption: "菜单项4"
+                        },
+                        {
+                            caption: "菜单项5"
+                        }
+                    ]
+                })
+            }, {
+                $type: "Label",
+                text: "中文加english+123"
+            }, new dorado.widget.TextEditor({
+            }), {
+                $type: "Label",
+                text: "一段文本",
+                style: "top: 3; position: relative"
+            }, "->", {
+                caption: "菜单栏7"
+            }, {
+                caption: "菜单栏8"
+            }, "-", {
+                caption: "菜单栏9",
+				toolTip: "菜单栏9测试提示"
+            }],
+			layoutConstraint: {width: "100%"}
+        });
+
+        view.addChild(toolbar);
+        var toolbar2 = new dorado.widget.ToolBar({
+            layoutConstraint: {width: "100%"}
+        });
+        view.addChild(toolbar2);
+        var toolbar3 = new dorado.widget.ToolBar({
+            layoutConstraint: {width: "100%"}
+        });
+        view.addChild(toolbar3);
+
+        $(document).ready(function() {
+            view.render(document.body);
+        });
+    </script>
+</head>
+<body style="">
+</body>
+</html>

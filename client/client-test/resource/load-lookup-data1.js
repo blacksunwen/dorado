@@ -1,0 +1,19 @@
+[ {
+	"code": 1,
+	"label": "Beijing"
+}, {
+	"code": 2,
+	"label": "Shanghai"
+}, {
+	"code": 3,
+	"label": "Tianjing"
+}, {
+	"code": 4,
+	"label": "Chongqing"
+}, {
+	"code": 5,
+	"label": "Guangzhou"
+}, {
+	"code": 6,
+	"label": "Shenzhen"
+} ]

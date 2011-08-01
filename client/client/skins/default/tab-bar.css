@@ -1,0 +1,271 @@
+.d-tabbar{
+    height: 27px;
+    position: relative;
+}
+
+.d-tabbar-top{
+    background: transparent url(base/tab-top-all.gif) repeat-x 0 -234px;
+}
+
+.d-tabbar-bottom{
+    background: transparent url(base/tab-bottom-all.gif) repeat-x 0 -234px;
+}
+
+.d-tabbar .tabs-wrap{
+    height: 27px;
+    overflow: hidden;
+
+    position: relative;
+    /*float: left;*/
+}
+
+.d-tabbar .tabs-wrap .tabs{
+    width: 5000px;
+	height: 27px;
+	padding: 0 0 0 4px;
+    margin: 0;
+
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.d-tabbar .tabs-wrap .tabs li{
+    list-style-type: none;
+}
+
+.d-tabbar .tab{
+    float: left;
+	cursor: default;
+    position: relative;
+    padding-left: 7px;
+}
+
+.d-tabbar .tab-disabled{
+    color: gray;
+}
+
+.d-tabbar-top .tab{
+	background: transparent url(base/tab-top-all.gif) no-repeat 0 -26px;
+}
+
+.d-tabbar-top .tab-hover{
+	background-position: 0 -52px;
+}
+
+.d-tabbar-top .tab-selected{
+	background-position: 0 0;
+}
+
+.d-tabbar-bottom .tab{
+	background: transparent url(base/tab-bottom-all.gif) no-repeat 0 -26px;
+}
+
+.d-tabbar-bottom .tab-hover{
+	background-position: 0 -52px;
+}
+
+.d-tabbar-bottom .tab-selected{
+	background-position: 0 0;
+}
+
+.d-tabbar .tab .tab-left{
+    float: left;
+    position: relative;
+
+	height: 26px;
+    display: inline-block;
+    margin-right: 7px;
+
+    display: inline-block;
+
+    line-height: 26px;
+}
+
+.d-tabbar-top .tab .tab-left{
+    background: url(base/tab-top-all.gif) repeat-x 0 -104px;
+}
+
+.d-tabbar-bottom .tab .tab-left{
+    background: url(base/tab-bottom-all.gif) repeat-x 0 -104px;
+}
+
+.d-tabbar .tab-closeable .tab-left{
+    padding-right: 17px;
+}
+
+.d-tabbar .tab-hover .tab-left{
+    background-position: 0 -130px;
+}
+
+.d-tabbar .tab-selected .tab-left{
+    background-position: 0 -78px;
+}
+
+.d-tabbar .tab .icon{
+    float: left;
+    display: inline-block;
+    height: 24px;
+    padding: 0px 4px 0 12px;
+    background: transparent no-repeat 0px center;
+}
+
+.d-tabbar .tab .caption{
+    float: left;
+    display: inline-block;
+    height: 24px;
+    line-height: 24px;
+    padding: 0px 4px 0 4px;
+    white-space:nowrap;
+    overflow: hidden;
+}
+
+.d-tabbar .tab .tab-right{
+    position: absolute;
+    right: 0;
+    top: 0;
+    
+    padding-left: 7px;
+    display: inline-block;
+	height: 26px;
+}
+
+.d-tabbar-top .tab .tab-right{
+	background: url(base/tab-top-all.gif) no-repeat 0 -182px;
+}
+
+.d-tabbar-bottom .tab .tab-right{
+	background: url(base/tab-bottom-all.gif) no-repeat 0 -182px;
+}
+
+.d-tabbar-top .tab-hover .tab-right{
+	background-position: 0 -208px;
+}
+
+.d-tabbar-top .tab-selected .tab-right{
+	background-position: 0 -156px;
+}
+
+.d-tabbar-bottom .tab-hover .tab-right{
+	background-position: 0 -208px;
+}
+
+.d-tabbar-bottom .tab-selected .tab-right{
+	background-position: 0 -156px;
+}
+
+.d-tabbar .tab .close{
+	cursor: pointer;
+    position: absolute;
+    right: 0;
+    top: 3px;
+    
+	width: 18px;
+	height: 18px;
+}
+
+.d-tabbar-bottom .tab .close{
+    top: 5px;
+}
+
+.d-tabbar .tab .close, .d-tabbar .tab-selected .close{
+	background: url(base/tab-buttons.gif) no-repeat 0 -63px;
+}
+
+.d-tabbar .tab .close-hover, .d-tabbar .tab-selected .close-hover{
+	background-position: -18px -63px;
+}
+
+.d-tabbar .tab .close-click, .d-tabbar .tab-selected .close-click{
+	background-position: -36px -63px;
+}
+
+.d-tabbar .left-button{
+	cursor: pointer;
+	width: 20px;
+    height: 22px;
+	margin-top: 1px;
+	margin-right: 2px;
+    display: inline;
+}
+
+.d-tabbar .right-button{
+	cursor: pointer;
+	width: 20px;
+    height: 22px;
+	margin: 1px 1px 0 2px;
+    display: inline;
+}
+
+.d-tabbar .menu-button{
+	cursor: pointer;
+	width: 20px;
+    height: 21px;
+	margin-top: 1px;
+    display: inline;
+}
+
+.d-tabbar-bottom .left-button, .d-tabbar-bottom .right-button, .d-tabbar-bottom .menu-button{
+    margin-top: 5px;
+}
+
+.d-tabbar .left-button{
+    position: absolute;
+    left: 0;
+}
+
+.d-tabbar .right-button, .d-tabbar .menu-button{
+    position: absolute;
+    right: 0;
+}
+
+.d-tabbar .left-button{
+	background: url(base/tab-buttons.gif) 0 0 no-repeat;
+}
+
+.d-tabbar .left-button-hover{
+	background-position: -20px 0;
+}
+
+.d-tabbar .left-button-click{
+	background-position: -40px 0;
+}
+
+.d-tabbar .left-button-disabled{
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+}
+
+.d-tabbar .right-button{
+	background: url(base/tab-buttons.gif) 0 -21px no-repeat;
+}
+
+.d-tabbar .right-button-hover{
+	background-position: -20px -21px;
+}
+
+.d-tabbar .right-button-click{
+	background-position: -40px -21px;
+}
+
+.d-tabbar .right-button-disabled{
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+}
+
+.d-tabbar .menu-button{
+	background: url(base/tab-buttons.gif) 0 -42px no-repeat;
+}
+
+.d-tabbar .menu-button-hover{
+	background-position: -20px -42px;
+}
+
+.d-tabbar .menu-button-disabled{
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+}
+
+.d-tabbar .menu-button-toggled{
+	background-position: -40px -42px;
+}

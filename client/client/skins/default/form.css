@@ -1,0 +1,63 @@
+.d-data-message {
+}
+
+.d-data-message .d-message {
+	height: 20px;
+    line-height: 20px;
+    padding-left: 20px;
+}
+
+.d-data-message .d-message-info {
+    background: url(form/message-info.gif) no-repeat;
+}
+
+.d-data-message .d-message-ok {
+    background: url(form/message-ok.gif) no-repeat;
+}
+
+.d-data-message .d-message-warn {
+    background: url(form/message-warn.gif) no-repeat;
+}
+
+.d-data-message .d-message-error {
+    color: #FF0000;
+    background: url(form/message-error.gif) no-repeat;
+}
+
+.d-data-message .d-message-validating {
+    background: url(form/validating.gif) no-repeat;
+}
+
+.d-form-element {
+}
+
+.d-form-element .form-label {
+    height: 20px;
+    line-height: 20px;
+}
+
+.d-form-element .form-label-top {
+    margin-left: -12px;
+	padding-right: 12px;
+}
+
+.d-form-element .form-label-align-right {
+    margin-left: -12px;
+	padding-right: 12px;
+}
+
+.d-form-element .form-label-required {
+    background: url(form/field-required.gif) right 2px no-repeat;
+}
+
+.d-form-element .form-hint {
+    height: 20px;
+    line-height: 20px;
+}
+
+.d-ie6 .d-form-element .form-hint {
+    margin-top: 2px;
+}
+
+.d-auto-form {
+}

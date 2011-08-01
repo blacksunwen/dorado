@@ -1,0 +1,251 @@
+.d-toolbar {
+    border-top: #E0E0E0 1px solid;
+    border-bottom: #E0E0E0 1px solid;
+    height: 24px;
+    position: relative;
+}
+
+.d-toolbar-overflow {
+}
+
+.d-toolbar-fixright {
+}
+
+.d-toolbar .toolbar-left-wrap {
+    background: #EEEEEE url(base/toolbar-bg.gif) repeat-x top;
+    overflow: hidden;
+    position: relative;
+    height: 24px;
+}
+
+.d-toolbar .toolbar-left {
+    width: 3000px;
+    position: absolute;
+    left: 0;
+    top: 1px;
+}
+
+.d-toolbar .toolbar-right {
+    background: #EEEEEE url(base/toolbar-bg.gif) repeat-x top;
+    position: absolute;
+    right: 0;
+    top: 1px;
+}
+
+.d-toolbar .overflow-button {
+    display: none;
+    position: absolute;
+    width: 15px;
+    height: 25px;
+    right: 0;
+    top: -2px;
+    background: url(base/toolbar-more-button.gif) no-repeat;
+}
+
+.d-toolbar .overflow-button-hover {
+    background-position: -15px 0;
+}
+
+.d-toolbar .overflow-button-click {
+    background-position: -30px 0;
+}
+
+.d-toolbar .overflow-button-toggled {
+    background-position: -45px 0;
+}
+
+.d-toolbar-overflow .overflow-button {
+    display: block;
+}
+
+.d-toolbar-overflow .toolbar-right {
+    padding-right: 17px;
+}
+
+.d-toolbar-fixright .overflow-button {
+    left: 0;
+    right: auto;
+}
+
+.d-toolbar-fixright .toolbar-right {
+    padding-left: 17px;
+    padding-right: 0;
+}
+
+.d-toolbar-item {
+    float: left;
+}
+
+.d-toolbar-sep {
+    background: url(base/toolbar-separator.gif) center center no-repeat;
+    cursor: default;
+    display: inline-block;
+    width: 10px;
+    height: 22px;
+}
+
+.d-toolbar-label {
+    cursor: default;
+    height: 22px;
+    line-height: 20px;
+    vertical-align: baseline;
+}
+
+.d-toolbar .d-text-editor {
+    margin-top: 1px;
+}
+
+.d-toolbar-button {
+    white-space: nowrap;
+    display: inline-block;
+    height: 22px;
+    cursor: pointer;
+    overflow: hidden;
+    background: url(base/toolbar-button-bg.gif) no-repeat;
+}
+
+.d-toolbar-button .button-left {
+    float: left;
+    height: 22px;
+    line-height: 22px;
+    display: inline-block;
+    background: url(base/toolbar-button-bg.gif) repeat-x 0 -22px;
+    overflow: hidden;
+    border: 0;
+    margin: 0 0 0 3px;
+    padding: 0 4px;
+    cursor: pointer;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.d-toolbar-button .button-left .icon {
+    background-repeat: no-repeat;
+    display: inline-block;
+    padding-left: 20px;
+    width: 0;
+    height: 22px;
+    line-height: 22px;
+    margin: 0 1px;
+}
+
+.d-toolbar-button .button-left .caption {
+    line-height: 22px;
+}
+
+.d-ie .d-toolbar-button .button-left .caption {
+    vertical-align: baseline;
+}
+
+.d-toolbar-button .button-right {
+    float: left;
+    display: inline-block;
+    width: 3px;
+    height: 22px;
+    background: url(base/toolbar-button-bg.gif) no-repeat right -44px;
+}
+
+.d-toolbar-button-trigger .button-right {
+    width: 19px;
+}
+
+.d-toolbar-button-focused {
+    background-position: 0 -132px;
+}
+
+.d-toolbar-button-focused .button-left {
+    background-position: 0 -154px;
+}
+
+.d-toolbar-button-focused .button-right {
+    background-position: right -176px;
+}
+
+.d-toolbar-button-hover {
+    background-position: 0 -66px;
+}
+
+.d-toolbar-button-hover .button-left {
+    background-position: 0 -88px;
+}
+
+.d-toolbar-button-hover .button-right {
+    background-position: right -110px;
+}
+
+.d-toolbar-button-toggled {
+    background-position: 0 -264px;
+}
+
+.d-toolbar-button-toggled .button-left {
+    background-position: 0 -286px;
+}
+
+.d-toolbar-button-toggled .button-right {
+    background-position: right -308px;
+}
+
+.d-toolbar-button-click {
+    background-position: 0 -198px;
+}
+
+.d-toolbar-button-click .button-left {
+    background-position: 0 -220px;
+}
+
+.d-toolbar-button-click .button-right {
+    background-position: right -242px;
+}
+
+.d-toolbar-button-left-hover {
+    background-position: 0 -66px;
+}
+
+.d-toolbar-button-left-hover .button-left {
+    background-position: 0 -88px;
+}
+
+.d-toolbar-button-left-click, .d-toolbar-button-left-toggled {
+    background-position: 0 -132px;
+}
+
+.d-toolbar-button-left-toggled .button-left {
+    background-position: 0 -286px;
+}
+
+.d-toolbar-button-left-click .button-left {
+    background-position: 0 -220px;
+}
+
+.d-toolbar-button-left-click .button-right, .d-toolbar-button-left-toggled .button-right {
+    background-position: right -44px;
+}
+
+.d-toolbar-button-right-hover {
+    background-position: 0 0px;
+}
+
+.d-toolbar-button-right-hover .button-right {
+    background-position: right -110px;
+}
+
+.d-toolbar-button-right-click, .d-toolbar-button-right-toggled {
+    background-position: 0 0px;
+}
+
+.d-toolbar-button-right-toggled .button-right {
+    background-position: right -308px;
+}
+
+.d-toolbar-button-right-click .button-right {
+    background-position: right -242px;
+}
+
+.d-toolbar-button-disabled .button-left .icon{
+    filter: alpha(opacity = 50);
+    opacity: 0.5;
+}
+
+.d-toolbar-button-disabled .caption {
+    color: #aaa;
+}

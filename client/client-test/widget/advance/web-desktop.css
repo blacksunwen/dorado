@@ -1,0 +1,62 @@
+.image-canvas-toolbar {
+}
+
+.image-canvas-toolbar .zoom-in{
+	background: transparent url("image_icons/zoom_in.png") center center no-repeat;
+}
+
+.image-canvas-toolbar .zoom-out{
+	background: transparent url("image_icons/zoom_out.png") center center no-repeat;
+}
+
+.image-canvas-toolbar .zoom-selection{
+	background: transparent url("image_icons/zoom_selection.png") center center no-repeat;
+}
+
+.image-canvas-toolbar .zoom{
+	background: transparent url("image_icons/zoom.png") center center no-repeat;
+}
+
+.image-canvas-toolbar .select-rect{
+	background: transparent url("image_icons/select_rect.png") center center no-repeat;
+}
+
+.image-canvas-toolbar .zoom-fit-width{
+	background: transparent url("image_icons/zoom_fit_width.png") center center no-repeat;
+}
+
+.image-canvas-toolbar .zoom-fit-height{
+	background: transparent url("image_icons/zoom_fit_height.png") center center no-repeat;
+}
+
+.image-canvas-toolbar .zoom-best-fit{
+	background: transparent url("image_icons/zoom_best_fit.png") center center no-repeat;
+}
+
+.image-canvas-toolbar .zoom-original{
+	background: transparent url("image_icons/zoom_original.png") center center no-repeat;
+}
+
+.image-canvas-toolbar .rotate-anticlockwise{
+	background: transparent url("image_icons/rotate_anticlockwise.png") center center no-repeat;
+}
+
+.image-canvas-toolbar .rotate-clockwise{
+	background: transparent url("image_icons/rotate_clockwise.png") center center no-repeat;
+}
+
+.image-canvas-toolbar .rotate-half{
+	background: transparent url("image_icons/rotate_half.png") center center no-repeat;
+}
+
+.image-canvas-toolbar .flip-horizontal{
+	background: transparent url("image_icons/flip_horizontal.png") center center no-repeat;
+}
+
+.image-canvas-toolbar .flip-vertical{
+	background: transparent url("image_icons/flip_vertical.png") center center no-repeat;
+}
+
+.image-canvas-toolbar .negative{
+	background: transparent url("image_icons/negative.png") center center no-repeat;
+}

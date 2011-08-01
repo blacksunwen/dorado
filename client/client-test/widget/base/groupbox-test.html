@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+        <title>GroupBox Test Page</title>
+		<script type="text/javascript" src="../../include-all.js"></script>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<script type="text/javascript">
+		var view = new dorado.widget.View({ layout: "Dock" });
+ 
+        var fieldSet = new dorado.widget.FieldSet({
+            layoutConstraint: "top",
+            caption: "FieldSet",
+            width: 500,
+            collapsed: true,
+            children: [new dorado.widget.Button({
+                caption: "测试子组件",
+                listener: {
+                    onClick: function() {
+                        alert(123);
+                    }
+                }
+            })],
+            buttons: [new dorado.widget.Button({
+                caption: "确定",
+                width: 80,
+                listener: {
+                    onClick: function(){
+                    }
+                }
+            }), new dorado.widget.Button({
+                caption: "取消",
+                width: 80,
+                listener: {
+                    onClick: function(){
+                    }
+                }
+            })]
+        });
+ 
+		view.addChild(fieldSet);
+ 
+        var groupBox = new dorado.widget.GroupBox({
+            layout: {
+                $type: "Anchor"
+            },
+            caption: "GroupBox",
+            width: 300,
+            height: 200,
+            //collapsed: true,
+            children: [new dorado.widget.Button({
+                caption: "测试子组件",
+                listener: {
+                    onClick: function() {
+                        alert(123);
+                    }
+                }
+            })],
+            buttons: [new dorado.widget.Button({
+                caption: "确定",
+                width: 80,
+                listener: {
+                    onClick: function(){
+                    }
+                }
+            }), new dorado.widget.Button({
+                caption: "取消",
+                width: 80,
+                listener: {
+                    onClick: function(){
+                    }
+                }
+            })]
+        });
+ 
+        view.addChild(groupBox);
+ 
+		$(document).ready(function(){
+			view.render(document.body);
+		});
+		</script>
+	</head>
+	<body>
+	</body>
+</html>

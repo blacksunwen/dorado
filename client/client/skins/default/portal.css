@@ -1,0 +1,32 @@
+.d-portal {
+	position: relative;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+.d-portal .portal-column {
+	position: absolute;
+}
+
+.d-portal .portal-column-hover {
+	background: #F6FAFF;
+}
+
+.d-portal .place-holder {
+	position: absolute;
+	left: -9999px;
+	top: -9999px;
+    border: 2px dashed #BBBBBB;
+	width: 200px;
+	height: 200px;
+}
+
+.d-portal .d-panel {
+	position: absolute;
+	margin-bottom: 10px;
+}
+
+.d-portlet-helper {
+	opacity: 0.8;
+	filter: alpha( opacity = 80);
+}

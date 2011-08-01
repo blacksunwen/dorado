@@ -1,0 +1,141 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <title>Dialog Test Page</title>
+    <script type="text/javascript" src="../../include-all.js"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <script type="text/javascript">
+        var view = new dorado.widget.View({ layout: "Anchor" });
+
+        var dialog = new dorado.widget.Dialog({
+			//visible: true,
+			//showCaptionBar: false,
+            caption: "test",
+            width: 400,
+            height: 300,
+            minWidth: 150
+            //,left: 200
+            //,top: 50
+            //,modal: true
+            ,maximizeable: true
+            ,collapseable: true
+            ,center: true
+            ,icon: "del.gif"
+			,buttonAlign: "right"
+            ,buttons: [new dorado.widget.Button({
+                caption: "确定",
+                width: 80,
+                listener: {
+                    onClick: function() {
+                        dialog2.show();
+                    }
+                }
+            }), new dorado.widget.Button({
+                caption: "取消",
+                width: 80,
+                listener: {
+                    onClick: function() {
+                        var taskId = dorado.util.TaskIndicator.showTaskIndicator("保存所有数据", "main");
+                        setTimeout(function() {
+                            dorado.util.TaskIndicator.hideTaskIndicator(taskId);
+                        }, 2000);
+                    }
+                }
+            })]
+        });
+
+        dialog.addChild(new dorado.widget.Button({
+            caption: "测试子组件",
+            listener: {
+                onClick: function() {
+                    alert(123);
+                }
+            }
+        }));
+
+        var dialog2 = new dorado.widget.Dialog({
+            caption: "test"
+            ,width: "30%"
+            ,height: 100
+            ,left: 200
+            ,top: 50
+            ,modal: true
+            ,icon: "del.gif"
+            ,buttons: [new dorado.widget.Button({
+                caption: "确定",
+                width: 80
+            }), new dorado.widget.Button({
+                caption: "取消",
+                width: 80
+            })]
+        });
+
+        var toolbar = new dorado.widget.ToolBar({
+            items: [
+                {
+                    caption: "显示Dialog",
+                    listener: {
+                        onClick: function(self) {
+                            dialog.show({animateTarget: self});
+                        }
+                    }
+                },
+                {
+                    caption: "隐藏Dialog",
+                    listener: {
+                        onClick: function(self) {
+                            dialog.hide({animateTarget: self});
+                        }
+                    }
+                },
+                {
+                    caption: "Set Icon",
+                    listener: {
+                        onClick: function() {
+                            var result = dialog._captionBar.get("icon") ? "" : "del.gif";
+                            dialog.set("icon", result);
+                        }
+                    }
+                },
+                {
+                    caption: "minimizeable",
+                    listener: {
+                        onClick: function() {
+                            dialog.set("minimizeable", !dialog._minimizeable);
+                        }
+                    }
+                },
+                {
+                    caption: "maximizeable",
+                    listener: {
+                        onClick: function() {
+                            dialog.set("maximizeable", !dialog._maximizeable);
+                        }
+                    }
+                },
+                {
+                    caption: "closeable",
+                    listener: {
+                        onClick: function() {
+                            dialog.set("closeable", !dialog._closeable);
+                        }
+                    }
+                }
+            ]
+        });
+
+        view.addChild(toolbar);
+		view.addChild(dialog);
+
+        $(document).ready(function() {
+            view.render(document.body);
+            dialog.show({
+                callback: function(self) {
+                }
+            });
+        });
+    </script>
+</head>
+<body style="margin:0;padding:0;">
+</body>
+</html>

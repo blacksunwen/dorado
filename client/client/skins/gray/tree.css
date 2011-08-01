@@ -1,0 +1,85 @@
+.d-tree {
+	border: 1px #A1A1A1 solid;
+	background: #efefef;
+}
+
+.d-tree-focused {
+	border: 1px #325573 solid;
+}
+
+.d-tree .data-table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.d-tree .data-table .row td {
+	white-space: nowrap;
+	padding-left: 2px;
+	padding-right: 2px;
+	-moz-user-select: none;
+	border-bottom: 1px #efefef solid;
+}
+
+.d-tree .data-table .hover-row td {
+	background: #EFEFEF;
+}
+
+.d-tree .data-table .current-row td {
+	background: #d3d3d3 url(list/current-row.png) repeat-x top;
+	border-bottom-color: #999999;
+}
+
+.d-tree .preparing-area {
+	background: url(list/preparing-area-bg.gif);
+}
+
+
+.d-tree-node .button {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	margin-left: 4px;
+	margin-right: 4px;
+	margin-bottom: -3px;
+	cursor: pointer;
+	background: url(tree/tree-buttons.png) no-repeat;
+}
+
+.d-tree-node .expand-button {
+	background-position: 0 -16px;
+}
+
+.d-tree-node .expand-button-hover {
+	background-position: -16px -16px;
+}
+
+.d-tree-node .collapse-button {
+	background-position: 0 -32px;
+}
+
+.d-tree-node .collapse-button-hover {
+	background-position: -16px -32px;
+}
+
+.d-tree-node .button-expanding {
+	background: transparent url(tree/expanding.gif) no-repeat;
+}
+
+
+.d-tree-node .icon {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	margin-right: 4px;
+	margin-bottom: -3px;
+}
+
+.d-tree-node .d-checkbox-icononly {
+	display: inline-block;
+	margin-right: 4px;
+	margin-bottom: -6px;
+}
+
+.d-tree-expanding-placeholder {
+	background: #FAFAFA;
+}

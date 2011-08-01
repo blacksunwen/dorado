@@ -1,0 +1,332 @@
+.d-dialog {
+    position: absolute;
+    margin: 0;
+    overflow: hidden;
+    padding: 0;
+    left: 0;
+    top: 0;
+}
+
+.d-dialog-caption-bar {
+    line-height: 28px;
+    height: 29px;
+    background: url(base/dialog-hori-bg-blur.gif) 0 -48px repeat-x;
+	margin: 0px 8px;
+}
+
+.d-dialog-focused{}
+
+.d-dialog-focused .d-dialog-caption-bar{
+	background-image: url(base/dialog-hori-bg.gif);
+}
+
+.d-dialog-caption-bar .caption {
+    padding-left: 8px;
+    text-align: left;
+}
+
+.d-dialog-caption-bar .button-group {
+    float: right;
+    height: 20px;
+    margin: 4px 4px 0 0;
+    padding: 0;
+}
+
+.d-dialog-caption-bar .button-group div {
+    float: left;
+}
+
+.d-dialog-caption-bar .caption-bar-icon{
+    float: left;
+    width: 20px;
+    height: 20px;
+	margin-left: 6px;
+	margin-top: 4px;
+    background: transparent 0px center no-repeat;
+}
+
+.d-dialog .dialog-header {
+    font-size: 0%;
+    height: 8px;
+    position: relative;
+}
+
+.d-dialog .dialog-header .dialog-header-left {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 8px;
+    height: 8px;
+    margin: 0;
+    background: url(base/dialog-hori-bg-blur.gif);
+    filter: alpha( opacity = 50);
+	opacity: 0.5;
+}
+
+.d-dialog .dialog-header .dialog-header-right {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 8px;
+    height: 8px;
+    margin: 0;
+    background: url(base/dialog-hori-bg-blur.gif) 0 -8px;
+    filter: alpha( opacity = 50);
+	opacity: 0.5;
+}
+
+.d-dialog .dialog-header .dialog-header-center {
+    margin: 0 8px 0 8px;
+    height: 8px;
+    background: url(base/dialog-hori-bg-blur.gif) 0 -32px;
+    filter: alpha( opacity = 50);
+	opacity: 0.5;
+}
+
+.d-dialog-focused .dialog-header .dialog-header-left{
+	background-image: url(base/dialog-hori-bg.gif);
+}
+
+.d-dialog-focused .dialog-header .dialog-header-right{
+	background-image: url(base/dialog-hori-bg.gif);
+}
+
+.d-dialog-focused .dialog-header .dialog-header-center{
+	background-image: url(base/dialog-hori-bg.gif);
+}
+
+.d-dialog-resizeable .dialog-header .dialog-header-left {
+    cursor: nw-resize;
+}
+
+.d-dialog-resizeable .dialog-header .dialog-header-right {
+    cursor: ne-resize;
+}
+
+.d-dialog-resizeable .dialog-header .dialog-header-center {
+    cursor: n-resize;
+}
+
+.d-dialog .dialog-body-wrap {
+    position: relative;
+    overflow: hidden;
+}
+
+.d-dialog .dialog-body-wrap .dialog-body-left {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 8px;
+    height: 100%;
+    background: url(base/dialog-vert-bg-blur.gif);
+    padding-bottom: 3000px;
+    margin-bottom: -3000px;
+    filter: alpha( opacity = 50);
+	opacity: 0.5;
+}
+
+.d-dialog .dialog-body-wrap .dialog-body-right {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 8px;
+    height: 100%;
+    background: url(base/dialog-vert-bg-blur.gif) -8px 0;
+    padding-bottom: 3000px;
+    margin-bottom: -3000px;
+    filter: alpha( opacity = 50);
+	opacity: 0.5;
+}
+
+.d-dialog-focused .dialog-body-wrap .dialog-body-left{
+	background-image: url(base/dialog-vert-bg.gif);
+}
+
+.d-dialog-focused .dialog-body-wrap .dialog-body-right{
+	background-image: url(base/dialog-vert-bg.gif);
+}
+
+.d-dialog .dialog-body-wrap .dialog-body {
+    padding: 0;
+    margin: 0 8px 0 8px;
+    background-color: white;
+}
+
+.d-dialog-resizeable .dialog-body-wrap .dialog-body-left {
+    cursor: w-resize;
+}
+
+.d-dialog-resizeable .dialog-body-wrap .dialog-body-right {
+    cursor: e-resize;
+}
+
+.d-dialog .dialog-body-wrap .dialog-body .content-panel {
+    padding: 0;
+}
+
+.d-dialog .dialog-footer {
+    font-size: 0%;
+    height: 8px;
+    position: relative;
+}
+
+.d-dialog .dialog-footer .dialog-footer-left {
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: url(base/dialog-hori-bg-blur.gif) 0 -16px;
+    filter: alpha( opacity = 50);
+	opacity: 0.5;
+	width: 8px;
+	height: 8px;
+}
+
+.d-dialog .dialog-footer .dialog-footer-right {
+    position: absolute;
+    right: 0;
+    top: 0;
+    background: url(base/dialog-hori-bg-blur.gif) 0 -24px;
+    filter: alpha( opacity = 50);
+	opacity: 0.5;
+	width: 8px;
+	height: 8px;
+}
+
+.d-dialog .dialog-footer .dialog-footer-center {
+    background: url(base/dialog-hori-bg-blur.gif) 0 -40px;
+    height: 8px;
+    margin: 0 8px 0 8px;
+    filter: alpha( opacity = 50);
+	opacity: 0.5;
+}
+
+.d-dialog-focused .dialog-footer .dialog-footer-left{
+	background-image: url(base/dialog-hori-bg.gif);
+}
+
+.d-dialog-focused .dialog-footer .dialog-footer-right{
+	background-image: url(base/dialog-hori-bg.gif);
+}
+
+.d-dialog-focused .dialog-footer .dialog-footer-center{
+	background-image: url(base/dialog-hori-bg.gif);
+}
+
+.d-dialog .dialog-body-wrap .dialog-body .content-panel {
+}
+
+.d-dialog .dialog-body-wrap .dialog-body .button-panel {
+    background: #FFFFFF;
+    padding: 2px 8px 10px 8px;
+    text-align: center;
+    height: 24px;
+}
+
+.d-dialog .dialog-body-wrap .dialog-body .button-panel-left{
+	text-align: left;
+}
+
+.d-dialog .dialog-body-wrap .dialog-body .button-panel-right{
+	text-align: right;
+}
+
+.d-dialog .dialog-body-wrap .dialog-body .button-panel .d-button {
+    margin-right: 3px;
+}
+
+.d-dialog .collapse-icon {
+    background: url(common/icons.gif) -20px -280px;
+}
+
+.d-dialog .expand-icon{
+    background: url(common/icons.gif) 0 -280px;
+}
+
+.d-dialog-resizeable .dialog-footer .dialog-footer-left {
+    cursor: sw-resize;
+}
+
+.d-dialog-resizeable .dialog-footer .dialog-footer-right {
+    cursor: se-resize;
+}
+
+.d-dialog-resizeable .dialog-footer .dialog-footer-center {
+    cursor: s-resize;
+}
+
+.d-dialog-dragging {
+}
+
+.d-dialog-draggable .d-dialog-caption-bar {
+    cursor: move;
+}
+
+.d-dialog-drag-proxy {
+    position: absolute;
+    border: 1px dotted #3B5A82;
+}
+
+.d-close-button {
+    background: url(base/dialog-buttons.gif) no-repeat -180px 0;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.d-close-button-hover {
+    background-position: -200px 0;
+}
+
+.d-close-button-click {
+    background-position: -220px 0;
+}
+
+.d-minimize-button {
+    background: url(base/dialog-buttons.gif) no-repeat 0 0;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.d-minimize-button-hover {
+    background-position: -20px 0;
+}
+
+.d-minimize-button-click {
+    background-position: -40px 0;
+}
+
+.d-maximize-button {
+    background: url(base/dialog-buttons.gif) no-repeat -60px 0;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.d-maximize-button-hover {
+    background-position: -80px 0;
+}
+
+.d-maximize-button-click {
+    background-position: -100px 0;
+}
+
+.d-restore-button {
+    background: url(base/dialog-buttons.gif) no-repeat -120px 0;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.d-restore-button-hover {
+    background-position: -140px 0;
+}
+
+.d-restore-button-click {
+    background-position: -160px 0;
+}
+
+.d-dialog-helper {
+	left: -9999px;
+	top: -9999px;
+}

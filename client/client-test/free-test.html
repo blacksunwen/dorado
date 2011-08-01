@@ -1,0 +1,263 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<script type="text/javascript" src="include-all.js"></script>
+<script type="text/javascript">
+	jQuery(document).ready(function(){
+try{
+var v=new dorado.widget.View({
+	"id":"viewMain",
+	"name":"test.TabControl"
+});
+function f(v){v.set("children",[
+	{
+		"$type":"TabControl",
+		"height":"300",
+		"renderOn":"#tabcontrol1",
+		"tabs":[
+			{
+				"$type":"Control",
+				"caption":"Tab1",
+				"control":{
+					"$type":"SubViewHolder",
+					"subView":(function(){
+var v=new dorado.widget.View({
+						"name":"test.SubView"
+					});
+function f(v){v.set("children",[
+						{
+							"$type":"TabBar",
+							"tabs":[
+								{
+									"$type":"Tab"
+								},
+								{
+									"$type":"Tab"
+								},
+								{
+									"$type":"Tab"
+								}
+							]
+						},
+						{
+							"$type":"Grid",
+							"columns":[
+								{
+									"name":"c1"
+								},
+								{
+									"name":"c2"
+								}
+							],
+							"items":[
+								{
+									"c1":"AAA",
+									"c2":"BBB"
+								},
+								{
+									"c1":"AAA",
+									"c2":"BBB"
+								},
+								{
+									"c1":"AAA",
+									"c2":"BBB"
+								},
+								{
+									"c1":"AAA",
+									"c2":"BBB"
+								},
+								{
+									"c1":"AAA",
+									"c2":"BBB"
+								},
+								{
+									"c1":"AAA",
+									"c2":"BBB"
+								},
+								{
+									"c1":"AAA",
+									"c2":"BBB"
+								},
+								{
+									"c1":"AAA",
+									"c2":"BBB"
+								},
+								{
+									"c1":"AAA",
+									"c2":"BBB"
+								},
+								{
+									"c1":"AAA",
+									"c2":"BBB"
+								},
+								{
+									"c1":"AAA",
+									"c2":"BBB"
+								},
+								{
+									"c1":"AAA",
+									"c2":"BBB"
+								},
+								{
+									"c1":"AAA",
+									"c2":"BBB"
+								},
+								{
+									"c1":"AAA",
+									"c2":"BBB"
+								},
+								{
+									"c1":"AAA",
+									"c2":"BBB"
+								},
+								{
+									"c1":"AAA",
+									"c2":"BBB"
+								},
+								{
+									"c1":"AAA",
+									"c2":"BBB"
+								},
+								{
+									"c1":"AAA",
+									"c2":"BBB"
+								},
+								{
+									"c1":"AAA",
+									"c2":"BBB"
+								},
+								{
+									"c1":"AAA",
+									"c2":"BBB"
+								},
+								{
+									"c1":"AAA",
+									"c2":"BBB"
+								},
+								{
+									"c1":"AAA",
+									"c2":"BBB"
+								},
+								{
+									"c1":"AAA",
+									"c2":"BBB"
+								},
+								{
+									"c1":"AAA",
+									"c2":"BBB"
+								},
+								{
+									"c1":"AAA",
+									"c2":"BBB"
+								},
+								{
+									"c1":"AAA",
+									"c2":"BBB"
+								},
+								{
+									"c1":"AAA",
+									"c2":"BBB"
+								},
+								{
+									"c1":"AAA",
+									"c2":"BBB"
+								},
+								{
+									"c1":"AAA",
+									"c2":"BBB"
+								},
+								{
+									"c1":"AAA",
+									"c2":"BBB"
+								},
+								{
+									"c1":"AAA",
+									"c2":"BBB"
+								},
+								{
+									"c1":"AAA",
+									"c2":"BBB"
+								},
+								{
+									"c1":"AAA",
+									"c2":"BBB"
+								},
+								{
+									"c1":"AAA",
+									"c2":"BBB"
+								},
+								{
+									"c1":"AAA",
+									"c2":"BBB"
+								},
+								{
+									"c1":"AAA",
+									"c2":"BBB"
+								},
+								{
+									"c1":"AAA",
+									"c2":"BBB"
+								},
+								{
+									"c1":"AAA",
+									"c2":"BBB"
+								},
+								{
+									"c1":"AAA",
+									"c2":"BBB"
+								},
+								{
+									"c1":"AAA",
+									"c2":"BBB"
+								},
+								{
+									"c1":"AAA",
+									"c2":"BBB"
+								},
+								{
+									"c1":"AAA",
+									"c2":"BBB"
+								}
+							]
+						},
+						{
+							"$type":"Button",
+							"layoutConstraint":{
+								"type":"bottom"
+							}
+						}
+					]);}
+f(v);
+return v;
+})()
+				}
+			},
+			{
+				"$type":"Control",
+				"caption":"Tab2",
+				"control":{
+					"$type":"Panel",
+					"caption":"AAAAAA"
+				}
+			}
+		],
+		"listener":{
+			"onReady":(function(self,arg){
+self.set("height", 600);
+})
+		}
+	}
+]);}
+f(v);
+var doradoView = document.getElementById("doradoView");
+if (doradoView) v.replace(doradoView);
+}
+catch(e){dorado.Exception.processException(e);}
+});
+</script>
+</head>
+<body style="margin: 0">
+	<label id="tabcontrol1" />
+
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+        <title>MessageBox Test Page</title>
+		<script type="text/javascript" src="../../include-all.js"></script>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<script type="text/javascript">
+		var view = new dorado.widget.View({ layout: "Anchor" });
+ 
+        view.addChild(new dorado.widget.Button({
+            id: "alertButton",
+            caption: "alert",
+            listener: {
+                onClick: function(){
+                    dorado.MessageBox.alert("测试一下测试一下\n<test>\n&ttt", {
+                        icon: dorado.MessageBox.INFO_ICON
+                    });
+                }
+            }
+        }));
+
+        view.addChild(new dorado.widget.Button({
+            id: "alertButton1",
+            caption: "alertLong...",
+            listener: {
+                onClick: function(){
+                    var str = "";
+                    for (var i = 0; i < 1000; i++) {
+                        str += "testDataPipe\n";
+                    }
+                    dorado.MessageBox.alert(str, {
+                        icon: dorado.MessageBox.INFO_ICON
+                    });
+                }
+            }
+        }));
+ 
+        view.addChild(new dorado.widget.Button({
+            caption: "confirm",
+            listener: {
+                onClick: function(){
+                    dorado.MessageBox.confirm("测试", function(text){
+                        dorado.MessageBox.alert("nothing to say...");
+                    });
+                }
+            }
+        }));
+ 
+        view.addChild(new dorado.widget.Button({
+            caption: "prompt",
+            listener: {
+                onClick: function(){
+                    dorado.MessageBox.prompt("测试", {
+                        callback: function(text){
+                            dorado.MessageBox.alert(text);
+                        },
+                        defaultText: "默认值^_^"
+                    });
+                }
+            }
+        }));
+ 
+        view.addChild(new dorado.widget.Button({
+            caption: "promptMultiline",
+            listener: {
+                onClick: function(){
+                    dorado.MessageBox.promptMultiline("测试",function(text){
+                        dorado.MessageBox.alert(text);
+                    });
+                }
+            }
+        }));
+ 
+		$(document).ready(function(){
+			view.render(document.body, document.body.firstChild);
+		});
+		</script>
+	</head>
+	<body>
+        <pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        </pre>
+	</body>
+</html>

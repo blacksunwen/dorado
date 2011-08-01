@@ -5,7 +5,7 @@ package com.bstek.dorado.data.entity;
  * @since 2010-12-19
  */
 public enum EntityState {
-	NONE, NEW, MODIFIED, DELETED;
+	NONE, NEW, MODIFIED, DELETED, MOVED;
 
 	public static boolean isDirty(EntityState state) {
 		return !NONE.equals(state);
@@ -20,14 +20,21 @@ public enum EntityState {
 	}
 
 	public static int toInt(EntityState state) {
-		if (state == NONE)
+		if (state == NONE) {
 			return 0;
-		if (state == NEW)
+		}
+		if (state == NEW) {
 			return 1;
-		if (state == MODIFIED)
+		}
+		if (state == MODIFIED) {
 			return 2;
-		if (state == DELETED)
+		}
+		if (state == DELETED) {
 			return 3;
+		}
+		if (state == MOVED) {
+			return 4;
+		}
 		return 0;
 	}
 
@@ -41,6 +48,8 @@ public enum EntityState {
 			return MODIFIED;
 		case 3:
 			return DELETED;
+		case 4:
+			return MOVED;
 		default:
 			return NONE;
 		}

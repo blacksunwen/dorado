@@ -1,0 +1,170 @@
+.d-split-panel{
+    position: relative;
+    overflow: hidden;
+}
+
+.d-split-panel .side-panel{
+    position: absolute;
+	overflow: hidden;
+}
+
+.d-split-panel .main-panel{
+    position: absolute;
+	overflow: hidden;
+}
+
+.d-split-panel .splitter{
+    position: absolute;
+    font-size:1px;
+}
+
+.d-split-panel .splitter-left, .d-split-panel .splitter-right{
+    width: 5px;
+    height: 100%;
+
+    background: url(base/split-panel-vert-bg.gif);
+
+    line-height: 100%;
+    vertical-align: middle;
+}
+
+.d-split-panel .splitter-top, .d-split-panel .splitter-bottom{
+    line-height: 5px;
+    height: 5px;
+    width: 100%;
+
+    background: url(base/split-panel-hori-bg.gif);
+}
+
+.d-split-panel .splitter-h-resizeable{
+    cursor: w-resize;
+}
+
+.d-split-panel .splitter-v-resizeable{
+    cursor: n-resize;
+}
+
+.d-split-panel-collapsed .splitter-h-resizeable, .d-split-panel-collapsed .splitter-v-resizeable{
+	cursor: default;	
+}
+
+.d-split-panel .splitter-left .button, .d-split-panel .splitter-right .button{
+    cursor: pointer;
+    width: 5px;
+    height: 51px;
+    font-size: 0%;
+    /**
+     * left固定为0，top固定为50%，margin-top为height的50%的数值 -1px。
+     */
+    position: relative;
+    left: 0;
+    top: 50%;
+
+    margin: -24px 0px;
+}
+
+.d-split-panel .splitter-top .button, .d-split-panel .splitter-bottom .button{
+    cursor: pointer;
+    width: 51px;
+    height: 5px;
+    /**
+     * 与上面的类似。
+     */
+    position: relative;
+    left: 50%;
+    top: 0;
+    margin: 0px -24px;
+}
+
+.d-split-panel .splitter-left .button{
+    background: url(base/split-panel-vert-buttons.gif) no-repeat left;
+}
+
+.d-split-panel .splitter-right .button{
+    background: url(base/split-panel-vert-buttons.gif) no-repeat right;
+}
+
+.d-split-panel .splitter-top .button{
+    background: url(base/split-panel-hori-buttons.gif) no-repeat top;
+}
+
+.d-split-panel .splitter-bottom .button{
+    background: url(base/split-panel-hori-buttons.gif) no-repeat bottom;
+}
+
+.d-split-panel .splitter-dragging {
+	background: #000000;
+    filter: alpha( opacity = 30);
+	opacity: 0.3;
+}
+
+.d-split-panel .collapse-bar{
+	position: absolute;
+	background-color: #e4e4e4;
+}
+
+.d-split-panel .collapse-bar-hover{
+	background-color: #efefef;
+}
+
+.d-split-panel .collapse-bar-left, .d-split-panel .collapse-bar-right{
+	border: 1px solid #b9b9b9;
+	width: 19px;
+}
+
+.d-split-panel .collapse-bar-top, .d-split-panel .collapse-bar-bottom{
+	border: 1px solid #b9b9b9;
+	height: 19px;
+}
+
+.d-split-panel .collapse-bar .button{
+	background: transparent url(base/split-panel-collapse.gif);
+	cursor: pointer;
+    width: 17px;
+    height: 17px;
+	margin: 3px;
+}
+
+.d-split-panel .collapse-bar-left .button{
+	background-position: 0 0;
+	margin-left: 1px;
+}
+
+.d-split-panel .collapse-bar-left .button-hover{
+	background-position: -17px 0;
+	margin-left: 1px;
+}
+
+.d-split-panel .collapse-bar-right .button{
+	background-position: 0 -17px;
+	margin-left: 1px;
+}
+
+.d-split-panel .collapse-bar-right .button-hover{
+	background-position: -17px -17px;
+	margin-left: 1px;
+}
+
+.d-split-panel .collapse-bar-top .button{
+	float: right;
+	background-position: 0 -34px;
+	margin-top: 1px;
+}
+
+.d-split-panel .collapse-bar-top .button-hover{
+	float: right;
+	background-position: -17px -34px;
+	margin-top: 1px;
+}
+
+.d-split-panel .collapse-bar-bottom .button{
+	float: right;
+	background-position: 0 -51px;
+	margin-top: 1px;
+}
+
+.d-split-panel .collapse-bar-bottom .button-hover{
+	float: right;
+	background-position: -17px -51px;
+	margin-top: 1px;
+}

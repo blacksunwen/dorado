@@ -5,7 +5,7 @@ package com.bstek.dorado.data.entity;
  * @since 2010-12-20
  */
 public enum FilterType {
-	NONE, NEW, MODIFIED, DELETED, VISIBLE, DIRTY, VISIBLE_DIRTY, ALL;
+	NONE, NEW, MODIFIED, DELETED, MOVED, VISIBLE, DIRTY, VISIBLE_DIRTY, ALL;
 
 	public static int toInt(FilterType type) {
 		if (type == NONE)
@@ -16,6 +16,8 @@ public enum FilterType {
 			return 2;
 		if (type == DELETED)
 			return 3;
+		if (type == MOVED)
+			return 4;
 		if (type == VISIBLE)
 			return 96;
 		if (type == DIRTY)
@@ -35,6 +37,8 @@ public enum FilterType {
 			return MODIFIED;
 		case 3:
 			return DELETED;
+		case 4:
+			return MOVED;
 		case 96:
 			return VISIBLE;
 		case 97:
