@@ -1,0 +1,285 @@
+package com.bstek.dorado.view.service;
+
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import net.sf.json.JSON;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
+import org.apache.commons.lang.StringUtils;
+
+import com.bstek.dorado.core.Configure;
+import com.bstek.dorado.data.DataTypeResolver;
+import com.bstek.dorado.data.JsonConvertContext;
+import com.bstek.dorado.data.JsonUtils;
+import com.bstek.dorado.data.entity.EntityWrapper;
+import com.bstek.dorado.data.entity.EntityEnhancer;
+import com.bstek.dorado.data.entity.EntityState;
+import com.bstek.dorado.data.entity.EntityUtils;
+import com.bstek.dorado.data.resolver.DataItems;
+import com.bstek.dorado.data.resolver.DataResolver;
+import com.bstek.dorado.data.resolver.manager.DataResolverManager;
+import com.bstek.dorado.view.manager.ViewConfig;
+import com.bstek.dorado.view.output.JsonBuilder;
+import com.bstek.dorado.view.output.OutputContext;
+import com.bstek.dorado.view.output.Outputter;
+import com.bstek.dorado.view.widget.action.RefreshMode;
+import com.bstek.dorado.web.DoradoContext;
+
+/**
+ * 提供Ajax数据处理服务的处理器。
+ * 
+ * @author Benny Bao (mailto:benny.bao@bstek.com)
+ * @since Apr 16, 2009
+ */
+public class ResolveDataServiceProcessor extends DataServiceProcessorSupport {
+	private Outputter simplePropertyValueOnlyDataOutputter;
+	private DataResolverManager dataResolverManager;
+
+	public void setSimplePropertyValueOnlyDataOutputter(
+			Outputter simplePropertyValueOnlyDataOutputter) {
+		this.simplePropertyValueOnlyDataOutputter = simplePropertyValueOnlyDataOutputter;
+	}
+
+	public void setDataResolverManager(DataResolverManager dataResolverManager) {
+		this.dataResolverManager = dataResolverManager;
+	}
+
+	protected DataResolver getDataResolver(String dataResolverName)
+			throws Exception {
+		DataResolver dataResolver;
+		// 判断是否View中的私有DataResolver
+		if (dataResolverName.startsWith(PRIVATE_VIEW_OBJECT_PREFIX)) {
+			ParsedDataObjectName parsedName = new ParsedDataObjectName(
+					dataResolverName);
+			ViewConfig viewConfig = getViewConfig(DoradoContext.getCurrent(),
+					parsedName.getViewName());
+			dataResolver = viewConfig.getDataResolver(parsedName
+					.getDataObject());
+		} else {
+			dataResolver = dataResolverManager
+					.getDataResolver(dataResolverName);
+		}
+		return dataResolver;
+	}
+
+	@Override
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	protected void doExecute(Writer writer, JSONObject json,
+			DoradoContext context) throws Exception {
+		Object parameter = json.get("parameter");
+		if (parameter instanceof JSON) {
+			parameter = jsonToJavaObject((JSON) parameter, null, null, false);
+		}
+
+		String dataResolverName = json.getString("dataResolver");
+		DataResolver dataResolver = getDataResolver(dataResolverName);
+		if (dataResolver == null) {
+			throw new IllegalArgumentException("Unknown DataResolver ["
+					+ dataResolverName + "].");
+		}
+
+		Object jsonDataItems = json.get("dataItems");
+		DataItems dataItems = null;
+		Map<String, UpdateInfo> updateInfos = new HashMap<String, UpdateInfo>();
+
+		long lastTimeStamp = Long.MAX_VALUE;
+		Object result = null;
+
+		EntityEnhancer.disableGetterInterception();
+		try {
+			if (jsonDataItems instanceof JSONArray) {
+				dataItems = new DataItems();
+				JSONArray jsonArray = (JSONArray) jsonDataItems;
+				for (Iterator it = jsonArray.iterator(); it.hasNext();) {
+					JSONObject item = (JSONObject) it.next();
+					String alias = item.getString("alias");
+					Object value = item.get("data");
+
+					String refreshModeText = item.containsKey("refreshMode") ? item
+							.getString("refreshMode") : null;
+					RefreshMode refreshMode = (StringUtils
+							.isEmpty(refreshModeText)) ? RefreshMode.value
+							: RefreshMode.valueOf(refreshModeText);
+
+					boolean autoResetEntityState = item
+							.containsKey("autoResetEntityState") ? item
+							.getBoolean("autoResetEntityState") : true;
+
+					JsonConvertContext jsonContext = new JsonConvertContextImpl(
+							(RefreshMode.none.equals(refreshMode) || RefreshMode.value
+									.equals(refreshMode)), false, this);
+					if (value instanceof JSON) {
+						value = JsonUtils.toJavaObject((JSON) value, null,
+								null, true, jsonContext);
+					}
+
+					dataItems.put(alias, value);
+					updateInfos.put(alias, new UpdateInfo(refreshMode,
+							autoResetEntityState, jsonContext));
+				}
+			}
+
+			lastTimeStamp = EntityEnhancer.getLastTimeStamp();
+			result = dataResolver.resolve(dataItems, parameter);
+		} finally {
+			EntityEnhancer.enableGetterInterception();
+		}
+
+		OutputContext outputContext = new OutputContext(writer);
+		outputContext.setUsePrettyJson(Configure
+				.getBoolean("view.outputPrettyJson"));
+		JsonBuilder jsonBuilder = outputContext.getJsonBuilder();
+		jsonBuilder.object();
+
+		outputContext.setShouldOutputEntityState(true);
+		try {
+			for (UpdateInfo updateInfo : updateInfos.values()) {
+				if (!updateInfo.isAutoResetEntityState())
+					continue;
+				Collection<Object> entities = updateInfo.getJsonContext()
+						.getEntityCollection();
+				if (entities != null) {
+					EntityUtils.resetEntities(entities, true);
+				}
+			}
+
+			jsonBuilder.key("entityStates");
+			outputEntityStates(jsonBuilder, dataItems, updateInfos,
+					outputContext, lastTimeStamp);
+		} finally {
+			outputContext.setShouldOutputEntityState(false);
+		}
+
+		boolean supportsEntity = JsonUtils.getBoolean(json, "supportsEntity");
+		if (supportsEntity) {
+			outputContext.setLoadedDataTypes(JsonUtils.getJSONArray(json,
+					"loadedDataTypes"));
+		}
+		outputContext.setShouldOutputDataTypes(supportsEntity);
+		outputContext.setShouldOutputEntityState(false);
+
+		jsonBuilder.key("returnValue");
+		outputResult(result, outputContext);
+		jsonBuilder.endObject();
+	}
+
+	protected void outputEntityStates(JsonBuilder json, DataItems dataItems,
+			Map<String, UpdateInfo> updateInfos, OutputContext context,
+			long lastTimeStamp) throws Exception {
+		json.object();
+		for (Map.Entry<String, Object> entry : dataItems.entrySet()) {
+			String name = entry.getKey();
+			Object item = entry.getValue();
+
+			UpdateInfo updateInfo = updateInfos.get(name);
+			RefreshMode refreshMode = updateInfo.getRefreshMode();
+			if (RefreshMode.none.equals(refreshMode))
+				continue;
+			if (RefreshMode.cascade.equals(refreshMode)) {
+				if (item instanceof Collection<?>) {
+					for (Object entity : ((Collection<?>) item)) {
+						outputEntityDataAndState(json, entity, true, true,
+								context, lastTimeStamp);
+					}
+				} else if (EntityUtils.isSimpleValue(item)) {
+					continue;
+				} else {
+					outputEntityDataAndState(json, item, true, true, context,
+							lastTimeStamp);
+				}
+			} else {
+				boolean shouldOutputData = RefreshMode.value
+						.equals(refreshMode);
+				for (Object entity : updateInfo.getJsonContext()
+						.getEntityCollection()) {
+					outputEntityDataAndState(json, entity, shouldOutputData,
+							false, context, lastTimeStamp);
+				}
+			}
+		}
+		json.endObject();
+	}
+
+	protected void outputEntityDataAndState(JsonBuilder json, Object entity,
+			boolean shouldOutputData, boolean shouldOutputSubEntity,
+			OutputContext context, long lastTimeStamp) throws Exception {
+		EntityWrapper entityWrapper = EntityWrapper.create(entity);
+		EntityState state = entityWrapper.getState();
+		shouldOutputData = (shouldOutputData && state != EntityState.DELETED && (shouldOutputSubEntity || entityWrapper
+				.getTimeStamp() > lastTimeStamp));
+		if (!shouldOutputData) {
+			if (state != EntityState.NONE) {
+				json.key(String.valueOf(entityWrapper.getEntityId()));
+				json.value(EntityState.toInt(state));
+			}
+		} else {
+			json.key(String.valueOf(entityWrapper.getEntityId()));
+			if (shouldOutputSubEntity) {
+				outputData(entity, context);
+			} else {
+				simplePropertyValueOnlyDataOutputter.output(entity, context);
+			}
+		}
+	}
+}
+
+class UpdateInfo {
+	private RefreshMode refreshMode;
+	private boolean autoResetEntityState;
+	private JsonConvertContext jsonContext;
+
+	public UpdateInfo(RefreshMode refreshMode, boolean autoResetEntityState,
+			JsonConvertContext jsonContext) {
+		this.refreshMode = refreshMode;
+		this.autoResetEntityState = autoResetEntityState;
+		this.jsonContext = jsonContext;
+	}
+
+	public RefreshMode getRefreshMode() {
+		return refreshMode;
+	}
+
+	public boolean isAutoResetEntityState() {
+		return autoResetEntityState;
+	}
+
+	public JsonConvertContext getJsonContext() {
+		return jsonContext;
+	}
+}
+
+class JsonConvertContextImpl implements JsonConvertContext {
+	private Collection<Object> entityCollection;
+	private Collection<Collection<?>> entityListCollection;
+	private DataTypeResolver dataTypeResolver;
+
+	public JsonConvertContextImpl(boolean collectEntities,
+			boolean collectEntityLists, DataTypeResolver dataTypeResolver) {
+		if (collectEntities) {
+			entityCollection = new ArrayList<Object>();
+		}
+		if (collectEntityLists) {
+			entityListCollection = new ArrayList<Collection<?>>();
+		}
+		this.dataTypeResolver = dataTypeResolver;
+	}
+
+	public Collection<Object> getEntityCollection() {
+		return entityCollection;
+	}
+
+	public Collection<Collection<?>> getEntityListCollection() {
+		return entityListCollection;
+	}
+
+	public DataTypeResolver getDataTypeResolver() {
+		return dataTypeResolver;
+	}
+
+}

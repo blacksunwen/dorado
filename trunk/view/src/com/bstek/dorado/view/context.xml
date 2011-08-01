@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:d="http://www.bstek.com/dorado/schema"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dorado-7.0.xsd">
+	<import resource="parser-context.xml" />
+	<import resource="outputter-context.xml" />
+	<import resource="registry-context.xml" />
+
+	<bean parent="dorado.dataConfigLoader">
+		<property name="configLocation"
+			value="classpath:com/bstek/dorado/view/base-types.xml" />
+	</bean>
+
+	<bean id="dorado.xmlViewConfigDefinitionFactory"
+		class="com.bstek.dorado.view.config.XmlViewConfigDefinitionFactory">
+		<property name="xmlDocumentBuilder" ref="dorado.xmlDocumentBuilder" />
+		<property name="xmlPreprocessor">
+			<bean class="com.bstek.dorado.view.config.XmlDocumentPreprocessor">
+				<property name="viewConfigManager" ref="dorado.viewConfigManager" />
+				<property name="componentTypeRegistry" ref="dorado.componentTypeRegistry" />
+			</bean>
+		</property>
+		<property name="xmlParser" ref="dorado.viewConfigParser" />
+		<property name="pathSubfix" value=".view.xml" />
+		<property name="dataTypeDefinitionManager" ref="dorado.dataTypeDefinitionManager" />
+		<property name="dataProviderDefinitionManager" ref="dorado.dataProviderDefinitionManager" />
+		<property name="dataResolverDefinitionManager" ref="dorado.dataResolverDefinitionManager" />
+	</bean>
+	<bean id="dorado.viewConfigManager"
+		class="com.bstek.dorado.view.manager.ConfigurableViewConfigManager">
+		<property name="viewConfigFactoryMap">
+			<map>
+				<entry key="**">
+					<bean parent="dorado.xmlViewConfigDefinitionFactory" />
+				</entry>
+			</map>
+		</property>
+	</bean>
+	<bean id="dorado.viewConfigFactoryRegister" abstract="true"
+		class="com.bstek.dorado.view.manager.ViewConfigFactoryRegister">
+		<property name="viewConfigManager" ref="dorado.viewConfigManager" />
+	</bean>
+
+	<bean id="dorado.componentTypeRegistry"
+		class="com.bstek.dorado.view.registry.DefaultComponentTypeRegistry" />
+	<bean id="dorado.componentTypeRegister" abstract="true"
+		class="com.bstek.dorado.view.registry.ComponentTypeRegister">
+		<property name="componentTypeRegistry" ref="dorado.componentTypeRegistry" />
+	</bean>
+
+	<bean id="dorado.layoutTypeRegistry"
+		class="com.bstek.dorado.view.registry.DefaultLayoutTypeRegistry">
+		<property name="defaultType" value="Dock" />
+	</bean>
+	<bean id="dorado.layoutTypeRegister" abstract="true"
+		class="com.bstek.dorado.view.registry.LayoutTypeRegister">
+		<property name="layoutTypeRegistry" ref="dorado.layoutTypeRegistry" />
+		<property name="parser" ref="dorado.dispatchableTextParser" />
+	</bean>
+
+	<!-- Expression -->
+	<bean id="dorado.expressionHandler" class="com.bstek.dorado.view.el.ViewExpressionHandler">
+		<property name="contextInitializers">
+			<list>
+				<bean class="com.bstek.dorado.core.el.CoreContextVarsInitializer" />
+			</list>
+		</property>
+	</bean>
+
+	<!-- Services -->
+	<bean id="dorado.viewServiceResolver" class="com.bstek.dorado.view.resolver.ViewServiceResolver">
+		<property name="serviceProcessors">
+			<map>
+				<entry key="load-datatype" value-ref="dorado.loadDataTypeServiceProcessor" />
+				<entry key="load-data" value-ref="dorado.loadDataServiceProcessor" />
+				<entry key="resolve-data" value-ref="dorado.resolveDataServiceProcessor" />
+				<entry key="remote-service" value-ref="dorado.remoteServiceProcessor" />
+			</map>
+		</property>
+	</bean>
+	<bean id="dorado.viewServiceInterceptorRegister"
+		class="com.bstek.dorado.view.resolver.ViewServiceInterceptorRegister"
+		abstract="true">
+		<property name="viewServiceResolver" ref="dorado.viewServiceResolver" />
+	</bean>
+
+	<bean id="dorado.dataServiceProcessorSupport" abstract="true">
+		<property name="dataTypeManager" ref="dorado.dataTypeManager" />
+		<property name="viewConfigManager" ref="dorado.viewConfigManager" />
+		<property name="dataOutputter" ref="dorado.dataOutputter" />
+		<property name="includeDataTypesOutputter" ref="dorado.includeDataTypesOutputter" />
+	</bean>
+	<bean id="dorado.loadDataTypeServiceProcessor" parent="dorado.dataServiceProcessorSupport"
+		class="com.bstek.dorado.view.service.LoadDataTypeServiceProcessor" />
+	<bean id="dorado.loadDataServiceProcessor" parent="dorado.dataServiceProcessorSupport"
+		class="com.bstek.dorado.view.service.LoadDataServiceProcessor">
+		<property name="dataProviderManager" ref="dorado.dataProviderManager" />
+	</bean>
+	<bean id="dorado.resolveDataServiceProcessor" parent="dorado.dataServiceProcessorSupport"
+		class="com.bstek.dorado.view.service.ResolveDataServiceProcessor">
+		<property name="dataResolverManager" ref="dorado.dataResolverManager" />
+		<property name="simplePropertyValueOnlyDataOutputter">
+			<bean parent="dorado.dataOutputter">
+				<property name="simplePropertyValueOnly" value="true" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="dorado.remoteServiceProcessor" parent="dorado.dataServiceProcessorSupport"
+		class="com.bstek.dorado.view.service.RemoteServiceProcessor">
+		<property name="exposedServiceManager" ref="dorado.exposedServiceManager" />
+	</bean>
+
+	<!-- Others -->
+	<bean id="dorado.velocityHelper"
+		class="com.bstek.dorado.view.resolver.VelocityHelperFactoryBean">
+		<property name="velocityProperties">
+			<props>
+				<prop key="input.encoding">UTF-8</prop>
+				<prop key="output.encoding">UTF-8</prop>
+				<prop key="file.resource.loader.cache">false</prop>
+				<prop key="file.resource.loader.class">
+					com.bstek.dorado.view.resolver.VelocityViewTemplateResourceLoader
+				</prop>
+				<prop key="userdirective">
+					com.bstek.dorado.view.resolver.VelocityPageHeaderDirective,
+					com.bstek.dorado.view.resolver.VelocityPageFooterDirective,
+					com.bstek.dorado.view.resolver.VelocityInterceptorDirective,
+					com.bstek.dorado.view.resolver.VelocityExceptionDirective
+				</prop>
+			</props>
+		</property>
+		<property name="velocityToolProperties">
+			<props>
+				<prop key="tools.application.date">
+					org.apache.velocity.tools.generic.DateTool
+				</prop>
+			</props>
+		</property>
+	</bean>
+</beans>

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+	<View impl="com.bstek.dorado.view.MockView" scope="instant" />
+</ViewConfig>
