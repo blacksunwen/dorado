@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:d="http://www.bstek.com/dorado/schema"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dorado-7.0.xsd">
+	<import resource="xml-parser-context.xml" />
+
+	<bean name="dorado.genericObjectListenerRegister"
+		class="com.bstek.dorado.data.config.definition.GenericObjectListenerRegister"
+		abstract="true" />
+
+	<!-- Startup Listeners -->
+	<bean class="com.bstek.dorado.data.config.DataConfigEngineStartupListener">
+		<property name="priority" value="1000" />
+		<property name="DataConfigManager" ref="dorado.dataConfigManager" />
+	</bean>
+	<bean
+		class="com.bstek.dorado.data.config.DataObjectAnnotationEngineStartupListener">
+		<property name="priority" value="1001" />
+		<property name="dataProviderDefinitionManager" ref="dorado.dataProviderDefinitionManager" />
+		<property name="dataResolverDefinitionManager" ref="dorado.dataResolverDefinitionManager" />
+	</bean>
+
+	<!-- Expression Initializer -->
+	<bean parent="dorado.expressionVarsInitializerRegister">
+		<property name="contextInitializer">
+			<bean
+				class="com.bstek.dorado.data.config.DataProviderContextVarsInitializer" />
+		</property>
+	</bean>
+
+	<!-- DataType -->
+	<bean name="dorado.dataTypeDefinitionManager"
+		class="com.bstek.dorado.data.config.definition.DataTypeDefinitionManager" />
+	<bean id="dorado.dataTypeManager"
+		class="com.bstek.dorado.data.type.manager.DefaultDataTypeManager">
+		<property name="dataTypeDefinitionManager" ref="dorado.dataTypeDefinitionManager" />
+	</bean>
+
+	<!-- DataType Cache -->
+	<bean id="dorado.lookupPropertyIndexedDataCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+		<property name="cacheName"
+			value="com.bstek.dorado.data.type.LookupPropertyIndexedDataCache" />
+		<property name="maxElementsInMemory"
+			value="${data.lookup.indexCache.maxElementsInMemory}" />
+		<property name="timeToLive" value="${data.lookup.indexCache.timeToLive}" />
+		<property name="timeToIdle" value="${data.lookup.indexCache.timeToIdle}" />
+	</bean>
+
+	<!-- DataProvider -->
+	<bean name="dorado.dataProviderDefinitionManager"
+		class="com.bstek.dorado.data.config.definition.DataProviderDefinitionManager" />
+	<bean name="dorado.dataProviderInterceptorRegister"
+		class="com.bstek.dorado.data.provider.manager.DataProviderInterceptorRegister"
+		abstract="true">
+		<property name="dataProviderDefinitionManager" ref="dorado.dataProviderDefinitionManager" />
+	</bean>
+
+	<bean id="dorado.dataProviderManager"
+		class="com.bstek.dorado.data.provider.manager.DefaultDataProviderManager">
+		<property name="dataProviderDefinitionManager" ref="dorado.dataProviderDefinitionManager" />
+	</bean>
+
+	<bean id="dorado.dataProviderTypeRegistry"
+		class="com.bstek.dorado.data.provider.manager.DefaultDataProviderTypeRegistry">
+		<property name="defaultType" value="direct" />
+	</bean>
+	<bean name="dorado.dataProviderTypeRegisterSupport" abstract="true"
+		class="com.bstek.dorado.data.provider.manager.DataProviderTypeRegister">
+		<property name="dataProviderTypeRegistry" ref="dorado.dataProviderTypeRegistry" />
+	</bean>
+
+	<bean id="dorado.directDataProviderTypeRegister" parent="dorado.dataProviderTypeRegisterSupport">
+		<property name="type" value="direct" />
+		<property name="classType"
+			value="com.bstek.dorado.data.provider.DirectDataProvider" />
+		<property name="parser">
+			<bean class="com.bstek.dorado.data.config.xml.DirectDataProviderParser"
+				parent="dorado.dataProviderParser">
+				<d:property-parser key="resultDataType,result"
+					value-ref="dorado.ignoreParser" />
+			</bean>
+		</property>
+	</bean>
+
+	<!-- DataResolver -->
+	<bean name="dorado.dataResolverDefinitionManager"
+		class="com.bstek.dorado.data.config.definition.DataResolverDefinitionManager" />
+	<bean name="dorado.dataResolverInterceptorRegister"
+		class="com.bstek.dorado.data.resolver.manager.DataResolverInterceptorRegister"
+		abstract="true">
+		<property name="dataResolverDefinitionManager" ref="dorado.dataResolverDefinitionManager" />
+	</bean>
+
+	<bean id="dorado.dataResolverManager"
+		class="com.bstek.dorado.data.resolver.manager.DefaultDataResolverManager">
+		<property name="dataResolverDefinitionManager" ref="dorado.dataResolverDefinitionManager" />
+	</bean>
+
+	<!-- Validator -->
+	<bean id="dorado.validatorTypeRegistry"
+		class="com.bstek.dorado.data.type.validator.DefaultValidatorTypeRegistry" />
+	<bean name="dorado.validatorTypeRegisterSupport" abstract="true"
+		class="com.bstek.dorado.data.type.validator.ValidatorTypeRegister">
+		<property name="validatorTypeRegistry" ref="dorado.validatorTypeRegistry" />
+		<property name="parser" ref="dorado.defaultValidatorParser" />
+	</bean>
+
+	<!-- DataConfig -->
+	<bean id="dorado.dataConfigManagerTemplate" abstract="true"
+		class="com.bstek.dorado.data.config.ConfigurableDataConfigManager">
+		<property name="dataTypeManager" ref="dorado.dataTypeManager" />
+		<property name="dataProviderManager" ref="dorado.dataProviderManager" />
+		<property name="xmlDocumentBuilder" ref="dorado.xmlDocumentBuilder" />
+		<property name="preloadParser" ref="dorado.preloadDataDocumentElementParser" />
+		<property name="dataObjectsParser" ref="dorado.dataObjectsParser" />
+		<property name="dataTypeDefinitionManager" ref="dorado.dataTypeDefinitionManager" />
+		<property name="dataProviderDefinitionManager" ref="dorado.dataProviderDefinitionManager" />
+		<property name="dataResolverDefinitionManager" ref="dorado.dataResolverDefinitionManager" />
+
+		<property name="autoReloadEnabled" value="${data.config.autoReloadEnabled}" />
+		<property name="autoRecalculatePaths" value="${data.config.autoRecalculatePaths}" />
+		<property name="validateThreadIntervalSeconds" value="${data.config.validateThreadIntervalSeconds}" />
+		<property name="minResourceValidateSeconds" value="${data.config.minResourceValidateSeconds}" />
+		<property name="recalcLocationsThreadIntervalSeconds"
+			value="${data.config.recalcLocationsThreadIntervalSeconds}" />
+
+		<property name="configLocations">
+			<list>
+				<value>classpath:com/bstek/dorado/data/base-types.xml</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="dorado.dataConfigManager" parent="dorado.dataConfigManagerTemplate" />
+	<bean id="dorado.dataConfigLoader" abstract="true"
+		class="com.bstek.dorado.data.config.DataConfigLoader">
+		<property name="dataConfigManager" ref="dorado.dataConfigManager" />
+	</bean>
+
+	<!-- Proxy -->
+	<bean id="dorado.entityProxyMethodInterceptorFactory"
+		class="com.bstek.dorado.data.entity.DefaultEntityProxyMethodInterceptorFactory" />
+</beans>
