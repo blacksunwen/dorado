@@ -61,7 +61,7 @@
 		<foreach list="${module.projects}" param="module.project" target="copy-project-source" inheritall="true" />
 	</target>
 
-	<target name="compressor-css">
+	<target name="compressor-css" unless="dont-compressor-css">
 		<if>
 			<available file="${dist}/skins" />
 			<then>
@@ -73,7 +73,7 @@
 		</if>
 	</target>
 
-	<target name="tidy-js">
+	<target name="tidy-js" unless="dont-tidy-js">
 		<js-tidy>
 			<fileset dir="${dist}">
 				<include name="**/*.js" />
@@ -81,7 +81,7 @@
 		</js-tidy>
 	</target>
 
-	<target name="compressor-js">
+	<target name="compressor-js" unless="dont-compressor-js">
 		<if>
 			<available file="${dist}" />
 			<then>

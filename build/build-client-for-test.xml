@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="build" default="build">
 	<property name="dont-resolve-env-libs" value="" />
+	<property name="dont-compressor-css" value="" />
+	<property name="dont-compressor-js" value="" />
+	<property name="dont-tidy-js" value="" />
 	<property name="project.dir" value="${basedir}/../client" />
 
 	<target name="build">
