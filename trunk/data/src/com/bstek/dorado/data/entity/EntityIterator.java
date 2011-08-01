@@ -45,13 +45,17 @@ public class EntityIterator<E> implements Iterator<E> {
 					visible = (state == EntityState.MODIFIED);
 				} else if (filterType == FilterType.DELETED) {
 					visible = (state == EntityState.DELETED);
+				} else if (filterType == FilterType.MOVED) {
+					visible = (state == EntityState.MOVED);
 				} else if (filterType == FilterType.VISIBLE) {
 					visible = (state != EntityState.DELETED);
 				} else if (filterType == FilterType.DIRTY) {
 					visible = (state == EntityState.NEW
-							|| state == EntityState.MODIFIED || state == EntityState.DELETED);
+							|| state == EntityState.MODIFIED
+							|| state == EntityState.DELETED || state == EntityState.MOVED);
 				} else if (filterType == FilterType.VISIBLE) {
-					visible = (state == EntityState.NEW || state == EntityState.MODIFIED);
+					visible = (state == EntityState.NEW
+							|| state == EntityState.MODIFIED || state == EntityState.MOVED);
 				} else if (filterType == FilterType.ALL) {
 					visible = true;
 				}

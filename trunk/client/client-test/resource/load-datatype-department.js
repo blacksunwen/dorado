@@ -1,0 +1,42 @@
+[ {
+	"name": "Departments",
+	"type": "aggregation",
+	"elementDataType": "Department"
+}, {
+	"name": "Department",
+	"type": "entity",
+	"propertyDefs": [ {
+		"name": "id"
+	}, {
+		"name": "name"
+	}, {
+		"name": "departments",
+		"dataType": "Departments"
+	}, {
+		"name": "employees",
+		"dataType": "Employees"
+	} ]
+}, {
+	"name": "Employees",
+	"type": "aggregation",
+	"elementDataType": "Employee"
+}, {
+	"name": "Employee",
+	"type": "entity",
+	"propertyDefs": [ {
+		"name": "id"
+	}, {
+		"name": "name"
+	}, {
+		"name": "sex",
+		"dataType": "boolean"
+	}, {
+		"name": "birthday",
+		"dataType": "Date"
+	}, {
+		"name": "salary",
+		"dataType": "float"
+	}, {
+		"name": "comment"
+	} ]
+} ]

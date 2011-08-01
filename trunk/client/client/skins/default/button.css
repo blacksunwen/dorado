@@ -1,0 +1,222 @@
+.d-button {
+    white-space: nowrap;
+    display: inline-block;
+    height: 22px;
+    cursor: pointer;
+    overflow: hidden;
+    background: url(base/button-bg.gif) no-repeat;
+}
+
+.d-button .button-left {
+    float: left;
+    height: 22px;
+	line-height: 22px;
+    display: inline-block;
+
+    background: url(base/button-bg.gif) repeat-x 0 -22px;
+    overflow: hidden;
+    border: 0;
+    margin: 0 0 0 3px;
+    padding: 0 4px;
+    cursor: pointer;
+    text-align: center;
+	vertical-align: middle;
+}
+
+.d-button .button-left .icon {
+    background-repeat: no-repeat;
+    display: inline-block;
+    padding-left: 20px;
+    width: 0;
+    height: 22px;
+	line-height: 22px;
+    margin: 0 1px;
+}
+
+.d-button .button-left .caption {
+	line-height: 22px;
+}
+
+.d-ie .d-button .button-left .caption{
+	vertical-align: baseline;
+}
+
+.d-button .button-right {
+    float: left;
+    display: inline-block;
+    width: 3px;
+    height: 22px;    
+    background: url(base/button-bg.gif) no-repeat right -44px;
+}
+
+.d-button-trigger .button-right {
+    width: 19px;
+}
+
+.d-button-focused {
+    background-position: 0 -132px;
+}
+
+.d-button-focused .button-left {
+    background-position: 0 -154px;
+}
+
+.d-button-focused .button-right {
+    background-position: right -176px;
+}
+
+.d-button-hover {
+    background-position: 0 -66px;
+}
+
+.d-button-hover .button-left {
+    background-position: 0 -88px;
+}
+
+.d-button-hover .button-right {
+    background-position: right -110px;
+}
+
+.d-button-toggled {
+    background-position: 0 -264px;
+}
+
+.d-button-toggled .button-left {
+    background-position: 0 -286px;
+}
+
+.d-button-toggled .button-right {
+    background-position: right -308px;
+}
+
+.d-button-click {
+    background-position: 0 -198px;
+}
+
+.d-button-click .button-left {
+    background-position: 0 -220px;
+}
+
+.d-button-click .button-right {
+    background-position: right -242px;
+}
+
+.d-button-left-hover {
+    background-position: 0 -66px;
+}
+
+.d-button-left-hover .button-left {
+    background-position: 0 -88px;
+}
+
+.d-button-left-click, .d-button-left-toggled {
+    background-position: 0 -264px;
+}
+
+.d-button-left-toggled .button-left {
+    background-position: 0 -286px;
+}
+
+.d-button-left-click .button-left {
+    background-position: 0 -220px;
+}
+
+.d-button-left-click .button-right, .d-button-left-toggled .button-right {
+    background-position: right -44px;
+}
+
+.d-button-right-hover {
+    background-position: 0 0;
+}
+
+.d-button-right-hover .button-right {
+    background-position: right -110px;
+}
+
+.d-button-right-click, .d-button-right-toggled{
+    background-position: 0 0;
+}
+
+.d-button-right-toggled .button-right {
+    background-position: right -308px;
+}
+
+.d-button-right-click .button-right {
+    background-position: right -242px;
+}
+
+.d-button-disabled .button-left .icon{
+    filter: alpha(opacity = 50);
+    opacity: 0.5;
+}
+
+.d-button-disabled .caption {
+    color: #aaa;
+}
+
+.d-simple-button {
+	cursor: pointer;
+	width: 20px;
+	height: 20px;
+}
+
+.d-icon-button {
+	cursor: pointer;
+	width: 20px;
+	height: 20px;
+	background: url(base/tool-button-bg.gif);
+}
+
+.d-icon-button .icon {
+	float: left;
+	width: 20px;
+	height: 20px;
+	background-repeat: no-repeat;
+}
+
+.d-icon-button-hover {
+	background-position: -20px 0;
+}
+
+.d-icon-button-click {
+	background-position: -40px 0;
+}
+
+.d-icon-button-toggled {
+	background-position: -60px 0;
+}
+
+.d-icon-button-disabled .icon{
+    filter: alpha(opacity = 50);
+    opacity: 0.5;
+}
+
+.d-icon-button-trigger {
+    cursor: pointer;
+	width: 28px;
+	height: 20px;
+	background: url(base/tool-button-bg.gif) -80px 0;
+}
+
+.d-icon-button-trigger .icon {
+	float: left;
+	width: 20px;
+	height: 20px;
+}
+
+.d-icon-button-trigger-hover {
+	background-position: -108px 0;
+}
+
+.d-icon-button-trigger-click {
+	background-position: -136px 0;
+}
+
+.d-icon-button-trigger-toggled {
+	background-position: -164px 0;
+}
+
+.d-icon-button-trigger-disabled .icon{
+    filter: alpha(opacity = 50);
+    opacity: 0.5;
+}

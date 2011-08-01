@@ -1,0 +1,80 @@
+.d-section {
+    overflow: hidden;
+    cursor: default;
+    font-size: 9pt;
+    width: 100%;
+}
+
+.d-section .container {
+    background: #F0F0F0;
+}
+
+.d-section-caption-bar {
+    background: url(base/section-caption-bar-bg.png) top repeat-x;
+    height: 21px;
+    overflow: hidden;
+    border: 1px solid #808080;
+    padding-left: 6px;
+    cursor: pointer;
+}
+
+.d-section-caption-bar .caption {
+    float: left;
+    padding-left: 6px;
+    line-height: 22px;
+    height: 24px;
+}
+
+.d-section-caption-bar .caption-bar-icon {
+    float: left;
+    margin-top: 1px;
+    float: left;
+    width: 16px;
+    height: 20px;
+    background: transparent 0 center no-repeat;
+}
+
+.d-section-caption-bar .button-group {
+    float: right;
+    margin: 1px 4px 0 0;
+    height: 20px;
+    padding: 0;
+}
+
+.d-section-caption-bar .button-group .d-icon-button {
+    float: left;
+}
+
+.d-accordion .current-section .d-section-caption-bar {
+    background: url(base/section-caption-bar-bg.png) bottom repeat-x;
+    height: 21px;
+    overflow: hidden;
+    border: 1px solid #aaaaaa;
+    padding-left: 6px;
+}
+
+.d-accordion {
+    border: 1px #A1A1A1 solid;
+    padding: 0 1px 1px 1px;
+    background: white;
+    overflow: hidden;
+}
+
+.d-accordion .d-section {
+    margin-top: 1px;
+}
+
+.d-accordion .d-section .container {
+    display: none;
+}
+
+.d-accordion .current-section .container {
+    display: block;
+}
+
+.d-accordion .d-menu {
+    position: relative;
+    border: 0;
+    padding: 0;
+    background: #FAFAFA;
+}

@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<title>Radio Button Test</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<script type="text/javascript" src="../../include-all.js"></script>
+		<script type="text/javascript">
+			
+			var view = new dorado.widget.View({});
+			
+			var panel = new dorado.widget.Panel({
+				layout: new dorado.widget.layout.DockLayout(),
+				width: "100%",
+				height: 30
+			});
+			view.addChild(panel);
+			
+			var radioButton1 = new dorado.widget.RadioButton({
+				text: "测试而已",
+				value: 'test1'
+			});
+			var radioButton2 = new dorado.widget.RadioButton({
+				text: "测试而已2",
+				value: 'test2'
+			});
+			var radioButton3 = new dorado.widget.RadioButton({
+				text: "测试而已3",
+				value: 'test3'
+			});
+			
+			var radioGroup = new dorado.widget.RadioGroup({
+				id: "rg1",
+				layout: "flow",
+				radioButtons: [radioButton1, radioButton2, radioButton3],
+				value: 'test1',
+				listener: {
+					onValueChange: function(radioGroup) {
+						//alert(radioGroup.get("value"));
+					}
+				}
+			});
+			
+			view.addChild(radioGroup);
+			
+			var count = 1;
+			
+			panel.addChild(new dorado.widget.Button({
+				caption: "Set Value",
+				listener: {
+					onClick: function() {
+						var rg1 = this.id("rg1");
+						rg1.set("value", "test2");
+					}
+				},
+				layoutConstraint: "left"
+			}));
+			
+			panel.addChild(new dorado.widget.Button({
+				caption: "Set FlowLayout",
+				listener: {
+					onClick: function() {
+						radioGroup.set("layout", radioGroup._flowLayout ? "flow" : "vertical");
+					}
+				},
+				layoutConstraint: "left"
+			}));
+			
+			panel.addChild(new dorado.widget.Button({
+				caption: "Set ReadOnly",
+				listener: {
+					onClick: function() {
+						var rg1 = this.id("rg1");
+						rg1.set("readOnly", !rg1.get("readOnly"));
+					}
+				},
+				layoutConstraint: "left"
+			}));
+			
+			panel.addChild(new dorado.widget.Button({
+				caption: "Get Value",
+				listener: {
+					onClick: function() {
+						var rg1 = this.id("rg1");
+						alert(rg1.get("value"));
+					}
+				},
+				layoutConstraint: "left"
+			}));
+			
+			panel.addChild(new dorado.widget.Button({
+				caption: "Set Radio Buttons",
+				listener: {
+					onClick: function() {
+						var rg1 = this.id("rg1");
+						rg1.set("radioButtons", [{
+							value: false,
+							text: "Female1"
+						}, {
+							value: true,
+							text: "Male1"
+						}]);
+					}
+				},
+				layoutConstraint: "left"
+			}));
+			
+			var rg2 = new dorado.widget.RadioGroup({
+				id: "rg2",
+				width: "100%",
+				radioButtons: [{
+					value: false,
+					text: "Female"
+				}, {
+					value: true,
+					text: "Male"
+				}],
+				value: true,
+				listener: {
+					onValueChange: function(radioGroup) {
+						//alert(radioGroup.get("value"));
+					}
+				}
+			});
+			view.addChild(rg2);
+			
+			
+			$(document).ready(function() {
+				view.render(document.body);
+			});
+		</script>
+	</head>
+	<body></body>
+</html>

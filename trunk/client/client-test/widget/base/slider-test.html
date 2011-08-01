@@ -1,0 +1,45 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+        <title>Slider Test Page</title>
+		<script type="text/javascript" src="../../include-all.js"></script>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<script type="text/javascript">
+		var view = new dorado.widget.View({ layout: "Anchor" });
+
+        view.addChild(new dorado.widget.Slider({
+            id: "slider1",
+            //step: 5,
+            width: 1014,
+            listener: {
+                beforeValueChange: function(self, value){
+                    if(value > 50){
+                        alert("值不能大于50!");
+                        return false;
+                    }
+                },
+                onValueChange: function(self){
+                    alert(self._value);
+                }
+            },
+            style: {
+                "margin-top": 50,
+                "margin-bottom": 50
+            }
+        }));
+
+        view.addChild(new dorado.widget.Slider({
+            id: "slider2",
+            orientation: "vertical",
+            height: 414
+            //,step: 5
+        }));
+
+		$(document).ready(function(){
+			view.render(document.body);
+		});
+		</script>
+	</head>
+	<body>
+	</body>
+</html>

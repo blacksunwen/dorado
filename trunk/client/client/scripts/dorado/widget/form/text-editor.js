@@ -1,0 +1,1085 @@
+(function() {
+
+	function isInputOrTextArea(dom) {
+		return ["input", "textarea"].indexOf(dom.tagName.toLowerCase()) >= 0;
+	}
+	
+	/**
+	 * @name dorado.widget.editor
+	 * @namespace 编辑器所使用的一些相关类的命名空间。
+	 */
+	dorado.widget.editor = {};
+	
+	/**
+	 * @author Benny Bao (mailto:benny.bao@bstek.com)
+	 * @class 来自外部系统的异常信息。
+	 * @extends dorado.Exception
+	 * @param [object] messages 校验信息的数组。数组中的每一个元素是一个JSON对象，该JSON对象包含以下属性：
+	 * <ul>
+	 * <li>state	-	{String} 信息级别。取值范围包括：info、ok、warn、error。默认值为error。</li>
+	 * <li>text	-	{String} 信息内容。</li>
+	 * </ul>
+	 */
+	dorado.widget.editor.PostException = $extend(dorado.Exception, {
+		$className: "dorado.widget.editor.PostException",
+		
+		/**
+		 * 校验信息的数组。
+		 * @name dorado.widget.editor.PostException#validationMessages
+		 * @property
+		 * @type [object]
+		 */
+		// =====
+		
+		constructor: function(messages) {
+			$invokeSuper.call(this, [dorado.Toolkits.getTopMessage(messages).text]);
+			this.messages = messages;
+		}
+	});
+	
+	/**
+	 * @author Benny Bao (mailto:benny.bao@bstek.com)
+	 * @class 抽象的具有文本框特征的编辑器。
+	 * @abstract
+	 * @extends dorado.widget.AbstractDataEditor
+	 */
+	dorado.widget.AbstractTextBox = $extend(dorado.widget.AbstractDataEditor, /** @scope dorado.widget.AbstractTextBox.prototype */ {
+		$className: "dorado.widget.AbstractTextBox",
+		
+		_triggerChanged: true,
+		
+		ATTRIBUTES: /** @scope dorado.widget.AbstractTextBox.prototype */ {
+			className: {
+				defaultValue: "d-text-box"
+			},
+			
+			width: {
+				defaultValue: 150,
+				independent: true
+			},
+			
+			height: {
+				independent: true,
+				readOnly: true
+			},
+			
+			/**
+			 * 文本编辑器中的文本内容。
+			 * @type String
+			 * @attribute
+			 */
+			text: {
+				skipRefresh: true,
+				getter: function() {
+					return this.doGetText();
+				},
+				setter: function(text) {
+					this.doSetText(text);
+				}
+			},
+			
+			value: {
+				skipRefresh: true,
+				getter: function() {
+					var text = this.doGetText();
+					if (this._value !== undefined && text === this._valueText) {
+						return this._value;
+					} else {
+						if (text === undefined) text = null;
+						return text;
+					}
+				},
+				setter: function(value) {
+					/*
+					 * _value将在doPost之后被自动清空，并且当modified==true时，系统也不会将_value的值作为value属性的只返回给外界。
+					 */
+					this._value = value;
+					var text = this._lastPost = this._valueText = dorado.$String.toText(value);
+					this.doSetText(text);
+				}
+			},
+			
+			/**
+			 * 编辑框中的文本是否允许编辑。
+			 * <p>
+			 * <b>editable和readOnly属性都可以用于控制编辑框中的文本是否可编辑。
+			 * 他们的不同点在于，当editable=false时，虽然编辑框不可编辑但其关联的{@link dorado.widget.EditorTrigger}仍可操作；
+			 * 而当readOnly=true时，不但编辑框不可编辑其关联的{@link dorado.widget.EditorTrigger}也将不能使用。</b>
+			 * </p>
+			 * @type boolean
+			 * @attribute
+			 * @default true
+			 * @see dorado.widget.AbstractEditor#attribute:readOnly
+			 */
+			editable: {
+				defaultValue: true
+			},
+			
+			readOnly: {},
+			
+			modified: {
+				getter: function() {
+					return (this._focused) ? (this._lastPost == this.doGetText()) : false;
+				}
+			},
+			
+			/**
+			 * 编辑器中当前的数据校验状态。
+			 * <ul>
+			 * <li>none	-	未知或尚未校验。</li>
+			 * <li>warn	-	数据包含警告信息。</li>
+			 * <li>error	-	数据不合法。</li>
+			 * </ul>
+			 * @type String
+			 * @attribute readOnly
+			 */
+			validationState: {
+				readOnly: true,
+				defaultValue: "none"
+			},
+			
+			/**
+			 * 编辑器中当前的数据校验信息的数组。
+			 * @type [Object] 校验信息的数组。数组中的每一个元素是一个JSON对象，该JSON对象包含以下属性：
+			 * <ul>
+			 * <li>state	-	{String} 信息级别。取值范围包括：info、ok、warn、error。默认值为error。</li>
+			 * <li>text	-	{String} 信息内容。</li>
+			 * </ul>
+			 * @attribute readOnly
+			 */
+			validationMessages: {
+				readOnly: true
+			},
+			
+			/**
+			 * 关联的编辑框触发器。下拉框也是一种特殊的编辑框触发器。
+			 * <p>此处既可以传入一个触发器，也可以传入多个触发器组成的数组。</p>
+			 * @type dorado.widget.Trigger|dorado.widget.Trigger[]
+			 * @attribute
+			 */
+			trigger: {
+				componentReference: true,
+				setter: function(v) {
+					if (v instanceof Array && v.length == 0) v = null;
+					this._trigger = v;
+					this._triggerChanged = true;
+				}
+			}
+		},
+		
+		EVENTS: /** @scope dorado.widget.AbstractTextBox.prototype */ {
+			/**
+			 * 当编辑器中的内容被修改时触发的事件。
+			 * @param {Object} self 事件的发起者，即控件本身。
+			 * @param {Object} arg 事件参数。
+			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+			 * @see dorado.widget.AbstractTextEditor#textEdited
+			 * @event
+			 */
+			onTextEdit: {},
+			
+			/**
+			 * 当编辑器中的触发按钮被点击时触发的事件。
+			 * @param {Object} self 事件的发起者，即控件本身。
+			 * @param {Object} arg 事件参数。
+			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+			 * @event
+			 */
+			onTriggerClick: {},
+			
+			/**
+			 * 当编辑器的状态发生改变时触发的事件。
+			 * @param {Object} self 事件的发起者，即控件本身。
+			 * @param {Object} arg 事件参数。
+			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+			 * @event
+			 */
+			onValidationStateChange: {}
+		},
+		
+		/**
+		 * @name dorado.widget.AbstractTextBox#doValidate
+		 * @function
+		 * @protected
+		 * @description 内部的校验文本的处理方法。
+		 * @param {String} text 要校验的文本。如果数据未通过校验应抛出异常信息。
+		 */
+		/** 
+		 * @name dorado.widget.AbstractTextBox#doGetText
+		 * @function
+		 * @protected
+		 * @description 返回编辑框中的文本。
+		 * @return {String} 编辑框中的文本。
+		 */
+		/** 
+		 * @name dorado.widget.AbstractTextBox#doSetText
+		 * @function
+		 * @protected
+		 * @description 设置编辑框中的文本。
+		 * @parem text {String} 编辑框中的文本。
+		 */
+		// =====
+		
+		createDom: function() {
+			var textDom = this._textDom = this.createTextDom();
+			textDom.style.width = "100%";
+			textDom.style.height = "100%";
+			
+			var dom = document.createElement("DIV");
+			with (dom.style) {
+				position = "relative";
+				whiteSpace = "nowrap";
+				overflow = "hidden";
+			}
+			dom.appendChild(textDom);
+			
+			var self = this;
+			jQuery(dom).addClassOnHover(this._className + "-hover", null, function() {
+				return !self.get("readOnly");
+			});
+			if (this._text) this.doSetText(this._text);
+			return dom;
+		},
+		
+		refreshTriggerDoms: function() {
+			var triggerButtons = this._triggerButtons, triggerButton;
+			if (triggerButtons) {
+				for (var i = 0; i < triggerButtons.length; i++) {
+					triggerButton = triggerButtons[i];
+					triggerButton.unrender();
+					this.unregisterInnerControl(triggerButton);
+				}
+			}
+			
+			this._triggersWidth = 0;
+			var triggers = this.get("trigger");
+			if (triggers) {
+				if (!(triggers instanceof Array)) triggers = [triggers];
+				var trigger;
+				this._triggerButtons = triggerButtons = [];
+				for (var i = triggers.length - 1; i >= 0; i--) {
+					trigger = triggers[i];
+					triggerButton = trigger.createTriggerButton(this);
+					triggerButton.set("style", {
+						position: "absolute",
+						top: 0,
+						right: this._triggersWidth + "px"
+					});
+					triggerButtons.push(triggerButton);
+					this.registerInnerControl(triggerButton);
+					triggerButton.render(this._dom);
+					this._triggersWidth += triggerButton.getDom().offsetWidth;
+				}
+				this._triggersWidth = -1;
+				this.doOnAttachToDocument = this.doOnResize;
+				if (this._attached) this.onResize();
+			} else {
+				this._textDom.style.width = "100%";
+				delete this.doOnAttachToDocument;
+				delete this.onResize;
+			}
+		},
+		
+		refreshDom: function(dom) {
+			$invokeSuper.call(this, arguments);
+			
+			if (this._dataSet) {
+				var value, dirty, timestamp = 0, readOnly;
+				this._entity = null;
+				if (this._property) {
+					readOnly = this._dataSet._readOnly;
+					var bindingInfo = this._bindingInfo, propertyDef = bindingInfo.propertyDef, state, messages;
+					if (propertyDef) {
+						readOnly = (bindingInfo.entity == null) || readOnly || propertyDef._readOnly;
+						this._readOnly2 = readOnly;
+						this.resetReadOnly();
+							
+						if (!this._displayFormat) this._displayFormat = propertyDef._displayFormat;
+						if (!this._inputFormat) this._inputFormat = propertyDef._inputFormat;
+						if (!propertyDef._mapping && !this._dataType) this._dataType = propertyDef._dataType;
+					}
+					
+					timestamp = bindingInfo.timestamp;
+					if (bindingInfo.entity instanceof dorado.Entity) {
+						var e = this._entity = bindingInfo.entity;
+						if (this._dataType) {
+							value = e.get(this._property);
+						} else {
+							value = e.getText(this._property);
+						}
+						dirty = e.isDirty(this._property);
+						state = e.getMessageState(this._property);
+						messages = e.getMessages(this._property);
+					}
+					
+					if (timestamp != this.timestamp) {
+						this.set("value", value);
+						this.timestamp = timestamp;
+					}
+					this.setValidationState(state, messages);
+					this.setDirty(dirty);
+				} else {
+					readOnly = true;
+				}
+				this._readOnly2 = readOnly;
+				this.resetReadOnly();
+			} else {
+				var dom = this._dom, textDom = this._textDom, readOnly = this._readOnly || this._readOnly2;
+				$fly(dom).toggleClass(this._className + "-readonly", !!readOnly);
+			}
+			
+			if (this._triggerChanged) {
+				this._triggerChanged = false;
+				this.refreshTriggerDoms();
+			}
+		},
+		
+		validate: function(text) {
+			if (this._skipValidate) return null;
+			if (this.doValidate) return this.doValidate(text);
+		},
+		
+		setValidationState: function(state, messages) {
+			state = state || "none";
+			if (this._validationState == state) return;
+			this._validationState = state;
+			this._validationMessages = dorado.Toolkits.trimMessages(messages, "error");
+			if (this._rendered) {
+				var dom = this._dom, warnCls = this._className + "-warn", errorCls = this._className + "-error";
+				$fly(dom).toggleClass(warnCls, state == "warn").toggleClass(errorCls, state == "error");
+				
+				if ((state == "warn" || state == "error") && messages) {
+					var message = dorado.Toolkits.getTopMessage(messages);
+					dorado.TipManager.initTip(dom, {
+						text: message.text
+					});
+				} else {
+					dorado.TipManager.deleteTip(dom);
+				}
+			}
+			this.fireEvent("onValidationStateChange", this);
+		},
+		
+		doOnResize: function() {
+			if (this._attached) {
+				if (this._triggersWidth < 0) {
+					var _triggerButtons = this._triggerButtons;
+					if (_triggerButtons) {
+						this._triggersWidth = 0;
+						for (var i = 0; i < _triggerButtons.length; i++) {
+							var triggerDom = _triggerButtons[i].getDom();
+							triggerDom.style.right = this._triggersWidth + "px";
+							this._triggersWidth += triggerDom.offsetWidth;
+						}
+					}
+				}
+				var w = this._dom.clientWidth - this._triggersWidth + 1;
+				this._textDom.style.width = (w > 0 ? w : 0) + "px";
+			}
+		},
+		
+		setFocus: function() {
+			if (this._textDom) this._textDom.focus();
+		},
+		
+		doOnFocus: function() {
+			var readOnly = this._readOnly || this._readOnly2;
+			if (readOnly || !this._editable) {
+				this._textDom.readOnly = true; // 避免在IE8中出现的DIV异常滚动的BUG
+			}
+			if (readOnly) return;
+			
+			this._focusTime = new Date();
+			this._lastPost = this._lastObserve = this.doGetText();
+			this._editObserverId = $setInterval(this, function() {
+				var text = this.get("text");
+				if (this._lastObserve != text) {
+					this._lastObserve = text;
+					this.textEdited();
+				}
+			}, 50);
+			
+			var triggers = this.get("trigger");
+			if (triggers) {
+				if (!(triggers instanceof Array)) triggers = [triggers];
+				var self = this;
+				jQuery.each(triggers, function(i, trigger) {
+					if (trigger.onEditorFocus) trigger.onEditorFocus(self);
+				});
+			}
+		},
+		
+		doOnBlur: function() {
+			if (this.get("readOnly")) return;
+			clearInterval(this._editObserverId);
+			delete this._editObserverId;
+			this.post();
+		},
+		
+		resetReadOnly: function() {
+			if (!this._rendered) return;
+			var readOnly = !!(this._readOnly || this._readOnly2);
+			if (this._realReadOnly != readOnly) {
+				this._realReadOnly = readOnly;
+				if (this.get("focused") && isInputOrTextArea(this._textDom)) this._textDom.readOnly = readOnly;
+				$fly(this.getDom()).toggleClass(this._className + "-readonly", readOnly);
+			}
+		},
+		
+		/**
+		 * 当编辑器中的触发按钮被点击是激活的方法。
+		 * @param {dorado.widget.Trigger} trigger 被点击的触发器。
+		 */
+		onTriggerClick: function(trigger) {
+			$setTimeout(this, function() {
+				this._textDom.focus();
+			}, 0);
+			
+			if (this._readOnly) return;
+			if (this.fireEvent("onTriggerClick", this)) {
+				trigger.execute(this);
+			}
+		},
+		
+		doOnKeyDown: function(evt) {
+			var retValue = true;
+			var firstTrigger = this.get("trigger");
+			if (firstTrigger && firstTrigger instanceof Array) firstTrigger = firstTrigger[0];
+			
+			switch (evt.keyCode) {
+				case 36: // home
+				case 35: // end
+				case 38: // up
+				case 27:{ // esc
+					if (firstTrigger && firstTrigger.onEditorKeyDown) retValue = firstTrigger.onEditorKeyDown(this, evt);
+					break;
+				}
+				case 40: // down
+					if (firstTrigger) {
+						if (firstTrigger.onEditorKeyDown) retValue = firstTrigger.onEditorKeyDown(this, evt);
+						if (evt.altKey) {
+							this.onTriggerClick(firstTrigger);
+							retValue = false;
+						}
+					}
+					break;
+				case 13: // enter
+					if (firstTrigger) {
+						if (firstTrigger.onEditorKeyDown) retValue = firstTrigger.onEditorKeyDown(this, evt);
+					} else {
+						var b = this.post();
+						retValue = (b === true || b == null);
+					}
+					break;
+				case 113: // F2
+					if (firstTrigger) {
+						this.onTriggerClick(firstTrigger);
+						retValue = false;
+					}
+					break;
+				default:
+					if (firstTrigger && firstTrigger.onEditorKeyDown) {
+						retValue = firstTrigger.onEditorKeyDown(this, evt);
+					}
+			}
+			return retValue;
+		},
+		
+		/**
+		 * 当确认编辑器中的文本被修改(这些修改的内容此时尚未通过确认)时激活的方法。
+		 * 例如：当用户在编辑器中键入文本时，不必等到编辑器失去焦点，此方法就会立刻被触发。
+		 */
+		textEdited: function() {
+			this.fireEvent("onTextEdit", this);
+			if (this._dataSet && this._entity && this._property && !this._entity.isDirty()) {
+				this._entity.setState(dorado.Entity.STATE_MODIFIED);
+			}
+		},
+		
+		setDirty: function(dirty) {
+			if (!this._supportsDirtyFlag) return;
+			var dirtyFlag = this._dirtyFlag;
+			if (dirty) {
+				if (!dirtyFlag) {
+					this._dirtyFlag = dirtyFlag = $DomUtils.xCreateElement({
+						tagName: "LABEL",
+						className: "dirty-flag"
+					});
+					this._dom.appendChild(dirtyFlag);
+				}
+				dirtyFlag.style.display = '';
+			} else {
+				if (dirtyFlag) dirtyFlag.style.display = 'none';
+			}
+		},
+		
+		/**
+		 * 当系统尝试确认编辑器中的编辑内容时执行的内部方法。
+		 * @param {boolean} force 是否强制确认，即忽略对编辑框中内容有没有被修改过的判断，直接确认其中的内容。
+		 * @return boolean 编辑器中的内容是否得到了确认。
+		 */
+		post: function(force) {
+			try {
+				var text = this.get("text"), state, result, modified = (this._lastPost != text), validationResults;
+				if ((force || modified || (this._validationState == "none" && text == '') && (new Date() - (this._focusTime || 0)) > 300)) {
+					this._lastPost = text;
+					var eventArg = {
+						processDefault: true
+					};
+					if (force || modified) this.fireEvent("beforePost", this, eventArg);
+					if (eventArg.processDefault === false) return false;
+					validationResults = this.validate(text);
+					if (validationResults) {
+						var topValidationResult = dorado.Toolkits.getTopMessage(validationResults);
+						if (topValidationResult) {
+							state = topValidationResult.state;
+							if (state == "error") {
+								throw new dorado.widget.editor.PostException(validationResults);
+							}
+						}
+					}
+					
+					if (force || modified) {
+						this.doPost();
+						this.fireEvent("onPost", this);
+						result = true;
+					}
+				}
+				
+				if (result) this.setValidationState(state, validationResults);
+				return result;
+			} 
+			catch (e) {
+				if (e instanceof dorado.widget.editor.PostException) {
+					this.setValidationState("error", e.messages);
+				}
+				
+				var eventArg = {
+					exception: e,
+					processDefault: true
+				};
+				this.fireEvent("onPostFailed", this, eventArg);
+				if (eventArg.processDefault) {
+					dorado.Exception.processException(e);
+				} else {
+					dorado.Exception.removeException(e);
+				}
+				return false;
+			}
+		}
+	});
+	
+	/**
+	 * @author Benny Bao (mailto:benny.bao@bstek.com)
+	 * @class 抽象的文本编辑器。
+	 * @abstract
+	 * @extends dorado.widget.AbstractTextBox
+	 */
+	dorado.widget.AbstractTextEditor = $extend(dorado.widget.AbstractTextBox, /** @scope dorado.widget.AbstractTextEditor.prototype */ {
+		$className: "dorado.widget.AbstractTextEditor",
+		
+		ATTRIBUTES: /** @scope dorado.widget.AbstractTextEditor.prototype */ {
+			
+			/**
+			 * 一组用于定义改变属性编辑框中文字显示方式的"代码"/"名称"键值对。
+			 * @type Object[]
+			 * @attribute
+			 *
+			 * @example
+			 * // 例如对于一个以逻辑型表示性别的属性，我们可能希望在显示属性值时将true显示为"男"、将false显示为"女"。
+			 * textEditor.set("mapping", [
+			 * 	{
+			 * 		key : "true",
+			 * 		value : "男"
+			 * 	},
+			 * 	{
+			 * 		key : "false",
+			 * 		value : "女"
+			 * 	} 
+			 * ]);
+			 */
+			mapping: {
+				setter: function(mapping) {
+					this._mapping = mapping;
+					if (mapping && mapping.length > 0) {
+						var index = this._mappingIndex = {};
+						for (var i = 0; i < mapping.length; i++) {
+							var key = mapping[i].key;
+							if (key == null) key = "${null}";
+							else if (key === '') key = "${empty}";
+							index[key + ''] = mapping[i].value || null;
+						}
+					} else {
+						delete this._mappingIndex;
+					}
+					delete this._mappingRevIndex;
+				}
+			},
+		
+			value: {
+				skipRefresh: true,
+				getter: function() {
+					var text = this.get("text");
+					if (this._value !== undefined && text === this._valueText) {
+						return this._value;
+					} else {
+						if (text && this._mapping) text = this.getMappedKey(text);
+						if (text === undefined) text = null;
+						return text;
+					}
+				},
+				setter: function(value) {
+					this._value = value;
+					var text = dorado.$String.toText(value);
+					if (text && this._mapping) text = this.getMappedValue(text);
+					this._skipValidateEmpty = true;
+					this.validate(text);
+					this._text = this._lastPost = this._valueText = text;
+					this.doSetText(text);
+					this.setValidationState(null);
+				}
+			},
+			
+			text: {
+				skipRefresh: true,
+				setter: function(text) {
+					this.validate(text);
+					this._text = this._lastPost = text;
+					this.doSetText(text);
+					this.setValidationState(null);
+				}
+			},
+			
+			/**
+			 * 当文本编辑框中没有任何实际内容时显示的文本。
+			 * @type String
+			 * @attribute
+			 */
+			blankText: {},
+			
+			/**
+			 * 是否非空。
+			 * @type boolean
+			 * @attribute
+			 */
+			required: {},
+			
+			/**
+			 * 最小文本长度。用于对输入值进行校验。默认值为undefined表示不校验最小文本长度。
+			 * @type int
+			 * @attribute skipRefresh
+			 */
+			minLength: {
+				skipRefresh: true
+			},
+			
+			/**
+			 * 最大文本长度。用于对输入值进行校验。默认值为undefined表示不校验最大文本长度。
+			 * @type int
+			 * @attribute skipRefresh
+			 */
+			maxLength: {
+				skipRefresh: true
+			},
+			
+			/**
+			 * 是否在获得焦点时自动选中编辑框中的文本。
+			 * @type boolean
+			 * @default true
+			 * @attribute
+			 */
+			selectTextOnFocus: {
+				defaultValue: true
+			},
+			
+			/**
+			 * 数据校验器的数组。
+			 * <p>
+			 * 此处数组中可放置两种类型的校验器定义：
+			 * 	<ul>
+			 * 	<li>直接放入一个校验器的实例对象。</li>
+			 * 	<li>放入含校验器信息的JSON对象。<br>
+			 * 此时可以使用子控件类型名称中"dorado."和"Validator"之间的部分作为$type的简写。
+			 * 	</li>
+			 * 	<li>直接放入一个字符串代表$type的简写。</li>
+			 * 	</ul>
+			 * </p>
+			 * @type dorado.validator.Validator[]|Object[]|String[]
+			 * @attribute
+			 * @see dorado.validator.Validator
+			 * @see dorado.Toolkits.createInstance
+			 */
+			validators: {
+				setter: function(value) {
+					var validators = [];
+					for (var i = 0; i < value.length; i++) {
+						var v = value[i];
+						if (!(v instanceof dorado.validator.Validator)) {
+							v = dorado.Toolkits.createInstance("validator", v, function(type) {
+								return dorado.util.Common.getClassType("dorado.validator." + type + "Validator", true);
+							});
+						}
+						validators.push(v);
+					}
+					this._validators = validators;
+				}
+			}
+		},
+		
+		createDom: function() {
+			var text = this._text, dom = $invokeSuper.call(this, arguments);
+			if (!text) this.doSetText('');
+			return dom;
+		},
+		
+		/**
+		 * 返回编辑框中的文本。
+		 * @protected
+		 * @return {String} 编辑框中的文本。
+		 */
+		doGetText: function() {
+			if (this._useBlankText) return '';
+			return (this._textDom) ? this._textDom.value : this._text;
+		},
+		
+		/**
+		 * 设置编辑框中的文本。
+		 * @protected
+		 * @parem text {String} 编辑框中的文本。
+		 */
+		doSetText: function(text) {
+			this._useBlankText = (!this._focused && text == '' && this._blankText);
+			if (this._textDom) {
+				if (this._useBlankText) text = this._blankText;
+				$fly(this._textDom).toggleClass("blank-text", !!this._useBlankText);
+				this._textDom.value = text || '';
+			} else {
+				this._text = text;
+			}
+		},
+		
+		doValidate: function(text) {
+			var validationResults = [];
+			var skipValidateEmpty = this._skipValidateEmpty;
+			this._skipValidateEmpty = false;
+			if (!skipValidateEmpty && this._required && text.length == 0) {
+				validationResults.push({
+					state: "error",
+					text: $resource("dorado.data.ErrorContentRequired")
+				});
+			}
+			if (text.length) {
+				if (this._mapping && this.getMappedKey(text) === undefined) {
+					validationResults.push({
+						state: "error",
+						text: $resource("dorado.baseWidget.InputTextOutOfMapping")
+					});
+				}
+				
+				var validator = $singleton(dorado.validator.LengthValidator);
+				validator.set({
+					minLength: this._minLength,
+					maxLength: this._maxLength
+				});
+				var results = validator.validate(text);
+				if (results) validationResults.concat(results);
+				
+				if (this._validators) {
+					jQuery.each(this._validators, function(i, validator) {
+						results = validator.validate(text);
+						if (results) validationResults.concat(results);
+					});
+				}
+			}
+			return validationResults;
+		},
+		
+		doPost: function() {
+			var p = this._property, e = this._entity;
+			if (!p || !e) return false;
+			
+			if (this._dataSet) {
+				if (this._dataType) {
+					e.set(p, this.get("value"));
+				} else {
+					e.setText(p, this.get("value"));
+				}
+				this.timestamp = this._entity.timestamp;
+			} else {
+				if (e instanceof dorado.Entity) {
+					var v = this.get("value");
+					if (v instanceof dorado.Entity) e.set(p, v);
+					else e.setText(p, this.get("text"));
+					this.setDirty(e.isDirty(p));
+				} else {
+					e[p] = this.get("value");
+					this.setDirty(true);
+				}
+			}
+			return true;
+		},
+		
+		doOnFocus: function() {
+			$invokeSuper.call(this, arguments);
+			if (this._selectTextOnFocus) {
+				$setTimeout(this, function() {
+					this._textDom.select();
+				}, 0);
+			}
+		},
+		
+		/**
+		 * 将给定的数值翻译成显示值。
+		 * @param {String} key 要翻译的键值。
+		 * @return {Object} 显示值。
+		 * @see dorado.widget.AbstractTextEditor#attribute:mapping
+		 */
+		getMappedValue: function(key) {
+			if (key == null) key = "${null}";
+			else if (key === '') key = "${empty}";
+			return this._mappingIndex ? this._mappingIndex[key + ''] : undefined;
+		},
+		
+		/**
+		 * 根据给定的显示值返回与其匹配的键值。
+		 * @param {Object} value 要翻译的显示值。
+		 * @return {String} 键值。
+		 * @see dorado.widget.AbstractTextEditor#attribute:mapping
+		 */
+		getMappedKey: function(value) {
+			if (!this._mappingRevIndex) {
+				var index = this._mappingRevIndex = {}, mapping = this._mapping;
+				for (var i = 0; i < mapping.length; i++) {
+					var v = mapping[i].value;
+					if (v == null) v = "${null}";
+					else if (v === '') v = "${empty}";
+					index[v + ''] = mapping[i].key;
+				}
+			}
+			if (value == null) value = "${null}";
+			else if (value === '') value = "${empty}";
+			return this._mappingRevIndex[value + ''];
+		}
+		
+	});
+	
+	/**
+	 * @author Benny Bao (mailto:benny.bao@bstek.com)
+	 * @component Form
+	 * @class 文本编辑器。
+	 * @extends dorado.widget.AbstractTextEditor
+	 */
+	dorado.widget.TextEditor = $extend(dorado.widget.AbstractTextEditor, /** @scope dorado.widget.TextEditor.prototype */ {
+		$className: "dorado.widget.TextEditor",
+		
+		ATTRIBUTES: /** @scope dorado.widget.TextEditor.prototype */ {
+		
+			value: {
+				skipRefresh: true,
+				getter: function() {
+					var text = (this._editorFocused) ? this.doGetText() : this._text;
+					if (this._value !== undefined && text === this._valueText) {
+						return this._value;
+					} else {
+						if (text && this._mapping) text = this.getMappedKey(text);
+						if (text === undefined) text = null;
+						
+						var dataType = this.get("dataType");
+						if (dataType) {
+							try {
+								var value = this._value = dataType.parse(text);
+								this._valueText = text;
+								return value;
+							} 
+							catch (e) {
+								dorado.Exception.removeException(e);
+								return null;
+							}
+						} else {
+							return text;
+						}
+					}
+				},
+				setter: function(value) {
+					this._value = value;
+					var t, text;
+					var dataType = this.get("dataType");
+					if (dataType) {
+						text = dataType.toText(value, this._editorFocused ? this._typeFormat : this._displayFormat);
+						t = (this._editorFocused) ? text : dataType.toText(value, this._typeFormat);
+					} else {
+						t = text = dorado.$String.toText(value);
+					}
+					if (text && this._mapping) text = this.getMappedValue(text);
+					this._skipValidateEmpty = true;
+					this.validate(t);
+					this._text = this._lastPost = this._valueText = t;
+					this.doSetText(text);
+					this.setValidationState(null);
+				}
+			},
+			
+			text: {
+				skipRefresh: true,				
+				getter: function() {
+					return ((!this.get("dataType") || this._editorFocused) ? this.doGetText() : this._text) || '';
+				},
+				setter: function(text) {
+					var t = text;
+					var dataType = this.get("dataType");
+					if (dataType) {
+						try {
+							if (!this._editorFocused) {
+								var value = dataType.parse(t, this._typeFormat);
+								t = dataType.toText(value, this._displayFormat);
+							}
+						} 
+						catch (e) {
+							// do nothing
+						}
+					}
+					this.validate(t);
+					this._text = this._lastPost = text;
+					this.doSetText(t);
+					this.setValidationState(null);
+				}
+			},
+			
+			/**
+			 * 编辑器对应的数据类型。主要用于对编辑器中的文本进行校验和格式化。
+			 * @type dorado.data.DataType
+			 * @attribute
+			 */
+			dataType: {
+				getter: function() {
+					var dataType;
+					if (this._dataType) {
+						dataType = dorado.LazyLoadDataType.dataTypeGetter.call(this);
+					} else if (this._property && this._dataSet) {
+						var bindingInfo = this._bindingInfo || this.getBindingInfo();
+						if (bindingInfo && !(bindingInfo.propertyDef && bindingInfo.propertyDef._mapping)) dataType = bindingInfo.dataType;
+					}
+					return dataType;
+				}
+				
+			},
+			
+			/**
+			 * 是否密码模式。
+			 * @type boolean
+			 * @attribute
+			 */
+			password: {},
+			
+			/**
+			 * 显示格式。此属性只在定义了dataType时才有效。
+			 * @type String
+			 * @attribute
+			 */
+			displayFormat: {},
+			
+			/**
+			 * 输入格式。此属性只在定义了dataType时才有效。
+			 * @type String
+			 * @attribute skipRefresh
+			 */
+			typeFormat: {
+				skipRefresh: true
+			},
+			
+			modified: {
+				getter: function() {
+					return (this._editorFocused) ? (this._lastPost == this.doGetText()) : false;
+				}
+			},
+			
+			trigger: {
+				getter: function(p, v) {
+					var trigger = this._trigger;
+					if (!trigger && this._view) {
+						if (this.get("dataType") instanceof dorado.datatype.DateDataType) trigger = this._view.id("defaultDateDropDown");
+					}
+					return trigger;
+				}
+			}
+		},
+		
+		createTextDom: function() {
+			var textDom = document.createElement("INPUT");
+			textDom.className = "editor";
+			if (this._password) textDom.type = "password";
+			if (!(dorado.Browser.msie && dorado.Browser.version < '7')) textDom.style.padding = 0;
+			if (dorado.Browser.msie && dorado.Browser.version > '7') {
+				textDom.style.top = 0;
+				textDom.style.position = "absolute";
+			}
+			return textDom;
+		},
+		
+		doValidate: function(text) {
+			var validationResults;
+			try {
+				var dataType = this.get("dataType");
+				if (dataType) dataType.parse(text, this._typeFormat);
+				validationResults = $invokeSuper.call(this, arguments);
+			} 
+			catch (e) {
+				dorado.Exception.removeException(e);
+				validationResults = [{
+					state: "error",
+					text: dorado.Exception.getExceptionMessage(e)
+				}];
+			}
+			return validationResults;
+		},
+		
+		doOnFocus: function() {
+			var dataType = this.get("dataType");
+			if (dataType && this._validationState != "error") {
+				var text = dataType.toText(this.get("value"), this._typeFormat);
+				this._editorFocused = true;
+				this.doSetText(text);
+			} else {
+				this._editorFocused = true;
+				if (this._useBlankText) this.doSetText('');
+			}
+			
+			$invokeSuper.call(this, arguments);
+		},
+		
+		doOnBlur: function() {
+			this._textDom.readOnly = false; // 避免在IE8中出现的DIV异常滚动的BUG
+			if (this.get("readOnly")) return;
+			
+			this._text = this.doGetText();
+			try {
+				$invokeSuper.call(this, arguments);
+			}
+			finally {
+				var text, dataType = this.get("dataType");
+				if (dataType && this._validationState != "error") {
+					text = dataType.toText(this.get("value"), this._displayFormat);
+					this._editorFocused = false;
+					this.doSetText(text);
+				}
+			}
+		},
+		
+		doOnKeyPress: function(evt) {
+			var dataType = this.get("dataType");
+			if (!dataType) return true;
+			var b = true, k = (evt.keyCode || evt.which), $d = dorado.DataType;
+			switch (dataType._code) {
+				case $d.INTEGER:
+				case $d.PRIMITIVE_INT:
+					b = (k == 44 || k == 45 || (k >= 48 && k <= 57));
+					break;
+				case $d.FLOAT:
+				case $d.PRIMITIVE_FLOAT:
+					b = (k == 44 || k == 45 || k == 46 || (k >= 48 && k <= 57));
+					break;
+			}
+			return b;
+		}
+	});
+})();

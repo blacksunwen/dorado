@@ -1,0 +1,287 @@
+*:focus {
+    outline: none;
+}
+
+html, body {
+    height: 100%;
+}
+
+/*
+ body{
+ margin: 0;
+ }
+ */
+
+body, input, textarea, button {
+    font-size: 12px;
+    font-family: "Microsoft YaHei";
+}
+
+.d-shadow-ie {
+    display: none;
+    position: absolute;
+    overflow: hidden;
+    left: 0;
+    top: 0;
+    background: #777;
+}
+
+.d-shadow-drop {
+    -moz-box-shadow: 2px 2px 3px #bbbbbb;
+    -webkit-box-shadow: 2px 2px 3px #bbbbbb;
+    box-shadow: 2px 2px 3px #bbbbbb;
+}
+
+.d-shadow-sides {
+    -moz-box-shadow: 0 1px 4px #bbbbbb;
+    -webkit-box-shadow: 0 1px 4px #bbbbbb;
+    box-shadow: 0 1px 4px #bbbbbb;
+}
+
+.d-shadow-frame {
+    -moz-box-shadow: 0 0 5px #bbbbbb;
+    -webkit-box-shadow: 0 0 5px #bbbbbb;
+    box-shadow: 0 0 5px #bbbbbb;
+}
+
+.d-modal-mask {
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin: 0;
+    width: 100%;
+    filter: alpha(opacity = 30);
+    opacity: 0.3;
+    background: url(common/model-cover-bg.gif);
+}
+
+.d-modal-mask-transparent {
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin: 0;
+    width: 100%;
+    filter: alpha(opacity = 0);
+    opacity: 0;
+    background: white;
+}
+
+.d-animate-zoom-proxy {
+    position: absolute;
+    background-color: #DADADA;
+    border: 1px solid #7B7B7B;
+    filter: alpha(opacity = 50);
+    opacity: 0.5;
+}
+
+.d-message-box {
+}
+
+.d-message-box .msg-icon {
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: transparent none no-repeat center center;
+}
+
+.d-message-box .error-icon, .d-message-box .info-icon, .d-message-box .warning-icon, .d-message-box .question-icon {
+    height: 48px;
+    width: 48px;
+    margin: 0 12px 0 2px;
+}
+
+.d-message-box .error-icon {
+    background-image: url(common/icon-error.gif);
+}
+
+.d-message-box .info-icon {
+    background-image: url(common/icon-info.gif);
+}
+
+.d-message-box .warning-icon {
+    background-image: url(common/icon-warning.gif);
+}
+
+.d-message-box .question-icon {
+    background-image: url(common/icon-question.gif);
+}
+
+.d-message-box .msg-content {
+    position: relative;
+    word-break: break-all;
+}
+
+.d-message-box .msg-content-hasicon {
+    min-height: 48px;
+    padding-left: 62px;
+}
+
+.d-ie6 .d-message-box .msg-content-hasicon {
+    height: 48px;
+    overflow: visible;
+}
+
+.d-message-box .msg-content .msg-text {
+}
+
+.d-message-box .msg-content-hasicon .msg-text {
+}
+
+.d-message-box .editor-wrap {
+    margin-top: 8px;
+}
+
+.d-dialog.d-message-box .dialog-body-wrap .dialog-body .content-panel {
+    padding: 6px;
+}
+
+.d-ie6 .d-message-box .dialog-body-wrap .dialog-body .content-panel {
+    padding: 6px;
+}
+
+.d-task-group-panel {
+    position: absolute;
+    margin: 0;
+    border: 0;
+}
+
+.d-task-group-panel .panel-header-left {
+    background: url(common/tip-corners.gif) no-repeat scroll 0 top;
+    font-size: 0;
+    line-height: 0;
+    margin-right: 2px;
+}
+
+.d-task-group-panel .panel-header-right {
+    background: url(common/tip-corners.gif) no-repeat scroll right -4px;
+    font-size: 0;
+    line-height: 0;
+    padding: 2px 0 0 0;
+    margin-right: -2px;
+    position: relative;
+}
+
+.d-task-group-panel .panel-body-left {
+    background: url(common/tip-lr.gif) repeat-y 0 0;
+    padding-left: 2px;
+}
+
+.d-task-group-panel .panel-body-right {
+    background: url(common/tip-lr.gif) repeat-y right 0;
+    padding-right: 2px;
+}
+
+.d-task-group-panel .panel-body {
+    background: #FFFFFF;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+}
+
+.d-task-group-panel .panel-footer-left {
+    background: url(common/tip-corners.gif) no-repeat scroll 0 -2px;
+    margin-right: 2px;
+}
+
+.d-task-group-panel .panel-footer-right {
+    background: url(common/tip-corners.gif) no-repeat scroll right bottom;
+    font-size: 0;
+    padding: 2px 0 0 0;
+    line-height: 0;
+    margin-right: -2px;
+    position: relative;
+}
+
+.d-task-group-panel .content-panel {
+    padding: 0 3px;
+    background-color: white;
+}
+
+.d-task-group-panel .content-panel .task-list {
+    padding: 3px 0 3px 10px;
+    list-style: none;
+}
+
+.d-task-group-panel .content-panel .task-list .task-item {
+    width: 100%;
+}
+
+.d-task-group-panel .content-panel .task-list .task-item .caption-span {
+}
+
+.d-task-group-panel .content-panel .task-list .task-item .interval-span {
+    float: right;
+}
+
+.d-task-indicator {
+}
+
+.daemon-task-indicator {
+    width: 200px;
+    filter: alpha(opacity = 80);
+    opacity: 0.8;
+}
+
+.daemon-task-indicator .task-list {
+    margin: 0;
+}
+
+.daemon-task-indicator .content-panel {
+    padding: 3px;
+}
+
+.main-task-indicator {
+    width: 300px;
+    filter: alpha(opacity = 80);
+    opacity: 0.8;
+}
+
+.main-task-indicator .content-panel {
+    padding: 10px;
+}
+
+.d-dragging-indicator {
+	cursor: pointer;
+	position: absolute;
+}
+
+.d-dragging-indicator .icon {
+	cursor: pointer;
+	width: 24px;
+	height: 24px;
+    filter: alpha(opacity = 80);
+    opacity: 0.8;
+}
+
+.d-dragging-indicator .accept-icon {
+	background: url(common/accept.gif) no-repeat;
+    filter: alpha(opacity = 50);
+    opacity: 0.5;
+}
+
+.d-dragging-indicator .denied-icon {
+	background: url(common/denied.gif) no-repeat;
+}
+
+.d-dragging-indicator .content-container {
+	position: absolute;
+    filter: alpha(opacity = 80);
+    opacity: 0.8;
+}
+
+.d-dragging-indicator .default-content {
+	width: 38px;
+	height: 18px;
+	background: url(common/dragging-content.gif) no-repeat;
+}
+
+.d-floating {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.d-ofc {
+	overflow: hidden;
+}

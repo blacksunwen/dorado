@@ -1,0 +1,25 @@
+.d-form-element {
+}
+
+.d-form-element .form-label {
+    height: 20px;
+    line-height: 20px;
+}
+
+.d-form-element .form-label-right {
+    margin-left: -12px;
+	padding-right: 12px;
+}
+
+.d-form-element .form-label-required {
+    background: url(form/field-required.gif) right 2px no-repeat;
+}
+
+.d-form-element .form-hint {
+    height: 20px;
+    line-height: 20px;
+}
+
+.d-ie6 .d-form-element .form-hint {
+    margin-top: 2px;
+}

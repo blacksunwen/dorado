@@ -1,0 +1,436 @@
+(function() {
+
+	var ALL_VIEWS = [];
+	
+	/**
+	 * @author Benny Bao (mailto:benny.bao@bstek.com)
+	 * @class 视图对象。
+	 * @extends dorado.widget.Container
+	 */
+	dorado.widget.View = $extend(dorado.widget.Container, /** @scope dorado.widget.View.prototype */ {
+		$className: "dorado.widget.View",
+		
+		ATTRIBUTES: /** @scope dorado.widget.View.prototype */ {
+		
+			dataTypeRepository: {
+				getter: function(p) {
+					return this['_' + p] || $dataTypeRepository;
+				}
+			},
+			
+			className: {
+				defaultValue: "d-view"
+			},
+			
+			width: {
+				defaultValue: "100%"
+			},
+			
+			height: {
+				defaultValue: "100%"
+			},
+			
+			/**
+			 * 视图的名称。此属性仅在配合Dorado服务端的开发模式中有意义。
+			 * @type String
+			 * @attribute writeBeforeReady
+			 */
+			name: {},
+			
+			view: {
+				setter: function(view) {
+					this._view = view;
+				}
+			},
+			
+			/**
+			 * 与此视图关联的上下文。
+			 * <p>
+			 * 此上下文对象通常仅在Standard Edtiion的开发中有效，开发者可以通过此上下文与服务端进行一些数据和状态的传递。
+			 * </p>
+			 * @type dorado.util.Map
+			 * @attribute writeBeforeReady
+			 */
+			context: {
+				writeBeforeReady: true,
+				getter: function() {
+					if (this._context == null) this._context = $map();
+					return this._context;
+				},
+				setter: function(context) {
+					this._context = (context == null) ? null : $map(context);
+				}
+			}
+		},
+		
+		EVENTS: /** @scope dorado.widget.View.prototype */ {
+			/**
+			 * 当组件对应的根DOM对象被创建时触发的事件。
+			 * @param {Object} self 事件的发起者，即组件本身。
+			 * @param {Object} arg 事件参数。
+			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+			 * @event
+			 * @see dorado.widget.DataSet#loadMode
+			 */
+			onDataLoaded: {},
+			
+			/**
+			 * 当一个子组件被注册到视图中时触发的事件。
+			 * <p>
+			 * 这里所说的子组件并不单指视图控件中的子控件，还包括子控件中的子控件，但不包含子视图中的子控件。
+			 * </p>
+			 * @param {Object} self 事件的发起者，即组件本身。
+			 * @param {Object} arg 事件参数。
+			 * @param {dorado.widget.Component} arg.component 被注册的子组件。
+			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+			 * @event
+			 */
+			onComponentRegistered: {},
+			
+			/**
+			 * 当一个子组件被从视图中注消时触发的事件。
+			 * <p>
+			 * 这里所说的子组件并不单指视图控件中的子控件，还包括子控件中的子控件，但不包含子视图中的子控件。
+			 * </p>
+			 * @param {Object} self 事件的发起者，即组件本身。
+			 * @param {Object} arg 事件参数。
+			 * @param {dorado.widget.Component} arg.component 被注消的子组件。
+			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+			 * @event
+			 */
+			onComponentUnregistered: {}
+		},
+		
+		constructor: function(id) {
+			ALL_VIEWS.push(this);
+			
+			this._identifiedComponents = {};
+			this._loadingDataSet = [];
+			
+			if (id == "$TOP_VIEW") this._dataTypeRepository = dorado.DataTypeRepository.ROOT;
+			else this._dataTypeRepository = new dorado.DataTypeRepository(dorado.DataTypeRepository.ROOT);
+			this._dataTypeRepository.view = this;
+			
+			$invokeSuper.call(this, arguments);
+		},
+		
+		destroy: function() {
+			ALL_VIEWS.remove(this);
+			$invokeSuper.call(this, arguments);
+		},
+		
+		createDefaultLayout: function() {
+			if (this._id != "$TOP_VIEW") $invokeSuper.call(this, arguments);
+		},
+		
+		parentChanged: function() {
+			if (this._parent) {
+				var container = this._parent;
+				do {
+					if (container instanceof dorado.widget.View) {
+						this._dataTypeRepository.parent = container._dataTypeRepository;
+						break;
+					}
+					container = container._parent;
+				}
+				while (container != null);
+			} else {
+				this._dataTypeRepository.parent = dorado.DataTypeRepository.ROOT;
+			}
+		},
+		
+		registerComponent: function(id, comp) {
+			if (this._identifiedComponents[id]) throw new dorado.ResourceException("dorado.widget.ComponentIdNotUnique", id, this._id);
+			this._identifiedComponents[id] = comp;
+			this.fireEvent("onComponentRegistered", this, {
+				component: comp
+			});
+		},
+		
+		unregisterComponent: function(id) {
+			var comp = this._identifiedComponents[id];
+			delete this._identifiedComponents[id];
+			this.fireEvent("onComponentUnregistered", this, {
+				component: comp
+			});
+		},
+		
+		getListenerScope: function() {
+			return this;
+		},
+		
+		/**
+		 * 根据传入的id返回View中的某个组件。
+		 * @param {String} id 子对象的ID。
+		 * @return {dorado.widget.Component} ID所指的子对象。
+		 */
+		id: function(id) {
+			var comp = this._identifiedComponents[id];
+			if (!comp && dorado.widget.View.DEFAULT_COMPONENTS) {
+				comp = dorado.widget.View.getDefaultComponent(this, id);
+				if (comp) this.registerComponent(id, comp);
+			}
+			return comp;
+		},
+		
+		/**
+		 * 返回本视图中具有某一指定标签的对象的对象组。
+		 * @param {String} tags 标签值。
+		 * @return {dorado.ObjectGroup} 对象组。
+		 *
+		 * @see $tag
+		 */
+		tag: function(tags) {
+			var group = dorado.TagManager.find(tags), allObjects = group.objects, objects = [];
+			for (var i = 0; i < allObjects.length; i++) {
+				var object = allObjects[i];
+				if (object._view == this || object.view == this || 
+						(object.ATTRIBUTES.view && object.get("view"))) {
+					objects.push(object);
+				}
+			}
+			return new dorado.ObjectGroup(objects);
+		},
+		
+		getComponentReference: function(id) {
+			var comp = this.id(id);
+			return comp ||
+			{
+				view: this,
+				component: id
+			};
+		},
+		
+		/**
+		 * 根据名称以同步方式返回View中的DataType。
+		 * @param {String} name 数据类型的名称。
+		 * @return {dorado.DataType} 数据类型。
+		 */
+		getDataType: function(name) {
+			return this._dataTypeRepository.get(name);
+		},
+		
+		/**
+		 * 根据名称以异步方式返回View中的DataType。
+		 * @param {String} name 数据类型的名称。
+		 * @param {Function|dorado.Callback} callback 回调对象，传入回调对象的参数即为得到数据类型。
+		 */
+		getDataTypeAsync: function(name, callback) {
+			return this._dataTypeRepository.getAsync(id, callback);
+		},
+		
+		onReady: function() {
+			$invokeSuper.call(this, arguments);
+			$waitFor(this._loadingDataSet, $scopify(this, this.onDataLoaded));
+			this._loadingDataSet = [];
+			
+		},
+		
+		/**
+		 * 当那些loadMode属性为onReady的数据集全部完成数据装载时触发的方法。
+		 * @protected
+		 * @see dorado.widget.DataSet#loadMode
+		 */
+		onDataLoaded: function() {
+			this.fireEvent("onDataLoaded", this);
+		},
+		
+		render: function(containerElement) {
+			var bodyWidth;
+			if (containerElement == document.body) bodyWidth = document.body.clientWidth;
+			$invokeSuper.call(this, arguments);
+			if (bodyWidth && bodyWidth > document.body.clientWidth) this.onResize();
+		}
+		
+	});
+	
+	dorado.widget.View.registerDefaultComponent = function(id, component) {
+		var comps = this.DEFAULT_COMPONENTS = this.DEFAULT_COMPONENTS || {};
+		comps[id] = component;
+	};
+	
+	dorado.widget.View.getDefaultComponent = function(view, id) {
+		var comps = this.DEFAULT_COMPONENTS;
+		if (!comps || !comps[id]) return;
+		var comp = comps[id];
+		if (comp instanceof Function) comp = comp(view);
+		return comp;
+	};
+	
+	var topView = new dorado.widget.View("$TOP_VIEW");
+	topView.isChildrenFocusable = function() {
+		return true;
+	};
+	
+	/**
+	 * 根视图对象。<br>
+	 * 该视图对象是所有其它尚未被添加到容器中的视图对象的默认容器。
+	 * @type dorado.widget.View
+	 * @constant
+	 */
+	dorado.widget.View.TOP = topView;
+	
+	/**
+	 * dorado.widget.View.TOP的快捷方式。
+	 * @type dorado.widget.View
+	 * @constant
+	 * @see dorado.widget.View.TOP
+	 */
+	window.$view = topView;
+	
+	/**
+	 * 返回某给定的id，返回当前页面的所有视图(View)中于此id匹配的控件所组成的对象组。
+	 * @param {String} id 要查找的id。
+	 * @return {dorado.ObjectGroup} 对象组。
+	 */
+	window.$id = function(id) {
+		var components = [];
+		for (var i = 0; i < ALL_VIEWS.length; i++) {
+			var view = ALL_VIEWS[i];
+			var component = view.id(id);
+			if (component) components.push(component);
+		}
+		return new dorado.ObjectGroup(components);
+	};
+	
+	/**
+	 * @name dorado.widget.View.waitFor
+	 * @function
+	 * @description 等待一个或一组异步操作过程全部执行完毕之后再触发指定的回调方法。
+	 * @param {Function[]|Function|dorado.widget.DataSet[]|dorado.widget.DataSet} tasks 一个或一组要等待的异步过程。
+	 * <p>
+	 * 此处定义异步操作过程时既可以传入单个的过程也可以传入以数组封装的多个过程。 目前可支持的异步操作过程包括下列两种定义形式:
+	 * <ul>
+	 * <li>直接传入某个{@link dorado.DataSet}，此方法会自动调用其getDataAsync()方法。 </li>
+	 * <li>传入异步操作描述对象。异步操作描述对象是用于定义异步操作的JSON对象，其中包含下列子属性：
+	 * <ul>
+	 * <li>run - {Function} 包含对调用异步操作进行调用的Function。</li>
+	 * <li>callback - {Function|dorado.Callback} 异步操作的回调方法或回调对象。</li>
+	 * </ul>
+	 * </li>
+	 * <li>传入一个包含异步操作的Function，该Function的有且只能有一个传入参数，该参数其中异步操作的回调方法。 </li>
+	 * </ul>
+	 * </p>
+	 * @param {Function|dorado.Callback} callback 回调方法或回调对象。
+	 * @see $waitFor
+	 */
+	/**
+	 * @name $waitFor
+	 * @function
+	 * @description {@link dorado.widget.View.waitFor}的快捷方式。
+	 * @see dorado.widget.View.waitFor
+	 */
+	window.$waitFor = dorado.widget.View.waitFor = function(tasks, callback) {
+		if (!(tasks instanceof Array)) tasks = [tasks];
+		var simTasks = [];
+		jQuery.each(tasks, function(i, task) {
+			if (task instanceof dorado.widget.DataSet) {
+				simTasks.push({
+					callback: dorado._NULL_FUNCTION,
+					run: function(callback) {
+						task.loadAsync(callback);
+					}
+				});
+			} else if (task instanceof Function) {
+				simTasks.push({
+					callback: dorado._NULL_FUNCTION,
+					run: task
+				});
+			} else {
+				simTasks.push(task);
+			}
+		});
+		dorado.Callback.simultaneousCallbacks(simTasks, callback);
+	};
+	
+	jQuery().ready(function() {
+	
+		function getControlByElement(el) {
+			var node = $DomUtils.findParent(el, function(node) {
+				return (!!node.doradoUniqueId);
+			});
+			var control = null;
+			if (node) control = dorado.widget.Component.ALL[node.doradoUniqueId];
+			return control;
+		}
+		
+		$fly(document).mousedown(function(evt) {
+			var control = getControlByElement(evt.target);
+			if (control == null) dorado.widget.setFocusedControl(null);
+		}).keydown(function(evt) {
+			var b, c = dorado.widget.getFocusedControl();
+			if (c) b = c.onKeyDown(evt);
+			if (b === false) {
+				evt.preventDefault();
+				evt.cancelBubble = true;
+				return false;
+			} else {
+				if (b === true) {
+					switch (evt.keyCode || evt.which) {
+						case 9: // Tab
+						case 13: // Enter
+							var c = (evt.shiftKey) ? dorado.widget.findPreviousFocusableControl() : dorado.widget.findNextFocusableControl();
+							if (c && c.isFocusable(true)) {
+								c.setFocus();
+							}
+					}
+				}
+				return true;
+			}
+		}).keypress(function(evt) {
+			var b, c = dorado.widget.getFocusedControl();
+			if (c) b = c.onKeyPress(evt);
+			if (b === false) {
+				evt.preventDefault();
+				evt.cancelBubble = true;
+				return false;
+			} else {
+				return true;
+			}
+		});
+		
+		var cls = "d-unknown-browser", b = dorado.Browser, v = b.version;
+		if (b.msie) {
+			cls = "d-ie";
+		} else if (b.mozilla) {
+			cls = "d-mozilla";
+		} else if (b.chrome) {
+			cls = "d-chrome";
+		} else if (b.safari) {
+			cls = "d-safari";
+		} else if (b.opera) {
+			cls = "d-opera";
+		}
+		if (v) {
+			var i = v.indexOf('.');
+			cls += " " + cls + ((i > 0) ? v.substring(0, i) : v);
+		}
+		
+		$fly(document.body).addClass(cls).focusin(function(evt) {
+			var control = getControlByElement(evt.target);
+			if (control) dorado.widget.onControlGainedFocus(control);
+		});
+		
+		setTimeout(function() {
+			topView.onReady();
+			
+			$fly(window).unload(function() {
+				dorado.windowClosed = true;
+				if (!topView._destroyed) topView.destroy();
+			}).bind("resize", function() {
+				if (topView.onResizeTimerId) {
+					clearTimeout(topView.onResizeTimerId);
+					delete topView.onResizeTimerId;
+				}
+				
+				topView.onResizeTimerId = setTimeout(function() {
+					delete topView.onResizeTimerId;
+					topView._children.each(function(child) {
+						if (child.resetDimension) child.resetDimension();
+					});
+				}, 200);
+			});
+		}, 30);
+	});
+	
+})();
