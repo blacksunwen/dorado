@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:ivy="antlib:org.apache.ivy.ant" xmlns:artifact="antlib:org.apache.maven.artifact.ant" name="build-jars" default="build">
+	<taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant">
+		<classpath>
+			<pathelement location="${lib.dir}/${ivy.jar}" />
+			<pathelement location="${lib.dir}/${oro.jar}" />
+		</classpath>
+	</taskdef>
+	<typedef resource="org/apache/maven/artifact/ant/antlib.xml" uri="antlib:org.apache.maven.artifact.ant">
+		<classpath>
+			<pathelement location="${lib.dir}/${maven-ant-tasks.jar}" />
+		</classpath>
+	</typedef>
+
+	<target name="clean">
+		<delete dir="${work.dir}" />
+	</target>
+
+	<target name="prepare-work-dir" depends="clean">
+		<mkdir dir="${work.dir}" />
+		<mkdir dir="${work.dir}/lib" />
+		<mkdir dir="${work.dir}/repository" />
+		<mkdir dir="${target.lib.dir}" />
+		<mkdir dir="${target.src.dir}" />
+		<mkdir dir="${target.pom.dir}" />
+
+		<copy file="${ivy.home}/ivysettings.properties" todir="${work.dir}" />
+		<copy file="${ivy.home}/ivysettings.xml" tofile="${work.dir}/ivysettings-include.xml" />
+		<copy file="${resources.dir}/ivysettings.xml" todir="${work.dir}" />
+
+		<propertyfile file="${work.dir}/ivysettings.properties">
+			<entry key="product.revision" value="${product.revision}" />
+			<entry key="product.status" value="${product.status}" />
+			<entry key="product.publication" value="${product.publication}" />
+			<entry key="default-resolver" value="building" />
+			<entry key="cache.dir" value="${ivy.home}/.cache" />
+			<entry key="local-repository.dir" value="${ivy.home}/repository" />
+			<entry key="temp-repository.dir" value="${work.dir}/repository" />
+		</propertyfile>
+
+		<ivy:configure file="${work.dir}/ivysettings.xml" />
+	</target>
+
+	<target name="package-module">
+		<property name="module.projects" value="${module}" />
+		<propertycopy name="module.projects" from="module.${module}.projects" override="true" silent="true" />
+		<if>
+			<equals arg1="${module.projects}" arg2="" />
+			<then>
+				<property name="module.projects" value="${module}" />
+			</then>
+		</if>
+
+		<echo message="module: ${module}" />
+		<echo message="module.projects: ${module.projects}" />
+		<ant antfile="${basedir}/includes/build-jar.xml" inheritRefs="true" />
+	</target>
+
+	<target name="package" depends="prepare-work-dir">
+		<foreach list="${product.modules}" param="module" target="package-module" inheritall="true" />
+	</target>
+
+	<target name="publish-module-to-bsdn">
+		<echo message="publish-to-bsdn: ${target.lib.dir}/${product.name}-${module}-${product.revision}.jar" />
+
+		<artifact:deploy file="${target.lib.dir}/${product.name}-${module}-${product.revision}.jar" settingsfile="${resources.dir}/maven-settings.xml">
+			<remoteRepository url="${maven.repository}">
+				<authentication username="${bsdn.nexus.user}" password="${bsdn.nexus.password}" />
+			</remoteRepository>
+			<pom file="${target.pom.dir}/${product.name}-${module}.pom" />
+			<attach file="${target.src.dir}/${product.name}-${module}-${product.revision}.source.jar" type="jar" classifier="sources" />
+		</artifact:deploy>
+	</target>
+
+	<target name="publish-to-bsdn">
+		<echo message="publish-to-bsdn: ${maven.repository}" />
+
+		<copy file="${resources.dir}/dorado-parent.pom" todir="${target.pom.dir}" />
+		<replace dir="${target.pom.dir}" token="%product.revision%" value="${product.revision}" encoding="utf-8">
+			<include name="dorado-parent.pom" />
+		</replace>
+
+		<echo message="publish-to-bsdn: ${work.dir}/dorado-parent.pom" />
+		<artifact:deploy file="${work.dir}/dorado-parent.pom" settingsfile="${resources.dir}/maven-settings.xml">
+			<remoteRepository url="${maven.repository}">
+				<authentication username="${bsdn.nexus.user}" password="${bsdn.nexus.password}" />
+			</remoteRepository>
+			<pom file="${target.pom.dir}/dorado-parent.pom" />
+		</artifact:deploy>
+
+		<foreach list="${product.modules}" param="module" target="publish-module-to-bsdn" inheritall="true" />
+	</target>
+
+	<target name="publish" if="publish-jars">
+		<property name="maven.repository" value="${bsdn.nexus-snapshots}" />
+		<if>
+			<equals arg1="${product.qualifier}" arg2="RELEASE" />
+			<then>
+				<property name="maven.repository" value="${bsdn.nexus-release}" />
+			</then>
+		</if>
+		<antcall target="publish-to-bsdn" inheritAll="true" />
+	</target>
+
+	<target name="build" depends="package,publish" />
+</project>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:ivy="antlib:org.apache.ivy.ant" basedir=".." name="wrapper" default="build">
+	<property file="${basedir}/build.properties" />
+
+	<property name="product.revision" value="${product.version}.${product.qualifier}" />
+	<tstamp>
+		<format property="product.publication" pattern="yyMMdd.HHmm" />
+	</tstamp>
+	<property name="product.fullversion" value="${product.revision}.${product.publication}" />
+
+	<property name="workspace.dir" value="${basedir}/.." />
+	<property name="work.dir" value="${basedir}/work" />
+	<property name="target.dir" value="${work.dir}/target" />
+	<property name="target.lib.dir" value="${target.dir}/lib" />
+	<property name="target.src.dir" value="${target.dir}/src" />
+	<property name="target.pom.dir" value="${target.dir}/pom" />
+
+	<property name="lib.dir" value="${basedir}/lib" />
+	<property name="resources.dir" value="${basedir}/resources" />
+
+	<property name="ivy.jar" value="ivy-${ivy.version}.jar" />
+	<property name="ivy.home" value="${workspace.dir}/ivy" />
+	<property name="ivy.repository" value="${ivy.home}/repository" />
+	<available property="ivy.installed" file="${lib.dir}/${ivy.jar}" />
+
+	<property name="ant-contrib.jar" value="ant-contrib-${ant-contrib.version}.jar" />
+	<property name="oro.jar" value="oro-${oro.version}.jar" />
+	<property name="maven-ant-tasks.jar" value="maven-ant-tasks-${maven-ant-tasks.version}.jar" />
+
+	<taskdef resource="net/sf/antcontrib/antlib.xml">
+		<classpath>
+			<pathelement location="${lib.dir}/${ant-contrib.jar}" />
+		</classpath>
+	</taskdef>
+
+	<target name="do-resolve-env-libs" unless="ivy.installed">
+		<mkdir dir="${ivy.repository}" />
+		<get src="http://repo1.maven.org/maven2/ant-contrib/ant-contrib/${ant-contrib.version}/${ant-contrib.jar}" dest="${lib.dir}/${ant-contrib.jar}" />
+		<get src="http://repo1.maven.org/maven2/oro/oro/${oro.version}/${oro.jar}" dest="${lib.dir}/${oro.jar}" />
+		<get src="http://repo1.maven.org/maven2/org/apache/ivy/ivy/${ivy.version}/${ivy.jar}" dest="${lib.dir}/${ivy.jar}" />
+		<get src="http://repo1.maven.org/maven2/org/apache/maven/maven-ant-tasks/${maven-ant-tasks.version}/${maven-ant-tasks.jar}" dest="${lib.dir}/${maven-ant-tasks.jar}" />
+	</target>
+
+	<target name="resolve-env-libs" unless="dont-resolve-env-libs">
+		<antcall target="do-resolve-env-libs" inheritAll="true" />
+	</target>
+
+	<target name="build" depends="resolve-env-libs">
+		<ant antfile="${basedir}/includes/${build-file}" inheritRefs="true" />
+	</target>
+</project>

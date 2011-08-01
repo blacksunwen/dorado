@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="build" default="build">
+	<property name="dont-resolve-env-libs" value="" />
+	<property name="project.dir" value="${basedir}/../client" />
+
+	<target name="build">
+		<ant antfile="${basedir}/includes/wrapper.xml" inheritRefs="true">
+			<property name="build-file" value="build-client.xml" />
+			<property name="src" value="${project.dir}/client" />
+			<property name="dist" value="${project.dir}/bin" />
+			<property name="module.projects" value="client" />
+		</ant>
+	</target>
+</project>
