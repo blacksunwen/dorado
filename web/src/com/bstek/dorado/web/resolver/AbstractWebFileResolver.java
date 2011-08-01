@@ -1,0 +1,211 @@
+package com.bstek.dorado.web.resolver;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.zip.GZIPOutputStream;
+import java.util.zip.ZipOutputStream;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.bstek.dorado.core.Context;
+import com.bstek.dorado.core.io.Resource;
+import com.bstek.dorado.web.DoradoContext;
+
+public abstract class AbstractWebFileResolver extends AbstractResolver {
+	private static Log logger = LogFactory.getLog(WebFileResolver.class);
+
+	private static final int BUFFER_SIZE = 1024;
+	private static final int ONE_SECOND = 1000;
+	private static final int MIN_RETRIEVE_LAST_MODIFIED_INTERVAL = ONE_SECOND * 10;
+
+	private static final ResourcesWrapper FILE_NOT_FOUND_RESOURCES_WRAPPER = new ResourcesWrapper(
+			HttpServletResponse.SC_NOT_FOUND);
+	private static final ResourcesWrapper FORBIDDEN_RESOURCES_WRAPPER = new ResourcesWrapper(
+			HttpServletResponse.SC_FORBIDDEN);
+
+	private ResourceTypeManager resourceTypeManager;
+	private Map<String, ResourcesWrapper> resourcesCache = new Hashtable<String, ResourcesWrapper>();
+
+	protected ResourceTypeManager getResourceTypeManager() {
+		if (resourceTypeManager == null) {
+			try {
+				resourceTypeManager = (ResourceTypeManager) Context
+						.getCurrent().getServiceBean("resourceTypeManager");
+			} catch (Exception e) {
+				logger.error(e, e);
+			}
+		}
+		return resourceTypeManager;
+	}
+
+	protected String getResourceExtName(String path) {
+		int i = path.lastIndexOf(".");
+		if (i > 0 && i < path.length() - 1) {
+			return path.substring(i).toLowerCase();
+		}
+		return "";
+	}
+
+	protected String getUriSuffix(HttpServletRequest request) {
+		return getResourceExtName(request.getRequestURI());
+	}
+
+	protected boolean shouldCompress(ResourcesWrapper resourcesWrapper) {
+		ResourceType resourceType = resourcesWrapper.getResourceType();
+		return (resourceType != null) ? resourceType.isCompressible() : false;
+	}
+
+	protected String getContentType(ResourcesWrapper resourcesWrapper) {
+		ResourceType resourceType = resourcesWrapper.getResourceType();
+		return (resourceType != null) ? resourceType.getContentType()
+				: HttpConstants.CONTENT_TYPE_OCTET_STREAM;
+	}
+
+	protected OutputStream getOutputStream(HttpServletRequest request,
+			HttpServletResponse response, ResourcesWrapper resourcesWrapper)
+			throws IOException {
+		int encodingType = 0;
+		String encoding = request.getHeader(HttpConstants.ACCEPT_ENCODING);
+		if (encoding != null) {
+			encodingType = (encoding.indexOf(HttpConstants.GZIP) >= 0) ? 1
+					: (encoding.indexOf(HttpConstants.COMPRESS) >= 0 ? 2 : 0);
+		}
+
+		OutputStream out = response.getOutputStream();
+		if (encodingType > 0 && shouldCompress(resourcesWrapper)) {
+			if (encodingType == 1) {
+				response.setHeader(HttpConstants.CONTENT_ENCODING,
+						HttpConstants.GZIP);
+				out = new GZIPOutputStream(out);
+			} else if (encodingType == 2) {
+				response.setHeader(HttpConstants.CONTENT_ENCODING,
+						HttpConstants.COMPRESS);
+				out = new ZipOutputStream(out);
+			}
+		}
+		return out;
+	}
+
+	protected void outputFile(OutputStream out, Resource resource)
+			throws IOException {
+		InputStream in = resource.getInputStream();
+		try {
+			byte[] buffer = new byte[BUFFER_SIZE];
+			int len = in.read(buffer);
+			while (len != -1) {
+				out.write(buffer, 0, len);
+				len = in.read(buffer);
+			}
+		} finally {
+			in.close();
+		}
+	}
+
+	protected ResourcesWrapper getResourcesWrapper(HttpServletRequest request,
+			DoradoContext context) throws Exception {
+		String path = getRelativeRequestURI(request);
+		ResourcesWrapper resourcesWrapper = resourcesCache.get(path);
+		if (resourcesWrapper != null) {
+			if (resourcesWrapper.isReloadable()
+					&& System.currentTimeMillis()
+							- resourcesWrapper.getLastAccessed() > MIN_RETRIEVE_LAST_MODIFIED_INTERVAL) {
+				resourcesWrapper.updateLastModified();
+			}
+			resourcesWrapper.updateLastAccessed();
+		} else {
+			try {
+				resourcesWrapper = createResourcesWrapper(request, context);
+				if (resourcesWrapper.getResourceType() == null) {
+					resourcesWrapper = FORBIDDEN_RESOURCES_WRAPPER;
+				} else {
+					Resource[] resources = resourcesWrapper.getResources();
+					if (resources != null && resources.length > 0) {
+						for (int i = 0; i < resources.length; i++) {
+							Resource resource = resources[i];
+							if (!resource.exists()) {
+								throw new FileNotFoundException(resource
+										+ " does not exist.");
+							}
+						}
+					}
+				}
+			} catch (FileNotFoundException e) {
+				logger.error(e, e);
+				resourcesWrapper = FILE_NOT_FOUND_RESOURCES_WRAPPER;
+			} catch (IllegalAccessException e) {
+				logger.error(e, e);
+				resourcesWrapper = FORBIDDEN_RESOURCES_WRAPPER;
+			}
+			resourcesCache.put(path, resourcesWrapper);
+		}
+		return resourcesWrapper;
+	}
+
+	protected ResourcesWrapper createResourcesWrapper(
+			HttpServletRequest request, DoradoContext context) throws Exception {
+		String path = getRelativeRequestURI(request);
+		String resourceSuffix = getUriSuffix(request);
+		Resource[] resources = context.getResources(path);
+		return new ResourcesWrapper(resources, getResourceTypeManager()
+				.getResourceType(resourceSuffix));
+	}
+
+	@Override
+	protected ModelAndView doHandleRequest(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		DoradoContext context = DoradoContext.getCurrent();
+		ResourcesWrapper resourcesWrapper = getResourcesWrapper(request,
+				context);
+		if (resourcesWrapper.getHttpStatus() != 0) {
+			response.setStatus(resourcesWrapper.getHttpStatus());
+		} else {
+			// 获取Client端缓存资源的最后修改时间，如果尚没有缓存将返回-1
+			long cachedLastModified = request
+					.getDateHeader(HttpConstants.IF_MODIFIED_SINCE);
+
+			// 获取Server端资源的最后修改时间
+			long lastModified = resourcesWrapper.getLastModified();
+
+			// 判断是否利用Client端缓存
+			if (lastModified != 0 && cachedLastModified != 0
+					&& Math.abs(lastModified - cachedLastModified) < ONE_SECOND) {
+				// 通知浏览器Server端的资源没有改变，可以使用Client端的缓存
+				response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+			} else {
+				String contentType = getContentType(resourcesWrapper);
+				response.setContentType(contentType);
+
+				// 告知Client端此资源的最后修改时间
+				response.addDateHeader(HttpConstants.LAST_MODIFIED,
+						lastModified);
+
+				Resource[] resources = resourcesWrapper.getResources();
+				OutputStream out = getOutputStream(request, response,
+						resourcesWrapper);
+				try {
+					for (int i = 0; i < resources.length; i++) {
+						if (i > 0 && contentType.contains("text")) {
+							out.write("\n".getBytes(response
+									.getCharacterEncoding()));
+						}
+						outputFile(out, resources[i]);
+					}
+					out.flush();
+				} finally {
+					out.close();
+				}
+			}
+		}
+		return null;
+	}
+
+}

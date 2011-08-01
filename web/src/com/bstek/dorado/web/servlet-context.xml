@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:d="http://www.bstek.com/dorado/schema"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dorado-7.0.xsd">
+	<bean class="com.bstek.dorado.core.ConfigureProperiesConfigurer" />
+	<bean class="com.bstek.dorado.web.resolver.ResolverRegisterProcessor">
+		<property name="urlResolverMapping" ref="dorado.urlResolverMapping" />
+	</bean>
+
+	<bean id="dorado.urlResolverMapping" class="com.bstek.dorado.web.resolver.UrlResolverMapping">
+		<property name="lazyInitHandlers" value="true" />
+		<property name="alwaysUseFullPath" value="true" />
+	</bean>
+	<bean id="dorado.mappingExceptionResolver"
+		class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="defaultErrorView" value="forward:/dorado/ErrorPage" />
+	</bean>
+
+	<bean id="dorado.resolverRegister" abstract="true"
+		class="com.bstek.dorado.web.resolver.ResolverRegister" />
+
+	<bean parent="dorado.resolverRegister">
+		<property name="url" value="/dorado/ErrorPage" />
+		<property name="resolver">
+			<bean class="com.bstek.dorado.web.resolver.ErrorPageResolver" />
+		</property>
+	</bean>
+
+	<bean parent="dorado.resolverRegister">
+		<property name="url" value="**/*.dpkg" />
+		<property name="resolver">
+			<bean class="com.bstek.dorado.web.resolver.LibraryFileResolver" />
+		</property>
+	</bean>
+</beans>
