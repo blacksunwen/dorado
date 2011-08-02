@@ -21,6 +21,7 @@ import org.springframework.util.ClassUtils;
  */
 public final class PackageManager {
 	private static final String PACKAGE_PROPERTIES_LOCATION = "META-INF/dorado-package.properties";
+	private static final String UNKNOWN_VERSION = "<Unknown Version>";
 
 	private static final Map<String, PackageInfo> packageInfosMap = new HashMap<String, PackageInfo>();
 	private static boolean packageInfoBuilded = false;
@@ -80,7 +81,7 @@ public final class PackageManager {
 		String packageName = "", minVersion = null, maxVersion = null;
 		boolean leftBracketFound = false, rightBracketFound = false, versionDelimFound = false;
 		char c;
-		for (int i = 0; i < text.length() - 1; i++) {
+		for (int i = 0; i < text.length(); i++) {
 			c = text.charAt(i);
 			if (rightBracketFound) {
 				throw new IllegalArgumentException("Bad depends format.");
@@ -151,7 +152,8 @@ public final class PackageManager {
 
 				PackageInfo packageInfo = new PackageInfo(packageName);
 
-				packageInfo.setVersion(properties.getProperty("version"));
+				packageInfo.setVersion(StringUtils.defaultIfEmpty(
+						properties.getProperty("version"), UNKNOWN_VERSION));
 
 				String dependsText = properties.getProperty("depends");
 				if (StringUtils.isNotBlank(dependsText)) {

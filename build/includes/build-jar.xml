@@ -16,13 +16,6 @@
 		<include name="**/*.swf" />
 	</patternset>
 
-	<taskdef name="build-package-properties" classname="com.bstek.dorado.ant.BuildPackagePropertiesTask">
-		<classpath>
-			<pathelement path="${lib.dir}/dorado-ant-task.jar" />
-			<pathelement path="${lib.dir}/commons-lang-2.5.jar" />
-		</classpath>
-	</taskdef>
-
 	<target name="clean">
 		<delete dir="${work.dir}/bin" />
 		<delete dir="${work.dir}/src" />
@@ -60,11 +53,6 @@
 				<patternset refid="source-patternset" />
 			</fileset>
 		</copy>
-
-		<echo message="copy ${project.dir}/META-INF --> ${module.dir}/META-INF" />
-		<copy todir="${module.dir}/META-INF" failonerror="false">
-			<fileset dir="${project.dir}/META-INF" excludes="dorado-package.properties" />
-		</copy>
 	</target>
 
 	<target name="compile" depends="prepare-work-dir">
@@ -93,23 +81,15 @@
 	</target>
 
 	<target name="build-package-properties">
-		<build-package-properties workspace="${workspace.dir}" subProjects="${module.projects}" outputFile="${module.dir}/META-INF/dorado-package.properties" />
-
-		<propertyfile file="${module.dir}/META-INF/dorado-package.properties">
+		<propertyfile file="${module.dir}/src/META-INF/dorado-package.properties">
 			<entry key="version" value="${product.fullversion}" />
 		</propertyfile>
-
 	</target>
 
 	<target name="jar" depends="compile,post-compile,build-package-properties">
 		<echo message="copy ${module.dir}/src --> ${module.dir}/bin" />
 		<copy todir="${module.dir}/bin">
 			<fileset dir="${module.dir}/src" excludes="**/*.java" />
-		</copy>
-
-		<echo message="copy ${module.dir}/META-INF --> ${module.dir}/bin/META-INF" />
-		<copy todir="${module.dir}/bin/META-INF">
-			<fileset dir="${module.dir}/META-INF" />
 		</copy>
 
 		<echo message="jar: ${module.dir}/bin --> ${target.lib.dir}/${product.name}-${module}-${product.revision}.jar" />

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RuleSet>
+	<Rule name="Model">
+		<Children>
+			<Child rule="DataType" aggregated="true" />
+			<Child rule="DataProvider" aggregated="true" />
+			<Child rule="DataResolver" aggregated="true" />
+		</Children>
+	</Rule>
+
+	<Rule name="DataObject" abstract="true">
+		<PrimitiveProps>
+			<Prop name="impl" type="java.lang.Class" />
+			<Prop name="parent" />
+			<Prop name="resource" ignored="true" />
+			<Prop name="listener" />
+		</PrimitiveProps>
+	</Rule>
+
+	<Rule name="Validator" abstract="true" nodeName="Validator" type="com.bstek.dorado.data.type.validator.Validator">
+		<PrimitiveProps>
+			<Prop name="type" visible="false" />
+		</PrimitiveProps>
+	</Rule>
+
+	<Rule name="PropertyDefSupport" abstract="true" type="com.bstek.dorado.data.type.property.PropertyDefSupport">
+		<PrimitiveProps>
+			<Prop name="name" />
+			<Prop name="parent" ignored="true" />
+		</PrimitiveProps>
+		<Children>
+			<Child>
+				<Rule name="PropertyDefDataType" parents="DataType" />
+			</Child>
+			<Child rule="Validator" aggregated="true" />
+		</Children>
+	</Rule>
+	<Rule name="PropertyDef" parents="PropertyDefSupport" type="com.bstek.dorado.data.type.property.BasePropertyDef" sortFactor="1" />
+	<Rule name="Reference" parents="PropertyDefSupport" type="com.bstek.dorado.data.type.property.Reference" sortFactor="2">
+		<Props>
+			<Prop name="dataProvider" reference="DataProvider:name" />
+		</Props>
+		<Children>
+			<Child rule="DataProvider" />
+		</Children>
+	</Rule>
+	<Rule name="Lookup" parents="PropertyDefSupport" type="com.bstek.dorado.data.type.property.Lookup" sortFactor="3">
+		<Props>
+			<Prop name="dataProvider" reference="DataProvider:name" />
+			<Prop name="dataSet" reference="DataSet:id" />
+		</Props>
+		<Children>
+			<Child rule="DataProvider" />
+		</Children>
+	</Rule>
+	<Rule name="DataType" nodeName="DataType" parents="DataObject" parser="globalDataTypeParser" outputter="entityDataTypeOutputter">
+		<PrimitiveProps>
+			<Prop name="name" />
+			<Prop name="id" ignored="true" />
+			<Prop name="parent" />
+			<Prop name="matchType" type="java.lang.Class" />
+			<Prop name="creationType" type="java.lang.Class" />
+			<Prop name="overwrite" type="boolean" />
+		</PrimitiveProps>
+		<Props>
+			<Prop name="acceptUnknownProperty" defaultValue="true" />
+		</Props>
+	</Rule>
+
+	<Rule name="DataProvider" abstract="true" parents="DataObject" nodeName="DataProvider" type="com.bstek.dorado.data.provider.AbstractDataProvider" parser="dataProviderParser"
+		outputter="dataProviderOutputter">
+		<PrimitiveProps>
+			<Prop name="name" />
+			<Prop name="id" ignored="true" />
+			<Prop name="interceptor" />
+			<Prop name="scope" type="com.bstek.dorado.core.bean.Scope" defaultValue="singleton" />
+		</PrimitiveProps>
+		<Props>
+			<Prop name="parameterDataType" reference="DataType:name" />
+			<Prop name="resultDataType" reference="DataType:name" />
+		</Props>
+		<Children>
+			<Child>
+				<Rule nodeName="ParameterDataType" parents="DataType" />
+			</Child>
+			<Child>
+				<Rule nodeName="ResultDataType" parents="DataType" />
+			</Child>
+		</Children>
+	</Rule>
+
+	<Rule name="DataResolver" parents="DataObject" nodeName="DataResolver" type="com.bstek.dorado.data.resolver.AbstractDataResolver" parser="dataResolverParser"
+		outputter="dataResolverOutputter">
+		<PrimitiveProps>
+			<Prop name="name" />
+			<Prop name="id" ignored="true" />
+			<Prop name="interceptor" />
+			<Prop name="scope" type="com.bstek.dorado.core.bean.Scope" defaultValue="singleton" />
+		</PrimitiveProps>
+	</Rule>
+</RuleSet>
