@@ -124,7 +124,7 @@ public class DoradoLoader {
 			ResourceLoader resourceLoader, String configureLocation,
 			boolean silence) throws IOException {
 		// 装载附加的基本配置信息
-		ConsoleUtils.outputLoadingInfo("Loading extension configure from ["
+		ConsoleUtils.outputLoadingInfo("Loading configure from ["
 				+ configureLocation + "]...");
 		if (StringUtils.isNotEmpty(configureLocation)) {
 			Resource resource = resourceLoader
