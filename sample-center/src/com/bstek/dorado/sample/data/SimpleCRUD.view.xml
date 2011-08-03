@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Model>
+    <DataType parent="Bean" name="ProductType" matchType="com.bstek.dorado.sample.entity.Product" meta="x:75;y:45" autoCreatePropertyDefs="true">
+      <PropertyDef name="productName" required="true"/>
+    </DataType>
+  </Model>
+  <View title="Product Maintain">
+    <DataSet id="dsProducts" dataType="[ProductType]" dataProvider="simpleCRUD#getAll" pageSize="10"/>
+    <UpdateAction id="actionSave" caption="Save" confirmMessage="Sure to save all changes?" icon="url(>skin>common/icons.gif) -140px -20px" successMessage="OK!" dataResolver="simpleCRUD#saveAll">
+      <UpdateItem dataSet="dsProducts"/>
+    </UpdateAction>
+    <ToolBar layoutConstraint="top">
+      <DataPilot dataSet="dsProducts" itemCodes="pages,|,+,-,x"/>
+      <Separator/>
+      <ToolBarButton action="actionSave"/>
+    </ToolBar>
+    <DataGrid dataSet="dsProducts">
+      <IndicatorColumn/>
+    </DataGrid>
+  </View>
+</ViewConfig>

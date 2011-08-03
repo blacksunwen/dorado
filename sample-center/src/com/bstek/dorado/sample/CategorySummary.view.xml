@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+	<View title="分类简述" layout="Anchor"
+		pageTemplate="com/bstek/dorado/sample/CategorySummary.html">
+		<DataSet id="dsCategory" dataType="ExampleCategory" dataProvider="categorySummary#getCategory" parameter='${request.getParameter("categoryId")}'
+			loadMode="preload">
+			<ClientEvent name="onReady"><![CDATA[
+var id = self.getData("id");
+$("a").attr("target", "doc_" + id);
+]]></ClientEvent>
+		</DataSet>
+	</View>
+</ViewConfig>

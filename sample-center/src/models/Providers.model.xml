@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Model>
+  <DataProvider name="DynaExpressionProvider" meta="x:8;y:10">
+    <Property name="result">
+      <Entity>
+        <Property name="exp1">${context.getAttribute(&quot;stage&quot;)}</Property>
+        <Property name="exp2">$${context.getAttribute(&quot;stage&quot;)}</Property>
+      </Entity>
+    </Property>
+  </DataProvider>
+</Model>

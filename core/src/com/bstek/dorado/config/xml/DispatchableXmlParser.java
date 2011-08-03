@@ -300,9 +300,7 @@ public abstract class DispatchableXmlParser implements XmlParser {
 		for (int i = 0; i < attributeNum; i++) {
 			Node node = attributes.item(i);
 			String property = node.getNodeName();
-			if (!properties.containsKey(property)) {
-				properties.put(property, node);
-			}
+			properties.put(property, node);
 		}
 
 		for (Iterator<Map.Entry<String, Object>> it = properties.entrySet()

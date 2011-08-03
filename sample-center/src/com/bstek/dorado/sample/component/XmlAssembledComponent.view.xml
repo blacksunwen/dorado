@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <View layout="Anchor padding:40" title="配置型组装控件">
+    <ToggleButton caption="这是一个名为ToggleButton的组装控件"/>
+    <ButtonPanel layoutConstraint="anchorTop:previous; top:30" height="200" width="500" caption="这是一个名为ButtonPanel的组装控件" collapseable="true" buttonCaption="确定">
+      <Children>
+        <TextArea/>
+      </Children>
+    </ButtonPanel>
+    <ButtonPanel layout="form">
+      <Property name="buttonCaption">AAAAAAAAAAA</Property>
+      <Property name="width">300</Property>
+      <Property name="height">300</Property>
+      <Property name="caption">WWWWW</Property>
+      <Children>
+        <TextEditor/>
+        <TextEditor/>
+      </Children>
+    </ButtonPanel>
+  </View>
+</ViewConfig>

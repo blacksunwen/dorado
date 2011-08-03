@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Model>
+	<DataProvider name="testCriProvider1" type="hibernateCriteria">
+		<Criteria entityName="com.bstek.dorado.hibernate.entity.Product" alias="product">
+			<Criterions>
+				<IdEqCriterion dataType="Long" value="6"/>
+				<BetweenCriterion available="true" not="false" dataType="Long" propertyName="id" value1="6" value2="60" />
+				<SingleCriterion propertyName="productName" value="C" op="%like%" />
+				<NonValueCriterion propertyName="quantityPerUnit" op="!null"/>
+				<DoublePropertyCriterion available="true" not="false" propertyName1="unitsInStock" propertyName2="unitsOnOrder"
+						op=">=" />
+				<And available="true" not="false">
+					<DoublePropertyCriterion available="true" not="false" propertyName1="unitsInStock" propertyName2="unitsOnOrder"
+							op=">" />
+					<SingleCriterion available="true" not="false" propertyName="productName" value="C" op="%like%" />
+				</And>
+				<Or>
+					<DoublePropertyCriterion available="true" not="false" propertyName1="unitsInStock" propertyName2="unitsOnOrder"
+						op=">" />
+					<SingleCriterion available="true" not="false" propertyName="productName" value="C" op="%like%" />
+				</Or>
+			</Criterions>
+			<Orders>
+				<Order propertyName="productName" ignoreCase="true" direction="desc" />
+				<Order propertyName="unitPrice" direction="asc" />
+			</Orders>
+		</Criteria>
+	</DataProvider>
+	
+	<DataProvider name="testCriProvider2" type="hibernateCriteria">
+		<Criteria entityName="com.bstek.dorado.hibernate.entity.Category" alias="category">
+			<Criterions>
+				<SizeCriterion propertyName="products" value="1" op=">="/>
+			</Criterions>
+		</Criteria>
+	</DataProvider>
+	
+	<DataProvider name="testCriProvider_projections" type="hibernateCriteria">
+		<Criteria entityName="com.bstek.dorado.hibernate.entity.Product" alias="product">
+			<Projections>
+				<RowCountProjection/>
+				<PropertyProjection propertyName="category"/>
+				<GroupByProjection propertyName="category"/>
+				<CountProjection propertyName="unitsInStock"/>
+				<AvgProjection propertyName="unitsInStock"/>
+				<MaxProjection propertyName="unitsInStock"/>
+				<MinProjection propertyName="unitsInStock"/>
+				<SumProjection propertyName="unitsInStock"/>
+			</Projections>
+		</Criteria>
+	</DataProvider>
+	
+	<DataProvider name="testCriProvider_aliases" type="hibernateCriteria">
+		<Criteria entityName="com.bstek.dorado.hibernate.entity.Product" alias="product">
+			<Aliases>
+				<Alias associationPath="category" alias="cc2" joinType="LEFT_JOIN">
+					<Criterions>
+						<NonValueCriterion propertyName="categoryName" op="!null" />
+					</Criterions>
+				</Alias>
+			</Aliases>
+		</Criteria>
+	</DataProvider>
+	
+	<DataProvider name="testCriProvider_fetchmode" type="hibernateCriteria">
+		<Criteria entityName="com.bstek.dorado.hibernate.entity.Product" alias="product">
+			<FetchModes>
+				<FetchMode associationPath="category" mode="JOIN"/>
+			</FetchModes>
+		</Criteria>
+	</DataProvider>
+	
+	<DataProvider name="testCriProvider_SubCriteria" type="hibernateCriteria">
+		<Criteria entityName="com.bstek.dorado.hibernate.entity.Category" alias="category">
+			<SubCriterias>
+				<SubCriteria associationPath="products" alias="product" joinType="INNER_JOIN">
+					<Criterions>
+						<NonValueCriterion propertyName="productName" op="!null" />
+					</Criterions>
+				</SubCriteria>
+			</SubCriterias>
+		</Criteria>
+	</DataProvider>
+	
+	<DataProvider name="testCriProvider_sqlProjection" type="hibernateCriteria">
+		<Criteria entityName="com.bstek.dorado.hibernate.entity.Product" alias="product">
+			<Projections>
+				<SqlProjection clause="({alias}.UNITS_IN_STOCK + {alias}.UNITS_ON_ORDER) as sumUnit, ({alias}.UNITS_IN_STOCK - {alias}.UNITS_ON_ORDER) as subUnit">
+					<Columns>
+		  				<Column columanAlias="sumUnit" hibernateType="integer"/>
+		  				<Column columanAlias="subUnit" hibernateType="integer"/>
+		  			</Columns>
+				</SqlProjection>
+		  	</Projections>
+		</Criteria>
+	</DataProvider>
+	
+	<DataProvider name="testCriProvider_sqlCriteria" type="hibernateCriteria">
+		<Criteria entityName="com.bstek.dorado.hibernate.entity.Product" alias="product">
+			<Criterions>
+				<SqlCriterion clause="lower({alias}.PRODUCT_NAME) like lower(?)">
+		  			<Parameters>
+		  				<Parameter value="%C%" hibernateType="string"/>
+		  			</Parameters>
+		  		</SqlCriterion>
+			</Criterions>
+		</Criteria>
+	</DataProvider>
+	
+	<DataProvider name="testCriProvider_SubQueryPropertyCriterion" type="hibernateCriteria">
+		<Criteria entityName="com.bstek.dorado.hibernate.entity.Product">
+			<Criterions>
+				<SubQueryPropertyCriterion propertyName="unitPrice" op=">">
+					<Criteria entityName="com.bstek.dorado.hibernate.entity.Product">
+						<Projections>
+							<AvgProjection propertyName="unitPrice"/>
+						</Projections>
+					</Criteria>
+				</SubQueryPropertyCriterion>
+			</Criterions>
+		</Criteria>
+	</DataProvider>
+	
+	<DataProvider name="testCriProvider_SubQueryValueCriterion" type="hibernateCriteria">
+		<Criteria entityName="com.bstek.dorado.hibernate.entity.Product">
+			<Criterions>
+				<SubQueryValueCriterion value=":pce" op=">" dataType="double">
+					<Criteria entityName="com.bstek.dorado.hibernate.entity.Product">
+						<Projections>
+							<AvgProjection propertyName="unitPrice"/>
+						</Projections>
+					</Criteria>
+				</SubQueryValueCriterion>
+			</Criterions>
+		</Criteria>
+	</DataProvider>
+	
+	<DataProvider name="testCriProvider_SubQueryNoValueCriterion" type="hibernateCriteria">
+		<Criteria entityName="com.bstek.dorado.hibernate.entity.Category" alias="category">
+			<Criterions>
+				<SubQueryNoValueCriterion op="exists">
+					<Criteria entityName="com.bstek.dorado.hibernate.entity.Product">
+						<Projections>
+							<AvgProjection propertyName="unitPrice"/>
+						</Projections>
+					</Criteria>
+				</SubQueryNoValueCriterion>
+			</Criterions>
+		</Criteria>
+	</DataProvider>
+</Model>

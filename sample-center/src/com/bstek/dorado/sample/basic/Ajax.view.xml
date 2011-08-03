@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <View layout="form cols:*" style="margin:16px" title="Ajax">
+    <AjaxAction id="toUpperCaseAction" caption="To UpperCase" parameter="Hello World!" service="ajax#toUpperCase">
+      <ClientEvent name="onSuccess">dorado.MessageBox.alert(self.get(&quot;returnValue&quot;));</ClientEvent>
+    </AjaxAction>
+    <Button action="toUpperCaseAction"/>
+    <AjaxAction id="multiplyAction" executingMessage="Computing..." service="ajax#multiply"/>
+    <Button caption="Ajax Multiply">
+      <ClientEvent name="onClick">
+var action = this.id(&quot;multiplyAction&quot;);
+dorado.MessageBox.prompt(&quot;Please input two numbers here&quot;, {
+	defaultText: &quot;3,5&quot;,
+	callback: function(text) {
+		var nums = text.split(&quot;,&quot;);
+		var parameter = {
+			num1: nums[0],
+			num2: nums[1]
+		};
+		action.set(&quot;parameter&quot;, parameter).execute(function(result) {
+			dorado.MessageBox.alert(nums[0] + &quot; * &quot; + nums[1] + &quot; = &quot; + result);
+		});
+	}
+});
+</ClientEvent>
+    </Button>
+    <AjaxAction id="getSystemInfoAction" caption="Retrieve Dorado7 System Information" service="ajax#getSystemInfo">
+      <ClientEvent name="onSuccess">
+var info = self.get(&quot;returnValue&quot;);
+dorado.MessageBox.alert(&quot;product : &quot; + info.product + &quot;\n&quot; + 
+	&quot;vendor : &quot; + info.vendor + &quot;\n&quot; + 
+	&quot;version : &quot; + info.version);
+</ClientEvent>
+    </AjaxAction>
+    <Button action="getSystemInfoAction"/>
+  </View>
+</ViewConfig>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Model>
+	<DataProvider name="testHqlProvider$" type="hibernateHql">
+		<Property name="hql"><![CDATA[from Category where id = :$ ]]></Property>
+	</DataProvider>
+	<DataProvider name="testHqlProvider1" type="hibernateHql">
+		<Property name="hql"><![CDATA[from Category where id = :id]]></Property>
+	</DataProvider>
+	
+	<DataProvider name="testHqlProvider_map2" type="hibernateHql">
+		<Property name="hql"><![CDATA[from Category where id = :mm.id]]></Property>
+	</DataProvider>
+	<DataProvider name="testHqlProvider_pojo2" type="hibernateHql">
+		<Property name="hql"><![CDATA[from Category where id = :parent.id]]></Property>
+	</DataProvider>
+	
+	<DataProvider name="testHqlProvider_vm1" type="hibernateHql">
+		<Property name="hql"><![CDATA[
+		from Category where 1=1  
+		#if ($parent) 
+			and id = :parent.id
+		#end
+		]]></Property>
+	</DataProvider>
+	
+	<DataProvider name="testHqlProvider_vm_noset" type="hibernateHql">
+		<Property name="hql"><![CDATA[
+		#set($parent.id = 1)
+		from Category where 1=1  
+		#if ($parent) 
+			and id = :parent.id
+		#end
+		]]></Property>
+	</DataProvider>
+</Model>

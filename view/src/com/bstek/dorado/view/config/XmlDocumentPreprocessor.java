@@ -365,24 +365,33 @@ public class XmlDocumentPreprocessor implements XmlParser {
 		}
 	}
 
+	private String getPackagesProperty(Element viewElement) {
+		String packages = null;
+		Node node = viewElement
+				.getAttributeNode(ViewXmlConstants.ATTRIBUTE_PACKAGES);
+		if (node == null) {
+			List<Element> propertyElements = DomUtils.getChildrenByTagName(
+					viewElement, XmlConstants.PROPERTY);
+			if (propertyElements != null) {
+				for (Element element : propertyElements) {
+					if (ViewXmlConstants.ATTRIBUTE_PACKAGES.equals(element
+							.getAttribute(XmlConstants.ATTRIBUTE_NAME))) {
+						packages = org.springframework.util.xml.DomUtils
+								.getTextValue(element);
+						break;
+					}
+				}
+			}
+		} else {
+			packages = node.getNodeValue();
+		}
+		return packages;
+	}
+
 	private void gothroughPlaceHolders(Document templateDocument,
 			TemplateContext templateContext) throws Exception {
 		Element templteViewElement = ViewConfigParserUtils.findViewElement(
 				templateDocument.getDocumentElement(), templateContext);
-
-		String packages = templteViewElement
-				.getAttribute(ViewXmlConstants.ATTRIBUTE_PACKAGES);
-		String oldPackages = templateContext.getSourceContext().getPackages();
-		if (StringUtils.isNotEmpty(packages)
-				&& StringUtils.isNotEmpty(oldPackages)) {
-			packages = oldPackages + ',' + packages;
-		} else {
-			packages = oldPackages;
-		}
-		if (StringUtils.isNotEmpty(packages)) {
-			templteViewElement.setAttribute(
-					ViewXmlConstants.ATTRIBUTE_PACKAGES, packages);
-		}
 
 		Document document = templateContext.getSourceDocument();
 		Element viewElement = ViewConfigParserUtils.findViewElement(
@@ -395,6 +404,20 @@ public class XmlDocumentPreprocessor implements XmlParser {
 			Node item = attributes.item(i);
 			String nodeName = item.getNodeName();
 			templteViewElement.setAttribute(nodeName, item.getNodeValue());
+		}
+
+		String templatePackages = getPackagesProperty(templteViewElement);
+		String packages = getPackagesProperty(viewElement);
+		if (StringUtils.isNotEmpty(packages)) {
+			if (StringUtils.isNotEmpty(templatePackages)) {
+				packages = templatePackages + ',' + packages;
+			}
+		} else {
+			packages = templatePackages;
+		}
+		if (StringUtils.isNotEmpty(templatePackages)) {
+			templteViewElement.setAttribute(
+					ViewXmlConstants.ATTRIBUTE_PACKAGES, packages);
 		}
 
 		for (Element element : DomUtils.getChildElements(viewElement)) {

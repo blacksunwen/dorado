@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+#outputPageHeader()
+<style>
+h1 {
+	font-size: 18pt;
+	font-style: italic;
+	color: #02559F;
+	margin: 46px 0 4px 0;
+}
+h3 {
+	font-size: 11pt;
+}
+hr {
+	border: none;
+	border-bottom: 1px #77BDFD solid;
+}
+a:link,a:visited,a:active,a:hover {
+	color: #0373D8;
+}
+.button-run {
+	cursor: pointer;
+	width: 160px;
+	height: 69px;
+	background: url(images/run-example.png);
+	display: inline-block;
+}
+.button-run-hover {
+	background: url(images/run-example-hover.png);
+}
+.summary {
+	font-size: 10pt;
+	margin: 8px 0 8px 0;
+}
+.source-path {
+	color: #808080;
+}
+.props {
+	font-style: italic;
+	color: #808080;
+	margin-left: 20px;
+}
+</style>
+</head>
+<body style="margin:24px; background:white url(images/summary-bg.png) no-repeat">
+
+#set( $example = $view.getComponent("dsExample").getData() )
+
+<h1>
+${example.label}
+</h1>
+
+<hr>
+
+<img src="images/dorado7-corner.png" style="position:absolute; top:30px; right:25px">
+
+#if ($example.url)
+<p>
+<a id="buttonRunHold" href="$!{example.url}" target="_blank"></a>
+</p>
+#end
+
+<div class="summary">
+#interceptor("spring:exampleSummary#outputContent")
+</div>
+
+<p style="margin:24px 0 24px 0">
+<div id="gridSource"></div>
+</p>
+
+#if ($example.author || $example.createDate || $example.lastModify || $example.tags)
+<div style="border-left:1px #808080 solid; background:#F6F6F6; padding:8px 0 8px 0">
+	<table class="props">
+		<cols>
+			<col width="100px"></col>
+			<col></col>
+		</cols>
+#if ($example.author)
+		<tr><td>Author:</td><td>$esc.html($example.author)</td></tr>
+#end
+#if ($example.createDate)
+		<tr><td>Create Date:</td><td>$date.format("yyyy-M-d", $example.createDate)</td></tr>
+#end
+#if ($example.lastModify)
+		<tr><td>Last Modify:</td><td>$date.format("yyyy-M-d", $example.lastModify)</td></tr>
+#end
+#if ($example.tags)
+		<tr><td>Tags:</td><td>$!esc.html($example.tags)</td></tr>
+#end
+	</table>
+</div>
+#end
+
+</body>
+</html>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Arguments/>
+  <Context/>
+  <Model>
+    <DataType name="scatterData">
+      <PropertyDef name="x"/>
+      <PropertyDef name="y"/>
+    </DataType>
+  </Model>
+  <View>
+    <DataSet id="dsScatter1">
+      <Property name="dataProvider">investmentDataProvider#getScatterData1</Property>
+      <Property name="dataType">[scatterData]</Property>
+    </DataSet>
+    <DataSet id="dsScatter2">
+      <Property name="dataProvider">investmentDataProvider#getScatterData2</Property>
+      <Property name="dataType">[scatterData]</Property>
+    </DataSet>
+    <OpenFlashChart id="openFlashChart1">
+      <Property name="title">
+        <Property name="text">Investment Overview</Property>
+      </Property>
+      <Elements>
+        <Scatter>
+          <Property name="bindingConfig">
+            <Property name="xProperty">x</Property>
+            <Property name="yProperty">y</Property>
+          </Property>
+          <Property name="dataSet">dsScatter1</Property>
+          <Property name="dotStyle">
+            <Property name="type">Anchor</Property>
+            <Property name="dotSize">4</Property>
+            <Property name="haloSize">3</Property>
+            <Property name="hollow">true</Property>
+          </Property>
+          <Property name="color">#0372AB</Property>
+          <Property name="text">Equities</Property>
+        </Scatter>
+        <Scatter>
+          <Property name="dataSet">dsScatter2</Property>
+          <Property name="bindingConfig">
+            <Property name="xProperty">x</Property>
+            <Property name="yProperty">y</Property>
+          </Property>
+          <Property name="dotStyle">
+            <Property name="type">StarDot</Property>
+          </Property>
+          <Property name="color">#FF9900</Property>
+          <Property name="text">Mutual Funds</Property>
+        </Scatter>
+      </Elements>
+      <XAxis>
+        <Property name="min">1</Property>
+        <Property name="max">10</Property>
+      </XAxis>
+      <YAxis>
+        <Property name="min">0</Property>
+        <Property name="max">500</Property>
+        <Property name="steps">100</Property>
+      </YAxis>
+    </OpenFlashChart>
+  </View>
+</ViewConfig>

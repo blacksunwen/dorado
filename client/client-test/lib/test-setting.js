@@ -1,5 +1,5 @@
 window.$setting = {
-	"common.contextPath": "/web-test",
-	"widget.skinRoot": ">client/src/css/skin/",
-	"widget.skin": "nature"
+	"common.contextPath": "/client-test",
+	"widget.skinRoot": ">client/client/skins/",
+	"widget.skin": "default"
 };

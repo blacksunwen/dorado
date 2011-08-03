@@ -47,7 +47,7 @@
 			document.writeln("<" + "/div>");
 		}
 		
-		var root = "/web-test/";
+		var root = "/client-test/workspace/";
 		
 		document.writeln("<div class=\"container\">");
 		writeJsUnitHyperlink(root + "brich-client/test-support/all-cases.html", "all-case");
@@ -67,15 +67,6 @@
 			var testPage = root + ALL_JS_PAGES[i];
 			var title = testPage.match(/\/[\w|-]*test\./) + '';
 			title = title.substring(1, title.length - 6);
-			writePageHyperlink(testPage, title);
-		}
-		document.writeln("</div>");
-		
-		document.writeln("<div class=\"container\">");
-		for (var i = 0; i < ALL_WEB_PAGES.length; i++) {
-			var testPage = root + ALL_WEB_PAGES[i];
-			var delimIndex = indexOfLastDelim(testPage);
-			var title = testPage.substring(delimIndex + 1);
 			writePageHyperlink(testPage, title);
 		}
 		document.writeln("</div>");

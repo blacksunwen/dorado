@@ -1,0 +1,139 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+#outputPageHeader()
+<style>
+body {
+	font-size: 10pt;
+}
+h1 {
+	font-size: 16pt;
+	color: #02559F;
+	border-bottom: 1px #77BDFD solid;
+	margin-top: 30px;
+}
+h2 {
+	font-size: 12pt;
+	color: #02559F;
+}
+hr {
+	border: none;
+	border-bottom: 1px #77BDFD solid;
+}
+a:link,a:visited,a:active,a:hover {
+	color: #003399;
+}
+</style>
+</head>
+<body style="margin:32px">
+<center>
+<img src="images/dorado7-logo-big.png" style="margin: 8px 0 20px 0" />
+</center>
+
+<h1>产品简介</h1>
+<p>
+Dorado Presentation Middleware（即Dorado展现中间件，以下简称Dorado）致力于辅助Web应用中表现层的开发过程。Dorado主要可以为您带来如下两方面的使用价值：
+<ul>
+	<li>更加美观、更加人性化的Web操作界面。</li>
+	<li>更加高效的表现层开发效率。</li>
+</ul>
+</p>
+<p>
+Dorado Presentation Middleware产品包含3个主要的功能部分：Web客户端、服务端引擎、IDE集成开发工具。（见右侧插图）
+<img src="images/dorado-parts.png" style="float:right"/>
+<ul>
+	<li><b>Web客户端</b>		-	主要利用Javascript搭建的纯浏览器前端展现系统，可支持目前较为常见的所有主流浏览器。</li>
+	<li><b>服务端引擎</b>		-	用于辅助Dorado Web客户端的自动生成，客户端与服务端的数据通信、状态同步，以及Dorado展现层与后台系统的集成等。</li>
+	<li><b>IDE集成开发工具</b>		-	Eclipse插件形式的集成开发工具。用于辅助开发人员对Dorado界面及其他相关配置进行快速的定制。</li>
+</ul>
+</p>
+
+<h1>主要功能特点</h1>
+<h2>1. 全新的Web客户端</h2>
+<p>
+Dorado7提供了全新打造的Web客户端，这包括全新的基础运行框架和全新的控件库。较之Dorado的前作，新的Web客户端将带来如下的增强：
+<ul>
+	<li><b>支持所有主流浏览器</b>	-	Dorado7将兼容所有主流的浏览器，包括IE、Chrome、Firefox、Safari、Opera以及以这5种浏览器为内核的其他浏览器。
+	结合目前各浏览器在性能、稳定性、功能等各方面的因素，我们推荐用户使用Chrome作为首选的浏览器。</li>
+	<li><b>更加丰富的控件库</b>		-	初始包含超过60个的界面控件，并且此数量还会不断的提高。</li>
+	<li><b>更加Ajax</b>			-	由于在设计之初给予了周全的考虑，因此Dorado7可以在几乎所有的交互过程中以异步请求替代同步请求，这将使界面的操作体验获得极大的提升。
+	同时，Dorado7中还提供了独特的Ajax请求自动合并技术，以尽可能减少与服务端之间的实际交互次数，进一步提高界面运行效率。</li>
+	<li><b>管理库文件，实现按需装载</b>		-	Dorado7提供了以资源包的形式对Javascript和CSS文件进行管理的功能，不但系统内部的库文件以此种方式进行管理，用户也可以将自己的库文件纳入这一管理机制。
+	通过这一功能，用户可以定义各资源包之间的依赖关系、实现库文件的运行时自动合并、以及库文件的按需装载。
+	这可以在性能优化、项目维护等方面带来诸多好处。</li>
+	<li><b>强大的客户端调试器</b>		-	新的客户端调试器可以提供分级日志、API测试、页面结构剖析等调试功能。
+	借助新的调试器您甚至还可以随时查看/修改任意Dorado对象的属性值、分析DataSet中的实时数据。配合Dorado7中全新的异常处理机制，相比前作开发人员将拥有更加丰富的调试手段。</li>
+	<li><b>完整的拖拽功能支持</b>		-	Dorado7中所有的控件都将支持拖拽操作的属性、事件和API接口。</li>
+</ul>
+</p>
+
+<h2>2. 立体数据模型</h2>
+<p>
+“立体数据模型”因其相对于平面数据模型（二维数据模型）而得名。即指Dorado7推翻了Dorado前作中以DataSet为媒介、以二维表形式对于展现数据进行封装和管理的设计思路。
+Dorado7不再局限数据必须以二维表结构与DataSet对接，而是可以支持非常自由的数据形式。并且也不再提供专用的数据封装对象。
+这些变化使得展现层中的数据更加纯粹、更加贴切真实的业务含义。自然，也使开发变得更加便利、更加生动。<br>
+“立体数据模型”是Dorado7相对于前作最重要的概念变化，也是Dorado7最为核心的设计思想。
+以上的寥寥数语并不足以阐明这一抽象概念，请参考 <a href="http://www.bsdn.org">Dorado7方法论</a> 中关于“立体数据模型”的更多论述。
+</p>
+
+<h2>3. 没有JSP的Web</h2>
+<p>
+秉承了Dorado产品的一贯风格，Dorado7仍以XML形式的视图配置文件作为定义Web界面的主要手段。
+不过，在Dorado7中这里的视图配置文件被赋予了更多的内涵，视图配置文件已经可以完整的描述Web界面的所有特性，JSP不再是Dorado7的必选项。
+在大多数情况下，直接访问一个视图配置文件就可以得到一个功能完整的Web界面。<br>
+可能很多开发人员对于此特性会感到一丝不安，出于某些技术人员习惯以及页面需求等原因，开发人员可能仍然需要以HTML形式来实现页面的布局。
+Dorado7同样对此种使用方式提供了完善的支持。开发者可以很方便的使用JSP、Velocity或者其他类似的技术来为视图配置文件定义布局方式。
+并且，新的开发方式让美工人员与开发人员的合作变得更为可行和便利。以JSP为例，Dorado7不再引入繁多的Taglib标签库，而是以纯HTML方式的占位符来辅助Web页面的布局。
+</p>
+
+<h2>4. 智能方法适配</h2>
+<p>
+“智能方法适配”是指允许开发人员尽可能按照自己的意愿、业务的需要来定义他们的业务方法，然后由Dorado引擎自动根据场景、参数名、参数类型等因素来判断应当怎样调用该业务方法。
+“智能方法适配”是Dorado7提供的一个非常有特色的功能，提供此功能的主要目的是尽量减少开发人员所需要掌握的Dorado API，让业务方法的代码更加“业务化”，更加易于阅读。<br>
+通过“智能方法适配”也可以很好的体验出Dorado7所提倡的“基于约定而非配置”进行开发的理念。在实际的应用场景中大部分实现了Dorado前端的功能中可能并不需要引入任何Dorado的API。
+</p>
+
+<h2>5. 扩展和重用</h2>
+<p>
+为提高Dorado7产品的扩展性和可重用性我们在Dorado7中提供了很多性的特性，这些特性主要包括：
+<ul>	
+	<li><b>叠加式配置</b>		-	当用于需要设置或改变Dorado中的某运行参数时，通常不需要直接修改Dorado提供的缺省配置文件，而是增加一个新的、只包含最小参数集合的配置文件。
+	由Dorado引擎对这些配置文件进行叠加是的读取和处理，此特性可以有效的降低升级Dorado引擎可能带来的额外成本、提供项目的可维护性。</li>
+	<li><b>利用Spring搭建的Dorado引擎</b>		-	Dorado7自身的服务就是利用Spring搭建起来，不过Dorado7并不因此要求用户的项目一定要使用Spring。<br>
+	这个特性使得开发人员有能力利用Spring的特性来替换几乎所有Dorado自身的内部服务。</li>	
+	<li><b>数据模型对象</b>		-	Dorado7中的数据模型对象既支持全局、私有、匿名等可见性，又支持类似面向对象的继承和复写。这些特性可以为配置信息的重用和维护提供很多的便利。</li>
+	<li><b>视图配置文件模板</b>		-	Dorado7中的视图配置文件支持多级模板功能，这非常有利于降低项目的管理和维护成本。</li>
+	<li><b>视图配置的Import和Export</b>		-	Dorado7的视图配置文件允许开发人员利用Import和Export这两个标记。引入来自于其他视图配置文件中的一段配置信息。</li>
+	<li><b>用户自定义控件</b>		-	Dorado7允许用户将一段已有的、具有一个通用性视图配置信息注册为一个新的自定义控件，并且Dorado的IDE也可以非常方便的支持这一新添加的控件。</li>
+</ul>
+</p>
+
+<h2>6. Client Edition</h2>
+<p>
+Dorado7提供Dorado7 Client Edition这样一个特性的产品打包方式，Dorado7 Client Edition中只包含了Dorado7 Presentation Middleware中的Web客户端部分（即Javascript和CSS的部分）。<br>
+发布此版本的目的是为了满足各种Web项目中前端界面增强的需求。这里提到的Web项目包括基于JEE的Web项目和其他非JEE的Web项目，如.Net、PHP等，其定位类似于Ext。
+Dorado7 Client Edition从一个侧面体现出了Dorado7产品在设计上的封装度和灵活性。
+</p>
+
+<h2>7. 不仅仅是展现中间件</h2>
+<p>
+虽然Dorado7的主要功能都是围绕展现层这一主题展开的，可是我们认为Dorado7连同配套的SampleCenter提供给用户的并不仅仅是对Web应用展现层的简单补充。
+通过Dorado7即相关的示例所承载的是一种非常实用的Web开发最佳实践、一种新的开发模式。<br>
+因此可以说，使用Dorado您得到的可能并不是仅仅是对展现层的改良，也是对整体应用开发模式的一次度量和重铸。
+</p>
+
+<h1>其他相关资源</h1>
+<p>
+<ul>
+	<li><a href="http://www.bsdn.org" target="_blank">Project Home on BSDN.org</li>
+	<li><a href="http://www.bstek.com" target="_blank">上海锐道信息技术有限公司</li>
+</ul>
+</p>
+
+<p>
+<br>
+<br>
+</p>
+
+</body>
+</html>

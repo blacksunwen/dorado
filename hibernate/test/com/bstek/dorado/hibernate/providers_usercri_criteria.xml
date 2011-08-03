@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Model>
+
+	<!-- Orders -->
+	<DataProvider name="test_1" type="hibernateCriteria" autoFilter="true">
+		<Criteria entityName="com.bstek.dorado.hibernate.entity.Product" alias="product">
+			<Orders>
+				<Order propertyName="productName" ignoreCase="true" direction="desc" />
+				<Order propertyName="unitPrice" direction="asc" />
+			</Orders>
+		</Criteria>
+	</DataProvider>
+	
+	<DataProvider name="test_2" type="hibernateCriteria" autoFilter="true">
+		<Criteria entityName="com.bstek.dorado.hibernate.entity.Product" alias="product">
+			<Orders>
+				<Order propertyName="productName" ignoreCase="true" direction="desc" />
+				<Order propertyName="unitPrice" direction="asc" />
+			</Orders>
+		</Criteria>
+	</DataProvider>
+	
+	<DataProvider name="test_3" type="hibernateCriteria" autoFilter="true">
+		<Criteria entityName="com.bstek.dorado.hibernate.entity.Product" alias="product">
+			<Orders>
+				<Order propertyName="productName" ignoreCase="true" direction="desc" />
+				<Order propertyName="unitPrice" direction="asc" />
+			</Orders>
+		</Criteria>
+	</DataProvider>
+	
+	<!-- Criterions -->
+	<DataProvider name="test_4" type="hibernateCriteria" autoFilter="true">
+		<Criteria entityName="com.bstek.dorado.hibernate.entity.Product" alias="product">
+		</Criteria>
+	</DataProvider>
+	
+	<DataProvider name="test_5" type="hibernateCriteria" autoFilter="true">
+		<Criteria entityName="com.bstek.dorado.hibernate.entity.Product" alias="product">
+			<Aliases>
+				<Alias associationPath="category" alias="cg" joinType="LEFT_JOIN"/>
+			</Aliases>
+		</Criteria>
+	</DataProvider>
+	
+	<DataProvider name="test_6" type="hibernateCriteria" autoFilter="true">
+		<Criteria entityName="com.bstek.dorado.hibernate.entity.Product" alias="pdk">
+			<Aliases>
+				<Alias associationPath="category" alias="cg" joinType="LEFT_JOIN"/>
+			</Aliases>
+		</Criteria>
+	</DataProvider>
+	
+	<DataProvider name="test_7" type="hibernateCriteria" autoFilter="true">
+		<Criteria entityName="com.bstek.dorado.hibernate.entity.Product" alias="pdk">
+			<Aliases>
+				<Alias associationPath="category" alias="cg" joinType="LEFT_JOIN"/>
+				<Alias associationPath="category.parent" alias="pcg" joinType="LEFT_JOIN"/>
+			</Aliases>
+		</Criteria>
+	</DataProvider>
+	
+	<DataProvider name="test_8" type="hibernateCriteria" autoFilter="true">
+		<Criteria entityName="com.bstek.dorado.hibernate.entity.Product" alias="pdk">
+			<SubCriterias>
+				<SubCriteria associationPath="category" alias="cg" joinType="INNER_JOIN">
+				</SubCriteria>
+				<SubCriteria associationPath="category.parent" alias="pcg">
+					<Criterions>
+						<SizeCriterion propertyName="products" value="1" op=">="/>
+					</Criterions>
+				</SubCriteria>
+			</SubCriterias>
+		</Criteria>
+	</DataProvider>
+	
+	<DataProvider name="test_9" type="hibernateCriteria" autoFilter="true">
+		<Criteria entityName="com.bstek.dorado.hibernate.entity.Product" alias="pdk">
+			<SubCriterias>
+				<SubCriteria associationPath="category" alias="cg" joinType="INNER_JOIN">
+					<SubCriterias>
+						<SubCriteria associationPath="parent" alias="pcg" joinType="INNER_JOIN">
+							<Criterions>
+								<SizeCriterion propertyName="products" value="1" op=">="/>
+							</Criterions>
+						</SubCriteria>
+					</SubCriterias>
+				</SubCriteria>
+			</SubCriterias>
+		</Criteria>
+	</DataProvider>
+	
+</Model>

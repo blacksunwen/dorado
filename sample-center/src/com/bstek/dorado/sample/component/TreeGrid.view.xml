@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Model>
+    <DataType parent="global:Employee" name="Employee">
+      <Reference name="underlings" dataType="[SELF]" submitable="false" dataProvider="employeeInterceptor#getEmployeesBySuperior" parameter="$${this.id}"/>
+    </DataType>
+  </Model>
+  <View title="Employee Maintain">
+    <DataSet id="dsEmployees" dataType="[Employee]" dataProvider="employeeInterceptor#getEmployeesBySuperior"/>
+    <UpdateAction id="actionSave" caption="Save" icon="url(>skin>common/icons.gif) -140px -20px" dataResolver="employeeInterceptor#saveAll">
+      <ClientEvent name="onSuccess">dorado.MessageBox.alert(&quot;OK.&quot;);
+			</ClientEvent>
+      <UpdateItem dataPath="underlings[#dirty](R)" dataSet="dsEmployees"/>
+    </UpdateAction>
+    <ToolBar layoutConstraint="top">
+      <DataPilot dataSet="dsEmployees" itemCodes="pages,|,+,-,x"/>
+      <Separator/>
+      <ToolBarButton action="actionSave"/>
+    </ToolBar>
+    <DataTreeGrid dataSet="dsEmployees" treeColumn="firstName">
+      <BindingConfigs>
+        <BindingConfig childrenProperty="underlings" expandLevel="3" labelProperty="firstName" recursive="true"/>
+      </BindingConfigs>
+      <Columns>
+        <DataColumn property="firstName" width="160"/>
+        <DataColumn property="lastName"/>
+        <DataColumn property="sex"/>
+        <DataColumn property="titleOfCourtesy"/>
+        <DataColumn property="birthDate"/>
+        <DataColumn property="city"/>
+      </Columns>
+    </DataTreeGrid>
+  </View>
+</ViewConfig>

@@ -15,7 +15,6 @@
 				<include name="block-view.css" />
 				<include name="debugger.css" />
 				<include name="portal.css" />
-				<include name="desktop.css" />
 			</fileset>
 		</copy>
 
@@ -239,25 +238,6 @@
 		</concat>
 
 		<copy file="${src}/scripts/dorado/widget/advance/portal.js" todir="${dist}/scripts/dorado" />
-
-		<concat destfile="${dist}/scripts/dorado/chart.js" fixlastline="true" encoding="utf-8">
-			<filelist dir="${src}/scripts/dorado/widget/chart">
-				<file name="chart.js" />
-				<file name="model.js" />
-				<file name="binding.js" />
-				<file name="axis.js" />
-				<file name="element.js" />
-			</filelist>
-		</concat>
-
-		<concat destfile="${dist}/scripts/dorado/desktop.js" fixlastline="true" encoding="utf-8">
-			<filelist dir="${src}/scripts/dorado/widget/desktop">
-				<file name="app.js" />
-				<file name="desktop.js" />
-				<file name="taskbar.js" />
-				<file name="shell.js" />
-			</filelist>
-		</concat>
 	</target>
 
 	<target name="replace-revision">

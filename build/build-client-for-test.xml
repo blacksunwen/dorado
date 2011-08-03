@@ -4,6 +4,7 @@
 	<property name="dont-compressor-css" value="" />
 	<property name="dont-compressor-js" value="" />
 	<property name="dont-tidy-js" value="" />
+	<property name="build-i18n" value="" />
 	<property name="project.dir" value="${basedir}/../client" />
 
 	<target name="build">
@@ -11,7 +12,7 @@
 			<property name="build-file" value="build-client.xml" />
 			<property name="src" value="${project.dir}/client" />
 			<property name="dist" value="${project.dir}/bin" />
-			<property name="module.projects" value="client" />
+			<property name="module.projects" value="client,chart,desktop" />
 		</ant>
 	</target>
 </project>

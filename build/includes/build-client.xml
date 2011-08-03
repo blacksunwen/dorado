@@ -29,27 +29,29 @@
 	</taskdef>
 
 	<target name="copy-project-source">
-		<property name="project.dir" value="${workspace.dir}/${module.project}" />
+		<echo message="copy-project-source: ${module.project}" />
+		<property name="project.root" value="${workspace.dir}/${module.project}" />
 
 		<if>
-			<available file="${project.dir}/client" />
+			<available file="${project.root}/client" />
 			<then>
 				<if>
-					<available file="${project.dir}/client/build-client.xml" />
+					<available file="${project.root}/client/build-client.xml" />
 					<then>
-						<ant antfile="${project.dir}/client/build-client.xml" inheritRefs="true">
-							<property name="src" value="${project.dir}/client" />
+						<echo message="custom build file: ${project.root}/client/build-client.xml" />
+						<ant antfile="${project.root}/client/build-client.xml" inheritRefs="true">
+							<property name="src" value="${project.root}/client" />
 						</ant>
 					</then>
 					<else>
 						<copy todir="${dist}/scripts">
-							<fileset dir="${project.dir}/client/scripts" />
+							<fileset dir="${project.root}/client/scripts" />
 						</copy>
 						<copy todir="${dist}/skins">
-							<fileset dir="${project.dir}/client/skins" />
+							<fileset dir="${project.root}/client/skins" />
 						</copy>
 						<copy todir="${dist}/resources">
-							<fileset dir="${project.dir}/client/resources" />
+							<fileset dir="${project.root}/client/resources" />
 						</copy>
 					</else>
 				</if>
@@ -93,5 +95,10 @@
 		</if>
 	</target>
 
-	<target name="build" depends="copy-source,compressor-css,tidy-js,compressor-js" />
+	<target name="build-i18n" if="build-i18n">
+		<echo message="build-i18n: ${dist}/resources/i18n" />
+		<build-i18n-resource inputDir="${dist}/resources/i18n" outputDir="${dist}/resources/i18n" />
+	</target>
+	
+	<target name="build" depends="copy-source,compressor-css,tidy-js,compressor-js,build-i18n" />
 </project>

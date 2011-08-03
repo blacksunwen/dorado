@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+	<View title="Velocity Template" pageTemplate="com/bstek/dorado/sample/basic/VelocityTemplate.html">
+		<Button caption="按钮1" renderTo="#place1" />
+		<Button caption="按钮2" renderTo="#place1" />
+		<ListBox renderOn="#place2" items="One,Two,Three" />
+		<Panel caption="一个面板控件" renderOn="#place3" collapseable="true" width="800" height="300" layout="padding:20" />
+	</View>
+</ViewConfig>
