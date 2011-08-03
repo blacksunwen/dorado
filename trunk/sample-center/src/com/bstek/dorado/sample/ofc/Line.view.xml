@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Arguments/>
+  <Context/>
+  <Model>
+    <DataType name="lineData">
+      <PropertyDef name="value"/>
+    </DataType>
+  </Model>
+  <View>
+    <DataSet id="dsLine1">
+      <Property name="dataType">[lineData]</Property>
+      <Property name="dataProvider">sitehitsDataProvider#getLineData1</Property>
+    </DataSet>
+    <DataSet id="dsLine2">
+      <Property name="dataType">[lineData]</Property>
+      <Property name="dataProvider">sitehitsDataProvider#getLineData2</Property>
+    </DataSet>
+    <DataSet id="dsLine3">
+      <Property name="dataType">[lineData]</Property>
+      <Property name="dataProvider">sitehitsDataProvider#getLineData3</Property>
+    </DataSet>
+    <DataSet id="dsLine4">
+      <Property name="dataType">[lineData]</Property>
+      <Property name="dataProvider">sitehitsDataProvider#getLineData4</Property>
+    </DataSet>
+    <DataSet id="dsLine5">
+      <Property name="dataType">[lineData]</Property>
+      <Property name="dataProvider">sitehitsDataProvider#getLineData5</Property>
+    </DataSet>
+    <DataSet id="dsLine6">
+      <Property name="dataType">[lineData]</Property>
+      <Property name="dataProvider">sitehitsDataProvider#getLineData6</Property>
+    </DataSet>
+    <DataSet id="dsLine7">
+      <Property name="dataType">[lineData]</Property>
+      <Property name="dataProvider">sitehitsDataProvider#getLineData7</Property>
+    </DataSet>
+    <OpenFlashChart id="openFlashChart1">
+      <Property name="title">
+        <Property name="text">Site hits per hour</Property>
+      </Property>
+      <Elements>
+        <Line>
+          <Property name="bindingConfig">
+            <Property name="valueProperty">value</Property>
+          </Property>
+          <Property name="dataSet">dsLine1</Property>
+          <Property name="color">#0080C0</Property>
+        </Line>
+        <Line>
+          <Property name="bindingConfig">
+            <Property name="valueProperty">value</Property>
+          </Property>
+          <Property name="dataSet">dsLine2</Property>
+          <Property name="text">Sun</Property>
+          <Property name="color">#008040</Property>
+        </Line>
+        <Line>
+          <Property name="bindingConfig">
+            <Property name="valueProperty">value</Property>
+          </Property>
+          <Property name="dataSet">dsLine3</Property>
+          <Property name="text">Mon</Property>
+          <Property name="color">#808080</Property>
+        </Line>
+        <Line>
+          <Property name="bindingConfig">
+            <Property name="valueProperty">value</Property>
+          </Property>
+          <Property name="dataSet">dsLine4</Property>
+          <Property name="text">Tue</Property>
+          <Property name="color">#800080</Property>
+        </Line>
+        <Line>
+          <Property name="bindingConfig">
+            <Property name="valueProperty">value</Property>
+          </Property>
+          <Property name="dataSet">dsLine5</Property>
+          <Property name="text">Wed</Property>
+          <Property name="color">#FF8040</Property>
+        </Line>
+        <Line>
+          <Property name="bindingConfig">
+            <Property name="valueProperty">value</Property>
+          </Property>
+          <Property name="dataSet">dsLine6</Property>
+          <Property name="text">Thu</Property>
+          <Property name="color">#FFFF00</Property>
+        </Line>
+        <Line>
+          <Property name="bindingConfig">
+            <Property name="valueProperty">value</Property>
+          </Property>
+          <Property name="dataSet">dsLine7</Property>
+          <Property name="text">Fri</Property>
+          <Property name="color">#FF0080</Property>
+          <Property name="dotStyle">
+            <Property name="haloSize">3</Property>
+            <Property name="dotSize">5</Property>
+            <Property name="hollow">true</Property>
+          </Property>
+        </Line>
+      </Elements>
+      <XAxis>
+        <Labels>
+          <Property name="rotate">-45</Property>
+          <AxisLabel>
+            <Property name="text">00:00</Property>
+          </AxisLabel>
+          <AxisLabel>
+            <Property name="text">01:00</Property>
+          </AxisLabel>
+          <AxisLabel>
+            <Property name="text">02:00</Property>
+          </AxisLabel>
+          <AxisLabel>
+            <Property name="text">03:00</Property>
+          </AxisLabel>
+          <AxisLabel>
+            <Property name="text">04:00</Property>
+          </AxisLabel>
+          <AxisLabel>
+            <Property name="text">05:00</Property>
+          </AxisLabel>
+          <AxisLabel>
+            <Property name="text">06:00</Property>
+          </AxisLabel>
+          <AxisLabel>
+            <Property name="text">07:00</Property>
+          </AxisLabel>
+          <AxisLabel>
+            <Property name="text">08:00</Property>
+          </AxisLabel>
+          <AxisLabel>
+            <Property name="text">09:00</Property>
+          </AxisLabel>
+          <AxisLabel>
+            <Property name="text">10:00</Property>
+          </AxisLabel>
+          <AxisLabel>
+            <Property name="text">11:00</Property>
+          </AxisLabel>
+          <AxisLabel>
+            <Property name="text">12:00</Property>
+          </AxisLabel>
+          <AxisLabel>
+            <Property name="text">13:00</Property>
+          </AxisLabel>
+          <AxisLabel>
+            <Property name="text">14:00</Property>
+          </AxisLabel>
+          <AxisLabel>
+            <Property name="text">15:00</Property>
+          </AxisLabel>
+          <AxisLabel>
+            <Property name="text">16:00</Property>
+          </AxisLabel>
+          <AxisLabel>
+            <Property name="text">17:00</Property>
+          </AxisLabel>
+          <AxisLabel>
+            <Property name="text">18:00</Property>
+          </AxisLabel>
+          <AxisLabel>
+            <Property name="text">19:00</Property>
+          </AxisLabel>
+          <AxisLabel>
+            <Property name="text">20:00</Property>
+          </AxisLabel>
+          <AxisLabel>
+            <Property name="text">21:00</Property>
+          </AxisLabel>
+          <AxisLabel>
+            <Property name="text">22:00</Property>
+          </AxisLabel>
+          <AxisLabel>
+            <Property name="text">23:00</Property>
+          </AxisLabel>
+        </Labels>
+      </XAxis>
+      <YAxis>
+        <Property name="min">0</Property>
+        <Property name="max">6000</Property>
+        <Property name="steps">500</Property>
+      </YAxis>
+    </OpenFlashChart>
+  </View>
+</ViewConfig>

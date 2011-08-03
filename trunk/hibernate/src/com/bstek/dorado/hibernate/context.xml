@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:d="http://www.bstek.com/dorado/schema"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dorado-7.0.xsd">
+	<bean id="dorado.unByteCodeProxyInterceptor" class="com.bstek.dorado.hibernate.UnByteCodeProxyInterceptor" />
+
+	<bean id="dorado.hibernateSessionFactoryManager" class="com.bstek.dorado.hibernate.provider.SpringWebApplicationSessionFactoryManager">
+		<property name="defaultSessionFactory" value="sessionFactory" />
+	</bean>
+
+	<!-- Hql -->
+	<bean id="dorado.hqlDataProviderTypeRegister" parent="dorado.dataProviderTypeRegisterSupport">
+		<property name="type" value="hibernateHql" />
+		<property name="classType" value="com.bstek.dorado.hibernate.provider.HqlDataProvider" />
+	</bean>
+	<bean id="dorado.hqlQuerier" class="com.bstek.dorado.hibernate.hql.DefaultHqlQuerier">
+		<property name="hqlParameterResolver">
+			<bean class="com.bstek.dorado.hibernate.hql.DefaultHqlParameterResolver" />
+		</property>
+	</bean>
+
+	<!-- Criteria -->
+	<bean id="dorado.criteriaDataProviderTypeRegister" parent="dorado.dataProviderTypeRegisterSupport">
+		<property name="type" value="hibernateCriteria" />
+		<property name="classType" value="com.bstek.dorado.hibernate.provider.CriteriaDataProvider" />
+	</bean>
+	<bean id="dorado.criteriaTransformer" class="com.bstek.dorado.hibernate.criteria.DefaultHibernateCriteriaTransformer">
+		<property name="parameterExtractor">
+			<bean class="com.bstek.dorado.hibernate.criteria.parameter.DefaultParameterExtractor" />
+		</property>
+		<property name="misValueStrategy">
+			<bean class="com.bstek.dorado.hibernate.criteria.criterion.DefaultMisValueStrategy" />
+		</property>
+	</bean>
+	<bean id="dorado.userCriteriaProcessor" class="com.bstek.dorado.hibernate.criteria.DefaultUserCriteriaProcessor"/>
+	
+	<!-- Parser -->
+	<bean id="dorado.projectionsParser" parent="dorado.collectionToPropertyParser">
+		<property name="property" value="projections" />
+		<d:impl-type name="com.bstek.dorado.hibernate.criteria.projection.AvgProjection" />
+		<d:impl-type name="com.bstek.dorado.hibernate.criteria.projection.CountProjection" />
+		<d:impl-type name="com.bstek.dorado.hibernate.criteria.projection.GroupByProjection" />
+		<d:impl-type name="com.bstek.dorado.hibernate.criteria.projection.MaxProjection" />
+		<d:impl-type name="com.bstek.dorado.hibernate.criteria.projection.MinProjection" />
+		<d:impl-type name="com.bstek.dorado.hibernate.criteria.projection.PropertyProjection" />
+		<d:impl-type name="com.bstek.dorado.hibernate.criteria.projection.RowCountProjection" />
+		<d:impl-type name="com.bstek.dorado.hibernate.criteria.projection.SumProjection" />
+		<d:impl-type name="com.bstek.dorado.hibernate.criteria.projection.SqlProjection" />
+	</bean>
+	<bean id="dorado.criterionsParser" parent="dorado.collectionToPropertyParser">
+		<property name="property" value="criterions" />
+		<d:impl-type name="com.bstek.dorado.hibernate.criteria.criterion.BetweenCriterion" />		
+		<d:impl-type name="com.bstek.dorado.hibernate.criteria.criterion.DoublePropertyCriterion" />
+		<d:impl-type name="com.bstek.dorado.hibernate.criteria.criterion.IdEqCriterion" />
+		<d:impl-type name="com.bstek.dorado.hibernate.criteria.criterion.NonValueCriterion" />
+		<d:impl-type name="com.bstek.dorado.hibernate.criteria.criterion.SingleCriterion" />
+		<d:impl-type name="com.bstek.dorado.hibernate.criteria.criterion.SizeCriterion" />
+		<d:impl-type name="com.bstek.dorado.hibernate.criteria.criterion.SqlCriterion" />
+		<d:impl-type name="com.bstek.dorado.hibernate.criteria.criterion.SubQueryPropertyCriterion" />
+		<d:impl-type name="com.bstek.dorado.hibernate.criteria.criterion.SubQueryNoValueCriterion" />
+		<d:impl-type name="com.bstek.dorado.hibernate.criteria.criterion.SubQueryValueCriterion" />
+		<d:impl-type name="com.bstek.dorado.hibernate.criteria.criterion.AndCriterion" />
+		<d:impl-type name="com.bstek.dorado.hibernate.criteria.criterion.OrCriterion" />
+	</bean>
+	<bean id="dorado.singleCriterionOpParser" parent="dorado.propertyParser" 
+		class="com.bstek.dorado.hibernate.criteria.criterion.SingleCriterionOpParser"/>
+	<bean id="dorado.nonValueCriterionOpParser" parent="dorado.propertyParser" 
+		class="com.bstek.dorado.hibernate.criteria.criterion.NonValueCriterionOpParser"/>
+	<bean id="dorado.doublePropertyCriterionOpParser" parent="dorado.propertyParser" 
+		class="com.bstek.dorado.hibernate.criteria.criterion.DoublePropertyCriterionOpParser"/>
+	<bean id="dorado.sizeCriterionOpParser" parent="dorado.propertyParser" 
+		class="com.bstek.dorado.hibernate.criteria.criterion.SizeCriterionOpParser"/>
+	<bean id="dorado.subQueryPropertyCriterionOpParser" parent="dorado.propertyParser" 
+		class="com.bstek.dorado.hibernate.criteria.criterion.SubQueryPropertyCriterionOpParser"/>
+	<bean id="dorado.subQueryValueCriterionOpParser" parent="dorado.propertyParser" 
+		class="com.bstek.dorado.hibernate.criteria.criterion.SubQueryValueCriterionOpParser"/>
+	<bean id="dorado.subQueryNoValueCriterionOpParser" parent="dorado.propertyParser" 
+		class="com.bstek.dorado.hibernate.criteria.criterion.SubQueryNoValueCriterionOpParser"/>
+</beans>

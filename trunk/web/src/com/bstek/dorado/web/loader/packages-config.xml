@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
 	<Patterns>
-		<Pattern name="dorado-js" contentType="text/javascript"
-			charset="UTF-8" mergeRequests='${configure["view.mergeJavaScript"]}'
-			baseUri=">dorado/client" resourcePrefix="scripts" resourceSuffix=".js" />
-		<Pattern name="dorado-css" contentType="text/css" charset="UTF-8"
-			mergeRequests='${configure["view.mergeStyleSheet"]}' baseUri=">dorado/client/skins/~current"
-			resourcePrefix="skins" resourceSuffix=".css" />
+		<Pattern name="dorado-js" contentType="text/javascript" charset="UTF-8" mergeRequests='${configure["view.mergeJavaScript"]}' baseUri=">dorado/client"
+			resourceSuffix=".js" />
+		<Pattern name="dorado-css" contentType="text/css" charset="UTF-8" mergeRequests='${configure["view.mergeStyleSheet"]}' baseUri=">dorado/client/skins/~current"
+			resourceSuffix=".css" />
 	</Patterns>
 
 	<Packages>
@@ -42,8 +40,7 @@
 			skins/~current/common,
 			skins/~current/widget
 		</Package>
-		<Package name="widget" pattern="dorado-js"
-			depends="jquery-plugins,data,widget-skin">
+		<Package name="widget" pattern="dorado-js" depends="jquery-plugins,data,widget-skin">
 			scripts/dorado/widget,
 			resources/i18n/widget,
 			skins/~current/support

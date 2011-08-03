@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+	<View listener="spring:dynaView#onViewInit" title="Dyna View" layout="padding:20">
+		<Panel id="panelButtons" width="600" height="300" layout="Anchor" />
+	</View>
+</ViewConfig>

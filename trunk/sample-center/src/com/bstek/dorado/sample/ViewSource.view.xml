@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+	<View packages="syntax-highlighter" title="查看源文件" pageTemplate="com/bstek/dorado/sample/ViewSource.html" layout="padding:8">
+		<ClientEvent name="onReady"><![CDATA[$fly("#theCode").beautifyCode();]]></ClientEvent>
+	</View>
+</ViewConfig>

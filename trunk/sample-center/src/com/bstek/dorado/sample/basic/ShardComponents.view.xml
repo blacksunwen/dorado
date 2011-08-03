@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+	<View>
+		<ToolBar>
+			<GroupStart id="buttons" />
+			<ToolBarButton caption="添加" icon="url(>skin>common/icons.gif) -121px 0">
+				<ClientEvent name="onClick"><![CDATA[dorado.MessageBox.alert("您点击了添加按钮.");]]></ClientEvent>
+			</ToolBarButton>
+			<ToolBarButton caption="删除" icon="url(>skin>common/icons.gif) -141px 0">
+				<ClientEvent name="onClick"><![CDATA[dorado.MessageBox.alert("您点击了删除按钮.");]]></ClientEvent>
+			</ToolBarButton>
+			<GroupEnd />
+		</ToolBar>
+		<ListBox id="listbox1" items="One,Two,Three,Four,Five,Six,Seven" />
+	</View>
+</ViewConfig>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+	<Arguments>
+		<Argument name="numberStyle"
+			value="padding:8px 18px 8px 18px; color:white; background:#004080; fontSize:16pt; fontWeight:bold" />
+		<Argument name="sumStyle" value="color: gray; fontSize:16pt; fontWeight:bold" />
+	</Arguments>
+	<View title="拖拽  2" layout="Anchor padding:20">
+		<ClientEvent name="onCreate"><![CDATA[
+this.$onGetDraggingIndicator = function(self, arg) {
+	arg.indicator.set("content", $(self.getDom()).clone().css("background", "gray"));
+}
+
+this.$onDraggingSourceDrop = function(self, arg) {
+	var sum = parseInt(self.get("userData")) || 0;
+	var draggingNum = parseInt(arg.draggingInfo.get("object.text"));
+	var label = self.get("children").toArray()[0];
+	sum += draggingNum;
+	label.set("text", "合计: " + sum);
+	self.set("userData", sum);
+	$(label.getDom()).effect("highlight", { color: "#FF8000" });
+}
+		]]></ClientEvent>
+
+		<Label text="请尝试将这些数字拖动到下面的某个面板中..." />
+		<Container height="60" width="100%" layout="Anchor"
+			layoutConstraint="top:30">
+			<Label text="1" draggable="true" dragTags="number,1"
+				layoutConstraint="anchorLeft:previous; left:4" style="${argument.numberStyle}">
+				<ClientEvent name="onGetDraggingIndicator"><![CDATA[this.$onGetDraggingIndicator(self, arg);]]></ClientEvent>
+			</Label>
+			<Label text="2" draggable="true" dragTags="number,2"
+				layoutConstraint="anchorLeft:previous; left:4" style="${argument.numberStyle}">
+				<ClientEvent name="onGetDraggingIndicator"><![CDATA[this.$onGetDraggingIndicator(self, arg);]]></ClientEvent>
+			</Label>
+			<Label text="3" draggable="true" dragTags="number,3"
+				layoutConstraint="anchorLeft:previous; left:4" style="${argument.numberStyle}">
+				<ClientEvent name="onGetDraggingIndicator"><![CDATA[this.$onGetDraggingIndicator(self, arg);]]></ClientEvent>
+			</Label>
+			<Label text="4" draggable="true" dragTags="number,4"
+				layoutConstraint="anchorLeft:previous; left:4" style="${argument.numberStyle}">
+				<ClientEvent name="onGetDraggingIndicator"><![CDATA[this.$onGetDraggingIndicator(self, arg);]]></ClientEvent>
+			</Label>
+			<Label text="5" draggable="true" dragTags="number,5"
+				layoutConstraint="anchorLeft:previous; left:4" style="${argument.numberStyle}">
+				<ClientEvent name="onGetDraggingIndicator"><![CDATA[this.$onGetDraggingIndicator(self, arg);]]></ClientEvent>
+			</Label>
+			<Label text="6" draggable="true" dragTags="number,6"
+				layoutConstraint="anchorLeft:previous; left:4" style="${argument.numberStyle}">
+				<ClientEvent name="onGetDraggingIndicator"><![CDATA[this.$onGetDraggingIndicator(self, arg);]]></ClientEvent>
+			</Label>
+			<Label text="7" draggable="true" dragTags="number,7"
+				layoutConstraint="anchorLeft:previous; left:4" style="${argument.numberStyle}">
+				<ClientEvent name="onGetDraggingIndicator"><![CDATA[this.$onGetDraggingIndicator(self, arg);]]></ClientEvent>
+			</Label>
+			<Label text="8" draggable="true" dragTags="number,8"
+				layoutConstraint="anchorLeft:previous; left:4" style="${argument.numberStyle}">
+				<ClientEvent name="onGetDraggingIndicator"><![CDATA[this.$onGetDraggingIndicator(self, arg);]]></ClientEvent>
+			</Label>
+			<Label text="9" draggable="true" dragTags="number,9"
+				layoutConstraint="anchorLeft:previous; left:4" style="${argument.numberStyle}">
+				<ClientEvent name="onGetDraggingIndicator"><![CDATA[this.$onGetDraggingIndicator(self, arg);]]></ClientEvent>
+			</Label>
+		</Container>
+
+		<Panel caption="我喜欢所有数字" droppable="true" droppableTags="number"
+			width="200" height="200" layoutConstraint="top:100" layout="padding:8"
+			userData="0">
+			<ClientEvent name="onDraggingSourceDrop"><![CDATA[this.$onDraggingSourceDrop(self, arg);]]></ClientEvent>
+			<Children>
+				<Label text="合计: 0" style="${argument.sumStyle}" />
+			</Children>
+		</Panel>
+		<Panel caption="我只喜欢偶数" droppable="true" droppableTags="0,2,4,6,8"
+			width="200" height="200" layoutConstraint="top:100; left:210" layout="padding:8"
+			userData="0">
+			<ClientEvent name="onDraggingSourceDrop"><![CDATA[this.$onDraggingSourceDrop(self, arg);]]></ClientEvent>
+			<Children>
+				<Label text="合计: 0" style="${argument.sumStyle}" />
+			</Children>
+		</Panel>
+		<Panel caption="我的合计不能大于10" droppable="true" droppableTags="number"
+			width="200" height="200" layoutConstraint="top:100; left:420" layout="padding:8"
+			userData="0">
+			<ClientEvent name="onDraggingSourceMove"><![CDATA[
+var sum = parseInt(self.get("userData")) || 0;
+var draggingNum = parseInt(arg.draggingInfo.get("object.text"));
+arg.draggingInfo.set("accept", (sum + draggingNum) <= 10);
+			]]></ClientEvent>
+			<ClientEvent name="onDraggingSourceDrop"><![CDATA[this.$onDraggingSourceDrop(self, arg);]]></ClientEvent>
+			<Children>
+				<Label text="合计: 0" style="${argument.sumStyle}" />
+			</Children>
+		</Panel>
+	</View>
+</ViewConfig>

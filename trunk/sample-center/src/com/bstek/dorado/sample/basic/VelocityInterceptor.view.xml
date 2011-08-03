@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+	<View title="Velocity模板拦截器" pageTemplate="com/bstek/dorado/sample/basic/VelocityInterceptor.html" />
+</ViewConfig>

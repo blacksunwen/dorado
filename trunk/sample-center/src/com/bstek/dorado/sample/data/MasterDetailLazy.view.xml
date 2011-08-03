@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Model>
+    <DataType parent="global:Category" name="Category" meta="x:15;y:0">
+      <Reference name="products" dataProvider="productInterceptor#getProductsByCategoryId" parameter="$${this.id}">
+        <Property name="cacheMode">clientSide</Property>
+      </Reference>
+    </DataType>
+  </Model>
+  <View title="Lazy Loading Master-Detail">
+    <DataSet id="dsCategories" dataType="[Category]" dataProvider="categoryInterceptor#getAll"/>
+    <UpdateAction id="actionSave" caption="保存" icon="url(>skin>common/icons.gif) -140px -20px" successMessage="数据保存成功。" dataResolver="categoryInterceptor#saveAll">
+      <UpdateItem dataSet="dsCategories" refreshMode="cascade"/>
+    </UpdateAction>
+    <SplitPanel direction="top" position="230">
+      <MainControl>
+        <Container>
+          <ToolBar layoutConstraint="top">
+            <DataPilot dataPath="#.products" dataSet="dsCategories" itemCodes="+,-,x"/>
+          </ToolBar>
+          <DataGrid dataPath="#.products" dataSet="dsCategories" stretchColumnsMode="stretchableColumns">
+            <IndicatorColumn/>
+          </DataGrid>
+        </Container>
+      </MainControl>
+      <SideControl>
+        <Container>
+          <ToolBar layoutConstraint="top">
+            <DataPilot dataSet="dsCategories" itemCodes="pages,|,+,-,x"/>
+            <Separator/>
+            <ToolBarButton action="actionSave"/>
+          </ToolBar>
+          <DataGrid dataSet="dsCategories" stretchColumnsMode="stretchableColumns">
+            <IndicatorColumn/>
+          </DataGrid>
+        </Container>
+      </SideControl>
+    </SplitPanel>
+  </View>
+</ViewConfig>

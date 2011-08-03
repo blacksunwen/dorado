@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Model>
+  <DataType parent="CommonEntity" name="BaseExampleCategory" matchType="com.bstek.dorado.sample.entity.ExampleCategory" meta="x:13;y:10;child:ExampleCategory">
+    <PropertyDef name="label" label="标题" required="true"/>
+    <PropertyDef name="icon" label="图标"/>
+  </DataType>
+  <DataType parent="BaseExampleCategory" name="ExampleCategory" meta="x:8;y:164" autoCreatePropertyDefs="true">
+    <PropertyDef name="new" label="是否新示例"/>
+    <PropertyDef name="hot" label="是否重点示例"/>
+    <PropertyDef name="url" label="路径"/>
+    <PropertyDef name="tags" label="标签"/>
+    <PropertyDef name="summary" label="说明"/>
+  </DataType>
+  <DataType parent="CommonEntity" name="BaseExample" matchType="com.bstek.dorado.sample.entity.Example" meta="x:176;y:10;child:Example">
+    <PropertyDef name="label" label="标题" required="true"/>
+    <PropertyDef name="icon" label="图标"/>
+  </DataType>
+  <DataType parent="BaseExample" name="Example" meta="x:181;y:164" autoCreatePropertyDefs="true">
+    <PropertyDef name="author" label="作者"/>
+    <PropertyDef name="createDate" defaultValue="${util.getDate()}" label="创建日期"/>
+    <PropertyDef name="lastModify" defaultValue="${util.getDate()}" label="修改日期"/>
+    <PropertyDef name="new" label="是否新示例"/>
+    <PropertyDef name="hot" label="是否重点示例"/>
+    <PropertyDef name="url" label="路径"/>
+    <PropertyDef name="tags" label="标签"/>
+    <PropertyDef name="summary" label="说明"/>
+  </DataType>
+  <DataType parent="CommonEntity" name="ExampleSource" matchType="com.bstek.dorado.sample.entity.ExampleSource" meta="x:319;y:10" autoCreatePropertyDefs="true">
+    <PropertyDef name="label" label="标题" required="true"/>
+    <PropertyDef name="path" label="路径" required="true"/>
+    <PropertyDef name="summary" label="说明"/>
+  </DataType>
+</Model>

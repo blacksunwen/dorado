@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+	<View title="对象型组装控件" layout="Anchor padding:40">
+		<QuickForm items="prop1,prop2,prop3,prop4,prop5" width="400" />
+	</View>
+</ViewConfig>

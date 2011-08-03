@@ -38,18 +38,18 @@
 
 	<target name="prepare-project-src">
 		<echo message="process sub project: ${module.project}" />
-		<property name="project.dir" value="${workspace.dir}/${module.project}" />
+		<property name="project.root" value="${workspace.dir}/${module.project}" />
 
-		<echo message="copy ${project.dir}/src --> ${module.dir}/src" />
+		<echo message="copy ${project.root}/src --> ${module.dir}/src" />
 		<copy todir="${module.dir}/src" failonerror="false">
-			<fileset dir="${project.dir}/src">
+			<fileset dir="${project.root}/src">
 				<patternset refid="source-patternset" />
 			</fileset>
 		</copy>
 
-		<echo message="copy ${project.dir}/test --> ${module.dir}/test" />
+		<echo message="copy ${project.root}/test --> ${module.dir}/test" />
 		<copy todir="${module.dir}/test" failonerror="false">
-			<fileset dir="${project.dir}/test">
+			<fileset dir="${project.root}/test">
 				<patternset refid="source-patternset" />
 			</fileset>
 		</copy>

@@ -301,7 +301,7 @@
 						break;
 					}
 					case "multiRows":{
-						$row.toggleClass("selected-row", selection.indexOf(item) >= 0);
+						$row.toggleClass("selected-row", !!(selection && selection.indexOf(item) >= 0));
 						break;
 					}
 				}

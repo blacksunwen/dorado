@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+	<View>
+		<DataSet id="ds1">
+			<DataProvider parent="testProvider1">
+				<ResultDataType parent="[Map]">
+					<PropertyDef name="key1" label="Key 1" />
+					<PropertyDef name="key2" label="Key 2" />
+					<PropertyDef name="key3" label="Key 3" />
+					<PropertyDef name="key4" label="Key 4" />
+					<PropertyDef name="key5" label="Key 5" />
+					<ClientEvent name="onInsert"><![CDATA[alert('onInsert');]]></ClientEvent>
+					<ClientEvent name="onCurrentChange"><![CDATA[alert('onCurrentChange');]]></ClientEvent>
+				</ResultDataType>
+			</DataProvider>
+			<ClientEvent name="onReady"><![CDATA[alert('ds1 ready.');]]></ClientEvent>
+		</DataSet>
+		<OpenFlashChart id="chart1" backgroundColor="blue">
+			<Property name="legend">
+				<Property name="backgroundColor" value="yellow" />
+				<Property name="padding" value="8" />
+			</Property>
+			<PieChart>
+				<Property name="dataSet" value="ds1"></Property>
+				<Property name="bindingConfig">
+					<Property name="valueProperty" value="value" />
+					<Property name="labelProperty" value="label" />
+					<Property name="textProperty" value="text" />
+				</Property>
+			</PieChart>
+		</OpenFlashChart>
+	</View>
+</ViewConfig>

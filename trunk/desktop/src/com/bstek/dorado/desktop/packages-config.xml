@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<Packages>
+		<Package name="desktop-skin" pattern="dorado-css">
+			skins/~current/desktop
+		</Package>
+		<Package name="desktop" pattern="dorado-js" depends="base-widget,desktop-skin">
+			scripts/dorado/desktop
+		</Package>
+	</Packages>
+</config>

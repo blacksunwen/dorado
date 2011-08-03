@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Model>
+    <DataType parent="global:ExampleCategory" name="ExampleCategory">
+      <Reference name="categories" dataType="[SELF]" dataProvider="main#getCategories" parameter="$${this.id}"/>
+      <Reference name="examples" dataType="[Example]" dataProvider="main#getExamplesByCategoryId" parameter="$${this.id}"/>
+    </DataType>
+    <DataType parent="global:Example" name="Example">
+      <PropertyDef name="sortFlag" dataType="int"/>
+      <PropertyDef name="sources" dataType="[ExampleSource]"/>
+    </DataType>
+  </Model>
+  <View layout="Anchor" title="Dorado7 Sample Center">
+    <PageBanner layoutConstraint="left:0; right:0; top:0" caption="Dorado 7 Sample Center"/>
+    <DataSet id="dsCategories" dataType="[ExampleCategory]" dataProvider="main#getCategories"/>
+    <SplitPanel layoutConstraint="left:0; right:0; top:0; anchorTop:previous; bottom:0" position="260">
+      <MainControl>
+        <IFrame id="frameExample" path="com.bstek.dorado.sample.Welcome.d"/>
+      </MainControl>
+      <SideControl>
+        <DataTree id="treeExamples" dataSet="dsCategories">
+          <ClientEvent name="onDataRowClick">
+var frameExample = this.id(&quot;frameExample&quot;);
+var nodeType = self.get(&quot;currentNode.bindingConfig.name&quot;);
+var url;
+if (nodeType == &quot;Category&quot;) url = &quot;com.bstek.dorado.sample.CategorySummary.d?categoryId=&quot;;
+else url = &quot;com.bstek.dorado.sample.ExampleSummary.d?exampleId=&quot;;
+url += self.get(&quot;currentNode.data.id&quot;);
+frameExample.set(&quot;path&quot;, url);
+</ClientEvent>
+          <Property name="expandingAnimated">true</Property>
+          <BindingConfigs>
+            <BindingConfig childrenProperty="categories" icon=">images/folder.gif" labelProperty="label" name="Category" recursive="true">
+              <Property name="expandLevel">1</Property>
+              <BindingConfig childrenProperty="examples" icon=">images/file.gif" labelProperty="label" name="Example">
+                <Property name="expandLevel">0</Property>
+              </BindingConfig>
+            </BindingConfig>
+          </BindingConfigs>
+        </DataTree>
+      </SideControl>
+    </SplitPanel>
+    <SimpleIconButton layoutConstraint="top:10; right:12" tip="管理" icon="url(>skin>common/icons.gif) -100px -20px">
+      <ClientEvent name="onClick">
+open($url(&quot;>com.bstek.dorado.sample.admin.ExampleMaintain.d&quot;));
+</ClientEvent>
+    </SimpleIconButton>
+  </View>
+</ViewConfig>

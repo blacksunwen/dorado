@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Model>
+    <DataType parent="BaseExampleCategory" name="ExampleCategory">
+      <Reference name="categories" dataType="[SELF]" dataProvider="main#getCategories" parameter="$${this.id}"/>
+      <Reference name="examples" dataType="[BaseExample]" dataProvider="main#getExamplesByCategoryId" parameter="$${this.id}"/>
+    </DataType>
+  </Model>
+  <View layout="Anchor padding:20" title="Recursive Tree">
+    <DataSet id="dsCategories" dataType="[ExampleCategory]" dataProvider="main#getCategories"/>
+    <DataTree id="treeExamples" height="400" width="300" dataSet="dsCategories">
+      <BindingConfigs>
+        <BindingConfig childrenProperty="categories" icon=">images/folder.gif" labelProperty="label" recursive="true" expandLevel="1">
+          <BindingConfig childrenProperty="examples" icon=">images/file.gif" labelProperty="label"/>
+        </BindingConfig>
+      </BindingConfigs>
+    </DataTree>
+  </View>
+</ViewConfig>

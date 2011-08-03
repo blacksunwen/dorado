@@ -2036,10 +2036,9 @@
 								value = v[1];
 								var pd = column._propertyDef;
 								if (pd && pd._mapping) {
-									value = operator + pd.getMappedKey(value);
+									value = pd.getMappedKey(value);
 								}
-								var dataType = column.get("dataType");
-								if (dataType) value = operator + dataType.parse(value, column.get("typeFormat"));
+								value = operator + value;
 							}
 						}
 						
@@ -2055,6 +2054,20 @@
 						}
 					}
 				});
+				
+				jQuery.aop.around({
+					target: textEditor,
+					method: "doSet"
+				}, function(invocation) {
+					var attr = invocation.arguments[0];
+					var value = invocation.arguments[1];
+					if (attr == "value") {
+						var dataType = column.get("dataType");
+						if (dataType) value = dataType.toText(value, column.get("typeFormat"));
+						invocation.arguments[1] = value;
+					}
+					return invocation.proceed();
+				});
 
 				var trigger = column.get("trigger"), pd = column._propertyDef;
 				if (!trigger) {
@@ -2067,18 +2080,22 @@
 				} 
 				if (!trigger) {
 					var dataType = column.get("dataType");
-					if (dataType &&
-					(dataType._code == dorado.DataType.PRIMITIVE_BOOLEAN || dataType._code == dorado.DataType.BOOLEAN)) {
-						textEditor.set({
-							mapping: [{
-								key: false,
-								value: $resource("dorado.core.BooleanFalse")
-							}, {
-								key: true,
-								value: $resource("dorado.core.BooleanTrue")
-							}],
-							trigger: "autoMappingDropDown2"
-						});
+					if (dataType) {
+						if (dataType._code == dorado.DataType.PRIMITIVE_BOOLEAN || dataType._code == dorado.DataType.BOOLEAN) {
+							textEditor.set({
+								mapping: [{
+									key: false,
+									value: $resource("dorado.core.BooleanFalse")
+								}, {
+									key: true,
+									value: $resource("dorado.core.BooleanTrue")
+								}],
+								trigger: "autoMappingDropDown2"
+							});
+						}
+						else if (dataType._code == dorado.DataType.DATE) {
+							textEditor.set("trigger", "defaultDateDropDown");
+						}
 					}
 				}
 				return textEditor;
@@ -2096,15 +2113,14 @@
 				if (text) {
 					var v = dorado.Toolkits.parseFilterValue(text), operator = v[0], value = v[1];
 					if (pd && pd._mapping) {
-						value = operator + pd.getMappedValue(value);
+						value = pd.getMappedValue(value);
 					}
-					var dataType = column.get("dataType");
-					if (dataType) value = operator + dataType.toText(value, column.get("displayFormat"));
+					value = operator + value;
 				}
 			}		
 			textEditor._cellColumn = arg.column;
 			textEditor.disableListeners();
-			textEditor.set("value", value);
+			textEditor.set("text", value);
 			textEditor.refresh();
 			textEditor.enableListeners();
 		}

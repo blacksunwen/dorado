@@ -1,23 +1,22 @@
 (function() {
 
-	var skin = "nature";
+	var skin = "default";
 
 	var testLibsBefore = [
-		"src-test/lib/json/json2.js",
+		"client/scripts/json/json2.js",
 
-		"src-test/lib/jquery/jquery-1.4.4.js",
-		"src-test/lib/jquery/jquery-template-1.0.0.js",
-		"src-test/lib/jquery/jquery.easing.1.3.js",
-		"src-test/lib/jquery/jquery.mousewheel.js",
-		"src-test/lib/jquery/aop.js",
-		"src-test/lib/jquery/jquery.hotkeys.js",
-		"src-test/lib/jquery/jquery.swfobject.1-1-1.js",
-		"src-test/lib/jquery/jquery-ui-1.8.7.custom.js",
-		"src-test/lib/swfobject.js",
+		"client/scripts/jquery/jquery-1.4.4.js",
+		"client/scripts/jquery/jquery-template-1.0.0.js",
+		"client/scripts/jquery/jquery.easing.1.3.js",
+		"client/scripts/jquery/jquery.mousewheel.js",
+		"client/scripts/jquery/aop.js",
+		"client/scripts/jquery/jquery.hotkeys.js",
+		"client/scripts/jquery/jquery.swfobject.1-1-1.js",
+		"client/scripts/jquery/jquery-ui-1.8.7.custom.js",
 
-		"test-support/lib/jsunit/app/jsUnitCore.js",
+		"client-test/lib/jsunit/app/jsUnitCore.js",
 
-		"src-test/lib/test-setting.js"
+		"client-test/lib/test-setting.js"
 	];
 
 	var doradoLibs = [
@@ -120,7 +119,6 @@
         "widget/base/dialog.js",
         "widget/base/menu-item.js",
         "widget/base/menu.js",
-        //"widget/base/menu.js",
 
 		"widget/data-control/data-control.js",
 		"widget/data-control/property-data-control.js",
@@ -174,38 +172,40 @@
 		"widget/debugger/view.js",
 		"widget/debugger/hotkeys.js",
 		"widget/debugger/ajax.js",
-
-		"widget/chart/chart.js",
-		"widget/chart/model.js",
-		"widget/chart/binding.js",
-		"widget/chart/axis.js",
-		"widget/chart/element.js",
-
+		
 		"widget/advance/portal.js",
 		"widget/advance/color-picker.js",
 		"widget/advance/face-picker.js",
 		"widget/advance/html-editor.js",
-		"widget/advance/image-canvas.js",
-
-		"widget/desktop/app.js",
-		"widget/desktop/desktop.js",
-		"widget/desktop/taskbar.js",
-		"widget/desktop/shell.js"
+		"widget/advance/image-canvas.js"
+	];
+	
+	var addOnLibs = [
+		"chart/client/scripts/dorado/chart.js",
+		"chart/client/scripts/dorado/model.js",
+		"chart/client/scripts/dorado/binding.js",
+		"chart/client/scripts/dorado/axis.js",
+		"chart/client/scripts/dorado/element.js",
+		
+		"desktop/client/scripts/dorado/app.js",
+		"desktop/client/scripts/dorado/desktop.js",
+		"desktop/client/scripts/dorado/taskbar.js",
+		"desktop/client/scripts/dorado/shell.js"
 	];
 
 	var locale = "zh_CN"
 	var testLibsAfter = [
-		"src/css/skin/" + skin + "/support.js",
+		"client/skins/" + skin + "/support.js",
 
-		"dist/resources/i18n/core." + locale + ".js",
-		"dist/resources/i18n/data." + locale + ".js",
-		"dist/resources/i18n/widget." + locale + ".js",
-		"dist/resources/i18n/base-widget." + locale + ".js",
-		"dist/resources/i18n/list." + locale + ".js",
-		"dist/resources/i18n/grid." + locale + ".js",
-		"dist/resources/i18n/tree." + locale + ".js",
+		"bin/resources/i18n/core." + locale + ".js",
+		"bin/resources/i18n/data." + locale + ".js",
+		"bin/resources/i18n/widget." + locale + ".js",
+		"bin/resources/i18n/base-widget." + locale + ".js",
+		"bin/resources/i18n/list." + locale + ".js",
+		"bin/resources/i18n/grid." + locale + ".js",
+		"bin/resources/i18n/tree." + locale + ".js",
 
-		"src-test/lib/test-utils.js"
+		"client-test/lib/test-utils.js"
 	];
 
 	var styleSheets = [
@@ -247,32 +247,43 @@
 		"block-view.css",
 		"image-canvas.css",
 		"color-picker.css",
-		"debugger.css",
-		"desktop.css"
+		"debugger.css"
 	];
+	
+	var addOnstyleSheets = [
+ 		"desktop/client/skins/" + skin + "/desktop.css"
+ 	];
 
 	var cacheBuster = "";
 	if ((location + "").substring(0, 4) == "http") {
 		cacheBuster = "?cacheBuster=" + parseInt(new Date().getTime() / 10000);
 	}
 
-	var ROOT = "/web-test/client/";
+	var WORKSPACE_ROOT = "/client-test/workspace/";
+	var CLIENT_ROOT = WORKSPACE_ROOT + "client/";
 
     for (var i = 0; i < styleSheets.length; i++) {
-		writeIncludeStyleSheet(ROOT + "src/css/skin/" + skin + "/" + styleSheets[i]);
+		writeIncludeStyleSheet(CLIENT_ROOT + "client/skins/" + skin + "/" + styleSheets[i]);
 	}
-	writeIncludeStyleSheet(ROOT + "src-test/lib/blackbird.css");
+    
+    for (var i = 0; i < addOnstyleSheets.length; i++) {
+		writeIncludeStyleSheet(WORKSPACE_ROOT + addOnstyleSheets[i]);
+	}
 
 	for (var i = 0; i < testLibsBefore.length; i++) {
-		writeIncludeScriptlet(ROOT + testLibsBefore[i]);
+		writeIncludeScriptlet(CLIENT_ROOT + testLibsBefore[i]);
 	}
 
 	for (var i = 0; i < doradoLibs.length; i++) {
-		writeIncludeScriptlet(ROOT + "src/" + doradoLibs[i]);
+		writeIncludeScriptlet(CLIENT_ROOT + "client/scripts/dorado/" + doradoLibs[i]);
+	}
+
+	for (var i = 0; i < addOnLibs.length; i++) {
+		writeIncludeScriptlet(WORKSPACE_ROOT + addOnLibs[i]);
 	}
 
 	for (var i = 0; i < testLibsAfter.length; i++) {
-		writeIncludeScriptlet(ROOT + testLibsAfter[i]);
+		writeIncludeScriptlet(CLIENT_ROOT + testLibsAfter[i]);
 	}
 
 	function writeIncludeScriptlet(file) {

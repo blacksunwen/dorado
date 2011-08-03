@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+	<View>
+		<Button id="ToggleButton" toggleable="true" />
+
+		<Panel id="ButtonPanel" layout="regionPadding:8">
+			<Children>
+				<Container layout="Anchor" layoutConstraint="bottom height:28">
+					<Button caption="${virtualProperty.buttonCaption}"
+						layoutConstraint="left:50%">
+						<ClientEvent name="onClick"><![CDATA[
+dorado.MessageBox.alert("您点击了" + self.get("caption") + "按钮.");
+					]]></ClientEvent>
+					</Button>
+				</Container>
+			</Children>
+		</Panel>
+	</View>
+</ViewConfig>

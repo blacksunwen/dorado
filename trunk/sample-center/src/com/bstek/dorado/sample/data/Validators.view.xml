@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Arguments/>
+  <Context/>
+  <Model>
+    <DataType name="Account">
+      <PropertyDef name="accountName">
+        <Property name="required">true</Property>
+        <Property name="label">账户名</Property>
+        <Validator type="length">
+          <Property name="maxLength">10</Property>
+          <Property name="minLength">5</Property>
+          <Property name="defaultResultState">warn</Property>
+          <Property name="defaultResultState">warn</Property>
+        </Validator>
+        <Validator type="ajax">
+          <Property name="service">validators#checkAccountName</Property>
+          <Property name="executingMessage">正在检查账户名...</Property>
+        </Validator>
+      </PropertyDef>
+      <PropertyDef name="registerDate">
+        <Property name="required">false</Property>
+        <Property name="dataType">Date</Property>
+        <Property name="label">注册日期</Property>
+      </PropertyDef>
+      <PropertyDef name="email">
+        <Property name="label">电子邮件</Property>
+        <Validator type="regExp">
+          <Property name="whiteRegExp">\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*</Property>
+          <Property name="resultMessage">输入的内容不是正确的EMail格式。</Property>
+        </Validator>
+      </PropertyDef>
+    </DataType>
+  </Model>
+  <View layout="anchor padding:30">
+    <DataSet id="dataSetAccount">
+      <ClientEvent name="onReady">self.disableObservers();&#xD;
+try {&#xD;
+    var accounts = self.get(&quot;data&quot;), account;&#xD;
+    &#xD;
+    account = accounts.insert();&#xD;
+    account.set(&quot;accountName&quot;, &quot;Dorado&quot;);&#xD;
+    account.set(&quot;registerDate&quot;, new Date(2000, 8, 25));&#xD;
+    account.set(&quot;email&quot;, &quot;dorado7@bstek.com&quot;);&#xD;
+    account.validate();&#xD;
+    account.reset();&#xD;
+    &#xD;
+    account = accounts.insert();&#xD;
+    account.set(&quot;accountName&quot;, &quot;Guest&quot;);&#xD;
+    account.set(&quot;registerDate&quot;, new Date(2006, 1, 7));&#xD;
+    account.set(&quot;email&quot;, &quot;www.bstek.com&quot;);&#xD;
+    account.validate();&#xD;
+    &#xD;
+    account = accounts.insert();&#xD;
+    account.set(&quot;accountName&quot;, &quot;Administrator&quot;);&#xD;
+    account.set(&quot;registerDate&quot;, new Date(2007, 9, 22));&#xD;
+    account.validate();&#xD;
+}&#xD;
+finally {&#xD;
+    self.enableObservers();&#xD;
+}&#xD;
+</ClientEvent>
+      <Property name="dataType">[Account]</Property>
+    </DataSet>
+    <Container layout="regionPadding:2">
+      <Button id="buttonAdd" layoutConstraint="left">
+        <ClientEvent name="onClick">this.id(&quot;dataSetAccount&quot;).get(&quot;data&quot;).insert();&#xD;
+</ClientEvent>
+        <Property name="caption">添加</Property>
+        <Property name="icon">url(>skin>common/icons.gif) -121px 0</Property>
+      </Button>
+      <Button id="buttonDelete" layoutConstraint="left">
+        <ClientEvent name="onClick">this.id(&quot;dataSetAccount&quot;).get(&quot;data&quot;).remove();</ClientEvent>
+        <Property name="caption">删除</Property>
+        <Property name="icon">url(>skin>common/icons.gif) -141px 0</Property>
+      </Button>
+    </Container>
+    <AutoForm id="autoFormAccount" layoutConstraint="anchorTop:previous">
+      <Property name="dataSet">dataSetAccount</Property>
+      <Property name="autoCreateElements">false</Property>
+      <Property name="cols">*</Property>
+      <Property name="hintWidth">300</Property>
+      <Property name="width">600</Property>
+      <Property name="showHintMessage">true</Property>
+      <AutoFormElement>
+        <Property name="name">accountName</Property>
+        <Property name="property">accountName</Property>
+        <Editor/>
+      </AutoFormElement>
+      <AutoFormElement>
+        <Property name="name">accountName</Property>
+        <Property name="property">registerDate</Property>
+        <Editor/>
+      </AutoFormElement>
+      <AutoFormElement>
+        <Property name="name">email</Property>
+        <Property name="property">email</Property>
+        <Editor>
+          <TextEditor id="textEditorEMail">
+            <Property name="blankText">abc@abc.abc</Property>
+          </TextEditor>
+        </Editor>
+      </AutoFormElement>
+    </AutoForm>
+    <DataGrid id="dataGridAccount" layoutConstraint="anchorTop:previous">
+      <Property name="dataSet">dataSetAccount</Property>
+      <Property name="width">600</Property>
+      <Property name="height">200</Property>
+      <Property name="stretchColumnsMode">stretchableColumns</Property>
+      <IndicatorColumn/>
+    </DataGrid>
+  </View>
+</ViewConfig>

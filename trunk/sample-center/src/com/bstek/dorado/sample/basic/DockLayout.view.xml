@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+	<Arguments>
+		<Argument name="layoutRegion" value="background:#FDFEDA; border:1px #DBB74A solid; padding:4px; white-space:nowrap; overflow:visible" />
+	</Arguments>
+	<View title="DockLayout" layout="Dock regionPadding:1">
+		<HtmlContainer content="1) left" layoutConstraint="left" style="${argument.layoutRegion}" />
+		<HtmlContainer content="2) top" layoutConstraint="top" style="${argument.layoutRegion}" ></HtmlContainer>
+		<HtmlContainer content="3) right" layoutConstraint="right" style="${argument.layoutRegion}" />
+		<HtmlContainer content="4) bottom" layoutConstraint="bottom" style="${argument.layoutRegion}" />
+		<HtmlContainer content="5) bottom" layoutConstraint="bottom" style="${argument.layoutRegion}" />
+		<HtmlContainer content="6) right" layoutConstraint="right" style="${argument.layoutRegion}" />
+		<HtmlContainer content="center" style="${argument.layoutRegion}" />
+	</View>
+</ViewConfig>
