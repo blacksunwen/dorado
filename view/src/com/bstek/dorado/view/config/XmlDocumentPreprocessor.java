@@ -561,7 +561,7 @@ public class XmlDocumentPreprocessor implements XmlParser {
 			document = templateDocument;
 		}
 
-		processImports(documentElement, preparseContext);
+		processImports(viewElement, preparseContext);
 		return document;
 	}
 

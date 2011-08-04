@@ -5,12 +5,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
 
 import com.bstek.dorado.core.Context;
+import com.bstek.dorado.core.pkgs.PackageInfo;
 import com.bstek.dorado.idesupport.model.Child;
 import com.bstek.dorado.idesupport.model.CompositeType;
 import com.bstek.dorado.idesupport.model.Property;
@@ -59,6 +61,10 @@ public class RuleSetBuilderTest extends IdeSupportContextTestCase {
 			RuleSet ruleSet = getRuleSetBuilder().buildRuleSet(in);
 			assertNotNull(ruleSet);
 			assertFalse(ruleSet.getRuleMap().isEmpty());
+			
+			List<PackageInfo> packageInfos = ruleSet.getPackageInfos();
+			assertNotNull(packageInfos);
+			assertTrue(!packageInfos.isEmpty());
 
 			Rule modelRule = ruleSet.getRule("Model");
 			assertNotNull(modelRule);

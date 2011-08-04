@@ -26,7 +26,7 @@ public class PreloadParser implements XmlParser {
 		ConfigRuleParseContext parserContext = (ConfigRuleParseContext) context;
 
 		Element packagesElement = DomUtils.getChildByTagName(element,
-				"Packages");
+				"PackageInfos");
 		if (packagesElement != null) {
 			List<PackageInfo> packageInfos = (List<PackageInfo>) context
 					.getAttributes().get("packageInfos");
