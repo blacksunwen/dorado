@@ -50,6 +50,7 @@ public class RuleSetBuilder {
 		this.ruleTemplateParser = ruleTemplateParser;
 	}
 
+	@SuppressWarnings("unchecked")
 	public RuleSet buildRuleSet(InputStream in) throws Exception {
 		Document document = xmlDocumentBuilder
 				.loadDocument(new InputStreamResource(in));
@@ -60,6 +61,14 @@ public class RuleSetBuilder {
 		parserContext.setRuleTemplateManager(ruleTemplateManager);
 
 		preloadParser.parse(document.getDocumentElement(), parserContext);
+
+		ruleTemplateManager.getPackageInfos().clear();
+		List<PackageInfo> packageInfos = (List<PackageInfo>) parserContext
+				.getAttributes().get("packageInfos");
+		if (packageInfos != null) {
+			ruleTemplateManager.getPackageInfos().addAll(packageInfos);
+		}
+
 		Map<String, Element> ruleElementMap = parserContext.getRuleElementMap();
 		for (String name : ruleElementMap.keySet().toArray(new String[0])) {
 			Element element = ruleElementMap.get(name);

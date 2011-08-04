@@ -71,9 +71,9 @@
 			<property name="dist" value="${module.dir}/client" />
 		</ant>
 
-		<mkdir dir="${module.dir}/bin/com/bstek/dorado/client" />
-		<echo message="copy ${module.dir}/client --> ${module.dir}/bin/com/bstek/dorado/client" />
-		<copy todir="${module.dir}/bin/com/bstek/dorado/client" failonerror="false">
+		<mkdir dir="${module.dir}/bin/CLIENT" />
+		<echo message="copy ${module.dir}/client --> ${module.dir}/bin/CLIENT" />
+		<copy todir="${module.dir}/bin/CLIENT" failonerror="false">
 			<fileset dir="${module.dir}/client">
 				<patternset refid="resource-patternset" />
 			</fileset>
