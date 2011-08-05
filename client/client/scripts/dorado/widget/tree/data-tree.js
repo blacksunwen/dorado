@@ -758,8 +758,9 @@ dorado.widget.DataTree = $extend([dorado.widget.Tree, dorado.widget.DataControl]
 					entityList = targetEntity.get(childBindingConfig.childrenProperty, "always");
 				}
 				if (entityList instanceof dorado.EntityList) {
+					var originState = sourceEntity.state;
 					sourceEntity.remove(true);
-					sourceEntity.setState(dorado.Entity.STATE_MOVED);
+					if (originState != dorado.Entity.STATE_NEW) sourceEntity.setState(dorado.Entity.STATE_MOVED);
 					entityList.insert(sourceEntity, insertMode, refEntity);
 					return true;
 				}

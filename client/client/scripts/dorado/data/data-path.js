@@ -385,6 +385,8 @@
 									section.visibility = 5;
 								} else if (condition == "#deleted") {
 									section.visibility = 6;
+								} else if (condition == "#moved") {
+									section.visibility = 7;
 								} else if (condition == "#current") {
 									section.visibility = 2;
 								} else {
@@ -484,6 +486,9 @@
 						break;
 					case 6: // delete
 						b = entity.state == dorado.Entity.STATE_DELETED;
+						break;
+					case 7: // moved
+						b = entity.state == dorado.Entity.STATE_MOVED;
 						break;
 				}
 
