@@ -42,3 +42,9 @@
 
 .d-vbox-layout-region {
 }
+
+.d-floating {
+    position: absolute;
+    left: 0;
+    top: 0;
+}

@@ -1,0 +1,88 @@
+*:focus {
+    outline: none;
+}
+
+html, body {
+    height: 100%;
+}
+
+.i-shadow-ie {
+    display: none;
+    position: absolute;
+    overflow: hidden;
+    left: 0;
+    top: 0;
+}
+
+.i-modal-mask {
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin: 0;
+    width: 100%;
+    background: white;
+}
+
+.i-animate-zoom-proxy {
+    position: absolute;
+}
+
+.i-task-group-panel {
+    position: absolute;
+    margin: 0;
+    border: 0;
+}
+
+.i-task-group-panel .panel-header-left {
+    font-size: 0;
+    line-height: 0;
+}
+
+.i-task-group-panel .panel-header-right {
+    font-size: 0;
+    line-height: 0;
+    position: relative;
+}
+
+.i-task-group-panel .panel-body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+}
+
+.i-task-group-panel .panel-footer-right {
+    font-size: 0;
+    line-height: 0;
+    position: relative;
+}
+
+.i-task-group-panel .content-panel .task-list {
+    padding: 3px 0 3px 10px;
+    list-style: none;
+}
+
+.i-task-group-panel .content-panel .task-list .task-item {
+    width: 100%;
+}
+
+.i-task-group-panel .content-panel .task-list .task-item .interval-span {
+    float: right;
+}
+
+.i-daemon-task-indicator .task-list {
+    margin: 0;
+}
+
+.i-dragging-indicator {
+	cursor: pointer;
+	position: absolute;
+}
+
+.i-dragging-indicator .icon {
+	cursor: pointer;
+}
+
+.i-dragging-indicator .content-container {
+	position: absolute;
+}

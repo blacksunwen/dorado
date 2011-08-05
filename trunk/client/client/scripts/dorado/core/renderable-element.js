@@ -126,6 +126,7 @@ dorado.RenderableElement = $extend(dorado.AttributeSupport, /** @scope dorado.Re
 	refreshDom: function(dom) {
 		if (dom.nodeType != 3) {
 			var el = $fly(dom);
+			if (this._inherentClassName) el.addClass(this._inherentClassName);
 			if (this._className) el.addClass(this._className);
 			if (this._exClassName) el.addClass(this._exClassName);
 			if (this._floating) el.addClass(this._floatingClassName);

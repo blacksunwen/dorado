@@ -1,6 +1,6 @@
 dorado.util.ShadowPool = new dorado.util.ObjectPool({
 	makeObject: function() {
-		return $fly(document.body).prepend("<div class=\"d-shadow-ie\"></div>")[0].firstChild;
+		return $fly(document.body).prepend("<div class=\"i-shadow-ie d-shadow-ie\"></div>")[0].firstChild;
 	}
 });
 
@@ -178,13 +178,13 @@ jQuery.fn.shadow = function(options) {
 			var mode = options.mode || "drop";
 			switch (mode.toLowerCase()) {
 				case "drop":
-					this.addClass("d-shadow-drop");
+					this.addClass("i-shadow-drop d-shadow-drop");
 					break;
 				case "sides":
-					this.addClass("d-shadow-sides");
+					this.addClass("i-shadow-sides d-shadow-sides");
 					break;
 				case "frame":
-					this.addClass("d-shadow-frame");
+					this.addClass("i-shadow-frame d-shadow-frame");
 					break;
 			}
 		}

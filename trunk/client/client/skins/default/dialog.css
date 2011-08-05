@@ -330,3 +330,68 @@
 	left: -9999px;
 	top: -9999px;
 }
+
+.d-message-box {
+}
+
+.d-message-box .msg-icon {
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: transparent none no-repeat center center;
+}
+
+.d-message-box .error-icon, .d-message-box .info-icon, .d-message-box .warning-icon, .d-message-box .question-icon {
+    height: 48px;
+    width: 48px;
+    margin: 0 12px 0 2px;
+}
+
+.d-message-box .error-icon {
+    background-image: url(common/icon-error.gif);
+}
+
+.d-message-box .info-icon {
+    background-image: url(common/icon-info.gif);
+}
+
+.d-message-box .warning-icon {
+    background-image: url(common/icon-warning.gif);
+}
+
+.d-message-box .question-icon {
+    background-image: url(common/icon-question.gif);
+}
+
+.d-message-box .msg-content {
+    position: relative;
+    word-break: break-all;
+}
+
+.d-message-box .msg-content-hasicon {
+    min-height: 48px;
+    padding-left: 62px;
+}
+
+.d-ie6 .d-message-box .msg-content-hasicon {
+    height: 48px;
+    overflow: visible;
+}
+
+.d-message-box .msg-content .msg-text {
+}
+
+.d-message-box .msg-content-hasicon .msg-text {
+}
+
+.d-message-box .editor-wrap {
+    margin-top: 8px;
+}
+
+.d-message-box .dialog-body-wrap .dialog-body .content-panel {
+    padding: 6px;
+}
+
+.d-ie6 .d-message-box .dialog-body-wrap .dialog-body .content-panel {
+    padding: 6px;
+}
