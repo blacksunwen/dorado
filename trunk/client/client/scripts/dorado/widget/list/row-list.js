@@ -737,7 +737,9 @@
 						sourceControl.refresh();
 					}
 				}
-				if (object instanceof dorado.Entity) object.setState(dorado.Entity.STATE_MOVED);
+				if (object instanceof dorado.Entity && object.state != dorado.Entity.STATE_NEW) {
+					object.setState(dorado.Entity.STATE_MOVED);
+				}
 				
 				var targetList = this.get("itemModel").getItems(), highlight;
 				if (!targetList && !dorado.Object.isInstanceOf(this, dorado.widget.DataControl) && this.ATTRIBUTES.items) {
