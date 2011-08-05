@@ -682,7 +682,7 @@ dorado.dequeue = function(namespace) {
 	};
 
 	dorado.widget.FloatControl.modalTypeClassName = {
-		dark: "d-modal-mask",
+		dark: null,	// model-manager中已有默认值处理
 		transparent: "d-modal-mask-transparent"
 	};
 

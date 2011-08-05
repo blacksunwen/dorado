@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="build" default="build">
-	<property name="skin.name" value="default" />
+	<property name="skin.names" value="inherent,default" />
 
-	<target name="copy-skins">
+	<target name="copy-skin">
 		<mkdir dir="${dist}/skins/${skin.name}" />
 
 		<copy todir="${dist}/skins/${skin.name}">
 			<fileset dir="${src}/skins/${skin.name}">
+				<include name="_common.css" />
 				<include name="common.css" />
 				<include name="widget.css" />
 				<include name="list.css" />
@@ -53,6 +54,10 @@
 				<exclude name="*.css" />
 			</fileset>
 		</copy>
+	</target>
+
+	<target name="copy-skins">
+		<foreach list="${skin.names}" param="skin.name" target="copy-skin" inheritall="true" />
 	</target>
 
 	<target name="copy-js">

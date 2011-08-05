@@ -363,6 +363,7 @@ function open_flash_chart_data() {
 	 */
 	dorado.widget.ofc.OpenFlashChart = $extend(dorado.widget.Control, /** @scope dorado.widget.ofc.OpenFlashChart.prototype */{
 		$className: "dorado.widget.ofc.OpenFlashChart",
+		
 		ATTRIBUTES: /** @scope dorado.widget.ofc.OpenFlashChart.prototype */{
 			hideMode: {
 				defaultValue: "visibility"
@@ -547,6 +548,7 @@ function open_flash_chart_data() {
 		createDom: function() {
 			var chart = this, dom = document.createElement("div");
 			dom.className = "d-ofc";
+			dom.style.overflow = "hidden";
 			dom.id = "dorado_ofc_" + ofc_id_seed++;
 			return dom;
 		},

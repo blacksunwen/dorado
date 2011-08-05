@@ -20,6 +20,7 @@ import org.springframework.beans.factory.BeanFactory;
 
 import com.bstek.dorado.annotation.ViewAttribute;
 import com.bstek.dorado.annotation.ViewObject;
+import com.bstek.dorado.util.proxy.ProxyBeanUtils;
 import com.bstek.dorado.view.widget.Component;
 
 /**
@@ -114,7 +115,7 @@ public abstract class ViewOutputUtils {
 	 */
 	public static TypeAnnotationInfo getTypeAnnotationInfo(
 			BeanFactory beanFactory, Object object) throws Exception {
-		Class<? extends Object> cl = object.getClass();
+		Class<? extends Object> cl = ProxyBeanUtils.getProxyTargetType(object);
 		if (cl.getName().startsWith("java.") || cl.isArray()
 				|| Map.class.isAssignableFrom(cl)
 				|| Collection.class.isAssignableFrom(cl)) {
