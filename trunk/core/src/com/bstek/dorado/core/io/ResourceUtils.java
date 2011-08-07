@@ -10,11 +10,13 @@ import com.bstek.dorado.core.Context;
 
 /**
  * Resource相关的工具类。
+ * 
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Feb 19, 2007
  */
 public abstract class ResourceUtils {
-	private ResourceUtils() {}
+	private ResourceUtils() {
+	}
 
 	/**
 	 * 将两个路径连接起来，同时根据确保连接处的语法始终正确。 例如自动在连接处添加'/'分隔符。
@@ -23,8 +25,7 @@ public abstract class ResourceUtils {
 		String result;
 		if (StringUtils.isEmpty(path1)) {
 			result = path2;
-		}
-		else {
+		} else {
 			result = path1;
 			if (StringUtils.isNotEmpty(path2)) {
 				char c1 = path1.charAt(path1.length() - 1), c2 = path2
@@ -32,8 +33,7 @@ public abstract class ResourceUtils {
 				boolean b1 = (c1 == '\\' || c1 == '/'), b2 = (c2 == '\\' || c2 == '/');
 				if (!b1 && !b2) {
 					result += '/';
-				}
-				else if (b1 && b2) {
+				} else if (b1 && b2) {
 					path2 = path2.substring(1);
 				}
 				result += path2;
@@ -44,7 +44,9 @@ public abstract class ResourceUtils {
 
 	/**
 	 * 将一组资源路径转换成资源描述对象。
-	 * @param resourceLocations 资源路径数组
+	 * 
+	 * @param resourceLocations
+	 *            资源路径数组
 	 * @return 资源描述对象集合
 	 * @throws IOException
 	 */
@@ -65,7 +67,9 @@ public abstract class ResourceUtils {
 
 	/**
 	 * 将资源路径转换成一组资源描述对象。
-	 * @param resourceLocation 资源路径
+	 * 
+	 * @param resourceLocation
+	 *            资源路径
 	 * @return 资源描述对象的集合
 	 * @throws IOException
 	 */
@@ -76,7 +80,9 @@ public abstract class ResourceUtils {
 
 	/**
 	 * 将资源路径转换成一组资源描述对象。
-	 * @param resourceLocation 资源路径
+	 * 
+	 * @param resourceLocation
+	 *            资源路径
 	 * @return 资源描述对象数组
 	 * @throws IOException
 	 */
@@ -87,7 +93,9 @@ public abstract class ResourceUtils {
 
 	/**
 	 * 将一组资源路径转换成资源描述对象。
-	 * @param resourceLocations 资源路径数组
+	 * 
+	 * @param resourceLocations
+	 *            资源路径数组
 	 * @return 资源描述对象数组
 	 * @throws IOException
 	 */
@@ -97,5 +105,23 @@ public abstract class ResourceUtils {
 		Resource[] resources = new Resource[resourceSet.size()];
 		resourceSet.toArray(resources);
 		return resources;
+	}
+
+	/**
+	 * 将资源路径转换成资源描述对象。
+	 * 
+	 * @param resourceLocation
+	 *            资源路径
+	 * @return 资源描述对象
+	 * @throws IOException
+	 */
+	public static Resource getResource(String resourceLocation)
+			throws IOException {
+		Resource resource = null;
+		Resource[] resources = getResources(resourceLocation);
+		if (resources.length > 0) {
+			resource = resources[0];
+		}
+		return resource;
 	}
 }

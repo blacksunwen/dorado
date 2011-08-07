@@ -28,6 +28,8 @@ public class OutputContext {
 	private Set<String> loadedDataTypes;
 	private Map<String, DataType> includeDataTypes;
 	private Set<String> dependsPackages = new LinkedHashSet<String>();
+	private Set<String> javaScriptFiles = new LinkedHashSet<String>();
+	private Set<String> styleSheetFiles = new LinkedHashSet<String>();
 	private Stack<Object> dataObjectStack = new Stack<Object>();
 	private Stack<Layout> layoutStack = new Stack<Layout>();
 	private Map<Object, String> calloutHtmlMap = new HashMap<Object, String>();
@@ -142,6 +144,14 @@ public class OutputContext {
 	 */
 	public Set<String> getDependsPackages() {
 		return dependsPackages;
+	}
+
+	public Set<String> getJavaScriptFiles() {
+		return javaScriptFiles;
+	}
+
+	public Set<String> getStyleSheetFiles() {
+		return styleSheetFiles;
 	}
 
 	/**

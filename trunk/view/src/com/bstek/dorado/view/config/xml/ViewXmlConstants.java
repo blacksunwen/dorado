@@ -29,7 +29,13 @@ public abstract class ViewXmlConstants {
 
 	public static final String ATTRIBUTE_TEMPALTE = "template";
 
+	public static final String ATTRIBUTE_PAGE_TEMPALTE = "pageTemplate";
+
 	public static final String ATTRIBUTE_PACKAGES = "packages";
+
+	public static final String ATTRIBUTE_JAVASCRIPT_FILE = "javaScriptFile";
+
+	public static final String ATTRIBUTE_STYLESHEET_FILE = "styleSheetFile";
 
 	/**
 	 * ID属性的属性名。

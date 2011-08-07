@@ -48,7 +48,6 @@ public abstract class WebConfigure {
 	 *            配置项的名称
 	 */
 	public static String getString(String key) {
-		;
 		return store.getString(key);
 	}
 
@@ -130,7 +129,7 @@ class ConfigureWrapper extends ConfigureStore {
 	}
 
 	@Override
-	public void set(String key, Object value) {
+	protected void doSet(String key, Object value) {
 		store.set(key, value);
 	}
 

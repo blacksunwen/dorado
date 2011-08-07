@@ -79,6 +79,7 @@
 		scope="private" parser="viewParser" outputter="viewOutputter">
 		<PrimitiveProps>
 			<Prop name="id" ignored="true" />
+			<Prop name="name" ignored="true" />
 		</PrimitiveProps>
 		<Props>
 			<Prop name="ignored" ignored="true" />
