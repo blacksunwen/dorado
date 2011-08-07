@@ -2,6 +2,9 @@ package com.bstek.dorado.view;
 
 import java.io.Writer;
 import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.view.output.OutputContext;
@@ -35,6 +38,37 @@ public class ViewOutputter extends ContainerOutputter {
 
 	protected void outputView(View view, OutputContext context)
 			throws Exception {
+		Set<String> dependsPackages = context.getDependsPackages();
+		String exPackages = view.getPackages();
+		if (StringUtils.isNotEmpty(exPackages)) {
+			for (String pkg : StringUtils.split(exPackages, ",;")) {
+				if (StringUtils.isNotEmpty(pkg)) {
+					dependsPackages.add(pkg);
+				}
+			}
+		}
+
+		String files;
+		Set<String> javaScriptFiles = context.getJavaScriptFiles();
+		files = view.getJavaScriptFile();
+		if (StringUtils.isNotEmpty(files)) {
+			for (String file : StringUtils.split(files, ",;")) {
+				if (StringUtils.isNotEmpty(file)) {
+					javaScriptFiles.add(file);
+				}
+			}
+		}
+
+		Set<String> styleSheetFiles = context.getStyleSheetFiles();
+		files = view.getStyleSheetFile();
+		if (StringUtils.isNotEmpty(files)) {
+			for (String file : StringUtils.split(files, ",;")) {
+				if (StringUtils.isNotEmpty(file)) {
+					styleSheetFiles.add(file);
+				}
+			}
+		}
+
 		Writer writer = context.getWriter();
 		context.createJsonBuilder();
 		try {

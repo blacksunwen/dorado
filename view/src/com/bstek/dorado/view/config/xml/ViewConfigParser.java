@@ -72,7 +72,7 @@ public class ViewConfigParser extends GenericObjectParser {
 		Map<String, Object> viewContextAttributes = new HashMap<String, Object>();
 
 		Element argumentsElement = ViewConfigParserUtils.findArgumentsElement(
-				documentElement, context);
+				documentElement, context.getResource());
 		parseArguments(arguments, argumentsElement, context);
 		viewConfigDefinition.setArguments(arguments);
 
@@ -83,16 +83,16 @@ public class ViewConfigParser extends GenericObjectParser {
 
 		try {
 			Element contextElement = ViewConfigParserUtils.findContextElement(
-					documentElement, context);
+					documentElement, context.getResource());
 			parseContext(viewContextAttributes, contextElement, context);
 			viewConfigDefinition.setViewContext(viewContextAttributes);
 
 			Element modelElement = ViewConfigParserUtils.findModelElement(
-					documentElement, context);
+					documentElement, context.getResource());
 			parseModelElement(modelElement, context);
 
 			Element viewElement = ViewConfigParserUtils.findViewElement(
-					documentElement, context);
+					documentElement, context.getResource());
 			// parse view element
 			ViewDefinition viewDefinition = (ViewDefinition) viewParser.parse(
 					viewElement, context);

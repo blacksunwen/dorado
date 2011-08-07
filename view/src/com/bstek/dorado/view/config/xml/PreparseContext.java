@@ -8,11 +8,11 @@ import com.bstek.dorado.config.ParseContext;
  */
 public class PreparseContext extends ParseContext {
 	private String viewName;
-	private String packages;
 	private boolean inPlaceHolderSection;
 
 	/**
-	 * @param viewName 当前正被解析的视图的名称。
+	 * @param viewName
+	 *            当前正被解析的视图的名称。
 	 */
 	public PreparseContext(String viewName) {
 		this.viewName = viewName;
@@ -23,14 +23,6 @@ public class PreparseContext extends ParseContext {
 	 */
 	public String getViewName() {
 		return viewName;
-	}
-
-	public String getPackages() {
-		return packages;
-	}
-
-	public void setPackages(String packages) {
-		this.packages = packages;
 	}
 
 	public boolean isInPlaceHolderSection() {

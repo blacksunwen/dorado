@@ -11,10 +11,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-import com.bstek.dorado.config.ParseContext;
 import com.bstek.dorado.config.xml.XmlConstants;
 import com.bstek.dorado.config.xml.XmlParseException;
-import com.bstek.dorado.config.xml.XmlParser;
 import com.bstek.dorado.core.io.Resource;
 import com.bstek.dorado.util.Assert;
 import com.bstek.dorado.util.xml.DomUtils;
@@ -30,7 +28,7 @@ import com.bstek.dorado.view.registry.ComponentTypeRegistry;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-12-26
  */
-public class XmlDocumentPreprocessor implements XmlParser {
+public class XmlDocumentPreprocessor {
 	private ViewConfigManager viewConfigManager;
 	private ComponentTypeRegistry componentTypeRegistry;
 
@@ -77,13 +75,13 @@ public class XmlDocumentPreprocessor implements XmlParser {
 		Element element = null;
 		Element documentElement = document.getDocumentElement();
 		Element modelElement = ViewConfigParserUtils.findModelElement(
-				documentElement, context);
+				documentElement, context.getResource());
 		if (modelElement != null) {
 			element = doFindElementById(modelElement, id);
 		}
 		if (element == null) {
 			Element viewElement = ViewConfigParserUtils.findViewElement(
-					documentElement, context);
+					documentElement, context.getResource());
 			element = doFindElementById(viewElement, id);
 		}
 		return element;
@@ -365,19 +363,18 @@ public class XmlDocumentPreprocessor implements XmlParser {
 		}
 	}
 
-	private String getPackagesProperty(Element viewElement) {
+	public String getPropertyValue(Element element, String property) {
 		String packages = null;
-		Node node = viewElement
-				.getAttributeNode(ViewXmlConstants.ATTRIBUTE_PACKAGES);
+		Node node = element.getAttributeNode(property);
 		if (node == null) {
 			List<Element> propertyElements = DomUtils.getChildrenByTagName(
-					viewElement, XmlConstants.PROPERTY);
+					element, XmlConstants.PROPERTY);
 			if (propertyElements != null) {
-				for (Element element : propertyElements) {
-					if (ViewXmlConstants.ATTRIBUTE_PACKAGES.equals(element
+				for (Element childElement : propertyElements) {
+					if (property.equals(childElement
 							.getAttribute(XmlConstants.ATTRIBUTE_NAME))) {
 						packages = org.springframework.util.xml.DomUtils
-								.getTextValue(element);
+								.getTextValue(childElement);
 						break;
 					}
 				}
@@ -388,15 +385,32 @@ public class XmlDocumentPreprocessor implements XmlParser {
 		return packages;
 	}
 
+	private void mergeTemplateProperty(Element templteViewElement,
+			Element viewElement, String property) {
+		String templatePackages = getPropertyValue(templteViewElement, property);
+		String packages = getPropertyValue(viewElement, property);
+		if (StringUtils.isNotEmpty(packages)) {
+			if (StringUtils.isNotEmpty(templatePackages)) {
+				packages = templatePackages + ',' + packages;
+			}
+		} else {
+			packages = templatePackages;
+		}
+		if (StringUtils.isNotEmpty(templatePackages)) {
+			templteViewElement.setAttribute(property, packages);
+		}
+	}
+
 	private void gothroughPlaceHolders(Document templateDocument,
 			TemplateContext templateContext) throws Exception {
 		Element templteViewElement = ViewConfigParserUtils.findViewElement(
-				templateDocument.getDocumentElement(), templateContext);
+				templateDocument.getDocumentElement(),
+				templateContext.getResource());
 
 		Document document = templateContext.getSourceDocument();
-		Element viewElement = ViewConfigParserUtils.findViewElement(
-				document.getDocumentElement(),
-				templateContext.getSourceContext());
+		Element viewElement = ViewConfigParserUtils.findViewElement(document
+				.getDocumentElement(), templateContext.getSourceContext()
+				.getResource());
 
 		NamedNodeMap attributes = viewElement.getAttributes();
 		int len = attributes.getLength();
@@ -406,19 +420,14 @@ public class XmlDocumentPreprocessor implements XmlParser {
 			templteViewElement.setAttribute(nodeName, item.getNodeValue());
 		}
 
-		String templatePackages = getPackagesProperty(templteViewElement);
-		String packages = getPackagesProperty(viewElement);
-		if (StringUtils.isNotEmpty(packages)) {
-			if (StringUtils.isNotEmpty(templatePackages)) {
-				packages = templatePackages + ',' + packages;
-			}
-		} else {
-			packages = templatePackages;
-		}
-		if (StringUtils.isNotEmpty(templatePackages)) {
-			templteViewElement.setAttribute(
-					ViewXmlConstants.ATTRIBUTE_PACKAGES, packages);
-		}
+		mergeTemplateProperty(templteViewElement, viewElement,
+				ViewXmlConstants.ATTRIBUTE_PACKAGES);
+		mergeTemplateProperty(templteViewElement, viewElement,
+				ViewXmlConstants.ATTRIBUTE_PAGE_TEMPALTE);
+		mergeTemplateProperty(templteViewElement, viewElement,
+				ViewXmlConstants.ATTRIBUTE_JAVASCRIPT_FILE);
+		mergeTemplateProperty(templteViewElement, viewElement,
+				ViewXmlConstants.ATTRIBUTE_STYLESHEET_FILE);
 
 		for (Element element : DomUtils.getChildElements(viewElement)) {
 			String nodeName = element.getNodeName();
@@ -443,7 +452,7 @@ public class XmlDocumentPreprocessor implements XmlParser {
 			PreparseContext context) throws Exception {
 		Map<String, Element> map = new HashMap<String, Element>();
 		Element argumentsElement = ViewConfigParserUtils.findArgumentsElement(
-				document.getDocumentElement(), context);
+				document.getDocumentElement(), context.getResource());
 		if (argumentsElement != null) {
 			for (Element argumentElement : DomUtils.getChildrenByTagName(
 					argumentsElement, ViewXmlConstants.ARGUMENT)) {
@@ -468,7 +477,7 @@ public class XmlDocumentPreprocessor implements XmlParser {
 					.getDocumentElement();
 			Element argumentsElement = ViewConfigParserUtils
 					.findArgumentsElement(templateDocumentElement,
-							templateContext);
+							templateContext.getResource());
 			if (argumentsElement == null) {
 				argumentsElement = templateDocument
 						.createElement(ViewXmlConstants.ARGUMENTS);
@@ -493,12 +502,12 @@ public class XmlDocumentPreprocessor implements XmlParser {
 			TemplateContext templateContext) throws Exception {
 		Element templateDocumentElement = templateDocument.getDocumentElement();
 		Element templateModelElement = ViewConfigParserUtils.findModelElement(
-				templateDocumentElement, templateContext);
+				templateDocumentElement, templateContext.getResource());
 
 		Document document = templateContext.getSourceDocument();
-		Element modelElement = ViewConfigParserUtils.findModelElement(
-				document.getDocumentElement(),
-				templateContext.getSourceContext());
+		Element modelElement = ViewConfigParserUtils.findModelElement(document
+				.getDocumentElement(), templateContext.getSourceContext()
+				.getResource());
 
 		if (modelElement != null) {
 			List<Element> modelElements = DomUtils
@@ -509,7 +518,7 @@ public class XmlDocumentPreprocessor implements XmlParser {
 							.createElement(ViewXmlConstants.MODEL);
 					Element viewElement = ViewConfigParserUtils
 							.findViewElement(templateDocumentElement,
-									templateContext);
+									templateContext.getResource());
 					templateDocumentElement.insertBefore(templateModelElement,
 							viewElement);
 				}
@@ -540,16 +549,13 @@ public class XmlDocumentPreprocessor implements XmlParser {
 		return templateDocument;
 	}
 
-	public Object parse(Node node, ParseContext context) throws Exception {
-		PreparseContext preparseContext = (PreparseContext) context;
-		Document document = (Document) node;
+	public Document process(String viewName, Document document)
+			throws Exception {
+		PreparseContext preparseContext = new PreparseContext(viewName);
 		Element documentElement = document.getDocumentElement();
 
 		Element viewElement = ViewConfigParserUtils.findViewElement(
-				documentElement, preparseContext);
-		String packages = viewElement
-				.getAttribute(ViewXmlConstants.ATTRIBUTE_PACKAGES);
-		preparseContext.setPackages(packages);
+				documentElement, preparseContext.getResource());
 
 		String templateSrc = documentElement
 				.getAttribute(ViewXmlConstants.ATTRIBUTE_TEMPALTE);

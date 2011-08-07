@@ -158,7 +158,7 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 		<d:property-outputter key="context">
 			<bean class="com.bstek.dorado.view.ViewContextPropertyOutputter" />
 		</d:property-outputter>
-		<d:property-outputter key="title,pageTemplate,pageUri,packages,children"
+		<d:property-outputter key="title,pageTemplate,pageUri,packages,javaScriptFile,styleSheetFile,children"
 			value="#ignore" />
 	</bean>
 	<bean id="dorado.topViewOutputter" parent="dorado.viewOutputter"

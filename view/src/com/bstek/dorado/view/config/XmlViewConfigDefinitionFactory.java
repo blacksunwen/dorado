@@ -22,6 +22,7 @@ import com.bstek.dorado.data.config.definition.DataTypeDefinitionManager;
 import com.bstek.dorado.util.PathUtils;
 import com.bstek.dorado.view.config.definition.ViewConfigDefinition;
 import com.bstek.dorado.view.config.xml.PreparseContext;
+import com.bstek.dorado.view.config.xml.ViewConfigParserUtils;
 import com.bstek.dorado.view.config.xml.ViewParseContext;
 import com.bstek.dorado.view.config.xml.ViewXmlConstants;
 
@@ -37,7 +38,7 @@ public class XmlViewConfigDefinitionFactory implements
 	private String pathPrefix;
 	private String pathSubfix;
 	private char pathDelimChar = '.';
-	private XmlParser xmlPreprocessor;
+	private XmlDocumentPreprocessor xmlPreprocessor;
 	private XmlParser xmlParser;
 	private DataTypeDefinitionManager dataTypeDefinitionManager;
 	private DataProviderDefinitionManager dataProviderDefinitionManager;
@@ -89,7 +90,7 @@ public class XmlViewConfigDefinitionFactory implements
 		this.pathDelimChar = pathDelimChar;
 	}
 
-	public void setXmlPreprocessor(XmlParser xmlPreprocessor) {
+	public void setXmlPreprocessor(XmlDocumentPreprocessor xmlPreprocessor) {
 		this.xmlPreprocessor = xmlPreprocessor;
 	}
 
@@ -115,20 +116,9 @@ public class XmlViewConfigDefinitionFactory implements
 		this.dataResolverDefinitionManager = dataResolverDefinitionManager;
 	}
 
-	protected Resource getResource(String viewName) throws Exception {
-		if (pathDelimChar != PathUtils.PATH_DELIM) {
-			viewName = viewName.replace(pathDelimChar, PathUtils.PATH_DELIM);
-		}
-
-		String path = viewName;
-		if (StringUtils.isNotEmpty(pathPrefix)) {
-			path = PathUtils.concatPath(pathPrefix, path);
-		}
-
-		if (StringUtils.isNotEmpty(pathSubfix)) {
-			path += pathSubfix;
-		}
-
+	protected Resource getResource(String viewName, String pathSubfix)
+			throws Exception {
+		String path = getResoucePath(viewName, pathSubfix);
 		Resource[] resources = ResourceUtils.getResources(path);
 		if (resources.length == 0) {
 			throw new IllegalArgumentException("Resource[" + path
@@ -141,11 +131,61 @@ public class XmlViewConfigDefinitionFactory implements
 		return resources[0];
 	}
 
+	private String getResoucePath(String viewName, String pathSubfix) {
+		String path = viewName;
+		if (pathDelimChar != PathUtils.PATH_DELIM) {
+			path = path.replace(pathDelimChar, PathUtils.PATH_DELIM);
+		}
+		if (StringUtils.isNotEmpty(pathPrefix)) {
+			path = PathUtils.concatPath(pathPrefix, path);
+		}
+
+		if (StringUtils.isNotEmpty(pathSubfix)) {
+			path += pathSubfix;
+		}
+		return path;
+	}
+
 	public ViewConfigInfo getViewConfigInfo(String viewName) throws Exception {
-		Resource resource = getResource(viewName);
+		Resource resource = getResource(viewName, pathSubfix);
 		Document document = xmlDocumentBuilder.loadDocument(resource);
 		PreparseContext preparseContext = new PreparseContext(viewName);
-		document = (Document) xmlPreprocessor.parse(document, preparseContext);
+
+		Element viewElement = ViewConfigParserUtils.findViewElement(
+				document.getDocumentElement(), preparseContext.getResource());
+		Resource tempResource;
+
+		if (xmlPreprocessor.getPropertyValue(viewElement,
+				ViewXmlConstants.ATTRIBUTE_PAGE_TEMPALTE) == null) {
+			tempResource = getResource(viewName, ".html");
+			if (tempResource.exists()) {
+				viewElement.setAttribute(
+						ViewXmlConstants.ATTRIBUTE_PAGE_TEMPALTE,
+						getResoucePath(viewName, ".html"));
+			}
+		}
+
+		if (xmlPreprocessor.getPropertyValue(viewElement,
+				ViewXmlConstants.ATTRIBUTE_JAVASCRIPT_FILE) == null) {
+			tempResource = getResource(viewName, ".js");
+			if (tempResource.exists()) {
+				viewElement.setAttribute(
+						ViewXmlConstants.ATTRIBUTE_JAVASCRIPT_FILE,
+						getResoucePath(viewName, ".js"));
+			}
+		}
+
+		if (xmlPreprocessor.getPropertyValue(viewElement,
+				ViewXmlConstants.ATTRIBUTE_STYLESHEET_FILE) == null) {
+			tempResource = getResource(viewName, ".css");
+			if (tempResource.exists()) {
+				viewElement.setAttribute(
+						ViewXmlConstants.ATTRIBUTE_STYLESHEET_FILE,
+						getResoucePath(viewName, ".css"));
+			}
+		}
+
+		document = xmlPreprocessor.process(viewName, document);
 		return new ViewConfigInfo(viewName, resource, document);
 	}
 

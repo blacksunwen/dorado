@@ -32,11 +32,11 @@
 		ATTRIBUTES: /** @scope dorado.widget.layout.FormLayout.prototype */ {
 		
 			className: {
-				defaultValue: "d-form-layout"
+				defaultValue: "i-form-layout"
 			},
 			
 			regionClassName: {
-				defaultValue: "d-form-layout-region"
+				defaultValue: "i-form-layout-region"
 			},
 			
 			/**

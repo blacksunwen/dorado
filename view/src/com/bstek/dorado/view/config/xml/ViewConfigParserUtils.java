@@ -7,9 +7,9 @@ import java.util.List;
 
 import org.w3c.dom.Element;
 
-import com.bstek.dorado.config.ParseContext;
 import com.bstek.dorado.config.xml.XmlConstants;
 import com.bstek.dorado.config.xml.XmlParseException;
+import com.bstek.dorado.core.io.Resource;
 import com.bstek.dorado.util.xml.DomUtils;
 
 /**
@@ -21,14 +21,14 @@ public final class ViewConfigParserUtils {
 	}
 
 	public static Element findArgumentsElement(Element documentElement,
-			ParseContext context) throws Exception {
+			Resource resource) throws Exception {
 		List<Element> elements = DomUtils.getChildrenByTagName(documentElement,
 				ViewXmlConstants.ARGUMENTS);
 		int size = elements.size();
 		if (size > 1) {
 			throw new XmlParseException("More than one <"
 					+ ViewXmlConstants.ARGUMENTS + "> found.", documentElement,
-					context.getResource());
+					resource);
 		} else if (size == 1) {
 			return elements.get(0);
 		} else {
@@ -37,14 +37,14 @@ public final class ViewConfigParserUtils {
 	}
 
 	public static Element findContextElement(Element documentElement,
-			ParseContext context) throws Exception {
+			Resource resource) throws Exception {
 		List<Element> elements = DomUtils.getChildrenByTagName(documentElement,
 				ViewXmlConstants.CONTEXT);
 		int size = elements.size();
 		if (size > 1) {
 			throw new XmlParseException("More than one <"
 					+ ViewXmlConstants.CONTEXT + "> found.", documentElement,
-					context.getResource());
+					resource);
 		} else if (size == 1) {
 			return elements.get(0);
 		} else {
@@ -53,14 +53,14 @@ public final class ViewConfigParserUtils {
 	}
 
 	public static Element findModelElement(Element documentElement,
-			ParseContext context) throws Exception {
+			Resource resource) throws Exception {
 		List<Element> elements = DomUtils.getChildrenByTagName(documentElement,
 				ViewXmlConstants.MODEL);
 		int size = elements.size();
 		if (size > 1) {
 			throw new XmlParseException("More than one <"
 					+ ViewXmlConstants.MODEL + "> found.", documentElement,
-					context.getResource());
+					resource);
 		} else if (size == 1) {
 			return elements.get(0);
 		} else {
@@ -68,7 +68,7 @@ public final class ViewConfigParserUtils {
 		}
 	}
 
-	public static Element findViewElement(Element element, ParseContext context) {
+	public static Element findViewElement(Element element, Resource resource) {
 		Element viewElement = null;
 		for (Element childElement : DomUtils.getChildElements(element)) {
 			String nodeName = childElement.getNodeName();
@@ -79,14 +79,14 @@ public final class ViewConfigParserUtils {
 				if (viewElement != null) {
 					throw new XmlParseException(
 							"More than one view element found.", element,
-							context.getResource());
+							resource);
 				}
 				viewElement = childElement;
 			}
 		}
 		if (viewElement == null) {
 			throw new XmlParseException("No view element found.", element,
-					context.getResource());
+					resource);
 		}
 		return viewElement;
 	}

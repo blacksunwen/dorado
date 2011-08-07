@@ -8,6 +8,7 @@ import com.bstek.dorado.web.resolver.WebFileResolver;
 
 /**
  * 用于向客户端输出一个皮肤文件的处理器。
+ * 
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Sep 28, 2008
  */
@@ -33,6 +34,11 @@ public class SkinFileResolver extends WebFileResolver {
 		}
 
 		if (fileName.startsWith(CURRENT_SKIN_PREFIX)) {
+			if ("inherent".equals(getSkin())) {
+				throw new IllegalArgumentException(
+						"\"inherent\" is not a valid dorado skin.");
+			}
+
 			fileName = fileName.replace(CURRENT_SKIN, getSkin());
 		}
 		return super.getResourcesByFileName(context, resourcePrefix, fileName,

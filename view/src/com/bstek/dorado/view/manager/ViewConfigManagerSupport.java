@@ -10,6 +10,7 @@ import com.bstek.dorado.view.config.ViewConfigInfo;
 import com.bstek.dorado.view.config.definition.ViewConfigDefinition;
 import com.bstek.dorado.web.DoradoContext;
 import com.bstek.dorado.web.DoradoContextUtils;
+import com.bstek.dorado.web.WebConfigure;
 
 /**
  * 默认的视图管理器实现类。
@@ -61,6 +62,11 @@ public abstract class ViewConfigManagerSupport implements ViewConfigManager {
 	}
 
 	public ViewConfig getViewConfig(String viewName) throws Exception {
+		if ("inherent".equals(WebConfigure.getString("view.skin"))) {
+			throw new IllegalArgumentException(
+					"\"inherent\" is not a valid dorado skin.");
+		}
+
 		DoradoContext context = DoradoContext.getCurrent();
 		DoradoContextUtils.pushNewViewContext(context);
 
@@ -92,7 +98,7 @@ public abstract class ViewConfigManagerSupport implements ViewConfigManager {
 				}
 			}
 
-			if (viewConfig != null) {
+			if (viewConfig != null) {				
 				DoradoContextUtils.bindViewContext(context, viewConfig);
 			}
 			return viewConfig;
@@ -100,5 +106,4 @@ public abstract class ViewConfigManagerSupport implements ViewConfigManager {
 			DoradoContextUtils.popViewContext(context);
 		}
 	}
-
 }

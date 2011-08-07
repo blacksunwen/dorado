@@ -1,0 +1,50 @@
+.i-view {
+    width: 100%;
+    height: 100%;
+}
+
+.i-container {
+    margin: 0;
+    overflow: hidden;
+}
+
+.i-html-container {
+    margin: 0;
+}
+
+.i-floating {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.i-anchor-layout {
+    position: relative;
+    overflow: hidden;
+}
+
+.i-dock-layout {
+    position: relative;
+    overflow: hidden;
+}
+
+.i-form-layout {
+    table-layout: fixed;
+}
+
+.i-form-layout-region {
+    height: 100%;
+}
+
+.i-hbox-layout {
+    display: inline-block;
+}
+
+.i-hbox-layout-region {
+}
+
+.i-vbox-layout {
+}
+
+.i-vbox-layout-region {
+}

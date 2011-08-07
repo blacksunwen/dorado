@@ -14,6 +14,7 @@ import com.bstek.dorado.util.Assert;
 
 /**
  * 用于管理及方便读取Dorado基础配置的工具类。
+ * 
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Dec 11, 2007
  */
@@ -34,10 +35,17 @@ public abstract class Configure {
 
 		try {
 			properties.load(in);
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			logger.error(e, e);
 		}
+	}
+
+	public void addListener(ConfigureListener listener) {
+		getStore().addListener(listener);
+	}
+
+	public void removeListener(ConfigureListener listener) {
+		getStore().removeListener(listener);
 	}
 
 	/**
@@ -49,7 +57,9 @@ public abstract class Configure {
 
 	/**
 	 * 以String形式返回某配置项的值。
-	 * @param key 配置项的名称
+	 * 
+	 * @param key
+	 *            配置项的名称
 	 */
 	public static String getString(String key) {
 		return store.getString(key);
@@ -57,8 +67,11 @@ public abstract class Configure {
 
 	/**
 	 * 以String形式返回某配置项的值，如果该配置项不存在则返回给定的默认值。
-	 * @param key 配置项的名称
-	 * @param defaultValue 默认值
+	 * 
+	 * @param key
+	 *            配置项的名称
+	 * @param defaultValue
+	 *            默认值
 	 */
 	public static String getString(String key, String defaultValue) {
 		return store.getString(key, defaultValue);
@@ -66,7 +79,9 @@ public abstract class Configure {
 
 	/**
 	 * 以boolean形式返回某配置项的值。
-	 * @param key 配置项的名称
+	 * 
+	 * @param key
+	 *            配置项的名称
 	 */
 	public static boolean getBoolean(String key) {
 		return store.getBoolean(key);
@@ -74,8 +89,11 @@ public abstract class Configure {
 
 	/**
 	 * 以boolean形式返回某配置项的值，如果该配置项不存在则返回给定的默认值。
-	 * @param key 配置项的名称
-	 * @param defaultValue 默认值
+	 * 
+	 * @param key
+	 *            配置项的名称
+	 * @param defaultValue
+	 *            默认值
 	 */
 	public static boolean getBoolean(String key, boolean defaultValue) {
 		return store.getBoolean(key, defaultValue);
@@ -83,7 +101,9 @@ public abstract class Configure {
 
 	/**
 	 * 以long形式返回某配置项的值。
-	 * @param key 配置项的名称
+	 * 
+	 * @param key
+	 *            配置项的名称
 	 */
 	public static long getLong(String key) {
 		return store.getLong(key);
@@ -91,8 +111,11 @@ public abstract class Configure {
 
 	/**
 	 * 以long形式返回某配置项的值，如果该配置项不存在则返回给定的默认值。
-	 * @param key 配置项的名称
-	 * @param defaultValue 默认值
+	 * 
+	 * @param key
+	 *            配置项的名称
+	 * @param defaultValue
+	 *            默认值
 	 */
 	public static long getLong(String key, long defaultValue) {
 		return store.getLong(key, defaultValue);
@@ -117,11 +140,10 @@ class PropertiesConfigureStore extends ConfigureStore {
 	}
 
 	@Override
-	public void set(String key, Object value) {
+	protected void doSet(String key, Object value) {
 		if (value != null) {
 			map.put(key, value);
-		}
-		else {
+		} else {
 			map.remove(key);
 		}
 	}

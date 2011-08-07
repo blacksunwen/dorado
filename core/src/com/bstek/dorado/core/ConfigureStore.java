@@ -1,15 +1,45 @@
 package com.bstek.dorado.core;
 
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.BooleanUtils;
 
 /**
  * 用于存贮配置信息的对象。
+ * 
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Sep 27, 2008
  */
 public abstract class ConfigureStore {
+
+	private List<ConfigureListener> listeners;
+
+	public void addListener(ConfigureListener listener) {
+		listeners.add(listener);
+	}
+
+	public void removeListener(ConfigureListener listener) {
+		listeners.remove(listener);
+	}
+
+	protected void fireBeforeConfigureChange(String property, Object newValue) {
+		if (listeners == null) {
+			return;
+		}
+		for (ConfigureListener listener : listeners) {
+			listener.beforeConfigureChange(property, newValue);
+		}
+	}
+
+	protected void fireOnConfigureChange(String property) {
+		if (listeners == null) {
+			return;
+		}
+		for (ConfigureListener listener : listeners) {
+			listener.onConfigureChange(property);
+		}
+	}
 
 	/**
 	 * 检查是否包含某项配置信息。
@@ -18,26 +48,40 @@ public abstract class ConfigureStore {
 
 	/**
 	 * 根据给定的配置项的名称返回其值。
-	 * @param key 配置项的名称
+	 * 
+	 * @param key
+	 *            配置项的名称
 	 */
 	public abstract Object get(String key);
 
 	/**
 	 * 设置给定的配置项的值。
-	 * @param key 配置项的名称
-	 * @param value 值。
+	 * 
+	 * @param key
+	 *            配置项的名称
+	 * @param value
+	 *            值。
 	 */
-	public abstract void set(String key, Object value);
+	public final void set(String key, Object value) {
+		fireBeforeConfigureChange(key, value);
+		doSet(key, value);
+		fireOnConfigureChange(key);
+	}
+
+	protected abstract void doSet(String key, Object value);
 
 	/**
 	 * 返回所有配置项名称的集合。
+	 * 
 	 * @return 所有配置项名称的集合。
 	 */
 	public abstract Set<String> keySet();
 
 	/**
 	 * 以String形式返回某配置项的值。
-	 * @param key 配置项的名称
+	 * 
+	 * @param key
+	 *            配置项的名称
 	 */
 	public String getString(String key) {
 		Object value = get(key);
@@ -46,21 +90,25 @@ public abstract class ConfigureStore {
 
 	/**
 	 * 以String形式返回某配置项的值，如果该配置项不存在则返回给定的默认值。
-	 * @param key 配置项的名称
-	 * @param defaultValue 默认值
+	 * 
+	 * @param key
+	 *            配置项的名称
+	 * @param defaultValue
+	 *            默认值
 	 */
 	public String getString(String key, String defaultValue) {
 		if (contains(key)) {
 			return getString(key);
-		}
-		else {
+		} else {
 			return defaultValue;
 		}
 	}
 
 	/**
 	 * 以boolean形式返回某配置项的值。
-	 * @param key 配置项的名称
+	 * 
+	 * @param key
+	 *            配置项的名称
 	 */
 	public boolean getBoolean(String key) {
 		Object value = get(key);
@@ -71,21 +119,25 @@ public abstract class ConfigureStore {
 
 	/**
 	 * 以boolean形式返回某配置项的值，如果该配置项不存在则返回给定的默认值。
-	 * @param key 配置项的名称
-	 * @param defaultValue 默认值
+	 * 
+	 * @param key
+	 *            配置项的名称
+	 * @param defaultValue
+	 *            默认值
 	 */
 	public boolean getBoolean(String key, boolean defaultValue) {
 		if (contains(key)) {
 			return getBoolean(key);
-		}
-		else {
+		} else {
 			return defaultValue;
 		}
 	}
 
 	/**
 	 * 以long形式返回某配置项的值。
-	 * @param key 配置项的名称
+	 * 
+	 * @param key
+	 *            配置项的名称
 	 */
 	public long getLong(String key) {
 		Object value = get(key);
@@ -95,14 +147,16 @@ public abstract class ConfigureStore {
 
 	/**
 	 * 以long形式返回某配置项的值，如果该配置项不存在则返回给定的默认值。
-	 * @param key 配置项的名称
-	 * @param defaultValue 默认值
+	 * 
+	 * @param key
+	 *            配置项的名称
+	 * @param defaultValue
+	 *            默认值
 	 */
 	public long getLong(String key, long defaultValue) {
 		if (contains(key)) {
 			return getLong(key);
-		}
-		else {
+		} else {
 			return defaultValue;
 		}
 	}

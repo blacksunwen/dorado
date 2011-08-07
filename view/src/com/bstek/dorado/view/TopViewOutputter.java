@@ -28,15 +28,6 @@ public class TopViewOutputter extends ViewOutputter {
 			dependsPackages.add("debugger");
 		}
 
-		String exPackages = view.getPackages();
-		if (StringUtils.isNotEmpty(exPackages)) {
-			for (String pkg : StringUtils.split(exPackages, ',')) {
-				if (StringUtils.isNotEmpty(pkg)) {
-					dependsPackages.add(pkg);
-				}
-			}
-		}
-
 		Writer writer = context.getWriter();
 		writer.append("jQuery(document).ready(function(){\n").append("try{\n");
 		outputView(view, context);

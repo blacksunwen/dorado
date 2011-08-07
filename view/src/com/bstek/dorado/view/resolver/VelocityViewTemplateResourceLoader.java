@@ -10,11 +10,11 @@ import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.runtime.resource.Resource;
 import org.apache.velocity.runtime.resource.loader.ResourceLoader;
 
-import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.core.Context;
 
 /**
  * 用于桥接dorado的资源装载器的Velocity资源装载器。
+ * 
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Sep 18, 2008
  */
@@ -30,9 +30,6 @@ public class VelocityViewTemplateResourceLoader extends ResourceLoader {
 
 	@Override
 	public void init(ExtendedProperties properties) {
-		setCachingOn(Configure.getBoolean("view.templateCachingOn", true));
-		setModificationCheckInterval(Configure.getLong(
-				"view.templateModificationCheckInterval", 5));
 	}
 
 	@Override
@@ -41,8 +38,7 @@ public class VelocityViewTemplateResourceLoader extends ResourceLoader {
 				.getName());
 		try {
 			return (r.getTimestamp() != resource.getLastModified());
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			logger.error(e, e);
 			return false;
 		}
@@ -54,8 +50,7 @@ public class VelocityViewTemplateResourceLoader extends ResourceLoader {
 				.getName());
 		try {
 			return r.getTimestamp();
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			logger.error(e, e);
 			return 0;
 		}
@@ -70,8 +65,7 @@ public class VelocityViewTemplateResourceLoader extends ResourceLoader {
 		}
 		try {
 			return resource.getInputStream();
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			logger.error(e, e);
 			return null;
 		}
