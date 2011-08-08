@@ -6,7 +6,6 @@
  */
 dorado.widget.HtmlContainer = $extend(dorado.widget.Container, /** @scope dorado.widget.HtmlContainer.prototype */ {
 	$className: "dorado.widget.HtmlContainer",
-	_inherentClassName: "i-html-container",
 	
 	ATTRIBUTES: /** @scope dorado.widget.HtmlContainer.prototype */ {
 	

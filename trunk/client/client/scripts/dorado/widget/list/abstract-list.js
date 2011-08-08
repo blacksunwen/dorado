@@ -24,16 +24,6 @@ dorado.widget.AbstractList = $extend(dorado.widget.Control, /** @scope dorado.wi
 		itemModel: {},
 		
 		/**
-		 * 高亮显示当前行。
-		 * @type boolean
-		 * @attribute
-		 * @default true
-		 */
-		highlightCurrentRow: {
-			defaultValue: true
-		},
-		
-		/**
 		 * 是否允许用户通过界面操作使列表中没有任何选中项。
 		 * <p>
 		 * 此属性只在当列表中存在列表项是有意义。

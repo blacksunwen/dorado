@@ -551,7 +551,27 @@
 			className: {
 				defaultValue: "d-grid"
 			},
-
+			
+			/**
+			 * 高亮显示当前行。
+			 * @type boolean
+			 * @attribute
+			 * @default true
+			 */
+			highlightCurrentRow: {
+				defaultValue: true
+			},
+			
+			/**
+			 * 高亮显示鼠标悬停的行。
+			 * @type boolean
+			 * @attribute
+			 * @default true
+			 */
+			highlightHoverRow: {
+				defaultValue: true
+			},
+			
 			/**
 			 * 默认的行高。
 			 * @type int
@@ -1275,6 +1295,7 @@
 				fixedInnerGrid._scrollMode = this._scrollMode;
 				fixedInnerGrid._rowHeight = this._rowHeight;
 				fixedInnerGrid._highlightCurrentRow = this._highlightCurrentRow;
+				fixedInnerGrid._highlightHoverRow = this._highlightHoverRow;
 				fixedInnerGrid._selectionMode = this._selectionMode;
 				fixedInnerGrid._columnsInfo = columnsInfo.fixed;
 				fixedInnerGrid._forceRefreshRearRows = this._forceRefreshRearRows;
@@ -1314,6 +1335,7 @@
 			innerGrid._scrollMode = this._scrollMode;
 			innerGrid._rowHeight = this._rowHeight;
 			innerGrid._highlightCurrentRow = this._highlightCurrentRow;
+			innerGrid._highlightHoverRow = this._highlightHoverRow;
 			innerGrid._columnsInfo = columnsInfo.main;
 			innerGrid._forceRefreshRearRows = this._forceRefreshRearRows;
 			innerGrid._ignoreItemTimestamp = ignoreItemTimestamp;

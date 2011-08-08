@@ -125,7 +125,7 @@
 		ATTRIBUTES: /** @scope dorado.widget.layout.DockLayout.prototype */ {
 		
 			className: {
-				defaultValue: "i-dock-layout"
+				defaultValue: "d-dock-layout"
 			},
 			
 			/**

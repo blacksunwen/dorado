@@ -101,7 +101,7 @@ dorado.ModalManager = {
 			maskClass = maskClass || "d-modal-mask";
 			$fly(maskDom).css({
 				display : ""
-			}).attr("className", "i-modal-mask " + maskClass).bringToFront();
+			}).attr("className", maskClass).bringToFront();
 
 			stack.push({
 				dom : dom,
@@ -145,7 +145,7 @@ dorado.ModalManager = {
 					target = stack[stack.length - 1];
 					$fly(maskDom).css({
 						zIndex : target.zIndex
-					}).attr("className", "i-modal-mask " + target.className);
+					}).attr("className", target.className);
 				}
 			}
 		}

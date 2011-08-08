@@ -65,7 +65,7 @@ dorado.dequeue = function(namespace) {
              * @type String
              */
 			floatingClassName: {
-				defaultValue: "i-floating"
+				defaultValue: "d-floating"
 			},
 
 			visible: {

@@ -77,11 +77,11 @@
 		ATTRIBUTES: /** @scope dorado.widget.layout.HBoxLayout.prototype */ {
 		
 			className: {
-				defaultValue: "i-hbox-layout"
+				defaultValue: "d-hbox-layout"
 			},
 			
 			regionClassName: {
-				defaultValue: "i-hbox-layout-region"
+				defaultValue: "d-hbox-layout-region"
 			},
 			
 			/**
@@ -223,11 +223,11 @@
 		ATTRIBUTES: /** @scope dorado.widget.layout.VBoxLayout.prototype */ {
 		
 			className: {
-				defaultValue: "i-vbox-layout"
+				defaultValue: "d-vbox-layout"
 			},
 			
 			regionClassName: {
-				defaultValue: "i-hbox-layout-region"
+				defaultValue: "d-vbox-layout-region"
 			},
 			
 			/**

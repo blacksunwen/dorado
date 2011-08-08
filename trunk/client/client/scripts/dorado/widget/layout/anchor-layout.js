@@ -58,7 +58,7 @@
 		ATTRIBUTES: /** @scope dorado.widget.layout.AnchorLayout.prototype */ {
 		
 			className: {
-				defaultValue: "i-anchor-layout"
+				defaultValue: "d-anchor-layout"
 			},
 			
 			/**

@@ -8,10 +8,11 @@ import com.bstek.dorado.annotation.ViewAttribute;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2011-2-26
  */
-@ClientEvents( { @ClientEvent(name = "onDataRowClick") })
+@ClientEvents({ @ClientEvent(name = "onDataRowClick") })
 public abstract class RowList extends AbstractList {
 	private int rowHeight;
 	private boolean highlightCurrentRow = true;
+	private boolean highlightHoverRow = true;
 
 	public int getRowHeight() {
 		return rowHeight;
@@ -28,6 +29,15 @@ public abstract class RowList extends AbstractList {
 
 	public void setHighlightCurrentRow(boolean highlightCurrentRow) {
 		this.highlightCurrentRow = highlightCurrentRow;
+	}
+
+	@ViewAttribute(defaultValue = "true")
+	public boolean isHighlightHoverRow() {
+		return highlightHoverRow;
+	}
+
+	public void setHighlightHoverRow(boolean highlightHoverRow) {
+		this.highlightHoverRow = highlightHoverRow;
 	}
 
 }
