@@ -403,7 +403,7 @@
 	var zoomCoverPool = new dorado.util.ObjectPool({
 		makeObject: function() {
 			var cover = document.createElement("div");
-			cover.className = "i-animate-zoom-proxy d-animate-zoom-proxy";
+			cover.className = "d-animate-zoom-proxy";
 			jQuery(document.body).prepend(cover);
 
 			return cover;

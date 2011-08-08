@@ -21,6 +21,26 @@
 				defaultValue: 18
 			},
 			
+			/**
+			 * 高亮显示当前行。
+			 * @type boolean
+			 * @attribute
+			 * @default true
+			 */
+			highlightCurrentRow: {
+				defaultValue: true
+			},
+			
+			/**
+			 * 高亮显示鼠标悬停的行。
+			 * @type boolean
+			 * @attribute
+			 * @default true
+			 */
+			highlightHoverRow: {
+				defaultValue: true
+			},
+			
 			selection: {
 				setter: function(v) {
 					if (v == null && "multiRows" == this._selectionMode) v = [];
@@ -81,7 +101,7 @@
 			
 			var self = this;
 			$fly(table).mouseover(function(evt) {
-				if ($DomUtils.isDragging()) return;
+				if ($DomUtils.isDragging() && !self._highlightHoverRow) return;
 				dorado.Toolkits.cancelDelayedAction(self, "$hoverOutTimerId");
 				self.setHoverRow(self.findItemDomByEvent(evt));
 			}).mouseout(function(evt) {

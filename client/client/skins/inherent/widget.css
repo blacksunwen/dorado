@@ -1,50 +1,50 @@
-.i-view {
+.d-view {
     width: 100%;
     height: 100%;
 }
 
-.i-container {
+.d-container {
     margin: 0;
     overflow: hidden;
 }
 
-.i-html-container {
+.d-html-container {
     margin: 0;
 }
 
-.i-floating {
+.d-floating {
     position: absolute;
     left: 0;
     top: 0;
 }
 
-.i-anchor-layout {
+.d-anchor-layout {
     position: relative;
     overflow: hidden;
 }
 
-.i-dock-layout {
+.d-dock-layout {
     position: relative;
     overflow: hidden;
 }
 
-.i-form-layout {
+.d-form-layout {
     table-layout: fixed;
 }
 
-.i-form-layout-region {
+.d-form-layout-region {
     height: 100%;
 }
 
-.i-hbox-layout {
+.d-hbox-layout {
     display: inline-block;
 }
 
-.i-hbox-layout-region {
+.d-hbox-layout-region {
 }
 
-.i-vbox-layout {
+.d-vbox-layout {
 }
 
-.i-vbox-layout-region {
+.d-vbox-layout-region {
 }

@@ -9,7 +9,6 @@
 	 */
 	dorado.widget.View = $extend(dorado.widget.Container, /** @scope dorado.widget.View.prototype */ {
 		$className: "dorado.widget.View",
-		_inherentClassName: "i-view",
 		
 		ATTRIBUTES: /** @scope dorado.widget.View.prototype */ {
 		
