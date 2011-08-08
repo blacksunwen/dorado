@@ -235,12 +235,9 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 				}
 
 				if (originProperty != null) {
-					if (originProperty.isIgnored()) {
-						continue;
-					} else if (originProperty instanceof AutoProperty) {
+					if (originProperty instanceof AutoProperty) {
 						AutoProperty autoProperty = (AutoProperty) originProperty;
-						if (autoProperty.getAnnotationMethod().equals(
-								readMethod)
+						if (autoProperty.getAnnotationMethod() == readMethod
 								&& (propertyParser == null || autoProperty
 										.getPropertyParser() == propertyParser)) {
 							continue;
@@ -250,11 +247,9 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 
 				Object defaultValue = null;
 				String referenceComponentName = null, enumValues = null, editor = null;
-				boolean visible = true, highlight = false;
+				boolean ignored = false, visible = true, highlight = false;
 				if (viewAttribute != null) {
-					if (viewAttribute.ignored()) {
-						continue;
-					}
+					ignored = viewAttribute.ignored();
 					visible = viewAttribute.visible();
 					defaultValue = viewAttribute.defaultValue();
 					referenceComponentName = viewAttribute
@@ -293,6 +288,7 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 					BeanUtils.copyProperties(originProperty, property);
 				}
 				property.setName(name);
+				property.setIgnored(ignored);
 				property.setVisible(visible);
 
 				property.setType(propertyDescriptor.getPropertyType().getName());

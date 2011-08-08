@@ -7,6 +7,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
+import com.bstek.dorado.annotation.ViewAttribute;
 import com.bstek.dorado.annotation.ViewObject;
 import com.bstek.dorado.annotation.Widget;
 import com.bstek.dorado.annotation.XmlNode;
@@ -45,6 +46,12 @@ public class View extends Container implements Namable, Scopable {
 	private String javaScriptFile;
 	private String styleSheetFile;
 
+	@ViewAttribute(ignored = true)
+	public boolean isIgnored() {
+		return super.isIgnored();
+	}
+
+	@ViewAttribute(ignored = true)
 	public String getName() {
 		return name;
 	}

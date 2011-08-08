@@ -132,11 +132,10 @@ class AddElementsOperation implements DefinitionInitOperation {
 		Collection collection;
 		if (object instanceof Definition) {
 			Definition parentDefinition = (Definition) object;
-			collection = (Collection) parentDefinition.getProperties().get(
-					property);
+			collection = (Collection) parentDefinition.getProperty(property);
 			if (collection == null) {
 				collection = new DefinitionSupportedList();
-				parentDefinition.getProperties().put(property, collection);
+				parentDefinition.setProperty(property, collection);
 			}
 		} else {
 			collection = (Collection) PropertyUtils.getProperty(object,
