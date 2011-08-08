@@ -105,9 +105,6 @@ public class RuleSetOutputter {
 			Element subElement = DocumentHelper.createElement("PrimitiveProps");
 			xmlWriter.writeOpen(subElement);
 			for (PropertyTemplate property : primitiveProperties) {
-				if (property.isIgnored()) {
-					continue;
-				}
 				outputProperty(xmlWriter, property, context);
 			}
 			xmlWriter.writeClose(subElement);
@@ -119,9 +116,6 @@ public class RuleSetOutputter {
 			Element subElement = DocumentHelper.createElement("Props");
 			xmlWriter.writeOpen(subElement);
 			for (PropertyTemplate property : properties) {
-				if (property.isIgnored()) {
-					continue;
-				}
 				outputProperty(xmlWriter, property, context);
 			}
 			xmlWriter.writeClose(subElement);
@@ -143,9 +137,6 @@ public class RuleSetOutputter {
 			Element subElement = DocumentHelper.createElement("Children");
 			xmlWriter.writeOpen(subElement);
 			for (ChildTemplate childTemplate : children) {
-				if (childTemplate.isIgnored()) {
-					continue;
-				}
 				outputChildTemplate(xmlWriter, childTemplate, context);
 			}
 			xmlWriter.writeClose(subElement);
@@ -156,13 +147,9 @@ public class RuleSetOutputter {
 
 	protected void outputProperty(XMLWriter xmlWriter,
 			PropertyTemplate property, OutputContext context) throws Exception {
-		if (property.isIgnored()) {
-			return;
-		}
-
 		Element element = DocumentHelper.createElement("Prop");
 		setElementAttributes(element, property,
-				"name,type,defaultValue,highlight,fixed,enumValues,editor,reserve");
+				"name,type,defaultValue,ignored,highlight,fixed,enumValues,editor,reserve");
 		if (!property.isVisible()) {
 			element.addAttribute("visible", "false");
 		}
@@ -212,7 +199,7 @@ public class RuleSetOutputter {
 			element.addAttribute("rule", ruleName);
 
 		setElementAttributes(element, childTemplate,
-				"name,fixed,aggregated,reserve");
+				"name,fixed,aggregated,ignored,reserve");
 		xmlWriter.writeOpen(element);
 
 		if (!ruleTemplate.isGlobal()) {
