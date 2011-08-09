@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -225,6 +226,8 @@ public class ViewObjectOutputter extends ObjectOutputter implements
 		TypeAnnotationInfo typeAnnotationInfo = null;
 		if (object instanceof Map<?, ?>) {
 			beanMap = (Map<?, ?>) object;
+		} else if (object.getClass() == Object.class) {
+			beanMap = Collections.EMPTY_MAP;
 		} else {
 			beanMap = BeanMap.create(object);
 			typeAnnotationInfo = ViewOutputUtils.getTypeAnnotationInfo(
