@@ -103,19 +103,19 @@
 			onSubControlAction: {}
 		},
 		
-		filterDataSetMessage: function(messageCode, arg, data) {//dorado.DataUtil.isOwnerOf(items, arg.entity)
+		filterDataSetMessage: function(messageCode, arg, data) {
 			var b = true;
 			switch (messageCode) {
 				case dorado.widget.DataSet.MESSAGE_CURRENT_CHANGED:
 				case dorado.widget.DataSet.MESSAGE_REFRESH_ENTITY:
 				case dorado.widget.DataSet.MESSAGE_ENTITY_STATE_CHANGED:{
 					var entities = this.getBindingData();
-					b = (entities != this._entities || dorado.DataUtil.isOwnerOf(entities, arg.entity));
+					b = (entities == this._entities || dorado.DataUtil.isOwnerOf(entities, arg.entity));
 					break;
 				}
 				case dorado.widget.DataSet.MESSAGE_DATA_CHANGED:{
 					var entities = this.getBindingData();
-					b = (entities != this._entities);
+					b = (entities == this._entities);
 					break;
 				}
 				case dorado.widget.DataSet.MESSAGE_DELETED:
@@ -156,7 +156,6 @@
 		
 		refreshDom: function(dom) {
 			$invokeSuper.call(this, arguments);
-			
 			
 			if (this._currentItemCodeExpression === undefined) {
 				this.compileItemCodes();
