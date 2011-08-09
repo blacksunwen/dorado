@@ -27,7 +27,11 @@
 			 */
 			column: {
 				defaultValue: 0
-			}
+			},
+
+            closeAction: {
+                defaultValue: "close"
+            }
 		},
 
 		createDom: function() {
@@ -136,7 +140,16 @@
 			});
 
 			return dom;
-		}
+		},
+
+        close: function() {
+            var portal = this._parent;
+            if (portal) {
+                portal.doOnPortletClose(this);
+            }
+
+            $invokeSuper.call(this, arguments);
+        }
 	});
 
 	/**
@@ -285,16 +298,51 @@
 			}
 		},
 
+        EVENTS: /** @scope dorado.widget.Portal.prototype */{
+            /**
+             * 当调用addPortlet成功后触发的事件，此事件在Portal初始化的时候不会被触发。
+			 * @param {Object} self 事件的发起者，即组件本身。
+			 * @param {Object} arg 事件参数。
+             * @param {Object} arg.portlet 添加成功的portlet。
+			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+			 * @event
+			 */
+            onPortletAdd: {},
+
+            /**
+             * 当调用removePortlet成功后(包括手动关闭)触发的事件，此事件在Portal初始化的时候不会被触发。
+			 * @param {Object} self 事件的发起者，即组件本身。
+			 * @param {Object} arg 事件参数。
+             * @param {Object} arg.portlet 移除成功的portlet。
+			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+			 * @event
+			 */
+            onPortletRemove: {},
+
+            /**
+             * 当Portlet被移动后触发的事件。
+			 * @param {Object} self 事件的发起者，即组件本身。
+			 * @param {Object} arg 事件参数。
+             * @param {Object} arg.portlet 移动成功的portlet。
+			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+			 * @event
+			 */
+            onPortletMove: {}
+        },
+
 		/**
 		 * 添加指定的Portlet到指定的位置，column的指定请直接设置Portlet的column属性。
 		 * @param {dorado.widget.Portlet} portlet 要添加的Portlet。
-		 * @param {int} index {optional} 要插入到的Portlet所在Column的索引，可以不提供，不提供则直接添加到某列的最后。
+		 * @param {int} [index] 要插入到的Portlet所在Column的索引，可以不提供，不提供则直接添加到最后。
 		 */
-		insertPortlet: function(portlet, index) {
+		addPortlet: function(portlet, index) {
 			var portal = this, columns = portal._columns, rendered = portal._rendered;
 			if (!portlet || !columns) {
 				return;
 			}
+            if (!portlet.render) {
+                portlet = new dorado.widget.Portlet(portlet);
+            }
 			var column = portlet._column || 0, dom = portal._dom;
 			if (columns) {
 				var columnPortlets = portal._columnPortlets[column];
@@ -313,17 +361,13 @@
 					columnPortlets.push(portlet);
 				}
 
+                portal.fireEvent("onPortletAdd", portal, {
+                    portlet: portlet
+                });
+
 				portal.refresh();
 			}
 
-		},
-
-		/**
-		 * 添加指定的Portlet到指定的最后。
-		 * @param {dorado.widget.Portlet} portlet 要添加的Portlet。
-		 */
-		appendPortlet: function(portlet) {
-			this.insertPortlet(portlet);
 		},
 
 		/**
@@ -341,13 +385,20 @@
 				var columnPortlets = portal._columnPortlets[column];
 				if (columnPortlets) {
 					columnPortlets.remove(portlet);
-					portal.unregisterInnerControl(portlet);
 					portlet.destroy();
 				}
+
+                portal.fireEvent("onPortletRemove", portal, {
+                    portlet: portlet
+                });
 
 				portal.refresh();
 			}
 		},
+
+        doOnPortletClose: function(portlet) {
+            this.removePortlet(portlet);
+        },
 
 		/**
 		 * 清除所有的Portlet。
@@ -359,9 +410,13 @@
 				if (!columnPortlets) {
 					continue;
 				}
-				for (var j = 0;j < columnPortlets.length;j++) {
+				for (var j = 0; j < columnPortlets.length; j++) {
 					var portlet = columnPortlets[j];
-					portlet.destroy();
+                    portal.unregisterInnerControl(portlet);
+                    portlet.destroy();
+                    portal.fireEvent("onPortletRemove", portal, {
+                        portlet: portlet
+                    });
 				}
 			}
 			portal._columnPortlets = [];
@@ -445,6 +500,10 @@
 					}
 					columnPortlets.insert(portal._draggingPortlet, row);
 					portal._draggingPortlet._column = column;
+
+                    portal.fireEvent("onPortletMove", portal, {
+                        portlet: portal._draggingPortlet
+                    });
 
 					portal._placeholder.style.display = "none";
 					portal._draggingPortlet = null;
@@ -583,6 +642,7 @@
 		showColumns: function() {
 			var portal = this, columns = portal._columns, dom = portal._dom, columnDoms = portal._columnDoms,
 				widthMap = portal._columnWidthMap, height = $fly(dom).attr("scrollHeight") - portal._portletPadding;
+
 			for (var i = 0; i < columns.size; i++) {
 				var columnDom = columnDoms[i], columnWidth = widthMap[i];
 				$fly(columnDom).width(columnWidth).outerHeight(height);
@@ -606,7 +666,7 @@
 		 * @private
 		 */
 		positionPortlets: function() {
-			var portal = this, columns = portal._columns, dom = portal._dom, portlets = portal._columnPortlets,
+			var portal = this, columns = portal._columns, dom = portal._dom, portlets = portal._columnPortlets || [],
 				width = $fly(dom).width(), columnCount = columns.size,
 				widthMap = portal._columnWidthMap, leftMap = portal._columnLeftMap;
 

@@ -39,7 +39,40 @@
             		}
             	})]
             });
-            
+
+            var menu  = new dorado.widget.Menu({
+                items: [{
+                    caption: "1",
+                    listener: {
+                        onClick: function(self, arg) {
+                            var menu = self._parent._focusParent;
+                            var focusItem = menu._focusItem;
+                            console.log(focusItem._caption);
+                        }
+                    }
+                }, {
+                    caption: "2"
+                }, {
+                    caption: "3"
+                }]
+            });
+
+            var listener = {
+                onContextMenu: function(self, arg) {
+                    self.freeze();
+                    var event = arg.event;
+                    menu._focusParent = self;
+                    menu.show({
+                        event: event
+                    });
+                    menu.addListener("onHide", function() {
+                        self.unfreeze();
+                    }, {
+                        once: true
+                    })
+                }
+            };
+
             var testMenu = new dorado.widget.Menu({
                 floating: false,
                 width: 200,
@@ -48,24 +81,31 @@
 					width: 200,
 					height: 200
 				},
+                listener: listener,
             	items: [{
             		action: action
             	}, {
             		caption: "菜单项2菜单项2",
-                    items: [{
-            			items: [{
-            				caption: "菜单项121"
-            			}, {
-            				caption: "菜单项122"
-            			}, {
-            				caption: "菜单项123"
-            			}],
-            			caption: "菜单项12"
-            		}, {
-            			caption: "菜单项11"
-            		}, {
-            			caption: "菜单项13"
-            		}]
+                    submenu: {
+                        listener: listener,
+                        items: [{
+                            submenu: {
+                                listener: listener,
+                                items: [{
+                                    caption: "菜单项121"
+                                }, {
+                                    caption: "菜单项122"
+                                }, {
+                                    caption: "菜单项123"
+                                }]
+                            },
+                            caption: "菜单项12"
+                        }, {
+                            caption: "菜单项11"
+                        }, {
+                            caption: "菜单项13"
+                        }]
+                    }
             	}, "-", {
             		$type: "Control",
             		caption: "Control Menu Item",

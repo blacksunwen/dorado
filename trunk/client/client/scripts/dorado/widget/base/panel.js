@@ -386,7 +386,44 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		 * @default false
 		 * @type boolean
 		 */
-		maximized: {}
+		maximized: {},
+
+        /**
+		 * 是否显示关闭按钮.
+		 * @attribute
+		 * @type boolean
+		 */
+		closeable: {
+			defaultValue: true,
+			setter: function(value) {
+				var panel = this, captionBar = panel._captionBar, button;
+				panel._closeable = value;
+				if (captionBar) {
+					if (value) {
+						button = captionBar.getButton(panel._id + "_close");
+						if (button) {
+							$fly(button._dom).css("display", "");
+						} else {
+							panel._createCloseButton();
+						}
+					} else {
+						button = captionBar.getButton(panel._id + "_close");
+						if (button) {
+							$fly(button._dom).css("display", "none");
+						}
+					}
+				}
+			}
+		},
+
+		/**
+		 * 当用户点击关闭以后要做的动作，默认是hide，可选值为hide和close。hide仅仅是隐藏该对话框，close会完全销毁该对话框，销毁以后该对话框不能再使用。
+		 * @attribute
+		 * @type String
+		 */
+		closeAction: {
+			defaultValue: "hide"
+		}
 	},
 
 	EVENTS: {
@@ -406,7 +443,25 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 		 * @event
 		 */
-		onMaximize: {}
+		onMaximize: {},
+
+        /**
+         * 在组件关闭之前触发。
+         * @param {Object} self 事件的发起者，即组件本身。
+         * @param {Object} arg 事件参数。
+         * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+         * @event
+         */
+        beforeClose: {},
+
+        /**
+         * 在组件关闭之后触发。
+         * @param {Object} self 事件的发起者，即组件本身。
+         * @param {Object} arg 事件参数。
+         * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+         * @event
+         */
+        onClose: {}
 	},
 
 	createDom: function() {
@@ -531,6 +586,10 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 			$fly(dom).addClass(panel._className + "-collapsed");
 		}
 
+        if (panel._closeable) {
+			panel._createCloseButton();
+		}
+
 		if (panel._maximizeable) {
 			panel._createMaximizeButton();
 		}
@@ -559,7 +618,36 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		
 		panel._captionBar.addButton(collapseButton, 0);
 	},
-	
+
+    _createCloseButton: function() {
+		var panel = this, captionBar = panel._captionBar;
+		if (captionBar) {
+			captionBar.addButton(new dorado.widget.SimpleButton({
+				id: panel._id + "_close",
+				listener: {
+					onClick: function() {
+						panel.close();
+					}
+				},
+				className: "d-close-button"
+			}));
+		}
+	},
+
+	/**
+	 * 关闭面板。
+	 */
+	close: function() {
+		var panel = this, eventArg = {};
+		panel.fireEvent("beforeClose", panel, eventArg);
+		if (eventArg.processDefault === false) return;
+		panel.hide && panel.hide();
+		panel.fireEvent("onClose", panel);
+		if (panel._closeAction == "close") {
+			panel.destroy();
+		}
+	},
+
 	_doOnResize: function(collapsed) {
 		var panel = this, border = panel._border, dom = panel._dom, doms = panel._doms, height = panel.getRealHeight();
 		
