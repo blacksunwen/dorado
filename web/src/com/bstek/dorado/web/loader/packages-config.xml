@@ -38,6 +38,7 @@
 
 		<Package name="widget-skin" pattern="dorado-css">
 			skins/inherent/common,
+			skins/inherent/widget,
 			skins/~current/common,
 			skins/~current/widget
 		</Package>

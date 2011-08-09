@@ -103,7 +103,7 @@ dorado.util.TaskIndicator.registerTaskGroup("main", {
 		vAlign: "center"
 	},
 	modal: true,
-	className: "d-main-task-indicator"
+	className: "i-main-task-indicator d-main-task-indicator"
 });
 
 dorado.util.TaskIndicator.registerTaskGroup("daemon", {
@@ -113,7 +113,7 @@ dorado.util.TaskIndicator.registerTaskGroup("daemon", {
         offsetLeft: -15,
         offsetTop: 15
 	},
-	className: "d-daemon-task-indicator"
+	className: "i-daemon-task-indicator d-daemon-task-indicator"
 });
 
 /**
@@ -125,6 +125,7 @@ dorado.util.TaskIndicator.registerTaskGroup("daemon", {
 dorado.util.TaskGroupPanel = $extend(dorado.RenderableElement, { /** @scope dorado.util.TaskList.prototype */
 	$className: "dorado.util.TaskGroupPanel",
 	
+	_inherentClassName: "i-task-group-panel",
 	tasks: null,
 	taskGroupConfig: null,
 	_intervalId: null,
