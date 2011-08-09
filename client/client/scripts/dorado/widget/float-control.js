@@ -379,8 +379,6 @@ dorado.dequeue = function(namespace) {
 				}
 			}
 
-            console.dir(options);
-
 			//$log("control._hideTimer:" + control._hideTimer);
 			dorado.queue(control._id + SHOWHIDE_SUFFIX, function() {
 				options = options || {};
@@ -682,7 +680,7 @@ dorado.dequeue = function(namespace) {
 	};
 
 	dorado.widget.FloatControl.modalTypeClassName = {
-		dark: null,	// model-manager中已有默认值处理
+		dark: "d-modal-mask",
 		transparent: "d-modal-mask-transparent"
 	};
 

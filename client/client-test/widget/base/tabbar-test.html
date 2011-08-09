@@ -18,7 +18,7 @@
                         var tabbar = this.id("tabbar1");
                         if (tabbar) {
                             var tab = tabbar.get("contextMenuTab");
-                            tab.close();
+                            tabbar.closeTab(tab);
                         }
                     }
                 }
@@ -29,12 +29,7 @@
                     onClick: function() {
                         var tabbar = this.id("tabbar1");
                         if (tabbar) {
-                            var tabs = tabbar.get("tabs").toArray();
-                            jQuery.each(tabs, function(index, tab){
-                                if (!tab._disabled && tab._closeable) {
-                                    tab.close();
-                                }
-                            });
+                            tabbar.closeAllTabs();
                         }
                     }
                 }
@@ -46,12 +41,7 @@
                         var tabbar = this.id("tabbar1");
                         if (tabbar) {
                             var contextMenuTab = tabbar.get("contextMenuTab");
-                            var tabs = tabbar.get("tabs").toArray();
-                            jQuery.each(tabs, function(index, tab){
-                                if (tab != contextMenuTab && !tab._disabled && tab._closeable) {
-                                    tab.close();
-                                }
-                            });
+                            tabbar.closeOtherTabs(contextMenuTab);
                         }
                     }
                 }
@@ -206,13 +196,21 @@
                 "margin-bottom": "10px"
             }
         });
- 
+        tabbar1.addRightToolButton(new dorado.widget.SimpleIconButton({
+            icon: "del.gif"
+        }));
         view.addChild(toolbar);
  
         view.addChild(tabbar1);
  
         $(document).ready(function() {
             view.render(document.body);
+            tabbar1.addRightToolButton(new dorado.widget.SimpleButton({
+                className: "menu-button",
+                menu: new dorado.widget.Menu({
+                    items: [ { caption: "test" }, { caption: "test" }]
+                })
+            }));
         });
     </script>
 </head>

@@ -105,6 +105,13 @@
             tabMinWidth: 100
         });
 
+        tabcontrol.addRightToolButton(new dorado.widget.SimpleButton({
+            className: "menu-button",
+            menu: new dorado.widget.Menu({
+                items: [ { caption: "test" }, { caption: "test" }]
+            })
+        }));
+
         view.addChild(tabcontrol);
 
         $(document).ready(function() {

@@ -120,8 +120,8 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 	/**
 	 * 插入子组件。
 	 * @param {dorado.widget.Control} control 要插入的子组件
-	 * @param {int} index {optional} 要插入的子组件的索引。
-	 * @param {boolean} current {optional} 是否把插入的组件置为活动组件，默认为false。
+	 * @param {int} [index] 要插入的子组件的索引。
+	 * @param {boolean} [current=false] 是否把插入的组件置为活动组件，默认为false。
 	 * @return {dorado.widget.Control} 插入的组件。
 	 */
 	addControl: function(control, index, current) {
