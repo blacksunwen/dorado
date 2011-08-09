@@ -13,11 +13,6 @@ public abstract class ViewXmlConstants {
 	public static final char VIEW_NAME_DELIM = '|';
 
 	/**
-	 * 用于表示某控件不参与布局管理的特殊布局条件配置，即布局管理器将在渲染时忽略对该控件的处理。
-	 */
-	public static final String NON_LAYOUT_CONSTRAINT = "NO_CONSTRAINT";
-
-	/**
 	 * Model节点的节点名。
 	 */
 	public static final String MODEL = "Model";

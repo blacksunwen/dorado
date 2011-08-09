@@ -11,7 +11,7 @@ public abstract class Layout {
 	/**
 	 * 用于表示某控件不参与布局管理的特殊布局条件，即布局管理器将在渲染时忽略对该控件的处理。
 	 */
-	public final static Object NON_LAYOUT_CONSTRAINT = new Object();
+	public final static Object NON_LAYOUT_CONSTRAINT = "none";
 
 	private String className;
 	private int padding;
