@@ -774,7 +774,7 @@
 	 * @type int
 	 * @constant
 	 */
-	DataSet.MESSAGE_REFRESH_ENTITY = dorado.EntityList._MESSAGE_REFRESH_ENTITY;
+	DataSet.MESSAGE_REFRESH_ENTITY = dorado.Entity._MESSAGE_REFRESH_ENTITY;
 
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
