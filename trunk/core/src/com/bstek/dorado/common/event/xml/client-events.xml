@@ -14,6 +14,7 @@
 		<event name="onDataChange" />
 		<event name="beforeStateChange" />
 		<event name="onStateChange" />
+		<event name="onMessageChange" />
 		<event name="onEntityToText" />
 	</type>
 	<type class="com.bstek.dorado.data.type.property.PropertyDef">

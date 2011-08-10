@@ -415,6 +415,19 @@ dorado.EntityDataType = $extend([dorado.DataType, dorado.EventSupport], /** @sco
 		onStateChange: {},
 		
 		/**
+		 * 当某个此类型的{@link dorado.Entity}的额外信息被改变后触发的事件。
+		 * @param {Object} self 事件的发起者，即EntityDataType本身。
+		 * @param {Object} arg 事件参数。
+		 * @param {dorado.Entity} arg.entity 触发事件的实体对象。
+		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+		 * @event
+		 * @see dorado.Entity#getMessages
+		 * @see dorado.Entity#getMessageState
+		 * @see dorado.Entity#setMessages
+		 */
+		onMessageChange: {},
+		
+		/**
 		 * 系统尝试将一个数据实体对象转换成一段用于显示的文本时触发的事件。
 		 * @param {Object} self 事件的发起者，即EntityDataType本身。
 		 * @param {Object} arg 事件参数。

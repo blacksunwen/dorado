@@ -510,6 +510,7 @@
 			}
 
 			try {
+				context.possibleMultiResult = true;
 				var section = context.section;
 
 				if (section.interceptor) {
@@ -593,6 +594,7 @@
 			var context = new dorado.DataPathContext(this._compiledPath, firstResultOnly);
 			context.acceptAggregation = acceptAggregation;
 			context.loadMode = loadMode;
+			context.possibleMultiResult = false;
 			try {
 				if (data != null) {
 					if (data instanceof dorado.EntityList || data instanceof Array) {
@@ -600,6 +602,9 @@
 					} else {
 						this._evaluateSectionOnEntity(context, data);
 					}
+				}
+				if (!context.possibleMultiResult && context.results.length == 1) {
+					context.results = context.results[0];
 				}
 				return context.results;
 			}
