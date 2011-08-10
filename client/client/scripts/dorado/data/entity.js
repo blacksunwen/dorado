@@ -1179,6 +1179,11 @@
 					retval = true;
 				}
 			}
+			
+			var dataType = this.dataType;
+			dataType.fireEvent("onMessageChange", dataType, {
+				entity: this
+			});
 			return retval;
 		},
 		
