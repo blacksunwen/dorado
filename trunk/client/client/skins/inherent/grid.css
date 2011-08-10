@@ -1,0 +1,44 @@
+.i-grid {
+   position: relative;
+}
+
+.i-grid .header-table .header {
+    white-space: nowrap;
+}
+
+.i-grid .header-table .sorted-header .sort-state {
+    display: inline-block;
+}
+
+.i-grid .footer-table .footer {
+    white-space: nowrap;
+}
+
+.i-grid .data-table {
+    width: 100%;
+}
+
+.i-grid .cell {
+    padding-left: 2px; /* do not modify, may cause problums in safari/chrome */
+    padding-right: 2px; /* do not modify, may cause problums in safari/chrome */
+}
+
+.i-grid .data-table td {
+    white-space: nowrap;
+}
+
+.i-grid .float-refresh-panel {
+    position: absolute;
+}
+
+.i-grid .float-refresh-panel .button {
+    position: absolute;
+}
+
+.i-grid .float-filter-panel {
+    position: absolute;
+}
+
+.i-grid .float-filter-panel .d-icon-button {
+    position: absolute;
+}

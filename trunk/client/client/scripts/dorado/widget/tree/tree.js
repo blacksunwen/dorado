@@ -14,6 +14,7 @@
 	 */
 	dorado.widget.Tree = $extend(dorado.widget.AbstractTree, /** @scope dorado.widget.Tree.prototype */ {
 		$className: "dorado.widget.Tree",
+		_inherentClassName: "i-tree",
 		
 		ATTRIBUTES: /** @scope dorado.widget.Tree.prototype */ {
 			className: {

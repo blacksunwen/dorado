@@ -1,22 +1,14 @@
 .d-tree {
 	border: 1px #A1A1A1 solid;
 	background: #FFFFFF;
-	position: relative;
 }
 
 .d-tree-focused {
 }
 
-.d-tree .data-table {
-	width: 100%;
-	border-collapse: collapse;
-}
-
 .d-tree .data-table .row td {
-	white-space: nowrap;
 	padding-left: 2px;
 	padding-right: 2px;
-	-moz-user-select: none;
 	border-bottom: 1px #FFFFFF solid;
 }
 
@@ -39,9 +31,7 @@
 	background: url(list/preparing-area-bg.gif);
 }
 
-
 .d-tree-node .button {
-	display: inline-block;
 	width: 16px;
 	height: 16px;
 	margin-left: 4px;
@@ -71,9 +61,7 @@
 	background: url(tree/expanding.gif) no-repeat;
 }
 
-
 .d-tree-node .icon {
-	display: inline-block;
 	width: 16px;
 	height: 16px;
 	margin-right: 4px;
@@ -81,7 +69,6 @@
 }
 
 .d-tree-node .d-checkbox-icononly {
-	display: inline-block;
 	margin-right: 4px;
 	margin-bottom: -6px;
 }

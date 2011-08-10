@@ -45,7 +45,7 @@
 	 */
 	dorado.widget.AbstractTextBox = $extend(dorado.widget.AbstractDataEditor, /** @scope dorado.widget.AbstractTextBox.prototype */ {
 		$className: "dorado.widget.AbstractTextBox",
-		
+		_inherentClassName: "i-text-box",		
 		_triggerChanged: true,
 		
 		ATTRIBUTES: /** @scope dorado.widget.AbstractTextBox.prototype */ {

@@ -9,6 +9,7 @@
 	 */
 	dorado.widget.SpinnerTrigger = $extend(dorado.widget.Trigger, /** @scope dorado.widget.SpinnerTrigger.prototype */ {
 		$className: "dorado.widget.SpinnerTrigger",
+		_inherentClassName: "i-spinner-trigger",
 		
 		ATTRIBUTES: /** @scope dorado.widget.SpinnerTrigger.prototype */ {
 			className: {

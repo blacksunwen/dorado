@@ -35,9 +35,13 @@ public class LibraryFileResolver extends
 	private static final String MIN_STYLESHEET_SUFFIX = ".min.css";
 	private static final String I18N = "resources/i18n/";
 	private static final String I18N_FILE_SUFFIX = ".properties";
+	private static final String DEFAULT_SKIN = "default";
+	private static final String INHERENT_SKIN = "inherent";
 	private static final String CURRENT_SKIN = "~current";
 	private static final String CURRENT_SKIN_PREFIX = "skins/" + CURRENT_SKIN
 			+ '/';
+
+	private Map<String, Resource[]> resourcesCache = new HashMap<String, Resource[]>();
 
 	private static class I18NResource extends AbstractResourceAdapter {
 		private static Map<Resource, File> cacheFileMap = new HashMap<Resource, File>();
@@ -118,7 +122,12 @@ public class LibraryFileResolver extends
 	 * 返回客户端使用的皮肤的名称。
 	 */
 	protected String getSkin() {
-		return WebConfigure.getString("view.skin");
+		String skin = WebConfigure.getString("view.skin");
+		if (INHERENT_SKIN.equals(skin)) {
+			throw new IllegalArgumentException("\"" + INHERENT_SKIN
+					+ "\" is not a valid dorado skin.");
+		}
+		return skin;
 	}
 
 	@Override
@@ -127,78 +136,200 @@ public class LibraryFileResolver extends
 			throws Exception {
 		if (JAVASCRIPT_SUFFIX.equals(resourceSuffix)) {
 			if (fileName.indexOf(I18N) >= 0) { // 国际化资源
-				String localeSuffix = "", defaultLocaleSuffix = "";
-				Locale locale = localeResolver.resolveLocale(DoradoContext
-						.getAttachedRequest());
-				boolean hasCustomLocale = (locale != null);
-				if (hasCustomLocale) {
-					String localeString = locale.toString();
-					if (StringUtils.isNotEmpty(localeString)) {
-						localeSuffix = '.' + localeString;
-					}
-				}
-
-				fileName = PathUtils.concatPath(resourcePrefix, fileName);
-				Resource[] resources = context.getResources(fileName
-						+ localeSuffix + I18N_FILE_SUFFIX);
-				boolean resourcesValid = (resources.length > 0);
-				if (resourcesValid) {
-					for (Resource resource : resources) {
-						if (!resource.exists()) {
-							resourcesValid = false;
-							break;
-						}
-					}
-				}
-
-				// 尝试获取默认的国际化资源文件
-				if (!resourcesValid && hasCustomLocale) {
-					String localeString = (defaultLocale != null) ? defaultLocale
-							.toString() : null;
-					if (StringUtils.isNotEmpty(localeString)) {
-						defaultLocaleSuffix = '.' + localeString;
-					}
-					resources = context.getResources(fileName
-							+ defaultLocaleSuffix + I18N_FILE_SUFFIX);
-				}
-				resourcesValid = (resources.length > 0);
-				if (resourcesValid) {
-					for (Resource resource : resources) {
-						if (!resource.exists()) {
-							resourcesValid = false;
-							break;
-						}
-					}
-				}
-
-				if (!resourcesValid) {
-					Exception e = new FileNotFoundException("File [" + fileName
-							+ localeSuffix + I18N_FILE_SUFFIX + "] or ["
-							+ fileName + defaultLocaleSuffix + I18N_FILE_SUFFIX
-							+ "] not found.");
-					logger.warn(e, e);
-					resources = null;
-				} else {
-					for (int i = 0; i < resources.length; i++) {
-						resources[i] = new I18NResource(resources[i]);
-					}
-				}
-				return resources;
-			} else if (fileName.startsWith(CURRENT_SKIN_PREFIX)) {
-				fileName = fileName.replace(CURRENT_SKIN, getSkin());
-			}
-
-			if (Configure.getBoolean("view.useMinifiedJavaScript")) {
-				resourceSuffix = MIN_JAVASCRIPT_SUFFIX;
+				return getI18NResources(context, resourcePrefix, fileName,
+						resourceSuffix);
+			} else {
+				return getJavaScriptResources(context, resourcePrefix,
+						fileName, resourceSuffix);
 			}
 		} else if (STYLESHEET_SUFFIX.equals(resourceSuffix)) {
-			fileName = fileName.replace(CURRENT_SKIN, getSkin());
+			return getStyleSheetResources(context, resourcePrefix, fileName,
+					resourceSuffix);
 
-			if (Configure.getBoolean("view.useMinifiedJavaScript")) {
-				resourceSuffix = MIN_STYLESHEET_SUFFIX;
+		} else {
+			return super.getResourcesByFileName(context, resourcePrefix,
+					fileName, resourceSuffix);
+		}
+	}
+
+	protected Resource[] getI18NResources(DoradoContext context,
+			String resourcePrefix, String fileName, String resourceSuffix)
+			throws Exception {
+		Resource[] resources;
+		String localeSuffix = "", defaultLocaleSuffix = "";
+		Locale locale = localeResolver.resolveLocale(DoradoContext
+				.getAttachedRequest());
+		boolean hasCustomLocale = (locale != null);
+		if (hasCustomLocale) {
+			String localeString = locale.toString();
+			if (StringUtils.isNotEmpty(localeString)) {
+				localeSuffix = '.' + localeString;
 			}
 		}
-		return super.getResourcesByFileName(context, resourcePrefix, fileName,
-				resourceSuffix);
+
+		fileName = PathUtils.concatPath(resourcePrefix, fileName);
+		resources = context.getResources(fileName + localeSuffix
+				+ I18N_FILE_SUFFIX);
+		boolean resourcesValid = (resources.length > 0);
+		if (resourcesValid) {
+			for (Resource resource : resources) {
+				if (!resource.exists()) {
+					resourcesValid = false;
+					break;
+				}
+			}
+		}
+
+		// 尝试获取默认的国际化资源文件
+		if (!resourcesValid && hasCustomLocale) {
+			String localeString = (defaultLocale != null) ? defaultLocale
+					.toString() : null;
+			if (StringUtils.isNotEmpty(localeString)) {
+				defaultLocaleSuffix = '.' + localeString;
+			}
+			resources = context.getResources(fileName + defaultLocaleSuffix
+					+ I18N_FILE_SUFFIX);
+		}
+		resourcesValid = (resources.length > 0);
+		if (resourcesValid) {
+			for (Resource resource : resources) {
+				if (!resource.exists()) {
+					resourcesValid = false;
+					break;
+				}
+			}
+		}
+
+		if (!resourcesValid) {
+			Exception e = new FileNotFoundException("File [" + fileName
+					+ localeSuffix + I18N_FILE_SUFFIX + "] or [" + fileName
+					+ defaultLocaleSuffix + I18N_FILE_SUFFIX + "] not found.");
+			logger.warn(e, e);
+			resources = null;
+		} else {
+			for (int i = 0; i < resources.length; i++) {
+				resources[i] = new I18NResource(resources[i]);
+			}
+		}
+		return resources;
+	}
+
+	private String getCacheKey(String resourcePrefix, String fileName,
+			String resourceSuffix, String skin) {
+		return (new StringBuffer(resourcePrefix)).append('+').append(fileName)
+				.append('+').append(resourceSuffix).append('+').append(skin)
+				.toString();
+	}
+
+	protected synchronized Resource[] getJavaScriptResources(
+			DoradoContext context, String resourcePrefix, String fileName,
+			String resourceSuffix) throws Exception {
+		String skin = getSkin();
+		String cacheKey = getCacheKey(resourcePrefix, fileName, resourceSuffix,
+				skin);
+		Resource[] resources = resourcesCache.get(cacheKey);
+		if (resources == null) {
+			if (fileName.startsWith(CURRENT_SKIN_PREFIX)) {
+				fileName = fileName.replace(CURRENT_SKIN, getSkin());
+			}
+			if (Configure.getBoolean("view.useMinifiedJavaScript")) {
+				resources = super.getResourcesByFileName(context,
+						resourcePrefix, fileName, MIN_JAVASCRIPT_SUFFIX);
+				if (!resources[0].exists()) {
+					resources = null;
+				}
+			}
+			if (resources == null) {
+				resources = super.getResourcesByFileName(context,
+						resourcePrefix, fileName, resourceSuffix);
+			}
+			resourcesCache.put(cacheKey, resources);
+		}
+		return resources;
+	}
+
+	protected synchronized Resource[] getStyleSheetResources(
+			DoradoContext context, String resourcePrefix, String fileName,
+			String resourceSuffix) throws Exception {
+		String skin = getSkin();
+		String cacheKey = getCacheKey(resourcePrefix, fileName, resourceSuffix,
+				skin);
+		boolean useMinifiedStyleSheet = Configure
+				.getBoolean("view.useMinifiedStyleSheet");
+		Resource[] resources = resourcesCache.get(cacheKey);
+		if (resources == null) {
+			String template = fileName;
+			if (template.indexOf(CURRENT_SKIN) >= 0) {
+				fileName = template.replace(CURRENT_SKIN, INHERENT_SKIN);
+				Resource inherentResource = null;
+				if (useMinifiedStyleSheet) {
+					inherentResource = super.getResourcesByFileName(context,
+							resourcePrefix, fileName, MIN_STYLESHEET_SUFFIX)[0];
+					if (!inherentResource.exists()) {
+						inherentResource = null;
+					}
+				}
+				if (inherentResource == null) {
+					inherentResource = super.getResourcesByFileName(context,
+							resourcePrefix, fileName, resourceSuffix)[0];
+				}
+
+				fileName = template.replace(CURRENT_SKIN, skin);
+				Resource concreteResource = null;
+				if (useMinifiedStyleSheet) {
+					concreteResource = super.getResourcesByFileName(context,
+							resourcePrefix, fileName, MIN_STYLESHEET_SUFFIX)[0];
+					if (!concreteResource.exists()) {
+						concreteResource = null;
+					}
+				}
+				if (concreteResource == null) {
+					concreteResource = super.getResourcesByFileName(context,
+							resourcePrefix, fileName, resourceSuffix)[0];
+				}
+
+				if (!concreteResource.exists()) {
+					fileName = template.replace(CURRENT_SKIN, DEFAULT_SKIN);
+					Resource defaultResource = null;
+					if (useMinifiedStyleSheet) {
+						defaultResource = super
+								.getResourcesByFileName(context,
+										resourcePrefix, fileName,
+										MIN_STYLESHEET_SUFFIX)[0];
+						if (!defaultResource.exists()) {
+							defaultResource = null;
+						}
+					}
+					if (defaultResource == null) {
+						defaultResource = super.getResourcesByFileName(context,
+								resourcePrefix, fileName, resourceSuffix)[0];
+					}
+					if (defaultResource.exists()) {
+						concreteResource = defaultResource;
+					}
+				}
+
+				if (inherentResource.exists()) {
+					resources = new Resource[] { inherentResource,
+							concreteResource };
+				} else {
+					resources = new Resource[] { concreteResource };
+				}
+			} else {
+				if (useMinifiedStyleSheet) {
+					resources = super.getResourcesByFileName(context,
+							resourcePrefix, fileName, MIN_STYLESHEET_SUFFIX);
+					if (!resources[0].exists()) {
+						resources = null;
+					}
+				}
+				if (resources == null) {
+					resources = super.getResourcesByFileName(context,
+							resourcePrefix, fileName, resourceSuffix);
+				}
+			}
+			resourcesCache.put(cacheKey, resources);
+		}
+		return resources;
 	}
 }

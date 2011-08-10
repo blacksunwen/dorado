@@ -532,7 +532,7 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 	createItemDomDetail: function(row, node) {
 		var cell = $DomUtils.xCreateElement({
 			tagName: "TD",
-			className: "d-tree-node",
+			className: "i-tree-node d-tree-node",
 			content: [{
 				tagName: "LABEL",
 				doradoType: "tree-button",

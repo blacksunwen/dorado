@@ -1,0 +1,8 @@
+.i-text-box .slots-container .text {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.i-text-box .slots-container .slot {
+    display: inline-block;
+}

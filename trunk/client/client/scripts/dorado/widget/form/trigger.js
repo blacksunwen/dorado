@@ -93,14 +93,14 @@ dorado.widget.Trigger = $extend(dorado.widget.Component, /** @scope dorado.widge
 	createTriggerButton: function(editor) {
 		var trigger = this;
 		var control = new dorado.widget.SimpleIconButton({
-			exClassName: "d-trigger " + (trigger._className || ''),
+			exClassName: "i-trigger d-trigger " + (trigger._className || ''),
 			icon: trigger._icon,
 			iconClass: trigger._iconClass,
 			onClick: function() {
 				editor.onTriggerClick(trigger);
 			}
 		});
-		jQuery(control.getDom()).addClassOnClick("d-trigger-down", null, function() {
+		jQuery(control.getDom()).addClassOnClick("i-trigger-down d-trigger-down", null, function() {
 			return !editor.get("readOnly");
 		});
 		return control;

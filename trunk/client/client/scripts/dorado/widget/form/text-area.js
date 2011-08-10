@@ -8,6 +8,7 @@
 	 */
 	dorado.widget.TextArea = $extend(dorado.widget.AbstractTextEditor, /** @scope dorado.widget.TextArea.prototype */ {
 		$className: "dorado.widget.TextArea",
+		_inherentClassName: "i-text-area",
 		
 		ATTRIBUTES: /** @scope dorado.widget.TextArea.prototype */ {
 			width: {
@@ -48,7 +49,7 @@
 			if (triggers) {
 				if (!triggerPanel) {
 					triggerPanel = this._triggerPanel = $create("DIV");
-					triggerPanel.className = "d-trigger-panel";
+					triggerPanel.className = "i-trigger-panel d-trigger-panel";
 					this._dom.appendChild(triggerPanel);
 				}
 				
