@@ -23,7 +23,6 @@ public class Dialog extends FloatPanel {
 	private boolean draggable = true;
 	private boolean dragOutside;
 	private boolean resizeable = true;
-	private DialogCloseAction closeAction = DialogCloseAction.hide;
 	
 	private boolean minimizeable;
 	private boolean minimized;
@@ -73,15 +72,6 @@ public class Dialog extends FloatPanel {
 
 	public void setResizeable(boolean resizeable) {
 		this.resizeable = resizeable;
-	}
-
-	@ViewAttribute(defaultValue = "hide")
-	public DialogCloseAction getCloseAction() {
-		return closeAction;
-	}
-
-	public void setCloseAction(DialogCloseAction closeAction) {
-		this.closeAction = closeAction;
 	}
 
 	public boolean isMinimizeable() {

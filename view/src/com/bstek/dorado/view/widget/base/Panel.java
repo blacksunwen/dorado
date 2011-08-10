@@ -27,6 +27,9 @@ public class Panel extends AbstractPanel {
 	private boolean showCaptionBar = true;
 	private boolean maximizeable;
 	private boolean maximized;
+	
+	private boolean closeable = true;
+	private CloseAction closeAction = CloseAction.hide;
 	private String icon;
 	private List<SimpleIconButton> tools = new InnerElementList<SimpleIconButton>(
 			this);
@@ -81,5 +84,23 @@ public class Panel extends AbstractPanel {
 
 	public void setMaximized(boolean maximized) {
 		this.maximized = maximized;
+	}
+	
+	@ViewAttribute(defaultValue = "true")
+	public boolean isCloseable() {
+		return closeable;
+	}
+
+	public void setCloseable(boolean closeable) {
+		this.closeable = closeable;
+	}
+	
+	@ViewAttribute(defaultValue = "hide")
+	public CloseAction getCloseAction() {
+		return closeAction;
+	}
+
+	public void setCloseAction(CloseAction closeAction) {
+		this.closeAction = closeAction;
 	}
 }
