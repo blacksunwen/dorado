@@ -1,0 +1,24 @@
+.i-tree {
+	position: relative;
+}
+
+.i-tree .data-table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.i-tree .data-table .row td {
+	white-space: nowrap;
+}
+
+.i-tree-node .button {
+	display: inline-block;
+}
+
+.i-tree-node .icon {
+	display: inline-block;
+}
+
+.i-tree-node .d-checkbox-icononly {
+	display: inline-block;
+}

@@ -41,7 +41,7 @@
 				<file name="data-pilot.css" />
 				<file name="spinner.css" />
 				<file name="text-editor.css" />
-				<file name="dropdown.css" />
+				<file name="trigger.css" />
 				<file name="checkbox.css" />
 				<file name="radio-button.css" />
 				<file name="form.css" />
@@ -52,6 +52,7 @@
 		<copy todir="${dist}/skins/${skin.name}">
 			<fileset dir="${src}/skins/${skin.name}">
 				<exclude name="*.css" />
+				<exclude name="advance/**/*" />
 			</fileset>
 		</copy>
 	</target>

@@ -545,6 +545,7 @@
 	 */
 	dorado.widget.AbstractGrid = $extend([dorado.widget.AbstractList, dorado.widget.grid.ColumnModel], /** @scope dorado.widget.AbstractGrid.prototype */ {
 		$className: "dorado.widget.AbstractGrid",
+		_inherentClassName: "i-grid",
 
 		ATTRIBUTES: /** @scope dorado.widget.AbstractGrid.prototype */ {
 
@@ -1060,7 +1061,6 @@
 
 		createDom: function() {
 			var dom = $invokeSuper.call(this, arguments);
-			dom.style.position = "relative";
 			$fly(dom).mousewheel($scopify(this, function(evt, delta) {
 				if (this._divScroll) this._divScroll.scrollTop -= delta * this._rowHeight * 2;
 				if (this._currentCellEditor) this._currentCellEditor.hide();

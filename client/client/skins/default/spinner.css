@@ -12,15 +12,15 @@
 }
 
 .d-text-box-hover .d-spinner-trigger {
-	background-position: -18px 0;
+    background-position: -18px 0;
 }
 
 .d-text-box-focused .d-spinner-trigger {
-	background-position: -36px 0;
+    background-position: -36px 0;
 }
 
 .d-text-box-focused .d-spinner-trigger-down {
-	background-position: -54px 0;
+    background-position: -54px 0;
 }
 
 .d-text-box-focused .d-spinner-trigger .up-button-click {
@@ -32,22 +32,20 @@
 }
 
 .d-text-box-invalid .d-spinner-trigger {
-	background-position: -72px 0;
+    background-position: -72px 0;
 }
 
 .d-text-box-invalid .d-spinner-trigger-down {
-	background-position: -90px 0;
+    background-position: -90px 0;
 }
 
 .d-text-box-readonly .d-spinner-trigger {
-	background-position: -108px 0;
+    background-position: -108px 0;
 }
 
 .d-text-box .slots-container .text {
-    display: inline-block;
     line-height: 16px;
     height: 18px;
-    vertical-align: top;
 }
 
 .d-ie .d-text-box .slots-container .text {
@@ -55,15 +53,14 @@
 }
 
 .d-text-box .slots-container .slot {
-    display: inline-block;
     line-height: 16px;
     height: 18px;
     cursor: pointer;
     background: url(form/spinner-slot-bg.gif);
-	padding: 0 1px 0 1px;
+    padding: 0 1px 0 1px;
 }
 
-.d-text-box .editor .slot-selected {
+.d-text-box .slots-container .slot-selected {
     background: url(form/spinner-selected-slot-bg.gif);
     color: white;
 }

@@ -7,13 +7,11 @@
 }
 
 .d-grid .header-table .header {
-    white-space: nowrap;
     background: #F0F0F0 url(grid/header-bg.gif) repeat-x top;
     border-top: 1px #FFFFFF solid;
     border-left: 1px #FFFFFF solid;
     border-right: 1px #C8CBCE solid;
     border-bottom: 1px #C8CBCE solid;
-    -moz-user-select: none;
 }
 
 .d-grid .header-table .caption {
@@ -31,7 +29,6 @@
     margin-top: -2px;
     margin-left: 4px;
     vertical-align: middle;
-    display: inline-block;
 }
 
 .d-grid .header-table .sorted-header .sort-state-desc {
@@ -57,16 +54,11 @@
 }
 
 .d-grid .footer-table .footer {
-    white-space: nowrap;
     background: #F0F4F8 url(grid/header-bg.gif) repeat-x top;
     border-top: 1px #C8CBCE solid;
     border-left: 1px #FFFFFF solid;
     border-right: 1px #C8CBCE solid;
     border-bottom: 1px #E3E8EC solid;
-}
-
-.d-grid .data-table {
-    width: 100%;
 }
 
 .d-grid .data-table .row td {
@@ -143,11 +135,6 @@
     border-bottom: 1px #7B9CC2 solid;
 }
 
-.d-grid .cell {
-    padding-left: 2px; /* do not modify, may cause problums in safari/chrome */
-    padding-right: 2px; /* do not modify, may cause problums in safari/chrome */
-}
-
 .d-grid .cell-flag-dirty {
     background: url(form/dirty-flag.gif) no-repeat right top;
 }
@@ -158,11 +145,6 @@
 
 .d-grid .cell-flag-error {
     background: url(grid/cell-flag-error.gif) no-repeat right top;
-}
-
-.d-grid .data-table td {
-    white-space: nowrap;
-    -moz-user-select: none;
 }
 
 .d-grid .indicator-new {
@@ -253,7 +235,6 @@
 
 .d-grid .float-refresh-panel {
     background: url(grid/refresh-panel.gif);
-    position: absolute;
     top: -54px;
     right: 20px;
     width: 54px;
@@ -263,7 +244,6 @@
 }
 
 .d-grid .float-refresh-panel .button {
-    position: absolute;
     cursor: pointer;
     background: url(grid/refresh-button.gif);
     top: 3px;
@@ -281,7 +261,6 @@
 }
 
 .d-grid .float-filter-panel {
-    position: absolute;
     background: url(grid/float-filter-panel.gif);
     left: 20px;
     width: 90px;
@@ -291,7 +270,6 @@
 }
 
 .d-grid .float-filter-panel .d-icon-button {
-    position: absolute;
     bottom: 5px;
     background: url(base/tool-button-bg.gif);
 }

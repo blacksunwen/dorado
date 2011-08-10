@@ -34,11 +34,6 @@ public class SkinFileResolver extends WebFileResolver {
 		}
 
 		if (fileName.startsWith(CURRENT_SKIN_PREFIX)) {
-			if ("inherent".equals(getSkin())) {
-				throw new IllegalArgumentException(
-						"\"inherent\" is not a valid dorado skin.");
-			}
-
 			fileName = fileName.replace(CURRENT_SKIN, getSkin());
 		}
 		return super.getResourcesByFileName(context, resourcePrefix, fileName,

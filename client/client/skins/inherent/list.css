@@ -1,0 +1,23 @@
+.i-list-box {
+	position: relative;
+}
+
+.i-list-box .data-table {
+    width: 100%;
+}
+
+.i-list-box .data-table .row td {
+    white-space: nowrap;
+}
+
+.i-list-scrolling-indicator {
+    position: absolute;
+}
+
+.i-list-dragging-item {
+    white-space: noWrap;
+}
+
+.i-list-dragging-insert-indicator {
+	position: absolute;
+}

@@ -236,7 +236,7 @@
         "data-pilot.css",
 
 		"text-editor.css",
-		"dropdown.css",
+		"triggert.css",
         "checkbox.css",
         "radio-button.css",
         "form.css",
