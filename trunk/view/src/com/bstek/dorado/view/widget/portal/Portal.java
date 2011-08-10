@@ -3,6 +3,8 @@ package com.bstek.dorado.view.widget.portal;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.bstek.dorado.annotation.ClientEvent;
+import com.bstek.dorado.annotation.ClientEvents;
 import com.bstek.dorado.annotation.ViewAttribute;
 import com.bstek.dorado.annotation.ViewObject;
 import com.bstek.dorado.annotation.Widget;
@@ -18,8 +20,11 @@ import com.bstek.dorado.view.widget.InnerElementList;
 @Widget(name = "Portal", category = "Advance", dependsPackage = "portal")
 @ViewObject(prototype = "dorado.widget.Portal", shortTypeName = "Portal")
 @XmlNode(nodeName = "Portal")
+@ClientEvents({ @ClientEvent(name = "onPortletAdd"),
+		@ClientEvent(name = "onPortletRemove"), @ClientEvent(name = "onPortletMove")})
 public class Portal extends Control {
 	private int portletPadding;
+	private int defaultPortletHeight = 200;
 	private List<Column> columns = new ArrayList<Column>();
 	private List<Portlet> portlets = new InnerElementList<Portlet>(this);
 
@@ -49,5 +54,14 @@ public class Portal extends Control {
 	@XmlSubNode(fixed = true)
 	public List<Portlet> getPortlets() {
 		return portlets;
+	}
+	
+	@ViewAttribute(defaultValue = "200")
+	public int getDefaultPortletHeight() {
+		return defaultPortletHeight;
+	}
+
+	public void setDefaultPortletHeight(int defaultPortletHeight) {
+		this.defaultPortletHeight = defaultPortletHeight;
 	}
 }

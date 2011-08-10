@@ -29,7 +29,6 @@ public class FloatPanel extends Panel implements FloatControl {
 	private ModalType modalType = ModalType.dark;
 	private FloatControlShadowMode shadowMode = FloatControlShadowMode.sides;
 	private boolean focusAfterShow = true;
-	private boolean closeable = true;
 
 	private boolean floating = true;
 	private String floatingClassName;
@@ -136,15 +135,6 @@ public class FloatPanel extends Panel implements FloatControl {
 
 	public void setFocusAfterShow(boolean focusAfterShow) {
 		this.focusAfterShow = focusAfterShow;
-	}
-
-	@ViewAttribute(defaultValue = "true")
-	public boolean isCloseable() {
-		return closeable;
-	}
-
-	public void setCloseable(boolean closeable) {
-		this.closeable = closeable;
 	}
 	
 	/**

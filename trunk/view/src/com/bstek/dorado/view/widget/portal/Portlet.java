@@ -3,6 +3,7 @@ package com.bstek.dorado.view.widget.portal;
 import com.bstek.dorado.annotation.ViewAttribute;
 import com.bstek.dorado.annotation.ViewObject;
 import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.view.widget.base.CloseAction;
 import com.bstek.dorado.view.widget.base.Panel;
 import com.bstek.dorado.view.widget.base.PanelBorder;
 
@@ -15,6 +16,7 @@ import com.bstek.dorado.view.widget.base.PanelBorder;
 public class Portlet extends Panel {
 	private boolean showCaptionBar = true;
 	private PanelBorder border = PanelBorder.curve;
+	private CloseAction closeAction = CloseAction.close;
 	private int column;
 
 	@Override
@@ -37,6 +39,12 @@ public class Portlet extends Panel {
 	@Override
 	public void setBorder(PanelBorder border) {
 		this.border = border;
+	}
+	
+	@Override
+	@ViewAttribute(defaultValue = "close")
+	public CloseAction getCloseAction() {
+		return closeAction;
 	}
 
 	public int getColumn() {
