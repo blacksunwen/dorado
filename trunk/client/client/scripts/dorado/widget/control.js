@@ -191,7 +191,7 @@
 			 * 隐藏模式，表示当用户将该控件的visible属性设置为false时，系统应通过怎样的方式隐藏它。取值范围如下：
 			 * <ul>
 			 * <li>visibility	-	仅将此控件的设置为不可见，它仍将占用布局控件。</li>
-			 * <li>layout	-	将此控件从布局管理器中抹去。</li>
+			 * <li>display	-	将此控件从布局中抹去，且其他控件可以占用它空出的位置。</li>
 			 * </ul>
 			 * @type boolean
 			 * @default "visibility"
@@ -567,10 +567,14 @@
 				
 				if (this._currentVisible !== undefined) {
 					if (this._currentVisible != this._visible) {
-						if (this._hideMode == "layout") {
+						if (this._hideMode == "display") {
 							if (this._visible) {
+								dom.style.display = this._oldDisplay;
 								this.set("layoutConstraint", this._oldLayoutConstraint);
 							} else {
+								this._oldDisplay = dom.style.display;
+								dom.style.display = "none";
+								
 								this._oldLayoutConstraint = this._layoutConstraint;
 								this.set("layoutConstraint", dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT);
 							}
@@ -581,7 +585,10 @@
 				}
 				else {
 					if (!this._visible) {
-						if (this._hideMode == "layout") {
+						if (this._hideMode == "display") {
+							this._oldDisplay = dom.style.display;
+							dom.style.display = "none";
+							
 							this._oldLayoutConstraint = this._layoutConstraint;
 							// 在Container的layout.addControl中已处理
 						}

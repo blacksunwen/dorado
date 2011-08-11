@@ -46,16 +46,6 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 			</bean>
 		</property>
 	</bean>
-	<bean id="dorado.resourcesResolverRegister" parent="dorado.resolverRegister">
-		<property name="order" value="50" />
-		<property name="url" value="/dorado/res/**" />
-		<property name="resolver">
-			<bean class="com.bstek.dorado.web.resolver.WebFileResolver">
-				<property name="baseUri" value="/dorado/res" />
-				<property name="resourcePrefix" value="classpath:" />
-			</bean>
-		</property>
-	</bean>
 	<bean id="dorado.viewServiceResolverRegister" parent="dorado.resolverRegister">
 		<property name="order" value="60" />
 		<property name="url" value="/dorado/view-service" />

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:ivy="antlib:org.apache.ivy.ant" name="build-jar" default="build">
 	<property name="module.dir" value="${work.dir}/${module}" />
+	<available property="ivy-presented" file="${workspace.dir}/${module}/ivy.xml" />
 
 	<patternset id="source-patternset">
 		<include name="**/*.*" />
@@ -29,7 +30,6 @@
 
 	<target name="prepare-work-dir" depends="clean,prepare-dependencies">
 		<mkdir dir="${module.dir}/src" />
-		<mkdir dir="${module.dir}/client" />
 		<mkdir dir="${module.dir}/test" />
 		<mkdir dir="${module.dir}/bin" />
 
@@ -68,16 +68,8 @@
 
 	<target name="post-compile">
 		<ant antfile="${basedir}/includes/build-client.xml" inheritRefs="true">
-			<property name="dist" value="${module.dir}/client" />
+			<property name="dist" value="${module.dir}/bin/dorado" />
 		</ant>
-
-		<mkdir dir="${module.dir}/bin/CLIENT" />
-		<echo message="copy ${module.dir}/client --> ${module.dir}/bin/CLIENT" />
-		<copy todir="${module.dir}/bin/CLIENT" failonerror="false">
-			<fileset dir="${module.dir}/client">
-				<patternset refid="resource-patternset" />
-			</fileset>
-		</copy>
 	</target>
 
 	<target name="build-package-properties">
@@ -123,7 +115,7 @@
 		<delete file="${target.lib.dir}/ivy-${product.revision}.xml" />
 	</target>
 
-	<target name="make-pom">
+	<target name="make-pom" if="ivy-presented">
 		<ivy:makepom ivyfile="${workspace.dir}/${module}/ivy.xml" pomfile="${target.pom.dir}/${product.name}-${module}.pom" templateFile="${resources.dir}/dorado-module-template.pom" conf="compile" />
 	</target>
 

@@ -5,6 +5,8 @@
 			resourceSuffix=".js" />
 		<Pattern name="dorado-css" contentType="text/css" charset="UTF-8" mergeRequests='${configure["view.mergeStyleSheet"]}' baseUri=">dorado/client/skins/~current"
 			resourceSuffix=".css" />
+		<Pattern name="res-js" contentType="text/javascript" charset="UTF-8" mergeRequests='${configure["view.mergeJavaScript"]}' resourceSuffix=".js" />
+		<Pattern name="res-css" contentType="text/css" charset="UTF-8" mergeRequests="false" resourceSuffix=".css" />
 	</Patterns>
 
 	<Packages>
@@ -19,7 +21,8 @@
 			scripts/jquery/jquery.mousewheel,
 			scripts/jquery/jquery.hotkeys,
 			scripts/jquery/jquery-ui-1.8.7.custom,
-			scripts/jquery/jquery.swfobject.1-1-1
+			scripts/jquery/jquery.swfobject.1-1-1,
+			scripts/jquery/jquery.textarea
 		</Package>
 
 		<Package name="json2" pattern="dorado-js">

@@ -2,20 +2,15 @@
 	<info organisation="com.bstek.dorado" module="ant-task" />
 
 	<configurations>
-		<conf name="default" visibility="public" extends="runtime,master" />
-		<conf name="master" visibility="public" />
-		<conf name="compile" visibility="public" />
-		<conf name="provided" visibility="public" />
-		<conf name="runtime" visibility="public" extends="compile" />
-		<conf name="test" visibility="private" extends="runtime" />
+		<include file="../ivy/ivy-configurations.xml" />
 	</configurations>
 
-	<dependencies defaultconfmapping="compile->compile(*),master(*);runtime->master(*),compile(*),runtime(*)">
-		<!-- COMPILE -->
-		<dependency org="commons-lang" name="commons-lang" rev="2.5" conf="compile" />
-		<dependency org="net.sf.json-lib" name="json-lib" rev="2.4" conf="compile" m:classifier="jdk15" />
-		<dependency org="net.sf.ezmorph" name="ezmorph" rev="1.0.4" conf="compile" />
-		<dependency org="rhino" name="js" rev="1.7R2" conf="compile" />
-		<dependency org="org.apache.ant" name="ant" rev="1.8.2" conf="compile" />
+	<dependencies>
+		<!-- RUNTIME -->
+		<dependency org="commons-lang" name="commons-lang" rev="2.5" conf="runtime" />
+		<dependency org="net.sf.json-lib" name="json-lib" rev="2.4" conf="runtime" m:classifier="jdk15" />
+		<dependency org="net.sf.ezmorph" name="ezmorph" rev="1.0.4" conf="runtime" />
+		<dependency org="rhino" name="js" rev="1.7R2" conf="runtime" />
+		<dependency org="org.apache.ant" name="ant" rev="1.8.2" conf="runtime" />
 	</dependencies>
 </ivy-module>

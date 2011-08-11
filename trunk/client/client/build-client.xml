@@ -264,6 +264,7 @@
 				<include name="jquery.hotkeys.js" />
 				<include name="jquery-ui-1.8.7.custom.js" />
 				<include name="jquery.swfobject.1-1-1.js" />
+				<include name="jquery.textarea.js" />
 			</fileset>
 		</copy>
 

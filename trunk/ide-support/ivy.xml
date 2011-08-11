@@ -2,20 +2,15 @@
 	<info organisation="com.bstek.dorado" module="dorado-ide-support" revision="${product.revision}" status="${product.status}" />
 
 	<configurations>
-		<conf name="default" visibility="public" extends="runtime,master" />
-		<conf name="master" visibility="public" />
-		<conf name="compile" visibility="public" />
-		<conf name="provided" visibility="public" />
-		<conf name="runtime" visibility="public" extends="compile" />
-		<conf name="test" visibility="private" extends="runtime" />
+		<include file="../ivy/ivy-configurations.xml" />
 	</configurations>
 
-	<dependencies defaultconfmapping="compile->compile(*),master(*);runtime->master(*),compile(*),runtime(*)">
-		<!-- COMPILE -->
-		<dependency org="com.bstek.dorado" name="dorado-console" rev="${depended-dorado.version}" conf="compile" />
-		<dependency org="dom4j" name="dom4j" rev="1.6.1" conf="compile" />
+	<dependencies>
+		<!-- RUNTIME -->
+		<dependency org="com.bstek.dorado" name="dorado-console" rev="${depended-dorado.version}" conf="runtime" />
+		<dependency org="dom4j" name="dom4j" rev="1.6.1" conf="runtime" />
 		
 		<!-- TEST -->
-		<dependency org="junit" name="junit" rev="4.8.2" conf="test->default" />
+		<dependency org="junit" name="junit" rev="4.8.2" conf="test" />
 	</dependencies>
 </ivy-module>
