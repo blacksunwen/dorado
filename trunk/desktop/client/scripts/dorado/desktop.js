@@ -16,6 +16,16 @@ dorado.widget.desktop.ShortCut = $extend([dorado.RenderableElement, dorado.Event
         }
     },
 
+    destroy: function() {
+        var isClosed = (window.closed || dorado.windowClosed);
+
+        var dom = this._dom;
+        if (dom) {
+            $dom = $fly(dom);
+            if (!isClosed) $dom.remove();
+        }
+    },
+
     getListenerScope: function() {
         if (this._parent && this._parent._view) {
             return this._parent._view;
@@ -332,6 +342,67 @@ dorado.widget.desktop.Desktop = $extend(dorado.widget.desktop.AbstractDesktop, /
 			}
 		}
 	},
+
+    /**
+     * 添加ShortCut，目前不支持ShortCut自身的column、row的设置，Desktop会自动找到一个合理的位置放置该ShortCut。
+     * @param {dorado.widget.desktop.ShortCut} item 要添加的ShortCut。
+     */
+    addItem: function(item) {
+        var desktop = this, items = desktop._items, rendered = desktop._rendered;
+        if (!items) {
+            items = desktop._items || [];
+        }
+        if (!(item instanceof dorado.widget.desktop.ShortCut)) {
+            item = new dorado.widget.desktop.ShortCut(item);
+        }
+        if (rendered) {
+            desktop.initShortCut(item, desktop._dom);
+            desktop.placeNewShortCut(item);
+        }
+        items.push(item);
+    },
+
+    /**
+     * 删除指定的ShortCut。
+     * @param {dorado.widget.desktop.ShortCut} item 要删除的ShortCut。
+     */
+    removeItem: function(item) {
+        var desktop = this, items = desktop._items, rendered = desktop._rendered;
+        if (!items) return;
+        desktop.unplaceShortCut(item);
+        items.remove(item);
+        item.destroy();
+    },
+
+    /**
+     * 清除所有的ShortCut。
+     */
+    clearItems: function() {
+        var desktop = this, items = desktop._items, rendered = desktop._rendered;
+        if (!items) return;
+        for (var i = 0, j = items.length; i < j; i++) {
+            var item = items[i];
+            desktop.unplaceShortCut(item);
+            item.destroy();
+        }
+        desktop._items = [];
+    },
+
+    /**
+     * @private
+     */
+    placeNewShortCut: function(shortcut) {
+        var desktop = this, rowCount = desktop._rowCount, columnCount = desktop._columnCount;
+        for (var i = 0; i < columnCount; i++) {
+            for (var j = 0; j < rowCount; j++) {
+                if (desktop.getShortCut(i, j) == null) {
+                    desktop.placeShortCut(shortcut, i, j);
+                    return;
+                }
+            }
+        }
+        desktop.placeShortCut(shortcut, columnCount, rowCount);
+    },
 
 	/**
 	 * 放置快捷键到指定位置上。
@@ -684,8 +755,8 @@ dorado.widget.desktop.DesktopCarousel = $extend(dorado.widget.desktop.AbstractDe
 	/**
 	 * 插入子组件。
 	 * @param {dorado.widget.Control} control 要插入的子组件
-	 * @param {int} index {optional} 要插入的子组件的索引。
-	 * @param {boolean} current {optional} 是否把插入的组件置为活动组件，默认为false。
+	 * @param {int} [index] 要插入的子组件的索引。
+	 * @param {boolean} [current=false] 是否把插入的组件置为活动组件，默认为false。
 	 * @return {dorado.widget.Control} 插入的组件。
 	 */
 	addControl: function(control, index, current) {

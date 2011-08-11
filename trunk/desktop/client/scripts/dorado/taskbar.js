@@ -47,8 +47,20 @@ dorado.widget.desktop.TaskButton = $extend(dorado.widget.AbstractButton, /** @sc
 		current: {
 			defaultValue: false
 		},
-		
-		control: {}
+
+        /**
+         * ControlApp生成的TaskButton，会包含该属性。
+         * @attribute readOnly
+         * @type dorado.widget.Control
+         */
+		control: {},
+
+        /**
+         * ControlApp生成的TaskButton，会包含该属性。
+         * @attribute readOnly
+         * @type dorado.widget.desktop.App
+         */
+        app: {}
 	},
 	
 	getShell: function() {
@@ -229,6 +241,7 @@ dorado.widget.desktop.TimeLabel = $extend(dorado.widget.Control, /** @scope dora
 		
 		return dom;
 	},
+
 	destroy: function() {
 		var label = this;
 		$invokeSuper.call(label, arguments);
@@ -362,7 +375,16 @@ dorado.widget.desktop.Taskbar = $extend(dorado.widget.Control, /** @scope dorado
 			writeBeforeReady: true,
 			defaultValue: true
 		},
-		
+
+        /**
+         * 激活右键菜单的TaskButton，可能会被激活的右键菜单使用。
+         * @type dorado.widget.desktop.TaskButton
+         * @attribute
+         */
+        contextMenuTaskButton: {
+            readOnly: true
+        },
+
 		/**
 		 *
 		 * @attribute
