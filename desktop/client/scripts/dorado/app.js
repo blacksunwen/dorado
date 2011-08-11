@@ -260,6 +260,7 @@ dorado.widget.desktop.ControlApp = $extend(dorado.widget.desktop.AbstractControl
                 icon: app._icon16 || null,
 				control: control
 			});
+            taskButton._app = app;
 			taskbar.addTaskButton(taskButton);
 			control._animateTarget = taskButton;
 			app._taskButton = taskButton;
