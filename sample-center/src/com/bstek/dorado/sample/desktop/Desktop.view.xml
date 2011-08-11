@@ -4,52 +4,8 @@
   <Context/>
   <Model/>
   <View>
-    <Shell>
+    <Shell id="shell">
       <Property name="wallpaper">>dorado/res/com/bstek/dorado/sample/desktop/wallpapers/dorado1.jpg</Property>
-      <Desktop>
-        <DesktopCarousel>
-          <Desktop>
-            <Property name="iconSize">small</Property>
-            <Shortcut>
-              <Property name="appId">iframe1</Property>
-            </Shortcut>
-            <Shortcut>
-              <Property name="appId">iframe2</Property>
-            </Shortcut>
-            <Shortcut>
-              <Property name="appId">iframe3</Property>
-            </Shortcut>
-            <Shortcut>
-              <Property name="appId">iframe4</Property>
-            </Shortcut>
-          </Desktop>
-          <Desktop>
-            <Shortcut>
-              <Property name="appId">chart1</Property>
-            </Shortcut>
-            <Shortcut>
-              <Property name="appId">chart2</Property>
-            </Shortcut>
-            <Shortcut>
-              <Property name="appId">chart3</Property>
-            </Shortcut>
-            <Shortcut>
-              <Property name="appId">chart4</Property>
-            </Shortcut>
-            <Shortcut>
-              <Property name="appId">chart5</Property>
-            </Shortcut>
-            <Shortcut>
-              <Property name="appId">chart6</Property>
-            </Shortcut>
-          </Desktop>
-          <Desktop>
-            <Shortcut>
-              <Property name="appId">widget1</Property>
-            </Shortcut>
-          </Desktop>
-        </DesktopCarousel>
-      </Desktop>
       <Apps>
         <WidgetApp>
           <Property name="id">widget1</Property>
@@ -133,18 +89,62 @@
           <Property name="path">>com.bstek.dorado.sample.ofc.Radar.d</Property>
           <Property name="icon32">>dorado/res/com/bstek/dorado/sample/desktop/radar.png</Property>
         </IFrameApp>
-        <DialogApp>
-          <Property name="id">control1</Property>
-          <Property name="icon32">>dorado/res/com/bstek/dorado/sample/desktop/pie.png</Property>
-          <Dialog>
-            <Property name="height">400</Property>
-            <Property name="width">600</Property>
-            <Property name="caption">Test</Property>
-            <Children/>
-          </Dialog>
-        </DialogApp>
       </Apps>
+      <Desktop>
+        <DesktopCarousel>
+          <Desktop>
+            <Property name="iconSize">small</Property>
+            <Shortcut>
+              <Property name="appId">iframe1</Property>
+            </Shortcut>
+            <Shortcut>
+              <Property name="appId">iframe2</Property>
+            </Shortcut>
+            <Shortcut>
+              <Property name="appId">iframe3</Property>
+            </Shortcut>
+            <Shortcut>
+              <Property name="appId">iframe4</Property>
+            </Shortcut>
+          </Desktop>
+          <Desktop>
+            <Shortcut>
+              <Property name="appId">chart1</Property>
+            </Shortcut>
+            <Shortcut>
+              <Property name="appId">chart2</Property>
+            </Shortcut>
+            <Shortcut>
+              <Property name="appId">chart3</Property>
+            </Shortcut>
+            <Shortcut>
+              <Property name="appId">chart4</Property>
+            </Shortcut>
+            <Shortcut>
+              <Property name="appId">chart5</Property>
+            </Shortcut>
+            <Shortcut>
+              <Property name="appId">chart6</Property>
+            </Shortcut>
+          </Desktop>
+          <Desktop>
+            <Shortcut>
+              <Property name="appId">widget1</Property>
+            </Shortcut>
+          </Desktop>
+        </DesktopCarousel>
+      </Desktop>
       <Taskbar>
+        <ClientEvent name="onTaskButtonContextMenu">var menu = this.id(&quot;menut&quot;);
+menu.show({event: arg.event, direction: &quot;b2t&quot;});</ClientEvent>
+        <QuickButtons>
+          <QuickButton>
+            <Property name="appId">chart1</Property>
+          </QuickButton>
+          <QuickButton>
+            <Property name="appId">chart2</Property>
+          </QuickButton>
+        </QuickButtons>
         <StartButton>
           <SimpleButton>
             <ClientEvent name="onClick">var startMenuPanel = this.id(&quot;startMenuPanel&quot;);
@@ -163,14 +163,6 @@ startMenuPanel.show({
             <Property name="className">start-button</Property>
           </SimpleButton>
         </StartButton>
-        <QuickButtons>
-          <QuickButton>
-            <Property name="appId">chart1</Property>
-          </QuickButton>
-          <QuickButton>
-            <Property name="appId">chart2</Property>
-          </QuickButton>
-        </QuickButtons>
       </Taskbar>
     </Shell>
     <FloatContainer id="startMenuPanel">
@@ -200,6 +192,18 @@ startMenuPanel.show({
               </MenuItem>
             </Menu>
             <Menu>
+              <ClientEvent name="onContextMenu">if (!self.get(&quot;focusItem&quot;) || (self.get(&quot;focusItem&quot;) &amp;&amp; self.get(&quot;focusItem&quot;).hasSubmenu())) {
+    return;
+}
+var menu = this.id(&quot;menu&quot;);
+self.freeze();
+menu._focusParent = self;
+menu.show({
+    event: arg.event
+});
+menu.addListener(&quot;onHide&quot;, function() {
+    self.unfreeze();
+}, { once: true });</ClientEvent>
               <Property name="exClassName">right-menu</Property>
               <Property name="floating">false</Property>
               <MenuItem>
@@ -243,5 +247,25 @@ startMenuPanel.show({
         </Panel>
       </Children>
     </FloatContainer>
+    <Menu id="menu">
+      <MenuItem>
+        <ClientEvent name="onClick">var shell = this.id(&quot;shell&quot;);
+var menu = self.get(&quot;parent&quot;).get(&quot;focusParent&quot;);
+var focusItem = menu.get(&quot;focusItem&quot;);
+shell.getCurrentDesktop().addItem({ caption: focusItem.get(&quot;caption&quot;) });
+</ClientEvent>
+        <Property name="caption">Send To Desktop</Property>
+      </MenuItem>
+    </Menu>
+    <Menu id="menut">
+      <MenuItem>
+        <ClientEvent name="onClick">var shell = this.id(&quot;shell&quot;), taskbar = shell.get(&quot;taskbar&quot;);
+var contextMenuTaskButton = taskbar.get(&quot;contextMenuTaskButton&quot;);
+if (contextMenuTaskButton &amp;&amp; contextMenuTaskButton.get(&quot;app&quot;)) {
+    contextMenuTaskButton.get(&quot;app&quot;).close();
+}</ClientEvent>
+        <Property name="caption">Close</Property>
+      </MenuItem>
+    </Menu>
   </View>
 </ViewConfig>
