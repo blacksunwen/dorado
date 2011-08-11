@@ -1,5 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html style="overflow: hidden;">
+<html style="overflow: hidden;height: 100%;">
 <head>
     <title>Web Desktop Test Page</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
@@ -18,10 +18,10 @@
                 caption: "Close",
                 listener: {
                     onClick: function() {
-                        var tabbar = this.id("tabbar1");
-                        if (tabbar) {
-                            var tab = tabbar.get("contextMenuTab");
-                            tab.close();
+                        var taskbar = shell._taskbar;
+                        var contextMenuTaskButton = taskbar._contextMenuTaskButton;
+                        if (contextMenuTaskButton && contextMenuTaskButton._app) {
+                            contextMenuTaskButton._app.close();
                         }
                     }
                 }
@@ -726,6 +726,6 @@
         });
     </script>
 </head>
-<body style="margin: 0;padding: 0;overflow: hidden;">
+<body style="margin: 0;padding: 0;overflow: hidden;height: 100%;">
 </body>
 </html>

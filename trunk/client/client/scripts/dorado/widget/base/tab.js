@@ -346,6 +346,13 @@
 
 		getControl: function() {
 			return (this.doGetControl) ? this.doGetControl() : null;
+		},
+
+        getListenerScope: function() {
+			if (this._parent && this._parent._view) {
+				return this._parent._view;
+			}
+			return this;
 		}
 	});
 

@@ -76,14 +76,12 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 					if (value instanceof Array) {
 						for (var i = 0; i < value.length; i++) {
 							controls.insert(value[i]);
-							value[i]._parent = value[i]._focusParent = this;
 							if (i == 0 && currentFirstControl) {
 								this.set("currentControl", value[i]);
 							}
 						}
 					} else if (value.constructor == Object.prototype.constructor) {
                         controls.insert(value);
-						value._parent = value._focusParent = this;
                         this.set("currentControl", value);
                     }
 				}
