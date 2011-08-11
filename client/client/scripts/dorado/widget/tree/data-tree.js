@@ -69,8 +69,8 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 
 				if (this._nodes.size > 0) return true;
 				if (this._hasChild != undefined) return this._hasChild;
-				if (this._bindingConfig._hasChildProperty != undefined) {
-					return this._getEntityProperty(this._data, this._bindingConfig._hasChildProperty);
+				if (this._bindingConfig.hasChildProperty != undefined) {
+					return this._getEntityProperty(this._data, this._bindingConfig.hasChildProperty);
 				}
 
 				var hasChild = false, entity = this._data;

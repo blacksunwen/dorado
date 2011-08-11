@@ -8,5 +8,5 @@ package com.bstek.dorado.view.widget;
  * @since 2011-5-5
  */
 public enum HideMode {
-	visibility, layout
+	visibility, display
 }

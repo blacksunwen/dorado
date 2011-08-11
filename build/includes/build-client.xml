@@ -32,6 +32,7 @@
 		<echo message="copy-project-source: ${module.project}" />
 		<property name="project.root" value="${workspace.dir}/${module.project}" />
 
+		<!-- old style project -->
 		<if>
 			<available file="${project.root}/client" />
 			<then>
@@ -57,56 +58,38 @@
 				</if>
 			</then>
 		</if>
+
+		<!-- new style project -->
+		<if>
+			<available file="${project.root}/res/dorado" />
+			<then>
+				<if>
+					<available file="${project.root}/res/dorado/build-client.xml" />
+					<then>
+						<echo message="custom build file: ${project.root}/res/dorado/build-client.xml" />
+						<ant antfile="${project.root}/res/dorado/build-client.xml" inheritRefs="true">
+							<property name="src" value="${project.root}/res/dorado" />
+						</ant>
+					</then>
+					<else>
+						<copy todir="${dist}/scripts">
+							<fileset dir="${project.root}/res/dorado/scripts" />
+						</copy>
+						<copy todir="${dist}/skins">
+							<fileset dir="${project.root}/res/dorado/skins" />
+						</copy>
+						<copy todir="${dist}/resources">
+							<fileset dir="${project.root}/res/dorado/resources" />
+						</copy>
+					</else>
+				</if>
+			</then>
+		</if>
 	</target>
 
 	<target name="copy-source">
 		<foreach list="${module.projects}" param="module.project" target="copy-project-source" inheritall="true" />
 	</target>
-
-	<!--
-	<target name="merge-single-css">
-		<echo message="merge-single-css: ${file}" />
-		<basename property="file.name" file="${file}" />
-		<concat destfile="${file}.concat" fixlastline="true" encoding="utf-8">
-			<filelist>
-				<file name="${dist}/skins/inherent/${file.name}" />
-				<file name="${file}" />
-			</filelist>
-		</concat>
-		<move file="${file}.concat" tofile="${file}" overwrite="true" />
-	</target>
-
-	<target name="merge-single-skin">
-		<echo message="merge-single-skin: ${skin}" />
-		<basename property="skin.name" file="${skin}" />
-		<foreach target="merge-single-css" param="file" inheritall="true">
-			<path>
-				<fileset dir="${dist}/skins/${skin.name}" includes="*.css" />
-			</path>
-		</foreach>
-
-		<copy todir="${dist}/skins/${skin.name}" overwrite="false">
-			<fileset dir="${dist}/skins/inherent" />
-		</copy>
-	</target>
-
-	<target name="merge-css">
-		<if>
-			<available file="${dist}/skins/inherent" />
-			<then>
-				<foreach target="merge-single-skin" param="skin" inheritall="true">
-					<path>
-						<dirset dir="${dist}">
-							<include name="skins/*" />
-							<exclude name="skins/inherent" />
-						</dirset>
-					</path>
-				</foreach>
-				<delete dir="${dist}/skins/inherent" />
-			</then>
-		</if>
-	</target>
-	-->
 
 	<target name="compressor-css" unless="dont-compressor-css">
 		<if>
@@ -121,11 +104,16 @@
 	</target>
 
 	<target name="tidy-js" unless="dont-tidy-js">
-		<js-tidy>
-			<fileset dir="${dist}">
-				<include name="**/*.js" />
-			</fileset>
-		</js-tidy>
+		<if>
+			<available file="${dist}" />
+			<then>
+				<js-tidy>
+					<fileset dir="${dist}">
+						<include name="**/*.js" />
+					</fileset>
+				</js-tidy>
+			</then>
+		</if>
 	</target>
 
 	<target name="compressor-js" unless="dont-compressor-js">

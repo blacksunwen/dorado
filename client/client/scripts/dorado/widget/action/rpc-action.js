@@ -289,6 +289,7 @@
 					if (updateItems) {
 						var self = this;
 						jQuery.each(updateItems, function(i, updateItem) {
+							if (updateItem.refreshMode == null) updateItem.refreshMode = "value";
 							if (updateItem.autoResetEntityState == null) updateItem.autoResetEntityState = true;
 							
 							if (updateItem.dataSet == null) return;
@@ -596,9 +597,9 @@
 
 					var state = entityStates[entity.entityId] || 0;
 					if (state.constructor == Number) {
-						if (entity.state == state) return b;
 						delete entity._oldData;
 						if (state == dorado.Entity.STATE_DELETED) entity.remove(true);
+						else if (entity.state == state) return b;
 						else entity.setState(state);
 					} else {
 						var s = state.$state || 0;

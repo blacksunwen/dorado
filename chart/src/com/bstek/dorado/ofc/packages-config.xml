@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
 	<Packages>
-		<Package name="chart-skin" pattern="dorado-css">
-		</Package>
-		<Package name="chart" pattern="dorado-js" depends="widget,chart-skin">
+		<Package name="chart" pattern="dorado-js" depends="widget">
 			scripts/dorado/chart
 		</Package>
 	</Packages>

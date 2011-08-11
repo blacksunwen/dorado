@@ -603,7 +603,7 @@
 						this._evaluateSectionOnEntity(context, data);
 					}
 				}
-				if (!context.possibleMultiResult && context.results.length == 1) {
+				if (!context.possibleMultiResult && context.results && context.results.length == 1) {
 					context.results = context.results[0];
 				}
 				return context.results;

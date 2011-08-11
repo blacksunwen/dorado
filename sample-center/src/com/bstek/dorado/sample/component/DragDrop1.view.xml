@@ -86,6 +86,6 @@ self.set("renderer", new dorado.widget.blockview.ImageBlockRenderer({ captionPro
 			]]></ClientEvent>
 		</BlockView>
 		<ListBox property="name" draggable="true" dragTags="block" droppable="true" droppableTags="block" dragMode="item"
-			dropMode="insertItems" width="300" height="200" layoutConstraint="left:430; top:240" />
+			dropMode="insertItems" width="300" height="200" layoutConstraint="none" />
 	</View>
 </ViewConfig>
