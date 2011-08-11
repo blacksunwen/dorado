@@ -65,7 +65,48 @@
             caption: "buttonSetStyle"
         }));
 
-        var tabcontrol = new dorado.widget.TabControl("tabcontrol");
+        var menu = new dorado.widget.Menu({
+            items: [{
+                name: "close",
+                caption: "Close",
+                listener: {
+                    onClick: function() {
+                        var tabbar = this.id("tabbar1");
+                        if (tabbar) {
+                            var tab = tabbar.get("contextMenuTab");
+                            tabbar.closeTab(tab);
+                        }
+                    }
+                }
+            }, "-", {
+                name: "closeAll",
+                caption: "Close All",
+                listener: {
+                    onClick: function() {
+                        var tabbar = this.id("tabbar1");
+                        if (tabbar) {
+                            tabbar.closeAllTabs();
+                        }
+                    }
+                }
+            }, {
+                name: "closeOthers",
+                caption: "Close Others",
+                listener: {
+                    onClick: function() {
+                        var tabbar = this.id("tabbar1");
+                        if (tabbar) {
+                            var contextMenuTab = tabbar.get("contextMenuTab");
+                            tabbar.closeOtherTabs(contextMenuTab);
+                        }
+                    }
+                }
+            }]
+        });
+
+        view.addChild(menu);
+
+        var tabcontrol = new dorado.widget.TabControl("tabbar1");
         tabcontrol.set({
             width: 600,
             height: 400,
@@ -102,7 +143,14 @@
                     path: "http://www.163.com"
                 }
             ],
-            tabMinWidth: 100
+            tabMinWidth: 100,
+            listener: {
+                onTabContextMenu: function(self, arg) {
+                    var tab = arg.tab;
+                    menu.getItem("close").set("disabled", tab._disabled || !tab._closeable);
+                    menu.show({event: arg.event});
+                }
+            }
         });
 
         tabcontrol.addRightToolButton(new dorado.widget.SimpleButton({

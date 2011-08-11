@@ -64,9 +64,25 @@
 			}
 		},
 
+        getTopMenu: function() {
+            var menu = this._parent, opener = menu.opener, result;
+            while (opener) {
+                var parent = opener._parent;
+                if (opener instanceof dorado.widget.menu.AbstractMenuItem && parent instanceof dorado.widget.Menu) {
+                    result = parent;
+                }
+                opener = parent ? parent.opener : null;
+            }
+            return result;
+        },
+
 		getListenerScope: function() {
 			if (this._parent && this._parent._view) {
-				return this._parent._view;
+                var topMenu = this.getTopMenu();
+                if (!topMenu) {
+                    topMenu = this._parent;
+                }
+				return topMenu._view;
 			}
 			return this;
 		}
@@ -436,11 +452,22 @@
 			var item = this, submenu = item._submenu;
 			if (submenu) {
                 item._showSubmenuTimer = setTimeout(function() {
+                    var owner = item._parent;
+
+                    if (owner && owner.getListenerCount("onContextMenu") > 0 && submenu.getListenerCount("onContextMenu") == 0) {
+                        var handles = item._parent._events["onContextMenu"];
+                        for (var i = 0, j = handles.length; i < j; i++) {
+                            var handle = handles[i];
+                            submenu.addListener("onContextMenu", handle.listener);
+                        }
+                        submenu._inheritContextMenu = true;
+                    }
+                    owner.registerInnerControl(submenu);
+
                     submenu.show({
                         anchorTarget: item,
                         align: "right",
                         vAlign: "innertop",
-                        delay: 300,
                         focusFirst: focusfirst
                     });
 
@@ -478,6 +505,10 @@
                     clearTimeout(item._showSubmenuTimer);
                     item._showSubmenuTimer = null;
                 } else {
+                    if (submenu._inheritContextMenu) {
+                        submenu.clearListeners("onContextMenu");
+                    }
+                    item._parent.registerInnerControl(submenu);
                     submenu.hide();
                 }
 			}

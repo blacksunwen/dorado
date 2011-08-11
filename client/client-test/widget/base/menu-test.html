@@ -59,17 +59,18 @@
 
             var listener = {
                 onContextMenu: function(self, arg) {
+                    console.log(this);
+                    if (!self.get("focusItem") || (self.get("focusItem") && self.get("focusItem").hasSubmenu())) {
+                        return;
+                    }
                     self.freeze();
-                    var event = arg.event;
                     menu._focusParent = self;
                     menu.show({
-                        event: event
+                        event: arg.event
                     });
                     menu.addListener("onHide", function() {
                         self.unfreeze();
-                    }, {
-                        once: true
-                    })
+                    }, { once: true });
                 }
             };
 
@@ -87,10 +88,8 @@
             	}, {
             		caption: "菜单项2菜单项2",
                     submenu: {
-                        listener: listener,
                         items: [{
                             submenu: {
-                                listener: listener,
                                 items: [{
                                     caption: "菜单项121"
                                 }, {

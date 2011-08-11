@@ -645,6 +645,29 @@
             }
         },
 
+        getTopMenu: function() {
+            var menu = this, opener = menu.opener, result = menu;
+            while (opener) {
+                var parent = opener._parent;
+                if (opener instanceof dorado.widget.menu.AbstractMenuItem && parent instanceof dorado.widget.Menu) {
+                    result = parent;
+                }
+                opener = parent ? parent.opener : null;
+            }
+            return result;
+        },
+
+		getListenerScope: function() {
+			if (this._parent && this._parent._view) {
+                var topMenu = this.getTopMenu();
+                if (!topMenu) {
+                    topMenu = this;
+                }
+				return topMenu._view;
+			}
+			return this;
+		},
+
 		createDom: function() {
 			var menu = this, doms = {}, dom = $DomUtils.xCreateElement({
 				tagName: "div",

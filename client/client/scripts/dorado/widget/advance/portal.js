@@ -179,6 +179,10 @@
 				defaultValue: "d-portal"
 			},
 
+            defaultPortletHeight: {
+                defaultValue: 200
+            },
+
 			/**
 			 * Portal组件包含的Portlet的集合，只建议初始化的时候设置。
 			 * @attribute
@@ -349,6 +353,10 @@
 				if (!columnPortlets) {
 					columnPortlets = portal._columnPortlets[column] = [];
 				}
+
+                if (portlet._height == undefined) {
+                    portlet._height = portal._defaultPortletHeight;
+                }
 
 				if (rendered) {
 					portlet.render(dom);
@@ -551,6 +559,9 @@
 						}
 						for (j = 0, l = columnPortlets.length; j < l; j++) {
 							var temp = columnPortlets[j];
+                            if (temp._height == undefined) {
+                                temp._height = portal._defaultPortletHeight;
+                            }
 							temp.render(dom);
 							temp._column = i;
 							$fly(temp._dom).css("margin-bottom", portal._portletPadding);
