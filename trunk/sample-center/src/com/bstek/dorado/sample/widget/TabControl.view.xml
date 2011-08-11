@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Arguments/>
+  <Context/>
+  <Model/>
+  <View>
+    <TabControl id="tabControl">
+      <ClientEvent name="onCreate">self.addRightToolButton(new dorado.widget.SimpleButton({
+    className: &quot;menu-button&quot;,
+    menu: new dorado.widget.Menu({
+        items: [ { caption: &quot;test&quot; }, { caption: &quot;test&quot; }]
+    })
+}));</ClientEvent>
+      <ClientEvent name="onTabContextMenu">var menu = this.id(&quot;menu&quot;);
+var tab = arg.tab;
+menu.getItem(&quot;close&quot;).set(&quot;disabled&quot;, tab.get(&quot;disabled&quot;) || !tab.get(&quot;closeable&quot;));
+menu.show({
+	event: arg.event
+});
+</ClientEvent>
+      <Property name="height">400</Property>
+      <Property name="width">400</Property>
+      <ControlTab>
+        <Property name="caption">Tab1</Property>
+        <Container>
+          <Property name="style">
+            <Property name="border">1px solid #ccc;</Property>
+          </Property>
+        </Container>
+      </ControlTab>
+      <ControlTab>
+        <Property name="caption">Tab2</Property>
+        <Property name="closeable">true</Property>
+        <Container>
+          <Property name="style">
+            <Property name="border">1px solid #000;</Property>
+          </Property>
+        </Container>
+      </ControlTab>
+      <ControlTab>
+        <Property name="caption">Tab3</Property>
+        <Property name="closeable">true</Property>
+        <Container>
+          <Property name="style">
+            <Property name="border">1px solid #f0f;</Property>
+          </Property>
+        </Container>
+      </ControlTab>
+    </TabControl>
+    <Menu id="menu">
+      <MenuItem>
+        <ClientEvent name="onClick">var tabcontrol = this.id(&quot;tabControl&quot;);
+var tab = tabcontrol.get(&quot;contextMenuTab&quot;);
+if (tab) tabcontrol.closeTab(tab);</ClientEvent>
+        <Property name="caption">Close</Property>
+        <Property name="name">close</Property>
+      </MenuItem>
+      <Separator/>
+      <MenuItem>
+        <ClientEvent name="onClick">var tabcontrol = this.id(&quot;tabControl&quot;);
+tabcontrol.closeAllTabs();
+</ClientEvent>
+        <Property name="caption">Close All</Property>
+      </MenuItem>
+      <MenuItem>
+        <ClientEvent name="onClick">var tabcontrol = this.id(&quot;tabControl&quot;);
+var tab = tabcontrol.get(&quot;contextMenuTab&quot;);
+if (tab) tabcontrol.closeOtherTabs(tab);</ClientEvent>
+        <Property name="caption">Close Others</Property>
+      </MenuItem>
+    </Menu>
+  </View>
+</ViewConfig>
