@@ -10,32 +10,32 @@
 		<dependency org="javax.servlet" name="servlet-api" rev="2.5" conf="compile" />
 		<dependency org="javax.servlet" name="jsp-api" rev="2.0" conf="compile" />
 
-		<!-- RUNTIME -->
-		<dependency org="cglib" name="cglib" rev="2.2" conf="runtime" />
-		<dependency org="javassist" name="javassist" rev="3.12.1.GA" conf="runtime" />
+		<!-- COMPILE,RUNTIME -->
+		<dependency org="cglib" name="cglib" rev="2.2" conf="compile,runtime" />
+		<dependency org="javassist" name="javassist" rev="3.12.1.GA" conf="compile,runtime" />
 
-		<dependency org="net.sf.ehcache" name="ehcache-core" rev="2.4.1" conf="runtime" />
-		<dependency org="net.sf.json-lib" name="json-lib" rev="2.4" conf="runtime" m:classifier="jdk15" />
-		<dependency org="net.sf.ezmorph" name="ezmorph" rev="1.0.4" conf="runtime" />
+		<dependency org="net.sf.ehcache" name="ehcache-core" rev="2.4.1" conf="compile,runtime" />
+		<dependency org="net.sf.json-lib" name="json-lib" rev="2.4" conf="compile,runtime" m:classifier="jdk15" />
+		<dependency org="net.sf.ezmorph" name="ezmorph" rev="1.0.4" conf="compile,runtime" />
 
-		<dependency org="com.thoughtworks.paranamer" name="paranamer" rev="2.3" conf="runtime" />
+		<dependency org="com.thoughtworks.paranamer" name="paranamer" rev="2.3" conf="compile,runtime" />
 
-		<dependency org="org.apache.velocity" name="velocity" rev="1.7" conf="runtime" />
-		<dependency org="org.apache.velocity" name="velocity-tools-generic" rev="2.0" conf="runtime" />
+		<dependency org="org.apache.velocity" name="velocity" rev="1.7" conf="compile,runtime" />
+		<dependency org="org.apache.velocity" name="velocity-tools-generic" rev="2.0" conf="compile,runtime" />
 
-		<dependency org="commons-lang" name="commons-lang" rev="2.5" conf="runtime" />
-		<dependency org="commons-beanutils" name="commons-beanutils" rev="1.8.1" conf="runtime" />
-		<dependency org="commons-codec" name="commons-codec" rev="1.5" conf="runtime" />
-		<dependency org="org.apache.commons" name="commons-jexl" rev="2.0.1" conf="runtime" />
+		<dependency org="commons-lang" name="commons-lang" rev="2.5" conf="compile,runtime" />
+		<dependency org="commons-beanutils" name="commons-beanutils" rev="1.8.1" conf="compile,runtime" />
+		<dependency org="commons-codec" name="commons-codec" rev="1.5" conf="compile,runtime" />
+		<dependency org="org.apache.commons" name="commons-jexl" rev="2.0.1" conf="compile,runtime" />
 
-		<dependency org="org.springframework" name="spring-core" rev="${springframework.version}" conf="runtime" />
-		<dependency org="org.springframework" name="spring-beans" rev="${springframework.version}" conf="runtime" />
-		<dependency org="org.springframework" name="spring-context" rev="${springframework.version}" conf="runtime" />
-		<dependency org="org.springframework" name="spring-context-support" rev="${springframework.version}" conf="runtime" />
-		<dependency org="org.springframework" name="spring-asm" rev="${springframework.version}" conf="runtime" />
-		<dependency org="org.springframework" name="spring-expression" rev="${springframework.version}" conf="runtime" />
-		<dependency org="org.springframework" name="spring-web" rev="${springframework.version}" conf="runtime" />
-		<dependency org="org.springframework" name="spring-web-servlet" rev="${springframework.version}" conf="runtime" />
+		<dependency org="org.springframework" name="spring-core" rev="${springframework.version}" conf="compile,runtime" />
+		<dependency org="org.springframework" name="spring-beans" rev="${springframework.version}" conf="compile,runtime" />
+		<dependency org="org.springframework" name="spring-context" rev="${springframework.version}" conf="compile,runtime" />
+		<dependency org="org.springframework" name="spring-context-support" rev="${springframework.version}" conf="compile,runtime" />
+		<dependency org="org.springframework" name="spring-asm" rev="${springframework.version}" conf="compile,runtime" />
+		<dependency org="org.springframework" name="spring-expression" rev="${springframework.version}" conf="compile,runtime" />
+		<dependency org="org.springframework" name="spring-web" rev="${springframework.version}" conf="compile,runtime" />
+		<dependency org="org.springframework" name="spring-web-servlet" rev="${springframework.version}" conf="compile,runtime" />
 
 		<!-- TEST -->
 		<dependency org="junit" name="junit" rev="4.8.2" conf="test" />

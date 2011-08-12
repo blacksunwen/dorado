@@ -3,6 +3,6 @@
 	<conf name="master" visibility="public" />
 	<conf name="compile" visibility="public" />
 	<conf name="provided" visibility="public" />
-	<conf name="runtime" visibility="public" extends="compile" />
+	<conf name="runtime" visibility="public" />
 	<conf name="test" visibility="private" extends="runtime" />
 </configurations>

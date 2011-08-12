@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:ivy="antlib:org.apache.ivy.ant" xmlns:artifact="antlib:org.apache.maven.artifact.ant" name="build-jars" default="build">
+<project xmlns:ivy="antlib:org.apache.ivy.ant" xmlns:artifact="antlib:org.apache.maven.artifact.ant" name="jars" default="build">
 	<taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant">
 		<classpath>
 			<pathelement location="${lib.dir}/${ivy.jar}" />
@@ -54,7 +54,7 @@
 
 		<echo message="module: ${module}" />
 		<echo message="module.projects: ${module.projects}" />
-		<ant antfile="${basedir}/includes/build-jar.xml" inheritRefs="true" />
+		<ant antfile="${basedir}/includes/jar.xml" inheritRefs="true" />
 	</target>
 
 	<target name="package" depends="prepare-work-dir">

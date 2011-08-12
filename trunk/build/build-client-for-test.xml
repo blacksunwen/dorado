@@ -9,10 +9,10 @@
 
 	<target name="build">
 		<ant antfile="${basedir}/includes/wrapper.xml" inheritRefs="true">
-			<property name="build-file" value="build-client.xml" />
+			<property name="build-files" value="client.xml" />
 			<property name="src" value="${project.dir}/client" />
 			<property name="dist" value="${project.dir}/bin" />
-			<property name="module.projects" value="client,chart,desktop,markitup" />
+			<property name="module.projects" value="client,chart,desktop" />
 		</ant>
 	</target>
 </project>

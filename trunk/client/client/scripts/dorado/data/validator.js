@@ -13,19 +13,13 @@ dorado.Toolkits.registerTypeTranslator("validator", function(type) {
  * @class 数据校验器的抽象类。
  * @abstract
  * @extends dorado.AttributeSupport
+ * @extends dorado.EventSupport
  */
-dorado.validator.Validator = $extend(dorado.AttributeSupport, /** @scope dorado.validator.Validator.prototype */ {
+dorado.validator.Validator = $extend([dorado.AttributeSupport, dorado.EventSupport], /** @scope dorado.validator.Validator.prototype */ {
 	className: "dorado.validator.Validator",
 	
 	ATTRIBUTES:/** @scope dorado.validator.Validator.prototype */ {
 	
-		/**
-		 * 校验未通过时给出的信息。
-		 * @type String
-		 * @attribute
-		 */
-		defaultResultMessage: {},
-		
 		/**
 		 * 校验未通过时给出的信息的默认级别。
 		 * <p>
@@ -57,15 +51,28 @@ dorado.validator.Validator = $extend(dorado.AttributeSupport, /** @scope dorado.
 		if (config) this.set(config);
 	},
 	
+	getListenerScope: function() {
+		return (this._propertyDef) ? this._propertyDef.get("view") : dorado.widget.View.TOP;
+	},
+	
 	/**
 	 * 验证数据。
 	 * @param {Object} data 要验证的数据。
 	 * @return {[Object]} 验证结果。
+	 * 不返回任何验证结果表示通过验证，但返回验证结果并不一定表示未通过验证。
+	 * <p>
 	 * 返回的验证结果应该是由0到多个验证消息构成的数组。每一个验证结果是一个JSON对象，该JSON对象包含以下属性：
 	 * <ul>
 	 * <li>state	-	{String} 信息级别。取值范围包括：info、ok、warn、error。默认值为error。</li>
 	 * <li>text	-	{String} 信息内容。</li>
 	 * </ul>
+	 * </p>
+	 * <p>
+	 * 不过在实际的使用过程中可以根据需要以更加简洁的方式来定义验证结果。<br>
+	 * 例如您只想返回一条单一的信息，那么就可以直接返回一个JSON对象而不必将其封装到数组中。<br>
+	 * 甚至可以直接返回一个字符串，此时系统认为您希望返回一条单一的信息，该字符串将被视作信息的文本，
+	 * 信息的级别则由{@link dorado.validator.Validator#defaultResultState}决定。
+	 * </p>
 	 * @see dorado.Entity#getPropertyMessages
 	 */
 	validate: function(data) {
@@ -116,7 +123,6 @@ dorado.validator.RemoteValidator = $extend(dorado.validator.Validator, /** @scop
 	 * <li>对于同步的验证方式，验证结果将直接通过方法的返回值返回。</li>
 	 * <li>对于异步的验证方式，验证结果将通过回调方法的参数传给外界。</li>
 	 * </ul>
-	 * 此处的验证结果可以是单独的消息文本、消息对象等。最终Validator会将各种类型的返回值自动的转换成标准的形式。
 	 * @description 内部的验证数据逻辑。
 	 * @see dorado.validator.RemoteValidator#validate
 	 */
@@ -459,5 +465,86 @@ dorado.validator.AjaxValidator = $extend(dorado.validator.RemoteValidator, /** @
 		if (retval && !this._async) {
 			return ajaxAction.get("returnValue");
 		}
+	}
+});
+
+/**
+ * @author Benny Bao (mailto:benny.bao@bstek.com)
+ * @class 用户自定义数据校验器。
+ * @shortTypeName Custom
+ * @extends dorado.validator.Validator
+ */
+dorado.validator.CustomValidator = $extend(dorado.validator.Validator, /** @scope dorado.validator.CustomValidator.prototype */ {
+	className: "dorado.validator.CustomValidator",
+	
+	EVENTS:/** @scope dorado.validator.CustomValidator.prototype */ {
+	
+		/**
+		 * 当校验器执行数据校验时触发的事件。
+		 * @param {Object} self 事件的发起者，即本校验器对象。
+		 * @param {Object} arg 事件参数。
+		 * @param {Object} arg.data 要校验的数据。
+		 * @param {String|Object|[String]|[Object]} #arg.result 验证结果。
+		 * 不返回任何验证结果表示通过验证，但返回验证结果并不一定表示未通过验证。
+		 * <p>
+		 * 标准验证结果应该是由0到多个验证消息构成的数组。每一个验证结果是一个JSON对象，该JSON对象包含以下属性：
+		 * <ul>
+		 * <li>state	-	{String} 信息级别。取值范围包括：info、ok、warn、error。默认值为error。</li>
+		 * <li>text	-	{String} 信息内容。</li>
+		 * </ul>
+		 * </p>
+		 * <p>
+		 * 不过在实际的使用过程中可以根据需要以更加简洁的方式来定义验证结果。<br>
+		 * 例如您只想返回一条单一的信息，那么就可以直接返回一个JSON对象而不必将其封装到数组中。<br>
+		 * 甚至可以直接返回一个字符串，此时系统认为您希望返回一条单一的信息，该字符串将被视作信息的文本，
+		 * 信息的级别则由{@link dorado.validator.Validator#defaultResultState}决定。
+		 * </p>
+		 * <p>
+		 * 除了使用arg.result参数，您还可以以直接抛出异常的方式向外界返回验证信息，该异常的消息被视作验证信息的文本，
+		 * 信息的级别则由{@link dorado.validator.Validator#defaultResultState}决定。
+		 * </p>
+		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+		 * @event
+		 * 
+		 * @example
+		 * // 以抛出异常的方式返回验证结果
+		 * new dorado.validator.CustomValidator({
+		 * 	onValidate: function(self, arg) {
+		 * 		if ((arg.data + '') === '') {
+		 * 			throw new dorado.Exception("内容不能为空.");
+		 * 		}
+		 * 	}
+		 * });
+		 * 
+		 * @example
+		 * // 以arg.result的方式返回验证结果
+		 * new dorado.validator.CustomValidator({
+		 * 	onValidate: function(self, arg) {
+		 * 		if ((arg.data + '').length < 10) {
+		 * 			arg.result = {
+		 * 				text: "长度不能小于10.",
+		 * 				state: "warn"
+		 * 			};
+		 * 		}
+		 * 	}
+		 * });
+		 */
+		onValidate: {}
+	},
+	
+	doValidate: function(data) {
+		var result;
+		try {
+			var arg = {
+				data: data
+			};
+			this.fireEvent("onValidate", this, arg);
+			result = arg.result;
+		}
+		catch(e) {
+			dorado.Exception.removeException(e);
+			result = dorado.Exception.getExceptionMessage(e);
+		}
+		return dorado.Toolkits.trimMessages(result, this._defaultResultState);
 	}
 });

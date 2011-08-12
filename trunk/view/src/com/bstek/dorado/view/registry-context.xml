@@ -22,6 +22,10 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 		<property name="type" value="ajax" />
 		<property name="classType" value="com.bstek.dorado.view.type.property.validator.AjaxValidator" />
 	</bean>
+	<bean parent="dorado.validatorTypeRegisterSupport">
+		<property name="type" value="custom" />
+		<property name="classType" value="com.bstek.dorado.view.type.property.validator.CustomValidator" />
+	</bean>
 
 	<bean id="dorado.defaultComponentTypeRegister" abstract="true" parent="dorado.componentTypeRegister" class="com.bstek.dorado.view.registry.DefaultComponentTypeRegister" />
 	<bean id="dorado.assembledComponentTypeRegister" abstract="true" parent="dorado.defaultComponentTypeRegister" class="com.bstek.dorado.view.registry.AssembledComponentTypeRegister">

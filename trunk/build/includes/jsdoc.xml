@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="jsdoc" default="build">
+	<property name="jsdoc.project" value="${workspace.dir}/jsdoc" />
+	<property name="jsdoc.dist" value="${jsdoc.project}/src" />
+	<property name="jsdoc-toolkit.home" value="${lib.dir}/jsdoc_toolkit-2.4.0/jsdoc-toolkit/" />
+
+	<taskdef name="jsdoctoolkit" classname="uk.co.darrenhurley.ant.tasks.JsDocToolkit">
+		<classpath>
+			<pathelement path="${lib.dir}/jsdoctoolkit-ant-task-1.0.2.jar" />
+			<pathelement path="${lib.dir}/js.jar" />
+		</classpath>
+	</taskdef>
+
+	<target name="update-jsdoc-toolkit">
+		<copy todir="${jsdoc-toolkit.home}/app/plugins">
+			<fileset dir="${jsdoc.project}/jsdoc-toolkit-extension/plugins" includes="*.js" />
+		</copy>
+
+		<copy todir="${jsdoc-toolkit.home}/templates">
+			<fileset dir="${jsdoc.project}/jsdoc-toolkit-extension/templates" includes="**/*.js" />
+		</copy>
+	</target>
+
+	<target name="jsdoc" depends="update-jsdoc-toolkit" if="jsdoc">
+		<delete dir="${jsdoc.dist}/data" failonerror="false" />
+		<mkdir dir="${jsdoc.dist}/data" />
+
+		<jsdoctoolkit jsdochome="${jsdoc-toolkit.home}" suppresssourceout="true" template="json" outputdir="${jsdoc.dist}/data" verbose="true">
+			<fileset dir="${dist}/scripts">
+				<include name="**/*.js" />
+				<exclude name="**/chart/*.js" />
+			</fileset>
+		</jsdoctoolkit>
+	</target>
+
+	<target name="dispatch-to-stanard-edition">
+		<property name="dispatch.dir" value="${standard-edition.dir}/docs/jsdoc" />
+
+		<delete>
+			<fileset dir="${dispatch.dir}" includes="**/*" />
+		</delete>
+		<copy todir="${dispatch.dir}">
+			<fileset dir="${jsdoc.dist}" includes="**/*.*" />
+		</copy>
+
+		<replace dir="${dispatch.dir}" token="%product.revision%" value="${product.fullversion}" encoding="utf-8">
+			<include name="index.js" />
+		</replace>
+	</target>
+
+	<target name="build" depends="jsdoc,dispatch-to-stanard-edition" />
+</project>

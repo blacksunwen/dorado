@@ -1,0 +1,46 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html style="height: 100%">
+	<head>
+		<meta http-equiv="Cache-Control" content="no-cache">
+		<script type="text/javascript" src="scripts/boot.js"></script>
+		<script type="text/javascript">
+			$import("base-widget,syntax-highlighter,jsdoc");
+			$load("class.js");
+		</script>
+	</head>
+	<body style="margin: 8px; overflow: false">
+		<p class="symbol-title">
+			<label id="elSymbolType"></label>
+			<label id="elPackageName" class="package-name"></label><label id="elSybmolName" class="sybmol-name"></label>
+		</p>
+		<table id="elSybmolProps" class="sybmol-props">
+			<tr id="elAuthorRow">
+				<td class="prop-name">Author : </td>
+				<td id="elAuthor" class="prop-value"></td>
+			</tr>
+			<tr id="elDoradoPackageRow">
+				<td class="prop-name">Package : </td>
+				<td id="elDoradoPackage" class="prop-value"></td>
+			</tr>
+			<tr id="elShortTypeNameRow">
+				<td class="prop-name">$type : </td>
+				<td id="elShortTypeName" class="prop-value"></td>
+			</tr>
+			<tr id="elExtendsRow">
+				<td class="prop-name">Extends : </td>
+				<td id="elExtends" class="prop-value"></td>
+			</tr>
+			<tr id="elSubclassesRow">
+				<td class="prop-name">Subclasses : </td>
+				<td id="elSubclasses" class="prop-value"></td>
+			</tr>
+		</table>
+		<hr/>
+		<p id="elSybmolDesc" class="sybmol-desc"></p>
+		<p id="elSybmolParams" class="sybmol-params"></p>
+		<p id="elSybmolChildren" class="sybmol-children"></p>
+		<p id="elSybmolSees" class="sybmol-sees"></p>
+		<p id="elSybmolExamples" class="sybmol-examples"></p>
+		<p id="elSybmolDetail"></p>
+	</body>
+</html>
