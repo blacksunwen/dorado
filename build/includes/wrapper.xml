@@ -40,7 +40,11 @@
 		<antcall target="do-resolve-env-libs" inheritAll="true" />
 	</target>
 
-	<target name="build" depends="resolve-env-libs">
+	<target name="invoke-sub-ant">
 		<ant antfile="${basedir}/includes/${build-file}" inheritRefs="true" />
+	</target>
+
+	<target name="build" depends="resolve-env-libs">
+		<foreach list="${build-files}" param="build-file" target="invoke-sub-ant" inheritall="true" />
 	</target>
 </project>

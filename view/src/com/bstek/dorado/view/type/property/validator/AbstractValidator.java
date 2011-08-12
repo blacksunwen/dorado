@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.bstek.dorado.annotation.ViewAttribute;
+import com.bstek.dorado.common.event.ClientEventSupportedObject;
 import com.bstek.dorado.data.type.validator.MessageState;
 import com.bstek.dorado.data.type.validator.ValidationMessage;
 import com.bstek.dorado.data.type.validator.Validator;
@@ -14,7 +15,8 @@ import com.bstek.dorado.view.RunAt;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-7-27
  */
-public abstract class AbstractValidator implements Validator {
+public abstract class AbstractValidator extends ClientEventSupportedObject
+		implements Validator {
 	private RunAt runAt = RunAt.client;
 	private MessageState defaultResultState = MessageState.error;
 

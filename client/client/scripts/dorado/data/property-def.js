@@ -214,6 +214,10 @@
 						if (!(v instanceof dorado.validator.Validator)) {
 							v = dorado.Toolkits.createInstance("validator", v);
 						}
+						if (v._propertyDef) {
+							throw new dorado.Exception("Validator alreay belongs to another PropertyDef \"" + v._propertyDef._name + "\"."); 
+						}
+						v._propertyDef = this;
 						validators.push(v);
 					}
 					this._validators = validators;

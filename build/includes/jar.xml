@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:ivy="antlib:org.apache.ivy.ant" name="build-jar" default="build">
+<project xmlns:ivy="antlib:org.apache.ivy.ant" name="jar" default="build">
 	<property name="module.dir" value="${work.dir}/${module}" />
 	<available property="ivy-presented" file="${workspace.dir}/${module}/ivy.xml" />
 
@@ -24,7 +24,7 @@
 
 	<target name="prepare-dependencies">
 		<echo message="${product.revision}" />
-		<ivy:resolve file="${workspace.dir}/${module}/ivy.xml" conf="compile" />
+		<ivy:resolve file="${workspace.dir}/${module}/ivy.xml" />
 		<ivy:retrieve pattern="${work.dir}/lib/[artifact]-[revision](-[classifier]).[ext]" conf="compile" />
 	</target>
 
@@ -67,7 +67,7 @@
 	</target>
 
 	<target name="post-compile">
-		<ant antfile="${basedir}/includes/build-client.xml" inheritRefs="true">
+		<ant antfile="${basedir}/includes/client.xml" inheritRefs="true">
 			<property name="dist" value="${module.dir}/bin/dorado" />
 		</ant>
 	</target>

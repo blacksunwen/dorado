@@ -1,18 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="build-client" default="build">
-	<property name="jsdoc.dist" value="${workspace}/jsdoc/src" />
-	<property name="jsdoc-toolkit.home" value="${lib.dir}/jsdoc_toolkit-2.4.0/jsdoc-toolkit/" />
-
+<project name="client" default="build">
 	<taskdef name="yui-compressor" classname="net.noha.tools.ant.yuicompressor.tasks.YuiCompressorTask">
 		<classpath>
 			<pathelement path="${lib.dir}/yuicompressor-2.4.2.jar" />
 			<pathelement path="${lib.dir}/yui-compressor-ant-task-0.5.jar" />
-		</classpath>
-	</taskdef>
-	<taskdef name="jsdoctoolkit" classname="uk.co.darrenhurley.ant.tasks.JsDocToolkit">
-		<classpath>
-			<pathelement path="${lib.dir}/jsdoctoolkit-ant-task-1.0.2.jar" />
-			<pathelement path="${lib.dir}/js.jar" />
 		</classpath>
 	</taskdef>
 	<taskdef name="js-tidy" classname="com.bstek.dorado.ant.JsTidyTask">
@@ -103,14 +94,19 @@
 		</if>
 	</target>
 
-	<target name="tidy-js" unless="dont-tidy-js">
+	<target name="copy-js-for-doc" if="jsdoc">
+		<mkdir dir="${work.dir}/js-src" />
+		<copy todir="${work.dir}/js-src">
+			<fileset dir="${dist}/scripts/dorado" includes="**/*.js" />
+		</copy>
+	</target>
+
+	<target name="tidy-js" depends="copy-js-for-doc" unless="dont-tidy-js">
 		<if>
 			<available file="${dist}" />
 			<then>
 				<js-tidy>
-					<fileset dir="${dist}">
-						<include name="**/*.js" />
-					</fileset>
+					<fileset dir="${dist}" includes="**/*.js" />
 				</js-tidy>
 			</then>
 		</if>

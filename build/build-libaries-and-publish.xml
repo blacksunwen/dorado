@@ -4,7 +4,7 @@
 
 	<target name="build">
 		<ant antfile="${basedir}/includes/wrapper.xml" inheritRefs="true">
-			<property name="build-file" value="build-jars.xml" />
+			<property name="build-files" value="jars.xml" />
 		</ant>
 	</target>
 </project>
