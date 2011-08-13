@@ -176,8 +176,12 @@
 		"widget/advance/portal.js",
 		"widget/advance/color-picker.js",
 		"widget/advance/face-picker.js",
-		"widget/advance/html-editor.js",
-		"widget/advance/image-canvas.js"
+		//"widget/advance/html-editor.js",
+		"widget/advance/image-canvas.js",
+
+        "widget/advance/editor_config.js",
+        "widget/advance/editor_ui_all.js",
+        "widget/advance/ueditor.js"
 	];
 	
 	var addOnLibs = [
@@ -207,6 +211,17 @@
 
 		"client-test/lib/test-utils.js"
 	];
+
+    var inherentStyleSheets = [
+        "common.css",
+        "widget.css",
+        "trigger.css",
+        "text-editor.css",
+        "spinner.css",
+        "list.css",
+        "grid.css",
+        "tree.css"
+    ];
 
 	var styleSheets = [
 		"common.css",
@@ -261,6 +276,10 @@
 
 	var WORKSPACE_ROOT = "/client-test/workspace/";
 	var CLIENT_ROOT = WORKSPACE_ROOT + "client/";
+
+    for (var i = 0; i < inherentStyleSheets.length; i++) {
+		writeIncludeStyleSheet(CLIENT_ROOT + "client/skins/inherent/" + styleSheets[i]);
+	}
 
     for (var i = 0; i < styleSheets.length; i++) {
 		writeIncludeStyleSheet(CLIENT_ROOT + "client/skins/" + skin + "/" + styleSheets[i]);
