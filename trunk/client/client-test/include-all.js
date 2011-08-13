@@ -278,7 +278,7 @@
 	var CLIENT_ROOT = WORKSPACE_ROOT + "client/";
 
     for (var i = 0; i < inherentStyleSheets.length; i++) {
-		writeIncludeStyleSheet(CLIENT_ROOT + "client/skins/inherent/" + styleSheets[i]);
+		writeIncludeStyleSheet(CLIENT_ROOT + "client/skins/inherent/" + inherentStyleSheets[i]);
 	}
 
     for (var i = 0; i < styleSheets.length; i++) {
