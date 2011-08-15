@@ -572,7 +572,7 @@ function open_flash_chart_data() {
 							try{
 								swf.load(str || JSON.stringify(chart));
 							} catch(e) {
-								console.log(e);
+								//console.log(e);
 							}
 							chart._reloadTimer = null;
 						}, 100);

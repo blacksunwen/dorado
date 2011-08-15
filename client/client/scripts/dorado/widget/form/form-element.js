@@ -306,14 +306,13 @@
 				if (!dorado.widget.Control.prototype.ATTRIBUTES[attr] &&
 				dorado.widget.FormConfig.prototype.ATTRIBUTES[attr]) {
 					dorado.Toolkits.setDelayedAction(self, "$profileChangeTimerId", function() {
-						var value = arg.value;
 						self._bindingElements.invoke("onProfileChange");
 					}, 20);
 				}
 			});
 		}
 	});
-
+	
 	dorado.widget.FormProfile.DefaultEntity = $class({});
 	
 	/**
@@ -335,7 +334,6 @@
 		$className: "dorado.widget.FormElement",
 		
 		ATTRIBUTES: /** @scope dorado.widget.FormElement.prototype */ {
-		
 			/**
 			 * 宽度。
 			 * @type int
@@ -654,21 +652,25 @@
 					this.initEditorConfig(config);
 					control.set(config, {
 						skipUnknownAttribute: true,
-						tryNextOnError: true
+						tryNextOnError: true,
+						preventOverwriting: true,
+						lockWritingTimes: true
 					});
 				}
 				shouldInitControl = false;
 			}
 			
-			if (control && !this._controlRegistered) {
-				this._controlRegistered = true;
-				
-				if (this._showHint && control instanceof dorado.widget.AbstractEditor) {
-					if (control instanceof dorado.widget.AbstractTextBox) {
-						control.addListener("onValidationStateChange", $scopify(this, this.onEditorStateChange));
-						control.addListener("onPost", $scopify(this, this.onEditorPost));
+			if (control) {
+				if (!this._controlRegistered) {
+					this._controlRegistered = true;
+					if (this._showHint && control instanceof dorado.widget.AbstractEditor) {
+						if (control instanceof dorado.widget.AbstractTextBox) {
+							control.addListener("onValidationStateChange", $scopify(this, this.onEditorStateChange));
+							control.addListener("onPost", $scopify(this, this.onEditorPost));
+						}
+						control.addListener("onPostFailed", $scopify(this, this.onEditorPostFailed));
 					}
-					control.addListener("onPostFailed", $scopify(this, this.onEditorPostFailed));
+					this.registerInnerControl(control);
 				}
 				
 				if (shouldInitControl) {
@@ -681,11 +683,10 @@
 					control.set(config2, {
 						skipUnknownAttribute: true,
 						tryNextOnError: true,
-						preventOverwriting: true
+						preventOverwriting: true,
+						lockWritingTimes: true
 					});
 				}
-				
-				this.registerInnerControl(control);
 			}
 			return control;
 		},
@@ -803,7 +804,8 @@
 				this.set(config, {
 					skipUnknownAttribute: true,
 					tryNextOnError: true,
-					preventOverwriting: true
+					preventOverwriting: true,
+					lockWritingTimes: true
 				});
 			}
 		},
@@ -878,6 +880,21 @@
 					"px";
 				}
 				if (!hintControl.get("rendered")) hintControl.render(hintEl);
+			}
+		},
+		
+		/**
+		 * 刷新其中编辑器中的数据。
+		 * <p>
+		 * 该方法通常只对那么未通过DataSet建立数据绑定的使用场景有效。
+		 * 例如我们将一个FormElement与一个数据实体进行了数据关联，当数据实体中的属性值发生变化时FormElement并不会自动刷新。
+		 * 此时我们需要调用refreshData()方法，手工的通知FormElement进行数据刷新。
+		 * </p>
+		 */
+		refreshData: function() {
+			var editor = this.getEditor();
+			if (editor != null && dorado.Object.isInstanceOf(editor, dorado.widget.AbstractEditor)) {
+				editor.refreshData();
 			}
 		}
 	});

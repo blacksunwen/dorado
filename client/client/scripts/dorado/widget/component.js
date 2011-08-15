@@ -169,7 +169,7 @@
 			var def = this.ATTRIBUTES[attr];
 			if (def) {
 				if (this._ready && def.writeBeforeReady) {
-					throw new dorado.ResourceException("dorado.widget.AttributeWriteBeforeReady", attr);
+					throw new dorado.AttributeException("dorado.widget.AttributeWriteBeforeReady", attr);
 				}
 				if (def.componentReference) {
 					var component = null, allPrepared = false;

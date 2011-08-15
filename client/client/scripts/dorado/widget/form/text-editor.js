@@ -45,22 +45,12 @@
 	 */
 	dorado.widget.AbstractTextBox = $extend(dorado.widget.AbstractDataEditor, /** @scope dorado.widget.AbstractTextBox.prototype */ {
 		$className: "dorado.widget.AbstractTextBox",
-		_inherentClassName: "i-text-box",		
+		_inherentClassName: "i-text-box",
 		_triggerChanged: true,
 		
 		ATTRIBUTES: /** @scope dorado.widget.AbstractTextBox.prototype */ {
 			className: {
 				defaultValue: "d-text-box"
-			},
-			
-			width: {
-				defaultValue: 150,
-				independent: true
-			},
-			
-			height: {
-				independent: true,
-				readOnly: true
 			},
 			
 			/**
@@ -173,7 +163,7 @@
 			 * @param {Object} self 事件的发起者，即控件本身。
 			 * @param {Object} arg 事件参数。
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
-			 * @see dorado.widget.AbstractTextEditor#textEdited
+			 * @see dorado.widget.AbstractTextBox#textEdited
 			 * @event
 			 */
 			onTextEdit: {},
@@ -293,7 +283,7 @@
 						readOnly = (bindingInfo.entity == null) || readOnly || propertyDef._readOnly;
 						this._readOnly2 = readOnly;
 						this.resetReadOnly();
-							
+						
 						if (!this._displayFormat) this._displayFormat = propertyDef._displayFormat;
 						if (!this._inputFormat) this._inputFormat = propertyDef._inputFormat;
 						if (!propertyDef._mapping && !this._dataType) this._dataType = propertyDef._dataType;
@@ -579,7 +569,7 @@
 		$className: "dorado.widget.AbstractTextEditor",
 		
 		ATTRIBUTES: /** @scope dorado.widget.AbstractTextEditor.prototype */ {
-			
+		
 			/**
 			 * 一组用于定义改变属性编辑框中文字显示方式的"代码"/"名称"键值对。
 			 * @type Object[]
@@ -595,7 +585,7 @@
 			 * 	{
 			 * 		key : "false",
 			 * 		value : "女"
-			 * 	} 
+			 * 	}
 			 * ]);
 			 */
 			mapping: {
@@ -615,7 +605,7 @@
 					delete this._mappingRevIndex;
 				}
 			},
-		
+			
 			value: {
 				skipRefresh: true,
 				getter: function() {
@@ -874,6 +864,16 @@
 		
 		ATTRIBUTES: /** @scope dorado.widget.TextEditor.prototype */ {
 		
+			width: {
+				defaultValue: 150,
+				independent: true
+			},
+			
+			height: {
+				independent: true,
+				readOnly: true
+			},
+			
 			value: {
 				skipRefresh: true,
 				getter: function() {
@@ -920,7 +920,7 @@
 			},
 			
 			text: {
-				skipRefresh: true,				
+				skipRefresh: true,
 				getter: function() {
 					return ((!this.get("dataType") || this._editorFocused) ? this.doGetText() : this._text) || '';
 				},

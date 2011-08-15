@@ -1,0 +1,18 @@
+.d-exception-content {
+	height: 48px;
+	padding: 16px 16px 16px 80px;
+	position: relative;
+}
+
+.d-exception-icon {
+	position: absolute;
+    left: 16px;
+    top: 16px;
+	width: 48px;
+	height: 48px;
+	background-image: url(common/icon-error.gif);
+}
+
+.d-exception-text {
+    position: relative;
+}

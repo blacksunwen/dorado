@@ -7,6 +7,6 @@
 
 	<dependencies>
 		<!-- RUNTIME -->
-		<dependency org="com.bstek.dorado" name="dorado-core" rev="${depended-dorado.version}" conf="runtime" />
+		<dependency org="com.bstek.dorado" name="dorado-core" rev="${depended-dorado.version}" conf="compile,runtime" />
 	</dependencies>
 </ivy-module>

@@ -236,7 +236,7 @@ dorado.widget.desktop.TimeLabel = $extend(dorado.widget.Control, /** @scope dora
 		
 		label._refreshTimer = setInterval(function() {
 			now = new Date();
-			$fly(dom).text(now.dateFormat(label._format));
+			$fly(dom).text(now.formatDate(label._format));
 		}, 40000);
 		
 		return dom;

@@ -338,11 +338,7 @@
     position: absolute;
     left: 0;
     top: 0;
-    background: transparent none no-repeat center center;
-}
-
-.d-message-box .error-icon, .d-message-box .info-icon, .d-message-box .warning-icon, .d-message-box .question-icon {
-    height: 48px;
+    background: transparent none no-repeat center center;height: 48px;
     width: 48px;
     margin: 0 12px 0 2px;
 }
@@ -370,7 +366,7 @@
 
 .d-message-box .msg-content-hasicon {
     min-height: 48px;
-    padding-left: 62px;
+    padding-left: 70px;
 }
 
 .d-ie6 .d-message-box .msg-content-hasicon {
@@ -389,9 +385,5 @@
 }
 
 .d-message-box .dialog-body-wrap .dialog-body .content-panel {
-    padding: 6px;
-}
-
-.d-ie6 .d-message-box .dialog-body-wrap .dialog-body .content-panel {
-    padding: 6px;
+    padding: 16px;
 }
