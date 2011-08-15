@@ -22,7 +22,14 @@ dorado.widget.CustomDropDown = $extend(dorado.widget.DropDown,/** @scope dorado.
 	
 	createDropDownBox: function(editor, dropDown) {
 		var box = $invokeSuper.call(this, arguments);
-		box.set("control", this._control);
+		var control = this._control;
+		box.set("control", control);
+		box.addListener("beforeShow", function() {
+			var $box = jQuery(box.getDom().firstChild), boxWidth = $box.width(), boxHeight = $box.height();
+			var $dom = jQuery(control.getDom());
+			if ($dom.outerWidth() < boxWidth) $dom.outerWidth(boxWidth);
+			if ($dom.outerHeight() < boxHeight) $dom.outerHeight(boxHeight);
+		});
 		return box;
 	}
 });
