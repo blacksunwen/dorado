@@ -227,12 +227,19 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 					config.name = name;
 				}
 				
-				element = dorado.Toolkits.createInstance("widget", config, function(type) {
+				element = dorado.Toolkits.createInstance("widget", null, function(type) {
 					if (!type) return dorado.widget.autoform.AutoFormElement;
 				});
 			} else {
-				element = new dorado.widget.Control(config);
+				element = new dorado.widget.Control();
 			}
+			
+			element.set(config, {
+				skipUnknownAttribute: true,
+				tryNextOnError: true,
+				preventOverwriting: true,
+				lockWritingTimes: true
+			});
 		}
 		elements.append(element);
 		if (this._container) this._container.addChild(element);
@@ -284,7 +291,6 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 			} else if (!dorado.widget.Control.prototype.ATTRIBUTES[attr] &&
 			dorado.widget.FormConfig.prototype.ATTRIBUTES[attr]) {
 				dorado.Toolkits.setDelayedAction(self, "$profileChangeTimerId", function() {
-					var value = arg.value;
 					self._bindingElements.invoke("onProfileChange");
 				}, 20);
 			}
@@ -379,8 +385,10 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 				
 				if (!element) element = self.addElement(config);
 				else element.set(config, {
+					skipUnknownAttribute: true,
 					tryNextOnError: true,
-					preventOverwriting: true
+					preventOverwriting: true,
+					lockWritingTimes: true
 				});
 				
 				if (element instanceof dorado.widget.FormElement && !this._dataSet && propertyDef._readOnly) {
@@ -412,5 +420,21 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 			}
 		});
 		return result;
+	},
+	
+	/**
+	 * 刷新其中编辑器中的数据。
+	 * <p>
+	 * 该方法通常只对那么未通过DataSet建立数据绑定的使用场景有效。
+	 * 例如我们将一个AutoForm与一个数据实体进行了数据关联，当数据实体中的属性值发生变化时AutoForm并不会自动刷新。
+	 * 此时我们需要调用refreshData()方法，手工的通知AutoForm进行数据刷新。
+	 * </p>
+	 */
+	refreshData: function() {
+		this._elements.each(function(element) {
+			if (element instanceof dorado.widget.FormElement) {
+				element.refreshData();
+			}
+		});
 	}
 });

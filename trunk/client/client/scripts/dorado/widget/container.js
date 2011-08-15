@@ -173,7 +173,8 @@
 			containerDom: {
 				readOnly: true,
 				getter: function() {
-					return this._container;
+					if (!this._dom) this.getDom();
+					return this.getContentContainer();
 				}
 			}
 		},

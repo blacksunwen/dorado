@@ -136,16 +136,14 @@ dorado.dequeue = function(namespace) {
 			/**
 			 * 组件在屏幕上的左偏移。
 			 * @attribute
-			 * @default 0
-			 * @type int
+			 * @type Integer
 			 */
 			left: {},
 
 			/**
 			 * 组件在屏幕上的上偏移。
 			 * @attribute
-			 * @default 0
-			 * @type int
+			 * @type Integer
 			 */
 			top: {},
 

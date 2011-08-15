@@ -306,7 +306,7 @@
 		 * 插入标签页
 		 * @param {Object|dorado.widget.tab.Tab} tab 要插入的tab或者tab的配置信息。
 		 * @param {int} [index] 插入的tab的索引，不指定则添加到最后。
-		 * @param {boolean} [current=true] 插入的tab是否设置为当前tab，默认值为true。
+		 * @param {boolean} [current] 插入的tab是否设置为当前tab。
 		 * @return {dorado.widget.tab.Tab} 添加成功的tab，如果添加不成功，返回null。
 		 */
 		addTab: function(tab, index, current) {
@@ -343,7 +343,7 @@
 				tab.refreshDom(tab._dom);
 				tabbar.doRefreshGap();
 			}
-			if (current !== false) {
+			if (current) {
 				tabbar.doChangeCurrentTab(tab);
 			}
 		},

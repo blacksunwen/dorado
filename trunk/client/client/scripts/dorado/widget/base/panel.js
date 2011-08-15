@@ -115,6 +115,7 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 			}
 		}
 	},
+	
 	EVENTS: /** @scope dorado.widget.AbstractPanel.prototype */ {
 		/**
 		 * 在容器折叠或者展开之前触发，只有当collapseable为true的时候才会触发该事件。

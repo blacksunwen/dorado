@@ -7,8 +7,8 @@
 
 	<dependencies>
 		<!-- RUNTIME -->
-		<dependency org="com.bstek.dorado" name="dorado-console" rev="${depended-dorado.version}" conf="runtime" />
-		<dependency org="dom4j" name="dom4j" rev="1.6.1" conf="runtime" />
+		<dependency org="com.bstek.dorado" name="dorado-console" rev="${depended-dorado.version}" conf="compile,runtime" />
+		<dependency org="dom4j" name="dom4j" rev="1.6.1" conf="compile,runtime" />
 		
 		<!-- TEST -->
 		<dependency org="junit" name="junit" rev="4.8.2" conf="test" />
