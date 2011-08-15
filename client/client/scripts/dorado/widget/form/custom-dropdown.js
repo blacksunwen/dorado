@@ -26,9 +26,16 @@ dorado.widget.CustomDropDown = $extend(dorado.widget.DropDown,/** @scope dorado.
 		box.set("control", control);
 		box.addListener("beforeShow", function() {
 			var $box = jQuery(box.getDom().firstChild), boxWidth = $box.width(), boxHeight = $box.height();
-			var $dom = jQuery(control.getDom());
-			if ($dom.outerWidth() < boxWidth) $dom.outerWidth(boxWidth);
-			if ($dom.outerHeight() < boxHeight) $dom.outerHeight(boxHeight);
+			var $dom = jQuery(control.getDom()), shouldRefresh;
+			if ($dom.outerWidth() < boxWidth) {
+				control.set("width", boxWidth);
+				shouldRefresh = true;
+			}
+			if ($dom.outerHeight() < boxHeight) {
+				control.set("height", boxHeight);
+				shouldRefresh = true;
+			}
+			if (shouldRefresh) control.refresh();
 		});
 		return box;
 	}
