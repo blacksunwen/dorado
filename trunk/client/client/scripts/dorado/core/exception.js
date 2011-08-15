@@ -299,7 +299,7 @@
 			caption: $resource("dorado.baseWidget.ExceptionDialogTitle"),
 			left: undefined,
 			top: undefined,
-			width: undefined,
+			width: exceptionDialogMaxWidth,
 			height: undefined
 		});
 		dialog._textDom.innerText = dorado.Exception.getExceptionMessage(currentException);
@@ -334,12 +334,13 @@
 				buttonAlign: "right",
 				buttons: [{
 					caption: $resource("dorado.baseWidget.ExceptionDialogOK"),
-					width: 80,
+					width: 85,
 					onClick: function() {
 						exceptionDialog.hide();
 					}
 				}, {
 					caption: $resource("dorado.baseWidget.ExceptionDialogDetail"),
+					width: 70,
 					onClick: function() {
 						showExceptionDetailDialog(currentException);
 					}
@@ -350,7 +351,7 @@
 					var dom = dialog._dom;
 					var $dom = jQuery(dom), $contentDom = jQuery(contentDom);
 					
-					var contentWidth = $fly(doms.iconDom).outerWidth(true) + $fly(doms.textDom).outerWidth(true);
+					var contentWidth = $fly(doms.iconDom).outerWidth() + $fly(doms.textDom).outerWidth();
 					if (contentWidth < exceptionDialogMinWidth) {
 						contentWidth = exceptionDialogMinWidth;
 					} else if (contentWidth > exceptionDialogMaxWidth) {
@@ -359,7 +360,7 @@
 					var dialogWidth = $dom.width(), panelWidth = $contentDom.width();
 					dialog._width = contentWidth + dialogWidth - panelWidth;
 					
-					var contentHeight = $contentDom.outerHeight(true);
+					var contentHeight = $contentDom.outerHeight();
 					if (contentHeight > exceptionDialogMaxHeight) {
 						contentHeight = exceptionDialogMaxHeight;
 					} else {
@@ -375,7 +376,7 @@
 				onHide: function(dialog) {
 					setTimeout(function() {
 						exceptionDialogOpening = false;
-						doshowExceptionDialog(); // Show next exception
+						doShowExceptionDialog(); // Show next exception
 					}, 0);
 				}
 			});
@@ -396,7 +397,7 @@
 			dialog._messsageTextArea.set("text", dorado.Exception.getExceptionMessage(e));
 			
 			var tabControl = dialog._tabControl, tab;
-			tab = tabControl.getTab("DoradoStack");
+			tab = tabControl.getTab("CallStack");
 			tab.set("disabled", !e.stack);
 			if (e.stack) {
 				tab.get("control").set("text", e.formatStack(e.stack));
@@ -408,7 +409,7 @@
 				tab.get("control").set("text", e.formatStack(e.systemStack));
 			}
 			
-			tab = tabControl.getTab("ServerStack");
+			tab = tabControl.getTab("RemoteStack");
 			tab.set("disabled", !e.remoteStack);
 			if (e.remoteStack) {
 				tab.get("control").set("text", e.formatStack(e.remoteStack));
@@ -420,42 +421,47 @@
 	function getExceptionDetailDialog() {
 		if (!exceptionDetailDialog) {
 			var messsageTextArea = new dorado.widget.TextArea({
-				readOnly: true
+				readOnly: true,
+				selectTextOnFocus: false
 			});
 			var tabControl = new dorado.widget.TabControl({
 				tabs: [{
 					$type: "Control",
-					name: "DoradoStack",
-					caption: "堆栈信息",
+					name: "CallStack",
+					caption: $resource("dorado.baseWidget.ExceptionDialogDetailCallStack"),
 					control: {
 						$type: "TextArea",
-						readOnly: true
+						readOnly: true,
+						selectTextOnFocus: false
 					}
 				}, {
 					$type: "Control",
 					name: "SystemStack",
-					caption: "系统堆栈信息",
+					caption: $resource("dorado.baseWidget.ExceptionDialogDetailSystemStack"),
 					control: {
 						$type: "TextArea",
-						readOnly: true
+						readOnly: true,
+						selectTextOnFocus: false
 					}
 				}, {
 					$type: "Control",
-					name: "ServerStack",
-					caption: "服务端堆栈信息",
+					name: "RemoteStack",
+					caption: $resource("dorado.baseWidget.ExceptionDialogDetailRemoteStack"),
 					control: {
 						$type: "TextArea",
-						readOnly: true
+						readOnly: true,
+						selectTextOnFocus: false
 					}
 				}]
 			});
 			
 			exceptionDetailDialog = new dorado.widget.Dialog({
-				caption: "异常详细信息",
+				caption: $resource("dorado.baseWidget.ExceptionDialogDetailTitle"),
 				width: 800,
 				height: 560,
 				center: true,
 				resizeable: true,
+				maximizeable: true,
 				layout: {
 					regionPadding: 8
 				},
@@ -465,7 +471,8 @@
 					children: [{
 						$type: "FormElement",
 						width: "100%",
-						label: "Message",
+						showHint: false,
+						label: $resource("dorado.baseWidget.ExceptionDialogDetailMessage"),
 						editor: messsageTextArea
 					}]
 				}, tabControl],

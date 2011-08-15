@@ -90,11 +90,12 @@
 						}
 					}
 				}
-				var w = this._dom.clientWidth;
+				var w = this._dom.clientWidth, h = this._dom.clientHeight;
 				if (this._triggerPanel) {
 					w -= this._triggerPanel.offsetWidth;
 				}
 				this._textDom.style.width = (w < 0 ? 0 : w) + "px";
+				this._textDom.style.height = h + "px";
 			}
 		},
 		
