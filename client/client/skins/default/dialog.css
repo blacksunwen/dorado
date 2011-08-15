@@ -217,9 +217,9 @@
 
 .d-dialog .dialog-body-wrap .dialog-body .button-panel {
     background: #FFFFFF;
-    padding: 2px 8px 10px 8px;
+    padding: 12px 8px 12px 8px;
     text-align: center;
-    height: 24px;
+    height: 22px;
 }
 
 .d-dialog .dialog-body-wrap .dialog-body .button-panel-left{
@@ -231,7 +231,8 @@
 }
 
 .d-dialog .dialog-body-wrap .dialog-body .button-panel .d-button {
-    margin-right: 3px;
+    margin-left: 1px;
+    margin-right: 1px;
 }
 
 .d-dialog .collapse-icon {
