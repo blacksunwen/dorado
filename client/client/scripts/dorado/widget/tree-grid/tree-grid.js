@@ -60,10 +60,10 @@
 		},
 		
 		doRender: function(dom, arg) {
-			if (!dom.firstChild || dom.firstChild.className != "d-tree-node") {
+			if (!dom.firstChild || dom.firstChild.className != "i-tree-node d-tree-node") {
 				$fly(dom).empty().xCreate({
 					tagName: "DIV",
-					className: "d-tree-node",
+					className: "i-tree-node d-tree-node",
 					content: [{
 						tagName: "LABEL",
 						doradoType: "tree-button",
@@ -185,7 +185,7 @@
 					this.set("currentNode", node);
 				},
 				getter: function() {
-					return (this._currentNode) ? this._currentNode._data : null;
+					return this.get("currentNode.data");
 				}
 			},
 			
@@ -270,8 +270,10 @@
 				if (row) innerGrid.refreshItemDomData(row, entity);
 			}
 			innerGrid = this._innerGrid;
-			row = innerGrid._itemDomMap[itemId];
-			if (row) innerGrid.refreshItemDomData(row, entity);
+			if (innerGrid) {
+				row = innerGrid._itemDomMap[itemId];
+				if (row) innerGrid.refreshItemDomData(row, entity);
+			}
 		},
 		
 		getCellEditor: function(column, entity) {
