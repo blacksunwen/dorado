@@ -8,7 +8,8 @@ import com.bstek.dorado.annotation.ViewAttribute;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2011-2-26
  */
-@ClientEvents({ @ClientEvent(name = "onDataRowClick") })
+@ClientEvents({ @ClientEvent(name = "onDataRowClick"),
+		@ClientEvent(name = "onDataRowDoubleClick") })
 public abstract class RowList extends AbstractList {
 	private int rowHeight;
 	private boolean highlightCurrentRow = true;
