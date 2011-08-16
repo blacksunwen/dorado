@@ -372,6 +372,7 @@
 			if (autoHeight) {
 				autoHeight = (!control.ATTRIBUTES.height.independent && !control.getAttributeWatcher().getWritingTimes("height"));
 			}
+			if (control instanceof dorado.widget.Panel) eval("debugger");
 			$invokeSuper.call(this, [region, container, autoWidth, autoHeight]);
 		}
 	
