@@ -177,7 +177,7 @@
 					}
 				}
 			}
-			return false;
+			return true;
 		},
 		
 		setSelection: function(selection) {
