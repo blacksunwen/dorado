@@ -273,7 +273,7 @@
 	background-position: -40px -42px;
 }
 
-.d-tabbar .d-icon-button {
+.d-tabbar .d-icon-button, .d-tabbar .d-icon-button-trigger {
     top: 1px;
 }
 

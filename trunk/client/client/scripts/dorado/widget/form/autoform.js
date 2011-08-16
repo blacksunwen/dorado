@@ -204,15 +204,7 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 			if (element) {
 				var constraint = element._layoutConstraint;
 				
-				var config = dorado.Object.apply({}, {
-					layoutConstraint: constraint,
-					entity: this._entity,
-					dataSet: this._dataSet,
-					dataPath: this._dataPath,
-					formProfile: this
-				}, function(p, v) {
-					return (v !== undefined);
-				});
+				var config = {};
 				dorado.Object.apply(config, element);
 				
 				if (!config.name) {
@@ -227,13 +219,22 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 					config.name = name;
 				}
 				
-				element = dorado.Toolkits.createInstance("widget", null, function(type) {
+				element = dorado.Toolkits.createInstance("widget", config, function(type) {
 					if (!type) return dorado.widget.autoform.AutoFormElement;
 				});
 			} else {
-				element = new dorado.widget.Control();
+				element = new dorado.widget.Control(config);
 			}
 			
+			dorado.Object.apply(config, {
+				layoutConstraint: constraint,
+				entity: this._entity,
+				dataSet: this._dataSet,
+				dataPath: this._dataPath,
+				formProfile: this
+			}, function(p, v) {
+				return (v !== undefined);
+			});
 			element.set(config, {
 				skipUnknownAttribute: true,
 				tryNextOnError: true,
