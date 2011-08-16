@@ -241,6 +241,7 @@ dorado.MessageBox = {
 		} else {
 			options = options || {};
 		}
+		options.icon = dorado.MessageBox.INFO_ICON;
 		options.message = msg;
 		options.buttons = dorado.MessageBox.OK;
 		options.closeAction = "ok";
@@ -263,6 +264,7 @@ dorado.MessageBox = {
 		} else {
 			options = options || {};
 		}
+		options.icon = dorado.MessageBox.QUESTION_ICON;
 		options.message = msg;
 		options.buttons = dorado.MessageBox.YESNO;
 		options.closeAction = "no";
@@ -356,23 +358,27 @@ dorado.MessageBox = {
 		$fly(doms.msgIcon).attr("className", "msg-icon");
 
 		if (icon) {
-			$fly(doms.msgIcon).addClass(icon);
+			$fly(doms.msgIcon).addClass(icon).css("display", "");
 			$fly(doms.msgContent).addClass("msg-content-hasicon");
 		} else {
+			$fly(doms.msgIcon).css("display", "none");
 			$fly(doms.msgContent).removeClass("msg-content-hasicon");
 		}
 		if (dorado.MessageBox.SINGLE_EDITOR) {
 			switch (editor) {
 				case "none":
+					$fly(doms.editorWrap).css("display", "none");
 					$fly(dorado.MessageBox.SINGLE_EDITOR._dom).css("display", "none");
 					$fly(dorado.MessageBox.TEXTAREA._dom).css("display", "none");
 					break;
 				case "single":
+					$fly(doms.editorWrap).css("display", "");
 					$fly(dorado.MessageBox.SINGLE_EDITOR._dom).css("display", "");
 					$fly(dorado.MessageBox.TEXTAREA._dom).css("display", "none");
 					dorado.MessageBox.SINGLE_EDITOR.set("value", value || "");
 					break;
 				case "multiple":
+					$fly(doms.editorWrap).css("display", "");
 					$fly(dorado.MessageBox.SINGLE_EDITOR._dom).css("display", "none");
 					$fly(dorado.MessageBox.TEXTAREA._dom).css("display", "");
 					dorado.MessageBox.TEXTAREA.set("value", value || "");

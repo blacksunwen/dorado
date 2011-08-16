@@ -339,9 +339,9 @@
     position: absolute;
     left: 0;
     top: 0;
-    background: transparent none no-repeat center center;height: 48px;
+    background: transparent none no-repeat center center;
     width: 48px;
-    margin: 0 12px 0 2px;
+	height: 48px;
 }
 
 .d-message-box .error-icon {
@@ -386,5 +386,5 @@
 }
 
 .d-message-box .dialog-body-wrap .dialog-body .content-panel {
-    padding: 16px;
+    padding: 16px 16px 0 16px;
 }
