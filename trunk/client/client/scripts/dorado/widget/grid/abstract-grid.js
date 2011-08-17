@@ -3088,21 +3088,30 @@
 			for (var i = 0; i < row.cells.length; i++) {
 				var cell = row.cells[i];
 				if (cell.colId == column._id) {
+					if (grid._divScroll) {
+						var offset1 = $fly(grid._divScroll).offset(), offset2 = $fly(cell).offset();
+						var t = offset2.top - offset1.top;
+						if ((t + cell.offsetHeight) > grid._divScroll.clientHeight || t < 0) {
+							return;
+						}
+					}
+					
 					// scroll the cell into view
 					var gridDom = grid.getDom();
-					if (gridDom.scrollWidth > gridDom.clientWidth) {
+					if (gridDom.scrollWidth > gridDom.clientWidth ||
+						gridDom.scrollHeight > gridDom.clientHeight) {
 						var offset1 = $fly(gridDom).offset(), offset2 = $fly(cell).offset();
-						var l = offset2.left - offset1.left;
 						with (gridDom) {
+							var l = offset2.left - offset1.left;
 							if ((l + cell.offsetWidth) > clientWidth) {
 								scrollLeft -= clientWidth - (l + cell.offsetWidth);
 							} else if (l < 0) {
 								scrollLeft += l;
 							}
 						}
-					} else {
+					} else if (grid._divScroll) {
 						var container = this.getDom().parentNode;
-						if (grid._divScroll && container.scrollWidth > container.clientWidth) {
+						if (container.scrollWidth > container.clientWidth) {
 							var scrollPos = -1, ratio;
 							with (container) {
 								if ((cell.offsetLeft + cell.offsetWidth) > (scrollLeft + clientWidth)) {
