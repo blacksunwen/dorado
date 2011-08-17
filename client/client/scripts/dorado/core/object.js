@@ -390,7 +390,7 @@
 		 * @return {Object} 新的克隆对象。
 		 */
 		clone: function(object, options) {
-			if (object instanceof Object) {
+			if (typeof object == "object") {
 				var objClone, options = options || {};
 				if (options.onCreate) objClone = new options.onCreate(object);
 				else objClone = new object.constructor();

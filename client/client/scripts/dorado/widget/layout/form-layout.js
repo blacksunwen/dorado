@@ -145,6 +145,7 @@
 				tbody.appendChild(tr);
 			}
 			
+			var realignRegions = [];
 			for (var row = 0; row < grid.length; row++) {
 				var tr = document.createElement("TR");
 				tr.style.height = this._rowHeight + "px";
@@ -196,8 +197,22 @@
 				for (var i = 0; i < cellForRenders.length; i++) {
 					var cellInfo = cellForRenders[i], td = cellInfo.cell, region = cellInfo.region;
 					index = region.regionIndex;
-					this.renderControl(region, td, true, false);
+					if (region.control._fixedHeight === false) {
+						var controlDom = region.control.getDom();
+						region.display = controlDom.style.display;
+						controlDom.style.display = "none";
+						realignRegions.push(region);
+					} else {
+						this.renderControl(region, td, true, true);
+					}
 				}
+			}
+			
+			for (var i = 0; i < realignRegions.length; i++) {
+				var region = realignRegions[i], td = this.createRegionContainer(region);
+				region.height = td.clientHeight;
+				controlDom.style.display = region.display;
+				this.renderControl(region, td, true, true);
 			}
 		},
 		
@@ -206,8 +221,7 @@
 			if (!dom) {
 				dom = document.createElement("TD");
 				if (region) this._domCache[region.id] = dom;
-			}
-			else if (dom.firstChild) {
+			} else if (dom.firstChild) {
 				dom.removeChild(dom.firstChild);
 			}
 			dom.className = this._regionClassName;
@@ -362,20 +376,8 @@
 				realColWidths[i] = w;
 			}
 			return changedCols;
-		},
-		
-		resetControlDimension: function(region, container, autoWidth, autoHeight) {
-			var control = region.control;
-			if (autoWidth) {
-				autoWidth = (!control.ATTRIBUTES.width.independent && !control.getAttributeWatcher().getWritingTimes("width"));
-			}
-			if (autoHeight) {
-				autoHeight = (!control.ATTRIBUTES.height.independent && !control.getAttributeWatcher().getWritingTimes("height"));
-			}
-			if (control instanceof dorado.widget.Panel) eval("debugger");
-			$invokeSuper.call(this, [region, container, autoWidth, autoHeight]);
 		}
-	
+		
 	});
 	
 	var p = dorado.widget.layout.FormLayout.prototype;
