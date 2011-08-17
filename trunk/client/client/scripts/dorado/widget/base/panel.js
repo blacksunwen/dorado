@@ -651,7 +651,6 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 
 	_doOnResize: function(collapsed) {
 		var panel = this, border = panel._border, dom = panel._dom, doms = panel._doms, height = panel.getRealHeight();
-		
 		if (typeof height == "number" && height > 0) {
 			if (collapsed == undefined) {
 				collapsed = panel._collapsed;

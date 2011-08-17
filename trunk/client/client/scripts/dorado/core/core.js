@@ -214,7 +214,7 @@ dorado.Core = {
 	clone: function(obj, deep) {
 	
 		function doClone(obj, deep) {
-			if (obj == null || !(obj instanceof Object)) return obj;
+			if (obj == null || typeof(obj) != "object") return obj;
 			if (obj.clone instanceof Function) {
 				return obj.clone(deep);
 			} else {
