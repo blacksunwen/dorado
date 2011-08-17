@@ -4,9 +4,7 @@
 package com.bstek.dorado.data.provider.manager;
 
 import org.aopalliance.intercept.MethodInterceptor;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.InitializingBean;
 
 import com.bstek.dorado.data.config.definition.DataProviderDefinitionManager;
 
@@ -14,8 +12,7 @@ import com.bstek.dorado.data.config.definition.DataProviderDefinitionManager;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2011-7-8
  */
-public class DataProviderInterceptorRegister implements
-		BeanFactoryPostProcessor {
+public class DataProviderInterceptorRegister implements InitializingBean {
 	private DataProviderDefinitionManager dataProviderDefinitionManager;
 	private MethodInterceptor methodInterceptor;
 
@@ -24,16 +21,14 @@ public class DataProviderInterceptorRegister implements
 		this.dataProviderDefinitionManager = dataProviderDefinitionManager;
 	}
 
-	public void postProcessBeanFactory(
-			ConfigurableListableBeanFactory beanFactory) throws BeansException {
+	public void setMethodInterceptor(MethodInterceptor methodInterceptor) {
+		this.methodInterceptor = methodInterceptor;
+	}
+
+	public void afterPropertiesSet() throws Exception {
 		if (methodInterceptor != null) {
 			dataProviderDefinitionManager
 					.addDataProviderMethodInterceptor(methodInterceptor);
 		}
 	}
-
-	public void setMethodInterceptor(MethodInterceptor methodInterceptor) {
-		this.methodInterceptor = methodInterceptor;
-	}
-
 }

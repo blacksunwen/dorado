@@ -3,9 +3,7 @@ package com.bstek.dorado.view.registry;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.InitializingBean;
 
 import com.bstek.dorado.config.Parser;
 import com.bstek.dorado.view.output.Outputter;
@@ -14,10 +12,11 @@ import com.bstek.dorado.view.widget.layout.LayoutConstraintSupport;
 
 /**
  * 用于配置在Spring文件中的布局管理器类型信息的注册器。
+ * 
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Sep 16, 2008
  */
-public class LayoutTypeRegister implements BeanFactoryPostProcessor {
+public class LayoutTypeRegister implements InitializingBean {
 	private static final Log logger = LogFactory
 			.getLog(LayoutTypeRegister.class);
 
@@ -68,8 +67,7 @@ public class LayoutTypeRegister implements BeanFactoryPostProcessor {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void postProcessBeanFactory(ConfigurableListableBeanFactory factory)
-			throws BeansException {
+	public void afterPropertiesSet() throws Exception {
 		try {
 			Class<? extends Layout> cl = null;
 			if (StringUtils.isNotEmpty(classType)) {
@@ -87,8 +85,7 @@ public class LayoutTypeRegister implements BeanFactoryPostProcessor {
 			registerInfo.setParser(parser);
 			registerInfo.setOutputter(outputter);
 			layoutTypeRegistry.registerType(registerInfo);
-		}
-		catch (ClassNotFoundException e) {
+		} catch (ClassNotFoundException e) {
 			logger.equals(e);
 		}
 	}

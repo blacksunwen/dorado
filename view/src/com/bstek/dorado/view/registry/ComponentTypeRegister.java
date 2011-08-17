@@ -8,8 +8,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.BeanNameAware;
-import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
 
 import com.bstek.dorado.annotation.Widget;
@@ -24,11 +23,12 @@ import com.bstek.dorado.view.widget.Control;
 
 /**
  * 用于配置在Spring文件中的组件类型信息的注册器。
+ * 
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Jan 22, 2008
  */
-public abstract class ComponentTypeRegister implements
-		BeanFactoryPostProcessor, BeanFactoryAware, BeanNameAware {
+public abstract class ComponentTypeRegister implements InitializingBean,
+		BeanFactoryAware, BeanNameAware {
 	private static final Log logger = LogFactory
 			.getLog(ComponentTypeRegister.class);
 
@@ -120,7 +120,8 @@ public abstract class ComponentTypeRegister implements
 	protected ComponentTypeRegisterInfo getRegisterInfo() throws Exception {
 		if (StringUtils.isEmpty(name)) {
 			int i = beanName.lastIndexOf(".");
-			if (i >= 0) name = beanName.substring(i + 1);
+			if (i >= 0)
+				name = beanName.substring(i + 1);
 		}
 
 		Class<? extends Component> cl = null;
@@ -159,14 +160,11 @@ public abstract class ComponentTypeRegister implements
 				String parserId;
 				if (View.class.isAssignableFrom(cl)) {
 					parserId = VIEW_PARSER;
-				}
-				else if (Container.class.isAssignableFrom(cl)) {
+				} else if (Container.class.isAssignableFrom(cl)) {
 					parserId = CONTAINER_PARSER;
-				}
-				else if (Control.class.isAssignableFrom(cl)) {
+				} else if (Control.class.isAssignableFrom(cl)) {
 					parserId = CONTROL_PARSER;
-				}
-				else {
+				} else {
 					parserId = COMPONENT_PARSER;
 				}
 				parser = (Parser) getBeanFactory().getBean(parserId);
@@ -187,13 +185,11 @@ public abstract class ComponentTypeRegister implements
 		return registerInfo;
 	}
 
-	public void postProcessBeanFactory(ConfigurableListableBeanFactory factory)
-			throws BeansException {
+	public void afterPropertiesSet() throws Exception {
 		try {
 			ComponentTypeRegisterInfo registerInfo = getRegisterInfo();
 			componentTypeRegistry.registerType(registerInfo);
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			logger.warn(e, e);
 		}
 	}

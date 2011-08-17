@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.beans.factory.InitializingBean;
 
 /**
  * 用于利用外部的Spring配置文件完成隐式变量初始化器注册功能的辅助类。
@@ -13,8 +14,14 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Dec 17, 2007
  */
-public class ContextVarsInitializerRegister implements BeanFactoryPostProcessor {
+public class ContextVarsInitializerRegister implements InitializingBean,
+		BeanFactoryAware {
+	private BeanFactory beanFactory;
 	private ContextVarsInitializer contextInitializer;
+
+	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+		this.beanFactory = beanFactory;
+	}
 
 	/**
 	 * 设置隐式变量初始化器。
@@ -23,8 +30,7 @@ public class ContextVarsInitializerRegister implements BeanFactoryPostProcessor 
 		this.contextInitializer = contextInitializer;
 	}
 
-	public void postProcessBeanFactory(
-			ConfigurableListableBeanFactory beanFactory) throws BeansException {
+	public void afterPropertiesSet() throws Exception {
 		DefaultExpressionHandler handler = (DefaultExpressionHandler) beanFactory
 				.getBean("dorado.expressionHandler");
 		List<ContextVarsInitializer> realInitializers = handler

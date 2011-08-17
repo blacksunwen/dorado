@@ -3,9 +3,7 @@ package com.bstek.dorado.data.type.validator;
 import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.InitializingBean;
 
 import com.bstek.dorado.config.Parser;
 import com.bstek.dorado.data.config.xml.GenericObjectParser;
@@ -14,7 +12,7 @@ import com.bstek.dorado.data.config.xml.GenericObjectParser;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-7-27
  */
-public class ValidatorTypeRegister implements BeanFactoryPostProcessor {
+public class ValidatorTypeRegister implements InitializingBean {
 	private static final Log logger = LogFactory
 			.getLog(ValidatorTypeRegister.class);
 
@@ -70,8 +68,7 @@ public class ValidatorTypeRegister implements BeanFactoryPostProcessor {
 		this.parser = parser;
 	}
 
-	public void postProcessBeanFactory(
-			ConfigurableListableBeanFactory beanFactory) throws BeansException {
+	public void afterPropertiesSet() throws Exception {
 		try {
 			Class<?> cl = ClassUtils.getClass(classType);
 			ValidatorTypeRegisterInfo registerInfo = new ValidatorTypeRegisterInfo(

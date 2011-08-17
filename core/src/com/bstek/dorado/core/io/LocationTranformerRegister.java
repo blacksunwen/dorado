@@ -3,9 +3,7 @@
  */
 package com.bstek.dorado.core.io;
 
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.InitializingBean;
 
 /**
  * 
@@ -13,7 +11,7 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2011-3-22
  */
-public class LocationTranformerRegister implements BeanFactoryPostProcessor {
+public class LocationTranformerRegister implements InitializingBean {
 	private String protocal;
 	private LocationTransformer transformer;
 
@@ -25,8 +23,7 @@ public class LocationTranformerRegister implements BeanFactoryPostProcessor {
 		this.transformer = transformer;
 	}
 
-	public void postProcessBeanFactory(
-			ConfigurableListableBeanFactory beanFactory) throws BeansException {
+	public void afterPropertiesSet() throws Exception {
 		LocationTransformerHolder.getPathTransformers().put(protocal,
 				transformer);
 	}

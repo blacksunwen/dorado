@@ -23,9 +23,12 @@ public class WebContextVarsInitializer implements ContextVarsInitializer {
 			vars.put("configure", WebConfigure.getStore());
 			HttpServletRequest request = DoradoContext.getAttachedRequest();
 			vars.put("request", request);
+			vars.put("req", new RequestWrapperMap(request));
+			vars.put("param", new RequestParameterWrapperMap(request));
 			vars.put("session", (request != null) ? request.getSession(false)
 					: null);
-			vars.put("servletContext", DoradoContext.getAttachedServletContext());
+			vars.put("servletContext",
+					DoradoContext.getAttachedServletContext());
 			vars.put("web", SingletonBeanFactory
 					.getInstance(WebExpressionUtilsObject.class));
 		} catch (Exception e) {
