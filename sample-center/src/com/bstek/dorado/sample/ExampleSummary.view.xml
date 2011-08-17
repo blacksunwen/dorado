@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ViewConfig>
   <Model>
-    <DataType parent="Example" name="XExample">
+    <DataType name="XExample" parent="Example">
       <PropertyDef name="sources" dataType="[ExampleSource]"/>
     </DataType>
   </Model>
   <View layout="Anchor" pageTemplate="com/bstek/dorado/sample/ExampleSummary.html" title="示例简述">
-    <DataSet id="dsExample" dataType="XExample" dataProvider="exampleSummary#getExample" loadMode="preload" parameter="${request.getParameter(&quot;exampleId&quot;)}">
+    <DataSet id="dsExample" dataProvider="exampleSummary#getExample" dataType="XExample" loadMode="preload" parameter="${request.getParameter(&quot;exampleId&quot;)}">
       <ClientEvent name="onReady">
 var id = self.getData(&quot;id&quot;);
 $(&quot;a&quot;).attr(&quot;target&quot;, &quot;doc_&quot; + id);
@@ -17,7 +17,7 @@ if (sources.entityCount == 0) {
 </ClientEvent>
     </DataSet>
     <SimpleButton className="button-run" renderTo="#buttonRunHold"/>
-    <DataGrid renderOn="#gridSource" width="600" dataPath="sources" dataSet="dsExample" dynaRowHeight="true" highlightCurrentRow="false" readOnly="true" stretchColumnsMode="stretchableColumns">
+    <DataGrid dataPath="sources" dataSet="dsExample" dynaRowHeight="true" highlightCurrentRow="false" readOnly="true" renderOn="#gridSource" width="600">
       <DataColumn caption="源文件" property="label" width="*">
         <ClientEvent name="onRenderCell">
 var t, sourceId = arg.data.get(&quot;id&quot;), label = arg.data.get(&quot;label&quot;), path = arg.data.get(&quot;path&quot;);

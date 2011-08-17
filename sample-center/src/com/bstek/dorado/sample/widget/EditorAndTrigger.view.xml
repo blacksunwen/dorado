@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ViewConfig>
   <Model>
-    <DataType parent="BaseExampleCategory" name="CategoryNode">
-      <Reference name="categories" dataType="[CategoryNode]" dataProvider="exampleMaintain#getCategories" parameter="$${this.id}"/>
+    <DataType name="CategoryNode" parent="BaseExampleCategory">
+      <Reference name="categories" dataProvider="exampleMaintain#getCategories" dataType="[CategoryNode]" parameter="$${this.id}"/>
       <Reference name="examples" dataProvider="exampleMaintain#getExamplesByCategoryId" parameter="$${this.id}">
         <Property name="dataType">[BaseExample]</Property>
       </Reference>
@@ -67,22 +67,22 @@ dialog.show();</ClientEvent>
       <ClientEvent name="onExecute">this.$onMathTriggerExecute(self, arg);&#xD;
 </ClientEvent>
       <Property name="userData">*2</Property>
-      <Property name="icon">>resources/com/bstek/dorado/sample/widget/m2.gif</Property>
+      <Property name="icon">>dorado/res/com/bstek/dorado/sample/widget/m2.gif</Property>
     </Trigger>
     <Trigger id="trigger4">
       <ClientEvent name="onExecute">this.$onMathTriggerExecute(self, arg);</ClientEvent>
       <Property name="userData">*3</Property>
-      <Property name="icon">>resources/com/bstek/dorado/sample/widget/m3.gif</Property>
+      <Property name="icon">>dorado/res/com/bstek/dorado/sample/widget/m3.gif</Property>
     </Trigger>
     <Trigger id="trigger5">
       <ClientEvent name="onExecute">this.$onMathTriggerExecute(self, arg);</ClientEvent>
       <Property name="userData">/2</Property>
-      <Property name="icon">>resources/com/bstek/dorado/sample/widget/d2.gif</Property>
+      <Property name="icon">>dorado/res/com/bstek/dorado/sample/widget/d2.gif</Property>
     </Trigger>
     <Trigger id="trigger6">
       <ClientEvent name="onExecute">this.$onMathTriggerExecute(self, arg);</ClientEvent>
       <Property name="userData">/3</Property>
-      <Property name="icon">>resources/com/bstek/dorado/sample/widget/d3.gif</Property>
+      <Property name="icon">>dorado/res/com/bstek/dorado/sample/widget/d3.gif</Property>
     </Trigger>
     <FormElement>
       <Property name="label">自定义的Trigger3</Property>
@@ -206,19 +206,19 @@ dropDown.close(arg.data.value);</ClientEvent>
           <Collection>
             <Entity>
               <Property name="value">黑桃</Property>
-              <Property name="image">>resources/com/bstek/dorado/sample/widget/pique.png</Property>
+              <Property name="image">>dorado/res/com/bstek/dorado/sample/widget/pique.png</Property>
             </Entity>
             <Entity>
               <Property name="value">红桃</Property>
-              <Property name="image">>resources/com/bstek/dorado/sample/widget/coeur.png</Property>
+              <Property name="image">>dorado/res/com/bstek/dorado/sample/widget/coeur.png</Property>
             </Entity>
             <Entity>
               <Property name="value">草花</Property>
-              <Property name="image">>resources/com/bstek/dorado/sample/widget/trefle.png</Property>
+              <Property name="image">>dorado/res/com/bstek/dorado/sample/widget/trefle.png</Property>
             </Entity>
             <Entity>
               <Property name="value">方片</Property>
-              <Property name="image">>resources/com/bstek/dorado/sample/widget/carreau.png</Property>
+              <Property name="image">>dorado/res/com/bstek/dorado/sample/widget/carreau.png</Property>
             </Entity>
           </Collection>
         </Property>

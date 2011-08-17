@@ -5,8 +5,8 @@
   <Model/>
   <View>
     <TabControl id="tabControl">
-      <ClientEvent name="onCreate">self.addRightToolButton(new dorado.widget.SimpleButton({
-    className: &quot;menu-button&quot;,
+      <ClientEvent name="onCreate">self.addRightToolButton(new dorado.widget.SimpleIconButton({
+	icon: &quot;url(>skin>common/icons.gif) -140px -20px&quot;,
     menu: new dorado.widget.Menu({
         items: [ { caption: &quot;test&quot; }, { caption: &quot;test&quot; }]
     })
