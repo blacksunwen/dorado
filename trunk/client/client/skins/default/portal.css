@@ -23,7 +23,8 @@
 
 .d-portal .d-panel {
 	position: absolute;
-	margin-bottom: 10px;
+    left: 0;
+    top: 0;
 }
 
 .d-portlet-helper {
