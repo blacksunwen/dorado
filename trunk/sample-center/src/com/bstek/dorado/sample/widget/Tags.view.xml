@@ -43,7 +43,7 @@ for (var i = 1; i &lt;= 40; i++) {&#xD;
 	var button = {&#xD;
 		$type: &quot;Button&quot;,&#xD;
 		caption: dorado.util.Common.formatFloat(i, &quot;00&quot;),&#xD;
-		icon: &quot;>resources/com/bstek/dorado/sample/widget/&quot; + color + &quot;.gif&quot;,&#xD;
+		icon: &quot;>dorado/res/com/bstek/dorado/sample/widget/&quot; + color + &quot;.gif&quot;,&#xD;
 		width: 60, toggleable: true,&#xD;
 		layoutConstraint: { align: &quot;center&quot; },&#xD;
 		tags: tags,&#xD;

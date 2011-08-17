@@ -7,7 +7,7 @@
     <Property name="title">Grid</Property>
     <Button>
       <ClientEvent name="onClick">var grid = this.id(&quot;gridPhones&quot;);&#xD;
-$ajax.request(&quot;>resources/com/bstek/dorado/sample/widget/grid/Phones.js&quot;, function(result) {&#xD;
+$ajax.request(&quot;>dorado/res/com/bstek/dorado/sample/widget/grid/Phones.js&quot;, function(result) {&#xD;
 	grid.set(&quot;items&quot;, result.getJsonData());&#xD;
 });</ClientEvent>
       <Property name="caption">Load grid data via Ajax ...</Property>
