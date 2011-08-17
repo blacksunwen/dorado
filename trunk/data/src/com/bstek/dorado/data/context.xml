@@ -12,12 +12,12 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 
 	<!-- Startup Listeners -->
 	<bean class="com.bstek.dorado.data.config.DataConfigEngineStartupListener">
-		<property name="priority" value="1000" />
+		<property name="order" value="1001" />
 		<property name="DataConfigManager" ref="dorado.dataConfigManager" />
 	</bean>
 	<bean
 		class="com.bstek.dorado.data.config.DataObjectAnnotationEngineStartupListener">
-		<property name="priority" value="1001" />
+		<property name="order" value="1002" />
 		<property name="dataProviderDefinitionManager" ref="dorado.dataProviderDefinitionManager" />
 		<property name="dataResolverDefinitionManager" ref="dorado.dataResolverDefinitionManager" />
 	</bean>

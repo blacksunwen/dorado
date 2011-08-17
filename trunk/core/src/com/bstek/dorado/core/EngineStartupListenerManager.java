@@ -19,17 +19,16 @@ public abstract class EngineStartupListenerManager {
 			new Comparator<EngineStartupListener>() {
 				public int compare(EngineStartupListener listener1,
 						EngineStartupListener listener2) {
-					if (listener1.getPriority() != listener2.getPriority()) {
-						return listener1.getPriority()
-								- listener2.getPriority();
-					}
-					else {
+					if (listener1.getOrder() != listener2.getOrder()) {
+						return listener1.getOrder() - listener2.getOrder();
+					} else {
 						return listener1.hashCode() - listener2.hashCode();
 					}
 				}
 			});
 
-	private EngineStartupListenerManager() {}
+	private EngineStartupListenerManager() {
+	}
 
 	public static void register(EngineStartupListener listener) {
 		listeners.add(listener);

@@ -6,15 +6,13 @@ package com.bstek.dorado.idesupport;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.InitializingBean;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2011-6-21
  */
-public class RuleConfigLoader implements BeanFactoryPostProcessor {
+public class RuleConfigLoader implements InitializingBean {
 	private RuleTemplateBuilder ruleTemplateBuilder;
 	private String configLocation;
 
@@ -29,8 +27,7 @@ public class RuleConfigLoader implements BeanFactoryPostProcessor {
 		this.configLocation = configLocation;
 	}
 
-	public void postProcessBeanFactory(ConfigurableListableBeanFactory arg0)
-			throws BeansException {
+	public void afterPropertiesSet() throws Exception {
 		if (configLocation != null) {
 			List<String> configTemplateFiles = ruleTemplateBuilder
 					.getConfigTemplateFiles();

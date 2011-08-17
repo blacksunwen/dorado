@@ -2,9 +2,7 @@ package com.bstek.dorado.data.config;
 
 import java.util.List;
 
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.InitializingBean;
 
 /**
  * 用于配置在Spring中，定义要装载的数据配置文件的Bean。
@@ -12,7 +10,7 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Apr 11, 2008
  */
-public class DataConfigLoader implements BeanFactoryPostProcessor {
+public class DataConfigLoader implements InitializingBean {
 	private String configLocation;
 	private List<String> configLocations;
 	private ConfigurableDataConfigManager dataConfigManager;
@@ -43,8 +41,7 @@ public class DataConfigLoader implements BeanFactoryPostProcessor {
 		this.dataConfigManager = dataConfigManager;
 	}
 
-	public void postProcessBeanFactory(ConfigurableListableBeanFactory factory)
-			throws BeansException {
+	public void afterPropertiesSet() throws Exception {
 		if (configLocation != null) {
 			dataConfigManager.addConfigLocation(configLocation);
 		}

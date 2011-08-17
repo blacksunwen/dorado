@@ -1171,7 +1171,6 @@
 				}]);
 			}
 			var ignoreItemTimestamp = (this._ignoreItemTimestamp === undefined) ? true : this._ignoreItemTimestamp;
-			delete this._ignoreItemTimestamp;
 			
 			var fixedColumnCount;
 			if (!this.getRealWidth() || !this.getRealHeight() || this._groupProperty) {

@@ -2,9 +2,7 @@ package com.bstek.dorado.common.service;
 
 import java.util.List;
 
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.InitializingBean;
 
 import com.bstek.dorado.util.Assert;
 
@@ -12,7 +10,7 @@ import com.bstek.dorado.util.Assert;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2011-1-21
  */
-public class ExposedServiceRegister implements BeanFactoryPostProcessor {
+public class ExposedServiceRegister implements InitializingBean {
 	private ExposedServiceManager exposedServiceManager;
 	private List<String> services;
 
@@ -25,8 +23,7 @@ public class ExposedServiceRegister implements BeanFactoryPostProcessor {
 		this.services = services;
 	}
 
-	public void postProcessBeanFactory(
-			ConfigurableListableBeanFactory beanFactory) throws BeansException {
+	public void afterPropertiesSet() throws Exception {
 		if (services != null) {
 			synchronized (exposedServiceManager) {
 				for (String service : services) {
@@ -37,8 +34,7 @@ public class ExposedServiceRegister implements BeanFactoryPostProcessor {
 					if (i > 0) {
 						bean = service.substring(0, i);
 						method = service.substring(i + 1);
-					}
-					else {
+					} else {
 						bean = service;
 					}
 					exposedServiceManager.registerService(new ExposedService(

@@ -4,8 +4,9 @@ import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.beans.factory.InitializingBean;
 
 import com.bstek.dorado.config.Parser;
 import com.bstek.dorado.data.config.xml.GenericObjectParser;
@@ -17,16 +18,22 @@ import com.bstek.dorado.data.config.xml.GenericObjectParser;
  * @since Dec 16, 2007
  * @see com.bstek.dorado.data.provider.manager.DataProviderTypeRegistry
  */
-public class DataProviderTypeRegister implements BeanFactoryPostProcessor {
+public class DataProviderTypeRegister implements BeanFactoryAware,
+		InitializingBean {
 	private static final Log logger = LogFactory
 			.getLog(DataProviderTypeRegister.class);
 
 	private static final String DATA_PROVIDER_PARSER = "dorado.prototype.dataProviderParser";
 
+	private BeanFactory beanFactory;
 	private DataProviderTypeRegistry dataProviderTypeRegistry;
 	private String type;
 	private String classType;
 	private Parser parser;
+
+	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+		this.beanFactory = beanFactory;
+	}
 
 	/**
 	 * 设置DataProvider的类型注册管理器。
@@ -78,8 +85,7 @@ public class DataProviderTypeRegister implements BeanFactoryPostProcessor {
 		this.parser = parser;
 	}
 
-	public void postProcessBeanFactory(
-			ConfigurableListableBeanFactory beanFactory) throws BeansException {
+	public void afterPropertiesSet() throws Exception {
 		try {
 			Class<?> cl = ClassUtils.getClass(classType);
 			DataProviderTypeRegisterInfo registerInfo = new DataProviderTypeRegisterInfo(
