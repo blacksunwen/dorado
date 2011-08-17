@@ -246,9 +246,9 @@
 									parseInt($fly(doc.body).css("margin-right"), 10);
 						$fly(useShimDiv).width(bodyWidth - 2).height(bodyHeight - 4);
 					} else if (dorado.Browser.version == 7) {
-						$fly(useShimDiv).height(bodyHeight);
+						$fly(useShimDiv).width("100%").height(bodyHeight);
 					} else if (dorado.Browser.version == 8) {
-						$fly(useShimDiv).height(bodyHeight - 4);
+						$fly(useShimDiv).width("100%").height(bodyHeight - 4);
 					}
 				} else {
 					$fly(useShimDiv).width("100%").height(bodyHeight - 4);

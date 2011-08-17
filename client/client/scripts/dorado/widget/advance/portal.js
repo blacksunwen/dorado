@@ -508,6 +508,11 @@
 					}
 					columnPortlets.insert(portal._draggingPortlet, row);
 					portal._draggingPortlet._column = column;
+                    var dom = portal._draggingPortlet._dom;
+                    $fly(dom).css({
+                        left: portal._placeholder.style.left,
+                        top: portal._placeholder.style.top
+                    });
 
                     portal.fireEvent("onPortletMove", portal, {
                         portlet: portal._draggingPortlet
@@ -521,7 +526,7 @@
 
 					portal.hideColumns();
 
-					portal.refresh();
+                    setTimeout(function() { portal.refresh(); }, 0);
 				},
 				over: function(ev, ui) {
 					portal._dropColumnIndex = this.index;
@@ -537,7 +542,7 @@
 				tagName: "div",
 				className: portal._className,
 				style: {
-					padding: portal._portletPadding + "px"
+					//padding: portal._portletPadding + "px"
 				}
 			}), columnDoms;
 
@@ -577,16 +582,12 @@
 		calcColumnsWidth: function() {
 			var portal = this, columns = portal._columns, columnDoms = portal._columnDoms, dom = portal._dom;
 			if (columns) {
-				var width = $fly(dom).width(), columnCount = columns.size, viewWidth;
+				var width = dom.clientWidth, columnCount = columns.size, viewWidth;
 
-				if (portal._hasScroll) {
-					width -= 16;
-				}
-
-				viewWidth = width - (columnCount - 1) * portal._portletPadding;
+				viewWidth = width - (columnCount + 1) * portal._portletPadding;
 
 				//init width
-				var starColumn = [], noneStartWidthTotal = 0, widthMap = [], leftMap = [];
+				var starColumn = [], noneStarWidthTotal = 0, widthMap = [], leftMap = [];
 				for (var i = 0; i < columnCount; i++) {
 					var columnSetting = columns.get(i), columnWidth = columnSetting.width || "*";
 					if (columnWidth == "*") {
@@ -598,12 +599,12 @@
 						} else {
 							realWidth = parseInt(columnWidth, 10);
 						}
-						noneStartWidthTotal += realWidth;
-						widthMap [i] = realWidth;
+						noneStarWidthTotal += realWidth;
+						widthMap[i] = realWidth;
 					}
 				}
 
-				var leftWidth = viewWidth - noneStartWidthTotal, starColumnCount = starColumn.length, leftWidthAverage = leftWidth / starColumnCount;
+				var leftWidth = viewWidth - noneStarWidthTotal, starColumnCount = starColumn.length, leftWidthAverage = leftWidth / starColumnCount;
 				for (var i = 0; i < starColumnCount; i++) {
 					widthMap[starColumn[i]] = leftWidthAverage;
 				}
@@ -612,10 +613,7 @@
 				for (var i = 0; i < columnCount; i++) {
 					columnLeft += portal._portletPadding;
 					leftMap.push(columnLeft);
-					$fly(columnDoms[i]).css({
-						left: columnLeft,
-						top: portal._portletPadding
-					});
+					$fly(columnDoms[i]).css({ left: columnLeft, top: portal._portletPadding });
 					columnLeft += widthMap[i];
 				}
 
@@ -672,6 +670,10 @@
 			}
 		},
 
+        doOnResize: function() {
+            this.refresh();
+        },
+
 		/**
 		 * 定位所有的Portlets。
 		 * @private
@@ -723,11 +725,9 @@
 
 			var portal = this, columns = portal._columns;
 			if (columns) {
-				portal.positionPortlets();
+                portal.calcColumnsWidth();
+                portal.positionPortlets();
 			}
-			setTimeout(function() {
-				portal.ifScrollChange();
-			}, 0);
 		}
 	});
 })();

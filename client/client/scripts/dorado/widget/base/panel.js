@@ -671,10 +671,11 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 					captionBarHeight = $fly(doms.captionBar).outerHeight(true);
 				}
 				if (border == "curve") {
-					$fly(doms.body).outerHeight(jQuery(dom).height() - jQuery(doms.header).outerHeight() - jQuery(doms.footer).outerHeight() - captionBarHeight);
-					$fly(doms.contentPanel).outerHeight(jQuery(doms.body).height() - buttonPanelHeight);
+                    var bodyHeight = height - jQuery(doms.header).outerHeight() - jQuery(doms.footer).outerHeight() - captionBarHeight;
+					$fly(doms.body).outerHeight(bodyHeight);
+					$fly(doms.contentPanel).outerHeight(bodyHeight - buttonPanelHeight);
 				} else {
-					$fly(doms.contentPanel).outerHeight(jQuery(dom).height() - captionBarHeight - buttonPanelHeight);
+					$fly(doms.contentPanel).outerHeight(height - captionBarHeight - buttonPanelHeight);
 				}
 				$fly(dom).height("auto");
 			}
