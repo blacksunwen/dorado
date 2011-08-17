@@ -27,6 +27,7 @@ public class Dialog extends FloatPanel {
 	private boolean minimizeable;
 	private boolean minimized;
 	private DialogStatus status = DialogStatus.normal;
+	private boolean closeable = true;
 
 	public Dialog() {
 		setShadowMode(FloatControlShadowMode.frame);
@@ -113,5 +114,9 @@ public class Dialog extends FloatPanel {
 		this.dragOutside = dragOutside;
 	}
 	
+	@ViewAttribute(defaultValue = "true")
+	public boolean isCloseable() {
+		return closeable;
+	}
 	
 }

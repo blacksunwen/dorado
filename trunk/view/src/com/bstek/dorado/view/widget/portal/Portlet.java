@@ -18,7 +18,8 @@ public class Portlet extends Panel {
 	private PanelBorder border = PanelBorder.curve;
 	private CloseAction closeAction = CloseAction.close;
 	private int column;
-
+	private boolean closeable = true;
+	
 	@Override
 	@ViewAttribute(defaultValue = "true")
 	public boolean isShowCaptionBar() {
@@ -53,5 +54,10 @@ public class Portlet extends Panel {
 
 	public void setColumn(int column) {
 		this.column = column;
+	}
+	
+	@ViewAttribute(defaultValue = "true")
+	public boolean isCloseable() {
+		return closeable;
 	}
 }
