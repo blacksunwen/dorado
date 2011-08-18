@@ -360,7 +360,7 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 							startIndex = processBindingConfig.call(self, info.bindingConfig, info.data, startIndex, !self._hasExpanded);
 						}
 						var nodes = self._nodes;
-						for (var i = nodes.size - 1; i > startIndex; i--) {
+						for (var i = nodes.size - 1; i >= startIndex; i--) {
 							nodes.removeAt(i);
 						}
 						if (startIndex == 0) self._hasChild = false;
@@ -689,7 +689,7 @@ dorado.widget.DataTree = $extend([dorado.widget.Tree, dorado.widget.DataControl]
 
 				var parentNode;
 				if (parentEntity instanceof dorado.Entity) parentNode = this._entityMap[parentEntity.entityId];
-				else if (parentEntityList == this._root._data) {
+				if (!parentNode && parentEntityList == this._root._data) {
 					parentNode = this._root;
 				}
 
