@@ -39,52 +39,69 @@ dorado.widget.desktop.ShortCut = $extend([dorado.RenderableElement, dorado.Event
 		},
 
 		/**
+         * 图标路径。
 		 * @attribute
 		 * @type String
 		 */
 		icon: {},
 
 		/**
+         * 图标使用的className。
 		 * @attribute
 		 * @type String
 		 */
 		iconClass: {},
 
 		/**
-		 * small medium big
+		 * 图标大小，可选值为small,medium,big，分别对应32*32，48*48，64*64大小的图标。
 		 * @attribute
 		 * @type String
+         * @default "small"
 		 */
 		iconSize: {
 			defaultValue: "small"
 		},
 
 		/**
+         * 图标下方显示的文字。
 		 * @attribute
 		 * @type String
 		 */
 		caption: {},
 
 		/**
+         * ShortCut所在的列，暂不支持设定。
 		 * @attribute
 		 * @type int
 		 */
 		column: {},
 
 		/**
+         * ShortCut所在的行，暂不支持设定。
 		 * @attribute
 		 * @type int
 		 */
 		row: {},
 
 		/**
+         * 对应的App的id。
 		 * @attribute
 		 * @type String
 		 */
 		appId: {}
 	},
 
-	EVENTS: {},
+	EVENTS: /** @scope dorado.widget.desktop.ShortCut.prototype */{
+        /**
+		 * 在ShortCut上点击触发的事件。
+		 * @param {Object} self 事件的发起者，即组件本身。
+		 * @param {Object} arg 事件参数。
+		 * @param {boolean} #arg.processDefault=false 是否要继续系统的默认操作，让系统上下文菜单显示出来。
+		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+		 * @event
+		 */
+        onClick: {}
+    },
 
 	getShell: function() {
 		return this._parent.findParent(dorado.widget.desktop.Shell);
@@ -96,6 +113,7 @@ dorado.widget.desktop.ShortCut = $extend([dorado.RenderableElement, dorado.Event
 		if (shell && appId) {
 			shell.launchApp(appId);
 		}
+        cut.fireEvent("onClick", self);
 	},
 
 	createDom: function() {
@@ -181,7 +199,7 @@ dorado.widget.desktop.Desktop = $extend(dorado.widget.desktop.AbstractDesktop, /
 		},
 
 		/**
-		 * small medium big
+		 * 图标大小，可选值为small,medium,big，分别对应32*32，48*48，64*64大小的图标。
 		 * @attribute
 		 * @type String
 		 */
@@ -435,7 +453,7 @@ dorado.widget.desktop.Desktop = $extend(dorado.widget.desktop.AbstractDesktop, /
 	},
 
 	createDom: function() {
-		var desktop = this, dom = $invokeSuper.call(desktop, arguments), items = desktop._items;
+		var desktop = this, dom = $invokeSuper.call(desktop, arguments), items = desktop._items || [];
 		for (var i = 0, j = items.length; i < j; i++) {
 			var item = items[i];
 			desktop.initShortCut(item, dom);
