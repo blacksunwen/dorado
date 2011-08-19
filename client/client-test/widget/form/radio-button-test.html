@@ -21,7 +21,8 @@
 			});
 			var radioButton2 = new dorado.widget.RadioButton({
 				text: "测试而已2",
-				value: 'test2'
+				value: 'test2',
+                readOnly: true
 			});
 			var radioButton3 = new dorado.widget.RadioButton({
 				text: "测试而已3",
@@ -33,6 +34,7 @@
 				layout: "flow",
 				radioButtons: [radioButton1, radioButton2, radioButton3],
 				value: 'test1',
+                readOnly: true,
 				listener: {
 					onValueChange: function(radioGroup) {
 						//alert(radioGroup.get("value"));

@@ -196,7 +196,7 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 								collapseButton.set("iconClass", "expand-icon");
 							}
 							onCollapsedChange(panel, collapsed);
-                            dom.style.zIndex = orginalZIndex;
+                            dom.style.zIndex = orginalZIndex || "";
 						}
 					});
 				} else {
@@ -214,7 +214,7 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 								collapseButton.set("iconClass", "collapse-icon");
 							}
 							onCollapsedChange(panel, collapsed);
-                            dom.style.zIndex = orginalZIndex;
+                            dom.style.zIndex = orginalZIndex || "";
 						}
 					});
 				}
@@ -359,7 +359,6 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		 * @type boolean
 		 */
 		maximizeable: {
-			defaultValue: false,
 			setter: function(value) {
 				var panel = this, captionBar = panel._captionBar, button;
 				panel._maximizeable = value;

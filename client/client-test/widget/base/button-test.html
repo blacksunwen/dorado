@@ -100,8 +100,6 @@
 				};
 
 				//$ajax.request(options, function(result) {});
-
-
             });
             
             view.addChild(buttonWidth);
@@ -301,12 +299,16 @@
                 disabled: true
             });
             view.addChild(iconButton2);
-            
+
+            var testButton = new dorado.widget.Button({ caption: "changchangchangchang" });
+
             $(document).ready(function() {
             	view.render(document.body);
+                testButton.render(document.getElementById("test"));
             });
         </script>
     </head>
     <body>
+        <div id="test" style="width: 100px;"></div>
     </body>
 </html>

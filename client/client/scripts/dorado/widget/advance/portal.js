@@ -29,6 +29,10 @@
 				defaultValue: 0
 			},
 
+            closeable: {
+			    defaultValue: true
+            },
+
             closeAction: {
                 defaultValue: "close"
             },
