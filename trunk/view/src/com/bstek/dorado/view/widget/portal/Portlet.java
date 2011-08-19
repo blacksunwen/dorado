@@ -41,7 +41,7 @@ public class Portlet extends Panel {
 	public void setBorder(PanelBorder border) {
 		this.border = border;
 	}
-	
+
 	@Override
 	@ViewAttribute(defaultValue = "close")
 	public CloseAction getCloseAction() {

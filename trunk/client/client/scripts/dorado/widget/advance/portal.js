@@ -31,6 +31,10 @@
 
             closeAction: {
                 defaultValue: "close"
+            },
+            
+            closeable: {
+            	defaultValue: true
             }
 		},
 

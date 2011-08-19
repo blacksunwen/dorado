@@ -395,7 +395,6 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		 * @type boolean
 		 */
 		closeable: {
-			defaultValue: true,
 			setter: function(value) {
 				var panel = this, captionBar = panel._captionBar, button;
 				panel._closeable = value;

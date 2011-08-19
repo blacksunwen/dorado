@@ -380,7 +380,7 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 			} else {
 				readOnly = true;
 			}
-			group._readOnlyw = readOnly;
+			group._readOnly = readOnly;
 			group.set("value", value);
 			group.setDirty(dirty);
 		}

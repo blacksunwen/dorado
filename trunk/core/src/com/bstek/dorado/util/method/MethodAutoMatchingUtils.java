@@ -111,7 +111,13 @@ public abstract class MethodAutoMatchingUtils {
 
 	private static void trimClassTypes(Class<?>[] cls) {
 		for (int i = 0; i < cls.length; i++) {
-			cls[i] = ProxyBeanUtils.getProxyTargetType(cls[i]);
+			Class<?> type = cls[i];
+			if (type == null) {
+				type = Object.class;
+			} else {
+				type = ProxyBeanUtils.getProxyTargetType(type);
+			}
+			cls[i] = type;
 		}
 	}
 
@@ -545,12 +551,15 @@ public abstract class MethodAutoMatchingUtils {
 		MethodDescriptor methodDescriptor = findMatchingMethod(methods,
 				requiredTypes, exactTypes, optionalTypes, returnType);
 
-		if (requiredArgs == null)
+		if (requiredArgs == null) {
 			requiredArgs = EMPTY_ARGS;
-		if (exactArgs == null)
+		}
+		if (exactArgs == null) {
 			exactArgs = EMPTY_ARGS;
-		if (optionalArgs == null)
+		}
+		if (optionalArgs == null) {
 			optionalArgs = EMPTY_ARGS;
+		}
 
 		Object[] args = new Object[requiredArgs.length + exactArgs.length
 				+ optionalArgs.length];
