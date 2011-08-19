@@ -28,7 +28,7 @@ public class Panel extends AbstractPanel {
 	private boolean maximizeable;
 	private boolean maximized;
 	
-	private boolean closeable = false;
+	private boolean closeable;
 	private CloseAction closeAction = CloseAction.hide;
 	private String icon;
 	private List<SimpleIconButton> tools = new InnerElementList<SimpleIconButton>(
@@ -86,7 +86,6 @@ public class Panel extends AbstractPanel {
 		this.maximized = maximized;
 	}
 	
-	@ViewAttribute(defaultValue = "false")
 	public boolean isCloseable() {
 		return closeable;
 	}

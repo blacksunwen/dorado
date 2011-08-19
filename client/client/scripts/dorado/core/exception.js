@@ -101,30 +101,40 @@
 		 * 将传入的调用堆栈信息格式化为较便于阅读的文本格式。
 		 * @param {String[]} stack 调用堆栈信息。
 		 * @return {String} 格式化后的调用堆栈信息。
+		 * @see dorado.Exception.formatStack
 		 */
 		formatStack: function(stack) {
-			var msg = "";
-			if (stack) {
-				for (var i = 0; i < stack.length; i++) {
-					if (i > 0) msg += '\n';
-					var trace = jQuery.trim(stack[i]);
-					if (trace.indexOf("at ") != 0) {
-						trace = "at " + trace;
-					}
-					msg += " > " + trace;
-					if (i > 255) {
-						msg += "\n > ... ... ...";
-						break;
-					}
-				}
-			}
-			return msg;
+			return dorado.Exception.formatStack(stack);
 		},
 		
 		toString: function() {
 			return this.message;
 		}
 	});
+	
+	/**
+	 * 将传入的调用堆栈信息格式化为较便于阅读的文本格式。
+	 * @param {String[]} stack 调用堆栈信息。
+	 * @return {String} 格式化后的调用堆栈信息。
+	 */
+	dorado.Exception.formatStack = function(stack) {
+		var msg = "";
+		if (stack) {
+			for (var i = 0; i < stack.length; i++) {
+				if (i > 0) msg += '\n';
+				var trace = jQuery.trim(stack[i]);
+				if (trace.indexOf("at ") != 0) {
+					trace = "at " + trace;
+				}
+				msg += " > " + trace;
+				if (i > 255) {
+					msg += "\n > ... ... ...";
+					break;
+				}
+			}
+		}
+		return msg;
+	};
 	
 	//=====
 	
@@ -251,11 +261,11 @@
 		} else {
 			var msg = dorado.Exception.getExceptionMessage(e);
 			if (e instanceof dorado.Exception) {
-				if (e.stack) msg += "\n\nDorado Stack:\n" + e.formatStack(e.stack);
-				if (e.remoteStack) msg += "\n\nRemote Stack:\n" + e.formatStack(e.remoteStack);
-				if (e.systemStack) msg += "\n\nSystem Stack:\n" + e.formatStack(e.systemStack);
+				if (e.stack) msg += "\n\nDorado Stack:\n" + dorado.Exception.formatStack(e.stack);
+				if (e.remoteStack) msg += "\n\nRemote Stack:\n" + dorado.Exception.formatStack(e.remoteStack);
+				if (e.systemStack) msg += "\n\nSystem Stack:\n" + dorado.Exception.formatStack(e.systemStack);
 			} else if (e instanceof Error) {
-				if (e.stack) msg += "\n\nSystem Stack:\n" + e.stack;
+				if (e.stack) msg += "\n\nSystem Stack:\n" + dorado.Exception.formatStack(e.stack);
 			}
 			if (window.console) console.log(msg);
 			
@@ -396,24 +406,29 @@
 			var dialog = getExceptionDetailDialog();
 			dialog._messsageTextArea.set("text", dorado.Exception.getExceptionMessage(e));
 			
-			var tabControl = dialog._tabControl, tab;
+			var tabControl = dialog._tabControl, tab, currentTab;
 			tab = tabControl.getTab("CallStack");
 			tab.set("disabled", !e.stack);
 			if (e.stack) {
-				tab.get("control").set("text", e.formatStack(e.stack));
+				tab.get("control").set("text", dorado.Exception.formatStack(e.stack));
+				currentTab = tab;
 			}
 			
 			tab = tabControl.getTab("SystemStack");
 			tab.set("disabled", !e.systemStack);
 			if (e.systemStack) {
-				tab.get("control").set("text", e.formatStack(e.systemStack));
+				tab.get("control").set("text", dorado.Exception.formatStack(e.systemStack));
+				if (!currentTab) currentTab = tab;
 			}
 			
 			tab = tabControl.getTab("RemoteStack");
 			tab.set("disabled", !e.remoteStack);
 			if (e.remoteStack) {
-				tab.get("control").set("text", e.formatStack(e.remoteStack));
+				tab.get("control").set("text", dorado.Exception.formatStack(e.remoteStack));
+				if (!currentTab) currentTab = tab;
 			}
+			
+			tabControl.set("currentTab", currentTab);
 			dialog.show();
 		}
 	}

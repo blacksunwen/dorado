@@ -203,7 +203,7 @@
 						controlDom.style.display = "none";
 						realignRegions.push(region);
 					} else {
-						this.renderControl(region, td, true, true);
+						this.renderControl(region, td, true, false);
 					}
 				}
 			}
