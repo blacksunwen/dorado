@@ -124,6 +124,10 @@
 			 */
 			minimized: {},
 
+            closeable: {
+			    defaultValue: true
+            },
+
 			shadowMode: {
 				defaultValue: "frame",
 				skipRefresh: true

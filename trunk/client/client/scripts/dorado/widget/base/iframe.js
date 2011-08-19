@@ -91,7 +91,11 @@
 
 			frame._doms = doms;
 
-			var iframe = doms.iframe, loadingCoverImg = doms.loadingCoverImg;
+			return dom;
+		},
+
+        doOnAttachToDocument: function() {
+            var frame = this, doms = frame._doms, iframe = doms.iframe;
 			$fly(iframe).attr("src", $url(frame._path || BLANK_PATH)).load( function() {
 				$fly(doms.loadingCover).css("display", "none");
 				//fix ie 6 bug....
@@ -100,8 +104,7 @@
 				}
 				frame.fireEvent("onLoad", frame);
 			});
-			return dom;
-		},
+        },
 
 		refreshDom: function(dom) {
 			$invokeSuper.call(this, arguments);

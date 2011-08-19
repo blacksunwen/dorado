@@ -437,6 +437,32 @@
 		},
 
         /**
+         * 取得触发事件的表格单元格。
+         * @param {Event} event 浏览器的event对象。
+         * @return {Object} 触发事件的表格单元格，包含row、column、element属性。
+         */
+        getCellPosition: function(event) {
+            var element = event.srcElement || event.target, row = -1, column = -1;
+            while (element && element != element.ownerDocument.body) {
+                var tagName = element.tagName.toLowerCase();
+                if (tagName == "td") {
+                    row = element.parentNode.rowIndex;
+                    column = element.cellIndex;
+                    break;
+                }
+                element = element.parentNode;
+            }
+            if (element != element.ownerDocument.body) {
+                return {
+                    "row": row,
+                    "column": column,
+                    "element": element
+                };
+            }
+            return null;
+        },
+
+        /**
          * 将一个DOM对象一环绕的方式停靠在另一个固定位置DOM对象的周围。
          * <p>
          * 该方法把固定位置的DOM对象的横向和纵向进行了区域划分。<br />
@@ -473,32 +499,6 @@
          *
          * @return {Object} 计算出来的位置。
          */
-
-        /**
-         * 取得触发事件的表格单元格。
-         * @param {Event} event 浏览器的event对象。
-         * @return {Object} 触发事件的表格单元格，包含row、column、element属性。
-         */
-        getCellPosition: function(event) {
-            var element = event.srcElement || event.target, row = -1, column = -1;
-            while (element && element != element.ownerDocument.body) {
-                var tagName = element.tagName.toLowerCase();
-                if (tagName == "td") {
-                    row = element.parentNode.rowIndex;
-                    column = element.cellIndex;
-                    break;
-                }
-                element = element.parentNode;
-            }
-            if (element != element.ownerDocument.body) {
-                return {
-                    "row": row,
-                    "column": column,
-                    "element": element
-                };
-            }
-            return null;
-        },
         dockAround: function(element, fixedElement, options) {
 			options = options || {};
 			var align = options.align || "innerleft", vAlign = options.vAlign || "innertop",

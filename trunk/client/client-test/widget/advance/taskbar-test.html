@@ -1,0 +1,35 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html style="overflow: hidden;">
+<head>
+    <title>Web Desktop Prototype Page</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <script type="text/javascript" src="../../include-all.js"></script>
+    <script type="text/javascript">
+        var view = new dorado.widget.View({
+            layout: new dorado.widget.layout.DockLayout({
+                padding: 0
+            })
+        });
+
+        var taskbar = new dorado.widget.desktop.Taskbar({
+            taskButtons: [{
+                caption: "test"
+            }, {
+                caption: "test"
+            }, {
+                caption: "test"
+            }, {
+                caption: "test"
+            }]
+        });
+
+        view.addChild(taskbar);
+
+        $(document).ready(function() {
+            view.render(document.body);
+        });
+    </script>
+</head>
+<body style="margin: 0;padding: 0;overflow: hidden;">
+</body>
+</html>

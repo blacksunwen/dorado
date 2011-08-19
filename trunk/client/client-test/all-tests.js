@@ -152,5 +152,6 @@ var ALL_JS_PAGES = [
 	"client/client-test/widget/advance/portal-test.html",
 	"client/client-test/widget/advance/image-canvas-test.html",
 	"client/client-test/widget/advance/web-desktop-test.html",
-	"client/client-test/widget/advance/html-editor-test.html"
+	"client/client-test/widget/advance/html-editor-test.html",
+    "client/client-test/widget/advance/u-editor-test.html"
 ];

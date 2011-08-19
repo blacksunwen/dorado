@@ -247,7 +247,7 @@
         "menu.css",
         "portal.css",
         "spinner.css",
-
+        /**
         "data-pilot.css",
 
 		"text-editor.css",
@@ -263,6 +263,7 @@
 		"image-canvas.css",
 		"color-picker.css",
 		"debugger.css"
+         **/
 	];
 	
 	var addOnstyleSheets = [
