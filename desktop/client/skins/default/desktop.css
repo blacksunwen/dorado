@@ -123,7 +123,8 @@
 	height: 101px;
 }
 
-.task-button {
+.d-task-button {
+    display: inline-block;
     margin: 0 1px;
     white-space: nowrap;
     height: 23px;
@@ -132,8 +133,9 @@
     background: url(desktop/task-buttons.png) no-repeat;
 }
 
-.task-button .button-left {
+.d-task-button .button-left {
     float: left;
+    display: inline-block;
     height: 23px;
 	line-height: 22px;
 
@@ -146,8 +148,8 @@
 	vertical-align: middle;
 }
 
-.task-button .button-left .icon {
-    float: left;
+.d-task-button .button-left .icon {
+    display: inline-block;
     background: no-repeat left center;
     padding-left: 18px;
     width: 0;
@@ -156,52 +158,52 @@
     margin: 0 1px;
 }
 
-.task-button .button-left .default-icon {
+.d-task-button .button-left .default-icon {
 	background-image: url(desktop/task-button-default-icon.png);
 }
 
-.task-button .button-left .caption {
-    float: left;
+.d-task-button .button-left .caption {
 	line-height: 23px;
     color: #364056;
 }
 
-.d-ie .task-button .button-left .caption{
+.d-ie .d-task-button .button-left .caption{
 	vertical-align: baseline;
 }
 
-.task-button .button-right {
+.d-task-button .button-right {
     float: left;
+    display: inline-block;
     width: 5px;
     height: 23px;
     background: url(desktop/task-buttons.png) no-repeat right 0;
 }
 
-.task-button-hover {
+.d-task-button-hover {
     background-position: 0 -23px;
 }
 
-.task-button-hover .button-left {
+.d-task-button-hover .button-left {
     background-position: 0 -92px;
 }
 
-.task-button-hover .button-right {
+.d-task-button-hover .button-right {
     background-position: right -23px;
 }
 
-.task-button-current {
+.d-task-button-current {
     background-position: 0 -46px;
 }
 
-.task-button-current .button-left {
+.d-task-button-current .button-left {
     background-position: 0 -115px;
 }
 
-.task-button-current .button-right {
+.d-task-button-current .button-right {
     background-position: right -46px;
 }
 
-.task-button-disabled .caption {
+.d-task-button-disabled .caption {
     color: #aaa;
 }
 
@@ -228,6 +230,7 @@
 }
 
 .d-task-bar .left-wrap .task-buttons-wrap {
+    float: left;
     position: relative;
     height: 24px;
     overflow: hidden;
@@ -280,7 +283,7 @@
     background-position: -40px -12px;;
 }
 
-.d-task-bar .left-wrap .task-buttons-wrap .task-buttons .task-button{
+.d-task-bar .left-wrap .task-buttons-wrap .task-buttons .d-task-button{
     float: left;
 }
 
@@ -387,17 +390,20 @@
 }
 
 .d-desktop-carousel .switcher .switcher-right {
+    display: inline-block;
 	background: url(desktop/switcher-bg.png) right -26px no-repeat;
 	height: 26px;
 	padding-right: 15px;
 }
 
 .d-desktop-carousel .switcher .switcher-center {
+    display: inline-block;
 	height: 26px;
 	background: url(desktop/switcher-bg.png) repeat-x 0 -52px;
 }
 
 .d-desktop-carousel .switcher .switch-button{
+    display: inline-block;
 	float: left;
 	cursor: pointer;
 	margin-top: 2px;
@@ -417,6 +423,6 @@
 }
 
 .d-shell {
-	background-color: #3D71B8;
+	background: #3D71B8 50% 50% fixed;
 	overflow: hidden;
 }

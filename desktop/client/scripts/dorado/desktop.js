@@ -848,10 +848,10 @@ dorado.widget.desktop.DesktopCarousel = $extend(dorado.widget.desktop.AbstractDe
                 className: "switcher",
                 contextKey: "switcher",
                 content: {
-                    tagName: "div",
+                    tagName: "span",
                     className: "switcher-right",
                     content: {
-                        tagName: "div",
+                        tagName: "span",
                         className: "switcher-center",
                         contextKey: "switcherCenter"
                     }
@@ -869,7 +869,7 @@ dorado.widget.desktop.DesktopCarousel = $extend(dorado.widget.desktop.AbstractDe
 			$fly(control._dom).addClass("carousel-item");
 			card.registerInnerControl(control);
 
-            var button = document.createElement("div");
+            var button = document.createElement("span");
 			button.className = "switch-button";
 			jQuery(button).addClassOnHover("switch-button-hover").click(function() {
 				card.setCurrentButton(this);
