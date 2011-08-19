@@ -148,6 +148,6 @@ $fly(window).bind("resize", function() {
 
     dorado.ModalManager.onResizeTimerId = setTimeout(function() {
         delete dorado.ModalManager.onResizeTimerId;
-        // dorado.ModalManager.resizeMask();
-    }, 200);
+        dorado.ModalManager.resizeMask();
+    }, 20);
 });
