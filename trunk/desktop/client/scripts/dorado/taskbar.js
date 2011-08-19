@@ -9,7 +9,7 @@ dorado.widget.desktop.TaskButton = $extend(dorado.widget.AbstractButton, /** @sc
 	$className: "dorado.widget.desktop.TaskButton",
 	ATTRIBUTES: /** @scope dorado.widget.desktop.TaskButton.prototype */ {
 		className: {
-			defaultValue: "task-button"
+			defaultValue: "d-task-button"
 		},
 		
 		width: {
@@ -162,20 +162,20 @@ dorado.widget.desktop.TaskButton = $extend(dorado.widget.AbstractButton, /** @sc
 		var button = this, cls = button._className, doms = {}, action = button._action || {};
 		
 		var dom = $DomUtils.xCreateElement({
-			tagName: "div",
+			tagName: "span",
 			className: cls,
 			content: [{
-				tagName: "div",
+				tagName: "span",
 				className: "button-left",
 				contextKey: "buttonLeft",
 				content: {
-					tagName: "div",
+					tagName: "span",
 					className: "caption",
 					content: button._caption || action._caption,
 					contextKey: "caption"
 				}
 			}, {
-				tagName: "div",
+				tagName: "span",
 				className: "button-right",
 				contextKey: "buttonRight"
 			}]
@@ -315,7 +315,7 @@ dorado.widget.desktop.Taskbar = $extend(dorado.widget.Control, /** @scope dorado
 		 * @type dorado.widget.desktop.TaskButton[]
 		 */
 		taskButtons: {
-			innerComponent: "TaskButton",
+			innerComponent: "desktop.TaskButton",
 			setter: function(value) {
 				var taskbar = this, taskButtons = taskbar._taskButtons, rendered = taskbar._rendered;
 				if (taskButtons) {
@@ -545,9 +545,13 @@ dorado.widget.desktop.Taskbar = $extend(dorado.widget.Control, /** @scope dorado
 		var taskbar = this, dom = taskbar._dom, doms = taskbar._doms, domWidth = $fly(dom).width(), rightWidth = $fly(doms.rightWrap).outerWidth(true), startButtonWidth = $fly(doms.startButton).outerWidth(true);
 		
 		var quickButtonsWidth = $fly(doms.quickButtons).outerWidth(true);
-		
-		$fly(doms.taskButtonsWrap).outerWidth(domWidth - rightWidth - startButtonWidth - quickButtonsWidth);
-		
+
+        if (dorado.Browser.msie && dorado.Browser.version == 6) {
+            $fly(doms.taskButtonsWrap).outerWidth(domWidth - rightWidth - startButtonWidth - quickButtonsWidth - 4, true);
+        } else {
+            $fly(doms.taskButtonsWrap).outerWidth(domWidth - rightWidth - startButtonWidth - quickButtonsWidth, true);
+        }
+
 		taskbar.refreshTrigger();
 	},
 	
