@@ -247,7 +247,7 @@
 				content: {
 					tagName: "TBODY",
 					contextKey: "tbody"
-				},
+				}
 			}, null, context);
 			this._tbody = context.tbody;
 			return dom;
