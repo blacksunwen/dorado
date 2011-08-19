@@ -404,7 +404,7 @@
 		makeObject: function() {
 			var cover = document.createElement("div");
 			cover.className = "i-animate-zoom-proxy d-animate-zoom-proxy";
-			jQuery(document.body).prepend(cover);
+			jQuery(document.body).append(cover);
 
 			return cover;
 		}
