@@ -13,7 +13,7 @@
 		<ibiblio name="bsdn" m2compatible="true" usepoms="true" root="${bsdn.nexus}" pattern="${bsdn.respository.pattern}" />
 		<ibiblio name="global" m2compatible="true" usepoms="true" pattern="${global.respository.pattern}" />
 
-		<chain name="default" returnFirst="true">
+		<chain name="default" returnFirst="true" checkmodified="true">
 			<resolver ref="local" />
 			<resolver ref="bsdn" />
 			<resolver ref="global" />

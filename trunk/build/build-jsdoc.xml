@@ -5,7 +5,6 @@
 	<property name="dont-compressor-js" value="" />
 	<property name="dont-tidy-js" value="" />
 	<property name="jsdoc" value="" />
-	<property name="build-i18n" value="" />
 	<property name="project.dir" value="${basedir}/../client" />
 
 	<target name="build">

@@ -149,8 +149,11 @@ dorado.widget.Link = $extend(dorado.widget.Label, /** @scope dorado.widget.Link.
 		 */
 		onClick: {
 			interceptor: function(superFire, self, arg) {
-				superFire(self, arg);
-				return !!arg.processDefault;
+				if (this.getListenerCount("onClick") > 0) {
+					arg.processDefault == false;
+					superFire(self, arg);
+					return !!arg.processDefault;
+				}
 			}
 		}
 	},
@@ -162,6 +165,6 @@ dorado.widget.Link = $extend(dorado.widget.Label, /** @scope dorado.widget.Link.
 	refreshDom: function(dom) {
 		$invokeSuper.call(this, arguments);
 		dom.href = this._href;
-		dom.target = this._target;
+		dom.target = this._target || "_self";
 	}
 });

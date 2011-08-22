@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:ivy="antlib:org.apache.ivy.ant" default="build">
+	<property name="project.root" value="${workspace.dir}/sample-center" />
+	<property name="module.dir" value="${work.dir}/sample-center" />
+	<available property="ivy-presented" file="${workspace.dir}/sample-center/ivy.xml" />
+
+	<taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant">
+		<classpath>
+			<pathelement location="${lib.dir}/${ivy.jar}" />
+			<pathelement location="${lib.dir}/${oro.jar}" />
+		</classpath>
+	</taskdef>
+
+	<target name="clean">
+		<delete dir="${module.dir}" />
+	</target>
+
+	<target name="prepare-dependencies">
+		<ivy:configure file="${work.dir}/ivysettings.xml" />
+		<ivy:resolve file="${project.root}/ivy.xml" />
+		<ivy:retrieve pattern="${work.dir}/lib/[artifact]-[revision](-[classifier]).[ext]" conf="compile" />
+	</target>
+
+	<target name="prepare-work-dir" depends="clean,prepare-dependencies">
+		<mkdir dir="${module.dir}/src" />
+		<mkdir dir="${module.dir}/bin" />
+		<mkdir dir="${module.dir}/db" />
+		<mkdir dir="${module.dir}/web" />
+
+		<echo message="copy ${project.root}/src --> ${module.dir}/src" />
+		<copy todir="${module.dir}/src">
+			<fileset dir="${project.root}/src" excludes="**/test/**" />
+		</copy>
+
+		<echo message="copy ${project.root}/db --> ${module.dir}/db" />
+		<copy todir="${module.dir}/db" file="${project.root}/db/demo-data.h2.db" />
+
+		<echo message="copy ${project.root}/web --> ${module.dir}/web" />
+		<copy todir="${module.dir}/web">
+			<fileset dir="${project.root}/web">
+				<exclude name="WEB-INF/classes/**" />
+				<exclude name="WEB-INF/lib/**" />
+			</fileset>
+		</copy>
+		<mkdir dir="${module.dir}/web/WEB-INF/classes" />
+		<mkdir dir="${module.dir}/web/WEB-INF/lib" />
+
+		<ivy:retrieve pattern="${module.dir}/web/WEB-INF/lib/[artifact]-[revision](-[classifier]).[ext]" conf="runtime" />
+		<copy todir="${module.dir}/web/WEB-INF/lib">
+			<fileset dir="${target.lib.dir}">
+				<include name="*.jar" />
+			</fileset>
+		</copy>
+		<delete>
+			<fileset dir="${module.dir}/web/WEB-INF/lib">
+				<include name="servlet-api-*.jar" />
+				<include name="jsp-api-*.jar" />
+				<include name="xml-apis-*.jar" />
+			</fileset>
+		</delete>
+	</target>
+
+	<target name="compile" depends="prepare-work-dir">
+		<path id="classpath">
+			<fileset dir="${work.dir}/lib">
+				<include name="*.jar" />
+				<exclude name="dorado-*" />
+			</fileset>
+			<fileset dir="${work.dir}/repository" includes="*.jar" />
+		</path>
+		<javac classpathref="classpath" srcdir="${module.dir}/src" destdir="${module.dir}/bin" debug="true" deprecation="true" nowarn="false" encoding="UTF-8" />
+	</target>
+
+	<target name="template-project" depends="prepare-work-dir">
+		<copy todir="${module.dir}" overwrite="true">
+			<fileset dir="${resources.dir}/sample-center/project" />
+		</copy>
+
+		<zip destfile="${module.dir}/sample-center.zip" compress="true" level="9">
+			<fileset dir="${module.dir}">
+				<include name=".*" />
+				<include name=".settings/**" />
+				<include name="src/**/*.*" />
+				<include name="db/**/*.*" />
+				<include name="web/**/*.*" />
+			</fileset>
+		</zip>
+	</target>
+
+	<target name="bsdn-war" depends="compile">
+		<mkdir dir="${module.dir}/web/WEB-INF/classes" />
+		<copy todir="${module.dir}/web/WEB-INF/classes">
+			<fileset dir="${module.dir}/src" />
+			<fileset dir="${module.dir}/bin" />
+		</copy>
+
+		<delete>
+			<fileset dir="${module.dir}/web/WEB-INF/dorado-home" includes="*.properties" />
+		</delete>
+		<copy todir="${module.dir}/web" overwrite="true">
+			<fileset dir="${resources.dir}/sample-center/bsdn-war" />
+		</copy>
+		<replace dir="${module.dir}/web/WEB-INF/dorado-home" token="%project.dir%" value="${product.fullversion}" encoding="utf-8">
+			<include name="*.properties" />
+		</replace>
+
+		<war destfile="${module.dir}/sample-center.war" compress="true" level="9">
+			<fileset dir="${module.dir}/web">
+				<include name="**/*.*" />
+			</fileset>
+		</war>
+	</target>
+
+	<target name="build" depends="template-project,bsdn-war" />
+</project>

@@ -96,12 +96,15 @@
 
 	<target name="copy-js-for-doc" if="jsdoc">
 		<mkdir dir="${work.dir}/js-src" />
-		<copy todir="${work.dir}/js-src">
-			<fileset dir="${dist}/scripts/dorado" includes="**/*.js" />
+		<copy todir="${work.dir}/js-src" failonerror="false">
+			<fileset dir="${dist}/scripts/dorado">
+				<include name="**/*.js" />
+				<exclude name="**/*.min.js" />
+			</fileset>
 		</copy>
 	</target>
 
-	<target name="tidy-js" depends="copy-js-for-doc" unless="dont-tidy-js">
+	<target name="tidy-js" unless="dont-tidy-js">
 		<if>
 			<available file="${dist}" />
 			<then>
@@ -129,5 +132,5 @@
 		<build-i18n-resource inputDir="${dist}/resources/i18n" outputDir="${dist}/resources/i18n" />
 	</target>
 
-	<target name="build" depends="copy-source,compressor-css,tidy-js,compressor-js,build-i18n" />
+	<target name="build" depends="copy-source,compressor-css,copy-js-for-doc,tidy-js,compressor-js,build-i18n" />
 </project>
