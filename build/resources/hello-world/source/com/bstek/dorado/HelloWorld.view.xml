@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <View layout="anchor padding:20">
+    <Property name="layout">padding:20</Property>
+    <Property name="title">HelloWorld</Property>
+    <Button>
+      <ClientEvent name="onClick">dorado.MessageBox.alert(&quot;Hello World!&quot;);</ClientEvent>
+      <Property name="caption">Greeting from Dorado7 ...</Property>
+    </Button>
+    <Link layoutConstraint="anchorTop:previous;top:12">
+      <Property name="href">http://www.BSTEK.com</Property>
+      <Property name="target">_blank</Property>
+      <Property name="text">Please visit BSTEK.com to learn more...</Property>
+    </Link>
+  </View>
+</ViewConfig>

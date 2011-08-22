@@ -144,5 +144,6 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 	<bean id="dorado.defaultValidatorParser" scope="prototype" parent="dorado.genericObjectParser">
 		<d:property-parser key="type,parent" value-ref="dorado.ignoreParser" />
 		<d:property-parser key="interceptor" value-ref="dorado.staticPropertyParser" />
+		<d:sub-parser key="ClientEvent" value-ref="dorado.clientEventParser" />
 	</bean>
 </beans>

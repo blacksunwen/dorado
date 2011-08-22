@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<installation version="1.0">
+	<info>
+		<appname>Dorado展现中间件</appname>
+		<appversion>7.0</appversion>
+		<appsubpath>Dorado7</appsubpath>
+		<javaversion>1.5</javaversion>
+		<url>http://www.bstek.com</url>
+		<authors>
+			<author name="BSTEK" email="dorado7@bstek.com" />
+		</authors>
+		<writeinstallationinformation>no</writeinstallationinformation>
+		<webdir>ftp://bsdn.org/pub/projects/dorado7</webdir>
+		<pack200 />
+	</info>
+
+	<guiprefs width="640" height="480" resizable="yes">
+		<laf name="kunststoff">
+			<os family="windows" />
+		</laf>
+		<laf name="kunststoff">
+			<os family="unix" />
+		</laf>
+		<laf name="kunststoff">
+			<os family="mac" />
+		</laf>
+
+		<splash>.installer/images/splash.png</splash>
+
+		<modifier key="useButtonIcons" value="yes" />
+		<modifier key="useLabelIcons" value="no" />
+		<modifier key="labelGap" value="2" />
+		<modifier key="layoutAnchor" value="NORTH" />
+		<modifier key="useHeadingPanel" value="yes" />
+		<modifier key="headingLineCount" value="1" />
+		<modifier key="headingFontSize" value="2" />
+		<modifier key="headingBackgroundColor" value="0x00ffffff" />
+		<modifier key="headingPanelCounter" value="text" />
+		<modifier key="headingPanelCounterPos" value="inHeading" />
+	</guiprefs>
+
+	<locale>
+		<langpack iso3="eng" />
+	</locale>
+
+	<variables>
+		<variable name="FILE_SEPARATOR" value="/" />
+		<variable name="DesktopShortcutCheckboxEnabled" value="true" />
+
+		<variable name="CacheablePacker." value="/" />
+	</variables>
+
+	<resources>
+		<res id="infoBannerPng" src=".installer/images/info-banner.png" />
+		<res id="startTomcatInEclipsePng" src=".installer/images/start-tomcat-in-eclipse.png" />
+		<res id="HTMLInfoPanel.beforeReadme" src=".installer/before-readme.html" />
+		<res id="HTMLInfoPanel.postReadme" src=".installer/post-readme.html" />
+		<res id="HTMLLicencePanel.licence" src=".installer/license.html" />
+		<res id="TargetPanel.dir.windows" src=".installer/target-dir.txt" />
+		<res id="Heading.image" src=".installer/images/dorado7-logo.png" />
+		<res id="shortcutSpec.xml" src=".installer/default_shortcut_specification.xml" />
+	</resources>
+
+	<panels>
+		<panel classname="HTMLInfoPanel" id="beforeReadme" />
+		<panel classname="HTMLLicencePanel" />
+		<panel classname="TargetPanel" />
+		<panel classname="PacksPanel" />
+		<panel classname="InstallPanel" />
+		<panel classname="ShortcutPanel" />
+		<panel classname="HTMLInfoPanel" id="postReadme" />
+	</panels>
+
+	<listeners>
+		<listener installer="Unpack200InstallerListener" />
+	</listeners>
+
+	<packs>
+		<pack id="core.libraries" name="Dorado Libraries" required="no">
+			<description>Dorado7的核心库文件。</description>
+			<fileset dir="." targetdir="$INSTALL_PATH">
+				<include name="*.txt" />
+				<include name="lib/dorado/**/*" />
+			</fileset>
+		</pack>
+		
+		<pack id="endorsed.libraries" name="Endorsed Libraries" required="no">
+			<description>Dorado7依赖的第三方的库文件。</description>
+			<depends packname="Dorado Libraries" />
+
+			<fileset dir="." targetdir="$INSTALL_PATH">
+				<include name="lib/endorsed/**/*" />
+			</fileset>
+		</pack>
+		
+		<pack id="core.source" name="Source" required="no">
+			<description>Dorado7的源代码。</description>
+			<fileset dir="." targetdir="$INSTALL_PATH">
+				<include name="src/**/*" />
+			</fileset>
+		</pack>
+		
+		<pack id="eclipse.plugins" name="Eclipse IDE Plugins" required="no">
+			<description>用于辅助Dorado7开发的Eclipse插件。</description>
+			<fileset dir="eclipse" targetdir="$INSTALL_PATH/eclipse"
+				defaultexcludes="yes">
+				<include name="dropins/**/*" />
+			</fileset>
+		</pack>
+		
+		<pack id="eclipse.ide" name="Eclipse IDE (Recommended)" required="no">
+			<description>Eclipse IDE for Java EE Developers (Eclipse Indigo).
+			</description>
+			<depends packname="Eclipse IDE Plugins" />
+			<fileset dir="eclipse" targetdir="$INSTALL_PATH/eclipse">
+				<exclude name="dropins/**/*" />
+			</fileset>
+		</pack>
+		
+		<pack id="documentations" name="Documentations" required="no">
+			<description>文档。</description>
+			<fileset dir="docs" targetdir="$INSTALL_PATH/docs" />
+		</pack>
+		
+		<pack id="tomcat" name="Tomcat (Recommended)" required="no">
+			<description><![CDATA[Apache Tomcat 6.0.32]]></description>
+			<depends packname="Sample Projects (Recommended)" />
+			<fileset dir="." targetdir="$INSTALL_PATH" defaultexcludes="yes">
+				<include name="apache-tomcat-6.0.32/**/*" />
+			</fileset>
+		</pack>
+		
+		<pack id="ivy-dorado" name="Ivy Dorado" required="no">
+			<description>用于提取Dorado最新SNAPSHOT版本的小工具。</description>
+			<fileset dir="ivy-dorado-1.1" targetdir="$INSTALL_PATH/ivy-dorado-1.1" />
+		</pack>
+	</packs>
+
+	<jar src=".installer/eclipse-jarprocessor.jar" stage="install" />
+
+	<!-- The native libraries to add. This is required for creating shortcuts 
+		on Windows -->
+	<native type="izpack" name="ShellLink.dll" />
+</installation>

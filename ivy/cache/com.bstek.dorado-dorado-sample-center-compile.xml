@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="ivy-report.xsl"?>
+<ivy-report version="1.0">
+	<info
+		organisation="com.bstek.dorado"
+		module="dorado-sample-center"
+		revision="working@Benny-PC"
+		conf="compile"
+		confs="default, master, compile, provided, runtime, test"
+		date="20110820022107"/>
+	<dependencies>
+		<module organisation="info.bliki.wiki" name="bliki-core">
+			<revision name="3.0.16" error="not found" downloaded="false" searched="false" conf="master(*), compile(*)" position="-1">
+				<caller organisation="com.bstek.dorado" name="dorado-sample-center" conf="compile" rev="3.0.16" rev-constraint-default="3.0.16" rev-constraint-dynamic="3.0.16" callerrev="working@Benny-PC"/>
+				<artifacts>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="org.springframework" name="spring-tx">
+			<revision name="${springframework.version}" error="not found" downloaded="false" searched="false" conf="master(*), compile(*)" position="-1">
+				<caller organisation="com.bstek.dorado" name="dorado-sample-center" conf="compile" rev="${springframework.version}" rev-constraint-default="${springframework.version}" rev-constraint-dynamic="${springframework.version}" callerrev="working@Benny-PC"/>
+				<artifacts>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="org.springframework" name="spring-orm">
+			<revision name="${springframework.version}" error="not found" downloaded="false" searched="false" conf="master(*), compile(*)" position="-1">
+				<caller organisation="com.bstek.dorado" name="dorado-sample-center" conf="compile" rev="${springframework.version}" rev-constraint-default="${springframework.version}" rev-constraint-dynamic="${springframework.version}" callerrev="working@Benny-PC"/>
+				<artifacts>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="org.springframework" name="spring-jdbc">
+			<revision name="${springframework.version}" error="not found" downloaded="false" searched="false" conf="master(*), compile(*)" position="-1">
+				<caller organisation="com.bstek.dorado" name="dorado-sample-center" conf="compile" rev="${springframework.version}" rev-constraint-default="${springframework.version}" rev-constraint-dynamic="${springframework.version}" callerrev="working@Benny-PC"/>
+				<artifacts>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="org.springframework" name="spring-aop">
+			<revision name="${springframework.version}" error="not found" downloaded="false" searched="false" conf="master(*), compile(*)" position="-1">
+				<caller organisation="com.bstek.dorado" name="dorado-sample-center" conf="compile" rev="${springframework.version}" rev-constraint-default="${springframework.version}" rev-constraint-dynamic="${springframework.version}" callerrev="working@Benny-PC"/>
+				<artifacts>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="com.bstek.dorado" name="dorado-desktop">
+			<revision name="${depended-dorado.version}" error="not found" downloaded="false" searched="false" conf="master(*), compile(*)" position="-1">
+				<caller organisation="com.bstek.dorado" name="dorado-sample-center" conf="compile" rev="${depended-dorado.version}" rev-constraint-default="${depended-dorado.version}" rev-constraint-dynamic="${depended-dorado.version}" callerrev="working@Benny-PC"/>
+				<artifacts>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="com.bstek.dorado" name="dorado-chart">
+			<revision name="${depended-dorado.version}" error="not found" downloaded="false" searched="false" conf="master(*), compile(*)" position="-1">
+				<caller organisation="com.bstek.dorado" name="dorado-sample-center" conf="compile" rev="${depended-dorado.version}" rev-constraint-default="${depended-dorado.version}" rev-constraint-dynamic="${depended-dorado.version}" callerrev="working@Benny-PC"/>
+				<artifacts>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="com.bstek.dorado" name="dorado-ide-support">
+			<revision name="${depended-dorado.version}" error="not found" downloaded="false" searched="false" conf="master(*), compile(*)" position="-1">
+				<caller organisation="com.bstek.dorado" name="dorado-sample-center" conf="compile" rev="${depended-dorado.version}" rev-constraint-default="${depended-dorado.version}" rev-constraint-dynamic="${depended-dorado.version}" callerrev="working@Benny-PC"/>
+				<artifacts>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="com.bstek.dorado" name="dorado-console">
+			<revision name="${depended-dorado.version}" error="not found" downloaded="false" searched="false" conf="master(*), compile(*)" position="-1">
+				<caller organisation="com.bstek.dorado" name="dorado-sample-center" conf="compile" rev="${depended-dorado.version}" rev-constraint-default="${depended-dorado.version}" rev-constraint-dynamic="${depended-dorado.version}" callerrev="working@Benny-PC"/>
+				<artifacts>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="com.bstek.dorado" name="dorado-hibernate">
+			<revision name="${depended-dorado.version}" error="not found" downloaded="false" searched="false" conf="master(*), compile(*)" position="-1">
+				<caller organisation="com.bstek.dorado" name="dorado-sample-center" conf="compile" rev="${depended-dorado.version}" rev-constraint-default="${depended-dorado.version}" rev-constraint-dynamic="${depended-dorado.version}" callerrev="working@Benny-PC"/>
+				<artifacts>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="com.bstek.dorado" name="dorado-core">
+			<revision name="${depended-dorado.version}" error="not found" downloaded="false" searched="false" conf="master(*), compile(*)" position="-1">
+				<caller organisation="com.bstek.dorado" name="dorado-sample-center" conf="compile" rev="${depended-dorado.version}" rev-constraint-default="${depended-dorado.version}" rev-constraint-dynamic="${depended-dorado.version}" callerrev="working@Benny-PC"/>
+				<artifacts>
+				</artifacts>
+			</revision>
+		</module>
+	</dependencies>
+</ivy-report>

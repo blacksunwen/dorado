@@ -61,6 +61,41 @@
 		<foreach list="${product.modules}" param="module" target="package-module" inheritall="true" />
 	</target>
 
+	<target name="copy-javadoc-sources">
+		<copy todir="${javadoc.src}">
+			<fileset dir="${work.dir}/${module}/src">
+				<include name="**/*.java" />
+				<include name="**/*.html" />
+				<exclude name="com/bstek/dorado/console/**" />
+				<exclude name="com/bstek/dorado/ide-support/**" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="javadoc" if="standard-edition.dir">
+		<property name="javadoc.dist" value="${standard-edition.dir}/docs/javadoc" />
+		<property name="javadoc.src" value="${work.dir}/javadoc" />
+		<property name="stylesheet" value="${resources.dir}/stylesheet.css" />
+
+		<mkdir dir="${javadoc.src}" />
+		<foreach list="${product.modules}" param="module" target="copy-javadoc-sources" inheritall="true" />
+
+		<delete dir="${javadoc.dist}" />
+		<mkdir dir="${javadoc.dist}" />
+
+		<path id="classpath">
+			<fileset dir="${work.dir}/lib">
+				<include name="*.jar" />
+				<exclude name="dorado-*" />
+			</fileset>
+		</path>
+
+		<javadoc access="protected" author="true" encoding="UTF-8" docencoding="UTF-8" destdir="${javadoc.dist}" doctitle="Dorado 7 Server Side API Documentation" stylesheetfile="${stylesheet}" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="1.5" splitindex="true" use="true" version="true" useexternalfile="yes">
+			<classpath refid="classpath" />
+			<fileset dir="${javadoc.src}" />
+		</javadoc>
+	</target>
+
 	<target name="publish-module-to-bsdn">
 		<echo message="publish-to-bsdn: ${target.lib.dir}/${product.name}-${module}-${product.revision}.jar" />
 
@@ -69,7 +104,7 @@
 				<authentication username="${bsdn.nexus.user}" password="${bsdn.nexus.password}" />
 			</remoteRepository>
 			<pom file="${target.pom.dir}/${product.name}-${module}.pom" />
-			<attach file="${target.src.dir}/${product.name}-${module}-${product.revision}.source.jar" type="jar" classifier="sources" />
+			<attach file="${target.src.dir}/${product.name}-${module}-${product.revision}-sources.jar" type="jar" classifier="sources" />
 		</artifact:deploy>
 	</target>
 
@@ -103,5 +138,5 @@
 		<antcall target="publish-to-bsdn" inheritAll="true" />
 	</target>
 
-	<target name="build" depends="package,publish" />
+	<target name="build" depends="package,javadoc,publish" />
 </project>

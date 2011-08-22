@@ -26,14 +26,14 @@
 		<mkdir dir="${jsdoc.dist}/data" />
 
 		<jsdoctoolkit jsdochome="${jsdoc-toolkit.home}" suppresssourceout="true" template="json" outputdir="${jsdoc.dist}/data" verbose="true">
-			<fileset dir="${dist}/scripts">
+			<fileset dir="${work.dir}/js-src">
 				<include name="**/*.js" />
 				<exclude name="**/chart/*.js" />
 			</fileset>
 		</jsdoctoolkit>
 	</target>
 
-	<target name="dispatch-to-stanard-edition">
+	<target name="dispatch-to-stanard-edition" if="standard-edition.dir">
 		<property name="dispatch.dir" value="${standard-edition.dir}/docs/jsdoc" />
 
 		<delete>

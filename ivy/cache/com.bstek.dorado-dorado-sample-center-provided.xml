@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="ivy-report.xsl"?>
+<ivy-report version="1.0">
+	<info
+		organisation="com.bstek.dorado"
+		module="dorado-sample-center"
+		revision="working@Benny-PC"
+		conf="provided"
+		confs="default, master, compile, provided, runtime, test"
+		date="20110820022107"/>
+	<dependencies>
+	</dependencies>
+</ivy-report>

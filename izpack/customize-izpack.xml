@@ -4,7 +4,7 @@
 
 	<target name="deploy">
 		<copy todir="${lzpack.location}/src/lib">
-			<fileset dir="${basedir}/src" includes="**/*.*" />
+			<fileset dir="${basedir}/src" />
 		</copy>
 	</target>
 

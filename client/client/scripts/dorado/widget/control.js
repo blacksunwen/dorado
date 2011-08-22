@@ -668,6 +668,7 @@
 				var dom = this._dom = this.createDom();
 				var self = this;
 				$fly(dom).data("doradoControl", this).click( function(evt) {
+					eval("debugger");
 					if (!self.processDefaultMouseListener()) return;
 					if (self.onClick) if (self.onClick(evt) === false) return false;
 					return self.fireEvent("onClick", self, {

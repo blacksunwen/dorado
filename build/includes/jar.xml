@@ -18,8 +18,7 @@
 	</patternset>
 
 	<target name="clean">
-		<delete dir="${work.dir}/bin" />
-		<delete dir="${work.dir}/src" />
+		<delete dir="${module.dir}" />
 	</target>
 
 	<target name="prepare-dependencies">
@@ -95,7 +94,7 @@
 		</jar>
 
 		<echo message="jar: ${module.dir}/bin --> ${target.src.dir}/${product.name}-${module}-${product.revision}.src.jar" />
-		<jar compress="true" jarfile="${target.src.dir}/${product.name}-${module}-${product.revision}.source.jar">
+		<jar compress="true" jarfile="${target.src.dir}/${product.name}-${module}-${product.revision}-sources.jar">
 			<fileset dir="${module.dir}/src" />
 			<manifest>
 				<attribute name="Implementation-Title" value="${product.name}" />
@@ -116,7 +115,9 @@
 	</target>
 
 	<target name="make-pom" if="ivy-presented">
-		<ivy:makepom ivyfile="${workspace.dir}/${module}/ivy.xml" pomfile="${target.pom.dir}/${product.name}-${module}.pom" templateFile="${resources.dir}/dorado-module-template.pom" conf="compile" />
+		<ivy:makepom ivyfile="${workspace.dir}/${module}/ivy.xml" pomfile="${target.pom.dir}/${product.name}-${module}.pom" templateFile="${resources.dir}/dorado-module-template.pom" conf="compile">
+			<mapping conf="compile" scope="compile" />
+		</ivy:makepom>
 	</target>
 
 	<target name="build" depends="jar,publish-to-temp-repository,make-pom" />
