@@ -96,7 +96,7 @@
 .d-face-picker table {
     border-collapse: collapse;
     table-layout: fixed;
-    background-image: url(advance/emotion/all-emotions.png);
+    background-image: url(html-editor/emotion/all-emotions.png);
     width: 375px;
     height: 175px;
 }
@@ -190,7 +190,7 @@ span.unclickable {
 }
 
 .d-html-editor .html-editor-icon {
-    background: transparent url(advance/icons.png);
+    background: transparent url(html-editor/icons.png);
 }
 
 .d-html-editor .undo {
