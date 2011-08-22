@@ -1334,11 +1334,7 @@
 
             for (var i = 0, j = rowspacing.length; i < j; i++) {
                 var temp = rowspacing[i].split(":");
-                console.log(temp);
-                mappingArray.push({
-                    key: temp[1],
-                    value: temp[0]
-                });
+                mappingArray.push({ key: temp[1], value: temp[0] });
             }
 
             var entity = new dorado.Entity();
@@ -1353,7 +1349,6 @@
                 listener: {
                     onPost: function(self) {
                         plugin.execCommand("rowspacing", self.get("value"));
-                        //console.log("size:" + self.get("text"));
                         plugin.checkStatus();
                     }
                 }

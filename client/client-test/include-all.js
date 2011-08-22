@@ -174,14 +174,12 @@
 		"widget/debugger/ajax.js",
 		
 		"widget/advance/portal.js",
-		"widget/advance/color-picker.js",
-		"widget/advance/face-picker.js",
-		//"widget/advance/html-editor.js",
 		"widget/advance/image-canvas.js",
 
-        "widget/advance/editor_config.js",
-        "widget/advance/editor_ui_all.js",
-        "widget/advance/ueditor.js"
+        "widget/advance/ueditor_all.js",
+        "widget/advance/color-picker.js",
+		"widget/advance/face-picker.js",
+        "widget/advance/html-editor.js"
 	];
 	
 	var addOnLibs = [
