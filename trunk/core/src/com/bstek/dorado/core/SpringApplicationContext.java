@@ -23,6 +23,8 @@ import com.bstek.dorado.core.io.Resource;
  */
 public abstract class SpringApplicationContext extends SpringContextSupport {
 	private static final String CONFIG_PROPERTY = "core.contextConfigLocation";
+	private static final String EXT_CONFIG_PROPERTY = "core.extensionContextConfigLocation";
+
 	private static final String LOCATION_SEPARATOR = ",;";
 	private static ApplicationContext applicationContext;
 
@@ -60,14 +62,14 @@ public abstract class SpringApplicationContext extends SpringContextSupport {
 		if (resource instanceof DefaultResource) {
 			xmlReader.loadBeanDefinitions(((DefaultResource) resource)
 					.getAdaptee());
-		}
-		else {
+		} else {
 			xmlReader.loadBeanDefinitions(resource.getPath());
 		}
 	}
 
 	/**
 	 * 创建Dorado Engine内部使用的ApplicationContext。
+	 * 
 	 * @throws Exception
 	 */
 	protected ApplicationContext createApplicationContext() throws Exception {
@@ -83,6 +85,14 @@ public abstract class SpringApplicationContext extends SpringContextSupport {
 		for (Resource resource : getConfigLocations(configLocation)) {
 			loadBeanDefintiionsFromResource(xmlReader, resource);
 		}
+
+		String extConfigLocation = Configure.getString(EXT_CONFIG_PROPERTY);
+		if (!StringUtils.isBlank(extConfigLocation)) {
+			for (Resource resource : getConfigLocations(extConfigLocation)) {
+				loadBeanDefintiionsFromResource(xmlReader, resource);
+			}
+		}
+
 		ctx.refresh();
 		return ctx;
 	}
@@ -93,6 +103,7 @@ public abstract class SpringApplicationContext extends SpringContextSupport {
 
 	/**
 	 * 初始化Dorado Engine内部使用的ApplicationContext。
+	 * 
 	 * @throws Exception
 	 */
 	public void initApplicationContext() throws Exception {
@@ -101,6 +112,7 @@ public abstract class SpringApplicationContext extends SpringContextSupport {
 
 	/**
 	 * 返回Dorado Engine内部使用的ApplicationContext。
+	 * 
 	 * @throws Exception
 	 */
 	@Override

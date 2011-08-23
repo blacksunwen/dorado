@@ -22,7 +22,7 @@ public abstract class ContextTestCase extends TestCase {
 
 	@Override
 	protected void setUp() throws Exception {
-		Configure.getStore().set("core.extensionDoradoContextConfigLocation",
+		Configure.getStore().set("core.extensionContextConfigLocation",
 				getLocations());
 		super.setUp();
 		MockContext.init();
