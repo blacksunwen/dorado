@@ -1,11 +1,11 @@
 /**
  * @author frank.zhang
  */
-dorado.widget.FacePicker = $extend([dorado.widget.Control, dorado.widget.FloatControl], {
+dorado.widget.EmoticonPicker = $extend([dorado.widget.Control, dorado.widget.FloatControl], {
 	focusable: true,
 	ATTRIBUTES: {
 		className: {
-			defaultValue: "d-face-picker"
+			defaultValue: "d-emoticon-picker"
 		},
 		animateType: {
 			defaultValue: "slide"
@@ -23,18 +23,18 @@ dorado.widget.FacePicker = $extend([dorado.widget.Control, dorado.widget.FloatCo
 			className: picker._className,
 			content: [{
 				tagName: "table",
-				contextKey: "faceTable",
+				contextKey: "emoticonTable",
 				border: 0,
 				cellSpacing: 0,
 				cellPadding: 0,
 				content: [{
 					tagName: "tbody",
-					contextKey: "faceTableBody"
+					contextKey: "emoticonTableBody"
 				}]
 			}, {
 				tagName: "div",
-				className: "face-preview",
-				contextKey: "facePreview",
+				className: "emoticon-preview",
+				contextKey: "emoticonPreview",
 				style: {
 					display: "none"
 				},
@@ -46,34 +46,34 @@ dorado.widget.FacePicker = $extend([dorado.widget.Control, dorado.widget.FloatCo
 
 		picker._doms = doms;
 
-		var faceTableBody = doms.faceTableBody;
+		var emoticonTableBody = doms.emoticonTableBody;
 		for(var i = 0; i < 7; i++){
 			var tr = document.createElement("tr");
 			for(var j = 0; j < 15; j++){
-				var index = i * 15 + j, source = ">skin>/advance/emotion/" + index + ".gif";
+				var index = i * 15 + j, source = ">skin>/html-editor/emotion/" + index + ".gif";
 				var td = document.createElement("td");
-				td.className = "face-cell";
+				td.className = "emoticon-cell";
 				td.source = $url(source);
 
 				tr.appendChild(td);
 			}
-			faceTableBody.appendChild(tr);
+			emoticonTableBody.appendChild(tr);
 		}
 
-		$fly(doms.faceTable).mouseover(function(event) {
+		$fly(doms.emoticonTable).mouseover(function(event) {
 			var position = $DomUtils.getCellPosition(event) || {}, element = position.element;
 
 			if (element) {
 				if (picker.lastElement) {
-					$fly(picker.lastElement).removeClass("cur-face-cell");
+					$fly(picker.lastElement).removeClass("cur-emoticon-cell");
 				}
-				$fly(element).addClass("cur-face-cell");
+				$fly(element).addClass("cur-emoticon-cell");
 				picker.lastElement = element;
-				doms.facePreview.style.display = "";
-				doms.facePreview.firstChild.src = element.source;
+				doms.emoticonPreview.style.display = "";
+				doms.emoticonPreview.firstChild.src = element.source;
 			}
 		}).mouseout(function() {
-			doms.facePreview.style.display = "none";
+			doms.emoticonPreview.style.display = "none";
 		}).click(function(event) {
 			var position = $DomUtils.getCellPosition(event) || {}, element = position.element;
 			var source = element.source;
@@ -85,7 +85,7 @@ dorado.widget.FacePicker = $extend([dorado.widget.Control, dorado.widget.FloatCo
 			}
 		});
 
-		$fly(doms.facePreview).mouseover(function(){
+		$fly(doms.emoticonPreview).mouseover(function(){
 			if (this.style.right == "auto") {
 				this.style.right = 0;
 				this.style.left = "auto";

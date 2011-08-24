@@ -41,6 +41,10 @@
     vertical-align: baseline;
 }
 
+.d-button-trigger .button-left{
+    margin: 0 19px 0 3px;
+}
+
 .d-button .button-right {
     position: absolute;
     top: 0;
@@ -163,6 +167,7 @@
 }
 
 .d-icon-button {
+    display: inline-block;
     cursor: pointer;
     width: 20px;
     height: 20px;
@@ -170,10 +175,19 @@
 }
 
 .d-icon-button .icon {
+    display: inline-block;
     float: left;
     width: 20px;
     height: 20px;
     background-repeat: no-repeat;
+}
+
+.d-ie6 .d-icon-button, .d-ie7 .d-icon-button {
+    display: inline;
+}
+
+.d-ie6 .d-icon-button .icon, .d-ie7 .d-icon-button .icon{
+    display: inline;
 }
 
 .d-icon-button-hover {
@@ -194,6 +208,7 @@
 }
 
 .d-icon-button-trigger {
+    display: inline-block;
     cursor: pointer;
     width: 28px;
     height: 20px;
@@ -201,9 +216,18 @@
 }
 
 .d-icon-button-trigger .icon {
+    display: inline-block;
     float: left;
     width: 20px;
     height: 20px;
+}
+
+.d-ie6 .d-icon-button-trigger, .d-ie7 .d-icon-button-trigger {
+    display: inline;
+}
+
+.d-ie6 .d-icon-button-trigger .icon, .d-ie7 .d-icon-button-trigger .icon{
+    display: inline;
 }
 
 .d-icon-button-trigger-hover {
