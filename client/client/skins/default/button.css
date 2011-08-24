@@ -41,10 +41,6 @@
     vertical-align: baseline;
 }
 
-.d-button-trigger .button-left{
-    margin: 0 19px 0 3px;
-}
-
 .d-button .button-right {
     position: absolute;
     top: 0;
@@ -53,6 +49,10 @@
     width: 3px;
     height: 22px;
     background: url(base/button-bg.gif) no-repeat right -44px;
+}
+
+.d-button-trigger .button-left{
+    margin: 0 19px 0 3px;
 }
 
 .d-button-trigger .button-right {
@@ -75,80 +75,36 @@
     background-position: 0 -66px;
 }
 
-.d-button-hover .button-left {
-    background-position: 0 -88px;
-}
-
-.d-button-hover .button-right {
-    background-position: right -110px;
-}
-
 .d-button-toggled {
     background-position: 0 -264px;
-}
-
-.d-button-toggled .button-left {
-    background-position: 0 -286px;
-}
-
-.d-button-toggled .button-right {
-    background-position: right -308px;
 }
 
 .d-button-click {
     background-position: 0 -198px;
 }
 
-.d-button-click .button-left {
-    background-position: 0 -220px;
-}
-
-.d-button-click .button-right {
-    background-position: right -242px;
-}
-
-.d-button-left-hover {
-    background-position: 0 -66px;
-}
-
-.d-button-left-hover .button-left {
+.d-button .button-left-hover {
     background-position: 0 -88px;
 }
 
-.d-button-left-click, .d-button-left-toggled {
-    background-position: 0 -264px;
-}
-
-.d-button-left-toggled .button-left {
-    background-position: 0 -286px;
-}
-
-.d-button-left-click .button-left {
+.d-button .button-left-click {
     background-position: 0 -220px;
 }
 
-.d-button-left-click .button-right, .d-button-left-toggled .button-right {
-    background-position: right -44px;
+.d-button .button-left-toggled {
+    background-position: 0 -286px;
 }
 
-.d-button-right-hover {
-    background-position: 0 0;
-}
-
-.d-button-right-hover .button-right {
+.d-button .button-right-hover {
     background-position: right -110px;
 }
 
-.d-button-right-click, .d-button-right-toggled {
-    background-position: 0 0;
-}
-
-.d-button-right-toggled .button-right {
-    background-position: right -308px;
-}
-
-.d-button-right-click .button-right {
+.d-button .button-right-click {
     background-position: right -242px;
+}
+
+.d-button .button-right-toggled {
+    background-position: right -308px;
 }
 
 .d-button-disabled .button-left .icon {
