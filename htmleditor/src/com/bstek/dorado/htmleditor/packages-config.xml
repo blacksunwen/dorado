@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<Packages>
+		<Package name="html-editor-skin" pattern="dorado-css">
+			skins/~current/html-editor
+		</Package>
+		<Package name="html-editor" pattern="dorado-js" depends="base-widget,html-editor-skin">
+			scripts/dorado/html-editor
+		</Package>
+	</Packages>
+</config>
