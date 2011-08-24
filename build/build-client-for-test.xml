@@ -12,7 +12,7 @@
 			<property name="build-files" value="client.xml" />
 			<property name="src" value="${project.dir}/client" />
 			<property name="dist" value="${project.dir}/bin" />
-			<property name="module.projects" value="client,chart,desktop" />
+			<property name="module.projects" value="client,chart,desktop,htmleditor" />
 		</ant>
 	</target>
 </project>
