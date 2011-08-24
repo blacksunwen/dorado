@@ -86,9 +86,14 @@
 
 .d-toolbar-label {
     cursor: default;
+    display: inline-block;
     height: 22px;
     line-height: 20px;
     vertical-align: baseline;
+}
+
+.d-ie6 .d-toolbar-label, .d-ie7 .d-toolbar-label {
+    display: inline;
 }
 
 .d-toolbar .d-text-editor {

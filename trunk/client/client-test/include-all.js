@@ -176,10 +176,11 @@
 		"widget/advance/portal.js",
 		"widget/advance/image-canvas.js",
 
-        "widget/advance/ueditor_all.js",
-        "widget/advance/color-picker.js",
-		"widget/advance/face-picker.js",
-        "widget/advance/html-editor.js"
+        "widget/html-editor/ueditor_all.js",
+        "widget/html-editor/color-picker.js",
+		"widget/html-editor/face-picker.js",
+        "widget/html-editor/html-editor.js",
+        "widget/html-editor/html-editor-plugins.js"
 	];
 	
 	var addOnLibs = [
@@ -258,7 +259,7 @@
 		"tree.css",
 		"block-view.css",
 		"image-canvas.css",
-		"color-picker.css",
+		"html-editor.css",
 		"debugger.css"
 	];
 	

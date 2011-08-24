@@ -62,7 +62,7 @@
 			iconClass: {},
 
 			/**
-			 * 右边箭头是否被按下。<br />
+			 * Trigger是否被按下。<br />
 			 * 当button存在onClick事件，且toggleable为true的时候，左边和右边的toggle值使用两个变量来表示。
 			 * <ul>
 			 * 	<li> toggled: 左侧按钮是否被按下。 </li>

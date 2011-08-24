@@ -89,11 +89,11 @@
     display: block;
 }
 
-.d-face-picker {
+.d-emoticon-picker {
     position: absolute;
 }
 
-.d-face-picker table {
+.d-emoticon-picker table {
     border-collapse: collapse;
     table-layout: fixed;
     background-image: url(html-editor/emotion/all-emotions.png);
@@ -101,19 +101,19 @@
     height: 175px;
 }
 
-.d-face-picker .face-cell {
+.d-emoticon-picker .emoticon-cell {
     border: 1px solid #E2E1EF;
     width: 24px;
     height: 24px;
 }
 
-.d-face-picker .cur-face-cell {
+.d-emoticon-picker .cur-emoticon-cell {
     background-color: #aaa;
     opacity: 0.5;
     filter: alpha(opacity = 50);
 }
 
-.d-face-picker .face-preview {
+.d-emoticon-picker .emoticon-preview {
     border: 1px solid #85F314;
     background-color: white;
     width: 75px;
@@ -123,7 +123,7 @@
     top: 0;
 }
 
-.d-face-picker .face-preview img {
+.d-emoticon-picker .emoticon-preview img {
     margin: 25px 0 0 25px;
     width: 24px;
     height: 24px;
@@ -170,6 +170,50 @@
 .d-html-editor {
     margin: 0;
     padding: 0;
+    border: 1px solid gray;
+}
+
+.d-htmleditor-toolbar {
+    padding: 0;
+    margin: 0;
+    background: #efefef url(html-editor/toolbar-bg.png) repeat-x bottom;
+}
+
+.d-htmleditor-toolbar .i-text-box {
+    display: inline-block;
+    vertical-align: top;
+    margin-top: 1px;
+}
+
+.d-ie6 .d-htmleditor-toolbar .i-text-box, .d-ie7 .d-htmleditor-toolbar .i-text-box {
+    display: inline;
+}
+
+.d-htmleditor-toolbar .d-toolbar-label{
+    vertical-align: top;
+}
+
+.d-htmleditor-toolbar .fullscreen-button {
+    float: right;
+}
+
+.d-html-editor .editor-wrap {
+    clear: both;
+}
+
+.browse-button-wrap {
+    position: relative;
+}
+
+.browse-button-wrap  .hidden-file {
+    position: absolute;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    filter: alpha(opacity=0);
+    width: 50px;
+    height: 21px;
 }
 
 .popup {
@@ -184,13 +228,14 @@ span.clickable {
     cursor: pointer;
     text-decoration: underline;
 }
+
 span.unclickable {
     color: gray;
     cursor:default;
 }
 
 .d-html-editor .html-editor-icon {
-    background: transparent url(html-editor/icons.png);
+    background: transparent url(html-editor/icons.gif);
 }
 
 .d-html-editor .undo {
