@@ -1,0 +1,495 @@
+.d-color-picker {
+    font-size: 9pt;
+    color: #385065;
+    border: 1px solid #9FAC87;
+    padding: 3px;
+    width: 160px;
+    background-color: white;
+    position: absolute;
+}
+
+.d-color-picker .clear-color, .d-color-picker .more-color {
+    padding: 1px;
+    cursor: default;
+    border: 1px solid #FFFFFF;
+    text-align: center;
+    margin-bottom: 3px;
+}
+
+.d-color-picker .clear-color-over, .d-color-picker .more-color-over {
+    border: 1px solid #000080;
+    background-color: #FFEEC2;
+}
+
+.d-color-picker .clear-color {
+    margin-bottom: 3px;
+}
+
+.d-color-picker .more-color {
+    margin-top: 3px;
+}
+
+.d-color-picker .color-preview {
+    position: absolute;
+    border: 1px solid #9FAC87;
+
+    top: 6px;
+    left: 5px;
+    font-size: 1px;
+    width: 30px;
+    height: 12px;
+}
+
+.d-color-picker .color-preview-text {
+}
+
+.d-color-picker .simple-color-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.d-color-picker .simple-color-table td {
+    border: 1px solid #ACA899;
+    font-size: 1px;
+    line-height: 3px;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.d-color-picker .more-color-table {
+    display: none;
+    border-collapse: collapse;
+    cursor: pointer;
+    margin-top: 3px;
+}
+
+.d-color-picker .more-color-table td {
+    width: 12px;
+    height: 12px;
+    border: 1px solid black;
+    font-size: 0%;
+    line-height: 3px;
+    cursor: pointer;
+}
+
+.d-color-picker-more {
+    width: 234px;
+}
+
+.d-color-picker-more .simple-color-table {
+    display: none;
+}
+
+.d-color-picker-more .more-color {
+    display: none;
+}
+
+.d-color-picker-more .more-color-table {
+    display: block;
+}
+
+.d-emoticon-picker {
+    position: absolute;
+}
+
+.d-emoticon-picker table {
+    border-collapse: collapse;
+    table-layout: fixed;
+    background-image: url(html-editor/emotion/all-emotions.png);
+    width: 375px;
+    height: 175px;
+}
+
+.d-emoticon-picker .emoticon-cell {
+    border: 1px solid #E2E1EF;
+    width: 24px;
+    height: 24px;
+}
+
+.d-emoticon-picker .cur-emoticon-cell {
+    background-color: #aaa;
+    opacity: 0.5;
+    filter: alpha(opacity = 50);
+}
+
+.d-emoticon-picker .emoticon-preview {
+    border: 1px solid #85F314;
+    background-color: white;
+    width: 75px;
+    height: 75px;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.d-emoticon-picker .emoticon-preview img {
+    margin: 25px 0 0 25px;
+    width: 24px;
+    height: 24px;
+}
+
+.d-grid-picker {
+    position: relative;
+}
+
+.d-grid-picker table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.d-grid-picker .element-cell {
+    border: 1px solid #E2E1EF;
+    height: 22px;
+    text-align: center;
+}
+
+.d-grid-picker .cur-element-cell {
+    background-color: #aaa;
+    opacity: 0.5;
+    filter: alpha(opacity = 50);
+}
+
+.d-grid-picker .element-preview {
+    border: 1px solid #85F314;
+    background-color: white;
+    width: 75px;
+    height: 75px;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.d-grid-picker .element-preview div {
+    margin: 25px 0 0 25px;
+    width: 24px;
+    height: 24px;
+}
+
+.d-html-editor {
+    margin: 0;
+    padding: 0;
+    border: 1px solid gray;
+}
+
+.d-htmleditor-toolbar {
+    padding: 0;
+    margin: 0;
+    background: #efefef url(html-editor/toolbar-bg.png) repeat-x bottom;
+}
+
+.d-htmleditor-toolbar .i-text-box {
+    display: inline-block;
+    vertical-align: top;
+    margin-top: 1px;
+}
+
+.d-ie6 .d-htmleditor-toolbar .i-text-box, .d-ie7 .d-htmleditor-toolbar .i-text-box {
+    display: inline;
+}
+
+.d-htmleditor-toolbar .d-toolbar-label{
+    vertical-align: top;
+}
+
+.d-htmleditor-toolbar .fullscreen-button {
+    float: right;
+}
+
+.d-html-editor .editor-wrap {
+    clear: both;
+}
+
+.browse-button-wrap {
+    position: relative;
+}
+
+.browse-button-wrap  .hidden-file {
+    position: absolute;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    filter: alpha(opacity=0);
+    width: 50px;
+    height: 21px;
+}
+
+.popup {
+    border: 1px solid #DCAC6C;
+    background-color: #fff6d9;
+    padding: 5px;
+    font-size: 10pt;
+}
+
+span.clickable {
+    color: blue;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+span.unclickable {
+    color: gray;
+    cursor:default;
+}
+
+.d-html-editor .html-editor-icon {
+    background: transparent url(html-editor/icons.gif);
+}
+
+.d-html-editor .undo {
+    background-position: -160px 0;
+}
+
+.d-html-editor .redo {
+    background-position: -100px 0;
+}
+
+.d-html-editor .bold {
+    background-position: 0 0;
+}
+
+.d-html-editor .italic {
+    background-position: -60px 0;
+}
+
+.d-html-editor .underline {
+    background-position: -140px 0;
+}
+
+.d-html-editor .strikethrough {
+    background-position: -120px 0;
+}
+
+.d-html-editor .subscript {
+    background-position: -600px 0;
+}
+
+.d-html-editor .superscript {
+    background-position: -620px 0;
+}
+
+.d-html-editor .blockquote {
+    background-position: -220px 0;
+}
+
+.d-html-editor .forecolor {
+    background-position: -720px 0;
+}
+
+.d-html-editor .backcolor {
+    background-position: -760px 0;
+}
+
+.d-html-editor .inserttable {
+    background-position: -580px -20px;
+}
+
+.d-html-editor .justifyleft {
+    background-position: -460px 0;
+}
+
+.d-html-editor .justifycenter {
+    background-position: -420px 0;
+}
+
+.d-html-editor .justifyright {
+    background-position: -480px 0;
+}
+
+.d-html-editor .justifyjustify {
+    background-position: -440px 0;
+}
+
+.d-html-editor .insertorderedlist {
+    background-position: -80px 0;
+}
+
+.d-html-editor .insertunorderedlist {
+    background-position: -20px 0;
+}
+
+.d-html-editor .horizontal {
+    background-position: -360px 0;
+}
+
+.d-html-editor .link {
+    background-position: -500px 0;
+}
+
+.d-html-editor .code {
+    background-position: -280px -40px;
+}
+
+.d-html-editor .image {
+    background-position: -380px 0;
+}
+
+.d-html-editor .emoticon {
+    background-position: -60px -20px;
+}
+
+.d-html-editor .spechars {
+    background-position: -240px 0;
+}
+
+.d-html-editor .help {
+    background-position: -340px 0;
+}
+
+.d-html-editor .print {
+    background-position: -440px -20px;
+}
+
+.d-html-editor .preview {
+    background-position: -420px -20px;
+}
+
+.d-html-editor .selectall {
+    background-position: -400px -20px;
+}
+
+.d-html-editor .searchreplace {
+    background-position: -520px -20px;
+}
+
+.d-html-editor .map {
+    background-position: -40px -40px;
+}
+
+.d-html-editor .gmap {
+    background-position: -40px -40px;
+}
+
+.d-html-editor .video {
+    background-position: -320px -20px;
+}
+
+.d-html-editor .time {
+    background-position: -160px -20px;
+}
+
+.d-html-editor .date {
+    background-position: -140px -20px;
+}
+
+.d-html-editor .cut {
+    background-position: -680px 0;
+}
+
+.d-html-editor .copy {
+    background-position: -700px 0;
+}
+
+.d-html-editor .paste {
+    background-position: -560px 0;
+}
+
+.d-html-editor .formatmatch {
+    background-position: -40px 0;
+}
+
+.d-html-editor .pasteplain {
+    background-position: -360px -20px;
+}
+
+.d-html-editor .directionalityltr {
+    background-position: -20px -20px;
+}
+
+.d-html-editor .directionalityrtl {
+    background-position: -40px -20px;
+}
+
+.d-html-editor .source {
+    background-position: -260px -0px;
+}
+
+.d-html-editor .removeformat {
+    background-position: -580px 0;
+}
+
+.d-html-editor .unlink {
+    background-position: -640px 0;
+}
+
+.d-html-editor .insertrow {
+    background-position: -740px -20px;
+}
+
+.d-html-editor .insertcol {
+    background-position: -700px -20px;
+}
+
+.d-html-editor .mergeright {
+    background-position: -60px -40px;
+}
+
+.d-html-editor .mergedown {
+    background-position: -80px -40px;
+}
+
+.d-html-editor .splittorows {
+    background-position: -100px -40px;
+}
+
+.d-html-editor .splittocols {
+    background-position: -120px -40px;
+}
+
+.d-html-editor .insertparagraphbeforetable {
+    background-position: -140px -40px;
+}
+
+.d-html-editor .deleterow {
+    background-position: -660px -20px;
+}
+
+.d-html-editor .deletecol {
+    background-position: -640px -20px;
+}
+
+.d-html-editor .splittocells {
+    background-position: -800px -20px;
+}
+
+.d-html-editor .mergecells {
+    background-position: -760px -20px;
+}
+
+.d-html-editor .deletetable {
+    background-position: -620px -20px;
+}
+
+.d-html-editor .cleardoc {
+    background-position: -520px 0;
+}
+
+.d-html-editor .fullscreen {
+    background-position: -100px -20px;
+}
+
+.d-html-editor .tablesuper {
+    background-position: -100px -20px;
+}
+
+.d-html-editor .anchor {
+    background-position: -200px 0;
+}
+
+.d-html-editor .indent {
+    background-position: -400px 0;
+}
+
+.d-html-editor .outdent {
+    background-position: -540px 0;
+}
+
+.d-html-editor .table {
+    background-position: -580px -20px;
+}
+
+.d-html-editor .delete {
+    background-position: -260px -40px;
+}
