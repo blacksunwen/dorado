@@ -9,6 +9,9 @@
  */
 dorado.widget.CaptionBar = $extend(dorado.widget.Control, /** @scope dorado.widget.CaptionBar.prototype */ {
 	$className: "dorado.widget.CaptionBar",
+
+    _inherentClassName: "i-caption-bar",
+
 	ATTRIBUTES: /** @scope dorado.widget.CaptionBar.prototype */ {
 		className: {
 			defaultValue: "d-caption-bar"
@@ -175,7 +178,7 @@ dorado.widget.CaptionBar = $extend(dorado.widget.Control, /** @scope dorado.widg
 	createDom: function() {
 		var bar = this, buttons = bar._buttons, doms = {}, dom = $DomUtils.xCreateElement({
 			tagName: "div",
-			className: bar._className,
+			className: "i-caption-bar " + bar._className,
 			content: [{
 				tagName: "div",
 				className: "caption",
@@ -206,6 +209,7 @@ dorado.widget.CaptionBar = $extend(dorado.widget.Control, /** @scope dorado.widg
 	},
 	
 	refreshDom: function() {
+        $invokeSuper.call(this, arguments);
 		var bar = this, doms = bar._doms;
 		
 		$fly(doms.caption).text(bar._caption);

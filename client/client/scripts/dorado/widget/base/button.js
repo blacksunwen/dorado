@@ -29,7 +29,7 @@
 	 */
 	dorado.widget.Button = $extend(dorado.widget.AbstractButton, /** @scope dorado.widget.Button.prototype */ {
 		$className: "dorado.widget.Button",
-
+        _inherentClassName: "i-button",
 		focusable: true,
 
 		ATTRIBUTES: /** @scope dorado.widget.Button.prototype */ {
@@ -355,7 +355,7 @@
 				}
 			}
 
-			$fly(dom).toggleClass(cls + BUTTON_TRIGGER_CLASS, button._showTrigger === true || (!!button._menu && button._showTrigger !== false)).toggleClass(cls + "-disabled", !!(button._disabled || action._disabled));
+			$fly(dom).toggleClass("i-button-trigger " + cls + BUTTON_TRIGGER_CLASS, button._showTrigger === true || (!!button._menu && button._showTrigger !== false)).toggleClass(cls + "-disabled", !!(button._disabled || action._disabled));
 
 			var icon = button._icon || action._icon, iconCls = button._iconClass || action._iconClass;
 
@@ -387,7 +387,7 @@
             }
 
 
-			$fly(dom).toggleClass(cls + BUTTON_TRIGGER_CLASS, button._showTrigger === true || (!!button._menu && button._showTrigger !== false))
+			$fly(dom).toggleClass("i-button-trigger " +cls + BUTTON_TRIGGER_CLASS, button._showTrigger === true || (!!button._menu && button._showTrigger !== false))
 				.toggleClass(cls + "-disabled", !!(button._disabled || action._disabled));
 
             if (!needSplit(button)) {

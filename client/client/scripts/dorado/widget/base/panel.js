@@ -15,7 +15,7 @@
  */
 dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado.widget.AbstractPanel.prototype */ {
 	$className: "dorado.widget.AbstractPanel",
-	
+	_inherentClassName: "i-panel",
 	ATTRIBUTES: /** @scope dorado.widget.AbstractPanel.prototype */ {
 	
 		/**
@@ -191,7 +191,7 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 						step: function() {
 						},
 						complete: function() {
-							$fly(dom).addClass(panel._className + "-collapsed");
+							$fly(dom).addClass("i-panel-collapsed " + panel._className + "-collapsed");
 							if (collapseButton) {
 								collapseButton.set("iconClass", "expand-icon");
 							}
@@ -204,7 +204,7 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 						direction: "t2b",
 						start: function() {
                             orginalZIndex = dom.style.zIndex;
-							$fly(dom).bringToFront().removeClass(panel._className + "-collapsed");
+							$fly(dom).bringToFront().removeClass("i-panel-collapsed " + panel._className + "-collapsed");
 						},
 						step: function() {
 						},
@@ -579,10 +579,10 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		
 		panel.initButtons(dom);
 		
-		$fly(dom).toggleClass(panel._className + "-normalborder", border == "normal").toggleClass(panel._className + "-curveborder", border == "curve");
+		$fly(dom).toggleClass("i-panel-normalborder " + panel._className + "-normalborder", border == "normal").toggleClass("i-panel-curveborder " + panel._className + "-curveborder", border == "curve");
 		
 		if (panel._collapsed) {
-			$fly(dom).addClass(panel._className + "-collapsed");
+			$fly(dom).addClass("i-panel-collapsed " + panel._className + "-collapsed");
 		}
 
         if (panel._closeable) {
@@ -689,7 +689,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 			doms.contentPanel.style.background = this._background;
 		}
 		
-		$fly(dom).toggleClass(this._className + "-normalborder", border == "normal").toggleClass(this._className + "-curveborder", border == "curve");
+        $fly(dom).toggleClass("i-panel-normalborder " + panel._className + "-normalborder", border == "normal").toggleClass("i-panel-curveborder " + panel._className + "-curveborder", border == "curve");
 	},
 	
 	getContentContainer: function() {

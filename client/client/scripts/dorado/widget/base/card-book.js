@@ -10,7 +10,7 @@
  */
 dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget.CardBook.prototype */ {
 	$className: "dorado.widget.CardBook",
-
+    _inherentClassName: "i-cardbook",
 	ATTRIBUTES: /** @scope dorado.widget.CardBook.prototype */ {
 		className: {
 			defaultValue: "d-cardbook"

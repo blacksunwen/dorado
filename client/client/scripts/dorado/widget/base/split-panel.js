@@ -39,7 +39,7 @@
 	 */
 	dorado.widget.SplitPanel = $extend(dorado.widget.Control, /** @scope dorado.widget.SplitPanel.prototype*/ {
 		$className: "dorado.widget.SplitPanel",
-
+        _inherentClassName: "i-split-panel",
 		ATTRIBUTES: /** @scope dorado.widget.SplitPanel.prototype*/ {
 			className: {
 				defaultValue: "d-split-panel"

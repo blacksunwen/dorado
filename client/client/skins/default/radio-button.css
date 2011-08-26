@@ -1,48 +1,23 @@
-.d-radio {
-    overflow: hidden;
-    cursor: default;
-    height: 20px;
+.d-radio .icon{
+	background: url(form/checkbox-radiobox.gif) 0 -20px;
 }
 
-.d-radio .icon {
-    float: left;
-    display: inline-block;
-    width: 16px;
-    height: 20px;
-    background: url(form/checkbox-radiobox.gif) 0 -20px;
+.d-radio .unchecked{
+	background-position: 0px -20px;
 }
 
-.d-radio .unchecked {
-    background-position: 0px -20px;
+.d-radio-hover .unchecked{
+	background-position: -16px -20px;
 }
 
-.d-radio-hover .unchecked {
-    background-position: -16px -20px;
+.d-radio .checked{
+	background-position: -32px -20px;
 }
 
-.d-radio .checked {
-    background-position: -32px -20px;
+.d-radio-hover .checked{
+	background-position: -48px -20px;
 }
 
-.d-radio-hover .checked {
-    background-position: -48px -20px;
-}
-
-.d-radio .text {
-    line-height: 20px;
-    vertical-align: middle;
-    margin-right: 8px;
-    white-space: nowrap;
-}
-
-.d-radiogroup {
-	height: 18px;
-}
-
-.d-radiogroup-dirty {
-    background: url(form/dirty-flag-left.gif) no-repeat left 2px;
-}
-
-.d-radiogroup-flow .d-radio {
-    float: left;
+.d-radiogroup-dirty{
+	background: url(form/dirty-flag-left.gif) no-repeat left 2px;
 }

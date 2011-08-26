@@ -24,7 +24,7 @@
 	 */
 	dorado.widget.Dialog = $extend(dorado.widget.FloatPanel, /** @scope dorado.widget.Dialog.prototype */ {
 		$className: "dorado.widget.Dialog",
-
+        _inherentClassName: "i-dialog",
 		focusable: true,
 
 		ATTRIBUTES: /** @scope dorado.widget.Dialog.prototype */ {
@@ -209,11 +209,11 @@
 
 					var $dom = $fly(dom);
 					if (dialog._resizeable) {
-						$dom.addClass("d-dialog-resizeable").find(".dialog-resize-handle").draggable("enable");
+						$dom.addClass("i-dialog-resizeable d-dialog-resizeable").find(".dialog-resize-handle").draggable("enable");
 					}
 
 					if (dialog._draggable) {
-						$dom.addClass("d-dialog-draggable").draggable("enable");
+						$dom.addClass("i-dialog-resizeable d-dialog-draggable").draggable("enable");
 					}
 				}
 			}
@@ -268,11 +268,11 @@
 				domEl.css(targetOffset);
 
 				if (dialog._resizeable) {
-					domEl.removeClass("d-dialog-resizeable").find(".dialog-resize-handle").draggable("disable");
+					domEl.removeClass("i-dialog-resizeable d-dialog-resizeable").find(".dialog-resize-handle").draggable("disable");
 				}
 
 				if (dialog._draggable) {
-					domEl.removeClass("d-dialog-draggable").draggable("disable");
+					domEl.removeClass("i-dialog-resizeable d-dialog-draggable").draggable("disable");
 				}
 
 				dialog.fireEvent("onMaximize", dialog);
@@ -298,9 +298,9 @@
 			var dialog = this;
 			if (dialog._resizeable) {
 				if (collapsed) {
-					$fly(dialog._dom).removeClass("d-dialog-resizeable").find(".dialog-resize-handle").draggable("disable");
+					$fly(dialog._dom).removeClass("i-dialog-resizeable d-dialog-resizeable").find(".dialog-resize-handle").draggable("disable");
 				} else {
-					$fly(dialog._dom).addClass("d-dialog-resizeable").find(".dialog-resize-handle").draggable("enable");
+					$fly(dialog._dom).addClass("i-dialog-resizeable d-dialog-resizeable").find(".dialog-resize-handle").draggable("enable");
 				}
 			}
 		},
@@ -504,7 +504,7 @@
 					containment: dialog._dragOutside ? null : "parent",
 					helper: function() {
 						if (!fakeDialog) {
-							fakeDialog = new dorado.widget.Dialog({ exClassName: "d-dialog-helper", visible: true, animateType: "none", shadowMode: "none" });
+							fakeDialog = new dorado.widget.Dialog({ exClassName: "i-dialog-helper d-dialog-helper", visible: true, animateType: "none", shadowMode: "none" });
 							fakeDialog.render(document.body);
 						}
 
@@ -547,7 +547,7 @@
 
 			if (dialog._resizeable) {
 				var dialogXY, dialogSize;
-				$fly(dom).addClass("d-dialog-resizeable").find(".dialog-resize-handle").each(function(index, handle) {
+				$fly(dom).addClass("i-dialog-resizeable d-dialog-resizeable").find(".dialog-resize-handle").each(function(index, handle) {
 					var className = handle.className.split(" ")[0], config = handleConfigMap[className];
 					if (!config) return;
 					$fly(handle).draggable({
@@ -557,7 +557,7 @@
 						containment: "window",
 						helper: function() {
 							var proxy = document.createElement("div");
-							proxy.className = "d-dialog-drag-proxy";
+							proxy.className = "i-dialog-drag-proxy d-dialog-drag-proxy";
 							proxy.style.position = "absolute";
 							$fly(proxy).bringToFront();
 							document.body.appendChild(proxy);

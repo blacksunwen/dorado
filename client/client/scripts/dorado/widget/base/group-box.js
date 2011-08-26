@@ -7,7 +7,9 @@
  * @extends dorado.widget.AbstractPanel
  */
 dorado.widget.FieldSet = $extend(dorado.widget.AbstractPanel, /** @scope dorado.widget.FieldSet.prototype */{
-	ATTRIBUTES: /** @scope dorado.widget.FieldSet.prototype */ {
+	$className: "dorado.widget.FieldSet",
+    _inherentClassName: "i-field-set",
+    ATTRIBUTES: /** @scope dorado.widget.FieldSet.prototype */ {
 		className: {
 			defaultValue: "d-field-set"
 		},
@@ -26,7 +28,7 @@ dorado.widget.FieldSet = $extend(dorado.widget.AbstractPanel, /** @scope dorado.
 	createDom: function() {
 		var fieldset = this, doms = {}, dom = $DomUtils.xCreateElement({
 			tagName: "fieldset",
-			className: fieldset._className,
+			className: "i-field-set " + fieldset._className,
 			content: [{
 					tagName: "legend",
 					className: "field-set-legend",
@@ -95,7 +97,7 @@ dorado.widget.FieldSet = $extend(dorado.widget.AbstractPanel, /** @scope dorado.
 	refreshDom: function(dom) {
 		$invokeSuper.call(this, arguments);
 		var fieldset = this;
-		$fly(dom)[fieldset._collapsed ? "addClass" : "removeClass"](fieldset._className + "-collapsed");
+		$fly(dom)[fieldset._collapsed ? "addClass" : "removeClass"]("i-field-set-collapsed " + fieldset._className + "-collapsed");
 		$fly(fieldset._doms.caption).text(fieldset._caption);
 	},
 
@@ -135,6 +137,8 @@ dorado.widget.FieldSet = $extend(dorado.widget.AbstractPanel, /** @scope dorado.
  * @extends dorado.widget.AbstractPanel
  */
 dorado.widget.GroupBox = $extend(dorado.widget.AbstractPanel, /** @scope dorado.widget.GroupBox.prototype */{
+    $className: "dorado.widget.GroupBox",
+    _inherentClassName: "i-group-box",
 	ATTRIBUTES: /** @scope dorado.widget.GroupBox.prototype */{
 		className: {
 			defaultValue: "d-group-box"

@@ -11,10 +11,6 @@ dorado.widget.FloatPanel = $extend([dorado.widget.Panel, dorado.widget.FloatCont
 	focusable: true,
 	
 	ATTRIBUTES: /** @scope dorado.widget.FloatPanel.prototype */ {
-		className: {
-			defaultValue: "d-float-panel"
-		},
-
 		visible: {
 			defaultValue: false
 		}

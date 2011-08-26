@@ -5,6 +5,8 @@
 	 * @extends dorado.widget.Control
 	 */
 	dorado.widget.YearMonthPicker = $extend(dorado.widget.Control, /** @scope dorado.widget.YearMonthPicker.prototype */ {
+        $className: "dorado.widget.YearMonthPicker",
+        _inherentClassName: "i-year-month-picker",
 		_opened: false,
 		focusable: true,
 		ATTRIBUTES: /** @scope dorado.widget.YearMonthPicker.prototype */ {
@@ -364,6 +366,7 @@
 	 * @extends dorado.widget.DropDown
 	 */
 	dorado.widget.YearMonthDropDown = $extend(dorado.widget.DropDown, /** @scope dorado.widget.YearMonthDropDown.prototype */{
+        $className: "dorado.widget.YearMonthDropDown",
 		ATTRIBUTES: {
 			width: {
 				defaultValue: 260

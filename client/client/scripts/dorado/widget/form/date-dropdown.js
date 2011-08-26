@@ -46,8 +46,9 @@
 	 * @extends dorado.widget.Control
 	 */
 	dorado.widget.DatePicker = $extend(dorado.widget.Control, /** @scope dorado.widget.DatePicker.prototype */ {
+        $className: "dorado.widget.DatePicker",
 		focusable: true,
-		
+		_inherentClassName: "i-date-picker",
 		ATTRIBUTES: /** @scope dorado.widget.DatePicker.prototype */ {
 
 			/**
@@ -757,6 +758,8 @@
 	 * @extends dorado.widget.DropDown
 	 */
 	dorado.widget.DateDropDown = $extend(dorado.widget.DropDown, /** @scope dorado.widget.DateDropDown.prototype */ {
+        $className: "dorado.widget.DateDropDown",
+
 		ATTRIBUTES: /** @scope dorado.widget.DateDropDown.prototype */ {
 			width: {
 				defaultValue: 260

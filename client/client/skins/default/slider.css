@@ -1,107 +1,55 @@
-.d-slider {
-    position: relative;
+.d-slider .slider-thumb{
+	background: transparent no-repeat 0 0;
 }
 
-.d-slider .slider-thumb {
-	position: absolute;
-    background: transparent no-repeat 0 0;
+.d-slider .slider-start, .d-slider .slider-end{
+	background: transparent no-repeat 0 0;
 }
 
-.d-slider .slider-start, .d-slider .slider-end {
-    position: absolute;
-    font-size: 1pt;
-    background: transparent no-repeat 0 0;
+.d-slider-vertical .slider-thumb{
+	background-image: url(base/slider-v-thumb.gif);
 }
 
-.d-slider-vertical {
-    width: 20px;
+.d-slider-vertical .slider-thumb-hover{
+	background-position: 0 -11px;
 }
 
-.d-slider-vertical .slider-thumb {
-    position: absolute;
-    font-size: 1pt;
-    left: 0;
-    top: 0;
-
-    width: 20px;
-    height: 11px;
-
-    background-image: url(base/slider-v-thumb.gif);
+.d-slider-vertical .slider-thumb-click{
+	background-position: 0 -22px;
 }
 
-.d-slider-vertical .slider-thumb-hover {
-    background-position: 0 -11px;
+.d-slider-vertical .slider-start{
+	background: url(base/slider-v-bg.gif) transparent no-repeat -20px 0;
 }
 
-.d-slider-vertical .slider-thumb-click {
-    background-position: 0 -22px;
+.d-slider-vertical .slider-end{
+	background: url(base/slider-v-bg.gif) transparent no-repeat 0 bottom;
 }
 
-.d-slider-vertical .slider-start, .d-slider-vertical .slider-end {
-    width: 20px;
-    height: 5px;
+.d-slider-vertical .slider-body{
+	background: url(base/slider-v-bg.gif) transparent repeat-y -40px 0;
 }
 
-.d-slider-vertical .slider-start {
-    top: 0;
-    left: 0;
-    background: url(base/slider-v-bg.gif) transparent no-repeat -20px 0;
+.d-slider-horizental .slider-thumb{
+	background-image: url(base/slider-thumb.gif);
 }
 
-.d-slider-vertical .slider-end {
-    left: 0;
-    bottom: 0;
-    background: url(base/slider-v-bg.gif) transparent no-repeat 0 bottom;
+.d-slider-horizental .slider-thumb-hover{
+	background-position: 0 -20px;
 }
 
-.d-slider-vertical .slider-body {
-    position: absolute;
-    top: 5px;
-    left: 0px;
-    width: 20px;
-    background: url(base/slider-v-bg.gif) transparent repeat-y -40px 0;
+.d-slider-horizental .slider-thumb-click{
+	background-position: 0 -40px;
 }
 
-.d-slider-horizental {
-    height: 20px;
+.d-slider-horizental .slider-start{
+	background: url(base/slider-bg.gif) transparent no-repeat 0 -20px;
 }
 
-.d-slider-horizental .slider-thumb {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 11px;
-    height: 20px;
-    background-image: url(base/slider-thumb.gif);
+.d-slider-horizental .slider-end{
+	background: url(base/slider-bg.gif) transparent no-repeat right -40px;
 }
 
-.d-slider-horizental .slider-thumb-hover {
-    background-position: 0 -20px;
-}
-
-.d-slider-horizental .slider-thumb-click {
-    background-position: 0 -40px;
-}
-
-.d-slider-horizental .slider-start, .d-slider-horizental .slider-end {
-    width: 5px;
-    height: 20px;
-}
-
-.d-slider-horizental .slider-start {
-    left: 0;
-    top: 0;
-    background: url(base/slider-bg.gif) transparent no-repeat 0 -20px;
-}
-
-.d-slider-horizental .slider-end {
-    right: 0;
-    top: 0;
-    background: url(base/slider-bg.gif) transparent no-repeat right -40px;
-}
-
-.d-slider-horizental .slider-body {
-    margin: 0 5px 0 5px;
-    height: 20px;
-    background: url(base/slider-bg.gif) transparent repeat-x 0 0;
+.d-slider-horizental .slider-body{
+	background: url(base/slider-bg.gif) transparent repeat-x 0 0;
 }

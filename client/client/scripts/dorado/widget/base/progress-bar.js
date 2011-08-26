@@ -5,7 +5,7 @@
  */
 dorado.widget.ProgressBar = $extend(dorado.widget.Control, /** @scope dorado.widget.ProgressBar.prototype */ {
 	$className: "dorado.widget.ProgressBar",
-	
+	_inherentClassName: "i-progress-bar",
 	selectable: false,
 	
 	ATTRIBUTES: /** @scope dorado.widget.ProgressBar.prototype */ {

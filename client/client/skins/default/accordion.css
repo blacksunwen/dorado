@@ -1,61 +1,35 @@
-.d-section {
-    overflow: hidden;
-    cursor: default;
-    font-size: 9pt;
-    width: 100%;
+.d-section .container{
+	background: #F0F0F0;
 }
 
-.d-section .container {
-    background: #F0F0F0;
+.d-section-caption-bar{
+	background: url(base/section-caption-bar-bg.gif) top repeat-x;
+	height: 22px;
+	border: 1px solid #CCCCCC;
+	padding: 0;
+	padding-left: 6px;
 }
 
-.d-section-caption-bar {
-    background: url(base/section-caption-bar-bg.gif) top repeat-x;
-    height: 22px;
-    border: 1px solid #CCCCCC;
-    padding: 0;
-    padding-left: 6px;
+.d-section-caption-bar .caption{
+	height: 22px;
 }
 
-.d-section-caption-bar .caption {
-    height: 22px;
+.d-section-caption-bar .caption-bar-icon{
+	width: 16px;
+	background: transparent 0 center no-repeat;
 }
 
-.d-section-caption-bar .caption-bar-icon {
-    width: 16px;
-    background: transparent 0 center no-repeat;
+.d-accordion .current-section .d-section-caption-bar{
+	background: url(base/section-caption-bar-bg.gif) bottom;
+	border: 1px solid #7CA7D9;
 }
 
-.d-section-caption-bar .button-group .d-icon-button {
+.d-accordion{
+	border: 1px #A1A1A1 solid;
+	background: white;
 }
 
-.d-accordion .current-section .d-section-caption-bar {
-    background: url(base/section-caption-bar-bg.gif) bottom;
-    border: 1px solid #7CA7D9;
-}
-
-.d-accordion {
-    border: 1px #A1A1A1 solid;
-    padding: 0 1px 1px 1px;
-    background: white;
-    overflow: hidden;
-}
-
-.d-accordion .d-section {
-    margin-top: 1px;
-}
-
-.d-accordion .d-section .container {
-    display: none;
-}
-
-.d-accordion .current-section .container {
-    display: block;
-}
-
-.d-accordion .d-menu {
-    position: relative;
-    border: 0;
-    padding: 0;
-    background: #FAFAFA;
+.d-accordion .d-menu{
+	border: 0;
+	background: #FAFAFA;
 }

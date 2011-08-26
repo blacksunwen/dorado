@@ -7,7 +7,7 @@
 dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.Slider.prototype */{
 
 	selectable: false,
-
+    _inherentClassName: "i-slider",
 	ATTRIBUTES: /** @scope dorado.widget.Slider.prototype */{
 		className: {
 			defaultValue: "d-slider"
@@ -142,10 +142,10 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
 
 		if (orientation == "vertical") {
 			axis = "y";
-			$fly(dom).addClass(className + "-vertical");
+			$fly(dom).addClass("i-slider-vertical " + className + "-vertical");
 		}
 		else {
-			$fly(dom).addClass(className + "-horizental");
+			$fly(dom).addClass("i-slider-horizental " + className + "-horizental");
 		}
 
 		var tip = new dorado.widget.Tip({

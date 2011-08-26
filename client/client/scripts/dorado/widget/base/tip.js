@@ -24,7 +24,7 @@
 		$className: "dorado.widget.Tip",
 
 		focusable: false,
-
+        _inherentClassName: "i-tip",
 		ATTRIBUTES: /** @scope dorado.widget.Tip.prototype */ {
 			className: {
 				defaultValue: "d-tip"
@@ -252,7 +252,7 @@
 			var tip = this, text = (tip._text == undefined) ? "&nbsp;&nbsp;" : tip._text,
 				doms = tip._doms, arrowDirection = tip._arrowDirection, cls = tip._className;
 
-			$fly(dom).attr("className", cls + " d-shadow-drop");
+			$fly(dom).attr("className", "i-tip " + cls + " d-shadow-drop");
 			$fly(doms.tipText).html(text);
 
 			if (arrowDirection && arrowDirection != "none") {

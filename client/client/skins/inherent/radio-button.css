@@ -1,0 +1,27 @@
+.i-radio{
+	overflow: hidden;
+	cursor: default;
+	height: 20px;
+}
+
+.i-radio .icon{
+	float: left;
+	display: inline-block;
+	width: 16px;
+	height: 20px;
+}
+
+.i-radio .text{
+	line-height: 20px;
+	vertical-align: middle;
+	margin-right: 8px;
+	white-space: nowrap;
+}
+
+.i-radiogroup{
+	height: 18px;
+}
+
+.i-radiogroup-flow .i-radio{
+	float: left;
+}

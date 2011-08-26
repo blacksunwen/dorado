@@ -241,7 +241,6 @@
         "date-picker.css",
 		"group-box.css",
 
-		"float-panel.css",
         "dialog.css",
         "menu.css",
         "portal.css",
@@ -275,8 +274,8 @@
 	var WORKSPACE_ROOT = "/client-test/workspace/";
 	var CLIENT_ROOT = WORKSPACE_ROOT + "client/";
 
-    for (var i = 0; i < inherentStyleSheets.length; i++) {
-		writeIncludeStyleSheet(CLIENT_ROOT + "client/skins/inherent/" + inherentStyleSheets[i]);
+    for (var i = 0; i < styleSheets.length; i++) {
+		writeIncludeStyleSheet(CLIENT_ROOT + "client/skins/inherent/" + styleSheets[i]);
 	}
 
     for (var i = 0; i < styleSheets.length; i++) {

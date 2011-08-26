@@ -11,7 +11,7 @@
  */
 dorado.widget.Section = $extend(dorado.widget.Control, /** @scope dorado.widget.Section.prototype */{
     $className: "dorado.widget.Section",
-
+    _inherentClassName: "i-section",
 	ATTRIBUTES: /** @scope dorado.widget.Section.prototype */ {
 		className: {
 			defaultValue: "d-section"
@@ -142,7 +142,7 @@ dorado.widget.Section = $extend(dorado.widget.Control, /** @scope dorado.widget.
 	createDom: function() {
 		var section = this, doms = {}, dom = $DomUtils.xCreateElement({
 			tagName: "div",
-			className: "d-section",
+			className: "i-section " + section._className,
 			content: [
 				{
 					tagName: "div",
@@ -190,7 +190,7 @@ dorado.widget.Section = $extend(dorado.widget.Control, /** @scope dorado.widget.
  */
 dorado.widget.Accordion = $extend(dorado.widget.Control, /** @scope dorado.widget.Accordion.prototype */{
 	$className: "dorado.widget.Accordion",
-
+    _inherentClassName: "i-accordion",
 	ATTRIBUTES: /** @scope dorado.widget.Accordion.prototype */ {
 		className: {
 			defaultValue: "d-accordion"
@@ -435,6 +435,8 @@ dorado.widget.Accordion = $extend(dorado.widget.Control, /** @scope dorado.widge
 
 	createDom: function() {
 		var accordion = this, dom = document.createElement("div"), sections = accordion._sections, section;
+
+        dom.className = "i-accordion " + accordion._className;
 
 		if (sections) {
 			for (var i = 0, j = sections.length; i < j; i++) {

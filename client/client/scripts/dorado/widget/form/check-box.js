@@ -15,7 +15,7 @@
  */
 dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope dorado.widget.CheckBox.prototype */ {
 	$className: "dorado.widget.CheckBox",
-	
+	_inherentClassName: "i-checkbox",
 	ATTRIBUTES: /** @scope dorado.widget.CheckBox.prototype */ {
 		className: {
 			defaultValue: "d-checkbox"
@@ -222,7 +222,7 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 		//checkBox._checked = (checkBox._value == checkBox._onValue);
 		
 		if (checkBox._iconOnly) {
-			checkBox._className = checkBox._className + "-icononly";
+			checkBox._className = "i-checkbox-icononly " + checkBox._className + "-icononly";
 			dom = $DomUtils.xCreateElement({
 				tagName: "div",
 				className: checkBox._className
