@@ -1,0 +1,25 @@
+.i-progress-bar{
+	position: relative;
+	overflow: hidden;
+	font-size: 9pt;
+	height: 18px;
+	background-repeat: repeat-x;
+}
+
+.i-progress-bar .bar{
+	position: absolute;
+	left: 1px;
+	top: 1px;
+	height: 16px;
+	background-repeat: repeat-x;
+}
+
+.i-progress-bar .msg{
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	vertical-align: middle;
+	text-align: center;
+	line-height: 18px;
+}

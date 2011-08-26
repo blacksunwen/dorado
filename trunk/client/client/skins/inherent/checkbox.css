@@ -1,0 +1,22 @@
+.i-checkbox{
+	overflow: hidden;
+	cursor: default;
+	height: 20px;
+}
+
+.i-checkbox .icon{
+	float: left;
+	width: 16px;
+	height: 20px;
+}
+
+.i-checkbox .caption{
+	vertical-align: middle;
+	white-space: nowrap;
+	line-height: 20px;
+}
+
+.i-checkbox-icononly{
+	width: 16px;
+	height: 20px;
+}

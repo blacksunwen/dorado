@@ -1,88 +1,68 @@
-.d-checkbox {
-    overflow: hidden;
-    cursor: default;
-    height: 20px;
+.d-checkbox-dirty{
+	background: url(form/dirty-flag-left.gif) no-repeat left 3px;
 }
 
-.d-checkbox-dirty {
-    background: url(form/dirty-flag-left.gif) no-repeat left 3px;
+.d-checkbox .icon{
+	background: url(form/checkbox-radiobox.gif);
 }
 
-.d-checkbox-hover {
+.d-checkbox .halfchecked{
+	background-position: 0 1px;
 }
 
-.d-checkbox .icon {
-    float: left;
-    width: 16px;
-    height: 20px;
-    background: url(form/checkbox-radiobox.gif);
+.d-checkbox-hover .halfchecked{
+	background-position: -16px 1px;
 }
 
-.d-checkbox .halfchecked {
-    background-position: 0 1px;
+.d-checkbox .unchecked{
+	background-position: -32px 1px;
 }
 
-.d-checkbox-hover .halfchecked {
-    background-position: -16px 1px;
+.d-checkbox-hover .unchecked{
+	background-position: -48px 1px;
 }
 
-.d-checkbox .unchecked {
-    background-position: -32px 1px;
+.d-checkbox .checked{
+	background-position: -64px 1px;
 }
 
-.d-checkbox-hover .unchecked {
-    background-position: -48px 1px;
-}
-
-.d-checkbox .checked {
-    background-position: -64px 1px;
-}
-
-.d-checkbox-hover .checked {
-    background-position: -80px 1px;
+.d-checkbox-hover .checked{
+	background-position: -80px 1px;
 }
 
 .d-checkbox-center{
-    float: none;
-    position: relative;
-    left: 50%;
-    top: 50%;
-    margin: -10px 0 0 -7px;
-    padding: 0;
-}
-
-.d-checkbox .caption {
-    vertical-align: middle;
-    white-space: nowrap;
-    line-height: 20px;
+	float: none;
+	position: relative;
+	left: 50%;
+	top: 50%;
+	margin: -10px 0 0 -7px;
+	padding: 0;
 }
 
 .d-checkbox-icononly{
-    width: 16px;
-    height: 20px;
-    background: url(form/checkbox-radiobox.gif);
+	background: url(form/checkbox-radiobox.gif);
 }
 
-.d-checkbox-halfchecked {
-    background-position: 0 1px;
+.d-checkbox-halfchecked{
+	background-position: 0 1px;
 }
 
-.d-checkbox-halfchecked-hover {
-    background-position: -16px 1px;
+.d-checkbox-halfchecked-hover{
+	background-position: -16px 1px;
 }
 
-.d-checkbox-unchecked {
-    background-position: -32px 1px;
+.d-checkbox-unchecked{
+	background-position: -32px 1px;
 }
 
-.d-checkbox-unchecked-hover {
-    background-position: -48px 1px;
+.d-checkbox-unchecked-hover{
+	background-position: -48px 1px;
 }
 
-.d-checkbox-checked {
-    background-position: -64px 1px;
+.d-checkbox-checked{
+	background-position: -64px 1px;
 }
 
-.d-checkbox-checked-hover {
-    background-position: -80px 1px;
+.d-checkbox-checked-hover{
+	background-position: -80px 1px;
 }

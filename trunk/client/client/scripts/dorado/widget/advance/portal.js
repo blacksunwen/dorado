@@ -182,6 +182,7 @@
 	 */
 	dorado.widget.Portal = $extend(dorado.widget.Control, /** @scope dorado.widget.Portal.prototype */{
 		$className: "dorado.widget.Portal",
+        _inherentClassName: "i-portal",
 		ATTRIBUTES: /** @scope dorado.widget.Portal.prototype */{
 			className: {
 				defaultValue: "d-portal"

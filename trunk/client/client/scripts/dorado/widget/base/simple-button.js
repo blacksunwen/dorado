@@ -164,7 +164,7 @@
 	 */
 	dorado.widget.SimpleIconButton = $extend(dorado.widget.SimpleButton, {
 		$className: "dorado.widget.SimpleIconButton",
-		
+		_inherentClassName: "i-icon-button",
 		ATTRIBUTES: /** @scope dorado.widget.SimpleIconButton.prototype */ {
 			className: {
 				defaultValue: "d-icon-button"
@@ -209,7 +209,7 @@
 		createDom: function() {
 			this._className = this._showTrigger === true || (this._menu && (this._showTrigger !== false)) ? this._className + "-trigger" : this._className;
 			var dom = $invokeSuper.call(this, arguments);
-			$fly(dom).addClass(this._className);
+			$fly(dom).addClass("i-icon-button " + this._className);
 			dom.appendChild($DomUtils.xCreateElement({
 				tagName: "div",
 				className: "icon"

@@ -10,7 +10,7 @@
 	 */
 	dorado.widget.TabBar = $extend(dorado.widget.Control, /** @scope dorado.widget.TabBar.prototype */ {
 		$className: "dorado.widget.TabBar",
-
+        _inherentClassName: "i-tabbar",
 		focusable: true,
 
 		ATTRIBUTES: /** @scope dorado.widget.TabBar.prototype */ {
@@ -466,7 +466,7 @@
 		createDom: function() {
 			var tabbar = this, tabs = tabbar._tabs, doms = {}, dom = $DomUtils.xCreateElement({
 				tagName: "div",
-				className: tabbar._className,
+				className: "i-tabbar " + tabbar._className,
 				contextKey: "tabbar",
 				content: [
 					{
@@ -484,7 +484,7 @@
 
 			tabbar._doms = doms;
 
-			jDom.addClass(tabbar._className + (tabbar._tabPlacement == "top" ? "-top" : "-bottom"));
+			jDom.addClass(tabbar._tabPlacement == "top" ? "i-tabbar-top " + tabbar._className +  "-top" : "i-tabbar-bottom " + tabbar._className + "-bottom");
 
 			if (tabbar._alwaysShowNavButtons) {
 				tabbar.createNavButtons(dom);
@@ -683,7 +683,7 @@
 		 */
 		doScrollRight: function(anim, length) {
 			var tabbar = this, doms = tabbar._doms, tabs = tabbar._tabs, tabsEl = doms.tabs,
-				currentLeft = parseInt(tabsEl.style.left, 10);
+				currentLeft = parseInt(tabsEl.style.left || 0, 10);
 			length = length > 0 ? length : 100;
 			if (tabs) {
 				var tabsWidth = tabbar.getTabsWidth(), visibleWidth = $fly(doms.tabsWrap).innerWidth(),
@@ -836,9 +836,9 @@
 			var tabbar = this, cls = tabbar._className, doms = tabbar._doms, tabbarDom = doms.tabbar;
 			if (tabbarDom) {
 				var oldValue = tabbar._tabPlacement;
-				$fly(tabbarDom).addClass(cls + "-" + value);
+				$fly(tabbarDom).addClass("i-tabbar-" + value + " " + cls + "-" + value);
 				if (oldValue) {
-					$fly(tabbarDom).removeClass(cls + "-" + oldValue);
+					$fly(tabbarDom).removeClass("i-tabbar-" + oldValue + " " + cls + "-" + oldValue);
 				}
 			}
 			tabbar._tabPlacement = value;
@@ -873,8 +873,9 @@
 			var tabbar = this, dom = tabbar._dom, tabs = tabbar._tabs, doms = tabbar._doms;
 			if (!dom || !tabs) return;
 			var leftButton = tabbar._leftButton, rightButton = tabbar._rightButton;
-			var tabsWidth = tabbar.getTabsWidth(), tabsEl = doms.tabs, currentLeft = parseInt(tabsEl.style.left, 10);
+			var tabsWidth = tabbar.getTabsWidth(), tabsEl = doms.tabs, currentLeft = parseInt(tabsEl.style.left || 0, 10);
 			var visibleWidth = $fly(doms.tabsWrap).width();
+            debugger;
 			//console.log("tabsWidth + currentLeft:" + (tabsWidth + currentLeft) + "\tvisibleWidth:" + visibleWidth + "\ttabsWidth:" + tabsWidth);
 			if (tabsWidth > 0) {
 				if (tabbar._alwaysShowNavButtons !== true && visibleWidth > tabsWidth) {//没有必要显示NavButtons
@@ -994,6 +995,7 @@
 		onToolButtonVisibleChange: function() {
 			var tabbar = this, dom = tabbar._dom, doms = tabbar._doms;
 			if (!dom) return;
+            debugger;
 			var leftButton = doms.leftButton, rightButton = doms.rightButton, menuButton = doms.menuButton;
 			var leftWidth = 0, rightWidth = 0, menuButtonWidth = 0;
 			if (leftButton && leftButton.style.display != "none") {

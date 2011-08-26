@@ -1,46 +1,13 @@
-.d-tabbar{
-    position: relative;
-    height: 27px;
-}
-
 .d-tabbar-top{
-    background: transparent url(base/tab-top-all.gif) repeat-x 0 -234px;
+	background: transparent url(base/tab-top-all.gif) repeat-x 0 -234px;
 }
 
 .d-tabbar-bottom{
-    background: transparent url(base/tab-bottom-all.gif) repeat-x 0 -234px;
-}
-
-.d-tabbar .tabs-wrap{
-    position: relative;
-    overflow: hidden;
-    height: 27px;
-}
-
-.d-tabbar .tabs-wrap .tabs{
-    position: absolute;
-    left: 0;
-    top: 0;
-	padding: 0 0 0 4px;
-    margin: 0;
-
-    width: 5000px;
-	height: 27px;
-}
-
-.d-tabbar .tabs-wrap .tabs li{
-    list-style-type: none;
-}
-
-.d-tabbar .tab{
-    float: left;
-    position: relative;
-	cursor: default;
-    padding-left: 7px;
+	background: transparent url(base/tab-bottom-all.gif) repeat-x 0 -234px;
 }
 
 .d-tabbar .tab-disabled{
-    color: gray;
+	color: gray;
 }
 
 .d-tabbar-top .tab{
@@ -67,61 +34,24 @@
 	background-position: 0 0;
 }
 
-.d-tabbar .tab .tab-left{
-    display: inline-block;
-    position: relative;
-    float: left;
-    margin-right: 7px;
-    line-height: 26px;
-	height: 26px;
-}
-
 .d-tabbar-top .tab .tab-left{
-    background: url(base/tab-top-all.gif) repeat-x 0 -104px;
+	background: url(base/tab-top-all.gif) repeat-x 0 -104px;
 }
 
 .d-tabbar-bottom .tab .tab-left{
-    background: url(base/tab-bottom-all.gif) repeat-x 0 -104px;
-}
-
-.d-tabbar .tab-closeable .tab-left{
-    padding-right: 17px;
+	background: url(base/tab-bottom-all.gif) repeat-x 0 -104px;
 }
 
 .d-tabbar .tab-hover .tab-left{
-    background-position: 0 -130px;
+	background-position: 0 -130px;
 }
 
 .d-tabbar .tab-selected .tab-left{
-    background-position: 0 -78px;
+	background-position: 0 -78px;
 }
 
 .d-tabbar .tab .icon{
-    float: left;
-    display: inline-block;
-    padding: 0px 4px 0 12px;
-    height: 24px;
-    background: transparent no-repeat 0px center;
-}
-
-.d-tabbar .tab .caption{
-    float: left;
-    display: inline-block;
-    white-space:nowrap;
-    overflow: hidden;
-    height: 24px;
-    line-height: 24px;
-    padding: 0px 4px 0 4px;
-}
-
-.d-tabbar .tab .tab-right{
-    position: absolute;
-    right: 0;
-    top: 0;
-    display: inline-block;
-
-    padding-left: 7px;
-	height: 26px;
+	background: transparent no-repeat 0px center;
 }
 
 .d-tabbar-top .tab .tab-right{
@@ -148,20 +78,6 @@
 	background-position: 0 -156px;
 }
 
-.d-tabbar .tab .close{
-    position: absolute;
-    right: 0;
-    top: 3px;
-    cursor: pointer;
-
-	width: 18px;
-	height: 18px;
-}
-
-.d-tabbar-bottom .tab .close{
-    top: 5px;
-}
-
 .d-tabbar .tab .close, .d-tabbar .tab-selected .close{
 	background: url(base/tab-buttons.gif) no-repeat 0 -63px;
 }
@@ -172,50 +88,6 @@
 
 .d-tabbar .tab .close-click, .d-tabbar .tab-selected .close-click{
 	background-position: -36px -63px;
-}
-
-.d-tabbar .left-button{
-    display: inline;
-	cursor: pointer;
-    margin-top: 1px;
-	margin-right: 2px;
-
-	width: 20px;
-    height: 22px;
-}
-
-.d-tabbar .right-button{
-    display: inline;
-	cursor: pointer;
-    margin: 1px 1px 0 2px;
-
-	width: 20px;
-    height: 22px;
-}
-
-.d-tabbar .menu-button{
-    display: inline;
-	cursor: pointer;
-	width: 20px;
-    height: 21px;
-}
-
-.d-tabbar-bottom .left-button, .d-tabbar-bottom .right-button, .d-tabbar-bottom .menu-button{
-    margin-top: 5px;
-}
-
-.d-tabbar .left-button{
-    position: absolute;
-    left: 0;
-}
-
-.d-tabbar .right-button, .d-tabbar .menu-button{
-    position: absolute;
-    right: 0;
-    top: 1px;
-}
-
-.d-tabbar-bottom .right-button, .d-tabbar-bottom .menu-button{
 }
 
 .d-tabbar .left-button{
@@ -231,8 +103,8 @@
 }
 
 .d-tabbar .left-button-disabled{
-    opacity: 0.5;
-    filter: alpha(opacity=50);
+	opacity: 0.5;
+	filter: alpha(opacity=50);
 }
 
 .d-tabbar .right-button{
@@ -248,8 +120,8 @@
 }
 
 .d-tabbar .right-button-disabled{
-    opacity: 0.5;
-    filter: alpha(opacity=50);
+	opacity: 0.5;
+	filter: alpha(opacity=50);
 }
 
 .d-tabbar .menu-button{
@@ -261,18 +133,10 @@
 }
 
 .d-tabbar .menu-button-disabled{
-    opacity: 0.5;
-    filter: alpha(opacity=50);
+	opacity: 0.5;
+	filter: alpha(opacity=50);
 }
 
 .d-tabbar .menu-button-toggled{
 	background-position: -40px -42px;
-}
-
-.d-tabbar .d-icon-button, .d-tabbar .d-icon-button-trigger {
-    top: 1px;
-}
-
-.d-tabbar-bottom .d-icon-button {
-    top: 5px;
 }

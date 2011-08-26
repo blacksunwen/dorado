@@ -1,149 +1,60 @@
-.d-field-set {
-    border: 1px solid #6394BC;
-    padding: 0;
-    margin: 0;
+.d-field-set{
+	border: 1px solid #6394BC;
 }
 
-.d-field-set-collapsed {
-    border-color: #6394BC;
-    border-style: solid none none;
-    border-width: 1px medium medium;
-    padding: 0 1px 0 1px;
+.d-field-set-collapsed{
+	border-color: #6394BC;
+	border-style: solid none none;
+	border-width: 1px medium medium;
 }
 
-.d-field-set .field-set-legend {
-    color: #15428B;
-    font-weight: bold;
-    line-height: 17px;
-    margin-left: 11px !important;
-    padding: 0 3px 0 0;
-    vertical-align: middle;
+.d-field-set .field-set-legend{
+	color: #15428B;
+	font-weight: bold;
 }
 
-.d-field-set .field-set-legend .collapse-button {
-    float: left;
-    background: transparent url("base/groupbox-button.gif") no-repeat scroll 0 0;
-    cursor: pointer;
-
-    height: 17px;
-    width: 17px;
-    margin-right: 2px;
+.d-field-set .field-set-legend .collapse-button{
+	background: transparent url("base/groupbox-button.gif") no-repeat scroll 0 0;
 }
 
 .d-field-set .field-set-legend .collapse-button-hover{
-    background-position: -17px 0;
+	background-position: -17px 0;
 }
 
 .d-field-set-collapsed .field-set-legend .collapse-button{
-    background-position: -34px 0;
+	background-position: -34px 0;
 }
 
 .d-field-set-collapsed .field-set-legend .collapse-button-hover{
-    background-position: -51px 0;
+	background-position: -51px 0;
 }
 
-.d-field-set .content-panel {
-    padding: 5px;
-    display: block;
-    overflow: hidden;
-}
-
-.d-field-set-collapsed .body{
-}
-
-.d-field-set .button-panel {
-    text-align: center;
-    padding: 2px 5px 5px 2px;
-    height: 24px;
-}
-
-.d-field-set .button-panel-left{
-	text-align: left;
-}
-
-.d-field-set .button-panel-right{
-	text-align: right;
-}
-
-.d-field-set .button-panel .d-button {
-    margin-right: 3px;
-}
-
-.d-group-box {
-    padding: 0;
-}
-
-.d-group-box-collapsed {
-}
-
-.d-group-box .caption-bar {
-    overflow: hidden;
-    height: 20px;
-	line-height: 20px;
+.d-group-box .caption-bar{
 	background: transparent url("base/groupbox-bg.gif") 0 0 repeat;
-	padding-left: 10px;
 }
 
 .d-group-box .caption-bar .bar-right{
-    float: right;
-	background:#fff url("base/groupbox-bg.gif") right -20px no-repeat;
-	height:20px;
-	width:100px;
+	background: #fff url("base/groupbox-bg.gif") right -20px no-repeat;
 }
 
 .d-group-box .caption-bar .caption{
-    float: left;
-    overflow: hidden;
-    height: 20px;
-	line-height: 20px;
-	padding: 0 6px 0 2px;
-    color: #15428B;
-    font-weight: bold;
+	color: #15428B;
+	font-weight: bold;
 	background-color: #fff;
 }
 
-.d-group-box .caption-bar .collapse-button {
-    float: left;
-    cursor: pointer;
-    background: #fff url("base/groupbox-button.gif") no-repeat scroll 0 center;
-    height: 20px;
-    width: 17px;
+.d-group-box .caption-bar .collapse-button{
+	background: #fff url("base/groupbox-button.gif") no-repeat scroll 0 center;
 }
 
 .d-group-box .caption-bar .collapse-button-hover{
-    background-position: -17px center;
+	background-position: -17px center;
 }
 
 .d-group-box-collapsed .caption-bar .collapse-button{
-    background-position: -34px center;
+	background-position: -34px center;
 }
 
 .d-group-box-collapsed .caption-bar .collapse-button-hover{
-    background-position: -51px center;
-}
-
-.d-group-box .content-panel {
-    display: block;
-    padding: 5px;
-}
-
-.d-group-box-collapsed .body{
-}
-
-.d-group-box .button-panel {
-    padding: 2px 5px 5px 2px;
-    text-align: center;
-    height: 24px;
-}
-
-.d-group-box .button-panel-left{
-	text-align: left;
-}
-
-.d-group-box .button-panel-right{
-	text-align: right;
-}
-
-.d-group-box .button-panel .d-button {
-    margin-right: 3px;
+	background-position: -51px center;
 }

@@ -5,7 +5,7 @@
  */
 dorado.widget.RadioButton = $extend(dorado.widget.Control, /** @scope dorado.widget.RadioButton.prototype */ {
 	$className: "dorado.widget.RadioButton",
-	
+	_inherentClassName: "i-radio",
 	focusable: true,
 	
 	ATTRIBUTES: /** @scope dorado.widget.RadioButton.prototype */ {
@@ -79,7 +79,7 @@ dorado.widget.RadioButton = $extend(dorado.widget.Control, /** @scope dorado.wid
 			tagName: "div",
 			className: radioButton._className,
 			content: [{
-				tagName: "div",
+				tagName: "span",
 				className: "icon"
 			}, {
 				tagName: "span",
@@ -109,6 +109,8 @@ dorado.widget.RadioButton = $extend(dorado.widget.Control, /** @scope dorado.wid
  * @extends dorado.widget.AbstractDataEditor
  */
 dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope dorado.widget.RadioGroup.prototype */ {
+    $className: "dorado.widget.RadioGroup",
+    _inherentClassName: "i-radiogroup",
 	ATTRIBUTES: /** @scope dorado.widget.RadioGroup.prototype */ {
 		className: {
 			defaultValue: "d-radiogroup"
@@ -386,7 +388,7 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 		}
 		
 		if (layout == "flow") {
-			$fly(dom).addClass(group._className + "-flow");
+			$fly(dom).addClass("i-radiogroup-flow " + group._className + "-flow");
 		}
 	},
 	

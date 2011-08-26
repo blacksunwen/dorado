@@ -1,68 +1,32 @@
-.d-year-month-picker {
-    width: 100%;
-    border: 0;
-    height: 200px;
-    background: #FFFFFF url(base/date-picker-bg.gif) 0 -200px repeat-x;
+.d-year-month-picker{
+	border: 0;
+	background: #FFFFFF url(base/date-picker-bg.gif) 0 -200px repeat-x;
 }
 
-.d-year-month-picker td {
-    height: 20px;
+.d-year-month-picker .year-table{
+	border-left: 1px dotted #325573;
 }
 
-.d-year-month-picker .month-table {
-    width: 49%;
-    table-layout: fixed;
+.d-year-month-picker .year-table .prev-year-button, .d-year-month-picker .year-table .next-year-button{
+	background: url(common/icons.gif) no-repeat -60px -280px;
 }
 
-.d-year-month-picker .year-table {
-    width: 49%;
-    border-left: 1px dotted #325573;
-    float: right;
-    table-layout: fixed;
+.d-year-month-picker .year-table .prev-year-button{
+	background-position: -40px -280px;
 }
 
-.d-year-month-picker .year-table .btn-row {
-    height: 20px;
+.d-year-month-picker .year-table td.hover, .d-year-month-picker .month-table td.hover,{
+	background: url(base/ym-picker-hover-cell.gif) no-repeat center center;
 }
 
-.d-year-month-picker .year-table .prev-year-button, .d-year-month-picker .year-table .next-year-button {
-    background: url(common/icons.gif) no-repeat -60px -280px;
-}
-
-.d-year-month-picker .year-table .prev-year-button {
-    background-position: -40px -280px;
-}
-
-.d-year-month-picker .year-table .number-row td, .d-year-month-picker .month-table .number-row td {
-    text-align: center;
-    cursor: pointer;
-    line-height: 20px;
-    padding: 1px;
-}
-
-.d-year-month-picker .year-table td.hover, .d-year-month-picker .month-table td.hover,
-.d-year-month-picker .year-table td:hover, .d-year-month-picker .month-table td:hover {
-    background: url(base/ym-picker-hover-cell.gif) no-repeat center center;
+.d-year-month-picker .year-table td:hover, .d-year-month-picker .month-table td:hover{
+	background: url(base/ym-picker-hover-cell.gif) no-repeat center center;
 }
 
 .d-year-month-picker .year-table .btn-row td:hover{
-    background-image: none;
+	background-image: none;
 }
 
-.d-year-month-picker .year-table td.selected, .d-year-month-picker .month-table td.selected {
-    background: url(base/ym-picker-current-cell.gif) no-repeat center center;
-}
-
-.d-year-month-picker .btns-pane {
-    position: absolute;
-    float: left;
-    clear: left;
-    bottom: 0;
-    text-align: center;
-    width: 100%;
-    height: 30px;
-}
-
-.d-year-month-picker .btns-pane .d-button {
-    margin-right: 5px;
+.d-year-month-picker .year-table td.selected, .d-year-month-picker .month-table td.selected{
+	background: url(base/ym-picker-current-cell.gif) no-repeat center center;
 }

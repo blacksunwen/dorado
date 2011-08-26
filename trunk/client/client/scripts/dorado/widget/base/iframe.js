@@ -16,7 +16,7 @@
 	dorado.widget.IFrame = $extend(dorado.widget.Control, /** @scope dorado.widget.IFrame.prototype */
 	{
 		$className: "dorado.widget.IFrame",
-
+        _inherentClassName: "i-iframe",
 		ATTRIBUTES: /** @scope dorado.widget.IFrame.prototype */
 		{
 			className: {

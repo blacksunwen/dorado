@@ -1,5 +1,5 @@
 (function() {
-	var GROUP_CONTENT_CLASS = "group-content", GROUP_OVERFLOW_CLASS = "d-menu-overflow";
+	var GROUP_CONTENT_CLASS = "group-content", GROUP_OVERFLOW_CLASS = "i-menu-overflow d-menu-overflow";
 
 	/**
      * @author Frank Zhang (mailto:frank.zhang@bstek.com)
@@ -8,6 +8,7 @@
 	 */
 	dorado.widget.Menu = $extend([dorado.widget.Control, dorado.widget.FloatControl], /** @scope dorado.widget.Menu.prototype */ {
 		$className: "dorado.widget.Menu",
+        _inherentClassName: "i-menu",
 
 		focusable: true,
 		selectable: false,
@@ -18,7 +19,7 @@
 			},
 
 			floatingClassName: {
-				defaultValue: "d-menu-floating"
+				defaultValue: "i-menu-floating"
 			},
 
 			visible: {
@@ -671,7 +672,7 @@
 		createDom: function() {
 			var menu = this, doms = {}, dom = $DomUtils.xCreateElement({
 				tagName: "div",
-				className: menu._className,
+				className: "i-menu " + menu._className,
 				content: {
 					tagName: "ul",
 					className: "group-content",
@@ -723,7 +724,7 @@
 			});
 
 			if (menu._iconPosition == "top") {
-				$fly(dom).addClass(menu._className + "-icon-top");
+				$fly(dom).addClass("i-menu-icon-top " + menu._className + "-icon-top");
 			}
 
 			return dom;
@@ -754,10 +755,10 @@
 					menu._noContentEl.innerHTML = "&lt;empty panel&gt;";
 					dom.appendChild(menu._noContentEl);
 				}
-				$fly(dom).addClass(menu._className + "-no-content");
+				$fly(dom).addClass("i-menu-no-content " + menu._className + "-no-content");
 			} else {                            
 				if(menu._noContentEl){
-					$fly(dom).removeClass(menu._className + "-no-content");
+					$fly(dom).removeClass("i-menu-no-content " + menu._className + "-no-content");
 				}
 			}
 		},

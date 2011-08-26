@@ -1,190 +1,90 @@
-.d-tip {
-    position: absolute;
-    margin: 0;
-    
-    overflow: visible;
-
-    -moz-border-radius: 2px;
-	-webkit-border-radius: 2px;
-	border-radius: 3px;
-    border: 1px solid #a17900;
-    background-color: #fdfcc2;
-    padding: 5px;
+.d-tip{
+	border: 1px solid #a17900;
+	background-color: #fdfcc2;
 }
 
 .d-ie .d-tip{
-    padding: 0;
-    border: 0;
-    background-color: transparent;
+	border: 0;
+	background-color: transparent;
 }
 
-.d-tip-arrow-top, .d-tip-arrow-bottom, .d-tip-arrow-left, .d-tip-arrow-right {
+.d-tip-arrow-top .arrow, .d-tip-arrow-bottom .arrow, .d-tip-arrow-left .arrow, .d-tip-arrow-right .arrow{
+	background: transparent url(base/tip-anchor-sprite.gif) no-repeat;
 }
 
-.d-tip-arrow-top .arrow, .d-tip-arrow-bottom .arrow {
-    width: 13px;
-    height: 9px;
+.d-tip-arrow-bottom .arrow{
+	background-position: -13px 0;
 }
 
-.d-tip-arrow-left .arrow, .d-tip-arrow-right .arrow {
-    width: 9px;
-    height: 13px;
+.d-ie6 .d-tip-arrow-bottom .arrow{
+	background-position: -13px 5px;
 }
 
-.d-tip-arrow-top .arrow, .d-tip-arrow-bottom .arrow, .d-tip-arrow-left .arrow, .d-tip-arrow-right .arrow {
-    background: transparent url(base/tip-anchor-sprite.gif) no-repeat;
-    position: absolute;
+.d-tip-arrow-left .arrow{
+	background-position: -26px 0;
 }
 
-.d-tip-arrow-top .arrow {
-    top: -7px;
-    left: 8px;
+.d-tip-arrow-right .arrow{
+	background-position: -35px 0;
 }
 
-.d-tip-arrow-bottom .arrow {
-    background-position: -13px 0;
-    bottom: -7px;
-    left: 8px;
+.d-tip .tip-tl{
+	background: transparent url(base/tip-clr.gif) no-repeat scroll 0 top;
 }
 
-.d-ie6 .d-tip-arrow-bottom .arrow {
-    background-position: -13px 5px;
-    bottom: -7px;
-    left: 8px;
+.d-tip .tip-tr{
+	background: transparent url(base/tip-clr.gif) no-repeat scroll right -10px;
 }
 
-.d-ie6 .d-tip-arrow-bottom .arrow {
-    bottom: -11px;
+.d-tip .tip-cl{
+	background: transparent url(base/tip-bg.gif) repeat-y scroll 0 0;
 }
 
-.d-tip-arrow-left .arrow {
-    background-position: -26px 0;
-    top: 8px;
-    left: -7px;
+.d-tip .tip-cr{
+	background: transparent url(base/tip-bg.gif) repeat-y scroll right 0;
 }
 
-.d-tip-arrow-right .arrow {
-    background-position: -35px 0;
-    top: 8px;
-    right: -7px;
+.d-tip .tip-cm .caption{
+	font-weight: bold;
 }
 
-.d-tip .tip-tl {
-    background: transparent url(base/tip-clr.gif) no-repeat scroll 0 top;
-    font-size: 0;
-    line-height: 0;
-    margin-right: 5px;
+.d-tip .tip-bl{
+	background: transparent url(base/tip-clr.gif) no-repeat scroll 0 -5px;
 }
 
-.d-tip .tip-tr {
-    background: transparent url(base/tip-clr.gif) no-repeat scroll right -10px;
-    font-size: 0;
-    line-height: 0;
-    padding: 5px 0 0 0;
-    margin-right: -5px;
+.d-tip .tip-br{
+	background: transparent url(base/tip-clr.gif) no-repeat scroll right bottom;
 }
 
-.d-tip .tip-cl {
-    background: transparent url(base/tip-bg.gif) repeat-y scroll 0 0;
-    padding-left: 6px;
+.d-tip .close{
+	background: url(base/tip-close.gif) 0 0;
+	zoom: 1;
 }
 
-.d-tip .tip-cr {
-    background: transparent url(base/tip-bg.gif) repeat-y scroll right 0;
-    padding-right: 6px;
-    overflow: auto;
+.d-tip .close-hover{
+	background-position: -16px 0;
 }
 
-.d-tip .tip-cm {
-    margin: 0;
-    padding: 0;
+.d-tip .close-click{
+	background-position: -32px 0;
 }
 
-.d-tip .tip-cm .caption {
-    padding-bottom: 3px;
-    font-weight: bold;
+.d-tip .tip-content .tip-icon{
+	background: transparent none no-repeat center center;
 }
 
-.d-tip .tip-bl {
-    background: transparent url(base/tip-clr.gif) no-repeat scroll 0 -5px;
-    margin-right: 5px;
+.d-tip .tip-content .error-icon{
+	background-image: url(common/icon-error.gif);
 }
 
-.d-tip .tip-br {
-    background: transparent url(base/tip-clr.gif) no-repeat scroll right bottom;
-    font-size: 0;
-    padding: 5px 0 0 0;
-    line-height: 0;
-    margin-right: -5px;
+.d-tip .tip-content .info-icon{
+	background-image: url(common/icon-info.gif);
 }
 
-.d-tip .close {
-    position: absolute;
-    cursor: pointer;
-
-    right: -7px;
-    top: -7px;
-    background: url(base/tip-close.gif) 0 0;
-    width: 16px;
-    height: 16px;
-
-    zoom: 1;
+.d-tip .tip-content .warning-icon{
+	background-image: url(common/icon-warning.gif);
 }
 
-.d-tip .close-hover {
-    background-position: -16px 0;
-}
-
-.d-tip .close-click {
-     background-position: -32px 0;
-}
-
-.d-tip .tip-content {
-    position: relative;
-    word-break: break-all;
-}
-
-.d-tip .tip-content-hasicon {
-    min-height: 48px;
-    padding-left: 62px;
-}
-
-.d-ie6 .d-tip .tip-content-hasicon {
-    height: 48px;
-    overflow: visible;
-}
-
-.d-tip .tip-content .tip-text {
-}
-
-.d-tip .tip-content-hasicon .tip-text {
-}
-
-.d-tip .tip-content .tip-icon {
-    position: absolute;
-    left: 0;
-    top: 0;
-    background: transparent none no-repeat center center;
-}
-
-.d-tip .tip-content .error-icon, .d-tip .tip-content .info-icon, .d-tip .tip-content .warning-icon, .d-tip .tip-content .question-icon {
-    height: 48px;
-    width: 48px;
-    margin: 0 12px 0 2px;
-}
-
-.d-tip .tip-content .error-icon {
-    background-image: url(common/icon-error.gif);
-}
-
-.d-tip .tip-content .info-icon {
-    background-image: url(common/icon-info.gif);
-}
-
-.d-tip .tip-content .warning-icon {
-    background-image: url(common/icon-warning.gif);
-}
-
-.d-tip .tip-content .question-icon {
-    background-image: url(common/icon-question.gif);
+.d-tip .tip-content .question-icon{
+	background-image: url(common/icon-question.gif);
 }
