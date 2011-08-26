@@ -55,13 +55,12 @@
 
 .d-year-month-picker .btns-pane {
     position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 30px;
-    text-align: center;
     float: left;
     clear: left;
+    bottom: 0;
+    text-align: center;
     width: 100%;
+    height: 30px;
 }
 
 .d-year-month-picker .btns-pane .d-button {

@@ -15,24 +15,21 @@
 
 .d-split-panel .splitter{
     position: absolute;
-    font-size:1px;
+    font-size: 1px;
 }
 
 .d-split-panel .splitter-left, .d-split-panel .splitter-right{
     width: 5px;
     height: 100%;
-
     background: url(base/split-panel-vert-bg.gif);
-
     line-height: 100%;
     vertical-align: middle;
 }
 
-.d-split-panel .splitter-top, .d-split-panel .splitter-bottom{
+.d-split-panel .splitter-top, .d-split-panel .splitter-bottom {
     line-height: 5px;
     height: 5px;
     width: 100%;
-
     background: url(base/split-panel-hori-bg.gif);
 }
 

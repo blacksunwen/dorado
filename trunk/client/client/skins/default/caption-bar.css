@@ -1,7 +1,7 @@
 .d-caption-bar{
+    overflow: hidden;
 	background: #F8F8F8 url(base/caption-bar-bg.gif) bottom repeat-x;
     height: 24px;
-	overflow: hidden;
 	padding: 1px;
 }
 
@@ -16,10 +16,10 @@
 	float: left;
 	margin-left: 6px;
 	margin-top: 1px;
-    float: left;
     width: 20px;
     height: 20px;
-    background: transparent 0 center no-repeat;
+    background-position: 0 center;
+    background-repeat: no-repeat;
 }
 
 .d-caption-bar .button-group{
@@ -41,6 +41,7 @@
 	line-height: 20px;
     height: 22px;
 }
+
 .d-ie .d-caption-bar .caption-bar-icon{
 	margin-top: 0;
 }
