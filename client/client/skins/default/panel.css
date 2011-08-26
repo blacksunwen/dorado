@@ -75,15 +75,15 @@
     margin-right: 2px;
 }
 
+
 .d-panel-curveborder .panel-header-right{
-    background: url(base/panel-corners.gif) no-repeat scroll right -4px;
+    position: relative;
     font-size: 0;
     line-height: 0;
+    background: url(base/panel-corners.gif) no-repeat scroll right -4px;
     padding: 2px 0 0 0;
     margin-right: -2px;
-    position: relative;
 }
-
 .d-panel-curveborder .panel-body-left {
     background: url(base/panel-lr.gif) repeat-y 0 0;
     padding-left: 2px;
@@ -95,11 +95,11 @@
 }
 
 .d-panel-curveborder .panel-body {
-    background: #FFFFFF;
+    overflow: hidden;
     margin: 0;
     padding: 0;
-    overflow: hidden;
 	border: 0;
+    background: #FFFFFF;
 }
 
 .d-panel-curveborder .panel-footer-left {
@@ -108,12 +108,12 @@
 }
 
 .d-panel-curveborder .panel-footer-right {
-    background: url(base/panel-corners.gif) no-repeat scroll right bottom;
+    position: relative;
     font-size: 0;
+    margin-right: -2px;
     padding: 2px 0 0 0;
     line-height: 0;
-    margin-right: -2px;
-    position: relative;
+    background: url(base/panel-corners.gif) no-repeat scroll right bottom;
 }
 
 .d-panel-curveborder .content-panel {

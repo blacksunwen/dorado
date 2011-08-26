@@ -1,26 +1,28 @@
 .d-progress-bar{
+    position: relative;
+    overflow: hidden;
+    font-size: 9pt;
 	height: 18px;
 	border: 1px #A1A1A1 solid;
-	background: url(base/progressbar-bg.gif) 0 -16px repeat-x;
-	overflow: hidden;
-	position: relative;
-	font-size: 9pt;
+	background: url(base/progressbar-bg.gif) 0 -16px;
+    background-repeat: repeat-x;
 }
 
 .d-progress-bar .bar{
-	height: 16px;
-	background: url(base/progressbar-bg.gif) 0 0 repeat-x scroll;
-	position: absolute;
+    position: absolute;
 	left: 1px;
 	top: 1px;
+	height: 16px;
+	background: url(base/progressbar-bg.gif) 0 0 scroll;
+    background-repeat: repeat-x;
 }
 
 .d-progress-bar .msg{
-	width: 100%;
-	position: absolute;
+    position: absolute;
 	left: 0px;
 	top: 0px;
+	width: 100%;
+	vertical-align: middle;
 	text-align: center;
 	line-height: 18px;
-	vertical-align: middle;
 }

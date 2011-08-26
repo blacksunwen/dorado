@@ -52,8 +52,8 @@
 }
 
 .d-field-set .button-panel {
-    padding: 2px 5px 5px 2px;
     text-align: center;
+    padding: 2px 5px 5px 2px;
     height: 24px;
 }
 
@@ -77,36 +77,35 @@
 }
 
 .d-group-box .caption-bar {
+    overflow: hidden;
     height: 20px;
 	line-height: 20px;
 	background: transparent url("base/groupbox-bg.gif") 0 0 repeat;
-	overflow: hidden;
 	padding-left: 10px;
 }
 
 .d-group-box .caption-bar .bar-right{
+    float: right;
 	background:#fff url("base/groupbox-bg.gif") right -20px no-repeat;
 	height:20px;
 	width:100px;
-	float: right;
 }
 
 .d-group-box .caption-bar .caption{
+    float: left;
+    overflow: hidden;
+    height: 20px;
+	line-height: 20px;
+	padding: 0 6px 0 2px;
     color: #15428B;
     font-weight: bold;
 	background-color: #fff;
-	height: 20px;
-	overflow: hidden;
-	line-height: 20px;
-	float: left;
-	padding: 0 6px 0 2px;
 }
 
 .d-group-box .caption-bar .collapse-button {
     float: left;
-    background: #fff url("base/groupbox-button.gif") no-repeat scroll 0 center;
     cursor: pointer;
-
+    background: #fff url("base/groupbox-button.gif") no-repeat scroll 0 center;
     height: 20px;
     width: 17px;
 }
@@ -124,8 +123,8 @@
 }
 
 .d-group-box .content-panel {
-    padding: 5px;
     display: block;
+    padding: 5px;
 }
 
 .d-group-box-collapsed .body{

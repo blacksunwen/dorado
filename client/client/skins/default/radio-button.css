@@ -1,11 +1,12 @@
 .d-radio {
-    height: 20px;
     overflow: hidden;
     cursor: default;
+    height: 20px;
 }
 
 .d-radio .icon {
     float: left;
+    display: inline-block;
     width: 16px;
     height: 20px;
     background: url(form/checkbox-radiobox.gif) 0 -20px;
@@ -31,6 +32,7 @@
     line-height: 20px;
     vertical-align: middle;
     margin-right: 8px;
+    white-space: nowrap;
 }
 
 .d-radiogroup {

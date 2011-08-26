@@ -119,8 +119,9 @@
 }
 
 .d-tip .close {
-    cursor: pointer;
     position: absolute;
+    cursor: pointer;
+
     right: -7px;
     top: -7px;
     background: url(base/tip-close.gif) 0 0;

@@ -1,7 +1,7 @@
 .d-text-box .d-spinner-trigger {
     width: 18px;
     height: 18px;
-    background: url(base/spinner-button.gif)
+    background: url(base/spinner-button.gif);
 }
 
 .d-text-box .d-spinner-trigger .up-button, .d-text-box .d-spinner-trigger .down-button {

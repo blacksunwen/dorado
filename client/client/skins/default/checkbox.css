@@ -1,7 +1,7 @@
 .d-checkbox {
-    height: 20px;
     overflow: hidden;
     cursor: default;
+    height: 20px;
 }
 
 .d-checkbox-dirty {
@@ -52,9 +52,9 @@
 }
 
 .d-checkbox .caption {
-    line-height: 20px;
     vertical-align: middle;
     white-space: nowrap;
+    line-height: 20px;
 }
 
 .d-checkbox-icononly{

@@ -8,28 +8,21 @@
 }
 
 .d-dialog-caption-bar {
-    line-height: 28px;
     height: 29px;
     background: url(base/dialog-hori-bg-blur.gif) 0 -48px repeat-x;
 	margin: 0px 8px;
-}
-
-.d-dialog-focused{}
-
-.d-dialog-focused .d-dialog-caption-bar{
-	background-image: url(base/dialog-hori-bg.gif);
+    padding: 0;
 }
 
 .d-dialog-caption-bar .caption {
     padding-left: 8px;
     text-align: left;
+    line-height: 28px;
+    vertical-align: middle;
 }
 
 .d-dialog-caption-bar .button-group {
-    float: right;
-    height: 20px;
     margin: 4px 4px 0 0;
-    padding: 0;
 }
 
 .d-dialog-caption-bar .button-group div {
@@ -37,12 +30,14 @@
 }
 
 .d-dialog-caption-bar .caption-bar-icon{
-    float: left;
-    width: 20px;
-    height: 20px;
-	margin-left: 6px;
 	margin-top: 4px;
     background: transparent 0px center no-repeat;
+}
+
+.d-dialog-focused{}
+
+.d-dialog-focused .d-dialog-caption-bar{
+	background-image: url(base/dialog-hori-bg.gif);
 }
 
 .d-dialog .dialog-header {

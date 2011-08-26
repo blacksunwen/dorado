@@ -8,8 +8,8 @@
 }
 
 .d-slider .slider-start, .d-slider .slider-end {
-    font-size: 1pt;
     position: absolute;
+    font-size: 1pt;
     background: transparent no-repeat 0 0;
 }
 
@@ -18,12 +18,14 @@
 }
 
 .d-slider-vertical .slider-thumb {
-    font-size: 1pt;
     position: absolute;
-    width: 20px;
-    height: 11px;
+    font-size: 1pt;
     left: 0;
     top: 0;
+
+    width: 20px;
+    height: 11px;
+
     background-image: url(base/slider-v-thumb.gif);
 }
 
@@ -36,8 +38,8 @@
 }
 
 .d-slider-vertical .slider-start, .d-slider-vertical .slider-end {
-    height: 5px;
     width: 20px;
+    height: 5px;
 }
 
 .d-slider-vertical .slider-start {
@@ -47,8 +49,8 @@
 }
 
 .d-slider-vertical .slider-end {
-    bottom: 0;
     left: 0;
+    bottom: 0;
     background: url(base/slider-v-bg.gif) transparent no-repeat 0 bottom;
 }
 
@@ -82,8 +84,8 @@
 }
 
 .d-slider-horizental .slider-start, .d-slider-horizental .slider-end {
-    height: 20px;
     width: 5px;
+    height: 20px;
 }
 
 .d-slider-horizental .slider-start {

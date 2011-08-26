@@ -1,32 +1,30 @@
 .d-menu{
 	cursor: default;
-	background: #FDFDFD url(base/menu-bg.gif) repeat-y;
-
-	border: 1px solid #A1A1A1;
     overflow: hidden;
+    border: 1px solid #A1A1A1;
+	background: #FDFDFD url(base/menu-bg.gif) repeat-y;
 }
 
 .d-menu .group-content{
+    position: relative;
+    overflow: hidden;
     list-style: none;
+    display: block;
+    cursor: pointer;
 	background: transparent none repeat scroll 0 0;
 	border: 0 none;
 	margin: 0;
-
-	line-height: 100%;
-	display: block;
 	padding: 1px;
-	cursor: pointer;
-    overflow: hidden;
-    position: relative;
+    line-height: 100%;
 }
 
 .d-menu .group-content .menu-item{
-	background: transparent left center repeat-x;
-
+    display: block;
+    cursor: pointer;
 	margin: 0 !important;
-	display: block;
+
+	background: transparent left center repeat-x;
 	padding: 1px;
-	cursor: pointer;
     color: #222;
 }
 
@@ -46,22 +44,20 @@
 
 .d-menu .group-content .menu-item .menu-item-content{
 	display: block;
+    white-space: nowrap;
 	line-height: 16px;
 	padding: 2px 10px 2px 3px;
-	white-space: nowrap;
 }
 
 .d-menu .group-content .menu-item .menu-item-content .caption{
-	/*background:left center no-repeat;
-	padding-left:25px;*/
     padding-left: 5px;
     padding-right: 5px;
 	zoom: 1;
 }
 
 .d-menu .group-content .menu-item .menu-item-content .icon{
+    display: inline-block;
     background: left center no-repeat;
-	display: inline-block;
     height: 18px;
     padding-left: 16px;
 }
@@ -90,8 +86,8 @@
 }
 
 .d-menu-icon-top .group-content .menu-item .menu-item-content .icon{
-    background-position: center center;
     display: inline-block;
+    background-position: center center;
     width: 32px;
     height: 32px;
 }
@@ -107,10 +103,10 @@
 
 .d-menu .no-content-group{
 	display: none;
-	height: 50px;
     float: left;
+    vertical-align: middle;
+	height: 50px;
 	line-height: 50px;
-	vertical-align: middle;
 	padding: 0 10px 0 10px;
 }
 
@@ -123,20 +119,20 @@
 }
 
 .d-menu .overflow-top-arrow{
-    font-size: 1%;
-    height: 10px;
     display: none;
     cursor: pointer;
+    font-size: 1%;
+    height: 10px;
     background: url(base/menu-overflow-buttons.gif) no-repeat center top;
     filter: alpha( opacity = 50);
 	opacity: 0.5;
 }
 
 .d-menu .overflow-bottom-arrow{
-    font-size: 1%;
-    height: 10px;
     display: none;
     cursor: pointer;
+    font-size: 1%;
+    height: 10px;
     background: url(base/menu-overflow-buttons.gif) no-repeat center bottom;
     filter: alpha( opacity = 50);
 	opacity: 0.5;
@@ -158,9 +154,9 @@
 
 .d-menu-floating {
     position: absolute;
+    float: none;
 	left: -9999px;
 	top: -9999px;
-    float: none;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
