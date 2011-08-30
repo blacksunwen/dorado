@@ -763,8 +763,6 @@
 													property : property
 												});
 											}
-
-											$callback(callback, success, result);
 										}
 									});
 								} else {
