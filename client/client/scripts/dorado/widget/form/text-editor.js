@@ -425,7 +425,7 @@
 				this._textDom.focus();
 			}, 0);
 			
-			if (this._readOnly) return;
+			if (this._readOnly || this._readOnly2) return;
 			if (this.fireEvent("onTriggerClick", this)) {
 				trigger.execute(this);
 			}
