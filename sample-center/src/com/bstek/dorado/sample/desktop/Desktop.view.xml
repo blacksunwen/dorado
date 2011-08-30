@@ -92,6 +92,10 @@
       </Apps>
       <Desktop>
         <DesktopCarousel>
+          <ClientEvent name="onShortcutContextMenu">var menus = this.id(&quot;menus&quot;);
+menus.show({
+	event: arg.event
+});</ClientEvent>
           <Desktop>
             <Property name="iconSize">small</Property>
             <Shortcut>
@@ -265,6 +269,20 @@ if (contextMenuTaskButton &amp;&amp; contextMenuTaskButton.get(&quot;app&quot;))
     contextMenuTaskButton.get(&quot;app&quot;).close();
 }</ClientEvent>
         <Property name="caption">Close</Property>
+      </MenuItem>
+    </Menu>
+    <Menu id="menus">
+      <MenuItem>
+        <ClientEvent name="onClick">var shell = this.id(&quot;shell&quot;), desktop = shell.getCurrentDesktop(), 
+	shortcut = desktop.get(&quot;contextMenuShortcut&quot;);
+desktop.removeItem(shortcut);</ClientEvent>
+        <Property name="caption">Remove</Property>
+      </MenuItem>
+      <MenuItem>
+        <ClientEvent name="onClick">var shell = this.id(&quot;shell&quot;), desktop = shell.getCurrentDesktop(), 
+	shortcut = desktop.get(&quot;contextMenuShortcut&quot;);
+shell.launchApp(shortcut.get(&quot;appId&quot;));</ClientEvent>
+        <Property name="caption">Launch</Property>
       </MenuItem>
     </Menu>
   </View>
