@@ -20,6 +20,8 @@ public class Button extends AbstractButton {
 	private String iconClass;
 	private boolean triggerToggled;
 	private double num;
+	private Boolean showTrigger;
+	private Boolean splitButton;
 
 	public String getCaption() {
 		return caption;
@@ -60,5 +62,23 @@ public class Button extends AbstractButton {
 	public void setNum(double num) {
 		this.num = num;
 	}
+
+	public Boolean getShowTrigger() {
+		return showTrigger;
+	}
+
+	public void setShowTrigger(Boolean showTrigger) {
+		this.showTrigger = showTrigger;
+	}
+
+	public Boolean getSplitButton() {
+		return splitButton;
+	}
+
+	public void setSplitButton(Boolean splitButton) {
+		this.splitButton = splitButton;
+	}
+	
+	
 
 }
