@@ -95,7 +95,7 @@ dorado.MessageBox = {
 		if (!dorado.MessageBox._dialog) {
 			dorado.MessageBox.defaultTitle = $resource("dorado.baseWidget.MessageBoxDefaultTitle");
 			dorado.MessageBox._dialog = new dorado.widget.Dialog({
-				focusAfterShow: false,
+				focusAfterShow: true,
 				anchorTarget: window,
 				align: "center",
 				vAlign: "center",
