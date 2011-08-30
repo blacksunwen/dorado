@@ -171,7 +171,7 @@
 			 * @type boolean
 			 * @attribute
 			 */
-			submitable: {
+			submittable: {
 				defaultValue: true
 			},
 			

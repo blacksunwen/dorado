@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <events>
 	<type class="com.bstek.dorado.data.type.DataType">
-		<event name="onAttributeChanged" />
+		<event name="onAttributeChange" />
 	</type>
 	<type class="com.bstek.dorado.data.type.EntityDataType">
 		<event name="beforeCurrentChange" />

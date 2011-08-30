@@ -1,14 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:ivy="antlib:org.apache.ivy.ant" default="build">
+<project default="build">
 	<property name="izpack.dir" value="D:/projects/dorado7/build/IzPack4" />
 	<property name="release.dir" value="D:/projects/dorado7/dist" />
 
-	<taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant">
-		<classpath>
-			<pathelement location="${lib.dir}/${ivy.jar}" />
-			<pathelement location="${lib.dir}/${oro.jar}" />
-		</classpath>
-	</taskdef>
 	<taskdef name="IzPack" classname="com.izforge.izpack.ant.IzPackTask">
 		<classpath>
 			<pathelement path="${izpack.dir}/lib/compiler.jar" />
@@ -34,20 +28,22 @@
 
 	<target name="retrieve-jars">
 		<delete>
-			<fileset dir="${standard-edition.dir}/lib/dorado" includes="×.jar" />
+			<fileset dir="${standard-edition.dir}/lib/dorado" includes="*.jar" />
 		</delete>
-		<copy todir="${standard-edition.dir}/lib/dorado">
-			<fileset dir="${target.lib.dir}">
-				<include name="*.jar" />
-			</fileset>
-		</copy>
-
 		<delete>
 			<fileset dir="${standard-edition.dir}/lib/endorsed" includes="*.jar" />
 		</delete>
-		<ivy:configure file="${work.dir}/ivysettings.xml" />
-		<ivy:resolve file="${resources.dir}/blank-project/ivy.xml" />
-		<ivy:retrieve pattern="${standard-edition.dir}/lib/endorsed/[artifact]-[revision](-[classifier]).[ext]" conf="runtime" />
+
+		<copy todir="${standard-edition.dir}/lib/dorado">
+			<fileset dir="${target.lib.dir}" includes="*.jar" />
+		</copy>
+		<copy todir="${standard-edition.dir}/lib/endorsed">
+			<fileset dir="${work.dir}/lib">
+				<include name="*.jar" />
+				<exclude name="dorado-*.jar" />
+				<exclude name="jta-*.jar" />
+			</fileset>
+		</copy>
 	</target>
 
 	<target name="retrieve-sources">
@@ -71,7 +67,7 @@
 			<fileset dir="${work.dir}/blank" />
 		</copy>
 
-		<delete dir="${file}" />
+		<delete file="${file}" />
 		<zip destfile="${file}" compress="true" level="9">
 			<fileset dir="${temp.dir}" />
 		</zip>
@@ -82,30 +78,6 @@
 			<path>
 				<fileset dir="${standard-edition.dir}/eclipse/dropins/dorado7/plugins">
 					<include name="com.bstek.ide.template2_*.jar" />
-				</fileset>
-			</path>
-		</foreach>
-	</target>
-
-	<target name="do-update-sample-center">
-		<property name="temp.dir" value="${work.dir}/installer/com.bstek.ide.sample" />
-		<unzip src="${file}" dest="${temp.dir}" overwrite="true" />
-
-		<delete dir="${temp.dir}/samples" />
-		<mkdir dir="${temp.dir}/samples" />
-		<copy todir="${temp.dir}/samples" file="${work.dir}/sample-center/sample-center.zip" />
-
-		<delete dir="${file}" />
-		<zip destfile="${file}" compress="true" level="9">
-			<fileset dir="${temp.dir}" />
-		</zip>
-	</target>
-
-	<target name="update-sample-center">
-		<foreach target="do-update-sample-center" param="file" inheritall="true">
-			<path>
-				<fileset dir="${standard-edition.dir}/eclipse/dropins/dorado7/plugins">
-					<include name="com.bstek.ide.sample_*.jar" />
 				</fileset>
 			</path>
 		</foreach>
@@ -122,7 +94,7 @@
 			<fileset dir="${work.dir}/sample-center/web/WEB-INF/lib" includes="hibernate-*.jar" />
 		</copy>
 
-		<delete dir="${file}" />
+		<delete file="${file}" />
 		<zip destfile="${file}" compress="true" level="9">
 			<fileset dir="${temp.dir}" />
 		</zip>
@@ -148,7 +120,7 @@
 			<fileset dir="${target.lib.dir}" includes="dorado-desktop-*.jar" />
 		</copy>
 
-		<delete dir="${file}" />
+		<delete file="${file}" />
 		<zip destfile="${file}" compress="true" level="9">
 			<fileset dir="${temp.dir}" />
 		</zip>
@@ -174,7 +146,7 @@
 			<fileset dir="${target.lib.dir}" includes="dorado-chart-*.jar" />
 		</copy>
 
-		<delete dir="${file}" />
+		<delete file="${file}" />
 		<zip destfile="${file}" compress="true" level="9">
 			<fileset dir="${temp.dir}" />
 		</zip>
@@ -195,10 +167,10 @@
 		<unzip src="${file}" dest="${temp.dir}" overwrite="true" />
 
 		<copy todir="${temp.dir}">
-			<fileset dir="${resources.dir}/hello-world" includes="**/*.*" />
+			<fileset dir="${resources.dir}/hello-world" />
 		</copy>
 
-		<delete dir="${file}" />
+		<delete file="${file}" />
 		<zip destfile="${file}" compress="true" level="9">
 			<fileset dir="${temp.dir}" />
 		</zip>
@@ -214,26 +186,48 @@
 		</foreach>
 	</target>
 
-	<target name="update-ide" depends="update-blank-project,update-sample-center,update-hibernate,update-desktop,update-chart,update-helloworld" />
+	<target name="do-update-samplecenter">
+		<property name="temp.dir" value="${work.dir}/installer/com.bstek.ide.samplecenter" />
+		<unzip src="${file}" dest="${temp.dir}" overwrite="true" />
 
-	<target name="build-installer">
+		<copy todir="${temp.dir}">
+			<fileset dir="${work.dir}/sample-center/facet" />
+		</copy>
+
+		<delete file="${file}" />
+		<zip destfile="${file}" compress="true" level="9">
+			<fileset dir="${temp.dir}" />
+		</zip>
+	</target>
+
+	<target name="update-samplecenter">
+		<foreach target="do-update-samplecenter" param="file" inheritall="true">
+			<path>
+				<fileset dir="${standard-edition.dir}/eclipse/dropins/dorado7/plugins">
+					<include name="com.bstek.ide.samplecenter_*.jar" />
+				</fileset>
+			</path>
+		</foreach>
+	</target>
+
+	<target name="update-ide" depends="update-blank-project,update-hibernate,update-desktop,update-chart,update-helloworld,update-samplecenter" />
+
+	<target name="build-izpack" if="izpack">
 		<echo message="Makes the installer using IzPack" />
-		<echo message="${basedir}/izpack-install.xml" />
+		<echo message="${resources.dir}/izpack.xml" />
 		<echo message="${standard-edition.dir}" />
 		<echo message="${izpack.dir}" />
 
-		<!--
-		<IzPack input="${basedir}/izpack-install.xml" output="${release.dir}/dorado-${product.version}-installer.jar" installerType="standard" basedir="${standard-edition.dir}" IzPackDir="${izpack.dir}/" />
-		-->
+		<IzPack input="${resources.dir}/izpack.xml" output="${release.dir}/dorado-${build.revision}-installer.jar" installerType="standard" basedir="${standard-edition.dir}" IzPackDir="${izpack.dir}/" />
 
 		<!--
-		<IzPack input="${basedir}/izpack-install.xml"
-			output="${release.dir}/dorado.${product.version}.installer.jar"
+		<IzPack input="${resources.dir}/izpack.xml"
+			output="${release.dir}/dorado-${build.revision}-installer.jar"
 			installerType="web"
 			basedir="${standard-edition.dir}"
 			IzPackDir="${izpack.dir}/" />
 		-->
 	</target>
 
-	<target name="build" depends="init,retrieve-jars,retrieve-sources,update-ide" />
+	<target name="build" depends="init,retrieve-jars,retrieve-sources,update-ide,build-izpack" />
 </project>

@@ -7,8 +7,6 @@ package com.bstek.dorado.view.widget.layout;
  * @since Jun 18, 2009
  */
 public class AnchorLayoutConstraint extends LayoutConstraintSupport {
-	private static final long serialVersionUID = -780861327680634227L;
-
 	private String left;
 	private String top;
 	private String right;

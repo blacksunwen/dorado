@@ -72,10 +72,9 @@
 		</copy>
 	</target>
 
-	<target name="javadoc" if="standard-edition.dir">
+	<target name="javadoc" if="javadoc">
 		<property name="javadoc.dist" value="${standard-edition.dir}/docs/javadoc" />
 		<property name="javadoc.src" value="${work.dir}/javadoc" />
-		<property name="stylesheet" value="${resources.dir}/stylesheet.css" />
 
 		<mkdir dir="${javadoc.src}" />
 		<foreach list="${product.modules}" param="module" target="copy-javadoc-sources" inheritall="true" />
@@ -90,10 +89,14 @@
 			</fileset>
 		</path>
 
-		<javadoc access="protected" author="true" encoding="UTF-8" docencoding="UTF-8" destdir="${javadoc.dist}" doctitle="Dorado 7 Server Side API Documentation" stylesheetfile="${stylesheet}" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="1.5" splitindex="true" use="true" version="true" useexternalfile="yes">
+		<javadoc access="protected" author="true" encoding="UTF-8" docencoding="UTF-8" charset="UTF-8" destdir="${javadoc.dist}" doctitle="Dorado 7 Server Side API Documentation" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="1.5" splitindex="true" use="true" version="true" useexternalfile="yes">
 			<classpath refid="classpath" />
 			<fileset dir="${javadoc.src}" />
+			<doctitle><![CDATA[<h1>Dorado7 Server Side API</h1>]]></doctitle>
+			<bottom><![CDATA[<i>Copyright &#169; 2001-2011 www.BSTEK.com All Rights Reserved.</i>]]></bottom>
+			<link href="http://bsdn.org/projects/dorado7/deploy/javadoc" />
 		</javadoc>
+		<copy file="${resources.dir}/stylesheet.css" todir="${javadoc.dist}" overwrite="true" />
 	</target>
 
 	<target name="publish-module-to-bsdn">

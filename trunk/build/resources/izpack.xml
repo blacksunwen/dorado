@@ -52,7 +52,12 @@
 
 	<resources>
 		<res id="infoBannerPng" src=".installer/images/info-banner.png" />
-		<res id="startTomcatInEclipsePng" src=".installer/images/start-tomcat-in-eclipse.png" />
+		<res id="createSampleCenter1Png" src=".installer/images/create-sample-center1.png" />
+		<res id="configServerRuntime1Png" src=".installer/images/config-server-runtime1.png" />
+		<res id="configServerRuntime2Png" src=".installer/images/config-server-runtime2.png" />
+		<res id="configServerRuntime3Png" src=".installer/images/config-server-runtime3.png" />
+		<res id="configServerRuntime4Png" src=".installer/images/config-server-runtime4.png" />
+		<res id="runSampleCenterPng" src=".installer/images/run-sample-center.png" />
 		<res id="HTMLInfoPanel.beforeReadme" src=".installer/before-readme.html" />
 		<res id="HTMLInfoPanel.postReadme" src=".installer/post-readme.html" />
 		<res id="HTMLLicencePanel.licence" src=".installer/license.html" />
@@ -77,37 +82,36 @@
 
 	<packs>
 		<pack id="core.libraries" name="Dorado Libraries" required="no">
-			<description>Dorado7的核心库文件。</description>
+			<description>Dorado7 Core Libraries.</description>
 			<fileset dir="." targetdir="$INSTALL_PATH">
 				<include name="*.txt" />
 				<include name="lib/dorado/**/*" />
 			</fileset>
 		</pack>
-		
+
 		<pack id="endorsed.libraries" name="Endorsed Libraries" required="no">
-			<description>Dorado7依赖的第三方的库文件。</description>
+			<description>Dorado7 Endorsed libraries.</description>
 			<depends packname="Dorado Libraries" />
 
 			<fileset dir="." targetdir="$INSTALL_PATH">
 				<include name="lib/endorsed/**/*" />
 			</fileset>
 		</pack>
-		
+
 		<pack id="core.source" name="Source" required="no">
-			<description>Dorado7的源代码。</description>
+			<description>Dorado7 Source Code.</description>
 			<fileset dir="." targetdir="$INSTALL_PATH">
 				<include name="src/**/*" />
 			</fileset>
 		</pack>
-		
+
 		<pack id="eclipse.plugins" name="Eclipse IDE Plugins" required="no">
-			<description>用于辅助Dorado7开发的Eclipse插件。</description>
-			<fileset dir="eclipse" targetdir="$INSTALL_PATH/eclipse"
-				defaultexcludes="yes">
+			<description>Dorado7 Eclipse Plugins.</description>
+			<fileset dir="eclipse" targetdir="$INSTALL_PATH/eclipse" defaultexcludes="yes">
 				<include name="dropins/**/*" />
 			</fileset>
 		</pack>
-		
+
 		<pack id="eclipse.ide" name="Eclipse IDE (Recommended)" required="no">
 			<description>Eclipse IDE for Java EE Developers (Eclipse Indigo).
 			</description>
@@ -116,29 +120,27 @@
 				<exclude name="dropins/**/*" />
 			</fileset>
 		</pack>
-		
+
 		<pack id="documentations" name="Documentations" required="no">
-			<description>文档。</description>
+			<description>Documentations.</description>
 			<fileset dir="docs" targetdir="$INSTALL_PATH/docs" />
 		</pack>
-		
+
 		<pack id="tomcat" name="Tomcat (Recommended)" required="no">
-			<description><![CDATA[Apache Tomcat 6.0.32]]></description>
-			<depends packname="Sample Projects (Recommended)" />
+			<description><![CDATA[Apache Tomcat 7.0.20]]></description>
 			<fileset dir="." targetdir="$INSTALL_PATH" defaultexcludes="yes">
-				<include name="apache-tomcat-6.0.32/**/*" />
+				<include name="apache-tomcat-7.0.20/**/*" />
 			</fileset>
 		</pack>
-		
+
 		<pack id="ivy-dorado" name="Ivy Dorado" required="no">
-			<description>用于提取Dorado最新SNAPSHOT版本的小工具。</description>
+			<description>A Tool for retrieving latest Dorado7 SNAPSHOT jars.</description>
 			<fileset dir="ivy-dorado-1.1" targetdir="$INSTALL_PATH/ivy-dorado-1.1" />
 		</pack>
 	</packs>
 
 	<jar src=".installer/eclipse-jarprocessor.jar" stage="install" />
 
-	<!-- The native libraries to add. This is required for creating shortcuts 
-		on Windows -->
+	<!-- The native libraries to add. This is required for creating shortcuts on Windows -->
 	<native type="izpack" name="ShellLink.dll" />
 </installation>

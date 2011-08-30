@@ -49,7 +49,7 @@ dorado.widget.HtmlContainer = $extend(dorado.widget.Container, /** @scope dorado
 		},
 		
 		/**
-		 * 作为子控件容器的子DOM对象的CSS或XPath选择表达式。
+		 * 作为子控件容器的子DOM对象的CSS选择表达式。
 		 * @type String
 		 * @attribute writeBeforeReady
 		 *

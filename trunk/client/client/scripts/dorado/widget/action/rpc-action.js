@@ -1,11 +1,11 @@
 (function() {
-	
+
 	var VALIDATION_RESULT_CODE = {
-		ok: 0,
-		invalid: 1,
-		executing: 2
+		ok : 0,
+		invalid : 1,
+		executing : 2
 	};
-	
+
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @component Action
@@ -16,28 +16,30 @@
 	 * @extends dorado.widget.Action
 	 * @see dorado.DataResolver
 	 */
-	dorado.widget.AjaxAction = $extend(dorado.widget.Action, /** @scope dorado.widget.AjaxAction.prototype */ {
-		$className: "dorado.widget.AjaxAction",
-		
-		ATTRIBUTES: /** @scope dorado.widget.AjaxAction.prototype */ {
-			
+	dorado.widget.AjaxAction = $extend(dorado.widget.Action, /** @scope dorado.widget.AjaxAction.prototype */
+	{
+		$className : "dorado.widget.AjaxAction",
+
+		ATTRIBUTES : /** @scope dorado.widget.AjaxAction.prototype */
+		{
+
 			/**
 			 * 是否默认情况下使用异步方式执行。
 			 * @type boolean
 			 * @attribute
 			 * @default true
 			 */
-			async: {
-				defaultValue: true
+			async : {
+				defaultValue : true
 			},
-			
+
 			/**
 			 * Dorado服务端暴露给客户端的某个服务的名称。
 			 * @type String
 			 * @attribute
 			 */
-			service: {},
-			
+			service : {},
+
 			/**
 			 * 是否支持Dorado的数据实体。
 			 * <p>
@@ -49,41 +51,41 @@
 			 * @attribute
 			 * @default true
 			 */
-			supportsEntity: {
-				defaultValue: true
+			supportsEntity : {
+				defaultValue : true
 			}
 		},
-		
-		getAjaxOptions: function() {
+
+		getAjaxOptions : function() {
 			var jsonData = {
-				action: "remote-service",
-				service: this._service,
-				parameter: dorado.JSON.evaluate(this._parameter),
-				context: (this._view ? this._view.get("context") : null)
+				action : "remote-service",
+				service : this._service,
+				parameter : dorado.JSON.evaluate(this._parameter),
+				context : (this._view ? this._view.get("context") : null)
 			};
-			if (this._supportsEntity) {
+			if(this._supportsEntity) {
 				jsonData.loadedDataTypes = this.get("dataTypeRepository").getLoadedDataTypes();
 			}
 			return dorado.Object.apply({
-				jsonData: jsonData
+				jsonData : jsonData
 			}, $setting["ajax.remoteServiceOptions"]);
 		},
-		
-		doExecuteSync: function() {
+		doExecuteSync : function() {
 			var ajaxOptions = this.getAjaxOptions(), ajax = dorado.Toolkits.getAjax(ajaxOptions);
 			var result = ajax.requestSync(ajaxOptions);
-			if (result.success) {
+			if(result.success) {
 				var result = result.getJsonData(), dataTypeRepository = this.get("dataTypeRepository");
-				if (result && (result.$dataTypeDefinitions || result.$context)) {
+				if(result && (result.$dataTypeDefinitions || result.$context)) {
 					result = result.data;
-					if (result.$dataTypeDefinitions) dataTypeRepository.parseJsonData(result.$dataTypeDefinitions);
-					if (result.$context && this._view) {
+					if(result.$dataTypeDefinitions)
+						dataTypeRepository.parseJsonData(result.$dataTypeDefinitions);
+					if(result.$context && this._view) {
 						var context = this._view.get("context");
 						context.clear();
 						context.put(json.$context);
 					}
 				}
-				if (result && this._supportsEntity) {
+				if(result && this._supportsEntity) {
 					result = dorado.DataUtil.convertIfNecessary(result, dataTypeRepository);
 				}
 				return result;
@@ -91,65 +93,69 @@
 				throw result.error;
 			}
 		},
-
-		doExecuteAsync: function(callback) {
-			var ajaxOptions = this.getAjaxOptions(), ajax = dorado.Toolkits.getAjax(ajaxOptions);			
+		doExecuteAsync : function(callback) {
+			var ajaxOptions = this.getAjaxOptions(), ajax = dorado.Toolkits.getAjax(ajaxOptions);
 			ajax.request(ajaxOptions, {
-				scope: this,
-				callback: function(success, result) {
-					if (success) {
-						result = result.getJsonData(), dataTypeRepository = this.get("dataTypeRepository");
-						if (result && (result.$dataTypeDefinitions || result.$context)) {
+				scope : this,
+				callback : function(success, result) {
+					if(success) { result = result.getJsonData(), dataTypeRepository = this.get("dataTypeRepository");
+						if(result && (result.$dataTypeDefinitions || result.$context)) {
 							result = result.data;
-							if (result) {
-								if (result.$dataTypeDefinitions) dataTypeRepository.parseJsonData(result.$dataTypeDefinitions);
-								if (result.$context && this._view) {
+							if(result) {
+								if(result.$dataTypeDefinitions)
+									dataTypeRepository.parseJsonData(result.$dataTypeDefinitions);
+								if(result.$context && this._view) {
 									var context = this._view.get("context");
 									context.clear();
 									context.put(json.$context);
 								}
 							}
 						}
-						if (result && this._supportsEntity) {
+						if(result && this._supportsEntity) {
 							result = dorado.DataUtil.convertIfNecessary(result, dataTypeRepository);
 						}
 						$callback(callback, true, result);
-					} else $callback(callback, false, result.error);
+					} else
+						$callback(callback, false, result.error);
 				}
 			});
 		}
 	});
-	
+
 	dorado.DataPath.registerInterceptor("CASCADE_DIRTY", function(data) {
 		function isDirty(entity) {
 			var dirty = (entity.state != dorado.Entity.STATE_NONE);
-			if (!dirty) {
+			if(!dirty) {
 				var data = entity._data;
-				for (var p in data) {
+				for(var p in data) {
 					var v = data[p];
-					if (v instanceof dorado.Entity) {
+					if( v instanceof dorado.Entity) {
 						dirty = isDirty(v);
-					} else if (v instanceof dorado.EntityList) {
+					} else if( v instanceof dorado.EntityList) {
 						var it = v.iterator(true);
-						while (it.hasNext()) {
+						while(it.hasNext()) {
 							dirty = isDirty(it.next());
-							if (dirty) break;
+							if(dirty)
+								break;
 						}
 					}
-					if (dirty) break;
+					if(dirty)
+						break;
 				}
 			}
 			return dirty;
 		}
-		
-		if (data instanceof dorado.Entity) {
-			if (!isDirty(data)) data = null;
-		} else if (data instanceof dorado.EntityList) {
+
+		if( data instanceof dorado.Entity) {
+			if(!isDirty(data))
+				data = null;
+		} else if( data instanceof dorado.EntityList) {
 			var it = data.iterator(true);
 			var data = [];
-			while (it.hasNext()) {
+			while(it.hasNext()) {
 				var e = it.next();
-				if (isDirty(e)) data.push(e);
+				if(isDirty(e))
+					data.push(e);
 			}
 		} else {
 			data = null;
@@ -158,53 +164,58 @@
 	}, function(dataType) {
 		return dataType;
 	});
-	
 	var CASCADE_NOT_DRITY_ENTITYS;
-	
+
 	dorado.DataPath.registerInterceptor("DIRTY_TREE", function(data) {
-		
+
 		function gothrough(entity) {
 			var isDirty = entity.isDirty();
 
 			var data = entity._data;
-			for (var property in data) {
-				if (!data.hasOwnProperty(property)) continue;
-				if (property.charAt(0) == '$') continue;
+			for(var property in data) {
+				if(!data.hasOwnProperty(property))
+					continue;
+				if(property.charAt(0) == '$')
+					continue;
 				var propertyDef = (entity._propertyDefs) ? entity._propertyDefs.get(property) : null;
-				if (!propertyDef || !propertyDef._submitable) continue;
-				
+				if(!propertyDef || !propertyDef._submittable)
+					continue;
+
 				var value = entity.get(property, "never");
-				if (value instanceof dorado.EntityList) {
+				if( value instanceof dorado.EntityList) {
 					var it = value.iterator(true);
-					while (it.hasNext()) {
-						if (gothrough(it.next())) isDirty = true;
+					while(it.hasNext()) {
+						if(gothrough(it.next()))
+							isDirty = true;
 					}
 				}
 			}
-			if (!isDirty) CASCADE_NOT_DRITY_ENTITYS[entity.entityId] = true;
+			if(!isDirty)
+				CASCADE_NOT_DRITY_ENTITYS[entity.entityId] = true;
 			return isDirty;
 		}
-		
+
 		CASCADE_NOT_DRITY_ENTITYS = {};
-		if (data instanceof dorado.Entity) {
-			if (!gothrough(data)) data = null;
-		} else if (data instanceof dorado.EntityList) {
+		if( data instanceof dorado.Entity) {
+			if(!gothrough(data))
+				data = null;
+		} else if( data instanceof dorado.EntityList) {
 			var it = data.iterator(true);
 			data = [];
-			while (it.hasNext()) {
+			while(it.hasNext()) {
 				var entity = it.next();
-				if (gothrough(entity)) data.push(entity); 
+				if(gothrough(entity))
+					data.push(entity);
 			}
 		}
 		return data;
 	}, function(dataType) {
 		return dataType;
 	});
-	
 	function filterCascadeDrityEntity(entity) {
 		return !CASCADE_NOT_DRITY_ENTITYS[entity.entityId];
 	}
-	
+
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @component Action
@@ -212,28 +223,30 @@
 	 * @extends dorado.widget.Action
 	 * @see dorado.DataResolver
 	 */
-	dorado.widget.UpdateAction = $extend(dorado.widget.Action, /** @scope dorado.widget.UpdateAction.prototype */ {
-		$className: "dorado.widget.UpdateAction",
+	dorado.widget.UpdateAction = $extend(dorado.widget.Action, /** @scope dorado.widget.UpdateAction.prototype */
+	{
+		$className : "dorado.widget.UpdateAction",
 
-		ATTRIBUTES: /** @scope dorado.widget.UpdateAction.prototype */ {
-			
+		ATTRIBUTES : /** @scope dorado.widget.UpdateAction.prototype */
+		{
+
 			/**
 			 * 是否默认情况下使用异步方式执行。
 			 * @type boolean
 			 * @attribute
 			 * @default true
 			 */
-			async: {
-				defaultValue: true
+			async : {
+				defaultValue : true
 			},
-			
+
 			/**
 			 * 数据处理器的名称。
 			 * @type dorado.DataResolver
 			 * @attribute
 			 */
-			dataResolver: {
-				setter: function(v) {
+			dataResolver : {
+				setter : function(v) {
 					this._dataResolver = (v && v.constructor === String) ? dorado.DataResolver.create(v) : v;
 				}
 			},
@@ -283,20 +296,22 @@
 			 * @type Object[]
 			 * @attribute
 			 */
-			updateItems: {
-				getter: function() {
+			updateItems : {
+				getter : function() {
 					var updateItems = this._updateItems;
-					if (updateItems) {
+					if(updateItems) {
 						var self = this;
 						jQuery.each(updateItems, function(i, updateItem) {
-							if (updateItem.refreshMode == null) updateItem.refreshMode = "value";
-							if (updateItem.autoResetEntityState == null) updateItem.autoResetEntityState = true;
-							
-							if (updateItem.dataSet == null) return;
-							if (typeof updateItem.dataSet == "string") {
+							if(updateItem.refreshMode == null)
+								updateItem.refreshMode = "value";
+							if(updateItem.autoResetEntityState == null)
+								updateItem.autoResetEntityState = true;
+
+							if(updateItem.dataSet == null)
+								return;
+							if( typeof updateItem.dataSet == "string") {
 								updateItem.dataSet = self.get("view").id(updateItem.dataSet);
-							}
-							else if (!(updateItem.dataSet instanceof dorado.widget.DataSet)) {
+							} else if(!(updateItem.dataSet instanceof dorado.widget.DataSet)) {
 								var ref = updateItem.dataSet;
 								updateItem.dataSet = ref.view.id(ref.component);
 							}
@@ -312,19 +327,20 @@
 			 * @type boolean
 			 * @attribute
 			 */
-			alwaysExecute: {}
+			alwaysExecute : {}
 		},
-		
-		EVENTS: /** @scope dorado.widget.UpdateAction.prototype */ {
-			beforeExecute: {
-	 			interceptor: function(superFire, self, arg) {
-	 				var retval = superFire(self, arg);
+
+		EVENTS : /** @scope dorado.widget.UpdateAction.prototype */
+		{
+			beforeExecute : {
+				interceptor : function(superFire, self, arg) {
+					var retval = superFire(self, arg);
 					this._realConfirmMessage = this._confirmMessage;
 					this._confirmMessage = null;
 					return retval;
-	 			}
-	 		},
- 
+				}
+			},
+
 			/**
 			 * 当数据将要被提交给Server之前触发的事件。
 			 * @param {Object} self 事件的发起者，即组件本身。
@@ -336,12 +352,12 @@
 			 * <li>data	-	{Object|Object[]} 以JSON或Array作为载体的提交数据。</li>
 			 * </ul>
 			 * @param {Object} arg.parameter 随本次操作一起被发送的提交参数。
-		 	 * @param {boolean} #arg.processDefault=true 用于通知系统是否要继续完成后续动作。
+			 * @param {boolean} #arg.processDefault=true 用于通知系统是否要继续完成后续动作。
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
 			 */
-			beforeUpdate: {},
-			
+			beforeUpdate : {},
+
 			/**
 			 * 当数据Server完成了对提交数据的处理之后触发的事件。
 			 * @param {Object} self 事件的发起者，即组件本身。
@@ -356,8 +372,8 @@
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
 			 */
-			onUpdate: {},
-			
+			onUpdate : {},
+
 			/**
 			 * 当UpdateAction尝试获取每个UpdateItem对应的提交数据时触发的事件。<br>
 			 * 此事件在提交过程中会针对每一个UpdateItem触发一次。
@@ -368,20 +384,20 @@
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
 			 */
-			onGetUpdateData: {}
+			onGetUpdateData : {}
 		},
 
-		constructor: function(id) {
+		constructor : function(id) {
 			this._updateItems = [];
 			$invokeSuper.call(this, arguments);
 		},
+		getResolveContext : function() {
 
-		getResolveContext: function() {
-			
 			function mergeValidateContext(context, contextForMerge) {
-				if (!context) return contextForMerge;
-				
-				if (VALIDATION_RESULT_CODE[contextForMerge.result] > VALIDATION_RESULT_CODE[context.result]) {
+				if(!context)
+					return contextForMerge;
+
+				if(VALIDATION_RESULT_CODE[contextForMerge.result] > VALIDATION_RESULT_CODE[context.result]) {
 					context.result = contextForMerge.result;
 				}
 				context.info = context.info.concat(contextForMerge.info);
@@ -392,160 +408,171 @@
 				context.executingValidationNum += contextForMerge.executingValidationNum;
 				return context;
 			}
-			
+
 			var dataItems = [], updateInfos = [], aliasMap = {}, hasUpdateData = false, updateItems = this.get("updateItems");
-			for (var i = 0; i < updateItems.length; i++) {
+			for(var i = 0; i < updateItems.length; i++) {
 				var updateItem = updateItems[i];
 				var dataSet = updateItem.dataSet;
 
 				var options = updateItem.options;
-				if (dataSet == null) continue;
-
-				if (options instanceof Object) {
-					if (options.loadMode !== false) options.loadMode = true;
-					if (options.includeUnsubmitableProperties !== true) options.includeUnsubmitableProperties = false;
-					if (options.generateDataType !== false) options.generateDataType = true;
-					if (options.generateState !== false) options.generateState = true;
-					if (options.generateEntityId !== false) options.generateEntityId = true;
+				if(!options && options instanceof Object) {
+					if(options.loadMode !== false)
+						options.loadMode = true;
+					if(options.includeUnsubmittableProperties !== true)
+						options.includeUnsubmittableProperties = false;
+					if(options.generateDataType !== false)
+						options.generateDataType = true;
+					if(options.generateState !== false)
+						options.generateState = true;
+					if(options.generateEntityId !== false)
+						options.generateEntityId = true;
 				} else {
 					options = {
-						loadMode: "never",
-						includeUnsubmitableProperties: false,
-						generateDataType: true,
-						generateState: true,
-						generateEntityId: true
+						loadMode : "never",
+						includeUnsubmittableProperties : false,
+						generateDataType : true,
+						generateState : true,
+						generateEntityId : true
 					};
 				}
-				
+				updateItem.options = options;
+
 				options.firstResultOnly = updateItem.firstResultOnly;
 				options.generateOldData = updateItem.submitOldData;
 
-				var alias = updateItem.alias || dataSet._id;
-				aliasMap[alias] = dataSet;
+				var alias = updateItem.alias;
+				if(dataSet) {
+					alias = alias || dataSet._id;
+					aliasMap[alias] = dataSet;
+				} else if(!alias) {
+					alias = "$alias" + i;
+				}
 
 				var dataPath = updateItem.dataPath || "!DIRTY_TREE";
-				if (dataPath.indexOf("!DIRTY_TREE") >= 0) {
+				if(dataPath.indexOf("!DIRTY_TREE") >= 0) {
 					options.entityFilter = filterCascadeDrityEntity;
 					options.includeDeletedEntity = true;
 					CASCADE_NOT_DRITY_ENTITYS = {};
-				} else if (updateItem.submitSimplePropertyOnly) {
+				} else if(updateItem.submitSimplePropertyOnly) {
 					options.entityFilter = filterCascadeDrityEntity;
 					CASCADE_NOT_DRITY_ENTITYS = {};
 				}
 				var entityFilter = options.entityFilter;
 
-				var data = dataSet.queryData(dataPath, options);
+				var data;
+				if(dataSet)
+					data = dataSet.queryData(dataPath, options);
 				var eventArg = {
-					updateItem: updateItem,
-					data: data
+					updateItem : updateItem,
+					data : data
 				};
 				this.fireEvent("onGetUpdateData", this, eventArg);
 				data = eventArg.data;
-				
-				if (data) {
+
+				if(data) {
 					// validaton
 					var validateContext, validateOptions = {
-						validateSimplePropertyOnly: updateItem.submitSimplePropertyOnly
+						validateSimplePropertyOnly : updateItem.submitSimplePropertyOnly
 					};
-					
-					if (data instanceof Array) {
-						for (var j = 0; j < data.length; j++) {
+
+					if( data instanceof Array) {
+						for(var j = 0; j < data.length; j++) {
 							var entity = data[j];
-							if (entity instanceof dorado.Entity && entity.isDirty()) {
+							if( entity instanceof dorado.Entity && entity.isDirty()) {
 								validateOptions.context = {};
 								entity.validate(validateOptions);
 								validateContext = mergeValidateContext(validateContext, validateOptions.context);
 							}
 						}
-					} else if (data instanceof dorado.EntityList) {
-						for (var it = data.iterator(); it.hasNext();) {
+					} else if( data instanceof dorado.EntityList) {
+						for(var it = data.iterator(); it.hasNext(); ) {
 							var entity = it.next();
-							if (entity.isDirty()) {
+							if(entity.isDirty()) {
 								validateOptions.context = {};
 								entity.validate(validateOptions);
 								validateContext = mergeValidateContext(validateContext, validateOptions.context);
 							}
 						}
-					} else if (data instanceof dorado.Entity && data.isDirty()) {
+					} else if( data instanceof dorado.Entity && data.isDirty()) {
 						validateOptions.context = {};
 						data.validate(validateOptions);
 						validateContext = mergeValidateContext(validateContext, validateOptions.context);
 					}
 				}
-				
+
 				dataItems.push({
-					updateItem: updateItem,
-					alias: alias,
-					data: data,
-					refreshMode: updateItem.refreshMode,
-					autoResetEntityState: updateItem.autoResetEntityState
+					updateItem : updateItem,
+					alias : alias,
+					data : data,
+					refreshMode : updateItem.refreshMode,
+					autoResetEntityState : updateItem.autoResetEntityState
 				});
 			}
-					
-			if (validateContext) {
-				if (validateContext.result == "invalid") {
+
+			if(validateContext) {
+				if(validateContext.result == "invalid") {
 					var errorMessage = $resource("dorado.baseWidget.SubmitInvalidData") + '\n';
-					if (validateContext.error.length + validateContext.warn.length == 1) {
-						if (validateContext.error.length) {
+					if(validateContext.error.length + validateContext.warn.length == 1) {
+						if(validateContext.error.length) {
 							errorMessage += validateContext.error[0].text;
-						}
-						else {
+						} else {
 							errorMessage += validateContext.warn[0].text;
 						}
-					}
-					else {
+					} else {
 						errorMessage += $resource("dorado.baseWidget.SubmitValidationSummary", validateContext.error.length, validateContext.warn.length);
 					}
 					throw new dorado.Exception(errorMessage);
-				} else if (validateContext.result == "executing") {
+				} else if(validateContext.result == "executing") {
 					throw new dorado.ResourceException("dorado.baseWidget.SubmitValidatingData", validateContext.executing.length);
 				}
 			}
-			
-			for (var i = 0; i < dataItems.length; i++) {
-				var dataItem = dataItems[i], updateItem = dataItem.updateItem, data = dataItem.data;
+
+			for(var i = 0; i < dataItems.length; i++) {
+				var dataItem = dataItems[i], updateItem = dataItem.updateItem, data = dataItem.data, options = updateItem.options;
 				delete dataItem.updateItem;
-				
+
 				var entities = [], context = {
-					entities: []
+					entities : []
 				};
-				if (data) {
-					if (data instanceof Array) {
+				if(data) {
+					if( data instanceof Array) {
 						var v = data, data = [];
 						hasUpdateData = hasUpdateData || (v.length > 0);
-						for (var j = 0; j < v.length; j++) {
+						for(var j = 0; j < v.length; j++) {
 							var generateDataType = options.generateDataType, lastDataType;
 							var entity = v[j];
-							if (entity instanceof dorado.Entity) {
-								if (generateDataType && lastDataType != entity.dataType) {
+							if( entity instanceof dorado.Entity) {
+								if(generateDataType && lastDataType != entity.dataType) {
 									lastDataType = entity.dataType;
 									options.generateDataType = true;
 								} else {
 									options.generateDataType = false;
 								}
-								
-								if (updateItem.submitSimplePropertyOnly) {
+
+								if(updateItem.submitSimplePropertyOnly) {
 									CASCADE_NOT_DRITY_ENTITYS[entity.entityId] = true;
 								}
 								entities.push(entity);
 								data.push(entity.toJSON(options, context));
 							}
 						}
-					} else if (data instanceof dorado.EntityList || data instanceof dorado.Entity) {
+					} else if( data instanceof dorado.EntityList || data instanceof dorado.Entity) {
 						hasUpdateData = true;
-						if (updateItem.refreshMode == "cascade" || updateItem.submitSimplePropertyOnly) {
-							if (data instanceof dorado.Entity) {
-								if (updateItem.submitSimplePropertyOnly) {
+						if(updateItem.refreshMode == "cascade" || updateItem.submitSimplePropertyOnly) {
+							if( data instanceof dorado.Entity) {
+								if(updateItem.submitSimplePropertyOnly) {
 									CASCADE_NOT_DRITY_ENTITYS[data.entityId] = true;
 								}
-								if (updateItem.refreshMode == "cascade") entities.push(data);
+								if(updateItem.refreshMode == "cascade")
+									entities.push(data);
 							} else {
-								for (var it = data.iterator(); it.hasNext();) {
+								for(var it = data.iterator(); it.hasNext(); ) {
 									var entity = it.next();
-									if (updateItem.submitSimplePropertyOnly) {
+									if(updateItem.submitSimplePropertyOnly) {
 										CASCADE_NOT_DRITY_ENTITYS[entity.entityId] = true;
 									}
-									if (updateItem.refreshMode == "cascade") entities.push(entity);
+									if(updateItem.refreshMode == "cascade")
+										entities.push(entity);
 								}
 							}
 						}
@@ -554,62 +581,73 @@
 					dataItem.data = data;
 				}
 				updateInfos.push({
-					alias: dataItem.alias,
-					refreshMode: updateItem.refreshMode,
-					entities: ((updateItem.refreshMode == "cascade") ? entities : context.entities)
+					alias : dataItem.alias,
+					refreshMode : updateItem.refreshMode,
+					entities : ((updateItem.refreshMode == "cascade") ? entities : context.entities)
 				});
 			}
-			
+
 			return {
-				aliasMap: aliasMap,
-				updateInfos: updateInfos,
-				dataResolverArg: {
-					dataItems: dataItems,
-					parameter: this._parameter,
-					view: this._view
+				aliasMap : aliasMap,
+				updateInfos : updateInfos,
+				dataResolverArg : {
+					dataItems : dataItems,
+					parameter : this._parameter,
+					view : this._view
 				},
-				hasUpdateData: hasUpdateData
+				hasUpdateData : hasUpdateData
 			};
 		},
-
-		doExecuteSync: function() {
+		doExecuteSync : function() {
 			return this.doExecuteAsync();
 		},
-
-		doExecuteAsync: function(callback) {
+		doExecuteAsync : function(callback) {
 
 			function processEntityStates(entityStates, context) {
 
 				function processEntity(entity, entityStates, refreshMode) {
-					if (!entity.entityId) return;
+					if(!entity.entityId)
+						return;
 
 					var b;
-					if (refreshMode != "cascade") {
+					if(refreshMode != "cascade") {
 						var data = entity.getData();
-						for (var p in data) {
-							if (!data.hasOwnProperty(p)) continue;
+						for(var p in data) {
+							if(!data.hasOwnProperty(p))
+								continue;
 							var v = data[p];
-							if (v instanceof Object && v.entityId) {
+							if( v instanceof Object && v.entityId) {
 								b = processEntity(v, entityStates) || b;
 							}
 						}
 					}
 
 					var state = entityStates[entity.entityId] || 0;
-					if (state.constructor == Number) {
+					if(state.constructor == Number) {
 						delete entity._oldData;
-						if (state == dorado.Entity.STATE_DELETED) entity.remove(true);
-						else if (entity.state == state) return b;
-						else entity.setState(state);
+						if(state == dorado.Entity.STATE_DELETED)
+							entity.remove(true);
+						else if(entity.state == state)
+							return b;
+						else
+							entity.setState(state);
 					} else {
 						var s = state.$state || 0;
 						delete state.$state;
-						if (refreshMode == "cascade") {
+						if(refreshMode == "cascade") {
 							entity.fromJSON(state);
 						} else {
-							for (var p in state) {
-								if (!state.hasOwnProperty(p)) continue;
-								entity.set(p, state[p]);
+							var dataType = entity.dataType;
+							if(dataType) {
+								dataType.set("validatorsDisabled", true);
+							}
+							for(var p in state) {
+								if(state.hasOwnProperty(p)) {
+									entity.set(p, state[p]);
+								}
+							}
+							if(dataType) {
+								dataType.set("validatorsDisabled", false);
 							}
 						}
 						delete entity._oldData;
@@ -619,24 +657,25 @@
 				}
 
 				function processUpdateInfo(updateInfo, entityStates) {
-					if (updateInfo.refreshMode == "none") return false;
+					if(updateInfo.refreshMode == "none")
+						return false;
 					var b = false, entities = updateInfo.entities;
-					if (updateInfo.refreshMode == "cascade") {
+					if(updateInfo.refreshMode == "cascade") {
 						var map = {};
-						for (var i = 0; i < entities.length; i++) {
+						for(var i = 0; i < entities.length; i++) {
 							var entity = entities[i];
 							map[entity.entityId] = entity;
 						}
-						for (var entityId in entityStates) {
-							if (entityStates.hasOwnProperty(entityId)) {
+						for(var entityId in entityStates) {
+							if(entityStates.hasOwnProperty(entityId)) {
 								var entity = map[entityId];
-								if (entity) {
+								if(entity) {
 									b = processEntity(entity, entityStates, updateInfo.refreshMode) || b;
 								}
 							}
 						}
 					} else {
-						for (var i = 0; i < entities.length; i++) {
+						for(var i = 0; i < entities.length; i++) {
 							var entity = entities[i];
 							b = processEntity(entity, entityStates, updateInfo.refreshMode) || b;
 						}
@@ -645,16 +684,15 @@
 				}
 
 				var updateInfos = context.updateInfos, changedDataSets = [];
-				for (var i = 0; i < updateInfos.length; i++) {
+				for(var i = 0; i < updateInfos.length; i++) {
 					var alias = updateInfos[i].alias;
 					var dataSet = context.aliasMap[alias];
 					dataSet.disableObservers();
 					try {
-						if (processUpdateInfo(updateInfos[i], entityStates)) {
+						if(processUpdateInfo(updateInfos[i], entityStates)) {
 							changedDataSets.push(dataSet);
 						}
-					}
-					finally {
+					} finally {
 						dataSet.enableObservers();
 					}
 				}
@@ -663,24 +701,25 @@
 					dataSet.notifyObservers();
 				});
 			}
-			
+
 			function doUpdate(context, dataResolverArg) {
 				var eventArg = {
-					dataItems: dataResolverArg.dataItems,
-					parameter: dataResolverArg.parameter,
-					processDefault: true
+					dataItems : dataResolverArg.dataItems,
+					parameter : dataResolverArg.parameter,
+					processDefault : true
 				};
 				this.fireEvent("beforeUpdate", this, eventArg);
-				if (eventArg.processDefault && this._dataResolver) {
+				if(eventArg.processDefault && this._dataResolver) {
 					var dataResolver = this._dataResolver;
 					dataResolver.supportsEntity = this._supportsEntity;
 					dataResolver.dataTypeRepository = this.get("dataTypeRepository");
 					dataResolver.message = this._executingMessage ? '' : null;
-					if (callback) {
+					if(callback) {
 						return dataResolver.resolveAsync(dataResolverArg, {
-							scope: this,
-							callback: function(success, result) {
-								if (success) processEntityStates.call(this, result.entityStates, context);
+							scope : this,
+							callback : function(success, result) {
+								if(success)
+									processEntityStates.call(this, result.entityStates, context);
 								$callback(callback, success, (success) ? result.returnValue : result);
 								this.fireEvent("onUpdate", this, eventArg);
 							}
@@ -695,21 +734,21 @@
 			}
 
 			var context = this.getResolveContext(), dataResolverArg = context.dataResolverArg;
-			if (this._alwaysExecute || !this._updateItems.length || context.hasUpdateData) {
-				if (this._realConfirmMessage) {
+			if(this._alwaysExecute || !this._updateItems.length || context.hasUpdateData) {
+				if(this._realConfirmMessage) {
 					var self = this;
 					dorado.MessageBox.confirm(this._realConfirmMessage, function() {
 						doUpdate.call(self, context, dataResolverArg);
 					});
-					if (this._confirmMessage === null) {
+					if(this._confirmMessage === null) {
 						this._confirmMessage = this._realConfirmMessage;
 						this._realConfirmMessage = null;
 					}
 				} else {
 					doUpdate.call(this, context, dataResolverArg);
-				}				
+				}
 			} else {
-				if (callback) {
+				if(callback) {
 					$callback(callback, false);
 				} else {
 					return false;

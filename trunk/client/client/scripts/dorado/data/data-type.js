@@ -10,27 +10,29 @@
  * @extends dorado.AttributeSupport
  * @param {String|Object} [config] 配置信息。
  */
-dorado.DataType = $extend(dorado.AttributeSupport, /** @scope dorado.DataType.prototype */ {
-	$className: "dorado.DataType",
+dorado.DataType = $extend(dorado.AttributeSupport, /** @scope dorado.DataType.prototype */
+{
+	$className : "dorado.DataType",
 
-	ATTRIBUTES: /** @scope dorado.DataType.prototype */ {
+	ATTRIBUTES : /** @scope dorado.DataType.prototype */
+	{
 
 		/**
 		 * 数据类型的名称。
 		 * @type String
 		 * @attribute readOnly
 		 */
-		name: {
-			readOnly: true
+		name : {
+			readOnly : true
 		},
-		
+
 		/**
 		 * 用于在后端定位服务的id。如无特殊需要请不要修改。
 		 * @type String
 		 * @attribute writeOnce
 		 */
-		id: {
-			writeOnce: true
+		id : {
+			writeOnce : true
 		},
 
 		/**
@@ -38,41 +40,42 @@ dorado.DataType = $extend(dorado.AttributeSupport, /** @scope dorado.DataType.pr
 		 * @type dorado.DataTypeRepository
 		 * @attribute readOnly
 		 */
-		dataTypeRepository: {
-			readOnly: true
+		dataTypeRepository : {
+			readOnly : true
 		},
-		
+
 		/**
 		 * 返回所属的视图。
 		 * @type dorado.widget.View
 		 * @attribute readOnly
 		 */
-		view: {
-			path: "_dataTypeRepository.view"
+		view : {
+			path : "_dataTypeRepository.view"
 		}
 	},
 
-	constructor: function(config) {
+	constructor : function(config) {
 		$invokeSuper.call(this, arguments);
 
 		var name;
-		if (config && config.constructor == String) {
+		if(config && config.constructor == String) {
 			name = config;
 			config = null;
-		} else if (config) {
+		} else if(config) {
 			name = config.name;
 			delete config.name;
 			this.set(config);
 		}
 		this._name = name ? name : dorado.Core.newId();
-		if (!this._id) this._id = this._name;
+		if(!this._id)
+			this._id = this._name;
 
-		if (this.id) {
-			if (window[this.id] === undefined) {
+		if(this.id) {
+			if(window[this.id] === undefined) {
 				window[this.id] = this;
 			} else {
 				var v = window[this.id];
-				if (v instanceof Array) {
+				if( v instanceof Array) {
 					v.push(this);
 				} else {
 					window[this.id] = [v, this];
@@ -80,21 +83,18 @@ dorado.DataType = $extend(dorado.AttributeSupport, /** @scope dorado.DataType.pr
 			}
 		}
 	},
-
 	/**
 	 * 尝试将一个任意类型的值转换成本数据类型所描述的类型。
 	 * @param {Object} data 要转换的数据。
 	 * @param {Object} [argument] 转换时可能需要用到的参数。
 	 * @return {Object} 转换后得到的数据。
 	 */
-	parse: function(data, argument) {
+	parse : function(data, argument) {
 		return data;
 	},
-
-	getListenerScope: function() {
+	getListenerScope : function() {
 		return this.get("view");
 	},
-
 	/**
 	 * 尝试将一个任意类型的值转换成本文本值。<br>
 	 * 如需在子类中改变其逻辑其复写{@link dorado.DataType#doToText}方法。
@@ -104,17 +104,16 @@ dorado.DataType = $extend(dorado.AttributeSupport, /** @scope dorado.DataType.pr
 	 * @final
 	 * @see dorado.DataType#doToText
 	 */
-	toText: function(data, argument) {
-		if (typeof argument == "string" && argument.indexOf("call:") == 0) {
+	toText : function(data, argument) {
+		if( typeof argument == "string" && argument.indexOf("call:") == 0) {
 			var func = argument.substring(5);
 			func = window[func];
-			if (func instanceof Function) {
+			if( func instanceof Function) {
 				return func(data);
 			}
 		}
 		return this.doToText.apply(this, arguments);
 	},
-	
 	/**
 	 * 将一个任意类型的值转换成本文本值。此方法供子类复写。
 	 * @param {Object} data 要转换的数据。
@@ -123,8 +122,8 @@ dorado.DataType = $extend(dorado.AttributeSupport, /** @scope dorado.DataType.pr
 	 * @protected
 	 * @see dorado.DataType#toText
 	 */
-	doToText: function(data, argument) {
-		if (data === null || data === undefined || (typeof data !== "object" && isNaN(data))) {
+	doToText : function(data, argument) {
+		if(data === null || data === undefined || ( typeof data !== "object" && isNaN(data))) {
 			return '';
 		} else {
 			return data + '';
@@ -136,27 +135,28 @@ dorado.DataType.getSubName = function(name) {
 	var complexDataTypeNameRegex = /^[\w.$:@#]*\[[\w\[\].$:@#]*\]$/;
 	return (name.match(complexDataTypeNameRegex)) ? name.substring(name.indexOf('[') + 1, name.length - 1) : null;
 };
-
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @class 聚合类型。
  * @extends dorado.DataType
  * @see dorado.EntityDataType
  */
-dorado.AggregationDataType = $extend(dorado.DataType, /** @scope dorado.AggregationDataType.prototype */ {
-	$className: "dorado.AggregationDataType",
+dorado.AggregationDataType = $extend(dorado.DataType, /** @scope dorado.AggregationDataType.prototype */
+{
+	$className : "dorado.AggregationDataType",
 
-	ATTRIBUTES: /** @scope dorado.AggregationDataType.prototype */ {
+	ATTRIBUTES : /** @scope dorado.AggregationDataType.prototype */
+	{
 		/**
 		 * 聚合元素的数据类型。
 		 * @return {dorado.DataType}
 		 * @attribute writeOnce
 		 */
-		elementDataType: {
-			getter: function() {
+		elementDataType : {
+			getter : function() {
 				return this.getElementDataType("always");
 			},
-			writeOnce: true
+			writeOnce : true
 		},
 
 		/**
@@ -164,33 +164,33 @@ dorado.AggregationDataType = $extend(dorado.DataType, /** @scope dorado.Aggregat
 		 * @type int
 		 * @attribute
 		 */
-		pageSize: {
-			defaultValue: 0
+		pageSize : {
+			defaultValue : 0
 		}
 	},
 
-	constructor: function(config, elementDataType) {
+	constructor : function(config, elementDataType) {
 		$invokeSuper.call(this, arguments);
-		if (elementDataType) this._elementDataType = elementDataType;
+		if(elementDataType)
+			this._elementDataType = elementDataType;
 	},
-	
-	getElementDataType: function(loadMode) {
+	getElementDataType : function(loadMode) {
 		var dataType = this._elementDataType;
-		if (dataType != null) {
+		if(dataType != null) {
 			dataType = dorado.LazyLoadDataType.dataTypeTranslator.call(this, dataType, loadMode);
-			if (dataType instanceof dorado.DataType) this._elementDataType = dataType;
+			if( dataType instanceof dorado.DataType)
+				this._elementDataType = dataType;
 		}
 		return dataType;
 	},
-
 	/**
 	 * 将传入的数据转换为集合。
 	 * @param {Object|Object[]} data 要转换的数据。
 	 * @return {dorado.EntityList} 转换后得到的集合。
 	 */
-	parse: function(data) {
-		if (data != null) {
-			return (data instanceof dorado.EntityList) ? data : new dorado.EntityList(data, this._dataTypeRepository, this);
+	parse : function(data) {
+		if(data != null) {
+			return ( data instanceof dorado.EntityList) ? data : new dorado.EntityList(data, this._dataTypeRepository, this);
 		} else {
 			return null;
 		}
@@ -207,18 +207,20 @@ dorado.AggregationDataType = $extend(dorado.DataType, /** @scope dorado.Aggregat
  * @see dorado.Reference
  * @see dorado.Lookup
  */
-dorado.EntityDataType = $extend([dorado.DataType, dorado.EventSupport], /** @scope dorado.EntityDataType.prototype */ {
-	$className: "dorado.EntityDataType",
+dorado.EntityDataType = $extend([dorado.DataType, dorado.EventSupport], /** @scope dorado.EntityDataType.prototype */
+{
+	$className : "dorado.EntityDataType",
 
-	ATTRIBUTES: /** @scope dorado.EntityDataType.prototype */ {
+	ATTRIBUTES : /** @scope dorado.EntityDataType.prototype */
+	{
 
 		/**
 		 * 是否允许外界访问实体中尚未声名的属性。
 		 * @type boolean
 		 * @attribute
 		 */
-		acceptUnknownProperty: {},
-		
+		acceptUnknownProperty : {},
+
 		/**
 		 * 默认的显示属性。
 		 * <p>
@@ -232,8 +234,8 @@ dorado.EntityDataType = $extend([dorado.DataType, dorado.EventSupport], /** @sco
 		 * @type String
 		 * @attribute
 		 */
-		defaultDisplayProperty: {},
-		
+		defaultDisplayProperty : {},
+
 		/**
 		 * 当数据实体需要确认其中的内容修改时，最高可以接受哪个级别的验证信息。
 		 * 出此处给定的默认值ok之外，通常可选的值还有warn。info和error则一般不会作为此属性的值。
@@ -243,9 +245,16 @@ dorado.EntityDataType = $extend([dorado.DataType, dorado.EventSupport], /** @sco
 		 * @see dorado.validator.Validator#validate
 		 * @see dorado.Entity#getValidationResults
 		 */
-		acceptValidationState: {
-			defaultValue: "ok"
+		acceptValidationState : {
+			defaultValue : "ok"
 		},
+
+		/**
+		 * 是否禁用其中所有的数据验证器。包括所有属性上的数据验证器。
+		 * @type boolean
+		 * @attribute
+		 */
+		validatorsDisabled : {},
 
 		/**
 		 * 属性声明的集合。
@@ -261,10 +270,10 @@ dorado.EntityDataType = $extend([dorado.DataType, dorado.EventSupport], /** @sco
 		 * @type Object[]|dorado.PropertyDef[]
 		 * @attribute
 		 */
-		propertyDefs: {
-			setter: function(value) {
-				if (value) {
-					for (var i = 0; i < value.length; i++) {
+		propertyDefs : {
+			setter : function(value) {
+				if(value) {
+					for(var i = 0; i < value.length; i++) {
 						this.addPropertyDef(value[i]);
 					}
 				}
@@ -272,7 +281,8 @@ dorado.EntityDataType = $extend([dorado.DataType, dorado.EventSupport], /** @sco
 		}
 	},
 
-	EVENTS: /** @scope dorado.EntityDataType.prototype */ {
+	EVENTS : /** @scope dorado.EntityDataType.prototype */
+	{
 		/**
 		 * 当某个此类型的{@link dorado.EntityList}中的当前数据实体将要被改变前触发的事件。
 		 * @param {Object} self 事件的发起者，即EntityDataType本身。
@@ -286,7 +296,7 @@ dorado.EntityDataType = $extend([dorado.DataType, dorado.EventSupport], /** @sco
 		 * @see dorado.EntityList#current
 		 * @see dorado.EntityList#setCurrent
 		 */
-		beforeCurrentChange: {},
+		beforeCurrentChange : {},
 
 		/**
 		 * 当某个此类型的{@link dorado.EntityList}中的当前数据实体被改变后触发的事件。
@@ -300,7 +310,7 @@ dorado.EntityDataType = $extend([dorado.DataType, dorado.EventSupport], /** @sco
 		 * @see dorado.EntityList#current
 		 * @see dorado.EntityList#setCurrent
 		 */
-		onCurrentChange: {},
+		onCurrentChange : {},
 
 		/**
 		 * 当某个此类型的{@link dorado.EntityList}中的将要插入一个新的数据实体前触发的事件。
@@ -315,7 +325,7 @@ dorado.EntityDataType = $extend([dorado.DataType, dorado.EventSupport], /** @sco
 		 * @event
 		 * @see dorado.EntityList#insert
 		 */
-		beforeInsert: {},
+		beforeInsert : {},
 
 		/**
 		 * 当某个此类型的{@link dorado.EntityList}中的插入一个新的数据实体后触发的事件。
@@ -329,7 +339,7 @@ dorado.EntityDataType = $extend([dorado.DataType, dorado.EventSupport], /** @sco
 		 * @event
 		 * @see dorado.EntityList#insert
 		 */
-		onInsert: {},
+		onInsert : {},
 
 		/**
 		 * 当某个此类型的{@link dorado.EntityList}中的将要删除的一个数据实体前触发的事件。
@@ -342,7 +352,7 @@ dorado.EntityDataType = $extend([dorado.DataType, dorado.EventSupport], /** @sco
 		 * @event
 		 * @see dorado.EntityList#remove
 		 */
-		beforeRemove: {},
+		beforeRemove : {},
 
 		/**
 		 * 当某个此类型的{@link dorado.EntityList}中的删除了一个数据实体后触发的事件。
@@ -354,7 +364,7 @@ dorado.EntityDataType = $extend([dorado.DataType, dorado.EventSupport], /** @sco
 		 * @event
 		 * @see dorado.EntityList#remove
 		 */
-		onRemove: {},
+		onRemove : {},
 
 		/**
 		 * 当某个此类型的{@link dorado.Entity}中的属性值将要被改变前触发的事件。
@@ -369,7 +379,7 @@ dorado.EntityDataType = $extend([dorado.DataType, dorado.EventSupport], /** @sco
 		 * @event
 		 * @see dorado.Entity#set
 		 */
-		beforeDataChange: {},
+		beforeDataChange : {},
 
 		/**
 		 * 当某个此类型的{@link dorado.Entity}中的属性值被改变后触发的事件。
@@ -383,7 +393,7 @@ dorado.EntityDataType = $extend([dorado.DataType, dorado.EventSupport], /** @sco
 		 * @event
 		 * @see dorado.Entity#set
 		 */
-		onDataChange: {},
+		onDataChange : {},
 
 		/**
 		 * 当某个此类型的{@link dorado.Entity}的状态将要被改变前触发的事件。
@@ -398,7 +408,7 @@ dorado.EntityDataType = $extend([dorado.DataType, dorado.EventSupport], /** @sco
 		 * @see dorado.Entity#state
 		 * @see dorado.Entity#setState
 		 */
-		beforeStateChange: {},
+		beforeStateChange : {},
 
 		/**
 		 * 当某个此类型的{@link dorado.Entity}的状态被改变后触发的事件。
@@ -412,8 +422,8 @@ dorado.EntityDataType = $extend([dorado.DataType, dorado.EventSupport], /** @sco
 		 * @see dorado.Entity#state
 		 * @see dorado.Entity#setState
 		 */
-		onStateChange: {},
-		
+		onStateChange : {},
+
 		/**
 		 * 当某个此类型的{@link dorado.Entity}的额外信息被改变后触发的事件。
 		 * @param {Object} self 事件的发起者，即EntityDataType本身。
@@ -425,8 +435,8 @@ dorado.EntityDataType = $extend([dorado.DataType, dorado.EventSupport], /** @sco
 		 * @see dorado.Entity#getMessageState
 		 * @see dorado.Entity#setMessages
 		 */
-		onMessageChange: {},
-		
+		onMessageChange : {},
+
 		/**
 		 * 系统尝试将一个数据实体对象转换成一段用于显示的文本时触发的事件。
 		 * @param {Object} self 事件的发起者，即EntityDataType本身。
@@ -439,16 +449,15 @@ dorado.EntityDataType = $extend([dorado.DataType, dorado.EventSupport], /** @sco
 		 * @see dorado.Entity#state
 		 * @see dorado.Entity#setState
 		 */
-		onEntityToText: {}
+		onEntityToText : {}
 	},
 
-	constructor: function(config) {
+	constructor : function(config) {
 		this._propertyDefs = new dorado.util.KeyedArray(function(propertyDef) {
 			return propertyDef._name;
 		});
 		$invokeSuper.call(this, arguments);
 	},
-
 	/**
 	 * 向实体类型中添加一个属性声明。
 	 * <p>
@@ -468,11 +477,11 @@ dorado.EntityDataType = $extend([dorado.DataType, dorado.EventSupport], /** @sco
 	 * @see dorado.Lookup
 	 * @see dorado.Toolkits.createInstance
 	 */
-	addPropertyDef: function(propertyDef) {
-		if (propertyDef instanceof dorado.PropertyDef) {
-			if (propertyDef._parent) {
+	addPropertyDef : function(propertyDef) {
+		if( propertyDef instanceof dorado.PropertyDef) {
+			if(propertyDef._parent) {
 				var parent = propertyDef._parent;
-				if (parent.getPropertyDef(propertyDef._name) == propertyDef) {
+				if(parent.getPropertyDef(propertyDef._name) == propertyDef) {
 					parent._propertyDefs.remove(propertyDef);
 				}
 			}
@@ -484,29 +493,26 @@ dorado.EntityDataType = $extend([dorado.DataType, dorado.EventSupport], /** @sco
 		this._propertyDefs.append(propertyDef);
 		return propertyDef;
 	},
-
 	/**
 	 * 根据属性名从实体类型返回相应的属性声明。
 	 * @param {String} name 属性名。
 	 * @return {dorado.PropertyDef} 属性声明。
 	 */
-	getPropertyDef: function(name) {
+	getPropertyDef : function(name) {
 		return this._propertyDefs.get(name);
 	},
-
 	/**
 	 * 将传入的数据转换为一个实体对象。
 	 * @param {Object} data 要转换的数据
 	 * @return {dorado.Entity} 转换后得到的实体。
 	 */
-	parse: function(data) {
-		if (data != null) {
-			return (data instanceof dorado.Entity) ? data : new dorado.Entity(data, this._dataTypeRepository, this);
+	parse : function(data) {
+		if(data != null) {
+			return ( data instanceof dorado.Entity) ? data : new dorado.Entity(data, this._dataTypeRepository, this);
 		} else {
 			return null;
 		}
 	},
-
 	/**
 	 * 扩展本实体数据类型。即以当前的实体数据类型为模板，创建一个相似的、全新的实体数据类型。
 	 * @param {String|Object} config 新的实体数据类型的名称或构造参数。
@@ -517,15 +523,17 @@ dorado.EntityDataType = $extend([dorado.DataType, dorado.EventSupport], /** @sco
 	 * </p>
 	 * @return {dorado.EntityDataType} 新的实体数据类型。
 	 */
-	extend: function(config) {
-		if (typeof config == "string") {
+	extend : function(config) {
+		if( typeof config == "string") {
 			config = {
-				name: config
+				name : config
 			};
-		} else config = config || {};
-		var self= this;
+		} else
+			config = config || {};
+		var self = this;
 		jQuery(["acceptUnknownProperty", "tag"]).each(function(i, p) {
-			if (config[p] === undefined) config[p] = self.get(p);
+			if(config[p] === undefined)
+				config[p] = self.get(p);
 		});
 		var newDataType = new this.constructor(config);
 		newDataType._events = dorado.Core.clone(this._events);
@@ -534,10 +542,7 @@ dorado.EntityDataType = $extend([dorado.DataType, dorado.EventSupport], /** @sco
 		});
 		return newDataType;
 	}
-
-});
-
-(function() {
+}); (function() {
 	/**
 	 * @name dorado.datatype
 	 * @namespace 包含各种常用数据类型声明的命名空间。
@@ -558,16 +563,16 @@ dorado.EntityDataType = $extend([dorado.DataType, dorado.EventSupport], /** @sco
 	 * @class 字符串类型。
 	 * @extends dorado.DataType
 	 */
-	dorado.datatype.StringDataType = $extend(DataType, /** @scope dorado.datatype.StringDataType.prototype */ {
-		$className: "dorado.datatype.StringDataType",
+	dorado.datatype.StringDataType = $extend(DataType, /** @scope dorado.datatype.StringDataType.prototype */
+	{
+		$className : "dorado.datatype.StringDataType",
 
-		_code: DataType.STRING,
+		_code : DataType.STRING,
 
-		parse: function(data, argument) {
+		parse : function(data, argument) {
 			return (data == null) ? null : (data + '');
 		},
-
-		doToText: function(data, argument) {
+		doToText : function(data, argument) {
 			return (data == null) ? '' : data + '';
 		}
 	});
@@ -578,7 +583,6 @@ dorado.EntityDataType = $extend([dorado.DataType, dorado.EventSupport], /** @sco
 	 * @constant
 	 */
 	dorado.$String = new dorado.datatype.StringDataType("String");
-
 	$parseFloat = dorado.util.Common.parseFloat;
 	$parseInt = function(s) {
 		return Math.round($parseFloat(s));
@@ -589,16 +593,16 @@ dorado.EntityDataType = $extend([dorado.DataType, dorado.EventSupport], /** @sco
 	 * @class 原生整数类型。
 	 * @extends dorado.DataType
 	 */
-	dorado.datatype.PrimitiveIntDataType = $extend(DataType, /** @scope dorado.datatype.PrimitiveIntDataType.prototype */ {
-		$className: "dorado.datatype.PrimitiveIntDataType",
+	dorado.datatype.PrimitiveIntDataType = $extend(DataType, /** @scope dorado.datatype.PrimitiveIntDataType.prototype */
+	{
+		$className : "dorado.datatype.PrimitiveIntDataType",
 
-		_code: DataType.PRIMITIVE_INT,
+		_code : DataType.PRIMITIVE_INT,
 
-		parse: function(data, argument) {
+		parse : function(data, argument) {
 			var n = $parseInt(data);
 			return (isNaN(n)) ? 0 : n;
 		},
-
 		/**
 		 * 尝试将一个整数转换成本文本值。
 		 * @param {int} data 要转换的数据。
@@ -606,7 +610,7 @@ dorado.EntityDataType = $extend([dorado.DataType, dorado.EventSupport], /** @sco
 		 * @return {String} 转换后得到的文本。
 		 * @see $formatFloat
 		 */
-		doToText: $formatFloat
+		doToText : $formatFloat
 	});
 
 	/**
@@ -620,16 +624,16 @@ dorado.EntityDataType = $extend([dorado.DataType, dorado.EventSupport], /** @sco
 	 * @class 整数对象类型。
 	 * @extends dorado.DataType
 	 */
-	dorado.datatype.IntegerDataType = $extend(DataType, /** @scope dorado.datatype.IntegerDataType.prototype */ {
-		$className: "dorado.datatype.IntegerDataType",
+	dorado.datatype.IntegerDataType = $extend(DataType, /** @scope dorado.datatype.IntegerDataType.prototype */
+	{
+		$className : "dorado.datatype.IntegerDataType",
 
-		_code: DataType.INTEGER,
+		_code : DataType.INTEGER,
 
-		parse: function(data, argument) {
+		parse : function(data, argument) {
 			var n = $parseInt(data);
 			return (isNaN(n)) ? null : n;
 		},
-
 		/**
 		 * 尝试将一个整数对象转换成本文本值。
 		 * @param {int} data 要转换的数据。
@@ -637,7 +641,7 @@ dorado.EntityDataType = $extend([dorado.DataType, dorado.EventSupport], /** @sco
 		 * @return {String} 转换后得到的文本。
 		 * @see $formatFloat
 		 */
-		doToText: $formatFloat
+		doToText : $formatFloat
 	});
 
 	/**
@@ -651,16 +655,16 @@ dorado.EntityDataType = $extend([dorado.DataType, dorado.EventSupport], /** @sco
 	 * @class 原生浮点类型。
 	 * @extends dorado.DataType
 	 */
-	dorado.datatype.PrimitiveFloatDataType = $extend(DataType, /** @scope dorado.datatype.PrimitiveFloatDataType.prototype */ {
-		$className: "dorado.datatype.PrimitiveFloatDataType",
+	dorado.datatype.PrimitiveFloatDataType = $extend(DataType, /** @scope dorado.datatype.PrimitiveFloatDataType.prototype */
+	{
+		$className : "dorado.datatype.PrimitiveFloatDataType",
 
-		_code: DataType.PRIMITIVE_FLOAT,
+		_code : DataType.PRIMITIVE_FLOAT,
 
-		parse: function(data, argument) {
+		parse : function(data, argument) {
 			var n = $parseFloat(data);
 			return (isNaN(n)) ? 0 : n;
 		},
-
 		/**
 		 * 尝试将一个浮点数转换成本文本值。
 		 * @param {float} data 要转换的数据。
@@ -668,7 +672,7 @@ dorado.EntityDataType = $extend([dorado.DataType, dorado.EventSupport], /** @sco
 		 * @return {String} 转换后得到的文本。
 		 * @see $formatFloat
 		 */
-		doToText: $formatFloat
+		doToText : $formatFloat
 	});
 
 	/**
@@ -682,16 +686,16 @@ dorado.EntityDataType = $extend([dorado.DataType, dorado.EventSupport], /** @sco
 	 * @class 浮点对象类型。
 	 * @extends dorado.DataType
 	 */
-	dorado.datatype.FloatDataType = $extend(DataType, /** @scope dorado.datatype.FloatDataType.prototype */ {
-		$className: "dorado.datatype.FloatDataType",
+	dorado.datatype.FloatDataType = $extend(DataType, /** @scope dorado.datatype.FloatDataType.prototype */
+	{
+		$className : "dorado.datatype.FloatDataType",
 
-		_code: DataType.FLOAT,
+		_code : DataType.FLOAT,
 
-		parse: function(data, argument) {
+		parse : function(data, argument) {
 			var n = $parseFloat(data);
 			return (isNaN(n)) ? null : n;
 		},
-
 		/**
 		 * 尝试将一个浮点数对象转换成本文本值。
 		 * @param {float} data 要转换的数据。
@@ -699,7 +703,7 @@ dorado.EntityDataType = $extend([dorado.DataType, dorado.EventSupport], /** @sco
 		 * @return {String} 转换后得到的文本。
 		 * @see $formatFloat
 		 */
-		doToText: $formatFloat
+		doToText : $formatFloat
 	});
 
 	/**
@@ -710,9 +714,10 @@ dorado.EntityDataType = $extend([dorado.DataType, dorado.EventSupport], /** @sco
 	dorado.$Float = new dorado.datatype.FloatDataType("Float");
 
 	function parseBoolean(data, argument) {
-		if (argument == null) {
-			if (data == null) return false;
-			if (data.constructor == String) {
+		if(argument == null) {
+			if(data == null)
+				return false;
+			if(data.constructor == String) {
 				return (data.toLowerCase() == "true");
 			} else {
 				return !!data;
@@ -726,10 +731,11 @@ dorado.EntityDataType = $extend([dorado.DataType, dorado.EventSupport], /** @sco
 	 * @class 原生逻辑类型。
 	 * @extends dorado.DataType
 	 */
-	dorado.datatype.PrimitiveBooleanDataType = $extend(DataType, /** @scope dorado.datatype.PrimitiveBooleanDataType.prototype */ {
-		$className: "dorado.datatype.PrimitiveBooleanDataType",
+	dorado.datatype.PrimitiveBooleanDataType = $extend(DataType, /** @scope dorado.datatype.PrimitiveBooleanDataType.prototype */
+	{
+		$className : "dorado.datatype.PrimitiveBooleanDataType",
 
-		_code: DataType.PRIMITIVE_BOOLEAN,
+		_code : DataType.PRIMITIVE_BOOLEAN,
 
 		/**
 		 * 尝试将一个任意类型的值转换逻辑值。
@@ -737,7 +743,7 @@ dorado.EntityDataType = $extend([dorado.DataType, dorado.EventSupport], /** @sco
 		 * @param {String} [argument] 代表逻辑true的值，即如果指定了该参数，那么当传入的数据与该值相等时将被转换为逻辑true。
 		 * @return {boolean} 转换后得到的逻辑值。
 		 */
-		parse: parseBoolean
+		parse : parseBoolean
 	});
 
 	/**
@@ -751,10 +757,11 @@ dorado.EntityDataType = $extend([dorado.DataType, dorado.EventSupport], /** @sco
 	 * @class 逻辑对象类型。
 	 * @extends dorado.DataType
 	 */
-	dorado.datatype.BooleanDataType = $extend(DataType, /** @scope dorado.datatype.BooleanDataType.prototype */ {
-		$className: "dorado.datatype.BooleanDataType",
+	dorado.datatype.BooleanDataType = $extend(DataType, /** @scope dorado.datatype.BooleanDataType.prototype */
+	{
+		$className : "dorado.datatype.BooleanDataType",
 
-		_code: DataType.BOOLEAN,
+		_code : DataType.BOOLEAN,
 
 		/**
 		 * 尝试将一个任意类型的值转换逻辑对象。
@@ -762,8 +769,9 @@ dorado.EntityDataType = $extend([dorado.DataType, dorado.EventSupport], /** @sco
 		 * @param {String} [argument] 代表逻辑true的值，即如果指定了该参数，那么当传入的数据与该值相等时将被转换为逻辑true。
 		 * @return {boolean} 转换后得到的逻辑对象。
 		 */
-		parse: function(data, argument) {
-			if (data == null) return null;
+		parse : function(data, argument) {
+			if(data == null)
+				return null;
 			return parseBoolean(data, argument);
 		}
 	});
@@ -779,10 +787,11 @@ dorado.EntityDataType = $extend([dorado.DataType, dorado.EventSupport], /** @sco
 	 * @class 日期类型。
 	 * @extends dorado.DataType
 	 */
-	dorado.datatype.DateDataType = $extend(DataType, /** @scope dorado.datatype.DateDataType.prototype */ {
-		$className: "dorado.datatype.DateDataType",
+	dorado.datatype.DateDataType = $extend(DataType, /** @scope dorado.datatype.DateDataType.prototype */
+	{
+		$className : "dorado.datatype.DateDataType",
 
-		_code: DataType.DATE,
+		_code : DataType.DATE,
 
 		/**
 		 * 尝试将一个任意类型的值转换日期值。
@@ -790,22 +799,26 @@ dorado.EntityDataType = $extend([dorado.DataType, dorado.EventSupport], /** @sco
 		 * @param {String} [argument] 如果传入的数据为日期字符创，那么此参数可用于指定日期格式。
 		 * @return {Date} 转换后得到的日期值。
 		 */
-		parse: function(data, argument) {
-			if (data == null || data == '') return null;
-			if (data instanceof Date) return data;
-			if (isFinite(data)) return new Date(data);
+		parse : function(data, argument) {
+			if(data == null || data == '')
+				return null;
+			if( data instanceof Date)
+				return data;
+			if(isFinite(data))
+				return new Date(data);
 			var date = Date.parseDate(data, argument || $setting["common.defaultDateFormat"]);
-			if (date == null) {
+			if(date == null) {
 				var format = $setting["common.defaultTimeFormat"];
-				if (format) {
+				if(format) {
 					date = Date.parseDate(data, format);
-					if (date == null) data = new Date(data);
+					if(date == null)
+						data = new Date(data);
 				}
 			}
-			if (date == null) throw new dorado.ResourceException("dorado.data.BadDateFormat", data);
+			if(date == null)
+				throw new dorado.ResourceException("dorado.data.BadDateFormat", data);
 			return date;
 		},
-
 		/**
 		 * 尝试将一个日期值转换成本文本值。
 		 * @param {Date} data 要转换的数据。
@@ -813,7 +826,7 @@ dorado.EntityDataType = $extend([dorado.DataType, dorado.EventSupport], /** @sco
 		 * @return {String} 转换后得到的文本。
 		 * @see Date
 		 */
-		doToText: function(data, argument) {
+		doToText : function(data, argument) {
 			return (data != null && data instanceof Date) ? data.formatDate(argument || $setting["common.defaultDateFormat"]) : '';
 		}
 	});

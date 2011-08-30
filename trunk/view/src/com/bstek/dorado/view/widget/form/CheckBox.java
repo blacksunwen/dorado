@@ -18,11 +18,13 @@ import com.bstek.dorado.annotation.XmlNode;
 public class CheckBox extends AbstractDataEditor {
 	private Object onValue = true;
 	private Object offValue = false;
+	private Object mixedValue;
 	private String caption;
 	private boolean showCaption = true;
 	private Object value = false;
 	private Boolean checked;
 	private boolean triState;
+	private boolean iconOnly;
 
 	@ViewAttribute(defaultValue = "true")
 	public Object getOnValue() {
@@ -40,6 +42,14 @@ public class CheckBox extends AbstractDataEditor {
 
 	public void setOffValue(Object offValue) {
 		this.offValue = offValue;
+	}
+
+	public Object getMixedValue() {
+		return mixedValue;
+	}
+
+	public void setMixedValue(Object mixedValue) {
+		this.mixedValue = mixedValue;
 	}
 
 	public String getCaption() {
@@ -72,8 +82,8 @@ public class CheckBox extends AbstractDataEditor {
 		return checked;
 	}
 
-	public void setChecked(Boolean checked) {
-		this.checked = checked;
+	public Boolean getChecked() {
+		return checked;
 	}
 
 	public boolean isTriState() {
@@ -83,4 +93,13 @@ public class CheckBox extends AbstractDataEditor {
 	public void setTriState(boolean triState) {
 		this.triState = triState;
 	}
+
+	public boolean isIconOnly() {
+		return iconOnly;
+	}
+
+	public void setIconOnly(boolean iconOnly) {
+		this.iconOnly = iconOnly;
+	}
+
 }

@@ -40,7 +40,7 @@ public abstract class PropertyDef implements Ignorable, TagSupport,
 	private boolean visible = true;
 	private boolean required;
 	private boolean ignored;
-	private boolean submitable = true;
+	private boolean submittable = true;
 	private List<Validator> validators;
 	private String tags;
 	private Map<String, Object> metaData;
@@ -160,12 +160,12 @@ public abstract class PropertyDef implements Ignorable, TagSupport,
 	}
 
 	@ViewAttribute(defaultValue = "true")
-	public boolean isSubmitable() {
-		return submitable;
+	public boolean isSubmittable() {
+		return submittable;
 	}
 
-	public void setSubmitable(boolean submitable) {
-		this.submitable = submitable;
+	public void setSubmittable(boolean submittable) {
+		this.submittable = submittable;
 	}
 
 	public void setValidators(List<Validator> validators) {

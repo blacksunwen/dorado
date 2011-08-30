@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="build" default="build">
-	<property name="package-jars" value="" />
-	<property name="jsdoc" value="" />
+	<property name="package-jars" value="true" />
+	<property name="javadoc" value="true" />
+	<property name="jsdoc" value="true" />
+	<property name="izpack" value="true" />
 	<property name="standard-edition.dir" value="D:/projects/dorado7/build/standard-edition" />
 
 	<target name="prebuild">

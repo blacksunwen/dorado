@@ -47,6 +47,7 @@ public class StandaloneRuleSetBuilderTest extends IdeSupportContextTestCase {
 
 		Rule viewRule = ruleSet.getRule("View");
 		assertNotNull(viewRule);
+		assertNotNull(viewRule.getType());
 
 		assertNotNull(ruleSet.getRule("AnchorLayout"));
 		assertNotNull(ruleSet.getRule("LayoutHolder"));
@@ -69,7 +70,7 @@ public class StandaloneRuleSetBuilderTest extends IdeSupportContextTestCase {
 		assertFalse(datasetRule.isSubRuleOf(controlRule));
 		assertFalse(componentRule.isSubRuleOf(controlRule));
 
-		assertNotNull(viewRule.getPrimitiveProperty("interceptor"));
+		assertNotNull(viewRule.getPrimitiveProperty("listener"));
 		assertNotNull(datasetRule.getPrimitiveProperty("id"));
 		assertNotNull(panelRule.getPrimitiveProperty("id"));
 
