@@ -59,7 +59,10 @@ dorado.widget.RadioButton = $extend(dorado.widget.Control, /** @scope dorado.wid
 	refreshDom: function(dom) {
 		$invokeSuper.call(this, arguments);
 		
-		var radioButton = this, checked = radioButton._checked, text = radioButton._text, jDom;
+		var radioButton = this, radioGroup = radioButton._radioGroup, checked = radioButton._checked, text = radioButton._text, jDom;
+		if (radioGroup) {
+			radioButton._readOnly2 = radioGroup._readOnly || radioGroup._readOnly2;
+		}
 		if (dom) {
 			jDom = jQuery(dom);
 			var iconEl = dom.firstChild, textEl = iconEl.nextSibling;
@@ -150,9 +153,7 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 							radioButtons[i] = radioButton = new dorado.widget.RadioButton(radioButton);
 						}
 						if (dom) {
-							radioButton._radioGroup = radioGroup;
-							radioButton._readOnly = radioGroup._readOnly && radioGroup._readOnly2;
-							
+							radioButton._radioGroup = radioGroup;							
 							if (radioButton._value == radioGroup._value) {
 								radioGroup.currentRadioButton = radioButton;
 								radioButton._checked = true;
@@ -194,22 +195,7 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 		 * @type boolean
 		 * @attribute
 		 */
-		readOnly: {
-			setter: function(value) {
-				var radioGroup = this, radioButtons = radioGroup._radioButtons;
-				if (radioGroup._readOnly == value) {
-					return;
-				}
-				
-				if (radioButtons) {
-					for (var i = 0, j = radioButtons.length; i < j; i++) {
-						var radioButton = radioButtons[i];
-						radioButton.set("readOnly", value || radioGroup._readOnly2);
-					}
-				}
-				radioGroup._readOnly = value;
-			}
-		}
+		readOnly: {}
 	},
 	
 	EVENTS: /** @scope dorado.widget.RadioGroup.prototype */ {
@@ -240,8 +226,6 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 		}
 		if (dom) {
 			radioButton._radioGroup = radioGroup;
-			radioButton._readOnly = radioGroup._readOnly && radioGroup._readOnly2;
-			
 			if (radioButton._value == radioGroup._value) {
 				radioGroup.currentRadioButton = radioButton;
 				radioButton._checked = true;
@@ -340,8 +324,6 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 			for (var i = 0, j = radioButtons.length; i < j; i++) {
 				var radioButton = radioButtons[i];
 				radioButton._radioGroup = radioGroup;
-				radioButton._readOnly = radioGroup._readOnly && radioGroup._readOnly2;
-				
 				if (radioButton._value == radioGroup._value) {
 					radioGroup.currentRadioButton = radioButton;
 					radioButton._checked = true;
@@ -357,14 +339,14 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 		
 		var group = this, layout = group._layout;
 		if (group._dataSet) {
-			var value, readOnly, dirty;
+			var value, dirty, readOnly = this._dataSet._readOnly;
 			if (group._property) {
 				var bindingInfo = group._bindingInfo;
 				if (bindingInfo.entity instanceof dorado.Entity) {
 					value = bindingInfo.entity.get(group._property);
 					dirty = bindingInfo.entity.isDirty(group._property);
 				}
-				readOnly = (bindingInfo.entity == null) || bindingInfo.propertyDef.get("readOnly");
+				readOnly = readOnly || (bindingInfo.entity == null) || bindingInfo.propertyDef.get("readOnly");
 				
 				if (!group._radioButtons || !group._radioButtons.length) {
 					var radioButtons = [], mapping = bindingInfo.propertyDef._mapping;
@@ -382,7 +364,7 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 			} else {
 				readOnly = true;
 			}
-			group._readOnly = readOnly;
+			group._readOnly2 = readOnly;
 			group.set("value", value);
 			group.setDirty(dirty);
 		}
