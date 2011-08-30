@@ -182,7 +182,31 @@ dorado.widget.desktop.Shortcut = $extend([dorado.RenderableElement, dorado.Event
  * @class AbstractDesktop
  * @extends dorado.widget.Control
  */
-dorado.widget.desktop.AbstractDesktop = $extend(dorado.widget.Control, {});
+dorado.widget.desktop.AbstractDesktop = $extend(dorado.widget.Control, /** @scope dorado.widget.desktop.AbstractDesktop.prototype */ {
+    ATTRIBUTES: /** @scope dorado.widget.desktop.AbstractDesktop.prototype */{
+        /**
+         * 激活右键菜单的Shortcut，可能会被激活的右键菜单使用。
+         * @type dorado.widget.desktop.Shortcut
+         * @attribute
+         */
+        contextMenuShortcut: {
+            readOnly: true
+        }
+    },
+    EVENTS: /** @scope dorado.widget.desktop.AbstractDesktop.prototype */ {
+        /**
+		 * 在Shortcut上点击右键触发的事件。
+		 * @param {Object} self 事件的发起者，即组件本身。
+		 * @param {Object} arg 事件参数。
+		 * @param {dorado.widget.desktop.Shortcut} arg.shortcut 触发该事件的Shortcut。
+		 * @param {Event} arg.event DHTML中的事件event参数。
+		 * @param {boolean} #arg.processDefault=false 是否要继续系统的默认操作，让系统上下文菜单显示出来。
+		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+		 * @event
+		 */
+		onShortcutContextMenu: {}
+    }
+});
 
 /**
  * @author Frank Zhang (mailto:frank.zhang@bstek.com)
@@ -232,31 +256,8 @@ dorado.widget.desktop.Desktop = $extend(dorado.widget.desktop.AbstractDesktop, /
 		 */
 		rowCount: {
 			readOnly: true
-		},
-
-        /**
-         * 激活右键菜单的Shortcut，可能会被激活的右键菜单使用。
-         * @type dorado.widget.desktop.Shortcut
-         * @attribute
-         */
-        contextMenuShortcut: {
-            readOnly: true
-        }
+		}
 	},
-
-    EVENTS: /** @scope dorado.widget.Desktop.prototype */ {
-        /**
-		 * 在Shortcut上点击右键触发的事件。
-		 * @param {Object} self 事件的发起者，即组件本身。
-		 * @param {Object} arg 事件参数。
-		 * @param {dorado.widget.desktop.Shortcut} arg.shortcut 触发该事件的Shortcut。
-		 * @param {Event} arg.event DHTML中的事件event参数。
-		 * @param {boolean} #arg.processDefault=false 是否要继续系统的默认操作，让系统上下文菜单显示出来。
-		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
-		 * @event
-		 */
-		onShortcutContextMenu: {}
-    },
 
 	/**
 	 * 初始化快捷键。
@@ -269,7 +270,22 @@ dorado.widget.desktop.Desktop = $extend(dorado.widget.desktop.AbstractDesktop, /
 		shortcut._iconSize = desktop._iconSize;
         shortcut._parent = desktop;
 		shortcut.render(dom);
-		$fly(shortcut._dom).css("position", "absolute").draggable({
+		$fly(shortcut._dom).bind("contextmenu", function(event) {
+			event.preventDefault();
+			event.stopImmediatePropagation();
+			var desktop = shortcut._parent, arg = {
+				shortcut: shortcut,
+				event: event
+			};
+			desktop._contextMenuShortcut = shortcut;
+			desktop.fireEvent("onShortcutContextMenu", desktop, arg);
+            if (desktop._parent instanceof dorado.widget.desktop.DesktopCarousel) {
+                desktop._parent._contextMenuShortcut = shortcut;
+			    desktop._parent.fireEvent("onShortcutContextMenu", desktop._parent, arg);
+            }
+
+			return false;
+		}).css("position", "absolute").draggable({
 			distance: 10,
 			scope: "desktop",
 			start: function(event, ui) {
@@ -345,17 +361,6 @@ dorado.widget.desktop.Desktop = $extend(dorado.widget.desktop.AbstractDesktop, /
 				$fly(desktop._shortcutHolder).css("display", "");
                 $(shortcut._dom).addClass("ui-draggable-dragged");
 			}
-		}).bind("contextmenu", function(event) {
-			event.preventDefault();
-			event.stopImmediatePropagation();
-			var desktop = shortcut._parent, arg = {
-				shortcut: shortcut,
-				event: event
-			};
-			desktop._contextMenuShortcut = shortcut;
-			desktop.fireEvent("onShortcutContextMenu", desktop, arg);
-
-			return false;
 		});
 	},
 
