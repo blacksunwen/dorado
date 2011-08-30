@@ -12,6 +12,22 @@
             })
         });
 
+        var smenu = new dorado.widget.Menu({
+            items: [{
+                caption: "remove",
+                onClick: function(self, arg) {
+                    var desktop = shell.getCurrentDesktop(), shortcut = desktop.get("contextMenuShortcut");
+                    desktop.removeItem(shortcut);
+                }
+            }, {
+                caption: "open",
+                onClick: function(self, arg) {
+                    var desktop = shell.getCurrentDesktop(), shortcut = desktop.get("contextMenuShortcut");
+                    shell.launchApp(shortcut._appId);
+                }
+            }]
+        });
+
         var menu = new dorado.widget.Menu({
             items: [{
                 name: "close",
@@ -295,7 +311,10 @@
         });
 
 		var card = new dorado.widget.desktop.DesktopCarousel({
-			controls: [desktop, desktop2, desktop3]
+			controls: [desktop, desktop2, desktop3],
+            onShortcutContextMenu: function(self, arg) {
+                smenu.show({ event: arg.event });
+            }
 		});
 
 		var shell = new dorado.widget.desktop.Shell({
@@ -692,7 +711,7 @@
 			}
 		});
 
-		var clock =factory.registerApp({
+		var clock = factory.registerApp({
 			id: "clock",
 			$type: "Widget",
 			doCreateControl: function() {
