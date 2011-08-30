@@ -17,8 +17,8 @@ public class AbstractPanel extends Container {
 	private String caption;
 	private List<Button> buttons = new InnerElementList<Button>(this);
 	private Align buttonAlign = Align.center;
-	private boolean collapseable;
-	private boolean collapsed;
+	private boolean collapseable = true;
+	private boolean collapsed = false;
 
 	public String getCaption() {
 		return caption;
@@ -47,6 +47,7 @@ public class AbstractPanel extends Container {
 		this.buttonAlign = buttonAlign;
 	}
 
+	@ViewAttribute(defaultValue = "true")
 	public boolean isCollapseable() {
 		return collapseable;
 	}
@@ -55,10 +56,11 @@ public class AbstractPanel extends Container {
 		this.collapseable = collapseable;
 	}
 
+	@ViewAttribute(defaultValue = "false")
 	public boolean isCollapsed() {
 		return collapsed;
 	}
-
+	
 	public void setCollapsed(boolean collapsed) {
 		this.collapsed = collapsed;
 	}

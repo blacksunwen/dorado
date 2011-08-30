@@ -29,6 +29,9 @@ public class Panel extends AbstractPanel {
 	private boolean maximized;
 	
 	private boolean closeable;
+	private boolean collapseable = false;
+	private String iconClass;
+	private String background;
 	private CloseAction closeAction = CloseAction.hide;
 	private String icon;
 	private List<SimpleIconButton> tools = new InnerElementList<SimpleIconButton>(
@@ -102,4 +105,28 @@ public class Panel extends AbstractPanel {
 	public void setCloseAction(CloseAction closeAction) {
 		this.closeAction = closeAction;
 	}
+	
+	@Override
+	@ViewAttribute(defaultValue = "false")
+	public boolean isCollapseable() {
+		return collapseable;
+	}
+
+	public String getIconClass() {
+		return iconClass;
+	}
+
+	public void setIconClass(String iconClass) {
+		this.iconClass = iconClass;
+	}
+
+	public String getBackground() {
+		return background;
+	}
+
+	public void setBackground(String background) {
+		this.background = background;
+	}
+	
+	
 }
