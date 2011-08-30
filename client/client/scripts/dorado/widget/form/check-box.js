@@ -222,10 +222,10 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 		//checkBox._checked = (checkBox._value == checkBox._onValue);
 		
 		if (checkBox._iconOnly) {
-			checkBox._className = "i-checkbox-icononly " + checkBox._className + "-icononly";
+			checkBox._className = checkBox._className + "-icononly";
 			dom = $DomUtils.xCreateElement({
 				tagName: "div",
-				className: checkBox._className
+				className: "i-checkbox-icononly " + checkBox._className
 			});
 			$fly(dom).hover(function() {
 				if (!checkBox._readOnly) {
