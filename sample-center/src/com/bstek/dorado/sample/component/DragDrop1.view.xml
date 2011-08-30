@@ -1,91 +1,88 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ViewConfig>
-	<View title="拖拽  1" layout="Anchor">
-		<BlockView draggable="true" dragTags="block" droppable="true" droppableTags="block" dragMode="item" dropMode="insertItems"
-			blockHeight="100" lineSize="4" fillLine="true" width="400" height="430" layoutConstraint="left:10; top:10">
-			<ClientEvent name="onCreate"><![CDATA[
-self.set("renderer", new dorado.widget.blockview.ImageBlockRenderer({ captionProperty: "name" }));
-			]]></ClientEvent>
-			<Property name="items">
-				<Collection>
-					<Entity>
-						<Property name="name">CYCLINER</Property>
-						<Property name="image">images/blocks/1.gif</Property>
-					</Entity>
-					<Entity>
-						<Property name="name">banana moon</Property>
-						<Property name="image">images/blocks/2.gif</Property>
-					</Entity>
-					<Entity>
-						<Property name="name">BlueBuck</Property>
-						<Property name="image">images/blocks/3.gif</Property>
-					</Entity>
-					<Entity>
-						<Property name="name">SOSO</Property>
-						<Property name="image">images/blocks/4.gif</Property>
-					</Entity>
-					<Entity>
-						<Property name="name">buzzsprout</Property>
-						<Property name="image">images/blocks/5.gif</Property>
-					</Entity>
-					<Entity>
-						<Property name="name">Sweetcakes</Property>
-						<Property name="image">images/blocks/6.gif</Property>
-					</Entity>
-					<Entity>
-						<Property name="name">paperbox</Property>
-						<Property name="image">images/blocks/7.gif</Property>
-					</Entity>
-					<Entity>
-						<Property name="name">ALESSANDRO</Property>
-						<Property name="image">images/blocks/8.gif</Property>
-					</Entity>
-					<Entity>
-						<Property name="name">TRENTO MEDIA</Property>
-						<Property name="image">images/blocks/9.gif</Property>
-					</Entity>
-					<Entity>
-						<Property name="name">Global Templates</Property>
-						<Property name="image">images/blocks/10.gif</Property>
-					</Entity>
-					<Entity>
-						<Property name="name">DreamTemplate</Property>
-						<Property name="image">images/blocks/11.gif</Property>
-					</Entity>
-					<Entity>
-						<Property name="name">DESIGN to XHTML</Property>
-						<Property name="image">images/blocks/12.gif</Property>
-					</Entity>
-					<Entity>
-						<Property name="name">Custom Banners</Property>
-						<Property name="image">images/blocks/13.gif</Property>
-					</Entity>
-					<Entity>
-						<Property name="name">HTML EMail</Property>
-						<Property name="image">images/blocks/14.gif</Property>
-					</Entity>
-					<Entity>
-						<Property name="name">deposit photos</Property>
-						<Property name="image">images/blocks/15.gif</Property>
-					</Entity>
-					<Entity>
-						<Property name="name">MONEY MODLER</Property>
-						<Property name="image">images/blocks/16.gif</Property>
-					</Entity>
-					<Entity>
-						<Property name="name">elegant</Property>
-						<Property name="image">images/blocks/17.gif</Property>
-					</Entity>
-				</Collection>
-			</Property>
-		</BlockView>
-		<BlockView draggable="true" dragTags="block" droppable="true" droppableTags="block" dragMode="item" dropMode="insertItems"
-			blockHeight="75" lineSize="4" fillLine="true" width="300" height="220" layoutConstraint="left:430; top:10">
-			<ClientEvent name="onCreate"><![CDATA[
-self.set("renderer", new dorado.widget.blockview.ImageBlockRenderer({ captionProperty: "name" }));
-			]]></ClientEvent>
-		</BlockView>
-		<ListBox property="name" draggable="true" dragTags="block" droppable="true" droppableTags="block" dragMode="item"
-			dropMode="insertItems" width="300" height="200" layoutConstraint="none" />
-	</View>
+  <View layout="Anchor" title="拖拽  1">
+    <BlockView blockHeight="100" dragTags="block" draggable="true" droppable="true" droppableTags="block" fillLine="true" height="430" layoutConstraint="left:10; top:10" lineSize="4" width="400">
+      <ClientEvent name="onCreate">
+self.set(&quot;renderer&quot;, new dorado.widget.blockview.ImageBlockRenderer({ captionProperty: &quot;name&quot; }));
+			</ClientEvent>
+      <Property name="items">
+        <Collection>
+          <Entity>
+            <Property name="name">CYCLINER</Property>
+            <Property name="image">images/blocks/1.gif</Property>
+          </Entity>
+          <Entity>
+            <Property name="name">banana moon</Property>
+            <Property name="image">images/blocks/2.gif</Property>
+          </Entity>
+          <Entity>
+            <Property name="name">BlueBuck</Property>
+            <Property name="image">images/blocks/3.gif</Property>
+          </Entity>
+          <Entity>
+            <Property name="name">SOSO</Property>
+            <Property name="image">images/blocks/4.gif</Property>
+          </Entity>
+          <Entity>
+            <Property name="name">buzzsprout</Property>
+            <Property name="image">images/blocks/5.gif</Property>
+          </Entity>
+          <Entity>
+            <Property name="name">Sweetcakes</Property>
+            <Property name="image">images/blocks/6.gif</Property>
+          </Entity>
+          <Entity>
+            <Property name="name">paperbox</Property>
+            <Property name="image">images/blocks/7.gif</Property>
+          </Entity>
+          <Entity>
+            <Property name="name">ALESSANDRO</Property>
+            <Property name="image">images/blocks/8.gif</Property>
+          </Entity>
+          <Entity>
+            <Property name="name">TRENTO MEDIA</Property>
+            <Property name="image">images/blocks/9.gif</Property>
+          </Entity>
+          <Entity>
+            <Property name="name">Global Templates</Property>
+            <Property name="image">images/blocks/10.gif</Property>
+          </Entity>
+          <Entity>
+            <Property name="name">DreamTemplate</Property>
+            <Property name="image">images/blocks/11.gif</Property>
+          </Entity>
+          <Entity>
+            <Property name="name">DESIGN to XHTML</Property>
+            <Property name="image">images/blocks/12.gif</Property>
+          </Entity>
+          <Entity>
+            <Property name="name">Custom Banners</Property>
+            <Property name="image">images/blocks/13.gif</Property>
+          </Entity>
+          <Entity>
+            <Property name="name">HTML EMail</Property>
+            <Property name="image">images/blocks/14.gif</Property>
+          </Entity>
+          <Entity>
+            <Property name="name">deposit photos</Property>
+            <Property name="image">images/blocks/15.gif</Property>
+          </Entity>
+          <Entity>
+            <Property name="name">MONEY MODLER</Property>
+            <Property name="image">images/blocks/16.gif</Property>
+          </Entity>
+          <Entity>
+            <Property name="name">elegant</Property>
+            <Property name="image">images/blocks/17.gif</Property>
+          </Entity>
+        </Collection>
+      </Property>
+    </BlockView>
+    <BlockView blockHeight="75" dragTags="block" draggable="true" droppable="true" droppableTags="block" fillLine="true" height="220" layoutConstraint="left:430; top:10" lineSize="4" width="300">
+      <ClientEvent name="onCreate">
+self.set(&quot;renderer&quot;, new dorado.widget.blockview.ImageBlockRenderer({ captionProperty: &quot;name&quot; }));
+			</ClientEvent>
+    </BlockView>
+    <ListBox dragTags="block" draggable="true" droppable="true" droppableTags="block" height="200" property="name" width="300"/>
+  </View>
 </ViewConfig>

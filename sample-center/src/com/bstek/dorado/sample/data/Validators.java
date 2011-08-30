@@ -15,7 +15,7 @@ public class Validators {
 		if (VALID_ACCOUNT.equals(parameter)) {
 			return null;
 		} else {
-			return "你输入的用户名不可使用，请试试\"" + VALID_ACCOUNT + "\"。";
+			return "Invalid User Name, Please try \"" + VALID_ACCOUNT + "\".";
 		}
 	}
 }

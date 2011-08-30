@@ -124,30 +124,30 @@
 	 * @param {String} path 数据路径表达式。
 	 * @see dorado.DataPath.create
 	 */
-	dorado.DataPath = $class(/** @scope dorado.DataPath.prototype */{
+	dorado.DataPath = $class(/** @scope dorado.DataPath.prototype */
+	{
 
-		$className: "dorado.DataPath",
+		$className : "dorado.DataPath",
 
-		_ALL: [{
-			visibility: 1
+		_ALL : [{
+			visibility : 1
 		}],
 
-		_CURRENT: [{
-			visibility: 2
+		_CURRENT : [{
+			visibility : 2
 		}],
 
-		_REPEAT_ALL: [{
-			visibility: 1,
-			repeat: true
+		_REPEAT_ALL : [{
+			visibility : 1,
+			repeat : true
 		}],
 
-		constructor: function(path) {
+		constructor : function(path) {
 			this.path = (path != null) ? $.trim(path) : path;
 		},
-
-		_throw: function(message, position) {
+		_throw : function(message, position) {
 			var text = "DataPath syntax error";
-			if (message) {
+			if(message) {
 				text += (":\n" + message + "in:\n");
 			} else {
 				text += " in:\n";
@@ -155,36 +155,35 @@
 
 			var path = this.path;
 			text += path;
-			if (isFinite(position)) {
+			if(isFinite(position)) {
 				position = parseInt(position);
 				text += "\nat char " + position;
 			}
 			throw new SyntaxError(text);
 		},
-
 		/**
 		 * 编译数据路径表达式。
 		 * @throws {SyntaxError}
 		 */
-		compile: function() {
+		compile : function() {
 
 			function isUnsignedInteger(s) {
 				return (s.search(/^[0-9]+$/) == 0);
 			}
 
 			var path = this.path;
-			if (path == null || path == "" || path == "*") {
+			if(path == null || path == "" || path == "*") {
 				this._compiledPath = this._ALL;
 				return;
 			}
-			if (path == "#" || path == "[#current]") {
+			if(path == "#" || path == "[#current]") {
 				this._compiledPath = this._CURRENT;
 				this._compiledPath.singleResult = true;
 				return;
 			}
 
 			var _path = path.toLowerCase();
-			if (_path == "(repeat)" || _path == "(r)") {
+			if(_path == "(repeat)" || _path == "(r)") {
 				this._compiledPath = this._REPEAT_ALL;
 				return;
 			}
@@ -204,24 +203,24 @@
 			var escapeNext = false;
 
 			// 对表达式的初次解析
-			for (var i = 0; i < path.length; i++) {
+			for(var i = 0; i < path.length; i++) {
 				var c = path.charAt(i);
-				if (escapeNext) {
+				if(escapeNext) {
 					property += c;
 					escapeNext = false;
 					continue;
 				}
-				if (afterArgs && afterCondition && c != '.') this._throw(null, i);
+				if(afterArgs && afterCondition && c != '.')
+					this._throw(null, i);
 
 				switch (c) {
-					case '.':{
-						if (!quotation && !inArgs && !inCondition) {
+					case '.': {
+						if(!quotation && !inArgs && !inCondition) {
 							compiledPath.push({
-								property: property,
-								args: args,
-								conditions: conditions
+								property : property,
+								args : args,
+								conditions : conditions
 							});
-
 							property = "";
 							args = null;
 							arg = "";
@@ -236,14 +235,15 @@
 						}
 						break;
 					}
-					case ',':{
-						if (!inArgs && !inCondition) this._throw(null, i);
+					case ',': {
+						if(!inArgs && !inCondition)
+							this._throw(null, i);
 
-						if (!quotation) {
-							if (inArgs) {
+						if(!quotation) {
+							if(inArgs) {
 								args.push(arg);
 								arg = "";
-							} else if (inCondition) {
+							} else if(inCondition) {
 								conditions.push(condition);
 								condition = "";
 							}
@@ -252,20 +252,22 @@
 						break;
 					}
 					case '\'':
-					case '"':{
-						if (!inArgs && !inCondition) this._throw(null, i);
+					case '"': {
+						if(!inArgs && !inCondition)
+							this._throw(null, i);
 
-						if (!quotation) {
+						if(!quotation) {
 							quotation = c;
-						} else if (quotation == c) {
+						} else if(quotation == c) {
 							quotation = null;
 						}
 						break;
 					}
-					case '[':{
-						if (inArgs || afterCondition) this._throw(null, i);
+					case '[': {
+						if(inArgs || afterCondition)
+							this._throw(null, i);
 
-						if (!inCondition) {
+						if(!inCondition) {
 							inCondition = true;
 							conditions = [];
 							condition = "";
@@ -273,9 +275,9 @@
 						}
 						break;
 					}
-					case ']':{
-						if (inCondition) {
-							if (condition.length > 0) {
+					case ']': {
+						if(inCondition) {
+							if(condition.length > 0) {
 								conditions.push(condition);
 							}
 							inCondition = false;
@@ -286,10 +288,10 @@
 						}
 						break;
 					}
-					case '(':{
-						if (!inCondition) {
-							if (inArgs || afterArgs) this._throw(null, i);
-
+					case '(': {
+						if(!inCondition) {
+							if(inArgs || afterArgs)
+								this._throw(null, i);
 							inArgs = true;
 							args = [];
 							arg = "";
@@ -297,11 +299,12 @@
 						}
 						break;
 					}
-					case ')':{
-						if (!inCondition && afterArgs) this._throw(null, i);
+					case ')': {
+						if(!inCondition && afterArgs)
+							this._throw(null, i);
 
-						if (inArgs) {
-							if (arg.length > 0) {
+						if(inArgs) {
+							if(arg.length > 0) {
 								args.push(arg);
 							}
 							inArgs = false;
@@ -310,7 +313,7 @@
 						}
 						break;
 					}
-					case '@':{
+					case '@': {
 						c = "$this";
 						break;
 					}
@@ -318,10 +321,10 @@
 						escapeNext = (c == '\\');
 				}
 
-				if (!escapeNext && c != null) {
-					if (inCondition) {
+				if(!escapeNext && c != null) {
+					if(inCondition) {
 						condition += c;
-					} else if (inArgs) {
+					} else if(inArgs) {
 						arg += c;
 					} else {
 						property += c;
@@ -329,65 +332,65 @@
 				}
 			}
 
-			if (property.length > 0 || (args && args.length > 0) || (conditions && conditions.length > 0)) {
+			if(property.length > 0 || (args && args.length > 0) || (conditions && conditions.length > 0)) {
 				compiledPath.push({
-					property: property,
-					args: args,
-					conditions: conditions
+					property : property,
+					args : args,
+					conditions : conditions
 				});
 			}
 
 			// 对初次解析的结果进行整理
 			var singleResult = (compiledPath.length > 0);
-			for (var i = 0; i < compiledPath.length; i++) {
+			for(var i = 0; i < compiledPath.length; i++) {
 				var section = compiledPath[i];
-				if ((!section.property || section.property == '*') && !section.args && !section.conditions) {
+				if((!section.property || section.property == '*') && !section.args && !section.conditions) {
 					section = this._ALL;
 					compiledPath[i] = section;
 					singleResult = false;
 				} else {
 					var property = section.property;
-					if (property) {
-						if (property.charAt(0) == '#') {
+					if(property) {
+						if(property.charAt(0) == '#') {
 							section.visibility = 2;
 							section.property = property = property.substring(1);
 						}
-						if (property.charAt(0) == '!') {
+						if(property.charAt(0) == '!') {
 							section.interceptor = property.substring(1);
 						}
 					}
 
 					var args = section.args;
-					if (args) {
-						for (var j = 0; j < args.length; j++) {
+					if(args) {
+						for(var j = 0; j < args.length; j++) {
 							var arg = args[j].toLowerCase();
-							if (arg == "r" || arg == "repeat") {
+							if(arg == "r" || arg == "repeat") {
 								section.repeat = true;
-							} else if (arg == "l" || arg == "leaf") {
+							} else if(arg == "l" || arg == "leaf") {
 								section.repeat = true;
 								section.leaf = true;
-							} else if (isUnsignedInteger(arg)) {
+							} else if(isUnsignedInteger(arg)) {
 								section.max = parseInt(arg);
 							}
 						}
 					}
 
 					var conditions = section.conditions;
-					if (conditions) {
-						for (var j = conditions.length - 1; j >= 0; j--) {
+					if(conditions) {
+						for(var j = conditions.length - 1; j >= 0; j--) {
 							var condition = conditions[j];
-							if (condition && condition.charAt(0) == '#' && !(section.visibility > 0)) {
-								if (condition == "#dirty") {
+							if(condition && condition.charAt(0) == '#' && !(section.visibility > 0)) {
+								if(condition == "#dirty") {
 									section.visibility = 3;
-								} else if (condition == "#new") {
+								} else if(condition == "#new") {
 									section.visibility = 4;
-								} else if (condition == "#modified") {
+								} else if(condition == "#modified") {
 									section.visibility = 5;
-								} else if (condition == "#deleted") {
+								} else if(condition == "#deleted") {
 									section.visibility = 6;
-								} else if (condition == "#moved") {
+								} else if(condition == "#moved") {
 									section.visibility = 7;
-								} else if (condition == "#current") {
+								} else if(condition == "#current") {
 									section.visibility = 2;
 								} else {
 									this._throw("Unknown token \"" + condition + "\".");
@@ -402,23 +405,22 @@
 			compiledPath.singleResult = singleResult;
 			this._compiledPath = compiledPath;
 		},
-
-		_selectEntityIf: function(context, entity, isLeaf) {
+		_selectEntityIf : function(context, entity, isLeaf) {
 			var section = context.section;
-			if (!section.leaf || isLeaf) {
+			if(!section.leaf || isLeaf) {
 				var sections = context.sections;
-				if (section == sections[sections.length - 1]) {
+				if(section == sections[sections.length - 1]) {
 					context.addResult(entity);
 				} else {
 					this._evaluateSectionOnEntity(context, entity, true);
 				}
 			}
 		},
-
-		_evaluateSectionOnEntity: function(context, entity, nextSection) {
+		_evaluateSectionOnEntity : function(context, entity, nextSection) {
 			var oldLevel = context.level;
-			if (nextSection) {
-				if (context.level >= (context.sections.length - 1)) reutrn;
+			if(nextSection) {
+				if(context.level >= (context.sections.length - 1))
+					reutrn;
 				context.setCurrentLevel(context.level + 1);
 			}
 
@@ -427,84 +429,86 @@
 			context.lastSection = section;
 			try {
 				var result;
-				if (section.interceptor) {
+				if(section.interceptor) {
 					var interceptors = dorado.DataPath.interceptors[section.interceptor];
-					if (interceptors && interceptors.dataInterceptor) {
+					if(interceptors && interceptors.dataInterceptor) {
 						result = interceptors.dataInterceptor.call(this, entity, section.interceptor);
 					} else {
 						throw new dorado.Exception("DataPath interceptor \"" + section.interceptor + "\" not found.");
 					}
-				} else if (section.property) {
-					if (entity instanceof dorado.Entity) {
+				} else if(section.property) {
+					if( entity instanceof dorado.Entity) {
 						dorado.Entity.ALWAYS_RETURN_VALID_ENTITY_LIST = !section.leaf;
 						try {
 							result = entity.get(section.property, context.loadMode);
-						}
-						finally {
+						} finally {
 							dorado.Entity.ALWAYS_RETURN_VALID_ENTITY_LIST = true;
 						}
 					} else {
 						result = entity[section.property];
 					}
-					if (result == null && section.leaf && section == oldLastSection) {
+					if(result == null && section.leaf && section == oldLastSection) {
 						this._selectEntityIf(context, entity, true);
 					}
 				} else {
 					result = entity;
 				}
 
-				if (result != null) {
-					if (result instanceof dorado.EntityList || result instanceof Array) {
-						this._evaluateSectionOnAggregation(context, result);
-					} else {
-						this._selectEntityIf(context, result);
-						if (section.repeat) {
-							this._evaluateSectionOnEntity(context, entity);
-						}
+				if( result instanceof dorado.EntityList || result instanceof Array) {
+					this._evaluateSectionOnAggregation(context, result);
+				} else if(result !== undefined) {
+					this._selectEntityIf(context, result);
+					if(result != null && section.repeat) {
+						this._evaluateSectionOnEntity(context, entity);
 					}
 				}
-			}
-			finally {
+			} finally {
 				context.lastSection = oldLastSection;
 				context.setCurrentLevel(oldLevel);
 			}
 		},
-
-		_evaluateSectionOnAggregation: function(context, entities, isRoot) {
+		_evaluateSectionOnAggregation : function(context, entities, isRoot) {
 
 			function selectEntityIf(entity) {
 				var b = true;
 				switch (section.visibility) {
-					case 3: // dirty
+					case 3:
+						// dirty
 						b = entity.state != dorado.Entity.STATE_NONE;
 						break;
-					case 4: // new
+					case 4:
+						// new
 						b = entity.state == dorado.Entity.STATE_NEW;
 						break;
-					case 5: // modified
+					case 5:
+						// modified
 						b = entity.state == dorado.Entity.STATE_MODIFIED;
 						break;
-					case 6: // delete
+					case 6:
+						// delete
 						b = entity.state == dorado.Entity.STATE_DELETED;
 						break;
-					case 7: // moved
+					case 7:
+						// moved
 						b = entity.state == dorado.Entity.STATE_MOVED;
 						break;
 				}
 
-				if (b) {
+				if(b) {
 					var conditions = section.conditions;
-					if (conditions) {
+					if(conditions) {
 						var $this = entity;
-						for (var i = 0; i < conditions.length; i++) {
+						for(var i = 0; i < conditions.length; i++) {
 							b = eval(conditions[i]);
-							if (!b) break;
+							if(!b)
+								break;
 						}
 					}
 				}
 
-				if (b) this._selectEntityIf(context, entity);
-				if (section.repeat) {
+				if(b)
+					this._selectEntityIf(context, entity);
+				if(section.repeat) {
 					this._evaluateSectionOnEntity(context, entity);
 				}
 			}
@@ -513,48 +517,48 @@
 				context.possibleMultiResult = true;
 				var section = context.section;
 
-				if (section.interceptor) {
+				if(section.interceptor) {
 					var interceptors = dorado.DataPath.interceptors[section.interceptor];
-					if (interceptors && interceptors.dataInterceptor) {
+					if(interceptors && interceptors.dataInterceptor) {
 						entities = interceptors.dataInterceptor.call(this, entities, section.interceptor);
-						if (entities == null) return;
+						if(entities == null)
+							return;
 					} else {
 						throw new dorado.Exception("DataPath interceptor \"" + section.interceptor + "\" not found.");
 					}
 				}
 
-				if (entities instanceof dorado.EntityList || entities instanceof Array) {
-					if (context.acceptAggregation && (section.visibility || 1) == 1 /* ALL */ && !section.conditions) {
+				if( entities instanceof dorado.EntityList || entities instanceof Array) {
+					if(context.acceptAggregation && (section.visibility || 1) == 1/* ALL */ && !section.conditions) {
 						var sections = context.sections;
-						if (section == sections[sections.length - 1]) {
+						if(section == sections[sections.length - 1]) {
 							context.addResult(entities);
 						}
 					}
-				}
-				else {
+				} else {
 					entities = [entities];
 				}
 
-				if (entities instanceof dorado.EntityList) {
-					if (section.visibility == 2) { // current
-						if (entities.current) selectEntityIf.call(this, entities.current);
+				if( entities instanceof dorado.EntityList) {
+					if(section.visibility == 2) {// current
+						if(entities.current)
+							selectEntityIf.call(this, entities.current);
 					} else {
 						var it = entities.iterator(section.visibility == 3 || section.visibility == 6);
-						while (it.hasNext()) {
+						while(it.hasNext()) {
 							selectEntityIf.call(this, it.next());
 						}
 					}
 				} else {
-					for (var i = 0; i < entities.length; i++) {
+					for(var i = 0; i < entities.length; i++) {
 						selectEntityIf.call(this, entities[i]);
 					}
 				}
-			}
-			catch (e) {
-				if (e != BREAK_LEVEL) throw e;
+			} catch (e) {
+				if(e != BREAK_LEVEL)
+					throw e;
 			}
 		},
-
 		/**
 		 * 针对传入的数据应用(执行)路径表达式，并返回表达式的执行结果。
 		 * @param {Object} data 将被应用(执行)的数据。
@@ -577,18 +581,19 @@
 		 * </ul>
 		 * @return {Object|Object[]} 表达式的执行结果。
 		 */
-		evaluate: function(data, options) {
+		evaluate : function(data, options) {
 			var firstResultOnly, acceptAggregation = false, loadMode;
-			if (options === true) {
+			if(options === true) {
 				firstResultOnly = options;
-			} else if (options instanceof Object) {
+			} else if( options instanceof Object) {
 				firstResultOnly = options.firstResultOnly;
 				acceptAggregation = options.acceptAggregation;
 				loadMode = options.loadMode;
 			}
 			loadMode = loadMode || "always";
 
-			if (this._compiledPath === undefined) this.compile();
+			if(this._compiledPath === undefined)
+				this.compile();
 			firstResultOnly = firstResultOnly || this._compiledPath.singleResult;
 
 			var context = new dorado.DataPathContext(this._compiledPath, firstResultOnly);
@@ -596,27 +601,25 @@
 			context.loadMode = loadMode;
 			context.possibleMultiResult = false;
 			try {
-				if (data != null) {
-					if (data instanceof dorado.EntityList || data instanceof Array) {
+				if(data != null) {
+					if( data instanceof dorado.EntityList || data instanceof Array) {
 						this._evaluateSectionOnAggregation(context, data, true);
 					} else {
 						this._evaluateSectionOnEntity(context, data);
 					}
 				}
-				if (!context.possibleMultiResult && context.results && context.results.length == 1) {
+				if(!context.possibleMultiResult && context.results && context.results.length == 1) {
 					context.results = context.results[0];
 				}
 				return context.results;
-			}
-			catch (e) {
-				if (e == BREAK_ALL) {
+			} catch (e) {
+				if(e == BREAK_ALL) {
 					return (firstResultOnly) ? context.result : context.results;
 				} else {
 					throw e;
 				}
 			}
 		},
-
 		/**
 		 * 返回某数据路径所对应的子数据类型。
 		 * @param {dorado.DataType} dataType 根数据类型。
@@ -636,90 +639,91 @@
 		 * </ul>
 		 * @return {dorado.DataType} 子数据类型。
 		 */
-		getDataType: function(dataType, options) {
-			if (!dataType) return null;
+		getDataType : function(dataType, options) {
+			if(!dataType)
+				return null;
 
 			var acceptAggregationDataType, loadMode;
-			if (options === true) {
+			if(options === true) {
 				acceptAggregationDataType = options;
-			} else if (options instanceof Object) {
+			} else if( options instanceof Object) {
 				acceptAggregationDataType = options.acceptAggregationDataType;
 				loadMode = options.loadMode;
 			}
 			loadMode = loadMode || "always";
 
 			var cache = dataType._subDataTypeCache;
-			if (cache) {
+			if(cache) {
 				var dt = cache[this.path];
-				if (dt !== undefined) {
-					if (!acceptAggregationDataType && dt instanceof dorado.AggregationDataType) {
+				if(dt !== undefined) {
+					if(!acceptAggregationDataType && dt instanceof dorado.AggregationDataType) {
 						dt = dt.getElementDataType(loadMode);
 					}
-					if (dt instanceof dorado.DataType) return dt;
+					if( dt instanceof dorado.DataType)
+						return dt;
 				}
 			} else {
 				dataType._subDataTypeCache = cache = {};
 			}
 
-			if (dataType instanceof dorado.LazyLoadDataType) {
+			if( dataType instanceof dorado.LazyLoadDataType) {
 				dataType = dataType.get(loadMode);
 			}
 
-			if (this._compiledPath === undefined) this.compile();
+			if(this._compiledPath === undefined)
+				this.compile();
 
 			var compiledPath = this._compiledPath;
-			for (var i = 0; i < compiledPath.length; i++) {
+			for(var i = 0; i < compiledPath.length; i++) {
 				var section = compiledPath[i];
 
-				if (section.interceptor) {
+				if(section.interceptor) {
 					var interceptors = dorado.DataPath.interceptors[section.interceptor];
-					if (interceptors && interceptors.dataTypeInterceptor) {
+					if(interceptors && interceptors.dataTypeInterceptor) {
 						dataType = interceptors.dataTypeInterceptor.call(this, dataType, section.interceptor);
-					}
-					else {
+					} else {
 						dataType = null;
 					}
-				} else if (section.property) {
-					if (dataType instanceof dorado.AggregationDataType) dataType = dataType.getElementDataType(loadMode);
+				} else if(section.property) {
+					if( dataType instanceof dorado.AggregationDataType)
+						dataType = dataType.getElementDataType(loadMode);
 					var p = dataType.getPropertyDef(section.property);
 					dataType = (p) ? p.get("dataType") : null;
 				}
-				if (!dataType) break;
+				if(!dataType)
+					break;
 			}
 
 			cache[this.path] = dataType;
-			if (!acceptAggregationDataType && dataType instanceof dorado.AggregationDataType) {
+			if(!acceptAggregationDataType && dataType instanceof dorado.AggregationDataType) {
 				dataType = dataType.getElementDataType(loadMode);
 			}
 			return dataType;
 		},
-
-		_section2Path: function(section) {
+		_section2Path : function(section) {
 			var path = (section.visibility == 2) ? '#' : '';
 			path += (section.property) ? section.property : '';
 
 			var args = section.args;
-			if (args && args.length > 0) {
+			if(args && args.length > 0) {
 				path += '(' + args.join(',') + ')';
 			}
 
 			var conditions = section.conditions;
-			if (conditions && conditions.length > 0) {
+			if(conditions && conditions.length > 0) {
 				path += '[' + conditions.join(',') + ']';
 			}
 			return (path) ? path : '*';
 		},
-
-		_compiledPath2Path: function() {
+		_compiledPath2Path : function() {
 			var compiledPath = this._compiledPath;
 			var sections = [];
-			for (var i = 0; i < compiledPath.length; i++) {
+			for(var i = 0; i < compiledPath.length; i++) {
 				sections.push(this._section2Path(compiledPath[i]));
 			}
 			return sections.join('.');
 		},
-
-		toString: function() {
+		toString : function() {
 			this.compile();
 			return this._compiledPath2Path();
 		}
@@ -733,7 +737,8 @@
 	dorado.DataPath.create = function(path) {
 		var key = path || "$EMPTY";
 		var dataPath = ENTITY_PATH_CACHE[key];
-		if (dataPath == null) ENTITY_PATH_CACHE[key] = dataPath = new dorado.DataPath(path);
+		if(dataPath == null)
+			ENTITY_PATH_CACHE[key] = dataPath = new dorado.DataPath(path);
 		return dataPath;
 	};
 
@@ -780,21 +785,21 @@
 	 */
 	dorado.DataPath.registerInterceptor = function(section, dataInterceptor, dataTypeInterceptor) {
 		dorado.DataPath.interceptors[section] = {
-			dataInterceptor: dataInterceptor,
-			dataTypeInterceptor: dataTypeInterceptor
+			dataInterceptor : dataInterceptor,
+			dataTypeInterceptor : dataTypeInterceptor
 		};
 	};
 
 	dorado.DataPathContext = $class({
-		$className: "dorado.DataPathContext",
+		$className : "dorado.DataPathContext",
 
-		constructor: function(sections, firstResultOnly) {
+		constructor : function(sections, firstResultOnly) {
 			this.sections = sections;
 			this.firstResultOnly = firstResultOnly;
 			this.level = -1;
 			this.levelInfos = [];
 
-			if (firstResultOnly) {
+			if(firstResultOnly) {
 				this.result = null;
 			} else {
 				this.results = [];
@@ -803,11 +808,10 @@
 			this.lastSection = sections[sections.length - 1];
 			this.setCurrentLevel(0);
 		},
-
-		setCurrentLevel: function(level) {
-			if (level > this.level) {
+		setCurrentLevel : function(level) {
+			if(level > this.level) {
 				this.levelInfos[level] = this.levelInfo = {
-					count: 0
+					count : 0
 				};
 			} else {
 				this.levelInfo = this.levelInfos[level];
@@ -815,14 +819,13 @@
 			this.level = level;
 			this.section = this.sections[level];
 		},
-
-		addResult: function(result) {
-			if (this.firstResultOnly) {
+		addResult : function(result) {
+			if(this.firstResultOnly) {
 				this.result = result;
 				throw BREAK_ALL;
 			} else {
 				var section = this.section;
-				if (section.max > 0 && this.levelInfo.count >= section.max) {
+				if(section.max > 0 && this.levelInfo.count >= section.max) {
 					throw BREAK_LEVEL;
 				}
 				this.results.push(result);
