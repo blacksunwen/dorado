@@ -250,7 +250,7 @@ public class DataOutputter implements Outputter {
 				if (!BeanPropertyUtils.isValidProperty(type, property)) {
 					continue;
 				}
-				outputEntityProperty(context, entity, property);
+				outputEntityProperty(context, entity, property, false);
 			}
 		} else {
 			for (String property : entity.getPropertySet()) {
@@ -270,7 +270,8 @@ public class DataOutputter implements Outputter {
 						continue;
 					}
 				}
-				outputEntityProperty(context, entity, property);
+				outputEntityProperty(context, entity, property,
+						ignoreEmptyProperty);
 			}
 		}
 
@@ -285,8 +286,9 @@ public class DataOutputter implements Outputter {
 		json.endObject();
 	}
 
-	protected void outputEntityProperty(OutputContext context, EntityWrapper entity,
-			String property) throws Exception {
+	protected void outputEntityProperty(OutputContext context,
+			EntityWrapper entity, String property, boolean ignoreEmptyProperty)
+			throws Exception {
 		Object value = null;
 		EntityEnhancer.resetHasPropertyResultSkiped();
 
@@ -304,16 +306,16 @@ public class DataOutputter implements Outputter {
 			}
 		}
 
-		if (value != null
-				&& (!ignoreEmptyProperty || !OutputUtils.isEscapeValue(value,
-						OutputUtils.ESCAPE_VALUE))
-				&& !EntityEnhancer.hasGetterResultSkiped()
-				&& (!simplePropertyValueOnly || EntityUtils
-						.isSimpleValue(value))) {
-			JsonBuilder json = context.getJsonBuilder();
-			json.escapeableKey(property);
-			outputData(value, context);
-			json.endKey();
+		if ((value != null
+				&& !OutputUtils.isEscapeValue(value, OutputUtils.ESCAPE_VALUE) || !ignoreEmptyProperty)) {
+			if (!EntityEnhancer.hasGetterResultSkiped()
+					&& (!simplePropertyValueOnly || EntityUtils
+							.isSimpleValue(value))) {
+				JsonBuilder json = context.getJsonBuilder();
+				json.escapeableKey(property);
+				outputData(value, context);
+				json.endKey();
+			}
 		}
 	}
 

@@ -1,5 +1,6 @@
 package com.bstek.dorado.view.widget.base;
 
+import com.bstek.dorado.annotation.ViewAttribute;
 import com.bstek.dorado.annotation.ViewObject;
 import com.bstek.dorado.annotation.Widget;
 import com.bstek.dorado.annotation.XmlNode;
@@ -11,4 +12,15 @@ import com.bstek.dorado.annotation.XmlNode;
 @Widget(name = "GroupBox", category = "General", dependsPackage = "base-widget")
 @ViewObject(prototype = "dorado.widget.GroupBox", shortTypeName = "GroupBox")
 @XmlNode(nodeName = "GroupBox")
-public class GroupBox extends AbstractPanel {}
+public class GroupBox extends AbstractPanel {
+	public GroupBox() {
+		this.setCollapseable(true);
+	}
+
+	@ViewAttribute(defaultValue = "true")
+	@Override
+	public void setCollapseable(boolean collapseable) {
+		super.setCollapseable(collapseable);
+	}
+
+}

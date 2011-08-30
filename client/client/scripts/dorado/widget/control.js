@@ -1,5 +1,5 @@
-( function() {
-	
+(function() {
+
 	var lastMouseDownTarget, lastMouseDownTimestamp = 0;
 
 	/**
@@ -11,14 +11,13 @@
 	 * @extends dorado.Draggable
 	 * @extends dorado.Droppable
 	 */
-	dorado.widget.Control = $extend( [ dorado.widget.Component, dorado.RenderableElement, dorado.Draggable,
-			dorado.Droppable ], /** @scope dorado.widget.Control.prototype */
+	dorado.widget.Control = $extend([dorado.widget.Component, dorado.RenderableElement, dorado.Draggable, dorado.Droppable], /** @scope dorado.widget.Control.prototype */
 	{
-		$className: "dorado.widget.Control",
+		$className : "dorado.widget.Control",
 
-		_ignoreRefresh: 1,
-		_actualVisible: true,
-		_parentActualVisible: true,
+		_ignoreRefresh : 1,
+		_actualVisible : true,
+		_parentActualVisible : true,
 
 		/**
 		 * @protected
@@ -29,14 +28,14 @@
 		 * 对于那些未通过appendChild操作添加中网页document.body中的DOM对象，我们称之为游离状态的对象。
 		 * </p>
 		 */
-		renderUtilAttached: true,
+		renderUtilAttached : true,
 
 		/**
 		 * @protected
 		 * @type boolean
 		 * @description 用于指示该种控件是否支持获得控制焦点。
 		 */
-		focusable: false,
+		focusable : false,
 
 		/**
 		 * @protected
@@ -44,7 +43,7 @@
 		 * @default true
 		 * @description 该控件（包含其中的子控件）是否允许被鼠标选中。
 		 */
-		selectable: true,
+		selectable : true,
 
 		/**
 		 * @name dorado.widget.Control#doOnFocus
@@ -73,8 +72,8 @@
 		 * @see dorado.widget.Control.prototype#onDetachFromDocument
 		 */
 		// =====
-		
-		ATTRIBUTES: /** @scope dorado.widget.Control.prototype */
+
+		ATTRIBUTES : /** @scope dorado.widget.Control.prototype */
 		{
 
 			/**
@@ -82,11 +81,11 @@
 			 * @type int|String
 			 * @attribute
 			 */
-			width: {
-				setter: function(v) {
+			width : {
+				setter : function(v) {
 					this._width = isFinite(v) ? parseInt(v) : v;
 					delete this._realWidth;
-					this._fixedWidth = !(typeof v == "string" && v.match('%'));
+					this._fixedWidth = !( typeof v == "string" && v.match('%'));
 				}
 			},
 
@@ -95,11 +94,11 @@
 			 * @type int|String
 			 * @attribute
 			 */
-			height: {
-				setter: function(v) {
+			height : {
+				setter : function(v) {
 					this._height = isFinite(v) ? parseInt(v) : v;
 					delete this._realHeight;
-					this._fixedHeight = !(typeof v == "string" && v.match('%'));
+					this._fixedHeight = !( typeof v == "string" && v.match('%'));
 				}
 			},
 
@@ -117,16 +116,16 @@
 			 * @type String|HTMLElement
 			 * @attribute writeOnce,writeBeforeReady
 			 * @see dorado.widget.Control#attribute:renderOn
-			 * 
+			 *
 			 * @example // 指定此按钮自动渲染到id为divButtonHolder的DOM元素中。
 			 * new dorado.widget.Button({
 			 * 	caption: "Test Button",
 			 * 	renderTo: "#divButtonHolder"
 			 * });
 			 */
-			renderTo: {
-				writeOnce: true,
-				writeBeforeReady: true
+			renderTo : {
+				writeOnce : true,
+				writeBeforeReady : true
 			},
 
 			/**
@@ -143,16 +142,16 @@
 			 * @type String|HTMLElement
 			 * @attribute writeOnce,writeBeforeReady
 			 * @see dorado.widget.Control#attribute:renderTo
-			 * 
+			 *
 			 * @example // 指定此按钮自动渲染并替换掉id为myButton的DOM元素。
 			 * new dorado.widget.Button({
 			 * 	caption: "Test Button",
 			 * 	renderOn: "#myButton"
 			 * });
 			 */
-			renderOn: {
-				writeOnce: true,
-				writeBeforeReady: true
+			renderOn : {
+				writeOnce : true,
+				writeBeforeReady : true
 			},
 
 			/**
@@ -161,16 +160,16 @@
 			 * @attribute
 			 * @default true
 			 */
-			visible: {
-				defaultValue: true,
-				setter: function(visible) {
-					if (this._visible != visible) {
+			visible : {
+				defaultValue : true,
+				setter : function(visible) {
+					if(this._visible != visible) {
 						this._visible = visible;
 						this.onActualVisibleChange();
 					}
 				}
 			},
-			
+
 			/**
 			 * 用于表述此控件当前是否真实可见。
 			 * <p>
@@ -180,13 +179,13 @@
 			 * @type boolean
 			 * @attribute readOnly
 			 */
-			actualVisible: {
-				readOnly: true,
-				getter: function() {
+			actualVisible : {
+				readOnly : true,
+				getter : function() {
 					return this.isActualVisible() && this._attached && this._rendered;
 				}
 			},
-			
+
 			/**
 			 * 隐藏模式，表示当用户将该控件的visible属性设置为false时，系统应通过怎样的方式隐藏它。取值范围如下：
 			 * <ul>
@@ -196,8 +195,8 @@
 			 * @type boolean
 			 * @default "visibility"
 			 */
-			hideMode: {
-				defaultValue: "visibility"
+			hideMode : {
+				defaultValue : "visibility"
 			},
 
 			/**
@@ -205,8 +204,8 @@
 			 * @type boolean
 			 * @attribute readOnly
 			 */
-			attached: {
-				readOnly: true
+			attached : {
+				readOnly : true
 			},
 
 			/**
@@ -214,8 +213,8 @@
 			 * @type boolean
 			 * @attribute readOnly
 			 */
-			focused: {
-				readOnly: true
+			focused : {
+				readOnly : true
 			},
 
 			/**
@@ -228,10 +227,10 @@
 			 * @type dorado.widget.Control
 			 * @attribute readOnly
 			 */
-			focusParent: {
-				skipRefresh: true,
-				readOnly: true,
-				getter: function() {
+			focusParent : {
+				skipRefresh : true,
+				readOnly : true,
+				getter : function() {
 					return this._focusParent || this._parent;
 				}
 			},
@@ -241,7 +240,7 @@
 			 * @type String
 			 * @attribute
 			 */
-			tip: {},
+			tip : {},
 
 			/**
 			 * 控件使用的布局条件。
@@ -255,29 +254,30 @@
 			 * @see dorado.widget.Control#attribute:lc
 			 * @see dorado.widget.Container#addChild
 			 */
-			layoutConstraint: {
-				setter: function(layoutConstraint) {
-					if (this._layoutConstraint != layoutConstraint) {
+			layoutConstraint : {
+				setter : function(layoutConstraint) {
+					if(this._layoutConstraint != layoutConstraint) {
 						this._layoutConstraint = layoutConstraint;
-						if (this._layoutConstraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT ||
-							layoutConstraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT) {
+						if(this._layoutConstraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT || layoutConstraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT) {
 							this.onActualVisibleChange();
 						}
-						if (this._rendered && this._parent && this._parent._layout) {
+						if(this._rendered && this._parent && this._parent._layout) {
 							this._parent._layout.refreshControl(this);
 						}
 					}
 				}
 			},
 
-			view: {
-				skipRefresh: true,
-				setter: function(view) {
-					if (this._view == view) return;
+			view : {
+				skipRefresh : true,
+				setter : function(view) {
+					if(this._view == view)
+						return;
 					$invokeSuper.call(this, arguments);
-					if (this._innerControls) {
+					if(this._innerControls) {
 						jQuery.each(this._innerControls, function(i, control) {
-							if (this._view) control.set("view", null);
+							if(this._view)
+								control.set("view", null);
 							control.set("view", view);
 						});
 					}
@@ -285,7 +285,7 @@
 			}
 		},
 
-		EVENTS: /** @scope dorado.widget.Control.prototype */
+		EVENTS : /** @scope dorado.widget.Control.prototype */
 		{
 
 			/**
@@ -296,7 +296,7 @@
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
 			 */
-			onCreateDom: {},
+			onCreateDom : {},
 
 			/**
 			 * 当控件被点击时触发的事件。
@@ -307,7 +307,7 @@
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
 			 */
-			onClick: {},
+			onClick : {},
 
 			/**
 			 * 当控件被双击时触发的事件。
@@ -318,7 +318,7 @@
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
 			 */
-			onDoubleClick: {},
+			onDoubleClick : {},
 
 			/**
 			 * 当鼠标在控件中按下时触发的事件。
@@ -329,7 +329,7 @@
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
 			 */
-			onMouseDown: {},
+			onMouseDown : {},
 
 			/**
 			 * 当鼠标在控件中抬起时触发的事件。
@@ -340,7 +340,7 @@
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
 			 */
-			onMouseUp: {},
+			onMouseUp : {},
 
 			/**
 			 * 当控件中的系统上下文菜单将要显示时触发的事件。
@@ -352,7 +352,7 @@
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
 			 */
-			onContextMenu: {},
+			onContextMenu : {},
 
 			/**
 			 * 当控件获得控制焦点时触发的事件。
@@ -361,7 +361,7 @@
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
 			 */
-			onFocus: {},
+			onFocus : {},
 
 			/**
 			 * 当控件失去控制焦点时触发的事件。
@@ -370,7 +370,7 @@
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
 			 */
-			onBlur: {},
+			onBlur : {},
 
 			/**
 			 * 当控件拥有焦点并且有按键被按下时触发的事件。
@@ -391,7 +391,7 @@
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
 			 */
-			onKeyDown: {},
+			onKeyDown : {},
 
 			/**
 			 * 当控件拥有焦点并且有ASCII码的按键被按下时触发的事件。
@@ -412,146 +412,144 @@
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
 			 */
-			onKeyPress: {}
+			onKeyPress : {}
 		},
 
-		constructor: function(config) {
+		constructor : function(config) {
 			$invokeSuper.call(this, arguments);
 			var renderTo = this._renderTo, renderOn = this._renderOn;
-			if (renderTo || renderOn) {
+			if(renderTo || renderOn) {
 				$setTimeout(this, function() {
 					var container = renderTo || renderOn;
-					if (typeof container == "string") container = jQuery(container)[0];
-					if (container && container.nodeType) {
-						(renderTo) ? this.render(container) : this.replace(container);
+					if( typeof container == "string")
+						container = jQuery(container)[0];
+					if(container && container.nodeType) {(renderTo) ? this.render(container) : this.replace(container);
 					}
 				}, 0);
 			}
 		},
-
-		onReady: function() {
-			if (this._innerControls) {
+		onReady : function() {
+			if(this._innerControls) {
 				jQuery.each(this._innerControls, function(i, control) {
-					if (!(control instanceof dorado.widget.Control) && !control._ready) control.onReady();
+					if(!( control instanceof dorado.widget.Control) && !control._ready)
+						control.onReady();
 				});
 			}
 			$invokeSuper.call(this, arguments);
 		},
-
-		destroy: function() {
-			if (this._innerControls) {
+		destroy : function() {
+			if(this._innerControls) {
 				jQuery.each(this._innerControls.slice(0, -1), function(i, control) {
-					if (!control._destroyed) control.destroy();
+					if(!control._destroyed)
+						control.destroy();
 				});
 				delete this._innerControls;
 			}
-			
+
 			var isClosed = (window.closed || dorado.windowClosed);
-			if (!isClosed && this._parent) {
-				if (this._isInnerControl) this._parent.unregisterInnerControl(this);
-				else this._parent.removeChild(this);
+			if(!isClosed && this._parent) {
+				if(this._isInnerControl)
+					this._parent.unregisterInnerControl(this);
+				else
+					this._parent.removeChild(this);
 			}
-			
+
 			var dom = this._dom;
-			if (dom) {
+			if(dom) {
 				$dom = $fly(dom);
 				$dom.removeData("doradoControl");
 				try {
 					dom.doradoUniqueId = null;
-				} 
-				catch (e) {
+				} catch (e) {
 				}
-				if (!isClosed) $dom.remove();
+				if(!isClosed)
+					$dom.remove();
 			}
 			$invokeSuper.call(this, arguments);
 		},
-
-		doSet: function(attr, value) {
+		doSet : function(attr, value) {
 			$invokeSuper.call(this, arguments);
-			if (!this._rendered) return;
+			if(!this._rendered)
+				return;
 			var def = this.ATTRIBUTES[attr];
-			if ((this._visible || attr == "visible") && this._ignoreRefresh < 1 && def && !def.skipRefresh) {
+			if((this._visible || attr == "visible") && this._ignoreRefresh < 1 && def && !def.skipRefresh) {
 				dorado.Toolkits.setDelayedAction(this, "$refreshDelayTimerId", this.refresh, 50);
 			}
 		},
-		
-		setActualVisible: function(actualVisible) {
-			if (this._actualVisible != actualVisible) {
+		setActualVisible : function(actualVisible) {
+			if(this._actualVisible != actualVisible) {
 				var oldVisible = this.isActualVisible();
 				this._actualVisible = actualVisible;
-				if (oldVisible != this.isActualVisible()) {
+				if(oldVisible != this.isActualVisible()) {
 					this.onActualVisibleChange();
 				}
 			}
 		},
-		
-		isActualVisible: function() {
+		isActualVisible : function() {
 			return this._parentActualVisible && this._actualVisible && this._visible && this._layoutConstraint != dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT;
 		},
-		
-		onActualVisibleChange: function() {
-			
+		onActualVisibleChange : function() {
+
 			function notifyChildren(control, actualVisible) {
-				if (control._innerControls) {
+				if(control._innerControls) {
 					jQuery.each(control._innerControls, function(i, child) {
-						if (child._parentActualVisible == actualVisible) return;
+						if(child._parentActualVisible == actualVisible)
+							return;
 						child._parentActualVisible = actualVisible;
 						child.onActualVisibleChange();
 					});
 				}
 			}
-			
+
 			var actualVisible = this.isActualVisible();
-			if (actualVisible) {
+			if(actualVisible) {
 				this._skipResize = this._shouldResizeOnVisible;
-				if (this._shouldRefreshOnVisible) this.refresh();
+				if(this._shouldRefreshOnVisible)
+					this.refresh();
 				this._skipResize = false;
-				if (this._shouldResizeOnVisible) this.onResize();
+				if(this._shouldResizeOnVisible)
+					this.onResize();
 			}
-			
+
 			notifyChildren(this, actualVisible);
 		},
+		refresh : function(delay) {
+			if(this._duringRefreshDom || !this._rendered || (!this._attached && this.renderUtilAttached))
+				return;
 
-		refresh: function(delay) {
-			if (this._duringRefreshDom || !this._rendered || (!this._attached && this.renderUtilAttached)) return;
-						
-			if (!this.isActualVisible() && !this._currentVisible) {
+			if(!this.isActualVisible() && !this._currentVisible) {
 				this._shouldRefreshOnVisible = true;
 				return;
 			}
 			this._shouldRefreshOnVisible = false;
-						
-			if (delay) {
+
+			if(delay) {
 				dorado.Toolkits.setDelayedAction(this, "$refreshDelayTimerId", function() {
 					this._duringRefreshDom = true;
 					try {
 						dorado.Toolkits.cancelDelayedAction(this, "$refreshDelayTimerId");
-						
-						if (!this.isActualVisible()) {
+
+						if(!this.isActualVisible()) {
 							this._shouldRefreshOnVisible = true;
 							return;
 						}
 						this._shouldRefreshOnVisible = false;
-						
+
 						this.refreshDom(this.getDom());
-					}
-					finally {
+					} finally {
 						this._duringRefreshDom = false;
 					}
 				}, 50);
-			}
-			else {
+			} else {
 				this._duringRefreshDom = true;
 				try {
 					dorado.Toolkits.cancelDelayedAction(this, "$refreshDelayTimerId");
 					this.refreshDom(this.getDom());
-				}
-				finally {
+				} finally {
 					this._duringRefreshDom = false;
 				}
 			}
 		},
-
 		/**
 		 * 根据控件自身的属性设定来刷新DOM对象。
 		 * <p>
@@ -559,22 +557,23 @@
 		 * </p>
 		 * @param {HTMLElement} dom 控件对应的DOM对象。
 		 */
-		refreshDom: function(dom) {
-			if (!this.selectable) $DomUtils.disableUserSelection(dom);
-		
+		refreshDom : function(dom) {
+			if(!this.selectable)
+				$DomUtils.disableUserSelection(dom);
+
 			try {
 				dom.doradoUniqueId = this._uniqueId;
-				
-				if (this._currentVisible !== undefined) {
-					if (this._currentVisible != this._visible) {
-						if (this._hideMode == "display") {
-							if (this._visible) {
+
+				if(this._currentVisible !== undefined) {
+					if(this._currentVisible != this._visible) {
+						if(this._hideMode == "display") {
+							if(this._visible) {
 								dom.style.display = this._oldDisplay;
 								this.set("layoutConstraint", this._oldLayoutConstraint);
 							} else {
 								this._oldDisplay = dom.style.display;
 								dom.style.display = "none";
-								
+
 								this._oldLayoutConstraint = this._layoutConstraint;
 								this.set("layoutConstraint", dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT);
 							}
@@ -582,187 +581,198 @@
 							dom.style.visibility = (this._visible) ? '' : "hidden";
 						}
 					}
-				}
-				else {
-					if (!this._visible) {
-						if (this._hideMode == "display") {
+				} else {
+					if(!this._visible) {
+						if(this._hideMode == "display") {
 							this._oldDisplay = dom.style.display;
 							dom.style.display = "none";
-							
+
 							this._oldLayoutConstraint = this._layoutConstraint;
 							// 在Container的layout.addControl中已处理
-						}
-						else {
+						} else {
 							dom.style.visibility = "hidden";
 						}
 					}
 				}
-	
-				if (this._tip) {
+
+				if(this._tip) {
 					this._currentTip = this._tip;
 					dorado.TipManager.initTip(dom, {
-						text: this._tip
+						text : this._tip
 					});
-				}
-				else if (this._currentTip) {
+				} else if(this._currentTip) {
 					dorado.TipManager.deleteTip(dom);
 				}
-			}
-			catch (e) {
+			} catch (e) {
 				// do nothing
 			}
-		
+
 			this.applyDraggable(dom);
 			this.applyDroppable(dom);
 			$invokeSuper.call(this, arguments);
-			
-			this._currentVisible  = !!this._visible;
+
+			this._currentVisible = !!this._visible;
 		},
-		
-		getRealWidth: function() {
-			if (this._width == "none") return null;
+		getRealWidth : function() {
+			if(this._width == "none")
+				return null;
 			return (this._realWidth == null) ? this._width : this._realWidth;
 		},
-		
-		getRealHeight: function() {
-			if (this._height == "none") return null;
+		getRealHeight : function() {
+			if(this._height == "none")
+				return null;
 			return (this._realHeight == null) ? this._height : this._realHeight;
 		},
-
 		/**
 		 * 重新设置控件DOM元素的尺寸。
 		 * @protected
 		 * @return {boolean} 返回在此次方法的调用过程中是否确实改变了控件的宽高设置。
 		 */
-		resetDimension: function() {
-			if (this._skipResetDimension) return;
+		resetDimension : function() {
+			if(this._skipResetDimension)
+				return;
 			var changed = $invokeSuper.call(this, arguments) || !this._fixedWidth || !this._fixedHeight;
-			if ((changed || !this._currentVisible) && this._visible) {
+			if((changed || !this._currentVisible) && this._visible) {
 				this._skipResetDimension = true;
 				this.onResize();
 				this._skipResetDimension = false;
 			}
 			return changed;
 		},
-
 		/**
 		 * 向控件所在的布局管理器通知本控件的尺寸已经发生了变化。
 		 * @protected
 		 */
-		notifySizeChange: function() {
-			if (!this._parent || !this._rendered) return;
+		notifySizeChange : function() {
+			if(!this._parent || !this._rendered)
+				return;
 			var layout = this._parent._layout;
-			if (layout && layout._attached && layout.onControlSizeChange) {
+			if(layout && layout._attached && layout.onControlSizeChange) {
 				dorado.Toolkits.setDelayedAction(this, "$notifySizeChangeTimerId", function() {
 					layout.onControlSizeChange(this);
 				}, 200);
 			}
 		},
-	
 		/**
 		 * 返回控件对应的DOM对象。
 		 * @return {HTMLElement} 控件对应的DOM对象。
 		 */
-		getDom: function() {
-			if (!this._dom) {
+		getDom : function() {
+			if(!this._dom) {
 				var dom = this._dom = this.createDom();
+				var $dom = $fly(this._dom);
+				if(this._inherentClassName) {
+					$dom.addClass(this._inherentClassName);
+				}
+				if(this._className) {
+					$dom.addClass(this._className);
+				}
+
 				var self = this;
-				$fly(dom).data("doradoControl", this).click( function(evt) {
-					eval("debugger");
-					if (!self.processDefaultMouseListener()) return;
-					if (self.onClick) if (self.onClick(evt) === false) return false;
+				$dom.data("doradoControl", this).click(function(evt) {
+					if(!self.processDefaultMouseListener())
+						return;
+					if(self.onClick)
+						if(self.onClick(evt) === false)
+							return false;
 					return self.fireEvent("onClick", self, {
-						button: evt.button,
-						event: evt
+						button : evt.button,
+						event : evt
 					});
 				}).bind("dblclick", function(evt) {
-					if (!self.processDefaultMouseListener()) return;
-					if (self.onDoubleClick) if (self.onDoubleClick(evt) === false) return false;
+					if(!self.processDefaultMouseListener())
+						return;
+					if(self.onDoubleClick)
+						if(self.onDoubleClick(evt) === false)
+							return false;
 					return self.fireEvent("onDoubleClick", self, {
-						button: evt.button,
-						event: evt
+						button : evt.button,
+						event : evt
 					});
-				}).mousedown( function(evt) {
-					if (evt.srcElement != lastMouseDownTarget || (new Date() - lastMouseDownTimestamp) > 500) {
+				}).mousedown(function(evt) {
+					if(evt.srcElement != lastMouseDownTarget || (new Date() - lastMouseDownTimestamp) > 500) {
 						dorado.widget.setFocusedControl(self);
 						lastMouseDownTarget = evt.srcElement;
 						lastMouseDownTimestamp = new Date();
 					}
-					if (!self.processDefaultMouseListener()) return;
-					if (self.onMouseDown) if (self.onMouseDown(evt) === false) return false;
+					if(!self.processDefaultMouseListener())
+						return;
+					if(self.onMouseDown)
+						if(self.onMouseDown(evt) === false)
+							return false;
 					return self.fireEvent("onMouseDown", self, {
-						button: evt.button,
-						event: evt
+						button : evt.button,
+						event : evt
 					});
-				}).mouseup( function(evt) {
-					if (!self.processDefaultMouseListener()) return;
-					if (self.onMouseUp) if (self.onMouseUp(evt) === false) return false;
+				}).mouseup(function(evt) {
+					if(!self.processDefaultMouseListener())
+						return;
+					if(self.onMouseUp)
+						if(self.onMouseUp(evt) === false)
+							return false;
 					return self.fireEvent("onMouseUp", self, {
-						button: evt.button,
-						event: evt
+						button : evt.button,
+						event : evt
 					});
 				}).bind("contextmenu", function(evt) {
 					evt = jQuery.event.fix(evt || window.event);
 					var eventArg = {
-						event: evt,
-						processDefault: true
+						event : evt,
+						processDefault : true
 					};
-					if (self.getListenerCount("onContextMenu")) {
+					if(self.getListenerCount("onContextMenu")) {
 						eventArg.processDefault = false;
 						self.fireEvent("onContextMenu", self, eventArg);
 					}
-					if (!eventArg.processDefault) {
+					if(!eventArg.processDefault) {
 						evt.preventDefault();
 						evt.returnValue = false;
 						return false;
 					}
 				});
-	
-				if (this.focusable) dom.tabIndex = 1;
+				if(this.focusable)
+					dom.tabIndex = 1;
 				this.fireEvent("onCreateDom", this, {
-					dom: dom
+					dom : dom
 				});
 			}
 			return this._dom;
 		},
-	
-		processDefaultMouseListener: function() {
+		processDefaultMouseListener : function() {
 			return !this._disabled;
 		},
-	
-		doRenderToOrReplace: function(replace, element, nextChildElement) {
+		doRenderToOrReplace : function(replace, element, nextChildElement) {
 			var renderTarget = this._renderTo || this._renderOn;
-			
+
 			$invokeSuper.call(this, arguments);
-	
+
 			var dom = this._dom;
-			if (!dom) return;
-	
+			if(!dom)
+				return;
+
 			var attached = false;
-			if (!renderTarget && this._parent && this._parent != dorado.widget.View.TOP) {
+			if(!renderTarget && this._parent && this._parent != dorado.widget.View.TOP) {
 				attached = this._parent._attached;
-			}
-			else {
+			} else {
 				var body = dom.ownerDocument.body;
 				var node = dom.parentNode;
-				while (node) {
-					if (node == body) {
+				while(node) {
+					if(node == body) {
 						attached = true;
 						break;
 					}
 					node = node.parentNode;
 				}
 			}
-			
-			if (attached) {
+
+			if(attached) {
 				this.onAttachToDocument();
-			}
-			else if (this._attached) {
+			} else if(this._attached) {
 				this.onDetachFromDocument();
 			}
-			if (!this._ready) this.onReady();
+			if(!this._ready)
+				this.onReady();
 		},
-	
 		/**
 		 * 当控件所对应的HTML元素被真正的添加(相当于appendChild)到HTML的dom树中时激活的方法。
 		 * <p>
@@ -780,22 +790,23 @@
 		 * @protected
 		 * @see dorado.widget.Control#doOnDetachFromDocument
 		 */
-		onAttachToDocument: function() {
-			if (this._rendered && !this._attached) {
+		onAttachToDocument : function() {
+			if(this._rendered && !this._attached) {
 				var dom = this.getDom();
 				this._attached = true;
 				this._ignoreRefresh--;
-				if (this.renderUtilAttached) this.refreshDom(dom);
-				if (this.doOnAttachToDocument) this.doOnAttachToDocument();
-	
-				if (this._innerControls) {
+				if(this.renderUtilAttached)
+					this.refreshDom(dom);
+				if(this.doOnAttachToDocument)
+					this.doOnAttachToDocument();
+
+				if(this._innerControls) {
 					jQuery.each(this._innerControls, function(i, control) {
 						control.onAttachToDocument();
 					});
 				}
 			}
 		},
-	
 		/**
 		 * 当控件所对应的HTML元素被从(相当于removeChild)到HTML的dom树中分离时激活的方法。
 		 * <p>
@@ -805,20 +816,20 @@
 		 * @see dorado.widget.Control#onAttachToDocument
 		 * @see dorado.widget.Control#doOnDetachFromDocument
 		 */
-		onDetachFromDocument: function() {
-			if (this._rendered && this._attached) {
+		onDetachFromDocument : function() {
+			if(this._rendered && this._attached) {
 				this._attached = false;
 				this._ignoreRefresh++;
-				if (this.doOnDetachFromDocument) this.doOnDetachFromDocument();
-	
-				if (this._innerControls) {
+				if(this.doOnDetachFromDocument)
+					this.doOnDetachFromDocument();
+
+				if(this._innerControls) {
 					jQuery.each(this._innerControls, function(i, control) {
 						control.onDetachFromDocument();
 					});
 				}
 			}
 		},
-	
 		/**
 		 * 将一个给定控件注册为本控件的内部控件。
 		 * <p>
@@ -833,41 +844,43 @@
 		 * @param {dorado.widget.Control} control 内部控件。
 		 * @protected
 		 */
-		registerInnerControl: function(control) {
-			if (!this._innerControls) this._innerControls = [];
+		registerInnerControl : function(control) {
+			if(!this._innerControls)
+				this._innerControls = [];
 			this._innerControls.push(control);
-			if (this._attached) control.onAttachToDocument();
+			if(this._attached)
+				control.onAttachToDocument();
 			control._isInnerControl = true;
 			control._parent = control._focusParent = this;
 			control.set("view", (this instanceof dorado.widget.View) ? this : this.get("view"));
-			
-			if (control.parentChanged) control.parentChanged();
+
+			if(control.parentChanged)
+				control.parentChanged();
 		},
-	
 		/**
 		 * 注销一个给定的内部控件。
 		 * @param {dorado.widget.Control} control 内部控件。
 		 * @protected
 		 */
-		unregisterInnerControl: function(control) {
-			if (!this._innerControls) return;
+		unregisterInnerControl : function(control) {
+			if(!this._innerControls)
+				return;
 			control.onDetachFromDocument();
 			this._innerControls.remove(control);
 			control._parent = control._focusParent = null;
 			control.set("view", null);
 			delete control._isInnerControl;
-			
-			if (control.parentChanged) control.parentChanged();
+
+			if(control.parentChanged)
+				control.parentChanged();
 		},
-		
-		parentChanged: function() {
+		parentChanged : function() {
 			var parent = this._parent;
 			var parentActualVisible = (parent) ? parent.isActualVisible() : true;
-			if (parentActualVisible != this._parentActualVisible) {
+			if(parentActualVisible != this._parentActualVisible) {
 				this.onActualVisibleChange();
 			}
 		},
-		
 		/**
 		 * @name dorado.widget.Control#onResize
 		 * @function
@@ -878,92 +891,95 @@
 		 * 以使这些对象能够正确的使用尺寸的改变。此时，我们可以将这些处理逻辑放置在onResize方法中。
 		 * </p>
 		 */
-		onResize: function() {
-			if (this._skipResize) return;
-			
-			if (!this.isActualVisible()) {
+		onResize : function() {
+			if(this._skipResize)
+				return;
+
+			if(!this.isActualVisible()) {
 				this._shouldResizeOnVisible = true;
 				return;
 			}
 			this._shouldResizeOnVisible = false;
-			
-			if (this.doOnResize) this.doOnResize.apply(this, arguments);
+
+			if(this.doOnResize)
+				this.doOnResize.apply(this, arguments);
 		},
-	
 		/**
 		 * 根据给定的类型需要最靠近此控件的父控件。
 		 * @param {Prototype} type 要需要的父控件的类型。
 		 * @return {dorado.widget.Container} 找到的父控件。
-		 * 
+		 *
 		 * @example
 		 * // 寻找某按钮所隶属的Dialog控件。
 		 * var dialog = button1.findParent(dorado.widget.Dialog);
 		 */
-		findParent: function(type) {
+		findParent : function(type) {
 			var parent = this._parent;
-			while (parent) {
-				if (parent instanceof type) return parent;
+			while(parent) {
+				if( parent instanceof type)
+					return parent;
 				parent = parent._parent;
 			}
 			return null;
 		},
-	
 		/**
 		 * 使控件获得控制焦点。
 		 */
-		setFocus: function() {
+		setFocus : function() {
 			var dom = this._dom;
-			if (dom) setTimeout( function() {
-				try {
-					dom.focus();
-				}
-				catch (e) {
-				}
-			}, 0);
+			if(dom)
+				setTimeout(function() {
+					try {
+						dom.focus();
+					} catch (e) {
+					}
+				}, 0);
 		},
-	
 		/**
 		 * 返回控件当前是否可以接收控制焦点成为当前控件。
 		 * @param {boolean} [deep] 是否要分析控件各层父控件已确定该控件自身当前是否可以获得焦点。默认为false。
 		 * 例如：当某个Panel对象被设置为不可用时，那么该Panel中所包含所有控件都将无法接受控制焦点。
 		 * @return {boolean} 是否可以接收控制焦点。
 		 */
-		isFocusable: function(deep) {
-			if (!this.focusable || !this._rendered || !this.getDom() || this._disabled) return false;
-			if (deep) {
+		isFocusable : function(deep) {
+			if(!this.focusable || !this._rendered || !this.getDom() || this._disabled)
+				return false;
+			if(deep) {
 				var parent = this._parent;
-				while (parent) {
-					if (!parent._rendered) break;
-					if (parent.isChildrenFocusable && !parent.isChildrenFocusable(false)) return false;
+				while(parent) {
+					if(!parent._rendered)
+						break;
+					if(parent.isChildrenFocusable && !parent.isChildrenFocusable(false))
+						return false;
 					parent = parent._parent;
 				}
 			}
 			var dom = this.getDom();
 			return !dom.disabled && dom.offsetWidth > 0;
 		},
-	
 		/**
 		 * 当控件获得控制焦点时被激活的方法。
 		 * @protected
 		 */
-		onFocus: function() {
+		onFocus : function() {
 			this._focused = true;
-			if (this.doOnFocus) this.doOnFocus();
-			if (this._className) $fly(this.getDom()).addClass(this._className + "-focused");
+			if(this.doOnFocus)
+				this.doOnFocus();
+			if(this._className)
+				$fly(this.getDom()).addClass(this._className + "-focused");
 			this.fireEvent("onFocus", this);
 		},
-	
 		/**
 		 * 当控件失去控制焦点时被激活的方法。
 		 * @protected
 		 */
-		onBlur: function() {
+		onBlur : function() {
 			this._focused = false;
-			if (this.doOnBlur) this.doOnBlur();
+			if(this.doOnBlur)
+				this.doOnBlur();
 			$fly(this.getDom()).removeClass(this._className + "-focused");
 			this.fireEvent("onBlur", this);
 		},
-	
 		/**
 		 * 当控件拥有控制焦点，并且用户按下任何键盘键（包括系统按钮，如箭头键和功能键）时被激活的方法。
 		 * @param {Event} evt DHTML事件中的Event对象。
@@ -976,29 +992,31 @@
 		 * </ul>
 		 * @protected
 		 */
-		onKeyDown: function(evt) {
+		onKeyDown : function(evt) {
 			var b = true;
-			if (this.getListenerCount("onKeyDown")) {
+			if(this.getListenerCount("onKeyDown")) {
 				var arg = {
-					keyCode: evt.keyCode,
-					shiftKey: evt.shiftKey,
-					ctrlKey: evt.ctrlKey,
-					altlKey: evt.altlKey,
-					event: evt
+					keyCode : evt.keyCode,
+					shiftKey : evt.shiftKey,
+					ctrlKey : evt.ctrlKey,
+					altlKey : evt.altlKey,
+					event : evt
 				};
 				this.fireEvent("onKeyDown", this, arg);
 				b = arg.returnValue;
 			}
-			if (!b) return b;
-	
+			if(!b)
+				return b;
+
 			var b = this.doOnKeyDown ? this.doOnKeyDown(evt) : true;
-			if (!b) return b;
-	
+			if(!b)
+				return b;
+
 			var fp = this.get("focusParent");
-			if (fp && dorado.widget.disableKeyBubble != fp) b = fp.onKeyDown(evt);
+			if(fp && dorado.widget.disableKeyBubble != fp)
+				b = fp.onKeyDown(evt);
 			return b;
 		},
-	
 		/**
 		 * 当控件拥有控制焦点，并且用户按下并放开任何字母数字键时被激活的方法。
 		 * @param {Event} evt DHTML事件中的Event对象。
@@ -1011,54 +1029,53 @@
 		 * </ul>
 		 * @protected
 		 */
-		onKeyPress: function(evt) {
+		onKeyPress : function(evt) {
 			var b = true;
-			if (this.getListenerCount("onKeyPress")) {
+			if(this.getListenerCount("onKeyPress")) {
 				var arg = {
-					keyCode: evt.keyCode,
-					shiftKey: evt.shiftKey,
-					ctrlKey: evt.ctrlKey,
-					altlKey: evt.altlKey,
-					event: evt
+					keyCode : evt.keyCode,
+					shiftKey : evt.shiftKey,
+					ctrlKey : evt.ctrlKey,
+					altlKey : evt.altlKey,
+					event : evt
 				};
 				this.fireEvent("onKeyPress", this, arg);
 				b = arg.returnValue;
 			}
-			if (!b) return b;
-	
+			if(!b)
+				return b;
+
 			var b = this.doOnKeyPress ? this.doOnKeyPress(evt) : true;
-			if (!b) return b;
-	
+			if(!b)
+				return b;
+
 			var fp = this.get("focusParent");
-			if (fp && dorado.widget.disableKeyBubble != fp) b = fp.onKeyDown(evt);
+			if(fp && dorado.widget.disableKeyBubble != fp)
+				b = fp.onKeyDown(evt);
 			return b;
 		},
-	
-		initDraggingInfo: function(draggingInfo, evt) {
+		initDraggingInfo : function(draggingInfo, evt) {
 			$invokeSuper.call(this, arguments);
-			draggingInfo.set( {
-				object: this,
-				sourceControl: this
+			draggingInfo.set({
+				object : this,
+				sourceControl : this
 			});
 		},
-	
-		onDraggingSourceOver: function(draggingInfo, evt) {
-			draggingInfo.set( {
-				targetObject: this,
-				targetControl: this
+		onDraggingSourceOver : function(draggingInfo, evt) {
+			draggingInfo.set({
+				targetObject : this,
+				targetControl : this
 			});
 			return $invokeSuper.call(this, arguments);
 		},
-	
-		onDraggingSourceOut: function(draggingInfo, evt) {
+		onDraggingSourceOut : function(draggingInfo, evt) {
 			var retval = $invokeSuper.call(this, arguments);
-			draggingInfo.set( {
-				targetObject: null,
-				targetControl: null
+			draggingInfo.set({
+				targetObject : null,
+				targetControl : null
 			});
 			return retval;
 		}
-
 	});
 
 	dorado.widget.disableKeyBubble = false;
@@ -1066,63 +1083,69 @@
 	dorado.widget.focusedControl = [];
 
 	dorado.widget.onControlGainedFocus = function(control) {
-		if (dorado.widget.focusedControl && dorado.widget.focusedControl.peek() == control) return;
+		if(dorado.widget.focusedControl && dorado.widget.focusedControl.peek() == control)
+			return;
 		var ov = dorado.widget.focusedControl;
 		var nv = [];
-		if (control) {
+		if(control) {
 			var c = control;
-			while (c) {
+			while(c) {
 				nv.push(c);
 				var focusParent = c.get("focusParent");
-				if (!focusParent) break;
+				if(!focusParent)
+					break;
 				c = focusParent;
 			}
 			nv = nv.reverse();
 		}
 
 		var i = ov.length - 1;
-		for (; i >= 0; i--) {
+		for(; i >= 0; i--) {
 			var o = ov[i];
-			if (o == nv[i]) break;
-			if (o.onBlur) o.onBlur();
+			if(o == nv[i])
+				break;
+			if(o.onBlur)
+				o.onBlur();
 		}
 
 		dorado.widget.focusedControl = nv;
-
 		i++;
-		for (; i < nv.length; i++) {
-			if (nv[i].onFocus) nv[i].onFocus();
+		for(; i < nv.length; i++) {
+			if(nv[i].onFocus)
+				nv[i].onFocus();
 		}
 	};
 
 	dorado.widget.onControlLostFocus = function(control) {
-		if (!control.get("focused")) return;
+		if(!control.get("focused"))
+			return;
 		do {
 			control = control.get("focusParent");
-		}
-		while (control && !control.isFocusable());
+		} while (control && !control.isFocusable());
 		dorado.widget.onControlGainedFocus(control);
 	};
 
 	dorado.widget.setFocusedControl = function(control) {
-		if (dorado.widget.focusedControl && dorado.widget.focusedControl.peek() == control) return;
-		while (control && !control.isFocusable()) {
+		if(dorado.widget.focusedControl && dorado.widget.focusedControl.peek() == control)
+			return;
+		while(control && !control.isFocusable()) {
 			control = control.get("focusParent");
 		}
-		if (control) {
+		if(control) {
 			control.setFocus();
 			dorado.widget.onControlGainedFocus(control);
-		}
-		else {
-			if (document.body) document.body.focus();
+		} else {
+			if(document.body)
+				document.body.focus();
 			dorado.widget.onControlGainedFocus(null);
 		}
 	};
 
 	dorado.widget.getMainFocusedControl = function() {
 		var v = dorado.widget.focusedControl;
-		for ( var i = v.length - 1; i >= 0; i--) {
-			if (!v[i]._focusParent) return v[i];
+		for(var i = v.length - 1; i >= 0; i--) {
+			if(!v[i]._focusParent)
+				return v[i];
 		}
 		return v[0];
 	};
@@ -1136,12 +1159,13 @@
 
 		function findInChildren(element) {
 			var el = element.firstChild, control = null;
-			while (el) {
+			while(el) {
 				control = findInChildren(el);
-				if (control) break;
-				if (el.doradoUniqueId) {
+				if(control)
+					break;
+				if(el.doradoUniqueId) {
 					c = dorado.widget.Component.ALL[el.doradoUniqueId];
-					if (c && c.isFocusable()) {
+					if(c && c.isFocusable()) {
 						control = c;
 						break;
 					}
@@ -1153,32 +1177,34 @@
 
 		return findInChildren(element);
 	};
-
 	function findFirstChild(c) {
 		var t = null;
-		if (c instanceof dorado.widget.Container && c.isChildrenFocusable()) {
+		if( c instanceof dorado.widget.Container && c.isChildrenFocusable()) {
 			var it = c._children.iterator();
-			while (it.hasNext()) {
+			while(it.hasNext()) {
 				t = it.next();
-				if (t instanceof dorado.widget.Control && t.isFocusable()) {
+				if( t instanceof dorado.widget.Control && t.isFocusable()) {
 					t = findFirstChild(t);
-					if (t) break;
+					if(t)
+						break;
 				}
 			}
 		}
-		if (!t && c.isFocusable()) t = c;
+		if(!t && c.isFocusable())
+			t = c;
 		return t;
 	};
 
 	function findNext(c) {
 		var p = c._parent;
-		if (p && p._children) {
+		if(p && p._children) {
 			var it = p._children.iterator(c);
-			while (it.hasNext()) {
+			while(it.hasNext()) {
 				var t = it.next();
-				if (t instanceof dorado.widget.Control && t.isFocusable()) {
+				if( t instanceof dorado.widget.Control && t.isFocusable()) {
 					t = findFirstChild(t);
-					if (t) return t;
+					if(t)
+						return t;
 				}
 			}
 		}
@@ -1187,41 +1213,46 @@
 
 	function findLastChild(c) {
 		var t = null;
-		if (c instanceof dorado.widget.Container && c.isChildrenFocusable()) {
+		if( c instanceof dorado.widget.Container && c.isChildrenFocusable()) {
 			var it = c._children.iterator();
 			it.last();
-			while (it.hasPrevious()) {
+			while(it.hasPrevious()) {
 				t = it.previous();
-				if (t instanceof dorado.widget.Control && t.isFocusable()) {
+				if( t instanceof dorado.widget.Control && t.isFocusable()) {
 					t = findLastChild(t);
-					if (t) break;
+					if(t)
+						break;
 				}
 			}
 		}
-		if (!t && c.isFocusable()) t = c;
+		if(!t && c.isFocusable())
+			t = c;
 		return t;
 	};
 
 	function findPrevious(c) {
 		var p = c._parent;
-		if (p && p._children) {
+		if(p && p._children) {
 			var it = p._children.iterator(c);
-			while (it.hasPrevious()) {
+			while(it.hasPrevious()) {
 				var t = it.previous();
-				if (t instanceof dorado.widget.Control && t.isFocusable()) {
+				if( t instanceof dorado.widget.Control && t.isFocusable()) {
 					t = findLastChild(t);
-					if (t) return t;
+					if(t)
+						return t;
 				}
 			}
 		}
 		return null;
 	};
 
+
 	dorado.widget.findNextFocusableControl = function(control) {
 		var c = control || dorado.widget.getMainFocusedControl();
-		while (c) {
+		while(c) {
 			var t = findNext(c);
-			if (t) return t;
+			if(t)
+				return t;
 			c = c._parent;
 		}
 		return findFirstChild(dorado.widget.View.TOP);
@@ -1229,14 +1260,14 @@
 
 	dorado.widget.findPreviousFocusableControl = function(control) {
 		var c = control || dorado.widget.getMainFocusedControl();
-		while (c) {
+		while(c) {
 			var t = findPrevious(c);
-			if (t) return t;
+			if(t)
+				return t;
 			c = c._parent;
 		}
 		return findLastChild(dorado.widget.View.TOP);
 	};
-	
 	/**
 	 * 根据给定的DOM对象查找其所属的Dorado控件。
 	 * <p>
@@ -1246,65 +1277,62 @@
 	 * @param {Prototype|String} [type] 要查找的目标控件的类型。可以是具体的Prototype或类名。
 	 * 如果不指定参数则表示包含此DOM对象且距离此此DOM对象最近的Dorado控件。
 	 * @return {dorado.widget.Control} Dorado控件。
-	 * 
+	 *
 	 * @example
 	 * // 查找某Element所属的控件。
 	 * var control = dorado.widget.findParentControl(div);
-	 * 
+	 *
 	 * @example
 	 * // 查找某Element元素所属的Dialog控件。
 	 * var dialog = dorado.widget.findParentControl(div, dorado.widget.Dialog);
 	 */
 	dorado.widget.findParentControl = function(element, type) {
-		
+
 		function find(win, dom, className) {
 			var control = null;
 			do {
 				control = win.$fly(dom).data("doradoControl");
-				if (control) {
-					if (className) {
-						if (control.constructor.className === className) break;
+				if(control) {
+					if(className) {
+						if(control.constructor.className === className)
+							break;
 					} else {
 						break;
 					}
 				}
 				dom = dom.parentNode;
-			}
-			while (dom != null);
-			
-			if (!control && win.parent) {
+			} while (dom != null);
+
+			if(!control && win.parent) {
 				var parentFrames;
 				try {
 					parentFrames = win.parent.jQuery("iframe,frame");
-				}
-				catch (e) {
+				} catch (e) {
 					// do nothing;
 				}
-				
-				if (parentFrames) {
+
+				if(parentFrames) {
 					var frame;
 					parentFrames.each(function() {
-						if (this.contentWindow == win) { // IE8下使用===判断会失败
+						if(this.contentWindow == win) {// IE8下使用===判断会失败
 							frame = this;
 							return false;
 						}
 					});
-					if (frame) {
+					if(frame) {
 						control = find(win.parent, frame, className);
 					}
 				}
 			}
 			return control;
 		}
-		
+
 		var className;
-		if (type instanceof Function) {
+		if( type instanceof Function) {
 			className = type.className;
-		}
-		else if (type) {
+		} else if(type) {
 			className = type + '';
 		}
 		return find(window, element, className);
 	}
-
 })();

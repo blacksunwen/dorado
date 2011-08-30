@@ -332,7 +332,7 @@
 					contextKey: "textDom"
 				}]
 			}, null, doms);
-			
+
 			exceptionDialog = new dorado.widget.Dialog({
 				center: true,
 				modal: true,

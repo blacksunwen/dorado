@@ -4,10 +4,13 @@
  */
 dorado.validator = {};
 
+dorado.validator.defaultOkMessage = [{
+	state : "ok"
+}];
+
 dorado.Toolkits.registerTypeTranslator("validator", function(type) {
 	return dorado.util.Common.getClassType("dorado.validator." + type + "Validator", true);
 });
-
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @class 数据校验器的抽象类。
@@ -15,11 +18,13 @@ dorado.Toolkits.registerTypeTranslator("validator", function(type) {
  * @extends dorado.AttributeSupport
  * @extends dorado.EventSupport
  */
-dorado.validator.Validator = $extend([dorado.AttributeSupport, dorado.EventSupport], /** @scope dorado.validator.Validator.prototype */ {
-	className: "dorado.validator.Validator",
-	
-	ATTRIBUTES:/** @scope dorado.validator.Validator.prototype */ {
-	
+dorado.validator.Validator = $extend([dorado.AttributeSupport, dorado.EventSupport], /** @scope dorado.validator.Validator.prototype */
+{
+	className : "dorado.validator.Validator",
+
+	ATTRIBUTES : /** @scope dorado.validator.Validator.prototype */
+	{
+
 		/**
 		 * 校验未通过时给出的信息的默认级别。
 		 * <p>
@@ -29,11 +34,11 @@ dorado.validator.Validator = $extend([dorado.AttributeSupport, dorado.EventSuppo
 		 * @attribute
 		 * @default "error"
 		 */
-		defaultResultState: {
-			defaultValue: "error"
+		defaultResultState : {
+			defaultValue : "error"
 		}
 	},
-	
+
 	/**
 	 * @name dorado.validator.Validator#doValidate
 	 * @function
@@ -45,16 +50,15 @@ dorado.validator.Validator = $extend([dorado.AttributeSupport, dorado.EventSuppo
 	 * @see dorado.validator.Validator#validate
 	 */
 	// =====
-	
-	constructor: function(config) {
+
+	constructor : function(config) {
 		$invokeSuper.call(this, arguments);
-		if (config) this.set(config);
+		if(config)
+			this.set(config);
 	},
-	
-	getListenerScope: function() {
+	getListenerScope : function() {
 		return (this._propertyDef) ? this._propertyDef.get("view") : dorado.widget.View.TOP;
 	},
-	
 	/**
 	 * 验证数据。
 	 * @param {Object} data 要验证的数据。
@@ -75,9 +79,9 @@ dorado.validator.Validator = $extend([dorado.AttributeSupport, dorado.EventSuppo
 	 * </p>
 	 * @see dorado.Entity#getPropertyMessages
 	 */
-	validate: function(data) {
+	validate : function(data) {
 		var result = this.doValidate(data);
-		return dorado.Toolkits.trimMessages(result, this._defaultResultState);
+		return dorado.Toolkits.trimMessages(result, this._defaultResultState) || dorado.validator.defaultOkMessage;
 	}
 });
 
@@ -87,20 +91,22 @@ dorado.validator.Validator = $extend([dorado.AttributeSupport, dorado.EventSuppo
  * @extends dorado.validator.Validator
  * @abstract
  */
-dorado.validator.RemoteValidator = $extend(dorado.validator.Validator, /** @scope dorado.validator.RemoteValidator.prototype */ {
-	className: "dorado.validator.RemoteValidator",
-	
-	ATTRIBUTES: /** @scope dorado.validator.RemoteValidator.prototype */ {
+dorado.validator.RemoteValidator = $extend(dorado.validator.Validator, /** @scope dorado.validator.RemoteValidator.prototype */
+{
+	className : "dorado.validator.RemoteValidator",
+
+	ATTRIBUTES : /** @scope dorado.validator.RemoteValidator.prototype */
+	{
 		/**
 		 * 是否以异步的方式来执行验证。
 		 * @type boolean
 		 * @attribute
 		 * @default true
 		 */
-		async: {
-			defaultValue: true
+		async : {
+			defaultValue : true
 		},
-		
+
 		/**
 		 * 当此校验器正在执行时希望系统显示给用户的提示信息。
 		 * <p>
@@ -109,9 +115,9 @@ dorado.validator.RemoteValidator = $extend(dorado.validator.Validator, /** @scop
 		 * @type String
 		 * @attribute
 		 */
-		executingMessage: {}
+		executingMessage : {}
 	},
-	
+
 	/**
 	 * @name dorado.validator.RemoteValidator#doValidate
 	 * @function
@@ -127,7 +133,7 @@ dorado.validator.RemoteValidator = $extend(dorado.validator.Validator, /** @scop
 	 * @see dorado.validator.RemoteValidator#validate
 	 */
 	// =====
-	
+
 	/**
 	 * @name dorado.validator.RemoteValidator.Validator#validate
 	 * @function
@@ -140,19 +146,25 @@ dorado.validator.RemoteValidator = $extend(dorado.validator.Validator, /** @scop
 	 * </ul>
 	 * @description 验证数据。
 	 */
-	validate: function(data, callback) {
-		if (this._async) {
+	validate : function(data, callback) {
+		if(this._async) {
 			this.doValidate(data, {
-				scope: this,
-				callback: function(success, result) {
-					if (success) result = dorado.Toolkits.trimMessages(result, this._defaultResultState);
-					else result = dorado.Toolkits.trimMessages(dorado.Exception.getExceptionMessage(result), "error");
+				scope : this,
+				callback : function(success, result) {
+					if(success) {
+						result = dorado.Toolkits.trimMessages(result, this._defaultResultState);
+					} else {
+						result = dorado.Toolkits.trimMessages(dorado.Exception.getExceptionMessage(result), "error");
+					}
+					result = result || dorado.validator.defaultOkMessage;
 					$callback(callback, true, result);
 				}
 			});
 		} else {
 			var result = $invokeSuper.call(this, arguments);
-			if (callback) $callback(callback, true, result);
+			if(callback) {
+				$callback(callback, true, result);
+			}
 			return result;
 		}
 	}
@@ -164,22 +176,25 @@ dorado.validator.RemoteValidator = $extend(dorado.validator.Validator, /** @scop
  * @extends dorado.validator.Validator
  * @abstract
  */
-dorado.validator.BaseValidator = $extend(dorado.validator.Validator, /** @scope dorado.validator.BaseValidator.prototype */ {
-	className: "dorado.validator.BaseValidator",
-	
-	ATTRIBUTES:/** @scope dorado.validator.BaseValidator.prototype */ {
-	
+dorado.validator.BaseValidator = $extend(dorado.validator.Validator, /** @scope dorado.validator.BaseValidator.prototype */
+{
+	className : "dorado.validator.BaseValidator",
+
+	ATTRIBUTES : /** @scope dorado.validator.BaseValidator.prototype */
+	{
+
 		/**
 		 * 默认的验证信息内容。
 		 * @type String
 		 * @attribute
 		 */
-		resultMessage: {}
+		resultMessage : {}
 	},
-	
-	validate: function(data) {
+
+	validate : function(data) {
 		var result = this.doValidate(data);
-		if (this._resultMessage && result && typeof result == "string") result = this._resultMessage;
+		if(this._resultMessage && result && typeof result == "string")
+			result = this._resultMessage;
 		return dorado.Toolkits.trimMessages(result, this._defaultResultState);
 	}
 });
@@ -190,48 +205,51 @@ dorado.validator.BaseValidator = $extend(dorado.validator.Validator, /** @scope 
  * @shortTypeName Length
  * @extends dorado.validator.BaseValidator
  */
-dorado.validator.LengthValidator = $extend(dorado.validator.BaseValidator, /** @scope dorado.validator.LengthValidator.prototype */ {
-	className: "dorado.validator.LengthValidator",
-	
-	ATTRIBUTES: /** @scope dorado.validator.LengthValidator.prototype */ {
-	
+dorado.validator.LengthValidator = $extend(dorado.validator.BaseValidator, /** @scope dorado.validator.LengthValidator.prototype */
+{
+	className : "dorado.validator.LengthValidator",
+
+	ATTRIBUTES : /** @scope dorado.validator.LengthValidator.prototype */
+	{
+
 		/**
 		 * 最小合法长度。如果设置为-1则表示忽略对于最小合法长度的校验。
 		 * @type int
 		 * @attribute
 		 * @default -1
 		 */
-		minLength: {
-			defaultValue: -1
+		minLength : {
+			defaultValue : -1
 		},
-		
+
 		/**
 		 * 最大合法长度。如果设置为-1则表示忽略对于最大合法长度的校验。
 		 * @type int
 		 * @attribute
 		 * @default -1
 		 */
-		maxLength: {
-			defaultValue: -1
+		maxLength : {
+			defaultValue : -1
 		}
 	},
-	
-	doValidate: function(data) {
-		if (typeof data != "string") return;
+
+	doValidate : function(data) {
+		if( typeof data != "string")
+			return;
 		var invalid, message = '', len = data.length;
-		if (this._minLength > 0 && len < this._minLength) {
+		if(this._minLength > 0 && len < this._minLength) {
 			invalid = true;
 			message += $resource("dorado.data.ErrorContentTooShort", this._minLength);
 		}
-		if (this._maxLength > 0 && len > this._maxLength) {
+		if(this._maxLength > 0 && len > this._maxLength) {
 			invalid = true;
-			if (message) message += '\n';
+			if(message)
+				message += '\n';
 			message += $resource("dorado.data.ErrorContentTooLong", this._maxLength);
 		}
 		return message;
 	}
 });
-
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -239,19 +257,21 @@ dorado.validator.LengthValidator = $extend(dorado.validator.BaseValidator, /** @
  * @shortTypeName Range
  * @extends dorado.validator.BaseValidator
  */
-dorado.validator.RangeValidator = $extend(dorado.validator.BaseValidator, /** @scope dorado.validator.RangeValidator.prototype */ {
-	className: "dorado.validator.RangeValidator",
-	
-	ATTRIBUTES: /** @scope dorado.validator.RangeValidator.prototype */ {
-	
+dorado.validator.RangeValidator = $extend(dorado.validator.BaseValidator, /** @scope dorado.validator.RangeValidator.prototype */
+{
+	className : "dorado.validator.RangeValidator",
+
+	ATTRIBUTES : /** @scope dorado.validator.RangeValidator.prototype */
+	{
+
 		/**
 		 * 最小值。
 		 * @type float
 		 * @attribute
 		 * @see dorado.validator.RangeValidator#attribute:minValueValidateMode
 		 */
-		minValue: {},
-		
+		minValue : {},
+
 		/**
 		 * 最小值的校验方式。
 		 * <p>
@@ -267,20 +287,18 @@ dorado.validator.RangeValidator = $extend(dorado.validator.BaseValidator, /** @s
 		 * @default "ignore"
 		 * @see dorado.validator.RangeValidator#attribute:minValue
 		 */
-		minValueValidateMode: {
-			defaultValue: "ignore"
+		minValueValidateMode : {
+			defaultValue : "ignore"
 		},
-		
+
 		/**
 		 * 最大值。
 		 * @type float
 		 * @attribute
 		 * @see dorado.validator.RangeValidator#attribute:maxValueValidateMode
 		 */
-		maxValue: {},
-		
-		
-		
+		maxValue : {},
+
 		/**
 		 * 最大值的校验方式。
 		 * <p>
@@ -296,39 +314,41 @@ dorado.validator.RangeValidator = $extend(dorado.validator.BaseValidator, /** @s
 		 * @default "ignore"
 		 * @see dorado.validator.RangeValidator#attribute:maxValue
 		 */
-		maxValueValidateMode: {
-			defaultValue: "ignore"
+		maxValueValidateMode : {
+			defaultValue : "ignore"
 		}
 	},
-	
-	doValidate: function(data) {
-		var invalid, message = '', subMessage = '', data = (typeof data == "number") ? data : parseFloat(data);
-		if (this._minValueValidateMode != "ignore") {
-			if (data == this._minValue && this._minValueValidateMode != "allowEquals") {
+
+	doValidate : function(data) {
+		var invalid, message = '', subMessage = '', data = ( typeof data == "number") ? data : parseFloat(data);
+		if(this._minValueValidateMode != "ignore") {
+			if(data == this._minValue && this._minValueValidateMode != "allowEquals") {
 				invalid = true;
 				subMessage = $resource("dorado.data.ErrorOrEqualTo");
 			}
-			if (data < this._minValue) {
+			if(data < this._minValue) {
 				invalid = true;
 			}
-			if (invalid) {
+			if(invalid) {
 				message += $resource("dorado.data.ErrorNumberTooLess", subMessage, this._minValue);
 			}
 		}
-		if (this._maxValueValidateMode != "ignore") {
-			if (data == this._maxValue && this._maxValueValidateMode != "allowEquals") {
+		if(this._maxValueValidateMode != "ignore") {
+			if(data == this._maxValue && this._maxValueValidateMode != "allowEquals") {
 				invalid = true;
 				subMessage = $resource("dorado.data.ErrorOrEqualTo");
 			}
-			if (data > this._maxValue) {
+			if(data > this._maxValue) {
 				invalid = true;
 			}
-			if (invalid) {
-				if (message) message += '\n';
+			if(invalid) {
+				if(message)
+					message += '\n';
 				message += $resource("dorado.data.ErrorNumberTooGreat", subMessage, this._maxValue);
 			}
 		}
-		if (invalid) return message;
+		if(invalid)
+			return message;
 	}
 });
 
@@ -341,21 +361,23 @@ dorado.validator.RangeValidator = $extend(dorado.validator.BaseValidator, /** @s
  * @shortTypeName Enum
  * @extends dorado.validator.BaseValidator
  */
-dorado.validator.EnumValidator = $extend(dorado.validator.BaseValidator, /** @scope dorado.validator.EnumValidator.prototype */ {
-	className: "dorado.validator.EnumValidator",
-	
-	ATTRIBUTES: /** @scope dorado.validator.EnumValidator.prototype */ {
-	
+dorado.validator.EnumValidator = $extend(dorado.validator.BaseValidator, /** @scope dorado.validator.EnumValidator.prototype */
+{
+	className : "dorado.validator.EnumValidator",
+
+	ATTRIBUTES : /** @scope dorado.validator.EnumValidator.prototype */
+	{
+
 		/**
 		 * 合法值的数组。
 		 * @type Object[]
 		 * @attribute
 		 */
-		enumValus: {}
+		enumValus : {}
 	},
-	
-	doValidate: function(data) {
-		if (this._enumValues instanceof Array && this._enumValues.indexOf(data) < 0) {
+
+	doValidate : function(data) {
+		if(this._enumValues instanceof Array && this._enumValues.indexOf(data) < 0) {
 			return $resource("dorado.data.ErrorValueOutOfEnumRange");
 		}
 	}
@@ -367,25 +389,27 @@ dorado.validator.EnumValidator = $extend(dorado.validator.BaseValidator, /** @sc
  * @shortTypeName RegExp
  * @extends dorado.validator.BaseValidator
  */
-dorado.validator.RegExpValidator = $extend(dorado.validator.BaseValidator, /** @scope dorado.validator.RegExpValidator.prototype */ {
-	className: "dorado.validator.RegExpValidator",
-	
-	ATTRIBUTES: /** @scope dorado.validator.RegExpValidator.prototype */ {
-	
+dorado.validator.RegExpValidator = $extend(dorado.validator.BaseValidator, /** @scope dorado.validator.RegExpValidator.prototype */
+{
+	className : "dorado.validator.RegExpValidator",
+
+	ATTRIBUTES : /** @scope dorado.validator.RegExpValidator.prototype */
+	{
+
 		/**
 		 * 白表达式。即用于描述怎样的数值是合法值的表达式。
 		 * @attribute
 		 * @type String
 		 */
-		whiteRegExp: {},
-		
+		whiteRegExp : {},
+
 		/**
 		 * 黑表达式。即用于描述怎样的数值是非法值的表达式。
 		 * @attribute
 		 * @type String
 		 */
-		blackRegExp: {},
-		
+		blackRegExp : {},
+
 		/**
 		 * 校验模式，此属性用于决定黑白两种表达式哪一个的优先级更高。
 		 * 该属性支持两种取值:
@@ -397,30 +421,32 @@ dorado.validator.RegExpValidator = $extend(dorado.validator.BaseValidator, /** @
 		 * @type String
 		 * @default "whiteBlack"
 		 */
-		validateMode: {
-			defaultValue: "whiteBlack"
+		validateMode : {
+			defaultValue : "whiteBlack"
 		}
 	},
-	
-	doValidate: function(data) {
-	
+
+	doValidate : function(data) {
+
 		function toRegExp(text) {
 			var regexp = null;
-			if (text) {
+			if(text) {
 				regexp = (text.charAt(0) == '/') ? eval(text) : new RegExp(text);
 			}
 			return regexp;
 		}
-		
-		if (typeof data != "string") return;
+
+		if( typeof data != "string")
+			return;
 		var whiteRegExp = toRegExp(this._whiteRegExp), blackRegExp = toRegExp(this._blackRegExp);
 		var valid;
-		if (this._validateMode == "whiteBlack") {
+		if(this._validateMode == "whiteBlack") {
 			valid = blackRegExp && !data.match(blackRegExp) || whiteRegExp && data.match(whiteRegExp);
 		} else {
 			valid = whiteRegExp && data.match(whiteRegExp) || blackRegExp && !data.match(blackRegExp);
 		}
-		if (!valid) return $resource("dorado.data.ErrorBadFormat", data);
+		if(!valid)
+			return $resource("dorado.data.ErrorBadFormat", data);
 	}
 });
 
@@ -430,39 +456,40 @@ dorado.validator.RegExpValidator = $extend(dorado.validator.BaseValidator, /** @
  * @shortTypeName Ajax
  * @extends dorado.validator.RemoteValidator
  */
-dorado.validator.AjaxValidator = $extend(dorado.validator.RemoteValidator, /** @scope dorado.validator.AjaxValidator.prototype */ {
-	className: "dorado.validator.AjaxValidator",
-	
-	ATTRIBUTES: /** @scope dorado.validator.AjaxValidator.prototype */ {
+dorado.validator.AjaxValidator = $extend(dorado.validator.RemoteValidator, /** @scope dorado.validator.AjaxValidator.prototype */
+{
+	className : "dorado.validator.AjaxValidator",
+
+	ATTRIBUTES : /** @scope dorado.validator.AjaxValidator.prototype */
+	{
 		/**
 		 * Dorado服务端暴露给客户端的某个服务的名称。
 		 * @type String
 		 * @attribute
 		 */
-		service: {}
+		service : {}
 	},
-	
-	constructor: function(config) {
-		if (!dorado.widget || !dorado.widget.AjaxAction) {
+
+	constructor : function(config) {
+		if(!dorado.widget || !dorado.widget.AjaxAction) {
 			this._disabled = true;
 			alert("'dorado.validator.AjaxValidator' is disabled because the 'dorado.widget.AjaxAction' is not available.");
 		}
 		$invokeSuper.call(this, arguments);
 	},
-	
-	doValidate: function(data, callback) {
+	doValidate : function(data, callback) {
 		var ajaxAction = this._ajaxAction;
-		if (!ajaxAction) {
+		if(!ajaxAction) {
 			this._ajaxAction = ajaxAction = new dorado.widget.AjaxAction();
 		}
 		ajaxAction.set({
-			async: this._async,
-			executingMessage: this._executingMessage,
-			service: this._service,
-			parameter: data
+			async : this._async,
+			executingMessage : this._executingMessage,
+			service : this._service,
+			parameter : data
 		});
 		var retval = ajaxAction.execute(this._async ? callback : null);
-		if (retval && !this._async) {
+		if(retval && !this._async) {
 			return ajaxAction.get("returnValue");
 		}
 	}
@@ -474,11 +501,13 @@ dorado.validator.AjaxValidator = $extend(dorado.validator.RemoteValidator, /** @
  * @shortTypeName Custom
  * @extends dorado.validator.Validator
  */
-dorado.validator.CustomValidator = $extend(dorado.validator.Validator, /** @scope dorado.validator.CustomValidator.prototype */ {
-	className: "dorado.validator.CustomValidator",
-	
-	EVENTS:/** @scope dorado.validator.CustomValidator.prototype */ {
-	
+dorado.validator.CustomValidator = $extend(dorado.validator.Validator, /** @scope dorado.validator.CustomValidator.prototype */
+{
+	className : "dorado.validator.CustomValidator",
+
+	EVENTS : /** @scope dorado.validator.CustomValidator.prototype */
+	{
+
 		/**
 		 * 当校验器执行数据校验时触发的事件。
 		 * @param {Object} self 事件的发起者，即本校验器对象。
@@ -505,7 +534,7 @@ dorado.validator.CustomValidator = $extend(dorado.validator.Validator, /** @scop
 		 * </p>
 		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 		 * @event
-		 * 
+		 *
 		 * @example
 		 * // 以抛出异常的方式返回验证结果
 		 * new dorado.validator.CustomValidator({
@@ -515,7 +544,7 @@ dorado.validator.CustomValidator = $extend(dorado.validator.Validator, /** @scop
 		 * 		}
 		 * 	}
 		 * });
-		 * 
+		 *
 		 * @example
 		 * // 以arg.result的方式返回验证结果
 		 * new dorado.validator.CustomValidator({
@@ -529,19 +558,18 @@ dorado.validator.CustomValidator = $extend(dorado.validator.Validator, /** @scop
 		 * 	}
 		 * });
 		 */
-		onValidate: {}
+		onValidate : {}
 	},
-	
-	doValidate: function(data) {
+
+	doValidate : function(data) {
 		var result;
 		try {
 			var arg = {
-				data: data
+				data : data
 			};
 			this.fireEvent("onValidate", this, arg);
 			result = arg.result;
-		}
-		catch(e) {
+		} catch(e) {
 			dorado.Exception.removeException(e);
 			result = dorado.Exception.getExceptionMessage(e);
 		}

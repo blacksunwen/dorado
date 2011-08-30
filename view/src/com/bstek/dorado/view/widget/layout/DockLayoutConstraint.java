@@ -7,8 +7,6 @@ package com.bstek.dorado.view.widget.layout;
  * @since Feb 5, 2008
  */
 public class DockLayoutConstraint extends LayoutConstraintSupport {
-	private static final long serialVersionUID = 4102078599716859849L;
-
 	private DockMode type = DockMode.center;
 
 	/**

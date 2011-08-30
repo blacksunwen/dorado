@@ -132,7 +132,7 @@ public class RuleSetBuilder {
 	protected void applyTemplateToRule(RuleTemplate ruleTemplate, Rule rule,
 			RuleSet ruleSet) throws Exception {
 		applyProperties(ruleTemplate, rule,
-				"abstract,nodeName,supportsCustomProperty,category,robots,sortFactor,reserve");
+				"abstract,nodeName,type,supportsCustomProperty,category,robots,sortFactor,reserve");
 
 		Map<String, PropertyTemplate> primitiveProperties = ruleTemplate
 				.getFinalPrimitiveProperties();

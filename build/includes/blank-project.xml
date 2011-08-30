@@ -1,36 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:ivy="antlib:org.apache.ivy.ant" default="build">
+<project default="build">
 	<property name="module.dir" value="${work.dir}/blank" />
-
-	<taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant">
-		<classpath>
-			<pathelement location="${lib.dir}/${ivy.jar}" />
-			<pathelement location="${lib.dir}/${oro.jar}" />
-		</classpath>
-	</taskdef>
 
 	<target name="clean">
 		<delete dir="${module.dir}" />
 	</target>
 
-	<target name="prepare-dependencies">
-		<ivy:configure file="${work.dir}/ivysettings.xml" />
-		<ivy:resolve file="${resources.dir}/blank-project/ivy.xml" />
-	</target>
-
-	<target name="build" depends="clean,prepare-dependencies">
+	<target name="build" depends="clean">
 		<mkdir dir="${module.dir}" />
 
 		<copy todir="${module.dir}">
-			<fileset dir="${resources.dir}/blank-project">
-				<exclude name="ivy.xml" />
-			</fileset>
+			<fileset dir="${resources.dir}/blank-project" />
 		</copy>
 
-		<ivy:retrieve pattern="${module.dir}/web/WEB-INF/lib/[artifact]-[revision](-[classifier]).[ext]" conf="runtime" />
 		<copy todir="${module.dir}/web/WEB-INF/lib">
-			<fileset dir="${target.lib.dir}">
+			<fileset dir="${work.dir}/lib">
 				<include name="*.jar" />
+				<exclude name="dorado-*.jar" />
+			</fileset>
+			<fileset dir="${target.lib.dir}">
+				<include name="dorado-core-*.jar" />
+				<include name="dorado-console-*.jar" />
+				<include name="dorado-ide-support-*.jar" />
 			</fileset>
 		</copy>
 		<delete>
@@ -38,7 +29,6 @@
 				<include name="servlet-api-*.jar" />
 				<include name="jsp-api-*.jar" />
 				<include name="xml-apis-*.jar" />
-				<include name="dorado-hibernate-*.jar" />
 			</fileset>
 		</delete>
 	</target>

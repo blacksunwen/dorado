@@ -1,13 +1,10 @@
 package com.bstek.dorado.view.widget.layout;
 
-
 import com.bstek.dorado.annotation.ViewAttribute;
 import com.bstek.dorado.view.widget.Align;
 import com.bstek.dorado.view.widget.VerticalAlign;
 
 public class FormLayoutConstraint extends LayoutConstraintSupport {
-	private static final long serialVersionUID = 4215956783836177923L;
-
 	private int colSpan = 1;
 	private int rowSpan = 1;
 	private Align align = Align.left;
@@ -18,7 +15,8 @@ public class FormLayoutConstraint extends LayoutConstraintSupport {
 	}
 
 	public void setColSpan(int colSpan) {
-		if (colSpan < 1) colSpan = 1;
+		if (colSpan < 1)
+			colSpan = 1;
 		this.colSpan = colSpan;
 	}
 
@@ -27,7 +25,8 @@ public class FormLayoutConstraint extends LayoutConstraintSupport {
 	}
 
 	public void setRowSpan(int rowSpan) {
-		if (rowSpan < 1) rowSpan = 1;
+		if (rowSpan < 1)
+			rowSpan = 1;
 		this.rowSpan = rowSpan;
 	}
 

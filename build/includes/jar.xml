@@ -114,7 +114,7 @@
 		<delete file="${target.lib.dir}/ivy-${product.revision}.xml" />
 	</target>
 
-	<target name="make-pom" if="ivy-presented">
+	<target name="make-pom" if="${ivy-presented}">
 		<ivy:makepom ivyfile="${workspace.dir}/${module}/ivy.xml" pomfile="${target.pom.dir}/${product.name}-${module}.pom" templateFile="${resources.dir}/dorado-module-template.pom" conf="compile">
 			<mapping conf="compile" scope="compile" />
 		</ivy:makepom>

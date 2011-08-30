@@ -4,7 +4,7 @@
 
 	<property name="product.revision" value="${product.version}-${product.qualifier}" />
 	<tstamp>
-		<format property="product.publication" pattern="yyMMdd.HHmm" />
+		<format property="product.publication" pattern="yyMMdd.HHmm" locale="true" />
 	</tstamp>
 	<property name="product.fullversion" value="${product.revision}.${product.publication}" />
 

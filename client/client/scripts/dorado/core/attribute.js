@@ -1,9 +1,9 @@
 (function() {
 
 	dorado.AttributeException = $extend(dorado.ResourceException, {
-		$className: "dorado.AttributeException"
+		$className : "dorado.AttributeException"
 	});
-	
+
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @class 支持get/set属性的对象的通用接口。
@@ -29,7 +29,7 @@
 	 * </p>
 	 *
 	 * @abstract
-	 * 
+	 *
 	 * @example
 	 * // 读写类属性。
 	 * oop.set("visible", true); // 设置一个属性
@@ -55,19 +55,19 @@
 	 * 	}
 	 * });
 	 */
-	dorado.AttributeSupport = $class(/** @scope dorado.AttributeSupport.prototype */{
-		$className: "dorado.AttributeSupport",
-		
-		constructor: function() {
+	dorado.AttributeSupport = $class(/** @scope dorado.AttributeSupport.prototype */
+	{
+		$className : "dorado.AttributeSupport",
+
+		constructor : function() {
 			var defs = this.ATTRIBUTES;
-			for (var p in defs) {
-				if (defs.hasOwnProperty(p) && defs[p].defaultValue != undefined && this['_' + p] == undefined) {
+			for(var p in defs) {
+				if(defs.hasOwnProperty(p) && defs[p].defaultValue != undefined && this['_' + p] == undefined) {
 					var dv = defs[p].defaultValue;
-					this['_' + p] = (dv instanceof Function && !defs[p].neverEvalDefaultValue) ? dv() : dv;
+					this['_' + p] = ( dv instanceof Function && !defs[p].neverEvalDefaultValue) ? dv() : dv;
 				}
 			}
 		},
-		
 		/**
 		 * 用于声明该对象中所支持的所有Attribute。<br>
 		 * 此属性中的对象一般由dorado系统自动生成，且往往一个类型的所有实例都共享同一个EVENTS对象。
@@ -80,7 +80,8 @@
 		 * // 判断该属性是否只读
 		 * if (attributeDef.readOnly) { ... ... }
 		 */
-		ATTRIBUTES: /** @scope dorado.AttributeSupport.prototype */{
+		ATTRIBUTES : /** @scope dorado.AttributeSupport.prototype */
+		{
 			/**
 			 * 对象的标签。
 			 * <p>
@@ -90,18 +91,22 @@
 			 * @attribute
 			 * @see dorado.TagManager
 			 */
-			tags: {
-				setter: function(tags) {
-					if (typeof tags == "string") tags = tags.split(',');
-					if (this._tags) dorado.TagManager.unregister(this);
+			tags : {
+				setter : function(tags) {
+					if( typeof tags == "string")
+						tags = tags.split(',');
+					if(this._tags)
+						dorado.TagManager.unregister(this);
 					this._tags = tags;
-					if (tags) dorado.TagManager.register(this);
+					if(tags)
+						dorado.TagManager.register(this);
 				}
 			}
 		},
-		
-		EVENTS: /** @scope dorado.AttributeSupport.prototype */ {
-		
+
+		EVENTS : /** @scope dorado.AttributeSupport.prototype */
+		{
+
 			/**
 			 * 当对象中的某属性值被改变时触发的事件。
 			 * @param {Object} self 事件的发起者，即对象本身。
@@ -111,18 +116,18 @@
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
 			 */
-			onAttributeChange: {}
+			onAttributeChange : {}
 		},
-		
+
 		/**
 		 * 返回与该对象关联的属性观察者。
 		 * @return {dorado.AttributeWatcher} 属性观察者。
 		 */
-		getAttributeWatcher: function() {
-			if (!this.attributeWatcher) this.attributeWatcher = new dorado.AttributeWatcher();
+		getAttributeWatcher : function() {
+			if(!this.attributeWatcher)
+				this.attributeWatcher = new dorado.AttributeWatcher();
 			return this.attributeWatcher;
 		},
-		
 		/**
 		 * 读取指定的属性值。
 		 * <p>
@@ -136,33 +141,33 @@
 		 *
 		 * @example
 		 * oop.get("label");
-		 * 
+		 *
 		 * @example
-		 * oop.get("address.postCode");	// 迭代式的属性读取	
+		 * oop.get("address.postCode");	// 迭代式的属性读取
 		 * // 如果address的属性值是一个dorado.AttributeSupport的实例，那么此行命令的效果相当于oop.get("address").get("postCode")。
 		 * // 如果address的属性值是一个JSON对象，那么此行命令的效果相当于oop.get("address").postCode
 		 */
-		get: function(attr) {
+		get : function(attr) {
 			var attrs = attr.split('.'), result;
-			for (var i = 0; i < attrs.length; i++) {
+			for(var i = 0; i < attrs.length; i++) {
 				attr = attrs[i];
-				if (i == 0) {
+				if(i == 0) {
 					var def = this.ATTRIBUTES[attr];
-					if (def) {
-						if (def.writeOnly) throw new dorado.AttributeException("dorado.core.AttributeWriteOnly", attr);
-						if (def.getter) {
+					if(def) {
+						if(def.writeOnly)
+							throw new dorado.AttributeException("dorado.core.AttributeWriteOnly", attr);
+						if(def.getter) {
 							result = def.getter.call(this, attr);
-						} else if (def.path) {
+						} else if(def.path) {
 							var sections = def.path.split('.'), owner = this;
-							for (var i = 0; i < sections.length; i++) {
+							for(var i = 0; i < sections.length; i++) {
 								var section = sections[i];
-								if (section.charAt(0) != '_' && dorado.Object.isInstanceOf(owner, dorado.AttributeSupport)) {
+								if(section.charAt(0) != '_' && dorado.Object.isInstanceOf(owner, dorado.AttributeSupport)) {
 									owner = owner.get(section);
-								}
-								else {
+								} else {
 									owner = owner[section];
 								}
-								if (owner == null || i == sections.length - 1) {
+								if(owner == null || i == sections.length - 1) {
 									result = owner;
 									break;
 								}
@@ -174,13 +179,13 @@
 						throw new dorado.AttributeException("dorado.core.UnknownAttribute", attr);
 					}
 				} else {
-					if (!result) break;
+					if(!result)
+						break;
 					result = (result.get instanceof Function) ? result.get(attr) : result[attr];
 				}
 			}
 			return result;
 		},
-		
 		/**
 		 * 设置属性值。
 		 * @param {String|Object} attr 此参数具有下列两种设置方式：
@@ -225,7 +230,7 @@
 		 *	 label : "Sample Text",
 		 *	 visible : true
 		 * });
-		 * 
+		 *
 		 * @example
 		 * // 利用属性迭代的特性为子对象中的属性赋值。
 		 * oop.set("address.postCode", "7232-00124");
@@ -235,7 +240,7 @@
 		 *	 "address.postCode" : "7232-00124"
 		 * });
 		 * // 上面的两行命令相当于oop.get("address").set("postCode", "7232-00124")
-		 * 
+		 *
 		 * @example
 		 * // 使用上文中提及的第一种方法为label属性赋值，同时为click事件绑定一个监听器。
 		 * oop.set( {
@@ -245,54 +250,57 @@
 		 * 	}
 		 * });
 		 */
-		set: function(attr, value, options) {
+		set : function(attr, value, options) {
 			var skipUnknownAttribute, tryNextOnError, preventOverwriting, lockWritingTimes;
-			if (attr && typeof attr == "object") options = value;
-			if (options && typeof options == "object") {
+			if(attr && typeof attr == "object")
+				options = value;
+			if(options && typeof options == "object") {
 				skipUnknownAttribute = options.skipUnknownAttribute;
 				tryNextOnError = options.tryNextOnError;
 				preventOverwriting = options.preventOverwriting;
 				lockWritingTimes = options.lockWritingTimes;
 			}
-			
-			if (attr.constructor != String) {
+
+			if(attr.constructor != String) {
 				var attrInfos = [];
-				for (var p in attr) {
-					if (attr.hasOwnProperty(p)) {
+				for(var p in attr) {
+					if(attr.hasOwnProperty(p)) {
 						var v = attr[p], attrInfo = {
-							attr: p,
-							value: v
+							attr : p,
+							value : v
 						};
-						if (p == "listener" || v instanceof Function) {
+						if(p == "listener" || v instanceof Function) {
 							attrInfos.insert(attrInfo);
 						} else {
 							attrInfos.push(attrInfo);
 						}
 					}
 				}
-				
-				if (preventOverwriting) watcher = this.getAttributeWatcher();
-				for (var i = 0; i < attrInfos.length; i++) {
+
+				if(preventOverwriting)
+					watcher = this.getAttributeWatcher();
+				for(var i = 0; i < attrInfos.length; i++) {
 					attrInfo = attrInfos[i];
-					if (preventOverwriting && watcher.getWritingTimes(attrInfo.attr)) continue;
+					if(preventOverwriting && watcher.getWritingTimes(attrInfo.attr))
+						continue;
 					try {
 						this.doSet(attrInfo.attr, attrInfo.value, skipUnknownAttribute, lockWritingTimes);
-					} 
-					catch (e) {
-						if (e instanceof dorado.AttributeException) {
+					} catch (e) {
+						if( e instanceof dorado.AttributeException) {
 							dorado.Exception.removeException(e);
-						} else if (!tryNextOnError) throw e;
+						} else if(!tryNextOnError)
+							throw e;
 					}
 				}
 			} else {
-				if (preventOverwriting) {
-					if (this.getAttributeWatcher().getWritingTimes(attr)) return this;
+				if(preventOverwriting) {
+					if(this.getAttributeWatcher().getWritingTimes(attr))
+						return this;
 				}
 				this.doSet(attr, value, skipUnknownAttribute, lockWritingTimes);
 			}
 			return this;
 		},
-		
 		/**
 		 * 用于实现为单个属性赋值的内部方法。
 		 * @param {String} attr 要设置的属性名。
@@ -300,31 +308,33 @@
 		 * @param {boolean} [skipUnknownAttribute] 是否忽略未知的属性。
 		 * @protected
 		 */
-		doSet: function(attr, value, skipUnknownAttribute, lockWritingTimes) {
-			if (attr.charAt(0) == '$') return;
+		doSet : function(attr, value, skipUnknownAttribute, lockWritingTimes) {
+			if(attr.charAt(0) == '$')
+				return;
 			var def = this.ATTRIBUTES[attr];
-			if (def) {
-				if (def.readOnly) throw new dorado.AttributeException("dorado.core.AttributeReadOnly", attr);
+			if(def) {
+				if(def.readOnly)
+					throw new dorado.AttributeException("dorado.core.AttributeReadOnly", attr);
 				var attributeWatcher = this.getAttributeWatcher();
-				if (def.writeOnce && attributeWatcher.getWritingTimes(attr) > 0) {
+				if(def.writeOnce && attributeWatcher.getWritingTimes(attr) > 0) {
 					throw new dorado.AttributeException("dorado.core.AttributeWriteOnce", attr);
 				}
-				if (!lockWritingTimes) attributeWatcher.incWritingTimes(attr);
+				if(!lockWritingTimes)
+					attributeWatcher.incWritingTimes(attr);
 
-				if (def.setter) {
+				if(def.setter) {
 					def.setter.call(this, value, attr);
-				} else if (def.path) {
+				} else if(def.path) {
 					var sections = def.path.split('.'), owner = this;
-					for (var i = 0; i < sections.length - 1 && owner != null; i++) {
+					for(var i = 0; i < sections.length - 1 && owner != null; i++) {
 						var section = sections[i];
-						if (section.charAt(0) != '_' && dorado.Object.isInstanceOf(owner, dorado.AttributeSupport)) {
+						if(section.charAt(0) != '_' && dorado.Object.isInstanceOf(owner, dorado.AttributeSupport)) {
 							owner = owner.get(section);
-						}
-						else {
+						} else {
 							owner = owner[section];
 						}
 					}
-					if (owner != null) {
+					if(owner != null) {
 						var section = sections[sections.length - 1];
 						(section.charAt(0) == '_') ? (owner[section] = value) : owner.set(section, value);
 					} else {
@@ -333,59 +343,59 @@
 				} else {
 					this['_' + attr] = value;
 				}
-				
-				if (this.fireEvent) this.fireEvent("onAttributeChange", this, {
-					attribute: attr,
-					value: value
-				});
+
+				if(this.fireEvent)
+					this.fireEvent("onAttributeChange", this, {
+						attribute : attr,
+						value : value
+					});
 			} else {
-				if (value instanceof Object && dorado.Object.isInstanceOf(this, dorado.EventSupport) &&
-				this.EVENTS[attr]) {
-					if (value instanceof Function) this.addListener(attr, value);
-					else if (value.listener) this.addListener(attr, value.listener, value.options);
-				} else if (!skipUnknownAttribute) {
+				if( value instanceof Object && dorado.Object.isInstanceOf(this, dorado.EventSupport) && this.EVENTS[attr]) {
+					if( value instanceof Function)
+						this.addListener(attr, value);
+					else if(value.listener)
+						this.addListener(attr, value.listener, value.options);
+				} else if(!skipUnknownAttribute) {
 					throw new dorado.AttributeException("dorado.core.UnknownAttribute", attr);
 				}
 			}
 		},
-		
 		/**
 		 * 判断对象中是否定义了某个标签值。
 		 * @param {String} tag 要判断的标签值。
 		 * @return {boolean} 是否具有该标签值。
 		 */
-		hasTag: function(tag) {
-			if (this._tags) {
+		hasTag : function(tag) {
+			if(this._tags) {
 				return this._tags.indexOf(tag) >= 0;
 			} else {
 				return false;
 			}
 		}
 	});
-	
+
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @class 属性的观察者。
 	 */
-	dorado.AttributeWatcher = $class(/** @scope dorado.AttributeWatcher.prototype */{
-		$className: "dorado.AttributeWatcher",
-		
+	dorado.AttributeWatcher = $class(/** @scope dorado.AttributeWatcher.prototype */
+	{
+		$className : "dorado.AttributeWatcher",
+
 		/**
 		 * 返回某属性的被写入次数。
 		 * @param {String} attr 属性名
 		 * @return {int} 属性的被写入次数。
 		 */
-		getWritingTimes: function(attr) {
+		getWritingTimes : function(attr) {
 			return this[attr + ".writingTimes"] || 0;
 		},
-		
-		incWritingTimes: function(attr) {
+		incWritingTimes : function(attr) {
 			this[attr + ".writingTimes"] = (this[attr + ".writingTimes"] || 0) + 1;
 		},
-		
-		setWritingTimes: function(attr, n) {
+		setWritingTimes : function(attr, n) {
 			this[attr + ".writingTimes"] = n;
 		}
 	});
-	
+
 })();

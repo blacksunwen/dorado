@@ -875,7 +875,7 @@
 			var leftButton = tabbar._leftButton, rightButton = tabbar._rightButton;
 			var tabsWidth = tabbar.getTabsWidth(), tabsEl = doms.tabs, currentLeft = parseInt(tabsEl.style.left || 0, 10);
 			var visibleWidth = $fly(doms.tabsWrap).width();
-            debugger;
+			
 			//console.log("tabsWidth + currentLeft:" + (tabsWidth + currentLeft) + "\tvisibleWidth:" + visibleWidth + "\ttabsWidth:" + tabsWidth);
 			if (tabsWidth > 0) {
 				if (tabbar._alwaysShowNavButtons !== true && visibleWidth > tabsWidth) {//没有必要显示NavButtons
@@ -995,7 +995,7 @@
 		onToolButtonVisibleChange: function() {
 			var tabbar = this, dom = tabbar._dom, doms = tabbar._doms;
 			if (!dom) return;
-            debugger;
+			
 			var leftButton = doms.leftButton, rightButton = doms.rightButton, menuButton = doms.menuButton;
 			var leftWidth = 0, rightWidth = 0, menuButtonWidth = 0;
 			if (leftButton && leftButton.style.display != "none") {
