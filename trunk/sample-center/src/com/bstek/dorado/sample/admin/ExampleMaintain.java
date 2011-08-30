@@ -123,8 +123,9 @@ public class ExampleMaintain {
 		long exampleId = example.getId();
 		if (EntityState.isDirty(state) && !EntityState.NEW.equals(state)) {
 			if (persisContext.getDirtyExamples().contains(exampleId)) {
-				throw new IllegalArgumentException("不能同时提交同一示例的两份修改，请取消["
-						+ example.getLabel() + "]示例的其中一份修改后重新尝试提交。");
+				throw new IllegalArgumentException(
+						"Can not submit duplicate modifications ["
+								+ example.getLabel() + "].");
 			}
 			persisContext.getDirtyExamples().add(exampleId);
 		}

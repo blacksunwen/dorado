@@ -29,7 +29,7 @@
 <ClientEvent name="onEntityToText" parameters="self,arg"/>
 <ClientEvent name="onCurrentChange" parameters="self,arg"/>
 <ClientEvent name="beforeCurrentChange" parameters="self,arg"/>
-<ClientEvent name="onAttributeChanged" parameters="self,arg"/>
+<ClientEvent name="onAttributeChange" parameters="self,arg"/>
 <ClientEvent name="onStateChange" parameters="self,arg"/></ClientEvents><Children><Child rule="PropertyDef" name="PropertyDef" aggregated="true"></Child><Child rule="Reference" name="Reference" aggregated="true"></Child><Child rule="Lookup" name="Lookup" aggregated="true"></Child></Children></Rule><Rule name="Import" scope="protected" sortFactor="9001" category="Auxiliary"><PrimitiveProps>
 <Prop name="id"/>
 <Prop name="src"/></PrimitiveProps></Rule><Rule name="PlaceHolder" scope="protected" sortFactor="9004" category="Auxiliary"><PrimitiveProps>
@@ -73,7 +73,7 @@
 <Prop name="metaData" type="java.util.Map"/>
 <Prop name="readOnly" type="boolean"/>
 <Prop name="required" type="boolean"/>
-<Prop name="submitable" type="boolean" defaultValue="true"/>
+<Prop name="submittable" type="boolean" defaultValue="true"/>
 <Prop name="tags" type="java.lang.String"/>
 <Prop name="visible" type="boolean" defaultValue="true"/></Props><ClientEvents>
 <ClientEvent name="onGetText" parameters="self,arg"/>
@@ -360,7 +360,7 @@
 <Prop name="propertyPath" type="java.lang.String"/>
 <Prop name="readOnly" type="boolean"/>
 <Prop name="required" type="boolean"/>
-<Prop name="submitable" type="boolean" defaultValue="true"/>
+<Prop name="submittable" type="boolean" defaultValue="true"/>
 <Prop name="tags" type="java.lang.String"/>
 <Prop name="visible" type="boolean" defaultValue="true"/></Props></Rule><Rule name="Layout" abstract="true" type="com.bstek.dorado.view.widget.layout.Layout" scope="protected"><Props>
 <Prop name="className" type="java.lang.String"/>
@@ -390,7 +390,7 @@
 <Prop name="valueProperty" type="java.lang.String"/></Prop><Prop name="metaData" type="java.util.Map" compositeType="Open"></Prop>
 <Prop name="readOnly" type="boolean"/>
 <Prop name="required" type="boolean"/>
-<Prop name="submitable" type="boolean" defaultValue="true"/>
+<Prop name="submittable" type="boolean" defaultValue="true"/>
 <Prop name="tags" type="java.lang.String"/>
 <Prop name="visible" type="boolean" defaultValue="true"/></Props><Children><Child rule="DataProvider" name="DataProvider"></Child><Child rule="Lookup.Constraint" name="Constraint" aggregated="true"></Child></Children></Rule><Rule name="LayoutConstraint" abstract="true" type="com.bstek.dorado.view.widget.layout.LayoutConstraintSupport" scope="protected"><Props>
 <Prop name="className" type="java.lang.String"/>
@@ -410,7 +410,7 @@
 <Prop name="parameter" type="java.lang.Object" editor="pojo"/>
 <Prop name="readOnly" type="boolean"/>
 <Prop name="required" type="boolean"/>
-<Prop name="submitable" type="boolean" defaultValue="true"/>
+<Prop name="submittable" type="boolean" defaultValue="true"/>
 <Prop name="tags" type="java.lang.String"/>
 <Prop name="visible" type="boolean" defaultValue="true"/></Props><ClientEvents>
 <ClientEvent name="onLoadData" parameters="self,arg"/>
@@ -1006,7 +1006,7 @@
 <Prop name="icon48" type="java.lang.String"/>
 <Prop name="icon64" type="java.lang.String"/>
 <Prop name="id" type="java.lang.String"/>
-<Prop name="parent" type="java.lang.Object"/>
+<Prop name="parent" type="com.bstek.dorado.view.ViewElement"/>
 <Prop name="showTaskButton" type="boolean" defaultValue="true"/></Props><Children><Child name="Dialog" fixed="true"><Rule name="Shell.Apps.DialogApp.Dialog" parents="Container" nodeName="Dialog" type="com.bstek.dorado.view.widget.base.Dialog" scope="protected" sortFactor="1" category="Floatable"><Props>
 <Prop name="align" type="com.bstek.dorado.view.widget.FloatControlAlign" enumValues="left,innerleft,center,innerright,top"/>
 <Prop name="anchorTarget" type="java.lang.String"/>
@@ -1018,7 +1018,7 @@
 <Prop name="caption" type="java.lang.String"/>
 <Prop name="center" type="boolean"/>
 <Prop name="className" type="java.lang.String"/>
-<Prop name="closeAction" type="com.bstek.dorado.view.widget.base.DialogCloseAction" defaultValue="hide" enumValues="hide,close"/>
+<Prop name="closeAction" type="com.bstek.dorado.view.widget.base.CloseAction" defaultValue="hide" enumValues="hide,close"/>
 <Prop name="closeable" type="boolean" defaultValue="true"/>
 <Prop name="collapseable" type="boolean"/>
 <Prop name="collapsed" type="boolean"/>
@@ -1106,7 +1106,7 @@
 <Prop name="icon48" type="java.lang.String"/>
 <Prop name="icon64" type="java.lang.String"/>
 <Prop name="id" type="java.lang.String"/>
-<Prop name="parent" type="java.lang.Object"/></Props><Children><Child rule="Control" name="Control" fixed="true"></Child></Children></Rule></Child><Child name="IFrameApp" aggregated="true"><Rule name="Shell.Apps.IFrameApp" nodeName="IFrameApp" type="com.bstek.dorado.desktop.IFrameApp" scope="protected" sortFactor="3"><Props>
+<Prop name="parent" type="com.bstek.dorado.view.ViewElement"/></Props><Children><Child rule="Control" name="Control" fixed="true"></Child></Children></Rule></Child><Child name="IFrameApp" aggregated="true"><Rule name="Shell.Apps.IFrameApp" nodeName="IFrameApp" type="com.bstek.dorado.desktop.IFrameApp" scope="protected" sortFactor="3"><Props>
 <Prop name="caption" type="java.lang.String"/>
 <Prop name="center" type="boolean" defaultValue="true"/>
 <Prop name="height" type="int"/>
@@ -1118,7 +1118,7 @@
 <Prop name="left" type="int"/>
 <Prop name="maximizeable" type="boolean" defaultValue="true"/>
 <Prop name="minimizeable" type="boolean" defaultValue="true"/>
-<Prop name="parent" type="java.lang.Object"/>
+<Prop name="parent" type="com.bstek.dorado.view.ViewElement"/>
 <Prop name="path" type="java.lang.String"/>
 <Prop name="showTaskButton" type="boolean" defaultValue="true"/>
 <Prop name="top" type="int"/>
@@ -1133,7 +1133,7 @@
 <Prop name="caption" type="java.lang.String"/>
 <Prop name="center" type="boolean"/>
 <Prop name="className" type="java.lang.String"/>
-<Prop name="closeAction" type="com.bstek.dorado.view.widget.base.DialogCloseAction" defaultValue="hide" enumValues="hide,close"/>
+<Prop name="closeAction" type="com.bstek.dorado.view.widget.base.CloseAction" defaultValue="hide" enumValues="hide,close"/>
 <Prop name="closeable" type="boolean" defaultValue="true"/>
 <Prop name="collapseable" type="boolean"/>
 <Prop name="collapsed" type="boolean"/>
@@ -1750,6 +1750,8 @@
 <Prop name="buttonAlign" type="com.bstek.dorado.view.widget.Align" defaultValue="center" enumValues="left,center,right"/>
 <Prop name="caption" type="java.lang.String"/>
 <Prop name="className" type="java.lang.String"/>
+<Prop name="closeAction" type="com.bstek.dorado.view.widget.base.CloseAction" defaultValue="hide" enumValues="hide,close"/>
+<Prop name="closeable" type="boolean"/>
 <Prop name="collapseable" type="boolean"/>
 <Prop name="collapsed" type="boolean"/>
 <Prop name="contentOverflow" type="com.bstek.dorado.view.widget.Overflow" defaultValue="auto" enumValues="visible,hidden,scroll,auto"/>
@@ -2085,6 +2087,8 @@
 <Prop name="caption" type="java.lang.String"/>
 <Prop name="center" type="boolean"/>
 <Prop name="className" type="java.lang.String"/>
+<Prop name="closeAction" type="com.bstek.dorado.view.widget.base.CloseAction" defaultValue="hide" enumValues="hide,close"/>
+<Prop name="closeable" type="boolean"/>
 <Prop name="collapseable" type="boolean"/>
 <Prop name="collapsed" type="boolean"/>
 <Prop name="contentOverflow" type="com.bstek.dorado.view.widget.Overflow" defaultValue="auto" enumValues="visible,hidden,scroll,auto"/>
@@ -2138,7 +2142,8 @@
 <Prop name="caption" type="java.lang.String"/>
 <Prop name="center" type="boolean"/>
 <Prop name="className" type="java.lang.String"/>
-<Prop name="closeable" type="boolean" defaultValue="true"/>
+<Prop name="closeAction" type="com.bstek.dorado.view.widget.base.CloseAction" defaultValue="hide" enumValues="hide,close"/>
+<Prop name="closeable" type="boolean"/>
 <Prop name="collapseable" type="boolean"/>
 <Prop name="collapsed" type="boolean"/>
 <Prop name="contentOverflow" type="com.bstek.dorado.view.widget.Overflow" defaultValue="auto" enumValues="visible,hidden,scroll,auto"/>
@@ -2192,7 +2197,7 @@
 <Prop name="caption" type="java.lang.String"/>
 <Prop name="center" type="boolean"/>
 <Prop name="className" type="java.lang.String"/>
-<Prop name="closeAction" type="com.bstek.dorado.view.widget.base.DialogCloseAction" defaultValue="hide" enumValues="hide,close"/>
+<Prop name="closeAction" type="com.bstek.dorado.view.widget.base.CloseAction" defaultValue="hide" enumValues="hide,close"/>
 <Prop name="closeable" type="boolean" defaultValue="true"/>
 <Prop name="collapseable" type="boolean"/>
 <Prop name="collapsed" type="boolean"/>
@@ -3430,6 +3435,7 @@
 <ClientEvent name="beforeExpand" parameters="self,arg"/>
 <ClientEvent name="onNodeAttached" parameters="self,arg"/></ClientEvents><Children><Child name="BindingConfigs" fixed="true"><Rule name="DataTreeGrid.BindingConfigs" nodeName="BindingConfigs" scope="protected" sortFactor="1"><Children><Child rule="DataTree.BindingConfigs.BindingConfig" name="BindingConfig" aggregated="true"></Child></Children></Rule></Child><Child rule="TreeGrid.Columns" name="Columns" fixed="true"></Child></Children></Rule><Rule name="Portal" parents="Control" type="com.bstek.dorado.view.widget.portal.Portal" scope="public" sortFactor="270" category="Advance"><Props>
 <Prop name="className" type="java.lang.String"/>
+<Prop name="defaultPortletHeight" type="int" defaultValue="200"/>
 <Prop name="dragTags" type="java.lang.String"/>
 <Prop name="draggable" type="boolean"/>
 <Prop name="droppable" type="boolean"/>
@@ -3446,7 +3452,10 @@
 <Prop name="tip" type="java.lang.String"/>
 <Prop name="userData" type="java.lang.Object" editor="any"/>
 <Prop name="visible" type="boolean" defaultValue="true"/>
-<Prop name="width" type="java.lang.String"/></Props><Children><Child name="Columns" fixed="true"><Rule name="Portal.Columns" nodeName="Columns" scope="protected" sortFactor="1"><Children><Child name="Column" aggregated="true"><Rule name="Portal.Columns.Column" nodeName="Column" type="com.bstek.dorado.view.widget.portal.Column" scope="protected" sortFactor="1"><Props>
+<Prop name="width" type="java.lang.String"/></Props><ClientEvents>
+<ClientEvent name="onPortletRemove" parameters="self,arg"/>
+<ClientEvent name="onPortletMove" parameters="self,arg"/>
+<ClientEvent name="onPortletAdd" parameters="self,arg"/></ClientEvents><Children><Child name="Columns" fixed="true"><Rule name="Portal.Columns" nodeName="Columns" scope="protected" sortFactor="1"><Children><Child name="Column" aggregated="true"><Rule name="Portal.Columns.Column" nodeName="Column" type="com.bstek.dorado.view.widget.portal.Column" scope="protected" sortFactor="1"><Props>
 <Prop name="className" type="java.lang.String"/>
 <Prop name="ignored" type="boolean"/>
 <Prop name="tags" type="java.lang.String"/>
@@ -3455,6 +3464,8 @@
 <Prop name="buttonAlign" type="com.bstek.dorado.view.widget.Align" defaultValue="center" enumValues="left,center,right"/>
 <Prop name="caption" type="java.lang.String"/>
 <Prop name="className" type="java.lang.String"/>
+<Prop name="closeAction" type="com.bstek.dorado.view.widget.base.CloseAction" defaultValue="close" enumValues="hide,close"/>
+<Prop name="closeable" type="boolean" defaultValue="true"/>
 <Prop name="collapseable" type="boolean"/>
 <Prop name="collapsed" type="boolean"/>
 <Prop name="column" type="int"/>
@@ -3494,7 +3505,7 @@
 <Prop name="iconSize" type="com.bstek.dorado.view.widget.IconSize" defaultValue="normal" enumValues="normal,big"/>
 <Prop name="ignored" type="boolean"/>
 <Prop name="name" type="java.lang.String"/>
-<Prop name="parent" type="java.lang.Object"/><Prop name="style" type="java.util.Map" compositeType="Open"></Prop>
+<Prop name="parent" type="com.bstek.dorado.view.ViewElement"/><Prop name="style" type="java.util.Map" compositeType="Open"></Prop>
 <Prop name="tags" type="java.lang.String"/>
 <Prop name="tip" type="java.lang.String"/>
 <Prop name="visible" type="boolean" defaultValue="true"/>
@@ -3505,7 +3516,7 @@
 <Prop name="height" type="java.lang.String"/>
 <Prop name="ignored" type="boolean"/>
 <Prop name="name" type="java.lang.String"/>
-<Prop name="parent" type="java.lang.Object"/><Prop name="style" type="java.util.Map" compositeType="Open"></Prop>
+<Prop name="parent" type="com.bstek.dorado.view.ViewElement"/><Prop name="style" type="java.util.Map" compositeType="Open"></Prop>
 <Prop name="tags" type="java.lang.String"/>
 <Prop name="tip" type="java.lang.String"/>
 <Prop name="visible" type="boolean" defaultValue="true"/>
@@ -3564,7 +3575,7 @@
 <Prop name="icon" type="java.lang.String"/>
 <Prop name="ignored" type="boolean"/><Prop name="metaData" type="java.util.Map" compositeType="Open"></Prop>
 <Prop name="name" type="java.lang.String"/>
-<Prop name="parent" type="java.lang.Object"/><Prop name="style" type="java.util.Map" compositeType="Open"></Prop>
+<Prop name="parent" type="com.bstek.dorado.view.ViewElement"/><Prop name="style" type="java.util.Map" compositeType="Open"></Prop>
 <Prop name="tags" type="java.lang.String"/>
 <Prop name="tip" type="java.lang.String"/>
 <Prop name="userData" type="java.lang.Object" editor="any"/>
@@ -3579,7 +3590,7 @@
 <Prop name="icon" type="java.lang.String"/>
 <Prop name="ignored" type="boolean"/><Prop name="metaData" type="java.util.Map" compositeType="Open"></Prop>
 <Prop name="name" type="java.lang.String"/>
-<Prop name="parent" type="java.lang.Object"/><Prop name="style" type="java.util.Map" compositeType="Open"></Prop>
+<Prop name="parent" type="com.bstek.dorado.view.ViewElement"/><Prop name="style" type="java.util.Map" compositeType="Open"></Prop>
 <Prop name="tags" type="java.lang.String"/>
 <Prop name="tip" type="java.lang.String"/>
 <Prop name="userData" type="java.lang.Object" editor="any"/>

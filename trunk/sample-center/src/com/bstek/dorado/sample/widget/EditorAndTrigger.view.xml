@@ -32,7 +32,7 @@
     <Label>
       <Property name="text">Trigger可以看作是跟编辑框显示在一起的一个按钮，可以在其中放置任何逻辑。</Property>
     </Label>
-    <Dialog layout="anchor" id="dialog2">
+    <Dialog id="dialog2" layout="anchor">
       <Property name="caption">弹出窗口</Property>
       <Property name="width">300</Property>
       <Property name="height">150</Property>
@@ -279,7 +279,7 @@ if (node &amp;&amp; node.get(&quot;bindingConfig.name&quot;) == &quot;Example&qu
     </Label>
     <YearMonthDropDown id="dropDownYearMonth">
       <ClientEvent name="onValueSelect">var value = arg.selectedValue;&#xD;
-arg.selectedValue = value[0] + &quot;年&quot; + (value[1] + 1) + &quot;月&quot;;</ClientEvent>
+arg.selectedValue = value.year + &quot;年&quot; + (value.month + 1) + &quot;月&quot;;</ClientEvent>
     </YearMonthDropDown>
     <FormElement>
       <Property name="trigger">dropDownYearMonth</Property>
