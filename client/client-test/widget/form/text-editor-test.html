@@ -19,17 +19,14 @@
 		
 		panel.addChild(new dorado.widget.Button({
 			caption: "Set Text",
-			listener: [{
-				name: "onClick",
-				listener: function() {
-					var edt = this.id("editor1");
-					edt.set("text", "==Sample Text A==!");
-					alert(edt.get("text"));
-					
-					edt.set("value", "==Sample Text B==!");
-					alert(edt.get("value"));
-				}
-			}],
+            listener: function() {
+                var edt = this.id("editor1");
+                edt.set("text", "==Sample Text A==!");
+                alert(edt.get("text"));
+
+                edt.set("value", "==Sample Text B==!");
+                alert(edt.get("value"));
+            },
 			layoutConstraint: "left"
 		}));
 		
