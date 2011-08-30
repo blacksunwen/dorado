@@ -1,12 +1,12 @@
 /**
  * @author Frank Zhang (mailto:frank.zhang@bstek.com)
  * @component Desktop
- * @class dorado.widget.desktop.ShortCut
+ * @class dorado.widget.desktop.Shortcut
  * @extends dorado.RenderableElement
  * @extends dorado.EventSupport
  */
-dorado.widget.desktop.ShortCut = $extend([dorado.RenderableElement, dorado.EventSupport], /** @scope dorado.widget.desktop.ShortCut.prototype */{
-	$className: "dorado.widget.desktop.ShortCut",
+dorado.widget.desktop.Shortcut = $extend([dorado.RenderableElement, dorado.EventSupport], /** @scope dorado.widget.desktop.Shortcut.prototype */{
+	$className: "dorado.widget.desktop.Shortcut",
 	focusable: true,
 
     constructor: function(config) {
@@ -33,7 +33,7 @@ dorado.widget.desktop.ShortCut = $extend([dorado.RenderableElement, dorado.Event
         return this;
     },
 
-	ATTRIBUTES: /** @scope dorado.widget.desktop.ShortCut.prototype */{
+	ATTRIBUTES: /** @scope dorado.widget.desktop.Shortcut.prototype */{
 		className: {
 			defaultValue: "shortcut"
 		},
@@ -70,14 +70,14 @@ dorado.widget.desktop.ShortCut = $extend([dorado.RenderableElement, dorado.Event
 		caption: {},
 
 		/**
-         * ShortCut所在的列，暂不支持设定。
+         * Shortcut所在的列，暂不支持设定。
 		 * @attribute
 		 * @type int
 		 */
 		column: {},
 
 		/**
-         * ShortCut所在的行，暂不支持设定。
+         * Shortcut所在的行，暂不支持设定。
 		 * @attribute
 		 * @type int
 		 */
@@ -91,9 +91,9 @@ dorado.widget.desktop.ShortCut = $extend([dorado.RenderableElement, dorado.Event
 		appId: {}
 	},
 
-	EVENTS: /** @scope dorado.widget.desktop.ShortCut.prototype */{
+	EVENTS: /** @scope dorado.widget.desktop.Shortcut.prototype */{
         /**
-		 * 在ShortCut上点击触发的事件。
+		 * 在Shortcut上点击触发的事件。
 		 * @param {Object} self 事件的发起者，即组件本身。
 		 * @param {Object} arg 事件参数。
 		 * @param {boolean} #arg.processDefault=false 是否要继续系统的默认操作，让系统上下文菜单显示出来。
@@ -210,10 +210,10 @@ dorado.widget.desktop.Desktop = $extend(dorado.widget.desktop.AbstractDesktop, /
 		/**
 		 * 桌面上的快捷键的集合。
 		 * @attribute
-		 * @type dorado.widget.desktop.ShortCut[]
+		 * @type dorado.widget.desktop.Shortcut[]
 		 */
 		items: {
-			innerComponent: "desktop.ShortCut"
+			innerComponent: "desktop.Shortcut"
 		},
 
 		/**
@@ -232,16 +232,39 @@ dorado.widget.desktop.Desktop = $extend(dorado.widget.desktop.AbstractDesktop, /
 		 */
 		rowCount: {
 			readOnly: true
-		}
+		},
+
+        /**
+         * 激活右键菜单的Shortcut，可能会被激活的右键菜单使用。
+         * @type dorado.widget.desktop.Shortcut
+         * @attribute
+         */
+        contextMenuShortcut: {
+            readOnly: true
+        }
 	},
+
+    EVENTS: /** @scope dorado.widget.Desktop.prototype */ {
+        /**
+		 * 在Shortcut上点击右键触发的事件。
+		 * @param {Object} self 事件的发起者，即组件本身。
+		 * @param {Object} arg 事件参数。
+		 * @param {dorado.widget.desktop.Shortcut} arg.shortcut 触发该事件的Shortcut。
+		 * @param {Event} arg.event DHTML中的事件event参数。
+		 * @param {boolean} #arg.processDefault=false 是否要继续系统的默认操作，让系统上下文菜单显示出来。
+		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+		 * @event
+		 */
+		onShortcutContextMenu: {}
+    },
 
 	/**
 	 * 初始化快捷键。
-	 * @param {dorado.widget.desktop.ShortCut} shortcut 要初始化的快捷键。
+	 * @param {dorado.widget.desktop.Shortcut} shortcut 要初始化的快捷键。
 	 * @param {HtmlElement} dom desktop的dom。
 	 * @private
 	 */
-	initShortCut: function(shortcut, dom) {
+	initShortcut: function(shortcut, dom) {
 		var desktop = this, desktopXY, desktopSize, itemWidth, itemHeight, columnIndex, rowIndex;
 		shortcut._iconSize = desktop._iconSize;
         shortcut._parent = desktop;
@@ -288,13 +311,13 @@ dorado.widget.desktop.Desktop = $extend(dorado.widget.desktop.AbstractDesktop, /
 				}
 			},
 			stop: function() {
-				function getNextShortCut(column, row) {
+				function getNextShortcut(column, row) {
 					var resultColumn = column, resultRow = row + 1;
 					if (row == desktop._rowCount - 1) {
 						resultColumn += 1;
 						resultRow = 0;
 					}
-					return desktop.getShortCut(resultColumn, resultRow);
+					return desktop.getShortcut(resultColumn, resultRow);
 				}
 				function placeLastShortcut(shortcut) {
 					var column = shortcut._column, row = shortcut._row, resultColumn = column, resultRow = row + 1;
@@ -302,26 +325,37 @@ dorado.widget.desktop.Desktop = $extend(dorado.widget.desktop.AbstractDesktop, /
 						resultColumn += 1;
 						resultRow = 0;
 					}
-					desktop.placeShortCut(shortcut, resultColumn, resultRow, true);
+					desktop.placeShortcut(shortcut, resultColumn, resultRow, true);
 				}
-				var target = desktop.getShortCut(columnIndex, rowIndex);
+				var target = desktop.getShortcut(columnIndex, rowIndex);
 				if (target) {
-					desktop.unplaceShortCut(shortcut);//unplace self first
-					var nextShortCut;
+					desktop.unplaceShortcut(shortcut);//unplace self first
+					var nextShortcut;
 					while (target) {
-						nextShortCut = getNextShortCut(target._column, target._row);
-						if (nextShortCut) {
-							desktop.placeShortCut(target, nextShortCut._column, nextShortCut._row, true);
+						nextShortcut = getNextShortcut(target._column, target._row);
+						if (nextShortcut) {
+							desktop.placeShortcut(target, nextShortcut._column, nextShortcut._row, true);
 						} else {//last short cut
 							placeLastShortcut(target);
 						}
-						target = nextShortCut;
+						target = nextShortcut;
 					}
 				}
-				desktop.placeShortCut(shortcut, columnIndex, rowIndex);//place self
+				desktop.placeShortcut(shortcut, columnIndex, rowIndex);//place self
 				$fly(desktop._shortcutHolder).css("display", "");
                 $(shortcut._dom).addClass("ui-draggable-dragged");
 			}
+		}).bind("contextmenu", function(event) {
+			event.preventDefault();
+			event.stopImmediatePropagation();
+			var desktop = shortcut._parent, arg = {
+				shortcut: shortcut,
+				event: event
+			};
+			desktop._contextMenuShortcut = shortcut;
+			desktop.fireEvent("onShortcutContextMenu", desktop, arg);
+
+			return false;
 		});
 	},
 
@@ -330,7 +364,7 @@ dorado.widget.desktop.Desktop = $extend(dorado.widget.desktop.AbstractDesktop, /
 	 * @param {int} column 列索引
 	 * @param {int} row 行索引
 	 */
-	getShortCut: function(column, row) {
+	getShortcut: function(column, row) {
 		var desktop = this, scCache = desktop._scCache;
 		if (scCache) {
 			var columnCache = scCache[column];
@@ -343,10 +377,10 @@ dorado.widget.desktop.Desktop = $extend(dorado.widget.desktop.AbstractDesktop, /
 
 	/**
 	 * 取消放置某个快捷键，该方法主要用来清空缓存。
-	 * @param {dorado.widget.desktop.ShortCut} shortcut 要取消放置的快捷键。
+	 * @param {dorado.widget.desktop.Shortcut} shortcut 要取消放置的快捷键。
 	 * @protected
 	 */
-	unplaceShortCut: function(shortcut) {
+	unplaceShortcut: function(shortcut) {
 		if (shortcut) {
 			var column = shortcut._column, row = shortcut._row;
 			var desktop = this, scCache = desktop._scCache;
@@ -362,45 +396,45 @@ dorado.widget.desktop.Desktop = $extend(dorado.widget.desktop.AbstractDesktop, /
 	},
 
     /**
-     * 添加ShortCut，目前不支持ShortCut自身的column、row的设置，Desktop会自动找到一个合理的位置放置该ShortCut。
-     * @param {dorado.widget.desktop.ShortCut} item 要添加的ShortCut。
+     * 添加Shortcut，目前不支持Shortcut自身的column、row的设置，Desktop会自动找到一个合理的位置放置该Shortcut。
+     * @param {dorado.widget.desktop.Shortcut} item 要添加的Shortcut。
      */
     addItem: function(item) {
         var desktop = this, items = desktop._items, rendered = desktop._rendered;
         if (!items) {
             items = desktop._items || [];
         }
-        if (!(item instanceof dorado.widget.desktop.ShortCut)) {
-            item = new dorado.widget.desktop.ShortCut(item);
+        if (!(item instanceof dorado.widget.desktop.Shortcut)) {
+            item = new dorado.widget.desktop.Shortcut(item);
         }
         if (rendered) {
-            desktop.initShortCut(item, desktop._dom);
-            desktop.placeNewShortCut(item);
+            desktop.initShortcut(item, desktop._dom);
+            desktop.placeNewShortcut(item);
         }
         items.push(item);
     },
 
     /**
-     * 删除指定的ShortCut。
-     * @param {dorado.widget.desktop.ShortCut} item 要删除的ShortCut。
+     * 删除指定的Shortcut。
+     * @param {dorado.widget.desktop.Shortcut} item 要删除的Shortcut。
      */
     removeItem: function(item) {
         var desktop = this, items = desktop._items, rendered = desktop._rendered;
         if (!items) return;
-        desktop.unplaceShortCut(item);
+        desktop.unplaceShortcut(item);
         items.remove(item);
         item.destroy();
     },
 
     /**
-     * 清除所有的ShortCut。
+     * 清除所有的Shortcut。
      */
     clearItems: function() {
         var desktop = this, items = desktop._items, rendered = desktop._rendered;
         if (!items) return;
         for (var i = 0, j = items.length; i < j; i++) {
             var item = items[i];
-            desktop.unplaceShortCut(item);
+            desktop.unplaceShortcut(item);
             item.destroy();
         }
         desktop._items = [];
@@ -409,32 +443,32 @@ dorado.widget.desktop.Desktop = $extend(dorado.widget.desktop.AbstractDesktop, /
     /**
      * @private
      */
-    placeNewShortCut: function(shortcut) {
+    placeNewShortcut: function(shortcut) {
         var desktop = this, rowCount = desktop._rowCount, columnCount = desktop._columnCount;
         for (var i = 0; i < columnCount; i++) {
             for (var j = 0; j < rowCount; j++) {
-                if (desktop.getShortCut(i, j) == null) {
-                    desktop.placeShortCut(shortcut, i, j);
+                if (desktop.getShortcut(i, j) == null) {
+                    desktop.placeShortcut(shortcut, i, j);
                     return;
                 }
             }
         }
-        desktop.placeShortCut(shortcut, columnCount, rowCount);
+        desktop.placeShortcut(shortcut, columnCount, rowCount);
     },
 
 	/**
 	 * 放置快捷键到指定位置上。
-	 * @param {dorado.widget.desktop.ShortCut} shortcut 要放置的快捷键。
+	 * @param {dorado.widget.desktop.Shortcut} shortcut 要放置的快捷键。
 	 * @param {int} column 列索引
 	 * @param {int} row 行索引
 	 * @param {boolean} animate 是否需要动画效果。
 	 */
-	placeShortCut: function(shortcut, column, row, animate) {
+	placeShortcut: function(shortcut, column, row, animate) {
 		if (!shortcut || typeof column != "number" || typeof row != "number") {
 			return;
 		}
 		var desktop = this, scCache = desktop._scCache, leftStart = desktop._leftStart, topStart = desktop._topStart;
-		desktop.unplaceShortCut(shortcut);
+		desktop.unplaceShortcut(shortcut);
 		if (!scCache) {
 			scCache = desktop._scCache = [];
 		}
@@ -456,7 +490,7 @@ dorado.widget.desktop.Desktop = $extend(dorado.widget.desktop.AbstractDesktop, /
 		var desktop = this, dom = $invokeSuper.call(desktop, arguments), items = desktop._items || [];
 		for (var i = 0, j = items.length; i < j; i++) {
 			var item = items[i];
-			desktop.initShortCut(item, dom);
+			desktop.initShortcut(item, dom);
 		}
 
 		return dom;
@@ -467,30 +501,30 @@ dorado.widget.desktop.Desktop = $extend(dorado.widget.desktop.AbstractDesktop, /
 	 * @param columnCount 列数
 	 * @param rowCount 行数
 	 */
-	moveInvalidShortCut: function(columnCount, rowCount) {
-		var desktop = this, items = desktop._items, scCache = desktop._scCache, allShortCuts = [], tempArray = [], i, j, item;
+	moveInvalidShortcut: function(columnCount, rowCount) {
+		var desktop = this, items = desktop._items, scCache = desktop._scCache, allShortcuts = [], tempArray = [], i, j, item;
 		for (i = 0; i < items.length; i++) {
 			item = items[i];
 			if (item) {
 				if (item._column > columnCount - 1) {
 					tempArray.push(item);
 				} else {
-					allShortCuts[item._column * desktop._rowCount + item._row] = item;
+					allShortcuts[item._column * desktop._rowCount + item._row] = item;
 				}
 			}
 		}
 
 		for (i = 0; i < tempArray.length; i++) {
-			allShortCuts.push(tempArray[i]);
+			allShortcuts.push(tempArray[i]);
 		}
 
 		scCache = desktop._scCache = [];
-		for (i = 0, j = allShortCuts.length; i < j; i++) {
-			item = allShortCuts[i];
+		for (i = 0, j = allShortcuts.length; i < j; i++) {
+			item = allShortcuts[i];
 			if (item) {
 				item._column = Math.floor(i / rowCount);
 				item._row = i % rowCount;
-				desktop.placeShortCut(item, item._column, item._row);
+				desktop.placeShortcut(item, item._column, item._row);
 			}
 		}
 	},
@@ -518,7 +552,7 @@ dorado.widget.desktop.Desktop = $extend(dorado.widget.desktop.AbstractDesktop, /
 				}
 				for (i = 0, j = items.length; i < j; i++) {
 					item = items[i];
-					desktop.placeShortCut(item, Math.floor(i / rowCount), i % rowCount);
+					desktop.placeShortcut(item, Math.floor(i / rowCount), i % rowCount);
 				}
 			} else {
 				item = items[0];
@@ -532,7 +566,7 @@ dorado.widget.desktop.Desktop = $extend(dorado.widget.desktop.AbstractDesktop, /
 					if (desktop._rowCount != rowCount || desktop._columnCount > columnCount) {
 						//if desktop._columnCount > columnCount move the hidden shortcut to the last
 						//if desktop._rowCount != rowCount resort shortcut by current order
-						desktop.moveInvalidShortCut(columnCount, rowCount);
+						desktop.moveInvalidShortcut(columnCount, rowCount);
 					}
 					desktop._columnCount = columnCount;
 					desktop._rowCount = rowCount;
