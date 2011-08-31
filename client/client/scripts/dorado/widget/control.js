@@ -299,11 +299,39 @@
 			onCreateDom : {},
 
 			/**
+			 * 当组件将要刷新其对应的DOM对象之前触发的事件。
+			 * @param {Object} self 事件的发起者，即组件本身。
+			 * @param {Object} arg 事件参数。
+			 * @param {HTMLElement} arg.dom 组件对应的根DOM对象。
+			 * @param {boolean} #arg.processDefault=false 是否要继续系统默认的刷新操作。
+			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+			 * @event
+			 */
+			beforeRefreshDom : {},
+
+			/**
+			 * 当组件刷新其对应的DOM对象时触发的事件。
+			 * <p>
+			 * 在实际的使用过程中，{@link dorado.widget.Control#event:beforeRefreshDom}可能是更加常用的事件。
+			 * </P>
+			 * @param {Object} self 事件的发起者，即组件本身。
+			 * @param {Object} arg 事件参数。
+			 * @param {HTMLElement} arg.dom 组件对应的根DOM对象。
+			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+			 * @event
+			 * @see dorado.widget.Control#event:beforeRefreshDom
+			 */
+			onRefreshDom : {},
+
+			/**
 			 * 当控件被点击时触发的事件。
 			 * @param {Object} self 事件的发起者，即组件本身。
 			 * @param {Object} arg 事件参数。
 			 * @param {int} arg.button 表示用户按下的是哪个按钮，具体请参考DHTML的相关文档。
 			 * @param {Event} arg.event DHTML中的事件event参数。
+			 * @param {boolean} #arg.returnValue 表示是否要终止该鼠标事件的冒泡处理机制。
+			 * 如果返回false相当于调用了系统event的preventDefault()和stopPropagation()方法。
+			 * 不定义此参数表示交由系统自行判断。
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
 			 */
@@ -315,6 +343,9 @@
 			 * @param {Object} arg 事件参数。
 			 * @param {int} arg.button 表示用户按下的是哪个按钮，具体请参考DHTML的相关文档。
 			 * @param {Event} arg.event DHTML中的事件event参数。
+			 * @param {boolean} #arg.returnValue 表示是否要终止该鼠标事件的冒泡处理机制。
+			 * 如果返回false相当于调用了系统event的preventDefault()和stopPropagation()方法。
+			 * 不定义此参数表示交由系统自行判断。
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
 			 */
@@ -326,6 +357,9 @@
 			 * @param {Object} arg 事件参数。
 			 * @param {int} arg.button 表示用户按下的是哪个按钮，具体请参考DHTML的相关文档。
 			 * @param {Event} arg.event DHTML中的事件event参数。
+			 * @param {boolean} #arg.returnValue 表示是否要终止该鼠标事件的冒泡处理机制。
+			 * 如果返回false相当于调用了系统event的preventDefault()和stopPropagation()方法。
+			 * 不定义此参数表示交由系统自行判断。
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
 			 */
@@ -337,6 +371,9 @@
 			 * @param {Object} arg 事件参数。
 			 * @param {int} arg.button 表示用户按下的是哪个按钮，具体请参考DHTML的相关文档。
 			 * @param {Event} arg.event DHTML中的事件event参数。
+			 * @param {boolean} #arg.returnValue 表示是否要终止该鼠标事件的冒泡处理机制。
+			 * 如果返回false相当于调用了系统event的preventDefault()和stopPropagation()方法。
+			 * 不定义此参数表示交由系统自行判断。
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
 			 */
@@ -421,8 +458,7 @@
 			if(renderTo || renderOn) {
 				$setTimeout(this, function() {
 					var container = renderTo || renderOn;
-					if( typeof container == "string")
-						container = jQuery(container)[0];
+					if( typeof container == "string") container = jQuery(container)[0];
 					if(container && container.nodeType) {(renderTo) ? this.render(container) : this.replace(container);
 					}
 				}, 0);
@@ -448,10 +484,8 @@
 
 			var isClosed = (window.closed || dorado.windowClosed);
 			if(!isClosed && this._parent) {
-				if(this._isInnerControl)
-					this._parent.unregisterInnerControl(this);
-				else
-					this._parent.removeChild(this);
+				if(this._isInnerControl) this._parent.unregisterInnerControl(this);
+				else this._parent.removeChild(this);
 			}
 
 			var dom = this._dom;
@@ -461,6 +495,7 @@
 				try {
 					dom.doradoUniqueId = null;
 				} catch (e) {
+					// do nothing
 				}
 				if(!isClosed)
 					$dom.remove();
@@ -469,8 +504,7 @@
 		},
 		doSet : function(attr, value) {
 			$invokeSuper.call(this, arguments);
-			if(!this._rendered)
-				return;
+			if(!this._rendered) return;
 			var def = this.ATTRIBUTES[attr];
 			if((this._visible || attr == "visible") && this._ignoreRefresh < 1 && def && !def.skipRefresh) {
 				dorado.Toolkits.setDelayedAction(this, "$refreshDelayTimerId", this.refresh, 50);
@@ -493,8 +527,7 @@
 			function notifyChildren(control, actualVisible) {
 				if(control._innerControls) {
 					jQuery.each(control._innerControls, function(i, child) {
-						if(child._parentActualVisible == actualVisible)
-							return;
+						if(child._parentActualVisible == actualVisible) return;
 						child._parentActualVisible = actualVisible;
 						child.onActualVisibleChange();
 					});
@@ -504,18 +537,15 @@
 			var actualVisible = this.isActualVisible();
 			if(actualVisible) {
 				this._skipResize = this._shouldResizeOnVisible;
-				if(this._shouldRefreshOnVisible)
-					this.refresh();
+				if(this._shouldRefreshOnVisible) this.refresh();
 				this._skipResize = false;
-				if(this._shouldResizeOnVisible)
-					this.onResize();
+				if(this._shouldResizeOnVisible) this.onResize();
 			}
 
 			notifyChildren(this, actualVisible);
 		},
 		refresh : function(delay) {
-			if(this._duringRefreshDom || !this._rendered || (!this._attached && this.renderUtilAttached))
-				return;
+			if(this._duringRefreshDom || !this._rendered || (!this._attached && this.renderUtilAttached)) return;
 
 			if(!this.isActualVisible() && !this._currentVisible) {
 				this._shouldRefreshOnVisible = true;
@@ -535,7 +565,15 @@
 						}
 						this._shouldRefreshOnVisible = false;
 
-						this.refreshDom(this.getDom());
+						var dom = this.getDom(), arg =  {
+							dom: dom,
+							processDefault: false
+						};
+						this.fireEvent("beforeRefreshDom", this, arg);
+						if (arg.processDefault) {
+							this.refreshDom(dom);
+							this.fireEvent("onRefreshDom", this, arg);
+						}
 					} finally {
 						this._duringRefreshDom = false;
 					}
@@ -544,7 +582,16 @@
 				this._duringRefreshDom = true;
 				try {
 					dorado.Toolkits.cancelDelayedAction(this, "$refreshDelayTimerId");
-					this.refreshDom(this.getDom());
+					
+					var dom = this.getDom(), arg =  {
+						dom: dom,
+						processDefault: false
+					};
+					this.fireEvent("beforeRefreshDom", this, arg);
+					if (arg.processDefault) {
+						this.refreshDom(dom);
+						this.fireEvent("onRefreshDom", this, arg);
+					}
 				} finally {
 					this._duringRefreshDom = false;
 				}
@@ -614,13 +661,11 @@
 			this._currentVisible = !!this._visible;
 		},
 		getRealWidth : function() {
-			if(this._width == "none")
-				return null;
+			if(this._width == "none") return null;
 			return (this._realWidth == null) ? this._width : this._realWidth;
 		},
 		getRealHeight : function() {
-			if(this._height == "none")
-				return null;
+			if(this._height == "none") return null;
 			return (this._realHeight == null) ? this._height : this._realHeight;
 		},
 		/**
@@ -629,8 +674,7 @@
 		 * @return {boolean} 返回在此次方法的调用过程中是否确实改变了控件的宽高设置。
 		 */
 		resetDimension : function() {
-			if(this._skipResetDimension)
-				return;
+			if(this._skipResetDimension) return;
 			var changed = $invokeSuper.call(this, arguments) || !this._fixedWidth || !this._fixedHeight;
 			if((changed || !this._currentVisible) && this._visible) {
 				this._skipResetDimension = true;
@@ -644,8 +688,7 @@
 		 * @protected
 		 */
 		notifySizeChange : function() {
-			if(!this._parent || !this._rendered)
-				return;
+			if(!this._parent || !this._rendered) return;
 			var layout = this._parent._layout;
 			if(layout && layout._attached && layout.onControlSizeChange) {
 				dorado.Toolkits.setDelayedAction(this, "$notifySizeChangeTimerId", function() {
@@ -670,50 +713,62 @@
 
 				var self = this;
 				$dom.data("doradoControl", this).click(function(evt) {
-					if(!self.processDefaultMouseListener())
-						return;
-					if(self.onClick)
-						if(self.onClick(evt) === false)
-							return false;
-					return self.fireEvent("onClick", self, {
+					if(!self.processDefaultMouseListener()) return;
+					var defaultReturnValue;
+					if (self.onClick) {
+						defaultReturnValue = self.onClick(evt);
+					}
+					var arg = {
 						button : evt.button,
-						event : evt
-					});
+						event : evt,
+						returnValue: defaultReturnValue
+					}
+					self.fireEvent("onClick", self, arg);
+					return arg.returnValue;
 				}).bind("dblclick", function(evt) {
-					if(!self.processDefaultMouseListener())
-						return;
-					if(self.onDoubleClick)
-						if(self.onDoubleClick(evt) === false)
-							return false;
-					return self.fireEvent("onDoubleClick", self, {
+					if(!self.processDefaultMouseListener()) return;
+					var defaultReturnValue;
+					if (self.onDoubleClick) {
+						defaultReturnValue = self.onDoubleClick(evt);
+					}
+					var arg = {
 						button : evt.button,
-						event : evt
-					});
+						event : evt,
+						returnValue: defaultReturnValue
+					}
+					self.fireEvent("onDoubleClick", self, arg);
+					return arg.returnValue;
 				}).mousedown(function(evt) {
 					if(evt.srcElement != lastMouseDownTarget || (new Date() - lastMouseDownTimestamp) > 500) {
 						dorado.widget.setFocusedControl(self);
 						lastMouseDownTarget = evt.srcElement;
 						lastMouseDownTimestamp = new Date();
 					}
-					if(!self.processDefaultMouseListener())
-						return;
-					if(self.onMouseDown)
-						if(self.onMouseDown(evt) === false)
-							return false;
-					return self.fireEvent("onMouseDown", self, {
+					if(!self.processDefaultMouseListener()) return;
+					var defaultReturnValue;
+					if (self.onMouseDown) {
+						defaultReturnValue = self.onMouseDown(evt);
+					}
+					var arg = {
 						button : evt.button,
-						event : evt
-					});
+						event : evt,
+						returnValue: defaultReturnValue
+					}
+					self.fireEvent("onMouseDown", self, arg);
+					return arg.returnValue;
 				}).mouseup(function(evt) {
-					if(!self.processDefaultMouseListener())
-						return;
-					if(self.onMouseUp)
-						if(self.onMouseUp(evt) === false)
-							return false;
-					return self.fireEvent("onMouseUp", self, {
+					if(!self.processDefaultMouseListener()) return;
+					var defaultReturnValue;
+					if (self.onMouseUp) {
+						defaultReturnValue = self.onMouseUp(evt);
+					}
+					var arg = {
 						button : evt.button,
-						event : evt
-					});
+						event : evt,
+						returnValue: defaultReturnValue
+					}
+					self.fireEvent("onMouseUp", self, arg);
+					return arg.returnValue;
 				}).bind("contextmenu", function(evt) {
 					evt = jQuery.event.fix(evt || window.event);
 					var eventArg = {
@@ -730,8 +785,7 @@
 						return false;
 					}
 				});
-				if(this.focusable)
-					dom.tabIndex = 1;
+				if(this.focusable) dom.tabIndex = 1;
 				this.fireEvent("onCreateDom", this, {
 					dom : dom
 				});
@@ -747,8 +801,7 @@
 			$invokeSuper.call(this, arguments);
 
 			var dom = this._dom;
-			if(!dom)
-				return;
+			if(!dom) return;
 
 			var attached = false;
 			if(!renderTarget && this._parent && this._parent != dorado.widget.View.TOP) {
@@ -770,8 +823,7 @@
 			} else if(this._attached) {
 				this.onDetachFromDocument();
 			}
-			if(!this._ready)
-				this.onReady();
+			if(!this._ready) this.onReady();
 		},
 		/**
 		 * 当控件所对应的HTML元素被真正的添加(相当于appendChild)到HTML的dom树中时激活的方法。
@@ -795,10 +847,8 @@
 				var dom = this.getDom();
 				this._attached = true;
 				this._ignoreRefresh--;
-				if(this.renderUtilAttached)
-					this.refreshDom(dom);
-				if(this.doOnAttachToDocument)
-					this.doOnAttachToDocument();
+				if(this.renderUtilAttached) this.refreshDom(dom);
+				if(this.doOnAttachToDocument) this.doOnAttachToDocument();
 
 				if(this._innerControls) {
 					jQuery.each(this._innerControls, function(i, control) {
@@ -820,8 +870,7 @@
 			if(this._rendered && this._attached) {
 				this._attached = false;
 				this._ignoreRefresh++;
-				if(this.doOnDetachFromDocument)
-					this.doOnDetachFromDocument();
+				if(this.doOnDetachFromDocument) this.doOnDetachFromDocument();
 
 				if(this._innerControls) {
 					jQuery.each(this._innerControls, function(i, control) {
@@ -848,14 +897,12 @@
 			if(!this._innerControls)
 				this._innerControls = [];
 			this._innerControls.push(control);
-			if(this._attached)
-				control.onAttachToDocument();
+			if(this._attached) 	control.onAttachToDocument();
 			control._isInnerControl = true;
 			control._parent = control._focusParent = this;
 			control.set("view", (this instanceof dorado.widget.View) ? this : this.get("view"));
 
-			if(control.parentChanged)
-				control.parentChanged();
+			if(control.parentChanged) control.parentChanged();
 		},
 		/**
 		 * 注销一个给定的内部控件。
@@ -1005,16 +1052,13 @@
 				this.fireEvent("onKeyDown", this, arg);
 				b = arg.returnValue;
 			}
-			if(!b)
-				return b;
+			if(!b) return b;
 
 			var b = this.doOnKeyDown ? this.doOnKeyDown(evt) : true;
-			if(!b)
-				return b;
+			if(!b) return b;
 
 			var fp = this.get("focusParent");
-			if(fp && dorado.widget.disableKeyBubble != fp)
-				b = fp.onKeyDown(evt);
+			if(fp && dorado.widget.disableKeyBubble != fp) b = fp.onKeyDown(evt);
 			return b;
 		},
 		/**
@@ -1042,16 +1086,13 @@
 				this.fireEvent("onKeyPress", this, arg);
 				b = arg.returnValue;
 			}
-			if(!b)
-				return b;
+			if(!b) return b;
 
 			var b = this.doOnKeyPress ? this.doOnKeyPress(evt) : true;
-			if(!b)
-				return b;
+			if(!b) return b;
 
 			var fp = this.get("focusParent");
-			if(fp && dorado.widget.disableKeyBubble != fp)
-				b = fp.onKeyDown(evt);
+			if(fp && dorado.widget.disableKeyBubble != fp) b = fp.onKeyDown(evt);
 			return b;
 		},
 		initDraggingInfo : function(draggingInfo, evt) {
