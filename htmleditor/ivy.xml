@@ -1,5 +1,5 @@
 <ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
-	<info organisation="com.bstek.dorado" module="dorado-desktop" revision="${product.revision}" status="${product.status}" />
+	<info organisation="com.bstek.dorado" module="dorado-htmleditor" revision="${product.revision}" status="${product.status}" />
 
 	<configurations>
 		<include file="../ivy/ivy-configurations.xml" />
