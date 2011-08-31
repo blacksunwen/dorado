@@ -13,7 +13,7 @@ dorado.Toolkits = {
 		if (this.ajaxDefaultOptions) dorado.Object.apply(defaultOptions, this.ajaxDefaultOptions);
 		dorado.Object.apply(defaultOptions, options);
 		
-		var key = defaultOptions.url || "#EMPTY";
+		var key = (defaultOptions.url || "#EMPTY");
 		var ajax = this.ajaxs[key];
 		if (ajax === undefined) {
 			ajax = new dorado.util.AjaxEngine();

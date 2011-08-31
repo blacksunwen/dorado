@@ -14,7 +14,10 @@ import com.bstek.dorado.annotation.XmlNode;
 @XmlNode(nodeName = "AjaxAction")
 public class AjaxAction extends Action {
 	private boolean async = true;
+	private long timeout;
+	private boolean batchable = true;
 	private String service;
+	private boolean supportsEntity = true;
 
 	@Override
 	@ViewAttribute(defaultValue = "true")
@@ -27,6 +30,23 @@ public class AjaxAction extends Action {
 		this.async = async;
 	}
 
+	public long getTimeout() {
+		return timeout;
+	}
+
+	public void setTimeout(long timeout) {
+		this.timeout = timeout;
+	}
+
+	@ViewAttribute(defaultValue = "true")
+	public boolean isBatchable() {
+		return batchable;
+	}
+
+	public void setBatchable(boolean batchable) {
+		this.batchable = batchable;
+	}
+
 	@ViewAttribute(outputter = "dorado.stringAliasPropertyOutputter")
 	public String getService() {
 		return service;
@@ -34,5 +54,14 @@ public class AjaxAction extends Action {
 
 	public void setService(String service) {
 		this.service = service;
+	}
+
+	@ViewAttribute(defaultValue = "true")
+	public boolean isSupportsEntity() {
+		return supportsEntity;
+	}
+
+	public void setSupportsEntity(boolean supportsEntity) {
+		this.supportsEntity = supportsEntity;
 	}
 }

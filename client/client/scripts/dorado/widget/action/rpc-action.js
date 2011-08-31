@@ -41,6 +41,23 @@
 			service : {},
 
 			/**
+			 * 以毫秒为单位的超时时长。此特性在同步模式下不生效。
+			 * @type int
+			 * @attribute
+			 */
+			timeout : {},
+
+			/**
+			 * 是否支持自动批量请求模式。此特性在同步模式下不生效。
+			 * @type boolean
+			 * @attribute
+			 * @default true
+			 */
+			batchable : {
+				defaultValue : true
+			},
+
+			/**
 			 * 是否支持Dorado的数据实体。
 			 * <p>
 			 * 如果选择是，那么当有数据从服务端返回时，系统自动判断该数据在服务端的形态。
@@ -67,7 +84,9 @@
 				jsonData.loadedDataTypes = this.get("dataTypeRepository").getLoadedDataTypes();
 			}
 			return dorado.Object.apply({
-				jsonData : jsonData
+				jsonData : jsonData,
+				timeout : this._timeout,
+				batchable : this._batchable
 			}, $setting["ajax.remoteServiceOptions"]);
 		},
 		doExecuteSync : function() {
