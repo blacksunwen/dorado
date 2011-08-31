@@ -233,6 +233,27 @@
             editor.refresh();
             //editor.fireEvent("onValueChange", editor);
         },
+        doOnReadOnlyChange: function(readOnly) {
+            var editor = this, riche = editor._editor;
+            if (readOnly === undefined) {
+                readOnly = editor._readOnly || editor._readOnly2;
+            }
+            if (!riche || !riche.document) return;
+            if (readOnly) {
+                if (dorado.Browser.msie) {
+                    riche.document.body.contentEditable = false;
+                } else {
+                    riche.document.body.contentEditable = false;
+                }
+            } else {
+                if (dorado.Browser.msie) {
+                    riche.document.body.contentEditable = true;
+                } else {
+                    riche.document.body.contentEditable = true;
+                }
+            }
+            editor.checkStatus();
+        },
         post: function() {
             try {
                 if(!this._dirty) {
@@ -500,6 +521,7 @@
         },
         checkStatus: function() {
             var editor = this, plugins = editor._plugins;
+
             for (var name in plugins) {
                 var plugin = plugins[name];
                 if (plugin.checkStatus) {
@@ -523,8 +545,17 @@
                     readOnly = true;
                 }
 
+                var oldReadOnly = editor._oldReadOnly;
+                editor._oldReadOnly = !!readOnly;
+
                 editor._value = value;
+                if (editor._editor && editor._editor.getContent() != value) {
+                    editor._editor.setContent(value || "");
+                }
                 editor._readOnly2 = readOnly;
+                if (oldReadOnly === undefined || oldReadOnly !== readOnly) {
+                    editor.doOnReadOnlyChange(!!readOnly);
+                }
                 editor.setDirty(dirty);
             }
         }
@@ -610,7 +641,11 @@
             }
         },
         checkStatus: function() {
-            var plugin = this, editor = plugin._htmlEditor._editor, result;
+            var plugin = this, heditor = plugin._htmlEditor, editor = plugin._htmlEditor._editor, result;
+            if (heditor._readOnly || heditor._readOnly2) {
+                plugin.set("status", "disable");
+                return;
+            }
             if (plugin._statusToggleable) {
                 try {
                     result = editor.queryCommandState(plugin._command);
@@ -638,8 +673,12 @@
     });
 
     var pcheckStatus = function() {
-        var plugin = this, editor = plugin._htmlEditor._editor;
+        var plugin = this, heditor = plugin._htmlEditor, editor = plugin._htmlEditor._editor;
         try {
+            if (heditor._readOnly || heditor._readOnly2) {
+                plugin.set("status", "disable");
+                return;
+            }
             var status = editor.queryCommandState(plugin._command);
             if (status == -1) {
                 plugin.set("status", "disable");
@@ -709,7 +748,7 @@
             execute: function() {
                 var editor = this._htmlEditor;
                 if (!editor._maximized) {
-                    editor._originalWidth = editor._width;
+                    editor._originalWidth = editor.getRealWidth();
                     editor._originalHeight = editor._height;
                     $fly(editor._dom).fullWindow({
                         modifySize: false,
@@ -726,11 +765,15 @@
                             editor._maximized = false;
                             editor._width = editor._originalWidth;
                             editor._height = editor._originalHeight;
+                            if (!editor._width) {
+                                $fly(editor._dom).css("width", "");
+                            }
                             editor.resetDimension();
                             editor.refresh();
                         }
                     });
                 }
+                this.checkStatus();
             },
             initToolBar: function(toolbar) {
                 var plugin = this;
