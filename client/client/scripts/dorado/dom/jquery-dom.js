@@ -223,6 +223,8 @@
 		event.preventDefault();
 	};
 
+
+
 	/**
 	 * @name jQuery#fullWindow
 	 * @function
@@ -234,21 +236,23 @@
 		if (self.length == 1) {
 			var dom = self[0], containBlock = dom.parentNode, parentsOverflow = [];
 
-			self.parents().filter(function() {
-				if ((/(auto|scroll|hidden)/).test($.curCSS(this, 'overflow', 1) + $.curCSS(this, 'overflow-y', 1))) {
-					parentsOverflow.push({
-						parent: this,
-						overflow: jQuery.curCSS(this, "overflow"),
-						overflowY: jQuery.curCSS(this, "overflow-y"),
-						scrollTop: this.scrollTop
-					});
-					var overflowValue = this == document.body ? "hidden" : "visible";
-					jQuery(this).attr("scrollTop", 0).css({
-						overflow: overflowValue,
-						overflowY: overflowValue
-					}).mousewheel(disableMouseWheel);
-				}
-			});
+            function doFilter() {
+                if (this == document.body || (/(auto|scroll|hidden)/).test($.curCSS(this, 'overflow', 1) + $.curCSS(this, 'overflow-y', 1))) {
+                    parentsOverflow.push({
+                        parent: this,
+                        overflow: jQuery.curCSS(this, "overflow"),
+                        overflowY: jQuery.curCSS(this, "overflow-y"),
+                        scrollTop: this.scrollTop
+                    });
+                    var overflowValue = this == document.body ? "hidden" : "visible";
+                    jQuery(this).attr("scrollTop", 0).css({
+                        overflow: overflowValue,
+                        overflowY: overflowValue
+                    }).mousewheel(disableMouseWheel);
+                }
+            }
+
+            self.parents().filter(doFilter);
 
 			while(containBlock != document.body) {
 				if (jQuery(containBlock).css("position") != "static") {

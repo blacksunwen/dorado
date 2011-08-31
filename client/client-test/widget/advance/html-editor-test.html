@@ -4,15 +4,21 @@
 	<title>Rich Editor Page</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<script type="text/javascript" src="../../include-all.js"></script>
+    <script type="text/javascript" src="common-types.js"></script>
 	<script type="text/javascript">
 		var view = new dorado.widget.View({ layout: "Dock" });
+
+        var dataSet = new dorado.widget.DataSet({
+			dataProvider: new dorado.AjaxDataProvider("phones.js"),
+			dataType: "Phone"	// Phone的声明实际位于data/common-types.js中，通过上面的$import("grid,common-types")引入。
+		});
 
         var entity = new dorado.Entity();
         entity.set("property1", "ok");
 
 		var richEditor = new dorado.widget.HtmlEditor({
-            entity: entity,
-            property: "property1",
+            dataSet: dataSet,
+            property: "comment",
             height: 500,
 			style: {
 				border: "1px solid gray"

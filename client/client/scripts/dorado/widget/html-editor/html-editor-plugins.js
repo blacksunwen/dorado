@@ -763,6 +763,11 @@
         statusToggleable: true,
         checkStatus: function() {
             var plugin = this, value = plugin.queryCommandValue("paragraph");
+            var heditor = plugin._htmlEditor;
+            if (heditor._readOnly || heditor._readOnly2) {
+                plugin.set("status", "disable");
+                return;
+            }
             plugin.formatEditor.set("value", value);
             var status = plugin.queryCommandState("paragraph");
             if (status == -1) {
@@ -833,6 +838,11 @@
         statusToggleable: true,
         checkStatus: function() {
             var plugin = this, value = plugin.queryCommandValue("fontfamily");
+            var heditor = plugin._htmlEditor;
+            if (heditor._readOnly || heditor._readOnly2) {
+                plugin.set("status", "disable");
+                return;
+            }
             plugin.fontEditor.set("text", value);
             var status = plugin.queryCommandState("fontfamily");
             if (status == -1) {
@@ -890,6 +900,11 @@
         statusToggleable: true,
         checkStatus: function() {
             var plugin = this, value = plugin.queryCommandValue("rowspacing");
+            var heditor = plugin._htmlEditor;
+            if (heditor._readOnly || heditor._readOnly2) {
+                plugin.set("status", "disable");
+                return;
+            }
             plugin.rowSpacingEditor.set("value", value);
             var status = plugin.queryCommandState("rowspacing");
             if (status == -1) {
@@ -950,6 +965,11 @@
         statusToggleable: true,
         checkStatus: function() {
             var plugin = this, value = plugin.queryCommandValue("fontsize");
+            var heditor = plugin._htmlEditor;
+            if (heditor._readOnly || heditor._readOnly2) {
+                plugin.set("status", "disable");
+                return;
+            }
             plugin.fontSizeEditor.set("text", value);
 
             var status = plugin.queryCommandState("fontsize");
