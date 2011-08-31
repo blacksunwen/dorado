@@ -178,7 +178,7 @@
 	 * </p>
 	 * @extends dorado.widget.Control
 	 */
-    dorado.widget.HtmlEditor = $extend(dorado.widget.Control, /** @scope dorado.widget.HtmlEditor.prototype */{
+    dorado.widget.HtmlEditor = $extend(dorado.widget.AbstractDataEditor, /** @scope dorado.widget.HtmlEditor.prototype */{
         focusable: true,
         ATTRIBUTES: /** @scope dorado.widget.HtmlEditor.prototype */{
             className: {
@@ -218,12 +218,48 @@
                 }
             }
         },
+        doOnBlur: function() {
+            var editor = this;
+            editor._lastPostValue = editor._value;
+            editor._value = editor.get("content");
+            editor._dirty = true;
+            try {
+                editor.post();
+            } catch (e) {
+                editor._value = editor._lastPostValue;
+                editor._dirty = false;
+                throw e;
+            }
+            editor.refresh();
+            //editor.fireEvent("onValueChange", editor);
+        },
+        post: function() {
+            try {
+                if(!this._dirty) {
+                    return false;
+                }
+                var eventArg = {
+                    processDefault : true
+                };
+                this.fireEvent("beforePost", this, eventArg);
+                if(eventArg.processDefault === false)
+                    return false;
+                this.doPost();
+                this._lastPostValue = this._value;
+                this._dirty = false;
+                this.fireEvent("onPost", this);
+                return true;
+            } catch (e) {
+                dorado.Exception.processException(e);
+            }
+        },
+        setFocus : function() {},
         doOnAttachToDocument: function() {
             var heditor = this;
             $invokeSuper.call(this, arguments);
             //editor的属性
             var option = {
-                initialContent: '',//初始化编辑器的内容
+                initialContent: heditor._value,//初始化编辑器的内容
                 minFrameHeight: 100,
                 iframeCssUrl: $url(">skin>/html-editor/iframe.css")//给iframe样式的路径
             };
@@ -325,6 +361,7 @@
                 popup.hide();
             });
             editor.addListener('selectionchange', function (t, evt) {
+                dorado.widget.setFocusedControl(heditor);
                 var html = '', img = editor.selection.getRange().getClosedNode(),
                     imglink = baidu.editor.dom.domUtils.findParentByTagName(img, "a", true);
 
@@ -468,6 +505,27 @@
                 if (plugin.checkStatus) {
                     plugin.checkStatus();
                 }
+            }
+        },
+        refreshDom: function() {
+            $invokeSuper.call(this, arguments);
+            var editor = this;
+            if(editor._dataSet) {
+                var value, dirty, readOnly = this._dataSet._readOnly;
+                if(editor._property) {
+                    var bindingInfo = editor._bindingInfo;
+                    if(bindingInfo.entity instanceof dorado.Entity) {
+                        value = bindingInfo.entity.get(editor._property);
+                        dirty = bindingInfo.entity.isDirty(editor._property);
+                    }
+                    readOnly = readOnly || (bindingInfo.entity == null) || bindingInfo.propertyDef.get("readOnly");
+                } else {
+                    readOnly = true;
+                }
+
+                editor._value = value;
+                editor._readOnly2 = readOnly;
+                editor.setDirty(dirty);
             }
         }
     });

@@ -7,17 +7,46 @@
 	<script type="text/javascript">
 		var view = new dorado.widget.View({ layout: "Dock" });
 
-		var richEditor = new dorado.widget.HtmlEditor(
-		{
+        var entity = new dorado.Entity();
+        entity.set("property1", "ok");
+
+		var richEditor = new dorado.widget.HtmlEditor({
+            entity: entity,
+            property: "property1",
+            height: 500,
 			style: {
 				border: "1px solid gray"
 			}
 		});
 
-		view.addChild(richEditor);
+        var dialog = new dorado.widget.Dialog({
+            caption: "test",
+            width: 800,
+            height: 600,
+            left: 200,
+            top: 50,
+            modal: true,
+            children: [{
+                $type: "AutoForm",
+                cols: "*",
+                elements: [
+                    { property: "alignment", label: "对齐方式", type: "text",
+                        editor: richEditor
+                    }
+                ]
+            }],
+            buttons: [new dorado.widget.Button({
+                caption: "确定",
+                width: 80
+            }), new dorado.widget.Button({
+                caption: "取消",
+                width: 80
+            })]
+        });
+
 
 		$(document).ready(function() {
-			view.render(document.body);
+            dialog.show();
 		});
 	</script>
 </head>

@@ -90,3 +90,12 @@
 .d-toolbar-button .button-right-toggled{
 	background-position: right -308px;
 }
+
+.d-toolbar-button-disabled .button-left .icon{
+	filter: alpha(opacity = 50);
+	opacity: 0.5;
+}
+
+.d-toolbar-button-disabled .caption{
+	color: #aaa;
+}
