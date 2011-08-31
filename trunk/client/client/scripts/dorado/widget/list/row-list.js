@@ -111,7 +111,7 @@
 			
 			var self = this;
 			$fly(table).mouseover(function(evt) {
-				if ($DomUtils.isDragging() && !self._highlightHoverRow) return;
+				if ($DomUtils.isDragging() || !self._highlightHoverRow) return;
 				dorado.Toolkits.cancelDelayedAction(self, "$hoverOutTimerId");
 				self.setHoverRow(self.findItemDomByEvent(evt));
 			}).mouseout(function(evt) {
@@ -821,7 +821,7 @@
 		if (indicator == null) {
 			indicator = $DomUtils.xCreateElement({
 				tagName: "div",
-				className: "d-list-dragging-insert-indicator"
+				className: "i-list-dragging-insert-indicator d-list-dragging-insert-indicator"
 			});
 			this._draggingInsertIndicator = indicator;
 		}
