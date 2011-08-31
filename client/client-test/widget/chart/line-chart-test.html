@@ -145,14 +145,30 @@
 				}
 			}]
 		});
-        view.addChild(lineChart);
 
 		function open_flash_chart_data() {
 			return JSON.stringify({"bg_colour": "#ffffff", elements: [{"type": "pie"}]});
 		}
 
+        var dialog = new dorado.widget.Dialog({
+            caption: "test",
+            width: "500",
+            height: 400,
+            left: 200,
+            top: 50,
+            modal: true,
+            children: [lineChart],
+            buttons: [new dorado.widget.Button({
+                caption: "确定",
+                width: 80
+            }), new dorado.widget.Button({
+                caption: "取消",
+                width: 80
+            })]
+        });
+
 		$(document).ready(function(){
-			view.render(document.body);
+            dialog.show();
 		});
 		</script>
 	</head>

@@ -530,12 +530,12 @@
 						fakeDialog.refresh();
 						var helper = ui.helper;
 						helper.css({ display: "", visibility: "" }).bringToFront();
-						$fly(dom).addClass("d-dialog-dragging").css("display", "none").disableShadow();
+						$fly(dom).addClass("d-dialog-dragging").css("visibility", "hidden").disableShadow();
 					},
 					stop: function(event, ui) {
 						var helper = ui.helper, left = parseInt(helper.css("left"), 10), top = parseInt(helper.css("top"), 10);
 						$fly(dom).removeClass("d-dialog-dragging").css({
-							display: "",
+							visibility: "",
 							left: left,
 							top: top
 						}).enableShadow();
