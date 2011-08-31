@@ -247,13 +247,13 @@ dorado.EventSupport = $class(/** @scope dorado.EventSupport.prototype */{
 		 * oop.set("listener", [
 		 *	 {
 		 *		 name: "onFocus",
-		 *		 fn: function(button) {
+		 *		 listener: function(button) {
 		 *			 ... ...
 		 *		 }
 		 *	 },
 		 *	 {
 		 *		 name: "onBlur",
-		 *		 fn: function(button) {
+		 *		 listener: function(button) {
 		 *			 ... ...
 		 *		 }
 		 *	 }
