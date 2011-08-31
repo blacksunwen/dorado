@@ -9562,7 +9562,7 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
 	 * </p>
 	 * @extends dorado.widget.Control
 	 */
-    dorado.widget.HtmlEditor = $extend(dorado.widget.Control, /** @scope dorado.widget.HtmlEditor.prototype */{
+    dorado.widget.HtmlEditor = $extend(dorado.widget.AbstractDataEditor, /** @scope dorado.widget.HtmlEditor.prototype */{
         focusable: true,
         ATTRIBUTES: /** @scope dorado.widget.HtmlEditor.prototype */{
             className: {
@@ -9602,12 +9602,69 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
                 }
             }
         },
+        doOnBlur: function() {
+            var editor = this;
+            editor._lastPostValue = editor._value;
+            editor._value = editor.get("content");
+            editor._dirty = true;
+            try {
+                editor.post();
+            } catch (e) {
+                editor._value = editor._lastPostValue;
+                editor._dirty = false;
+                throw e;
+            }
+            editor.refresh();
+            //editor.fireEvent("onValueChange", editor);
+        },
+        doOnReadOnlyChange: function(readOnly) {
+            var editor = this, riche = editor._editor;
+            if (readOnly === undefined) {
+                readOnly = editor._readOnly || editor._readOnly2;
+            }
+            if (!riche || !riche.document) return;
+            if (readOnly) {
+                if (dorado.Browser.msie) {
+                    riche.document.body.contentEditable = false;
+                } else {
+                    riche.document.body.contentEditable = false;
+                }
+            } else {
+                if (dorado.Browser.msie) {
+                    riche.document.body.contentEditable = true;
+                } else {
+                    riche.document.body.contentEditable = true;
+                }
+            }
+            editor.checkStatus();
+        },
+        post: function() {
+            try {
+                if(!this._dirty) {
+                    return false;
+                }
+                var eventArg = {
+                    processDefault : true
+                };
+                this.fireEvent("beforePost", this, eventArg);
+                if(eventArg.processDefault === false)
+                    return false;
+                this.doPost();
+                this._lastPostValue = this._value;
+                this._dirty = false;
+                this.fireEvent("onPost", this);
+                return true;
+            } catch (e) {
+                dorado.Exception.processException(e);
+            }
+        },
+        setFocus : function() {},
         doOnAttachToDocument: function() {
             var heditor = this;
             $invokeSuper.call(this, arguments);
             //editor的属性
             var option = {
-                initialContent: '',//初始化编辑器的内容
+                initialContent: heditor._value,//初始化编辑器的内容
                 minFrameHeight: 100,
                 iframeCssUrl: $url(">skin>/html-editor/iframe.css")//给iframe样式的路径
             };
@@ -9709,6 +9766,7 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
                 popup.hide();
             });
             editor.addListener('selectionchange', function (t, evt) {
+                dorado.widget.setFocusedControl(heditor);
                 var html = '', img = editor.selection.getRange().getClosedNode(),
                     imglink = baidu.editor.dom.domUtils.findParentByTagName(img, "a", true);
 
@@ -9847,11 +9905,42 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
         },
         checkStatus: function() {
             var editor = this, plugins = editor._plugins;
+
             for (var name in plugins) {
                 var plugin = plugins[name];
                 if (plugin.checkStatus) {
                     plugin.checkStatus();
                 }
+            }
+        },
+        refreshDom: function() {
+            $invokeSuper.call(this, arguments);
+            var editor = this;
+            if(editor._dataSet) {
+                var value, dirty, readOnly = this._dataSet._readOnly;
+                if(editor._property) {
+                    var bindingInfo = editor._bindingInfo;
+                    if(bindingInfo.entity instanceof dorado.Entity) {
+                        value = bindingInfo.entity.get(editor._property);
+                        dirty = bindingInfo.entity.isDirty(editor._property);
+                    }
+                    readOnly = readOnly || (bindingInfo.entity == null) || bindingInfo.propertyDef.get("readOnly");
+                } else {
+                    readOnly = true;
+                }
+
+                var oldReadOnly = editor._oldReadOnly;
+                editor._oldReadOnly = !!readOnly;
+
+                editor._value = value;
+                if (editor._editor && editor._editor.getContent() != value) {
+                    editor._editor.setContent(value || "");
+                }
+                editor._readOnly2 = readOnly;
+                if (oldReadOnly === undefined || oldReadOnly !== readOnly) {
+                    editor.doOnReadOnlyChange(!!readOnly);
+                }
+                editor.setDirty(dirty);
             }
         }
     });
@@ -9936,7 +10025,11 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
             }
         },
         checkStatus: function() {
-            var plugin = this, editor = plugin._htmlEditor._editor, result;
+            var plugin = this, heditor = plugin._htmlEditor, editor = plugin._htmlEditor._editor, result;
+            if (heditor._readOnly || heditor._readOnly2) {
+                plugin.set("status", "disable");
+                return;
+            }
             if (plugin._statusToggleable) {
                 try {
                     result = editor.queryCommandState(plugin._command);
@@ -9964,8 +10057,12 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
     });
 
     var pcheckStatus = function() {
-        var plugin = this, editor = plugin._htmlEditor._editor;
+        var plugin = this, heditor = plugin._htmlEditor, editor = plugin._htmlEditor._editor;
         try {
+            if (heditor._readOnly || heditor._readOnly2) {
+                plugin.set("status", "disable");
+                return;
+            }
             var status = editor.queryCommandState(plugin._command);
             if (status == -1) {
                 plugin.set("status", "disable");
@@ -10035,7 +10132,7 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
             execute: function() {
                 var editor = this._htmlEditor;
                 if (!editor._maximized) {
-                    editor._originalWidth = editor._width;
+                    editor._originalWidth = editor.getRealWidth();
                     editor._originalHeight = editor._height;
                     $fly(editor._dom).fullWindow({
                         modifySize: false,
@@ -10052,11 +10149,15 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
                             editor._maximized = false;
                             editor._width = editor._originalWidth;
                             editor._height = editor._originalHeight;
+                            if (!editor._width) {
+                                $fly(editor._dom).css("width", "");
+                            }
                             editor.resetDimension();
                             editor.refresh();
                         }
                     });
                 }
+                this.checkStatus();
             },
             initToolBar: function(toolbar) {
                 var plugin = this;
@@ -10927,6 +11028,11 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
         statusToggleable: true,
         checkStatus: function() {
             var plugin = this, value = plugin.queryCommandValue("paragraph");
+            var heditor = plugin._htmlEditor;
+            if (heditor._readOnly || heditor._readOnly2) {
+                plugin.set("status", "disable");
+                return;
+            }
             plugin.formatEditor.set("value", value);
             var status = plugin.queryCommandState("paragraph");
             if (status == -1) {
@@ -10997,6 +11103,11 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
         statusToggleable: true,
         checkStatus: function() {
             var plugin = this, value = plugin.queryCommandValue("fontfamily");
+            var heditor = plugin._htmlEditor;
+            if (heditor._readOnly || heditor._readOnly2) {
+                plugin.set("status", "disable");
+                return;
+            }
             plugin.fontEditor.set("text", value);
             var status = plugin.queryCommandState("fontfamily");
             if (status == -1) {
@@ -11054,6 +11165,11 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
         statusToggleable: true,
         checkStatus: function() {
             var plugin = this, value = plugin.queryCommandValue("rowspacing");
+            var heditor = plugin._htmlEditor;
+            if (heditor._readOnly || heditor._readOnly2) {
+                plugin.set("status", "disable");
+                return;
+            }
             plugin.rowSpacingEditor.set("value", value);
             var status = plugin.queryCommandState("rowspacing");
             if (status == -1) {
@@ -11114,6 +11230,11 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
         statusToggleable: true,
         checkStatus: function() {
             var plugin = this, value = plugin.queryCommandValue("fontsize");
+            var heditor = plugin._htmlEditor;
+            if (heditor._readOnly || heditor._readOnly2) {
+                plugin.set("status", "disable");
+                return;
+            }
             plugin.fontSizeEditor.set("text", value);
 
             var status = plugin.queryCommandState("fontsize");
