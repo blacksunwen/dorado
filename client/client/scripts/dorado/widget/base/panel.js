@@ -147,7 +147,6 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 	 * @private
 	 */
 	doSetCollapsed: function(collapsed) {
-	
 		function onCollapsedChange(panel, collapsed) {
 			panel._children.each(function(child) {
 				if (child instanceof dorado.widget.Control) {
@@ -197,6 +196,7 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 							}
 							onCollapsedChange(panel, collapsed);
                             dom.style.zIndex = orginalZIndex || "";
+                            orginalZIndex = null;
 						}
 					});
 				} else {
@@ -209,12 +209,12 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 						step: function() {
 						},
 						complete: function() {
-                            orginalZIndex = null;
 							if (collapseButton) {
 								collapseButton.set("iconClass", "collapse-icon");
 							}
 							onCollapsedChange(panel, collapsed);
                             dom.style.zIndex = orginalZIndex || "";
+                            orginalZIndex = null;
 						}
 					});
 				}
