@@ -20,7 +20,9 @@ import com.bstek.dorado.annotation.XmlProperty;
 @Widget(name = "Control", category = "General", dependsPackage = "widget")
 @ViewObject(prototype = "dorado.widget.Control", shortTypeName = "Control")
 @XmlNode(nodeName = "Control")
-@ClientEvents({ @ClientEvent(name = "onClick"),
+@ClientEvents({ @ClientEvent(name = "onCreateDom"),
+		@ClientEvent(name = "beforeRefreshDom"),
+		@ClientEvent(name = "onRefreshDom"), @ClientEvent(name = "onClick"),
 		@ClientEvent(name = "onDoubleClick"),
 		@ClientEvent(name = "onMouseDown"), @ClientEvent(name = "onMouseUp"),
 		@ClientEvent(name = "onFocus"), @ClientEvent(name = "onBlur"),
