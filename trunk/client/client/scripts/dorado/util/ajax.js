@@ -1,32 +1,28 @@
 dorado.util.AjaxConnectionPool = new dorado.util.ObjectPool({
-	activeX: ["MSXML2.XMLHTTP.6.0", "MSXML2.XMLHTTP.5.0", "MSXML2.XMLHTTP.4.0", "MSXML2.XMLHTTP.3.0", "MSXML2.XMLHTTP", "Microsoft.XMLHTTP"],
-	
-	_createXMLHttpRequest: function() {
+	activeX : ["MSXML2.XMLHTTP.6.0", "MSXML2.XMLHTTP.5.0", "MSXML2.XMLHTTP.4.0", "MSXML2.XMLHTTP.3.0", "MSXML2.XMLHTTP", "Microsoft.XMLHTTP"],
+
+	_createXMLHttpRequest : function() {
 		try {
 			return new XMLHttpRequest();
-		} 
-		catch (e) {
-			for (var i = 0; i < this.activeX.length; ++i) {
+		} catch (e) {
+			for(var i = 0; i < this.activeX.length; ++i) {
 				try {
 					return new ActiveXObject(this.activeX[i]);
-				} 
-				catch (e) {
+				} catch (e) {
 				}
 			}
 		}
 	},
-	
-	makeObject: function() {
+	makeObject : function() {
 		return {
-			conn: this._createXMLHttpRequest()
+			conn : this._createXMLHttpRequest()
 		};
 	},
-	
-	passivateObject: function(connObj) {
+	passivateObject : function(connObj) {
 		delete connObj.url;
 		delete connObj.method;
 		delete connObj.options;
-		
+
 		var conn = connObj.conn;
 		conn.onreadystatechange = dorado._NULL_FUNCTION;
 		conn.abort();
@@ -56,16 +52,17 @@ dorado.util.AjaxConnectionPool = new dorado.util.ObjectPool({
  * @extends dorado.EventSupport
  * @see $ajax
  */
-dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport], /** @scope dorado.util.AjaxEngine.prototype */ {
-	$className: "dorado.util.AjaxEngine",
-	
-	constructor: function() {
+dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport], /** @scope dorado.util.AjaxEngine.prototype */
+{
+	$className : "dorado.util.AjaxEngine",
+
+	constructor : function() {
 		$invokeSuper.call(this, arguments);
 		this._requests = [];
 		this._connectionPool = dorado.util.AjaxConnectionPool;
 	},
-	
-	ATTRIBUTES: /** @scope dorado.util.AjaxEngine.prototype */ {
+	ATTRIBUTES : /** @scope dorado.util.AjaxEngine.prototype */
+	{
 		/**
 		 * 默认的执行选项。 执行选项中可包含下列一些属性：
 		 * <ul>
@@ -91,10 +88,10 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 		 *		 }
 		 *	 });
 		 */
-		defaultOptions: {
-			writeOnce: true
+		defaultOptions : {
+			writeOnce : true
 		},
-		
+
 		/**
 		 * 是否启用自动批量请求的功能。默认值为false。
 		 * <p>
@@ -107,37 +104,38 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 		 * @attribute
 		 * @see dorado.util.AjaxEngine#setAutoBatchEnabled
 		 */
-		autoBatchEnabled: {
-			setter: function(value) {
-				if (value && !(this._defaultOptions && this._defaultOptions.url)) {
+		autoBatchEnabled : {
+			setter : function(value) {
+				if(value && !(this._defaultOptions && this._defaultOptions.url)) {
 					throw new dorado.ResourceException("dorado.core.BatchUrlUndefined");
 				}
 				this._autoBatchEnabled = value;
 			}
 		},
-		
+
 		/**
 		 * 最小的与服务器建立的连接的时间间隔(毫秒数)。此属性仅在autoBatchEnabled属性为true时生效。
 		 * @type int
 		 * @attribute
 		 * @default 50
 		 */
-		minConnectInterval: {
-			defaultValue: 50
+		minConnectInterval : {
+			defaultValue : 50
 		},
-		
+
 		/**
 		 * 每一次批量请求中允许的最大子请求数量。此属性仅在autoBatchEnabled属性为true时生效。
 		 * @type int
 		 * @attribute
 		 * @default 20
 		 */
-		maxBatchSize: {
-			defaultValue: 20
+		maxBatchSize : {
+			defaultValue : 20
 		}
 	},
-	
-	EVENTS: /** @scope dorado.util.AjaxEngine.prototype */ {
+
+	EVENTS : /** @scope dorado.util.AjaxEngine.prototype */
+	{
 		/**
 		 * 当AjaxEngine将要发出以个请求时触发的事件。
 		 * @param {Object} self 事件的发起者，即AjaxEngine本身。
@@ -148,8 +146,8 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 		 * @event
 		 * @event
 		 */
-		beforeRequest: {},
-		
+		beforeRequest : {},
+
 		/**
 		 * 当AjaxEngine某个请求执行结束后(包含因失败而结束的情况)触发的事件。
 		 * @param {Object} self 事件的发起者，即AjaxEngine本身。
@@ -159,8 +157,8 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 		 * @return {boolean} result  是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 		 * @event
 		 */
-		onRequest: {},
-		
+		onRequest : {},
+
 		/**
 		 * 当AjaxEngine将要与服务器建立连接时触发的事件。
 		 * @param {Object} self 事件的发起者，即AjaxEngine本身。
@@ -170,8 +168,8 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 		 * @return {boolean} result  是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 		 * @event
 		 */
-		beforeConnect: {},
-		
+		beforeConnect : {},
+
 		/**
 		 * 当AjaxEngine断开与服务器建立连接时触发的事件。
 		 * @param {Object} self 事件的发起者，即AjaxEngine本身。
@@ -181,7 +179,7 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 		 * @return {boolean} result  是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 		 * @event
 		 */
-		onConnect: {}
+		onConnect : {}
 	},
 
 	/**
@@ -203,6 +201,8 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 	 * 这些参数以子属性值的方式保存在此JSON对象中。
 	 * <b>对于POST方法的请求而言，如果在定义了parameter的同时又定义了xmlData或jsonData，那么parameter将被添加到url中以类似GET请求的方式发送。、
 	 * 真正通过POST方法发送的数据将是xmlData或jsonData。</b>
+	 * @param {int} [options.timeout] 以毫秒为单位的超时时长。此特性在同步模式下不生效。
+	 * @param {boolean} [options.batchable=true] 是否支持自动批量请求模式。此特性在同步模式下不生效。
 	 * @param {String} [options.header] 请求时包含在HttpRequest中的头信息。
 	 * 这些头信息以子属性值的方式保存在此JSON对象中。
 	 * 最终在请求发出时所包含的头信息是defaultOptions.header和此处header属性的合集，如二者之间的属性定义有冲突，则以此处header属性中的为准。
@@ -212,7 +212,7 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 	 * @param {Function|dorado.Callback} [callback] 回调对象。传入回调对象的结果参数是{@link dorado.util.AjaxResult}对象。
 	 * @throws {dorado.util.AjaxException}
 	 * @throws {Error}
-	 * 
+	 *
 	 * @example
 	 * // 发起一个Ajax异步请求，使用Function作为回调对象。
 	 * var ajax = new AjaxEngine();
@@ -241,7 +241,7 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 	 * 	failure: function(e) {
 	 * 		alert("操作失败：" + e);
 	 * 	}
-	 * });	
+	 * });
 	 * </pre>
 	 *
 	 * @example
@@ -251,48 +251,48 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 	 * ajax.set("options", {
 	 * 	// 每一个支持批量操作的请求的url都必须是一致的。
 	 * 	url: "/delete-employee.do",
-	 * 	
+	 *
 	 * 	// 每一个支持批量操作的请求的method都必须是一致的。
 	 * 	method: "POST"
 	 * });
-	 * 
+	 *
 	 * // 启用自动批量请求功能。
 	 * ajax.setAutoBatchEnabled(true);
-	 * 
+	 *
 	 * ajax.request({
 	 * 	jsonData: "0001"
 	 * }, function(result) {
 	 * 	alert(result.responseText);
 	 * });
-	 * 
+	 *
 	 * ajax.request({
 	 * 	jsonData: "0002"
 	 * }, function(result) {
 	 * 	alert(result.responseText);
 	 * });
-	 * 
+	 *
 	 * ajax.request({
 	 * 	jsonData: "0005"
 	 * }, function(result) {
 	 * 	alert(result.responseText);
 	 * });
 	 */
-	request: function(options, callback) {
-		if (typeof options == "string") {
+	request : function(options, callback) {
+		if( typeof options == "string") {
 			options = {
-				url: options
+				url : options
 			};
 		}
-		
-		var useBatch = this._autoBatchEnabled;
-		if (this._autoBatchEnabled) {
-			if (options) {
-				if (options.url && options.url != this._defaultOptions.url || options.method && options.method != "POST") {
+
+		var useBatch = this._autoBatchEnabled && (options.batchable !== false);
+		if(this._autoBatchEnabled) {
+			if(options) {
+				if(options.url && options.url != this._defaultOptions.url || options.method && options.method != "POST" || options.timeout) {
 					useBatch = false;
 				}
-				if (useBatch && options.headers) {
-					for (var prop in options.headers) {
-						if (options.headers.hasOwnProperty(prop)) {
+				if(useBatch && options.headers) {
+					for(var prop in options.headers) {
+						if(options.headers.hasOwnProperty(prop)) {
 							useBatch = false;
 							break;
 						}
@@ -300,133 +300,134 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 				}
 			}
 		}
-		
-		if (useBatch) {
+
+		if(useBatch) {
 			var requests = this._requests;
-			if (requests.length == 0) {
+			if(requests.length == 0) {
 				this._batchTimerId = $setTimeout(this, function() {
 					this._requestBatch();
 				}, this._minConnectInterval);
 			}
-			
+
 			this.fireEvent("beforeRequest", this, {
-				async: true,
-				options: options
+				async : true,
+				options : options
 			});
-			
+
 			var message = options.message, taskId;
-			if (message) taskId = dorado.util.TaskIndicator.showTaskIndicator(message);
-			
+			if(message)
+				taskId = dorado.util.TaskIndicator.showTaskIndicator(message);
+
 			requests.push({
-				options: options,
-				callback: callback,
-				taskId: taskId
+				options : options,
+				callback : callback,
+				taskId : taskId
 			});
-			
-			if (requests.length >= this._maxBatchSize) {
+
+			if(requests.length >= this._maxBatchSize) {
 				this._requestBatch();
 			}
 		} else {
 			this.requestAsync(options, callback);
 		}
 	},
-	
-	_requestBatch: function() {
-		if (this._batchTimerId) {
+	_requestBatch : function() {
+		if(this._batchTimerId) {
 			clearTimeout(this._batchTimerId);
 			this._batchTimerId = 0;
 		}
-		
+
 		var requests = this._requests;
-		if (requests.length == 0) return;
+		if(requests.length == 0)
+			return;
 		this._requests = [];
-		
+
 		var batchCallback = {
-			scope: this,
-			callback: function(success, batchResult) {
+			scope : this,
+			callback : function(success, batchResult) {
 				function createAjaxResult(options) {
 					var result = new dorado.util.AjaxResult(options);
 					result._init(batchResult._connObj);
 					return result;
 				}
-				
-				if (success) {
+
+				if(success) {
 					var xmlDoc = jQuery(batchResult.getXmlDocument());
-					
+
 					var i = 0;
 					xmlDoc.find("result>request").each($scopify(this, function(index, elem) {
 						var request = requests[i];
-						if (request.taskId) dorado.util.TaskIndicator.hideTaskIndicator(request.taskId);
-						
+						if(request.taskId)
+							dorado.util.TaskIndicator.hideTaskIndicator(request.taskId);
+
 						var result = createAjaxResult(request.options);
-						
+
 						var el = jQuery(elem);
 						var exceptionEl = el.children("exception");
 						var success = (exceptionEl.size() == 0);
-						if (success) {
+						if(success) {
 							var responseEl = el.children("response");
 							result.text = unescape(responseEl.text());
 						} else {
 							result.text = unescape(exceptionEl.text());
-							if (exceptionEl.attr("type") == "runnable") {
+							if(exceptionEl.attr("type") == "runnable") {
 								result._parseRunnableException(result.text);
 							} else {
 								result._setException(result._parseException(result.text, batchResult._connObj));
 							}
 						}
 						$callback(request.callback, success, result);
-						
+
 						this.fireEvent("onRequest", this, {
-							async: true,
-							result: result
+							async : true,
+							result : result
 						});
-						
 						i++;
 					}));
 				} else {
-					for (var i = 0; i < requests.length; i++) {
+					for(var i = 0; i < requests.length; i++) {
 						var request = requests[i];
-						if (request.taskId) dorado.util.TaskIndicator.hideTaskIndicator(request.taskId);
-						
+						if(request.taskId)
+							dorado.util.TaskIndicator.hideTaskIndicator(request.taskId);
+
 						var result = createAjaxResult(request.options);
 						result._setException(batchResult.exception);
 						$callback(request.callback, false, result);
-						
+
 						this.fireEvent("onRequest", this, {
-							async: true,
-							result: result
+							async : true,
+							result : result
 						});
 					}
 				}
 			}
 		};
-		
+
 		var sendData = ["<batch>\n"];
-		for (var i = 0; i < requests.length; i++) {
+		for(var i = 0; i < requests.length; i++) {
 			var request = requests[i];
 			var options = request.options;
 			var type = "";
-			if (options) {
-				if (options.xmlData) {
+			if(options) {
+				if(options.xmlData) {
 					type = "xml";
-				} else if (options.jsonData) {
+				} else if(options.jsonData) {
 					type = "json";
 				}
 			}
-			
+
 			sendData.push("<request type=\"" + type + "\"><![CDATA[");
 			sendData.push(this._getSendData(options));
 			sendData.push("]]></request>\n");
 		}
 		sendData.push("</batch>");
-		
+
 		var batchOptions = {
-			isBatch: true,
-			xmlData: sendData.join('')
+			isBatch : true,
+			xmlData : sendData.join('')
 		};
 		this.requestAsync(batchOptions, batchCallback);
 	},
-	
 	/**
 	 * 发起一个异步的请求。
 	 * <p>
@@ -441,164 +442,168 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 	 * @throws {Error}
 	 * @see dorado.util.AjaxEngine#request
 	 */
-	requestAsync: function(options, callback) {
+	requestAsync : function(options, callback) {
 		var connObj = this._connectionPool.borrowObject();
 		this._init(connObj, options, true);
-		
+
 		var eventArg = {
-			async: true,
-			options: options
+			async : true,
+			options : options
 		};
-		if (options == null || !options.isBatch) {
+		if(options == null || !options.isBatch) {
 			this.fireEvent("beforeRequest", this, eventArg);
 		}
 		this.fireEvent("beforeConnect", this, eventArg);
-		
+
 		var conn = connObj.conn;
-		
+
 		var message = options.message, taskId;
-		if (message) taskId = dorado.util.TaskIndicator.showTaskIndicator(message);
-		
-		if (callback && options && options.timeout) {
+		if(message)
+			taskId = dorado.util.TaskIndicator.showTaskIndicator(message);
+
+		if(callback && options && options.timeout) {
 			connObj.timeoutTimerId = $setTimeout(this, function() {
 				try {
-					if (taskId) dorado.util.TaskIndicator.hideTaskIndicator(taskId);
-					
+					if(taskId)
+						dorado.util.TaskIndicator.hideTaskIndicator(taskId);
+
 					var result = dorado.util.AjaxResult(options);
 					result._init(connObj);
 					result._setException(new dorado.util.AjaxException("Async Request Timeout.", null, connObj));
 					$callback(callback, false, result, {
-						scope: this
+						scope : this
 					});
-					
+
 					var eventArg = {
-						async: true,
-						result: result
+						async : true,
+						result : result
 					};
-					
+
 					this.fireEvent("onConnect", this, eventArg);
-					if (options == null || !options.isBatch) {
+					if(options == null || !options.isBatch) {
 						this.fireEvent("onRequest", this, eventArg);
 					}
-				}
-				finally {
+				} finally {
 					this._connectionPool.returnObject(connObj);
 				}
 			}, options.timeout);
 		}
-		
+
 		conn.onreadystatechange = $scopify(this, function() {
-			if (conn.readyState == 4) {
+			if(conn.readyState == 4) {
 				try {
-					if (taskId) dorado.util.TaskIndicator.hideTaskIndicator(taskId);
-					if (callback && options && options.timeout) {
+					if(taskId)
+						dorado.util.TaskIndicator.hideTaskIndicator(taskId);
+					if(callback && options && options.timeout) {
 						clearTimeout(connObj.timeoutTimerId);
 					}
 					var result = new dorado.util.AjaxResult(options, connObj);
-					
+
 					var eventArg = {
-						async: true,
-						result: result
+						async : true,
+						result : result
 					};
 					this.fireEvent("onConnect", this, eventArg);
-					
+
 					$callback(callback, result.success, result, {
-						scope: this
+						scope : this
 					});
-					
-					if (options == null || !options.isBatch) {
+
+					if(options == null || !options.isBatch) {
 						this.fireEvent("onRequest", this, eventArg);
 					}
-				}
-				finally {
+				} finally {
 					this._connectionPool.returnObject(connObj);
 				}
 			}
 		});
 		conn.send(this._getSendData(options));
 	},
-	
-	_setHeader: function(connObj, options) {
-	
+	_setHeader : function(connObj, options) {
+
 		function setHeaders(conn, headers) {
-			if (!headers) return;
-			for (var prop in headers) {
-				if (headers.hasOwnProperty(prop)) {
+			if(!headers)
+				return;
+			for(var prop in headers) {
+				if(headers.hasOwnProperty(prop)) {
 					var value = headers[prop];
-					if (value != null) conn.setRequestHeader(prop, value);
+					if(value != null)
+						conn.setRequestHeader(prop, value);
 				}
 			}
 		}
-		
-		if (this._defaultOptions) setHeaders(connObj.conn, this._defaultOptions.headers);
-		if (options) setHeaders(connObj.conn, options.headers);
+
+		if(this._defaultOptions)
+			setHeaders(connObj.conn, this._defaultOptions.headers);
+		if(options)
+			setHeaders(connObj.conn, options.headers);
 	},
-	
-	_init: function(connObj, options, async) {
-		
-		function urlAppend(url, s){
-            if(s) return url + (url.indexOf('?') === -1 ? '?' : '&') + encodeURI(s);
-            return url;
-        }
-		
+	_init : function(connObj, options, async) {
+
+		function urlAppend(url, s) {
+			if(s)
+				return url + (url.indexOf('?') === -1 ? '?' : '&') + encodeURI(s);
+			return url;
+		}
+
 		var url, method;
-		if (options) {
+		if(options) {
 			url = options.url;
 			method = options.method;
-			
-			if (!options.headers) options.headers = {};
-			if (options.xmlData) {
+
+			if(!options.headers)
+				options.headers = {};
+			if(options.xmlData) {
 				options.headers["content-type"] = "text/xml";
 				method = "POST";
-			} else if (options.jsonData) {
+			} else if(options.jsonData) {
 				options.headers["content-type"] = "text/javascript";
 				method = "POST";
 			}
 		}
-		
+
 		var defaultOptions = (this._defaultOptions) ? this._defaultOptions : {};
 		url = url || defaultOptions.url;
 		method = method || defaultOptions.method || "GET";
-		
+
 		var parameter = options.parameter;
-		if (parameter && (method == "GET" || options.xmlData || options.jsonData)) {
-			for (var p in parameter) {
-				if (parameter.hasOwnProperty(p)) url = urlAppend(url, parameter[p]);
+		if(parameter && (method == "GET" || options.xmlData || options.jsonData)) {
+			for(var p in parameter) {
+				if(parameter.hasOwnProperty(p))
+					url = urlAppend(url, parameter[p]);
 			}
 		}
-		
+
 		connObj.url = url = $url(url);
 		connObj.method = method;
 		connObj.options = options;
-		
+
 		connObj.conn.open(method, url, async);
 		this._setHeader(connObj, options);
 	},
-	
-	_getSendData: function(options) {
-		if (!options) return null;
+	_getSendData : function(options) {
+		if(!options)
+			return null;
 		var data = null;
-		if (options.xmlData) {
+		if(options.xmlData) {
 			data = options.xmlData;
-		} else if (options.jsonData) {
+		} else if(options.jsonData) {
 			data = dorado.JSON.stringify(options.jsonData, {
-				replacer: function(key, value) {
-					return (value instanceof Function) ? value.call(this) : value;
+				replacer : function(key, value) {
+					return ( value instanceof Function) ? value.call(this) : value;
 				}
 			});
-		} 
-		else if (options.parameter){
+		} else if(options.parameter) {
 			var parameter = options.parameter;
 			data = '';
-			for (var p in parameter) {
-				if (parameter.hasOwnProperty(p)) {
+			for(var p in parameter) {
+				if(parameter.hasOwnProperty(p)) {
 					data += (i > 0 ? '&' : '') + p + '=' + encodeURI(parameters[p]);
 				}
 			}
 		}
 		return data;
 	},
-	
 	/**
 	 * 发起一个同步的请求。
 	 * @param {String|Object} [options] 执行选项，请参考本类中request()方法的options参数的描述。
@@ -606,7 +611,7 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 	 * @return {dorado.util.AjaxResult} 执行结果。
 	 * @throws {dorado.util.AjaxException}
 	 * @throws {Error}
-	 * 
+	 *
 	 * @example
 	 * var ajax = new AjaxEngine();
 	 * var result = ajax.requestSync({
@@ -617,52 +622,49 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 	 * });
 	 * alert(result.responseText);
 	 */
-	requestSync: function(options, alwaysReturn) {
-		if (typeof options == "string") {
+	requestSync : function(options, alwaysReturn) {
+		if( typeof options == "string") {
 			options = {
-				url: options
+				url : options
 			};
 		}
-		
+
 		var connObj = this._connectionPool.borrowObject();
 		try {
 			var eventArg = {
-				async: false,
-				options: options
+				async : false,
+				options : options
 			};
 			this.fireEvent("beforeRequest", this, eventArg);
 			this.fireEvent("beforeConnect", this, eventArg);
-			
+
 			var exception = null;
 			try {
 				this._init(connObj, options, false);
 				connObj.conn.send(this._getSendData(options));
-			} 
-			catch (e) {
+			} catch (e) {
 				exception = e;
 			}
-			
+
 			var result = new dorado.util.AjaxResult(options);
-			if (exception != null) {
+			if(exception != null) {
 				result._init(connObj);
 				result._setException(exception);
 			} else {
 				result._init(connObj, true);
 			}
-			
 			eventArg = {
-				async: true,
-				result: result
+				async : true,
+				result : result
 			};
 			this.fireEvent("onConnect", this, eventArg);
 			this.fireEvent("onRequest", this, eventArg);
-			
-			if (!alwaysReturn && exception != null) {
+
+			if(!alwaysReturn && exception != null) {
 				throw exception;
 			}
 			return result;
-		}
-		finally {
+		} finally {
 			this._connectionPool.returnObject(connObj);
 		}
 	}
@@ -671,14 +673,13 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 dorado.util.AjaxEngine._parseXml = function(xml) {
 	var xmlDoc = null;
 	try {
-		if (dorado.Browser.msie) {
+		if(dorado.Browser.msie) {
 			var activeX = ["MSXML2.DOMDocument", "MSXML.DOMDocument"];
-			for (var i = 0; i < activeX.length; ++i) {
+			for(var i = 0; i < activeX.length; ++i) {
 				try {
 					xmlDoc = new ActiveXObject(activeX[i]);
 					break;
-				} 
-				catch (e) {
+				} catch (e) {
 					// do nothing
 				}
 			}
@@ -687,12 +688,10 @@ dorado.util.AjaxEngine._parseXml = function(xml) {
 			var parser = new DOMParser();
 			xmlDoc = parser.parseFromString(xml, "text/xml");
 		}
-	}
-	finally {
+	} finally {
 		return xmlDoc;
 	}
 };
-
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @class 用于描述Ajax操作(包含同步请求)过程中发生的异常信息的对象。
@@ -701,44 +700,46 @@ dorado.util.AjaxEngine._parseXml = function(xml) {
  * @param {String} [description] 异常的描述信息。
  * @param {XMLHttpRequest} [connObj] 用于实现远程访问的XMLHttpRequest对象。
  */
-dorado.util.AjaxException = $extend(dorado.Exception, /** @scope dorado.util.AjaxException.prototype */ {
-	$className: "dorado.util.AjaxException",
-	
-	constuctor: function(message, description, connObj) {
+dorado.util.AjaxException = $extend(dorado.Exception, /** @scope dorado.util.AjaxException.prototype */
+{
+	$className : "dorado.util.AjaxException",
+
+	constuctor : function(message, description, connObj) {
 		/**
 		 * 异常消息。
 		 * @type String
 		 */
 		this.message = message || "Unknown Exception.";
-		
+
 		/**
 		 * 异常的描述信息。
 		 * @type String
 		 */
 		this.description = description;
-		
-		if (connObj == null) return;
-		
+
+		if(connObj == null)
+			return;
+
 		/**
 		 * 请求的URL。
 		 * @type String
 		 */
 		this.url = connObj.url;
-		
+
 		/**
 		 * 发起请求时使用的HttpMethod。
 		 * @type String
 		 * @default "GET"
 		 */
 		this.method = connObj.method;
-		
+
 		/**
 		 * 服务器返回的Http状态码。<br>
 		 * 如：200表示正常返回、404表示请求的资源不存在等，详情请参考Http协议说明。
 		 * @type int
 		 */
 		this.status = connObj.conn.status;
-		
+
 		/**
 		 * 服务器返回的Http状态描述。<br>
 		 * 如：OK表示正常返回、NOT_MODIFIED表示资源未发生任何改变等，详情请参考Http协议说明。
@@ -746,12 +747,14 @@ dorado.util.AjaxException = $extend(dorado.Exception, /** @scope dorado.util.Aja
 		 */
 		this.statusText = connObj.conn.statusText;
 	},
-	
-	toString: function() {
+	toString : function() {
 		var text = this.message;
-		if (this.url) text += "\nURL: " + this.url;
-		if (this.status) text += "\nStatus: " + this.statusText + '(' + this.status + ')';
-		if (this.description) text += '\n' + this.description;
+		if(this.url)
+			text += "\nURL: " + this.url;
+		if(this.status)
+			text += "\nStatus: " + this.statusText + '(' + this.status + ')';
+		if(this.description)
+			text += '\n' + this.description;
 		return text;
 	}
 });
@@ -763,10 +766,11 @@ dorado.util.AjaxException = $extend(dorado.Exception, /** @scope dorado.util.Aja
  * @param {Object} options 发起请求时使用的请求选项。
  * @param {XMLHttpRequest} [connObj] 用于实现远程访问的XMLHttpRequest对象。
  */
-dorado.util.AjaxResult = $class(/** @scope dorado.util.AjaxResult.prototype */{
-	$className: "dorado.util.AjaxResult",
-	
-	constructor: function(options, connObj) {
+dorado.util.AjaxResult = $class(/** @scope dorado.util.AjaxResult.prototype */
+{
+	$className : "dorado.util.AjaxResult",
+
+	constructor : function(options, connObj) {
 		/**
 		 * @name dorado.util.AjaxResult#options
 		 * @property
@@ -774,101 +778,97 @@ dorado.util.AjaxResult = $class(/** @scope dorado.util.AjaxResult.prototype */{
 		 * @type Object
 		 */
 		this.options = options;
-		
-		if (connObj != null) this._init(connObj, true);
+
+		if(connObj != null)
+			this._init(connObj, true);
 	},
-	
 	/**
 	 * Ajax请求是否执行成功。
 	 * @type boolean
 	 * @default true
 	 */
-	success: true,
-	
-	_init: function(connObj, parseResponse) {
+	success : true,
+
+	_init : function(connObj, parseResponse) {
 		this._connObj = connObj;
-		
+
 		/**
 		 * 请求的URL。
 		 * @type String
 		 */
 		this.url = connObj.url;
-		
+
 		/**
 		 * 发起请求时使用的HttpMethod。
 		 * @type String
 		 */
 		this.method = connObj.method;
-		
+
 		var conn = connObj.conn;
-		
+
 		/**
 		 * 服务器返回的Http状态码。<br>
 		 * 如：200表示正常返回、404表示请求的资源不存在等，详情请参考Http协议说明。
 		 * @type int
 		 */
 		this.status = conn.status;
-		
+
 		/**
 		 * 服务器返回的Http状态描述。<br>
 		 * 如：OK表示正常返回、NOT_MODIFIED表示资源未发生任何改变等，详情请参考Http协议说明。
 		 * @type String
 		 */
 		this.statusText = conn.statusText;
-		
+
 		/**
 		 * 包含所有的Response头信息的字符串。<br>
 		 * 其格式为：header1=value1;header2=value2;...
 		 * @type String
 		 */
 		this.allResponseHeaders = conn.getAllResponseHeaders();
-		
-		if (parseResponse) {
+
+		if(parseResponse) {
 			/**
 			 * 服务器返回的原始文本信息。
 			 * @type String
 			 */
 			this.text = conn.responseText;
-			
+
 			var exception, contentType = this.getResponseHeaders()["content-type"];
-			if (contentType && contentType.indexOf("text/runnable") >= 0) {
+			if(contentType && contentType.indexOf("text/runnable") >= 0) {
 				exception = this._parseRunnableException(conn.responseText, connObj);
-			}
-			else if (conn.status < 200 || conn.status >= 400) {
-				if (conn.status == 12021) {
+			} else if(conn.status < 200 || conn.status >= 400) {
+				if(conn.status == 12021) {
 					exception = this._parseException(conn.responseText, connObj);
 				} else {
 					exception = new dorado.util.AjaxException("HTTP " + conn.status + " " + conn.statusText, null, connObj);
 				}
 			}
-			if (exception) this._setException(exception);
+			if(exception)
+				this._setException(exception);
 		}
 	},
-	
-	_setException: function(exception) {
+	_setException : function(exception) {
 		this.success = false;
-		
+
 		/**
 		 * 请求过程中发生的异常。
 		 * @type Error
 		 */
 		this.exception = exception;
 	},
-	
-	_parseException: function(text) {
+	_parseException : function(text) {
 		var json = dorado.JSON.parse(text, true);
 		return new dorado.RemoteException(json.message, json.exceptionType, json.stackTrace);
 	},
-	
-	_parseRunnableException: function(text) {
+	_parseRunnableException : function(text) {
 		return new dorado.RunnableException(text);
 	},
-	
 	/**
 	 * 返回一个包含所有的Response头信息的对象。<br>
 	 * 所有的Response头信息以属性的形式存放在该对象中，其形式如下：<br>
 	 * <pre class="symbol-example code">
- 	 * <code class="javascript">
+	 * <code class="javascript">
 	 * {
 	 *	 "content-type": "text/xml",
 	 *	 "header1": "value1",
@@ -879,42 +879,39 @@ dorado.util.AjaxResult = $class(/** @scope dorado.util.AjaxResult.prototype */{
 	 * </pre>
 	 * @return {Object} 包含所有的Response头信息的对象。
 	 */
-	getResponseHeaders: function() {
+	getResponseHeaders : function() {
 		var responseHeaders = this._responseHeaders;
-		if (responseHeaders === undefined) {
+		if(responseHeaders === undefined) {
 			responseHeaders = {};
 			this._responseHeaders = responseHeaders;
 			try {
 				var headerStr = this.allResponseHeaders;
 				var headers = headerStr.split('\n');
-				for (var i = 0; i < headers.length; i++) {
+				for(var i = 0; i < headers.length; i++) {
 					var header = headers[i];
 					var delimitPos = header.indexOf(':');
-					if (delimitPos != -1) {
+					if(delimitPos != -1) {
 						responseHeaders[header.substring(0, delimitPos).toLowerCase()] = header.substring(delimitPos + 2);
 					}
 				}
-			} 
-			catch (e) {
+			} catch (e) {
 				// do nothing
 			}
 		}
 		return responseHeaders;
 	},
-	
 	/**
 	 * 以XmlDocument的形式获得服务器返回的Response信息。
 	 * @return {XMLDocument} XmlDocument。
 	 */
-	getXmlDocument: function() {
+	getXmlDocument : function() {
 		var responseXML = this._responseXML;
-		if (responseXML === undefined) {
+		if(responseXML === undefined) {
 			responseXML = dorado.util.AjaxEngine._parseXml(this.text);
 			this._responseXML = responseXML;
 		}
 		return responseXML;
 	},
-	
 	/**
 	 * 以JSON数据的形式获得服务器返回的Response信息。
 	 * @param {boolean} [untrusty] 服务器返回的Response信息是否是不可信的。默认为false，即Response信息是可信的。<br>
@@ -923,9 +920,9 @@ dorado.util.AjaxResult = $class(/** @scope dorado.util.AjaxResult.prototype */{
 	 * 因此，如果您能够确定访问的服务器是安全的，其返回的JSON字符串不会嵌入黑客代码，那么就不必开启此选项。
 	 * @return {Object} JSON数据。
 	 */
-	getJsonData: function(untrusty) {
+	getJsonData : function(untrusty) {
 		var jsonData = this._jsonData;
-		if (jsonData === undefined) {
+		if(jsonData === undefined) {
 			this._jsonData = jsonData = dorado.JSON.parse(this.text, untrusty);
 		}
 		return jsonData;
@@ -940,7 +937,7 @@ dorado.util.AjaxResult = $class(/** @scope dorado.util.AjaxResult.prototype */{
  * 很多情况下，我们建议您直接利用$ajax来完成Ajax操作，这样就不必频繁的创建dorado.util.AjaxEngine的对象实例了。
  * </p>
  * @see dorado.util.AjaxEngine
- * 
+ *
  * @example
  * // 发起一个Ajax异步请求，使用Function作为回调对象。
  * $ajax.request( {

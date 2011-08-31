@@ -6,7 +6,7 @@
  * @param {Function} factory.destroyObject 销毁一个对象。
  * @param {Function} factory.activateObject 当一个对象被激活（被租借）时触发的方法。
  * @param {Function} factory.passivateObject 当一个对象被钝化（被归还）时触发的方法。
- * 
+ *
  * @example
  * // 结合XMLHttpRequest创建过程的简陋示例：
  * // 声明XMLHttpRequest的创建工厂
@@ -40,100 +40,96 @@
  */
 dorado.util.ObjectPool = $class(/** @scope dorado.util.ObjectPool.prototype */
 {
-	$className: "dorado.util.ObjectPool",
+	$className : "dorado.util.ObjectPool",
 
-	constructor: function(factory) {
+	constructor : function(factory) {
 		dorado.util.ObjectPool.OBJECT_POOLS.push(this);
 
 		this._factory = factory;
 		this._idlePool = [];
 		this._activePool = [];
 	},
-
 	/**
 	 * 从对象池中租借一个对象。
 	 * @return {Object} 返回租借到的对象实例。
 	 */
-	borrowObject: function() {
+	borrowObject : function() {
 		var object = null;
 		var factory = this._factory;
-		if (this._idlePool.length > 0) {
+		if(this._idlePool.length > 0) {
 			object = this._idlePool.pop();
-		}
-		else {
+		} else {
 			object = factory.makeObject();
 		}
-		if (object != null) {
+		if(object != null) {
 			this._activePool.push(object);
-			if (factory.activateObject) {
+			if(factory.activateObject) {
 				factory.activateObject(object);
 			}
 		}
 		return object;
 	},
-
 	/**
 	 * 向对象池归还一个先前租借的对象。
 	 * @param {Object} object 要归还的对象。
 	 */
-	returnObject: function(object) {
-		if (object != null) {
+	returnObject : function(object) {
+		if(object != null) {
 			var factory = this._factory;
 			var i = this._activePool.indexOf(object);
-			if (i < 0) return;
-			if (factory.passivateObject) {
+			if(i < 0)
+				return;
+			if(factory.passivateObject) {
 				factory.passivateObject(object);
 			}
 			this._activePool.removeAt(i);
 			this._idlePool.push(object);
 		}
 	},
-
 	/**
 	 * 返回对象池中的激活对象的个数。
 	 * @return {int} 激活对象的个数。
 	 */
-	getNumActive: function() {
+	getNumActive : function() {
 		return this._activePool.length;
 	},
-
 	/**
 	 * 返回对象池中的空闲对象的个数。
 	 * @return {int} 空闲对象的个数。
 	 */
-	getNumIdle: function() {
+	getNumIdle : function() {
 		return this._idlePool.length;
 	},
-
 	/**
 	 * 销毁对象池及其中管理的所有对象。
 	 */
-	destroy: function() {
-		if (!!this._destroyed) return;
+	destroy : function() {
+		if(!!this._destroyed)
+			return;
 
 		var factory = this._factory;
 
 		function returnObject(object) {
-			if (factory.passivateObject) {
+			if(factory.passivateObject) {
 				factory.passivateObject(object);
 			}
 		}
 
 		function destroyObject(object) {
-			if (factory.destroyObject) {
+			if(factory.destroyObject) {
 				factory.destroyObject(object);
 			}
 		}
 
 		var activePool = this._activePool;
-		for ( var i = 0; i < activePool.length; i++) {
+		for(var i = 0; i < activePool.length; i++) {
 			var object = activePool[i];
 			returnObject(object);
 			destroyObject(object);
 		}
 
 		var idlePool = this._idlePool;
-		for ( var i = 0; i < idlePool.length; i++) {
+		for(var i = 0; i < idlePool.length; i++) {
 			var object = idlePool[i];
 			destroyObject(object);
 		}
@@ -145,8 +141,8 @@ dorado.util.ObjectPool = $class(/** @scope dorado.util.ObjectPool.prototype */
 
 dorado.util.ObjectPool.OBJECT_POOLS = [];
 
-jQuery(window).unload(function() {
-	var pools = dorado.util.ObjectPool.OBJECT_POOLS;
-	for ( var i = 0; i < pools.length; i++)
-		pools[i].destroy();
-});
+// jQuery(window).unload(function() {
+// var pools = dorado.util.ObjectPool.OBJECT_POOLS;
+// for ( var i = 0; i < pools.length; i++)
+// pools[i].destroy();
+// });

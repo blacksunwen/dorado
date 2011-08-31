@@ -218,11 +218,11 @@
 		<echo message="${standard-edition.dir}" />
 		<echo message="${izpack.dir}" />
 
-		<IzPack input="${resources.dir}/izpack.xml" output="${release.dir}/dorado-${build.revision}-installer.jar" installerType="standard" basedir="${standard-edition.dir}" IzPackDir="${izpack.dir}/" />
+		<IzPack input="${resources.dir}/izpack.xml" output="${release.dir}/dorado-${product.revision}-installer.jar" installerType="standard" basedir="${standard-edition.dir}" IzPackDir="${izpack.dir}/" />
 
 		<!--
 		<IzPack input="${resources.dir}/izpack.xml"
-			output="${release.dir}/dorado-${build.revision}-installer.jar"
+			output="${release.dir}/dorado-${product.revision}-installer.jar"
 			installerType="web"
 			basedir="${standard-edition.dir}"
 			IzPackDir="${izpack.dir}/" />
