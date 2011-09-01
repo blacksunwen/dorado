@@ -579,7 +579,7 @@
 		 * <li>auto	-	如果有需要则自动启动异步的数据装载过程，但对于本次方法调用将返回数据的当前值。</li>
 		 * <li>never	-	不会激活数据装载过程，直接返回数据的当前值。</li>
 		 * </ul>
-		 * @return {Object|Object[]} 表达式的执行结果。
+		 * @return {dorado.Entity|dorado.EntityList|any} 表达式的执行结果。
 		 */
 		evaluate : function(data, options) {
 			var firstResultOnly, acceptAggregation = false, loadMode;

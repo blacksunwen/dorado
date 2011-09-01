@@ -29,7 +29,7 @@ var dorado = {
 	 * @class 用于获取当前浏览器信息的静态对象。
 	 * @static
 	 */
-	Browser: $.browser,
+	Browser: jQuery.browser,
 	
 	/**
 	 * @name dorado.Browser.version

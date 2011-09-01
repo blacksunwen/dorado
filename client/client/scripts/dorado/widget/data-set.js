@@ -393,7 +393,7 @@
 		 * <li>never - 不会激活数据装载过程，直接返回数据的当前值。</li>
 		 * </ul>
 		 * @param {boolean} options.flush 是否要清除DataSet中原有的数据并重新提取数据。
-		 * @return {dorado.Entity|dorado.EntityList}
+		 * @return {dorado.Entity|dorado.EntityList|any}
 		 * @see dorado.DataPath#evaluate
 		 * @see dorado.widget.DataSet#queryData
 		 */

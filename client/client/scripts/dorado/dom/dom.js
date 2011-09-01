@@ -426,93 +426,90 @@
 			var content = findValidContent(container);
 			if (!content) return;
 			
-			var $container = $fly(container);
-			$container.height(content.offsetHeight +
-			((content.offsetWidth > container.clientWidth) ? ($container.height() - container.clientHeight) : 0));
+			if (content.offsetWidth > container.clientWidth && content.offsetHeight > container.clientHeight) {
+				var $container = $fly(container);
+				$container.height(content.offsetHeight + ($container.height() - container.clientHeight));
+			}
 		},
-
+		
 		isDragging: function() {
 			var currentDraggable = jQuery.ui.ddmanager.current;
 			return (currentDraggable && currentDraggable._mouseStarted);
 		},
-
-        /**
-         * 取得触发事件的表格单元格。
-         * @param {Event} event 浏览器的event对象。
-         * @return {Object} 触发事件的表格单元格，包含row、column、element属性。
-         */
-        getCellPosition: function(event) {
-            var element = event.srcElement || event.target, row = -1, column = -1;
-            while (element && element != element.ownerDocument.body) {
-                var tagName = element.tagName.toLowerCase();
-                if (tagName == "td") {
-                    row = element.parentNode.rowIndex;
-                    column = element.cellIndex;
-                    break;
-                }
-                element = element.parentNode;
-            }
-            if (element != element.ownerDocument.body) {
-                return {
-                    "row": row,
-                    "column": column,
-                    "element": element
-                };
-            }
-            return null;
-        },
-
-        /**
-         * 将一个DOM对象一环绕的方式停靠在另一个固定位置DOM对象的周围。
-         * <p>
-         * 该方法把固定位置的DOM对象的横向和纵向进行了区域划分。<br />
-         * 横向可以分为五个区域，分别是left、innerleft、center、innerright、top。<br />
-         * 纵向也可以分为5个区域，分别是top、innertop、center、innerbottom、bottom。<br />
-         * 如下图所示（橙色方块代表fixedElement，从fixedElement的左上角作为原点坐标，可以为水平和垂直方向分别划分5个区域，该图主要展示水平和垂直区域的划分）：
-         * </p>
-         * <img class="clip-image" src="images/dock-around-1.jpg">
-         * <p>
-         * 根据水平方向五个区域，垂直方向五个区域，那么对水平方向和垂直方向进行组合，则可以得出25中组合，如下图所示：
-         * </p>
-         * <img class="clip-image" src="images/dock-around-2.jpg">
-         * <p>
-         * 这些组合基本上可以满足用户的大部分需求，如果计算出来的位置需要微调，可以使用offsetLeft、offsetTop进行微调。
-         * </p>
-         *
-         * <p>
-         * 另外，此方法在设定停靠位置的同时会尽可能使DOM对象位于屏幕的可见区域内。
-         * 该方法会先判断出该组件是横向超出，还是纵向超出，然后根据要停靠的DOM对象的align和vAlign设置，进行一个合理的方向的调整。
-         * 如果该方向可以显示在屏幕范围内，则使用该位置。<br />
-         * 如果仍然不能显示在屏幕范围内，我们就认为该组件的超出触发，会调用该组件的overflowHandler来处理组件的超出。
-         * </p>
-         * @param {HTMLElement} element 要停靠的DOM对象。
-         *     此DOM对象是绝对定位的(style.position=absolute)并且其DOM树处于顶层位置(即其父节点是document.body)。
-         * @param {HTMLElement|window} fixedElement 固定位置的DOM对象，如果是window，则表示该要停靠的DOM元素相对于当前可视范围进行停靠。
-         * @param {Object} options 以JSON方式定义的选项。
-         * @param {String} options.align 在水平方向上，停靠的DOM对象停靠在固定位置的DOM对象的位置。可选值为left、innerleft、center、innerright、top。
-         * @param {String} options.vAlign 在垂直方向上，停靠的DOM对象停靠在固定位置的DOM对象的位置。可选值为top、innertop、center、innerbottom、bottom。
-         * @param {int} options.offsetLeft 使用align、vAlign计算出组件的位置的水平偏移量，可以为正，可以为负。
-         * @param {int} options.offsetTop 使用align、vAlign计算出组件的位置的垂直偏移量，可以为正，可以为负。
-         * @param {boolean} options.autoAdjustPosition 当使用默认的align、vAlign计算的位置超出屏幕可见范围以后，是否要对停靠DOM对象的位置进行调整，默认为true，即进行调整。
-         * @param {boolean} options.handleOverflow 当自动调整以后也无法使得组件显示在屏幕范围以内以后，就认为停靠的DOM对象的超出触发了，该属性用来标示是否对这种情况进行处理，默认会对这种情况进行处理。
-         * @param {Function} options.overflowHandler 当停靠的DOM的超出触发以后，要调用的函数。
-         *
-         * @return {Object} 计算出来的位置。
-         */
-        dockAround: function(element, fixedElement, options) {
+		
+		/**
+		 * 取得触发事件的表格单元格。
+		 * @param {Event} event 浏览器的event对象。
+		 * @return {Object} 触发事件的表格单元格，包含row、column、element属性。
+		 */
+		getCellPosition: function(event) {
+			var element = event.srcElement || event.target, row = -1, column = -1;
+			while (element && element != element.ownerDocument.body) {
+				var tagName = element.tagName.toLowerCase();
+				if (tagName == "td") {
+					row = element.parentNode.rowIndex;
+					column = element.cellIndex;
+					break;
+				}
+				element = element.parentNode;
+			}
+			if (element != element.ownerDocument.body) {
+				return {
+					"row": row,
+					"column": column,
+					"element": element
+				};
+			}
+			return null;
+		},
+		
+		/**
+		 * 将一个DOM对象一环绕的方式停靠在另一个固定位置DOM对象的周围。
+		 * <p>
+		 * 该方法把固定位置的DOM对象的横向和纵向进行了区域划分。<br />
+		 * 横向可以分为五个区域，分别是left、innerleft、center、innerright、top。<br />
+		 * 纵向也可以分为5个区域，分别是top、innertop、center、innerbottom、bottom。<br />
+		 * 如下图所示（橙色方块代表fixedElement，从fixedElement的左上角作为原点坐标，可以为水平和垂直方向分别划分5个区域，该图主要展示水平和垂直区域的划分）：
+		 * </p>
+		 * <img class="clip-image" src="images/dock-around-1.jpg">
+		 * <p>
+		 * 根据水平方向五个区域，垂直方向五个区域，那么对水平方向和垂直方向进行组合，则可以得出25中组合，如下图所示：
+		 * </p>
+		 * <img class="clip-image" src="images/dock-around-2.jpg">
+		 * <p>
+		 * 这些组合基本上可以满足用户的大部分需求，如果计算出来的位置需要微调，可以使用offsetLeft、offsetTop进行微调。
+		 * </p>
+		 *
+		 * <p>
+		 * 另外，此方法在设定停靠位置的同时会尽可能使DOM对象位于屏幕的可见区域内。
+		 * 该方法会先判断出该组件是横向超出，还是纵向超出，然后根据要停靠的DOM对象的align和vAlign设置，进行一个合理的方向的调整。
+		 * 如果该方向可以显示在屏幕范围内，则使用该位置。<br />
+		 * 如果仍然不能显示在屏幕范围内，我们就认为该组件的超出触发，会调用该组件的overflowHandler来处理组件的超出。
+		 * </p>
+		 * @param {HTMLElement} element 要停靠的DOM对象。
+		 *     此DOM对象是绝对定位的(style.position=absolute)并且其DOM树处于顶层位置(即其父节点是document.body)。
+		 * @param {HTMLElement|window} fixedElement 固定位置的DOM对象，如果是window，则表示该要停靠的DOM元素相对于当前可视范围进行停靠。
+		 * @param {Object} options 以JSON方式定义的选项。
+		 * @param {String} options.align 在水平方向上，停靠的DOM对象停靠在固定位置的DOM对象的位置。可选值为left、innerleft、center、innerright、top。
+		 * @param {String} options.vAlign 在垂直方向上，停靠的DOM对象停靠在固定位置的DOM对象的位置。可选值为top、innertop、center、innerbottom、bottom。
+		 * @param {int} options.offsetLeft 使用align、vAlign计算出组件的位置的水平偏移量，可以为正，可以为负。
+		 * @param {int} options.offsetTop 使用align、vAlign计算出组件的位置的垂直偏移量，可以为正，可以为负。
+		 * @param {boolean} options.autoAdjustPosition 当使用默认的align、vAlign计算的位置超出屏幕可见范围以后，是否要对停靠DOM对象的位置进行调整，默认为true，即进行调整。
+		 * @param {boolean} options.handleOverflow 当自动调整以后也无法使得组件显示在屏幕范围以内以后，就认为停靠的DOM对象的超出触发了，该属性用来标示是否对这种情况进行处理，默认会对这种情况进行处理。
+		 * @param {Function} options.overflowHandler 当停靠的DOM的超出触发以后，要调用的函数。
+		 *
+		 * @return {Object} 计算出来的位置。
+		 */
+		dockAround: function(element, fixedElement, options) {
 			options = options || {};
-			var align = options.align || "innerleft", vAlign = options.vAlign || "innertop",
-				offsetLeft = options.offsetLeft || 0, offsetTop = options.offsetTop || 0,
-				autoAdjustPosition = options.autoAdjustPosition, handleOverflow = options.handleOverflow,
-				docEl = jQuery(document), docWidth = docEl.width(), docHeight = docEl.height(),
-				overflowTrigger = false, bodyOffset = $fly(element.ownerDocument.body).offset(), overflowHeight, adjustLeft, adjustTop;
+			var align = options.align || "innerleft", vAlign = options.vAlign || "innertop", offsetLeft = options.offsetLeft || 0, offsetTop = options.offsetTop || 0, autoAdjustPosition = options.autoAdjustPosition, handleOverflow = options.handleOverflow, docEl = jQuery(document), docWidth = docEl.width(), docHeight = docEl.height(), overflowTrigger = false, bodyOffset = $fly(element.ownerDocument.body).offset(), overflowHeight, adjustLeft, adjustTop;
 			
 			docWidth += bodyOffset.left;
 			docHeight += bodyOffset.top;
 			
 			var rect, offset;
 			var position = jQuery(fixedElement == window ? document.body : fixedElement).offset(), left = position.left, top = position.top, newAlign, vAlignPrefix;
-
+			
 			//console.log("left:" + left + "\ttop:" + top + "\tdocWidth:" + docWidth + "\tdocHeight:" + docHeight);
 			if (fixedElement) {
 				offset = jQuery(fixedElement).offset();
@@ -626,8 +623,8 @@
 		 * @param {Object} options 以JSON方式定义的选项。
 		 * @param {HTMLElement} options.parent 作为容器的DOM对象（并不是指DOM结构上的父节点，仅指视觉上的关系）。如果不指定此属性则表示放置在屏幕可见区域内。
 		 * @param {Object} options.position DOM对象显示位置，相对于parent对象的位置。
-         * @param {int} options.offsetLeft 水平偏移量，可以为正，可以为负。
-         * @param {int} options.offsetTop 垂直偏移量，可以为正，可以为负。
+		 * @param {int} options.offsetLeft 水平偏移量，可以为正，可以为负。
+		 * @param {int} options.offsetTop 垂直偏移量，可以为正，可以为负。
 		 * @param {boolean} options.autoAdjustPosition 当使用默认的align、vAlign计算的位置超出屏幕可见范围以后，是否要对停靠DOM对象的位置进行调整，默认为true，即进行调整。
 		 * @param {boolean} options.handleOverflow 当自动调整以后也无法使得组件显示在屏幕范围以内以后，认为停靠的DOM的超出触发了，该属性用来标示是否对这种情况进行处理，默认会对这种情况进行处理。
 		 * @param {Function} options.overflowHandler 当停靠的DOM的超出触发以后，要调用的函数。
@@ -636,18 +633,14 @@
 		 */
 		locateIn: function(element, options) {
 			options = options || {};
-			var offsetLeft = options.offsetLeft || 0, offsetTop = options.offsetTop || 0,
-                handleOverflow = options.handleOverflow, parent = options.parent,
-				docEl = jQuery(document), docWidth = docEl.width(), docHeight = docEl.height(), adjustLeft, adjustTop,
-				overflowTrigger = false, overflowHeight, position = options.position, left = position ? position.left : 0,
-				top = position ? position.top : 0, autoAdjustPosition = options.autoAdjustPosition;
-
+			var offsetLeft = options.offsetLeft || 0, offsetTop = options.offsetTop || 0, handleOverflow = options.handleOverflow, parent = options.parent, docEl = jQuery(document), docWidth = docEl.width(), docHeight = docEl.height(), adjustLeft, adjustTop, overflowTrigger = false, overflowHeight, position = options.position, left = position ? position.left : 0, top = position ? position.top : 0, autoAdjustPosition = options.autoAdjustPosition;
+			
 			if (parent) {
 				var parentPos = $fly(parent).offset();
 				left += parentPos.left;
 				top += parentPos.top;
 			}
-
+			
 			if (!(autoAdjustPosition === false)) {
 				if (top < 0) {
 					top = 0;
@@ -742,10 +735,10 @@
 			var width, height;
 			if (element == window) {
 				var $win = $fly(window), left = $win.scrollLeft(), top = $win.scrollTop();
-
+				
 				width = $win.width();
 				height = $win.height();
-
+				
 				return {
 					left: left,
 					top: top,
@@ -753,7 +746,7 @@
 					bottom: top + height
 				};
 			}
-
+			
 			var offset = $fly(element).offset();
 			if (element == document.body) {
 				width = $fly(window).width();
