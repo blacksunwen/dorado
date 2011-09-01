@@ -2561,6 +2561,7 @@
 				cellSpacing: 0,
 				cellPadding: 0,
 				style: {
+					width: "100%",	// IE下必须
 					position: "relative"
 				},
 				content: ["^THEAD", {
@@ -2617,6 +2618,9 @@
 						className: "header-table",
 						cellSpacing: 0,
 						cellPadding: 0,
+						style: {
+							width: "100%"	// IE下必须
+						},
 						content: "^TBODY"
 					});
 
@@ -2791,6 +2795,9 @@
 						className: "footer-table",
 						cellSpacing: 0,
 						cellPadding: 0,
+						style: {
+							width: "100%"	// IE下必须
+						},
 						content: "^TR"
 					});
 					tableFrameFooter.appendChild($DomUtils.xCreateElement({
