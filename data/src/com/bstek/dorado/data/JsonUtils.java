@@ -22,9 +22,9 @@ import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.core.Context;
 import com.bstek.dorado.data.entity.EnhanceableMapEntityEnhancer;
-import com.bstek.dorado.data.entity.EntityWrapper;
 import com.bstek.dorado.data.entity.EntityProxyMethodInterceptorFactory;
 import com.bstek.dorado.data.entity.EntityState;
+import com.bstek.dorado.data.entity.EntityWrapper;
 import com.bstek.dorado.data.type.AggregationDataType;
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.data.type.EntityDataType;
@@ -42,24 +42,12 @@ import com.bstek.dorado.util.proxy.ProxyBeanUtils;
 public final class JsonUtils {
 	private static final char SYSTEM_PROPERTY_PREFIX = '$';
 
-	/**
-	 *
-	 */
 	public static final String DATATYPE_PROPERTY = "$dataType";
 
-	/**
-	 *
-	 */
 	public static final String STATE_PROPERTY = "$state";
 
-	/**
-	 *
-	 */
 	public static final String ENTITY_ID_PROPERTY = "$entityId";
 
-	/**
-	 *
-	 */
 	public static final String OLD_DATA_PROPERTY = "$oldData";
 
 	private static final int DEFAULT_DATE_PATTERN_LEN = 20;
@@ -230,7 +218,7 @@ public final class JsonUtils {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private static Object internalToJavaObject(JSONObject json,
 			EntityDataType dataType, Class<?> targetType, boolean proxy,
 			JsonConvertContext context) throws Exception {
@@ -285,17 +273,27 @@ public final class JsonUtils {
 									: null, type, proxy, context);
 				}
 
-				if (type != null && !type.isInstance(value)) {
-					DataType propertyDataType = getDataTypeManager()
-							.getDataType(type);
-					if (propertyDataType != null) {
-						value = propertyDataType.fromObject(value);
+				if (type != null) {
+					if (!type.isInstance(value)) {
+						DataType propertyDataType = getDataTypeManager()
+								.getDataType(type);
+						if (propertyDataType != null) {
+							value = propertyDataType.fromObject(value);
+						}
+					} else if (value instanceof String) {
+						String str = (String) value;
+						if (type.isEnum()) {
+							value = Enum.valueOf((Class<? extends Enum>) type,
+									str);
+						}
 					}
-				} else if (value instanceof String) {// 处理日期字符串
-					String str = (String) value;
-					if (str.length() == DEFAULT_DATE_PATTERN_LEN
-							&& DEFAULT_DATE_PATTERN.matcher(str).matches()) {
-						value = DEFAULT_DATE_FORMAT.parse(str);
+				} else {
+					if (value instanceof String) {// 处理日期字符串
+						String str = (String) value;
+						if (str.length() == DEFAULT_DATE_PATTERN_LEN
+								&& DEFAULT_DATE_PATTERN.matcher(str).matches()) {
+							value = DEFAULT_DATE_FORMAT.parse(str);
+						}
 					}
 				}
 			}
