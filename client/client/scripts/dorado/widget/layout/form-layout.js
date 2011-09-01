@@ -133,14 +133,17 @@
 				var same = true;
 				for(var i = 0; i < newGrid.length && same; i++) {
 					var oldRow = oldGrid[i], newRow = newGrid[i];
-					if(oldRow.length != newRow.length) {
+					if(oldRow == null || oldRow.length != newRow.length) {
 						same = false;
 						break;
 					}
 
 					for(var j = 0; j < newRow.length; j++) {
 						var oldRegion = oldRow[j], newRegion = newRow[j];
-						if(oldRegion.colSpan != newRegion.colSpan || oldRegion.rowSpan != newRegion.rowSpan) {
+						if (oldRegion == null && newRegion == null) {
+							continue;
+						}
+						if(oldRegion == null || oldRegion.colSpan != newRegion.colSpan || oldRegion.rowSpan != newRegion.rowSpan) {
 							same = false;
 							break;
 						}
@@ -204,7 +207,6 @@
 					if(region && region.regionIndex <= index) {
 						continue;
 					}
-					index = region.regionIndex;
 					
 					var td;
 					if(structureChanged) {
@@ -218,8 +220,10 @@
 					if(cls) {
 						$fly(td).addClass(cls);
 					}
+					
 					// real cell
 					if(region) {
+						index = region.regionIndex;
 						$fly(td).css(region.constraint);
 
 						region.autoWidthAdjust = region.autoHeightAdjust = 0;
