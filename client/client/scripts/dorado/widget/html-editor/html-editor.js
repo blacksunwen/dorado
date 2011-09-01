@@ -755,6 +755,7 @@
                         callback: function(docSize) {
                             editor._maximized = true;
                             editor.set(docSize);
+                            editor.resetDimension();
                             editor.refresh();
                         }
                     });
