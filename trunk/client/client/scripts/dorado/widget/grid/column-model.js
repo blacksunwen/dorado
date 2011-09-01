@@ -1453,7 +1453,7 @@
 			name: {
 				setter: function(v) {
 					this._name = v;
-					if (!this.getAttributeWatcher().getWritingTimes("property")) this._property = v;
+					if (!this.getAttributeWatcher().getWritingTimes("property") && !this.ATTRIBUTES.property.defaultValue) this._property = v;
 				}
 			},
 			
@@ -1466,7 +1466,7 @@
 				writeOnce: true,				
 				setter: function(v) {
 					this._property = v;
-					if (!this.getAttributeWatcher().getWritingTimes("name")) this._name = v;
+					if (!this.getAttributeWatcher().getWritingTimes("name") && !this.ATTRIBUTES.name.defaultValue) this._name = v;
 				}
 			},			
 			
@@ -1681,6 +1681,15 @@
 			 */
 			filterable: {
 				defaultValue: true
+			},
+			
+			/**
+			 * 本列是否支持用户调整列宽。
+			 * @attribute
+			 * @default true
+			 */
+			resizeable: {
+				defaultValue: true
 			}
 		},
 		
@@ -1772,7 +1781,13 @@
 			caption: {
 				defaultValue: "Indicator"
 			},
+			property: {
+				defaultValue: "none"
+			},
 			supportsOptionMenu: {
+				defaultValue: false
+			},
+			resizeable: {
 				defaultValue: false
 			},
 			headerRenderer: {
@@ -1828,7 +1843,13 @@
 			align: {
 				defaultValue: "center"
 			},
+			property: {
+				defaultValue: "none"
+			},
 			supportsOptionMenu: {
+				defaultValue: false
+			},
+			resizeable: {
 				defaultValue: false
 			},
 			headerRenderer: {
@@ -1949,7 +1970,13 @@
 			caption: {
 				defaultValue: "RowSelector"
 			},
+			property: {
+				defaultValue: "none"
+			},
 			supportsOptionMenu: {
+				defaultValue: false
+			},
+			resizeable: {
 				defaultValue: false
 			},
 			headerRenderer: {

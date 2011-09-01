@@ -199,7 +199,7 @@
 			var columns = [];
 			for (var i = 0; i < dataColumns.length; i++) {
 				var column = dataColumns[i];
-				if (!column._summaryType) continue;
+				if (!column._summaryType || column._property == "none") continue;
 				var cal = dorado.SummaryCalculators[column._summaryType];
 				if (cal) columns.push({
 					name: column._name,
@@ -1698,7 +1698,7 @@
 
 		shouldEditing: function(column) {
 			return this._editing && this._focused && column && !column.get("readOnly") && !this.get("readOnly") &&
-			column._property &&
+			column._property && column._property != "none" &&
 			column._property != this._groupProperty;
 		},
 
@@ -1791,7 +1791,7 @@
 				var dataColumns = this._columnsInfo.dataColumns;
 				for (var i = 0; i < dataColumns.length; i++) {
 					var column = dataColumns[i];
-					if (!column._property) continue;
+					if (!column._property || column._property == "none") continue;
 					var text = filterEntity.get(column._property);
 					if (text == null) continue;
 
@@ -3164,7 +3164,7 @@
 			for (var i = 0; i < dataColumns.length; i++) {
 				var col = dataColumns[i];
 				var headerCell = col.headerCell;
-				if (Math.abs((headerCell.offsetLeft + headerCell.offsetWidth) - (evt.pageX - offset.left)) < 2 &&
+				if (col._resizeable && Math.abs((headerCell.offsetLeft + headerCell.offsetWidth) - (evt.pageX - offset.left)) < 2 &&
 				(evt.pageY - offset.top) > getCellOffsetTop(headerCell, grid._headerRowHeight)) {
 					action = "resize";
 					showColumnResizeHandler(col);
