@@ -34,6 +34,7 @@ public class DataColumn extends Column {
 	private SortState sortState = SortState.none;
 	private boolean wrappable;
 	private boolean filterable = true;
+	private boolean resizeable = true;
 
 	public String getProperty() {
 		return property;
@@ -186,5 +187,14 @@ public class DataColumn extends Column {
 
 	public void setFilterable(boolean filterable) {
 		this.filterable = filterable;
+	}
+
+	@ViewAttribute(defaultValue = "true")
+	public boolean isResizeable() {
+		return resizeable;
+	}
+
+	public void setResizeable(boolean resizeable) {
+		this.resizeable = resizeable;
 	}
 }
