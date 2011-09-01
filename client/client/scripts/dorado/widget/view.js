@@ -185,8 +185,8 @@
 			var group = dorado.TagManager.find(tags), allObjects = group.objects, objects = [];
 			for (var i = 0; i < allObjects.length; i++) {
 				var object = allObjects[i];
-				if (object._view == this || object.view == this || 
-						(object.ATTRIBUTES.view && object.get("view"))) {
+				if (object._view == this || object.view == this ||
+				(object.ATTRIBUTES.view && object.get("view"))) {
 					objects.push(object);
 				}
 			}

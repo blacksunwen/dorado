@@ -567,9 +567,12 @@
 
 						var dom = this.getDom(), arg =  {
 							dom: dom,
-							processDefault: false
+							processDefault: true
 						};
-						this.fireEvent("beforeRefreshDom", this, arg);
+						if (this.getListenerCount("beforeRefreshDom")) {
+							arg.processDefault = false;
+							this.fireEvent("beforeRefreshDom", this, arg);
+						}
 						if (arg.processDefault) {
 							this.refreshDom(dom);
 							this.fireEvent("onRefreshDom", this, arg);
@@ -585,9 +588,12 @@
 					
 					var dom = this.getDom(), arg =  {
 						dom: dom,
-						processDefault: false
+						processDefault: true
 					};
-					this.fireEvent("beforeRefreshDom", this, arg);
+					if (this.getListenerCount("beforeRefreshDom")) {
+						arg.processDefault = false;
+						this.fireEvent("beforeRefreshDom", this, arg);
+					}
 					if (arg.processDefault) {
 						this.refreshDom(dom);
 						this.fireEvent("onRefreshDom", this, arg);
