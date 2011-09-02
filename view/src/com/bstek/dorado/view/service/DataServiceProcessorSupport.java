@@ -8,6 +8,7 @@ import java.util.Set;
 import net.sf.json.JSON;
 import net.sf.json.JSONObject;
 
+import com.bstek.dorado.common.StringAliasUtils;
 import com.bstek.dorado.data.Constants;
 import com.bstek.dorado.data.DataTypeResolver;
 import com.bstek.dorado.data.JsonConvertContext;
@@ -43,13 +44,12 @@ public abstract class DataServiceProcessorSupport implements ServiceProcessor,
 					PRIVATE_VIEW_OBJECT_PREFIX.length(), i);
 			dataObject = name.substring(i + 1);
 
-			// String viewSection = StringAliasUtils
-			// .getOriginalString(viewSectionAlias);
-			// if (viewSection == null) {
-			// throw new IllegalArgumentException("Invalid ViewAlias ["
-			// + viewSectionAlias + "].");
-			// }
-			String viewSection = viewSectionAlias;
+			String viewSection = StringAliasUtils
+					.getOriginalString(viewSectionAlias);
+			if (viewSection == null) {
+				throw new IllegalArgumentException("Invalid ViewAlias ["
+						+ viewSectionAlias + "].");
+			}
 
 			i = viewSection.indexOf(ViewXmlConstants.VIEW_NAME_DELIM);
 			viewType = viewSection.substring(0, i);
