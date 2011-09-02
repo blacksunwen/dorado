@@ -10,7 +10,6 @@ import net.sf.json.JSONObject;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.bstek.dorado.common.StringAliasUtils;
 import com.bstek.dorado.common.service.ExposedService;
 import com.bstek.dorado.common.service.ExposedServiceManager;
 import com.bstek.dorado.core.Configure;
@@ -44,7 +43,9 @@ public class RemoteServiceProcessor extends DataServiceProcessorSupport {
 		String serviceAlias = json.getString("service");
 		Assert.notEmpty(serviceAlias);
 
-		String serviceName = StringAliasUtils.getOriginalString(serviceAlias);
+		// String serviceName =
+		// StringAliasUtils.getOriginalString(serviceAlias);
+		String serviceName = serviceAlias;
 		if (serviceName == null) {
 			throw new IllegalArgumentException("Invalid ServiceAlias ["
 					+ serviceAlias + "].");
