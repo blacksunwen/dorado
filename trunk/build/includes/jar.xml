@@ -62,7 +62,7 @@
 			</fileset>
 			<fileset dir="${work.dir}/repository" includes="*.jar" />
 		</path>
-		<javac classpathref="classpath" srcdir="${module.dir}/src" destdir="${module.dir}/bin" debug="true" deprecation="true" nowarn="false" encoding="UTF-8" />
+		<javac classpathref="classpath" srcdir="${module.dir}/src" destdir="${module.dir}/bin" debug="true" deprecation="true" nowarn="false" target="1.5" encoding="UTF-8" />
 	</target>
 
 	<target name="post-compile">
