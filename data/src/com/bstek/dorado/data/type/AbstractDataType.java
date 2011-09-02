@@ -76,20 +76,14 @@ public abstract class AbstractDataType implements RudeDataType {
 		return (value == null) ? null : value.toString();
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Object fromObject(Object value) {
 		if (value == null) {
 			return null;
 		}
 
 		Class<?> targetType = this.getMatchType();
-		if (targetType != null) {
-			if (targetType.isAssignableFrom(value.getClass())) {
-				return value;
-			} else if (value instanceof String && targetType.isEnum()) {
-				return Enum.valueOf((Class<? extends Enum>) targetType,
-						(String) value);
-			}
+		if (targetType != null && targetType.isAssignableFrom(value.getClass())) {
+			return value;
 		}
 
 		throw new DataConvertException(value.getClass(), getMatchType());

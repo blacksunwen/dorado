@@ -23,7 +23,7 @@
 	<DataType name="BigDecimal" matchType="java.math.BigDecimal" impl="com.bstek.dorado.data.type.BigDecimalDataType" />
 	<DataType name="Date" matchType="java.util.Date" impl="com.bstek.dorado.data.type.DateDataType" />
 	<DataType name="Calendar" matchType="java.util.Calendar" impl="com.bstek.dorado.data.type.CalendarDataType" />
-
+	
 	<!-- AggreagationDataTypes -->
 	<DataType name="Aggregation" impl="com.bstek.dorado.data.type.AggregationDataType" />
 	<DataType name="Array" parent="Aggregation" />
