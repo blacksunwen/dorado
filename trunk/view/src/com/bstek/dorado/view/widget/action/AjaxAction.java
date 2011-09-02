@@ -47,7 +47,6 @@ public class AjaxAction extends Action {
 		this.batchable = batchable;
 	}
 
-	@ViewAttribute(outputter = "dorado.stringAliasPropertyOutputter")
 	public String getService() {
 		return service;
 	}
