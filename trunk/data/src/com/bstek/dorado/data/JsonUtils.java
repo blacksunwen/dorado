@@ -218,7 +218,7 @@ public final class JsonUtils {
 		}
 	}
 
-	@SuppressWarnings({ "unchecked" })
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private static Object internalToJavaObject(JSONObject json,
 			EntityDataType dataType, Class<?> targetType, boolean proxy,
 			JsonConvertContext context) throws Exception {
@@ -275,10 +275,15 @@ public final class JsonUtils {
 
 				if (type != null) {
 					if (!type.isInstance(value)) {
-						DataType propertyDataType = getDataTypeManager()
-								.getDataType(type);
-						if (propertyDataType != null) {
-							value = propertyDataType.fromObject(value);
+						if (value instanceof String && type.isEnum()) {
+							value = Enum.valueOf((Class<? extends Enum>) type,
+									(String) value);
+						} else {
+							DataType propertyDataType = getDataTypeManager()
+									.getDataType(type);
+							if (propertyDataType != null) {
+								value = propertyDataType.fromObject(value);
+							}
 						}
 					}
 				} else {
