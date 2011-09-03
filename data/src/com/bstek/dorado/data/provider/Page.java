@@ -84,7 +84,8 @@ public class Page<T> {
 	/**
 	 * 返回当页数据。
 	 */
-	public Collection<?> getEntities() {
+	@SuppressWarnings("unchecked")
+	public Collection<T> getEntities() {
 		return (entities != null) ? entities : Collections.EMPTY_LIST;
 	}
 
@@ -125,7 +126,7 @@ public class Page<T> {
 	/**
 	 * 返回当页数据的迭代器。
 	 */
-	public Iterator<?> iterator() {
+	public Iterator<T> iterator() {
 		if (entities != null) {
 			return entities.iterator();
 		} else {

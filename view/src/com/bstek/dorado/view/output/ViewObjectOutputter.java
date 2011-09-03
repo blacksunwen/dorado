@@ -164,11 +164,13 @@ public class ViewObjectOutputter extends ObjectOutputter implements
 				writer.write("(");
 			}
 
-			if (escapeable) {
-				json.escapeableObject();
-			} else {
-				json.object();
-			}
+			// if (escapeable) {
+			// json.escapeableObject();
+			// } else {
+			// json.object();
+			// }
+			json.object();
+
 			if (useTypedJson && StringUtils.isNotEmpty(configType)) {
 				json.key("$type").value(configType);
 			}
