@@ -61,9 +61,12 @@
 	 * <ul>
 	 * <li>#current - 表示集合中的当前Entity对象。</li>
 	 * <li>#dirty - 表示集合中所有在客户端被改变过的（包含被删除的）Entity对象。</li>
+	 * <li>#none - 表示集合中所有在客户端未被改变过的Entity对象。</li>
+	 * <li>#all - 表示集合中所有状态的（包含被删除的）Entity对象。</li>
 	 * <li>#new - 表示集合中所有在客户端新增的Entity对象。</li>
 	 * <li>#modified - 表示集合中所有在客户端被修改过的Entity对象。</li>
 	 * <li>#deleted - 表示集合中所有在客户端被标记为已删除的Entity对象。</li>
+	 * <li>#move - 表示集合中所有在客户端被标记为已被移动的Entity对象。</li>
 	 * </ul>
 	 * 例如:<code>employees[#current]</code>表示返回employees集合中的当前Employee对象。
 	 * </li>
@@ -129,12 +132,21 @@
 
 		$className : "dorado.DataPath",
 
+		_VISIBLE : [{
+			visibility : 0
+		}],
+		
 		_ALL : [{
 			visibility : 1
 		}],
 
 		_CURRENT : [{
 			visibility : 2
+		}],
+		
+		_REPEAT_VISIBLE : [{
+			visibility : 0,
+			repeat : true
 		}],
 
 		_REPEAT_ALL : [{
@@ -173,7 +185,7 @@
 
 			var path = this.path;
 			if(path == null || path == "" || path == "*") {
-				this._compiledPath = this._ALL;
+				this._compiledPath = this._VISIBLE;
 				return;
 			}
 			if(path == "#" || path == "[#current]") {
@@ -184,7 +196,7 @@
 
 			var _path = path.toLowerCase();
 			if(_path == "(repeat)" || _path == "(r)") {
-				this._compiledPath = this._REPEAT_ALL;
+				this._compiledPath = this._REPEAT_VISIBLE;
 				return;
 			}
 
@@ -345,7 +357,7 @@
 			for(var i = 0; i < compiledPath.length; i++) {
 				var section = compiledPath[i];
 				if((!section.property || section.property == '*') && !section.args && !section.conditions) {
-					section = this._ALL;
+					section = this._VISIBLE;
 					compiledPath[i] = section;
 					singleResult = false;
 				} else {
@@ -380,18 +392,22 @@
 						for(var j = conditions.length - 1; j >= 0; j--) {
 							var condition = conditions[j];
 							if(condition && condition.charAt(0) == '#' && !(section.visibility > 0)) {
-								if(condition == "#dirty") {
-									section.visibility = 3;
-								} else if(condition == "#new") {
-									section.visibility = 4;
-								} else if(condition == "#modified") {
-									section.visibility = 5;
-								} else if(condition == "#deleted") {
-									section.visibility = 6;
-								} else if(condition == "#moved") {
-									section.visibility = 7;
-								} else if(condition == "#current") {
+								if (condition == "#all") {
+									section.visibility = 1;
+								} else if (condition == "#current") {
 									section.visibility = 2;
+								} else if (condition == "#dirty") {
+									section.visibility = 3;
+								} else if (condition == "#new") {
+									section.visibility = 4;
+								} else if (condition == "#modified") {
+									section.visibility = 5;
+								} else if (condition == "#deleted") {
+									section.visibility = 6;
+								} else if (condition == "#moved") {
+									section.visibility = 7;
+								} else if (condition == "#none") {
+									section.visibility = 8;
 								} else {
 									this._throw("Unknown token \"" + condition + "\".");
 								}
@@ -472,6 +488,10 @@
 			function selectEntityIf(entity) {
 				var b = true;
 				switch (section.visibility) {
+					case 1:
+						// all
+						b = true;
+						break;
 					case 3:
 						// dirty
 						b = entity.state != dorado.Entity.STATE_NONE;
@@ -492,6 +512,13 @@
 						// moved
 						b = entity.state == dorado.Entity.STATE_MOVED;
 						break;
+					case 8:
+						// none
+						b = entity.state == dorado.Entity.STATE_NONE;
+						break;
+					default:
+						// visible
+						b = entity.state != dorado.Entity.STATE_DELETED;
 				}
 
 				if(b) {
@@ -529,7 +556,7 @@
 				}
 
 				if( entities instanceof dorado.EntityList || entities instanceof Array) {
-					if(context.acceptAggregation && (section.visibility || 1) == 1/* ALL */ && !section.conditions) {
+					if(context.acceptAggregation && !(section.visibility > 0)/* VISIBLE */ && !section.conditions) {
 						var sections = context.sections;
 						if(section == sections[sections.length - 1]) {
 							context.addResult(entities);

@@ -723,6 +723,7 @@
 		 * 渲染。
 		 * <p><b>如有需要应在子类中复写doRender方法，而不是此方法。</b></p>
 		 * @param {HTMLElement} dom 单元格对应的DOM对象。
+		 * @param {Object} arg 渲染参数。
 		 * @param {dorado.widget.grid.AbstractGrid} arg.grid 对应的表格。
 		 * @param {Object|dorado.Entity} arg.data 对应的数据实体。
 		 * @param {dorado.widget.grid.Column} arg.column 对应的表格列。

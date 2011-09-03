@@ -70,6 +70,7 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 				this._formProfile = formProfile;
 				if (formProfile) {
 					formProfile._bindingElements.objects.push(this);
+					this.onProfileChange();
 				}
 			}
 		},
@@ -296,6 +297,14 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 				}, 20);
 			}
 		});
+	},
+	
+	createDom: function() {
+		if (!this._formProfile) {
+			var view = this.get("view") || dorado.widget.View.TOP;
+			this.set("formProfile", view.id("defaultFormProfile"));
+		}
+		return $invokeSuper.call(this, arguments);
 	},
 	
 	refreshDom: function(dom) {
