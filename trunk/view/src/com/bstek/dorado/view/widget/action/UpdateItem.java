@@ -30,7 +30,7 @@ public class UpdateItem {
 		this.dataSet = dataSet;
 	}
 
-	@ViewAttribute(defaultValue = "!DIRTY_TREE", enumValues = "!DIRTY_TREE,!CASCADE_DIRTY,[#dirty]")
+	@ViewAttribute(defaultValue = "!DIRTY_TREE", enumValues = "!DIRTY_TREE,!CASCADE_DIRTY,[#dirty],[#all],[#visible]")
 	public String getDataPath() {
 		return dataPath;
 	}

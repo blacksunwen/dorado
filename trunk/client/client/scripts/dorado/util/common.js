@@ -155,6 +155,7 @@ dorado.util.Common = {
 	 * @return {float} 转换后得到的浮点数。
 	 */
 	parseFloat: function(s) {
+		if (s === 0) return 0;
 		if (!s) return Number.NaN;
 		var ns = (s + '').match(/[-\d\.]/g);
 		if (!ns) return Number.NaN;
