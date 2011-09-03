@@ -240,6 +240,28 @@
 			 * @attribute
 			 */
 			readOnly: {}
+		},
+		
+		onProfileChange: function() {
+			var formProfile = this._formProfile;
+			if (dorado.Object.isInstanceOf(formProfile, dorado.widget.FormProfile)) {
+				var attrs = formProfile.ATTRIBUTES, config = {};
+				for (var attr in attrs) {
+					if (!attrs.hasOwnProperty(attr) || attrs[attr].writeOnly) continue;
+					if (specialFormConfigProps.indexOf(attr) >= 0 && formProfile instanceof dorado.widget.Control) {
+						continue;
+					}
+					
+					var value = formProfile.get(attr);
+					if (value != null) config[attr] = value;
+				}
+				this.set(config, {
+					skipUnknownAttribute: true,
+					tryNextOnError: true,
+					preventOverwriting: true,
+					lockWritingTimes: true
+				});
+			}
 		}
 	});
 	
@@ -342,8 +364,7 @@
 			 */
 			width: {
 				defaultValue: 260,
-				writeBeforeReady: true,
-				independent: true
+				writeBeforeReady: true
 			},
 			
 			/**
@@ -377,6 +398,7 @@
 					this._formProfile = formProfile;
 					if (formProfile) {
 						formProfile._bindingElements.objects.push(this);
+						this.onProfileChange();
 					}
 				}
 			},
@@ -513,7 +535,6 @@
 				var view = this.get("view") || dorado.widget.View.TOP;
 				this.set("formProfile", view.id("defaultFormProfile"));
 			}
-			this.onProfileChange();
 			
 			var labelConfig, editorConfig = {
 				tagName: "DIV",
@@ -788,28 +809,6 @@
 			return required;
 		},
 		
-		onProfileChange: function() {
-			var formProfile = this._formProfile;
-			if (dorado.Object.isInstanceOf(formProfile, dorado.widget.FormProfile)) {
-				var attrs = formProfile.ATTRIBUTES, config = {};
-				for (var attr in attrs) {
-					if (!attrs.hasOwnProperty(attr) || attrs[attr].writeOnly) continue;
-					if (specialFormConfigProps.indexOf(attr) >= 0 && formProfile instanceof dorado.widget.Control) {
-						continue;
-					}
-					
-					var value = formProfile.get(attr);
-					if (value != null) config[attr] = value;
-				}
-				this.set(config, {
-					skipUnknownAttribute: true,
-					tryNextOnError: true,
-					preventOverwriting: true,
-					lockWritingTimes: true
-				});
-			}
-		},
-		
 		refreshDom: function(dom) {
 			var height = this._height || this._realHeight;
 			$invokeSuper.call(this, arguments);
@@ -860,8 +859,10 @@
 					config.width = dom.offsetWidth - labelWidth;
 					config.height = editorEl.offsetHeight;
 				}
-				if (config.width) editor._realWidth = config.width;
-				if (config.height) editor._realHeight = config.height;
+				
+				if (config.width > 0) editor._realWidth = config.width;
+				else editor._realWidth = 2;
+				if (config.height > 0) editor._realHeight = config.height;
 				
 				if (!editor.get("rendered")) editor.render(editorEl, editorEl.firstChild);
 				else editor.refresh();

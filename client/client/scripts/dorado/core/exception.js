@@ -120,16 +120,20 @@
 	dorado.Exception.formatStack = function(stack) {
 		var msg = "";
 		if (stack) {
-			for (var i = 0; i < stack.length; i++) {
-				if (i > 0) msg += '\n';
-				var trace = jQuery.trim(stack[i]);
-				if (trace.indexOf("at ") != 0) {
-					trace = "at " + trace;
-				}
-				msg += " > " + trace;
-				if (i > 255) {
-					msg += "\n > ... ... ...";
-					break;
+			if (typeof stack == "string") {
+				msg = stack;
+			} else {
+				for (var i = 0; i < stack.length; i++) {
+					if (i > 0) msg += '\n';
+					var trace = jQuery.trim(stack[i]);
+					if (trace.indexOf("at ") != 0) {
+						trace = "at " + trace;
+					}
+					msg += " > " + trace;
+					if (i > 255) {
+						msg += "\n > ... ... ...";
+						break;
+					}
 				}
 			}
 		}
@@ -332,7 +336,7 @@
 					contextKey: "textDom"
 				}]
 			}, null, doms);
-
+			
 			exceptionDialog = new dorado.widget.Dialog({
 				center: true,
 				modal: true,
