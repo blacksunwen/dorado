@@ -571,7 +571,7 @@
 						if(entities.current)
 							selectEntityIf.call(this, entities.current);
 					} else {
-						var it = entities.iterator(section.visibility == 3 || section.visibility == 6);
+						var it = entities.iterator(section.visibility == 1 || section.visibility == 3 || section.visibility == 6);
 						while(it.hasNext()) {
 							selectEntityIf.call(this, it.next());
 						}
