@@ -253,7 +253,7 @@
 					}
 					
 					var value = formProfile.get(attr);
-					if (value != null) config[attr] = value;
+					if (value !== undefined) config[attr] = value;
 				}
 				this.set(config, {
 					skipUnknownAttribute: true,

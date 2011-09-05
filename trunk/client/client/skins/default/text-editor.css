@@ -22,10 +22,6 @@
 }
 
 .d-text-box .dirty-flag {
-	right: -1px;
-	top: 0;
-	width: 5px;
-	height: 5px;
 	background: url(form/dirty-flag.gif);
 }
 
@@ -123,10 +119,6 @@
 }
 
 .d-text-area .dirty-flag {
-	left: 0;
-	top: 0;
-	width: 5px;
-	height: 5px;
 	background: url(form/dirty-flag.gif);
 }
 
