@@ -110,12 +110,12 @@
 				case dorado.widget.DataSet.MESSAGE_REFRESH_ENTITY:
 				case dorado.widget.DataSet.MESSAGE_ENTITY_STATE_CHANGED:{
 					var entities = this.getBindingData();
-					b = (entities == this._entities || dorado.DataUtil.isOwnerOf(entities, arg.entity));
+					b = (!this._entities || entities == this._entities || dorado.DataUtil.isOwnerOf(entities, arg.entityList));
 					break;
 				}
 				case dorado.widget.DataSet.MESSAGE_DATA_CHANGED:{
 					var entities = this.getBindingData();
-					b = (entities == this._entities);
+					b = (!this._entities || entities == this._entities || dorado.DataUtil.isOwnerOf(entities, arg.entity));
 					break;
 				}
 				case dorado.widget.DataSet.MESSAGE_DELETED:
@@ -128,8 +128,6 @@
 		},
 		
 		processDataSetMessage: function(messageCode, arg, data) {
-			
-							eval("debugger")
 			this._entities = this.getBindingData();
 			switch (messageCode) {
 				case dorado.widget.DataSet.MESSAGE_REFRESH:
@@ -263,7 +261,6 @@
 						icon: itemCode.showIcon ? "url(>skin>common/icons.gif) -120px 0px" : null,
 						caption: itemCode.showCaption ? $resource("dorado.baseWidget.DataPilotInsert") : null,
 						onClick: function() {
-							eval("debugger")
 							if (!fireOnActionEvent.call(pilot, itemCode.code, self)) return;
 							var list = pilot._entities;
 							if (list instanceof dorado.EntityList) list.createChild();

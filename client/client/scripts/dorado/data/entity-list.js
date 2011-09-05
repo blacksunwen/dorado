@@ -1176,12 +1176,17 @@
 		},
 		
 		doGetAsync: function(callback) {
-			var dataProvider = this.entityList.dataProvider, dataProviderArg = this.dataProviderArg;
+			var dataProvider = this.entityList.dataProvider, dataProviderArg = this.dataProviderArg, oldSupportsEntity = dataProvider.supportsEntity;
 			dataProvider.supportsEntity = false;
-			if (callback) {
-				dataProvider.getResultAsync(dataProviderArg, callback);
-			} else {
-				return dataProvider.getResult(dataProviderArg);
+			try {
+				if (callback) {
+					dataProvider.getResultAsync(dataProviderArg, callback);
+				} else {
+					return dataProvider.getResult(dataProviderArg);
+				}
+			}
+			finally {
+				dataProvider.supportsEntity = oldSupportsEntity;
 			}
 		}
 	});
