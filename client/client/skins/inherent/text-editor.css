@@ -5,6 +5,10 @@
 }
 
 .i-text-box .dirty-flag {
+	right: -1px;
+	top: 0;
+	width: 5px;
+	height: 5px;
 	position: absolute;
 	z-index: 1;
 }
@@ -23,4 +27,9 @@
 
 .i-text-area .dirty-flag {
 	position: absolute;
+	right: -1px;
+	top: 0;
+	width: 5px;
+	height: 5px;
+	z-index: 1;
 }
