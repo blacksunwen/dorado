@@ -2133,22 +2133,27 @@
 		},
 		
 		refreshSubControl: function(textEditor, arg) {
-			var value, entity = arg.data, column = arg.column, property = column._property, pd = column._propertyDef;
+			var value, text, entity = arg.data, column = arg.column, property = column._property, pd = column._propertyDef;
 			if (textEditor.get("mapping")) {
 				value = entity.get(property);
 			} else {
-				var text = entity.getText(property);
+				text = entity.getText(property);
 				if (text) {
 					var v = dorado.Toolkits.parseFilterValue(text), operator = v[0], value = v[1];
 					if (pd && pd._mapping) {
-						value = pd.getMappedValue(value);
+						text = pd.getMappedValue(value);
 					}
-					value = operator + value;
+					text = operator + text;
 				}
 			}		
 			textEditor._cellColumn = arg.column;
 			textEditor.disableListeners();
-			textEditor.set("text", value);
+			if (text !== undefined) {
+				textEditor.set("text", text);
+			}
+			else {
+				textEditor.set("value", value);
+			}
 			textEditor.refresh();
 			textEditor.enableListeners();
 		}
