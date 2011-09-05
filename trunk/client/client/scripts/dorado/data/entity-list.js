@@ -1159,7 +1159,7 @@
 			if (dataType) {
 				var dataTypeRepository = dataType.get("dataTypeRepository");
 				this.dataTypeRepository = dataTypeRepository;
-				view = dataTypeRepository ? dataTypeRepository.view : null;
+				view = dataTypeRepository ? dataTypeRepository._view : null;
 			}
 			
 			this.dataProviderArg = {
