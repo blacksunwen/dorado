@@ -1488,20 +1488,24 @@
 
 			var arg = {
 				parameter : this.parameter
-			};
+			}, oldSupportsEntity = this.dataProvider.supportsEntity;
 			this.dataProvider.supportsEntity = false;
-			if(callback) {
-				this.dataProvider.getResultAsync(arg, {
-					scope : this,
-					callback : function(success, result) {
-						if(success)
-							this.fromJSON(result);
-						$callback(callback, success, ((success) ? this : result));
-					}
-				});
-			} else {
-				var result = this.dataProvider.getResult(arg);
-				this.fromJSON(result);
+			try {
+				if (callback) {
+					this.dataProvider.getResultAsync(arg, {
+						scope: this,
+						callback: function(success, result) {
+							if (success) this.fromJSON(result);
+							$callback(callback, success, ((success) ? this : result));
+						}
+					});
+				} else {
+					var result = this.dataProvider.getResult(arg);
+					this.fromJSON(result);
+				}
+			}
+			finally {
+				this.dataProvider.supportsEntity = oldSupportsEntity;
 			}
 		},
 		/**
