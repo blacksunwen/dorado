@@ -29,6 +29,7 @@
 }
 
 .d-form-element {
+	position: relative;
 }
 
 .d-form-element .form-label {

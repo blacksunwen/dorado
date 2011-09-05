@@ -93,21 +93,20 @@
 			var ajaxOptions = this.getAjaxOptions(), ajax = dorado.Toolkits.getAjax(ajaxOptions);
 			var result = ajax.requestSync(ajaxOptions);
 			if(result.success) {
-				var result = result.getJsonData(), dataTypeRepository = this.get("dataTypeRepository");
-				if(result && (result.$dataTypeDefinitions || result.$context)) {
-					result = result.data;
-					if(result.$dataTypeDefinitions)
-						dataTypeRepository.parseJsonData(result.$dataTypeDefinitions);
+				var result = result.getJsonData(), dataTypeRepository = this.get("dataTypeRepository"), data;
+				if(result && typeof result == "object" && (result.$dataTypeDefinitions || result.$context)) {
+					data = result.data;
+					if(result.$dataTypeDefinitions) dataTypeRepository.parseJsonData(result.$dataTypeDefinitions);
 					if(result.$context && this._view) {
 						var context = this._view.get("context");
 						context.clear();
 						context.put(json.$context);
 					}
 				}
-				if(result && this._supportsEntity) {
-					result = dorado.DataUtil.convertIfNecessary(result, dataTypeRepository);
+				if(data && this._supportsEntity) {
+					data = dorado.DataUtil.convertIfNecessary(data, dataTypeRepository);
 				}
-				return result;
+				return data;
 			} else {
 				throw result.error;
 			}
@@ -117,23 +116,22 @@
 			ajax.request(ajaxOptions, {
 				scope : this,
 				callback : function(success, result) {
-					if(success) { result = result.getJsonData(), dataTypeRepository = this.get("dataTypeRepository");
+					if(success) { 
+						var data;
+						result = result.getJsonData(), dataTypeRepository = this.get("dataTypeRepository");
 						if(result && (result.$dataTypeDefinitions || result.$context)) {
-							result = result.data;
-							if(result) {
-								if(result.$dataTypeDefinitions)
-									dataTypeRepository.parseJsonData(result.$dataTypeDefinitions);
-								if(result.$context && this._view) {
-									var context = this._view.get("context");
-									context.clear();
-									context.put(json.$context);
-								}
+							data = result.data;
+							if(result.$dataTypeDefinitions) dataTypeRepository.parseJsonData(result.$dataTypeDefinitions);
+							if(result.$context && this._view) {
+								var context = this._view.get("context");
+								context.clear();
+								context.put(result.$context);
 							}
 						}
-						if(result && this._supportsEntity) {
-							result = dorado.DataUtil.convertIfNecessary(result, dataTypeRepository);
+						if(data && this._supportsEntity) {
+							data = dorado.DataUtil.convertIfNecessary(data, dataTypeRepository);
 						}
-						$callback(callback, true, result);
+						$callback(callback, true, data);
 					} else
 						$callback(callback, false, result.error);
 				}
