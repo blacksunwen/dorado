@@ -371,7 +371,7 @@
 			this.dataType = propertyDef._dataType;
 			var parent = propertyDef.get("parent");
 			this.dataTypeRepository = (parent ? parent.get("dataTypeRepository") : null) || $dataTypeRepository;
-			this.view = this.dataTypeRepository ? this.dataTypeRepository.view : null;
+			this.view = this.dataTypeRepository ? this.dataTypeRepository._view : null;
 		},
 		
 		getDataProviderArg: function() {

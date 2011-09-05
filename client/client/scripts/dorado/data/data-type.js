@@ -50,7 +50,7 @@ dorado.DataType = $extend(dorado.AttributeSupport, /** @scope dorado.DataType.pr
 		 * @attribute readOnly
 		 */
 		view : {
-			path : "_dataTypeRepository.view"
+			path : "_dataTypeRepository._view"
 		}
 	},
 

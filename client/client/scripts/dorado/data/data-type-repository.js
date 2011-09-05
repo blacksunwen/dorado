@@ -139,7 +139,7 @@
 				jsonData: {
 					action: "load-datatype",
 					dataType: [this.id],
-					context: (dataTypeRepository.view ? dataTypeRepository.view.get("context") : null)
+					context: (dataTypeRepository._view ? dataTypeRepository._view.get("context") : null)
 				}
 			}, this.loadOptions);
 		},
@@ -172,8 +172,8 @@
 								});
 							}
 							
-							if (context && dataTypeRepository.view) {
-								dataTypeRepository.view.set("context", context);  
+							if (context && dataTypeRepository._view) {
+								dataTypeRepository._view.set("context", context);  
 							}
 						} else {
 							$callback(callback, false, result.error, {

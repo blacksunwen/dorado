@@ -110,7 +110,7 @@
 			
 			if (id == "$TOP_VIEW") this._dataTypeRepository = dorado.DataTypeRepository.ROOT;
 			else this._dataTypeRepository = new dorado.DataTypeRepository(dorado.DataTypeRepository.ROOT);
-			this._dataTypeRepository.view = this;
+			this._dataTypeRepository._view = this;
 			
 			$invokeSuper.call(this, arguments);
 		},
