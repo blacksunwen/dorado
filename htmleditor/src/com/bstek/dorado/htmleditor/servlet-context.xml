@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:d="http://www.bstek.com/dorado/schema"
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:d="http://www.bstek.com/dorado/schema"
 	xsi:schemaLocation="
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
 http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dorado-7.0.xsd">
@@ -8,6 +7,12 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 		<property name="url" value="/dorado/htmleditor/imageupload" />
 		<property name="resolver">
 			<bean class="com.bstek.dorado.htmleditor.ImageUploadResolver">
+				<property name="multipartResolver">
+					<bean class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+						<!-- one of the properties available; the maximum file size in bytes -->
+						<property name="maxUploadSize" value="10000000" />
+					</bean>
+				</property>
 			</bean>
 		</property>
 	</bean>
