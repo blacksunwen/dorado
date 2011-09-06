@@ -14,7 +14,7 @@ public class ImageUploadResolver extends AbstractImageUploadResolver{
 	
 	protected String execute(MultipartHttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		MultipartFile filename = request.getFile("filename");  
+		MultipartFile filename = request.getFile("filename");
 		
 		String path = request.getSession().getServletContext().getRealPath("/" + FOLDER_PATH);
 		
