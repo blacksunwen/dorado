@@ -6,8 +6,11 @@ import java.io.Writer;
 import net.sf.json.JSONException;
 import net.sf.json.util.JSONUtils;
 
+import com.bstek.dorado.data.JsonUtils;
+
 /**
  * 用于辅助JSON对象输出的工具类。
+ * 
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Oct 6, 2008
  */
@@ -81,17 +84,16 @@ public class JsonBuilder {
 				|| state == 'v') {
 			try {
 				if (state == 'a') {
-					if (comma) write(',');
+					if (comma)
+						write(',');
 					outputLeadingTab();
 				}
 				if (s != null) {
 					write(s);
-				}
-				else if (!skipNull) {
+				} else if (!skipNull) {
 					write("null");
 				}
-			}
-			catch (IOException e) {
+			} catch (IOException e) {
 				throw new JSONException(e);
 			}
 			comma = (top > 0);
@@ -126,8 +128,7 @@ public class JsonBuilder {
 				outputLeadingTab();
 				write(c);
 			}
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			throw new JSONException(e);
 		}
 		comma = (top > 0);
@@ -184,10 +185,10 @@ public class JsonBuilder {
 					break;
 				}
 				throw new JSONException(msg);
-			}
-			else {
+			} else {
 				escapeTop--;
-				if (escapeTop > 0) escapeKeyStack[escapeTop] = null;
+				if (escapeTop > 0)
+					escapeKeyStack[escapeTop] = null;
 				escaped = true;
 
 			}
@@ -228,7 +229,8 @@ public class JsonBuilder {
 			append("[");
 			push('a');
 			comma = false;
-			if (prettyFormat) leadingTab++;
+			if (prettyFormat)
+				leadingTab++;
 			return this;
 		}
 		throw new JSONException("Misplaced array.");
@@ -244,7 +246,8 @@ public class JsonBuilder {
 	 */
 	public JsonBuilder endArray() {
 		if (!popEscapeablePart('a')) {
-			if (prettyFormat) leadingTab--;
+			if (prettyFormat)
+				leadingTab--;
 			end('a', ']');
 		}
 		return this;
@@ -258,7 +261,8 @@ public class JsonBuilder {
 		if (state == 'i' || state == 'k' || state == 'a' || state == 'v') {
 			append("{");
 			push('o');
-			if (prettyFormat) leadingTab++;
+			if (prettyFormat)
+				leadingTab++;
 			comma = false;
 			return this;
 		}
@@ -275,7 +279,8 @@ public class JsonBuilder {
 	 */
 	public JsonBuilder endObject() {
 		if (!popEscapeablePart('o')) {
-			if (prettyFormat) leadingTab--;
+			if (prettyFormat)
+				leadingTab--;
 			end('o', '}');
 		}
 		return this;
@@ -291,15 +296,15 @@ public class JsonBuilder {
 		writeEscapeableParts();
 		if (state == 'o') {
 			try {
-				if (comma) write(',');
+				if (comma)
+					write(',');
 				outputLeadingTab();
 				write(JSONUtils.quote(s));
 				write(':');
 				comma = false;
 				state = 'k';
 				return this;
-			}
-			catch (IOException e) {
+			} catch (IOException e) {
 				throw new JSONException(e);
 			}
 		}
@@ -341,14 +346,15 @@ public class JsonBuilder {
 	 * 输出一个对象型的数值。
 	 */
 	public JsonBuilder value(Object o) {
-		return outputValue((o == null) ? "null" : JSONUtils.valueToString(o));
+		return outputValue((o == null) ? "null" : JsonUtils.valueToString(o));
 	}
 
 	private JsonBuilder outputValue(String s) {
 		writeEscapeableParts();
 		if (state == 'k' || state == 'a' || state == 'i') {
 			append(s);
-			if (state == 'k') state = 'o';
+			if (state == 'k')
+				state = 'o';
 			return this;
 		}
 		throw new JSONException("Misplaced value.");

@@ -40,8 +40,6 @@ import com.bstek.dorado.util.proxy.ProxyBeanUtils;
  * @since Nov 11, 2008
  */
 public final class JsonUtils {
-	private static final char SYSTEM_PROPERTY_PREFIX = '$';
-
 	public static final String DATATYPE_PROPERTY = "$dataType";
 
 	public static final String STATE_PROPERTY = "$state";
@@ -50,6 +48,8 @@ public final class JsonUtils {
 
 	public static final String OLD_DATA_PROPERTY = "$oldData";
 
+	private static final String NULL = "null";
+	private static final char SYSTEM_PROPERTY_PREFIX = '$';
 	private static final int DEFAULT_DATE_PATTERN_LEN = 20;
 	private static final Pattern DEFAULT_DATE_PATTERN = Pattern
 			.compile("^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$");
@@ -78,6 +78,13 @@ public final class JsonUtils {
 					.getServiceBean("entityProxyMethodInterceptorFactory");
 		}
 		return methodInterceptorFactory;
+	}
+
+	public static String valueToString(Object value) {
+		if (NULL.equals(value)) {
+			return JSONUtils.quote(NULL);
+		}
+		return JSONUtils.valueToString(value);
 	}
 
 	/**
