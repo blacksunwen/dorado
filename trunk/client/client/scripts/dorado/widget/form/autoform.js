@@ -156,7 +156,7 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 		 * <li></li>
 		 * </ul>
 		 * </p>
-		 * @type dorado.widget.Control[]
+		 * @type Control[]|dorado.util.KeyedArray
 		 * @attribute skipRefresh
 		 */
 		elements: {
@@ -200,50 +200,48 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 	 * @return {dorado.widget.Control} 新添加的表单元素。
 	 */
 	addElement: function(element) {
-		var elements = this._elements;
-		if (!(element instanceof dorado.widget.Control)) {
-			if (element) {
-				var constraint = element._layoutConstraint;
-				
-				var config = {};
-				dorado.Object.apply(config, element);
-				
-				if (!config.name) {
-					var name = config.property || "_unnamed";
-					if (elements.get(name)) {
-						var j = 2;
-						while (elements.get(name + '_' + j)) {
-							j++;
-						}
-						name = name + '_' + j;
-					}
-					config.name = name;
+		var elements = this._elements, config = {}, constraint;
+		if (!config.name) {
+			var name = config.property || "_unnamed";
+			if (elements.get(name)) {
+				var j = 2;
+				while (elements.get(name + '_' + j)) {
+					j++;
 				}
-				
+				name = name + '_' + j;
+			}
+			config.name = name;
+		}
+		
+		if (!(element instanceof dorado.widget.Control)) {
+			dorado.Object.apply(config, element);
+			if (element) {
+				constraint = element._layoutConstraint;
 				element = dorado.Toolkits.createInstance("widget", config, function(type) {
 					if (!type) return dorado.widget.autoform.AutoFormElement;
 				});
 			} else {
 				element = new dorado.widget.Control(config);
 			}
-			
-			dorado.Object.apply(config, {
-				layoutConstraint: constraint,
-				entity: this._entity,
-				dataSet: this._dataSet,
-				dataPath: this._dataPath,
-				formProfile: this
-			}, function(p, v) {
-				return (v !== undefined);
-			});
-			element.set(config, {
-				skipUnknownAttribute: true,
-				tryNextOnError: true,
-				preventOverwriting: true,
-				lockWritingTimes: true
-			});
 		}
+		
+		dorado.Object.apply(config, {
+			layoutConstraint: constraint,
+			entity: this._entity,
+			dataSet: this._dataSet,
+			dataPath: this._dataPath,
+			formProfile: this
+		}, function(p, v) {
+			return (v !== undefined);
+		});
+		element.set(config, {
+			skipUnknownAttribute: true,
+			tryNextOnError: true,
+			preventOverwriting: true,
+			lockWritingTimes: true
+		});
 		elements.append(element);
+		
 		if (this._container) this._container.addChild(element);
 		return element;
 	},
