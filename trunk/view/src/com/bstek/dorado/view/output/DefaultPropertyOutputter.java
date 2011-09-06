@@ -1,12 +1,12 @@
 package com.bstek.dorado.view.output;
 
 import net.sf.json.JSONArray;
-import net.sf.json.util.JSONUtils;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 
+import com.bstek.dorado.data.JsonUtils;
 import com.bstek.dorado.data.entity.EntityUtils;
 
 /**
@@ -34,20 +34,19 @@ public class DefaultPropertyOutputter implements PropertyOutputter,
 		JsonBuilder json = context.getJsonBuilder();
 		json.beginValue();
 		if (EntityUtils.isSimpleValue(object)) {
-			context.getWriter().append(JSONUtils.valueToString(object));
-		}
-		else if (object.getClass().isArray() && EntityUtils.isSimpleType(object.getClass().getComponentType())) {
+			context.getWriter().append(JsonUtils.valueToString(object));
+		} else if (object.getClass().isArray()
+				&& EntityUtils.isSimpleType(object.getClass()
+						.getComponentType())) {
 			JSONArray jsonArray = JSONArray.fromObject(object);
 			context.getWriter().append(jsonArray.toString());
-		}
-		else {
+		} else {
 			TypeAnnotationInfo typeAnnotationInfo = ViewOutputUtils
 					.getTypeAnnotationInfo(beanFactory, object);
 			if (typeAnnotationInfo != null
 					&& typeAnnotationInfo.getOutputter() != null) {
 				typeAnnotationInfo.getOutputter().output(object, context);
-			}
-			else {
+			} else {
 				objectOutputter.output(object, context);
 			}
 		}
