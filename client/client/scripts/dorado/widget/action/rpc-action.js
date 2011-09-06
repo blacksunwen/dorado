@@ -100,7 +100,7 @@
 					if(result.$context && this._view) {
 						var context = this._view.get("context");
 						context.clear();
-						context.put(json.$context);
+						context.put(result.$context);
 					}
 				}
 				if(data && this._supportsEntity) {
