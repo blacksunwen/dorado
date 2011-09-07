@@ -59,8 +59,8 @@
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
 			 */
-			onDataRowClick: {},			
-		
+			onDataRowClick: {},
+			
 			/**
 			 * 当数据行被双击时触发的事件。
 			 * @param {Object} self 事件的发起者，即控件本身。
@@ -133,42 +133,53 @@
 		onMouseDown: function(evt) {
 			var row = this.findItemDomByEvent(evt);
 			if (row || this._allowNoCurrent) {
-				var oldCurrentItem = this.getCurrentItem();
 				if (this.setCurrentItemDom(row)) {
 					var clickedItem = (row ? $fly(row).data("item") : null), selection = this.get("selection");
 					if (this._selectionMode == "singleRow") {
 						if (evt.ctrlKey || evt.shiftKey) this.replaceSelection(null, clickedItem);
 					} else if (this._selectionMode == "multiRows") {
-						var removed = [], added = [];
+						var removed = [], added = [], oldCurrentItem;
 						if (evt.ctrlKey) {
 							this.addOrRemoveSelection(selection, clickedItem, removed, added);
+							this._oldCurrentItem = this.getCurrentItem();
 						} else if (evt.shiftKey) {
+							var si = -1, ei, itemModel = this._itemModel;
+							oldCurrentItem = this._oldCurrentItem;
 							if (oldCurrentItem) {
-								var itemModel = this._itemModel;
-								var si = itemModel.getItemIndex(oldCurrentItem);
-								var ei = itemModel.getItemIndex(clickedItem);
+								si = itemModel.getItemIndex(oldCurrentItem);
+								if (si < 0) {
+									oldCurrentItem = this.getCurrentItem();
+								}
+							}
+							
+							if (oldCurrentItem) {
+								if (si < 0) si = itemModel.getItemIndex(oldCurrentItem);
+								ei = itemModel.getItemIndex(clickedItem);
 								if (si > ei) {
 									var i = si;
 									si = ei, ei = i;
 								}
 								
+								removed = selection.slice(0);
+								removed.remove(oldCurrentItem);
+								removed.remove(clickedItem);
+								
+								selection = [];
+								
 								var c = ei - si + 1, i = 0;
 								var it = itemModel.iterator(si);
 								while (it.hasNext() && i < c) {
-									var item = it.next();
-									if (item == oldCurrentItem) {
-										if (selection.indexOf(item) < 0) added.push(item);
-									} else {
-										this.addOrRemoveSelection(selection, item, removed, added);
-									}
+									added.push(it.next());
 									i++;
 								}
 							} else {
 								this.addOrRemoveSelection(selection, clickedItem, removed, added);
+								this._oldCurrentItem = this.getCurrentItem();
 							}
 						} else {
 							removed = selection;
 							added.push(clickedItem);
+							this._oldCurrentItem = this.getCurrentItem();
 						}
 						this.replaceSelection(removed, added);
 					}
