@@ -19,7 +19,7 @@
 			}
 		},
 		
-		iterator: function() {
+		iterator: function(nextIndex) {
 			if (!this._items) return this.EMPTY_ITERATOR;
 			if (this.groups || this._items instanceof Array) {
 				return $invokeSuper.call(this, arguments);
@@ -27,7 +27,7 @@
 				return this._items.iterator({
 					simulateUnloadPage: this.grid._supportsPaging,
 					currentPage: !this.grid._supportsPaging,
-					nextIndex: this._startIndex || 0
+					nextIndex: this._startIndex || nextIndex
 				});
 			}
 		},
