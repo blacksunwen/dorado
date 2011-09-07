@@ -925,6 +925,16 @@
 			 * @event
 			 */
 			onDataRowClick: {},
+			
+			/**
+			 * 当数据行被双击时触发的事件。
+			 * @param {Object} self 事件的发起者，即控件本身。
+			 * @param {Object} arg 事件参数。
+			 * @param {Event} arg.event DHTML中的事件event参数。
+			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+			 * @event
+			 */
+			onDataRowDoubleClick: {},
 
 			/**
 			 * 当表格尝试获取用于排序的数据比较器时触发的事件。
