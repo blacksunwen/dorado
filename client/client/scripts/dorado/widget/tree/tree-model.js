@@ -362,6 +362,7 @@ dorado.widget.tree.Node = $extend([dorado.AttributeSupport, dorado.EventSupport]
 	
 	_nodeCheckedChanged: function(checked, processChildren, processParent, ignoreThis) {
 		var tree = this._tree;
+		if (!tree) return;
 		
 		if (processChildren && this.get("autoCheckChildren")) {
 			if (!tree._autoChecking) tree._autoCheckingChildren = true;

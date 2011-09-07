@@ -1110,20 +1110,14 @@
 				result[property] = value;
 			}
 
-			if(generateDataType && data.$dataType)
-				result.$dataType = data.$dataType;
-			if(generateState && this.state != dorado.Entity.STATE_NONE)
-				result.$state = this.state;
-			if(generateEntityId)
-				result.$entityId = this.entityId;
-			if(oldDataHolder)
-				result.$oldData = oldDataHolder;
+			if(generateDataType && data.$dataType) result.$dataType = data.$dataType;
+			if(generateState && this.state != dorado.Entity.STATE_NONE) result.$state = this.state;
+			if(generateEntityId) result.$entityId = this.entityId;
+			if(oldDataHolder) result.$oldData = oldDataHolder;
 
-			if(options)
-				options.generateDataType = generateDataType;
+			if(options) options.generateDataType = generateDataType;
 
-			if(context && context.entities)
-				context.entities.push(this);
+			if(context && context.entities) context.entities.push(this);
 			return result;
 		},
 		/**
@@ -1200,12 +1194,10 @@
 				var map = this._propertyInfoMap;
 				messages = dorado.Toolkits.trimMessages(messages, DEFAULT_VALIDATION_RESULT_STATE);
 				var propertyInfo = map[property];
-				if(propertyInfo && !propertyInfo.validating && propertyInfo.messages == messages)
-					return false;
+				if(propertyInfo && !propertyInfo.validating && propertyInfo.messages == messages) return false;
 
 				var state = dorado.Toolkits.getTopMessageState(messages);
-				if(!propertyInfo)
-					map[property] = propertyInfo = {};
+				if(!propertyInfo) map[property] = propertyInfo = {};
 				propertyInfo.state = state;
 				propertyInfo.messages = messages;
 
