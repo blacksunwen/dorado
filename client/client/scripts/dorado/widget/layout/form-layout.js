@@ -263,16 +263,19 @@
 						controlDom.style.display = "none";
 						realignRegions.push(region);
 					} else {
-						this.renderControl(region, td, true, false);
+						var useControlWidth = region.control.getAttributeWatcher().getWritingTimes("width");
+						this.renderControl(region, td, !useControlWidth, false);
 					}
 				}
 			}
 			
 			for (var i = 0; i < realignRegions.length; i++) {
 				var region = realignRegions[i], td = this.getRegionDom(region);
+				var controlDom = region.control.getDom();
 				region.height = td.clientHeight;
 				controlDom.style.display = region.display;
-				this.renderControl(region, td, true, true);
+				var useControlWidth = region.control.getAttributeWatcher().getWritingTimes("width");
+				this.renderControl(region, td, !useControlWidth, true);
 			}
 		},
 		createRegionContainer: function(region) {
