@@ -58,7 +58,10 @@ public class PageHeaderOutputter implements Outputter {
 				"<meta http-equiv=\"content-type\" content=\"text/html; charset=")
 				.append(Constants.DEFAULT_CHARSET)
 				.append("\" />\n")
-				.append("<meta http-equiv=\"cache-control\" content=\"no-cache\" />\n");
+				.append("<meta http-equiv=\"pragma\" content=\"no-cache\" />\n")
+				.append("<meta http-equiv=\"cache-control\" content=\"no-cache\" />\n")
+				.append("<meta http-equiv=\"expires\" content=\"0\" />\n");
+
 		if (StringUtils.isNotEmpty(view.getTitle())) {
 			writer.append("<title>")
 					.append(StringEscapeUtils.escapeHtml(view.getTitle()))
@@ -122,5 +125,4 @@ public class PageHeaderOutputter implements Outputter {
 			writer.append("</style>\n");
 		}
 	}
-
 }
