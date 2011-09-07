@@ -1102,9 +1102,8 @@
 						value = value.toJSON(options, context);
 					}
 				}
-				if(generateOldData && propertyDef && oldData[property] != null) {
-					if(!oldDataHolder)
-						oldDataHolder = {};
+				if(generateOldData && propertyDef && oldData != null) {
+					if(!oldDataHolder) oldDataHolder = {};
 					oldDataHolder[property] = oldData[property];
 				}
 

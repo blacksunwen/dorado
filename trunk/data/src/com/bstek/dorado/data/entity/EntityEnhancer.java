@@ -391,7 +391,8 @@ public abstract class EntityEnhancer {
 							&& !CacheMode
 									.isCacheableAtServerSide(lazyPropertyDef
 											.getCacheMode())) {
-						result = readPropertyDef(entity, propertyDef);
+						result = readPropertyDef(entity, propertyDef,
+								originResult);
 					}
 				} else {
 					BasePropertyDef basePropertyDef = (BasePropertyDef) propertyDef;
@@ -486,13 +487,14 @@ public abstract class EntityEnhancer {
 		return true;
 	}
 
-	private Object readPropertyDef(Object entity, PropertyDef propertyDef)
-			throws Throwable {
+	private Object readPropertyDef(Object entity, PropertyDef propertyDef,
+			Object originResult) throws Throwable {
 		Object result;
 		if (propertyDef instanceof Lookup) {
-			result = readLookup(entity, (Lookup) propertyDef);
+			result = readLookup(entity, (Lookup) propertyDef, originResult);
 		} else if (propertyDef instanceof Reference) {
-			result = readReference(entity, (Reference) propertyDef);
+			result = readReference(entity, (Reference) propertyDef,
+					originResult);
 		} else {
 			throw new IllegalArgumentException("Unknown PropertyDef type ["
 					+ propertyDef + "].");
@@ -500,12 +502,12 @@ public abstract class EntityEnhancer {
 		return result;
 	}
 
-	private Object readReference(Object entity, Reference referenceProperty)
-			throws Throwable {
+	private Object readReference(Object entity, Reference referenceProperty,
+			Object originResult) throws Throwable {
 		if (!referenceProperty.shouldIntercept()
 				|| isGetterInterceptionDisabled()) {
 			setHasGetterResultSkiped();
-			return null;
+			return originResult;
 		} else {
 			DataProvider dataProvider = referenceProperty.getDataProvider();
 
@@ -521,11 +523,11 @@ public abstract class EntityEnhancer {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private Object readLookup(Object entity, Lookup lookupProperty)
-			throws Throwable {
+	private Object readLookup(Object entity, Lookup lookupProperty,
+			Object originResult) throws Throwable {
 		if (!lookupProperty.shouldIntercept() || isGetterInterceptionDisabled()) {
 			setHasGetterResultSkiped();
-			return null;
+			return originResult;
 		} else {
 			Object result;
 			IndexedLookupData indexedLookupData;
@@ -596,7 +598,8 @@ public abstract class EntityEnhancer {
 				if (result != null) {
 					String resultProperty = lookupProperty.getLookupProperty();
 					if (StringUtils.isNotEmpty(resultProperty)) {
-						result = EntityWrapper.create(result).get(resultProperty);
+						result = EntityWrapper.create(result).get(
+								resultProperty);
 					}
 				}
 			} finally {
