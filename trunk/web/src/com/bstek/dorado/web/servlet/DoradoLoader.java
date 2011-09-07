@@ -233,11 +233,6 @@ public class DoradoLoader {
 
 		String configureLocation = HOME_LOCATION_PREFIX
 				+ "configure.properties";
-		intParam = servletContext.getInitParameter("configureLocation");
-		if (intParam != null) {
-			configureLocation = intParam;
-		}
-
 		loadConfigureProperties(configureStore, resourceLoader,
 				configureLocation, false);
 		String runMode = configureStore.getString("core.runMode");

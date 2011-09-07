@@ -21,7 +21,11 @@ public class WebResourceLoader extends BaseResourceLoader {
 
 	@Override
 	protected ResourceLoader getAdaptee() {
-		return webApplicationContext;
+		if (webApplicationContext != null) {
+			return webApplicationContext;
+		} else {
+			return super.getAdaptee();
+		}
 	}
 
 }
