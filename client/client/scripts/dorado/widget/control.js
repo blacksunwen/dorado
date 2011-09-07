@@ -1098,7 +1098,7 @@
 			if(!b) return b;
 
 			var fp = this.get("focusParent");
-			if(fp && dorado.widget.disableKeyBubble != fp) b = fp.onKeyDown(evt);
+			if(fp && dorado.widget.disableKeyBubble != fp) b = fp.onKeyPress(evt);
 			return b;
 		},
 		initDraggingInfo : function(draggingInfo, evt) {
@@ -1126,7 +1126,6 @@
 	});
 
 	dorado.widget.disableKeyBubble = false;
-
 	dorado.widget.focusedControl = [];
 
 	dorado.widget.onControlGainedFocus = function(control) {
