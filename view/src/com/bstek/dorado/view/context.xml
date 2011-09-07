@@ -104,6 +104,7 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 				<prop key="input.encoding">UTF-8</prop>
 				<prop key="output.encoding">UTF-8</prop>
 				<prop key="resource.loader">file</prop>
+				<prop key="runtime.log.logsystem.class">org.apache.velocity.runtime.log.NullLogChute</prop>
 				<prop key="file.resource.loader.description">Dorado File Resource Loader</prop>
 				<prop key="file.resource.loader.class">
 					com.bstek.dorado.view.resolver.VelocityViewTemplateResourceLoader
