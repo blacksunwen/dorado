@@ -18,7 +18,7 @@
 		<event name="onEntityToText" />
 	</type>
 	<type class="com.bstek.dorado.data.type.property.PropertyDef">
-		<event name="onAttributeChanged" />
+		<event name="onAttributeChange" />
 		<event name="onGet" />
 		<event name="onGetText" />
 		<event name="onSet" />

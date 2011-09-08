@@ -267,6 +267,7 @@
 		
 		onDoubleClick: function(evt) {
 			if (this.findItemDomByEvent(evt)) {
+				$DomUtils.disableUserSelection(evt.target);
 				this.fireEvent("onDataRowDoubleClick", this, {
 					event: evt
 				});
