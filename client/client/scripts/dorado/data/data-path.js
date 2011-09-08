@@ -368,6 +368,7 @@
 							section.property = property = property.substring(1);
 						}
 						if(property.charAt(0) == '!') {
+							section.visibility = 1; // all
 							section.interceptor = property.substring(1);
 						}
 					}
@@ -571,7 +572,8 @@
 						if(entities.current)
 							selectEntityIf.call(this, entities.current);
 					} else {
-						var it = entities.iterator(section.visibility == 1 || section.visibility == 3 || section.visibility == 6);
+						var includeDeleted = true;//(section.visibility == 1/*all*/ || section.visibility == 3/*dirty*/ || section.visibility == 6/*delete*/)
+						var it = entities.iterator(includeDeleted);
 						while(it.hasNext()) {
 							selectEntityIf.call(this, it.next());
 						}

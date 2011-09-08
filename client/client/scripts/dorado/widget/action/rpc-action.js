@@ -190,39 +190,32 @@
 
 			var data = entity._data;
 			for(var property in data) {
-				if(!data.hasOwnProperty(property))
-					continue;
-				if(property.charAt(0) == '$')
-					continue;
+				if(!data.hasOwnProperty(property)) continue;
+				if(property.charAt(0) == '$') continue;
 				var propertyDef = (entity._propertyDefs) ? entity._propertyDefs.get(property) : null;
-				if(!propertyDef || !propertyDef._submittable)
-					continue;
+				if(!propertyDef || !propertyDef._submittable) continue;
 
 				var value = entity.get(property, "never");
 				if( value instanceof dorado.EntityList) {
 					var it = value.iterator(true);
 					while(it.hasNext()) {
-						if(gothrough(it.next()))
-							isDirty = true;
+						if(gothrough(it.next())) isDirty = true;
 					}
 				}
 			}
-			if(!isDirty)
-				CASCADE_NOT_DRITY_ENTITYS[entity.entityId] = true;
+			if(!isDirty) CASCADE_NOT_DRITY_ENTITYS[entity.entityId] = true;
 			return isDirty;
 		}
 
 		CASCADE_NOT_DRITY_ENTITYS = {};
 		if( data instanceof dorado.Entity) {
-			if(!gothrough(data))
-				data = null;
+			if(!gothrough(data)) data = null;
 		} else if( data instanceof dorado.EntityList) {
 			var it = data.iterator(true);
 			data = [];
 			while(it.hasNext()) {
 				var entity = it.next();
-				if(gothrough(entity))
-					data.push(entity);
+				if(gothrough(entity)) data.push(entity);
 			}
 		}
 		return data;
@@ -324,8 +317,7 @@
 							if(updateItem.autoResetEntityState == null)
 								updateItem.autoResetEntityState = true;
 
-							if(updateItem.dataSet == null)
-								return;
+							if(updateItem.dataSet == null) return;
 							if( typeof updateItem.dataSet == "string") {
 								updateItem.dataSet = self.get("view").id(updateItem.dataSet);
 							} else if(!(updateItem.dataSet instanceof dorado.widget.DataSet)) {
