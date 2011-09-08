@@ -180,6 +180,7 @@
 		},
 		
 		constructor: function(config) {
+			this._contentContainerVisible = true;
 			this._children = new dorado.util.KeyedList(dorado._GET_ID);
 			
 			var childrenConfig;
@@ -318,15 +319,31 @@
 			return this.getDom();
 		},
 		
+		setContentContainerVisible: function(visible) {
+			this._children.each(function(child) {
+				if (child instanceof dorado.widget.Control) {
+					child.setActualVisible(visible);
+				}
+			});
+			this._contentContainerVisible = visible;
+			
+			var layout = this._layout;
+			if (layout && visible && !(layout._regions.size == 0 && !layout._rendered)) {
+				layout.onAttachToDocument(this.getContentContainer());
+			}
+		},
+		
 		doOnAttachToDocument: function() {
 			var contentCt = this.getContentContainer();
 			if (contentCt.nodeType && contentCt.nodeType == 1 && !contentCt.style.overflow) {
 				contentCt.style.overflow = this._contentOverflow;
 			}
 			var layout = this._layout;
-			if (layout && !(layout._regions.size == 0 && !layout._rendered)) {
+			if (layout) {
 				layout._overflow = (this._contentOverflow == "hidden") ? "hidden" : "visible";
-				layout.onAttachToDocument(this.getContentContainer());
+				if (this._contentContainerVisible && !(layout._regions.size == 0 && !layout._rendered)) {
+					layout.onAttachToDocument(this.getContentContainer());
+				}
 			}
 		},
 		
@@ -337,7 +354,7 @@
 		
 		doOnResize: function() {
 			var layout = this._layout;
-			if (layout && layout._attached) {
+			if (this._contentContainerVisible && layout && layout._attached) {
 				layout._overflow = (this._contentOverflow == "hidden") ? "hidden" : "visible";
 				layout.onResize();
 			}
