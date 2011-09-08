@@ -195,8 +195,10 @@
 					break;
 				}
 				default:
-					autoWidth = autoHeight = true;
-				// autoHeight = (this._container._height != null || this._container._contentOverflow == "hidden");
+					{
+						autoWidth = autoHeight = true;
+					// autoHeight = (this._container._height != null || this._container._contentOverflow == "hidden");
+					}
 			}
 			return $invokeSuper.call(this, [region, containerDom, autoWidth, autoHeight]);
 		}

@@ -111,6 +111,7 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 					panel.doSetCollapsed(value);
 				} else {
 					panel._collapsed = value;
+					panel.setContentContainerVisible(!value);
 				}
 			}
 		}
@@ -142,27 +143,28 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 		var panel = this, collapsed = panel.get("collapsed");
 		panel.doSetCollapsed(!collapsed);
 	},
-
+	
+	setContentContainerVisible: function() {
+		var panel = this, buttons = panel._buttons;
+		if (buttons) {
+			for (var i = 0, j = buttons.length; i < j; i++) {
+				var button = buttons[i];
+				button.setActualVisible(!collapsed);
+			}
+		}
+		$invokeSuper.call(this, arguments);
+	},
+	
 	/**
 	 * @private
 	 */
 	doSetCollapsed: function(collapsed) {
+	
 		function onCollapsedChange(panel, collapsed) {
-			panel._children.each(function(child) {
-				if (child instanceof dorado.widget.Control) {
-					child.setActualVisible(!collapsed);
-				}
-			});
-            var buttons = panel._buttons;
-            if (buttons) {
-                for (var i = 0, j = buttons.length; i < j; i++) {
-                    var button = buttons[i];
-                    button.setActualVisible(!collapsed);
-                }
-            }
-			panel.fireEvent("onCollapsedChange", panel);
 			panel._doOnResize(collapsed);
+			panel.setContentContainerVisible(!collapsed);
 			panel.notifySizeChange();
+			panel.fireEvent("onCollapsedChange", panel);
 		}
 		
 		var panel = this, dom = panel._dom, doms = panel._doms, collapseButton = panel._collapseButton, eventArg = {};
@@ -178,13 +180,14 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 			}, true);
 		} else {
 			panel._collapsed = collapsed;
-            var orginalZIndex;
+				
+			var orginalZIndex;
 			if (panel._rendered) {
 				if (collapsed) {
 					$fly(doms.body).safeSlideOut({
 						direction: "b2t",
 						start: function() {
-                            orginalZIndex = dom.style.zIndex;
+							orginalZIndex = dom.style.zIndex;
 							$fly(dom).bringToFront();
 						},
 						step: function() {
@@ -195,15 +198,15 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 								collapseButton.set("iconClass", "expand-icon");
 							}
 							onCollapsedChange(panel, collapsed);
-                            dom.style.zIndex = orginalZIndex || "";
-                            orginalZIndex = null;
+							dom.style.zIndex = orginalZIndex || "";
+							orginalZIndex = null;
 						}
 					});
 				} else {
 					$fly(doms.body).safeSlideIn({
 						direction: "t2b",
 						start: function() {
-                            orginalZIndex = dom.style.zIndex;
+							orginalZIndex = dom.style.zIndex;
 							$fly(dom).bringToFront().removeClass("i-panel-collapsed " + panel._className + "-collapsed");
 						},
 						step: function() {
@@ -213,15 +216,15 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 								collapseButton.set("iconClass", "collapse-icon");
 							}
 							onCollapsedChange(panel, collapsed);
-                            dom.style.zIndex = orginalZIndex || "";
-                            orginalZIndex = null;
+							dom.style.zIndex = orginalZIndex || "";
+							orginalZIndex = null;
 						}
 					});
 				}
 			}
 		}
 	},
-
+	
 	_createButtonPanel: function(dom) {
 		var panel = this, doms = panel._doms, buttonPanel = document.createElement("div");
 		buttonPanel.className = "button-panel";
@@ -234,12 +237,12 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 		}
 		return buttonPanel;
 	},
-
+	
 	doOnResize: function(collapsed) {
 		this._doOnResize && this._doOnResize(collapsed);
 		$invokeSuper.call(this, arguments);
 	},
-
+	
 	initButtons: function(dom) {
 		var panel = this, doms = panel._doms;
 		if (panel._buttons) {
@@ -351,7 +354,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		tools: {
 			innerComponent: "SimpleIconButton"
 		},
-
+		
 		/**
 		 * 是否显示最大化按钮。
 		 * @attribute
@@ -379,7 +382,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 				}
 			}
 		},
-
+		
 		/**
 		 * 是否已经最大化。
 		 * @attribute
@@ -387,8 +390,8 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		 * @type boolean
 		 */
 		maximized: {},
-
-        /**
+		
+		/**
 		 * 是否显示关闭按钮.
 		 * @attribute
 		 * @type boolean
@@ -414,7 +417,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 				}
 			}
 		},
-
+		
 		/**
 		 * 当用户点击关闭以后要做的动作，默认是hide，可选值为hide和close。hide仅仅是隐藏该对话框，close会完全销毁该对话框，销毁以后该对话框不能再使用。
 		 * @attribute
@@ -424,7 +427,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 			defaultValue: "hide"
 		}
 	},
-
+	
 	EVENTS: {
 		/**
 		 * 在组件最大化之前触发此事件。
@@ -434,7 +437,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		 * @event
 		 */
 		beforeMaximize: {},
-
+		
 		/**
 		 * 在组件最大化之后触发此事件。
 		 * @param {Object} self 事件的发起者，即组件本身。
@@ -443,26 +446,26 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		 * @event
 		 */
 		onMaximize: {},
-
-        /**
-         * 在组件关闭之前触发。
-         * @param {Object} self 事件的发起者，即组件本身。
-         * @param {Object} arg 事件参数。
-         * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
-         * @event
-         */
-        beforeClose: {},
-
-        /**
-         * 在组件关闭之后触发。
-         * @param {Object} self 事件的发起者，即组件本身。
-         * @param {Object} arg 事件参数。
-         * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
-         * @event
-         */
-        onClose: {}
+		
+		/**
+		 * 在组件关闭之前触发。
+		 * @param {Object} self 事件的发起者，即组件本身。
+		 * @param {Object} arg 事件参数。
+		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+		 * @event
+		 */
+		beforeClose: {},
+		
+		/**
+		 * 在组件关闭之后触发。
+		 * @param {Object} self 事件的发起者，即组件本身。
+		 * @param {Object} arg 事件参数。
+		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+		 * @event
+		 */
+		onClose: {}
 	},
-
+	
 	createDom: function() {
 		var panel = this, doms = {}, border = panel._border, dom;
 		if ((dorado.Browser.msie || !$setting["widget.panel.useCssCurveBorder"]) && border == "curve") {
@@ -560,19 +563,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 			if (panel._collapseable) {
 				panel._createCollapseButton();
 				if (panel._collapsed) {
-                    panel._children.each(function(child) {
-                        if (child instanceof dorado.widget.Control) {
-                            child.setActualVisible(false);
-                        }
-                        var buttons = panel._buttons;
-                        if (buttons) {
-                            for (var i = 0, j = buttons.length; i < j; i++) {
-                                var button = buttons[i];
-                                button.setActualVisible(false);
-                            }
-                        }
-                    });
-                    $fly(doms.body).css("display", "none");
+					$fly(doms.body).css("display", "none");
 				}
 			}
 		}
@@ -584,15 +575,15 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		if (panel._collapsed) {
 			$fly(dom).addClass("i-panel-collapsed " + panel._className + "-collapsed");
 		}
-
-        if (panel._closeable) {
+		
+		if (panel._closeable) {
 			panel._createCloseButton();
 		}
-
+		
 		if (panel._maximizeable) {
 			panel._createMaximizeButton();
 		}
-
+		
 		return dom;
 	},
 	
@@ -617,8 +608,8 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		
 		panel._captionBar.addButton(collapseButton, 0);
 	},
-
-    _createCloseButton: function() {
+	
+	_createCloseButton: function() {
 		var panel = this, captionBar = panel._captionBar;
 		if (captionBar) {
 			captionBar.addButton(new dorado.widget.SimpleButton({
@@ -632,7 +623,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 			}));
 		}
 	},
-
+	
 	/**
 	 * 关闭面板。
 	 */
@@ -646,7 +637,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 			panel.destroy();
 		}
 	},
-
+	
 	_doOnResize: function(collapsed) {
 		var panel = this, border = panel._border, dom = panel._dom, doms = panel._doms, height = panel.getRealHeight();
 		if (typeof height == "number" && height > 0) {
@@ -669,7 +660,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 					captionBarHeight = $fly(doms.captionBar).outerHeight(true);
 				}
 				if (border == "curve") {
-                    var bodyHeight = height - jQuery(doms.header).outerHeight() - jQuery(doms.footer).outerHeight() - captionBarHeight;
+					var bodyHeight = height - jQuery(doms.header).outerHeight() - jQuery(doms.footer).outerHeight() - captionBarHeight;
 					$fly(doms.body).outerHeight(bodyHeight);
 					$fly(doms.contentPanel).outerHeight(bodyHeight - buttonPanelHeight);
 				} else {
@@ -689,21 +680,21 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 			doms.contentPanel.style.background = this._background;
 		}
 		
-        $fly(dom).toggleClass("i-panel-normalborder " + panel._className + "-normalborder", border == "normal").toggleClass("i-panel-curveborder " + panel._className + "-curveborder", border == "curve");
+		$fly(dom).toggleClass("i-panel-normalborder " + panel._className + "-normalborder", border == "normal").toggleClass("i-panel-curveborder " + panel._className + "-curveborder", border == "curve");
 	},
 	
 	getContentContainer: function() {
 		var panel = this, doms = panel._doms;
 		return doms.contentPanel;
 	},
-
+	
 	maximizeRestore: function() {
 		var panel = this, dom = panel._dom, doms = panel._doms;
 		if (dom) {
 			$fly(doms.contentPanel).css("display", "");
-
+			
 			if (panel._maximized) {
-
+			
 				$fly(dom).unfullWindow({
 					callback: function() {
 						panel._maximized = false;
@@ -715,9 +706,9 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 						panel.refresh();
 					}
 				});
-
+				
 				$fly(dom).draggable("enable");
-
+				
 				var captionBar = panel._captionBar;
 				if (captionBar) {
 					var button = captionBar.getButton(panel._id + "_maximize");
@@ -729,7 +720,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 			}
 		}
 	},
-
+	
 	maximize: function() {
 		var panel = this, dom = panel._dom;
 		if (dom) {
@@ -738,12 +729,12 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 			if (eventArg.processDefault === false) {
 				return;
 			}
-
+			
 			panel._originalWidth = panel._width;
 			panel._originalHeight = panel._height;
 			panel._originalLeft = panel._left;
 			panel._originalTop = panel._top;
-
+			
 			var captionBar = panel._captionBar;
 			if (captionBar) {
 				var button = captionBar.getButton(panel._id + "_maximize");
@@ -752,7 +743,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 					button._className = "d-restore-button";
 				}
 			}
-
+			
 			$fly(dom).fullWindow({
 				modifySize: false,
 				callback: function(docSize) {
@@ -761,13 +752,13 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 					panel.refresh();
 				}
 			});
-
+			
 			$fly(dom).draggable("disable");
-
+			
 			panel.fireEvent("onMaximize", panel);
 		}
 	},
-
+	
 	_createMaximizeButton: function() {
 		var panel = this, captionBar = panel._captionBar;
 		if (captionBar) {
