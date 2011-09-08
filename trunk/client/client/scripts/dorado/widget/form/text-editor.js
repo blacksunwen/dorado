@@ -401,6 +401,7 @@
 		
 		doOnBlur: function() {
 			if (this.get("readOnly")) return;
+			
 			clearInterval(this._editObserverId);
 			delete this._editObserverId;
 			this.post();
@@ -1034,6 +1035,8 @@
 		},
 		
 		doOnFocus: function() {
+			if (this.get("readOnly")) return;
+			
 			var dataType = this.get("dataType");
 			if (dataType && this._validationState != "error") {
 				var text = dataType.toText(this.get("value"), this._typeFormat);
@@ -1060,7 +1063,9 @@
 				if (dataType && this._validationState != "error") {
 					text = dataType.toText(this.get("value"), this._displayFormat);
 					this._editorFocused = false;
-					this.doSetText(text);
+				}
+				else {
+					this.doSetText(this._text);
 				}
 			}
 		},

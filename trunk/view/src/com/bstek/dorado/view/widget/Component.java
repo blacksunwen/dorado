@@ -26,7 +26,7 @@ import com.bstek.dorado.view.manager.ViewConfig;
  * @since Jan 19, 2008
  */
 @ClientEvents({
-		@com.bstek.dorado.annotation.ClientEvent(name = "onAttributeChanged"),
+		@com.bstek.dorado.annotation.ClientEvent(name = "onAttributeChange"),
 		@com.bstek.dorado.annotation.ClientEvent(name = "onCreate"),
 		@com.bstek.dorado.annotation.ClientEvent(name = "onDestroy"),
 		@com.bstek.dorado.annotation.ClientEvent(name = "onReady") })

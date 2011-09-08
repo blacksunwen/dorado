@@ -1100,19 +1100,31 @@
 			}
 
 			function registerInnerControl(innerGrid) {
+				
+				function findColumnByEvent(grid, innerGrid, event) {
+					var column = null, row = $DomUtils.findParent(event.target, function(parentNode) {
+						return (parentNode.parentNode == innerGrid._dataTBody);
+					});
+					if (row) {
+						var cell = $DomUtils.findParent(event.target, function(parentNode) {
+							return parentNode.parentNode == row;
+						}, true);
+						column = grid._columnsInfo.idMap[cell.colId];
+					}
+					return column;
+				}
+				
 				var grid = this;
 				innerGrid.addListener("onDataRowClick", function(self, arg) {
 					if (grid.getListenerCount("onDataRowClick")) {
-						var row = $DomUtils.findParent(arg.event.target, function(parentNode) {
-							return (parentNode.parentNode == innerGrid._dataTBody);
-						});
-						if (row) {
-							var cell = $DomUtils.findParent(arg.event.target, function(parentNode) {
-								return parentNode.parentNode == row;
-							}, true);
-							arg.column = grid._columnsInfo.idMap[cell.colId];
-						}{}
+						arg.column = findColumnByEvent(grid, innerGrid, arg.event);
 						grid.fireEvent("onDataRowClick", grid, arg);
+					}
+				});
+				innerGrid.addListener("onDataRowDoubleClick", function(self, arg) {
+					if (grid.getListenerCount("onDataRowDoubleClick")) {
+						arg.column = findColumnByEvent(grid, innerGrid, arg.event);
+						grid.fireEvent("onDataRowDoubleClick", grid, arg);
 					}
 				});
 				this.registerInnerControl(innerGrid);

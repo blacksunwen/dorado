@@ -152,27 +152,23 @@
 						var it = v.iterator(true);
 						while(it.hasNext()) {
 							dirty = isDirty(it.next());
-							if(dirty)
-								break;
+							if(dirty) break;
 						}
 					}
-					if(dirty)
-						break;
+					if(dirty) break;
 				}
 			}
 			return dirty;
 		}
 
 		if( data instanceof dorado.Entity) {
-			if(!isDirty(data))
-				data = null;
+			if(!isDirty(data)) data = null;
 		} else if( data instanceof dorado.EntityList) {
 			var it = data.iterator(true);
 			var data = [];
 			while(it.hasNext()) {
 				var e = it.next();
-				if(isDirty(e))
-					data.push(e);
+				if(isDirty(e)) data.push(e);
 			}
 		} else {
 			data = null;
