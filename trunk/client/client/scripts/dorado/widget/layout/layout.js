@@ -338,7 +338,7 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 		if (this._ignoreControlSizeChange || !this.doOnResize) return;
 		var containerDom = this.getDom();
 		if (containerDom.offsetWidth == 0 || containerDom.offsetHeight == 0) return;
-		if (this.doOnResize) this.doOnResize();
+		this.doOnResize();
 	},
 	
 	/**

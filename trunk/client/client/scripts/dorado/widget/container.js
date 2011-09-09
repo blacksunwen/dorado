@@ -355,7 +355,6 @@
 		doOnResize: function() {
 			var layout = this._layout;
 			if (this._contentContainerVisible && layout && layout._attached) {
-				layout._overflow = (this._contentOverflow == "hidden") ? "hidden" : "visible";
 				layout.onResize();
 			}
 		},
