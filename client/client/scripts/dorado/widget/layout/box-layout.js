@@ -100,32 +100,27 @@
 				cellPadding: 0,
 				content: {
 					tagName: "TBODY",
-					contextKey: "tbody",
 					content: {
 						tagName: "TR",
 						contextKey: "row"
 					}
 				}
 			}, null, context);
-			this._tbody = context.tbody;
 			this._row = context.row;
 			return dom;
 		},
 		
 		refreshDom: function(dom) {
-			var table = dom, tbody = this._tbody, row = this._row;
-			tbody.removeChild(row);
-			while (row.firstChild) {
-				row.removeChild(row.firstChild);
-			}
-			tbody.appendChild(row);
-			this._domCache = {};
+			var table = dom, row = this._row, parentDom = table.parentNode;
+			var domCache = this.domCache || {}, newDomCache = this.domCache = {};
 			
 			var padding = parseInt(this._padding) || 0, regionPadding = this._regionPadding || 0;
-			table.style.padding = padding + "px";
+			if (dorado.Browser.msie && dorado.Browser.version < '8') {
+				table.style.margin = padding + "px";
+			} else {
+				table.style.padding = padding + "px";
+			}
 			
-			var parentDom = table.parentNode;
-			var padding = parseInt(this._padding) || 0;
 			var realContainerWidth = parentDom.clientWidth - padding * 2;
 			var realContainerHeight = parentDom.clientHeight - padding * 2;
 			if (realContainerWidth < 0) realContainerWidth = 0;
@@ -133,14 +128,41 @@
 			
 			$(parentDom).css("text-align", HBOX_PACKS[this._pack]);
 			row.style.verticalAlign = HBOX_ALIGNS[this._align];
-			row.style.height = realContainerHeight + "px";
-			this._currentHeight = realContainerHeight;
+			table.style.height = realContainerHeight + "px";
+			var currentHeight = table.offsetHeight;
+			
+			for (var it = this._regions.iterator(); it.hasNext();) {
+				var region = it.next(), cell = domCache[region.id];
+				if (cell) {
+					cell.style.display = "none";
+					delete domCache[region.id];
+					newDomCache[region.id] = cell;
+				}
+			}
+			
+			for (var id in domCache) {
+				var cell = domCache[id];
+				if (cell) row.removeNode(cell);
+			}
+			domCache = newDomCache;
 			
 			var i = 0;
 			for (var it = this._regions.iterator(); it.hasNext();) {
 				var region = it.next();
 				var constraint = region.constraint;
 				if (constraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT) continue;
+				
+				var w, cell = domCache[region.id], cell, div, isNewCell = false;
+				if (!cell) {
+					cell = document.createElement("TD");
+					newDomCache[region.id] = cell;
+					isNewCell = true;
+				}
+				var refCell = row[i];
+				if (refCell != cell) {
+					(refCell) ? tbody.insertBefore(cell, refCell) : row.appendChild(cell);
+				}
+				cell.style.display = "";
 				
 				var w = region.control._width;
 				if (w) {
@@ -177,34 +199,34 @@
 				}
 				region.height = h;
 				
-				var cell = document.createElement("TD");
-				row.appendChild(cell);
-				this._domCache[region.id] = cell;
-				if (i > 0) {
-					cell.style.paddingLeft = regionPadding + "px";
-				}
-				this.renderControl(region, cell, true, true);
+				if (i > 0) cell.style.paddingLeft = regionPadding + "px";
+				if (isNewCell) this.renderControl(region, cell, true, true);
+				else this.resetControlDimension(region, cell, true, true);
 				i++;
 			}
 			
-			this.doOnResize();
-		},
-		
-		doOnResize: function() {
-			var row = this._row, rowHeight = row.offsetHeight;
-			if (dorado.Browser.msie && dorado.Browser.version < '8') {
-				rowHeight -= padding * 2;
-			}
-			if (this._stretch && rowHeight > this._currentHeight) {
-				var h = this._currentHeight = rowHeight;
+			if (this._stretch && row.offsetHeight > currentHeight) {
+				table.style.height = "";
+				realContainerHeight += (table.offsetHeight - currentHeight);
 				for (var it = this._regions.iterator(); it.hasNext();) {
 					var region = it.next();
 					var constraint = region.constraint;
 					if (constraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT) continue;
 					
-					region.height = h;
-					var cell = this._domCache[region.id];
-					this.resetControlDimension(region, cell, true, true);
+					var h = region.control._height;
+					if (h) {
+						if (h.constructor == String && h.match('%')) {
+							var rate = parseInt(h);
+							if (!isNaN(rate)) {
+								h = rate * realContainerHeight / 100;
+							}
+						} 
+					}
+					if (h) {
+						region.height = h;
+						var cell = newDomCache[region.id];
+						this.resetControlDimension(region, cell, true, true);
+					}
 				}
 			}
 		}
@@ -298,25 +320,37 @@
 			}
 			
 			var table = dom, tbody = this._tbody;
-			
-			table.removeChild(tbody);
-			while (tbody.firstChild) {
-				tbody.removeChild(tbody.firstChild);
-			}
-			table.appendChild(tbody);
-			this._domCache = {};
+			var domCache = this.domCache || {}, newDomCache = this.domCache = {};
 			
 			var padding = parseInt(this._padding) || 0, regionPadding = this._regionPadding || 0;
-			table.style.margin = padding + "px";
+			if (dorado.Browser.msie && dorado.Browser.version < '8') {
+				table.style.margin = padding + "px";
+			} else {
+				table.style.padding = padding + "px";
+			}
 			
-			var padding = parseInt(this._padding) || 0;
 			var realContainerWidth = parentDom.clientWidth - padding * 2;
 			var realContainerHeight = parentDom.clientHeight - padding * 2;
 			if (realContainerWidth < 0) realContainerWidth = 0;
 			if (realContainerHeight < 0) realContainerHeight = 0;
 			
 			table.style.width = realContainerWidth + "px";
-			this._currentHeight = realContainerWidth;
+			var currentWidth = table.offsetWidth;
+			
+			for (var it = this._regions.iterator(); it.hasNext();) {
+				var region = it.next(), row = domCache[region.id];
+				if (row) {
+					row.style.display = "none";
+					delete domCache[region.id];
+					newDomCache[region.id] = row;
+				}
+			}
+			
+			for (var id in domCache) {
+				var row = domCache[id];
+				if (row) tbody.removeNode(row);
+			}
+			domCache = newDomCache;
 			
 			var i = 0;
 			for (var it = this._regions.iterator(); it.hasNext();) {
@@ -324,7 +358,30 @@
 				var constraint = region.constraint;
 				if (constraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT) continue;
 				
-				var w;
+				var w, row = domCache[region.id], cell, div, isNewRow = false;
+				if (!row) {
+					row = $DomUtils.xCreateElement({
+						tagName: "TR",
+						content: {
+							tagName: "TD",
+							content: {
+								tagName: "DIV",
+								// 用于防止TD.align=center的设置传染到内部子控件
+								style: "display:inline-block;text-align:left;zoom:1"
+							}
+						}
+					});
+					newDomCache[region.id] = row;
+					isNewRow = true;
+				}
+				var refRow = tbody[i];
+				if (refRow != row) {
+					(refRow) ? tbody.insertBefore(row, refRow) : tbody.appendChild(row);
+				}
+				row.style.display = "";
+				cell = row.firstChild;
+				div = cell.firstChild;
+				
 				if (!this._stretch || region.control.getAttributeWatcher().getWritingTimes("width")) {
 					w = region.control._width;
 					if (w) {
@@ -359,49 +416,35 @@
 				}
 				region.height = h;
 				
-				var context = {}, div;
-				$fly(tbody).xCreate({
-					tagName: "TR",
-					content: {
-						tagName: "TD",
-						contextKey: "cell",
-						content: {
-							tagName: "DIV",
-							contextKey: "div",
-							// 用于防止TD.align=center的设置传染到内部子控件
-							style: "display:inline-block;text-align:left;zoom:1;*display:inline"
-						}
-					}
-				}, null, {
-					context: context
-				});
-				cell = context.cell;
-				div = context.div;
-				
-				this._domCache[region.id] = div;
 				cell.align = VBOX_ALIGNS[this._align];
-				if (i > 0) {
-					cell.style.paddingTop = regionPadding + "px";
-				}
-				this.renderControl(region, div, true, true);
+				if (i > 0) cell.style.paddingTop = regionPadding + "px";
+				
+				if (isNewRow) this.renderControl(region, div, true, true);
+				else this.resetControlDimension(region, div, true, true);
 				i++;
 			}
 			
-			this.doOnResize();
-		},
-		
-		doOnResize: function() {
-			var table = this._dom;
-			if (this._stretch && table.offsetWidth > this._currentHeight) {
-				var w = this._currentHeight = table.offsetWidth;
+			if (this._stretch && table.offsetWidth > currentWidth) {
+				realContainerWidth += (table.offsetWidth - currentWidth);
 				for (var it = this._regions.iterator(); it.hasNext();) {
 					var region = it.next();
 					var constraint = region.constraint;
 					if (constraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT) continue;
 					
-					region.width = w;
-					var div = this._domCache[region.id];
-					this.resetControlDimension(region, div, true, true);
+					var w = region.control._width;
+					if (w) {
+						if (w.constructor == String && w.match('%')) {
+							var rate = parseInt(w);
+							if (!isNaN(rate)) {
+								w = rate * realContainerWidth / 100;
+							}
+						} 
+					}
+					if (w) {
+						region.width = w;
+						var div = newDomCache[region.id];
+						this.resetControlDimension(region, div, true, true);
+					}
 				}
 			}
 		}

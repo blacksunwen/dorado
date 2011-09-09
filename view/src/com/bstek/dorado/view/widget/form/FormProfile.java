@@ -23,7 +23,7 @@ public class FormProfile extends Component implements FormConfig {
 	private String exClassName;
 	private FormElementType type = FormElementType.text;
 	private String trigger;
-	private String labelSeperator;
+	private String labelSeparator;
 	private boolean showLabel = true;
 	private int labelWidth;
 	private int labelSpacing;
@@ -92,12 +92,12 @@ public class FormProfile extends Component implements FormConfig {
 		this.trigger = trigger;
 	}
 
-	public String getLabelSeperator() {
-		return labelSeperator;
+	public String getLabelSeparator() {
+		return labelSeparator;
 	}
 
-	public void setLabelSeperator(String labelSeperator) {
-		this.labelSeperator = labelSeperator;
+	public void setLabelSeparator(String labelSeparator) {
+		this.labelSeparator = labelSeparator;
 	}
 
 	@ViewAttribute(defaultValue = "true")

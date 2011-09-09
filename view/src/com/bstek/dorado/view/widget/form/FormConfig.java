@@ -31,9 +31,9 @@ public interface FormConfig {
 
 	void setTrigger(String trigger);
 
-	String getLabelSeperator();
+	String getLabelSeparator();
 
-	void setLabelSeperator(String labelSeperator);
+	void setLabelSeparator(String labelSeparator);
 
 	boolean isShowLabel();
 
