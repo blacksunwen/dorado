@@ -2,6 +2,8 @@ package com.bstek.dorado.idesupport.output;
 
 import java.io.Writer;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
@@ -57,16 +59,21 @@ public class RuleSetOutputter {
 	protected void outputPackageInfos(XMLWriter xmlWriter,
 			RuleTemplateManager ruleTemplateManager, OutputContext context)
 			throws Exception {
+		Map<String, PackageInfo> finalPackageInfos = new HashMap<String, PackageInfo>(
+				PackageManager.getPackageInfoMap());
+
 		Collection<PackageInfo> packageInfos = ruleTemplateManager
 				.getPackageInfos();
-		if (packageInfos.isEmpty()) {
-			packageInfos = PackageManager.getPackageInfoMap().values();
+		if (packageInfos != null) {
+			for (PackageInfo packageInfo : packageInfos) {
+				finalPackageInfos.put(packageInfo.getName(), packageInfo);
+			}
 		}
 
 		Element packageInfosElement = DocumentHelper
 				.createElement("PackageInfos");
 		xmlWriter.writeOpen(packageInfosElement);
-		for (PackageInfo packageInfo : packageInfos) {
+		for (PackageInfo packageInfo : finalPackageInfos.values()) {
 			Element packageInfoElement = DocumentHelper
 					.createElement("PackageInfo");
 			setElementAttributes(packageInfoElement, packageInfo,

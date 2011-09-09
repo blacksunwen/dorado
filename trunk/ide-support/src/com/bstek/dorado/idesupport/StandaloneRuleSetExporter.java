@@ -6,6 +6,8 @@ package com.bstek.dorado.idesupport;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -226,6 +228,18 @@ public class StandaloneRuleSetExporter {
 		}
 		StandaloneRuleSetExporter instance = new StandaloneRuleSetExporter(
 				doradoHome);
-		return instance.exportRuleSet();
+		RuleSet ruleSet = instance.exportRuleSet();
+
+		Map<String, PackageInfo> finalPackageInfos = new HashMap<String, PackageInfo>(
+				PackageManager.getPackageInfoMap());
+		Collection<PackageInfo> packageInfos = ruleSet.getPackageInfos();
+		for (PackageInfo packageInfo : packageInfos) {
+			finalPackageInfos.put(packageInfo.getName(), packageInfo);
+		}
+
+		packageInfos.clear();
+		packageInfos.addAll(finalPackageInfos.values());
+
+		return ruleSet;
 	}
 }
