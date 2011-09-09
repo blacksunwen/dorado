@@ -194,10 +194,17 @@
 					caption: "添加模块",
 					onClick: function() {
                         portal.addPortlet({
-                            caption: "Portlet5",
-                            height: 200,
-                            column: 1,
-                            closeable: true
+                            "caption": "300",
+                            "height": 300,
+                            "id": "id",
+                            "maximizeable":true,
+                            "closeable":false,
+                            "children":[
+                                {
+                                    "$type":"IFrame",
+                                    "path": "http://www.baidu.com"
+                                }
+                            ]
                         });
 					}
 				}, {

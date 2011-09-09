@@ -104,7 +104,7 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 	/**
 	 * 创建工具栏中的子组件。
 	 * @param {Object} config 子组件的配置信息。
-	 * @return {dorado.widget.menu.MenuItem} 创建好的MenuItem。
+	 * @return {dorado.widget.Control} 创建好的Control。
 	 * @protected
 	 */
 	createItem: function(config) {
