@@ -1,0 +1,25 @@
+package com.bstek.dorado.idesupport;
+
+import java.util.List;
+
+import junit.framework.TestCase;
+
+import com.bstek.dorado.core.pkgs.PackageInfo;
+import com.bstek.dorado.idesupport.model.RuleSet;
+
+public class StandaloneRuleSetExporterTest extends TestCase {
+
+	/**
+	 * @param args
+	 * @throws Exception
+	 */
+	public void test() throws Exception {
+		RuleSet ruleSet = StandaloneRuleSetExporter
+				.getRuleSet("file:D:/projects/dorado7/workspace/sample-center/web/WEB-INF/dorado-home");
+		List<PackageInfo> packageInfos = ruleSet.getPackageInfos();
+
+		assertNotNull(packageInfos);
+		assertTrue(packageInfos.size() > 0);
+	}
+
+}
