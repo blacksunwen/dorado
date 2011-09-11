@@ -50,6 +50,10 @@
 	background-repeat: no-repeat;
 }
 
+.i-button-disabled{
+	cursor: default;
+}
+
 .i-button-trigger .button-left{
 	margin: 0 19px 0 3px;
 }
@@ -85,6 +89,10 @@
 
 .d-ie6 .i-icon-button .icon, .d-ie7 .i-icon-button .icon{
 	display: inline;
+}
+
+.i-icon-button-disabled{
+	cursor: default;
 }
 
 .i-icon-button-trigger{

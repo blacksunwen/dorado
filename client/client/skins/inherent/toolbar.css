@@ -75,3 +75,7 @@
 .i-toolbar .i-text-editor{
 	margin-top: 1px;
 }
+
+.i-toolbar-button-disabled{
+	cursor: default;
+}

@@ -281,8 +281,6 @@
 					var bindingInfo = this._bindingInfo, propertyDef = bindingInfo.propertyDef, state, messages;
 					if (propertyDef) {
 						readOnly = (bindingInfo.entity == null) || readOnly || propertyDef._readOnly;
-						this._readOnly2 = readOnly;
-						this.resetReadOnly();
 						
 						if (!this._displayFormat) this._displayFormat = propertyDef._displayFormat;
 						if (!this._inputFormat) this._inputFormat = propertyDef._inputFormat;
@@ -311,12 +309,12 @@
 				} else {
 					readOnly = true;
 				}
-				this._readOnly2 = readOnly;
-				this.resetReadOnly();
 			} else {
 				var dom = this._dom, textDom = this._textDom, readOnly = this._readOnly || this._readOnly2;
 				$fly(dom).toggleClass(this._className + "-readonly", !!readOnly);
 			}
+			this._readOnly2 = readOnly;
+			this.resetReadOnly();
 			
 			if (this._triggerChanged) {
 				this._triggerChanged = false;
@@ -377,6 +375,7 @@
 			if (readOnly || !this._editable) {
 				this._textDom.readOnly = true; // 避免在IE8中出现的DIV异常滚动的BUG
 			}
+			this.resetReadOnly();
 			if (readOnly) return;
 			
 			this._focusTime = new Date();
@@ -400,6 +399,7 @@
 		},
 		
 		doOnBlur: function() {
+			this.resetReadOnly();
 			if (this.get("readOnly")) return;
 			
 			clearInterval(this._editObserverId);
@@ -1035,37 +1035,38 @@
 		},
 		
 		doOnFocus: function() {
-			if (this.get("readOnly")) return;
-			
-			var dataType = this.get("dataType");
-			if (dataType && this._validationState != "error") {
-				var text = dataType.toText(this.get("value"), this._typeFormat);
-				this._editorFocused = true;
-				this.doSetText(text);
-			} else {
-				this._editorFocused = true;
-				if (this._useBlankText) this.doSetText('');
+			if (!this.get("readOnly")) {
+				var dataType = this.get("dataType");
+				if (dataType && this._validationState != "error") {
+					var text = dataType.toText(this.get("value"), this._typeFormat);
+					this._editorFocused = true;
+					this.doSetText(text);
+				} else {
+					this._editorFocused = true;
+					if (this._useBlankText) this.doSetText('');
+				}
 			}
 			
 			$invokeSuper.call(this, arguments);
 		},
 		
 		doOnBlur: function() {
-			this._textDom.readOnly = false; // 避免在IE8中出现的DIV异常滚动的BUG
-			if (this.get("readOnly")) return;
-			
-			this._text = this.doGetText();
-			try {
+			if (this.get("readOnly")) {
 				$invokeSuper.call(this, arguments);
-			}
-			finally {
-				var text, dataType = this.get("dataType");
-				if (dataType && this._validationState != "error") {
-					text = dataType.toText(this.get("value"), this._displayFormat);
-					this._editorFocused = false;
+			} else {
+				this._textDom.readOnly = false; // 避免在IE8中出现的DIV异常滚动的BUG
+				this._text = this.doGetText();
+				try {
+					$invokeSuper.call(this, arguments);
 				}
-				else {
-					this.doSetText(this._text);
+				finally {
+					var text, dataType = this.get("dataType");
+					if (dataType && this._validationState != "error") {
+						text = dataType.toText(this.get("value"), this._displayFormat);
+						this._editorFocused = false;
+					} else {
+						this.doSetText(this._text);
+					}
 				}
 			}
 		},

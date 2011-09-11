@@ -15,7 +15,7 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 		 * 图标元素的CSS Class。
 		 * @type String
 		 * @attribute
-		 * @default "d-trigger-icon-normal"
+		 * @default "d-trigger-icon-drop"
 		 */
 		iconClass: {
 			defaultValue: "d-trigger-icon-drop"

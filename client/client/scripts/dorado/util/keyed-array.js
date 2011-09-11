@@ -232,7 +232,10 @@ dorado.util.KeyedArray = $class(/** @scope dorado.util.KeyedArray.prototype */{
 	 * @return {dorado.util.KeyedArray} 克隆的数组。
 	 */
 	clone: function() {
-		return dorado.Core.clone(this);
+		var cloned = dorado.Core.clone(this);
+		cloned.items = dorado.Core.clone(this.items);
+		cloned._keyMap = dorado.Core.clone(this._keyMap);
+		return cloned;
 	},
 	
 	/**
