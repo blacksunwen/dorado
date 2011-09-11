@@ -90,8 +90,9 @@
 			}
 			action.doSubmitData(data);
 		},
-		doExecuteAsync: function() {
+		doExecuteAsync: function(callback) {
 			this.doExecuteSync();
+			$callback(callback, true);
 		}
 	});
 })();

@@ -578,6 +578,10 @@
 							renderer = $singleton(dorado.widget.grid.CheckBoxCellRenderer);
 							align = "center";
 						}
+					} 
+					else if (dtCode >= dorado.DataType.PRIMITIVE_INT && dtCode <= dorado.DataType.FLOAT) {
+						renderer = $singleton(dorado.widget.grid.DefaultCellRenderer);
+						align = "right";
 					} else {
 						renderer = $singleton(dorado.widget.grid.DefaultCellRenderer);
 					}
