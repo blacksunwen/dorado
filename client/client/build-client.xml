@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="build" default="build">
-	<property name="skin.names" value="inherent,default" />
+	<property name="skin.names" value="inherent,default,gray" />
 
 	<target name="copy-skin">
 		<mkdir dir="${dist}/skins/${skin.name}" />
