@@ -153,7 +153,7 @@
 			/**
 			 * 激活右键菜单的Tab，可能会被激活的右键菜单使用。
 			 * @type dorado.widget.tab.Tab
-			 * @attribute
+			 * @attribute readOnly
 			 */
 			contextMenuTab: {
 				readOnly: true
