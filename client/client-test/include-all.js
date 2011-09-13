@@ -1,6 +1,6 @@
 (function() {
 
-	var skin = "default";
+	var skin = "gray";
 
 	var testLibsBefore = [
 		"client/scripts/json/json2.js",
