@@ -18,6 +18,7 @@
 
 .i-toolbar .toolbar-right{
 	position: absolute;
+    height: 23px;
 	right: 0;
 	top: 1px;
 }
