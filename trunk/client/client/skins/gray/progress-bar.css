@@ -1,26 +1,8 @@
 .d-progress-bar{
-	height: 18px;
 	border: 1px #cccccf solid;
 	background: url(base/progressbar-bg.png) 0 -16px repeat-x;
-	overflow: hidden;
-	position: relative;
-	font-size: 9pt;
 }
 
 .d-progress-bar .bar{
-	height: 16px;
 	background: url(base/progressbar-bg.png) 0 0 repeat-x scroll;
-	position: absolute;
-	left: 1px;
-	top: 1px;
-}
-
-.d-progress-bar .msg{
-	width: 100%;
-	position: absolute;
-	left: 0px;
-	top: 0px;
-	text-align: center;
-	line-height: 18px;
-	vertical-align: middle;
 }

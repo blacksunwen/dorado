@@ -125,6 +125,7 @@
 }
 
 .d-tabbar .menu-button{
+    height: 21px;
 	background: url(base/tab-buttons.gif) 0 -42px no-repeat;
 }
 

@@ -1,85 +1,44 @@
-.d-tabbar{
+.d-tabbar {
     height: 23px;
-    padding: 0;
-    position: relative;
 }
 
 .d-tabbar .tabs-wrap{
     height: 23px;
-    overflow: hidden;
-
-    position: relative;
 }
 
 .d-tabbar .tabs-wrap .tabs{
-    width: 5000px;
-	height: 23px;
-	padding: 1px 0 0 4px;
-    margin: 0;
-
-    position: absolute;
-    left: 0;
-    top: 0;
-}
-
-.d-tabbar .tabs-wrap .tabs li{
-    list-style-type: none;
-}
-
-.d-tabbar .tab{
-    float: left;
-	cursor: default;
-    position: relative;
-    padding-left: 7px;
+    padding: 1px 0 0 4px;
+    height: 23px;
 }
 
 .d-tabbar .tab-disabled{
-    color: gray;
+	color: gray;
 }
 
 .d-tabbar .tab .tab-left{
-    float: left;
-    position: relative;
-    display: inline-block;
-
-	height: 23px;
+    height: 23px;
     margin-right: 7px;
     line-height: 22px;
 }
 
 .d-tabbar .tab .icon{
-    float: left;
-    display: inline-block;
-
     height: 23px;
     padding: 0 4px 0 12px;
-    background: transparent no-repeat 0 center;
+	background: transparent no-repeat 0 center;
 }
 
 .d-tabbar .tab .caption{
-    float: left;
-    display: inline-block;
-    white-space:nowrap;
-    overflow: hidden;
-
     height: 23px;
     line-height: 20px;
     padding: 0 4px 0 4px;
 }
 
 .d-tabbar .tab .tab-right{
-    position: absolute;
-    right: 0;
-    top: 0;
-    display: inline-block;
-
     padding-left: 7px;
-	height: 23px;
+    height: 23px;
 }
 
 .d-tabbar .tab .close{
-	cursor: pointer;
-    position: absolute;
     right: 0;
     top: 5px;
 
@@ -104,41 +63,6 @@
 }
 
 .d-tabbar .left-button{
-	cursor: pointer;
-	width: 20px;
-    height: 20px;
-	margin-top: 1px;
-	margin-right: 2px;
-    display: inline;
-}
-
-.d-tabbar .right-button{
-	cursor: pointer;
-	width: 20px;
-    height: 20px;
-	margin: 1px 1px 0 2px;
-    display: inline;
-}
-
-.d-tabbar .menu-button{
-	cursor: pointer;
-	width: 20px;
-    height: 20px;
-	margin-top: 1px;
-    display: inline;
-}
-
-.d-tabbar .left-button{
-    position: absolute;
-    left: 0;
-}
-
-.d-tabbar .right-button, .d-tabbar .menu-button{
-    position: absolute;
-    right: 0;
-}
-
-.d-tabbar .left-button{
 	background: url(base/tabbar-buttons.png) 0 0 no-repeat;
 }
 
@@ -151,9 +75,9 @@
 }
 
 .d-tabbar .left-button-disabled{
-    background-position: 0 0;
-    opacity: 0.5;
-    filter: alpha(opacity=50);
+	background-position: 0 0;
+	opacity: 0.5;
+	filter: alpha(opacity=50);
 }
 
 .d-tabbar .right-button{
@@ -169,12 +93,13 @@
 }
 
 .d-tabbar .right-button-disabled{
-    background-position: 0 -20px;
-    opacity: 0.5;
-    filter: alpha(opacity=50);
+	background-position: 0 -20px;
+	opacity: 0.5;
+	filter: alpha(opacity=50);
 }
 
 .d-tabbar .menu-button{
+	height: 20px;
 	background: url(base/tabbar-buttons.png) 0 -40px no-repeat;
 }
 
@@ -183,9 +108,9 @@
 }
 
 .d-tabbar .menu-button-disabled{
-    background-position: 0 -40px;
-    opacity: 0.5;
-    filter: alpha(opacity=50);
+	background-position: 0 -40px;
+	opacity: 0.5;
+	filter: alpha(opacity=50);
 }
 
 .d-tabbar .menu-button-toggled{
@@ -193,7 +118,7 @@
 }
 
 .d-tabbar-top{
-    background: #efefef url(base/tabs-top-final-bg.png) repeat-x 0 -132px;
+	background: #efefef url(base/tabs-top-final-bg.png) repeat-x 0 -132px;
 }
 
 .d-tabbar-top .tab{
@@ -209,7 +134,7 @@
 }
 
 .d-tabbar-top .tab .tab-left{
-    background: url(base/tabs-top-final-bg.png) repeat-x 0 -110px;
+	background: url(base/tabs-top-final-bg.png) repeat-x 0 -110px;
 }
 
 .d-tabbar-top .tab .tab-right{
@@ -233,7 +158,7 @@
 }
 
 .d-tabbar-bottom{
-    background: #efefef url(base/tabs-bottom-final-bg.png) repeat-x 0 -134px;
+	background: #efefef url(base/tabs-bottom-final-bg.png) repeat-x 0 -134px;
 }
 
 .d-tabbar-bottom .tabs-wrap .tabs{
@@ -241,12 +166,12 @@
 }
 
 .d-tabbar-bottom .tab{
-	background: transparent url(base/tabs-bottom-final-bg.png) no-repeat 0 -44px;
     height: 22px;
+	background: transparent url(base/tabs-bottom-final-bg.png) no-repeat 0 -44px;
 }
 
 .d-tabbar-bottom .tab .tab-left{
-    background: url(base/tabs-bottom-final-bg.png) repeat-x 0 -110px;
+	background: url(base/tabs-bottom-final-bg.png) repeat-x 0 -110px;
     height: 22px;
 }
 
@@ -268,19 +193,19 @@
 }
 
 .d-tabbar-bottom .tab-hover .tab-left{
-    background-position: 0 -88px;
+	background-position: 0 -88px;
 }
 
 .d-tabbar-bottom .tab-hover .tab-right{
 	background-position: right -22px;
 }
 
-.d-tabbar-bottom .tab-selected {
-    background-position: 0 0;
+.d-tabbar-bottom .tab-selected{
+	background-position: 0 0;
 }
 
 .d-tabbar-bottom .tab-selected .tab-left{
-    background-position: 0 -66px;
+	background-position: 0 -66px;
 }
 
 .d-tabbar-bottom .tab-selected .tab-right{
@@ -291,6 +216,12 @@
     top: 3px;
 }
 
-.d-tabbar-bottom .left-button, .d-tabbar-bottom .right-button, .d-tabbar-bottom .menu-button{
-    margin-top: 2px;
+.d-tabbar-bottom .left-button, .d-tabbar-bottom .right-button,
+.d-tabbar-bottom .menu-button, .d-tabbar-bottom .i-icon-button,
+.d-tabbar-bottom .i-icon-button-trigger{
+    margin-top: 1px;
+}
+
+.d-tabbar-bottom .d-icon-button{
+	top: 1px;
 }
