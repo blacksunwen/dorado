@@ -118,7 +118,7 @@
 }
 
 .d-tabbar-top{
-	background: #efefef url(base/tabs-top-final-bg.png) repeat-x 0 -132px;
+	background: transparent url(base/tabs-top-final-bg.png) repeat-x 0 -132px;
 }
 
 .d-tabbar-top .tab{
@@ -158,7 +158,7 @@
 }
 
 .d-tabbar-bottom{
-	background: #efefef url(base/tabs-bottom-final-bg.png) repeat-x 0 -134px;
+	background: transparent url(base/tabs-bottom-final-bg.png) repeat-x 0 -134px;
 }
 
 .d-tabbar-bottom .tabs-wrap .tabs{
