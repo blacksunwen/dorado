@@ -64,8 +64,12 @@
 
 .d-dialog .dialog-body-wrap .dialog-body{
     padding: 0;
-    margin: 0 6px 0 6px;
+    margin: 0 1px 0 1px;
 	background-color: #efefef;
+}
+
+.d-dialog .dialog-footer{
+    height: 6px;
 }
 
 .d-dialog .dialog-footer .dialog-footer-left{

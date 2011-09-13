@@ -34,7 +34,7 @@
 }
 
 .d-group-box .caption-bar .bar-right{
-	background: #fff url("base/groupbox-bg.gif") right -20px no-repeat;
+	background: transparent url("base/groupbox-bg.gif") right -20px no-repeat;
 }
 
 .d-group-box .caption-bar .caption{
