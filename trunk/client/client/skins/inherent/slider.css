@@ -46,6 +46,10 @@
 	width: 20px;
 }
 
+.i-slider-vertical .slider-current {
+    position: absolute;
+}
+
 .i-slider-horizental{
 	height: 20px;
 }
@@ -76,4 +80,8 @@
 .i-slider-horizental .slider-body{
 	margin: 0 5px 0 5px;
 	height: 20px;
+}
+
+.i-slider-horizental .slider-current {
+    position: absolute;
 }
