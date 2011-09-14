@@ -21,12 +21,12 @@ public class TopViewOutputter extends ViewOutputter {
 		View view = (View) object;
 		view.setId("viewMain");
 		Set<String> dependsPackages = context.getDependsPackages();
-		dependsPackages.add("common");
+		
 		dependsPackages.add("widget");
-
 		if (WebConfigure.getBoolean("view.debugEnabled")) {
 			dependsPackages.add("debugger");
 		}
+		dependsPackages.add("common");
 
 		Writer writer = context.getWriter();
 		writer.append("jQuery(document).ready(function(){\n").append("try{\n");
