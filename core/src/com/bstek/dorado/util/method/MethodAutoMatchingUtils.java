@@ -581,7 +581,7 @@ public abstract class MethodAutoMatchingUtils {
 				System.arraycopy(exactParameters, 0, newExactParameters, 0,
 						exactParameters.length);
 
-				int i = optionalParameterTypes.length;
+				int i = exactParameters.length;
 				for (ParameterFactory parameterFactory : systemOptionalParameters) {
 					newExactParameterTypes[i] = parameterFactory
 							.getParameterType();
