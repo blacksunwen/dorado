@@ -8,7 +8,7 @@ import com.bstek.dorado.annotation.ViewAttribute;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-3-26
  */
-@ClientEvents( { @ClientEvent(name = "onOpen"), @ClientEvent(name = "onClose"),
+@ClientEvents({ @ClientEvent(name = "onOpen"), @ClientEvent(name = "onClose"),
 		@ClientEvent(name = "onValueSelect") })
 public abstract class DropDown extends Trigger {
 	private int width;
@@ -19,6 +19,7 @@ public abstract class DropDown extends Trigger {
 	private int maxHeight;
 	private boolean autoOpen;
 	private boolean postValueOnSelect = true;
+	private String assignmentMap;
 
 	public int getWidth() {
 		return width;
@@ -83,6 +84,14 @@ public abstract class DropDown extends Trigger {
 
 	public void setPostValueOnSelect(boolean postValueOnSelect) {
 		this.postValueOnSelect = postValueOnSelect;
+	}
+
+	public String getAssignmentMap() {
+		return assignmentMap;
+	}
+
+	public void setAssignmentMap(String assignmentMap) {
+		this.assignmentMap = assignmentMap;
 	}
 
 }
