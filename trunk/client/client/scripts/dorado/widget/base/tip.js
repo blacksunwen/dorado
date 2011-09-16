@@ -112,7 +112,7 @@
 		createDom: function() {
 			var tip = this, dom, doms = {};
             if (dorado.Browser.msie) {
-                dom = $DomUtils.xCreateElement({
+                dom = $DomUtils.xCreate({
                     tagName: "div",
                     className: tip._className,
                     content: [
@@ -162,7 +162,7 @@
                     ]
                 }, null, doms);
             } else {
-                dom = $DomUtils.xCreateElement({
+                dom = $DomUtils.xCreate({
                     tagName: "div",
                     className: tip._className,
                     content: {

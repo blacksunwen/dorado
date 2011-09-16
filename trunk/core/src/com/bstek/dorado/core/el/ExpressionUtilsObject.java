@@ -1,6 +1,9 @@
 package com.bstek.dorado.core.el;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.core.Constants;
 
@@ -13,6 +16,23 @@ public class ExpressionUtilsObject {
 	public Date getDate() {
 		return new Date();
 	}
+
+	public String getDate(String format) {
+		return formatDate(new Date(), format);
+	}
+
+	public String formatDate(Date date, String format) {
+		return new SimpleDateFormat(format).format(date);
+	}
+
+	public String formatNumber(Number d, String format) {
+		return new DecimalFormat(format).format(d);
+	}
+
+	public String trim(String s) {
+		return StringUtils.trim(s);
+	}
+
 }
 
 class Date extends java.util.Date {

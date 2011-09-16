@@ -78,7 +78,7 @@ dorado.widget.RadioButton = $extend(dorado.widget.Control, /** @scope dorado.wid
 	createDom: function() {
 		var radioButton = this, dom, checked = radioButton._checked;
 		
-		dom = $DomUtils.xCreateElement({
+		dom = $DomUtils.xCreate({
 			tagName: "div",
 			className: radioButton._className,
 			content: [{
@@ -315,7 +315,7 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 	createDom: function() {
 		var radioGroup = this, layout = radioGroup._layout, radioButtons = radioGroup._radioButtons;
 		
-		var dom = $DomUtils.xCreateElement({
+		var dom = $DomUtils.xCreate({
 			tagName: "div",
 			className: radioGroup._className
 		});

@@ -1,6 +1,6 @@
 package com.bstek.dorado.common.service;
 
-import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.InitializingBean;
 
@@ -12,24 +12,26 @@ import com.bstek.dorado.util.Assert;
  */
 public class ExposedServiceRegister implements InitializingBean {
 	private ExposedServiceManager exposedServiceManager;
-	private List<String> services;
+	private Map<String, String> services;
 
 	public void setExposedServiceManager(
 			ExposedServiceManager exposedServiceManager) {
 		this.exposedServiceManager = exposedServiceManager;
 	}
 
-	public void setServices(List<String> services) {
+	public void setServices(Map<String, String> services) {
 		this.services = services;
 	}
 
 	public void afterPropertiesSet() throws Exception {
 		if (services != null) {
 			synchronized (exposedServiceManager) {
-				for (String service : services) {
-					String bean, method = null;
-
+				for (Map.Entry<String, String> entry : services.entrySet()) {
+					String name = entry.getKey(), service = entry.getValue();
+					Assert.notEmpty(name);
 					Assert.notEmpty(service);
+
+					String bean, method = null;
 					int i = service.lastIndexOf('#');
 					if (i > 0) {
 						bean = service.substring(0, i);
@@ -38,7 +40,7 @@ public class ExposedServiceRegister implements InitializingBean {
 						bean = service;
 					}
 					exposedServiceManager.registerService(new ExposedService(
-							service, bean, method));
+							name, bean, method));
 				}
 			}
 		}

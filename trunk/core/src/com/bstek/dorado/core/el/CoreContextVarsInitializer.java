@@ -11,6 +11,7 @@ import com.bstek.dorado.util.SingletonBeanFactory;
 
 /**
  * Dorado核心EL隐式变量的初始化器。
+ * 
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Dec 17, 2007
  */
@@ -21,16 +22,16 @@ public class CoreContextVarsInitializer implements ContextVarsInitializer {
 	public void initializeContext(Map<String, Object> vars) {
 		try {
 			vars.put("null", null);
-			vars.put("this", null);	// 避免jexl在编译时报出警告
+			vars.put("this", null); // 避免jexl在编译时报出警告
 			vars.put("env", System.getenv());
 			vars.put("system", System.getProperties());
 			vars.put("configure", Configure.getStore());
 			vars.put("context", Context.getCurrent());
+			vars.put("ctx", new ContextWrapperMap(Context.getCurrent()));
 
 			vars.put("util", SingletonBeanFactory
 					.getInstance(ExpressionUtilsObject.class));
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			logger.error(e, e);
 		}
 	}

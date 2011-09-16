@@ -12,7 +12,7 @@
 	 * @param dom tab的dom。
 	 */
 	function createTabCloseDom(tab, dom, doms) {
-		var closeEl = $DomUtils.xCreateElement({
+		var closeEl = $DomUtils.xCreate({
 			tagName: "span",
 			className: "close",
 			contextKey: "close"
@@ -277,7 +277,7 @@
 		},
 
 		createDom: function() {
-			var tab = this, doms = {}, dom = $DomUtils.xCreateElement({
+			var tab = this, doms = {}, dom = $DomUtils.xCreate({
 				tagName: "li",
 				className: tab._className,
 				content: [

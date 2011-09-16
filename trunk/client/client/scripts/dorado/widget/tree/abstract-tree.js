@@ -530,7 +530,7 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 	},
 
 	createItemDomDetail: function(row, node) {
-		var cell = $DomUtils.xCreateElement({
+		var cell = $DomUtils.xCreate({
 			tagName: "TD",
 			className: "i-tree-node d-tree-node",
 			content: [{
@@ -678,7 +678,7 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 			var itemDom = draggingInfo.get("element");
 			if (itemDom) {
 				var cell = itemDom.firstChild;
-				var contentDom = $DomUtils.xCreateElement({
+				var contentDom = $DomUtils.xCreate({
 					tagName: "div",
 					className: "d-list-dragging-item " + cell.className
 				});

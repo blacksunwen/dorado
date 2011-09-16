@@ -32,7 +32,7 @@
 			var id = "_dorado_invisible_div";
 			var div = document.getElementById(id);
 			if (!div) {
-				div = this.xCreateElement({
+				div = this.xCreate({
 					tagName: "DIV",
 					id: id,
 					style: {
@@ -53,7 +53,7 @@
 			var id = "_dorado_undisplay_div";
 			var div = document.getElementById(id);
 			if (!div) {
-				div = this.xCreateElement({
+				div = this.xCreate({
 					tagName: "DIV",
 					id: id,
 					style: {
@@ -115,7 +115,7 @@
 		},
 		
 		/**
-		 * 根据以JSON形式定义的组件的模板信息快速的创建元素。
+		 * 根据以JSON形式定义的组件的模板信息快速的创建DOM元素。
 		 * @param {Object|Object[]} template JSON形式定义的组件的模板信息。
 		 * @param {Object} [arg] JSON形式定义的模板参数。
 		 * @param {Object} [context] 用于在创建过程中搜集子元素引用的上下文对象。
@@ -124,13 +124,13 @@
 		 *
 		 * @example
 		 * // 创建一个按钮
-		 * dorado.dom.xCreateElement({
+		 * $DomUtils.xCreate({
 		 * 	tagName: "button",
 		 * 	content: "Click Me",	// 定义按钮的标题
 		 * 	style: {	// 定义按钮的style
 		 * 		border: "1px black solid",
 		 * 		backgroundColor: "white"
-		 * 	}
+		 * 	},
 		 * 	onclick: function() {	// 定义onclick事件
 		 * 		alert("Button clicked.");
 		 * 	}
@@ -139,7 +139,7 @@
 		 * @example
 		 * // 创建两个DIV, 同时将两个DIV注册到上下文中
 		 * var context = {};
-		 * dorado.dom.xCreateElement([
+		 * $DomUtils.xCreate([
 		 * 	{
 		 * 		tagName: "div",
 		 * 		content: "Content of DIV1",
@@ -156,7 +156,7 @@
 		 *
 		 * @example
 		 * // 一个表格
-		 * dorado.dom.xCreateElement(
+		 * $DomUtils.xCreate(
 		 * 	{
 		 * 		tagName: "table",
 		 * 		content: [
@@ -205,9 +205,9 @@
 		 * 	buttonText1 : "Button 1",
 		 * 	buttonText2 : "Button 2"
 		 * };
-		 * dorado.dom.xCreateElement(template, arg);
+		 * $DomUtils.xCreate(template, arg);
 		 */
-		xCreateElement: function(template, arg, context) {
+		xCreate: function(template, arg, context) {
 		
 			function setAttrs(el, attrs, jqEl) {
 				//attrName is not global. modified by frank
@@ -291,7 +291,7 @@
 			if (template instanceof Array) {
 				var elements = [];
 				for (var i = 0; i < template.length; i++) {
-					elements.push(this.xCreateElement(template[i], arg, context));
+					elements.push(this.xCreate(template[i], arg, context));
 				}
 				return elements;
 			}
@@ -328,17 +328,25 @@
 									appendChild(el, document.createTextNode(c));
 								}
 							} else {
-								appendChild(el, this.xCreateElement(c, arg, context));
+								appendChild(el, this.xCreate(c, arg, context));
 							}
 						}
 					} else if (content.nodeType) {
 						appendChild(el, content);
 					} else {
-						appendChild(el, this.xCreateElement(content, arg, context));
+						appendChild(el, this.xCreate(content, arg, context));
 					}
 				}
 			}
 			return el;
+		},
+		
+		/**
+		 * @deprecated
+		 * @see $DomUtils.xCreate
+		 */
+		xCreateElement: function() {
+			return this.xCreate.apply(this, arguments);
 		},
 		
 		BLANK_IMG: dorado.Setting["common.contextPath"] + "dorado/client/resources/blank.gif",
@@ -382,7 +390,7 @@
 				if (fn && fn(child) === false) child = null;
 			}
 			if (!child) {
-				child = (tagName instanceof Function) ? tagName(index) : ((tagName.constructor == String) ? document.createElement(tagName) : this.xCreateElement(tagName));
+				child = (tagName instanceof Function) ? tagName(index) : ((tagName.constructor == String) ? document.createElement(tagName) : this.xCreate(tagName));
 				(refChild) ? parentNode.insertBefore(child, refChild) : parentNode.appendChild(child);
 			}
 			return child;

@@ -202,6 +202,30 @@ dorado.Toolkits = {
 	 */
 	URL_VARS: {},
 	
+	concatURL: function() {
+		var url = "";
+		for (var i = 0; i < arguments.length; i++) {
+			var section = arguments[i];
+			if (typeof section == "string" && section) {
+				section = jQuery.trim(section);
+				var e = (url.charAt(url.length - 1) == '/');
+				var s = (section.charAt(0) == '/');
+				if (s == e) {
+					if (s) {
+						url += section.substring(1);
+					}
+					else {
+						url += '/' + section;
+					}
+				}
+				else {
+					url += section;
+				}
+			}
+		}
+		return url;
+	},
+	
 	/**
 	 * 将一段给定URL转换为最终的可以使用的URL。
 	 * <p>
@@ -223,23 +247,18 @@ dorado.Toolkits = {
 	 * @see dorado.Toolkits.URL_VARS
 	 */
 	translateURL: function(url) {
-		if (url && url.charAt(0) == '>') {
-			var reg = /^\>.*\>/, m = url.match(reg);
-			if (m) {
-				m = m[0];
-				var varName = m.substring(1, m.length - 1);
-				var s1 = this.URL_VARS[varName] || "", s2 = url.substring(m.length);
-				if (s1) {
-					if (s1.charAt(s1.length - 1) == '/') {
-						if (s2.charAt(0) == '/') s2 = s2.substring(1);
-					}
-					else if (s2.charAt(0) != '/') s2 = '/' + s2;
-				}
-				url = s1 + s2;
-				if (url.charAt(0) == '>') url = this.translateURL(url);
-			} else {
-				url = $setting["common.contextPath"] + url.substring(1);
-			}
+		if (!url) return url;
+
+		var reg = /^.+\>/, m = url.match(reg);
+		if (m) {
+			m = m[0];
+			var varName = m.substring(0, m.length - 1);
+			if (varName.charAt(0) == '>') varName = varName.substring(1);
+			var s1 = this.URL_VARS[varName] || "", s2 = url.substring(m.length);
+			url = this.concatURL(s1, s2);
+		}
+		else if (url.charAt(0) == '>') {
+			url = this.concatURL($setting["common.contextPath"], url.substring(1));
 		}
 		return url;
 	},

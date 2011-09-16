@@ -262,7 +262,7 @@
 				label = dom.firstChild;
 			} else {
 				$fly(dom).empty();
-				label = $DomUtils.xCreateElement({
+				label = $DomUtils.xCreate({
 					tagName: "LABEL",
 					className: "caption"
 				});
@@ -275,7 +275,7 @@
 				
 				var sortState = column.get("sortState"), sortIndicator;
 				if (sortState) {
-					sortIndicator = $DomUtils.xCreateElement({
+					sortIndicator = $DomUtils.xCreate({
 						tagName: "LABEL",
 						className: "sort-state sort-state-" + sortState
 					});
@@ -1081,7 +1081,7 @@
 		 * @protected
 		 */
 		createDom: function() {
-			return $DomUtils.xCreateElement({
+			return $DomUtils.xCreate({
 				tagName: "DIV",
 				className: "d-grid-cell-editor" + (this.showBorder ? " d-grid-cell-editor-border" : ''),
 				style: {

@@ -595,7 +595,7 @@
 				}
 			}
 			
-			var dom = $DomUtils.xCreateElement({
+			var dom = $DomUtils.xCreate({
 				tagName: "DIV",
 				content: [labelConfig, editorConfig],
 				style: {

@@ -218,7 +218,7 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 		var checkBox = this, dom;
 		if(checkBox._iconOnly) {
 			checkBox._className = checkBox._className + "-icononly";
-			dom = $DomUtils.xCreateElement({
+			dom = $DomUtils.xCreate({
 				tagName : "div",
 				className : "i-checkbox-icononly " + checkBox._className
 			});
@@ -243,7 +243,7 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 				}
 			});
 		} else {
-			dom = $DomUtils.xCreateElement({
+			dom = $DomUtils.xCreate({
 				tagName : "div",
 				className : checkBox._className,
 				content : [{

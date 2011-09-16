@@ -21,13 +21,13 @@ dorado.widget.HtmlContainer = $extend(dorado.widget.Container, /** @scope dorado
 		 * <ul>
 		 * <li>String - 通过一段HTML字符串来指定控件的内容。</li>
 		 * <li>HTMLElement - 直接指定一个DOM对象作为控件的内容。</li>
-		 * <li>Object - JSON形式定义的组件的模板信息。{@link dorado.util.Dom.xCreateElement}。</li>
+		 * <li>Object - JSON形式定义的组件的模板信息。{@link dorado.util.Dom.xCreate}。</li>
 		 * <li>Object[] - JSON形式定义的组件的模板信息(同上)或DOM对象的数组。</li>
 		 * </ul>
 		 * </p>
 		 * @param {String|HTMLElement|Object|Object[]} content 控件的内容。
 		 * @attribute
-		 * @see dorado.util.Dom.xCreateElement
+		 * @see dorado.util.Dom.xCreate
 		 */
 		content: {
 			skipRefresh: true,
@@ -123,7 +123,7 @@ dorado.widget.HtmlContainer = $extend(dorado.widget.Container, /** @scope dorado
 			} else if (content.nodeType) {
 				doms.push(content);
 			} else {
-				doms.push($DomUtils.xCreateElement(content, null, context));
+				doms.push($DomUtils.xCreate(content, null, context));
 			}
 		}
 		
@@ -138,10 +138,10 @@ dorado.widget.HtmlContainer = $extend(dorado.widget.Container, /** @scope dorado
 	/**
 	 * 根据contextKey返回一个内部的子DOM元素。
 	 * <p>此方法仅当content属性是通过Object或Object[]方式定义是有效，
-	 * 即此时HTMLContainer中的DOM元素是通过{@link dorado.util.Dom.xCreateElement}方法创建的来的。</p>
+	 * 即此时HTMLContainer中的DOM元素是通过{@link dorado.util.Dom.xCreate}方法创建的来的。</p>
 	 * @param {String} contextKey 子DOM元素对应的contextKey。
 	 * @return {HTMLElement} 子DOM元素。
-	 * @see {@link dorado.util.Dom.xCreateElement}
+	 * @see {@link dorado.util.Dom.xCreate}
 	 */
 	getSubDom: function(contextKey) {
 		this.getDom();

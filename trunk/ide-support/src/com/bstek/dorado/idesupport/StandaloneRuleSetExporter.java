@@ -53,6 +53,12 @@ public class StandaloneRuleSetExporter {
 	private static final String CONTEXT_CONFIG_PROPERTY = "core.contextConfigLocation";
 	private static final String WEB_CONFIGURE_LOCATION = "com/bstek/dorado/web/configure.properties";
 
+	private static final String CONTEXT_FILE_EXT = ".xml";
+	private static final String HOME_CONTEXT_PREFIX = HOME_LOCATION_PREFIX
+			+ "context";
+	private static final String HOME_CONTEXT_XML = HOME_CONTEXT_PREFIX
+			+ CONTEXT_FILE_EXT;
+
 	private String doradoHome;
 
 	private StandaloneRuleSetExporter(String doradoHome) {
@@ -185,10 +191,12 @@ public class StandaloneRuleSetExporter {
 		loadConfigureProperties(configureStore, resourceLoader,
 				WEB_CONFIGURE_LOCATION, false);
 
-		String configureLocation = HOME_LOCATION_PREFIX
-				+ "configure.properties";
-		loadConfigureProperties(configureStore, resourceLoader,
-				configureLocation, false);
+		if (StringUtils.isNotEmpty(doradoHome)) {
+			String configureLocation = HOME_LOCATION_PREFIX
+					+ "configure.properties";
+			loadConfigureProperties(configureStore, resourceLoader,
+					configureLocation, false);
+		}
 
 		List<String> contextLocations = new ArrayList<String>();
 		// findPackages
@@ -206,6 +214,14 @@ public class StandaloneRuleSetExporter {
 		if (contextLocationsFromProperties != null) {
 			pushLocations(contextLocations, contextLocationsFromProperties);
 		}
+
+		Resource resource;
+		resource = resourceLoader
+				.getResource(getRealResourcePath(HOME_CONTEXT_XML));
+		if (resource.exists()) {
+			pushLocations(contextLocations, HOME_CONTEXT_XML);
+		}
+
 		configureStore.set(CONTEXT_CONFIG_PROPERTY,
 				StringUtils.join(getRealResourcesPath(contextLocations), ';'));
 		ConsoleUtils.outputConfigureItem(CONTEXT_CONFIG_PROPERTY);

@@ -490,7 +490,7 @@
 
 		_createColumn: function(columnIndex) {
 			var portal = this, columnDoms = portal._columnDoms,
-				columnDom = columnDoms[columnIndex] = $DomUtils.xCreateElement({
+				columnDom = columnDoms[columnIndex] = $DomUtils.xCreate({
 					tagName: "div",
 					className: "portal-column"
 				});
@@ -547,7 +547,7 @@
 		},
 
 		createDom: function() {
-			var portal = this, dom = $DomUtils.xCreateElement({
+			var portal = this, dom = $DomUtils.xCreate({
 				tagName: "div",
 				className: portal._className,
 				style: {

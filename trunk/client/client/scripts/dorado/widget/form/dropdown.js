@@ -498,7 +498,7 @@ dorado.widget.DropDownBox = $extend([dorado.widget.Control, dorado.widget.FloatC
 	},
 	
 	createDom: function() {
-		return $DomUtils.xCreateElement({
+		return $DomUtils.xCreate({
 			tagName: "DIV",
 			style: {
 				position: "absolute",

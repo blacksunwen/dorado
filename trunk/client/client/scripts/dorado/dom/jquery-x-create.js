@@ -7,11 +7,11 @@
  * @param {boolean} [options.insertBefore] 是否已插入而不是追加的方式将新创建的元素添加到父对象中。xCreate默认是以appendChild的模式添加新元素的。
  * @param {HTMLElement} [options.refNode] 当使用insertBefore方式添加新元素时，应将新元素插入到哪一个原有的子元素之前。如果不定义此参数，则将插入所有子元素之前。
  * @param {boolean} [options.returnNewElements] 指定此方法是否返回新创建的元素，否则方法返回的是调用者自身。
- * @param {Object} [options.context] 上下文对象，见{@link dorado.util.Dom.xCreateElement}中的context参数。
+ * @param {Object} [options.context] 上下文对象，见{@link dorado.util.Dom.xCreate}中的context参数。
  * @return {jQuery} jQuery对象或新创建的元素。
  * @description 根据以JSON形式定义的组件的模板信息快速的插入批量元素。<br>
- * 更多的例子请参考{@link dorado.Dom.xCreateElement}的文档。
- * @see dorado.util.Dom.xCreateElement
+ * 更多的例子请参考{@link dorado.Dom.xCreate}的文档。
+ * @see dorado.util.Dom.xCreate
  *
  * @example
  * // 创建并插入一个按钮
@@ -29,7 +29,7 @@
  */
 jQuery.fn.xCreate = function(template, arg, options) {
 	var parentEl = this[0];
-	var element = $DomUtils.xCreateElement(template, arg, (options ? options.context : null));
+	var element = $DomUtils.xCreate(template, arg, (options ? options.context : null));
 	if (element) {
 		var insertBef = false, returnNewElements = false, refNode = null;
 		if (options instanceof Object) {

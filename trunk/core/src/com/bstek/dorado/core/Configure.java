@@ -25,6 +25,9 @@ public abstract class Configure {
 	private static ConfigureStore store;
 
 	static {
+		// disable ehcache's update check
+		System.setProperty("net.sf.ehcache.skipUpdateCheck", "false");
+
 		Properties properties = new Properties();
 		store = new PropertiesConfigureStore(properties);
 

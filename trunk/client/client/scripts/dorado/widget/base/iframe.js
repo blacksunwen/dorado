@@ -69,7 +69,7 @@
 		},
 
 		createDom: function() {
-			var frame = this, doms = {}, dom = $DomUtils.xCreateElement( {
+			var frame = this, doms = {}, dom = $DomUtils.xCreate( {
 				tagName: "div",
 				className: frame._className,
 				content: [ {

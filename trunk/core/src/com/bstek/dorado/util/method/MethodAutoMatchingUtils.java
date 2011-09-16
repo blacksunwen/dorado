@@ -2,6 +2,7 @@ package com.bstek.dorado.util.method;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import org.apache.commons.collections.keyvalue.MultiKey;
 import org.apache.commons.lang.ArrayUtils;
 import org.springframework.util.NumberUtils;
 
+import com.bstek.dorado.core.Context;
 import com.bstek.dorado.util.proxy.ProxyBeanUtils;
 import com.thoughtworks.paranamer.BytecodeReadingParanamer;
 import com.thoughtworks.paranamer.CachingParanamer;
@@ -31,9 +33,27 @@ public abstract class MethodAutoMatchingUtils {
 	private static Map<Object, Method[]> methodCache = new Hashtable<Object, Method[]>();
 	private static Paranamer paranamer = new CachingParanamer(
 			new BytecodeReadingParanamer());
+	private static Collection<ParameterFactory> systemOptionalParameters;
 
 	private static class IgnoreType {
 	};
+
+	private static Collection<ParameterFactory> getSystemOptionalParameters()
+			throws Exception {
+		if (systemOptionalParameters == null) {
+			Context context = Context.getCurrent();
+			SystemOptionalParametersFactory systemOptionalParametersFactory = (SystemOptionalParametersFactory) context
+					.getServiceBean("systemOptionalParametersFactory");
+			if (systemOptionalParametersFactory != null) {
+				systemOptionalParameters = systemOptionalParametersFactory
+						.getOptionalParameters();
+			}
+			if (systemOptionalParameters == null) {
+				systemOptionalParameters = new ArrayList<ParameterFactory>();
+			}
+		}
+		return systemOptionalParameters;
+	}
 
 	private static Object getCacheKey(Class<?> cl, String methodName) {
 		return new MultiKey(cl, methodName);
@@ -139,7 +159,7 @@ public abstract class MethodAutoMatchingUtils {
 	 * @throws MethodAutoMatchingException
 	 *             如果找到了一个以上的匹配方法或没有找到任何匹配的方法将抛出此异常。
 	 */
-	public static MethodDescriptor findMatchingMethod(Method[] methods,
+	private static MethodDescriptor findMatchingMethod(Method[] methods,
 			Class<?>[] requiredTypes, Class<?>[] exactTypes,
 			Class<?>[] optionalTypes, Class<?> returnType)
 			throws MethodAutoMatchingException {
@@ -441,7 +461,7 @@ public abstract class MethodAutoMatchingUtils {
 	 * @throws MethodAutoMatchingException
 	 *             如果找到了一个以上的匹配方法或没有找到任何匹配的方法将抛出此异常。
 	 */
-	public static MethodDescriptor findMatchingMethodByParameterNames(
+	private static MethodDescriptor findMatchingMethodByParameterNames(
 			Method[] methods, String[] requiredParameterNames,
 			String[] optionalParameterNames)
 			throws MethodAutoMatchingException, SecurityException,
@@ -525,17 +545,17 @@ public abstract class MethodAutoMatchingUtils {
 	 *            方法数组。
 	 * @param object
 	 *            方法的宿主对象。
-	 * @param requiredTypes
+	 * @param requiredParameterTypes
 	 *            必须提供的方法参数类型。
-	 * @param requiredArgs
+	 * @param requiredParameters
 	 *            必须的方法参数。
-	 * @param exactTypes
+	 * @param exactParameterTypes
 	 *            类型必须严格匹配的方法参数类型。
-	 * @param exactArgs
+	 * @param exactParameters
 	 *            类型必须严格匹配的方法参数。
-	 * @param optionalTypes
+	 * @param optionalParameterTypes
 	 *            可选的方法参数类型。
-	 * @param optionalArgs
+	 * @param optionalParameters
 	 *            可选的方法参数。
 	 * @param returnType
 	 *            返回值类型，如果为null则表示忽略对返回值类型的判断。
@@ -544,30 +564,70 @@ public abstract class MethodAutoMatchingUtils {
 	 * @throws Exception
 	 */
 	public static Object invokeMethod(Method[] methods, Object object,
-			Class<?>[] requiredTypes, Object[] requiredArgs,
-			Class<?>[] exactTypes, Object[] exactArgs,
-			Class<?>[] optionalTypes, Object[] optionalArgs, Class<?> returnType)
-			throws MethodAutoMatchingException, Exception {
+			Class<?>[] requiredParameterTypes, Object[] requiredParameters,
+			Class<?>[] exactParameterTypes, Object[] exactParameters,
+			Class<?>[] optionalParameterTypes, Object[] optionalParameters,
+			Class<?> returnType) throws MethodAutoMatchingException, Exception {
+		Collection<ParameterFactory> systemOptionalParameters = getSystemOptionalParameters();
+		if (!systemOptionalParameters.isEmpty()) {
+			if (exactParameterTypes != null) {
+				Class<?>[] newExactParameterTypes = new Class<?>[exactParameterTypes.length
+						+ systemOptionalParameters.size()];
+				System.arraycopy(exactParameterTypes, 0,
+						newExactParameterTypes, 0, exactParameterTypes.length);
+
+				Object[] newExactParameters = new Object[exactParameters.length
+						+ systemOptionalParameters.size()];
+				System.arraycopy(exactParameters, 0, newExactParameters, 0,
+						exactParameters.length);
+
+				int i = optionalParameterTypes.length;
+				for (ParameterFactory parameterFactory : systemOptionalParameters) {
+					newExactParameterTypes[i] = parameterFactory
+							.getParameterType();
+					newExactParameters[i] = parameterFactory.getParameter();
+					i++;
+				}
+
+				exactParameterTypes = newExactParameterTypes;
+				exactParameters = newExactParameters;
+			} else {
+				exactParameterTypes = new Class<?>[systemOptionalParameters
+						.size()];
+				exactParameters = new Object[systemOptionalParameters.size()];
+
+				int i = 0;
+				for (ParameterFactory parameterFactory : systemOptionalParameters) {
+					exactParameterTypes[i] = parameterFactory
+							.getParameterType();
+					exactParameters[i] = parameterFactory.getParameter();
+					i++;
+				}
+			}
+		}
+
 		MethodDescriptor methodDescriptor = findMatchingMethod(methods,
-				requiredTypes, exactTypes, optionalTypes, returnType);
+				requiredParameterTypes, exactParameterTypes,
+				optionalParameterTypes, returnType);
 
-		if (requiredArgs == null) {
-			requiredArgs = EMPTY_ARGS;
+		if (requiredParameters == null) {
+			requiredParameters = EMPTY_ARGS;
 		}
-		if (exactArgs == null) {
-			exactArgs = EMPTY_ARGS;
+		if (exactParameters == null) {
+			exactParameters = EMPTY_ARGS;
 		}
-		if (optionalArgs == null) {
-			optionalArgs = EMPTY_ARGS;
+		if (optionalParameters == null) {
+			optionalParameters = EMPTY_ARGS;
 		}
 
-		Object[] args = new Object[requiredArgs.length + exactArgs.length
-				+ optionalArgs.length];
-		System.arraycopy(requiredArgs, 0, args, 0, requiredArgs.length);
-		System.arraycopy(exactArgs, 0, args, requiredArgs.length,
-				exactArgs.length);
-		System.arraycopy(optionalArgs, 0, args, requiredArgs.length
-				+ exactArgs.length, optionalArgs.length);
+		Object[] args = new Object[requiredParameters.length
+				+ exactParameters.length + optionalParameters.length];
+		System.arraycopy(requiredParameters, 0, args, 0,
+				requiredParameters.length);
+		System.arraycopy(exactParameters, 0, args, requiredParameters.length,
+				exactParameters.length);
+		System.arraycopy(optionalParameters, 0, args, requiredParameters.length
+				+ exactParameters.length, optionalParameters.length);
 		return invokeMethod(methodDescriptor, object, args);
 	}
 
@@ -595,6 +655,45 @@ public abstract class MethodAutoMatchingUtils {
 			String[] requiredParameterNames, Object[] requiredParameters,
 			String[] optionalParameterNames, Object[] optionalParameters)
 			throws MethodAutoMatchingException, Exception {
+		Collection<ParameterFactory> systemOptionalParameters = getSystemOptionalParameters();
+		if (!systemOptionalParameters.isEmpty()) {
+			if (optionalParameterNames != null) {
+				String[] newOptionalParameterNames = new String[optionalParameterNames.length
+						+ systemOptionalParameters.size()];
+				System.arraycopy(optionalParameterNames, 0,
+						newOptionalParameterNames, 0,
+						optionalParameterNames.length);
+
+				Object[] newOptionalParameters = new Object[optionalParameters.length
+						+ systemOptionalParameters.size()];
+				System.arraycopy(optionalParameters, 0, newOptionalParameters,
+						0, optionalParameters.length);
+
+				int i = optionalParameterNames.length;
+				for (ParameterFactory parameterFactory : systemOptionalParameters) {
+					newOptionalParameterNames[i] = parameterFactory
+							.getParameterName();
+					newOptionalParameters[i] = parameterFactory.getParameter();
+					i++;
+				}
+
+				optionalParameterNames = newOptionalParameterNames;
+				optionalParameters = newOptionalParameters;
+			} else {
+				optionalParameterNames = new String[systemOptionalParameters
+						.size()];
+				optionalParameters = new Object[systemOptionalParameters.size()];
+
+				int i = 0;
+				for (ParameterFactory parameterFactory : systemOptionalParameters) {
+					optionalParameterNames[i] = parameterFactory
+							.getParameterName();
+					optionalParameters[i] = parameterFactory.getParameter();
+					i++;
+				}
+			}
+		}
+
 		MethodDescriptor methodDescriptor = findMatchingMethodByParameterNames(
 				methods, requiredParameterNames, optionalParameterNames);
 

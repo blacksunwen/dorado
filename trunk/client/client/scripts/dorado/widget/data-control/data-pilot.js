@@ -433,7 +433,7 @@
 			
 			var gotoPage = this;
 			
-			this._labelPrefix = $DomUtils.xCreateElement({
+			this._labelPrefix = $DomUtils.xCreate({
 				tagName: "SPAN",
 				className: "text",
 				style: "float: left"
@@ -470,7 +470,7 @@
 			spinner.render(dom);
 			this.registerInnerControl(spinner);
 			
-			this._labelSuffix = $DomUtils.xCreateElement({
+			this._labelSuffix = $DomUtils.xCreate({
 				tagName: "SPAN",
 				className: "text",
 				style: "float: left"

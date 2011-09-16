@@ -323,7 +323,7 @@
 	function getExceptionDialog() {
 		if (!exceptionDialog) {
 			var doms = {};
-			var contentDom = $DomUtils.xCreateElement({
+			var contentDom = $DomUtils.xCreate({
 				tagName: "DIV",
 				className: "d-exception-content",
 				content: [{

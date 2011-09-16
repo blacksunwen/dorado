@@ -252,7 +252,7 @@
 		createDom: function() {
 			var button = this, cls = button._className, doms = {}, action = button._action || {};
 
-			var dom = $DomUtils.xCreateElement({
+			var dom = $DomUtils.xCreate({
 				tagName: "span",
 				className: cls,
 				content: [

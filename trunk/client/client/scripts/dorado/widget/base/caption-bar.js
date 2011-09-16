@@ -176,7 +176,7 @@ dorado.widget.CaptionBar = $extend(dorado.widget.Control, /** @scope dorado.widg
 	},
 	
 	createDom: function() {
-		var bar = this, buttons = bar._buttons, doms = {}, dom = $DomUtils.xCreateElement({
+		var bar = this, buttons = bar._buttons, doms = {}, dom = $DomUtils.xCreate({
 			tagName: "div",
 			className: "i-caption-bar " + bar._className,
 			content: [{

@@ -436,7 +436,7 @@
             editor.render(this._doms.editorWrap);
         },
         createDom: function() {
-            var editor = this, doms = {}, dom = $DomUtils.xCreateElement({
+            var editor = this, doms = {}, dom = $DomUtils.xCreate({
                 tagName: "div",
                 className: editor._className,
                 content: [

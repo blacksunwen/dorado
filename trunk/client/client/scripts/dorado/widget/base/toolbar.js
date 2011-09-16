@@ -71,7 +71,7 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 	},
 	
 	createDom: function() {
-		var toolbar = this, doms = {}, dom = $DomUtils.xCreateElement({
+		var toolbar = this, doms = {}, dom = $DomUtils.xCreate({
 			tagName: "div",
 			className: "i-toolbar " + toolbar._className,
 			content: [{

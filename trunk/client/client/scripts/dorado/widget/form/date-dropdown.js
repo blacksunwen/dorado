@@ -417,7 +417,7 @@
 				});
 			}
 
-			var picker = this, doms = {}, dom = $DomUtils.xCreateElement({
+			var picker = this, doms = {}, dom = $DomUtils.xCreate({
 				tagName: "div",
 				className: "d-date-picker",
 				content: [{
