@@ -7,8 +7,8 @@
 
 	<dependencies>
 		<!-- COMPILE -->
-		<dependency org="javax.servlet" name="servlet-api" rev="2.5" conf="provided->compile(*),master(*)" />
-		<dependency org="javax.servlet" name="jsp-api" rev="2.0" conf="provided->compile(*),master(*)" />
+		<dependency org="javax.servlet" name="servlet-api" rev="2.5" conf="compile" />
+		<dependency org="javax.servlet" name="jsp-api" rev="2.0" conf="compile" />
 		
 		<dependency org="cglib" name="cglib" rev="2.2" conf="compile" />
 		<dependency org="javassist" name="javassist" rev="3.12.1.GA" conf="compile" />
