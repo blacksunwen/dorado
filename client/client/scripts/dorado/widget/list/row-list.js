@@ -98,7 +98,7 @@
 		},
 		
 		createDataTable: function() {
-			var table = this._dataTable = $DomUtils.xCreateElement({
+			var table = this._dataTable = $DomUtils.xCreate({
 				tagName: "TABLE",
 				cellSpacing: 0,
 				cellPadding: 0,
@@ -398,7 +398,7 @@
 			
 			if (!this._dataTable) container.appendChild(this.createDataTable());
 			if (!beginBlankRow) {
-				this._beginBlankRow = beginBlankRow = $DomUtils.xCreateElement({
+				this._beginBlankRow = beginBlankRow = $DomUtils.xCreate({
 					tagName: "TR",
 					className: "preparing-area",
 					content: "^TD"
@@ -408,7 +408,7 @@
 				container.firstChild.appendChild(thead);
 			}
 			if (!endBlankRow) {
-				this._endBlankRow = endBlankRow = $DomUtils.xCreateElement({
+				this._endBlankRow = endBlankRow = $DomUtils.xCreate({
 					tagName: "TR",
 					className: "preparing-area",
 					content: "^TD"
@@ -831,7 +831,7 @@
 	dorado.widget.RowList.getDraggingInsertIndicator = function() {
 		var indicator = this._draggingInsertIndicator;
 		if (indicator == null) {
-			indicator = $DomUtils.xCreateElement({
+			indicator = $DomUtils.xCreate({
 				tagName: "div",
 				className: "i-list-dragging-insert-indicator d-list-dragging-insert-indicator"
 			});

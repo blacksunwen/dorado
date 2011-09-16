@@ -633,7 +633,7 @@
 		createExpandingIndicator: function() {
 			var row = this._expandingIndicator;
 			if (row == null) {
-				this._expandingIndicator = row = $DomUtils.xCreateElement({
+				this._expandingIndicator = row = $DomUtils.xCreate({
 					tagName: "TR",
 					className: "d-tree-expanding-placeholder",
 					content: "^TD"

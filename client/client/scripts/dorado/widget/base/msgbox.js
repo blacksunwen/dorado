@@ -134,7 +134,7 @@ dorado.MessageBox = {
 				dorado.widget.Dialog.prototype.doOnAttachToDocument.apply(dialog, []);
 				if (dom) {
 					var lastIcon = dorado.MessageBox._lastIcon || "";
-					dom.appendChild($DomUtils.xCreateElement({
+					dom.appendChild($DomUtils.xCreate({
 						tagName: "div",
 						className: "msg-content",
 						contextKey: "msgContent",
@@ -150,7 +150,7 @@ dorado.MessageBox = {
 						}]
 					}, null, doms));
 
-					var editorWrap = $DomUtils.xCreateElement({ tagName: "div", className: "editor-wrap" });
+					var editorWrap = $DomUtils.xCreate({ tagName: "div", className: "editor-wrap" });
 
 					doms.editorWrap = editorWrap;
 
@@ -162,7 +162,7 @@ dorado.MessageBox = {
 
 					dom.appendChild(editorWrap);
 
-					var textareaWrap = $DomUtils.xCreateElement({
+					var textareaWrap = $DomUtils.xCreate({
 						tagName: "div",
 						className: "textarea-wrap"
 					});

@@ -464,7 +464,7 @@
         },
 
 		createDom: function() {
-			var tabbar = this, tabs = tabbar._tabs, doms = {}, dom = $DomUtils.xCreateElement({
+			var tabbar = this, tabs = tabbar._tabs, doms = {}, dom = $DomUtils.xCreate({
 				tagName: "div",
 				className: "i-tabbar " + tabbar._className,
 				contextKey: "tabbar",

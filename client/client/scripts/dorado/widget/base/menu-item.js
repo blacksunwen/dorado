@@ -201,7 +201,7 @@
 		},
 
 		createDom: function() {
-			var item = this, action = item._action || {}, doms = {}, dom = $DomUtils.xCreateElement({
+			var item = this, action = item._action || {}, doms = {}, dom = $DomUtils.xCreate({
 				tagName: "li",
 				className: "menu-item",
 				content: {

@@ -60,7 +60,7 @@ dorado.widget.ProgressBar = $extend(dorado.widget.Control, /** @scope dorado.wid
 	},
 
 	createDom: function() {
-		var bar = this, doms = {}, dom = $DomUtils.xCreateElement({
+		var bar = this, doms = {}, dom = $DomUtils.xCreate({
 			tagName: "div",
 			className: bar._className,
 			content: [

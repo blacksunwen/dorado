@@ -151,7 +151,7 @@ dorado.util.TaskGroupPanel = $extend(dorado.RenderableElement, { /** @scope dora
 
 	createDom: function() {
 		var panel = this, dom, doms = {}, taskGroupConfig = panel.taskGroupConfig;
-		dom = $DomUtils.xCreateElement({
+		dom = $DomUtils.xCreate({
 			tagName: "div",
 			className: panel._className,
 			content: [{
@@ -216,7 +216,7 @@ dorado.util.TaskGroupPanel = $extend(dorado.RenderableElement, { /** @scope dora
 	 * @param {int} taskId 任务Id。
 	 */
 	addTask: function(taskInfo, taskId) {
-		var panel = this, taskGroupConfig = panel.taskGroupConfig, listDom = panel._doms.taskList, li = $DomUtils.xCreateElement({
+		var panel = this, taskGroupConfig = panel.taskGroupConfig, listDom = panel._doms.taskList, li = $DomUtils.xCreate({
 			tagName: "li",
 			className: "task-item",
 			content: [

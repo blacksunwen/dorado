@@ -336,7 +336,7 @@
 			}
 		},
 		createTextDom : function() {
-			var spinner = this, doms = {}, dom = $DomUtils.xCreateElement({
+			var spinner = this, doms = {}, dom = $DomUtils.xCreate({
 				tagName : "div",
 				className : "editor slots-container",
 				contextKey : "editor"

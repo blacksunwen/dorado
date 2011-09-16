@@ -143,7 +143,7 @@
 		 * @example
 		 * var s = '';
 		 * ['A', 'B', 'C'].each(function(item) {
-		 * 	s += item
+		 * 	s += item;
 		 * });
 		 * // s == "ABC"
 		 */

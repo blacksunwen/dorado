@@ -111,7 +111,7 @@
 			$invokeSuper.call(this, arguments);
 		},
 		createDom: function() {
-			return $DomUtils.xCreateElement({
+			return $DomUtils.xCreate({
 				tagName: "TABLE",
 				cellSpacing: 0,
 				cellPadding: 0,

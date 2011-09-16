@@ -35,7 +35,7 @@ dorado.widget.ColorPicker = $extend([dorado.widget.Control, dorado.widget.FloatC
 		onClear: {}
 	},
 	createDom: function() {
-		var picker = this, doms = {}, dom = $DomUtils.xCreateElement({
+		var picker = this, doms = {}, dom = $DomUtils.xCreate({
 			tagName: "div",
 			className: picker._className,
 			content: [{

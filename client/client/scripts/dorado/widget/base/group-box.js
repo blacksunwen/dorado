@@ -26,7 +26,7 @@ dorado.widget.FieldSet = $extend(dorado.widget.AbstractPanel, /** @scope dorado.
 	},
 
 	createDom: function() {
-		var fieldset = this, doms = {}, dom = $DomUtils.xCreateElement({
+		var fieldset = this, doms = {}, dom = $DomUtils.xCreate({
 			tagName: "fieldset",
 			className: "i-field-set " + fieldset._className,
 			content: [{
@@ -157,7 +157,7 @@ dorado.widget.GroupBox = $extend(dorado.widget.AbstractPanel, /** @scope dorado.
 	},
 
 	createDom: function() {
-		var groupBox = this, doms = {}, dom = $DomUtils.xCreateElement({
+		var groupBox = this, doms = {}, dom = $DomUtils.xCreate({
 			tagName: "div",
 			className: groupBox._className,
 			content: [

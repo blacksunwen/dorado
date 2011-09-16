@@ -135,7 +135,7 @@
 
 		createDom: function() {
 			var monthLabel = $resource("dorado.baseWidget.AllMonths"), month_label = monthLabel.split(",");
-			var picker = this, doms = {}, dom = $DomUtils.xCreateElement({
+			var picker = this, doms = {}, dom = $DomUtils.xCreate({
 				tagName: "div",
 				className: "d-year-month-picker",
 				content: [{

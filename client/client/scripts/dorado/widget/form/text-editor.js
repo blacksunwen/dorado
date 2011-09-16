@@ -309,11 +309,12 @@
 				} else {
 					readOnly = true;
 				}
+				this._readOnly2 = readOnly;
 			} else {
+				this._readOnly2 = false;
 				var dom = this._dom, textDom = this._textDom, readOnly = this._readOnly || this._readOnly2;
 				$fly(dom).toggleClass(this._className + "-readonly", !!readOnly);
 			}
-			this._readOnly2 = readOnly;
 			this.resetReadOnly();
 			
 			if (this._triggerChanged) {
@@ -492,7 +493,7 @@
 			var dirtyFlag = this._dirtyFlag;
 			if (dirty) {
 				if (!dirtyFlag) {
-					this._dirtyFlag = dirtyFlag = $DomUtils.xCreateElement({
+					this._dirtyFlag = dirtyFlag = $DomUtils.xCreate({
 						tagName: "LABEL",
 						className: "dirty-flag"
 					});

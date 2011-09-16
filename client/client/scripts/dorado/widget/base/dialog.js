@@ -379,7 +379,7 @@
 		},
 
 		createDom: function() {
-			var dialog = this, doms = {}, dom = $DomUtils.xCreateElement({
+			var dialog = this, doms = {}, dom = $DomUtils.xCreate({
 				tagName: "div",
 				className: dialog._className,
 				style: {

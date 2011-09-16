@@ -158,7 +158,7 @@
 				getImageDom : function(dom) {
 					var img = dom.firstChild;
 					if (img == null) {
-						img = $DomUtils.xCreateElement({
+						img = $DomUtils.xCreate({
 							tagName : "IMG",
 							style : {
 								position : "absolute"
@@ -172,7 +172,7 @@
 				getLabelDom : function(dom) {
 					var label = dom.lastChild;
 					if (label == null || label.nodeName != "CENTER") {
-						label = $DomUtils.xCreateElement({
+						label = $DomUtils.xCreate({
 							tagName : "CENTER",
 							style : {
 								position : "absolute"
@@ -498,7 +498,7 @@
 				createDom : function() {
 					var dom = $invokeSuper.call(this, arguments);
 					var container = this._container = $DomUtils
-							.xCreateElement({
+							.xCreate({
 								tagName : "DIV",
 								style : {
 									position : "relative",
@@ -764,7 +764,7 @@
 				},
 
 				createItemDom : function(item) {
-					var blockDom = $DomUtils.xCreateElement({
+					var blockDom = $DomUtils.xCreate({
 						tagName : "DIV",
 						className : "block",
 						style : {
@@ -1173,7 +1173,7 @@
 					if (this._dragMode != "control") {
 						var itemDom = draggingInfo.get("element");
 						if (itemDom) {
-							var contentDom = $DomUtils.xCreateElement({
+							var contentDom = $DomUtils.xCreate({
 								tagName : "div",
 								className : "d-list-dragging-item"
 							});
@@ -1325,7 +1325,7 @@
 		var code = (direction == "horizontal") ? 'h' : 'v';
 		var indicator = this["_draggingInsertIndicator-" + code];
 		if (indicator == null) {
-			indicator = $DomUtils.xCreateElement({
+			indicator = $DomUtils.xCreate({
 				tagName : "div",
 				className : "i-block-dragging-insert-indicator-" + code
 						+ " d-block-dragging-insert-indicator-" + code

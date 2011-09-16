@@ -90,7 +90,7 @@
 			logs.push(level + ":" + msg);
 
 			if (logger._rendered) {
-				var dom = logger._dom, logDom = $DomUtils.xCreateElement({
+				var dom = logger._dom, logDom = $DomUtils.xCreate({
 					tagName: "div",
 					className: "log log-" + level,
 					style: {
@@ -139,7 +139,7 @@
 		},
 
 		createDom: function() {
-			var logger = this, dom = $DomUtils.xCreateElement({
+			var logger = this, dom = $DomUtils.xCreate({
 				tagName: "div"
 			}), logs = logger._logs, logDom;
 			if (logs) {
@@ -147,7 +147,7 @@
 					var log = logs[i], semicolonIndex = log.indexOf(":"), level = log.substring(0, semicolonIndex),
 						msg = log.substr(semicolonIndex + 1);
 
-					logDom = $DomUtils.xCreateElement({
+					logDom = $DomUtils.xCreate({
 						tagName: "div",
 						className: "log log-" + level,
 						style: {

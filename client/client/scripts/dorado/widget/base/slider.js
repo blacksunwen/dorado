@@ -101,7 +101,7 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
 	},
 	createDom: function() {
 		var slider = this, dom, doms = {}, orientation = slider._orientation, className = slider._className;
-		dom = $DomUtils.xCreateElement({
+		dom = $DomUtils.xCreate({
 			tagName: "div",
 			className: slider._className,
 			content: [

@@ -211,7 +211,7 @@ dorado.widget.AbstractList = $extend(dorado.widget.Control, /** @scope dorado.wi
 		if (this._dragMode != "control") {
 			var itemDom = draggingInfo.get("element");
 			if (itemDom) {
-				var contentDom = $DomUtils.xCreateElement({
+				var contentDom = $DomUtils.xCreate({
 					tagName: "div",
 					className: "d-list-dragging-item"
 				});

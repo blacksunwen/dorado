@@ -93,7 +93,7 @@
 		},
 		
 		createDom: function() {
-			var context = {}, dom = $DomUtils.xCreateElement({
+			var context = {}, dom = $DomUtils.xCreate({
 				tagName: "TABLE",
 				className: this._className,
 				cellSpacing: 0,
@@ -261,7 +261,7 @@
 		},
 		
 		createDom: function() {
-			var context = {}, dom = $DomUtils.xCreateElement({
+			var context = {}, dom = $DomUtils.xCreate({
 				tagName: "TABLE",
 				className: this._className,
 				cellSpacing: 0,
@@ -278,7 +278,7 @@
 		preparePackTable: function(container, pack) {
 			if (!this._packTable) {
 				var context = {};
-				this._packTable = $DomUtils.xCreateElement({
+				this._packTable = $DomUtils.xCreate({
 					tagName: "TABLE",
 					cellSpacing: 0,
 					cellPadding: 0,
@@ -360,7 +360,7 @@
 				
 				var w, row = domCache[region.id], cell, div, isNewRow = false;
 				if (!row) {
-					row = $DomUtils.xCreateElement({
+					row = $DomUtils.xCreate({
 						tagName: "TR",
 						content: {
 							tagName: "TD",

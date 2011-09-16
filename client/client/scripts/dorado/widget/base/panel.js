@@ -469,7 +469,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 	createDom: function() {
 		var panel = this, doms = {}, border = panel._border, dom;
 		if ((dorado.Browser.msie || !$setting["widget.panel.useCssCurveBorder"]) && border == "curve") {
-			dom = $DomUtils.xCreateElement({
+			dom = $DomUtils.xCreate({
 				tagName: "div",
 				className: panel._className,
 				content: [{
@@ -511,7 +511,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 			
 			panel._doms = doms;
 		} else {
-			dom = $DomUtils.xCreateElement({
+			dom = $DomUtils.xCreate({
 				tagName: "div",
 				className: panel._className,
 				content: {

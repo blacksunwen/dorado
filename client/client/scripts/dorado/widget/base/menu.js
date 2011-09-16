@@ -143,12 +143,12 @@
 		createOverflowarrow: function() {
 			var menu = this, dom = menu._dom, doms = menu._doms;
 			if (dom) {
-				var topArrow = $DomUtils.xCreateElement({
+				var topArrow = $DomUtils.xCreate({
 					tagName: "div",
 					className: "overflow-top-arrow"
 				});
 
-				var bottomArrow = $DomUtils.xCreateElement({
+				var bottomArrow = $DomUtils.xCreate({
 					tagName: "div",
 					className: "overflow-bottom-arrow"
 				});
@@ -670,7 +670,7 @@
 		},
 
 		createDom: function() {
-			var menu = this, doms = {}, dom = $DomUtils.xCreateElement({
+			var menu = this, doms = {}, dom = $DomUtils.xCreate({
 				tagName: "div",
 				className: "i-menu " + menu._className,
 				content: {

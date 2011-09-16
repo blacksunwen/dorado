@@ -89,7 +89,7 @@ dorado.DraggingIndicator = $extend(dorado.RenderableElement, /** @scope dorado.D
 	},
 	
 	createDom: function() {
-		var dom = $DomUtils.xCreateElement({
+		var dom = $DomUtils.xCreate({
 			tagName: "div",
 			content: [{
 				tagName: "div",

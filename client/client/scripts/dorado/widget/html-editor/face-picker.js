@@ -18,7 +18,7 @@ dorado.widget.EmoticonPicker = $extend([dorado.widget.Control, dorado.widget.Flo
 		onSelect: {}
 	},
 	createDom: function() {
-		var picker = this, doms = {}, dom = $DomUtils.xCreateElement({
+		var picker = this, doms = {}, dom = $DomUtils.xCreate({
 			tagName: "div",
 			className: picker._className,
 			content: [{
@@ -125,7 +125,7 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
 		onSelect: {}
 	},
 	createDom: function() {
-		var picker = this, doms = {}, dom = $DomUtils.xCreateElement({
+		var picker = this, doms = {}, dom = $DomUtils.xCreate({
 			tagName: "div",
 			className: picker._className,
 			content: [{

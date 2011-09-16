@@ -14,8 +14,8 @@ public class StandaloneRuleSetExporterTest extends TestCase {
 	 * @throws Exception
 	 */
 	public void test() throws Exception {
-		RuleSet ruleSet = StandaloneRuleSetExporter
-				.getRuleSet("file:D:/projects/dorado7/workspace/sample-center/web/WEB-INF/dorado-home");
+		RuleSet ruleSet = StandaloneRuleSetExporter.getRuleSet(System
+				.getenv("DORADO7_WORKSPACE") + "/sample-center/web/WEB-INF/dorado-home");
 		List<PackageInfo> packageInfos = ruleSet.getPackageInfos();
 
 		assertNotNull(packageInfos);

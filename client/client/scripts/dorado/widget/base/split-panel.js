@@ -279,7 +279,7 @@
 		},
 
 		_createCollapseBar: function() {
-			var panel = this, doms = panel._doms, bar = $DomUtils.xCreateElement({
+			var panel = this, doms = panel._doms, bar = $DomUtils.xCreate({
 				tagName: "div",
 				className: "collapse-bar",
 				contextKey: "collapseBar",
@@ -307,7 +307,7 @@
 		},
 
 		createDom: function() {
-			var panel = this, doms = {}, dom = $DomUtils.xCreateElement({
+			var panel = this, doms = {}, dom = $DomUtils.xCreate({
 				tagName: "div",
 				className: panel._className,
 				content: [

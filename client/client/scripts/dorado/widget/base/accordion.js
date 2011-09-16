@@ -140,7 +140,7 @@ dorado.widget.Section = $extend(dorado.widget.Control, /** @scope dorado.widget.
 	},
 
 	createDom: function() {
-		var section = this, doms = {}, dom = $DomUtils.xCreateElement({
+		var section = this, doms = {}, dom = $DomUtils.xCreate({
 			tagName: "div",
 			className: "i-section " + section._className,
 			content: [

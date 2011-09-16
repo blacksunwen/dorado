@@ -1083,7 +1083,7 @@
 			
 			function getDivScroll() {
 				if (this._divScroll) return this._divScroll;
-				var div = this._divScroll = $DomUtils.xCreateElement({
+				var div = this._divScroll = $DomUtils.xCreate({
 					tagName: "DIV",
 					style: {
 						width: "100%",
@@ -1940,7 +1940,7 @@
 		getHeaderOptionButton: function(column) {
 			var cell = column.headerCell, button = cell.lastChild;
 			if ((!button || button.className != "d-grid-header-option-button") && cell) {
-				button = $DomUtils.xCreateElement({
+				button = $DomUtils.xCreate({
 					tagName: "DIV",
 					className: "d-grid-header-option-button",
 					style: {
@@ -2207,7 +2207,7 @@
 		getFloatRefreshPanel: function() {
 			var floatRefreshPanel = this._floatRefreshPanel;
 			if (!floatRefreshPanel) {
-				this._floatRefreshPanel = floatRefreshPanel = $DomUtils.xCreateElement({
+				this._floatRefreshPanel = floatRefreshPanel = $DomUtils.xCreate({
 					tagName: "DIV",
 					className: "float-refresh-panel"
 				});
@@ -2279,7 +2279,7 @@
 		getFloatFilterPanel: function() {
 			var floatFilterPanel = this._floatFilterPanel;
 			if (!floatFilterPanel) {
-				this._floatFilterPanel = floatFilterPanel = $DomUtils.xCreateElement({
+				this._floatFilterPanel = floatFilterPanel = $DomUtils.xCreate({
 					tagName: "DIV",
 					className: "float-filter-panel"
 				});
@@ -2570,14 +2570,14 @@
 		createItemModel: dorado._NULL_FUNCTION,
 
 		createDom: function() {
-			this._container = $DomUtils.xCreateElement({
+			this._container = $DomUtils.xCreate({
 				tagName: "DIV",
 				style: {
 					overflow: "hidden",
 					height: "100%"
 				}
 			});
-			var tableFrame = $DomUtils.xCreateElement({
+			var tableFrame = $DomUtils.xCreate({
 				tagName: "TABLE",
 				className: "frame-table",
 				cellSpacing: 0,
@@ -2635,7 +2635,7 @@
 				var headerTable = this._headerTable;
 				var headerTBody = this._headerTBody;
 				if (!headerTable) {
-					headerTable = this._headerTable = $DomUtils.xCreateElement({
+					headerTable = this._headerTable = $DomUtils.xCreate({
 						tagName: "TABLE",
 						className: "header-table",
 						cellSpacing: 0,
@@ -2646,7 +2646,7 @@
 						content: "^TBODY"
 					});
 
-					tableFrameHeader.appendChild($DomUtils.xCreateElement({
+					tableFrameHeader.appendChild($DomUtils.xCreate({
 						tagName: "TR",
 						style: {
 							height: "1px"
@@ -2812,7 +2812,7 @@
 				var footerTable = this._footerTable;
 				var footerRow = this._footerRow;
 				if (!footerTable) {
-					footerTable = this._footerTable = $DomUtils.xCreateElement({
+					footerTable = this._footerTable = $DomUtils.xCreate({
 						tagName: "TABLE",
 						className: "footer-table",
 						cellSpacing: 0,
@@ -2822,7 +2822,7 @@
 						},
 						content: "^TR"
 					});
-					tableFrameFooter.appendChild($DomUtils.xCreateElement({
+					tableFrameFooter.appendChild($DomUtils.xCreate({
 						tagName: "TR",
 						style: {
 							height: "1px"
@@ -3237,7 +3237,7 @@
 		var cell = draggableElement;
 		var ind = window._dragColIndicator;
 		if (!ind) {
-			window._dragColIndicator = ind = $DomUtils.xCreateElement({
+			window._dragColIndicator = ind = $DomUtils.xCreate({
 				tagName: "DIV",
 				className: "d-grid-col-drag-helper",
 				style: {
@@ -3272,21 +3272,21 @@
 
 		var ind = window._colDropIndicator;
 		if (!ind) {
-			var ind1 = $DomUtils.xCreateElement({
+			var ind1 = $DomUtils.xCreate({
 				tagName: "DIV",
 				className: "d-grid-col-drag-top",
 				style: {
 					position: "absolute"
 				}
 			});
-			var ind2 = $DomUtils.xCreateElement({
+			var ind2 = $DomUtils.xCreate({
 				tagName: "DIV",
 				className: "d-grid-col-drag-bottom",
 				style: {
 					position: "absolute"
 				}
 			});
-			var ind3 = $DomUtils.xCreateElement({
+			var ind3 = $DomUtils.xCreate({
 				tagName: "DIV",
 				className: "d-grid-col-drop-indicator",
 				style: {
@@ -3337,7 +3337,7 @@
 	function showColumnResizeHandler(column) {
 		var handler = window._colResizingHanlder, minSize = 5;
 		if (!handler) {
-			window._colResizingHanlder = handler = $DomUtils.xCreateElement({
+			window._colResizingHanlder = handler = $DomUtils.xCreate({
 				tagName: "DIV",
 				className: "d-grid-col-resize-handler",
 				style: {

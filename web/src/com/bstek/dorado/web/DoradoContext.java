@@ -1,5 +1,6 @@
 package com.bstek.dorado.web;
 
+import java.util.Enumeration;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
@@ -226,8 +227,19 @@ public class DoradoContext extends SpringContextSupport {
 		return dispose((HttpServletRequest) null);
 	}
 
+	@SuppressWarnings("rawtypes")
+	private boolean hasAttribute(Enumeration names, String name) {
+		while (names.hasMoreElements()) {
+			if (name.equals(names.nextElement())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/**
-	 * 返回指定属性的值。此方法相当于从{@link #REQUEST}中获取属性值的操作。
+	 * 返回指定属性的值。 此方法按照{@link #REQUEST}、{@link #VIEW}、{@link #SESSION}、
+	 * {@link #APPLICATION}的顺序依次查找是否存在该属性，如果存在则立即返回该属性的值。
 	 * 
 	 * @param key
 	 *            属性名。
@@ -235,7 +247,28 @@ public class DoradoContext extends SpringContextSupport {
 	 */
 	@Override
 	public Object getAttribute(String key) {
-		return getAttribute(REQUEST, key);
+		if (request != null) {
+			if (hasAttribute(request.getAttributeNames(), key)) {
+				return request.getAttribute(key);
+			} else if (viewContext != null && viewContext.containsKey(key)) {
+				return viewContext.get(key);
+			} else {
+				HttpSession session = request.getSession(false);
+				if (session != null) {
+					if (hasAttribute(session.getAttributeNames(), key)) {
+						return session.getAttribute(key);
+					} else {
+						ServletContext servletContext = session
+								.getServletContext();
+						if (hasAttribute(servletContext.getAttributeNames(),
+								key)) {
+							return servletContext.getAttribute(key);
+						}
+					}
+				}
+			}
+		}
+		return null;
 	}
 
 	@Override

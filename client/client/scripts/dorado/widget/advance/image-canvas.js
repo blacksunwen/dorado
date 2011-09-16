@@ -126,7 +126,7 @@
 
     function getZoomMagnifierEl(canvas){
         if(!zmEl){
-            zmEl = $DomUtils.xCreateElement({
+            zmEl = $DomUtils.xCreate({
                 tagName: "div",
                 className: "image-canvas-magnifier",
                 style: {
@@ -409,7 +409,7 @@
             	containment: canvasEl,
 	            helper: function() {
 					if (!selectProxy) {
-						selectProxy = $DomUtils.xCreateElement({
+						selectProxy = $DomUtils.xCreate({
 							tagName: "div",
 							className: "image-canvas-select-proxy",
 							style: {
