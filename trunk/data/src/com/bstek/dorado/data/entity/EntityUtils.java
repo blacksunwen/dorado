@@ -86,7 +86,7 @@ public abstract class EntityUtils {
 		return (String.class.equals(cl) || cl.isPrimitive()
 				|| Boolean.class.equals(cl)
 				|| Number.class.isAssignableFrom(cl) || cl.isEnum() || Date.class
-				.isAssignableFrom(cl));
+					.isAssignableFrom(cl));
 	}
 
 	public static EntityEnhancer getEntityEnhancer(Object entity) {
@@ -373,6 +373,24 @@ public abstract class EntityUtils {
 	public static Iterator getIterator(Collection entities,
 			FilterType filterType) {
 		return new EntityIterator(entities, filterType);
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static <E> Iterator<E> getIterator(Collection entities,
+			FilterType filterType, Class<E> cl) {
+		return new EntityIterator<E>(entities, filterType);
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static Iterable getIterable(Collection entities,
+			FilterType filterType) {
+		return new EntityIterator(entities, filterType);
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static <E> Iterable<E> getIterable(Collection entities,
+			FilterType filterType, Class<E> cl) {
+		return new EntityIterator<E>(entities, filterType);
 	}
 
 	@SuppressWarnings("unchecked")

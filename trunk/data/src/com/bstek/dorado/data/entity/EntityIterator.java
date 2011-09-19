@@ -9,7 +9,7 @@ import java.util.Iterator;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Jan 17, 2008
  */
-public class EntityIterator<E> implements Iterator<E> {
+public class EntityIterator<E> implements Iterator<E>, Iterable<E> {
 	private Iterator<E> iterator;
 	private FilterType filterType;
 	private boolean hasNext;
@@ -89,6 +89,10 @@ public class EntityIterator<E> implements Iterator<E> {
 		}
 		EntityUtils.markDeleted(lastEntity);
 		lastEntity = null;
+	}
+
+	public Iterator<E> iterator() {
+		return this;
 	}
 
 }
