@@ -190,10 +190,14 @@ dorado.widget.tree.Node = $extend([dorado.AttributeSupport, dorado.EventSupport]
 					node: this,
 					processDefault: true
 				};
-				tree.fireEvent("beforeNodeCheckedChange", tree, arg);
-				if (!arg.processDefault) return;
+				if (tree) {
+					tree.fireEvent("beforeNodeCheckedChange", tree, arg);
+					if (!arg.processDefault) return;
+				}
 				this._checked = checked;
-				tree.fireEvent("onNodeCheckedChange", tree, arg);
+				if (tree) {
+					tree.fireEvent("onNodeCheckedChange", tree, arg);
+				}
 				
 				if (this.get("checkable")) this._nodeCheckedChanged(this._checked, true, true);
 			}

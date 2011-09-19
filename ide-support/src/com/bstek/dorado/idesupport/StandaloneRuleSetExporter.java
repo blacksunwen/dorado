@@ -225,7 +225,7 @@ public class StandaloneRuleSetExporter {
 		configureStore.set(CONTEXT_CONFIG_PROPERTY,
 				StringUtils.join(getRealResourcesPath(contextLocations), ';'));
 		ConsoleUtils.outputConfigureItem(CONTEXT_CONFIG_PROPERTY);
-
+		
 		CommonContext.init();
 		try {
 			EngineStartupListenerManager.notifyStartup();

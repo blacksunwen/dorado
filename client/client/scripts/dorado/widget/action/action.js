@@ -256,7 +256,7 @@
 							 }
 							 */
 							if (success && eventArg.processDefault && self._successMessage) {
-								dorado.MessageBox.alert(self._successMessage);
+								dorado.widget.NotifyTipManager.notify(self._successMessage);
 							}
 						}
 					});
@@ -284,7 +284,7 @@
 					 }
 					 */
 					if (success && eventArg.processDefault && self._successMessage) {
-						dorado.MessageBox.alert(self._successMessage);
+						dorado.widget.NotifyTipManager.notify(self._successMessage);
 					}
 					return result;
 				}
