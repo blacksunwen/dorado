@@ -71,7 +71,7 @@
 		createDom: function() {
 			var frame = this, doms = {}, dom = $DomUtils.xCreate( {
 				tagName: "div",
-				className: frame._className,
+				className: "i-iframe " + frame._className,
 				content: [ {
 					tagName: "iframe",
 					contextKey: "iframe",

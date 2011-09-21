@@ -144,12 +144,12 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 		panel.doSetCollapsed(!collapsed);
 	},
 	
-	setContentContainerVisible: function() {
+	setContentContainerVisible: function(collapsed) {
 		var panel = this, buttons = panel._buttons;
 		if (buttons) {
 			for (var i = 0, j = buttons.length; i < j; i++) {
 				var button = buttons[i];
-				button.setActualVisible(!collapsed);
+				button.setActualVisible(collapsed);
 			}
 		}
 		$invokeSuper.call(this, arguments);

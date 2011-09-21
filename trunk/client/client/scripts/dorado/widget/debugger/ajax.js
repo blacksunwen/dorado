@@ -50,8 +50,8 @@
 					name: "Text",
 					property: "text"
 				}, {
-					name: "Error",
-					property: "error"
+					name: "Exception",
+					property: "exception"
 				}]
 			};
 
