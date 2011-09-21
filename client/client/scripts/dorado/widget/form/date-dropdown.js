@@ -498,7 +498,7 @@
 				caption: $resource("dorado.baseWidget.DatePickerConfirm"),
 				listener: {
 					onClick: function() {
-						picker.fireEvent("onPick", picker, picker._date);
+						picker.fireEvent("onPick", picker, new Date(picker._date.getTime()));
 					}
 				}
 			});
@@ -546,7 +546,7 @@
 					}
 					picker.setDate(parseInt(element.innerHTML, 10), true);
 					
-					picker.fireEvent("onPick", picker, date);
+					picker.fireEvent("onPick", picker, new Date(date.getTime()));
 				}
 			});
 			
@@ -798,7 +798,7 @@
 					break;
 				case 13: // enter
 					if (!ymPicker || !ymPicker._opened) {
-						datePicker.fireEvent("onPick", datePicker, datePicker._date);
+						datePicker.fireEvent("onPick", datePicker, new Date(datePicker._date.getTime()));
 						retValue = false;
 					}
 					break;
@@ -812,7 +812,7 @@
 			var dropDown = this, datePicker = dropDown.get("box.control");
 			if (datePicker) {
 				var date = editor.get("value");
-				if (date) datePicker.set("date", date);
+				if (date) datePicker.set("date", new Date(date.getTime()));
 				if (datePicker._yearMonthPicker && datePicker._yearMonthPicker._opened) {
 					datePicker.hideYMPicker(false);
 				}

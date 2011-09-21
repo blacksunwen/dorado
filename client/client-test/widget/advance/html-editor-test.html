@@ -24,11 +24,11 @@
 
         var dialog = new dorado.widget.Dialog({
             caption: "test",
-            width: 800,
-            height: 600,
+            width: 600,
+            height: 400,
             left: 200,
             top: 50,
-            modal: true,
+            //modal: true,
             children: [{
                 $type: "AutoForm",
                 cols: "*",
@@ -38,6 +38,7 @@
                     }
                 ]
             }],
+            showAnimateType: "none",
             buttons: [new dorado.widget.Button({
                 caption: "确定",
                 width: 80
@@ -47,9 +48,10 @@
             })]
         });
 
-
 		$(document).ready(function() {
-            dialog.show();
+            setTimeout(function() {
+                dialog.show();
+            }, 0);
 		});
 	</script>
 </head>
