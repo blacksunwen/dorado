@@ -679,7 +679,7 @@
 		return this.doGetSlotValue(attr);
 	}
 
-	function slotAttributeSetter(attr, value) {
+	function slotAttributeSetter(value, attr) {
 		this.doSetSlotValue(attr, value);
 	}
 
