@@ -34,9 +34,9 @@ public class Tip extends Control implements FloatControl {
 	private String caption;
 	private String text;
 	private boolean closeable;
-	private TipAnchor anchor;
-	private boolean anchorOffset;
-	private TipAnchorArrowAlign anchorArrowAlign = TipAnchorArrowAlign.center;
+	private TipArrowDirection arrowDirection = TipArrowDirection.none;
+	private int arrowOffset;
+	private TipArrowAlign arrowAlign = TipArrowAlign.center;
 	private int showDuration;
 
 	private boolean floating = true;
@@ -169,30 +169,31 @@ public class Tip extends Control implements FloatControl {
 	public void setCloseable(boolean closeable) {
 		this.closeable = closeable;
 	}
-
-	public TipAnchor getAnchor() {
-		return anchor;
+	
+	@ViewAttribute(defaultValue = "none")
+	public TipArrowDirection getArrowDirection() {
+		return arrowDirection;
 	}
 
-	public void setAnchor(TipAnchor anchor) {
-		this.anchor = anchor;
+	public void setArrowDirection(TipArrowDirection arrowDirection) {
+		this.arrowDirection = arrowDirection;
 	}
 
-	public boolean isAnchorOffset() {
-		return anchorOffset;
+	public int getArrowOffset() {
+		return arrowOffset;
 	}
 
-	public void setAnchorOffset(boolean anchorOffset) {
-		this.anchorOffset = anchorOffset;
+	public void setArrowOffset(int arrowOffset) {
+		this.arrowOffset = arrowOffset;
 	}
 
 	@ViewAttribute(defaultValue = "center")
-	public TipAnchorArrowAlign getAnchorArrowAlign() {
-		return anchorArrowAlign;
+	public TipArrowAlign getAnchorArrowAlign() {
+		return arrowAlign;
 	}
 
-	public void setAnchorArrowAlign(TipAnchorArrowAlign anchorArrowAlign) {
-		this.anchorArrowAlign = anchorArrowAlign;
+	public void setAnchorArrowAlign(TipArrowAlign anchorArrowAlign) {
+		this.arrowAlign = anchorArrowAlign;
 	}
 
 	public int getShowDuration() {
