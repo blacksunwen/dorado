@@ -114,6 +114,7 @@ public class Dialog extends FloatPanel {
 		this.dragOutside = dragOutside;
 	}
 	
+	@Override
 	@ViewAttribute(defaultValue = "true")
 	public boolean isCloseable() {
 		return closeable;
