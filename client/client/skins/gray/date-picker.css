@@ -4,10 +4,7 @@
 	font-weight: bold;
 }
 
-.d-date-picker .year-month-block .pre-year-button, .d-date-picker .year-month-block .pre-month-button,{
-	background: url(common/icons.gif) no-repeat;
-}
-
+.d-date-picker .year-month-block .pre-year-button, .d-date-picker .year-month-block .pre-month-button,
 .d-date-picker .year-month-block .next-year-button, .d-date-picker .year-month-block .next-month-button{
 	background: url(common/icons.gif) no-repeat;
 }
@@ -30,8 +27,8 @@
 
 .d-date-picker .date-header{
 	border-color: gray;
-	background: url(base/date-picker-bg.gif) 0 -29px;
 	border-bottom: 1px #B7B7B7 solid;
+	background: url(base/date-picker-bg.gif) 0 -29px;
 }
 
 .d-date-picker .date-block .date-table{

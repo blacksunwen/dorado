@@ -4,10 +4,7 @@
 	font-weight: bold;
 }
 
-.d-date-picker .year-month-block .pre-year-button, .d-date-picker .year-month-block .pre-month-button,{
-	background: url(common/icons.gif) no-repeat;
-}
-
+.d-date-picker .year-month-block .pre-year-button, .d-date-picker .year-month-block .pre-month-button,
 .d-date-picker .year-month-block .next-year-button, .d-date-picker .year-month-block .next-month-button{
 	background: url(common/icons.gif) no-repeat;
 }
