@@ -7,37 +7,35 @@
 	 * Spinner右侧的按钮。
 	 * @extends dorado.widget.Trigger
 	 */
-	dorado.widget.SpinnerTrigger = $extend(dorado.widget.Trigger, /** @scope dorado.widget.SpinnerTrigger.prototype */
-	{
-		$className : "dorado.widget.SpinnerTrigger",
-		_inherentClassName : "i-spinner-trigger",
-
-		ATTRIBUTES : /** @scope dorado.widget.SpinnerTrigger.prototype */
-		{
-			className : {
-				defaultValue : "d-spinner-trigger"
+	dorado.widget.SpinnerTrigger = $extend(dorado.widget.Trigger, /** @scope dorado.widget.SpinnerTrigger.prototype */ {
+		$className: "dorado.widget.SpinnerTrigger",
+		_inherentClassName: "i-spinner-trigger",
+		
+		ATTRIBUTES: /** @scope dorado.widget.SpinnerTrigger.prototype */ {
+			className: {
+				defaultValue: "d-spinner-trigger"
 			}
 		},
-
-		createTriggerButton : function(editor) {
+		
+		createTriggerButton: function(editor) {
 			var trigger = this, control = new dorado.widget.HtmlContainer({
-				content : {
-					tagName : "div",
-					className : trigger._className,
-					content : [{
-						tagName : "div",
-						className : "up-button",
-						contextKey : "upButton"
+				content: {
+					tagName: "div",
+					className: trigger._className,
+					content: [{
+						tagName: "div",
+						className: "up-button",
+						contextKey: "upButton"
 					}, {
-						tagName : "div",
-						className : "down-button",
-						contextKey : "downButton"
+						tagName: "div",
+						className: "down-button",
+						contextKey: "downButton"
 					}]
 				}
 			});
-
+			
 			control.getDom();
-
+			
 			jQuery(control.getSubDom("upButton")).repeatOnClick(function() {
 				editor.doStepUp();
 			}, 150).addClassOnClick("up-button-click", null, function() {
@@ -51,7 +49,7 @@
 			return control;
 		}
 	});
-
+	
 	/**
 	 * @author Frank Zhang (mailto:frank.zhang@bstek.com)
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -63,61 +61,58 @@
 	 * @extends dorado.widget.AbstractTextBox
 	 * @abstract
 	 */
-	dorado.widget.Spinner = $extend(dorado.widget.AbstractTextBox, /** @scope dorado.widget.Spinner.prototype */
-	{
-		$className : "dorado.widget.Spinner",
-
-		focusable : true,
-
-		ATTRIBUTES : /** @scope dorado.widget.Spinner.prototype */
-		{
-
-			trigger : {
-				getter : function() {
+	dorado.widget.Spinner = $extend(dorado.widget.AbstractTextBox, /** @scope dorado.widget.Spinner.prototype */ {
+		$className: "dorado.widget.Spinner",
+		
+		focusable: true,
+		
+		ATTRIBUTES: /** @scope dorado.widget.Spinner.prototype */ {
+		
+			trigger: {
+				getter: function() {
 					var triggers = this._trigger;
-					if(triggers && !( triggers instanceof Array)) {
+					if (triggers && !(triggers instanceof Array)) {
 						triggers = [triggers];
 					}
 					var spinnerTriggers = this.getSpinnerTriggers();
 					return triggers ? spinnerTriggers.concat(triggers) : spinnerTriggers;
 				}
 			},
-
+			
 			/**
 			 * 是否显示微调按钮。
 			 * @attribute
 			 * @type boolean
 			 * @default true
 			 */
-			showSpinTrigger : {
-				defaultValue : true
+			showSpinTrigger: {
+				defaultValue: true
 			},
-
+			
 			/**
 			 * 点击向上或者向下按钮时，每次变化的大小，默认值为1。
 			 * @attribute
 			 * @type int
 			 * @default 1
 			 */
-			step : {
-				defaultValue : 1
+			step: {
+				defaultValue: 1
 			}
 		},
-
-		constructor : function() {
+		
+		constructor: function() {
 			$invokeSuper.call(this, arguments);
 			this._triggerChanged = true;
 		},
-		getSpinnerTriggers : function() {
-			if(!this._showSpinTrigger)
-				return [];
-			if(!this._spinTrigger) {
+		getSpinnerTriggers: function() {
+			if (!this._showSpinTrigger) return [];
+			if (!this._spinTrigger) {
 				var triggers = this._spinTrigger = [], self = this;
 				triggers.push(new dorado.widget.SpinnerTrigger({}));
 			}
 			return this._spinTrigger;
 		},
-		createDom : function() {
+		createDom: function() {
 			var dom = $invokeSuper.call(this, arguments), self = this;
 			jQuery(dom).addClassOnHover(this._className + "-hover", null, function() {
 				return !self.get("readOnly");
@@ -125,117 +120,117 @@
 			return dom;
 		}
 	});
-
+	
 	/**
 	 * @author Frank Zhang (mailto:frank.zhang@bstek.com)
 	 * @component Form
 	 * @class 数字微调编辑器。
 	 * @extends dorado.widget.Spinner
 	 */
-	dorado.widget.NumberSpinner = $extend(dorado.widget.Spinner, /** @scope dorado.widget.NumberSpinner.prototype */
-	{
-
-		ATTRIBUTES : /** @scope dorado.widget.NumberSpinner.prototype */
-		{
-
+	dorado.widget.NumberSpinner = $extend(dorado.widget.Spinner, /** @scope dorado.widget.NumberSpinner.prototype */ {
+	
+		ATTRIBUTES: /** @scope dorado.widget.NumberSpinner.prototype */ {
+		
 			/**
 			 * 最小值。
 			 * @type int
 			 * @default -2147483648
 			 * @attribute
 			 */
-			min : {
-				defaultValue : -2147483648
+			min: {
+				defaultValue: -2147483648
 			},
-
+			
 			/**
 			 * 最大值。
 			 * @type int
 			 * @default 2147483648
 			 * @attribute
 			 */
-			max : {
-				defaultValue : 2147483648
+			max: {
+				defaultValue: 2147483648
 			},
-
-			text : {
-				defaultValue : 0
+			
+			text: {
+				defaultValue: 0
 			},
-
-			value : {
-				getter : function() {
+			
+			value: {
+				getter: function() {
 					return parseInt(this.get("text"), 10);
 				}
 			},
-
+			
 			/**
 			 * 是否在获得焦点时自动选中编辑框中的文本。
 			 * @type boolean
 			 * @default true
 			 * @attribute
 			 */
-			selectTextOnFocus : {
-				defaultValue : true
+			selectTextOnFocus: {
+				defaultValue: true
 			}
 		},
-
-		createTextDom : function() {
+		
+		createTextDom: function() {
 			var textDom = document.createElement("INPUT");
 			textDom.className = "editor";
-			if(!(dorado.Browser.msie && dorado.Browser.version < '7'))
-				textDom.style.padding = 0;
-			if(dorado.Browser.msie && dorado.Browser.version > '7') {
+			if (!(dorado.Browser.msie && dorado.Browser.version < '7')) textDom.style.padding = 0;
+			if (dorado.Browser.msie && dorado.Browser.version > '7') {
 				textDom.style.top = 0;
 				textDom.style.position = "absolute";
 			}
 			return textDom;
 		},
-		doGetText : function() {
+		doGetText: function() {
 			return (this._textDom) ? this._textDom.value : this._text;
 		},
-		doSetText : function(text) {
-			if(this._textDom) {
+		doSetText: function(text) {
+			if (this._textDom) {
 				this._textDom.value = text;
 			} else {
 				this._text = text;
 			}
 		},
-		doStepUp : function() {
+		doStepUp: function() {
 			var spinner = this;
 			var value = parseInt(spinner.get("value"), 10);
-			if(!isNaN(value)) {
+			if (!isNaN(value)) {
 				spinner.set("value", value + spinner._step);
 			}
 		},
-		doStepDown : function() {
+		doStepDown: function() {
 			var spinner = this;
 			var value = parseInt(spinner.get("value"), 10);
-			if(!isNaN(value)) {
+			if (!isNaN(value)) {
 				spinner.set("value", value - spinner._step);
 			}
 		},
-		post : function(force) {
-			var text = this.get("text"), value = parseInt(text) || 0;
-			if(value > this._max)
-				value = this._max;
-			else if(value < this._min)
-				value = this._min;
-			this._value = value;
-			this.doSetText(value + '');
-
+		post: function(force) {
+			var text = this.get("text"), value = text ? parseInt(text) : null;
+			if (value != null) {
+				if (value > this._max) value = this._max;
+				else if (value < this._min) value = this._min;
+				this._value = value;
+				this.doSetText(value + '');
+			} else {
+				this._value = value;
+				this.doSetText('');
+			}
+			
 			$invokeSuper.call(this, arguments);
 		},
-		doOnFocus : function() {
+		doOnFocus: function() {
 			$invokeSuper.call(this, arguments);
-
-			if(this._selectTextOnFocus) {
+			
+			if (this._selectTextOnFocus) {
 				$setTimeout(this, function() {
 					this._textDom.select();
 				}, 0);
 			}
 		}
 	});
-
+	
 	/**
 	 * @author Frank Zhang (mailto:frank.zhang@bstek.com)
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -268,10 +263,9 @@
 	 * @extends dorado.widget.Spinner
 	 * @abstract
 	 */
-	dorado.widget.MultiSlotSpinner = $extend(dorado.widget.Spinner, /** @scope dorado.widget.MultiSlotSpinner.prototype */
-	{
-		$className : "dorado.widget.MultiSlotSpinner",
-
+	dorado.widget.MultiSlotSpinner = $extend(dorado.widget.Spinner, /** @scope dorado.widget.MultiSlotSpinner.prototype */ {
+		$className: "dorado.widget.MultiSlotSpinner",
+		
 		/**
 		 * 微调槽的配置信息。
 		 * <p>
@@ -308,63 +302,61 @@
 		 *		defaultValue: 0
 		 *	}]
 		 */
-		slotConfigs : [{}],
-
+		slotConfigs: [{}],
+		
 		/**
 		 * 默认的槽的序号（自零开始计算的序号）或名称。
 		 * @protected
 		 * @type int|String
 		 * @default 0
 		 */
-		defaultSlot : 0,
-
-		constructor : function() {
-			if(this.slotConfigs)
-				this.initSlotConfigs();
+		defaultSlot: 0,
+		
+		constructor: function() {
+			if (this.slotConfigs) this.initSlotConfigs();
 			this._currentSlotIndex = 0;
 			$invokeSuper.call(this, arguments);
 		},
-		initSlotConfigs : function() {
+		initSlotConfigs: function() {
 			var slotConfigs = this.slotConfigs, slotMap = this._slotMap = {}, values = this._values = [];
-			for(var i = 0, j = slotConfigs.length; i < j; i++) {
+			for (var i = 0, j = slotConfigs.length; i < j; i++) {
 				var config = slotConfigs[i], name = config.name;
 				config.className = config.className || "slot";
-				config.defaultValue = config.defaultValue || 0;
 				config.range = config.range || [null, null];
 				slotMap[name] = config;
 				values[i] = config.defaultValue;
 			}
 		},
-		createTextDom : function() {
+		createTextDom: function() {
 			var spinner = this, doms = {}, dom = $DomUtils.xCreate({
-				tagName : "div",
-				className : "editor slots-container",
-				contextKey : "editor"
+				tagName: "div",
+				className: "editor slots-container",
+				contextKey: "editor"
 			}, null, doms);
 			spinner._doms = doms;
-
+			
 			var slotConfigs = spinner.slotConfigs;
-			for(var i = 0, j = slotConfigs.length; i < j; i++) {
+			for (var i = 0, j = slotConfigs.length; i < j; i++) {
 				var config = slotConfigs[i], name = config.name;
-
+				
 				var label = document.createElement("span");
 				label.className = config.className;
 				label.slotIndex = i;
-
+				
 				doms["slot_" + i] = label;
-
+				
 				$fly(label).mousedown(function() {
 					spinner.doChangeCurrentSlot(parseInt(this.slotIndex));
 				});
-				if(config.prefix) {
+				if (config.prefix) {
 					var spEl = document.createElement("span");
 					$fly(spEl).text(config.prefix).attr("class", "text");
 					$fly(doms.editor).append(spEl);
 				}
-
+				
 				$fly(doms.editor).append(label);
-
-				if(config.suffix) {
+				
+				if (config.suffix) {
 					var spEl = document.createElement("span");
 					$fly(spEl).text(config.suffix).attr("class", "text");
 					$fly(doms.editor).append(spEl);
@@ -378,8 +370,8 @@
 		 * @param {int|String} slotIndex 要取得值的槽的名称或槽的序号（自零开始计算的序号）。
 		 * @return {int[]} 取得的指定的槽的取值范围。
 		 */
-		doGetSlotRange : function(slotIndex) {
-			if( typeof slotIndex == "string") {
+		doGetSlotRange: function(slotIndex) {
+			if (typeof slotIndex == "string") {
 				slotIndex = this.getSlotIndexByName(slotIndex);
 			}
 			return this.slotConfigs[slotIndex].range;
@@ -391,7 +383,7 @@
 		 * @param {String} name 槽的名称。
 		 * @return {int} 槽的序号（自零开始计算的序号）。
 		 */
-		getSlotIndexByName : function(name) {
+		getSlotIndexByName: function(name) {
 			var config = this._slotMap[name];
 			return config ? this.slotConfigs.indexOf(config) : -1;
 		},
@@ -401,9 +393,9 @@
 		 * @param {int|String} slotIndex 要取得值的槽的名称或槽的序号（自零开始计算的序号）。
 		 * @return {int} 取得的指定的槽的值。
 		 */
-		doGetSlotValue : function(slotIndex) {
+		doGetSlotValue: function(slotIndex) {
 			this._slotValueChanged = true;
-			if( typeof slotIndex == "string") {
+			if (typeof slotIndex == "string") {
 				slotIndex = this.getSlotIndexByName(slotIndex);
 			}
 			return this._values[slotIndex];
@@ -414,27 +406,27 @@
 		 * @param {int|String} slotIndex 要取得值的槽的名称或槽的序号（自零开始计算的序号）。
 		 * @param {int|String} value 要设置给槽的值。
 		 */
-		doSetSlotValue : function(slotIndex, value) {
+		doSetSlotValue: function(slotIndex, value) {
 			var spinner = this;
-			if( typeof slotIndex == "string") {
+			if (typeof slotIndex == "string") {
 				slotIndex = spinner.getSlotIndexByName(slotIndex);
 			}
-			if(slotIndex < 0)
-				return;
-
-			var config = spinner.slotConfigs[slotIndex], range = config.range || [], minValue = range[0], maxValue = range[1];
-			value = parseInt(value, 10);
-			if(!isNaN(value)) {
-				if(maxValue != null && value > maxValue) {
+			if (slotIndex < 0) return;
+			
+			if (value != null) {
+				var config = spinner.slotConfigs[slotIndex], range = config.range || [], minValue = range[0], maxValue = range[1];
+				value = parseInt(value, 10);
+				if (isNaN(value)) {
+					value = config.defaultValue || 0;
+				}
+				if (maxValue != null && value > maxValue) {
 					value = maxValue;
-				} else if(minValue != null && value < minValue) {
+				} else if (minValue != null && value < minValue) {
 					value = minValue;
 				}
-			} else {
-				value = config.defaultValue || 0;
 			}
 			this._values[slotIndex] = value;
-
+			
 			dorado.Toolkits.setDelayedAction(spinner, "$refreshDelayTimerId", spinner.refresh, 50);
 		},
 		/**
@@ -443,26 +435,31 @@
 		 * @param {int|String} slotIndex 要取得值的槽的名称或槽的序号（自零开始计算的序号）。
 		 * @return {String} 取得的指定的槽的显示值。
 		 */
-		doGetSlotText : function(slotIndex) {
+		doGetSlotText: function(slotIndex) {
 			var spinner = this;
-			if( typeof slotIndex == "string") {
+			if (typeof slotIndex == "string") {
 				slotIndex = spinner.getSlotIndexByName(slotIndex);
 			}
-			if(slotIndex < 0)
-				return "";
-
+			if (slotIndex < 0) return "";
+			
 			var config = spinner.slotConfigs[slotIndex];
 			var text = this.doGetSlotValue(slotIndex);
-			if(text == null) {
-				text = "&nbsp;";
+			if (text == null) {
+				if (config.digit > 0) {
+					text = '';
+					for (var i = 0; i < config.digit; i++) text += "&nbsp;";
+				}
+				else {
+					text = "&nbsp;";
+				}
 			} else {
 				var num = text, negative = (num < 0), text = Math.abs(num) + "";
-				if(config.digit > 0 && text.length < config.digit) {
-					for(var i = text.length; i <= config.digit - 1; i++) {
+				if (config.digit > 0 && text.length < config.digit) {
+					for (var i = text.length; i <= config.digit - 1; i++) {
 						text = '0' + text;
 					}
 				}
-				text = ( negative ? '-' : '') + text;
+				text = (negative ? '-' : '') + text;
 			}
 			return text;
 		},
@@ -470,58 +467,58 @@
 		 * 向上微调，当用户点击向上按钮的时候会调用该方法。
 		 * @protected
 		 */
-		doStepUp : function() {
+		doStepUp: function() {
 			var spinner = this, currentSlotIndex = spinner._currentSlotIndex;
-			if(!currentSlotIndex) {
+			if (!currentSlotIndex) {
 				currentSlotIndex = spinner.doChangeCurrentSlot();
 			}
-
+			
 			var value = spinner.doGetSlotValue(currentSlotIndex) + spinner._step;
 			var config = spinner.slotConfigs[currentSlotIndex], range = config.range || [], minValue = range[0], maxValue = range[1];
-			if(maxValue != null && minValue != null && value > maxValue)
-				value = minValue;
-			spinner.doSetSlotValue(currentSlotIndex, value);
+			if (value == null) value = minValue;
+			else if (maxValue != null && value > maxValue) value = minValue;
+			spinner.doSetSlotValue(currentSlotIndex, value || 0);
 		},
 		/**
 		 * 向下微调，当用户点击向下按钮的时候会调用该方法。
 		 * @protected
 		 */
-		doStepDown : function() {
+		doStepDown: function() {
 			var spinner = this, currentSlotIndex = spinner._currentSlotIndex;
-			if(!currentSlotIndex) {
+			if (!currentSlotIndex) {
 				currentSlotIndex = spinner.doChangeCurrentSlot();
 			}
-
+			
 			var value = spinner.doGetSlotValue(currentSlotIndex) - spinner._step;
 			var config = spinner.slotConfigs[currentSlotIndex], range = config.range || [], minValue = range[0], maxValue = range[1];
-			if(maxValue != null && minValue != null && value < minValue)
-				value = maxValue;
-			spinner.doSetSlotValue(currentSlotIndex, value);
+			if (value == null) value = maxValue;
+			if (minValue != null && value < minValue) value = maxValue;
+			spinner.doSetSlotValue(currentSlotIndex, value || 0);
 		},
-		doOnKeyDown : function(event) {
+		doOnKeyDown: function(event) {
 			var spinner = this, retval = true;
 			switch (event.keyCode) {
 				case 38:
 					// up arrow
-					if(!spinner.get("readOnly")) {
+					if (!spinner.get("readOnly")) {
 						spinner.doStepUp();
 						retval = false;
 					}
 					break;
-
+					
 				case 40:
 					// down arrow
-					if(!spinner.get("readOnly")) {
+					if (!spinner.get("readOnly")) {
 						spinner.doStepDown();
 						retval = false;
 					}
 					break;
-
+					
 				case 8:
 					// backspace
-					if(spinner._currentSlotIndex >= 0 && !spinner.get("readOnly")) {
+					if (spinner._currentSlotIndex >= 0 && !spinner.get("readOnly")) {
 						var currentSlotIndex = spinner._currentSlotIndex, value, range = spinner.doGetSlotRange(currentSlotIndex);
-						if(spinner._neverEdit) {
+						if (spinner._neverEdit) {
 							value = 0;
 						} else {
 							var text = spinner.doGetSlotText(currentSlotIndex);
@@ -531,66 +528,64 @@
 					}
 					retval = false;
 					break;
-
+					
 				case 9:
 					// tab
-					if(event.ctrlKey || !event.shiftKey && spinner._currentSlotIndex == spinner.slotConfigs.length - 1 || event.shiftKey && spinner._currentSlotIndex == 0) {
+					if (event.ctrlKey || !event.shiftKey && spinner._currentSlotIndex == spinner.slotConfigs.length - 1 || event.shiftKey && spinner._currentSlotIndex == 0) {
 						retval = true;
 					} else {
 						spinner.doChangeCurrentSlot(event.shiftKey ? "prev" : "next");
 						retval = false;
 					}
 					break;
-
+					
 				case 187:
 					// +
-					if(spinner._currentSlotIndex >= 0 && !spinner.get("readOnly")) {
+					if (spinner._currentSlotIndex >= 0 && !spinner.get("readOnly")) {
 						var currentSlotIndex = spinner._currentSlotIndex, value = spinner.doGetSlotValue(currentSlotIndex) || 0;
-						if(value) {
+						if (value) {
 							value = Math.abs(value);
 							spinner.doSetSlotValue(currentSlotIndex, value);
 						}
 						retval = false;
 					}
 					break;
-
+					
 				case 189:
 					// -
-					if(spinner._currentSlotIndex >= 0 && !spinner.get("readOnly")) {
+					if (spinner._currentSlotIndex >= 0 && !spinner.get("readOnly")) {
 						var currentSlotIndex = spinner._currentSlotIndex, value = spinner.doGetSlotValue(currentSlotIndex) || 0;
-						if(value) {
+						if (value) {
 							value = 0 - Math.abs(value);
 							spinner.doSetSlotValue(currentSlotIndex, value);
 						}
 						retval = false;
 					}
 					break;
-
+					
 				default:
 					// 48-57
-					if(spinner._currentSlotIndex >= 0 && !spinner.get("readOnly")) {
-						if(event.keyCode >= 48 && event.keyCode <= 57) {
+					if (spinner._currentSlotIndex >= 0 && !spinner.get("readOnly")) {
+						if (event.keyCode >= 48 && event.keyCode <= 57) {
 							var number = event.keyCode - 48, currentSlotIndex = spinner._currentSlotIndex, range = spinner.doGetSlotRange(currentSlotIndex), maxValue = range[1];
 							var value = spinner._neverEdit ? 0 : (spinner.doGetSlotValue(currentSlotIndex) || 0), ignore = false;
 							var config = spinner.slotConfigs[currentSlotIndex], digit = config.digit;
-							if(!digit && maxValue != null) {
+							if (!digit && maxValue != null) {
 								digit = (maxValue + '').length;
 							}
-							if(digit && (value + '').length == digit) {
+							if (digit && (value + '').length == digit) {
 								ignore = true;
 							} else {
 								value = value * 10 + number;
 								ignore = (maxValue != null && value > maxValue);
 							}
-							if(!ignore)
-								spinner.doSetSlotValue(currentSlotIndex, value);
+							if (!ignore) spinner.doSetSlotValue(currentSlotIndex, value);
 							retval = false;
 						}
 					}
 					break;
 			}
-			if(retval === false)
-				spinner._neverEdit = false;
+			if (retval === false) spinner._neverEdit = false;
 			return retval;
 		},
 		/**
@@ -600,28 +595,28 @@
 		 * 或者如果传入的值是next或prev还可以表示一下含义：next表示切换到下一个槽，prev表示切换到上一个槽。
 		 * @return {int} 新的当前槽的序号。
 		 */
-		doChangeCurrentSlot : function(slotIndex) {
+		doChangeCurrentSlot: function(slotIndex) {
 			var spinner = this;
-			if( typeof slotIndex == "string") {
-				if(slotIndex == "next") {
+			if (typeof slotIndex == "string") {
+				if (slotIndex == "next") {
 					slotIndex = (spinner._currentSlotIndex >= 0) ? spinner._currentSlotIndex + 1 : spinner.defaultSlot;
-				} else if(slotIndex == "prev") {
+				} else if (slotIndex == "prev") {
 					slotIndex = (spinner._currentSlotIndex >= 0) ? spinner._currentSlotIndex - 1 : spinner.defaultSlot;
 				} else {
 					slotIndex = spinner.getSlotIndexByName(slotIndex);
 				}
 			}
 			slotIndex = slotIndex || 0;
-
+			
 			var oldSlotIndex = spinner._currentSlotIndex, doms = spinner._doms;
 			var config = spinner.slotConfigs[slotIndex];
-			if(config) {
-				if(oldSlotIndex >= 0) {
+			if (config) {
+				if (oldSlotIndex >= 0) {
 					var oldSlotConfig = spinner.slotConfigs[oldSlotIndex];
 					$fly(doms["slot_" + oldSlotIndex]).removeClass(oldSlotConfig.className + "-selected");
 					spinner.doAfterSlotBlur(oldSlotIndex);
 				}
-
+				
 				$fly(doms["slot_" + slotIndex]).addClass(config.className + "-selected");
 				spinner._currentSlotIndex = slotIndex;
 				return slotIndex;
@@ -635,37 +630,37 @@
 		 * @protected
 		 * @param {int} slotIndex 失去焦点的槽的序号。
 		 */
-		doAfterSlotBlur : function(slotIndex) {
+		doAfterSlotBlur: function(slotIndex) {
 			var spinner = this, value = spinner.doGetSlotValue(slotIndex);
-			if(value == null) {
-				spinner.doSetSlotValue(slotIndex, spinner.slotConfigs[slotIndex].defaultValue || 0);
+			if (value == null) {
+				spinner.doSetSlotValue(slotIndex, spinner.slotConfigs[slotIndex].defaultValue);
 			}
 		},
-		doOnBlur : function() {
+		doOnBlur: function() {
 			var spinner = this, currentSlotIndex = spinner._currentSlotIndex, doms = spinner._doms;
-			if(currentSlotIndex >= 0) {
+			if (currentSlotIndex >= 0) {
 				$fly(doms["slot_" + currentSlotIndex]).removeClass(spinner.slotConfigs[currentSlotIndex].className + "-selected");
 				spinner.doAfterSlotBlur(currentSlotIndex);
 			}
 			this.post(true);
 		},
-		doOnFocus : function() {
+		doOnFocus: function() {
 			var spinner = this, currentSlotIndex = spinner._currentSlotIndex, doms = spinner._doms;
 			spinner._neverEdit = true;
-			if(currentSlotIndex >= 0 && !spinner.get("readOnly")) {
+			if (currentSlotIndex >= 0 && !spinner.get("readOnly")) {
 				$fly(doms["slot_" + currentSlotIndex]).addClass(spinner.slotConfigs[currentSlotIndex].className + "-selected");
 			}
 		},
-		refreshDom : function() {
+		refreshDom: function() {
 			$invokeSuper.call(this, arguments);
 			var spinner = this, doms = spinner._doms;
-			for(var i = 0; i < spinner.slotConfigs.length; i++) {
+			for (var i = 0; i < spinner.slotConfigs.length; i++) {
 				$fly(doms["slot_" + i]).html(spinner.doGetSlotText(i));
 			}
 		},
-		doGetText : function() {
+		doGetText: function() {
 			var spinner = this, slotConfigs = spinner.slotConfigs, text = "";
-			for(var i = 0; i < slotConfigs.length; i++) {
+			for (var i = 0; i < slotConfigs.length; i++) {
 				var config = slotConfigs[i];
 				text += config.prefix || "";
 				text += spinner.doGetSlotText(i);
@@ -674,17 +669,17 @@
 			return text;
 		}
 	});
-
+	
 	function slotAttributeGetter(attr) {
 		return this.doGetSlotValue(attr);
 	}
-
+	
 	function slotAttributeSetter(value, attr) {
 		this.doSetSlotValue(attr, value);
 	}
-
+	
 	var now = new Date();
-
+	
 	/**
 	 * @author Frank Zhang (mailto:frank.zhang@bstek.com)
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -692,58 +687,56 @@
 	 * @class 日期时间微调编辑器。
 	 * @extends dorado.widget.MultiSlotSpinner
 	 */
-	dorado.widget.DateTimeSpinner = $extend(dorado.widget.MultiSlotSpinner, /** @scope dorado.widget.DateTimeSpinner.prototype */
-	{
-		$className : "dorado.widget.DateTimeSpinner",
-
-		slotConfigTemplate : {
-			year : {
-				name : "year",
-				range : [1, 9999],
-				defaultValue : now.getFullYear()
+	dorado.widget.DateTimeSpinner = $extend(dorado.widget.MultiSlotSpinner, /** @scope dorado.widget.DateTimeSpinner.prototype */ {
+		$className: "dorado.widget.DateTimeSpinner",
+		
+		slotConfigTemplate: {
+			year: {
+				name: "year",
+				range: [1, 9999],
+				defaultValue: now.getFullYear()
 			},
-			month : {
-				name : "month",
-				range : [1, 12],
-				defaultValue : now.getMonth() + 1,
-				digit : 2,
-				prefix : "-"
+			month: {
+				name: "month",
+				range: [1, 12],
+				defaultValue: now.getMonth() + 1,
+				digit: 2,
+				prefix: "-"
 			},
-			date : {
-				name : "date",
-				range : [1, 31],
-				defaultValue : now.getDate(),
-				digit : 2,
-				prefix : "-"
+			date: {
+				name: "date",
+				range: [1, 31],
+				defaultValue: now.getDate(),
+				digit: 2,
+				prefix: "-"
 			},
-			hours : {
-				name : "hours",
-				range : [0, 23],
-				digit : 2,
-				prefix : " "
+			hours: {
+				name: "hours",
+				range: [0, 23],
+				digit: 2,
+				prefix: " "
 			},
-			leading_hours : {
-				name : "hours",
-				range : [0, 23],
-				digit : 2
+			leading_hours: {
+				name: "hours",
+				range: [0, 23],
+				digit: 2
 			},
-			minutes : {
-				name : "minutes",
-				range : [0, 59],
-				digit : 2,
-				prefix : ":"
+			minutes: {
+				name: "minutes",
+				range: [0, 59],
+				digit: 2,
+				prefix: ":"
 			},
-			seconds : {
-				name : "seconds",
-				range : [0, 59],
-				digit : 2,
-				prefix : ":"
+			seconds: {
+				name: "seconds",
+				range: [0, 59],
+				digit: 2,
+				prefix: ":"
 			}
 		},
-
-		ATTRIBUTES : /** @scope dorado.widget.DateTimeSpinner.prototype */
-		{
-
+		
+		ATTRIBUTES: /** @scope dorado.widget.DateTimeSpinner.prototype */ {
+		
 			/**
 			 * 类型。
 			 * <p>
@@ -762,10 +755,10 @@
 			 * @type String
 			 * @default "time"
 			 */
-			type : {
-				writeOnce : true,
-				writeBeforeReady : true,
-				setter : function(type) {
+			type: {
+				writeOnce: true,
+				writeBeforeReady: true,
+				setter: function(type) {
 					this._type = type = type || "time";
 					this._typeChanged = true;
 					var configs, template = this.slotConfigTemplate;
@@ -796,74 +789,74 @@
 					this.initSlotConfigs();
 				}
 			},
-
+			
 			/**
 			 * 年份。
 			 * @attribute
 			 * @type int
 			 */
-			year : {
-				getter : slotAttributeGetter,
-				setter : slotAttributeSetter
+			year: {
+				getter: slotAttributeGetter,
+				setter: slotAttributeSetter
 			},
-
+			
 			/**
 			 * 月份。
 			 * @attribute
 			 * @type int
 			 */
-			month : {
-				getter : slotAttributeGetter,
-				setter : slotAttributeSetter
+			month: {
+				getter: slotAttributeGetter,
+				setter: slotAttributeSetter
 			},
-
+			
 			/**
 			 * 日期。
 			 * @attribute
 			 * @type int
 			 */
-			date : {
-				getter : slotAttributeGetter,
-				setter : slotAttributeSetter
+			date: {
+				getter: slotAttributeGetter,
+				setter: slotAttributeSetter
 			},
-
+			
 			/**
 			 * 小时。
 			 * @attribute
 			 * @type int
 			 */
-			hours : {
-				getter : slotAttributeGetter,
-				setter : slotAttributeSetter
+			hours: {
+				getter: slotAttributeGetter,
+				setter: slotAttributeSetter
 			},
-
+			
 			/**
 			 * 分钟。
 			 * @attribute
 			 * @type int
 			 */
-			minutes : {
-				getter : slotAttributeGetter,
-				setter : slotAttributeSetter
+			minutes: {
+				getter: slotAttributeGetter,
+				setter: slotAttributeSetter
 			},
-
+			
 			/**
 			 * 秒数。
 			 * @attribute
 			 * @type int
 			 */
-			seconds : {
-				getter : slotAttributeGetter,
-				setter : slotAttributeSetter
+			seconds: {
+				getter: slotAttributeGetter,
+				setter: slotAttributeSetter
 			},
-
+			
 			/**
 			 * 当前编辑器中的日期时间值。
 			 * @attribute
 			 * @type Date
 			 */
-			value : {
-				getter : function() {
+			value: {
+				getter: function() {
 					var year = this.doGetSlotValue("year") || 1980;
 					var month = (this.doGetSlotValue("month") - 1) || 0;
 					var date = this.doGetSlotValue("date") || 1;
@@ -872,9 +865,9 @@
 					var seconds = this.doGetSlotValue("seconds") || 0;
 					return new Date(year, month, date, hours, minutes, seconds);
 				},
-				setter : function(d) {
+				setter: function(d) {
 					var year = 0, month = 1, date = 1, hours = 0, minutes = 1, seconds = 1;
-					if(d) {
+					if (d) {
 						year = d.getFullYear();
 						month = d.getMonth() + 1;
 						date = d.getDate();
@@ -892,44 +885,46 @@
 				}
 			}
 		},
-
-		constructor : function() {
+		
+		constructor: function() {
 			this.slotConfigs = [];
 			$invokeSuper.call(this, arguments);
 		},
-		createTextDom : function() {
-			if(!this._typeChanged)
-				this.set("type", "time");
+		createTextDom: function() {
+			if (!this._typeChanged) this.set("type", "time");
 			return $invokeSuper.call(this, arguments);
 		},
-		doSetSlotValue : function(slotIndex, value) {
+		doSetSlotValue: function(slotIndex, value) {
+			if (value == null) {
+				$invokeSuper.call(this, arguments);
+				return;
+			}
+			
 			var spinner = this, slotName;
-			if( typeof slotIndex == "number") {
-				slotName = spinner.slotConfigs[slotIndex].name;
+			if (typeof slotIndex == "number") {
+				var config = spinner.slotConfigs[slotIndex];
+				if (config) slotName = config.name;
 			} else {
 				slotName = slotIndex;
 				slotIndex = spinner.getSlotIndexByName(slotIndex);
 			}
-
-			if(!spinner._slotMap[slotName])
-				return;
-			if(!spinner._slotMap["date"]) {
+			
+			if (!slotName || !spinner._slotMap[slotName]) return;
+			if (!spinner._slotMap["date"]) {
 				$invokeSuper.call(this, arguments);
-
 				return;
 			}
-
+			
 			var dateSlotIndex = spinner.getSlotIndexByName("date"), date = spinner._values[dateSlotIndex], newDate = 0;
-			if(date >= 28) {
+			if (date >= 28) {
 				var year = (slotIndex == 0) ? value : spinner._values[0];
 				var month = (slotIndex == 1) ? value : spinner._values[1];
 				var dayCount = new Date(year, month - 1).getDaysInMonth();
-				if(date > dayCount)
-					newDate = dayCount;
+				if (date > dayCount) newDate = dayCount;
 			}
-
-			if(newDate) {
-				if(slotName == "year" || slotName == "month") {
+			
+			if (newDate) {
+				if (slotName == "year" || slotName == "month") {
 					spinner.doSetSlotValue("date", newDate);
 					$invokeSuper.call(this, arguments);
 				} else {
@@ -939,21 +934,21 @@
 				$invokeSuper.call(this, arguments);
 			}
 		},
-		doGetSlotRange : function(slotIndex) {
+		doGetSlotRange: function(slotIndex) {
 			var spinner = this, slotName;
-			if( typeof slotIndex == "number") {
+			if (typeof slotIndex == "number") {
 				slotName = spinner.slotConfigs[slotIndex].name;
 			} else {
 				slotName = slotIndex;
 			}
-			if(slotName == "date" && spinner._slotMap["date"]) {
+			if (slotName == "date" && spinner._slotMap["date"]) {
 				var year = spinner._values[0], month = spinner._values[1], dayCount = new Date(year, month - 1).getDaysInMonth();
 				return [1, dayCount];
 			} else {
 				return $invokeSuper.call(this, arguments);
 			}
 		},
-		doSetText : function(text) {
+		doSetText: function(text) {
 			var format;
 			switch (this._type) {
 				case "date":
@@ -981,20 +976,18 @@
 			this.set("value", format);
 		}
 	});
-
+	
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @component Form
 	 * @class 自定义微调编辑器。
 	 * @extends dorado.widget.MultiSlotSpinner
 	 */
-	dorado.widget.CustomSpinner = $extend(dorado.widget.MultiSlotSpinner, /** @scope dorado.widget.CustomSpinner.prototype */
-	{
-		$className : "dorado.widget.CustomSpinner",
-
-		ATTRIBUTES : /** @scope dorado.widget.CustomSpinner.prototype */
-		{
-
+	dorado.widget.CustomSpinner = $extend(dorado.widget.MultiSlotSpinner, /** @scope dorado.widget.CustomSpinner.prototype */ {
+		$className: "dorado.widget.CustomSpinner",
+		
+		ATTRIBUTES: /** @scope dorado.widget.CustomSpinner.prototype */ {
+		
 			/**
 			 * 样式表达式,用于定义各个微调槽配置信息的文本表达式。
 			 * <p>
@@ -1012,59 +1005,63 @@
 			 * // [0,*].[0,999|3]
 			 * // ￥[*].[0,99|2]/kg
 			 */
-			pattern : {
-				writeOnce : true,
-				writeBeforeReady : true,
-				setter : function(pattern) {
+			pattern: {
+				writeOnce: true,
+				writeBeforeReady: true,
+				setter: function(pattern) {
 					this.parsePattern(pattern);
 				}
 			},
-
+			
 			/**
 			 * 当前各槽数值的数组。
 			 * @attribute
-			 * @type int[]
+			 * @type int[]|String
 			 */
-			value : {
-				getter : function() {
+			value: {
+				getter: function() {
 					return this._values;
 				},
-				setter : function(v) {
+				setter: function(v) {
 					var v = v || [];
-					for(var i = 0; i < this.slotConfigs.length; i++) {
-						this.doSetSlotValue(i, v[i]);
+					if (typeof v == "string") {
+						v = v.split(',');
+					}
+					for (var i = 0; i < this.slotConfigs.length; i++) {
+						var n = parseInt(v[i]);
+						if (isNaN(n)) n = null;
+						this.doSetSlotValue(i, n);
 					}
 					this.setValidationState("none");
 				}
 			}
 		},
-
-		parsePattern : function(pattern) {
-
+		
+		parsePattern: function(pattern) {
+		
 			function parseSlotConfig(slotConfig) {
 				var slot = {}, sections = slotConfig.split('|');
-				if(sections[0] != '*') {
+				if (sections[0] != '*') {
 					var range = sections[0].replace(/\*/g, "null");
 					slot.range = eval('[' + range + ']');
 				}
-				if(sections[1])
-					slot.digit = parseInt(sections[1]);
+				if (sections[1]) slot.digit = parseInt(sections[1]);
+				slot.defaultValue = slot.defaultValue || 0;
 				return slot;
 			}
-
-			if(!pattern) {
+			
+			if (!pattern) {
 				throw new dorado.ResourceException("dorado.core.AttributeValueRequired", "pattern");
 			}
-
+			
 			this.slotConfigs = [];
 			var i = 0, c, text = "", slotConfig = "", inSlot = false;
-			while(i < pattern.length) {
+			while (i < pattern.length) {
 				c = pattern.charAt(i);
-				if(inSlot) {
-					if(c == ']') {
+				if (inSlot) {
+					if (c == ']') {
 						var slot = parseSlotConfig(slotConfig);
-						if(text)
-							slot.prefix = text;
+						if (text) slot.prefix = text;
 						this.slotConfigs.push(slot);
 						inSlot = false;
 						text = slotConfig = "";
@@ -1072,10 +1069,10 @@
 						slotConfig += c;
 					}
 				} else {
-					if(c == '\\') {
+					if (c == '\\') {
 						c = pattern.charAt(++i);
 						text += c;
-					} else if(c == '[') {
+					} else if (c == '[') {
 						inSlot = true;
 					} else {
 						text += c;
@@ -1083,23 +1080,22 @@
 				}
 				i++;
 			}
-			if(!this.slotConfigs.length) {
+			if (!this.slotConfigs.length) {
 				throw new dorado.ResourceException("dorado.baseWidget.InvalidSpinnerPattern", pattern);
 			}
-			if(text)
-				this.slotConfigs.peek().suffix = text;
+			if (text) this.slotConfigs.peek().suffix = text;
 			this.initSlotConfigs();
 		},
-		doSetText : function(text) {
+		doSetText: function(text) {
 			var value = null;
-			if(text) {
+			if (text) {
 				var value = [], textArray = text.split(',');
-				for(var i = 0; i < textArray.length; i++) {
+				for (var i = 0; i < textArray.length; i++) {
 					value.push(parseInt(textArray[i]) || 0);
 				}
 			}
 			this.set("value", value);
 		}
 	});
-
+	
 })();
