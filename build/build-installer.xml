@@ -3,7 +3,7 @@
 	<property name="package-jars" value="true" />
 	<property name="javadoc" value="true" />
 	<property name="jsdoc" value="true" />
-	<property name="izpack" value="true" />
+	<!--property name="izpack" value="true" /-->
 	<property name="standard-edition.dir" value="D:/projects/dorado7/build/standard-edition" />
 
 	<target name="prebuild">

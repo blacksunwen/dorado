@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.bstek.dorado.core.pkgs;
 
 /**

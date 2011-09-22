@@ -1,5 +1,7 @@
 package com.bstek.dorado.web;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.util.PathUtils;
@@ -11,8 +13,13 @@ import com.bstek.dorado.util.PathUtils;
 public class WebExpressionUtilsObject {
 
 	public String getContextPath() {
-		return WebConfigure.getString("web.contextPath", DoradoContext
-				.getAttachedRequest().getContextPath());
+		try {
+			HttpServletRequest request = DoradoContext.getAttachedRequest();
+			return WebConfigure.getString("web.contextPath",
+					request.getContextPath());
+		} catch (Exception e) {
+			return "/";
+		}
 	}
 
 	public String url(String urlPattern) {

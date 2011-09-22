@@ -12,7 +12,16 @@ import com.bstek.dorado.annotation.XmlNode;
 @ViewObject(prototype = "dorado.widget.CustomSpinner", shortTypeName = "CustomSpinner")
 @XmlNode(nodeName = "CustomSpinner")
 public class CustomSpinner extends Spinner {
+	private String value;
 	private String pattern;
+
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
+	}
 
 	public String getPattern() {
 		return pattern;
