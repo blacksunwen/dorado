@@ -28,7 +28,8 @@
 		<jsdoctoolkit jsdochome="${jsdoc-toolkit.home}" suppresssourceout="true" template="json" outputdir="${jsdoc.dist}/data" verbose="true">
 			<fileset dir="${work.dir}/js-src">
 				<include name="**/*.js" />
-				<exclude name="**/chart/*.js" />
+				<exclude name="**/chart.js" />
+				<exclude name="**/html-editor.js" />
 			</fileset>
 		</jsdoctoolkit>
 	</target>

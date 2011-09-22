@@ -7,9 +7,9 @@
 
 	<dependencies>
 		<!-- COMPILE -->
-		<dependency org="javax.servlet" name="servlet-api" rev="2.5" conf="compile" />
-		<dependency org="javax.servlet" name="jsp-api" rev="2.0" conf="compile" />
-		
+		<dependency org="javax.servlet" name="servlet-api" rev="2.5" conf="provided" />
+		<dependency org="javax.servlet" name="jsp-api" rev="2.0" conf="provided" />
+
 		<dependency org="cglib" name="cglib" rev="2.2" conf="compile" />
 		<dependency org="javassist" name="javassist" rev="3.12.1.GA" conf="compile" />
 
@@ -27,6 +27,7 @@
 		<dependency org="commons-codec" name="commons-codec" rev="1.5" conf="compile" />
 		<dependency org="commons-digester" name="commons-digester" rev="2.1" conf="compile" />
 		<dependency org="org.apache.commons" name="commons-jexl" rev="2.0.1" conf="compile" />
+		<dependency org="log4j" name="log4j" rev="1.2.16" conf="compile" />
 
 		<dependency org="org.springframework" name="spring-core" rev="${springframework.version}" conf="compile" />
 		<dependency org="org.springframework" name="spring-beans" rev="${springframework.version}" conf="compile" />

@@ -21,13 +21,13 @@ import com.bstek.dorado.view.widget.InnerElementList;
 @ViewObject(prototype = "dorado.widget.Panel", shortTypeName = "Panel")
 @XmlNode(nodeName = "Panel")
 @ClientEvents({ @ClientEvent(name = "beforeMaximize"),
-		@ClientEvent(name = "onMaximize")})
+		@ClientEvent(name = "onMaximize") })
 public class Panel extends AbstractPanel {
 	private PanelBorder border = PanelBorder.normal;
 	private boolean showCaptionBar = true;
 	private boolean maximizeable;
 	private boolean maximized;
-	
+
 	private boolean closeable;
 	private boolean collapseable = false;
 	private String iconClass;
@@ -72,7 +72,7 @@ public class Panel extends AbstractPanel {
 	public List<SimpleIconButton> getTools() {
 		return tools;
 	}
-	
+
 	public boolean isMaximizeable() {
 		return maximizeable;
 	}
@@ -88,7 +88,7 @@ public class Panel extends AbstractPanel {
 	public void setMaximized(boolean maximized) {
 		this.maximized = maximized;
 	}
-	
+
 	public boolean isCloseable() {
 		return closeable;
 	}
@@ -96,7 +96,7 @@ public class Panel extends AbstractPanel {
 	public void setCloseable(boolean closeable) {
 		this.closeable = closeable;
 	}
-	
+
 	@ViewAttribute(defaultValue = "hide")
 	public CloseAction getCloseAction() {
 		return closeAction;
@@ -105,11 +105,15 @@ public class Panel extends AbstractPanel {
 	public void setCloseAction(CloseAction closeAction) {
 		this.closeAction = closeAction;
 	}
-	
+
 	@Override
 	@ViewAttribute(defaultValue = "false")
 	public boolean isCollapseable() {
 		return collapseable;
+	}
+
+	public void setCollapseable(boolean collapseable) {
+		this.collapseable = collapseable;
 	}
 
 	public String getIconClass() {
@@ -127,6 +131,5 @@ public class Panel extends AbstractPanel {
 	public void setBackground(String background) {
 		this.background = background;
 	}
-	
-	
+
 }

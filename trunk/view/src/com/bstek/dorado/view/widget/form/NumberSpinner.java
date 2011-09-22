@@ -15,6 +15,7 @@ import com.bstek.dorado.annotation.XmlNode;
 public class NumberSpinner extends Spinner {
 	private int min = Integer.MIN_VALUE;
 	private int max = Integer.MAX_VALUE;
+	private boolean selectTextOnFocus = true;
 
 	@ViewAttribute(defaultValue = "-2147483648")
 	public int getMin() {
@@ -25,12 +26,21 @@ public class NumberSpinner extends Spinner {
 		this.min = min;
 	}
 
-	@ViewAttribute(defaultValue = "2147483648")
+	@ViewAttribute(defaultValue = "2147483647")
 	public int getMax() {
 		return max;
 	}
 
 	public void setMax(int max) {
 		this.max = max;
+	}
+
+	@ViewAttribute(defaultValue = "true")
+	public boolean isSelectTextOnFocus() {
+		return selectTextOnFocus;
+	}
+
+	public void setSelectTextOnFocus(boolean selectTextOnFocus) {
+		this.selectTextOnFocus = selectTextOnFocus;
 	}
 }

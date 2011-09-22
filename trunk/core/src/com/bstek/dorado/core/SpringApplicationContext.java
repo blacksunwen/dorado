@@ -13,6 +13,7 @@ import org.springframework.beans.factory.BeanDefinitionStoreException;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
+import org.springframework.context.support.GenericXmlApplicationContext;
 
 import com.bstek.dorado.core.io.DefaultResource;
 import com.bstek.dorado.core.io.Resource;
@@ -98,7 +99,7 @@ public abstract class SpringApplicationContext extends SpringContextSupport {
 	}
 
 	protected GenericApplicationContext internalCreateApplicationContext() {
-		return new GenericApplicationContext();
+		return new GenericXmlApplicationContext();
 	}
 
 	/**
