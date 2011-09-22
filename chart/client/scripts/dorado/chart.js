@@ -590,7 +590,7 @@ function open_flash_chart_data() {
 			$invokeSuper.call(this, arguments);
 
 			jQuery(this._dom).flash({
-				swf: dorado.Setting["common.contextPath"] + "dorado/client/resources/open-flash-chart.swf",
+				swf: dorado.Setting["common.contextPath"] + "dorado/client/resources/open-flash-chart.swf?" + (new Date()).getTime(),
 				width: "100%",
 				height: "100%"
 			});
