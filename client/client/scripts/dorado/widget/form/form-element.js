@@ -49,6 +49,7 @@
 			 * <p>
 			 * 目前支持以下几种取值：
 			 * <ul>
+			 * <li>label - 文本标签。</li>
 			 * <li>text - 文本编辑框。</li>
 			 * <li>password - 口令编辑框。</li>
 			 * <li>textArea - 多行文本编辑框。</li>
@@ -621,6 +622,9 @@
 					return new dorado.widget.RadioGroup({
 						layout: "flow"
 					});
+				}
+				case "label":{
+					return new dorado.widget.DataLabel();
 				}
 				default:
 					{

@@ -12,6 +12,7 @@ dorado.widget.LabelRenderer = $extend(dorado.Renderer, {
  */
 dorado.widget.Label = $extend(dorado.widget.Control, /** @scope dorado.widget.Label.prototype */ {
 	$className: "dorado.widget.Label",
+	_inherentClassName: "i-label",
 	
 	ATTRIBUTES: /** @scope dorado.widget.Label.prototype */ {
 		className: {
@@ -58,6 +59,7 @@ dorado.widget.DataLabelRenderer = $extend(dorado.Renderer, {
  */
 dorado.widget.DataLabel = $extend([dorado.widget.Control, dorado.widget.PropertyDataControl], /** @scope dorado.widget.DataLabel.prototype */ {
 	$className: "dorado.widget.DataLabel",
+    _inherentClassName: "i-data-label",
 	
 	ATTRIBUTES: /** @scope dorado.widget.DataLabel.prototype */ {
 		className: {
