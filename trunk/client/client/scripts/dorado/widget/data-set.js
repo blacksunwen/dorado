@@ -228,16 +228,18 @@
 				this._dataPathCache = {};
 
 				this.sendMessage(0);
-				this.fireEvent("onDataLoad", this);
 			}
 		},
 
 		doLoad: function(callback) {
-			var data = this._data;
+			var data = this._data, shouldFireOnDataLoad;
 			if (data === undefined) {
 				if (this._dataProvider) {
 					data = this.dataPipe;
-					if (!data) data = this.dataPipe = new dorado.DataSetDataPipe(this);
+					if (!data) {
+						data = this.dataPipe = new dorado.DataSetDataPipe(this);
+						shouldFireOnDataLoad = true;
+					}
 				}
 				else {
 					this.setData(null);
@@ -249,7 +251,10 @@
 					pipe.getAsync( {
 						scope: this,
 						callback: function(success, result) {
-							if (success) this.setData(result);
+							if (success) {
+								this.setData(result);
+								if (shouldFireOnDataLoad) this.fireEvent("onDataLoad", this);
+							}
 							$callback(callback, success);
 						}
 					});
@@ -260,6 +265,7 @@
 						throw new dorado.ResourceException("dorado.widget.GetDataDuringLoading", this._id);
 					}
 					this.setData(pipe.get());
+					this.fireEvent("onDataLoad", this);
 				}
 			}
 			else {
