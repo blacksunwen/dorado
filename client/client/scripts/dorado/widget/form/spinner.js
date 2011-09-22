@@ -714,23 +714,27 @@
 				name: "hours",
 				range: [0, 23],
 				digit: 2,
+				defaultValue: 0,
 				prefix: " "
 			},
 			leading_hours: {
 				name: "hours",
 				range: [0, 23],
-				digit: 2
+				digit: 2,
+				defaultValue: 0
 			},
 			minutes: {
 				name: "minutes",
 				range: [0, 59],
 				digit: 2,
+				defaultValue: 0,
 				prefix: ":"
 			},
 			seconds: {
 				name: "seconds",
 				range: [0, 59],
 				digit: 2,
+				defaultValue: 0,
 				prefix: ":"
 			}
 		},
