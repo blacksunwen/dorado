@@ -1,18 +1,44 @@
 package com.bstek.dorado.idesupport.robot;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-11-17
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface RobotInfo {
-	String viewObject() default "";
+public class RobotInfo {
+	private String name;
+	private String label;
+	private String viewObject;
+	private Object robot;
 
-	String label() default "";
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
+	}
+
+	public String getViewObject() {
+		return viewObject;
+	}
+
+	public void setViewObject(String viewObject) {
+		this.viewObject = viewObject;
+	}
+
+	public Object getRobot() {
+		return robot;
+	}
+
+	public void setRobot(Object robot) {
+		this.robot = robot;
+	}
 }

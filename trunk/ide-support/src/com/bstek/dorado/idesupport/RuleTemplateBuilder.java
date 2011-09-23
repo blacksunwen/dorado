@@ -97,6 +97,7 @@ public class RuleTemplateBuilder implements RuleTemplateManagerListener {
 				.values()) {
 			ruleTemplateManager.addRuleTemplate(ruleTemplate);
 		}
+
 		initRuleTemplates(ruleTemplateManager);
 		return ruleTemplateManager;
 	}

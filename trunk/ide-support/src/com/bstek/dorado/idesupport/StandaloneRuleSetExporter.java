@@ -3,8 +3,10 @@
  */
 package com.bstek.dorado.idesupport;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -36,6 +38,7 @@ import com.bstek.dorado.core.io.ResourceUtils;
 import com.bstek.dorado.core.pkgs.PackageInfo;
 import com.bstek.dorado.core.pkgs.PackageManager;
 import com.bstek.dorado.idesupport.model.RuleSet;
+import com.bstek.dorado.idesupport.output.RuleSetOutputter;
 import com.bstek.dorado.web.ConsoleUtils;
 
 /**
@@ -72,6 +75,12 @@ public class StandaloneRuleSetExporter {
 		Context context = Context.getCurrent();
 		return (RuleSetBuilder) context
 				.getServiceBean("idesupport.ruleSetBuilder");
+	}
+
+	private RuleSetOutputter getRuleSetOutputter() throws Exception {
+		Context context = Context.getCurrent();
+		return (RuleSetOutputter) context
+				.getServiceBean("idesupport.ruleSetOutputter");
 	}
 
 	private String getRealResourcePath(String location) {
@@ -165,6 +174,7 @@ public class StandaloneRuleSetExporter {
 		}
 	}
 
+	@Deprecated
 	private RuleSet exportRuleSet() throws Exception {
 		// 输出版本信息
 		ConsoleUtils.outputLoadingInfo("Initializing "
@@ -229,30 +239,130 @@ public class StandaloneRuleSetExporter {
 
 			RuleTemplateManager ruleTemplateManager = getRuleTemplateBuilder()
 					.getRuleTemplateManager();
-			return getRuleSetBuilder().buildRuleSet(ruleTemplateManager);
+			RuleSet ruleSet = getRuleSetBuilder().buildRuleSet(
+					ruleTemplateManager);
+
+			Map<String, PackageInfo> finalPackageInfos = new HashMap<String, PackageInfo>(
+					PackageManager.getPackageInfoMap());
+			Collection<PackageInfo> packageInfos = ruleSet.getPackageInfos();
+			for (PackageInfo packageInfo : packageInfos) {
+				finalPackageInfos.put(packageInfo.getName(), packageInfo);
+			}
+
+			packageInfos.clear();
+			packageInfos.addAll(finalPackageInfos.values());
+
+			return ruleSet;
 		} finally {
 			CommonContext.dispose();
 		}
 	}
 
+	private void exportRuleSet(PrintWriter writer) throws Exception {
+		// 输出版本信息
+		ConsoleUtils.outputLoadingInfo("Initializing "
+				+ DoradoAbout.getProductTitle() + " engine...");
+		ConsoleUtils.outputLoadingInfo("[vendor: " + DoradoAbout.getVendor()
+				+ "]");
+
+		ConfigureStore configureStore = Configure.getStore();
+
+		// 处理DoradoHome
+		configureStore.set(HOME_PROPERTY, doradoHome);
+		ConsoleUtils
+				.outputLoadingInfo("[dorado home: "
+						+ StringUtils.defaultString(doradoHome,
+								"<not assigned>") + "]");
+
+		// 创建一个临时的ResourceLoader
+		ResourceLoader resourceLoader = new BaseResourceLoader();
+
+		// 读取configure.properties
+		loadConfigureProperties(configureStore, resourceLoader,
+				WEB_CONFIGURE_LOCATION, false);
+
+		if (StringUtils.isNotEmpty(doradoHome)) {
+			String configureLocation = HOME_LOCATION_PREFIX
+					+ "configure.properties";
+			loadConfigureProperties(configureStore, resourceLoader,
+					configureLocation, false);
+		}
+
+		List<String> contextLocations = new ArrayList<String>();
+		// findPackages
+		for (PackageInfo packageInfo : PackageManager.getPackageInfoMap()
+				.values()) {
+			ConsoleUtils.outputLoadingInfo("Package [" + packageInfo.getName()
+					+ " - " + packageInfo.getVersion() + "] found.");
+
+			// 处理Spring的配置文件
+			pushLocations(contextLocations, packageInfo.getContextLocations());
+		}
+
+		String contextLocationsFromProperties = configureStore
+				.getString(CONTEXT_CONFIG_PROPERTY);
+		if (contextLocationsFromProperties != null) {
+			pushLocations(contextLocations, contextLocationsFromProperties);
+		}
+
+		Resource resource;
+		resource = resourceLoader
+				.getResource(getRealResourcePath(HOME_COMPONENT_CONTEXT_FILE));
+		if (resource.exists()) {
+			pushLocations(contextLocations, HOME_COMPONENT_CONTEXT_FILE);
+		}
+
+		configureStore.set(CONTEXT_CONFIG_PROPERTY,
+				StringUtils.join(getRealResourcesPath(contextLocations), ';'));
+		ConsoleUtils.outputConfigureItem(CONTEXT_CONFIG_PROPERTY);
+
+		CommonContext.init();
+		try {
+			EngineStartupListenerManager.notifyStartup();
+
+			RuleTemplateManager ruleTemplateManager = getRuleTemplateBuilder()
+					.getRuleTemplateManager();
+			getRuleSetOutputter().output(writer, ruleTemplateManager);
+		} finally {
+			CommonContext.dispose();
+		}
+	}
+
+	@Deprecated
 	public static RuleSet getRuleSet(String doradoHome) throws Exception {
 		if (StringUtils.isEmpty(doradoHome)) {
 			doradoHome = System.getenv("DORADO_HOME");
 		}
 		StandaloneRuleSetExporter instance = new StandaloneRuleSetExporter(
 				doradoHome);
-		RuleSet ruleSet = instance.exportRuleSet();
+		return instance.exportRuleSet();
+	}
 
-		Map<String, PackageInfo> finalPackageInfos = new HashMap<String, PackageInfo>(
-				PackageManager.getPackageInfoMap());
-		Collection<PackageInfo> packageInfos = ruleSet.getPackageInfos();
-		for (PackageInfo packageInfo : packageInfos) {
-			finalPackageInfos.put(packageInfo.getName(), packageInfo);
+	public static void main(String[] args) throws Exception {
+		String ruleSetFile = null;
+		String doradoHome = null;
+		if (args.length >= 2) {
+			ruleSetFile = args[0];
+			doradoHome = args[1];
+		} else {
+			throw new IllegalArgumentException();
 		}
 
-		packageInfos.clear();
-		packageInfos.addAll(finalPackageInfos.values());
+		if (StringUtils.isEmpty(doradoHome)) {
+			doradoHome = System.getenv("DORADO_HOME");
+		}
 
-		return ruleSet;
+		StandaloneRuleSetExporter instance = new StandaloneRuleSetExporter(
+				doradoHome);
+
+		FileOutputStream fos = new FileOutputStream(ruleSetFile);
+		PrintWriter writer = new PrintWriter(fos);
+		try {
+			instance.exportRuleSet(writer);
+		} finally {
+			writer.flush();
+			writer.close();
+			fos.close();
+		}
 	}
 }

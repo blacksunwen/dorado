@@ -1,6 +1,5 @@
 package com.bstek.dorado.idesupport.template;
 
-
 import com.bstek.dorado.common.event.ClientEventRegisterInfo;
 import com.bstek.dorado.idesupport.model.ClientEvent;
 

@@ -3,7 +3,6 @@ package com.bstek.dorado.idesupport.resolver;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import javax.servlet.ServletInputStream;
@@ -23,6 +22,7 @@ import com.bstek.dorado.core.Constants;
 import com.bstek.dorado.core.io.InputStreamResource;
 import com.bstek.dorado.core.xml.XmlDocumentBuilder;
 import com.bstek.dorado.idesupport.robot.Robot;
+import com.bstek.dorado.idesupport.robot.RobotRegistry;
 import com.bstek.dorado.util.Assert;
 import com.bstek.dorado.util.xml.DomUtils;
 import com.bstek.dorado.web.DoradoContext;
@@ -36,7 +36,7 @@ import com.bstek.dorado.web.resolver.HttpConstants;
 public class RobotResolver extends AbstractTextualResolver {
 	private static Log logger = LogFactory.getLog(RobotResolver.class);
 
-	private Map<String, Robot> robotMap;
+	private RobotRegistry robotRegistry;
 	private XmlDocumentBuilder xmlDocumentBuilder;
 
 	public RobotResolver() {
@@ -44,12 +44,8 @@ public class RobotResolver extends AbstractTextualResolver {
 		setCacheControl(HttpConstants.NO_STORE);
 	}
 
-	public Map<String, Robot> getRobotMap() {
-		return robotMap;
-	}
-
-	public void setRobotMap(Map<String, Robot> robotMap) {
-		this.robotMap = robotMap;
+	public void setRobotRegistry(RobotRegistry robotRegistry) {
+		this.robotRegistry = robotRegistry;
 	}
 
 	private XmlDocumentBuilder getXmlDocumentBuilder(DoradoContext context)
@@ -78,14 +74,10 @@ public class RobotResolver extends AbstractTextualResolver {
 		List<Element> resultElements = null;
 		Exception error = null;
 
-		if (robotMap == null) {
-			throw new IllegalStateException("\"robotMap\" not initialized.");
-		}
-
 		String robotName = getRobotName(request);
 		Assert.notEmpty(robotName, "\"robotName\" undefined.");
 
-		Robot robot = robotMap.get(robotName);
+		Robot robot = robotRegistry.getRobot(robotName);
 		if (robot == null) {
 			throw new IllegalArgumentException("Unknown robotName \""
 					+ robotName + "\".");
@@ -195,4 +187,5 @@ public class RobotResolver extends AbstractTextualResolver {
 			stackTraceElement.appendChild(element);
 		}
 	}
+
 }
