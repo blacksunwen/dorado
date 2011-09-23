@@ -31,7 +31,6 @@ import com.bstek.dorado.util.xml.DomUtils;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-11-2
  */
-@RobotInfo(viewObject = "DataType", label = "Generate PropertyDefs (Advance)")
 public class EntityDataTypeReflectionRobot implements Robot {
 	private static final Set<String> IGNORE_DATATYPES = new HashSet<String>();
 

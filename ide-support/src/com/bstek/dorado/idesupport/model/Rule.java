@@ -20,8 +20,7 @@ import com.bstek.dorado.util.Assert;
  * @since 2009-11-18
  */
 public class Rule {
-
-	private static Comparator<String> propertyComparator;
+	private static transient Comparator<String> propertyComparator;
 	static {
 		propertyComparator = new Comparator<String>() {
 			public int compare(String name1, String name2) {

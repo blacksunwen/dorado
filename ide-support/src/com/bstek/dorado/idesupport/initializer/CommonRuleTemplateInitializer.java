@@ -7,6 +7,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -32,12 +33,12 @@ import com.bstek.dorado.config.xml.SubNodeToPropertyParser;
 import com.bstek.dorado.config.xml.TypeAnnotationInfo;
 import com.bstek.dorado.config.xml.XmlParser;
 import com.bstek.dorado.config.xml.XmlParserAnnotationHelper;
-import com.bstek.dorado.core.Context;
 import com.bstek.dorado.data.config.xml.GenericObjectParser;
 import com.bstek.dorado.idesupport.RuleTemplateManager;
 import com.bstek.dorado.idesupport.model.ClientEvent;
 import com.bstek.dorado.idesupport.model.CompositeType;
-import com.bstek.dorado.idesupport.resolver.RuleSetResolver;
+import com.bstek.dorado.idesupport.robot.RobotInfo;
+import com.bstek.dorado.idesupport.robot.RobotRegistry;
 import com.bstek.dorado.idesupport.template.AutoChildTemplate;
 import com.bstek.dorado.idesupport.template.AutoClientEvent;
 import com.bstek.dorado.idesupport.template.AutoProperty;
@@ -47,6 +48,7 @@ import com.bstek.dorado.idesupport.template.LazyReferenceTemplate;
 import com.bstek.dorado.idesupport.template.PropertyTemplate;
 import com.bstek.dorado.idesupport.template.ReferenceTemplate;
 import com.bstek.dorado.idesupport.template.RuleTemplate;
+import com.bstek.dorado.util.PathUtils;
 import com.bstek.dorado.view.config.xml.ChildComponentParser;
 import com.bstek.dorado.view.config.xml.ComponentParserDispatcher;
 import com.bstek.dorado.view.output.ObjectOutputter;
@@ -64,13 +66,17 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 	private static final String FAIL_SAFE_NODE_NAME = "FailSafeNodeName";
 
 	private XmlParserAnnotationHelper xmlParserAnnotationHelper;
+	private RobotRegistry robotRegistry;
 
 	public void setXmlParserAnnotationHelper(
 			XmlParserAnnotationHelper xmlParserAnnotationHelper) {
 		this.xmlParserAnnotationHelper = xmlParserAnnotationHelper;
 	}
 
-	@SuppressWarnings("unchecked")
+	public void setRobotRegistry(RobotRegistry robotRegistry) {
+		this.robotRegistry = robotRegistry;
+	}
+
 	public void initRuleTemplate(RuleTemplate ruleTemplate,
 			InitializerContext initializerContext) throws Exception {
 		Class<?> type = null;
@@ -104,14 +110,23 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 			}
 		}
 
-		Context context = Context.getCurrent();
-		Map<String, String> robotMap = (Map<String, String>) context
-				.getAttribute(RuleSetResolver.ROBOT_MAP_ATTRIBUTE_KEY);
-		if (robotMap != null) {
-			String robots = robotMap.get(ruleTemplate.getName());
-			if (StringUtils.isNotEmpty(robots)) {
-				ruleTemplate.setRobots(StringUtils.split(robots, ","));
+		List<String> robots = null;
+		Map<String, RobotInfo> robotMap = robotRegistry.getRobotMap();
+		for (Map.Entry<String, RobotInfo> entry : robotMap.entrySet()) {
+			RobotInfo robotInfo = entry.getValue();
+			if (robotInfo != null) {
+				String pattern = robotInfo.getViewObject();
+				if (PathUtils.match(pattern, ruleTemplate.getName())) {
+					if (robots == null) {
+						robots = new ArrayList<String>();
+					}
+					robots.add(robotInfo.getName());
+				}
 			}
+		}
+
+		if (robots != null) {
+			ruleTemplate.setRobots(robots.toArray(new String[0]));
 		}
 
 		XmlParser parser = ruleTemplate.getParser();
