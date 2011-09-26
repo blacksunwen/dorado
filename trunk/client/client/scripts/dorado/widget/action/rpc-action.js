@@ -611,15 +611,13 @@
 			function processEntityStates(entityStates, context) {
 
 				function processEntity(entity, entityStates, refreshMode) {
-					if(!entity.entityId)
-						return;
+					if(!entity.entityId) return;
 
 					var b;
 					if(refreshMode != "cascade") {
 						var data = entity.getData();
 						for(var p in data) {
-							if(!data.hasOwnProperty(p))
-								continue;
+							if(!data.hasOwnProperty(p)) continue;
 							var v = data[p];
 							if( v instanceof Object && v.entityId) {
 								b = processEntity(v, entityStates) || b;
@@ -630,12 +628,9 @@
 					var state = entityStates[entity.entityId] || 0;
 					if(state.constructor == Number) {
 						delete entity._oldData;
-						if(state == dorado.Entity.STATE_DELETED)
-							entity.remove(true);
-						else if(entity.state == state)
-							return b;
-						else
-							entity.setState(state);
+						if(state == dorado.Entity.STATE_DELETED) entity.remove(true);
+						else if(entity.state == state) return b;
+						else entity.setState(state);
 					} else {
 						var s = state.$state || 0;
 						delete state.$state;
@@ -662,8 +657,7 @@
 				}
 
 				function processUpdateInfo(updateInfo, entityStates) {
-					if(updateInfo.refreshMode == "none")
-						return false;
+					if(updateInfo.refreshMode == "none") return false;
 					var b = false, entities = updateInfo.entities;
 					if(updateInfo.refreshMode == "cascade") {
 						var map = {};
@@ -692,13 +686,17 @@
 				for(var i = 0; i < updateInfos.length; i++) {
 					var alias = updateInfos[i].alias;
 					var dataSet = context.aliasMap[alias];
-					dataSet.disableObservers();
+					if (!dataSet && updateInfo.entities.length) {
+						dataSet = dorado.widget.DataSet.getOwnerDataSet(updateInfo.entities[0]);
+					}
+					
+					if (dataSet) dataSet.disableObservers();
 					try {
-						if(processUpdateInfo(updateInfos[i], entityStates)) {
+						if(processUpdateInfo(updateInfos[i], entityStates) && dataSet) {
 							changedDataSets.push(dataSet);
 						}
 					} finally {
-						dataSet.enableObservers();
+						if (dataSet) dataSet.enableObservers();
 					}
 				}
 
@@ -723,8 +721,7 @@
 						return dataResolver.resolveAsync(dataResolverArg, {
 							scope : this,
 							callback : function(success, result) {
-								if(success)
-									processEntityStates.call(this, result.entityStates, context);
+								if(success)	processEntityStates.call(this, result.entityStates, context);
 								$callback(callback, success, (success) ? result.returnValue : result);
 								this.fireEvent("onUpdate", this, eventArg);
 							}

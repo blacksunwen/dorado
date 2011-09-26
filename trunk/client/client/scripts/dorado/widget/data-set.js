@@ -251,9 +251,9 @@
 					pipe.getAsync( {
 						scope: this,
 						callback: function(success, result) {
-							if (success) {
+							if (success && shouldFireOnDataLoad) {
 								this.setData(result);
-								if (shouldFireOnDataLoad) this.fireEvent("onDataLoad", this);
+								this.fireEvent("onDataLoad", this);
 							}
 							$callback(callback, success);
 						}
@@ -781,6 +781,15 @@
 	 * @constant
 	 */
 	DataSet.MESSAGE_REFRESH_ENTITY = dorado.Entity._MESSAGE_REFRESH_ENTITY;
+	
+	DataSet.getOwnerDataSet = function(data) {
+		var p = data.parent;
+		while (p) {
+			if (p instanceof DataSet) return p;
+			p = p.parent;
+		}
+		return null;
+	};
 
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
