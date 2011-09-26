@@ -7,8 +7,8 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 		<property name="url" value="/dorado/ide/config-rules.xml" />
 		<property name="resolver">
 			<bean class="com.bstek.dorado.idesupport.resolver.RuleSetResolver">
-				<property name="ruleTemplateBuilder" ref="dorado.ruleTemplateBuilder" />
-				<property name="ruleSetOutputter" ref="dorado.ruleSetOutputter" />
+				<property name="ruleTemplateBuilder" ref="dorado.idesupport.ruleTemplateBuilder" />
+				<property name="ruleSetOutputter" ref="dorado.idesupport.ruleSetOutputter" />
 			</bean>
 		</property>
 	</bean>
