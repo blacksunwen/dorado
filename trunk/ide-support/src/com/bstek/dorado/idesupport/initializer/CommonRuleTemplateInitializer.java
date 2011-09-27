@@ -120,7 +120,7 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 					if (robots == null) {
 						robots = new ArrayList<String>();
 					}
-					robots.add(robotInfo.getName());
+					robots.add(robotInfo.getName() + '|' + robotInfo.getLabel());
 				}
 			}
 		}
