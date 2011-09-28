@@ -133,6 +133,7 @@ public abstract class EntityEnhancer {
 	}
 
 	private Ehcache getLookupIndexedDataCache() throws Exception {
+		// 未避免同一系统下部署多个Dorado7应用时，缓存文件名产生冲突。暂时在context.xml中关闭了overflowToDiskoverflowToDisk选项。
 		if (lookupIndexedDataCache == null) {
 			Context context = Context.getCurrent();
 			lookupIndexedDataCache = (Ehcache) context
