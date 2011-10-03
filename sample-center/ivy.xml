@@ -25,6 +25,9 @@
 		<dependency org="com.bstek.dorado" name="dorado-desktop" rev="${depended-dorado.version}" conf="compile,runtime">
 			<exclude org="com.bstek.dorado" />
 		</dependency>
+		<dependency org="com.bstek.dorado" name="dorado-htmleditor" rev="${depended-dorado.version}" conf="compile,runtime">
+			<exclude org="com.bstek.dorado" />
+		</dependency>
 
 		<dependency org="org.springframework" name="spring-aop" rev="${springframework.version}" conf="compile,runtime" />
 		<dependency org="org.springframework" name="spring-jdbc" rev="${springframework.version}" conf="compile,runtime" />

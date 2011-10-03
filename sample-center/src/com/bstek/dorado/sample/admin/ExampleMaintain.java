@@ -3,7 +3,6 @@ package com.bstek.dorado.sample.admin;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -14,9 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bstek.dorado.annotation.DataProvider;
 import com.bstek.dorado.annotation.DataResolver;
-import com.bstek.dorado.data.entity.EntityWrapper;
 import com.bstek.dorado.data.entity.EntityState;
 import com.bstek.dorado.data.entity.EntityUtils;
+import com.bstek.dorado.data.entity.EntityWrapper;
 import com.bstek.dorado.data.entity.FilterType;
 import com.bstek.dorado.sample.dao.CategoryExampleRelationDao;
 import com.bstek.dorado.sample.dao.ExampleCategoryDao;
@@ -66,12 +65,10 @@ public class ExampleMaintain {
 
 	@DataResolver
 	@Transactional
-	@SuppressWarnings("unchecked")
 	public void saveAll(Collection<ExampleCategory> categories) {
 		PersistenceContext persisContext = new PersistenceContext();
-		for (Iterator<ExampleCategory> it = EntityUtils.getIterator(categories,
-				FilterType.VISIBLE); it.hasNext();) {
-			ExampleCategory category = it.next();
+		for (ExampleCategory category : EntityUtils.getIterable(categories,
+				FilterType.VISIBLE, ExampleCategory.class)) {
 			doSaveCategory(null, category, persisContext);
 		}
 		for (Long exampleId : persisContext.getDetachedExamples()) {

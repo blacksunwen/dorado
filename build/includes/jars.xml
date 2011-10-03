@@ -40,9 +40,6 @@
 		</propertyfile>
 
 		<ivy:configure file="${work.dir}/ivysettings.xml" />
-
-		<ivy:resolve file="${resources.dir}/ivy.xml" />
-		<ivy:retrieve pattern="${work.dir}/lib/[artifact]-[revision](-[classifier]).[ext]" conf="compile" />
 	</target>
 
 	<target name="package-module">

@@ -3,6 +3,7 @@
   <Arguments>
     <Argument name="caption" value="示例结构维护"/>
   </Arguments>
+  <Context/>
   <Model>
     <DataType name="Node" meta="child:ExampleSource,CategoryNode,ExampleNode,global:ExampleSource">
       <ClientEvent name="onStateChange">if (arg.oldState == dorado.Entity.STATE_NONE) {
@@ -144,6 +145,8 @@ this.$refreshActions();</ClientEvent>
       <ToolBarButton action="actionCancel"/>
       <Separator/>
       <ToolBarButton action="actionSave"/>
+      <HtmlContainer/>
+      <HtmlContainer/>
     </ToolBar>
     <SplitPanel position="260">
       <MainControl>
