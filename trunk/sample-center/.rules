@@ -2,6 +2,7 @@
 <RuleSet><PackageInfos>
 <PackageInfo name="com.bstek.dorado.ide-support" version="&lt;Unknown Version&gt;"/>
 <PackageInfo name="com.bstek.dorado.console" version="&lt;Unknown Version&gt;"/>
+<PackageInfo name="com.bstek.dorado.htmleditor" version="&lt;Unknown Version&gt;"/>
 <PackageInfo name="com.bstek.dorado.desktop" version="&lt;Unknown Version&gt;"/>
 <PackageInfo name="com.bstek.dorado.chart" version="&lt;Unknown Version&gt;"/>
 <PackageInfo name="com.bstek.dorado.hibernate" version="&lt;Unknown Version&gt;"/>
@@ -61,7 +62,8 @@
 <Prop name="tip" type="java.lang.String"/>
 <Prop name="userData" type="java.lang.Object" editor="any"/>
 <Prop name="visible" type="boolean" defaultValue="true"/>
-<Prop name="width" type="java.lang.String"/></Props></Rule><Rule name="PropertyDefSupport" abstract="true" type="com.bstek.dorado.data.type.property.PropertyDefSupport" scope="protected"><PrimitiveProps>
+<Prop name="width" type="java.lang.String"/></Props><ClientEvents>
+<ClientEvent name="onShortcutContextMenu" parameters="self,arg"/></ClientEvents></Rule><Rule name="PropertyDefSupport" abstract="true" type="com.bstek.dorado.data.type.property.PropertyDefSupport" scope="protected"><PrimitiveProps>
 <Prop name="name"/>
 <Prop name="parent" ignored="true"/></PrimitiveProps><Props>
 <Prop name="dataType" type="com.bstek.dorado.data.type.DataType"/>
@@ -80,7 +82,7 @@
 <ClientEvent name="onGet" parameters="self,arg"/>
 <ClientEvent name="onSet" parameters="self,arg"/>
 <ClientEvent name="onValidate" parameters="self,arg"/>
-<ClientEvent name="onAttributeChanged" parameters="self,arg"/></ClientEvents><Children><Child name="PropertyDefDataType"><Rule name="PropertyDefDataType" parents="DataType" scope="protected"></Rule></Child><Child rule="Validator" name="Validator" aggregated="true"></Child></Children></Rule><Rule name="Trigger" parents="Component" type="com.bstek.dorado.view.widget.form.trigger.Trigger" scope="public" sortFactor="252" category="Trigger" reserve="requireID"><Props>
+<ClientEvent name="onAttributeChange" parameters="self,arg"/></ClientEvents><Children><Child name="PropertyDefDataType"><Rule name="PropertyDefDataType" parents="DataType" scope="protected"></Rule></Child><Child rule="Validator" name="Validator" aggregated="true"></Child></Children></Rule><Rule name="Trigger" parents="Component" type="com.bstek.dorado.view.widget.form.trigger.Trigger" scope="public" sortFactor="252" category="Trigger" reserve="requireID"><Props>
 <Prop name="icon" type="java.lang.String"/>
 <Prop name="iconClass" type="java.lang.String" enumValues="d-trigger-icon-drop,d-trigger-icon-search,d-trigger-icon-date,d-trigger-icon-custom"/>
 <Prop name="ignored" type="boolean"/><Prop name="metaData" type="java.util.Map" compositeType="Open"></Prop>
@@ -110,15 +112,18 @@
 <ClientEvent name="onDraggingSourceOut" parameters="self,arg"/>
 <ClientEvent name="onDraggingSourceMove" parameters="self,arg"/>
 <ClientEvent name="onDraggingSourceDrop" parameters="self,arg"/>
-<ClientEvent name="onDragStart" parameters="self,arg"/>
 <ClientEvent name="onGetDraggingIndicator" parameters="self,arg"/>
 <ClientEvent name="onKeyPress" parameters="self,arg"/>
+<ClientEvent name="onDragStart" parameters="self,arg"/>
+<ClientEvent name="onCreateDom" parameters="self,arg"/>
 <ClientEvent name="onDragStop" parameters="self,arg"/>
+<ClientEvent name="beforeRefreshDom" parameters="self,arg"/>
 <ClientEvent name="onDragMove" parameters="self,arg"/>
 <ClientEvent name="onContextMenu" parameters="self,arg"/>
 <ClientEvent name="onDoubleClick" parameters="self,arg"/>
 <ClientEvent name="onMouseUp" parameters="self,arg"/>
 <ClientEvent name="onMouseDown" parameters="self,arg"/>
+<ClientEvent name="onRefreshDom" parameters="self,arg"/>
 <ClientEvent name="onFocus" parameters="self,arg"/>
 <ClientEvent name="onKeyDown" parameters="self,arg"/></ClientEvents></Rule><Rule name="Menu" parents="Component" type="com.bstek.dorado.view.widget.base.menu.Menu" scope="public" sortFactor="237" category="Floatable" reserve="requireID"><Props>
 <Prop name="align" type="com.bstek.dorado.view.widget.FloatControlAlign" enumValues="left,innerleft,center,innerright,top"/>
@@ -166,21 +171,24 @@
 <ClientEvent name="onKeyPress" parameters="self,arg"/>
 <ClientEvent name="onGetDraggingIndicator" parameters="self,arg"/>
 <ClientEvent name="onDragStop" parameters="self,arg"/>
+<ClientEvent name="onCreateDom" parameters="self,arg"/>
 <ClientEvent name="onDoubleClick" parameters="self,arg"/>
 <ClientEvent name="onMouseUp" parameters="self,arg"/>
 <ClientEvent name="onFocus" parameters="self,arg"/>
 <ClientEvent name="onKeyDown" parameters="self,arg"/>
 <ClientEvent name="onBlur" parameters="self,arg"/>
 <ClientEvent name="onDraggingSourceOver" parameters="self,arg"/>
+<ClientEvent name="beforeHide" parameters="self,arg"/>
+<ClientEvent name="beforeClose" parameters="self,arg"/>
 <ClientEvent name="onDraggingSourceDrop" parameters="self,arg"/>
 <ClientEvent name="onDraggingSourceMove" parameters="self,arg"/>
-<ClientEvent name="beforeClose" parameters="self,arg"/>
-<ClientEvent name="beforeHide" parameters="self,arg"/>
 <ClientEvent name="onDragStart" parameters="self,arg"/>
+<ClientEvent name="beforeRefreshDom" parameters="self,arg"/>
 <ClientEvent name="onDragMove" parameters="self,arg"/>
 <ClientEvent name="onContextMenu" parameters="self,arg"/>
 <ClientEvent name="beforeShow" parameters="self,arg"/>
 <ClientEvent name="onMouseDown" parameters="self,arg"/>
+<ClientEvent name="onRefreshDom" parameters="self,arg"/>
 <ClientEvent name="onShow" parameters="self,arg"/>
 <ClientEvent name="onClose" parameters="self,arg"/>
 <ClientEvent name="onHide" parameters="self,arg"/></ClientEvents><Children><Child rule="ToolBar.#self.ToolBarMenuButton.#self.MenuItem" name="MenuItem" aggregated="true"></Child><Child rule="ToolBar.#self.ToolBarMenuButton.#self.Separator" name="Separator" aggregated="true"></Child><Child rule="ToolBar.#self.ToolBarMenuButton.#self.CheckableMenuItem" name="CheckableMenuItem" aggregated="true"></Child><Child rule="ToolBar.#self.ToolBarMenuButton.#self.ControlMenuItem" name="ControlMenuItem" aggregated="true"></Child></Children></Rule><Rule name="View" parents="Container" type="com.bstek.dorado.view.View" scope="private" sortFactor="208" category="General"><PrimitiveProps>
@@ -245,7 +253,7 @@
 <ClientEvent name="onCreate" parameters="self,arg"/>
 <ClientEvent name="onReady" parameters="self,arg"/>
 <ClientEvent name="onDestroy" parameters="self,arg"/>
-<ClientEvent name="onAttributeChanged" parameters="self,arg"/></ClientEvents></Rule><Rule name="Container" parents="Control" type="com.bstek.dorado.view.widget.Container" scope="public" sortFactor="211" category="General"><Props>
+<ClientEvent name="onAttributeChange" parameters="self,arg"/></ClientEvents></Rule><Rule name="Container" parents="Control" type="com.bstek.dorado.view.widget.Container" scope="public" sortFactor="211" category="General"><Props>
 <Prop name="className" type="java.lang.String"/>
 <Prop name="contentOverflow" type="com.bstek.dorado.view.widget.Overflow" defaultValue="auto" enumValues="visible,hidden,scroll,auto"/>
 <Prop name="dragTags" type="java.lang.String"/>
@@ -312,8 +320,8 @@
 <Prop name="userData" type="java.lang.Object" editor="any"/>
 <Prop name="visible" type="boolean" defaultValue="true"/>
 <Prop name="width" type="java.lang.String"/></Props><ClientEvents>
-<ClientEvent name="onPost" parameters="self,arg"/>
 <ClientEvent name="onPostFailed" parameters="self,arg"/>
+<ClientEvent name="onPost" parameters="self,arg"/>
 <ClientEvent name="beforePost" parameters="self,arg"/></ClientEvents></Rule><Rule name="LayoutHolder" scope="protected"><Children><Child rule="AnchorLayout" name="anchor"></Child><Child rule="DockLayout" name="dock"></Child><Child rule="HboxLayout" name="hbox"></Child><Child rule="VboxLayout" name="vbox"></Child><Child rule="FormLayout" name="form"></Child><Child rule="NativeLayout" name="native"></Child></Children></Rule><Rule name="DataSet" parents="Component" type="com.bstek.dorado.view.widget.data.DataSet" scope="public" sortFactor="209" category="General" reserve="requireID"><Props>
 <Prop name="dataType" type="com.bstek.dorado.data.type.DataType" reference="DataType:name"/>
 <Prop name="dataProvider" type="com.bstek.dorado.data.provider.DataProvider" reference="DataProvider:name"/>
@@ -347,9 +355,9 @@
 <Prop name="userData" type="java.lang.Object" editor="any"/>
 <Prop name="visible" type="boolean" defaultValue="true"/>
 <Prop name="width" type="java.lang.String"/></Props><ClientEvents>
+<ClientEvent name="onTabChange" parameters="self,arg"/>
 <ClientEvent name="onTabContextMenu" parameters="self,arg"/>
-<ClientEvent name="beforeTabChange" parameters="self,arg"/>
-<ClientEvent name="onTabChange" parameters="self,arg"/></ClientEvents></Rule><Rule name="PropertyDef" parents="PropertyDefSupport" type="com.bstek.dorado.data.type.property.BasePropertyDef" scope="protected" sortFactor="1"><Props>
+<ClientEvent name="beforeTabChange" parameters="self,arg"/></ClientEvents></Rule><Rule name="PropertyDef" parents="PropertyDefSupport" type="com.bstek.dorado.data.type.property.BasePropertyDef" scope="protected" sortFactor="1"><Props>
 <Prop name="defaultValue" type="java.lang.Object"/>
 <Prop name="displayFormat" type="java.lang.String"/>
 <Prop name="ignored" type="boolean"/>
@@ -610,7 +618,57 @@
 <Prop name="vAlign" type="com.bstek.dorado.view.widget.VerticalAlign" defaultValue="top" enumValues="top,center,bottom"/></Props></Rule><Rule name="NativeLayout" parents="Layout" nodeName="native" type="com.bstek.dorado.view.widget.layout.NativeLayout" scope="protected" sortFactor="106"><Props>
 <Prop name="className" type="java.lang.String"/>
 <Prop name="padding" type="int"/>
-<Prop name="style" type="java.lang.String"/></Props></Rule><Rule name="NativeLayoutConstraint" parents="LayoutConstraint" type="com.bstek.dorado.view.widget.layout.CommonLayoutConstraint" scope="protected"></Rule><Rule name="Flash" parents="Control" type="com.bstek.dorado.desktop.Flash" scope="public" sortFactor="201" category="Desktop"><Props>
+<Prop name="style" type="java.lang.String"/></Props></Rule><Rule name="NativeLayoutConstraint" parents="LayoutConstraint" type="com.bstek.dorado.view.widget.layout.CommonLayoutConstraint" scope="protected"></Rule><Rule name="HtmlEditor" parents="AbstractEditor" type="com.bstek.dorado.htmleditor.HtmlEditor" scope="public" sortFactor="201" category="Advance"><Props>
+<Prop name="className" type="java.lang.String"/>
+<Prop name="dataPath" type="java.lang.String"/>
+<Prop name="dataSet" type="java.lang.String" reference="DataSet:id"/>
+<Prop name="dragTags" type="java.lang.String"/>
+<Prop name="draggable" type="boolean"/>
+<Prop name="droppable" type="boolean"/>
+<Prop name="droppableTags" type="java.lang.String"/>
+<Prop name="exClassName" type="java.lang.String"/>
+<Prop name="height" type="java.lang.String"/>
+<Prop name="hideMode" type="com.bstek.dorado.view.widget.HideMode" defaultValue="visibility" enumValues="visibility,display"/>
+<Prop name="ignored" type="boolean"/>
+<Prop name="layoutConstraint" type="java.lang.Object"/><Prop name="metaData" type="java.util.Map" compositeType="Open"></Prop>
+<Prop name="mode" type="com.bstek.dorado.htmleditor.HtmlEditorMode" defaultValue="full" enumValues="full,simple"/>
+<Prop name="property" type="java.lang.String"/>
+<Prop name="readOnly" type="boolean"/>
+<Prop name="renderOn" type="java.lang.String"/>
+<Prop name="renderTo" type="java.lang.String"/><Prop name="style" type="java.util.Map" compositeType="Open"></Prop>
+<Prop name="supportsDirtyFlag" type="boolean" defaultValue="true"/>
+<Prop name="tags" type="java.lang.String"/>
+<Prop name="tip" type="java.lang.String"/>
+<Prop name="userData" type="java.lang.Object" editor="any"/>
+<Prop name="visible" type="boolean" defaultValue="true"/>
+<Prop name="width" type="java.lang.String"/></Props><ClientEvents>
+<ClientEvent name="onClick" parameters="self,arg"/>
+<ClientEvent name="onDraggingSourceOut" parameters="self,arg"/>
+<ClientEvent name="onKeyPress" parameters="self,arg"/>
+<ClientEvent name="onGetDraggingIndicator" parameters="self,arg"/>
+<ClientEvent name="onCreate" parameters="self,arg"/>
+<ClientEvent name="onDragStop" parameters="self,arg"/>
+<ClientEvent name="onCreateDom" parameters="self,arg"/>
+<ClientEvent name="onReady" parameters="self,arg"/>
+<ClientEvent name="onPostFailed" parameters="self,arg"/>
+<ClientEvent name="onDoubleClick" parameters="self,arg"/>
+<ClientEvent name="onMouseUp" parameters="self,arg"/>
+<ClientEvent name="onDestroy" parameters="self,arg"/>
+<ClientEvent name="onFocus" parameters="self,arg"/>
+<ClientEvent name="onKeyDown" parameters="self,arg"/>
+<ClientEvent name="onBlur" parameters="self,arg"/>
+<ClientEvent name="onDraggingSourceOver" parameters="self,arg"/>
+<ClientEvent name="onDraggingSourceDrop" parameters="self,arg"/>
+<ClientEvent name="onDraggingSourceMove" parameters="self,arg"/>
+<ClientEvent name="onDragStart" parameters="self,arg"/>
+<ClientEvent name="onPost" parameters="self,arg"/>
+<ClientEvent name="beforeRefreshDom" parameters="self,arg"/>
+<ClientEvent name="onDragMove" parameters="self,arg"/>
+<ClientEvent name="onContextMenu" parameters="self,arg"/>
+<ClientEvent name="beforePost" parameters="self,arg"/>
+<ClientEvent name="onMouseDown" parameters="self,arg"/>
+<ClientEvent name="onRefreshDom" parameters="self,arg"/>
+<ClientEvent name="onAttributeChange" parameters="self,arg"/></ClientEvents></Rule><Rule name="Flash" parents="Control" type="com.bstek.dorado.desktop.Flash" scope="public" sortFactor="202" category="Desktop"><Props>
 <Prop name="className" type="java.lang.String"/>
 <Prop name="dragTags" type="java.lang.String"/>
 <Prop name="draggable" type="boolean"/>
@@ -635,21 +693,24 @@
 <ClientEvent name="onDraggingSourceOut" parameters="self,arg"/>
 <ClientEvent name="onDraggingSourceMove" parameters="self,arg"/>
 <ClientEvent name="onDraggingSourceDrop" parameters="self,arg"/>
-<ClientEvent name="onDragStart" parameters="self,arg"/>
 <ClientEvent name="onGetDraggingIndicator" parameters="self,arg"/>
 <ClientEvent name="onKeyPress" parameters="self,arg"/>
+<ClientEvent name="onDragStart" parameters="self,arg"/>
+<ClientEvent name="onCreateDom" parameters="self,arg"/>
 <ClientEvent name="onDragStop" parameters="self,arg"/>
 <ClientEvent name="onCreate" parameters="self,arg"/>
+<ClientEvent name="beforeRefreshDom" parameters="self,arg"/>
 <ClientEvent name="onReady" parameters="self,arg"/>
 <ClientEvent name="onDragMove" parameters="self,arg"/>
 <ClientEvent name="onContextMenu" parameters="self,arg"/>
 <ClientEvent name="onDoubleClick" parameters="self,arg"/>
 <ClientEvent name="onMouseUp" parameters="self,arg"/>
 <ClientEvent name="onMouseDown" parameters="self,arg"/>
+<ClientEvent name="onRefreshDom" parameters="self,arg"/>
 <ClientEvent name="onFocus" parameters="self,arg"/>
 <ClientEvent name="onDestroy" parameters="self,arg"/>
-<ClientEvent name="onAttributeChanged" parameters="self,arg"/>
-<ClientEvent name="onKeyDown" parameters="self,arg"/></ClientEvents></Rule><Rule name="Desktop" parents="AbstractDesktop" type="com.bstek.dorado.desktop.Desktop" scope="public" sortFactor="202" category="Desktop"><Props>
+<ClientEvent name="onAttributeChange" parameters="self,arg"/>
+<ClientEvent name="onKeyDown" parameters="self,arg"/></ClientEvents></Rule><Rule name="Desktop" parents="AbstractDesktop" type="com.bstek.dorado.desktop.Desktop" scope="public" sortFactor="203" category="Desktop"><Props>
 <Prop name="className" type="java.lang.String"/>
 <Prop name="dragTags" type="java.lang.String"/>
 <Prop name="draggable" type="boolean"/>
@@ -668,27 +729,31 @@
 <Prop name="userData" type="java.lang.Object" editor="any"/>
 <Prop name="visible" type="boolean" defaultValue="true"/>
 <Prop name="width" type="java.lang.String"/></Props><ClientEvents>
-<ClientEvent name="onBlur" parameters="self,arg"/>
 <ClientEvent name="onClick" parameters="self,arg"/>
-<ClientEvent name="onDraggingSourceOver" parameters="self,arg"/>
 <ClientEvent name="onDraggingSourceOut" parameters="self,arg"/>
-<ClientEvent name="onDraggingSourceMove" parameters="self,arg"/>
-<ClientEvent name="onDraggingSourceDrop" parameters="self,arg"/>
-<ClientEvent name="onDragStart" parameters="self,arg"/>
-<ClientEvent name="onGetDraggingIndicator" parameters="self,arg"/>
 <ClientEvent name="onKeyPress" parameters="self,arg"/>
-<ClientEvent name="onDragStop" parameters="self,arg"/>
+<ClientEvent name="onGetDraggingIndicator" parameters="self,arg"/>
 <ClientEvent name="onCreate" parameters="self,arg"/>
+<ClientEvent name="onDragStop" parameters="self,arg"/>
+<ClientEvent name="onCreateDom" parameters="self,arg"/>
 <ClientEvent name="onReady" parameters="self,arg"/>
-<ClientEvent name="onDragMove" parameters="self,arg"/>
-<ClientEvent name="onContextMenu" parameters="self,arg"/>
+<ClientEvent name="onShortcutContextMenu" parameters="self,arg"/>
 <ClientEvent name="onDoubleClick" parameters="self,arg"/>
 <ClientEvent name="onMouseUp" parameters="self,arg"/>
-<ClientEvent name="onMouseDown" parameters="self,arg"/>
-<ClientEvent name="onFocus" parameters="self,arg"/>
 <ClientEvent name="onDestroy" parameters="self,arg"/>
-<ClientEvent name="onAttributeChanged" parameters="self,arg"/>
-<ClientEvent name="onKeyDown" parameters="self,arg"/></ClientEvents><Children><Child rule="Desktop.#self.Shortcut" name="Shortcut" aggregated="true"></Child></Children></Rule><Rule name="DesktopCarousel" parents="AbstractDesktop" type="com.bstek.dorado.desktop.DesktopCarousel" scope="public" sortFactor="203" category="Desktop"><Props>
+<ClientEvent name="onFocus" parameters="self,arg"/>
+<ClientEvent name="onKeyDown" parameters="self,arg"/>
+<ClientEvent name="onBlur" parameters="self,arg"/>
+<ClientEvent name="onDraggingSourceOver" parameters="self,arg"/>
+<ClientEvent name="onDraggingSourceDrop" parameters="self,arg"/>
+<ClientEvent name="onDraggingSourceMove" parameters="self,arg"/>
+<ClientEvent name="onDragStart" parameters="self,arg"/>
+<ClientEvent name="beforeRefreshDom" parameters="self,arg"/>
+<ClientEvent name="onDragMove" parameters="self,arg"/>
+<ClientEvent name="onContextMenu" parameters="self,arg"/>
+<ClientEvent name="onMouseDown" parameters="self,arg"/>
+<ClientEvent name="onRefreshDom" parameters="self,arg"/>
+<ClientEvent name="onAttributeChange" parameters="self,arg"/></ClientEvents><Children><Child rule="Desktop.#self.Shortcut" name="Shortcut" aggregated="true"></Child></Children></Rule><Rule name="DesktopCarousel" parents="AbstractDesktop" type="com.bstek.dorado.desktop.DesktopCarousel" scope="public" sortFactor="204" category="Desktop"><Props>
 <Prop name="className" type="java.lang.String"/>
 <Prop name="dragTags" type="java.lang.String"/>
 <Prop name="draggable" type="boolean"/>
@@ -706,78 +771,31 @@
 <Prop name="userData" type="java.lang.Object" editor="any"/>
 <Prop name="visible" type="boolean" defaultValue="true"/>
 <Prop name="width" type="java.lang.String"/></Props><ClientEvents>
-<ClientEvent name="onBlur" parameters="self,arg"/>
 <ClientEvent name="onClick" parameters="self,arg"/>
-<ClientEvent name="onDraggingSourceOver" parameters="self,arg"/>
 <ClientEvent name="onDraggingSourceOut" parameters="self,arg"/>
-<ClientEvent name="onDraggingSourceMove" parameters="self,arg"/>
-<ClientEvent name="onDraggingSourceDrop" parameters="self,arg"/>
-<ClientEvent name="onDragStart" parameters="self,arg"/>
-<ClientEvent name="onGetDraggingIndicator" parameters="self,arg"/>
 <ClientEvent name="onKeyPress" parameters="self,arg"/>
-<ClientEvent name="onDragStop" parameters="self,arg"/>
+<ClientEvent name="onGetDraggingIndicator" parameters="self,arg"/>
 <ClientEvent name="onCreate" parameters="self,arg"/>
+<ClientEvent name="onDragStop" parameters="self,arg"/>
+<ClientEvent name="onCreateDom" parameters="self,arg"/>
 <ClientEvent name="onReady" parameters="self,arg"/>
-<ClientEvent name="onDragMove" parameters="self,arg"/>
-<ClientEvent name="onContextMenu" parameters="self,arg"/>
+<ClientEvent name="onShortcutContextMenu" parameters="self,arg"/>
 <ClientEvent name="onDoubleClick" parameters="self,arg"/>
 <ClientEvent name="onMouseUp" parameters="self,arg"/>
-<ClientEvent name="onMouseDown" parameters="self,arg"/>
-<ClientEvent name="onFocus" parameters="self,arg"/>
 <ClientEvent name="onDestroy" parameters="self,arg"/>
-<ClientEvent name="onAttributeChanged" parameters="self,arg"/>
-<ClientEvent name="onKeyDown" parameters="self,arg"/></ClientEvents><Children><Child rule="Desktop" name="Component" aggregated="true"></Child></Children></Rule><Rule name="QuickButton" parents="AbstractButton" type="com.bstek.dorado.desktop.QuickButton" scope="public" sortFactor="204" category="General"><Props>
-<Prop name="action" type="java.lang.String" reference="Action:id"/>
-<Prop name="appId" type="java.lang.String"/>
-<Prop name="className" type="java.lang.String"/>
-<Prop name="disabled" type="boolean"/>
-<Prop name="disabledClassName" type="java.lang.String"/>
-<Prop name="dragTags" type="java.lang.String"/>
-<Prop name="draggable" type="boolean"/>
-<Prop name="droppable" type="boolean"/>
-<Prop name="droppableTags" type="java.lang.String"/>
-<Prop name="exClassName" type="java.lang.String"/>
-<Prop name="height" type="java.lang.String"/>
-<Prop name="hideMode" type="com.bstek.dorado.view.widget.HideMode" defaultValue="visibility" enumValues="visibility,display"/>
-<Prop name="hoverClassName" type="java.lang.String"/>
-<Prop name="icon" type="java.lang.String"/>
-<Prop name="iconClass" type="java.lang.String"/>
-<Prop name="ignored" type="boolean"/>
-<Prop name="layoutConstraint" type="java.lang.Object"/>
-<Prop name="menu" type="java.lang.String" reference="Menu:id"/><Prop name="metaData" type="java.util.Map" compositeType="Open"></Prop>
-<Prop name="mouseDownClassName" type="java.lang.String"/>
-<Prop name="renderOn" type="java.lang.String"/>
-<Prop name="renderTo" type="java.lang.String"/><Prop name="style" type="java.util.Map" compositeType="Open"></Prop>
-<Prop name="tags" type="java.lang.String"/>
-<Prop name="tip" type="java.lang.String"/>
-<Prop name="toggleOnShowMenu" type="boolean" defaultValue="true"/>
-<Prop name="toggleable" type="boolean"/>
-<Prop name="toggled" type="boolean"/>
-<Prop name="toggledClassName" type="java.lang.String"/>
-<Prop name="userData" type="java.lang.Object" editor="any"/>
-<Prop name="visible" type="boolean" defaultValue="true"/>
-<Prop name="width" type="java.lang.String"/></Props><ClientEvents>
+<ClientEvent name="onFocus" parameters="self,arg"/>
+<ClientEvent name="onKeyDown" parameters="self,arg"/>
 <ClientEvent name="onBlur" parameters="self,arg"/>
-<ClientEvent name="onClick" parameters="self,arg"/>
 <ClientEvent name="onDraggingSourceOver" parameters="self,arg"/>
-<ClientEvent name="onDraggingSourceOut" parameters="self,arg"/>
-<ClientEvent name="onDraggingSourceMove" parameters="self,arg"/>
 <ClientEvent name="onDraggingSourceDrop" parameters="self,arg"/>
+<ClientEvent name="onDraggingSourceMove" parameters="self,arg"/>
 <ClientEvent name="onDragStart" parameters="self,arg"/>
-<ClientEvent name="onGetDraggingIndicator" parameters="self,arg"/>
-<ClientEvent name="onKeyPress" parameters="self,arg"/>
-<ClientEvent name="onDragStop" parameters="self,arg"/>
-<ClientEvent name="onCreate" parameters="self,arg"/>
-<ClientEvent name="onReady" parameters="self,arg"/>
+<ClientEvent name="beforeRefreshDom" parameters="self,arg"/>
 <ClientEvent name="onDragMove" parameters="self,arg"/>
 <ClientEvent name="onContextMenu" parameters="self,arg"/>
-<ClientEvent name="onDoubleClick" parameters="self,arg"/>
-<ClientEvent name="onMouseUp" parameters="self,arg"/>
 <ClientEvent name="onMouseDown" parameters="self,arg"/>
-<ClientEvent name="onFocus" parameters="self,arg"/>
-<ClientEvent name="onDestroy" parameters="self,arg"/>
-<ClientEvent name="onAttributeChanged" parameters="self,arg"/>
-<ClientEvent name="onKeyDown" parameters="self,arg"/></ClientEvents></Rule><Rule name="Taskbar" parents="Control" type="com.bstek.dorado.desktop.Taskbar" scope="public" sortFactor="205" category="Desktop"><Props>
+<ClientEvent name="onRefreshDom" parameters="self,arg"/>
+<ClientEvent name="onAttributeChange" parameters="self,arg"/></ClientEvents><Children><Child rule="Desktop" name="Component" aggregated="true"></Child></Children></Rule><Rule name="Taskbar" parents="Control" type="com.bstek.dorado.desktop.Taskbar" scope="public" sortFactor="205" category="Desktop"><Props>
 <Prop name="className" type="java.lang.String"/>
 <Prop name="dragTags" type="java.lang.String"/>
 <Prop name="draggable" type="boolean"/>
@@ -796,28 +814,87 @@
 <Prop name="userData" type="java.lang.Object" editor="any"/>
 <Prop name="visible" type="boolean" defaultValue="true"/>
 <Prop name="width" type="java.lang.String"/></Props><ClientEvents>
+<ClientEvent name="onClick" parameters="self,arg"/>
+<ClientEvent name="onDraggingSourceOut" parameters="self,arg"/>
+<ClientEvent name="onKeyPress" parameters="self,arg"/>
+<ClientEvent name="onGetDraggingIndicator" parameters="self,arg"/>
+<ClientEvent name="onCreate" parameters="self,arg"/>
+<ClientEvent name="onDragStop" parameters="self,arg"/>
+<ClientEvent name="onCreateDom" parameters="self,arg"/>
+<ClientEvent name="onReady" parameters="self,arg"/>
+<ClientEvent name="onDoubleClick" parameters="self,arg"/>
+<ClientEvent name="onMouseUp" parameters="self,arg"/>
+<ClientEvent name="onDestroy" parameters="self,arg"/>
+<ClientEvent name="onFocus" parameters="self,arg"/>
+<ClientEvent name="onTaskButtonContextMenu" parameters="self,arg"/>
+<ClientEvent name="onKeyDown" parameters="self,arg"/>
+<ClientEvent name="onBlur" parameters="self,arg"/>
+<ClientEvent name="onDraggingSourceOver" parameters="self,arg"/>
+<ClientEvent name="onDraggingSourceDrop" parameters="self,arg"/>
+<ClientEvent name="onDraggingSourceMove" parameters="self,arg"/>
+<ClientEvent name="onDragStart" parameters="self,arg"/>
+<ClientEvent name="beforeRefreshDom" parameters="self,arg"/>
+<ClientEvent name="onDragMove" parameters="self,arg"/>
+<ClientEvent name="onContextMenu" parameters="self,arg"/>
+<ClientEvent name="onMouseDown" parameters="self,arg"/>
+<ClientEvent name="onRefreshDom" parameters="self,arg"/>
+<ClientEvent name="onAttributeChange" parameters="self,arg"/></ClientEvents><Children><Child name="QuickButtons"><Rule name="Taskbar.QuickButtons" nodeName="QuickButtons" scope="protected" sortFactor="1"><Children><Child name="Component" aggregated="true"><Rule name="Taskbar.QuickButtons.Component" parents="AbstractButton" nodeName="QuickButton" type="com.bstek.dorado.desktop.QuickButton" scope="protected" sortFactor="1" category="General"><Props>
+<Prop name="action" type="java.lang.String" reference="Action:id"/>
+<Prop name="appId" type="java.lang.String"/>
+<Prop name="className" type="java.lang.String"/>
+<Prop name="disabled" type="boolean"/>
+<Prop name="disabledClassName" type="java.lang.String"/>
+<Prop name="dragTags" type="java.lang.String"/>
+<Prop name="draggable" type="boolean"/>
+<Prop name="droppable" type="boolean"/>
+<Prop name="droppableTags" type="java.lang.String"/>
+<Prop name="exClassName" type="java.lang.String"/>
+<Prop name="height" type="java.lang.String"/>
+<Prop name="hideMode" type="com.bstek.dorado.view.widget.HideMode" defaultValue="visibility" enumValues="visibility,display"/>
+<Prop name="hoverClassName" type="java.lang.String"/>
+<Prop name="icon" type="java.lang.String"/>
+<Prop name="iconClass" type="java.lang.String"/>
+<Prop name="ignored" type="boolean"/>
+<Prop name="layoutConstraint" type="java.lang.Object"/>
+<Prop name="menu" type="java.lang.String" reference="Menu:id"/>
+<Prop name="metaData" type="java.util.Map"/>
+<Prop name="mouseDownClassName" type="java.lang.String"/>
+<Prop name="renderOn" type="java.lang.String"/>
+<Prop name="renderTo" type="java.lang.String"/>
+<Prop name="style" type="java.util.Map"/>
+<Prop name="tags" type="java.lang.String"/>
+<Prop name="tip" type="java.lang.String"/>
+<Prop name="toggleOnShowMenu" type="boolean" defaultValue="true"/>
+<Prop name="toggleable" type="boolean"/>
+<Prop name="toggled" type="boolean"/>
+<Prop name="toggledClassName" type="java.lang.String"/>
+<Prop name="userData" type="java.lang.Object" editor="any"/>
+<Prop name="visible" type="boolean" defaultValue="true"/>
+<Prop name="width" type="java.lang.String"/></Props><ClientEvents>
 <ClientEvent name="onBlur" parameters="self,arg"/>
 <ClientEvent name="onClick" parameters="self,arg"/>
 <ClientEvent name="onDraggingSourceOver" parameters="self,arg"/>
 <ClientEvent name="onDraggingSourceOut" parameters="self,arg"/>
 <ClientEvent name="onDraggingSourceMove" parameters="self,arg"/>
 <ClientEvent name="onDraggingSourceDrop" parameters="self,arg"/>
-<ClientEvent name="onDragStart" parameters="self,arg"/>
 <ClientEvent name="onGetDraggingIndicator" parameters="self,arg"/>
 <ClientEvent name="onKeyPress" parameters="self,arg"/>
+<ClientEvent name="onDragStart" parameters="self,arg"/>
+<ClientEvent name="onCreateDom" parameters="self,arg"/>
 <ClientEvent name="onDragStop" parameters="self,arg"/>
 <ClientEvent name="onCreate" parameters="self,arg"/>
+<ClientEvent name="beforeRefreshDom" parameters="self,arg"/>
 <ClientEvent name="onReady" parameters="self,arg"/>
 <ClientEvent name="onDragMove" parameters="self,arg"/>
 <ClientEvent name="onContextMenu" parameters="self,arg"/>
 <ClientEvent name="onDoubleClick" parameters="self,arg"/>
 <ClientEvent name="onMouseUp" parameters="self,arg"/>
 <ClientEvent name="onMouseDown" parameters="self,arg"/>
+<ClientEvent name="onRefreshDom" parameters="self,arg"/>
 <ClientEvent name="onFocus" parameters="self,arg"/>
 <ClientEvent name="onDestroy" parameters="self,arg"/>
-<ClientEvent name="onAttributeChanged" parameters="self,arg"/>
-<ClientEvent name="onTaskButtonContextMenu" parameters="self,arg"/>
-<ClientEvent name="onKeyDown" parameters="self,arg"/></ClientEvents><Children><Child name="QuickButtons"><Rule name="Taskbar.QuickButtons" nodeName="QuickButtons" scope="protected" sortFactor="1"><Children><Child rule="QuickButton" name="Component" aggregated="true"></Child></Children></Rule></Child><Child name="StartButton"><Rule name="Taskbar.StartButton" nodeName="StartButton" scope="protected"><Children><Child name="SimpleButton"><Rule name="Taskbar.StartButton.SimpleButton" parents="AbstractButton" nodeName="SimpleButton" type="com.bstek.dorado.view.widget.base.SimpleButton" scope="protected" sortFactor="1" category="General"><Props>
+<ClientEvent name="onAttributeChange" parameters="self,arg"/>
+<ClientEvent name="onKeyDown" parameters="self,arg"/></ClientEvents></Rule></Child></Children></Rule></Child><Child name="StartButton"><Rule name="Taskbar.StartButton" nodeName="StartButton" scope="protected"><Children><Child name="SimpleButton"><Rule name="Taskbar.StartButton.SimpleButton" parents="AbstractButton" nodeName="SimpleButton" type="com.bstek.dorado.view.widget.base.SimpleButton" scope="protected" sortFactor="1" category="General"><Props>
 <Prop name="action" type="java.lang.String" reference="Action:id"/>
 <Prop name="className" type="java.lang.String"/>
 <Prop name="disabled" type="boolean"/>
@@ -853,20 +930,23 @@
 <ClientEvent name="onDraggingSourceOut" parameters="self,arg"/>
 <ClientEvent name="onDraggingSourceMove" parameters="self,arg"/>
 <ClientEvent name="onDraggingSourceDrop" parameters="self,arg"/>
-<ClientEvent name="onDragStart" parameters="self,arg"/>
 <ClientEvent name="onGetDraggingIndicator" parameters="self,arg"/>
 <ClientEvent name="onKeyPress" parameters="self,arg"/>
+<ClientEvent name="onDragStart" parameters="self,arg"/>
+<ClientEvent name="onCreateDom" parameters="self,arg"/>
 <ClientEvent name="onDragStop" parameters="self,arg"/>
 <ClientEvent name="onCreate" parameters="self,arg"/>
+<ClientEvent name="beforeRefreshDom" parameters="self,arg"/>
 <ClientEvent name="onReady" parameters="self,arg"/>
 <ClientEvent name="onDragMove" parameters="self,arg"/>
 <ClientEvent name="onContextMenu" parameters="self,arg"/>
 <ClientEvent name="onDoubleClick" parameters="self,arg"/>
 <ClientEvent name="onMouseUp" parameters="self,arg"/>
 <ClientEvent name="onMouseDown" parameters="self,arg"/>
+<ClientEvent name="onRefreshDom" parameters="self,arg"/>
 <ClientEvent name="onFocus" parameters="self,arg"/>
 <ClientEvent name="onDestroy" parameters="self,arg"/>
-<ClientEvent name="onAttributeChanged" parameters="self,arg"/>
+<ClientEvent name="onAttributeChange" parameters="self,arg"/>
 <ClientEvent name="onKeyDown" parameters="self,arg"/></ClientEvents></Rule></Child></Children></Rule></Child><Child name="TaskButtons"><Rule name="Taskbar.TaskButtons" nodeName="TaskButtons" scope="protected" sortFactor="3"><Children><Child name="Component" aggregated="true"><Rule name="Taskbar.TaskButtons.Component" parents="Control" nodeName="Control" type="com.bstek.dorado.desktop.TaskButton" scope="protected" sortFactor="1" category="General"><Props>
 <Prop name="caption" type="java.lang.String"/>
 <Prop name="className" type="java.lang.String"/>
@@ -896,20 +976,23 @@
 <ClientEvent name="onDraggingSourceOut" parameters="self,arg"/>
 <ClientEvent name="onDraggingSourceMove" parameters="self,arg"/>
 <ClientEvent name="onDraggingSourceDrop" parameters="self,arg"/>
-<ClientEvent name="onDragStart" parameters="self,arg"/>
 <ClientEvent name="onGetDraggingIndicator" parameters="self,arg"/>
 <ClientEvent name="onKeyPress" parameters="self,arg"/>
+<ClientEvent name="onDragStart" parameters="self,arg"/>
+<ClientEvent name="onCreateDom" parameters="self,arg"/>
 <ClientEvent name="onDragStop" parameters="self,arg"/>
 <ClientEvent name="onCreate" parameters="self,arg"/>
+<ClientEvent name="beforeRefreshDom" parameters="self,arg"/>
 <ClientEvent name="onReady" parameters="self,arg"/>
 <ClientEvent name="onDragMove" parameters="self,arg"/>
 <ClientEvent name="onContextMenu" parameters="self,arg"/>
 <ClientEvent name="onDoubleClick" parameters="self,arg"/>
 <ClientEvent name="onMouseUp" parameters="self,arg"/>
 <ClientEvent name="onMouseDown" parameters="self,arg"/>
+<ClientEvent name="onRefreshDom" parameters="self,arg"/>
 <ClientEvent name="onFocus" parameters="self,arg"/>
 <ClientEvent name="onDestroy" parameters="self,arg"/>
-<ClientEvent name="onAttributeChanged" parameters="self,arg"/>
+<ClientEvent name="onAttributeChange" parameters="self,arg"/>
 <ClientEvent name="onKeyDown" parameters="self,arg"/></ClientEvents></Rule></Child></Children></Rule></Child><Child name="TrayButtons"><Rule name="Taskbar.TrayButtons" nodeName="TrayButtons" scope="protected" sortFactor="4"><Children><Child name="Component" aggregated="true"><Rule name="Taskbar.TrayButtons.Component" parents="AbstractButton" nodeName="SimpleButton" type="com.bstek.dorado.view.widget.base.SimpleButton" scope="protected" sortFactor="1" category="General"><Props>
 <Prop name="action" type="java.lang.String" reference="Action:id"/>
 <Prop name="className" type="java.lang.String"/>
@@ -946,20 +1029,23 @@
 <ClientEvent name="onDraggingSourceOut" parameters="self,arg"/>
 <ClientEvent name="onDraggingSourceMove" parameters="self,arg"/>
 <ClientEvent name="onDraggingSourceDrop" parameters="self,arg"/>
-<ClientEvent name="onDragStart" parameters="self,arg"/>
 <ClientEvent name="onGetDraggingIndicator" parameters="self,arg"/>
 <ClientEvent name="onKeyPress" parameters="self,arg"/>
+<ClientEvent name="onDragStart" parameters="self,arg"/>
+<ClientEvent name="onCreateDom" parameters="self,arg"/>
 <ClientEvent name="onDragStop" parameters="self,arg"/>
 <ClientEvent name="onCreate" parameters="self,arg"/>
+<ClientEvent name="beforeRefreshDom" parameters="self,arg"/>
 <ClientEvent name="onReady" parameters="self,arg"/>
 <ClientEvent name="onDragMove" parameters="self,arg"/>
 <ClientEvent name="onContextMenu" parameters="self,arg"/>
 <ClientEvent name="onDoubleClick" parameters="self,arg"/>
 <ClientEvent name="onMouseUp" parameters="self,arg"/>
 <ClientEvent name="onMouseDown" parameters="self,arg"/>
+<ClientEvent name="onRefreshDom" parameters="self,arg"/>
 <ClientEvent name="onFocus" parameters="self,arg"/>
 <ClientEvent name="onDestroy" parameters="self,arg"/>
-<ClientEvent name="onAttributeChanged" parameters="self,arg"/>
+<ClientEvent name="onAttributeChange" parameters="self,arg"/>
 <ClientEvent name="onKeyDown" parameters="self,arg"/></ClientEvents></Rule></Child></Children></Rule></Child></Children></Rule><Rule name="Shell" parents="Control" type="com.bstek.dorado.desktop.Shell" scope="public" sortFactor="206" category="Desktop"><Props>
 <Prop name="className" type="java.lang.String"/>
 <Prop name="dragTags" type="java.lang.String"/>
@@ -985,20 +1071,23 @@
 <ClientEvent name="onDraggingSourceOut" parameters="self,arg"/>
 <ClientEvent name="onDraggingSourceMove" parameters="self,arg"/>
 <ClientEvent name="onDraggingSourceDrop" parameters="self,arg"/>
-<ClientEvent name="onDragStart" parameters="self,arg"/>
 <ClientEvent name="onGetDraggingIndicator" parameters="self,arg"/>
 <ClientEvent name="onKeyPress" parameters="self,arg"/>
+<ClientEvent name="onDragStart" parameters="self,arg"/>
+<ClientEvent name="onCreateDom" parameters="self,arg"/>
 <ClientEvent name="onDragStop" parameters="self,arg"/>
 <ClientEvent name="onCreate" parameters="self,arg"/>
+<ClientEvent name="beforeRefreshDom" parameters="self,arg"/>
 <ClientEvent name="onReady" parameters="self,arg"/>
 <ClientEvent name="onDragMove" parameters="self,arg"/>
 <ClientEvent name="onContextMenu" parameters="self,arg"/>
 <ClientEvent name="onDoubleClick" parameters="self,arg"/>
 <ClientEvent name="onMouseUp" parameters="self,arg"/>
 <ClientEvent name="onMouseDown" parameters="self,arg"/>
+<ClientEvent name="onRefreshDom" parameters="self,arg"/>
 <ClientEvent name="onFocus" parameters="self,arg"/>
 <ClientEvent name="onDestroy" parameters="self,arg"/>
-<ClientEvent name="onAttributeChanged" parameters="self,arg"/>
+<ClientEvent name="onAttributeChange" parameters="self,arg"/>
 <ClientEvent name="onKeyDown" parameters="self,arg"/></ClientEvents><Children><Child name="Apps"><Rule name="Shell.Apps" nodeName="Apps" scope="protected" sortFactor="1"><Children><Child name="DialogApp" aggregated="true"><Rule name="Shell.Apps.DialogApp" nodeName="DialogApp" type="com.bstek.dorado.desktop.DialogApp" scope="protected" sortFactor="1"><Props>
 <Prop name="caption" type="java.lang.String"/>
 <Prop name="icon16" type="java.lang.String"/>
@@ -1013,6 +1102,7 @@
 <Prop name="animateTarget" type="java.lang.String"/>
 <Prop name="animateType" type="com.bstek.dorado.view.widget.FloatControlAnimateType" defaultValue="zoom" enumValues="zoom,slide,safeSlide,fade,none"/>
 <Prop name="autoAdjustPosition" type="boolean" defaultValue="true"/>
+<Prop name="background" type="java.lang.String"/>
 <Prop name="border" type="com.bstek.dorado.view.widget.base.PanelBorder" defaultValue="normal" enumValues="none,normal,curve"/>
 <Prop name="buttonAlign" type="com.bstek.dorado.view.widget.Align" defaultValue="center" enumValues="left,center,right"/>
 <Prop name="caption" type="java.lang.String"/>
@@ -1020,8 +1110,8 @@
 <Prop name="className" type="java.lang.String"/>
 <Prop name="closeAction" type="com.bstek.dorado.view.widget.base.CloseAction" defaultValue="hide" enumValues="hide,close"/>
 <Prop name="closeable" type="boolean" defaultValue="true"/>
-<Prop name="collapseable" type="boolean"/>
-<Prop name="collapsed" type="boolean"/>
+<Prop name="collapseable" type="boolean" defaultValue="false"/>
+<Prop name="collapsed" type="boolean" defaultValue="false"/>
 <Prop name="contentOverflow" type="com.bstek.dorado.view.widget.Overflow" defaultValue="auto" enumValues="visible,hidden,scroll,auto"/>
 <Prop name="dragOutside" type="boolean"/>
 <Prop name="dragTags" type="java.lang.String"/>
@@ -1037,6 +1127,7 @@
 <Prop name="hideAnimateType" type="com.bstek.dorado.view.widget.FloatControlAnimateType" enumValues="zoom,slide,safeSlide,fade,none"/>
 <Prop name="hideMode" type="com.bstek.dorado.view.widget.HideMode" defaultValue="visibility" enumValues="visibility,display"/>
 <Prop name="icon" type="java.lang.String"/>
+<Prop name="iconClass" type="java.lang.String"/>
 <Prop name="ignored" type="boolean"/>
 <Prop name="layout" type="com.bstek.dorado.view.widget.layout.Layout"/>
 <Prop name="layoutConstraint" type="java.lang.Object"/>
@@ -1073,10 +1164,11 @@
 <ClientEvent name="onGetDraggingIndicator" parameters="self,arg"/>
 <ClientEvent name="onCreate" parameters="self,arg"/>
 <ClientEvent name="onDragStop" parameters="self,arg"/>
+<ClientEvent name="onCreateDom" parameters="self,arg"/>
 <ClientEvent name="beforeMaximize" parameters="self,arg"/>
 <ClientEvent name="onReady" parameters="self,arg"/>
-<ClientEvent name="onDoubleClick" parameters="self,arg"/>
 <ClientEvent name="onMaximize" parameters="self,arg"/>
+<ClientEvent name="onDoubleClick" parameters="self,arg"/>
 <ClientEvent name="onMouseUp" parameters="self,arg"/>
 <ClientEvent name="onMinimize" parameters="self,arg"/>
 <ClientEvent name="onCollapsedChange" parameters="self,arg"/>
@@ -1090,16 +1182,18 @@
 <ClientEvent name="onDraggingSourceDrop" parameters="self,arg"/>
 <ClientEvent name="onDraggingSourceMove" parameters="self,arg"/>
 <ClientEvent name="onDragStart" parameters="self,arg"/>
+<ClientEvent name="beforeRefreshDom" parameters="self,arg"/>
 <ClientEvent name="onDragMove" parameters="self,arg"/>
 <ClientEvent name="beforeShow" parameters="self,arg"/>
 <ClientEvent name="onContextMenu" parameters="self,arg"/>
 <ClientEvent name="onMouseDown" parameters="self,arg"/>
 <ClientEvent name="beforeCollapsedChange" parameters="self,arg"/>
+<ClientEvent name="onRefreshDom" parameters="self,arg"/>
 <ClientEvent name="onShow" parameters="self,arg"/>
 <ClientEvent name="onClose" parameters="self,arg"/>
 <ClientEvent name="beforeMinimize" parameters="self,arg"/>
 <ClientEvent name="onHide" parameters="self,arg"/>
-<ClientEvent name="onAttributeChanged" parameters="self,arg"/></ClientEvents></Rule></Child></Children></Rule></Child><Child name="WidgetApp" aggregated="true"><Rule name="Shell.Apps.WidgetApp" nodeName="WidgetApp" type="com.bstek.dorado.desktop.WidgetApp" scope="protected" sortFactor="2"><Props>
+<ClientEvent name="onAttributeChange" parameters="self,arg"/></ClientEvents></Rule></Child></Children></Rule></Child><Child name="WidgetApp" aggregated="true"><Rule name="Shell.Apps.WidgetApp" nodeName="WidgetApp" type="com.bstek.dorado.desktop.WidgetApp" scope="protected" sortFactor="2"><Props>
 <Prop name="caption" type="java.lang.String"/>
 <Prop name="icon16" type="java.lang.String"/>
 <Prop name="icon32" type="java.lang.String"/>
@@ -1128,6 +1222,7 @@
 <Prop name="animateTarget" type="java.lang.String"/>
 <Prop name="animateType" type="com.bstek.dorado.view.widget.FloatControlAnimateType" defaultValue="zoom" enumValues="zoom,slide,safeSlide,fade,none"/>
 <Prop name="autoAdjustPosition" type="boolean" defaultValue="true"/>
+<Prop name="background" type="java.lang.String"/>
 <Prop name="border" type="com.bstek.dorado.view.widget.base.PanelBorder" defaultValue="normal" enumValues="none,normal,curve"/>
 <Prop name="buttonAlign" type="com.bstek.dorado.view.widget.Align" defaultValue="center" enumValues="left,center,right"/>
 <Prop name="caption" type="java.lang.String"/>
@@ -1135,8 +1230,8 @@
 <Prop name="className" type="java.lang.String"/>
 <Prop name="closeAction" type="com.bstek.dorado.view.widget.base.CloseAction" defaultValue="hide" enumValues="hide,close"/>
 <Prop name="closeable" type="boolean" defaultValue="true"/>
-<Prop name="collapseable" type="boolean"/>
-<Prop name="collapsed" type="boolean"/>
+<Prop name="collapseable" type="boolean" defaultValue="false"/>
+<Prop name="collapsed" type="boolean" defaultValue="false"/>
 <Prop name="contentOverflow" type="com.bstek.dorado.view.widget.Overflow" defaultValue="auto" enumValues="visible,hidden,scroll,auto"/>
 <Prop name="dragOutside" type="boolean"/>
 <Prop name="dragTags" type="java.lang.String"/>
@@ -1152,6 +1247,7 @@
 <Prop name="hideAnimateType" type="com.bstek.dorado.view.widget.FloatControlAnimateType" enumValues="zoom,slide,safeSlide,fade,none"/>
 <Prop name="hideMode" type="com.bstek.dorado.view.widget.HideMode" defaultValue="visibility" enumValues="visibility,display"/>
 <Prop name="icon" type="java.lang.String"/>
+<Prop name="iconClass" type="java.lang.String"/>
 <Prop name="ignored" type="boolean"/>
 <Prop name="layout" type="com.bstek.dorado.view.widget.layout.Layout"/>
 <Prop name="layoutConstraint" type="java.lang.Object"/>
@@ -1613,6 +1709,7 @@
 <Prop name="visible" type="boolean" defaultValue="true"/>
 <Prop name="width" type="java.lang.String"/></Props></Rule><Rule name="AjaxAction" parents="Action" type="com.bstek.dorado.view.widget.action.AjaxAction" scope="public" sortFactor="215" category="Action"><Props>
 <Prop name="async" type="boolean" defaultValue="true"/>
+<Prop name="batchable" type="boolean" defaultValue="true"/>
 <Prop name="caption" type="java.lang.String"/>
 <Prop name="confirmMessage" type="java.lang.String"/>
 <Prop name="disabled" type="boolean"/>
@@ -1624,7 +1721,9 @@
 <Prop name="parameter" type="java.lang.Object" editor="any"/>
 <Prop name="service" type="java.lang.String"/>
 <Prop name="successMessage" type="java.lang.String"/>
+<Prop name="supportsEntity" type="boolean" defaultValue="true"/>
 <Prop name="tags" type="java.lang.String"/>
+<Prop name="timeout" type="long"/>
 <Prop name="tip" type="java.lang.String"/>
 <Prop name="userData" type="java.lang.Object" editor="any"/></Props></Rule><Rule name="UpdateAction" parents="Action" type="com.bstek.dorado.view.widget.action.UpdateAction" scope="public" sortFactor="216" category="Action"><Props>
 <Prop name="alwaysExecute" type="boolean"/>
@@ -1679,7 +1778,9 @@
 <Prop name="menu" type="java.lang.String" reference="Menu:id"/><Prop name="metaData" type="java.util.Map" compositeType="Open"></Prop>
 <Prop name="num" type="double"/>
 <Prop name="renderOn" type="java.lang.String"/>
-<Prop name="renderTo" type="java.lang.String"/><Prop name="style" type="java.util.Map" compositeType="Open"></Prop>
+<Prop name="renderTo" type="java.lang.String"/>
+<Prop name="showTrigger" type="java.lang.Boolean"/>
+<Prop name="splitButton" type="java.lang.Boolean"/><Prop name="style" type="java.util.Map" compositeType="Open"></Prop>
 <Prop name="tags" type="java.lang.String"/>
 <Prop name="tip" type="java.lang.String"/>
 <Prop name="toggleOnShowMenu" type="boolean" defaultValue="true"/>
@@ -1746,14 +1847,15 @@
 <Prop name="userData" type="java.lang.Object" editor="any"/>
 <Prop name="visible" type="boolean" defaultValue="true"/>
 <Prop name="width" type="java.lang.String"/></Props></Rule><Rule name="Panel" parents="Container" type="com.bstek.dorado.view.widget.base.Panel" scope="public" sortFactor="221" category="General"><Props>
+<Prop name="background" type="java.lang.String"/>
 <Prop name="border" type="com.bstek.dorado.view.widget.base.PanelBorder" defaultValue="normal" enumValues="none,normal,curve"/>
 <Prop name="buttonAlign" type="com.bstek.dorado.view.widget.Align" defaultValue="center" enumValues="left,center,right"/>
 <Prop name="caption" type="java.lang.String"/>
 <Prop name="className" type="java.lang.String"/>
 <Prop name="closeAction" type="com.bstek.dorado.view.widget.base.CloseAction" defaultValue="hide" enumValues="hide,close"/>
 <Prop name="closeable" type="boolean"/>
-<Prop name="collapseable" type="boolean"/>
-<Prop name="collapsed" type="boolean"/>
+<Prop name="collapseable" type="boolean" defaultValue="false"/>
+<Prop name="collapsed" type="boolean" defaultValue="false"/>
 <Prop name="contentOverflow" type="com.bstek.dorado.view.widget.Overflow" defaultValue="auto" enumValues="visible,hidden,scroll,auto"/>
 <Prop name="dragTags" type="java.lang.String"/>
 <Prop name="draggable" type="boolean"/>
@@ -1763,6 +1865,7 @@
 <Prop name="height" type="java.lang.String"/>
 <Prop name="hideMode" type="com.bstek.dorado.view.widget.HideMode" defaultValue="visibility" enumValues="visibility,display"/>
 <Prop name="icon" type="java.lang.String"/>
+<Prop name="iconClass" type="java.lang.String"/>
 <Prop name="ignored" type="boolean"/>
 <Prop name="layoutConstraint" type="java.lang.Object"/>
 <Prop name="maximizeable" type="boolean"/>
@@ -1782,8 +1885,8 @@
 <Prop name="buttonAlign" type="com.bstek.dorado.view.widget.Align" defaultValue="center" enumValues="left,center,right"/>
 <Prop name="caption" type="java.lang.String"/>
 <Prop name="className" type="java.lang.String"/>
-<Prop name="collapseable" type="boolean"/>
-<Prop name="collapsed" type="boolean"/>
+<Prop name="collapseable" type="boolean" defaultValue="true"/>
+<Prop name="collapsed" type="boolean" defaultValue="false"/>
 <Prop name="contentOverflow" type="com.bstek.dorado.view.widget.Overflow" defaultValue="auto" enumValues="visible,hidden,scroll,auto"/>
 <Prop name="dragTags" type="java.lang.String"/>
 <Prop name="draggable" type="boolean"/>
@@ -1806,8 +1909,8 @@
 <Prop name="buttonAlign" type="com.bstek.dorado.view.widget.Align" defaultValue="center" enumValues="left,center,right"/>
 <Prop name="caption" type="java.lang.String"/>
 <Prop name="className" type="java.lang.String"/>
-<Prop name="collapseable" type="boolean"/>
-<Prop name="collapsed" type="boolean"/>
+<Prop name="collapseable" type="boolean" defaultValue="true"/>
+<Prop name="collapsed" type="boolean" defaultValue="false"/>
 <Prop name="contentOverflow" type="com.bstek.dorado.view.widget.Overflow" defaultValue="auto" enumValues="visible,hidden,scroll,auto"/>
 <Prop name="dragTags" type="java.lang.String"/>
 <Prop name="draggable" type="boolean"/>
@@ -1888,9 +1991,9 @@
 <Prop name="userData" type="java.lang.Object" editor="any"/>
 <Prop name="visible" type="boolean" defaultValue="true"/>
 <Prop name="width" type="java.lang.String"/></Props><ClientEvents>
+<ClientEvent name="onTabChange" parameters="self,arg"/>
 <ClientEvent name="onTabContextMenu" parameters="self,arg"/>
-<ClientEvent name="beforeTabChange" parameters="self,arg"/>
-<ClientEvent name="onTabChange" parameters="self,arg"/></ClientEvents><Children><Child rule="TabBar.#self.Tab" name="Tab" aggregated="true"></Child></Children></Rule><Rule name="TabControl" parents="AbstractTabControl" type="com.bstek.dorado.view.widget.base.tab.TabControl" scope="public" sortFactor="227" category="General"><Props>
+<ClientEvent name="beforeTabChange" parameters="self,arg"/></ClientEvents><Children><Child rule="TabBar.#self.Tab" name="Tab" aggregated="true"></Child></Children></Rule><Rule name="TabControl" parents="AbstractTabControl" type="com.bstek.dorado.view.widget.base.tab.TabControl" scope="public" sortFactor="227" category="General"><Props>
 <Prop name="alwaysShowNavButtons" type="boolean"/>
 <Prop name="className" type="java.lang.String"/>
 <Prop name="currentTab" type="int"/>
@@ -1913,9 +2016,9 @@
 <Prop name="userData" type="java.lang.Object" editor="any"/>
 <Prop name="visible" type="boolean" defaultValue="true"/>
 <Prop name="width" type="java.lang.String"/></Props><ClientEvents>
+<ClientEvent name="onTabChange" parameters="self,arg"/>
 <ClientEvent name="onTabContextMenu" parameters="self,arg"/>
-<ClientEvent name="beforeTabChange" parameters="self,arg"/>
-<ClientEvent name="onTabChange" parameters="self,arg"/></ClientEvents><Children><Child rule="TabControl.#self.ControlTab" name="ControlTab" aggregated="true"></Child><Child rule="TabControl.#self.IFrameTab" name="IFrameTab" aggregated="true"></Child></Children></Rule><Rule name="SplitPanel" parents="Control" type="com.bstek.dorado.view.widget.base.SplitPanel" scope="public" sortFactor="228" category="General"><Props>
+<ClientEvent name="beforeTabChange" parameters="self,arg"/></ClientEvents><Children><Child rule="TabControl.#self.ControlTab" name="ControlTab" aggregated="true"></Child><Child rule="TabControl.#self.IFrameTab" name="IFrameTab" aggregated="true"></Child></Children></Rule><Rule name="SplitPanel" parents="Control" type="com.bstek.dorado.view.widget.base.SplitPanel" scope="public" sortFactor="228" category="General"><Props>
 <Prop name="className" type="java.lang.String"/>
 <Prop name="collapsable" type="boolean" defaultValue="true"/>
 <Prop name="collapsed" type="boolean"/>
@@ -2034,8 +2137,8 @@
 <Prop name="vAlign" type="com.bstek.dorado.view.widget.FloatControlVAlign" enumValues="top,innertop,center,innerbottom,bottom"/>
 <Prop name="visible" type="boolean" defaultValue="false"/>
 <Prop name="width" type="java.lang.String"/></Props><ClientEvents>
-<ClientEvent name="beforeClose" parameters="self,arg"/>
 <ClientEvent name="beforeHide" parameters="self,arg"/>
+<ClientEvent name="beforeClose" parameters="self,arg"/>
 <ClientEvent name="beforeShow" parameters="self,arg"/>
 <ClientEvent name="onShow" parameters="self,arg"/>
 <ClientEvent name="onClose" parameters="self,arg"/>
@@ -2076,21 +2179,14 @@
 <Prop name="visible" type="boolean" defaultValue="true"/>
 <Prop name="width" type="java.lang.String"/></Props><ClientEvents>
 <ClientEvent name="beforeCurrentSectionChange" parameters="self,arg"/>
-<ClientEvent name="onCurrentSectionChange" parameters="self,arg"/></ClientEvents><Children><Child rule="Accordion.#self.Section" name="Section" aggregated="true"></Child></Children></Rule><Rule name="FloatContainer" parents="Panel" type="com.bstek.dorado.view.widget.base.FloatContainer" scope="public" sortFactor="234" category="Floatable"><Props>
+<ClientEvent name="onCurrentSectionChange" parameters="self,arg"/></ClientEvents><Children><Child rule="Accordion.#self.Section" name="Section" aggregated="true"></Child></Children></Rule><Rule name="FloatContainer" parents="Container" type="com.bstek.dorado.view.widget.base.FloatContainer" scope="public" sortFactor="234" category="Floatable"><Props>
 <Prop name="align" type="com.bstek.dorado.view.widget.FloatControlAlign" enumValues="left,innerleft,center,innerright,top"/>
 <Prop name="anchorTarget" type="java.lang.String"/>
 <Prop name="animateTarget" type="java.lang.String"/>
 <Prop name="animateType" type="com.bstek.dorado.view.widget.FloatControlAnimateType" defaultValue="zoom" enumValues="zoom,slide,safeSlide,fade,none"/>
 <Prop name="autoAdjustPosition" type="boolean" defaultValue="true"/>
-<Prop name="border" type="com.bstek.dorado.view.widget.base.PanelBorder" defaultValue="normal" enumValues="none,normal,curve"/>
-<Prop name="buttonAlign" type="com.bstek.dorado.view.widget.Align" defaultValue="center" enumValues="left,center,right"/>
-<Prop name="caption" type="java.lang.String"/>
 <Prop name="center" type="boolean"/>
 <Prop name="className" type="java.lang.String"/>
-<Prop name="closeAction" type="com.bstek.dorado.view.widget.base.CloseAction" defaultValue="hide" enumValues="hide,close"/>
-<Prop name="closeable" type="boolean"/>
-<Prop name="collapseable" type="boolean"/>
-<Prop name="collapsed" type="boolean"/>
 <Prop name="contentOverflow" type="com.bstek.dorado.view.widget.Overflow" defaultValue="auto" enumValues="visible,hidden,scroll,auto"/>
 <Prop name="dragTags" type="java.lang.String"/>
 <Prop name="draggable" type="boolean"/>
@@ -2104,12 +2200,9 @@
 <Prop name="height" type="java.lang.String"/>
 <Prop name="hideAnimateType" type="com.bstek.dorado.view.widget.FloatControlAnimateType" enumValues="zoom,slide,safeSlide,fade,none"/>
 <Prop name="hideMode" type="com.bstek.dorado.view.widget.HideMode" defaultValue="visibility" enumValues="visibility,display"/>
-<Prop name="icon" type="java.lang.String"/>
 <Prop name="ignored" type="boolean"/>
 <Prop name="layoutConstraint" type="java.lang.Object"/>
-<Prop name="left" type="int"/>
-<Prop name="maximizeable" type="boolean"/>
-<Prop name="maximized" type="boolean"/><Prop name="metaData" type="java.util.Map" compositeType="Open"></Prop>
+<Prop name="left" type="int"/><Prop name="metaData" type="java.util.Map" compositeType="Open"></Prop>
 <Prop name="modal" type="boolean"/>
 <Prop name="modalType" type="com.bstek.dorado.view.widget.ModalType" enumValues="dark,transparent"/>
 <Prop name="offsetLeft" type="int"/>
@@ -2117,8 +2210,7 @@
 <Prop name="renderOn" type="java.lang.String"/>
 <Prop name="renderTo" type="java.lang.String"/>
 <Prop name="shadowMode" type="com.bstek.dorado.view.widget.FloatControlShadowMode" defaultValue="sides" enumValues="drop,sides,frame,none"/>
-<Prop name="showAnimateType" type="com.bstek.dorado.view.widget.FloatControlAnimateType" enumValues="zoom,slide,safeSlide,fade,none"/>
-<Prop name="showCaptionBar" type="boolean" defaultValue="true"/><Prop name="style" type="java.util.Map" compositeType="Open"></Prop>
+<Prop name="showAnimateType" type="com.bstek.dorado.view.widget.FloatControlAnimateType" enumValues="zoom,slide,safeSlide,fade,none"/><Prop name="style" type="java.util.Map" compositeType="Open"></Prop>
 <Prop name="tags" type="java.lang.String"/>
 <Prop name="tip" type="java.lang.String"/>
 <Prop name="top" type="int"/>
@@ -2131,12 +2223,13 @@
 <ClientEvent name="beforeShow" parameters="self,arg"/>
 <ClientEvent name="onShow" parameters="self,arg"/>
 <ClientEvent name="onClose" parameters="self,arg"/>
-<ClientEvent name="onHide" parameters="self,arg"/></ClientEvents><Children><Child name="Buttons"><Rule name="FloatContainer.Buttons" nodeName="Buttons" scope="protected" sortFactor="1"><Children><Child rule="Button" name="Component" aggregated="true"></Child></Children></Rule></Child><Child name="Children" fixed="true"><Rule name="FloatContainer.Children" nodeName="Children" scope="protected"><Children><Child rule="Component" name="Component" aggregated="true"></Child></Children></Rule></Child><Child name="Tools"><Rule name="FloatContainer.Tools" nodeName="Tools" scope="protected" sortFactor="3"><Children><Child rule="SimpleIconButton" name="Component" aggregated="true"></Child></Children></Rule></Child></Children></Rule><Rule name="FloatPanel" parents="Panel" type="com.bstek.dorado.view.widget.base.FloatPanel" scope="public" sortFactor="235" category="Floatable"><Props>
+<ClientEvent name="onHide" parameters="self,arg"/></ClientEvents></Rule><Rule name="FloatPanel" parents="Panel" type="com.bstek.dorado.view.widget.base.FloatPanel" scope="public" sortFactor="235" category="Floatable"><Props>
 <Prop name="align" type="com.bstek.dorado.view.widget.FloatControlAlign" enumValues="left,innerleft,center,innerright,top"/>
 <Prop name="anchorTarget" type="java.lang.String"/>
 <Prop name="animateTarget" type="java.lang.String"/>
 <Prop name="animateType" type="com.bstek.dorado.view.widget.FloatControlAnimateType" defaultValue="zoom" enumValues="zoom,slide,safeSlide,fade,none"/>
 <Prop name="autoAdjustPosition" type="boolean" defaultValue="true"/>
+<Prop name="background" type="java.lang.String"/>
 <Prop name="border" type="com.bstek.dorado.view.widget.base.PanelBorder" defaultValue="normal" enumValues="none,normal,curve"/>
 <Prop name="buttonAlign" type="com.bstek.dorado.view.widget.Align" defaultValue="center" enumValues="left,center,right"/>
 <Prop name="caption" type="java.lang.String"/>
@@ -2144,8 +2237,8 @@
 <Prop name="className" type="java.lang.String"/>
 <Prop name="closeAction" type="com.bstek.dorado.view.widget.base.CloseAction" defaultValue="hide" enumValues="hide,close"/>
 <Prop name="closeable" type="boolean"/>
-<Prop name="collapseable" type="boolean"/>
-<Prop name="collapsed" type="boolean"/>
+<Prop name="collapseable" type="boolean" defaultValue="false"/>
+<Prop name="collapsed" type="boolean" defaultValue="false"/>
 <Prop name="contentOverflow" type="com.bstek.dorado.view.widget.Overflow" defaultValue="auto" enumValues="visible,hidden,scroll,auto"/>
 <Prop name="dragTags" type="java.lang.String"/>
 <Prop name="draggable" type="boolean"/>
@@ -2160,6 +2253,7 @@
 <Prop name="hideAnimateType" type="com.bstek.dorado.view.widget.FloatControlAnimateType" enumValues="zoom,slide,safeSlide,fade,none"/>
 <Prop name="hideMode" type="com.bstek.dorado.view.widget.HideMode" defaultValue="visibility" enumValues="visibility,display"/>
 <Prop name="icon" type="java.lang.String"/>
+<Prop name="iconClass" type="java.lang.String"/>
 <Prop name="ignored" type="boolean"/>
 <Prop name="layoutConstraint" type="java.lang.Object"/>
 <Prop name="left" type="int"/>
@@ -2192,6 +2286,7 @@
 <Prop name="animateTarget" type="java.lang.String"/>
 <Prop name="animateType" type="com.bstek.dorado.view.widget.FloatControlAnimateType" defaultValue="zoom" enumValues="zoom,slide,safeSlide,fade,none"/>
 <Prop name="autoAdjustPosition" type="boolean" defaultValue="true"/>
+<Prop name="background" type="java.lang.String"/>
 <Prop name="border" type="com.bstek.dorado.view.widget.base.PanelBorder" defaultValue="normal" enumValues="none,normal,curve"/>
 <Prop name="buttonAlign" type="com.bstek.dorado.view.widget.Align" defaultValue="center" enumValues="left,center,right"/>
 <Prop name="caption" type="java.lang.String"/>
@@ -2199,8 +2294,8 @@
 <Prop name="className" type="java.lang.String"/>
 <Prop name="closeAction" type="com.bstek.dorado.view.widget.base.CloseAction" defaultValue="hide" enumValues="hide,close"/>
 <Prop name="closeable" type="boolean" defaultValue="true"/>
-<Prop name="collapseable" type="boolean"/>
-<Prop name="collapsed" type="boolean"/>
+<Prop name="collapseable" type="boolean" defaultValue="false"/>
+<Prop name="collapsed" type="boolean" defaultValue="false"/>
 <Prop name="contentOverflow" type="com.bstek.dorado.view.widget.Overflow" defaultValue="auto" enumValues="visible,hidden,scroll,auto"/>
 <Prop name="dragOutside" type="boolean"/>
 <Prop name="dragTags" type="java.lang.String"/>
@@ -2216,6 +2311,7 @@
 <Prop name="hideAnimateType" type="com.bstek.dorado.view.widget.FloatControlAnimateType" enumValues="zoom,slide,safeSlide,fade,none"/>
 <Prop name="hideMode" type="com.bstek.dorado.view.widget.HideMode" defaultValue="visibility" enumValues="visibility,display"/>
 <Prop name="icon" type="java.lang.String"/>
+<Prop name="iconClass" type="java.lang.String"/>
 <Prop name="ignored" type="boolean"/>
 <Prop name="layoutConstraint" type="java.lang.Object"/>
 <Prop name="left" type="int"/>
@@ -2399,8 +2495,10 @@
 <Prop name="exClassName" type="java.lang.String"/>
 <Prop name="height" type="java.lang.String"/>
 <Prop name="hideMode" type="com.bstek.dorado.view.widget.HideMode" defaultValue="visibility" enumValues="visibility,display"/>
+<Prop name="iconOnly" type="boolean"/>
 <Prop name="ignored" type="boolean"/>
 <Prop name="layoutConstraint" type="java.lang.Object"/><Prop name="metaData" type="java.util.Map" compositeType="Open"></Prop>
+<Prop name="mixedValue" type="java.lang.Object"/>
 <Prop name="offValue" type="java.lang.Object" defaultValue="false"/>
 <Prop name="onValue" type="java.lang.Object" defaultValue="true"/>
 <Prop name="property" type="java.lang.String"/>
@@ -2485,7 +2583,7 @@
 <Prop name="ignored" type="boolean"/>
 <Prop name="labelAlign" type="com.bstek.dorado.view.widget.Align" defaultValue="left" enumValues="left,center,right"/>
 <Prop name="labelPosition" type="com.bstek.dorado.view.widget.form.FormElementLabelPosition" defaultValue="left" enumValues="left,top"/>
-<Prop name="labelSeperator" type="java.lang.String"/>
+<Prop name="labelSeparator" type="java.lang.String"/>
 <Prop name="labelSpacing" type="int"/>
 <Prop name="labelWidth" type="int"/><Prop name="metaData" type="java.util.Map" compositeType="Open"></Prop>
 <Prop name="readOnly" type="boolean"/>
@@ -2518,7 +2616,7 @@
 <Prop name="label" type="java.lang.String"/>
 <Prop name="labelAlign" type="com.bstek.dorado.view.widget.Align" defaultValue="left" enumValues="left,center,right"/>
 <Prop name="labelPosition" type="com.bstek.dorado.view.widget.form.FormElementLabelPosition" defaultValue="left" enumValues="left,top"/>
-<Prop name="labelSeperator" type="java.lang.String"/>
+<Prop name="labelSeparator" type="java.lang.String"/>
 <Prop name="labelSpacing" type="int"/>
 <Prop name="labelWidth" type="int"/>
 <Prop name="layoutConstraint" type="java.lang.Object"/><Prop name="metaData" type="java.util.Map" compositeType="Open"></Prop>
@@ -2554,6 +2652,7 @@
 <Prop name="readOnly" type="boolean"/>
 <Prop name="renderOn" type="java.lang.String"/>
 <Prop name="renderTo" type="java.lang.String"/>
+<Prop name="selectTextOnFocus" type="boolean" defaultValue="true"/>
 <Prop name="showSpinTrigger" type="boolean" defaultValue="true"/>
 <Prop name="step" type="int" defaultValue="1"/><Prop name="style" type="java.util.Map" compositeType="Open"></Prop>
 <Prop name="supportsDirtyFlag" type="boolean" defaultValue="true"/>
@@ -2634,6 +2733,7 @@
 <Prop name="tip" type="java.lang.String"/>
 <Prop name="trigger" type="java.lang.String" enumValues="triggerClear,autoMappingDropDown1,autoMappingDropDown2,defaultDateDropDown" reference="Trigger:id"/>
 <Prop name="userData" type="java.lang.Object" editor="any"/>
+<Prop name="value" type="java.lang.String"/>
 <Prop name="visible" type="boolean" defaultValue="true"/>
 <Prop name="width" type="java.lang.String"/></Props><ClientEvents>
 <ClientEvent name="onPostFailed" parameters="self,arg"/>
@@ -2665,7 +2765,7 @@
 <Prop name="ignored" type="boolean"/>
 <Prop name="labelAlign" type="com.bstek.dorado.view.widget.Align" defaultValue="left" enumValues="left,center,right"/>
 <Prop name="labelPosition" type="com.bstek.dorado.view.widget.form.FormElementLabelPosition" defaultValue="left" enumValues="left,top"/>
-<Prop name="labelSeperator" type="java.lang.String"/>
+<Prop name="labelSeparator" type="java.lang.String"/>
 <Prop name="labelSpacing" type="int"/>
 <Prop name="labelWidth" type="int"/>
 <Prop name="layoutConstraint" type="java.lang.Object"/><Prop name="metaData" type="java.util.Map" compositeType="Open"></Prop>
@@ -2686,6 +2786,7 @@
 <Prop name="userData" type="java.lang.Object" editor="any"/>
 <Prop name="visible" type="boolean" defaultValue="true"/>
 <Prop name="width" type="java.lang.String"/></Props><Children><Child rule="AutoForm.#self.AutoFormElement" name="AutoFormElement" aggregated="true"></Child><Child rule="Control" name="Component" aggregated="true"></Child></Children></Rule><Rule name="ListDropDown" parents="Trigger" type="com.bstek.dorado.view.widget.form.trigger.ListDropDown" scope="public" sortFactor="253" category="Trigger"><Props>
+<Prop name="assignmentMap" type="java.lang.String"/>
 <Prop name="autoOpen" type="boolean"/>
 <Prop name="displayProperty" type="java.lang.String"/>
 <Prop name="dynaFilter" type="boolean"/>
@@ -2711,6 +2812,7 @@
 <ClientEvent name="onValueSelect" parameters="self,arg"/>
 <ClientEvent name="onClose" parameters="self,arg"/>
 <ClientEvent name="onFilterItem" parameters="self,arg"/></ClientEvents><Children><Child rule="ListDropDown.#self.DataColumn" name="DataColumn" aggregated="true"></Child><Child rule="ListDropDown.#self.ColumnGroup" name="ColumnGroup" aggregated="true"></Child><Child rule="ListDropDown.#self.IndicatorColumn" name="IndicatorColumn" aggregated="true"></Child><Child rule="ListDropDown.#self.RowNumColumn" name="RowNumColumn" aggregated="true"></Child><Child rule="ListDropDown.#self.RowSelectorColumn" name="RowSelectorColumn" aggregated="true"></Child></Children></Rule><Rule name="DataSetDropDown" parents="Trigger" type="com.bstek.dorado.view.widget.form.trigger.DataSetDropDown" scope="public" sortFactor="254" category="Trigger"><Props>
+<Prop name="assignmentMap" type="java.lang.String"/>
 <Prop name="autoOpen" type="boolean"/>
 <Prop name="dataPath" type="java.lang.String"/>
 <Prop name="dataSet" type="java.lang.String" reference="DataSet:id"/>
@@ -2740,6 +2842,7 @@
 <ClientEvent name="onSetFilterParameter" parameters="self,arg"/>
 <ClientEvent name="onClose" parameters="self,arg"/>
 <ClientEvent name="onFilterItem" parameters="self,arg"/></ClientEvents><Children><Child rule="ListDropDown.#self.DataColumn" name="DataColumn" aggregated="true"></Child><Child rule="ListDropDown.#self.ColumnGroup" name="ColumnGroup" aggregated="true"></Child><Child rule="ListDropDown.#self.IndicatorColumn" name="IndicatorColumn" aggregated="true"></Child><Child rule="ListDropDown.#self.RowNumColumn" name="RowNumColumn" aggregated="true"></Child><Child rule="ListDropDown.#self.RowSelectorColumn" name="RowSelectorColumn" aggregated="true"></Child></Children></Rule><Rule name="AutoMappingDropDown" parents="Trigger" type="com.bstek.dorado.view.widget.form.trigger.AutoMappingDropDown" scope="public" sortFactor="255" category="Trigger"><Props>
+<Prop name="assignmentMap" type="java.lang.String"/>
 <Prop name="autoOpen" type="boolean"/>
 <Prop name="displayProperty" type="java.lang.String"/>
 <Prop name="dynaFilter" type="boolean"/>
@@ -2765,6 +2868,7 @@
 <ClientEvent name="onValueSelect" parameters="self,arg"/>
 <ClientEvent name="onClose" parameters="self,arg"/>
 <ClientEvent name="onFilterItem" parameters="self,arg"/></ClientEvents><Children><Child rule="ListDropDown.#self.DataColumn" name="DataColumn" aggregated="true"></Child><Child rule="ListDropDown.#self.ColumnGroup" name="ColumnGroup" aggregated="true"></Child><Child rule="ListDropDown.#self.IndicatorColumn" name="IndicatorColumn" aggregated="true"></Child><Child rule="ListDropDown.#self.RowNumColumn" name="RowNumColumn" aggregated="true"></Child><Child rule="ListDropDown.#self.RowSelectorColumn" name="RowSelectorColumn" aggregated="true"></Child></Children></Rule><Rule name="DateDropDown" parents="Trigger" type="com.bstek.dorado.view.widget.form.trigger.DateDropDown" scope="public" sortFactor="256" category="Trigger"><Props>
+<Prop name="assignmentMap" type="java.lang.String"/>
 <Prop name="autoOpen" type="boolean"/>
 <Prop name="height" type="int"/>
 <Prop name="icon" type="java.lang.String"/>
@@ -2781,6 +2885,7 @@
 <ClientEvent name="onOpen" parameters="self,arg"/>
 <ClientEvent name="onValueSelect" parameters="self,arg"/>
 <ClientEvent name="onClose" parameters="self,arg"/></ClientEvents></Rule><Rule name="YearMonthDropDown" parents="Trigger" type="com.bstek.dorado.view.widget.form.trigger.YearMonthDropDown" scope="public" sortFactor="257" category="Trigger"><Props>
+<Prop name="assignmentMap" type="java.lang.String"/>
 <Prop name="autoOpen" type="boolean"/>
 <Prop name="height" type="int"/>
 <Prop name="icon" type="java.lang.String"/>
@@ -2797,6 +2902,7 @@
 <ClientEvent name="onOpen" parameters="self,arg"/>
 <ClientEvent name="onValueSelect" parameters="self,arg"/>
 <ClientEvent name="onClose" parameters="self,arg"/></ClientEvents></Rule><Rule name="CustomDropDown" parents="Trigger" type="com.bstek.dorado.view.widget.form.trigger.CustomDropDown" scope="public" sortFactor="258" category="Trigger"><Props>
+<Prop name="assignmentMap" type="java.lang.String"/>
 <Prop name="autoOpen" type="boolean"/>
 <Prop name="height" type="int"/>
 <Prop name="icon" type="java.lang.String"/>
@@ -3249,6 +3355,7 @@
 <Prop name="readOnly" type="boolean"/>
 <Prop name="renderer" type="java.lang.String"/>
 <Prop name="required" type="boolean"/>
+<Prop name="resizeable" type="boolean" defaultValue="true"/>
 <Prop name="sortState" type="com.bstek.dorado.view.widget.grid.SortState" defaultValue="none" enumValues="none,asc,desc"/>
 <Prop name="summaryRenderer" type="java.lang.String"/>
 <Prop name="summaryType" type="java.lang.String" enumValues="sum,average,count,max,min"/>
@@ -3460,14 +3567,15 @@
 <Prop name="ignored" type="boolean"/>
 <Prop name="tags" type="java.lang.String"/>
 <Prop name="width" type="java.lang.String"/></Props></Rule></Child></Children></Rule></Child><Child name="Portlets" fixed="true"><Rule name="Portal.Portlets" nodeName="Portlets" scope="protected" sortFactor="2"><Children><Child name="Portlet" aggregated="true"><Rule name="Portal.Portlets.Portlet" parents="Panel" nodeName="Portlet" type="com.bstek.dorado.view.widget.portal.Portlet" scope="protected" sortFactor="1" category="General"><Props>
+<Prop name="background" type="java.lang.String"/>
 <Prop name="border" type="com.bstek.dorado.view.widget.base.PanelBorder" defaultValue="curve" enumValues="none,normal,curve"/>
 <Prop name="buttonAlign" type="com.bstek.dorado.view.widget.Align" defaultValue="center" enumValues="left,center,right"/>
 <Prop name="caption" type="java.lang.String"/>
 <Prop name="className" type="java.lang.String"/>
 <Prop name="closeAction" type="com.bstek.dorado.view.widget.base.CloseAction" defaultValue="close" enumValues="hide,close"/>
 <Prop name="closeable" type="boolean" defaultValue="true"/>
-<Prop name="collapseable" type="boolean"/>
-<Prop name="collapsed" type="boolean"/>
+<Prop name="collapseable" type="boolean" defaultValue="false"/>
+<Prop name="collapsed" type="boolean" defaultValue="false"/>
 <Prop name="column" type="int"/>
 <Prop name="contentOverflow" type="com.bstek.dorado.view.widget.Overflow" defaultValue="auto" enumValues="visible,hidden,scroll,auto"/>
 <Prop name="dragTags" type="java.lang.String"/>
@@ -3478,6 +3586,7 @@
 <Prop name="height" type="java.lang.String"/>
 <Prop name="hideMode" type="com.bstek.dorado.view.widget.HideMode" defaultValue="visibility" enumValues="visibility,display"/>
 <Prop name="icon" type="java.lang.String"/>
+<Prop name="iconClass" type="java.lang.String"/>
 <Prop name="ignored" type="boolean"/>
 <Prop name="layoutConstraint" type="java.lang.Object"/>
 <Prop name="maximizeable" type="boolean"/>
@@ -3560,7 +3669,7 @@
 <Prop name="iconSize" type="com.bstek.dorado.desktop.ShortcutIconSize" enumValues="small,medium,big"/></Props></Rule><Rule name="UpdateAction.#self.UpdateItem" nodeName="UpdateItem" type="com.bstek.dorado.view.widget.action.UpdateItem" scope="protected" sortFactor="1"><Props>
 <Prop name="alias" type="java.lang.String"/>
 <Prop name="autoResetEntityState" type="boolean" defaultValue="true"/>
-<Prop name="dataPath" type="java.lang.String" defaultValue="!DIRTY_TREE" enumValues="!DIRTY_TREE,!CASCADE_DIRTY,[#dirty]"/>
+<Prop name="dataPath" type="java.lang.String" defaultValue="!DIRTY_TREE" enumValues="!DIRTY_TREE,!CASCADE_DIRTY,[#dirty],[#all],[#visible]"/>
 <Prop name="dataSet" type="java.lang.String" reference="DataSet:id"/>
 <Prop name="firstResultOnly" type="boolean"/>
 <Prop name="options" type="java.util.Properties"/>
@@ -3630,7 +3739,9 @@
 <Prop name="menu" type="java.lang.String" reference="Menu:id"/><Prop name="metaData" type="java.util.Map" compositeType="Open"></Prop>
 <Prop name="num" type="double"/>
 <Prop name="renderOn" type="java.lang.String"/>
-<Prop name="renderTo" type="java.lang.String"/><Prop name="style" type="java.util.Map" compositeType="Open"></Prop>
+<Prop name="renderTo" type="java.lang.String"/>
+<Prop name="showTrigger" type="java.lang.Boolean"/>
+<Prop name="splitButton" type="java.lang.Boolean"/><Prop name="style" type="java.util.Map" compositeType="Open"></Prop>
 <Prop name="tags" type="java.lang.String"/>
 <Prop name="tip" type="java.lang.String"/>
 <Prop name="toggleOnShowMenu" type="boolean" defaultValue="true"/>
@@ -3658,7 +3769,9 @@
 <Prop name="menu" type="java.lang.String" visible="false" reference="Menu:id"/><Prop name="metaData" type="java.util.Map" compositeType="Open"></Prop>
 <Prop name="num" type="double"/>
 <Prop name="renderOn" type="java.lang.String"/>
-<Prop name="renderTo" type="java.lang.String"/><Prop name="style" type="java.util.Map" compositeType="Open"></Prop>
+<Prop name="renderTo" type="java.lang.String"/>
+<Prop name="showTrigger" type="java.lang.Boolean"/>
+<Prop name="splitButton" type="java.lang.Boolean"/><Prop name="style" type="java.util.Map" compositeType="Open"></Prop>
 <Prop name="tags" type="java.lang.String"/>
 <Prop name="tip" type="java.lang.String"/>
 <Prop name="toggleOnShowMenu" type="boolean" defaultValue="true"/>
@@ -3755,7 +3868,7 @@
 <Prop name="label" type="java.lang.String"/>
 <Prop name="labelAlign" type="com.bstek.dorado.view.widget.Align" defaultValue="left" enumValues="left,center,right"/>
 <Prop name="labelPosition" type="com.bstek.dorado.view.widget.form.FormElementLabelPosition" defaultValue="left" enumValues="left,top"/>
-<Prop name="labelSeperator" type="java.lang.String"/>
+<Prop name="labelSeparator" type="java.lang.String"/>
 <Prop name="labelSpacing" type="int"/>
 <Prop name="labelWidth" type="int"/>
 <Prop name="layoutConstraint" type="java.lang.Object"/><Prop name="metaData" type="java.util.Map" compositeType="Open"></Prop>

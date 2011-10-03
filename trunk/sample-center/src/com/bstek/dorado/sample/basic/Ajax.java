@@ -11,9 +11,8 @@ import com.bstek.dorado.core.DoradoAbout;
 public class Ajax {
 
 	@Expose
-	public String toUpperCase(String parameter) {
-		return "input:\n" + parameter + "\n\n" + "output:\n"
-				+ parameter.toUpperCase();
+	public String toUpperCase(String str) {
+		return "input:\n" + str + "\n\n" + "output:\n" + str.toUpperCase();
 	}
 
 	@Expose

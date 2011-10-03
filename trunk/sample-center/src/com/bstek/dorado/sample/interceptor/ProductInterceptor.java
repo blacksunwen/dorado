@@ -26,8 +26,13 @@ public class ProductInterceptor {
 	}
 
 	@DataProvider
-	public Collection<Product> getProductsByCategoryId(Long parameter) {
-		return productDao.find("from Product where category.id=" + parameter);
+	public Collection<Product> getProductsByCategoryId(Long categoryId) {
+		return productDao.find("from Product where category.id=" + categoryId);
+	}
+
+	@DataProvider
+	public void getProductsByCategoryId(Page<Product> page, Long categoryId) {
+		productDao.find(page, "from Product where category.id=" + categoryId);
 	}
 
 	@DataProvider
@@ -36,7 +41,8 @@ public class ProductInterceptor {
 			return productDao.getAll();
 		} else {
 			return productDao.find(
-					"from Product where productName like '%'||?||'%'", namePattern);
+					"from Product where productName like '%'||?||'%'",
+					namePattern);
 		}
 	}
 

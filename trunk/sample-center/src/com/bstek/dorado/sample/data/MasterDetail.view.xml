@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ViewConfig>
   <Model>
-    <DataType parent="global:Category" name="Category" meta="x:75;y:15">
+    <DataType name="Category" parent="global:Category" meta="x:75;y:15">
       <PropertyDef name="products"/>
     </DataType>
   </Model>
   <View title="Master-Detail">
-    <DataSet id="dsCategories" dataType="[Category]" dataProvider="categoryInterceptor#getAll"/>
-    <UpdateAction id="actionSave" caption="保存" icon="url(>skin>common/icons.gif) -140px -20px" successMessage="数据保存成功。" dataResolver="categoryInterceptor#saveAll">
+    <DataSet id="dsCategories" dataProvider="categoryInterceptor#getAll" dataType="[Category]"/>
+    <UpdateAction id="actionSave" caption="保存" dataResolver="categoryInterceptor#saveAll" icon="url(>skin>common/icons.gif) -140px -20px" successMessage="数据保存成功。">
       <UpdateItem dataSet="dsCategories" refreshMode="cascade"/>
     </UpdateAction>
     <SplitPanel direction="top" position="230">
@@ -29,6 +29,7 @@
             <ToolBarButton action="actionSave"/>
           </ToolBar>
           <DataGrid dataSet="dsCategories">
+            <Property name="selectionMode">none</Property>
             <IndicatorColumn/>
           </DataGrid>
         </Container>

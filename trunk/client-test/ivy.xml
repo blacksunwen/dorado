@@ -2,32 +2,29 @@
 	<info organisation="com.bstek.dorado" module="common-dependencies" />
 
 	<configurations>
-		<conf name="default" visibility="public" extends="runtime,master" />
-		<conf name="master" visibility="public" />
-		<conf name="compile" visibility="public" />
-		<conf name="provided" visibility="public" />
-		<conf name="runtime" visibility="public" extends="compile" />
-		<conf name="test" visibility="private" extends="runtime" />
+		<include file="../ivy/ivy-configurations.xml" />
 	</configurations>
 
-	<dependencies defaultconfmapping="compile->compile(*),master(*);runtime->master(*),compile(*),runtime(*)">
-		<!-- COMPILE -->
-		<dependency org="com.bstek.dorado" name="dorado-core" rev="${depended-dorado.version}" conf="compile">
+	<dependencies>
+		<dependency org="com.bstek.dorado" name="dorado-core" rev="${depended-dorado.version}" conf="compile,runtime">
 			<exclude org="com.bstek.dorado" />
 		</dependency>
-		<dependency org="com.bstek.dorado" name="dorado-hibernate" rev="${depended-dorado.version}" conf="compile">
+		<dependency org="com.bstek.dorado" name="dorado-hibernate" rev="${depended-dorado.version}" conf="compile,runtime">
 			<exclude org="com.bstek.dorado" />
 		</dependency>
-		<dependency org="com.bstek.dorado" name="dorado-console" rev="${depended-dorado.version}" conf="compile">
+		<dependency org="com.bstek.dorado" name="dorado-console" rev="${depended-dorado.version}" conf="compile,runtime">
 			<exclude org="com.bstek.dorado" />
 		</dependency>
-		<dependency org="com.bstek.dorado" name="dorado-ide-support" rev="${depended-dorado.version}" conf="compile">
+		<dependency org="com.bstek.dorado" name="dorado-ide-support" rev="${depended-dorado.version}" conf="compile,runtime">
 			<exclude org="com.bstek.dorado" />
 		</dependency>
-		<dependency org="com.bstek.dorado" name="dorado-chart" rev="${depended-dorado.version}" conf="compile">
+		<dependency org="com.bstek.dorado" name="dorado-chart" rev="${depended-dorado.version}" conf="compile,runtime">
 			<exclude org="com.bstek.dorado" />
 		</dependency>
-		<dependency org="com.bstek.dorado" name="dorado-desktop" rev="${depended-dorado.version}" conf="compile">
+		<dependency org="com.bstek.dorado" name="dorado-desktop" rev="${depended-dorado.version}" conf="compile,runtime">
+			<exclude org="com.bstek.dorado" />
+		</dependency>
+		<dependency org="com.bstek.dorado" name="dorado-htmleditor" rev="${depended-dorado.version}" conf="compile,runtime">
 			<exclude org="com.bstek.dorado" />
 		</dependency>
 	</dependencies>
