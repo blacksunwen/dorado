@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- Boolean -->
+	<bean id="dorado.jdbc.type.bitBoolean" class="com.bstek.dorado.jdbc.type.BitBoolean"/>
+	<bean id="dorado.jdbc.type.booleanBoolean" class="com.bstek.dorado.jdbc.type.BooleanBoolean"/>
+	
+	<!-- Short -->
+	<bean id="dorado.jdbc.type.smallintShort" class="com.bstek.dorado.jdbc.type.SmallintShort"/>
+		
+	<!-- Integer -->
+	<bean id="dorado.jdbc.type.integerInteger" class="com.bstek.dorado.jdbc.type.IntegerInteger"/>
+		
+	<!-- Long -->
+	<bean id="dorado.jdbc.type.bigintLong" class="com.bstek.dorado.jdbc.type.BigintLong"/>
+		
+	<!-- Float -->
+	<bean id="dorado.jdbc.type.realFloat" class="com.bstek.dorado.jdbc.type.RealFloat"/>
+		
+	<!-- Double -->
+	<bean id="dorado.jdbc.type.floatDouble" class="com.bstek.dorado.jdbc.type.FloatDouble"/>
+	<bean id="dorado.jdbc.type.doubleDouble" class="com.bstek.dorado.jdbc.type.DoubleDouble"/>
+		
+	<!-- BigDecimal -->
+	<bean id="dorado.jdbc.type.numricBigDecimal" class="com.bstek.dorado.jdbc.type.NumricBigDecimal"/>
+	<bean id="dorado.jdbc.type.decimalBigDecimal" class="com.bstek.dorado.jdbc.type.DecimalBigDecimal"/>
+		
+	<!-- String -->
+	<bean id="dorado.jdbc.type.charString" class="com.bstek.dorado.jdbc.type.CharString"/>
+	<bean id="dorado.jdbc.type.varcharString" class="com.bstek.dorado.jdbc.type.VarcharString"/>
+	<bean id="dorado.jdbc.type.longvarcharString" class="com.bstek.dorado.jdbc.type.LongvarcharString"/>
+	<bean id="dorado.jdbc.type.ncharString" class="com.bstek.dorado.jdbc.type.NcharString"/>
+	<bean id="dorado.jdbc.type.nvarcharString" class="com.bstek.dorado.jdbc.type.NvarcharString"/>
+		
+	<!-- Date -->
+	<bean id="dorado.jdbc.type.dateDate" class="com.bstek.dorado.jdbc.type.DateDate"/>
+	<bean id="dorado.jdbc.type.timeDate" class="com.bstek.dorado.jdbc.type.TimeDate"/>
+	<bean id="dorado.jdbc.type.timestampDate" class="com.bstek.dorado.jdbc.type.TimestampDate"/>
+		
+	<!-- Byte -->
+	<bean id="dorado.jdbc.type.tinyintByte" class="com.bstek.dorado.jdbc.type.TinyintByte"/>
+</beans>

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Model>
+
+	<AutoTable name="t1" mainTableAlias="emp">
+		<Columns>
+		    <Column columnAlias ="n_id"          tableAlias="emp" columnName="ID"          propertyName="p_id"            />
+			<Column columnAlias ="n_last_name"   tableAlias="emp" columnName="LAST_NAME"   propertyName="p_last_name"     />
+			<Column columnAlias ="n_first_name"  tableAlias="emp" columnName="FIRST_NAME"  propertyName="p_first_name"    />
+			<Column columnAlias ="n_title"       tableAlias="emp" columnName="TITLE"       propertyName="p_title"         />
+			<Column columnAlias ="n_sex"         tableAlias="emp" columnName="SEX"         propertyName="p_sex"           />
+			<Column columnAlias ="n_birth_date"  tableAlias="emp" columnName="BIRTH_DATE"  propertyName="p_birth_date"    />
+		</Columns>
+		<FromTables>
+			<FromTable tableAlias="emp" table="EMP_0"/>
+		</FromTables>
+	</AutoTable>
+
+	<AutoTable name="t2">
+		<Columns>
+			<Column columnAlias ="n_pid"        tableAlias="p" columnName="ID"                propertyName="p_pid" />
+			<Column columnAlias ="n_pname"      tableAlias="p" columnName="PRODUCT_NAME"      propertyName="p_pname" />
+			<Column columnAlias ="n_psupplier"  tableAlias="p" columnName="SUPPLIER_ID"       propertyName="p_psupplier" />
+			<Column columnAlias ="n_pcategory"  tableAlias="p" columnName="CATEGORY_ID"       propertyName="p_pcategory" />
+			<Column columnAlias ="n_pquanitity" tableAlias="p" columnName="QUANTITY_PER_UNIT" propertyName="p_pquanitity" />
+			<Column columnAlias ="n_punitprice" tableAlias="p" columnName="UNIT_PRICE"        propertyName="p_punitprice" />
+			<Column columnAlias ="n_ccategory"  tableAlias="c" columnName="CATEGORY_NAME"     propertyName="p_ccategory" />
+		</Columns>
+		<FromTables>
+			<FromTable tableAlias="p" table="PRODUCTS"/>
+			<FromTable tableAlias="c" table="CATEGORIES"/>
+		</FromTables>
+		<JoinTables>
+			<JoinTable leftFromTableAlias="p" leftColumnNames="CATEGORY_ID" rightFromTableAlias="c" rightColumnNames="ID" joinModel="LEFT_JOIN"/>
+		</JoinTables>
+	</AutoTable>
+	
+	<AutoTable name="t3">
+		<Columns>
+			<Column columnAlias ="n_pid"        tableAlias="p" columnName="ID"                propertyName="p_pid" />
+			<Column columnAlias ="n_pname"      tableAlias="p" columnName="PRODUCT_NAME"      propertyName="p_pname" />
+			<Column columnAlias ="n_psupplier"  tableAlias="p" columnName="SUPPLIER_ID"       propertyName="p_psupplier" />
+			<Column columnAlias ="n_pcategory"  tableAlias="p" columnName="CATEGORY_ID"       propertyName="p_pcategory" />
+			<Column columnAlias ="n_pquanitity" tableAlias="p" columnName="QUANTITY_PER_UNIT" propertyName="p_pquanitity" />
+			<Column columnAlias ="n_punitprice" tableAlias="p" columnName="UNIT_PRICE"        propertyName="p_punitprice" />
+			<Column columnAlias ="n_ccategory"  tableAlias="c" columnName="CATEGORY_NAME"     propertyName="p_ccategory" />
+		</Columns>
+		<FromTables>
+			<FromTable tableAlias="c" table="CATEGORIES"/>
+			<FromTable tableAlias="p" table="PRODUCTS"/>
+		</FromTables>
+		<JoinTables>
+			<JoinTable leftFromTableAlias="p" leftColumnNames="CATEGORY_ID" rightFromTableAlias="c" rightColumnNames="ID" joinModel="LEFT_JOIN"/>
+		</JoinTables>
+		<Orders>
+			<Order tableAlias="c" columnName="ID"/>
+			<Order tableAlias="p" columnName="ID" orderModel="ASC"/>
+			<Order tableAlias="p" columnName="PRODUCT_NAME" nullsModel="NULLS_LAST"/>
+			<Order tableAlias="p" columnName="SUPPLIER_ID" orderModel="DESC" nullsModel="NULLS_FIRST"/>
+			<Order columnName="n_pname"/>
+		</Orders>
+	</AutoTable>
+	
+	<!-- MatchRule Examples -->
+	
+	<AutoTable name="t4" tableAlias="emp">
+		<Columns>
+		    <Column columnAlias ="n_id"          tableAlias="emp" columnName="ID"          propertyName="p_id"            />
+			<Column columnAlias ="n_last_name"   tableAlias="emp" columnName="LAST_NAME"   propertyName="p_last_name"     />
+			<Column columnAlias ="n_first_name"  tableAlias="emp" columnName="FIRST_NAME"  propertyName="p_first_name"    />
+			<Column columnAlias ="n_title"       tableAlias="emp" columnName="TITLE"       propertyName="p_title"         />
+			<Column columnAlias ="n_sex"         tableAlias="emp" columnName="SEX"         propertyName="p_sex"           />
+			<Column columnAlias ="n_birth_date"  tableAlias="emp" columnName="BIRTH_DATE"  propertyName="p_birth_date"    />
+			<Column columnAlias ="n_hire_date"   tableAlias="emp" columnName="HIRE_DATE"   propertyName="p_hire_date"     />
+			<Column columnAlias ="n_address"     tableAlias="emp" columnName="ADDRESS"     propertyName="p_address"       />
+			<Column columnAlias ="n_city"        tableAlias="emp" columnName="CITY"        propertyName="p_city"          />
+			<Column columnAlias ="n_region"      tableAlias="emp" columnName="REGION"      propertyName="p_region"        />
+			<Column columnAlias ="n_postal_code" tableAlias="emp" columnName="POSTAL_CODE" propertyName="p_postal_code"   />
+			<Column columnAlias ="n_country"     tableAlias="emp" columnName="COUNTRY"     propertyName="p_country"       />
+			<Column columnAlias ="n_phone"       tableAlias="emp" columnName="PHONE"       propertyName="p_phone"         />
+			<Column columnAlias ="n_extension"   tableAlias="emp" columnName="EXTENSION"   propertyName="p_extension"     />
+			<Column columnAlias ="n_reports_to"  tableAlias="emp" columnName="REPORTS_TO"  propertyName="p_reports_to"    />
+			<Column columnAlias ="n_notes"       tableAlias="emp" columnName="NOTES"       propertyName="p_notes"         />
+			<Column columnAlias ="n_photo_path"  tableAlias="emp" columnName="PHOTO_PATH"  propertyName="p_photo_path"    />
+		</Columns>
+		<FromTables>
+			<FromTable tableAlias="emp" table="EMP_0"/>
+		</FromTables>
+		<Where>
+			<BaseMatchRule tableAlias="emp" columnName="ID" operator="=" value=":arg_id"/>
+		</Where>
+	</AutoTable>
+	
+	<AutoTable name="t5" tableAlias="emp">
+		<Columns>
+		    <Column columnAlias ="n_id"          tableAlias="emp" columnName="ID"          propertyName="p_id"            />
+			<Column columnAlias ="n_last_name"   tableAlias="emp" columnName="LAST_NAME"   propertyName="p_last_name"     />
+			<Column columnAlias ="n_first_name"  tableAlias="emp" columnName="FIRST_NAME"  propertyName="p_first_name"    />
+			<Column columnAlias ="n_title"       tableAlias="emp" columnName="TITLE"       propertyName="p_title"         />
+			<Column columnAlias ="n_sex"         tableAlias="emp" columnName="SEX"         propertyName="p_sex"           />
+			<Column columnAlias ="n_birth_date"  tableAlias="emp" columnName="BIRTH_DATE"  propertyName="p_birth_date"    />
+			<Column columnAlias ="n_hire_date"   tableAlias="emp" columnName="HIRE_DATE"   propertyName="p_hire_date"     />
+			<Column columnAlias ="n_address"     tableAlias="emp" columnName="ADDRESS"     propertyName="p_address"       />
+			<Column columnAlias ="n_city"        tableAlias="emp" columnName="CITY"        propertyName="p_city"          />
+			<Column columnAlias ="n_region"      tableAlias="emp" columnName="REGION"      propertyName="p_region"        />
+			<Column columnAlias ="n_postal_code" tableAlias="emp" columnName="POSTAL_CODE" propertyName="p_postal_code"   />
+			<Column columnAlias ="n_country"     tableAlias="emp" columnName="COUNTRY"     propertyName="p_country"       />
+			<Column columnAlias ="n_phone"       tableAlias="emp" columnName="PHONE"       propertyName="p_phone"         />
+			<Column columnAlias ="n_extension"   tableAlias="emp" columnName="EXTENSION"   propertyName="p_extension"     />
+			<Column columnAlias ="n_reports_to"  tableAlias="emp" columnName="REPORTS_TO"  propertyName="p_reports_to"    />
+			<Column columnAlias ="n_notes"       tableAlias="emp" columnName="NOTES"       propertyName="p_notes"         />
+			<Column columnAlias ="n_photo_path"  tableAlias="emp" columnName="PHOTO_PATH"  propertyName="p_photo_path"    />
+		</Columns>
+		<FromTables>
+			<FromTable tableAlias="emp" table="EMP_0"/>
+		</FromTables>
+		<Where>
+			<JunctionMatchRule model="OR">
+				<BaseMatchRule tableAlias="emp" columnName="LAST_NAME" operator="like%" value=":arg_last"/>
+				<BaseMatchRule tableAlias="emp" columnName="FIRST_NAME" operator="%like%" value=":arg_first"/>
+			</JunctionMatchRule>
+		</Where>
+	</AutoTable>
+	
+	<AutoTable name="t6" tableAlias="emp">
+		<Columns>
+		    <Column columnAlias ="n_id"          tableAlias="emp" columnName="ID"          propertyName="p_id"            />
+			<Column columnAlias ="n_last_name"   tableAlias="emp" columnName="LAST_NAME"   propertyName="p_last_name"     />
+			<Column columnAlias ="n_first_name"  tableAlias="emp" columnName="FIRST_NAME"  propertyName="p_first_name"    />
+			<Column columnAlias ="n_title"       tableAlias="emp" columnName="TITLE"       propertyName="p_title"         />
+			<Column columnAlias ="n_sex"         tableAlias="emp" columnName="SEX"         propertyName="p_sex"           />
+			<Column columnAlias ="n_birth_date"  tableAlias="emp" columnName="BIRTH_DATE"  propertyName="p_birth_date"    />
+			<Column columnAlias ="n_hire_date"   tableAlias="emp" columnName="HIRE_DATE"   propertyName="p_hire_date"     />
+			<Column columnAlias ="n_address"     tableAlias="emp" columnName="ADDRESS"     propertyName="p_address"       />
+			<Column columnAlias ="n_city"        tableAlias="emp" columnName="CITY"        propertyName="p_city"          />
+			<Column columnAlias ="n_region"      tableAlias="emp" columnName="REGION"      propertyName="p_region"        />
+			<Column columnAlias ="n_postal_code" tableAlias="emp" columnName="POSTAL_CODE" propertyName="p_postal_code"   />
+			<Column columnAlias ="n_country"     tableAlias="emp" columnName="COUNTRY"     propertyName="p_country"       />
+			<Column columnAlias ="n_phone"       tableAlias="emp" columnName="PHONE"       propertyName="p_phone"         />
+			<Column columnAlias ="n_extension"   tableAlias="emp" columnName="EXTENSION"   propertyName="p_extension"     />
+			<Column columnAlias ="n_reports_to"  tableAlias="emp" columnName="REPORTS_TO"  propertyName="p_reports_to"    />
+			<Column columnAlias ="n_notes"       tableAlias="emp" columnName="NOTES"       propertyName="p_notes"         />
+			<Column columnAlias ="n_photo_path"  tableAlias="emp" columnName="PHOTO_PATH"  propertyName="p_photo_path"    />
+		</Columns>
+		<FromTables>
+			<FromTable tableAlias="emp" table="EMP_0"/>
+		</FromTables>
+		<Where>
+			<BaseMatchRule tableAlias="emp" columnName="ID" operator="=" value=":arg_id"/>
+			<JunctionMatchRule model="OR">
+				<BaseMatchRule tableAlias="emp" columnName="LAST_NAME" operator="like%" value=":arg_last"/>
+				<BaseMatchRule tableAlias="emp" columnName="FIRST_NAME" operator="%like%" value=":arg_first"/>
+			</JunctionMatchRule>
+		</Where>
+	</AutoTable>
+</Model>
