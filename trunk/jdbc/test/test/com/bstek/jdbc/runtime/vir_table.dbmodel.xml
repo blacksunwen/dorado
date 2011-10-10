@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DbModel>
+	<Table name="people0" tableName="PEOPLE">
+		<Property name="dynamicToken">xxxxxx</Property>
+		<Columns>
+			<Column columnName="ID"   propertyName="p_id"   selectable="false" jdbcType="INTEGER-Integer" />
+			<Column columnName="NAME" propertyName="p_name" selectable="true"  jdbcType="VARCHAR-String" />
+			<Column columnName="SEX"  propertyName="p_sex"  selectable="true"  jdbcType="BOOLEAN-Boolean" />
+		</Columns>
+	</Table>
+</DbModel>
