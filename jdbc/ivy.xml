@@ -8,18 +8,18 @@
 	
 	<dependencies>
 	
-		<!-- COMPILE,RUNTIME -->
-		<dependency org="com.bstek.dorado" name="dorado-core" rev="${depended-dorado.version}" conf="compile,runtime">
+		<!-- COMPILE -->
+		<dependency org="com.bstek.dorado" name="dorado-core" rev="${depended-dorado.version}" conf="compile">
 		</dependency>
 		
-		<dependency org="org.springframework" name="spring-core" rev="${springframework.version}" conf="compile,runtime" />
-		<dependency org="org.springframework" name="spring-beans" rev="${springframework.version}" conf="compile,runtime" />
-		<dependency org="org.springframework" name="spring-context" rev="${springframework.version}" conf="compile,runtime" />
-		<dependency org="org.springframework" name="spring-context-support" rev="${springframework.version}" conf="compile,runtime" />
-		<dependency org="org.springframework" name="spring-asm" rev="${springframework.version}" conf="compile,runtime" />
-		<dependency org="org.springframework" name="spring-aop" rev="${springframework.version}" conf="compile,runtime" />
-		<dependency org="org.springframework" name="spring-jdbc" rev="${springframework.version}" conf="compile,runtime" />
-		<dependency org="org.springframework" name="spring-tx" rev="${springframework.version}" conf="compile,runtime" />
+		<dependency org="org.springframework" name="spring-core" rev="${springframework.version}" conf="compile" />
+		<dependency org="org.springframework" name="spring-beans" rev="${springframework.version}" conf="compile" />
+		<dependency org="org.springframework" name="spring-context" rev="${springframework.version}" conf="compile" />
+		<dependency org="org.springframework" name="spring-context-support" rev="${springframework.version}" conf="compile" />
+		<dependency org="org.springframework" name="spring-asm" rev="${springframework.version}" conf="compile" />
+		<dependency org="org.springframework" name="spring-aop" rev="${springframework.version}" conf="compile" />
+		<dependency org="org.springframework" name="spring-jdbc" rev="${springframework.version}" conf="compile" />
+		<dependency org="org.springframework" name="spring-tx" rev="${springframework.version}" conf="compile" />
 		
 		<!-- TEST -->
 		<dependency org="junit" name="junit" rev="4.8.2" conf="test" />
