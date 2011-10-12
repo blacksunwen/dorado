@@ -13,21 +13,11 @@ public class SqlConstants {
 		public static final String WHERE = "WHERE";
 		public static final String ORDER_BY = "ORDER BY";
 		public static final String NOT = "NOT";
-	}
-	
-	public static class RightSpace {
-		public static final String SELECT = SqlUtils.rightSpace(KeyWord.SELECT);
-		public static final String NOT = SqlUtils.rightSpace(KeyWord.NOT);
-	}
-	
-	public static class BothSpace {
-		public static final String AS = SqlUtils.bothSpace(KeyWord.AS);
-		public static final String ON = SqlUtils.bothSpace(KeyWord.ON);
-		public static final String AND = SqlUtils.bothSpace(KeyWord.AND);
-		public static final String FROM = SqlUtils.bothSpace(KeyWord.FROM);
-		public static final String WHERE = SqlUtils.bothSpace(KeyWord.WHERE);
-		public static final String ORDER_BY = SqlUtils.bothSpace(KeyWord.ORDER_BY);
-		public static final String NOT = SqlUtils.bothSpace(KeyWord.NOT);
+		public static final String INSERT_INTO = "INSERT INTO";
+		public static final String VALUES = "VALUES";
+		public static final String UPDATE = "UPDATE";
+		public static final String SET = "SET";
+		public static final String DELETE = "DELETE";
 	}
 	
 	public enum Operator {
@@ -96,11 +86,6 @@ public class SqlConstants {
 			public String toSQL(){
 				return "IN";
 			}
-
-			@Override
-			public String notSQL() {
-				return RightSpace.NOT + this.toSQL();
-			}
 		},isnull {
 			@Override
 			public String toSQL(){
@@ -109,7 +94,7 @@ public class SqlConstants {
 
 			@Override
 			public String notSQL() {
-				return "IS" + BothSpace.NOT + "NULL";
+				return "IS NOT NULL";
 			}
 		},like{
 			@Override
@@ -119,7 +104,7 @@ public class SqlConstants {
 
 			@Override
 			public String notSQL() {
-				return RightSpace.NOT + this.toSQL();
+				return KeyWord.NOT + " " + this.toSQL();
 			}
 		},like_start{
 			public String toString(){
@@ -129,11 +114,6 @@ public class SqlConstants {
 			@Override
 			public String toSQL(){
 				return "LIKE";
-			}
-			
-			@Override
-			public String notSQL() {
-				return RightSpace.NOT + this.toSQL();
 			}
 			
 			@Override
@@ -151,11 +131,6 @@ public class SqlConstants {
 			}
 			
 			@Override
-			public String notSQL() {
-				return RightSpace.NOT + this.toSQL();
-			}
-			
-			@Override
 			public Object parameterValue(Object value) {
 				return "%"+ String.valueOf(value);
 			}
@@ -170,18 +145,15 @@ public class SqlConstants {
 			}
 			
 			@Override
-			public String notSQL() {
-				return RightSpace.NOT + this.toSQL();
-			}
-			
-			@Override
 			public Object parameterValue(Object value) {
 				return "%" + String.valueOf(value) + "%";
 			}
 		};
 		
-		public abstract String notSQL();
 		public abstract String toSQL();
+		public String notSQL() {
+			return KeyWord.NOT + " " + this.toSQL();
+		}
 		public Object parameterValue(Object value) {
 			return value;
 		}

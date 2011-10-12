@@ -4,8 +4,8 @@ import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.jdbc.Dialect;
 import com.bstek.dorado.jdbc.sql.SelectSql;
-import com.bstek.dorado.jdbc.sql.SqlConstants.BothSpace;
-import com.bstek.dorado.jdbc.sql.SqlConstants.RightSpace;
+import com.bstek.dorado.jdbc.sql.SqlBuilder;
+import com.bstek.dorado.jdbc.sql.SqlConstants.KeyWord;
 import com.bstek.dorado.util.Assert;
 
 public class AutoTableSelectSql  extends SelectSql {
@@ -47,41 +47,35 @@ public class AutoTableSelectSql  extends SelectSql {
 	}
 	
 	public String toSQL(Dialect dialect) {
-		StringBuilder sql = new StringBuilder();
-		String columnsToken = this.getColumnsToken();
-		sql.append(RightSpace.SELECT + columnsToken);
+		Assert.notEmpty(columnsToken, "ColumnsToken must not be empty.");
+		Assert.notEmpty(fromToken, "FromToken must not be empty.");
 		
-		String fromToken = this.getFromToken();
-		Assert.notEmpty(fromToken);
-		sql.append(BothSpace.FROM + fromToken);
+		SqlBuilder sql = new SqlBuilder();
 		
-		String whereToken = this.getWhereToken();
+		sql.rightSpace(KeyWord.SELECT, columnsToken, KeyWord.FROM).append(fromToken);
+		
 		if (StringUtils.isNotEmpty(whereToken)) {
-			sql.append(BothSpace.WHERE).append(whereToken);
+			sql.leftSpace(KeyWord.WHERE, whereToken);
 		}
 		
-		String orderToken = this.getOrderToken();
 		if (StringUtils.isNotEmpty(orderToken)) {
-			sql.append(BothSpace.ORDER_BY).append(orderToken);
+			sql.leftSpace(KeyWord.ORDER_BY, orderToken);
 		}
 		
-		return sql.toString();
+		return sql.build();
 	}
 
 	@Override
 	public String toCountSQL(Dialect dialect) {
-		StringBuilder sql = new StringBuilder();
-		sql.append(RightSpace.SELECT + "COUNT(*)");
+		Assert.notEmpty(fromToken, "FromToken must not be empty.");
 		
-		String fromToken = this.getFromToken();
-		Assert.notEmpty(fromToken);
-		sql.append(BothSpace.FROM + fromToken);
+		SqlBuilder sql = new SqlBuilder();
+		sql.rightSpace(KeyWord.SELECT, "COUNT(*)", KeyWord.FROM).append(fromToken);
 		
-		String whereToken = this.getWhereToken();
 		if (StringUtils.isNotEmpty(whereToken)) {
-			sql.append(BothSpace.WHERE).append(whereToken);
+			sql.leftSpace(KeyWord.WHERE, whereToken);
 		}
 		
-		return sql.toString();
+		return sql.build();
 	}
 }

@@ -9,12 +9,13 @@ public interface DbElement {
 	}
 	
 	JdbcEnviroment getJdbcEnviroment();
+	
 	void setJdbcEnviroment(JdbcEnviroment env);
 	
 	String getName();
 	
 	Type getType();
-	
+
 	DbElementTrigger getTrigger();
 	
 	List<Column> getAllColumns();

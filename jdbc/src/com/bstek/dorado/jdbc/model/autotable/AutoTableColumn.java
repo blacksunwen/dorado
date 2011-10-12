@@ -40,13 +40,5 @@ public class AutoTableColumn extends TableColumn {
 	public void setColumnAlias(String columnAlias) {
 		this.columnAlias = columnAlias;
 	}
-//
-//	public Column getDbColumn() {
-//		String columnName = this.getColumnName();
-//		FromTable fromTable = this.getFromTable();
-//		Table table = fromTable.getTable();
-//		return table.getColumn(columnName);
-//	}
-//	
 }
 

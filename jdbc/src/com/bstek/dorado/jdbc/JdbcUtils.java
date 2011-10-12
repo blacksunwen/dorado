@@ -1,14 +1,19 @@
 package com.bstek.dorado.jdbc;
 
 import com.bstek.dorado.core.Context;
-import com.bstek.dorado.jdbc.manager.JdbcEnviromentManager;
-import com.bstek.dorado.jdbc.manager.JdbcModelManager;
+import com.bstek.dorado.jdbc.config.JdbcConfigManager;
+import com.bstek.dorado.jdbc.config.JdbcEnviromentManager;
 import com.bstek.dorado.jdbc.model.DbElement;
-import com.bstek.dorado.jdbc.model.table.Table;
 import com.bstek.dorado.jdbc.sql.SqlGenerator;
 import com.bstek.dorado.util.Assert;
 
-public class JdbcUtils {
+/**
+ * JDBC模块的工具类
+ * 
+ * @author mark
+ *
+ */
+public abstract class JdbcUtils {
 
 	public static JdbcEnviromentManager getEnviromentManager() {
 		Context ctx = Context.getCurrent();
@@ -20,10 +25,10 @@ public class JdbcUtils {
 		}
 	}
 	
-	public static JdbcModelManager getJdbcModelManager() {
+	public static JdbcConfigManager getJdbcConfigManager() {
 		Context context = Context.getCurrent();
 		try {
-			JdbcModelManager parser = (JdbcModelManager)context.getServiceBean("jdbc.jdbcModelManager");
+			JdbcConfigManager parser = (JdbcConfigManager)context.getServiceBean("jdbc.jdbcConfigManager");
 			return parser;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -32,25 +37,15 @@ public class JdbcUtils {
 	
 	@SuppressWarnings("rawtypes")
 	public static SqlGenerator getSqlGenerator(DbElement dbElement) {
-		SqlGenerator generator = getJdbcModelManager().getSqlGenerator(dbElement.getType());
+		SqlGenerator generator = getJdbcConfigManager().getSqlGenerator(dbElement.getType());
 		return generator;
 	}
 	
 	public static DbElement getDbElement(String elementName) throws Exception {
 		Assert.notEmpty(elementName, "DbElement name must not be null.");
 		
-		JdbcModelManager manager = JdbcUtils.getJdbcModelManager();
-		DbElement dbElement = manager.getDbElement(elementName);
+		DbElement dbElement = JdbcUtils.getJdbcConfigManager().getDbElement(elementName);
 		
 		return dbElement;
 	}
-	
-//	public static Table getTable(String objRef) throws Exception {
-//		DbElement dbElement = (DbElement) getDbElement(objRef);
-//		if (dbElement instanceof Table){
-//			return (Table)dbElement;
-//		} else {
-//			throw new IllegalArgumentException("[" + objRef + "] " + dbElement.getClass());
-//		}
-//	}
 }

@@ -5,9 +5,14 @@ import com.bstek.dorado.data.provider.Page;
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.jdbc.model.DbElement;
 import com.bstek.dorado.jdbc.model.DbElementTrigger;
-import com.bstek.dorado.jdbc.model.QueryOperation;
 import com.bstek.dorado.util.Assert;
 
+/**
+ * JDBC模块的{@link com.bstek.dorado.data.provider.DataProvider}
+ * 
+ * @author mark
+ * 
+ */
 public class JdbcDataProvider extends AbstractDataProvider {
 
 	private String dbElement;
@@ -20,29 +25,14 @@ public class JdbcDataProvider extends AbstractDataProvider {
 		this.dbElement = dbElement;
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	protected Object internalGetResult(Object parameter, DataType resultDataType)
 			throws Exception {
-		String elementName = this.getDbElement();
-		Assert.notEmpty(elementName);
-		
-		DbElement dbElement = JdbcUtils.getDbElement(elementName);
-		try {
-			JdbcQueryContext rCtx = JdbcQueryContext.newInstance(parameter);
-			rCtx.setJdbcEnviroment(dbElement.getJdbcEnviroment());
-			
-			QueryOperation operation = new QueryOperation(dbElement);
-			DbElementTrigger trigger = dbElement.getTrigger();
-			if (trigger != null) {
-				trigger.doQuery(operation);
-			} else {
-				operation.execute();
-			}
-			
-			return rCtx.getPage().getEntities();
-		} finally {
-			JdbcQueryContext.clear();
-		}
+		Page page = new Page(0, 0);
+		this.internalGetResult(parameter, page, resultDataType);
+
+		return page.getEntities();
 	}
 
 	@Override
@@ -50,21 +40,17 @@ public class JdbcDataProvider extends AbstractDataProvider {
 			DataType resultDataType) throws Exception {
 		String elementName = this.getDbElement();
 		Assert.notEmpty(elementName);
-		
+
 		DbElement dbElement = JdbcUtils.getDbElement(elementName);
-		try {
-			JdbcQueryContext rCtx = JdbcQueryContext.newInstance(parameter, page);
-			rCtx.setJdbcEnviroment(dbElement.getJdbcEnviroment());
-			
-			QueryOperation operation = new QueryOperation(dbElement);
-			DbElementTrigger trigger = dbElement.getTrigger();
-			if (trigger != null) {
-				trigger.doQuery(operation);
-			} else {
-				operation.execute();
-			}
-		} finally {
-			JdbcQueryContext.clear();
+		JdbcDataProviderContext rCtx = new JdbcDataProviderContext(dbElement.getJdbcEnviroment(),parameter, page);
+
+		JdbcDataProviderOperation operation = new JdbcDataProviderOperation(dbElement,
+				rCtx);
+		DbElementTrigger trigger = dbElement.getTrigger();
+		if (trigger != null) {
+			trigger.doQuery(operation);
+		} else {
+			operation.execute();
 		}
 	}
 

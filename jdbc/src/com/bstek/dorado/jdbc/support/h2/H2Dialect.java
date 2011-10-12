@@ -8,8 +8,9 @@ import com.bstek.dorado.jdbc.model.autotable.FromTable;
 import com.bstek.dorado.jdbc.model.autotable.Order;
 import com.bstek.dorado.jdbc.model.table.Table;
 import com.bstek.dorado.jdbc.sql.SelectSql;
-import com.bstek.dorado.jdbc.sql.SqlConstants.BothSpace;
+import com.bstek.dorado.jdbc.sql.SqlBuilder;
 import com.bstek.dorado.jdbc.sql.SqlConstants.JoinModel;
+import com.bstek.dorado.jdbc.sql.SqlConstants.KeyWord;
 import com.bstek.dorado.jdbc.sql.SqlConstants.NullsModel;
 import com.bstek.dorado.jdbc.sql.SqlConstants.OrderModel;
 import com.bstek.dorado.jdbc.sql.SqlUtils;
@@ -45,7 +46,7 @@ public class H2Dialect extends AbstractDialect {
 			String[] leftColumnNames, FromTable rightFromTable,
 			String[] rightColumnNames) {
 		int leng = leftColumnNames.length;
-		StringBuilder token = new StringBuilder();
+		SqlBuilder token = new SqlBuilder();
 		String leftTableAlias = leftFromTable.getTableAlias();
 		String rightTableAlias = rightFromTable.getTableAlias();
 		
@@ -56,11 +57,11 @@ public class H2Dialect extends AbstractDialect {
 		String tr = SqlUtils.token(rightFromTable);
 		String jm = token(joinModel);
 		
-		token.append(tl).append(" ").append(jm).append(" ").append(tr);
-		token.append(BothSpace.ON);
+		token.append(tl).bothSpace(jm).append(tr);
+		token.bothSpace(KeyWord.ON);
 		for (int i=0; i<leng; i++) {
 			if (i>0) {
-				token.append(BothSpace.AND);
+				token.bothSpace(KeyWord.AND);
 			}
 			
 			String leftColumnName = leftColumnNames[i];
@@ -68,12 +69,12 @@ public class H2Dialect extends AbstractDialect {
 			Column leftColumn = leftTable.getColumn(leftColumnName);
 			Column rightColumn = rightTable.getColumn(rightColumnName);
 			
-			token.append(leftTableAlias + "." + leftColumn.getColumnName());
-			token.append(" = ");
-			token.append(rightTableAlias + "." + rightColumn.getColumnName());
+			token.append(leftTableAlias, ".", leftColumn.getColumnName());
+			token.bothSpace("=");
+			token.append(rightTableAlias, ".", rightColumn.getColumnName());
 		}
 		
-		return token.toString();
+		return token.build();
 	}
 
 	protected String token(JoinModel joinModel) {

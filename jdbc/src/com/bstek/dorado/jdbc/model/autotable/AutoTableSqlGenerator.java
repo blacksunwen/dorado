@@ -5,19 +5,23 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.Dialect;
-import com.bstek.dorado.jdbc.JdbcQueryContext;
 import com.bstek.dorado.jdbc.JdbcParameterSource;
+import com.bstek.dorado.jdbc.JdbcDataProviderContext;
+import com.bstek.dorado.jdbc.JdbcDataResolverContext;
 import com.bstek.dorado.jdbc.model.Column;
 import com.bstek.dorado.jdbc.model.DbElement.Type;
+import com.bstek.dorado.jdbc.sql.DeleteSql;
+import com.bstek.dorado.jdbc.sql.InsertSql;
 import com.bstek.dorado.jdbc.sql.SelectSql;
 import com.bstek.dorado.jdbc.sql.SqlConstants;
+import com.bstek.dorado.jdbc.sql.SqlConstants.JoinModel;
+import com.bstek.dorado.jdbc.sql.SqlConstants.JunctionModel;
+import com.bstek.dorado.jdbc.sql.SqlConstants.KeyWord;
 import com.bstek.dorado.jdbc.sql.SqlGenerator;
 import com.bstek.dorado.jdbc.sql.SqlUtils;
-import com.bstek.dorado.jdbc.sql.SqlConstants.JunctionModel;
-import com.bstek.dorado.jdbc.sql.SqlConstants.BothSpace;
-import com.bstek.dorado.jdbc.sql.SqlConstants.JoinModel;
-import com.bstek.dorado.jdbc.sql.SqlConstants.RightSpace;
+import com.bstek.dorado.jdbc.sql.UpdateSql;
 import com.bstek.dorado.util.Assert;
 
 public class AutoTableSqlGenerator implements SqlGenerator<AutoTable> {
@@ -28,7 +32,7 @@ public class AutoTableSqlGenerator implements SqlGenerator<AutoTable> {
 	}
 	
 	@Override
-	public SelectSql selectSql(AutoTable t, Object parameter) {
+	public SelectSql selectSql(AutoTable t, Object parameter, JdbcDataProviderContext jdbcContext) {
 		//columnsToken
 		StringBuilder columnsToken = new StringBuilder();
 		List<Column> columns = t.getAllColumns();
@@ -47,18 +51,18 @@ public class AutoTableSqlGenerator implements SqlGenerator<AutoTable> {
 				if (StringUtils.isEmpty(columnAlias)) {
 					columnAlias = columnName;
 				}
-				String token = tableAlias + "." + columnName + BothSpace.AS + columnAlias;
+				String token = tableAlias + "." + columnName + " " + KeyWord.AS + " " + columnAlias;
 				columnsToken.append(token);
 			}
 		}
 		
 		//fromToken
-		StringBuilder fromToken = fromToken(t);
+		StringBuilder fromToken = fromToken(t,jdbcContext);
 		//where
 		JdbcParameterSource p = SqlUtils.createJdbcParameter(parameter);
 		StringBuilder whereToken = whereToken(t, p);
 		//order
-		StringBuilder orderbyToken = orderByToken(t, p);
+		StringBuilder orderbyToken = orderByToken(t, p, jdbcContext);
 		
 		//--
 		AutoTableSelectSql selectSql = new AutoTableSelectSql();
@@ -71,7 +75,7 @@ public class AutoTableSqlGenerator implements SqlGenerator<AutoTable> {
 		return selectSql;
 	}
 
-	protected StringBuilder fromToken(AutoTable t) {
+	protected StringBuilder fromToken(AutoTable t, JdbcDataProviderContext jdbcContext) {
 		StringBuilder fromToken = new StringBuilder();
 		List<JoinTable> joinTables = t.getJoinTables();
 		if (joinTables.size() == 0) {
@@ -104,7 +108,7 @@ public class AutoTableSqlGenerator implements SqlGenerator<AutoTable> {
 				Assert.isTrue(leftColumnNames.length == rightColumnNames.length, 
 						"length of LeftColumnNames and length of RightColumnNames not equals.");
 				
-				Dialect dialect = JdbcQueryContext.getInstance().getJdbcEnviroment().getDialect();
+				Dialect dialect = jdbcContext.getJdbcEnviroment().getDialect();
 				FromTable leftFromTable = t.getFromTable(joinTable.getLeftFromTableAlias());
 				FromTable rightFromTable = t.getFromTable(joinTable.getRightFromTableAlias());
 				String token = dialect.joinToken(joinModel, leftFromTable, leftColumnNames, rightFromTable, rightColumnNames);
@@ -166,7 +170,7 @@ public class AutoTableSqlGenerator implements SqlGenerator<AutoTable> {
 			
 			if (value != null) {
 				if (parameterName == null) {
-					parameterName = p.newValue(value);
+					parameterName = p.addValue(value);
 				}
 				
 				SqlConstants.Operator sqlOperator = SqlConstants.Operator.value(operator.trim());
@@ -220,7 +224,7 @@ public class AutoTableSqlGenerator implements SqlGenerator<AutoTable> {
 						token = StringUtils.join(tokens, m);
 					}
 					if (amr.isNot()) {
-						return RightSpace.NOT + "(" + token + ")";
+						return KeyWord.NOT + "(" + token + ")";
 					} else {
 						return token;
 					}
@@ -231,18 +235,20 @@ public class AutoTableSqlGenerator implements SqlGenerator<AutoTable> {
 		}
 	}
 	
-	protected StringBuilder orderByToken(AutoTable t, JdbcParameterSource p) {
+	protected StringBuilder orderByToken(AutoTable t, JdbcParameterSource p, JdbcDataProviderContext jdbcContext) {
 		StringBuilder r = new StringBuilder();
 		
 		List<Order> orders = t.getOrders();
 		if (orders != null && !orders.isEmpty()) {
-			Dialect dialect = JdbcQueryContext.getInstance().getJdbcEnviroment().getDialect();
+			Dialect dialect = jdbcContext.getJdbcEnviroment().getDialect();
 			List<String> tokens = new ArrayList<String>(orders.size());
 			for (int i=0; i<orders.size(); i++) {
 				Order order = orders.get(i);
-				String token = dialect.orderToken(order);
-				if (StringUtils.isNotEmpty(token)) {
-					tokens.add(token);
+				if (order.isAvailable()) {
+					String token = dialect.orderToken(order);
+					if (StringUtils.isNotEmpty(token)) {
+						tokens.add(token);
+					}
 				}
 			}
 			
@@ -259,5 +265,24 @@ public class AutoTableSqlGenerator implements SqlGenerator<AutoTable> {
 		
 		return r;
 	}
+
+	@Override
+	public InsertSql insertSql(AutoTable t, Record record,
+			JdbcDataResolverContext jdbcContext) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public UpdateSql updateSql(AutoTable t, Record record,
+			JdbcDataResolverContext jdbcContext) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public DeleteSql deleteSql(AutoTable t, Record record,
+			JdbcDataResolverContext jdbcContext) {
+		throw new UnsupportedOperationException();
+	}
+
 
 }

@@ -1,20 +1,12 @@
 package com.bstek.dorado.jdbc.sql;
 
 import com.bstek.dorado.jdbc.Dialect;
-import com.bstek.dorado.jdbc.JdbcParameterSource;
 
-public abstract class  SelectSql {
+public abstract class SelectSql extends AbstractSql {
 	
-	private JdbcParameterSource parameterSource;
-	
-	public JdbcParameterSource getParameterSource() {
-		return parameterSource;
+	public String toCountSQL(Dialect dialect) {
+		String sql = this.toSQL(dialect);
+		String countSql = dialect.toCountSQL(sql);
+		return countSql;
 	}
-	public void setParameterSource(JdbcParameterSource parameterSource) {
-		this.parameterSource = parameterSource;
-	}
-	
-	public abstract String toSQL(Dialect dialect);
-	
-	public abstract String toCountSQL(Dialect dialect);
 }

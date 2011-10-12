@@ -1,4 +1,4 @@
-package com.bstek.dorado.jdbc.manager;
+package com.bstek.dorado.jdbc.config;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -16,15 +16,7 @@ public class SqlSelectSql  extends SelectSql {
 	}
 	
 	public String toSQL(Dialect dialect) {
+		Assert.notEmpty(dynamicToken, "DynamicToken must not be empty.");
 		return this.getDynamicToken();
-	}
-	
-	@Override
-	public String toCountSQL(Dialect dialect) {
-		String dynamicToken = this.getDynamicToken();
-		Assert.notEmpty(dynamicToken);
-		
-		String countSql = dialect.toCountSQL(dynamicToken);
-		return countSql;
 	}
 }
