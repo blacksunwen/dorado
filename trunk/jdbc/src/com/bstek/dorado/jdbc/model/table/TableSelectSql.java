@@ -4,8 +4,8 @@ import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.jdbc.Dialect;
 import com.bstek.dorado.jdbc.sql.SelectSql;
-import com.bstek.dorado.jdbc.sql.SqlConstants.BothSpace;
-import com.bstek.dorado.jdbc.sql.SqlConstants.RightSpace;
+import com.bstek.dorado.jdbc.sql.SqlBuilder;
+import com.bstek.dorado.jdbc.sql.SqlConstants.KeyWord;
 import com.bstek.dorado.util.Assert;
 
 public class TableSelectSql extends SelectSql {
@@ -38,35 +38,15 @@ public class TableSelectSql extends SelectSql {
 	}
 	
 	public String toSQL(Dialect dialect) {
-		StringBuilder sql = new StringBuilder();
-		sql.append(RightSpace.SELECT + columnsToken);
+		Assert.notEmpty(fromToken, "FromToken must not be empty.");
+		SqlBuilder sql = new SqlBuilder();
+		sql.rightSpace(KeyWord.SELECT, columnsToken, KeyWord.FROM).append(fromToken);
 		
-		String fromToken = this.getFromToken();
-		Assert.notEmpty(fromToken);
-		sql.append(BothSpace.FROM + fromToken);
-		
-		String dynamicToken = this.getDynamicToken();
 		if (StringUtils.isNotEmpty(dynamicToken)) {
-			sql.append(' ').append(dynamicToken);
+			sql.leftSpace(dynamicToken);
 		}
 		
-		return sql.toString();
+		return sql.build();
 	}
 
-	@Override
-	public String toCountSQL(Dialect dialect) {
-		StringBuilder sql = new StringBuilder();
-		sql.append(RightSpace.SELECT + "COUNT(*)");
-		
-		String fromToken = this.getFromToken();
-		Assert.notEmpty(fromToken);
-		sql.append(BothSpace.FROM + fromToken);
-		
-		String dynamicToken = this.getDynamicToken();
-		if (StringUtils.isNotEmpty(dynamicToken)) {
-			sql.append(' ').append(dynamicToken);
-		}
-		
-		return sql.toString();
-	}
 }

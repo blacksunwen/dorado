@@ -13,7 +13,7 @@ import org.apache.velocity.app.Velocity;
 import com.bstek.dorado.jdbc.JdbcParameterSource;
 import com.bstek.dorado.jdbc.model.autotable.FromTable;
 import com.bstek.dorado.jdbc.model.table.Table;
-import com.bstek.dorado.jdbc.sql.SqlConstants.BothSpace;
+import com.bstek.dorado.jdbc.sql.SqlConstants.KeyWord;
 import com.bstek.dorado.util.Assert;
 import com.bstek.dorado.util.proxy.UnmutableMap;
 
@@ -39,9 +39,12 @@ public abstract class SqlUtils {
 	public static String bothSpace(String token) {
 		return " " + token + " ";
 	}
+	public static String brackets(String token) {
+		return '(' + token + ')';
+	}
 	
 	public static String token(Table table) {
-		Assert.notNull(table, "DbElement must not be null.");
+		Assert.notNull(table, "Table must not be null.");
 		
 		String name = table.getTableName();
 		String spaceName = table.getSpaceName();
@@ -54,7 +57,7 @@ public abstract class SqlUtils {
 	
 	public static String token(Table table, String alias) {
 		String token = token(table);
-		return token + BothSpace.AS + alias;
+		return token + " " + KeyWord.AS + " " + alias;
 	}
 	
 	public static String token(FromTable fromTable) {

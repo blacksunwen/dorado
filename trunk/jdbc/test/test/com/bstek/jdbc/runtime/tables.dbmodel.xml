@@ -1,5 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Model name="m1">
+	<Table name="EMP" tableName="EMPLOYEES" trigger="test.com.bstek.jdbc.runtime.TableTriggerLogger">
+		<Columns>
+			<KeyColumn columnName="ID"        propertyName="ID"             jdbcType="INTEGER-Integer"/>
+			<Column columnName="LAST_NAME"    propertyName="LAST_NAME"      jdbcType="VARCHAR-String"/>
+			<Column columnName="FIRST_NAME"   propertyName="FIRST_NAME"     jdbcType="VARCHAR-String"/>
+			<Column columnName="TITLE"        propertyName="TITLE"          jdbcType="VARCHAR-String"/>
+			<Column columnName="SEX"          propertyName="SEX"            jdbcType="SMALLINT-Short"/>
+			<Column columnName="BIRTH_DATE"   propertyName="BIRTH_DATE"     jdbcType="DATE-Date"/>
+			<Column columnName="HIRE_DATE"    propertyName="HIRE_DATE"      jdbcType="DATE-Date"/>         
+			<Column columnName="ADDRESS"      propertyName="ADDRESS"        jdbcType="VARCHAR-String"/>
+			<Column columnName="CITY"         propertyName="CITY"           jdbcType="VARCHAR-String"/>
+			<Column columnName="REGION"       propertyName="REGION"         jdbcType="VARCHAR-String"/>
+			<Column columnName="POSTAL_CODE"  propertyName="POSTAL_CODE"    jdbcType="VARCHAR-String"/>
+			<Column columnName="COUNTRY"      propertyName="COUNTRY"        jdbcType="VARCHAR-String"/>
+			<Column columnName="PHONE"        propertyName="PHONE"          jdbcType="VARCHAR-String"/>
+			<Column columnName="EXTENSION"    propertyName="EXTENSION"      jdbcType="VARCHAR-String"/>
+			<Column columnName="REPORTS_TO"   propertyName="REPORTS_TO"     jdbcType="INTEGER-Integer"/>
+			<Column columnName="NOTES"        propertyName="NOTES"          jdbcType="VARCHAR-String"/>
+			<Column columnName="PHOTO_PATH"   propertyName="PHOTO_PATH"     jdbcType="VARCHAR-String"/>
+			<Column columnName="TITLE_OF_COURTESY" propertyName="TITLE_OF_COURTESY" jdbcType="VARCHAR-String"/>
+		</Columns>
+	</Table>
 	<Table name="EMP_0" tableName="EMPLOYEES" trigger="test.com.bstek.jdbc.runtime.TableTriggerLogger">
 		<Columns>
 			<KeyColumn columnName="ID"        propertyName="p_id"             jdbcType="INTEGER-Integer"/>

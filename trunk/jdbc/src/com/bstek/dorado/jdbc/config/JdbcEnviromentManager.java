@@ -1,4 +1,4 @@
-package com.bstek.dorado.jdbc.manager;
+package com.bstek.dorado.jdbc.config;
 
 import com.bstek.dorado.jdbc.model.JdbcEnviroment;
 

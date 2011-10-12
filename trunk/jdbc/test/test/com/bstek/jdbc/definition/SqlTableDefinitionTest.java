@@ -62,7 +62,7 @@ public class SqlTableDefinitionTest extends ConfigManagerTestSupport {
 		//-
 		ObjectParser parser = JdbcTestUtils.sqlTableParser();
 		
-		JdbcParseContext parseContext = new JdbcParseContext();
+		JdbcParseContext parseContext = new JdbcParseContext(null);
 		ObjectDefinition def = (ObjectDefinition)parser.parse(table, parseContext);
 		System.out.println(def);
 		

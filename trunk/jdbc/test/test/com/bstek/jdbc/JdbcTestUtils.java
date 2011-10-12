@@ -11,7 +11,6 @@ import com.bstek.dorado.data.provider.manager.DataProviderManager;
 import com.bstek.dorado.jdbc.JdbcDataProvider;
 import com.bstek.dorado.jdbc.config.JdbcConfigManager;
 import com.bstek.dorado.jdbc.config.xml.ColumnParser;
-import com.bstek.dorado.jdbc.manager.JdbcModelManager;
 import com.bstek.dorado.jdbc.model.DbElement;
 import com.bstek.dorado.jdbc.model.autotable.AutoTable;
 import com.bstek.dorado.jdbc.model.table.Table;
@@ -31,25 +30,26 @@ public class JdbcTestUtils {
 		return document;
 	}
 
-	public static JdbcModelManager jdbcModelManager() throws Exception {
+	public static JdbcConfigManager getJdbcConfigManager() {
 		Context context = Context.getCurrent();
-		JdbcModelManager parser = (JdbcModelManager)context.getServiceBean("jdbc.jdbcModelManager");
-		return parser;
+		try {
+			JdbcConfigManager parser = (JdbcConfigManager)context.getServiceBean("jdbc.jdbcConfigManager");
+			return parser;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	public static ObjectParser tableParser() throws Exception {
-		JdbcModelManager modelManager = jdbcModelManager();
-		return modelManager.getParser(DbElement.Type.Table);
+		return getJdbcConfigManager().getParser(DbElement.Type.Table);
 	}
 	
 	public static ObjectParser sqlTableParser() throws Exception {
-		JdbcModelManager modelManager = jdbcModelManager();
-		return modelManager.getParser(DbElement.Type.SqlTable);
+		return getJdbcConfigManager().getParser(DbElement.Type.SqlTable);
 	}
 	
 	public static ObjectParser autoTableParser() throws Exception {
-		JdbcModelManager modelManager = jdbcModelManager();
-		return modelManager.getParser(DbElement.Type.AutoTable);
+		return getJdbcConfigManager().getParser(DbElement.Type.AutoTable);
 	}
 	
 	public static JdbcConfigManager configManager() throws Exception {
@@ -59,13 +59,11 @@ public class JdbcTestUtils {
 	}
 	
 	public static Table table(String name) throws Exception {
-		JdbcModelManager modelMananger = jdbcModelManager();
-		return (Table)modelMananger.getDbElement(name);
+		return (Table)getJdbcConfigManager().getDbElement(name);
 	}
 	
 	public static AutoTable autoTable(String name) throws Exception {
-		JdbcModelManager modelMananger = jdbcModelManager();
-		return (AutoTable)modelMananger.getDbElement(name);
+		return (AutoTable)getJdbcConfigManager().getDbElement(name);
 	}
 	
 	public static JdbcDataProvider getDataProvider(String id) throws Exception {

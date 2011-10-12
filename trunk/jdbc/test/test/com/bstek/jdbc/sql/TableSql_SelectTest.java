@@ -17,7 +17,7 @@ import com.bstek.dorado.jdbc.support.h2.H2Dialect;
 public class TableSql_SelectTest {
 
 	@Test
-	public void test0() {
+	public void test_select_0() {
 		TableSqlGenerator generator = new TableSqlGenerator();
 		
 		Table table = new Table();
@@ -28,7 +28,7 @@ public class TableSql_SelectTest {
 		id.setColumnName("ID");
 		table.addColumn(id);
 		
-		SelectSql selectSql = generator.selectSql(table, null);
+		SelectSql selectSql = generator.selectSql(table, null, null);
 		
 		H2Dialect dialect = new H2Dialect();
 		String sql = dialect.toSQL(selectSql);
@@ -38,7 +38,7 @@ public class TableSql_SelectTest {
 	}
 	
 	@Test
-	public void test1() {
+	public void test_select_1() {
 		TableSqlGenerator generator = new TableSqlGenerator();
 		
 		Table table = new Table();
@@ -53,7 +53,7 @@ public class TableSql_SelectTest {
 		name.setColumnName("NAME");
 		table.addColumn(name);
 		
-		SelectSql selectSql = generator.selectSql(table, null);
+		SelectSql selectSql = generator.selectSql(table, null, null);
 		H2Dialect dialect = new H2Dialect();
 		String sql = dialect.toSQL(selectSql);
 		
@@ -62,7 +62,7 @@ public class TableSql_SelectTest {
 	}
 	
 	@Test
-	public void test2() {
+	public void test_select_2() {
 		TableSqlGenerator generator = new TableSqlGenerator();
 		
 		Table table = new Table();
@@ -78,7 +78,7 @@ public class TableSql_SelectTest {
 		name.setColumnName("NAME");
 		table.addColumn(name);
 		
-		SelectSql selectSql = generator.selectSql(table, null);
+		SelectSql selectSql = generator.selectSql(table, null, null);
 		H2Dialect dialect = new H2Dialect();
 		String sql = dialect.toSQL(selectSql);
 		
@@ -87,7 +87,7 @@ public class TableSql_SelectTest {
 	}
 	
 	@Test
-	public void test3() {
+	public void test_select_3() {
 		TableSqlGenerator generator = new TableSqlGenerator();
 		
 		Table table = new Table();
@@ -104,7 +104,7 @@ public class TableSql_SelectTest {
 		name.setColumnName("NAME");
 		table.addColumn(name);
 		
-		SelectSql selectSql = generator.selectSql(table, null);
+		SelectSql selectSql = generator.selectSql(table, null, null);
 		H2Dialect dialect = new H2Dialect();
 		String sql = dialect.toSQL(selectSql);
 		
@@ -113,7 +113,7 @@ public class TableSql_SelectTest {
 	}
 	
 	@Test
-	public void test4() {
+	public void test_select_4() {
 		TableSqlGenerator generator = new TableSqlGenerator();
 		
 		Table table = new Table();
@@ -130,7 +130,7 @@ public class TableSql_SelectTest {
 		name.setColumnName("NAME");
 		table.addColumn(name);
 		
-		SelectSql selectSql = generator.selectSql(table, null);
+		SelectSql selectSql = generator.selectSql(table, null, null);
 		H2Dialect dialect = new H2Dialect();
 		String sql = dialect.toSQL(selectSql);
 		
@@ -138,7 +138,7 @@ public class TableSql_SelectTest {
 		Assert.assertEquals("SELECT ID,NAME FROM D.t1", sql);
 	}
 	@Test
-	public void test4_1() {
+	public void test_select_4_1() {
 		TableSqlGenerator generator = new TableSqlGenerator();
 		
 		Table table = new Table();
@@ -162,7 +162,7 @@ public class TableSql_SelectTest {
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("ID", 5);
 		
-		SelectSql selectSql = generator.selectSql(table, param);
+		SelectSql selectSql = generator.selectSql(table, param, null);
 		H2Dialect dialect = new H2Dialect();
 		String sql = dialect.toSQL(selectSql);
 		
@@ -170,7 +170,7 @@ public class TableSql_SelectTest {
 		Assert.assertEquals("SELECT ID,NAME,SEX FROM D.t1 WHERE ID=:ID", sql);
 	}
 	@Test
-	public void test5() {
+	public void test_select_5() {
 		TableSqlGenerator generator = new TableSqlGenerator();
 		
 		Table table = new Table();
@@ -199,13 +199,12 @@ public class TableSql_SelectTest {
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("ID", 5);
 		
-		SelectSql selectSql = generator.selectSql(table, param);
+		SelectSql selectSql = generator.selectSql(table, param, null);
 		H2Dialect dialect = new H2Dialect();
 		String sql = dialect.toSQL(selectSql);
 		
 		System.out.println(sql);
 		Assert.assertEquals("SELECT ID,NAME,SEX FROM D.t1 WHERE ID=:ID", sql);
 	}
-	
 	
 }

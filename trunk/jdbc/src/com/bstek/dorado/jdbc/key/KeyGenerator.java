@@ -1,11 +1,40 @@
 package com.bstek.dorado.jdbc.key;
 
-import com.bstek.dorado.jdbc.JdbcQueryContext;
+import com.bstek.dorado.data.variant.Record;
+import com.bstek.dorado.jdbc.JdbcDataResolverContext;
 import com.bstek.dorado.jdbc.model.table.TableKeyColumn;
 
+/**
+ * 主键生成器
+ * 
+ * @author mark
+ * 
+ * @param <T>
+ */
 public interface KeyGenerator<T> {
-	
+
+	/**
+	 * 获取名称
+	 * 
+	 * @return
+	 */
 	String getName();
 
-	T newKey(JdbcQueryContext context, TableKeyColumn keyColumn);
+	/**
+	 * 是否是数据库自增主键
+	 * 
+	 * @return
+	 */
+	boolean isIdentity();
+
+	/**
+	 * 产生一个新的主键值
+	 * 
+	 * @param context
+	 * @param keyColumn
+	 * @param record
+	 * @return
+	 */
+	T newKey(JdbcDataResolverContext context, TableKeyColumn keyColumn,
+			Record record);
 }

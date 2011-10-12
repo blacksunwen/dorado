@@ -8,8 +8,8 @@ import java.util.Map;
 import com.bstek.dorado.jdbc.Dialect;
 import com.bstek.dorado.jdbc.key.KeyGenerator;
 import com.bstek.dorado.jdbc.sql.SelectSql;
-import com.bstek.dorado.jdbc.sql.SqlConstants.BothSpace;
-import com.bstek.dorado.jdbc.sql.SqlConstants.RightSpace;
+import com.bstek.dorado.jdbc.sql.SqlBuilder;
+import com.bstek.dorado.jdbc.sql.SqlConstants.KeyWord;
 import com.bstek.dorado.jdbc.type.JdbcType;
 import com.bstek.dorado.util.Assert;
 
@@ -54,7 +54,10 @@ public abstract class AbstractDialect implements Dialect {
 	}
 	
 	public String toCountSQL(String sql) {
-		return RightSpace.SELECT + "COUNT(*)" + BothSpace.FROM + "("+sql+")";
+		SqlBuilder sqlBuilder = new SqlBuilder();
+		sqlBuilder.rightSpace(KeyWord.SELECT, "COUNT(*)", KeyWord.FROM).brackets(sql);
+		
+		return sqlBuilder.build();
 	}
 	
 	public String toSQL(SelectSql selectSql) {

@@ -2,9 +2,9 @@ package com.bstek.dorado.jdbc.model.autotable;
 
 import com.bstek.dorado.config.definition.CreationContext;
 import com.bstek.dorado.jdbc.model.DbElementCreationContext;
-import com.bstek.dorado.jdbc.model.NamedObjectDefinition;
+import com.bstek.dorado.jdbc.model.DbElementDefinition;
 
-public class AutoTableDefinition extends NamedObjectDefinition {
+public class AutoTableDefinition extends DbElementDefinition {
 
 	@Override
 	protected void initObject(Object object, CreationInfo creationInfo,
@@ -16,5 +16,4 @@ public class AutoTableDefinition extends NamedObjectDefinition {
 		super.initObject(object, creationInfo, context);
 	}
 
-	
 }

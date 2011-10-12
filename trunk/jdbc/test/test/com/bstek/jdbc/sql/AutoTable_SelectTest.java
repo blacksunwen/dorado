@@ -8,7 +8,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 
 import com.bstek.dorado.jdbc.Dialect;
-import com.bstek.dorado.jdbc.JdbcQueryContext;
+import com.bstek.dorado.jdbc.JdbcDataProviderContext;
 import com.bstek.dorado.jdbc.model.JdbcEnviroment;
 import com.bstek.dorado.jdbc.model.autotable.JunctionMatchRule;
 import com.bstek.dorado.jdbc.model.autotable.AutoTable;
@@ -66,22 +66,16 @@ public class AutoTable_SelectTest {
 		}
 		
 		//-
-		JdbcQueryContext.newInstance(null);
-		try {
-			JdbcQueryContext ctx = JdbcQueryContext.getInstance();
-			ctx.setJdbcEnviroment(new JdbcEnviroment());
-			ctx.getJdbcEnviroment().setDialect(new H2Dialect());
-			
-			SelectSql selectSql = generator.selectSql(t, null);
-			Dialect dialect = ctx.getJdbcEnviroment().getDialect();
-			String sql = dialect.toSQL(selectSql);
-			
-			System.out.println(sql);
-			
-			Assert.assertEquals("SELECT emp.EMP_ID AS c1,emp.EMP_NAME AS c2 FROM EMPLOYEE AS emp", sql);
-		} finally {
-			JdbcQueryContext.clear();
-		}
+		JdbcDataProviderContext ctx = new JdbcDataProviderContext(new JdbcEnviroment(),null, null);
+		ctx.getJdbcEnviroment().setDialect(new H2Dialect());
+		
+		SelectSql selectSql = generator.selectSql(t, null, ctx);
+		Dialect dialect = ctx.getJdbcEnviroment().getDialect();
+		String sql = dialect.toSQL(selectSql);
+		
+		System.out.println(sql);
+		
+		Assert.assertEquals("SELECT emp.EMP_ID AS c1,emp.EMP_NAME AS c2 FROM EMPLOYEE AS emp", sql);
 		
 	}
 	
@@ -149,21 +143,15 @@ public class AutoTable_SelectTest {
 		}
 		
 		//-
-		JdbcQueryContext.newInstance(null);
-		try {
-			JdbcQueryContext ctx = JdbcQueryContext.getInstance();
-			ctx.setJdbcEnviroment(new JdbcEnviroment());
-			ctx.getJdbcEnviroment().setDialect(new H2Dialect());
-			
-			SelectSql selectSql = generator.selectSql(t, null);
-			Dialect dialect = ctx.getJdbcEnviroment().getDialect();
-			String sql = dialect.toSQL(selectSql);
-			
-			System.out.println(sql);
-			Assert.assertEquals("SELECT emp.EMP_ID AS c1,emp.EMP_NAME AS c2,dept.DEPT_ID AS c3,dept.DEPT_NAME AS c4 FROM EMPLOYEE AS emp LEFT JOIN DEPT AS dept ON emp.DEPT_ID = dept.DEPT_ID", sql);
-		} finally {
-			JdbcQueryContext.clear();
-		}
+		JdbcDataProviderContext ctx = new JdbcDataProviderContext(new JdbcEnviroment(),null, null);
+		ctx.getJdbcEnviroment().setDialect(new H2Dialect());
+		
+		SelectSql selectSql = generator.selectSql(t, null, ctx);
+		Dialect dialect = ctx.getJdbcEnviroment().getDialect();
+		String sql = dialect.toSQL(selectSql);
+		
+		System.out.println(sql);
+		Assert.assertEquals("SELECT emp.EMP_ID AS c1,emp.EMP_NAME AS c2,dept.DEPT_ID AS c3,dept.DEPT_NAME AS c4 FROM EMPLOYEE AS emp LEFT JOIN DEPT AS dept ON emp.DEPT_ID = dept.DEPT_ID", sql);
 		
 	}
 	
@@ -207,27 +195,21 @@ public class AutoTable_SelectTest {
 			mr1.setTableAlias("emp");
 			mr1.setColumnName("EMP_NAME");
 			mr1.setOperator("=");
-			mr1.setValue("ename");
+			mr1.setValue(":ename");
 			where.addMatchRule(mr1);
 			t.setWhere(where);
 		}
 		//-
-		JdbcQueryContext.newInstance(null);
-		try {
-			JdbcQueryContext ctx = JdbcQueryContext.getInstance();
-			ctx.setJdbcEnviroment(new JdbcEnviroment());
-			ctx.getJdbcEnviroment().setDialect(new H2Dialect());
-			
-			SelectSql selectSql = generator.selectSql(t, ctx.getParameter());
-			Dialect dialect = ctx.getJdbcEnviroment().getDialect();
-			String sql = dialect.toSQL(selectSql);
-			
-			System.out.println(sql);
-			
-			Assert.assertEquals("SELECT emp.EMP_ID AS c1,emp.EMP_NAME AS c2 FROM EMPLOYEE AS emp", sql);
-		} finally {
-			JdbcQueryContext.clear();
-		}
+		JdbcDataProviderContext ctx = new JdbcDataProviderContext(new JdbcEnviroment(),null, null);
+		ctx.getJdbcEnviroment().setDialect(new H2Dialect());
+		
+		SelectSql selectSql = generator.selectSql(t, ctx.getParameter(), ctx);
+		Dialect dialect = ctx.getJdbcEnviroment().getDialect();
+		String sql = dialect.toSQL(selectSql);
+		
+		System.out.println(sql);
+		
+		Assert.assertEquals("SELECT emp.EMP_ID AS c1,emp.EMP_NAME AS c2 FROM EMPLOYEE AS emp", sql);
 	}
 	
 	@Test
@@ -270,7 +252,7 @@ public class AutoTable_SelectTest {
 			mr1.setTableAlias("emp");
 			mr1.setColumnName("EMP_NAME");
 			mr1.setOperator("=");
-			mr1.setValue("ename");
+			mr1.setValue(":ename");
 			where.addMatchRule(mr1);
 			t.setWhere(where);
 		}
@@ -278,22 +260,17 @@ public class AutoTable_SelectTest {
 		//-
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("ename", "LIWI");
-		JdbcQueryContext.newInstance(param);
-		try {
-			JdbcQueryContext ctx = JdbcQueryContext.getInstance();
-			ctx.setJdbcEnviroment(new JdbcEnviroment());
-			ctx.getJdbcEnviroment().setDialect(new H2Dialect());
-			
-			SelectSql selectSql = generator.selectSql(t, ctx.getParameter());
-			Dialect dialect = ctx.getJdbcEnviroment().getDialect();
-			String sql = dialect.toSQL(selectSql);
-			
-			System.out.println(sql);
-			
-			Assert.assertEquals("SELECT emp.EMP_ID AS c1,emp.EMP_NAME AS c2 FROM EMPLOYEE AS emp WHERE emp.EMP_NAME = :ename", sql);
-		} finally {
-			JdbcQueryContext.clear();
-		}
+		
+		JdbcDataProviderContext ctx = new  JdbcDataProviderContext(new JdbcEnviroment(),param, null);
+		ctx.getJdbcEnviroment().setDialect(new H2Dialect());
+		
+		SelectSql selectSql = generator.selectSql(t, ctx.getParameter(), ctx);
+		Dialect dialect = ctx.getJdbcEnviroment().getDialect();
+		String sql = dialect.toSQL(selectSql);
+		
+		System.out.println(sql);
+		
+		Assert.assertEquals("SELECT emp.EMP_ID AS c1,emp.EMP_NAME AS c2 FROM EMPLOYEE AS emp WHERE emp.EMP_NAME = :ename", sql);
 	}
 	
 	@Test
@@ -338,7 +315,7 @@ public class AutoTable_SelectTest {
 			mr1.setTableAlias("emp");
 			mr1.setColumnName("EMP_NAME");
 			mr1.setOperator("=");
-			mr1.setValue("ename");
+			mr1.setValue(":ename");
 			where.addMatchRule(mr1);
 		}
 		{
@@ -347,7 +324,7 @@ public class AutoTable_SelectTest {
 			mr2.setTableAlias("emp");
 			mr2.setColumnName("DEPT_ID");
 			mr2.setOperator("like");
-			mr2.setValue("edept");
+			mr2.setValue(":edept");
 			where.addMatchRule(mr2);
 			t.setWhere(where);
 		}
@@ -359,7 +336,7 @@ public class AutoTable_SelectTest {
 			mr11.setTableAlias("emp");
 			mr11.setColumnName("EMP_ID");
 			mr11.setOperator(">=");
-			mr11.setValue("eid1");
+			mr11.setValue(":eid1");
 			amr.addMatchRule(mr11);
 		}
 		{
@@ -368,7 +345,7 @@ public class AutoTable_SelectTest {
 			mr12.setTableAlias("emp");
 			mr12.setColumnName("EMP_ID");
 			mr12.setOperator("<=");
-			mr12.setValue("eid2");
+			mr12.setValue(":eid2");
 			amr.addMatchRule(mr12);
 			where.addMatchRule(amr);
 			where.setModel(JunctionModel.OR);
@@ -380,21 +357,16 @@ public class AutoTable_SelectTest {
 		param.put("edept", "DEPT001");
 		param.put("eid1", "10");
 		param.put("eid2", "20");
-		JdbcQueryContext.newInstance(param);
-		try {
-			JdbcQueryContext ctx = JdbcQueryContext.getInstance();
-			ctx.setJdbcEnviroment(new JdbcEnviroment());
-			ctx.getJdbcEnviroment().setDialect(new H2Dialect());
-			
-			SelectSql selectSql = generator.selectSql(t, ctx.getParameter());
-			Dialect dialect = ctx.getJdbcEnviroment().getDialect();
-			String sql = dialect.toSQL(selectSql);
-			
-			System.out.println(sql);
-			Assert.assertEquals("SELECT emp.EMP_ID AS c1,emp.EMP_NAME AS c2 FROM EMPLOYEE AS emp WHERE emp.EMP_NAME = :ename OR emp.DEPT_ID like :edept OR (emp.EMP_ID >= :eid1 AND emp.EMP_ID <= :eid2)", sql);
-		} finally {
-			JdbcQueryContext.clear();
-		}
+
+		JdbcDataProviderContext ctx = new JdbcDataProviderContext(new JdbcEnviroment(),param, null);
+		ctx.getJdbcEnviroment().setDialect(new H2Dialect());
+		
+		SelectSql selectSql = generator.selectSql(t, ctx.getParameter(), ctx);
+		Dialect dialect = ctx.getJdbcEnviroment().getDialect();
+		String sql = dialect.toSQL(selectSql);
+		
+		System.out.println(sql);
+		Assert.assertEquals("SELECT emp.EMP_ID AS c1,emp.EMP_NAME AS c2 FROM EMPLOYEE AS emp WHERE emp.EMP_NAME = :ename OR emp.DEPT_ID LIKE :edept OR (emp.EMP_ID >= :eid1 AND emp.EMP_ID <= :eid2)", sql);
 	}
 	
 	@Test
@@ -464,22 +436,16 @@ public class AutoTable_SelectTest {
 		}
 		
 		//-
-		JdbcQueryContext.newInstance(null);
-		try {
-			JdbcQueryContext ctx = JdbcQueryContext.getInstance();
-			ctx.setJdbcEnviroment(new JdbcEnviroment());
-			ctx.getJdbcEnviroment().setDialect(new H2Dialect());
-			
-			SelectSql selectSql = generator.selectSql(t, ctx.getParameter());
-			Dialect dialect = ctx.getJdbcEnviroment().getDialect();
-			String sql = dialect.toSQL(selectSql);
-			
-			System.out.println(sql);
-			
-			Assert.assertEquals("SELECT emp.EMP_ID AS c1,emp.EMP_NAME AS c2,emp.DEPT_ID AS c3 FROM EMPLOYEE AS emp ORDER BY c1,c2 DESC,c3 ASC NULLS FIRST", sql);
-		} finally {
-			JdbcQueryContext.clear();
-		}
+		JdbcDataProviderContext ctx = new JdbcDataProviderContext(new JdbcEnviroment(),null, null);
+		ctx.getJdbcEnviroment().setDialect(new H2Dialect());
+		
+		SelectSql selectSql = generator.selectSql(t, ctx.getParameter(), ctx);
+		Dialect dialect = ctx.getJdbcEnviroment().getDialect();
+		String sql = dialect.toSQL(selectSql);
+		
+		System.out.println(sql);
+		
+		Assert.assertEquals("SELECT emp.EMP_ID AS c1,emp.EMP_NAME AS c2,emp.DEPT_ID AS c3 FROM EMPLOYEE AS emp ORDER BY c1,c2 DESC,c3 ASC NULLS FIRST", sql);
 		
 	}
 	

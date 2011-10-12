@@ -29,7 +29,7 @@ public class ColumnDefinitionTest extends ConfigManagerTestSupport {
 		
 		ColumnParser parser = JdbcTestUtils.columnParser();
 		
-		JdbcParseContext parseContext = new JdbcParseContext();
+		JdbcParseContext parseContext = new JdbcParseContext(null);
 		ObjectDefinition columnDef = (ObjectDefinition)parser.parse(element, parseContext);
 		System.out.println(columnDef);
 		

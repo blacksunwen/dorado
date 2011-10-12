@@ -68,7 +68,7 @@ public class TableDefinitionTest extends ConfigManagerTestSupport {
 		
 		ObjectParser parser = JdbcTestUtils.tableParser();
 		
-		JdbcParseContext parseContext = new JdbcParseContext();
+		JdbcParseContext parseContext = new JdbcParseContext(null);
 		ObjectDefinition def = (ObjectDefinition)parser.parse(table, parseContext);
 		System.out.println(def);
 		
@@ -127,7 +127,7 @@ public class TableDefinitionTest extends ConfigManagerTestSupport {
 		
 		ObjectParser parser = JdbcTestUtils.tableParser();
 		
-		JdbcParseContext parseContext = new JdbcParseContext();
+		JdbcParseContext parseContext = new JdbcParseContext(null);
 		ObjectDefinition def = (ObjectDefinition)parser.parse(table, parseContext);
 		System.out.println(def);
 		
