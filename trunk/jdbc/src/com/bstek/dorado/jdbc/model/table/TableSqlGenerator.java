@@ -25,14 +25,14 @@ public class TableSqlGenerator implements SqlGenerator<Table> {
 	}
 	
 	@Override
-	public SelectSql selectSql(Table t, Object parameter,
+	public SelectSql selectSql(Table table, Object parameter,
 			JdbcDataProviderContext jdbcContext) {
 		//SelectSql
 		TableSelectSql selectSql = new TableSelectSql();
 				
 		//columnsToken
 		StringBuilder columnsToken = new StringBuilder();
-		List<Column> columns = t.getAllColumns();
+		List<Column> columns = table.getAllColumns();
 		for (int i=0, j=columns.size(), ableColumnCount = 0; i<j; i++) {
 			Column column = columns.get(i);
 			if (column.isSelectable()) {
@@ -47,11 +47,11 @@ public class TableSqlGenerator implements SqlGenerator<Table> {
 		selectSql.setColumnsToken(columnsToken.toString());
 		
 		//fromToken
-		String fromToken = SqlUtils.token(t);
+		String fromToken = SqlUtils.token(table);
 		selectSql.setFromToken(fromToken);
 		
 		//dynamicToken
-		String dynamicToken = t.getDynamicToken();
+		String dynamicToken = table.getDynamicToken();
 		dynamicToken = SqlUtils.build(dynamicToken, parameter);
 		
 		selectSql.setDynamicToken(dynamicToken);
@@ -87,9 +87,12 @@ public class TableSqlGenerator implements SqlGenerator<Table> {
 					} else {
 						record.put(propertyName, value);
 					}
+					
+					sql.addColumnToken(keyColumn.getColumnName(), ":"+propertyName);
 				}
-			} 
-			sql.addColumnToken(keyColumn.getColumnName(), ":"+propertyName);
+			} else {
+				sql.addColumnToken(keyColumn.getColumnName(), ":"+propertyName);
+			}
 		}
 		
 		for (TableColumn column: table.getTableColumns()) {

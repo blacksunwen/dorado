@@ -47,6 +47,12 @@ public class Resolver_TableTest extends ConfigManagerTestSupport {
 		{
 			JdbcDataResolverContext jdbcContext = new JdbcDataResolverContext(table.getJdbcEnviroment(),null);
 			
+			r.getEntityEnhancer().setState(EntityState.DELETED);
+			JdbcDataResolverOperation operation = new JdbcDataResolverOperation(table, r, jdbcContext);
+			operation.execute();
+		}{
+			JdbcDataResolverContext jdbcContext = new JdbcDataResolverContext(table.getJdbcEnviroment(),null);
+			
 			r.getEntityEnhancer().setState(EntityState.NEW);
 			JdbcDataResolverOperation operation = new JdbcDataResolverOperation(table, r, jdbcContext);
 			operation.execute();

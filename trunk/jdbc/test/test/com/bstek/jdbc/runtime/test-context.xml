@@ -10,6 +10,7 @@
 				<value>classpath:test/com/bstek/jdbc/runtime/tables.dbmodel.xml</value>
 				<value>classpath:test/com/bstek/jdbc/runtime/sqltables.dbmodel.xml</value>
 				<value>classpath:test/com/bstek/jdbc/runtime/autoTable.dbmodel.xml</value>
+				<value>classpath:test/com/bstek/jdbc/runtime/key-tables.dbmodel.xml</value>
 			</list>
 		</property>
 	</bean>
