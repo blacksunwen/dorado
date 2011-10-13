@@ -218,6 +218,30 @@
                 }
             }
         },
+
+        /**
+         * 显示工具栏。
+         */
+        showToolBar: function() {
+            var editor = this, doms = editor._doms;
+            if (doms) {
+                var toolbar = doms.toolbar;
+                $fly(toolbar).css("display", "");
+                editor.doOnResize();
+            }
+        },
+
+        /**
+         * 隐藏工具栏。
+         */
+        hideToolBar: function() {
+            var editor = this, doms = editor._doms;
+            if (doms) {
+                var toolbar = doms.toolbar;
+                $fly(toolbar).css("display", "none");
+                editor.doOnResize();
+            }
+        },
         doOnBlur: function() {
             var editor = this;
             editor._lastPostValue = editor._value;
