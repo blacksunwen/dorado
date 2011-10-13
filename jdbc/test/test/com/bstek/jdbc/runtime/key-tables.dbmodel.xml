@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Model name="view">
+	<Table name="T1_INCREMENT" tableName="T1_INCREMENT">
+		<Columns>
+			<KeyColumn columnName="ID"   propertyName="ID"   jdbcType="BIGINT-Long" keyGenerator="IDENTITY" />
+			<Column    columnName="NAME" propertyName="NAME" jdbcType="VARCHAR-String" />
+		</Columns>
+	</Table>
+	<Table name="T1_UUID" tableName="T1_UUID">
+		<Columns>
+			<KeyColumn columnName="ID"   propertyName="ID"   jdbcType="VARCHAR-String" keyGenerator="JDK-UUID" />
+			<Column    columnName="NAME" propertyName="NAME" jdbcType="VARCHAR-String" />
+		</Columns>
+	</Table>
+	<Table name="T1_SEQUENCE" tableName="T1_SEQUENCE">
+		<Columns>
+			<KeyColumn columnName="ID"   propertyName="ID"   jdbcType="INTEGER-Integer" keyGenerator="SEQUENCE" keyParameter="SEQ_ID" />
+			<Column    columnName="NAME" propertyName="NAME" jdbcType="VARCHAR-String" />
+		</Columns>
+	</Table>
+</Model>
