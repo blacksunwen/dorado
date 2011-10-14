@@ -4,6 +4,7 @@
 }
 
 .d-tree-focused {
+	border: 1px #303030 solid;
 }
 
 .d-tree .data-table .row td {
@@ -59,18 +60,6 @@
 
 .d-tree-node .button-expanding {
 	background: url(tree/expanding.gif) no-repeat;
-}
-
-.d-tree-node .icon {
-	width: 16px;
-	height: 16px;
-	margin-right: 4px;
-	margin-bottom: -3px;
-}
-
-.d-tree-node .d-checkbox-icononly {
-	margin-right: 4px;
-	margin-bottom: -6px;
 }
 
 .d-tree-expanding-placeholder {

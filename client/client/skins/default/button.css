@@ -1,111 +1,111 @@
-.d-button{
+.d-button {
 	background: url(base/button-bg.gif);
 }
 
-.d-button .button-left{
+.d-button .button-left {
 	background: url(base/button-bg.gif) 0 -22px;
 	border: 0;
 }
 
-.d-button .button-right{
+.d-button .button-right {
 	background: url(base/button-bg.gif) right -44px;
 }
 
-.d-button-focused{
+.d-button-focused {
 	background-position: 0 -132px;
 }
 
-.d-button-focused .button-left{
+.d-button-focused .button-left {
 	background-position: 0 -154px;
 }
 
-.d-button-focused .button-right{
+.d-button-focused .button-right {
 	background-position: right -176px;
 }
 
-.d-button-hover{
+.d-button-hover {
 	background-position: 0 -66px;
 }
 
-.d-button-toggled{
+.d-button-toggled {
 	background-position: 0 -264px;
 }
 
-.d-button-click{
+.d-button-click {
 	background-position: 0 -198px;
 }
 
-.d-button .button-left-hover{
+.d-button .button-left-hover {
 	background-position: 0 -88px;
 }
 
-.d-button .button-left-click{
+.d-button .button-left-click {
 	background-position: 0 -220px;
 }
 
-.d-button .button-left-toggled{
+.d-button .button-left-toggled {
 	background-position: 0 -286px;
 }
 
-.d-button .button-right-hover{
+.d-button .button-right-hover {
 	background-position: right -110px;
 }
 
-.d-button .button-right-click{
+.d-button .button-right-click {
 	background-position: right -242px;
 }
 
-.d-button .button-right-toggled{
+.d-button .button-right-toggled {
 	background-position: right -308px;
 }
 
-.d-button-disabled .button-left .icon{
-	filter: alpha(opacity = 50);
+.d-button-disabled .button-left .icon {
+	filter: alpha(opacity =   50);
 	opacity: 0.5;
 }
 
-.d-button-disabled .caption{
+.d-button-disabled .caption {
 	color: #aaa;
 }
 
-.d-icon-button{
+.d-icon-button {
 	background: url(base/tool-button-bg.gif);
 }
 
-.d-icon-button-hover{
+.d-icon-button-hover {
 	background-position: -20px 0;
 }
 
-.d-icon-button-click{
+.d-icon-button-click {
 	background-position: -40px 0;
 }
 
-.d-icon-button-toggled{
+.d-icon-button-toggled {
 	background-position: -60px 0;
 }
 
-.d-icon-button-disabled .icon{
-	filter: alpha(opacity = 50);
+.d-icon-button-disabled .icon {
+	filter: alpha(opacity =   50);
 	opacity: 0.5;
 }
 
-.d-icon-button-trigger{
+.d-icon-button-trigger {
 	background: url(base/tool-button-bg.gif) -80px 0;
 }
 
-.d-icon-button-trigger-hover{
+.d-icon-button-trigger-hover {
 	background-position: -108px 0;
 }
 
-.d-icon-button-trigger-click{
+.d-icon-button-trigger-click {
 	background-position: -136px 0;
 }
 
-.d-icon-button-trigger-toggled{
+.d-icon-button-trigger-toggled {
 	background-position: -164px 0;
 }
 
-.d-icon-button-trigger-disabled .icon{
-	filter: alpha(opacity = 50);
+.d-icon-button-trigger-disabled .icon {
+	filter: alpha(opacity =   50);
 	opacity: 0.5;
 }

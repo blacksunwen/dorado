@@ -373,25 +373,23 @@ dorado.EventSupport = $class(/** @scope dorado.EventSupport.prototype */{
 	fireEvent: function(name) {
 		var def = this.EVENTS[name];
 		if (!def) throw new dorado.ResourceException("dorado.core.UnknownEvent", name);
-		var interceptor = (def.interceptor instanceof Function) ? def.interceptor : null;
 		
-		var handlers;
-		if (this._events) handlers = this._events[name];
+		var handlers = (this._events) ? this._events[name] : null;
+		if (!handlers) return;
 		
 		var self = this;
 		var superFire = function() {
-			if (handlers) {
-				for (var i = 0; i < handlers.length;) {
-					var handler = handlers[i];
-					if (handler.once) handlers.removeAt(i);
-					else i++;
-					if (self.notifyListener(handler, arguments) === false) return false;
-				}
+			for (var i = 0; i < handlers.length;) {
+				var handler = handlers[i];
+				if (handler.once) handlers.removeAt(i);
+				else i++;
+				if (self.notifyListener(handler, arguments) === false) return false;
 			}
 			return true;
 		};
 		
 		try {
+			var interceptor = (def.interceptor instanceof Function) ? def.interceptor : null;
 			if (interceptor) {
 				arguments[0] = superFire;
 				return interceptor.apply(this, arguments);
@@ -415,9 +413,13 @@ dorado.EventSupport = $class(/** @scope dorado.EventSupport.prototype */{
 	 * @return {int} 已定义的事件监听器的个数。
 	 */
 	getListenerCount: function(name) {
-		var handlers = null;
-		if (this._events) handlers = this._events[name];
-		return (handlers) ? handlers.length : 0;
+		if (this._events) {
+			var handlers = this._events[name];
+			return (handlers) ? handlers.length : 0;
+		}
+		else {
+			return 0;
+		}
 	},
 	
 	notifyListener: function(handler, args) {

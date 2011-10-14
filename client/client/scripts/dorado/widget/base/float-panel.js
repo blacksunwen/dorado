@@ -7,7 +7,6 @@
  */
 dorado.widget.FloatPanel = $extend([dorado.widget.Panel, dorado.widget.FloatControl], /** @scope dorado.widget.FloatPanel.prototype */ {
 	$className: "dorado.widget.FloatPanel",
-	
 	focusable: true,
 	
 	ATTRIBUTES: /** @scope dorado.widget.FloatPanel.prototype */ {

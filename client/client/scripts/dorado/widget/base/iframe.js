@@ -25,6 +25,7 @@
 
 			/**
 			 * IFrame对应的路径。
+			 * 
 			 * @type String
 			 * @attribute
 			 */
@@ -45,6 +46,7 @@
 
 			/**
 			 * 该组件内置的IFrame的window对象。
+			 * 
 			 * @attribute readOnly
 			 * @type Window
 			 */
@@ -60,12 +62,21 @@
 		{
 			/**
 			 * 当iframe中的页面加载完毕后触发。
-			 * @param {Object} self 事件的发起者，即组件本身。
-			 * @param {Object} arg 事件参数。
+			 * 
+			 * @param {Object}
+			 *            self 事件的发起者，即组件本身。
+			 * @param {Object}
+			 *            arg 事件参数。
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
 			 */
 			onLoad: {}
+		},
+		
+		destroy: function() {
+			var frame = this, doms = frame._doms;
+			if (doms) $fly(doms.iframe).attr("src", BLANK_PATH);
+			$invokeSuper.call(this);
 		},
 
 		createDom: function() {
@@ -98,7 +109,7 @@
             var frame = this, doms = frame._doms, iframe = doms.iframe;
 			$fly(iframe).attr("src", $url(frame._path || BLANK_PATH)).load( function() {
 				$fly(doms.loadingCover).css("display", "none");
-				//fix ie 6 bug....
+				// fix ie 6 bug....
 				if (!(dorado.Browser.msie && dorado.Browser.version == 6)) {
 					$fly(iframe).removeClass("hidden");
 				}
@@ -107,12 +118,13 @@
         },
 
 		refreshDom: function(dom) {
-			$invokeSuper.call(this, arguments);
+			$invokeSuper.call(this, [dom]);
 			centerCover(dom, this._doms);
 		},
 
 		/**
 		 * 取得iframe中的window对象，如果iframe还没有创建，则返回null。
+		 * 
 		 * @return {window} iframe的contentWindow对象
 		 */
 		getIFrameWindow: function() {

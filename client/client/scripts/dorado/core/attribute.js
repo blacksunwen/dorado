@@ -31,13 +31,29 @@
 	 * 
 	 * @abstract
 	 * 
-	 * @example // 读写类属性。 oop.set("visible", true); // 设置一个属性
-	 *          oop.get("visible"); // 读取一个属性
+	 * @example 
+	 * // 读写类属性。
+	 * oop.set("visible", true); // 设置一个属性
+	 * oop.get("visible"); // 读取一个属性
 	 * 
-	 * @example // 声明类属性。 var SampleClass = $class({ ATTRIBUTES: { visible: {}, //
-	 *          声明一个简单的属性 label: { // 声明一个带有getter方法的属性 getter: function(attr) {
-	 *          ... ... } }, status: { // 声明一个带有setter方法的只读属性 readOnly: true,
-	 *          setter: function(value, attr) { ... ... } } } } });
+	 * @example
+	 * // 声明类属性。
+	 * var SampleClass = $class({
+	 * 	ATTRIBUTES: {
+	 * 		visible: {}, // 声明一个简单的属性
+	 * 		label: { // 声明一个带有getter方法的属性
+	 * 			getter: function(attr) {
+	 * 				... ...
+	 * 			}
+	 * 		},
+	 * 		status: { // 声明一个带有setter方法的只读属性
+	 * 			readOnly: true,
+	 * 			setter: function(value, attr) {
+	 * 				... ...
+	 * 			}
+	 * 		}
+	 * 	}
+	 * });
 	 */
 	dorado.AttributeSupport = $class(/** @scope dorado.AttributeSupport.prototype */
 	{
@@ -46,11 +62,10 @@
 		constructor : function() {
 			var defs = this.ATTRIBUTES;
 			for ( var p in defs) {
-				if (defs.hasOwnProperty(p) && defs[p].defaultValue != undefined
-						&& this['_' + p] == undefined) {
-					var dv = defs[p].defaultValue;
-					this['_' + p] = (dv instanceof Function && !defs[p].neverEvalDefaultValue) ? dv()
-							: dv;
+				var def =  defs[p];
+				if (def && def.defaultValue != undefined && this['_' + p] == undefined) {
+					var dv = def.defaultValue;
+					this['_' + p] = (dv instanceof Function && !def.neverEvalDefaultValue) ? dv() : dv;
 				}
 			}
 		},
@@ -61,9 +76,11 @@
 		 * 
 		 * @type Object
 		 * 
-		 * @example // 获取某对象的caption属性的声明。 var attributeDef =
-		 *          oop.ATTRIBUTES.caption。 // 判断该属性是否只读 if
-		 *          (attributeDef.readOnly) { ... ... }
+		 * @example 
+		 * // 获取某对象的caption属性的声明。
+		 * var attributeDef = oop.ATTRIBUTES.caption。
+		 * // 判断该属性是否只读
+		 * if (attributeDef.readOnly) { ... ... }
 		 */
 		ATTRIBUTES : /** @scope dorado.AttributeSupport.prototype */
 		{
@@ -225,23 +242,35 @@
 		 *            即对于那些已拥有值(曾经通过set方法写入过值)的属性跳过本次的赋值操作，而只对那些未定义过的属性进行赋值。
 		 * @return {dorado.AttributeSupport} 返回对象自身。
 		 * 
-		 * @example oop.set("label", "Sample Text"); oop.set("visible", true);
+		 * @example
+		 * oop.set("label", "Sample Text"); oop.set("visible", true);
 		 * 
-		 * @example oop.set( { label : "Sample Text", visible : true });
+		 * @example
+		 * oop.set( { label : "Sample Text", visible : true });
 		 * 
-		 * @example // 利用属性迭代的特性为子对象中的属性赋值。 oop.set("address.postCode",
-		 *          "7232-00124"); ... ... oop.set( { "name" : "Toad",
-		 *          "address.postCode" : "7232-00124" }); //
-		 *          上面的两行命令相当于oop.get("address").set("postCode", "7232-00124")
+		 * @example
+		 * // 利用属性迭代的特性为子对象中的属性赋值。
+		 * oop.set("address.postCode", "7232-00124");
+		 * ... ...
+		 * oop.set({
+		 * 	"name" : "Toad",
+		 * 	"address.postCode" : "7232-00124"
+		 * });
+		 * // 上面的两行命令相当于
+		 * oop.get("address").set("postCode", "7232-00124")
 		 * 
-		 * @example // 使用上文中提及的第一种方法为label属性赋值，同时为click事件绑定一个监听器。 oop.set( {
-		 *          label : "Sample Text", onClick : function(self, arg) { ...
-		 *          ... } });
+		 * @example
+		 * // 使用上文中提及的第一种方法为label属性赋值，同时为click事件绑定一个监听器。
+		 * oop.set({
+		 *  label : "Sample Text",
+		 *  onClick : function(self, arg) {
+		 *  	... ...
+		 *  }
+		 * });
 		 */
 		set : function(attr, value, options) {
 			var skipUnknownAttribute, tryNextOnError, preventOverwriting, lockWritingTimes;
-			if (attr && typeof attr == "object")
-				options = value;
+			if (attr && typeof attr == "object") options = value;
 			if (options && typeof options == "object") {
 				skipUnknownAttribute = options.skipUnknownAttribute;
 				tryNextOnError = options.tryNextOnError;
@@ -265,32 +294,27 @@
 					}
 				}
 
-				if (preventOverwriting)
-					watcher = this.getAttributeWatcher();
+				if (preventOverwriting) watcher = this.getAttributeWatcher();
 				for ( var i = 0; i < attrInfos.length; i++) {
 					attrInfo = attrInfos[i];
-					if (preventOverwriting
-							&& watcher.getWritingTimes(attrInfo.attr))
-						continue;
+					if (preventOverwriting && watcher.getWritingTimes(attrInfo.attr)) continue;
 					try {
-						this.doSet(attrInfo.attr, attrInfo.value,
-								skipUnknownAttribute, lockWritingTimes);
+						this.doSet(attrInfo.attr, attrInfo.value, skipUnknownAttribute, lockWritingTimes);
 					} catch (e) {
 						if (e instanceof dorado.AttributeException) {
 							dorado.Exception.removeException(e);
-						} else if (!tryNextOnError)
-							throw e;
+						} else if (!tryNextOnError) throw e;
 					}
 				}
 			} else {
 				if (preventOverwriting) {
-					if (this.getAttributeWatcher().getWritingTimes(attr))
-						return this;
+					if (this.getAttributeWatcher().getWritingTimes(attr)) return this;
 				}
 				this.doSet(attr, value, skipUnknownAttribute, lockWritingTimes);
 			}
 			return this;
 		},
+		
 		/**
 		 * 用于实现为单个属性赋值的内部方法。
 		 * 
@@ -335,17 +359,17 @@
 				}
 			} else {
 				if (def) {
-					if (def.readOnly)
-						throw new dorado.AttributeException(
-								"dorado.core.AttributeReadOnly", attr);
+					if (def.readOnly) {
+						throw new dorado.AttributeException("dorado.core.AttributeReadOnly", attr);
+					}
+					
 					var attributeWatcher = this.getAttributeWatcher();
 					if (def.writeOnce
 							&& attributeWatcher.getWritingTimes(attr) > 0) {
 						throw new dorado.AttributeException(
 								"dorado.core.AttributeWriteOnce", attr);
 					}
-					if (!lockWritingTimes)
-						attributeWatcher.incWritingTimes(attr);
+					if (!lockWritingTimes) attributeWatcher.incWritingTimes(attr);
 
 					if (def.setter) {
 						def.setter.call(this, value, attr);
@@ -353,7 +377,7 @@
 						this['_' + attr] = value;
 					}
 
-					if (this.fireEvent) {
+					if (this.fireEvent && this.getListenerCount("onAttributeChange")) {
 						this.fireEvent("onAttributeChange", this, {
 							attribute : attr,
 							value : value
@@ -401,13 +425,13 @@
 		 * @return {int} 属性的被写入次数。
 		 */
 		getWritingTimes : function(attr) {
-			return this[attr + ".writingTimes"] || 0;
+			return this[attr] || 0;
 		},
 		incWritingTimes : function(attr) {
-			this[attr + ".writingTimes"] = (this[attr + ".writingTimes"] || 0) + 1;
+			this[attr] = (this[attr] || 0) + 1;
 		},
 		setWritingTimes : function(attr, n) {
-			this[attr + ".writingTimes"] = n;
+			this[attr] = n;
 		}
 	});
 

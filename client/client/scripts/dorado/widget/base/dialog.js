@@ -25,7 +25,6 @@
 	dorado.widget.Dialog = $extend(dorado.widget.FloatPanel, /** @scope dorado.widget.Dialog.prototype */ {
 		$className: "dorado.widget.Dialog",
         _inherentClassName: "i-dialog",
-		focusable: true,
 
 		ATTRIBUTES: /** @scope dorado.widget.Dialog.prototype */ {
 			className: {

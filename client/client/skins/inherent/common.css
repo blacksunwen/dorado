@@ -6,6 +6,10 @@ html, body {
     height: 100%;
 }
 
+.d-ie6 * {
+	position: relative;
+}
+
 .d-shadow-ie {
     display: none;
     position: absolute;

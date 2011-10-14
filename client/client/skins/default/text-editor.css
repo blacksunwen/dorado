@@ -10,14 +10,9 @@
 }
 
 .d-text-box .blank-text {
-	font-style: italic;
-	color: #B2B2B2;
 }
 
 .d-text-box .d-trigger {
-	width: 18px;
-	height: 18px;
-	cursor: pointer;
 	background: url(form/dropdown-trigger-bg.gif) no-repeat;
 }
 

@@ -1,6 +1,5 @@
 (function() {
 
-
 	/**
 	 * @name dorado.widget
 	 * @namespace 包含dorado中各种界面组件的命名空间。
@@ -147,10 +146,9 @@
 			dorado.widget.Component.ALL[this._uniqueId] = this;
 			this._id = id ? id : this._uniqueId;
 			
-			$invokeSuper.call(this, arguments);
+			$invokeSuper.call(this);
 			if (config) this.set(config);
 			
-			if (dorado.widget.View.TOP) dorado.widget.View.TOP.addChild(this);
 			this.fireEvent("onCreate", this);
 		},
 		
@@ -187,8 +185,7 @@
 							allPrepared = (component instanceof dorado.widget.Component);
 						}
 					}
-					$invokeSuper.call(this, [attr, (allPrepared ? component : null)]);
-					return;
+					return $invokeSuper.call(this, [attr,  (allPrepared ? component : null)]);
 				} else if (def.innerComponent != null) {
 					if (value) {
 						if (value instanceof Array) {
@@ -203,7 +200,7 @@
 					}
 				}
 			}
-			$invokeSuper.call(this, arguments);
+			$invokeSuper.call(this, [attr, value]);
 		},
 		
 		/**
@@ -230,8 +227,7 @@
 			return this.get("view") || dorado.widget.View.TOP;
 		}
 	});
-	
-	
+		
 	dorado.widget.Component.getComponentReference = function(object, attr, value) {
 		if (!value) return value;
 		if (value instanceof dorado.widget.Component) {

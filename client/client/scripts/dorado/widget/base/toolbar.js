@@ -340,6 +340,10 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 				$fly(item._dom).css("visibility", "");
 			}
 		}
+	},
+	
+	getFocusableSubControls: function() {
+		return this._items.toArray();
 	}
 	
 });

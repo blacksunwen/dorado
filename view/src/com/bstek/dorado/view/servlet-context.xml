@@ -12,7 +12,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 					<bean
 						class="org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver" />
 				</property>
-				<property name="resourcePrefix" value="${view.librayRoot}" />
+				<property name="resourcePrefix" value="${view.libraryRoot}" />
 			</bean>
 		</property>
 	</bean>
@@ -22,7 +22,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 		<property name="resolver">
 			<bean class="com.bstek.dorado.view.resolver.BootPackagesResolver">
 				<property name="bootFile" value="scripts/dorado/boot" />
-				<property name="resourcePrefix" value="${view.librayRoot}" />
+				<property name="resourcePrefix" value="${view.libraryRoot}" />
 			</bean>
 		</property>
 	</bean>
@@ -32,7 +32,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 		<property name="resolver">
 			<bean class="com.bstek.dorado.view.resolver.SkinFileResolver">
 				<property name="baseUri" value="/dorado/client" />
-				<property name="resourcePrefix" value="${view.librayRoot}" />
+				<property name="resourcePrefix" value="${view.libraryRoot}" />
 			</bean>
 		</property>
 	</bean>
@@ -42,7 +42,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 		<property name="resolver">
 			<bean class="com.bstek.dorado.web.resolver.WebFileResolver">
 				<property name="baseUri" value="/dorado/client" />
-				<property name="resourcePrefix" value="${view.librayRoot}" />
+				<property name="resourcePrefix" value="${view.libraryRoot}" />
 			</bean>
 		</property>
 	</bean>

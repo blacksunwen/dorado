@@ -11,7 +11,6 @@ import com.bstek.dorado.annotation.XmlNode;
  */
 @XmlNode(nodeName = "UpdateItem")
 public class UpdateItem {
-
 	private String dataSet;
 	private String dataPath = "!DIRTY_TREE";
 	private String alias;
@@ -19,6 +18,7 @@ public class UpdateItem {
 	private boolean firstResultOnly;
 	private boolean autoResetEntityState = true;
 	private boolean submitOldData;
+	private boolean submitSimplePropertyOnly;
 	private Properties options;
 
 	@ViewAttribute(referenceComponentName = "DataSet")
@@ -79,6 +79,14 @@ public class UpdateItem {
 
 	public void setSubmitOldData(boolean submitOldData) {
 		this.submitOldData = submitOldData;
+	}
+
+	public boolean isSubmitSimplePropertyOnly() {
+		return submitSimplePropertyOnly;
+	}
+
+	public void setSubmitSimplePropertyOnly(boolean submitSimplePropertyOnly) {
+		this.submitSimplePropertyOnly = submitSimplePropertyOnly;
 	}
 
 	public Properties getOptions() {

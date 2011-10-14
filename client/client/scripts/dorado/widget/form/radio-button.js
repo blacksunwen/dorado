@@ -44,9 +44,14 @@ dorado.widget.RadioButton = $extend(dorado.widget.Control, /** @scope dorado.wid
 		readOnly: {}
 	},
 	
+	_isReadOnly: function() {
+		var radioButton = this, radioGroup = radioButton._radioGroup;
+		return radioButton._readOnly || radioGroup._readOnly || radioGroup._readOnly2;
+	},
+	
 	onClick: function() {
 		var radioButton = this;
-		if (!radioButton._readOnly && !radioButton._readOnly2) {
+		if (!radioButton._isReadOnly()) {
 			if (!radioButton._checked) {
 				radioButton._checked = true;
 				if (radioButton._radioGroup) {
@@ -59,10 +64,7 @@ dorado.widget.RadioButton = $extend(dorado.widget.Control, /** @scope dorado.wid
 	refreshDom: function(dom) {
 		$invokeSuper.call(this, arguments);
 		
-		var radioButton = this, radioGroup = radioButton._radioGroup, checked = radioButton._checked, text = radioButton._text, jDom;
-		if (radioGroup) {
-			radioButton._readOnly2 = radioGroup._readOnly || radioGroup._readOnly2;
-		}
+		var radioButton = this, checked = radioButton._checked, text = radioButton._text, jDom;
 		if (dom) {
 			jDom = jQuery(dom);
 			var iconEl = dom.firstChild, textEl = iconEl.nextSibling;
@@ -92,16 +94,16 @@ dorado.widget.RadioButton = $extend(dorado.widget.Control, /** @scope dorado.wid
 		});
 		
 		jQuery(dom).addClassOnHover(radioButton._className + "-hover", null, function() {
-			return !radioButton._readOnly && !radioButton._readOnly2;
+			return !radioButton._isReadOnly();
 		}).addClassOnClick(radioButton._className + "-click", null, function() {
-			return !radioButton._readOnly && !radioButton._readOnly2;
+			return !radioButton._isReadOnly();
 		});
 		
 		return dom;
 	},
 	
-	isFocusable: function(deep) {
-		return !this._readOnly && !this._readOnly2 && $invokeSuper.call(this, arguments);
+	isFocusable: function() {
+		return !this._isReadOnly() && $invokeSuper.call(this);
 	}
 });
 

@@ -4,6 +4,7 @@
 }
 
 .d-grid-focused {
+	border: 1px #303030 solid;
 }
 
 .d-grid .header-table .header {

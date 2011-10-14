@@ -254,8 +254,6 @@
 	dorado.widget.menu.ControlMenuItem = $extend(dorado.widget.menu.TextMenuItem, /** @scope dorado.widget.menu.ControlMenuItem.prototype*/{
 		$className: "dorado.widget.menu.ControlMenuItem",
 
-		focusable: true,
-
 		ATTRIBUTES: /** @scope dorado.widget.menu.ControlMenuItem.prototype*/ {
             /**
              * 绑定的组件。

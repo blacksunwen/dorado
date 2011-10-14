@@ -106,9 +106,9 @@
 			stretchWidth: {}
 		},
 		
-		constructor: function() {
+		constructor: function(config) {
 			this._useBlankRow = !(dorado.Browser.safari || dorado.Browser.chrome);
-			$invokeSuper.call(this, arguments);
+			$invokeSuper.call(this, [config]);
 		},
 		createDom: function() {
 			return $DomUtils.xCreate({
@@ -404,12 +404,13 @@
 			
 			var table = this.getDom(), padding = parseInt(this._padding) || 0, colPadding = this._colPadding || 0;
 			var containerWidth = (table.parentNode) ? (jQuery(table.parentNode).width() - padding * 2) : 0;
-			if (containerWidth < 0) containerWidth = 0;
+			if (!(containerWidth >= 0)) containerWidth = 0;
 			
 			var adjust = 0;
 			if (dorado.Browser.safari || dorado.Browser.chrome) {
 				adjust = padding * 2;
 			}
+			
 			if (this._stretchWidth || this.dynaColCount > 0) {
 				table.style.width = (containerWidth + adjust) + "px";
 			}

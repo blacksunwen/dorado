@@ -444,5 +444,9 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 				element.refreshData();
 			}
 		});
+	},
+	
+	getFocusableSubControls: function() {
+		return [this._container];
 	}
 });

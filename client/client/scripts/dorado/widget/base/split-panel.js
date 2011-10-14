@@ -40,6 +40,7 @@
 	dorado.widget.SplitPanel = $extend(dorado.widget.Control, /** @scope dorado.widget.SplitPanel.prototype*/ {
 		$className: "dorado.widget.SplitPanel",
         _inherentClassName: "i-split-panel",
+		
 		ATTRIBUTES: /** @scope dorado.widget.SplitPanel.prototype*/ {
 			className: {
 				defaultValue: "d-split-panel"
@@ -880,6 +881,17 @@
 
 					$fly(doms.splitter).draggable('option', 'containment', range);
 				}
+			}
+		},
+	
+		getFocusableSubControls: function() {
+			debugger;
+			var direction = this._direction;
+			if (direction == "left" || direction == "top") {
+				return [this._sideControl, this._mainControl];
+			}
+			else {
+				return [this._mainControl, this._sideControl];
 			}
 		}
 	});

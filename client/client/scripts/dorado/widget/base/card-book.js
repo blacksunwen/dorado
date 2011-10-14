@@ -10,12 +10,13 @@
  */
 dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget.CardBook.prototype */ {
 	$className: "dorado.widget.CardBook",
-    _inherentClassName: "i-cardbook",
+	_inherentClassName: "i-cardbook",
+	
 	ATTRIBUTES: /** @scope dorado.widget.CardBook.prototype */ {
 		className: {
 			defaultValue: "d-cardbook"
 		},
-
+		
 		/**
 		 * 当前活动的组件。
 		 * @type dorado.widget.Control|int
@@ -23,44 +24,51 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 		 */
 		currentControl: {
 			skipRefresh: true,
-			setter: function(value) {
+			setter: function(control) {
 				var cardbook = this, controls = cardbook._controls;
-				if (value != null) {
-					if (typeof value == "string" || typeof value == "number") {
-						value = controls.get(value);
+				if (control != null) {
+					if (typeof control == "string" || typeof control == "number") {
+						control = controls.get(control);
 					}
 				}
-                var oldValue = cardbook._currentControl;
+				if (cardbook._currentControl == control) return;
+				if (!cardbook._ready) { // 延时触发currentChange事件，以确保第一次触发时CardBook已被渲染
+					cardbook._currentControl = control;
+					return;
+				}
+				
+				var oldControl = cardbook._currentControl;
 				var eventArg = {
-					oldValue: oldValue
+					oldControl: oldControl,
+					newControl: control
 				};
-                cardbook.fireEvent("beforeCurrentChange", this, eventArg);
+				cardbook.fireEvent("beforeCurrentChange", this, eventArg);
 				if (eventArg.processDefault === false) return;
-				if (oldValue) {
-					var oldDom = oldValue._dom;
+				if (oldControl) {
+					var oldDom = oldControl._dom;
 					if (oldDom) {
 						oldDom.style.display = "none";
 					}
-                    oldValue.setActualVisible(false);
+					oldControl.setActualVisible(false);
 				}
-				cardbook._currentControl = value;
+				cardbook._currentControl = control;
 				var dom = cardbook._dom;
-				if (dom && value) {
-					value.set("width", $fly(dom).innerWidth());
-					value.set("height", $fly(dom).innerHeight());
-
-					if (!value._rendered) {
-						cardbook.registerInnerControl(value);
-						value.render(dom);
+				if (dom && control) {
+					control.set("width", $fly(dom).innerWidth());
+					control.set("height", $fly(dom).innerHeight());
+					
+					if (!control._rendered) {
+						cardbook.registerInnerControl(control);
+						control.render(dom);
 					} else {
-						$fly(value._dom).css("display", "block");
-                        value.setActualVisible(true);
+						$fly(control._dom).css("display", "block");
+						control.setActualVisible(true);
 					}
 				}
-                cardbook.fireEvent("onCurrentChange", this, value);
+				cardbook.fireEvent("onCurrentChange", this, eventArg);
 			}
 		},
-
+		
 		/**
 		 * Card中所有的Control。
 		 * 该属性设置时使用Array类型的数据进行设置，取得时取得的数据类型为dorado.util.KeyedArray。
@@ -72,49 +80,64 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 			innerComponent: "",
 			setter: function(value) {
 				if (value) {
-					var controls = this._controls, currentFirstControl = (controls.size == 0);
+					var controls = this._controls;
 					if (value instanceof Array) {
 						for (var i = 0; i < value.length; i++) {
 							controls.insert(value[i]);
-							if (i == 0 && currentFirstControl) {
-								this.set("currentControl", value[i]);
-							}
 						}
 					} else if (value.constructor == Object.prototype.constructor) {
-                        controls.insert(value);
-                        this.set("currentControl", value);
-                    }
+						controls.insert(value);
+					}
 				}
 			}
 		}
 	},
-
-    EVENTS: /** @scope dorado.widget.CardBook.prototype */ {
+	
+	EVENTS: /** @scope dorado.widget.CardBook.prototype */ {
 		/**
 		 * 在currentControl改变之前触发。
 		 * @param {Object} self 事件的发起者，即组件本身。
 		 * @param {Object} arg 事件参数。
+		 * @param {dorado.widget.Control} arg.newControl 要切换到的控件。
+		 * @param {dorado.widget.Control} arg.oldControl 当前控件。
 		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 		 * @event
 		 */
-        beforeCurrentChange: {},
-        /**
-         * 在currentControl改变之后触发。
-         * @param {Object} self 事件的发起者，即组件本身。
-         * @param {Object} arg 事件参数。
-         * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
-         * @event
-         */
-        onCurrentChange: {}
-    },
-
+		beforeCurrentChange: {},
+		
+		/**
+		 * 在currentControl改变之后触发。
+		 * @param {Object} self 事件的发起者，即组件本身。
+		 * @param {Object} arg 事件参数。
+		 * @param {dorado.widget.Control} arg.newControl 要切换到的控件。
+		 * @param {dorado.widget.Control} arg.oldControl 切换之前的控件。
+		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+		 * @event
+		 */
+		onCurrentChange: {}
+	},
+	
 	constructor: function() {
 		this._controls = new dorado.util.KeyedArray(function(value) {
 			return value._id;
 		});
 		$invokeSuper.call(this, arguments);
 	},
-
+	
+	onReady: function() {
+		var currentControl = this._currentControl;
+		this._currentControl = null;
+		
+		$invokeSuper.call(this);
+		
+		if (!currentControl) {
+			currentControl = this._controls.get(0);
+		}
+		if (currentControl) {
+			this.set("currentControl", currentControl);
+		}
+	},
+	
 	/**
 	 * 插入子组件。
 	 * @param {dorado.widget.Control} control 要插入的子组件
@@ -134,7 +157,7 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 		}
 		return control;
 	},
-
+	
 	/**
 	 * 移除子组件。
 	 * @param {String|int|dorado.widget.Control} control
@@ -151,7 +174,7 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 		}
 		return null;
 	},
-
+	
 	/**
 	 * 移除所有的组件。
 	 */
@@ -162,7 +185,7 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 			card.removeControl(item);
 		}
 	},
-
+	
 	/**
 	 * 取得Card中的组件。
 	 * @param {String|Number|dorado.widget.Control} id 组件的id、index或者组件本身。
@@ -179,17 +202,17 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 		}
 		return null;
 	},
-
+	
 	createDom: function() {
 		var dom = $invokeSuper.call(this, arguments);
 		dom.className = this._className;
-
+		
 		return dom;
 	},
-
+	
 	refreshDom: function(dom) {
 		$invokeSuper.call(this, arguments);
-
+		
 		var card = this, currentControl = card["_currentControl"];
 		/*
 		 * Commented by benny 此处应当允许currentControl为Null。
@@ -198,18 +221,21 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 		 currentControl = card["_currentControl"] = controls.get(0);
 		 }
 		 */
-
 		if (currentControl) {
 			currentControl.set("width", $fly(dom).innerWidth());
 			currentControl.set("height", $fly(dom).innerHeight());
-
+			
 			if (!currentControl._rendered) {
 				card.registerInnerControl(currentControl);
 				currentControl.render(dom);
 			} else {
 				$fly(currentControl._dom).css("display", "block");
-                currentControl.setActualVisible(true);
+				currentControl.setActualVisible(true);
 			}
 		}
+	},
+	
+	getFocusableSubControls: function() {
+		return [this._currentControl];
 	}
 });

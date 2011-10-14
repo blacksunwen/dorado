@@ -132,6 +132,10 @@ dorado.widget.TabControl = $extend(dorado.widget.TabBar, /** @scope dorado.widge
 		card.refreshDom(cardDom);
 	},
 	
+	getFocusableSubControls: function() {
+		return [this._cardBook];
+	},
+	
 	setFocus: function() {
 		// 放置在IE容器滚动条的意外滚动
 		var dom = this._tabbarDom;

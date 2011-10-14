@@ -30,7 +30,11 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 		 * @type boolean
 		 */
 		iconOnly : {
-			writeBeforeReady : true
+			writeBeforeReady : true,
+			setter: function(value) {
+				this.iconOnly = value;
+				this._inherentClassName = (value ? "i-checkbox i-checkbox-icononly" : "i-checkbox");
+			}
 		},
 
 		/**
@@ -219,8 +223,8 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 		if(checkBox._iconOnly) {
 			checkBox._className = checkBox._className + "-icononly";
 			dom = $DomUtils.xCreate({
-				tagName : "div",
-				className : "i-checkbox-icononly " + checkBox._className
+				tagName : "SPAN",
+				className : checkBox._className
 			});
 			$fly(dom).hover(function() {
 				if(!checkBox._readOnly) {
@@ -244,13 +248,13 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 			});
 		} else {
 			dom = $DomUtils.xCreate({
-				tagName : "div",
+				tagName : "SPAN",
 				className : checkBox._className,
 				content : [{
-					tagName : "div",
+					tagName : "SPAN",
 					className : "icon"
 				}, {
-					tagName : "div",
+					tagName : "SPAN",
 					className : "caption",
 					content : checkBox._caption || ''
 				}]

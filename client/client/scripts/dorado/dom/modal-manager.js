@@ -40,7 +40,7 @@ dorado.ModalManager = {
                     if (stackEl)
                         dom = stackEl.dom;
                     if (dom) {
-                        var control = $fly(dom).data("doradoControl");
+                        var control = dorado.widget.findParentControl(dom);
                         if (control) {
                             var count = 1, fn = repeat(function() {
                                 dorado.widget.setFocusedControl(count++ % 2 == 1 ? control : null);
@@ -64,8 +64,8 @@ dorado.ModalManager = {
             if (dorado.Browser.msie) {
                 if (dorado.Browser.version == 6) {
                     bodyWidth = $fly(doc).width()
-                        - parseInt($fly(doc.body).css("margin-left"), 10)
-                        - parseInt($fly(doc.body).css("margin-right"), 10);
+                        - (parseInt($fly(doc.body).css("margin-left"), 10) || 0)
+                        - (parseInt($fly(doc.body).css("margin-right"), 10) || 0);
                     $fly(maskDom).width(bodyWidth - 2).height(bodyHeight - 4);
                 } else if (dorado.Browser.version == 7) {
                     $fly(maskDom).height(bodyHeight);

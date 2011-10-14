@@ -254,14 +254,14 @@
 			 * @see dorado.widget.Control#attribute:lc
 			 * @see dorado.widget.Container#addChild
 			 */
-			layoutConstraint : {
-				setter : function(layoutConstraint) {
-					if(this._layoutConstraint != layoutConstraint) {
+			layoutConstraint: {
+				setter: function(layoutConstraint) {
+					if (this._layoutConstraint != layoutConstraint) {
 						this._layoutConstraint = layoutConstraint;
-						if(this._layoutConstraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT || layoutConstraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT) {
+						if (this._layoutConstraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT || layoutConstraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT) {
 							this.onActualVisibleChange();
 						}
-						if(this._rendered && this._parent && this._parent._layout) {
+						if (this._rendered && this._parent && this._parent._layout) {
 							this._parent._layout.refreshControl(this);
 						}
 					}
@@ -271,14 +271,11 @@
 			view : {
 				skipRefresh : true,
 				setter : function(view) {
-					if(this._view == view)
-						return;
-					$invokeSuper.call(this, arguments);
+					if(this._view == view) return;
+					$invokeSuper.call(this, [view]);
 					if(this._innerControls) {
 						jQuery.each(this._innerControls, function(i, control) {
-							if(this._view)
-								control.set("view", null);
-							control.set("view", view);
+							control.set("view", (this._view) ? null : view);
 						});
 					}
 				}
@@ -453,7 +450,7 @@
 		},
 
 		constructor : function(config) {
-			$invokeSuper.call(this, arguments);
+			dorado.widget.Component.prototype.constructor.call(this, config);
 			var renderTo = this._renderTo, renderOn = this._renderOn;
 			if(renderTo || renderOn) {
 				$setTimeout(this, function() {
@@ -464,6 +461,7 @@
 				}, 0);
 			}
 		},
+		
 		onReady : function() {
 			if(this._innerControls) {
 				jQuery.each(this._innerControls, function(i, control) {
@@ -471,8 +469,9 @@
 						control.onReady();
 				});
 			}
-			$invokeSuper.call(this, arguments);
+			$invokeSuper.call(this);
 		},
+		
 		destroy : function() {
 			if(this._innerControls) {
 				jQuery.each(this._innerControls.slice(0, -1), function(i, control) {
@@ -490,26 +489,25 @@
 
 			var dom = this._dom;
 			if(dom) {
-				$dom = $fly(dom);
-				$dom.removeData("doradoControl");
 				try {
 					dom.doradoUniqueId = null;
 				} catch (e) {
 					// do nothing
 				}
-				if(!isClosed)
-					$dom.remove();
+				if(!isClosed) $fly(dom).remove();
 			}
-			$invokeSuper.call(this, arguments);
+			$invokeSuper.call(this);
 		},
+		
 		doSet : function(attr, value) {
-			$invokeSuper.call(this, arguments);
+			$invokeSuper.call(this, [attr, value]);
 			if(!this._rendered) return;
 			var def = this.ATTRIBUTES[attr];
-			if((this._visible || attr == "visible") && this._ignoreRefresh < 1 && def && !def.skipRefresh) {
+			if(!this._duringRefreshDom && (this._visible || attr == "visible") && this._ignoreRefresh < 1 && def && !def.skipRefresh) {
 				dorado.Toolkits.setDelayedAction(this, "$refreshDelayTimerId", this.refresh, 50);
 			}
 		},
+		
 		setActualVisible : function(actualVisible) {
 			if(this._actualVisible != actualVisible) {
 				var oldVisible = this.isActualVisible();
@@ -519,9 +517,11 @@
 				}
 			}
 		},
+		
 		isActualVisible : function() {
 			return this._parentActualVisible && this._actualVisible && this._visible && this._layoutConstraint != dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT;
 		},
+		
 		onActualVisibleChange : function() {
 
 			function notifyChildren(control, actualVisible) {
@@ -544,6 +544,7 @@
 
 			notifyChildren(this, actualVisible);
 		},
+		
 		refresh : function(delay) {
 			if(this._duringRefreshDom || !this._rendered || (!this._attached && this.renderUtilAttached)) return;
 
@@ -603,6 +604,7 @@
 				}
 			}
 		},
+		
 		/**
 		 * 根据控件自身的属性设定来刷新DOM对象。
 		 * <p>
@@ -611,8 +613,7 @@
 		 * @param {HTMLElement} dom 控件对应的DOM对象。
 		 */
 		refreshDom : function(dom) {
-			if(!this.selectable)
-				$DomUtils.disableUserSelection(dom);
+			if(!this.selectable) $DomUtils.disableUserSelection(dom);
 
 			try {
 				dom.doradoUniqueId = this._uniqueId;
@@ -662,18 +663,21 @@
 
 			this.applyDraggable(dom);
 			this.applyDroppable(dom);
-			$invokeSuper.call(this, arguments);
+			$invokeSuper.call(this, [dom]);
 
 			this._currentVisible = !!this._visible;
 		},
+		
 		getRealWidth : function() {
 			if(this._width == "none") return null;
 			return (this._realWidth == null) ? this._width : this._realWidth;
 		},
+		
 		getRealHeight : function() {
 			if(this._height == "none") return null;
 			return (this._realHeight == null) ? this._height : this._realHeight;
 		},
+		
 		/**
 		 * 重新设置控件DOM元素的尺寸。
 		 * @protected
@@ -681,7 +685,7 @@
 		 */
 		resetDimension : function() {
 			if(this._skipResetDimension) return;
-			var changed = $invokeSuper.call(this, arguments) || !this._fixedWidth || !this._fixedHeight;
+			var changed = $invokeSuper.call(this) || !this._fixedWidth || !this._fixedHeight;
 			if((changed || !this._currentVisible) && this._visible) {
 				this._skipResetDimension = true;
 				this.onResize();
@@ -689,6 +693,7 @@
 			}
 			return changed;
 		},
+		
 		/**
 		 * 向控件所在的布局管理器通知本控件的尺寸已经发生了变化。
 		 * @protected
@@ -702,6 +707,7 @@
 				}, 200);
 			}
 		},
+		
 		/**
 		 * 返回控件对应的DOM对象。
 		 * @return {HTMLElement} 控件对应的DOM对象。
@@ -709,42 +715,74 @@
 		getDom : function() {
 			if(!this._dom) {
 				var dom = this._dom = this.createDom();
-				var $dom = $fly(this._dom);
-				if(this._inherentClassName) {
-					$dom.addClass(this._inherentClassName);
-				}
-				if(this._className) {
-					$dom.addClass(this._className);
-				}
+				
+				var className = (this._inherentClassName) ? this._inherentClassName : "";
+				if (this._className) className += (" " + this._className);
+				if (className) dom.className = className;
+				if (this.focusable) dom.tabIndex = 1;
 
 				var self = this;
-				$dom.data("doradoControl", this).click(function(evt) {
-					if(!self.processDefaultMouseListener()) return;
-					var defaultReturnValue;
-					if (self.onClick) {
-						defaultReturnValue = self.onClick(evt);
+				$fly(this._dom).mousedown(function(evt) {
+					if (!self._eventBinded) {
+						self._eventBinded = true;
+						
+						jQuery(this).click(function(evt) {
+							if (!self.processDefaultMouseListener()) return;
+							var defaultReturnValue;
+							if (self.onClick) {
+								defaultReturnValue = self.onClick(evt);
+							}
+							var arg = {
+								button: evt.button,
+								event: evt,
+								returnValue: defaultReturnValue
+							}
+							self.fireEvent("onClick", self, arg);
+							return arg.returnValue;
+						}).bind("dblclick", function(evt) {
+							if (!self.processDefaultMouseListener()) return;
+							var defaultReturnValue;
+							if (self.onDoubleClick) {
+								defaultReturnValue = self.onDoubleClick(evt);
+							}
+							var arg = {
+								button: evt.button,
+								event: evt,
+								returnValue: defaultReturnValue
+							}
+							self.fireEvent("onDoubleClick", self, arg);
+							return arg.returnValue;
+						}).mouseup(function(evt) {
+							if (!self.processDefaultMouseListener()) return;
+							var defaultReturnValue;
+							if (self.onMouseUp) {
+								defaultReturnValue = self.onMouseUp(evt);
+							}
+							var arg = {
+								button: evt.button,
+								event: evt,
+								returnValue: defaultReturnValue
+							}
+							self.fireEvent("onMouseUp", self, arg);
+							return arg.returnValue;
+						}).bind("contextmenu", function(evt) {
+							evt = jQuery.event.fix(evt || window.event);
+							var eventArg = {
+								event: evt,
+								processDefault: true
+							};
+							if (self.getListenerCount("onContextMenu")) {
+								eventArg.processDefault = false;
+								self.fireEvent("onContextMenu", self, eventArg);
+							}
+							if (!eventArg.processDefault) {
+								evt.preventDefault();
+								evt.returnValue = false;
+								return false;
+							}
+						});
 					}
-					var arg = {
-						button : evt.button,
-						event : evt,
-						returnValue: defaultReturnValue
-					}
-					self.fireEvent("onClick", self, arg);
-					return arg.returnValue;
-				}).bind("dblclick", function(evt) {
-					if(!self.processDefaultMouseListener()) return;
-					var defaultReturnValue;
-					if (self.onDoubleClick) {
-						defaultReturnValue = self.onDoubleClick(evt);
-					}
-					var arg = {
-						button : evt.button,
-						event : evt,
-						returnValue: defaultReturnValue
-					}
-					self.fireEvent("onDoubleClick", self, arg);
-					return arg.returnValue;
-				}).mousedown(function(evt) {
+					
 					if(evt.srcElement != lastMouseDownTarget || (new Date() - lastMouseDownTimestamp) > 500) {
 						dorado.widget.setFocusedControl(self);
 						lastMouseDownTarget = evt.srcElement;
@@ -762,49 +800,25 @@
 					}
 					self.fireEvent("onMouseDown", self, arg);
 					return arg.returnValue;
-				}).mouseup(function(evt) {
-					if(!self.processDefaultMouseListener()) return;
-					var defaultReturnValue;
-					if (self.onMouseUp) {
-						defaultReturnValue = self.onMouseUp(evt);
-					}
-					var arg = {
-						button : evt.button,
-						event : evt,
-						returnValue: defaultReturnValue
-					}
-					self.fireEvent("onMouseUp", self, arg);
-					return arg.returnValue;
-				}).bind("contextmenu", function(evt) {
-					evt = jQuery.event.fix(evt || window.event);
-					var eventArg = {
-						event : evt,
-						processDefault : true
-					};
-					if(self.getListenerCount("onContextMenu")) {
-						eventArg.processDefault = false;
-						self.fireEvent("onContextMenu", self, eventArg);
-					}
-					if(!eventArg.processDefault) {
-						evt.preventDefault();
-						evt.returnValue = false;
-						return false;
-					}
 				});
-				if(this.focusable) dom.tabIndex = 1;
-				this.fireEvent("onCreateDom", this, {
-					dom : dom
-				});
+				
+				if (this.getListenerCount("onCreateDom")) {
+					this.fireEvent("onCreateDom", this, {
+						dom: dom
+					});
+				}
 			}
 			return this._dom;
 		},
+		
 		processDefaultMouseListener : function() {
 			return !this._disabled;
 		},
+		
 		doRenderToOrReplace : function(replace, element, nextChildElement) {
 			var renderTarget = this._renderTo || this._renderOn;
 
-			$invokeSuper.call(this, arguments);
+			$invokeSuper.call(this, [replace, element, nextChildElement]);
 
 			var dom = this._dom;
 			if(!dom) return;
@@ -831,6 +845,7 @@
 			}
 			if(!this._ready) this.onReady();
 		},
+		
 		/**
 		 * 当控件所对应的HTML元素被真正的添加(相当于appendChild)到HTML的dom树中时激活的方法。
 		 * <p>
@@ -863,6 +878,7 @@
 				}
 			}
 		},
+		
 		/**
 		 * 当控件所对应的HTML元素被从(相当于removeChild)到HTML的dom树中分离时激活的方法。
 		 * <p>
@@ -885,6 +901,7 @@
 				}
 			}
 		},
+		
 		/**
 		 * 将一个给定控件注册为本控件的内部控件。
 		 * <p>
@@ -900,8 +917,7 @@
 		 * @protected
 		 */
 		registerInnerControl : function(control) {
-			if(!this._innerControls)
-				this._innerControls = [];
+			if(!this._innerControls) this._innerControls = [];
 			this._innerControls.push(control);
 			if(this._attached) 	control.onAttachToDocument();
 			control._isInnerControl = true;
@@ -910,23 +926,23 @@
 
 			if(control.parentChanged) control.parentChanged();
 		},
+		
 		/**
 		 * 注销一个给定的内部控件。
 		 * @param {dorado.widget.Control} control 内部控件。
 		 * @protected
 		 */
 		unregisterInnerControl : function(control) {
-			if(!this._innerControls)
-				return;
+			if(!this._innerControls) return;
 			control.onDetachFromDocument();
 			this._innerControls.remove(control);
 			control._parent = control._focusParent = null;
 			control.set("view", null);
 			delete control._isInnerControl;
 
-			if(control.parentChanged)
-				control.parentChanged();
+			if(control.parentChanged) control.parentChanged();
 		},
+		
 		parentChanged : function() {
 			var parent = this._parent;
 			var parentActualVisible = (parent) ? parent.isActualVisible() : true;
@@ -934,6 +950,7 @@
 				this.onActualVisibleChange();
 			}
 		},
+		
 		/**
 		 * @name dorado.widget.Control#onResize
 		 * @function
@@ -945,8 +962,7 @@
 		 * </p>
 		 */
 		onResize : function() {
-			if(this._skipResize)
-				return;
+			if(this._skipResize) return;
 
 			if(!this.isActualVisible()) {
 				this._shouldResizeOnVisible = true;
@@ -954,9 +970,9 @@
 			}
 			this._shouldResizeOnVisible = false;
 
-			if(this.doOnResize)
-				this.doOnResize.apply(this, arguments);
+			if(this.doOnResize) this.doOnResize.apply(this, arguments);
 		},
+		
 		/**
 		 * 根据给定的类型需要最靠近此控件的父控件。
 		 * @param {Prototype} type 要需要的父控件的类型。
@@ -975,19 +991,13 @@
 			}
 			return null;
 		},
+		
 		/**
-		 * 使控件获得控制焦点。
+		 * 返回可聚焦的子控件的集合。
+		 * @return {[dorado.widget.Control]} 可聚焦的子控件的集合。
 		 */
-		setFocus : function() {
-			var dom = this._dom;
-			if(dom)
-				setTimeout(function() {
-					try {
-						dom.focus();
-					} catch (e) {
-					}
-				}, 0);
-		},
+		getFocusableSubControls: dorado._NULL_FUNCTION,
+				
 		/**
 		 * 返回控件当前是否可以接收控制焦点成为当前控件。
 		 * @param {boolean} [deep] 是否要分析控件各层父控件已确定该控件自身当前是否可以获得焦点。默认为false。
@@ -995,44 +1005,68 @@
 		 * @return {boolean} 是否可以接收控制焦点。
 		 */
 		isFocusable : function(deep) {
-			if(!this.focusable || !this._rendered || !this.getDom() || this._disabled)
+			if (!this.focusable || !this._rendered || !this.isActualVisible() || !this.getDom() || this._disabled) {
 				return false;
-			if(deep) {
-				var parent = this._parent;
-				while(parent) {
-					if(!parent._rendered)
-						break;
-					if(parent.isChildrenFocusable && !parent.isChildrenFocusable(false))
-						return false;
-					parent = parent._parent;
-				}
 			}
 			var dom = this.getDom();
-			return !dom.disabled && dom.offsetWidth > 0;
+			if (dom.disabled || dom.offsetWidth <= 0) {
+				return false;
+			}
+			
+			if(deep) {
+				var child = this, parent = child._parent;
+				while (parent && parent != $topView) {
+					if (!parent._rendered) {
+						break;
+					}
+					if (!parent.isFocusable()) {
+						var focusableSubControls = parent.getFocusableSubControls();
+						return (focusableSubControls) ? (focusableSubControls.indexOf(child) >= 0) : false;
+					}
+					child = parent;
+					parent = child._parent;
+				}
+			}
+			return true;
 		},
+		
+		/**
+		 * 使控件获得控制焦点。
+		 */
+		setFocus : function() {
+			var dom = this._dom;
+			if (dom) {
+				setTimeout(function() {
+					try {
+						dom.focus();
+					} catch (e) {
+					}
+				}, 0);
+			}
+		},
+		
 		/**
 		 * 当控件获得控制焦点时被激活的方法。
 		 * @protected
 		 */
 		onFocus : function() {
 			this._focused = true;
-			if(this.doOnFocus)
-				this.doOnFocus();
-			if(this._className)
-				$fly(this.getDom()).addClass(this._className + "-focused");
+			if(this.doOnFocus) this.doOnFocus();
+			if(this._className) $fly(this.getDom()).addClass(this._inherentClassName + "-focused").addClass(this._className + "-focused");
 			this.fireEvent("onFocus", this);
 		},
+		
 		/**
 		 * 当控件失去控制焦点时被激活的方法。
 		 * @protected
 		 */
 		onBlur : function() {
 			this._focused = false;
-			if(this.doOnBlur)
-				this.doOnBlur();
-			$fly(this.getDom()).removeClass(this._className + "-focused");
+			if(this.doOnBlur) this.doOnBlur();
+			$fly(this.getDom()).removeClass(this._inherentClassName + "-focused").removeClass(this._className + "-focused");
 			this.fireEvent("onBlur", this);
 		},
+		
 		/**
 		 * 当控件拥有控制焦点，并且用户按下任何键盘键（包括系统按钮，如箭头键和功能键）时被激活的方法。
 		 * @param {Event} evt DHTML事件中的Event对象。
@@ -1041,7 +1075,7 @@
 		 * <ul>
 		 * <li>true - 表示允许将此事件进一步通知给上层控件（指此控件的focusParent属性指向的控件）。</li>
 		 * <li>false - 表示禁止将此事件进一步通知给上层控件，同时终止浏览器对此键盘操作的默认响应处理。</li>
-		 * <li>不定义返回值 - 表示禁止将此事件进一步通知给上层控件。</li>
+		 * <li>不定义返回值 - 表示禁止将此事件进一步通知给上层控件，但不中断浏览器对此键盘操作的默认响应处理。</li>
 		 * </ul>
 		 * @protected
 		 */
@@ -1067,6 +1101,7 @@
 			if(fp && dorado.widget.disableKeyBubble != fp) b = fp.onKeyDown(evt);
 			return b;
 		},
+		
 		/**
 		 * 当控件拥有控制焦点，并且用户按下并放开任何字母数字键时被激活的方法。
 		 * @param {Event} evt DHTML事件中的Event对象。
@@ -1075,7 +1110,7 @@
 		 * <ul>
 		 * <li>true - 表示允许将此事件进一步通知给上层控件（指此控件的focusParent属性指向的控件）。</li>
 		 * <li>false - 表示禁止将此事件进一步通知给上层控件，同时终止浏览器对此键盘操作的默认响应处理。</li>
-		 * <li>不定义返回值 - 表示禁止将此事件进一步通知给上层控件。</li>
+		 * <li>不定义返回值 - 表示禁止将此事件进一步通知给上层控件，但不中断浏览器对此键盘操作的默认响应处理。</li>
 		 * </ul>
 		 * @protected
 		 */
@@ -1101,6 +1136,7 @@
 			if(fp && dorado.widget.disableKeyBubble != fp) b = fp.onKeyPress(evt);
 			return b;
 		},
+		
 		initDraggingInfo : function(draggingInfo, evt) {
 			$invokeSuper.call(this, arguments);
 			draggingInfo.set({
@@ -1108,6 +1144,7 @@
 				sourceControl : this
 			});
 		},
+		
 		onDraggingSourceOver : function(draggingInfo, evt) {
 			draggingInfo.set({
 				targetObject : this,
@@ -1115,6 +1152,7 @@
 			});
 			return $invokeSuper.call(this, arguments);
 		},
+		
 		onDraggingSourceOut : function(draggingInfo, evt) {
 			var retval = $invokeSuper.call(this, arguments);
 			draggingInfo.set({
@@ -1129,8 +1167,7 @@
 	dorado.widget.focusedControl = [];
 
 	dorado.widget.onControlGainedFocus = function(control) {
-		if(dorado.widget.focusedControl && dorado.widget.focusedControl.peek() == control)
-			return;
+		if(dorado.widget.focusedControl && dorado.widget.focusedControl.peek() == control) return;
 		var ov = dorado.widget.focusedControl;
 		var nv = [];
 		if(control) {
@@ -1138,8 +1175,7 @@
 			while(c) {
 				nv.push(c);
 				var focusParent = c.get("focusParent");
-				if(!focusParent)
-					break;
+				if(!focusParent) break;
 				c = focusParent;
 			}
 			nv = nv.reverse();
@@ -1148,23 +1184,19 @@
 		var i = ov.length - 1;
 		for(; i >= 0; i--) {
 			var o = ov[i];
-			if(o == nv[i])
-				break;
-			if(o.onBlur)
-				o.onBlur();
+			if(o == nv[i]) break;
+			if(o.onBlur) o.onBlur();
 		}
 
 		dorado.widget.focusedControl = nv;
 		i++;
 		for(; i < nv.length; i++) {
-			if(nv[i].onFocus)
-				nv[i].onFocus();
+			if(nv[i].onFocus) nv[i].onFocus();
 		}
 	};
 
 	dorado.widget.onControlLostFocus = function(control) {
-		if(!control.get("focused"))
-			return;
+		if(!control.get("focused")) return;
 		do {
 			control = control.get("focusParent");
 		} while (control && !control.isFocusable());
@@ -1172,8 +1204,7 @@
 	};
 
 	dorado.widget.setFocusedControl = function(control) {
-		if(dorado.widget.focusedControl && dorado.widget.focusedControl.peek() == control)
-			return;
+		if(dorado.widget.focusedControl && dorado.widget.focusedControl.peek() == control) return;
 		while(control && !control.isFocusable()) {
 			control = control.get("focusParent");
 		}
@@ -1190,8 +1221,7 @@
 	dorado.widget.getMainFocusedControl = function() {
 		var v = dorado.widget.focusedControl;
 		for(var i = v.length - 1; i >= 0; i--) {
-			if(!v[i]._focusParent)
-				return v[i];
+			if(!v[i]._focusParent) return v[i];
 		}
 		return v[0];
 	};
@@ -1200,120 +1230,97 @@
 		var v = dorado.widget.focusedControl;
 		return v.peek();
 	};
-
-	dorado.widget.findFocusableControlInElement = function(element) {
-
-		function findInChildren(element) {
-			var el = element.firstChild, control = null;
-			while(el) {
-				control = findInChildren(el);
-				if(control)
-					break;
-				if(el.doradoUniqueId) {
-					c = dorado.widget.Component.ALL[el.doradoUniqueId];
-					if(c && c.isFocusable()) {
-						control = c;
-						break;
+	
+	function findFocusableControl(control, options) {
+		var focusableControls, subControls = control.getFocusableSubControls();
+		if (control.isFocusable()) {
+			focusableControls = [control];
+		}
+		if (subControls && subControls.length){
+			if (focusableControls) {
+				focusableControls = focusableControls.concat(subControls);
+			}
+			else {
+				focusableControls = subControls;
+			}
+		}
+		
+		var focusableControl = null;
+		if (focusableControls) {
+			var reverse = false, from = null;
+			if (options) {
+				reverse = options.reverse;
+				from = options.from;
+			}
+			
+			if (reverse) focusableControls.reverse();
+			var start = 0;
+			if (from) start = focusableControls.indexOf(from) + 1;
+			
+			for (var i = start; i < focusableControls.length; i++) {
+				var c = focusableControls[i];
+				if (c && c instanceof dorado.widget.Control) {
+					if (c == control) {
+						focusableControl = c;
+					} else {
+						focusableControl = findFocusableControl(c, {
+							reverse: reverse
+						});
 					}
-				}
-				el = el.nextSibling;
-			}
-			return control;
-		}
-
-		return findInChildren(element);
-	};
-	function findFirstChild(c) {
-		var t = null;
-		if( c instanceof dorado.widget.Container && c.isChildrenFocusable()) {
-			var it = c._children.iterator();
-			while(it.hasNext()) {
-				t = it.next();
-				if( t instanceof dorado.widget.Control && t.isFocusable()) {
-					t = findFirstChild(t);
-					if(t)
-						break;
+					if (focusableControl) break;
 				}
 			}
 		}
-		if(!t && c.isFocusable())
-			t = c;
-		return t;
+		return focusableControl;
+	};
+	
+	function findNext(from) {
+		var control = null, parent = from._parent;
+		if (parent) {
+			control = findFocusableControl(parent, {
+				from: from
+			});
+		}
+		return control;
 	};
 
-	function findNext(c) {
-		var p = c._parent;
-		if(p && p._children) {
-			var it = p._children.iterator(c);
-			while(it.hasNext()) {
-				var t = it.next();
-				if( t instanceof dorado.widget.Control && t.isFocusable()) {
-					t = findFirstChild(t);
-					if(t)
-						return t;
-				}
-			}
+	function findPrevious(from) {
+		var control = null, parent = from._parent;
+		if (parent) {
+			control = findFocusableControl(parent, {
+				from: from,
+				reverse: true
+			});
 		}
-		return null;
+		return control;
 	};
 
-	function findLastChild(c) {
-		var t = null;
-		if( c instanceof dorado.widget.Container && c.isChildrenFocusable()) {
-			var it = c._children.iterator();
-			it.last();
-			while(it.hasPrevious()) {
-				t = it.previous();
-				if( t instanceof dorado.widget.Control && t.isFocusable()) {
-					t = findLastChild(t);
-					if(t)
-						break;
-				}
-			}
+	dorado.widget.findNextFocusableControl = function(from) {
+		var from = from || dorado.widget.getFocusedControl();
+		while (from) {
+			var control = findNext(from);
+			if (control) control = findFocusableControl(control);
+			if (control) return control;
+			from = from._parent;
 		}
-		if(!t && c.isFocusable())
-			t = c;
-		return t;
-	};
-
-	function findPrevious(c) {
-		var p = c._parent;
-		if(p && p._children) {
-			var it = p._children.iterator(c);
-			while(it.hasPrevious()) {
-				var t = it.previous();
-				if( t instanceof dorado.widget.Control && t.isFocusable()) {
-					t = findLastChild(t);
-					if(t)
-						return t;
-				}
-			}
-		}
-		return null;
-	};
-
-
-	dorado.widget.findNextFocusableControl = function(control) {
-		var c = control || dorado.widget.getMainFocusedControl();
-		while(c) {
-			var t = findNext(c);
-			if(t)
-				return t;
-			c = c._parent;
-		}
-		return findFirstChild(dorado.widget.View.TOP);
+		return findFocusableControl($topView);
 	};
 
 	dorado.widget.findPreviousFocusableControl = function(control) {
-		var c = control || dorado.widget.getMainFocusedControl();
-		while(c) {
-			var t = findPrevious(c);
-			if(t)
-				return t;
-			c = c._parent;
+		var from = from || dorado.widget.getFocusedControl();
+		while (from) {
+			var control = findPrevious(from);
+			if (control) control = findFocusableControl(control, {
+				reverse: true
+			});
+			if (control) return control;
+			from = from._parent;
 		}
-		return findLastChild(dorado.widget.View.TOP);
+		return findFocusableControl($topView, {
+			reverse: true
+		});
 	};
+	
 	/**
 	 * 根据给定的DOM对象查找其所属的Dorado控件。
 	 * <p>
@@ -1337,7 +1344,10 @@
 		function find(win, dom, className) {
 			var control = null;
 			do {
-				control = win.$fly(dom).data("doradoControl");
+				var control;
+				if (dom.doradoUniqueId) {
+					control = win.dorado.widget.Component.ALL[dom.doradoUniqueId];
+				}
 				if(control) {
 					if(className) {
 						if(control.constructor.className === className)
@@ -1360,7 +1370,7 @@
 				if(parentFrames) {
 					var frame;
 					parentFrames.each(function() {
-						if(this.contentWindow == win) {// IE8下使用===判断会失败
+						if(this.contentWindow == win) {	// IE8下使用===判断会失败
 							frame = this;
 							return false;
 						}
@@ -1381,4 +1391,5 @@
 		}
 		return find(window, element, className);
 	}
+
 })();

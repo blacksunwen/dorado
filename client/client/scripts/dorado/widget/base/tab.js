@@ -341,7 +341,6 @@
         destroy: function() {
             var tab = this, dom = tab._dom;
             if (dom) $fly(dom).remove();
-            tab._control = null;
         },
 
 		getControl: function() {
@@ -379,6 +378,14 @@
 				}
 			}
 		},
+		
+		destroy: function() {
+			if (this._control) {
+				this._control && this._control.destroy();
+			}
+			$invokeSuper.call(this);
+		},
+		
 		doGetControl: function() {
 			var result = this._control;
 			if (!result) {

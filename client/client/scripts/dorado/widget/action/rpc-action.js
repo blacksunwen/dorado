@@ -396,11 +396,11 @@
 			this._updateItems = [];
 			$invokeSuper.call(this, arguments);
 		},
+		
 		getResolveContext : function() {
 
 			function mergeValidateContext(context, contextForMerge) {
-				if(!context)
-					return contextForMerge;
+				if(!context) return contextForMerge;
 
 				if(VALIDATION_RESULT_CODE[contextForMerge.result] > VALIDATION_RESULT_CODE[context.result]) {
 					context.result = contextForMerge.result;
@@ -465,8 +465,7 @@
 				var entityFilter = options.entityFilter;
 
 				var data;
-				if(dataSet)
-					data = dataSet.queryData(dataPath, options);
+				if(dataSet) data = dataSet.queryData(dataPath, options);
 				var eventArg = {
 					updateItem : updateItem,
 					data : data

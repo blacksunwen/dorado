@@ -6,7 +6,6 @@
  */
 dorado.widget.AbstractEditor = $extend(dorado.widget.Control, /** @scope dorado.widget.AbstractEditor.prototype */ {
 	$className: "dorado.widget.AbstractEditor",
-	
 	focusable: true,
 	
 	/**
@@ -122,7 +121,7 @@ dorado.widget.AbstractEditor = $extend(dorado.widget.Control, /** @scope dorado.
 	},
 	
 	refreshDom: function(dom) {
-			$invokeSuper.call(this, arguments);
+			$invokeSuper.call(this, [dom]);
 			
 			this._bindingInfo = null;
 			if (this._dataSet) {
@@ -288,5 +287,9 @@ dorado.widget.AbstractDataEditor = $extend([dorado.widget.AbstractEditor, dorado
 			b = true;
 		}
 		return b;
+	},
+	
+	isFocusable: function() {
+		return $invokeSuper.call(this) && !(this._readOnly || this._realReadOnly);
 	}
 });

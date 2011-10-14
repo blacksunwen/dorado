@@ -242,8 +242,8 @@
 				var doc = useShimDiv.ownerDocument, bodyHeight = $fly(doc).height(), bodyWidth;
 				if (dorado.Browser.msie) {
 					if (dorado.Browser.version == 6) {
-						bodyWidth = $fly(doc).width() - parseInt($fly(doc.body).css("margin-left"), 10) -
-									parseInt($fly(doc.body).css("margin-right"), 10);
+						bodyWidth = $fly(doc).width() - (parseInt($fly(doc.body).css("margin-left"), 10) || 0)-
+									(parseInt($fly(doc.body).css("margin-right"), 10) || 0);
 						$fly(useShimDiv).width(bodyWidth - 2).height(bodyHeight - 4);
 					} else if (dorado.Browser.version == 7) {
 						$fly(useShimDiv).width("100%").height(bodyHeight);

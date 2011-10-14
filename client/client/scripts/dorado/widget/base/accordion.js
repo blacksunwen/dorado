@@ -9,50 +9,51 @@
  * </p>
  * @extends dorado.widget.Control
  */
-dorado.widget.Section = $extend(dorado.widget.Control, /** @scope dorado.widget.Section.prototype */{
-    $className: "dorado.widget.Section",
-    _inherentClassName: "i-section",
+dorado.widget.Section = $extend(dorado.widget.Control, /** @scope dorado.widget.Section.prototype */ {
+	$className: "dorado.widget.Section",
+	_inherentClassName: "i-section",
+	
 	ATTRIBUTES: /** @scope dorado.widget.Section.prototype */ {
 		className: {
 			defaultValue: "d-section"
 		},
-
-        /**
-         * Section的标题栏使用的标题。
-         * @attribute
-         * @type String
-         */
+		
+		/**
+		 * Section的标题栏使用的标题。
+		 * @attribute
+		 * @type String
+		 */
 		caption: {
-            skipRefresh: true,
-            path: "_captionBar.caption"
-        },
-
-        /**
-         * Section的标题栏使用的图标。
-         * @attribute
-         * @type String
-         */
+			skipRefresh: true,
+			path: "_captionBar.caption"
+		},
+		
+		/**
+		 * Section的标题栏使用的图标。
+		 * @attribute
+		 * @type String
+		 */
 		icon: {
-            skipRefresh: true,
-            path: "_captionBar.icon"
-        },
-
-        /**
-         * Section的标题栏使用的图标的className。
-         * @attribute
-         * @type String
-         */
+			skipRefresh: true,
+			path: "_captionBar.icon"
+		},
+		
+		/**
+		 * Section的标题栏使用的图标的className。
+		 * @attribute
+		 * @type String
+		 */
 		iconClass: {
-            skipRefresh: true,
-            path: "_captionBar.iconClass"
-        },
-
-        /**
-         * Section是否可以点击。
-         * @attribute
+			skipRefresh: true,
+			path: "_captionBar.iconClass"
+		},
+		
+		/**
+		 * Section是否可以点击。
+		 * @attribute
 		 * @default false
-         * @type boolean
-         */
+		 * @type boolean
+		 */
 		disabled: {
 			setter: function(value) {
 				this._disabled = value;
@@ -64,7 +65,7 @@ dorado.widget.Section = $extend(dorado.widget.Control, /** @scope dorado.widget.
 				}
 			}
 		},
-
+		
 		visible: {
 			setter: function(value) {
 				this._visible = value;
@@ -79,7 +80,7 @@ dorado.widget.Section = $extend(dorado.widget.Control, /** @scope dorado.widget.
 				}
 			}
 		},
-
+		
 		/**
 		 * 是否可以展开，此属性存在的意义是为了那些专门用来作为一个按钮的section提供便利。
 		 * @attribute
@@ -98,28 +99,28 @@ dorado.widget.Section = $extend(dorado.widget.Control, /** @scope dorado.widget.
 				}
 			}
 		},
-
+		
 		/**
-         * 该Section绑定的Control
-         * @attribute
-         * @type dorado.widget.Control
-         */
+		 * 该Section绑定的Control
+		 * @attribute
+		 * @type dorado.widget.Control
+		 */
 		control: {
 			componentReference: true,
 			innerComponent: "",
-			setter: function(value){
+			setter: function(value) {
 				var oldValue = this._value;
 				if (oldValue) {
 					this.unregisterInnerControl(oldValue);
 					oldValue.destroy();
 				}
-                if (value instanceof dorado.widget.Menu) {
-                    value.set("floating", false);
-                }
+				if (value instanceof dorado.widget.Menu) {
+					value.set("floating", false);
+				}
 				this._control = value;
 			}
 		},
-
+		
 		/**
 		 * 用户自定义数据。
 		 * @type Object
@@ -127,7 +128,7 @@ dorado.widget.Section = $extend(dorado.widget.Control, /** @scope dorado.widget.
 		 */
 		userData: {}
 	},
-
+	
 	EVENTS: /** @scope dorado.widget.Section.prototype */ {
 		/**
 		 * 当Caption被点击以后会触发的事件，对于expandable为false的Section比较有用。
@@ -138,43 +139,41 @@ dorado.widget.Section = $extend(dorado.widget.Control, /** @scope dorado.widget.
 		 */
 		onCaptionClick: {}
 	},
-
+	
 	createDom: function() {
 		var section = this, doms = {}, dom = $DomUtils.xCreate({
 			tagName: "div",
 			className: "i-section " + section._className,
-			content: [
-				{
-					tagName: "div",
-					className: "container",
-					contextKey: "container"
-				}
-			]
+			content: [{
+				tagName: "div",
+				className: "container",
+				contextKey: "container"
+			}]
 		}, null, doms);
-
+		
 		section._doms = doms;
-
+		
 		jQuery(dom).addClassOnHover("hover-section");
-
+		
 		var captionBar = section._captionBar = new dorado.widget.CaptionBar({
 			caption: section._caption,
 			className: "d-section-caption-bar",
 			icon: section._icon,
-            iconClass: section._iconClass
+			iconClass: section._iconClass
 		});
 		captionBar.render(dom, doms.container);
 		section.registerInnerControl(captionBar);
-
+		
 		doms.captionBar = captionBar._dom;
-
+		
 		return dom;
 	},
-	doRenderControl: function(){
+	
+	doRenderControl: function() {
 		var section = this, doms = section._doms, control = section._control;
 		if (control) {
 			section.registerInnerControl(control);
 			control.render(doms.container);
-
 			control.set("visible", true);
 		}
 	}
@@ -188,19 +187,21 @@ dorado.widget.Section = $extend(dorado.widget.Control, /** @scope dorado.widget.
  * </p>
  * @extends dorado.widget.Control
  */
-dorado.widget.Accordion = $extend(dorado.widget.Control, /** @scope dorado.widget.Accordion.prototype */{
+dorado.widget.Accordion = $extend(dorado.widget.Control, /** @scope dorado.widget.Accordion.prototype */ {
 	$className: "dorado.widget.Accordion",
-    _inherentClassName: "i-accordion",
+	_inherentClassName: "i-accordion",
+	focusable: true,
+	
 	ATTRIBUTES: /** @scope dorado.widget.Accordion.prototype */ {
 		className: {
 			defaultValue: "d-accordion"
 		},
-
-        /**
+		
+		/**
 		 * Accordion中的Section。
-         * @attribute
-         * @type dorado.widget.Section[]
-         */
+		 * @attribute
+		 * @type dorado.widget.Section[]
+		 */
 		sections: {
 			innerComponent: "Section",
 			setter: function(value) {
@@ -215,85 +216,86 @@ dorado.widget.Accordion = $extend(dorado.widget.Control, /** @scope dorado.widge
 				}
 			}
 		},
-
+		
 		height: {
 			defaultValue: 400
 		},
-
-        /**
+		
+		/**
 		 * 当前的Section。
-         * @attribute
-         * @type dorado.widget.Section
-         */
+		 * @attribute
+		 * @type dorado.widget.Section
+		 */
 		currentSection: {
-			setter: function(value){
+			setter: function(value) {
 				this.doSetCurrentSection(value);
 			}
 		}
 	},
-	EVENTS: /** @scope dorado.widget.Accordion.prototype */{
+	
+	EVENTS: /** @scope dorado.widget.Accordion.prototype */ {
 		/**
-         * 在currentSection进行切换之前触发的事件，在这个事件里面currentSection属性还是切换之前的Section。
-         *
+		 * 在currentSection进行切换之前触发的事件，在这个事件里面currentSection属性还是切换之前的Section。
+		 *
 		 * @param {Object} self 事件的发起者，即组件本身。
 		 * @param {Object} arg 事件参数。
-         * @param {dorado.widget.Section} arg.newSection 要切换到的Section。
-	     * @param {dorado.widget.Section} arg.oldSection 当前Section。
+		 * @param {dorado.widget.Section} arg.newSection 要切换到的Section。
+		 * @param {dorado.widget.Section} arg.oldSection 当前Section。
 		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 		 * @event
 		 */
 		beforeCurrentSectionChange: {},
-
+		
 		/**
-         * 在currentSection进行切换之前触发的事件，在这个事件里面currentSection属性还是切换之前的Section。
-         *
+		 * 在currentSection进行切换之前触发的事件，在这个事件里面currentSection属性还是切换之前的Section。
+		 *
 		 * @param {Object} self 事件的发起者，即组件本身。
 		 * @param {Object} arg 事件参数。
-         * @param {dorado.widget.Section} arg.newSection 要切换到的Section。
-	     * @param {dorado.widget.Section} arg.oldSection 切换之前的Section。
+		 * @param {dorado.widget.Section} arg.newSection 要切换到的Section。
+		 * @param {dorado.widget.Section} arg.oldSection 切换之前的Section。
 		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 		 * @event
 		 */
 		onCurrentSectionChange: {}
 	},
-
+	
 	doSetCurrentSection: function(section, animate) {
 		var accordion = this, lastCurrent = accordion._currentSection, newCurrent = section;
-
+		
 		if (lastCurrent == newCurrent) {
 			return;
 		}
-
+		
 		if (!accordion._rendered) {
 			accordion._currentSection = newCurrent;
 			return;
 		}
-
+		
 		var eventArg = {
 			newSection: section,
 			oldSection: lastCurrent
 		};
 		accordion.fireEvent("beforeCurrentSectionChange", accordion, eventArg);
-
+		
 		if (eventArg.processDefault === false) {
 			return;
 		}
-
+		
 		if (animate) {
 			var lastCurrentCt = lastCurrent._doms.container, oldHeight = $fly(lastCurrentCt).height();
 			$fly(lastCurrentCt).dockable("bottom", true);
-
+			
 			accordion._sliding = true;
-
+			
 			$fly(newCurrent._doms.container).safeSlideIn({
 				direction: "t2b",
 				complete: function() {
 					$fly(lastCurrentCt).height(oldHeight).css("display", "").undockable(true);
-
+					
 					accordion._currentSection = newCurrent;
 					accordion.refresh();
 					accordion.fireEvent("onCurrentSectionChange", accordion, newCurrent);
-
+					
 					accordion._sliding = false;
 				},
 				step: function(now, animate) {
@@ -308,7 +310,7 @@ dorado.widget.Accordion = $extend(dorado.widget.Control, /** @scope dorado.widge
 			accordion.fireEvent("onCurrentSectionChange", accordion, eventArg);
 		}
 	},
-
+	
 	changeToAvialableSection: function() {
 		var accordion = this, sections = accordion._sections;
 		if (sections) {
@@ -333,7 +335,7 @@ dorado.widget.Accordion = $extend(dorado.widget.Control, /** @scope dorado.widge
 		}
 		return null;
 	},
-
+	
 	getVisibleSectionCount: function() {
 		var accordion = this, sections = accordion._sections, result = 0;
 		if (sections) {
@@ -347,7 +349,7 @@ dorado.widget.Accordion = $extend(dorado.widget.Control, /** @scope dorado.widge
 		}
 		return result;
 	},
-
+	
 	/**
 	 * 为Accordion插入Section。
 	 * @param {Object|dorado.widget.Section} section 要插入的Section或者Section的配置信息。
@@ -358,7 +360,7 @@ dorado.widget.Accordion = $extend(dorado.widget.Control, /** @scope dorado.widge
 		if (!sections) {
 			accordion._sections = sections = [];
 		}
-		if (typeof section == "object" && section.constructor == Object.prototype.constructor){
+		if (typeof section == "object" && section.constructor == Object.prototype.constructor) {
 			section = new dorado.widget.Section(section);
 		}
 		if (typeof index == "number") {
@@ -371,11 +373,11 @@ dorado.widget.Accordion = $extend(dorado.widget.Control, /** @scope dorado.widge
 			section.render(accordion._dom, refDom);
 			accordion.registerInnerControl(section);
 			accordion.bindAction(section);
-
+			
 			accordion.refresh();
 		}
 	},
-
+	
 	/**
 	 * 移除一个Section。
 	 * @param {int|dorado.widget.Section} section 要移除的Section或者Section的索引。
@@ -390,12 +392,12 @@ dorado.widget.Accordion = $extend(dorado.widget.Control, /** @scope dorado.widge
 				if (accordion._rendered) {
 					accordion.unregisterInnerControl(section);
 					section.destroy();
-
+					
 					if (section == accordion._currentSection) {
 						accordion.changeToAvialableSection();
 					}
 					sections.remove(section);
-
+					
 					accordion.refresh();
 				} else {
 					sections.remove(section);
@@ -403,7 +405,7 @@ dorado.widget.Accordion = $extend(dorado.widget.Control, /** @scope dorado.widge
 			}
 		}
 	},
-
+	
 	/**
 	 * 删除掉所有的Section。
 	 */
@@ -419,7 +421,7 @@ dorado.widget.Accordion = $extend(dorado.widget.Control, /** @scope dorado.widge
 			accordion._sections = [];
 		}
 	},
-
+	
 	bindAction: function(section) {
 		var accordion = this;
 		section._captionBar.addListener("onClick", function() {
@@ -432,12 +434,12 @@ dorado.widget.Accordion = $extend(dorado.widget.Control, /** @scope dorado.widge
 			}
 		});
 	},
-
+	
 	createDom: function() {
 		var accordion = this, dom = document.createElement("div"), sections = accordion._sections, section;
-
-        dom.className = "i-accordion " + accordion._className;
-
+		
+		dom.className = "i-accordion " + accordion._className;
+		
 		if (sections) {
 			for (var i = 0, j = sections.length; i < j; i++) {
 				section = sections[i];
@@ -446,44 +448,44 @@ dorado.widget.Accordion = $extend(dorado.widget.Control, /** @scope dorado.widge
 				accordion.bindAction(section);
 			}
 		}
-
+		
 		return dom;
 	},
-
+	
 	refreshDom: function(dom) {
 		$invokeSuper.call(this, arguments);
-
+		
 		var accordion = this, sections = accordion._sections, currentSection = accordion._currentSection;
-
+		
 		if (sections && !currentSection) {
 			currentSection = accordion.changeToAvialableSection();
 		}
-
+		
 		if (currentSection) {
 			$fly(currentSection._dom).addClass("current-section");
-            currentSection.setActualVisible(true);
+			currentSection.setActualVisible(true);
 		}
-
+		
 		var sectionMinHeight, ctHeight, accordionHeight = $fly(dom).height(), visibleCount = accordion.getVisibleSectionCount();
-
+		
 		if (sections) {
 			var section, control, sectionCt;
 			for (var i = 0, j = sections.length; i < j; i++) {
 				section = sections[i];
 				sectionCt = section._doms.container;
-
+				
 				if (currentSection != section) {
 					$fly(section._dom).removeClass("current-section");
-                    currentSection.setActualVisible(false);
+					currentSection.setActualVisible(false);
 				}
-
+				
 				if (typeof sectionMinHeight != "number") {
 					sectionMinHeight = $fly(section._dom).outerHeight(true) - sectionCt.offsetHeight;
 					ctHeight = accordionHeight - sectionMinHeight * visibleCount;
 				}
-
+				
 				$fly(sectionCt).outerHeight(ctHeight, true);
-
+				
 				control = section._control;
 				if (control) {
 					control.set({
@@ -493,9 +495,13 @@ dorado.widget.Accordion = $extend(dorado.widget.Control, /** @scope dorado.widge
 				}
 			}
 		}
-
-		if(currentSection && currentSection._control && !currentSection._control._rendered){
+		
+		if (currentSection && currentSection._control && !currentSection._control._rendered) {
 			currentSection.doRenderControl();
 		}
+	},
+	
+	getFocusableSubControls: function() {
+		return [this._currentSection ? this._currentSection._control : null];
 	}
 });
