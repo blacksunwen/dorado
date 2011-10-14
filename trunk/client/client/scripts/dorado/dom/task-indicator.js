@@ -33,7 +33,7 @@ dorado.util.TaskIndicator = {
 	registerTaskGroup: function(groupName, options) {
 		var indicator = this, taskGroups = indicator._taskGroups;
 		if (taskGroups[groupName]) {
-			//task has registered alreaday.
+			//task has registered already.
 		} else {
 			options = options || {};
 			taskGroups[groupName] = options;
@@ -137,10 +137,10 @@ dorado.util.TaskGroupPanel = $extend(dorado.RenderableElement, { /** @scope dora
 	},
 
 	constructor: function(taskGroupConfig) {
-		$invokeSuper.call(this, [{}]);
+		$invokeSuper.call(this);
 		var panel = this;
 		if (!taskGroupConfig) {
-			throw new Error("taskGrooupRequired");
+			throw new dorado.Exception("taskGrooupRequired");
 		}
 		panel.taskGroupConfig = taskGroupConfig;
 

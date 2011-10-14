@@ -177,6 +177,7 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 		 */
 		nodes: {
 			setter: function(nodes) {
+				this._root.clearChildren();
 				this._root.addNodes(nodes);
 			},
 			getter: function() {

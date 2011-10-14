@@ -51,18 +51,17 @@
 }
 
 .i-toolbar-item{
+	display: inline-block;
 	float: left;
 }
 
 .i-toolbar-sep{
-	display: inline-block;
 	cursor: default;
 	width: 10px;
 	height: 22px;
 }
 
 .i-toolbar-label{
-	display: inline-block;
 	cursor: default;
 	vertical-align: baseline;
 	height: 22px;

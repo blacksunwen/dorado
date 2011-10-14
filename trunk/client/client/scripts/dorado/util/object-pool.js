@@ -104,8 +104,7 @@ dorado.util.ObjectPool = $class(/** @scope dorado.util.ObjectPool.prototype */
 	 * 销毁对象池及其中管理的所有对象。
 	 */
 	destroy : function() {
-		if(!!this._destroyed)
-			return;
+		if(!!this._destroyed) return;
 
 		var factory = this._factory;
 

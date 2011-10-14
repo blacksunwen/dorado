@@ -1639,6 +1639,8 @@
 
 			this._processingCurrentRow = false;
 		},
+		
+		onMouseDown: dorado._NULL_FUNCTION,
 
 		onMouseUp: function(evt) {
 			var tbody1 = this._innerGrid._dataTBody, tbody2 = (this._domMode == 2) ? this._fixedInnerGrid._dataTBody : null;
@@ -1734,10 +1736,8 @@
 		},
 
 		showColumnEditor: function(column) {
-			if (this.shouldEditing(column)) {
-				if (this._domMode == 2) this._fixedInnerGrid.showColumnEditor(column);
-				this._innerGrid.showColumnEditor(column);
-			}
+			if (this._domMode == 2) this._fixedInnerGrid.showColumnEditor(column);
+			this._innerGrid.showColumnEditor(column);
 		},
 
 		getCellEditor: function(column, entity) {
@@ -2332,14 +2332,26 @@
 		showFilterPanel: function() {
 			if (!dorado.Toolkits.cancelDelayedAction(this, "$filterPanelTimerId")) {
 				var panel = this.getFloatFilterPanel(), filterBar = this._innerGrid._filterBarRow;
-				$fly(panel).hide().top(filterBar.offsetTop + filterBar.offsetHeight - 1).slideDown("fast");
+				var $panel = $fly(panel);
+				$panel.hide().top(filterBar.offsetTop + filterBar.offsetHeight - 1);
+				if (dorado.Browser.msie && dorado.Browser.version < '7') {
+					$panel.show();
+				}
+				else {
+					$panel.slideDown("fast");
+				}
 			}
 		},
 
 		hideFilterPanel: function() {
 			dorado.Toolkits.cancelDelayedAction(this, "$filterPanelTimerId");
 			var panel = this.getFloatFilterPanel(), filterBar = this._innerGrid._filterBarRow;
-			$fly(panel).slideUp("slow");
+			if (dorado.Browser.msie && dorado.Browser.version < '7') {
+				$fly(panel).hide();
+			}
+			else {
+				$fly(panel).slideUp("slow");
+			}
 		},
 		
 		getDraggableOptions: function(dom) {
@@ -3158,18 +3170,20 @@
 					}
 
 					grid._currentCell = cell;
-					if (!grid.get("readOnly")) $fly(cell).addClass("current-cell");
-
-					var currentItem = this.getCurrentItem(), cellEditor;
-					if (currentItem) cellEditor = grid._currentCellEditor = grid.getCellEditor(column, currentItem);
-					if (cellEditor) {
-						if (cellEditor.shouldShow()) cellEditor.show(this, cell);
-					} else {
-						var fc = dorado.widget.findFocusableControlInElement(cell);
-						if (fc) {
-							if (!fc.get("focused")) fc.setFocus();
+					$fly(cell).addClass("current-cell");
+					
+					if (grid.shouldEditing(column)) {
+						var currentItem = this.getCurrentItem(), cellEditor;
+						if (currentItem) cellEditor = grid._currentCellEditor = grid.getCellEditor(column, currentItem);
+						if (cellEditor) {
+							if (cellEditor.shouldShow()) cellEditor.show(this, cell);
 						} else {
-							if (!grid.get("focused")) grid.setFocus();
+							var fc = dorado.widget.findFocusableControlInElement(cell);
+							if (fc) {
+								if (!fc.get("focused")) fc.setFocus();
+							} else {
+								if (!grid.get("focused")) grid.setFocus();
+							}
 						}
 					}
 					break;

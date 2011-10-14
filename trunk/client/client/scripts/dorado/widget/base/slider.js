@@ -8,10 +8,15 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
 
 	selectable: false,
     _inherentClassName: "i-slider",
+	focusable: true,
+    
 	ATTRIBUTES: /** @scope dorado.widget.Slider.prototype */{
 		className: {
 			defaultValue: "d-slider"
-		},
+		},		
+		height: {
+			defaultValue: 20
+		},		
 		/**
 		 * 滑动条的方向，可选值为horizental和vertical，默认值为horizental
 		 * @attribute
@@ -46,16 +51,14 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
 		 */
 		value: {
             setter: function(value){
-                var slider = this, result;
+                var slider = this;
                 value = slider.getValidValue(value);
 				var eventArg = {
 					value: slider._value
 				};
-                result = slider.fireEvent("beforeValueChange", slider, eventArg);
-				if (eventArg.processDefault === false) return;
-                if(!result){
+                slider.fireEvent("beforeValueChange", slider, eventArg);
+                if(eventArg.processDefault === false){
                     slider.refresh();
-                    return false;
                 }
                 slider._value = value;
                 slider.fireEvent("onValueChange", slider);
@@ -100,10 +103,9 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
 		this._value = this.getValidValue(this._value);
 	},
 	createDom: function() {
-		var slider = this, dom, doms = {}, orientation = slider._orientation, className = slider._className;
+		var slider = this, dom, doms = {}, orientation = slider._orientation;
 		dom = $DomUtils.xCreate({
 			tagName: "div",
-			className: slider._className,
 			content: [
 				{
 					tagName: "div",
@@ -138,16 +140,7 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
 
 		slider._doms = doms;
 
-		var axis = "x";
-
-		if (orientation == "vertical") {
-			axis = "y";
-			$fly(dom).addClass("i-slider-vertical " + className + "-vertical");
-		}
-		else {
-			$fly(dom).addClass("i-slider-horizental " + className + "-horizental");
-		}
-
+		var axis = (orientation == "vertical") ? "y" : "x";
 		var tip = new dorado.widget.Tip({
 			animateType: "none",
 			showDelay: ""
@@ -300,6 +293,8 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
 		var slider = this, doms = slider._doms, orientation = slider._orientation, maxValue = slider._maxValue, minValue = slider._minValue,
 			value = slider._value, thumbSize, step = slider._step, handleIncrease = (step != null), stepCount;
 
+		$fly(dom).addClass(this._inherentClassName + "-" + orientation + " " + this._className + "-" + orientation);
+		
 		if (value == null) {
 			value = minValue;
 		}

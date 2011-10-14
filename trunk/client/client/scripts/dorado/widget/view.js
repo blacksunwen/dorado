@@ -40,7 +40,7 @@
 			
 			view: {
 				setter: function(view) {
-					this._view = view;
+					dorado.widget.Component.prototype.ATTRIBUTES.view.setter.call(this, view);
 				}
 			},
 			
@@ -112,16 +112,17 @@
 			else this._dataTypeRepository = new dorado.DataTypeRepository(dorado.DataTypeRepository.ROOT);
 			this._dataTypeRepository._view = this;
 			
-			$invokeSuper.call(this, arguments);
+			$invokeSuper.call(this, [id]);
+			if (topView) topView.addChild(this);
 		},
 		
 		destroy: function() {
 			ALL_VIEWS.remove(this);
-			$invokeSuper.call(this, arguments);
+			$invokeSuper.call(this);
 		},
 		
 		createDefaultLayout: function() {
-			if (this._id != "$TOP_VIEW") $invokeSuper.call(this, arguments);
+			if (this._id != "$TOP_VIEW") $invokeSuper.call(this);
 		},
 		
 		parentChanged: function() {
@@ -187,7 +188,7 @@
 				var dataTypeName = attr.substring(1);
 				return this.getDataType(dataTypeName);
 			} else {
-				return $invokeSuper.call(this, arguments);
+				return $invokeSuper.call(this, [attr]);
 			}
 		},
 		
@@ -252,7 +253,7 @@
 		},
 		
 		onReady: function() {
-			$invokeSuper.call(this, arguments);
+			$invokeSuper.call(this);
 			$waitFor(this._loadingDataSet, $scopify(this, this.onDataLoaded));
 			this._loadingDataSet = [];
 			
@@ -270,7 +271,7 @@
 		render: function(containerElement) {
 			var bodyWidth;
 			if (containerElement == document.body) bodyWidth = document.body.clientWidth;
-			$invokeSuper.call(this, arguments);
+			$invokeSuper.call(this, [containerElement]);
 			if (bodyWidth && bodyWidth > document.body.clientWidth) this.onResize();
 		}
 		
@@ -290,9 +291,6 @@
 	};
 	
 	var topView = new dorado.widget.View("$TOP_VIEW");
-	topView.isChildrenFocusable = function() {
-		return true;
-	};
 	
 	/**
 	 * 根视图对象。<br>
@@ -308,7 +306,7 @@
 	 * @constant
 	 * @see dorado.widget.View.TOP
 	 */
-	window.$view = topView;
+	window.$topView = topView;
 	
 	/**
 	 * 返回某给定的id，返回当前页面的所有视图(View)中于此id匹配的控件所组成的对象组。
@@ -386,9 +384,16 @@
 			return control;
 		}
 		
+		var lastFocusedControl;
+		
 		$fly(document).mousedown(function(evt) {
 			var control = getControlByElement(evt.target);
-			if (control == null) dorado.widget.setFocusedControl(null);
+			if (control == null) {
+				dorado.widget.setFocusedControl(null);
+			}
+			else if (!control._isFocused) {
+				control.setFocus();
+			}
 		}).keydown(function(evt) {
 			var b, c = dorado.widget.getFocusedControl();
 			if (c) b = c.onKeyDown(evt);
@@ -400,11 +405,13 @@
 				if (b === true) {
 					switch (evt.keyCode || evt.which) {
 						case 9: // Tab
-						case 13: // Enter
+						case 13: { // Enter
 							var c = (evt.shiftKey) ? dorado.widget.findPreviousFocusableControl() : dorado.widget.findNextFocusableControl();
-							if (c && c.isFocusable(true)) {
-								c.setFocus();
-							}
+							if (c) c.setFocus();
+							evt.preventDefault();
+							evt.cancelBubble = true;
+							return false;
+						}
 					}
 				}
 				return true;
@@ -449,6 +456,13 @@
 			$fly(window).unload(function() {
 				dorado.windowClosed = true;
 				if (!topView._destroyed) topView.destroy();
+				
+				var components = dorado.widget.Component.ALL;
+				for (var id in components) {
+					if (components.hasOwnProperty(id)) {
+						components[id].destroy();
+					}
+				}
 			}).bind("resize", function() {
 				if (topView.onResizeTimerId) {
 					clearTimeout(topView.onResizeTimerId);

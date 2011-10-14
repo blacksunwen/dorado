@@ -1,6 +1,6 @@
 (function() {
 
-	var specialFormConfigProps = ["width", "height", "className", "exClassName"];
+	var specialFormConfigProps = ["width", "height", "className", "exClassName", "visible", "hideMode"];
 	
 	var DEFAULT_OK_MESSAGES = [{
 		state: "ok"
@@ -246,9 +246,10 @@
 		onProfileChange: function() {
 			var formProfile = this._formProfile;
 			if (dorado.Object.isInstanceOf(formProfile, dorado.widget.FormProfile)) {
-				var attrs = formProfile.ATTRIBUTES, config = {};
+				var attrs = formProfile.ATTRIBUTES, attrWatcher = formProfile.getAttributeWatcher(), config = {};
 				for (var attr in attrs) {
-					if (!attrs.hasOwnProperty(attr) || attrs[attr].writeOnly) continue;
+					if (!attrs.hasOwnProperty(attr) || attrs[attr].writeOnly ||
+					(!attrWatcher.getWritingTimes(attr) && !(attrs[attr].defaultValue instanceof Function))) continue;
 					if (specialFormConfigProps.indexOf(attr) >= 0 && formProfile instanceof dorado.widget.Control) {
 						continue;
 					}
@@ -901,6 +902,15 @@
 			if (editor != null && dorado.Object.isInstanceOf(editor, dorado.widget.AbstractEditor)) {
 				editor.refreshData();
 			}
+		},
+		
+		isFocusable: function() {
+			var editor = this.getEditor();
+			return $invokeSuper.call(this) && editor.isFocusable();
+		},
+		
+		getFocusableSubControls: function() {
+			return [this.getEditor()];
 		}
 	});
 	

@@ -172,6 +172,7 @@
 			 * 当编辑器中的触发按钮被点击时触发的事件。
 			 * @param {Object} self 事件的发起者，即控件本身。
 			 * @param {Object} arg 事件参数。
+			 * @param {boolean} #arg.processDefault=true 用于通知系统是否要继续完成后续动作。
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
 			 */
@@ -221,12 +222,13 @@
 				whiteSpace = "nowrap";
 				overflow = "hidden";
 			}
-			dom.appendChild(textDom);
 			
 			var self = this;
 			jQuery(dom).addClassOnHover(this._className + "-hover", null, function() {
 				return !self.get("readOnly");
 			});
+			dom.appendChild(textDom);
+			
 			if (this._text) this.doSetText(this._text);
 			return dom;
 		},
@@ -261,17 +263,15 @@
 					this._triggersWidth += triggerButton.getDom().offsetWidth;
 				}
 				this._triggersWidth = -1;
-				this.doOnAttachToDocument = this.doOnResize;
-				if (this._attached) this.onResize();
+				this.doOnResize = this.resizeTextDom;
 			} else {
 				this._textDom.style.width = "100%";
-				delete this.doOnAttachToDocument;
-				delete this.onResize;
+				delete this.doOnResize;
 			}
 		},
 		
 		refreshDom: function(dom) {
-			$invokeSuper.call(this, arguments);
+			$invokeSuper.call(this, [dom]);
 			
 			if (this._dataSet) {
 				var value, dirty, timestamp = 0, readOnly;
@@ -349,7 +349,7 @@
 			this.fireEvent("onValidationStateChange", this);
 		},
 		
-		doOnResize: function() {
+		resizeTextDom: function() {
 			if (this._attached) {
 				if (this._triggersWidth < 0) {
 					var _triggerButtons = this._triggerButtons;
@@ -428,7 +428,12 @@
 			}, 0);
 			
 			if (this._readOnly || this._readOnly2) return;
-			if (this.fireEvent("onTriggerClick", this)) {
+			
+			var eventArg = {
+				processDefault: true
+			}
+			this.fireEvent("onTriggerClick", this, eventArg)
+			if (eventArg.processDefault) {
 				trigger.execute(this);
 			}
 		},
@@ -719,7 +724,7 @@
 		},
 		
 		createDom: function() {
-			var text = this._text, dom = $invokeSuper.call(this, arguments);
+			var text = this._text, dom = $invokeSuper.call(this);
 			if (!text) this.doSetText('');
 			return dom;
 		},
@@ -812,7 +817,7 @@
 		},
 		
 		doOnFocus: function() {
-			$invokeSuper.call(this, arguments);
+			$invokeSuper.call(this);
 			if (this._selectTextOnFocus) {
 				$setTimeout(this, function() {
 					this._textDom.select();

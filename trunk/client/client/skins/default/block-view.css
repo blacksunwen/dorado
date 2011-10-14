@@ -4,6 +4,7 @@
 }
 
 .d-block-view-focused {
+	border: 1px #303030 solid;
 }
 
 .d-block-view .block {

@@ -162,7 +162,7 @@
 			view: {
 				setter: function(view) {
 					if (this._view == view) return;
-					$invokeSuper.call(this, arguments);
+					$invokeSuper.call(this, [view]);
 					this._children.each(function(child) {
 						if (this._view) child.set("view", null);
 						child.set("view", view);
@@ -189,7 +189,7 @@
 				delete config.children;
 			}
 			
-			$invokeSuper.call(this, arguments);
+			$invokeSuper.call(this, [config]);
 			
 			if (childrenConfig) {
 				config.children = childrenConfig;
@@ -209,14 +209,14 @@
 					child.show();
 				}
 			});
-			$invokeSuper.call(this, arguments);
+			$invokeSuper.call(this);
 		},
 		
 		destroy: function() {
 			jQuery.each(this._children.toArray(), function(i, child) {
 				if (!child._destroyed) child.destroy();
 			});
-			$invokeSuper.call(this, arguments);
+			$invokeSuper.call(this);
 		},
 		
 		onActualVisibleChange: function() {
@@ -231,7 +231,7 @@
 				});
 			}
 			
-			$invokeSuper.call(this, arguments);
+			$invokeSuper.call(this);
 			notifyChildren(this, this.isActualVisible());
 		},
 
@@ -247,7 +247,7 @@
 				});
 				this.addChild(htmlContrainer);
 			}
-			$invokeSuper.call(this, arguments);
+			$invokeSuper.call(this, [replace, element]);
 		},
 		
 		/**
@@ -262,7 +262,7 @@
 			}
 			
 			this._children.insert(component);
-			if (dorado.widget.View.TOP != this) component._parent = this;
+			component._parent = this;
 			component.set("view", (this instanceof dorado.widget.View) ? this : this.get("view"));
 			if (fireParentChanged && component.parentChanged) component.parentChanged();
 			
@@ -279,6 +279,7 @@
 					}
 				}
 			}
+
 			if (!(component instanceof dorado.widget.Control) && !component._ready && this._ready) {
 				component.onReady.call(component);
 			}
@@ -293,7 +294,6 @@
 			component.set("view", null);
 			
 			component._parent = null;
-			dorado.widget.View.TOP.addChild(component);
 			if (fireParentChanged && component.parentChanged) component.parentChanged();
 			
 			if (component instanceof dorado.widget.Control) {	
@@ -359,24 +359,8 @@
 			}
 		},
 		
-		/**
-		 * 返回当前该容器中的子控件是否可以获得控制焦点。
-		 * @param {boolean} [deep] 是否要分析控件各层父控件。默认为false。
-		 * @return {boolean} 是否该容器控件中的子控件获得控制焦点。
-		 * @see dorado.widget.Control.isFocusabled
-		 */
-		isChildrenFocusable: function(deep) {
-			if (!this._rendered || !this.getDom()) return false;
-			if (deep) {
-				var parent = this._parent;
-				while (parent) {
-					if (!parent._rendered) break;
-					if (!parent.isChildrenFocusable(false)) return false;
-					parent = parent._parent;
-				}
-			}
-			var dom = this.getDom();
-			return !dom.disabled && dom.offsetWidth > 0;
+		getFocusableSubControls: function() {
+			return this._children.toArray();
 		}
 		
 	});

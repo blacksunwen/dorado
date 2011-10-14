@@ -166,12 +166,14 @@
 		"widget/tree-grid/tree-grid.js",
 		"widget/tree-grid/data-tree-grid.js",
 
+/*
 		"widget/debugger/debugger.js",
 		"widget/debugger/console.js",
 	    "widget/debugger/script.js",
 		"widget/debugger/view.js",
 		"widget/debugger/hotkeys.js",
 		"widget/debugger/ajax.js",
+*/
 		
 		"widget/advance/portal.js",
 		"widget/advance/image-canvas.js",
@@ -258,8 +260,9 @@
 		"tree.css",
 		"block-view.css",
 		"image-canvas.css",
-		"html-editor.css",
-		"debugger.css"
+		"html-editor.css"
+		
+//		"debugger.css"
 	];
 	
 	var addOnstyleSheets = [

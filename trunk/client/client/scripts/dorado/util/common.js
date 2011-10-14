@@ -162,6 +162,8 @@ dorado.util.Common = {
 		return parseFloat(ns.join(''));
 	},
 	
+	_classTypeCache: {},
+	
 	/**
 	 * 根据给定的Class类型的名称返回具体的Class的构造器。
 	 * @param {String} type Class类型的名称。
@@ -171,7 +173,11 @@ dorado.util.Common = {
 	getClassType: function(type, silence) {
 		var classType = null;
 		try {
-			classType = eval(type);
+			classType = this._classTypeCache[type];
+			if (classType === undefined) {
+				classType = eval(type);
+				this._classTypeCache[type] = (classType || null);
+			}
 		} 
 		catch (e) {
 			if (!silence) throw new dorado.ResourceException("dorado.core.UnknownType", type);

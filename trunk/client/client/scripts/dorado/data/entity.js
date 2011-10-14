@@ -800,8 +800,7 @@
 				this.setState(dorado.Entity.STATE_MODIFIED);
 			}
 
-			if(dataType && !this.disableEvents)
-				dataType.fireEvent("onDataChange", dataType, eventArg);
+			if(dataType && !this.disableEvents) dataType.fireEvent("onDataChange", dataType, eventArg);
 			this.sendMessage(dorado.Entity._MESSAGE_DATA_CHANGED, eventArg);
 		},
 		/**
@@ -1386,8 +1385,7 @@
 					}
 
 					if(pd._required && (!propertyInfo || !propertyInfo.validated)) {
-						if(!propertyInfo)
-							propertyInfoMap[property] = propertyInfo = {};
+						if(!propertyInfo)propertyInfoMap[property] = propertyInfo = {};
 						propertyInfo.validated = true;
 
 						var value = entity._data[property];
@@ -1397,8 +1395,7 @@
 								text : $resource("dorado.data.ErrorContentRequired")
 							};
 							entity.setMessages(property, [message]);
-							if(context)
-								addMessage2Context(context, this, property, message);
+							if(context) addMessage2Context(context, this, property, message);
 						}
 					}
 				});
@@ -1407,8 +1404,7 @@
 			if(simplePropertyOnly) {
 				var data = this._data;
 				for(var p in data) {
-					if(!data.hasOwnProperty(p))
-						continue;
+					if(!data.hasOwnProperty(p))continue;
 
 					var value = data[p];
 					if( value instanceof dorado.Entity) {
@@ -1443,8 +1439,7 @@
 				topResultCode = resultCode;
 				topResult = result;
 			}
-			if(context)
-				context.result = topResult;
+			if(context) context.result = topResult;
 			return topResult;
 		},
 		/**

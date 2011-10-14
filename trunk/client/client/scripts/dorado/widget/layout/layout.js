@@ -148,7 +148,7 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 		this._regions = new dorado.util.KeyedList(function(region) {
 			return region.control._id;
 		});
-		$invokeSuper.call(this, arguments);
+		$invokeSuper.call(this, [config]);
 		if (config) this.set(config);
 	},
 	
@@ -297,7 +297,7 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 	},
 	
 	renderControl: function(region, containerDom, autoWidth, autoHeight) {
-		this.resetControlDimension.apply(this, arguments);
+		this.resetControlDimension.apply(this, [region, containerDom, autoWidth, autoHeight]);
 		
 		var control = region.control;
 		if (!control._rendered || control.getDom().parentNode != containerDom) {
@@ -334,7 +334,7 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 	 * @protected
 	 * @see dorado.widget.Control#onResize
 	 */
-	onResize: function() {
+	onResize: function() {		
 		if (this._ignoreControlSizeChange || !this.doOnResize) return;
 		var containerDom = this.getDom();
 		if (containerDom.offsetWidth == 0 || containerDom.offsetHeight == 0) return;

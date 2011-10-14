@@ -766,9 +766,21 @@
 	dorado.DataPath.create = function(path) {
 		var key = path || "$EMPTY";
 		var dataPath = ENTITY_PATH_CACHE[key];
-		if(dataPath == null)
-			ENTITY_PATH_CACHE[key] = dataPath = new dorado.DataPath(path);
+		if(dataPath == null) ENTITY_PATH_CACHE[key] = dataPath = new dorado.DataPath(path);
 		return dataPath;
+	};
+	
+	/**
+	 * 对给定数据应用(执行)路径表达式，并返回表达式的执行结果。
+	 * @param {Object} data 将被应用(执行)的数据。
+	 * @param {String} path 数据路径。
+	 * @param {boolean|Object} [options] 执行选项。
+	 * @return {dorado.Entity|dorado.EntityList|any} 表达式的执行结果。
+	 * @see dorado.DataPath#evaluate
+	 */
+	dorado.DataPath.evaluate = function(data, path, options) {
+		var dataPath = dorado.DataPath.create(path);
+		return dataPath.evaluate();
 	};
 
 	dorado.DataPath.interceptors = {};

@@ -115,6 +115,7 @@ dorado.widget.tree.Node = $extend([dorado.AttributeSupport, dorado.EventSupport]
 		 */
 		nodes: {
 			setter: function(nodes) {
+				this.clearChildren();
 				this.addNodes(nodes);
 			}
 		},

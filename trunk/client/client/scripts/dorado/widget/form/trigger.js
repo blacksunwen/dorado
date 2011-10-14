@@ -7,8 +7,6 @@
 dorado.widget.Trigger = $extend(dorado.widget.Component, /** @scope dorado.widget.Trigger.prototype */ {
 	$className: "dorado.widget.Trigger",
 	
-	focusable: true,
-	
 	ATTRIBUTES: /** @scope dorado.widget.Trigger.prototype */ {
 	
 		/**

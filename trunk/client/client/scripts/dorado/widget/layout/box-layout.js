@@ -4,7 +4,7 @@
 	
 	var HBOX_ALIGNS = {
 		top: "top",
-		center: "center",
+		center: "middle",
 		bottom: "bottom"
 	}, HBOX_PACKS = {
 		start: "left",
@@ -205,9 +205,10 @@
 				i++;
 			}
 			
-			if (this._stretch && row.offsetHeight > currentHeight) {
+			var rowHeight = row.offsetHeight;
+			if (this._stretch && rowHeight > currentHeight) {
 				table.style.height = "";
-				realContainerHeight += (table.offsetHeight - currentHeight);
+				realContainerHeight += (rowHeight - currentHeight);
 				for (var it = this._regions.iterator(); it.hasNext();) {
 					var region = it.next();
 					var constraint = region.constraint;
@@ -253,10 +254,10 @@
 			},
 			
 			/**
-			 * top、center、bottom
+			 * left、center、right
 			 */
 			align: {
-				defaultValue: "center"
+				defaultValue: "left"
 			}
 		},
 		
@@ -424,8 +425,9 @@
 				i++;
 			}
 			
-			if (this._stretch && table.offsetWidth > currentWidth) {
-				realContainerWidth += (table.offsetWidth - currentWidth);
+			var tableWidth = table.offsetWidth;
+			if (this._stretch && tableWidth > currentWidth) {
+				realContainerWidth += (tableWidth - currentWidth);
 				for (var it = this._regions.iterator(); it.hasNext();) {
 					var region = it.next();
 					var constraint = region.constraint;

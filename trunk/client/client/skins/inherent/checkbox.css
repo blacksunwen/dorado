@@ -1,4 +1,5 @@
 .i-checkbox{
+	display: inline-block;
 	overflow: hidden;
 	cursor: default;
 	height: 20px;
@@ -7,7 +8,7 @@
 .i-checkbox .icon{
 	float: left;
 	width: 16px;
-	height: 20px;
+	height: 16px;
 }
 
 .i-checkbox .caption{
@@ -18,5 +19,4 @@
 
 .i-checkbox-icononly{
 	width: 16px;
-	height: 20px;
 }

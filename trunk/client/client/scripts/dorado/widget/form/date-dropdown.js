@@ -49,8 +49,12 @@
         $className: "dorado.widget.DatePicker",
 		focusable: true,
 		_inherentClassName: "i-date-picker",
+		
 		ATTRIBUTES: /** @scope dorado.widget.DatePicker.prototype */ {
-
+			className: {
+				defaultValue: "d-date-picker"
+			},
+			
 			/**
 			 * DataPicker对应的日期。
 			 * @attribute
@@ -419,7 +423,6 @@
 
 			var picker = this, doms = {}, dom = $DomUtils.xCreate({
 				tagName: "div",
-				className: "d-date-picker",
 				content: [{
 					tagName: "div",
 					className: "year-month-block",

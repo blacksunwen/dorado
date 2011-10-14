@@ -106,8 +106,8 @@
 		recordMaxRange: function(region) {
 			var controlDom = region.control.getDom();
 			if (controlDom.style.position == "absolute") {
-				var right = controlDom.offsetLeft + region.realWidth;
-				var bottom = controlDom.offsetTop + region.realHeight;
+				var right = (region.left || 0) + region.realWidth;
+				var bottom = (region.top || 0) + region.realHeight;
 				if (right > this._maxRagionRight) this._maxRagionRight = right;
 				if (bottom > this._maxRagionBottom) this._maxRagionBottom = bottom;
 			}
@@ -187,6 +187,7 @@
 		},
 		
 		adjustRegion: function(region) {
+			
 			function getAnchorRegion(region, p) {
 				var anchor = constraint[p];
 				if (anchor) {
@@ -209,8 +210,8 @@
 			lp = rp = tp = bp = wp = hp = 0;
 			
 			var padding = parseInt(this._padding) || 0;
-			var realContainerWidth = containerDom.clientWidth - padding * 2;
-			var realContainerHeight = containerDom.clientHeight - padding * 2;
+			var clientWidth = containerDom.clientWidth, realContainerWidth = clientWidth - padding * 2;
+			var clientHeight = containerDom.clientHeight, realContainerHeight = clientHeight - padding * 2;
 			
 			if (constraint.anchorLeft == "previous" && constraint.left == null) constraint.left = 0;
 			if (constraint.left != null && constraint.anchorLeft != "none") {
@@ -246,7 +247,7 @@
 					var anchorRegion = getAnchorRegion.call(this, region, "anchorRight");
 					if (anchorRegion) {
 						var anchorDom = anchorRegion.control.getDom();
-						right = containerDom.clientWidth - anchorDom.offsetLeft + parseInt(r);
+						right = clientWidth - anchorDom.offsetLeft + parseInt(r);
 					} else {
 						right = parseInt(r);
 						right += padding;
@@ -288,7 +289,7 @@
 					var anchorRegion = getAnchorRegion.call(this, region, "anchorBottom");
 					if (anchorRegion) {
 						var anchorDom = anchorRegion.control.getDom();
-						bottom = containerDom.clientHeight - anchorDom.offsetTop + parseInt(b);
+						bottom = clientHeight - anchorDom.offsetTop + parseInt(b);
 					} else {
 						bottom = parseInt(b);
 						bottom += padding;
@@ -317,11 +318,11 @@
 				}
 			} else if (left >= 0 && right >= 0) {
 				if (lp && rp) {
-					width = containerDom.clientWidth - left - right;
+					width = clientWidth - left - right;
 					right = -1;
 					lp = rp = false;
 				} else {
-					width = containerDom.clientWidth;
+					width = clientWidth;
 					if (lp) {
 						left = -1;
 						width -= right;
@@ -355,11 +356,11 @@
 				}
 			} else if (top >= 0 && bottom >= 0) {
 				if (tp && bp) {
-					height = containerDom.clientHeight - top - bottom;
+					height = clientHeight - top - bottom;
 					bottom = -1;
 					tp = bp = false;
 				} else {
-					height = containerDom.clientHeight;
+					height = clientHeight;
 					if (tp) {
 						top = -1;
 						height -= bottom;
@@ -404,12 +405,12 @@
 			this.renderControl(region, containerDom, true, true);
 			
 			var controlDom = region.control.getDom();
-			if (controlDom) {
+			if (controlDom) {	// TODO: 为IE优化而屏蔽
 				region.realWidth = controlDom.offsetWidth;
 				region.realHeight = controlDom.offsetHeight;
 			} else {
-				region.realWidth = region.width || 0;
-				region.realHeight = region.height || 0;
+				region.realWidth = region.control.getRealWidth() || 0;
+				region.realHeight = region.control.getRealHeight() || 0;
 			}
 			this.recordMaxRange(region);
 			
@@ -421,16 +422,18 @@
 			
 			var left, right, width, top, bottom, height;
 			left = right = width = top = bottom = height = -1;
+			
 			var constraint = region.constraint, containerDom = this.getDom();
+			var clientWidth = containerDom.clientWidth, clientHeight = containerDom.clientHeight;
 			if (realignArg.left) {
-				left = Math.round((containerDom.clientWidth - region.realWidth - (region.right < 0 ? 0 : region.right)) * realignArg.left / 100);
+				left = Math.round((clientWidth - region.realWidth - (region.right < 0 ? 0 : region.right)) * realignArg.left / 100);
 			} else if (realignArg.right) {
-				right = Math.round((containerDom.clientWidth - region.realWidth - (region.left < 0 ? 0 : region.left)) * realignArg.right / 100);
+				right = Math.round((clientWidth - region.realWidth - (region.left < 0 ? 0 : region.left)) * realignArg.right / 100);
 			}
 			if (realignArg.top) {
-				top = Math.round((containerDom.clientHeight - region.realHeight - (region.bottom < 0 ? 0 : region.bottom)) * realignArg.top / 100);
+				top = Math.round((clientHeight - region.realHeight - (region.bottom < 0 ? 0 : region.bottom)) * realignArg.top / 100);
 			} else if (realignArg.bottom) {
-				bottom = Math.round((containerDom.clientHeight - region.realHeight - (region.top < 0 ? 0 : region.top)) * realignArg.bottom / 100);
+				bottom = Math.round((clientHeight - region.realHeight - (region.top < 0 ? 0 : region.top)) * realignArg.bottom / 100);
 			}
 			
 			var style = controlDom.style;
@@ -461,7 +464,7 @@
 			style.top = (region.top >= 0) ? (region.top + "px") : '';
 			style.bottom = (region.bottom >= 0) ? (region.bottom + "px") : '';
 			
-			$invokeSuper.call(this, arguments);
+			$invokeSuper.call(this, [region, containerDom, autoWidth, autoHeight]);
 		}
 		
 	});

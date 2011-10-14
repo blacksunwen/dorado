@@ -10,6 +10,10 @@
 		_opened: false,
 		focusable: true,
 		ATTRIBUTES: /** @scope dorado.widget.YearMonthPicker.prototype */ {
+			className: {
+				defaultValue: "d-year-month-picker"
+			},
+			
 			/**
 			 * 选择的年份
 			 * @attribute
@@ -137,7 +141,6 @@
 			var monthLabel = $resource("dorado.baseWidget.AllMonths"), month_label = monthLabel.split(",");
 			var picker = this, doms = {}, dom = $DomUtils.xCreate({
 				tagName: "div",
-				className: "d-year-month-picker",
 				content: [{
 					tagName: "table",
 					className: "year-table",
@@ -425,11 +428,6 @@
 					retValue = ymPicker.onKeyDown(event);
 			}
 			return retValue;
-		},
-
-		initDropDownBox: function(box, editor) {
-			//createDropDownBox只会调用一次，而initDropDownBox会在每次下拉框打开时调用，
-			//比如在在每次下拉框打开时将YearMonthPicker的当前日期调整为与编辑框中的值一致。 --Benny
 		}
 	});
 })();

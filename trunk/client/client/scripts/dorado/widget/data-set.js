@@ -154,6 +154,36 @@
 			$invokeSuper.call(this, arguments);
 		},
 		
+		/**
+		 * 读取指定的属性值或提取DataSet中的数据。
+		 * <p>
+		 * 此方法在{@link dorado.AttributeSupport#get}的基础上做了增强。
+		 * 除了原有的读取属性值的功能之外，此方法还另外提供了下面的用法。
+		 * <ul>
+		 * 	<li>当传入一个以data:开头的字符串时，data:后面的所有内容将被识别成DataPath。</li>
+		 * </ul>
+		 * </p>
+		 * <p>
+		 * <b>需要注意的是，此处的data:语法不能被使用在DataSet的set方法中！</b>
+		 * </p>
+		 * @param {Object} attr 属性值或其他表达式。
+		 * @return {Object} 读取到的属性值或提取到的子对象
+		 * @see dorado.AttributeSupport#get
+		 * 
+		 * @example
+		 * //上面的两句代码功能相同
+		 * var employees = ds.get("data:#.employees");
+		 * var employees = ds.queryData("#.employees");
+		 */
+		get: function(attr) {
+			if (attr.substring(0, 5) === "data:") {
+				var dataPath = attr.substring(5);
+				return this.queryData(dataPath);
+			} else {
+				return $invokeSuper.call(this, [attr]);
+			}
+		},
+		
 		doSet: function(attr, value) {
 			$invokeSuper.call(this, arguments);
 			if (!this._ready) return;
@@ -235,9 +265,9 @@
 			var data = this._data, shouldFireOnDataLoad;
 			if (data === undefined) {
 				if (this._dataProvider) {
-					data = this.dataPipe;
+					data = this._dataPipe;
 					if (!data) {
-						data = this.dataPipe = new dorado.DataSetDataPipe(this);
+						data = this._dataPipe = new dorado.DataSetDataPipe(this);
 						shouldFireOnDataLoad = true;
 					}
 				}
@@ -251,6 +281,7 @@
 					pipe.getAsync( {
 						scope: this,
 						callback: function(success, result) {
+							delete this._dataPipe;
 							if (success && shouldFireOnDataLoad) {
 								this.setData(result);
 								this.fireEvent("onDataLoad", this);

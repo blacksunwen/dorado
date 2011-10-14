@@ -255,7 +255,7 @@
 		 */
 		reload: function() {
 			var panel = this, controlsTree = panel._controlsTree,
-				topView = $view, nodes = panel.getTreeNodes(topView._children, true);
+				topView = $topView, nodes = panel.getTreeNodes(topView._children, true);
 
 			controlsTree.disableAutoRefresh();
 			controlsTree._root.clearChildren();
@@ -361,7 +361,7 @@
 
 				function doGetNodes(obj) {
 					if (onlyview) {
-						if (obj._parent && obj._parent != $view) {
+						if (obj._parent && obj._parent != $topView) {
 							//console.log("filter:" + obj.constructor.className);
 							return;
 						}

@@ -258,6 +258,11 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 				$fly(doms.buttonPanel).addClass("button-panel-" + buttonAlign);
 			}
 		}
+	},
+	
+	getFocusableSubControls: function() {
+		var controls = this._children.toArray();
+		return controls.concat(this._buttons);
 	}
 });
 

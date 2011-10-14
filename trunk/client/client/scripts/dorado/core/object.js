@@ -44,11 +44,13 @@
 						if (odef.hasOwnProperty(m) && (overwrite || cdef[m] === undefined)) {
 							var odefv = odef[m];
 							if (odefv instanceof Function) {
-								if (odefv.declaringClass) odefv = adapterFunction(odefv);
-								odefv.declaringClass = subClass;
-								odefv.methodName = m;
-								odefv.definitionType = defProp;
-								odefv.definitionName = p;
+								// if (odefv.declaringClass) odefv = adapterFunction(odefv);
+								if (!odefv.declaringClass) {
+									odefv.declaringClass = subClass;
+									odefv.methodName = m;
+									odefv.definitionType = defProp;
+									odefv.definitionName = p;
+								}
 							}
 							cdef[m] = odefv;
 						}
@@ -78,11 +80,11 @@
 			 */
 			if (subp[p] === undefined || overwrite) {
 				if (override instanceof Function) {
-					if (override.declaringClass) {
-						override = adapterFunction(override);
+					// if (override.declaringClass) override = adapterFunction(override);
+					if (!override.declaringClass) {
+						override.declaringClass = subClass;
+						override.methodName = p;
 					}
-					override.declaringClass = subClass;
-					override.methodName = p;
 				}
 				subp[p] = override;
 			}
@@ -158,9 +160,11 @@
 				if (p.hasOwnProperty(m)) {
 					var v = p[m];
 					if (v instanceof Function) {
-						if (v.declaringClass) p[m] = v = adapterFunction(v);
-						v.declaringClass = constr;
-						v.methodName = m;
+						// if (v.declaringClass) p[m] = v = adapterFunction(v);
+						if (!v.declaringClass) {
+							v.declaringClass = constr;
+							v.methodName = m;
+						}
 					}
 				}
 			}
@@ -279,6 +283,7 @@
 				subClass.superClasses = ps;
 				
 				override(subClass, overrides, true);
+				
 				CLASS_REPOSITORY[subClass.className] = subClass;
 				return subClass;
 			};
@@ -473,6 +478,7 @@
 	window.$extend = dorado.Object.extend;
 	
 	/**
+	 * @deprecated
 	 * @name $getSuperClass
 	 * @function
 	 * @description 返回当前对象的超类。对于多重继承而言，此方法返回第一个超类。
@@ -481,13 +487,14 @@
 	 * </p>
 	 * @return {Function} 超类。
 	 */
-	window.$getSuperClass = function() {
-		var fn = arguments.callee.caller, superClass;
+	var getSuperClass = window.$getSuperClass = function() {
+		var fn = getSuperClass.caller, superClass;
 		if (fn.declaringClass) superClass = fn.declaringClass.superClass;
 		return superClass || {};
 	};
 	
 	/**
+	 * @deprecated
 	 * @name $getSuperClasses
 	 * @function
 	 * @description 返回当前对象的超类的数组。
@@ -496,17 +503,17 @@
 	 * </p>
 	 * @return {Prototype[]} 超类的数组。
 	 */
-	window.$getSuperClasses = function() {
-		var fn = arguments.callee.caller, superClass;
+	var getSuperClasses = window.$getSuperClasses = function() {
+		var fn = getSuperClasses.caller, superClass;
 		if (dorado.Browser.opera && dorado.Browser.version < "10") fn = fn.caller;
 		if (fn.caller && fn.caller._doradoAdapter) fn = fn.caller;
 		
 		if (fn.declaringClass) superClasses = fn.declaringClass.superClasses;
-		return superClasses ||
-		[];
+		return superClasses || [];
 	};
 	
 	/**
+	 * @deprecated
 	 * @name $invokeSuper
 	 * @function
 	 * @description 调用当前方法在超类中的实现逻辑。
@@ -521,8 +528,8 @@
 	 * $invokeSuper.call(this, arguments); // 较简单的调用方式
 	 * $invokeSuper.call(this, [ "Sample Arg", true ]); // 自定义传给超类方法的参数数组
 	 */
-	window.$invokeSuper = function(args) {
-		var fn = arguments.callee.caller;
+	var invokeSuper = window.$invokeSuper = function(args) {			
+		var fn = invokeSuper.caller;
 		if (dorado.Browser.opera && dorado.Browser.version < "10") fn = fn.caller;
 		if (fn.caller && fn.caller._doradoAdapter) fn = fn.caller;
 		
@@ -544,6 +551,6 @@
 			}
 		}
 	};
-	window.$invokeSuper.methodName = "$invokeSuper";
+	invokeSuper.methodName = "$invokeSuper";
 	
 })();
