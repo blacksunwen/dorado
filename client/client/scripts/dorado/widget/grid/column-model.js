@@ -524,7 +524,10 @@
 					column.fireEvent("onRenderCell", column, eventArg);
 					processDefault = eventArg.processDefault;
 				}
-				if (processDefault) dorado.Renderer.render(cellRenderer, dom, arg);
+				if (processDefault) {
+					cellRenderer = eventArg.cellRenderer;
+					dorado.Renderer.render(cellRenderer, dom, arg);
+				}
 			}
 		},
 		
