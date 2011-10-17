@@ -1,26 +1,32 @@
 package com.bstek.dorado.data;
 
+import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import net.sf.ezmorph.object.DateMorpher;
-import net.sf.json.JSON;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONException;
-import net.sf.json.JSONFunction;
-import net.sf.json.JSONNull;
-import net.sf.json.JSONObject;
-import net.sf.json.JSONString;
-import net.sf.json.util.JSONUtils;
-
 import org.aopalliance.intercept.MethodInterceptor;
 import org.apache.commons.lang.StringUtils;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.node.ArrayNode;
+import org.codehaus.jackson.node.BooleanNode;
+import org.codehaus.jackson.node.ContainerNode;
+import org.codehaus.jackson.node.NumericNode;
+import org.codehaus.jackson.node.ObjectNode;
+import org.codehaus.jackson.node.TextNode;
+import org.codehaus.jackson.node.ValueNode;
+import org.codehaus.jackson.type.TypeReference;
 
 import com.bstek.dorado.core.Context;
 import com.bstek.dorado.data.entity.EnhanceableMapEntityEnhancer;
@@ -33,6 +39,7 @@ import com.bstek.dorado.data.type.EntityDataType;
 import com.bstek.dorado.data.type.manager.DataTypeManager;
 import com.bstek.dorado.data.type.property.PropertyDef;
 import com.bstek.dorado.data.variant.Record;
+import com.bstek.dorado.data.variant.VariantUtils;
 import com.bstek.dorado.util.proxy.ProxyBeanUtils;
 
 /**
@@ -58,15 +65,8 @@ public final class JsonUtils {
 			com.bstek.dorado.core.Constants.ISO_DATETIME_FORMAT1);
 
 	private static EntityProxyMethodInterceptorFactory methodInterceptorFactory;
-
-	static {
-		String[] dateFormats = new String[] {
-				com.bstek.dorado.core.Constants.ISO_DATE_FORMAT,
-				com.bstek.dorado.core.Constants.ISO_DATETIME_FORMAT1,
-				com.bstek.dorado.core.Constants.ISO_DATETIME_FORMAT2 };
-		JSONUtils.getMorpherRegistry().registerMorpher(
-				new DateMorpher(dateFormats));
-	}
+	private static DataTypeManager dataTypeManager;
+	private static ObjectMapper objectMapper;
 
 	private JsonUtils() {
 	}
@@ -79,6 +79,116 @@ public final class JsonUtils {
 					.getServiceBean("entityProxyMethodInterceptorFactory");
 		}
 		return methodInterceptorFactory;
+	}
+
+	private static DataTypeManager getDataTypeManager() throws Exception {
+		if (dataTypeManager == null) {
+			Context context = Context.getCurrent();
+			dataTypeManager = (DataTypeManager) context
+					.getServiceBean("dataTypeManager");
+		}
+		return dataTypeManager;
+	}
+
+	public static ObjectMapper getObjectMapper() {
+		if (objectMapper == null) {
+			objectMapper = new ObjectMapper();
+		}
+		return objectMapper;
+	}
+
+	public static String getString(ObjectNode objectNode, String property,
+			String defaultValue) {
+		JsonNode propertyNode = objectNode.get(property);
+		return (propertyNode != null) ? propertyNode.getTextValue()
+				: defaultValue;
+	}
+
+	public static String getString(ObjectNode objectNode, String property) {
+		return getString(objectNode, property, null);
+	}
+
+	public static boolean getBoolean(ObjectNode objectNode, String property,
+			boolean defaultValue) {
+		JsonNode propertyNode = objectNode.get(property);
+		return (propertyNode != null) ? propertyNode.getBooleanValue()
+				: defaultValue;
+	}
+
+	public static boolean getBoolean(ObjectNode objectNode, String property) {
+		return getBoolean(objectNode, property, false);
+	}
+
+	public static int getInt(ObjectNode objectNode, String property,
+			int defaultValue) {
+		JsonNode propertyNode = objectNode.get(property);
+		return (propertyNode != null) ? propertyNode.getIntValue()
+				: defaultValue;
+	}
+
+	public static int getInt(ObjectNode objectNode, String property) {
+		return getInt(objectNode, property, 0);
+	}
+
+	public static long getLong(ObjectNode objectNode, String property,
+			long defaultValue) {
+		JsonNode propertyNode = objectNode.get(property);
+		return (propertyNode != null) ? propertyNode.getLongValue()
+				: defaultValue;
+	}
+
+	public static long getLong(ObjectNode objectNode, String property) {
+		return getLong(objectNode, property, 0);
+	}
+
+	public static float getFloat(ObjectNode objectNode, String property,
+			float defaultValue) {
+		JsonNode propertyNode = objectNode.get(property);
+		return (propertyNode != null) ? propertyNode.getNumberValue()
+				.floatValue() : defaultValue;
+	}
+
+	public static float getFloat(ObjectNode objectNode, String property) {
+		return getFloat(objectNode, property, 0);
+	}
+
+	public static double getDouble(ObjectNode objectNode, String property,
+			double defaultValue) {
+		JsonNode propertyNode = objectNode.get(property);
+		return (propertyNode != null) ? propertyNode.getNumberValue()
+				.doubleValue() : defaultValue;
+	}
+
+	public static double getDouble(ObjectNode objectNode, String property) {
+		return getDouble(objectNode, property, 0);
+	}
+
+	public static Date getDate(ObjectNode objectNode, String property,
+			Date defaultValue) {
+		JsonNode propertyNode = objectNode.get(property);
+		return (propertyNode != null) ? VariantUtils.toDate(propertyNode
+				.getTextValue()) : defaultValue;
+	}
+
+	public static Date getDate(ObjectNode objectNode, String property) {
+		return getDate(objectNode, property, null);
+	}
+
+	public static <T> T get(ObjectNode objectNode, String property,
+			Class<T> classType) throws JsonParseException,
+			JsonMappingException, IOException {
+		JsonNode propertyNode = objectNode.get(property);
+		return (propertyNode != null) ? getObjectMapper().readValue(
+				propertyNode, classType) : null;
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static <T> T get(ObjectNode objectNode, String property,
+			TypeReference valueTypeRef) throws JsonParseException,
+			JsonMappingException, IOException {
+		JsonNode propertyNode = objectNode.get(property);
+		return (T) ((propertyNode != null) ? getObjectMapper().readValue(
+				propertyNode, valueTypeRef) : null);
 	}
 
 	/**
@@ -94,7 +204,7 @@ public final class JsonUtils {
 	 *            A String
 	 * @return A String correctly formatted for insertion in a JSON text.
 	 */
-	private static String quote(String string) {
+	public static String quote(String string) {
 		if (string == null || string.length() == 0) {
 			return "\"\"";
 		}
@@ -198,159 +308,14 @@ public final class JsonUtils {
 	 *             If the value is or contains an invalid number.
 	 */
 	public static String valueToString(Object value) {
-		if (value == null || JSONUtils.isNull(value)) {
+		if (value == null) {
 			return "null";
 		}
-		if (value instanceof JSONFunction) {
-			return ((JSONFunction) value).toString();
-		}
-		if (value instanceof JSONString) {
-			Object o;
-			try {
-				o = ((JSONString) value).toJSONString();
-			} catch (Exception e) {
-				throw new JSONException(e);
-			}
-			if (o instanceof String) {
-				return (String) o;
-			}
-			throw new JSONException("Bad value from toJSONString: " + o);
-		}
-		if (value instanceof Number) {
-			return JSONUtils.numberToString((Number) value);
-		}
-		if (value instanceof Boolean || value instanceof JSONObject
-				|| value instanceof JSONArray) {
+
+		if (value instanceof Number || value instanceof Boolean) {
 			return value.toString();
 		}
 		return quote(value.toString());
-	}
-
-	/**
-	 * 返回Json对象中某个属性的String值，如果该属性不存在则返回null。
-	 */
-	public static String getString(JSONObject json, String key) {
-		return getString(json, key, null);
-	}
-
-	/**
-	 * 返回Json对象中某个属性的String值，如果该属性不存在则返回defaultValue参数指定的默认值。
-	 */
-	public static String getString(JSONObject json, String key,
-			String defaultValue) {
-		if (json.get(key) != null) {
-			return json.getString(key);
-		} else {
-			return defaultValue;
-		}
-	}
-
-	/**
-	 * 返回Json对象中某个属性的boolean值，如果该属性不存在或转换失败则返回false。
-	 */
-	public static boolean getBoolean(JSONObject json, String key) {
-		return getBoolean(json, key, false);
-	}
-
-	/**
-	 * 返回Json对象中某个属性的boolean值，如果该属性不存在在或转换失败则返回defaultValue参数指定的默认值。
-	 */
-	public static boolean getBoolean(JSONObject json, String key,
-			boolean defaultValue) {
-		try {
-			return json.getBoolean(key);
-		} catch (JSONException e) {
-			return defaultValue;
-		}
-	}
-
-	/**
-	 * 返回Json对象中某个属性的int值，如果该属性不存在或转换失败则返回0。
-	 */
-	public static int getInt(JSONObject json, String key) {
-		return getInt(json, key, 0);
-	}
-
-	/**
-	 * 返回Json对象中某个属性的int值，如果该属性不存在在或转换失败则返回defaultValue参数指定的默认值。
-	 */
-	public static int getInt(JSONObject json, String key, int defaultValue) {
-		try {
-			return json.getInt(key);
-		} catch (JSONException e) {
-			return defaultValue;
-		}
-	}
-
-	/**
-	 * 返回Json对象中某个属性的long值，如果该属性不存在或转换失败则返回0。
-	 */
-	public static long getLong(JSONObject json, String key) {
-		return getLong(json, key, 0);
-	}
-
-	/**
-	 * 返回Json对象中某个属性的long值，如果该属性不存在在或转换失败则返回defaultValue参数指定的默认值。
-	 */
-	public static long getLong(JSONObject json, String key, long defaultValue) {
-		try {
-			return json.getLong(key);
-		} catch (JSONException e) {
-			return defaultValue;
-		}
-	}
-
-	/**
-	 * 返回Json对象中某个属性的double值，如果该属性不存在或转换失败则返回0。
-	 */
-	public static double getDouble(JSONObject json, String key) {
-		return getDouble(json, key, 0);
-	}
-
-	/**
-	 * 返回Json对象中某个属性的double值，如果该属性不存在在或转换失败则返回defaultValue参数指定的默认值。
-	 */
-	public static double getDouble(JSONObject json, String key,
-			double defaultValue) {
-		try {
-			return json.getDouble(key);
-		} catch (JSONException e) {
-			return defaultValue;
-		}
-	}
-
-	/**
-	 * 返回Json对象中某个属性的JSONObject值，如果该属性不存在或转换失败则返回null。
-	 */
-	public static JSONObject getJSONObject(JSONObject json, String key) {
-		try {
-			JSONObject result = json.getJSONObject(key);
-			return (result != null && result.isNullObject()) ? null : result;
-		} catch (JSONException e) {
-			return null;
-		}
-	}
-
-	/**
-	 * 返回Json对象中某个属性的JSONArray值，如果该属性不存在或转换失败则返回null。
-	 */
-	public static JSONArray getJSONArray(JSONObject json, String key) {
-		try {
-			return json.getJSONArray(key);
-		} catch (JSONException e) {
-			return null;
-		}
-	}
-
-	private static DataTypeManager dataTypeManager;
-
-	private static DataTypeManager getDataTypeManager() throws Exception {
-		if (dataTypeManager == null) {
-			Context context = Context.getCurrent();
-			dataTypeManager = (DataTypeManager) context
-					.getServiceBean("dataTypeManager");
-		}
-		return dataTypeManager;
 	}
 
 	private static DataType getDataType(String dataTypeName,
@@ -364,15 +329,37 @@ public final class JsonUtils {
 		}
 	}
 
+	private static Object toJavaValue(ValueNode valueNode, DataType dataType,
+			JsonConvertContext context) {
+		Object value = null;
+		if (valueNode != null) {
+			if (valueNode instanceof TextNode) {
+				value = ((TextNode) valueNode).getTextValue();
+			} else if (valueNode instanceof NumericNode) {
+				value = ((NumericNode) valueNode).getNumberValue();
+			} else if (valueNode instanceof BooleanNode) {
+				value = ((BooleanNode) valueNode).getBooleanValue();
+			} else {
+				value = valueNode.getTextValue();
+			}
+		}
+
+		if (dataType != null) {
+			value = dataType.fromObject(value);
+		}
+		return value;
+	}
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private static Object internalToJavaObject(JSONObject json,
+	private static Object internalToJavaEntity(ObjectNode objectNode,
 			EntityDataType dataType, Class<?> targetType, boolean proxy,
 			JsonConvertContext context) throws Exception {
-		if (json.isNullObject())
+		if (objectNode == null || objectNode.isNull()) {
 			return null;
+		}
 
-		if (dataType == null && json.has(DATATYPE_PROPERTY)) {
-			String dataTypeName = json.getString(DATATYPE_PROPERTY);
+		if (dataType == null && objectNode.has(DATATYPE_PROPERTY)) {
+			String dataTypeName = getString(objectNode, DATATYPE_PROPERTY);
 			if (StringUtils.isNotEmpty(dataTypeName)) {
 				dataType = (EntityDataType) getDataType(dataTypeName, context);
 			}
@@ -399,24 +386,31 @@ public final class JsonUtils {
 			entity.setStateLocked(true);
 		}
 
-		for (Map.Entry<String, Object> entry : (Set<Map.Entry<String, Object>>) json
-				.entrySet()) {
-			String property = entry.getKey();
+		Iterator<Entry<String, JsonNode>> fields = objectNode.getFields();
+		while (fields.hasNext()) {
+			Entry<String, JsonNode> field = fields.next();
+			String property = field.getKey();
 			if (property.charAt(0) == SYSTEM_PROPERTY_PREFIX) {
 				continue;
 			}
 
-			Object value = entry.getValue();
-			if (value != null) {
+			Object value = null;
+			JsonNode jsonNode = field.getValue();
+			if (jsonNode != null) {
 				Class<?> type = null;
 				type = entity.getPropertyType(property);
 
-				if (value instanceof JSON) {
+				if (jsonNode instanceof ContainerNode) {
 					PropertyDef propertyDef = (dataType != null) ? dataType
 							.getPropertyDef(property) : null;
-					value = toJavaObject((JSON) value,
+					value = toJavaObject((ContainerNode) jsonNode,
 							(propertyDef != null) ? propertyDef.getDataType()
 									: null, type, proxy, context);
+				} else if (jsonNode instanceof ValueNode) {
+					value = toJavaValue((ValueNode) jsonNode, null, null);
+				} else {
+					throw new IllegalArgumentException(
+							"Value type mismatch. expect [JSON Value].");
 				}
 
 				if (type != null) {
@@ -433,7 +427,7 @@ public final class JsonUtils {
 						}
 					}
 				} else {
-					if (value instanceof String) {// 处理日期字符串
+					if (value instanceof String) { // 处理日期字符串
 						String str = (String) value;
 						if (str.length() == DEFAULT_DATE_PATTERN_LEN
 								&& DEFAULT_DATE_PATTERN.matcher(str).matches()) {
@@ -447,24 +441,33 @@ public final class JsonUtils {
 
 		if (proxy) {
 			entity.setStateLocked(false);
-			if (json.has(STATE_PROPERTY)) {
-				int state = json.getInt(STATE_PROPERTY);
+			if (objectNode.has(STATE_PROPERTY)) {
+				int state = JsonUtils.getInt(objectNode, STATE_PROPERTY);
 				if (state > 0) {
 					entity.setState(EntityState.fromInt(state));
 				}
 			}
-			if (json.has(ENTITY_ID_PROPERTY)) {
-				int entityId = json.getInt(ENTITY_ID_PROPERTY);
+			if (objectNode.has(ENTITY_ID_PROPERTY)) {
+				int entityId = JsonUtils.getInt(objectNode, ENTITY_ID_PROPERTY);
 				if (entityId > 0) {
 					entity.setEntityId(entityId);
 				}
 			}
-			if (json.has(OLD_DATA_PROPERTY)) {
-				JSONObject jsonOldValues = json
-						.getJSONObject(OLD_DATA_PROPERTY);
+			if (objectNode.has(OLD_DATA_PROPERTY)) {
+				ObjectNode jsonOldValues = (ObjectNode) objectNode
+						.get(OLD_DATA_PROPERTY);
 				if (jsonOldValues != null) {
 					Map<String, Object> oldValues = entity.getOldValues(true);
-					oldValues.putAll(jsonOldValues);
+					Iterator<Entry<String, JsonNode>> oldFields = jsonOldValues
+							.getFields();
+					while (oldFields.hasNext()) {
+						Entry<String, JsonNode> entry = oldFields.next();
+						String oldKey = entry.getKey();
+						oldValues.put(
+								oldKey,
+								toJavaValue((ValueNode) entry.getValue(), null,
+										null));
+					}
 				}
 			}
 		}
@@ -480,7 +483,7 @@ public final class JsonUtils {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private static Collection<?> internalToJavaCollection(JSONArray array,
+	private static Collection<?> internalToJavaCollection(ArrayNode arrayNode,
 			AggregationDataType dataType, Class<Collection<?>> targetType,
 			boolean proxy, JsonConvertContext context) throws Exception {
 		Class<Collection> creationType = null;
@@ -515,26 +518,32 @@ public final class JsonUtils {
 		boolean isFirstElement = true;
 		EntityDataType elementDataType = (EntityDataType) ((dataType != null) ? dataType
 				.getElementDataType() : null);
-		for (Object element : array) {
-			if (element instanceof JSONObject) {
-				JSONObject json = (JSONObject) element;
+		Iterator<JsonNode> it = arrayNode.iterator();
+		while (it.hasNext()) {
+			JsonNode jsonNode = it.next();
+			if (jsonNode instanceof ObjectNode) {
+				ObjectNode objectNode = (ObjectNode) jsonNode;
 				if (isFirstElement && elementDataType == null
-						&& json.has(DATATYPE_PROPERTY)) {
-					String dataTypeName = json.getString(DATATYPE_PROPERTY);
+						&& objectNode.has(DATATYPE_PROPERTY)) {
+					String dataTypeName = JsonUtils.getString(objectNode,
+							DATATYPE_PROPERTY);
 					if (StringUtils.isNotEmpty(dataTypeName)) {
 						elementDataType = (EntityDataType) getDataType(
 								dataTypeName, context);
 					}
 				}
-
-				collection.add(internalToJavaObject(json, elementDataType,
-						null, proxy, context));
+				collection.add(internalToJavaEntity(objectNode,
+						elementDataType, null, proxy, context));
+			} else if (jsonNode instanceof ValueNode) {
+				collection.add(toJavaValue(((ValueNode) jsonNode),
+						elementDataType, context));
 			} else {
-				collection.add((elementDataType != null) ? elementDataType
-						.fromObject(element) : element);
+				throw new IllegalArgumentException(
+						"Value type mismatch. expect [JSON Value].");
 			}
 			isFirstElement = false;
 		}
+
 		if (context != null && context.getEntityListCollection() != null) {
 			context.getEntityListCollection().add(collection);
 		}
@@ -545,16 +554,16 @@ public final class JsonUtils {
 	 * 尝试将一个JSON数据对象转换成Java POJO对象。<br>
 	 * 如果在转换的同时还指定了目标数据类型，那么此过程会尝试把JSON数据转换成与目标数据类型相匹配的Java POJO对象。
 	 * 
-	 * @param json
+	 * @param jsonNode
 	 *            要转换的JSON数据。
 	 * @param dataType
 	 *            目标数据类型。
 	 * @return 转换得到的Java POJO对象。
 	 * @throws Exception
 	 */
-	public static Object toJavaObject(JSON json, DataType dataType)
+	public static Object toJavaObject(JsonNode jsonNode, DataType dataType)
 			throws Exception {
-		return toJavaObject(json, dataType, false);
+		return toJavaObject(jsonNode, dataType, false);
 	}
 
 	/**
@@ -570,9 +579,9 @@ public final class JsonUtils {
 	 * @return 转换得到的Java POJO对象。
 	 * @throws Exception
 	 */
-	public static Object toJavaObject(JSON json, DataType dataType,
+	public static Object toJavaObject(JsonNode jsonNode, DataType dataType,
 			boolean proxy) throws Exception {
-		return toJavaObject(json, dataType, null, proxy, null);
+		return toJavaObject(jsonNode, dataType, null, proxy, null);
 	}
 
 	/**
@@ -592,42 +601,46 @@ public final class JsonUtils {
 	 * @return 转换得到的Java POJO对象。
 	 * @throws Exception
 	 */
-	public static Object toJavaObject(JSON json, DataType dataType,
+	public static Object toJavaObject(JsonNode jsonNode, DataType dataType,
 			Class<?> targetType, boolean proxy, JsonConvertContext context)
 			throws Exception {
-		if (json == null || json instanceof JSONNull)
+		if (jsonNode == null || jsonNode.isNull()) {
 			return null;
+		}
 
 		if (dataType != null) {
 			if (dataType instanceof EntityDataType) {
-				if (json instanceof JSONObject) {
-					return internalToJavaObject((JSONObject) json,
+				if (jsonNode instanceof ObjectNode) {
+					return internalToJavaEntity((ObjectNode) jsonNode,
 							(EntityDataType) dataType, null, proxy, context);
 				} else {
 					throw new IllegalArgumentException(
-							"Value type mismatch. expect [JSONObject].");
+							"Value type mismatch. expect [JSON Object].");
 				}
 			} else if (dataType instanceof AggregationDataType) {
-				if (json instanceof JSONArray) {
-					return internalToJavaCollection((JSONArray) json,
+				if (jsonNode instanceof ArrayNode) {
+					return internalToJavaCollection((ArrayNode) jsonNode,
 							(AggregationDataType) dataType, null, proxy,
 							context);
 				} else {
 					throw new IllegalArgumentException(
-							"Value type mismatch. expect [JSONArray].");
+							"Value type mismatch. expect [JSON Array].");
 				}
+			} else if (jsonNode instanceof ValueNode) {
+				return toJavaValue((ValueNode) jsonNode, dataType, context);
 			} else {
 				throw new IllegalArgumentException(
-						"Type mismatch. error occured during convert [JSON] to ["
-								+ dataType.getName() + "].");
+						"Value type mismatch. expect [JSON Value].");
 			}
 		} else {
-			if (json instanceof JSONObject) {
-				return internalToJavaObject((JSONObject) json, null, null,
+			if (jsonNode instanceof ObjectNode) {
+				return internalToJavaEntity((ObjectNode) jsonNode, null, null,
 						proxy, context);
+			} else if (jsonNode instanceof ArrayNode) {
+				return internalToJavaCollection((ArrayNode) jsonNode, null,
+						null, proxy, context);
 			} else {
-				return internalToJavaCollection((JSONArray) json, null, null,
-						proxy, context);
+				return toJavaValue((ValueNode) jsonNode, null, context);
 			}
 		}
 	}

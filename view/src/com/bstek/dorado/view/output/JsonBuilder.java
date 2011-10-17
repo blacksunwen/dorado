@@ -3,9 +3,7 @@ package com.bstek.dorado.view.output;
 import java.io.IOException;
 import java.io.Writer;
 
-import net.sf.json.JSONException;
-import net.sf.json.util.JSONUtils;
-
+import com.bstek.dorado.data.IllegalJsonFormatException;
 import com.bstek.dorado.data.JsonUtils;
 
 /**
@@ -78,7 +76,7 @@ public class JsonBuilder {
 
 	private JsonBuilder append(String s, boolean skipNull) {
 		if (state == 'o' && s == null) {
-			throw new JSONException("Null pointer");
+			throw new IllegalJsonFormatException("Null pointer");
 		}
 		if (state == 'i' || state == 'o' || state == 'k' || state == 'a'
 				|| state == 'v') {
@@ -94,12 +92,12 @@ public class JsonBuilder {
 					write("null");
 				}
 			} catch (IOException e) {
-				throw new JSONException(e);
+				throw new IllegalJsonFormatException(e);
 			}
 			comma = (top > 0);
 			return this;
 		}
-		throw new JSONException("Value out of sequence.");
+		throw new IllegalJsonFormatException("Value out of sequence.");
 	}
 
 	private JsonBuilder append(String s) {
@@ -120,7 +118,7 @@ public class JsonBuilder {
 				msg = "Misplaced endValue.";
 				break;
 			}
-			throw new JSONException(msg);
+			throw new IllegalJsonFormatException(msg);
 		}
 		pop(m);
 		try {
@@ -129,7 +127,7 @@ public class JsonBuilder {
 				write(c);
 			}
 		} catch (IOException e) {
-			throw new JSONException(e);
+			throw new IllegalJsonFormatException(e);
 		}
 		comma = (top > 0);
 		return this;
@@ -146,7 +144,7 @@ public class JsonBuilder {
 
 	private void push(char c) {
 		if (top >= MAXDEPTH) {
-			throw new JSONException("Nesting too deep.");
+			throw new IllegalJsonFormatException("Nesting too deep.");
 		}
 		stack[top] = c;
 		state = c;
@@ -155,7 +153,7 @@ public class JsonBuilder {
 
 	private void pop(char c) {
 		if (top <= 0 || stack[top - 1] != c) {
-			throw new JSONException("Nesting error.");
+			throw new IllegalJsonFormatException("Nesting error.");
 		}
 		top--;
 		state = top == 0 ? (reuseable ? 'i' : 'd') : stack[top - 1];
@@ -184,7 +182,7 @@ public class JsonBuilder {
 					msg = "Misplaced endValue.";
 					break;
 				}
-				throw new JSONException(msg);
+				throw new IllegalJsonFormatException(msg);
 			} else {
 				escapeTop--;
 				if (escapeTop > 0)
@@ -233,7 +231,7 @@ public class JsonBuilder {
 				leadingTab++;
 			return this;
 		}
-		throw new JSONException("Misplaced array.");
+		throw new IllegalJsonFormatException("Misplaced array.");
 	}
 
 	public JsonBuilder escapeableArray() {
@@ -266,7 +264,7 @@ public class JsonBuilder {
 			comma = false;
 			return this;
 		}
-		throw new JSONException("Misplaced object.");
+		throw new IllegalJsonFormatException("Misplaced object.");
 	}
 
 	public JsonBuilder escapeableObject() {
@@ -291,7 +289,7 @@ public class JsonBuilder {
 	 */
 	public JsonBuilder key(String s) {
 		if (s == null) {
-			throw new JSONException("Null key.");
+			throw new IllegalJsonFormatException("Null key.");
 		}
 		writeEscapeableParts();
 		if (state == 'o') {
@@ -299,16 +297,16 @@ public class JsonBuilder {
 				if (comma)
 					write(',');
 				outputLeadingTab();
-				write(JSONUtils.quote(s));
+				write(JsonUtils.quote(s));
 				write(':');
 				comma = false;
 				state = 'k';
 				return this;
 			} catch (IOException e) {
-				throw new JSONException(e);
+				throw new IllegalJsonFormatException(e);
 			}
 		}
-		throw new JSONException("Misplaced key.");
+		throw new IllegalJsonFormatException("Misplaced key.");
 	}
 
 	public JsonBuilder escapeableKey(String s) {
@@ -357,7 +355,7 @@ public class JsonBuilder {
 				state = 'o';
 			return this;
 		}
-		throw new JSONException("Misplaced value.");
+		throw new IllegalJsonFormatException("Misplaced value.");
 	}
 
 	/**
@@ -370,7 +368,7 @@ public class JsonBuilder {
 			push('v');
 			return this;
 		}
-		throw new JSONException("Misplaced beginValue.");
+		throw new IllegalJsonFormatException("Misplaced beginValue.");
 	}
 
 	/**

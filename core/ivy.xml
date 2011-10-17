@@ -14,9 +14,14 @@
 		<dependency org="javassist" name="javassist" rev="3.12.1.GA" conf="compile" />
 
 		<dependency org="net.sf.ehcache" name="ehcache-core" rev="2.4.1" conf="compile" />
+		
+		<!--
 		<dependency org="net.sf.json-lib" name="json-lib" rev="2.4" conf="compile" m:classifier="jdk15" />
 		<dependency org="net.sf.ezmorph" name="ezmorph" rev="1.0.4" conf="compile" />
-
+		-->
+		<dependency org="org.codehaus.jackson" name="jackson-mapper-asl" rev="1.9.0" conf="compile" />
+		<dependency org="org.codehaus.jackson" name="jackson-core-asl" rev="1.9.0" conf="compile" />
+		
 		<dependency org="com.thoughtworks.paranamer" name="paranamer" rev="2.3" conf="compile" />
 
 		<dependency org="org.apache.velocity" name="velocity" rev="1.7" conf="compile" />

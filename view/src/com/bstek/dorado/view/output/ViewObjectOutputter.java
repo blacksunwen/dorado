@@ -114,8 +114,7 @@ public class ViewObjectOutputter extends ObjectOutputter implements
 				outputObject(object, context);
 			}
 		} else {
-			if (!escapeable)
-				context.getWriter().append("null");
+			if (!escapeable) context.getWriter().append("null");
 		}
 	}
 

@@ -2,13 +2,13 @@ package com.bstek.dorado.view.service;
 
 import java.io.Writer;
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Map;
-
-import net.sf.json.JSON;
-import net.sf.json.JSONObject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.codehaus.jackson.node.ObjectNode;
+import org.codehaus.jackson.type.TypeReference;
 
 import com.bstek.dorado.common.service.ExposedService;
 import com.bstek.dorado.common.service.ExposedServiceManager;
@@ -37,10 +37,9 @@ public class RemoteServiceProcessor extends DataServiceProcessorSupport {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
-	protected void doExecute(Writer writer, JSONObject json,
+	protected void doExecute(Writer writer, ObjectNode objectNode,
 			DoradoContext context) throws Exception {
-		String serviceAlias = json.getString("service");
+		String serviceAlias = JsonUtils.getString(objectNode, "service");
 		Assert.notEmpty(serviceAlias);
 
 		// String serviceName =
@@ -57,10 +56,8 @@ public class RemoteServiceProcessor extends DataServiceProcessorSupport {
 					+ serviceName + "].");
 		}
 
-		Object parameter = json.get("parameter");
-		if (parameter instanceof JSON) {
-			parameter = jsonToJavaObject((JSON) parameter, null, null, false);
-		}
+		Object parameter = jsonToJavaObject(objectNode.get("parameter"), null,
+				null, false);
 
 		Object serviceBean = BeanFactoryUtils.getBean(exposedService
 				.getBeanName());
@@ -86,10 +83,13 @@ public class RemoteServiceProcessor extends DataServiceProcessorSupport {
 		}
 
 		OutputContext outputContext = new OutputContext(writer);
-		boolean supportsEntity = JsonUtils.getBoolean(json, "supportsEntity");
+		boolean supportsEntity = JsonUtils.getBoolean(objectNode,
+				"supportsEntity");
 		if (supportsEntity) {
-			outputContext.setLoadedDataTypes(JsonUtils.getJSONArray(json,
-					"loadedDataTypes"));
+			List<String> loadedDataTypes = JsonUtils.get(objectNode,
+					"loadedDataTypes", new TypeReference<List<String>>() {
+					});
+			outputContext.setLoadedDataTypes(loadedDataTypes);
 		}
 		outputContext.setUsePrettyJson(Configure
 				.getBoolean("view.outputPrettyJson"));

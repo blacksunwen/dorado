@@ -885,7 +885,6 @@
 		},
 	
 		getFocusableSubControls: function() {
-			debugger;
 			var direction = this._direction;
 			if (direction == "left" || direction == "top") {
 				return [this._sideControl, this._mainControl];

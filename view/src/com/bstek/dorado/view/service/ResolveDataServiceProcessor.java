@@ -5,22 +5,22 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
-import net.sf.json.JSON;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-
 import org.apache.commons.lang.StringUtils;
+import org.codehaus.jackson.node.ArrayNode;
+import org.codehaus.jackson.node.ObjectNode;
+import org.codehaus.jackson.type.TypeReference;
 
 import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.data.DataTypeResolver;
 import com.bstek.dorado.data.JsonConvertContext;
 import com.bstek.dorado.data.JsonUtils;
-import com.bstek.dorado.data.entity.EntityWrapper;
 import com.bstek.dorado.data.entity.EntityEnhancer;
 import com.bstek.dorado.data.entity.EntityState;
 import com.bstek.dorado.data.entity.EntityUtils;
+import com.bstek.dorado.data.entity.EntityWrapper;
 import com.bstek.dorado.data.resolver.DataItems;
 import com.bstek.dorado.data.resolver.DataResolver;
 import com.bstek.dorado.data.resolver.manager.DataResolverManager;
@@ -69,22 +69,21 @@ public class ResolveDataServiceProcessor extends DataServiceProcessorSupport {
 	}
 
 	@Override
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	protected void doExecute(Writer writer, JSONObject json,
+	@SuppressWarnings("rawtypes")
+	protected void doExecute(Writer writer, ObjectNode objectNode,
 			DoradoContext context) throws Exception {
-		Object parameter = json.get("parameter");
-		if (parameter instanceof JSON) {
-			parameter = jsonToJavaObject((JSON) parameter, null, null, false);
-		}
+		Object parameter = jsonToJavaObject(objectNode.get("parameter"), null,
+				null, false);
 
-		String dataResolverName = json.getString("dataResolver");
+		String dataResolverName = JsonUtils.getString(objectNode,
+				"dataResolver");
 		DataResolver dataResolver = getDataResolver(dataResolverName);
 		if (dataResolver == null) {
 			throw new IllegalArgumentException("Unknown DataResolver ["
 					+ dataResolverName + "].");
 		}
 
-		Object jsonDataItems = json.get("dataItems");
+		ArrayNode jsonDataItems = (ArrayNode) objectNode.get("dataItems");
 		DataItems dataItems = null;
 		Map<String, UpdateInfo> updateInfos = new HashMap<String, UpdateInfo>();
 
@@ -93,36 +92,28 @@ public class ResolveDataServiceProcessor extends DataServiceProcessorSupport {
 
 		EntityEnhancer.disableGetterInterception();
 		try {
-			if (jsonDataItems instanceof JSONArray) {
-				dataItems = new DataItems();
-				JSONArray jsonArray = (JSONArray) jsonDataItems;
-				for (Iterator it = jsonArray.iterator(); it.hasNext();) {
-					JSONObject item = (JSONObject) it.next();
-					String alias = item.getString("alias");
-					Object value = item.get("data");
+			dataItems = new DataItems();
+			for (Iterator it = jsonDataItems.iterator(); it.hasNext();) {
+				ObjectNode item = (ObjectNode) it.next();
+				String alias = JsonUtils.getString(item, "alias");
 
-					String refreshModeText = item.containsKey("refreshMode") ? item
-							.getString("refreshMode") : null;
-					RefreshMode refreshMode = (StringUtils
-							.isEmpty(refreshModeText)) ? RefreshMode.value
-							: RefreshMode.valueOf(refreshModeText);
+				String refreshModeText = JsonUtils.getString(item,
+						"refreshMode");
+				RefreshMode refreshMode = (StringUtils.isEmpty(refreshModeText)) ? RefreshMode.value
+						: RefreshMode.valueOf(refreshModeText);
 
-					boolean autoResetEntityState = item
-							.containsKey("autoResetEntityState") ? item
-							.getBoolean("autoResetEntityState") : true;
+				boolean autoResetEntityState = JsonUtils.getBoolean(item,
+						"autoResetEntityState", true);
 
-					JsonConvertContext jsonContext = new JsonConvertContextImpl(
-							(RefreshMode.none.equals(refreshMode) || RefreshMode.value
-									.equals(refreshMode)), false, this);
-					if (value instanceof JSON) {
-						value = JsonUtils.toJavaObject((JSON) value, null,
-								null, true, jsonContext);
-					}
+				JsonConvertContext jsonContext = new JsonConvertContextImpl(
+						(RefreshMode.none.equals(refreshMode) || RefreshMode.value
+								.equals(refreshMode)), false, this);
+				Object data = JsonUtils.toJavaObject(item.get("data"), null,
+						null, true, jsonContext);
 
-					dataItems.put(alias, value);
-					updateInfos.put(alias, new UpdateInfo(refreshMode,
-							autoResetEntityState, jsonContext));
-				}
+				dataItems.put(alias, data);
+				updateInfos.put(alias, new UpdateInfo(refreshMode,
+						autoResetEntityState, jsonContext));
 			}
 
 			lastTimeStamp = EntityEnhancer.getLastTimeStamp();
@@ -156,11 +147,15 @@ public class ResolveDataServiceProcessor extends DataServiceProcessorSupport {
 			outputContext.setShouldOutputEntityState(false);
 		}
 
-		boolean supportsEntity = JsonUtils.getBoolean(json, "supportsEntity");
+		boolean supportsEntity = JsonUtils.getBoolean(objectNode,
+				"supportsEntity");
 		if (supportsEntity) {
-			outputContext.setLoadedDataTypes(JsonUtils.getJSONArray(json,
-					"loadedDataTypes"));
+			List<String> loadedDataTypes = JsonUtils.get(objectNode,
+					"loadedDataTypes", new TypeReference<List<String>>() {
+					});
+			outputContext.setLoadedDataTypes(loadedDataTypes);
 		}
+
 		outputContext.setShouldOutputDataTypes(supportsEntity);
 		outputContext.setShouldOutputEntityState(false);
 

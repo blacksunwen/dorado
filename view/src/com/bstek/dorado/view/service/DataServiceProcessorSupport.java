@@ -2,11 +2,12 @@ package com.bstek.dorado.view.service;
 
 import java.io.Writer;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
+import java.util.Map.Entry;
 
-import net.sf.json.JSON;
-import net.sf.json.JSONObject;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.node.ObjectNode;
 
 import com.bstek.dorado.common.StringAliasUtils;
 import com.bstek.dorado.data.Constants;
@@ -96,8 +97,7 @@ public abstract class DataServiceProcessorSupport implements ServiceProcessor,
 		this.includeDataTypesOutputter = includeDataTypesOutputter;
 	}
 
-	@SuppressWarnings("unchecked")
-	public final void execute(Writer writer, JSONObject json,
+	public final void execute(Writer writer, ObjectNode objectNode,
 			DoradoContext context) throws Exception {
 		ViewState originViewState = (ViewState) context
 				.getAttribute(VIEW_STATE_ATTRIBUTE_KEY);
@@ -105,28 +105,30 @@ public abstract class DataServiceProcessorSupport implements ServiceProcessor,
 
 		DoradoContextUtils.pushNewViewContext(context);
 
-		JSONObject rudeContext = json.getJSONObject("context");
+		ObjectNode rudeContext = (ObjectNode) objectNode.get("context");
 		if (rudeContext != null) {
-			for (Map.Entry<String, Object> entry : (Set<Map.Entry<String, Object>>) rudeContext
-					.entrySet()) {
+			Iterator<Entry<String, JsonNode>> fields = rudeContext.getFields();
+			while (fields.hasNext()) {
+				Entry<String, JsonNode> entry = fields.next();
 				String key = entry.getKey();
-				Object value = entry.getValue();
-				if (value instanceof JSON) {
-					value = JsonUtils.toJavaObject((JSON) value, null);
+				JsonNode jsonValue = rudeContext.get(key);
+				Object value = null;
+				if (jsonValue != null) {
+					value = JsonUtils.toJavaObject(jsonValue, null);
 				}
 				context.setAttribute(DoradoContext.VIEW, key, value);
 			}
 		}
 
 		try {
-			doExecute(writer, json, context);
+			doExecute(writer, objectNode, context);
 		} finally {
 			DoradoContextUtils.popViewContext(context);
 			context.setAttribute(VIEW_STATE_ATTRIBUTE_KEY, originViewState);
 		}
 	}
 
-	protected abstract void doExecute(Writer writer, JSONObject json,
+	protected abstract void doExecute(Writer writer, ObjectNode objectNode,
 			DoradoContext context) throws Exception;
 
 	protected void outputResult(Object result, OutputContext context)
@@ -231,12 +233,12 @@ public abstract class DataServiceProcessorSupport implements ServiceProcessor,
 		return dataType;
 	}
 
-	protected Object jsonToJavaObject(JSON json, DataType dataType,
+	protected Object jsonToJavaObject(JsonNode jsonNode, DataType dataType,
 			Class<?> targetType, boolean proxy) throws Exception {
 		if (jsonContext == null) {
 			jsonContext = new JsonConvertContextImpl(false, false, this);
 		}
-		return JsonUtils.toJavaObject(json, dataType, targetType, proxy,
+		return JsonUtils.toJavaObject(jsonNode, dataType, targetType, proxy,
 				jsonContext);
 
 	}
