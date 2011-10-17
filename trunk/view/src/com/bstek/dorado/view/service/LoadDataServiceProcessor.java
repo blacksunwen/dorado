@@ -3,12 +3,13 @@ package com.bstek.dorado.view.service;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.Iterator;
-
-import net.sf.json.JSON;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.node.ArrayNode;
+import org.codehaus.jackson.node.ObjectNode;
+import org.codehaus.jackson.type.TypeReference;
 
 import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.data.JsonUtils;
@@ -97,14 +98,14 @@ public class LoadDataServiceProcessor extends DataServiceProcessorSupport {
 		}
 	}
 
-	protected Criteria getCriteria(JSONObject rudeCriteria) {
+	protected Criteria getCriteria(ObjectNode rudeCriteria) {
 		Criteria criteria = new Criteria();
 		if (rudeCriteria.has("criterions")) {
-			JSONArray criterions = JsonUtils.getJSONArray(rudeCriteria,
-					"criterions");
+			ArrayNode criterions = (ArrayNode) rudeCriteria.get("criterions");
 			if (criterions != null) {
-				for (Iterator<?> it = criterions.iterator(); it.hasNext();) {
-					JSONObject rudeCriterion = (JSONObject) it.next();
+				for (Iterator<JsonNode> it = criterions.iterator(); it
+						.hasNext();) {
+					ObjectNode rudeCriterion = (ObjectNode) it.next();
 					Criterion criterion = new FilterCriterion(
 							JsonUtils.getString(rudeCriterion, "property"),
 							JsonUtils.getString(rudeCriterion, "expression"));
@@ -114,10 +115,10 @@ public class LoadDataServiceProcessor extends DataServiceProcessorSupport {
 		}
 
 		if (rudeCriteria.has("orders")) {
-			JSONArray orders = JsonUtils.getJSONArray(rudeCriteria, "orders");
+			ArrayNode orders = (ArrayNode) rudeCriteria.get("orders");
 			if (orders != null) {
-				for (Iterator<?> it = orders.iterator(); it.hasNext();) {
-					JSONObject rudeCriterion = (JSONObject) it.next();
+				for (Iterator<JsonNode> it = orders.iterator(); it.hasNext();) {
+					ObjectNode rudeCriterion = (ObjectNode) it.next();
 					Order order = new Order(JsonUtils.getString(rudeCriterion,
 							"property"), JsonUtils.getBoolean(rudeCriterion,
 							"desc"));
@@ -130,47 +131,44 @@ public class LoadDataServiceProcessor extends DataServiceProcessorSupport {
 
 	@Override
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	protected void doExecute(Writer writer, JSONObject json,
+	protected void doExecute(Writer writer, ObjectNode objectNode,
 			DoradoContext context) throws Exception {
-		String dataProviderName = json.getString("dataProvider");
+		String dataProviderName = JsonUtils.getString(objectNode,
+				"dataProvider");
 		String resultDataTypeName = null;
-		if (json.containsKey("resultDataType")) {
-			resultDataTypeName = json.getString("resultDataType");
+		if (objectNode.has("resultDataType")) {
+			resultDataTypeName = JsonUtils.getString(objectNode,
+					"resultDataType");
 		}
 
-		Object parameter = json.get("parameter");
-		if (parameter instanceof JSON) {
-			JSONObject rudeCriteria = null;
-			if (parameter instanceof JSONObject) {
-				rudeCriteria = JsonUtils.getJSONObject((JSONObject) parameter,
-						"criteria");
-				if (rudeCriteria != null) {
-					((JSONObject) parameter).remove("criteria");
-				}
-			}
-
-			parameter = jsonToJavaObject((JSON) parameter, null, null, false);
-
+		JsonNode rudeParameter = objectNode.get("parameter");
+		ObjectNode rudeCriteria = null;
+		if (rudeParameter instanceof ObjectNode) {
+			rudeCriteria = (ObjectNode) ((ObjectNode) rudeParameter)
+					.get("criteria");
 			if (rudeCriteria != null) {
-				Criteria criteria = getCriteria(rudeCriteria);
-				((Record) parameter).put("criteria", criteria);
+				((ObjectNode) rudeParameter).remove("criteria");
 			}
 		}
 
-		Object sysParameter = json.get("sysParameter");
+		Object parameter = jsonToJavaObject(rudeParameter, null, null, false);
+		if (rudeCriteria != null) {
+			Criteria criteria = getCriteria(rudeCriteria);
+			((Record) parameter).put("criteria", criteria);
+		}
+
+		JsonNode rudeSysParameter = objectNode.get("sysParameter");
 		Collection<DataPreloadConfig> dataPreloadConfigs = null;
-		if (sysParameter instanceof JSONObject) {
-			JSONObject jsonSysParameter = ((JSONObject) sysParameter);
-			if (jsonSysParameter.has("preloadConfigs")) {
+		if (rudeSysParameter instanceof ObjectNode) {
+			if (rudeSysParameter.has("preloadConfigs")) {
 				dataPreloadConfigs = (Collection<DataPreloadConfig>) JsonUtils
-						.toJavaObject(
-								jsonSysParameter.getJSONArray("preloadConfigs"),
+						.toJavaObject(rudeSysParameter.get("preloadConfigs"),
 								getDataType("[DataPreloadConfig]"));
 			}
 		}
 
-		int pageSize = JsonUtils.getInt(json, "pageSize");
-		int pageNo = JsonUtils.getInt(json, "pageNo");
+		int pageSize = JsonUtils.getInt(objectNode, "pageSize");
+		int pageNo = JsonUtils.getInt(objectNode, "pageNo");
 
 		DataProvider dataProvider = getDataProvider(dataProviderName);
 		if (dataProvider == null) {
@@ -197,10 +195,13 @@ public class LoadDataServiceProcessor extends DataServiceProcessorSupport {
 		}
 
 		OutputContext outputContext = new OutputContext(writer);
-		boolean supportsEntity = JsonUtils.getBoolean(json, "supportsEntity");
+		boolean supportsEntity = JsonUtils.getBoolean(objectNode,
+				"supportsEntity");
 		if (supportsEntity) {
-			outputContext.setLoadedDataTypes(JsonUtils.getJSONArray(json,
-					"loadedDataTypes"));
+			List<String> loadedDataTypes = JsonUtils.get(objectNode,
+					"loadedDataTypes", new TypeReference<List<String>>() {
+					});
+			outputContext.setLoadedDataTypes(loadedDataTypes);
 		}
 		outputContext.setUsePrettyJson(Configure
 				.getBoolean("view.outputPrettyJson"));

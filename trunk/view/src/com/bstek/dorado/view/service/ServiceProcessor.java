@@ -2,7 +2,7 @@ package com.bstek.dorado.view.service;
 
 import java.io.Writer;
 
-import net.sf.json.JSONObject;
+import org.codehaus.jackson.node.ObjectNode;
 
 import com.bstek.dorado.web.DoradoContext;
 
@@ -18,12 +18,12 @@ public interface ServiceProcessor {
 	 * 
 	 * @param writer
 	 *            面向客户端Response输出流的输出器。
-	 * @param json
+	 * @param jsonNode
 	 *            客户端提交的信息。
 	 * @param context
 	 *            Dorado上下文对象。
 	 * @throws Exception
 	 */
-	void execute(Writer writer, JSONObject json, DoradoContext context)
+	void execute(Writer writer, ObjectNode objectNode, DoradoContext context)
 			throws Exception;
 }

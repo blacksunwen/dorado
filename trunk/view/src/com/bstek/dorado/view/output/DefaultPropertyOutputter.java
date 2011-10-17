@@ -1,6 +1,6 @@
 package com.bstek.dorado.view.output;
 
-import net.sf.json.JSONArray;
+import java.lang.reflect.Array;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
@@ -38,8 +38,11 @@ public class DefaultPropertyOutputter implements PropertyOutputter,
 		} else if (object.getClass().isArray()
 				&& EntityUtils.isSimpleType(object.getClass()
 						.getComponentType())) {
-			JSONArray jsonArray = JSONArray.fromObject(object);
-			context.getWriter().append(jsonArray.toString());
+			json.array();
+			for (int size = Array.getLength(object), i = 0; i < size; i++) {
+				Object element = Array.get(object, i);
+				json.value(element);
+			}
 		} else {
 			TypeAnnotationInfo typeAnnotationInfo = ViewOutputUtils
 					.getTypeAnnotationInfo(beanFactory, object);

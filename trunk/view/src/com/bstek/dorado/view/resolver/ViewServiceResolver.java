@@ -12,12 +12,11 @@ import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.json.JSONObject;
-
 import org.aopalliance.intercept.MethodInterceptor;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.codehaus.jackson.node.ObjectNode;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -26,6 +25,7 @@ import com.bstek.dorado.common.proxy.SortableMethodInterceptorSet;
 import com.bstek.dorado.core.Constants;
 import com.bstek.dorado.core.io.InputStreamResource;
 import com.bstek.dorado.core.xml.XmlDocumentBuilder;
+import com.bstek.dorado.data.JsonUtils;
 import com.bstek.dorado.util.proxy.BaseMethodInterceptorDispatcher;
 import com.bstek.dorado.util.proxy.MethodInterceptorFilter;
 import com.bstek.dorado.util.proxy.ProxyBeanUtils;
@@ -124,13 +124,13 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 
 	/**
 	 * @param writer
-	 * @param json
+	 * @param jsonNode
 	 * @param context
 	 * @throws Exception
 	 */
-	protected void processTask(Writer writer, JSONObject json,
+	protected void processTask(Writer writer, ObjectNode objectNode,
 			DoradoContext context) throws Exception {
-		String action = json.getString("action");
+		String action = JsonUtils.getString(objectNode, "action");
 
 		ServiceProcessor processor = serviceProcessors.get(action);
 		if (processor == null) {
@@ -139,8 +139,8 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 		}
 
 		context.setAttribute(ACTION_ATTRIBUTE, action);
-		getViewServiceInvoker()
-				.invoke(action, processor, writer, json, context);
+		getViewServiceInvoker().invoke(action, processor, writer, objectNode,
+				context);
 	}
 
 	/**
@@ -194,8 +194,10 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 				for (int n; (n = reader.read(cs)) != -1;) {
 					buf.append(new String(cs, 0, n));
 				}
-				JSONObject json = JSONObject.fromObject(buf.toString());
-				processTask(writer, json, context);
+
+				ObjectNode objectNode = (ObjectNode) JsonUtils
+						.getObjectMapper().readTree(buf.toString());
+				processTask(writer, objectNode, context);
 			} else if (contentType != null && contentType.contains(XML_TOKEN)) {
 				Document document = getXmlDocumentBuilder(context)
 						.loadDocument(
@@ -210,11 +212,13 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 						.getDocumentElement())) {
 					writer.append("<request>\n");
 					writer.append("<response type=\"json\"><![CDATA[\n");
-					JSONObject json = JSONObject.fromObject(DomUtils
-							.getTextContent(element));
+					String textContent = DomUtils.getTextContent(element);
+
+					ObjectNode objectNode = (ObjectNode) JsonUtils
+							.getObjectMapper().readTree(textContent);
 					try {
-						// processTask(escapeWriter, json, context);
-						processTask(writer, json, context);
+						// processTask(escapeWriter, objectNode, context);
+						processTask(writer, objectNode, context);
 						writer.append("\n]]></response>\n");
 					} catch (ClientRunnableException e) {
 						writer.append("\n]]></response>\n");

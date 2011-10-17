@@ -2,11 +2,10 @@ package com.bstek.dorado.data;
 
 import java.util.Collection;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
 
 import com.bstek.dorado.core.Context;
-import com.bstek.dorado.data.JsonUtils;
 import com.bstek.dorado.data.model.Department;
 import com.bstek.dorado.data.model.Employee;
 import com.bstek.dorado.data.type.DataType;
@@ -27,15 +26,9 @@ public class JsonUtilsTest extends DataContextTestCase {
 		EntityDataType employeeDataType = (EntityDataType) dataTypeManager
 				.getDataType("domain.Employee");
 
-		JSONObject jsonDepartment = new JSONObject();
-		jsonDepartment.put("id", "D11");
-		jsonDepartment.put("name", "PRODUCT");
-
-		JSONObject jsonEmployee = new JSONObject();
-		jsonEmployee.put("id", "0001");
-		jsonEmployee.put("name", "Benny");
-		jsonEmployee.put("salary", "88888");
-		jsonEmployee.put("department", jsonDepartment);
+		ObjectMapper objectMapper = JsonUtils.getObjectMapper();
+		JsonNode jsonEmployee = objectMapper
+				.readTree("{\"id\":\"0001\",\"name\":\"Benny\",\"salary\":88888,\"department\":{\"id\":\"D11\",\"name\":\"PRODUCT\"}}");
 
 		Employee employee = (Employee) JsonUtils.toJavaObject(jsonEmployee,
 				employeeDataType);
@@ -56,23 +49,11 @@ public class JsonUtilsTest extends DataContextTestCase {
 		DataType employeesDataType = dataTypeManager
 				.getDataType("[map.Employee]");
 
-		JSONObject jsonEmployee;
-		JSONArray jsonArray = new JSONArray();
-
-		jsonEmployee = new JSONObject();
-		jsonEmployee.put("id", "0001");
-		jsonEmployee.put("name", "Tom");
-		jsonArray.add(jsonEmployee);
-
-		jsonEmployee = new JSONObject();
-		jsonEmployee.put("id", "0002");
-		jsonEmployee.put("name", "John");
-		jsonArray.add(jsonEmployee);
-
-		jsonEmployee = new JSONObject();
-		jsonEmployee.put("id", "0003");
-		jsonEmployee.put("name", "Mike");
-		jsonArray.add(jsonEmployee);
+		ObjectMapper objectMapper = JsonUtils.getObjectMapper();
+		JsonNode jsonArray = objectMapper.readTree("["
+				+ "{\"id\":\"0001\",\"name\":\"Tom\"},"
+				+ "{\"id\":\"0002\",\"name\":\"John\"},"
+				+ "{\"id\":\"0003\",\"name\":\"Mike\"}" + "]");
 
 		Collection<Employee> employees = (Collection<Employee>) JsonUtils
 				.toJavaObject(jsonArray, employeesDataType);
