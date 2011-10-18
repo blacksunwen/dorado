@@ -406,14 +406,14 @@
 		},
 		
 		constructor: function(config) {
-			$invokeSuper.call(this, arguments);
+			$invokeSuper.call(this, [config]);
 			this._id = dorado.Core.newId();
 			if (config) this.set(config);
 			if (!this._name) this._name = this._id;
 		},
 		
 		doSet: function(attr, value) {
-			$invokeSuper.call(this, arguments);
+			$invokeSuper.call(this, [attr, value]);
 			
 			var grid = this._grid;
 			if (!grid || !grid._rendered) return;
@@ -1248,7 +1248,7 @@
 				if (ie6) control.getDom().style.display = "none";
 			}
 			
-			$invokeSuper.call(this, arguments);
+			$invokeSuper.call(this);
 			
 			if (control) {
 				var w = dom.clientWidth, h = dom.clientHeight;
@@ -1264,7 +1264,7 @@
 		},
 		
 		show: function(parent, cell) {
-			$invokeSuper.call(this, arguments);
+			$invokeSuper.call(this, [parent, cell]);
 			
 			var control = this.getEditorControl();
 			control._focusParent = parent;
@@ -1291,7 +1291,7 @@
 		hide: function(post) {
 			var control = this.getEditorControl();
 			if (control) delete control._focusParent;
-			$invokeSuper.call(this, arguments);
+			$invokeSuper.call(this, [post]);
 		}
 	});
 	
@@ -1352,7 +1352,7 @@
 				value = editor.get("value");
 				entity[column._property] = value;
 			}
-			$invokeSuper.call(this, arguments);
+			$invokeSuper.call(this, [arg]);
 		}
 	});
 	
@@ -1421,7 +1421,7 @@
 			var editor = this.getEditorControl();
 			var sameEditor = (dorado.widget.getMainFocusedControl() == editor);
 			if (sameEditor && editor) editor.onBlur();
-			$invokeSuper.call(this, arguments);
+			$invokeSuper.call(this, [parent, cell]);
 			if (sameEditor && editor) editor.onFocus();
 		}
 	});
@@ -1770,7 +1770,7 @@
 		
 		constructor: function(config) {
 			this._columns = new dorado.widget.grid.ColumnList(this);
-			$invokeSuper.call(this, arguments);
+			$invokeSuper.call(this, [config]);
 		}
 	});
 	

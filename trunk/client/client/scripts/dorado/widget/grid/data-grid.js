@@ -333,6 +333,14 @@
 			this.updateScroller(this._innerGrid._container);
 			this.fixSizeBugs();
 		},
+
+		shouldEditing: function(column) {
+			var readOnly = false;
+			if (this._dataSet) {
+				readOnly = this._dataSet.get("readOnly");
+			}
+			return !readOnly && $invokeSuper.call(this, [column]);
+		},
 		
 		_doOnKeyDown: function(evt) {
 			var retValue = true;
