@@ -51,6 +51,15 @@ dorado.DataType = $extend(dorado.AttributeSupport, /** @scope dorado.DataType.pr
 		 */
 		view : {
 			path : "_dataTypeRepository._view"
+		},
+		
+		/**
+		 * 用户自定义数据。
+		 * @type Object
+		 * @attribute skipRefresh
+		 */
+		userData: {
+			skipRefresh: true
 		}
 	},
 

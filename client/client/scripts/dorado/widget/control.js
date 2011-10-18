@@ -843,7 +843,13 @@
 			} else if(this._attached) {
 				this.onDetachFromDocument();
 			}
-			if(!this._ready) this.onReady();
+			
+			if(!this._ready) {
+				this.onReady();
+				if (this._view && !this._view._ready) {
+					this._view.onReady();
+				}
+			}
 		},
 		
 		/**

@@ -242,7 +242,16 @@
 			 * @type boolean
 			 * @attribute
 			 */
-			cacheable: {}
+			cacheable: {},
+			
+			/**
+			 * 用户自定义数据。
+			 * @type Object
+			 * @attribute skipRefresh
+			 */
+			userData: {
+				skipRefresh: true
+			}
 		},
 		
 		EVENTS: /** @scope dorado.PropertyDef.prototype */ {

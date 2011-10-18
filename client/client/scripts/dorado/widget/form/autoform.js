@@ -274,8 +274,18 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 		});
 		this.registerInnerControl(this._container);
 		this._bindingElements = new dorado.ObjectGroup();
-		
+
+		this._skipOnCreateListeners = (this._skipOnCreateListeners || 0) + 1;
 		$invokeSuper.call(this, arguments);
+		this._skipOnCreateListeners --;
+		
+		if (this._elementConfigs) {
+			var configs = this._elementConfigs;
+			for (var i = 0; i < configs.length; i++) {
+				this.addElement(configs[i]);
+			}
+			delete this._elementConfigs;
+		}
 		
 		this.addListener("onAttributeChange", function(self, arg) {
 			var attr = arg.attribute;
@@ -295,6 +305,10 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 				}, 20);
 			}
 		});
+		
+		if (!(this._skipOnCreateListeners > 0)) {
+			this.fireEvent("onCreate", this);
+		}
 	},
 	
 	createDom: function() {
@@ -309,14 +323,6 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 		$invokeSuper.call(this, arguments);
 		var container = this._container;
 		if (!container._rendered) {
-			if (this._elementConfigs) {
-				var configs = this._elementConfigs;
-				for (var i = 0; i < configs.length; i++) {
-					this.addElement(configs[i]);
-				}
-				delete this._elementConfigs;
-			}
-			
 			if (this._autoCreateElements && !this._defaultElementsGenerated) {
 				this.generateDefaultElements();
 			}
