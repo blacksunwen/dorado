@@ -34,7 +34,7 @@
 		</JoinTables>
 	</AutoTable>
 	
-	<AutoTable name="t3">
+	<AutoTable name="t3" mainTableAlias="p">
 		<Columns>
 			<Column columnAlias ="n_pid"        tableAlias="p" columnName="ID"                propertyName="p_pid" />
 			<Column columnAlias ="n_pname"      tableAlias="p" columnName="PRODUCT_NAME"      propertyName="p_pname" />

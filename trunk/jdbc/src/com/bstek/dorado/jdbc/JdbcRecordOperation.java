@@ -22,6 +22,10 @@ public class JdbcRecordOperation extends
 
 	private JdbcRecordOperation parent;
 	
+	private JdbcRecordOperation substitute;
+	
+//	private boolean retrieveAfterExecute = false;
+	
 	public JdbcRecordOperation(DbElement dbElement, Record record,
 			JdbcDataResolverContext jdbcContext) {
 		super(dbElement, jdbcContext);
@@ -40,6 +44,14 @@ public class JdbcRecordOperation extends
 		return this.parent;
 	}
 	
+	public JdbcRecordOperation getSubstitute() {
+		return substitute;
+	}
+
+	public void setSubstitute(JdbcRecordOperation substitute) {
+		this.substitute = substitute;
+	}
+
 	@SuppressWarnings("unchecked")
 	public JdbcRecordOperation[] create(JdbcDataResolverItem item) {
 		String eName = item.getDbElement();

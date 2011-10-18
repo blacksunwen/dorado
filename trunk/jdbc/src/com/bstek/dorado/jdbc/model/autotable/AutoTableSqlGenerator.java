@@ -5,13 +5,16 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.Dialect;
 import com.bstek.dorado.jdbc.JdbcDataProviderContext;
 import com.bstek.dorado.jdbc.JdbcDataProviderOperation;
 import com.bstek.dorado.jdbc.JdbcParameterSource;
 import com.bstek.dorado.jdbc.JdbcRecordOperation;
+import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.model.Column;
 import com.bstek.dorado.jdbc.model.DbElement.Type;
+import com.bstek.dorado.jdbc.model.table.Table;
 import com.bstek.dorado.jdbc.sql.DeleteSql;
 import com.bstek.dorado.jdbc.sql.InsertSql;
 import com.bstek.dorado.jdbc.sql.SelectSql;
@@ -272,17 +275,89 @@ public class AutoTableSqlGenerator implements SqlGenerator{
 
 	@Override
 	public InsertSql insertSql(JdbcRecordOperation operation) {
-		throw new UnsupportedOperationException();
+		AutoTable autoTable = ( AutoTable)operation.getDbElement();
+		FromTable fromTable = autoTable.getMainTable();
+		Table table = fromTable.getTable();
+		Assert.notNull(table, autoTable.getType() + " [" + autoTable.getName() + "] " + "has no table to be inserted into.");
+		
+		Record record = operation.getRecord();
+		Record sRecord = new Record();
+		String tableAlias = fromTable.getTableAlias();
+		for (Column c: autoTable.getAllColumns()) {
+			AutoTableColumn column = (AutoTableColumn)c;
+			if (column.isInsertable() && tableAlias.equals(column.getTableAlias())) {
+				String columnName = column.getColumnName();
+				Column tableColumn = table.getColumn(columnName);
+				String propertyName = tableColumn.getPropertyName();
+				if (StringUtils.isNotEmpty(propertyName)) {
+					Object value = record.get(column.getPropertyName());
+					sRecord.put(propertyName, value);
+				}
+			}
+		}
+		
+		JdbcRecordOperation sOperation = new JdbcRecordOperation(table, sRecord, operation.getJdbcContext());
+		SqlGenerator generator = JdbcUtils.getSqlGenerator(table);
+		operation.setSubstitute(sOperation);
+		return generator.insertSql(sOperation);
 	}
 
 	@Override
 	public UpdateSql updateSql(JdbcRecordOperation operation) {
-		throw new UnsupportedOperationException();
+		AutoTable autoTable = ( AutoTable)operation.getDbElement();
+		FromTable fromTable = autoTable.getMainTable();
+		Table table = fromTable.getTable();
+		Assert.notNull(table, autoTable.getType() + " [" + autoTable.getName() + "] " + "has no table to be inserted into.");
+		
+		Record record = operation.getRecord();
+		Record sRecord = new Record();
+		String tableAlias = fromTable.getTableAlias();
+		for (Column c: autoTable.getAllColumns()) {
+			AutoTableColumn column = (AutoTableColumn)c;
+			if (column.isUpdatable() && tableAlias.equals(column.getTableAlias())) {
+				String columnName = column.getColumnName();
+				Column tableColumn = table.getColumn(columnName);
+				String propertyName = tableColumn.getPropertyName();
+				if (StringUtils.isNotEmpty(propertyName)) {
+					Object value = record.get(column.getPropertyName());
+					sRecord.put(propertyName, value);
+				}
+			}
+		}
+		
+		JdbcRecordOperation sOperation = new JdbcRecordOperation(table, sRecord, operation.getJdbcContext());
+		SqlGenerator generator = JdbcUtils.getSqlGenerator(table);
+		operation.setSubstitute(sOperation);
+		return generator.updateSql(sOperation);
 	}
 
 	@Override
 	public DeleteSql deleteSql(JdbcRecordOperation operation) {
-		throw new UnsupportedOperationException();
+		AutoTable autoTable = ( AutoTable)operation.getDbElement();
+		FromTable fromTable = autoTable.getMainTable();
+		Table table = fromTable.getTable();
+		Assert.notNull(table, autoTable.getType() + " [" + autoTable.getName() + "] " + "has no table to be inserted into.");
+		
+		Record record = operation.getRecord();
+		Record sRecord = new Record();
+		String tableAlias = fromTable.getTableAlias();
+		for (Column c: autoTable.getAllColumns()) {
+			AutoTableColumn column = (AutoTableColumn)c;
+			if (column.isUpdatable() && tableAlias.equals(column.getTableAlias())) {
+				String columnName = column.getColumnName();
+				Column tableColumn = table.getColumn(columnName);
+				String propertyName = tableColumn.getPropertyName();
+				if (StringUtils.isNotEmpty(propertyName)) {
+					Object value = record.get(column.getPropertyName());
+					sRecord.put(propertyName, value);
+				}
+			}
+		}
+		
+		JdbcRecordOperation sOperation = new JdbcRecordOperation(table, sRecord, operation.getJdbcContext());
+		SqlGenerator generator = JdbcUtils.getSqlGenerator(table);
+		operation.setSubstitute(sOperation);
+		return generator.deleteSql(sOperation);
 	}
 
 

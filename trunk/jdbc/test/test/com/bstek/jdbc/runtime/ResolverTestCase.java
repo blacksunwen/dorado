@@ -249,4 +249,67 @@ public class ResolverTestCase extends ConfigManagerTestSupport {
 	}
 	
 
+	public void test_sql() throws Exception {
+		JdbcDataResolver resolver = new JdbcDataResolver();
+		List<JdbcDataResolverItem> items = new ArrayList<JdbcDataResolverItem>();
+		resolver.setItems(items);
+		{
+			JdbcDataResolverItem item = new JdbcDataResolverItem();
+			item.setName("emp0");
+			item.setDbElement("emp0");
+			items.add(item);
+		}
+		
+		{
+			DataItems dataItems = new DataItems();
+			Record r = JdbcTestUtils.Radom.radomEmpSql(290);
+			dataItems.set("emp0", r);
+			{
+				r.getEntityEnhancer().setState(EntityState.DELETED);
+				resolver.resolve(dataItems);
+			}{
+				r.getEntityEnhancer().setState(EntityState.NEW);
+				resolver.resolve(dataItems);
+				
+			}{
+				r.getEntityEnhancer().setState(EntityState.MODIFIED);
+				resolver.resolve(dataItems);
+			}{
+				r.getEntityEnhancer().setState(EntityState.DELETED);
+				resolver.resolve(dataItems);
+			}
+		}
+	}
+	
+	public void test_auto() throws Exception {
+		JdbcDataResolver resolver = new JdbcDataResolver();
+		List<JdbcDataResolverItem> items = new ArrayList<JdbcDataResolverItem>();
+		resolver.setItems(items);
+		{
+			JdbcDataResolverItem item = new JdbcDataResolverItem();
+			item.setName("t3");
+			item.setDbElement("t3");
+			items.add(item);
+		}
+		
+		{
+			DataItems dataItems = new DataItems();
+			Record r = JdbcTestUtils.Radom.radomAutoT3(233);
+			dataItems.set("t3", r);
+			{
+				r.getEntityEnhancer().setState(EntityState.DELETED);
+				resolver.resolve(dataItems);
+			}{
+				r.getEntityEnhancer().setState(EntityState.NEW);
+				resolver.resolve(dataItems);
+				
+			}{
+				r.getEntityEnhancer().setState(EntityState.MODIFIED);
+				resolver.resolve(dataItems);
+			}{
+				r.getEntityEnhancer().setState(EntityState.DELETED);
+				resolver.resolve(dataItems);
+			}
+		}
+	}
 }
