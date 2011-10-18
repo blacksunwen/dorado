@@ -142,8 +142,10 @@ dorado.widget.DataControl = $extend(dorado.widget.DataSetObserver, /** @scope do
 	 * @param {Object} arg 消息参数。
 	 */
 	dataSetMessageReceived: function(messageCode, arg) {
-		if (this._disableBindingCounter == 0 && this.filterDataSetMessage(messageCode, arg)) {
-			this.processDataSetMessage(messageCode, arg);
+		if (this._disableBindingCounter == 0 && (!(this instanceof dorado.widget.Component) || this._ready)) {
+			if (this.filterDataSetMessage(messageCode, arg)) {
+				this.processDataSetMessage(messageCode, arg);
+			}
 		}
 	},
 	
