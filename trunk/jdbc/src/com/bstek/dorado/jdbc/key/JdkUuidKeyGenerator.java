@@ -2,8 +2,7 @@ package com.bstek.dorado.jdbc.key;
 
 import java.util.UUID;
 
-import com.bstek.dorado.data.variant.Record;
-import com.bstek.dorado.jdbc.JdbcDataResolverContext;
+import com.bstek.dorado.jdbc.JdbcRecordOperation;
 import com.bstek.dorado.jdbc.model.table.TableKeyColumn;
 
 /**
@@ -20,7 +19,7 @@ public class JdkUuidKeyGenerator extends AbstractKeyGenerator<String> {
 	}
 
 	@Override
-	public String newKey(JdbcDataResolverContext context, TableKeyColumn keyColumn, Record record) {
+	public String newKey(JdbcRecordOperation operation, TableKeyColumn keyColumn) {
 		UUID id = UUID.randomUUID();
 		return id.toString();
 	}

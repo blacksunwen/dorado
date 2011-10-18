@@ -4,6 +4,7 @@ import javax.sql.DataSource;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import com.bstek.dorado.jdbc.Dialect;
 import com.bstek.dorado.util.Assert;
@@ -71,6 +72,16 @@ public class JdbcEnviroment implements InitializingBean {
 		return namedParameterJdbcDaoSupport;
 	}
 
+	private TransactionTemplate transactionTemplate;
+	
+	public void setTransactionTemplate(TransactionTemplate transactionTemplate) {
+		this.transactionTemplate = transactionTemplate;
+	}
+	
+	public TransactionTemplate getTransactionTemplate() {
+		return transactionTemplate;
+	}
+	
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		Assert.notNull(this.getName(), "name can not be null.");

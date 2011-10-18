@@ -7,11 +7,11 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
-import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.Dialect;
-import com.bstek.dorado.jdbc.JdbcDataResolverContext;
+import com.bstek.dorado.jdbc.JdbcRecordOperation;
 import com.bstek.dorado.jdbc.model.JdbcEnviroment;
 import com.bstek.dorado.jdbc.model.table.TableKeyColumn;
+import com.bstek.dorado.util.Assert;
 
 /**
  * 数据库序列的主键生成器
@@ -27,11 +27,15 @@ public class SequenceKeyGenerator extends AbstractKeyGenerator<Number> {
 	}
 
 	@Override
-	public Number newKey(JdbcDataResolverContext context, TableKeyColumn keyColumn,
-			Record record) {
+	public Number newKey(JdbcRecordOperation operation, TableKeyColumn keyColumn) {
 		String sequenceName = (String) keyColumn.getKeyParameter();
-
-		JdbcEnviroment jdbcEnviroment = context.getJdbcEnviroment();
+		Assert.notEmpty(sequenceName, "sequenceName must not be empty.");
+		
+		JdbcEnviroment jdbcEnviroment = operation.getJdbcContext().getJdbcEnviroment();
+		if (jdbcEnviroment == null) {
+			jdbcEnviroment = operation.getDbElement().getJdbcEnviroment();
+		}
+		
 		Dialect dialect = jdbcEnviroment.getDialect();
 		if (!dialect.isSequenceSupport()) {
 			throw new UnsupportedOperationException("[" + jdbcEnviroment.getName() + "] does not support db sequence.");

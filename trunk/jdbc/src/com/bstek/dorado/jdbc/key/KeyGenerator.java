@@ -1,7 +1,6 @@
 package com.bstek.dorado.jdbc.key;
 
-import com.bstek.dorado.data.variant.Record;
-import com.bstek.dorado.jdbc.JdbcDataResolverContext;
+import com.bstek.dorado.jdbc.JdbcRecordOperation;
 import com.bstek.dorado.jdbc.model.table.TableKeyColumn;
 
 /**
@@ -35,6 +34,5 @@ public interface KeyGenerator<T> {
 	 * @param record
 	 * @return
 	 */
-	T newKey(JdbcDataResolverContext context, TableKeyColumn keyColumn,
-			Record record);
+	T newKey(JdbcRecordOperation operation, TableKeyColumn keyColumn);
 }

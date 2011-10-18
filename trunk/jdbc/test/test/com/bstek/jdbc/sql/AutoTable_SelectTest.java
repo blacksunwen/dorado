@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import com.bstek.dorado.jdbc.Dialect;
 import com.bstek.dorado.jdbc.JdbcDataProviderContext;
+import com.bstek.dorado.jdbc.JdbcDataProviderOperation;
 import com.bstek.dorado.jdbc.model.JdbcEnviroment;
 import com.bstek.dorado.jdbc.model.autotable.JunctionMatchRule;
 import com.bstek.dorado.jdbc.model.autotable.AutoTable;
@@ -69,7 +70,9 @@ public class AutoTable_SelectTest {
 		JdbcDataProviderContext ctx = new JdbcDataProviderContext(new JdbcEnviroment(),null, null);
 		ctx.getJdbcEnviroment().setDialect(new H2Dialect());
 		
-		SelectSql selectSql = generator.selectSql(t, null, ctx);
+		JdbcDataProviderOperation operation = new JdbcDataProviderOperation(t, ctx);
+		SelectSql selectSql = generator.selectSql(operation);
+		
 		Dialect dialect = ctx.getJdbcEnviroment().getDialect();
 		String sql = dialect.toSQL(selectSql);
 		
@@ -146,7 +149,9 @@ public class AutoTable_SelectTest {
 		JdbcDataProviderContext ctx = new JdbcDataProviderContext(new JdbcEnviroment(),null, null);
 		ctx.getJdbcEnviroment().setDialect(new H2Dialect());
 		
-		SelectSql selectSql = generator.selectSql(t, null, ctx);
+		JdbcDataProviderOperation operation = new JdbcDataProviderOperation(t, ctx);
+		SelectSql selectSql = generator.selectSql(operation);
+		
 		Dialect dialect = ctx.getJdbcEnviroment().getDialect();
 		String sql = dialect.toSQL(selectSql);
 		
@@ -203,7 +208,9 @@ public class AutoTable_SelectTest {
 		JdbcDataProviderContext ctx = new JdbcDataProviderContext(new JdbcEnviroment(),null, null);
 		ctx.getJdbcEnviroment().setDialect(new H2Dialect());
 		
-		SelectSql selectSql = generator.selectSql(t, ctx.getParameter(), ctx);
+		JdbcDataProviderOperation operation = new JdbcDataProviderOperation(t, ctx);
+		SelectSql selectSql = generator.selectSql(operation);
+		
 		Dialect dialect = ctx.getJdbcEnviroment().getDialect();
 		String sql = dialect.toSQL(selectSql);
 		
@@ -261,10 +268,12 @@ public class AutoTable_SelectTest {
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("ename", "LIWI");
 		
-		JdbcDataProviderContext ctx = new  JdbcDataProviderContext(new JdbcEnviroment(),param, null);
+		JdbcDataProviderContext ctx = new JdbcDataProviderContext(new JdbcEnviroment(),param, null);
 		ctx.getJdbcEnviroment().setDialect(new H2Dialect());
 		
-		SelectSql selectSql = generator.selectSql(t, ctx.getParameter(), ctx);
+		JdbcDataProviderOperation operation = new JdbcDataProviderOperation(t, ctx);
+		SelectSql selectSql = generator.selectSql(operation);
+		
 		Dialect dialect = ctx.getJdbcEnviroment().getDialect();
 		String sql = dialect.toSQL(selectSql);
 		
@@ -361,7 +370,9 @@ public class AutoTable_SelectTest {
 		JdbcDataProviderContext ctx = new JdbcDataProviderContext(new JdbcEnviroment(),param, null);
 		ctx.getJdbcEnviroment().setDialect(new H2Dialect());
 		
-		SelectSql selectSql = generator.selectSql(t, ctx.getParameter(), ctx);
+		JdbcDataProviderOperation operation = new JdbcDataProviderOperation(t, ctx);
+		SelectSql selectSql = generator.selectSql(operation);
+		
 		Dialect dialect = ctx.getJdbcEnviroment().getDialect();
 		String sql = dialect.toSQL(selectSql);
 		
@@ -439,7 +450,9 @@ public class AutoTable_SelectTest {
 		JdbcDataProviderContext ctx = new JdbcDataProviderContext(new JdbcEnviroment(),null, null);
 		ctx.getJdbcEnviroment().setDialect(new H2Dialect());
 		
-		SelectSql selectSql = generator.selectSql(t, ctx.getParameter(), ctx);
+		JdbcDataProviderOperation operation = new JdbcDataProviderOperation(t, ctx);
+		SelectSql selectSql = generator.selectSql(operation);
+		
 		Dialect dialect = ctx.getJdbcEnviroment().getDialect();
 		String sql = dialect.toSQL(selectSql);
 		

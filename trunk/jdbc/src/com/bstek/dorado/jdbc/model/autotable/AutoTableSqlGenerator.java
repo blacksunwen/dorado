@@ -5,11 +5,11 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.Dialect;
-import com.bstek.dorado.jdbc.JdbcParameterSource;
 import com.bstek.dorado.jdbc.JdbcDataProviderContext;
-import com.bstek.dorado.jdbc.JdbcDataResolverContext;
+import com.bstek.dorado.jdbc.JdbcDataProviderOperation;
+import com.bstek.dorado.jdbc.JdbcParameterSource;
+import com.bstek.dorado.jdbc.JdbcRecordOperation;
 import com.bstek.dorado.jdbc.model.Column;
 import com.bstek.dorado.jdbc.model.DbElement.Type;
 import com.bstek.dorado.jdbc.sql.DeleteSql;
@@ -24,7 +24,7 @@ import com.bstek.dorado.jdbc.sql.SqlUtils;
 import com.bstek.dorado.jdbc.sql.UpdateSql;
 import com.bstek.dorado.util.Assert;
 
-public class AutoTableSqlGenerator implements SqlGenerator<AutoTable> {
+public class AutoTableSqlGenerator implements SqlGenerator{
 
 	@Override
 	public Type getType() {
@@ -32,7 +32,11 @@ public class AutoTableSqlGenerator implements SqlGenerator<AutoTable> {
 	}
 	
 	@Override
-	public SelectSql selectSql(AutoTable t, Object parameter, JdbcDataProviderContext jdbcContext) {
+	public SelectSql selectSql(JdbcDataProviderOperation operation) {
+		AutoTable t = (AutoTable)operation.getDbElement();
+		JdbcDataProviderContext jdbcContext = operation.getJdbcContext();
+		Object parameter = operation.getJdbcContext().getParameter();
+		
 		//columnsToken
 		StringBuilder columnsToken = new StringBuilder();
 		List<Column> columns = t.getAllColumns();
@@ -267,20 +271,17 @@ public class AutoTableSqlGenerator implements SqlGenerator<AutoTable> {
 	}
 
 	@Override
-	public InsertSql insertSql(AutoTable t, Record record,
-			JdbcDataResolverContext jdbcContext) {
+	public InsertSql insertSql(JdbcRecordOperation operation) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public UpdateSql updateSql(AutoTable t, Record record,
-			JdbcDataResolverContext jdbcContext) {
+	public UpdateSql updateSql(JdbcRecordOperation operation) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public DeleteSql deleteSql(AutoTable t, Record record,
-			JdbcDataResolverContext jdbcContext) {
+	public DeleteSql deleteSql(JdbcRecordOperation operation) {
 		throw new UnsupportedOperationException();
 	}
 
