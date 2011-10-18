@@ -199,6 +199,7 @@ public abstract class AbstractDialect implements Dialect {
 		if (logger.isDebugEnabled()) {
 			logger.debug("[INSERT-SQL]" + sql);
 		}
+		JdbcRecordOperation substitute = operation.getSubstitute();
 		
 		NamedParameterJdbcTemplate jdbcTemplate = env.getNamedDao().getNamedParameterJdbcTemplate();
 		TableKeyColumn identityColumn = insertSql.getIdentityColumn();
@@ -206,7 +207,7 @@ public abstract class AbstractDialect implements Dialect {
 			JdbcParameterSource parameterSource = insertSql.getParameterSource();
 			jdbcTemplate.update(sql, parameterSource);
 		} else {
-			Record record = operation.getRecord();
+			
 			JdbcParameterSource parameterSource = insertSql.getParameterSource();
 			GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 			jdbcTemplate.update(sql, parameterSource, keyHolder);
@@ -217,8 +218,21 @@ public abstract class AbstractDialect implements Dialect {
 				if (jdbcType != null) {
 					value = jdbcType.fromDB(value);
 				}
-				record.put(propertyName, value);
+				
+				if (substitute != null) {
+					Record record = substitute.getRecord();
+					record.put(propertyName, value);
+				} else {
+					Record record = operation.getRecord();
+					record.put(propertyName, value);
+				}
 			}
+		}
+		
+		if (substitute != null) {
+			Record record = operation.getRecord();
+			Record sRecord = substitute.getRecord();
+			record.putAll(sRecord);
 		}
 	}
 	

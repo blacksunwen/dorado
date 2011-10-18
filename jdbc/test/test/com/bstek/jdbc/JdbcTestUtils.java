@@ -116,6 +116,26 @@ public class JdbcTestUtils {
 			return r;
 		}
 		
+		public static Record radomEmpSql(int id) {
+			Record r = new Record();
+			
+			r.set("id", id);
+			r.set("lastName", RandomStringUtils.randomAscii(10));
+			r.set("firstName", RandomStringUtils.randomAscii(10));
+			r.set("title", RandomStringUtils.randomAscii(20));
+			r.set("titleOfCourtesy", RandomStringUtils.randomAscii(20));
+			r.set("sex", Short.valueOf("1"));
+			r.set("birthDate", new Date(1980, 2, 21));
+			r.set("hireDate", new Date(2010, 12, 30));
+			
+			try {
+				r = (Record)EntityUtils.toEntity(r, null);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+			return r;
+		}
+		
 		public static Record radomCategory(int id) {
 			Record r = new Record();
 			
@@ -182,6 +202,22 @@ public class JdbcTestUtils {
 			Record r = new Record();
 			
 			r.set("NAME", RandomStringUtils.random(10, new char[]{'A','B','C','D','X','Y','Z'}));
+			try {
+				r = (Record)EntityUtils.toEntity(r, null);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+			return r;
+		}
+		public static Record radomAutoT3(int id) {
+			Record r = new Record();
+			r.set("p_pid", id);
+			r.set("p_pname", RandomStringUtils.random(10, new char[]{'A','B','C','D','X','Y','Z'}));
+			r.set("p_psupplier", 3);
+			r.set("p_pcategory", 4);
+			r.set("p_pquanitity", RandomStringUtils.random(2, new char[]{'A','B','C','D','X','Y','Z'}));
+			r.set("p_punitprice", 4);
+			r.set("p_ccategory", RandomStringUtils.random(10, new char[]{'A','B','C','D','X','Y','Z'}));
 			try {
 				r = (Record)EntityUtils.toEntity(r, null);
 			} catch (Exception e) {

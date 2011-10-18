@@ -109,6 +109,15 @@ public class TableSqlGenerator implements SqlGenerator {
 					Object value = record.get(propertyName);
 					if (value == null) {
 						value = column.getInsertDefaultValue();
+						if (value != null) {
+							JdbcType jdbcType = column.getJdbcType();
+							if (jdbcType != null) {
+								value = jdbcType.fromDB(value);
+								record.set(propertyName, value);
+							} else {
+								record.set(propertyName, value);
+							}
+						}
 					}
 					
 					addColumnToken(sql, parameterSource, column, propertyName,

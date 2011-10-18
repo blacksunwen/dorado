@@ -37,7 +37,7 @@ public class AutoTable extends AbstractDbElement {
 	
 	public FromTable getFromTable(String alias) {
 		FromTable fromTable = fromTables.get(alias);
-		Assert.notNull(fromTable, "No FromTable named [" + alias + "]");
+		Assert.notNull(fromTable, getType() + " [" + getName()+ "] " + "No FromTable named [" + alias + "]");
 		return fromTable;
 	}
 
@@ -68,7 +68,7 @@ public class AutoTable extends AbstractDbElement {
 	}
 
 	public FromTable getMainTable() {
-		Assert.notEmpty(mainTableAlias);
+		Assert.notEmpty(mainTableAlias, getType() + " [" + getName()+ "] " + "mainTableAlias must not be null.");
 		
 		return this.getFromTable(mainTableAlias);
 	}
@@ -90,7 +90,7 @@ public class AutoTable extends AbstractDbElement {
 			super.addColumn(column);
 			c.setAutoTable(this);
 		} else {
-			throw new IllegalArgumentException("Unknown column class [" + column.getClass() + "]");
+			throw new IllegalArgumentException(getType() + " [" + getName()+ "] " + "Unknown column class [" + column.getClass() + "]");
 		}
 	}
 

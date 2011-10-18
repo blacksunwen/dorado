@@ -55,7 +55,7 @@ public abstract class AbstractDbElement implements DbElement {
 	
 	public Column getColumn(String name) {
 		Column c = columnMap.get(name);
-		Assert.notNull(c, "no column named [" + name + "]");
+		Assert.notNull(c, getType() + "named [" + getName() + "]" + " has not column named [" + name + "]");
 		return c;
 	}
 	
