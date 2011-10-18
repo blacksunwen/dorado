@@ -256,7 +256,6 @@
 			$invokeSuper.call(this);
 			$waitFor(this._loadingDataSet, $scopify(this, this.onDataLoaded));
 			this._loadingDataSet = [];
-			
 		},
 		
 		/**
