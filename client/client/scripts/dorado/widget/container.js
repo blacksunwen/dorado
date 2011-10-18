@@ -189,11 +189,17 @@
 				delete config.children;
 			}
 			
+			this._skipOnCreateListeners = (this._skipOnCreateListeners || 0) + 1;
 			$invokeSuper.call(this, [config]);
+			this._skipOnCreateListeners --;
 			
 			if (childrenConfig) {
 				config.children = childrenConfig;
 				this.set("children", childrenConfig);
+			}
+			
+			if (!(this._skipOnCreateListeners > 0)) {
+				this.fireEvent("onCreate", this);
 			}
 		},
 		

@@ -149,7 +149,9 @@
 			$invokeSuper.call(this);
 			if (config) this.set(config);
 			
-			this.fireEvent("onCreate", this);
+			if (!(this._skipOnCreateListeners > 0)) {
+				this.fireEvent("onCreate", this);
+			}
 		},
 		
 		doSet: function(attr, value) {
