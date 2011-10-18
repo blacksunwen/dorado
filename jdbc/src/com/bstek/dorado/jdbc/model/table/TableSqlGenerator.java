@@ -3,9 +3,9 @@ package com.bstek.dorado.jdbc.model.table;
 import java.util.List;
 
 import com.bstek.dorado.data.variant.Record;
+import com.bstek.dorado.jdbc.JdbcDataProviderOperation;
 import com.bstek.dorado.jdbc.JdbcParameterSource;
-import com.bstek.dorado.jdbc.JdbcDataProviderContext;
-import com.bstek.dorado.jdbc.JdbcDataResolverContext;
+import com.bstek.dorado.jdbc.JdbcRecordOperation;
 import com.bstek.dorado.jdbc.key.KeyGenerator;
 import com.bstek.dorado.jdbc.model.Column;
 import com.bstek.dorado.jdbc.model.DbElement;
@@ -18,15 +18,17 @@ import com.bstek.dorado.jdbc.sql.UpdateSql;
 import com.bstek.dorado.jdbc.type.JdbcType;
 import com.bstek.dorado.util.Assert;
 
-public class TableSqlGenerator implements SqlGenerator<Table> {
+public class TableSqlGenerator implements SqlGenerator {
 
 	public DbElement.Type getType() {
 		return DbElement.Type.Table;
 	}
 	
 	@Override
-	public SelectSql selectSql(Table table, Object parameter,
-			JdbcDataProviderContext jdbcContext) {
+	public SelectSql selectSql(JdbcDataProviderOperation operation) {
+		Table table = (Table)operation.getDbElement();
+		Object parameter = operation.getJdbcContext().getParameter();
+		
 		//SelectSql
 		TableSelectSql selectSql = new TableSelectSql();
 				
@@ -64,7 +66,10 @@ public class TableSqlGenerator implements SqlGenerator<Table> {
 	}
 
 	@Override
-	public InsertSql insertSql(Table table, Record record, JdbcDataResolverContext jdbcContext) {
+	public InsertSql insertSql(JdbcRecordOperation operation) {
+		Table table = (Table)operation.getDbElement();
+		Record record = operation.getRecord();
+		
 		InsertSql sql = new InsertSql();
 		JdbcParameterSource parameterSource = SqlUtils.createJdbcParameter(record);
 		sql.setParameterSource(parameterSource);
@@ -79,7 +84,7 @@ public class TableSqlGenerator implements SqlGenerator<Table> {
 				if (keyGenerator.isIdentity()) {
 					sql.setIdentityColumn(keyColumn);
 				} else {
-					Object value = keyGenerator.newKey(jdbcContext, keyColumn, record);
+					Object value = keyGenerator.newKey(operation, keyColumn);
 					JdbcType jdbcType = keyColumn.getJdbcType();
 					if (jdbcType != null) {
 						record.put(propertyName, jdbcType.fromDB(value));
@@ -134,7 +139,10 @@ public class TableSqlGenerator implements SqlGenerator<Table> {
 	}
 
 	@Override
-	public UpdateSql updateSql(Table table, Record record, JdbcDataResolverContext jdbcContext) {
+	public UpdateSql updateSql(JdbcRecordOperation operation) {
+		Table table = (Table)operation.getDbElement();
+		Record record = operation.getRecord();
+		
 		UpdateSql sql = new UpdateSql();
 		JdbcParameterSource parameterSource = SqlUtils.createJdbcParameter(record);
 		sql.setParameterSource(parameterSource);
@@ -185,7 +193,10 @@ public class TableSqlGenerator implements SqlGenerator<Table> {
 	}
 
 	@Override
-	public DeleteSql deleteSql(Table table, Record record, JdbcDataResolverContext jdbcContext) {
+	public DeleteSql deleteSql(JdbcRecordOperation operation) {
+		Table table = (Table)operation.getDbElement();
+		Record record = operation.getRecord();
+		
 		DeleteSql sql = new DeleteSql();
 		JdbcParameterSource parameterSource = SqlUtils.createJdbcParameter(record);
 		sql.setParameterSource(parameterSource);

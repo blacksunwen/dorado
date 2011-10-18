@@ -7,6 +7,8 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
+import com.bstek.dorado.jdbc.JdbcDataProviderContext;
+import com.bstek.dorado.jdbc.JdbcDataProviderOperation;
 import com.bstek.dorado.jdbc.model.table.Table;
 import com.bstek.dorado.jdbc.model.table.TableColumn;
 import com.bstek.dorado.jdbc.model.table.TableKeyColumn;
@@ -28,7 +30,9 @@ public class TableSql_SelectTest {
 		id.setColumnName("ID");
 		table.addColumn(id);
 		
-		SelectSql selectSql = generator.selectSql(table, null, null);
+		JdbcDataProviderContext jdbcContext = new JdbcDataProviderContext(null, null, null);
+		JdbcDataProviderOperation operation = new JdbcDataProviderOperation(table, jdbcContext);
+		SelectSql selectSql = generator.selectSql(operation);
 		
 		H2Dialect dialect = new H2Dialect();
 		String sql = dialect.toSQL(selectSql);
@@ -53,7 +57,10 @@ public class TableSql_SelectTest {
 		name.setColumnName("NAME");
 		table.addColumn(name);
 		
-		SelectSql selectSql = generator.selectSql(table, null, null);
+		JdbcDataProviderContext jdbcContext = new JdbcDataProviderContext(null, null, null);
+		JdbcDataProviderOperation operation = new JdbcDataProviderOperation(table, jdbcContext);
+		SelectSql selectSql = generator.selectSql(operation);
+		
 		H2Dialect dialect = new H2Dialect();
 		String sql = dialect.toSQL(selectSql);
 		
@@ -78,7 +85,10 @@ public class TableSql_SelectTest {
 		name.setColumnName("NAME");
 		table.addColumn(name);
 		
-		SelectSql selectSql = generator.selectSql(table, null, null);
+		JdbcDataProviderContext jdbcContext = new JdbcDataProviderContext(null, null, null);
+		JdbcDataProviderOperation operation = new JdbcDataProviderOperation(table, jdbcContext);
+		SelectSql selectSql = generator.selectSql(operation);
+		
 		H2Dialect dialect = new H2Dialect();
 		String sql = dialect.toSQL(selectSql);
 		
@@ -104,7 +114,10 @@ public class TableSql_SelectTest {
 		name.setColumnName("NAME");
 		table.addColumn(name);
 		
-		SelectSql selectSql = generator.selectSql(table, null, null);
+		JdbcDataProviderContext jdbcContext = new JdbcDataProviderContext(null, null, null);
+		JdbcDataProviderOperation operation = new JdbcDataProviderOperation(table, jdbcContext);
+		SelectSql selectSql = generator.selectSql(operation);
+		
 		H2Dialect dialect = new H2Dialect();
 		String sql = dialect.toSQL(selectSql);
 		
@@ -130,7 +143,10 @@ public class TableSql_SelectTest {
 		name.setColumnName("NAME");
 		table.addColumn(name);
 		
-		SelectSql selectSql = generator.selectSql(table, null, null);
+		JdbcDataProviderContext jdbcContext = new JdbcDataProviderContext(null, null, null);
+		JdbcDataProviderOperation operation = new JdbcDataProviderOperation(table, jdbcContext);
+		SelectSql selectSql = generator.selectSql(operation);
+		
 		H2Dialect dialect = new H2Dialect();
 		String sql = dialect.toSQL(selectSql);
 		
@@ -162,7 +178,10 @@ public class TableSql_SelectTest {
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("ID", 5);
 		
-		SelectSql selectSql = generator.selectSql(table, param, null);
+		JdbcDataProviderContext jdbcContext = new JdbcDataProviderContext(null, param, null);
+		JdbcDataProviderOperation operation = new JdbcDataProviderOperation(table, jdbcContext);
+		SelectSql selectSql = generator.selectSql(operation);
+		
 		H2Dialect dialect = new H2Dialect();
 		String sql = dialect.toSQL(selectSql);
 		
@@ -199,7 +218,10 @@ public class TableSql_SelectTest {
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("ID", 5);
 		
-		SelectSql selectSql = generator.selectSql(table, param, null);
+		JdbcDataProviderContext jdbcContext = new JdbcDataProviderContext(null, param, null);
+		JdbcDataProviderOperation operation = new JdbcDataProviderOperation(table, jdbcContext);
+		SelectSql selectSql = generator.selectSql(operation);
+		
 		H2Dialect dialect = new H2Dialect();
 		String sql = dialect.toSQL(selectSql);
 		

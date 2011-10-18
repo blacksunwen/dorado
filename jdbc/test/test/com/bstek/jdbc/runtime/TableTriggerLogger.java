@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.bstek.dorado.jdbc.JdbcDataProviderOperation;
-import com.bstek.dorado.jdbc.JdbcDataResolverOperation;
+import com.bstek.dorado.jdbc.JdbcRecordOperation;
 import com.bstek.dorado.jdbc.model.AbstractDbElementTrigger;
 
 public class TableTriggerLogger extends AbstractDbElementTrigger {
@@ -24,7 +24,7 @@ public class TableTriggerLogger extends AbstractDbElementTrigger {
 	}
 
 	@Override
-	public void doResolve(JdbcDataResolverOperation operation) {
+	public void doResolve(JdbcRecordOperation operation) {
 		System.out.println("-");
 		System.out.println("Begin::" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
 		try {

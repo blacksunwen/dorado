@@ -31,6 +31,14 @@ public abstract class AbstractJdbcOperation<T extends AbstractJdbcContext> {
 		return this.jdbcContext;
 	}
 
+	public JdbcEnviroment getJdbcEnviroment() {
+		AbstractJdbcContext jdbcContext = getJdbcContext();
+		JdbcEnviroment env = jdbcContext.getJdbcEnviroment();
+		if (env == null) {
+			env = this.getDbElement().getJdbcEnviroment();
+		}
+		return env;
+	}
 	/**
 	 * 执行操作动作
 	 */

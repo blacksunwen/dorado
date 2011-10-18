@@ -61,6 +61,6 @@ public interface JdbcConfigManager {
 	 * @param type
 	 * @return
 	 */
-	SqlGenerator<DbElement> getSqlGenerator(DbElement.Type type);
+	SqlGenerator getSqlGenerator(DbElement.Type type);
 
 }

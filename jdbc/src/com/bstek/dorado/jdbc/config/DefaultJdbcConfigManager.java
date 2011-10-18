@@ -41,7 +41,7 @@ public class DefaultJdbcConfigManager implements JdbcConfigManager, ApplicationC
 
 	private JdbcDefinitionManager definitionManager = new JdbcDefinitionManager();
 	private Map<DbElement.Type, TagedObjectParser> objectParsers = new HashMap<DbElement.Type, TagedObjectParser>();
-	private Map<DbElement.Type, SqlGenerator<DbElement>> sqlGenerators = new HashMap<DbElement.Type, SqlGenerator<DbElement>>();
+	private Map<DbElement.Type, SqlGenerator> sqlGenerators = new HashMap<DbElement.Type, SqlGenerator>();
 	
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext)
@@ -66,9 +66,9 @@ public class DefaultJdbcConfigManager implements JdbcConfigManager, ApplicationC
 		}
 	}
 
-	public void setSqlGenerators(List<SqlGenerator<DbElement>> generators) {
+	public void setSqlGenerators(List<SqlGenerator> generators) {
 		sqlGenerators.clear();
-		for (SqlGenerator<DbElement> generator: generators) {
+		for (SqlGenerator generator: generators) {
 			Type type = generator.getType();
 			sqlGenerators.put(type, generator);
 		}
@@ -96,9 +96,9 @@ public class DefaultJdbcConfigManager implements JdbcConfigManager, ApplicationC
 		return parser;
 	}
 
-	public SqlGenerator<DbElement> getSqlGenerator(DbElement.Type type) {
+	public SqlGenerator getSqlGenerator(DbElement.Type type) {
 		Assert.notNull(type);
-		SqlGenerator<DbElement> generator = sqlGenerators.get(type);
+		SqlGenerator generator = sqlGenerators.get(type);
 
 		Assert.notNull(generator);
 		return generator;

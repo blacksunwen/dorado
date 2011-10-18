@@ -1,7 +1,6 @@
 package com.bstek.dorado.jdbc.key;
 
-import com.bstek.dorado.data.variant.Record;
-import com.bstek.dorado.jdbc.JdbcDataResolverContext;
+import com.bstek.dorado.jdbc.JdbcRecordOperation;
 import com.bstek.dorado.jdbc.model.table.TableKeyColumn;
 
 /**
@@ -22,8 +21,7 @@ public class IdentityKeyGenerator extends AbstractKeyGenerator<Number> {
 	}
 
 	@Override
-	public Number newKey(JdbcDataResolverContext context, TableKeyColumn keyColumn,
-			Record record) {
+	public Number newKey(JdbcRecordOperation operation, TableKeyColumn keyColumn) {
 		throw new UnsupportedOperationException();
 	}
 

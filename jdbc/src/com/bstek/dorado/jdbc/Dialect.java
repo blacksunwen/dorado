@@ -108,4 +108,16 @@ public interface Dialect {
 	 * @return
 	 */
 	List<KeyGenerator<Object>> getKeyGenerators();
+	
+	/**
+	 * 执行查询操作
+	 * @param operation
+	 */
+	void execute(JdbcDataProviderOperation operation);
+	
+	/**
+	 * 执行数据库操作
+	 * @param operation
+	 */
+	void execute(JdbcRecordOperation operation);
 }

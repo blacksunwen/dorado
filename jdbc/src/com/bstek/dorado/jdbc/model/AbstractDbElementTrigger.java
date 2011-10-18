@@ -1,7 +1,7 @@
 package com.bstek.dorado.jdbc.model;
 
 import com.bstek.dorado.jdbc.JdbcDataProviderOperation;
-import com.bstek.dorado.jdbc.JdbcDataResolverOperation;
+import com.bstek.dorado.jdbc.JdbcRecordOperation;
 
 public abstract class AbstractDbElementTrigger implements DbElementTrigger {
 
@@ -11,7 +11,7 @@ public abstract class AbstractDbElementTrigger implements DbElementTrigger {
 	}
 
 	@Override
-	public void doResolve(JdbcDataResolverOperation operation) {
+	public void doResolve(JdbcRecordOperation operation) {
 		operation.execute();
 	}
 

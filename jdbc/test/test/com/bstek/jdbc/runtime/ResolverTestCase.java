@@ -78,9 +78,9 @@ public class ResolverTestCase extends ConfigManagerTestSupport {
 			
 			List<Record> records = new ArrayList<Record>();
 			dataItems.set("catg", records);
-			records.add(JdbcTestUtils.Radom.radomCategory(101));
-			records.add(JdbcTestUtils.Radom.radomCategory(102));
-			records.add(JdbcTestUtils.Radom.radomCategory(103));
+			records.add(JdbcTestUtils.Radom.radomCategory(201));
+			records.add(JdbcTestUtils.Radom.radomCategory(202));
+			records.add(JdbcTestUtils.Radom.radomCategory(203));
 		}
 		
 		{
@@ -101,6 +101,52 @@ public class ResolverTestCase extends ConfigManagerTestSupport {
 			resolver.resolve(dataItems);
 		}
 		
+	}
+	
+	public void test_3() throws Exception {
+		//Resolver
+		JdbcDataResolver resolver = new JdbcDataResolver();
+		List<JdbcDataResolverItem> items = new ArrayList<JdbcDataResolverItem>();
+		resolver.setItems(items);
+		{
+			JdbcDataResolverItem catgItem = new JdbcDataResolverItem();
+			catgItem.setName("catg");
+			catgItem.setDbElement("CATEGORIES");
+			items.add(catgItem);
+			
+			{
+				JdbcDataResolverItem productItem = new JdbcDataResolverItem();
+				productItem.setName("products");
+				productItem.setDbElement("PRODUCTS");
+				productItem.setReferencedKeyProperties("ID");
+				productItem.setForeignKeyProperties("CATEGORY_ID");
+				catgItem.getItems().add(productItem);
+			}
+		}
+		
+		//DataItems
+		DataItems dataItems = new DataItems();
+		Record catg = JdbcTestUtils.Radom.radomCategory(301);
+		List<Record> prods = new ArrayList<Record>();
+		{
+			dataItems.set("catg", catg);
+			catg.set("products", prods);
+			
+			prods.add(JdbcTestUtils.Radom.radomProduct(1001, null));
+			prods.add(JdbcTestUtils.Radom.radomProduct(1002, null));
+		}
+		
+		{
+			JdbcTestUtils.setState(dataItems, "catg", EntityState.DELETED);
+			resolver.resolve(dataItems);
+		}{
+			JdbcTestUtils.setState(dataItems, "catg", EntityState.NEW);
+			JdbcTestUtils.setState(prods, EntityState.NEW);
+			resolver.resolve(dataItems);
+			
+			Assert.assertEquals(catg.get("ID"), prods.get(0).get("CATEGORY_ID"));
+			Assert.assertEquals(catg.get("ID"), prods.get(1).get("CATEGORY_ID"));
+		}
 	}
 	
 	public void test_inc() throws Exception {
@@ -201,4 +247,6 @@ public class ResolverTestCase extends ConfigManagerTestSupport {
 			}
 		}
 	}
+	
+
 }

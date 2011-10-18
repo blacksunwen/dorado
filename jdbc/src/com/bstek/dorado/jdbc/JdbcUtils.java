@@ -35,13 +35,12 @@ public abstract class JdbcUtils {
 		}
 	}
 	
-	@SuppressWarnings("rawtypes")
 	public static SqlGenerator getSqlGenerator(DbElement dbElement) {
 		SqlGenerator generator = getJdbcConfigManager().getSqlGenerator(dbElement.getType());
 		return generator;
 	}
 	
-	public static DbElement getDbElement(String elementName) throws Exception {
+	public static DbElement getDbElement(String elementName) {
 		Assert.notEmpty(elementName, "DbElement name must not be null.");
 		
 		DbElement dbElement = JdbcUtils.getJdbcConfigManager().getDbElement(elementName);

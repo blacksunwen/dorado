@@ -1,5 +1,6 @@
 package test.com.bstek.jdbc;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
 
@@ -84,6 +85,7 @@ public class JdbcTestUtils {
 	}
 	
 	public static class Radom {
+		@SuppressWarnings("deprecation")
 		public static Record radomEmployee(int id) {
 			Record r = new Record();
 			
@@ -120,6 +122,30 @@ public class JdbcTestUtils {
 			r.set("ID", id);
 			r.set("CATEGORY_NAME", RandomStringUtils.random(10, new char[]{'A','B','C','D'}));
 			r.set("DESCRIPTION", RandomStringUtils.random(50, new char[]{'A','B','C','D'}));
+			try {
+				r = (Record)EntityUtils.toEntity(r, null);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+			return r;
+		}
+		
+		public static Record radomProduct(int id, String catgId) {
+			Record r = new Record();
+			
+			r.set("ID", id);
+			r.set("PRODUCT_NAME", RandomStringUtils.random(10, new char[]{'A','B','C','D'}));
+			r.set("SUPPLIER_ID", Integer.valueOf(3));
+			r.set("QUANTITY_PER_UNIT", RandomStringUtils.random(3, new char[]{'A','B','C','D'}));
+			r.set("UNIT_PRICE", new BigDecimal(10));
+			r.set("UNITS_IN_STOCK", Integer.valueOf(RandomStringUtils.randomNumeric(2)));
+			r.set("UNITS_ON_ORDER", Integer.valueOf(RandomStringUtils.randomNumeric(2)));
+			r.set("REORDER_LEVEL", Integer.valueOf(RandomStringUtils.randomNumeric(2)));
+			r.set("DISCONTINUED", Short.valueOf("3"));
+			if (catgId != null) {
+				r.set("CATEGORY_ID", catgId);
+			}
+			
 			try {
 				r = (Record)EntityUtils.toEntity(r, null);
 			} catch (Exception e) {
@@ -165,9 +191,6 @@ public class JdbcTestUtils {
 		}
 	}
 	
-	
-	
-	
 	@SuppressWarnings("rawtypes")
 	public static void setState(DataItems dataItems, String itemName, EntityState state) {
 		Object itemValue = dataItems.get(itemName);
@@ -176,10 +199,15 @@ public class JdbcTestUtils {
 			r.getEntityEnhancer().setState(state);
 		} else if (itemValue instanceof Collection) {
 			Collection records = (Collection)itemValue;
-			for (Object item: records) {
-				Record r = (Record)item;
-				r.getEntityEnhancer().setState(state);
-			}
+			setState(records, state);
+		}
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public static void setState(Collection records, EntityState state) {
+		for (Object item: records) {
+			Record r = (Record)item;
+			r.getEntityEnhancer().setState(state);
 		}
 	}
 }

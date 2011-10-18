@@ -5,6 +5,8 @@ import junit.framework.Assert;
 import org.junit.Test;
 
 import com.bstek.dorado.data.variant.Record;
+import com.bstek.dorado.jdbc.JdbcDataResolverContext;
+import com.bstek.dorado.jdbc.JdbcRecordOperation;
 import com.bstek.dorado.jdbc.model.table.Table;
 import com.bstek.dorado.jdbc.model.table.TableColumn;
 import com.bstek.dorado.jdbc.model.table.TableKeyColumn;
@@ -41,19 +43,28 @@ public class TableSql_ResolverTest {
 		
 		//-
 		{
-			InsertSql insertSql = generator.insertSql(table, record, null);
+			JdbcDataResolverContext jdbcContext = new JdbcDataResolverContext(null);
+			JdbcRecordOperation operation = new JdbcRecordOperation(table, record, jdbcContext);
+			
+			InsertSql insertSql = generator.insertSql(operation);
 			String sql = insertSql.toSQL(null);
 			
 			System.out.println(sql);
 			Assert.assertEquals("INSERT INTO table1 (ID,NAME) VALUES (:id,:name)", sql);
 		}{
-			UpdateSql insertSql = generator.updateSql(table, record, null);
+			JdbcDataResolverContext jdbcContext = new JdbcDataResolverContext(null);
+			JdbcRecordOperation operation = new JdbcRecordOperation(table, record, jdbcContext);
+			
+			UpdateSql insertSql = generator.updateSql(operation);
 			String sql = insertSql.toSQL(null);
 			
 			System.out.println(sql);
 			Assert.assertEquals("UPDATE table1 SET NAME=:name WHERE ID=:id", sql);
 		}{
-			DeleteSql deleteSql = generator.deleteSql(table, record, null);
+			JdbcDataResolverContext jdbcContext = new JdbcDataResolverContext(null);
+			JdbcRecordOperation operation = new JdbcRecordOperation(table, record, jdbcContext);
+			
+			DeleteSql deleteSql = generator.deleteSql(operation);
 			String sql = deleteSql.toSQL(null);
 			
 			System.out.println(sql);

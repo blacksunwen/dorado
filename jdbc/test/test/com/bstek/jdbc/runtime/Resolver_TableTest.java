@@ -9,7 +9,7 @@ import com.bstek.dorado.data.entity.EntityState;
 import com.bstek.dorado.data.entity.EntityUtils;
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.JdbcDataResolverContext;
-import com.bstek.dorado.jdbc.JdbcDataResolverOperation;
+import com.bstek.dorado.jdbc.JdbcRecordOperation;
 import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.model.table.Table;
 
@@ -48,26 +48,26 @@ public class Resolver_TableTest extends ConfigManagerTestSupport {
 			JdbcDataResolverContext jdbcContext = new JdbcDataResolverContext(table.getJdbcEnviroment(),null);
 			
 			r.getEntityEnhancer().setState(EntityState.DELETED);
-			JdbcDataResolverOperation operation = new JdbcDataResolverOperation(table, r, jdbcContext);
+			JdbcRecordOperation operation = new JdbcRecordOperation(table, r, jdbcContext);
 			operation.execute();
 		}{
 			JdbcDataResolverContext jdbcContext = new JdbcDataResolverContext(table.getJdbcEnviroment(),null);
 			
 			r.getEntityEnhancer().setState(EntityState.NEW);
-			JdbcDataResolverOperation operation = new JdbcDataResolverOperation(table, r, jdbcContext);
+			JdbcRecordOperation operation = new JdbcRecordOperation(table, r, jdbcContext);
 			operation.execute();
 		}{
 			JdbcDataResolverContext jdbcContext = new JdbcDataResolverContext(table.getJdbcEnviroment(),null);
 			
 			r.set("REPORTS_TO", "3");
 			r.getEntityEnhancer().setState(EntityState.MODIFIED);
-			JdbcDataResolverOperation operation = new JdbcDataResolverOperation(table, r, jdbcContext);
+			JdbcRecordOperation operation = new JdbcRecordOperation(table, r, jdbcContext);
 			operation.execute();
 		}{
 			JdbcDataResolverContext jdbcContext = new JdbcDataResolverContext(table.getJdbcEnviroment(),null);
 			
 			r.getEntityEnhancer().setState(EntityState.DELETED);
-			JdbcDataResolverOperation operation = new JdbcDataResolverOperation(table, r, jdbcContext);
+			JdbcRecordOperation operation = new JdbcRecordOperation(table, r, jdbcContext);
 			operation.execute();
 		}
 		
