@@ -93,6 +93,7 @@
             
             var buttonWidth = new dorado.widget.Button("buttonWidth");
             buttonWidth.set("icon", "del.gif");
+            buttonWidth.set("menu", testMenu);
             buttonWidth.addListener("onClick", function(self) {
             	self.set("disabled", true);
 				var options = {
@@ -294,9 +295,7 @@
 
             var iconButton2 = new dorado.widget.SimpleIconButton({
                 icon: "url(>skin>common/icons.gif) -20px -60px",
-                menu: testMenu,
-                showTrigger: false,
-                disabled: true
+                menu: testMenu
             });
             view.addChild(iconButton2);
 

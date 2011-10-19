@@ -209,7 +209,11 @@
 		createDom: function() {
 			this._className = this._showTrigger === true || (this._menu && (this._showTrigger !== false)) ? this._className + "-trigger" : this._className;
 			var dom = $invokeSuper.call(this, arguments);
-			$fly(dom).addClass("i-icon-button " + this._className);
+            if (this._showTrigger === true || (this._menu && (this._showTrigger !== false))) {
+                $fly(dom).addClass("i-icon-button-trigger " + this._className);
+            } else {
+                $fly(dom).addClass("i-icon-button " + this._className);
+            }
 			dom.appendChild($DomUtils.xCreate({
 				tagName: "div",
 				className: "icon"
