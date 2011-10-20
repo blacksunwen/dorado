@@ -105,8 +105,8 @@ public abstract class DataServiceProcessorSupport implements ServiceProcessor,
 
 		DoradoContextUtils.pushNewViewContext(context);
 
-		ObjectNode rudeContext = (ObjectNode) objectNode.get("context");
-		if (rudeContext != null) {
+		JsonNode rudeContext = (JsonNode) objectNode.get("context");
+		if (rudeContext != null && !rudeContext.isNull()) {
 			Iterator<Entry<String, JsonNode>> fields = rudeContext.getFields();
 			while (fields.hasNext()) {
 				Entry<String, JsonNode> entry = fields.next();
@@ -145,7 +145,7 @@ public abstract class DataServiceProcessorSupport implements ServiceProcessor,
 			outputData(result, context);
 
 			if (context.isShouldOutputDataTypes()) {
-				jsonBuilder.key("$dataTypeDefinitions");
+				jsonBuilder.key("$dataTypeDefinitions");				
 				boolean hasDataTypes = false;
 				Map<String, DataType> includeDataTypes = context
 						.getIncludeDataTypes(false);
@@ -237,7 +237,7 @@ public abstract class DataServiceProcessorSupport implements ServiceProcessor,
 			Class<?> targetType, boolean proxy) throws Exception {
 		if (jsonContext == null) {
 			jsonContext = new JsonConvertContextImpl(false, false, this);
-		}
+		} 
 		return JsonUtils.toJavaObject(jsonNode, dataType, targetType, proxy,
 				jsonContext);
 
