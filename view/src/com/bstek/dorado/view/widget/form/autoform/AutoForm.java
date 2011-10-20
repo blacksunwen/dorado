@@ -59,6 +59,7 @@ public class AutoForm extends Control implements FormConfig {
 	private boolean showHintMessage;
 	private FormElementHintPosition hintPosition;
 	private boolean readOnly;
+	private boolean createOwnEntity = true;
 
 	@ViewAttribute(referenceComponentName = "FormProfile")
 	public String getFormProfile() {
@@ -334,6 +335,15 @@ public class AutoForm extends Control implements FormConfig {
 
 	public void setReadOnly(boolean readOnly) {
 		this.readOnly = readOnly;
+	}
+
+	@ViewAttribute(defaultValue = "true")
+	public boolean isCreateOwnEntity() {
+		return createOwnEntity;
+	}
+
+	public void setCreateOwnEntity(boolean createOwnEntity) {
+		this.createOwnEntity = createOwnEntity;
 	}
 
 }

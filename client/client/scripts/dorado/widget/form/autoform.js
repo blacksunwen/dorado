@@ -191,7 +191,24 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 					this._elementConfigs = elements;
 				}
 			}
+		},
+		
+		/**
+		 * 是否要自动创建一个私有的Entity，否则AutoForm将尝试使用关联的FormProfile中的Entity。
+		 * @boolean
+		 * @attribute
+		 * @default value
+		 */
+		createOwnEntity: {
+			defaultValue: true
 		}
+	},
+	
+	constructor: function(config) {
+		if (this._createOwnEntity) {
+			this.set("entity", {});
+		}
+		$invokeSuper.call(this, [config]);
 	},
 	
 	/**
