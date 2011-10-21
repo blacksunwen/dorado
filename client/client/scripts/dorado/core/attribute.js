@@ -163,9 +163,11 @@
 				if (i == 0) {
 					var def = this.ATTRIBUTES[attr];
 					if (def) {
-						if (def.writeOnly)
+						if (def.writeOnly) {
 							throw new dorado.AttributeException(
 									"dorado.core.AttributeWriteOnly", attr);
+						}
+						
 						if (def.getter) {
 							result = def.getter.call(this, attr);
 						} else if (def.path) {
@@ -192,8 +194,7 @@
 								"dorado.core.UnknownAttribute", attr);
 					}
 				} else {
-					if (!result)
-						break;
+					if (!result) break;
 					result = (result.get instanceof Function) ? result
 							.get(attr) : result[attr];
 				}
