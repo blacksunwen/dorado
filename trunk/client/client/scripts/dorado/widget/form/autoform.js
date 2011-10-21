@@ -204,11 +204,57 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 		}
 	},
 	
-	constructor: function(config) {
+
+	
+	constructor: function() {
+		this._elements = new dorado.util.KeyedArray(function(element) {
+			return (element instanceof dorado.widget.autoform.AutoFormElement) ? element._name : element._id;
+		});
+		this._container = new dorado.widget.Container({
+			layout: "Form",
+			contentOverflow: "visible"
+		});
+		this.registerInnerControl(this._container);
+		this._bindingElements = new dorado.ObjectGroup();
+		
 		if (this._createOwnEntity) {
 			this.set("entity", {});
 		}
-		$invokeSuper.call(this, [config]);
+
+		this._skipOnCreateListeners = (this._skipOnCreateListeners || 0) + 1;
+		$invokeSuper.call(this, arguments);
+		this._skipOnCreateListeners --;
+		
+		if (this._elementConfigs) {
+			var configs = this._elementConfigs;
+			for (var i = 0; i < configs.length; i++) {
+				this.addElement(configs[i]);
+			}
+			delete this._elementConfigs;
+		}
+		
+		this.addListener("onAttributeChange", function(self, arg) {
+			var attr = arg.attribute;
+			if (attr == "readOnly") {
+				var readOnly = self._readOnly, objects = self._bindingElements.objects;
+				for (var i = 0; i < objects.length; i++) {
+					var object = objects[i];
+					if (object instanceof dorado.widget.FormElement) {
+						object._realReadOnly = readOnly;
+						object.resetEditorReadOnly();
+					}
+				}
+			} else if (!dorado.widget.Control.prototype.ATTRIBUTES[attr] &&
+			dorado.widget.FormConfig.prototype.ATTRIBUTES[attr]) {
+				dorado.Toolkits.setDelayedAction(self, "$profileChangeTimerId", function() {
+					self._bindingElements.invoke("onProfileChange");
+				}, 20);
+			}
+		});
+		
+		if (!(this._skipOnCreateListeners > 0)) {
+			this.fireEvent("onCreate", this);
+		}
 	},
 	
 	/**
@@ -279,53 +325,6 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 	 */
 	getElement: function(name) {
 		return this._elements.get(name);
-	},
-	
-	constructor: function() {
-		this._elements = new dorado.util.KeyedArray(function(element) {
-			return (element instanceof dorado.widget.autoform.AutoFormElement) ? element._name : element._id;
-		});
-		this._container = new dorado.widget.Container({
-			layout: "Form",
-			contentOverflow: "visible"
-		});
-		this.registerInnerControl(this._container);
-		this._bindingElements = new dorado.ObjectGroup();
-
-		this._skipOnCreateListeners = (this._skipOnCreateListeners || 0) + 1;
-		$invokeSuper.call(this, arguments);
-		this._skipOnCreateListeners --;
-		
-		if (this._elementConfigs) {
-			var configs = this._elementConfigs;
-			for (var i = 0; i < configs.length; i++) {
-				this.addElement(configs[i]);
-			}
-			delete this._elementConfigs;
-		}
-		
-		this.addListener("onAttributeChange", function(self, arg) {
-			var attr = arg.attribute;
-			if (attr == "readOnly") {
-				var readOnly = self._readOnly, objects = self._bindingElements.objects;
-				for (var i = 0; i < objects.length; i++) {
-					var object = objects[i];
-					if (object instanceof dorado.widget.FormElement) {
-						object._realReadOnly = readOnly;
-						object.resetEditorReadOnly();
-					}
-				}
-			} else if (!dorado.widget.Control.prototype.ATTRIBUTES[attr] &&
-			dorado.widget.FormConfig.prototype.ATTRIBUTES[attr]) {
-				dorado.Toolkits.setDelayedAction(self, "$profileChangeTimerId", function() {
-					self._bindingElements.invoke("onProfileChange");
-				}, 20);
-			}
-		});
-		
-		if (!(this._skipOnCreateListeners > 0)) {
-			this.fireEvent("onCreate", this);
-		}
 	},
 	
 	createDom: function() {
