@@ -12,74 +12,64 @@
 			return null;
 		};
 	});
-	
-	var defaultConstraintsCache = {};
-	function getDefaultConstraints(regionPadding) {
-		if (regionPadding == null) regionPadding = defaultRegionPadding;
-		var constraints = defaultConstraintsCache[regionPadding + ''];
-		if (!constraints) {
-			constraints = {
-				top: {
-					type: "top",
-					left: regionPadding,
-					right: regionPadding,
-					top: regionPadding,
-					bottom: undefined,
-					anchorLeft: getLastRegionFuncs.left,
-					anchorRight: getLastRegionFuncs.right,
-					anchorTop: getLastRegionFuncs.top
-				},
-				bottom: {
-					type: "bottom",
-					left: regionPadding,
-					right: regionPadding,
-					top: undefined,
-					bottom: regionPadding,
-					anchorLeft: getLastRegionFuncs.left,
-					anchorRight: getLastRegionFuncs.right,
-					anchorBottom: getLastRegionFuncs.bottom
-				},
-				left: {
-					type: "left",
-					left: regionPadding,
-					right: undefined,
-					top: regionPadding,
-					bottom: regionPadding,
-					anchorLeft: getLastRegionFuncs.left,
-					anchorTop: getLastRegionFuncs.top,
-					anchorBottom: getLastRegionFuncs.bottom
-				},
-				right: {
-					type: "right",
-					left: undefined,
-					right: regionPadding,
-					top: regionPadding,
-					bottom: regionPadding,
-					anchorRight: getLastRegionFuncs.right,
-					anchorTop: getLastRegionFuncs.top,
-					anchorBottom: getLastRegionFuncs.bottom
-				},
-				center: {
-					type: "center",
-					left: regionPadding,
-					right: regionPadding,
-					top: regionPadding,
-					bottom: regionPadding,
-					anchorLeft: getLastRegionFuncs.left,
-					anchorRight: getLastRegionFuncs.right,
-					anchorTop: getLastRegionFuncs.top,
-					anchorBottom: getLastRegionFuncs.bottom,
-					overFlow: "auto"
-				}
-			};
-			defaultConstraintsCache[regionPadding + ''] = constraints;
+
+	var defaultConstraintsCache = {
+		top: {
+			type: "top",
+			left: 0,
+			right: 0,
+			top: 0,
+			bottom: undefined,
+			anchorLeft: getLastRegionFuncs.left,
+			anchorRight: getLastRegionFuncs.right,
+			anchorTop: getLastRegionFuncs.top
+		},
+		bottom: {
+			type: "bottom",
+			left: 0,
+			right: 0,
+			top: undefined,
+			bottom: 0,
+			anchorLeft: getLastRegionFuncs.left,
+			anchorRight: getLastRegionFuncs.right,
+			anchorBottom: getLastRegionFuncs.bottom
+		},
+		left: {
+			type: "left",
+			left: 0,
+			right: undefined,
+			top: 0,
+			bottom: 0,
+			anchorLeft: getLastRegionFuncs.left,
+			anchorTop: getLastRegionFuncs.top,
+			anchorBottom: getLastRegionFuncs.bottom
+		},
+		right: {
+			type: "right",
+			left: undefined,
+			right: 0,
+			top: 0,
+			bottom: 0,
+			anchorRight: getLastRegionFuncs.right,
+			anchorTop: getLastRegionFuncs.top,
+			anchorBottom: getLastRegionFuncs.bottom
+		},
+		center: {
+			type: "center",
+			left: 0,
+			right: 0,
+			top: 0,
+			bottom: 0,
+			anchorLeft: getLastRegionFuncs.left,
+			anchorRight: getLastRegionFuncs.right,
+			anchorTop: getLastRegionFuncs.top,
+			anchorBottom: getLastRegionFuncs.bottom,
+			overFlow: "auto"
 		}
-		return constraints;
-	}
+	};
 	
-	function getDefaultConstraint(type, regionPadding) {
-		var constraints = getDefaultConstraints(regionPadding);
-		return constraints[type || "center"];
+	function getDefaultConstraint(type) {
+		return dorado.Object.apply({}, defaultConstraintsCache[type || "center"]);
 	}
 	
 	/**
@@ -142,14 +132,14 @@
 			if (layoutConstraint) {
 				if (layoutConstraint != dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT) {
 					if (layoutConstraint.constructor == String) {
-						layoutConstraint = getDefaultConstraint(layoutConstraint, this._regionPadding);
+						layoutConstraint = getDefaultConstraint(layoutConstraint);
 					} else {
-						dorado.Object.apply(layoutConstraint, getDefaultConstraint(layoutConstraint.type, this._regionPadding));
+						layoutConstraint = dorado.Object.apply(layoutConstraint, getDefaultConstraint(layoutConstraint.type));
 					}
 				}
 			} else {
-				layoutConstraint = dorado.Object.apply({}, getDefaultConstraint(null, this._regionPadding));
-			}
+				layoutConstraint = dorado.Object.apply({}, getDefaultConstraint(null));
+			}			
 			return layoutConstraint;
 		},
 		
@@ -165,7 +155,7 @@
 			var lastRegion = (regions.size > 0) ? regions.last.data : null;
 			if (lastRegion && lastRegion.constraint.type == "center") {
 				if (layoutConstraint.type == "center") {
-					lastRegion.constraint = getDefaultConstraint("top", this._regionPadding);
+					dorado.Object.apply(lastRegion.constraint, getDefaultConstraint("top"));
 					if (this._rendered) this.refreshControl(control);
 					
 					region.previousRegion = lastRegion;

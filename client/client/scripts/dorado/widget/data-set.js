@@ -184,8 +184,8 @@
 			}
 		},
 		
-		doSet: function(attr, value) {
-			$invokeSuper.call(this, arguments);
+		doSet: function(attr, value, skipUnknownAttribute, lockWritingTimes) {
+			$invokeSuper.call(this, [attr, value, skipUnknownAttribute, lockWritingTimes]);
 			if (!this._ready) return;
 			var def = this.ATTRIBUTES[attr];
 			if (def && def.notifyObservers) {
@@ -194,7 +194,7 @@
 		},
 
 		onReady: function() {
-			$invokeSuper.call(this, arguments);
+			$invokeSuper.call(this);
 			
 			if (this._observers.length > 0) {
 				for (var i = 0; i < this._observers; i++) {

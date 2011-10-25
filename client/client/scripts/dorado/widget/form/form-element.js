@@ -297,7 +297,9 @@
 			 */
 			entity: {
 				defaultValue: function() {
-					return new dorado.widget.FormProfile.DefaultEntity();
+					var entity = new dorado.widget.FormProfile.DefaultEntity();
+					entity.$id = dorado.Core.newId();
+					return entity;
 				}
 			},
 			

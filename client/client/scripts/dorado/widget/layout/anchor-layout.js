@@ -209,7 +209,9 @@
 			var lp, rp, tp, bp, wp, hp;
 			lp = rp = tp = bp = wp = hp = 0;
 			
-			var padding = parseInt(this._padding) || 0;
+			var padding = (parseInt(this._padding) || 0) +
+				(parseInt(this._regionPadding) || 0) +
+				(parseInt(constraint.padding) || 0);
 			var clientWidth = containerDom.clientWidth, realContainerWidth = clientWidth - padding * 2;
 			var clientHeight = containerDom.clientHeight, realContainerHeight = clientHeight - padding * 2;
 			
@@ -226,10 +228,10 @@
 					var anchorRegion = getAnchorRegion.call(this, region, "anchorLeft");
 					if (anchorRegion) {
 						var anchorDom = anchorRegion.control.getDom();
-						left = anchorDom.offsetLeft + anchorRegion.realWidth + parseInt(l);
+						left = anchorDom.offsetLeft + anchorRegion.realWidth +
+							(parseInt(anchorRegion.constraint.padding) || 0) + parseInt(l) + padding;
 					} else {
-						left = parseInt(l);
-						left += padding;
+						left = parseInt(l) + padding;
 					}
 				}
 			}
@@ -247,10 +249,10 @@
 					var anchorRegion = getAnchorRegion.call(this, region, "anchorRight");
 					if (anchorRegion) {
 						var anchorDom = anchorRegion.control.getDom();
-						right = clientWidth - anchorDom.offsetLeft + parseInt(r);
+						right = clientWidth - anchorDom.offsetLeft + 
+							(parseInt(anchorRegion.constraint.padding) || 0) + parseInt(r) + padding;
 					} else {
-						right = parseInt(r);
-						right += padding;
+						right = parseInt(r) + padding;
 					}
 				}
 			}
@@ -268,10 +270,10 @@
 					var anchorRegion = getAnchorRegion.call(this, region, "anchorTop");
 					if (anchorRegion) {
 						var anchorDom = anchorRegion.control.getDom();
-						top = anchorDom.offsetTop + anchorRegion.realHeight + parseInt(t);
+						top = anchorDom.offsetTop + anchorRegion.realHeight + 
+							(parseInt(anchorRegion.constraint.padding) || 0) + parseInt(t) + padding;
 					} else {
-						top = parseInt(t);
-						top += padding;
+						top = parseInt(t) + padding;
 					}
 				}
 			}
@@ -289,10 +291,10 @@
 					var anchorRegion = getAnchorRegion.call(this, region, "anchorBottom");
 					if (anchorRegion) {
 						var anchorDom = anchorRegion.control.getDom();
-						bottom = clientHeight - anchorDom.offsetTop + parseInt(b);
+						bottom = clientHeight - anchorDom.offsetTop + 
+							(parseInt(anchorRegion.constraint.padding) || 0) + parseInt(b) + padding;
 					} else {
-						bottom = parseInt(b);
-						bottom += padding;
+						bottom = parseInt(b) + padding;
 					}
 				}
 			}

@@ -499,8 +499,8 @@
 			$invokeSuper.call(this);
 		},
 		
-		doSet : function(attr, value) {
-			$invokeSuper.call(this, [attr, value]);
+		doSet : function(attr, value, skipUnknownAttribute, lockWritingTimes) {
+			$invokeSuper.call(this, [attr, value, skipUnknownAttribute, lockWritingTimes]);
 			if(!this._rendered) return;
 			var def = this.ATTRIBUTES[attr];
 			if(!this._duringRefreshDom && (this._visible || attr == "visible") && this._ignoreRefresh < 1 && def && !def.skipRefresh) {
