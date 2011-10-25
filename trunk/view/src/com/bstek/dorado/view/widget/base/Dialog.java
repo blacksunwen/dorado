@@ -16,21 +16,21 @@ import com.bstek.dorado.view.widget.FloatControlShadowMode;
 @ViewObject(prototype = "dorado.widget.Dialog", shortTypeName = "Dialog")
 @XmlNode(nodeName = "Dialog")
 @ClientEvents({ @ClientEvent(name = "beforeMinimize"),
-		@ClientEvent(name = "onMinimize")})
+		@ClientEvent(name = "onMinimize") })
 public class Dialog extends FloatPanel {
 	private int minWidth;
 	private int minHeight;
 	private boolean draggable = true;
 	private boolean dragOutside;
 	private boolean resizeable = true;
-	
+
 	private boolean minimizeable;
 	private boolean minimized;
 	private DialogStatus status = DialogStatus.normal;
-	private boolean closeable = true;
 
 	public Dialog() {
 		setShadowMode(FloatControlShadowMode.frame);
+		setCloseable(true);
 	}
 
 	@Override
@@ -108,16 +108,17 @@ public class Dialog extends FloatPanel {
 	}
 
 	/**
-	 * @param dragOutside the dragOutside to set
+	 * @param dragOutside
+	 *            the dragOutside to set
 	 */
 	public void setDragOutside(boolean dragOutside) {
 		this.dragOutside = dragOutside;
 	}
-	
+
 	@Override
 	@ViewAttribute(defaultValue = "true")
 	public boolean isCloseable() {
-		return closeable;
+		return super.isCloseable();
 	}
-	
+
 }
