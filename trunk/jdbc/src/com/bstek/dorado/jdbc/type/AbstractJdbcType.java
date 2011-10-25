@@ -37,8 +37,7 @@ public abstract class AbstractJdbcType implements JdbcType {
 		return jdbcName;
 	}
 	public String setJdbcName(String jdbcName) {
-		Number jdbcTypeCode = JdbcConstants.JDBC_TYPE_CONSTANTS.asNumber(jdbcName);
-		this.jdbcCode = jdbcTypeCode.intValue();
+		this.jdbcCode = JdbcConstants.getTypeValue(jdbcName);
 		return this.jdbcName = jdbcName;
 	}
 

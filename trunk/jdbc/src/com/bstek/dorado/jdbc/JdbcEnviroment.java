@@ -1,4 +1,4 @@
-package com.bstek.dorado.jdbc.model;
+package com.bstek.dorado.jdbc;
 
 import javax.sql.DataSource;
 
@@ -6,7 +6,6 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import com.bstek.dorado.jdbc.Dialect;
 import com.bstek.dorado.util.Assert;
 
 /**
@@ -82,11 +81,22 @@ public class JdbcEnviroment implements InitializingBean {
 		return transactionTemplate;
 	}
 	
+	private ModelGenerator modelGenerator;
+	
+	public ModelGenerator getModelGenerator() {
+		return modelGenerator;
+	}
+
+	public void setModelGenerator(ModelGenerator modelGenerator) {
+		this.modelGenerator = modelGenerator;
+	}
+
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		Assert.notNull(this.getName(), "name can not be null.");
 		Assert.notNull(this.getDataSource(), "dataSource can not be null.");
 		Assert.notNull(this.getDialect(), "dialect can not be null.");
+		Assert.notNull(this.getModelGenerator(), "modelGenerator can not be null.");
 	}
 
 }

@@ -146,6 +146,13 @@ public class ResolverTestCase extends ConfigManagerTestSupport {
 			
 			Assert.assertEquals(catg.get("ID"), prods.get(0).get("CATEGORY_ID"));
 			Assert.assertEquals(catg.get("ID"), prods.get(1).get("CATEGORY_ID"));
+		}{
+			JdbcTestUtils.setState(dataItems, "catg", EntityState.MODIFIED);
+			JdbcTestUtils.setState(prods, EntityState.MODIFIED);
+			resolver.resolve(dataItems);
+		}{
+			JdbcTestUtils.setState(dataItems, "catg", EntityState.DELETED);
+			resolver.resolve(dataItems);
 		}
 	}
 	

@@ -1,6 +1,7 @@
 package com.bstek.dorado.jdbc.model;
 
 import com.bstek.dorado.jdbc.AbstractJdbcContext;
+import com.bstek.dorado.jdbc.JdbcEnviroment;
 
 /**
  * JDBC数据库操作

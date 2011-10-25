@@ -47,11 +47,16 @@ public abstract class SqlUtils {
 		Assert.notNull(table, "Table must not be null.");
 		
 		String name = table.getTableName();
-		String spaceName = table.getSpaceName();
-		if (StringUtils.isEmpty(spaceName)) {
+		String catalog = table.getCatalog();
+		String schema = table.getSchema();
+		if (StringUtils.isEmpty(catalog) && StringUtils.isEmpty(schema)) {
 			return name;
+		} else if(StringUtils.isNotEmpty(catalog)){
+			return catalog + "." + name;
+		} else if(StringUtils.isNotEmpty(schema)){
+			return schema + "." + name;
 		} else {
-			return spaceName + "." + name;
+			return catalog + "." + schema + "." + name;
 		}
 	}
 	

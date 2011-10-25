@@ -37,7 +37,43 @@
 	</bean>
 	<bean id="dorado.jdbc.enviromentManager" class="com.bstek.dorado.jdbc.config.DefaultJdbcEnviromentManager"/>
 	<bean id="dorado.jdbcConfigTemplate" class="com.bstek.dorado.jdbc.config.GlobalDbModelConfig" abstract="true"/>
-	<bean id="dorado.jdbcEnvTemplate" class="com.bstek.dorado.jdbc.model.JdbcEnviroment" abstract="true"/>
+	<bean id="dorado.jdbc.defaultModelGenerator" class="com.bstek.dorado.jdbc.support.DefaultModelGenerator"></bean>
+	<bean id="dorado.jdbcEnvTemplate" class="com.bstek.dorado.jdbc.JdbcEnviroment" abstract="true">
+		<property name="modelGenerator" ref="dorado.jdbc.defaultModelGenerator"/>
+	</bean>
+	<bean id="dorado.dialectTemplate" abstract="true">
+		<property name="keyGenerators">
+			<list>
+				<bean class="com.bstek.dorado.jdbc.key.IdentityKeyGenerator"/>
+				<bean class="com.bstek.dorado.jdbc.key.JdkUuidKeyGenerator"/>
+				<bean class="com.bstek.dorado.jdbc.key.SequenceKeyGenerator"/>
+			</list>
+		</property>
+		<property name="jdbcTypes">
+			<list>
+				<bean class="com.bstek.dorado.jdbc.type.BitBoolean"/>
+				<bean class="com.bstek.dorado.jdbc.type.BooleanBoolean"/>
+				<bean class="com.bstek.dorado.jdbc.type.SmallintShort"/>
+				<bean class="com.bstek.dorado.jdbc.type.IntegerInteger"/>
+				<bean class="com.bstek.dorado.jdbc.type.BigintLong"/>
+				<bean class="com.bstek.dorado.jdbc.type.RealFloat"/>
+				<bean class="com.bstek.dorado.jdbc.type.FloatDouble"/>
+				<bean class="com.bstek.dorado.jdbc.type.DoubleDouble"/>
+				<bean class="com.bstek.dorado.jdbc.type.NumricBigDecimal"/>
+				<bean class="com.bstek.dorado.jdbc.type.DecimalBigDecimal"/>
+				<bean class="com.bstek.dorado.jdbc.type.CharString"/>
+				<bean class="com.bstek.dorado.jdbc.type.VarcharString"/>
+				<bean class="com.bstek.dorado.jdbc.type.LongvarcharString"/>
+				<bean class="com.bstek.dorado.jdbc.type.NcharString"/>
+				<bean class="com.bstek.dorado.jdbc.type.NvarcharString"/>
+				<bean class="com.bstek.dorado.jdbc.type.DateDate"/>
+				<bean class="com.bstek.dorado.jdbc.type.TimeDate"/>
+				<bean class="com.bstek.dorado.jdbc.type.TimestampDate"/>
+				<bean class="com.bstek.dorado.jdbc.type.TinyintByte"/>
+			</list>
+		</property>
+	</bean>
+	<bean id="dorado.jdbc.h2Dialect" class="com.bstek.dorado.jdbc.support.h2.H2Dialect" parent="dorado.dialectTemplate" abstract="true"/>
 	
 	<!-- Parser -->
 	<bean id="dorado.jdbc.config.xml.dbElementParser" abstract="true" parent="dorado.objectParser" class="com.bstek.dorado.jdbc.config.xml.DbElementParser">
@@ -54,26 +90,28 @@
 	</bean>
 	<bean id="dorado.jdbc.config.xml.keyColumnParser" parent="dorado.jdbc.config.xml.columnParser">
 		<property name="impl" value="com.bstek.dorado.jdbc.model.table.TableKeyColumn"/>
-		<property name="definitionType" value="com.bstek.dorado.jdbc.model.ColumnDefinition"/>
+		<property name="definitionType" value="com.bstek.dorado.jdbc.model.table.TableKeyColumnDefinition"/>
 		<d:property-parser key="keyGenerator" value-ref="dorado.jdbc.config.xml.keyGeneratorParser" />
 	</bean>
 		
-	<bean id="dorado.jdbc.config.xml.tableParser" parent="dorado.jdbc.config.xml.dbElementParser">
+	<bean id="dorado.jdbc.config.xml.tableParser" class="com.bstek.dorado.jdbc.model.table.TableParser" 
+		parent="dorado.jdbc.config.xml.dbElementParser">
 		<property name="tagName" value="Table"/>
-		<property name="definitionType" value="com.bstek.dorado.jdbc.model.DbElementDefinition"/>
+		<property name="definitionType" value="com.bstek.dorado.jdbc.model.table.TableDefinition"/>
 		<property name="defaultImpl" value="com.bstek.dorado.jdbc.model.table.Table"/>
+		<d:property-parser key="autoCreateColumns" value-ref="dorado.staticPropertyParser"/>
 		<d:sub-parser key="Columns/KeyColumn" value-ref="dorado.jdbc.config.xml.keyColumnParser"/>
 		<d:sub-parser key="Columns/Column">
 			<bean parent="dorado.jdbc.config.xml.columnParser">
 				<property name="impl" value="com.bstek.dorado.jdbc.model.table.TableColumn"/>
-				<property name="definitionType" value="com.bstek.dorado.jdbc.model.ColumnDefinition"/>
+				<property name="definitionType" value="com.bstek.dorado.jdbc.model.table.TableColumnDefinition"/>
 			</bean>
 		</d:sub-parser>
 	</bean>
 	
 	<bean id="dorado.jdbc.config.xml.sqlTableParser" parent="dorado.jdbc.config.xml.dbElementParser">
 		<property name="tagName" value="SqlTable"/>
-		<property name="definitionType" value="com.bstek.dorado.jdbc.model.DbElementDefinition"/>
+		<property name="definitionType" value="com.bstek.dorado.jdbc.model.sqltable.SqlTableDefinition"/>
 		<property name="defaultImpl" value="com.bstek.dorado.jdbc.model.sqltable.SqlTable"/>
 		<d:property-parser key="table" value-ref="dorado.jdbc.config.xml.tableReferenceParser"/>
 		<d:sub-parser key="Columns/Column">

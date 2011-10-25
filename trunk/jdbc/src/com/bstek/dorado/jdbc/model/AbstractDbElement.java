@@ -5,6 +5,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.bstek.dorado.annotation.ViewAttribute;
+import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.util.Assert;
 
@@ -27,6 +29,7 @@ public abstract class AbstractDbElement implements DbElement {
 		this.name = name;
 	}
 	
+	@ViewAttribute(visible=false)
 	@Override
 	public JdbcEnviroment getJdbcEnviroment() {
 		if (env != null) {

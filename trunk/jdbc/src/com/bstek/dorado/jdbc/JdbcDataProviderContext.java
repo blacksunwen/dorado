@@ -1,7 +1,6 @@
 package com.bstek.dorado.jdbc;
 
 import com.bstek.dorado.data.provider.Page;
-import com.bstek.dorado.jdbc.model.JdbcEnviroment;
 
 /**
  * {@link JdbcDataProvider}执行时的上下文

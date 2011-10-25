@@ -20,49 +20,17 @@
 		<property name="configLocation" value="classpath:test/com/bstek/jdbc/runtime/providers_jdbc.xml" />
 	</bean>
 	
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="org.h2.Driver" />
+		<property name="url" value="jdbc:h2:tcp://localhost/~/test" />
+		<property name="username" value="sa" />
+		<property name="password" value="dorado" />
+	</bean>
 	<bean parent="dorado.jdbcEnvTemplate">
 		<property name="name" value="h2" />
-		<property name="dataSource">
-			<bean class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-				<property name="driverClassName" value="org.h2.Driver" />
-				<property name="url" value="jdbc:h2:tcp://localhost/~/test" />
-				<property name="username" value="sa" />
-				<property name="password" value="dorado" />
-			</bean>
-		</property>
+		<property name="dataSource" ref="dataSource"/>
 		<property name="dialect">
-			<bean class="com.bstek.dorado.jdbc.support.h2.H2Dialect">
-				<property name="jdbcTypes">
-					<list>
-						<bean class="com.bstek.dorado.jdbc.type.BitBoolean"/>
-						<bean class="com.bstek.dorado.jdbc.type.BooleanBoolean"/>
-						<bean class="com.bstek.dorado.jdbc.type.SmallintShort"/>
-						<bean class="com.bstek.dorado.jdbc.type.IntegerInteger"/>
-						<bean class="com.bstek.dorado.jdbc.type.BigintLong"/>
-						<bean class="com.bstek.dorado.jdbc.type.RealFloat"/>
-						<bean class="com.bstek.dorado.jdbc.type.FloatDouble"/>
-						<bean class="com.bstek.dorado.jdbc.type.DoubleDouble"/>
-						<bean class="com.bstek.dorado.jdbc.type.NumricBigDecimal"/>
-						<bean class="com.bstek.dorado.jdbc.type.DecimalBigDecimal"/>
-						<bean class="com.bstek.dorado.jdbc.type.CharString"/>
-						<bean class="com.bstek.dorado.jdbc.type.VarcharString"/>
-						<bean class="com.bstek.dorado.jdbc.type.LongvarcharString"/>
-						<bean class="com.bstek.dorado.jdbc.type.NcharString"/>
-						<bean class="com.bstek.dorado.jdbc.type.NvarcharString"/>
-						<bean class="com.bstek.dorado.jdbc.type.DateDate"/>
-						<bean class="com.bstek.dorado.jdbc.type.TimeDate"/>
-						<bean class="com.bstek.dorado.jdbc.type.TimestampDate"/>
-						<bean class="com.bstek.dorado.jdbc.type.TinyintByte"/>
-					</list>
-				</property>
-				<property name="keyGenerators">
-					<list>
-						<bean class="com.bstek.dorado.jdbc.key.IdentityKeyGenerator"/>
-						<bean class="com.bstek.dorado.jdbc.key.JdkUuidKeyGenerator"/>
-						<bean class="com.bstek.dorado.jdbc.key.SequenceKeyGenerator"/>
-					</list>
-				</property>
-			</bean>
+			<bean parent="dorado.jdbc.h2Dialect"/>
 		</property>
 	</bean>
 </beans>
