@@ -1,6 +1,6 @@
 (function() {
 
-	var specialFormConfigProps = ["width", "height", "className", "exClassName", "visible", "hideMode"];
+	var specialFormConfigProps = ["formProfile", "width", "height", "className", "exClassName", "visible", "hideMode"];
 	
 	var DEFAULT_OK_MESSAGES = [{
 		state: "ok"
@@ -248,13 +248,25 @@
 			if (dorado.Object.isInstanceOf(formProfile, dorado.widget.FormProfile)) {
 				var attrs = formProfile.ATTRIBUTES, attrWatcher = formProfile.getAttributeWatcher(), config = {};
 				for (var attr in attrs) {
-					if (!attrs.hasOwnProperty(attr) || attrs[attr].writeOnly ||
-					(!attrWatcher.getWritingTimes(attr) && !(attrs[attr].defaultValue instanceof Function))) continue;
-					if (specialFormConfigProps.indexOf(attr) >= 0 && formProfile instanceof dorado.widget.Control) {
+					if (!attrs.hasOwnProperty(attr)){
 						continue;
 					}
 					
+					var def = attrs[attr];
+					if (def.writeOnly || (!attrWatcher.getWritingTimes(attr) &&
+							!(def.defaultValue instanceof Function))) {
+						continue;
+					}
+					
+					if (specialFormConfigProps.indexOf(attr) >= 0 && formProfile instanceof dorado.widget.Control) {
+						continue;
+					}
+
 					var value = formProfile.get(attr);
+					if (def.componentReference && !(value instanceof dorado.widget.Component)) {
+						continue;
+					}
+					
 					if (value !== undefined) config[attr] = value;
 				}
 				this.set(config, {
@@ -297,9 +309,7 @@
 			 */
 			entity: {
 				defaultValue: function() {
-					var entity = new dorado.widget.FormProfile.DefaultEntity();
-					entity.$id = dorado.Core.newId();
-					return entity;
+					return new dorado.widget.FormProfile.DefaultEntity();
 				}
 			},
 			
@@ -836,8 +846,7 @@
 				labelHeight = labelEl.offsetHeight + this._labelSpacing;
 				editorEl.style.paddingTop = labelHeight + "px";
 				editorWidth = dom.offsetWidth;
-				if (height) editorEl.style.height = (dom.offsetHeight - labelHeight) +
-				"px";
+				if (height) editorEl.style.height = (dom.offsetHeight - labelHeight) + "px";
 			} else {
 				labelWidth = this._labelWidth + this._labelSpacing;
 				editorWidth = dom.offsetWidth - labelWidth;

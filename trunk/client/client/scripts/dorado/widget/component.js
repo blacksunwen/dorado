@@ -296,7 +296,11 @@
 				var ids = object['_' + attribute + "_id"];
 				if (ids) {
 					if (typeof ids == "string") {
-						if (ids == component._id) object.set(attribute, component);
+						if (ids == component._id) {
+							object.set(attribute, component, {
+								lockWritingTimes: true
+							});
+						}
 					} else {
 						var index = ids.indexOf(component._id);
 						if (index >= 0) {
@@ -308,7 +312,11 @@
 									break;
 								}
 							}
-							if (allComponentPrepared) object.set(attribute, ids);
+							if (allComponentPrepared) {
+								object.set(attribute, ids, {
+									lockWritingTimes: true
+								});
+							}
 						}
 					}
 				}

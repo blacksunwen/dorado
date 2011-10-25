@@ -22,6 +22,10 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 		className : {
 			defaultValue : "d-checkbox"
 		},
+		
+		height:  {
+			independent : true
+		},
 
 		/**
 		 * 是否只显示图标、不显示文字。主要在Grid和Tree中作为编辑器的时候被使用。
@@ -161,6 +165,7 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 		checkBox.refresh();
 		checkBox.fireEvent("onValueChange", checkBox);
 	},
+	
 	refreshDom : function(dom) {
 		$invokeSuper.call(this, arguments);
 
@@ -178,7 +183,8 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 			} else {
 				readOnly = true;
 			}
-
+			
+			value += '';
 			if(value === checkBox._onValue) {
 				checked = true;
 			} else if(value === checkBox._offValue) {
@@ -218,6 +224,7 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 			}
 		}
 	},
+	
 	createDom : function() {
 		var checkBox = this, dom;
 		if(checkBox._iconOnly) {
@@ -269,6 +276,7 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 
 		return dom;
 	},
+	
 	post : function() {
 		try {
 			if(!this._dirty) {
@@ -278,8 +286,7 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 				processDefault : true
 			};
 			this.fireEvent("beforePost", this, eventArg);
-			if(eventArg.processDefault === false)
-				return false;
+			if(eventArg.processDefault === false) return false;
 			this.doPost();
 			this._lastPostChecked = this._checked;
 			this._dirty = false;
@@ -289,6 +296,7 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 			dorado.Exception.processException(e);
 		}
 	},
+	
 	doOnKeyDown : function(evt) {
 		var retValue = true;
 		switch (evt.keyCode) {
