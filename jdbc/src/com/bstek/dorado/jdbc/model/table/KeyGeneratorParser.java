@@ -5,9 +5,9 @@ import org.w3c.dom.Node;
 
 import com.bstek.dorado.config.ParseContext;
 import com.bstek.dorado.config.xml.PropertyParser;
+import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.config.xml.JdbcParseContext;
 import com.bstek.dorado.jdbc.key.KeyGenerator;
-import com.bstek.dorado.jdbc.model.JdbcEnviroment;
 
 public class KeyGeneratorParser extends PropertyParser {
 

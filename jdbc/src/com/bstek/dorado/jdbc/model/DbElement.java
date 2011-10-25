@@ -2,6 +2,8 @@ package com.bstek.dorado.jdbc.model;
 
 import java.util.List;
 
+import com.bstek.dorado.jdbc.JdbcEnviroment;
+
 public interface DbElement {
 
 	public enum Type {

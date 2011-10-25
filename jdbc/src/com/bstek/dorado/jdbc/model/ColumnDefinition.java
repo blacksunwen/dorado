@@ -6,6 +6,10 @@ import com.bstek.dorado.config.definition.Operation;
 
 public class ColumnDefinition extends ObjectDefinition implements Operation {
 
+	public String getName() {
+		return (String)this.getProperties().get("columnName");
+	}
+	
 	@Override
 	public void execute(Object object, CreationContext context)
 			throws Exception {

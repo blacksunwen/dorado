@@ -20,7 +20,8 @@ public class TableTest extends ConfigManagerTestSupport{
 		System.out.println(t);
 		
 		Assert.assertEquals("people0", t.getName());
-		Assert.assertEquals(null, t.getSpaceName());
+		Assert.assertEquals(null, t.getCatalog());
+		Assert.assertEquals(null, t.getSchema());
 		Assert.assertEquals("PEOPLE", t.getTableName());
 		Assert.assertEquals(Type.Table, t.getType());
 		Assert.assertEquals("xxxxxx", t.getDynamicToken());
@@ -65,6 +66,16 @@ public class TableTest extends ConfigManagerTestSupport{
 			Assert.assertEquals(true,    c.isInsertable());
 			Assert.assertEquals(true,    c.isSelectable());
 			Assert.assertEquals(true,    c.isUpdatable());
+		}
+	}
+
+	public void test1() throws Exception{
+		Table t1 = JdbcTestUtils.table("EMP");
+		Table t2 = JdbcTestUtils.table("EMP_AUTO");
+		
+		{
+			Assert.assertEquals(t1.getCatalog(), t2.getCatalog());
+			Assert.assertEquals(t1.getAllColumns().size(), t2.getAllColumns().size());
 		}
 	}
 }

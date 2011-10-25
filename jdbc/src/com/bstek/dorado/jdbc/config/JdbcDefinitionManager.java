@@ -7,11 +7,11 @@ import org.w3c.dom.Element;
 
 import com.bstek.dorado.config.definition.DefaultDefinitionManager;
 import com.bstek.dorado.config.xml.ObjectParser;
+import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.config.xml.JdbcParseContext;
 import com.bstek.dorado.jdbc.config.xml.JdbcXmlConstants;
 import com.bstek.dorado.jdbc.model.DbElementDefinition;
-import com.bstek.dorado.jdbc.model.JdbcEnviroment;
 
 /**
  * JDBC模块的{@link com.bstek.dorado.config.definition.Definition}管理器

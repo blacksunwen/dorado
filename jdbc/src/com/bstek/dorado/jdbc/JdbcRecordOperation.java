@@ -7,7 +7,6 @@ import org.apache.commons.lang.StringUtils;
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.model.AbstractJdbcOperation;
 import com.bstek.dorado.jdbc.model.DbElement;
-import com.bstek.dorado.jdbc.model.JdbcEnviroment;
 
 /**
  * {@link com.bstek.dorado.jdbc.JdbcDataResolver}对应的数据库操作
@@ -23,8 +22,6 @@ public class JdbcRecordOperation extends
 	private JdbcRecordOperation parent;
 	
 	private JdbcRecordOperation substitute;
-	
-//	private boolean retrieveAfterExecute = false;
 	
 	public JdbcRecordOperation(DbElement dbElement, Record record,
 			JdbcDataResolverContext jdbcContext) {

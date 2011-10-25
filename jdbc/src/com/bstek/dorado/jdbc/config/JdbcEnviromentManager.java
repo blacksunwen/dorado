@@ -1,6 +1,6 @@
 package com.bstek.dorado.jdbc.config;
 
-import com.bstek.dorado.jdbc.model.JdbcEnviroment;
+import com.bstek.dorado.jdbc.JdbcEnviroment;
 
 /**
  * JdbcEnviroment的管理器

@@ -15,7 +15,6 @@ import com.bstek.dorado.data.resolver.DataItems;
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.model.DbElement;
 import com.bstek.dorado.jdbc.model.DbElementTrigger;
-import com.bstek.dorado.jdbc.model.JdbcEnviroment;
 import com.bstek.dorado.util.Assert;
 
 /**

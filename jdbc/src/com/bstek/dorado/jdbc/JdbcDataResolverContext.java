@@ -1,6 +1,5 @@
 package com.bstek.dorado.jdbc;
 
-import com.bstek.dorado.jdbc.model.JdbcEnviroment;
 
 public class JdbcDataResolverContext extends AbstractJdbcContext {
 

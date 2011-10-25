@@ -8,7 +8,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-import com.bstek.dorado.jdbc.model.JdbcEnviroment;
+import com.bstek.dorado.jdbc.JdbcEnviroment;
 
 
 public class DefaultJdbcEnviromentManager implements JdbcEnviromentManager, ApplicationContextAware {

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Model name="view">
+<DbModel name="view">
 	<Table name="T1_INCREMENT" tableName="T1_INCREMENT">
 		<Columns>
 			<KeyColumn columnName="ID"   propertyName="ID"   jdbcType="BIGINT-Long" keyGenerator="IDENTITY" />
@@ -18,4 +18,4 @@
 			<Column    columnName="NAME" propertyName="NAME" jdbcType="VARCHAR-String" />
 		</Columns>
 	</Table>
-</Model>
+</DbModel>

@@ -10,8 +10,12 @@ import com.bstek.dorado.jdbc.model.Column;
 public class Table extends AbstractDbElement {
 
 	private String tableName;
-	private String spaceName;
+	private String catalog;
+	private String schema;
 	private String dynamicToken;
+	
+	private boolean retrieveAfterInsert = false;
+	private boolean retrieveAfterUpdate = false;
 	
 	private List<TableColumn> tableColumns = new ArrayList<TableColumn>();
 	private List<TableKeyColumn> keyColumns = new ArrayList<TableKeyColumn>();
@@ -40,16 +44,40 @@ public class Table extends AbstractDbElement {
 		this.tableName = tableName;
 	}
 
-	public String getSpaceName() {
-		return spaceName;
+	public String getCatalog() {
+		return catalog;
 	}
 
-	public void setSpaceName(String spaceName) {
-		this.spaceName = spaceName;
+	public void setCatalog(String spaceName) {
+		this.catalog = spaceName;
+	}
+
+	public String getSchema() {
+		return schema;
+	}
+
+	public void setSchema(String schema) {
+		this.schema = schema;
 	}
 
 	public String getDynamicToken() {
 		return dynamicToken;
+	}
+
+	public boolean isRetrieveAfterInsert() {
+		return retrieveAfterInsert;
+	}
+
+	public void setRetrieveAfterInsert(boolean retrieveAfterInsert) {
+		this.retrieveAfterInsert = retrieveAfterInsert;
+	}
+
+	public boolean isRetrieveAfterUpdate() {
+		return retrieveAfterUpdate;
+	}
+
+	public void setRetrieveAfterUpdate(boolean retrieveAfterUpdate) {
+		this.retrieveAfterUpdate = retrieveAfterUpdate;
 	}
 
 	public void setDynamicToken(String dynamicToken) {

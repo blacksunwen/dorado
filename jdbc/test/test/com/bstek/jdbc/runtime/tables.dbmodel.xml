@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Model name="m1">
+<DbModel name="m1">
 	<Table name="EMP" tableName="EMPLOYEES" trigger="test.com.bstek.jdbc.runtime.TableTriggerLogger">
 		<Columns>
 			<KeyColumn columnName="ID"        propertyName="ID"             jdbcType="INTEGER-Integer"/>
@@ -101,7 +101,18 @@ WHERE SEX=:EMP.SEX
 		</Columns>
 	</Table>
 	
-	<Table name="CATEGORIES" tableName="CATEGORIES">
+	<Table name="EMP_AUTO" tableName="EMPLOYEES" trigger="test.com.bstek.jdbc.runtime.TableTriggerLogger" autoCreateColumns="true">
+		<Columns>
+			<KeyColumn columnName="ID"        propertyName="ID"             jdbcType="INTEGER-Integer"/>
+			<Column columnName="LAST_NAME"    propertyName="LAST_NAME"      jdbcType="VARCHAR-String"/>
+			<Column columnName="FIRST_NAME"   propertyName="FIRST_NAME"     jdbcType="VARCHAR-String"/>
+			<Column columnName="TITLE"        propertyName="TITLE"          jdbcType="VARCHAR-String"/>
+			<Column columnName="SEX"          propertyName="SEX"            jdbcType="SMALLINT-Short"/>
+			<Column columnName="BIRTH_DATE"   propertyName="BIRTH_DATE"     jdbcType="DATE-Date"/>
+		</Columns>
+	</Table>
+	
+	<Table name="CATEGORIES" tableName="CATEGORIES" trigger="test.com.bstek.jdbc.runtime.CategoriesTrigger">
 		<Columns>
 			<KeyColumn columnName="ID" propertyName="ID" jdbcType="INTEGER-Integer"/>
 			<Column columnName="CATEGORY_NAME" propertyName="CATEGORY_NAME" jdbcType="VARCHAR-String"/>
@@ -122,4 +133,4 @@ WHERE SEX=:EMP.SEX
 			<Column columnName="DISCONTINUED"   propertyName="DISCONTINUED"   jdbcType="SMALLINT-Short"/>
 		</Columns>
 	</Table>
-</Model>
+</DbModel>
