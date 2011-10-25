@@ -1080,8 +1080,15 @@
 		doOnKeyPress: function(evt) {
 			var dataType = this.get("dataType");
 			if (!dataType) return true;
-			var b = true, k = (evt.keyCode || evt.which), $d = dorado.DataType;
-			switch (dataType._code) {
+			
+			var k = (evt.keyCode || evt.which);
+			if (dorado.Browser.mozilla) {
+				// backspace, left, top, right, bottom
+				if ([8, 37, 38, 39, 40].indexOf(k) >= 0) return true; 
+			}
+			
+			var b = true, $d = dorado.DataType;
+			switch (k) {
 				case $d.INTEGER:
 				case $d.PRIMITIVE_INT:
 					b = (k == 44 || k == 45 || (k >= 48 && k <= 57));
