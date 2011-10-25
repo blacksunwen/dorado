@@ -154,7 +154,7 @@
 			}
 		},
 		
-		doSet: function(attr, value) {
+		doSet: function(attr, value, skipUnknownAttribute, lockWritingTimes) {
 		
 			function getComponent(value, defaultType) {
 				if (!value) return value;
@@ -187,7 +187,7 @@
 							allPrepared = (component instanceof dorado.widget.Component);
 						}
 					}
-					return $invokeSuper.call(this, [attr,  (allPrepared ? component : null)]);
+					return $invokeSuper.call(this, [attr,  (allPrepared ? component : null), skipUnknownAttribute, lockWritingTimes]);
 				} else if (def.innerComponent != null) {
 					if (value) {
 						if (value instanceof Array) {
@@ -202,7 +202,7 @@
 					}
 				}
 			}
-			$invokeSuper.call(this, [attr, value]);
+			$invokeSuper.call(this, [attr, value, skipUnknownAttribute, lockWritingTimes]);
 		},
 		
 		/**

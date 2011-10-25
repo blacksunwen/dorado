@@ -204,8 +204,6 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 		}
 	},
 	
-
-	
 	constructor: function() {
 		this._elements = new dorado.util.KeyedArray(function(element) {
 			return (element instanceof dorado.widget.autoform.AutoFormElement) ? element._name : element._id;
