@@ -853,7 +853,7 @@
 		 * var names = "";
 		 * var entityList = ...
 		 * entityList.each(function(entity){
-		 *	 names += data.get("name");
+		 *	 names += entity.get("name");
 		 * });
 		 */
 		each: function(fn, scope) {
