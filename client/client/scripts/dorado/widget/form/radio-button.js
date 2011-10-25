@@ -13,6 +13,10 @@ dorado.widget.RadioButton = $extend(dorado.widget.Control, /** @scope dorado.wid
 			defaultValue: "d-radio"
 		},
 		
+		height:  {
+			independent : true
+		},
+		
 		/**
 		 * 单选框显示的文本。
 		 * @type String

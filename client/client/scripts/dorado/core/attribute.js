@@ -58,17 +58,7 @@
 	dorado.AttributeSupport = $class(/** @scope dorado.AttributeSupport.prototype */
 	{
 		$className : "dorado.AttributeSupport",
-
-		constructor : function() {
-			var defs = this.ATTRIBUTES;
-			for ( var p in defs) {
-				var def =  defs[p];
-				if (def && def.defaultValue != undefined && this['_' + p] == undefined) {
-					var dv = def.defaultValue;
-					this['_' + p] = (dv instanceof Function && !def.neverEvalDefaultValue) ? dv() : dv;
-				}
-			}
-		},
+		
 		/**
 		 * 用于声明该对象中所支持的所有Attribute。<br>
 		 * 此属性中的对象一般由dorado系统自动生成，且往往一个类型的所有实例都共享同一个EVENTS对象。
@@ -125,6 +115,17 @@
 			 * @event
 			 */
 			onAttributeChange : {}
+		},
+
+		constructor : function() {
+			var defs = this.ATTRIBUTES;
+			for ( var p in defs) {
+				var def =  defs[p];
+				if (def && def.defaultValue != undefined && this['_' + p] == undefined) {
+					var dv = def.defaultValue;
+					this['_' + p] = (dv instanceof Function && !def.neverEvalDefaultValue) ? dv() : dv;
+				}
+			}
 		},
 
 		/**
@@ -201,6 +202,7 @@
 			}
 			return result;
 		},
+		
 		/**
 		 * 设置属性值。
 		 * 

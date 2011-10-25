@@ -215,13 +215,13 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 		this.registerInnerControl(this._container);
 		this._bindingElements = new dorado.ObjectGroup();
 		
-		if (this._createOwnEntity) {
-			this.set("entity", {});
-		}
-
 		this._skipOnCreateListeners = (this._skipOnCreateListeners || 0) + 1;
 		$invokeSuper.call(this, arguments);
 		this._skipOnCreateListeners --;
+		
+		if (this._createOwnEntity) {
+			this.set("entity", new dorado.widget.FormProfile.DefaultEntity());
+		}
 		
 		if (this._elementConfigs) {
 			var configs = this._elementConfigs;
@@ -285,17 +285,7 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 				element = new dorado.widget.Control(config);
 			}
 		}
-		
-		dorado.Object.apply(config, {
-			layoutConstraint: constraint,
-			entity: this._entity,
-			dataSet: this._dataSet,
-			dataPath: this._dataPath,
-			formProfile: this
-		}, function(p, v) {
-			return (v !== undefined);
-		});
-		element.set(config, {
+		element.set("formProfile", this, {
 			skipUnknownAttribute: true,
 			tryNextOnError: true,
 			preventOverwriting: true,
