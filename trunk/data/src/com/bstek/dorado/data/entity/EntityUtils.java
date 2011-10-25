@@ -500,8 +500,7 @@ public abstract class EntityUtils {
 					value = getValue(entity, property);
 				}
 			} else {
-				throw new IllegalStateException(
-						"Entity does not have OldValue.");
+				value = getValue(entity, property);
 			}
 		}
 		return (T) value;
