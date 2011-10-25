@@ -14,38 +14,36 @@ import com.bstek.dorado.view.widget.base.PanelBorder;
 @ViewObject(prototype = "dorado.widget.Portlet")
 @XmlNode(nodeName = "Portlet", parser = "dorado.Portal.PortletParser")
 public class Portlet extends Panel {
-	private boolean showCaptionBar = true;
-	private PanelBorder border = PanelBorder.curve;
-	private CloseAction closeAction = CloseAction.close;
 	private int column;
-	private boolean closeable = true;
-	
-	@Override
-	@ViewAttribute(defaultValue = "true")
-	public boolean isShowCaptionBar() {
-		return showCaptionBar;
+
+	public Portlet() {
+		setShowCaptionBar(true);
+		setBorder(PanelBorder.curve);
+		setCloseAction(CloseAction.close);
+		setCloseable(true);
 	}
 
 	@Override
-	public void setShowCaptionBar(boolean showCaptionBar) {
-		this.showCaptionBar = showCaptionBar;
+	@ViewAttribute(defaultValue = "true")
+	public boolean isShowCaptionBar() {
+		return super.isShowCaptionBar();
 	}
 
 	@Override
 	@ViewAttribute(defaultValue = "curve")
 	public PanelBorder getBorder() {
-		return border;
-	}
-
-	@Override
-	public void setBorder(PanelBorder border) {
-		this.border = border;
+		return super.getBorder();
 	}
 
 	@Override
 	@ViewAttribute(defaultValue = "close")
 	public CloseAction getCloseAction() {
-		return closeAction;
+		return super.getCloseAction();
+	}
+
+	@ViewAttribute(defaultValue = "true")
+	public boolean isCloseable() {
+		return super.isCloseable();
 	}
 
 	public int getColumn() {
@@ -54,10 +52,5 @@ public class Portlet extends Panel {
 
 	public void setColumn(int column) {
 		this.column = column;
-	}
-	
-	@ViewAttribute(defaultValue = "true")
-	public boolean isCloseable() {
-		return closeable;
 	}
 }
