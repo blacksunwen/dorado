@@ -221,8 +221,13 @@
 			var dataType = this.getDataType(null, true);
 			if (dataType || this._getDataCalled) {
 				if (data != null) {
-					if (!(data instanceof dorado.EntityList || data instanceof dorado.Entity)) {
+					if (!(data instanceof dorado.EntityList)) {
 						data = dorado.DataUtil.convert(data, this.getDataTypeRepository(), dataType);
+					}
+					else if (data instanceof dorado.Entity) {
+						var state = data.$state;
+						data = dorado.DataUtil.convert(data, this.getDataTypeRepository(), dataType);
+						if (state == null) data.setState(dorado.Entity.STATE_NEW);
 					}
 				}
 				else if (dataType instanceof dorado.AggregationDataType) {

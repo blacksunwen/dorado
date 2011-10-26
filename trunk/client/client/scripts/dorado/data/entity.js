@@ -106,15 +106,14 @@
 		if(data) {
 			this._data = data;
 			if(dataType == null) {
-				if(dataTypeRepository && data.$dataType)
-					dataType = dataTypeRepository.get(data.$dataType);
+				if(dataTypeRepository && data.$dataType) dataType = dataTypeRepository.get(data.$dataType);
 			} else {
 				data.$dataType = dataType._id;
 			}
+			if (data.$state) this.state = data.$state;
 		} else {
 			this._data = data = {};
-			if(dataType)
-				this._data.$dataType = dataType._id;
+			if(dataType) this._data.$dataType = dataType._id;
 		}
 
 		/**
@@ -231,6 +230,7 @@
 				}
 			}
 		},
+		
 		/**
 		 * 禁止dorado.Entity将消息发送给其观察者。
 		 * <p>
@@ -241,6 +241,7 @@
 		disableObservers : function() {
 			this._disableObserversCounter++;
 		},
+		
 		/**
 		 * 允许dorado.Entity将消息发送给其观察者。
 		 */
@@ -248,24 +249,26 @@
 			if(this._disableObserversCounter > 0)
 				this._disableObserversCounter--;
 		},
+		
 		/**
 		 * 通知dorado.Entity的观察者刷新数据。
 		 */
 		notifyObservers : function() {
 			this.sendMessage(0);
 		},
+		
 		sendMessage : function(messageCode, arg) {
 			if(this._disableObserversCounter == 0 && this._observer) {
 				this._observer.entityMessageReceived(messageCode, arg);
 			}
 		},
+		
 		/**
 		 * 设置实体对象的状态。
 		 * @param {int} state 状态。
 		 */
 		setState : function(state) {
-			if(this.state == state)
-				return;
+			if(this.state == state) return;
 
 			var eventArg = {
 				entity : this,
@@ -277,8 +280,7 @@
 			var dataType = this.dataType;
 			if(dataType && !this.disableEvents)
 				dataType.fireEvent("beforeStateChange", dataType, eventArg);
-			if(!eventArg.processDefault)
-				return;
+			if(!eventArg.processDefault) return;
 
 			if(this.state == dorado.Entity.STATE_NONE && (state == dorado.Entity.STATE_MODIFIED || state == dorado.Entity.STATE_MOVED)) {
 				this.storeOldData();
@@ -287,10 +289,10 @@
 			this.state = state;
 			this.timestamp = dorado.Core.getTimestamp();
 
-			if(dataType && !this.disableEvents)
-				dataType.fireEvent("onStateChange", dataType, eventArg);
+			if(dataType && !this.disableEvents) dataType.fireEvent("onStateChange", dataType, eventArg);
 			this.sendMessage(dorado.Entity._MESSAGE_ENTITY_STATE_CHANGED, eventArg);
 		},
+		
 		_get : function(property, propertyDef, callback, loadMode) {
 
 			function transferAndReplaceIf(propertyDef, value) {
@@ -334,8 +336,7 @@
 							};
 							propertyDef.fireEvent("beforeLoadData", propertyDef, eventArg);
 							if(eventArg.value !== undefined) {
-								if(propertyDef._cacheable)
-									this._data[property] = value;
+								if(propertyDef._cacheable) this._data[property] = value;
 							} else {
 								if(callback || loadMode == "auto") {
 									pipe.getAsync({
@@ -373,16 +374,14 @@
 												propertyDef.fireEvent("onGet", propertyDef, eventArg);
 												result = eventArg.value;
 											}
-											if(callback)
-												$callback(callback, success, result);
+											if(callback) $callback(callback, success, result);
 										}
 									});
 									this._data[property] = dataPipeWrapper = {
 										isDataPipeWrapper : true,
 										pipe : pipe
 									};
-									if(callback)
-										return;
+									if(callback) return;
 								} else {
 									value = pipe.get();
 
@@ -390,8 +389,7 @@
 									propertyDef.fireEvent("onLoadData", propertyDef, eventArg);
 									value = eventArg.value;
 
-									if(propertyDef._cacheable)
-										this._data[property] = value;
+									if(propertyDef._cacheable) this._data[property] = value;
 								}
 							}
 						}
@@ -435,8 +433,7 @@
 				propertyDef.fireEvent("onGet", propertyDef, eventArg);
 				value = eventArg.value;
 			}
-			if(callback)
-				$callback(callback, true, value);
+			if(callback) $callback(callback, true, value);
 			return value;
 		},
 		_getPropertyDef : function(property) {
@@ -474,8 +471,7 @@
 					var propertyDef = this._getPropertyDef(property);
 					result = this._get(property, propertyDef, null, loadMode);
 				} else {
-					if(!result)
-						break;
+					if(!result) break;
 					result = ( result instanceof dorado.Entity) ? result.get(property) : result[property];
 				}
 			}
@@ -600,8 +596,7 @@
 				if(i == (properties.length - 1)) {
 					result = result.doGetText(property, null, loadMode);
 				} else {
-					if(!result)
-						break;
+					if(!result) break;
 					result = ( result instanceof dorado.Entity) ? result.get(property) : result[property];
 				}
 			}
@@ -657,12 +652,10 @@
 			_getTextAsync(this, property, callback || dorado._NULL_FUNCTION, loadMode);
 		},
 		storeOldData : function() {
-			if(this._oldData)
-				return;
+			if(this._oldData) return;
 			var data = this._data, oldData = this._oldData = {};
 			for(var p in data) {
-				if(data.hasOwnProperty(p))
-					oldData[p] = data[p];
+				if(data.hasOwnProperty(p)) oldData[p] = data[p];
 			}
 		},
 		_set : function(property, value, propertyDef) {
@@ -679,12 +672,10 @@
 			if(dataType && !this.disableEvents && dataType.fireEvent("beforeDataChange", dataType, eventArg)) {
 				value = eventArg.newValue;
 			}
-			if(!eventArg.processDefault)
-				return;
+			if(!eventArg.processDefault) return;
 
 			// 保存原始值
-			if(this.state == dorado.Entity.STATE_NONE)
-				this.storeOldData();
+			if(this.state == dorado.Entity.STATE_NONE) this.storeOldData();
 
 			if(oldValue && oldValue.isDataPipeWrapper)
 				oldValue = oldValue.value;
@@ -839,6 +830,7 @@
 			}
 			this._set(property, value, propertyDef);
 		},
+		
 		/**
 		 * 取消对当前数据实体的各种数据操作。
 		 * <ul>
@@ -864,11 +856,11 @@
 							data[p] = oldData[p];
 					}
 				}
-				if(this.state != dorado.Entity.STATE_MOVED)
-					this.resetState();
+				if(this.state != dorado.Entity.STATE_MOVED)this.resetState();
 				this.sendMessage(0);
 			}
 		},
+		
 		resetState : function() {
 			this._propertyInfoMap = {};
 			delete this._messages;
@@ -876,6 +868,7 @@
 			this.setState(dorado.Entity.STATE_NONE);
 			delete this._oldData;
 		},
+		
 		/**
 		 * 重设实体对象。
 		 * <p>
@@ -891,8 +884,7 @@
 		 */
 		reset : function(property) {
 			if(property !== false) {
-				if( typeof property == "boolean")
-					property = null;
+				if( typeof property == "boolean") property = null;
 				var data = this._data;
 				if(property) {
 					var props = property.split(',');
@@ -921,6 +913,7 @@
 			this.resetState();
 			this.sendMessage(0);
 		},
+		
 		/**
 		 * 创建并返回一个兄弟实体对象。即创建一个与本实体对象相同类型的新实体对象。
 		 * @param {Object} [data] 新创建的实体对象要封装JSON数据对象，可以不指定此参数。
@@ -937,6 +930,7 @@
 			}
 			return brother;
 		},
+		
 		/**
 		 * 创建并返回一个子实体对象。
 		 * @param {String} property 子实体对象对应的属性名。
