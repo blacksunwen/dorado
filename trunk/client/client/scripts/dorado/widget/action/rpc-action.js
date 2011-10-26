@@ -602,9 +602,11 @@
 				hasUpdateData : hasUpdateData
 			};
 		},
+		
 		doExecuteSync : function() {
 			return this.doExecuteAsync();
 		},
+		
 		doExecuteAsync : function(callback) {
 
 			function processEntityStates(entityStates, context) {
