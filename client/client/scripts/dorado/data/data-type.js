@@ -1,557 +1,569 @@
-/**
- * @author Benny Bao (mailto:benny.bao@bstek.com)
- * @class 数据类型。数据类型是对所有系统中可能使用到的数据类型的抽象。
- * <p>
- * 此参数具有多态性，当我们传入一个String类型的参数时，该String值表示数据类型的name。
- * 当我们传入的参数是一个JSON对象时，系统会自动将该JSON对象中的属性复制到数据类型中。 <br>
- * 如果没有在此步骤中没有为组件指定name，那么系统会自动为其分配一个name。
- * </p>
- * @abstract
- * @extends dorado.AttributeSupport
- * @param {String|Object} [config] 配置信息。
- */
-dorado.DataType = $extend(dorado.AttributeSupport, /** @scope dorado.DataType.prototype */
-{
-	$className : "dorado.DataType",
+(function() {
 
-	ATTRIBUTES : /** @scope dorado.DataType.prototype */
-	{
-
-		/**
-		 * 数据类型的名称。
-		 * @type String
-		 * @attribute readOnly
-		 */
-		name : {
-			readOnly : true
-		},
-
-		/**
-		 * 用于在后端定位服务的id。如无特殊需要请不要修改。
-		 * @type String
-		 * @attribute writeOnce
-		 */
-		id : {
-			writeOnce : true
-		},
-
-		/**
-		 * 隶属的数据类型管理器。
-		 * @type dorado.DataTypeRepository
-		 * @attribute readOnly
-		 */
-		dataTypeRepository : {
-			readOnly : true
-		},
-
-		/**
-		 * 返回所属的视图。
-		 * @type dorado.widget.View
-		 * @attribute readOnly
-		 */
-		view : {
-			path : "_dataTypeRepository._view"
-		},
-		
-		/**
-		 * 用户自定义数据。
-		 * @type Object
-		 * @attribute skipRefresh
-		 */
-		userData: {
-			skipRefresh: true
-		}
-	},
-
-	constructor : function(config) {
-		$invokeSuper.call(this, arguments);
-
-		var name;
-		if(config && config.constructor == String) {
-			name = config;
-			config = null;
-		} else if(config) {
-			name = config.name;
-			delete config.name;
-			this.set(config);
-		}
-		this._name = name ? name : dorado.Core.newId();
-		if(!this._id)
-			this._id = this._name;
-
-		if(this.id) {
-			if(window[this.id] === undefined) {
-				window[this.id] = this;
-			} else {
-				var v = window[this.id];
-				if( v instanceof Array) {
-					v.push(this);
-				} else {
-					window[this.id] = [v, this];
-				}
-			}
-		}
-	},
 	/**
-	 * 尝试将一个任意类型的值转换成本数据类型所描述的类型。
-	 * @param {Object} data 要转换的数据。
-	 * @param {Object} [argument] 转换时可能需要用到的参数。
-	 * @return {Object} 转换后得到的数据。
-	 */
-	parse : function(data, argument) {
-		return data;
-	},
-	getListenerScope : function() {
-		return this.get("view");
-	},
-	/**
-	 * 尝试将一个任意类型的值转换成本文本值。<br>
-	 * 如需在子类中改变其逻辑其复写{@link dorado.DataType#doToText}方法。
-	 * @param {Object} data 要转换的数据。
-	 * @param {Object} [argument] 转换时可能需要用到的参数。
-	 * @return {String} 转换后得到的文本。
-	 * @final
-	 * @see dorado.DataType#doToText
-	 */
-	toText : function(data, argument) {
-		if( typeof argument == "string" && argument.indexOf("call:") == 0) {
-			var func = argument.substring(5);
-			func = window[func];
-			if( func instanceof Function) {
-				return func(data);
-			}
-		}
-		return this.doToText.apply(this, arguments);
-	},
-	/**
-	 * 将一个任意类型的值转换成本文本值。此方法供子类复写。
-	 * @param {Object} data 要转换的数据。
-	 * @param {Object} [argument] 转换时可能需要用到的参数。
-	 * @return {String} 转换后得到的文本。
-	 * @protected
-	 * @see dorado.DataType#toText
-	 */
-	doToText : function(data, argument) {
-		if(data === null || data === undefined || ( typeof data !== "object" && isNaN(data))) {
-			return '';
-		} else {
-			return data + '';
-		}
-	}
-});
-
-dorado.DataType.getSubName = function(name) {
-	var complexDataTypeNameRegex = /^[\w.$:@#]*\[[\w\[\].$:@#]*\]$/;
-	return (name.match(complexDataTypeNameRegex)) ? name.substring(name.indexOf('[') + 1, name.length - 1) : null;
-};
-/**
- * @author Benny Bao (mailto:benny.bao@bstek.com)
- * @class 聚合类型。
- * @extends dorado.DataType
- * @see dorado.EntityDataType
- */
-dorado.AggregationDataType = $extend(dorado.DataType, /** @scope dorado.AggregationDataType.prototype */
-{
-	$className : "dorado.AggregationDataType",
-
-	ATTRIBUTES : /** @scope dorado.AggregationDataType.prototype */
-	{
-		/**
-		 * 聚合元素的数据类型。
-		 * @return {dorado.DataType}
-		 * @attribute writeOnce
-		 */
-		elementDataType : {
-			getter : function() {
-				return this.getElementDataType("always");
-			},
-			writeOnce : true
-		},
-
-		/**
-		 * 对数据进行分页浏览时每页的记录数。
-		 * @type int
-		 * @attribute
-		 */
-		pageSize : {
-			defaultValue : 0
-		}
-	},
-
-	constructor : function(config, elementDataType) {
-		$invokeSuper.call(this, arguments);
-		if(elementDataType)
-			this._elementDataType = elementDataType;
-	},
-	getElementDataType : function(loadMode) {
-		var dataType = this._elementDataType;
-		if(dataType != null) {
-			dataType = dorado.LazyLoadDataType.dataTypeTranslator.call(this, dataType, loadMode);
-			if( dataType instanceof dorado.DataType)
-				this._elementDataType = dataType;
-		}
-		return dataType;
-	},
-	/**
-	 * 将传入的数据转换为集合。
-	 * @param {Object|Object[]} data 要转换的数据。
-	 * @return {dorado.EntityList} 转换后得到的集合。
-	 */
-	parse : function(data) {
-		if(data != null) {
-			return ( data instanceof dorado.EntityList) ? data : new dorado.EntityList(data, this._dataTypeRepository, this);
-		} else {
-			return null;
-		}
-	}
-});
-
-/**
- * @author Benny Bao (mailto:benny.bao@bstek.com)
- * @name dorado.EntityDataType
- * @class 实体类型。
- * @extends dorado.DataType
- * @extends dorado.EventSupport
- * @see dorado.PropertyDef
- * @see dorado.Reference
- * @see dorado.Lookup
- */
-dorado.EntityDataType = $extend([dorado.DataType, dorado.EventSupport], /** @scope dorado.EntityDataType.prototype */
-{
-	$className : "dorado.EntityDataType",
-
-	ATTRIBUTES : /** @scope dorado.EntityDataType.prototype */
-	{
-
-		/**
-		 * 是否允许外界访问实体中尚未声名的属性。
-		 * @type boolean
-		 * @attribute
-		 */
-		acceptUnknownProperty : {},
-
-		/**
-		 * 默认的显示属性。
-		 * <p>
-		 * 当系统需要将一个属于此类型的数据实体转换成用于显示的文本时（即相当于调用{@link dorado.Entity#toText}方法时），
-		 * 如果此时数据类型中定义了此值，那么系统将直接使用此值所代表的属性的属性值作为整个数据实体的显示文本。
-		 * </p>
-		 * <p>
-		 * 例如一个Employee类型中有id、name、sex、phone等很多属性，如果我们定义了Employee类型的defaultDisplayProperty=name，
-		 * 那么系统会将直接用name属性的值作为其隶属的数据实体的显示文本。
-		 * </p>
-		 * @type String
-		 * @attribute
-		 */
-		defaultDisplayProperty : {},
-
-		/**
-		 * 当数据实体需要确认其中的内容修改时，最高可以接受哪个级别的验证信息。
-		 * 出此处给定的默认值ok之外，通常可选的值还有warn。info和error则一般不会作为此属性的值。
-		 * @type String
-		 * @default "ok"
-		 * @attribute
-		 * @see dorado.validator.Validator#validate
-		 * @see dorado.Entity#getValidationResults
-		 */
-		acceptValidationState : {
-			defaultValue : "ok"
-		},
-
-		/**
-		 * 是否禁用其中所有的数据验证器。包括所有属性上的数据验证器。
-		 * @type boolean
-		 * @attribute
-		 */
-		validatorsDisabled : {},
-
-		/**
-		 * 属性声明的集合。
-		 * <p>
-		 * 此属性在读写时的意义不完全相同。
-		 * <ul>
-		 * <li>当读取时返回实体类型中属性声明的集合，类型为{@link dorado.util.KeyedArray}。</li>
-		 * <li>当写入时用于添加属性声明。<br>
-		 * 此处数组中既可以放入属性声明的实例，又可以放入JSON对象。
-		 * 具体请参考{@link dorado.EntityDataType#addPropertyDef}。</li>
-		 * </ul>
-		 * </p>
-		 * @type Object[]|dorado.PropertyDef[]
-		 * @attribute
-		 */
-		propertyDefs : {
-			setter : function(value) {
-				if(value) {
-					for(var i = 0; i < value.length; i++) {
-						this.addPropertyDef(value[i]);
-					}
-				}
-			}
-		}
-	},
-
-	EVENTS : /** @scope dorado.EntityDataType.prototype */
-	{
-		/**
-		 * 当某个此类型的{@link dorado.EntityList}中的当前数据实体将要被改变前触发的事件。
-		 * @param {Object} self 事件的发起者，即EntityDataType本身。
-		 * @param {Object} arg 事件参数。
-		 * @param {dorado.EntityList} arg.entityList 触发事件的实体对象集合。
-		 * @param {dorado.Entity} arg.oldCurrent 原先的当前数据实体。
-		 * @param {dorado.Entity} arg.newCurrent 新的当前数据实体。
-		 * @param {boolean} #arg.processDefault=true 用于通知系统是否要继续完成后续动作。
-		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
-		 * @event
-		 * @see dorado.EntityList#current
-		 * @see dorado.EntityList#setCurrent
-		 */
-		beforeCurrentChange : {},
-
-		/**
-		 * 当某个此类型的{@link dorado.EntityList}中的当前数据实体被改变后触发的事件。
-		 * @param {Object} self 事件的发起者，即EntityDataType本身。
-		 * @param {Object} arg 事件参数。
-		 * @param {dorado.EntityList} arg.entityList 触发事件的实体对象集合。
-		 * @param {dorado.Entity} arg.oldCurrent 原先的当前数据实体。
-		 * @param {dorado.Entity} arg.newCurrent 新的当前数据实体。
-		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
-		 * @event
-		 * @see dorado.EntityList#current
-		 * @see dorado.EntityList#setCurrent
-		 */
-		onCurrentChange : {},
-
-		/**
-		 * 当某个此类型的{@link dorado.EntityList}中的将要插入一个新的数据实体前触发的事件。
-		 * @param {Object} self 事件的发起者，即EntityDataType本身。
-		 * @param {Object} arg 事件参数。
-		 * @param {dorado.EntityList} arg.entityList 触发事件的实体对象集合。
-		 * @param {dorado.Entity} arg.entity 将要插入的数据实体。
-		 * @param {String} arg.insertMode 插入方式。
-		 * @param {dorado.Entity} arg.refEntity 插入位置的参照数据实体。
-		 * @param {boolean} #arg.processDefault=true 用于通知系统是否要继续完成后续动作。
-		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
-		 * @event
-		 * @see dorado.EntityList#insert
-		 */
-		beforeInsert : {},
-
-		/**
-		 * 当某个此类型的{@link dorado.EntityList}中的插入一个新的数据实体后触发的事件。
-		 * @param {Object} self 事件的发起者，即EntityDataType本身。
-		 * @param {Object} arg 事件参数。
-		 * @param {dorado.EntityList} arg.entityList 触发事件的实体对象集合。
-		 * @param {dorado.Entity} arg.entity 新插入的数据实体。
-		 * @param {String} arg.insertMode 插入方式。
-		 * @param {dorado.Entity} arg.refEntity 插入位置的参照数据实体。
-		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
-		 * @event
-		 * @see dorado.EntityList#insert
-		 */
-		onInsert : {},
-
-		/**
-		 * 当某个此类型的{@link dorado.EntityList}中的将要删除的一个数据实体前触发的事件。
-		 * @param {Object} self 事件的发起者，即EntityDataType本身。
-		 * @param {Object} arg 事件参数。
-		 * @param {dorado.EntityList} arg.entityList 触发事件的实体对象集合。
-		 * @param {dorado.Entity} arg.entity 将被删除的数据实体。
-		 * @param {boolean} #arg.processDefault=true 用于通知系统是否要继续完成后续动作。
-		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
-		 * @event
-		 * @see dorado.EntityList#remove
-		 */
-		beforeRemove : {},
-
-		/**
-		 * 当某个此类型的{@link dorado.EntityList}中的删除了一个数据实体后触发的事件。
-		 * @param {Object} self 事件的发起者，即EntityDataType本身。
-		 * @param {Object} arg 事件参数。
-		 * @param {dorado.EntityList} arg.entityList 触发事件的实体对象集合。
-		 * @param {dorado.Entity} arg.entity 被删除的数据实体。
-		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
-		 * @event
-		 * @see dorado.EntityList#remove
-		 */
-		onRemove : {},
-
-		/**
-		 * 当某个此类型的{@link dorado.Entity}中的属性值将要被改变前触发的事件。
-		 * @param {Object} self 事件的发起者，即EntityDataType本身。
-		 * @param {Object} arg 事件参数。
-		 * @param {dorado.Entity} arg.entity 触发事件的实体对象。
-		 * @param {String} arg.property 将要被改变的属性名。
-		 * @param {Object} arg.oldValue 原先的属性值。
-		 * @param {Object} arg.newValue 将要写入的值。
-		 * @param {boolean} #arg.processDefault=true 用于通知系统是否要继续完成后续动作。
-		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
-		 * @event
-		 * @see dorado.Entity#set
-		 */
-		beforeDataChange : {},
-
-		/**
-		 * 当某个此类型的{@link dorado.Entity}中的属性值被改变后触发的事件。
-		 * @param {Object} self 事件的发起者，即EntityDataType本身。
-		 * @param {Object} arg 事件参数。
-		 * @param {dorado.Entity} arg.entity 触发事件的实体对象。
-		 * @param {String} arg.property 被改变的属性名。
-		 * @param {Object} arg.oldValue 原先的属性值。
-		 * @param {Object} arg.newValue 将要写入的值。
-		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
-		 * @event
-		 * @see dorado.Entity#set
-		 */
-		onDataChange : {},
-
-		/**
-		 * 当某个此类型的{@link dorado.Entity}的状态将要被改变前触发的事件。
-		 * @param {Object} self 事件的发起者，即EntityDataType本身。
-		 * @param {Object} arg 事件参数。
-		 * @param {dorado.Entity} arg.entity 触发事件的实体对象。
-		 * @param {int} arg.oldState 原先的状态代码。
-		 * @param {int} arg.newState 新的状态代码。
-		 * @param {boolean} #arg.processDefault=true 用于通知系统是否要继续完成后续动作。
-		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
-		 * @event
-		 * @see dorado.Entity#state
-		 * @see dorado.Entity#setState
-		 */
-		beforeStateChange : {},
-
-		/**
-		 * 当某个此类型的{@link dorado.Entity}的状态被改变后触发的事件。
-		 * @param {Object} self 事件的发起者，即EntityDataType本身。
-		 * @param {Object} arg 事件参数。
-		 * @param {dorado.Entity} arg.entity 触发事件的实体对象。
-		 * @param {int} arg.oldState 原先的状态代码。
-		 * @param {int} arg.newState 新的状态代码。
-		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
-		 * @event
-		 * @see dorado.Entity#state
-		 * @see dorado.Entity#setState
-		 */
-		onStateChange : {},
-
-		/**
-		 * 当某个此类型的{@link dorado.Entity}的额外信息被改变后触发的事件。
-		 * @param {Object} self 事件的发起者，即EntityDataType本身。
-		 * @param {Object} arg 事件参数。
-		 * @param {dorado.Entity} arg.entity 触发事件的实体对象。
-		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
-		 * @event
-		 * @see dorado.Entity#getMessages
-		 * @see dorado.Entity#getMessageState
-		 * @see dorado.Entity#setMessages
-		 */
-		onMessageChange : {},
-
-		/**
-		 * 系统尝试将一个数据实体对象转换成一段用于显示的文本时触发的事件。
-		 * @param {Object} self 事件的发起者，即EntityDataType本身。
-		 * @param {Object} arg 事件参数。
-		 * @param {dorado.Entity} arg.entity 触发事件的实体对象。
-		 * @param {String} #arg.text 转换得到的用于显示的文本。
-		 * @param {boolean} #arg.processDefault=false 用于通知系统是否要继续完成后续动作。
-		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
-		 * @event
-		 * @see dorado.Entity#state
-		 * @see dorado.Entity#setState
-		 */
-		onEntityToText : {}
-	},
-
-	constructor : function(config) {
-		this._propertyDefs = new dorado.util.KeyedArray(function(propertyDef) {
-			return propertyDef._name;
-		});
-		$invokeSuper.call(this, arguments);
-	},
-	/**
-	 * 向实体类型中添加一个属性声明。
-	 * <p>
-	 * 此处数组中可放置两种类型的属性声明定义：
-	 * 	<ul>
-	 * 	<li>直接放入一个属性声明的实例对象。</li>
-	 * 	<li>放入含属性声明信息的JSON对象。<br>
-	 * 此时可以使用子控件类型名称中"dorado."和"PropertyDef"之间的部分作为$type的简写。
-	 * 如果$type为空或不指定$type，系统将会按照{@link dorado.PropertyDef}来实例化。
-	 * 	</li>
-	 * 	</ul>
-	 * </p>
-	 * @param {dorado.PropertyDef|Object} propertyDef 要添加的属性声明或含属性声明信息的JSON对象。
-	 * @return dorado.PropertyDef 添加的属性声明。
-	 * @see dorado.PropertyDef
-	 * @see dorado.Reference
-	 * @see dorado.Lookup
-	 * @see dorado.Toolkits.createInstance
-	 */
-	addPropertyDef : function(propertyDef) {
-		if( propertyDef instanceof dorado.PropertyDef) {
-			if(propertyDef._parent) {
-				var parent = propertyDef._parent;
-				if(parent.getPropertyDef(propertyDef._name) == propertyDef) {
-					parent._propertyDefs.remove(propertyDef);
-				}
-			}
-		} else {
-			propertyDef = dorado.Toolkits.createInstance("propertydef", propertyDef);
-		}
-
-		propertyDef._parent = this;
-		this._propertyDefs.append(propertyDef);
-		return propertyDef;
-	},
-	/**
-	 * 根据属性名从实体类型返回相应的属性声明。
-	 * @param {String} name 属性名。
-	 * @return {dorado.PropertyDef} 属性声明。
-	 */
-	getPropertyDef : function(name) {
-		return this._propertyDefs.get(name);
-	},
-	/**
-	 * 将传入的数据转换为一个实体对象。
-	 * @param {Object} data 要转换的数据
-	 * @return {dorado.Entity} 转换后得到的实体。
-	 */
-	parse : function(data) {
-		if(data != null) {
-			return ( data instanceof dorado.Entity) ? data : new dorado.Entity(data, this._dataTypeRepository, this);
-		} else {
-			return null;
-		}
-	},
-	/**
-	 * 扩展本实体数据类型。即以当前的实体数据类型为模板，创建一个相似的、全新的实体数据类型。
-	 * @param {String|Object} config 新的实体数据类型的名称或构造参数。
+	 * @author Benny Bao (mailto:benny.bao@bstek.com)
+	 * @class 数据类型。数据类型是对所有系统中可能使用到的数据类型的抽象。
 	 * <p>
 	 * 此参数具有多态性，当我们传入一个String类型的参数时，该String值表示数据类型的name。
 	 * 当我们传入的参数是一个JSON对象时，系统会自动将该JSON对象中的属性复制到数据类型中。 <br>
 	 * 如果没有在此步骤中没有为组件指定name，那么系统会自动为其分配一个name。
 	 * </p>
-	 * @return {dorado.EntityDataType} 新的实体数据类型。
+	 * @abstract
+	 * @extends dorado.AttributeSupport
+	 * @param {String|Object} [config] 配置信息。
 	 */
-	extend : function(config) {
-		if( typeof config == "string") {
-			config = {
-				name : config
-			};
-		} else
-			config = config || {};
-		var self = this;
-		jQuery(["acceptUnknownProperty", "tag"]).each(function(i, p) {
-			if(config[p] === undefined)
-				config[p] = self.get(p);
-		});
-		var newDataType = new this.constructor(config);
-		newDataType._events = dorado.Core.clone(this._events);
-		this._propertyDefs.each(function(pd) {
-			newDataType.addPropertyDef(dorado.Core.clone(pd));
-		});
-		return newDataType;
-	}
-}); (function() {
+	dorado.DataType = $extend(dorado.AttributeSupport, /** @scope dorado.DataType.prototype */
+	{
+		$className : "dorado.DataType",
+	
+		ATTRIBUTES : /** @scope dorado.DataType.prototype */
+		{
+	
+			/**
+			 * 数据类型的名称。
+			 * @type String
+			 * @attribute readOnly
+			 */
+			name : {
+				readOnly : true
+			},
+	
+			/**
+			 * 用于在后端定位服务的id。如无特殊需要请不要修改。
+			 * @type String
+			 * @attribute writeOnce
+			 */
+			id : {
+				writeOnce : true
+			},
+	
+			/**
+			 * 隶属的数据类型管理器。
+			 * @type dorado.DataTypeRepository
+			 * @attribute readOnly
+			 */
+			dataTypeRepository : {
+				readOnly : true
+			},
+	
+			/**
+			 * 返回所属的视图。
+			 * @type dorado.widget.View
+			 * @attribute readOnly
+			 */
+			view : {
+				path : "_dataTypeRepository._view"
+			},
+			
+			/**
+			 * 用户自定义数据。
+			 * @type Object
+			 * @attribute skipRefresh
+			 */
+			userData: {
+				skipRefresh: true
+			}
+		},
+	
+		constructor : function(config) {
+			$invokeSuper.call(this, arguments);
+	
+			var name;
+			if(config && config.constructor == String) {
+				name = config;
+				config = null;
+			} else if(config) {
+				name = config.name;
+				delete config.name;
+				this.set(config);
+			}
+			this._name = name ? name : dorado.Core.newId();
+			if(!this._id)
+				this._id = this._name;
+	
+			if(this.id) {
+				if(window[this.id] === undefined) {
+					window[this.id] = this;
+				} else {
+					var v = window[this.id];
+					if( v instanceof Array) {
+						v.push(this);
+					} else {
+						window[this.id] = [v, this];
+					}
+				}
+			}
+		},
+		
+		/**
+		 * 尝试将一个任意类型的值转换成本数据类型所描述的类型。
+		 * @param {Object} data 要转换的数据。
+		 * @param {Object} [argument] 转换时可能需要用到的参数。
+		 * @return {Object} 转换后得到的数据。
+		 */
+		parse : function(data, argument) {
+			return data;
+		},
+		
+		getListenerScope : function() {
+			return this.get("view");
+		},
+		
+		/**
+		 * 尝试将一个任意类型的值转换成本文本值。<br>
+		 * 如需在子类中改变其逻辑其复写{@link dorado.DataType#doToText}方法。
+		 * @param {Object} data 要转换的数据。
+		 * @param {Object} [argument] 转换时可能需要用到的参数。
+		 * @return {String} 转换后得到的文本。
+		 * @final
+		 * @see dorado.DataType#doToText
+		 */
+		toText : function(data, argument) {
+			if( typeof argument == "string" && argument.indexOf("call:") == 0) {
+				var func = argument.substring(5);
+				func = window[func];
+				if( func instanceof Function) {
+					return func(data);
+				}
+			}
+			return this.doToText.apply(this, arguments);
+		},
+		
+		/**
+		 * 将一个任意类型的值转换成本文本值。此方法供子类复写。
+		 * @param {Object} data 要转换的数据。
+		 * @param {Object} [argument] 转换时可能需要用到的参数。
+		 * @return {String} 转换后得到的文本。
+		 * @protected
+		 * @see dorado.DataType#toText
+		 */
+		doToText : function(data, argument) {
+			if(data === null || data === undefined || ( typeof data !== "object" && isNaN(data))) {
+				return '';
+			} else {
+				return data + '';
+			}
+		}
+	});
+	
+	dorado.DataType.getSubName = function(name) {
+		var complexDataTypeNameRegex = /^[\w.$:@#]*\[[\w\[\].$:@#]*\]$/;
+		return (name.match(complexDataTypeNameRegex)) ? name.substring(name.indexOf('[') + 1, name.length - 1) : null;
+	};
+	
+	/**
+	 * @author Benny Bao (mailto:benny.bao@bstek.com)
+	 * @class 聚合类型。
+	 * @extends dorado.DataType
+	 * @see dorado.EntityDataType
+	 */
+	dorado.AggregationDataType = $extend(dorado.DataType, /** @scope dorado.AggregationDataType.prototype */
+	{
+		$className : "dorado.AggregationDataType",
+	
+		ATTRIBUTES : /** @scope dorado.AggregationDataType.prototype */
+		{
+			/**
+			 * 聚合元素的数据类型。
+			 * @return {dorado.DataType}
+			 * @attribute writeOnce
+			 */
+			elementDataType : {
+				getter : function() {
+					return this.getElementDataType("always");
+				},
+				writeOnce : true
+			},
+	
+			/**
+			 * 对数据进行分页浏览时每页的记录数。
+			 * @type int
+			 * @attribute
+			 */
+			pageSize : {
+				defaultValue : 0
+			}
+		},
+	
+		constructor : function(config, elementDataType) {
+			$invokeSuper.call(this, arguments);
+			if(elementDataType)
+				this._elementDataType = elementDataType;
+		},
+		
+		getElementDataType : function(loadMode) {
+			var dataType = this._elementDataType;
+			if(dataType != null) {
+				dataType = dorado.LazyLoadDataType.dataTypeTranslator.call(this, dataType, loadMode);
+				if( dataType instanceof dorado.DataType) this._elementDataType = dataType;
+			}
+			return dataType;
+		},
+		/**
+		 * 将传入的数据转换为集合。
+		 * @param {Object|Object[]} data 要转换的数据。
+		 * @return {dorado.EntityList} 转换后得到的集合。
+		 */
+		parse : function(data) {
+			if(data != null) {
+				return (data instanceof dorado.EntityList) ? data : new dorado.EntityList(data, this._dataTypeRepository, this);
+			} else {
+				return null;
+			}
+		}
+	});
+	
+	/**
+	 * @author Benny Bao (mailto:benny.bao@bstek.com)
+	 * @name dorado.EntityDataType
+	 * @class 实体类型。
+	 * @extends dorado.DataType
+	 * @extends dorado.EventSupport
+	 * @see dorado.PropertyDef
+	 * @see dorado.Reference
+	 * @see dorado.Lookup
+	 */
+	dorado.EntityDataType = $extend([dorado.DataType, dorado.EventSupport], /** @scope dorado.EntityDataType.prototype */
+	{
+		$className : "dorado.EntityDataType",
+	
+		ATTRIBUTES : /** @scope dorado.EntityDataType.prototype */
+		{
+	
+			/**
+			 * 是否允许外界访问实体中尚未声名的属性。
+			 * @type boolean
+			 * @attribute
+			 */
+			acceptUnknownProperty : {},
+	
+			/**
+			 * 默认的显示属性。
+			 * <p>
+			 * 当系统需要将一个属于此类型的数据实体转换成用于显示的文本时（即相当于调用{@link dorado.Entity#toText}方法时），
+			 * 如果此时数据类型中定义了此值，那么系统将直接使用此值所代表的属性的属性值作为整个数据实体的显示文本。
+			 * </p>
+			 * <p>
+			 * 例如一个Employee类型中有id、name、sex、phone等很多属性，如果我们定义了Employee类型的defaultDisplayProperty=name，
+			 * 那么系统会将直接用name属性的值作为其隶属的数据实体的显示文本。
+			 * </p>
+			 * @type String
+			 * @attribute
+			 */
+			defaultDisplayProperty : {},
+	
+			/**
+			 * 当数据实体需要确认其中的内容修改时，最高可以接受哪个级别的验证信息。
+			 * 出此处给定的默认值ok之外，通常可选的值还有warn。info和error则一般不会作为此属性的值。
+			 * @type String
+			 * @default "ok"
+			 * @attribute
+			 * @see dorado.validator.Validator#validate
+			 * @see dorado.Entity#getValidationResults
+			 */
+			acceptValidationState : {
+				defaultValue : "ok"
+			},
+	
+			/**
+			 * 是否禁用其中所有的数据验证器。包括所有属性上的数据验证器。
+			 * @type boolean
+			 * @attribute
+			 */
+			validatorsDisabled : {},
+	
+			/**
+			 * 属性声明的集合。
+			 * <p>
+			 * 此属性在读写时的意义不完全相同。
+			 * <ul>
+			 * <li>当读取时返回实体类型中属性声明的集合，类型为{@link dorado.util.KeyedArray}。</li>
+			 * <li>当写入时用于添加属性声明。<br>
+			 * 此处数组中既可以放入属性声明的实例，又可以放入JSON对象。
+			 * 具体请参考{@link dorado.EntityDataType#addPropertyDef}。</li>
+			 * </ul>
+			 * </p>
+			 * @type Object[]|dorado.PropertyDef[]
+			 * @attribute
+			 */
+			propertyDefs : {
+				setter : function(value) {
+					if(value) {
+						for(var i = 0; i < value.length; i++) {
+							this.addPropertyDef(value[i]);
+						}
+					}
+				}
+			}
+		},
+	
+		EVENTS : /** @scope dorado.EntityDataType.prototype */
+		{
+			/**
+			 * 当某个此类型的{@link dorado.EntityList}中的当前数据实体将要被改变前触发的事件。
+			 * @param {Object} self 事件的发起者，即EntityDataType本身。
+			 * @param {Object} arg 事件参数。
+			 * @param {dorado.EntityList} arg.entityList 触发事件的实体对象集合。
+			 * @param {dorado.Entity} arg.oldCurrent 原先的当前数据实体。
+			 * @param {dorado.Entity} arg.newCurrent 新的当前数据实体。
+			 * @param {boolean} #arg.processDefault=true 用于通知系统是否要继续完成后续动作。
+			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+			 * @event
+			 * @see dorado.EntityList#current
+			 * @see dorado.EntityList#setCurrent
+			 */
+			beforeCurrentChange : {},
+	
+			/**
+			 * 当某个此类型的{@link dorado.EntityList}中的当前数据实体被改变后触发的事件。
+			 * @param {Object} self 事件的发起者，即EntityDataType本身。
+			 * @param {Object} arg 事件参数。
+			 * @param {dorado.EntityList} arg.entityList 触发事件的实体对象集合。
+			 * @param {dorado.Entity} arg.oldCurrent 原先的当前数据实体。
+			 * @param {dorado.Entity} arg.newCurrent 新的当前数据实体。
+			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+			 * @event
+			 * @see dorado.EntityList#current
+			 * @see dorado.EntityList#setCurrent
+			 */
+			onCurrentChange : {},
+	
+			/**
+			 * 当某个此类型的{@link dorado.EntityList}中的将要插入一个新的数据实体前触发的事件。
+			 * @param {Object} self 事件的发起者，即EntityDataType本身。
+			 * @param {Object} arg 事件参数。
+			 * @param {dorado.EntityList} arg.entityList 触发事件的实体对象集合。
+			 * @param {dorado.Entity} arg.entity 将要插入的数据实体。
+			 * @param {String} arg.insertMode 插入方式。
+			 * @param {dorado.Entity} arg.refEntity 插入位置的参照数据实体。
+			 * @param {boolean} #arg.processDefault=true 用于通知系统是否要继续完成后续动作。
+			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+			 * @event
+			 * @see dorado.EntityList#insert
+			 */
+			beforeInsert : {},
+	
+			/**
+			 * 当某个此类型的{@link dorado.EntityList}中的插入一个新的数据实体后触发的事件。
+			 * @param {Object} self 事件的发起者，即EntityDataType本身。
+			 * @param {Object} arg 事件参数。
+			 * @param {dorado.EntityList} arg.entityList 触发事件的实体对象集合。
+			 * @param {dorado.Entity} arg.entity 新插入的数据实体。
+			 * @param {String} arg.insertMode 插入方式。
+			 * @param {dorado.Entity} arg.refEntity 插入位置的参照数据实体。
+			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+			 * @event
+			 * @see dorado.EntityList#insert
+			 */
+			onInsert : {},
+	
+			/**
+			 * 当某个此类型的{@link dorado.EntityList}中的将要删除的一个数据实体前触发的事件。
+			 * @param {Object} self 事件的发起者，即EntityDataType本身。
+			 * @param {Object} arg 事件参数。
+			 * @param {dorado.EntityList} arg.entityList 触发事件的实体对象集合。
+			 * @param {dorado.Entity} arg.entity 将被删除的数据实体。
+			 * @param {boolean} #arg.processDefault=true 用于通知系统是否要继续完成后续动作。
+			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+			 * @event
+			 * @see dorado.EntityList#remove
+			 */
+			beforeRemove : {},
+	
+			/**
+			 * 当某个此类型的{@link dorado.EntityList}中的删除了一个数据实体后触发的事件。
+			 * @param {Object} self 事件的发起者，即EntityDataType本身。
+			 * @param {Object} arg 事件参数。
+			 * @param {dorado.EntityList} arg.entityList 触发事件的实体对象集合。
+			 * @param {dorado.Entity} arg.entity 被删除的数据实体。
+			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+			 * @event
+			 * @see dorado.EntityList#remove
+			 */
+			onRemove : {},
+	
+			/**
+			 * 当某个此类型的{@link dorado.Entity}中的属性值将要被改变前触发的事件。
+			 * @param {Object} self 事件的发起者，即EntityDataType本身。
+			 * @param {Object} arg 事件参数。
+			 * @param {dorado.Entity} arg.entity 触发事件的实体对象。
+			 * @param {String} arg.property 将要被改变的属性名。
+			 * @param {Object} arg.oldValue 原先的属性值。
+			 * @param {Object} arg.newValue 将要写入的值。
+			 * @param {boolean} #arg.processDefault=true 用于通知系统是否要继续完成后续动作。
+			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+			 * @event
+			 * @see dorado.Entity#set
+			 */
+			beforeDataChange : {},
+	
+			/**
+			 * 当某个此类型的{@link dorado.Entity}中的属性值被改变后触发的事件。
+			 * @param {Object} self 事件的发起者，即EntityDataType本身。
+			 * @param {Object} arg 事件参数。
+			 * @param {dorado.Entity} arg.entity 触发事件的实体对象。
+			 * @param {String} arg.property 被改变的属性名。
+			 * @param {Object} arg.oldValue 原先的属性值。
+			 * @param {Object} arg.newValue 将要写入的值。
+			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+			 * @event
+			 * @see dorado.Entity#set
+			 */
+			onDataChange : {},
+	
+			/**
+			 * 当某个此类型的{@link dorado.Entity}的状态将要被改变前触发的事件。
+			 * @param {Object} self 事件的发起者，即EntityDataType本身。
+			 * @param {Object} arg 事件参数。
+			 * @param {dorado.Entity} arg.entity 触发事件的实体对象。
+			 * @param {int} arg.oldState 原先的状态代码。
+			 * @param {int} arg.newState 新的状态代码。
+			 * @param {boolean} #arg.processDefault=true 用于通知系统是否要继续完成后续动作。
+			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+			 * @event
+			 * @see dorado.Entity#state
+			 * @see dorado.Entity#setState
+			 */
+			beforeStateChange : {},
+	
+			/**
+			 * 当某个此类型的{@link dorado.Entity}的状态被改变后触发的事件。
+			 * @param {Object} self 事件的发起者，即EntityDataType本身。
+			 * @param {Object} arg 事件参数。
+			 * @param {dorado.Entity} arg.entity 触发事件的实体对象。
+			 * @param {int} arg.oldState 原先的状态代码。
+			 * @param {int} arg.newState 新的状态代码。
+			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+			 * @event
+			 * @see dorado.Entity#state
+			 * @see dorado.Entity#setState
+			 */
+			onStateChange : {},
+	
+			/**
+			 * 当某个此类型的{@link dorado.Entity}的额外信息被改变后触发的事件。
+			 * @param {Object} self 事件的发起者，即EntityDataType本身。
+			 * @param {Object} arg 事件参数。
+			 * @param {dorado.Entity} arg.entity 触发事件的实体对象。
+			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+			 * @event
+			 * @see dorado.Entity#getMessages
+			 * @see dorado.Entity#getMessageState
+			 * @see dorado.Entity#setMessages
+			 */
+			onMessageChange : {},
+	
+			/**
+			 * 系统尝试将一个数据实体对象转换成一段用于显示的文本时触发的事件。
+			 * @param {Object} self 事件的发起者，即EntityDataType本身。
+			 * @param {Object} arg 事件参数。
+			 * @param {dorado.Entity} arg.entity 触发事件的实体对象。
+			 * @param {String} #arg.text 转换得到的用于显示的文本。
+			 * @param {boolean} #arg.processDefault=false 用于通知系统是否要继续完成后续动作。
+			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+			 * @event
+			 * @see dorado.Entity#state
+			 * @see dorado.Entity#setState
+			 */
+			onEntityToText : {}
+		},
+	
+		constructor : function(config) {
+			this._propertyDefs = new dorado.util.KeyedArray(function(propertyDef) {
+				return propertyDef._name;
+			});
+			$invokeSuper.call(this, arguments);
+		},
+		
+		/**
+		 * 向实体类型中添加一个属性声明。
+		 * <p>
+		 * 此处数组中可放置两种类型的属性声明定义：
+		 * 	<ul>
+		 * 	<li>直接放入一个属性声明的实例对象。</li>
+		 * 	<li>放入含属性声明信息的JSON对象。<br>
+		 * 此时可以使用子控件类型名称中"dorado."和"PropertyDef"之间的部分作为$type的简写。
+		 * 如果$type为空或不指定$type，系统将会按照{@link dorado.PropertyDef}来实例化。
+		 * 	</li>
+		 * 	</ul>
+		 * </p>
+		 * @param {dorado.PropertyDef|Object} propertyDef 要添加的属性声明或含属性声明信息的JSON对象。
+		 * @return dorado.PropertyDef 添加的属性声明。
+		 * @see dorado.PropertyDef
+		 * @see dorado.Reference
+		 * @see dorado.Lookup
+		 * @see dorado.Toolkits.createInstance
+		 */
+		addPropertyDef : function(propertyDef) {
+			if( propertyDef instanceof dorado.PropertyDef) {
+				if(propertyDef._parent) {
+					var parent = propertyDef._parent;
+					if(parent.getPropertyDef(propertyDef._name) == propertyDef) {
+						parent._propertyDefs.remove(propertyDef);
+					}
+				}
+			} else {
+				propertyDef = dorado.Toolkits.createInstance("propertydef", propertyDef);
+			}
+	
+			propertyDef._parent = this;
+			this._propertyDefs.append(propertyDef);
+			return propertyDef;
+		},
+		
+		/**
+		 * 根据属性名从实体类型返回相应的属性声明。
+		 * @param {String} name 属性名。
+		 * @return {dorado.PropertyDef} 属性声明。
+		 */
+		getPropertyDef : function(name) {
+			return this._propertyDefs.get(name);
+		},
+		
+		/**
+		 * 将传入的数据转换为一个实体对象。
+		 * @param {Object} data 要转换的数据
+		 * @return {dorado.Entity} 转换后得到的实体。
+		 */
+		parse : function(data) {
+			if(data != null) {
+				return (data instanceof dorado.Entity) ? data : new dorado.Entity(data, this._dataTypeRepository, this);
+			} else {
+				return null;
+			}
+		},
+		
+		/**
+		 * 扩展本实体数据类型。即以当前的实体数据类型为模板，创建一个相似的、全新的实体数据类型。
+		 * @param {String|Object} config 新的实体数据类型的名称或构造参数。
+		 * <p>
+		 * 此参数具有多态性，当我们传入一个String类型的参数时，该String值表示数据类型的name。
+		 * 当我们传入的参数是一个JSON对象时，系统会自动将该JSON对象中的属性复制到数据类型中。 <br>
+		 * 如果没有在此步骤中没有为组件指定name，那么系统会自动为其分配一个name。
+		 * </p>
+		 * @return {dorado.EntityDataType} 新的实体数据类型。
+		 */
+		extend : function(config) {
+			if( typeof config == "string") {
+				config = {
+					name : config
+				};
+			} else
+				config = config || {};
+			var self = this;
+			jQuery(["acceptUnknownProperty", "tag"]).each(function(i, p) {
+				if(config[p] === undefined)
+					config[p] = self.get(p);
+			});
+			var newDataType = new this.constructor(config);
+			newDataType._events = dorado.Core.clone(this._events);
+			this._propertyDefs.each(function(pd) {
+				newDataType.addPropertyDef(dorado.Core.clone(pd));
+			});
+			return newDataType;
+		}
+	}); 
+
 	/**
 	 * @name dorado.datatype
 	 * @namespace 包含各种常用数据类型声明的命名空间。
@@ -828,6 +840,7 @@ dorado.EntityDataType = $extend([dorado.DataType, dorado.EventSupport], /** @sco
 				throw new dorado.ResourceException("dorado.data.BadDateFormat", data);
 			return date;
 		},
+		
 		/**
 		 * 尝试将一个日期值转换成本文本值。
 		 * @param {Date} data 要转换的数据。
