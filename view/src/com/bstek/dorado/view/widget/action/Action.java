@@ -12,7 +12,7 @@ import com.bstek.dorado.view.widget.Component;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since May 13, 2009
  */
-@Widget(name = "Action", category = "Action", dependsPackage = "widget")
+@Widget(name = "Action", category = "Action", dependsPackage = "base-widget")
 @ViewObject(prototype = "dorado.widget.Action", shortTypeName = "Action")
 @XmlNode(nodeName = "Action")
 @ClientEvents({ @ClientEvent(name = "beforeExecute"),

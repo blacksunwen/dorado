@@ -17,7 +17,7 @@ import com.bstek.dorado.data.resolver.DataResolver;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since May 13, 2009
  */
-@Widget(name = "UpdateAction", category = "Action", dependsPackage = "widget")
+@Widget(name = "UpdateAction", category = "Action", dependsPackage = "base-widget")
 @ViewObject(prototype = "dorado.widget.UpdateAction", shortTypeName = "UpdateAction")
 @XmlNode(nodeName = "UpdateAction")
 @ClientEvents({ @ClientEvent(name = "onGetUpdateData") })

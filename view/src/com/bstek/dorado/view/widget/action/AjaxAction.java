@@ -9,7 +9,7 @@ import com.bstek.dorado.annotation.XmlNode;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-8-10
  */
-@Widget(name = "AjaxAction", category = "Action", dependsPackage = "widget")
+@Widget(name = "AjaxAction", category = "Action", dependsPackage = "base-widget")
 @ViewObject(prototype = "dorado.widget.AjaxAction", shortTypeName = "AjaxAction")
 @XmlNode(nodeName = "AjaxAction")
 public class AjaxAction extends Action {

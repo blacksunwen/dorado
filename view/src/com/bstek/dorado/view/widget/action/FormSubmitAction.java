@@ -13,7 +13,7 @@ import com.bstek.dorado.annotation.XmlNode;
  * @since 2011-4-19
  */
 
-@Widget(name = "FormSubmitAction", category = "Action", dependsPackage = "widget")
+@Widget(name = "FormSubmitAction", category = "Action", dependsPackage = "base-widget")
 @ViewObject(prototype = "dorado.widget.FormSubmitAction", shortTypeName = "FormSubmitAction")
 @XmlNode(nodeName = "FormSubmitAction")
 public class FormSubmitAction extends Action {
