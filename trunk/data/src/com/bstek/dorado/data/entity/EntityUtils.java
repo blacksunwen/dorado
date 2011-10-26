@@ -478,7 +478,7 @@ public abstract class EntityUtils {
 		}
 	}
 
-	public boolean hasOldValues(Object entity) {
+	public static boolean hasOldValues(Object entity) {
 		EntityEnhancer entityEnhancer = getEntityEnhancer(entity);
 		if (entityEnhancer != null) {
 			return entityEnhancer.getOldValues() != null;
