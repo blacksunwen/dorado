@@ -111,7 +111,7 @@ public final class JsonUtils {
 	public static boolean getBoolean(ObjectNode objectNode, String property,
 			boolean defaultValue) {
 		JsonNode propertyNode = objectNode.get(property);
-		return (propertyNode != null) ? propertyNode.getBooleanValue()
+		return (propertyNode != null) ? propertyNode.asBoolean()
 				: defaultValue;
 	}
 
@@ -122,8 +122,7 @@ public final class JsonUtils {
 	public static int getInt(ObjectNode objectNode, String property,
 			int defaultValue) {
 		JsonNode propertyNode = objectNode.get(property);
-		return (propertyNode != null) ? propertyNode.getIntValue()
-				: defaultValue;
+		return (propertyNode != null) ? propertyNode.asInt() : defaultValue;
 	}
 
 	public static int getInt(ObjectNode objectNode, String property) {
@@ -133,8 +132,7 @@ public final class JsonUtils {
 	public static long getLong(ObjectNode objectNode, String property,
 			long defaultValue) {
 		JsonNode propertyNode = objectNode.get(property);
-		return (propertyNode != null) ? propertyNode.getLongValue()
-				: defaultValue;
+		return (propertyNode != null) ? propertyNode.asLong() : defaultValue;
 	}
 
 	public static long getLong(ObjectNode objectNode, String property) {
@@ -144,8 +142,8 @@ public final class JsonUtils {
 	public static float getFloat(ObjectNode objectNode, String property,
 			float defaultValue) {
 		JsonNode propertyNode = objectNode.get(property);
-		return (propertyNode != null) ? propertyNode.getNumberValue()
-				.floatValue() : defaultValue;
+		return (propertyNode != null) ? ((float) propertyNode.asDouble())
+				: defaultValue;
 	}
 
 	public static float getFloat(ObjectNode objectNode, String property) {
@@ -155,8 +153,7 @@ public final class JsonUtils {
 	public static double getDouble(ObjectNode objectNode, String property,
 			double defaultValue) {
 		JsonNode propertyNode = objectNode.get(property);
-		return (propertyNode != null) ? propertyNode.getNumberValue()
-				.doubleValue() : defaultValue;
+		return (propertyNode != null) ? propertyNode.asDouble() : defaultValue;
 	}
 
 	public static double getDouble(ObjectNode objectNode, String property) {
@@ -338,7 +335,7 @@ public final class JsonUtils {
 			} else if (valueNode instanceof NumericNode) {
 				value = ((NumericNode) valueNode).getNumberValue();
 			} else if (valueNode instanceof BooleanNode) {
-				value = ((BooleanNode) valueNode).getBooleanValue();
+				value = ((BooleanNode) valueNode).asBoolean();
 			} else {
 				value = valueNode.getTextValue();
 			}

@@ -1058,7 +1058,7 @@
 		onFocus : function() {
 			this._focused = true;
 			if(this.doOnFocus) this.doOnFocus();
-			if(this._className) $fly(this.getDom()).addClass(this._inherentClassName + "-focused").addClass(this._className + "-focused");
+			if(this._className) $fly(this.getDom()).addClass(this._className + "-focused");
 			this.fireEvent("onFocus", this);
 		},
 		
@@ -1069,7 +1069,7 @@
 		onBlur : function() {
 			this._focused = false;
 			if(this.doOnBlur) this.doOnBlur();
-			$fly(this.getDom()).removeClass(this._inherentClassName + "-focused").removeClass(this._className + "-focused");
+			$fly(this.getDom()).removeClass(this._className + "-focused");
 			this.fireEvent("onBlur", this);
 		},
 		
@@ -1235,6 +1235,28 @@
 	dorado.widget.getFocusedControl = function() {
 		var v = dorado.widget.focusedControl;
 		return v.peek();
+	};
+	
+	dorado.widget.findFocusableControlInElement = function(element) {
+
+		function findInChildren(element) {
+			var el = element.firstChild, control = null;
+			while(el) {
+				control = findInChildren(el);
+				if(control) break;
+				if(el.doradoUniqueId) {
+					var c = dorado.widget.Component.ALL[el.doradoUniqueId];
+					if(c && c.isFocusable()) {
+						control = c;
+						break;
+					}
+				}
+				el = el.nextSibling;
+			}
+			return control;
+		}
+
+		return findInChildren(element);
 	};
 	
 	function findFocusableControl(control, options) {
