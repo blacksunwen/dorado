@@ -82,6 +82,26 @@
 			entity: {},
 			
 			/**
+			 * 绑定的数据集。
+			 * @type dorado.widget.DataSet
+			 * @attribute writeBeforeReady
+			 */
+			dataSet: {
+				componentReference: true,
+				writeBeforeReady: true
+			},
+			
+			/**
+			 * 数据路径，用于指定数据控件与数据集中的哪些数据节点进行关联。
+			 * @type String
+			 * @attribute writeBeforeReady
+			 * @see dorado.DataPath
+			 */
+			dataPath: {
+				writeBeforeReady: true
+			},
+			
+			/**
 			 * 文本标签与编辑器之间的分隔字符。
 			 * @type String
 			 * @attribute
@@ -311,26 +331,6 @@
 				defaultValue: function() {
 					return new dorado.widget.FormProfile.DefaultEntity();
 				}
-			},
-			
-			/**
-			 * 绑定的数据集。
-			 * @type dorado.widget.DataSet
-			 * @attribute writeBeforeReady
-			 */
-			dataSet: {
-				componentReference: true,
-				writeBeforeReady: true
-			},
-			
-			/**
-			 * 数据路径，用于指定数据控件与数据集中的哪些数据节点进行关联。
-			 * @type String
-			 * @attribute writeBeforeReady
-			 * @see dorado.DataPath
-			 */
-			dataPath: {
-				writeBeforeReady: true
 			}
 		},
 		
@@ -416,26 +416,14 @@
 					}
 				}
 			},
-			
-			/**
-			 * 数据控件绑定的数据集。
-			 * @type dorado.widget.DataSet
-			 * @attribute
-			 */
+
 			dataSet: {
 				setter: function(v) {
 					this._dataSet = v;
 					delete this._propertyDef;
 				}
 			},
-			
-			/**
-			 * 数据路径，用于指定数据控件与数据集中的哪些数据节点进行关联。
-			 * @type String
-			 * @attribute
-			 * @default "#"
-			 * @see dorado.DataPath
-			 */
+
 			dataPath: {
 				setter: function(v) {
 					this._dataPath = v;
