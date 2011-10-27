@@ -1095,7 +1095,6 @@
             var content = oldGetContent.apply(this, []), imgReg = /<img.*?(edui_faked_video_\d+)['"\s].*?>/ig;
             return content.replace(imgReg, function(word) {
                 var fakeId = RegExp.$1, img = editor.document.getElementById(fakeId);
-                console.log("word:" + word);
                 if (img) {
                     var width = img.width || 320, height = img.height || 240, strcss = img.style.cssText,
                         url = img.getAttribute("_url"), style = getPars(strcss,"display") ? "display:" + getPars(strcss, "display") : "float:" + getPars(strcss,"float");
