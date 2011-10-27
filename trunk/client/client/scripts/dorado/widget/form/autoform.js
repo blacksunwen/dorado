@@ -218,8 +218,8 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 		this._skipOnCreateListeners = (this._skipOnCreateListeners || 0) + 1;
 		$invokeSuper.call(this, arguments);
 		this._skipOnCreateListeners --;
-		
-		if (this._createOwnEntity) {
+
+		if (this._createOwnEntity && this.getAttributeWatcher().getWritingTimes("entity") == 0) {
 			this.set("entity", new dorado.widget.FormProfile.DefaultEntity());
 		}
 		
