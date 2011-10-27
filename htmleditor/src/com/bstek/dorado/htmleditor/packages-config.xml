@@ -4,7 +4,7 @@
 		<Package name="html-editor-skin" pattern="dorado-css">
 			skins/~current/html-editor
 		</Package>
-		<Package name="html-editor" pattern="dorado-js" depends="base-widget,html-editor-skin">
+		<Package name="html-editor" pattern="dorado-js" depends="base-widget,list,html-editor-skin">
 			scripts/dorado/html-editor
 		</Package>
 	</Packages>

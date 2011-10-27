@@ -6,13 +6,26 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 	<bean parent="dorado.resolverRegister">
 		<property name="url" value="/dorado/htmleditor/imageupload" />
 		<property name="resolver">
-			<bean class="com.bstek.dorado.htmleditor.ImageUploadResolver">
-				<property name="multipartResolver">
-					<bean class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-						<!-- one of the properties available; the maximum file size in bytes -->
-						<property name="maxUploadSize" value="10000000" />
-					</bean>
-				</property>
+			<bean class="com.bstek.dorado.htmleditor.DefaultUploadResolver">
+				<property name="saveFolderName" value="htmleditorimage" />
+			</bean>
+		</property>
+	</bean>
+	
+	<bean parent="dorado.resolverRegister">
+		<property name="url" value="/dorado/htmleditor/fileupload" />
+		<property name="resolver">
+			<bean class="com.bstek.dorado.htmleditor.DefaultUploadResolver">
+				<property name="saveFolderName" value="htmleditorfile" />
+			</bean>
+		</property>
+	</bean>
+	
+	<bean parent="dorado.resolverRegister">
+		<property name="url" value="/dorado/htmleditor/flashupload" />
+		<property name="resolver">
+			<bean class="com.bstek.dorado.htmleditor.DefaultUploadResolver">
+				<property name="saveFolderName" value="htmleditorflash" />
 			</bean>
 		</property>
 	</bean>

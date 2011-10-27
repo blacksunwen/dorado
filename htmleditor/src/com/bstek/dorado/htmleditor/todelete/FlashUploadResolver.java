@@ -1,4 +1,4 @@
-package com.bstek.dorado.htmleditor;
+package com.bstek.dorado.htmleditor.todelete;
 
 import java.io.File;
 import java.util.Date;
@@ -8,9 +8,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-public class ImageUploadResolver extends AbstractImageUploadResolver{
+public class FlashUploadResolver extends AbstractFlashUploadResolver{
 
-	private String FOLDER_PATH = "editorimages/";
+	private String FOLDER_PATH = "editorflash/";
 	
 	protected String execute(MultipartHttpServletRequest request,
 			HttpServletResponse response) throws Exception {
