@@ -1,4 +1,4 @@
-package com.bstek.dorado.htmleditor;
+package com.bstek.dorado.htmleditor.todelete;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -15,7 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bstek.dorado.core.Constants;
 import com.bstek.dorado.web.resolver.AbstractResolver;
 
-public abstract class AbstractImageUploadResolver extends AbstractResolver {
+public abstract class AbstractFlashUploadResolver extends AbstractResolver {
 	private String characterEncoding = Constants.DEFAULT_CHARSET;
 
 	private MultipartResolver multipartResolver;
@@ -30,25 +30,28 @@ public abstract class AbstractImageUploadResolver extends AbstractResolver {
 		// 如果直接在Spring上下文中配置一个multipartResolver会导致所有含有multipart特性的Request都被自动处理，
 		// 这时，如果用户希望自行读取request.getInputStream会得到null，因为multipartResolver已经抢先读取了。
 		// 目前BDF的部分使用场景就碰到了这个问题，因此将multipartResolver改为此Bean的内部类。
-		if (!(request instanceof MultipartHttpServletRequest)
-				&& multipartResolver.isMultipart(request)) {
-			MultipartHttpServletRequest multipartRequest = multipartResolver
-					.resolveMultipart(request);
+		MultipartHttpServletRequest multipartRequest = null;
+		if (!(request instanceof MultipartHttpServletRequest) && multipartResolver.isMultipart(request)) {
+			multipartRequest = multipartResolver.resolveMultipart(request);
+		} else if (request instanceof MultipartHttpServletRequest){
+			multipartRequest = (MultipartHttpServletRequest)request;
+		} else {
+			return null;
+		}
 
-			String url = execute(multipartRequest, response);
+		String url = execute(multipartRequest, response);
 
-			if (url == null) {
-				url = "";
-			}
+		if (url == null) {
+			url = "";
+		}
 
-			PrintWriter writer = getWriter(request, response);
-			try {
-				writer.println("<script>parent.reloadHtmlEditorImage('" + url
-						+ "')</script>");
-			} finally {
-				writer.flush();
-				writer.close();
-			}
+		PrintWriter writer = getWriter(request, response);
+		try {
+			writer.println("<script>parent.reloadHtmlEditorFlash('" + url
+					+ "')</script>");
+		} finally {
+			writer.flush();
+			writer.close();
 		}
 		return null;
 	}
