@@ -8,6 +8,7 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 		<property name="resolver">
 			<bean class="com.bstek.dorado.htmleditor.DefaultUploadResolver">
 				<property name="saveFolderName" value="htmleditorimage" />
+				<property name="allowedExtensions" value="jpg|gif|jpeg|png|bmp" />
 			</bean>
 		</property>
 	</bean>
@@ -17,6 +18,7 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 		<property name="resolver">
 			<bean class="com.bstek.dorado.htmleditor.DefaultUploadResolver">
 				<property name="saveFolderName" value="htmleditorfile" />
+				<property name="deniedExtensions" value="php|php2|php3|php4|php5|phtml|pwml|inc|asp|aspx|ascx|jsp|cfm|cfc|pl|bat|exe|com|dll|vbs|js|reg|cgi" />
 			</bean>
 		</property>
 	</bean>
@@ -26,6 +28,7 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 		<property name="resolver">
 			<bean class="com.bstek.dorado.htmleditor.DefaultUploadResolver">
 				<property name="saveFolderName" value="htmleditorflash" />
+				<property name="allowedExtensions" value="swf|fla" />
 			</bean>
 		</property>
 	</bean>
