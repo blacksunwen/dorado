@@ -5,8 +5,8 @@
         iconClass: "html-editor-icon link",
         command: "link",
         execute: function() {
-            var plugin = this, editor = plugin._htmlEditor, formId = editor._uniqueId + "linkForm",
-                urlObject = plugin.urlObject;
+            var plugin = this, editor = plugin._htmlEditor, formId = editor._uniqueId + "_linkForm",
+                urlObject = plugin.urlObject, filePath = editor._uniqueId + "_linkFilePath", tabControlId = editor._uniqueId + "_linkTabControl";
 
             if (!urlObject) {
                 urlObject = plugin.urlObject = new dorado.Entity();
@@ -20,15 +20,99 @@
                     modal: true,
                     modalType: "transparent",
                     children: [{
-                        id: formId,
-                        $type: "AutoForm",
-                        cols: "*",
-                        entity: urlObject,
-                        elements: [
-                            { property: "url", label: "超链接", type: "text" },
-                            { property: "title", label: "标题", type: "text" },
-                            { property: "target", label: "是否在新窗口打开", type: "checkBox" }
-                        ]
+                        $type: "TabControl",
+                        id: tabControlId,
+                        height: 150,
+                        tabs: [{
+                            $type: "Control",
+                            caption: "超链接",
+                            control: {
+                                id: formId,
+                                $type: "AutoForm",
+                                cols: "*",
+                                entity: urlObject,
+                                elements: [
+                                    { property: "url", label: "超链接", type: "text" },
+                                    { property: "title", label: "标题", type: "text" },
+                                    { property: "target", label: "是否在新窗口打开", type: "checkBox" }
+                                ]
+                            }
+                        }, {
+                            $type: "Control",
+                            caption: "上传",
+                            control: {
+                                $type: "AutoForm",
+                                cols: "*,100",
+                                elements: [{
+                                    property: "url", label: "文件",
+                                    editor: new dorado.widget.TextEditor({
+                                        id: filePath,
+                                        required: true,
+                                        readOnly: true
+                                    })
+                                },
+                                {
+                                    $type: "Container",
+                                    exClassName: "browse-button-wrap",
+                                    children: [{
+                                        $type: "Button",
+                                        caption: "浏览..."
+                                    }],
+                                    onReady: function(self, arg) {
+                                        if (self._inited) {
+                                            return;
+                                        }
+                                        self._inited = true;
+                                        var dom = self._dom, hiddenFile, pathEditor = this.id(filePath);
+                                        if (dorado.Browser.msie) {
+                                            hiddenFile = document.createElement("<input type='file' name='filename' class='hidden-file'/>");
+                                        } else {
+                                            hiddenFile = document.createElement("input");
+                                            hiddenFile.type = "file";
+                                            hiddenFile.name = "filename";
+                                            hiddenFile.className = "hidden-file";
+                                        }
+
+                                        var iframe, iframeName = editor._uniqueId + "_fileUploadIframe";
+                                        if (dorado.Browser.msie) {
+                                            iframe = document.createElement("<iframe name='" + iframeName + "'></iframe>")
+                                        } else {
+                                            iframe = document.createElement("iframe");
+                                            iframe.name = iframeName;
+                                        }
+                                        iframe.style.display = "none";
+
+                                        var form, action = $url(editor._fileUploadPath);
+                                        if (dorado.Browser.msie) {
+                                            form = document.createElement("<form name ='fileForm' action='" + action + "' enctype='multipart/form-data' method='post' target='" + iframeName + "'></form>");
+                                        } else {
+                                            form = document.createElement("form");
+                                            form.action = action;
+                                            form.method = "post";
+                                            form.target = iframeName;
+                                            form.enctype = "multipart/form-data";
+                                        }
+
+                                        form.appendChild(hiddenFile);
+                                        var view = this;
+                                        hiddenFile.onchange = function() {
+                                            pathEditor.set("text", this.value);
+                                            form.submit();
+
+                                            window.uploadCallbackForHtmlEditorFn = function(url) {
+                                                urlObject.set("url", url);
+                                                var autoform = view.id(formId);
+                                                if (autoform) autoform.refreshData();
+                                                var tabControl = view.id(tabControlId);
+                                                tabControl.set("currentTab", 0);
+                                            }
+                                        };
+                                        dom.firstChild.appendChild(form);
+                                        dom.firstChild.appendChild(iframe);
+                                    }
+                                }]
+                            }
+                        }]
                     }],
                     buttons: [{
                         caption: "确定",
@@ -56,12 +140,14 @@
                 });
                 editor.registerInnerControl(plugin.dialog);
             }
+
             var link = plugin.queryCommandValue("link") || {}, autoform = editor._view.id(formId);
 
             urlObject.set("url", link.href);
             urlObject.set("title", link.title || "");
             urlObject.set("target", link.target == "_blank");
-            autoform.refreshData();
+            if (autoform)
+                autoform.refreshData();
 
             plugin.dialog.show();
         }
@@ -111,11 +197,11 @@
                         listener: {
                             onClick: function() {
                                 if (tableConfig) {
-                                    var border = tableConfig.border;
-                                    var cellpadding = tableConfig.cellpadding;
-                                    var cellspacing = tableConfig.cellspacing;
-                                    var width = tableConfig.width;
-                                    var row = tableConfig.row || 2, column = tableConfig.column || 2;
+                                    var border = tableConfig.get("border");
+                                    var cellpadding = tableConfig.get("cellpadding");
+                                    var cellspacing = tableConfig.get("cellspacing");
+                                    var width = tableConfig.get("width");
+                                    var row = tableConfig.get("row") || 2, column = tableConfig.get("column") || 2;
 
                                     var alignment = tableConfig.alignment, cellborder = tableConfig.cellborder;
 
@@ -148,33 +234,16 @@
         }
     };
 
-    function suo(img, max) {
-        var width = 0,height = 0,percent;
-        img.sWidth = img.width;
-        img.sHeight = img.height;
-        if ( img.width > max || img.height > max ) {
-            if ( img.width >= img.height ) {
-                if ( width = img.width - max ) {
-                    percent = (width / img.width).toFixed( 2 );
-                    img.height = img.height - img.height * percent;
-                    img.width = max;
-                }
+    window.uploadCallbackForHtmlEditorFn = null;
+
+    window.uploadCallbackForHtmlEditor = function(path) {
+        if (window.uploadCallbackForHtmlEditorFn) {
+            if (path && /Exception:/.test(path)) {
+                alert(path.replace("Exception:", ""));
             } else {
-                if ( height = img.height - max ) {
-                    percent = (height / img.height).toFixed( 2 );
-                    img.width = img.width - img.width * percent;
-                    img.height = max;
-                }
+                window.uploadCallbackForHtmlEditorFn($url(path));
             }
-        }
-    }
-
-    window.reloadHtmlEditorImageFn = null;
-
-    window.reloadHtmlEditorImage = function(path) {
-        if (window.reloadHtmlEditorImageFn) {
-            window.reloadHtmlEditorImageFn($url(path));
-            window.reloadHtmlEditorImageFn = null;
+            window.uploadCallbackForHtmlEditorFn = null;
         }
     };
 
@@ -189,90 +258,184 @@
         iconClass: "html-editor-icon image",
         command: "inserthtml",
         execute: function() {
-            var plugin = this, editor = plugin._htmlEditor;
-            var imageObject = plugin.imageObject, imageObjectLocal = plugin.imageObjectLocal;
+            var plugin = this, editor = plugin._htmlEditor, imageObject = plugin.imageObject,
+                autoformId = editor._uniqueId + "_imageAutoform";
 
             if (!imageObject) {
                 imageObject = plugin.imageObject = new dorado.Entity();
-                imageObjectLocal = plugin.imageObjectLocal = new dorado.Entity();
+                imageObject.set("lockRatio", true);
             }
 
+            var imgInfoId = editor._uniqueId + "_imageInfo", imgPreviewId = editor._uniqueId + "_imagePreview",
+                imageAlignEditorId = editor._uniqueId + "_imageAlignEditor", imgWidthEditorId = editor._uniqueId + "_imageWidthEditor",
+                imgHeightEditorId = editor._uniqueId + "_imageHeightEditor", imagePathEditorId = editor._uniqueId + "_imagePathEditor",
+                imageUrlEditorId = editor._uniqueId + "_imageUrlEditor", tabControlId = editor._uniqueId + "_imageTabControl";
+
+            var resizeImage = function(view) {
+                var previewImg = plugin.previewImg;
+                if (previewImg) {
+                    var width = view.id(imgWidthEditorId).get("text"), height = view.id(imgHeightEditorId).get("text");
+                    if (width)
+                        previewImg.width = width;
+                    else
+                        previewImg.removeAttribute("width");
+
+                    if (height)
+                        previewImg.height = height;
+                    else
+                        previewImg.removeAttribute("height");
+                }
+            };
+
+            var refreshImage = function(view, url, width, height) {
+                var imgInfo = view.id(imgInfoId).getDom(), imgPreview = view.id(imgPreviewId), preImg = imgPreview.getContentContainer();
+                plugin.imageRatio = null;
+
+                if (!/\.(png|gif|jpg|jpeg|bmp)$/ig.test(url) && url.indexOf("api.map.baidu.com") == -1) {
+                    preImg.innerHTML = "";
+                    imgInfo.innerHTML = "";
+                    return false;
+                } else {
+                    preImg.innerHTML = "图片正在加载";
+                    preImg.innerHTML = "<img src='" + url + "' />";
+                    var pimg = preImg.firstChild;
+                    plugin.previewImg = pimg;
+                    pimg.onload = function() {
+                        imgInfo.innerHTML = "原始宽：" + this.width + "px&nbsp;&nbsp;原始高：" + this.height + "px";
+                        imgInfo.parentNode.parentNode.style.display = "";
+
+                        this.sWidth = this.width;
+                        this.sHeight = this.height;
+
+                        plugin.imageRatio = this.width / this.height;
+
+                        if (width == undefined && height == undefined) {
+                            var widthEditor = view.id(imgWidthEditorId), heightEditor = view.id(imgHeightEditorId);
+                            widthEditor.set("value", this.width);
+                            heightEditor.set("value", this.height);
+                            widthEditor.post(true);
+                            heightEditor.post(true);
+                        } else {
+                            this.width = width;
+                            this.height = height;
+                        }
+
+                        view.id(tabControlId).set("currentTab", 0);
+                    };
+                    pimg.onerror = function() {
+                        preImg.innerHTML = "图片不存在";
+                    }
+                }
+            };
+
             if (!plugin.dialog) {
-                var imgInfoId = editor._uniqueId + "imageInfo", imgPreviewId = editor._uniqueId + "imagePreview",
-                    alignId = editor._uniqueId + "alignEditor", imgInfoLocalId = editor._uniqueId + "imageInfoLocal",
-                    imgPreviewLocalId = editor._uniqueId + "imagePreviewLocal", alignLocalId = editor._uniqueId + "alignEditorLocal";
-
-                var imagePath = editor._uniqueId + "imagePath";
-
                 plugin.dialog = new dorado.widget.Dialog({
                     caption: "插入图像",
-                    width: 480,
-                    height: 280,
+                    width: 520,
+                    height: 395,
                     cols: "*",
                     center: true,
                     modal: true,
                     modalType: "transparent",
                     children: [{
+                        id: tabControlId,
                         $type: "TabControl",
                         tabs: [{
                             $type: "Control",
-                            caption: "Remote",
+                            caption: "图像",
                             control: {
                                 $type: "Panel",
                                 children: [{
                                     $type: "AutoForm",
+                                    id: autoformId,
                                     entity: imageObject,
-                                    cols: "*,100",
+                                    cols: "100,*",
                                     elements: [{
                                         property: "url", label: "图片链接",
                                         layoutConstraint: { colSpan: 2 },
                                         editor: new dorado.widget.TextEditor({
+                                            id: imageUrlEditorId,
                                             required: true,
                                             entity: imageObject,
                                             property: "url",
                                             listener: {
-                                                onPost: function(self, arg) {
-                                                    var imgInfo = this.id(imgInfoId).getDom(), imgPreview = this.id(imgPreviewId);
-                                                    var url = self.get("text"), preImg = imgPreview.getContentContainer();
-                                                    preImg.style.height = "100px";
-                                                    if ( !/\.(png|gif|jpg|jpeg|bmp)$/ig.test( url ) && url.indexOf( "api.map.baidu.com" ) == -1 ) {
-                                                        preImg.innerHTML = "";
-                                                        return false;
-                                                    } else {
-                                                        preImg.innerHTML = "图片正在加载。。。";
-                                                        preImg.innerHTML = "<img src='" + url + "' />";
-                                                        var pimg = preImg.firstChild;
-                                                        //G( "urll" ).value = pimg.src;
-                                                        pimg.onload = function() {
-                                                            imgInfo.innerHTML = "原始宽：" + this.width + "px&nbsp;&nbsp;原始高：" + this.height + "px";
-                                                            imgInfo.parentNode.parentNode.style.display = "";
-                                                            suo( this, 100 );
-                                                        };
-                                                        pimg.onerror = function() {
-                                                            preImg.innerHTML = "图片不存在";
-                                                        }
-                                                    }
+                                                onPost: function(self) {
+                                                    var url = self.get("text"), view = this;
+                                                    refreshImage(view, url);
                                                 }
                                             }
                                         })
                                     },
-                                    { property: "width", label: "宽度", type: "text" },
+                                    {
+                                        property: "width", label: "宽度", type: "text", labelPosition: "top",
+                                        editor: new dorado.widget.TextEditor({
+                                            id: imgWidthEditorId,
+                                            entity: imageObject,
+                                            property: "width",
+                                            onPost: function() {
+                                                resizeImage(this);
+                                            },
+                                            onTextEdit: function(self) {
+                                                var heightEditor = this.id(imgHeightEditorId), width = parseInt(self.get("text"), 10) || 0, height;
+                                                if (imageObject.get("lockRatio") && plugin.imageRatio) {
+                                                    if (width == 0) {
+                                                        height = "";
+                                                    } else {
+                                                        height = parseInt(width / plugin.imageRatio, 10);
+                                                    }
+                                                    heightEditor.set("value", height);
+                                                    heightEditor.post(true);
+                                                }
+                                                resizeImage(this);
+                                            }
+                                        })
+                                    },
                                     {
                                         id: imgPreviewId,
                                         $type: "Container",
-                                        layoutConstraint: { rowSpan: 4, vAlign: "top" },
+                                        layoutConstraint: { rowSpan: 5, vAlign: "top" },
                                         style: {
                                             border: "1px solid #ddd"
                                         },
-                                        width: "100%",
                                         height: "100%"
                                     },
-                                    { property: "height", label: "高度", type: "text" },
-                                    { property: "title", label: "标题", type: "text" },
                                     {
-                                        property: "align", label: "对齐方式",
+                                        property: "height", label: "高度", type: "text", labelPosition: "top",
                                         editor: new dorado.widget.TextEditor({
-                                            id: alignId,
+                                            id: imgHeightEditorId,
+                                            entity: imageObject,
+                                            property: "height",
+                                            onPost: function() {
+                                                resizeImage(this);
+                                            },
+                                            onTextEdit: function(self) {
+                                                var widthEditor = this.id(imgWidthEditorId), height = parseInt(self.get("text"), 10) || 0, width;
+                                                if (imageObject.get("lockRatio") && plugin.imageRatio) {
+                                                    if (height == 0) {
+                                                        width = "";
+                                                    } else {
+                                                        width = parseInt(height * plugin.imageRatio, 10);
+                                                    }
+                                                    widthEditor.set("value", width);
+                                                    widthEditor.post(true);
+                                                }
+                                                resizeImage(this);
+                                            }
+                                        })
+                                    },
+                                    {
+                                        property: "lockRadio", type: "checkBox", labelPosition: "top", showLabel: false,
+                                        editor: new dorado.widget.CheckBox({
+                                            entity: imageObject,
+                                            property: "lockRatio",
+                                            caption: "锁定比例"
+                                        })
+                                    },
+                                    { property: "title", label: "标题", type: "text", labelPosition: "top" },
+                                    {
+                                        property: "align", label: "对齐方式", labelPosition: "top",
+                                        editor: new dorado.widget.TextEditor({
+                                            id: imageAlignEditorId,
                                             entity: imageObject,
                                             property: "align",
                                             trigger: "autoMappingDropDown1",
@@ -290,7 +453,7 @@
                                         style: {
                                             "text-align": "right"
                                         },
-                                        layoutConstraint: { colSpan: 1 },
+                                        layoutConstraint: { colSpan: 2 },
                                         content: "&nbsp;"
                                     }]
                                 }],
@@ -301,7 +464,7 @@
                                             var url = imageObject.get("url");
                                             if (url) {
                                                 var width = imageObject.get("width"), height = imageObject.get("height"),
-                                                    align = this.id(alignId).get("value"), title = imageObject.get("title");
+                                                    align = this.id(imageAlignEditorId).get("value"), title = imageObject.get("title");
 
                                                 var imgstr = "<img ";
                                                 var myimg = this.id(imgPreviewId).getDom().firstChild;
@@ -310,7 +473,7 @@
                                                 if ( !width ) {
                                                     imgstr += " width=" + myimg.sWidth;
                                                 }else if ( width && !/^[1-9]+[.]?\d*$/g.test( width ) ) {
-                                                    alert( "请输入正确的宽度" );
+                                                    alert("请输入正确的宽度");
                                                     return false;
                                                 } else {
                                                     myimg && myimg.setAttribute( "width", width );
@@ -319,7 +482,7 @@
                                                 if (!height) {
                                                     imgstr += " height=" + myimg.sHeight;
                                                 } else if ( height && !/^[1-9]+[.]?\d*$/g.test( height ) ) {
-                                                    alert( "请输入正确的高度" );
+                                                    alert("请输入正确的高度");
                                                     return false;
                                                 } else {
                                                     myimg && myimg.setAttribute( "height", height );
@@ -355,20 +518,19 @@
                             }
                         }, {
                             $type: "Control",
-                            caption: "Local",
+                            caption: "上传",
                             control: {
                                 $type: "Panel",
                                 children: [{
                                     $type: "AutoForm",
-                                    entity: imageObjectLocal,
                                     cols: "*,100",
                                     elements: [{
-                                        property: "url", label: "图片链接",
+                                        property: "linkurl", label: "链接",
                                         layoutConstraint: { colSpan: 1 },
                                         editor: new dorado.widget.TextEditor({
-                                            id: imagePath,
+                                            id: imagePathEditorId,
                                             required: true,
-                                            entity: imageObjectLocal,
+                                            entity: imageObject,
                                             property: "url",
                                             readOnly: true
                                         })
@@ -380,12 +542,12 @@
                                             $type: "Button",
                                             caption: "浏览..."
                                         }],
-                                        onReady: function(self, arg) {
+                                        onReady: function(self) {
                                             if (self._inited) {
                                                 return;
                                             }
                                             self._inited = true;
-                                            var dom = self._dom, hiddenFile, pathEditor = this.id(imagePath);
+                                            var dom = self._dom, hiddenFile, pathEditor = this.id(imagePathEditorId);
                                             if (dorado.Browser.msie) {
                                                 hiddenFile = document.createElement("<input type='file' name='filename' class='hidden-file'/>");
                                             } else {
@@ -404,7 +566,7 @@
                                             }
                                             iframe.style.display = "none";
 
-                                            var form, action = $url(">dorado/htmleditor/imageupload");
+                                            var form, action = $url(editor._imageUploadPath);
                                             if (dorado.Browser.msie) {
                                                 form = document.createElement("<form name ='imgForm' action='" + action + "' enctype='multipart/form-data' method='post' target='" + iframeName + "'></form>");
                                             } else {
@@ -420,130 +582,17 @@
                                             hiddenFile.onchange = function() {
                                                 pathEditor.set("text", this.value);
                                                 form.submit();
-                                                window.reloadHtmlEditorImageFn = function(url) {
-                                                    var imgInfo = view.id(imgInfoLocalId).getDom(), imgPreview = view.id(imgPreviewLocalId);
-                                                    var preImg = imgPreview.getContentContainer();
-                                                    preImg.style.height = "100px";
-                                                    if ( !/\.(png|gif|jpg|jpeg|bmp)$/ig.test( url ) && url.indexOf( "api.map.baidu.com" ) == -1 ) {
-                                                        preImg.innerHTML = "";
-                                                        return false;
-                                                    } else {
-                                                        preImg.innerHTML = "图片正在加载。。。";
-                                                        preImg.innerHTML = "<img src='" + url + "' />";
-                                                        var pimg = preImg.firstChild;
-                                                        pimg.onload = function() {
-                                                            imgInfo.innerHTML = "原始宽：" + this.width + "px&nbsp;&nbsp;原始高：" + this.height + "px";
-                                                            imgInfo.parentNode.parentNode.style.display = "";
-                                                            suo( this, 100 );
-                                                        };
-                                                        pimg.onerror = function() {
-                                                            preImg.innerHTML = "图片不存在";
-                                                        }
-                                                    }
-                                                    imageObjectLocal.set("url", url);
+                                                window.uploadCallbackForHtmlEditorFn = function(url) {
+                                                    var urlEditor = view.id(imageUrlEditorId);
+                                                    urlEditor.set("value", url);
+                                                    urlEditor.post(true);
                                                 }
                                             };
                                             dom.firstChild.appendChild(form);
                                             dom.firstChild.appendChild(iframe);
                                         }
-                                    },
-                                    { property: "width", label: "宽度", type: "text" },
-                                    {
-                                        id: imgPreviewLocalId,
-                                        $type: "Container",
-                                        layoutConstraint: { rowSpan: 4, vAlign: "top" },
-                                        style: {
-                                            border: "1px solid #ddd"
-                                        },
-                                        width: "100%",
-                                        height: "100%"
-                                    },
-                                    { property: "height", label: "高度", type: "text" },
-                                    { property: "title", label: "标题", type: "text" },
-                                    {
-                                        property: "align", label: "对齐方式",
-                                        editor: new dorado.widget.TextEditor({
-                                            id: alignLocalId,
-                                            entity: imageObjectLocal,
-                                            property: "align",
-                                            trigger: "autoMappingDropDown1",
-                                            mapping: [
-                                                { key: "default", value: "默认" },
-                                                { key: "left", value: "左浮动" },
-                                                { key: "right", value: "右浮动" },
-                                                { key: "block", value: "独占一行" }
-                                            ]
-                                        })
-                                    },
-                                    {
-                                        id: imgInfoLocalId,
-                                        $type: "HtmlContainer",
-                                        style: {
-                                            "text-align": "right"
-                                        },
-                                        layoutConstraint: { colSpan: 1 },
-                                        content: "&nbsp;"
                                     }]
-                                }],
-                                buttons: [{
-                                    caption: "确定",
-                                    listener: {
-                                        onClick: function() {
-                                            var url = imageObjectLocal.get("url");
-                                            if (url) {
-                                                var width = imageObjectLocal.get("width"), height = imageObjectLocal.get("height"),
-                                                    align = this.id(alignLocalId).get("value"), title = imageObjectLocal.get("title");
-
-                                                var imgstr = "<img ";
-                                                var myimg = this.id(imgPreviewLocalId).getDom().firstChild;
-                                                imgstr += " src=" + url;
-
-                                                if ( !width ) {
-                                                    imgstr += " width=" + myimg.sWidth;
-                                                }else if ( width && !/^[1-9]+[.]?\d*$/g.test( width ) ) {
-                                                    alert( "请输入正确的宽度" );
-                                                    return false;
-                                                } else {
-                                                    myimg && myimg.setAttribute( "width", width );
-                                                    imgstr += " width=" + width;
-                                                }
-                                                if (!height) {
-                                                    imgstr += " height=" + myimg.sHeight;
-                                                } else if ( height && !/^[1-9]+[.]?\d*$/g.test( height ) ) {
-                                                    alert( "请输入正确的高度" );
-                                                    return false;
-                                                } else {
-                                                    myimg && myimg.setAttribute( "height", height );
-                                                    imgstr += " height=" + height;
-                                                }
-
-                                                if (title) {
-                                                    myimg && myimg.setAttribute( "title", title );
-                                                    imgstr += " title=" + title;
-                                                }
-
-                                                if (align) {
-                                                    var value = alignImageMap[align];
-                                                    if (value) {
-                                                        imgstr += " style='" + value + "'";
-                                                    }
-                                                }
-
-                                                plugin.insertHtml(imgstr + " />");
-                                                plugin.dialog.hide();
-                                            }
-                                        }
-                                    }
-                                },
-                                {
-                                    caption: "取消",
-                                    listener: {
-                                        onClick: function() {
-                                            plugin.dialog.hide();
-                                        }
-                                    }
-                                }
-                            ]
+                                }]
                             }
                         }]
                     }]
@@ -551,7 +600,61 @@
 
                 plugin._htmlEditor.registerInnerControl(plugin.dialog);
             }
+
             plugin.dialog.show();
+
+            editor.get("view").id(imageAlignEditorId).set("readOnly", false);
+
+            var img = editor._editor.selection.getRange().getClosedNode(), image = {};
+            if ( img && /img/ig.test( img.tagName ) && img.className != "edui-faked-video" ) {
+                image = img;
+                //判断图片是否在连接内部
+                var link = baidu.editor.dom.domUtils.findParentByTagName( img, "a", true );
+                if ( link != null ) {
+                    editor.get("view").id(imageAlignEditorId).set("readOnly", true);
+                }
+
+                //获得style里的某个样式对应的值
+                function getPars(str, par) {
+                    var reg = new RegExp(par + ":\\s*((\\w)*)", "ig");
+                    var arr = reg.exec(str);
+                    return arr ? arr[1] : "";
+                }
+
+                var style = image.style.cssText;
+                var reg = "";
+                if ( /float/ig.test( style ) ) {
+                    reg = getPars( style, "float" );
+                } else if ( /display/ig.test( style ) ) {
+                    reg = getPars( style, "display" );
+                }
+                switch ( reg ) {
+                    case "left":
+                    case "right" :
+                    case "block" :
+                        imageObject.set("align", reg);
+                        break;
+                }
+
+                imageObject.set("width", image.width);
+                imageObject.set("height", image.height);
+                imageObject.set("title", image.title);
+                imageObject.set("url", image.src);
+
+                try {
+                    if (image.src) {
+                        refreshImage(editor.get("view"), image.src, image.width, image.height);
+                    }
+                    editor.get("view").id(autoformId).refreshData();
+                } catch(e) {
+                    alert(e);
+                }
+            } else {
+                imageObject.clearData();
+                imageObject.set("lockRatio", true);
+                refreshImage(editor.get("view"), "");
+                editor.get("view").id(autoformId).refreshData();
+            }
         }
     };
 
@@ -843,7 +946,7 @@
                 plugin.set("status", "disable");
                 return;
             }
-            plugin.fontEditor.set("text", value);
+            plugin.fontEditor.set("text", value == "undefined" ? "" : value);
             var status = plugin.queryCommandState("fontfamily");
             if (status == -1) {
                 plugin.set("status", "disable");
@@ -1113,35 +1216,198 @@
         }
     };
 
-    plugins.Video = {
-        iconClass: "html-editor-icon spechars",
+    plugins.Flash = {
+        iconClass: "html-editor-icon video",
         command: "inserthtml",
         execute: function() {
-            var plugin = this, editor = plugin._htmlEditor;
+            var plugin = this, editor = plugin._htmlEditor, formId = editor._uniqueId + "_flashForm",
+                flashObject = plugin.flashObject, filePath = editor._uniqueId + "_flashPath",
+                flashAlignEditorId = editor._uniqueId + "_flashAlignEditor", tabControlId = editor._uniqueId + "_flashTabControl";
+
+            if (!flashObject) {
+                flashObject = plugin.flashObject = new dorado.Entity();
+            }
 
             if (!plugin.dialog) {
                 plugin.dialog = new dorado.widget.Dialog({
-                    caption: "特殊字符",
+                    caption: "插入Flash",
                     width: 480,
                     center: true,
                     modal: true,
                     modalType: "transparent",
-                    children: [
-                        {
-                            $type: "AutoForm",
-                            cols: "*",
-                            entity: urlObject,
-                            elements: [
-                                { property: "url", label: "超链接", type: "text" },
-                                { property: "title", label: "标题", type: "text" },
-                                { property: "target", label: "是否在新窗口打开", type: "checkBox" }
-                            ]
+                    children: [{
+                        $type: "TabControl",
+                        id: tabControlId,
+                        height: 150,
+                        tabs: [{
+                            $type: "Control",
+                            caption: "Flash",
+                            control: {
+                                id: formId,
+                                $type: "AutoForm",
+                                cols: "*",
+                                entity: flashObject,
+                                elements: [
+                                    { property: "url", label: "地址", type: "text" },
+                                    { property: "width", label: "宽度", type: "text" },
+                                    { property: "height", label: "高度", type: "text" },
+                                    { property: "align", label: "对齐方式", type: "text",
+                                        editor: new dorado.widget.TextEditor({
+                                            id: flashAlignEditorId,
+                                            entity: flashObject,
+                                            property: "align",
+                                            trigger: "autoMappingDropDown1",
+                                            mapping: [
+                                                { key: "default", value: "默认" },
+                                                { key: "left", value: "左浮动" },
+                                                { key: "right", value: "右浮动" },
+                                                { key: "block", value: "独占一行" }
+                                            ]
+                                        })
+                                    }
+                                ]
+                            }
+                        }, {
+                            $type: "Control",
+                            caption: "上传",
+                            control: {
+                                $type: "AutoForm",
+                                cols: "*,100",
+                                elements: [{
+                                    property: "url", label: "链接",
+                                    layoutConstraint: { colSpan: 1 },
+                                    editor: new dorado.widget.TextEditor({
+                                        id: filePath,
+                                        required: true,
+                                        readOnly: true
+                                    })
+                                },
+                                {
+                                    $type: "Container",
+                                    exClassName: "browse-button-wrap",
+                                    children: [{
+                                        $type: "Button",
+                                        caption: "浏览..."
+                                    }],
+                                    onReady: function(self, arg) {
+                                        if (self._inited) {
+                                            return;
+                                        }
+                                        self._inited = true;
+                                        var dom = self._dom, hiddenFile, pathEditor = this.id(filePath);
+                                        if (dorado.Browser.msie) {
+                                            hiddenFile = document.createElement("<input type='file' name='filename' class='hidden-file'/>");
+                                        } else {
+                                            hiddenFile = document.createElement("input");
+                                            hiddenFile.type = "file";
+                                            hiddenFile.name = "filename";
+                                            hiddenFile.className = "hidden-file";
+                                        }
+
+                                        var iframe, iframeName = editor._uniqueId + "_flashUploadIframe";
+                                        if (dorado.Browser.msie) {
+                                            iframe = document.createElement("<iframe name='" + iframeName + "'></iframe>")
+                                        } else {
+                                            iframe = document.createElement("iframe");
+                                            iframe.name = iframeName;
+                                        }
+                                        iframe.style.display = "none";
+
+                                        var form, action = $url(editor._flashUploadPath);
+                                        if (dorado.Browser.msie) {
+                                            form = document.createElement("<form name ='fileForm' action='" + action + "' enctype='multipart/form-data' method='post' target='" + iframeName + "'></form>");
+                                        } else {
+                                            form = document.createElement("form");
+                                            form.action = action;
+                                            form.method = "post";
+                                            form.target = iframeName;
+                                            form.enctype = "multipart/form-data";
+                                        }
+
+                                        form.appendChild(hiddenFile);
+                                        var view = this;
+                                        hiddenFile.onchange = function() {
+                                            pathEditor.set("text", this.value);
+                                            form.submit();
+
+                                            window.uploadCallbackForHtmlEditorFn = function(url) {
+                                                flashObject.set("url", url);
+                                                var autoform = view.id(formId);
+                                                if (autoform) autoform.refreshData();
+                                                var tabControl = view.id(tabControlId);
+                                                tabControl.set("currentTab", 0);
+                                            }
+                                        };
+                                        dom.firstChild.appendChild(form);
+                                        dom.firstChild.appendChild(iframe);
+                                    }
+                                }]
+                            }
+                        }]
+                    }],
+                    buttons: [{
+                        caption: "确定",
+                        listener: {
+                            onClick: function() {
+                                if (flashObject) {
+                                    var url = flashObject.get("url");
+                                    plugin.execCommand("insertflash", {
+                                        url: url,
+                                        width: flashObject.get("width"),
+                                        height: flashObject.get("height"),
+                                        style: alignImageMap[flashObject.get("align")]
+                                    });
+                                    plugin.dialog.hide();
+                                }
+                            }
                         }
-                    ],
-                    buttons: []
+                    }, {
+                        caption: "取消",
+                        listener: {
+                            onClick: function() {
+                                plugin.dialog.hide();
+                            }
+                        }
+                    }]
                 });
                 editor.registerInnerControl(plugin.dialog);
             }
+
+            var autoform = editor._view.id(formId);
+
+            var img = editor._editor.selection.getRange().getClosedNode();
+            if ( img && /img/ig.test( img.tagName ) && img.className == "edui-faked-video" ) {
+                //获得style里的某个样式对应的值
+                function getPars(str, par) {
+                    var reg = new RegExp(par + ":\\s*((\\w)*)", "ig");
+                    var arr = reg.exec(str);
+                    return arr ? arr[1] : "";
+                }
+
+                var style = img.style.cssText;
+                var reg = "";
+                if ( /float/ig.test( style ) ) {
+                    reg = getPars( style, "float" );
+                } else if ( /display/ig.test( style ) ) {
+                    reg = getPars( style, "display" );
+                }
+                switch ( reg ) {
+                    case "left":
+                    case "right" :
+                    case "block" :
+                        flashObject.set("align", reg);
+                        break;
+                }
+
+                flashObject.set("width", img.width);
+                flashObject.set("height", img.height);
+                flashObject.set("url", img.getAttribute("_url"));
+            } else {
+                flashObject.clearData();
+            }
+
+            if (autoform)
+                autoform.refreshData();
 
             plugin.dialog.show();
         }
@@ -1203,7 +1469,7 @@
                 editor.registerInnerControl(plugin.dialog);
             }
 
-            var anchor, img = editor._editor.selection.getRange().getClosedNode(), autoform = editor._view.id(formId);;
+            var anchor, img = editor._editor.selection.getRange().getClosedNode(), autoform = editor._view.id(formId);
             if(img && /img/ig.test(img.tagName.toLowerCase()) && img.getAttribute('anchorname')){
                 anchor = img.getAttribute('anchorname');
             }
@@ -1215,31 +1481,18 @@
         }
     };
 
-    var scriptOnload = document.createElement('script').readyState ? function(node, callback) {
-	   var oldCallback = node.onreadystatechange;
-	   node.onreadystatechange = function() {
-		   var rs = node.readyState;
-		   if (rs === 'loaded' || rs === 'complete') {
-			   node.onreadystatechange = null;
-			   oldCallback && oldCallback();
-			   callback.call(this);
-		   }
-	   };
-	} : function(node, callback) {
-	   node.addEventListener('load', callback, false);
-	};
-
     plugins.Map = {
         iconClass: "html-editor-icon map",
         command: "inserthtml",
         execute: function() {
-            var plugin = this, editor = plugin._htmlEditor, iframeId = editor._id + "_map_iframe";
+            var plugin = this, editor = plugin._htmlEditor, iframeId = editor._uniqueId + "_map_iframe";
 
             if (!plugin.dialog) {
                 plugin.dialog = new dorado.widget.Dialog({
                     caption: "Baidu Map",
-                    width: 600,
-                    height: 400,
+                    width: 580,
+                    height: 490,
+                    resizeable: false,
                     center: true,
                     modal: true,
                     modalType: "transparent",
@@ -1282,15 +1535,16 @@
         iconClass: "html-editor-icon gmap",
         command: "inserthtml",
         execute: function() {
-            var plugin = this, editor = plugin._htmlEditor, iframeId = editor._id + "_gmap_iframe";
+            var plugin = this, editor = plugin._htmlEditor, iframeId = editor._uniqueId + "_gmap_iframe";
 
             if (!plugin.dialog) {
                 plugin.dialog = new dorado.widget.Dialog({
                     caption: "Google Map",
-                    width: 600,
-                    height: 400,
+                    width: 580,
+                    height: 490,
                     center: true,
                     modal: true,
+                    resizeable: false,
                     modalType: "transparent",
                     children: [
                         {

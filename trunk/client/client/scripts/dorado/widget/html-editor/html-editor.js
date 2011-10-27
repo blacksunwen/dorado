@@ -1,6 +1,6 @@
 (function() {
     dorado.widget.htmleditor = {
-        //,'Video','Map','GMap','Code'
+        //,'Video','Code'
         fullToolbars: [
             ['FullScreen','Source','|','Undo','Redo','|',
              'Bold','Italic','Underline','StrikeThrough','Superscript','Subscript','RemoveFormat','FormatMatch','|',
@@ -10,7 +10,7 @@
              'Paragraph','RowSpacing','FontFamily','FontSize','|',
              'DirectionalityLtr','DirectionalityRtl','|','Indent','Outdent','|',
              'JustifyLeft','JustifyCenter','JustifyRight','JustifyJustify','|',
-             'Link','Unlink','Anchor','Image','Emoticon', '|',
+             'Link','Unlink','Anchor','Image','Emoticon', "Flash", '|',
              'Horizontal','Date','Time','Spechars','Map','GMap','|',
              'InsertTable','DeleteTable','InsertParagraphBeforeTable','InsertRow','DeleteRow','InsertCol','DeleteCol','MergeCells','MergeRight','MergeDown','SplittoCells','SplittoRows','SplittoCols','|',
              'SelectAll','ClearDoc','SearchReplace','Print','Preview','Help']
@@ -216,6 +216,63 @@
                         return editor.setContent(value || "");
                     }
                 }
+            },
+
+            readOnly: {
+                setter: function(value) {
+                    this._readOnly = value;
+                    this.doOnReadOnlyChange(value);
+                }
+            },
+
+            /**
+             * 默认字号。
+             * @attribute
+             * @type String
+             * @default "16px"
+             */
+            defaultFontSize: {
+                defaultValue: "16px"
+            },
+
+            /**
+             * 默认字体。
+             * @attribute
+             * @type String
+             * @default "宋体"
+             */
+            defaultFontFamily: {
+                defaultValue: "宋体"
+            },
+
+            /**
+             * 文件上传路径。
+             * @attribute
+             * @type String
+             * @default ">dorado/htmleditor/fileupload"
+             */
+            fileUploadPath: {
+                defaultValue: ">dorado/htmleditor/fileupload"
+            },
+
+            /**
+             * Flash上传路径。
+             * @attribute
+             * @type String
+             * @default ">dorado/htmleditor/flashupload"
+             */
+            flashUploadPath: {
+                defaultValue: ">dorado/htmleditor/flashupload"
+            },
+
+            /**
+             * 图片上传路径。
+             * @attribute
+             * @type String
+             * @default ">dorado/htmleditor/imageupload"
+             */
+            imageUploadPath: {
+                defaultValue: ">dorado/htmleditor/imageupload"
             }
         },
 
@@ -245,16 +302,18 @@
         doOnBlur: function() {
             var editor = this;
             editor._lastPostValue = editor._value;
-            editor._value = editor.get("content");
-            editor._dirty = true;
-            try {
-                editor.post();
-            } catch (e) {
-                editor._value = editor._lastPostValue;
-                editor._dirty = false;
-                throw e;
-            }
-            editor.refresh();
+            setTimeout(function() {
+                editor._value = editor.get("content");
+                editor._dirty = true;
+                try {
+                    editor.post();
+                } catch (e) {
+                    editor._value = editor._lastPostValue;
+                    editor._dirty = false;
+                    throw e;
+                }
+                editor.refresh();
+            }, 100);
             //editor.fireEvent("onValueChange", editor);
         },
         doOnReadOnlyChange: function(readOnly) {
@@ -300,32 +359,36 @@
         },
         setFocus : function() {},
         doOnAttachToDocument: function() {
-            var heditor = this;
+            var htmleditor = this;
             $invokeSuper.call(this, arguments);
             //editor的属性
             var option = {
-                initialContent: heditor._value,//初始化编辑器的内容
+                initialContent: htmleditor._value,//初始化编辑器的内容
                 minFrameHeight: 100,
+                defaultFontFamily: htmleditor._defaultFontFamily,
+                defaultFontSize: htmleditor._defaultFontSize,
                 iframeCssUrl: $url(">skin>/html-editor/iframe.css")//给iframe样式的路径
             };
             var editor = new baidu.editor.Editor(option);
             this._editor = editor;
             editor.addListener('selectionchange', function () {
-                heditor.checkStatus();
+                htmleditor.checkStatus();
             });
             editor.addListener("ready", function() {
-                heditor.checkStatus();
-                heditor.doOnResize();
+                htmleditor.checkStatus();
+                htmleditor.doOnResize();
             });
             var popup = new dorado.widget.FloatContainer({
                 exClassName: "popup",
                 animateType: "none"
             });
             popup.focusable = false;
+
+            htmleditor._popup = popup;
             jQuery.extend(popup, {
                 _onEditButtonClick: function () {
                     this.hide();
-                    heditor.executePlugin("Link");
+                    htmleditor.executePlugin("Link");
                 },
                 _onImgEditButtonClick: function () {
                     this.hide();
@@ -333,17 +396,16 @@
                     var img = baidu.editor.dom.domUtils.findParentByTagName(nodeStart, "img", true);
                     //edui remove.
                     if (img && img.className.indexOf("edui-faked-video") != -1) {
-                        heditor.executePlugin("Video");
+                        htmleditor.executePlugin("Flash");
                     } else if (img && img.src.indexOf("http://api.map.baidu.com") != -1) {
-                        heditor.executePlugin("Map");
+                        htmleditor.executePlugin("Map");
                     } else if (img && img.src.indexOf("http://maps.google.com/maps/api/staticmap") != -1) {
-                        heditor.executePlugin("GMap");
+                        htmleditor.executePlugin("GMap");
                     } else if (img && img.getAttribute("anchorname")) {
-                        heditor.executePlugin("Anchor");
+                        htmleditor.executePlugin("Anchor");
                     } else {
-                        heditor.executePlugin("Image");
+                        htmleditor.executePlugin("Image");
                     }
-
                 },
                 _onImgSetFloat: function(event, value) {
                     var nodeStart = editor.selection.getRange().getClosedNode();
@@ -387,7 +449,7 @@
                                 }
 
                         }
-                        //this.showAnchor(img);
+                        htmleditor.updatePopupPosition(img);
                     }
                 },
                 _onRemoveButtonClick: function () {
@@ -401,13 +463,13 @@
                     this.hide();
                 }
             });
-            var popupId = heditor._uniqueId + "_imageLinkPopup";
+            var popupId = htmleditor._uniqueId + "_imageLinkPopup";
             window[popupId] = popup;
             editor.addListener('sourcemodechanged', function() {
                 popup.hide();
             });
             editor.addListener('selectionchange', function (t, evt) {
-                dorado.widget.setFocusedControl(heditor);
+                dorado.widget.setFocusedControl(htmleditor);
                 var html = '', img = editor.selection.getRange().getClosedNode(),
                     imglink = baidu.editor.dom.domUtils.findParentByTagName(img, "a", true);
 
@@ -447,18 +509,72 @@
                 }
                 if (html) {
                     popup.getDom().innerHTML = html.replace(/\$\$/g, popupId);
-                    var anchorTarget = img || link;
-                    var anchorPosition = $fly(anchorTarget).offset(), position = {};
-                    var editorPosition = $fly(editor.iframe).position(), targetHeight = $fly(anchorTarget).height();
-                    position.left = anchorPosition.left + editorPosition.left;
-                    position.top = anchorPosition.top + editorPosition.top + targetHeight;
-                    popup.show({ position: position, autoAdjustPosition: false });
+
+                    htmleditor.updatePopupPosition(img || link);
                 } else {
                     popup.hide();
                 }
             });
 
             editor.render(this._doms.editorWrap);
+
+            $fly(editor.iframe.contentWindow.document).bind("scroll", function() {
+                //TODO: performance
+                if (popup._visible) {
+                    htmleditor.updatePopupPosition();
+                }
+            });
+        },
+        updatePopupPosition: function(anchorTarget) {
+            var htmleditor = this, editor = htmleditor._editor, iframe = editor.iframe;
+            if (!anchorTarget) {
+                anchorTarget = htmleditor._lastAnchorTarget;
+            }
+            htmleditor._lastAnchorTarget = anchorTarget;
+
+            var editorPosition = $fly(iframe).offset(), editorWidth = iframe.offsetWidth, editorHeight = iframe.offsetHeight;
+            var targetPosition = $fly(anchorTarget).position(), targetWidth = $fly(anchorTarget).width(),
+                targetHeight = $fly(anchorTarget).height(), scrollTop = $fly(iframe.contentWindow.document.body).scrollTop();
+
+            var editorRect = {
+                left: editorPosition.left,
+                top: editorPosition.top,
+                right: editorPosition.left + editorWidth,
+                bottom: editorPosition.top + editorHeight,
+                width: editorWidth,
+                height: editorHeight
+            };
+
+            var targetRect = {
+                left: editorPosition.left + targetPosition.left,
+                top: editorPosition.top + targetPosition.top - scrollTop,
+                right: editorPosition.left + targetPosition.left + targetWidth,
+                bottom: editorPosition.top + targetPosition.top - scrollTop + targetHeight,
+                width: targetWidth,
+                height: targetHeight
+            };
+
+            var targetVisible = true;
+
+            if (targetRect.top > editorRect.bottom || targetRect.bottom < editorRect.top) {
+                targetVisible = false;
+            }
+
+            if (targetVisible) {
+                var position = {};
+
+                if (targetRect.bottom + 5 > editorRect.bottom) {
+                    position.left = targetRect.left;
+                    position.top = editorRect.bottom - htmleditor._popup._dom.offsetHeight;
+                } else {
+                    position.left = targetRect.left;
+                    position.top = targetRect.top + targetHeight;
+                }
+
+                htmleditor._popup.show({ position: position, autoAdjustPosition: false });
+            } else {
+                htmleditor._popup.hide();
+            }
         },
         createDom: function() {
             var editor = this, doms = {}, dom = $DomUtils.xCreate({
@@ -550,7 +666,10 @@
             for (var name in plugins) {
                 var plugin = plugins[name];
                 if (plugin.checkStatus) {
-                    plugin.checkStatus();
+                    try {
+                        plugin.checkStatus();
+                    } catch(e) {//fix a bug for ie.
+                    }
                 }
             }
         },
@@ -903,5 +1022,301 @@
             }
             plugin.dialog.show();
         }
+    };
+})();
+
+(function (){
+    baidu.editor.plugins['flash'] = function (){
+        var editor = this, lastFakedId = 0;
+
+        function real(url, width, height, style) {
+            return '<embed isfakedvideo' +
+            ' type="application/x-shockwave-flash"' +
+            ' pluginspage="http://www.macromedia.com/go/getflashplayer"' +
+            ' src="' + url + '"' +
+            ' width="' + width + '"' +
+            ' height="' + height + '"' +
+            ' style="' + (style || "") + '"' +
+            ' wmode="transparent"' +
+            ' play="true"' +
+            ' loop="false"' +
+            ' menu="false"' +
+            ' allowscriptaccess="never"' +
+            '/>';
+        }
+
+        function fake(url, width, height, style){
+            var fakedId = 'edui_faked_video_' + (lastFakedId ++);
+
+            return '<img isfakedvideo id="'+ fakedId +'" width="'+ width +'" height="' + height + '" _url="'+url+'" class="edui-faked-video"' +
+                ' src="' + $DomUtils.BLANK_IMG + '"' +
+                ' style="background:url(' + $url('>skin>/html-editor/fck_videologo.gif') + ') no-repeat center center; border:1px solid gray;'+ style +';" />';
+        }
+
+        editor.commands['insertflash'] = {
+            execCommand: function (cmd, options){
+                var url = options.url;
+                var width = options.width || 320;
+                var height = options.height || 240;
+                var style = options.style ? options.style : "";
+                editor.execCommand('inserthtml', fake(url, width, height, style));
+            }
+        };
+
+        //获得style里的某个样式对应的值
+        function getPars(str,par){
+            var reg = new RegExp(par+":\\s*((\\w)*)","ig");
+            var arr = reg.exec(str);
+            return arr ? arr[1] : "";
+        }
+
+        editor.addListener('aftersetcontent', function (){
+            var tempDiv = editor.document.createElement('div');
+            var embedNodeList = editor.document.getElementsByTagName('embed');
+            var embeds = [];
+            var k = embedNodeList.length;
+            while (k --) {
+                embeds[k] = embedNodeList[k];
+            }
+            k = embeds.length;
+            while (k --) {
+                var url = embeds[k].src;
+                var width = embeds[k].width || 320;
+                var height = embeds[k].height || 240;
+                var strcss = embeds[k].style.cssText;
+                var style = getPars(strcss,"display") ? "display:" + getPars(strcss, "display") : "float:" + getPars(strcss,"float");
+                tempDiv.innerHTML = fake(url, width, height,style);
+                embeds[k].parentNode.replaceChild(tempDiv.firstChild, embeds[k]);
+            }
+        });
+
+        var oldGetContent = editor.getContent;
+        editor.getContent = function() {
+            var content = oldGetContent.apply(this, []), imgReg = /<img.*?(edui_faked_video_\d+)['"\s].*?>/ig;
+            return content.replace(imgReg, function(word) {
+                var fakeId = RegExp.$1, img = editor.document.getElementById(fakeId);
+                console.log("word:" + word);
+                if (img) {
+                    var width = img.width || 320, height = img.height || 240, strcss = img.style.cssText,
+                        url = img.getAttribute("_url"), style = getPars(strcss,"display") ? "display:" + getPars(strcss, "display") : "float:" + getPars(strcss,"float");
+
+                    return real(url, width, height, style);
+                }
+                return word;
+            });
+        }
+    };
+})();
+
+(function () {
+    var contextMenu = [
+        {
+            caption: '删除',
+            name: 'delete'
+        },
+        {
+            caption: '全选',
+            name: 'selectall'
+        },
+        {
+            caption: '删除代码',
+            name: 'highlightcode'
+        },
+        {
+            caption: '清空文档',
+            name: 'cleardoc',
+            exec: function() {
+                if (confirm('确定清空文档吗？')) {
+                    this.execCommand('cleardoc');
+                }
+            }
+        },
+        {
+            caption: '取消链接',
+            name: 'unlink'
+        },
+        {
+            caption: '段落格式',
+            icon: 'justifyjustify',
+            name: "justify",
+            submenu: [
+                {
+                    caption: '居左对齐',
+                    name: 'justify',
+                    value: 'left'
+                },
+                {
+                    caption: '居右对齐',
+                    name: 'justify',
+                    value: 'right'
+                },
+                {
+                    caption: '居中对齐',
+                    name: 'justify',
+                    value: 'center'
+                },
+                {
+                    caption: '两端对齐',
+                    name: 'justify',
+                    value: 'justify'
+                }
+            ]
+        },
+        //TODO
+        /**
+        {
+            caption: '表格属性',
+            name: 'edittable',
+            onClick: function() {
+                this.tableDialog.open();
+            }
+        },
+        **/
+        {
+            caption: '表格',
+            icon: 'table',
+            name: "edittable",
+            submenu: [
+                {
+                    caption: '删除表格',
+                    name: 'deletetable'
+                },
+                {
+                    caption: '表格前插行',
+                    name: 'insertparagraphbeforetable'
+                },
+                {
+                    caption: '删除行',
+                    name: 'deleterow'
+                },
+                {
+                    caption: '删除列',
+                    name: 'deletecol'
+                },
+                {
+                    caption: '前插入行',
+                    name: 'insertrow'
+                },
+                {
+                    caption: '前插入列',
+                    name: 'insertcol'
+                },
+                {
+                    caption: '右合并单元格',
+                    name: 'mergeright'
+                },
+                {
+                    caption: '下合并单元格',
+                    name: 'mergedown'
+                },
+                {
+                    caption: '拆分成行',
+                    name: 'splittorows'
+                },
+                {
+                    caption: '拆分成列',
+                    name: 'splittocols'
+                },
+                {
+                    caption: '合并多个单元格',
+                    name: 'mergecells'
+                },
+                {
+                    caption: '完全拆分单元格',
+                    name: 'splittocells'
+                }
+            ]
+        }
+    ];
+
+    baidu.editor.plugins['contextmenu'] = function () {
+        var me = this, menu, items = contextMenu;
+
+        var getWindow = function (node) {
+            var doc = node.ownerDocument || node;
+            return doc.defaultView || doc.parentWindow;
+        };
+
+        me.addListener('contextmenu', function(type, evt) {
+            var element = evt.target || evt.srcElement, iframe = getWindow(element).frameElement;
+            var frameOffset = $fly(iframe).offset();
+            var offset = {
+                left: evt.pageX + frameOffset.left,
+                top: evt.pageY + frameOffset.top
+            };
+
+            if (!menu) {
+                for (var i = 0, ti, contextItems = []; ti = items[i]; i++) {
+                    (function(item) {
+                        if (item.submenu) {
+                            for (var j = 0, submenuItem, submenu = []; submenuItem = item.submenu[j]; j++) {
+                                (function(subItem) {
+                                    submenu.push({
+                                        caption: subItem.caption,
+                                        name: subItem.name,
+                                        iconClass: 'html-editor-icon ' + subItem.name + (subItem.value || ''),
+                                        onClick : subItem.exec ? function() {
+                                            subItem.exec.call(me)
+                                        } : function() {
+                                            me.execCommand(subItem.name, subItem.value)
+                                        }
+                                    });
+                                })(submenuItem);
+                            }
+                            if (submenu.length) {
+                                contextItems.push({
+                                    caption : item.caption,
+                                    name: item.name,
+                                    iconClass: 'html-editor-icon ' + item.icon,
+                                    submenu: {
+                                        items: submenu
+                                    }
+                                })
+                            }
+                        } else {
+                            contextItems.push({
+                                caption: item.caption,
+                                name: item.name,
+                                iconClass: 'html-editor-icon ' + item.name + (item.value || ''),
+                                onClick : item.exec ? function() {
+                                    item.exec.call(me)
+                                } : function() {
+                                    me.execCommand(item.name, item.value)
+                                }
+                            });
+                        }
+                    })(ti);
+                }
+
+                menu = new dorado.widget.Menu({
+                    items: contextItems
+                });
+            }
+
+            function filterMenuItem(item) {
+                if (item._name) {
+                    var visible = me.queryCommandState(item._name) != -1;
+                    item.set("visible", visible);
+                    if (visible) {
+                        if (item.hasSubmenu()) {
+                            var subitems = item.get("items");
+                            subitems.each(function(subitem) {
+                                filterMenuItem(subitem);
+                            });
+                        }
+                    }
+                }
+            }
+
+            var menuItems = menu.get("items");
+
+            menuItems.each(function(item) {
+                filterMenuItem(item);
+            });
+
+            menu.show({ position: offset });
+
+            evt.preventDefault ? evt.preventDefault() : (evt.returnValue = false)
+        });
     };
 })();

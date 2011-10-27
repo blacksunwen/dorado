@@ -38,6 +38,7 @@
 }
 
 .i-menu .group-content .menu-item .menu-item-content .icon{
+    background-repeat: no-repeat;
 	display: inline-block;
 	height: 18px;
 	padding-left: 16px;
