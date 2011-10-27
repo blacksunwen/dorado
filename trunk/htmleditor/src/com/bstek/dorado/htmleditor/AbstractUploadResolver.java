@@ -20,7 +20,8 @@ import com.bstek.dorado.web.resolver.AbstractResolver;
 public abstract class AbstractUploadResolver extends AbstractResolver{
 	private String characterEncoding = Constants.DEFAULT_CHARSET;
 	private long maxUploadSize = 10485760;
-	private String suffixLimit;
+	private String allowedExtensions;
+	private String deniedExtensions;
 	
 	public long getMaxUploadSize() {
 		return maxUploadSize;
@@ -30,12 +31,20 @@ public abstract class AbstractUploadResolver extends AbstractResolver{
 		this.maxUploadSize = maxUploadSize;
 	}
 
-	public String getSuffixLimit() {
-		return suffixLimit;
+	public String getAllowedExtensions() {
+		return allowedExtensions;
 	}
 
-	public void setSuffixLimit(String suffixLimit) {
-		this.suffixLimit = suffixLimit;
+	public void setAllowedExtensions(String allowedExtensions) {
+		this.allowedExtensions = allowedExtensions;
+	}
+
+	public String getDeniedExtensions() {
+		return deniedExtensions;
+	}
+
+	public void setDeniedExtensions(String deniedExtensions) {
+		this.deniedExtensions = deniedExtensions;
 	}
 
 	@Override
@@ -63,12 +72,10 @@ public abstract class AbstractUploadResolver extends AbstractResolver{
 		
 		MultipartFile uploadFile = multipartRequest.getFile("filename");
 		
-		if (suffixLimit != null) {
-			String fileName = uploadFile.getName(), fileSuffix = fileName.substring(fileName.lastIndexOf("."));
-			if (!isSuffixAllowed(fileSuffix)) {
-				writeScript("<script>parent.uploadCallbackForHtmlEditor('Exception:FileSuffixNotAllowed');</script>", request, response);
-				return null;
-			}
+		String fileName = new String(uploadFile.getOriginalFilename().getBytes("ISO-8859-1"),"UTF-8"), fileSuffix = fileName.substring(fileName.lastIndexOf(".") + 1);
+		if (!isExtensionAllowed(fileSuffix)) {
+			writeScript("<script>parent.uploadCallbackForHtmlEditor('Exception:FileExtensionNotAllowed');</script>", request, response);
+			return null;
 		}
 		
 		String url = doUploadFile(multipartRequest, uploadFile);
@@ -82,17 +89,19 @@ public abstract class AbstractUploadResolver extends AbstractResolver{
 		return null;
 	}
 	
-	public boolean isSuffixAllowed(String fileSuffix) {
+	public boolean isExtensionAllowed(String fileSuffix) {
 		if (fileSuffix == null)
 			return false;
-		String suffixs[] = suffixLimit.split(",");
-		for (int i = 0, j = suffixs.length; i < j; i++) {
-			String suffix = suffixs[i];
-			if (suffix.trim().toLowerCase().equals(fileSuffix.trim().toLowerCase())) 
-				return true;
+		
+		if (allowedExtensions != null) {
+			return fileSuffix.toLowerCase().matches(allowedExtensions);
 		}
 		
-		return false;
+		if (deniedExtensions != null) {
+			return !fileSuffix.toLowerCase().matches(deniedExtensions);
+		}
+		
+		return true;
 	}
 	
 	protected void writeScript(String script, HttpServletRequest request, HttpServletResponse response) throws IOException{

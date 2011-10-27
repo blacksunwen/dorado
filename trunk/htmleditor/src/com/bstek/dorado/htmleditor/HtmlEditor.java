@@ -11,7 +11,30 @@ import com.bstek.dorado.view.widget.form.AbstractDataEditor;
 @XmlNode(nodeName = "HtmlEditor")
 public class HtmlEditor extends AbstractDataEditor {
 	private HtmlEditorMode mode = HtmlEditorMode.full;
+	private String defaultFontFamily = "宋体";
+	private String defaultFontSize = "16px";
+	private String fileUploadPath = ">dorado/htmleditor/fileupload";
+	private String flashUploadPath = ">dorado/htmleditor/flashupload";
+	private String imageUploadPath = ">dorado/htmleditor/imageupload";
 	
+	@ViewAttribute(defaultValue = "宋体")
+	public String getDefaultFontFamily() {
+		return defaultFontFamily;
+	}
+
+	public void setDefaultFontFamily(String defaultFontFamily) {
+		this.defaultFontFamily = defaultFontFamily;
+	}
+	
+	@ViewAttribute(defaultValue = "16px")
+	public String getDefaultFontSize() {
+		return defaultFontSize;
+	}
+
+	public void setDefaultFontSize(String defaultFontSize) {
+		this.defaultFontSize = defaultFontSize;
+	}
+
 	@ViewAttribute(defaultValue = "full")
 	public HtmlEditorMode getMode() {
 		return mode;
@@ -19,6 +42,33 @@ public class HtmlEditor extends AbstractDataEditor {
 	
 	public void setMode(HtmlEditorMode mode) {
 		this.mode = mode;
+	}
+	
+	@ViewAttribute(defaultValue = ">dorado/htmleditor/fileupload")
+	public String getFileUploadPath() {
+		return fileUploadPath;
+	}
+
+	public void setFileUploadPath(String fileUploadPath) {
+		this.fileUploadPath = fileUploadPath;
+	}
+
+	@ViewAttribute(defaultValue = ">dorado/htmleditor/flashupload")
+	public String getFlashUploadPath() {
+		return flashUploadPath;
+	}
+
+	public void setFlashUploadPath(String flashUploadPath) {
+		this.flashUploadPath = flashUploadPath;
+	}
+
+	@ViewAttribute(defaultValue = ">dorado/htmleditor/imageupload")
+	public String getImageUploadPath() {
+		return imageUploadPath;
+	}
+
+	public void setImageUploadPath(String imageUploadPath) {
+		this.imageUploadPath = imageUploadPath;
 	}
 	
 }
