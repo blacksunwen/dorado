@@ -41,17 +41,21 @@
             showAnimateType: "none",
             buttons: [new dorado.widget.Button({
                 caption: "确定",
-                width: 80
+                width: 80,
+                onClick: function() {
+                    dataSet.set("readOnly", true);
+                }
             }), new dorado.widget.Button({
                 caption: "取消",
-                width: 80
+                width: 80,
+                onClick: function() {
+                    dataSet.set("readOnly", false);
+                }
             })]
         });
 
 		$(document).ready(function() {
-            setTimeout(function() {
-                dialog.show();
-            }, 0);
+            dialog.show();
 		});
 	</script>
 </head>
