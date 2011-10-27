@@ -190,7 +190,17 @@
 }
 
 .d-htmleditor-toolbar .d-toolbar-label{
+    display: inline-block;
     vertical-align: top;
+}
+
+.d-htmleditor-toolbar .i-toolbar-sep {
+    display: inline-block;
+}
+
+.d-ie6 .d-htmleditor-toolbar .d-toolbar-label, .d-ie7 .d-htmleditor-toolbar .d-toolbar-label,
+.d-ie6 .d-htmleditor-toolbar .i-toolbar-sep, .d-ie7 .d-htmleditor-toolbar .i-toolbar-sep {
+    display: inline;
 }
 
 .d-htmleditor-toolbar .fullscreen-button {
@@ -234,262 +244,262 @@ span.unclickable {
     cursor:default;
 }
 
-.d-html-editor .html-editor-icon {
+.html-editor-icon {
     background: transparent url(html-editor/icons.gif);
 }
 
-.d-html-editor .undo {
+.html-editor-icon.undo {
     background-position: -160px 0;
 }
 
-.d-html-editor .redo {
+.html-editor-icon.redo {
     background-position: -100px 0;
 }
 
-.d-html-editor .bold {
+.html-editor-icon.bold {
     background-position: 0 0;
 }
 
-.d-html-editor .italic {
+.html-editor-icon.italic {
     background-position: -60px 0;
 }
 
-.d-html-editor .underline {
+.html-editor-icon.underline {
     background-position: -140px 0;
 }
 
-.d-html-editor .strikethrough {
+.html-editor-icon.strikethrough {
     background-position: -120px 0;
 }
 
-.d-html-editor .subscript {
+.html-editor-icon.subscript {
     background-position: -600px 0;
 }
 
-.d-html-editor .superscript {
+.html-editor-icon.superscript {
     background-position: -620px 0;
 }
 
-.d-html-editor .blockquote {
+.html-editor-icon.blockquote {
     background-position: -220px 0;
 }
 
-.d-html-editor .forecolor {
+.html-editor-icon.forecolor {
     background-position: -720px 0;
 }
 
-.d-html-editor .backcolor {
+.html-editor-icon.backcolor {
     background-position: -760px 0;
 }
 
-.d-html-editor .inserttable {
+.html-editor-icon.inserttable {
     background-position: -580px -20px;
 }
 
-.d-html-editor .justifyleft {
+.html-editor-icon.justifyleft {
     background-position: -460px 0;
 }
 
-.d-html-editor .justifycenter {
+.html-editor-icon.justifycenter {
     background-position: -420px 0;
 }
 
-.d-html-editor .justifyright {
+.html-editor-icon.justifyright {
     background-position: -480px 0;
 }
 
-.d-html-editor .justifyjustify {
+.html-editor-icon.justifyjustify {
     background-position: -440px 0;
 }
 
-.d-html-editor .insertorderedlist {
+.html-editor-icon.insertorderedlist {
     background-position: -80px 0;
 }
 
-.d-html-editor .insertunorderedlist {
+.html-editor-icon.insertunorderedlist {
     background-position: -20px 0;
 }
 
-.d-html-editor .horizontal {
+.html-editor-icon.horizontal {
     background-position: -360px 0;
 }
 
-.d-html-editor .link {
+.html-editor-icon.link {
     background-position: -500px 0;
 }
 
-.d-html-editor .code {
+.html-editor-icon.code {
     background-position: -280px -40px;
 }
 
-.d-html-editor .image {
+.html-editor-icon.image {
     background-position: -380px 0;
 }
 
-.d-html-editor .emoticon {
+.html-editor-icon.emoticon {
     background-position: -60px -20px;
 }
 
-.d-html-editor .spechars {
+.html-editor-icon.spechars {
     background-position: -240px 0;
 }
 
-.d-html-editor .help {
+.html-editor-icon.help {
     background-position: -340px 0;
 }
 
-.d-html-editor .print {
+.html-editor-icon.print {
     background-position: -440px -20px;
 }
 
-.d-html-editor .preview {
+.html-editor-icon.preview {
     background-position: -420px -20px;
 }
 
-.d-html-editor .selectall {
+.html-editor-icon.selectall {
     background-position: -400px -20px;
 }
 
-.d-html-editor .searchreplace {
+.html-editor-icon.searchreplace {
     background-position: -520px -20px;
 }
 
-.d-html-editor .map {
+.html-editor-icon.map {
     background-position: -40px -40px;
 }
 
-.d-html-editor .gmap {
-    background-position: -40px -40px;
+.html-editor-icon.gmap {
+    background-position: -260px -40px;
 }
 
-.d-html-editor .video {
+.html-editor-icon.video {
     background-position: -320px -20px;
 }
 
-.d-html-editor .time {
+.html-editor-icon.time {
     background-position: -160px -20px;
 }
 
-.d-html-editor .date {
+.html-editor-icon.date {
     background-position: -140px -20px;
 }
 
-.d-html-editor .cut {
+.html-editor-icon.cut {
     background-position: -680px 0;
 }
 
-.d-html-editor .copy {
+.html-editor-icon.copy {
     background-position: -700px 0;
 }
 
-.d-html-editor .paste {
+.html-editor-icon.paste {
     background-position: -560px 0;
 }
 
-.d-html-editor .formatmatch {
+.html-editor-icon.formatmatch {
     background-position: -40px 0;
 }
 
-.d-html-editor .pasteplain {
+.html-editor-icon.pasteplain {
     background-position: -360px -20px;
 }
 
-.d-html-editor .directionalityltr {
+.html-editor-icon.directionalityltr {
     background-position: -20px -20px;
 }
 
-.d-html-editor .directionalityrtl {
+.html-editor-icon.directionalityrtl {
     background-position: -40px -20px;
 }
 
-.d-html-editor .source {
+.html-editor-icon.source {
     background-position: -260px -0px;
 }
 
-.d-html-editor .removeformat {
+.html-editor-icon.removeformat {
     background-position: -580px 0;
 }
 
-.d-html-editor .unlink {
+.html-editor-icon.unlink {
     background-position: -640px 0;
 }
 
-.d-html-editor .insertrow {
+.html-editor-icon.insertrow {
     background-position: -740px -20px;
 }
 
-.d-html-editor .insertcol {
+.html-editor-icon.insertcol {
     background-position: -700px -20px;
 }
 
-.d-html-editor .mergeright {
+.html-editor-icon.mergeright {
     background-position: -60px -40px;
 }
 
-.d-html-editor .mergedown {
+.html-editor-icon.mergedown {
     background-position: -80px -40px;
 }
 
-.d-html-editor .splittorows {
+.html-editor-icon.splittorows {
     background-position: -100px -40px;
 }
 
-.d-html-editor .splittocols {
+.html-editor-icon.splittocols {
     background-position: -120px -40px;
 }
 
-.d-html-editor .insertparagraphbeforetable {
+.html-editor-icon.insertparagraphbeforetable {
     background-position: -140px -40px;
 }
 
-.d-html-editor .deleterow {
+.html-editor-icon.deleterow {
     background-position: -660px -20px;
 }
 
-.d-html-editor .deletecol {
+.html-editor-icon.deletecol {
     background-position: -640px -20px;
 }
 
-.d-html-editor .splittocells {
+.html-editor-icon.splittocells {
     background-position: -800px -20px;
 }
 
-.d-html-editor .mergecells {
+.html-editor-icon.mergecells {
     background-position: -760px -20px;
 }
 
-.d-html-editor .deletetable {
+.html-editor-icon.deletetable {
     background-position: -620px -20px;
 }
 
-.d-html-editor .cleardoc {
+.html-editor-icon.cleardoc {
     background-position: -520px 0;
 }
 
-.d-html-editor .fullscreen {
+.html-editor-icon.fullscreen {
     background-position: -100px -20px;
 }
 
-.d-html-editor .tablesuper {
+.html-editor-icon.tablesuper {
     background-position: -100px -20px;
 }
 
-.d-html-editor .anchor {
+.html-editor-icon.anchor {
     background-position: -200px 0;
 }
 
-.d-html-editor .indent {
+.html-editor-icon.indent {
     background-position: -400px 0;
 }
 
-.d-html-editor .outdent {
+.html-editor-icon.outdent {
     background-position: -540px 0;
 }
 
-.d-html-editor .table {
+.html-editor-icon.table {
     background-position: -580px -20px;
 }
 
-.d-html-editor .delete {
-    background-position: -260px -40px;
+.html-editor-icon.delete {
+    background-position: -360px -40px;
 }
