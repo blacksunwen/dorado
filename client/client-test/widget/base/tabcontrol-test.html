@@ -110,19 +110,30 @@
         tabcontrol.set({
             width: 600,
             height: 400,
-			currentTab: 1,
             tabs: [
+                {
+                    $type: "Control",
+                    caption: "测试2",
+                    control: new dorado.widget.Panel({
+                        width: 400,
+                        height: 200,
+                        style: {
+                            border: "5px black dotted"
+                        }
+                    }),
+                    visible: false
+                },
+                {
+                    $type: "Control",
+                    caption: "测试2",
+                    control: panel
+                },
                 {
                     $type: "IFrame",
                     caption: "测试1",
                     icon: "del.gif",
                     closeable: true,
                     path: "http://www.g.cn"
-                },
-                {
-                    $type: "Control",
-                    caption: "测试2",
-                    control: panel
                 },
                 {
                     $type: "Control",

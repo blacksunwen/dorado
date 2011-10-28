@@ -8,7 +8,7 @@
         var view = new dorado.widget.View({ layout: "Anchor" });
 
         var dialog = new dorado.widget.Dialog({
-			//visible: true,
+			visible: true,
 			//showCaptionBar: false,
             caption: "test",
             width: 400,
@@ -17,7 +17,7 @@
             //,left: 200
             //,top: 50
             //,modal: true
-            ,closeable: false
+            //,closeable: false
             ,minimizeable: true
             ,maximizeable: true
             ,collapseable: true
@@ -127,14 +127,14 @@
         });
 
         view.addChild(toolbar);
-		view.addChild(dialog);
+        view.addChild(dialog);
 
         $(document).ready(function() {
             view.render(document.body);
-            dialog.show({
-                callback: function(self) {
-                }
-            });
+//            dialog.show({
+//                callback: function(self) {
+//                }
+//            });
         });
     </script>
 </head>
