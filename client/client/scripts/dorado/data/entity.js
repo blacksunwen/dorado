@@ -728,13 +728,16 @@
 						}
 					} else {
 						if(propertyDef._validators && !dataType._validatorsDisabled) {
-							var entity = this, currentValue = value;
+							var entity = this, currentValue = value, validateArg = {
+								property: property,
+								entity: entity
+							};
 							propertyInfo.validating = propertyInfo.validating || 0;
 							for(var i = 0; i < propertyDef._validators.length; i++) {
 								var validator = propertyDef._validators[i];
 								if( validator instanceof dorado.validator.RemoteValidator && validator._async) {
 									propertyInfo.validating++;
-									validator.validate(value, {
+									validator.validate(value, validateArg, {
 										callback : function(success, result) {
 											propertyInfo.validating--;
 											if(propertyInfo.validating <= 0) {
@@ -743,8 +746,7 @@
 											}
 
 											if(success) {
-												if(entity._data[property] != currentValue)
-													return;
+												if(entity._data[property] != currentValue) return;
 												entity.doSetMessages(property, result);
 											}
 
@@ -757,7 +759,7 @@
 										}
 									});
 								} else {
-									var msgs = validator.validate(value);
+									var msgs = validator.validate(value, validateArg);
 									if(msgs) {
 										messages = messages.concat(msgs);
 										var state = dorado.Toolkits.getTopMessageState(msgs);
@@ -794,6 +796,7 @@
 			if(dataType && !this.disableEvents) dataType.fireEvent("onDataChange", dataType, eventArg);
 			this.sendMessage(dorado.Entity._MESSAGE_DATA_CHANGED, eventArg);
 		},
+		
 		/**
 		 * 设置属性值。
 		 * @param {String} property 要设置的属性名。
@@ -808,6 +811,7 @@
 			}
 			this._set(property, value, propertyDef);
 		},
+		
 		/**
 		 * 以文本方式设置属性的值。
 		 * <p>
@@ -1401,7 +1405,7 @@
 					if(!data.hasOwnProperty(p))continue;
 
 					var value = data[p];
-					if( value instanceof dorado.Entity) {
+					if (value instanceof dorado.Entity) {
 						result = value.validate(options);
 						resultCode = VALIDATION_RESULT_CODE[result];
 						if(resultCode > topResultCode) {
