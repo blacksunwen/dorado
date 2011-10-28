@@ -208,6 +208,7 @@
 		},
 		
 		onReady: function() {
+			$invokeSuper.call(this);			
 			this._children.each(function(child) {
 				if (!(child instanceof dorado.widget.Control) && !child._ready) child.onReady();
 
@@ -215,7 +216,6 @@
 					child.show();
 				}
 			});
-			$invokeSuper.call(this);
 		},
 		
 		destroy: function() {
