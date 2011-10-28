@@ -102,6 +102,10 @@ dorado.widget.TabControl = $extend(dorado.widget.TabBar, /** @scope dorado.widge
 			var tab = tabs.get(i);
 			controls.push(tab.getControl());
 		}
+        var currentTab = tabcontrol._currentTab;
+        if (currentTab) {
+            card._currentControl = tab.getControl();
+        }
 		card.set("controls", controls);
 		card.render(dom);
 
