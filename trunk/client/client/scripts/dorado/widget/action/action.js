@@ -55,8 +55,7 @@
 				setter: function(parameter) {
 					if (this._parameter instanceof dorado.util.Map && parameter instanceof dorado.util.Map) {
 						this._parameter.put(parameter);
-					}
-					else {
+					} else {
 						this._parameter = parameter;
 					}
 				}
@@ -250,11 +249,9 @@
 							self.fireEvent("onExecute", eventArg);
 							self.fireEvent((success) ? "onSuccess" : "onFailure", self, eventArg);
 							
-							/*
-							 if (!success && !eventArg.processDefault) {
-							 dorado.Exception.removeException(eventArg.error);
-							 }
-							 */
+							if (!success && !eventArg.processDefault) {
+								dorado.Exception.removeException(eventArg.error);
+							}
 							if (success && eventArg.processDefault && self._successMessage) {
 								dorado.widget.NotifyTipManager.notify(self._successMessage);
 							}
@@ -278,11 +275,9 @@
 					self.fireEvent("onExecute", self, eventArg);
 					self.fireEvent((success) ? "onSuccess" : "onFailure", self, eventArg);
 					
-					/*
-					 if (!success && !eventArg.processDefault) {
-					 dorado.Exception.removeException(eventArg.error);
-					 }
-					 */
+					if (!success && !eventArg.processDefault) {
+						dorado.Exception.removeException(eventArg.error);
+					}
 					if (success && eventArg.processDefault && self._successMessage) {
 						dorado.widget.NotifyTipManager.notify(self._successMessage);
 					}

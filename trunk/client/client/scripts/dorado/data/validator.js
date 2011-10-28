@@ -56,12 +56,17 @@ dorado.validator.Validator = $extend([dorado.AttributeSupport, dorado.EventSuppo
 		if(config)
 			this.set(config);
 	},
+	
 	getListenerScope : function() {
 		return (this._propertyDef) ? this._propertyDef.get("view") : dorado.widget.View.TOP;
 	},
+	
 	/**
 	 * 验证数据。
 	 * @param {Object} data 要验证的数据。
+	 * @param {Object} [arg] 验证参数。通常可能包含两个子属性。
+	 * @param {Object} [arg.property] 当前被修改的属性名。
+	 * @param {Object} [arg.entity] 当前被修改的数据实体。
 	 * @return {[Object]} 验证结果。
 	 * 不返回任何验证结果表示通过验证，但返回验证结果并不一定表示未通过验证。
 	 * <p>
@@ -79,8 +84,8 @@ dorado.validator.Validator = $extend([dorado.AttributeSupport, dorado.EventSuppo
 	 * </p>
 	 * @see dorado.Entity#getPropertyMessages
 	 */
-	validate : function(data) {
-		var result = this.doValidate(data);
+	validate : function(data, arg) {
+		var result = this.doValidate(data, arg);
 		return dorado.Toolkits.trimMessages(result, this._defaultResultState) || dorado.validator.defaultOkMessage;
 	}
 });
@@ -123,6 +128,9 @@ dorado.validator.RemoteValidator = $extend(dorado.validator.Validator, /** @scop
 	 * @function
 	 * @protected
 	 * @param {Object} data 要验证的数据。
+	 * @param {Object} [arg] 验证参数。通常可能包含两个子属性。
+	 * @param {Object} [arg.property] 当前被修改的属性名。
+	 * @param {Object} [arg.entity] 当前被修改的数据实体。
 	 * @param {Function|dorado.Callback} callback 回调方法或对象。
 	 * @return {String|Object|[String]|[Object]} 验证结果。
 	 * <ul>
@@ -138,6 +146,9 @@ dorado.validator.RemoteValidator = $extend(dorado.validator.Validator, /** @scop
 	 * @name dorado.validator.RemoteValidator.Validator#validate
 	 * @function
 	 * @param {Object} data 要验证的数据。
+	 * @param {Object} [arg] 验证参数。通常可能包含两个子属性。
+	 * @param {Object} [arg.property] 当前被修改的属性名。
+	 * @param {Object} [arg.entity] 当前被修改的数据实体。
 	 * @param {Function|dorado.Callback} callback 回调方法或对象。此参数对于同步或异步两种验证方式都有效。
 	 * @return {[Object]} 验证结果。
 	 * <ul>
@@ -146,9 +157,9 @@ dorado.validator.RemoteValidator = $extend(dorado.validator.Validator, /** @scop
 	 * </ul>
 	 * @description 验证数据。
 	 */
-	validate : function(data, callback) {
+	validate : function(data, arg, callback) {
 		if(this._async) {
-			this.doValidate(data, {
+			this.doValidate(data, arg, {
 				scope : this,
 				callback : function(success, result) {
 					if(success) {
@@ -191,10 +202,9 @@ dorado.validator.BaseValidator = $extend(dorado.validator.Validator, /** @scope 
 		resultMessage : {}
 	},
 
-	validate : function(data) {
-		var result = this.doValidate(data);
-		if(this._resultMessage && result && typeof result == "string")
-			result = this._resultMessage;
+	validate : function(data, arg) {
+		var result = this.doValidate(data, arg);
+		if(this._resultMessage && result && typeof result == "string") result = this._resultMessage;
 		return dorado.Toolkits.trimMessages(result, this._defaultResultState);
 	}
 });
@@ -233,9 +243,8 @@ dorado.validator.LengthValidator = $extend(dorado.validator.BaseValidator, /** @
 		}
 	},
 
-	doValidate : function(data) {
-		if( typeof data != "string")
-			return;
+	doValidate : function(data, arg) {
+		if( typeof data != "string") return;
 		var invalid, message = '', len = data.length;
 		if(this._minLength > 0 && len < this._minLength) {
 			invalid = true;
@@ -243,8 +252,7 @@ dorado.validator.LengthValidator = $extend(dorado.validator.BaseValidator, /** @
 		}
 		if(this._maxLength > 0 && len > this._maxLength) {
 			invalid = true;
-			if(message)
-				message += '\n';
+			if(message) message += '\n';
 			message += $resource("dorado.data.ErrorContentTooLong", this._maxLength);
 		}
 		return message;
@@ -319,7 +327,7 @@ dorado.validator.RangeValidator = $extend(dorado.validator.BaseValidator, /** @s
 		}
 	},
 
-	doValidate : function(data) {
+	doValidate : function(data, arg) {
 		var invalid, message = '', subMessage = '', data = ( typeof data == "number") ? data : parseFloat(data);
 		if(this._minValueValidateMode != "ignore") {
 			if(data == this._minValue && this._minValueValidateMode != "allowEquals") {
@@ -342,13 +350,11 @@ dorado.validator.RangeValidator = $extend(dorado.validator.BaseValidator, /** @s
 				invalid = true;
 			}
 			if(invalid) {
-				if(message)
-					message += '\n';
+				if(message) message += '\n';
 				message += $resource("dorado.data.ErrorNumberTooGreat", subMessage, this._maxValue);
 			}
 		}
-		if(invalid)
-			return message;
+		if(invalid) return message;
 	}
 });
 
@@ -376,7 +382,8 @@ dorado.validator.EnumValidator = $extend(dorado.validator.BaseValidator, /** @sc
 		enumValus : {}
 	},
 
-	doValidate : function(data) {
+	doValidate : function(data, arg) {
+		if (data == null) return;
 		if(this._enumValues instanceof Array && this._enumValues.indexOf(data) < 0) {
 			return $resource("dorado.data.ErrorValueOutOfEnumRange");
 		}
@@ -426,27 +433,24 @@ dorado.validator.RegExpValidator = $extend(dorado.validator.BaseValidator, /** @
 		}
 	},
 
-	doValidate : function(data) {
-
+	doValidate: function(data, arg) {
 		function toRegExp(text) {
 			var regexp = null;
-			if(text) {
+			if (text) {
 				regexp = (text.charAt(0) == '/') ? eval(text) : new RegExp(text);
 			}
 			return regexp;
 		}
-
-		if( typeof data != "string")
-			return;
+		
+		if (typeof data != "string" || data == '') return;
 		var whiteRegExp = toRegExp(this._whiteRegExp), blackRegExp = toRegExp(this._blackRegExp);
 		var valid;
-		if(this._validateMode == "whiteBlack") {
+		if (this._validateMode == "whiteBlack") {
 			valid = blackRegExp && !data.match(blackRegExp) || whiteRegExp && data.match(whiteRegExp);
 		} else {
 			valid = whiteRegExp && data.match(whiteRegExp) || blackRegExp && !data.match(blackRegExp);
 		}
-		if(!valid)
-			return $resource("dorado.data.ErrorBadFormat", data);
+		if (!valid) return $resource("dorado.data.ErrorBadFormat", data);
 	}
 });
 
@@ -469,6 +473,30 @@ dorado.validator.AjaxValidator = $extend(dorado.validator.RemoteValidator, /** @
 		 */
 		service : {}
 	},
+	
+	EVENTS : /** @scope dorado.validator.AjaxValidator.prototype */
+	{
+
+		/**
+		 * 当校验器将要发出数据校验的请求之前触发的事件。
+		 * @param {Object} self 事件的发起者，即本校验器对象。
+		 * @param {Object} arg 事件参数。
+		 * @param {Object} arg.data 当前将要校验的数据，默认是用户在界面中刚刚编辑的数据。
+		 * @param {String} arg.property 用户当前编辑的属性名。
+		 * @param {dorado.Entity} arg.entity 用户当前编辑的数据实体。
+		 * @param {Object} #arg.parameter 要传递给服务端的数据。
+		 * <p>
+		 * 此参数就是AjaxValidator稍后即将通过AjaxAction发送到服务端的信息。
+		 * 默认情况parameter是一个JSON对象，其中包含一个名为data的属性，其值为用户在界面中刚刚编辑的数据。
+		 * </p>
+		 * <p>
+		 * 如果您需要自定定义发往服务端的信息，既可以直接修改此JSON对象，也可以直接为arg.parameter赋以新值。
+		 * </p>
+		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+		 * @event
+		 */
+		beforeExecute: {}
+	},
 
 	constructor : function(config) {
 		if(!dorado.widget || !dorado.widget.AjaxAction) {
@@ -477,16 +505,27 @@ dorado.validator.AjaxValidator = $extend(dorado.validator.RemoteValidator, /** @
 		}
 		$invokeSuper.call(this, arguments);
 	},
-	doValidate : function(data, callback) {
+	
+	doValidate : function(data, arg, callback) {
+		var eventArg = {
+			data: data,
+			property: arg.property,
+			entity: arg.entity,
+			parameter: {
+				data: data
+			}
+		};
+		this.fireEvent("beforeExecute", this, eventArg);
+		
 		var ajaxAction = this._ajaxAction;
 		if(!ajaxAction) {
 			this._ajaxAction = ajaxAction = new dorado.widget.AjaxAction();
 		}
 		ajaxAction.set({
-			async : this._async,
-			executingMessage : this._executingMessage,
-			service : this._service,
-			parameter : data
+			async: this._async,
+			executingMessage: this._executingMessage,
+			service: this._service,
+			parameter: eventArg.parameter
 		});
 		var retval = ajaxAction.execute(this._async ? callback : null);
 		if(retval && !this._async) {
@@ -513,6 +552,8 @@ dorado.validator.CustomValidator = $extend(dorado.validator.Validator, /** @scop
 		 * @param {Object} self 事件的发起者，即本校验器对象。
 		 * @param {Object} arg 事件参数。
 		 * @param {Object} arg.data 要校验的数据。
+		 * @param {String} arg.property 用户当前编辑的属性名。
+		 * @param {dorado.Entity} arg.entity 用户当前编辑的数据实体。
 		 * @param {String|Object|[String]|[Object]} #arg.result 验证结果。
 		 * 不返回任何验证结果表示通过验证，但返回验证结果并不一定表示未通过验证。
 		 * <p>
@@ -561,14 +602,16 @@ dorado.validator.CustomValidator = $extend(dorado.validator.Validator, /** @scop
 		onValidate : {}
 	},
 
-	doValidate : function(data) {
+	doValidate : function(data, arg) {
 		var result;
 		try {
-			var arg = {
-				data : data
+			var eventArg = {
+				data : data,
+				property: arg.property,
+				entity: arg.entity
 			};
-			this.fireEvent("onValidate", this, arg);
-			result = arg.result;
+			this.fireEvent("onValidate", this, eventArg);
+			result = eventArg.result;
 		} catch(e) {
 			dorado.Exception.removeException(e);
 			result = dorado.Exception.getExceptionMessage(e);

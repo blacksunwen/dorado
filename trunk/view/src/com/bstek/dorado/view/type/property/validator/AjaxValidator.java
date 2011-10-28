@@ -5,6 +5,8 @@ package com.bstek.dorado.view.type.property.validator;
 
 import java.lang.reflect.Method;
 
+import com.bstek.dorado.annotation.ClientEvent;
+import com.bstek.dorado.annotation.ClientEvents;
 import com.bstek.dorado.annotation.ViewObject;
 import com.bstek.dorado.common.service.ExposedService;
 import com.bstek.dorado.common.service.ExposedServiceManager;
@@ -17,6 +19,7 @@ import com.bstek.dorado.util.method.MethodAutoMatchingUtils;
  * @since 2011-5-25
  */
 @ViewObject(prototype = "dorado.validator.AjaxValidator", shortTypeName = "Ajax")
+@ClientEvents(@ClientEvent(name = "beforeExecute"))
 public class AjaxValidator extends AbstractAjaxValidator {
 	private static ExposedServiceManager exposedServiceManager;
 
