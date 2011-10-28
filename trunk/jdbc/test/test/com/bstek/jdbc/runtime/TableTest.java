@@ -24,7 +24,7 @@ public class TableTest extends ConfigManagerTestSupport{
 		Assert.assertEquals(null, t.getSchema());
 		Assert.assertEquals("PEOPLE", t.getTableName());
 		Assert.assertEquals(Type.Table, t.getType());
-		Assert.assertEquals("xxxxxx", t.getDynamicToken());
+		Assert.assertEquals("xxxxxx", t.getDynamicClause());
 		
 		Assert.assertEquals(3, t.getAllColumns().size());
 		Assert.assertEquals(0, t.getKeyColumns().size());

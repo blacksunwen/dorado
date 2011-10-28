@@ -1,7 +1,9 @@
 package com.bstek.dorado.jdbc.model.autotable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -283,22 +285,27 @@ public class AutoTableSqlGenerator implements SqlGenerator{
 		Record record = operation.getRecord();
 		Record sRecord = new Record();
 		String tableAlias = fromTable.getTableAlias();
+		Map<String, String> propertyMap = new HashMap<String, String>();
 		for (Column c: autoTable.getAllColumns()) {
 			AutoTableColumn column = (AutoTableColumn)c;
-			if (column.isInsertable() && tableAlias.equals(column.getTableAlias())) {
-				String columnName = column.getColumnName();
-				Column tableColumn = table.getColumn(columnName);
-				String propertyName = tableColumn.getPropertyName();
-				if (StringUtils.isNotEmpty(propertyName)) {
-					Object value = record.get(column.getPropertyName());
-					sRecord.put(propertyName, value);
+			String columnName = column.getColumnName();
+			String propertyName = column.getPropertyName();
+			if (StringUtils.isNotEmpty(columnName) && StringUtils.isNotEmpty(propertyName)) {
+				if (column.isInsertable() && tableAlias.equals(column.getTableAlias())) {
+					Column tableColumn = table.getColumn(columnName);
+					String tpn = tableColumn.getPropertyName();
+					if (StringUtils.isNotEmpty(tpn)) {
+						Object value = record.get(propertyName);
+						sRecord.put(tpn, value);
+						propertyMap.put(propertyName, tpn);
+					}
 				}
 			}
 		}
 		
 		JdbcRecordOperation sOperation = new JdbcRecordOperation(table, sRecord, operation.getJdbcContext());
 		SqlGenerator generator = JdbcUtils.getSqlGenerator(table);
-		operation.setSubstitute(sOperation);
+		operation.setSubstitute(sOperation,propertyMap);
 		return generator.insertSql(sOperation);
 	}
 
@@ -312,22 +319,27 @@ public class AutoTableSqlGenerator implements SqlGenerator{
 		Record record = operation.getRecord();
 		Record sRecord = new Record();
 		String tableAlias = fromTable.getTableAlias();
+		Map<String, String> propertyMap = new HashMap<String, String>();
 		for (Column c: autoTable.getAllColumns()) {
 			AutoTableColumn column = (AutoTableColumn)c;
-			if (column.isUpdatable() && tableAlias.equals(column.getTableAlias())) {
-				String columnName = column.getColumnName();
-				Column tableColumn = table.getColumn(columnName);
-				String propertyName = tableColumn.getPropertyName();
-				if (StringUtils.isNotEmpty(propertyName)) {
-					Object value = record.get(column.getPropertyName());
-					sRecord.put(propertyName, value);
+			String columnName = column.getColumnName();
+			String propertyName = column.getPropertyName();
+			if (StringUtils.isNotEmpty(columnName) && StringUtils.isNotEmpty(propertyName)) {
+				if (column.isUpdatable() && tableAlias.equals(column.getTableAlias())) {
+					Column tableColumn = table.getColumn(columnName);
+					String tpn = tableColumn.getPropertyName();
+					if (StringUtils.isNotEmpty(tpn)) {
+						Object value = record.get(propertyName);
+						sRecord.put(tpn, value);
+						propertyMap.put(propertyName, tpn);
+					}
 				}
 			}
 		}
 		
 		JdbcRecordOperation sOperation = new JdbcRecordOperation(table, sRecord, operation.getJdbcContext());
 		SqlGenerator generator = JdbcUtils.getSqlGenerator(table);
-		operation.setSubstitute(sOperation);
+		operation.setSubstitute(sOperation, propertyMap);
 		return generator.updateSql(sOperation);
 	}
 
@@ -341,24 +353,28 @@ public class AutoTableSqlGenerator implements SqlGenerator{
 		Record record = operation.getRecord();
 		Record sRecord = new Record();
 		String tableAlias = fromTable.getTableAlias();
+		Map<String, String> propertyMap = new HashMap<String, String>();
 		for (Column c: autoTable.getAllColumns()) {
 			AutoTableColumn column = (AutoTableColumn)c;
-			if (column.isUpdatable() && tableAlias.equals(column.getTableAlias())) {
-				String columnName = column.getColumnName();
-				Column tableColumn = table.getColumn(columnName);
-				String propertyName = tableColumn.getPropertyName();
-				if (StringUtils.isNotEmpty(propertyName)) {
-					Object value = record.get(column.getPropertyName());
-					sRecord.put(propertyName, value);
+			String columnName = column.getColumnName();
+			String propertyName = column.getPropertyName();
+			if (StringUtils.isNotEmpty(columnName) && StringUtils.isNotEmpty(propertyName)) {
+				if (column.isInsertable() && tableAlias.equals(column.getTableAlias())) {
+					Column tableColumn = table.getColumn(columnName);
+					String tpn = tableColumn.getPropertyName();
+					if (StringUtils.isNotEmpty(tpn)) {
+						Object value = record.get(propertyName);
+						sRecord.put(tpn, value);
+						propertyMap.put(propertyName, tpn);
+					}
 				}
 			}
 		}
 		
 		JdbcRecordOperation sOperation = new JdbcRecordOperation(table, sRecord, operation.getJdbcContext());
 		SqlGenerator generator = JdbcUtils.getSqlGenerator(table);
-		operation.setSubstitute(sOperation);
+		operation.setSubstitute(sOperation, propertyMap);
 		return generator.deleteSql(sOperation);
 	}
-
 
 }

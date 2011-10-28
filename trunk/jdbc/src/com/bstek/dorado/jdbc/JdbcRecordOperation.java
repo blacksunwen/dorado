@@ -1,6 +1,7 @@
 package com.bstek.dorado.jdbc;
 
 import java.util.Collection;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -22,6 +23,8 @@ public class JdbcRecordOperation extends
 	private JdbcRecordOperation parent;
 	
 	private JdbcRecordOperation substitute;
+	
+	private Map<String, String> propertyMap;
 	
 	public JdbcRecordOperation(DbElement dbElement, Record record,
 			JdbcDataResolverContext jdbcContext) {
@@ -45,10 +48,15 @@ public class JdbcRecordOperation extends
 		return substitute;
 	}
 
-	public void setSubstitute(JdbcRecordOperation substitute) {
+	public void setSubstitute(JdbcRecordOperation substitute, Map<String, String> propertyMap) {
 		this.substitute = substitute;
+		this.propertyMap = propertyMap;
 	}
 
+	public Map<String, String> getPropertyMap() {
+		return this.propertyMap;
+	}
+	
 	@SuppressWarnings("unchecked")
 	public JdbcRecordOperation[] create(JdbcDataResolverItem item) {
 		String eName = item.getDbElement();

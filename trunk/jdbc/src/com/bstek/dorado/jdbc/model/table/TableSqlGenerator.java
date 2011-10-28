@@ -2,6 +2,8 @@ package com.bstek.dorado.jdbc.model.table;
 
 import java.util.List;
 
+import com.bstek.dorado.data.entity.EntityEnhancer;
+import com.bstek.dorado.data.entity.EntityUtils;
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.JdbcDataProviderOperation;
 import com.bstek.dorado.jdbc.JdbcParameterSource;
@@ -48,12 +50,12 @@ public class TableSqlGenerator implements SqlGenerator {
 		}
 		selectSql.setColumnsToken(columnsToken.toString());
 		
-		//fromToken
-		String fromToken = SqlUtils.token(table);
-		selectSql.setFromToken(fromToken);
+		//tableToken
+		String tableToken = SqlUtils.token(table);
+		selectSql.setTableToken(tableToken);
 		
 		//dynamicToken
-		String dynamicToken = table.getDynamicToken();
+		String dynamicToken = table.getDynamicClause();
 		dynamicToken = SqlUtils.build(dynamicToken, parameter);
 		
 		selectSql.setDynamicToken(dynamicToken);
@@ -132,6 +134,7 @@ public class TableSqlGenerator implements SqlGenerator {
 			}
 		}
 		
+		sql.setRetrieveAfterExecute(table.isRetrieveAfterInsert());
 		return sql;
 	}
 
@@ -147,6 +150,19 @@ public class TableSqlGenerator implements SqlGenerator {
 		sql.addColumnToken(columnName, ":"+propertyName);
 	}
 
+	private boolean hasOldValues(Object entity) {
+		EntityEnhancer entityEnhancer = EntityUtils.getEntityEnhancer(entity);
+		if (entityEnhancer != null) {
+			return entityEnhancer.getOldValues() != null;
+		} else {
+			return false;
+		}
+	}
+	
+	protected String oldPropertyVar(String propertyName) {
+		return "_OLD_" + propertyName;
+	}
+	
 	@Override
 	public UpdateSql updateSql(JdbcRecordOperation operation) {
 		Table table = (Table)operation.getDbElement();
@@ -162,7 +178,21 @@ public class TableSqlGenerator implements SqlGenerator {
 			Assert.notEmpty(propertyName, "propertyName of KeyColumn named [" + keyColumn.getColumnName() +"] must not be empty.");
 			
 			String columnName = keyColumn.getColumnName();
-			sql.addKeyToken(columnName, ":"+propertyName);
+			Object oldValue = null;
+			if (hasOldValues(record) && (oldValue = EntityUtils.getOldValue(record, propertyName)) != null) {
+				if (keyColumn.isUpdatable()) {
+					sql.addColumnToken(columnName, ":"+propertyName);
+					
+					String oldPropertyVar = oldPropertyVar(propertyName);
+					parameterSource.setValue(oldPropertyVar, oldValue);
+					sql.addKeyToken(columnName, ":" + oldPropertyVar);
+				} else {
+					parameterSource.setValue(propertyName, oldValue);
+					sql.addKeyToken(columnName, ":"+propertyName);
+				}
+			} else {
+				sql.addKeyToken(columnName, ":"+propertyName);
+			}
 		}
 		
 		for (TableColumn column: table.getTableColumns()) {
@@ -187,6 +217,7 @@ public class TableSqlGenerator implements SqlGenerator {
 			}
 		}
 		
+		sql.setRetrieveAfterExecute(table.isRetrieveAfterUpdate());
 		return sql;
 	}
 

@@ -17,7 +17,10 @@ public class InsertSql extends AbstractTableSql {
 	
 	private TableKeyColumn identityColumn;
 	
-
+	public InsertSql() {
+		super();
+	}
+	
 	public void addColumnToken(String columnName, String value) {
 		columnTokenList.add(columnName);
 		valueTokenList.add(value);

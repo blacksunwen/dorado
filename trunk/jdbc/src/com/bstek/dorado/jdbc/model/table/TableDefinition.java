@@ -37,8 +37,8 @@ public class TableDefinition extends DbElementDefinition {
 		return autoCreateColumns;
 	}
 
-	public void setAppendUnknownColumnOnStartup(boolean appendUnknownColumnOnStartup) {
-		this.autoCreateColumns = appendUnknownColumnOnStartup;
+	public void setAutoCreateColumns(boolean autoCreateColumns) {
+		this.autoCreateColumns = autoCreateColumns;
 	}
 	
 	public String getCatalog() {

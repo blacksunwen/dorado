@@ -3,24 +3,14 @@
 	<SqlTable name="emp0" table="EMP_0">
 		<Property name="querySql"><![CDATA[select * from EMPLOYEES]]></Property>
 		<Columns>
-			<Column columnName="ID"                propertyName="id"              jdbcType="INTEGER-Integer" resolveColumnName="ID"/>
-			<Column columnName="LAST_NAME"         propertyName="lastName"        jdbcType="VARCHAR-String"/>
-			<Column columnName="FIRST_NAME"        propertyName="firstName"       jdbcType="VARCHAR-String"/>
-			<Column columnName="TITLE"             propertyName="title"           jdbcType="VARCHAR-String"/>
-			<Column columnName="TITLE_OF_COURTESY" propertyName="titleOfCourtesy" jdbcType="VARCHAR-String"/>
-			<Column columnName="SEX"               propertyName="sex"             jdbcType="SMALLINT-Short"/>
-			<Column columnName="BIRTH_DATE"        propertyName="birthDate"       jdbcType="DATE-Date"/>
-			<Column columnName="HIRE_DATE"         propertyName="hireDate"        jdbcType="DATE-Date"/>
-<!-- 			<Column columnName="ADDRESS"           propertyName="address"         jdbcType="VARCHAR-String"/> -->
-<!-- 			<Column columnName="CITY"              propertyName="city"            jdbcType="VARCHAR-String"/> -->
-<!-- 			<Column columnName="REGION"            propertyName="region"          jdbcType="VARCHAR-String"/> -->
-<!-- 			<Column columnName="POSTAL_CODE"       propertyName="postalCode"      jdbcType="VARCHAR-String"/> -->
-<!-- 			<Column columnName="COUNTRY"           propertyName="country"         jdbcType="VARCHAR-String"/> -->
-<!-- 			<Column columnName="PHONE"             propertyName="phone"           jdbcType="VARCHAR-String"/> -->
-<!-- 			<Column columnName="EXTENSION"         propertyName="extension"       jdbcType="VARCHAR-String"/> -->
-<!-- 			<Column columnName="REPORTS_TO"        propertyName="reportsTo"       jdbcType="INTEGER-Integer"/> -->
-<!-- 			<Column columnName="NOTES"             propertyName="notes"           jdbcType="VARCHAR-String"/> -->
-<!-- 			<Column columnName="PHOTO_PATH"        propertyName="photoPath"       jdbcType="VARCHAR-String"/> -->
+			<Column columnName="ID"                propertyName="id"              jdbcType="INTEGER-Integer" nativeColumnName="ID"/>
+			<Column columnName="LAST_NAME"         propertyName="lastName"        jdbcType="VARCHAR-String"  nativeColumnName="LAST_NAME"/>
+			<Column columnName="FIRST_NAME"        propertyName="firstName"       jdbcType="VARCHAR-String"  nativeColumnName="FIRST_NAME"/>
+			<Column columnName="TITLE"             propertyName="title"           jdbcType="VARCHAR-String"  nativeColumnName="TITLE"/>
+			<Column columnName="TITLE_OF_COURTESY" propertyName="titleOfCourtesy" jdbcType="VARCHAR-String"  nativeColumnName="TITLE_OF_COURTESY"/>
+			<Column columnName="SEX"               propertyName="sex"             jdbcType="SMALLINT-Short"  nativeColumnName="SEX"/>
+			<Column columnName="BIRTH_DATE"        propertyName="birthDate"       jdbcType="DATE-Date"       nativeColumnName="BIRTH_DATE"/>
+			<Column columnName="HIRE_DATE"         propertyName="hireDate"        jdbcType="DATE-Date"       nativeColumnName="HIRE_DATE"/>
 		</Columns>
 	</SqlTable>
 </DbModel>

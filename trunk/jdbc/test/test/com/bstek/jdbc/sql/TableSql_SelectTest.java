@@ -104,7 +104,7 @@ public class TableSql_SelectTest {
 		table.setName("t1");
 		table.setTableName("t1");
 		table.setCatalog("D");
-		table.setDynamicToken("WHERE 1=1");
+		table.setDynamicClause("WHERE 1=1");
 		
 		TableKeyColumn id = new TableKeyColumn();
 		id.setColumnName("ID");
@@ -133,7 +133,7 @@ public class TableSql_SelectTest {
 		table.setName("t1");
 		table.setTableName("t1");
 		table.setCatalog("D");
-		table.setDynamicToken("#if ($ID) WHERE ID=:ID #end");
+		table.setDynamicClause("#if ($ID) WHERE ID=:ID #end");
 		
 		TableKeyColumn id = new TableKeyColumn();
 		id.setColumnName("ID");
@@ -161,7 +161,7 @@ public class TableSql_SelectTest {
 		table.setName("t1");
 		table.setTableName("t1");
 		table.setCatalog("D");
-		table.setDynamicToken("#if($ID)WHERE ID=:ID#end");
+		table.setDynamicClause("#if($ID)WHERE ID=:ID#end");
 		
 		TableKeyColumn id = new TableKeyColumn();
 		id.setColumnName("ID");
@@ -196,7 +196,7 @@ public class TableSql_SelectTest {
 		table.setName("t1");
 		table.setTableName("t1");
 		table.setCatalog("D");
-		table.setDynamicToken("#if($ID)WHERE ID=:ID#end");
+		table.setDynamicClause("#if($ID)WHERE ID=:ID#end");
 		
 		TableKeyColumn id = new TableKeyColumn();
 		id.setColumnName("ID");
