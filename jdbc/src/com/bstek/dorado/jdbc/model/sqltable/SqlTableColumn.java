@@ -4,14 +4,14 @@ import com.bstek.dorado.jdbc.model.table.TableColumn;
 
 public class SqlTableColumn extends TableColumn {
 	
-	private String resolveColumnName;
+	private String nativeColumnName;
 
-	public String getResolveColumnName() {
-		return resolveColumnName;
+	public String getNativeColumnName() {
+		return nativeColumnName;
 	}
 
-	public void setResolveColumnName(String resolveColumnName) {
-		this.resolveColumnName = resolveColumnName;
+	public void setNativeColumnName(String nativeColumnName) {
+		this.nativeColumnName = nativeColumnName;
 	}
 	
 }

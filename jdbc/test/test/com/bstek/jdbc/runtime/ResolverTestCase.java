@@ -274,16 +274,19 @@ public class ResolverTestCase extends ConfigManagerTestSupport {
 			{
 				r.getEntityEnhancer().setState(EntityState.DELETED);
 				resolver.resolve(dataItems);
+				Assert.assertEquals(8, r.size());
 			}{
 				r.getEntityEnhancer().setState(EntityState.NEW);
 				resolver.resolve(dataItems);
-				
+				Assert.assertEquals(8, r.size());
 			}{
 				r.getEntityEnhancer().setState(EntityState.MODIFIED);
 				resolver.resolve(dataItems);
+				Assert.assertEquals(8, r.size());
 			}{
 				r.getEntityEnhancer().setState(EntityState.DELETED);
 				resolver.resolve(dataItems);
+				Assert.assertEquals(8, r.size());
 			}
 		}
 	}
@@ -309,7 +312,6 @@ public class ResolverTestCase extends ConfigManagerTestSupport {
 			}{
 				r.getEntityEnhancer().setState(EntityState.NEW);
 				resolver.resolve(dataItems);
-				
 			}{
 				r.getEntityEnhancer().setState(EntityState.MODIFIED);
 				resolver.resolve(dataItems);

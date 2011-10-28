@@ -1,5 +1,8 @@
 package com.bstek.dorado.jdbc.model.sqltable;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.data.variant.Record;
@@ -49,25 +52,27 @@ public class SqlTableSqlGenerator implements SqlGenerator {
 		
 		Record record = operation.getRecord();
 		Record sRecord = new Record();
+		Map<String, String> propertyMap = new HashMap<String, String>();
 		for (Column c: sqlTable.getAllColumns()) {
 			SqlTableColumn column = (SqlTableColumn)c;
-			if (column.isInsertable()) {
-				String columnName = column.getResolveColumnName();
-				if (StringUtils.isEmpty(columnName)) {
-					columnName = column.getColumnName();
-				}
-				Column tableColumn = table.getColumn(columnName);
-				String propertyName = tableColumn.getPropertyName();
-				if (StringUtils.isNotEmpty(propertyName)) {
-					Object value = record.get(column.getPropertyName());
-					sRecord.put(propertyName, value);
+			String columnName = column.getNativeColumnName();
+			String propertyName = column.getPropertyName();
+			if (StringUtils.isNotEmpty(columnName) && StringUtils.isNotEmpty(propertyName)) {
+				if (column.isInsertable()) {
+					Column tableColumn = table.getColumn(columnName);
+					String tpn = tableColumn.getPropertyName();
+					if (StringUtils.isNotEmpty(tpn)) {
+						Object value = record.get(propertyName);
+						sRecord.put(tpn, value);
+						propertyMap.put(propertyName, tpn);
+					}
 				}
 			}
 		}
 		
 		JdbcRecordOperation sOperation = new JdbcRecordOperation(table, sRecord, operation.getJdbcContext());
 		SqlGenerator generator = JdbcUtils.getSqlGenerator(table);
-		operation.setSubstitute(sOperation);
+		operation.setSubstitute(sOperation, propertyMap);
 		return generator.insertSql(sOperation);
 	}
 
@@ -79,25 +84,27 @@ public class SqlTableSqlGenerator implements SqlGenerator {
 		
 		Record record = operation.getRecord();
 		Record sRecord = new Record();
+		Map<String, String> propertyMap = new HashMap<String, String>();
 		for (Column c: sqlTable.getAllColumns()) {
 			SqlTableColumn column = (SqlTableColumn)c;
-			if (column.isUpdatable()) {
-				String columnName = column.getResolveColumnName();
-				if (StringUtils.isEmpty(columnName)) {
-					columnName = column.getColumnName();
-				}
-				Column tableColumn = table.getColumn(columnName);
-				String propertyName = tableColumn.getPropertyName();
-				if (StringUtils.isNotEmpty(propertyName)) {
-					Object value = record.get(column.getPropertyName());
-					sRecord.put(propertyName, value);
+			String columnName = column.getNativeColumnName();
+			String propertyName = column.getPropertyName();
+			if (StringUtils.isNotEmpty(columnName) && StringUtils.isNotEmpty(propertyName)) {
+				if (column.isUpdatable()) {
+					Column tableColumn = table.getColumn(columnName);
+					String sPropertyName = tableColumn.getPropertyName();
+					if (StringUtils.isNotEmpty(sPropertyName)) {
+						Object value = record.get(propertyName);
+						sRecord.put(sPropertyName, value);
+						propertyMap.put(propertyName, sPropertyName);
+					}
 				}
 			}
 		}
 		
 		JdbcRecordOperation sOperation = new JdbcRecordOperation(table, sRecord, operation.getJdbcContext());
 		SqlGenerator generator = JdbcUtils.getSqlGenerator(table);
-		operation.setSubstitute(sOperation);
+		operation.setSubstitute(sOperation, propertyMap);
 		return generator.updateSql(sOperation);
 	}
 
@@ -109,25 +116,27 @@ public class SqlTableSqlGenerator implements SqlGenerator {
 		
 		Record record = operation.getRecord();
 		Record sRecord = new Record();
+		Map<String, String> propertyMap = new HashMap<String, String>();
 		for (Column c: sqlTable.getAllColumns()) {
 			SqlTableColumn column = (SqlTableColumn)c;
-			if (column.isInsertable()) {
-				String columnName = column.getResolveColumnName();
-				if (StringUtils.isEmpty(columnName)) {
-					columnName = column.getColumnName();
-				}
-				Column tableColumn = table.getColumn(columnName);
-				String propertyName = tableColumn.getPropertyName();
-				if (StringUtils.isNotEmpty(propertyName)) {
-					Object value = record.get(column.getPropertyName());
-					sRecord.put(propertyName, value);
+			String columnName = column.getNativeColumnName();
+			String propertyName = column.getPropertyName();
+			if (StringUtils.isNotEmpty(columnName) && StringUtils.isNotEmpty(propertyName)) {
+				if (column.isInsertable()) {
+					Column tableColumn = table.getColumn(columnName);
+					String sPropertyName = tableColumn.getPropertyName();
+					if (StringUtils.isNotEmpty(sPropertyName)) {
+						Object value = record.get(propertyName);
+						sRecord.put(sPropertyName, value);
+						propertyMap.put(propertyName, sPropertyName);
+					}
 				}
 			}
 		}
 		
 		JdbcRecordOperation sOperation = new JdbcRecordOperation(table, sRecord, operation.getJdbcContext());
 		SqlGenerator generator = JdbcUtils.getSqlGenerator(table);
-		operation.setSubstitute(sOperation);
+		operation.setSubstitute(sOperation, propertyMap);
 		return generator.deleteSql(sOperation);
 	}
 

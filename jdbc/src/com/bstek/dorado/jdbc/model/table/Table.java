@@ -12,7 +12,7 @@ public class Table extends AbstractDbElement {
 	private String tableName;
 	private String catalog;
 	private String schema;
-	private String dynamicToken;
+	private String dynamicClause;
 	
 	private boolean retrieveAfterInsert = false;
 	private boolean retrieveAfterUpdate = false;
@@ -60,8 +60,8 @@ public class Table extends AbstractDbElement {
 		this.schema = schema;
 	}
 
-	public String getDynamicToken() {
-		return dynamicToken;
+	public String getDynamicClause() {
+		return dynamicClause;
 	}
 
 	public boolean isRetrieveAfterInsert() {
@@ -80,8 +80,8 @@ public class Table extends AbstractDbElement {
 		this.retrieveAfterUpdate = retrieveAfterUpdate;
 	}
 
-	public void setDynamicToken(String dynamicToken) {
-		this.dynamicToken = dynamicToken;
+	public void setDynamicClause(String dynamicToken) {
+		this.dynamicClause = dynamicToken;
 	}
 
 	public List<TableColumn> getTableColumns() {

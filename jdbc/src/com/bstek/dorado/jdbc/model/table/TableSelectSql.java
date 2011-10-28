@@ -10,7 +10,7 @@ import com.bstek.dorado.util.Assert;
 
 public class TableSelectSql extends SelectSql {
 	private String columnsToken;
-	private String fromToken;
+	private String tableToken;
 	private String dynamicToken;
 	
 	public String getColumnsToken() {
@@ -21,12 +21,12 @@ public class TableSelectSql extends SelectSql {
 		this.columnsToken = columnsToken;
 	}
 
-	public String getFromToken() {
-		return fromToken;
+	public String getTableToken() {
+		return tableToken;
 	}
 
-	public void setFromToken(String fromToken) {
-		this.fromToken = fromToken;
+	public void setTableToken(String fromToken) {
+		this.tableToken = fromToken;
 	}
 
 	public String getDynamicToken() {
@@ -38,9 +38,9 @@ public class TableSelectSql extends SelectSql {
 	}
 	
 	public String toSQL(Dialect dialect) {
-		Assert.notEmpty(fromToken, "FromToken must not be empty.");
+		Assert.notEmpty(tableToken, "FromToken must not be empty.");
 		SqlBuilder sql = new SqlBuilder();
-		sql.rightSpace(KeyWord.SELECT, columnsToken, KeyWord.FROM).append(fromToken);
+		sql.rightSpace(KeyWord.SELECT, columnsToken, KeyWord.FROM).append(tableToken);
 		
 		if (StringUtils.isNotEmpty(dynamicToken)) {
 			sql.leftSpace(dynamicToken);

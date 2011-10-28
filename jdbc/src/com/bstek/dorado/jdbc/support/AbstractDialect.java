@@ -1,6 +1,7 @@
 package com.bstek.dorado.jdbc.support;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,16 +24,20 @@ import com.bstek.dorado.jdbc.JdbcParameterSource;
 import com.bstek.dorado.jdbc.JdbcRecordOperation;
 import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.key.KeyGenerator;
+import com.bstek.dorado.jdbc.model.Column;
 import com.bstek.dorado.jdbc.model.DbElement;
+import com.bstek.dorado.jdbc.model.table.Table;
 import com.bstek.dorado.jdbc.model.table.TableKeyColumn;
 import com.bstek.dorado.jdbc.sql.DeleteSql;
 import com.bstek.dorado.jdbc.sql.InsertSql;
 import com.bstek.dorado.jdbc.sql.RecordRowMapper;
+import com.bstek.dorado.jdbc.sql.RetrieveSql;
 import com.bstek.dorado.jdbc.sql.SelectSql;
 import com.bstek.dorado.jdbc.sql.ShiftRowMapperResultSetExtractor;
 import com.bstek.dorado.jdbc.sql.SqlBuilder;
 import com.bstek.dorado.jdbc.sql.SqlConstants.KeyWord;
 import com.bstek.dorado.jdbc.sql.SqlGenerator;
+import com.bstek.dorado.jdbc.sql.SqlUtils;
 import com.bstek.dorado.jdbc.sql.UpdateSql;
 import com.bstek.dorado.jdbc.type.JdbcType;
 import com.bstek.dorado.util.Assert;
@@ -190,16 +195,15 @@ public abstract class AbstractDialect implements Dialect {
 	 */
 	protected void doInsert(JdbcRecordOperation operation) {
 		JdbcEnviroment env = operation.getJdbcEnviroment();
-		
-		Dialect dialect = env.getDialect();
 		DbElement dbElement = operation.getDbElement();
 		SqlGenerator generator = JdbcUtils.getSqlGenerator(dbElement);
+		
 		InsertSql insertSql = generator.insertSql(operation);
+		Dialect dialect = env.getDialect();
 		String sql = insertSql.toSQL(dialect);
 		if (logger.isDebugEnabled()) {
 			logger.debug("[INSERT-SQL]" + sql);
 		}
-		JdbcRecordOperation substitute = operation.getSubstitute();
 		
 		NamedParameterJdbcTemplate jdbcTemplate = env.getNamedDao().getNamedParameterJdbcTemplate();
 		TableKeyColumn identityColumn = insertSql.getIdentityColumn();
@@ -207,7 +211,6 @@ public abstract class AbstractDialect implements Dialect {
 			JdbcParameterSource parameterSource = insertSql.getParameterSource();
 			jdbcTemplate.update(sql, parameterSource);
 		} else {
-			
 			JdbcParameterSource parameterSource = insertSql.getParameterSource();
 			GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 			jdbcTemplate.update(sql, parameterSource, keyHolder);
@@ -219,21 +222,18 @@ public abstract class AbstractDialect implements Dialect {
 					value = jdbcType.fromDB(value);
 				}
 				
-				if (substitute != null) {
-					Record record = substitute.getRecord();
-					record.put(propertyName, value);
-				} else {
-					Record record = operation.getRecord();
-					record.put(propertyName, value);
-				}
+				JdbcRecordOperation o = (operation.getSubstitute() == null)? operation: operation.getSubstitute();
+				Record record = o.getRecord();
+				record.put(propertyName, value);
 			}
 		}
 		
-		if (substitute != null) {
-			Record record = operation.getRecord();
-			Record sRecord = substitute.getRecord();
-			record.putAll(sRecord);
+		if(insertSql.isRetrieveAfterExecute()) {
+			JdbcRecordOperation o = (operation.getSubstitute() == null)? operation: operation.getSubstitute();
+			this.retrieve(o.getRecord(), o.getDbElement(), operation.getJdbcEnviroment());
 		}
+		
+		this.sync(operation);
 	}
 	
 	/**
@@ -252,6 +252,13 @@ public abstract class AbstractDialect implements Dialect {
 		}
 		JdbcParameterSource parameterSource = updateSql.getParameterSource();
 		jdbcTemplate.update(sql, parameterSource);
+		
+		if(updateSql.isRetrieveAfterExecute()) {
+			JdbcRecordOperation o = (operation.getSubstitute() == null)? operation: operation.getSubstitute();
+			this.retrieve(o.getRecord(), o.getDbElement(), operation.getJdbcEnviroment());
+		}
+		
+		this.sync(operation);
 	}
 	
 	/**
@@ -271,5 +278,74 @@ public abstract class AbstractDialect implements Dialect {
 		}
 		JdbcParameterSource parameterSource = deleteSql.getParameterSource();
 		jdbcTemplate.update(sql, parameterSource);
+		
+		Assert.isTrue(deleteSql.isRetrieveAfterExecute() == false, "delete sql does not support retrieve operation.");
+		this.sync(operation);
+	}
+	
+	protected void retrieve(Record record, DbElement dbElement, JdbcEnviroment jdbcEnv) {
+		Dialect dialect = jdbcEnv.getDialect();
+		if (dbElement instanceof Table) {
+			Table table = (Table)dbElement;
+			RetrieveSql retrieveSql = new RetrieveSql();
+			retrieveSql.setTableToken(SqlUtils.token(table));
+			
+			List<Column> columnList = new ArrayList<Column>();
+			for(Column column: table.getAllColumns()) {
+				String propertyName = column.getPropertyName();
+				if (column.isSelectable() && record.containsKey(propertyName)) {
+					columnList.add(column);
+					retrieveSql.addColumnToken(column.getColumnName());
+				}
+			}
+			JdbcParameterSource parameterSource = SqlUtils.createJdbcParameter(null);
+			for (TableKeyColumn column: table.getKeyColumns()) {
+				String propertyName = column.getPropertyName();
+				if (column.isSelectable() && record.containsKey(propertyName)) {
+					String columnName = column.getColumnName();
+					Object columnValue = record.get(propertyName);
+					JdbcType jdbcType = column.getJdbcType();
+					if (jdbcType != null) {
+						parameterSource.setValue(columnName, columnValue, jdbcType.getJdbcCode());
+					} else {
+						parameterSource.setValue(columnName, columnValue);
+					}
+					
+					retrieveSql.addKeyToken(columnName, ":"+columnName);
+				}
+			}
+
+			String sql = retrieveSql.toSQL(dialect);
+			if (logger.isDebugEnabled()) {
+				logger.debug("[RETRIEVE-SQL]" + sql);
+			}
+			NamedParameterJdbcTemplate jdbcTemplate = jdbcEnv.getNamedDao().getNamedParameterJdbcTemplate();
+			List<Record> rs = jdbcTemplate.query(sql, parameterSource, new RecordRowMapper(columnList));
+			Assert.isTrue(rs.size() == 1, "[" + rs.size() +"] records retrieved, only 1 excepted.");
+			
+			Record rRecord = rs.get(0);
+			record.putAll(rRecord);
+		} else {
+			throw new UnsupportedOperationException("[" + dbElement.getName() + "] does not support retrieve operation.");
+		}
+	}
+	
+	protected void sync(JdbcRecordOperation operation) {
+		JdbcRecordOperation sOperation = operation.getSubstitute();
+		if (sOperation != null) {
+			Map<String, String> propertyMap = operation.getPropertyMap();
+			if (propertyMap != null) {
+				Record record = operation.getRecord();
+				Record sRecord = sOperation.getRecord();
+				
+				Iterator<String> keyItr = propertyMap.keySet().iterator();
+				while (keyItr.hasNext()) {
+					String propertyName = keyItr.next();
+					String sPropertyName = propertyMap.get(propertyName);
+					Object sValue = sRecord.get(sPropertyName);
+					record.put(propertyName, sValue);
+				}
+			}
+		}
 	}
 }

@@ -9,6 +9,8 @@ public class TableKeyColumn extends Column {
 
 	private Object keyParameter;
 	
+	private boolean updatable = false;
+	
 	public KeyGenerator<?> getKeyGenerator() {
 		return keyGenerator;
 	}
@@ -23,6 +25,14 @@ public class TableKeyColumn extends Column {
 
 	public void setKeyParameter(Object keyParameter) {
 		this.keyParameter = keyParameter;
+	}
+
+	public boolean isUpdatable() {
+		return updatable;
+	}
+
+	public void setUpdatable(boolean updatable) {
+		this.updatable = updatable;
 	}
 	
 }
