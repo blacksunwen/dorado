@@ -296,7 +296,6 @@ dorado.widget.ViewPortList = $extend(dorado.widget.AbstractList, /** @scope dora
 		
 		var bookmark = it.createBookmark(), viewPortFilled = false, reverseFlag = true;
 		if (reverse) {
-			debugger;
 			it.next();
 			reverseFlag = it.hasNext();
 			reverseFlag ? it.next() : it.last();
