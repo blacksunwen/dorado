@@ -14,6 +14,7 @@ public class StandaloneRuleSetExporterTest extends TestCase {
 	 * @throws Exception
 	 */
 	public void test() throws Exception {
+		@SuppressWarnings("deprecation")
 		RuleSet ruleSet = StandaloneRuleSetExporter.getRuleSet(System
 				.getenv("DORADO7_WORKSPACE") + "/sample-center/web/WEB-INF/dorado-home");
 		List<PackageInfo> packageInfos = ruleSet.getPackageInfos();
