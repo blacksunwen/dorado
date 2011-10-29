@@ -489,7 +489,7 @@
 			}
 		},
 		
-		onScroll: function() {
+		onScroll: function() {			
 			if (this._scrollMode == "simple") return;
 			
 			var container = this._container;

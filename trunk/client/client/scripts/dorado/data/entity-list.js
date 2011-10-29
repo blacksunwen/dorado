@@ -990,6 +990,7 @@
 						else break;
 					}
 				}
+				delete this._nextIndex;
 			} else {
 				var result = this._findFromPage(pageNo, reverse);
 				if (reverse) {

@@ -272,7 +272,7 @@ dorado.Toolkits = {
 	cancelDelayedAction: function(owner, actionId) {
 		if (owner[actionId]) {
 			clearTimeout(owner[actionId]);
-			delete owner[actionId];
+			owner[actionId] = undefined;
 			return true;
 		}
 		return false;

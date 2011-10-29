@@ -5,6 +5,10 @@
 	height: 20px;
 }
 
+.d-ie6 .i-checkbox, .d-ie7 .i-checkbox {
+	position: relative;
+}
+
 .i-checkbox .icon{
 	float: left;
 	width: 16px;
@@ -15,6 +19,12 @@
 	vertical-align: middle;
 	white-space: nowrap;
 	line-height: 20px;
+}
+
+.d-ie6 .i-checkbox .caption, .d-ie7 .i-checkbox .caption {
+	left: 16px;
+	top: 0;
+	position: absolute;
 }
 
 .i-checkbox-icononly{
