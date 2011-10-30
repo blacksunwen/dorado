@@ -9,7 +9,6 @@
 	 */
 	dorado.widget.SpinnerTrigger = $extend(dorado.widget.Trigger, /** @scope dorado.widget.SpinnerTrigger.prototype */ {
 		$className: "dorado.widget.SpinnerTrigger",
-		_inherentClassName: "i-spinner-trigger",
 		
 		ATTRIBUTES: /** @scope dorado.widget.SpinnerTrigger.prototype */ {
 			className: {
@@ -19,9 +18,9 @@
 		
 		createTriggerButton: function(editor) {
 			var trigger = this, control = new dorado.widget.HtmlContainer({
+				exClassName:  (trigger._inherentClassName || '') + " " + (trigger._className || ''),
 				content: {
 					tagName: "div",
-					className: trigger._className,
 					content: [{
 						tagName: "div",
 						className: "up-button",
@@ -104,6 +103,7 @@
 			$invokeSuper.call(this, arguments);
 			this._triggerChanged = true;
 		},
+		
 		getSpinnerTriggers: function() {
 			if (!this._showSpinTrigger) return [];
 			if (!this._spinTrigger) {
@@ -112,6 +112,7 @@
 			}
 			return this._spinTrigger;
 		},
+		
 		createDom: function() {
 			var dom = $invokeSuper.call(this, arguments), self = this;
 			jQuery(dom).addClassOnHover(this._className + "-hover", null, function() {
@@ -158,6 +159,11 @@
 			value: {
 				getter: function() {
 					return parseInt(this.get("text"), 10);
+				},
+				setter: function(value) {
+					value = this.getValidValue(value);
+					this._value = value;
+					this.doSetText((value != null) ? (value + '') : '');
 				}
 			},
 			
@@ -182,9 +188,11 @@
 			}
 			return textDom;
 		},
+		
 		doGetText: function() {
 			return (this._textDom) ? this._textDom.value : this._text;
 		},
+		
 		doSetText: function(text) {
 			if (this._textDom) {
 				this._textDom.value = text;
@@ -192,6 +200,7 @@
 				this._text = text;
 			}
 		},
+		
 		doStepUp: function() {
 			var spinner = this;
 			var value = parseInt(spinner.get("value"), 10);
@@ -199,6 +208,7 @@
 				spinner.set("value", value + spinner._step);
 			}
 		},
+		
 		doStepDown: function() {
 			var spinner = this;
 			var value = parseInt(spinner.get("value"), 10);
@@ -206,20 +216,25 @@
 				spinner.set("value", value - spinner._step);
 			}
 		},
-		post: function(force) {
-			var text = this.get("text"), value = text ? parseInt(text) : null;
+		
+		getValidValue: function(value) {
 			if (value != null) {
 				if (value > this._max) value = this._max;
 				else if (value < this._min) value = this._min;
-				this._value = value;
-				this.doSetText(value + '');
-			} else {
-				this._value = value;
-				this.doSetText('');
+			}
+			return value;
+		},
+		
+		post: function(force) {
+			var text = this.get("text"), value = text ? parseInt(text) : null;
+			var value2 = this.getValidValue(value);
+			if (value2 != value) {
+				this.set("value", value2);
 			}
 			
 			$invokeSuper.call(this, arguments);
 		},
+		
 		doOnFocus: function() {
 			$invokeSuper.call(this, arguments);
 			
@@ -317,6 +332,7 @@
 			this._currentSlotIndex = 0;
 			$invokeSuper.call(this, arguments);
 		},
+		
 		initSlotConfigs: function() {
 			var slotConfigs = this.slotConfigs, slotMap = this._slotMap = {}, values = this._values = [];
 			for (var i = 0, j = slotConfigs.length; i < j; i++) {
@@ -327,6 +343,7 @@
 				values[i] = config.defaultValue;
 			}
 		},
+		
 		createTextDom: function() {
 			var spinner = this, doms = {}, dom = $DomUtils.xCreate({
 				tagName: "div",
@@ -364,6 +381,7 @@
 			}
 			return dom;
 		},
+		
 		/**
 		 * 取得某个槽的取值范围。
 		 * @protected
@@ -376,6 +394,7 @@
 			}
 			return this.slotConfigs[slotIndex].range;
 		},
+		
 		/**
 		 * 根据槽的名称返回槽的序号。<br>
 		 * 如果槽的名称无效则返回-1。
@@ -387,6 +406,7 @@
 			var config = this._slotMap[name];
 			return config ? this.slotConfigs.indexOf(config) : -1;
 		},
+		
 		/**
 		 * 取得某个槽的值。
 		 * @protected
@@ -400,6 +420,7 @@
 			}
 			return this._values[slotIndex];
 		},
+		
 		/**
 		 * 为某个槽设置值。
 		 * @protected
@@ -429,6 +450,7 @@
 			
 			dorado.Toolkits.setDelayedAction(spinner, "$refreshDelayTimerId", spinner.refresh, 50);
 		},
+		
 		/**
 		 * 取得某个槽的显示值。
 		 * @protected
@@ -463,6 +485,7 @@
 			}
 			return text;
 		},
+		
 		/**
 		 * 向上微调，当用户点击向上按钮的时候会调用该方法。
 		 * @protected
@@ -479,6 +502,7 @@
 			else if (maxValue != null && value > maxValue) value = minValue;
 			spinner.doSetSlotValue(currentSlotIndex, value || 0);
 		},
+		
 		/**
 		 * 向下微调，当用户点击向下按钮的时候会调用该方法。
 		 * @protected
@@ -495,6 +519,7 @@
 			if (minValue != null && value < minValue) value = maxValue;
 			spinner.doSetSlotValue(currentSlotIndex, value || 0);
 		},
+		
 		doOnKeyDown: function(event) {
 			var spinner = this, retval = true;
 			switch (event.keyCode) {
@@ -588,6 +613,7 @@
 			if (retval === false) spinner._neverEdit = false;
 			return retval;
 		},
+		
 		/**
 		 * 切换当前编辑的槽。
 		 * @protected
@@ -624,6 +650,7 @@
 				return oldSlotIndex;
 			}
 		},
+		
 		/**
 		 * 当某个槽失去焦点以后，会调用此方法。<br>
 		 * 此方法会判断失去焦点的槽的值是不是空，如果是空，则把defaultValue赋值给该槽。
@@ -636,6 +663,7 @@
 				spinner.doSetSlotValue(slotIndex, spinner.slotConfigs[slotIndex].defaultValue);
 			}
 		},
+		
 		doOnBlur: function() {
 			var spinner = this, currentSlotIndex = spinner._currentSlotIndex, doms = spinner._doms;
 			if (currentSlotIndex >= 0) {
@@ -644,6 +672,7 @@
 			}
 			this.post(true);
 		},
+		
 		doOnFocus: function() {
 			var spinner = this, currentSlotIndex = spinner._currentSlotIndex, doms = spinner._doms;
 			spinner._neverEdit = true;
@@ -651,6 +680,7 @@
 				$fly(doms["slot_" + currentSlotIndex]).addClass(spinner.slotConfigs[currentSlotIndex].className + "-selected");
 			}
 		},
+		
 		refreshDom: function() {
 			$invokeSuper.call(this, arguments);
 			var spinner = this, doms = spinner._doms;
@@ -658,6 +688,7 @@
 				$fly(doms["slot_" + i]).html(spinner.doGetSlotText(i));
 			}
 		},
+		
 		doGetText: function() {
 			var spinner = this, slotConfigs = spinner.slotConfigs, text = "";
 			for (var i = 0; i < slotConfigs.length; i++) {
@@ -894,10 +925,12 @@
 			this.slotConfigs = [];
 			$invokeSuper.call(this, arguments);
 		},
+		
 		createTextDom: function() {
 			if (!this._typeChanged) this.set("type", "time");
 			return $invokeSuper.call(this, arguments);
 		},
+		
 		doSetSlotValue: function(slotIndex, value) {
 			if (value == null) {
 				$invokeSuper.call(this, arguments);
@@ -938,6 +971,7 @@
 				$invokeSuper.call(this, arguments);
 			}
 		},
+		
 		doGetSlotRange: function(slotIndex) {
 			var spinner = this, slotName;
 			if (typeof slotIndex == "number") {
@@ -952,6 +986,7 @@
 				return $invokeSuper.call(this, arguments);
 			}
 		},
+		
 		doSetText: function(text) {
 			var format;
 			switch (this._type) {
@@ -1090,6 +1125,7 @@
 			if (text) this.slotConfigs.peek().suffix = text;
 			this.initSlotConfigs();
 		},
+		
 		doSetText: function(text) {
 			var value = null;
 			if (text) {
