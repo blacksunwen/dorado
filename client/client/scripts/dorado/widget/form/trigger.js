@@ -6,16 +6,17 @@
  */
 dorado.widget.Trigger = $extend(dorado.widget.Component, /** @scope dorado.widget.Trigger.prototype */ {
 	$className: "dorado.widget.Trigger",
+	_inherentClassName: "i-trigger",
 	
 	ATTRIBUTES: /** @scope dorado.widget.Trigger.prototype */ {
 	
 		/**
 		 * CSS类名。
-		 * <p>默认情况下Trigger对应的按钮总是会带有d-trigger的CSS Class，此处定义的CSS Class除d-trigger的额外的CSS Class。</p>
 		 * @type String
 		 * @attribute writeBeforeReady
 		 */
 		className: {
+			defaultValue: "d-trigger",
 			writeBeforeReady: true
 		},
 		
@@ -91,7 +92,7 @@ dorado.widget.Trigger = $extend(dorado.widget.Component, /** @scope dorado.widge
 	createTriggerButton: function(editor) {
 		var trigger = this;
 		var control = new dorado.widget.SimpleIconButton({
-			exClassName: "i-trigger d-trigger " + (trigger._className || ''),
+			exClassName:  (trigger._inherentClassName || '') + " " + (trigger._className || ''),
 			icon: trigger._icon,
 			iconClass: trigger._iconClass,
 			onClick: function() {
