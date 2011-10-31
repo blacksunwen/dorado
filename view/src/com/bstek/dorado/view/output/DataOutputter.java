@@ -266,7 +266,7 @@ public class DataOutputter implements Outputter {
 				if (propertyDef instanceof LazyPropertyDef) {
 					LazyPropertyDef lazyPropertyDef = (LazyPropertyDef) propertyDef;
 					if (lazyPropertyDef.isActiveAtClient()
-							&& !entity.isPropertyHasRead(property)) {
+							&& !entity.isLoaded(property)) {
 						continue;
 					}
 				}

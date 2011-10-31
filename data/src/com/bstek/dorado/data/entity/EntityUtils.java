@@ -393,6 +393,27 @@ public abstract class EntityUtils {
 		return new EntityIterator<E>(entities, filterType);
 	}
 
+	public static boolean isLoaded(Object entity, String property) {
+		EntityEnhancer entityEnhancer = getEntityEnhancer(entity);
+		if (entityEnhancer != null) {
+			return entityEnhancer.isLoaded(property);
+		} else {
+			throwNotValidEntity();
+			return false;
+		}
+	}
+
+	public static boolean loadIfNecessary(Object entity, String property)
+			throws Throwable {
+		EntityEnhancer entityEnhancer = getEntityEnhancer(entity);
+		if (entityEnhancer != null) {
+			return entityEnhancer.loadIfNecessary(entity, property);
+		} else {
+			throwNotValidEntity();
+			return false;
+		}
+	}
+
 	@SuppressWarnings("unchecked")
 	private static <T> T getValue(Object entity, String property,
 			boolean ignoreInterceptors) {

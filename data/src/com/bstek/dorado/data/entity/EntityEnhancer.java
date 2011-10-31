@@ -234,6 +234,44 @@ public abstract class EntityEnhancer {
 		oldValues = null;
 	}
 
+	public boolean isLoaded(String property) {
+		if (dataType != null) {
+			PropertyDef propertyDef = dataType.getPropertyDef(property);
+			if (propertyDef != null && propertyDef instanceof LazyPropertyDef) {
+				return isPropertyHasRead(property);
+			} else {
+				throw new IllegalArgumentException("Property \"" + property
+						+ "\" does not exists or is not \"LazyPropertyDef\".");
+			}
+		} else {
+			throw new IllegalArgumentException("DataType undefined.");
+		}
+	}
+
+	public boolean loadIfNecessary(Object entity, String property)
+			throws Throwable {
+		if (dataType != null) {
+			PropertyDef propertyDef = dataType.getPropertyDef(property);
+			if (propertyDef != null && propertyDef instanceof LazyPropertyDef) {
+				boolean hasRead = isPropertyHasRead(property);
+				if (hasRead) {
+					EntityEnhancer.disableGetterInterception();
+					try {
+						readProperty(entity, property, false);
+					} finally {
+						EntityEnhancer.enableGetterInterception();
+					}
+				}
+				return !hasRead;
+			} else {
+				throw new IllegalArgumentException("Property \"" + property
+						+ "\" does not exists or is not \"LazyPropertyDef\".");
+			}
+		} else {
+			throw new IllegalArgumentException("DataType undefined.");
+		}
+	}
+
 	protected void markPropertyHasRead(String property) {
 		if (propertiesHasRead == null) {
 			propertiesHasRead = new HashSet<String>();
