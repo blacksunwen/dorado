@@ -224,13 +224,18 @@
 			
 			if (this.initDropDownData) this.initDropDownData(box, editor);
 			
-			var rowList = box.get("control");
+			var rowList = box.get("control"), itemCount = rowList._itemModel.getItemCount();
+			var cellCount = itemCount;
+			if (rowList instanceof dorado.widget.AbstractGrid) {
+				cellCount = rowList.get("dataColumns").length * itemCount;
+			}
+			 
 			if (!this._height) {
-				var useMaxHeight = true, refreshed = false, itemCount = rowList._itemModel.getItemCount();
+				var useMaxHeight = true, refreshed = false;
 				if (this._maxHeight &&
 				(!itemCount || (this._maxHeight / (rowList._rowHeight + 2) > (itemCount + 1)))) {
 					rowList.set({
-						scrollMode: "simple"
+						scrollMode: "lazyRender"
 					});
 					rowList.refresh();
 					refreshed = true;
@@ -241,7 +246,7 @@
 				if (useMaxHeight) {
 					rowList.set({
 						height: this._maxHeight,
-						scrollMode: "viewport"
+						scrollMode:  ((cellCount > 300) ? "viewport" : "lazyRender")
 					});
 					rowList.refresh();
 					refreshed = true;
@@ -251,7 +256,7 @@
 			} else {
 				rowList.set({
 					height: this._height,
-					scrollMode: "viewport"
+					scrollMode: ((cellCount > 300) ? "viewport" : "lazyRender")
 				});
 				rowList.refresh();
 			}

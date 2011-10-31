@@ -422,11 +422,7 @@
 		 * 当编辑器中的触发按钮被点击是激活的方法。
 		 * @param {dorado.widget.Trigger} trigger 被点击的触发器。
 		 */
-		onTriggerClick: function(trigger) {
-			$setTimeout(this, function() {
-				this._textDom.focus();
-			}, 0);
-			
+		onTriggerClick: function(trigger) {			
 			if (this._readOnly || this._readOnly2) return;
 			
 			var eventArg = {
@@ -436,6 +432,10 @@
 			if (eventArg.processDefault) {
 				trigger.execute(this);
 			}
+			
+			$setTimeout(this, function() {
+				this._textDom.focus();
+			}, 0);
 		},
 		
 		doOnKeyDown: function(evt) {
