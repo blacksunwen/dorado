@@ -135,10 +135,20 @@ public class EntityWrapper {
 		}
 	}
 
-	public boolean isPropertyHasRead(String property) {
+	public boolean isLoaded(String property) {
 		if (entityEnhancer != null) {
-			return entityEnhancer.isPropertyHasRead(property);
+			return entityEnhancer.isLoaded(property);
 		} else {
+			throwNotValidEntity();
+			return false;
+		}
+	}
+
+	public boolean loadIfNecessary(String property) throws Throwable {
+		if (entityEnhancer != null) {
+			return entityEnhancer.loadIfNecessary(entity, property);
+		} else {
+			throwNotValidEntity();
 			return false;
 		}
 	}
