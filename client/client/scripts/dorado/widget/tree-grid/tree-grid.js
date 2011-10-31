@@ -276,11 +276,11 @@
 			}
 		},
 		
-		getCellEditor: function(column, entity) {
-			var cellEditor = $invokeSuper.call(this, arguments);
+		getCellEditor: function(column, node) {
+			var cellEditor = $invokeSuper.call(this, [column, node._data]);
 			if (cellEditor) {
-				cellEditor.node = entity;
-				cellEditor.data = entity._data;
+				cellEditor.node = node;
+				cellEditor.data = node._data;
 			}
 			return cellEditor;
 		},

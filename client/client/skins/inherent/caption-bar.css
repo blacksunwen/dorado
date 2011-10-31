@@ -31,16 +31,3 @@
 .i-caption-bar .button-group div{
 	float: left;
 }
-
-.d-ie .i-caption-bar{
-	height: 22px;
-}
-
-.d-ie .i-caption-bar .caption{
-	line-height: 20px;
-	height: 22px;
-}
-
-.d-ie .i-caption-bar .caption-bar-icon{
-	margin-top: 0;
-}

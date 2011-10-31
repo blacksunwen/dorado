@@ -37,6 +37,7 @@ dorado.widget.AbstractEditor = $extend(dorado.widget.Control, /** @scope dorado.
 		 */
 		entity: {
 			setter: function(v) {
+				if (this._dataSet) return;
 				this._entity = v;
 				this.refreshData();
 			}

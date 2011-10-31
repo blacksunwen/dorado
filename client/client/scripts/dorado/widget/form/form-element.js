@@ -861,7 +861,6 @@
 					}
 				} else {
 					config.width = dom.offsetWidth - labelWidth;
-					config.height = editorEl.offsetHeight;
 				}
 				
 				if (config.width > 0) editor._realWidth = config.width;
