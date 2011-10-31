@@ -21,7 +21,7 @@ public class TopViewOutputter extends ViewOutputter {
 		View view = (View) object;
 		view.setId("viewMain");
 		Set<String> dependsPackages = context.getDependsPackages();
-		
+
 		dependsPackages.add("widget");
 		if (WebConfigure.getBoolean("view.debugEnabled")) {
 			dependsPackages.add("debugger");
@@ -29,13 +29,13 @@ public class TopViewOutputter extends ViewOutputter {
 		dependsPackages.add("common");
 
 		Writer writer = context.getWriter();
-		writer.append("jQuery(document).ready(function(){\n").append("try{\n");
+		writer.append("jQuery(document).ready(function(){\n");
+		// writer.append("try{\n");
 		outputView(view, context);
-		writer.append(
-				"var doradoView = document.getElementById(\"doradoView\");\n"
-						+ "if (doradoView) v.replace(doradoView);\n")
-				.append("}\n").append("catch(e){")
-				.append("dorado.Exception.processException(e);}\n");
+		writer.append("var doradoView = document.getElementById(\"doradoView\");\n"
+				+ "if (doradoView) v.replace(doradoView);\n");
+		// writer.append("}\n").append("catch(e){")
+		// .append("dorado.Exception.processException(e);}\n");
 		writer.append("});\n");
 
 		writer.append("$import(\"")
