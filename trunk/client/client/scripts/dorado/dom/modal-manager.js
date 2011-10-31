@@ -69,7 +69,7 @@ dorado.ModalManager = {
                     $fly(maskDom).width(bodyWidth - 2).height(bodyHeight - 4);
                 } else if (dorado.Browser.version == 7) {
                     $fly(maskDom).height(bodyHeight);
-                } else if (dorado.Browser.version == 8) {
+                } else {
                     $fly(maskDom).height(bodyHeight - 4);
                 }
             } else {
