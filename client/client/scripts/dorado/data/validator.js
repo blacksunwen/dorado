@@ -243,16 +243,19 @@ dorado.validator.LengthValidator = $extend(dorado.validator.BaseValidator, /** @
 		}
 	},
 
-	doValidate : function(data, arg) {
-		if( typeof data != "string") return;
+	doValidate: function(data, arg) {
+		if (typeof data == "number") {
+			data += '';
+		}
+		if (typeof data != "string") return;
 		var invalid, message = '', len = data.length;
-		if(this._minLength > 0 && len < this._minLength) {
+		if (this._minLength > 0 && len < this._minLength) {
 			invalid = true;
 			message += $resource("dorado.data.ErrorContentTooShort", this._minLength);
 		}
-		if(this._maxLength > 0 && len > this._maxLength) {
+		if (this._maxLength > 0 && len > this._maxLength) {
 			invalid = true;
-			if(message) message += '\n';
+			if (message) message += '\n';
 			message += $resource("dorado.data.ErrorContentTooLong", this._maxLength);
 		}
 		return message;

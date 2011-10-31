@@ -159,7 +159,14 @@ dorado.util.Common = {
 		if (!s) return Number.NaN;
 		var ns = (s + '').match(/[-\d\.]/g);
 		if (!ns) return Number.NaN;
-		return parseFloat(ns.join(''));
+		var n = parseFloat(ns.join(''));
+		if (n > 9007199254740991) {
+			throw new dorado.ResourceException("dorado.data.ErrorNumberOutOfRangeG");
+		}
+		else if (n < -9007199254740991) {
+			throw new dorado.ResourceException("dorado.data.ErrorNumberOutOfRangeL");
+		}
+		return n;
 	},
 	
 	_classTypeCache: {},

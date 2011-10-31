@@ -606,7 +606,14 @@
 	dorado.$String = new dorado.datatype.StringDataType("String");
 	$parseFloat = dorado.util.Common.parseFloat;
 	$parseInt = function(s) {
-		return Math.round($parseFloat(s));
+		var n = Math.round($parseFloat(s));
+		if (n > 9007199254740991) {
+			throw new dorado.ResourceException("dorado.data.ErrorNumberOutOfRangeG");
+		}
+		else if (n < -9007199254740991) {
+			throw new dorado.ResourceException("dorado.data.ErrorNumberOutOfRangeL");
+		}
+		return n;
 	};
 	$formatFloat = dorado.util.Common.formatFloat;
 
@@ -736,8 +743,7 @@
 
 	function parseBoolean(data, argument) {
 		if(argument == null) {
-			if(data == null)
-				return false;
+			if(data == null) return false;
 			if(data.constructor == String) {
 				return (data.toLowerCase() == "true");
 			} else {
@@ -791,8 +797,7 @@
 		 * @return {boolean} 转换后得到的逻辑对象。
 		 */
 		parse : function(data, argument) {
-			if(data == null)
-				return null;
+			if(data == null) return null;
 			return parseBoolean(data, argument);
 		}
 	});
@@ -821,23 +826,20 @@
 		 * @return {Date} 转换后得到的日期值。
 		 */
 		parse : function(data, argument) {
-			if(data == null || data == '')
-				return null;
-			if( data instanceof Date)
-				return data;
-			if(isFinite(data))
-				return new Date(data);
+			if(data == null || data == '') return null;
+			if( data instanceof Date) return data;
+			if(isFinite(data)) return new Date(data);
 			var date = Date.parseDate(data, argument || $setting["common.defaultDateFormat"]);
 			if(date == null) {
 				var format = $setting["common.defaultTimeFormat"];
 				if(format) {
 					date = Date.parseDate(data, format);
-					if(date == null)
-						data = new Date(data);
+					if(date == null) data = new Date(data);
 				}
 			}
-			if(date == null)
+			if (date == null) {
 				throw new dorado.ResourceException("dorado.data.BadDateFormat", data);
+			}
 			return date;
 		},
 		
