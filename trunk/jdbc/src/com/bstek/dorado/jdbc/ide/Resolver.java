@@ -1,5 +1,6 @@
 package com.bstek.dorado.jdbc.ide;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
@@ -7,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.OutputFormat;
@@ -22,6 +24,7 @@ public abstract class Resolver extends AbstractTextualResolver {
 	public static final String PARAM_SCHE = "SCHE"; //schema
 	public static final String PARAM_TBTY = "TBTY"; //tableType
 	public static final String PARAM_TBNM = "TBNM"; //tableName
+	public static final String PARAM_SQL  = "SQL";
 	public static final String PARAM_GENERATE_CATALOG = "generateCatalog";
 	public static final String PARAM_GENERATE_SCHEMA  = "generateSchema";
 	
@@ -37,6 +40,34 @@ public abstract class Resolver extends AbstractTextualResolver {
 				writer.close();
 			}
 		}
+	}
+	
+	protected String toString(Document document) {
+		StringWriter writer = new StringWriter();
+		OutputFormat format = OutputFormat.createPrettyPrint();
+		format.setEncoding(Constants.DEFAULT_CHARSET);
+
+		XMLWriter xmlWriter = new XMLWriter(writer, format);
+		try {
+			xmlWriter.write(document);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		return writer.toString();
+	}
+	
+	protected String toString(Element element) {
+		StringWriter writer = new StringWriter();
+		OutputFormat format = OutputFormat.createPrettyPrint();
+		format.setEncoding(Constants.DEFAULT_CHARSET);
+
+		XMLWriter xmlWriter = new XMLWriter(writer, format);
+		try {
+			xmlWriter.write(element);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		return writer.toString().trim();
 	}
 	
 	@Override

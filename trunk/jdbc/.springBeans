@@ -12,6 +12,7 @@
 		<config>src/com/bstek/dorado/jdbc/jdbc-type.xml</config>
 		<config>src/com/bstek/dorado/jdbc/jdbc-key-generator.xml</config>
 		<config>src/com/bstek/dorado/jdbc/jdbc-ide.xml</config>
+		<config>src/com/bstek/dorado/jdbc/servlet-context.xml</config>
 	</configs>
 	<configSets>
 	</configSets>

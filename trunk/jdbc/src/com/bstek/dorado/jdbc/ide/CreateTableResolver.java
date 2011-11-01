@@ -38,6 +38,7 @@ public class CreateTableResolver extends Resolver {
 		final ModelGenerator generator = jdbcEnv.getModelGenerator();
 		
 		Document document = generator.createTableDocument(catalog, schema, table, option);
-		return document.asXML();
+		return toString(document);
 	}
+	
 }

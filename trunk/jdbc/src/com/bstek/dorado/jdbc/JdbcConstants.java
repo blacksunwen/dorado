@@ -24,13 +24,19 @@ public class JdbcConstants {
 	
 	public static final String TABLE_NAME = "TABLE_NAME";
 	
+	public static final String TABLE_TYPE = "TABLE_TYPE";
+	
 	public static final String IDENTITY = "IDENTITY";
 	
 	public static final String IS_AUTOINCREMENT = "IS_AUTOINCREMENT";
 	
 	public static final String COLUMN_NAME = "COLUMN_NAME";
 
+	public static final String COLUMN_LABEL = "COLUMN_LABEL";
+	
 	public static final String DATA_TYPE = "DATA_TYPE";
+	
+	public static final String TYPE_NAME = "TYPE_NAME";
 	
 	public static final String YES = "YES";
 	

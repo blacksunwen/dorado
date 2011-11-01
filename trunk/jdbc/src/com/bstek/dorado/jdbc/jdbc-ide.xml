@@ -9,5 +9,6 @@
 	<bean id="dorado.jdbc.ide.listTablesResolver" class="com.bstek.dorado.jdbc.ide.ListTablesResolver"/>
 	<bean id="dorado.jdbc.ide.listTableTypeResolver" class="com.bstek.dorado.jdbc.ide.ListTableTypeResolver"/>
 	<bean id="dorado.jdbc.ide.createTableResolver" class="com.bstek.dorado.jdbc.ide.CreateTableResolver"/>
+	<bean id="dorado.jdbc.ide.createSqlTableResolver" class="com.bstek.dorado.jdbc.ide.CreateSqlTableResolver"/>
 	
 </beans>
