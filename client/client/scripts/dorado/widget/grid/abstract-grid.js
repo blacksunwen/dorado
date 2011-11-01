@@ -2595,7 +2595,7 @@
 				cellSpacing: 0,
 				cellPadding: 0,
 				style: {
-					//width: "100%",	// IE下必须
+					// width: "100%",
 					position: "relative"
 				},
 				content: ["^THEAD", {
