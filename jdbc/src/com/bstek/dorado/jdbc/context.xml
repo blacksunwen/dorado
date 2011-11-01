@@ -38,7 +38,7 @@
 	</bean>
 	<bean id="dorado.jdbc.enviromentManager" class="com.bstek.dorado.jdbc.config.DefaultJdbcEnviromentManager"/>
 	<bean id="dorado.jdbcConfigTemplate" class="com.bstek.dorado.jdbc.config.GlobalDbModelConfig" abstract="true"/>
-	<bean id="dorado.jdbc.defaultModelGenerator" class="com.bstek.dorado.jdbc.support.DefaultModelGenerator"></bean>
+	<bean id="dorado.jdbc.defaultModelGenerator" class="com.bstek.dorado.jdbc.support.DefaultModelGenerator"/>
 	<bean id="dorado.jdbcEnvTemplate" class="com.bstek.dorado.jdbc.JdbcEnviroment" abstract="true">
 		<property name="modelGenerator" ref="dorado.jdbc.defaultModelGenerator"/>
 	</bean>

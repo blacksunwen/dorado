@@ -13,17 +13,22 @@ import com.bstek.dorado.jdbc.type.JdbcType;
 public class DefaultModelGenerator extends AbstractModelGenerator {
 
 	@Override
-	protected String columnName(Map<String,String> column, Map<String,String> table, JdbcEnviroment jdbcEnv) {
-		return column.get(JdbcConstants.COLUMN_NAME);
+	protected String columnName(Map<String,String> column, JdbcEnviroment jdbcEnv) {
+		String label = column.get(JdbcConstants.COLUMN_LABEL);
+		if (StringUtils.isEmpty(label)) {
+			return column.get(JdbcConstants.COLUMN_NAME);
+		} else {
+			return label;
+		}
 	}
 	
 	@Override
-	protected String propertyName(Map<String,String> column, Map<String,String> table, JdbcEnviroment jdbcEnv) {
-		return columnName(column, table, jdbcEnv);
+	protected String propertyName(Map<String,String> column, JdbcEnviroment jdbcEnv) {
+		return columnName(column, jdbcEnv);
 	}
 	
 	@Override
-	protected String keyGenerator(Map<String,String> column, Map<String,String> table, JdbcEnviroment jdbcEnv) {
+	protected String keyGenerator(Map<String,String> column, JdbcEnviroment jdbcEnv) {
 		if (JdbcConstants.YES.equalsIgnoreCase(column.get(JdbcConstants.IS_AUTOINCREMENT))) {
 			return JdbcConstants.IDENTITY;
 		} else {
@@ -32,7 +37,7 @@ public class DefaultModelGenerator extends AbstractModelGenerator {
 	}
 	
 	@Override
-	protected String jdbcType(Map<String,String> column, Map<String,String> table, JdbcEnviroment jdbcEnv) {
+	protected String jdbcType(Map<String,String> column, JdbcEnviroment jdbcEnv) {
 		String dataType = column.get(JdbcConstants.DATA_TYPE);
 		if (StringUtils.isNotEmpty(dataType)) {
 			int code = Integer.valueOf(dataType);

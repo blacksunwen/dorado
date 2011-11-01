@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	<bean parent="dorado.resolverRegister">
+		<property name="url" value="/dorado/jdbc/ide/list-envs.html" />
+		<property name="resolver">
+			<ref bean="dorado.jdbc.ide.listEnviromentResolver"/>
+		</property>
+	</bean>
+	
+	<bean parent="dorado.resolverRegister">
+		<property name="url" value="/dorado/jdbc/ide/list-catalogs.html" />
+		<property name="resolver">
+			<ref bean="dorado.jdbc.ide.listCatalogResolver"/>
+		</property>
+	</bean>
+	
+	<bean parent="dorado.resolverRegister">
+		<property name="url" value="/dorado/jdbc/ide/list-schemas.html" />
+		<property name="resolver">
+			<ref bean="dorado.jdbc.ide.listSchemaResolver"/>
+		</property>
+	</bean>
+	
+	<bean parent="dorado.resolverRegister">
+		<property name="url" value="/dorado/jdbc/ide/list-table-types.html" />
+		<property name="resolver">
+			<ref bean="dorado.jdbc.ide.listTableTypeResolver"/>
+		</property>
+	</bean>
+	
+	<bean parent="dorado.resolverRegister">
+		<property name="url" value="/dorado/jdbc/ide/list-tables.html" />
+		<property name="resolver">
+			<ref bean="dorado.jdbc.ide.listTablesResolver"/>
+		</property>
+	</bean>
+	
+	<bean parent="dorado.resolverRegister">
+		<property name="url" value="/dorado/jdbc/ide/create-table.html" />
+		<property name="resolver">
+			<ref bean="dorado.jdbc.ide.createTableResolver"/>
+		</property>
+	</bean>
+	
+	<bean parent="dorado.resolverRegister">
+		<property name="url" value="/dorado/jdbc/ide/create-sqltable.html" />
+		<property name="resolver">
+			<ref bean="dorado.jdbc.ide.createSqlTableResolver"/>
+		</property>
+	</bean>
+</beans>
