@@ -37,14 +37,15 @@ public class TableParser extends DbElementParser {
 			String catalog = tableDef.getCatalog();
 			String schema = tableDef.getSchema();
 			String tableName = tableDef.getTableName();
-			Map<String,String> table = generator.singleTable(jdbcEnv, catalog, schema, tableName);
+			Map<String,String> tableMeta = generator.singleTable(jdbcEnv, catalog, schema, tableName);
 			
 			List<Map<String,String>> columnList = generator.listColumns(jdbcEnv, catalog, schema, tableName);
-			for (Map<String,String> column: columnList) {
-				String columnName = column.get(JdbcConstants.COLUMN_NAME);
+			for (Map<String,String> columnMeta: columnList) {
+				String columnName = columnMeta.get(JdbcConstants.COLUMN_NAME);
 				ColumnDefinition columnDef = columnMap.get(columnName);
 				if (columnDef == null) {
-					columnDef = generator.column(table, column, jdbcEnv);
+					Map<String,String> columnProperties = generator.columnProperties(tableMeta, columnMeta, jdbcEnv);
+					columnDef = generator.createColumnDefinition(tableMeta, columnProperties, jdbcEnv);
 					if (columnDef != null) {
 						tableDef.addInitOperation(columnDef);
 					}
