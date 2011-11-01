@@ -1,6 +1,6 @@
 (function() {
     dorado.widget.htmleditor = {
-        //,'Video','Code'
+        //'Code'
         fullToolbars: [
             ['FullScreen','Source','|','Undo','Redo','|',
              'Bold','Italic','Underline','StrikeThrough','Superscript','Subscript','RemoveFormat','FormatMatch','|',
@@ -302,40 +302,38 @@
         doOnBlur: function() {
             var editor = this;
             editor._lastPostValue = editor._value;
-            setTimeout(function() {
-                editor._value = editor.get("content");
-                editor._dirty = true;
-                try {
-                    editor.post();
-                } catch (e) {
-                    editor._value = editor._lastPostValue;
-                    editor._dirty = false;
-                    throw e;
-                }
-                editor.refresh();
-            }, 100);
+            editor._value = editor.get("content");
+            editor._dirty = true;
+            try {
+                editor.post();
+            } catch (e) {
+                editor._value = editor._lastPostValue;
+                editor._dirty = false;
+                throw e;
+            }
+            editor.refresh();
             //editor.fireEvent("onValueChange", editor);
         },
         doOnReadOnlyChange: function(readOnly) {
-            var editor = this, riche = editor._editor;
+            var htmleditor = this, editor = htmleditor._editor;
             if (readOnly === undefined) {
-                readOnly = editor._readOnly || editor._readOnly2;
+                readOnly = htmleditor._readOnly || htmleditor._readOnly2;
             }
-            if (!riche || !riche.document) return;
+            if (!editor || !editor.document) return;
             if (readOnly) {
                 if (dorado.Browser.msie) {
-                    riche.document.body.contentEditable = false;
+                    editor.document.body.contentEditable = false;
                 } else {
-                    riche.document.body.contentEditable = false;
+                    editor.document.body.contentEditable = false;
                 }
             } else {
                 if (dorado.Browser.msie) {
-                    riche.document.body.contentEditable = true;
+                    editor.document.body.contentEditable = true;
                 } else {
-                    riche.document.body.contentEditable = true;
+                    editor.document.body.contentEditable = true;
                 }
             }
-            editor.checkStatus();
+            htmleditor.checkStatus();
         },
         post: function() {
             try {
@@ -367,7 +365,13 @@
                 minFrameHeight: 100,
                 defaultFontFamily: htmleditor._defaultFontFamily,
                 defaultFontSize: htmleditor._defaultFontSize,
-                iframeCssUrl: $url(">skin>/html-editor/iframe.css")//给iframe样式的路径
+                iframeCssUrl: $url(">skin>/html-editor/iframe.css"),//给iframe样式的路径,
+                selectedTdClass : 'selectTdClass',
+                autoHeightEnabled: false,
+                removeFormatTags : 'b,big,code,del,dfn,em,font,i,ins,kbd,q,samp,small,span,strike,strong,sub,sup,tt,u,var',    //清除格式删除的标签
+                removeFormatAttributes : 'class,style,lang,width,height,align,hspace,valign',        //清除格式删除的属性
+                enterTag : 'p',//编辑器回车标签。p或br
+                pasteplain : 0
             };
             var editor = new baidu.editor.Editor(option);
             this._editor = editor;
@@ -470,6 +474,7 @@
             });
             editor.addListener('selectionchange', function (t, evt) {
                 dorado.widget.setFocusedControl(htmleditor);
+
                 var html = '', img = editor.selection.getRange().getClosedNode(),
                     imglink = baidu.editor.dom.domUtils.findParentByTagName(img, "a", true);
 
@@ -669,6 +674,7 @@
                     try {
                         plugin.checkStatus();
                     } catch(e) {//fix a bug for ie.
+                        if (console.log) console.log(e);
                     }
                 }
             }
@@ -692,10 +698,11 @@
                 var oldReadOnly = editor._oldReadOnly;
                 editor._oldReadOnly = !!readOnly;
 
-                editor._value = value;
-                if (editor._editor && editor._editor.getContent() != value) {
+                if (editor._editor && editor._value != value) {
                     editor._editor.setContent(value || "");
                 }
+
+                editor._value = value;
                 editor._readOnly2 = readOnly;
                 if (oldReadOnly === undefined || oldReadOnly !== readOnly) {
                     editor.doOnReadOnlyChange(!!readOnly);
@@ -788,6 +795,9 @@
             var plugin = this, heditor = plugin._htmlEditor, editor = plugin._htmlEditor._editor, result;
             if (heditor._readOnly || heditor._readOnly2) {
                 plugin.set("status", "disable");
+                return;
+            } else if (!plugin._command) {
+                plugin.set("status", "enable");
                 return;
             }
             if (plugin._statusToggleable) {
@@ -898,6 +908,9 @@
                         modifySize: false,
                         callback: function(docSize) {
                             editor._maximized = true;
+                            editor._dirty = true;
+                            editor._value = editor._editor.getContent();
+                            editor.post();
                             editor.set(docSize);
                             editor.resetDimension();
                             editor.refresh();
@@ -910,6 +923,9 @@
                             editor._maximized = false;
                             editor._width = editor._originalWidth;
                             editor._height = editor._originalHeight;
+                            editor._dirty = true;
+                            editor._value = editor._editor.getContent();
+                            editor.post();
                             if (!editor._width) {
                                 $fly(editor._dom).css("width", "");
                             }
@@ -1238,10 +1254,10 @@
 
         me.addListener('contextmenu', function(type, evt) {
             var element = evt.target || evt.srcElement, iframe = getWindow(element).frameElement;
-            var frameOffset = $fly(iframe).offset();
+            var frameOffset = $fly(iframe).offset(), iframeBody = iframe.contentWindow.document.body;
             var offset = {
-                left: evt.pageX + frameOffset.left,
-                top: evt.pageY + frameOffset.top
+                left: evt.pageX + frameOffset.left - iframeBody.scrollLeft,
+                top: evt.pageY + frameOffset.top - iframeBody.scrollTop
             };
 
             if (!menu) {
@@ -1288,7 +1304,9 @@
                 }
 
                 menu = new dorado.widget.Menu({
-                    items: contextItems
+                    items: contextItems,
+                    showAnimateType: "none",
+                    hideAnimateType: "none"
                 });
             }
 
