@@ -245,7 +245,7 @@ dorado.Core = {
 	 * @example
 	 * var div = $create("DIV"); // 相当于document.createElement("DIV")
 	 */
-	window.$create = (dorado.Browser.msie) ? document.createElement : function(arg) {
+	window.$create = (dorado.Browser.msie && dorado.Browser.version < '9') ? document.createElement : function(arg) {
 		return document.createElement(arg);
 	};
 	
