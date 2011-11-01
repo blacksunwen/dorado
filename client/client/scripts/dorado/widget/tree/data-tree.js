@@ -247,8 +247,11 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 			}
 
 			if (entity instanceof dorado.EntityList) {
-				for (var it = entity.iterator(); it.hasNext();) {
-					addNode(it.next());
+				for (var it = entity.iterator({
+					currentPage: true
+				}); it.hasNext();) {
+					var d = it.next();
+					addNode(d);
 					startIndex++;
 				}
 				return startIndex;
@@ -602,18 +605,15 @@ dorado.widget.DataTree = $extend([dorado.widget.Tree, dorado.widget.DataControl]
 
 	refresh: function() {
 		if (this._dataSet) {
-			var shouldPrepareChildren = !this._root._childrenPrepared;
-			if (!shouldPrepareChildren) {
-				var data = this.getBindingData({
-					firstResultOnly: true,
-					acceptAggregation: true
-				});
-				if (this._data != data) {
-					shouldPrepareChildren = true;
-					this._data = data;
-				}
-			}
-			if (shouldPrepareChildren) {
+			var data = this.getBindingData({
+				firstResultOnly: true,
+				acceptAggregation: true
+			});
+			
+			if (!this._root._childrenPrepared || this._data != data ||
+				(this._data && this._data.pageNo != (this._pageNo || 0))) {
+				this._data = data;
+				this._pageNo = (data ? data.pageNo : 0);
 				this._root._prepareChildren(dorado._NULL_FUNCTION);
 			}
 		}
@@ -634,6 +634,7 @@ dorado.widget.DataTree = $extend([dorado.widget.Tree, dorado.widget.DataControl]
 			case dorado.widget.DataSet.MESSAGE_CURRENT_CHANGED:
 				if (this._data) {
 					if (dorado.DataUtil.isOwnerOf(this._data, arg.entityList)) return true;
+					if (this._data == arg.entityList && this._pageNo != arg.entityList.pageNo) return true;
 				}
 				return false;
 
@@ -650,9 +651,7 @@ dorado.widget.DataTree = $extend([dorado.widget.Tree, dorado.widget.DataControl]
 			}
 			
 			case dorado.widget.DataSet.MESSAGE_CURRENT_CHANGED:{
-				if (this.getBindingData() != this._data) {
-					this.refresh(true);
-				}
+				this.refresh(true);
 				break;
 			}
 			
@@ -667,7 +666,7 @@ dorado.widget.DataTree = $extend([dorado.widget.Tree, dorado.widget.DataControl]
 				break;
 			}
 			
-			case dorado.widget.DataSet.MESSAGE_ENTITY_STATE_CHANGED: {			
+			case dorado.widget.DataSet.MESSAGE_ENTITY_STATE_CHANGED: {
 				this.refreshNodeByEntity(arg.entity);
 				break;
 			}
