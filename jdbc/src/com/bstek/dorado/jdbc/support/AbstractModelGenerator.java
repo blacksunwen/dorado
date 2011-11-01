@@ -6,12 +6,16 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import javax.sql.DataSource;
 
 import org.apache.commons.lang.StringUtils;
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 import org.springframework.jdbc.support.DatabaseMetaDataCallback;
 import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.jdbc.support.MetaDataAccessException;
@@ -22,10 +26,8 @@ import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.ModelGenerator;
 import com.bstek.dorado.jdbc.key.KeyGenerator;
 import com.bstek.dorado.jdbc.model.ColumnDefinition;
-import com.bstek.dorado.jdbc.model.DbElementDefinition;
-import com.bstek.dorado.jdbc.model.sqltable.SqlTableDefinition;
+import com.bstek.dorado.jdbc.model.DbElement;
 import com.bstek.dorado.jdbc.model.table.TableColumnDefinition;
-import com.bstek.dorado.jdbc.model.table.TableDefinition;
 import com.bstek.dorado.jdbc.model.table.TableKeyColumnDefinition;
 import com.bstek.dorado.jdbc.type.JdbcType;
 
@@ -62,10 +64,6 @@ public abstract class AbstractModelGenerator implements ModelGenerator {
 
 	@Override
 	public String[] listTableTypes(JdbcEnviroment jdbcEnv) {
-		return this.defaultTableTypes(jdbcEnv);
-	}
-	
-	protected String[] listTableTypesFromDb(JdbcEnviroment jdbcEnv) {
 		DataSource dataSource = jdbcEnv.getDataSource();
 		try {
 			return (String[])org.springframework.jdbc.support.JdbcUtils.extractDatabaseMetaData(dataSource, new DatabaseMetaDataCallback(){
@@ -92,7 +90,7 @@ public abstract class AbstractModelGenerator implements ModelGenerator {
 			throw new RuntimeException(e);
 		}
 	}
-
+	
 	private String[] defaultTableTypes = new String[]{"TABLE", "VIEW"}; 
 	
 	@Override
@@ -148,7 +146,11 @@ public abstract class AbstractModelGenerator implements ModelGenerator {
 		}
 
 	}
-
+	
+	public String name(Map<String, String> tableMeta, JdbcEnviroment jdbcEnv) {
+		return tableMeta.get("TABLE_NAME");
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Map<String, String>> listSchemas(JdbcEnviroment jdbcEnv) {
@@ -183,6 +185,20 @@ public abstract class AbstractModelGenerator implements ModelGenerator {
 			throw new RuntimeException(e);
 		}
 
+	}
+	
+	public List<Map<String,String>> listSchemas(JdbcEnviroment jdbcEnv, String catalog) {
+		List<Map<String, String>> schemaList = listSchemas(jdbcEnv);
+		if (StringUtils.isNotEmpty(catalog)) {
+			List<Map<String,String>> schemaList2 = new ArrayList<Map<String, String>>(schemaList.size());
+			for (Map<String,String> schema: schemaList) {
+				if (catalog.equals(schema.get("TABLE_CATALOG"))) {
+					schemaList2.add(schema);
+				}
+			}
+			schemaList = schemaList2;
+		}
+		return schemaList; 
 	}
 
 	public Map<String,String> singleTable(JdbcEnviroment jdbcEnv, 
@@ -258,62 +274,41 @@ public abstract class AbstractModelGenerator implements ModelGenerator {
 		}
 	}
 
-	public TableDefinition createTable(String catalog, String schema, String table, TableGeneratorOption option) {
-		TableDefinition def = new TableDefinition();
-		JdbcEnviroment jdbcEnv = option.getJdbcEnviroment();
+	public Map<String, String> tableProperties(Map<String, String> tableMeta, JdbcEnviroment jdbcEnv) {
+		Map<String,String> st = new HashMap<String,String>();
+		String name = name(tableMeta, jdbcEnv);
+		st.put("name", name);
+		st.put("tableName", tableMeta.get(JdbcConstants.TABLE_NAME));
+		st.put("catalog", tableMeta.get(JdbcConstants.TABLE_CAT));
+		st.put("schema", tableMeta.get(JdbcConstants.TABLE_SCHEM));
 		
-		List<Map<String,String>> tables = listTables(jdbcEnv, catalog, schema, table, null);
-		if (tables.size() == 0) {
-			throw new IllegalArgumentException("no table found from JdbcEnviroment [" + jdbcEnv.getName() + "], " +
-					"catalog[" + catalog + "]scheme[" + schema + "]table[" + table + "]");
-		} else if (tables.size() != 1) {
-			throw new IllegalArgumentException("more than one tables found from JdbcEnviroment [" + jdbcEnv.getName() + "], it is " +tables.size() + ", " +
-					"catalog[" + catalog + "]scheme[" + schema + "]table[" + table + "]");
-		}
-		
-		Map<String,String> tableObj = tables.get(0);
-		this.init(def, tableObj, catalog, schema, table, option);
-		
-		List<Map<String,String>> columnList = this.listColumns(jdbcEnv, catalog, schema, table);
-		this.init(def, tableObj, columnList, option);
-		
-		return def;
+		return st;
 	}
 	
-	protected abstract void init(TableDefinition def, Map<String,String> tableObj, 
-			String catalog, String schema, String table, TableGeneratorOption option);
-	
-	protected abstract void init(TableDefinition def, Map<String,String> tableObj, 
-			List<Map<String,String>> columnList, TableGeneratorOption option);
-	
-	protected void setName(DbElementDefinition def, String name) {
-		def.getProperties().put("name", name);
-	}
-	
-	public ColumnDefinition column(Map<String, String> table, Map<String, String> column, JdbcEnviroment jdbcEnv) {
+	public ColumnDefinition createColumnDefinition(Map<String, String> tableMeta, Map<String, String> columnProperties, JdbcEnviroment jdbcEnv) {
 		ColumnDefinition columnDef = null;
-		if (JdbcConstants.YES.equalsIgnoreCase(column.get(JdbcConstants.IS_KEY))) {
+		if (JdbcConstants.YES.equalsIgnoreCase(columnProperties.get(JdbcConstants.IS_KEY))) {
 			columnDef = new TableKeyColumnDefinition();
 		} else {
 			columnDef = new TableColumnDefinition();
 		}
 		
-		String columnName = this.columnName(column, table, jdbcEnv);
+		String columnName = columnProperties.get("columnName");
 		columnDef.getProperties().put("columnName", columnName);
 		
-		String propertyName = this.propertyName(column, table, jdbcEnv);
+		String propertyName = columnProperties.get("propertyName");
 		if (StringUtils.isNotEmpty(propertyName)) {
 			columnDef.getProperties().put("propertyName", propertyName);
 		}
 		
-		String jdbcType = this.jdbcType(column, table, jdbcEnv);
+		String jdbcType = columnProperties.get("jdbcType");
 		if (StringUtils.isNotEmpty(jdbcType)) {
 			JdbcType jdbcTypeObj = jdbcEnv.getDialect().getJdbcType(jdbcType);
 			columnDef.getProperties().put("jdbcType", jdbcTypeObj);
 		}
 		
-		if (JdbcConstants.YES.equalsIgnoreCase(column.get(JdbcConstants.IS_KEY))) {
-			String keyGenerator = this.keyGenerator(column, table, jdbcEnv);
+		if (JdbcConstants.YES.equalsIgnoreCase(columnProperties.get(JdbcConstants.IS_KEY))) {
+			String keyGenerator = columnProperties.get("keyGenerator");
 			if (StringUtils.isNotEmpty(keyGenerator)) {
 				KeyGenerator<Object> kg = jdbcEnv.getDialect().getKeyGenerator(keyGenerator);
 				columnDef.getProperties().put("keyGenerator", kg);
@@ -322,15 +317,70 @@ public abstract class AbstractModelGenerator implements ModelGenerator {
 		return columnDef;
 	}
 	
-	protected abstract String tableName(Map<String,String> table, JdbcEnviroment jdbcEnv);
-	protected abstract String columnName(Map<String,String> column, Map<String,String> table, JdbcEnviroment jdbcEnv);
-	protected abstract String propertyName(Map<String,String> column, Map<String,String> table, JdbcEnviroment jdbcEnv);
-	protected abstract String keyGenerator(Map<String,String> column, Map<String,String> table, JdbcEnviroment jdbcEnv);
-	protected abstract String jdbcType(Map<String,String> column, Map<String,String> table, JdbcEnviroment jdbcEnv);
+	public Map<String, String> columnProperties(Map<String, String> tableMeta, Map<String, String> columnMeta, JdbcEnviroment jdbcEnv) {
+		Map<String, String> properties = new HashMap<String, String>();
+		properties.put(JdbcConstants.IS_KEY, columnMeta.get(JdbcConstants.IS_KEY));
+		
+		String columnName = this.columnName(columnMeta, tableMeta, jdbcEnv);
+		properties.put("columnName", columnName);
+		
+		String propertyName = this.propertyName(columnMeta, tableMeta, jdbcEnv);
+		properties.put("propertyName", propertyName);
+		
+		String jdbcType = this.jdbcType(columnMeta, tableMeta, jdbcEnv);
+		properties.put("jdbcType", jdbcType);
+		
+		if (JdbcConstants.YES.equalsIgnoreCase(columnMeta.get(JdbcConstants.IS_KEY))) {
+			String keyGenerator = this.keyGenerator(columnMeta, tableMeta, jdbcEnv);
+			properties.put("keyGenerator", keyGenerator);
+		}
+		
+		return properties;
+	}
 	
-	@Override
-	public SqlTableDefinition createSqlTable(JdbcEnviroment jdbcEnv, String sql) {
-		// TODO Auto-generated method stub
-		return null;
+	protected abstract String columnName(Map<String,String> columnMeta, Map<String,String> tableMeta, JdbcEnviroment jdbcEnv);
+	protected abstract String propertyName(Map<String,String> columnMeta, Map<String,String> tableMeta, JdbcEnviroment jdbcEnv);
+	protected abstract String keyGenerator(Map<String,String> columnMeta, Map<String,String> tableMeta, JdbcEnviroment jdbcEnv);
+	protected abstract String jdbcType(Map<String,String> columnMeta, Map<String,String> tableMeta, JdbcEnviroment jdbcEnv);
+	
+	public Document createTableDocument(String catalog, String schema, String table, TableGeneratorOption option) {
+		Document document = DocumentHelper.createDocument();
+		JdbcEnviroment jdbcEnv = option.getJdbcEnviroment();
+		Map<String,String> tableMeta = this.singleTable(jdbcEnv, catalog, schema, table);
+		List<Map<String,String>> columnMetaList = this.listColumns(jdbcEnv, catalog, schema, table);
+		
+		String name = name(tableMeta, option.getJdbcEnviroment());
+		Element tableElement = document.addElement(DbElement.Type.Table.name());
+		tableElement.addAttribute("name", name);
+		tableElement.addAttribute("tableName", table);
+
+		if (option.isGenerateCatalog() && StringUtils.isNotEmpty(catalog)) {
+			tableElement.addAttribute("catalog", catalog);
+		}
+		if (option.isGenerateSchema() && StringUtils.isNotEmpty(schema)) {
+			tableElement.addAttribute("schema", schema);
+		}
+		
+		Element columnsElement = tableElement.addElement("Columns");
+		
+		for (Map<String,String> columnMeta: columnMetaList) {
+			Map<String,String> columnProperties = this.columnProperties(tableMeta, columnMeta, jdbcEnv);
+			String elementName = "Column";
+			if (JdbcConstants.YES.equalsIgnoreCase(columnProperties.get(JdbcConstants.IS_KEY))) {
+				elementName = "KeyColumn";
+			}
+			columnProperties.remove(JdbcConstants.IS_KEY);
+			
+			Element element = columnsElement.addElement(elementName);
+			for (Iterator<String> keyItr = columnProperties.keySet().iterator(); keyItr.hasNext();){
+				String key = keyItr.next();
+				String value = columnProperties.get(key);
+				if (StringUtils.isNotEmpty(value)) {
+					element.addAttribute(key, value);
+				}
+			}
+		}
+		
+		return document;
 	}
 }

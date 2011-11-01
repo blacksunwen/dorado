@@ -54,6 +54,10 @@ public class DefaultJdbcEnviromentManager implements JdbcEnviromentManager, Appl
 		return defaultEnviroment;
 	}
 
+	public JdbcEnviroment[] listAll() {
+		return enviroments.values().toArray(new JdbcEnviroment[0]);
+	}
+	
 	@Override
 	public void initialize() {
 		Map<String, JdbcEnviroment> envMap = ctx.getBeansOfType(JdbcEnviroment.class);

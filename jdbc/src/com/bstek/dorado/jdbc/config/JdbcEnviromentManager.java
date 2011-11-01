@@ -23,6 +23,12 @@ public interface JdbcEnviromentManager {
 	JdbcEnviroment getDefault();
 	
 	/**
+	 * 列出所有的{@link JdbcEnviroment}
+	 * @return
+	 */
+	JdbcEnviroment[] listAll();
+	
+	/**
 	 * 注册{@link JdbcEnviroment}
 	 * @param env
 	 */

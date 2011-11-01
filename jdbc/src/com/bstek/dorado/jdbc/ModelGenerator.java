@@ -3,9 +3,9 @@ package com.bstek.dorado.jdbc;
 import java.util.List;
 import java.util.Map;
 
+import org.dom4j.Document;
+
 import com.bstek.dorado.jdbc.model.ColumnDefinition;
-import com.bstek.dorado.jdbc.model.sqltable.SqlTableDefinition;
-import com.bstek.dorado.jdbc.model.table.TableDefinition;
 import com.bstek.dorado.jdbc.support.TableGeneratorOption;
 
 public interface ModelGenerator {
@@ -53,6 +53,16 @@ public interface ModelGenerator {
 	List<Map<String,String>> listSchemas(JdbcEnviroment jdbcEnv);
 	
 	/**
+	 * 根据catalog返回Schema列表
+	 * @param jdbcEnv
+	 * @param catalog
+	 * @return
+	 */
+	List<Map<String,String>> listSchemas(JdbcEnviroment jdbcEnv, String catalog);
+	
+	String name(Map<String,String> tableMeta, JdbcEnviroment jdbcEnv);
+	
+	/**
 	 * Each column description has the following columns:
 	 * <OL>
 	 * <LI><B>COLUMN_NAME</B> String => column name
@@ -68,9 +78,9 @@ public interface ModelGenerator {
 	 */
 	List<Map<String,String>> listColumns(JdbcEnviroment jdbcEnv, String catalog, String schema, String tableName);
 	
-	TableDefinition createTable(String catalog, String schema, String table, TableGeneratorOption option);
+	ColumnDefinition createColumnDefinition(Map<String, String> tableMeta, Map<String, String> columnProperties, JdbcEnviroment jdbcEnv);
+
+	Map<String, String> columnProperties(Map<String, String> tableMeta, Map<String, String> columnMeta, JdbcEnviroment jdbcEnv);
 	
-	ColumnDefinition column(Map<String, String> table, Map<String, String> column, JdbcEnviroment jdbcEnv);
-	
-	SqlTableDefinition createSqlTable(JdbcEnviroment jdbcEnv, String sql);
+	Document createTableDocument(String catalog, String schema, String table, TableGeneratorOption option);
 }
