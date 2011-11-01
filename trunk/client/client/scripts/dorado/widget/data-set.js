@@ -418,7 +418,7 @@
 		 * 不过在默认情况下将启用{@link dorado.DataPath.evaluate}的firstResultOnly和acceptAggregation这两个选项。
 		 * </p>
 		 * @param {String} [path] 数据路径。
-		 * @param {boolean|Object} [options] 选项。
+		 * @param {String|Object} [options] 选项。
 		 * <p>
 		 * 此参数具有两种设定方式。当直接传入字符串时，dorado会将此逻辑值直接认为是针对loadMode子属性的值；
 		 * 当传入的是一个对象时，dorado将尝试识别该对象中的子属性。 其支持的子属性请参考{@link dorado.DataPath.evaluate}方法的执行选项。
@@ -451,7 +451,7 @@
 		 * </p>
 		 * @param {String} [path] 数据路径。
 		 * @param {Function|dorado.Callback} callback 回调对象，传入回调对象的参数即为提取到的数据。
-		 * @param {boolean|Object} [options] 选项。
+		 * @param {String|Object} [options] 选项。
 		 * <p>
 		 * 此参数具有两种设定方式。当直接传入字符串时，dorado会将此逻辑值直接认为是针对loadMode子属性的值；
 		 * 当传入的是一个对象时，dorado将尝试识别该对象中的子属性。 其支持的子属性请参考{@link dorado.DataPath.evaluate}方法的执行选项。
@@ -479,7 +479,7 @@
 		/**
 		 * 利用DataPath来查询数据集中的数据。
 		 * @param {String} path 数据路径。
-		 * @param {boolean|Object} [options] 选项。
+		 * @param {String|Object} [options] 选项。
 		 * <p>
 		 * 此参数具有两种设定方式。当直接传入字符串时，dorado会将此逻辑值直接认为是针对loadMode子属性的值；
 		 * 当传入的是一个对象时，dorado将尝试识别该对象中的子属性。 其支持的子属性请参考{@link dorado.DataPath.evaluate}方法的执行选项。
@@ -505,7 +505,7 @@
 		 * 利用DataPath来查询数据集中的数据。
 		 * @param {String} path 数据路径。
 		 * @param {Function|dorado.Callback} callback 回调对象，传入回调对象的参数即为提取到的数据。
-		 * @param {boolean|Object} [options] 选项。
+		 * @param {Stringed|Object} [options] 选项。
 		 * <p>
 		 * 此参数具有两种设定方式。当直接传入字符串时，dorado会将此逻辑值直接认为是针对loadMode子属性的值；
 		 * 当传入的是一个对象时，dorado将尝试识别该对象中的子属性。 其支持的子属性请参考{@link dorado.DataPath.evaluate}方法的执行选项。
