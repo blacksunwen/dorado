@@ -275,6 +275,7 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 		}
 
 		var asyncTasks = [], self = this;
+		debugger;
 		if (callback && data instanceof dorado.Entity) {
 			var processPreload = (this._parent == tree._root);	
 			if (bindingConfig.recursive && !isRoot) {
@@ -712,11 +713,6 @@ dorado.widget.DataTree = $extend([dorado.widget.Tree, dorado.widget.DataControl]
 		var node = this._entityMap[entity.entityId];
 		if (!node) return;
 		this.refreshNode(node);
-	},
-
-	rebuildNodes: function() {
-		delete this._root._data;
-		this._root.rebuildChildNodes();
 	},
 
 	processItemDrop: function(draggingInfo, evt) {
