@@ -300,8 +300,8 @@
 			this.pageNo = (current) ? current.page.pageNo : 1;
 			this.timestamp = dorado.Core.getTimestamp();
 			
-			if (elementDataType) elementDataType.fireEvent("onCurrentChange", elementDataType, eventArg);
 			this.sendMessage(dorado.EntityList._MESSAGE_CURRENT_CHANGED, eventArg);
+			if (elementDataType) elementDataType.fireEvent("onCurrentChange", elementDataType, eventArg);
 		},
 		
 		/**
@@ -667,7 +667,13 @@
 				if (jsonArray.entityCount) this.entityCount = jsonArray.entityCount;
 				if (jsonArray.pageCount) this.pageCount = jsonArray.pageCount;
 				
-				if (changeCurrent && firstEntity) this.setCurrent(firstEntity);
+				if (changeCurrent && firstEntity) {
+					// 放置onCurrentChange事件在DataSet的onLoad之前触发，可能导致"dorado.widget.GetDataDuringLoading"异常
+					var oldCurrent = this._current;
+					$setTimeout(this, function() {
+						if (oldCurrent === this._current) this.setCurrent(firstEntity);
+					}, 0);
+				}
 			}
 			finally {
 				this._disableObserversCounter--;

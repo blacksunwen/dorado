@@ -476,6 +476,29 @@
 		},
 		
 		/**
+		 * 读取指定的属性值或获取DataType中的属性声明。
+		 * <p>
+		 * 此方法在{@link dorado.AttributeSupport#get}的基础上做了很多增强。
+		 * 除了原有的读取属性值的功能之外，此方法还另外提供了下面的用法。
+		 * <ul>
+		 * 	<li>当传入一个以@开头的字符串时，@后面的内容将被识别成属性声明的名称，表示根据名称获取属性声明。参考{@link dorado.EntityDataType#getPropertyDef}。</li>
+		 * </ul>
+		 * </p>
+		 * @param {Object} attr 属性值或其他表达式。
+		 * @return {Object} 读取到的属性值或提取到的子对象
+		 * @see dorado.AttributeSupport#get
+		 */
+		get: function(attr) {
+			var c = attr.charAt(0);
+			if (c == '@') {
+				var propertyName = attr.substring(1);
+				return this.getPropertyDef(propertyName);
+			} else {
+				return $invokeSuper.call(this, [attr]);
+			}
+		},
+		
+		/**
 		 * 向实体类型中添加一个属性声明。
 		 * <p>
 		 * 此处数组中可放置两种类型的属性声明定义：

@@ -226,7 +226,7 @@
 			
 			var rowList = box.get("control"), itemCount = rowList._itemModel.getItemCount();
 			var cellCount = itemCount;
-			if (rowList instanceof dorado.widget.AbstractGrid) {
+			if (dorado.widget.AbstractGrid && rowList instanceof dorado.widget.AbstractGrid) {
 				cellCount = rowList.get("dataColumns").length * itemCount;
 			}
 			 
