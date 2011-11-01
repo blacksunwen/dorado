@@ -1,8 +1,7 @@
 (function() {
-    dorado.widget.htmleditor = {
+    dorado.htmleditor = {
         //'Code'
-        fullToolbars: [
-            ['FullScreen','Source','|','Undo','Redo','|',
+        fullMode: ['FullScreen','Source','|','Undo','Redo','|',
              'Bold','Italic','Underline','StrikeThrough','Superscript','Subscript','RemoveFormat','FormatMatch','|',
              'BlockQuote','|',
              'PastePlain','|',
@@ -10,12 +9,11 @@
              'Paragraph','RowSpacing','FontFamily','FontSize','|',
              'DirectionalityLtr','DirectionalityRtl','|','Indent','Outdent','|',
              'JustifyLeft','JustifyCenter','JustifyRight','JustifyJustify','|',
-             'Link','Unlink','Anchor','Image','Emoticon', "Flash", '|',
+             'Link','Unlink','Anchor','Image','Emoticon', 'Flash', '|',
              'Horizontal','Date','Time','Spechars','Map','GMap','|',
              'InsertTable','DeleteTable','InsertParagraphBeforeTable','InsertRow','DeleteRow','InsertCol','DeleteCol','MergeCells','MergeRight','MergeDown','SplittoCells','SplittoRows','SplittoCols','|',
-             'SelectAll','ClearDoc','SearchReplace','Print','Preview','Help']
-        ],
-        simpleToolbars: [
+             'SelectAll','ClearDoc','SearchReplace','Print','Preview','Help'],
+        simpleMode:
             ['FullScreen','Source','|','Undo','Redo','|',
              'Bold','Italic','Underline','StrikeThrough','Superscript','Subscript','RemoveFormat','|',
              'ForeColor','BackColor','InsertOrderedList','InsertUnorderedList','|',
@@ -23,8 +21,14 @@
              'Indent','Outdent','|',
              'JustifyLeft','JustifyCenter','JustifyRight','JustifyJustify','|',
              'Link','Unlink','Horizontal','Image','|',
-             'SelectAll','ClearDoc','SearchReplace','Print','Preview','Help']
-        ],
+             'SelectAll','ClearDoc','SearchReplace','Print','Preview','Help'],
+
+        registerMode: function(name, config) {
+            if (name && config) {
+                dorado.htmleditor[name + "Mode"] = config;
+            }
+        },
+
         defaultLabelMap: {
             'anchor':'锚点',
             'undo': '撤销',
@@ -111,7 +115,7 @@
         }
     };
 
-    dorado.widget.htmleditor.ToolBar = $extend(dorado.widget.Control, {
+    dorado.htmleditor.ToolBar = $extend(dorado.widget.Control, {
         focusable: true,
         ATTRIBUTES: {
             className: {
@@ -187,7 +191,7 @@
 
             /**
              * <p>富文本编辑器的模式，不同的模式会开启不同的插件，目前可选full,simple，区别在于工具栏上的功能的多少。</p>
-             * <p>如果需要自定义，比如叫custom，可以为dorado.widget.htmleditor添加一属性名为customToolbars，内容可参考fullToolbars和simpleToolbars。</p>
+             * <p>如果需要自定义，比如叫custom，可以为dorado.htmleditor添加一属性名为customMode，内容可参考fullMode和simpleMode。</p>
              * @attribute
              * @type String
              * @default "full"
@@ -314,6 +318,7 @@
             editor.refresh();
             //editor.fireEvent("onValueChange", editor);
         },
+
         doOnReadOnlyChange: function(readOnly) {
             var htmleditor = this, editor = htmleditor._editor;
             if (readOnly === undefined) {
@@ -335,6 +340,7 @@
             }
             htmleditor.checkStatus();
         },
+
         post: function() {
             try {
                 if(!this._dirty) {
@@ -355,7 +361,9 @@
                 dorado.Exception.processException(e);
             }
         },
+
         setFocus : function() {},
+
         doOnAttachToDocument: function() {
             var htmleditor = this;
             $invokeSuper.call(this, arguments);
@@ -612,49 +620,47 @@
             }
         },
         initPlugins: function() {
-            var editor = this, mode = editor._mode || "default";
+            var editor = this, mode = editor._mode || "default", toolbarConfig = dorado.htmleditor[mode + "Mode"] || [], toolbar = new dorado.htmleditor.ToolBar();
             editor._plugins = {};
-            var toolbars = dorado.widget.htmleditor[mode + "Toolbars"] || [];
-            for (var i = 0, k = toolbars.length; i < k; i++) {
-                var toolbarConfig = toolbars[i], toolbar = new dorado.widget.htmleditor.ToolBar();
-                for (var j = 0, l = toolbarConfig.length; j < l; j++) {
-                    var pluginName = toolbarConfig[j];
-                    if (pluginName == "|") {
-                        toolbar.addItem("-");
-                    } else {
-                        var pluginConfig = plugins[pluginName];
-                        pluginConfig.htmlEditor = editor;
 
-                        if (pluginConfig.iconClass == undefined && pluginConfig.command) {
-                            pluginConfig.iconClass = "html-editor-icon " + pluginConfig.command;
-                        }
+            for (var j = 0, l = toolbarConfig.length; j < l; j++) {
+                var pluginName = toolbarConfig[j];
+                if (pluginName == "|") {
+                    toolbar.addItem("-");
+                } else {
+                    var pluginConfig = plugins[pluginName];
+                    pluginConfig.htmlEditor = editor;
 
-                        var plugin = new dorado.widget.htmleditor.HtmlEditorPlugIn(pluginConfig);
-
-                        if (pluginConfig.execute) {
-                            plugin.execute = pluginConfig.execute;
-                        }
-
-                        if (pluginConfig.initToolBar) {
-                            plugin.initToolBar = pluginConfig.initToolBar;
-                        }
-
-                        if (pluginConfig.checkStatus) {
-                            plugin.checkStatus = pluginConfig.checkStatus;
-                        }
-
-                        if (pluginConfig.onStatusChange) {
-                            plugin.onStatusChange = pluginConfig.onStatusChange;
-                        }
-                        plugin._name = pluginName;
-                        plugin.initToolBar(toolbar);
-
-                        editor._plugins[pluginName] = plugin;
+                    if (pluginConfig.iconClass == undefined && pluginConfig.command) {
+                        pluginConfig.iconClass = "html-editor-icon " + pluginConfig.command;
                     }
+
+                    var plugin = new dorado.htmleditor.HtmlEditorPlugIn(pluginConfig);
+
+                    if (pluginConfig.execute) {
+                        plugin.execute = pluginConfig.execute;
+                    }
+
+                    if (pluginConfig.initToolBar) {
+                        plugin.initToolBar = pluginConfig.initToolBar;
+                    }
+
+                    if (pluginConfig.checkStatus) {
+                        plugin.checkStatus = pluginConfig.checkStatus;
+                    }
+
+                    if (pluginConfig.onStatusChange) {
+                        plugin.onStatusChange = pluginConfig.onStatusChange;
+                    }
+
+                    plugin._name = pluginName;
+                    plugin.initToolBar(toolbar);
+
+                    editor._plugins[pluginName] = plugin;
                 }
-                editor.registerInnerControl(toolbar);
-                toolbar.render(editor._doms.toolbar);
             }
+            editor.registerInnerControl(toolbar);
+            toolbar.render(editor._doms.toolbar);
         },
         doOnResize: function() {
             var htmleditor = this, dom = htmleditor._dom, doms = htmleditor._doms;
@@ -712,7 +718,7 @@
         }
     });
 
-    dorado.widget.htmleditor.HtmlEditorPlugIn = $extend(dorado.AttributeSupport, {
+    dorado.htmleditor.HtmlEditorPlugIn = $extend(dorado.AttributeSupport, {
         constructor: function(options) {
             if (options) this.set(options);
         },
@@ -771,7 +777,7 @@
             }
         },
         initToolBar: function(toolbar) {
-            var plugin = this, labels = dorado.widget.htmleditor.defaultLabelMap;
+            var plugin = this, labels = dorado.htmleditor.defaultLabelMap;
 
             plugin.button = toolbar.addItem({
                 $type: "SimpleIconButton",
@@ -850,7 +856,7 @@
         }
     };
 
-    var plugins = dorado.widget.htmleditor.plugins = {
+    var plugins = dorado.htmleditor.plugins = {
         Source: {
             command: "source"
         },

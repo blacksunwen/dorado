@@ -1,5 +1,5 @@
 (function(plugins) {
-    var htmleditor = dorado.widget.htmleditor;
+    var htmleditor = dorado.htmleditor;
 
     plugins.Link = {
         iconClass: "html-editor-icon link",
@@ -1580,4 +1580,4 @@
             plugin.dialog.show();
         }
     };
-})(dorado.widget.htmleditor.plugins);
+})(dorado.htmleditor.plugins);

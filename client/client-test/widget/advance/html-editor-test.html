@@ -13,13 +13,19 @@
 			dataType: "Phone"	// Phone的声明实际位于data/common-types.js中，通过上面的$import("grid,common-types")引入。
 		});
 
+        dorado.htmleditor.registerMode("custom", [
+            'Bold','Italic','Underline','StrikeThrough','Superscript','Subscript','RemoveFormat','|',
+            'JustifyLeft','JustifyCenter','JustifyRight','JustifyJustify'
+        ]);
+
 		var richEditor = new dorado.widget.HtmlEditor({
             dataSet: dataSet,
             property: "comment",
             height: 300,
 			style: {
 				border: "1px solid gray"
-			}
+			},
+            mode: 'custom'
 		});
 
         var dialog = new dorado.widget.Dialog({
