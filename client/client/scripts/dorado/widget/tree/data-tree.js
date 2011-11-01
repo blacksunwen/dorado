@@ -275,7 +275,6 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 		}
 
 		var asyncTasks = [], self = this;
-		debugger;
 		if (callback && data instanceof dorado.Entity) {
 			var processPreload = (this._parent == tree._root);	
 			if (bindingConfig.recursive && !isRoot) {
