@@ -558,7 +558,7 @@
 				
 				var label = cell.firstChild;
 				if (grid._dynaRowHeight) {
-					label.style.overflowY = "visible";
+					if (!dorado.Browser.chrome && !dorado.Browser.safari) label.style.overflowY = "visible";
 					cell.style.height = grid._rowHeight + "px";
 				} else {
 					cell.style.height = '';
@@ -603,7 +603,7 @@
 			if (grid._dynaRowHeight) {
 				var h;
 				if (dorado.Browser.chrome || dorado.Browser.safari) {
-					h = row.firstChild.clientHeight;
+					h = row.firstChild.scrollHeight;
 				} else {
 					h = row.clientHeight;
 				}
