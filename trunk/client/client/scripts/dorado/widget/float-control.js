@@ -467,6 +467,8 @@ dorado.dequeue = function(namespace) {
 					display: ""
 				}).bringToFront();
 
+                this.setActualVisible(true);
+
 				if(control._shadowMode != "none"){
 					$fly(dom).shadow({
 						mode: control._shadowMode || "sides"
@@ -478,8 +480,6 @@ dorado.dequeue = function(namespace) {
 			}
 			dorado.dequeue(control._id + SHOWHIDE_SUFFIX);
 			//log.debug("dorado.dequeue after show：" + control._id);
-			
-			this.setActualVisible(true);
 		},
 
 		/**
