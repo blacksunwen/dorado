@@ -21,7 +21,6 @@
 .i-grid .cell {
     padding-left: 2px; /* do not modify, may cause problums in safari/chrome */
     padding-right: 2px; /* do not modify, may cause problums in safari/chrome */
-	height: 100%
 }
 
 .i-grid .data-table td {
