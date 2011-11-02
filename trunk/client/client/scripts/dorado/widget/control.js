@@ -1042,12 +1042,17 @@
 		setFocus : function() {
 			var dom = this._dom;
 			if (dom) {
-				setTimeout(function() {
-					try {
-						dom.focus();
-					} catch (e) {
-					}
-				}, 0);
+				if (["input", "button"].indexOf(dom.nodeName.toLowerCase) >= 0) {
+					setTimeout(function() {
+						try {
+							dom.focus();
+						} catch (e) {
+						}
+					}, 0);
+				}
+				else {
+					dorado.widget.onControlGainedFocus(this);
+				}
 			}
 		},
 		

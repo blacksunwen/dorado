@@ -1620,7 +1620,9 @@
 					retValue = this._doOnKeyDown(evt);
 					break;
 			}
-			if (this._editing && !this._currentCellEditor) this.showColumnEditor(this._currentColumn);
+			if (this._editing && !this._currentCellEditor && this._currentColumn) {
+				this.showColumnEditor(this._currentColumn);
+			}
 			return retValue;
 		},
 
