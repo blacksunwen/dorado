@@ -255,11 +255,11 @@ public abstract class EntityEnhancer {
 			if (propertyDef != null && propertyDef instanceof LazyPropertyDef) {
 				boolean hasRead = isPropertyHasRead(property);
 				if (hasRead) {
-					EntityEnhancer.disableGetterInterception();
+					EntityEnhancer.enableGetterInterception();
 					try {
 						readProperty(entity, property, false);
 					} finally {
-						EntityEnhancer.enableGetterInterception();
+						EntityEnhancer.disableGetterInterception();
 					}
 				}
 				return !hasRead;
