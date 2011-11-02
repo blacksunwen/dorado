@@ -166,10 +166,11 @@
 		 * @return {Object|dorado.Entity} 数据实体。
 		 */
 		getItemById: function(itemId) {
-			if (this._items instanceof Array) {
-				return this._items.indexOf(itemId);
+			var items = this._items; 
+			if (items instanceof Array) {
+				return items[itemId];
 			} else {
-				return this._items.getById(itemId);
+				return items.getById(itemId);
 			}
 		},
 		
