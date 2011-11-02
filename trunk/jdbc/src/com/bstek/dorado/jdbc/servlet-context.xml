@@ -4,49 +4,49 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 	
 	<bean parent="dorado.resolverRegister">
-		<property name="url" value="/dorado/jdbc/ide/list-envs.html" />
+		<property name="url" value="/dorado/jdbc/ide/list-envs.xml" />
 		<property name="resolver">
 			<ref bean="dorado.jdbc.ide.listEnviromentResolver"/>
 		</property>
 	</bean>
 	
 	<bean parent="dorado.resolverRegister">
-		<property name="url" value="/dorado/jdbc/ide/list-catalogs.html" />
+		<property name="url" value="/dorado/jdbc/ide/list-catalogs.xml" />
 		<property name="resolver">
 			<ref bean="dorado.jdbc.ide.listCatalogResolver"/>
 		</property>
 	</bean>
 	
 	<bean parent="dorado.resolverRegister">
-		<property name="url" value="/dorado/jdbc/ide/list-schemas.html" />
+		<property name="url" value="/dorado/jdbc/ide/list-schemas.xml" />
 		<property name="resolver">
 			<ref bean="dorado.jdbc.ide.listSchemaResolver"/>
 		</property>
 	</bean>
 	
 	<bean parent="dorado.resolverRegister">
-		<property name="url" value="/dorado/jdbc/ide/list-table-types.html" />
+		<property name="url" value="/dorado/jdbc/ide/list-table-types.xml" />
 		<property name="resolver">
 			<ref bean="dorado.jdbc.ide.listTableTypeResolver"/>
 		</property>
 	</bean>
 	
 	<bean parent="dorado.resolverRegister">
-		<property name="url" value="/dorado/jdbc/ide/list-tables.html" />
+		<property name="url" value="/dorado/jdbc/ide/list-tables.xml" />
 		<property name="resolver">
 			<ref bean="dorado.jdbc.ide.listTablesResolver"/>
 		</property>
 	</bean>
 	
 	<bean parent="dorado.resolverRegister">
-		<property name="url" value="/dorado/jdbc/ide/create-table.html" />
+		<property name="url" value="/dorado/jdbc/ide/create-table.xml" />
 		<property name="resolver">
 			<ref bean="dorado.jdbc.ide.createTableResolver"/>
 		</property>
 	</bean>
 	
 	<bean parent="dorado.resolverRegister">
-		<property name="url" value="/dorado/jdbc/ide/create-sqltable.html" />
+		<property name="url" value="/dorado/jdbc/ide/create-sqltable.xml" />
 		<property name="resolver">
 			<ref bean="dorado.jdbc.ide.createSqlTableResolver"/>
 		</property>

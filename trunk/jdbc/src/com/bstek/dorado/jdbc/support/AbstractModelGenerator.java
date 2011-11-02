@@ -165,22 +165,29 @@ public abstract class AbstractModelGenerator implements ModelGenerator {
 				@Override
 				public Object processMetaData(DatabaseMetaData dbmd)
 						throws SQLException, MetaDataAccessException {
-					List<Map<String, String>> catalogList = new ArrayList<Map<String, String>>();
+					List<Map<String, String>> list = new ArrayList<Map<String, String>>();
 					ResultSet rs = dbmd.getSchemas();
 					try {
-						while (rs.next()) {
-							Map<String,String> s = new HashMap<String,String>(2);
-							String catalogName = rs.getString(JdbcConstants.TABLE_CATALOG);
-							String schemaName = rs.getString(JdbcConstants.TABLE_SCHEM);
-							s.put(JdbcConstants.TABLE_CATALOG, catalogName);
-							s.put(JdbcConstants.TABLE_SCHEM, schemaName);
-							catalogList.add(s);
+						ResultSetMetaData rsmd = rs.getMetaData();
+						int columnCount = rsmd.getColumnCount();
+						try {
+							while (rs.next()) {
+								Map<String,String> s = new LinkedCaseInsensitiveMap<String>(columnCount);
+								for (int i = 1; i <= columnCount; i++) {
+									String key = JdbcUtils.lookupColumnName(rsmd, i);
+									String value = rs.getString(i);
+									s.put(key, value);
+								}
+								list.add(s);
+							}
+						} finally {
+							rs.close();
 						}
 					} finally {
 						rs.close();
 					}
 					
-					return catalogList;
+					return list;
 				}
 				
 			});

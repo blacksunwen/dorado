@@ -3,7 +3,9 @@ package com.bstek.dorado.jdbc.ide;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+import org.dom4j.io.XMLWriter;
 
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.JdbcUtils;
@@ -17,17 +19,19 @@ public class ListJdbcEnviromentResolver extends Resolver {
 	}
 
 	public String toContent() {
-		String result = null;
-		JdbcEnviroment[] envs = JdbcUtils.getEnviromentManager().listAll();
-		if (envs.length > 0) {
-			String[] names = new String[envs.length];
-			for (int i=0; i<envs.length; i++) {
-				names[i] = envs[i].getName();
+		final JdbcEnviroment[] envs = JdbcUtils.getEnviromentManager().listAll();
+		return toXml("Envs", new XML(){
+
+			@Override
+			public void build(XMLWriter xmlWriter, Element rootElement)
+					throws Exception {
+				for (JdbcEnviroment jdbcEnv: envs) {
+					Element element = DocumentHelper.createElement("Env");
+					element.addAttribute("name", jdbcEnv.getName());
+					xmlWriter.write(element);
+				}
 			}
 			
-			result = StringUtils.join(names, ',');
-		}
-		
-		return result;
+		});
 	}
 }

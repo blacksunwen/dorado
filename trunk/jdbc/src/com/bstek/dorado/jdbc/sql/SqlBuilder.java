@@ -2,7 +2,15 @@ package com.bstek.dorado.jdbc.sql;
 
 public class SqlBuilder {
 
-	private StringBuilder sql = new StringBuilder();;
+	private StringBuilder sql;
+	
+	public SqlBuilder(int c) {
+		sql = new StringBuilder(c);
+	}
+	
+	public SqlBuilder() {
+		sql = new StringBuilder();
+	}
 	
 	public SqlBuilder space() {
 		sql.append(' ');

@@ -44,6 +44,8 @@ public class JdbcConstants {
 
 	public static final String IS_KEY = "IS_KEY";
 	
+	public static final String ROWNUM_VAR = "ROWNUM_";
+	
 	public static int getTypeValue(String name) {
 		return JDBC_TYPE_CONSTANTS.asNumber(name).intValue();
 	}
