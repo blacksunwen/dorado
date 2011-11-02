@@ -23,7 +23,7 @@ public class ListSchemaResolver extends Resolver {
 		String catalog = request.getParameter(PARAM_CATA);
 		String envName = request.getParameter(PARAM_ENV);
 		
-		return toContent(catalog, envName);
+		return toContent(envName, catalog);
 	}
 
 	List<Map<String,String>> schemaList(String catalog, String envName) {
@@ -35,7 +35,7 @@ public class ListSchemaResolver extends Resolver {
 		return schemaList;
 	}
 	
-	public String toContent(String catalog, String envName) {
+	public String toContent(String envName, String catalog) {
 		JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(envName);
 		final List<Map<String,String>> schemaList = jdbcEnv.getModelGenerator().listSchemas(jdbcEnv, catalog);
 		

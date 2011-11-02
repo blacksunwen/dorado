@@ -29,55 +29,100 @@ public class IDE_TableTest extends ConfigManagerTestSupport {
 	public void test_listCatalogs() throws Exception {
 		Context ctx = Context.getCurrent();
 		ListCatalogResolver resolver = (ListCatalogResolver)ctx.getServiceBean("jdbc.ide.listCatalogResolver");
-		String c = resolver.toContent(null);
-		System.out.println("CATs: " + c);	
+		
+		String[] envNames = new String[]{null, "oracle11", "mssql"};
+		for (String envName: envNames) {
+			String c = resolver.toContent(envName);
+			System.out.println("CATs: " + c);
+		}
 	}
 	
 	public void test_listSchemas() throws Exception {
 		Context ctx = Context.getCurrent();
 		ListSchemaResolver resolver = (ListSchemaResolver)ctx.getServiceBean("jdbc.ide.listSchemaResolver");
-		String c = resolver.toContent(null, null);
-		System.out.println("SCHs: " + c);		
-	}
-	
-	public void test_listTables() throws Exception {
-		Context ctx = Context.getCurrent();
-		ListTablesResolver resolver = (ListTablesResolver)ctx.getServiceBean("jdbc.ide.listTablesResolver");
-		String envName = null;
-		String catalog = null;
-		String schema  = "PUBLIC";
-		String[] tableTypes = null;
-		String tableNamePattern = null;
-		String c = resolver.toContent(envName, catalog, schema, tableTypes, tableNamePattern);
-		System.out.println("TABs: " +c);
+		String[] envNames = new String[]{null, "oracle11"};
+		for (String envName: envNames) {
+			String c = resolver.toContent(envName, null);
+			System.out.println("SCHs: " + c);
+		}
 	}
 	
 	public void test_listTableTypes() throws Exception {
 		Context ctx = Context.getCurrent();
 		ListTableTypeResolver resolver = (ListTableTypeResolver)ctx.getServiceBean("jdbc.ide.listTableTypeResolver");
-		String envName = null;
-		String c = resolver.toContent(envName);
-		System.out.println("TTYs: " + c);
+		{//h2
+			String envName = null;
+			String c = resolver.toContent(envName);
+			System.out.println("["+envName+"]" + "TTYs: " + c);
+		}
+		{//oracle11
+			String envName = "oracle11";
+			String c = resolver.toContent(envName);
+			System.out.println("["+envName+"]" + "TTYs: " + c);
+		}
+	}
+	
+	public void test_listTables() throws Exception {
+		Context ctx = Context.getCurrent();
+		ListTablesResolver resolver = (ListTablesResolver)ctx.getServiceBean("jdbc.ide.listTablesResolver");
+		{//h2
+			String envName = null;
+			String catalog = null;
+			String schema  = "PUBLIC";
+			String[] tableTypes = null;
+			String tableNamePattern = null;
+			String c = resolver.toContent(envName, catalog, schema, tableTypes, tableNamePattern);
+			System.out.println("["+envName+"]" + "TABs: " +c);
+		}
+		{//oracle11
+			String envName = "oracle11";
+			String catalog = null;
+			String schema  = "BSTEK";
+			String[] tableTypes = null;
+			String tableNamePattern = null;
+			String c = resolver.toContent(envName, catalog, schema, tableTypes, tableNamePattern);
+			System.out.println("["+envName+"]" + "TABs: " +c);
+		}
+		
 	}
 	
 	public void test_createTable() throws Exception {
 		Context ctx = Context.getCurrent();
 		CreateTableResolver resolver = (CreateTableResolver)ctx.getServiceBean("jdbc.ide.createTableResolver");
-		
-		String catalog = null;
-		String schema = null;
-		String table = "EMPLOYEES";
-		
-		JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getDefault();
-		
-		TableGeneratorOption option = new TableGeneratorOption();
-		option.setJdbcEnviroment(jdbcEnv);
-		option.setGenerateCatalog(false);
-		option.setGenerateSchema(false);
-		
-		String xml = resolver.toContent(catalog, schema, table, option);
-		
-		System.out.println("XML: " + xml);
+		{//h2
+			String envName = null;
+			String catalog = null;
+			String schema = null;
+			String table = "EMPLOYEES";
+			
+			JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(envName);
+			
+			TableGeneratorOption option = new TableGeneratorOption();
+			option.setJdbcEnviroment(jdbcEnv);
+			option.setGenerateCatalog(false);
+			option.setGenerateSchema(false);
+			
+			String xml = resolver.toContent(catalog, schema, table, option);
+			
+			System.out.println("["+envName+"]" + "XML: " + xml);
+		}
+		{//oracle11
+			String envName = "oracle11";
+			String catalog = null;
+			String schema = "BSTEK";
+			String table = "DEMO_PROJECT";
+			
+			JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(envName);
+			
+			TableGeneratorOption option = new TableGeneratorOption();
+			option.setJdbcEnviroment(jdbcEnv);
+			option.setGenerateCatalog(false);
+			option.setGenerateSchema(false);
+			
+			String xml = resolver.toContent(catalog, schema, table, option);
+			
+			System.out.println("["+envName+"]" + "XML: " + xml);
+		}
 	}
 	
 	public void test_createSqlTable() throws Exception {

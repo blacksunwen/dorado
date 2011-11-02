@@ -74,10 +74,11 @@ public abstract class Resolver extends AbstractTextualResolver {
 	protected void execute(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String content = getContent(request, response);
-		if (StringUtils.isNotEmpty(content)) {
-			PrintWriter writer = getWriter(request, response);
-			output(content, writer);
+		if (StringUtils.isEmpty(content)) {
+			content="";
 		}
+		PrintWriter writer = getWriter(request, response);
+		output(content, writer);
 	}
 
 	protected String toXml(String rootElementName, XML xml) {

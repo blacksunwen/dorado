@@ -20,17 +20,47 @@
 		<property name="configLocation" value="classpath:test/com/bstek/jdbc/runtime/providers_jdbc.xml" />
 	</bean>
 	
-	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-		<property name="driverClassName" value="org.h2.Driver" />
-		<property name="url" value="jdbc:h2:tcp://localhost/~/test" />
-		<property name="username" value="sa" />
-		<property name="password" value="dorado" />
-	</bean>
 	<bean parent="dorado.jdbcEnvTemplate">
 		<property name="name" value="h2" />
-		<property name="dataSource" ref="dataSource"/>
+		<property name="default" value="true"/>
+		<property name="dataSource">
+			<bean class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+				<property name="driverClassName" value="org.h2.Driver" />
+				<property name="url" value="jdbc:h2:tcp://localhost/~/test" />
+				<property name="username" value="sa" />
+				<property name="password" value="dorado" />
+			</bean>
+		</property>
 		<property name="dialect">
 			<bean parent="dorado.jdbc.h2Dialect"/>
+		</property>
+	</bean>
+	
+	<bean parent="dorado.jdbcEnvTemplate">
+		<property name="name" value="oracle11" />
+		<property name="dataSource">
+			<bean class="oracle.jdbc.pool.OracleDataSource">
+				<property name="user" value="bstek"/>
+				<property name="password" value="bstek"/>
+				<property name="URL" value="jdbc:oracle:thin:@192.168.18.235:1521/DP"/>
+			</bean>
+		</property>
+		<property name="dialect">
+			<bean parent="dorado.jdbc.oracleDialect"/>
+		</property>
+	</bean>
+	
+	<bean parent="dorado.jdbcEnvTemplate">
+		<property name="name" value="mssql" />
+		<property name="dataSource">
+			<bean class="com.microsoft.sqlserver.jdbc.SQLServerDataSource">
+				<property name="user" value="bstek"/>
+				<property name="password" value="bstek"/>
+				<property name="URL" value="jdbc:sqlserver://192.168.18.235:1433;DatabaseName=DP"/>
+			</bean>
+		</property>
+		<property name="dialect">
+			<bean parent="dorado.jdbc.mssqlDialect"/>
 		</property>
 	</bean>
 </beans>

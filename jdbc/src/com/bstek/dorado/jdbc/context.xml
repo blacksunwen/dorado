@@ -75,6 +75,8 @@
 		</property>
 	</bean>
 	<bean id="dorado.jdbc.h2Dialect" class="com.bstek.dorado.jdbc.support.h2.H2Dialect" parent="dorado.dialectTemplate" abstract="true"/>
+	<bean id="dorado.jdbc.oracleDialect" class="com.bstek.dorado.jdbc.support.oracle.OracleDialect" parent="dorado.dialectTemplate" abstract="true"/>
+	<bean id="dorado.jdbc.mssqlDialect" class="com.bstek.dorado.jdbc.support.mssql.MssqlDialect" parent="dorado.dialectTemplate" abstract="true"/>
 	
 	<!-- Parser -->
 	<bean id="dorado.jdbc.config.xml.dbElementParser" abstract="true" parent="dorado.objectParser" class="com.bstek.dorado.jdbc.config.xml.DbElementParser">

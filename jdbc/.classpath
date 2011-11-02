@@ -6,5 +6,7 @@
 	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?ivyXmlPath=ivy.xml&amp;confs=*"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/core"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/data"/>
+	<classpathentry kind="lib" path="jdbc-driver/oracle11/ojdbc5.jar"/>
+	<classpathentry kind="lib" path="jdbc-driver/mssql2008/sqljdbc4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
