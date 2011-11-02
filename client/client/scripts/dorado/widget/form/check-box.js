@@ -185,9 +185,9 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 			}
 			
 			value += '';
-			if(value === checkBox._onValue) {
+			if(value == (checkBox._onValue + '')) {
 				checked = true;
-			} else if(value === checkBox._offValue) {
+			} else if(value == (checkBox._offValue + '')) {
 				checked = false;
 			}
 			checkBox._checked = checked;

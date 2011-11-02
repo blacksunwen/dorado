@@ -667,13 +667,7 @@
 				if (jsonArray.entityCount) this.entityCount = jsonArray.entityCount;
 				if (jsonArray.pageCount) this.pageCount = jsonArray.pageCount;
 				
-				if (changeCurrent && firstEntity) {
-					// 放置onCurrentChange事件在DataSet的onLoad之前触发，可能导致"dorado.widget.GetDataDuringLoading"异常
-					var oldCurrent = this._current;
-					$setTimeout(this, function() {
-						if (oldCurrent === this._current) this.setCurrent(firstEntity);
-					}, 0);
-				}
+				if (changeCurrent && firstEntity) this.setCurrent(firstEntity);
 			}
 			finally {
 				this._disableObserversCounter--;
