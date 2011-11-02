@@ -650,7 +650,10 @@
 				return radioButtons;
 			}
 			
-			var control = this._editor, shouldInitControl = true;
+			var control = this._editor;
+			if (this._controlRegistered) return control;
+			
+			var shouldInitControl = true;
 			if (!control) {
 				var propertyDef = this.getBindingPropertyDef();
 				if (propertyDef) {
@@ -687,17 +690,15 @@
 			}
 			
 			if (control) {
-				if (!this._controlRegistered) {
-					this._controlRegistered = true;
-					if (this._showHint && control instanceof dorado.widget.AbstractEditor) {
-						if (control instanceof dorado.widget.AbstractTextBox) {
-							control.addListener("onValidationStateChange", $scopify(this, this.onEditorStateChange));
-							control.addListener("onPost", $scopify(this, this.onEditorPost));
-						}
-						control.addListener("onPostFailed", $scopify(this, this.onEditorPostFailed));
+				this._controlRegistered = true;
+				if (this._showHint && control instanceof dorado.widget.AbstractEditor) {
+					if (control instanceof dorado.widget.AbstractTextBox) {
+						control.addListener("onValidationStateChange", $scopify(this, this.onEditorStateChange));
+						control.addListener("onPost", $scopify(this, this.onEditorPost));
 					}
-					this.registerInnerControl(control);
+					control.addListener("onPostFailed", $scopify(this, this.onEditorPostFailed));
 				}
+				this.registerInnerControl(control);
 				
 				if (shouldInitControl) {
 					var config1 = {}, config2 = {}, attrs = control.ATTRIBUTES;
