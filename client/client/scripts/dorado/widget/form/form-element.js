@@ -268,20 +268,21 @@
 			if (dorado.Object.isInstanceOf(formProfile, dorado.widget.FormProfile)) {
 				var attrs = formProfile.ATTRIBUTES, attrWatcher = formProfile.getAttributeWatcher(), config = {};
 				for (var attr in attrs) {
-					if (!attrs.hasOwnProperty(attr)){
+					if (!attrs.hasOwnProperty(attr)) {
 						continue;
 					}
 					
 					var def = attrs[attr];
-					if (def.writeOnly || (!attrWatcher.getWritingTimes(attr) &&
-							!(def.defaultValue instanceof Function))) {
+					if (def.writeOnly ||
+					(!attrWatcher.getWritingTimes(attr) &&
+					!(def.defaultValue instanceof Function))) {
 						continue;
 					}
 					
 					if (specialFormConfigProps.indexOf(attr) >= 0 && formProfile instanceof dorado.widget.Control) {
 						continue;
 					}
-
+					
 					var value = formProfile.get(attr);
 					if (def.componentReference && !(value instanceof dorado.widget.Component)) {
 						continue;
@@ -416,14 +417,14 @@
 					}
 				}
 			},
-
+			
 			dataSet: {
 				setter: function(v) {
 					this._dataSet = v;
 					delete this._propertyDef;
 				}
 			},
-
+			
 			dataPath: {
 				setter: function(v) {
 					this._dataPath = v;
@@ -651,9 +652,22 @@
 			}
 			
 			var control = this._editor;
-			if (this._controlRegistered) return control;
+			if (this._controlRegistered) {
+				var config1 = {}, config2 = {}, attrs = control.ATTRIBUTES;
+				this.initEditorConfig(config1);
+				for (var attr in config1) {
+					if (!attrs[attr] || attrs[attr].writeOnly) continue;
+					if (config1[attr] != null) config2[attr] = config1[attr];
+				}
+				control.set(config2, {
+					skipUnknownAttribute: true,
+					tryNextOnError: true,
+					preventOverwriting: true,
+					lockWritingTimes: true
+				});
+				return control;
+			}
 			
-			var shouldInitControl = true;
 			if (!control) {
 				var propertyDef = this.getBindingPropertyDef();
 				if (propertyDef) {
@@ -686,7 +700,6 @@
 						lockWritingTimes: true
 					});
 				}
-				shouldInitControl = false;
 			}
 			
 			if (control) {
@@ -699,21 +712,6 @@
 					control.addListener("onPostFailed", $scopify(this, this.onEditorPostFailed));
 				}
 				this.registerInnerControl(control);
-				
-				if (shouldInitControl) {
-					var config1 = {}, config2 = {}, attrs = control.ATTRIBUTES;
-					this.initEditorConfig(config1);
-					for (var attr in config1) {
-						if (!attrs[attr] || attrs[attr].writeOnly) continue;
-						if (config1[attr] != null) config2[attr] = config1[attr];
-					}
-					control.set(config2, {
-						skipUnknownAttribute: true,
-						tryNextOnError: true,
-						preventOverwriting: true,
-						lockWritingTimes: true
-					});
-				}
 			}
 			return control;
 		},
@@ -744,12 +742,13 @@
 			if (this._type == "password") config.password = true;
 			if (this._trigger) config.trigger = this._trigger;
 			if (this._readOnly) config.readOnly = this._readOnly || this._realReadOnly;
-			if (this._entity) config.entity = this._entity;
-			if (this._dataPath) config.dataPath = this._dataPath;
 			if (this._dataSet && this._property) {
 				config.dataSet = this._dataSet;
+			} else if (this._entity) {
+				config.entity = this._entity;
 			}
-			config.property = this._property;
+			if (this._dataPath) config.dataPath = this._dataPath;
+			if (this._property) config.property = this._property;
 		},
 		
 		resetEditorReadOnly: function() {
@@ -807,10 +806,10 @@
 			if (this._dataSet && this._property) p = this.getBindingPropertyDef();
 			var required = p ? p._required : false;
 			if (!required) {
-				var editor = this.getEditor();
+				var editor = this._editor;
 				required = (editor &&
-				editor instanceof dorado.widget.TextEditor &&
-				editor.get("required"));
+					editor instanceof dorado.widget.TextEditor &&
+					editor.get("required"));
 			}
 			return required;
 		},
@@ -904,12 +903,12 @@
 		},
 		
 		isFocusable: function() {
-			var editor = this.getEditor();
-			return $invokeSuper.call(this) && editor.isFocusable();
+			var editor = this._editor;
+			return $invokeSuper.call(this) && editor && editor.isFocusable();
 		},
 		
 		getFocusableSubControls: function() {
-			return [this.getEditor()];
+			return [this._editor];
 		}
 	});
 	
