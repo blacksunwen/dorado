@@ -30,33 +30,28 @@ public class IDE_TableTest extends ConfigManagerTestSupport {
 		Context ctx = Context.getCurrent();
 		ListCatalogResolver resolver = (ListCatalogResolver)ctx.getServiceBean("jdbc.ide.listCatalogResolver");
 		
-		String[] envNames = new String[]{null, "oracle11", "mssql"};
+		String[] envNames = new String[]{null, "oracle11", "mssql", "mysql"};
 		for (String envName: envNames) {
 			String c = resolver.toContent(envName);
-			System.out.println("CATs: " + c);
+			System.out.println("["+envName+"]" + "CATs: " + c);
 		}
 	}
 	
 	public void test_listSchemas() throws Exception {
 		Context ctx = Context.getCurrent();
 		ListSchemaResolver resolver = (ListSchemaResolver)ctx.getServiceBean("jdbc.ide.listSchemaResolver");
-		String[] envNames = new String[]{null, "oracle11"};
+		String[] envNames = new String[]{null, "oracle11", "mssql", "mysql"};
 		for (String envName: envNames) {
 			String c = resolver.toContent(envName, null);
-			System.out.println("SCHs: " + c);
+			System.out.println("["+envName+"]" + "SCHs: " + c);
 		}
 	}
 	
 	public void test_listTableTypes() throws Exception {
 		Context ctx = Context.getCurrent();
 		ListTableTypeResolver resolver = (ListTableTypeResolver)ctx.getServiceBean("jdbc.ide.listTableTypeResolver");
-		{//h2
-			String envName = null;
-			String c = resolver.toContent(envName);
-			System.out.println("["+envName+"]" + "TTYs: " + c);
-		}
-		{//oracle11
-			String envName = "oracle11";
+		String[] envNames = new String[]{null, "oracle11", "mssql", "mysql"};
+		for (String envName: envNames) {
 			String c = resolver.toContent(envName);
 			System.out.println("["+envName+"]" + "TTYs: " + c);
 		}
@@ -83,7 +78,24 @@ public class IDE_TableTest extends ConfigManagerTestSupport {
 			String c = resolver.toContent(envName, catalog, schema, tableTypes, tableNamePattern);
 			System.out.println("["+envName+"]" + "TABs: " +c);
 		}
-		
+		{//mssql
+			String envName = "mssql";
+			String catalog = null;
+			String schema  = null/*"dbo"*/;
+			String[] tableTypes = null;
+			String tableNamePattern = null;
+			String c = resolver.toContent(envName, catalog, schema, tableTypes, tableNamePattern);
+			System.out.println("["+envName+"]" + "TABs: " +c);
+		}
+		{//mysql
+			String envName = "mysql";
+			String catalog = null;
+			String schema  = null/*"dbo"*/;
+			String[] tableTypes = null;
+			String tableNamePattern = null;
+			String c = resolver.toContent(envName, catalog, schema, tableTypes, tableNamePattern);
+			System.out.println("["+envName+"]" + "TABs: " +c);
+		}
 	}
 	
 	public void test_createTable() throws Exception {
@@ -123,16 +135,65 @@ public class IDE_TableTest extends ConfigManagerTestSupport {
 			
 			System.out.println("["+envName+"]" + "XML: " + xml);
 		}
+		{//mssql
+			String envName = "mssql";
+			String catalog = null;
+			String schema = "dbo";
+			String table = "DEMO_PROJECT";
+			
+			JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(envName);
+			
+			TableGeneratorOption option = new TableGeneratorOption();
+			option.setJdbcEnviroment(jdbcEnv);
+			option.setGenerateCatalog(true);
+			option.setGenerateSchema(true);
+			
+			String xml = resolver.toContent(catalog, schema, table, option);
+			
+			System.out.println("["+envName+"]" + "XML: " + xml);
+		}
+		{//mssql
+			String envName = "mysql";
+			String catalog = null;
+			String schema = null;
+			String table = "issure_dialogue";
+			
+			JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(envName);
+			
+			TableGeneratorOption option = new TableGeneratorOption();
+			option.setJdbcEnviroment(jdbcEnv);
+			option.setGenerateCatalog(true);
+			option.setGenerateSchema(false);
+			
+			String xml = resolver.toContent(catalog, schema, table, option);
+			
+			System.out.println("["+envName+"]" + "XML: " + xml);
+		}
 	}
 	
 	public void test_createSqlTable() throws Exception {
 		Context ctx = Context.getCurrent();
 		CreateSqlTableResolver resolver = (CreateSqlTableResolver)ctx.getServiceBean("jdbc.ide.createSqlTableResolver");
-		
-		String envName = null;
-		String sql = "select * from EMPLOYEES";
-		String xml = resolver.toContent(envName, sql);
-		
-		System.out.println("XML: " + xml);
+		{
+			String envName = null;
+			String sql = "select * from EMPLOYEES";
+			String xml = resolver.toContent(envName, sql);
+			
+			System.out.println("["+envName+"]" + "XML: " + xml);
+		}
+		{
+			String envName = "oracle11";
+			String sql = "select * from DEMO_PROJECT";
+			String xml = resolver.toContent(envName, sql);
+			
+			System.out.println("["+envName+"]" + "XML: " + xml);
+		}
+		{
+			String envName = "mssql";
+			String sql = "select * from DEMO_PROJECT";
+			String xml = resolver.toContent(envName, sql);
+			
+			System.out.println("["+envName+"]" + "XML: " + xml);
+		}
 	}
 }

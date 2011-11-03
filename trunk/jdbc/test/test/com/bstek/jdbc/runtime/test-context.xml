@@ -11,6 +11,10 @@
 				<value>classpath:test/com/bstek/jdbc/runtime/sqltables.dbmodel.xml</value>
 				<value>classpath:test/com/bstek/jdbc/runtime/autoTable.dbmodel.xml</value>
 				<value>classpath:test/com/bstek/jdbc/runtime/key-tables.dbmodel.xml</value>
+				
+				<value>classpath:test/com/bstek/jdbc/runtime/oracle.dbmodel.xml</value>
+				<value>classpath:test/com/bstek/jdbc/runtime/mssql.dbmodel.xml</value>
+				<value>classpath:test/com/bstek/jdbc/runtime/mysql.dbmodel.xml</value>
 			</list>
 		</property>
 	</bean>
@@ -61,6 +65,20 @@
 		</property>
 		<property name="dialect">
 			<bean parent="dorado.jdbc.mssqlDialect"/>
+		</property>
+	</bean>
+	
+	<bean parent="dorado.jdbcEnvTemplate">
+		<property name="name" value="mysql" />
+		<property name="dataSource">
+			<bean class="com.mysql.jdbc.jdbc2.optional.MysqlDataSource">
+				<property name="user" value="bstek"/>
+				<property name="password" value="bstek"/>
+				<property name="URL" value="jdbc:mysql://192.168.18.235/bstekhelpdesk?useUnicode=true&amp;characterEncoding=UTF-8"/>
+			</bean>
+		</property>
+		<property name="dialect">
+			<bean parent="dorado.jdbc.mysqlDialect"/>
 		</property>
 	</bean>
 </beans>

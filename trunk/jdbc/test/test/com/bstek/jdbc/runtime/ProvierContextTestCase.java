@@ -65,4 +65,49 @@ public class ProvierContextTestCase extends ConfigManagerTestSupport {
 		}
 		
 	}
+	
+	public void test_oracle() throws Exception {
+		{
+			JdbcDataProvider provider = getDataProvider("jdbc.provider_oracle_1");
+			EntityList<Record> rs = (EntityList<Record>)provider.getResult();
+			
+			System.out.println(rs.size());
+		}{
+			JdbcDataProvider provider = getDataProvider("jdbc.provider_oracle_1");
+			Page<?> page = new Page(10, 2);
+			provider.getResult(page);
+			
+			System.out.println(page.getEntityCount());
+		}
+	}
+	
+	public void test_mssql() throws Exception {
+		{
+			JdbcDataProvider provider = getDataProvider("jdbc.provider_mssql_1");
+			EntityList<Record> rs = (EntityList<Record>)provider.getResult();
+			
+			System.out.println(rs.size());
+		}{
+			JdbcDataProvider provider = getDataProvider("jdbc.provider_mssql_1");
+			Page<?> page = new Page(10, 2);
+			provider.getResult(page);
+			
+			System.out.println(page.getEntityCount());
+		}
+	}
+	
+	public void test_mysql() throws Exception {
+		{
+			JdbcDataProvider provider = getDataProvider("jdbc.provider_mysql_1");
+			EntityList<Record> rs = (EntityList<Record>)provider.getResult();
+			
+			System.out.println(rs.size());
+		}{
+			JdbcDataProvider provider = getDataProvider("jdbc.provider_mysql_1");
+			Page<?> page = new Page(10, 5);
+			provider.getResult(page);
+			
+			System.out.println(page.getEntityCount());
+		}
+	}
 }

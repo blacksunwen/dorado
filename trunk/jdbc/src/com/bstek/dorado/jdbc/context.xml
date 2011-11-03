@@ -77,11 +77,14 @@
 	<bean id="dorado.jdbc.h2Dialect" class="com.bstek.dorado.jdbc.support.h2.H2Dialect" parent="dorado.dialectTemplate" abstract="true"/>
 	<bean id="dorado.jdbc.oracleDialect" class="com.bstek.dorado.jdbc.support.oracle.OracleDialect" parent="dorado.dialectTemplate" abstract="true"/>
 	<bean id="dorado.jdbc.mssqlDialect" class="com.bstek.dorado.jdbc.support.mssql.MssqlDialect" parent="dorado.dialectTemplate" abstract="true"/>
+	<bean id="dorado.jdbc.mysqlDialect" class="com.bstek.dorado.jdbc.support.mysql.MysqlDialect" parent="dorado.dialectTemplate" abstract="true"/>
 	
 	<!-- Parser -->
 	<bean id="dorado.jdbc.config.xml.dbElementParser" abstract="true" parent="dorado.objectParser" class="com.bstek.dorado.jdbc.config.xml.DbElementParser">
 		<d:property-parser key="trigger" value-ref="dorado.jdbc.config.xml.triggerParser"/>
+		<d:property-parser key="jdbcEnviroment" value-ref="dorado.jdbc.config.xml.jdbcEnviromentParser"/>
 	</bean>
+	<bean id="dorado.jdbc.config.xml.jdbcEnviromentParser" class="com.bstek.dorado.jdbc.config.xml.JdbcEnviromentParser" parent="dorado.propertyParser"/>
 	<bean id="dorado.jdbc.config.xml.jdbcTypeParser" class="com.bstek.dorado.jdbc.config.xml.JdbcTypeParser" parent="dorado.propertyParser"/>
 	<bean id="dorado.jdbc.config.xml.keyGeneratorParser" class="com.bstek.dorado.jdbc.model.table.KeyGeneratorParser" parent="dorado.propertyParser"/>
 	<bean id="dorado.jdbc.config.xml.tableReferenceParser" class="com.bstek.dorado.jdbc.model.table.TableRefrenceParser"
