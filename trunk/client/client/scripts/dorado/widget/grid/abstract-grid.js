@@ -1642,9 +1642,14 @@
 			this._processingCurrentRow = false;
 		},
 		
-		onMouseDown: dorado._NULL_FUNCTION,
+		onMouseDown: function(evt) {
+			this._disableCellEditor = true;
+		},
 
 		onMouseUp: function(evt) {
+			dorado.Toolkits.cancelDelayedAction(this, "$refreshPanelTimerId");
+			this._disableCellEditor = false;
+			
 			var tbody1 = this._innerGrid._dataTBody, tbody2 = (this._domMode == 2) ? this._fixedInnerGrid._dataTBody : null;
 			var self = this, innerGrid;
 			var row = $DomUtils.findParent(evt.target, function(parentNode) {
@@ -1714,7 +1719,11 @@
 		},
 
 		doOnFocus: function() {
-			if (this._currentColumn) this.showColumnEditor(this._currentColumn);
+			if (this._currentColumn) {
+				dorado.Toolkits.setDelayedAction(this, "$showEditorTimerId", function() {
+					this.showColumnEditor(this._currentColumn);
+				}, 300);
+			}
 		},
 
 		doOnBlur: function() {
@@ -1738,6 +1747,7 @@
 		},
 
 		showColumnEditor: function(column) {
+			if (this._disableCellEditor) return;
 			if (this._domMode == 2) this._fixedInnerGrid.showColumnEditor(column);
 			this._innerGrid.showColumnEditor(column);
 		},
