@@ -690,19 +690,18 @@
 				}
 				
 				this._editor = control = this.createEditor(this._type);
-				if (control) {
-					var config = {};
-					this.initEditorConfig(config);
-					control.set(config, {
-						skipUnknownAttribute: true,
-						tryNextOnError: true,
-						preventOverwriting: true,
-						lockWritingTimes: true
-					});
-				}
 			}
 			
 			if (control) {
+				var config = {};
+				this.initEditorConfig(config);
+				control.set(config, {
+					skipUnknownAttribute: true,
+					tryNextOnError: true,
+					preventOverwriting: true,
+					lockWritingTimes: true
+				});
+				
 				this._controlRegistered = true;
 				if (this._showHint && control instanceof dorado.widget.AbstractEditor) {
 					if (control instanceof dorado.widget.AbstractTextBox) {

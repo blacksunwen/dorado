@@ -280,9 +280,15 @@
 			if (data instanceof dorado.DataPipe) {
 				var pipe = data;
 				if (callback) {
+					var arg = {
+						dataSet: this
+					};
+					this.sendMessage(DataSet.MESSAGE_LOADING_START, arg);
 					pipe.getAsync( {
 						scope: this,
 						callback: function(success, result) {
+							this.sendMessage(DataSet.MESSAGE_LOADING_END, arg);
+							
 							delete this._dataPipe;
 							if (success && shouldFireOnDataLoad) {
 								this.setData(result);
@@ -331,6 +337,8 @@
 
 			function evaluatePath(path, options, callback) {
 				var data = this._data;
+				if (data instanceof dorado.DataPipe) return null;
+				
 				if (data) {
 					if (!(data instanceof dorado.EntityList || data instanceof dorado.Entity)) {
 						this.setData(data);
@@ -668,11 +676,17 @@
 		},
 
 		sendMessage: function(messageCode, args) {
-			if (this._disableObserversCounter > 0) return;
-			var observers = this._observers;
-			for ( var i = 0; i < observers.length; i++) {
-				var observer = observers[i];
-				observer.dataSetMessageReceived.call(observer, messageCode, args);
+			if (this._disableObserversCounter > 0 || this._duringSendMessage) return;
+			this._duringSendMessage = true;
+			try {
+				var observers = this._observers;
+				for (var i = 0; i < observers.length; i++) {
+					var observer = observers[i];
+					observer.dataSetMessageReceived.call(observer, messageCode, args);
+				}
+			}
+			finally {
+				this._duringSendMessage = false;
 			}
 		}
 	});
@@ -814,6 +828,9 @@
 	 * @constant
 	 */
 	DataSet.MESSAGE_REFRESH_ENTITY = dorado.Entity._MESSAGE_REFRESH_ENTITY;
+	
+	DataSet.MESSAGE_LOADING_START = dorado.Entity._MESSAGE_LOADING_START;
+	DataSet.MESSAGE_LOADING_END = dorado.Entity._MESSAGE_LOADING_END;
 	
 	DataSet.getOwnerDataSet = function(data) {
 		var p = data.parent;
