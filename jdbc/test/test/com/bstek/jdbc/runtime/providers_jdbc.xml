@@ -32,5 +32,20 @@
 	<DataProvider name="jdbc.provider_at6" type="jdbc">
 		<Property name="dbElement">t6</Property>
 	</DataProvider>
+	
+	<!-- Oracle -->
+	<DataProvider name="jdbc.provider_oracle_1" type="jdbc">
+		<Property name="dbElement">ORACLE_PROJECT</Property>
+	</DataProvider>
+	
+	<!-- MSSQL -->
+	<DataProvider name="jdbc.provider_mssql_1" type="jdbc">
+		<Property name="dbElement">MSSQL_PROJECT</Property>
+	</DataProvider>
+	
+	<!-- MYSQL -->
+	<DataProvider name="jdbc.provider_mysql_1" type="jdbc">
+		<Property name="dbElement">mysql_issure_dialogue</Property>
+	</DataProvider>
 </Model>
 

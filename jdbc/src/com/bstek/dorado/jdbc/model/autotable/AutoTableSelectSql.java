@@ -70,7 +70,7 @@ public class AutoTableSelectSql  extends SelectSql {
 		Assert.notEmpty(fromToken, "FromToken must not be empty.");
 		
 		SqlBuilder sql = new SqlBuilder();
-		sql.rightSpace(KeyWord.SELECT, "COUNT(*)", KeyWord.FROM).append(fromToken);
+		sql.rightSpace(KeyWord.SELECT, "COUNT(1)", KeyWord.FROM).append(fromToken);
 		
 		if (StringUtils.isNotEmpty(whereToken)) {
 			sql.leftSpace(KeyWord.WHERE, whereToken);

@@ -6,6 +6,11 @@ import com.bstek.dorado.jdbc.sql.SqlConstants.KeyWord;
 import com.bstek.dorado.jdbc.sql.SqlConstants.NullsModel;
 import com.bstek.dorado.jdbc.support.AbstractDialect;
 
+/**
+ * sqlserver database
+ * @author mark
+ * @see <a href='http://technet.microsoft.com/en-us/library/ms173372.aspx'>http://technet.microsoft.com/en-us/library/ms173372.aspx</a>
+ */
 public class MssqlDialect extends AbstractDialect {
 
 	@Override
@@ -51,6 +56,11 @@ public class MssqlDialect extends AbstractDialect {
 		}
 	}
 	
+	@Override
+	public String toCountSQL(String sql) {
+		return "SELECT COUNT(1) FROM ( " + sql + " ) AS _CT_";
+	}
+
 	@Override
 	public boolean isSequenceSupport() {
 		return false;

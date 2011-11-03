@@ -91,10 +91,7 @@ public abstract class AbstractDialect implements Dialect {
 	}
 	
 	public String toCountSQL(String sql) {
-		SqlBuilder sqlBuilder = new SqlBuilder();
-		sqlBuilder.rightSpace(KeyWord.SELECT, "COUNT(1)", KeyWord.FROM).brackets(sql);
-		
-		return sqlBuilder.build();
+		return "SELECT COUNT(1) FROM ( " + sql + " )";
 	}
 	
 	public String toSQL(SelectSql selectSql) {
@@ -132,6 +129,9 @@ public abstract class AbstractDialect implements Dialect {
 		NamedParameterJdbcTemplate jdbcTemplate = env.getNamedDao().getNamedParameterJdbcTemplate();
 
 		String sql = env.getDialect().toSQL(selectSql);
+		if (logger.isDebugEnabled()) {
+			logger.debug("[SELECT-SQL]" + sql);
+		}
 		List<Record> rs = jdbcTemplate.query(sql, jps, rowMapper);
 		jdbcContext.getPage().setEntities(rs);
 	}
@@ -159,18 +159,27 @@ public abstract class AbstractDialect implements Dialect {
 		if (dialect.isNarrowSupport()) {
 			JdbcParameterSource jps = selectSql.getParameterSource();
 			String sql = dialect.narrowSql(selectSql, pageSize, firstIndex);
+			if (logger.isDebugEnabled()) {
+				logger.debug("[SELECT-SQL]" + sql);
+			}
 			List<Record> rs = jdbcTemplate.query(sql, jps, rowMapper);
 			page.setEntities(rs);
 		} else {
 			ShiftRowMapperResultSetExtractor rse = new ShiftRowMapperResultSetExtractor(
 					rowMapper, pageSize, firstIndex);
 			String sql = dialect.toSQL(selectSql);
+			if (logger.isDebugEnabled()) {
+				logger.debug("[SELECT-SQL]" + sql);
+			}
 			JdbcParameterSource jps = selectSql.getParameterSource();
 			List<Record> rs = jdbcTemplate.query(sql, jps, rse);
 			page.setEntities(rs);
 		}
 
 		String countSql = dialect.toCountSQL(selectSql);
+		if (logger.isDebugEnabled()) {
+			logger.debug("[COUNT-SQL]" + countSql);
+		}
 		int count = jdbcTemplate.queryForInt(countSql, selectSql.getParameterSource());
 		page.setEntityCount(count);
 	}
@@ -399,8 +408,6 @@ public abstract class AbstractDialect implements Dialect {
 			return "LEFT JOIN";
 		case RIGHT_JOIN:
 			return "RIGHT JOIN";
-		case FULL_JOIN:
-			return "FULL JOIN";
 		}
 		
 		throw new IllegalArgumentException("unknown JoinModel '" + joinModel + "'");
@@ -450,6 +457,6 @@ public abstract class AbstractDialect implements Dialect {
 			return "NULLS LAST";
 		}
 		
-		return "";
+		return null;
 	}
 }

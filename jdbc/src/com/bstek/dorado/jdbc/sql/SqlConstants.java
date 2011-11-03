@@ -175,7 +175,7 @@ public class SqlConstants {
 	}
 	
 	public enum JoinModel {
-		LEFT_JOIN, RIGHT_JOIN, INNER_JOIN, FULL_JOIN
+		LEFT_JOIN, RIGHT_JOIN, INNER_JOIN
 	}
 	
 	public enum OrderModel {

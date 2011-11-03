@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DbModel jdbcEnviroment="mysql">
+	<Table name="mysql_issure_dialogue" tableName="issure_dialogue">
+	  <Columns>
+	    <KeyColumn propertyName="ID" jdbcType="VARCHAR-String" columnName="ID"/>
+	    <Column propertyName="CREATE_TIME" jdbcType="TIMESTAMP-Date" columnName="CREATE_TIME"/>
+	    <Column propertyName="CONTENT" jdbcType="LONGVARCHAR-String" columnName="CONTENT"/>
+	    <Column propertyName="CREATE_USER" jdbcType="VARCHAR-String" columnName="CREATE_USER"/>
+	    <Column propertyName="DIAL_TYPE" jdbcType="VARCHAR-String" columnName="DIAL_TYPE"/>
+	    <Column propertyName="ISSURE_ID" jdbcType="VARCHAR-String" columnName="ISSURE_ID"/>
+	    <Column propertyName="ROWCODE" jdbcType="LONGVARCHAR-String" columnName="ROWCODE"/>
+	  </Columns>
+	</Table>
+</DbModel>
