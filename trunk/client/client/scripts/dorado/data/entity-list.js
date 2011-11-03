@@ -83,9 +83,9 @@
 		if (data != null) this.fromJSON(data);
 	};
 	
-	dorado.EntityList._MESSAGE_CURRENT_CHANGED = 10;
-	dorado.EntityList._MESSAGE_DELETED = 11;
-	dorado.EntityList._MESSAGE_INSERTED = 12;
+	dorado.EntityList._MESSAGE_CURRENT_CHANGED = 20;
+	dorado.EntityList._MESSAGE_DELETED = 21;
+	dorado.EntityList._MESSAGE_INSERTED = 22;
 	
 	/**
 	 * @name dorado.EntityList#current
@@ -236,9 +236,15 @@
 							}
 							
 							if (callback) {
+								var arg = {
+									entityList: this,
+									pageNo: pageNo
+								};
 								pipe.getAsync({
 									scope: this,
 									callback: function(success, result) {
+										this.sendMessage(dorado.Entity._MESSAGE_LOADING_END, arg);
+								
 										if (success && !page.loaded) {
 											this._fillPage(page, result);
 											page.loaded = true;
@@ -246,6 +252,7 @@
 										$callback(callback, success, ((success) ? page : result));
 									}
 								});
+								this.sendMessage(dorado.Entity._MESSAGE_LOADING_START, arg);
 							} else {
 								var result = pipe.get();
 								this._fillPage(page, result);

@@ -253,27 +253,28 @@
 		}
 		return provider;
 	};
-})();
-
-dorado.DataProviderPipe = $extend(dorado.DataPipe, {
-	$className: "dorado.DataProviderPipe",
 	
-	getDataProvider: function() {
-		return this.dataProvider;
-	},
-	
-	doGet: function() {
-		return this.doGetAsync();
-	},
-	
-	doGetAsync: function(callback) {
-		var dataProviderArg = this.getDataProviderArg(), dataProvider = this.getDataProvider();
-		dataProvider.dataTypeRepository = this.dataTypeRepository;
-		dataProvider.dataType = this.dataType;
-		if (callback) {
-			dataProvider.getResultAsync(dataProviderArg, callback);
-		} else {
-			return dataProvider.getResult(dataProviderArg);
+	dorado.DataProviderPipe = $extend(dorado.DataPipe, {
+		$className: "dorado.DataProviderPipe",
+		
+		getDataProvider: function() {
+			return this.dataProvider;
+		},
+		
+		doGet: function() {
+			return this.doGetAsync();
+		},
+		
+		doGetAsync: function(callback) {
+			var dataProviderArg = this.getDataProviderArg(), dataProvider = this.getDataProvider();
+			dataProvider.dataTypeRepository = this.dataTypeRepository;
+			dataProvider.dataType = this.dataType;
+			if (callback) {
+				dataProvider.getResultAsync(dataProviderArg, callback);
+			} else {
+				return dataProvider.getResult(dataProviderArg);
+			}
 		}
-	}
-});
+	});
+	
+})();

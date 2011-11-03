@@ -66,6 +66,8 @@ dorado.DataPipe = $class(/** @scope dorado.DataPipe.prototype */{
 	 * @see dorado.DataPipe#doGet
 	 */
 	get: function() {
+		dorado.DataPipe.MONITOR.executionTimes ++;
+		dorado.DataPipe.MONITOR.syncExecutionTimes ++;
 		return this.convertIfNecessary(this.doGet(), this.dataTypeRepository, this.dataType);
 	},
 	
@@ -78,6 +80,9 @@ dorado.DataPipe = $class(/** @scope dorado.DataPipe.prototype */{
 	 * @see dorado.DataPipe#doGetAsync
 	 */
 	getAsync: function(callback) {
+		dorado.DataPipe.MONITOR.executionTimes ++;
+		dorado.DataPipe.MONITOR.asyncExecutionTimes ++;
+		
 		callback = callback || dorado._NULL_FUNCTION;
 		var callbacks = this._waitingCallbacks;
 		if (callbacks) {
@@ -112,3 +117,9 @@ dorado.DataPipe = $class(/** @scope dorado.DataPipe.prototype */{
 		}
 	}
 });
+	
+dorado.DataPipe.MONITOR = {
+	executionTimes: 0,
+	asyncExecutionTimes: 0,
+	syncExecutionTimes: 0
+};

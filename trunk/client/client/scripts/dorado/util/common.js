@@ -38,7 +38,7 @@ dorado.util.Common = {
 	
 		function formatInt(n, format, dec) {
 			if (!format) {
-				return (parseInt(n.substring(0, nfs.length)) + 1) + '';
+				return (parseInt(n.substring(0, nfs.length), 10) + 1) + '';
 			}
 			
 			var c, f, r = '', j = 0, prefix = '';
@@ -99,7 +99,14 @@ dorado.util.Common = {
 			if (nfs === null) {
 				return [format, (n && n.charAt(0) > '4')];
 			} else if (n && n.length > nfs.length && n.charAt(nfs.length) > '4') {
-				n = (parseInt(n.substring(0, nfs.length)) + 1) + '';
+				var n = n.substring(0, nfs.length), leadingZero = '';
+				for (var i = 0; i < n.length; i++) {
+					if (n.charAt(i) == '0') {
+						leadingZero += '0';
+						break;
+					}
+				}
+				n = leadingZero + (parseInt(n, 10) + 1) + '';
 			}
 			
 			var f, r = '', j = 0;
@@ -144,7 +151,7 @@ dorado.util.Common = {
 		var r = formatDecimal(n2, f2);
 		var dec = r[0];
 		if (r[1]) {
-			n1 = (parseInt(n1) + ((n1.charAt(0) == '-') ? -1 : 1)) + '';
+			n1 = (parseInt(n1, 10) + ((n1.charAt(0) == '-') ? -1 : 1)) + '';
 		}
 		return formatInt(n1, f1, dec) + ((dec) ? ('.' + dec) : '');
 	},

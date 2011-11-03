@@ -103,17 +103,17 @@
 
 		this._propertyInfoMap = {};
 
-		if(data) {
+		if (data) {
 			this._data = data;
-			if(dataType == null) {
-				if(dataTypeRepository && data.$dataType) dataType = dataTypeRepository.get(data.$dataType);
+			if (dataType == null) {
+				if (dataTypeRepository && data.$dataType) dataType = dataTypeRepository.get(data.$dataType);
 			} else {
 				data.$dataType = dataType._id;
 			}
 			if (data.$state) this.state = data.$state;
 		} else {
 			this._data = data = {};
-			if(dataType) this._data.$dataType = dataType._id;
+			if (dataType) this._data.$dataType = dataType._id;
 		}
 
 		/**
@@ -122,16 +122,16 @@
 		 */
 		this.dataType = dataType;
 
-		if(dataType) {
+		if (dataType) {
 			this._propertyDefs = dataType._propertyDefs;
 			this._propertyDefs.each(function(pd) {
-				if(pd._defaultValue != undefined && data[pd._name] == undefined) {
+				if (pd._defaultValue != undefined && data[pd._name] == undefined) {
 					data[pd._name] = (pd._defaultValue instanceof Function) ? pd._defaultValue.call(this) : pd._defaultValue;
 				}
 
-				if(data[pd._name] == null) {
+				if (data[pd._name] == null) {
 					var dataType = pd.get("dataType");
-					if(dataType) {
+					if (dataType) {
 						switch (dataType._code) {
 							case dorado.DataType.PRIMITIVE_INT:
 							case dorado.DataType.PRIMITIVE_FLOAT:
@@ -147,7 +147,7 @@
 		} else {
 			this._propertyDefs = null;
 		}
-		if(this.acceptUnknownProperty == null)
+		if (this.acceptUnknownProperty == null)
 			this.acceptUnknownProperty = (dataType) ? dataType._acceptUnknownProperty : true;
 	};
 	/**
@@ -184,6 +184,9 @@
 	dorado.Entity._MESSAGE_DATA_CHANGED = 3;
 	dorado.Entity._MESSAGE_ENTITY_STATE_CHANGED = 4;
 	dorado.Entity._MESSAGE_REFRESH_ENTITY = 5;
+	
+	dorado.Entity._MESSAGE_LOADING_START = 10;
+	dorado.Entity._MESSAGE_LOADING_END = 11;
 
 	/**
 	 * @name dorado.Entity#dataProvider
@@ -220,11 +223,11 @@
 			this._observer = observer;
 			var data = this._data;
 			for(p in data) {
-				if(data.hasOwnProperty(p)) {
+				if (data.hasOwnProperty(p)) {
 					var v = data[p];
-					if(v == null)
+					if (v == null)
 						continue;
-					if( v instanceof dorado.Entity || v instanceof dorado.EntityList) {
+					if ( v instanceof dorado.Entity || v instanceof dorado.EntityList) {
 						v._setObserver(observer);
 					}
 				}
@@ -246,7 +249,7 @@
 		 * 允许dorado.Entity将消息发送给其观察者。
 		 */
 		enableObservers : function() {
-			if(this._disableObserversCounter > 0)
+			if (this._disableObserversCounter > 0)
 				this._disableObserversCounter--;
 		},
 		
@@ -258,7 +261,7 @@
 		},
 		
 		sendMessage : function(messageCode, arg) {
-			if(this._disableObserversCounter == 0 && this._observer) {
+			if (this._disableObserversCounter == 0 && this._observer) {
 				this._observer.entityMessageReceived(messageCode, arg);
 			}
 		},
@@ -268,7 +271,7 @@
 		 * @param {int} state 状态。
 		 */
 		setState : function(state) {
-			if(this.state == state) return;
+			if (this.state == state) return;
 
 			var eventArg = {
 				entity : this,
@@ -278,95 +281,97 @@
 			};
 
 			var dataType = this.dataType;
-			if(dataType && !this.disableEvents)
+			if (dataType && !this.disableEvents)
 				dataType.fireEvent("beforeStateChange", dataType, eventArg);
-			if(!eventArg.processDefault) return;
+			if (!eventArg.processDefault) return;
 
-			if(this.state == dorado.Entity.STATE_NONE && (state == dorado.Entity.STATE_MODIFIED || state == dorado.Entity.STATE_MOVED)) {
+			if (this.state == dorado.Entity.STATE_NONE && (state == dorado.Entity.STATE_MODIFIED || state == dorado.Entity.STATE_MOVED)) {
 				this.storeOldData();
 			}
 
 			this.state = state;
 			this.timestamp = dorado.Core.getTimestamp();
 
-			if(dataType && !this.disableEvents) dataType.fireEvent("onStateChange", dataType, eventArg);
+			if (dataType && !this.disableEvents) dataType.fireEvent("onStateChange", dataType, eventArg);
 			this.sendMessage(dorado.Entity._MESSAGE_ENTITY_STATE_CHANGED, eventArg);
 		},
 		
 		_get : function(property, propertyDef, callback, loadMode) {
 
 			function transferAndReplaceIf(propertyDef, value) {
-				if(value && typeof value == "object" && value.parent == this)
+				if (value && typeof value == "object" && value.parent == this)
 					return value;
 
 				var dataType = propertyDef.get("dataType");
-				if(dataType == null)
-					return value;
+				if (dataType == null) return value;
 
 				var replaceValue = (!( value instanceof dorado.EntityList) && dataType instanceof dorado.AggregationDataType) || (!( value instanceof dorado.Entity) && dataType instanceof dorado.EntityDataType);
 				value = dataType.parse(value, propertyDef.get("typeFormat"));
 
-				if(( value instanceof dorado.Entity || value instanceof dorado.EntityList) && value.parent != this) {
+				if (( value instanceof dorado.Entity || value instanceof dorado.EntityList) && value.parent != this) {
 					value.parent = this;
 					value._setObserver(this._observer);
 				}
 
-				if(replaceValue) {
+				if (replaceValue) {
 					this._data[propertyDef._name] = value;
 				}
 				return value;
 			}
 
 			var value = this._data[property];
-			if(value === undefined) {
-				if(propertyDef) {
+			if (value === undefined) {
+				if (propertyDef) {
 					var dataPipeWrapper = null;
-					if(loadMode != "never" && propertyDef.getDataPipe) {
+					if (loadMode != "never" && propertyDef.getDataPipe) {
 						var pipe;
-						if( propertyDef instanceof dorado.Reference) {
-							if(this.state != dorado.Entity.STATE_NEW || propertyDef._activeOnNewEntity) {
+						if ( propertyDef instanceof dorado.Reference) {
+							if (this.state != dorado.Entity.STATE_NEW || propertyDef._activeOnNewEntity) {
 								pipe = propertyDef.getDataPipe(this);
 							}
 						} else {
 							pipe = propertyDef.getDataPipe(this);
 						}
-						if(pipe) {
+						if (pipe) {
 							var eventArg = {
-								entity : this
+								entity : this,
+								property: property
 							};
 							propertyDef.fireEvent("beforeLoadData", propertyDef, eventArg);
-							if(eventArg.value !== undefined) {
-								if(propertyDef._cacheable) this._data[property] = value;
+							if (eventArg.value !== undefined) {
+								if (propertyDef._cacheable) this._data[property] = value;
 							} else {
-								if(callback || loadMode == "auto") {
+								if (callback || loadMode == "auto") {
 									pipe.getAsync({
 										scope : this,
 										callback : function(success, result) {
-											if(success) {
+											this.sendMessage(dorado.Entity._MESSAGE_LOADING_END, eventArg);
+											
+											if (success) {
 												eventArg.value = result;
 												propertyDef.fireEvent("onLoadData", propertyDef, eventArg);
 												result = eventArg.value;
-
-												if(propertyDef.get("cacheable")) {
+												
+												if (propertyDef.get("cacheable")) {
 													var oldValue = this._data[property];
-													if(oldValue && oldValue.isDataPipeWrapper) {
+													if (oldValue && oldValue.isDataPipeWrapper) {
 														oldValue = oldValue.value;
 													}
-													if( oldValue instanceof dorado.Entity || oldValue instanceof dorado.EntityList) {
+													if (oldValue instanceof dorado.Entity || oldValue instanceof dorado.EntityList) {
 														oldValue.parent = null;
 														oldValue._setObserver(null);
 													}
-
+													
 													this._data[property] = result;
 													this.sendMessage(dorado.Entity._MESSAGE_DATA_CHANGED, {
-														entity : this,
-														property : property,
-														newValue : result
+														entity: this,
+														property: property,
+														newValue: result
 													});
 												}
 											}
 
-											if(propertyDef.getListenerCount("onGet")) {
+											if (propertyDef.getListenerCount("onGet")) {
 												eventArg = {
 													entity : this,
 													value : result
@@ -374,14 +379,15 @@
 												propertyDef.fireEvent("onGet", propertyDef, eventArg);
 												result = eventArg.value;
 											}
-											if(callback) $callback(callback, success, result);
+											if (callback) $callback(callback, success, result);
 										}
 									});
 									this._data[property] = dataPipeWrapper = {
 										isDataPipeWrapper : true,
 										pipe : pipe
-									};
-									if(callback) return;
+									};			
+									this.sendMessage(dorado.Entity._MESSAGE_LOADING_START, eventArg);
+									if (callback) return;
 								} else {
 									value = pipe.get();
 
@@ -389,43 +395,41 @@
 									propertyDef.fireEvent("onLoadData", propertyDef, eventArg);
 									value = eventArg.value;
 
-									if(propertyDef._cacheable) this._data[property] = value;
+									if (propertyDef._cacheable) this._data[property] = value;
 								}
 							}
 						}
 					}
 
-					if(dorado.Entity.ALWAYS_RETURN_VALID_ENTITY_LIST) {
+					if (dorado.Entity.ALWAYS_RETURN_VALID_ENTITY_LIST) {
 						var aggregationDataType = propertyDef.get("dataType");
-						if(value === undefined && aggregationDataType instanceof dorado.AggregationDataType) {
+						if (value === undefined && aggregationDataType instanceof dorado.AggregationDataType) {
 							value = aggregationDataType.parse([], propertyDef.get("typeFormat"));
 							value.parent = this;
 							value._setObserver(this._observer);
-							if(dataPipeWrapper) {
+							if (dataPipeWrapper) {
 								dataPipeWrapper.value = value;
-							} else if(loadMode != "never") {
+							} else if (loadMode != "never") {
 								this._data[property] = value;
 							}
 						}
 					}
 				}
-			} else if(value != null && value.isDataPipeWrapper) {
+			} else if (value != null && value.isDataPipeWrapper) {
 				var pipe = value.pipe;
-				if(loadMode != "never") {
-					if(callback) {
-						pipe.getAsync(callback);
-					}
-					if(loadMode == "auto") {
+				if (loadMode != "never") {
+					pipe.getAsync(callback);
+					if (loadMode == "auto") {
 						value = undefined;
 					} else {
 						value = pipe.get();
 					}
 				}
-			} else if(propertyDef) {
+			} else if (propertyDef) {
 				value = transferAndReplaceIf.call(this, propertyDef, value);
 			}
 
-			if(propertyDef && propertyDef.getListenerCount("onGet")) {
+			if (propertyDef && propertyDef.getListenerCount("onGet")) {
 				eventArg = {
 					entity : this,
 					value : value
@@ -433,14 +437,15 @@
 				propertyDef.fireEvent("onGet", propertyDef, eventArg);
 				value = eventArg.value;
 			}
-			if(callback) $callback(callback, true, value);
+			if (callback) $callback(callback, true, value);
 			return value;
 		},
+		
 		_getPropertyDef : function(property) {
 			var propertyDef = null;
-			if(!this.acceptUnknownProperty && this._propertyDefs) {
+			if (!this.acceptUnknownProperty && this._propertyDefs) {
 				propertyDef = this._propertyDefs.get(property);
-				if(!propertyDef) {
+				if (!propertyDef) {
 					throw new dorado.ResourceException("dorado.data.UnknownProperty", property);
 				}
 			}
@@ -467,11 +472,11 @@
 			var properties = property.split('.'), result;
 			for(var i = 0; i < properties.length; i++) {
 				property = properties[i];
-				if(i == 0) {
+				if (i == 0) {
 					var propertyDef = this._getPropertyDef(property);
 					result = this._get(property, propertyDef, null, loadMode);
 				} else {
-					if(!result) break;
+					if (!result) break;
 					result = ( result instanceof dorado.Entity) ? result.get(property) : result[property];
 				}
 			}
@@ -497,13 +502,13 @@
 
 			function _getAsync(entity, property, callback, loadMode) {
 				var i = property.indexOf('.');
-				if(i > 0) {
+				if (i > 0) {
 					var p1 = property.substring(0, i);
 					var p2 = property.substring(i + 1);
-					if( entity instanceof dorado.Entity) {
+					if ( entity instanceof dorado.Entity) {
 						entity.getAsync(p1, {
 							callback : function(success, result) {
-								if(success && result && ( result instanceof Object)) {
+								if (success && result && ( result instanceof Object)) {
 									_getAsync(result, p2, callback, loadMode);
 								} else {
 									$callback(callback, success, result);
@@ -512,12 +517,12 @@
 						}, loadMode);
 					} else {
 						var subEntity = entity[p1];
-						if(subEntity && ( subEntity instanceof Object)) {
+						if (subEntity && ( subEntity instanceof Object)) {
 							_getAsync(subEntity, p2, callback, loadMode);
 						}
 					}
 				} else {
-					if( entity instanceof dorado.Entity) {
+					if ( entity instanceof dorado.Entity) {
 						entity._get(property, entity._getPropertyDef(property), callback, loadMode);
 					} else {
 						var result = entity[property];
@@ -533,10 +538,10 @@
 
 			function toText(value, propertyDef) {
 				var text;
-				if(propertyDef) {
+				if (propertyDef) {
 					var dataType = propertyDef.get("dataType");
 					text = (dataType || dorado.$String).toText(value, propertyDef._displayFormat);
-					if(text && propertyDef._mapping)
+					if (text && propertyDef._mapping)
 						text = propertyDef.getMappedValue(text);
 				} else {
 					text = dorado.$String.toText(value);
@@ -545,11 +550,11 @@
 			}
 
 			var propertyDef = this._getPropertyDef(property);
-			if(callback) {
+			if (callback) {
 				var entity = this;
 				this._get(property, propertyDef, function(value) {
 					var text = toText(value, propertyDef);
-					if(propertyDef && propertyDef.getListenerCount("onGetText")) {
+					if (propertyDef && propertyDef.getListenerCount("onGetText")) {
 						eventArg = {
 							entity : entity,
 							text : text
@@ -562,7 +567,7 @@
 			} else {
 				var value = this._get(property, propertyDef, null, loadMode);
 				var text = toText(value, propertyDef);
-				if(propertyDef && propertyDef.getListenerCount("onGetText")) {
+				if (propertyDef && propertyDef.getListenerCount("onGetText")) {
 					eventArg = {
 						entity : this,
 						text : text
@@ -593,10 +598,10 @@
 			var properties = property.split('.'), result = this;
 			for(var i = 0; i < properties.length; i++) {
 				property = properties[i];
-				if(i == (properties.length - 1)) {
+				if (i == (properties.length - 1)) {
 					result = result.doGetText(property, null, loadMode);
 				} else {
-					if(!result) break;
+					if (!result) break;
 					result = ( result instanceof dorado.Entity) ? result.get(property) : result[property];
 				}
 			}
@@ -619,13 +624,13 @@
 
 			function _getTextAsync(entity, property, callback, loadMode) {
 				var i = property.indexOf('.');
-				if(i > 0) {
+				if (i > 0) {
 					var p1 = property.substring(0, i);
 					var p2 = property.substring(i + 1);
-					if( entity instanceof dorado.Entity) {
+					if ( entity instanceof dorado.Entity) {
 						entity.getAsync(p1, {
 							callback : function(success, result) {
-								if(success && result && ( result instanceof Object)) {
+								if (success && result && ( result instanceof Object)) {
 									_getAsync(result, p2, callback, loadMode);
 								} else {
 									$callback(callback, success, result);
@@ -634,12 +639,12 @@
 						}, loadMode);
 					} else {
 						var subEntity = entity[p1];
-						if(subEntity && ( subEntity instanceof Object)) {
+						if (subEntity && ( subEntity instanceof Object)) {
 							_getTextAsync(subEntity, p2, callback, loadMode);
 						}
 					}
 				} else {
-					if( entity instanceof dorado.Entity) {
+					if ( entity instanceof dorado.Entity) {
 						entity.doGetText(property, callback, loadMode);
 					} else {
 						var result = entity[property];
@@ -652,10 +657,10 @@
 			_getTextAsync(this, property, callback || dorado._NULL_FUNCTION, loadMode);
 		},
 		storeOldData : function() {
-			if(this._oldData) return;
+			if (this._oldData) return;
 			var data = this._data, oldData = this._oldData = {};
 			for(var p in data) {
-				if(data.hasOwnProperty(p)) oldData[p] = data[p];
+				if (data.hasOwnProperty(p)) oldData[p] = data[p];
 			}
 		},
 		_set : function(property, value, propertyDef) {
@@ -669,27 +674,27 @@
 			};
 
 			var dataType = this.dataType;
-			if(dataType && !this.disableEvents && dataType.fireEvent("beforeDataChange", dataType, eventArg)) {
+			if (dataType && !this.disableEvents && dataType.fireEvent("beforeDataChange", dataType, eventArg)) {
 				value = eventArg.newValue;
 			}
-			if(!eventArg.processDefault) return;
+			if (!eventArg.processDefault) return;
 
 			// 保存原始值
-			if(this.state == dorado.Entity.STATE_NONE) this.storeOldData();
+			if (this.state == dorado.Entity.STATE_NONE) this.storeOldData();
 
-			if(oldValue && oldValue.isDataPipeWrapper)
+			if (oldValue && oldValue.isDataPipeWrapper)
 				oldValue = oldValue.value;
-			if( oldValue instanceof dorado.Entity || oldValue instanceof dorado.EntityList) {
+			if ( oldValue instanceof dorado.Entity || oldValue instanceof dorado.EntityList) {
 				oldValue.parent = null;
 				oldValue._setObserver(null);
 			}
 
 			var propertyInfoMap = this._propertyInfoMap, propertyInfo = propertyInfoMap[property];
-			if(!propertyInfo)
+			if (!propertyInfo)
 				propertyInfoMap[property] = propertyInfo = {};
 
-			if( value instanceof dorado.Entity || value instanceof dorado.EntityList) {
-				if(value.parent != null) {
+			if ( value instanceof dorado.Entity || value instanceof dorado.EntityList) {
+				if (value.parent != null) {
 					throw new dorado.ResourceException("dorado.data.ValueNotFree", (( value instanceof dorado.Entity) ? "Entity" : "EntityList"));
 				}
 				value.parent = this;
@@ -702,7 +707,7 @@
 			}
 
 			eventArg.value = value;
-			if(propertyDef && propertyDef.getListenerCount("onSet")) {
+			if (propertyDef && propertyDef.getListenerCount("onSet")) {
 				propertyDef.fireEvent("onSet", propertyDef, eventArg);
 				value = eventArg.value;
 			}
@@ -710,24 +715,24 @@
 			this._data[property] = value;
 			this.timestamp = dorado.Core.getTimestamp();
 
-			if(property.charAt(0) != '$') {
+			if (property.charAt(0) != '$') {
 				var messages = [], validating;
-				if(propertyDef) {
-					if(propertyDef._required && (!value && value !== false)) {
+				if (propertyDef) {
+					if (propertyDef._required && (!value && value !== false)) {
 						messages.push({
 							state : "error",
 							text : $resource("dorado.data.ErrorContentRequired")
 						});
-					} else if(propertyDef._mapping && value != null) {
+					} else if (propertyDef._mapping && value != null) {
 						var mappedValue = propertyDef.getMappedValue(value);
-						if(propertyDef._acceptUnknownMapKey && mappedValue === undefined) {
+						if (propertyDef._acceptUnknownMapKey && mappedValue === undefined) {
 							messages.push({
 								state : "error",
 								text : $resource("dorado.data.ErrorContentRequired")
 							});
 						}
 					} else {
-						if(propertyDef._validators && !dataType._validatorsDisabled) {
+						if (propertyDef._validators && !dataType._validatorsDisabled) {
 							var entity = this, currentValue = value, validateArg = {
 								property: property,
 								entity: entity
@@ -735,22 +740,22 @@
 							propertyInfo.validating = propertyInfo.validating || 0;
 							for(var i = 0; i < propertyDef._validators.length; i++) {
 								var validator = propertyDef._validators[i];
-								if( validator instanceof dorado.validator.RemoteValidator && validator._async) {
+								if ( validator instanceof dorado.validator.RemoteValidator && validator._async) {
 									propertyInfo.validating++;
 									validator.validate(value, validateArg, {
 										callback : function(success, result) {
 											propertyInfo.validating--;
-											if(propertyInfo.validating <= 0) {
+											if (propertyInfo.validating <= 0) {
 												propertyInfo.validating = 0;
 												propertyInfo.validated = true;
 											}
 
-											if(success) {
-												if(entity._data[property] != currentValue) return;
+											if (success) {
+												if (entity._data[property] != currentValue) return;
 												entity.doSetMessages(property, result);
 											}
 
-											if(entity._data[property] == currentValue) {
+											if (entity._data[property] == currentValue) {
 												entity.sendMessage(dorado.Entity._MESSAGE_DATA_CHANGED, {
 													entity : entity,
 													property : property
@@ -760,11 +765,11 @@
 									});
 								} else {
 									var msgs = validator.validate(value, validateArg);
-									if(msgs) {
+									if (msgs) {
 										messages = messages.concat(msgs);
 										var state = dorado.Toolkits.getTopMessageState(msgs);
 										var acceptState = dataType.get("acceptValidationState");
-										if(STATE_CODE[state || "info"] > STATE_CODE[acceptState || "ok"]) {
+										if (STATE_CODE[state || "info"] > STATE_CODE[acceptState || "ok"]) {
 											asyncValidateActions = [];
 											break;
 										}
@@ -772,7 +777,7 @@
 								}
 							}
 
-							if(!propertyInfo.validating) {
+							if (!propertyInfo.validating) {
 								propertyInfo.validated = true;
 							}
 						} else {
@@ -781,7 +786,7 @@
 					}
 				}
 
-				if(!(messages && messages.length) && !propertyInfo.validating) {
+				if (!(messages && messages.length) && !propertyInfo.validating) {
 					messages = [{
 						state : "ok"
 					}];
@@ -789,11 +794,11 @@
 				this.doSetMessages(property, messages);
 			}
 
-			if(this.state == dorado.Entity.STATE_NONE) {
+			if (this.state == dorado.Entity.STATE_NONE) {
 				this.setState(dorado.Entity.STATE_MODIFIED);
 			}
 
-			if(dataType && !this.disableEvents) dataType.fireEvent("onDataChange", dataType, eventArg);
+			if (dataType && !this.disableEvents) dataType.fireEvent("onDataChange", dataType, eventArg);
 			this.sendMessage(dorado.Entity._MESSAGE_DATA_CHANGED, eventArg);
 		},
 		
@@ -804,9 +809,9 @@
 		 */
 		set : function(property, value) {
 			var propertyDef = this._getPropertyDef(property);
-			if(propertyDef) {
+			if (propertyDef) {
 				var dataType = propertyDef.get("dataType");
-				if(dataType)
+				if (dataType)
 					value = dataType.parse(value, propertyDef._typeFormat);
 			}
 			this._set(property, value, propertyDef);
@@ -822,14 +827,14 @@
 		 */
 		setText : function(property, text) {
 			var propertyDef = this._getPropertyDef(property), value = text;
-			if(propertyDef) {
-				if(propertyDef._mapping && text != null) {
+			if (propertyDef) {
+				if (propertyDef._mapping && text != null) {
 					value = propertyDef.getMappedKey(text);
-					if(value === undefined)
+					if (value === undefined)
 						value = text;
 				}
 				var dataType = propertyDef.get("dataType");
-				if(dataType)
+				if (dataType)
 					value = dataType.parse(value, propertyDef._displayFormat);
 			}
 			this._set(property, value, propertyDef);
@@ -846,21 +851,21 @@
 		 * </ul>
 		 */
 		cancel : function() {
-			if(this.state == dorado.Entity.STATE_NEW) {
+			if (this.state == dorado.Entity.STATE_NEW) {
 				this.remove();
-			} else if(this.state != dorado.Entity.STATE_NONE) {
+			} else if (this.state != dorado.Entity.STATE_NONE) {
 				var data = this._data, oldData = this._oldData;
-				if(oldData) {
+				if (oldData) {
 					for(var p in data) {
-						if(data.hasOwnProperty(p))
+						if (data.hasOwnProperty(p))
 							delete data[p];
 					}
 					for(var p in oldData) {
-						if(oldData.hasOwnProperty(p))
+						if (oldData.hasOwnProperty(p))
 							data[p] = oldData[p];
 					}
 				}
-				if(this.state != dorado.Entity.STATE_MOVED)this.resetState();
+				if (this.state != dorado.Entity.STATE_MOVED)this.resetState();
 				this.sendMessage(0);
 			}
 		},
@@ -887,27 +892,27 @@
 		 * </ul>
 		 */
 		reset : function(property) {
-			if(property !== false) {
-				if( typeof property == "boolean") property = null;
+			if (property !== false) {
+				if ( typeof property == "boolean") property = null;
 				var data = this._data;
-				if(property) {
+				if (property) {
 					var props = property.split(',');
 					for(var i = 0; i < props.length; i++) {
 						var prop = props[i];
-						if(data[prop] != undefined) {
+						if (data[prop] != undefined) {
 							var propertyDef = (this._propertyDefs) ? this._propertyDefs.get(prop) : null;
-							if(propertyDef && propertyDef instanceof dorado.Reference)
+							if (propertyDef && propertyDef instanceof dorado.Reference)
 								delete data[prop];
 						}
 					}
 				} else {
 					for(var property in data) {
-						if(!data.hasOwnProperty(property))
+						if (!data.hasOwnProperty(property))
 							continue;
-						if(property.charAt(0) == '$')
+						if (property.charAt(0) == '$')
 							continue;
 						var propertyDef = (this._propertyDefs) ? this._propertyDefs.get(property) : null;
-						if(propertyDef && propertyDef instanceof dorado.Reference) {
+						if (propertyDef && propertyDef instanceof dorado.Reference) {
 							delete data[property];
 						}
 					}
@@ -929,7 +934,7 @@
 		 */
 		createBrother : function(data, detached) {
 			var brother = new dorado.Entity(data, this.dataTypeRepository, this.dataType);
-			if(!detached && this.parent instanceof dorado.EntityList) {
+			if (!detached && this.parent instanceof dorado.EntityList) {
 				this.parent.insert(brother);
 			}
 			return brother;
@@ -948,21 +953,21 @@
 		 */
 		createChild : function(property, data, detached) {
 			var child = null;
-			if(this.dataType) {
+			if (this.dataType) {
 				var propertyDef = this._getPropertyDef(property);
-				if(!propertyDef)
+				if (!propertyDef)
 					throw new dorado.ResourceException("dorado.data.UnknownProperty", property);
 				var elementDataType = propertyDef.get("dataType"), aggregationDataType;
-				if(elementDataType && elementDataType instanceof dorado.AggregationDataType) {
+				if (elementDataType && elementDataType instanceof dorado.AggregationDataType) {
 					aggregationDataType = elementDataType;
 					elementDataType = elementDataType.getElementDataType();
 				}
-				if(elementDataType && !( elementDataType instanceof dorado.EntityDataType)) {
+				if (elementDataType && !( elementDataType instanceof dorado.EntityDataType)) {
 					throw new ResourceException("dorado.data.EntityPropertyExpected", property);
 				}
 				child = new dorado.Entity(data, this.dataTypeRepository, elementDataType);
-				if(!detached) {
-					if(aggregationDataType) {
+				if (!detached) {
+					if (aggregationDataType) {
 						var list = this._get(property, propertyDef);
 						list.insert(child);
 					} else {
@@ -971,11 +976,11 @@
 				}
 			} else {
 				child = new dorado.Entity(data);
-				if(!detached) {
+				if (!detached) {
 					var oldChild = this.get(property);
-					if( oldChild instanceof dorado.EntityList) {
+					if ( oldChild instanceof dorado.EntityList) {
 						oldChild.insert(child);
-					} else if( oldChild instanceof Array) {
+					} else if ( oldChild instanceof Array) {
 						oldChild.push(child);
 					} else {
 						this.set(property, child);
@@ -993,7 +998,7 @@
 		 * @see dorado.EntityList#setCurrent
 		 */
 		setCurrent : function() {
-			if(this.parent instanceof dorado.EntityList) {
+			if (this.parent instanceof dorado.EntityList) {
 				this.parent.setCurrent(this);
 			}
 		},
@@ -1003,7 +1008,7 @@
 		clearData : function() {
 			var data = this._data;
 			for(var property in data) {
-				if(!data.hasOwnProperty(property))
+				if (!data.hasOwnProperty(property))
 					continue;
 				delete data[property];
 			}
@@ -1014,7 +1019,7 @@
 		 * @param {Object} json 要转换的JSON对象。
 		 */
 		fromJSON : function(json) {
-			if(this.dataType)
+			if (this.dataType)
 				json.$dataType = this.dataType._id;
 			this._data = json;
 			delete this._oldData;
@@ -1048,12 +1053,12 @@
 		toJSON : function(options, context) {
 			var result = {};
 			var includeUnsubmittableProperties = includeReferenceProperties = includeLookupProperties = true, generateDataType = generateState = generateEntityId = generateOldData = false, properties = null, entityFilter = null;
-			if(options != null) {
-				if(options.includeUnsubmittableProperties === false)
+			if (options != null) {
+				if (options.includeUnsubmittableProperties === false)
 					includeUnsubmittableProperties = false;
-				if(options.includeReferenceProperties === false)
+				if (options.includeReferenceProperties === false)
 					includeReferenceProperties = false;
-				if(options.includeLookupProperties === false)
+				if (options.includeLookupProperties === false)
 					includeLookupProperties = false;
 				generateDataType = options.generateDataType;
 				generateState = options.generateState;
@@ -1062,59 +1067,59 @@
 				options.generateDataType = false;
 				properties = options.properties;
 				entityFilter = options.entityFilter;
-				if(properties != null && properties.length == 0)
+				if (properties != null && properties.length == 0)
 					properties = null;
 			}
 
 			var data = this._data, oldData = this._oldData, oldDataHolder;
 			for(var property in data) {
-				if(!data.hasOwnProperty(property))
+				if (!data.hasOwnProperty(property))
 					continue;
-				if(property.charAt(0) == '$')
+				if (property.charAt(0) == '$')
 					continue;
-				if(properties && properties.indexOf(property) < 0)
+				if (properties && properties.indexOf(property) < 0)
 					continue;
 
 				var propertyDef = (this._propertyDefs) ? this._propertyDefs.get(property) : null;
 
-				if(!includeUnsubmittableProperties && propertyDef && !propertyDef._submittable)
+				if (!includeUnsubmittableProperties && propertyDef && !propertyDef._submittable)
 					continue;
-				if( propertyDef instanceof dorado.Reference) {
-					if(!includeReferenceProperties)
+				if ( propertyDef instanceof dorado.Reference) {
+					if (!includeReferenceProperties)
 						continue;
-				} else if( propertyDef instanceof dorado.Lookup) {
-					if(!includeLookupProperties)
+				} else if ( propertyDef instanceof dorado.Lookup) {
+					if (!includeLookupProperties)
 						continue;
 				}
 
 				var value = this._get(property, propertyDef);
-				if(value != null) {
-					if( value instanceof dorado.Entity) {
-						if(!entityFilter || entityFilter(value)) {
+				if (value != null) {
+					if ( value instanceof dorado.Entity) {
+						if (!entityFilter || entityFilter(value)) {
 							value = value.toJSON(options, context);
 						} else {
 							value = null;
 						}
-					} else if( value instanceof dorado.EntityList) {
+					} else if ( value instanceof dorado.EntityList) {
 						value = value.toJSON(options, context);
 					}
 				}
-				if(generateOldData && propertyDef && oldData != null) {
-					if(!oldDataHolder) oldDataHolder = {};
+				if (generateOldData && propertyDef && oldData != null) {
+					if (!oldDataHolder) oldDataHolder = {};
 					oldDataHolder[property] = oldData[property];
 				}
 
 				result[property] = value;
 			}
 
-			if(generateDataType && data.$dataType) result.$dataType = data.$dataType;
-			if(generateState && this.state != dorado.Entity.STATE_NONE) result.$state = this.state;
-			if(generateEntityId) result.$entityId = this.entityId;
-			if(oldDataHolder) result.$oldData = oldDataHolder;
+			if (generateDataType && data.$dataType) result.$dataType = data.$dataType;
+			if (generateState && this.state != dorado.Entity.STATE_NONE) result.$state = this.state;
+			if (generateEntityId) result.$entityId = this.entityId;
+			if (oldDataHolder) result.$oldData = oldDataHolder;
 
-			if(options) options.generateDataType = generateDataType;
+			if (options) options.generateDataType = generateDataType;
 
-			if(context && context.entities) context.entities.push(this);
+			if (context && context.entities) context.entities.push(this);
 			return result;
 		},
 		/**
@@ -1146,7 +1151,7 @@
 		 */
 		getMessages : function(property) {
 			var results;
-			if(property) {
+			if (property) {
 				var obj = this._propertyInfoMap[property]
 				results = ((obj) ? obj.messages : null);
 			} else {
@@ -1158,16 +1163,16 @@
 
 			function getMessageState(entity) {
 				var state = null, stateCode = -1;
-				if(entity._messages) {
+				if (entity._messages) {
 					state = dorado.Toolkits.getTopMessageState(entity._messages);
-					if(state)
+					if (state)
 						stateCode = STATE_CODE[state];
 				}
 				var map = entity._propertyInfoMap;
 				for(var p in map) {
 					var obj = map[p];
 					var code = STATE_CODE[obj.state];
-					if(code > stateCode) {
+					if (code > stateCode) {
 						stateCode = code;
 						state = obj.state;
 					}
@@ -1176,14 +1181,14 @@
 			}
 
 			var retval = false;
-			if(messages === undefined) {
+			if (messages === undefined) {
 				messages = property;
 				messages = dorado.Toolkits.trimMessages(messages, DEFAULT_VALIDATION_RESULT_STATE);
-				if(this._messages == messages)
+				if (this._messages == messages)
 					return false;
 				this._messages = messages;
 
-				if(dorado.Toolkits.getTopMessageState(messages) != this._messageState) {
+				if (dorado.Toolkits.getTopMessageState(messages) != this._messageState) {
 					this._messageState = getMessageState(this);
 					retval = true;
 				}
@@ -1191,21 +1196,21 @@
 				var map = this._propertyInfoMap;
 				messages = dorado.Toolkits.trimMessages(messages, DEFAULT_VALIDATION_RESULT_STATE);
 				var propertyInfo = map[property];
-				if(propertyInfo && !propertyInfo.validating && propertyInfo.messages == messages) return false;
+				if (propertyInfo && !propertyInfo.validating && propertyInfo.messages == messages) return false;
 
 				var state = dorado.Toolkits.getTopMessageState(messages);
-				if(!propertyInfo) map[property] = propertyInfo = {};
+				if (!propertyInfo) map[property] = propertyInfo = {};
 				propertyInfo.state = state;
 				propertyInfo.messages = messages;
 
-				if(state != this._messageState || state != ( propertyInfo ? propertyInfo.state : null)) {
+				if (state != this._messageState || state != ( propertyInfo ? propertyInfo.state : null)) {
 					this._messageState = getMessageState(this);
 					retval = true;
 				}
 			}
 
 			var dataType = this.dataType;
-			if(dataType) {
+			if (dataType) {
 				dataType.fireEvent("onMessageChange", dataType, {
 					entity : this,
 					property : property,
@@ -1214,6 +1219,7 @@
 			}
 			return retval;
 		},
+		
 		/**
 		 * 设置当前数据实体关联的额外信息的数组。
 		 * <p>
@@ -1233,9 +1239,9 @@
 		 */
 		setMessages : function(property, messages) {
 			var retval = this.doSetMessages(property, messages);
-			if(retval) {
+			if (retval) {
 				this.timestamp = dorado.Core.getTimestamp();
-				if(property) {
+				if (property) {
 					this.sendMessage(dorado.Entity._MESSAGE_DATA_CHANGED, {
 						entity : this,
 						property : property
@@ -1246,6 +1252,7 @@
 			}
 			return retval;
 		},
+		
 		/**
 		 * 返回当前数据实体中最高的信息级别。即系统认为error高于warn高于okinfo高于。
 		 * @param {String} [property] 属性名。
@@ -1255,13 +1262,14 @@
 		 * @return {String} 最高的验证信息级别。取值包括: error、warn、ok、info。
 		 */
 		getMessageState : function(property) {
-			if(property) {
+			if (property) {
 				var map = this._propertyInfoMap;
 				return map[property] ? map[property].state : null;
 			} else {
 				return this._messageState;
 			}
 		},
+		
 		/**
 		 * 返回数据实体中某属性校验状态。
 		 * @param {Object} property 属性名。
@@ -1276,14 +1284,14 @@
 		 */
 		getValidateState : function(property) {
 			var state = "unvalidate", map = this._propertyInfoMap;
-			if(map) {
+			if (map) {
 				var propertyInfo = map[property];
-				if(propertyInfo) {
-					if(propertyInfo.validating) {
+				if (propertyInfo) {
+					if (propertyInfo.validating) {
 						state = "validating";
-					} else if(propertyInfo.validated) {
+					} else if (propertyInfo.validated) {
 						state = this.getMessageState(property);
-						if(!state || state == "info")
+						if (!state || state == "info")
 							state = "ok";
 					}
 				}
@@ -1345,7 +1353,7 @@
 			var context = options ? options.context : null;
 			var result, topResult, resultCode, topResultCode = -1
 
-			if(context) {
+			if (context) {
 				context.info = [];
 				context.ok = [];
 				context.warn = [];
@@ -1356,15 +1364,15 @@
 
 			var hasExecutingValidator = false, message;
 			var dataType = this.dataType, propertyInfoMap = this._propertyInfoMap;
-			if(dataType) {
+			if (dataType) {
 				this._propertyDefs = dataType._propertyDefs;
 				var entity = this;
 				this._propertyDefs.each(function(pd) {
 					var property = pd._name, propertyInfo = propertyInfoMap[property];
-					if(propertyInfo) {
-						if(propertyInfo.validating) {
+					if (propertyInfo) {
+						if (propertyInfo.validating) {
 							hasExecutingValidator = true;
-							if(context) {
+							if (context) {
 								context.executingValidationNum = (context.executingValidationNum || 0) + propertyInfo.validating;
 								var executing = context.executing = context.executing || [];
 								executing.push({
@@ -1374,7 +1382,7 @@
 								});
 							}
 						} else {
-							if(context && propertyInfo.messages) {
+							if (context && propertyInfo.messages) {
 								for(var i = 0; i < propertyInfo.messages.length; i++) {
 									addMessage2Context(context, this, property, propertyInfo.messages[i]);
 								}
@@ -1382,42 +1390,42 @@
 						}
 					}
 
-					if(pd._required && (!propertyInfo || !propertyInfo.validated)) {
-						if(!propertyInfo)propertyInfoMap[property] = propertyInfo = {};
+					if (pd._required && (!propertyInfo || !propertyInfo.validated)) {
+						if (!propertyInfo)propertyInfoMap[property] = propertyInfo = {};
 						propertyInfo.validated = true;
 
 						var value = entity._data[property];
-						if(!value && value !== false) {
+						if (!value && value !== false) {
 							message = {
 								state : "error",
 								text : $resource("dorado.data.ErrorContentRequired")
 							};
 							entity.setMessages(property, [message]);
-							if(context) addMessage2Context(context, this, property, message);
+							if (context) addMessage2Context(context, this, property, message);
 						}
 					}
 				});
 			}
 
-			if(simplePropertyOnly) {
+			if (simplePropertyOnly) {
 				var data = this._data;
 				for(var p in data) {
-					if(!data.hasOwnProperty(p))continue;
+					if (!data.hasOwnProperty(p))continue;
 
 					var value = data[p];
 					if (value instanceof dorado.Entity) {
 						result = value.validate(options);
 						resultCode = VALIDATION_RESULT_CODE[result];
-						if(resultCode > topResultCode) {
+						if (resultCode > topResultCode) {
 							topResultCode = resultCode;
 							topResult = result;
 						}
-					} else if( value instanceof dorado.EntityList) {
+					} else if ( value instanceof dorado.EntityList) {
 						var it = value.iterator();
 						while(it.hasNext()) {
 							result = it.next().validate(options);
 							resultCode = VALIDATION_RESULT_CODE[result];
-							if(resultCode > topResultCode) {
+							if (resultCode > topResultCode) {
 								topResultCode = resultCode;
 								topResult = result;
 							}
@@ -1427,17 +1435,17 @@
 			}
 			state = this.getMessageState();
 			var acceptState = this.dataType ? this.dataType.get("acceptValidationState") : null;
-			if(STATE_CODE[state || "info"] <= STATE_CODE[acceptState || "ok"]) {
+			if (STATE_CODE[state || "info"] <= STATE_CODE[acceptState || "ok"]) {
 				result = hasExecutingValidator ? "executing" : "ok";
 			} else {
 				result = "invalid";
 			}
 			resultCode = VALIDATION_RESULT_CODE[result];
-			if(resultCode > topResultCode) {
+			if (resultCode > topResultCode) {
 				topResultCode = resultCode;
 				topResult = result;
 			}
-			if(context) context.result = topResult;
+			if (context) context.result = topResult;
 			return topResult;
 		},
 		/**
@@ -1446,9 +1454,9 @@
 		 * @return {boolean} 是否包含未提交的信息。
 		 */
 		isDirty : function(property) {
-			if(this.state == dorado.Entity.STATE_NONE)
+			if (this.state == dorado.Entity.STATE_NONE)
 				return false;
-			if(property) {
+			if (property) {
 				var propertyInfo = this._propertyInfoMap[property];
 				return (propertyInfo) ? propertyInfo.isDirty : false;
 			} else {
@@ -1461,12 +1469,12 @@
 		flush : function(callback) {
 
 			function checkResult(result) {
-				if( result instanceof Array && result.length > 1) {
+				if ( result instanceof Array && result.length > 1) {
 					throw new dorado.ResourceException("dorado.data.TooMoreResult");
 				}
 			}
 
-			if(!this.dataType || !this.dataProvider) {
+			if (!this.dataType || !this.dataProvider) {
 				throw new dorado.ResourceException("dorado.data.DataProviderUndefined");
 			}
 
@@ -1507,26 +1515,26 @@
 		 * 这样做的目的是为了便于在今后提交时能够清晰的掌握集合中的元素究竟做过哪些改变。
 		 */
 		remove : function(detach) {
-			if(this.parent)
+			if (this.parent)
 				this.parent.remove(this, detach);
 		},
 		toString : function() {
 			var text;
-			if(this.dataType) {
+			if (this.dataType) {
 				var dataType = this.dataType;
 				var eventArg = {
 					entity : this,
 					processDefault : true
 				};
-				if(!this.disableEvents && dataType.getListenerCount("onEntityToText")) {
+				if (!this.disableEvents && dataType.getListenerCount("onEntityToText")) {
 					eventArg.processDefault = false;
 					dataType.fireEvent("onEntityToText", dataType, eventArg);
 				}
-				if(eventArg.processDefault) {
-					if(dataType._defaultDisplayProperty) {
+				if (eventArg.processDefault) {
+					if (dataType._defaultDisplayProperty) {
 						text = this.getText(dataType._defaultDisplayProperty, "never");
 					}
-					if(text === undefined)
+					if (text === undefined)
 						text = "Entity@" + this.entityId;
 				}
 			} else {
@@ -1536,13 +1544,13 @@
 		},
 		clone : function(deep) {
 			var newData, data = this._data;
-			if(deep) {
+			if (deep) {
 				newData = dorado.Core.clone(data, deep);
 			} else {
 				newData = {};
 				for(var attr in data) {
 					var v = data[attr];
-					if( v instanceof dorado.Entity || v instanceof dorado.EntityList)
+					if ( v instanceof dorado.Entity || v instanceof dorado.EntityList)
 						continue;
 					newData[attr] = v;
 				}
@@ -1557,7 +1565,7 @@
 
 	dorado.Entity.getDummyEntity = function(pageNo) {
 		var entity = dummyEntityMap[pageNo];
-		if(!entity) {
+		if (!entity) {
 			dummyEntityMap[pageNo] = entity = new dorado.Entity();
 			entity.get = entity.set = entity.getState = dorado._NULL_FUNCTION;
 			entity.dummy = true;

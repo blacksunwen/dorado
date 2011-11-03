@@ -600,9 +600,6 @@
 			for (var i = 0; i < constraints.length; i++) {
 				var constraint = constraints[i];
 				if (constraint.keyProperty) {
-					/*
-					 * keys.push((entity instanceof dorado.Entity) ? entity.get(constraint.keyProperty) : entity[constraint.keyProperty]);
-					 */
 					keys.push(entity.get(constraint.keyProperty));
 				} else {
 					keys.push(dorado.JSON.evaluate(constraint.keyValue));

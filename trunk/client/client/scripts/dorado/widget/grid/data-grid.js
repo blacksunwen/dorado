@@ -418,27 +418,52 @@
 			var itemModel = this._itemModel;
 			var items = itemModel.getItems();
 			switch (messageCode) {
-				case dorado.widget.DataSet.MESSAGE_REFRESH:
+				case dorado.widget.DataSet.MESSAGE_REFRESH:{
 					return true;
+				}
 					
-				case dorado.widget.DataSet.MESSAGE_CURRENT_CHANGED:
+				case dorado.widget.DataSet.MESSAGE_CURRENT_CHANGED:{
 					return (arg.entityList == items || dorado.DataUtil.isOwnerOf(items, arg.entityList));
+				}
 					
 				case dorado.widget.DataSet.MESSAGE_DATA_CHANGED:
-				case dorado.widget.DataSet.MESSAGE_REFRESH_ENTITY:
+				case dorado.widget.DataSet.MESSAGE_REFRESH_ENTITY:{
 					return (!items || items._observer != this._dataSet || arg.entity.parent == items || dorado.DataUtil.isOwnerOf(items, arg.entity));
-					
-				case dorado.widget.DataSet.MESSAGE_DELETED:
+				}
+				
+				case dorado.widget.DataSet.MESSAGE_DELETED:{
 					return (arg.entity.parent == items || dorado.DataUtil.isOwnerOf(items, arg.entity));
+				}
 					
-				case dorado.widget.DataSet.MESSAGE_INSERTED:
+				case dorado.widget.DataSet.MESSAGE_INSERTED:{
 					return (arg.entityList == items);
+				}
 					
-				case dorado.widget.DataSet.MESSAGE_ENTITY_STATE_CHANGED:
+				case dorado.widget.DataSet.MESSAGE_ENTITY_STATE_CHANGED:{
 					return (arg.entity.parent == items);
+				}
+					
+				case dorado.widget.DataSet.MESSAGE_LOADING_START:
+				case dorado.widget.DataSet.MESSAGE_LOADING_END:{
+					if (arg.entityList) {
+						return (items == arg.entityList || dorado.DataUtil.isOwnerOf(items, arg.entityList));
+					} else if (arg.entity) {
+						var asyncExecutionTimes = dorado.DataPipe.MONITOR.asyncExecutionTimes;
+						this.getBindingData({
+							firstResultOnly: true,
+							acceptAggregation: true
+						});
+						return (dorado.DataPipe.MONITOR.asyncExecutionTimes > asyncExecutionTimes);
+					}
+					else {
+						return true;
+					}
+				}
 					
 				default:
-					return false;
+					{
+						return false;
+					}
 			}
 		},
 		
@@ -504,6 +529,14 @@
 						this.onEntityInserted(arg);
 						this.refreshSummary();
 					}
+					break;
+				}
+				case dorado.widget.DataSet.MESSAGE_LOADING_START: {
+					this.showLoadingTip();
+					break;
+				}
+				case dorado.widget.DataSet.MESSAGE_LOADING_END: {
+					this.hideLoadingTip();
 					break;
 				}
 			}
@@ -626,6 +659,14 @@
 			} else {
 				return $invokeSuper.call(this, arguments);
 			}
+		},
+		
+		showLoadingTip: function() {
+			
+		},
+		
+		hideLoadingTip: function() {
+			
 		}
 	});
 	
