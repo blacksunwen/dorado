@@ -342,10 +342,11 @@
 								if (propertyDef._cacheable) this._data[property] = value;
 							} else {
 								if (callback || loadMode == "auto") {
+									var isNewPipe = (pipe.runningProcNum == 0);
 									pipe.getAsync({
 										scope : this,
 										callback : function(success, result) {
-											this.sendMessage(dorado.Entity._MESSAGE_LOADING_END, eventArg);
+											if (isNewPipe) this.sendMessage(dorado.Entity._MESSAGE_LOADING_END, eventArg);
 											
 											if (success) {
 												eventArg.value = result;
@@ -382,11 +383,12 @@
 											if (callback) $callback(callback, success, result);
 										}
 									});
+									
 									this._data[property] = dataPipeWrapper = {
 										isDataPipeWrapper : true,
 										pipe : pipe
 									};			
-									this.sendMessage(dorado.Entity._MESSAGE_LOADING_START, eventArg);
+									if (isNewPipe) this.sendMessage(dorado.Entity._MESSAGE_LOADING_START, eventArg);
 									if (callback) return;
 								} else {
 									value = pipe.get();
@@ -791,11 +793,11 @@
 						state : "ok"
 					}];
 				}
-				this.doSetMessages(property, messages);
-			}
+				this.doSetMessages(property, messages);				
 
-			if (this.state == dorado.Entity.STATE_NONE) {
-				this.setState(dorado.Entity.STATE_MODIFIED);
+				if (this.state == dorado.Entity.STATE_NONE) {
+					this.setState(dorado.Entity.STATE_MODIFIED);
+				}
 			}
 
 			if (dataType && !this.disableEvents) dataType.fireEvent("onDataChange", dataType, eventArg);

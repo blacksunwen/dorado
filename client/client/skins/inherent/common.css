@@ -82,6 +82,10 @@ html, body {
     margin: 0;
 }
 
+.d-main-task-indicator .task-list {
+    margin: 0;
+}
+
 .d-dragging-indicator {
 	cursor: pointer;
 	position: absolute;

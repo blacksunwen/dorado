@@ -18,7 +18,7 @@
 			var self = this;
 			function waitForReady() {
 				if (document.readyState !== "complete") {
-					setTimeout(arguments.callee, 20);
+					setTimeout(waitForReady, 20);
 				} else {
 					superReady.call(self, fn);
 				}

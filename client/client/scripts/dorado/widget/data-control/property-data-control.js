@@ -66,12 +66,12 @@ dorado.widget.PropertyDataControl = $extend(dorado.widget.DataControl, /** @scop
 	},
 	
 	getBindingPropertyValue: function() {
-		var entity = this.getBindingData(true);
+		var entity = this.getBindingData();
 		return (entity) ? entity.get(this._property) : null;
 	},
 	
 	getBindingPropertyText: function() {
-		var entity = this.getBindingData(true);
+		var entity = this.getBindingData();
 		return (entity) ? entity.getText(this._property) : '';
 	}
 });

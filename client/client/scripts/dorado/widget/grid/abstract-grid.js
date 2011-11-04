@@ -2557,7 +2557,10 @@
 				entity: entity,
 				column: column
 			});
-		}
+		},
+		
+		showLoadingTip: dorado.widget.AbstractList.prototype.showLoadingTip,
+		hideLoadingTip: dorado.widget.AbstractList.prototype.hideLoadingTip
 	});
 
 	dorado.widget.grid.AbstractInnerGrid = $extend(dorado.widget.RowList, {

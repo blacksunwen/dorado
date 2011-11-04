@@ -463,13 +463,13 @@
 		},
 		
 		onReady : function() {
+			$invokeSuper.call(this);
 			if(this._innerControls) {
 				jQuery.each(this._innerControls, function(i, control) {
 					if(!( control instanceof dorado.widget.Control) && !control._ready)
 						control.onReady();
 				});
 			}
-			$invokeSuper.call(this);
 		},
 		
 		destroy : function() {

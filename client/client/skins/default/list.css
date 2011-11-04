@@ -66,3 +66,31 @@
     height: 1px;
     background: #FF8040;
 }
+
+.d-list-loading .mask {
+	filter: alpha(opacity = 10);
+    opacity: 0.1;
+    background: gray;
+}
+
+.d-list-loading .tip {
+	width: 200px;
+    height: 36px;
+    line-height: 36px;
+	border: 1px #D0D0D0 solid;
+	border-radius: 5px;
+    background: #FFFFFF;
+}
+
+.d-list-loading .icon {
+	float: left;
+	width: 36px;
+    height: 36px;
+    background: url(common/loading.gif) no-repeat center center;
+}
+
+.d-list-loading .label {
+	text-align: left;
+	margin-left: 42px;
+    height: 36px;
+}
