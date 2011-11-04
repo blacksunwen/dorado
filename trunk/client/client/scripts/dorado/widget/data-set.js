@@ -267,7 +267,7 @@
 			var data = this._data, shouldFireOnDataLoad;
 			if (data === undefined) {
 				if (this._dataProvider) {
-					data = this._dataPipe;
+					data = this._data = this._dataPipe;
 					if (!data) {
 						data = this._dataPipe = new dorado.DataSetDataPipe(this);
 						shouldFireOnDataLoad = true;
@@ -283,20 +283,28 @@
 					var arg = {
 						dataSet: this
 					};
-					this.sendMessage(DataSet.MESSAGE_LOADING_START, arg);
+					var isNewPipe = (pipe.runningProcNum == 0);
 					pipe.getAsync( {
 						scope: this,
 						callback: function(success, result) {
-							this.sendMessage(DataSet.MESSAGE_LOADING_END, arg);
+							if (isNewPipe) {
+								this.sendMessage(DataSet.MESSAGE_LOADING_END, arg);
+								this._loadingData = false;
+							}
 							
-							delete this._dataPipe;
 							if (success && shouldFireOnDataLoad) {
 								this.setData(result);
 								this.fireEvent("onDataLoad", this);
 							}
+							
+							delete this._dataPipe;
 							$callback(callback, success);
 						}
 					});
+					if (isNewPipe) {
+						this._loadingData = true;
+						this.sendMessage(DataSet.MESSAGE_LOADING_START, arg);
+					}
 					return;
 				}
 				else {
@@ -627,7 +635,7 @@
 		 */
 		addObserver: function(observer) {
 			this._observers.push(observer);
-			if (this._ready) {
+			if (this._ready && observer._ready) {
 				this.retrievePreloadConfig(observer);
 				observer.dataSetMessageReceived(this, DataSet.MESSAGE_REFRESH);
 			}
@@ -676,17 +684,11 @@
 		},
 
 		sendMessage: function(messageCode, args) {
-			if (this._disableObserversCounter > 0 || this._duringSendMessage) return;
-			this._duringSendMessage = true;
-			try {
-				var observers = this._observers;
-				for (var i = 0; i < observers.length; i++) {
-					var observer = observers[i];
-					observer.dataSetMessageReceived.call(observer, messageCode, args);
-				}
-			}
-			finally {
-				this._duringSendMessage = false;
+			if (this._disableObserversCounter > 0) return;
+			var observers = this._observers;
+			for (var i = 0; i < observers.length; i++) {
+				var observer = observers[i];
+				observer.dataSetMessageReceived.call(observer, messageCode, args);
 			}
 		}
 	});

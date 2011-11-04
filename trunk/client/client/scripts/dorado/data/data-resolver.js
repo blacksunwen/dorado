@@ -126,6 +126,7 @@
 			if (message == null) message = ajaxOptions.message;
 			if (message === undefined) message = $resource("dorado.data.DataResolverTaskIndicator");
 			if (message) ajaxOptions.message = message;
+			if (ajaxOptions.modal == null) ajaxOptions.modal = this.modal;
 			
 			ajax.request(ajaxOptions, {
 				scope: this,

@@ -240,10 +240,11 @@
 									entityList: this,
 									pageNo: pageNo
 								};
+								var isNewPipe = (pipe.runningProcNum == 0);
 								pipe.getAsync({
 									scope: this,
 									callback: function(success, result) {
-										this.sendMessage(dorado.Entity._MESSAGE_LOADING_END, arg);
+										if (isNewPipe) this.sendMessage(dorado.Entity._MESSAGE_LOADING_END, arg);
 								
 										if (success && !page.loaded) {
 											this._fillPage(page, result);
@@ -252,7 +253,7 @@
 										$callback(callback, success, ((success) ? page : result));
 									}
 								});
-								this.sendMessage(dorado.Entity._MESSAGE_LOADING_START, arg);
+								if (isNewPipe) this.sendMessage(dorado.Entity._MESSAGE_LOADING_START, arg);
 							} else {
 								var result = pipe.get();
 								this._fillPage(page, result);

@@ -637,6 +637,15 @@ dorado.widget.DataTree = $extend([dorado.widget.Tree, dorado.widget.DataControl]
 					if (this._data == arg.entityList && this._pageNo != arg.entityList.pageNo) return true;
 				}
 				return false;
+				
+			case dorado.widget.DataSet.MESSAGE_LOADING_START:
+			case dorado.widget.DataSet.MESSAGE_LOADING_END:
+				if (arg.entityList) {
+					return (this._data == arg.entityList || dorado.DataUtil.isOwnerOf(this._data, arg.entityList));
+				} else {
+					return true;
+				}
+				
 
 			default:
 				return false;
@@ -702,6 +711,14 @@ dorado.widget.DataTree = $extend([dorado.widget.Tree, dorado.widget.DataControl]
 						this.refresh(true);
 					}
 				}
+				break;
+			}
+			case dorado.widget.DataSet.MESSAGE_LOADING_START:{
+				this.showLoadingTip();
+				break;
+			}
+			case dorado.widget.DataSet.MESSAGE_LOADING_END:{
+				this.hideLoadingTip();
 				break;
 			}
 		}

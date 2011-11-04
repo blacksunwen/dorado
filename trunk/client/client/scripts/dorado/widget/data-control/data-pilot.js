@@ -69,7 +69,14 @@
 			height: {
 				independent: true,
 				readOnly: true
-			}
+			},
+			
+			/**
+			 * 是否禁用。
+			 * @attribute
+			 * @type boolean
+			 */
+			disabled: {}
 		},
 		
 		EVENTS: /** @scope dorado.widget.DataPilot.prototype */ {
@@ -201,6 +208,10 @@
 				return eventArg.processDefault;
 			}
 			
+			function callback() {
+				pilot.set("disabled", false);
+			}
+			
 			var item, pilot = this;
 			switch (itemCode.code) {
 				case "|<":
@@ -210,7 +221,10 @@
 						onClick: function(self) {
 							if (!fireOnActionEvent.call(pilot, itemCode.code, self)) return;
 							var list = pilot._entities;
-							if (list instanceof dorado.EntityList) list.firstPage(dorado._NULL_FUNCTION);
+							if (list instanceof dorado.EntityList) {
+								pilot.set("disabled", true);
+								list.firstPage(callback);
+							}
 						}
 					});
 					break;
@@ -221,7 +235,10 @@
 						onClick: function() {
 							if (!fireOnActionEvent.call(pilot, itemCode.code, self)) return;
 							var list = pilot._entities;
-							if (list instanceof dorado.EntityList) list.previousPage(dorado._NULL_FUNCTION);
+							if (list instanceof dorado.EntityList) {
+								pilot.set("disabled", true);
+								list.previousPage(callback);
+							}
 						}
 					});
 					break;
@@ -232,7 +249,10 @@
 						onClick: function() {
 							if (!fireOnActionEvent.call(pilot, itemCode.code, self)) return;
 							var list = pilot._entities;
-							if (list instanceof dorado.EntityList) list.nextPage(dorado._NULL_FUNCTION);
+							if (list instanceof dorado.EntityList) {
+								pilot.set("disabled", true);
+								list.nextPage(callback);
+							}
 						}
 					});
 					break;
@@ -243,7 +263,10 @@
 						onClick: function() {
 							if (!fireOnActionEvent.call(pilot, itemCode.code, self)) return;
 							var list = pilot._entities;
-							if (list instanceof dorado.EntityList) list.lastPage(dorado._NULL_FUNCTION);
+							if (list instanceof dorado.EntityList) {
+								pilot.set("disabled", true);
+								list.lastPage(callback);
+							}
 						}
 					});
 					break;
@@ -252,7 +275,10 @@
 						onAction: function(self, arg) {
 							if (!fireOnActionEvent.call(pilot, itemCode.code, self)) return;
 							var list = pilot._entities;
-							if (list instanceof dorado.EntityList) list.gotoPage(arg.pageNo, dorado._NULL_FUNCTION);
+							if (list instanceof dorado.EntityList) {
+								pilot.set("disabled", true);
+								list.gotoPage(arg.pageNo, callback);
+							}
 						}
 					});
 					break;
@@ -364,35 +390,35 @@
 			var list = this._entities;
 			if (!(list instanceof dorado.EntityList)) list = null;
 			var pageNo = list ? list.pageNo : 1, pageCount = list ? list.pageCount : 1;
-			var current = list ? list.current : null;
+			var current = list ? list.current : null, disabled = this._disabled;
 			switch (itemCode.code) {
 				case "|<":
-					item.set("disabled", pageNo <= 1);
+					item.set("disabled", disabled || pageNo <= 1);
 					break;
 				case "<":
-					item.set("disabled", pageNo <= 1);
+					item.set("disabled", disabled || pageNo <= 1);
 					break;
 				case ">":
-					item.set("disabled", pageNo >= pageCount);
+					item.set("disabled", disabled || pageNo >= pageCount);
 					break;
 				case ">|":
-					item.set("disabled", pageNo >= pageCount);
+					item.set("disabled", disabled || pageNo >= pageCount);
 					break;
 				case "goto":
 					item.set({
-						disabled: pageCount == 1,
+						disabled: disabled || pageCount == 1,
 						pageNo: pageNo,
 						pageCount: pageCount
 					});
 					break;
 				case "+":
-					item.set("disabled", this._dataSet ? this._dataSet._readOnly : true);
+					item.set("disabled", disabled || (this._dataSet ? this._dataSet._readOnly : true));
 					break;
 				case "-":
-					item.set("disabled", !current || this._dataSet._readOnly);
+					item.set("disabled", disabled || !current || this._dataSet._readOnly);
 					break;
 				case "x":
-					item.set("disabled", !current ||
+					item.set("disabled", disabled || !current ||
 					(current.state != dorado.Entity.STATE_MODIFIED && current.state != dorado.Entity.STATE_NEW) ||
 					this._dataSet._readOnly);
 					break;

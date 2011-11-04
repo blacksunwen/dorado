@@ -160,6 +160,21 @@ dorado.widget.DataBlockView = $extend([dorado.widget.AbstractBlockView, dorado.w
 			case dorado.widget.DataSet.MESSAGE_ENTITY_STATE_CHANGED:
 				return (arg.entity.parent == items);
 				
+			case dorado.widget.DataSet.MESSAGE_LOADING_START:
+			case dorado.widget.DataSet.MESSAGE_LOADING_END:
+				if (arg.entityList) {
+					return (items == arg.entityList || dorado.DataUtil.isOwnerOf(items, arg.entityList));
+				} else if (arg.entity) {
+					var asyncExecutionTimes = dorado.DataPipe.MONITOR.asyncExecutionTimes;
+					this.getBindingData({
+						firstResultOnly: true,
+						acceptAggregation: true
+					});
+					return (dorado.DataPipe.MONITOR.asyncExecutionTimes > asyncExecutionTimes);
+				} else {
+					return true;
+				}
+				
 			default:
 				return false;
 		}
@@ -204,6 +219,14 @@ dorado.widget.DataBlockView = $extend([dorado.widget.AbstractBlockView, dorado.w
 				
 			case dorado.widget.DataSet.MESSAGE_INSERTED:
 				this.onEntityInserted(arg);
+				break;
+				
+			case dorado.widget.DataSet.MESSAGE_LOADING_START:
+				this.showLoadingTip();
+				break;
+				
+			case dorado.widget.DataSet.MESSAGE_LOADING_END:
+				this.hideLoadingTip();
 				break;
 		}
 	},

@@ -78,6 +78,17 @@
 			async: {},
 			
 			/**
+			 * 是否以模态方式在执行。
+			 * 即一次异步调用的执行尚未执行结束之前，不能再一次调用该Action。
+			 * @type boolean
+			 * @attribute
+			 * @default true
+			 */
+			modal: {
+				defaultValue: true
+			},
+			
+			/**
 			 * 热键。
 			 * @type String
 			 * @attribute
@@ -227,6 +238,10 @@
 		 * 注意：此方法返回值的含义可能会在派生类中被改变。
 		 */
 		execute: function(callback) {
+			if (this._disabled) {
+				throw new dorado.ResourceException("dorado.baseWidget.ErrorCallDisabledAction", this._id);
+			}
+			
 			var self = this, retval = true;
 			
 			function realCall(callback) {
@@ -235,7 +250,24 @@
 				};
 				if (self._async) {
 					var taskId;
-					if (self._executingMessage) taskId = dorado.util.TaskIndicator.showTaskIndicator(self._executingMessage);
+					if (self._executingMessage) {
+						taskId = dorado.util.TaskIndicator.showTaskIndicator(self._executingMessage, this._modal ? "main" : "daemon");
+					}
+					
+					var hasIcon, oldIcon, oldIconClass;
+					if (this._modal) {
+						this.set("disabled", true);
+						hasIcon = this._icon || this._iconClass;
+						if (hasIcon) {
+							oldIcon = this._icon;
+							oldIconClass = this._iconClass;
+							this.set({
+								icon: "url(skin>common/loading-small.gif) no-repeat center center",
+								iconClass: null
+							});
+						}
+					}
+					
 					self.doExecuteAsync({
 						callback: function(success, result) {
 							if (taskId) dorado.util.TaskIndicator.hideTaskIndicator(taskId);
@@ -254,6 +286,16 @@
 							}
 							if (success && eventArg.processDefault && self._successMessage) {
 								dorado.widget.NotifyTipManager.notify(self._successMessage);
+							}
+							
+							if (self._modal) {
+								self.set("disabled", false);
+								if (hasIcon) {
+									self.set({
+										icon: oldIcon,
+										iconClass: oldIconClass
+									});
+								}
 							}
 						}
 					});

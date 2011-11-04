@@ -309,6 +309,10 @@
 			
 			if (!columnsInited) this.initColumns();
 			$invokeSuper.call(this, arguments);
+			
+			if (!this._ready && this._dataSet && this._dataSet._loadingData) {
+				this.showLoadingTip();
+			}
 		},
 		
 		/**
@@ -333,7 +337,7 @@
 			this.updateScroller(this._innerGrid._container);
 			this.fixSizeBugs();
 		},
-
+		
 		shouldEditing: function(column) {
 			var readOnly = false;
 			if (this._dataSet) {
@@ -421,11 +425,11 @@
 				case dorado.widget.DataSet.MESSAGE_REFRESH:{
 					return true;
 				}
-					
+				
 				case dorado.widget.DataSet.MESSAGE_CURRENT_CHANGED:{
 					return (arg.entityList == items || dorado.DataUtil.isOwnerOf(items, arg.entityList));
 				}
-					
+				
 				case dorado.widget.DataSet.MESSAGE_DATA_CHANGED:
 				case dorado.widget.DataSet.MESSAGE_REFRESH_ENTITY:{
 					return (!items || items._observer != this._dataSet || arg.entity.parent == items || dorado.DataUtil.isOwnerOf(items, arg.entity));
@@ -434,15 +438,15 @@
 				case dorado.widget.DataSet.MESSAGE_DELETED:{
 					return (arg.entity.parent == items || dorado.DataUtil.isOwnerOf(items, arg.entity));
 				}
-					
+				
 				case dorado.widget.DataSet.MESSAGE_INSERTED:{
 					return (arg.entityList == items);
 				}
-					
+				
 				case dorado.widget.DataSet.MESSAGE_ENTITY_STATE_CHANGED:{
 					return (arg.entity.parent == items);
 				}
-					
+				
 				case dorado.widget.DataSet.MESSAGE_LOADING_START:
 				case dorado.widget.DataSet.MESSAGE_LOADING_END:{
 					if (arg.entityList) {
@@ -454,12 +458,11 @@
 							acceptAggregation: true
 						});
 						return (dorado.DataPipe.MONITOR.asyncExecutionTimes > asyncExecutionTimes);
-					}
-					else {
+					} else {
 						return true;
 					}
 				}
-					
+				
 				default:
 					{
 						return false;
@@ -531,11 +534,11 @@
 					}
 					break;
 				}
-				case dorado.widget.DataSet.MESSAGE_LOADING_START: {
+				case dorado.widget.DataSet.MESSAGE_LOADING_START:{
 					this.showLoadingTip();
 					break;
 				}
-				case dorado.widget.DataSet.MESSAGE_LOADING_END: {
+				case dorado.widget.DataSet.MESSAGE_LOADING_END:{
 					this.hideLoadingTip();
 					break;
 				}
@@ -591,15 +594,14 @@
 					if (parameter != null && !(parameter instanceof dorado.util.Map)) {
 						dataSet.set("parameter", null);
 					}
-
+					
 					if (parameter) criteria = parameter.get("criteria");
 					criteria = criteria || {};
 					criteria.criterions = criterions;
 					dataSet.set("parameter", $map({
 						criteria: criteria
 					}));
-				}
-				else if (parameter instanceof dorado.util.Map) {
+				} else if (parameter instanceof dorado.util.Map) {
 					criteria = parameter.get("criteria");
 					if (criteria && (!criteria.criterions || !criteria.orders)) {
 						parameter.remove("criteria");
@@ -659,14 +661,6 @@
 			} else {
 				return $invokeSuper.call(this, arguments);
 			}
-		},
-		
-		showLoadingTip: function() {
-			
-		},
-		
-		hideLoadingTip: function() {
-			
 		}
 	});
 	

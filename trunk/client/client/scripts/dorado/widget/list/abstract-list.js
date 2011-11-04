@@ -71,8 +71,7 @@ dorado.widget.AbstractList = $extend(dorado.widget.Control, /** @scope dorado.wi
 			getter: function() {
 				if (this._selectionMode == "multiRows" && this._selection) {
 					return [];
-				}
-				else {
+				} else {
 					return this._selection;
 				}
 			}
@@ -219,6 +218,80 @@ dorado.widget.AbstractList = $extend(dorado.widget.Control, /** @scope dorado.wi
 				indicator.set("content", contentDom);
 			}
 		}
+	},
+	
+	showLoadingTip: function() {
+	
+		function getLoadingTipDom() {
+			var tipDom = this._loadingTipDom;
+			if (!tipDom) {
+				this._loadingTipDom = tipDom = $DomUtils.xCreate({
+					tagName: "TABLE",
+					className: "i-list-loading d-list-loading",
+					cellPadding: 0,
+					cellSpacing: 0,
+					style: {
+						position: "absolute",
+						left: 0,
+						top: 0,
+						width: "100%",
+						height: "100%",
+						zIndex: 9999
+					},
+					content: {
+						tagName: "TR",
+						content: {
+							tagName: "TD",
+							align: "center",
+							content: [{
+								tagName: "DIV",
+								className: "mask",
+								style: {
+									zIndex: 1,
+									position: "absolute",
+									left: 0,
+									top: 0,
+									width: "100%",
+									height: "100%"
+								}
+							}, {
+								tagName: "DIV",
+								className: "tip",
+								content: [{
+									tagName: "DIV",
+									className: "icon"
+								}, {
+									tagName: "DIV",
+									className: "label",
+									content: $resource("dorado.list.LoadingData")
+								}],
+								style: {
+									zIndex: 2,
+									position: "relative"
+								}
+							}]
+						}
+					}
+				});
+				this._dom.appendChild(tipDom);
+			}
+			return tipDom;
+		}
+		
+		dorado.Toolkits.cancelDelayedAction(this, "$hideLoadingTip");
+		dorado.Toolkits.setDelayedAction(this, "$showLoadingTip", function() {
+			var tipDom = getLoadingTipDom.call(this);
+			$fly(tipDom).show();
+		}, 100);
+	},
+	
+	hideLoadingTip: function() {
+		dorado.Toolkits.cancelDelayedAction(this, "$showLoadingTip");
+		if (this._loadingTipDom) {
+			dorado.Toolkits.setDelayedAction(this, "$hideLoadingTip", function() {
+				$fly(this._loadingTipDom).hide();
+			}, 200);
+		}
 	}
 });
 
@@ -338,7 +411,7 @@ dorado.widget.ViewPortList = $extend(dorado.widget.AbstractList, /** @scope dora
 		}
 		this.startIndex = reverse ? startIndex - fillCount - itemDomCount + 1 : startIndex + fillCount;
 		// this._itemModel.setStartIndex(this.startIndex = reverse ? startIndex - fillCount - itemDomCount + 1 : startIndex + fillCount);
-
+		
 		this.itemCount = this._itemModel.getItemCount();
 		this.itemDomCount = itemDomCount;
 		return itemDomCount;

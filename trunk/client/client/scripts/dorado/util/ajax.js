@@ -315,8 +315,9 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 			});
 
 			var message = options.message, taskId;
-			if(message)
-				taskId = dorado.util.TaskIndicator.showTaskIndicator(message);
+			if (message) {
+				taskId = dorado.util.TaskIndicator.showTaskIndicator(message, options.modal ? "main" : "daemon");
+			}
 
 			requests.push({
 				options : options,
@@ -357,8 +358,9 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 					var i = 0;
 					xmlDoc.find("result>request").each($scopify(this, function(index, elem) {
 						var request = requests[i];
-						if(request.taskId)
+						if (request.taskId) {
 							dorado.util.TaskIndicator.hideTaskIndicator(request.taskId);
+						}
 
 						var result = createAjaxResult(request.options);
 
@@ -458,8 +460,9 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 		var conn = connObj.conn;
 
 		var message = options.message, taskId;
-		if(message)
-			taskId = dorado.util.TaskIndicator.showTaskIndicator(message);
+		if (message) {
+			taskId = dorado.util.TaskIndicator.showTaskIndicator(message, options.modal ? "main" : "daemon");
+		}
 
 		if(callback && options && options.timeout) {
 			connObj.timeoutTimerId = $setTimeout(this, function() {

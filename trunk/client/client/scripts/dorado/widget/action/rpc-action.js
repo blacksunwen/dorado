@@ -89,6 +89,7 @@
 				batchable : this._batchable
 			}, $setting["ajax.remoteServiceOptions"]);
 		},
+		
 		doExecuteSync : function() {
 			var ajaxOptions = this.getAjaxOptions(), ajax = dorado.Toolkits.getAjax(ajaxOptions);
 			var result = ajax.requestSync(ajaxOptions);
@@ -111,6 +112,7 @@
 				throw result.error;
 			}
 		},
+		
 		doExecuteAsync : function(callback) {
 			var ajaxOptions = this.getAjaxOptions(), ajax = dorado.Toolkits.getAjax(ajaxOptions);
 			ajax.request(ajaxOptions, {
@@ -718,6 +720,7 @@
 					dataResolver.supportsEntity = this._supportsEntity;
 					dataResolver.dataTypeRepository = this.get("dataTypeRepository");
 					dataResolver.message = this._executingMessage ? '' : null;
+					dataResolver.modal = this._modal;
 					if(callback) {
 						return dataResolver.resolveAsync(dataResolverArg, {
 							scope : this,

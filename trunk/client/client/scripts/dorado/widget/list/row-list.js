@@ -176,11 +176,14 @@
 								this.addOrRemoveSelection(selection, clickedItem, removed, added);
 								this._oldCurrentItem = this.getCurrentItem();
 							}
-						} else {
-							removed = selection;
-							added.push(clickedItem);
-							this._oldCurrentItem = this.getCurrentItem();
 						}
+						/*
+						 else {
+						 removed = selection;
+						 added.push(clickedItem);
+						 this._oldCurrentItem = this.getCurrentItem();
+						 }
+						 */
 						this.replaceSelection(removed, added);
 					}
 				}
@@ -488,7 +491,7 @@
 			}
 		},
 		
-		onScroll: function() {			
+		onScroll: function() {
 			if (this._scrollMode == "simple") return;
 			
 			var container = this._container;

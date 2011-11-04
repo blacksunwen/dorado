@@ -13,13 +13,13 @@
 dorado.util.TaskIndicator = {
 
 	idseed: 0,
-
+	
 	_taskGroups: {},
-
+	
 	/**
 	 * 注册一个任务提示组。
 	 * @param {String} groupName 任务组的名称。
-	 * @param {Object} options 任务组显示选项。
+	 * @param {Object} [options] 任务组显示选项。
 	 * @param {String} options.className 该组的任务提示面板使用的className。
 	 * @param {Object} options.showOptions 该组的任务提示面板使用的显示选项，参考$DomUtils.dockAround方法的的options参数。
 	 * @param {boolean} options.modal 任务提示组是否模态，默认非模态。
@@ -29,6 +29,7 @@ dorado.util.TaskIndicator = {
 	 * 	此处的提示文字中可用特殊的占位符表示下列显示元素：${taskNum}	- 任务数。
 	 * 	caption的示例：正在执行${taskNum}个后台任务...，显示结果可能为：正在执行2个后台任务...
 	 * </p>
+	 * @param {int} options.maxLines 该组的任务提示面板使用的className。
 	 */
 	registerTaskGroup: function(groupName, options) {
 		var indicator = this, taskGroups = indicator._taskGroups;
@@ -39,7 +40,7 @@ dorado.util.TaskIndicator = {
 			taskGroups[groupName] = options;
 		}
 	},
-
+	
 	/**
 	 * 显示任务提示框。
 	 * @example
@@ -55,36 +56,35 @@ dorado.util.TaskIndicator = {
 		var indicator = this, taskGroups = indicator._taskGroups, taskGroupConfig;
 		groupName = groupName || "daemon";
 		taskGroupConfig = taskGroups[groupName];
-
+		
 		if (taskGroupConfig) {
 			var groupPanel = taskGroupConfig.groupPanel;
-
+			
 			if (!groupPanel) {
 				groupPanel = taskGroupConfig.groupPanel = new dorado.util.TaskGroupPanel(taskGroupConfig);
 			}
-
+			
 			var taskId = groupName + "@" + ++indicator.idseed;
 			groupPanel.show();
 			groupPanel.addTask(taskInfo, taskId);
-
+			
 			return taskId;
-		}
-		else {
+		} else {
 			//no register.
 			return null;
 		}
 	},
-
+	
 	/**
 	 * 隐藏任务提示框。
 	 * @param {String} taskId 任务id。
 	 */
 	hideTaskIndicator: function(taskId) {
 		var indicator = this, taskGroups = indicator._taskGroups, taskGroupName, taskGroupConfig;
-
+		
 		taskGroupName = taskId.substring(0, taskId.indexOf("@"));
 		taskGroupConfig = taskGroups[taskGroupName];
-
+		
 		if (taskGroupConfig) {
 			var groupPanel = taskGroupConfig.groupPanel;
 			if (groupPanel) {
@@ -94,7 +94,7 @@ dorado.util.TaskIndicator = {
 			//no register.
 		}
 	}
-
+	
 };
 
 dorado.util.TaskIndicator.registerTaskGroup("main", {
@@ -110,8 +110,8 @@ dorado.util.TaskIndicator.registerTaskGroup("daemon", {
 	showOptions: {
 		align: "innerright",
 		vAlign: "innertop",
-        offsetLeft: -15,
-        offsetTop: 15
+		offsetLeft: -15,
+		offsetTop: 15
 	},
 	className: "i-daemon-task-indicator d-daemon-task-indicator"
 });
@@ -129,13 +129,13 @@ dorado.util.TaskGroupPanel = $extend(dorado.RenderableElement, { /** @scope dora
 	tasks: null,
 	taskGroupConfig: null,
 	_intervalId: null,
-
+	
 	ATTRIBUTES: {
 		className: {
 			defaultValue: "d-task-group-panel"
 		}
 	},
-
+	
 	constructor: function(taskGroupConfig) {
 		$invokeSuper.call(this);
 		var panel = this;
@@ -143,12 +143,12 @@ dorado.util.TaskGroupPanel = $extend(dorado.RenderableElement, { /** @scope dora
 			throw new dorado.Exception("taskGrooupRequired");
 		}
 		panel.taskGroupConfig = taskGroupConfig;
-
+		
 		panel.tasks = new dorado.util.KeyedArray(function(object) {
 			return object.taskId;
 		});
 	},
-
+	
 	createDom: function() {
 		var panel = this, dom, doms = {}, taskGroupConfig = panel.taskGroupConfig;
 		dom = $DomUtils.xCreate({
@@ -184,7 +184,14 @@ dorado.util.TaskGroupPanel = $extend(dorado.RenderableElement, { /** @scope dora
 							}, {
 								tagName: "ul",
 								className: "task-list",
-								contextKey: "taskList"
+								contextKey: "taskList",
+								content: {
+									tagName: "li",
+									className: "more",
+									content: "... ... ...",
+									contextKey: "more",
+									style: "display: none"
+								}
 							}]
 						}
 					}]
@@ -199,17 +206,19 @@ dorado.util.TaskGroupPanel = $extend(dorado.RenderableElement, { /** @scope dora
 				}
 			}]
 		}, null, doms);
-
+		
 		panel._doms = doms;
-
-		$fly(dom).addClass(taskGroupConfig.className).shadow({mode: "sides"});
-
+		
+		$fly(dom).addClass(taskGroupConfig.className).shadow({
+			mode: "sides"
+		});
+		
 		taskGroupConfig.caption = taskGroupConfig.caption ? taskGroupConfig.caption : $resource("dorado.core.DefaultTaskCountInfo");
 		taskGroupConfig.executeTimeCaption = taskGroupConfig.executeTimeCaption ? taskGroupConfig.executeTimeCaption : $resource("dorado.core.DefaultTaskExecuteTime");
-
+		
 		return dom;
 	},
-
+	
 	/**
 	 * 添加任务
 	 * @param {String} taskInfo 任务的提示信息
@@ -219,37 +228,38 @@ dorado.util.TaskGroupPanel = $extend(dorado.RenderableElement, { /** @scope dora
 		var panel = this, taskGroupConfig = panel.taskGroupConfig, listDom = panel._doms.taskList, li = $DomUtils.xCreate({
 			tagName: "li",
 			className: "task-item",
-			content: [
-				{
-					tagName: "span",
-					className: "interval-span",
-					content: taskGroupConfig.executeTimeCaption.replace("${taskExecuteTime}", "0")
-				},
-				{
-					tagName: "span",
-					className: "caption-span",
-					content: taskInfo
-				}
-			]
+			content: [{
+				tagName: "span",
+				className: "interval-span",
+				content: taskGroupConfig.executeTimeCaption.replace("${taskExecuteTime}", "0")
+			}, {
+				tagName: "span",
+				className: "caption-span",
+				content: taskInfo
+			}]
 		});
-
-		listDom.appendChild(li);
-
+		
+		if (panel.tasks.size >= (panel.taskGroupConfig.showOptions.maxLines || 1)) {
+			li.style.display = "none";
+			panel._doms.more.style.display = "";
+		}
+		listDom.insertBefore(li, panel._doms.more);
+		
 		if (panel.tasks.size == 0) {
 			panel._intervalId = setInterval(function() {
 				panel.refreshInterval();
 			}, 500);
 		}
-
+		
 		panel.tasks.append({
 			taskId: taskId,
 			dom: li,
 			startTime: new Date().getTime()
 		});
-
+		
 		$fly(panel._doms.countInfo).text(taskGroupConfig.caption.replace("${taskNum}", panel.tasks.size));
 	},
-
+	
 	/**
 	 * 移除任务。
 	 * @param {int} taskId 分配给该任务的id。
@@ -260,17 +270,33 @@ dorado.util.TaskGroupPanel = $extend(dorado.RenderableElement, { /** @scope dora
 			setTimeout(function() {
 				$fly(target.dom).remove();
 				panel.tasks.remove(target);
-
-				if (panel.tasks.size == 0) {
-					clearInterval(panel._intervalId);
-					panel._intervalId = null;
-					panel.hide();
+				
+				var maxLines = panel.taskGroupConfig.showOptions.maxLines || 1;
+				if (panel.tasks.size > maxLines) {
+					var i = 0;
+					panel.tasks.each(function(task) {
+						task.dom.style.display = "";
+						if (++i == maxLines) return false;
+					});
+				}
+				else {
+					panel._doms.more.style.display = "none";
+					if (panel.tasks.size == 0) {
+						clearInterval(panel._intervalId);
+						panel._intervalId = null;
+						panel.hide();
+					}
+					else {
+						panel.tasks.each(function(task) {
+							task.dom.style.display = "";
+						});
+					}
 				}
 				$fly(panel._doms.countInfo).text(taskGroupConfig.caption.replace("${taskNum}", panel.tasks.size));
 			}, 500);
 		}
 	},
-
+	
 	/**
 	 * 刷新所有正在执行任务的执行时间。
 	 * @protected
@@ -285,7 +311,7 @@ dorado.util.TaskGroupPanel = $extend(dorado.RenderableElement, { /** @scope dora
 			}
 		});
 	},
-
+	
 	/**
 	 * 显示任务面板
 	 * @param {Object} options 注册任务组的时候的配置信息中的showOptions选项。
@@ -309,7 +335,7 @@ dorado.util.TaskGroupPanel = $extend(dorado.RenderableElement, { /** @scope dora
 		$fly(panel._dom).bringToFront();
 		$DomUtils.dockAround(panel._dom, document.body, options);
 	},
-
+	
 	/**
 	 * 隐藏任务面板
 	 */

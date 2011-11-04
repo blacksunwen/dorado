@@ -93,10 +93,7 @@ dorado.DataPipe = $class(/** @scope dorado.DataPipe.prototype */{
 			
 			this.doGetAsync({
 				scope: this,
-				callback: function(success, result) {
-					delete this._waitingCallbacks;
-					this.runningProcNum = 0;
-					
+				callback: function(success, result) {					
 					if (success) {
 						result = this.convertIfNecessary(result, this.dataTypeRepository, this.dataType);
 					}
@@ -111,6 +108,9 @@ dorado.DataPipe = $class(/** @scope dorado.DataPipe.prototype */{
 							errors.push(e);
 						}
 					}
+					
+					delete this._waitingCallbacks;
+					this.runningProcNum = 0;
 					if (errors) throw ((errors.length > 1) ? errors : errors[0]);
 				}
 			});
