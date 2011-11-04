@@ -6,6 +6,7 @@ package com.bstek.dorado.idesupport;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,6 +25,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import com.bstek.dorado.core.CommonContext;
 import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.core.ConfigureStore;
+import com.bstek.dorado.core.Constants;
 import com.bstek.dorado.core.Context;
 import com.bstek.dorado.core.DoradoAbout;
 import com.bstek.dorado.core.EngineStartupListenerManager;
@@ -356,7 +358,8 @@ public class StandaloneRuleSetExporter {
 				doradoHome);
 
 		FileOutputStream fos = new FileOutputStream(ruleSetFile);
-		PrintWriter writer = new PrintWriter(fos);
+		PrintWriter writer = new PrintWriter(new OutputStreamWriter(fos,
+				Constants.DEFAULT_CHARSET));
 		try {
 			instance.exportRuleSet(writer);
 		} finally {
