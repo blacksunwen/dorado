@@ -100,9 +100,9 @@
 		 * @type dorad.DataRepository
 		 */
 		this.dataTypeRepository = dataTypeRepository;
-
+		
 		this._propertyInfoMap = {};
-
+		var shouldProcessDefaultValue = !data;
 		if (data) {
 			this._data = data;
 			if (dataType == null) {
@@ -125,7 +125,7 @@
 		if (dataType) {
 			this._propertyDefs = dataType._propertyDefs;
 			this._propertyDefs.each(function(pd) {
-				if (pd._defaultValue != undefined && data[pd._name] == undefined) {
+				if (shouldProcessDefaultValue && pd._defaultValue != undefined && data[pd._name] == undefined) {
 					data[pd._name] = (pd._defaultValue instanceof Function) ? pd._defaultValue.call(this) : pd._defaultValue;
 				}
 
