@@ -4,14 +4,16 @@
 package com.bstek.dorado.desktop;
 
 import com.bstek.dorado.annotation.ViewObject;
+import com.bstek.dorado.annotation.Widget;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.view.widget.base.SimpleIconButton;
 
 /**
  * @author bean
- *
+ * 
  */
-@XmlNode( nodeName = "QuickButton" )
+@Widget(name = "QuickButton", category = "QuickButton", dependsPackage = "desktop")
+@XmlNode(nodeName = "QuickButton")
 @ViewObject(prototype = "dorado.widget.desktop.QuickButton", shortTypeName = "desktop.QuickButton")
 public class QuickButton extends SimpleIconButton {
 	private String appId;
@@ -24,10 +26,11 @@ public class QuickButton extends SimpleIconButton {
 	}
 
 	/**
-	 * @param appId the appId to set
+	 * @param appId
+	 *            the appId to set
 	 */
 	public void setAppId(String appId) {
 		this.appId = appId;
 	}
-	
+
 }

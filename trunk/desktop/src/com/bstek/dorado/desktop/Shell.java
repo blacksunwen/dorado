@@ -26,7 +26,7 @@ public class Shell extends Control {
 	 * @return the desktopRef
 	 */
 	@ViewAttribute
-	@XmlSubNode(path = "Desktop/*")
+	@XmlSubNode(path = "#self", parser = "dorado.Desktop.DesktopParser")
 	public AbstractDesktop getDesktop() {
 		return desktopRef.get();
 	}
@@ -55,7 +55,7 @@ public class Shell extends Control {
 	public void setTaskbar(Taskbar taskbar) {
 		this.taskbarRef.set(taskbar);
 	}
-	
+
 	/**
 	 * @return the apps
 	 */
@@ -81,7 +81,8 @@ public class Shell extends Control {
 	}
 
 	/**
-	 * @param wallpaper the wallpaper to set
+	 * @param wallpaper
+	 *            the wallpaper to set
 	 */
 	public void setWallpaper(String wallpaper) {
 		this.wallpaper = wallpaper;
