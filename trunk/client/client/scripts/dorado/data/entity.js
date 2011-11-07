@@ -725,12 +725,12 @@
 							state : "error",
 							text : $resource("dorado.data.ErrorContentRequired")
 						});
-					} else if (propertyDef._mapping && value != null) {
+					} else if (propertyDef._mapping && value != null && value != "") {
 						var mappedValue = propertyDef.getMappedValue(value);
 						if (propertyDef._acceptUnknownMapKey && mappedValue === undefined) {
 							messages.push({
 								state : "error",
-								text : $resource("dorado.data.ErrorContentRequired")
+								text : $resource("dorado.data.UnknownMapKey", value)
 							});
 						}
 					} else {
