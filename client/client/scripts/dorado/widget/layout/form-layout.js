@@ -141,7 +141,10 @@
 						if (oldRegion == null && newRegion == null) {
 							continue;
 						}
-						if (oldRegion == null || oldRegion.colSpan != newRegion.colSpan || oldRegion.rowSpan != newRegion.rowSpan) {
+						if (oldRegion == null ||
+							oldRegion.colSpan != newRegion.colSpan ||
+							oldRegion.rowSpan != newRegion.rowSpan ||
+							oldRegion.regionIndex != newRegion.regionIndex) {
 							same = false;
 							break;
 						}
