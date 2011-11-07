@@ -1,54 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:d="http://www.bstek.com/dorado/schema"
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:d="http://www.bstek.com/dorado/schema"
 	xsi:schemaLocation="
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
 http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dorado-7.0.xsd">
-	<bean id="dorado.dispatchableXmlParser" abstract="true"
-		class="com.bstek.dorado.config.xml.ConfigurableDispatchableXmlParser">
+	<bean id="dorado.dispatchableXmlParser" abstract="true" class="com.bstek.dorado.config.xml.ConfigurableDispatchableXmlParser">
 		<property name="expressionHandler" ref="dorado.expressionHandler" />
 	</bean>
 	<bean id="dorado.ignoreParser" class="com.bstek.dorado.config.xml.IgnoreParser" />
-	<bean id="dorado.propertyParser" class="com.bstek.dorado.config.xml.PropertyParser"
-		parent="dorado.dispatchableXmlParser" />
-	<bean id="dorado.staticPropertyParser" class="com.bstek.dorado.config.xml.StaticPropertyParser"
-		parent="dorado.propertyParser" />
-	<bean id="dorado.textPropertyParser" abstract="true"
-		class="com.bstek.dorado.config.xml.TextPropertyParser">
+	<bean id="dorado.propertyParser" class="com.bstek.dorado.config.xml.PropertyParser" parent="dorado.dispatchableXmlParser" />
+	<bean id="dorado.staticPropertyParser" class="com.bstek.dorado.config.xml.StaticPropertyParser" parent="dorado.propertyParser" />
+	<bean id="dorado.textPropertyParser" abstract="true" class="com.bstek.dorado.config.xml.TextPropertyParser">
 		<property name="expressionHandler" ref="dorado.expressionHandler" />
 	</bean>
-	<bean id="dorado.xmlParserBridge" class="com.bstek.dorado.config.xml.XmlParserBridge"
-		parent="dorado.dispatchableXmlParser" />
-	<bean id="dorado.stringArrayPropertyParser" class="com.bstek.dorado.config.xml.StringArrayPropertyParser"
-	parent="dorado.staticPropertyParser" />
-	<bean id="dorado.classTypePropertyParser" class="com.bstek.dorado.config.xml.ClassTypePropertyParser"
-		parent="dorado.staticPropertyParser" />
+	<bean id="dorado.xmlParserBridge" class="com.bstek.dorado.config.xml.XmlParserBridge" parent="dorado.dispatchableXmlParser" />
+	<bean id="dorado.stringArrayPropertyParser" class="com.bstek.dorado.config.xml.StringArrayPropertyParser" parent="dorado.staticPropertyParser" />
+	<bean id="dorado.classTypePropertyParser" class="com.bstek.dorado.config.xml.ClassTypePropertyParser" parent="dorado.staticPropertyParser" />
 
 	<bean id="dorado.xmlParserAnnotationHelper" class="com.bstek.dorado.config.xml.XmlParserAnnotationHelper" />
-	<bean id="dorado.objectParser" class="com.bstek.dorado.config.xml.ObjectParser"
-		parent="dorado.dispatchableXmlParser">
+	<bean id="dorado.objectParser" class="com.bstek.dorado.config.xml.ObjectParser" parent="dorado.dispatchableXmlParser">
 		<property name="xmlParserAnnotationHelper" ref="dorado.xmlParserAnnotationHelper" />
-		<d:property-parser key="impl,scope,resource,meta"
-			value-ref="dorado.ignoreParser" />
+		<d:property-parser key="impl,scope,resource,meta" value-ref="dorado.ignoreParser" />
 	</bean>
-	<bean id="dorado.prototype.objectParser" scope="prototype"
-		parent="dorado.objectParser" />
-	<bean id="dorado.compositePropertyParser" class="com.bstek.dorado.config.xml.CompositePropertyParser"
-		parent="dorado.objectParser">
+	<bean id="dorado.prototype.objectParser" scope="prototype" parent="dorado.objectParser" />
+	<bean id="dorado.compositePropertyParser" class="com.bstek.dorado.config.xml.CompositePropertyParser" parent="dorado.objectParser">
 		<property name="defaultPropertyParser" ref="dorado.propertyParser" />
 	</bean>
-	<bean id="dorado.prototype.compositePropertyParser" scope="prototype"
-		parent="dorado.compositePropertyParser" />
+	<bean id="dorado.prototype.compositePropertyParser" scope="prototype" parent="dorado.compositePropertyParser" />
 
-	<bean id="dorado.collectionToPropertyParser" class="com.bstek.dorado.config.xml.CollectionToPropertyParser"
-		parent="dorado.dispatchableXmlParser">
+	<bean id="dorado.collectionToPropertyParser" class="com.bstek.dorado.config.xml.CollectionToPropertyParser" parent="dorado.dispatchableXmlParser">
 		<property name="xmlParserAnnotationHelper" ref="dorado.xmlParserAnnotationHelper" />
 	</bean>
-	<bean id="dorado.prototype.collectionToPropertyParser" scope="prototype"
-		parent="dorado.collectionToPropertyParser" />
+	<bean id="dorado.prototype.collectionToPropertyParser" scope="prototype" parent="dorado.collectionToPropertyParser" />
 
-	<bean id="dorado.subNodeToPropertyParser" class="com.bstek.dorado.config.xml.SubNodeToPropertyParser"
-		parent="dorado.dispatchableXmlParser" />
-	<bean id="dorado.prototype.subNodeToPropertyParser" scope="prototype"
-		parent="dorado.subNodeToPropertyParser" />
+	<bean id="dorado.subNodeToPropertyParser" class="com.bstek.dorado.config.xml.SubNodeToPropertyParser" parent="dorado.dispatchableXmlParser">
+		<property name="xmlParserAnnotationHelper" ref="dorado.xmlParserAnnotationHelper" />
+	</bean>
+	<bean id="dorado.prototype.subNodeToPropertyParser" scope="prototype" parent="dorado.subNodeToPropertyParser" />
 </beans>
