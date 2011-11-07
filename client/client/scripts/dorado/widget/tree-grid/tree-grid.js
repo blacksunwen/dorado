@@ -605,9 +605,10 @@
 						this.setCurrentRow(row);
 						if (row) this.scrollCurrentIntoView();
 					}
-					this.fireEvent("onCurrentChange", this);
 					
-					this.grid.doInnerGridSetCurrentRow(this, currentNode ? currentNode._id : null);
+					var grid = this.grid;
+					grid.fireEvent("onCurrentChange", grid);
+					grid.doInnerGridSetCurrentRow(this, currentNode ? currentNode._id : null);
 				}
 			}
 		},
