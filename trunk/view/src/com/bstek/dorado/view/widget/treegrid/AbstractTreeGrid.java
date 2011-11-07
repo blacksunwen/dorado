@@ -19,7 +19,6 @@ import com.bstek.dorado.view.widget.list.DropMode;
 		@ClientEvent(name = "onCollapse"),
 		@ClientEvent(name = "onNodeAttached"),
 		@ClientEvent(name = "onNodeDetached"),
-		@ClientEvent(name = "beforeCurrentChange"),
 		@ClientEvent(name = "onRenderNode") })
 public abstract class AbstractTreeGrid extends GridSupport {
 	private int indent;
