@@ -12,7 +12,7 @@ import com.bstek.dorado.view.widget.base.SimpleIconButton;
  * @author bean
  * 
  */
-@Widget(name = "QuickButton", category = "QuickButton", dependsPackage = "desktop")
+@Widget(name = "QuickButton", category = "Desktop", dependsPackage = "desktop")
 @XmlNode(nodeName = "QuickButton")
 @ViewObject(prototype = "dorado.widget.desktop.QuickButton", shortTypeName = "desktop.QuickButton")
 public class QuickButton extends SimpleIconButton {
