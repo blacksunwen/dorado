@@ -134,6 +134,8 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 			((ObjectParser) parser).init();
 		} else if (parser instanceof CollectionToPropertyParser) {
 			((CollectionToPropertyParser) parser).init();
+		} else if (parser instanceof SubNodeToPropertyParser) {
+			((SubNodeToPropertyParser) parser).init();
 		}
 
 		initProperties(ruleTemplate, initializerContext);
@@ -421,9 +423,6 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 		if (parser instanceof CollectionToPropertyParser) {
 			initChildrenByCollectionParser(ruleTemplate,
 					(CollectionToPropertyParser) parser, initializerContext);
-		} else if (parser instanceof SubNodeToPropertyParser) {
-			initChildrenBySubNodeParser(ruleTemplate,
-					(SubNodeToPropertyParser) parser, initializerContext);
 		} else if (parser instanceof DispatchableXmlParser) {
 			initChildrenByDispatchableXmlParser(ruleTemplate,
 					(DispatchableXmlParser) parser, initializerContext);
@@ -497,67 +496,6 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 			}
 			addChildBySubParser(ruleTemplate, initializerContext, nodeName,
 					subParser, xmlSubNode, subType, true);
-		}
-	}
-
-	protected void initChildrenBySubNodeParser(RuleTemplate ruleTemplate,
-			SubNodeToPropertyParser parser,
-			InitializerContext initializerContext) throws Exception {
-		XmlSubNode xmlSubNode = null;
-		Class<?> objectType = initializerContext.getCurrentType();
-		String property = initializerContext.getCurrentProperty();
-		Class<?> propertyType = null;
-		if (StringUtils.isEmpty(property)) {
-			property = parser.getProperty();
-		}
-		if (objectType != null && StringUtils.isNotEmpty(property)) {
-			PropertyDescriptor propertyDescriptor = BeanUtils
-					.getPropertyDescriptor(objectType, property);
-			if (propertyDescriptor != null) {
-				propertyType = propertyDescriptor.getPropertyType();
-				Method readMethod = propertyDescriptor.getReadMethod();
-				if (readMethod != null) {
-					if (readMethod.getDeclaringClass() != objectType) {
-						readMethod = objectType.getMethod(readMethod.getName(),
-								readMethod.getParameterTypes());
-					}
-					xmlSubNode = readMethod.getAnnotation(XmlSubNode.class);
-				}
-			}
-		}
-		addChildrenBySubNodeParser(ruleTemplate, initializerContext, parser,
-				xmlSubNode, propertyType);
-	}
-
-	protected void addChildrenBySubNodeParser(RuleTemplate ruleTemplate,
-			InitializerContext initializerContext,
-			SubNodeToPropertyParser parser, XmlSubNode xmlSubNode,
-			Class<?> propertyType) throws Exception {
-		Set<String> nodeNames = new HashSet<String>();
-		for (Map.Entry<String, XmlParser> entry : parser.getSubParsers()
-				.entrySet()) {
-			String nodeName = entry.getKey();
-			if (nodeNames.contains(nodeName)) {
-				continue;
-			}
-
-			XmlParser subParser = entry.getValue();
-			Class<?> subType = null;
-			if (subParser instanceof ObjectParser) {
-				String impl = ((ObjectParser) subParser).getImpl();
-				if (StringUtils.isNotEmpty(impl))
-					subType = ClassUtils.getClass(impl);
-			}
-			if (subType == null) {
-				subType = propertyType;
-			}
-
-			boolean aggregated = false;
-			if (propertyType != null) {
-				aggregated = Collection.class.isAssignableFrom(propertyType);
-			}
-			addChildBySubParser(ruleTemplate, initializerContext, nodeName,
-					subParser, xmlSubNode, subType, aggregated);
 		}
 	}
 
