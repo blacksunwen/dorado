@@ -52,63 +52,21 @@
                                     })
                                 },
                                 {
-                                    $type: "Container",
-                                    exClassName: "browse-button-wrap",
-                                    children: [{
-                                        $type: "Button",
-                                        caption: "浏览..."
-                                    }],
+                                    $type: "Button",
+                                    caption: "浏览...",
                                     onReady: function(self, arg) {
                                         if (self._inited) {
                                             return;
                                         }
                                         self._inited = true;
-                                        var dom = self._dom, hiddenFile, pathEditor = this.id(filePath);
-                                        if (dorado.Browser.msie) {
-                                            hiddenFile = document.createElement("<input type='file' name='filename' class='hidden-file'/>");
-                                        } else {
-                                            hiddenFile = document.createElement("input");
-                                            hiddenFile.type = "file";
-                                            hiddenFile.name = "filename";
-                                            hiddenFile.className = "hidden-file";
-                                        }
-
-                                        var iframe, iframeName = editor._uniqueId + "_fileUploadIframe";
-                                        if (dorado.Browser.msie) {
-                                            iframe = document.createElement("<iframe name='" + iframeName + "'></iframe>")
-                                        } else {
-                                            iframe = document.createElement("iframe");
-                                            iframe.name = iframeName;
-                                        }
-                                        iframe.style.display = "none";
-
-                                        var form, action = $url(editor._fileUploadPath);
-                                        if (dorado.Browser.msie) {
-                                            form = document.createElement("<form name ='fileForm' action='" + action + "' enctype='multipart/form-data' method='post' target='" + iframeName + "'></form>");
-                                        } else {
-                                            form = document.createElement("form");
-                                            form.action = action;
-                                            form.method = "post";
-                                            form.target = iframeName;
-                                            form.enctype = "multipart/form-data";
-                                        }
-
-                                        form.appendChild(hiddenFile);
-                                        var view = this;
-                                        hiddenFile.onchange = function() {
-                                            pathEditor.set("text", this.value);
-                                            form.submit();
-
-                                            window.uploadCallbackForHtmlEditorFn = function(url) {
-                                                urlObject.set("url", url);
-                                                var autoform = view.id(formId);
-                                                if (autoform) autoform.refreshData();
-                                                var tabControl = view.id(tabControlId);
-                                                tabControl.set("currentTab", 0);
-                                            }
+                                        var view = this, pathEditor = this.id(filePath), callback = function(url) {
+                                            urlObject.set("url", url);
+                                            var autoform = view.id(formId);
+                                            if (autoform) autoform.refreshData();
+                                            var tabControl = view.id(tabControlId);
+                                            tabControl.set("currentTab", 0);
                                         };
-                                        dom.firstChild.appendChild(form);
-                                        dom.firstChild.appendChild(iframe);
+                                        initBrowserButton(self, editor._uniqueId + "link", $url(editor._fileUploadPath), pathEditor, callback);
                                     }
                                 }]
                             }
@@ -254,6 +212,49 @@
         "default": ""
     };
 
+    function initBrowserButton(button, id, action, pathEditor, callback) {
+        var dom = button._dom, parentNode = dom.parentNode;
+        $fly(parentNode).addClass("browse-button-wrap");
+        debugger;
+        if (dorado.Browser.msie && parseInt(dorado.Browser.version, 10) < 9) {
+            hiddenFile = document.createElement("<input type='file' name='filename' class='hidden-file'/>");
+        } else {
+            hiddenFile = document.createElement("input");
+            hiddenFile.type = "file";
+            hiddenFile.name = "filename";
+            hiddenFile.className = "hidden-file";
+        }
+
+        var form, hiddenFile, iframe, iframeName = id + "UploadIframe";
+        if (dorado.Browser.msie && parseInt(dorado.Browser.version, 10) < 9) {
+            iframe = document.createElement("<iframe name='" + iframeName + "'></iframe>")
+        } else {
+            iframe = document.createElement("iframe");
+            iframe.name = iframeName;
+        }
+        iframe.style.display = "none";
+
+        if (dorado.Browser.msie && parseInt(dorado.Browser.version, 10) < 9) {
+            form = document.createElement("<form name ='" + id + "UploadForm' action='" + action + "' enctype='multipart/form-data' method='post' target='" + iframeName + "'></form>");
+        } else {
+            form = document.createElement("form");
+            form.action = action;
+            form.method = "post";
+            form.target = iframeName;
+            form.enctype = "multipart/form-data";
+        }
+
+        hiddenFile.onchange = function() {
+            pathEditor.set("text", this.value);
+            form.submit();
+            window.uploadCallbackForHtmlEditorFn = callback;
+        };
+
+        form.appendChild(hiddenFile);
+        dom.appendChild(form);
+        parentNode.appendChild(iframe);
+    }
+
     plugins.Image = {
         iconClass: "html-editor-icon image",
         command: "inserthtml",
@@ -296,11 +297,10 @@
                     imgInfo.innerHTML = "";
                     return false;
                 } else {
-                    preImg.innerHTML = "图片正在加载";
-                    preImg.innerHTML = "<img src='" + url + "' />";
-                    var pimg = preImg.firstChild;
-                    plugin.previewImg = pimg;
-                    pimg.onload = function() {
+                    preImg.innerHTML = "";
+                    var image = new Image();
+                    plugin.previewImg = image;
+                    image.onload = function() {
                         imgInfo.innerHTML = "原始宽：" + this.width + "px&nbsp;&nbsp;原始高：" + this.height + "px";
                         imgInfo.parentNode.parentNode.style.display = "";
 
@@ -322,9 +322,11 @@
 
                         view.id(tabControlId).set("currentTab", 0);
                     };
-                    pimg.onerror = function() {
+                    image.onerror = function() {
                         preImg.innerHTML = "图片不存在";
-                    }
+                    };
+                    preImg.appendChild(image);
+                    image.src = url;
                 }
             };
 
@@ -536,60 +538,20 @@
                                         })
                                     },
                                     {
-                                        $type: "Container",
-                                        exClassName: "browse-button-wrap",
-                                        children: [{
-                                            $type: "Button",
-                                            caption: "浏览..."
-                                        }],
+                                        $type: "Button",
+                                        caption: "浏览...",
                                         onReady: function(self) {
                                             if (self._inited) {
                                                 return;
                                             }
                                             self._inited = true;
-                                            var dom = self._dom, hiddenFile, pathEditor = this.id(imagePathEditorId);
-                                            if (dorado.Browser.msie) {
-                                                hiddenFile = document.createElement("<input type='file' name='filename' class='hidden-file'/>");
-                                            } else {
-                                                hiddenFile = document.createElement("input");
-                                                hiddenFile.type = "file";
-                                                hiddenFile.name = "filename";
-                                                hiddenFile.className = "hidden-file";
-                                            }
 
-                                            var iframe, iframeName = editor._uniqueId + "uploadIframe";
-                                            if (dorado.Browser.msie) {
-                                                iframe = document.createElement("<iframe name='" + iframeName + "'></iframe>")
-                                            } else {
-                                                iframe = document.createElement("iframe");
-                                                iframe.name = iframeName;
-                                            }
-                                            iframe.style.display = "none";
-
-                                            var form, action = $url(editor._imageUploadPath);
-                                            if (dorado.Browser.msie) {
-                                                form = document.createElement("<form name ='imgForm' action='" + action + "' enctype='multipart/form-data' method='post' target='" + iframeName + "'></form>");
-                                            } else {
-                                                form = document.createElement("form");
-                                                form.action = action;
-                                                form.method = "post";
-                                                form.target = iframeName;
-                                                form.enctype = "multipart/form-data";
-                                            }
-
-                                            form.appendChild(hiddenFile);
-                                            var view = this;
-                                            hiddenFile.onchange = function() {
-                                                pathEditor.set("text", this.value);
-                                                form.submit();
-                                                window.uploadCallbackForHtmlEditorFn = function(url) {
-                                                    var urlEditor = view.id(imageUrlEditorId);
-                                                    urlEditor.set("value", url);
-                                                    urlEditor.post(true);
-                                                }
+                                            var view = this, pathEditor = this.id(imagePathEditorId), callback = function(url) {
+                                                var urlEditor = view.id(imageUrlEditorId);
+                                                urlEditor.set("value", url);
+                                                urlEditor.post(true);
                                             };
-                                            dom.firstChild.appendChild(form);
-                                            dom.firstChild.appendChild(iframe);
+                                            initBrowserButton(self, editor._uniqueId + "image", $url(editor._imageUploadPath), pathEditor, callback);
                                         }
                                     }]
                                 }]
@@ -1283,63 +1245,21 @@
                                     })
                                 },
                                 {
-                                    $type: "Container",
-                                    exClassName: "browse-button-wrap",
-                                    children: [{
-                                        $type: "Button",
-                                        caption: "浏览..."
-                                    }],
+                                    $type: "Button",
+                                    caption: "浏览...",
                                     onReady: function(self, arg) {
                                         if (self._inited) {
                                             return;
                                         }
                                         self._inited = true;
-                                        var dom = self._dom, hiddenFile, pathEditor = this.id(filePath);
-                                        if (dorado.Browser.msie) {
-                                            hiddenFile = document.createElement("<input type='file' name='filename' class='hidden-file'/>");
-                                        } else {
-                                            hiddenFile = document.createElement("input");
-                                            hiddenFile.type = "file";
-                                            hiddenFile.name = "filename";
-                                            hiddenFile.className = "hidden-file";
-                                        }
 
-                                        var iframe, iframeName = editor._uniqueId + "_flashUploadIframe";
-                                        if (dorado.Browser.msie) {
-                                            iframe = document.createElement("<iframe name='" + iframeName + "'></iframe>")
-                                        } else {
-                                            iframe = document.createElement("iframe");
-                                            iframe.name = iframeName;
-                                        }
-                                        iframe.style.display = "none";
-
-                                        var form, action = $url(editor._flashUploadPath);
-                                        if (dorado.Browser.msie) {
-                                            form = document.createElement("<form name ='fileForm' action='" + action + "' enctype='multipart/form-data' method='post' target='" + iframeName + "'></form>");
-                                        } else {
-                                            form = document.createElement("form");
-                                            form.action = action;
-                                            form.method = "post";
-                                            form.target = iframeName;
-                                            form.enctype = "multipart/form-data";
-                                        }
-
-                                        form.appendChild(hiddenFile);
-                                        var view = this;
-                                        hiddenFile.onchange = function() {
-                                            pathEditor.set("text", this.value);
-                                            form.submit();
-
-                                            window.uploadCallbackForHtmlEditorFn = function(url) {
-                                                flashObject.set("url", url);
-                                                var autoform = view.id(formId);
-                                                if (autoform) autoform.refreshData();
-                                                var tabControl = view.id(tabControlId);
-                                                tabControl.set("currentTab", 0);
-                                            }
+                                        var view = this, pathEditor = this.id(filePath), callback = function(url) {
+                                            flashObject.set("url", url);
+                                            var autoform = view.id(formId), tabControl = view.id(tabControlId);
+                                            if (autoform) autoform.refreshData();
+                                            if (tabControl) tabControl.set("currentTab", 0);
                                         };
-                                        dom.firstChild.appendChild(form);
-                                        dom.firstChild.appendChild(iframe);
+                                        initBrowserButton(self, editor._uniqueId + "flash", $url(editor._flashUploadPath), pathEditor, callback);
                                     }
                                 }]
                             }

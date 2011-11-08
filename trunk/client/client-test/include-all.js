@@ -277,14 +277,17 @@
 	var WORKSPACE_ROOT = "/client-test/workspace/";
 	var CLIENT_ROOT = WORKSPACE_ROOT + "client/";
 
-    for (var i = 0; i < styleSheets.length; i++) {
-		writeIncludeStyleSheet(CLIENT_ROOT + "client/skins/inherent/" + styleSheets[i]);
-	}
+//    for (var i = 0; i < styleSheets.length; i++) {
+//		writeIncludeStyleSheet(CLIENT_ROOT + "client/skins/inherent/" + styleSheets[i]);
+//	}
+//
+//    for (var i = 0; i < styleSheets.length; i++) {
+//		writeIncludeStyleSheet(CLIENT_ROOT + "client/skins/" + skin + "/" + styleSheets[i]);
+//	}
 
-    for (var i = 0; i < styleSheets.length; i++) {
-		writeIncludeStyleSheet(CLIENT_ROOT + "client/skins/" + skin + "/" + styleSheets[i]);
-	}
-    
+    writeIncludeStyleSheet(CLIENT_ROOT + "client/skins/inherent/inherent.css");
+    writeIncludeStyleSheet(CLIENT_ROOT + "client/skins/default/default.css");
+
     for (var i = 0; i < addOnstyleSheets.length; i++) {
 		writeIncludeStyleSheet(WORKSPACE_ROOT + addOnstyleSheets[i]);
 	}
