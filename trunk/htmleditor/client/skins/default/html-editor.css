@@ -217,13 +217,15 @@
 
 .browse-button-wrap  .hidden-file {
     position: absolute;
-    z-index: 9999;
+    z-index: 999999;
     left: 0;
     top: 0;
     opacity: 0;
     filter: alpha(opacity=0);
     width: 50px;
-    height: 21px;
+    height: 20px;
+    text-align: left;
+    direction: rtl;
 }
 
 .popup {
