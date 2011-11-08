@@ -108,7 +108,9 @@ public abstract class AbstractUploadResolver extends AbstractResolver{
 		OutputStream out = response.getOutputStream();
 		PrintWriter writer = new PrintWriter(new OutputStreamWriter(out, characterEncoding));
 		try {
+			writer.println("<html>\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>\n</head>\n<body>\n");
 			writer.println(script);
+			writer.println("</body>\n</html>");
 		} finally {
 			writer.flush();
 			writer.close();
