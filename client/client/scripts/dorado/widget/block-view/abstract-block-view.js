@@ -821,10 +821,9 @@
 									border : "curve"
 								});
 						var refDom;
-						if (this._currentDecorator)
-							refDom = this._currentDecorator.getDom();
-						decorator.render(this._container, refDom);
+						if (this._currentDecorator) refDom = this._currentDecorator.getDom();
 						this.registerInnerControl(decorator);
+						decorator.render(this._container, refDom);
 					}
 					return decorator;
 				},
