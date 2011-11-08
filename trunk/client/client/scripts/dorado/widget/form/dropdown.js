@@ -327,14 +327,14 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 		var dropdown = this, editorDom = editor.getDom();
 		var win = $DomUtils.getOwnerWindow(editorDom) || window;
 		var boxCache = getBoxCache(win);
-		var box = boxCache ? boxCache[dorado.id + '$' + this._id]
-				: null;
+		var box = boxCache ? boxCache[dorado.id + '$' + this._id] : null;
 		if (!box) {
 			box = this.createDropDownBox(editor, dropdown);
 			box.addListener("onDropDownBoxShow", function() {
 				if (dropdown.onDropDownBoxShow)
 					dropdown.onDropDownBoxShow();
 			});
+			(this._view || $topView).registerInnerControl(box);
 			box.render(win.document.body);
 			if (boxCache) boxCache[dorado.id + '$' + this._id] = box;
 		}
