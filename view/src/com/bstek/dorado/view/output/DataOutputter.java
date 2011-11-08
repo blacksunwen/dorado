@@ -209,8 +209,8 @@ public class DataOutputter implements Outputter {
 		JsonBuilder json = context.getJsonBuilder();
 		Stack<Object> dataObjectStack = context.getDataObjectStack();
 		if (dataObjectStack.contains(object)) {
-			json.value(null);
-			return;
+			throw new IllegalArgumentException(
+					"Reference circuit found on entity [" + object + "].");
 		}
 
 		dataObjectStack.push(object);
