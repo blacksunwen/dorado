@@ -1089,7 +1089,7 @@
 			}
 			
 			var b = true, $d = dorado.DataType;
-			switch (k) {
+			switch (dataType._code) {
 				case $d.INTEGER:
 				case $d.PRIMITIVE_INT:
 					b = (k == 44 || k == 45 || (k >= 48 && k <= 57));

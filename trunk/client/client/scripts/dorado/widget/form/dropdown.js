@@ -336,8 +336,7 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 					dropdown.onDropDownBoxShow();
 			});
 			box.render(win.document.body);
-			if (boxCache)
-				boxCache[dorado.id + '$' + this._id] = box;
+			if (boxCache) boxCache[dorado.id + '$' + this._id] = box;
 		}
 		this._box = box;
 
@@ -351,18 +350,13 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 		box._focusParent = editor;
 
 		var boxWidth = this._width || $fly(editorDom).outerWidth();
-		if (boxWidth > this._maxWidth)
-			boxWidth = this._maxWidth;
-		if (boxWidth < this._minWidth)
-			boxWidth = this._minWidth;
+		if (boxWidth > this._maxWidth) boxWidth = this._maxWidth;
+		if (boxWidth < this._minWidth) boxWidth = this._minWidth;
 		var boxHeight = this._height || 0;
-		if (boxHeight > this._maxHeight)
-			boxHeight = this._maxHeight;
-		if (boxHeight < this._minHeight)
-			boxHeight = this._minHeight;
+		if (boxHeight > this._maxHeight) boxHeight = this._maxHeight;
+		if (boxHeight < this._minHeight) boxHeight = this._minHeight;
 
-		var boxDom = box.getDom(), containerElement = box
-				.getContainerElement();
+		var boxDom = box.getDom(), containerElement = box.getContainerElement();
 		with (boxDom.style) {
 			left = -screen.availWidth + "px";
 			top = 0;
@@ -385,10 +379,8 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 		}
 		if (!this._height) {
 			boxHeight = containerElement.scrollHeight;
-			if (boxHeight > this._maxHeight)
-				boxHeight = this._maxHeight;
-			if (boxHeight < this._minHeight)
-				boxHeight = this._minHeight;
+			if (boxHeight > this._maxHeight) boxHeight = this._maxHeight;
+			if (boxHeight < this._minHeight) boxHeight = this._minHeight;
 		}
 
 		boxDom.style.width = boxWidth + "px";
@@ -551,8 +543,7 @@ dorado.widget.DropDownBox = $extend([ dorado.widget.Control,
 		control : {
 			writeOnce : true,
 			setter : function(control) {
-				if (this._control == control)
-					return;
+				if (this._control == control) return;
 				this._control = control;
 				if (control) {
 					this.registerInnerControl(control);
@@ -614,7 +605,7 @@ dorado.widget.DropDownBox = $extend([ dorado.widget.Control,
 
 dorado.widget.View.registerDefaultComponent("triggerClear", function() {
 	return new dorado.widget.Trigger({
-		className : "d-trigger-clear",
+		exClassName : "d-trigger-clear",
 		iconClass : "d-trigger-icon-clear",
 		onExecute : function(self, arg) {
 			arg.editor.set("text", "");

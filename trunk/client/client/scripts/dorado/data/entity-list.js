@@ -662,7 +662,14 @@
 					if (elementDataType != null) {
 						entity = elementDataType.parse(jsonArray[i]);
 					} else {
-						entity = new dorado.Entity(jsonArray[i], (this.dataType) ? this.dataType.get("dataTypeRepository") : null);
+						var oldProcessDefaultValue = SHOULD_PROCESS_DEFAULT_VALUE;
+						SHOULD_PROCESS_DEFAULT_VALUE = false;
+						try {
+							entity = new dorado.Entity(jsonArray[i], (this.dataType) ? this.dataType.get("dataTypeRepository") : null);
+						}
+						finally {
+							SHOULD_PROCESS_DEFAULT_VALUE = oldProcessDefaultValue;
+						}
 					}
 					if (i == 0) firstEntity = entity;
 					page.insert(entity);
