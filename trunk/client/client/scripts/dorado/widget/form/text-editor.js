@@ -1071,8 +1071,9 @@
 						text = dataType.toText(this.get("value"), this._displayFormat);
 						this._editorFocused = false;
 					} else {
-						this.doSetText(this._text);
+						text = this._text;
 					}
+					this.doSetText(text);
 				}
 			}
 		},
