@@ -10,7 +10,7 @@ import com.bstek.dorado.view.widget.form.AbstractDataEditor;
 @ViewObject(prototype = "dorado.widget.HtmlEditor", shortTypeName = "HtmlEditor")
 @XmlNode(nodeName = "HtmlEditor")
 public class HtmlEditor extends AbstractDataEditor {
-	private HtmlEditorMode mode = HtmlEditorMode.full;
+	private String mode = "full";
 	private String defaultFontFamily = "宋体";
 	private String defaultFontSize = "16px";
 	private String fileUploadPath = ">dorado/htmleditor/fileupload";
@@ -36,11 +36,11 @@ public class HtmlEditor extends AbstractDataEditor {
 	}
 
 	@ViewAttribute(defaultValue = "full")
-	public HtmlEditorMode getMode() {
+	public String getMode() {
 		return mode;
 	}
 	
-	public void setMode(HtmlEditorMode mode) {
+	public void setMode(String mode) {
 		this.mode = mode;
 	}
 	
