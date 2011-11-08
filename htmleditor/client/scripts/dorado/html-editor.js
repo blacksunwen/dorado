@@ -7116,10 +7116,9 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
 	}
 });
 (function() {
-    dorado.widget.htmleditor = {
-        //,'Video','Code'
-        fullToolbars: [
-            ['FullScreen','Source','|','Undo','Redo','|',
+    dorado.htmleditor = {
+        //'Code'
+        fullMode: ['FullScreen','Source','|','Undo','Redo','|',
              'Bold','Italic','Underline','StrikeThrough','Superscript','Subscript','RemoveFormat','FormatMatch','|',
              'BlockQuote','|',
              'PastePlain','|',
@@ -7127,12 +7126,11 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
              'Paragraph','RowSpacing','FontFamily','FontSize','|',
              'DirectionalityLtr','DirectionalityRtl','|','Indent','Outdent','|',
              'JustifyLeft','JustifyCenter','JustifyRight','JustifyJustify','|',
-             'Link','Unlink','Anchor','Image','Emoticon', "Flash", '|',
+             'Link','Unlink','Anchor','Image','Emoticon', 'Flash', '|',
              'Horizontal','Date','Time','Spechars','Map','GMap','|',
              'InsertTable','DeleteTable','InsertParagraphBeforeTable','InsertRow','DeleteRow','InsertCol','DeleteCol','MergeCells','MergeRight','MergeDown','SplittoCells','SplittoRows','SplittoCols','|',
-             'SelectAll','ClearDoc','SearchReplace','Print','Preview','Help']
-        ],
-        simpleToolbars: [
+             'SelectAll','ClearDoc','SearchReplace','Print','Preview','Help'],
+        simpleMode:
             ['FullScreen','Source','|','Undo','Redo','|',
              'Bold','Italic','Underline','StrikeThrough','Superscript','Subscript','RemoveFormat','|',
              'ForeColor','BackColor','InsertOrderedList','InsertUnorderedList','|',
@@ -7140,8 +7138,14 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
              'Indent','Outdent','|',
              'JustifyLeft','JustifyCenter','JustifyRight','JustifyJustify','|',
              'Link','Unlink','Horizontal','Image','|',
-             'SelectAll','ClearDoc','SearchReplace','Print','Preview','Help']
-        ],
+             'SelectAll','ClearDoc','SearchReplace','Print','Preview','Help'],
+
+        registerMode: function(name, config) {
+            if (name && config) {
+                dorado.htmleditor[name + "Mode"] = config;
+            }
+        },
+
         defaultLabelMap: {
             'anchor':'锚点',
             'undo': '撤销',
@@ -7228,7 +7232,7 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
         }
     };
 
-    dorado.widget.htmleditor.ToolBar = $extend(dorado.widget.Control, {
+    dorado.htmleditor.ToolBar = $extend(dorado.widget.Control, {
         focusable: true,
         ATTRIBUTES: {
             className: {
@@ -7304,7 +7308,7 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
 
             /**
              * <p>富文本编辑器的模式，不同的模式会开启不同的插件，目前可选full,simple，区别在于工具栏上的功能的多少。</p>
-             * <p>如果需要自定义，比如叫custom，可以为dorado.widget.htmleditor添加一属性名为customToolbars，内容可参考fullToolbars和simpleToolbars。</p>
+             * <p>如果需要自定义，比如叫custom，可以为dorado.htmleditor添加一属性名为customMode，内容可参考fullMode和simpleMode。</p>
              * @attribute
              * @type String
              * @default "full"
@@ -7419,41 +7423,41 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
         doOnBlur: function() {
             var editor = this;
             editor._lastPostValue = editor._value;
-            setTimeout(function() {
-                editor._value = editor.get("content");
-                editor._dirty = true;
-                try {
-                    editor.post();
-                } catch (e) {
-                    editor._value = editor._lastPostValue;
-                    editor._dirty = false;
-                    throw e;
-                }
-                editor.refresh();
-            }, 100);
+            editor._value = editor.get("content");
+            editor._dirty = true;
+            try {
+                editor.post();
+            } catch (e) {
+                editor._value = editor._lastPostValue;
+                editor._dirty = false;
+                throw e;
+            }
+            editor.refresh();
             //editor.fireEvent("onValueChange", editor);
         },
+
         doOnReadOnlyChange: function(readOnly) {
-            var editor = this, riche = editor._editor;
+            var htmleditor = this, editor = htmleditor._editor;
             if (readOnly === undefined) {
-                readOnly = editor._readOnly || editor._readOnly2;
+                readOnly = htmleditor._readOnly || htmleditor._readOnly2;
             }
-            if (!riche || !riche.document) return;
+            if (!editor || !editor.document) return;
             if (readOnly) {
                 if (dorado.Browser.msie) {
-                    riche.document.body.contentEditable = false;
+                    editor.document.body.contentEditable = false;
                 } else {
-                    riche.document.body.contentEditable = false;
+                    editor.document.body.contentEditable = false;
                 }
             } else {
                 if (dorado.Browser.msie) {
-                    riche.document.body.contentEditable = true;
+                    editor.document.body.contentEditable = true;
                 } else {
-                    riche.document.body.contentEditable = true;
+                    editor.document.body.contentEditable = true;
                 }
             }
-            editor.checkStatus();
+            htmleditor.checkStatus();
         },
+
         post: function() {
             try {
                 if(!this._dirty) {
@@ -7474,7 +7478,9 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
                 dorado.Exception.processException(e);
             }
         },
+
         setFocus : function() {},
+
         doOnAttachToDocument: function() {
             var htmleditor = this;
             $invokeSuper.call(this, arguments);
@@ -7484,7 +7490,13 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
                 minFrameHeight: 100,
                 defaultFontFamily: htmleditor._defaultFontFamily,
                 defaultFontSize: htmleditor._defaultFontSize,
-                iframeCssUrl: $url(">skin>/html-editor/iframe.css")//给iframe样式的路径
+                iframeCssUrl: $url(">skin>/html-editor/iframe.css"),//给iframe样式的路径,
+                selectedTdClass : 'selectTdClass',
+                autoHeightEnabled: false,
+                removeFormatTags : 'b,big,code,del,dfn,em,font,i,ins,kbd,q,samp,small,span,strike,strong,sub,sup,tt,u,var',    //清除格式删除的标签
+                removeFormatAttributes : 'class,style,lang,width,height,align,hspace,valign',        //清除格式删除的属性
+                enterTag : 'p',//编辑器回车标签。p或br
+                pasteplain : 0
             };
             var editor = new baidu.editor.Editor(option);
             this._editor = editor;
@@ -7587,6 +7599,7 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
             });
             editor.addListener('selectionchange', function (t, evt) {
                 dorado.widget.setFocusedControl(htmleditor);
+
                 var html = '', img = editor.selection.getRange().getClosedNode(),
                     imglink = baidu.editor.dom.domUtils.findParentByTagName(img, "a", true);
 
@@ -7724,49 +7737,47 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
             }
         },
         initPlugins: function() {
-            var editor = this, mode = editor._mode || "default";
+            var editor = this, mode = editor._mode || "default", toolbarConfig = dorado.htmleditor[mode + "Mode"] || [], toolbar = new dorado.htmleditor.ToolBar();
             editor._plugins = {};
-            var toolbars = dorado.widget.htmleditor[mode + "Toolbars"] || [];
-            for (var i = 0, k = toolbars.length; i < k; i++) {
-                var toolbarConfig = toolbars[i], toolbar = new dorado.widget.htmleditor.ToolBar();
-                for (var j = 0, l = toolbarConfig.length; j < l; j++) {
-                    var pluginName = toolbarConfig[j];
-                    if (pluginName == "|") {
-                        toolbar.addItem("-");
-                    } else {
-                        var pluginConfig = plugins[pluginName];
-                        pluginConfig.htmlEditor = editor;
 
-                        if (pluginConfig.iconClass == undefined && pluginConfig.command) {
-                            pluginConfig.iconClass = "html-editor-icon " + pluginConfig.command;
-                        }
+            for (var j = 0, l = toolbarConfig.length; j < l; j++) {
+                var pluginName = toolbarConfig[j];
+                if (pluginName == "|") {
+                    toolbar.addItem("-");
+                } else {
+                    var pluginConfig = plugins[pluginName];
+                    pluginConfig.htmlEditor = editor;
 
-                        var plugin = new dorado.widget.htmleditor.HtmlEditorPlugIn(pluginConfig);
-
-                        if (pluginConfig.execute) {
-                            plugin.execute = pluginConfig.execute;
-                        }
-
-                        if (pluginConfig.initToolBar) {
-                            plugin.initToolBar = pluginConfig.initToolBar;
-                        }
-
-                        if (pluginConfig.checkStatus) {
-                            plugin.checkStatus = pluginConfig.checkStatus;
-                        }
-
-                        if (pluginConfig.onStatusChange) {
-                            plugin.onStatusChange = pluginConfig.onStatusChange;
-                        }
-                        plugin._name = pluginName;
-                        plugin.initToolBar(toolbar);
-
-                        editor._plugins[pluginName] = plugin;
+                    if (pluginConfig.iconClass == undefined && pluginConfig.command) {
+                        pluginConfig.iconClass = "html-editor-icon " + pluginConfig.command;
                     }
+
+                    var plugin = new dorado.htmleditor.HtmlEditorPlugIn(pluginConfig);
+
+                    if (pluginConfig.execute) {
+                        plugin.execute = pluginConfig.execute;
+                    }
+
+                    if (pluginConfig.initToolBar) {
+                        plugin.initToolBar = pluginConfig.initToolBar;
+                    }
+
+                    if (pluginConfig.checkStatus) {
+                        plugin.checkStatus = pluginConfig.checkStatus;
+                    }
+
+                    if (pluginConfig.onStatusChange) {
+                        plugin.onStatusChange = pluginConfig.onStatusChange;
+                    }
+
+                    plugin._name = pluginName;
+                    plugin.initToolBar(toolbar);
+
+                    editor._plugins[pluginName] = plugin;
                 }
-                editor.registerInnerControl(toolbar);
-                toolbar.render(editor._doms.toolbar);
             }
+            editor.registerInnerControl(toolbar);
+            toolbar.render(editor._doms.toolbar);
         },
         doOnResize: function() {
             var htmleditor = this, dom = htmleditor._dom, doms = htmleditor._doms;
@@ -7786,6 +7797,7 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
                     try {
                         plugin.checkStatus();
                     } catch(e) {//fix a bug for ie.
+                        if (console.log) console.log(e);
                     }
                 }
             }
@@ -7809,10 +7821,11 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
                 var oldReadOnly = editor._oldReadOnly;
                 editor._oldReadOnly = !!readOnly;
 
-                editor._value = value;
-                if (editor._editor && editor._editor.getContent() != value) {
+                if (editor._editor && editor._value != value) {
                     editor._editor.setContent(value || "");
                 }
+
+                editor._value = value;
                 editor._readOnly2 = readOnly;
                 if (oldReadOnly === undefined || oldReadOnly !== readOnly) {
                     editor.doOnReadOnlyChange(!!readOnly);
@@ -7822,7 +7835,7 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
         }
     });
 
-    dorado.widget.htmleditor.HtmlEditorPlugIn = $extend(dorado.AttributeSupport, {
+    dorado.htmleditor.HtmlEditorPlugIn = $extend(dorado.AttributeSupport, {
         constructor: function(options) {
             if (options) this.set(options);
         },
@@ -7881,7 +7894,7 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
             }
         },
         initToolBar: function(toolbar) {
-            var plugin = this, labels = dorado.widget.htmleditor.defaultLabelMap;
+            var plugin = this, labels = dorado.htmleditor.defaultLabelMap;
 
             plugin.button = toolbar.addItem({
                 $type: "SimpleIconButton",
@@ -7905,6 +7918,9 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
             var plugin = this, heditor = plugin._htmlEditor, editor = plugin._htmlEditor._editor, result;
             if (heditor._readOnly || heditor._readOnly2) {
                 plugin.set("status", "disable");
+                return;
+            } else if (!plugin._command) {
+                plugin.set("status", "enable");
                 return;
             }
             if (plugin._statusToggleable) {
@@ -7957,7 +7973,7 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
         }
     };
 
-    var plugins = dorado.widget.htmleditor.plugins = {
+    var plugins = dorado.htmleditor.plugins = {
         Source: {
             command: "source"
         },
@@ -8015,6 +8031,9 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
                         modifySize: false,
                         callback: function(docSize) {
                             editor._maximized = true;
+                            editor._dirty = true;
+                            editor._value = editor._editor.getContent();
+                            editor.post();
                             editor.set(docSize);
                             editor.resetDimension();
                             editor.refresh();
@@ -8027,6 +8046,9 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
                             editor._maximized = false;
                             editor._width = editor._originalWidth;
                             editor._height = editor._originalHeight;
+                            editor._dirty = true;
+                            editor._value = editor._editor.getContent();
+                            editor.post();
                             if (!editor._width) {
                                 $fly(editor._dom).css("width", "");
                             }
@@ -8212,7 +8234,6 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
             var content = oldGetContent.apply(this, []), imgReg = /<img.*?(edui_faked_video_\d+)['"\s].*?>/ig;
             return content.replace(imgReg, function(word) {
                 var fakeId = RegExp.$1, img = editor.document.getElementById(fakeId);
-                console.log("word:" + word);
                 if (img) {
                     var width = img.width || 320, height = img.height || 240, strcss = img.style.cssText,
                         url = img.getAttribute("_url"), style = getPars(strcss,"display") ? "display:" + getPars(strcss, "display") : "float:" + getPars(strcss,"float");
@@ -8356,10 +8377,10 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
 
         me.addListener('contextmenu', function(type, evt) {
             var element = evt.target || evt.srcElement, iframe = getWindow(element).frameElement;
-            var frameOffset = $fly(iframe).offset();
+            var frameOffset = $fly(iframe).offset(), iframeBody = iframe.contentWindow.document.body;
             var offset = {
-                left: evt.pageX + frameOffset.left,
-                top: evt.pageY + frameOffset.top
+                left: evt.pageX + frameOffset.left - iframeBody.scrollLeft,
+                top: evt.pageY + frameOffset.top - iframeBody.scrollTop
             };
 
             if (!menu) {
@@ -8406,7 +8427,9 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
                 }
 
                 menu = new dorado.widget.Menu({
-                    items: contextItems
+                    items: contextItems,
+                    showAnimateType: "none",
+                    hideAnimateType: "none"
                 });
             }
 
@@ -8438,7 +8461,7 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
     };
 })();
 (function(plugins) {
-    var htmleditor = dorado.widget.htmleditor;
+    var htmleditor = dorado.htmleditor;
 
     plugins.Link = {
         iconClass: "html-editor-icon link",
@@ -8491,63 +8514,21 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
                                     })
                                 },
                                 {
-                                    $type: "Container",
-                                    exClassName: "browse-button-wrap",
-                                    children: [{
-                                        $type: "Button",
-                                        caption: "浏览..."
-                                    }],
+                                    $type: "Button",
+                                    caption: "浏览...",
                                     onReady: function(self, arg) {
                                         if (self._inited) {
                                             return;
                                         }
                                         self._inited = true;
-                                        var dom = self._dom, hiddenFile, pathEditor = this.id(filePath);
-                                        if (dorado.Browser.msie) {
-                                            hiddenFile = document.createElement("<input type='file' name='filename' class='hidden-file'/>");
-                                        } else {
-                                            hiddenFile = document.createElement("input");
-                                            hiddenFile.type = "file";
-                                            hiddenFile.name = "filename";
-                                            hiddenFile.className = "hidden-file";
-                                        }
-
-                                        var iframe, iframeName = editor._uniqueId + "_fileUploadIframe";
-                                        if (dorado.Browser.msie) {
-                                            iframe = document.createElement("<iframe name='" + iframeName + "'></iframe>")
-                                        } else {
-                                            iframe = document.createElement("iframe");
-                                            iframe.name = iframeName;
-                                        }
-                                        iframe.style.display = "none";
-
-                                        var form, action = $url(editor._fileUploadPath);
-                                        if (dorado.Browser.msie) {
-                                            form = document.createElement("<form name ='fileForm' action='" + action + "' enctype='multipart/form-data' method='post' target='" + iframeName + "'></form>");
-                                        } else {
-                                            form = document.createElement("form");
-                                            form.action = action;
-                                            form.method = "post";
-                                            form.target = iframeName;
-                                            form.enctype = "multipart/form-data";
-                                        }
-
-                                        form.appendChild(hiddenFile);
-                                        var view = this;
-                                        hiddenFile.onchange = function() {
-                                            pathEditor.set("text", this.value);
-                                            form.submit();
-
-                                            window.uploadCallbackForHtmlEditorFn = function(url) {
-                                                urlObject.set("url", url);
-                                                var autoform = view.id(formId);
-                                                if (autoform) autoform.refreshData();
-                                                var tabControl = view.id(tabControlId);
-                                                tabControl.set("currentTab", 0);
-                                            }
+                                        var view = this, pathEditor = this.id(filePath), callback = function(url) {
+                                            urlObject.set("url", url);
+                                            var autoform = view.id(formId);
+                                            if (autoform) autoform.refreshData();
+                                            var tabControl = view.id(tabControlId);
+                                            tabControl.set("currentTab", 0);
                                         };
-                                        dom.firstChild.appendChild(form);
-                                        dom.firstChild.appendChild(iframe);
+                                        initBrowserButton(self, editor._uniqueId + "link", $url(editor._fileUploadPath), pathEditor, callback);
                                     }
                                 }]
                             }
@@ -8693,6 +8674,49 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
         "default": ""
     };
 
+    function initBrowserButton(button, id, action, pathEditor, callback) {
+        var dom = button._dom, parentNode = dom.parentNode;
+        $fly(parentNode).addClass("browse-button-wrap");
+        debugger;
+        if (dorado.Browser.msie && parseInt(dorado.Browser.version, 10) < 9) {
+            hiddenFile = document.createElement("<input type='file' name='filename' class='hidden-file'/>");
+        } else {
+            hiddenFile = document.createElement("input");
+            hiddenFile.type = "file";
+            hiddenFile.name = "filename";
+            hiddenFile.className = "hidden-file";
+        }
+
+        var form, hiddenFile, iframe, iframeName = id + "UploadIframe";
+        if (dorado.Browser.msie && parseInt(dorado.Browser.version, 10) < 9) {
+            iframe = document.createElement("<iframe name='" + iframeName + "'></iframe>")
+        } else {
+            iframe = document.createElement("iframe");
+            iframe.name = iframeName;
+        }
+        iframe.style.display = "none";
+
+        if (dorado.Browser.msie && parseInt(dorado.Browser.version, 10) < 9) {
+            form = document.createElement("<form name ='" + id + "UploadForm' action='" + action + "' enctype='multipart/form-data' method='post' target='" + iframeName + "'></form>");
+        } else {
+            form = document.createElement("form");
+            form.action = action;
+            form.method = "post";
+            form.target = iframeName;
+            form.enctype = "multipart/form-data";
+        }
+
+        hiddenFile.onchange = function() {
+            pathEditor.set("text", this.value);
+            form.submit();
+            window.uploadCallbackForHtmlEditorFn = callback;
+        };
+
+        form.appendChild(hiddenFile);
+        dom.appendChild(form);
+        parentNode.appendChild(iframe);
+    }
+
     plugins.Image = {
         iconClass: "html-editor-icon image",
         command: "inserthtml",
@@ -8735,11 +8759,10 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
                     imgInfo.innerHTML = "";
                     return false;
                 } else {
-                    preImg.innerHTML = "图片正在加载";
-                    preImg.innerHTML = "<img src='" + url + "' />";
-                    var pimg = preImg.firstChild;
-                    plugin.previewImg = pimg;
-                    pimg.onload = function() {
+                    preImg.innerHTML = "";
+                    var image = new Image();
+                    plugin.previewImg = image;
+                    image.onload = function() {
                         imgInfo.innerHTML = "原始宽：" + this.width + "px&nbsp;&nbsp;原始高：" + this.height + "px";
                         imgInfo.parentNode.parentNode.style.display = "";
 
@@ -8761,9 +8784,11 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
 
                         view.id(tabControlId).set("currentTab", 0);
                     };
-                    pimg.onerror = function() {
+                    image.onerror = function() {
                         preImg.innerHTML = "图片不存在";
-                    }
+                    };
+                    preImg.appendChild(image);
+                    image.src = url;
                 }
             };
 
@@ -8975,60 +9000,20 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
                                         })
                                     },
                                     {
-                                        $type: "Container",
-                                        exClassName: "browse-button-wrap",
-                                        children: [{
-                                            $type: "Button",
-                                            caption: "浏览..."
-                                        }],
+                                        $type: "Button",
+                                        caption: "浏览...",
                                         onReady: function(self) {
                                             if (self._inited) {
                                                 return;
                                             }
                                             self._inited = true;
-                                            var dom = self._dom, hiddenFile, pathEditor = this.id(imagePathEditorId);
-                                            if (dorado.Browser.msie) {
-                                                hiddenFile = document.createElement("<input type='file' name='filename' class='hidden-file'/>");
-                                            } else {
-                                                hiddenFile = document.createElement("input");
-                                                hiddenFile.type = "file";
-                                                hiddenFile.name = "filename";
-                                                hiddenFile.className = "hidden-file";
-                                            }
 
-                                            var iframe, iframeName = editor._uniqueId + "uploadIframe";
-                                            if (dorado.Browser.msie) {
-                                                iframe = document.createElement("<iframe name='" + iframeName + "'></iframe>")
-                                            } else {
-                                                iframe = document.createElement("iframe");
-                                                iframe.name = iframeName;
-                                            }
-                                            iframe.style.display = "none";
-
-                                            var form, action = $url(editor._imageUploadPath);
-                                            if (dorado.Browser.msie) {
-                                                form = document.createElement("<form name ='imgForm' action='" + action + "' enctype='multipart/form-data' method='post' target='" + iframeName + "'></form>");
-                                            } else {
-                                                form = document.createElement("form");
-                                                form.action = action;
-                                                form.method = "post";
-                                                form.target = iframeName;
-                                                form.enctype = "multipart/form-data";
-                                            }
-
-                                            form.appendChild(hiddenFile);
-                                            var view = this;
-                                            hiddenFile.onchange = function() {
-                                                pathEditor.set("text", this.value);
-                                                form.submit();
-                                                window.uploadCallbackForHtmlEditorFn = function(url) {
-                                                    var urlEditor = view.id(imageUrlEditorId);
-                                                    urlEditor.set("value", url);
-                                                    urlEditor.post(true);
-                                                }
+                                            var view = this, pathEditor = this.id(imagePathEditorId), callback = function(url) {
+                                                var urlEditor = view.id(imageUrlEditorId);
+                                                urlEditor.set("value", url);
+                                                urlEditor.post(true);
                                             };
-                                            dom.firstChild.appendChild(form);
-                                            dom.firstChild.appendChild(iframe);
+                                            initBrowserButton(self, editor._uniqueId + "image", $url(editor._imageUploadPath), pathEditor, callback);
                                         }
                                     }]
                                 }]
@@ -9722,63 +9707,21 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
                                     })
                                 },
                                 {
-                                    $type: "Container",
-                                    exClassName: "browse-button-wrap",
-                                    children: [{
-                                        $type: "Button",
-                                        caption: "浏览..."
-                                    }],
+                                    $type: "Button",
+                                    caption: "浏览...",
                                     onReady: function(self, arg) {
                                         if (self._inited) {
                                             return;
                                         }
                                         self._inited = true;
-                                        var dom = self._dom, hiddenFile, pathEditor = this.id(filePath);
-                                        if (dorado.Browser.msie) {
-                                            hiddenFile = document.createElement("<input type='file' name='filename' class='hidden-file'/>");
-                                        } else {
-                                            hiddenFile = document.createElement("input");
-                                            hiddenFile.type = "file";
-                                            hiddenFile.name = "filename";
-                                            hiddenFile.className = "hidden-file";
-                                        }
 
-                                        var iframe, iframeName = editor._uniqueId + "_flashUploadIframe";
-                                        if (dorado.Browser.msie) {
-                                            iframe = document.createElement("<iframe name='" + iframeName + "'></iframe>")
-                                        } else {
-                                            iframe = document.createElement("iframe");
-                                            iframe.name = iframeName;
-                                        }
-                                        iframe.style.display = "none";
-
-                                        var form, action = $url(editor._flashUploadPath);
-                                        if (dorado.Browser.msie) {
-                                            form = document.createElement("<form name ='fileForm' action='" + action + "' enctype='multipart/form-data' method='post' target='" + iframeName + "'></form>");
-                                        } else {
-                                            form = document.createElement("form");
-                                            form.action = action;
-                                            form.method = "post";
-                                            form.target = iframeName;
-                                            form.enctype = "multipart/form-data";
-                                        }
-
-                                        form.appendChild(hiddenFile);
-                                        var view = this;
-                                        hiddenFile.onchange = function() {
-                                            pathEditor.set("text", this.value);
-                                            form.submit();
-
-                                            window.uploadCallbackForHtmlEditorFn = function(url) {
-                                                flashObject.set("url", url);
-                                                var autoform = view.id(formId);
-                                                if (autoform) autoform.refreshData();
-                                                var tabControl = view.id(tabControlId);
-                                                tabControl.set("currentTab", 0);
-                                            }
+                                        var view = this, pathEditor = this.id(filePath), callback = function(url) {
+                                            flashObject.set("url", url);
+                                            var autoform = view.id(formId), tabControl = view.id(tabControlId);
+                                            if (autoform) autoform.refreshData();
+                                            if (tabControl) tabControl.set("currentTab", 0);
                                         };
-                                        dom.firstChild.appendChild(form);
-                                        dom.firstChild.appendChild(iframe);
+                                        initBrowserButton(self, editor._uniqueId + "flash", $url(editor._flashUploadPath), pathEditor, callback);
                                     }
                                 }]
                             }
@@ -10019,4 +9962,4 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
             plugin.dialog.show();
         }
     };
-})(dorado.widget.htmleditor.plugins);
+})(dorado.htmleditor.plugins);
