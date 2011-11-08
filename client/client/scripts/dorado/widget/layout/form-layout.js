@@ -110,6 +110,7 @@
 			this._useBlankRow = !(dorado.Browser.safari || dorado.Browser.chrome);
 			$invokeSuper.call(this, [config]);
 		},
+		
 		createDom: function() {
 			return $DomUtils.xCreate({
 				tagName: "TABLE",
@@ -118,6 +119,7 @@
 				content: "^TBODY"
 			});
 		},
+		
 		refreshDom: function(dom) {
 		
 			function isSameGrid(oldGrid, newGrid) {
@@ -281,6 +283,7 @@
 				this.renderControl(region, td, !useControlWidth, true);
 			}
 		},
+		
 		createRegionContainer: function(region) {
 			var dom = this.getRegionDom(region);
 			if (!dom) {
@@ -303,6 +306,7 @@
 			}
 			return dom;
 		},
+		
 		initColInfos: function() {
 			this._cols = this._cols || "*";
 			var colWidths = this._colWidths = [];
@@ -331,6 +335,7 @@
 			this.dynaColCount = dynaColCount;
 			this.fixedWidth = fixedWidth;
 		},
+		
 		precalculateRegions: function() {
 		
 			function precalculateRegion(grid, region) {
@@ -399,6 +404,7 @@
 			}
 			return grid;
 		},
+		
 		resizeTableAndCols: function() {
 			var realColWidths = this._realColWidths;
 			if (!realColWidths) {

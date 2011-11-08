@@ -167,6 +167,13 @@
 						this._visible = visible;
 						this.onActualVisibleChange();
 					}
+					if (visible && this._hideMode == "display" && !this._rendered && this._oldLayoutConstraint !== undefined) {
+						if (this._parent && this._parent._layout) {
+							this._layoutConstraint = this._oldLayoutConstraint;
+							delete this._oldLayoutConstraint;
+							this._parent._layout.refreshControl(this);
+						}
+					}
 				}
 			},
 
@@ -256,7 +263,10 @@
 			 */
 			layoutConstraint: {
 				setter: function(layoutConstraint) {
-					if (this._layoutConstraint != layoutConstraint) {
+					if (!this._visible && this._hideMode == "display") {
+						this._oldLayoutConstraint = layoutConstraint;
+					}
+					else if (this._layoutConstraint != layoutConstraint) {
 						this._layoutConstraint = layoutConstraint;
 						if (this._layoutConstraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT || layoutConstraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT) {
 							this.onActualVisibleChange();
@@ -451,6 +461,7 @@
 
 		constructor : function(config) {
 			dorado.widget.Component.prototype.constructor.call(this, config);
+			
 			var renderTo = this._renderTo, renderOn = this._renderOn;
 			if(renderTo || renderOn) {
 				$setTimeout(this, function() {
@@ -624,11 +635,12 @@
 							if(this._visible) {
 								dom.style.display = this._oldDisplay;
 								this.set("layoutConstraint", this._oldLayoutConstraint);
+								delete this._oldLayoutConstraint;
 							} else {
 								this._oldDisplay = dom.style.display;
 								dom.style.display = "none";
 
-								this._oldLayoutConstraint = this._layoutConstraint;
+								this._oldLayoutConstraint = this._layoutConstraint || null;
 								this.set("layoutConstraint", dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT);
 							}
 						} else {
@@ -640,9 +652,6 @@
 						if(this._hideMode == "display") {
 							this._oldDisplay = dom.style.display;
 							dom.style.display = "none";
-
-							this._oldLayoutConstraint = this._layoutConstraint;
-							// 在Container的layout.addControl中已处理
 						} else {
 							dom.style.visibility = "hidden";
 						}

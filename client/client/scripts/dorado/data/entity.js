@@ -1,5 +1,6 @@
-(function() {
+var SHOULD_PROCESS_DEFAULT_VALUE = true;
 
+(function() {
 	var DEFAULT_VALIDATION_RESULT_STATE = "error";
 
 	var STATE_CODE = dorado.Toolkits.STATE_CODE;
@@ -102,7 +103,6 @@
 		this.dataTypeRepository = dataTypeRepository;
 		
 		this._propertyInfoMap = {};
-		var shouldProcessDefaultValue = !data;
 		if (data) {
 			this._data = data;
 			if (dataType == null) {
@@ -125,7 +125,7 @@
 		if (dataType) {
 			this._propertyDefs = dataType._propertyDefs;
 			this._propertyDefs.each(function(pd) {
-				if (shouldProcessDefaultValue && pd._defaultValue != undefined && data[pd._name] == undefined) {
+				if (SHOULD_PROCESS_DEFAULT_VALUE && pd._defaultValue != undefined && data[pd._name] == undefined) {
 					data[pd._name] = (pd._defaultValue instanceof Function) ? pd._defaultValue.call(this) : pd._defaultValue;
 				}
 
@@ -1021,8 +1021,7 @@
 		 * @param {Object} json 要转换的JSON对象。
 		 */
 		fromJSON : function(json) {
-			if (this.dataType)
-				json.$dataType = this.dataType._id;
+			if (this.dataType) json.$dataType = this.dataType._id;
 			this._data = json;
 			delete this._oldData;
 			this.state = dorado.Entity.STATE_NONE;

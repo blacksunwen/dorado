@@ -21,6 +21,24 @@ dorado.widget.Trigger = $extend(dorado.widget.Component, /** @scope dorado.widge
 		},
 		
 		/**
+		 * 扩展CSS类名。
+		 * @type String
+		 * @attribute
+		 */
+		exClassName: {
+			skipRefresh: true,
+			setter: function(v) {
+				if (this._rendered && this._exClassName) {
+					$fly(this.getDom()).removeClass(this._exClassName);
+				}
+				this._exClassName = v;
+				if (this._rendered && v) {
+					$fly(this.getDom()).addClass(v);
+				}
+			}
+		},
+		
+		/**
 		 * 图标。
 		 * @type String
 		 * @attribute
@@ -92,7 +110,7 @@ dorado.widget.Trigger = $extend(dorado.widget.Component, /** @scope dorado.widge
 	createTriggerButton: function(editor) {
 		var trigger = this;
 		var control = new dorado.widget.SimpleIconButton({
-			exClassName:  (trigger._inherentClassName || '') + " " + (trigger._className || ''),
+			exClassName:  (trigger._inherentClassName || '') + " " + (trigger._className || '') + " " + (trigger._exClassName || ''),
 			icon: trigger._icon,
 			iconClass: trigger._iconClass,
 			onClick: function() {

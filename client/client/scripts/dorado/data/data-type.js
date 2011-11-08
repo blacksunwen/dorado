@@ -550,7 +550,19 @@
 		 */
 		parse : function(data) {
 			if(data != null) {
-				return (data instanceof dorado.Entity) ? data : new dorado.Entity(data, this._dataTypeRepository, this);
+				if (data instanceof dorado.Entity) {
+					return data
+				}
+				else {
+					var oldProcessDefaultValue = SHOULD_PROCESS_DEFAULT_VALUE;
+					SHOULD_PROCESS_DEFAULT_VALUE = false;
+					try {
+						return new dorado.Entity(data, this._dataTypeRepository, this);
+					}
+					finally {
+						SHOULD_PROCESS_DEFAULT_VALUE = oldProcessDefaultValue;
+					}
+				}
 			} else {
 				return null;
 			}

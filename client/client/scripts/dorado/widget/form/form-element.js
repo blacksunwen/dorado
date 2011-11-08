@@ -1,6 +1,6 @@
 (function() {
 
-	var specialFormConfigProps = ["formProfile", "width", "height", "className", "exClassName", "visible", "hideMode"];
+	var specialFormConfigProps = ["formProfile", "width", "height", "className", "exClassName", "visible", "hideMode", "layoutConstriant"];
 	
 	var DEFAULT_OK_MESSAGES = [{
 		state: "ok"
