@@ -8677,7 +8677,6 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
     function initBrowserButton(button, id, action, pathEditor, callback) {
         var dom = button._dom, parentNode = dom.parentNode;
         $fly(parentNode).addClass("browse-button-wrap");
-        debugger;
         if (dorado.Browser.msie && parseInt(dorado.Browser.version, 10) < 9) {
             hiddenFile = document.createElement("<input type='file' name='filename' class='hidden-file'/>");
         } else {
