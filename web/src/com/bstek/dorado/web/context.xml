@@ -18,6 +18,7 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 		<property name="configLocations">
 			<list merge="true">
 				<value>com/bstek/dorado/web/resolver/resource-types.xml</value>
+				<value>home:resource-types.xml</value>
 			</list>
 		</property>
 		<property name="xmlDocumentBuilder" ref="dorado.xmlDocumentBuilder" />
