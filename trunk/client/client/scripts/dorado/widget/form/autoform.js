@@ -250,7 +250,7 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 			}
 		});
 		
-		if (!(this._skipOnCreateListeners > 0)) {
+		if (!(this._skipOnCreateListeners > 0) && this.getListenerCount("onCreate")) {
 			this.fireEvent("onCreate", this);
 		}
 	},

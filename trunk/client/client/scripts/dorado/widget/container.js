@@ -198,7 +198,7 @@
 				this.set("children", childrenConfig);
 			}
 			
-			if (!(this._skipOnCreateListeners > 0)) {
+			if (!(this._skipOnCreateListeners > 0) && this.getListenerCount("onCreate")) {
 				this.fireEvent("onCreate", this);
 			}
 		},
