@@ -16,6 +16,7 @@
 	<resource-type type=".tif" content-type="image/tiff" compressible="false" />
 	<resource-type type=".tiff" content-type="image/tiff" compressible="false" />
 	<resource-type type=".swf" content-type="application/x-shockwave-flash" compressible="false" />
+	<resource-type type=".swz" content-type="application/x-shockwave-flash" compressible="false" />
 	<resource-type type=".wav" content-type="audio/x-wav" compressible="false" />
 	<resource-type type=".mp3" content-type="audio/mpeg" compressible="false" />
 </resource-types>
