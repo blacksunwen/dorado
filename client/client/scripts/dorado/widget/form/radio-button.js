@@ -179,20 +179,7 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 		 */
 		value: {
 			setter: function(value) {
-				var radioGroup = this, radioButtons = radioGroup._radioButtons;
-				if (radioButtons) {
-					var found = false;
-					for (var i = 0, j = radioButtons.length; i < j; i++) {
-						var radioButton = radioButtons[i];
-						if ((value + '') == (radioButton._value + '')) {
-							found = true;
-							radioGroup._setValue(radioButton);
-							break;
-						}
-					}
-					if (!found) radioGroup._setValue(null);
-				}
-				radioGroup._value = value;
+				this.setValue(value);
 			}
 		},
 		
@@ -211,6 +198,23 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 		 * @event
 		 */
 		onValueChange: {}
+	},
+	
+	setValue: function(value) {
+		var radioGroup = this, radioButtons = radioGroup._radioButtons;
+		if (radioButtons) {
+			var found = false;
+			for (var i = 0, j = radioButtons.length; i < j; i++) {
+				var radioButton = radioButtons[i];
+				if ((value + '') == (radioButton._value + '')) {
+					found = true;
+					radioGroup._setValue(radioButton);
+					break;
+				}
+			}
+			if (!found) radioGroup._setValue(null);
+		}
+		radioGroup._value = value;
 	},
 	
 	addRadioButton: function(radioButton, index) {
@@ -371,7 +375,7 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 				readOnly = true;
 			}
 			group._readOnly2 = readOnly;
-			group.set("value", value);
+			group.setValue(value);
 			group.setDirty(dirty);
 		}
 		

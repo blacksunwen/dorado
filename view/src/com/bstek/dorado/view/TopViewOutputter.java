@@ -31,7 +31,9 @@ public class TopViewOutputter extends ViewOutputter {
 		Writer writer = context.getWriter();
 		writer.append("jQuery(document).ready(function(){\n");
 		// writer.append("try{\n");
+		writer.append("AUTO_APPEND_TO_TOPVIEW=false;\n");
 		outputView(view, context);
+		writer.append("AUTO_APPEND_TO_TOPVIEW=true;\n");
 		writer.append("var doradoView = document.getElementById(\"doradoView\");\n"
 				+ "if (doradoView) v.replace(doradoView);\n");
 		// writer.append("}\n").append("catch(e){")

@@ -375,7 +375,7 @@ dorado.EventSupport = $class(/** @scope dorado.EventSupport.prototype */{
 		if (!def) throw new dorado.ResourceException("dorado.core.UnknownEvent", name);
 		
 		var handlers = (this._events) ? this._events[name] : null;
-		if (!handlers) return;
+		if (!handlers || !handlers.length) return;
 		
 		var self = this;
 		var superFire = function() {

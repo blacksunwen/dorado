@@ -271,6 +271,10 @@
 					self.doExecuteAsync({
 						callback: function(success, result) {
 							if (taskId) dorado.util.TaskIndicator.hideTaskIndicator(taskId);
+							if (self._modal) {
+								self.set("disabled", false);
+							}
+							
 							self._returnValue = result;
 							$callback(callback, success, result, {
 								scope: self._view
@@ -288,14 +292,11 @@
 								dorado.widget.NotifyTipManager.notify(self._successMessage);
 							}
 							
-							if (self._modal) {
-								self.set("disabled", false);
-								if (hasIcon) {
-									self.set({
-										icon: oldIcon,
-										iconClass: oldIconClass
-									});
-								}
+							if (self._modal && hasIcon) {
+								self.set({
+									icon: oldIcon,
+									iconClass: oldIconClass
+								});
 							}
 						}
 					});

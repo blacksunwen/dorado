@@ -1,3 +1,5 @@
+var AUTO_APPEND_TO_TOPVIEW = true;
+
 (function() {
 
 	var ALL_VIEWS = [];
@@ -142,19 +144,25 @@
 		},
 		
 		registerComponent: function(id, comp) {
-			if (this._identifiedComponents[id]) throw new dorado.ResourceException("dorado.widget.ComponentIdNotUnique", id, this._id);
+			if (this._identifiedComponents[id]) {
+				throw new dorado.ResourceException("dorado.widget.ComponentIdNotUnique", id, this._id);
+			}
 			this._identifiedComponents[id] = comp;
-			this.fireEvent("onComponentRegistered", this, {
-				component: comp
-			});
+			if (this.getListenerCount("onComponentRegistered")) {
+				this.fireEvent("onComponentRegistered", this, {
+					component: comp
+				});
+			}
 		},
 		
 		unregisterComponent: function(id) {
-			var comp = this._identifiedComponents[id];
+			if (this.getListenerCount("onComponentUnregistered")) {
+				var comp = this._identifiedComponents[id];
+				this.fireEvent("onComponentUnregistered", this, {
+					component: comp
+				});
+			}
 			delete this._identifiedComponents[id];
-			this.fireEvent("onComponentUnregistered", this, {
-				component: comp
-			});
 		},
 		
 		getListenerScope: function() {
@@ -218,7 +226,7 @@
 			for (var i = 0; i < allObjects.length; i++) {
 				var object = allObjects[i];
 				if (object._view == this || object.view == this ||
-				(object.ATTRIBUTES.view && object.get("view"))) {
+				(object.ATTRIBUTES.view && object.get("view") == this)) {
 					objects.push(object);
 				}
 			}
@@ -455,13 +463,6 @@
 			$fly(window).unload(function() {
 				dorado.windowClosed = true;
 				if (!topView._destroyed) topView.destroy();
-				
-				var components = dorado.widget.Component.ALL;
-				for (var id in components) {
-					if (components.hasOwnProperty(id)) {
-						components[id].destroy();
-					}
-				}
 			}).bind("resize", function() {
 				if (topView.onResizeTimerId) {
 					clearTimeout(topView.onResizeTimerId);

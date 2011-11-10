@@ -82,7 +82,7 @@
 			dataTypeRepository: {
 				readOnly: true,
 				getter: function() {
-					var view = this.get("view") || dorado.widget.View.TOP;
+					var view = this.get("view") || $topView;
 					return view.get("dataTypeRepository");
 				}
 			},
@@ -149,7 +149,11 @@
 			$invokeSuper.call(this);
 			if (config) this.set(config);
 			
-			if (!(this._skipOnCreateListeners > 0)) {
+			if (AUTO_APPEND_TO_TOPVIEW && window.$topView) {
+				$topView.addChild(this);
+			}
+			
+			if (!(this._skipOnCreateListeners > 0) && this.getListenerCount("onCreate")) {
 				this.fireEvent("onCreate", this);
 			}
 		},
@@ -226,7 +230,15 @@
 		},
 		
 		getListenerScope: function() {
-			return this.get("view") || dorado.widget.View.TOP;
+			return this.get("view") || $topView;
+		},
+		
+		fireEvent: function() {
+			var optimized = (AUTO_APPEND_TO_TOPVIEW === false);
+			if (optimized) AUTO_APPEND_TO_TOPVIEW = true;
+			var retVal = $invokeSuper.call(this, arguments);
+			if (optimized) AUTO_APPEND_TO_TOPVIEW = false;
+			return retVal;
 		}
 	});
 		
@@ -237,10 +249,10 @@
 		} else {
 			var component;
 			if (typeof value == "string") {
-				component = dorado.widget.View.TOP.id(value);
+				component = $topView.id(value);
 				if (component) return component;
 				value = {
-					view: dorado.widget.View.TOP,
+					view: $topView,
 					component: value
 				};
 			} else if (typeof value == "object" && value.$type) {
