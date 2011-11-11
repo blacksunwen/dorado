@@ -83,6 +83,6 @@ self.set(&quot;renderer&quot;, new dorado.widget.blockview.ImageBlockRenderer({ 
 self.set(&quot;renderer&quot;, new dorado.widget.blockview.ImageBlockRenderer({ captionProperty: &quot;name&quot; }));
 			</ClientEvent>
     </BlockView>
-    <ListBox dragTags="block" draggable="true" droppable="true" droppableTags="block" height="200" property="name" width="300"/>
+    <ListBox dragTags="block" draggable="true" droppable="true" droppableTags="block" height="200" property="name" width="300" layoutConstraint="left:430; anchorTop:previous; top:10" />
   </View>
 </ViewConfig>

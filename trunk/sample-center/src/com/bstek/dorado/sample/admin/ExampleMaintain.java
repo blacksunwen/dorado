@@ -58,6 +58,7 @@ public class ExampleMaintain {
 		for (Object[] row : rows) {
 			Example example = EntityUtils.toEntity(row[0]);
 			EntityUtils.setValue(example, "sortFlag", row[1]);
+			EntityUtils.setState(example, EntityState.NONE);
 			examples.add(example);
 		}
 		return examples;

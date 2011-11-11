@@ -1,0 +1,166 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+<html>
+
+<head>
+
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="pragma" content="no-cache" />
+<meta http-equiv="cache-control" content="no-cache" />
+<meta http-equiv="expires" content="0" />
+<title>Bstek Development Framework</title>
+<script language="javascript" type="text/javascript" charset="UTF-8" src="/sample-center/dorado/client/boot.dpkg"></script>
+<script language="javascript" type="text/javascript">
+$import("widget");
+</script>
+<script language="javascript" type="text/javascript">
+jQuery(document).ready(function(){
+try{
+var v=new dorado.widget.View({
+	"id":"viewMain",
+	"layout":{
+		"$type":"Anchor"
+	},
+	"name":"d7.login.Login"
+});
+function f(v){v.set("children",[
+	{
+		"$type":"FormSubmitAction",
+		"action":">security_check_",
+		"async":false,
+		"executingMessage":"登录中...",
+		"hotkey":"ctrl+q",
+		"id":"formSubmitActionLogin",
+		"listener":{
+			"beforeExecute":(function(self,arg){
+var data=this.id("autoFormLogin").get("entity");
+
+self.set("parameter",data);
+})
+		}
+	},
+	{
+		"$type":"Dialog",
+		"caption":"Login",
+		"center":true,
+		"height":"220",
+		closeable: false,
+		"id":"dialogLogin",
+		"layoutConstraint":{
+			"left":"50\u0025",
+			"top":"50\u0025"
+		},
+		"modalType":"dark",
+		"visible":true,
+		"width":"400",
+		"children":[
+			{
+				"$type":"AutoForm",
+				"cols":"*,*",
+				"elements":[
+					{
+						"id":"textEditorUsername",
+						"label":"用户名",
+						"labelAlign":"right",
+						"layoutConstraint":{
+							"colSpan":"2"
+						},
+						"name":"password_"
+					},
+					{
+						"id":"password_",
+						"label":"密码",
+						"labelAlign":"right",
+						"layoutConstraint":{
+							"colSpan":"2"
+						},
+						"name":"username_"
+					},
+					{
+						"editor":{
+							"$type":"TextEditor"
+						},
+						"id":"kaptcha_",
+						"label":"验证码",
+						"labelAlign":"right",
+						"layoutConstraint":{
+							"colSpan":"2"
+						},
+						"name":"kaptcha_"
+					},
+					{
+						"id":"qqqqqq",
+						"label":"密码",
+						"labelAlign":"right",
+						"layoutConstraint":{
+							"colSpan":"2"
+						},
+						"name":"qqqqqqq"
+					},
+					{
+						"id":"ssss",
+						"label":"密码",
+						"labelAlign":"right",
+						"layoutConstraint":{
+							"colSpan":"2"
+						},
+						"name":"ssss"
+					},
+					{
+						"editor":{
+							"$type":"HtmlContainer",
+							"content":"<img src=\"/bdf-dorado7/bdf.loginController.generateCaptcha.c\"/>"
+						},
+						"label":"  ",
+						"layoutConstraint":{
+							"colSpan":"2"
+						},
+						"showLabel":false
+					},
+					{
+						"$type":"Button",
+						"action":v.getComponentReference("formSubmitActionLogin"),
+						"caption":"登录",
+						"icon":"url(>skin>common/icons.gif) -100px -20px",
+						"id":"buttonOk",
+						"layoutConstraint":{
+							"align":"right"
+						}
+					},
+					{
+						"$type":"Button",
+						"caption":"重置",
+						"icon":"url(>skin>common/icons.gif) -40px -0px",
+						"id":"buttonCancel",
+						"layoutConstraint":{
+							"align":"left"
+						}
+					}
+				],
+				"id":"autoFormLogin",
+				"layoutConstraint":{
+					"type":"center"
+				},
+				"width":"300"
+			}
+		]
+	}
+]);}
+f(v);
+var doradoView = document.getElementById("doradoView");
+if (doradoView) v.replace(doradoView);
+}
+catch(e){dorado.Exception.processException(e);}
+});
+$import("widget,debugger,common,base-widget");
+</script>
+</head>
+
+<body scroll="no" style="margin:0px; overflow:hidden">
+
+	<label id="doradoView" style="display:none" />
+
+</body>
+
+</html>

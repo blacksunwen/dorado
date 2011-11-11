@@ -7,6 +7,7 @@
       <PropertyDef name="accountName">
         <Property name="required">true</Property>
         <Property name="label">账户名</Property>
+        <Property name="readOnly">false</Property>
         <Validator type="length">
           <Property name="maxLength">10</Property>
           <Property name="minLength">5</Property>
@@ -32,7 +33,7 @@
       </PropertyDef>
     </DataType>
   </Model>
-  <View layout="anchor padding:30">
+  <View layout="vbox align:left;padding:20">
     <DataSet id="dataSetAccount">
       <ClientEvent name="onReady">self.disableObservers();&#xD;
 try {&#xD;
@@ -75,13 +76,17 @@ finally {&#xD;
         <Property name="icon">url(>skin>common/icons.gif) -141px 0</Property>
       </Button>
     </Container>
-    <AutoForm id="autoFormAccount" layoutConstraint="anchorTop:previous">
+    <AutoForm id="autoFormAccount">
+      <ClientEvent name="onCreate">&#xD;
+</ClientEvent>
       <Property name="dataSet">dataSetAccount</Property>
       <Property name="autoCreateElements">false</Property>
       <Property name="cols">*</Property>
       <Property name="hintWidth">300</Property>
       <Property name="width">600</Property>
       <Property name="showHintMessage">true</Property>
+      <Property name="hideMode">visibility</Property>
+      <Property name="visible">true</Property>
       <AutoFormElement>
         <Property name="name">accountName</Property>
         <Property name="property">accountName</Property>
@@ -96,13 +101,13 @@ finally {&#xD;
         <Property name="name">email</Property>
         <Property name="property">email</Property>
         <Editor>
-          <TextEditor id="textEditorEMail">
+          <TextEditor>
             <Property name="blankText">abc@abc.abc</Property>
           </TextEditor>
         </Editor>
       </AutoFormElement>
     </AutoForm>
-    <DataGrid id="dataGridAccount" layoutConstraint="anchorTop:previous">
+    <DataGrid id="dataGridAccount">
       <Property name="dataSet">dataSetAccount</Property>
       <Property name="width">600</Property>
       <Property name="height">200</Property>

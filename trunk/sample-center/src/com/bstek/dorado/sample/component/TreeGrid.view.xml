@@ -2,7 +2,7 @@
 <ViewConfig>
   <Model>
     <DataType parent="global:Employee" name="Employee">
-      <Reference name="underlings" dataType="[SELF]" submitable="false" dataProvider="employeeInterceptor#getEmployeesBySuperior" parameter="$${this.id}"/>
+      <Reference name="underlings" dataType="[SELF]" dataProvider="employeeInterceptor#getEmployeesBySuperior" parameter="$${this.id}"/>
     </DataType>
   </Model>
   <View title="Employee Maintain">

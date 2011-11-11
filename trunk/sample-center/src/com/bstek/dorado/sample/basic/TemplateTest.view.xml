@@ -5,8 +5,14 @@
     <Argument name="dataSet" value="dsProducts"/>
     <Argument name="saveAction" value="actionSave"/>
   </Arguments>
+  <Model>
+    <DataType name="dataType1">
+      <PropertyDef name="propertyDef1"/>
+    </DataType>
+  </Model>
   <View title="${argument.caption}">
     <ToolBar layoutConstraint="top">
+      <Property name="userData"/>
       <GroupStart id="toolbarContent"/>
       <ToolBarButton caption="添加" icon="url(>skin>common/icons.gif) -121px 0">
         <ClientEvent name="onClick">dorado.MessageBox.alert(&quot;您点击了添加按钮.&quot;);</ClientEvent>
