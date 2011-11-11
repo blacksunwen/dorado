@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Arguments/>
+  <Context/>
+  <Model/>
+  <View layout="padding:4">
+    <DataSet id="dsProducts" dataProvider="simpleCRUD#getAll" pageSize="10">
+      <Property name="readOnly">false</Property>
+      <Property name="dataType">[Product]</Property>
+    </DataSet>
+    <ToolBar>
+      <DataPilot>
+        <Property name="dataSet">dsProducts</Property>
+        <Property name="itemCodes">|&lt;,&lt;,>,>|,|,+,-,x</Property>
+      </DataPilot>
+    </ToolBar>
+    <GroupBox layoutConstraint="padding:16">
+      <Property name="caption">Form</Property>
+      <Property name="collapseable">false</Property>
+      <Children>
+        <AutoForm>
+          <Property name="autoCreateElements">true</Property>
+          <Property name="dataSet">dsProducts</Property>
+          <Property name="cols">300,300</Property>
+        </AutoForm>
+      </Children>
+    </GroupBox>
+    <DataGrid layoutConstraint="center ">
+      <Property name="dataSet">dsProducts</Property>
+      <RowNumColumn/>
+      <IndicatorColumn/>
+    </DataGrid>
+  </View>
+</ViewConfig>

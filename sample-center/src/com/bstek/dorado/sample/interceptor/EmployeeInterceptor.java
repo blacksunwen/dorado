@@ -38,6 +38,11 @@ public class EmployeeInterceptor {
 	}
 
 	@DataProvider
+	public void getEmployeesBySuperior(Page<Employee> page, Long parameter) {
+		employeeDao.find(page, "from Employee where reportsTo.id=" + parameter);
+	}
+
+	@DataProvider
 	public Map<String, String> getTitlesOfCourtesy() {
 		Map<String, String> mapValue = new LinkedHashMap<String, String>();
 		mapValue.put("Mr.", "Mister");

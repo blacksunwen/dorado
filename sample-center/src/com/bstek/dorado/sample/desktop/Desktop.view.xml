@@ -6,6 +6,53 @@
   <View>
     <Shell id="shell">
       <Property name="wallpaper">>dorado/res/com/bstek/dorado/sample/desktop/wallpapers/dorado1.jpg</Property>
+      <DesktopCarousel>
+        <ClientEvent name="onShortcutContextMenu">var menus = this.id(&quot;menus&quot;);
+					menus.show({
+					event: arg.event
+					});
+				</ClientEvent>
+        <Desktop>
+          <Property name="iconSize">small</Property>
+          <Shortcut>
+            <Property name="appId">iframe1</Property>
+          </Shortcut>
+          <Shortcut>
+            <Property name="appId">iframe2</Property>
+          </Shortcut>
+          <Shortcut>
+            <Property name="appId">iframe3</Property>
+          </Shortcut>
+          <Shortcut>
+            <Property name="appId">iframe4</Property>
+          </Shortcut>
+        </Desktop>
+        <Desktop>
+          <Shortcut>
+            <Property name="appId">chart1</Property>
+          </Shortcut>
+          <Shortcut>
+            <Property name="appId">chart2</Property>
+          </Shortcut>
+          <Shortcut>
+            <Property name="appId">chart3</Property>
+          </Shortcut>
+          <Shortcut>
+            <Property name="appId">chart4</Property>
+          </Shortcut>
+          <Shortcut>
+            <Property name="appId">chart5</Property>
+          </Shortcut>
+          <Shortcut>
+            <Property name="appId">chart6</Property>
+          </Shortcut>
+        </Desktop>
+        <Desktop>
+          <Shortcut>
+            <Property name="appId">widget1</Property>
+          </Shortcut>
+        </Desktop>
+      </DesktopCarousel>
       <Apps>
         <WidgetApp>
           <Property name="id">widget1</Property>
@@ -90,57 +137,9 @@
           <Property name="icon32">>dorado/res/com/bstek/dorado/sample/desktop/radar.png</Property>
         </IFrameApp>
       </Apps>
-      <Desktop>
-        <DesktopCarousel>
-          <ClientEvent name="onShortcutContextMenu">var menus = this.id(&quot;menus&quot;);
-menus.show({
-	event: arg.event
-});</ClientEvent>
-          <Desktop>
-            <Property name="iconSize">small</Property>
-            <Shortcut>
-              <Property name="appId">iframe1</Property>
-            </Shortcut>
-            <Shortcut>
-              <Property name="appId">iframe2</Property>
-            </Shortcut>
-            <Shortcut>
-              <Property name="appId">iframe3</Property>
-            </Shortcut>
-            <Shortcut>
-              <Property name="appId">iframe4</Property>
-            </Shortcut>
-          </Desktop>
-          <Desktop>
-            <Shortcut>
-              <Property name="appId">chart1</Property>
-            </Shortcut>
-            <Shortcut>
-              <Property name="appId">chart2</Property>
-            </Shortcut>
-            <Shortcut>
-              <Property name="appId">chart3</Property>
-            </Shortcut>
-            <Shortcut>
-              <Property name="appId">chart4</Property>
-            </Shortcut>
-            <Shortcut>
-              <Property name="appId">chart5</Property>
-            </Shortcut>
-            <Shortcut>
-              <Property name="appId">chart6</Property>
-            </Shortcut>
-          </Desktop>
-          <Desktop>
-            <Shortcut>
-              <Property name="appId">widget1</Property>
-            </Shortcut>
-          </Desktop>
-        </DesktopCarousel>
-      </Desktop>
       <Taskbar>
         <ClientEvent name="onTaskButtonContextMenu">var menu = this.id(&quot;menut&quot;);
-menu.show({event: arg.event, direction: &quot;b2t&quot;});</ClientEvent>
+					menu.show({event: arg.event, direction: &quot;b2t&quot;});</ClientEvent>
         <QuickButtons>
           <QuickButton>
             <Property name="appId">chart1</Property>
@@ -152,18 +151,19 @@ menu.show({event: arg.event, direction: &quot;b2t&quot;});</ClientEvent>
         <StartButton>
           <SimpleButton>
             <ClientEvent name="onClick">var startMenuPanel = this.id(&quot;startMenuPanel&quot;);
-startMenuPanel.addListener(&quot;onShow&quot;, function() {
-	self.set(&quot;toggled&quot;, true);
-	startMenuPanel.addListener(&quot;onHide&quot;, function() {
-		self.set(&quot;toggled&quot;, false);
-	}, {once: true});
-}, {once: true});
-startMenuPanel.show({
-	anchorTarget: self,
-	vAlign: &quot;top&quot;,
-	align: &quot;innerleft&quot;,
-	positionOffset: [0, 8]
-});</ClientEvent>
+							startMenuPanel.addListener(&quot;onShow&quot;, function() {
+							self.set(&quot;toggled&quot;, true);
+							startMenuPanel.addListener(&quot;onHide&quot;, function() {
+							self.set(&quot;toggled&quot;, false);
+							}, {once: true});
+							}, {once: true});
+							startMenuPanel.show({
+							anchorTarget: self,
+							vAlign: &quot;top&quot;,
+							align: &quot;innerleft&quot;,
+							positionOffset: [0, 8]
+							});
+						</ClientEvent>
             <Property name="className">start-button</Property>
           </SimpleButton>
         </StartButton>
@@ -171,117 +171,120 @@ startMenuPanel.show({
     </Shell>
     <FloatContainer id="startMenuPanel">
       <ClientEvent name="onBlur">self.hide();
-</ClientEvent>
+			</ClientEvent>
       <Property name="width">330</Property>
       <Property name="height">300</Property>
       <Property name="animateType">fade</Property>
       <Property name="style">
         <Property name="position">absolute</Property>
       </Property>
-      <Children>
-        <Panel>
-          <Property name="exClassName">start-menu-panel</Property>
-          <Property name="caption">Desktop</Property>
-          <Children>
-            <Menu layoutConstraint="left width:150">
-              <Property name="exClassName">left-menu</Property>
-              <Property name="floating">false</Property>
+      <Property name="contentOverflow">visible</Property>
+      <Panel>
+        <Property name="exClassName">start-menu-panel</Property>
+        <Property name="caption">Desktop</Property>
+        <Children>
+          <Menu layoutConstraint="left width:150">
+            <Property name="exClassName">left-menu</Property>
+            <Property name="floating">false</Property>
+            <MenuItem>
+              <Property name="caption">Settings</Property>
+              <Property name="icon">>dorado/res/com/bstek/dorado/sample/desktop/left-default-menu-icon.png</Property>
+            </MenuItem>
+            <MenuItem>
+              <Property name="caption">Logout</Property>
+              <Property name="icon">>dorado/res/com/bstek/dorado/sample/desktop/left-default-menu-icon.png</Property>
+            </MenuItem>
+          </Menu>
+          <Menu>
+            <ClientEvent name="onContextMenu">if (!self.get(&quot;focusItem&quot;) || (self.get(&quot;focusItem&quot;) &amp;&amp;
+							self.get(&quot;focusItem&quot;).hasSubmenu())) {
+							return;
+							}
+							var menu = this.id(&quot;menu&quot;);
+							self.freeze();
+							menu._focusParent = self;
+							menu.show({
+							event: arg.event
+							});
+							menu.addListener(&quot;onHide&quot;, function() {
+							self.unfreeze();
+							}, { once: true });
+						</ClientEvent>
+            <Property name="exClassName">right-menu</Property>
+            <Property name="floating">false</Property>
+            <MenuItem>
+              <Property name="caption">Demo</Property>
               <MenuItem>
-                <Property name="caption">Settings</Property>
-                <Property name="icon">>dorado/res/com/bstek/dorado/sample/desktop/left-default-menu-icon.png</Property>
+                <Property name="caption">Grid</Property>
               </MenuItem>
               <MenuItem>
-                <Property name="caption">Logout</Property>
-                <Property name="icon">>dorado/res/com/bstek/dorado/sample/desktop/left-default-menu-icon.png</Property>
+                <Property name="caption">Form</Property>
               </MenuItem>
-            </Menu>
-            <Menu>
-              <ClientEvent name="onContextMenu">if (!self.get(&quot;focusItem&quot;) || (self.get(&quot;focusItem&quot;) &amp;&amp; self.get(&quot;focusItem&quot;).hasSubmenu())) {
-    return;
-}
-var menu = this.id(&quot;menu&quot;);
-self.freeze();
-menu._focusParent = self;
-menu.show({
-    event: arg.event
-});
-menu.addListener(&quot;onHide&quot;, function() {
-    self.unfreeze();
-}, { once: true });</ClientEvent>
-              <Property name="exClassName">right-menu</Property>
-              <Property name="floating">false</Property>
+            </MenuItem>
+            <MenuItem>
+              <Property name="caption">Chart</Property>
               <MenuItem>
-                <Property name="caption">Demo</Property>
-                <MenuItem>
-                  <Property name="caption">Grid</Property>
-                </MenuItem>
-                <MenuItem>
-                  <Property name="caption">Form</Property>
-                </MenuItem>
+                <Property name="caption">Column Chart</Property>
               </MenuItem>
               <MenuItem>
-                <Property name="caption">Chart</Property>
-                <MenuItem>
-                  <Property name="caption">Column Chart</Property>
-                </MenuItem>
-                <MenuItem>
-                  <Property name="caption">Bar Chart</Property>
-                </MenuItem>
-                <MenuItem>
-                  <Property name="caption">Line Chart</Property>
-                </MenuItem>
-                <MenuItem>
-                  <Property name="caption">Area Chart</Property>
-                </MenuItem>
-                <MenuItem>
-                  <Property name="caption">Radar Chart</Property>
-                </MenuItem>
-                <MenuItem>
-                  <Property name="caption">Pie Chart</Property>
-                </MenuItem>
+                <Property name="caption">Bar Chart</Property>
               </MenuItem>
               <MenuItem>
-                <Property name="caption">Widget</Property>
-                <MenuItem>
-                  <Property name="caption">Clock</Property>
-                </MenuItem>
+                <Property name="caption">Line Chart</Property>
               </MenuItem>
-            </Menu>
-          </Children>
-        </Panel>
-      </Children>
+              <MenuItem>
+                <Property name="caption">Area Chart</Property>
+              </MenuItem>
+              <MenuItem>
+                <Property name="caption">Radar Chart</Property>
+              </MenuItem>
+              <MenuItem>
+                <Property name="caption">Pie Chart</Property>
+              </MenuItem>
+            </MenuItem>
+            <MenuItem>
+              <Property name="caption">Widget</Property>
+              <MenuItem>
+                <Property name="caption">Clock</Property>
+              </MenuItem>
+            </MenuItem>
+          </Menu>
+        </Children>
+      </Panel>
     </FloatContainer>
     <Menu id="menu">
       <MenuItem>
         <ClientEvent name="onClick">var shell = this.id(&quot;shell&quot;);
-var menu = self.get(&quot;parent&quot;).get(&quot;focusParent&quot;);
-var focusItem = menu.get(&quot;focusItem&quot;);
-shell.getCurrentDesktop().addItem({ caption: focusItem.get(&quot;caption&quot;) });
-</ClientEvent>
+					var menu = self.get(&quot;parent&quot;).get(&quot;focusParent&quot;);
+					var focusItem = menu.get(&quot;focusItem&quot;);
+					shell.getCurrentDesktop().addItem({ caption: focusItem.get(&quot;caption&quot;) });
+				</ClientEvent>
         <Property name="caption">Send To Desktop</Property>
       </MenuItem>
     </Menu>
     <Menu id="menut">
       <MenuItem>
         <ClientEvent name="onClick">var shell = this.id(&quot;shell&quot;), taskbar = shell.get(&quot;taskbar&quot;);
-var contextMenuTaskButton = taskbar.get(&quot;contextMenuTaskButton&quot;);
-if (contextMenuTaskButton &amp;&amp; contextMenuTaskButton.get(&quot;app&quot;)) {
-    contextMenuTaskButton.get(&quot;app&quot;).close();
-}</ClientEvent>
+					var contextMenuTaskButton = taskbar.get(&quot;contextMenuTaskButton&quot;);
+					if (contextMenuTaskButton &amp;&amp; contextMenuTaskButton.get(&quot;app&quot;)) {
+					contextMenuTaskButton.get(&quot;app&quot;).close();
+					}
+				</ClientEvent>
         <Property name="caption">Close</Property>
       </MenuItem>
     </Menu>
     <Menu id="menus">
       <MenuItem>
-        <ClientEvent name="onClick">var shell = this.id(&quot;shell&quot;), desktop = shell.getCurrentDesktop(), 
-	shortcut = desktop.get(&quot;contextMenuShortcut&quot;);
-desktop.removeItem(shortcut);</ClientEvent>
+        <ClientEvent name="onClick">var shell = this.id(&quot;shell&quot;), desktop = shell.getCurrentDesktop(),
+					shortcut = desktop.get(&quot;contextMenuShortcut&quot;);
+					desktop.removeItem(shortcut);
+				</ClientEvent>
         <Property name="caption">Remove</Property>
       </MenuItem>
       <MenuItem>
-        <ClientEvent name="onClick">var shell = this.id(&quot;shell&quot;), desktop = shell.getCurrentDesktop(), 
-	shortcut = desktop.get(&quot;contextMenuShortcut&quot;);
-shell.launchApp(shortcut.get(&quot;appId&quot;));</ClientEvent>
+        <ClientEvent name="onClick">var shell = this.id(&quot;shell&quot;), desktop = shell.getCurrentDesktop(),
+					shortcut = desktop.get(&quot;contextMenuShortcut&quot;);
+					shell.launchApp(shortcut.get(&quot;appId&quot;));</ClientEvent>
         <Property name="caption">Launch</Property>
       </MenuItem>
     </Menu>

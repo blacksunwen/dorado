@@ -1,17 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ViewConfig>
   <Model>
-    <DataType parent="Bean" name="ProductType" matchType="com.bstek.dorado.sample.entity.Product" meta="x:75;y:45" autoCreatePropertyDefs="true">
+    <DataType matchType="com.bstek.dorado.sample.entity.Product" name="ProductType" parent="Bean" meta="x:75;y:45" autoCreatePropertyDefs="true">
       <PropertyDef name="productName" required="true"/>
     </DataType>
   </Model>
   <View title="Product Maintain">
-    <DataSet id="dsProducts" dataType="[ProductType]" dataProvider="simpleCRUD#getAll" pageSize="10"/>
-    <UpdateAction id="actionSave" caption="Save" confirmMessage="Sure to save all changes?" icon="url(>skin>common/icons.gif) -140px -20px" successMessage="OK!" dataResolver="simpleCRUD#saveAll">
-      <UpdateItem dataSet="dsProducts"/>
+    <DataSet id="dsProducts" dataProvider="simpleCRUD#getAll" dataType="[ProductType]" pageSize="10">
+      <Property name="readOnly">false</Property>
+    </DataSet>
+    <UpdateAction id="actionSave" caption="Save" confirmMessage="Sure to save all changes?" dataResolver="simpleCRUD#saveAll" icon="url(>skin>common/icons.gif) -140px -20px" successMessage="OK!">
+      <UpdateItem dataSet="dsProducts">
+        <Property name="dataPath">!DIRTY_TREE</Property>
+      </UpdateItem>
     </UpdateAction>
     <ToolBar layoutConstraint="top">
-      <DataPilot dataSet="dsProducts" itemCodes="pages,|,+,-,x"/>
+      <DataPilot dataSet="dsProducts" itemCodes="pages,|,+,-,x">
+        <Property name="ignored">false</Property>
+      </DataPilot>
       <Separator/>
       <ToolBarButton action="actionSave"/>
     </ToolBar>
