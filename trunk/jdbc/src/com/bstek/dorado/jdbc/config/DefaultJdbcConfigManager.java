@@ -15,7 +15,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -28,10 +27,10 @@ import com.bstek.dorado.core.xml.XmlDocumentBuilder;
 import com.bstek.dorado.jdbc.config.xml.JdbcXmlConstants;
 import com.bstek.dorado.jdbc.config.xml.TagedObjectParser;
 import com.bstek.dorado.jdbc.model.DbElement;
-import com.bstek.dorado.jdbc.model.DbElement.Type;
 import com.bstek.dorado.jdbc.model.DbElementCreationContext;
 import com.bstek.dorado.jdbc.sql.SqlGenerator;
 import com.bstek.dorado.util.Assert;
+import com.bstek.dorado.util.xml.DomUtils;
 
 public class DefaultJdbcConfigManager implements JdbcConfigManager, ApplicationContextAware {
 
@@ -40,8 +39,8 @@ public class DefaultJdbcConfigManager implements JdbcConfigManager, ApplicationC
 	private XmlDocumentBuilder xmlDocumentBuilder;
 
 	private JdbcDefinitionManager definitionManager = new JdbcDefinitionManager();
-	private Map<DbElement.Type, TagedObjectParser> objectParsers = new HashMap<DbElement.Type, TagedObjectParser>();
-	private Map<DbElement.Type, SqlGenerator> sqlGenerators = new HashMap<DbElement.Type, SqlGenerator>();
+	private Map<String, TagedObjectParser> objectParsers = new HashMap<String, TagedObjectParser>();
+	private Map<String, SqlGenerator> sqlGenerators = new HashMap<String, SqlGenerator>();
 	
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext)
@@ -62,14 +61,14 @@ public class DefaultJdbcConfigManager implements JdbcConfigManager, ApplicationC
 		objectParsers.clear();
 		for (TagedObjectParser parser: parsers) {
 			String tagName = parser.getTagName();
-			objectParsers.put(DbElement.Type.valueOf(tagName), parser);
+			objectParsers.put(String.valueOf(tagName), parser);
 		}
 	}
 
 	public void setSqlGenerators(List<SqlGenerator> generators) {
 		sqlGenerators.clear();
 		for (SqlGenerator generator: generators) {
-			Type type = generator.getType();
+			String type = generator.getType();
 			sqlGenerators.put(type, generator);
 		}
 	}
@@ -88,7 +87,7 @@ public class DefaultJdbcConfigManager implements JdbcConfigManager, ApplicationC
 	}
 
 	@Override
-	public ObjectParser getParser(Type type) {
+	public ObjectParser getParser(String type) {
 		Assert.notNull(type);
 		TagedObjectParser parser = objectParsers.get(type);
 		
@@ -96,7 +95,7 @@ public class DefaultJdbcConfigManager implements JdbcConfigManager, ApplicationC
 		return parser;
 	}
 
-	public SqlGenerator getSqlGenerator(DbElement.Type type) {
+	public SqlGenerator getSqlGenerator(String type) {
 		Assert.notNull(type);
 		SqlGenerator generator = sqlGenerators.get(type);
 
@@ -152,22 +151,20 @@ public class DefaultJdbcConfigManager implements JdbcConfigManager, ApplicationC
 			Resource resource = documentWrapper.getResource();
 			
 			Element documentElement = document.getDocumentElement();
-			for (DbElement.Type type: DbElement.Type.values()) {
-				String tagName = type.name();
-				ObjectParser parser = this.getParser(type);
-				List<Element> elements = DomUtils.getChildElementsByTagName(documentElement, tagName);
-				String envName = documentElement.getAttribute(JdbcXmlConstants.ATTRIBUTE_ENVIROMENT);
-				for (Element element: elements) {
-					if (StringUtils.isNotEmpty(envName)) {
-						element.setAttribute(JdbcXmlConstants.ATTRIBUTE_ENVIROMENT, envName);
-					}
-					
-					String name = element.getAttribute(XmlConstants.ATTRIBUTE_NAME);
-					if (!dbElementNodeMap.containsKey(name)){
-						dbElementNodeMap.put(name, new XmlElementWrapper(element, resource, parser));
-					} else {
-						throw new IllegalArgumentException("Duplicate DbElelment named [" + name +"].");
-					}
+			List<Element> elements = DomUtils.getChildElements(documentElement);
+			for (Element element: elements) {
+				String tagName = element.getNodeName();
+				ObjectParser parser = this.getParser(tagName);
+				String envName = documentElement.getAttribute(JdbcXmlConstants.JDBC_ENVIROMENT);
+				if (StringUtils.isNotEmpty(envName)) {
+					element.setAttribute(JdbcXmlConstants.JDBC_ENVIROMENT, envName);
+				}
+				
+				String name = element.getAttribute(XmlConstants.ATTRIBUTE_NAME);
+				if (!dbElementNodeMap.containsKey(name)){
+					dbElementNodeMap.put(name, new XmlElementWrapper(element, resource, parser));
+				} else {
+					throw new IllegalArgumentException("Duplicate DbElelment named [" + name +"].");
 				}
 			}
 		}

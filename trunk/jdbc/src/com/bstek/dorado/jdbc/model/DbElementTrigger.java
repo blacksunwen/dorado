@@ -7,5 +7,5 @@ public interface DbElementTrigger {
 
 	void doQuery(JdbcDataProviderOperation operation);
 	
-	void doResolve(JdbcRecordOperation operation);
+	void doSave(JdbcRecordOperation operation);
 }

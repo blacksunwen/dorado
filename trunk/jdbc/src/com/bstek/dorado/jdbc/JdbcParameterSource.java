@@ -10,7 +10,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 
 /**
  * 执行数据库操作时候的参数对象。<br>
- * <b>注意：</b>通过{@link #addValue(Object)}或{@link #setValue(String, Object)} 添加或设置的参数不会反映在“原始对象”中
+ * <b>注意：</b>通过{@link #addValue(Object)}或{@link #setValue(String, Object)} 添加或设置的参数并不操作“原始对象”
  * 
  * @see org.springframework.jdbc.core.namedparam.SqlParameterSource
  * @author mark
@@ -175,13 +175,17 @@ public class JdbcParameterSource implements SqlParameterSource {
 	 * @see org.springframework.jdbc.core.namedparam.SqlParameterSource#hasValue(java.lang.String)
 	 */
 	public boolean hasValue(String paramName) {
-		int subIndex = paramName.lastIndexOf('.');
-		if (subIndex > 0 && subIndex < paramName.length() - 1) {
-			String subParamName = paramName.substring(subIndex + 1);
-			String subSourceName = paramName.substring(0, subIndex);
-			return getSubSource(subSourceName).hasValue(subParamName);
+		if (handSource.hasValue(paramName)) {
+			return true;
 		} else {
-			return source.hasValue(paramName);
+			int subIndex = paramName.lastIndexOf('.');
+			if (subIndex > 0 && subIndex < paramName.length() - 1) {
+				String subParamName = paramName.substring(subIndex + 1);
+				String subSourceName = paramName.substring(0, subIndex);
+				return getSubSource(subSourceName).hasValue(subParamName);
+			} else {
+				return source.hasValue(paramName);
+			}
 		}
 	}
 

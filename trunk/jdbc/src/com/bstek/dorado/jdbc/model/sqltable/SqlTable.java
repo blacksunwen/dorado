@@ -1,11 +1,10 @@
 package com.bstek.dorado.jdbc.model.sqltable;
 
-import com.bstek.dorado.jdbc.model.AbstractDbElement;
+import com.bstek.dorado.jdbc.model.AbstractTable;
 import com.bstek.dorado.jdbc.model.Column;
-import com.bstek.dorado.jdbc.model.DbElement;
 import com.bstek.dorado.jdbc.model.table.Table;
 
-public class SqlTable extends AbstractDbElement {
+public class SqlTable extends AbstractTable {
 
 	private String querySql;
 	
@@ -36,8 +35,8 @@ public class SqlTable extends AbstractDbElement {
 	}
 
 	@Override
-	public Type getType() {
-		return DbElement.Type.SqlTable;
+	public String getType() {
+		return "SqlTable";
 	}
 	
 }

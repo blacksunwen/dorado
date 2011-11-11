@@ -72,7 +72,7 @@ public class MssqlDialect extends AbstractDialect {
 	}
 
 	@Override
-	protected String nullsModelToken(NullsModel nullsModel) {
+	protected String token(NullsModel nullsModel) {
 		return null;
 	}
 

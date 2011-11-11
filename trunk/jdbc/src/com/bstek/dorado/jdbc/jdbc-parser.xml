@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:d="http://www.bstek.com/dorado/schema"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dorado-7.0.xsd">
+
+	<bean id="dorado.jdbc.config.xml.dbElementParser" abstract="true" parent="dorado.objectParser" class="com.bstek.dorado.jdbc.config.xml.DbElementParser">
+		<d:property-parser key="trigger" value-ref="dorado.jdbc.config.xml.triggerParser"/>
+		<d:property-parser key="jdbcEnviroment" value-ref="dorado.jdbc.config.xml.jdbcEnviromentParser"/>
+	</bean>
+	<bean id="dorado.jdbc.config.xml.jdbcEnviromentParser" class="com.bstek.dorado.jdbc.config.xml.JdbcEnviromentParser" parent="dorado.propertyParser"/>
+	<bean id="dorado.jdbc.config.xml.jdbcTypeParser" class="com.bstek.dorado.jdbc.config.xml.JdbcTypeParser" parent="dorado.propertyParser"/>
+	<bean id="dorado.jdbc.config.xml.keyGeneratorParser" class="com.bstek.dorado.jdbc.model.table.KeyGeneratorParser" parent="dorado.propertyParser"/>
+	<bean id="dorado.jdbc.config.xml.tableReferenceParser" class="com.bstek.dorado.jdbc.model.table.TableRefrenceParser"
+		parent="dorado.propertyParser" />	
+	<bean id="dorado.jdbc.config.xml.triggerParser" class="com.bstek.dorado.jdbc.config.xml.TriggerParser" parent="dorado.propertyParser"/>
+	<bean id="dorado.jdbc.config.xml.columnParser" class="com.bstek.dorado.jdbc.config.xml.ColumnParser" parent="dorado.objectParser">
+		<d:property-parser key="*" value-ref="dorado.staticPropertyParser"/>
+		<d:property-parser key="jdbcType" value-ref="dorado.jdbc.config.xml.jdbcTypeParser" />
+	</bean>
+	<bean id="dorado.jdbc.config.xml.keyColumnParser" parent="dorado.jdbc.config.xml.columnParser">
+		<property name="impl" value="com.bstek.dorado.jdbc.model.table.TableKeyColumn"/>
+		<property name="definitionType" value="com.bstek.dorado.jdbc.model.table.TableKeyColumnDefinition"/>
+		<d:property-parser key="keyGenerator" value-ref="dorado.jdbc.config.xml.keyGeneratorParser" />
+	</bean>
+	
+	<!-- Table -->
+	<bean id="dorado.jdbc.config.xml.tableParser" class="com.bstek.dorado.jdbc.model.table.TableParser" 
+		parent="dorado.jdbc.config.xml.dbElementParser">
+		<property name="tagName" value="Table"/>
+		<property name="definitionType" value="com.bstek.dorado.jdbc.model.table.TableDefinition"/>
+		<property name="defaultImpl" value="com.bstek.dorado.jdbc.model.table.Table"/>
+		<d:property-parser key="autoCreateColumns" value-ref="dorado.staticPropertyParser"/>
+		<d:sub-parser key="Columns/KeyColumn" value-ref="dorado.jdbc.config.xml.keyColumnParser"/>
+		<d:sub-parser key="Columns/Column">
+			<bean parent="dorado.jdbc.config.xml.columnParser">
+				<property name="impl" value="com.bstek.dorado.jdbc.model.table.TableColumn"/>
+				<property name="definitionType" value="com.bstek.dorado.jdbc.model.table.TableColumnDefinition"/>
+			</bean>
+		</d:sub-parser>
+	</bean>
+	
+	<!-- SqlTable -->
+	<bean id="dorado.jdbc.config.xml.sqlTableParser" parent="dorado.jdbc.config.xml.dbElementParser">
+		<property name="tagName" value="SqlTable"/>
+		<property name="definitionType" value="com.bstek.dorado.jdbc.model.sqltable.SqlTableDefinition"/>
+		<property name="defaultImpl" value="com.bstek.dorado.jdbc.model.sqltable.SqlTable"/>
+		<d:property-parser key="table" value-ref="dorado.jdbc.config.xml.tableReferenceParser"/>
+		<d:sub-parser key="Columns/Column">
+			<bean parent="dorado.jdbc.config.xml.columnParser">
+				<property name="impl" value="com.bstek.dorado.jdbc.model.sqltable.SqlTableColumn"/>
+				<property name="definitionType" value="com.bstek.dorado.jdbc.model.ColumnDefinition"/>
+			</bean>
+		</d:sub-parser>
+	</bean>
+	
+	<!-- AutoTable -->
+	<bean id="dorado.jdbc.config.xml.autoTableParser" parent="dorado.jdbc.config.xml.dbElementParser">
+		<property name="tagName" value="AutoTable"/>
+		<property name="definitionType" value="com.bstek.dorado.jdbc.model.autotable.AutoTableDefinition"/>
+		<property name="defaultImpl" value="com.bstek.dorado.jdbc.model.autotable.AutoTable"/>
+		<d:sub-parser key="Columns/Column" value-ref="dorado.jdbc.config.xml.autoColumnParser"/>
+		<d:sub-parser key="FromTables/FromTable" value-ref="dorado.jdbc.config.xml.fromTableParser"/>
+		<d:sub-parser key="JoinTables/JoinTable" value-ref="dorado.jdbc.config.xml.joinTableParser"/>
+		<d:sub-parser key="Orders/Order" value-ref="dorado.jdbc.config.xml.orderParser"/>
+		<d:sub-parser key="Where" value-ref="dorado.jdbc.config.xml.whereParser"/>
+	</bean>
+	<bean id="dorado.jdbc.config.xml.autoColumnParser" parent="dorado.jdbc.config.xml.columnParser">
+		<property name="impl" value="com.bstek.dorado.jdbc.model.autotable.AutoTableColumn"/>
+		<property name="definitionType" value="com.bstek.dorado.jdbc.model.ColumnDefinition"/>
+	</bean>
+	<bean id="dorado.jdbc.config.xml.fromTableParser" parent="dorado.objectParser">
+		<property name="definitionType" value="com.bstek.dorado.jdbc.model.autotable.FromTableDefinition"/>
+		<property name="defaultImpl" value="com.bstek.dorado.jdbc.model.autotable.FromTable"/>
+		<d:property-parser key="table" value-ref="dorado.jdbc.config.xml.tableReferenceParser"/>
+	</bean>
+	<bean id="dorado.jdbc.config.xml.joinTableParser" parent="dorado.objectParser">
+		<property name="definitionType" value="com.bstek.dorado.jdbc.model.autotable.JoinTableDefinition"/>
+		<property name="defaultImpl" value="com.bstek.dorado.jdbc.model.autotable.JoinTable"/>
+		<d:property-parser key="leftColumnNames" value-ref="dorado.stringArrayPropertyParser"/>
+		<d:property-parser key="rightColumnNames" value-ref="dorado.stringArrayPropertyParser"/>
+	</bean>
+	<bean id="dorado.jdbc.config.xml.orderParser" parent="dorado.objectParser">
+		<property name="definitionType" value="com.bstek.dorado.jdbc.model.autotable.OrderDefinition"/>
+		<property name="defaultImpl" value="com.bstek.dorado.jdbc.model.autotable.Order"/>
+	</bean>
+	<bean id="dorado.jdbc.config.xml.whereParser" parent="dorado.jdbc.config.xml.junctionMatchRuleParser">
+		<property name="defaultImpl" value="com.bstek.dorado.jdbc.model.autotable.Where"/>
+		<property name="definitionType" value="com.bstek.dorado.jdbc.model.autotable.WhereDefinition"/>
+	</bean>
+	<bean id="dorado.jdbc.config.xml.junctionMatchRuleParser" parent="dorado.jdbc.config.xml.abstractMatchRuleParser">
+		<property name="defaultImpl" value="com.bstek.dorado.jdbc.model.autotable.JunctionMatchRule"/>
+		<d:sub-parser key="BaseMatchRule" value-ref="dorado.jdbc.config.xml.baseMatchRuleParser"/>
+		<d:sub-parser key="JunctionMatchRule" value-ref="dorado.jdbc.config.xml.junctionMatchRuleParser"/>
+	</bean>
+	<bean id="dorado.jdbc.config.xml.baseMatchRuleParser" parent="dorado.jdbc.config.xml.abstractMatchRuleParser">
+		<property name="defaultImpl" value="com.bstek.dorado.jdbc.model.autotable.BaseMatchRule"/>
+	</bean>
+	<bean id="dorado.jdbc.config.xml.abstractMatchRuleParser" parent="dorado.objectParser" abstract="true">
+		<property name="definitionType" value="com.bstek.dorado.jdbc.model.autotable.MatchRuleDefinition"/>
+	</bean>
+	
+</beans>

@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import com.bstek.dorado.data.entity.EntityState;
@@ -15,6 +15,7 @@ import com.bstek.dorado.data.resolver.DataItems;
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.model.DbElement;
 import com.bstek.dorado.jdbc.model.DbElementTrigger;
+import com.bstek.dorado.jdbc.model.DbTable;
 import com.bstek.dorado.util.Assert;
 
 /**
@@ -55,36 +56,28 @@ public class JdbcDataResolver extends AbstractDataResolver {
 		return transactionTemplate;
 	}
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	protected Object internalResolve(final DataItems dataItems, final Object parameter)
 			throws Exception {
-		if (items != null && !items.isEmpty()) {
-			final JdbcEnviroment jdbcEnv = this.getJdbcEnviroment();
-			TransactionTemplate transactionTemplate = this.getTransactionTemplate();
-			if (transactionTemplate == null && jdbcEnv != null) {
-				transactionTemplate = jdbcEnv.getTransactionTemplate();
-			}
-			if (transactionTemplate != null) {
-				transactionTemplate.execute(new TransactionCallbackWithoutResult() {
-
-					@Override
-					protected void doInTransactionWithoutResult(
-							TransactionStatus status) {
-						JdbcDataResolver.this.doResolve(dataItems, parameter, jdbcEnv);
-					}
-					
-				});
-			} else {
-				this.doResolve(dataItems, parameter, jdbcEnv);
-			}
-			
+		final JdbcEnviroment jdbcEnv = this.getJdbcEnviroment();
+		TransactionTemplate transactionTemplate = this.getTransactionTemplate();
+		if (transactionTemplate == null && jdbcEnv != null) {
+			transactionTemplate = jdbcEnv.getTransactionTemplate();
 		}
-		
-		return null;
+		if (transactionTemplate != null) {
+			return transactionTemplate.execute(new TransactionCallback() {
+				public Object doInTransaction(TransactionStatus status) {
+					return JdbcDataResolver.this.doResolve(dataItems, parameter, jdbcEnv);
+				}
+			});
+		} else {
+			return this.doResolve(dataItems, parameter, jdbcEnv);
+		}
 	}
 
 	@SuppressWarnings("unchecked")
-	protected void doResolve(DataItems dataItems, Object parameter, JdbcEnviroment jdbcEnv) {
+	protected Object doResolve(DataItems dataItems, Object parameter, JdbcEnviroment jdbcEnv) {
 		JdbcDataResolverContext jdbcContext = new JdbcDataResolverContext(jdbcEnv, parameter);
 		for (JdbcDataResolverItem item: items) {
 			String name = item.getName();
@@ -108,6 +101,8 @@ public class JdbcDataResolver extends AbstractDataResolver {
 				} 
 			}
 		}
+		
+		return null;
 	}
 	
 	protected void doResolve(JdbcDataResolverItem item, Record record, JdbcDataResolverContext jdbcContext) {
@@ -143,18 +138,21 @@ public class JdbcDataResolver extends AbstractDataResolver {
 		}
 		
 		DbElement dbElement = operation.getDbElement();
-		DbElementTrigger trigger = dbElement.getTrigger();
+		Assert.isTrue(dbElement instanceof DbTable, "["+dbElement.getName()+"] is not table.");
+
+		DbTable table = (DbTable)dbElement;
+		DbElementTrigger trigger = table.getTrigger();
 		if (trigger == null) {
 			operation.execute();
 		} else {
-			trigger.doResolve(operation);
+			trigger.doSave(operation);
 		}
 		
 		if (isContinue(operation)) {
 			List<JdbcDataResolverItem> items = item.getItems();
 			if (!items.isEmpty()) {
 				for (JdbcDataResolverItem i: items) {
-					JdbcRecordOperation[] childOperations = operation.create(i);
+					JdbcRecordOperation[] childOperations = operation.children(i);
 					for (JdbcRecordOperation childOperation: childOperations) {
 						this.doResolve(i, childOperation);
 					}

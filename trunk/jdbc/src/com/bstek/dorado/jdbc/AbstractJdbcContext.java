@@ -1,6 +1,5 @@
 package com.bstek.dorado.jdbc;
 
-
 /**
  * JDBC操作的上下文。当{@link JdbcDataProvider}或{@link JdbcDataResolver}执行时产生这个对象
  * 
@@ -14,7 +13,7 @@ public abstract class AbstractJdbcContext {
 
 	public AbstractJdbcContext(JdbcEnviroment enviroment, Object parameter) {
 		this.enviroment = enviroment;
-		this.setParameter(parameter);
+		this.parameter= parameter;
 	}
 	
 	public JdbcEnviroment getJdbcEnviroment() {

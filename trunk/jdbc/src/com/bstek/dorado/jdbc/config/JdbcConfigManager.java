@@ -53,7 +53,7 @@ public interface JdbcConfigManager {
 	 * @param type
 	 * @return
 	 */
-	ObjectParser getParser(DbElement.Type type);
+	ObjectParser getParser(String type);
 
 	/**
 	 * 获取{@link com.bstek.dorado.jdbc.sql.SqlGenerator}
@@ -61,6 +61,6 @@ public interface JdbcConfigManager {
 	 * @param type
 	 * @return
 	 */
-	SqlGenerator getSqlGenerator(DbElement.Type type);
+	SqlGenerator getSqlGenerator(String type);
 
 }

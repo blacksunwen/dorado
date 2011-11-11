@@ -44,7 +44,7 @@ public class DefaultModelGenerator extends AbstractModelGenerator {
 			Dialect dialect = jdbcEnv.getDialect();
 			List<JdbcType> jdbcTypes = dialect.getJdbcTypes();
 			for (JdbcType jdbcType: jdbcTypes) {
-				if (code == jdbcType.getJdbcCode()) {
+				if (code == jdbcType.getSqlType()) {
 					return jdbcType.getName();
 				}
 			}

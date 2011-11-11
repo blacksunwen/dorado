@@ -5,6 +5,7 @@ import com.bstek.dorado.data.provider.Page;
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.jdbc.model.DbElement;
 import com.bstek.dorado.jdbc.model.DbElementTrigger;
+import com.bstek.dorado.jdbc.model.DbTable;
 import com.bstek.dorado.util.Assert;
 
 /**
@@ -39,14 +40,18 @@ public class JdbcDataProvider extends AbstractDataProvider {
 	protected void internalGetResult(Object parameter, Page<?> page,
 			DataType resultDataType) throws Exception {
 		String elementName = this.getDbElement();
-		Assert.notEmpty(elementName);
+		Assert.notEmpty(elementName, "dbElement must not be null.");
 
 		DbElement dbElement = JdbcUtils.getDbElement(elementName);
 		JdbcDataProviderContext rCtx = new JdbcDataProviderContext(dbElement.getJdbcEnviroment(),parameter, page);
 
 		JdbcDataProviderOperation operation = new JdbcDataProviderOperation(dbElement,
 				rCtx);
-		DbElementTrigger trigger = dbElement.getTrigger();
+		
+		Assert.isTrue(dbElement instanceof DbTable, "["+dbElement.getName()+"] is not table.");
+
+		DbTable table = (DbTable)dbElement;
+		DbElementTrigger trigger = table.getTrigger();
 		if (trigger != null) {
 			trigger.doQuery(operation);
 		} else {

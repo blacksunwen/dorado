@@ -34,7 +34,7 @@ public class JdbcDefinitionManager extends DefaultDefinitionManager<DbElementDef
 			XmlElementWrapper wrapper = dbElementNodeMap.remove(name);
 			if (wrapper != null) {
 				Element node = wrapper.getElement();
-				String envName = node.getAttribute(JdbcXmlConstants.ATTRIBUTE_ENVIROMENT);
+				String envName = node.getAttribute(JdbcXmlConstants.JDBC_ENVIROMENT);
 				JdbcEnviroment env = JdbcUtils.getEnviromentManager().getEnviroment(envName);
 				try {
 					JdbcParseContext parseContext = new JdbcParseContext(env);

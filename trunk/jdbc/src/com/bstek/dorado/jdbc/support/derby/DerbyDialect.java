@@ -47,7 +47,7 @@ public class DerbyDialect extends AbstractDialect {
 	 * @see <a href='http://db.apache.org/derby/docs/10.8/ref/rrefsqlj29840.html'>http://db.apache.org/derby/docs/10.8/ref/rrefsqlj29840.html</a>
 	 */
 	@Override
-	protected String token(JoinModel joinModel) {
+	public String token(JoinModel joinModel) {
 		switch (joinModel) {
 		case INNER_JOIN:
 			return "INNER JOIN";

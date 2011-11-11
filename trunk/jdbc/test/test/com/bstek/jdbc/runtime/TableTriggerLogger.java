@@ -24,7 +24,7 @@ public class TableTriggerLogger extends AbstractDbElementTrigger {
 	}
 
 	@Override
-	public void doResolve(JdbcRecordOperation operation) {
+	public void doSave(JdbcRecordOperation operation) {
 		System.out.println("-");
 		System.out.println("Begin::" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
 		try {
