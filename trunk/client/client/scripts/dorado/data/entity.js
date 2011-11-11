@@ -658,6 +658,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			loadMode = loadMode || "always";
 			_getTextAsync(this, property, callback || dorado._NULL_FUNCTION, loadMode);
 		},
+		
 		storeOldData : function() {
 			if (this._oldData) return;
 			var data = this._data, oldData = this._oldData = {};
@@ -665,6 +666,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				if (data.hasOwnProperty(p)) oldData[p] = data[p];
 			}
 		},
+		
 		_set : function(property, value, propertyDef) {
 			var oldValue = this._data[property];
 			var eventArg = {
@@ -684,16 +686,14 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			// 保存原始值
 			if (this.state == dorado.Entity.STATE_NONE) this.storeOldData();
 
-			if (oldValue && oldValue.isDataPipeWrapper)
-				oldValue = oldValue.value;
+			if (oldValue && oldValue.isDataPipeWrapper) oldValue = oldValue.value;
 			if ( oldValue instanceof dorado.Entity || oldValue instanceof dorado.EntityList) {
 				oldValue.parent = null;
 				oldValue._setObserver(null);
 			}
 
 			var propertyInfoMap = this._propertyInfoMap, propertyInfo = propertyInfoMap[property];
-			if (!propertyInfo)
-				propertyInfoMap[property] = propertyInfo = {};
+			if (!propertyInfo) propertyInfoMap[property] = propertyInfo = {};
 
 			if ( value instanceof dorado.Entity || value instanceof dorado.EntityList) {
 				if (value.parent != null) {
@@ -738,11 +738,16 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 							var entity = this, currentValue = value, validateArg = {
 								property: property,
 								entity: entity
-							};
+							}, oldData = this._oldData;
+							
 							propertyInfo.validating = propertyInfo.validating || 0;
 							for(var i = 0; i < propertyDef._validators.length; i++) {
 								var validator = propertyDef._validators[i];
-								if ( validator instanceof dorado.validator.RemoteValidator && validator._async) {
+								if (!validator._revalidateOldValue && oldData && value == oldData[property]) {
+									continue;
+								}
+								
+								if (validator instanceof dorado.validator.RemoteValidator && validator._async) {
 									propertyInfo.validating++;
 									validator.validate(value, validateArg, {
 										callback : function(success, result) {
@@ -1055,12 +1060,9 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			var result = {};
 			var includeUnsubmittableProperties = includeReferenceProperties = includeLookupProperties = true, generateDataType = generateState = generateEntityId = generateOldData = false, properties = null, entityFilter = null;
 			if (options != null) {
-				if (options.includeUnsubmittableProperties === false)
-					includeUnsubmittableProperties = false;
-				if (options.includeReferenceProperties === false)
-					includeReferenceProperties = false;
-				if (options.includeLookupProperties === false)
-					includeLookupProperties = false;
+				if (options.includeUnsubmittableProperties === false) includeUnsubmittableProperties = false;
+				if (options.includeReferenceProperties === false) includeReferenceProperties = false;
+				if (options.includeLookupProperties === false) includeLookupProperties = false;
 				generateDataType = options.generateDataType;
 				generateState = options.generateState;
 				generateEntityId = options.generateEntityId;
@@ -1068,29 +1070,22 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				options.generateDataType = false;
 				properties = options.properties;
 				entityFilter = options.entityFilter;
-				if (properties != null && properties.length == 0)
-					properties = null;
+				if (properties != null && properties.length == 0) properties = null;
 			}
 
 			var data = this._data, oldData = this._oldData, oldDataHolder;
 			for(var property in data) {
-				if (!data.hasOwnProperty(property))
-					continue;
-				if (property.charAt(0) == '$')
-					continue;
-				if (properties && properties.indexOf(property) < 0)
-					continue;
+				if (!data.hasOwnProperty(property)) continue;
+				if (property.charAt(0) == '$') continue;
+				if (properties && properties.indexOf(property) < 0) continue;
 
 				var propertyDef = (this._propertyDefs) ? this._propertyDefs.get(property) : null;
 
-				if (!includeUnsubmittableProperties && propertyDef && !propertyDef._submittable)
-					continue;
+				if (!includeUnsubmittableProperties && propertyDef && !propertyDef._submittable) continue;
 				if ( propertyDef instanceof dorado.Reference) {
-					if (!includeReferenceProperties)
-						continue;
+					if (!includeReferenceProperties) continue;
 				} else if ( propertyDef instanceof dorado.Lookup) {
-					if (!includeLookupProperties)
-						continue;
+					if (!includeLookupProperties) continue;
 				}
 
 				var value = this._get(property, propertyDef);
@@ -1123,6 +1118,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			if (context && context.entities) context.entities.push(this);
 			return result;
 		},
+		
 		/**
 		 * 返回数据实体内部用于保存属性值的JSON对象。
 		 * @return {Object} JSON对象。
@@ -1130,6 +1126,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		getData : function() {
 			return this._data;
 		},
+		
 		/**
 		 * 返回数据实体内部用于保存原有属性值的JSON对象。
 		 * @return {Object} JSON对象。<br>
@@ -1138,6 +1135,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		getOldData : function() {
 			return this._oldData;
 		},
+		
 		/**
 		 * 返回当前数据实体关联的额外信息的数组。
 		 * @param {String} [property] 属性名。
@@ -1160,6 +1158,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			}
 			return results;
 		},
+		
 		doSetMessages : function(property, messages) {
 
 			function getMessageState(entity) {

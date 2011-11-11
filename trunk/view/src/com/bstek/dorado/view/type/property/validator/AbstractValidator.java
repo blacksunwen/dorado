@@ -19,6 +19,7 @@ public abstract class AbstractValidator extends ClientEventSupportedObject
 		implements Validator {
 	private RunAt runAt = RunAt.client;
 	private MessageState defaultResultState = MessageState.error;
+	private boolean revalidateOldValue = true;
 
 	@ViewAttribute(defaultValue = "client")
 	public RunAt getRunAt() {
@@ -36,6 +37,15 @@ public abstract class AbstractValidator extends ClientEventSupportedObject
 
 	public void setDefaultResultState(MessageState defaultResultState) {
 		this.defaultResultState = defaultResultState;
+	}
+
+	@ViewAttribute(defaultValue = "true")
+	public boolean isRevalidateOldValue() {
+		return revalidateOldValue;
+	}
+
+	public void setRevalidateOldValue(boolean revalidateOldValue) {
+		this.revalidateOldValue = revalidateOldValue;
 	}
 
 	private ValidationMessage trimSingleMessage(Object message) {
@@ -66,4 +76,5 @@ public abstract class AbstractValidator extends ClientEventSupportedObject
 	}
 
 	protected abstract Object doValidate(Object value) throws Exception;
+
 }
