@@ -4,7 +4,6 @@ import junit.framework.Assert;
 import test.com.bstek.jdbc.JdbcTestUtils;
 
 import com.bstek.dorado.data.config.ConfigManagerTestSupport;
-import com.bstek.dorado.jdbc.model.DbElement.Type;
 import com.bstek.dorado.jdbc.model.table.Table;
 import com.bstek.dorado.jdbc.model.table.TableColumn;
 
@@ -23,7 +22,7 @@ public class TableTest extends ConfigManagerTestSupport{
 		Assert.assertEquals(null, t.getCatalog());
 		Assert.assertEquals(null, t.getSchema());
 		Assert.assertEquals("PEOPLE", t.getTableName());
-		Assert.assertEquals(Type.Table, t.getType());
+		Assert.assertEquals("Table", t.getType());
 		Assert.assertEquals("xxxxxx", t.getDynamicClause());
 		
 		Assert.assertEquals(3, t.getAllColumns().size());

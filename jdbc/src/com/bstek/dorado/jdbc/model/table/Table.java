@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.bstek.dorado.jdbc.model.AbstractDbElement;
+import com.bstek.dorado.jdbc.model.AbstractTable;
 import com.bstek.dorado.jdbc.model.Column;
 
-public class Table extends AbstractDbElement {
+public class Table extends AbstractTable {
 
 	private String tableName;
 	private String catalog;
@@ -32,8 +32,8 @@ public class Table extends AbstractDbElement {
 	}
 	
 	@Override
-	public Type getType() {
-		return Type.Table;
+	public String getType() {
+		return "Table";
 	}
 
 	public String getTableName() {

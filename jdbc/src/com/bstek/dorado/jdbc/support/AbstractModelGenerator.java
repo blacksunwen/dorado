@@ -29,7 +29,6 @@ import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.ModelGenerator;
 import com.bstek.dorado.jdbc.key.KeyGenerator;
 import com.bstek.dorado.jdbc.model.ColumnDefinition;
-import com.bstek.dorado.jdbc.model.DbElement;
 import com.bstek.dorado.jdbc.model.table.TableColumnDefinition;
 import com.bstek.dorado.jdbc.model.table.TableKeyColumnDefinition;
 import com.bstek.dorado.jdbc.type.JdbcType;
@@ -360,7 +359,7 @@ public abstract class AbstractModelGenerator implements ModelGenerator {
 		List<Map<String,String>> columnMetaList = this.listColumns(jdbcEnv, catalog, schema, table);
 		
 		String name = name(tableMeta, option.getJdbcEnviroment());
-		Element tableElement = document.addElement(DbElement.Type.Table.name());
+		Element tableElement = document.addElement("Table");
 		tableElement.addAttribute("name", name);
 		tableElement.addAttribute("tableName", table);
 
@@ -411,7 +410,7 @@ public abstract class AbstractModelGenerator implements ModelGenerator {
 	
 	public Document createSqlTableDocument(final JdbcEnviroment jdbcEnv, String sql) {
 		Document document = DocumentHelper.createDocument();
-		final Element rootElement = document.addElement(DbElement.Type.SqlTable.name());
+		final Element rootElement = document.addElement("SqlTable");
 		
 		JdbcTemplate jdbcTemplate = jdbcEnv.getNamedDao().getJdbcTemplate();
 		jdbcTemplate.query(sql, new ResultSetExtractor<Object>(){

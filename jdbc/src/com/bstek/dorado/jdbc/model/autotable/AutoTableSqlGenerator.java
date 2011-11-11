@@ -15,11 +15,11 @@ import com.bstek.dorado.jdbc.JdbcParameterSource;
 import com.bstek.dorado.jdbc.JdbcRecordOperation;
 import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.model.Column;
-import com.bstek.dorado.jdbc.model.DbElement.Type;
 import com.bstek.dorado.jdbc.model.table.Table;
 import com.bstek.dorado.jdbc.sql.DeleteSql;
 import com.bstek.dorado.jdbc.sql.InsertSql;
 import com.bstek.dorado.jdbc.sql.SelectSql;
+import com.bstek.dorado.jdbc.sql.SqlBuilder;
 import com.bstek.dorado.jdbc.sql.SqlConstants;
 import com.bstek.dorado.jdbc.sql.SqlConstants.JoinModel;
 import com.bstek.dorado.jdbc.sql.SqlConstants.JunctionModel;
@@ -32,8 +32,8 @@ import com.bstek.dorado.util.Assert;
 public class AutoTableSqlGenerator implements SqlGenerator{
 
 	@Override
-	public Type getType() {
-		return Type.AutoTable;
+	public String getType() {
+		return "AutoTable";
 	}
 	
 	@Override
@@ -120,7 +120,7 @@ public class AutoTableSqlGenerator implements SqlGenerator{
 				Dialect dialect = jdbcContext.getJdbcEnviroment().getDialect();
 				FromTable leftFromTable = t.getFromTable(joinTable.getLeftFromTableAlias());
 				FromTable rightFromTable = t.getFromTable(joinTable.getRightFromTableAlias());
-				String token = dialect.joinToken(joinModel, leftFromTable, leftColumnNames, rightFromTable, rightColumnNames);
+				String token = this.joinToken(dialect, joinModel, leftFromTable, leftColumnNames, rightFromTable, rightColumnNames);
 				
 				if (i > 0) {
 					fromToken.append(',');
@@ -132,6 +132,40 @@ public class AutoTableSqlGenerator implements SqlGenerator{
 		return fromToken;
 	}
 
+	protected String joinToken(Dialect dialect, JoinModel joinModel, FromTable leftFromTable,
+			String[] leftColumnNames, FromTable rightFromTable,
+			String[] rightColumnNames) {
+		SqlBuilder token = new SqlBuilder();
+		String leftTableAlias = leftFromTable.getTableAlias();
+		String rightTableAlias = rightFromTable.getTableAlias();
+		
+		Table leftTable = leftFromTable.getTable();
+		Table rightTable = rightFromTable.getTable();
+		
+		String tl = SqlUtils.token(leftFromTable);
+		String tr = SqlUtils.token(rightFromTable);
+		String jm = dialect.token(joinModel);
+		
+		token.append(tl).bothSpace(jm).append(tr);
+		token.bothSpace(KeyWord.ON);
+		for (int i=0; i<leftColumnNames.length; i++) {
+			if (i>0) {
+				token.bothSpace(KeyWord.AND);
+			}
+			
+			String leftColumnName = leftColumnNames[i];
+			String rightColumnName = rightColumnNames[i];
+			Column leftColumn = leftTable.getColumn(leftColumnName);
+			Column rightColumn = rightTable.getColumn(rightColumnName);
+			
+			token.append(leftTableAlias, ".", leftColumn.getColumnName());
+			token.bothSpace("=");
+			token.append(rightTableAlias, ".", rightColumn.getColumnName());
+		}
+		
+		return token.build();
+	}
+	
 	protected StringBuilder whereToken(AutoTable t, JdbcParameterSource p) {
 		StringBuilder whereToken = new StringBuilder();
 		
@@ -183,7 +217,6 @@ public class AutoTableSqlGenerator implements SqlGenerator{
 				}
 				
 				SqlConstants.Operator sqlOperator = SqlConstants.Operator.value(operator.trim());
-				
 				String opToken = bmr.isNot() ? sqlOperator.notSQL(): sqlOperator.toSQL();
 				
 				Object parameterValue = sqlOperator.parameterValue(value);
@@ -254,7 +287,7 @@ public class AutoTableSqlGenerator implements SqlGenerator{
 			for (int i=0; i<orders.size(); i++) {
 				Order order = orders.get(i);
 				if (order.isAvailable()) {
-					String token = dialect.orderToken(order);
+					String token = dialect.token(order);
 					if (StringUtils.isNotEmpty(token)) {
 						tokens.add(token);
 					}

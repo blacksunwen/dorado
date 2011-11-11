@@ -6,9 +6,11 @@ public interface JdbcType {
 
 	String getName();
 	
-	String getJdbcName();
+	String getTypeName();
 	
-	int getJdbcCode();
+	int getSqlType();
+	
+	Integer getScale();
 	
 	DataType getDataType();
 	

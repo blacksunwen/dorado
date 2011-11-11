@@ -26,6 +26,7 @@ import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.key.KeyGenerator;
 import com.bstek.dorado.jdbc.model.Column;
 import com.bstek.dorado.jdbc.model.DbElement;
+import com.bstek.dorado.jdbc.model.DbTable;
 import com.bstek.dorado.jdbc.model.autotable.AutoTableColumn;
 import com.bstek.dorado.jdbc.model.autotable.FromTable;
 import com.bstek.dorado.jdbc.model.autotable.Order;
@@ -37,9 +38,7 @@ import com.bstek.dorado.jdbc.sql.RecordRowMapper;
 import com.bstek.dorado.jdbc.sql.RetrieveSql;
 import com.bstek.dorado.jdbc.sql.SelectSql;
 import com.bstek.dorado.jdbc.sql.ShiftRowMapperResultSetExtractor;
-import com.bstek.dorado.jdbc.sql.SqlBuilder;
 import com.bstek.dorado.jdbc.sql.SqlConstants.JoinModel;
-import com.bstek.dorado.jdbc.sql.SqlConstants.KeyWord;
 import com.bstek.dorado.jdbc.sql.SqlConstants.NullsModel;
 import com.bstek.dorado.jdbc.sql.SqlConstants.OrderModel;
 import com.bstek.dorado.jdbc.sql.SqlGenerator;
@@ -124,7 +123,10 @@ public abstract class AbstractDialect implements Dialect {
 		SqlGenerator generator = JdbcUtils.getSqlGenerator(dbElement);
 		SelectSql selectSql = generator.selectSql(operation);
 		JdbcParameterSource jps = selectSql.getParameterSource();
-		RecordRowMapper rowMapper = new RecordRowMapper(dbElement.getAllColumns());
+		Assert.isTrue(dbElement instanceof DbTable, "[" + dbElement.getName() + "] is not table.");
+		
+		DbTable table = (DbTable)dbElement;
+		RecordRowMapper rowMapper = new RecordRowMapper(table.getAllColumns());
 
 		NamedParameterJdbcTemplate jdbcTemplate = env.getNamedDao().getNamedParameterJdbcTemplate();
 
@@ -149,7 +151,11 @@ public abstract class AbstractDialect implements Dialect {
 		DbElement dbElement = operation.getDbElement();
 		SqlGenerator generator = JdbcUtils.getSqlGenerator(dbElement);
 		SelectSql selectSql = generator.selectSql(operation);
-		RecordRowMapper rowMapper = new RecordRowMapper(dbElement.getAllColumns());
+
+		Assert.isTrue(dbElement instanceof DbTable, "[" + dbElement.getName() + "] is not table.");
+		
+		DbTable table = (DbTable)dbElement;
+		RecordRowMapper rowMapper = new RecordRowMapper(table.getAllColumns());
 
 		NamedParameterJdbcTemplate jdbcTemplate = env.getNamedDao().getNamedParameterJdbcTemplate();
 
@@ -321,7 +327,7 @@ public abstract class AbstractDialect implements Dialect {
 					Object columnValue = record.get(propertyName);
 					JdbcType jdbcType = column.getJdbcType();
 					if (jdbcType != null) {
-						parameterSource.setValue(columnName, columnValue, jdbcType.getJdbcCode());
+						parameterSource.setValue(columnName, columnValue, jdbcType.getSqlType());
 					} else {
 						parameterSource.setValue(columnName, columnValue);
 					}
@@ -364,43 +370,7 @@ public abstract class AbstractDialect implements Dialect {
 		}
 	}
 	
-	@Override
-	public String joinToken(JoinModel joinModel, FromTable leftFromTable,
-			String[] leftColumnNames, FromTable rightFromTable,
-			String[] rightColumnNames) {
-		SqlBuilder token = new SqlBuilder();
-		String leftTableAlias = leftFromTable.getTableAlias();
-		String rightTableAlias = rightFromTable.getTableAlias();
-		
-		Table leftTable = leftFromTable.getTable();
-		Table rightTable = rightFromTable.getTable();
-		
-		String tl = SqlUtils.token(leftFromTable);
-		String tr = SqlUtils.token(rightFromTable);
-		String jm = token(joinModel);
-		
-		token.append(tl).bothSpace(jm).append(tr);
-		token.bothSpace(KeyWord.ON);
-		for (int i=0; i<leftColumnNames.length; i++) {
-			if (i>0) {
-				token.bothSpace(KeyWord.AND);
-			}
-			
-			String leftColumnName = leftColumnNames[i];
-			String rightColumnName = rightColumnNames[i];
-			Column leftColumn = leftTable.getColumn(leftColumnName);
-			Column rightColumn = rightTable.getColumn(rightColumnName);
-			
-			token.append(leftTableAlias, ".", leftColumn.getColumnName());
-			token.bothSpace("=");
-			token.append(rightTableAlias, ".", rightColumn.getColumnName());
-		}
-		
-		return token.build();
-	}
-	
-
-	protected String token(JoinModel joinModel) {
+	public String token(JoinModel joinModel) {
 		switch (joinModel) {
 		case INNER_JOIN:
 			return "INNER JOIN";
@@ -414,7 +384,7 @@ public abstract class AbstractDialect implements Dialect {
 	}
 	
 	@Override
-	public String orderToken(Order order) {
+	public String token(Order order) {
 		OrderModel model = order.getOrderModel();
 		NullsModel nullsModel = order.getNullsModel(); 
 		
@@ -439,7 +409,7 @@ public abstract class AbstractDialect implements Dialect {
 			token.append(model.toString());
 		}
 		if (nullsModel != null) {
-			String nullsModelToken = nullsModelToken(nullsModel);
+			String nullsModelToken = token(nullsModel);
 			if (StringUtils.isNotEmpty(nullsModelToken)) {
 				token.append(' ');
 				token.append(nullsModelToken);
@@ -449,7 +419,7 @@ public abstract class AbstractDialect implements Dialect {
 		return token.toString();
 	}
 	
-	protected String nullsModelToken(NullsModel nullsModel) {
+	protected String token(NullsModel nullsModel) {
 		switch(nullsModel) {
 		case NULLS_FIRST:
 			return "NULLS FIRST";

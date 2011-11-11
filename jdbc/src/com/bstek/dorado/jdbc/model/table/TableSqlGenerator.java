@@ -10,7 +10,6 @@ import com.bstek.dorado.jdbc.JdbcParameterSource;
 import com.bstek.dorado.jdbc.JdbcRecordOperation;
 import com.bstek.dorado.jdbc.key.KeyGenerator;
 import com.bstek.dorado.jdbc.model.Column;
-import com.bstek.dorado.jdbc.model.DbElement;
 import com.bstek.dorado.jdbc.sql.DeleteSql;
 import com.bstek.dorado.jdbc.sql.InsertSql;
 import com.bstek.dorado.jdbc.sql.SelectSql;
@@ -22,8 +21,8 @@ import com.bstek.dorado.util.Assert;
 
 public class TableSqlGenerator implements SqlGenerator {
 
-	public DbElement.Type getType() {
-		return DbElement.Type.Table;
+	public String getType() {
+		return "Table";
 	}
 	
 	@Override
@@ -90,7 +89,7 @@ public class TableSqlGenerator implements SqlGenerator {
 					JdbcType jdbcType = keyColumn.getJdbcType();
 					if (jdbcType != null) {
 						record.put(propertyName, jdbcType.fromDB(value));
-						parameterSource.setValue(propertyName, jdbcType.toDB(value), jdbcType.getJdbcCode());
+						parameterSource.setValue(propertyName, jdbcType.toDB(value), jdbcType.getSqlType());
 					} else {
 						record.put(propertyName, value);
 					}
@@ -145,7 +144,7 @@ public class TableSqlGenerator implements SqlGenerator {
 		JdbcType jdbcType = column.getJdbcType();
 		if (jdbcType != null) {
 			Object dbValue = jdbcType.toDB(value);
-			parameterSource.setValue(propertyName, dbValue, jdbcType.getJdbcCode());
+			parameterSource.setValue(propertyName, dbValue, jdbcType.getSqlType());
 		}
 		sql.addColumnToken(columnName, ":"+propertyName);
 	}
@@ -227,7 +226,7 @@ public class TableSqlGenerator implements SqlGenerator {
 		JdbcType jdbcType = c.getJdbcType();
 		if (jdbcType != null) {
 			Object dbValue = jdbcType.toDB(value);
-			parameterSource.setValue(propertyName, dbValue, jdbcType.getJdbcCode());
+			parameterSource.setValue(propertyName, dbValue, jdbcType.getSqlType());
 		}
 		sql.addColumnToken(columnName, ":"+propertyName);
 	}

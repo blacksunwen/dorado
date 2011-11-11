@@ -20,7 +20,6 @@ import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.JdbcDataProvider;
 import com.bstek.dorado.jdbc.config.JdbcConfigManager;
 import com.bstek.dorado.jdbc.config.xml.ColumnParser;
-import com.bstek.dorado.jdbc.model.DbElement;
 import com.bstek.dorado.jdbc.model.autotable.AutoTable;
 import com.bstek.dorado.jdbc.model.table.Table;
 
@@ -50,15 +49,15 @@ public class JdbcTestUtils {
 	}
 	
 	public static ObjectParser tableParser() throws Exception {
-		return getJdbcConfigManager().getParser(DbElement.Type.Table);
+		return getJdbcConfigManager().getParser("Table");
 	}
 	
 	public static ObjectParser sqlTableParser() throws Exception {
-		return getJdbcConfigManager().getParser(DbElement.Type.SqlTable);
+		return getJdbcConfigManager().getParser("SqlTable");
 	}
 	
 	public static ObjectParser autoTableParser() throws Exception {
-		return getJdbcConfigManager().getParser(DbElement.Type.AutoTable);
+		return getJdbcConfigManager().getParser("AutoTable");
 	}
 	
 	public static JdbcConfigManager configManager() throws Exception {

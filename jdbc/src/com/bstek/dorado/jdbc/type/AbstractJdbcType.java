@@ -7,19 +7,20 @@ import com.bstek.dorado.jdbc.JdbcConstants;
 public abstract class AbstractJdbcType implements JdbcType {
 
 	private String   name;
-	private int      jdbcCode;
-	private String   jdbcName;	
+	private int      sqlType;
+	private String   typeName;	
 	private DataType dataType;
 	private String   dataTypeName;
+	private Integer  scale;
 	
-	public AbstractJdbcType(String name, String jdbcName, String dataTypeName) {
+	public AbstractJdbcType(String name, String typeName, String dataTypeName) {
 		this.setName(name);
-		this.setJdbcName(jdbcName);
+		this.setTypeName(typeName);
 		this.setDataTypeName(dataTypeName);
 	}
 	
-	public AbstractJdbcType(String jdbcName, String dataTypeName) {
-		this(jdbcName + "-" + dataTypeName, jdbcName, dataTypeName);
+	public AbstractJdbcType(String typeName, String dataTypeName) {
+		this(typeName + "-" + dataTypeName, typeName, dataTypeName);
 	}
 	
 	public void setName(String name) {
@@ -29,16 +30,41 @@ public abstract class AbstractJdbcType implements JdbcType {
 		return name;
 	}
 
-	public int getJdbcCode() {
-		return jdbcCode;
+	public int getSqlType() {
+		return sqlType;
+	}
+	public void setSqlType(int sqlType) {
+		this.sqlType = sqlType;
 	}
 	
-	public String getJdbcName() {
-		return jdbcName;
+	public String getTypeName() {
+		return typeName;
 	}
-	public String setJdbcName(String jdbcName) {
-		this.jdbcCode = JdbcConstants.getTypeValue(jdbcName);
-		return this.jdbcName = jdbcName;
+	public void setTypeName(String typeName) {
+		this.typeName = typeName;
+		this.onSetTypeName();
+	}
+	
+	protected void onSetTypeName() {
+		int sqlType = JdbcConstants.getTypeValue(typeName);
+		this.sqlType = sqlType;
+	}
+	
+	public void setDataType(DataType dataType) {
+		this.dataType = dataType;
+		this.dataTypeName = this.dataType.getId();
+	}
+
+	public void setDataTypeName(String dataTypeName) {
+		this.dataTypeName = dataTypeName;
+	}
+	
+	public Integer getScale() {
+		return scale;
+	}
+
+	public void setScale(Integer scale) {
+		this.scale = scale;
 	}
 
 	public DataType getDataType() {
@@ -53,20 +79,12 @@ public abstract class AbstractJdbcType implements JdbcType {
 		return dataType;
 	}
 
-	public void setDataType(DataType dataType) {
-		this.dataType = dataType;
-	}
-
-	public void setDataTypeName(String dataTypeName) {
-		this.dataTypeName = dataTypeName;
-	}
-
 	public Object fromDB(Object obj) {
 		return getDataType().fromObject(obj);
 	}
 
 	public Object toDB(Object obj) {
-		return obj;
+		return fromDB(obj);
 	}
 	
 }

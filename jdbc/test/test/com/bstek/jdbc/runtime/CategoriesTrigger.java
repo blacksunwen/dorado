@@ -13,15 +13,15 @@ import com.bstek.dorado.jdbc.model.AbstractDbElementTrigger;
 public class CategoriesTrigger extends AbstractDbElementTrigger{
 
 	@Override
-	public void doResolve(JdbcRecordOperation operation) {
+	public void doSave(JdbcRecordOperation operation) {
 		Record record = operation.getRecord();
 		if (EntityUtils.getState(record) == EntityState.DELETED) {
 			NamedParameterJdbcDaoSupport dao = operation.getJdbcEnviroment().getNamedDao();
 			dao.getNamedParameterJdbcTemplate().update("DELETE FROM PRODUCTS WHERE CATEGORY_ID=:catId", 
 					Collections.singletonMap("catId", record.get("ID")));
-			super.doResolve(operation);
+			super.doSave(operation);
 		} else {
-			super.doResolve(operation);	
+			super.doSave(operation);	
 		}
 	}
 

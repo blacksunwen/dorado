@@ -11,7 +11,7 @@ public abstract class AbstractDbElementTrigger implements DbElementTrigger {
 	}
 
 	@Override
-	public void doResolve(JdbcRecordOperation operation) {
+	public void doSave(JdbcRecordOperation operation) {
 		operation.execute();
 	}
 

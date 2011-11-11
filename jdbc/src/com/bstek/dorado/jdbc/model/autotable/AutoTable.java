@@ -7,11 +7,11 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.bstek.dorado.jdbc.model.AbstractDbElement;
+import com.bstek.dorado.jdbc.model.AbstractTable;
 import com.bstek.dorado.jdbc.model.Column;
 import com.bstek.dorado.util.Assert;
 
-public class AutoTable extends AbstractDbElement {
+public class AutoTable extends AbstractTable {
 
 	private Map<String, FromTable> fromTables = new LinkedHashMap<String, FromTable>();
 	
@@ -62,9 +62,8 @@ public class AutoTable extends AbstractDbElement {
 		order.setAutoTable(this);
 	}
 
-	@Override
-	public Type getType() {
-		return Type.AutoTable;
+	public String getType() {
+		return "AutoTable";
 	}
 
 	public FromTable getMainTable() {

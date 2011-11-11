@@ -13,7 +13,7 @@ public class JdbcDataResolverItem {
 	
 	private String foreignKeyProperties;
 	
-	private List<JdbcDataResolverItem> items = new ArrayList<JdbcDataResolverItem>();
+	private List<JdbcDataResolverItem> items = new ArrayList<JdbcDataResolverItem>(5);
 	
 	public String getDbElement() {
 		return dbElement;

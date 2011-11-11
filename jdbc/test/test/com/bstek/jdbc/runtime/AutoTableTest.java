@@ -11,7 +11,6 @@ import com.bstek.dorado.data.entity.EntityList;
 import com.bstek.dorado.data.provider.Page;
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.JdbcDataProvider;
-import com.bstek.dorado.jdbc.model.DbElement;
 import com.bstek.dorado.jdbc.model.autotable.AutoTable;
 import com.bstek.dorado.jdbc.model.autotable.AutoTableColumn;
 import com.bstek.dorado.jdbc.model.autotable.BaseMatchRule;
@@ -20,8 +19,8 @@ import com.bstek.dorado.jdbc.model.autotable.JoinTable;
 import com.bstek.dorado.jdbc.model.autotable.JunctionMatchRule;
 import com.bstek.dorado.jdbc.model.autotable.Order;
 import com.bstek.dorado.jdbc.model.autotable.Where;
-import com.bstek.dorado.jdbc.sql.SqlConstants.JunctionModel;
 import com.bstek.dorado.jdbc.sql.SqlConstants.JoinModel;
+import com.bstek.dorado.jdbc.sql.SqlConstants.JunctionModel;
 import com.bstek.dorado.jdbc.sql.SqlConstants.NullsModel;
 import com.bstek.dorado.jdbc.sql.SqlConstants.OrderModel;
 
@@ -152,11 +151,11 @@ public class AutoTableTest extends ConfigManagerTestSupport {
 		{
 			FromTable ft = at.getFromTable("c");
 			Assert.assertEquals("CATEGORIES", ft.getTable().getTableName());
-			Assert.assertEquals(DbElement.Type.Table, ft.getTable().getType());
+			Assert.assertEquals("Table", ft.getTable().getType());
 		}{
 			FromTable ft = at.getFromTable("p");
 			Assert.assertEquals("PRODUCTS", ft.getTable().getTableName());
-			Assert.assertEquals(DbElement.Type.Table, ft.getTable().getType());
+			Assert.assertEquals("Table", ft.getTable().getType());
 		}
 		
 		Assert.assertEquals(1, at.getJoinTables().size());

@@ -14,8 +14,6 @@ public class JdbcConstants {
 
 	public static Constants JDBC_TYPE_CONSTANTS = new Constants(Types.class);
 
-	public static final String AUTO_CREATE_COLUMNS = "autoCreateColumns";
-
 	public static final String TABLE_CATALOG = "TABLE_CATALOG";
 
 	public static final String TABLE_CAT = "TABLE_CAT";

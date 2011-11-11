@@ -2,11 +2,10 @@ package com.bstek.dorado.jdbc.sql;
 
 import com.bstek.dorado.jdbc.JdbcDataProviderOperation;
 import com.bstek.dorado.jdbc.JdbcRecordOperation;
-import com.bstek.dorado.jdbc.model.DbElement;
 
 public interface SqlGenerator {
 
-	DbElement.Type getType();
+	String getType();
 	
 	SelectSql selectSql(JdbcDataProviderOperation operation);
 	

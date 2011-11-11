@@ -11,7 +11,6 @@ import com.bstek.dorado.jdbc.JdbcParameterSource;
 import com.bstek.dorado.jdbc.JdbcRecordOperation;
 import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.model.Column;
-import com.bstek.dorado.jdbc.model.DbElement;
 import com.bstek.dorado.jdbc.model.table.Table;
 import com.bstek.dorado.jdbc.sql.DeleteSql;
 import com.bstek.dorado.jdbc.sql.InsertSql;
@@ -23,8 +22,8 @@ import com.bstek.dorado.util.Assert;
 
 public class SqlTableSqlGenerator implements SqlGenerator {
 
-	public DbElement.Type getType() {
-		return DbElement.Type.SqlTable;
+	public String getType() {
+		return "SqlTable";
 	}
 	
 	@Override

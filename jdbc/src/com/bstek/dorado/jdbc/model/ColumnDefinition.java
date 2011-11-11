@@ -15,7 +15,7 @@ public class ColumnDefinition extends ObjectDefinition implements Operation {
 			throws Exception {
 		Column column = (Column)this.create(context);
 		
-		AbstractDbElement dbElement = (AbstractDbElement)object;
+		AbstractTable dbElement = (AbstractTable)object;
 		dbElement.addColumn(column);
 	}
 
