@@ -855,8 +855,10 @@
 			
 			if(!this._ready) {
 				this.onReady();
-				if (this._view && !this._view._ready) {
-					this._view.onReady();
+				
+				var view = this._view;
+				if (view && view != $topView && !view._ready && !view._rendering) {
+					view.onReady();
 				}
 			}
 		},

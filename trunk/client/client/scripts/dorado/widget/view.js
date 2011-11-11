@@ -280,6 +280,12 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			if (containerElement == document.body) bodyWidth = document.body.clientWidth;
 			$invokeSuper.call(this, [containerElement]);
 			if (bodyWidth && bodyWidth > document.body.clientWidth) this.onResize();
+		},
+		
+		doRenderToOrReplace: function(replace, element, nextChildElement) {
+			this._rendering = true;
+			$invokeSuper.call(this, [replace, element, nextChildElement]);
+			this._rendering = false;
 		}
 		
 	});
