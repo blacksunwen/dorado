@@ -373,9 +373,8 @@
 		
 		doOnFocus: function() {
 			var readOnly = this._readOnly || this._readOnly2;
-			if (readOnly || !this._editable) {
-				this._textDom.readOnly = true; // 避免在IE8中出现的DIV异常滚动的BUG
-			}
+			this._textDom.readOnly = (readOnly || !this._editable); // 避免在IE8中出现的DIV异常滚动的BUG
+
 			this.resetReadOnly();
 			if (readOnly) return;
 			

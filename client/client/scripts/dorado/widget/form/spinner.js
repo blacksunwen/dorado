@@ -231,7 +231,6 @@
 			if (value2 != value) {
 				this.set("value", value2);
 			}
-			
 			$invokeSuper.call(this, arguments);
 		},
 		
