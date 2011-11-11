@@ -283,7 +283,7 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 			if (bindingConfig.recursive && !isRoot) {
 				asyncTasks.push(function(callback) {
 					if (processPreload) {
-						var preloadConfigs = dorado.widget.DataTree.bindingConfigToPreloadConfig(bindingConfig, 1);
+						var preloadConfigs = dorado.widget.DataTree.bindingConfigToPreloadConfig(bindingConfig, 0);
 						if (preloadConfigs) {
 							dorado.DataProvider._SYS_PARAMETER = {
 								preloadConfigs: preloadConfigs
@@ -300,7 +300,7 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 					var childrenProperty = childBindingConfig.childrenProperty;
 					asyncTasks.push(function(callback) {
 						if (processPreload) {
-							var preloadConfigs = dorado.widget.DataTree.bindingConfigToPreloadConfig(childBindingConfig, 1);
+							var preloadConfigs = dorado.widget.DataTree.bindingConfigToPreloadConfig(childBindingConfig, 0);
 							if (preloadConfigs) {
 								dorado.DataProvider._SYS_PARAMETER = {
 									preloadConfigs: preloadConfigs
@@ -795,10 +795,12 @@ dorado.widget.DataTree.bindingConfigToPreloadConfig = function(bindingConfig, le
 	}
 	
 	function getChildPreloadConfigs(bindingConfig, level) {
+		if (!(level > 0)) return null;
+		
 		var preloadConfigs = [];
 		if (bindingConfig.childBindingConfigs) {
 			for (var i = 0; i < bindingConfig.childBindingConfigs.length; i++) {
-				var config = toPreloadConfig(bindingConfig.childBindingConfigs[i], 0);
+				var config = toPreloadConfig(bindingConfig.childBindingConfigs[i], level - 1);
 				preloadConfigs.push(config);
 			}
 		}
