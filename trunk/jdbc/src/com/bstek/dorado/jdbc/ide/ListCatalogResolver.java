@@ -9,7 +9,7 @@ import org.dom4j.io.XMLWriter;
 
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.JdbcUtils;
-import com.bstek.dorado.jdbc.ModelGenerator;
+import com.bstek.dorado.jdbc.ModelGeneratorSuit;
 
 public class ListCatalogResolver extends Resolver {
 
@@ -22,8 +22,8 @@ public class ListCatalogResolver extends Resolver {
 
 	public String toContent(String envName) {
 		JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(envName);
-		ModelGenerator generator = jdbcEnv.getModelGenerator();
-		final String[] catalogs = generator.listCatalogs(jdbcEnv);
+		ModelGeneratorSuit generator = jdbcEnv.getModelGeneratorSuit();
+		final String[] catalogs = generator.getJdbcEnviromentMetaDataGenerator().listCatalogs(jdbcEnv);
 		return toXml("Catalogs", new XML(){
 
 			@Override

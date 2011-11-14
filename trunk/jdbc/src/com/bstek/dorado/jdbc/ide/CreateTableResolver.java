@@ -9,7 +9,7 @@ import org.dom4j.Document;
 import com.bstek.dorado.data.variant.VariantUtils;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.JdbcUtils;
-import com.bstek.dorado.jdbc.ModelGenerator;
+import com.bstek.dorado.jdbc.ModelGeneratorSuit;
 import com.bstek.dorado.jdbc.support.TableGeneratorOption;
 
 public class CreateTableResolver extends Resolver {
@@ -35,9 +35,9 @@ public class CreateTableResolver extends Resolver {
 
 	public String toContent(String catalog, String schema, String table, TableGeneratorOption option) {
 		final JdbcEnviroment jdbcEnv = option.getJdbcEnviroment();
-		final ModelGenerator generator = jdbcEnv.getModelGenerator();
+		final ModelGeneratorSuit generator = jdbcEnv.getModelGeneratorSuit();
 		
-		Document document = generator.createTableDocument(catalog, schema, table, option);
+		Document document = generator.getTableMetaDataGenerator().createDocument(catalog, schema, table, option);
 		return toString(document);
 	}
 	

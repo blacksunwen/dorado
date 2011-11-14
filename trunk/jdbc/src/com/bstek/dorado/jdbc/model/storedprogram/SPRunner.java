@@ -35,7 +35,7 @@ public class SPRunner {
 		String procName = sp.getProgramName();
 		call.withProcedureName(procName);
 		
-		//call.withoutProcedureColumnMetaDataAccess();
+		call.withoutProcedureColumnMetaDataAccess();
 		
 		MapSqlParameterSource spSource = new MapSqlParameterSource();
 		JdbcParameterSource source = spContext.getJdbcParameterSource();

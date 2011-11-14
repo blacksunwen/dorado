@@ -81,14 +81,14 @@ public class JdbcEnviroment implements InitializingBean {
 		return transactionTemplate;
 	}
 	
-	private ModelGenerator modelGenerator;
+	private ModelGeneratorSuit modelGeneratorSuit;
 	
-	public ModelGenerator getModelGenerator() {
-		return modelGenerator;
+	public ModelGeneratorSuit getModelGeneratorSuit() {
+		return modelGeneratorSuit;
 	}
 
-	public void setModelGenerator(ModelGenerator modelGenerator) {
-		this.modelGenerator = modelGenerator;
+	public void setModelGeneratorSuit(ModelGeneratorSuit modelGeneratorSuit) {
+		this.modelGeneratorSuit = modelGeneratorSuit;
 	}
 
 	@Override
@@ -96,7 +96,7 @@ public class JdbcEnviroment implements InitializingBean {
 		Assert.notNull(this.getName(), "name can not be null.");
 		Assert.notNull(this.getDataSource(), "dataSource can not be null.");
 		Assert.notNull(this.getDialect(), "dialect can not be null.");
-		Assert.notNull(this.getModelGenerator(), "modelGenerator can not be null.");
+		Assert.notNull(this.getModelGeneratorSuit(), "modelGenerator can not be null.");
 	}
 
 }
