@@ -14,7 +14,8 @@ import org.dom4j.io.XMLWriter;
 import com.bstek.dorado.jdbc.JdbcConstants;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.JdbcUtils;
-import com.bstek.dorado.jdbc.ModelGenerator;
+import com.bstek.dorado.jdbc.ModelGeneratorSuit;
+import com.bstek.dorado.jdbc.meta.TableMetaDataGenerator;
 
 public class ListTablesResolver extends Resolver {
 
@@ -37,8 +38,9 @@ public class ListTablesResolver extends Resolver {
 
 	public String toContent(String envName, String catalog, String schema, String[] tableTypes, String tableNamePattern) {
 		final JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(envName);
-		final ModelGenerator generator = jdbcEnv.getModelGenerator();
-		final List<Map<String,String>> tableList = generator.listTables(jdbcEnv, catalog, schema, tableNamePattern, tableTypes);
+		final ModelGeneratorSuit generator = jdbcEnv.getModelGeneratorSuit();
+		final TableMetaDataGenerator tg = generator.getTableMetaDataGenerator();
+		final List<Map<String,String>> tableList = tg.listTableMetas(jdbcEnv, catalog, schema, tableNamePattern, tableTypes);
 		
 		return toXml("Tables", new XML() {
 
@@ -47,7 +49,7 @@ public class ListTablesResolver extends Resolver {
 					throws Exception {
 				for (Map<String,String> table: tableList) {
 					Element element = DocumentHelper.createElement("Table");
-					String name = generator.name(table, jdbcEnv);
+					String name = tg.tableName(table, jdbcEnv);
 					element.addAttribute("name", name);
 					element.addAttribute("catalog", table.get(JdbcConstants.TABLE_CAT));
 					element.addAttribute("schema", table.get(JdbcConstants.TABLE_SCHEM));

@@ -7,7 +7,7 @@ import org.dom4j.Document;
 
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.JdbcUtils;
-import com.bstek.dorado.jdbc.ModelGenerator;
+import com.bstek.dorado.jdbc.ModelGeneratorSuit;
 
 public class CreateSqlTableResolver extends Resolver {
 
@@ -23,8 +23,8 @@ public class CreateSqlTableResolver extends Resolver {
 
 	public String toContent(String envName, String sql) {
 		JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(envName);
-		ModelGenerator generator =jdbcEnv.getModelGenerator();
-		Document document = generator.createSqlTableDocument(jdbcEnv, sql);
+		ModelGeneratorSuit generator =jdbcEnv.getModelGeneratorSuit();
+		Document document = generator.getSqlTableMetaDataGenerator().createDocument(jdbcEnv, sql);
 		
 		return toString(document);
 	}

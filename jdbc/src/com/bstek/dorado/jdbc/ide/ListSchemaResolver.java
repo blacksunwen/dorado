@@ -13,7 +13,7 @@ import org.dom4j.io.XMLWriter;
 import com.bstek.dorado.jdbc.JdbcConstants;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.JdbcUtils;
-import com.bstek.dorado.jdbc.ModelGenerator;
+import com.bstek.dorado.jdbc.ModelGeneratorSuit;
 
 public class ListSchemaResolver extends Resolver {
 
@@ -28,16 +28,16 @@ public class ListSchemaResolver extends Resolver {
 
 	List<Map<String,String>> schemaList(String catalog, String envName) {
 		JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(envName);
-		ModelGenerator generator = jdbcEnv.getModelGenerator();
+		ModelGeneratorSuit generator = jdbcEnv.getModelGeneratorSuit();
 		
-		List<Map<String,String>> schemaList = generator.listSchemas(jdbcEnv, catalog);
+		List<Map<String,String>> schemaList = generator.getJdbcEnviromentMetaDataGenerator().listSchemas(jdbcEnv, catalog);
 		
 		return schemaList;
 	}
 	
 	public String toContent(String envName, String catalog) {
 		JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(envName);
-		final List<Map<String,String>> schemaList = jdbcEnv.getModelGenerator().listSchemas(jdbcEnv, catalog);
+		final List<Map<String,String>> schemaList = jdbcEnv.getModelGeneratorSuit().getJdbcEnviromentMetaDataGenerator().listSchemas(jdbcEnv, catalog);
 		
 		return toXml("Schemas", new XML() {
 
