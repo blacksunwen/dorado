@@ -7,6 +7,15 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @class 视图对象。
+	 * <p>
+	 * View对象的get方法在{@link dorado.AttributeSupport#get}的基础上做了很多增强。
+	 * 除了原有的读取属性值的功能之外，此方法还另外提供了下面的几种用法。
+	 * <ul>
+	 * 	<li>当传入一个以#开头的字符串时，#后面的内容将被识别成id，表示根据id获取View中的子控件。参考{@link dorado.widget.View#id}。</li>
+	 * 	<li>当传入一个以^开头的字符串时，^后面的内容将被识别成tag，表示根据tag查找View中的子对象。参考{@link dorado.widget.View#tag}。</li>
+	 * 	<li>当传入一个以@开头的字符串时，@后面的内容将被识别成DataType的名称，表示根据名称获取DataType。参考{@link dorado.widget.View#getDataType}。</li>
+	 * </ul>
+	 * </p>
 	 * @extends dorado.widget.Container
 	 */
 	dorado.widget.View = $extend(dorado.widget.Container, /** @scope dorado.widget.View.prototype */ {
@@ -169,21 +178,6 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			return this;
 		},
 		
-		/**
-		 * 读取指定的属性值或获取View中的子对象。
-		 * <p>
-		 * 此方法在{@link dorado.AttributeSupport#get}的基础上做了很多增强。
-		 * 除了原有的读取属性值的功能之外，此方法还另外提供了下面的几种用法。
-		 * <ul>
-		 * 	<li>当传入一个以#开头的字符串时，#后面的内容将被识别成id，表示根据id获取View中的子控件。参考{@link dorado.widget.View#id}。</li>
-		 * 	<li>当传入一个以^开头的字符串时，^后面的内容将被识别成tag，表示根据tag查找View中的子对象。参考{@link dorado.widget.View#tag}。</li>
-		 * 	<li>当传入一个以@开头的字符串时，@后面的内容将被识别成DataType的名称，表示根据名称获取DataType。参考{@link dorado.widget.View#getDataType}。</li>
-		 * </ul>
-		 * </p>
-		 * @param {Object} attr 属性值或其他表达式。
-		 * @return {Object} 读取到的属性值或提取到的子对象
-		 * @see dorado.AttributeSupport#get
-		 */
 		get: function(attr) {
 			var c = attr.charAt(0);
 			if (c == '#') {

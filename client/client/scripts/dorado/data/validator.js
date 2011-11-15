@@ -535,7 +535,9 @@ dorado.validator.AjaxValidator = $extend(dorado.validator.RemoteValidator, /** @
 		
 		var ajaxAction = this._ajaxAction;
 		if(!ajaxAction) {
-			this._ajaxAction = ajaxAction = new dorado.widget.AjaxAction();
+			this._ajaxAction = ajaxAction = new dorado.widget.AjaxAction({
+				modal: false
+			});
 		}
 		ajaxAction.set({
 			async: this._async,
