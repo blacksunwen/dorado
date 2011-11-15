@@ -352,4 +352,5 @@
 	});
 	
 	window.$log = dorado.Debugger.log;
+    window.$dir = dorado.Debugger.dir;
 })();
