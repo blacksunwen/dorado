@@ -500,6 +500,7 @@
 					addClasses: false,
 					handle: ".d-dialog-caption-bar",
 					cursor: "move",
+                    distance: 10,
 					containment: dialog._dragOutside ? null : "parent",
 					helper: function() {
 						if (!fakeDialog) {
