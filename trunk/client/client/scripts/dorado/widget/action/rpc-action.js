@@ -118,7 +118,7 @@
 			ajax.request(ajaxOptions, {
 				scope : this,
 				callback : function(success, result) {
-					if(success) { 
+					if(success) {
 						var data;
 						result = result.getJsonData(), dataTypeRepository = this.get("dataTypeRepository");
 						if(result && (result.$dataTypeDefinitions || result.$context)) {
