@@ -1,13 +1,24 @@
 package com.bstek.dorado.web.resolver;
 
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-7-13
  */
-public class ResolverRegister {
+public class ResolverRegister implements BeanFactoryPostProcessor {
+	private ResolverRegisterProcessor resolverRegisterProcessor;
+
 	private String url;
 	private Object resolver;
 	private int order = 999;
+
+	public void setResolverRegisterProcessor(
+			ResolverRegisterProcessor resolverRegisterProcessor) {
+		this.resolverRegisterProcessor = resolverRegisterProcessor;
+	}
 
 	public String getUrl() {
 		return url;
@@ -31,5 +42,10 @@ public class ResolverRegister {
 
 	public void setOrder(int order) {
 		this.order = order;
+	}
+
+	public void postProcessBeanFactory(
+			ConfigurableListableBeanFactory beanFactory) throws BeansException {
+		resolverRegisterProcessor.addResolverRegister(this);
 	}
 }
