@@ -1,28 +1,31 @@
 package com.bstek.dorado.web.resolver;
 
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.springframework.beans.BeansException;
-import org.springframework.context.support.ApplicationObjectSupport;
+import com.bstek.dorado.core.EngineStartupListener;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-7-15
  */
-public class ResolverRegisterProcessor extends ApplicationObjectSupport {
+public class ResolverRegisterProcessor extends EngineStartupListener {
+	private Map<String, ResolverRegister> resolverRegisters = new HashMap<String, ResolverRegister>();
 	private UrlResolverMapping urlResolverMapping;
 
 	public void setUrlResolverMapping(UrlResolverMapping urlResolverMapping) {
 		this.urlResolverMapping = urlResolverMapping;
 	}
 
-	@Override
-	protected void initApplicationContext() throws BeansException {
-		super.initApplicationContext();
+	public void addResolverRegister(ResolverRegister resolverRegister) {
+		resolverRegisters.put(resolverRegister.getUrl(), resolverRegister);
+	}
 
+	@Override
+	public void onStartup() throws Exception {
 		Set<ResolverRegister> treeSet = new TreeSet<ResolverRegister>(
 				new Comparator<ResolverRegister>() {
 					public int compare(ResolverRegister o1, ResolverRegister o2) {
@@ -36,8 +39,6 @@ public class ResolverRegisterProcessor extends ApplicationObjectSupport {
 					}
 				});
 
-		Map<String, ResolverRegister> resolverRegisters = getApplicationContext()
-				.getBeansOfType(ResolverRegister.class);
 		treeSet.addAll(resolverRegisters.values());
 		for (ResolverRegister resolverRegister : treeSet) {
 			urlResolverMapping.registerHandler(resolverRegister.getUrl(),
