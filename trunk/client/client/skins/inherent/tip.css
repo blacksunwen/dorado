@@ -125,6 +125,8 @@
 	position: absolute;
 	left: 0;
 	top: 0;
+    height: 48px;
+	width: 48px;
 }
 
 .i-tip .tip-content .error-icon, .i-tip .tip-content .info-icon, .i-tip .tip-content .warning-icon, .i-tip .tip-content .question-icon{
