@@ -13,7 +13,7 @@
             listener: {
                 onClick: function(){
                     dorado.MessageBox.alert("测试一下测试一下\n<test>\n&ttt", {
-                        icon: dorado.MessageBox.INFO_ICON
+                        icon: "del.gif"
                     });
                 }
             }
@@ -29,7 +29,7 @@
                         str += "testDataPipe\n";
                     }
                     dorado.MessageBox.alert(str, {
-                        icon: dorado.MessageBox.INFO_ICON
+                        icon: "ERROR"
                     });
                 }
             }
@@ -51,6 +51,7 @@
             listener: {
                 onClick: function(){
                     dorado.MessageBox.prompt("测试", {
+                        icon: "QUESTION",
                         callback: function(text){
                             dorado.MessageBox.alert(text);
                         },

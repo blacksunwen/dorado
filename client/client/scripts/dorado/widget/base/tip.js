@@ -315,16 +315,12 @@
                 icon = null;
             }
 			$fly(doms.tipIcon).attr("className", "tip-icon");
-			if (icon || iconClass) {
-                if (exClassName) {
-                    $fly(doms.tipIcon).addClass(exClassName);
-                }
-                if (iconClass) {
-                    $fly(doms.tipIcon).addClass(iconClass);
-                }
-                if (icon) {
-                    $DomUtils.setBackgroundImage(doms.tipIcon, icon);
-                }
+			if (icon || iconClass || exClassName) {
+                if (exClassName) $fly(doms.tipIcon).addClass(exClassName);
+                if (iconClass) $fly(doms.tipIcon).addClass(iconClass);
+                if (icon) $DomUtils.setBackgroundImage(doms.tipIcon, icon);
+                else $fly(doms.tipIcon).css("background-image", "");
+
 				$fly(doms.tipContent).addClass("tip-content-hasicon");
 			} else {
 				$fly(doms.tipContent).removeClass("tip-content-hasicon");
