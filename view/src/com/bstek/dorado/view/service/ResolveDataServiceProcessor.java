@@ -106,8 +106,7 @@ public class ResolveDataServiceProcessor extends DataServiceProcessorSupport {
 						"autoResetEntityState", true);
 
 				JsonConvertContext jsonContext = new JsonConvertContextImpl(
-						(RefreshMode.none.equals(refreshMode) || RefreshMode.value
-								.equals(refreshMode)), false, this);
+						true, false, this);
 				Object data = JsonUtils.toJavaObject(item.get("data"), null,
 						null, true, jsonContext);
 
@@ -131,8 +130,9 @@ public class ResolveDataServiceProcessor extends DataServiceProcessorSupport {
 		outputContext.setShouldOutputEntityState(true);
 		try {
 			for (UpdateInfo updateInfo : updateInfos.values()) {
-				if (!updateInfo.isAutoResetEntityState())
+				if (!updateInfo.isAutoResetEntityState()) {
 					continue;
+				}
 				Collection<Object> entities = updateInfo.getJsonContext()
 						.getEntityCollection();
 				if (entities != null) {

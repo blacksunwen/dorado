@@ -151,11 +151,13 @@
 		 *            attr 属性名。
 		 * @return {Object} 读取到的属性值。
 		 * 
-		 * @example oop.get("label");
+		 * @example
+		 * oop.get("label");
 		 * 
-		 * @example oop.get("address.postCode"); // 迭代式的属性读取 //
-		 *          如果address的属性值是一个dorado.AttributeSupport的实例，那么此行命令的效果相当于oop.get("address").get("postCode")。 //
-		 *          如果address的属性值是一个JSON对象，那么此行命令的效果相当于oop.get("address").postCode
+		 * @example
+		 * oop.get("address.postCode"); // 迭代式的属性读取
+		 * // 如果address的属性值是一个dorado.AttributeSupport的实例，那么此行命令的效果相当于oop.get("address").get("postCode")。
+		 * // 如果address的属性值是一个JSON对象，那么此行命令的效果相当于oop.get("address").postCode
 		 */
 		get : function(attr) {
 			var attrs = attr.split('.'), result;
@@ -263,7 +265,7 @@
 		 * oop.get("address").set("postCode", "7232-00124")
 		 * 
 		 * @example
-		 * // 使用上文中提及的第一种方法为label属性赋值，同时为click事件绑定一个监听器。
+		 * // 使用上文中提及的第一种方法为label属性赋值，同时为onClick事件绑定一个监听器。
 		 * oop.set({
 		 *  label : "Sample Text",
 		 *  onClick : function(self, arg) {
