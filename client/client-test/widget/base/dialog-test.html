@@ -10,7 +10,7 @@
         var dialog = new dorado.widget.Dialog({
 			visible: true,
 			//showCaptionBar: false,
-            caption: "test",
+            caption: "test222",
             width: 400,
             height: 300,
             minWidth: 150
@@ -24,6 +24,9 @@
             ,center: true
             ,icon: "del.gif"
 			,buttonAlign: "right"
+            ,onShow: function(self) {
+                self.set("caption", "modified caption.");
+            }
             ,buttons: [new dorado.widget.Button({
                 caption: "确定",
                 width: 80,
