@@ -4,10 +4,10 @@
 		TOOLTIP_KEY = "dorado.tooltip", DOMS_KEY = "dorado.tip.doms";
 
 	var icons = {
-		WARNING_ICON: "warning-icon",
-		ERROR_ICON: "error-icon",
-		INFO_ICON: "info-icon",
-		QUESTION_ICON: "question-icon"
+		WARNING: "warning-icon",
+		ERROR: "error-icon",
+		INFO: "info-icon",
+		QUESTION: "question-icon"
 	};
 
 	/**
@@ -58,11 +58,19 @@
 			text: {},
 
 			/**
-			 *
+			 * 图标所在路径。
+             * 可以使用WARNING、ERROR、INFO、QUESTION四个默认值，分别代表警告、错误、信息、问题。也可以自定义，自定义推荐48*48的图片大小。
 			 * @attribute
 			 * @type String
 			 */
 			icon: {},
+
+            /**
+			 * 图标使用的className。
+			 * @attribute
+			 * @type String
+			 */
+			iconClass: {},
 
 			/**
              * Tip是否可以关闭，默认不可以关闭。
@@ -301,10 +309,22 @@
 				$fly(doms.close).css("display", "none");
 			}
 
-			var icon = tip._icon;
+			var icon = tip._icon, iconClass = tip._iconClass || "", exClassName;
+            if (icon in icons) {
+                exClassName = icons[icon];
+                icon = null;
+            }
 			$fly(doms.tipIcon).attr("className", "tip-icon");
-			if (icon) {
-				$fly(doms.tipIcon).addClass(icon);
+			if (icon || iconClass) {
+                if (exClassName) {
+                    $fly(doms.tipIcon).addClass(exClassName);
+                }
+                if (iconClass) {
+                    $fly(doms.tipIcon).addClass(iconClass);
+                }
+                if (icon) {
+                    $DomUtils.setBackgroundImage(doms.tipIcon, icon);
+                }
 				$fly(doms.tipContent).addClass("tip-content-hasicon");
 			} else {
 				$fly(doms.tipContent).removeClass("tip-content-hasicon");
@@ -446,6 +466,7 @@
 			tip._text = msg;
 			tip._caption = options.caption || $resource("dorado.baseWidget.NotifyTipDefaultCaption") || "dorado 7";
 			tip._icon = options.icon;
+            tip._iconClass = options.iconClass;
 			tip.show();
 		},
 
