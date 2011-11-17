@@ -444,7 +444,7 @@
 			options = options || {};
 			var tip = dorado.NotifyTipPool.borrowObject();
 			tip._text = msg;
-			tip._caption = "dorado 7";
+			tip._caption = options.caption || $resource("dorado.baseWidget.NotifyTipDefaultCaption") || "dorado 7";
 			tip._icon = options.icon;
 			tip.show();
 		},
