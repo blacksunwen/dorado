@@ -1298,6 +1298,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			}
 			return state;
 		},
+		
 		/**
 		 * 验证此数据实体中的数据当前是否是有效的，即是否可以被提交保存。
 		 * <p>
@@ -1448,6 +1449,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			if (context) context.result = topResult;
 			return topResult;
 		},
+		
 		/**
 		 * 判断数据实体或数据实体中某属性中是否包含未提交的信息。
 		 * @param {String} [property] 要判断的属性。如果不定义则表示希望判断整个数据实体是否包含未提交的信息。
@@ -1463,6 +1465,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				return this.state != dorado.Entity.STATE_NONE;
 			}
 		},
+		
 		/**
 		 * 重新装载当前实体中的数据。
 		 */
@@ -1500,6 +1503,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				this.dataProvider.supportsEntity = oldSupportsEntity;
 			}
 		},
+		
 		/**
 		 * 以异步方式重新装载实体中的数据。
 		 * @param {Function|dorado.Callback} callback 回调对象。
@@ -1507,6 +1511,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		flushAsync : function(callback) {
 			this.flush(callback || dorado._NULL_FUNCTION);
 		},
+		
 		/**
 		 * 从所属的实体集合{@link dorado.EntityList}中删除本实体对象。
 		 * 如果本实体对象尚不属于任何实体集合，则此方法不会产生实际的作用。
@@ -1518,6 +1523,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			if (this.parent)
 				this.parent.remove(this, detach);
 		},
+		
 		toString : function() {
 			var text;
 			if (this.dataType) {
@@ -1542,6 +1548,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			}
 			return text;
 		},
+		
 		clone : function(deep) {
 			var newData, data = this._data;
 			if (deep) {
