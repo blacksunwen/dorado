@@ -118,7 +118,7 @@ public class ResolverTestCase extends ConfigManagerTestSupport {
 				JdbcDataResolverItem productItem = new JdbcDataResolverItem();
 				productItem.setName("products");
 				productItem.setDbElement("PRODUCTS");
-				productItem.setReferencedKeyProperties("ID");
+				productItem.setParentKeyProperties("ID");
 				productItem.setForeignKeyProperties("CATEGORY_ID");
 				catgItem.getItems().add(productItem);
 			}

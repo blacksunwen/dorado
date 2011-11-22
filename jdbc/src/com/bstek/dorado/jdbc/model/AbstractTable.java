@@ -10,7 +10,7 @@ import com.bstek.dorado.util.Assert;
 public abstract class AbstractTable extends AbstractDbElement implements DbTable {
 
 	private Map<String,Column> columnMap = new LinkedHashMap<String,Column>();
-	private DbElementTrigger trigger;
+	private TableTrigger trigger;
 	
 	public List<Column> getAllColumns() {
 		return new ArrayList<Column>(columnMap.values());
@@ -34,11 +34,11 @@ public abstract class AbstractTable extends AbstractDbElement implements DbTable
 		return column.getColumnName();
 	}
 
-	public DbElementTrigger getTrigger() {
+	public TableTrigger getTrigger() {
 		return trigger;
 	}
 	
-	public void setTrigger(DbElementTrigger trigger) {
+	public void setTrigger(TableTrigger trigger) {
 		this.trigger = trigger;
 	}
 	

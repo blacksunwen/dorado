@@ -6,7 +6,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.data.variant.Record;
-import com.bstek.dorado.jdbc.model.AbstractJdbcOperation;
+import com.bstek.dorado.jdbc.model.DbElementJdbcOperation;
 import com.bstek.dorado.jdbc.model.DbElement;
 
 /**
@@ -16,7 +16,7 @@ import com.bstek.dorado.jdbc.model.DbElement;
  * 
  */
 public class JdbcRecordOperation extends
-		AbstractJdbcOperation<JdbcDataResolverContext> {
+		DbElementJdbcOperation<JdbcDataResolverContext> {
 
 	private Record record;
 

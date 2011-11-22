@@ -12,14 +12,15 @@ import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.ModelGeneratorSuit;
 
-public class CreateSqlTableResolver extends Resolver {
+public class CreateDataTypeResolver extends Resolver {
 
 	@Override
 	public String getContent(HttpServletRequest request,
 			HttpServletResponse response) {
 		String envName = request.getParameter(PARAM_ENV);
-		String sql = request.getParameter(PARAM_SQL);
+		String tableName = request.getParameter(PARAM_TBNM);
 		String xml = request.getParameter(PARAM_XML);
+		
 		Document document = null;
 		if (StringUtils.isNotEmpty(xml)) {
 			try {
@@ -29,18 +30,18 @@ public class CreateSqlTableResolver extends Resolver {
 			}
 		}
 		
-		return toContent(envName, sql, document);
+		return toContent(envName, tableName, document);
 	}
 
-
-	public String toContent(String envName, String sql, Document document) {
+	public String toContent(String envName, String tableName, Document document) {
 		JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(envName);
 		ModelGeneratorSuit generator =jdbcEnv.getModelGeneratorSuit();
 		if (document == null) {
-			document = generator.getSqlTableMetaDataGenerator().createDocument(jdbcEnv, sql);
+			document = generator.getDataTypeMetaGenerator().createDocument(jdbcEnv, tableName);
 		} else {
-			document = generator.getSqlTableMetaDataGenerator().mergeDocument(jdbcEnv, sql, document);
+			document = generator.getDataTypeMetaGenerator().mergeDocument(jdbcEnv, tableName, document);
 		}
+		
 		return toString(document);
 	}
 }

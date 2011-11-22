@@ -6,15 +6,15 @@
 	<bean parent="dorado.jdbcConfigTemplate">
 		<property name="configLocations">
 			<list>
-				<value>classpath:test/com/bstek/jdbc/runtime/vir_table.dbmodel.xml</value>
-				<value>classpath:test/com/bstek/jdbc/runtime/tables.dbmodel.xml</value>
-				<value>classpath:test/com/bstek/jdbc/runtime/sqltables.dbmodel.xml</value>
-				<value>classpath:test/com/bstek/jdbc/runtime/autoTable.dbmodel.xml</value>
-				<value>classpath:test/com/bstek/jdbc/runtime/key-tables.dbmodel.xml</value>
+				<value>classpath:test/com/bstek/jdbc/runtime/vir_table.dbm.xml</value>
+				<value>classpath:test/com/bstek/jdbc/runtime/tables.dbm.xml</value>
+				<value>classpath:test/com/bstek/jdbc/runtime/sqltables.dbm.xml</value>
+				<value>classpath:test/com/bstek/jdbc/runtime/autoTable.dbm.xml</value>
+				<value>classpath:test/com/bstek/jdbc/runtime/key-tables.dbm.xml</value>
 				
-				<value>classpath:test/com/bstek/jdbc/runtime/oracle.dbmodel.xml</value>
-				<value>classpath:test/com/bstek/jdbc/runtime/mssql.dbmodel.xml</value>
-				<value>classpath:test/com/bstek/jdbc/runtime/mysql.dbmodel.xml</value>
+				<value>classpath:test/com/bstek/jdbc/runtime/oracle.dbm.xml</value>
+				<value>classpath:test/com/bstek/jdbc/runtime/mssql.dbm.xml</value>
+				<value>classpath:test/com/bstek/jdbc/runtime/mysql.dbm.xml</value>
 			</list>
 		</property>
 	</bean>

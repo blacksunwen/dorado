@@ -51,4 +51,11 @@
 			<ref bean="dorado.jdbc.ide.createSqlTableResolver"/>
 		</property>
 	</bean>
+	
+	<bean parent="dorado.resolverRegister">
+        <property name="url" value="/dorado/jdbc/ide/create-datatype.xml" />
+        <property name="resolver">
+            <ref bean="dorado.jdbc.ide.createDataTypeResolver"/>
+        </property>
+    </bean>
 </beans>

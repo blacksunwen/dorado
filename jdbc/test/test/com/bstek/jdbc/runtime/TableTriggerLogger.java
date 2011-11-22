@@ -5,9 +5,9 @@ import java.util.Date;
 
 import com.bstek.dorado.jdbc.JdbcDataProviderOperation;
 import com.bstek.dorado.jdbc.JdbcRecordOperation;
-import com.bstek.dorado.jdbc.model.AbstractDbElementTrigger;
+import com.bstek.dorado.jdbc.model.AbstractTableTrigger;
 
-public class TableTriggerLogger extends AbstractDbElementTrigger {
+public class TableTriggerLogger extends AbstractTableTrigger {
 
 	@Override
 	public void doQuery(JdbcDataProviderOperation operation) {

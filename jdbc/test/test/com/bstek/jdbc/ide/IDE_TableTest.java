@@ -1,5 +1,9 @@
 package test.com.bstek.jdbc.ide;
 
+import org.dom4j.Document;
+
+import test.com.bstek.jdbc.JdbcTestUtils;
+
 import com.bstek.dorado.core.Context;
 import com.bstek.dorado.data.config.ConfigManagerTestSupport;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
@@ -11,6 +15,7 @@ import com.bstek.dorado.jdbc.ide.ListJdbcEnviromentResolver;
 import com.bstek.dorado.jdbc.ide.ListSchemaResolver;
 import com.bstek.dorado.jdbc.ide.ListTableTypeResolver;
 import com.bstek.dorado.jdbc.ide.ListTablesResolver;
+import com.bstek.dorado.jdbc.support.DefaultDataTypeMetaGenerator;
 import com.bstek.dorado.jdbc.support.TableGeneratorOption;
 
 public class IDE_TableTest extends ConfigManagerTestSupport {
@@ -177,23 +182,36 @@ public class IDE_TableTest extends ConfigManagerTestSupport {
 		{
 			String envName = null;
 			String sql = "select * from EMPLOYEES";
-			String xml = resolver.toContent(envName, sql);
+			String xml = resolver.toContent(envName, sql, null);
 			
 			System.out.println("["+envName+"]" + "XML: " + xml);
 		}
 		{
 			String envName = "oracle11";
 			String sql = "select * from DEMO_PROJECT";
-			String xml = resolver.toContent(envName, sql);
+			String xml = resolver.toContent(envName, sql, null);
 			
 			System.out.println("["+envName+"]" + "XML: " + xml);
 		}
 		{
 			String envName = "mssql";
 			String sql = "select * from DEMO_PROJECT";
-			String xml = resolver.toContent(envName, sql);
+			String xml = resolver.toContent(envName, sql, null);
 			
 			System.out.println("["+envName+"]" + "XML: " + xml);
 		}
+	}
+	
+	public void test_dataType() throws Exception {
+		DefaultDataTypeMetaGenerator generator = new DefaultDataTypeMetaGenerator();
+		JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getDefault();
+		
+		String tableName = "EMP_AUTO";
+		Document document = generator.createDocument(jdbcEnv, tableName);
+		
+		String xml = JdbcTestUtils.toString(document);
+		
+		System.out.println("XML:");
+		System.out.println(xml);
 	}
 }

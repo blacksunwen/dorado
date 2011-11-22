@@ -22,6 +22,8 @@
 	</bean>
 	<bean id="dorado.jdbc.jdbcConfigManager" class="com.bstek.dorado.jdbc.config.DefaultJdbcConfigManager">
 		<property name="xmlDocumentBuilder" ref="dorado.xmlDocumentBuilder" />
+		<property name="dataProviderDefinitionManager" ref="dorado.dataProviderDefinitionManager" />
+        <property name="dataResolverDefinitionManager" ref="dorado.dataResolverDefinitionManager" />
 		<property name="parsers">
 			<list>
 				<ref bean="dorado.jdbc.config.xml.tableParser"/>

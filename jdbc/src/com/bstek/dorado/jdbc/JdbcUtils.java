@@ -42,7 +42,6 @@ public abstract class JdbcUtils {
 	
 	public static DbElement getDbElement(String elementName) {
 		Assert.notEmpty(elementName, "DbElement name must not be null.");
-		
 		DbElement dbElement = JdbcUtils.getJdbcConfigManager().getDbElement(elementName);
 		
 		return dbElement;

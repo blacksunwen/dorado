@@ -10,5 +10,5 @@
 	<bean id="dorado.jdbc.ide.listTableTypeResolver" class="com.bstek.dorado.jdbc.ide.ListTableTypeResolver"/>
 	<bean id="dorado.jdbc.ide.createTableResolver" class="com.bstek.dorado.jdbc.ide.CreateTableResolver"/>
 	<bean id="dorado.jdbc.ide.createSqlTableResolver" class="com.bstek.dorado.jdbc.ide.CreateSqlTableResolver"/>
-	
+	<bean id="dorado.jdbc.ide.createDataTypeResolver" class="com.bstek.dorado.jdbc.ide.CreateDataTypeResolver"/>
 </beans>

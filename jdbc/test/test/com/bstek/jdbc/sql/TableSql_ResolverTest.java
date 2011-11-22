@@ -43,7 +43,7 @@ public class TableSql_ResolverTest {
 		
 		//-
 		{
-			JdbcDataResolverContext jdbcContext = new JdbcDataResolverContext(null);
+			JdbcDataResolverContext jdbcContext = new JdbcDataResolverContext(null,null,null);
 			JdbcRecordOperation operation = new JdbcRecordOperation(table, record, jdbcContext);
 			
 			InsertSql insertSql = generator.insertSql(operation);
@@ -52,7 +52,7 @@ public class TableSql_ResolverTest {
 			System.out.println(sql);
 			Assert.assertEquals("INSERT INTO table1 (ID,NAME) VALUES (:id,:name)", sql);
 		}{
-			JdbcDataResolverContext jdbcContext = new JdbcDataResolverContext(null);
+			JdbcDataResolverContext jdbcContext = new JdbcDataResolverContext(null,null,null);
 			JdbcRecordOperation operation = new JdbcRecordOperation(table, record, jdbcContext);
 			
 			UpdateSql insertSql = generator.updateSql(operation);
@@ -61,7 +61,7 @@ public class TableSql_ResolverTest {
 			System.out.println(sql);
 			Assert.assertEquals("UPDATE table1 SET NAME=:name WHERE ID=:id", sql);
 		}{
-			JdbcDataResolverContext jdbcContext = new JdbcDataResolverContext(null);
+			JdbcDataResolverContext jdbcContext = new JdbcDataResolverContext(null,null,null);
 			JdbcRecordOperation operation = new JdbcRecordOperation(table, record, jdbcContext);
 			
 			DeleteSql deleteSql = generator.deleteSql(operation);

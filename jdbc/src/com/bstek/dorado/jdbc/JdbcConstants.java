@@ -13,6 +13,8 @@ import org.springframework.core.Constants;
 public class JdbcConstants {
 
 	public static Constants JDBC_TYPE_CONSTANTS = new Constants(Types.class);
+	
+	public static final String CONFIG_RELOAD_ELEMENT = "jdbc.autoReloadElement";
 
 	public static final String TABLE_CATALOG = "TABLE_CATALOG";
 

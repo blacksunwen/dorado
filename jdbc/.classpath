@@ -9,5 +9,7 @@
 	<classpathentry kind="lib" path="jdbc-driver/oracle11/ojdbc5.jar"/>
 	<classpathentry kind="lib" path="jdbc-driver/mssql2008/sqljdbc4.jar"/>
 	<classpathentry kind="lib" path="jdbc-driver/mysql/mysql-connector-java-5.1.17-bin.jar"/>
+	<classpathentry kind="lib" path="jdbc-driver/oracle11/orai18n.jar"/>
+	<classpathentry kind="lib" path="jdbc-driver/oracle11/runtime12.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

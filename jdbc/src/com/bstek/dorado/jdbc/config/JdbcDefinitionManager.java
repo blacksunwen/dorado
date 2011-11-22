@@ -10,7 +10,7 @@ import com.bstek.dorado.config.xml.ObjectParser;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.config.xml.JdbcParseContext;
-import com.bstek.dorado.jdbc.config.xml.JdbcXmlConstants;
+import com.bstek.dorado.jdbc.config.xml.XmlConstants;
 import com.bstek.dorado.jdbc.model.DbElementDefinition;
 
 /**
@@ -20,10 +20,11 @@ import com.bstek.dorado.jdbc.model.DbElementDefinition;
  */
 public class JdbcDefinitionManager extends DefaultDefinitionManager<DbElementDefinition> {
 
-	private Map<String, XmlElementWrapper> dbElementNodeMap = new LinkedHashMap<String, XmlElementWrapper>();
+	private LinkedHashMap<String, XmlElementWrapper> dbElementNodeMap = new LinkedHashMap<String, XmlElementWrapper>();
 	
 	public void reset(Map<String, XmlElementWrapper> dbElementNodeMap) {
-		this.dbElementNodeMap = dbElementNodeMap;
+		this.dbElementNodeMap.clear();
+		this.dbElementNodeMap.putAll(dbElementNodeMap);
 		this.clearAllDefinitions();
 	}
 	
@@ -34,7 +35,7 @@ public class JdbcDefinitionManager extends DefaultDefinitionManager<DbElementDef
 			XmlElementWrapper wrapper = dbElementNodeMap.remove(name);
 			if (wrapper != null) {
 				Element node = wrapper.getElement();
-				String envName = node.getAttribute(JdbcXmlConstants.JDBC_ENVIROMENT);
+				String envName = node.getAttribute(XmlConstants.JDBC_ENVIROMENT);
 				JdbcEnviroment env = JdbcUtils.getEnviromentManager().getEnviroment(envName);
 				try {
 					JdbcParseContext parseContext = new JdbcParseContext(env);
