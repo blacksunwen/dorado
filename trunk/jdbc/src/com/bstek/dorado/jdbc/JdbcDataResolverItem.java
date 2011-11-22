@@ -3,13 +3,18 @@ package com.bstek.dorado.jdbc;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 与UpdateAction的Item对应的Item
+ * @author mark
+ *
+ */
 public class JdbcDataResolverItem {
 
 	private String name;
 	
 	private String dbElement;
 	
-	private String referencedKeyProperties;
+	private String parentKeyProperties;
 	
 	private String foreignKeyProperties;
 	
@@ -31,12 +36,12 @@ public class JdbcDataResolverItem {
 		this.name = name;
 	}
 
-	public String getReferencedKeyProperties() {
-		return referencedKeyProperties;
+	public String getParentKeyProperties() {
+		return parentKeyProperties;
 	}
 
-	public void setReferencedKeyProperties(String refrencedParentProperties) {
-		this.referencedKeyProperties = refrencedParentProperties;
+	public void setParentKeyProperties(String refrencedParentProperties) {
+		this.parentKeyProperties = refrencedParentProperties;
 	}
 
 	public String getForeignKeyProperties() {

@@ -8,9 +8,9 @@ import com.bstek.dorado.data.entity.EntityState;
 import com.bstek.dorado.data.entity.EntityUtils;
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.JdbcRecordOperation;
-import com.bstek.dorado.jdbc.model.AbstractDbElementTrigger;
+import com.bstek.dorado.jdbc.model.AbstractTableTrigger;
 
-public class CategoriesTrigger extends AbstractDbElementTrigger{
+public class CategoriesTrigger extends AbstractTableTrigger{
 
 	@Override
 	public void doSave(JdbcRecordOperation operation) {

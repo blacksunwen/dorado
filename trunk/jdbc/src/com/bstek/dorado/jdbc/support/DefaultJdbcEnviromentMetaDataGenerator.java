@@ -81,7 +81,6 @@ public class DefaultJdbcEnviromentMetaDataGenerator implements
 
 	private String[] defaultTableTypes = new String[]{"TABLE", "VIEW"};
 	
-	@Override
 	public String[] defaultTableTypes(JdbcEnviroment jdbcEnv) {
 		return getDefaultTableTypes();
 	}

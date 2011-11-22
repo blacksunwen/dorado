@@ -1,5 +1,7 @@
 package test.com.bstek.jdbc;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
@@ -7,9 +9,12 @@ import java.util.Date;
 import junit.framework.Assert;
 
 import org.apache.commons.lang.RandomStringUtils;
+import org.dom4j.io.OutputFormat;
+import org.dom4j.io.XMLWriter;
 import org.w3c.dom.Document;
 
 import com.bstek.dorado.config.xml.ObjectParser;
+import com.bstek.dorado.core.Constants;
 import com.bstek.dorado.core.Context;
 import com.bstek.dorado.core.xml.XmlDocumentBuilder;
 import com.bstek.dorado.data.entity.EntityState;
@@ -38,6 +43,20 @@ public class JdbcTestUtils {
 		return document;
 	}
 
+	public static String toString(org.dom4j.Document document) {
+		StringWriter writer = new StringWriter();
+		OutputFormat format = OutputFormat.createPrettyPrint();
+		format.setEncoding(Constants.DEFAULT_CHARSET);
+
+		XMLWriter xmlWriter = new XMLWriter(writer, format);
+		try {
+			xmlWriter.write(document);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		return writer.toString();
+	}
+	
 	public static JdbcConfigManager getJdbcConfigManager() {
 		Context context = Context.getCurrent();
 		try {

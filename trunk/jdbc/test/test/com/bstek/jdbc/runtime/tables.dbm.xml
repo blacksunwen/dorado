@@ -102,7 +102,10 @@ WHERE SEX=:EMP.SEX
 		</Columns>
 	</Table>
 	
-	<Table name="EMP_AUTO" tableName="EMPLOYEES" trigger="test.com.bstek.jdbc.runtime.TableTriggerLogger" autoCreateColumns="true">
+	<Table name="EMP_AUTO" tableName="EMPLOYEES" trigger="test.com.bstek.jdbc.runtime.TableTriggerLogger" 
+	   autoCreateColumns="true"
+	   autoCreateDataProvider="true"
+	   autoCreateDataResolver="true">
 		<Columns>
 			<KeyColumn columnName="ID"        propertyName="ID"             jdbcType="INTEGER-Integer"/>
 			<Column columnName="LAST_NAME"    propertyName="LAST_NAME"      jdbcType="VARCHAR-String"/>

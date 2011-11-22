@@ -5,9 +5,11 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.dom4j.Document;
@@ -105,34 +107,61 @@ public class DefaultSqlTableMetaDataGenerator implements
 	}
 	
 	@Override
-	public Document createDocument(final JdbcEnviroment jdbcEnv, String sql) {
+	public Document createDocument(JdbcEnviroment jdbcEnv, String sql) {
 		Document document = DocumentHelper.createDocument();
 		Element tableElement = document.addElement("SqlTable");
 		Element columnsElement = tableElement.addElement("Columns");
 		
 		List<Map<String,String>> columnMetas = this.listColumnMetas(jdbcEnv, sql);
 		for (Map<String,String> columnMeta: columnMetas) {
-			Map<String,String> columnProperties = columnProperties(columnMeta, jdbcEnv);
-			columnProperties.put("nativeColumnName", columnMeta.get(JdbcConstants.COLUMN_NAME));
-			Element columnElement = DocumentHelper.createElement("Column");
-			for (Iterator<String> keyItr = columnProperties.keySet().iterator(); keyItr.hasNext();){
-				String key = keyItr.next();
-				String value = columnProperties.get(key);
-				if (StringUtils.isNotEmpty(value)) {
-					columnElement.addAttribute(key, value);
-				}
-			}
+			Element columnElement = createColumnElement(columnMeta, jdbcEnv);
 			columnsElement.add(columnElement);
 		}
 		
 		return document;
 	}
 
+	protected Element createColumnElement(Map<String, String> columnMeta, JdbcEnviroment jdbcEnv) {
+		Map<String,String> columnProperties = columnProperties(columnMeta, jdbcEnv);
+		columnProperties.put("nativeColumnName", columnMeta.get(JdbcConstants.COLUMN_NAME));
+		Element columnElement = DocumentHelper.createElement("Column");
+		for (Iterator<String> keyItr = columnProperties.keySet().iterator(); keyItr.hasNext();){
+			String key = keyItr.next();
+			String value = columnProperties.get(key);
+			if (StringUtils.isNotEmpty(value)) {
+				columnElement.addAttribute(key, value);
+			}
+		}
+		return columnElement;
+	}
+
 	@Override
 	public Document mergeDocument(JdbcEnviroment jdbcEnv, String sql,
 			Document document) {
+		Element tableElement = document.getRootElement();
+		Element columnsElement = tableElement.element("Columns");
+		if (columnsElement == null) {
+			columnsElement = tableElement.addElement("Columns");
+		}
 		
-		return null;
+		Set<String> columnNameSet = new HashSet<String>();
+		for (@SuppressWarnings("unchecked")
+		Iterator<Element> itr = columnsElement.elementIterator(); itr.hasNext();) {
+			Element element = itr.next();
+			String columnName = element.attributeValue("columnName");
+			columnNameSet.add(columnName);
+		}
+		
+		List<Map<String,String>> columnMetas = this.listColumnMetas(jdbcEnv, sql);
+		for (Map<String,String> columnMeta: columnMetas) {
+			Element columnElement = createColumnElement(columnMeta, jdbcEnv);
+			String columnName = columnElement.attributeValue("columnName");
+			if (!columnNameSet.contains(columnName)) {
+				columnsElement.add(columnElement);
+			}
+		}
+		
+		return document;
 	}
 
 }

@@ -10,10 +10,10 @@ import com.bstek.dorado.jdbc.JdbcEnviroment;
  * 
  * @param <T>
  */
-public abstract class AbstractJdbcOperation<T extends AbstractJdbcContext> {
+public abstract class DbElementJdbcOperation<T extends AbstractJdbcContext> {
 	private T jdbcContext;
 
-	public AbstractJdbcOperation(DbElement dbElement, T jdbcContext) {
+	public DbElementJdbcOperation(DbElement dbElement, T jdbcContext) {
 		this.dbElement = dbElement;
 		this.jdbcContext = jdbcContext;
 	}

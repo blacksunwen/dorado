@@ -1,6 +1,6 @@
 package com.bstek.dorado.jdbc;
 
-import com.bstek.dorado.jdbc.model.AbstractJdbcOperation;
+import com.bstek.dorado.jdbc.model.DbElementJdbcOperation;
 import com.bstek.dorado.jdbc.model.DbElement;
 
 /**
@@ -10,7 +10,7 @@ import com.bstek.dorado.jdbc.model.DbElement;
  * 
  */
 public class JdbcDataProviderOperation extends
-		AbstractJdbcOperation<JdbcDataProviderContext> {
+		DbElementJdbcOperation<JdbcDataProviderContext> {
 
 	public JdbcDataProviderOperation(DbElement dbElement,
 			JdbcDataProviderContext jdbcContext) {

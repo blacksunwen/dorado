@@ -8,5 +8,5 @@ public interface DbTable extends DbElement {
 	
 	Column getColumn(String name);
 	
-	DbElementTrigger getTrigger();
+	TableTrigger getTrigger();
 }

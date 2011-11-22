@@ -45,26 +45,26 @@ public class Resolver_TableTest extends ConfigManagerTestSupport {
 		r = (Record)EntityUtils.toEntity(r, null);
 		
 		{
-			JdbcDataResolverContext jdbcContext = new JdbcDataResolverContext(table.getJdbcEnviroment(),null);
+			JdbcDataResolverContext jdbcContext = new JdbcDataResolverContext(table.getJdbcEnviroment(),null,null,null);
 			
 			r.getEntityEnhancer().setState(EntityState.DELETED);
 			JdbcRecordOperation operation = new JdbcRecordOperation(table, r, jdbcContext);
 			operation.execute();
 		}{
-			JdbcDataResolverContext jdbcContext = new JdbcDataResolverContext(table.getJdbcEnviroment(),null);
+			JdbcDataResolverContext jdbcContext = new JdbcDataResolverContext(table.getJdbcEnviroment(),null,null,null);
 			
 			r.getEntityEnhancer().setState(EntityState.NEW);
 			JdbcRecordOperation operation = new JdbcRecordOperation(table, r, jdbcContext);
 			operation.execute();
 		}{
-			JdbcDataResolverContext jdbcContext = new JdbcDataResolverContext(table.getJdbcEnviroment(),null);
+			JdbcDataResolverContext jdbcContext = new JdbcDataResolverContext(table.getJdbcEnviroment(),null,null,null);
 			
 			r.set("REPORTS_TO", "3");
 			r.getEntityEnhancer().setState(EntityState.MODIFIED);
 			JdbcRecordOperation operation = new JdbcRecordOperation(table, r, jdbcContext);
 			operation.execute();
 		}{
-			JdbcDataResolverContext jdbcContext = new JdbcDataResolverContext(table.getJdbcEnviroment(),null);
+			JdbcDataResolverContext jdbcContext = new JdbcDataResolverContext(table.getJdbcEnviroment(),null,null,null);
 			
 			r.getEntityEnhancer().setState(EntityState.DELETED);
 			JdbcRecordOperation operation = new JdbcRecordOperation(table, r, jdbcContext);

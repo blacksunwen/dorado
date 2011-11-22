@@ -2,7 +2,7 @@ package com.bstek.dorado.jdbc.model.table;
 
 import com.bstek.dorado.core.el.Expression;
 import com.bstek.dorado.data.variant.VariantUtils;
-import com.bstek.dorado.jdbc.config.xml.JdbcXmlConstants;
+import com.bstek.dorado.jdbc.config.xml.XmlConstants;
 import com.bstek.dorado.jdbc.model.DbElementDefinition;
 
 public class TableDefinition extends DbElementDefinition {
@@ -16,8 +16,8 @@ public class TableDefinition extends DbElementDefinition {
 
 	public boolean isAutoCreateColumns() {
 		if (autoCreateColumns == null) {
-			Object value = this.getProperties().get(JdbcXmlConstants.AUTO_CREATE_COLUMNS);
-			this.getProperties().remove(JdbcXmlConstants.AUTO_CREATE_COLUMNS);
+			Object value = this.getProperties().get(XmlConstants.AUTO_CREATE_COLUMNS);
+			this.getProperties().remove(XmlConstants.AUTO_CREATE_COLUMNS);
 			
 			try {
 				value = this.getFinalValueOrExpression(value, null);
@@ -42,14 +42,14 @@ public class TableDefinition extends DbElementDefinition {
 	}
 	
 	public String getCatalog() {
-		return (String)this.getProperties().get(JdbcXmlConstants.CATALOG);
+		return (String)this.getProperties().get(XmlConstants.CATALOG);
 	}
 	
 	public String getSchema() {
-		return (String)this.getProperties().get(JdbcXmlConstants.SCHEMA);
+		return (String)this.getProperties().get(XmlConstants.SCHEMA);
 	}
 	
 	public String getTableName() {
-		return (String)this.getProperties().get(JdbcXmlConstants.TABLE_NAME);
+		return (String)this.getProperties().get(XmlConstants.TABLE_NAME);
 	}
 }

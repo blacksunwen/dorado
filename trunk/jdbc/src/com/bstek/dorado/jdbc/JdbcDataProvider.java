@@ -4,7 +4,7 @@ import com.bstek.dorado.data.provider.AbstractDataProvider;
 import com.bstek.dorado.data.provider.Page;
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.jdbc.model.DbElement;
-import com.bstek.dorado.jdbc.model.DbElementTrigger;
+import com.bstek.dorado.jdbc.model.TableTrigger;
 import com.bstek.dorado.jdbc.model.DbTable;
 import com.bstek.dorado.util.Assert;
 
@@ -51,7 +51,7 @@ public class JdbcDataProvider extends AbstractDataProvider {
 		Assert.isTrue(dbElement instanceof DbTable, "["+dbElement.getName()+"] is not table.");
 
 		DbTable table = (DbTable)dbElement;
-		DbElementTrigger trigger = table.getTrigger();
+		TableTrigger trigger = table.getTrigger();
 		if (trigger != null) {
 			trigger.doQuery(operation);
 		} else {

@@ -16,8 +16,18 @@ import com.bstek.dorado.jdbc.type.JdbcType;
  */
 public interface Dialect {
 
+	/**
+	 * 构造{@link JoinModel}的SQL语句的token
+	 * @param joinModel
+	 * @return
+	 */
 	String token(JoinModel joinModel);
 	
+	/**
+	 * 构造{@link Order}的SQL语句的token
+	 * @param order
+	 * @return
+	 */
 	String token(Order order);
 
 	/**

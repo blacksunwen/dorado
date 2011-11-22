@@ -25,6 +25,7 @@ public abstract class Resolver extends AbstractTextualResolver {
 	public static final String PARAM_TBTY = "TBTY"; //tableType
 	public static final String PARAM_TBNM = "TBNM"; //tableName
 	public static final String PARAM_SQL  = "SQL";
+	public static final String PARAM_XML  = "XML";
 	public static final String PARAM_GENERATE_CATALOG = "generateCatalog";
 	public static final String PARAM_GENERATE_SCHEMA  = "generateSchema";
 	
