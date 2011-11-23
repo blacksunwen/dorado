@@ -26,7 +26,6 @@ public class Dialog extends FloatPanel {
 
 	private boolean minimizeable;
 	private boolean minimized;
-	private DialogStatus status = DialogStatus.normal;
 
 	public Dialog() {
 		setShadowMode(FloatControlShadowMode.frame);
@@ -89,15 +88,6 @@ public class Dialog extends FloatPanel {
 
 	public void setMinimized(boolean minimized) {
 		this.minimized = minimized;
-	}
-
-	@ViewAttribute(defaultValue = "normal")
-	public DialogStatus getStatus() {
-		return status;
-	}
-
-	public void setStatus(DialogStatus status) {
-		this.status = status;
 	}
 
 	/**
