@@ -212,7 +212,9 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 		<d:impl-type name="com.bstek.dorado.view.widget.base.menu.ControlMenuItem" />
 	</bean>
 	<bean id="com.bstek.dorado.view.widget.base.menu.Menu" parent="dorado.defaultComponentTypeRegister" />
-
+	<bean id="com.bstek.dorado.view.widget.base.DatePicker" parent="dorado.defaultComponentTypeRegister" />
+	<bean id="com.bstek.dorado.view.widget.base.YearMonthPicker" parent="dorado.defaultComponentTypeRegister" />
+	
 	<bean id="com.bstek.dorado.view.widget.form.Label" parent="dorado.defaultComponentTypeRegister" />
 	<bean id="com.bstek.dorado.view.widget.form.DataLabel" parent="dorado.defaultComponentTypeRegister" />
 	<bean id="com.bstek.dorado.view.widget.form.Link" parent="dorado.defaultComponentTypeRegister" />
