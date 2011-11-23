@@ -68,12 +68,42 @@
 			/**
 			 * 是否显示TimeSpinner。
 			 * @attribute
-			 * @default true
+			 * @default false
 			 * @type boolean
 			 */
 			showTimeSpinner: {
 				defaultValue: false
-			}
+			},
+
+            /**
+			 * 是否显示今天按钮，仅在渲染前设置有效。
+			 * @attribute
+			 * @default true
+			 * @type boolean
+			 */
+            showTodayButton: {
+                defaultValue: true
+            },
+
+            /**
+			 * 是否显示清除按钮，仅在渲染前设置有效。
+			 * @attribute writeBeforeReady
+			 * @default true
+			 * @type boolean
+			 */
+            showClearButton: {
+                defaultValue: true
+            },
+
+            /**
+			 * 是否显示确定按钮，仅在渲染前设置有效。
+			 * @attribute
+			 * @default true
+			 * @type boolean
+			 */
+            showConfirmButton: {
+                defaultValue: true
+            }
 		},
 
 		EVENTS: /** @scope dorado.widget.DatePicker.prototype */ {
@@ -93,7 +123,18 @@
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
 			 */
-			onCancel: {}
+			onCancel: {},
+
+            /**
+			 * 当日期单元格要刷新的时候会触发此事件。
+			 * @param {Object} self 事件的发起者，即组件本身。
+			 * @param {Object} arg 事件参数。
+             * @param {HtmlElement} arg.cell 要刷新的cell的dom。
+			 * @param {Date} arg.date 要刷新的cell的日期。
+             * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+			 * @event
+			 */
+			onRefreshDateCell: {}
 		},
 
 		/**
@@ -349,9 +390,18 @@
 								cell.className = null;
 							}
 							cell.innerHTML = count++;
+                            picker.fireEvent("onRefreshDateCell", picker, {
+                                date: new Date(date.getFullYear(), date.getMonth(), parseInt(cell.innerHTML, 10)),
+                                cell: cell
+                            });
 						} else {
-							cell.innerHTML = lastMonthDay - (day - j) + 1;
+							cell.innerHTML = lastMonthDay - (day - j % 7) + 1;
+
 							cell.className = "pre-month";
+                            picker.fireEvent("onRefreshDateCell", picker, {
+                                date: new Date(date.getFullYear(), date.getMonth() - 1, parseInt(cell.innerHTML, 10)),
+                                cell: cell
+                            });
 						}
 					} else {
 						if (count <= maxDay) {
@@ -361,9 +411,17 @@
 								cell.className = null;
 							}
 							cell.innerHTML = count++;
+                            picker.fireEvent("onRefreshDateCell", picker, {
+                                date: new Date(date.getFullYear(), date.getMonth(), parseInt(cell.innerHTML, 10)),
+                                cell: cell
+                            });
 						} else {
 							cell.innerHTML = count++ - maxDay;
 							cell.className = "next-month";
+                            picker.fireEvent("onRefreshDateCell", picker, {
+                                date: new Date(date.getFullYear(), date.getMonth() + 1, parseInt(cell.innerHTML, 10)),
+                                cell: cell
+                            });
 						}
 					}
 				}
@@ -477,40 +535,45 @@
 			
 			picker._doms = doms;
 
-			var todayButton = new dorado.widget.Button({
-				caption: $resource("dorado.baseWidget.DatePickerToday"),
-				listener: {
-					onClick: function() {
-						picker.set("date", new Date());
-					}
-				}
-			});
-			todayButton.render(doms.buttonBlock);
-			
-			var clearButton = new dorado.widget.Button({
-				caption: $resource("dorado.baseWidget.DatePickerClear"),
-				listener: {
-					onClick: function() {
-						picker.fireEvent("onPick", picker, null);
-					}
-				}
-			});
-			clearButton.render(doms.buttonBlock);
-			
-			var okButton = new dorado.widget.Button({
-				caption: $resource("dorado.baseWidget.DatePickerConfirm"),
-				listener: {
-					onClick: function() {
-						picker.fireEvent("onPick", picker, new Date(picker._date.getTime()));
-					}
-				}
-			});
-			okButton.render(doms.buttonBlock);
-			
-			picker.registerInnerControl(okButton);
-			picker.registerInnerControl(clearButton);
-			picker.registerInnerControl(todayButton);
-			
+            if (picker._showTodayButton) {
+                var todayButton = new dorado.widget.Button({
+                    caption: $resource("dorado.baseWidget.DatePickerToday"),
+                    listener: {
+                        onClick: function() {
+                            picker.set("date", new Date());
+                        }
+                    }
+                });
+                todayButton.render(doms.buttonBlock);
+                picker.registerInnerControl(todayButton);
+            }
+
+            if (picker._showClearButton) {
+                var clearButton = new dorado.widget.Button({
+                    caption: $resource("dorado.baseWidget.DatePickerClear"),
+                    listener: {
+                        onClick: function() {
+                            picker.fireEvent("onPick", picker, null);
+                        }
+                    }
+                });
+                clearButton.render(doms.buttonBlock);
+                picker.registerInnerControl(clearButton);
+            }
+
+            if (picker._showConfirmButton) {
+                var confirmButton = new dorado.widget.Button({
+                    caption: $resource("dorado.baseWidget.DatePickerConfirm"),
+                    listener: {
+                        onClick: function() {
+                            picker.fireEvent("onPick", picker, new Date(picker._date.getTime()));
+                        }
+                    }
+                });
+                confirmButton.render(doms.buttonBlock);
+                picker.registerInnerControl(confirmButton);
+            }
+
 			var lastOverCell = null, dateTable = doms.dateTable;
 			
 			if (dorado.Browser.msie && dorado.Browser.version == 6) {
