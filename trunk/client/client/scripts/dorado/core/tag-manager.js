@@ -98,6 +98,14 @@ dorado.TagManager = {
  * @param {Object[]} objects 要进行的组合的对象的数组。
  */
 dorado.ObjectGroup = $class({
+	/**
+	 * @name dorado.AttributeSupport#objects
+	 * @property
+	 * @type dorado.AttributeSupport[]
+	 * @description 对象数组。
+	 */
+	// =====
+	
 	constructor: function(objects) {
 		if (objects && !(objects instanceof Array)) {
 			objects = [objects];
@@ -143,6 +151,22 @@ dorado.ObjectGroup = $class({
 				if (method instanceof Function) method.apply(object, Array.prototype.slice.call(arguments, 1));
 			}
 		}
+	},
+	
+	/**
+	 * 遍历对象。
+	 * @param {Function} fn 针对组中每一个对象的回调函数。此函数支持下列两个参数:
+	 * <ul>
+	 * <li>object - {dorado.AttributeSupport} 当前遍历到的对象。</li>
+	 * <li>[i] - {int} 当前遍历到的对象的下标。</li>
+	 * </ul>
+	 * 另外，此函数的返回值可用于通知系统是否要终止整个遍历操作。
+	 * 返回true或不返回任何数值表示继续执行遍历操作，返回false表示终止整个遍历操作。<br>
+	 * 此回调函数中的this指向正在被遍历的对象数组。
+	 */
+	each: function(callback) {
+		if (!this.objects) return;
+		this.objects.each(callback);
 	}
 });
 
