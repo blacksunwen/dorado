@@ -111,6 +111,7 @@
 			 * 当用户点击日期表格上的日期，或者点击确定按钮时触发此事件。
 			 * @param {Object} self 事件的发起者，即组件本身。
 			 * @param {Object} arg 事件参数。
+             * @param {Object} arg.date 用户选择的日期。
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
 			 */
@@ -553,7 +554,7 @@
                     caption: $resource("dorado.baseWidget.DatePickerClear"),
                     listener: {
                         onClick: function() {
-                            picker.fireEvent("onPick", picker, null);
+                            picker.fireEvent("onPick", picker, {});
                         }
                     }
                 });
@@ -566,7 +567,7 @@
                     caption: $resource("dorado.baseWidget.DatePickerConfirm"),
                     listener: {
                         onClick: function() {
-                            picker.fireEvent("onPick", picker, new Date(picker._date.getTime()));
+                            picker.fireEvent("onPick", picker, { date: new Date(picker._date.getTime()) });
                         }
                     }
                 });
@@ -612,7 +613,7 @@
 					}
 					picker.setDate(parseInt(element.innerHTML, 10), true);
 					
-					picker.fireEvent("onPick", picker, new Date(date.getTime()));
+					picker.fireEvent("onPick", picker, { date: new Date(date.getTime()) });
 				}
 			});
 			
@@ -838,7 +839,7 @@
 			var dropDown = this, box = $invokeSuper.call(this, arguments), picker = new dorado.widget.DatePicker({
 				listener: {
 					onPick: function(picker, value) {
-						dropDown.close(value);
+						dropDown.close(value.date);
 					},
 					onCancel: function() {
 						dropDown.close();
