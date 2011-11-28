@@ -45,6 +45,10 @@ public class ConfigurableDataConfigManager extends
 			.getLog(ConfigurableDataConfigManager.class);
 
 	private class RecalculateThread extends Thread {
+		public RecalculateThread() {
+			setDaemon(true);
+		}
+
 		@Override
 		public void run() {
 			try {
