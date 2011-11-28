@@ -34,6 +34,10 @@ public abstract class ReloadableDataConfigManagerSupport extends
 
 	private class ValidateThread extends Thread {
 		private boolean shouldStop = false;
+		
+		public ValidateThread() {
+			setDaemon(true);
+		}
 
 		public void kill() {
 			shouldStop = true;

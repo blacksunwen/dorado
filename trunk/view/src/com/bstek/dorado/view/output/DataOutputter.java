@@ -2,6 +2,7 @@ package com.bstek.dorado.view.output;
 
 import java.io.Writer;
 import java.sql.Time;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -13,10 +14,10 @@ import org.apache.commons.lang.StringEscapeUtils;
 
 import com.bstek.dorado.core.el.Expression;
 import com.bstek.dorado.data.JsonUtils;
-import com.bstek.dorado.data.entity.EntityWrapper;
 import com.bstek.dorado.data.entity.EntityEnhancer;
 import com.bstek.dorado.data.entity.EntityState;
 import com.bstek.dorado.data.entity.EntityUtils;
+import com.bstek.dorado.data.entity.EntityWrapper;
 import com.bstek.dorado.data.provider.Page;
 import com.bstek.dorado.data.provider.PagingList;
 import com.bstek.dorado.data.type.AggregationDataType;
@@ -154,7 +155,8 @@ public class DataOutputter implements Outputter {
 		if (EntityUtils.isSimpleValue(object)) {
 			if (object instanceof Date) {
 				Date d = (Date) object;
-				if (d instanceof Time || d.getTime() % ONE_HOUR != 0) {
+				if (d instanceof Time || d instanceof Timestamp
+						|| d.getTime() % ONE_HOUR != 0) {
 					json.value(TIME_FORMATTER.format(d));
 				} else {
 					json.value(DATE_FORMATTER.format(d));
