@@ -1,10 +1,13 @@
 package com.bstek.dorado.jdbc.support;
 
+import java.sql.DatabaseMetaData;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.sql.DataSource;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -17,6 +20,7 @@ import com.bstek.dorado.data.entity.EntityUtils;
 import com.bstek.dorado.data.provider.Page;
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.Dialect;
+import com.bstek.dorado.jdbc.JdbcConstants;
 import com.bstek.dorado.jdbc.JdbcDataProviderContext;
 import com.bstek.dorado.jdbc.JdbcDataProviderOperation;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
@@ -75,6 +79,30 @@ public abstract class AbstractDialect implements Dialect {
 		KeyGenerator<Object> kg = keyGeneratorMap.get(name);
 		Assert.notNull(kg, "could not look up for KeyGenerator named [" + name + "].");
 		return kg;
+	}
+	
+	public JdbcType jdbcType(Map<String,String> columnMeta) {
+		String dataType = columnMeta.get(JdbcConstants.DATA_TYPE);
+		if (StringUtils.isNotEmpty(dataType)) {
+			int code = Integer.valueOf(dataType);
+			List<JdbcType> jdbcTypes = this.getJdbcTypes();
+			for (JdbcType jdbcType: jdbcTypes) {
+				if (code == jdbcType.getSqlType()) {
+					return jdbcType;
+				}
+			}
+		}
+		
+		return null;
+	}
+	
+	public String propertyName(Map<String,String> columnMeta) {
+		String label = columnMeta.get(JdbcConstants.COLUMN_LABEL);
+		if (StringUtils.isEmpty(label)) {
+			return columnMeta.get(JdbcConstants.COLUMN_NAME);
+		} else {
+			return label;
+		}
 	}
 	
 	@SuppressWarnings("rawtypes")
@@ -429,4 +457,31 @@ public abstract class AbstractDialect implements Dialect {
 		
 		return null;
 	}
+	
+	private String defaultCatalog;
+	public String defaultCatalog(DataSource dataSource, DatabaseMetaData databaseMetaData) {
+		return defaultCatalog;
+	}
+	
+	private String defaultSchema;
+	public String defaultSchema(DataSource dataSource, DatabaseMetaData databaseMetaData) {
+		return defaultSchema;
+	}
+
+	public String getDefaultCatalog() {
+		return defaultCatalog;
+	}
+
+	public void setDefaultCatalog(String defaultCatalog) {
+		this.defaultCatalog = defaultCatalog;
+	}
+
+	public String getDefaultSchema() {
+		return defaultSchema;
+	}
+
+	public void setDefaultSchema(String defaultSchema) {
+		this.defaultSchema = defaultSchema;
+	}
+	
 }

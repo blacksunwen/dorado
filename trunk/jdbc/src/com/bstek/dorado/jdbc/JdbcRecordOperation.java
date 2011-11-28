@@ -59,7 +59,7 @@ public class JdbcRecordOperation extends
 	
 	@SuppressWarnings("unchecked")
 	public JdbcRecordOperation[] children(JdbcDataResolverItem item) {
-		String eName = item.getDbElement();
+		String eName = item.getTableName();
 		Object childValue = record.get(item.getName());
 		if (StringUtils.isNotEmpty(eName) && childValue != null) {
 			DbElement dbElement = JdbcUtils.getDbElement(eName); 

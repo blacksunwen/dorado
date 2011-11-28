@@ -1,5 +1,6 @@
 package com.bstek.dorado.jdbc.support;
 
+import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -23,7 +24,6 @@ import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.jdbc.support.MetaDataAccessException;
 import org.springframework.util.LinkedCaseInsensitiveMap;
 
-import com.bstek.dorado.jdbc.Dialect;
 import com.bstek.dorado.jdbc.JdbcConstants;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.key.KeyGenerator;
@@ -210,7 +210,7 @@ public class DefaultTableMetaDataGenerator implements TableMetaDataGenerator {
 	}
 	
 	protected String propertyName(Map<String,String> column, JdbcEnviroment jdbcEnv) {
-		return columnName(column, jdbcEnv);
+		return jdbcEnv.getDialect().propertyName(column);
 	}
 	
 	protected String keyGenerator(Map<String,String> column, JdbcEnviroment jdbcEnv) {
@@ -222,33 +222,111 @@ public class DefaultTableMetaDataGenerator implements TableMetaDataGenerator {
 	}
 	
 	protected String jdbcType(Map<String,String> column, JdbcEnviroment jdbcEnv) {
-		String dataType = column.get(JdbcConstants.DATA_TYPE);
-		if (StringUtils.isNotEmpty(dataType)) {
-			int code = Integer.valueOf(dataType);
-			Dialect dialect = jdbcEnv.getDialect();
-			List<JdbcType> jdbcTypes = dialect.getJdbcTypes();
-			for (JdbcType jdbcType: jdbcTypes) {
-				if (code == jdbcType.getSqlType()) {
-					return jdbcType.getName();
+		JdbcType jdbcType = jdbcEnv.getDialect().jdbcType(column);
+		if (jdbcType != null) {
+			return jdbcType.getName();
+		} else {
+			return null;
+		}
+	}
+	
+	private static class UsedTable {
+		String catalog; String schema; String table;
+		String usedCatalog; String usedSchema;String usedTable;
+		
+		public UsedTable(String catalog, String schema, String table) {
+			this.catalog = catalog;
+			this.schema = schema;
+			this.table = table;
+			
+			this.usedCatalog = catalog;
+			this.usedSchema = schema;
+			this.usedTable = table;
+		}
+		
+		public void init(JdbcEnviroment jdbcEnv) {
+			DataSource dataSource = jdbcEnv.getDataSource();
+			Connection conn = null;
+			try {
+				conn = dataSource.getConnection();
+				DatabaseMetaData dbmd = conn.getMetaData();
+				if (dbmd.supportsCatalogsInDataManipulation()) {
+					if (StringUtils.isEmpty(usedCatalog)) {
+						usedCatalog = jdbcEnv.getDialect().defaultCatalog(jdbcEnv.getDataSource(), dbmd);
+					}
+					
+					if (!dbmd.supportsMixedCaseIdentifiers()) {
+						if (dbmd.storesLowerCaseIdentifiers()) {
+							if (StringUtils.isNotEmpty(usedCatalog)){
+								usedCatalog = usedCatalog.toLowerCase();
+							} 
+						}
+						if (dbmd.storesUpperCaseIdentifiers()) {
+							if (StringUtils.isNotEmpty(usedCatalog)){
+								usedCatalog = usedCatalog.toUpperCase();
+							}
+						}
+					}
+				}
+				
+				if (dbmd.supportsSchemasInDataManipulation()) {
+					if (StringUtils.isEmpty(usedSchema)) {
+						usedSchema = jdbcEnv.getDialect().defaultSchema(jdbcEnv.getDataSource(), dbmd);
+					}
+					
+					if (!dbmd.supportsMixedCaseIdentifiers()) {
+						if (dbmd.storesLowerCaseIdentifiers()) {
+							if (StringUtils.isNotEmpty(usedSchema)){
+								usedSchema = usedSchema.toLowerCase();
+							} 
+						}
+						if (dbmd.storesUpperCaseIdentifiers()) {
+							if (StringUtils.isNotEmpty(usedSchema)){
+								usedSchema = usedSchema.toUpperCase();
+							}
+						}
+					}
+				}
+				
+				if (!dbmd.supportsMixedCaseIdentifiers()) {
+					if (dbmd.storesLowerCaseIdentifiers()) {
+						if (StringUtils.isNotEmpty(usedTable)){
+							usedTable = usedTable.toLowerCase();
+						} 
+					}
+					if (dbmd.storesUpperCaseIdentifiers()) {
+						if (StringUtils.isNotEmpty(usedTable)){
+							usedTable = usedTable.toUpperCase();
+						}
+					}
+				}
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			} finally {
+				if (conn != null) {
+					try {
+						conn.close();
+					} catch (SQLException e) {
+					}
 				}
 			}
 		}
-		
-		return null;
 	}
-	
 	@Override
 	public Document createDocument(String catalog, String schema, String table,
 			TableGeneratorOption option) {
+		JdbcEnviroment jdbcEnv = option.getJdbcEnviroment();
+		UsedTable usedTable = new UsedTable(catalog, schema, table);
+		usedTable.init(jdbcEnv);
+		
 		Document document = DocumentHelper.createDocument();
-		Element tableElement = this.createTableElement(catalog, schema, table, option);
+		Element tableElement = this.createTableElement(usedTable, option);
 		document.setRootElement(tableElement);
 		
 		List<Element> keyColumnElementList = new ArrayList<Element>();
 		List<Element> columnElementList = new ArrayList<Element>();
-		JdbcEnviroment jdbcEnv = option.getJdbcEnviroment();
 
-		List<Map<String,String>> columnMetaList = this.listColumnMetas(jdbcEnv, catalog, schema, table);
+		List<Map<String,String>> columnMetaList = this.listColumnMetas(jdbcEnv, usedTable.usedCatalog, usedTable.usedSchema, usedTable.usedTable);
 		for (Map<String,String> columnMeta: columnMetaList) {
 			Element element = createColumnElement(columnMeta, jdbcEnv);
 			if (element.getName().equals("KeyColumn")) {
@@ -269,21 +347,20 @@ public class DefaultTableMetaDataGenerator implements TableMetaDataGenerator {
 		return document;
 	}
 	
-	protected Element createTableElement(String catalog, String schema, String table,
-			TableGeneratorOption option) {
+	protected Element createTableElement(UsedTable usedTable, TableGeneratorOption option) {
 		JdbcEnviroment jdbcEnv = option.getJdbcEnviroment();
-		Map<String,String> tableMeta = this.tableMeta(jdbcEnv, catalog, schema, table);
+		Map<String,String> tableMeta = this.tableMeta(jdbcEnv, usedTable.usedCatalog, usedTable.usedSchema, usedTable.usedTable);
 		
 		String name = tableName(tableMeta, option.getJdbcEnviroment());
 		Element tableElement = DocumentHelper.createElement("Table");
 		tableElement.addAttribute("name", name);
-		tableElement.addAttribute("tableName", table);
+		tableElement.addAttribute("tableName", usedTable.table);
 
-		if (option.isGenerateCatalog() && StringUtils.isNotEmpty(catalog)) {
-			tableElement.addAttribute("catalog", catalog);
+		if (option.isGenerateCatalog() && StringUtils.isNotEmpty(usedTable.catalog)) {
+			tableElement.addAttribute("catalog", usedTable.catalog);
 		}
-		if (option.isGenerateSchema() && StringUtils.isNotEmpty(schema)) {
-			tableElement.addAttribute("schema", schema);
+		if (option.isGenerateSchema() && StringUtils.isNotEmpty(usedTable.schema)) {
+			tableElement.addAttribute("schema", usedTable.schema);
 		}
 		
 		return tableElement;
@@ -316,6 +393,9 @@ public class DefaultTableMetaDataGenerator implements TableMetaDataGenerator {
 	public Document mergeDocument(String catalog, String schema, String table,
 			TableGeneratorOption option, Document document) {
 		JdbcEnviroment jdbcEnv = option.getJdbcEnviroment();
+		UsedTable usedTable = new UsedTable(catalog, schema, table);
+		usedTable.init(jdbcEnv);
+		
 		Element tableElement = document.getRootElement();
 		Element columnsElement = tableElement.element("Columns");
 		if (columnsElement == null) {
@@ -331,7 +411,7 @@ public class DefaultTableMetaDataGenerator implements TableMetaDataGenerator {
 			columnNameSet.add(columnName);
 		}
 		
-		List<Map<String,String>> columnMetaList = this.listColumnMetas(jdbcEnv, catalog, schema, table);
+		List<Map<String,String>> columnMetaList = this.listColumnMetas(jdbcEnv, usedTable.usedCatalog, usedTable.usedSchema, usedTable.usedTable);
 		for (Map<String,String> columnMeta: columnMetaList) {
 			Element columnElement = createColumnElement(columnMeta, jdbcEnv);
 			String columnName = columnElement.attributeValue("columnName");

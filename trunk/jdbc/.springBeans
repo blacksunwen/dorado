@@ -8,8 +8,6 @@
 	<enableImports><![CDATA[false]]></enableImports>
 	<configs>
 		<config>src/com/bstek/dorado/jdbc/context.xml</config>
-		<config>test/test/com/bstek/jdbc/runtime/test-context.xml</config>
-		<config>src/com/bstek/dorado/jdbc/jdbc-type.xml</config>
 		<config>src/com/bstek/dorado/jdbc/jdbc-key-generator.xml</config>
 		<config>src/com/bstek/dorado/jdbc/jdbc-ide.xml</config>
 		<config>src/com/bstek/dorado/jdbc/servlet-context.xml</config>
