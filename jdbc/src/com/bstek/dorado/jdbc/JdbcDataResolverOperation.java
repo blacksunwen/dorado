@@ -29,7 +29,7 @@ public class JdbcDataResolverOperation {
 	public void execute() {
 		for (JdbcDataResolverItem item: jdbcContext.getResolverItems()) {
 			String iName = item.getName();
-			String eName = item.getDbElement();
+			String eName = item.getTableName();
 			Assert.notEmpty(iName, "value of name property must not be empty.");
 			
 			if (StringUtils.isNotEmpty(eName)) {
@@ -54,7 +54,7 @@ public class JdbcDataResolverOperation {
 	}
 	
 	protected void doResolve(JdbcDataResolverItem item, Record record, JdbcDataResolverContext jdbcContext) {
-		String eName = item.getDbElement();
+		String eName = item.getTableName();
 		DbElement dbElement = JdbcUtils.getDbElement(eName); 
 		JdbcRecordOperation operation = new JdbcRecordOperation(dbElement, record, jdbcContext);
 		

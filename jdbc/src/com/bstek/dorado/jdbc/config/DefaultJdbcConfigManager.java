@@ -229,7 +229,7 @@ public class DefaultJdbcConfigManager implements JdbcConfigManager, ApplicationC
 		
 		definition.setDefaultImpl(definitionType.getName());
 		
-		definition.setProperty("dbElement", name);
+		definition.setProperty("tableName", name);
 		
 		return definition;
 	}

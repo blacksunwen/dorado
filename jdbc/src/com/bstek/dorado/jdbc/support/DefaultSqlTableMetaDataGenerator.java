@@ -19,7 +19,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
-import com.bstek.dorado.jdbc.Dialect;
 import com.bstek.dorado.jdbc.JdbcConstants;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.meta.SqlTableMetaDataGenerator;
@@ -28,8 +27,7 @@ import com.bstek.dorado.jdbc.type.JdbcType;
 public class DefaultSqlTableMetaDataGenerator implements
 		SqlTableMetaDataGenerator {
 
-	@Override
-	public Map<String, String> columnProperties(Map<String, String> columnMeta,
+	protected Map<String, String> columnProperties(Map<String, String> columnMeta,
 			JdbcEnviroment jdbcEnv) {
 		Map<String, String> properties = new HashMap<String, String>(3);
 		
@@ -55,23 +53,16 @@ public class DefaultSqlTableMetaDataGenerator implements
 	}
 	
 	protected String propertyName(Map<String,String> column, JdbcEnviroment jdbcEnv) {
-		return columnName(column, jdbcEnv);
+		return jdbcEnv.getDialect().propertyName(column);
 	}
 	
 	protected String jdbcType(Map<String,String> column, JdbcEnviroment jdbcEnv) {
-		String dataType = column.get(JdbcConstants.DATA_TYPE);
-		if (StringUtils.isNotEmpty(dataType)) {
-			int code = Integer.valueOf(dataType);
-			Dialect dialect = jdbcEnv.getDialect();
-			List<JdbcType> jdbcTypes = dialect.getJdbcTypes();
-			for (JdbcType jdbcType: jdbcTypes) {
-				if (code == jdbcType.getSqlType()) {
-					return jdbcType.getName();
-				}
-			}
+		JdbcType jdbcType = jdbcEnv.getDialect().jdbcType(column);
+		if (jdbcType != null) {
+			return jdbcType.getName();
+		} else {
+			return null;
 		}
-		
-		return null;
 	}
 	
 	public List<Map<String,String>> listColumnMetas(JdbcEnviroment jdbcEnv, String sql) {

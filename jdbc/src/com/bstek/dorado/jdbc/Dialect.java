@@ -1,6 +1,10 @@
 package com.bstek.dorado.jdbc;
 
+import java.sql.DatabaseMetaData;
 import java.util.List;
+import java.util.Map;
+
+import javax.sql.DataSource;
 
 import com.bstek.dorado.jdbc.key.KeyGenerator;
 import com.bstek.dorado.jdbc.model.autotable.Order;
@@ -127,4 +131,26 @@ public interface Dialect {
 	 * @param operation
 	 */
 	void execute(JdbcRecordOperation operation);
+	
+	/**
+	 * 根据Column的数据库属性获取{@link com.bstek.dorado.jdbc.type.JdbcType}，用于IDE
+	 * @param columnMeta
+	 * @return
+	 */
+	JdbcType jdbcType(Map<String,String> columnMeta);
+	
+	/**
+	 * 根据Column的数据库属性获取propertyName，用于IDE
+	 * @param columnMeta
+	 * @return
+	 */
+	String propertyName(Map<String,String> columnMeta);
+	
+	
+	///////////////////////////////////////////////////////////////
+	String defaultCatalog(DataSource dataSource, DatabaseMetaData databaseMetaData);
+	
+	String defaultSchema(DataSource dataSource, DatabaseMetaData databaseMetaData);
+	
+	
 }

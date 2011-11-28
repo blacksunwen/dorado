@@ -5,7 +5,6 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 	http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dorado-7.0.xsd">
 
-	<import resource="jdbc-type.xml"/>
 	<import resource="jdbc-key-generator.xml"/>
 	<import resource="jdbc-ide.xml"/>
 	<import resource="jdbc-parser.xml"/>
@@ -76,6 +75,7 @@
 				<bean class="com.bstek.dorado.jdbc.type.LongvarcharString"/>
 				<bean class="com.bstek.dorado.jdbc.type.NcharString"/>
 				<bean class="com.bstek.dorado.jdbc.type.NvarcharString"/>
+				<bean class="com.bstek.dorado.jdbc.type.ClobString"/>
 				<bean class="com.bstek.dorado.jdbc.type.DateDate"/>
 				<bean class="com.bstek.dorado.jdbc.type.TimeDate"/>
 				<bean class="com.bstek.dorado.jdbc.type.TimestampDate"/>
@@ -83,9 +83,13 @@
 			</list>
 		</property>
 	</bean>
-	<bean id="dorado.jdbc.h2Dialect" class="com.bstek.dorado.jdbc.support.h2.H2Dialect" parent="dorado.dialectTemplate" abstract="true"/>
+	<bean id="dorado.jdbc.h2Dialect" class="com.bstek.dorado.jdbc.support.h2.H2Dialect" parent="dorado.dialectTemplate" abstract="true">
+	   <property name="defaultSchema" value="PUBLIC"/>
+	</bean>
 	<bean id="dorado.jdbc.oracleDialect" class="com.bstek.dorado.jdbc.support.oracle.OracleDialect" parent="dorado.dialectTemplate" abstract="true"/>
-	<bean id="dorado.jdbc.mssqlDialect" class="com.bstek.dorado.jdbc.support.mssql.MssqlDialect" parent="dorado.dialectTemplate" abstract="true"/>
+	<bean id="dorado.jdbc.mssqlDialect" class="com.bstek.dorado.jdbc.support.mssql.MssqlDialect" parent="dorado.dialectTemplate" abstract="true">
+	   <property name="defaultSchema" value="dbo"/>
+	</bean>
 	<bean id="dorado.jdbc.mysqlDialect" class="com.bstek.dorado.jdbc.support.mysql.MysqlDialect" parent="dorado.dialectTemplate" abstract="true"/>
 	<bean id="dorado.jdbc.db2Dialect" class="com.bstek.dorado.jdbc.support.db2.Db2Dialect" parent="dorado.dialectTemplate" abstract="true"/>
 	<bean id="dorado.jdbc.derbyDialect" class="com.bstek.dorado.jdbc.support.derby.DerbyDialect" parent="dorado.dialectTemplate" abstract="true"/>

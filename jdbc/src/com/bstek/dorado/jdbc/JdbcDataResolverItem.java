@@ -12,7 +12,7 @@ public class JdbcDataResolverItem {
 
 	private String name;
 	
-	private String dbElement;
+	private String tableName;
 	
 	private String parentKeyProperties;
 	
@@ -20,12 +20,12 @@ public class JdbcDataResolverItem {
 	
 	private List<JdbcDataResolverItem> items = new ArrayList<JdbcDataResolverItem>(5);
 	
-	public String getDbElement() {
-		return dbElement;
+	public String getTableName() {
+		return tableName;
 	}
 
-	public void setDbElement(String dbElement) {
-		this.dbElement = dbElement;
+	public void setTableName(String tableName) {
+		this.tableName = tableName;
 	}
 
 	public String getName() {
