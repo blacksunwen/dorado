@@ -1,6 +1,50 @@
 (function(plugins) {
     var htmleditor = dorado.htmleditor;
 
+    function initBrowserButton(button, id, action, pathEditor, callback) {
+        var dom = button._dom, parentNode = dom.parentNode, wrapNode = document.createElement("div");
+        $fly(wrapNode).addClass("browse-button-wrap");
+        if (dorado.Browser.msie && parseInt(dorado.Browser.version, 10) < 9) {
+            hiddenFile = document.createElement("<input type='file' name='filename' class='hidden-file'/>");
+        } else {
+            hiddenFile = document.createElement("input");
+            hiddenFile.type = "file";
+            hiddenFile.name = "filename";
+            hiddenFile.className = "hidden-file";
+        }
+
+        var form, hiddenFile, iframe, iframeName = id + "UploadIframe";
+        if (dorado.Browser.msie && parseInt(dorado.Browser.version, 10) < 9) {
+            iframe = document.createElement("<iframe name='" + iframeName + "'></iframe>")
+        } else {
+            iframe = document.createElement("iframe");
+            iframe.name = iframeName;
+        }
+        iframe.style.display = "none";
+
+        if (dorado.Browser.msie && parseInt(dorado.Browser.version, 10) < 9) {
+            form = document.createElement("<form name ='" + id + "UploadForm' action='" + action + "' enctype='multipart/form-data' method='post' target='" + iframeName + "'></form>");
+        } else {
+            form = document.createElement("form");
+            form.action = action;
+            form.method = "post";
+            form.target = iframeName;
+            form.enctype = "multipart/form-data";
+        }
+
+        hiddenFile.onchange = function() {
+            pathEditor.set("text", this.value);
+            form.submit();
+            window.uploadCallbackForHtmlEditorFn = callback;
+        };
+
+        form.appendChild(hiddenFile);
+        wrapNode.appendChild(form);
+        wrapNode.appendChild(iframe);
+        wrapNode.appendChild(dom);
+        parentNode.appendChild(wrapNode);
+    }
+
     plugins.Link = {
         iconClass: "html-editor-icon link",
         command: "link",
@@ -13,6 +57,11 @@
             }
 
             if (!plugin.dialog) {
+                var pathEditor = new dorado.widget.TextEditor({
+                    id: filePath,
+                    required: true,
+                    readOnly: true
+                });
                 plugin.dialog = new dorado.widget.Dialog({
                     caption: "插入超链接",
                     width: 480,
@@ -45,11 +94,7 @@
                                 cols: "*,100",
                                 elements: [{
                                     property: "url", label: "文件",
-                                    editor: new dorado.widget.TextEditor({
-                                        id: filePath,
-                                        required: true,
-                                        readOnly: true
-                                    })
+                                    editor: pathEditor
                                 },
                                 {
                                     $type: "Button",
@@ -59,7 +104,7 @@
                                             return;
                                         }
                                         self._inited = true;
-                                        var view = this, pathEditor = this.id(filePath), callback = function(url) {
+                                        var view = this, callback = function(url) {
                                             urlObject.set("url", url);
                                             var autoform = view.id(formId);
                                             if (autoform) autoform.refreshData();
@@ -212,48 +257,6 @@
         "default": ""
     };
 
-    function initBrowserButton(button, id, action, pathEditor, callback) {
-        var dom = button._dom, parentNode = dom.parentNode;
-        $fly(parentNode).addClass("browse-button-wrap");
-        if (dorado.Browser.msie && parseInt(dorado.Browser.version, 10) < 9) {
-            hiddenFile = document.createElement("<input type='file' name='filename' class='hidden-file'/>");
-        } else {
-            hiddenFile = document.createElement("input");
-            hiddenFile.type = "file";
-            hiddenFile.name = "filename";
-            hiddenFile.className = "hidden-file";
-        }
-
-        var form, hiddenFile, iframe, iframeName = id + "UploadIframe";
-        if (dorado.Browser.msie && parseInt(dorado.Browser.version, 10) < 9) {
-            iframe = document.createElement("<iframe name='" + iframeName + "'></iframe>")
-        } else {
-            iframe = document.createElement("iframe");
-            iframe.name = iframeName;
-        }
-        iframe.style.display = "none";
-
-        if (dorado.Browser.msie && parseInt(dorado.Browser.version, 10) < 9) {
-            form = document.createElement("<form name ='" + id + "UploadForm' action='" + action + "' enctype='multipart/form-data' method='post' target='" + iframeName + "'></form>");
-        } else {
-            form = document.createElement("form");
-            form.action = action;
-            form.method = "post";
-            form.target = iframeName;
-            form.enctype = "multipart/form-data";
-        }
-
-        hiddenFile.onchange = function() {
-            pathEditor.set("text", this.value);
-            form.submit();
-            window.uploadCallbackForHtmlEditorFn = callback;
-        };
-
-        form.appendChild(hiddenFile);
-        dom.appendChild(form);
-        parentNode.appendChild(iframe);
-    }
-
     plugins.Image = {
         iconClass: "html-editor-icon image",
         command: "inserthtml",
@@ -330,6 +333,13 @@
             };
 
             if (!plugin.dialog) {
+                var pathEditor = new dorado.widget.TextEditor({
+                    id: imagePathEditorId,
+                    required: true,
+                    entity: imageObject,
+                    property: "url",
+                    readOnly: true
+                });
                 plugin.dialog = new dorado.widget.Dialog({
                     caption: "插入图像",
                     width: 520,
@@ -528,13 +538,7 @@
                                     elements: [{
                                         property: "linkurl", label: "链接",
                                         layoutConstraint: { colSpan: 1 },
-                                        editor: new dorado.widget.TextEditor({
-                                            id: imagePathEditorId,
-                                            required: true,
-                                            entity: imageObject,
-                                            property: "url",
-                                            readOnly: true
-                                        })
+                                        editor: pathEditor
                                     },
                                     {
                                         $type: "Button",
@@ -545,11 +549,12 @@
                                             }
                                             self._inited = true;
 
-                                            var view = this, pathEditor = this.id(imagePathEditorId), callback = function(url) {
+                                            var view = this, callback = function(url) {
                                                 var urlEditor = view.id(imageUrlEditorId);
                                                 urlEditor.set("value", url);
                                                 urlEditor.post(true);
                                             };
+
                                             initBrowserButton(self, editor._uniqueId + "image", $url(editor._imageUploadPath), pathEditor, callback);
                                         }
                                     }]
@@ -1190,6 +1195,11 @@
             }
 
             if (!plugin.dialog) {
+                var pathEditor = new dorado.widget.TextEditor({
+                    id: filePath,
+                    required: true,
+                    readOnly: true
+                });
                 plugin.dialog = new dorado.widget.Dialog({
                     caption: "插入Flash",
                     width: 480,
@@ -1237,11 +1247,7 @@
                                 elements: [{
                                     property: "url", label: "链接",
                                     layoutConstraint: { colSpan: 1 },
-                                    editor: new dorado.widget.TextEditor({
-                                        id: filePath,
-                                        required: true,
-                                        readOnly: true
-                                    })
+                                    editor: pathEditor
                                 },
                                 {
                                     $type: "Button",
@@ -1252,7 +1258,7 @@
                                         }
                                         self._inited = true;
 
-                                        var view = this, pathEditor = this.id(filePath), callback = function(url) {
+                                        var view = this, callback = function(url) {
                                             flashObject.set("url", url);
                                             var autoform = view.id(formId), tabControl = view.id(tabControlId);
                                             if (autoform) autoform.refreshData();

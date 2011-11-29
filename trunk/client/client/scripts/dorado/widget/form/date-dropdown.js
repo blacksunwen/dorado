@@ -27,16 +27,6 @@
 			var temp = new Date(date.getTime());
 			temp.setDate(1);
 			return temp.getDay();
-		},
-		getDayPosition: function(date) {
-			if (date instanceof Date) {
-				var day = DateHelper.getFirstDayOfMonth(date), dayIndex = day + date.getDate(), columnIndex = dayIndex % 7 == 0 ? 7 : dayIndex % 7;
-				
-				return {
-					'rowIndex': (columnIndex == 0 ? Math.floor(dayIndex / 7) : Math.floor(dayIndex / 7) + 1),
-					'columnIndex': dayIndex % 7 == 0 ? 7 : dayIndex % 7
-				};
-			}
 		}
 	};
 
@@ -833,7 +823,16 @@
 			},
 			iconClass: {
 				defaultValue: "d-trigger-icon-date"
-			}
+			},
+            /**
+			 * 是否显示TimeSpinner。
+			 * @attribute
+			 * @default false
+			 * @type boolean
+			 */
+            showTimeSpinner: {
+                path: "picker.showTimeSpinner"
+            }
 		},
 		createDropDownBox: function(editor, dropDown) {
 			var dropDown = this, box = $invokeSuper.call(this, arguments), picker = new dorado.widget.DatePicker({
@@ -853,7 +852,9 @@
 			});
 			
 			box.set("control", picker);
-			
+
+            dropDown._picker = picker;
+
 			return box;
 		},
 		doOnKeyPress: function(evt) {

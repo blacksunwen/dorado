@@ -13,12 +13,14 @@
 		});
 
 		view.addChild(richEditor);
+
         view.addChild(new dorado.widget.Button({
             caption: "readOnly",
             onClick: function() {
                 richEditor.set("readOnly", true);
             }
         }));
+
         view.addChild(new dorado.widget.Button({
             caption: "not readOnly",
             onClick: function() {
