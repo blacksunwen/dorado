@@ -70,6 +70,7 @@
 				<bean class="com.bstek.dorado.jdbc.type.DoubleDouble"/>
 				<bean class="com.bstek.dorado.jdbc.type.NumricBigDecimal"/>
 				<bean class="com.bstek.dorado.jdbc.type.DecimalBigDecimal"/>
+				<bean class="com.bstek.dorado.jdbc.type.CharBoolean"/>
 				<bean class="com.bstek.dorado.jdbc.type.CharString"/>
 				<bean class="com.bstek.dorado.jdbc.type.VarcharString"/>
 				<bean class="com.bstek.dorado.jdbc.type.LongvarcharString"/>

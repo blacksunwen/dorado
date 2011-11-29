@@ -58,11 +58,11 @@ public abstract class JdbcUtils {
 		return dbElement;
 	}
 	
-	@SuppressWarnings("rawtypes")
-	public static Collection query(String tableName, Object parameter) {
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static Collection<Record> query(String tableName, Object parameter) {
 		Page page = new Page(0, 0);
 		query(tableName, parameter, page);
-		return page.getEntities();
+		return (Collection<Record>)page.getEntities();
 	}
 	
 	@SuppressWarnings("rawtypes") 

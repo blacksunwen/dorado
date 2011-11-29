@@ -7,7 +7,6 @@ import org.dom4j.Document;
 
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.model.ColumnDefinition;
-import com.bstek.dorado.jdbc.support.TableGeneratorOption;
 
 /**
  * 数据库Table属性的输出
@@ -83,19 +82,19 @@ public interface TableMetaDataGenerator {
 	 * @param catalog
 	 * @param schema
 	 * @param table
-	 * @param option
+	 * @param jdbcEnv
 	 * @return
 	 */
-	Document createDocument(String catalog, String schema, String table, TableGeneratorOption option);
+	Document createDocument(String catalog, String schema, String table, JdbcEnviroment jdbcEnv);
 	
 	/**
 	 * 在已有的Document基础上输出特定Table的Document对象
 	 * @param catalog
 	 * @param schema
 	 * @param table
-	 * @param option
+	 * @param jdbcEnv
 	 * @param oldDocument
 	 * @return
 	 */
-	Document mergeDocument(String catalog, String schema, String table, TableGeneratorOption option, Document oldDocument);
+	Document mergeDocument(String catalog, String schema, String table, JdbcEnviroment jdbcEnv, Document oldDocument);
 }

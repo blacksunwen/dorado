@@ -82,14 +82,10 @@ public abstract class AbstractDialect implements Dialect {
 	}
 	
 	public JdbcType jdbcType(Map<String,String> columnMeta) {
-		String dataType = columnMeta.get(JdbcConstants.DATA_TYPE);
-		if (StringUtils.isNotEmpty(dataType)) {
-			int code = Integer.valueOf(dataType);
-			List<JdbcType> jdbcTypes = this.getJdbcTypes();
-			for (JdbcType jdbcType: jdbcTypes) {
-				if (code == jdbcType.getSqlType()) {
-					return jdbcType;
-				}
+		List<JdbcType> jdbcTypes = this.getJdbcTypes();
+		for (JdbcType jdbcType: jdbcTypes) {
+			if (jdbcType.is(columnMeta)) {
+				return jdbcType;
 			}
 		}
 		
