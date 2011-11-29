@@ -7,6 +7,7 @@ dorado.widget.tree.TreeNodeRenderer = $extend(dorado.Renderer, {
 	createIconDom: function(tree) {
 		var icon = document.createElement("LABEL");
 		icon.className = "icon";
+		icon.style.display = "inline-block";
 		return icon;
 	},
 
@@ -63,20 +64,72 @@ dorado.widget.tree.TreeNodeRenderer = $extend(dorado.Renderer, {
 	 * 内部的渲染方法，供复写。
 	 */
 	doRender: function(cell, node) {
-		var tree = node._tree;
-
-		cell.style.paddingLeft = ((node.get("level") - 1) * tree._indent) + "px";
-
-		var cls = ["collapse-button", "expand-button"], buttonDom = cell.firstChild, $buttonDom = jQuery(buttonDom);
-		if (node.get("hasChild")) {
+		var tree = node._tree, level = node.get("level"), hasChild = node.get("hasChild");	
+		var container = (cell.tagName.toLowerCase() == "div") ? cell : cell.firstChild;	
+		container.style.paddingLeft = ((level - 1) * tree._indent) + "px";
+		
+		if (tree._showLines) {
+			var linesContainer = container.firstChild, lines = [];
+			linesContainer.style.width = (level * tree._indent) + "px";
+			linesContainer.style.height = tree._rowHeight + "px";
+			
+			var n = node, i = 0;
+			while (n && n._parent) {
+				var p = n._parent, pNodes = p._nodes;
+				if (i == 0) {
+					if (pNodes.get(pNodes.size - 1) == n) {
+						lines.push(hasChild ? 31 : 3);
+					}
+					else if (pNodes.get(0) == n && level == 1) {
+						lines.push(hasChild ? 11 : 1);
+					} 
+					else {
+						lines.push(hasChild ? 21 : 2);
+					} 
+				}
+				else if (pNodes.get(pNodes.size - 1) != n) {
+					lines.push(4);
+				}
+				else {
+					lines.push(0);
+				}
+				i++;
+				n = p;
+			}
+			
+			for (var i = 0; i < level; i++) {
+				var line = $DomUtils.getOrCreateChild(linesContainer, i, function() {
+					var line = $DomUtils.xCreate({
+						tagName: "LABEL",
+						style: {
+							background: "no-repeat center center",
+							display: "inline-block",
+							width: tree._indent,
+							height: "100%"
+						},
+					});
+					return line;
+				});
+				var lineType = lines[level - i - 1];
+				if (lineType) {
+					line.style.backgroundImage = "url(" + $url("skin>tree/tree-line" + lineType + ".gif") + ")";
+				} else {
+					line.style.backgroundImage = "url(none)";
+				}
+				$DomUtils.removeChildrenFrom(linesContainer, level);
+			}
+		}
+		
+		var cls = ["collapse-button", "expand-button"], buttonDomIndex = (tree._showLines) ? 1: 0
+		var buttonDom = container.childNodes[buttonDomIndex], $buttonDom = jQuery(buttonDom);
+		if (hasChild) {
 			if (node._expanded) cls.reverse();
 			$buttonDom.removeClass(cls[0]).addClass(cls[1]);
 		} else {
 			$buttonDom.removeClass(cls[0]).removeClass(cls[1]);
 		}
 		$buttonDom.toggleClass("button-expanding", !!node._expanding);
-		this.renderLabel(cell.lastChild, this.getLabel(node), node);
-
+		
 		var icon, iconClass;
 		if (node._expanded) {
 			icon = node.get("expandedIcon") || tree._defaultExpandedIcon;
@@ -85,17 +138,18 @@ dorado.widget.tree.TreeNodeRenderer = $extend(dorado.Renderer, {
 		icon = icon || node.get("icon") || tree._defaultIcon;
 		iconClass = iconClass || node.get("iconClass") || tree._defaultIconClass;
 
-		if (cell.doradoHasIcon) {
+		var iconDomIndex = buttonDomIndex + 1;
+		if (container.doradoHasIcon) {
 			if (!icon) {
-				cell.removeChild(cell.childNodes[1]);
-				cell.doradoHasIcon = false;
+				container.removeChild(container.childNodes[iconDomIndex]);
+				container.doradoHasIcon = false;
 			}
 		} else if (icon || iconClass) {
-			cell.insertBefore(this.createIconDom(tree), cell.childNodes[1]);
-			cell.doradoHasIcon = true;
+			container.insertBefore(this.createIconDom(tree), container.childNodes[iconDomIndex]);
+			container.doradoHasIcon = true;
 		}
 
-		var iconDom = cell.childNodes[1];
+		var iconDom = container.childNodes[iconDomIndex];
 		if (icon) {
 			$DomUtils.setBackgroundImage(iconDom, icon);
 		}
@@ -104,24 +158,26 @@ dorado.widget.tree.TreeNodeRenderer = $extend(dorado.Renderer, {
 		}
 
 		var checkable = node.get("checkable"), checkbox;
-		if (cell.subCheckboxId) {
-			checkbox = dorado.widget.Component.ALL[cell.subCheckboxId];
+		if (container.subCheckboxId) {
+			checkbox = dorado.widget.Component.ALL[container.subCheckboxId];
 			if (!checkable) {
 				checkbox.unrender();
 				tree.unregisterInnerControl(checkbox);
 				checkbox.destroy();
-				cell.subCheckboxId = null;
+				container.subCheckboxId = null;
 			}
 		} else if (checkable) {
-			checkbox = this.createCheckboxDom(tree), checkboxIndex = cell.doradoHasIcon ? 2 : 1;
-			checkbox.render(cell, cell.childNodes[checkboxIndex]);
+			checkbox = this.createCheckboxDom(tree), checkboxIndex = container.doradoHasIcon ? iconDomIndex + 1 : iconDomIndex;
+			checkbox.render(container, container.childNodes[checkboxIndex]);
 			tree.registerInnerControl(checkbox);
-			cell.subCheckboxId = checkbox._uniqueId;
+			container.subCheckboxId = checkbox._uniqueId;
 		}
 		if (checkable && checkbox) {
 			checkbox.set("checked", node.get("checked"));
 			checkbox.refresh();
 		}
+		
+		this.renderLabel(container.lastChild, this.getLabel(node), node);
 	},
 
 	/**
@@ -218,10 +274,10 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 		 * 每一层子节点相对于父节点的缩进距离。
 		 * @type int
 		 * @attribute
-		 * @default 16
+		 * @default 18
 		 */
 		indent: {
-			defaultValue: 16
+			defaultValue: 18
 		},
 
 		/**
@@ -305,6 +361,15 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 		 * @attribute
 		 */
 		defaultExpandedIconClass: {},
+		
+		/**
+		 * 是否显示连接树节点的线。
+		 * @type boolean
+		 * @attribute writeBeforeReady
+		 */
+		showLines: {
+			writeBeforeReady: true
+		},
 
 		/**
 		 * 返回树中的第一个有效节点。
@@ -531,25 +596,57 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 	},
 
 	createItemDomDetail: function(row, node) {
-		var cell = $DomUtils.xCreate({
+		var tree = node._tree, rowHeight = tree._rowHeight + "px";
+		var cellConfig = {
 			tagName: "TD",
 			className: "i-tree-node d-tree-node",
-			content: [{
-				tagName: "LABEL",
-				doradoType: "tree-button",
-				className: "button"
-			}, {
-				tagName: "LABEL",
-				className: "label",
-				whiteSpace: "no-wrap"
-			}]
-		});
-
-		var buttonDom = cell.firstChild, $buttonDom = jQuery(buttonDom), self = this;
+			vAlign: "center",
+			content: {
+				tagName: "DIV",
+				style: {
+					position: "relative",
+					height: rowHeight,
+					lineHeight: rowHeight
+				},
+				content: [{
+					tagName: "LABEL",
+					contextKey: "buttonDom",
+					doradoType: "tree-button",
+					className: "button",
+					style: {
+						display: "inline-block",
+						position: "relative"
+					}
+				}, {
+					tagName: "LABEL",
+					className: "label",
+					style: {
+						display: "inline-block"
+					}
+				}]
+			}
+		};
+		if (tree._showLines) {
+			cellConfig.content.content.insert({
+				tagName: "DIV",
+				className: "lines",
+				style: {
+					position: "absolute",
+					left: 0,
+					top: 0,
+					height: "100%"
+				}
+			}, 0);
+		}
+		
+		var context = {}, cell = $DomUtils.xCreate(cellConfig, null, context);
+		var buttonDom = context.buttonDom, $buttonDom = jQuery(buttonDom), self = this;
 		$buttonDom.mousedown(function() {
 			return false;
 		}).click(function() {
-			var row = buttonDom.parentNode.parentNode;
+			var row = $DomUtils.findParent(buttonDom, function(parentNode) {
+				return parentNode.tagName.toLowerCase() == "tr";
+			});
 			var node = $fly(row).data("item");
 			if (node.get("hasChild")) {
 				if (node._expanded) node.collapse();

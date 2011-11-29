@@ -2006,7 +2006,7 @@
 					items: [{
 						name: "sortAsc",
 						caption: $resource("dorado.grid.OptionMenuSortAscending"),
-						icon: "url(>skin>common/icons.gif) -280px -181px",
+						icon: "url(skin>common/icons.gif) -280px -181px",
 						onClick: function(self) {
 							if (menu._gridColumn instanceof dorado.widget.grid.DataColumn) {
 								grid.sort(menu._gridColumn);
@@ -2015,7 +2015,7 @@
 					}, {
 						name: "sortDesc",
 						caption: $resource("dorado.grid.OptionMenuSortDescending"),
-						icon: "url(>skin>common/icons.gif) -300px -181px",
+						icon: "url(skin>common/icons.gif) -300px -181px",
 						onClick: function(self) {
 							if (menu._gridColumn instanceof dorado.widget.grid.DataColumn) {
 								grid.sort(menu._gridColumn, true);
@@ -2026,7 +2026,7 @@
 					}), {
 						name: "fix",
 						caption: $resource("dorado.grid.OptionMenuFix"),
-						icon: "url(>skin>common/icons.gif) -60px -141px",
+						icon: "url(skin>common/icons.gif) -60px -141px",
 						onClick: function(self) {
 							grid.set("fixedColumnCount", menu._columnIndex + 1);
 						}
@@ -2041,7 +2041,7 @@
 					}), {
 						name: "group",
 						caption: $resource("dorado.grid.OptionMenuGroup"),
-						icon: "url(>skin>common/icons.gif) -80px -181px",
+						icon: "url(skin>common/icons.gif) -80px -181px",
 						onClick: function(self) {
 							var column = menu._gridColumn, grid = column._grid;
 							grid.set("groupProperty", column.get("property"));
@@ -2103,7 +2103,7 @@
 					}), {
 						name: "columns",
 						caption: $resource("dorado.grid.OptionMenuColumns"),
-						icon: "url(>skin>common/icons.gif) -120px -181px",
+						icon: "url(skin>common/icons.gif) -120px -181px",
 						items: []
 					}]
 				});

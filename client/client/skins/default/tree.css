@@ -35,9 +35,6 @@
 .d-tree-node .button {
 	width: 16px;
 	height: 16px;
-	margin-left: 4px;
-	margin-right: 4px;
-	margin-bottom: -3px;
 	cursor: pointer;
 	background: url(tree/tree-buttons.gif) no-repeat;
 }
@@ -60,6 +57,11 @@
 
 .d-tree-node .button-expanding {
 	background: url(tree/expanding.gif) no-repeat;
+}
+
+.d-tree-node .label {
+	position: relative;
+	top: -4px;
 }
 
 .d-tree-expanding-placeholder {
