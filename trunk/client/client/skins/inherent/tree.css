@@ -12,25 +12,15 @@
 }
 
 .i-tree-node .button {
-	display: inline-block;
 }
 
 .i-tree-node .icon {
-	display: inline-block;
 	width: 16px;
 	height: 16px;
 	margin-right: 4px;
-	margin-bottom: -3px;
 }
 
 .i-tree-node .i-checkbox-icononly {
+	height: 18px;
 	margin-right: 4px;
-	margin-bottom: -6px;
-}
-
-.i-tree-node .icon {
-	width: 16px;
-	height: 16px;
-	margin-right: 4px;
-	margin-bottom: -3px;
 }

@@ -7,7 +7,6 @@
 
 		<copy todir="${dist}/skins/${skin.name}">
 			<fileset dir="${src}/skins/${skin.name}">
-				<include name="_common.css" />
 				<include name="common.css" />
 				<include name="widget.css" />
 				<include name="list.css" />
@@ -45,6 +44,20 @@
 				<file name="checkbox.css" />
 				<file name="radio-button.css" />
 				<file name="form.css" />
+			</filelist>
+		</concat>
+
+		<concat destfile="${dist}/skins/${skin.name}/all.css" fixlastline="true" encoding="utf-8">
+			<filelist dir="${dist}/skins/${skin.name}">
+				<file name="common.css" />
+				<file name="widget.css" />
+				<file name="base-widget.css" />
+				<file name="list.css" />
+				<file name="grid.css" />
+				<file name="tree.css" />
+				<file name="block-view.css" />
+				<file name="debugger.css" />
+				<file name="portal.css" />
 			</filelist>
 		</concat>
 

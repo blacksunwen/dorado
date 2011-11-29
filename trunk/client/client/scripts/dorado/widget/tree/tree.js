@@ -26,7 +26,7 @@
 			},
 			
 			rowHeight: {
-				defaultValue: 22
+				defaultValue: 24
 			}
 		},
 		

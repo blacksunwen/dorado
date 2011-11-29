@@ -61,24 +61,56 @@
 		
 		doRender: function(dom, arg) {
 			if (!dom.firstChild || dom.firstChild.className != "i-tree-node d-tree-node") {
-				$fly(dom).empty().xCreate({
+				var tree = arg.grid, rowHeight = tree._rowHeight + "px";
+				var cellConfig = {
 					tagName: "DIV",
 					className: "i-tree-node d-tree-node",
+					style: {
+						position: "relative",
+						height: rowHeight,
+						lineHeight: rowHeight
+					},
 					content: [{
 						tagName: "LABEL",
+						contextKey: "buttonDom",
 						doradoType: "tree-button",
-						className: "button"
+						className: "button",
+						style: {
+							display: "inline-block",
+							position: "relative"
+						}
 					}, {
 						tagName: "LABEL",
 						className: "label",
-						whiteSpace: "no-wrap"
+						style: {
+							display: "inline-block"
+						}
 					}]
+				};
+				if (tree._showLines) {
+					cellConfig.content.insert({
+						tagName: "DIV",
+						className: "lines",
+						style: {
+							position: "absolute",
+							left: 0,
+							top: 0,
+							height: "100%"
+						}
+					}, 0);
+				}
+				
+				var context = {};
+				$fly(dom).empty().xCreate(cellConfig, null, {
+					context: context
 				});
-				var buttonDom = dom.firstChild.firstChild, $buttonDom = jQuery(buttonDom), self = this;
+				var buttonDom = context.buttonDom, $buttonDom = jQuery(buttonDom), self = this;
 				$buttonDom.mousedown(function() {
 					return false;
 				}).click(function() {
-					var row = buttonDom.parentNode.parentNode.parentNode.parentNode;
+					var row = $DomUtils.findParent(buttonDom, function(parentNode) {
+						return parentNode.tagName.toLowerCase() == "tr";
+					});
 					var node = $fly(row).data("item");
 					if (node.get("hasChild")) {
 						if (node._expanded) node.collapse();
@@ -149,7 +181,10 @@
 		$className: "dorado.widget.AbstractTreeGrid",
 		
 		ATTRIBUTES: /** @scope dorado.widget.TreeGrid.prototype */ {
-		
+			rowHeight: {
+				defaultValue: 22
+			},
+			
 			/**
 			 * 作为树型列的列名。
 			 * @type String
