@@ -1,5 +1,6 @@
 package com.bstek.dorado.view.widget.form.trigger;
 
+import com.bstek.dorado.annotation.ViewAttribute;
 import com.bstek.dorado.annotation.ViewObject;
 import com.bstek.dorado.annotation.Widget;
 import com.bstek.dorado.annotation.XmlNode;
@@ -11,4 +12,16 @@ import com.bstek.dorado.annotation.XmlNode;
 @Widget(name = "DateDropDown", category = "Trigger", dependsPackage = "base-widget")
 @ViewObject(prototype = "dorado.widget.DateDropDown", shortTypeName = "DateDropDown")
 @XmlNode(nodeName = "DateDropDown")
-public class DateDropDown extends DropDown {}
+public class DateDropDown extends DropDown {
+	private boolean showTimeSpinner;
+
+	public boolean isShowTimeSpinner() {
+		return showTimeSpinner;
+	}
+	
+	@ViewAttribute(defaultValue = "false")
+	public void setShowTimeSpinner(boolean showTimeSpinner) {
+		this.showTimeSpinner = showTimeSpinner;
+	}	
+	
+}
