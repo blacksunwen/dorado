@@ -147,10 +147,20 @@ public interface Dialect {
 	String propertyName(Map<String,String> columnMeta);
 	
 	
-	///////////////////////////////////////////////////////////////
+	/**
+	 * 默认的数据库catalog
+	 * @param dataSource
+	 * @param databaseMetaData
+	 * @return
+	 */
 	String defaultCatalog(DataSource dataSource, DatabaseMetaData databaseMetaData);
 	
+	/**
+	 * 默认的数据库catalog
+	 * @param dataSource
+	 * @param databaseMetaData
+	 * @return
+	 */
 	String defaultSchema(DataSource dataSource, DatabaseMetaData databaseMetaData);
-	
 	
 }

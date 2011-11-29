@@ -27,8 +27,8 @@ public class DefaultStoredProcedureGenerator implements
 		StoredProcedureGenerator {
 
 	@Override
-	public Document createDocument(JdbcEnviroment jdbcEnv, final String catalog,
-			final String schema, final String procedureName) {
+	public Document createDocument(JdbcEnviroment jdbcEnv, String catalog,
+			String schema, String procedureName) {
 		DataSource dataSource = jdbcEnv.getDataSource();
 		try {
 			Generator generator = new Generator(jdbcEnv, catalog, schema, procedureName);

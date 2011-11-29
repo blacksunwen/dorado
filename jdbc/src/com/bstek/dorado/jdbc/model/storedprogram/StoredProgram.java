@@ -81,25 +81,27 @@ public class StoredProgram extends AbstractDbElement {
 	}
 	
 	public ProgramParameter[] getOutableParameters() {
-		List<ProgramParameter> ps = outableParameters();
-		ProgramParameter[] outParameters = ps.toArray(new ProgramParameter[ps.size()]);
 		if (returnValueType != null) {
+			List<ProgramParameter> ps = outableParameters();
+			ProgramParameter[] outParameters = outableParameters().toArray(new ProgramParameter[ps.size()]);
 			ProgramParameter[] outParameters2 = new ProgramParameter[outParameters.length + 1];
 			ProgramParameter returnParameter = createReturnParameter();
 			outParameters2[0] = returnParameter;
-			System.arraycopy(outParameters2, 0, outParameters2, 1, outParameters.length);
+			System.arraycopy(outParameters, 0, outParameters2, 1, outParameters.length);
 			
 			return outParameters2;
 		} else {
+			List<ProgramParameter> ps = outableParameters();
+			ProgramParameter[] outParameters = ps.toArray(new ProgramParameter[ps.size()]);
 			return outParameters;
 		}
 		
 	}
 	
 	protected List<ProgramParameter> outableParameters() {
-		List<ProgramParameter> ins = new ArrayList<ProgramParameter>(parameters.size());
+		List<ProgramParameter> ins = new ArrayList<ProgramParameter>(parameters.size()+1);
 		for (ProgramParameter p: parameters) {
-			if (p.getType().equals(ProgramParameter.Type.OUT) && p.getType().equals(ProgramParameter.Type.INOUT)) {
+			if (p.getType().equals(ProgramParameter.Type.OUT) || p.getType().equals(ProgramParameter.Type.INOUT)) {
 				ins.add(p);
 			}
 		}

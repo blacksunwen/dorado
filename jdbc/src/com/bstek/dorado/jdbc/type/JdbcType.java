@@ -1,5 +1,7 @@
 package com.bstek.dorado.jdbc.type;
 
+import java.util.Map;
+
 import com.bstek.dorado.data.type.DataType;
 
 /**
@@ -54,4 +56,11 @@ public interface JdbcType {
 	 * @return
 	 */
 	Object toDB(Object obj);
+	
+	/**
+	 * 根据数据库中列属性，判断是否是该JdbcType
+	 * @param columnMeta
+	 * @return
+	 */
+	boolean is(Map<String,String> columnMeta);
 }

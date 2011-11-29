@@ -314,13 +314,12 @@ public class DefaultTableMetaDataGenerator implements TableMetaDataGenerator {
 	}
 	@Override
 	public Document createDocument(String catalog, String schema, String table,
-			TableGeneratorOption option) {
-		JdbcEnviroment jdbcEnv = option.getJdbcEnviroment();
+			JdbcEnviroment jdbcEnv) {
 		UsedTable usedTable = new UsedTable(catalog, schema, table);
 		usedTable.init(jdbcEnv);
 		
 		Document document = DocumentHelper.createDocument();
-		Element tableElement = this.createTableElement(usedTable, option);
+		Element tableElement = this.createTableElement(usedTable, jdbcEnv);
 		document.setRootElement(tableElement);
 		
 		List<Element> keyColumnElementList = new ArrayList<Element>();
@@ -347,19 +346,18 @@ public class DefaultTableMetaDataGenerator implements TableMetaDataGenerator {
 		return document;
 	}
 	
-	protected Element createTableElement(UsedTable usedTable, TableGeneratorOption option) {
-		JdbcEnviroment jdbcEnv = option.getJdbcEnviroment();
+	protected Element createTableElement(UsedTable usedTable, JdbcEnviroment jdbcEnv) {
 		Map<String,String> tableMeta = this.tableMeta(jdbcEnv, usedTable.usedCatalog, usedTable.usedSchema, usedTable.usedTable);
 		
-		String name = tableName(tableMeta, option.getJdbcEnviroment());
+		String name = tableName(tableMeta, jdbcEnv);
 		Element tableElement = DocumentHelper.createElement("Table");
 		tableElement.addAttribute("name", name);
 		tableElement.addAttribute("tableName", usedTable.table);
 
-		if (option.isGenerateCatalog() && StringUtils.isNotEmpty(usedTable.catalog)) {
+		if (StringUtils.isNotEmpty(usedTable.catalog)) {
 			tableElement.addAttribute("catalog", usedTable.catalog);
 		}
-		if (option.isGenerateSchema() && StringUtils.isNotEmpty(usedTable.schema)) {
+		if (StringUtils.isNotEmpty(usedTable.schema)) {
 			tableElement.addAttribute("schema", usedTable.schema);
 		}
 		
@@ -391,8 +389,7 @@ public class DefaultTableMetaDataGenerator implements TableMetaDataGenerator {
 
 	@Override
 	public Document mergeDocument(String catalog, String schema, String table,
-			TableGeneratorOption option, Document document) {
-		JdbcEnviroment jdbcEnv = option.getJdbcEnviroment();
+			JdbcEnviroment jdbcEnv, Document document) {
 		UsedTable usedTable = new UsedTable(catalog, schema, table);
 		usedTable.init(jdbcEnv);
 		

@@ -1,5 +1,9 @@
 package com.bstek.dorado.jdbc.type;
 
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.data.util.DataUtils;
 import com.bstek.dorado.jdbc.JdbcConstants;
@@ -87,4 +91,15 @@ public abstract class AbstractJdbcType implements JdbcType {
 		return fromDB(obj);
 	}
 	
+	public boolean is(Map<String,String> columnMeta) {
+		String dataType = columnMeta.get(JdbcConstants.DATA_TYPE);
+		if (StringUtils.isNotEmpty(dataType)) {
+			int code = Integer.valueOf(dataType);
+			if (code == this.getSqlType()) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
 }
