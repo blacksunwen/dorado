@@ -215,17 +215,24 @@
     position: relative;
 }
 
-.browse-button-wrap  .hidden-file {
+.browse-button-wrap form {
     position: absolute;
-    z-index: 999999;
+    z-index: 999;
     left: 0;
     top: 0;
+}
+
+.browse-button-wrap  .hidden-file {
     opacity: 0;
     filter: alpha(opacity=0);
-    width: 50px;
+    width: 60px;
     height: 20px;
     text-align: left;
     direction: rtl;
+}
+
+.d-ie6 .browse-button-wrap  .hidden-file {
+    left: -20px;
 }
 
 .popup {

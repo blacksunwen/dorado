@@ -160,6 +160,10 @@
                     var tab = arg.tab;
                     menu.getItem("close").set("disabled", tab._disabled || !tab._closeable);
                     menu.show({event: arg.event});
+                },
+                onTabChange: function(self, arg) {
+                    var tab = arg.newTab;
+                    console.log(tab.get("control"));
                 }
             }
         });
