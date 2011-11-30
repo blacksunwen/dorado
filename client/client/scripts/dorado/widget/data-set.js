@@ -28,9 +28,11 @@
 			 * </p>
 			 * @type String
 			 * @attribute
+			 * @default lazy
 			 */
 			loadMode: {
-				writeBeforeReady: true
+				writeBeforeReady: true,
+				defaultValue: "lazy"
 			},
 
 			/**

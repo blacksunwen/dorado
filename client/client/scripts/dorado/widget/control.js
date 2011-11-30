@@ -285,7 +285,7 @@
 					$invokeSuper.call(this, [view]);
 					if(this._innerControls) {
 						jQuery.each(this._innerControls, function(i, control) {
-							control.set("view", (this._view) ? null : view);
+							control.set("view", view);
 						});
 					}
 				}

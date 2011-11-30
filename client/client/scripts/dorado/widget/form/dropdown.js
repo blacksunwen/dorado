@@ -512,8 +512,7 @@ dorado.widget.DropDown.findDropDown = function(control) {
 	return box ? box.get("dropDown") : null;
 };
 
-dorado.widget.DropDownBox = $extend([ dorado.widget.Control,
-		dorado.widget.FloatControl ], /** @scope dorado.widget.DropDownBox.prototype */
+dorado.widget.DropDownBox = $extend([ dorado.widget.Control, dorado.widget.FloatControl ], /** @scope dorado.widget.DropDownBox.prototype */
 {
 	$className : "dorado.widget.DropDownBox",
 	_inherentClassName : "i-drop-down-box",
