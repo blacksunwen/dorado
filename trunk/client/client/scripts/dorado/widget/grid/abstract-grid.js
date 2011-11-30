@@ -2426,6 +2426,8 @@
 				for (var i = 0; i < columns.length; i++) {
 					var column = columns[i];
 					var cell = column.headerCell;
+					if (!cell) continue;
+					
 					if (offsetParent != cell.offsetParent) {
 						offsetParent = cell.offsetParent;
 						parentOffset = $fly(offsetParent).offset();
