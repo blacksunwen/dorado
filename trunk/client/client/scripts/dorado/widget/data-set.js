@@ -267,7 +267,7 @@
 			var data = this._data, shouldFireOnDataLoad;
 			if (data === undefined) {
 				if (this._dataProvider) {
-					data = this._data = this._dataPipe;
+					data = this._dataPipe;
 					if (!data) {
 						data = this._dataPipe = new dorado.DataSetDataPipe(this);
 						shouldFireOnDataLoad = true;
