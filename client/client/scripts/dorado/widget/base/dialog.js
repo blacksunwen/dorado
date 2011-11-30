@@ -466,7 +466,7 @@
 			if (showCaptionBar !== false) {
 				var captionBar = dialog._captionBar = new dorado.widget.CaptionBar({
 					className: "d-dialog-caption-bar",
-					caption: dialog.get("caption"),
+					caption: dialog.get("caption") || dialog._caption,
 					icon: dialog._icon
 				});
 				dialog.registerInnerControl(captionBar);
