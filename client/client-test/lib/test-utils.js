@@ -7,8 +7,8 @@ var Test = {
 		return -1;
 	},
 
-	CONTEXT_PATH: "/web-test",
-	ROOT: "/web-test/client/src-test/",
+	CONTEXT_PATH: "/client-test",
+	ROOT: "/client-test/workspace/client/client-test/",
 
 	getJSON: function(path) {
 		var xmlHttp = window.ActiveXObject ? new ActiveXObject("Microsoft.XMLHTTP") : new XMLHttpRequest();

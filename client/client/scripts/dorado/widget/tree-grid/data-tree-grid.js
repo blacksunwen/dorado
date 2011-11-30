@@ -27,6 +27,8 @@ dorado.widget.DataTreeGrid = $extend([dorado.widget.TreeGrid, dorado.widget.Data
 		}
 	},
 	
+	onReady: dorado.widget.DataTree.prototype.onReady,
+	
 	createRootNode: function() {
 		return new dorado.widget.tree.DataBindingNode({
 			bindingConfig: {}
