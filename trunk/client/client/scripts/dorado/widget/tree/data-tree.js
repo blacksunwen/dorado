@@ -550,7 +550,6 @@ dorado.widget.DataTree = $extend([dorado.widget.Tree, dorado.widget.DataControl]
 	},
 
 	onReady: function() {
-		alert(235);
 		if (this._currentNodeDataPath) {
 			var self = this;
 			dorado.DataPath.registerInterceptor(this._currentNodeDataPath, function(data) {
