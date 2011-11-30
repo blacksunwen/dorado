@@ -133,6 +133,8 @@ dorado.widget.DataListBox = $extend([dorado.widget.AbstractListBox, dorado.widge
 	 */
 	onEntityDeleted: function(arg) {
 		var entity = arg.entity;
+		this.replaceSelection(entity, null);
+		
 		var row = this._itemDomMap[entity.entityId], tbody = this._dataTBody;
 		if (this._scrollMode != "viewport") {
 			if (row) {
