@@ -14,7 +14,7 @@ import com.bstek.dorado.view.widget.list.DropMode;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2011-2-26
  */
-@ClientEvents( { @ClientEvent(name = "beforeExpand"),
+@ClientEvents({ @ClientEvent(name = "beforeExpand"),
 		@ClientEvent(name = "onExpand"), @ClientEvent(name = "beforeCollapse"),
 		@ClientEvent(name = "onCollapse"),
 		@ClientEvent(name = "onNodeAttached"),
@@ -22,6 +22,7 @@ import com.bstek.dorado.view.widget.list.DropMode;
 		@ClientEvent(name = "onRenderNode") })
 public abstract class AbstractTreeGrid extends GridSupport {
 	private int indent;
+	private boolean showLines;
 	private String treeColumn;
 	private DropMode dropMode = DropMode.onItem;
 
@@ -31,6 +32,14 @@ public abstract class AbstractTreeGrid extends GridSupport {
 
 	public void setIndent(int indent) {
 		this.indent = indent;
+	}
+
+	public boolean isShowLines() {
+		return showLines;
+	}
+
+	public void setShowLines(boolean showLines) {
+		this.showLines = showLines;
 	}
 
 	public String getTreeColumn() {
@@ -58,4 +67,5 @@ public abstract class AbstractTreeGrid extends GridSupport {
 	public void setDropMode(DropMode dropMode) {
 		this.dropMode = dropMode;
 	}
+
 }
