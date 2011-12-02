@@ -16,6 +16,8 @@ import java.util.Set;
 import javax.sql.DataSource;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -35,6 +37,8 @@ import com.bstek.dorado.jdbc.type.JdbcType;
 
 public class DefaultTableMetaDataGenerator implements TableMetaDataGenerator {
 
+	private static Log logger = LogFactory.getLog(DefaultTableMetaDataGenerator.class);
+	
 	@Override
 	public List<Map<String, String>> listTableMetas(JdbcEnviroment jdbcEnv,
 			final String catalogPattern, final String schemaPattern,
@@ -71,7 +75,12 @@ public class DefaultTableMetaDataGenerator implements TableMetaDataGenerator {
 					"catalog[" + catalog + "]scheme[" + schema + "]table[" + table + "]");
 		}
 		
-		return tables.get(0);
+		
+		Map<String, String> meta = tables.get(0);
+		if (logger.isDebugEnabled()) {
+			logger.debug("TABLE-META:" + meta);
+		}
+		return meta;
 	}
 
 	@Override
@@ -135,6 +144,11 @@ public class DefaultTableMetaDataGenerator implements TableMetaDataGenerator {
 				}
 				
 			});
+			if (logger.isDebugEnabled()) {
+				for (Map<String,String> meta: metaData) {
+					logger.debug("COLUMN-META:" + meta);
+				}
+			}
 			return metaData;
 		} catch (MetaDataAccessException e) {
 			throw new RuntimeException(e);

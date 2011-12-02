@@ -12,8 +12,6 @@ import org.springframework.core.Constants;
  */
 public class JdbcConstants {
 
-	public static Constants JDBC_TYPE_CONSTANTS = new Constants(Types.class);
-	
 	public static final String CONFIG_RELOAD_ELEMENT = "jdbc.autoReloadElement";
 
 	public static final String TABLE_CATALOG = "TABLE_CATALOG";
@@ -46,11 +44,28 @@ public class JdbcConstants {
 	
 	public static final String ROWNUM_VAR = "ROWNUM_";
 	
+	private static class JdbcTypeConstants extends Constants{
+
+		public JdbcTypeConstants() {
+			super(Types.class);
+		}
+		
+		public boolean hasObject(String name) {
+			return this.getFieldCache().containsKey(name);
+		}
+	}
+	
+	private static JdbcTypeConstants JDBC_TYPE_CONSTANTS = new JdbcTypeConstants();
+	
 	public static int getTypeValue(String name) {
 		return JDBC_TYPE_CONSTANTS.asNumber(name).intValue();
 	}
 	
 	public static String getTypeName(int value) {
 		return JDBC_TYPE_CONSTANTS.toCode(value, "");
+	}
+	
+	public static boolean hasType(String name) {
+		return JDBC_TYPE_CONSTANTS.hasObject(name);
 	}
 }

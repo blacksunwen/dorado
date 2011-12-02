@@ -1,5 +1,9 @@
 package com.bstek.dorado.jdbc.type;
 
+import java.util.Map;
+
+import com.bstek.dorado.jdbc.JdbcConstants;
+
 public class TimestampDate extends AbstractDate {
 
 	public TimestampDate() {
@@ -21,4 +25,23 @@ public class TimestampDate extends AbstractDate {
 		return super.toDB(obj);
 	}
 
+	@Override
+	public boolean is(Map<String, String> columnMeta) {
+		boolean is = super.is(columnMeta);
+		if (!is) {
+			String typeName = columnMeta.get(JdbcConstants.TYPE_NAME);
+			String dataType = columnMeta.get(JdbcConstants.DATA_TYPE);
+			//check for mssql
+			if ("-9".equalsIgnoreCase(dataType) && typeName.startsWith("datetime")) {
+				return true;
+			}
+			if ("-2".equalsIgnoreCase(dataType) && "timestamp".equalsIgnoreCase(typeName)){
+				return true;
+			}
+			
+			return false;
+		} else {
+			return is;
+		}
+	}
 }
