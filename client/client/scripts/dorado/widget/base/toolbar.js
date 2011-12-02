@@ -478,14 +478,14 @@ dorado.widget.toolbar.Label = $extend(dorado.widget.Control, {
 	createDom: function() {
 		var label = this, dom = document.createElement("div");
 		dom.className = label._className;
-		$fly(dom).text(label._text);
+		$fly(dom).text(label._text ? label._text : "");
 		return dom;
 	},
 	
 	refreshDom: function(dom) {
 		$invokeSuper.call(this, arguments);
 		var label = this;
-		$fly(dom).text(label._text);
+		$fly(dom).text(label._text ? label._text : "");
 	}
 });
 

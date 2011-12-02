@@ -1,0 +1,246 @@
+.d-calendar {
+}
+
+.d-calendar .navbar{
+    height: 26px;
+}
+
+.d-calendar .content-body {
+}
+
+.agenda-view {
+    width: 1000px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.agenda-view .allday-event-header{
+}
+
+.agenda-view .event-table-wrap{
+    height: 500px;
+    overflow-y: scroll;
+    position: relative;
+}
+
+.agenda-view .event-table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    margin-bottom: -1px;
+}
+
+.agenda-view .event-table .axis-cell {
+    width: 100px;
+    height: 24px;
+    text-align: right;
+}
+
+.agenda-view .event-table .odd-slot-cell{
+    border: 1px solid #cccccc;
+    border-bottom: 0;
+    height: 24px;
+}
+
+.agenda-view .event-table .even-slot-cell{
+    border: 1px solid #cccccc;
+    border-top: 1px dashed #cccccc;
+    height: 24px;
+}
+
+.agenda-view .event-table .first-row-slot-cell{
+    border-top: 0;
+}
+
+.agenda-view .events-holder{
+    position: absolute;
+    left: 100px;
+    top: 0;
+}
+
+.agenda-view .events-holder .event{
+    position: absolute;
+    border:  1px solid #36c;
+    background-color: #6B93D8;
+    left: -999999px;
+    top: -999999px;
+    overflow: hidden;
+}
+
+.agenda-view .events-holder .event .title{
+    color: white;
+}
+
+.agenda-view .events-holder .event .top-handle {
+    height: 7px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    cursor: row-resize;
+}
+
+.agenda-view .events-holder .event .bottom-handle {
+    height: 7px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    cursor: row-resize;
+}
+
+.agenda-view .wrap {
+    height: 24px;
+    overflow:  visible;
+}
+
+.agenda-view .agenda-columns {
+    top: 0;
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    z-index: -1;
+}
+
+.agenda-view .agenda-columns td{
+    border-right: 1px solid #ccc;
+}
+
+.agenda-view .agenda-columns .time-axis-cell{
+    width: 100px;
+    height: 24px;
+    text-align: right;
+    font-weight: normal;
+}
+
+.agenda-view .agenda-columns .header-cell {
+    text-align: center;
+    border: 1px solid #cccccc;
+    border-bottom: 0;
+    height: 24px;
+}
+
+.agenda-view .allday-event-table{
+    border-collapse: collapse;
+    table-layout: fixed;
+    width: 100%;
+}
+
+.agenda-view .allday-event-table .time-axis-cell{
+    width: 100px;
+    height: 24px;
+    text-align: right;
+}
+
+.agenda-view .allday-event-table .content-cell {
+    text-align: center;
+    border: 1px solid #cccccc;
+    height: 24px;
+}
+
+.agenda-view .allday-event-table .allday-events-wrap{
+    position: relative;
+}
+
+.agenda-view .allday-event-table .allday-events-wrap .event{
+    position: absolute;
+    color: white;
+    border:  1px solid #36c;
+    background-color: #6B93D8;
+    text-align: left;
+    left: -999999px;
+    top: -999999px;
+}
+
+.agenda-view td.event-drag-over {
+    background-color: #ccc;
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+}
+
+.agenda-view .bottom-line{
+    border-bottom: 1px solid #ccc;
+    position: absolute;
+    bottom: 0;
+    left: 100px;
+    height: 1px;
+    border-color: red;
+}
+
+.month-view {
+    width: 1000px;
+    height: 100%;
+    margin: 0 auto;
+    position: relative;
+}
+
+.month-view .month-table {
+    width: 100%;
+    height: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+.month-view .month-table td {
+    border: 1px solid #cccccc;
+    vertical-align: top;
+}
+
+.month-view .month-table tr {
+    overflow: hidden;
+}
+
+.month-view .month-table .header{
+    height: 20px;
+    padding: 0;
+}
+
+.month-view .month-table .header td {
+    border: 1px solid #cccccc;
+    height: 20px;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+.month-view .month-table td .date {
+    text-align: right;
+    height: 20px;
+}
+
+.month-view .month-table td .premonth, .month-view .month-table td .nextmonth{
+    color: #ccc;
+}
+
+.month-view .events-holder {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.month-view .events-holder .event{
+    position: absolute;
+    overflow: hidden;
+    color: #6B93D8;
+    text-align: left;
+    left: -999999px;
+    top: -999999px;
+}
+
+.month-view .events-holder .long-event {
+    border:  1px solid #36c;
+    background-color: #6B93D8;
+    color: white;
+}
+
+.month-view .month-table td ul{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.month-view .month-table td.event-drag-over{
+    background-color: #ccc;
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+}

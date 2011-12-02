@@ -54,9 +54,6 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 				cardbook._currentControl = control;
 				var dom = cardbook._dom;
 				if (dom && control) {
-					control.set("width", $fly(dom).innerWidth());
-					control.set("height", $fly(dom).innerHeight());
-					
 					if (!control._rendered) {
 						cardbook.registerInnerControl(control);
 						control.render(dom);
@@ -64,6 +61,10 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 						$fly(control._dom).css("display", "block");
 						control.setActualVisible(true);
 					}
+                    control.set("width", $fly(dom).innerWidth());
+					control.set("height", $fly(dom).innerHeight());
+
+                    control.resetDimension();
 				}
 				cardbook.fireEvent("onCurrentChange", this, eventArg);
 			}
@@ -202,7 +203,19 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 		}
 		return null;
 	},
-	
+
+    /**
+     * 取得当前组件的索引。
+     * @return {int} 当前组件的索引，如果没有当前组件，返回-1.
+     */
+    getCurrentControlIndex: function() {
+        var card = this, controls = card._controls, currentControl = card._currentControl;
+        if (controls && currentControl) {
+            return controls.indexOf(currentControl);
+        }
+        return -1;
+    },
+
 	createDom: function() {
 		var dom = $invokeSuper.call(this, arguments);
 		dom.className = this._className;
