@@ -10,7 +10,7 @@
             <bean class="oracle.jdbc.pool.OracleDataSource">
                 <property name="user" value="dorado"/>
                 <property name="password" value="dorado"/>
-                <property name="URL" value="jdbc:oracle:thin:@192.168.18.246:1521/DORADOJDBC"/>
+                <property name="URL" value="jdbc:oracle:thin:@192.168.18.235:1521/DORADOJDBC"/>
             </bean>
         </property>
         <property name="dialect">

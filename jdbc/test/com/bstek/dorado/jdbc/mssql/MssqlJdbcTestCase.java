@@ -1,4 +1,4 @@
-package com.bstek.dorado.jdbc.oracle;
+package com.bstek.dorado.jdbc.mssql;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,16 +13,18 @@ import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.AbstractJdbcTestCase;
 import com.bstek.dorado.jdbc.JdbcUtils;
 
-public class OracleJdbcTestCase extends AbstractJdbcTestCase {
+public class MssqlJdbcTestCase extends AbstractJdbcTestCase {
 
-	public static final String JDBC_ENV_NAME = "ora11";
+	public static final String ENV_2008 = "mssql2008";
+	public static final String ENV_2000 = "mssql2000";
 	
 	@Override
 	protected List<String> getExtConfigLocations() {
 		List<String> locations = new ArrayList<String>();
-		locations.add("com/bstek/dorado/jdbc/oracle/context.xml");
+		locations.add("com/bstek/dorado/jdbc/mssql/context.xml");
 		return locations;
 	}
+
 	protected static class Dept {
 		public static String TABLE = "DEPT";
 		
