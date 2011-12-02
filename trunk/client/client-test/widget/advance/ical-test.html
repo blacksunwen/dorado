@@ -1,0 +1,56 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<title>iCal</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<script type="text/javascript" src="../../include-all.js"></script>
+    <script type="text/javascript" src="common-types.js"></script>
+	<script type="text/javascript">
+		var view = new dorado.widget.View({ layout: "Dock"});
+
+		var calendar;
+
+		$(document).ready(function() {
+            $.ajax({
+                url:'gcal.xml',
+                type: 'get',
+                dataType: 'xml',//这里可以不写，但千万别写text或者html!!!
+                timeout: 100000,
+                error: function(xml) {
+                    alert('Error loading XML document' + xml);
+                },
+                success: function(xml) {
+                    var item, items = [];
+
+                    $(xml).find("entry").each(function() {
+                        var allDay = $(this).find("when").attr("startTime").indexOf('T') == -1;
+                        item = new dorado.widget.CalEvent({
+                            title : $(this).find("title").text(),
+                            content : $(this).find("content").text(),
+                            startTime: parseISO8601($(this).find("when").attr("startTime"), true),
+                            endTime: parseISO8601($(this).find("when").attr("endTime"), true),
+                            allDay: allDay
+                        });
+                        items.push(item);
+                    });
+                    items.forEach(function(item){
+                        if (item.title == "去全聚德吃烤鸭11.28") {
+                            console.log("======startTime:" + item.startTime.toString() + "\tendTime:" + item.endTime.toString());
+                        }
+                        //console.log(item.title);
+                    });
+                    calendar = new dorado.widget.Calendar({
+                        eventSource: new dorado.widget.ArrayEventSource({
+                            array: items
+                        })
+                    });
+                    view.addChild(calendar);
+                    view.render(document.body);
+                }
+            });
+		});
+	</script>
+</head>
+<body style="margin: 0; padding: 0;">
+</body>
+</html>
