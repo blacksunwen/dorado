@@ -45,6 +45,11 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 				cardbook.fireEvent("beforeCurrentChange", this, eventArg);
 				if (eventArg.processDefault === false) return;
 				if (oldControl) {
+                    if (oldControl instanceof dorado.widget.IFrame) {
+                        if (!oldControl._loaded) {
+                            oldControl.cancelLoad();
+                        }
+                    }
 					var oldDom = oldControl._dom;
 					if (oldDom) {
 						oldDom.style.display = "none";
@@ -55,16 +60,22 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 				var dom = cardbook._dom;
 				if (dom && control) {
 					if (!control._rendered) {
+                        control.set("width", $fly(dom).innerWidth());
+					    control.set("height", $fly(dom).innerHeight());
 						cardbook.registerInnerControl(control);
 						control.render(dom);
 					} else {
 						$fly(control._dom).css("display", "block");
 						control.setActualVisible(true);
-					}
-                    control.set("width", $fly(dom).innerWidth());
-					control.set("height", $fly(dom).innerHeight());
+                        control.set("width", $fly(dom).innerWidth());
+					    control.set("height", $fly(dom).innerHeight());
 
-                    control.resetDimension();
+                        control.resetDimension();
+
+                        if (control instanceof dorado.widget.IFrame && !control._loaded) {
+                            control.reloadIfNotLoaded();
+                        }
+					}
 				}
 				cardbook.fireEvent("onCurrentChange", this, eventArg);
 			}

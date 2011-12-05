@@ -36,10 +36,13 @@
         }));
 
 		$(document).ready(function(){
-			view.render(document.body);
+            var doradoView = document.getElementById("doradoView");
+            if (doradoView) view.replace(doradoView);
+			//view.render(document.body);
 		});
 		</script>
 	</head>
 	<body>
+        <label id="doradoView" style="display:none" />
 	</body>
 </html>
