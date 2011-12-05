@@ -127,3 +127,20 @@
 .i-tabbar-bottom .i-icon-button{
 	top: 5px;
 }
+
+
+.i-cardbook {
+    position: relative;
+}
+
+.i-cardbook .card-item{
+    position: absolute;
+    left: 0;
+    top: 0;
+    visibility: hidden;
+}
+
+.i-cardbook .card-item-active {
+    visibility: visible;
+    z-index: 9999;
+}

@@ -32,12 +32,14 @@
 			path: {
 				skipRefresh: true,
 				setter: function(value) {
-					var frame = this, dom = frame._dom, doms = frame._doms;
+					var frame = this, oldPath = frame._path, dom = frame._dom, doms = frame._doms;
 
 					if (dom) {
 						$fly(doms.loadingCover).css("display", "block");
 						$fly(doms.iframe).attr("src", value || BLANK_PATH).addClass("hidden");
-
+                        if (oldPath != value) {
+                            frame._loaded = false;
+                        }
 						centerCover(dom, doms);
 					}
 					frame._path = value;
@@ -106,7 +108,12 @@
 		},
 
         doOnAttachToDocument: function() {
+            this.doLoad();
+        },
+
+        doLoad: function() {
             var frame = this, doms = frame._doms, iframe = doms.iframe;
+            $fly(doms.loadingCover).css("display", "");
 			$fly(iframe).attr("src", $url(frame._path || BLANK_PATH)).load( function() {
 				$fly(doms.loadingCover).css("display", "none");
 				// fix ie 6 bug....
@@ -114,7 +121,21 @@
 					$fly(iframe).removeClass("hidden");
 				}
 				frame.fireEvent("onLoad", frame);
+                if (iframe.src != BLANK_PATH)
+                    frame._loaded = true;
 			});
+        },
+
+        reloadIfNotLoaded: function() {
+            var frame = this;
+            if (!frame._loaded && frame._path) {
+                frame.doLoad();
+            }
+        },
+
+        cancelLoad: function() {
+            var frame = this, doms = frame._doms, iframe = doms.iframe;
+            $fly(iframe).attr("src", BLANK_PATH);
         },
 
 		refreshDom: function(dom) {

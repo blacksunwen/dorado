@@ -1,0 +1,82 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <title>TabControl Test Page</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <script type="text/javascript" src="../../include-all.js"></script>
+    <script type="text/javascript">
+        var view = new dorado.widget.View({ layout: "Anchor" });
+
+        var tabcontrol = new dorado.widget.TabControl("tabbar1");
+        tabcontrol.set({
+            width: 1000,
+            height: 400,
+            tabs: [
+                {
+                    $type: "Control",
+                    caption: "测试2",
+                    control: new dorado.widget.Panel({
+                        width: 400,
+                        height: 200,
+                        style: {
+                            border: "5px black dotted"
+                        }
+                    }),
+                    visible: false
+                },
+                {
+                    $type: "Control",
+                    caption: "测试2",
+                    control: new dorado.widget.Control()
+                },
+                {
+                    $type: "IFrame",
+                    caption: "测试1",
+                    icon: "del.gif",
+                    closeable: true,
+                    path: "slider-test.html"
+                },
+                {
+                    $type: "IFrame",
+                    caption: "测试3",
+                    closeable: true,
+                    path: "slider-test.html"
+                },
+                {
+                    $type: "IFrame",
+                    caption: "测试4",
+                    closeable: true,
+                    path: "slider-test.html"
+                },
+                {
+                    $type: "IFrame",
+                    caption: "测试4",
+                    closeable: true,
+                    path: "slider-test.html"
+                },
+                {
+                    $type: "IFrame",
+                    caption: "测试4",
+                    closeable: true,
+                    path: "slider-test.html"
+                },
+                {
+                    $type: "IFrame",
+                    caption: "测试4",
+                    closeable: true,
+                    path: "slider-test.html"
+                }
+            ],
+            tabMinWidth: 100
+        });
+
+        view.addChild(tabcontrol);
+
+        $(document).ready(function() {
+            view.render(document.body);
+        });
+    </script>
+</head>
+<body style="margin: 0;padding: 0;overflow: hidden;">
+</body>
+</html>
