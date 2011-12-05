@@ -43,6 +43,7 @@ public class DefaultPropertyOutputter implements PropertyOutputter,
 				Object element = Array.get(object, i);
 				json.value(element);
 			}
+			json.endArray();
 		} else {
 			TypeAnnotationInfo typeAnnotationInfo = ViewOutputUtils
 					.getTypeAnnotationInfo(beanFactory, object);
