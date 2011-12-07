@@ -8,7 +8,7 @@
         var view = new dorado.widget.View({ layout: "Anchor" });
 
         var dialog = new dorado.widget.Dialog({
-			visible: true,
+			//visible: true,
 			//showCaptionBar: false,
             caption: "test222",
             width: 400,
@@ -26,8 +26,11 @@
 			,buttonAlign: "right"
             ,onShow: function(self) {
                 self.set("caption", "modified caption.");
-            }
+            },
+            children: [
+            ]
             ,buttons: [new dorado.widget.Button({
+                id: "button1",
                 caption: "确定",
                 width: 80,
                 listener: {
@@ -82,6 +85,7 @@
                     listener: {
                         onClick: function(self) {
                             dialog.show({animateTarget: self});
+                            this.id("button1").set("visible", false);
                         }
                     }
                 },
