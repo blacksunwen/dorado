@@ -1,4 +1,4 @@
-package com.bstek.dorado.web;
+﻿package com.bstek.dorado.web;
 
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.web.context.WebApplicationContext;
@@ -12,7 +12,7 @@ import com.bstek.dorado.core.io.BaseResourceLoader;
  * @since Sep 17, 2008
  */
 public class WebResourceLoader extends BaseResourceLoader {
-	private WebApplicationContext webApplicationContext;
+	protected WebApplicationContext webApplicationContext;
 
 	public void setWebApplicationContext(
 			WebApplicationContext webApplicationContext) {
