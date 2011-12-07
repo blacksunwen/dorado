@@ -1,67 +1,5 @@
 (function() {
     var weekArray = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
-    var DateHelper = {
-        getDayCountOfMonth: function(year, month) {
-            if (month == 3 || month == 5 || month == 8 || month == 10) {
-                return 30;
-            }
-            if (month == 1) {
-                if (year % 4 == 0 && year % 100 != 0 || year % 400 == 0) {
-                    return 29;
-                } else {
-                    return 28;
-                }
-            }
-            return 31;
-        },
-        getFirstDayOfMonth: function(date) {
-            var temp = new Date(date.getTime());
-            temp.setDate(1);
-            return temp.getDay();
-        }
-    };
-
-    var refreshDate = function(date, dateTable) {
-        var count = 1, day = DateHelper.getFirstDayOfMonth(date), selectDay = date.getDate(),
-            maxDay = DateHelper.getDayCountOfMonth(date.getFullYear(), date.getMonth()),
-            lastMonthDay = DateHelper.getDayCountOfMonth(date.getFullYear(), (date.getMonth() == 0 ? 11 : date.getMonth() - 1));
-
-        day = (day == 0 ? 7 : day);
-
-        var startI = 1, startJ = 0;
-
-        for (var i = startI; i < startI + 6; i++) {
-            for (var j = startJ; j < startJ + 7; j++) {
-                var cell = dateTable.rows[i].cells[j].firstChild;
-                if (i == startI) {
-                    if (j - startJ >= day) {
-                        if (count == selectDay) {
-                            cell.className = "selected-date";
-                        } else {
-                            cell.className = null;
-                        }
-                        cell.innerHTML = count++;
-                    } else {
-                        cell.innerHTML = lastMonthDay - (day - j % 7) + 1;
-
-                        cell.className = "premonth";
-                    }
-                } else {
-                    if (count <= maxDay) {
-                        if (count == selectDay) {
-                            cell.className = "selected-date";
-                        } else {
-                            cell.className = null;
-                        }
-                        cell.innerHTML = count++;
-                    } else {
-                        cell.innerHTML = count++ - maxDay;
-                        cell.className = "nextmonth";
-                    }
-                }
-            }
-        }
-    };
 
     var HOLD_EVENT_KEY = "cal_event", HOLD_MONTHVIEW_KEY = "cal_monthview";
 
@@ -69,28 +7,6 @@
 
     function intervalToDay(interval) {
         return interval / INTERVAL_A_DAY;
-    }
-
-    function minimizeDate(date) {
-        var result = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-        result.setHours(0);
-        result.setMinutes(0);
-        result.setSeconds(0);
-
-        return result;
-    }
-
-    function maxmizeDateIfPosibble(date) {
-        var possible = !(date.getMinutes() == 0 && date.getHours() == 0 && date.getSeconds() == 0);
-        var result = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-
-        if (possible) {
-            result.setHours(23);
-            result.setMinutes(59);
-            result.setSeconds(59);
-        }
-
-        return result;
     }
 
     dorado.widget.MonthEventPool = new dorado.util.ObjectPool({
@@ -125,16 +41,17 @@
 
     function resetEventDate(event, startTime) {
         var oldStartTime = event.startTime;
-        var newStartTime = new Date(startTime.getFullYear(), startTime.getMonth(), startTime.getDate(),
+        var newStartTime = new XDate(startTime.getFullYear(), startTime.getMonth(), startTime.getDate(),
             oldStartTime.getHours(), oldStartTime.getMinutes(), oldStartTime.getSeconds());
-        event.endTime = new Date(newStartTime.getTime() + (event.endTime - event.startTime));
+
+        event.endTime = new XDate(newStartTime.getTime() + (event.endTime - event.startTime));
         event.startTime = newStartTime;
     }
 
     dorado.widget.MonthView = $extend(dorado.widget.Control, {
         ATTRIBUTES: {
             className: {
-                defaultValue: "month-view"
+                defaultValue: "d-month-view"
             },
             date: {
                 setter: function(value) {
@@ -172,7 +89,7 @@
                     scope: "calendar",
                     greedy: false,
                     tolerance: "pointer",
-                    drop: function(ev, ui) {
+                    drop: function() {
                         var column = td.cellIndex, row = td.parentNode._rowIndex - 1, date = view.getDateByPosition(row, column);
                         if (date) {
                             if (view._draggingevent) {
@@ -181,9 +98,9 @@
                             }
                         }
                     },
-                    over: function(ev, ui) {
+                    over: function() {
                     },
-                    out: function(ev, ui) {
+                    out: function() {
                     }
                 });
             }
@@ -210,9 +127,7 @@
             return dom;
         },
         refreshEvents: function() {
-            //console.log(this._date.toString(), this.getDateRange()[0].toString(), this.getDateRange()[1].toString());
-            var eventRange = this.getDateRange(), eventSource = this._parent._parent._eventSource,
-                events;
+            var view = this, eventRange = view.getDateRange(), eventSource = view._parent._parent._eventSource, events;
 
             if (eventSource) {
                 events = eventSource.getEventsByRange(eventRange[0], eventRange[1]);
@@ -220,14 +135,12 @@
                 return;
             }
 
-            var view = this;
-
-            if (this._currentMonthEvents) {
-                var cacheEvents = this._currentMonthEvents;
+            if (view._currentMonthEvents) {
+                var cacheEvents = view._currentMonthEvents;
                 for (var i = 0; i < cacheEvents.length; i++) {
-                    var edom = cacheEvents[i];
-                    $fly(edom).css({ left: "", top: "" });
-                    dorado.widget.MonthEventPool.returnObject(edom);
+                    var eventDom = cacheEvents[i];
+                    $fly(eventDom).css({ left: "", top: "" });
+                    dorado.widget.MonthEventPool.returnObject(eventDom);
                 }
                 view._currentMonthEvents = [];
             }
@@ -243,12 +156,10 @@
                 return a.startTime > b.startTime;
             });
 
-            var view = this, monthTable = view._doms.monthTable, tableOffset = $fly(monthTable).offset(),
-                cellOffset, eventsHolder = view._doms.eventsHolder, cellWidth = $fly(monthTable).width() / 7;
+            var view = this, doms = view._doms, monthTable = doms.monthTable, eventsHolder = doms.eventsHolder,
+                tableOffset = $fly(monthTable).offset(), cellWidth = $fly(monthTable).width() / 7;
 
-            //console.log(allDayEvents);
-
-            var i, j, k, l, event, position, viewMap = [];
+            var i, j, k, l, cellOffset, eventPosition, viewMap = [];
 
             var fillCell = function(index, element) {
                 var cell = viewMap[index];
@@ -257,19 +168,19 @@
             };
 
             for (i = 0, k = allDayEvents.length; i < k; i++) {
-                event = allDayEvents[i];
-                position = view.getPositionOfDate(event.startTime);
+                var alldayEvent = allDayEvents[i];
+                eventPosition = view.getPositionOfDate(alldayEvent.startTime);
 
-                var dayCount = Math.ceil(intervalToDay(event.endTime - event.startTime)),
-                    startPosition = position.rowIndex * 7 + position.columnIndex;
+                var dayCount = Math.ceil(intervalToDay(alldayEvent.endTime - alldayEvent.startTime)),
+                    startPosition = eventPosition.rowIndex * 7 + eventPosition.columnIndex;
 
-                event.dayCount = dayCount;
+                alldayEvent.dayCount = dayCount;
 
-                fillCell(startPosition, event);
+                fillCell(startPosition, alldayEvent);
 
                 for (j = 1; j < dayCount && startPosition + j < 42; j++) {
                     if ((startPosition + j) % 7 == 0) {
-                        fillCell(startPosition + j, event);
+                        fillCell(startPosition + j, alldayEvent);
                     } else {
                         fillCell(startPosition + j, true);
                     }
@@ -277,62 +188,57 @@
             }
 
             for (i = 0; i < events.length; i++) {
-                event = events[i];
+                var event = events[i];
                 if (!isAllDay(event)) {
                     event.dayCount = 1;
-                    position = view.getPositionOfDate(event.startTime);
-                    fillCell(position.rowIndex * 7 + position.columnIndex, event);
+                    eventPosition = view.getPositionOfDate(event.startTime);
+                    fillCell(eventPosition.rowIndex * 7 + eventPosition.columnIndex, event);
                 }
             }
 
-            var dateRange = view.getDateRange();
-
-            //console.log("viewMap length:" + viewMap.length);
-            //console.log(viewMap);
-
-            var tempCell = monthTable.rows[1].cells[1];
-
-            var cellHeight = $fly(tempCell).height(), showEventsCount = Math.floor((cellHeight - 20) / 20);
+            var dateRange = view.getDateRange(), refCell = monthTable.rows[1].cells[1],
+                cellHeight = $fly(refCell).height(), showEventsCount = Math.floor((cellHeight - 20) / 20);
 
             for (i = 0, k = viewMap.length; i < k; i++) {
                 var cellConfig = viewMap[i];
                 if (cellConfig) {
                     for (j = 0, l = cellConfig.length; j < l && j < showEventsCount; j++) {
-                        event = cellConfig[j];
-                        if (event === true) continue;
-                        var dom = view.getEventDom(event), cell = monthTable.rows[Math.floor(i / 7) + 1].cells[i % 7];
+                        alldayEvent = cellConfig[j];
+                        if (alldayEvent === true) continue;
 
-                        cellOffset = $fly(cell).offset();
+                        var dom = view.getEventDom(alldayEvent), eventWidth = cellWidth,
+                            cell = monthTable.rows[Math.floor(i / 7) + 1].cells[i % 7];
 
-                        var width = cellWidth;
-
-                        if (event.dayCount > 1) {
-                            var row = Math.floor(i / 7), firstColumnDate = new Date(dateRange[0].getTime() + row * 7 * INTERVAL_A_DAY),
-                            lastColumnDate = new Date(dateRange[0].getTime() + (row + 1) * 7 * INTERVAL_A_DAY - 1000),
-                            startDate = minimizeDate(event.startTime), endDate = maxmizeDateIfPosibble(event.endTime);
+                        if (alldayEvent.dayCount > 1) {
+                            var row = Math.floor(i / 7), firstColumnDate = dateRange[0].clone().addDays(row * 7),
+                            lastColumnDate = dateRange[0].clone().addDays((row + 1) * 7 - 1).maximizeTime(true),
+                            startDate = alldayEvent.startTime.clone().minimizeTime(), endDate = alldayEvent.endTime.clone().maximizeTime();
 
                             //console.log(firstColumnDate.toString(), lastColumnDate.toString());
 
-                            if (event.endTime > lastColumnDate) {
+                            if (alldayEvent.endTime > lastColumnDate) {
                                 endDate = lastColumnDate;
                             }
-                            if (event.startTime < firstColumnDate) {
+                            if (alldayEvent.startTime < firstColumnDate) {
                                 startDate = firstColumnDate;
                             }
-                            width = intervalToDay(endDate - startDate) * cellWidth;
+                            eventWidth = startDate.diffDays(endDate) * cellWidth;
                             $fly(dom).addClass("long-event");
                         } else {
                             $fly(dom).removeClass("long-event");
                         }
 
+                        cellOffset = $fly(cell).offset();
+
                         $fly(dom).css({
-                            width: width,
+                            width: eventWidth,
                             left: parseInt(cellOffset.left, 10) - parseInt(tableOffset.left, 10),
                             top: parseInt(cellOffset.top, 10) - parseInt(tableOffset.top, 10) + (j + 1) * 20
                         });
 
                         eventsHolder.appendChild(dom);
                     }
+
                     if (cellConfig.length < showEventsCount) {
                         //TODO let user see it.
                     }
@@ -340,22 +246,20 @@
             }
         },
         getDateRange: function() {
-            var date = this._date || new Date(), firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
-            var startDate = new Date(firstDayOfMonth.getFullYear(), firstDayOfMonth.getMonth(), 1 - firstDayOfMonth.getDay(), 0, 0, 0),
-                endDate = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() + 41, 23, 59, 59);
+            var date = this._date || new XDate(), firstDayOfMonth = date.clone().setDate(1),
+                startDate = firstDayOfMonth.clone().addDays(-firstDayOfMonth.getDay()).minimizeTime(),
+                endDate = startDate.clone().addDays(41).maximizeTime(true);
 
-            //console.log("startDate:" + startDate.toString());
+            //console.log("date range:[" + startDate.toString() + "," + endDate.toString() + "]");
 
             return [startDate, endDate];
         },
         getDateByPosition: function(row, column) {
             var dateRange = this.getDateRange(), minDate = dateRange[0];
-            return new Date(minDate.getFullYear(), minDate.getMonth(), minDate.getDate() + row * 7 + column, 0, 0, 0);
+            return new XDate(minDate.getFullYear(), minDate.getMonth(), minDate.getDate() + row * 7 + column, 0, 0, 0);
         },
         getPositionOfDate: function(date) {
             var range = this.getDateRange(), startDate = range[0], dayCount = Math.floor(intervalToDay(date - startDate));
-
-            //console.log(date.toString(), Math.floor(dayCount / 7), dayCount % 7, startDate.toString(), range[1].toString());
 
             return {
                 rowIndex: Math.floor(dayCount / 7),
@@ -365,7 +269,6 @@
         getEventDom: function(event) {
             var dom = dorado.widget.MonthEventPool.borrowObject();
             dom.innerHTML = event.title;
-
             jQuery.data(dom, HOLD_EVENT_KEY, event);
             jQuery.data(dom, HOLD_MONTHVIEW_KEY, this);
 
@@ -375,11 +278,50 @@
             return dom;
         },
         refreshOnDateChange: function() {
-            var view = this, date = view._date || new Date();
-
-            refreshDate(date, view._doms.monthTable);
-
+            var view = this, date = view._date || new XDate();
+            view.refreshDate(date);
             view.refreshEvents();
+        },
+        refreshDate: function(date) {
+            var dateTable = this._doms.monthTable, count = 1, day = date.clone().setDate(1).getDay(), selectDay = date.getDate(),
+                maxDay = XDate.getDaysInMonth(date.getFullYear(), date.getMonth()),
+                lastMonthDay = XDate.getDaysInMonth(date.getFullYear(), (date.getMonth() == 0 ? 11 : date.getMonth() - 1));
+
+            day = (day == 0 ? 7 : day);
+
+            var startI = 1, startJ = 0;
+
+            for (var i = startI; i < startI + 6; i++) {
+                for (var j = startJ; j < startJ + 7; j++) {
+                    var cell = dateTable.rows[i].cells[j].firstChild;
+                    if (i == startI) {
+                        if (j - startJ >= day) {
+                            if (count == selectDay) {
+                                cell.className = "selected-date";
+                            } else {
+                                cell.className = null;
+                            }
+                            cell.innerHTML = count++;
+                        } else {
+                            cell.innerHTML = lastMonthDay - (day - j % 7) + 1;
+
+                            cell.className = "premonth";
+                        }
+                    } else {
+                        if (count <= maxDay) {
+                            if (count == selectDay) {
+                                cell.className = "selected-date";
+                            } else {
+                                cell.className = null;
+                            }
+                            cell.innerHTML = count++;
+                        } else {
+                            cell.innerHTML = count++ - maxDay;
+                            cell.className = "nextmonth";
+                        }
+                    }
+                }
+            }
         }
     });
 })();

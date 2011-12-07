@@ -1,13 +1,23 @@
 (function(){
-    var INTERVAL_A_DAY = 86400000;
+    XDate.prototype.minimizeTime = function() {
+        var date = this;
+        date.setHours(0);
+        date.setMinutes(0);
+        date.setSeconds(0);
 
-    function intervalToDay(interval) {
-        return interval / INTERVAL_A_DAY;
-    }
+        return date;
+    };
 
-    //TODO delete
-    Date.prototype.toString = function() {
-        return this.getFullYear() + "-" + (this.getMonth() + 1) + "-" + this.getDate() + " " + this.getHours() + ":" + this.getMinutes();
+    XDate.prototype.maximizeTime = function(forceMax) {
+        var date = this, possible = !(date.getMinutes() == 0 && date.getHours() == 0 && date.getSeconds() == 0);
+
+        if (forceMax || possible) {
+            date.setHours(23);
+            date.setMinutes(59);
+            date.setSeconds(59);
+        }
+
+        return date;
     };
 
     Array.prototype.select = function(fn) {
@@ -30,7 +40,7 @@
             },
             date: {
                 defaultValue: function() {
-                    return new Date()
+                    return new XDate()
                 },
                 setter: function(value) {
                     this._date = value;
@@ -104,7 +114,7 @@
                 }, {
                     caption: "Today",
                     onClick: function() {
-                        cal.set("date", new Date())
+                        cal.set("date", new XDate())
                     }
                 }, currentDateLabel, "->", {
                     caption: "Day",
@@ -135,22 +145,22 @@
         prev: function() {
             var cal = this, cardbook = cal._cardbook, index = cardbook.getCurrentControlIndex(), date = cal._date;
             if (index == 0) {
-                cal._date = new Date(date.getFullYear(), date.getMonth(), date.getDate() - 1);
+                date.addDays(-1);
             } else if (index == 1) {
-                cal._date = new Date(date.getFullYear(), date.getMonth(), date.getDate() - 7);
+                date.addWeeks(-1);
             } else if (index == 2) {
-                cal._date = new Date(date.getFullYear(), date.getMonth() - 1, date.getDate());
+                date.addMonths(-1, true);
             }
             cal.doOnDateChange();
         },
         next: function() {
             var cal = this, cardbook = cal._cardbook, index = cardbook.getCurrentControlIndex(), date = cal._date;
             if (index == 0) {
-                cal._date = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1);
+                date.addDays(1);
             } else if (index == 1) {
-                cal._date = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 7);
+                date.addWeeks(1);
             } else if (index == 2) {
-                cal._date = new Date(date.getFullYear(), date.getMonth() + 1, date.getDate());
+                date.addMonths(1, true);
             }
             cal.doOnDateChange();
         },
@@ -179,14 +189,12 @@
             if (!end) end = start;
             type = type || "all";
             function filter(event) {
-                var allDay = event.allDay /*|| (event.endTime - event.startTime) > INTERVAL_A_DAY*/;
+                var allDay = event.allDay;
                 return type == "all" || (type == "normal" && !allDay) || (type == "allday" && allDay);
             }
             var array = this.array || [], result = [];
             for (var i = 0, j = array.length; i < j; i++) {
                 var event = array[i];
-                if (event.title.indexOf("11-30") != -1) {
-                }
                 if (!(event.startTime >= end || event.endTime <= start)) {
                     if (filter(event)) {
                         result.push(event);

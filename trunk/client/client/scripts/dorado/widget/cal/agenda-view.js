@@ -7,28 +7,6 @@
         return interval / INTERVAL_A_DAY;
     }
 
-    function minimizeDate(date) {
-        var result = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-        result.setHours(0);
-        result.setMinutes(0);
-        result.setSeconds(0);
-
-        return result;
-    }
-
-    function maxmizeDateIfPosibble(date) {
-        var possible = !(date.getMinutes() == 0 && date.getHours() == 0 && date.getSeconds() == 0);
-        var result = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-
-        if (possible) {
-            result.setHours(23);
-            result.setMinutes(59);
-            result.setSeconds(59);
-        }
-
-        return result;
-    }
-
     dorado.widget.AgendaEventPool = new dorado.util.ObjectPool({
         makeObject: function() {
             var dom = document.createElement("div"), title = document.createElement("div");
@@ -66,7 +44,7 @@
 
                     return dom;
                 },
-                start: function(ui, ev) {
+                start: function() {
                     var event = jQuery.data(dom, HOLD_EVENT_KEY), agendaview = jQuery.data(dom, HOLD_AGENDAVIEW_KEY);
                     if (agendaview && event) {
                         agendaview._draggingevent = event;
@@ -78,7 +56,7 @@
                     gridUnit = Math.floor($fly(agendaview._doms.eventTable).outerHeight() / 48);
                     minHeight = gridUnit;
                 },
-                drag: function(ui, ev) {
+                drag: function() {
                     var agendaview = jQuery.data(dom, HOLD_AGENDAVIEW_KEY), inst = jQuery.data(this, "draggable"),
                         vertChange = event.pageY - inst.originalPageY + ($fly(agendaview._doms.eventTableWrap).attr("scrollTop") - startScrollTop);
 
@@ -103,8 +81,8 @@
                         //console.log("changeHUnit:" + changeHUnit + "\tchangeVUnit:" + changeVUnit +
                         //"\tchangeInterval:" + changeInterval + "\tstartLeft:" + startLeft + "\tendLeft:" + parseInt($fly(dom).css("left"), 10));
 
-                        event.startTime = new Date(event.startTime.getTime() + changeInterval);
-                        event.endTime = new Date(event.endTime.getTime() + changeInterval);
+                        event.startTime = new XDate(event.startTime.getTime() + changeInterval);
+                        event.endTime = new XDate(event.endTime.getTime() + changeInterval);
 
                         //console.log(event.title + ":\t" + event.startTime.toString() + "\t" + event.endTime.toString());
 
@@ -116,7 +94,7 @@
             $fly(topHandle).draggable({
                 addClasses: false,
                 axis: "fake",
-                start: function(ui, ev) {
+                start: function() {
                     var event = jQuery.data(dom, HOLD_EVENT_KEY), agendaview = jQuery.data(dom, HOLD_AGENDAVIEW_KEY);
                     if (agendaview && event) {
                         agendaview._draggingevent = event;
@@ -127,7 +105,7 @@
                     gridUnit = Math.floor($fly(agendaview._doms.eventTable).outerHeight() / 48);
                     minHeight = gridUnit;
                 },
-                drag: function(ui, ev) {
+                drag: function() {
                     var agendaview = jQuery.data(dom, HOLD_AGENDAVIEW_KEY), inst = jQuery.data(this, "draggable"),
                         vertChange = event.pageY - inst.originalPageY + ($fly(agendaview._doms.eventTableWrap).attr("scrollTop") - startScrollTop);
 
@@ -145,7 +123,7 @@
                     var agendaview = jQuery.data(dom, HOLD_AGENDAVIEW_KEY), event = jQuery.data(dom, HOLD_EVENT_KEY);
                     if (agendaview) {
                         var changeUnit = (parseInt($fly(dom).css("top"), 10) - startTop) / gridUnit;
-                        event.startTime = new Date(event.startTime.getTime() + changeUnit * 1800000);
+                        event.startTime = new XDate(event.startTime.getTime() + changeUnit * 1800000);
                         agendaview.refreshEvents();
                     }
                 }
@@ -154,7 +132,7 @@
             $fly(bottomHandle).draggable({
                 addClasses: false,
                 axis: "fake",
-                start: function(ui, ev) {
+                start: function() {
                     var event = jQuery.data(dom, HOLD_EVENT_KEY), agendaview = jQuery.data(dom, HOLD_AGENDAVIEW_KEY);
                     if (agendaview && event) {
                         agendaview._draggingevent = event;
@@ -165,7 +143,7 @@
                     gridUnit = Math.floor($fly(agendaview._doms.eventTable).outerHeight() / 48);
                     minHeight = gridUnit;
                 },
-                drag: function(ui, ev) {
+                drag: function() {
                     var agendaview = jQuery.data(dom, HOLD_AGENDAVIEW_KEY), inst = jQuery.data(this, "draggable"),
                         vertChange = event.pageY - inst.originalPageY + ($fly(agendaview._doms.eventTableWrap).attr("scrollTop") - startScrollTop);
 
@@ -178,11 +156,11 @@
 
                     $fly(dom).outerHeight(startHeight + vertChange);
                 },
-                stop: function(ui, ev) {
+                stop: function() {
                     var agendaview = jQuery.data(dom, HOLD_AGENDAVIEW_KEY), event = jQuery.data(dom, HOLD_EVENT_KEY);
                     if (agendaview) {
                         var changeUnit = ($fly(dom).outerHeight() - startHeight) / gridUnit;
-                        event.endTime = new Date(event.endTime.getTime() + changeUnit * 1800000);
+                        event.endTime = new XDate(event.endTime.getTime() + changeUnit * 1800000);
                         agendaview.refreshEvents();
                     }
                 }
@@ -214,7 +192,7 @@
 
                     return dom;
                 },
-                start: function(ui, ev) {
+                start: function() {
                     var event = jQuery.data(dom, HOLD_EVENT_KEY), agendaview = jQuery.data(dom, HOLD_AGENDAVIEW_KEY);
                     if (agendaview && event) {
                         agendaview._draggingevent = event;
@@ -226,7 +204,7 @@
                     gridUnit = Math.floor($fly(agendaview._doms.eventTable).outerHeight() / 48);
                     minHeight = gridUnit;
                 },
-                drag: function(ui, ev) {
+                drag: function() {
                     var agendaview = jQuery.data(dom, HOLD_AGENDAVIEW_KEY), inst = jQuery.data(this, "draggable");
 
                     //console.log("agendaview._dragoverColumn:" + agendaview._dragoverColumn);
@@ -241,8 +219,8 @@
                         var changeHUnit = Math.ceil(parseInt($fly(dom).css("left"), 10) - startLeft) / ((agendaview._doms.eventTable.offsetWidth - 100) / agendaview._showDays);
                         var changeInterval = changeHUnit * INTERVAL_A_DAY;
 
-                        event.startTime = minimizeDate(new Date(event.startTime.getTime() + changeInterval));
-                        event.endTime = minimizeDate(new Date(event.endTime.getTime() + changeInterval));
+                        event.startTime = (new XDate(event.startTime.getTime() + changeInterval)).minimizeTime();
+                        event.endTime = (new XDate(event.endTime.getTime() + changeInterval)).minimizeTime();
 
                         //console.log(event.title + ":\t" + event.startTime.toString() + "\t" + event.endTime.toString());
 
@@ -260,14 +238,14 @@
     dorado.widget.AgendaView = $extend(dorado.widget.Control, {
         ATTRIBUTES: {
             className: {
-                defaultValue: "agenda-view"
+                defaultValue: "d-agenda-view"
             },
             date: {
                 setter: function(value) {
                     if (this._forceDateDay !== undefined && value) {
                         var day = value.getDay();
                         if (day != this._forceDateDay) {
-                            this._date = new Date(value.getFullYear(), value.getMonth(), value.getDate() - (day - this._forceDateDay));
+                            this._date = new XDate(value.getFullYear(), value.getMonth(), value.getDate() - (day - this._forceDateDay));
                             if (this._rendered && this._visible) {
                                 this.refreshOnDateChange();
                             }
@@ -307,7 +285,7 @@
                 tagName: "div",
                 content: [{
                     tagName: "div",
-                    className: "wrap",
+                    className: "agenda-columns-wrap",
                     content: {
                         tagName: "table",
                         className: "agenda-columns",
@@ -350,7 +328,7 @@
                             className: "content-cell",
                             content: {
                                 tagName: "div",
-                                className: "allday-events-wrap",
+                                className: "allday-events-holder",
                                 contextKey: "alldayEventsHolder",
                                 style: {
                                     height: "30px"
@@ -432,12 +410,12 @@
             };
 
             var columnRow = doms.columnRow, contentRow = doms.contentRow, showDays = view._showDays;
-            for (var i = 0; i < showDays; i++) {
+            for (var j = 0; j < showDays; j++) {
                 var th = document.createElement("th"), td;
                 th.className = "header-cell";
                 columnRow.appendChild(th);
 
-                if (i != 0) {
+                if (j != 0) {
                     td = document.createElement("td");
                     contentRow.appendChild(td);
 
@@ -449,9 +427,41 @@
 
             return dom;
         },
+        refreshDom: function() {
+            $invokeSuper.call(this, arguments);
+            if (!this._initScrollBarGutter) {
+                var view = this, doms = view._doms, eventTableWrap = doms.eventTableWrap,
+                    columnRow = doms.columnRow, contentRow = doms.contentRow;
+
+                var barWidth = eventTableWrap.offsetWidth - eventTableWrap.clientWidth;
+                console.log("barWidth:" + barWidth);
+
+                var gutter1 = document.createElement("th"), gutter2 = document.createElement("td");
+                gutter1.style.width = barWidth + "px";
+                gutter1.className = "agenda-gutter";
+                gutter2.style.width = barWidth + "px";
+                gutter2.className = "agenda-gutter";
+
+                columnRow.appendChild(gutter1);
+                contentRow.appendChild(gutter2);
+
+                view._initScrollBarGutter = true;
+            }
+        },
+        filterEvents: function(events, start, end) {
+            if (!end) end = start;
+            var array = events || [], result = [];
+            for (var i = 0, j = array.length; i < j; i++) {
+                var event = array[i];
+                if (!(event.startTime >= end || event.endTime <= start)) {
+                    result.push(event);
+                }
+            }
+            return result;
+        },
         refreshEvents: function() {
-            var dateRange = this.getDateRange(), eventSource = this._parent._parent._eventSource,
-                events;
+            var view = this, dateRange = view.getDateRange(),
+                eventSource = view._parent._parent._eventSource, events, i, j, k;
 
             if (eventSource) {
                 events = eventSource.getEventsByRange(dateRange[0], dateRange[1], "normal");
@@ -459,39 +469,37 @@
                 return;
             }
 
-//            console.log("===events start===");
-//            events.forEach(function(event) {
-//                console.log(event.toString());
-//            });
-//            console.log("===events end===");
-
-            var view = this;
-
             if (view._currentAgendaEvents) {
                 var cacheEvents = view._currentAgendaEvents;
-                for (var i = 0; i < cacheEvents.length; i++) {
-                    var edom = cacheEvents[i];
-                    $fly(edom).css({ left: "", top: "" });
-                    dorado.widget.AgendaEventPool.returnObject(edom);
+                for (i = 0; i < cacheEvents.length; i++) {
+                    var eventDom = cacheEvents[i];
+                    $fly(eventDom).css({ left: "", top: "" });
+                    dorado.widget.AgendaEventPool.returnObject(eventDom);
                 }
                 view._currentAgendaEvents = [];
             }
+            var dayCount = dateRange[0].diffDays(dateRange[1]);
 
-            var result = view.sortEvents(events);
+            for (i = 0; i < dayCount; i++) {
+                var date = dateRange[0].clone().addDays(i), dayEvents = view.filterEvents(events, date, date.clone().addDays(1));
 
-            for (var i = 0; i < result.length; i++) {
-                var item = result[i];
-                if (item instanceof Array) {
-                    view.refreshBlock(item);
-                } else {
-                    view.refreshEvent(item);
+                var result = view.sortEventsOfSlot(dayEvents);
+
+                for (j = 0, k = result.length; j < k; j++) {
+                    var item = result[j];
+                    if (item instanceof Array) {
+                        view.refreshBlock(item, i);
+                    } else {
+                        view.refreshEvent(item, i);
+                    }
                 }
             }
         },
-        sortEvents: function(events) {
+        sortEventsOfSlot: function(events) {
             var allEvents = events.concat().sort(function(a, b) {
                 return a.startTime > b.startTime;
             });
+
             var result = [], block = [];
 
             function positionBlock(block) {
@@ -502,7 +510,10 @@
                     }
                     return columns[index];
                 }
-                for (var i = 0, k = block.length; i < k; i++) {
+
+                var i, k, j, l;
+
+                for (i = 0, k = block.length; i < k; i++) {
                     var event = block[i], columnIndex = 0;
                     while (true) {
                         var columnInfo = getColumn(columnIndex), okay = true, lastEventInColumn = columnInfo[columnInfo.length - 1];
@@ -516,16 +527,49 @@
                     }
                 }
 
+                function fixEvent(event, index) {
+                    event.colSpan = 1;
+                    for (var i = index + 1, k = columns.length; i < k; i++) {
+                        var okay = true, columnEvents = columns[i];
+                        for (var j = 0, l = columnEvents.length; j < l; j++) {
+                            var columnEvent = columnEvents[j];
+                            if (!(columnEvent.startTime >= event.endTime || columnEvent.endTime <= event.startTime)) {
+                                okay = false;
+                                break;
+                            }
+                        }
+                        if (okay) {
+                            event.colSpan++;
+                        } else {
+                            break;
+                        }
+                    }
+                }
+
+                for (i = 0, k = columns.length; i < k; i++) {
+                    var events = columns[i];
+                    for (j = 0, l = events.length; j < l; j++) {
+                        fixEvent(events[j], i);
+                    }
+                }
+
                 return columns;
             }
 
+            var blockMaxDate;
+
             for (var i = 0, j = allEvents.length; i < j; i++) {
                 var event = allEvents[i], nextEvent = allEvents[i + 1];
-                if (nextEvent && event.endTime > nextEvent.startTime) {
+                if (blockMaxDate == null) blockMaxDate = event.endTime;
+                if (nextEvent && blockMaxDate > nextEvent.startTime) {
                     block.push(event);
+                    if (event.endTime > blockMaxDate) {
+                        blockMaxDate = event.endTime;
+                    }
                 } else if (block.length > 0) {
                     block.push(event);
                     result.push(positionBlock(block));
+                    blockMaxDate = null;
                     block = [];
                 } else {
                     result.push(event);
@@ -534,34 +578,33 @@
 
             return result;
         },
-        refreshBlock: function(block) {
+        refreshBlock: function(block, slotIndex) {
             var view = this, columntCount = block.length;
             for (var i = 0, k = block.length; i < k; i++) {
                 var column = block[i];
                 for (var j = 0, l = column.length; j < l; j++) {
                     var event = column[j];
-                    view.refreshBlockEvent(event, i, columntCount);
+                    view.refreshBlockEvent(event, i, columntCount, slotIndex);
                 }
             }
         },
-        refreshBlockEvent: function(event, columnIndex, columnCount) {
-            var startDate = event.startTime, endDate = event.endTime;
-            var view = this, doms = view._doms, eventTable = doms.eventTable, eventTableHeight = $fly(eventTable).height();
-            var heightPerMin = eventTableHeight / 24 / 60, eventTableWidth = $fly(eventTable).width() - 100,
-                widthPerColumn = eventTableWidth / view._showDays / columnCount;
-
+        refreshBlockEvent: function(event, columnIndex, columnCount, slotIndex) {
+            var view = this, doms = view._doms, eventTable = doms.eventTable,
+                eventTableWidth = $fly(eventTable).width() - 100, eventTableHeight = $fly(eventTable).height(),
+                widthPerColumn = eventTableWidth / view._showDays / columnCount, heightPerMin = eventTableHeight / 24 / 60;
 
             function refreshEventPerSlot(event, startDate, endDate) {
                 var dom = view.getEventDom(event);
-                //console.log("event title:" + event.title + "\tstartDate:" + startDate.toString() + "\tendDate:" + endDate.toString());
+                //console.log(event.title, startDate.toString(), endDate.toString());
                 $fly(dom).css({
                     left: view._showDays == 1 ? widthPerColumn * columnIndex : eventTableWidth / view._showDays * (startDate.getDay()) + widthPerColumn * columnIndex,
-                    width: widthPerColumn,
+                    width: widthPerColumn * event.colSpan,
                     top: (startDate.getHours() * 60 + startDate.getMinutes()) * heightPerMin
                 }).outerHeight(Math.floor((endDate.getTime() - startDate.getTime()) / 1000 / 60 * heightPerMin));
             }
 
-            var dateRange = view.getDateRange(), minDate = dateRange[0], maxDate = dateRange[1];
+            var startDate = event.startTime, endDate = event.endTime, dateRange = view.getDateRange(),
+                minDate = dateRange[0].clone().addDays(slotIndex), maxDate = minDate.clone().addDays(1);
 
             if (startDate < minDate) {
                 startDate = minDate;
@@ -571,29 +614,12 @@
                 endDate = maxDate;
             }
 
-            if (startDate.getMonth() === endDate.getMonth() && startDate.getDate() === endDate.getDate()
-                && startDate.getFullYear() === endDate.getFullYear()) {
-                refreshEventPerSlot(event, startDate, endDate);
-            } else {
-                var count = Math.round((maxmizeDateIfPosibble(endDate) - minimizeDate(startDate)) / INTERVAL_A_DAY);
-                for (var i = 0; i < count; i++) {
-                    if (i == 0) {
-                        refreshEventPerSlot(event, startDate, new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 23, 59, 59));
-                    } else if (i == count - 1) {
-                        refreshEventPerSlot(event, new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() + i, 0, 0, 0), endDate);
-                    } else {
-                        refreshEventPerSlot(event, new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() + i, 0, 0, 0),
-                            new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() + i, 23, 59, 59));
-                    }
-                }
-            }
+            refreshEventPerSlot(event, startDate, endDate);
         },
-        refreshEvent: function(event) {
-            var view = this, doms = view._doms, eventTable = doms.eventTable, eventTableHeight = $fly(eventTable).height();
-            var heightPerMin = eventTableHeight / 24 / 60, eventTableWidth = $fly(eventTable).width() - 100,
-                widthPerColumn = eventTableWidth / view._showDays - 10;
-
-            var startDate = event.startTime, endDate = event.endTime;
+        refreshEvent: function(event, slotIndex) {
+            var view = this, doms = view._doms, eventTable = doms.eventTable,
+                eventTableWidth = $fly(eventTable).width() - 100, eventTableHeight = $fly(eventTable).height(),
+                widthPerColumn = eventTableWidth / view._showDays - 10, heightPerMin = eventTableHeight / 24 / 60;
 
             function refreshEventPerSlot(event, startDate, endDate) {
                 var dom = view.getEventDom(event);
@@ -604,7 +630,8 @@
                 }).outerHeight(Math.floor((endDate.getTime() - startDate.getTime()) / 1000 / 60 * heightPerMin));
             }
 
-            var dateRange = view.getDateRange(), minDate = dateRange[0], maxDate = dateRange[1];
+            var startDate = event.startTime, endDate = event.endTime,
+                dateRange = view.getDateRange(), minDate = dateRange[0].clone().addDays(slotIndex), maxDate = minDate.clone().addDays(1);
 
             if (startDate < minDate) {
                 startDate = minDate;
@@ -614,39 +641,22 @@
                 endDate = maxDate;
             }
 
-            if (startDate.getMonth() === endDate.getMonth() && startDate.getDate() === endDate.getDate()
-                && startDate.getFullYear() === endDate.getFullYear()) {
-                refreshEventPerSlot(event, startDate, endDate);
-            } else {
-                var count = Math.round((maxmizeDateIfPosibble(endDate) - minimizeDate(startDate)) / INTERVAL_A_DAY);
-                for (var i = 0; i < count; i++) {
-                    if (i == 0) {
-                        refreshEventPerSlot(event, startDate, new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 23, 59, 59));
-                    } else if (i == count - 1) {
-                        refreshEventPerSlot(event, new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() + i, 0, 0, 0), endDate);
-                    } else {
-                        refreshEventPerSlot(event, new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() + i, 0, 0, 0),
-                            new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() + i, 23, 59, 59));
-                    }
-                }
-            }
+            refreshEventPerSlot(event, startDate, endDate);
         },
         getEventDom: function(event) {
-            var dom = dorado.widget.AgendaEventPool.borrowObject();
+            var view = this, dom = dorado.widget.AgendaEventPool.borrowObject();
             $fly(dom).find(".title").html(event.title);
-
             jQuery.data(dom, HOLD_EVENT_KEY, event);
             jQuery.data(dom, HOLD_AGENDAVIEW_KEY, this);
 
-            if (this._currentAgendaEvents == null) this._currentAgendaEvents = [];
-            this._currentAgendaEvents.push(dom);
-            this._doms.eventsHolder.appendChild(dom);
+            if (view._currentAgendaEvents == null) view._currentAgendaEvents = [];
+            view._currentAgendaEvents.push(dom);
+            view._doms.eventsHolder.appendChild(dom);
 
             return dom;
         },
         refreshAllDayEvents: function() {
-            var dateRange = this.getDateRange(), eventSource = this._parent._parent._eventSource,
-                events;
+            var view = this, dateRange = view.getDateRange(), eventSource = view._parent._parent._eventSource, events;
 
             if (eventSource) {
                 events = eventSource.getEventsByRange(dateRange[0], dateRange[1], "allday")
@@ -654,16 +664,14 @@
                 return;
             }
 
-            var view = this;
-
             if (view._currentAgendaAllDayEvents) {
                 var cacheEvents = view._currentAgendaAllDayEvents;
                 for (var i = 0; i < cacheEvents.length; i++) {
-                    var edom = cacheEvents[i];
-                    if (edom.parentNode) {
-                        edom.parentNode.removeChild(edom);
+                    var eventDom = cacheEvents[i];
+                    if (eventDom.parentNode) {
+                        eventDom.parentNode.removeChild(eventDom);
                     }
-                    dorado.widget.AgendaAllDayEventPool.returnObject(edom);
+                    dorado.widget.AgendaAllDayEventPool.returnObject(eventDom);
                 }
                 view._currentAgendaAllDayEvents = [];
             }
@@ -672,26 +680,27 @@
 
             view.changeAlldayEventsHolderHeight(table.length * 20 + 10);
 
-            for (var i = 0; i < events.length; i++) {
-                var event = events[i], dom = view.getAllDayEventDom(event);
+            for (var j = 0; j < events.length; j++) {
+                var event = events[j], dom = view.getAllDayEventDom(event);
                 view.refreshAllDayEvent(dom, event);
             }
         },
         changeAlldayEventsHolderHeight: function(height) {
-            var view = this, doms = view._doms, allheight = view.getRealHeight();
+            var view = this, doms = view._doms, totalHeight = view.getRealHeight();
             $fly(doms.alldayEventsHolder).height(height);
+
             var columnRowHeight = $fly(doms.columnRow).outerHeight(true),
                 alldayEventTableHeight = $fly(doms.alldayEventTable).outerHeight(true);
 
-            $fly(doms.contentHeightCell).height(allheight - columnRowHeight);
-            $fly(doms.eventTableWrap).height(allheight - columnRowHeight - alldayEventTableHeight);
+            $fly(doms.contentHeightCell).height(totalHeight - columnRowHeight);
+            $fly(doms.eventTableWrap).height(totalHeight - columnRowHeight - alldayEventTableHeight);
         },
         sortAllDayEvents: function(events) {
             var view = this, resultTable = [];
             function getRow(row) {
                 var rowArray = resultTable[row];
                 if (!rowArray) {
-                    rowArray = new Array(this._showDays);
+                    rowArray = new Array(view._showDays);
                     resultTable[row] = rowArray;
                 }
                 return rowArray;
@@ -699,9 +708,9 @@
             function positionEvent(event) {
                 var startTime = event.startTime, endTime = event.endTime,
                     count = Math.ceil(intervalToDay(endTime - startTime)),
-                    column = Math.ceil(intervalToDay(startTime - view._date));
+                    column = Math.ceil(intervalToDay(startTime - view._date)),
+                    rowIndex = 0;
 
-                var rowIndex = 0;
                 while (true) {
                     var row = getRow(rowIndex), okay = true;
                     for (var i = 0; i < count; i++) {
@@ -710,11 +719,11 @@
                         }
                     }
                     if (okay) {
-                        for (var i = 0; i < count; i++) {
-                            if (i == 0)
-                                row[column + i] = event;
+                        for (var j = 0; j < count; j++) {
+                            if (j == 0)
+                                row[column + j] = event;
                             else
-                                row[column + i] = true;
+                                row[column + j] = true;
                         }
                         event.row = rowIndex;
                         return;
@@ -722,6 +731,7 @@
                     rowIndex++;
                 }
             }
+
             for (var i = 0, j = events.length; i < j; i++) {
                 var event = events[i];
                 positionEvent(event);
@@ -730,14 +740,9 @@
             return resultTable;
         },
         refreshAllDayEvent: function(dom, event) {
-            var view = this, doms = view._doms, eventTable = doms.eventTable;
-            var eventTableWidth = $fly(view._dom).width() - 100;
-
-            var width, dateRange = view.getDateRange();
-
-            var minDate = dateRange[0], maxDate = dateRange[1],
-                startDate = minimizeDate(event.startTime),
-                endDate = maxmizeDateIfPosibble(event.endTime);
+            var view = this, eventTableWidth = $fly(view._dom).width() - 100,
+                dateRange = view.getDateRange(), minDate = dateRange[0], maxDate = dateRange[1],
+                startDate = event.startTime.clone().minimizeTime(), endDate = event.endTime.clone().maximizeTime();
 
             if (startDate < minDate) {
                 startDate = minDate;
@@ -747,42 +752,36 @@
                 endDate = maxDate;
             }
 
-            width = eventTableWidth / view._showDays * intervalToDay(endDate - startDate) - 10;
-
             $fly(dom).css({
                 left: view._showDays == 1 ? 0 : eventTableWidth / view._showDays * startDate.getDay(),
                 top: 20 * event.row,
-                width: width,
+                width: eventTableWidth / view._showDays * intervalToDay(endDate - startDate) - 10,
                 height: 20
             });
         },
         getDateRange: function() {
-            var date = this._date || new Date(), startDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0),
-                endDate = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() + this._showDays - 1, 23, 59, 59);
-
-            //console.log("dateRange:[" + startDate.toString() + "," + endDate.toString() + "]");
+            var date = this._date || new XDate(), startDate = date.clone().minimizeTime(),
+                endDate = startDate.clone().addDays(this._showDays).minimizeTime();
 
             return [startDate, endDate];
         },
         getAllDayEventDom: function(event) {
-            var dom = dorado.widget.AgendaAllDayEventPool.borrowObject();
+            var view = this, dom = dorado.widget.AgendaAllDayEventPool.borrowObject();
             $fly(dom).html(event.title);
-
             jQuery.data(dom, HOLD_EVENT_KEY, event);
             jQuery.data(dom, HOLD_AGENDAVIEW_KEY, this);
 
-            if (this._currentAgendaAllDayEvents == null) this._currentAgendaAllDayEvents = [];
-            this._currentAgendaAllDayEvents.push(dom);
-            this._doms.alldayEventsHolder.appendChild(dom);
+            if (view._currentAgendaAllDayEvents == null) view._currentAgendaAllDayEvents = [];
+            view._currentAgendaAllDayEvents.push(dom);
+            view._doms.alldayEventsHolder.appendChild(dom);
 
             return dom;
         },
         refreshOnDateChange: function() {
-            var view = this, date = view._date || new Date(), doms = view._doms, columnRow = doms.columnRow;
+            var view = this, date = view._date || new XDate(), doms = view._doms, columnRow = doms.columnRow;
 
             for (var i = 1; i <= view._showDays; i++) {
-                var cell = columnRow.cells[i];
-                var newDate = new Date(date.getFullYear(), date.getMonth(), date.getDate() + i - 1);
+                var cell = columnRow.cells[i], newDate = new XDate(date.getFullYear(), date.getMonth(), date.getDate() + i - 1);
                 cell.innerHTML = (newDate.getMonth() + 1) + "/" + newDate.getDate();
             }
 
