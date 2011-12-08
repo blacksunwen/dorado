@@ -1,4 +1,4 @@
-package com.bstek.dorado.jdbc.oracle;
+package com.bstek.dorado.jdbc.oracle.v11;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -15,8 +15,7 @@ import com.bstek.dorado.jdbc.model.storedprogram.ProgramParameter.Type;
 import com.bstek.dorado.jdbc.model.storedprogram.StoredProgram;
 import com.bstek.dorado.jdbc.type.JdbcType;
 
-public class StoredProgramTest extends OracleJdbcTestCase {
-
+public class StoredProgramTest extends Oracle11JdbcTestCase {
 	static class SP {
 		static StoredProgram noop1() {
 			StoredProgram sp = new StoredProgram();
@@ -32,7 +31,7 @@ public class StoredProgramTest extends OracleJdbcTestCase {
 			sp.setProgramName("NOOP2");
 			sp.setName("noop2");
 			
-			JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(JDBC_ENV_NAME);
+			JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(ENV_NAME);
 			JdbcType vsType = jdbcEnv.getDialect().getJdbcType("VARCHAR-String");
 			{
 				ProgramParameter pp = new ProgramParameter();
@@ -58,7 +57,7 @@ public class StoredProgramTest extends OracleJdbcTestCase {
 			sp.setProgramName("P1");
 			sp.setName("p1");
 			
-			JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(JDBC_ENV_NAME);
+			JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(ENV_NAME);
 			JdbcType vsType = jdbcEnv.getDialect().getJdbcType("VARCHAR-String");
 			{
 				ProgramParameter pp = new ProgramParameter();
@@ -90,7 +89,7 @@ public class StoredProgramTest extends OracleJdbcTestCase {
 			sp.setProgramName("P2");
 			sp.setName("p2");
 			
-			JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(JDBC_ENV_NAME);
+			JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(ENV_NAME);
 			JdbcType vsType = jdbcEnv.getDialect().getJdbcType("VARCHAR-String");
 			{
 				ProgramParameter pp = new ProgramParameter();
@@ -123,7 +122,7 @@ public class StoredProgramTest extends OracleJdbcTestCase {
 			return sp;
 		}
 		static StoredProgram fn1() {
-			JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(JDBC_ENV_NAME);
+			JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(ENV_NAME);
 			JdbcType vsType = jdbcEnv.getDialect().getJdbcType("VARCHAR-String");
 			
 			StoredProgram sp = new StoredProgram();
@@ -150,7 +149,7 @@ public class StoredProgramTest extends OracleJdbcTestCase {
 			return sp;
 		}
 		static StoredProgram fn2() {
-			JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(JDBC_ENV_NAME);
+			JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(ENV_NAME);
 			JdbcType vsType = jdbcEnv.getDialect().getJdbcType("VARCHAR-String");
 			
 			StoredProgram sp = new StoredProgram();
@@ -183,7 +182,7 @@ public class StoredProgramTest extends OracleJdbcTestCase {
 			return sp;
 		}
 		static StoredProgram fn3() {
-			JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(JDBC_ENV_NAME);
+			JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(ENV_NAME);
 			JdbcType vsType = jdbcEnv.getDialect().getJdbcType("VARCHAR-String");
 			
 			StoredProgram sp = new StoredProgram();

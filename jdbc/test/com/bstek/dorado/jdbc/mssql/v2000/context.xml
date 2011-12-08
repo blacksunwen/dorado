@@ -5,26 +5,13 @@
 
     <!-- JdbcEnviroment -->
     <bean parent="dorado.jdbcEnvTemplate">
-        <property name="name" value="mssql2008" />
-        <property name="dataSource">
-            <bean class="com.microsoft.sqlserver.jdbc.SQLServerDataSource">
-                <property name="user" value="sa"/>
-                <property name="password" value="bstek"/>
-                <property name="URL" value="jdbc:sqlserver://192.168.18.235:1433;DatabaseName=DORADOJDBC"/>
-            </bean>
-        </property>
-        <property name="dialect">
-            <bean parent="dorado.jdbc.mssqlDialect"/>
-        </property>
-    </bean>
-    <bean parent="dorado.jdbcEnvTemplate">
         <property name="name" value="mssql2000" />
         <property name="dataSource">
             <bean class="com.microsoft.sqlserver.jdbc.SQLServerDataSource">
                 <property name="user" value="sa"/>
                 <property name="password" value="bstek"/>
                 <property name="databaseName" value="DORADOJDBC"/>
-                <property name="serverName" value="192.168.18.235"/>
+                <property name="serverName" value="192.168.18.210"/>
                 <property name="portNumber" value="1433"/>
             </bean>
         </property>
@@ -37,7 +24,7 @@
     <bean parent="dorado.jdbcConfigTemplate">
         <property name="configLocations">
             <list>
-                <value>classpath:com/bstek/dorado/jdbc/mssql/dbm/*.dbm.xml</value>
+                <value>classpath:com/bstek/dorado/jdbc/mssql/v2000/*.dbm.xml</value>
             </list>
         </property>
     </bean>
