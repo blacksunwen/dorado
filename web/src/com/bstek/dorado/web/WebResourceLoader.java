@@ -12,7 +12,7 @@ import com.bstek.dorado.core.io.BaseResourceLoader;
  * @since Sep 17, 2008
  */
 public class WebResourceLoader extends BaseResourceLoader {
-	protected WebApplicationContext webApplicationContext;
+	private WebApplicationContext webApplicationContext;
 
 	public void setWebApplicationContext(
 			WebApplicationContext webApplicationContext) {
