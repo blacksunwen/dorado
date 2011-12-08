@@ -1,4 +1,4 @@
-﻿package com.bstek.dorado.web;
+package com.bstek.dorado.web;
 
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.web.context.WebApplicationContext;
