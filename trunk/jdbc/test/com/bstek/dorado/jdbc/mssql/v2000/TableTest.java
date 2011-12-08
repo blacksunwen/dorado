@@ -1,4 +1,4 @@
-package com.bstek.dorado.jdbc.mssql;
+package com.bstek.dorado.jdbc.mssql.v2000;
 
 import junit.framework.Assert;
 
@@ -6,7 +6,8 @@ import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.TestJdbcUtils;
 
-public class TableTest extends MssqlJdbcTestCase {
+public class TableTest extends Mssql2000JdbcTestCase {
+	
 	public void testEmployee() {
 		Record employee = Employee.random();
 		Integer id = (Integer)employee.get("ID");
@@ -26,10 +27,10 @@ public class TableTest extends MssqlJdbcTestCase {
 			Record employee3 = Employee.get(id);
 			TestJdbcUtils.assertEquals(employee2, employee3);
 		}
-//		{
-//			//删除是否成功
-//			JdbcUtils.delete(Employee.TABLE, employee);
-//			Assert.assertTrue(!Employee.has(id));
-//		}
+		{
+			//删除是否成功
+			JdbcUtils.delete(Employee.TABLE, employee);
+			Assert.assertTrue(!Employee.has(id));
+		}
 	}
 }

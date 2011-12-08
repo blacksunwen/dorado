@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <!-- JdbcEnviroment -->
     <bean parent="dorado.jdbcEnvTemplate">
@@ -22,7 +22,7 @@
     <bean parent="dorado.jdbcConfigTemplate">
         <property name="configLocations">
             <list>
-                <value>classpath:com/bstek/dorado/jdbc/oracle/dbm/*.dbm.xml</value>
+                <value>classpath:com/bstek/dorado/jdbc/oracle/v11/*.dbm.xml</value>
             </list>
         </property>
     </bean>

@@ -1,4 +1,4 @@
-package com.bstek.dorado.jdbc.oracle;
+package com.bstek.dorado.jdbc.mssql.v2008;
 
 import junit.framework.Assert;
 
@@ -6,8 +6,8 @@ import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.TestJdbcUtils;
 
-public class TableTest extends OracleJdbcTestCase {
-
+public class TableTest extends Mssql2008JdbcTestCase {
+	
 	public void testEmployee() {
 		Record employee = Employee.random();
 		Integer id = (Integer)employee.get("ID");
