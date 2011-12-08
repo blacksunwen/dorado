@@ -833,7 +833,7 @@
 			if(!dom) return;
 
 			var attached = false;
-			if(!renderTarget && this._parent && this._parent != dorado.widget.View.TOP) {
+			if(!renderTarget && this._parent && this._parent._rendered && this._parent != dorado.widget.View.TOP) {
 				attached = this._parent._attached;
 			} else {
 				var body = dom.ownerDocument.body;
