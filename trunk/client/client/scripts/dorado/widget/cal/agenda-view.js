@@ -1,11 +1,11 @@
 (function() {
-    var HOLD_EVENT_KEY = "cal_event";
-
-    var INTERVAL_A_DAY = 86400000;
+    var HOLD_EVENT_KEY = "cal_event", HOLD_AGENDAVIEW_KEY = "cal_agendaview", INTERVAL_A_DAY = 86400000;
 
     function intervalToDay(interval) {
         return interval / INTERVAL_A_DAY;
     }
+
+    var fakeEvent;
 
     dorado.widget.AgendaEventPool = new dorado.util.ObjectPool({
         makeObject: function() {
@@ -25,68 +25,140 @@
 
             dom.style.position = "absolute";
 
-            var startHeight, startTop, startLeft, startScrollTop, gridUnit, minHeight;
+            var startHeight, startTop, startLeft, startScrollTop, gridUnit, minHeight, widthPerSlot, toAllDay = false;
 
             var grid = function(value) {
                 return Math.floor(value / gridUnit) * gridUnit;
             };
+
+            var fakeOffset, alldayEvent;
 
             $fly(dom).draggable({
                 addClasses: false,
                 scope: "calendar",
                 axis: "fake",
                 helper: function() {
-                    var agendaview = jQuery.data(dom, HOLD_AGENDAVIEW_KEY),
-                        width = Math.floor(($fly(agendaview._doms.eventTable).width() - 100) / agendaview._showDays),
-                        currentLeft = parseInt($fly(dom).css("left"), 10);
+                    if (!fakeEvent) {
+                        fakeEvent = document.createElement("div");
+                        fakeEvent.className = "fake-event";
+                    }
 
-                    $fly(dom).css({ width: width - 10, left: currentLeft - currentLeft % width }).bringToFront();
-
-                    return dom;
+                    return fakeEvent;
                 },
                 start: function() {
                     var event = jQuery.data(dom, HOLD_EVENT_KEY), agendaview = jQuery.data(dom, HOLD_AGENDAVIEW_KEY);
                     if (agendaview && event) {
                         agendaview._draggingevent = event;
+                        $fly(fakeEvent).html(event.title);
                     }
-                    startHeight = $fly(dom).outerHeight(true);
-                    startTop = parseInt($fly(dom).css("top"), 10);
-                    startLeft = parseInt($fly(dom).css("left"), 10);
+
+                    var holderOffset = $fly(agendaview._doms.eventTableWrap).offset(), viewoffset = $fly(agendaview._dom).offset(),
+                        currentLeft = parseInt($fly(dom).css("left"), 10), currentTop = parseInt($fly(dom).css("top"), 10);
+
+                    widthPerSlot = Math.floor(($fly(agendaview._doms.eventTable).width() - 100) / agendaview._showDays);
                     startScrollTop = $fly(agendaview._doms.eventTableWrap).attr("scrollTop");
+                    startHeight = $fly(dom).outerHeight(true);
+
+                    fakeOffset = {
+                        left: holderOffset.left + 100 - viewoffset.left,
+                        top: holderOffset.top - viewoffset.top
+                    };
+
+                    agendaview._dom.appendChild(fakeEvent);
+                    agendaview._dragoverAllDayTable = false;
+
+                    $fly(fakeEvent).css({
+                        width: widthPerSlot - 10,
+                        height: startHeight,
+                        left: currentLeft - currentLeft % widthPerSlot + fakeOffset.left,
+                        top:  currentTop + fakeOffset.top - startScrollTop
+                    }).bringToFront();
+
+                    startTop = parseInt($fly(fakeEvent).css("top"), 10);
+                    startLeft = parseInt($fly(fakeEvent).css("left"), 10);
                     gridUnit = Math.floor($fly(agendaview._doms.eventTable).outerHeight() / 48);
                     minHeight = gridUnit;
+                    alldayEvent = $fly(dom).addClass("dragging-event").hasClass("allday-event");
+                    toAllDay = alldayEvent;
+                    //console.log("start top:" + startTop + "\tcurrentTop:" + currentTop + "\tstartScrollTop:" + startScrollTop);
                 },
-                drag: function() {
+                drag: function(event) {
                     var agendaview = jQuery.data(dom, HOLD_AGENDAVIEW_KEY), inst = jQuery.data(this, "draggable"),
-                        vertChange = event.pageY - inst.originalPageY + ($fly(agendaview._doms.eventTableWrap).attr("scrollTop") - startScrollTop);
+                        scrollTop = $fly(agendaview._doms.eventTableWrap).attr("scrollTop"),
+                        mouseChange = event.pageY - inst.originalPageY,
+                        vertChange = mouseChange + scrollTop - startScrollTop;
 
-                    vertChange = grid(vertChange);
-
-                    $fly(dom).css("top", startTop + vertChange);
+                    if (agendaview._dragoverAllDayTable) {
+                        var alldayTableTop = $fly(agendaview._doms.alldayEventTable).position().top;
+                        $fly(fakeEvent).css({
+                            top: alldayTableTop,
+                            height: ""
+                        });
+                        toAllDay = true;
+                    } else {
+                        $fly(fakeEvent).css({
+                            top: startTop + mouseChange + grid(vertChange) - vertChange,
+                            height: startHeight
+                        });
+                        toAllDay = false;
+                    }
 
                     //console.log("agendaview._dragoverColumn:" + agendaview._dragoverColumn);
 
                     if (agendaview._dragoverColumn != null) {
-                        $fly(dom).css("left", agendaview._dragoverColumn * (agendaview._doms.eventTable.offsetWidth - 100) / agendaview._showDays);
+                        $fly(fakeEvent).css("left", agendaview._dragoverColumn * widthPerSlot + fakeOffset.left);
                     }
                 },
                 stop: function() {
                     var agendaview = jQuery.data(dom, HOLD_AGENDAVIEW_KEY), event = jQuery.data(dom, HOLD_EVENT_KEY);
                     if (agendaview) {
-                        var changeVUnit = (parseInt($fly(dom).css("top"), 10) - startTop) / gridUnit;
-                        var changeHUnit = (parseInt($fly(dom).css("left"), 10) - startLeft) / ((agendaview._doms.eventTable.offsetWidth - 100) / agendaview._showDays);
+                        if (!event.allDay) {
+                            if (toAllDay) {
+                                var changeDays = Math.round((parseInt($fly(fakeEvent).css("left"), 10) - startLeft) / ((agendaview._doms.eventTable.offsetWidth - 100) / agendaview._showDays));
 
-                        var changeInterval = changeVUnit * 1800000 + changeHUnit * INTERVAL_A_DAY;
+                                event.startTime = event.startTime.clone().minimizeTime().addDays(changeDays);
+                                event.endTime = event.endTime.clone().maximizeTime().addDays(changeDays);
+                                event.allDay = true;
 
-                        //console.log("changeHUnit:" + changeHUnit + "\tchangeVUnit:" + changeVUnit +
-                        //"\tchangeInterval:" + changeInterval + "\tstartLeft:" + startLeft + "\tendLeft:" + parseInt($fly(dom).css("left"), 10));
+                                //console.log(event.startTime.toString("i"), event.endTime.toString("i"));
 
-                        event.startTime = new XDate(event.startTime.getTime() + changeInterval);
-                        event.endTime = new XDate(event.endTime.getTime() + changeInterval);
+                                agendaview.refreshOnDateChange();
+                            } else {
+                                var scrollTop = $fly(agendaview._doms.eventTableWrap).attr("scrollTop");
+                                var changeVUnit = (scrollTop - startScrollTop + parseInt($fly(fakeEvent).css("top"), 10) - startTop) / gridUnit;
+                                var changeHUnit = (parseInt($fly(fakeEvent).css("left"), 10) - startLeft) / ((agendaview._doms.eventTable.offsetWidth - 100) / agendaview._showDays);
 
-                        //console.log(event.title + ":\t" + event.startTime.toString() + "\t" + event.endTime.toString());
+                                var changeInterval = changeVUnit * 1800000 + changeHUnit * INTERVAL_A_DAY;
 
-                        agendaview.refreshEvents();
+                                event.startTime = new XDate(event.startTime.getTime() + changeInterval);
+                                event.endTime = new XDate(event.endTime.getTime() + changeInterval);
+
+                                agendaview.refreshOnDateChange();
+                            }
+                        } else {
+                            if (toAllDay) {
+                                var changeDays = Math.round((parseInt($fly(fakeEvent).css("left"), 10) - startLeft) / ((agendaview._doms.eventTable.offsetWidth - 100) / agendaview._showDays));
+
+                                event.startTime = event.startTime.clone().minimizeTime().addDays(changeDays);
+                                event.endTime = event.endTime.clone().maximizeTime().addDays(changeDays);
+
+                                //console.log(event.startTime.toString("i"), event.endTime.toString("i"));
+
+                                agendaview.refreshOnDateChange();
+                            } else {
+                                var time = ($fly(agendaview._doms.eventTableWrap).attr("scrollTop") + parseInt($fly(fakeEvent).css("top"), 10) - fakeOffset.top) / gridUnit;
+                                var day = Math.round((parseInt($fly(fakeEvent).css("left"), 10) - startLeft) / ((agendaview._doms.eventTable.offsetWidth - 100) / agendaview._showDays));
+
+                                event.startTime = event.startTime.clone().addDays(day).minimizeTime().addMilliseconds(time * 1800000);
+                                event.endTime = event.startTime.clone().addMilliseconds(1800000);
+
+                                event.allDay = false;
+
+                                agendaview.refreshOnDateChange();
+                            }
+                        }
+
+                        $fly(dom).removeClass("dragging-event");
                     }
                 }
             });
@@ -94,7 +166,7 @@
             $fly(topHandle).draggable({
                 addClasses: false,
                 axis: "fake",
-                start: function() {
+                start: function(evt) {
                     var event = jQuery.data(dom, HOLD_EVENT_KEY), agendaview = jQuery.data(dom, HOLD_AGENDAVIEW_KEY);
                     if (agendaview && event) {
                         agendaview._draggingevent = event;
@@ -104,8 +176,10 @@
                     startScrollTop = $fly(agendaview._doms.eventTableWrap).attr("scrollTop");
                     gridUnit = Math.floor($fly(agendaview._doms.eventTable).outerHeight() / 48);
                     minHeight = gridUnit;
+
+                    $fly(dom).draggable("disable");
                 },
-                drag: function() {
+                drag: function(event) {
                     var agendaview = jQuery.data(dom, HOLD_AGENDAVIEW_KEY), inst = jQuery.data(this, "draggable"),
                         vertChange = event.pageY - inst.originalPageY + ($fly(agendaview._doms.eventTableWrap).attr("scrollTop") - startScrollTop);
 
@@ -116,8 +190,7 @@
                         vertChange = startHeight - (startHeight % minHeight + minHeight);
                     }
 
-                    $fly(dom).css("top", startTop + vertChange);
-                    $fly(dom).outerHeight(startHeight - vertChange);
+                    $fly(dom).css("top", startTop + vertChange).outerHeight(startHeight - vertChange);
                 },
                 stop: function() {
                     var agendaview = jQuery.data(dom, HOLD_AGENDAVIEW_KEY), event = jQuery.data(dom, HOLD_EVENT_KEY);
@@ -126,13 +199,15 @@
                         event.startTime = new XDate(event.startTime.getTime() + changeUnit * 1800000);
                         agendaview.refreshEvents();
                     }
+
+                    $fly(dom).draggable("enable");
                 }
             });
 
             $fly(bottomHandle).draggable({
                 addClasses: false,
                 axis: "fake",
-                start: function() {
+                start: function(evt) {
                     var event = jQuery.data(dom, HOLD_EVENT_KEY), agendaview = jQuery.data(dom, HOLD_AGENDAVIEW_KEY);
                     if (agendaview && event) {
                         agendaview._draggingevent = event;
@@ -142,8 +217,10 @@
                     startScrollTop = $fly(agendaview._doms.eventTableWrap).attr("scrollTop");
                     gridUnit = Math.floor($fly(agendaview._doms.eventTable).outerHeight() / 48);
                     minHeight = gridUnit;
+
+                    $fly(dom).draggable("disable");
                 },
-                drag: function() {
+                drag: function(event) {
                     var agendaview = jQuery.data(dom, HOLD_AGENDAVIEW_KEY), inst = jQuery.data(this, "draggable"),
                         vertChange = event.pageY - inst.originalPageY + ($fly(agendaview._doms.eventTableWrap).attr("scrollTop") - startScrollTop);
 
@@ -155,6 +232,8 @@
                     }
 
                     $fly(dom).outerHeight(startHeight + vertChange);
+
+                    $fly(dom).draggable("enable");
                 },
                 stop: function() {
                     var agendaview = jQuery.data(dom, HOLD_AGENDAVIEW_KEY), event = jQuery.data(dom, HOLD_EVENT_KEY);
@@ -169,71 +248,6 @@
             return dom;
         }
     });
-
-    dorado.widget.AgendaAllDayEventPool = new dorado.util.ObjectPool({
-        makeObject: function() {
-            var dom = document.createElement("div");
-            dom.className = "event";
-
-            dom.style.position = "absolute";
-
-            var startHeight, startTop, startLeft, startScrollTop, gridUnit, minHeight;
-
-            var grid = function(value) {
-                return Math.floor(value / gridUnit) * gridUnit;
-            };
-
-            $fly(dom).draggable({
-                addClasses: false,
-                scope: "calendar",
-                axis: "fake",
-                helper: function() {
-                    $fly(dom).bringToFront();
-
-                    return dom;
-                },
-                start: function() {
-                    var event = jQuery.data(dom, HOLD_EVENT_KEY), agendaview = jQuery.data(dom, HOLD_AGENDAVIEW_KEY);
-                    if (agendaview && event) {
-                        agendaview._draggingevent = event;
-                    }
-                    startHeight = $fly(dom).outerHeight(true);
-                    startTop = parseInt($fly(dom).css("top"), 10);
-                    startLeft = parseInt($fly(dom).css("left"), 10);
-                    startScrollTop = $fly(agendaview._doms.eventTableWrap).attr("scrollTop");
-                    gridUnit = Math.floor($fly(agendaview._doms.eventTable).outerHeight() / 48);
-                    minHeight = gridUnit;
-                },
-                drag: function() {
-                    var agendaview = jQuery.data(dom, HOLD_AGENDAVIEW_KEY), inst = jQuery.data(this, "draggable");
-
-                    //console.log("agendaview._dragoverColumn:" + agendaview._dragoverColumn);
-
-                    if (agendaview._dragoverColumn != null) {
-                        $fly(dom).css("left", agendaview._dragoverColumn * (agendaview._doms.eventTable.offsetWidth - 100) / agendaview._showDays);
-                    }
-                },
-                stop: function() {
-                    var agendaview = jQuery.data(dom, HOLD_AGENDAVIEW_KEY), event = jQuery.data(dom, HOLD_EVENT_KEY);
-                    if (agendaview) {
-                        var changeHUnit = Math.ceil(parseInt($fly(dom).css("left"), 10) - startLeft) / ((agendaview._doms.eventTable.offsetWidth - 100) / agendaview._showDays);
-                        var changeInterval = changeHUnit * INTERVAL_A_DAY;
-
-                        event.startTime = (new XDate(event.startTime.getTime() + changeInterval)).minimizeTime();
-                        event.endTime = (new XDate(event.endTime.getTime() + changeInterval)).minimizeTime();
-
-                        //console.log(event.title + ":\t" + event.startTime.toString() + "\t" + event.endTime.toString());
-
-                        agendaview.refreshAllDayEvents();
-                    }
-                }
-            });
-
-            return dom;
-        }
-    });
-
-    var HOLD_AGENDAVIEW_KEY = "cal_agendaview";
 
     dorado.widget.AgendaView = $extend(dorado.widget.Control, {
         ATTRIBUTES: {
@@ -326,6 +340,7 @@
                         }, {
                             tagName: "td",
                             className: "content-cell",
+                            contextKey: "alldayTableContentCell",
                             content: {
                                 tagName: "div",
                                 className: "allday-events-holder",
@@ -399,12 +414,12 @@
                     scope: "calendar",
                     greedy: false,
                     tolerance: "pointer",
-                    drop: function(ev, ui) {
+                    drop: function() {
                     },
-                    over: function(ev, ui) {
+                    over: function() {
                         view._dragoverColumn = td.cellIndex - 1;
                     },
-                    out: function(ev, ui) {
+                    out: function() {
                     }
                 });
             };
@@ -425,6 +440,20 @@
 
             makeDropable(doms.contentHeightCell);
 
+            $fly(doms.alldayTableContentCell).droppable({
+                scope: "calendar",
+                greedy: false,
+                tolerance: "touch",
+                drop: function() {
+                },
+                over: function() {
+                    view._dragoverAllDayTable = true;
+                },
+                out: function() {
+                    view._dragoverAllDayTable = false;
+                }
+            });
+
             return dom;
         },
         refreshDom: function() {
@@ -434,7 +463,6 @@
                     columnRow = doms.columnRow, contentRow = doms.contentRow;
 
                 var barWidth = eventTableWrap.offsetWidth - eventTableWrap.clientWidth;
-                console.log("barWidth:" + barWidth);
 
                 var gutter1 = document.createElement("th"), gutter2 = document.createElement("td");
                 gutter1.style.width = barWidth + "px";
@@ -595,7 +623,6 @@
 
             function refreshEventPerSlot(event, startDate, endDate) {
                 var dom = view.getEventDom(event);
-                //console.log(event.title, startDate.toString(), endDate.toString());
                 $fly(dom).css({
                     left: view._showDays == 1 ? widthPerColumn * columnIndex : eventTableWidth / view._showDays * (startDate.getDay()) + widthPerColumn * columnIndex,
                     width: widthPerColumn * event.colSpan,
@@ -645,7 +672,7 @@
         },
         getEventDom: function(event) {
             var view = this, dom = dorado.widget.AgendaEventPool.borrowObject();
-            $fly(dom).find(".title").html(event.title);
+            $fly(dom).removeClass("allday-event").find(".title").html(event.title);
             jQuery.data(dom, HOLD_EVENT_KEY, event);
             jQuery.data(dom, HOLD_AGENDAVIEW_KEY, this);
 
@@ -671,7 +698,7 @@
                     if (eventDom.parentNode) {
                         eventDom.parentNode.removeChild(eventDom);
                     }
-                    dorado.widget.AgendaAllDayEventPool.returnObject(eventDom);
+                    dorado.widget.AgendaEventPool.returnObject(eventDom);
                 }
                 view._currentAgendaAllDayEvents = [];
             }
@@ -740,7 +767,7 @@
             return resultTable;
         },
         refreshAllDayEvent: function(dom, event) {
-            var view = this, eventTableWidth = $fly(view._dom).width() - 100,
+            var view = this, eventTableWidth = $fly(view._doms.eventTable).width() - 100,
                 dateRange = view.getDateRange(), minDate = dateRange[0], maxDate = dateRange[1],
                 startDate = event.startTime.clone().minimizeTime(), endDate = event.endTime.clone().maximizeTime();
 
@@ -766,8 +793,8 @@
             return [startDate, endDate];
         },
         getAllDayEventDom: function(event) {
-            var view = this, dom = dorado.widget.AgendaAllDayEventPool.borrowObject();
-            $fly(dom).html(event.title);
+            var view = this, dom = dorado.widget.AgendaEventPool.borrowObject();
+            $fly(dom).addClass("allday-event").find(".title").html(event.title);
             jQuery.data(dom, HOLD_EVENT_KEY, event);
             jQuery.data(dom, HOLD_AGENDAVIEW_KEY, this);
 

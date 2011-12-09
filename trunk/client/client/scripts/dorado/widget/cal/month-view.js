@@ -161,10 +161,24 @@
 
             var i, j, k, l, cellOffset, eventPosition, viewMap = [];
 
-            var fillCell = function(index, element) {
+            var fillCell = function(index, element, eventIndex) {
                 var cell = viewMap[index];
                 if (!cell) viewMap[index] = cell = [];
-                cell.push(element);
+                if (element === true && eventIndex !== undefined) {
+                    //fill for long event cell
+                    cell[eventIndex] = true;
+                } else {
+                    if (element === true) console.log("true but eventIndex === undefined");
+                    var i = 0;
+                    while (true) {
+                        if (cell[i] === undefined) {
+                            cell[i] = element;
+                            return i;
+                        }
+                        i++;
+                    }
+                    //cell.push(element);
+                }
             };
 
             for (i = 0, k = allDayEvents.length; i < k; i++) {
@@ -176,13 +190,15 @@
 
                 alldayEvent.dayCount = dayCount;
 
-                fillCell(startPosition, alldayEvent);
+                var eventIndex = fillCell(startPosition, alldayEvent);
+
+                //console.log("event.title:" + alldayEvent.title, eventPosition.rowIndex, eventPosition.columnIndex, dayCount);
 
                 for (j = 1; j < dayCount && startPosition + j < 42; j++) {
                     if ((startPosition + j) % 7 == 0) {
-                        fillCell(startPosition + j, alldayEvent);
+                        eventIndex = fillCell(startPosition + j, alldayEvent);
                     } else {
-                        fillCell(startPosition + j, true);
+                        fillCell(startPosition + j, true, eventIndex);
                     }
                 }
             }
@@ -192,9 +208,12 @@
                 if (!isAllDay(event)) {
                     event.dayCount = 1;
                     eventPosition = view.getPositionOfDate(event.startTime);
+                    //console.log("event.title:" + event.title, eventPosition.rowIndex, eventPosition.columnIndex);
                     fillCell(eventPosition.rowIndex * 7 + eventPosition.columnIndex, event);
                 }
             }
+
+            //console.log(viewMap);
 
             var dateRange = view.getDateRange(), refCell = monthTable.rows[1].cells[1],
                 cellHeight = $fly(refCell).height(), showEventsCount = Math.floor((cellHeight - 20) / 20);
@@ -204,14 +223,14 @@
                 if (cellConfig) {
                     for (j = 0, l = cellConfig.length; j < l && j < showEventsCount; j++) {
                         alldayEvent = cellConfig[j];
-                        if (alldayEvent === true) continue;
+                        if (alldayEvent === undefined || alldayEvent === true) continue;
 
                         var dom = view.getEventDom(alldayEvent), eventWidth = cellWidth,
                             cell = monthTable.rows[Math.floor(i / 7) + 1].cells[i % 7];
 
                         if (alldayEvent.dayCount > 1) {
                             var row = Math.floor(i / 7), firstColumnDate = dateRange[0].clone().addDays(row * 7),
-                            lastColumnDate = dateRange[0].clone().addDays((row + 1) * 7 - 1).maximizeTime(true),
+                            lastColumnDate = dateRange[0].clone().addDays((row + 1) * 7).minimizeTime(),
                             startDate = alldayEvent.startTime.clone().minimizeTime(), endDate = alldayEvent.endTime.clone().maximizeTime();
 
                             //console.log(firstColumnDate.toString(), lastColumnDate.toString());
@@ -259,7 +278,7 @@
             return new XDate(minDate.getFullYear(), minDate.getMonth(), minDate.getDate() + row * 7 + column, 0, 0, 0);
         },
         getPositionOfDate: function(date) {
-            var range = this.getDateRange(), startDate = range[0], dayCount = Math.floor(intervalToDay(date - startDate));
+            var range = this.getDateRange(), startDate = range[0], dayCount = Math.round(startDate.diffDays(date.clone().minimizeTime()));
 
             return {
                 rowIndex: Math.floor(dayCount / 7),
