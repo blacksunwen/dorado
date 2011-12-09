@@ -72,38 +72,28 @@
 
 		$(document).ready(function() {
             $.ajax({
-                url:'sample.xml',
+                url:'cal-sample.js',
                 type: 'get',
-                dataType: 'xml',
+                dataType: 'json',
                 timeout: 100000,
-                error: function(xml) {
-                    alert('Error loading XML document' + xml);
+                error: function(json) {
+                    alert('Error loading json document' + json);
                 },
-                success: function(xml) {
+                success: function(json) {
                     var item, items = [];
+                    //console.log(json);
 
-                    $(xml).find("entry").each(function(i, entry) {
-                        var allDay = $(entry).find("when").attr("startTime").indexOf('T') == -1;
+                    jQuery.each(json, function(i, event) {
                         item = new dorado.widget.CalEvent({
-                            title : $(entry).find("title").text(),
-                            content : $(entry).find("content").text(),
-                            startTime: new XDate(parseISO8601($(entry).find("when").attr("startTime"), true)),
-                            endTime: new XDate(parseISO8601($(entry).find("when").attr("endTime"), true)),
-                            allDay: allDay
+                            title : event.title,
+                            content : event.content,
+                            startTime: new XDate(parseISO8601(event.startTime, true)),
+                            endTime: new XDate(parseISO8601(event.endTime, true)),
+                            allDay: event.allDay
                         });
                         items.push(item);
                     });
-                    var json = "";
-                    items.forEach(function(item, index){
-                        json += "{";
-                        json += "\ttitle:" + item.title + ",";
-                        json += "\tstartTime:" + item.startTime + ",";
-                        json += "\tendTime:" + item.endTime + ",";
-                        json += "\tallDay:" + item.allDay;
-                        json += "},";
-                    });
-                    //console.log(json);
-                    console.log(JSON.stringify(items));
+
                     calendar = new dorado.widget.Calendar({
                         eventSource: new dorado.widget.ArrayEventSource({
                             array: items

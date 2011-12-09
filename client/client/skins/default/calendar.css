@@ -73,16 +73,6 @@
     position: relative;
 }
 
-.d-agenda-view .allday-event-table .allday-events-holder .event{
-    position: absolute;
-    color: white;
-    border:  1px solid #36c;
-    background-color: #6B93D8;
-    text-align: left;
-    left: -999999px;
-    top: -999999px;
-}
-
 .d-agenda-view td.event-drag-over {
     background-color: #ccc;
     opacity: 0.5;
@@ -95,7 +85,7 @@
     bottom: 0;
     left: 100px;
     height: 1px;
-    border-color: red;
+    /*border-color: red;*/
 }
 
 .d-agenda-view .allday-event-header{
@@ -142,20 +132,21 @@
     top: 0;
 }
 
-.d-agenda-view .events-holder .event {
+.d-agenda-view .event {
     position: absolute;
     border:  1px solid #36c;
     background-color: #6B93D8;
     left: -999999px;
     top: -999999px;
     overflow: hidden;
+    cursor: default;
 }
 
-.d-agenda-view .events-holder .event .title {
+.d-agenda-view .event .title {
     color: white;
 }
 
-.d-agenda-view .events-holder .event .top-handle {
+.d-agenda-view .event .top-handle {
     height: 7px;
     position: absolute;
     top: 0;
@@ -164,13 +155,36 @@
     cursor: row-resize;
 }
 
-.d-agenda-view .events-holder .event .bottom-handle {
+.d-agenda-view .event .bottom-handle {
     height: 7px;
     position: absolute;
     bottom: 0;
     left: 0;
     width: 100%;
     cursor: row-resize;
+}
+
+.d-agenda-view .dragging-event {
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+}
+
+.d-agenda-view .allday-event {
+    color: white;
+}
+
+.d-agenda-view .allday-event .top-handle, .d-agenda-view .allday-event .bottom-handle {
+    display: none;
+}
+
+.d-agenda-view .fake-event {
+    position: absolute;
+    color: white;
+    border:  1px solid #36c;
+    background-color: #6B93D8;
+    text-align: left;
+    left: -999999px;
+    top: -999999px;
 }
 
 .d-month-view {
@@ -231,6 +245,7 @@
     text-align: left;
     left: -999999px;
     top: -999999px;
+    cursor: default;
 }
 
 .d-month-view .events-holder .long-event {

@@ -64,12 +64,7 @@
                 content: [{
                     tagName: "div",
                     className: "navbar",
-                    contextKey: "navbar",
-                    content: [{
-                        tagName: "span",
-                        content: "",
-                        contextKey: "currentDateCell"
-                    }]
+                    contextKey: "navbar"
                 }, {
                     tagName: "div",
                     className: "content-body",
