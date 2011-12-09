@@ -687,8 +687,7 @@
 
 				var updateInfos = context.updateInfos, changedDataSets = [];
 				for(var i = 0; i < updateInfos.length; i++) {
-					var alias = updateInfos[i].alias;
-					var dataSet = context.aliasMap[alias];
+					var updateInfo = updateInfos[i], alias = updateInfo.alias, dataSet = context.aliasMap[alias];
 					if (!dataSet && updateInfo.entities.length) {
 						dataSet = dorado.widget.DataSet.getOwnerDataSet(updateInfo.entities[0]);
 					}
