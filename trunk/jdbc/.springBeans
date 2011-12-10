@@ -12,8 +12,10 @@
 		<config>src/com/bstek/dorado/jdbc/jdbc-ide.xml</config>
 		<config>src/com/bstek/dorado/jdbc/servlet-context.xml</config>
 		<config>src/com/bstek/dorado/jdbc/jdbc-parser.xml</config>
-		<config>test/com/bstek/dorado/jdbc/mssql/context.xml</config>
-		<config>test/com/bstek/dorado/jdbc/mysql/context.xml</config>
+		<config>test/com/bstek/dorado/jdbc/mssql/v2000/context.xml</config>
+		<config>test/com/bstek/dorado/jdbc/mssql/v2008/context.xml</config>
+		<config>test/com/bstek/dorado/jdbc/oracle/v11/context.xml</config>
+		<config>test/com/bstek/dorado/jdbc/mysql/v55/context.xml</config>
 	</configs>
 	<configSets>
 	</configSets>

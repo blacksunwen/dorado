@@ -1,9 +1,9 @@
 package com.bstek.dorado.jdbc.config.xml;
 
-import com.bstek.dorado.config.ParseContext;
+import com.bstek.dorado.data.config.xml.DataParseContext;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 
-public class JdbcParseContext extends ParseContext {
+public class JdbcParseContext extends /*ParseContext*/ DataParseContext {
 
 	private JdbcEnviroment jdbcEnviroment;
 	

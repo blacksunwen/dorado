@@ -8,9 +8,9 @@
         <property name="name" value="mysql" />
         <property name="dataSource">
             <bean class="com.mysql.jdbc.jdbc2.optional.MysqlDataSource">
-                <property name="user" value="root"/>
-                <property name="password" value="bstek"/>
-                <property name="URL" value="jdbc:mysql://192.168.18.235/dorado?useUnicode=true&amp;characterEncoding=UTF-8"/>
+                <property name="user" value="dorado"/>
+                <property name="password" value="dorado"/>
+                <property name="URL" value="jdbc:mysql://192.168.18.241/DORADO?useUnicode=true&amp;characterEncoding=UTF-8"/>
             </bean>
         </property>
         <property name="dialect">
@@ -22,7 +22,7 @@
     <bean parent="dorado.jdbcConfigTemplate">
         <property name="configLocations">
             <list>
-                <value>classpath:com/bstek/dorado/jdbc/mysql/dbm/*.dbm.xml</value>
+                <value>classpath:com/bstek/dorado/jdbc/mysql/v55/*.dbm.xml</value>
             </list>
         </property>
     </bean>
