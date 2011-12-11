@@ -527,9 +527,7 @@ dorado.validator.AjaxValidator = $extend(dorado.validator.RemoteValidator, /** @
 			data: data,
 			property: arg.property,
 			entity: arg.entity,
-			parameter: {
-				data: data
-			}
+			parameter: data
 		};
 		this.fireEvent("beforeExecute", this, eventArg);
 		
