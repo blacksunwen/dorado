@@ -185,6 +185,7 @@
         <Children>
           <Menu layoutConstraint="left width:150">
             <Property name="exClassName">left-menu</Property>
+            <Property name="visible">true</Property>
             <Property name="floating">false</Property>
             <MenuItem>
               <Property name="caption">Settings</Property>
@@ -211,6 +212,7 @@
 							}, { once: true });
 						</ClientEvent>
             <Property name="exClassName">right-menu</Property>
+      		<Property name="visible">true</Property>
             <Property name="floating">false</Property>
             <MenuItem>
               <Property name="caption">Demo</Property>

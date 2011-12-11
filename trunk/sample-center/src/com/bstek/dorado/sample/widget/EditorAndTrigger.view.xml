@@ -246,6 +246,7 @@ dropDown.close(arg.data.value);</ClientEvent>
         <DataSet id="dataSetExamples">
           <Property name="dataType">[CategoryNode]</Property>
           <Property name="dataProvider">exampleMaintain#getCategories</Property>
+          <Property name="loadMode">onReady</Property>
         </DataSet>
         <DataTree id="treeCategories">
           <ClientEvent name="onDataRowClick">var dropDown = dorado.widget.DropDown.findDropDown(self);&#xD;
