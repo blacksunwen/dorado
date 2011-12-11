@@ -1,18 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="build" default="build">
+	<property name="workspace.dir" value="${basedir}/.." />
+	<property name="lib.dir" value="${basedir}/lib" />
+
 	<property name="dont-resolve-env-libs" value="true" />
 	<property name="dont-compressor-css" value="true" />
 	<property name="dont-compressor-js" value="true" />
 	<property name="dont-tidy-js" value="true" />
 	<property name="build-i18n" value="true" />
-	<property name="project.dir" value="${basedir}/../client" />
+	<property name="project.dir" value="${workspace.dir}/client" />
+	<property name="module.projects" value="client,chart,desktop,htmleditor" />
+
+	<taskdef resource="net/sf/antcontrib/antlib.xml">
+		<classpath>
+			<pathelement location="${lib.dir}/ant-contrib-1.0b3.jar" />
+		</classpath>
+	</taskdef>
+
+	<target name="concat-css">
+		<property name="project.skin.dir" value="${workspace.dir}/${module.project}/bin/skins/${skin.name}" />
+		<property name="project.all.css" value="${project.skin.dir}/all.css" />
+		<property name="all.css" value="${project.dir}/bin/skins/${skin.name}/all.css" />
+		<property name="all.temp.css" value="${project.dir}/bin/skins/${skin.name}/all.temp.css" />
+
+		<if>
+			<available file="${project.skin.dir}" />
+			<then>
+				<delete file="${all.temp.css}" />
+				<if>
+					<available file="${project.all.css}" />
+					<then>
+						<concat destfile="${all.temp.css}" append="true" fixlastline="true" encoding="utf-8">
+							<fileset file="${project.all.css}" />
+						</concat>
+					</then>
+					<else>
+						<concat destfile="${all.temp.css}" append="true" fixlastline="true" encoding="utf-8">
+							<fileset dir="${project.skin.dir}">
+								<include name="*.css" />
+								<exclude name="all.css" />
+							</fileset>
+						</concat>
+					</else>
+				</if>
+
+				<move file="${all.temp.css}" tofile="${all.css}" />
+			</then>
+		</if>
+	</target>
 
 	<target name="build">
 		<ant antfile="${basedir}/includes/wrapper.xml" inheritRefs="true">
 			<property name="build-files" value="client.xml" />
 			<property name="src" value="${project.dir}/client" />
 			<property name="dist" value="${project.dir}/bin" />
-			<property name="module.projects" value="client,chart,desktop,htmleditor" />
 		</ant>
+
+		<!-- concat all.css -->
+		<property name="skin.name" value="inherent" />
+		<foreach list="${module.projects}" param="module.project" target="concat-css" inheritall="true" />
+
+		<property name="skin.name" value="default" />
+		<foreach list="${module.projects}" param="module.project" target="concat-css" inheritall="true" />
 	</target>
 </project>
