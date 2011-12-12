@@ -178,7 +178,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			return this;
 		},
 		
-		get: function(attr) {
+		doGet: function(attr) {
 			var c = attr.charAt(0);
 			if (c == '#') {
 				var id = attr.substring(1);

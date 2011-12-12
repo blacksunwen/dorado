@@ -138,6 +138,7 @@
 				this.attributeWatcher = new dorado.AttributeWatcher();
 			return this.attributeWatcher;
 		},
+		
 		/**
 		 * 读取指定的属性值。
 		 * <p>
@@ -164,38 +165,7 @@
 			for ( var i = 0; i < attrs.length; i++) {
 				attr = attrs[i];
 				if (i == 0) {
-					var def = this.ATTRIBUTES[attr];
-					if (def) {
-						if (def.writeOnly) {
-							throw new dorado.AttributeException(
-									"dorado.core.AttributeWriteOnly", attr);
-						}
-						
-						if (def.getter) {
-							result = def.getter.call(this, attr);
-						} else if (def.path) {
-							var sections = def.path.split('.'), owner = this;
-							for ( var i = 0; i < sections.length; i++) {
-								var section = sections[i];
-								if (section.charAt(0) != '_'
-										&& (dorado.Object.isInstanceOf(owner,
-												dorado.AttributeSupport) || owner.get instanceof Function)) {
-									owner = owner.get(section);
-								} else {
-									owner = owner[section];
-								}
-								if (owner == null || i == sections.length - 1) {
-									result = owner;
-									break;
-								}
-							}
-						} else {
-							result = this['_' + attr];
-						}
-					} else {
-						throw new dorado.AttributeException(
-								"dorado.core.UnknownAttribute", attr);
-					}
+					result = this.doGet(attr);
 				} else {
 					if (!result) break;
 					result = (result.get instanceof Function) ? result
@@ -203,6 +173,43 @@
 				}
 			}
 			return result;
+		},
+		
+		doGet: function(attr) {
+			var def = this.ATTRIBUTES[attr];
+			if (def) {
+				if (def.writeOnly) {
+					throw new dorado.AttributeException(
+							"dorado.core.AttributeWriteOnly", attr);
+				}
+				
+				var result;
+				if (def.getter) {
+					result = def.getter.call(this, attr);
+				} else if (def.path) {
+					var sections = def.path.split('.'), owner = this;
+					for ( var i = 0; i < sections.length; i++) {
+						var section = sections[i];
+						if (section.charAt(0) != '_'
+								&& (dorado.Object.isInstanceOf(owner,
+										dorado.AttributeSupport) || owner.get instanceof Function)) {
+							owner = owner.get(section);
+						} else {
+							owner = owner[section];
+						}
+						if (owner == null || i == sections.length - 1) {
+							result = owner;
+							break;
+						}
+					}
+				} else {
+					result = this['_' + attr];
+				}
+				return result;
+			} else {
+				throw new dorado.AttributeException(
+						"dorado.core.UnknownAttribute", attr);
+			}
 		},
 		
 		/**
