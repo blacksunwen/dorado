@@ -6,7 +6,7 @@
 	<script type="text/javascript" src="../../include-all.js"></script>
     <script type="text/javascript" src="common-types.js"></script>
 	<script type="text/javascript">
-		var view = new dorado.widget.View({ layout: "Dock"});
+		var view = new dorado.widget.View({ layout: "Anchor"});
 
 		var calendar;
 
@@ -107,7 +107,9 @@
                     calendar = new dorado.widget.Calendar({
                         eventSource: new dorado.widget.ArrayEventSource({
                             array: items
-                        })
+                        }),
+                        width: "100%",
+                        height: "100%"
                     });
                     view.addChild(calendar);
                     view.render(document.body);

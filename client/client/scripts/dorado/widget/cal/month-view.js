@@ -71,7 +71,14 @@
                 content: [{
                     tagName: "table",
                     className: "month-table",
-                    contextKey: "monthTable"
+                    contextKey: "monthTable",
+                    content: [{
+                        tagName: "thead",
+                        contextKey: "monthTableHead"
+                    }, {
+                        tagName: "tbody",
+                        contextKey: "monthTableBody"
+                    }]
                 }, {
                     tagName: "div",
                     className: "events-holder",
@@ -110,18 +117,23 @@
                 tr._rowIndex = i;
                 if (i == 0) tr.className = "header";
                 for (var j = 0; j < columnCount; j++) {
-                    var td = document.createElement("td");
-                    makeDroppable(td);
+                    var td = document.createElement(i == 0 ? "th" : "td");
+
                     if (i == 0) {
                         td.innerHTML = weekArray[j];
                     } else {
+                        makeDroppable(td);
                         var div = document.createElement("div");
                         div.className = "date";
                         td.appendChild(div);
                     }
                     tr.appendChild(td);
                 }
-                doms.monthTable.appendChild(tr);
+                if (i == 0) {
+                    doms.monthTableHead.appendChild(tr);
+                } else {
+                    doms.monthTableBody.appendChild(tr);
+                }
             }
 
             return dom;
@@ -156,8 +168,8 @@
                 return a.startTime > b.startTime;
             });
 
-            var view = this, doms = view._doms, monthTable = doms.monthTable, eventsHolder = doms.eventsHolder,
-                tableOffset = $fly(monthTable).offset(), cellWidth = $fly(monthTable).width() / 7;
+            var view = this, doms = view._doms, monthTable = doms.monthTable, monthTableBody = doms.monthTableBody,
+                eventsHolder = doms.eventsHolder, tableOffset = $fly(monthTable).offset(), cellWidth = $fly(monthTable).width() / 7;
 
             var i, j, k, l, cellOffset, eventPosition, viewMap = [];
 
@@ -215,7 +227,7 @@
 
             //console.log(viewMap);
 
-            var dateRange = view.getDateRange(), refCell = monthTable.rows[1].cells[1],
+            var dateRange = view.getDateRange(), refCell = monthTableBody.rows[1].cells[1],
                 cellHeight = $fly(refCell).height(), showEventsCount = Math.floor((cellHeight - 20) / 20);
 
             for (i = 0, k = viewMap.length; i < k; i++) {
@@ -226,7 +238,7 @@
                         if (alldayEvent === undefined || alldayEvent === true) continue;
 
                         var dom = view.getEventDom(alldayEvent), eventWidth = cellWidth,
-                            cell = monthTable.rows[Math.floor(i / 7) + 1].cells[i % 7];
+                            cell = monthTableBody.rows[Math.floor(i / 7)].cells[i % 7];
 
                         if (alldayEvent.dayCount > 1) {
                             var row = Math.floor(i / 7), firstColumnDate = dateRange[0].clone().addDays(row * 7),
@@ -302,17 +314,18 @@
             view.refreshEvents();
         },
         refreshDate: function(date) {
-            var dateTable = this._doms.monthTable, count = 1, day = date.clone().setDate(1).getDay(), selectDay = date.getDate(),
+            var dateTableBody = this._doms.monthTableBody, count = 1,
+                day = date.clone().setDate(1).getDay(), selectDay = date.getDate(),
                 maxDay = XDate.getDaysInMonth(date.getFullYear(), date.getMonth()),
                 lastMonthDay = XDate.getDaysInMonth(date.getFullYear(), (date.getMonth() == 0 ? 11 : date.getMonth() - 1));
 
             day = (day == 0 ? 7 : day);
 
-            var startI = 1, startJ = 0;
+            var startI = 0, startJ = 0;
 
             for (var i = startI; i < startI + 6; i++) {
                 for (var j = startJ; j < startJ + 7; j++) {
-                    var cell = dateTable.rows[i].cells[j].firstChild;
+                    var cell = dateTableBody.rows[i].cells[j].firstChild;
                     if (i == startI) {
                         if (j - startJ >= day) {
                             if (count == selectDay) {

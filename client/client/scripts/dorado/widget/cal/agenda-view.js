@@ -45,7 +45,7 @@
 
                     return fakeEvent;
                 },
-                start: function() {
+                start: function(evt) {
                     var event = jQuery.data(dom, HOLD_EVENT_KEY), agendaview = jQuery.data(dom, HOLD_AGENDAVIEW_KEY);
                     if (agendaview && event) {
                         agendaview._draggingevent = event;
@@ -81,6 +81,8 @@
                     alldayEvent = $fly(dom).addClass("dragging-event").hasClass("allday-event");
                     toAllDay = alldayEvent;
                     //console.log("start top:" + startTop + "\tcurrentTop:" + currentTop + "\tstartScrollTop:" + startScrollTop);
+
+                    $log("event dragstart handle:" + evt.target.className);
                 },
                 drag: function(event) {
                     var agendaview = jQuery.data(dom, HOLD_AGENDAVIEW_KEY), inst = jQuery.data(this, "draggable"),
@@ -177,7 +179,7 @@
                     gridUnit = Math.floor($fly(agendaview._doms.eventTable).outerHeight() / 48);
                     minHeight = gridUnit;
 
-                    $fly(dom).draggable("disable");
+                    $fly(dom).draggable("option", "disabled", true);
                 },
                 drag: function(event) {
                     var agendaview = jQuery.data(dom, HOLD_AGENDAVIEW_KEY), inst = jQuery.data(this, "draggable"),
@@ -200,8 +202,10 @@
                         agendaview.refreshEvents();
                     }
 
-                    $fly(dom).draggable("enable");
+                    $fly(dom).draggable("option", "disabled", false);
                 }
+            }).mousedown(function(event) {
+                event.stopPropagation();
             });
 
             $fly(bottomHandle).draggable({
@@ -218,7 +222,8 @@
                     gridUnit = Math.floor($fly(agendaview._doms.eventTable).outerHeight() / 48);
                     minHeight = gridUnit;
 
-                    $fly(dom).draggable("disable");
+                    $fly(dom).draggable("option", "disabled", true);
+                    $log("bottomHandle dragstart");
                 },
                 drag: function(event) {
                     var agendaview = jQuery.data(dom, HOLD_AGENDAVIEW_KEY), inst = jQuery.data(this, "draggable"),
@@ -242,7 +247,10 @@
                         event.endTime = new XDate(event.endTime.getTime() + changeUnit * 1800000);
                         agendaview.refreshEvents();
                     }
+                    $fly(dom).draggable("option", "disabled", false);
                 }
+            }).mousedown(function(event) {
+                event.stopPropagation();
             });
 
             return dom;
@@ -278,6 +286,9 @@
                 defaultValue: 1
             },
             forceDateDay: {},
+            axisMode: {
+                defaultValue: "ical"
+            },
             events: {}
         },
         doOnResize: function() {
@@ -298,22 +309,21 @@
             var view = this, doms = {}, dom = $DomUtils.xCreate({
                 tagName: "div",
                 content: [{
-                    tagName: "div",
-                    className: "agenda-columns-wrap",
-                    content: {
-                        tagName: "table",
-                        className: "agenda-columns",
+                    tagName: "table",
+                    className: "agenda-columns",
+                    content: [{
+                        tagName: "thead",
                         content: [{
-                            tagName: "thead",
+                            tagName: "tr",
+                            contextKey: "columnRow",
                             content: [{
-                                tagName: "tr",
-                                contextKey: "columnRow",
-                                content: [{
-                                    tagName: "th",
-                                    className: "time-axis-cell"
-                                }]
+                                tagName: "th",
+                                className: "time-axis-cell"
                             }]
-                        }, {
+                        }]
+                    }, {
+                        tagName: "tbody",
+                        content: {
                             tagName: "tr",
                             contextKey: "contentRow",
                             content: [{
@@ -325,94 +335,142 @@
                                 tagName: "td",
                                 contextKey: "contentHeightCell"
                             }]
-                        }]
-                    }
-                }, {
-                    tagName: "table",
-                    className: "allday-event-table",
-                    contextKey: "alldayEventTable",
-                    content: {
-                        tagName: "tr",
-                        content: [{
-                            tagName: "td",
-                            className: "time-axis-cell",
-                            content: "allday"
-                        }, {
-                            tagName: "td",
-                            className: "content-cell",
-                            contextKey: "alldayTableContentCell",
-                            content: {
-                                tagName: "div",
-                                className: "allday-events-holder",
-                                contextKey: "alldayEventsHolder",
-                                style: {
-                                    height: "30px"
-                                }
-                            }
-                        }]
-                    }
-                }, {
-                    tagName: "div",
-                    className: "event-table-wrap",
-                    contextKey: "eventTableWrap",
-                    content: [{
-                        tagName: "table",
-                        className: "event-table",
-                        contextKey: "eventTable"
-                    }, {
-                        tagName: "div",
-                        className: "events-holder",
-                        contextKey: "eventsHolder"
+                        }
                     }]
                 }, {
-                    tagName: "div",
-                    className: "bottom-line",
-                    contextKey: "bottomLine"
+                   tagName: "div",
+                   className: "events-wrap",
+                   content: [
+                       {
+                           tagName: "table",
+                           className: "allday-event-table",
+                           contextKey: "alldayEventTable",
+                           content: {
+                               tagName: "tbody",
+                               content: {
+                                   tagName: "tr",
+                                   contextKey: "alldayEventTableRow",
+                                   content: [{
+                                       tagName: "td",
+                                       className: "time-axis-cell",
+                                       content: "allday"
+                                   }, {
+                                       tagName: "td",
+                                       className: "content-cell",
+                                       contextKey: "alldayTableContentCell",
+                                       content: {
+                                           tagName: "div",
+                                           className: "allday-events-holder",
+                                           contextKey: "alldayEventsHolder",
+                                           style: {
+                                               height: "30px"
+                                           }
+                                       }
+                                   }]
+                               }
+                           }
+                       }, {
+                           tagName: "div",
+                           className: "event-table-wrap",
+                           contextKey: "eventTableWrap",
+                           content: {
+                               tagName: "div",
+                               className: "event-table-wrap-inner",
+                               content: [{
+                                   tagName: "table",
+                                   className: "event-table",
+                                   contextKey: "eventTable",
+                                   content: {
+                                       tagName: "tbody",
+                                       contextKey: "eventTableBody"
+                                   }
+                               }, {
+                                   tagName: "div",
+                                   className: "events-holder",
+                                   contextKey: "eventsHolder"
+                               }]
+                           }
+                       }, {
+                           tagName: "div",
+                           className: "bottom-line",
+                           contextKey: "bottomLine"
+                       }
+                   ]
                 }]
             }, null, doms);
 
             view._doms = doms;
 
-            var eventTable = doms.eventTable;
+            var eventTableBody = doms.eventTableBody;
+
+            var axisMode = dorado.Browser.msie && dorado.Browser.version == 6 ? "gcal" : view._axisMode;
 
             var headTR = document.createElement("tr"), headTD1 = document.createElement("td"), headTD2 = document.createElement("td");
             headTD1.className = "axis-cell";
             headTD2.className = "odd-slot-cell first-row-slot-cell";
+            if (dorado.Browser.msie && dorado.Browser.version == 6) {
+                headTD1.innerHTML = "&nbsp;";
+                headTD2.innerHTML = "&nbsp;";
+            }
+            if (axisMode == "gcal") {
+                headTD1.innerHTML = "0:00";
+            }
             headTR.appendChild(headTD1);
             headTR.appendChild(headTD2);
-            eventTable.appendChild(headTR);
+            eventTableBody.appendChild(headTR);
 
             for (var i = 0; i < 23; i++) {
                 var evenTR = document.createElement("tr"), oddTR = document.createElement("tr");
                 var axisCell = document.createElement("td"), evenCell = document.createElement("td"), oddCell = document.createElement("td");
                 axisCell.className = "axis-cell";
-                axisCell.innerHTML = (i + 1) + ":00";
-                axisCell.rowSpan = 2;
+                if (axisMode != "gcal") {
+                    axisCell.rowSpan = 2;
+                    axisCell.innerHTML = (i + 1) + ":00";
+                }
 
                 evenCell.className = "even-slot-cell";
                 oddCell.className = "odd-slot-cell";
 
+                if (dorado.Browser.msie && dorado.Browser.version == 6) {
+                    evenCell.innerHTML = "&nbsp;";
+                    oddCell.innerHTML = "&nbsp;";
+                }
+
                 evenTR.appendChild(axisCell);
                 evenTR.appendChild(evenCell);
+                if (axisMode == "gcal") {
+                    var oddAxisCell = document.createElement("td");
+                    oddAxisCell.className = "axis-cell";
+                    oddAxisCell.innerHTML = (i + 1) + ":00";
+                    oddTR.appendChild(oddAxisCell);
+                }
                 oddTR.appendChild(oddCell);
 
-                eventTable.appendChild(evenTR);
-                eventTable.appendChild(oddTR);
+                eventTableBody.appendChild(evenTR);
+                eventTableBody.appendChild(oddTR);
             }
 
             var bottomTR = document.createElement("tr"), bottomTD1 = document.createElement("td"), bottomTD2 = document.createElement("td");
             bottomTD1.className = "axis-cell";
             bottomTD2.className = "even-slot-cell";
+            if (dorado.Browser.msie && dorado.Browser.version == 6) {
+                bottomTD1.innerHTML = "&nbsp;";
+                bottomTD2.innerHTML = "&nbsp;";
+            }
             bottomTR.appendChild(bottomTD1);
             bottomTR.appendChild(bottomTD2);
 
-            eventTable.appendChild(bottomTR);
+            eventTableBody.appendChild(bottomTR);
 
             var makeDropable = function(td) {
+                if (dorado.Browser.msie && dorado.Browser.version == 6) {
+                    td.innerHTML = "&nbsp;";
+                }
                 $fly(td).droppable({
                     hoverClass: 'event-drag-over',
                     scope: "calendar",
                     greedy: false,
+                    addClasses: false,
                     tolerance: "pointer",
                     drop: function() {
                     },
@@ -460,18 +518,18 @@
             $invokeSuper.call(this, arguments);
             if (!this._initScrollBarGutter) {
                 var view = this, doms = view._doms, eventTableWrap = doms.eventTableWrap,
-                    columnRow = doms.columnRow, contentRow = doms.contentRow;
+                    columnRow = doms.columnRow, alldayEventTableRow = doms.alldayEventTableRow;
 
                 var barWidth = eventTableWrap.offsetWidth - eventTableWrap.clientWidth;
 
                 var gutter1 = document.createElement("th"), gutter2 = document.createElement("td");
-                gutter1.style.width = barWidth + "px";
                 gutter1.className = "agenda-gutter";
-                gutter2.style.width = barWidth + "px";
+                gutter1.style.width = barWidth + "px";
                 gutter2.className = "agenda-gutter";
+                gutter2.style.width = barWidth + "px";
 
+                alldayEventTableRow.appendChild(gutter2);
                 columnRow.appendChild(gutter1);
-                contentRow.appendChild(gutter2);
 
                 view._initScrollBarGutter = true;
             }
