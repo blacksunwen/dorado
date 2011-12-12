@@ -9,22 +9,14 @@
 }
 
 .d-agenda-view {
-    width: 1000px;
-    margin: 0 auto;
     position: relative;
-}
-
-.d-agenda-view .agenda-columns-wrap {
-    height: 24px;
-    overflow:  visible;
+    margin: 0 auto;
 }
 
 .d-agenda-view .agenda-columns {
-    top: 0;
     width: 100%;
     border-collapse: collapse;
     table-layout: fixed;
-    z-index: -1;
 }
 
 .d-agenda-view .agenda-columns td{
@@ -51,6 +43,12 @@
     height: 24px;
 }
 
+.d-agenda-view .events-wrap {
+    position: absolute;
+    top: 24px;
+    width: 100%;
+}
+
 .d-agenda-view .allday-event-table {
     border-collapse: collapse;
     table-layout: fixed;
@@ -65,6 +63,11 @@
 
 .d-agenda-view .allday-event-table .content-cell {
     text-align: center;
+    border: 1px solid #cccccc;
+    height: 24px;
+}
+
+.d-agenda-view .allday-event-table .agenda-gutter {
     border: 1px solid #cccccc;
     height: 24px;
 }
@@ -92,13 +95,22 @@
 }
 
 .d-agenda-view .event-table-wrap{
-    overflow-y: scroll;
+    background-color: transparent;
+    overflow-y: auto;
     overflow-x: hidden;
+    position: absolute;
+    width: 100%;
+}
+
+.d-agenda-view .event-table-wrap-inner {
+    background-color: transparent;
     position: relative;
+    overflow: hidden
 }
 
 .d-agenda-view .event-table {
     width: 100%;
+    height: 100%;
     table-layout: fixed;
     border-collapse: collapse;
     margin-bottom: -1px;
@@ -127,6 +139,7 @@
 }
 
 .d-agenda-view .events-holder {
+    background-color: #00ee00;
     position: absolute;
     left: 100px;
     top: 0;
@@ -147,21 +160,27 @@
 }
 
 .d-agenda-view .event .top-handle {
-    height: 7px;
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
+    height: 7px;
     cursor: row-resize;
+    background-color: white;
+    opacity: 0;
+    filter: alpha(opacity=0);
 }
 
 .d-agenda-view .event .bottom-handle {
-    height: 7px;
     position: absolute;
     bottom: 0;
     left: 0;
     width: 100%;
+    height: 7px;
     cursor: row-resize;
+    background-color: white;
+    opacity: 0;
+    filter: alpha(opacity=0);
 }
 
 .d-agenda-view .dragging-event {
@@ -211,16 +230,21 @@
 }
 
 .d-month-view .month-table .header{
-    height: 20px;
+    height: auto;
     padding: 0;
 }
 
-.d-month-view .month-table .header td {
+.d-month-view .month-table .header th {
     border: 1px solid #cccccc;
-    height: 20px;
+    line-height: 18px;
+    font-size: 9pt;
     margin: 0;
     padding: 0;
     text-align: center;
+}
+
+.d-month-view .month-table td {
+    height: 15%;
 }
 
 .d-month-view .month-table td .date {
