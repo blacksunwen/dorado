@@ -225,7 +225,7 @@
 			
 			var self = this;
 			jQuery(dom).addClassOnHover(this._className + "-hover", null, function() {
-				return !self.get("readOnly");
+				return !self._realReadOnly;
 			});
 			dom.appendChild(textDom);
 			
@@ -400,7 +400,7 @@
 		
 		doOnBlur: function() {
 			this.resetReadOnly();
-			if (this.get("readOnly")) return;
+			if (this._realReadOnly) return;
 			
 			clearInterval(this._editObserverId);
 			delete this._editObserverId;
@@ -1040,7 +1040,7 @@
 		},
 		
 		doOnFocus: function() {
-			if (!this.get("readOnly")) {
+			if (!this._realReadOnly) {
 				var dataType = this.get("dataType");
 				if (dataType && this._validationState != "error") {
 					var text = dataType.toText(this.get("value"), this._typeFormat);
@@ -1056,7 +1056,7 @@
 		},
 		
 		doOnBlur: function() {
-			if (this.get("readOnly")) {
+			if (this._realReadOnly) {
 				$invokeSuper.call(this, arguments);
 			} else {
 				this._textDom.readOnly = false; // 避免在IE8中出现的DIV异常滚动的BUG
