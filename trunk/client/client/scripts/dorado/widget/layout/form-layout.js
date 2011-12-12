@@ -192,9 +192,9 @@
 				}
 			}
 			
-			var realignRegions = [], rowIndexOffset = (this._useBlankRow) ? 1 : 0;
+			var realignRegions = [], rowIndexOffset = ((this._useBlankRow) ? 1 : 0), index = -1;
 			for (var row = 0; row < grid.length; row++) {
-				var tr, index = -1;
+				var tr;
 				if (structureChanged) {
 					tr = document.createElement("TR");
 					tbody.appendChild(tr);
