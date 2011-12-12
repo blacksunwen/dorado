@@ -221,7 +221,7 @@
 						onClick: function(self) {
 							if (!fireOnActionEvent.call(pilot, itemCode.code, self)) return;
 							var list = pilot._entities;
-							if (list instanceof dorado.EntityList) {
+							if (list instanceof dorado.EntityList && list.pageNo > 1) {
 								pilot.set("disabled", true);
 								list.firstPage(callback);
 							}
@@ -235,7 +235,7 @@
 						onClick: function() {
 							if (!fireOnActionEvent.call(pilot, itemCode.code, self)) return;
 							var list = pilot._entities;
-							if (list instanceof dorado.EntityList) {
+							if (list instanceof dorado.EntityList && list.pageNo > 1) {
 								pilot.set("disabled", true);
 								list.previousPage(callback);
 							}
@@ -249,7 +249,7 @@
 						onClick: function() {
 							if (!fireOnActionEvent.call(pilot, itemCode.code, self)) return;
 							var list = pilot._entities;
-							if (list instanceof dorado.EntityList) {
+							if (list instanceof dorado.EntityList && list.pageNo < list.pageCount) {
 								pilot.set("disabled", true);
 								list.nextPage(callback);
 							}
@@ -263,7 +263,7 @@
 						onClick: function() {
 							if (!fireOnActionEvent.call(pilot, itemCode.code, self)) return;
 							var list = pilot._entities;
-							if (list instanceof dorado.EntityList) {
+							if (list instanceof dorado.EntityList && list.pageNo < list.pageCount) {
 								pilot.set("disabled", true);
 								list.lastPage(callback);
 							}
@@ -275,7 +275,7 @@
 						onAction: function(self, arg) {
 							if (!fireOnActionEvent.call(pilot, itemCode.code, self)) return;
 							var list = pilot._entities;
-							if (list instanceof dorado.EntityList) {
+							if (list instanceof dorado.EntityList && list.pageNo != arg.pageNo) {
 								pilot.set("disabled", true);
 								list.gotoPage(arg.pageNo, callback);
 							}
