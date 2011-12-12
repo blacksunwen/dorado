@@ -227,6 +227,9 @@
 							}
 							selection = null;
 						} else {
+							if (!(removed instanceof Array)) {
+								removed = [removed];
+							}
 							for (var i = 0; i < removed.length; i++) {
 								selection.remove(removed[i]);
 								this.toggleItemSelection(removed[i], false);
