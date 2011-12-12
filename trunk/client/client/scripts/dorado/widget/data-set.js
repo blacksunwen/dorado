@@ -177,7 +177,7 @@
 		 * var employees = ds.get("data:#.employees");
 		 * var employees = ds.queryData("#.employees");
 		 */
-		get: function(attr) {
+		doGet: function(attr) {
 			if (attr.substring(0, 5) === "data:") {
 				var dataPath = attr.substring(5);
 				return this.queryData(dataPath);
