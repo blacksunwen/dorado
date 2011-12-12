@@ -302,9 +302,9 @@ dorado.widget.desktop.QuickButton = $extend(dorado.widget.SimpleIconButton, /** 
  * @class 任务栏
  * @extends dorado.widget.Control
  */
-dorado.widget.desktop.Taskbar = $extend(dorado.widget.Control, /** @scope dorado.widget.Taskbar.prototype */ {
+dorado.widget.desktop.Taskbar = $extend(dorado.widget.Control, /** @scope dorado.widget.desktop.Taskbar.prototype */ {
 	$className: "dorado.widget.desktop.Taskbar",
-	ATTRIBUTES: /** @scope dorado.widget.Taskbar.prototype */ {
+	ATTRIBUTES: /** @scope dorado.widget.desktop.Taskbar.prototype */ {
 		className: {
 			defaultValue: "d-task-bar"
 		},
@@ -396,7 +396,7 @@ dorado.widget.desktop.Taskbar = $extend(dorado.widget.Control, /** @scope dorado
 		}
 	},
 	
-	EVENTS: /** @scope dorado.widget.Taskbar.prototype */ {
+	EVENTS: /** @scope dorado.widget.desktop.Taskbar.prototype */ {
 		/**
 		 * 在TaskButton上点击右键触发的事件。
 		 * @param {Object} self 事件的发起者，即组件本身。
