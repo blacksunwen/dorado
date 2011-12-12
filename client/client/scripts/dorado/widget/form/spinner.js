@@ -36,14 +36,14 @@
 			control.getDom();
 			
 			jQuery(control.getSubDom("upButton")).repeatOnClick(function() {
-				editor.doStepUp();
+				if (!editor._realReadOnly) editor.doStepUp();
 			}, 150).addClassOnClick("up-button-click", null, function() {
-				return !editor.get("readOnly");
+				return !editor._realReadOnly;
 			});
 			jQuery(control.getSubDom("downButton")).repeatOnClick(function() {
-				editor.doStepDown();
+				if (!editor._realReadOnly) editor.doStepDown();
 			}, 150).addClassOnClick("down-button-click", null, function() {
-				return !editor.get("readOnly");
+				return !editor._realReadOnly;
 			});
 			return control;
 		}
@@ -116,7 +116,7 @@
 		createDom: function() {
 			var dom = $invokeSuper.call(this, arguments), self = this;
 			jQuery(dom).addClassOnHover(this._className + "-hover", null, function() {
-				return !self.get("readOnly");
+				return !self._realReadOnly;
 			});
 			return dom;
 		}
@@ -524,7 +524,7 @@
 			switch (event.keyCode) {
 				case 38:
 					// up arrow
-					if (!spinner.get("readOnly")) {
+					if (!spinner._realReadOnly) {
 						spinner.doStepUp();
 						retval = false;
 					}
@@ -532,7 +532,7 @@
 					
 				case 40:
 					// down arrow
-					if (!spinner.get("readOnly")) {
+					if (!spinner._realReadOnly) {
 						spinner.doStepDown();
 						retval = false;
 					}
@@ -540,7 +540,7 @@
 					
 				case 8:
 					// backspace
-					if (spinner._currentSlotIndex >= 0 && !spinner.get("readOnly")) {
+					if (spinner._currentSlotIndex >= 0 && !spinner._realReadOnly) {
 						var currentSlotIndex = spinner._currentSlotIndex, value, range = spinner.doGetSlotRange(currentSlotIndex);
 						if (spinner._neverEdit) {
 							value = 0;
@@ -565,7 +565,7 @@
 					
 				case 187:
 					// +
-					if (spinner._currentSlotIndex >= 0 && !spinner.get("readOnly")) {
+					if (spinner._currentSlotIndex >= 0 && !spinner._realReadOnly) {
 						var currentSlotIndex = spinner._currentSlotIndex, value = spinner.doGetSlotValue(currentSlotIndex) || 0;
 						if (value) {
 							value = Math.abs(value);
@@ -577,7 +577,7 @@
 					
 				case 189:
 					// -
-					if (spinner._currentSlotIndex >= 0 && !spinner.get("readOnly")) {
+					if (spinner._currentSlotIndex >= 0 && !spinner._realReadOnly) {
 						var currentSlotIndex = spinner._currentSlotIndex, value = spinner.doGetSlotValue(currentSlotIndex) || 0;
 						if (value) {
 							value = 0 - Math.abs(value);
@@ -589,7 +589,7 @@
 					
 				default:
 					// 48-57
-					if (spinner._currentSlotIndex >= 0 && !spinner.get("readOnly")) {
+					if (spinner._currentSlotIndex >= 0 && !spinner._realReadOnly) {
 						if (event.keyCode >= 48 && event.keyCode <= 57) {
 							var number = event.keyCode - 48, currentSlotIndex = spinner._currentSlotIndex, range = spinner.doGetSlotRange(currentSlotIndex), maxValue = range[1];
 							var value = spinner._neverEdit ? 0 : (spinner.doGetSlotValue(currentSlotIndex) || 0), ignore = false;
@@ -675,7 +675,7 @@
 		doOnFocus: function() {
 			var spinner = this, currentSlotIndex = spinner._currentSlotIndex, doms = spinner._doms;
 			spinner._neverEdit = true;
-			if (currentSlotIndex >= 0 && !spinner.get("readOnly")) {
+			if (currentSlotIndex >= 0 && !spinner._realReadOnly) {
 				$fly(doms["slot_" + currentSlotIndex]).addClass(spinner.slotConfigs[currentSlotIndex].className + "-selected");
 			}
 		},
