@@ -268,38 +268,48 @@
 						}
 					}
 					
-					self.doExecuteAsync({
-						callback: function(success, result) {
-							if (taskId) dorado.util.TaskIndicator.hideTaskIndicator(taskId);
-							if (self._modal) {
-								self.set("disabled", false);
-							}
-							
-							self._returnValue = result;
-							$callback(callback, success, result, {
-								scope: self._view
-							});
-							
-							eventArg.success = success;
-							eventArg[success ? "result" : "error"] = result;
-							self.fireEvent("onExecute", eventArg);
-							self.fireEvent((success) ? "onSuccess" : "onFailure", self, eventArg);
-							
-							if (!success && !eventArg.processDefault) {
-								dorado.Exception.removeException(eventArg.error);
-							}
-							if (success && eventArg.processDefault && self._successMessage) {
-								dorado.widget.NotifyTipManager.notify(self._successMessage);
-							}
-							
-							if (self._modal && hasIcon) {
-								self.set({
-									icon: oldIcon,
-									iconClass: oldIconClass
+					try {
+						self.doExecuteAsync({
+							callback: function(success, result) {
+								if (taskId) dorado.util.TaskIndicator.hideTaskIndicator(taskId);
+								if (self._modal) {
+									self.set("disabled", false);
+								}
+								
+								self._returnValue = result;
+								$callback(callback, success, result, {
+									scope: self._view
 								});
+								
+								eventArg.success = success;
+								eventArg[success ? "result" : "error"] = result;
+								self.fireEvent("onExecute", eventArg);
+								self.fireEvent((success) ? "onSuccess" : "onFailure", self, eventArg);
+								
+								if (!success && !eventArg.processDefault) {
+									dorado.Exception.removeException(eventArg.error);
+								}
+								if (success && eventArg.processDefault && self._successMessage) {
+									dorado.widget.NotifyTipManager.notify(self._successMessage);
+								}
+								
+								if (self._modal && hasIcon) {
+									self.set({
+										icon: oldIcon,
+										iconClass: oldIconClass
+									});
+								}
 							}
+						});
+					}
+					catch(e) {
+						if (self._modal) {
+							self.set("disabled", false);
 						}
-					});
+						if (!(e instanceof dorado.AbstractException)) {
+							throw e;
+						}
+					}
 				} else {
 					var success = false, result;
 					try {
