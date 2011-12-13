@@ -545,6 +545,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			loadMode = loadMode || "always";
 			_getAsync(this, property, callback || dorado._NULL_FUNCTION, loadMode);
 		},
+		
 		doGetText : function(property, callback, loadMode) {
 
 			function toText(value, propertyDef) {
@@ -612,9 +613,9 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				if (i == (properties.length - 1)) {
 					result = result.doGetText(property, null, loadMode);
 				} else {
-					if (!result) break;
 					result = ( result instanceof dorado.Entity) ? result.get(property) : result[property];
 				}
+				if (result == null) break;
 			}
 			return result;
 		},

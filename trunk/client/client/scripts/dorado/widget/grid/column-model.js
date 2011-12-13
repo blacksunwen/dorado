@@ -2141,18 +2141,20 @@
 		
 		refreshSubControl: function(textEditor, arg) {
 			var value, text, entity = arg.data, column = arg.column, property = column._property, pd = column._propertyDef;
-			if (textEditor.get("mapping")) {
-				value = entity.get(property);
-			} else {
-				text = entity.getText(property);
-				if (text) {
-					var v = dorado.Toolkits.parseFilterValue(text), operator = v[0], value = v[1];
-					if (pd && pd._mapping) {
-						text = pd.getMappedValue(value);
+			if (entity) {
+				if (textEditor.get("mapping")) {
+					value = entity.get(property);
+				} else {
+					text = entity.getText(property);
+					if (text) {
+						var v = dorado.Toolkits.parseFilterValue(text), operator = v[0], value = v[1];
+						if (pd && pd._mapping) {
+							text = pd.getMappedValue(value);
+						}
+						text = operator + text;
 					}
-					text = operator + text;
 				}
-			}		
+			}	
 			textEditor._cellColumn = arg.column;
 			textEditor.disableListeners();
 			if (text !== undefined) {
