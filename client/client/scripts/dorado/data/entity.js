@@ -225,8 +225,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			for(p in data) {
 				if (data.hasOwnProperty(p)) {
 					var v = data[p];
-					if (v == null)
-						continue;
+					if (v == null) continue;
 					if ( v instanceof dorado.Entity || v instanceof dorado.EntityList) {
 						v._setObserver(observer);
 					}
@@ -363,6 +362,10 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 														oldValue._setObserver(null);
 													}
 													
+													if (value instanceof dorado.Entity || value instanceof dorado.EntityList) {
+														value.parent = this;
+														value._setObserver(this._observer);
+													}
 													this._data[property] = result;
 													this.sendMessage(dorado.Entity._MESSAGE_DATA_CHANGED, {
 														entity: this,
@@ -397,7 +400,13 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 									propertyDef.fireEvent("onLoadData", propertyDef, eventArg);
 									value = eventArg.value;
 
-									if (propertyDef._cacheable) this._data[property] = value;
+									if (propertyDef._cacheable) {
+										if (value instanceof dorado.Entity || value instanceof dorado.EntityList) {
+											value.parent = this;
+											value._setObserver(this._observer);
+										}
+										this._data[property] = value;
+									}
 								}
 							}
 						}

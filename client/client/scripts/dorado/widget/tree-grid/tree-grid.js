@@ -395,7 +395,7 @@
 				if (this._domMode == 2) this._fixedInnerGrid._nodeRemoved(node, parentNode, index);
 				this._innerGrid._nodeRemoved(node, parentNode, index);
 				this.updateScroller(this._innerGrid._container);
-				self.notifySizeChange();
+				this.notifySizeChange();
 			} else {
 				this._refreshAndScroll(node, "remove", parentNode, index);
 			}
