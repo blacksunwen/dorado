@@ -7420,6 +7420,7 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
                 editor.doOnResize();
             }
         },
+
         doOnBlur: function() {
             var editor = this;
             editor._lastPostValue = editor._value;
@@ -7444,15 +7445,19 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
             if (!editor || !editor.document) return;
             if (readOnly) {
                 if (dorado.Browser.msie) {
-                    editor.document.body.contentEditable = false;
+                    editor.body.disabled = true;
+                    editor.body.contentEditable = false;
+                    editor.body.disabled = false;
                 } else {
-                    editor.document.body.contentEditable = false;
+                    editor.body.contentEditable = false;
                 }
             } else {
                 if (dorado.Browser.msie) {
-                    editor.document.body.contentEditable = true;
+                    editor.body.disabled = true;
+                    editor.body.contentEditable = true;
+                    editor.body.disabled = false;
                 } else {
-                    editor.document.body.contentEditable = true;
+                    editor.body.contentEditable = true;
                 }
             }
             htmleditor.checkStatus();
@@ -7504,6 +7509,11 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
                 htmleditor.checkStatus();
             });
             editor.addListener("ready", function() {
+                if (!htmleditor._dataSet) {
+                    htmleditor.doOnReadOnlyChange(htmleditor._readOnly);
+                } else {
+                    htmleditor.doOnReadOnlyChange(htmleditor.doGetReadOnly());
+                }
                 htmleditor.checkStatus();
                 htmleditor.doOnResize();
             });
@@ -7802,11 +7812,21 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
                 }
             }
         },
+        doGetReadOnly: function() {
+            var editor = this, readOnly = editor._dataSet._readOnly;
+            if(editor._property) {
+                var bindingInfo = editor._bindingInfo;
+                readOnly = readOnly || (bindingInfo.entity == null) || bindingInfo.propertyDef.get("readOnly");
+            } else {
+                readOnly = true;
+            }
+            return readOnly || editor._readOnly;
+        },
         refreshDom: function() {
             $invokeSuper.call(this, arguments);
             var editor = this;
             if(editor._dataSet) {
-                var value, dirty, readOnly = this._dataSet._readOnly;
+                var value, dirty, readOnly = editor._dataSet._readOnly;
                 if(editor._property) {
                     var bindingInfo = editor._bindingInfo;
                     if(bindingInfo.entity instanceof dorado.Entity) {
@@ -7814,9 +7834,13 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
                         dirty = bindingInfo.entity.isDirty(editor._property);
                     }
                     readOnly = readOnly || (bindingInfo.entity == null) || bindingInfo.propertyDef.get("readOnly");
+
+                    editor._readOnly2 = readOnly;
                 } else {
                     readOnly = true;
                 }
+
+                readOnly = editor._readOnly || readOnly;
 
                 var oldReadOnly = editor._oldReadOnly;
                 editor._oldReadOnly = !!readOnly;
@@ -7826,8 +7850,8 @@ dorado.widget.GridPicker = $extend(dorado.widget.Control, {
                 }
 
                 editor._value = value;
-                editor._readOnly2 = readOnly;
-                if (oldReadOnly === undefined || oldReadOnly !== readOnly) {
+
+                if (oldReadOnly !== readOnly) {
                     editor.doOnReadOnlyChange(!!readOnly);
                 }
                 editor.setDirty(dirty);
