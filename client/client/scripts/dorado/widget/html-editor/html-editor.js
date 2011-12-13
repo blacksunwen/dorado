@@ -303,6 +303,7 @@
                 editor.doOnResize();
             }
         },
+
         doOnBlur: function() {
             var editor = this;
             editor._lastPostValue = editor._value;
@@ -702,7 +703,7 @@
             } else {
                 readOnly = true;
             }
-            return readOnly;
+            return readOnly || editor._readOnly;
         },
         refreshDom: function() {
             $invokeSuper.call(this, arguments);
