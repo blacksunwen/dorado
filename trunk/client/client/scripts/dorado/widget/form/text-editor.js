@@ -272,7 +272,6 @@
 		
 		refreshDom: function(dom) {
 			$invokeSuper.call(this, [dom]);
-			
 			if (this._dataSet) {
 				var value, dirty, timestamp = 0, readOnly;
 				this._entity = null;
@@ -374,7 +373,6 @@
 		doOnFocus: function() {
 			var readOnly = this._readOnly || this._readOnly2;
 			this._textDom.readOnly = (readOnly || !this._editable); // 避免在IE8中出现的DIV异常滚动的BUG
-
 			this.resetReadOnly();
 			if (readOnly) return;
 			
@@ -421,7 +419,7 @@
 		 * 当编辑器中的触发按钮被点击是激活的方法。
 		 * @param {dorado.widget.Trigger} trigger 被点击的触发器。
 		 */
-		onTriggerClick: function(trigger) {			
+		onTriggerClick: function(trigger) {
 			if (this._readOnly || this._readOnly2) return;
 			
 			var eventArg = {
@@ -1084,7 +1082,7 @@
 			var k = (evt.keyCode || evt.which);
 			if (dorado.Browser.mozilla) {
 				// backspace, left, top, right, bottom
-				if ([8, 37, 38, 39, 40].indexOf(k) >= 0) return true; 
+				if ([8, 37, 38, 39, 40].indexOf(k) >= 0) return true;
 			}
 			
 			var b = true, $d = dorado.DataType;

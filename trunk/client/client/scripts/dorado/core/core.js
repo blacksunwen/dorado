@@ -157,7 +157,7 @@ dorado.Core = {
 	scopify: function(scope, fn) {
 		if (fn instanceof Function) {
 			return function() {
-				return fn.call(scope);
+				return fn.apply(scope, arguments);
 			};
 		} else {
 			return function() {
@@ -184,7 +184,14 @@ dorado.Core = {
 	 * }, 1000);
 	 */
 	setTimeout: function(scope, fn, timeMillis) {
-		return setTimeout(dorado.Core.scopify(scope, fn), timeMillis);
+		if (dorado.Browser.mozilla && dorado.Browser.version == '8') {
+			// FF8莫名其妙的向setTimeout、setInterval的闭包函数中传入timerID
+			return setTimeout(function() {
+				dorado.Core.scopify(scope, fn);
+			}, timeMillis);
+		} else {
+			return setTimeout(dorado.Core.scopify(scope, fn), timeMillis);
+		}
 	},
 	
 	/**
@@ -198,7 +205,14 @@ dorado.Core = {
 	 * @see $setInterval
 	 */
 	setInterval: function(scope, fn, timeMillis) {
-		return setInterval(dorado.Core.scopify(scope, fn), timeMillis);
+		if (dorado.Browser.mozilla && dorado.Browser.version == '8') {
+			// FF8莫名其妙的向setTimeout、setInterval的闭包函数中传入timerID
+			return setInterval(function() {
+				dorado.Core.scopify(scope, fn);
+			}, timeMillis);
+		} else {
+			return setInterval(dorado.Core.scopify(scope, fn), timeMillis);
+		}
 	},
 	
 	/**
