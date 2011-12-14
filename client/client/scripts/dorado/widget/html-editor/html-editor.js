@@ -690,7 +690,7 @@
                     try {
                         plugin.checkStatus();
                     } catch(e) {//fix a bug for ie.
-                        if (console.log) console.log(e);
+                        if (console && console.log) console.log(e);
                     }
                 }
             }
