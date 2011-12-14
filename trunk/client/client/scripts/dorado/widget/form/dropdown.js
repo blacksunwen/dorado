@@ -249,11 +249,15 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 	},
 
 	createDropDownBox : function(editor, dropDown) {
-		return new dorado.widget.DropDownBox({
+		var config = {
 			editor : editor,
 			dropDown : dropDown,
 			hideAnimateType : "none"
-		});
+		};
+		if (dorado.Browser.msie && dorado.Browser.version < '9') {
+			config.showAnimateType =  "none";
+		}
+		return new dorado.widget.DropDownBox(config);
 	},
 
 	initDropDownBox : dorado._NULL_FUNCTION,
