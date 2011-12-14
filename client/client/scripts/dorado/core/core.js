@@ -157,7 +157,7 @@ dorado.Core = {
 	scopify: function(scope, fn) {
 		if (fn instanceof Function) {
 			return function() {
-				return fn.apply(scope, arguments);
+				return fn.call(scope);
 			};
 		} else {
 			return function() {
