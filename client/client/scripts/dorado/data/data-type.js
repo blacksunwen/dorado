@@ -855,7 +855,10 @@
 		 * @return {Date} 转换后得到的日期值。
 		 */
 		parse : function(data, argument) {
-			if(data == null || data == '') return null;
+			if(data == null) return null;
+			if (typeof data == "string") data = jQuery.trim(data);
+			if(data == '') return null;
+			
 			if( data instanceof Date) return data;
 			if(isFinite(data)) return new Date(data);
 			var date = Date.parseDate(data, argument || $setting["common.defaultDateFormat"]);
