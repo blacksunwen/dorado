@@ -366,7 +366,7 @@
 			}
 		},
 		
-		setFocus: function() {
+		doSetFocus: function() {
 			if (this._textDom) this._textDom.focus();
 		},
 		

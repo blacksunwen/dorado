@@ -213,7 +213,7 @@
                         if(buttons){
                             button = buttons[0];
                             if(button && button._dom.display != "none"){
-                                dorado.widget.setFocusedControl(button);
+                                button.setFocus();
                             }
                         }
                     });
