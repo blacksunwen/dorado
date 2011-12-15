@@ -76,7 +76,7 @@
 						if (button._toggleOnShowMenu) {
 							$fly(dom).removeClass(toggledClass ? toggledClass : (cls + BUTTON_TOGGLED_CLASS));
 						}
-						dorado.widget.setFocusedControl(button);
+						button.setFocus();
 					}, {
 						once: true
 					});

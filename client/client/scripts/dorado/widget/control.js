@@ -1050,16 +1050,20 @@
 		/**
 		 * 使控件获得控制焦点。
 		 */
-		setFocus : function() {
+		setFocus: function() {
+			dorado._LAST_FOCUS_CONTROL = this;
+			var self = this;
+			setTimeout(function() {
+				if (dorado._LAST_FOCUS_CONTROL == self) self.doSetFocus();
+				dorado._LAST_FOCUS_CONTROL = null;
+			}, 0);
+		},
+		
+		doSetFocus : function() {
 			var dom = this._dom;
 			if (dom) {
 				if (["input", "button"].indexOf(dom.nodeName.toLowerCase) >= 0) {
-					setTimeout(function() {
-						try {
-							dom.focus();
-						} catch (e) {
-						}
-					}, 0);
+					dom.focus();
 				}
 				else {
 					dorado.widget.onControlGainedFocus(this);
