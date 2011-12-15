@@ -875,12 +875,12 @@
 				if (this._hintPosition != "bottom") {
 					if (this._labelPosition == "top") hintEl.style.top = labelHeight + "px";
 					if (this._editorWidth > 0) {
-						hintEl.style.width = (editorWidth - this._editorWidth - this._hintSpacing) + "px";
+						var hintWidth = editorEl.offsetHeight - this._editorWidth - this._hintSpacing;
+						hintEl.style.width = ((hintWidth > 0) ? hintWidth : 0)+ "px";
 					} else {
 						hintEl.style.width = this._hintWidth + "px";
 					}
-					if (editorEl.clientHeight) hintEl.style.height = editorEl.clientHeight +
-					"px";
+					if (editorEl.clientHeight) hintEl.style.height = editorEl.clientHeight + "px";
 				}
 				if (!hintControl.get("rendered")) hintControl.render(hintEl);
 			}
