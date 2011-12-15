@@ -408,7 +408,7 @@
 			 */
 			color: {
 				jsonable: true,
-				jsonPoperty: "colour"
+				jsonProperty: "colour"
 			},
 
 			/**
