@@ -217,7 +217,13 @@ dorado.widget.ofc.binding.ColumnBindingConfig = $extend(dorado.widget.ofc.bindin
 		},
 		bottomProperty: {
 			jsonable: true
-		}
+		},
+        colorProperty: {
+            jsonable: true
+        },
+        toolTipProperty: {
+            jsonable: true
+        }
 	}
 });
 
