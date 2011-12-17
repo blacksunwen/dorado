@@ -6,5 +6,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/data"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/view"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/web"/>
+	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?ivyXmlPath=..%2Fcore%2Fivy.xml&amp;confs=*"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
