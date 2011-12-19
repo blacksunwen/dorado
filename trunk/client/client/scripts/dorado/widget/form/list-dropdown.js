@@ -153,12 +153,7 @@
 		},
 		
 		createDropDownBox: function(editor, dropDown) {
-			var box = $invokeSuper.call(this, arguments);
-			box.set("style", {
-				overflow: "hidden"
-			});
-			
-			var dropDown = this, rowList;
+			var box = $invokeSuper.call(this, arguments), rowList;
 			if (this._columns) {
 				rowList = new dorado.widget.Grid({
 					stretchColumnsMode: "stretchableColumns",
@@ -178,8 +173,13 @@
 						dropDown.close(dropDown.getSelectedValue(rowList));
 					}
 				});
-			}
-			box.set("control", rowList);
+			}		
+			box.set({
+				style: {
+					overflow: "hidden"
+				},
+				control: rowList
+			});
 			return box;
 		},
 		

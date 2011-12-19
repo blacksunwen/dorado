@@ -109,15 +109,7 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.RowListDropDown,/** @scope
 	
 	createDropDownBox: function(editor, dropDown) {
 		if (this._useDataBinding) {
-			var box = new dorado.widget.DropDownBox({
-				editor: editor,
-				dropDown: dropDown,
-				style: {
-					overflow: "hidden"
-				}
-			});
-			
-			var dropDown = this, rowList;
+			var box = dorado.widget.DropDown.prototype.createDropDownBox.call(this, editor, dropDown), rowList;
 			if (this._columns) {
 				rowList = new dorado.widget.DataGrid({
 					dataSet: this._dataSet,
@@ -142,7 +134,12 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.RowListDropDown,/** @scope
 					}
 				});
 			}
-			box.set("control", rowList);
+			box.set({
+				style: {
+					overflow: "hidden"
+				},
+				control: rowList
+			});
 			return box;
 		} else {
 			return $invokeSuper.call(this, arguments);

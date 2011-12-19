@@ -404,12 +404,13 @@
 				}
 			});
 			
-			box.set("style", {
-				overflow: "hidden",
-				height: 190
+			box.set({
+				style: {
+					overflow: "hidden",
+					height: 190
+				},
+				control: picker
 			});
-			
-			box.set("control", picker);
 			return box;
 		},
 
