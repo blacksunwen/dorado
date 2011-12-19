@@ -419,6 +419,7 @@
 		},
 		
 		filterDataSetMessage: function(messageCode, arg) {
+			if (this._dataPath != null) debugger;
 			var itemModel = this._itemModel;
 			var items = itemModel.getItems();
 			switch (messageCode) {
@@ -432,6 +433,7 @@
 				
 				case dorado.widget.DataSet.MESSAGE_DATA_CHANGED:
 				case dorado.widget.DataSet.MESSAGE_REFRESH_ENTITY:{
+					// 此处items._observer != this._dataSet判断的用意是什么？
 					return (!items || items._observer != this._dataSet || arg.entity.parent == items || dorado.DataUtil.isOwnerOf(items, arg.entity));
 				}
 				
@@ -494,7 +496,7 @@
 				}
 				case dorado.widget.DataSet.MESSAGE_DATA_CHANGED:{
 					var items = this._itemModel.getItems();
-					if (!items || items._observer != this._dataSet) {
+					if (!items || items._observer != this._dataSet || dorado.DataUtil.isOwnerOf(items, arg.entity)) {
 						this.refresh(true);
 					} else {
 						var entity = arg.entity;
