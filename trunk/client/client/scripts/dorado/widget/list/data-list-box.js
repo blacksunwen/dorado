@@ -313,7 +313,7 @@ dorado.widget.DataListBox = $extend([dorado.widget.AbstractListBox, dorado.widge
 			case dorado.widget.DataSet.MESSAGE_DATA_CHANGED:
 			case dorado.widget.DataSet.MESSAGE_REFRESH_ENTITY:
 				var items = this._itemModel.getItems();
-				if (!items || items._observer != this._dataSet) {
+				if (!items || items._observer != this._dataSet || arg.entity.parent == items || dorado.DataUtil.isOwnerOf(items, arg.newValue)) {
 					this.refresh(true);
 				} else {
 					this.refreshEntity(arg.entity);

@@ -433,7 +433,7 @@
 				case dorado.widget.DataSet.MESSAGE_DATA_CHANGED:
 				case dorado.widget.DataSet.MESSAGE_REFRESH_ENTITY:{
 					// 此处items._observer != this._dataSet判断的用意是什么？
-					return (!items || items._observer != this._dataSet || arg.entity.parent == items || dorado.DataUtil.isOwnerOf(items, arg.entity));
+					return (!items || items._observer != this._dataSet || arg.entity.parent == items || dorado.DataUtil.isOwnerOf(items, arg.newValue));
 				}
 				
 				case dorado.widget.DataSet.MESSAGE_DELETED:{

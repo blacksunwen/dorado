@@ -121,20 +121,19 @@ dorado.widget.AbstractEditor = $extend(dorado.widget.Control, /** @scope dorado.
 		onPostFailed: {}
 	},
 	
-	refreshDom: function(dom) {
-			$invokeSuper.call(this, [dom]);
-			
-			this._bindingInfo = null;
-			if (this._dataSet) {
-				this._entity = null;
-				if (this._property) {
-					var bindingInfo = this._bindingInfo = this.getBindingInfo();
-					if (bindingInfo.entity instanceof dorado.Entity) {
-						this._entity = bindingInfo.entity;
-					}
+	refreshDom: function(dom) {		
+		this._bindingInfo = null;
+		if (this._dataSet) {
+			this._entity = null;
+			if (this._property) {
+				var bindingInfo = this._bindingInfo = this.getBindingInfo();
+				if (bindingInfo.entity instanceof dorado.Entity) {
+					this._entity = bindingInfo.entity;
 				}
 			}
-		},
+		}
+		$invokeSuper.call(this, [dom]);
+	},
 	
 	/**
 	 * 确认编辑器中的编辑内容，即将编辑器中的数值写入到与之关联的数据对象中。
@@ -157,9 +156,9 @@ dorado.widget.AbstractEditor = $extend(dorado.widget.Control, /** @scope dorado.
 	refreshData: function() {
 		if (this._property && this._entity) {
 			if (this.doRefreshData) {
-				if (!this._refreshDataPerformed && this._entity 
-						&& this._entity instanceof dorado.widget.FormProfile.DefaultEntity
-						&& this._entity[this._property] === undefined) {
+				if (!this._refreshDataPerformed && this._entity &&
+				this._entity instanceof dorado.widget.FormProfile.DefaultEntity &&
+				this._entity[this._property] === undefined) {
 					return;
 				}
 				this._refreshDataPerformed = true;
