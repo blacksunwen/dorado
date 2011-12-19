@@ -321,6 +321,13 @@
 		control: consolePanel
 	});
 
+    function format(tpl) {
+        tpl = tpl || "";
+        return eval('("' + tpl.replace(/\$\{(.+?)\}/g, function($1, $2) {
+            return '"+' + $2 + '+"';
+        }) + '")');
+    }
+
 	dorado.Debugger.extend(/** @scope dorado.Debugger */{
 		consolePanel: consolePanel,
 
@@ -334,7 +341,7 @@
 			if (!deb.inited) {
 				deb.init();
 			}
-			return deb.consolePanel.log(msg, level);
+			return deb.consolePanel.log(format(msg), level);
 		},
 
 		/**
@@ -353,4 +360,25 @@
 	
 	window.$log = dorado.Debugger.log;
     window.$dir = dorado.Debugger.dir;
+
+    if (console && console.log) {
+        var log = console.log;
+        console.log = function() {
+            var str = arguments[0];
+            if (arguments.length > 1) {
+                log.apply(this, arguments);
+            } else if (arguments.length == 1 && typeof str === "string") {
+                log.apply(this, [format(str)]);
+            }
+        }
+    } else {
+        window.console = {
+            log: function() {
+                $log.apply(null, arguments);
+            },
+            dir: function() {
+                $dir.apply(null, arguments);
+            }
+        }
+    }
 })();
