@@ -419,7 +419,6 @@
 		},
 		
 		filterDataSetMessage: function(messageCode, arg) {
-			if (this._dataPath != null) debugger;
 			var itemModel = this._itemModel;
 			var items = itemModel.getItems();
 			switch (messageCode) {
