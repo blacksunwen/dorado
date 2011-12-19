@@ -29,14 +29,14 @@
 			return temp.getDay();
 		}
 	};
-
+	
 	/**
 	 * @author Frank Zhang (mailto:frank.zhang@bstek.com)
 	 * @class DatePicker
 	 * @extends dorado.widget.Control
 	 */
 	dorado.widget.DatePicker = $extend(dorado.widget.Control, /** @scope dorado.widget.DatePicker.prototype */ {
-        $className: "dorado.widget.DatePicker",
+		$className: "dorado.widget.DatePicker",
 		focusable: true,
 		_inherentClassName: "i-date-picker",
 		
@@ -54,7 +54,7 @@
 			date: {
 				defaultValue: new Date()
 			},
-
+			
 			/**
 			 * 是否显示TimeSpinner。
 			 * @attribute
@@ -64,49 +64,49 @@
 			showTimeSpinner: {
 				defaultValue: false
 			},
-
-            /**
+			
+			/**
 			 * 是否显示今天按钮，仅在渲染前设置有效。
 			 * @attribute
 			 * @default true
 			 * @type boolean
 			 */
-            showTodayButton: {
-                defaultValue: true
-            },
-
-            /**
+			showTodayButton: {
+				defaultValue: true
+			},
+			
+			/**
 			 * 是否显示清除按钮，仅在渲染前设置有效。
 			 * @attribute writeBeforeReady
 			 * @default true
 			 * @type boolean
 			 */
-            showClearButton: {
-                defaultValue: true
-            },
-
-            /**
+			showClearButton: {
+				defaultValue: true
+			},
+			
+			/**
 			 * 是否显示确定按钮，仅在渲染前设置有效。
 			 * @attribute
 			 * @default true
 			 * @type boolean
 			 */
-            showConfirmButton: {
-                defaultValue: true
-            }
+			showConfirmButton: {
+				defaultValue: true
+			}
 		},
-
+		
 		EVENTS: /** @scope dorado.widget.DatePicker.prototype */ {
 			/**
 			 * 当用户点击日期表格上的日期，或者点击确定按钮时触发此事件。
 			 * @param {Object} self 事件的发起者，即组件本身。
 			 * @param {Object} arg 事件参数。
-             * @param {Object} arg.date 用户选择的日期。
+			 * @param {Object} arg.date 用户选择的日期。
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
 			 */
 			onPick: {},
-
+			
 			/**
 			 * 当用户不选择日期，点击关闭按钮后触发此事件
 			 * @param {Object} self 事件的发起者，即组件本身。
@@ -115,19 +115,19 @@
 			 * @event
 			 */
 			onCancel: {},
-
-            /**
+			
+			/**
 			 * 当日期单元格要刷新的时候会触发此事件。
 			 * @param {Object} self 事件的发起者，即组件本身。
 			 * @param {Object} arg 事件参数。
-             * @param {HtmlElement} arg.cell 要刷新的cell的dom。
+			 * @param {HtmlElement} arg.cell 要刷新的cell的dom。
 			 * @param {Date} arg.date 要刷新的cell的日期。
-             * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
 			 */
 			onRefreshDateCell: {}
 		},
-
+		
 		/**
 		 * 设置Picker的年份。
 		 * @param {int|String} year 如果直接指定数字，则为要设置的年份，注意为完整年份。如果是字符串，目前只支持prev和next。
@@ -136,9 +136,9 @@
 		 */
 		setYear: function(year, refresh, animate) {
 			var picker = this, date = picker._date, oldDay = date.getDate(), oldMonth = date.getMonth(), oldYear = date.getFullYear();
-
+			
 			var source = new Date(date.getTime());
-
+			
 			if (year == "prev") {
 				year = oldYear - 1;
 			} else {
@@ -165,7 +165,7 @@
 				}
 			}
 		},
-
+		
 		/**
 		 * @param {Date} source
 		 * @param {Date} target
@@ -184,7 +184,7 @@
 			}
 			return null;
 		},
-
+		
 		/**
 		 * @param {Date} source
 		 * @param {Date} target
@@ -199,11 +199,11 @@
 				picker.refresh();
 				return;
 			}
-
+			
 			var dateTable = picker._doms.dateTable, dateBlock = picker._doms.dateBlock, dateTableWidth = dateBlock.offsetWidth, dateTableHeight = dateBlock.offsetHeight;
 			var sourceRegion, targetRegion, style, animConfig;
-
-			switch(animateType) {
+			
+			switch (animateType) {
 				case "l2r":
 					sourceRegion = 1;
 					targetRegion = 2;
@@ -253,14 +253,14 @@
 					};
 					break;
 			}
-
+			
 			picker.refreshDate(source, sourceRegion);
 			picker.refreshDate(target, targetRegion);
-
+			
 			$fly(dateTable).css(style);
-
+			
 			picker._visibleDateRegion = targetRegion;
-
+			
 			picker._doMonthAnimating = true;
 			$fly(dateTable).animate(animConfig, {
 				complete: function() {
@@ -269,7 +269,7 @@
 				}
 			});
 		},
-
+		
 		/**
 		 * 设置月份。
 		 * @param {int|String} month 如果是数字，则为要设置的月份，从0开始计算。如果是字符串，目前只支持prev和next。
@@ -278,9 +278,9 @@
 		 */
 		setMonth: function(month, refresh, animate) {
 			var picker = this, date = picker._date, oldDay = date.getDate(), oldYear = date.getFullYear(), oldMonth = date.getMonth();
-
+			
 			var source = new Date(date.getTime());
-
+			
 			if (month == "prev") {
 				if (oldMonth != 0) {
 					month = oldMonth - 1;
@@ -315,7 +315,7 @@
 				}
 			}
 		},
-
+		
 		/**
 		 * 设置日期。
 		 * @param {int|String} day 如果是数字，则为要设置的日期，从0开始。如果是数字，只支持prev和next。
@@ -346,17 +346,15 @@
 				picker.refresh();
 			}
 		},
-
+		
 		refreshDate: function(target, region) {
-			var picker = this, doms = picker._doms, date = target || picker._date, count = 1, day = DateHelper.getFirstDayOfMonth(date),
-				maxDay = DateHelper.getDayCountOfMonth(date.getFullYear(), date.getMonth()), dateTable = doms.dateTable, selectDay = date.getDate(),
-				lastMonthDay = DateHelper.getDayCountOfMonth(date.getFullYear(), (date.getMonth() == 0 ? 11 : date.getMonth() - 1));
-
+			var picker = this, doms = picker._doms, date = target || picker._date, count = 1, day = DateHelper.getFirstDayOfMonth(date), maxDay = DateHelper.getDayCountOfMonth(date.getFullYear(), date.getMonth()), dateTable = doms.dateTable, selectDay = date.getDate(), lastMonthDay = DateHelper.getDayCountOfMonth(date.getFullYear(), (date.getMonth() == 0 ? 11 : date.getMonth() - 1));
+			
 			day = (day == 0 ? 7 : day);
-
+			
 			var startI = 0, startJ = 0;
 			region = region || picker._visibleDateRegion;
-
+			
 			switch (region) {
 				case 2:
 					startJ = 7;
@@ -369,7 +367,7 @@
 					startJ = 7;
 					break;
 			}
-
+			
 			for (var i = startI; i < startI + 6; i++) {
 				for (var j = startJ; j < startJ + 7; j++) {
 					var cell = dateTable.rows[i].cells[j];
@@ -381,18 +379,18 @@
 								cell.className = null;
 							}
 							cell.innerHTML = count++;
-                            picker.fireEvent("onRefreshDateCell", picker, {
-                                date: new Date(date.getFullYear(), date.getMonth(), parseInt(cell.innerHTML, 10)),
-                                cell: cell
-                            });
+							picker.fireEvent("onRefreshDateCell", picker, {
+								date: new Date(date.getFullYear(), date.getMonth(), parseInt(cell.innerHTML, 10)),
+								cell: cell
+							});
 						} else {
 							cell.innerHTML = lastMonthDay - (day - j % 7) + 1;
-
+							
 							cell.className = "pre-month";
-                            picker.fireEvent("onRefreshDateCell", picker, {
-                                date: new Date(date.getFullYear(), date.getMonth() - 1, parseInt(cell.innerHTML, 10)),
-                                cell: cell
-                            });
+							picker.fireEvent("onRefreshDateCell", picker, {
+								date: new Date(date.getFullYear(), date.getMonth() - 1, parseInt(cell.innerHTML, 10)),
+								cell: cell
+							});
 						}
 					} else {
 						if (count <= maxDay) {
@@ -402,23 +400,23 @@
 								cell.className = null;
 							}
 							cell.innerHTML = count++;
-                            picker.fireEvent("onRefreshDateCell", picker, {
-                                date: new Date(date.getFullYear(), date.getMonth(), parseInt(cell.innerHTML, 10)),
-                                cell: cell
-                            });
+							picker.fireEvent("onRefreshDateCell", picker, {
+								date: new Date(date.getFullYear(), date.getMonth(), parseInt(cell.innerHTML, 10)),
+								cell: cell
+							});
 						} else {
 							cell.innerHTML = count++ - maxDay;
 							cell.className = "next-month";
-                            picker.fireEvent("onRefreshDateCell", picker, {
-                                date: new Date(date.getFullYear(), date.getMonth() + 1, parseInt(cell.innerHTML, 10)),
-                                cell: cell
-                            });
+							picker.fireEvent("onRefreshDateCell", picker, {
+								date: new Date(date.getFullYear(), date.getMonth() + 1, parseInt(cell.innerHTML, 10)),
+								cell: cell
+							});
 						}
 					}
 				}
 			}
 		},
-
+		
 		/**
 		 * 刷新月份和年份。
 		 * @private
@@ -427,7 +425,7 @@
 			var picker = this, doms = picker._doms, date = picker._date;
 			doms.yearMonthLabel.innerHTML = (date.getMonth() + 1) + "&nbsp;&nbsp;" + date.getFullYear();
 		},
-
+		
 		refreshSpinner: function() {
 			var picker = this, spinner = picker._timeSpinner, date = picker._date;
 			if (picker._showTimeSpinner && spinner) {
@@ -438,48 +436,81 @@
 				});
 			}
 		},
-
+		
 		refreshDom: function(dom) {
 			var picker = this;
 			
 			picker.refreshDate();
 			picker.refreshYearMonth();
-
+			
 			if (picker._showTimeSpinner) {
 				picker.doShowTimeSpinner();
 				picker.refreshSpinner();
 			} else {
 				picker.doHideTimeSpinner();
 			}
-
+			
 			$invokeSuper.call(this, arguments);
 		},
-
+		
 		createDom: function() {
 			var allWeeks = $resource("dorado.baseWidget.AllWeeks"), weeks = allWeeks.split(",");
-
+			
 			var dateRows = [];
-
+			
 			for (var i = 0; i < 12; i++) {
 				dateRows.push({
 					tagName: "tr",
-					content: [{ tagName: "td" }, { tagName: "td" }, { tagName: "td" }, { tagName: "td" },
-						{ tagName: "td" }, { tagName: "td" }, { tagName: "td" },
-						{ tagName: "td" }, { tagName: "td" }, { tagName: "td" }, { tagName: "td" },
-						{ tagName: "td" }, { tagName: "td" }, { tagName: "td" }]
+					content: [{
+						tagName: "td"
+					}, {
+						tagName: "td"
+					}, {
+						tagName: "td"
+					}, {
+						tagName: "td"
+					}, {
+						tagName: "td"
+					}, {
+						tagName: "td"
+					}, {
+						tagName: "td"
+					}, {
+						tagName: "td"
+					}, {
+						tagName: "td"
+					}, {
+						tagName: "td"
+					}, {
+						tagName: "td"
+					}, {
+						tagName: "td"
+					}, {
+						tagName: "td"
+					}, {
+						tagName: "td"
+					}]
 				});
 			}
-
+			
 			var picker = this, doms = {}, dom = $DomUtils.xCreate({
 				tagName: "div",
 				content: [{
 					tagName: "div",
 					className: "year-month-block",
-					content: [
-						{ tagName: "div", className: "pre-button-div", contextKey: "prevButtonDiv" },
-						{ tagName: "div", className: "next-button-div", contextKey: "nextButtonDiv" },
-						{ tagName: "div", className: "year-month-label", contextKey: "yearMonthLabel" }
-					]
+					content: [{
+						tagName: "div",
+						className: "pre-button-div",
+						contextKey: "prevButtonDiv"
+					}, {
+						tagName: "div",
+						className: "next-button-div",
+						contextKey: "nextButtonDiv"
+					}, {
+						tagName: "div",
+						className: "year-month-label",
+						contextKey: "yearMonthLabel"
+					}]
 				}, {
 					tagName: "table",
 					cellPadding: 0,
@@ -490,15 +521,28 @@
 					content: [{
 						tagName: "tr",
 						className: "header",
-						content: [
-							{ tagName: "td", content: weeks[0] },
-							{ tagName: "td", content: weeks[1] },
-							{ tagName: "td", content: weeks[2] },
-							{ tagName: "td", content: weeks[3] },
-							{ tagName: "td", content: weeks[4] },
-							{ tagName: "td", content: weeks[5] },
-							{ tagName: "td", content: weeks[6] }
-						]
+						content: [{
+							tagName: "td",
+							content: weeks[0]
+						}, {
+							tagName: "td",
+							content: weeks[1]
+						}, {
+							tagName: "td",
+							content: weeks[2]
+						}, {
+							tagName: "td",
+							content: weeks[3]
+						}, {
+							tagName: "td",
+							content: weeks[4]
+						}, {
+							tagName: "td",
+							content: weeks[5]
+						}, {
+							tagName: "td",
+							content: weeks[6]
+						}]
 					}]
 				}, {
 					tagName: "div",
@@ -525,46 +569,48 @@
 			}, null, doms);
 			
 			picker._doms = doms;
-
-            if (picker._showTodayButton) {
-                var todayButton = new dorado.widget.Button({
-                    caption: $resource("dorado.baseWidget.DatePickerToday"),
-                    listener: {
-                        onClick: function() {
-                            picker.set("date", new Date());
-                        }
-                    }
-                });
-                todayButton.render(doms.buttonBlock);
-                picker.registerInnerControl(todayButton);
-            }
-
-            if (picker._showClearButton) {
-                var clearButton = new dorado.widget.Button({
-                    caption: $resource("dorado.baseWidget.DatePickerClear"),
-                    listener: {
-                        onClick: function() {
-                            picker.fireEvent("onPick", picker, {});
-                        }
-                    }
-                });
-                clearButton.render(doms.buttonBlock);
-                picker.registerInnerControl(clearButton);
-            }
-
-            if (picker._showConfirmButton) {
-                var confirmButton = new dorado.widget.Button({
-                    caption: $resource("dorado.baseWidget.DatePickerConfirm"),
-                    listener: {
-                        onClick: function() {
-                            picker.fireEvent("onPick", picker, { date: new Date(picker._date.getTime()) });
-                        }
-                    }
-                });
-                confirmButton.render(doms.buttonBlock);
-                picker.registerInnerControl(confirmButton);
-            }
-
+			
+			if (picker._showTodayButton) {
+				var todayButton = new dorado.widget.Button({
+					caption: $resource("dorado.baseWidget.DatePickerToday"),
+					listener: {
+						onClick: function() {
+							picker.set("date", new Date());
+						}
+					}
+				});
+				todayButton.render(doms.buttonBlock);
+				picker.registerInnerControl(todayButton);
+			}
+			
+			if (picker._showClearButton) {
+				var clearButton = new dorado.widget.Button({
+					caption: $resource("dorado.baseWidget.DatePickerClear"),
+					listener: {
+						onClick: function() {
+							picker.fireEvent("onPick", picker, {});
+						}
+					}
+				});
+				clearButton.render(doms.buttonBlock);
+				picker.registerInnerControl(clearButton);
+			}
+			
+			if (picker._showConfirmButton) {
+				var confirmButton = new dorado.widget.Button({
+					caption: $resource("dorado.baseWidget.DatePickerConfirm"),
+					listener: {
+						onClick: function() {
+							picker.fireEvent("onPick", picker, {
+								date: new Date(picker._date.getTime())
+							});
+						}
+					}
+				});
+				confirmButton.render(doms.buttonBlock);
+				picker.registerInnerControl(confirmButton);
+			}
+			
 			var lastOverCell = null, dateTable = doms.dateTable;
 			
 			if (dorado.Browser.msie && dorado.Browser.version == 6) {
@@ -603,7 +649,9 @@
 					}
 					picker.setDate(parseInt(element.innerHTML, 10), true);
 					
-					picker.fireEvent("onPick", picker, { date: new Date(date.getTime()) });
+					picker.fireEvent("onPick", picker, {
+						date: new Date(date.getTime())
+					});
 				}
 			});
 			
@@ -648,21 +696,21 @@
 			
 			nextMonthButton.render(doms.nextButtonDiv);
 			nextYearButton.render(doms.nextButtonDiv);
-
+			
 			picker.registerInnerControl(prevYearButton);
 			picker.registerInnerControl(prevMonthButton);
 			picker.registerInnerControl(nextMonthButton);
 			picker.registerInnerControl(nextYearButton);
-
+			
 			$fly(doms.yearMonthLabel).click(function() {
 				picker.showYMPicker();
 			});
-
+			
 			picker._visibleDateRegion = 1;
-
+			
 			return dom;
 		},
-
+		
 		/**
 		 * @private
 		 */
@@ -686,7 +734,7 @@
 			}
 			$fly(spinner._dom).css("display", "");
 		},
-
+		
 		/**
 		 * @private
 		 */
@@ -696,7 +744,7 @@
 				$fly(spinner._dom).css("display", "none");
 			}
 		},
-
+		
 		/**
 		 * 显示年份和月份选择器。
 		 * 每个日期选择器都会对应一个年份和月份选择器。
@@ -725,17 +773,17 @@
 				ymPicker.render(dom);
 				picker.registerInnerControl(ymPicker);
 			}
-
+			
 			ymPicker.updateDate(picker._date);
-
+			
 			if (!ymPicker._rendered) {
 				ymPicker.render(document.body);
 			}
-
+			
 			ymPicker._opened = true;
 			$fly(ymPicker._dom).css("display", "").slideIn("t2b");
 		},
-
+		
 		/**
 		 * 隐藏日期选择器。
 		 * @param {boolean} animate 是否使用动画效果。
@@ -755,7 +803,7 @@
 				dorado.widget.setFocusedControl(picker);
 			}
 		},
-
+		
 		doOnKeyDown: function(event) {
 			var picker = this, date, ymPicker = picker._yearMonthPicker;
 			if (ymPicker && ymPicker._opened) {
@@ -815,8 +863,8 @@
 	 * @extends dorado.widget.DropDown
 	 */
 	dorado.widget.DateDropDown = $extend(dorado.widget.DropDown, /** @scope dorado.widget.DateDropDown.prototype */ {
-        $className: "dorado.widget.DateDropDown",
-
+		$className: "dorado.widget.DateDropDown",
+		
 		ATTRIBUTES: /** @scope dorado.widget.DateDropDown.prototype */ {
 			width: {
 				defaultValue: 260
@@ -824,15 +872,15 @@
 			iconClass: {
 				defaultValue: "d-trigger-icon-date"
 			},
-            /**
+			/**
 			 * 是否显示TimeSpinner。
 			 * @attribute
 			 * @default false
 			 * @type boolean
 			 */
-            showTimeSpinner: {
-                path: "picker.showTimeSpinner"
-            }
+			showTimeSpinner: {
+				path: "picker.showTimeSpinner"
+			}
 		},
 		createDropDownBox: function(editor, dropDown) {
 			var dropDown = this, box = $invokeSuper.call(this, arguments), picker = new dorado.widget.DatePicker({
@@ -845,16 +893,15 @@
 					}
 				}
 			});
+			dropDown._picker = picker;
 			
-			box.set("style", {
-				overflow: "hidden",
-				height: 200
+			box.set({
+				style: {
+					overflow: "hidden",
+					height: 200
+				},
+				control: picker
 			});
-			
-			box.set("control", picker);
-
-            dropDown._picker = picker;
-
 			return box;
 		},
 		doOnKeyPress: function(evt) {
