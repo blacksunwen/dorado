@@ -149,7 +149,7 @@ dorado.widget.DataBlockView = $extend([dorado.widget.AbstractBlockView, dorado.w
 				
 			case dorado.widget.DataSet.MESSAGE_DATA_CHANGED:
 			case dorado.widget.DataSet.MESSAGE_REFRESH_ENTITY:
-				return (!items || items._observer != this._dataSet || arg.entity.parent == items || dorado.DataUtil.isOwnerOf(items, arg.entity));
+				return (!items || items._observer != this._dataSet || arg.entity.parent == items || dorado.DataUtil.isOwnerOf(items, arg.newValue));
 				
 			case dorado.widget.DataSet.MESSAGE_DELETED:
 				return (arg.entity.parent == items || dorado.DataUtil.isOwnerOf(items, arg.entity));
