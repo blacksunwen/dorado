@@ -793,13 +793,10 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 									}
 								}
 							}
-
-							if (!propertyInfo.validating) {
-								propertyInfo.validated = true;
-							}
-						} else {
-							propertyInfo.validated = true;
 						}
+					}
+					if (!propertyInfo.validating) {
+						propertyInfo.validated = true;
 					}
 				}
 
@@ -901,42 +898,24 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		 * 此方法不仅仅会将Entity的状态置为dorado.Entity.STATE_NONE以及清空暂存的旧数据。
 		 * 同时也会重置那些通过引用属性(ReferencePropertyDef)装载的关联数据。
 		 * </p>
-		 * @param {String|boolean} [property] 要重置的引用属性的属性名。
-		 * <ul>
-		 * 	<li>如果需要定义多个，可以用“,”分隔。</li>
-		 * 	<li>如果传入false则表示不用重置任何引用属性。</li>
-		 * 	<li>如果不定义此参数则表示重置所有引用属性。</li>
-		 * </ul>
+		 * @param {String} [property] 要重置的引用属性的属性名。如果需要定义多个，可以用“,”分隔。
 		 */
 		reset : function(property) {
-			if (property !== false) {
-				if ( typeof property == "boolean") property = null;
+			if (property) {
 				var data = this._data;
-				if (property) {
-					var props = property.split(',');
-					for(var i = 0; i < props.length; i++) {
-						var prop = props[i];
-						if (data[prop] != undefined) {
-							var propertyDef = (this._propertyDefs) ? this._propertyDefs.get(prop) : null;
-							if (propertyDef && propertyDef instanceof dorado.Reference)
-								delete data[prop];
-						}
+				var props = property.split(',');
+				for (var i = 0; i < props.length; i++) {
+					var prop = props[i];
+					if (data[prop] != undefined) {
+						var propertyDef = (this._propertyDefs) ? this._propertyDefs.get(prop) : null;
+						if (propertyDef && propertyDef instanceof dorado.Reference) delete data[prop];
 					}
-				} else {
-					for(var property in data) {
-						if (!data.hasOwnProperty(property))
-							continue;
-						if (property.charAt(0) == '$')
-							continue;
-						var propertyDef = (this._propertyDefs) ? this._propertyDefs.get(property) : null;
-						if (propertyDef && propertyDef instanceof dorado.Reference) {
-							delete data[property];
-						}
-					}
+					this.doSetMessages(prop, null);	
 				}
+				this.timestamp = dorado.Core.getTimestamp();
+			} else {
+				this.resetState();
 			}
-			this.timestamp = dorado.Core.getTimestamp();
-			this.resetState();
 			this.sendMessage(0);
 		},
 		
@@ -1194,8 +1173,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			if (messages === undefined) {
 				messages = property;
 				messages = dorado.Toolkits.trimMessages(messages, DEFAULT_VALIDATION_RESULT_STATE);
-				if (this._messages == messages)
-					return false;
+				if (this._messages == messages) return false;
 				this._messages = messages;
 
 				if (dorado.Toolkits.getTopMessageState(messages) != this._messageState) {
@@ -1314,7 +1292,12 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		 * <p>
 		 * 关于是否有效的判断会与{@link dorado.EntityDataType#attribute:acceptValidationResult}的设置相关。
 		 * </p>
-		 * @param {Object} [options] 选项。
+		 * @param {Object|boolean} [options=true] 此参数有如下两种使用方式：
+		 * <ul>
+		 * <li>当传入一个boolean类型的数值时，表示是否强制重新验证所有子属性及校验器。默认为true。</li>
+		 * <li>当传入一个JSON对象时，其中有可以包含如下的更多选项。</li>
+		 * </ul>
+		 * @param {boolean} [options.force=true] 是否强制重新验证所有子属性及校验器。
 		 * @param {boolean} [options.validateSimplePropertyOnly] 只验证简单数据类型的属性中的数据，如String、boolean、int、Date等数据类型。
 		 * 设置此属性产生的实际结果是验证逻辑将忽略对此数据实体中的所有子数据实体的有效性验证。
 		 * @param {Object} [options.context] 验证上下文。<br>
@@ -1360,64 +1343,20 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				});
 			}
 
+			if (typeof options == "boolean") {
+				options = {
+					force: options
+				};
+			}
+			var force = (options && options.force === false) ? false : true;
 			var simplePropertyOnly = options ? options.validateSimplePropertyOnly : false;
 			var context = options ? options.context : null;
 			var result, topResult, resultCode, topResultCode = -1
+			
+			if (force) this._propertyInfoMap = {};
 
-			if (context) {
-				context.info = [];
-				context.ok = [];
-				context.warn = [];
-				context.error = [];
-				context.executing = [];
-				context.executingValidationNum = 0;
-			}
-
-			var hasExecutingValidator = false, message;
+			var hasExecutingValidator = false;
 			var dataType = this.dataType, propertyInfoMap = this._propertyInfoMap;
-			if (dataType) {
-				this._propertyDefs = dataType._propertyDefs;
-				var entity = this;
-				this._propertyDefs.each(function(pd) {
-					var property = pd._name, propertyInfo = propertyInfoMap[property];
-					if (propertyInfo) {
-						if (propertyInfo.validating) {
-							hasExecutingValidator = true;
-							if (context) {
-								context.executingValidationNum = (context.executingValidationNum || 0) + propertyInfo.validating;
-								var executing = context.executing = context.executing || [];
-								executing.push({
-									entity : this,
-									property : property,
-									num : propertyInfo.validating
-								});
-							}
-						} else {
-							if (context && propertyInfo.messages) {
-								for(var i = 0; i < propertyInfo.messages.length; i++) {
-									addMessage2Context(context, this, property, propertyInfo.messages[i]);
-								}
-							}
-						}
-					}
-
-					if (pd._required && (!propertyInfo || !propertyInfo.validated)) {
-						if (!propertyInfo)propertyInfoMap[property] = propertyInfo = {};
-						propertyInfo.validated = true;
-
-						var value = entity._data[property];
-						if (!value && value !== false) {
-							message = {
-								state : "error",
-								text : $resource("dorado.data.ErrorContentRequired")
-							};
-							entity.setMessages(property, [message]);
-							if (context) addMessage2Context(context, this, property, message);
-						}
-					}
-				});
-			}
-
 			if (simplePropertyOnly) {
 				var data = this._data;
 				for(var p in data) {
@@ -1444,8 +1383,9 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					}
 				}
 			}
+			
 			state = this.getMessageState();
-			var acceptState = this.dataType ? this.dataType.get("acceptValidationState") : null;
+			var acceptState = dataType ? dataType.get("acceptValidationState") : null;
 			if (STATE_CODE[state || "info"] <= STATE_CODE[acceptState || "ok"]) {
 				result = hasExecutingValidator ? "executing" : "ok";
 			} else {
@@ -1456,7 +1396,59 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				topResultCode = resultCode;
 				topResult = result;
 			}
-			if (context) context.result = topResult;
+			
+			if (context) {
+				context.result = topResult;
+				context.info = [];
+				context.ok = [];
+				context.warn = [];
+				context.error = [];
+				context.executing = [];
+				context.executingValidationNum = 0;
+				
+				if (dataType) {
+					this._propertyDefs = dataType._propertyDefs;
+					var entity = this;
+					this._propertyDefs.each(function(pd) {
+						var property = pd._name, propertyInfo = propertyInfoMap[property];
+						if (propertyInfo) {
+							if (propertyInfo.validating) {
+								hasExecutingValidator = true;
+								if (context) {
+									context.executingValidationNum = (context.executingValidationNum || 0) + propertyInfo.validating;
+									var executing = context.executing = context.executing || [];
+									executing.push({
+										entity: this,
+										property: property,
+										num: propertyInfo.validating
+									});
+								}
+							} else {
+								if (context && propertyInfo.messages) {
+									for (var i = 0; i < propertyInfo.messages.length; i++) {
+										addMessage2Context(context, this, property, propertyInfo.messages[i]);
+									}
+								}
+							}
+						}
+						
+						if (pd._required && (!propertyInfo || !propertyInfo.validated)) {
+							if (!propertyInfo) propertyInfoMap[property] = propertyInfo = {};
+							propertyInfo.validated = true;
+							
+							var value = entity._data[property];
+							if (!value && value !== false) {
+								var message = {
+									state: "error",
+									text: $resource("dorado.data.ErrorContentRequired")
+								};
+								entity.setMessages(property, [message]);
+								if (context) addMessage2Context(context, this, property, message);
+							}
+						}
+					});
+				}
+			}
 			return topResult;
 		},
 		

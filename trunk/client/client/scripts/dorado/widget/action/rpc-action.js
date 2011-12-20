@@ -478,6 +478,7 @@
 				if(data) {
 					// validaton
 					var validateContext, validateOptions = {
+						force: false,
 						validateSimplePropertyOnly : updateItem.submitSimplePropertyOnly
 					};
 
