@@ -301,11 +301,19 @@
 								}
 							}
 						});
-					}
-					catch(e) {
+					} 
+					catch (e) {
 						if (self._modal) {
 							self.set("disabled", false);
 						}
+								
+						if (self._modal && hasIcon) {
+							self.set({
+								icon: oldIcon,
+								iconClass: oldIconClass
+							});
+						}
+						
 						if (!(e instanceof dorado.AbstractException)) {
 							throw e;
 						}
