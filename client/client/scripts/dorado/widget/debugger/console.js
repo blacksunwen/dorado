@@ -323,9 +323,12 @@
 
     function format(tpl) {
         tpl = tpl || "";
-        return eval('("' + tpl.replace(/\$\{(.+?)\}/g, function($1, $2) {
-            return '"+' + $2 + '+"';
-        }) + '")');
+        if (tpl.indexOf("\r") != -1 || tpl.indexOf("\n") != -1)
+            return tpl;
+        else
+            return eval("('" + tpl.replace(/\$\{(.+?)\}/g, function($1, $2) {
+                return "'+" + $2 + "+'";
+            }) + "')");
     }
 
 	dorado.Debugger.extend(/** @scope dorado.Debugger */{
@@ -364,12 +367,12 @@
     if (console && console.log) {
         var log = console.log;
         console.log = function() {
-            var str = arguments[0];
-            if (arguments.length > 1) {
-                log.apply(this, arguments);
-            } else if (arguments.length == 1 && typeof str === "string") {
-                log.apply(this, [format(str)]);
+            var args = [];
+            for (var i = 0, j = arguments.length; i < j; i++) {
+                var arg = arguments[i];
+                args.push(typeof arg == "string" ? format(arg) : arg);
             }
+            log.apply(this, args);
         }
     } else {
         window.console = {
