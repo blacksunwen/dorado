@@ -677,6 +677,79 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			}
 		},
 		
+		_validateProperty: function(dataType, propertyDef,  propertyInfo, value) {
+			var messages = [], validating;
+			if (propertyDef._required && (!value && value !== false)) {
+				messages.push({
+					state: "error",
+					text: $resource("dorado.data.ErrorContentRequired")
+				});
+			} else if (propertyDef._mapping && value != null && value != "") {
+				var mappedValue = propertyDef.getMappedValue(value);
+				if (propertyDef._acceptUnknownMapKey && mappedValue === undefined) {
+					messages.push({
+						state: "error",
+						text: $resource("dorado.data.UnknownMapKey", value)
+					});
+				}
+			} else {
+				if (propertyDef._validators && !dataType._validatorsDisabled) {
+					var entity = this, currentValue = value, validateArg = {
+						property: property,
+						entity: entity
+					}, oldData = this._oldData;
+					
+					propertyInfo.validating = propertyInfo.validating || 0;
+					for (var i = 0; i < propertyDef._validators.length; i++) {
+						var validator = propertyDef._validators[i];
+						if (!validator._revalidateOldValue && oldData && value == oldData[property]) {
+							continue;
+						}
+						
+						if (validator instanceof dorado.validator.RemoteValidator && validator._async) {
+							propertyInfo.validating++;
+							validator.validate(value, validateArg, {
+								callback: function(success, result) {
+									propertyInfo.validating--;
+									if (propertyInfo.validating <= 0) {
+										propertyInfo.validating = 0;
+										propertyInfo.validated = true;
+									}
+									
+									if (success) {
+										if (entity._data[property] != currentValue) return;
+										entity.doSetMessages(property, result);
+									}
+									
+									if (entity._data[property] == currentValue) {
+										entity.sendMessage(dorado.Entity._MESSAGE_DATA_CHANGED, {
+											entity: entity,
+											property: property
+										});
+									}
+								}
+							});
+						} else {
+							var msgs = validator.validate(value, validateArg);
+							if (msgs) {
+								messages = messages.concat(msgs);
+								var state = dorado.Toolkits.getTopMessageState(msgs);
+								var acceptState = dataType.get("acceptValidationState");
+								if (STATE_CODE[state || "info"] > STATE_CODE[acceptState || "ok"]) {
+									asyncValidateActions = [];
+									break;
+								}
+							}
+						}
+					}
+				}
+			}
+			if (!propertyInfo.validating) {
+				propertyInfo.validated = true;
+			}
+			return messages;
+		},
+		
 		_set : function(property, value, propertyDef) {
 			var oldValue = this._data[property];
 			var eventArg = {
@@ -728,76 +801,12 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			this.timestamp = dorado.Core.getTimestamp();
 
 			if (property.charAt(0) != '$') {
-				var messages = [], validating;
+				var messages;
 				if (propertyDef) {
-					if (propertyDef._required && (!value && value !== false)) {
-						messages.push({
-							state : "error",
-							text : $resource("dorado.data.ErrorContentRequired")
-						});
-					} else if (propertyDef._mapping && value != null && value != "") {
-						var mappedValue = propertyDef.getMappedValue(value);
-						if (propertyDef._acceptUnknownMapKey && mappedValue === undefined) {
-							messages.push({
-								state : "error",
-								text : $resource("dorado.data.UnknownMapKey", value)
-							});
-						}
-					} else {
-						if (propertyDef._validators && !dataType._validatorsDisabled) {
-							var entity = this, currentValue = value, validateArg = {
-								property: property,
-								entity: entity
-							}, oldData = this._oldData;
-							
-							propertyInfo.validating = propertyInfo.validating || 0;
-							for(var i = 0; i < propertyDef._validators.length; i++) {
-								var validator = propertyDef._validators[i];
-								if (!validator._revalidateOldValue && oldData && value == oldData[property]) {
-									continue;
-								}
-								
-								if (validator instanceof dorado.validator.RemoteValidator && validator._async) {
-									propertyInfo.validating++;
-									validator.validate(value, validateArg, {
-										callback : function(success, result) {
-											propertyInfo.validating--;
-											if (propertyInfo.validating <= 0) {
-												propertyInfo.validating = 0;
-												propertyInfo.validated = true;
-											}
-
-											if (success) {
-												if (entity._data[property] != currentValue) return;
-												entity.doSetMessages(property, result);
-											}
-
-											if (entity._data[property] == currentValue) {
-												entity.sendMessage(dorado.Entity._MESSAGE_DATA_CHANGED, {
-													entity : entity,
-													property : property
-												});
-											}
-										}
-									});
-								} else {
-									var msgs = validator.validate(value, validateArg);
-									if (msgs) {
-										messages = messages.concat(msgs);
-										var state = dorado.Toolkits.getTopMessageState(msgs);
-										var acceptState = dataType.get("acceptValidationState");
-										if (STATE_CODE[state || "info"] > STATE_CODE[acceptState || "ok"]) {
-											asyncValidateActions = [];
-											break;
-										}
-									}
-								}
-							}
-						}
-					}
-					if (!propertyInfo.validating) {
-						propertyInfo.validated = true;
-					}
+					messages = this._validateProperty(dataType, propertyDef, propertyInfo, value);
+				}
+				else {
+					messages = null;
 				}
 
 				if (!(messages && messages.length) && !propertyInfo.validating) {
@@ -1342,6 +1351,28 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					text : message.text
 				});
 			}
+			
+			function addMessages2Context(context, entity, property, messages) {
+				for (var i = 0; i < messages.length; i++) {
+					addMessage2Context(context, entity, property, messages[i]);
+				}
+			}
+			
+			function mergeValidationContext(context, state, subContextMessages) {
+				var subContextMessages = subContext[state];
+				if (!subContextMessages) return;
+				for (var i = 0; i < subContextMessages.length; i++) {
+					context[state].push(subContextMessages[i]);
+				}
+			}
+			
+			function mergeValidationContexts(context, subContext) {
+				mergeValidationContext(context, "info", subContext);
+				mergeValidationContext(context, "ok", subContext);
+				mergeValidationContext(context, "warn", subContext);
+				mergeValidationContext(context, "error", subContext);
+				mergeValidationContext(context, "executing", subContext);
+			}
 
 			if (typeof options == "boolean") {
 				options = {
@@ -1357,14 +1388,63 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 
 			var hasExecutingValidator = false;
 			var dataType = this.dataType, propertyInfoMap = this._propertyInfoMap;
-			if (simplePropertyOnly) {
+			
+			if (context) {
+				context.info = [];
+				context.ok = [];
+				context.warn = [];
+				context.error = [];
+				context.executing = [];
+				context.executingValidationNum = 0;
+				
+				if (dataType) {
+					this._propertyDefs = dataType._propertyDefs;
+					var entity = this;
+					this._propertyDefs.each(function(pd) {
+						var property = pd._name, propertyInfo = propertyInfoMap[property];						
+						if (propertyInfo) {
+							if (propertyInfo.validating) {
+								hasExecutingValidator = true;
+								if (context) {
+									context.executingValidationNum = (context.executingValidationNum || 0) + propertyInfo.validating;
+									var executing = context.executing = context.executing || [];
+									executing.push({
+										entity: this,
+										property: property,
+										num: propertyInfo.validating
+									});
+								}
+								return;
+							} else if (propertyInfo.validated){
+								if (context && propertyInfo.messages) {
+									addMessages2Context(context, this, property, propertyInfo.messages);
+								}
+								return;
+							}
+						}
+						else{
+							propertyInfoMap[property] = propertyInfo = {};
+						}
+						
+						var value = entity._data[property];
+						var messages = entity._validateProperty(dataType, pd, propertyInfo, value);
+						if (context && messages) {
+							addMessages2Context(context, this, property, messages);
+						}
+					});
+				}
+			}
+			
+			if (!simplePropertyOnly) {
 				var data = this._data;
 				for(var p in data) {
 					if (!data.hasOwnProperty(p))continue;
 
 					var value = data[p];
 					if (value instanceof dorado.Entity) {
+						if (context) options.context = {};
 						result = value.validate(options);
+						if (context) mergeValidationContexts(context, options.context);
 						resultCode = VALIDATION_RESULT_CODE[result];
 						if (resultCode > topResultCode) {
 							topResultCode = resultCode;
@@ -1373,7 +1453,9 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					} else if ( value instanceof dorado.EntityList) {
 						var it = value.iterator();
 						while(it.hasNext()) {
+							if (context) options.context = {};
 							result = it.next().validate(options);
+							if (context) mergeValidationContexts(context, options.context);
 							resultCode = VALIDATION_RESULT_CODE[result];
 							if (resultCode > topResultCode) {
 								topResultCode = resultCode;
@@ -1397,58 +1479,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				topResult = result;
 			}
 			
-			if (context) {
-				context.result = topResult;
-				context.info = [];
-				context.ok = [];
-				context.warn = [];
-				context.error = [];
-				context.executing = [];
-				context.executingValidationNum = 0;
-				
-				if (dataType) {
-					this._propertyDefs = dataType._propertyDefs;
-					var entity = this;
-					this._propertyDefs.each(function(pd) {
-						var property = pd._name, propertyInfo = propertyInfoMap[property];
-						if (propertyInfo) {
-							if (propertyInfo.validating) {
-								hasExecutingValidator = true;
-								if (context) {
-									context.executingValidationNum = (context.executingValidationNum || 0) + propertyInfo.validating;
-									var executing = context.executing = context.executing || [];
-									executing.push({
-										entity: this,
-										property: property,
-										num: propertyInfo.validating
-									});
-								}
-							} else {
-								if (context && propertyInfo.messages) {
-									for (var i = 0; i < propertyInfo.messages.length; i++) {
-										addMessage2Context(context, this, property, propertyInfo.messages[i]);
-									}
-								}
-							}
-						}
-						
-						if (pd._required && (!propertyInfo || !propertyInfo.validated)) {
-							if (!propertyInfo) propertyInfoMap[property] = propertyInfo = {};
-							propertyInfo.validated = true;
-							
-							var value = entity._data[property];
-							if (!value && value !== false) {
-								var message = {
-									state: "error",
-									text: $resource("dorado.data.ErrorContentRequired")
-								};
-								entity.setMessages(property, [message]);
-								if (context) addMessage2Context(context, this, property, message);
-							}
-						}
-					});
-				}
-			}
+			if (context) context.result = topResult;
 			return topResult;
 		},
 		
