@@ -276,14 +276,14 @@
 		insert: function(data) {
 			var dataType = this.getDataType(null, true), entity;
 			if (dataType instanceof dorado.AggregationDataType) {
-				if (this._data === undefined) {
+				if (this._data == null) {
 					this.setData([]);
 				}
 				var entityList = this.getData();
 				entity = entityList.createChild(data);
 			}
 			else if (dataType instanceof dorado.EntityDataType) {
-				if (this._data === undefined) {
+				if (this._data == null) {
 					entity = new dorado.Entity(data, this.getDataTypeRepository(), dataType);
 					this.setData(entity);
 				}
