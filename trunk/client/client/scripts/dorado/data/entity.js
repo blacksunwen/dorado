@@ -362,9 +362,9 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 														oldValue._setObserver(null);
 													}
 													
-													if (value instanceof dorado.Entity || value instanceof dorado.EntityList) {
-														value.parent = this;
-														value._setObserver(this._observer);
+													if (result instanceof dorado.Entity || result instanceof dorado.EntityList) {
+														result.parent = this;
+														result._setObserver(this._observer);
 													}
 													this._data[property] = result;
 													this.sendMessage(dorado.Entity._MESSAGE_DATA_CHANGED, {
@@ -677,8 +677,8 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			}
 		},
 		
-		_validateProperty: function(dataType, propertyDef,  propertyInfo, value) {
-			var messages = [], validating;
+		_validateProperty: function(dataType, propertyDef, propertyInfo, value) {
+			var messages = [], property = propertyDef._name, validating;
 			if (propertyDef._required && (!value && value !== false)) {
 				messages.push({
 					state: "error",
@@ -693,7 +693,6 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					});
 				}
 			} else {
-				var property = propertyDef._name;
 				if (propertyDef._validators && !dataType._validatorsDisabled) {
 					var entity = this, currentValue = value, validateArg = {
 						property: property,
@@ -745,6 +744,9 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					}
 				}
 			}
+			
+			this.doSetMessages(property, messages);
+			
 			if (!propertyInfo.validating) {
 				propertyInfo.validated = true;
 			}
@@ -1337,7 +1339,6 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		 * @return {String} 验证结果，可能会有如下3种返回值：
 		 * <ul>
 		 * <li>invalid	-	表示本数据实体未通过数据验证，不能被提交。</li>
-		 * <li>executing	-	表示本数据目前相关的异步验证过程正在执行，暂时不能提交。</li>
 		 * <li>ok	-	表示本数据实体已通过验证，可以提交。</li>
 		 * </ul>
 		 */
@@ -1383,15 +1384,13 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			var force = (options && options.force === false) ? false : true;
 			var simplePropertyOnly =  (options && options.validateSimplePropertyOnly === false) ? false : true;
 			var context = options ? options.context : null;
-			var result, topResult, resultCode, topResultCode = -1
+			var result, topResult, resultCode, topResultCode = -1, hasValidate = false;
 			
 			if (force) {
 				this._propertyInfoMap = {};
 			}
 
-			var hasExecutingValidator = false;
 			var dataType = this.dataType, propertyInfoMap = this._propertyInfoMap;
-			
 			if (context) {
 				context.info = [];
 				context.ok = [];
@@ -1405,9 +1404,10 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				var entity = this;
 				dataType._propertyDefs.each(function(pd) {
 					var property = pd._name, propertyInfo = propertyInfoMap[property];
+					if (property.charAt(0) == '$') return;
+					
 					if (propertyInfo) {
 						if (propertyInfo.validating) {
-							hasExecutingValidator = true;
 							if (context) {
 								context.executingValidationNum = (context.executingValidationNum || 0) + propertyInfo.validating;
 								var executing = context.executing = context.executing || [];
@@ -1429,6 +1429,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					}
 					
 					var value = entity._data[property];
+					hasValidate = true;
 					var messages = entity._validateProperty(dataType, pd, propertyInfo, value);
 					if (context && messages) {
 						addMessages2Context(context, entity, property, messages);
@@ -1439,7 +1440,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			if (!simplePropertyOnly) {
 				var data = this._data;
 				for(var p in data) {
-					if (!data.hasOwnProperty(p))continue;
+					if (!data.hasOwnProperty(p) || p.charAt(0) == '$') continue;
 
 					var value = data[p];
 					if (value instanceof dorado.Entity) {
@@ -1470,7 +1471,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			state = this.getMessageState();
 			var acceptState = dataType ? dataType.get("acceptValidationState") : null;
 			if (STATE_CODE[state || "info"] <= STATE_CODE[acceptState || "ok"]) {
-				result = hasExecutingValidator ? "executing" : "ok";
+				result = "ok";
 			} else {
 				result = "invalid";
 			}
@@ -1481,6 +1482,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			}
 			
 			if (context) context.result = topResult;
+			if (hasValidate) this.sendMessage(0);
 			return topResult;
 		},
 		
