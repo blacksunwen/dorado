@@ -1396,43 +1396,40 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				context.error = [];
 				context.executing = [];
 				context.executingValidationNum = 0;
-				
-				if (dataType) {
-					this._propertyDefs = dataType._propertyDefs;
-					var entity = this;
-					this._propertyDefs.each(function(pd) {
-						var property = pd._name, propertyInfo = propertyInfoMap[property];						
-						if (propertyInfo) {
-							if (propertyInfo.validating) {
-								hasExecutingValidator = true;
-								if (context) {
-									context.executingValidationNum = (context.executingValidationNum || 0) + propertyInfo.validating;
-									var executing = context.executing = context.executing || [];
-									executing.push({
-										entity: this,
-										property: property,
-										num: propertyInfo.validating
-									});
-								}
-								return;
-							} else if (propertyInfo.validated){
-								if (context && propertyInfo.messages) {
-									addMessages2Context(context, this, property, propertyInfo.messages);
-								}
-								return;
+			}
+			
+			if (dataType) {
+				dataType._propertyDefs.each(function(pd) {
+					var property = pd._name, propertyInfo = propertyInfoMap[property];
+					if (propertyInfo) {
+						if (propertyInfo.validating) {
+							hasExecutingValidator = true;
+							if (context) {
+								context.executingValidationNum = (context.executingValidationNum || 0) + propertyInfo.validating;
+								var executing = context.executing = context.executing || [];
+								executing.push({
+									entity: this,
+									property: property,
+									num: propertyInfo.validating
+								});
 							}
+							return;
+						} else if (propertyInfo.validated) {
+							if (context && propertyInfo.messages) {
+								addMessages2Context(context, this, property, propertyInfo.messages);
+							}
+							return;
 						}
-						else{
-							propertyInfoMap[property] = propertyInfo = {};
-						}
-						
-						var value = entity._data[property];
-						var messages = entity._validateProperty(dataType, pd, propertyInfo, value);
-						if (context && messages) {
-							addMessages2Context(context, this, property, messages);
-						}
-					});
-				}
+					} else {
+						propertyInfoMap[property] = propertyInfo = {};
+					}
+					
+					var value = this._data[property];
+					var messages = entity._validateProperty(dataType, pd, propertyInfo, value);
+					if (context && messages) {
+						addMessages2Context(context, this, property, messages);
+					}
+				});
 			}
 			
 			if (!simplePropertyOnly) {
