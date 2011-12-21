@@ -1307,7 +1307,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		 * <li>当传入一个JSON对象时，其中有可以包含如下的更多选项。</li>
 		 * </ul>
 		 * @param {boolean} [options.force=true] 是否强制重新验证所有子属性及校验器。
-		 * @param {boolean} [options.validateSimplePropertyOnly] 只验证简单数据类型的属性中的数据，如String、boolean、int、Date等数据类型。
+		 * @param {boolean} [options.validateSimplePropertyOnly=true] 只验证简单数据类型的属性中的数据，如String、boolean、int、Date等数据类型。
 		 * 设置此属性产生的实际结果是验证逻辑将忽略对此数据实体中的所有子数据实体的有效性验证。
 		 * @param {Object} [options.context] 验证上下文。<br>
 		 * 传入此参数的目的通常是用于获得更加验证详尽的验证结果。此上下文对象中可以包含如下的返回属性：
@@ -1380,11 +1380,13 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				};
 			}
 			var force = (options && options.force === false) ? false : true;
-			var simplePropertyOnly = options ? options.validateSimplePropertyOnly : false;
+			var simplePropertyOnly =  (options && options.validateSimplePropertyOnly === false) ? false : true;
 			var context = options ? options.context : null;
 			var result, topResult, resultCode, topResultCode = -1
 			
-			if (force) this._propertyInfoMap = {};
+			if (force) {
+				this._propertyInfoMap = {};
+			}
 
 			var hasExecutingValidator = false;
 			var dataType = this.dataType, propertyInfoMap = this._propertyInfoMap;
