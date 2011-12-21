@@ -693,6 +693,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					});
 				}
 			} else {
+				var property = propertyDef._name;
 				if (propertyDef._validators && !dataType._validatorsDisabled) {
 					var entity = this, currentValue = value, validateArg = {
 						property: property,
