@@ -106,6 +106,7 @@
 
 	<target name="publish-to-temp-repository">
 		<echo message="publish-to-temp-repository: ${target.lib.dir}/${product.name}-${module}-${product.revision}.jar" />
+
 		<ivy:publish resolver="temp" forcedeliver="true" pubrevision="${product.revision}" overwrite="true">
 			<artifacts pattern="${target.lib.dir}/[artifact]-[revision](-[classifier]).[ext]" />
 		</ivy:publish>
