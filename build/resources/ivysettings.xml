@@ -1,12 +1,12 @@
 <ivysettings>
 	<properties file="${ivy.settings.dir}/ivysettings.properties" />
-	<property name="temp-repository.dir" value="${ivy.settings.dir}/temp-repository" />
+	<property name="temp-repository.dir" value="${temp-repository.dir}" />
 	<property name="temp-repository.ivy-pattern" value="[artifact]-[revision](-[classifier]).ivy.xml" />
 	<property name="temp-repository.pattern" value="[artifact]-[revision](-[classifier]).[ext]" />
 
 	<settings defaultResolver="${default-resolver}" />
 	<caches defaultCacheDir="${cache.dir}" />
-
+	
 	<include file="${ivy.settings.dir}/ivysettings-include.xml" />
 
 	<resolvers>
@@ -19,7 +19,6 @@
 			<resolver ref="temp" />
 			<resolver ref="local" />
 			<resolver ref="bsdn" />
-			<resolver ref="global" />
 		</chain>
 	</resolvers>
 </ivysettings>
