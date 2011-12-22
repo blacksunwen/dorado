@@ -19,6 +19,7 @@
 
 	<property name="ivy.jar" value="ivy-${ivy.version}.jar" />
 	<property name="ivy.home" value="${workspace.dir}/ivy" />
+	<property name="ivy.cache" value="${ivy.home}/.cache" />
 	<property name="ivy.repository" value="${ivy.home}/repository" />
 	<available property="ivy.installed" file="${lib.dir}/${ivy.jar}" />
 
