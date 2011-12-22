@@ -15,7 +15,6 @@
 
 		<!-- <chain name="default" returnFirst="true" checkmodified="true"> -->
 		<chain name="default" returnFirst="true">
-			<resolver ref="local" />
 			<resolver ref="bsdn" />
 		</chain>
 	</resolvers>

@@ -34,7 +34,6 @@
 			<entry key="product.status" value="${product.status}" />
 			<entry key="product.publication" value="${product.publication}" />
 			<entry key="default-resolver" value="building" />
-			<entry key="cache.dir" value="${ivy.home}/.cache" />
 			<entry key="local-repository.dir" value="${ivy.home}/repository" />
 			<entry key="temp-repository.dir" value="${work.dir}/repository" />
 		</propertyfile>
