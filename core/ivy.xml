@@ -1,5 +1,5 @@
 <ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
-	<info organisation="com.bstek.dorado" module="dorado-core" revision="7.0.0-SNAPSHOT" status="integration" publication="20111222170405"/>
+	<info organisation="com.bstek.dorado" module="dorado-core" status="integration"/>
 
 	<configurations>
 		<conf name="default" visibility="public" extends="runtime,master"/>
