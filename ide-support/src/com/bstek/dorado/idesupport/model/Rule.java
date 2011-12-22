@@ -34,12 +34,15 @@ public class Rule {
 	private boolean _abstract;
 
 	private String name;
+	private String label;
 	private String nodeName;
 	private String type;
-	private boolean supportsMetaProperty;
 	private String category;
 	private String[] robots;
 	private int sortFactor = Integer.MAX_VALUE;
+	private String icon;
+	private String labelProperty = "name,id";
+	private boolean autoGenerateId;
 	private String reserve;
 	private Object userData;
 
@@ -130,6 +133,14 @@ public class Rule {
 		return name;
 	}
 
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
+	}
+
 	public String getNodeName() {
 		return StringUtils.isEmpty(nodeName) ? name : nodeName;
 	}
@@ -144,14 +155,6 @@ public class Rule {
 
 	public void setType(String type) {
 		this.type = type;
-	}
-
-	public boolean isSupportsMetaProperty() {
-		return supportsMetaProperty;
-	}
-
-	public void setSupportsMetaProperty(boolean supportsMetaProperty) {
-		this.supportsMetaProperty = supportsMetaProperty;
 	}
 
 	public String getCategory() {
@@ -244,6 +247,30 @@ public class Rule {
 
 	public void setSortFactor(int sortFactor) {
 		this.sortFactor = sortFactor;
+	}
+
+	public String getIcon() {
+		return icon;
+	}
+
+	public void setIcon(String icon) {
+		this.icon = icon;
+	}
+
+	public String getLabelProperty() {
+		return labelProperty;
+	}
+
+	public void setLabelProperty(String labelProperty) {
+		this.labelProperty = labelProperty;
+	}
+
+	public boolean isAutoGenerateId() {
+		return autoGenerateId;
+	}
+
+	public void setAutoGenerateId(boolean autoGenerateId) {
+		this.autoGenerateId = autoGenerateId;
 	}
 
 	public String getReserve() {

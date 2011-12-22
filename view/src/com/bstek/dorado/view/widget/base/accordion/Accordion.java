@@ -4,11 +4,10 @@ import java.util.List;
 
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
+import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Control;
 import com.bstek.dorado.view.widget.InnerElementList;
 
@@ -16,9 +15,10 @@ import com.bstek.dorado.view.widget.InnerElementList;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-8-9
  */
-@Widget(name = "Accordion", category = "General", dependsPackage = "base-widget")
-@ViewObject(prototype = "dorado.widget.Accordion", shortTypeName = "Accordion")
-@XmlNode(nodeName = "Accordion")
+@Widget(name = "Accordion", category = "General",
+		dependsPackage = "base-widget")
+@ClientObject(prototype = "dorado.widget.Accordion",
+		shortTypeName = "Accordion")
 @ClientEvents({ @ClientEvent(name = "beforeCurrentSectionChange"),
 		@ClientEvent(name = "onCurrentSectionChange") })
 public class Accordion extends Control {
@@ -28,8 +28,8 @@ public class Accordion extends Control {
 		sections.add(section);
 	}
 
-	@ViewAttribute
-	@XmlSubNode(path = "#self")
+	@XmlSubNode
+	@ClientProperty
 	public List<Section> getSections() {
 		return sections;
 	}

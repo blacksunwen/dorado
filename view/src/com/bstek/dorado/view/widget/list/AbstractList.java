@@ -2,7 +2,7 @@ package com.bstek.dorado.view.widget.list;
 
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
-import com.bstek.dorado.annotation.ViewAttribute;
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.view.widget.Control;
 
 /**
@@ -11,14 +11,14 @@ import com.bstek.dorado.view.widget.Control;
  */
 @ClientEvents( { @ClientEvent(name = "onCurrentChange"),
 		@ClientEvent(name = "onSelectionChange") })
-public class AbstractList extends Control {
+public abstract class AbstractList extends Control {
 	private ScrollMode scrollMode = ScrollMode.lazyRender;
 	private SelectionMode selectionMode = SelectionMode.none;
 	private boolean allowNoCurrent;
 	private DragMode dragMode = DragMode.item;
 	private DropMode dropMode = DropMode.insertItems;
 
-	@ViewAttribute(defaultValue = "lazyRender")
+	@ClientProperty(escapeValue = "lazyRender")
 	public ScrollMode getScrollMode() {
 		return scrollMode;
 	}
@@ -27,7 +27,7 @@ public class AbstractList extends Control {
 		this.scrollMode = scrollMode;
 	}
 
-	@ViewAttribute(defaultValue = "none")
+	@ClientProperty(escapeValue = "none")
 	public SelectionMode getSelectionMode() {
 		return selectionMode;
 	}
@@ -44,7 +44,7 @@ public class AbstractList extends Control {
 		this.allowNoCurrent = allowNoCurrent;
 	}
 
-	@ViewAttribute(defaultValue = "item")
+	@ClientProperty(escapeValue = "item")
 	public DragMode getDragMode() {
 		return dragMode;
 	}
@@ -53,7 +53,7 @@ public class AbstractList extends Control {
 		this.dragMode = dragMode;
 	}
 
-	@ViewAttribute(defaultValue = "insertItems")
+	@ClientProperty(escapeValue = "insertItems")
 	public DropMode getDropMode() {
 		return dropMode;
 	}

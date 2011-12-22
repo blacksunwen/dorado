@@ -2,14 +2,18 @@ package com.bstek.dorado.view.widget.action;
 
 import java.util.Properties;
 
-import com.bstek.dorado.annotation.ViewAttribute;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.view.annotation.ComponentReference;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since May 15, 2009
  */
-@XmlNode(nodeName = "UpdateItem")
+@XmlNode
+@ClientObject
 public class UpdateItem {
 	private String dataSet;
 	private String dataPath = "!DIRTY_TREE";
@@ -21,7 +25,7 @@ public class UpdateItem {
 	private boolean submitSimplePropertyOnly;
 	private Properties options;
 
-	@ViewAttribute(referenceComponentName = "DataSet")
+	@ComponentReference("DataSet")
 	public String getDataSet() {
 		return dataSet;
 	}
@@ -30,7 +34,9 @@ public class UpdateItem {
 		this.dataSet = dataSet;
 	}
 
-	@ViewAttribute(defaultValue = "!DIRTY_TREE", enumValues = "!DIRTY_TREE,!CASCADE_DIRTY,[#dirty],[#all],[#visible]")
+	@ClientProperty(escapeValue = "!DIRTY_TREE")
+	@IdeProperty(
+			enumValues = "!DIRTY_TREE,!CASCADE_DIRTY,[#dirty],[#all],[#visible]")
 	public String getDataPath() {
 		return dataPath;
 	}
@@ -47,7 +53,7 @@ public class UpdateItem {
 		this.alias = alias;
 	}
 
-	@ViewAttribute(defaultValue = "value")
+	@ClientProperty(escapeValue = "value")
 	public RefreshMode getRefreshMode() {
 		return refreshMode;
 	}
@@ -64,7 +70,7 @@ public class UpdateItem {
 		this.firstResultOnly = firstResultOnly;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isAutoResetEntityState() {
 		return autoResetEntityState;
 	}

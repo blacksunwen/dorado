@@ -1,11 +1,14 @@
 package com.bstek.dorado.view.widget.layout;
 
+import com.bstek.dorado.annotation.TextSection;
+
 /**
  * 布局管理器的抽象类。
  * 
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Jan 19, 2008
  */
+@TextSection(parser = "spring:dorado.layoutTextParser")
 public abstract class Layout {
 
 	/**

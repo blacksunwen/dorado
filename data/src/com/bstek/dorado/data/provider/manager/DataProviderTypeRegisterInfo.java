@@ -1,6 +1,6 @@
 package com.bstek.dorado.data.provider.manager;
 
-import com.bstek.dorado.config.Parser;
+import com.bstek.dorado.data.provider.DataProvider;
 
 /**
  * DataProvider的类型注册信息。
@@ -12,8 +12,7 @@ import com.bstek.dorado.config.Parser;
  */
 public class DataProviderTypeRegisterInfo {
 	private String type;
-	private Class<?> classType;
-	private Parser parser;
+	private Class<? extends DataProvider> classType;
 
 	/**
 	 * @param type
@@ -21,7 +20,8 @@ public class DataProviderTypeRegisterInfo {
 	 * @param classType
 	 *            DataProvider的Class类型
 	 */
-	public DataProviderTypeRegisterInfo(String type, Class<?> classType) {
+	public DataProviderTypeRegisterInfo(String type,
+			Class<? extends DataProvider> classType) {
 		this.type = type;
 		this.classType = classType;
 	}
@@ -43,28 +43,14 @@ public class DataProviderTypeRegisterInfo {
 	/**
 	 * 返回DataProvider的Class类型。
 	 */
-	public Class<?> getClassType() {
+	public Class<? extends DataProvider> getClassType() {
 		return classType;
 	}
 
 	/**
 	 * 设置DataProvider的Class类型。
 	 */
-	public void setClassType(Class<?> classType) {
+	public void setClassType(Class<? extends DataProvider> classType) {
 		this.classType = classType;
-	}
-
-	/**
-	 * 返回对应的配置解析器。
-	 */
-	public Parser getParser() {
-		return parser;
-	}
-
-	/**
-	 * 设置对应的配置解析器。
-	 */
-	public void setParser(Parser parser) {
-		this.parser = parser;
 	}
 }

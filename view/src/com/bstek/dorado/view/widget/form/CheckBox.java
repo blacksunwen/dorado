@@ -2,18 +2,16 @@ package com.bstek.dorado.view.widget.form;
 
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.view.annotation.Widget;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2009-11-5
  */
 @Widget(name = "CheckBox", category = "Form", dependsPackage = "base-widget")
-@ViewObject(prototype = "dorado.widget.CheckBox", shortTypeName = "CheckBox")
-@XmlNode(nodeName = "CheckBox")
+@ClientObject(prototype = "dorado.widget.CheckBox", shortTypeName = "CheckBox")
 @ClientEvents({ @ClientEvent(name = "onValueChange") })
 public class CheckBox extends AbstractDataEditor {
 	private Object onValue = true;
@@ -26,7 +24,7 @@ public class CheckBox extends AbstractDataEditor {
 	private boolean triState;
 	private boolean iconOnly;
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public Object getOnValue() {
 		return onValue;
 	}
@@ -35,7 +33,7 @@ public class CheckBox extends AbstractDataEditor {
 		this.onValue = onValue;
 	}
 
-	@ViewAttribute(defaultValue = "false")
+	@ClientProperty(escapeValue = "false")
 	public Object getOffValue() {
 		return offValue;
 	}
@@ -60,7 +58,7 @@ public class CheckBox extends AbstractDataEditor {
 		this.caption = caption;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isShowCaption() {
 		return showCaption;
 	}
@@ -69,7 +67,7 @@ public class CheckBox extends AbstractDataEditor {
 		this.showCaption = showCaption;
 	}
 
-	@ViewAttribute(defaultValue = "false")
+	@ClientProperty(escapeValue = "false")
 	public Object getValue() {
 		return value;
 	}

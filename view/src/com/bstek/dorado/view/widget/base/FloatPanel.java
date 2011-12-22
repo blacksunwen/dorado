@@ -1,9 +1,8 @@
 package com.bstek.dorado.view.widget.base;
 
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.FloatControl;
 import com.bstek.dorado.view.widget.FloatControlAlign;
 import com.bstek.dorado.view.widget.FloatControlAnimateType;
@@ -15,9 +14,10 @@ import com.bstek.dorado.view.widget.ModalType;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-6-2
  */
-@Widget(name = "FloatPanel", category = "Floatable", dependsPackage = "base-widget")
-@ViewObject(prototype = "dorado.widget.FloatPanel", shortTypeName = "FloatPanel")
-@XmlNode(nodeName = "FloatPanel")
+@Widget(name = "FloatPanel", category = "Floatable",
+		dependsPackage = "base-widget")
+@ClientObject(prototype = "dorado.widget.FloatPanel",
+		shortTypeName = "FloatPanel")
 public class FloatPanel extends Panel implements FloatControl {
 	private FloatControlAnimateType animateType = FloatControlAnimateType.zoom;
 	private FloatControlAnimateType showAnimateType;
@@ -41,18 +41,18 @@ public class FloatPanel extends Panel implements FloatControl {
 	private FloatControlVAlign vAlign;
 	private boolean autoAdjustPosition = true;
 	private boolean handleOverflow = true;
-	
+
 	public FloatPanel() {
 		setVisible(false);
 	}
 
 	@Override
-	@ViewAttribute(defaultValue = "false")
+	@ClientProperty(escapeValue = "false")
 	public boolean isVisible() {
 		return super.isVisible();
 	}
 
-	@ViewAttribute(defaultValue = "zoom")
+	@ClientProperty(escapeValue = "zoom")
 	public FloatControlAnimateType getAnimateType() {
 		return animateType;
 	}
@@ -119,7 +119,7 @@ public class FloatPanel extends Panel implements FloatControl {
 		this.modalType = modalType;
 	}
 
-	@ViewAttribute(defaultValue = "sides")
+	@ClientProperty(escapeValue = "sides")
 	public FloatControlShadowMode getShadowMode() {
 		return shadowMode;
 	}
@@ -128,7 +128,7 @@ public class FloatPanel extends Panel implements FloatControl {
 		this.shadowMode = shadowMode;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isFocusAfterShow() {
 		return focusAfterShow;
 	}
@@ -136,22 +136,23 @@ public class FloatPanel extends Panel implements FloatControl {
 	public void setFocusAfterShow(boolean focusAfterShow) {
 		this.focusAfterShow = focusAfterShow;
 	}
-	
+
 	/**
 	 * @return the floating
 	 */
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isFloating() {
 		return floating;
 	}
 
 	/**
-	 * @param floating the floating to set
+	 * @param floating
+	 *            the floating to set
 	 */
 	public void setFloating(boolean floating) {
 		this.floating = floating;
 	}
-	
+
 	/**
 	 * @return the floatingClassName
 	 */
@@ -160,7 +161,8 @@ public class FloatPanel extends Panel implements FloatControl {
 	}
 
 	/**
-	 * @param floatingClassName the floatingClassName to set
+	 * @param floatingClassName
+	 *            the floatingClassName to set
 	 */
 	public void setFloatingClassName(String floatingClassName) {
 		this.floatingClassName = floatingClassName;
@@ -174,7 +176,8 @@ public class FloatPanel extends Panel implements FloatControl {
 	}
 
 	/**
-	 * @param left the left to set
+	 * @param left
+	 *            the left to set
 	 */
 	public void setLeft(int left) {
 		this.left = left;
@@ -188,7 +191,8 @@ public class FloatPanel extends Panel implements FloatControl {
 	}
 
 	/**
-	 * @param top the top to set
+	 * @param top
+	 *            the top to set
 	 */
 	public void setTop(int top) {
 		this.top = top;
@@ -202,7 +206,8 @@ public class FloatPanel extends Panel implements FloatControl {
 	}
 
 	/**
-	 * @param offsetLeft the offsetLeft to set
+	 * @param offsetLeft
+	 *            the offsetLeft to set
 	 */
 	public void setOffsetLeft(int offsetLeft) {
 		this.offsetLeft = offsetLeft;
@@ -216,7 +221,8 @@ public class FloatPanel extends Panel implements FloatControl {
 	}
 
 	/**
-	 * @param offsetTop the offsetTop to set
+	 * @param offsetTop
+	 *            the offsetTop to set
 	 */
 	public void setOffsetTop(int offsetTop) {
 		this.offsetTop = offsetTop;
@@ -230,7 +236,8 @@ public class FloatPanel extends Panel implements FloatControl {
 	}
 
 	/**
-	 * @param anchorTarget the anchorTarget to set
+	 * @param anchorTarget
+	 *            the anchorTarget to set
 	 */
 	public void setAnchorTarget(String anchorTarget) {
 		this.anchorTarget = anchorTarget;
@@ -244,7 +251,8 @@ public class FloatPanel extends Panel implements FloatControl {
 	}
 
 	/**
-	 * @param align the align to set
+	 * @param align
+	 *            the align to set
 	 */
 	public void setAlign(FloatControlAlign align) {
 		this.align = align;
@@ -258,7 +266,8 @@ public class FloatPanel extends Panel implements FloatControl {
 	}
 
 	/**
-	 * @param vAlign the vAlign to set
+	 * @param vAlign
+	 *            the vAlign to set
 	 */
 	public void setvAlign(FloatControlVAlign vAlign) {
 		this.vAlign = vAlign;
@@ -267,13 +276,14 @@ public class FloatPanel extends Panel implements FloatControl {
 	/**
 	 * @return the autoAdjustPosition
 	 */
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isAutoAdjustPosition() {
 		return autoAdjustPosition;
 	}
 
 	/**
-	 * @param autoAdjustPosition the autoAdjustPosition to set
+	 * @param autoAdjustPosition
+	 *            the autoAdjustPosition to set
 	 */
 	public void setAutoAdjustPosition(boolean autoAdjustPosition) {
 		this.autoAdjustPosition = autoAdjustPosition;
@@ -282,17 +292,17 @@ public class FloatPanel extends Panel implements FloatControl {
 	/**
 	 * @return the handleOverflow
 	 */
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isHandleOverflow() {
 		return handleOverflow;
 	}
 
 	/**
-	 * @param handleOverflow the handleOverflow to set
+	 * @param handleOverflow
+	 *            the handleOverflow to set
 	 */
 	public void setHandleOverflow(boolean handleOverflow) {
 		this.handleOverflow = handleOverflow;
 	}
-	
 
 }

@@ -3,19 +3,19 @@
  */
 package com.bstek.dorado.view.widget.action;
 
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.view.annotation.Widget;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2011-4-19
  */
 
-@Widget(name = "FormSubmitAction", category = "Action", dependsPackage = "base-widget")
-@ViewObject(prototype = "dorado.widget.FormSubmitAction", shortTypeName = "FormSubmitAction")
-@XmlNode(nodeName = "FormSubmitAction")
+@Widget(name = "FormSubmitAction", category = "Action",
+		dependsPackage = "base-widget")
+@ClientObject(prototype = "dorado.widget.FormSubmitAction",
+		shortTypeName = "FormSubmitAction")
 public class FormSubmitAction extends Action {
 	private String action;
 	private String target;
@@ -37,7 +37,7 @@ public class FormSubmitAction extends Action {
 		this.target = target;
 	}
 
-	@ViewAttribute(defaultValue = "post")
+	@ClientProperty(escapeValue = "post")
 	public SubmitMethod getMethod() {
 		return method;
 	}

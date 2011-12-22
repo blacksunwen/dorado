@@ -2,7 +2,7 @@ package com.bstek.dorado.common;
 
 import com.bstek.dorado.core.ContextTestCase;
 
-public class CommonContextTestCase extends ContextTestCase {
+public abstract class CommonContextTestCase extends ContextTestCase {
 	public CommonContextTestCase() {
 		addExtensionContextConfigLocation("com/bstek/dorado/common/context.xml");
 	}

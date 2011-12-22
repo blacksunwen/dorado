@@ -1,6 +1,6 @@
 package com.bstek.dorado.view.widget.grid;
 
-import com.bstek.dorado.annotation.ViewAttribute;
+import com.bstek.dorado.annotation.ClientProperty;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -38,7 +38,7 @@ public abstract class AbstractGrid extends GridSupport {
 		this.groupProperty = groupProperty;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isGroupOnSort() {
 		return groupOnSort;
 	}

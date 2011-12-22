@@ -9,7 +9,6 @@ import org.springframework.beans.BeansException;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 
-import com.bstek.dorado.common.event.xml.ClientEventConfigLoader;
 import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.web.ConsoleUtils;
 
@@ -23,8 +22,7 @@ public class DoradoServlet extends DispatcherServlet {
 	private static final long serialVersionUID = 5788753993615625187L;
 
 	private static final String SERVLET_CONTEXT_CONFIG_PROPERTY = "core.servletContextConfigLocation";
-	private static Log logger = LogFactory
-			.getLog(ClientEventConfigLoader.class);
+	private static Log logger = LogFactory.getLog(DoradoServlet.class);
 
 	@Override
 	protected WebApplicationContext createWebApplicationContext(

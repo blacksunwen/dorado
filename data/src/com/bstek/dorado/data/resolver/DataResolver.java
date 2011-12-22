@@ -1,13 +1,22 @@
 package com.bstek.dorado.data.resolver;
 
+import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.core.bean.Scope;
-import com.bstek.dorado.core.io.Resource;
 import com.bstek.dorado.data.DataModelObject;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Apr 29, 2009
  */
+@XmlNode(
+		nodeName = "DataResolver",
+		parser = "spring:dorado.prototype.dataResolverParser",
+		definitionType = "com.bstek.dorado.data.config.definition.DataResolverDefinition",
+		scopable = true, inheritable = true, properties = {
+				@XmlProperty(propertyName = "overwrite", ignored = true),
+				@XmlProperty(propertyName = "interceptor",
+						parser = "spring:dorado.staticPropertyParser") })
 public interface DataResolver extends DataModelObject {
 	/**
 	 * 返回DataResolver的名称。
@@ -18,15 +27,6 @@ public interface DataResolver extends DataModelObject {
 	 * 返回作用范围。
 	 */
 	Scope getScope();
-
-	/**
-	 * 返回DataResolver归属的文件资源。<br>
-	 * DataResolver归属的资源是指该DataResolver定义在哪个配置文件中。
-	 * 如果DataResolver并非由配置文件产生，那么该方法将返回null。
-	 * 
-	 * @return 文件资源描述对象
-	 */
-	Resource getResource();
 
 	/**
 	 * 设置默认参数。

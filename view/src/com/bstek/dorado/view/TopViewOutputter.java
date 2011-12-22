@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.bstek.dorado.view.output.ClientOutputHelper;
 import com.bstek.dorado.view.output.OutputContext;
 import com.bstek.dorado.web.WebConfigure;
 
@@ -15,6 +16,12 @@ import com.bstek.dorado.web.WebConfigure;
  * @since Nov 5, 2008
  */
 public class TopViewOutputter extends ViewOutputter {
+	private ClientOutputHelper clientOutputHelper;
+
+	public void setClientOutputHelper(
+			ClientOutputHelper clientOutputHelper) {
+		this.clientOutputHelper = clientOutputHelper;
+	}
 
 	@Override
 	public void output(Object object, OutputContext context) throws Exception {
@@ -32,7 +39,11 @@ public class TopViewOutputter extends ViewOutputter {
 		writer.append("jQuery(document).ready(function(){\n");
 		// writer.append("try{\n");
 		writer.append("AUTO_APPEND_TO_TOPVIEW=false;\n");
-		outputView(view, context);
+
+		ViewOutputter outputter = (ViewOutputter) clientOutputHelper
+				.getOutputter(view.getClass());
+		outputter.outputView(view, context);
+
 		writer.append("AUTO_APPEND_TO_TOPVIEW=true;\n");
 		writer.append("var doradoView = document.getElementById(\"doradoView\");\n"
 				+ "if (doradoView) v.replace(doradoView);\n");

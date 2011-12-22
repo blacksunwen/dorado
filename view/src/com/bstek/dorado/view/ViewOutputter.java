@@ -9,7 +9,6 @@ import org.apache.commons.lang.StringUtils;
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.view.output.OutputContext;
 import com.bstek.dorado.view.output.Outputter;
-import com.bstek.dorado.view.widget.ChildrenComponentOutputter;
 import com.bstek.dorado.view.widget.ContainerOutputter;
 
 /**
@@ -19,12 +18,11 @@ import com.bstek.dorado.view.widget.ContainerOutputter;
  * @since Sep 19, 2008
  */
 public class ViewOutputter extends ContainerOutputter {
-
-	protected ChildrenComponentOutputter childrenComponentOutputter;
+	protected Outputter childrenComponentOutputter;
 	protected Outputter includeDataTypesOutputter;
 
 	public void setChildrenComponentOutputter(
-			ChildrenComponentOutputter childrenComponentOutputter) {
+			Outputter childrenComponentOutputter) {
 		this.childrenComponentOutputter = childrenComponentOutputter;
 	}
 
@@ -33,11 +31,10 @@ public class ViewOutputter extends ContainerOutputter {
 	}
 
 	public ViewOutputter() {
-		setUseTypedJson(false);
+		setUsePrototype(true);
 	}
 
-	protected void outputView(View view, OutputContext context)
-			throws Exception {
+	public void outputView(View view, OutputContext context) throws Exception {
 		Set<String> dependsPackages = context.getDependsPackages();
 		String exPackages = view.getPackages();
 		if (StringUtils.isNotEmpty(exPackages)) {
@@ -80,8 +77,7 @@ public class ViewOutputter extends ContainerOutputter {
 			boolean hasChild = !view.getChildren().isEmpty();
 			if (hasChild) {
 				writer.append("function f(v){").append("v.set(\"children\",");
-				childrenComponentOutputter.outputChildrenComponents(view,
-						context); // 事实上此array不可能为空，前面已判断过了。
+				childrenComponentOutputter.output(view.getChildren(), context); // 事实上此array不可能为空，前面已判断过了。
 				writer.append(");").append("}\n");
 			}
 

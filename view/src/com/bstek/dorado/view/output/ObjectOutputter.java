@@ -1,22 +1,40 @@
 package com.bstek.dorado.view.output;
 
+import java.io.IOException;
+import java.io.Writer;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import net.sf.cglib.beans.BeanMap;
+
+import com.bstek.dorado.annotation.EscapeMode;
+import com.bstek.dorado.common.Ignorable;
+import com.bstek.dorado.data.entity.EntityUtils;
+import com.bstek.dorado.view.el.OutputableExpressionUtils;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2009-12-24
  */
-public abstract class ObjectOutputter implements Outputter {
+public class ObjectOutputter implements Outputter {
+	private EscapeMode escapeMode = EscapeMode.AUTO;
+	private Map<String, PropertyConfig> propertieConfigs = new HashMap<String, PropertyConfig>();
 
-	private Map<String, Object> configProperties = new HashMap<String, Object>();
+	public EscapeMode getEscapeMode() {
+		return escapeMode;
+	}
+
+	public void setEscapeMode(EscapeMode escapeMode) {
+		this.escapeMode = escapeMode;
+	}
 
 	/**
 	 * 返回要输出的POJO属性的Map集合。
-	 * @see #setConfigProperties(Map)
 	 */
-	public Map<String, Object> getConfigProperties() {
-		return configProperties;
+	public Map<String, PropertyConfig> getPropertieConfigs() {
+		return propertieConfigs;
 	}
 
 	/**
@@ -38,7 +56,163 @@ public abstract class ObjectOutputter implements Outputter {
 	 * <li>字符串"#ignore"是一个特殊的值，表示忽略该属性的输出操作。</li>
 	 * </ul>
 	 */
-	public void setConfigProperties(Map<String, Object> configProperties) {
-		this.configProperties = configProperties;
+	public void setPropertieConfigs(Map<String, PropertyConfig> propertieConfigs) {
+		this.propertieConfigs = propertieConfigs;
+	}
+
+	protected boolean isEscapeable(OutputContext context) {
+		if (EscapeMode.YES.equals(escapeMode)) {
+			return true;
+		} else if (EscapeMode.YES.equals(escapeMode)) {
+			return false;
+		} else {
+			return context.isEscapeable();
+		}
+	}
+
+	public void output(Object object, OutputContext context) throws Exception {
+		if (object != null) {
+			JsonBuilder json = context.getJsonBuilder();
+			if (object instanceof Collection<?>) {
+				if (isEscapeable(context)) {
+					json.escapeableArray();
+				} else {
+					json.array();
+				}
+				for (Object element : (Collection<?>) object) {
+					if (element instanceof Ignorable
+							&& ((Ignorable) element).isIgnored()) {
+						continue;
+					}
+					outputObject(element, context);
+				}
+				json.endArray();
+			} else {
+				outputObject(object, context);
+			}
+		} else {
+			if (!isEscapeable(context)) {
+				context.getWriter().append("null");
+			}
+		}
+	}
+
+	/**
+	 * 将一个Java的POJO对象输出成为JSON对象。
+	 */
+	protected void outputObject(Object object, OutputContext context)
+			throws IOException, Exception {
+		Writer writer = context.getWriter();
+		if (object != null) {
+			JsonBuilder json = context.getJsonBuilder();
+			if (isEscapeable(context)) {
+				json.escapeableObject();
+			} else {
+				json.object();
+			}
+			outputObjectProperties(object, context);
+			json.endObject();
+		} else {
+			writer.append("null");
+		}
+	}
+
+	/**
+	 * 输出一个Java的POJO对象中在{@link #getConfigProperties()}配置过的各个POJO属性。
+	 */
+	@SuppressWarnings("unchecked")
+	protected void outputObjectProperties(Object object, OutputContext context)
+			throws Exception {
+		Map<String, ?> beanMap;
+		if (object instanceof Map<?, ?>) {
+			beanMap = (Map<String, ?>) object;
+		} else if (object.getClass() == Object.class) {
+			beanMap = Collections.EMPTY_MAP;
+		} else {
+			beanMap = BeanMap.create(object);
+		}
+
+		Map<String, PropertyConfig> propertiesConfigs = getPropertieConfigs();
+		PropertyConfig defaultPropertyConfig = propertiesConfigs.get("*");
+		PropertyOutputter defaultPropertyOutputter = null;
+		if (defaultPropertyConfig != null && !defaultPropertyConfig.isIgnored()) {
+			defaultPropertyOutputter = (PropertyOutputter) defaultPropertyConfig
+					.getOutputter();
+		}
+
+		JsonBuilder json = context.getJsonBuilder();
+		for (String property : beanMap.keySet()) {
+			if ("class".equals(property)) {
+				continue;
+			}
+
+			PropertyConfig propertyConfig = propertiesConfigs.get(property);
+			if (propertyConfig != null) {
+				if (propertyConfig.isIgnored()) {
+					continue;
+				}
+
+				Object outputter = propertyConfig.getOutputter();
+				if (outputter != null
+						&& outputter instanceof VirtualPropertyOutputter) {
+					continue;
+				}
+
+				if (!propertyConfig.isEvaluateExpression()) {
+					OutputableExpressionUtils.disableOutputableExpression();
+				}
+				Object value = null;
+				try {
+					value = beanMap.get(property);
+					if (OutputableExpressionUtils.getSkipedExpression() != null) {
+						value = OutputableExpressionUtils.getSkipedExpression();
+					}
+				} finally {
+					if (!propertyConfig.isEvaluateExpression()) {
+						OutputableExpressionUtils.enableOutputableExpression();
+					}
+				}
+
+				Object escapeValue = propertyConfig.getEscapeValue();
+				boolean hasEscapeValue = (PropertyConfig.NONE_VALUE != escapeValue);
+				if (hasEscapeValue) {
+					if (OutputUtils.isEscapeValue(value, escapeValue)) {
+						continue;
+					}
+				}
+
+				PropertyOutputter propertyOutputter = (PropertyOutputter) outputter;
+				if (propertyOutputter == null) {
+					propertyOutputter = defaultPropertyOutputter;
+				}
+				if (propertyOutputter != null
+						&& (hasEscapeValue || !propertyOutputter
+								.isEscapeValue(value))) {
+					json.escapeableKey(property);
+					propertyOutputter.output(value, context);
+					json.endKey();
+				}
+			} else {
+				Object value = beanMap.get(property);
+				if (defaultPropertyOutputter != null && value != null
+						&& EntityUtils.isSimpleValue(value)
+						&& !defaultPropertyOutputter.isEscapeValue(value)) {
+					json.escapeableKey(property);
+					defaultPropertyOutputter.output(value, context);
+					json.endKey();
+				}
+			}
+		}
+
+		for (Map.Entry<String, PropertyConfig> entry : propertiesConfigs
+				.entrySet()) {
+			Object propertyOutputter = entry.getValue().getOutputter();
+			if (propertyOutputter != null
+					&& propertyOutputter instanceof VirtualPropertyOutputter) {
+				String property = entry.getKey();
+				((VirtualPropertyOutputter) propertyOutputter).output(object,
+						property, context);
+			}
+		}
 	}
 }

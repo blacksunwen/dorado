@@ -2,7 +2,7 @@ package com.bstek.dorado.view.widget.blockview;
 
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
-import com.bstek.dorado.annotation.ViewAttribute;
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.view.widget.list.AbstractList;
 
 /**
@@ -27,7 +27,7 @@ public abstract class AbstractBlockView extends AbstractList {
 	private int vertPadding;
 	private int blockDecoratorSize;
 
-	@ViewAttribute(defaultValue = "vertical")
+	@ClientProperty(escapeValue = "vertical")
 	public BlockLayout getBlockLayout() {
 		return blockLayout;
 	}

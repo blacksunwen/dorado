@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.bstek.dorado.annotation.ViewAttribute;
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.common.event.ClientEventSupportedObject;
 import com.bstek.dorado.data.type.validator.MessageState;
 import com.bstek.dorado.data.type.validator.ValidationMessage;
@@ -21,7 +21,7 @@ public abstract class AbstractValidator extends ClientEventSupportedObject
 	private MessageState defaultResultState = MessageState.error;
 	private boolean revalidateOldValue = true;
 
-	@ViewAttribute(defaultValue = "client")
+	@ClientProperty(escapeValue = "client")
 	public RunAt getRunAt() {
 		return runAt;
 	}
@@ -30,7 +30,7 @@ public abstract class AbstractValidator extends ClientEventSupportedObject
 		this.runAt = runAt;
 	}
 
-	@ViewAttribute(defaultValue = "error")
+	@ClientProperty(escapeValue = "error")
 	public MessageState getDefaultResultState() {
 		return defaultResultState;
 	}
@@ -39,7 +39,7 @@ public abstract class AbstractValidator extends ClientEventSupportedObject
 		this.defaultResultState = defaultResultState;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isRevalidateOldValue() {
 		return revalidateOldValue;
 	}

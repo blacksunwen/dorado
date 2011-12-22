@@ -1,16 +1,14 @@
 package com.bstek.dorado.view.widget.form;
 
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.view.annotation.Widget;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-8-10
  */
 @Widget(name = "TextArea", category = "Form", dependsPackage = "base-widget")
-@ViewObject(prototype = "dorado.widget.TextArea", shortTypeName = "TextArea")
-@XmlNode(nodeName = "TextArea")
+@ClientObject(prototype = "dorado.widget.TextArea", shortTypeName = "TextArea")
 public class TextArea extends AbstractTextEditor {
 	private boolean required;
 	private int minLength;

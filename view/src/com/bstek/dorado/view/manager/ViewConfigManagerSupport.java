@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.bstek.dorado.core.Context;
 import com.bstek.dorado.util.PathUtils;
 import com.bstek.dorado.view.config.ViewConfigDefinitionFactory;
 import com.bstek.dorado.view.config.ViewConfigInfo;
@@ -67,8 +68,10 @@ public abstract class ViewConfigManagerSupport implements ViewConfigManager {
 					"\"inherent\" is not a valid dorado skin.");
 		}
 
-		DoradoContext context = DoradoContext.getCurrent();
-		DoradoContextUtils.pushNewViewContext(context);
+		Context context = Context.getCurrent();
+		if (context instanceof DoradoContext) {
+			DoradoContextUtils.pushNewViewContext((DoradoContext) context);
+		}
 
 		try {
 			ViewConfig viewConfig = null;
@@ -98,12 +101,15 @@ public abstract class ViewConfigManagerSupport implements ViewConfigManager {
 				}
 			}
 
-			if (viewConfig != null) {				
-				DoradoContextUtils.bindViewContext(context, viewConfig);
+			if (viewConfig != null && context instanceof DoradoContext) {
+				DoradoContextUtils.bindViewContext((DoradoContext) context,
+						viewConfig);
 			}
 			return viewConfig;
 		} finally {
-			DoradoContextUtils.popViewContext(context);
+			if (context instanceof DoradoContext) {
+				DoradoContextUtils.popViewContext((DoradoContext) context);
+			}
 		}
 	}
 }

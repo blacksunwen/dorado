@@ -1,5 +1,7 @@
 package com.bstek.dorado.view.widget.layout;
 
+import com.bstek.dorado.annotation.IdeProperty;
+
 /**
  * Border型布局的布局条件。
  * 
@@ -22,6 +24,7 @@ public class DockLayoutConstraint extends LayoutConstraintSupport {
 	/**
 	 * 返回该布局条件代表的区域。
 	 */
+	@IdeProperty(highlight = 1)
 	public DockMode getType() {
 		return type;
 	}

@@ -1,6 +1,6 @@
 package com.bstek.dorado.view.widget.layout;
 
-import com.bstek.dorado.annotation.ViewAttribute;
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.view.widget.Align;
 import com.bstek.dorado.view.widget.VerticalAlign;
 
@@ -30,7 +30,7 @@ public class FormLayoutConstraint extends LayoutConstraintSupport {
 		this.rowSpan = rowSpan;
 	}
 
-	@ViewAttribute(defaultValue = "left")
+	@ClientProperty(escapeValue = "left")
 	public Align getAlign() {
 		return align;
 	}
@@ -39,7 +39,7 @@ public class FormLayoutConstraint extends LayoutConstraintSupport {
 		this.align = align;
 	}
 
-	@ViewAttribute(defaultValue = "top")
+	@ClientProperty(escapeValue = "top")
 	public VerticalAlign getvAlign() {
 		return vAlign;
 	}

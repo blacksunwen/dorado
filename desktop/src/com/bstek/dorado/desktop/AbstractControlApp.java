@@ -1,4 +1,4 @@
 package com.bstek.dorado.desktop;
 
-public class AbstractControlApp extends App {
+public abstract class AbstractControlApp extends App {
 }

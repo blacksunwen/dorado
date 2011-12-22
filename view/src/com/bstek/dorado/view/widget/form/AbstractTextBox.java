@@ -2,7 +2,8 @@ package com.bstek.dorado.view.widget.form;
 
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
-import com.bstek.dorado.annotation.ViewAttribute;
+import com.bstek.dorado.annotation.IdeProperty;
+import com.bstek.dorado.view.annotation.ComponentReference;
 
 @ClientEvents({ @ClientEvent(name = "onTextEdit"),
 		@ClientEvent(name = "onTriggerClick"),
@@ -19,7 +20,9 @@ public abstract class AbstractTextBox extends AbstractDataEditor {
 		this.text = text;
 	}
 
-	@ViewAttribute(referenceComponentName = "Trigger", enumValues = "triggerClear,autoMappingDropDown1,autoMappingDropDown2,defaultDateDropDown")
+	@ComponentReference("Trigger")
+	@IdeProperty(
+			enumValues = "triggerClear,autoMappingDropDown1,autoMappingDropDown2,defaultDateDropDown")
 	public String getTrigger() {
 		return trigger;
 	}

@@ -67,7 +67,7 @@ public class RobotResolver extends AbstractTextualResolver {
 	}
 
 	@Override
-	protected void execute(HttpServletRequest request,
+	public void execute(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		DoradoContext context = DoradoContext.getCurrent();
 		Document document = null;

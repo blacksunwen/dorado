@@ -3,7 +3,7 @@ package com.bstek.dorado.view.widget.tree;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bstek.dorado.annotation.ViewAttribute;
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.common.Ignorable;
@@ -13,7 +13,7 @@ import com.bstek.dorado.common.TagSupport;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2009-9-30
  */
-@XmlNode(nodeName = "BindingConfig")
+@XmlNode
 public class BindingConfig implements Ignorable, TagSupport {
 	private String name;
 	private String childrenProperty;
@@ -37,8 +37,8 @@ public class BindingConfig implements Ignorable, TagSupport {
 
 	private List<BindingConfig> childBindingConfigs = new ArrayList<BindingConfig>();
 
-	@ViewAttribute
-	@XmlSubNode(path = "#self")
+	@XmlSubNode
+	@ClientProperty
 	public List<BindingConfig> getChildBindingConfigs() {
 		return childBindingConfigs;
 	}
@@ -151,7 +151,7 @@ public class BindingConfig implements Ignorable, TagSupport {
 		this.checkedProperty = checkedProperty;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isAutoCheckChildren() {
 		return autoCheckChildren;
 	}

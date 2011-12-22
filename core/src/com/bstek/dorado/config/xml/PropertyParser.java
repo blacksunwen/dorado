@@ -54,7 +54,7 @@ public class PropertyParser extends ConfigurableDispatchableXmlParser {
 			if (!valueParsed) {
 				Element propertyElement = DomUtils.getChildByTagName(element,
 						XmlConstants.PROPERTY);
-				if (XmlConstants.ATTRIBUTE_VALUE.equals(propertyElement
+				if (propertyElement != null && XmlConstants.ATTRIBUTE_VALUE.equals(propertyElement
 						.getAttribute(XmlConstants.ATTRIBUTE_NAME))) {
 					value = DomUtils.getTextContent(propertyElement);
 				} else {

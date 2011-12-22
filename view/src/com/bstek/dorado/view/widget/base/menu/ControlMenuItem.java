@@ -3,9 +3,8 @@ package com.bstek.dorado.view.widget.base.menu;
 import java.util.Collection;
 import java.util.HashSet;
 
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.view.ViewElement;
 import com.bstek.dorado.view.widget.Control;
@@ -15,15 +14,15 @@ import com.bstek.dorado.view.widget.InnerElementReference;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-8-6
  */
-@ViewObject(prototype = "dorado.widget.menu.ControlMenuItem", shortTypeName = "Control")
-@XmlNode(nodeName = "ControlMenuItem")
+@ClientObject(prototype = "dorado.widget.menu.ControlMenuItem",
+		shortTypeName = "Control")
 public class ControlMenuItem extends BaseMenuItem implements ViewElement {
 	private InnerElementReference<Control> controlRef = new InnerElementReference<Control>(
 			this);
 	private Collection<ViewElement> innerElements = new HashSet<ViewElement>();
 
-	@ViewAttribute
-	@XmlSubNode(path = "Control/*", fixed = true)
+	@XmlSubNode
+	@ClientProperty
 	public Control getControl() {
 		return controlRef.get();
 	}

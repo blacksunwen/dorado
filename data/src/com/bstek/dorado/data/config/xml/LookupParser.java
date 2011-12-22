@@ -18,6 +18,8 @@ public class LookupParser extends PropertyDefParser {
 	@Override
 	protected void initDefinition(ObjectDefinition definition, Element element,
 			ParseContext context) throws Exception {
+		super.initDefinition(definition, element, context);
+
 		DefinitionReference<DataProviderDefinition> dataProviderRef = dataObjectParseHelper
 				.getReferencedDataProvider(
 						DataXmlConstants.ATTRIBUTE_DATA_PROVIDER,
@@ -27,7 +29,5 @@ public class LookupParser extends PropertyDefParser {
 			definition.getProperties().put(
 					DataXmlConstants.ATTRIBUTE_DATA_PROVIDER, dataProviderRef);
 		}
-
-		super.initDefinition(definition, element, context);
 	}
 }

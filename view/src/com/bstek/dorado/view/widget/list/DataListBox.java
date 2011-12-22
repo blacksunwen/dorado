@@ -1,10 +1,9 @@
 package com.bstek.dorado.view.widget.list;
 
 
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.view.annotation.ComponentReference;
+import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.datacontrol.DataControl;
 
 /**
@@ -12,13 +11,12 @@ import com.bstek.dorado.view.widget.datacontrol.DataControl;
  * @since 2009-9-28
  */
 @Widget(name = "DataListBox", category = "Collection", dependsPackage = "list")
-@ViewObject(prototype = "dorado.widget.DataListBox", shortTypeName = "DataListBox")
-@XmlNode(nodeName = "DataListBox")
+@ClientObject(prototype = "dorado.widget.DataListBox", shortTypeName = "DataListBox")
 public class DataListBox extends AbstractListBox implements DataControl {
 	private String dataSet;
 	private String dataPath;
 
-	@ViewAttribute(referenceComponentName = "DataSet")
+	@ComponentReference("DataSet")
 	public String getDataSet() {
 		return dataSet;
 	}

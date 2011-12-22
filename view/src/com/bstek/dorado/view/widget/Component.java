@@ -6,7 +6,10 @@ import java.util.List;
 import java.util.Map;
 
 import com.bstek.dorado.annotation.ClientEvents;
-import com.bstek.dorado.annotation.ViewAttribute;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.IdeProperty;
+import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.common.Ignorable;
 import com.bstek.dorado.common.MetaDataSupport;
@@ -25,6 +28,14 @@ import com.bstek.dorado.view.manager.ViewConfig;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Jan 19, 2008
  */
+@XmlNode(
+		definitionType = "com.bstek.dorado.view.config.definition.ComponentDefinition",
+		parser = "spring:dorado.componentParser", properties = { @XmlProperty(
+				propertyName = "interceptor",
+				parser = "spring:dorado.staticPropertyParser") })
+@ClientObject(prototype = "dorado.widget.Component",
+		shortTypeName = "Component",
+		outputter = "spring:dorado.componentOutputter")
 @ClientEvents({
 		@com.bstek.dorado.annotation.ClientEvent(name = "onAttributeChange"),
 		@com.bstek.dorado.annotation.ClientEvent(name = "onCreate"),
@@ -73,6 +84,8 @@ public abstract class Component implements Ignorable, TagSupport,
 	/**
 	 * 返回组件的id。
 	 */
+	@XmlProperty(ignored = true, attributeOnly = true)
+	@IdeProperty(highlight = 1)
 	public String getId() {
 		return id;
 	}
@@ -80,7 +93,8 @@ public abstract class Component implements Ignorable, TagSupport,
 	/**
 	 * 返回控件的父控件，即控件所属的容器。
 	 */
-	@ViewAttribute(visible = false, outputter = "#ignore")
+	@XmlProperty(unsupported = true)
+	@IdeProperty(visible = false)
 	public ViewElement getParent() {
 		return parent;
 	}
@@ -100,6 +114,7 @@ public abstract class Component implements Ignorable, TagSupport,
 		}
 	}
 
+	@XmlProperty(unsupported = true)
 	public View getView() {
 		return view;
 	}
@@ -125,6 +140,7 @@ public abstract class Component implements Ignorable, TagSupport,
 		return innerElements;
 	}
 
+	@ClientProperty(ignored = true)
 	public boolean isIgnored() {
 		return ignored;
 	}
@@ -147,7 +163,7 @@ public abstract class Component implements Ignorable, TagSupport,
 		this.tags = tags;
 	}
 
-	@ViewAttribute(editor = "any")
+	@IdeProperty(editor = "any")
 	public Object getUserData() {
 		return userData;
 	}
@@ -157,7 +173,6 @@ public abstract class Component implements Ignorable, TagSupport,
 	}
 
 	@XmlProperty(composite = true)
-	@ViewAttribute(outputter = "#ignore")
 	public Map<String, Object> getMetaData() {
 		return metaData;
 	}

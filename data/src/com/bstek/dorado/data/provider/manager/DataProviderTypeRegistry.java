@@ -1,40 +1,49 @@
 package com.bstek.dorado.data.provider.manager;
 
 import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
- * DataProvider类型的注册管理类。
+ * 默认的DataProvider类型的注册管理类。
  * 
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Dec 18, 2007
- * @see com.bstek.dorado.data.provider.DataProvider
  */
-public interface DataProviderTypeRegistry {
-	/**
-	 * 返回默认的DataProvider的类型名。
-	 */
-	String getDefaultType();
+public class DataProviderTypeRegistry {
+	private Map<String, DataProviderTypeRegisterInfo> typeMap = new LinkedHashMap<String, DataProviderTypeRegisterInfo>();
+	private String defaultType;
 
 	/**
-	 * 注册一种DataProvider类型。
+	 * 设置默认的DataProvider的类型名。<br>
+	 * 如果用户在调用的{@link #getTypeRegistryInfo(String)}方法时，
+	 * 没有指定DataProvider的类型名（传递null值）， 那么管理器将使用此属性指定的DataProvider的类型名来完成内部的处理。
 	 * 
-	 * @param registryInfo
-	 *            DataProvider的类型注册信息。
+	 * @param defaultType
+	 *            默认的DataProvider的类型名
 	 */
-	void registerType(DataProviderTypeRegisterInfo registryInfo);
+	public void setDefaultType(String defaultType) {
+		this.defaultType = defaultType;
+	}
 
-	/**
-	 * 根据组件类型名称返回相应的DataProvider类型注册信息。
-	 * 
-	 * @param type
-	 *            类型名称。
-	 * @return DataProvider的类型注册信息。
-	 */
-	DataProviderTypeRegisterInfo getTypeRegistryInfo(String type);
+	public String getDefaultType() {
+		return defaultType;
+	}
 
-	/**
-	 * 返回所有DataProvider类型的注册信息。
-	 */
-	Collection<DataProviderTypeRegisterInfo> getTypes();
+	public void registerType(DataProviderTypeRegisterInfo registryInfo) {
+		typeMap.put(registryInfo.getType(), registryInfo);
+	}
 
+	public DataProviderTypeRegisterInfo getTypeRegistryInfo(String type) {
+		if (StringUtils.isEmpty(type)) {
+			type = defaultType;
+		}
+		return typeMap.get(type);
+	}
+
+	public Collection<DataProviderTypeRegisterInfo> getTypes() {
+		return typeMap.values();
+	}
 }

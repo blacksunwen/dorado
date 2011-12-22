@@ -4,11 +4,11 @@ import java.util.List;
 
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.XmlNodeWrapper;
 import com.bstek.dorado.annotation.XmlSubNode;
+import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.InnerElementList;
 
 /**
@@ -18,8 +18,7 @@ import com.bstek.dorado.view.widget.InnerElementList;
  * @since Feb 2, 2008
  */
 @Widget(name = "Panel", category = "General", dependsPackage = "base-widget")
-@ViewObject(prototype = "dorado.widget.Panel", shortTypeName = "Panel")
-@XmlNode(nodeName = "Panel")
+@ClientObject(prototype = "dorado.widget.Panel", shortTypeName = "Panel")
 @ClientEvents({ @ClientEvent(name = "beforeMaximize"),
 		@ClientEvent(name = "onMaximize") })
 public class Panel extends AbstractPanel {
@@ -37,7 +36,7 @@ public class Panel extends AbstractPanel {
 	private List<SimpleIconButton> tools = new InnerElementList<SimpleIconButton>(
 			this);
 
-	@ViewAttribute(defaultValue = "normal")
+	@ClientProperty(escapeValue = "normal")
 	public PanelBorder getBorder() {
 		return border;
 	}
@@ -46,7 +45,7 @@ public class Panel extends AbstractPanel {
 		this.border = border;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isShowCaptionBar() {
 		return showCaptionBar;
 	}
@@ -67,8 +66,8 @@ public class Panel extends AbstractPanel {
 		tools.add(tool);
 	}
 
-	@ViewAttribute
-	@XmlSubNode(path = "Tools/*")
+	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "Tools"))
+	@ClientProperty
 	public List<SimpleIconButton> getTools() {
 		return tools;
 	}
@@ -97,7 +96,7 @@ public class Panel extends AbstractPanel {
 		this.closeable = closeable;
 	}
 
-	@ViewAttribute(defaultValue = "hide")
+	@ClientProperty(escapeValue = "hide")
 	public CloseAction getCloseAction() {
 		return closeAction;
 	}
@@ -107,7 +106,7 @@ public class Panel extends AbstractPanel {
 	}
 
 	@Override
-	@ViewAttribute(defaultValue = "false")
+	@ClientProperty(escapeValue = "false")
 	public boolean isCollapseable() {
 		return collapseable;
 	}

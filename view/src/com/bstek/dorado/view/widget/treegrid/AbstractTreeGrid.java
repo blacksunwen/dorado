@@ -4,7 +4,9 @@ import java.util.List;
 
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
-import com.bstek.dorado.annotation.ViewAttribute;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.IdeProperty;
+import com.bstek.dorado.annotation.XmlNodeWrapper;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.view.widget.grid.Column;
 import com.bstek.dorado.view.widget.grid.GridSupport;
@@ -42,6 +44,7 @@ public abstract class AbstractTreeGrid extends GridSupport {
 		this.showLines = showLines;
 	}
 
+	@IdeProperty(highlight = 1)
 	public String getTreeColumn() {
 		return treeColumn;
 	}
@@ -51,14 +54,14 @@ public abstract class AbstractTreeGrid extends GridSupport {
 	}
 
 	@Override
-	@ViewAttribute
-	@XmlSubNode(parser = "dorado.Grid.ColumnsParser", fixed = true)
+	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "Columns"))
+	@ClientProperty
 	public List<Column> getColumns() {
 		return super.getColumns();
 	}
 
 	@Override
-	@ViewAttribute(defaultValue = "onItem")
+	@ClientProperty(escapeValue = "onItem")
 	public DropMode getDropMode() {
 		return dropMode;
 	}

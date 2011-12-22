@@ -3,13 +3,14 @@ package com.bstek.dorado.view.widget.treegrid;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.XmlNodeWrapper;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.data.type.EntityDataType;
+import com.bstek.dorado.view.annotation.ComponentReference;
+import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.datacontrol.DataControl;
 import com.bstek.dorado.view.widget.tree.BindingConfig;
 
@@ -17,9 +18,10 @@ import com.bstek.dorado.view.widget.tree.BindingConfig;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-8-10
  */
-@Widget(name = "DataTreeGrid", category = "Collection", dependsPackage = "tree-grid")
-@ViewObject(prototype = "dorado.widget.DataTreeGrid", shortTypeName = "DataTreeGrid")
-@XmlNode(nodeName = "DataTreeGrid")
+@Widget(name = "DataTreeGrid", category = "Collection",
+		dependsPackage = "tree-grid")
+@ClientObject(prototype = "dorado.widget.DataTreeGrid",
+		shortTypeName = "DataTreeGrid")
 public class DataTreeGrid extends AbstractTreeGrid implements DataControl {
 	private String dataSet;
 	private String dataPath;
@@ -29,7 +31,7 @@ public class DataTreeGrid extends AbstractTreeGrid implements DataControl {
 
 	private List<BindingConfig> bindingConfigs = new ArrayList<BindingConfig>();
 
-	@ViewAttribute(referenceComponentName = "DataSet")
+	@ComponentReference("DataSet")
 	public String getDataSet() {
 		return dataSet;
 	}
@@ -46,8 +48,8 @@ public class DataTreeGrid extends AbstractTreeGrid implements DataControl {
 		this.dataPath = dataPath;
 	}
 
-	@XmlProperty(parser = "dorado.dataTypePropertyParser")
-	@ViewAttribute(outputter = "dorado.dataTypePropertyOutputter")
+	@XmlProperty(parser = "spring:dorado.dataTypePropertyParser")
+	@ClientProperty
 	public EntityDataType getDataType() {
 		return dataType;
 	}
@@ -64,7 +66,7 @@ public class DataTreeGrid extends AbstractTreeGrid implements DataControl {
 		this.currentNodeDataPath = currentNodeDataPath;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isAutoCreateColumns() {
 		return autoCreateColumns;
 	}
@@ -73,8 +75,8 @@ public class DataTreeGrid extends AbstractTreeGrid implements DataControl {
 		this.autoCreateColumns = autoCreateColumns;
 	}
 
-	@ViewAttribute
-	@XmlSubNode(path = "BindingConfigs/*", fixed = true)
+	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "BindingConfigs"))
+	@ClientProperty
 	public List<BindingConfig> getBindingConfigs() {
 		return bindingConfigs;
 	}

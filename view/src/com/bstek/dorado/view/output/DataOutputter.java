@@ -36,7 +36,7 @@ import com.bstek.dorado.view.el.SingleExpression;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Oct 6, 2008
  */
-public class DataOutputter implements Outputter {
+public class DataOutputter implements Outputter, PropertyOutputter {
 	private static final DateFormat DATE_FORMATTER = new SimpleDateFormat(
 			com.bstek.dorado.core.Constants.ISO_DATE_FORMAT);
 	private static final DateFormat TIME_FORMATTER = new SimpleDateFormat(
@@ -69,6 +69,10 @@ public class DataOutputter implements Outputter {
 
 	public void setSimplePropertyValueOnly(boolean simplePropertyValueOnly) {
 		this.simplePropertyValueOnly = simplePropertyValueOnly;
+	}
+
+	public boolean isEscapeValue(Object value) {
+		return OutputUtils.isEscapeValue(value);
 	}
 
 	/**
@@ -108,10 +112,10 @@ public class DataOutputter implements Outputter {
 		json.endArray();
 		writer.write(";\n");
 
-		ViewOutputUtils.outputProperty(writer, "a", pagingList, "pageSize");
-		ViewOutputUtils.outputProperty(writer, "a", pagingList, "pageNo");
-		ViewOutputUtils.outputProperty(writer, "a", pagingList, "pageCount");
-		ViewOutputUtils.outputProperty(writer, "a", pagingList, "entityCount");
+		OutputUtils.outputProperty(writer, "a", pagingList, "pageSize");
+		OutputUtils.outputProperty(writer, "a", pagingList, "pageNo");
+		OutputUtils.outputProperty(writer, "a", pagingList, "pageCount");
+		OutputUtils.outputProperty(writer, "a", pagingList, "entityCount");
 
 		writer.write("return a;\n");
 		writer.write("})()");
@@ -134,10 +138,10 @@ public class DataOutputter implements Outputter {
 		json.endArray();
 		writer.write(";\n");
 
-		ViewOutputUtils.outputProperty(writer, "a", page, "pageSize");
-		ViewOutputUtils.outputProperty(writer, "a", page, "pageNo");
-		ViewOutputUtils.outputProperty(writer, "a", page, "pageCount");
-		ViewOutputUtils.outputProperty(writer, "a", page, "entityCount");
+		OutputUtils.outputProperty(writer, "a", page, "pageSize");
+		OutputUtils.outputProperty(writer, "a", page, "pageNo");
+		OutputUtils.outputProperty(writer, "a", page, "pageCount");
+		OutputUtils.outputProperty(writer, "a", page, "entityCount");
 
 		writer.write("return a;\n");
 		writer.write("})()");

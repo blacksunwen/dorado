@@ -3,7 +3,10 @@ package com.bstek.dorado.data.type.property;
 import java.util.List;
 import java.util.Map;
 
-import com.bstek.dorado.annotation.ViewAttribute;
+import com.bstek.dorado.annotation.ClientEvents;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.common.Ignorable;
@@ -25,6 +28,19 @@ import com.bstek.dorado.data.type.validator.Validator;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Feb 13, 2007
  */
+@XmlNode(
+		definitionType = "com.bstek.dorado.data.config.definition.PropertyDefDefinition",
+		implTypes = "com.bstek.dorado.data.type.property.*",
+		properties = @XmlProperty(propertyName = "name",
+				parser = "spring:dorado.staticPropertyParser",
+				attributeOnly = true))
+@ClientObject
+@ClientEvents({
+		@com.bstek.dorado.annotation.ClientEvent(name = "beforeCurrentChange"),
+		@com.bstek.dorado.annotation.ClientEvent(name = "onGet"),
+		@com.bstek.dorado.annotation.ClientEvent(name = "onGetText"),
+		@com.bstek.dorado.annotation.ClientEvent(name = "onSet"),
+		@com.bstek.dorado.annotation.ClientEvent(name = "onValidate") })
 public abstract class PropertyDef implements Ignorable, TagSupport,
 		MetaDataSupport, ClientEventSupported {
 	public static final String SELF_DATA_TYPE_NAME = "SELF";
@@ -85,6 +101,8 @@ public abstract class PropertyDef implements Ignorable, TagSupport,
 		return parentDataType;
 	}
 
+	@XmlProperty(ignored = true)
+	@ClientProperty
 	public DataType getDataType() {
 		return dataType;
 	}
@@ -101,6 +119,8 @@ public abstract class PropertyDef implements Ignorable, TagSupport,
 		return label;
 	}
 
+	@XmlProperty
+	@ClientProperty
 	public Object getDefaultValue() {
 		return defaultValue;
 	}
@@ -118,6 +138,7 @@ public abstract class PropertyDef implements Ignorable, TagSupport,
 	}
 
 	@XmlProperty(composite = true)
+	@ClientProperty(outputter = "spring:dorado.mappingPropertyOutputter")
 	public Mapping getMapping() {
 		return mapping;
 	}
@@ -142,7 +163,7 @@ public abstract class PropertyDef implements Ignorable, TagSupport,
 		this.required = required;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isVisible() {
 		return visible;
 	}
@@ -159,7 +180,7 @@ public abstract class PropertyDef implements Ignorable, TagSupport,
 		this.ignored = ignored;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isSubmittable() {
 		return submittable;
 	}
@@ -172,7 +193,9 @@ public abstract class PropertyDef implements Ignorable, TagSupport,
 		this.validators = validators;
 	}
 
-	@XmlSubNode(path = "Validator", parser = "dorado.validatorParserDispatcher")
+	@XmlSubNode(nodeName = "Validator",
+			parser = "spring:dorado.validatorParserDispatcher")
+	@ClientProperty
 	public List<Validator> getValidators() {
 		return validators;
 	}
@@ -186,7 +209,7 @@ public abstract class PropertyDef implements Ignorable, TagSupport,
 	}
 
 	@XmlProperty(composite = true)
-	@ViewAttribute(outputter = "#ignore")
+	@ClientProperty(ignored = true)
 	public Map<String, Object> getMetaData() {
 		return metaData;
 	}

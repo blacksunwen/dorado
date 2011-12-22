@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
-import com.bstek.dorado.annotation.ViewAttribute;
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.view.widget.list.RowList;
 
@@ -40,8 +40,8 @@ public abstract class GridSupport extends RowList implements ColumnHolder {
 		columns.add(column);
 	}
 
-	@ViewAttribute
-	@XmlSubNode(path = "#self", parser = "dorado.Grid.ColumnsParser")
+	@XmlSubNode
+	@ClientProperty
 	public List<Column> getColumns() {
 		return columns;
 	}
@@ -78,7 +78,7 @@ public abstract class GridSupport extends RowList implements ColumnHolder {
 		this.footerRowHeight = footerRowHeight;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isShowHeader() {
 		return showHeader;
 	}
@@ -135,7 +135,7 @@ public abstract class GridSupport extends RowList implements ColumnHolder {
 		this.rowRenderer = rowRenderer;
 	}
 
-	@ViewAttribute(defaultValue = "stretchableColumns")
+	@ClientProperty(escapeValue = "stretchableColumns")
 	public StretchColumnsMode getStretchColumnsMode() {
 		return stretchColumnsMode;
 	}

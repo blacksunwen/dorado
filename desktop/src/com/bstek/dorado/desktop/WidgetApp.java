@@ -1,22 +1,22 @@
 package com.bstek.dorado.desktop;
 
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.view.widget.Control;
 import com.bstek.dorado.view.widget.InnerElementReference;
 
-@XmlNode(nodeName = "WidgetApp")
-@ViewObject(prototype = "dorado.widget.desktop.WidgetApp", shortTypeName = "Widget")
+@ClientObject(prototype = "dorado.widget.desktop.WidgetApp",
+		shortTypeName = "Widget")
 public class WidgetApp extends AbstractControlApp {
-	private InnerElementReference<Control> controlRef = new InnerElementReference<Control>(this);
+	private InnerElementReference<Control> controlRef = new InnerElementReference<Control>(
+			this);
 
 	/**
 	 * @return
 	 */
-	@ViewAttribute
-	@XmlSubNode(path = "*", fixed = true)
+	@XmlSubNode(fixed = true)
+	@ClientProperty
 	public Control getControl() {
 		return controlRef.get();
 	}

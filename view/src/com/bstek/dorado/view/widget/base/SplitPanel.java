@@ -1,10 +1,10 @@
 package com.bstek.dorado.view.widget.base;
 
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.XmlNodeWrapper;
 import com.bstek.dorado.annotation.XmlSubNode;
+import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Control;
 import com.bstek.dorado.view.widget.Direction;
 import com.bstek.dorado.view.widget.InnerElementReference;
@@ -13,9 +13,10 @@ import com.bstek.dorado.view.widget.InnerElementReference;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-8-7
  */
-@Widget(name = "SplitPanel", category = "General", dependsPackage = "base-widget")
-@ViewObject(prototype = "dorado.widget.SplitPanel", shortTypeName = "SplitPanel")
-@XmlNode(nodeName = "SplitPanel")
+@Widget(name = "SplitPanel", category = "General",
+		dependsPackage = "base-widget")
+@ClientObject(prototype = "dorado.widget.SplitPanel",
+		shortTypeName = "SplitPanel")
 public class SplitPanel extends Control {
 	private Direction direction = Direction.left;
 	private InnerElementReference<Control> sideControlRef = new InnerElementReference<Control>(
@@ -31,7 +32,7 @@ public class SplitPanel extends Control {
 	private boolean showCollapseBar;
 	private boolean previewable;
 
-	@ViewAttribute(defaultValue = "left")
+	@ClientProperty(escapeValue = "left")
 	public Direction getDirection() {
 		return direction;
 	}
@@ -40,8 +41,8 @@ public class SplitPanel extends Control {
 		this.direction = direction;
 	}
 
-	@ViewAttribute
-	@XmlSubNode(path = "SideControl/*", fixed = true)
+	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "SideControl"))
+	@ClientProperty
 	public Control getSideControl() {
 		return sideControlRef.get();
 	}
@@ -50,8 +51,8 @@ public class SplitPanel extends Control {
 		sideControlRef.set(sideControl);
 	}
 
-	@ViewAttribute
-	@XmlSubNode(path = "MainControl/*", fixed = true)
+	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "MainControl"))
+	@ClientProperty
 	public Control getMainControl() {
 		return mainControlRef.get();
 	}
@@ -60,7 +61,7 @@ public class SplitPanel extends Control {
 		mainControlRef.set(mainControl);
 	}
 
-	@ViewAttribute(defaultValue = "100")
+	@ClientProperty(escapeValue = "100")
 	public int getPosition() {
 		return position;
 	}
@@ -85,7 +86,7 @@ public class SplitPanel extends Control {
 		this.maxPosition = maxPosition;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isResizeable() {
 		return resizeable;
 	}
@@ -102,7 +103,7 @@ public class SplitPanel extends Control {
 		this.collapsed = collapsed;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isCollapsable() {
 		return collapsable;
 	}

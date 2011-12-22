@@ -25,6 +25,15 @@ public class EntityEnhancerTest extends ConfigManagerTestSupport {
 		} finally {
 			EntityEnhancer.enableGetterInterception();
 		}
+		
+		EntityEnhancer.disableGetterInterception();
+		try {
+			result = master.get("reference1");
+			assertEquals(null, result);
+			assertTrue(EntityEnhancer.hasGetterResultSkiped());
+		} finally {
+			EntityEnhancer.enableGetterInterception();
+		}
 
 		result = master.get("reference1");
 		assertEquals("54321", result);
@@ -32,7 +41,7 @@ public class EntityEnhancerTest extends ConfigManagerTestSupport {
 		EntityEnhancer.disableGetterInterception();
 		try {
 			result = master.get("reference1");
-			assertNull(result);
+			assertEquals("54321", result);	// 即使禁用方法拦截仍然得到reference的值，因此已被缓存
 			assertTrue(EntityEnhancer.hasGetterResultSkiped());
 		} finally {
 			EntityEnhancer.enableGetterInterception();

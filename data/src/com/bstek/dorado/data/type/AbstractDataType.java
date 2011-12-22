@@ -5,7 +5,7 @@ import java.util.Map;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 
-import com.bstek.dorado.annotation.ViewAttribute;
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlProperty;
 
 /**
@@ -22,6 +22,7 @@ public abstract class AbstractDataType implements RudeDataType {
 	private String tags;
 	private Map<String, Object> metaData;
 
+	@XmlProperty(ignored = true, attributeOnly = true)
 	public String getName() {
 		return name;
 	}
@@ -37,6 +38,7 @@ public abstract class AbstractDataType implements RudeDataType {
 		}
 	}
 
+	@XmlProperty(unsupported = true)
 	public String getId() {
 		return id;
 	}
@@ -45,6 +47,7 @@ public abstract class AbstractDataType implements RudeDataType {
 		this.id = id;
 	}
 
+	@ClientProperty(ignored = true)
 	public Class<?> getMatchType() {
 		return matchType;
 	}
@@ -56,6 +59,7 @@ public abstract class AbstractDataType implements RudeDataType {
 		}
 	}
 
+	@ClientProperty(ignored = true)
 	public Class<?> getCreationType() {
 		return creationType;
 	}
@@ -96,7 +100,7 @@ public abstract class AbstractDataType implements RudeDataType {
 	}
 
 	@XmlProperty(composite = true)
-	@ViewAttribute(outputter = "#ignore")
+	@ClientProperty(ignored = true)
 	public Map<String, Object> getMetaData() {
 		return metaData;
 	}

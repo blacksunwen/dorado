@@ -2,10 +2,10 @@ package com.bstek.dorado.view.widget.form.trigger;
 
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.view.annotation.ComponentReference;
+import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.datacontrol.PropertyDataControl;
 
 /**
@@ -13,8 +13,7 @@ import com.bstek.dorado.view.widget.datacontrol.PropertyDataControl;
  * @since 2010-8-10
  */
 @Widget(name = "DataSetDropDown", category = "Trigger", dependsPackage = "base-widget,grid")
-@ViewObject(prototype = "dorado.widget.DataSetDropDown", shortTypeName = "DataSetDropDown")
-@XmlNode(nodeName = "DataSetDropDown")
+@ClientObject(prototype = "dorado.widget.DataSetDropDown", shortTypeName = "DataSetDropDown")
 @ClientEvents( { @ClientEvent(name = "onSetFilterParameter") })
 public class DataSetDropDown extends RowListDropDown implements
 		PropertyDataControl {
@@ -25,7 +24,7 @@ public class DataSetDropDown extends RowListDropDown implements
 	private boolean filterOnTyping;
 	private boolean reloadDataOnOpen;
 
-	@ViewAttribute(referenceComponentName = "DataSet")
+	@ComponentReference("DataSet")
 	public String getDataSet() {
 		return dataSet;
 	}
@@ -52,7 +51,7 @@ public class DataSetDropDown extends RowListDropDown implements
 		this.property = property;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isUseDataBinding() {
 		return useDataBinding;
 	}

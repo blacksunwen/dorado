@@ -1,7 +1,6 @@
 package com.bstek.dorado.desktop;
 
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.view.widget.Control;
 import com.bstek.dorado.view.widget.FloatControl;
@@ -11,7 +10,6 @@ import com.bstek.dorado.view.widget.FloatControlShadowMode;
 import com.bstek.dorado.view.widget.FloatControlVAlign;
 import com.bstek.dorado.view.widget.ModalType;
 
-@XmlNode(nodeName = "Widget")
 public class Widget extends Control implements FloatControl {
 	private Control control;
 	private FloatControlAnimateType animateType = FloatControlAnimateType.none;
@@ -25,7 +23,7 @@ public class Widget extends Control implements FloatControl {
 	private FloatControlShadowMode shadowMode = FloatControlShadowMode.none;
 	private boolean focusAfterShow = true;
 	private boolean closeable;
-	
+
 	private boolean floating = true;
 	private String floatingClassName;
 	private int left;
@@ -37,14 +35,14 @@ public class Widget extends Control implements FloatControl {
 	private FloatControlVAlign vAlign;
 	private boolean autoAdjustPosition = true;
 	private boolean handleOverflow = true;
-	
+
 	@Override
-	@ViewAttribute(defaultValue = "false")
+	@ClientProperty(escapeValue = "false")
 	public boolean isVisible() {
 		return super.isVisible();
 	}
 
-	@ViewAttribute(defaultValue = "none")
+	@ClientProperty(escapeValue = "none")
 	public FloatControlAnimateType getAnimateType() {
 		return animateType;
 	}
@@ -111,7 +109,7 @@ public class Widget extends Control implements FloatControl {
 		this.modalType = modalType;
 	}
 
-	@ViewAttribute(defaultValue = "none")
+	@ClientProperty(escapeValue = "none")
 	public FloatControlShadowMode getShadowMode() {
 		return shadowMode;
 	}
@@ -120,7 +118,7 @@ public class Widget extends Control implements FloatControl {
 		this.shadowMode = shadowMode;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isFocusAfterShow() {
 		return focusAfterShow;
 	}
@@ -140,34 +138,36 @@ public class Widget extends Control implements FloatControl {
 	/**
 	 * @return the control
 	 */
-	@ViewAttribute
 	@XmlSubNode
+	@ClientProperty
 	public Control getControl() {
 		return control;
 	}
 
 	/**
-	 * @param control the control to set
+	 * @param control
+	 *            the control to set
 	 */
 	public void setControl(Control control) {
 		this.control = control;
 	}
-	
+
 	/**
 	 * @return the floating
 	 */
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isFloating() {
 		return floating;
 	}
 
 	/**
-	 * @param floating the floating to set
+	 * @param floating
+	 *            the floating to set
 	 */
 	public void setFloating(boolean floating) {
 		this.floating = floating;
 	}
-	
+
 	/**
 	 * @return the floatingClassName
 	 */
@@ -176,7 +176,8 @@ public class Widget extends Control implements FloatControl {
 	}
 
 	/**
-	 * @param floatingClassName the floatingClassName to set
+	 * @param floatingClassName
+	 *            the floatingClassName to set
 	 */
 	public void setFloatingClassName(String floatingClassName) {
 		this.floatingClassName = floatingClassName;
@@ -190,7 +191,8 @@ public class Widget extends Control implements FloatControl {
 	}
 
 	/**
-	 * @param left the left to set
+	 * @param left
+	 *            the left to set
 	 */
 	public void setLeft(int left) {
 		this.left = left;
@@ -204,7 +206,8 @@ public class Widget extends Control implements FloatControl {
 	}
 
 	/**
-	 * @param top the top to set
+	 * @param top
+	 *            the top to set
 	 */
 	public void setTop(int top) {
 		this.top = top;
@@ -218,7 +221,8 @@ public class Widget extends Control implements FloatControl {
 	}
 
 	/**
-	 * @param offsetLeft the offsetLeft to set
+	 * @param offsetLeft
+	 *            the offsetLeft to set
 	 */
 	public void setOffsetLeft(int offsetLeft) {
 		this.offsetLeft = offsetLeft;
@@ -232,7 +236,8 @@ public class Widget extends Control implements FloatControl {
 	}
 
 	/**
-	 * @param offsetTop the offsetTop to set
+	 * @param offsetTop
+	 *            the offsetTop to set
 	 */
 	public void setOffsetTop(int offsetTop) {
 		this.offsetTop = offsetTop;
@@ -246,7 +251,8 @@ public class Widget extends Control implements FloatControl {
 	}
 
 	/**
-	 * @param anchorTarget the anchorTarget to set
+	 * @param anchorTarget
+	 *            the anchorTarget to set
 	 */
 	public void setAnchorTarget(String anchorTarget) {
 		this.anchorTarget = anchorTarget;
@@ -260,7 +266,8 @@ public class Widget extends Control implements FloatControl {
 	}
 
 	/**
-	 * @param align the align to set
+	 * @param align
+	 *            the align to set
 	 */
 	public void setAlign(FloatControlAlign align) {
 		this.align = align;
@@ -274,7 +281,8 @@ public class Widget extends Control implements FloatControl {
 	}
 
 	/**
-	 * @param vAlign the vAlign to set
+	 * @param vAlign
+	 *            the vAlign to set
 	 */
 	public void setvAlign(FloatControlVAlign vAlign) {
 		this.vAlign = vAlign;
@@ -283,13 +291,14 @@ public class Widget extends Control implements FloatControl {
 	/**
 	 * @return the autoAdjustPosition
 	 */
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isAutoAdjustPosition() {
 		return autoAdjustPosition;
 	}
 
 	/**
-	 * @param autoAdjustPosition the autoAdjustPosition to set
+	 * @param autoAdjustPosition
+	 *            the autoAdjustPosition to set
 	 */
 	public void setAutoAdjustPosition(boolean autoAdjustPosition) {
 		this.autoAdjustPosition = autoAdjustPosition;
@@ -298,16 +307,17 @@ public class Widget extends Control implements FloatControl {
 	/**
 	 * @return the handleOverflow
 	 */
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isHandleOverflow() {
 		return handleOverflow;
 	}
 
 	/**
-	 * @param handleOverflow the handleOverflow to set
+	 * @param handleOverflow
+	 *            the handleOverflow to set
 	 */
 	public void setHandleOverflow(boolean handleOverflow) {
 		this.handleOverflow = handleOverflow;
 	}
-	
+
 }

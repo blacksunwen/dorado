@@ -1,0 +1,49 @@
+package com.bstek.dorado.config.xml;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.XmlNodeWrapper;
+import com.bstek.dorado.annotation.XmlSubNode;
+
+@XmlNode
+public class Food {
+	private String description;
+
+	private Category category;
+	private List<Drink> drinks = new ArrayList<Drink>();
+	private List<Fruit> fruits;
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	@XmlSubNode
+	public Category getCategory() {
+		return category;
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
+	}
+
+	@XmlSubNode
+	public List<Drink> getDrinks() {
+		return drinks;
+	}
+
+	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "Fruits"))
+	public List<Fruit> getFruits() {
+		return fruits;
+	}
+
+	public void setFruits(List<Fruit> fruits) {
+		this.fruits = fruits;
+	}
+
+}

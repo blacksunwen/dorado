@@ -2,17 +2,15 @@ package com.bstek.dorado.view.widget.base;
 
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.view.annotation.Widget;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Feb 16, 2009
  */
 @Widget(name = "Button", category = "General", dependsPackage = "base-widget")
-@ViewObject(prototype = "dorado.widget.Button", shortTypeName = "Button")
-@XmlNode(nodeName = "Button")
+@ClientObject(prototype = "dorado.widget.Button", shortTypeName = "Button")
 @ClientEvents({ @ClientEvent(name = "onTriggerClick") })
 public class Button extends AbstractButton {
 	private String caption;
@@ -20,8 +18,8 @@ public class Button extends AbstractButton {
 	private String iconClass;
 	private boolean triggerToggled;
 	private double num;
-	private Boolean showTrigger;
-	private Boolean splitButton;
+	private boolean showTrigger;
+	private boolean splitButton;
 
 	public String getCaption() {
 		return caption;
@@ -63,22 +61,20 @@ public class Button extends AbstractButton {
 		this.num = num;
 	}
 
-	public Boolean getShowTrigger() {
+	public boolean getShowTrigger() {
 		return showTrigger;
 	}
 
-	public void setShowTrigger(Boolean showTrigger) {
+	public void setShowTrigger(boolean showTrigger) {
 		this.showTrigger = showTrigger;
 	}
 
-	public Boolean getSplitButton() {
+	public boolean getSplitButton() {
 		return splitButton;
 	}
 
-	public void setSplitButton(Boolean splitButton) {
+	public void setSplitButton(boolean splitButton) {
 		this.splitButton = splitButton;
 	}
-	
-	
 
 }

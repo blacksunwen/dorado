@@ -4,6 +4,10 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
 
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.XmlProperty;
+
 /**
  * 聚合类型。
  * <p>
@@ -18,6 +22,8 @@ import java.util.Collection;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Feb 13, 2007
  */
+@ClientObject(prototype = "dorado.AggregationDataType",
+		shortTypeName = "Aggregation")
 public class AggregationDataType extends AbstractDataType implements
 		MutableDataType {
 	private DataType elementDataType;
@@ -77,6 +83,8 @@ public class AggregationDataType extends AbstractDataType implements
 	 * 例如：对于java.util.Vector，聚合元素就是Vector中管理的各个元素。
 	 * </p>
 	 */
+	@XmlProperty(ignored = true)
+	@ClientProperty
 	public DataType getElementDataType() {
 		return elementDataType;
 	}

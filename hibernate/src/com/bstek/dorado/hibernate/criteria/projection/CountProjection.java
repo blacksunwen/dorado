@@ -4,9 +4,6 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Projection;
 import org.hibernate.criterion.Projections;
 
-import com.bstek.dorado.annotation.XmlNode;
-
-@XmlNode(nodeName="CountProjection")
 public class CountProjection extends SinglePropertyProjection {
 
 	private boolean distinct = false;

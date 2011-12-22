@@ -2,7 +2,6 @@ package com.bstek.dorado.view.type;
 
 import java.io.StringWriter;
 
-
 import com.bstek.dorado.core.Context;
 import com.bstek.dorado.data.type.AggregationDataType;
 import com.bstek.dorado.data.type.EntityDataType;

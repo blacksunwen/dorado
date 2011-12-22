@@ -3,7 +3,7 @@
  */
 package com.bstek.dorado.view.widget.form;
 
-import com.bstek.dorado.annotation.ViewAttribute;
+import com.bstek.dorado.view.annotation.ComponentReference;
 import com.bstek.dorado.view.widget.datacontrol.PropertyDataControl;
 
 /**
@@ -16,7 +16,7 @@ public abstract class AbstractDataEditor extends AbstractEditor implements
 	private String dataPath;
 	private String property;
 
-	@ViewAttribute(referenceComponentName = "DataSet")
+	@ComponentReference("DataSet")
 	public String getDataSet() {
 		return dataSet;
 	}

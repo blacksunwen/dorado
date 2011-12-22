@@ -2,9 +2,8 @@ package com.bstek.dorado.config.xml;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedHashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.springframework.util.ClassUtils;
@@ -24,34 +23,8 @@ import com.bstek.dorado.util.Assert;
  */
 public class CollectionToPropertyParser extends
 		ConfigurableDispatchableXmlParser {
-	private XmlParserAnnotationHelper xmlParserAnnotationHelper;
-	private boolean initialized = false;
-	private List<Class<?>> implTypes = new ArrayList<Class<?>>();
 	private String property;
 	private Class<?> elementType;
-
-	public void setXmlParserAnnotationHelper(
-			XmlParserAnnotationHelper xmlParserAnnotationHelper) {
-		this.xmlParserAnnotationHelper = xmlParserAnnotationHelper;
-	}
-
-	public void registerImplType(Class<?> implType) {
-		if (initialized) {
-			throw new IllegalStateException(
-					"Can not registerImpleType after CollectionParser used.");
-		}
-		implTypes.add(implType);
-	}
-
-	public void setImplTypes(List<Class<?>> implTypes) {
-		for (Class<?> implType : implTypes) {
-			registerImplType(implType);
-		}
-	}
-
-	public List<Class<?>> getImplTypes() {
-		return implTypes;
-	}
 
 	/**
 	 * @return the property
@@ -82,34 +55,8 @@ public class CollectionToPropertyParser extends
 		return elementType;
 	}
 
-	public void init() throws Exception {
-		if (!initialized) {
-			initialized = true;
-
-			Map<String, XmlParser> subParsers = getSubParsers();
-			Map<String, XmlParser> oldSubParsers = new LinkedHashMap<String, XmlParser>(
-					subParsers);
-			subParsers.clear();
-
-			for (Class<?> implType : implTypes) {
-				String nodeName = implType.getSimpleName();
-				TypeAnnotationInfo typeAnnotationInfo = xmlParserAnnotationHelper
-						.getTypeAnnotationInfo(implType);
-				if (typeAnnotationInfo != null) {
-					nodeName = typeAnnotationInfo.getNodeName();
-				}
-				if (!subParsers.containsKey(nodeName)) {
-					registerSubParser(nodeName, typeAnnotationInfo.getParser());
-				}
-			}
-			subParsers.putAll(oldSubParsers);
-		}
-	}
-
 	@Override
 	protected Object doParse(Node node, ParseContext context) throws Exception {
-		init();
-
 		List<?> list = dispatchChildElements((Element) node, context);
 		return (list != null && !list.isEmpty()) ? new AddElementsOperation(
 				property, list) : null;
@@ -129,18 +76,46 @@ class AddElementsOperation implements DefinitionInitOperation {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void execute(Object object, CreationContext context)
 			throws Exception {
-		Collection collection;
+		Collection collection = null;
+		boolean useNativeProperty = false;
 		if (object instanceof Definition) {
-			Definition parentDefinition = (Definition) object;
-			collection = (Collection) parentDefinition.getProperty(property);
-			if (collection == null) {
-				collection = new DefinitionSupportedList();
-				parentDefinition.setProperty(property, collection);
+			try {
+				useNativeProperty = Collection.class
+						.isAssignableFrom(PropertyUtils.getPropertyType(object,
+								property));
+			} catch (Exception e) {
+				// do nothing
+			}
+
+			if (!useNativeProperty) {
+				Definition parentDefinition = (Definition) object;
+				collection = (Collection) parentDefinition
+						.getProperty(property);
+				if (collection == null) {
+					collection = new DefinitionSupportedList();
+					parentDefinition.setProperty(property, collection);
+				}
 			}
 		} else {
-			collection = (Collection) PropertyUtils.getProperty(object,
-					property);
+			useNativeProperty = true;
 		}
-		collection.addAll(elements);
+
+		if (useNativeProperty) {
+			collection = (Collection) PropertyUtils.getSimpleProperty(object,
+					property);
+			if (collection == null) {
+				if (List.class.isAssignableFrom(PropertyUtils.getPropertyType(
+						object, property))) {
+					collection = new ArrayList();
+				} else {
+					collection = new HashSet();
+				}
+				PropertyUtils.setSimpleProperty(object, property, collection);
+			}
+		}
+
+		if (collection != null) {
+			collection.addAll(elements);
+		}
 	}
 }

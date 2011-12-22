@@ -2,8 +2,6 @@ package com.bstek.dorado.view.output;
 
 import java.io.StringWriter;
 
-import com.bstek.dorado.view.output.JsonBuilder;
-
 import junit.framework.TestCase;
 
 public class JsonBuilderTest extends TestCase {

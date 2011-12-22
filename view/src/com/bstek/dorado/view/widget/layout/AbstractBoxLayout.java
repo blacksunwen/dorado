@@ -1,6 +1,6 @@
 package com.bstek.dorado.view.widget.layout;
 
-import com.bstek.dorado.annotation.ViewAttribute;
+import com.bstek.dorado.annotation.ClientProperty;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -12,7 +12,7 @@ public abstract class AbstractBoxLayout extends Layout {
 	private int padding = 2;
 	private int regionPadding = 2;
 
-	@ViewAttribute(defaultValue = "start")
+	@ClientProperty(escapeValue = "start")
 	public Pack getPack() {
 		return pack;
 	}
@@ -21,7 +21,7 @@ public abstract class AbstractBoxLayout extends Layout {
 		this.pack = pack;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isStretch() {
 		return stretch;
 	}
@@ -31,7 +31,7 @@ public abstract class AbstractBoxLayout extends Layout {
 	}
 
 	@Override
-	@ViewAttribute(defaultValue = "2")
+	@ClientProperty(escapeValue = "2")
 	public int getPadding() {
 		return padding;
 	}
@@ -40,7 +40,7 @@ public abstract class AbstractBoxLayout extends Layout {
 		this.padding = padding;
 	}
 
-	@ViewAttribute(defaultValue = "2")
+	@ClientProperty(escapeValue = "2")
 	public int getRegionPadding() {
 		return regionPadding;
 	}

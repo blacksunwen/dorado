@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
-import com.bstek.dorado.annotation.ViewAttribute;
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.view.widget.grid.Column;
 import com.bstek.dorado.view.widget.grid.ColumnHolder;
@@ -14,7 +14,7 @@ import com.bstek.dorado.view.widget.grid.ColumnHolder;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-8-10
  */
-@ClientEvents( { @ClientEvent(name = "onFilterItems"),
+@ClientEvents({ @ClientEvent(name = "onFilterItems"),
 		@ClientEvent(name = "onFilterItem") })
 public abstract class RowListDropDown extends DropDown implements ColumnHolder {
 	private String property;
@@ -37,8 +37,8 @@ public abstract class RowListDropDown extends DropDown implements ColumnHolder {
 		columns.add(column);
 	}
 
-	@ViewAttribute
-	@XmlSubNode(path = "#self", parser = "dorado.Grid.ColumnsParser")
+	@XmlSubNode
+	@ClientProperty
 	public List<Column> getColumns() {
 		return columns;
 	}
@@ -59,7 +59,7 @@ public abstract class RowListDropDown extends DropDown implements ColumnHolder {
 		this.dynaFilter = dynaFilter;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isFilterOnTyping() {
 		return filterOnTyping;
 	}
@@ -76,7 +76,7 @@ public abstract class RowListDropDown extends DropDown implements ColumnHolder {
 		this.filterOnOpen = filterOnOpen;
 	}
 
-	@ViewAttribute(defaultValue = "300")
+	@ClientProperty(escapeValue = "300")
 	public int getMinFilterInterval() {
 		return minFilterInterval;
 	}

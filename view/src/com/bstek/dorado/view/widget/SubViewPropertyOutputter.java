@@ -4,32 +4,27 @@ import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.common.event.DefaultClientEvent;
 import com.bstek.dorado.view.View;
-import com.bstek.dorado.view.ViewOutputter;
 import com.bstek.dorado.view.manager.ViewConfig;
 import com.bstek.dorado.view.manager.ViewConfigManager;
 import com.bstek.dorado.view.output.JsonBuilder;
-import com.bstek.dorado.view.output.ObjectPropertyOutputter;
+import com.bstek.dorado.view.output.ObjectOutputterDispatcher;
 import com.bstek.dorado.view.output.OutputContext;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-6-19
  */
-public class SubViewPropertyOutputter extends ObjectPropertyOutputter {
+public class SubViewPropertyOutputter extends ObjectOutputterDispatcher {
 	private ViewConfigManager viewConfigManager;
-	private ViewOutputter viewOutputter;
 
 	public void setViewConfigManager(ViewConfigManager viewConfigManager) {
 		this.viewConfigManager = viewConfigManager;
 	}
 
-	public void setViewOutputter(ViewOutputter viewOutputter) {
-		this.viewOutputter = viewOutputter;
-	}
-
 	@Override
-	public void output(Object value, OutputContext context) throws Exception {
-		String viewName = (String) value;
+	protected void outputObject(Object object, OutputContext context)
+			throws Exception {
+		String viewName = (String) object;
 		if (StringUtils.isNotEmpty(viewName)) {
 			ViewConfig viewConfig = viewConfigManager.getViewConfig(viewName);
 			View view = null;
@@ -38,7 +33,7 @@ public class SubViewPropertyOutputter extends ObjectPropertyOutputter {
 			if (viewConfig != null) {
 				view = viewConfig.getView();
 				if (view != null) {
-					viewOutputter.output(view, context);
+					super.outputObject(view, context);
 				}
 			}
 			jsonBuilder.endValue();

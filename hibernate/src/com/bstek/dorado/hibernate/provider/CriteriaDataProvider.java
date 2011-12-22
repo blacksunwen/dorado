@@ -20,63 +20,68 @@ import com.bstek.dorado.hibernate.criteria.UserCriteriaProcessor;
 
 /**
  * 利用Hibernate条件查询(Criteria Queries)功能实现的DataProvider
+ * 
  * @author mark
- *
+ * 
  */
-public class CriteriaDataProvider extends
-		HibernateDataProviderSupport {
+public class CriteriaDataProvider extends HibernateDataProviderSupport {
 	private TopCriteria criterita;
-	
+
 	@XmlSubNode(fixed = true)
 	public TopCriteria getCriteria() {
 		return criterita;
 	}
+
 	public void setCriteria(TopCriteria criterita) {
 		this.criterita = criterita;
 	}
-	
-	public UserCriteriaProcessor getUserCriteriaProcessor() 
-		throws Exception {
-		return (UserCriteriaProcessor)Context.getCurrent().
-			getServiceBean("userCriteriaProcessor");
+
+	public UserCriteriaProcessor getUserCriteriaProcessor() throws Exception {
+		return (UserCriteriaProcessor) Context.getCurrent().getServiceBean(
+				"userCriteriaProcessor");
 	}
-	
-	protected HibernateCriteriaTransformer getCriteriaTransformer() 
-		throws Exception {
-		return (HibernateCriteriaTransformer)Context.getCurrent().
-			getServiceBean("criteriaTransformer");
+
+	protected HibernateCriteriaTransformer getCriteriaTransformer()
+			throws Exception {
+		return (HibernateCriteriaTransformer) Context.getCurrent()
+				.getServiceBean("criteriaTransformer");
 	}
-	
+
 	/**
 	 * 从客户端传过来的参数中取出原始参数，因为Grid具有过滤栏的功能，所以
 	 * 当启用这个功能时参数的类型是UserCriteria，必须从这里取出原始参数
+	 * 
 	 * @param parameter
 	 * @return
 	 * @throws Exception
 	 */
-	protected void prepare(final Object parameter, DataType resultDataType) throws Exception {
-		UserCriteria userCriteria = UserCriteriaUtils.getUserCriteria(parameter);
+	protected void prepare(final Object parameter, DataType resultDataType)
+			throws Exception {
+		UserCriteria userCriteria = UserCriteriaUtils
+				.getUserCriteria(parameter);
 		if (userCriteria != null) {
 			if (!this.isAutoFilter()) {
-				throw new Exception("Unsupported autofiler operation, please check out your configuration.");
+				throw new Exception(
+						"Unsupported autofiler operation, please check out your configuration.");
 			}
-			
+
 			UserCriteriaProcessor processor = getUserCriteriaProcessor();
 			UserCriteriaUtils.prepare(userCriteria, resultDataType);
 			TopCriteria criteria = getCriteria();
-			processor.process(criteria, 
-					userCriteria, this.getSessionFactoryOject());
+			processor.process(criteria, userCriteria,
+					this.getSessionFactoryOject());
 		}
 	}
-	
+
 	/**
 	 * 创建DetachedCriteria
+	 * 
 	 * @param parameter
 	 * @return
 	 * @throws Exception
 	 */
-	protected DetachedCriteria createDetachedCriteria(Object parameter, DataType resultDataType) 
-		throws Exception {
+	protected DetachedCriteria createDetachedCriteria(Object parameter,
+			DataType resultDataType) throws Exception {
 		TopCriteria defCriteria = getCriteria();
 		if (defCriteria != null) {
 			prepare(parameter, resultDataType);
@@ -88,12 +93,13 @@ public class CriteriaDataProvider extends
 			return null;
 		}
 	}
-	
+
 	@SuppressWarnings("rawtypes")
 	@Override
 	protected Object internalGetResult(Object parameter, DataType resultDataType)
 			throws Exception {
-		DetachedCriteria detachedCriteria = createDetachedCriteria(parameter, resultDataType);
+		DetachedCriteria detachedCriteria = createDetachedCriteria(parameter,
+				resultDataType);
 		if (detachedCriteria != null) {
 			Session session = session();
 			try {
@@ -112,30 +118,32 @@ public class CriteriaDataProvider extends
 		}
 		return null;
 	}
-	
+
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	protected void internalGetResult(Object parameter, Page<?> page,
 			DataType resultDataType) throws Exception {
 		if (page.getPageSize() > 0) {
-			DetachedCriteria detachedCriteria = createDetachedCriteria(parameter, resultDataType);
+			DetachedCriteria detachedCriteria = createDetachedCriteria(
+					parameter, resultDataType);
 			if (detachedCriteria != null) {
 				Session session = session();
 				try {
-					CriteriaImpl entityCriteria = (CriteriaImpl)detachedCriteria.
-						getExecutableCriteria(session);
+					CriteriaImpl entityCriteria = (CriteriaImpl) detachedCriteria
+							.getExecutableCriteria(session);
 					if (!isUnique()) {
-						//查询结果记录
-						entityCriteria.setFirstResult(page.getFirstEntityIndex());
+						// 查询结果记录
+						entityCriteria.setFirstResult(page
+								.getFirstEntityIndex());
 						entityCriteria.setMaxResults(page.getPageSize());
 						List list = entityCriteria.list();
 						page.setEntities(list);
-						
-						//查询记录条数
+
+						// 查询记录条数
 						CriteriaImpl countCriteria = entityCriteria;
 						HibernateUtils.makeCount(countCriteria);
-						
-						Number c = (Number)countCriteria.uniqueResult();
+
+						Number c = (Number) countCriteria.uniqueResult();
 						page.setEntityCount(c.intValue());
 					} else {
 						Object object = entityCriteria.uniqueResult();

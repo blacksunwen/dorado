@@ -3,13 +3,14 @@ package com.bstek.dorado.view.widget.form.autoform;
 import java.util.List;
 import java.util.Properties;
 
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.data.type.EntityDataType;
+import com.bstek.dorado.view.annotation.ComponentReference;
+import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Align;
 import com.bstek.dorado.view.widget.Control;
 import com.bstek.dorado.view.widget.InnerElementList;
@@ -23,8 +24,7 @@ import com.bstek.dorado.view.widget.form.FormElementType;
  * @since 2010-9-3
  */
 @Widget(name = "AutoForm", category = "Form", dependsPackage = "base-widget")
-@ViewObject(prototype = "dorado.widget.AutoForm", shortTypeName = "AutoForm")
-@XmlNode(nodeName = "AutoForm")
+@ClientObject(prototype = "dorado.widget.AutoForm", shortTypeName = "AutoForm")
 public class AutoForm extends Control implements FormConfig {
 	private String formProfile;
 	private String dataSet;
@@ -61,7 +61,7 @@ public class AutoForm extends Control implements FormConfig {
 	private boolean readOnly;
 	private boolean createOwnEntity = true;
 
-	@ViewAttribute(referenceComponentName = "FormProfile")
+	@ComponentReference("FormProfile")
 	public String getFormProfile() {
 		return formProfile;
 	}
@@ -70,7 +70,7 @@ public class AutoForm extends Control implements FormConfig {
 		this.formProfile = formProfile;
 	}
 
-	@ViewAttribute(referenceComponentName = "DataSet")
+	@ComponentReference("DataSet")
 	public String getDataSet() {
 		return dataSet;
 	}
@@ -87,8 +87,8 @@ public class AutoForm extends Control implements FormConfig {
 		this.dataPath = dataPath;
 	}
 
-	@XmlProperty(parser = "dorado.dataTypePropertyParser")
-	@ViewAttribute(outputter = "dorado.dataTypePropertyOutputter")
+	@XmlProperty(parser = "spring:dorado.dataTypePropertyParser")
+	@ClientProperty
 	public EntityDataType getDataType() {
 		return dataType;
 	}
@@ -157,8 +157,9 @@ public class AutoForm extends Control implements FormConfig {
 		elements.add(element);
 	}
 
-	@ViewAttribute
-	@XmlSubNode(parser = "dorado.AutoForm.ElementsParser", path = "#self")
+	@XmlSubNode(
+			implTypes = "com.bstek.dorado.view.widget.form.autoform.*")
+	@ClientProperty
 	public List<Control> getElements() {
 		return elements;
 	}
@@ -203,7 +204,7 @@ public class AutoForm extends Control implements FormConfig {
 		this.exClassName = exClassName;
 	}
 
-	@ViewAttribute(defaultValue = "text")
+	@ClientProperty(escapeValue = "text")
 	public FormElementType getType() {
 		return type;
 	}
@@ -212,7 +213,9 @@ public class AutoForm extends Control implements FormConfig {
 		this.type = type;
 	}
 
-	@ViewAttribute(referenceComponentName = "Trigger", enumValues = "triggerClear,autoMappingDropDown1,autoMappingDropDown2,defaultDateDropDown")
+	@ComponentReference("Trigger")
+	@IdeProperty(
+			enumValues = "triggerClear,autoMappingDropDown1,autoMappingDropDown2,defaultDateDropDown")
 	public String getTrigger() {
 		return trigger;
 	}
@@ -229,7 +232,7 @@ public class AutoForm extends Control implements FormConfig {
 		this.labelSeparator = labelSeparator;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isShowLabel() {
 		return showLabel;
 	}
@@ -254,7 +257,7 @@ public class AutoForm extends Control implements FormConfig {
 		this.labelSpacing = labelSpacing;
 	}
 
-	@ViewAttribute(defaultValue = "left")
+	@ClientProperty(escapeValue = "left")
 	public FormElementLabelPosition getLabelPosition() {
 		return labelPosition;
 	}
@@ -263,7 +266,7 @@ public class AutoForm extends Control implements FormConfig {
 		this.labelPosition = labelPosition;
 	}
 
-	@ViewAttribute(defaultValue = "left")
+	@ClientProperty(escapeValue = "left")
 	public Align getLabelAlign() {
 		return labelAlign;
 	}
@@ -288,7 +291,7 @@ public class AutoForm extends Control implements FormConfig {
 		this.editorConfig = editorConfig;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isShowHint() {
 		return showHint;
 	}
@@ -337,7 +340,7 @@ public class AutoForm extends Control implements FormConfig {
 		this.readOnly = readOnly;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isCreateOwnEntity() {
 		return createOwnEntity;
 	}

@@ -71,7 +71,6 @@ public class ObjectDefinition extends Definition {
 	private Scope scope;
 	private String beanId;
 	private DefinitionReference<? extends Definition>[] parentReferences;
-	private String defaultImpl;
 	private boolean cacheCreatedObject;
 	private Object objectCache;
 
@@ -165,21 +164,6 @@ public class ObjectDefinition extends Definition {
 		this.parentReferences = parentReferences;
 	}
 
-	/**
-	 * @return the defaultImpl
-	 */
-	public String getDefaultImpl() {
-		return defaultImpl;
-	}
-
-	/**
-	 * @param defaultImpl
-	 *            the defaultImpl to set
-	 */
-	public void setDefaultImpl(String defaultImpl) {
-		this.defaultImpl = defaultImpl;
-	}
-
 	public boolean isCacheCreatedObject() {
 		return cacheCreatedObject;
 	}
@@ -205,7 +189,7 @@ public class ObjectDefinition extends Definition {
 		}
 
 		if (StringUtils.isEmpty(creationInfo.getImpl())) {
-			creationInfo.setImpl(defaultImpl);
+			creationInfo.setImpl(impl);
 		}
 
 		Map<String, Expression> expressionProperties = null;

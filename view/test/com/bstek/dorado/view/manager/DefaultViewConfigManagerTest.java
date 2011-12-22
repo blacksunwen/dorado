@@ -7,7 +7,6 @@ import com.bstek.dorado.data.type.EntityDataType;
 import com.bstek.dorado.data.type.property.PropertyDef;
 import com.bstek.dorado.view.View;
 import com.bstek.dorado.view.ViewContextTestCase;
-import com.bstek.dorado.view.manager.ViewConfigManager;
 import com.bstek.dorado.view.widget.data.DataSet;
 
 public class DefaultViewConfigManagerTest extends ViewContextTestCase {

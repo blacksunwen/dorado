@@ -8,17 +8,27 @@ import java.lang.annotation.Target;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
- * @since 2009-12-24
+ * @since 2011-11-11
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 @Inherited
 public @interface XmlSubNode {
-	String name() default "";
+	String nodeName() default "";
 
-	String path() default "";
+	String propertyName() default "";
+
+	String propertyType() default "";
+
+	boolean fixed() default false;
+
+	boolean aggregated() default false;
 
 	String parser() default "";
 
-	boolean fixed() default false;
+	boolean resultProcessed() default false;
+
+	String[] implTypes() default "";
+
+	XmlNodeWrapper wrapper() default @XmlNodeWrapper(nodeName = "");
 }

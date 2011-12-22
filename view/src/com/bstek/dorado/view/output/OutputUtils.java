@@ -1,6 +1,12 @@
 package com.bstek.dorado.view.output;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.util.Collection;
+import java.util.Date;
+
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang.StringEscapeUtils;
 
 import com.bstek.dorado.common.Ignorable;
 
@@ -68,4 +74,97 @@ public abstract class OutputUtils {
 		return true;
 	}
 
+	/**
+	 * 输出HTML中JavaScript标记的开始部分。
+	 * 
+	 * @throws IOException
+	 */
+	public static void outputScriptBeginTag(Writer writer) throws IOException {
+		writer.write("<script language=\"javascript\" type=\"text/javascript\">\n");
+	}
+
+	/**
+	 * 输出HTML中JavaScript标记的结束部分。
+	 * 
+	 * @throws IOException
+	 */
+	public static void outputScriptEndTag(Writer writer) throws IOException {
+		writer.write("</script>\n");
+	}
+
+	/**
+	 * 以安全的方式向HTML中输出一个段文本。
+	 * 
+	 * @throws IOException
+	 */
+	public static void outputString(Writer writer, String s) throws IOException {
+		writer.write(StringEscapeUtils.escapeHtml(s));
+	}
+
+	/**
+	 * 将Java对象的某属性输出为JavaScript属性。
+	 * 
+	 * @param writer
+	 *            Writer
+	 * @param owner
+	 *            该属性在JavaScript种的宿主。
+	 * @param object
+	 *            Java对象。
+	 * @param property
+	 *            要输出的属性名。
+	 * @param escapeValue
+	 *            默认值。如果Java对象的实际属性值与默认值一致则忽略此次输出操作。
+	 * @throws Exception
+	 * @see #DEFAULT_VALUE
+	 */
+	public static void outputProperty(Writer writer, String owner,
+			Object object, String property, Object escapeValue)
+			throws Exception {
+		Object value = PropertyUtils.getProperty(object, property);
+		if (value == escapeValue
+				|| (escapeValue != null && escapeValue.equals(value))) {
+			return;
+		}
+
+		writer.write(owner);
+		writer.write('.');
+		writer.write(property);
+		writer.write('=');
+
+		if (value == null) {
+			writer.write("null");
+		} else if (value instanceof String) {
+			writer.write("\"");
+			writer.write((String) value);
+			writer.write("\"");
+		} else if (value instanceof Number || value instanceof Boolean) {
+			writer.write(value.toString());
+		} else if (value instanceof Date) {
+			writer.write("new Date(");
+			writer.write(String.valueOf(((Date) value).getTime()));
+			writer.write(")");
+		} else {
+			writer.write("\"");
+			writer.write(value.toString());
+			writer.write("\"");
+		}
+		writer.write(";\n");
+	}
+
+	/**
+	 * 将Java对象的某属性输出为JavaScript属性。
+	 * 
+	 * @param writer
+	 *            Writer
+	 * @param owner
+	 *            该属性在JavaScript种的宿主。
+	 * @param object
+	 *            Java对象。
+	 * @param property
+	 *            要输出的属性名。
+	 */
+	public static void outputProperty(Writer writer, String owner,
+			Object object, String property) throws Exception {
+		outputProperty(writer, owner, object, property, null);
+	}
 }

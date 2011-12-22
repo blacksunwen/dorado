@@ -2,7 +2,7 @@ package com.bstek.dorado.view.widget.tree;
 
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
-import com.bstek.dorado.annotation.ViewAttribute;
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.view.widget.list.DropMode;
 import com.bstek.dorado.view.widget.list.RowList;
 import com.bstek.dorado.view.widget.list.ScrollMode;
@@ -61,7 +61,7 @@ public abstract class AbstractTree extends RowList {
 		this.showLines = showLines;
 	}
 
-	@ViewAttribute(defaultValue = "async")
+	@ClientProperty(escapeValue = "async")
 	public ExpandingMode getExpandingMode() {
 		return expandingMode;
 	}
@@ -70,7 +70,7 @@ public abstract class AbstractTree extends RowList {
 		this.expandingMode = expandingMode;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isExpandingAnimated() {
 		return expandingAnimated;
 	}
@@ -112,7 +112,7 @@ public abstract class AbstractTree extends RowList {
 	}
 
 	@Override
-	@ViewAttribute(defaultValue = "onItem")
+	@ClientProperty(escapeValue = "onItem")
 	public DropMode getDropMode() {
 		return dropMode;
 	}

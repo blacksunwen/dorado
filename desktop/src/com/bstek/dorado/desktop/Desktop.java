@@ -2,13 +2,12 @@ package com.bstek.dorado.desktop;
 
 import java.util.List;
 
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
 
-@ViewObject(prototype = "dorado.widget.desktop.Desktop", shortTypeName = "desktop.Desktop")
-@XmlNode(nodeName = "Desktop")
+@ClientObject(prototype = "dorado.widget.desktop.Desktop",
+		shortTypeName = "desktop.Desktop")
 public class Desktop extends AbstractDesktop {
 	private ShortcutIconSize iconSize;
 	private List<Shortcut> items;
@@ -31,8 +30,8 @@ public class Desktop extends AbstractDesktop {
 	/**
 	 * @return the items
 	 */
-	@ViewAttribute
-	@XmlSubNode(path = "#self")
+	@XmlSubNode
+	@ClientProperty
 	public List<Shortcut> getItems() {
 		return items;
 	}

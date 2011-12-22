@@ -10,10 +10,7 @@ import java.util.Set;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
 
-import com.bstek.dorado.config.xml.XmlParser;
 import com.bstek.dorado.idesupport.model.ClientEvent;
-import com.bstek.dorado.util.Assert;
-import com.bstek.dorado.view.output.Outputter;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -24,18 +21,19 @@ public class RuleTemplate {
 	private Set<RuleTemplate> subRuleTemplates;
 
 	private String type;
-	private XmlParser parser;
-	private Outputter outputter;
 
 	private String name;
+	private String label;
 	private String nodeName;
 	private boolean _abstract;
-	private Boolean supportsCustomProperty;
 
 	private String category;
 	private String[] robots;
 	private int sortFactor;
-	private String scope = "protected";
+	private String scope = "public";
+	private String icon;
+	private String labelProperty;
+	private boolean autoGenerateId;
 	private String reserve;
 
 	private boolean global;
@@ -48,12 +46,24 @@ public class RuleTemplate {
 	private Map<String, ChildTemplate> children = new LinkedHashMap<String, ChildTemplate>();
 
 	public RuleTemplate(String name) {
-		Assert.notEmpty(name);
 		this.name = name;
+	}
+
+	public RuleTemplate(String name, String type) {
+		this(name);
+		this.type = type;
 	}
 
 	public String getName() {
 		return name;
+	}
+
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
 	}
 
 	public RuleTemplate[] getParents() {
@@ -102,36 +112,12 @@ public class RuleTemplate {
 		this._abstract = _abstract;
 	}
 
-	public Boolean getSupportsCustomProperty() {
-		return supportsCustomProperty;
-	}
-
-	public void setSupportsCustomProperty(Boolean supportsCustomProperty) {
-		this.supportsCustomProperty = supportsCustomProperty;
-	}
-
 	public String getType() {
 		return type;
 	}
 
 	public void setType(String type) {
 		this.type = type;
-	}
-
-	public XmlParser getParser() {
-		return parser;
-	}
-
-	public void setParser(XmlParser parser) {
-		this.parser = parser;
-	}
-
-	public Outputter getOutputter() {
-		return outputter;
-	}
-
-	public void setOutputter(Outputter outputter) {
-		this.outputter = outputter;
 	}
 
 	public String getCategory() {
@@ -293,17 +279,18 @@ public class RuleTemplate {
 	}
 
 	public void processInheritance() throws Exception {
-		if (inheritanceProcessed)
+		if (inheritanceProcessed) {
 			return;
+		}
 		inheritanceProcessed = true;
 		if (parents != null && parents.length > 0) {
 			Map<String, Object> props = new HashMap<String, Object>();
-			applyProperties(this, props, "nodeName,supportsCustomProperty");
+			applyProperties(this, props, "nodeName");
 			for (RuleTemplate parent : parents) {
 				parent.processInheritance();
-				applyProperties(parent, this, "nodeName,supportsCustomProperty");
+				applyProperties(parent, this, "nodeName");
 			}
-			applyProperties(props, this, "nodeName,supportsCustomProperty");
+			applyProperties(props, this, "nodeName");
 		}
 	}
 
@@ -337,6 +324,30 @@ public class RuleTemplate {
 
 	public void setSortFactor(int sortFactor) {
 		this.sortFactor = sortFactor;
+	}
+
+	public String getIcon() {
+		return icon;
+	}
+
+	public void setIcon(String icon) {
+		this.icon = icon;
+	}
+
+	public String getLabelProperty() {
+		return labelProperty;
+	}
+
+	public void setLabelProperty(String labelProperty) {
+		this.labelProperty = labelProperty;
+	}
+
+	public boolean isAutoGenerateId() {
+		return autoGenerateId;
+	}
+
+	public void setAutoGenerateId(boolean autoGenerateId) {
+		this.autoGenerateId = autoGenerateId;
 	}
 
 	public String getReserve() {

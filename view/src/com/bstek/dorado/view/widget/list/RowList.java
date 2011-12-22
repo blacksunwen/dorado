@@ -2,7 +2,7 @@ package com.bstek.dorado.view.widget.list;
 
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
-import com.bstek.dorado.annotation.ViewAttribute;
+import com.bstek.dorado.annotation.ClientProperty;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -23,7 +23,7 @@ public abstract class RowList extends AbstractList {
 		this.rowHeight = rowHeight;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isHighlightCurrentRow() {
 		return highlightCurrentRow;
 	}
@@ -32,7 +32,7 @@ public abstract class RowList extends AbstractList {
 		this.highlightCurrentRow = highlightCurrentRow;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isHighlightHoverRow() {
 		return highlightHoverRow;
 	}

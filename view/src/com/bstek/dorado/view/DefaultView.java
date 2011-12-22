@@ -1,0 +1,28 @@
+package com.bstek.dorado.view;
+
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.view.annotation.Widget;
+
+/**
+ * 视图对象。
+ * <p>
+ * 视图对象对象用于定义和管理视图中的各种对象。
+ * </p>
+ * 
+ * @author Benny Bao (mailto:benny.bao@bstek.com)
+ * @since Jan 18, 2008
+ */
+@Widget(name = "View", category = "General", dependsPackage = "base-widget")
+@XmlNode(nodeName = "View")
+@ClientObject(
+		usePrototype = true,
+		prototype = "dorado.widget.View",
+		shortTypeName = "View",
+		outputter = "spring:dorado.viewOutputter",
+		properties = @ClientProperty(
+				propertyName = "context",
+				outputter = "com.bstek.dorado.view.ViewContextPropertyOutputter"))
+public class DefaultView extends View {
+}

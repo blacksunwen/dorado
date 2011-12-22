@@ -1,19 +1,18 @@
 package com.bstek.dorado.view.widget.form;
 
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.data.type.DataType;
+import com.bstek.dorado.view.annotation.Widget;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2009-9-22
  */
 @Widget(name = "TextEditor", category = "Form", dependsPackage = "base-widget")
-@ViewObject(prototype = "dorado.widget.TextEditor", shortTypeName = "TextEditor")
-@XmlNode(nodeName = "TextEditor")
+@ClientObject(prototype = "dorado.widget.TextEditor",
+		shortTypeName = "TextEditor")
 public class TextEditor extends AbstractTextEditor {
 	private DataType dataType;
 	private boolean password;
@@ -24,8 +23,8 @@ public class TextEditor extends AbstractTextEditor {
 	private int maxLength;
 
 	@Override
-	@XmlProperty(parser = "dorado.dataTypePropertyParser")
-	@ViewAttribute(outputter = "dorado.dataTypePropertyOutputter")
+	@XmlProperty(parser = "spring:dorado.dataTypePropertyParser")
+	@ClientProperty
 	public DataType getDataType() {
 		return dataType;
 	}

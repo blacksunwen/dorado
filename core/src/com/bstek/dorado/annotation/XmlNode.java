@@ -8,13 +8,30 @@ import java.lang.annotation.Target;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
- * @since 2009-12-24
+ * @since 2011-11-11
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Inherited
 public @interface XmlNode {
-	String nodeName();
+	String nodeName() default "";
+
+	/**
+	 * 使用类的完全限定名，其中可以包含*
+	 */
+	String[] implTypes() default "";
+
+	String definitionType() default "";
+
+	boolean scopable() default false;
+
+	boolean inheritable() default false;
 
 	String parser() default "";
+
+	String fixedProperties() default "";
+
+	XmlProperty[] properties() default @XmlProperty();
+
+	XmlSubNode[] subNodes() default @XmlSubNode();
 }

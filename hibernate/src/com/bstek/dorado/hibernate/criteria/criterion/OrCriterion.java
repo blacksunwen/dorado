@@ -10,17 +10,19 @@ import org.hibernate.criterion.Restrictions;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.hibernate.criteria.HibernateCriteriaTransformer;
 
-@XmlNode(nodeName="Or")
+@XmlNode(nodeName = "Or")
 public class OrCriterion extends JunctionCriterion {
 
-	public Criterion toHibernate(Object parameter, SessionFactory sessionFactory, 
-			HibernateCriteriaTransformer transformer) throws Exception{
+	public Criterion toHibernate(Object parameter,
+			SessionFactory sessionFactory,
+			HibernateCriteriaTransformer transformer) throws Exception {
 		List<BaseCriterion> cris = this.getCriterions();
 		if (cris != null && cris.size() > 0) {
-			List<Criterion> criterions = transformer.listCriterion(cris, parameter, sessionFactory);
+			List<Criterion> criterions = transformer.listCriterion(cris,
+					parameter, sessionFactory);
 			if (criterions != null && criterions.size() > 0) {
 				Disjunction orJunc = Restrictions.disjunction();
-				for (Criterion c: criterions) {
+				for (Criterion c : criterions) {
 					orJunc.add(c);
 				}
 				return orJunc;

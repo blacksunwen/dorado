@@ -5,11 +5,11 @@ import java.util.List;
 
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.XmlNodeWrapper;
 import com.bstek.dorado.annotation.XmlSubNode;
+import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Control;
 import com.bstek.dorado.view.widget.InnerElementList;
 
@@ -18,10 +18,10 @@ import com.bstek.dorado.view.widget.InnerElementList;
  * @since 2010-9-24
  */
 @Widget(name = "Portal", category = "Advance", dependsPackage = "portal")
-@ViewObject(prototype = "dorado.widget.Portal", shortTypeName = "Portal")
-@XmlNode(nodeName = "Portal")
+@ClientObject(prototype = "dorado.widget.Portal", shortTypeName = "Portal")
 @ClientEvents({ @ClientEvent(name = "onPortletAdd"),
-		@ClientEvent(name = "onPortletRemove"), @ClientEvent(name = "onPortletMove")})
+		@ClientEvent(name = "onPortletRemove"),
+		@ClientEvent(name = "onPortletMove") })
 public class Portal extends Control {
 	private int portletPadding;
 	private int defaultPortletHeight = 200;
@@ -40,8 +40,8 @@ public class Portal extends Control {
 		columns.add(column);
 	}
 
-	@ViewAttribute
-	@XmlSubNode(fixed = true)
+	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "Columns"))
+	@ClientProperty
 	public List<Column> getColumns() {
 		return columns;
 	}
@@ -50,13 +50,13 @@ public class Portal extends Control {
 		portlets.add(portlet);
 	}
 
-	@ViewAttribute
-	@XmlSubNode(fixed = true)
+	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "Portlets"))
+	@ClientProperty
 	public List<Portlet> getPortlets() {
 		return portlets;
 	}
-	
-	@ViewAttribute(defaultValue = "200")
+
+	@ClientProperty(escapeValue = "200")
 	public int getDefaultPortletHeight() {
 		return defaultPortletHeight;
 	}

@@ -2,11 +2,10 @@ package com.bstek.dorado.view.widget.base.toolbar;
 
 import java.util.List;
 
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
+import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Control;
 import com.bstek.dorado.view.widget.InnerElementList;
 
@@ -15,8 +14,7 @@ import com.bstek.dorado.view.widget.InnerElementList;
  * @since 2010-8-9
  */
 @Widget(name = "ToolBar", category = "General", dependsPackage = "base-widget")
-@ViewObject(prototype = "dorado.widget.ToolBar", shortTypeName = "ToolBar")
-@XmlNode(nodeName = "ToolBar")
+@ClientObject(prototype = "dorado.widget.ToolBar", shortTypeName = "ToolBar")
 public class ToolBar extends Control {
 	private List<Control> items = new InnerElementList<Control>(this);
 	private boolean fixRight;
@@ -25,8 +23,8 @@ public class ToolBar extends Control {
 		items.add(item);
 	}
 
-	@ViewAttribute
-	@XmlSubNode(parser = "dorado.ToolBar.ItemsParser", path = "#self")
+	@XmlSubNode(implTypes = "com.bstek.dorado.view.widget.base.toolbar.*")
+	@ClientProperty
 	public List<Control> getItems() {
 		return items;
 	}

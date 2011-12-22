@@ -4,11 +4,10 @@ import java.util.List;
 
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
+import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Control;
 import com.bstek.dorado.view.widget.InnerElementList;
 
@@ -17,8 +16,7 @@ import com.bstek.dorado.view.widget.InnerElementList;
  * @since 2009-11-4
  */
 @Widget(name = "CardBook", category = "General", dependsPackage = "base-widget")
-@ViewObject(prototype = "dorado.widget.CardBook", shortTypeName = "CardBook")
-@XmlNode(nodeName = "CardBook")
+@ClientObject(prototype = "dorado.widget.CardBook", shortTypeName = "CardBook")
 @ClientEvents({ @ClientEvent(name = "beforeCurrentChange"),
 		@ClientEvent(name = "onCurrentChange") })
 public class CardBook extends Control {
@@ -50,8 +48,8 @@ public class CardBook extends Control {
 		controls.add(control);
 	}
 
-	@ViewAttribute
-	@XmlSubNode(path = "#self")
+	@XmlSubNode
+	@ClientProperty
 	public List<Control> getControls() {
 		return controls;
 	}

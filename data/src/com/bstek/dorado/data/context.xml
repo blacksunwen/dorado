@@ -50,21 +50,16 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 		<property name="dataProviderDefinitionManager" ref="dorado.dataProviderDefinitionManager" />
 	</bean>
 
-	<bean id="dorado.dataProviderTypeRegistry" class="com.bstek.dorado.data.provider.manager.DefaultDataProviderTypeRegistry">
+	<bean id="dorado.dataProviderTypeRegistry" class="com.bstek.dorado.data.provider.manager.DataProviderTypeRegistry">
 		<property name="defaultType" value="direct" />
 	</bean>
-	<bean name="dorado.dataProviderTypeRegisterSupport" abstract="true" class="com.bstek.dorado.data.provider.manager.DataProviderTypeRegister">
+	<bean name="dorado.dataProviderTypeRegister" abstract="true" class="com.bstek.dorado.data.provider.manager.DataProviderTypeRegister">
 		<property name="dataProviderTypeRegistry" ref="dorado.dataProviderTypeRegistry" />
 	</bean>
 
-	<bean id="dorado.directDataProviderTypeRegister" parent="dorado.dataProviderTypeRegisterSupport">
+	<bean parent="dorado.dataProviderTypeRegister">
 		<property name="type" value="direct" />
 		<property name="classType" value="com.bstek.dorado.data.provider.DirectDataProvider" />
-		<property name="parser">
-			<bean class="com.bstek.dorado.data.config.xml.DirectDataProviderParser" parent="dorado.dataProviderParser">
-				<d:property-parser key="resultDataType,result" value-ref="dorado.ignoreParser" />
-			</bean>
-		</property>
 	</bean>
 
 	<!-- DataResolver -->
@@ -77,24 +72,35 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 		<property name="dataResolverDefinitionManager" ref="dorado.dataResolverDefinitionManager" />
 	</bean>
 
+	<bean id="dorado.dataResolverTypeRegistry" class="com.bstek.dorado.data.resolver.manager.DataResolverTypeRegistry">
+		<property name="defaultType" value="direct" />
+	</bean>
+	<bean name="dorado.dataResolverTypeRegister" abstract="true" class="com.bstek.dorado.data.resolver.manager.DataResolverTypeRegister">
+		<property name="dataResolverTypeRegistry" ref="dorado.dataResolverTypeRegistry" />
+	</bean>
+
+	<bean parent="dorado.dataResolverTypeRegister">
+		<property name="type" value="direct" />
+		<property name="classType" value="com.bstek.dorado.data.resolver.DirectDataResolver" />
+	</bean>
+
 	<!-- Validator -->
 	<bean id="dorado.validatorTypeRegistry" class="com.bstek.dorado.data.type.validator.DefaultValidatorTypeRegistry" />
-	<bean name="dorado.validatorTypeRegisterSupport" abstract="true" class="com.bstek.dorado.data.type.validator.ValidatorTypeRegister">
+	<bean name="dorado.validatorTypeRegister" abstract=" true " class="com.bstek.dorado.data.type.validator.ValidatorTypeRegister">
 		<property name="validatorTypeRegistry" ref="dorado.validatorTypeRegistry" />
-		<property name="parser" ref="dorado.defaultValidatorParser" />
 	</bean>
 
 	<!-- DataConfig -->
 	<bean id="dorado.dataConfigManagerTemplate" abstract="true" class="com.bstek.dorado.data.config.ConfigurableDataConfigManager">
 		<property name="dataTypeManager" ref="dorado.dataTypeManager" />
 		<property name="dataProviderManager" ref="dorado.dataProviderManager" />
+		<property name="dataResolverManager" ref="dorado.dataResolverManager" />
 		<property name="xmlDocumentBuilder" ref="dorado.xmlDocumentBuilder" />
 		<property name="preloadParser" ref="dorado.preloadDataDocumentElementParser" />
-		<property name="dataObjectsParser" ref="dorado.dataObjectsParser" />
+		<property name="dataObjectParserDispatcher" ref="dorado.dataObjectParserDispatcher" />
 		<property name="dataTypeDefinitionManager" ref="dorado.dataTypeDefinitionManager" />
 		<property name="dataProviderDefinitionManager" ref="dorado.dataProviderDefinitionManager" />
 		<property name="dataResolverDefinitionManager" ref="dorado.dataResolverDefinitionManager" />
-
 		<property name="autoReloadEnabled" value="${data.config.autoReloadEnabled}" />
 		<property name="autoRecalculatePaths" value="${data.config.autoRecalculatePaths}" />
 		<property name="validateThreadIntervalSeconds" value="${data.config.validateThreadIntervalSeconds}" />

@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RuleSet>
-	<Rule name="ViewConfig" type="com.bstek.dorado.view.manager.ViewConfig"
-		parser="viewConfigParser">
-		<PrimitiveProps>
-			<Prop name="impl" type="java.lang.Class" />
-			<Prop name="scope" type="com.bstek.dorado.core.bean.Scope"
-				defaultValue="request" />
-			<Prop name="template" />
-			<Prop name="listener" />
-		</PrimitiveProps>
+	<Rule name="ViewConfig" type="com.bstek.dorado.view.manager.ViewConfig">
 		<Children>
 			<Child>
 				<Rule nodeName="Arguments">
@@ -26,8 +18,6 @@
 					</Children>
 				</Rule>
 			</Child>
-			<Child rule="Model" />
-			<Child rule="View" />
 			<Child>
 				<Rule nodeName="Context">
 					<Children>
@@ -44,66 +34,9 @@
 					</Children>
 				</Rule>
 			</Child>
+			<Child rule="Model" />
 		</Children>
 	</Rule>
-
-	<Rule name="Layout" abstract="true"
-		type="com.bstek.dorado.view.widget.layout.Layout"
-		supportsMetaProperty="true" />
-	<Rule name="LayoutConstraint" abstract="true"
-		type="com.bstek.dorado.view.widget.layout.LayoutConstraintSupport"
-		supportsMetaProperty="true" />
 	<Rule name="LayoutHolder" />
-
-	<Rule name="Component" abstract="true"
-		type="com.bstek.dorado.view.widget.Component">
-		<PrimitiveProps>
-			<Prop name="id" highlight="true" />
-			<Prop name="impl" type="java.lang.Class" />
-			<Prop name="listener" />
-			<Prop name="parent" ignored="true" />
-		</PrimitiveProps>
-	</Rule>
-	<Rule name="Action" parents="Component"
-		type="com.bstek.dorado.view.widget.action.Action" reserve="requireID" />
-	<Rule name="Control" parents="Component"
-		type="com.bstek.dorado.view.widget.Control" parser="controlParser">
-		<Props>
-			<Prop name="layoutConstraint" visible="false" />
-		</Props>
-	</Rule>
-	<Rule name="Container" parents="Control"
-		type="com.bstek.dorado.view.widget.Container" parser="containerParser" />
-
-	<Rule name="View" parents="Container" type="com.bstek.dorado.view.View"
-		scope="private" parser="viewParser" outputter="viewOutputter">
-		<PrimitiveProps>
-			<Prop name="id" ignored="true" />
-			<Prop name="name" ignored="true" />
-		</PrimitiveProps>
-		<Props>
-			<Prop name="ignored" ignored="true" />
-		</Props>
-	</Rule>
-
-	<Rule name="Trigger" parents="Component"
-		type="com.bstek.dorado.view.widget.form.trigger.Trigger" reserve="requireID" />
-	<Rule name="AbstractButton" parents="Control" abstract="true"
-		type="com.bstek.dorado.view.widget.base.AbstractButton" />
-	<Rule name="AbstractEditor" parents="Control" abstract="true"
-		type="com.bstek.dorado.view.widget.form.AbstractEditor" />
-	<Rule name="AbstractTabControl" parents="Control" abstract="true"
-		type="com.bstek.dorado.view.widget.base.tab.AbstractTabControl" />
-
-	<Rule name="DataSet" parents="Component" reserve="requireID">
-		<Props>
-			<Prop name="dataType" reference="DataType:name" />
-			<Prop name="dataProvider" reference="DataProvider:name" />
-		</Props>
-		<Children>
-			<Child rule="DataProvider" />
-			<Child rule="DataType" />
-		</Children>
-	</Rule>
-	<Rule name="Menu" parents="Component" reserve="requireID" />
+	<Rule name="View" type="com.bstek.dorado.view.View" scope="private" />
 </RuleSet>

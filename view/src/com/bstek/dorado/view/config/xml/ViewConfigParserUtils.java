@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.bstek.dorado.view.config.xml;
 
 import java.util.List;

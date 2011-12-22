@@ -4,8 +4,6 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.bstek.dorado.config.Parser;
-import com.bstek.dorado.util.CloneUtils;
 import com.bstek.dorado.view.config.ViewConfigDefinitionFactory;
 import com.bstek.dorado.view.config.ViewConfigInfo;
 import com.bstek.dorado.view.config.definition.ComponentDefinition;
@@ -13,7 +11,6 @@ import com.bstek.dorado.view.config.definition.ViewConfigDefinition;
 import com.bstek.dorado.view.config.definition.ViewDefinition;
 import com.bstek.dorado.view.manager.ViewConfigManager;
 import com.bstek.dorado.view.widget.Component;
-import com.bstek.dorado.view.widget.ComponentParser;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -27,7 +24,7 @@ public class AssembledComponentTypeRegisterInfo extends
 
 	private boolean definitionLoaded;
 	private String src;
-	private ComponentTypeRegisterInfo superComponentTypeInfo;
+	private ComponentDefinition superComponentDefinition;
 	private Map<String, VirtualPropertyDescriptor> virtualProperties;
 
 	public AssembledComponentTypeRegisterInfo(String name) {
@@ -51,13 +48,8 @@ public class AssembledComponentTypeRegisterInfo extends
 		this.src = src;
 	}
 
-	public ComponentTypeRegisterInfo getSuperComponentTypeInfo() {
-		return superComponentTypeInfo;
-	}
-
-	public void setSuperComponentTypeInfo(
-			ComponentTypeRegisterInfo superComponentTypeInfo) {
-		this.superComponentTypeInfo = superComponentTypeInfo;
+	public ComponentDefinition getSuperComponentDefinition() {
+		return superComponentDefinition;
 	}
 
 	public Map<String, VirtualPropertyDescriptor> getVirtualProperties() {
@@ -109,7 +101,6 @@ public class AssembledComponentTypeRegisterInfo extends
 			}
 
 			ViewDefinition view = viewConfig.getViewDefinition();
-			ComponentDefinition superComponentDefinition;
 			if (StringUtils.isEmpty(componentId)) {
 				superComponentDefinition = view;
 			} else {
@@ -126,27 +117,6 @@ public class AssembledComponentTypeRegisterInfo extends
 			if (classType == null) {
 				classType = superRegisterInfo.getClassType();
 				setClassType(classType);
-			}
-
-			setSuperComponentTypeInfo(superRegisterInfo);
-			Parser parser = getParser();
-			if (parser == null) {
-				parser = superRegisterInfo.getParser();
-				if (parser instanceof ComponentParser) {
-					parser = ((Parser) CloneUtils.clone(parser));
-				}
-				setParser(parser);
-			}
-
-			if (parser instanceof ComponentParser) {
-				((ComponentParser) parser)
-						.setAssembledComponentDefinition(superComponentDefinition);
-			}
-		} else { // classType一定不为空
-			if (getParser() == null) {
-				ComponentTypeRegisterInfo superRegisterInfo = componentTypeRegistry
-						.getRegisterInfo(classType);
-				setParser(superRegisterInfo.getParser());
 			}
 		}
 	}

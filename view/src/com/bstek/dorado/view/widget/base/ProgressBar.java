@@ -1,19 +1,18 @@
 package com.bstek.dorado.view.widget.base;
 
-
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Control;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-8-9
  */
-@Widget(name = "ProgressBar", category = "General", dependsPackage = "base-widget")
-@ViewObject(prototype = "dorado.widget.ProgressBar", shortTypeName = "ProgressBar")
-@XmlNode(nodeName = "ProgressBar")
+@Widget(name = "ProgressBar", category = "General",
+		dependsPackage = "base-widget")
+@ClientObject(prototype = "dorado.widget.ProgressBar",
+		shortTypeName = "ProgressBar")
 public class ProgressBar extends Control {
 	private float minValue;
 	private float maxValue = 100;
@@ -30,7 +29,7 @@ public class ProgressBar extends Control {
 		this.minValue = minValue;
 	}
 
-	@ViewAttribute(defaultValue = "100")
+	@ClientProperty(escapeValue = "100")
 	public float getMaxValue() {
 		return maxValue;
 	}
@@ -47,7 +46,7 @@ public class ProgressBar extends Control {
 		this.value = value;
 	}
 
-	@ViewAttribute(defaultValue = "{percent}%")
+	@ClientProperty(escapeValue = "{percent}%")
 	public String getTextPattern() {
 		return textPattern;
 	}
@@ -56,7 +55,7 @@ public class ProgressBar extends Control {
 		this.textPattern = textPattern;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isShowText() {
 		return showText;
 	}

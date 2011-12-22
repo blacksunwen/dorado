@@ -5,11 +5,12 @@ import java.util.List;
 
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.XmlNodeWrapper;
 import com.bstek.dorado.annotation.XmlSubNode;
+import com.bstek.dorado.view.annotation.ComponentReference;
+import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.datacontrol.DataControl;
 
 /**
@@ -17,8 +18,7 @@ import com.bstek.dorado.view.widget.datacontrol.DataControl;
  * @since 2009-9-30
  */
 @Widget(name = "DataTree", category = "Collection", dependsPackage = "tree")
-@ViewObject(prototype = "dorado.widget.DataTree", shortTypeName = "DataTree")
-@XmlNode(nodeName = "DataTree")
+@ClientObject(prototype = "dorado.widget.DataTree", shortTypeName = "DataTree")
 @ClientEvents({ @ClientEvent(name = "beforeDataNodeCreate"),
 		@ClientEvent(name = "onDataNodeCreate") })
 public class DataTree extends AbstractTree implements DataControl {
@@ -28,7 +28,7 @@ public class DataTree extends AbstractTree implements DataControl {
 
 	private List<BindingConfig> bindingConfigs = new ArrayList<BindingConfig>();
 
-	@ViewAttribute(referenceComponentName = "DataSet")
+	@ComponentReference("DataSet")
 	public String getDataSet() {
 		return dataSet;
 	}
@@ -53,8 +53,8 @@ public class DataTree extends AbstractTree implements DataControl {
 		this.currentNodeDataPath = currentNodeDataPath;
 	}
 
-	@ViewAttribute
-	@XmlSubNode(path = "BindingConfigs", fixed = true)
+	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "BindingConfigs"))
+	@ClientProperty
 	public List<BindingConfig> getBindingConfigs() {
 		return bindingConfigs;
 	}

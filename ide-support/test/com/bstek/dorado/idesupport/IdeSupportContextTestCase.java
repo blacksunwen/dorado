@@ -4,6 +4,7 @@ import com.bstek.dorado.view.ViewContextTestCase;
 
 public abstract class IdeSupportContextTestCase extends ViewContextTestCase {
 	public IdeSupportContextTestCase() {
-		addExtensionContextConfigLocation("com/bstek/dorado/idesupport/ide-context.xml");
+		addExtensionContextConfigLocation("com/bstek/dorado/idesupport/common-context.xml");
+		addExtensionContextConfigLocation("com/bstek/dorado/idesupport/context.xml");
 	}
 }

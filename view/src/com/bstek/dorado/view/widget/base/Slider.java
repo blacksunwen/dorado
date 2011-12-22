@@ -2,10 +2,9 @@ package com.bstek.dorado.view.widget.base;
 
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Control;
 import com.bstek.dorado.view.widget.Orientation;
 
@@ -14,8 +13,7 @@ import com.bstek.dorado.view.widget.Orientation;
  * @since 2010-8-7
  */
 @Widget(name = "Slider", category = "General", dependsPackage = "base-widget")
-@ViewObject(prototype = "dorado.widget.Slider", shortTypeName = "Slider")
-@XmlNode(nodeName = "Slider")
+@ClientObject(prototype = "dorado.widget.Slider", shortTypeName = "Slider")
 @ClientEvents({ @ClientEvent(name = "beforeValueChange"),
 		@ClientEvent(name = "onValueChange") })
 public class Slider extends Control {
@@ -26,7 +24,7 @@ public class Slider extends Control {
 	private int precision;
 	private float step;
 
-	@ViewAttribute(defaultValue = "horizental")
+	@ClientProperty(escapeValue = "horizental")
 	public Orientation getOrientation() {
 		return orientation;
 	}
@@ -43,7 +41,7 @@ public class Slider extends Control {
 		this.minValue = minValue;
 	}
 
-	@ViewAttribute(defaultValue = "100")
+	@ClientProperty(escapeValue = "100")
 	public float getMaxValue() {
 		return maxValue;
 	}

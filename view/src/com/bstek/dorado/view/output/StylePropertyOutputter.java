@@ -40,7 +40,8 @@ public class StylePropertyOutputter implements PropertyOutputter {
 				if (style.length() > 0) {
 					style.append(';');
 				}
-				style.append(entry.getKey()).append(':').append(String.valueOf(value));
+				style.append(entry.getKey()).append(':')
+						.append(String.valueOf(value));
 			}
 			json.value(style.toString());
 		} else {

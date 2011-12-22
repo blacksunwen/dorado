@@ -17,9 +17,7 @@ public class DoradoNamespaceHandler extends NamespaceHandlerSupport {
 		registerBeanDefinitionDecorator("attribute-parser",
 				new MapEntryShortCutDecorator("attributeParsers"));
 		registerBeanDefinitionDecorator("property-outputter",
-				new MapEntryShortCutDecorator("configProperties"));
-		registerBeanDefinitionDecorator("impl-type",
-				new ClassTypeListShortCutDecorator());
+				new MapEntryShortCutDecorator("propertieConfigs"));
 		registerBeanDefinitionDecorator("virtual-property",
 				new VirtualPropertyDecorator());
 

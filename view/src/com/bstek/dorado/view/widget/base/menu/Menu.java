@@ -2,11 +2,10 @@ package com.bstek.dorado.view.widget.base.menu;
 
 import java.util.List;
 
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
+import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Control;
 import com.bstek.dorado.view.widget.FloatControl;
 import com.bstek.dorado.view.widget.FloatControlAlign;
@@ -23,9 +22,9 @@ import com.bstek.dorado.view.widget.ModalType;
  * @since 2009-11-4
  */
 
-@Widget(name = "Menu", category = "Floatable", dependsPackage = "base-widget")
-@ViewObject(prototype = "dorado.widget.Menu", shortTypeName = "Menu")
-@XmlNode(nodeName = "Menu")
+@Widget(name = "Menu", category = "Floatable", dependsPackage = "base-widget",
+		autoGenerateId = true)
+@ClientObject(prototype = "dorado.widget.Menu", shortTypeName = "Menu")
 public class Menu extends Control implements MenuItemGroup, FloatControl {
 	private FloatControlAnimateType animateType = FloatControlAnimateType.zoom;
 	private FloatControlAnimateType showAnimateType = FloatControlAnimateType.slide;
@@ -54,18 +53,18 @@ public class Menu extends Control implements MenuItemGroup, FloatControl {
 	private FloatControlVAlign vAlign;
 	private boolean autoAdjustPosition = true;
 	private boolean handleOverflow = true;
-	
+
 	public Menu() {
 		setVisible(false);
 	}
 
 	@Override
-	@ViewAttribute(defaultValue = "false")
+	@ClientProperty(escapeValue = "false")
 	public boolean isVisible() {
 		return super.isVisible();
 	}
 
-	@ViewAttribute(defaultValue = "zoom")
+	@ClientProperty(escapeValue = "zoom")
 	public FloatControlAnimateType getAnimateType() {
 		return animateType;
 	}
@@ -74,7 +73,7 @@ public class Menu extends Control implements MenuItemGroup, FloatControl {
 		this.animateType = animateType;
 	}
 
-	@ViewAttribute(defaultValue = "slide")
+	@ClientProperty(escapeValue = "slide")
 	public FloatControlAnimateType getShowAnimateType() {
 		return showAnimateType;
 	}
@@ -83,7 +82,7 @@ public class Menu extends Control implements MenuItemGroup, FloatControl {
 		this.showAnimateType = showAnimateType;
 	}
 
-	@ViewAttribute(defaultValue = "fade")
+	@ClientProperty(escapeValue = "fade")
 	public FloatControlAnimateType getHideAnimateType() {
 		return hideAnimateType;
 	}
@@ -134,7 +133,7 @@ public class Menu extends Control implements MenuItemGroup, FloatControl {
 		this.modalType = modalType;
 	}
 
-	@ViewAttribute(defaultValue = "sides")
+	@ClientProperty(escapeValue = "sides")
 	public FloatControlShadowMode getShadowMode() {
 		return shadowMode;
 	}
@@ -143,7 +142,7 @@ public class Menu extends Control implements MenuItemGroup, FloatControl {
 		this.shadowMode = shadowMode;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isFocusAfterShow() {
 		return focusAfterShow;
 	}
@@ -152,7 +151,7 @@ public class Menu extends Control implements MenuItemGroup, FloatControl {
 		this.focusAfterShow = focusAfterShow;
 	}
 
-	@ViewAttribute(defaultValue = "left")
+	@ClientProperty(escapeValue = "left")
 	public IconPosition getIconPosition() {
 		return iconPosition;
 	}
@@ -161,7 +160,7 @@ public class Menu extends Control implements MenuItemGroup, FloatControl {
 		this.iconPosition = iconPosition;
 	}
 
-	@ViewAttribute(defaultValue = "normal")
+	@ClientProperty(escapeValue = "normal")
 	public IconSize getIconSize() {
 		return iconSize;
 	}
@@ -174,8 +173,8 @@ public class Menu extends Control implements MenuItemGroup, FloatControl {
 		menuItems.add(menuItem);
 	}
 
-	@ViewAttribute
-	@XmlSubNode(path = "#self", parser = "dorado.Menu.ItemsParser")
+	@XmlSubNode
+	@ClientProperty
 	public List<BaseMenuItem> getItems() {
 		return menuItems;
 	}
@@ -188,7 +187,8 @@ public class Menu extends Control implements MenuItemGroup, FloatControl {
 	}
 
 	/**
-	 * @param menuItems the menuItems to set
+	 * @param menuItems
+	 *            the menuItems to set
 	 */
 	public void setMenuItems(List<BaseMenuItem> menuItems) {
 		this.menuItems = menuItems;
@@ -197,18 +197,19 @@ public class Menu extends Control implements MenuItemGroup, FloatControl {
 	/**
 	 * @return the floating
 	 */
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isFloating() {
 		return floating;
 	}
 
 	/**
-	 * @param floating the floating to set
+	 * @param floating
+	 *            the floating to set
 	 */
 	public void setFloating(boolean floating) {
 		this.floating = floating;
 	}
-	
+
 	/**
 	 * @return the floatingClassName
 	 */
@@ -217,7 +218,8 @@ public class Menu extends Control implements MenuItemGroup, FloatControl {
 	}
 
 	/**
-	 * @param floatingClassName the floatingClassName to set
+	 * @param floatingClassName
+	 *            the floatingClassName to set
 	 */
 	public void setFloatingClassName(String floatingClassName) {
 		this.floatingClassName = floatingClassName;
@@ -231,7 +233,8 @@ public class Menu extends Control implements MenuItemGroup, FloatControl {
 	}
 
 	/**
-	 * @param left the left to set
+	 * @param left
+	 *            the left to set
 	 */
 	public void setLeft(int left) {
 		this.left = left;
@@ -245,7 +248,8 @@ public class Menu extends Control implements MenuItemGroup, FloatControl {
 	}
 
 	/**
-	 * @param top the top to set
+	 * @param top
+	 *            the top to set
 	 */
 	public void setTop(int top) {
 		this.top = top;
@@ -259,7 +263,8 @@ public class Menu extends Control implements MenuItemGroup, FloatControl {
 	}
 
 	/**
-	 * @param offsetLeft the offsetLeft to set
+	 * @param offsetLeft
+	 *            the offsetLeft to set
 	 */
 	public void setOffsetLeft(int offsetLeft) {
 		this.offsetLeft = offsetLeft;
@@ -273,7 +278,8 @@ public class Menu extends Control implements MenuItemGroup, FloatControl {
 	}
 
 	/**
-	 * @param offsetTop the offsetTop to set
+	 * @param offsetTop
+	 *            the offsetTop to set
 	 */
 	public void setOffsetTop(int offsetTop) {
 		this.offsetTop = offsetTop;
@@ -287,7 +293,8 @@ public class Menu extends Control implements MenuItemGroup, FloatControl {
 	}
 
 	/**
-	 * @param anchorTarget the anchorTarget to set
+	 * @param anchorTarget
+	 *            the anchorTarget to set
 	 */
 	public void setAnchorTarget(String anchorTarget) {
 		this.anchorTarget = anchorTarget;
@@ -301,7 +308,8 @@ public class Menu extends Control implements MenuItemGroup, FloatControl {
 	}
 
 	/**
-	 * @param align the align to set
+	 * @param align
+	 *            the align to set
 	 */
 	public void setAlign(FloatControlAlign align) {
 		this.align = align;
@@ -315,7 +323,8 @@ public class Menu extends Control implements MenuItemGroup, FloatControl {
 	}
 
 	/**
-	 * @param vAlign the vAlign to set
+	 * @param vAlign
+	 *            the vAlign to set
 	 */
 	public void setvAlign(FloatControlVAlign vAlign) {
 		this.vAlign = vAlign;
@@ -324,13 +333,14 @@ public class Menu extends Control implements MenuItemGroup, FloatControl {
 	/**
 	 * @return the autoAdjustPosition
 	 */
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isAutoAdjustPosition() {
 		return autoAdjustPosition;
 	}
 
 	/**
-	 * @param autoAdjustPosition the autoAdjustPosition to set
+	 * @param autoAdjustPosition
+	 *            the autoAdjustPosition to set
 	 */
 	public void setAutoAdjustPosition(boolean autoAdjustPosition) {
 		this.autoAdjustPosition = autoAdjustPosition;
@@ -339,17 +349,17 @@ public class Menu extends Control implements MenuItemGroup, FloatControl {
 	/**
 	 * @return the handleOverflow
 	 */
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isHandleOverflow() {
 		return handleOverflow;
 	}
 
 	/**
-	 * @param handleOverflow the handleOverflow to set
+	 * @param handleOverflow
+	 *            the handleOverflow to set
 	 */
 	public void setHandleOverflow(boolean handleOverflow) {
 		this.handleOverflow = handleOverflow;
 	}
-	
-	
+
 }

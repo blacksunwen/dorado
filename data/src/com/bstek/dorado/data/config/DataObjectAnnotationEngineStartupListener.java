@@ -12,10 +12,10 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.support.MergedBeanDefinitionPostProcessor;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 
-import com.bstek.dorado.annotation.DataProvider;
-import com.bstek.dorado.annotation.DataResolver;
 import com.bstek.dorado.core.EngineStartupListener;
 import com.bstek.dorado.core.bean.Scope;
+import com.bstek.dorado.data.annotation.DataProvider;
+import com.bstek.dorado.data.annotation.DataResolver;
 import com.bstek.dorado.data.config.definition.DataProviderDefinition;
 import com.bstek.dorado.data.config.definition.DataProviderDefinitionManager;
 import com.bstek.dorado.data.config.definition.DataResolverDefinition;
@@ -31,7 +31,7 @@ import com.bstek.dorado.data.config.definition.DataResolverDefinitionManager;
 public class DataObjectAnnotationEngineStartupListener extends
 		EngineStartupListener implements MergedBeanDefinitionPostProcessor {
 	private static final String DEFAULT_DATA_PROVIDER = "com.bstek.dorado.data.provider.DirectDataProvider";
-	private static final String DEFAULT_DATA_RESOLVER = "com.bstek.dorado.data.resolver.DefaultDataResolver";
+	private static final String DEFAULT_DATA_RESOLVER = "com.bstek.dorado.data.resolver.DirectDataResolver";
 	private static final Scope DEFAULT_DATA_PROVIDER_SCOPE = null;
 	private static final Scope DEFAULT_DATA_RESOLVER_SCOPE = null;
 	private static final String BEAN_NAME_PREFIX = "spring:";
@@ -111,7 +111,7 @@ public class DataObjectAnnotationEngineStartupListener extends
 				definition
 						.setScope((StringUtils.isEmpty(scope)) ? DEFAULT_DATA_PROVIDER_SCOPE
 								: Scope.valueOf(scope));
-				definition.setDefaultImpl(DEFAULT_DATA_PROVIDER);
+				definition.setImpl(DEFAULT_DATA_PROVIDER);
 				definition.setInterceptor(BEAN_NAME_PREFIX + dataObjectName);
 				dataProviderDefinitionManager.registerDefinition(
 						dataObjectName, definition);
@@ -134,7 +134,7 @@ public class DataObjectAnnotationEngineStartupListener extends
 				definition
 						.setScope((StringUtils.isEmpty(scope)) ? DEFAULT_DATA_RESOLVER_SCOPE
 								: Scope.valueOf(scope));
-				definition.setDefaultImpl(DEFAULT_DATA_RESOLVER);
+				definition.setImpl(DEFAULT_DATA_RESOLVER);
 				definition.setInterceptor(BEAN_NAME_PREFIX + dataObjectName);
 				dataResolverDefinitionManager.registerDefinition(
 						dataObjectName, definition);

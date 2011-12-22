@@ -23,7 +23,7 @@ public class DefaultComponentTypeRegistry implements ComponentTypeRegistry {
 	private static final Log logger = LogFactory
 			.getLog(DefaultComponentTypeRegistry.class);
 
-	private ClassTypeRegistry classTypeRegistry = new ClassTypeRegistry();
+	private ClassTypeRegistry<ComponentTypeRegisterInfo> classTypeRegistry = new ClassTypeRegistry<ComponentTypeRegisterInfo>();
 	private Map<String, ComponentTypeRegisterInfo> registerInfoMap = new HashMap<String, ComponentTypeRegisterInfo>();
 	private Set<ComponentTypeRegisterInfo> registerInfoSet = new LinkedHashSet<ComponentTypeRegisterInfo>();
 

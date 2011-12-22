@@ -7,9 +7,9 @@ package com.bstek.dorado.data.config.xml;
  * @since Feb 13, 2007
  */
 public abstract class DataXmlConstants {
-
 	public static final String PATH_DATE_TYPE_SHORT_NAME = "t";
 	public static final String PATH_DATE_PROVIDER_SHORT_NAME = "p";
+	public static final String PATH_DATE_RESOLVER_SHORT_NAME = "r";
 	public static final String PATH_PROPERTY_PREFIX = "#";
 	public static final String PATH_SUB_OBJECT_PREFIX = "@";
 
@@ -38,12 +38,13 @@ public abstract class DataXmlConstants {
 	public static final String ATTRIBUTE_LOOKUP_KEY_PROPERTY = "lookupKeyProperty";
 	public static final String ATTRIBUTE_MATCH_TYPE = "matchType";
 	public static final String ATTRIBUTE_CREATION_TYPE = "creationType";
-	public static final String ATTRIBUTE_RESULT_TYPE = "resultDataType";
+	public static final String ATTRIBUTE_RESULT_DATA_TYPE = "resultDataType";
 	public static final String ATTRIBUTE_RESULT = "result";
 	public static final String ATTRIBUTE_VALUE_DATA_TYPE = "valueDataType";
 	public static final String ATTRIBUTE_KEY_DATA_TYPE = "keyDataType";
 	public static final String ATTRIBUTE_ELEMENT_DATA_TYPE = "elementDataType";
 	public static final String ATTRIBUTE_PROVIDER_TYPE = "type";
+	public static final String ATTRIBUTE_RESOLVER_TYPE = "type";
 	public static final String ATTRIBUTE_VALIDATOR_TYPE = "type";
 	public static final String ATTRIBUTE_PARAMETER = "parameter";
 	public static final String ATTRIBUTE_LISTENER = "listener";

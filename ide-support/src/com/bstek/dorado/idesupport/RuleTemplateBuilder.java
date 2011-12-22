@@ -11,7 +11,6 @@ import org.springframework.util.ClassUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import com.bstek.dorado.config.xml.DispatchableXmlParser;
 import com.bstek.dorado.config.xml.XmlParser;
 import com.bstek.dorado.core.Context;
 import com.bstek.dorado.core.io.Resource;
@@ -76,15 +75,18 @@ public class RuleTemplateBuilder implements RuleTemplateManagerListener {
 	@SuppressWarnings("unchecked")
 	public synchronized RuleTemplateManager getRuleTemplateManager()
 			throws Exception {
-		ConfigRuleParseContext parserContext = new ConfigRuleParseContext();
-		RuleTemplateManager ruleTemplateManager = (RuleTemplateManager) Context
-				.getCurrent().getServiceBean("idesupport.ruleTemplateManager");
+		RuleTemplateManager ruleTemplateManager = new RuleTemplateManager();
 		ruleTemplateManager.addListener(this);
+
+		ConfigRuleParseContext parserContext = new ConfigRuleParseContext();
 		parserContext.setRuleTemplateManager(ruleTemplateManager);
 
 		for (String configTemplateFile : configTemplateFiles) {
-			parseConfigTemplate(parserContext, configTemplateFile);
+			Document document = xmlDocumentBuilder
+					.loadDocument(getResource(configTemplateFile));
+			parseRuleConfigDocument(parserContext, document);
 		}
+		ruleTemplateManager.setVersion(Constants.RULE_CONFIG_VERSION);
 
 		ruleTemplateManager.getPackageInfos().clear();
 		List<PackageInfo> packageInfos = (List<PackageInfo>) parserContext
@@ -111,11 +113,14 @@ public class RuleTemplateBuilder implements RuleTemplateManagerListener {
 		return resource;
 	}
 
-	protected void parseConfigTemplate(ConfigRuleParseContext parserContext,
-			String templateFile) throws Exception {
-		Document document = xmlDocumentBuilder
-				.loadDocument(getResource(templateFile));
-		preloadParser.parse(document.getDocumentElement(), parserContext);
+	public void parseRuleConfigDocument(ConfigRuleParseContext parserContext,
+			Document document) throws Exception {
+		Element documentElement = document.getDocumentElement();
+		parserContext.getRuleTemplateManager().setVersion(
+				documentElement.getAttribute("version"));
+
+		preloadParser.parse(documentElement, parserContext);
+
 		Map<String, Element> ruleElementMap = parserContext.getRuleElementMap();
 		for (String name : ruleElementMap.keySet().toArray(new String[0])) {
 			Element element = ruleElementMap.get(name);
@@ -133,47 +138,8 @@ public class RuleTemplateBuilder implements RuleTemplateManagerListener {
 					.getRuleTemplates().toArray(new RuleTemplate[0])) {
 				initRuleTemplate(initializerContext, ruleTemplate);
 			}
-
-			for (RuleTemplate ruleTemplate : ruleTemplateManager
-					.getRuleTemplates().toArray(new RuleTemplate[0])) {
-				removeSelfRules(ruleTemplateManager, ruleTemplate);
-			}
 		} finally {
 			this.initializerContext = null;
-		}
-	}
-
-	private void removeSelfRules(RuleTemplateManager ruleTemplateManager,
-			RuleTemplate ruleTemplate) throws Exception {
-		Map<String, ChildTemplate> children = ruleTemplate.getChildren();
-		for (ChildTemplate childTemplate : children.values().toArray(
-				new ChildTemplate[0])) {
-			RuleTemplate childRuleTemplate = childTemplate.getRuleTemplate();
-			if (DispatchableXmlParser.SELF.equals(childRuleTemplate
-					.getNodeName())) {
-				children.remove(childTemplate.getName());
-				ruleTemplateManager.removeRuleTemplate(childRuleTemplate
-						.getName());
-
-				// 此判断屏蔽于2011/01/21，导致ToolBar中的子节点信息丢失
-				// if (childRuleTemplate.isGlobal()) {
-				children.putAll(childRuleTemplate.getChildren());
-
-				for (ChildTemplate selfChildTemplate : childRuleTemplate
-						.getChildren().values()) {
-					RuleTemplate selfChildRuleTemplate = selfChildTemplate
-							.getRuleTemplate();
-					boolean isGlobal = selfChildRuleTemplate.isGlobal();
-					ruleTemplateManager.addRuleTemplate(selfChildRuleTemplate);
-					if (!isGlobal) {
-						removeSelfRules(ruleTemplateManager,
-								selfChildRuleTemplate);
-					}
-				}
-				// }
-			} else if (!childRuleTemplate.isGlobal()) {
-				removeSelfRules(ruleTemplateManager, childRuleTemplate);
-			}
 		}
 	}
 

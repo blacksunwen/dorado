@@ -1,16 +1,14 @@
 package com.bstek.dorado.view.widget.form;
 
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.view.annotation.Widget;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-8-9
  */
 @Widget(name = "Link", category = "Form", dependsPackage = "base-widget")
-@ViewObject(prototype = "dorado.widget.Link", shortTypeName = "Link")
-@XmlNode(nodeName = "Link")
+@ClientObject(prototype = "dorado.widget.Link", shortTypeName = "Link")
 public class Link extends Label {
 	private String href;
 	private String target;

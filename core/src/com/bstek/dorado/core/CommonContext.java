@@ -40,7 +40,7 @@ public class CommonContext extends SpringApplicationContext {
 
 	/**
 	 * 初始化一个上下文对象，并将其与当前线程关联。
-	 * @return 当前线程中的上下文对象。
+	 * @return 当前线程中的上下文对象。这种
 	 * @throws Exception
 	 */
 	public static Context init() throws Exception {

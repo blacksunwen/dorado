@@ -1,16 +1,17 @@
 package com.bstek.dorado.view.widget.form;
 
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.IdeProperty;
+import com.bstek.dorado.view.annotation.Widget;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-9-24
  */
-@Widget(name = "CustomSpinner", category = "Form", dependsPackage = "base-widget")
-@ViewObject(prototype = "dorado.widget.CustomSpinner", shortTypeName = "CustomSpinner")
-@XmlNode(nodeName = "CustomSpinner")
+@Widget(name = "CustomSpinner", category = "Form",
+		dependsPackage = "base-widget")
+@ClientObject(prototype = "dorado.widget.CustomSpinner",
+		shortTypeName = "CustomSpinner")
 public class CustomSpinner extends Spinner {
 	private String value;
 	private String pattern;
@@ -23,6 +24,7 @@ public class CustomSpinner extends Spinner {
 		this.value = value;
 	}
 
+	@IdeProperty(highlight = 1)
 	public String getPattern() {
 		return pattern;
 	}

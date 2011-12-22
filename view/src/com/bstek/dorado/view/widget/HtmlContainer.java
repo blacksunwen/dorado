@@ -1,9 +1,8 @@
 package com.bstek.dorado.view.widget;
 
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.IdeProperty;
+import com.bstek.dorado.view.annotation.Widget;
 
 /**
  * 可完全通过HTML/DHTML自定义渲染方式的容器控件。
@@ -12,8 +11,9 @@ import com.bstek.dorado.annotation.XmlNode;
  * @since Sep 30, 2008
  */
 @Widget(name = "HtmlContainer", category = "General", dependsPackage = "widget")
-@ViewObject(prototype = "dorado.widget.HtmlContainer", shortTypeName = "HtmlContainer")
-@XmlNode(nodeName = "HtmlContainer")
+@ClientObject(prototype = "dorado.widget.HtmlContainer",
+		shortTypeName = "HtmlContainer",
+		outputter = "spring:dorado.htmlContainerOutputter")
 public class HtmlContainer extends Container {
 	private String content;
 	private String contentFile;
@@ -22,7 +22,7 @@ public class HtmlContainer extends Container {
 	/**
 	 * 返回以HTML形式定义的控件内容。
 	 */
-	@ViewAttribute(editor = "multiLines")
+	@IdeProperty(editor = "multiLines")
 	public String getContent() {
 		return content;
 	}

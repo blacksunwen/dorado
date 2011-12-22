@@ -2,7 +2,6 @@ package com.bstek.dorado.view;
 
 import junit.framework.TestCase;
 
-import com.bstek.dorado.view.View;
 import com.bstek.dorado.view.widget.Component;
 import com.bstek.dorado.view.widget.Container;
 

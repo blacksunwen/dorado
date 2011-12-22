@@ -2,15 +2,13 @@ package com.bstek.dorado.data.config.xml;
 
 import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 import com.bstek.dorado.config.ParseContext;
 import com.bstek.dorado.config.definition.DefinitionReference;
 import com.bstek.dorado.config.definition.ObjectDefinition;
 import com.bstek.dorado.config.xml.XmlConstants;
-import com.bstek.dorado.config.xml.XmlParser;
-import com.bstek.dorado.config.xml.XmlParserUtils;
 import com.bstek.dorado.data.config.definition.DataProviderDefinition;
+import com.bstek.dorado.data.config.definition.DataTypeDefinition;
 
 /**
  * DataProvider解析器的抽象类。
@@ -18,24 +16,7 @@ import com.bstek.dorado.data.config.definition.DataProviderDefinition;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Mar 2, 2007
  */
-public class DataProviderParser extends DataObjectParser {
-
-	/**
-	 * 用于解析各种数据节点的解析器。
-	 */
-	protected XmlParser dataParser;
-
-	/**
-	 * 设置用于解析各种数据节点的解析器。
-	 */
-	public void setDataParser(XmlParser dataParser) {
-		this.dataParser = dataParser;
-	}
-
-	public DataProviderParser() {
-		setScopable(true);
-		setInheritable(true);
-	}
+public class DataProviderParser extends GenericObjectParser {
 
 	@Override
 	@SuppressWarnings("unchecked")
@@ -51,12 +32,6 @@ public class DataProviderParser extends DataObjectParser {
 	}
 
 	@Override
-	protected ObjectDefinition createDefinition(Element element,
-			ParseContext context) {
-		return new DataProviderDefinition();
-	}
-
-	@Override
 	protected void initDefinition(ObjectDefinition definition, Element element,
 			ParseContext context) throws Exception {
 		super.initDefinition(definition, element, context);
@@ -69,13 +44,14 @@ public class DataProviderParser extends DataObjectParser {
 			dataProvider.setInterceptor(interceptor);
 		}
 
-		Node parameterNode = XmlParserUtils.getPropertyNode(element,
-				DataXmlConstants.ATTRIBUTE_PARAMETER,
-				DataXmlConstants.PARAMETER);
-		if (parameterNode != null) {
-			Object parameter = dataParser.parse(parameterNode, context);
+		DefinitionReference<DataTypeDefinition> dataTypeRef = dataObjectParseHelper
+				.getReferencedDataType(
+						DataXmlConstants.ATTRIBUTE_RESULT_DATA_TYPE,
+						DataXmlConstants.RESULT_TYPE, element,
+						(DataParseContext) context);
+		if (dataTypeRef != null) {
 			definition.getProperties().put(
-					DataXmlConstants.ATTRIBUTE_PARAMETER, parameter);
+					DataXmlConstants.ATTRIBUTE_RESULT_DATA_TYPE, dataTypeRef);
 		}
 	}
 }

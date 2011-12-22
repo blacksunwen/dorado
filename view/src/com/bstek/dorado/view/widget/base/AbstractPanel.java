@@ -4,7 +4,8 @@ import java.util.List;
 
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
-import com.bstek.dorado.annotation.ViewAttribute;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.XmlNodeWrapper;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.view.widget.Align;
 import com.bstek.dorado.view.widget.Component;
@@ -12,8 +13,8 @@ import com.bstek.dorado.view.widget.Container;
 import com.bstek.dorado.view.widget.InnerElementList;
 
 @ClientEvents({ @ClientEvent(name = "beforeCollapsedChange"),
-	@ClientEvent(name = "onCollapsedChange")})
-public class AbstractPanel extends Container {
+		@ClientEvent(name = "onCollapsedChange") })
+public abstract class AbstractPanel extends Container {
 	private String caption;
 	private List<Button> buttons = new InnerElementList<Button>(this);
 	private Align buttonAlign = Align.center;
@@ -32,13 +33,13 @@ public class AbstractPanel extends Container {
 		buttons.add(button);
 	}
 
-	@ViewAttribute
-	@XmlSubNode(path = "Buttons/*")
+	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "Buttons"))
+	@ClientProperty
 	public List<Button> getButtons() {
 		return buttons;
 	}
 
-	@ViewAttribute(defaultValue = "center")
+	@ClientProperty(escapeValue = "center")
 	public Align getButtonAlign() {
 		return buttonAlign;
 	}
@@ -47,7 +48,7 @@ public class AbstractPanel extends Container {
 		this.buttonAlign = buttonAlign;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isCollapseable() {
 		return collapseable;
 	}
@@ -56,17 +57,19 @@ public class AbstractPanel extends Container {
 		this.collapseable = collapseable;
 	}
 
-	@ViewAttribute(defaultValue = "false")
+	@ClientProperty(escapeValue = "false")
 	public boolean isCollapsed() {
 		return collapsed;
 	}
-	
+
 	public void setCollapsed(boolean collapsed) {
 		this.collapsed = collapsed;
 	}
 
 	@Override
-	@XmlSubNode(path = "Children/*", parser = "dorado.childComponentParser", fixed = true)
+	@XmlSubNode(nodeName = "*", parser = "spring:dorado.childComponentParser",
+			wrapper = @XmlNodeWrapper(nodeName = "Children"))
+	@ClientProperty
 	public List<Component> getChildren() {
 		return super.getChildren();
 	}

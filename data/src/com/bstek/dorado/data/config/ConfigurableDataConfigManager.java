@@ -25,7 +25,6 @@ import com.bstek.dorado.data.config.definition.DataResolverDefinition;
 import com.bstek.dorado.data.config.definition.DataResolverDefinitionManager;
 import com.bstek.dorado.data.config.definition.DataTypeDefinition;
 import com.bstek.dorado.data.config.definition.DataTypeDefinitionManager;
-import com.bstek.dorado.data.config.xml.DataObjectsParser;
 import com.bstek.dorado.data.config.xml.DataParseContext;
 
 /**
@@ -88,7 +87,7 @@ public class ConfigurableDataConfigManager extends
 	private DataTypeDefinitionManager dataTypeDefinitionManager;
 	private DataProviderDefinitionManager dataProviderDefinitionManager;
 	private DataResolverDefinitionManager dataResolverDefinitionManager;
-	private DataObjectsParser dataObjectsParser;
+	private XmlParser dataObjectParserDispatcher;
 	private boolean autoRecalculatePaths;
 	private long recalcLocationsThreadIntervalSeconds;
 
@@ -166,8 +165,9 @@ public class ConfigurableDataConfigManager extends
 		this.dataResolverDefinitionManager = dataResolverDefinitionManager;
 	}
 
-	public void setDataObjectsParser(DataObjectsParser dataObjectsParser) {
-		this.dataObjectsParser = dataObjectsParser;
+	public void setDataObjectParserDispatcher(
+			XmlParser dataObjectParserDispatcher) {
+		this.dataObjectParserDispatcher = dataObjectParserDispatcher;
 	}
 
 	public boolean isAutoRecalculatePaths() {
@@ -200,6 +200,7 @@ public class ConfigurableDataConfigManager extends
 	 */
 	public void initialize() throws Exception {
 		boolean shouldStartRecalculateThread = false;
+
 		if (configLocations != null) {
 			if (autoRecalculatePaths) {
 				for (String location : configLocations) {
@@ -246,7 +247,7 @@ public class ConfigurableDataConfigManager extends
 			}
 		}
 
-		dataObjectsParser.parse(parseContext);
+		dataObjectParserDispatcher.parse(null, parseContext);
 
 		Map<String, DataTypeDefinition> parsedDataTypes = parseContext
 				.getParsedDataTypes();
@@ -261,8 +262,9 @@ public class ConfigurableDataConfigManager extends
 					dataTypeDefinitionManager.registerDefinition(name,
 							entry.getValue());
 
-					if (needComma)
+					if (needComma) {
 						message.append(", ");
+					}
 					needComma = true;
 					message.append(name);
 				}
@@ -284,8 +286,9 @@ public class ConfigurableDataConfigManager extends
 					dataProviderDefinitionManager.registerDefinition(name,
 							entry.getValue());
 
-					if (needComma)
+					if (needComma) {
 						message.append(", ");
+					}
 					needComma = true;
 					message.append(name);
 				}
@@ -307,8 +310,9 @@ public class ConfigurableDataConfigManager extends
 					dataResolverDefinitionManager.registerDefinition(name,
 							entry.getValue());
 
-					if (needComma)
+					if (needComma) {
 						message.append(", ");
+					}
 					needComma = true;
 					message.append(name);
 				}
@@ -393,6 +397,23 @@ public class ConfigurableDataConfigManager extends
 
 		for (DataProviderDefinition dataProvider : dataProvidersForRemove) {
 			dataProviderDefinitionManager.unregisterDefinition(dataProvider
+					.getName());
+		}
+
+		// 移除相关的DataResolver
+		Set<DataResolverDefinition> dataResolversForRemove = new HashSet<DataResolverDefinition>();
+		DataResolverDefinitionManager dataResolverDefinitionManager = dataResolverManager
+				.getDataResolverDefinitionManager();
+		Map<String, DataResolverDefinition> dataResolvers = dataResolverDefinitionManager
+				.getDefinitions();
+		for (DataResolverDefinition dataResolver : dataResolvers.values()) {
+			if (resourceSet.contains(dataResolver.getResource())) {
+				dataResolversForRemove.add(dataResolver);
+			}
+		}
+
+		for (DataResolverDefinition dataResolver : dataResolversForRemove) {
+			dataResolverDefinitionManager.unregisterDefinition(dataResolver
 					.getName());
 		}
 

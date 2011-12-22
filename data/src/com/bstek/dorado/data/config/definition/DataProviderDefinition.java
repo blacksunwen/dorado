@@ -129,7 +129,7 @@ public class DataProviderDefinition extends InterceptableDefinition implements
 		if (!resultDataTypeParentAssigned) {
 			DataTypeDefinition resultDataType = (DataTypeDefinition) DefinitionUtils
 					.getDefinition(getProperties().get(
-							DataXmlConstants.ATTRIBUTE_RESULT_TYPE));
+							DataXmlConstants.ATTRIBUTE_RESULT_DATA_TYPE));
 			if (resultDataType != null && !resultDataType.isGlobal()) {
 				DefinitionReference<? extends Definition>[] parentReferences = getParentReferences();
 				if (parentReferences != null) {
@@ -140,8 +140,9 @@ public class DataProviderDefinition extends InterceptableDefinition implements
 						}
 
 						DataTypeDefinition parentResultDataType = (DataTypeDefinition) DefinitionUtils
-								.getDefinition(parent.getProperties().get(
-										DataXmlConstants.ATTRIBUTE_RESULT_TYPE));
+								.getDefinition(parent
+										.getProperties()
+										.get(DataXmlConstants.ATTRIBUTE_RESULT_DATA_TYPE));
 						if (parentResultDataType != null) {
 							Definition[] originParents = resultDataType
 									.getParents();

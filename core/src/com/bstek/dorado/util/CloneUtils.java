@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 
 /**
  * 用于辅助实现对象克隆的工具类。
+ * 
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Dec 30, 2007
  */
@@ -15,12 +16,15 @@ public abstract class CloneUtils {
 
 	/**
 	 * 克隆对象。
-	 * @param object 被克隆的对象
+	 * 
+	 * @param object
+	 *            被克隆的对象
 	 * @return 克隆的对象
 	 * @throws CloneNotSupportedException
 	 */
-	public static Object clone(Object object) throws CloneNotSupportedException {
-		Object clonedObject = null;
+	@SuppressWarnings("unchecked")
+	public static <T> T clone(T object) throws CloneNotSupportedException {
+		T clonedObject = null;
 		Class<?> cl = object.getClass();
 		Method method = null;
 		try {
@@ -28,33 +32,29 @@ public abstract class CloneUtils {
 				try {
 					method = cl.getDeclaredMethod(CLONE_METHOD,
 							CLONE_METHOD_ARGTYPES);
-				}
-				catch (NoSuchMethodException e) {
+				} catch (NoSuchMethodException e) {
 					cl = cl.getSuperclass();
 				}
 			} while (method == null);
 
 			if (method != null) {
 				boolean methodAccessible = method.isAccessible();
-				if (!methodAccessible) method.setAccessible(true);
+				if (!methodAccessible)
+					method.setAccessible(true);
 				try {
-					clonedObject = method.invoke(object, CLONE_METHOD_ARGS);
-				}
-				finally {
-					if (!methodAccessible) method.setAccessible(false);
+					clonedObject = (T) method.invoke(object, CLONE_METHOD_ARGS);
+				} finally {
+					if (!methodAccessible)
+						method.setAccessible(false);
 				}
 			}
-		}
-		catch (SecurityException e) {
+		} catch (SecurityException e) {
 			e.printStackTrace();
-		}
-		catch (InvocationTargetException e) {
+		} catch (InvocationTargetException e) {
 			e.getCause().printStackTrace();
-		}
-		catch (IllegalArgumentException e) {
+		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		}
-		catch (IllegalAccessException e) {
+		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		}
 		return clonedObject;

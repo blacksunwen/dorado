@@ -3,7 +3,7 @@ package com.bstek.dorado.view.widget.tree;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bstek.dorado.annotation.ViewAttribute;
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlSubNode;
 
@@ -11,7 +11,7 @@ import com.bstek.dorado.annotation.XmlSubNode;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2009-9-30
  */
-@XmlNode(nodeName = "Node")
+@XmlNode
 public class Node implements NodeHolder {
 	private List<Node> nodes;
 
@@ -29,8 +29,8 @@ public class Node implements NodeHolder {
 	private boolean expanded;
 	private Object tags;
 
-	@ViewAttribute
-	@XmlSubNode(path = "#self/*")
+	@XmlSubNode
+	@ClientProperty
 	public List<Node> getNodes() {
 		if (nodes == null)
 			nodes = new ArrayList<Node>();
@@ -89,7 +89,7 @@ public class Node implements NodeHolder {
 		this.checkable = checkable;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isAutoCheckChildren() {
 		return autoCheckChildren;
 	}

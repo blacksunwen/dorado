@@ -4,13 +4,13 @@ import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.annotation.XmlNode;
 
-@XmlNode(nodeName = "Order")
+@XmlNode
 public class Order {
 	private boolean available = true;
 	private String propertyName;
 	private boolean ignoreCase;
 	private Direction direction;
-	
+
 	public static enum Direction {
 		asc, desc
 	}
@@ -28,31 +28,33 @@ public class Order {
 			Direction d = Direction.valueOf(direction);
 			if (d != null) {
 				this.direction = d;
-			}
-			else {
+			} else {
 				throw new IllegalArgumentException("unknown direction '"
 						+ direction + "'.");
 			}
 		}
 	}
-	
+
 	public boolean isAvailable() {
 		return available;
 	}
+
 	public void setAvailable(boolean available) {
 		this.available = available;
 	}
-	
+
 	public String getPropertyName() {
 		return propertyName;
 	}
+
 	public void setPropertyName(String propertyName) {
 		this.propertyName = propertyName;
 	}
-	
+
 	public boolean isIgnoreCase() {
 		return ignoreCase;
 	}
+
 	public void setIgnoreCase(boolean ignoreCase) {
 		this.ignoreCase = ignoreCase;
 	}
