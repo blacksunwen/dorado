@@ -91,56 +91,54 @@
 		<javadoc access="protected" author="true" encoding="UTF-8" docencoding="UTF-8" charset="UTF-8" destdir="${javadoc.dist}" doctitle="Dorado 7 Server Side API Documentation" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="1.5" splitindex="true" use="true" version="true" useexternalfile="yes">
 			<classpath refid="classpath" />
 			<fileset dir="${javadoc.src}" />
-			<doctitle>
-				<![CDATA[<h1>Dorado7 Server Side API</h1>]]></doctitle>
-		<bottom>
-			<![CDATA[<i>Copyright &#169; 2001-2011 www.BSTEK.com All Rights Reserved.</i>]]></bottom>
-	<link href="http://bsdn.org/projects/dorado7/deploy/javadoc" />
-</javadoc>
-<copy file="${resources.dir}/stylesheet.css" todir="${javadoc.dist}" overwrite="true" />
-</target>
+			<doctitle><![CDATA[<h1>Dorado7 Server Side API</h1>]]></doctitle>
+			<bottom><![CDATA[<i>Copyright &#169; 2001-2011 www.BSTEK.com All Rights Reserved.</i>]]></bottom>
+			<link href="http://bsdn.org/projects/dorado7/deploy/javadoc" />
+		</javadoc>
+		<copy file="${resources.dir}/stylesheet.css" todir="${javadoc.dist}" overwrite="true" />
+	</target>
 
-<target name="publish-module-to-bsdn">
-<echo message="publish-to-bsdn: ${target.lib.dir}/${product.name}-${module}-${product.revision}.jar" />
+	<target name="publish-module-to-bsdn">
+		<echo message="publish-to-bsdn: ${target.lib.dir}/${product.name}-${module}-${product.revision}.jar" />
 
-<artifact:deploy file="${target.lib.dir}/${product.name}-${module}-${product.revision}.jar" settingsfile="${resources.dir}/maven-settings.xml">
-	<remoteRepository url="${maven.repository}">
-		<authentication username="${bsdn.nexus.user}" password="${bsdn.nexus.password}" />
-	</remoteRepository>
-	<pom file="${target.pom.dir}/${product.name}-${module}.pom" />
-	<attach file="${target.src.dir}/${product.name}-${module}-${product.revision}-sources.jar" type="jar" classifier="sources" />
-</artifact:deploy>
-</target>
+		<artifact:deploy file="${target.lib.dir}/${product.name}-${module}-${product.revision}.jar" settingsfile="${resources.dir}/maven-settings.xml">
+			<remoteRepository url="${maven.repository}">
+				<authentication username="${bsdn.nexus.user}" password="${bsdn.nexus.password}" />
+			</remoteRepository>
+			<pom file="${target.pom.dir}/${product.name}-${module}.pom" />
+			<attach file="${target.src.dir}/${product.name}-${module}-${product.revision}-sources.jar" type="jar" classifier="sources" />
+		</artifact:deploy>
+	</target>
 
-<target name="publish-to-bsdn">
-<echo message="publish-to-bsdn: ${maven.repository}" />
+	<target name="publish-to-bsdn">
+		<echo message="publish-to-bsdn: ${maven.repository}" />
 
-<copy file="${resources.dir}/dorado-parent.pom" todir="${target.pom.dir}" />
-<replace dir="${target.pom.dir}" token="%product.revision%" value="${product.revision}" encoding="utf-8">
-	<include name="dorado-parent.pom" />
-</replace>
+		<copy file="${resources.dir}/dorado-parent.pom" todir="${target.pom.dir}" />
+		<replace dir="${target.pom.dir}" token="%product.revision%" value="${product.revision}" encoding="utf-8">
+			<include name="dorado-parent.pom" />
+		</replace>
 
-<echo message="publish-to-bsdn: ${work.dir}/dorado-parent.pom" />
-<artifact:deploy file="${work.dir}/dorado-parent.pom" settingsfile="${resources.dir}/maven-settings.xml">
-	<remoteRepository url="${maven.repository}">
-		<authentication username="${bsdn.nexus.user}" password="${bsdn.nexus.password}" />
-	</remoteRepository>
-	<pom file="${target.pom.dir}/dorado-parent.pom" />
-</artifact:deploy>
+		<echo message="publish-to-bsdn: ${work.dir}/dorado-parent.pom" />
+		<artifact:deploy file="${work.dir}/dorado-parent.pom" settingsfile="${resources.dir}/maven-settings.xml">
+			<remoteRepository url="${maven.repository}">
+				<authentication username="${bsdn.nexus.user}" password="${bsdn.nexus.password}" />
+			</remoteRepository>
+			<pom file="${target.pom.dir}/dorado-parent.pom" />
+		</artifact:deploy>
 
-<foreach list="${product.modules}" param="module" target="publish-module-to-bsdn" inheritall="true" />
-</target>
+		<foreach list="${product.modules}" param="module" target="publish-module-to-bsdn" inheritall="true" />
+	</target>
 
-<target name="publish" if="publish-jars">
-<property name="maven.repository" value="${bsdn.nexus-snapshots}" />
-<if>
-	<equals arg1="${product.qualifier}" arg2="RELEASE" />
-	<then>
-		<property name="maven.repository" value="${bsdn.nexus-release}" />
-	</then>
-</if>
-<antcall target="publish-to-bsdn" inheritAll="true" />
-</target>
+	<target name="publish" if="publish-jars">
+		<property name="maven.repository" value="${bsdn.nexus-snapshots}" />
+		<if>
+			<equals arg1="${product.qualifier}" arg2="RELEASE" />
+			<then>
+				<property name="maven.repository" value="${bsdn.nexus-release}" />
+			</then>
+		</if>
+		<antcall target="publish-to-bsdn" inheritAll="true" />
+	</target>
 
-<target name="build" depends="package,javadoc,publish" />
+	<target name="build" depends="package,javadoc,publish" />
 </project>
