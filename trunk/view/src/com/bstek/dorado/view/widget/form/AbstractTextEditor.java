@@ -1,6 +1,6 @@
 package com.bstek.dorado.view.widget.form;
 
-import com.bstek.dorado.annotation.ViewAttribute;
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.data.type.property.Mapping;
@@ -24,7 +24,7 @@ public abstract class AbstractTextEditor extends AbstractTextBox {
 		this.dataType = dataType;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isEditable() {
 		return editable;
 	}
@@ -41,7 +41,7 @@ public abstract class AbstractTextEditor extends AbstractTextBox {
 		this.blankText = blankText;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isSelectTextOnFocus() {
 		return selectTextOnFocus;
 	}
@@ -51,7 +51,7 @@ public abstract class AbstractTextEditor extends AbstractTextBox {
 	}
 
 	@XmlProperty(composite = true)
-	@ViewAttribute(outputter = "dorado.mappingPropertyOutputter")
+	@ClientProperty(outputter = "spring:dorado.mappingPropertyOutputter")
 	public Mapping getMapping() {
 		return mapping;
 	}

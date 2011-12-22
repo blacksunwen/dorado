@@ -13,7 +13,7 @@ public class PropertyTemplate {
 	private boolean fixed;
 	private String[] enumValues;
 	private String editor;
-	private boolean highlight;
+	private int highlight;
 	private ReferenceTemplate reference;
 	private boolean ignored;
 	private boolean visible = true;
@@ -60,11 +60,11 @@ public class PropertyTemplate {
 		this.editor = editor;
 	}
 
-	public boolean isHighlight() {
+	public int getHighlight() {
 		return highlight;
 	}
 
-	public void setHighlight(boolean highlight) {
+	public void setHighlight(int highlight) {
 		this.highlight = highlight;
 	}
 

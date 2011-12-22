@@ -2,10 +2,11 @@ package com.bstek.dorado.view.widget.form;
 
 import java.util.Properties;
 
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.IdeProperty;
+import com.bstek.dorado.view.annotation.ComponentReference;
+import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Align;
 import com.bstek.dorado.view.widget.Component;
 
@@ -14,8 +15,8 @@ import com.bstek.dorado.view.widget.Component;
  * @since 2010-8-10
  */
 @Widget(name = "FormProfile", category = "Form", dependsPackage = "base-widget")
-@ViewObject(prototype = "dorado.widget.FormProfile", shortTypeName = "FormProfile")
-@XmlNode(nodeName = "FormProfile")
+@ClientObject(prototype = "dorado.widget.FormProfile",
+		shortTypeName = "FormProfile")
 public class FormProfile extends Component implements FormConfig {
 	private String width;
 	private String height;
@@ -74,7 +75,7 @@ public class FormProfile extends Component implements FormConfig {
 		this.exClassName = exClassName;
 	}
 
-	@ViewAttribute(defaultValue = "text")
+	@ClientProperty(escapeValue = "text")
 	public FormElementType getType() {
 		return type;
 	}
@@ -83,7 +84,9 @@ public class FormProfile extends Component implements FormConfig {
 		this.type = type;
 	}
 
-	@ViewAttribute(referenceComponentName = "Trigger", enumValues = "triggerClear,autoMappingDropDown1,autoMappingDropDown2,defaultDateDropDown")
+	@ComponentReference("Trigger")
+	@IdeProperty(
+			enumValues = "triggerClear,autoMappingDropDown1,autoMappingDropDown2,defaultDateDropDown")
 	public String getTrigger() {
 		return trigger;
 	}
@@ -100,7 +103,7 @@ public class FormProfile extends Component implements FormConfig {
 		this.labelSeparator = labelSeparator;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isShowLabel() {
 		return showLabel;
 	}
@@ -125,7 +128,7 @@ public class FormProfile extends Component implements FormConfig {
 		this.labelSpacing = labelSpacing;
 	}
 
-	@ViewAttribute(defaultValue = "left")
+	@ClientProperty(escapeValue = "left")
 	public FormElementLabelPosition getLabelPosition() {
 		return labelPosition;
 	}
@@ -134,7 +137,7 @@ public class FormProfile extends Component implements FormConfig {
 		this.labelPosition = labelPosition;
 	}
 
-	@ViewAttribute(defaultValue = "left")
+	@ClientProperty(escapeValue = "left")
 	public Align getLabelAlign() {
 		return labelAlign;
 	}
@@ -159,7 +162,7 @@ public class FormProfile extends Component implements FormConfig {
 		this.editorConfig = editorConfig;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isShowHint() {
 		return showHint;
 	}
@@ -168,7 +171,7 @@ public class FormProfile extends Component implements FormConfig {
 		this.showHint = showHint;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isShowValidHint() {
 		return showValidHint;
 	}
@@ -217,7 +220,7 @@ public class FormProfile extends Component implements FormConfig {
 		this.readOnly = readOnly;
 	}
 
-	@ViewAttribute(referenceComponentName = "DataSet")
+	@ComponentReference("DataSet")
 	public String getDataSet() {
 		return dataSet;
 	}

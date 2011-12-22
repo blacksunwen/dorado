@@ -178,8 +178,8 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 	}
 
 	@Override
-	protected void execute(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+	public void execute(HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
 		PrintWriter writer = getWriter(request, response);
 		JsonBuilder jsonBuilder = new JsonBuilder(writer);
 		ServletInputStream in = request.getInputStream();
@@ -220,16 +220,21 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 						// processTask(escapeWriter, objectNode, context);
 						processTask(writer, objectNode, context);
 						writer.append("\n]]></response>\n");
-					} catch (ClientRunnableException e) {
-						writer.append("\n]]></response>\n");
-						writer.append("<exception type=\"runnable\"><![CDATA[");
-						writer.append(e.getScript());
-						writer.append("]]></exception>\n");
-						logger.error(e, e);
 					} catch (Exception e) {
+						Throwable t = e;
+						while (t.getCause() != null) {
+							t = t.getCause();
+						}
+
 						writer.append("\n]]></response>\n");
-						writer.append("<exception><![CDATA[\n");
-						outputException(jsonBuilder, e);
+						if (t instanceof ClientRunnableException) {
+							writer.append("<exception type=\"runnable\"><![CDATA[");
+							writer.append(((ClientRunnableException) t)
+									.getScript());
+						} else {
+							writer.append("<exception><![CDATA[\n");
+							outputException(jsonBuilder, e);
+						}
 						writer.append("\n]]></exception>\n");
 						logger.error(e, e);
 					}
@@ -237,16 +242,21 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 				}
 				writer.append("</result>");
 			}
-		} catch (ClientRunnableException e) {
-			in.close();
-			response.setStatus(EXCEPTION_STATUS_CODE);
-			response.setContentType("text/runnable");
-			outputException(jsonBuilder, e);
-			logger.error(e, e);
 		} catch (Exception e) {
 			in.close();
 			response.setStatus(EXCEPTION_STATUS_CODE);
-			outputException(jsonBuilder, e);
+
+			Throwable t = e;
+			while (t.getCause() != null) {
+				t = t.getCause();
+			}
+
+			if (t instanceof ClientRunnableException) {
+				response.setContentType("text/runnable");
+				writer.write(((ClientRunnableException) t).getScript());
+			} else {
+				outputException(jsonBuilder, e);
+			}
 			logger.error(e, e);
 		} finally {
 			writer.flush();

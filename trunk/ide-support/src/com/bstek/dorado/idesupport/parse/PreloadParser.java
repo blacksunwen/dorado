@@ -12,6 +12,7 @@ import com.bstek.dorado.config.ParseContext;
 import com.bstek.dorado.config.xml.XmlParseException;
 import com.bstek.dorado.config.xml.XmlParser;
 import com.bstek.dorado.core.pkgs.PackageInfo;
+import com.bstek.dorado.idesupport.RuleTemplateManager;
 import com.bstek.dorado.util.xml.DomUtils;
 
 /**
@@ -20,16 +21,19 @@ import com.bstek.dorado.util.xml.DomUtils;
  */
 public class PreloadParser implements XmlParser {
 
-	@SuppressWarnings("unchecked")
 	public Object parse(Node node, ParseContext context) throws Exception {
 		Element element = (Element) node;
 		ConfigRuleParseContext parserContext = (ConfigRuleParseContext) context;
+		RuleTemplateManager ruleTemplateManager = parserContext
+				.getRuleTemplateManager();
+
+		ruleTemplateManager.setVersion(element.getAttribute("version"));
 
 		Element packagesElement = DomUtils.getChildByTagName(element,
 				"PackageInfos");
 		if (packagesElement != null) {
-			List<PackageInfo> packageInfos = (List<PackageInfo>) context
-					.getAttributes().get("packageInfos");
+			List<PackageInfo> packageInfos = ruleTemplateManager
+					.getPackageInfos();
 			if (packageInfos == null) {
 				packageInfos = new ArrayList<PackageInfo>();
 				context.getAttributes().put("packageInfos", packageInfos);

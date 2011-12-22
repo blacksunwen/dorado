@@ -2,10 +2,6 @@ package com.bstek.dorado.view.output;
 
 import java.lang.reflect.Array;
 
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
-
 import com.bstek.dorado.data.JsonUtils;
 import com.bstek.dorado.data.entity.EntityUtils;
 
@@ -13,14 +9,8 @@ import com.bstek.dorado.data.entity.EntityUtils;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2009-12-11
  */
-public class DefaultPropertyOutputter implements PropertyOutputter,
-		BeanFactoryAware {
-	private BeanFactory beanFactory;
+public class DefaultPropertyOutputter implements PropertyOutputter {
 	private Outputter objectOutputter;
-
-	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-		this.beanFactory = beanFactory;
-	}
 
 	public void setObjectOutputter(Outputter objectOutputter) {
 		this.objectOutputter = objectOutputter;
@@ -45,14 +35,7 @@ public class DefaultPropertyOutputter implements PropertyOutputter,
 			}
 			json.endArray();
 		} else {
-			TypeAnnotationInfo typeAnnotationInfo = ViewOutputUtils
-					.getTypeAnnotationInfo(beanFactory, object);
-			if (typeAnnotationInfo != null
-					&& typeAnnotationInfo.getOutputter() != null) {
-				typeAnnotationInfo.getOutputter().output(object, context);
-			} else {
-				objectOutputter.output(object, context);
-			}
+			objectOutputter.output(object, context);
 		}
 		json.endValue();
 	}

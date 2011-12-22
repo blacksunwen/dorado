@@ -2,7 +2,7 @@ package com.bstek.dorado.hibernate.provider;
 
 import org.hibernate.Session;
 
-import com.bstek.dorado.annotation.ViewAttribute;
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.core.Context;
 import com.bstek.dorado.data.provider.Page;
 import com.bstek.dorado.data.type.AggregationDataType;
@@ -22,7 +22,7 @@ import com.bstek.dorado.util.Assert;
 public class HqlDataProvider extends HibernateDataProviderSupport {
 	private String hql;
 
-	@ViewAttribute(editor = "multiLines")
+	@IdeProperty(editor = "multiLines")
 	public String getHql() {
 		return hql;
 	}

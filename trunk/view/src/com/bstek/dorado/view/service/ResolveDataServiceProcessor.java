@@ -174,8 +174,9 @@ public class ResolveDataServiceProcessor extends DataServiceProcessorSupport {
 
 			UpdateInfo updateInfo = updateInfos.get(name);
 			RefreshMode refreshMode = updateInfo.getRefreshMode();
-			if (RefreshMode.none.equals(refreshMode))
+			if (RefreshMode.none.equals(refreshMode)) {
 				continue;
+			}
 			if (RefreshMode.cascade.equals(refreshMode)) {
 				if (item instanceof Collection<?>) {
 					for (Object entity : ((Collection<?>) item)) {

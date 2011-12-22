@@ -9,13 +9,13 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.bstek.dorado.common.method.MethodAutoMatchingException;
+import com.bstek.dorado.common.method.MethodAutoMatchingUtils;
 import com.bstek.dorado.core.bean.BeanFactoryUtils;
 import com.bstek.dorado.data.provider.DataProvider;
 import com.bstek.dorado.data.provider.Page;
 import com.bstek.dorado.data.resolver.DataResolver;
 import com.bstek.dorado.util.Assert;
-import com.bstek.dorado.util.method.MethodAutoMatchingException;
-import com.bstek.dorado.util.method.MethodAutoMatchingUtils;
 
 /**
  * 用于激活用户绑定于DataProvider的拦截器的类，该类本身也是一个方法拦截器。

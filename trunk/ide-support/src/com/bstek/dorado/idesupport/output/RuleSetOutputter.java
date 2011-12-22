@@ -2,10 +2,11 @@ package com.bstek.dorado.idesupport.output;
 
 import java.io.Writer;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.lang.StringUtils;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -15,6 +16,7 @@ import org.dom4j.io.XMLWriter;
 import com.bstek.dorado.core.Constants;
 import com.bstek.dorado.core.pkgs.PackageInfo;
 import com.bstek.dorado.core.pkgs.PackageManager;
+import com.bstek.dorado.data.entity.EntityUtils;
 import com.bstek.dorado.idesupport.RuleTemplateManager;
 import com.bstek.dorado.idesupport.model.ClientEvent;
 import com.bstek.dorado.idesupport.model.CompositeType;
@@ -37,6 +39,7 @@ public class RuleSetOutputter {
 		xmlWriter.startDocument();
 
 		Element rootElement = DocumentHelper.createElement("RuleSet");
+		rootElement.addAttribute("version", ruleTemplateManager.getVersion());
 		xmlWriter.writeOpen(rootElement);
 
 		OutputContext context = new OutputContext();
@@ -59,7 +62,7 @@ public class RuleSetOutputter {
 	protected void outputPackageInfos(XMLWriter xmlWriter,
 			RuleTemplateManager ruleTemplateManager, OutputContext context)
 			throws Exception {
-		Map<String, PackageInfo> finalPackageInfos = new HashMap<String, PackageInfo>(
+		Map<String, PackageInfo> finalPackageInfos = new LinkedHashMap<String, PackageInfo>(
 				PackageManager.getPackageInfoMap());
 
 		Collection<PackageInfo> packageInfos = ruleTemplateManager
@@ -102,7 +105,7 @@ public class RuleSetOutputter {
 		setElementAttributes(
 				element,
 				ruleTempalte,
-				"abstract,nodeName,type,supportsCustomProperty,scope,sortFactor,category,robots,reserve");
+				"label,abstract,nodeName,scope,sortFactor,category,robots,icon,labelProperty,autoGenerateId,reserve");
 
 		xmlWriter.writeOpen(element);
 
@@ -156,9 +159,21 @@ public class RuleSetOutputter {
 			PropertyTemplate property, OutputContext context) throws Exception {
 		Element element = DocumentHelper.createElement("Prop");
 		setElementAttributes(element, property,
-				"name,type,defaultValue,ignored,highlight,fixed,enumValues,editor,reserve");
+				"name,defaultValue,ignored,highlight,fixed,enumValues,editor,reserve");
 		if (!property.isVisible()) {
 			element.addAttribute("visible", "false");
+		}
+
+		if (StringUtils.isNotEmpty(property.getType())) {
+			try {
+				Class<?> type = ClassUtils.getClass(property.getType());
+				if (EntityUtils.isSimpleType(type)
+						&& !String.class.equals(type) && !type.isEnum()) {
+					element.addAttribute("type", type.getName());
+				}
+			} catch (Exception e) {
+				// do nothing
+			}
 		}
 
 		CompositeType compositeType = property.getCompositeType();

@@ -1,21 +1,20 @@
 package com.bstek.dorado.view.widget;
 
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.view.annotation.Widget;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-6-19
  */
 @Widget(name = "SubViewHolder", category = "General", dependsPackage = "widget")
-@ViewObject(prototype = "dorado.widget.SubViewHolder", shortTypeName = "SubViewHolder")
-@XmlNode(nodeName = "SubViewHolder")
+@ClientObject(prototype = "dorado.widget.SubViewHolder",
+		shortTypeName = "SubViewHolder")
 public class SubViewHolder extends Control implements HtmlElement {
 	private String subView;
 
-	@ViewAttribute(outputter = "dorado.subViewPropertyOutputter")
+	@ClientProperty(outputter = "spring:dorado.subViewPropertyOutputter")
 	public String getSubView() {
 		return subView;
 	}

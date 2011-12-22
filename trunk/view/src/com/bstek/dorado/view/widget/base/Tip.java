@@ -1,9 +1,8 @@
 package com.bstek.dorado.view.widget.base;
 
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Control;
 import com.bstek.dorado.view.widget.FloatControl;
 import com.bstek.dorado.view.widget.FloatControlAlign;
@@ -17,8 +16,7 @@ import com.bstek.dorado.view.widget.ModalType;
  * @since 2011-1-15
  */
 @Widget(name = "Tip", category = "Floatable", dependsPackage = "base-widget")
-@ViewObject(prototype = "dorado.widget.Tip", shortTypeName = "Tip")
-@XmlNode(nodeName = "Tip")
+@ClientObject(prototype = "dorado.widget.Tip", shortTypeName = "Tip")
 public class Tip extends Control implements FloatControl {
 	private FloatControlAnimateType animateType = FloatControlAnimateType.fade;
 	private FloatControlAnimateType showAnimateType;
@@ -50,18 +48,18 @@ public class Tip extends Control implements FloatControl {
 	private FloatControlVAlign vAlign;
 	private boolean autoAdjustPosition = true;
 	private boolean handleOverflow = true;
-	
+
 	public Tip() {
 		setVisible(false);
 	}
 
 	@Override
-	@ViewAttribute(defaultValue = "false")
+	@ClientProperty(escapeValue = "false")
 	public boolean isVisible() {
 		return super.isVisible();
 	}
 
-	@ViewAttribute(defaultValue = "fade")
+	@ClientProperty(escapeValue = "fade")
 	public FloatControlAnimateType getAnimateType() {
 		return animateType;
 	}
@@ -128,7 +126,7 @@ public class Tip extends Control implements FloatControl {
 		this.modalType = modalType;
 	}
 
-	@ViewAttribute(defaultValue = "drop")
+	@ClientProperty(escapeValue = "drop")
 	public FloatControlShadowMode getShadowMode() {
 		return shadowMode;
 	}
@@ -137,7 +135,7 @@ public class Tip extends Control implements FloatControl {
 		this.shadowMode = shadowMode;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isFocusAfterShow() {
 		return focusAfterShow;
 	}
@@ -169,8 +167,8 @@ public class Tip extends Control implements FloatControl {
 	public void setCloseable(boolean closeable) {
 		this.closeable = closeable;
 	}
-	
-	@ViewAttribute(defaultValue = "none")
+
+	@ClientProperty(escapeValue = "none")
 	public TipArrowDirection getArrowDirection() {
 		return arrowDirection;
 	}
@@ -187,7 +185,7 @@ public class Tip extends Control implements FloatControl {
 		this.arrowOffset = arrowOffset;
 	}
 
-	@ViewAttribute(defaultValue = "center")
+	@ClientProperty(escapeValue = "center")
 	public TipArrowAlign getAnchorArrowAlign() {
 		return arrowAlign;
 	}
@@ -203,22 +201,23 @@ public class Tip extends Control implements FloatControl {
 	public void setShowDuration(int showDuration) {
 		this.showDuration = showDuration;
 	}
-	
+
 	/**
 	 * @return the floating
 	 */
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isFloating() {
 		return floating;
 	}
 
 	/**
-	 * @param floating the floating to set
+	 * @param floating
+	 *            the floating to set
 	 */
 	public void setFloating(boolean floating) {
 		this.floating = floating;
 	}
-	
+
 	/**
 	 * @return the floatingClassName
 	 */
@@ -227,7 +226,8 @@ public class Tip extends Control implements FloatControl {
 	}
 
 	/**
-	 * @param floatingClassName the floatingClassName to set
+	 * @param floatingClassName
+	 *            the floatingClassName to set
 	 */
 	public void setFloatingClassName(String floatingClassName) {
 		this.floatingClassName = floatingClassName;
@@ -241,7 +241,8 @@ public class Tip extends Control implements FloatControl {
 	}
 
 	/**
-	 * @param left the left to set
+	 * @param left
+	 *            the left to set
 	 */
 	public void setLeft(int left) {
 		this.left = left;
@@ -255,7 +256,8 @@ public class Tip extends Control implements FloatControl {
 	}
 
 	/**
-	 * @param top the top to set
+	 * @param top
+	 *            the top to set
 	 */
 	public void setTop(int top) {
 		this.top = top;
@@ -269,7 +271,8 @@ public class Tip extends Control implements FloatControl {
 	}
 
 	/**
-	 * @param offsetLeft the offsetLeft to set
+	 * @param offsetLeft
+	 *            the offsetLeft to set
 	 */
 	public void setOffsetLeft(int offsetLeft) {
 		this.offsetLeft = offsetLeft;
@@ -283,7 +286,8 @@ public class Tip extends Control implements FloatControl {
 	}
 
 	/**
-	 * @param offsetTop the offsetTop to set
+	 * @param offsetTop
+	 *            the offsetTop to set
 	 */
 	public void setOffsetTop(int offsetTop) {
 		this.offsetTop = offsetTop;
@@ -297,7 +301,8 @@ public class Tip extends Control implements FloatControl {
 	}
 
 	/**
-	 * @param anchorTarget the anchorTarget to set
+	 * @param anchorTarget
+	 *            the anchorTarget to set
 	 */
 	public void setAnchorTarget(String anchorTarget) {
 		this.anchorTarget = anchorTarget;
@@ -311,7 +316,8 @@ public class Tip extends Control implements FloatControl {
 	}
 
 	/**
-	 * @param align the align to set
+	 * @param align
+	 *            the align to set
 	 */
 	public void setAlign(FloatControlAlign align) {
 		this.align = align;
@@ -325,7 +331,8 @@ public class Tip extends Control implements FloatControl {
 	}
 
 	/**
-	 * @param vAlign the vAlign to set
+	 * @param vAlign
+	 *            the vAlign to set
 	 */
 	public void setvAlign(FloatControlVAlign vAlign) {
 		this.vAlign = vAlign;
@@ -334,13 +341,14 @@ public class Tip extends Control implements FloatControl {
 	/**
 	 * @return the autoAdjustPosition
 	 */
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isAutoAdjustPosition() {
 		return autoAdjustPosition;
 	}
 
 	/**
-	 * @param autoAdjustPosition the autoAdjustPosition to set
+	 * @param autoAdjustPosition
+	 *            the autoAdjustPosition to set
 	 */
 	public void setAutoAdjustPosition(boolean autoAdjustPosition) {
 		this.autoAdjustPosition = autoAdjustPosition;
@@ -349,17 +357,17 @@ public class Tip extends Control implements FloatControl {
 	/**
 	 * @return the handleOverflow
 	 */
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isHandleOverflow() {
 		return handleOverflow;
 	}
 
 	/**
-	 * @param handleOverflow the handleOverflow to set
+	 * @param handleOverflow
+	 *            the handleOverflow to set
 	 */
 	public void setHandleOverflow(boolean handleOverflow) {
 		this.handleOverflow = handleOverflow;
 	}
-	
 
 }

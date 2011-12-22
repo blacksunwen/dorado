@@ -2,19 +2,21 @@ package com.bstek.dorado.view.widget.grid;
 
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.IdeObject;
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.data.type.DataType;
+import com.bstek.dorado.view.annotation.ComponentReference;
 import com.bstek.dorado.view.widget.Align;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2009-9-28
  */
-@XmlNode(nodeName = "DataColumn")
 @ClientEvents({ @ClientEvent(name = "onRenderCell"),
 		@ClientEvent(name = "onRenderFooterCell") })
+@IdeObject(labelProperty = "name,property")
 public class DataColumn extends Column {
 	private String property;
 	private DataType dataType;
@@ -36,6 +38,7 @@ public class DataColumn extends Column {
 	private boolean filterable = true;
 	private boolean resizeable = true;
 
+	@IdeProperty(highlight = 1)
 	public String getProperty() {
 		return property;
 	}
@@ -44,8 +47,8 @@ public class DataColumn extends Column {
 		this.property = property;
 	}
 
-	@XmlProperty(parser = "dorado.dataTypePropertyParser")
-	@ViewAttribute(outputter = "dorado.dataTypePropertyOutputter")
+	@XmlProperty(parser = "spring:dorado.dataTypePropertyParser")
+	@ClientProperty
 	public DataType getDataType() {
 		return dataType;
 	}
@@ -79,7 +82,7 @@ public class DataColumn extends Column {
 	}
 
 	@Override
-	@ViewAttribute(defaultValue = "left")
+	@ClientProperty(escapeValue = "left")
 	public Align getAlign() {
 		return align;
 	}
@@ -129,7 +132,7 @@ public class DataColumn extends Column {
 		this.dropDown = dropDown;
 	}
 
-	@ViewAttribute(enumValues = "sum,average,count,max,min")
+	@IdeProperty(enumValues = "sum,average,count,max,min")
 	public String getSummaryType() {
 		return summaryType;
 	}
@@ -154,7 +157,9 @@ public class DataColumn extends Column {
 		this.editor = editor;
 	}
 
-	@ViewAttribute(referenceComponentName = "Trigger", enumValues = "triggerClear,autoMappingDropDown1,autoMappingDropDown2,defaultDateDropDown")
+	@ComponentReference("Trigger")
+	@IdeProperty(
+			enumValues = "triggerClear,autoMappingDropDown1,autoMappingDropDown2,defaultDateDropDown")
 	public String getTrigger() {
 		return trigger;
 	}
@@ -163,7 +168,7 @@ public class DataColumn extends Column {
 		this.trigger = trigger;
 	}
 
-	@ViewAttribute(defaultValue = "none")
+	@ClientProperty(escapeValue = "none")
 	public SortState getSortState() {
 		return sortState;
 	}
@@ -180,7 +185,7 @@ public class DataColumn extends Column {
 		this.wrappable = wrappable;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isFilterable() {
 		return filterable;
 	}
@@ -189,7 +194,7 @@ public class DataColumn extends Column {
 		this.filterable = filterable;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isResizeable() {
 		return resizeable;
 	}

@@ -4,9 +4,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.InputStream;
+import java.util.Set;
 
 import com.bstek.dorado.core.Context;
 import com.bstek.dorado.idesupport.model.Child;
+import com.bstek.dorado.idesupport.model.Property;
 import com.bstek.dorado.idesupport.model.Rule;
 import com.bstek.dorado.idesupport.model.RuleSet;
 import com.bstek.dorado.idesupport.output.RuleSetOutputter;
@@ -32,7 +34,8 @@ public class StandaloneRuleSetBuilderTest extends IdeSupportContextTestCase {
 	private String outputTemplateToFile() throws Exception {
 		RuleTemplateManager ruleTemplateManager = getRuleTemplateBuilder()
 				.getRuleTemplateManager();
-		File file = File.createTempFile("rules", "xml");
+		// File file = File.createTempFile("rules", "xml");
+		File file = new File("e:/temp/rule.xml");
 		getRuleSetOutputter().output(new FileWriter(file), ruleTemplateManager);
 		return file.getAbsolutePath();
 	}
@@ -45,9 +48,43 @@ public class StandaloneRuleSetBuilderTest extends IdeSupportContextTestCase {
 		assertNotNull(ruleSet);
 		assertFalse(ruleSet.getRuleMap().isEmpty());
 
+		Rule modelRule = ruleSet.getRule("Model");
+		assertNotNull(modelRule);
+
+		Child dataTypeChild = modelRule.getChild("DataType");
+		assertNotNull(dataTypeChild);
+
+		Rule dataTypeRule = ruleSet.getRule("DataType");
+		assertNotNull(dataTypeRule);
+		assertEquals("DataType", dataTypeRule.getNodeName());
+		assertFalse(dataTypeRule.isAbstract());
+
+		Child propertyDef = dataTypeRule.getChild("PropertyDef");
+		assertNotNull(propertyDef);
+
+		Set<Rule> concreteRules = propertyDef.getConcreteRules();
+		assertNotNull(concreteRules);
+
+		Property primitiveProperty = dataTypeRule.getPrimitiveProperty("impl");
+		assertNotNull(primitiveProperty);
+
+		Rule directDataProviderRule = ruleSet.getRule("DirectDataProvider");
+		assertNotNull(directDataProviderRule);
+		assertEquals("DataProvider", directDataProviderRule.getNodeName());
+		assertEquals(null, directDataProviderRule.getLabel());
+		assertFalse(directDataProviderRule.isAbstract());
+
+		primitiveProperty = directDataProviderRule.getPrimitiveProperty("impl");
+		assertNotNull(primitiveProperty);
+
+		Rule[] subRules = dataTypeChild.getRule().getSubRules();
+		assertNotNull(subRules);
+
 		Rule viewRule = ruleSet.getRule("View");
 		assertNotNull(viewRule);
-		assertNotNull(viewRule.getType());
+
+		Rule defaultViewRule = ruleSet.getRule("DefaultView");
+		assertNotNull(defaultViewRule);
 
 		assertNotNull(ruleSet.getRule("AnchorLayout"));
 		assertNotNull(ruleSet.getRule("LayoutHolder"));
@@ -56,6 +93,7 @@ public class StandaloneRuleSetBuilderTest extends IdeSupportContextTestCase {
 
 		Rule componentRule = ruleSet.getRule("Component");
 		Rule controlRule = ruleSet.getRule("Control");
+		Rule containerRule = ruleSet.getRule("Container");
 		Rule datasetRule = ruleSet.getRule("DataSet");
 		Rule panelRule = ruleSet.getRule("Panel");
 		Rule buttonRule = ruleSet.getRule("Button");
@@ -63,6 +101,7 @@ public class StandaloneRuleSetBuilderTest extends IdeSupportContextTestCase {
 
 		assertTrue(datasetRule.isSubRuleOf(componentRule));
 		assertTrue(controlRule.isSubRuleOf(componentRule));
+		assertTrue(containerRule.isSubRuleOf(componentRule));
 		assertTrue(buttonRule.isSubRuleOf(componentRule));
 		assertTrue(buttonRule.isSubRuleOf(controlRule));
 		assertTrue(autoFormRule.isSubRuleOf(controlRule));
@@ -70,11 +109,21 @@ public class StandaloneRuleSetBuilderTest extends IdeSupportContextTestCase {
 		assertFalse(datasetRule.isSubRuleOf(controlRule));
 		assertFalse(componentRule.isSubRuleOf(controlRule));
 
+		Set<Rule> componentRules = containerRule.getChild("Children")
+				.getConcreteRules();
+		assertFalse(componentRules.contains(defaultViewRule));
+
+		Rule toolBarButtonRule = ruleSet.getRule("Button_1");
+		assertNotNull(toolBarButtonRule);
+		assertEquals("ToolBar", toolBarButtonRule.getCategory());
+		assertFalse(componentRules.contains(toolBarButtonRule));
+
 		assertNotNull(viewRule.getPrimitiveProperty("listener"));
 		assertNotNull(datasetRule.getPrimitiveProperty("id"));
 		assertNotNull(panelRule.getPrimitiveProperty("id"));
 
 		Child child = autoFormRule.getChild("AutoFormElement");
 		assertNotNull(child);
+
 	}
 }

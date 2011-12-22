@@ -2,25 +2,34 @@ package com.bstek.dorado.view.widget.data;
 
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.data.entity.EntityUtils;
 import com.bstek.dorado.data.provider.DataProvider;
 import com.bstek.dorado.data.provider.PagingList;
 import com.bstek.dorado.data.type.DataType;
+import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Component;
 
 /**
  * 数据集。
+ * 
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Jan 19, 2008
  */
-@Widget(name = "DataSet", category = "General", dependsPackage = "widget")
-@ViewObject(prototype = "dorado.widget.DataSet", shortTypeName = "DataSet")
-@XmlNode(nodeName = "DataSet")
-@ClientEvents( { @ClientEvent(name = "onDataLoad") })
+@Widget(name = "DataSet", category = "General", dependsPackage = "widget",
+		autoGenerateId = true)
+@XmlNode(
+		nodeName = "DataSet",
+		definitionType = "com.bstek.dorado.view.config.definition.DataSetDefinition",
+		parser = "spring:dorado.dataSetParser")
+@ClientObject(prototype = "dorado.widget.DataSet", shortTypeName = "DataSet",
+		properties = @ClientProperty(propertyName = "data",
+				outputter = "spring:dorado.dataSetDataPropertyOutputter"))
+@ClientEvents({ @ClientEvent(name = "onDataLoad") })
 public class DataSet extends Component {
 	private DataType dataType;
 	private DataProvider dataProvider;
@@ -47,7 +56,9 @@ public class DataSet extends Component {
 	/**
 	 * 返回装载数据时使用的参数，及传递给数据提供器的参数。
 	 */
-	@ViewAttribute(outputter = "dorado.doradoMapPropertyOutputter", editor = "any")
+	@XmlProperty
+	@ClientProperty(outputter = "spring:dorado.doradoMapPropertyOutputter")
+	@IdeProperty(editor = "any", highlight = 1)
 	public Object getParameter() {
 		return parameter;
 	}
@@ -62,7 +73,9 @@ public class DataSet extends Component {
 	/**
 	 * 返回被封装数据的数据类型。
 	 */
-	@ViewAttribute(outputter = "dorado.dataTypePropertyOutputter")
+	@XmlProperty(ignored = true)
+	@ClientProperty
+	@IdeProperty(highlight = 1)
 	public DataType getDataType() {
 		return dataType;
 	}
@@ -77,7 +90,9 @@ public class DataSet extends Component {
 	/**
 	 * 返回数据集对应的数据提供器。
 	 */
-	@ViewAttribute(outputter = "dorado.dataProviderOutputter")
+	@XmlProperty(ignored = true)
+	@ClientProperty(outputter = "spring:dorado.dataProviderPropertyOutputter")
+	@IdeProperty(highlight = 1)
 	public DataProvider getDataProvider() {
 		return dataProvider;
 	}
@@ -92,13 +107,14 @@ public class DataSet extends Component {
 	/**
 	 * @return the loadMode
 	 */
-	@ViewAttribute(defaultValue = "lazy")
+	@ClientProperty(escapeValue = "lazy")
 	public LoadMode getLoadMode() {
 		return loadMode;
 	}
 
 	/**
-	 * @param loadMode the loadMode to set
+	 * @param loadMode
+	 *            the loadMode to set
 	 */
 	public void setLoadMode(LoadMode loadMode) {
 		this.loadMode = loadMode;
@@ -116,8 +132,7 @@ public class DataSet extends Component {
 		if (data == null && dataProvider != null) {
 			if (pageSize > 0) {
 				data = new PagingList(dataProvider, parameter, pageSize);
-			}
-			else {
+			} else {
 				data = dataProvider.getResult(parameter);
 			}
 		}

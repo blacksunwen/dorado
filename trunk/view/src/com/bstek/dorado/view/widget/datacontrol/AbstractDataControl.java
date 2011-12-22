@@ -2,7 +2,7 @@ package com.bstek.dorado.view.widget.datacontrol;
 
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
-import com.bstek.dorado.annotation.ViewAttribute;
+import com.bstek.dorado.view.annotation.ComponentReference;
 import com.bstek.dorado.view.widget.Control;
 
 /**
@@ -16,7 +16,7 @@ public abstract class AbstractDataControl extends Control implements
 	private String dataSet;
 	private String dataPath;
 
-	@ViewAttribute(referenceComponentName = "DataSet")
+	@ComponentReference("DataSet")
 	public String getDataSet() {
 		return dataSet;
 	}

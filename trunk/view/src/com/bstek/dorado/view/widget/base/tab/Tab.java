@@ -4,8 +4,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.common.Ignorable;
@@ -20,8 +21,8 @@ import com.bstek.dorado.view.widget.RenderableElement;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2009-11-4
  */
-@XmlNode(nodeName = "Tab")
-@ViewObject(prototype = "dorado.widget.tab.Tab", shortTypeName = "Tab")
+@XmlNode(implTypes = "com.bstek.dorado.view.widget.base.tab.*")
+@ClientObject(prototype = "dorado.widget.tab.Tab", shortTypeName = "Tab")
 public class Tab implements RenderableElement, Ignorable, TagSupport,
 		MetaDataSupport, ViewElement {
 	private ViewElement parent;
@@ -157,7 +158,7 @@ public class Tab implements RenderableElement, Ignorable, TagSupport,
 		this.style = style;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isVisible() {
 		return visible;
 	}
@@ -182,7 +183,7 @@ public class Tab implements RenderableElement, Ignorable, TagSupport,
 		this.ignored = ignored;
 	}
 
-	@ViewAttribute(editor = "any")
+	@IdeProperty(editor = "any")
 	public Object getUserData() {
 		return userData;
 	}
@@ -200,7 +201,7 @@ public class Tab implements RenderableElement, Ignorable, TagSupport,
 	}
 
 	@XmlProperty(composite = true)
-	@ViewAttribute(outputter = "#ignore")
+	@ClientProperty(ignored = true)
 	public Map<String, Object> getMetaData() {
 		return metaData;
 	}

@@ -4,28 +4,30 @@ import java.util.Date;
 
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Control;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-8-7
  */
-@Widget(name = "DatePicker", category = "General", dependsPackage = "base-widget")
-@ViewObject(prototype = "dorado.widget.DatePicker", shortTypeName = "DatePicker")
+@Widget(name = "DatePicker", category = "General",
+		dependsPackage = "base-widget")
 @XmlNode(nodeName = "DatePicker")
-@ClientEvents({ @ClientEvent(name = "onPick"),
-		@ClientEvent(name = "onCancel"), @ClientEvent(name = "onRefreshDateCell") })
+@ClientObject(prototype = "dorado.widget.DatePicker",
+		shortTypeName = "DatePicker")
+@ClientEvents({ @ClientEvent(name = "onPick"), @ClientEvent(name = "onCancel"),
+		@ClientEvent(name = "onRefreshDateCell") })
 public class DatePicker extends Control {
 	private Date date;
 	private boolean showTimeSpinner = false;
 	private boolean showConfirmButton = true;
 	private boolean showTodayButton = true;
 	private boolean showClearButton = true;
-	
+
 	public Date getDate() {
 		return date;
 	}
@@ -33,8 +35,8 @@ public class DatePicker extends Control {
 	public void setDate(Date date) {
 		this.date = date;
 	}
-	
-	@ViewAttribute(defaultValue = "false")
+
+	@ClientProperty(escapeValue = "false")
 	public boolean getShowTimeSpinner() {
 		return showTimeSpinner;
 	}
@@ -42,8 +44,8 @@ public class DatePicker extends Control {
 	public void setShowTimeSpinner(boolean showTimeSpinner) {
 		this.showTimeSpinner = showTimeSpinner;
 	}
-	
-	@ViewAttribute(defaultValue = "true")
+
+	@ClientProperty(escapeValue = "true")
 	public boolean isShowConfirmButton() {
 		return showConfirmButton;
 	}
@@ -51,8 +53,8 @@ public class DatePicker extends Control {
 	public void setShowConfirmButton(boolean showConfirmButton) {
 		this.showConfirmButton = showConfirmButton;
 	}
-	
-	@ViewAttribute(defaultValue = "true")
+
+	@ClientProperty(escapeValue = "true")
 	public boolean isShowTodayButton() {
 		return showTodayButton;
 	}
@@ -60,13 +62,13 @@ public class DatePicker extends Control {
 	public void setShowTodayButton(boolean showTodayButton) {
 		this.showTodayButton = showTodayButton;
 	}
-	
-	@ViewAttribute(defaultValue = "true")
+
+	@ClientProperty(escapeValue = "true")
 	public boolean isShowClearButton() {
 		return showClearButton;
 	}
 
 	public void setShowClearButton(boolean showClearButton) {
 		this.showClearButton = showClearButton;
-	}	
+	}
 }

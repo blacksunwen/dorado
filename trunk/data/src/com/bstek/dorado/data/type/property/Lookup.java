@@ -5,6 +5,11 @@ import java.util.List;
 
 import org.apache.commons.collections.keyvalue.MultiKey;
 
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.XmlProperty;
+import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.data.provider.DataProvider;
 import com.bstek.dorado.util.Assert;
 import com.bstek.dorado.util.proxy.ChildrenListSupport;
@@ -15,6 +20,8 @@ import com.bstek.dorado.util.proxy.ChildrenListSupport;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Apirl 22, 2007
  */
+@XmlNode(parser = "spring:dorado.lookupParser")
+@ClientObject(prototype = "dorado.Lookup", shortTypeName = "Lookup")
 public class Lookup extends LazyPropertyDef {
 
 	private class ConstraintList<E> extends ChildrenListSupport<E> {
@@ -51,6 +58,8 @@ public class Lookup extends LazyPropertyDef {
 		cacheKey = null;
 	}
 
+	@XmlProperty(ignored = true)
+	@ClientProperty(outputter = "spring:dorado.dataProviderPropertyOutputter")
 	public DataProvider getDataProvider() {
 		return dataProvider;
 	}
@@ -60,10 +69,12 @@ public class Lookup extends LazyPropertyDef {
 		return constraint;
 	}
 
+	@XmlSubNode
 	public List<LookupConstraint> getConstraints() {
 		return constraints;
 	}
 
+	@XmlProperty(parser = "spring:dorado.staticDataPropertyParser")
 	public String getLookupProperty() {
 		return lookupProperty;
 	}
@@ -76,6 +87,7 @@ public class Lookup extends LazyPropertyDef {
 		return true;
 	}
 
+	@ClientProperty(ignored = true)
 	public int getCacheTimeToIdleSeconds() {
 		return cacheTimeToIdleSeconds;
 	}
@@ -87,6 +99,7 @@ public class Lookup extends LazyPropertyDef {
 	/**
 	 * 返回缓存过期前的存活时间（单位：秒）。
 	 */
+	@ClientProperty(ignored = true)
 	public int getCacheTimeToLiveSeconds() {
 		return cacheTimeToLiveSeconds;
 	}

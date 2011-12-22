@@ -23,4 +23,5 @@ public class DataConfigEngineStartupListener extends EngineStartupListener {
 	public void onStartup() throws Exception {
 		dataConfigManager.initialize();
 	}
+
 }

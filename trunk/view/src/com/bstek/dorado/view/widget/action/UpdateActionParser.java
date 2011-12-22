@@ -2,6 +2,7 @@ package com.bstek.dorado.view.widget.action;
 
 import org.w3c.dom.Element;
 
+import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.config.ParseContext;
 import com.bstek.dorado.config.definition.DefinitionReference;
 import com.bstek.dorado.config.definition.ObjectDefinition;
@@ -14,6 +15,7 @@ import com.bstek.dorado.view.widget.ComponentParser;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since May 14, 2009
  */
+@XmlNode(parser = "spring:dorado.updateActionParser")
 public class UpdateActionParser extends ComponentParser {
 
 	@Override

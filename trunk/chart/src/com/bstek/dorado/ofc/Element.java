@@ -4,15 +4,18 @@ import java.util.List;
 import java.util.Map;
 
 import com.bstek.dorado.annotation.ClientEvents;
-import com.bstek.dorado.annotation.ViewAttribute;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.common.event.ClientEvent;
 import com.bstek.dorado.common.event.ClientEventHolder;
 import com.bstek.dorado.common.event.ClientEventSupported;
+import com.bstek.dorado.view.annotation.ComponentReference;
 import com.bstek.dorado.view.widget.datacontrol.DataControl;
 
-@ClientEvents( { @com.bstek.dorado.annotation.ClientEvent(name = "onClick") })
-public class Element implements ClientEventSupported, DataControl {
+@XmlNode(implTypes = "com.bstek.dorado.ofc.element.*")
+@ClientEvents({ @com.bstek.dorado.annotation.ClientEvent(name = "onClick") })
+public abstract class Element implements ClientEventSupported, DataControl {
 	private String[] colors;
 	private String values;
 	private int fontSize;
@@ -23,7 +26,7 @@ public class Element implements ClientEventSupported, DataControl {
 	private String dataPath;
 	private ClientEventHolder clientEventHolder = new ClientEventHolder(this);
 
-	@ViewAttribute(referenceComponentName = "DataSet")
+	@ComponentReference("DataSet")
 	public String getDataSet() {
 		return dataSet;
 	}
@@ -39,9 +42,9 @@ public class Element implements ClientEventSupported, DataControl {
 	public void setDataPath(String dataPath) {
 		this.dataPath = dataPath;
 	}
-	
-	@XmlProperty(parser="dorado.stringArrayPropertyParser")
-	@ViewAttribute(outputter = "dorado.defaultPropertyOutputter")
+
+	@XmlProperty
+	@ClientProperty
 	public String[] getColors() {
 		return colors;
 	}

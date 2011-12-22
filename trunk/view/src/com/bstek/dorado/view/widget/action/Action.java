@@ -2,19 +2,19 @@ package com.bstek.dorado.view.widget.action;
 
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.IdeProperty;
+import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Component;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since May 13, 2009
  */
-@Widget(name = "Action", category = "Action", dependsPackage = "base-widget")
-@ViewObject(prototype = "dorado.widget.Action", shortTypeName = "Action")
-@XmlNode(nodeName = "Action")
+@Widget(name = "Action", category = "Action", dependsPackage = "base-widget",
+		autoGenerateId = true)
+@ClientObject(prototype = "dorado.widget.Action", shortTypeName = "Action")
 @ClientEvents({ @ClientEvent(name = "beforeExecute"),
 		@ClientEvent(name = "onExecute"), @ClientEvent(name = "onSuccess"),
 		@ClientEvent(name = "onFailure") })
@@ -71,7 +71,8 @@ public class Action extends Component {
 		this.disabled = disabled;
 	}
 
-	@ViewAttribute(outputter = "dorado.doradoMapPropertyOutputter", editor = "any")
+	@ClientProperty(outputter = "spring:dorado.doradoMapPropertyOutputter")
+	@IdeProperty(editor = "any")
 	public Object getParameter() {
 		return parameter;
 	}
@@ -80,7 +81,7 @@ public class Action extends Component {
 		this.parameter = parameter;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isAsync() {
 		return async;
 	}
@@ -89,7 +90,8 @@ public class Action extends Component {
 		this.async = async;
 	}
 
-	@ViewAttribute(enumValues = "f1,f2,ctrl+s,alt+s,shift+s,ctrl+alt+shift+s,space,backspace,left,right,up,down")
+	@IdeProperty(
+			enumValues = "f1,f2,ctrl+s,alt+s,shift+s,ctrl+alt+shift+s,space,backspace,left,right,up,down")
 	public String getHotkey() {
 		return hotkey;
 	}

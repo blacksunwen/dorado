@@ -6,18 +6,20 @@ import java.util.Map;
 /**
  * 实现利用反射从给定的一组Class类型中寻找最匹配者功能的集合类。<br>
  * 为了提高执行效率，此集合类会缓存每次进行匹配运算后得到的结果。
+ * 
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Apr 10, 2008
  */
-public class ClassTypeRegistry {
-	private static class AnonymousClass extends Object {};
+public class ClassTypeRegistry<T> {
+	private static class AnonymousClass extends Object {
+	};
 
 	private final static Class<?> NULL_CLASS = AnonymousClass.class;
 	private final static Object NULL_OBJECT = new Object();
 
-	private Map<Class<?>, Object> typeMap = new HashMap<Class<?>, Object>();
-	private Map<Class<?>, Object> typeMatchingCache = new HashMap<Class<?>, Object>();
-	private Map<Class<?>, Object> valueMatchingCache = new HashMap<Class<?>, Object>();
+	private Map<Class<?>, T> typeMap = new HashMap<Class<?>, T>();
+	private Map<Class<?>, Class<?>> typeMatchingCache = new HashMap<Class<?>, Class<?>>();
+	private Map<Class<?>, T> valueMatchingCache = new HashMap<Class<?>, T>();
 
 	private void clearCache() {
 		typeMatchingCache.clear();
@@ -26,17 +28,22 @@ public class ClassTypeRegistry {
 
 	/**
 	 * 向集合中注册一种Class类型及与该类型关联的数据。
-	 * @param type 要注册的Class类型
-	 * @param value 与类型关联的数据
+	 * 
+	 * @param type
+	 *            要注册的Class类型
+	 * @param value
+	 *            与类型关联的数据
 	 */
-	public void registerType(Class<?> type, Object value) {
+	public void registerType(Class<?> type, T value) {
 		typeMap.put(type, value);
 		clearCache();
 	}
 
 	/**
 	 * 从集合中注销一种Class类型。
-	 * @param type 要注销的Class类型
+	 * 
+	 * @param type
+	 *            要注销的Class类型
 	 */
 	public void unregisterType(Class<?> type) {
 		typeMap.remove(type);
@@ -45,7 +52,9 @@ public class ClassTypeRegistry {
 
 	/**
 	 * 根据给定的Class类型从已注册Class类型中的寻找最为匹配的类型。
-	 * @param type 给定的Class类型
+	 * 
+	 * @param type
+	 *            给定的Class类型
 	 * @return 最匹配的Class类型
 	 */
 	public Class<?> getMatchingType(Class<?> type) {
@@ -55,8 +64,7 @@ public class ClassTypeRegistry {
 				if (tmpType.isAssignableFrom(type)) {
 					if (matchingType == null) {
 						matchingType = tmpType;
-					}
-					else {
+					} else {
 						if (matchingType.isAssignableFrom(tmpType)) {
 							matchingType = tmpType;
 						}
@@ -76,18 +84,21 @@ public class ClassTypeRegistry {
 
 	/**
 	 * 根据给定的Class类型从已注册Class类型中的寻找最为匹配的数据。
-	 * @param type 给定的Class类型
+	 * 
+	 * @param type
+	 *            给定的Class类型
 	 * @return 最匹配的数据
 	 */
-	public Object getMatchingValue(Class<?> type) {
-		Object matchingValue = valueMatchingCache.get(type);
+	@SuppressWarnings("unchecked")
+	public T getMatchingValue(Class<?> type) {
+		T matchingValue = valueMatchingCache.get(type);
 		if (matchingValue == null) {
 			Class<?> matchingType = getMatchingType(type);
 			if (matchingType != null) {
 				matchingValue = typeMap.get(matchingType);
 			}
-			valueMatchingCache.put(type, (matchingValue == null) ? NULL_OBJECT
-					: matchingValue);
+			valueMatchingCache.put(type,
+					(matchingValue == null) ? (T) NULL_OBJECT : matchingValue);
 		}
 
 		if (matchingValue == NULL_OBJECT) {

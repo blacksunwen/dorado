@@ -1,9 +1,11 @@
 package com.bstek.dorado.ofc.axis;
 
-import com.bstek.dorado.annotation.ViewAttribute;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlNode;
 
-@XmlNode( nodeName = "AxisLabel" )
+@XmlNode
+@ClientObject
 public class AxisLabel {
 	private String color;
 	private int rotate;
@@ -43,7 +45,7 @@ public class AxisLabel {
 		this.text = text;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isVisible() {
 		return visible;
 	}

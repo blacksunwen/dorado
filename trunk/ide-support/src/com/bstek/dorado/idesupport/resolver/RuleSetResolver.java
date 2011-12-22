@@ -36,8 +36,8 @@ public class RuleSetResolver extends AbstractTextualResolver {
 	}
 
 	@Override
-	protected void execute(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+	public void execute(HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
 		RuleTemplateManager ruleTemplateManager = ruleTemplateBuilder
 				.getRuleTemplateManager();
 		PrintWriter writer = getWriter(request, response);

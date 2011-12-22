@@ -4,11 +4,11 @@ import java.util.Map;
 
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
+import com.bstek.dorado.view.annotation.Widget;
 
 /**
  * 控件的抽象类。
@@ -18,8 +18,11 @@ import com.bstek.dorado.annotation.XmlProperty;
  */
 
 @Widget(name = "Control", category = "General", dependsPackage = "widget")
-@ViewObject(prototype = "dorado.widget.Control", shortTypeName = "Control")
-@XmlNode(nodeName = "Control")
+@XmlNode(
+		definitionType = "com.bstek.dorado.view.config.definition.ControlDefinition",
+		parser = "spring:dorado.controlParser")
+@ClientObject(prototype = "dorado.widget.Control", shortTypeName = "Control",
+		outputter = "spring:dorado.controlOutputter")
 @ClientEvents({ @ClientEvent(name = "onCreateDom"),
 		@ClientEvent(name = "beforeRefreshDom"),
 		@ClientEvent(name = "onRefreshDom"), @ClientEvent(name = "onClick"),
@@ -53,6 +56,9 @@ public class Control extends Component implements HtmlElement,
 	private boolean droppable;
 	private String droppableTags;
 
+	@XmlProperty(parser = "spring:dorado.layoutConstraintParser")
+	@ClientProperty(
+			outputter = "spring:dorado.layoutConstraintPropertyOutputter")
 	public Object getLayoutConstraint() {
 		return layoutConstraint;
 	}
@@ -93,8 +99,8 @@ public class Control extends Component implements HtmlElement,
 		this.exClassName = exClassName;
 	}
 
-	@XmlProperty(composite = true)
-	@ViewAttribute(outputter = "dorado.stylePropertyOutputter")
+	@XmlProperty(parser = "spring:dorado.styleParser", composite = true)
+	@ClientProperty(outputter = "spring:dorado.stylePropertyOutputter")
 	public Map<String, Object> getStyle() {
 		return style;
 	}
@@ -127,7 +133,7 @@ public class Control extends Component implements HtmlElement,
 		this.tip = tip;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isVisible() {
 		return visible;
 	}
@@ -136,7 +142,7 @@ public class Control extends Component implements HtmlElement,
 		this.visible = visible;
 	}
 
-	@ViewAttribute(defaultValue = "visibility")
+	@ClientProperty(escapeValue = "visibility")
 	public HideMode getHideMode() {
 		return hideMode;
 	}

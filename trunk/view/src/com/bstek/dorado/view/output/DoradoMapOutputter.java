@@ -14,7 +14,7 @@ import com.bstek.dorado.data.provider.Page;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2011-6-14
  */
-public class DoradoMapOutputter extends DataPropertyOutputter {
+public class DoradoMapOutputter extends DataOutputter {
 
 	@Override
 	public void output(Object object, OutputContext context) throws Exception {

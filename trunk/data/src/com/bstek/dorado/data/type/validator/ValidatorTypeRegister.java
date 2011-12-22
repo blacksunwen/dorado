@@ -5,9 +5,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
 
-import com.bstek.dorado.config.Parser;
-import com.bstek.dorado.data.config.xml.GenericObjectParser;
-
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-7-27
@@ -19,7 +16,6 @@ public class ValidatorTypeRegister implements InitializingBean {
 	private ValidatorTypeRegistry validatorTypeRegistry;
 	private String type;
 	private String classType;
-	private Parser parser;
 
 	public void setValidatorTypeRegistry(
 			ValidatorTypeRegistry validatorTypeRegistry) {
@@ -54,29 +50,11 @@ public class ValidatorTypeRegister implements InitializingBean {
 		this.classType = classType;
 	}
 
-	/**
-	 * 返回对应的配置解析器。
-	 */
-	public Parser getParser() {
-		return parser;
-	}
-
-	/**
-	 * 设置对应的配置解析器。
-	 */
-	public void setParser(Parser parser) {
-		this.parser = parser;
-	}
-
 	public void afterPropertiesSet() throws Exception {
 		try {
 			Class<?> cl = ClassUtils.getClass(classType);
 			ValidatorTypeRegisterInfo registerInfo = new ValidatorTypeRegisterInfo(
 					type, cl);
-			if (parser instanceof GenericObjectParser) {
-				((GenericObjectParser) parser).setDefaultImpl(classType);
-			}
-			registerInfo.setParser(parser);
 			validatorTypeRegistry.registerType(registerInfo);
 		} catch (ClassNotFoundException e) {
 			logger.equals(e);

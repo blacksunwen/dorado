@@ -1,7 +1,8 @@
 package com.bstek.dorado.data.provider;
 
+import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.core.bean.Scope;
-import com.bstek.dorado.core.io.Resource;
 import com.bstek.dorado.data.DataModelObject;
 import com.bstek.dorado.data.type.DataType;
 
@@ -24,6 +25,14 @@ import com.bstek.dorado.data.type.DataType;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Mar 8, 2007
  */
+@XmlNode(
+		nodeName = "DataProvider",
+		parser = "spring:dorado.prototype.dataProviderParser",
+		definitionType = "com.bstek.dorado.data.config.definition.DataProviderDefinition",
+		scopable = true, inheritable = true, properties = {
+				@XmlProperty(propertyName = "overwrite", ignored = true),
+				@XmlProperty(propertyName = "interceptor",
+						parser = "spring:dorado.staticPropertyParser") })
 public interface DataProvider extends DataModelObject {
 
 	/**
@@ -35,15 +44,6 @@ public interface DataProvider extends DataModelObject {
 	 * 返回作用范围。
 	 */
 	Scope getScope();
-
-	/**
-	 * 返回DataProvider归属的文件资源。<br>
-	 * DataProvider归属的资源是指该DataProvider定义在哪个配置文件中。
-	 * 如果DataProvider并非由配置文件产生，那么该方法将返回null。
-	 * 
-	 * @return 文件资源描述对象
-	 */
-	Resource getResource();
 
 	/**
 	 * 返回结果的数据类型。

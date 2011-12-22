@@ -59,6 +59,12 @@ public class ClientEventRegistry {
 		eventMap.put(eventName, clientEventRegisterInfo);
 	}
 
+	public static Map<String, ClientEventRegisterInfo> getOwnClientEventRegisterInfos(
+			Class<?> type) {
+		collectClientEventRegisterInfosFromSingleType(type);
+		return typeMap.get(type);
+	}
+
 	private synchronized static void collectClientEventRegisterInfos(
 			Map<String, ClientEventRegisterInfo> eventMap, Class<?> type) {
 		Class<?> superType = type.getSuperclass();
@@ -72,6 +78,16 @@ public class ClientEventRegistry {
 			collectClientEventRegisterInfos(eventMap, interfaceType);
 		}
 
+		collectClientEventRegisterInfosFromSingleType(type);
+
+		Map<String, ClientEventRegisterInfo> selfEventMap = typeMap.get(type);
+		if (selfEventMap != null) {
+			eventMap.putAll(selfEventMap);
+		}
+	}
+
+	protected static void collectClientEventRegisterInfosFromSingleType(
+			Class<?> type) {
 		if (!processedTypes.contains(type)) {
 			processedTypes.add(type);
 
@@ -90,11 +106,6 @@ public class ClientEventRegistry {
 				}
 			}
 		}
-
-		Map<String, ClientEventRegisterInfo> selfEventMap = typeMap.get(type);
-		if (selfEventMap != null) {
-			eventMap.putAll(selfEventMap);
-		}
 	}
 
 	/**
@@ -107,10 +118,6 @@ public class ClientEventRegistry {
 	@SuppressWarnings("unchecked")
 	public static Map<String, ClientEventRegisterInfo> getClientEventRegisterInfos(
 			Class<? extends ClientEventSupported> type) {
-		if (!ClientEventSupported.class.isAssignableFrom(type)) {
-			return null;
-		}
-
 		Map<String, ClientEventRegisterInfo> eventMap = typeMapCache.get(type);
 		if (eventMap == null) {
 			eventMap = new HashMap<String, ClientEventRegisterInfo>();

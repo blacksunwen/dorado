@@ -1,23 +1,21 @@
 package com.bstek.dorado.view.widget.form;
 
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.view.annotation.Widget;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-9-24
  */
 @Widget(name = "NumberSpinner", category = "Form", dependsPackage = "base-widget")
-@ViewObject(prototype = "dorado.widget.NumberSpinner", shortTypeName = "NumberSpinner")
-@XmlNode(nodeName = "NumberSpinner")
+@ClientObject(prototype = "dorado.widget.NumberSpinner", shortTypeName = "NumberSpinner")
 public class NumberSpinner extends Spinner {
 	private int min = Integer.MIN_VALUE;
 	private int max = Integer.MAX_VALUE;
 	private boolean selectTextOnFocus = true;
 
-	@ViewAttribute(defaultValue = "-2147483648")
+	@ClientProperty(escapeValue = "-2147483648")
 	public int getMin() {
 		return min;
 	}
@@ -26,7 +24,7 @@ public class NumberSpinner extends Spinner {
 		this.min = min;
 	}
 
-	@ViewAttribute(defaultValue = "2147483647")
+	@ClientProperty(escapeValue = "2147483647")
 	public int getMax() {
 		return max;
 	}
@@ -35,7 +33,7 @@ public class NumberSpinner extends Spinner {
 		this.max = max;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isSelectTextOnFocus() {
 		return selectTextOnFocus;
 	}

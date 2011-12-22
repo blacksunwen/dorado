@@ -12,7 +12,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.data.entity.EntityWrapper;
 import com.bstek.dorado.data.type.property.Mapping;
-import com.bstek.dorado.view.output.DataPropertyOutputter;
+import com.bstek.dorado.view.output.DataOutputter;
 import com.bstek.dorado.view.output.JsonBuilder;
 import com.bstek.dorado.view.output.OutputContext;
 
@@ -20,7 +20,7 @@ import com.bstek.dorado.view.output.OutputContext;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2011-4-13
  */
-public class MappingPropertyOutputter extends DataPropertyOutputter {
+public class MappingPropertyOutputter extends DataOutputter {
 	@SuppressWarnings("rawtypes")
 	public boolean isEscapeValue(Object value) {
 		boolean shouldEscape = (value == null);

@@ -27,7 +27,6 @@ public class CompositePropertyParser extends ObjectParser {
 	private TextParser textParser;
 	private PropertyParser defaultPropertyParser;
 	private boolean open;
-	private boolean annotationProcessed;
 
 	@Override
 	public void setScopable(boolean scopable) {
@@ -36,11 +35,6 @@ public class CompositePropertyParser extends ObjectParser {
 
 	@Override
 	public void setInheritable(boolean inheritable) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void setDefaultImpl(String defaultImpl) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -110,10 +104,6 @@ public class CompositePropertyParser extends ObjectParser {
 				List<Element> childElements = DomUtils.getChildrenByTagName(
 						element, XmlConstants.PROPERTY);
 				if (!childElements.isEmpty()) {
-					if (!annotationProcessed) {
-						annotationProcessed = true;
-						collectAnnotationConfig();
-					}
 					properties = parseSubProperties(childElements, context);
 				}
 			}

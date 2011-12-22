@@ -13,12 +13,7 @@ import com.bstek.dorado.data.config.definition.DataResolverDefinition;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Apr 29, 2009
  */
-public class DataResolverParser extends DataObjectParser {
-
-	public DataResolverParser() {
-		setScopable(true);
-		setInheritable(true);
-	}
+public class DataResolverParser extends GenericObjectParser {
 
 	@Override
 	@SuppressWarnings("unchecked")
@@ -31,12 +26,6 @@ public class DataResolverParser extends DataObjectParser {
 		} else {
 			return null;
 		}
-	}
-
-	@Override
-	protected ObjectDefinition createDefinition(Element element,
-			ParseContext context) {
-		return new DataResolverDefinition();
 	}
 
 	@Override

@@ -13,8 +13,17 @@ import com.bstek.dorado.util.Assert;
  * @since 2009-11-22
  */
 public class RuleSet {
+	private String version;
 	private List<PackageInfo> packageInfos = new ArrayList<PackageInfo>();
 	private Map<String, Rule> ruleMap = new HashMap<String, Rule>();
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
 
 	public List<PackageInfo> getPackageInfos() {
 		return packageInfos;

@@ -8,11 +8,12 @@ import com.bstek.dorado.annotation.XmlSubNode;
 public abstract class JunctionCriterion extends BaseCriterion {
 
 	protected List<BaseCriterion> criterions = new ArrayList<BaseCriterion>();
-	
-	@XmlSubNode(parser = "dorado.criterionsParser" , path="#self")
+
+	@XmlSubNode
 	public List<BaseCriterion> getCriterions() {
 		return criterions;
 	}
+
 	public void addCriterion(BaseCriterion criterion) {
 		criterions.add(criterion);
 	}

@@ -3,8 +3,6 @@ package com.bstek.dorado.view.registry;
 
 import com.bstek.dorado.core.Context;
 import com.bstek.dorado.view.ViewContextTestCase;
-import com.bstek.dorado.view.registry.ComponentTypeRegisterInfo;
-import com.bstek.dorado.view.registry.ComponentTypeRegistry;
 import com.bstek.dorado.view.widget.MockDataSet;
 
 public class DefaultComponentRegistryTest extends ViewContextTestCase {

@@ -2,17 +2,17 @@ package com.bstek.dorado.desktop;
 
 import java.util.List;
 
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.XmlNodeWrapper;
 import com.bstek.dorado.annotation.XmlSubNode;
+import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Control;
 import com.bstek.dorado.view.widget.InnerElementReference;
 
 @Widget(name = "Shell", category = "Desktop", dependsPackage = "desktop")
-@ViewObject(prototype = "dorado.widget.desktop.Shell", shortTypeName = "desktop.Shell")
-@XmlNode(nodeName = "Shell")
+@ClientObject(prototype = "dorado.widget.desktop.Shell",
+		shortTypeName = "desktop.Shell")
 public class Shell extends Control {
 	private InnerElementReference<AbstractDesktop> desktopRef = new InnerElementReference<AbstractDesktop>(
 			this);
@@ -25,8 +25,8 @@ public class Shell extends Control {
 	/**
 	 * @return the desktopRef
 	 */
-	@ViewAttribute
-	@XmlSubNode(path = "#self", parser = "dorado.Desktop.DesktopParser")
+	@XmlSubNode
+	@ClientProperty
 	public AbstractDesktop getDesktop() {
 		return desktopRef.get();
 	}
@@ -42,8 +42,8 @@ public class Shell extends Control {
 	/**
 	 * @return the taskbarRef
 	 */
-	@ViewAttribute
 	@XmlSubNode
+	@ClientProperty
 	public Taskbar getTaskbar() {
 		return taskbarRef.get();
 	}
@@ -59,8 +59,8 @@ public class Shell extends Control {
 	/**
 	 * @return the apps
 	 */
-	@ViewAttribute
-	@XmlSubNode(parser = "dorado.Desktop.AppsParser")
+	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "Apps"))
+	@ClientProperty
 	public List<App> getApps() {
 		return apps;
 	}

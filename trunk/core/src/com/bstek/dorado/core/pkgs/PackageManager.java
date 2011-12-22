@@ -6,6 +6,7 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -23,21 +24,23 @@ public final class PackageManager {
 	private static final String PACKAGE_PROPERTIES_LOCATION = "META-INF/dorado-package.properties";
 	private static final String UNKNOWN_VERSION = "<Unknown Version>";
 
-	private static final Map<String, PackageInfo> packageInfosMap = new HashMap<String, PackageInfo>();
+	private static final Map<String, PackageInfo> packageInfosMap = new LinkedHashMap<String, PackageInfo>();
 	private static boolean packageInfoBuilded = false;
 
 	private PackageManager() {
 	}
 
 	private static void calculateDepends(PackageInfo packageInfo,
-			Set<PackageInfo> calculatedPackages) {
+			Set<PackageInfo> calculatedPackages,
+			Map<String, PackageInfo> packageMap) {
 		Dependence[] dependences = packageInfo.getDepends();
 		if (dependences == null || dependences.length == 0) {
+			calculatedPackages.add(packageInfo);
 			return;
 		}
 
 		for (Dependence dependence : dependences) {
-			PackageInfo dependedPackageInfo = packageInfosMap.get(dependence
+			PackageInfo dependedPackageInfo = packageMap.get(dependence
 					.getPackageName());
 			if (dependedPackageInfo == null) {
 				throw new IllegalArgumentException("Depended package  ["
@@ -65,7 +68,8 @@ public final class PackageManager {
 								+ "] found.");
 			}
 
-			calculateDepends(dependedPackageInfo, calculatedPackages);
+			calculateDepends(dependedPackageInfo, calculatedPackages,
+					packageMap);
 		}
 
 		if (!calculatedPackages.contains(packageInfo)) {
@@ -131,6 +135,8 @@ public final class PackageManager {
 	}
 
 	private static void buildPackageInfos() throws Exception {
+		Map<String, PackageInfo> packageMap = new HashMap<String, PackageInfo>();
+
 		Enumeration<URL> defaultContextFileResources = ClassUtils
 				.getDefaultClassLoader().getResources(
 						PACKAGE_PROPERTIES_LOCATION);
@@ -175,7 +181,7 @@ public final class PackageManager {
 				packageInfo.setServletContextLocations(properties
 						.getProperty("servletContextConfigLocations"));
 
-				packageInfosMap.put(packageName, packageInfo);
+				packageMap.put(packageName, packageInfo);
 			} catch (Exception e) {
 				throw new IllegalArgumentException(
 						"Error occured during parsing [" + url.getPath() + "].",
@@ -188,8 +194,13 @@ public final class PackageManager {
 		}
 
 		Set<PackageInfo> calculatedPackages = new LinkedHashSet<PackageInfo>();
-		for (PackageInfo packageInfo : packageInfosMap.values()) {
-			calculateDepends(packageInfo, calculatedPackages);
+		for (PackageInfo packageInfo : packageMap.values()) {
+			calculateDepends(packageInfo, calculatedPackages, packageMap);
+		}
+
+		packageInfosMap.clear();
+		for (PackageInfo packageInfo : calculatedPackages) {
+			packageInfosMap.put(packageInfo.getName(), packageInfo);
 		}
 	}
 

@@ -2,19 +2,22 @@ package com.bstek.dorado.view.type.property.validator;
 
 import java.util.List;
 
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.XmlNode;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-7-27
  */
-@ViewObject(prototype = "dorado.validator.EnumValidator", shortTypeName = "Enum")
+@XmlNode(fixedProperties = "type=enum")
+@ClientObject(prototype = "dorado.validator.EnumValidator",
+		shortTypeName = "Enum")
 public class EnumValidator extends BaseValidator {
 
 	private List<?> enumValues;
 
-	@ViewAttribute(outputter = "dorado.dataPropertyOutputter")
+	@ClientProperty
 	public List<?> getEnumValues() {
 		return enumValues;
 	}

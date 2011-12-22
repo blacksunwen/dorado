@@ -25,6 +25,7 @@ public class OutputContext {
 	private boolean usePrettyJson;
 	private boolean shouldOutputDataTypes = true;
 	private boolean shouldOutputEntityState;
+	private boolean escapeable = false;
 	private Set<String> loadedDataTypes;
 	private Map<String, DataType> includeDataTypes;
 	private Set<String> dependsPackages = new LinkedHashSet<String>();
@@ -111,6 +112,14 @@ public class OutputContext {
 	 */
 	public void setShouldOutputEntityState(boolean shouldOutputEntityState) {
 		this.shouldOutputEntityState = shouldOutputEntityState;
+	}
+
+	public boolean isEscapeable() {
+		return escapeable;
+	}
+
+	public void setEscapeable(boolean escapeable) {
+		this.escapeable = escapeable;
 	}
 
 	public void setLoadedDataTypes(Collection<String> loadedDataTypes) {

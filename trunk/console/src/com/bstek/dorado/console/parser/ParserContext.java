@@ -6,21 +6,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.bstek.dorado.config.Parser;
-import com.bstek.dorado.config.xml.CollectionToPropertyParser;
 import com.bstek.dorado.config.xml.DispatchableXmlParser;
-import com.bstek.dorado.config.xml.ObjectParser;
 import com.bstek.dorado.config.xml.XmlParser;
 import com.bstek.dorado.core.Context;
 
 class ParserContext {
 	private Context doradoContext;
 	private Set<Parser> doneParsers;
-
-	private static Log logger = LogFactory.getLog(ParserContext.class);
 
 	ParserContext() {
 		doradoContext = Context.getCurrent();
@@ -38,12 +31,11 @@ class ParserContext {
 	}
 
 	void properties(Node node) throws Exception {
-		if (node.parser == null)
+		if (node.parser == null) {
 			return;
+		}
 
 		Parser parser = node.parser;
-		this.init(parser);
-
 		if (parser instanceof DispatchableXmlParser) {
 			Map<String, XmlParser> parsers = ((DispatchableXmlParser) parser)
 					.getPropertyParsers();
@@ -66,8 +58,6 @@ class ParserContext {
 			return;
 
 		Parser parentParser = parentNode.parser;
-		this.init(parentParser);
-
 		if (parentParser instanceof DispatchableXmlParser) {
 			Map<String, XmlParser> parsers = ((DispatchableXmlParser) parentParser)
 					.getSubParsers();
@@ -90,19 +80,6 @@ class ParserContext {
 					this.createSubContext().children(node);
 				}
 			}
-		}
-	}
-
-	private void init(Parser parser) {
-		try {
-			if (parser instanceof ObjectParser) {
-				((ObjectParser) parser).init();
-			}
-			if (parser instanceof CollectionToPropertyParser) {
-				((CollectionToPropertyParser) parser).init();
-			}
-		} catch (Exception e) {
-			logger.error("Parser init error.", e);
 		}
 	}
 

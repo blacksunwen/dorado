@@ -12,7 +12,6 @@ import org.w3c.dom.Node;
 
 import com.bstek.dorado.config.ParseContext;
 import com.bstek.dorado.config.xml.ConfigurableDispatchableXmlParser;
-import com.bstek.dorado.core.Context;
 import com.bstek.dorado.idesupport.model.ClientEvent;
 import com.bstek.dorado.idesupport.template.ChildTemplate;
 import com.bstek.dorado.idesupport.template.PropertyTemplate;
@@ -48,9 +47,9 @@ public class RuleTemplateParser extends ConfigurableDispatchableXmlParser {
 		String name = element.getAttribute("name");
 		if (StringUtils.isNotEmpty(name)) {
 			ruleTemplate = parserContext.getRuleTemplateMap().get(name);
-			if (ruleTemplate != null) return ruleTemplate;
-		}
-		else {
+			if (ruleTemplate != null)
+				return ruleTemplate;
+		} else {
 			name = element.getAttribute("nodeName");
 		}
 
@@ -67,21 +66,10 @@ public class RuleTemplateParser extends ConfigurableDispatchableXmlParser {
 			List<RuleTemplate> parentList = new ArrayList<RuleTemplate>();
 			for (String parentName : parents) {
 				RuleTemplate parent = getRuleTemplate(parentName, parserContext);
-				if (parent != null) parentList.add(parent);
+				if (parent != null)
+					parentList.add(parent);
 			}
 			properties.put("parents", parentList.toArray(new RuleTemplate[0]));
-		}
-
-		String parserName = (String) properties.remove("parser");
-		if (StringUtils.isNotEmpty(parserName)) {
-			properties.put("parser", Context.getCurrent().getServiceBean(
-					parserName));
-		}
-
-		String outputterName = (String) properties.remove("outputter");
-		if (StringUtils.isNotEmpty(outputterName)) {
-			properties.put("outputter", Context.getCurrent().getServiceBean(
-					outputterName));
 		}
 		BeanUtils.copyProperties(ruleTemplate, properties);
 

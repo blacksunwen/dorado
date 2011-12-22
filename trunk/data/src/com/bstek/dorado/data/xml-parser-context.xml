@@ -16,27 +16,18 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 		</d:sub-parser>
 	</bean>
 
-	<bean id="dorado.dataObjectsParser" class="com.bstek.dorado.data.config.xml.DataObjectsParser">
-		<property name="globalDataTypeParser" ref="dorado.globalDataTypeParser" />
-		<property name="globalDataProviderParser" ref="dorado.globalDataProviderParser" />
-		<property name="globalDataResolverParser" ref="dorado.globalDataResolverParser" />
-	</bean>
-
 	<!-- XML Parser -->
 	<bean id="dorado.dataObjectParseHelper" class="com.bstek.dorado.data.config.xml.DataObjectParseHelper">
-		<property name="globalDataTypeParser" ref="dorado.globalDataTypeParser" />
-		<property name="innerDataTypeParser" ref="dorado.innerDataTypeParser" />
-		<property name="innerDataProviderParser" ref="dorado.innerDataProviderParser" />
-		<property name="innerDataResolverParser" ref="dorado.innerDataResolverParser" />
+		<property name="dataTypeParser" ref="dorado.dataTypeParser" />
+		<property name="dataProviderParser" ref="dorado.dataProviderParserDispatcher" />
+		<property name="dataResolverParser" ref="dorado.dataResolverParserDispatcher" />
 	</bean>
 
 	<bean id="dorado.genericParser" abstract="true" class="com.bstek.dorado.data.config.xml.GenericParser" parent="dorado.dispatchableXmlParser">
 		<property name="dataObjectParseHelper" ref="dorado.dataObjectParseHelper" />
-		<d:property-parser key="*" value-ref="dorado.dataPropertyParser" />
 	</bean>
 	<bean id="dorado.genericObjectParser" class="com.bstek.dorado.data.config.xml.GenericObjectParser" parent="dorado.objectParser">
 		<property name="dataObjectParseHelper" ref="dorado.dataObjectParseHelper" />
-		<d:property-parser key="*" value-ref="dorado.dataPropertyParser" />
 	</bean>
 	<bean id="dorado.prototype.genericObjectParser" scope="prototype" parent="dorado.genericObjectParser" />
 
@@ -74,76 +65,41 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 	<bean id="dorado.dataPropertyParser" parent="dorado.preloadDataParser" />
 	<bean id="dorado.staticDataPropertyParser" parent="dorado.genericParser" class="com.bstek.dorado.data.config.xml.StaticPropertyParser" />
 
-	<!-- DataType Parser -->
-	<bean id="dorado.dataTypeParserTemplate" abstract="true" parent="dorado.genericObjectParser" class="com.bstek.dorado.data.config.xml.DataTypeParserSupport">
-		<property name="definitionType" value="com.bstek.dorado.data.config.definition.DataTypeDefinition" />
-		<d:property-parser key="name,parent,overwrite,dataType,elementDataType,keyDataType,valueDataType" value-ref="dorado.ignoreParser" />
-		<d:property-parser key="matchType,creationType" value-ref="dorado.classTypePropertyParser" />
-		<d:sub-parser key="PropertyDef" value-ref="dorado.basePropertyDefParser" />
-		<d:sub-parser key="Reference" value-ref="dorado.referencePropertyDefParser" />
-		<d:sub-parser key="Lookup" value-ref="dorado.lookupPropertyDefParser" />
+	<bean id="dorado.dataObjectParserDispatcher" class="com.bstek.dorado.data.config.xml.DataObjectParserDispatcher">
+		<property name="dataTypeParser" ref="dorado.dataTypeParser" />
+		<property name="dataProviderParser" ref="dorado.dataProviderParserDispatcher" />
+		<property name="dataResolverParser" ref="dorado.dataResolverParserDispatcher" />
 	</bean>
-	<bean id="dorado.dataTypeParserSupport" abstract="true" parent="dorado.dataTypeParserTemplate">
-		<d:sub-parser key="ClientEvent" value-ref="dorado.clientEventParser" />
-	</bean>
-	<bean id="dorado.globalDataTypeParser" class="com.bstek.dorado.data.config.xml.GlobalDataTypeParser" parent="dorado.dataTypeParserSupport" />
-	<bean id="dorado.innerDataTypeParser" class="com.bstek.dorado.data.config.xml.InnerDataTypeParser" parent="dorado.dataTypeParserSupport" />
 
-	<bean id="dorado.commonPropertyDefParser" abstract="true" parent="dorado.genericObjectParser">
-		<property name="definitionType" value="com.bstek.dorado.data.config.definition.PropertyDefDefinition" />
-		<d:property-parser key="dataType,dataProvider" value-ref="dorado.ignoreParser" />
-		<d:sub-parser key="ClientEvent" value-ref="dorado.clientEventParser" />
+	<!-- DataType Parser -->
+	<bean id="dorado.dataTypeParser" parent="dorado.genericObjectParser" class="com.bstek.dorado.data.config.xml.DataTypeParser">
+		<property name="impl" value="com.bstek.dorado.data.type.DefaultEntityDataType" />
 	</bean>
-	<bean id="dorado.basePropertyDefParser" class="com.bstek.dorado.data.config.xml.PropertyDefParser" parent="dorado.commonPropertyDefParser">
-		<property name="impl" value="com.bstek.dorado.data.type.property.BasePropertyDef" />
-	</bean>
-	<bean id="dorado.referencePropertyDefParser" class="com.bstek.dorado.data.config.xml.ReferenceParser" parent="dorado.commonPropertyDefParser">
-		<property name="impl" value="com.bstek.dorado.data.type.property.Reference" />
-		<property name="dataParser" ref="dorado.preloadDataParser" />
-		<d:property-parser key="parameter" value-ref="dorado.ignoreParser" />
-	</bean>
-	<bean id="dorado.lookupPropertyDefParser" class="com.bstek.dorado.data.config.xml.LookupParser" parent="dorado.commonPropertyDefParser">
-		<property name="impl" value="com.bstek.dorado.data.type.property.Lookup" />
-		<d:property-parser key="lookupProperty" value-ref="dorado.staticDataPropertyParser" />
-		<d:sub-parser key="Constraint" value-ref="dorado.lookupConstraintParser" />
-	</bean>
-	<bean id="dorado.lookupConstraintParser" class="com.bstek.dorado.data.config.xml.LookupConstraintParser" parent="dorado.genericObjectParser">
-		<property name="impl" value="com.bstek.dorado.data.type.property.LookupConstraint" />
-		<d:property-parser key="lookupKeyProperty" value-ref="dorado.staticDataPropertyParser" />
-	</bean>
+	<bean id="dorado.propertyDefParser" class="com.bstek.dorado.data.config.xml.PropertyDefParser" parent="dorado.genericObjectParser" />
+	<bean id="dorado.referenceParser" class="com.bstek.dorado.data.config.xml.ReferenceParser" parent="dorado.genericObjectParser" />
+	<bean id="dorado.lookupParser" class="com.bstek.dorado.data.config.xml.LookupParser" parent="dorado.genericObjectParser" />
+
 	<bean id="dorado.dataTypePropertyParser" class="com.bstek.dorado.data.config.xml.DataTypePropertyParser" parent="dorado.propertyParser">
 		<property name="dataObjectParseHelper" ref="dorado.dataObjectParseHelper" />
 	</bean>
 
-	<!-- DataProvider Parser -->
-	<bean id="dorado.dataProviderParserDispatcher" abstract="true" parent="dorado.genericParser">
-		<property name="dataProviderTypeRegistry" ref="dorado.dataProviderTypeRegistry" />
-	</bean>
-	<bean id="dorado.globalDataProviderParser" class="com.bstek.dorado.data.config.xml.GlobalDataProviderParser" parent="dorado.dataProviderParserDispatcher" />
-	<bean id="dorado.innerDataProviderParser" class="com.bstek.dorado.data.config.xml.InnerDataProviderParser" parent="dorado.dataProviderParserDispatcher" />
-	<bean id="dorado.dataProviderParser" class="com.bstek.dorado.data.config.xml.DataProviderParser" parent="dorado.genericObjectParser">
-		<property name="dataParser" ref="dorado.preloadDataParser" />
-		<d:property-parser key="type,name,parent,overwrite,parameter,resultDataType" value-ref="dorado.ignoreParser" />
-		<d:property-parser key="interceptor" value-ref="dorado.staticPropertyParser" />
-	</bean>
-	<bean id="dorado.prototype.dataProviderParser" scope="prototype" parent="dorado.dataProviderParser" />
-
-	<!-- DataResolver Parser -->
-	<bean id="dorado.dataResolverParser" class="com.bstek.dorado.data.config.xml.DataResolverParser" parent="dorado.genericObjectParser">
-		<property name="defaultImpl" value="com.bstek.dorado.data.resolver.DefaultDataResolver" />
-		<d:property-parser key="type,name,parent,overwrite,parameter" value-ref="dorado.ignoreParser" />
-		<d:property-parser key="interceptor" value-ref="dorado.staticPropertyParser" />
-	</bean>
-	<bean id="dorado.globalDataResolverParser" class="com.bstek.dorado.data.config.xml.GlobalDataResolverParser" parent="dorado.dataResolverParser" />
-	<bean id="dorado.innerDataResolverParser" class="com.bstek.dorado.data.config.xml.InnerDataResolverParser" parent="dorado.dataResolverParser" />
-
 	<!-- Validator Parser -->
 	<bean id="dorado.validatorParserDispatcher" parent="dorado.genericParser" class="com.bstek.dorado.data.config.xml.ValidatorParserDispatcher">
+		<property name="xmlParserHelper" ref="dorado.xmlParserHelper" />
 		<property name="validatorTypeRegistry" ref="dorado.validatorTypeRegistry" />
 	</bean>
-	<bean id="dorado.defaultValidatorParser" scope="prototype" parent="dorado.genericObjectParser">
-		<d:property-parser key="type,parent" value-ref="dorado.ignoreParser" />
-		<d:property-parser key="interceptor" value-ref="dorado.staticPropertyParser" />
-		<d:sub-parser key="ClientEvent" value-ref="dorado.clientEventParser" />
+
+	<!-- DataProvider Parser -->
+	<bean id="dorado.dataProviderParserDispatcher" class="com.bstek.dorado.data.config.xml.DataProviderParserDispatcher" parent="dorado.genericParser">
+		<property name="dataProviderTypeRegistry" ref="dorado.dataProviderTypeRegistry" />
+		<property name="xmlParserHelper" ref="dorado.xmlParserHelper" />
 	</bean>
+	<bean id="dorado.prototype.dataProviderParser" class="com.bstek.dorado.data.config.xml.DataProviderParser" parent="dorado.genericObjectParser" />
+
+	<!-- DataResolver Parser -->
+	<bean id="dorado.dataResolverParserDispatcher" class="com.bstek.dorado.data.config.xml.DataResolverParserDispatcher" parent="dorado.genericParser">
+		<property name="dataResolverTypeRegistry" ref="dorado.dataResolverTypeRegistry" />
+		<property name="xmlParserHelper" ref="dorado.xmlParserHelper" />
+	</bean>
+	<bean id="dorado.prototype.dataResolverParser" class="com.bstek.dorado.data.config.xml.DataResolverParser" parent="dorado.genericObjectParser" />
 </beans>

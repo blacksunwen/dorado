@@ -1,14 +1,14 @@
 package com.bstek.dorado.htmleditor;
 
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.form.AbstractDataEditor;
 
-@Widget(name = "HtmlEditor", category = "Advance", dependsPackage = "html-editor")
-@ViewObject(prototype = "dorado.widget.HtmlEditor", shortTypeName = "HtmlEditor")
-@XmlNode(nodeName = "HtmlEditor")
+@Widget(name = "HtmlEditor", category = "Advance",
+		dependsPackage = "html-editor")
+@ClientObject(prototype = "dorado.widget.HtmlEditor",
+		shortTypeName = "HtmlEditor")
 public class HtmlEditor extends AbstractDataEditor {
 	private String mode = "full";
 	private String defaultFontFamily = "宋体";
@@ -16,8 +16,8 @@ public class HtmlEditor extends AbstractDataEditor {
 	private String fileUploadPath = ">dorado/htmleditor/fileupload";
 	private String flashUploadPath = ">dorado/htmleditor/flashupload";
 	private String imageUploadPath = ">dorado/htmleditor/imageupload";
-	
-	@ViewAttribute(defaultValue = "宋体")
+
+	@ClientProperty(escapeValue = "宋体")
 	public String getDefaultFontFamily() {
 		return defaultFontFamily;
 	}
@@ -25,8 +25,8 @@ public class HtmlEditor extends AbstractDataEditor {
 	public void setDefaultFontFamily(String defaultFontFamily) {
 		this.defaultFontFamily = defaultFontFamily;
 	}
-	
-	@ViewAttribute(defaultValue = "16px")
+
+	@ClientProperty(escapeValue = "16px")
 	public String getDefaultFontSize() {
 		return defaultFontSize;
 	}
@@ -35,16 +35,16 @@ public class HtmlEditor extends AbstractDataEditor {
 		this.defaultFontSize = defaultFontSize;
 	}
 
-	@ViewAttribute(defaultValue = "full")
+	@ClientProperty(escapeValue = "full")
 	public String getMode() {
 		return mode;
 	}
-	
+
 	public void setMode(String mode) {
 		this.mode = mode;
 	}
-	
-	@ViewAttribute(defaultValue = ">dorado/htmleditor/fileupload")
+
+	@ClientProperty(escapeValue = ">dorado/htmleditor/fileupload")
 	public String getFileUploadPath() {
 		return fileUploadPath;
 	}
@@ -53,7 +53,7 @@ public class HtmlEditor extends AbstractDataEditor {
 		this.fileUploadPath = fileUploadPath;
 	}
 
-	@ViewAttribute(defaultValue = ">dorado/htmleditor/flashupload")
+	@ClientProperty(escapeValue = ">dorado/htmleditor/flashupload")
 	public String getFlashUploadPath() {
 		return flashUploadPath;
 	}
@@ -62,7 +62,7 @@ public class HtmlEditor extends AbstractDataEditor {
 		this.flashUploadPath = flashUploadPath;
 	}
 
-	@ViewAttribute(defaultValue = ">dorado/htmleditor/imageupload")
+	@ClientProperty(escapeValue = ">dorado/htmleditor/imageupload")
 	public String getImageUploadPath() {
 		return imageUploadPath;
 	}
@@ -70,5 +70,5 @@ public class HtmlEditor extends AbstractDataEditor {
 	public void setImageUploadPath(String imageUploadPath) {
 		this.imageUploadPath = imageUploadPath;
 	}
-	
+
 }

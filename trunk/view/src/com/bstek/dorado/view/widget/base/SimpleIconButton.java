@@ -1,16 +1,16 @@
 package com.bstek.dorado.view.widget.base;
 
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.view.annotation.Widget;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-8-1
  */
-@Widget(name = "SimpleIconButton", category = "General", dependsPackage = "base-widget")
-@ViewObject(prototype = "dorado.widget.SimpleIconButton", shortTypeName = "SimpleIconButton")
-@XmlNode(nodeName = "SimpleIconButton")
+@Widget(name = "SimpleIconButton", category = "General",
+		dependsPackage = "base-widget")
+@ClientObject(prototype = "dorado.widget.SimpleIconButton",
+		shortTypeName = "SimpleIconButton")
 public class SimpleIconButton extends SimpleButton {
 	private String icon;
 	private String iconClass;

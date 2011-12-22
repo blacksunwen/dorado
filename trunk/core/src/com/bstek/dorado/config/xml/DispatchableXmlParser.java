@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -19,13 +20,13 @@ import com.bstek.dorado.util.Assert;
 import com.bstek.dorado.util.xml.DomUtils;
 
 /**
- * XML分派解析器的抽象类。<br>
+ * XML分派解析器。<br>
  * 可支持将XML节点中各个属性和子节点的解析任务分派到相应子解析器。
  * 
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Feb 20, 2007
  */
-public abstract class DispatchableXmlParser implements XmlParser {
+public class DispatchableXmlParser implements XmlParser {
 	public static final String SELF = "#self";
 	public static final char SUB_PARSER_PATH_SEPERATOR = '/';
 
@@ -41,7 +42,9 @@ public abstract class DispatchableXmlParser implements XmlParser {
 	/**
 	 * 返回EL表达式的处理器。
 	 */
-	protected abstract ExpressionHandler getExpressionHandler();
+	protected ExpressionHandler getExpressionHandler() {
+		return null;
+	}
 
 	/**
 	 * 向当前解析器中注册一个属性解析器。
@@ -132,29 +135,54 @@ public abstract class DispatchableXmlParser implements XmlParser {
 
 	private List<Element> findSubElementsByPath(Element element, String[] path,
 			int deepth) {
-		String pathSection = path[deepth];
+		PathSection pathSection = PathSection.parse(path[deepth]);
+		String nodeName = pathSection.getNodeName();
+		Map<String, String> fixedProperties = pathSection.getFixedProperties();
+
 		List<Element> children;
-		if (WILDCARD.equals(pathSection)) {
+		if (WILDCARD.equals(nodeName)) {
 			children = DomUtils.getChildElements(element);
 		} else {
-			children = DomUtils.getChildrenByTagName(element, pathSection);
+			children = DomUtils.getChildrenByTagName(element, nodeName);
 		}
 
 		if (deepth < path.length - 1) {
 			List<Element> result = null;
 			for (Element child : children) {
 				List<Element> l = findSubElementsByPath(child, path, deepth + 1);
-				if (!l.isEmpty()) {
+				if (l != null && !l.isEmpty()) {
 					if (result == null) {
 						result = new ArrayList<Element>();
 					}
 					result.addAll(l);
 				}
 			}
-			return result;
-		} else {
-			return children;
+			children = result;
 		}
+
+		if (fixedProperties != null && !fixedProperties.isEmpty()) {
+			List<Element> result = null;
+			for (Element child : children) {
+				boolean according = true;
+				for (Map.Entry<String, String> entry : fixedProperties
+						.entrySet()) {
+					if (!ObjectUtils.equals(child.getAttribute(entry.getKey()),
+							entry.getValue())) {
+						according = false;
+						break;
+					}
+				}
+
+				if (according) {
+					if (result == null) {
+						result = new ArrayList<Element>();
+					}
+					result.add(child);
+				}
+			}
+			children = result;
+		}
+		return children;
 	}
 
 	/**
@@ -204,8 +232,8 @@ public abstract class DispatchableXmlParser implements XmlParser {
 			} else if (SELF.equals(key)) {
 				Object value = subParser.parse(element, context);
 				if (value != ConfigUtils.IGNORE_VALUE) {
+					list.add(value);
 				}
-				list.add(value);
 			}
 		}
 		return list;
@@ -342,4 +370,66 @@ public abstract class DispatchableXmlParser implements XmlParser {
 		return value;
 	}
 
+}
+
+class PathSection {
+	private static Map<String, PathSection> cache = new HashMap<String, PathSection>(
+			0);
+
+	private String nodeName;
+	private Map<String, String> fixedProperties;
+
+	public synchronized static PathSection parse(String expression) {
+		PathSection pathSection = cache.get(expression);
+		if (pathSection == null) {
+			pathSection = new PathSection(expression);
+			cache.put(expression, pathSection);
+		}
+		return pathSection;
+	}
+
+	private PathSection(String expression) {
+		if (expression.indexOf('[') > 0) {
+			StringBuffer nodeNameBuf = new StringBuffer(), fixedProperty = new StringBuffer(), fixedPropertyValue = new StringBuffer();
+			int len = expression.length();
+			boolean inBracket = false, beforeEquals = true;
+			for (int i = 0; i < len; i++) {
+				char c = expression.charAt(i);
+				if (!inBracket) {
+					if (c == '[') {
+						inBracket = true;
+					} else {
+						nodeNameBuf.append(c);
+					}
+				} else {
+					if (beforeEquals) {
+						fixedProperty.append(c);
+					} else if (c == '=') {
+						beforeEquals = false;
+					} else if (c == ';' || c == ',' || c == ']' && i == len - 1) {
+						beforeEquals = true;
+						if (fixedProperties == null) {
+							fixedProperties = new HashMap<String, String>();
+						}
+						fixedProperties.put(fixedProperty.toString(),
+								fixedPropertyValue.toString());
+						fixedProperty.setLength(0);
+						fixedPropertyValue.setLength(0);
+					} else {
+						fixedPropertyValue.append(c);
+					}
+				}
+			}
+		} else {
+			nodeName = expression;
+		}
+	}
+
+	public String getNodeName() {
+		return nodeName;
+	}
+
+	public Map<String, String> getFixedProperties() {
+		return fixedProperties;
+	}
 }

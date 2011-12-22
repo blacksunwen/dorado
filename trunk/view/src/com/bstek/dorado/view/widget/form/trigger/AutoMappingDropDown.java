@@ -1,17 +1,15 @@
 package com.bstek.dorado.view.widget.form.trigger;
 
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.view.annotation.Widget;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-8-10
  */
 @Widget(name = "AutoMappingDropDown", category = "Trigger", dependsPackage = "base-widget")
-@ViewObject(prototype = "dorado.widget.AutoMappingDropDown", shortTypeName = "AutoMappingDropDown")
-@XmlNode(nodeName = "AutoMappingDropDown")
+@ClientObject(prototype = "dorado.widget.AutoMappingDropDown", shortTypeName = "AutoMappingDropDown")
 public class AutoMappingDropDown extends RowListDropDown {
 	private boolean useEmptyItem;
 	private String property = "value";
@@ -26,7 +24,7 @@ public class AutoMappingDropDown extends RowListDropDown {
 	}
 
 	@Override
-	@ViewAttribute(defaultValue = "value")
+	@ClientProperty(escapeValue = "value")
 	public String getProperty() {
 		return property;
 	}

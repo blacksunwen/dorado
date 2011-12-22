@@ -44,8 +44,9 @@ public abstract class TestDataHolder {
 			while ((l = reader.readLine()) != null) {
 				sb.append(l).append('\n');
 			}
-			return (ArrayNode) JsonUtils.getObjectMapper().readTree(
+			ArrayNode json = (ArrayNode) JsonUtils.getObjectMapper().readTree(
 					sb.toString());
+			return json;
 		} finally {
 			isr.close();
 		}
@@ -63,8 +64,9 @@ public abstract class TestDataHolder {
 			while ((l = reader.readLine()) != null) {
 				sb.append(l).append('\n');
 			}
-			return (ArrayNode) JsonUtils.getObjectMapper().readTree(
+			ArrayNode json = (ArrayNode) JsonUtils.getObjectMapper().readTree(
 					sb.toString());
+			return json;
 		} finally {
 			isr.close();
 		}

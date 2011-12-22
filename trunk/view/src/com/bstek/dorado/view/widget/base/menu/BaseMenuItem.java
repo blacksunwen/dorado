@@ -4,7 +4,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 
-import com.bstek.dorado.annotation.ViewAttribute;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.common.Ignorable;
 import com.bstek.dorado.common.TagSupport;
@@ -18,7 +19,8 @@ import com.bstek.dorado.view.widget.RenderableElement;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2009-11-4
  */
-public class BaseMenuItem extends ClientEventSupportedObject implements
+@XmlNode(implTypes = "com.bstek.dorado.view.widget.base.menu.*")
+public abstract class BaseMenuItem extends ClientEventSupportedObject implements
 		RenderableElement, Ignorable, TagSupport, ViewElement {
 	private Collection<ViewElement> innerElements;
 
@@ -98,7 +100,7 @@ public class BaseMenuItem extends ClientEventSupportedObject implements
 		this.style = style;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isVisible() {
 		return visible;
 	}

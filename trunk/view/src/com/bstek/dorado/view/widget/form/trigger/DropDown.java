@@ -2,7 +2,7 @@ package com.bstek.dorado.view.widget.form.trigger;
 
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
-import com.bstek.dorado.annotation.ViewAttribute;
+import com.bstek.dorado.annotation.ClientProperty;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -77,7 +77,7 @@ public abstract class DropDown extends Trigger {
 		this.autoOpen = autoOpen;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isPostValueOnSelect() {
 		return postValueOnSelect;
 	}

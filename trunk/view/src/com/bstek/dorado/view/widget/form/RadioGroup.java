@@ -5,19 +5,18 @@ import java.util.List;
 
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
+import com.bstek.dorado.view.annotation.Widget;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2009-11-5
  */
 @Widget(name = "RadioGroup", category = "Form", dependsPackage = "base-widget")
-@ViewObject(prototype = "dorado.widget.RadioGroup", shortTypeName = "RadioGroup")
-@XmlNode(nodeName = "RadioGroup")
+@ClientObject(prototype = "dorado.widget.RadioGroup",
+		shortTypeName = "RadioGroup")
 @ClientEvents({ @ClientEvent(name = "onValueChange") })
 public class RadioGroup extends AbstractDataEditor {
 	private Object value;
@@ -32,7 +31,7 @@ public class RadioGroup extends AbstractDataEditor {
 		this.value = value;
 	}
 
-	@ViewAttribute(defaultValue = "vertical")
+	@ClientProperty(escapeValue = "vertical")
 	public RadioGroupLayout getLayout() {
 		return layout;
 	}
@@ -45,8 +44,8 @@ public class RadioGroup extends AbstractDataEditor {
 		radioButtons.add(radioButton);
 	}
 
-	@ViewAttribute
-	@XmlSubNode(path = "#self")
+	@XmlSubNode
+	@ClientProperty
 	public List<RadioButton> getRadioButtons() {
 		return radioButtons;
 	}

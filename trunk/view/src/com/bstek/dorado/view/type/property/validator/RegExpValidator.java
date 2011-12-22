@@ -5,13 +5,16 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.bstek.dorado.annotation.ViewObject;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.XmlNode;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-7-27
  */
-@ViewObject(prototype = "dorado.validator.RegExpValidator", shortTypeName = "RegExp")
+@XmlNode(fixedProperties = "type=regexp")
+@ClientObject(prototype = "dorado.validator.RegExpValidator",
+		shortTypeName = "RegExp")
 public class RegExpValidator extends BaseValidator {
 	private String whiteRegExp;
 	private String blackRegExp;

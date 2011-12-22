@@ -3,37 +3,37 @@ package com.bstek.dorado.idesupport.initializer;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javassist.Modifier;
+
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.collections.keyvalue.MultiKey;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.BeanUtils;
 
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.Widget;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.IdeObject;
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.XmlNodeWrapper;
+import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.common.event.ClientEventRegisterInfo;
 import com.bstek.dorado.common.event.ClientEventRegistry;
 import com.bstek.dorado.common.event.ClientEventSupported;
-import com.bstek.dorado.config.xml.CollectionToPropertyParser;
-import com.bstek.dorado.config.xml.CompositePropertyParser;
-import com.bstek.dorado.config.xml.DispatchableXmlParser;
-import com.bstek.dorado.config.xml.IgnoreParser;
-import com.bstek.dorado.config.xml.ObjectParser;
-import com.bstek.dorado.config.xml.SubNodeToPropertyParser;
-import com.bstek.dorado.config.xml.TypeAnnotationInfo;
-import com.bstek.dorado.config.xml.XmlParser;
-import com.bstek.dorado.config.xml.XmlParserAnnotationHelper;
-import com.bstek.dorado.data.config.xml.GenericObjectParser;
+import com.bstek.dorado.common.event.ClientEventSupportedObject;
+import com.bstek.dorado.core.bean.Scope;
+import com.bstek.dorado.core.io.Resource;
+import com.bstek.dorado.core.io.ResourceUtils;
+import com.bstek.dorado.data.config.definition.ListenableObjectDefinition;
+import com.bstek.dorado.data.entity.EntityUtils;
 import com.bstek.dorado.idesupport.RuleTemplateManager;
 import com.bstek.dorado.idesupport.model.ClientEvent;
 import com.bstek.dorado.idesupport.model.CompositeType;
@@ -41,7 +41,7 @@ import com.bstek.dorado.idesupport.robot.RobotInfo;
 import com.bstek.dorado.idesupport.robot.RobotRegistry;
 import com.bstek.dorado.idesupport.template.AutoChildTemplate;
 import com.bstek.dorado.idesupport.template.AutoClientEvent;
-import com.bstek.dorado.idesupport.template.AutoProperty;
+import com.bstek.dorado.idesupport.template.AutoPropertyTemplate;
 import com.bstek.dorado.idesupport.template.AutoRuleTemplate;
 import com.bstek.dorado.idesupport.template.ChildTemplate;
 import com.bstek.dorado.idesupport.template.LazyReferenceTemplate;
@@ -49,29 +49,20 @@ import com.bstek.dorado.idesupport.template.PropertyTemplate;
 import com.bstek.dorado.idesupport.template.ReferenceTemplate;
 import com.bstek.dorado.idesupport.template.RuleTemplate;
 import com.bstek.dorado.util.PathUtils;
-import com.bstek.dorado.view.config.xml.ChildComponentParser;
-import com.bstek.dorado.view.config.xml.ComponentParserDispatcher;
-import com.bstek.dorado.view.output.ObjectOutputter;
-import com.bstek.dorado.view.output.OutputUtils;
-import com.bstek.dorado.view.output.Outputter;
-import com.bstek.dorado.view.output.PropertyOutputter;
+import com.bstek.dorado.util.clazz.TypeInfo;
+import com.bstek.dorado.view.annotation.ComponentReference;
+import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Component;
+import com.bstek.dorado.view.widget.datacontrol.DataControl;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2009-11-20
  */
 public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
-	private static final String UNNAMED = "Unnamed";
-	private static final String FAIL_SAFE_NODE_NAME = "FailSafeNodeName";
+	private static final String WILCARD = "*";
 
-	private XmlParserAnnotationHelper xmlParserAnnotationHelper;
 	private RobotRegistry robotRegistry;
-
-	public void setXmlParserAnnotationHelper(
-			XmlParserAnnotationHelper xmlParserAnnotationHelper) {
-		this.xmlParserAnnotationHelper = xmlParserAnnotationHelper;
-	}
 
 	public void setRobotRegistry(RobotRegistry robotRegistry) {
 		this.robotRegistry = robotRegistry;
@@ -79,34 +70,74 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 
 	public void initRuleTemplate(RuleTemplate ruleTemplate,
 			InitializerContext initializerContext) throws Exception {
-		Class<?> type = null;
-		if (ruleTemplate.getType() != null) {
-			type = ClassUtils.getClass(ruleTemplate.getType());
+		TypeInfo typeInfo = TypeInfo.parse(ruleTemplate.getType());
+		if (typeInfo == null) {
+			return;
 		}
-		if (ruleTemplate.getParents() == null) {
-			if (type != null) {
-				RuleTemplateManager ruleTemplateManager = initializerContext
-						.getRuleTemplateManager();
-				Class<?> superType = type.getSuperclass();
-				while (superType != null && !superType.equals(Object.class)) {
-					RuleTemplate parentRuleTemplate = ruleTemplateManager
-							.getRuleTemplate(superType);
-					if (parentRuleTemplate != null
-							&& parentRuleTemplate != ruleTemplate) {
-						ruleTemplate
-								.setParents(new RuleTemplate[] { parentRuleTemplate });
-						break;
-					}
-					superType = superType.getSuperclass();
+
+		Class<?> type = typeInfo.getType();
+		RuleTemplateManager ruleTemplateManager = initializerContext
+				.getRuleTemplateManager();
+		ruleTemplate.setAbstract(Modifier.isAbstract(type.getModifiers()));
+
+		// 遍历所有SuperType并自动设定适合的ParentTemplate
+		Class<?> superType = type.getSuperclass();
+		List<Class<?>> superTypes = new ArrayList<Class<?>>();
+		while (superType != null && !superType.equals(Object.class)
+				&& !superType.equals(ClientEventSupportedObject.class)) {
+			RuleTemplate parentRuleTemplate = ruleTemplateManager
+					.getRuleTemplate(superType);
+			if (parentRuleTemplate != null) {
+				if (superTypes.isEmpty()) {
+					ruleTemplate
+							.setParents(new RuleTemplate[] { parentRuleTemplate });
 				}
+				break;
+			}
+			superTypes.add(superType);
+			superType = superType.getSuperclass();
+		}
+
+		// 自动创建各级AbstractParentTemplate
+		RuleTemplate parentRuleTemplate = null;
+		if (!superTypes.isEmpty()) {
+			for (int i = superTypes.size() - 1; i >= 0; i--) {
+				superType = superTypes.get(i);
+				RuleTemplate newRuleTemplate = createRuleTemplate(
+						ruleTemplateManager, superType, parentRuleTemplate);
+				parentRuleTemplate = newRuleTemplate;
+			}
+			if (parentRuleTemplate != null && ruleTemplate.getParents() == null) {
+				ruleTemplate
+						.setParents(new RuleTemplate[] { parentRuleTemplate });
 			}
 		}
 
-		if (type != null && Component.class.isAssignableFrom(type)
-				&& ruleTemplate.getCategory() == null) {
+		XmlNodeInfo xmlNodeInfo = getXmlNodeInfo(type);
+		String nodeName = xmlNodeInfo.getNodeName();
+		if (xmlNodeInfo != null && StringUtils.isNotEmpty(nodeName)) {
+			ruleTemplate.setNodeName(nodeName);
+			if (!ruleTemplate.isAbstract()
+					&& StringUtils.isEmpty(ruleTemplate.getLabel())) {
+				ruleTemplate.setLabel(nodeName);
+			}
+		}
+
+		IdeObject ideObject = type.getAnnotation(IdeObject.class);
+		if (ideObject != null
+				&& ArrayUtils.indexOf(type.getDeclaredAnnotations(), ideObject) >= 0) {
+			ruleTemplate.setLabelProperty(ideObject.labelProperty());
+		}
+
+		if (Component.class.isAssignableFrom(type)) {
 			Widget widget = type.getAnnotation(Widget.class);
-			if (widget != null) {
-				ruleTemplate.setCategory(widget.category());
+			if (widget != null
+					&& ArrayUtils
+							.indexOf(type.getDeclaredAnnotations(), widget) >= 0) {
+				if (StringUtils.isEmpty(ruleTemplate.getCategory())) {
+					ruleTemplate.setCategory(widget.category());
+				}
+				ruleTemplate.setAutoGenerateId(widget.autoGenerateId());
 			}
 		}
 
@@ -129,109 +160,286 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 			ruleTemplate.setRobots(robots.toArray(new String[0]));
 		}
 
-		XmlParser parser = ruleTemplate.getParser();
-		if (parser instanceof ObjectParser) {
-			((ObjectParser) parser).init();
-		} else if (parser instanceof CollectionToPropertyParser) {
-			((CollectionToPropertyParser) parser).init();
-		} else if (parser instanceof SubNodeToPropertyParser) {
-			((SubNodeToPropertyParser) parser).init();
-		}
+		initProperties(ruleTemplate, typeInfo, xmlNodeInfo, initializerContext);
+		initChildTemplates(ruleTemplate, typeInfo, xmlNodeInfo,
+				initializerContext);
+		initClientEvent(ruleTemplate, typeInfo, initializerContext);
 
-		initProperties(ruleTemplate, initializerContext);
-		initChildren(ruleTemplate, initializerContext);
-		initClientEvent(ruleTemplate);
-
-		for (PropertyTemplate property : ruleTemplate.getPrimitiveProperties()
-				.values()) {
-			initProperty(property);
-		}
-		for (PropertyTemplate property : ruleTemplate.getProperties().values()) {
-			initProperty(property);
-		}
-	}
-
-	protected void initProperty(PropertyTemplate property)
-			throws ClassNotFoundException {
-		Class<?> type = null;
-		if (property.getType() != null) {
-			type = ClassUtils.getClass(property.getType());
-		}
-		if (type != null && type.isEnum() && property.getEnumValues() == null) {
-			Object[] ecs = type.getEnumConstants();
-			String[] enumValues = new String[ecs.length];
-			for (int i = 0; i < ecs.length; i++) {
-				enumValues[i] = ecs[i].toString();
-			}
-			property.setEnumValues(enumValues);
-		}
-	}
-
-	private DispatchableXmlParser getDispatchableXmlParser(
-			RuleTemplate ruleTemplate) throws Exception {
-		XmlParser parser = ruleTemplate.getParser();
-		if (parser instanceof DispatchableXmlParser) {
-			return (DispatchableXmlParser) parser;
-		}
-		return null;
-	}
-
-	private ObjectOutputter getObjectOutputter(RuleTemplate ruleTemplate) {
-		ObjectOutputter outputter = null;
-		if (ruleTemplate.getOutputter() instanceof ObjectOutputter) {
-			outputter = (ObjectOutputter) ruleTemplate.getOutputter();
-		}
-		return outputter;
-	}
-
-	private Class<?> getType(RuleTemplate ruleTemplate) throws Exception {
-		DispatchableXmlParser parser = getDispatchableXmlParser(ruleTemplate);
-		Class<?> type = null;
-		if (ruleTemplate.getType() != null) {
-			type = ClassUtils.getClass(ruleTemplate.getType());
-		}
-		if (type == null && parser != null
-				&& parser instanceof GenericObjectParser) {
-			String impl = ((GenericObjectParser) parser).getImpl();
-			if (StringUtils.isNotEmpty(impl))
-				type = ClassUtils.getClass(impl);
-		}
-		return type;
-	}
-
-	private Collection<PropertyTemplate> getProperties(Class<?> type,
-			DispatchableXmlParser parser, ObjectOutputter outputter,
-			Map<String, PropertyTemplate> finalPrimitiveProperties,
-			Map<String, PropertyTemplate> finalProperties,
-			InitializerContext initializerContext) throws Exception {
-		if (type == null) {
-			return null;
-		}
-
-		Collection<PropertyTemplate> properties = new ArrayList<PropertyTemplate>();
-		RuleTemplateManager ruleTemplateManager = initializerContext
-				.getRuleTemplateManager();
-		PropertyDescriptor[] propertyDescriptors = PropertyUtils
-				.getPropertyDescriptors(type);
-		for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
-			String name = propertyDescriptor.getName();
-			if (propertyDescriptor.getWriteMethod() != null
-					&& (finalPrimitiveProperties == null || finalPrimitiveProperties
-							.get(name) == null)) {
-				PropertyTemplate originProperty = null;
-				if (finalProperties != null) {
-					originProperty = finalProperties.get(name);
-				}
-
-				Method readMethod = propertyDescriptor.getReadMethod();
-				if (readMethod == null) {
+		if (xmlNodeInfo != null && !xmlNodeInfo.getImplTypes().isEmpty()) {
+			Set<Class<?>> implTypes = discoverImplTypes(xmlNodeInfo
+					.getImplTypes().toArray(new String[0]), type);
+			for (Class<?> implType : implTypes) {
+				if (implType.equals(type)) {
 					continue;
 				}
 
-				if (readMethod.getDeclaringClass() != type) {
-					readMethod = type.getMethod(readMethod.getName(),
-							readMethod.getParameterTypes());
+				if (ruleTemplateManager.getRuleTemplate(implType) == null) {
+					// 此处不传入parentRuleTemplate，后面由新RuleTemplate的init方法自动分配
+					createRuleTemplate(ruleTemplateManager, implType, null);
 				}
+			}
+		}
+	}
+
+	protected RuleTemplate createRuleTemplate(
+			RuleTemplateManager ruleTemplateManager, Class<?> type,
+			RuleTemplate parentRuleTemplate) throws Exception {
+		String name = type.getSimpleName(), nodeName = null, label = null;
+		String tempName = name;
+		int tryCount = 0;
+		while (ruleTemplateManager.getRuleTemplate(name) != null) {
+			name = tempName + '_' + (++tryCount);
+			nodeName = type.getSimpleName();
+			label = type.getSimpleName();
+		}
+
+		String scope = null;
+		if (Component.class.isAssignableFrom(type)) {
+			Widget widget = type.getAnnotation(Widget.class);
+			if (widget != null
+					&& ArrayUtils
+							.indexOf(type.getDeclaredAnnotations(), widget) >= 0
+					&& !Modifier.isAbstract(type.getModifiers())) {
+				label = widget.name();
+			} else {
+				scope = "protected";
+			}
+		}
+
+		RuleTemplate newRuleTemplate = new AutoRuleTemplate(name,
+				type.getName());
+		if (parentRuleTemplate != null) {
+			newRuleTemplate
+					.setParents(new RuleTemplate[] { parentRuleTemplate });
+		}
+		if (label != null) {
+			newRuleTemplate.setLabel(label);
+		}
+		if (scope != null) {
+			newRuleTemplate.setScope(scope);
+		}
+		if (nodeName != null) {
+			newRuleTemplate.setNodeName(nodeName);
+		}
+		ruleTemplateManager.addRuleTemplate(newRuleTemplate);
+		return newRuleTemplate;
+	}
+
+	private XmlNodeInfo getXmlNodeInfo(Class<?> type) {
+		XmlNodeInfo xmlNodeInfo = new XmlNodeInfo();
+
+		for (Class<?> i : type.getInterfaces()) {
+			collectXmlNodeInfo(xmlNodeInfo, i);
+		}
+		collectXmlNodeInfo(xmlNodeInfo, type);
+
+		if ("#className".equals(xmlNodeInfo.getNodeName())) {
+			xmlNodeInfo.setNodeName(type.getSimpleName());
+		}
+		// if (xmlNodeInfo.getSourceTypes() == null) {
+		// xmlNodeInfo = null;
+		// }
+		return xmlNodeInfo;
+	}
+
+	private void collectXmlNodeInfo(XmlNodeInfo xmlNodeInfo, Class<?> type) {
+		XmlNode xmlNode = type.getAnnotation(XmlNode.class);
+		if (xmlNode == null
+				|| ArrayUtils.indexOf(type.getDeclaredAnnotations(), xmlNode) < 0) {
+			return;
+		}
+		xmlNodeInfo.addSourceType(type);
+
+		if (StringUtils.isNotEmpty(xmlNode.nodeName())) {
+			xmlNodeInfo.setNodeName(xmlNode.nodeName());
+		}
+		if (StringUtils.isNotEmpty(xmlNode.definitionType())) {
+			xmlNodeInfo.setDefinitionType(xmlNode.definitionType());
+		}
+		for (String implType : xmlNode.implTypes()) {
+			if (StringUtils.isNotEmpty(implType)) {
+				xmlNodeInfo.getImplTypes().add(implType);
+			}
+		}
+		if (!xmlNodeInfo.isScopable() && xmlNode.scopable()) {
+			xmlNodeInfo.setScopable(true);
+		}
+		if (!xmlNodeInfo.isInheritable() && xmlNode.inheritable()) {
+			xmlNodeInfo.setInheritable(true);
+		}
+		if (StringUtils.isNotEmpty(xmlNode.fixedProperties())) {
+			Map<String, String> fixedProperties = xmlNodeInfo
+					.getFixedProperties();
+			for (String fixedProperty : StringUtils.split(
+					xmlNode.fixedProperties(), ",;")) {
+				int i = fixedProperty.indexOf('=');
+				if (i > 0) {
+					String property = fixedProperty.substring(0, i);
+					fixedProperties.put(property,
+							fixedProperty.substring(i + 1));
+				}
+			}
+		}
+
+		Map<String, XmlProperty> properties = xmlNodeInfo.getProperties();
+		XmlProperty[] annotationProperties = xmlNode.properties();
+		boolean hasPropertyAnnotation = false;
+		if (annotationProperties.length == 1) {
+			XmlProperty xmlProperty = annotationProperties[0];
+			hasPropertyAnnotation = StringUtils.isNotEmpty(xmlProperty
+					.propertyName())
+					|| StringUtils.isNotEmpty(xmlProperty.propertyType())
+					|| StringUtils.isNotEmpty(xmlProperty.parser());
+		}
+		if (hasPropertyAnnotation) {
+			for (XmlProperty xmlProperty : annotationProperties) {
+				if (xmlProperty.ignored()) {
+					continue;
+				}
+				if (StringUtils.isEmpty(xmlProperty.propertyName())) {
+					throw new IllegalArgumentException(
+							"@XmlProperty.propertyName undefined. ["
+									+ type.getName() + "]");
+				}
+				for (String property : StringUtils.split(xmlProperty
+						.propertyName())) {
+					properties.put(property, xmlProperty);
+				}
+			}
+		}
+
+		Set<XmlSubNode> subNodes = xmlNodeInfo.getSubNodes();
+		XmlSubNode[] annotationSubNodes = xmlNode.subNodes();
+		boolean hasSubNodeAnnotation = (annotationSubNodes.length > 0);
+		if (annotationSubNodes.length == 1) {
+			XmlSubNode xmlSubNode = annotationSubNodes[0];
+			hasSubNodeAnnotation = StringUtils.isNotEmpty(xmlSubNode
+					.propertyName())
+					|| StringUtils.isNotEmpty(xmlSubNode.nodeName())
+					|| StringUtils.isNotEmpty(xmlSubNode.propertyType());
+		}
+		if (hasSubNodeAnnotation) {
+			for (XmlSubNode xmlSubNode : annotationSubNodes) {
+				if (!(StringUtils.isNotEmpty(xmlSubNode.propertyType()) || (StringUtils
+						.isNotEmpty(xmlSubNode.nodeName()) && StringUtils
+						.isNotEmpty(xmlSubNode.parser())))) {
+					throw new IllegalArgumentException(
+							"Neither @XmlSubNode.propertyType nor @XmlSubNode.nodeName/@XmlSubNode.parser undefined. ["
+									+ type.getName() + "]");
+				}
+				subNodes.add(xmlSubNode);
+			}
+		}
+	}
+
+	protected void initProperties(RuleTemplate ruleTemplate, TypeInfo typeInfo,
+			XmlNodeInfo xmlNodeInfo, InitializerContext initializerContext)
+			throws Exception {
+		Collection<AutoPropertyTemplate> properties = getProperties(
+				typeInfo.getType(), xmlNodeInfo, initializerContext);
+		for (AutoPropertyTemplate propertyTemplate : properties) {
+			if (propertyTemplate.isPrimitive()) {
+				ruleTemplate.addPrimitiveProperty(propertyTemplate);
+			} else {
+				ruleTemplate.addProperty(propertyTemplate);
+			}
+		}
+	}
+
+	protected Collection<AutoPropertyTemplate> getProperties(Class<?> type,
+			XmlNodeInfo xmlNodeInfo, InitializerContext initializerContext)
+			throws Exception {
+		Collection<AutoPropertyTemplate> properties = new ArrayList<AutoPropertyTemplate>();
+		RuleTemplateManager ruleTemplateManager = initializerContext
+				.getRuleTemplateManager();
+
+		if (xmlNodeInfo != null) {
+			if (xmlNodeInfo.isInheritable()) {
+				AutoPropertyTemplate propertyTemplate = new AutoPropertyTemplate(
+						"impl");
+				propertyTemplate.setPrimitive(true);
+				properties.add(propertyTemplate);
+
+				propertyTemplate = new AutoPropertyTemplate("parent");
+				propertyTemplate.setPrimitive(true);
+				properties.add(propertyTemplate);
+			}
+
+			if (xmlNodeInfo.isScopable()) {
+				AutoPropertyTemplate propertyTemplate = new AutoPropertyTemplate(
+						"scope");
+				propertyTemplate.setPrimitive(true);
+
+				Object[] ecs = Scope.class.getEnumConstants();
+				String[] enumValues = new String[ecs.length];
+				for (int i = 0; i < ecs.length; i++) {
+					enumValues[i] = ecs[i].toString();
+				}
+				propertyTemplate.setEnumValues(enumValues);
+
+				properties.add(propertyTemplate);
+			}
+
+			if (StringUtils.isNotEmpty(xmlNodeInfo.getDefinitionType())) {
+				Class<?> definitionType = ClassUtils.getClass(xmlNodeInfo
+						.getDefinitionType());
+				if (ListenableObjectDefinition.class
+						.isAssignableFrom(definitionType)) {
+					AutoPropertyTemplate propertyTemplate = new AutoPropertyTemplate(
+							"listener");
+					propertyTemplate.setPrimitive(true);
+					properties.add(propertyTemplate);
+				}
+			}
+
+			for (Map.Entry<String, String> entry : xmlNodeInfo
+					.getFixedProperties().entrySet()) {
+				String propertyName = entry.getKey();
+				String value = entry.getValue();
+
+				AutoPropertyTemplate propertyTemplate = new AutoPropertyTemplate(
+						propertyName);
+				propertyTemplate.setDefaultValue(value);
+				propertyTemplate.setFixed(true);
+				propertyTemplate.setVisible(false);
+				properties.add(propertyTemplate);
+			}
+
+			for (Map.Entry<String, XmlProperty> entry : xmlNodeInfo
+					.getProperties().entrySet()) {
+				String propertyName = entry.getKey();
+				XmlProperty xmlProperty = entry.getValue();
+				TypeInfo propertyTypeInfo = TypeInfo.parse(xmlProperty
+						.propertyType());
+				Class<?> propertyType = null;
+				if (propertyTypeInfo != null) {
+					propertyType = propertyTypeInfo.getType();
+				}
+
+				AutoPropertyTemplate propertyTemplate = new AutoPropertyTemplate(
+						propertyName, xmlProperty);
+				propertyTemplate.setPrimitive(xmlProperty.attributeOnly());
+				if (propertyType != null && !propertyType.equals(String.class)) {
+					propertyTemplate.setType(propertyType.getName());
+				}
+
+				if (xmlProperty.composite()) {
+					initCompositeProperty(propertyTemplate, propertyType,
+							initializerContext);
+				}
+
+				properties.add(propertyTemplate);
+			}
+		}
+
+		PropertyDescriptor[] propertyDescriptors = PropertyUtils
+				.getPropertyDescriptors(type);
+		for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
+			Method readMethod = propertyDescriptor.getReadMethod();
+			if (readMethod != null
+					&& propertyDescriptor.getWriteMethod() != null
+					&& readMethod.getDeclaringClass() == type) {
+				String propertyName = propertyDescriptor.getName();
 
 				XmlSubNode xmlSubNode = readMethod
 						.getAnnotation(XmlSubNode.class);
@@ -239,597 +447,356 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 					continue;
 				}
 
-				ViewAttribute viewAttribute = readMethod
-						.getAnnotation(ViewAttribute.class);
+				TypeInfo propertyTypeInfo;
+				Class<?> propertyType = propertyDescriptor.getPropertyType();
+				if (Collection.class.isAssignableFrom(propertyType)) {
+					propertyTypeInfo = TypeInfo.parse(
+							(ParameterizedType) readMethod
+									.getGenericReturnType(), true);
+					propertyType = propertyTypeInfo.getType();
+				} else {
+					propertyTypeInfo = new TypeInfo(propertyType, false);
+				}
 
-				XmlParser propertyParser = null;
-				if (parser != null) {
-					propertyParser = parser.getPropertyParsers().get(name);
-					if (propertyParser instanceof IgnoreParser
-							&& viewAttribute == null) {
+				AutoPropertyTemplate propertyTemplate = null;
+				XmlProperty xmlProperty = readMethod
+						.getAnnotation(XmlProperty.class);
+				if (xmlProperty != null) {
+					if (xmlProperty.unsupported()) {
 						continue;
 					}
+
+					propertyTemplate = new AutoPropertyTemplate(propertyName,
+							readMethod, xmlProperty);
+					propertyTemplate.setPrimitive(xmlProperty.attributeOnly());
+
+					if (("dataSet".equals(propertyName)
+							|| "dataPath".equals(propertyName) || "property"
+								.equals(propertyName))
+							&& DataControl.class.isAssignableFrom(type)) {
+						propertyTemplate.setHighlight(1);
+					}
+
+					if (xmlProperty.composite()) {
+						initCompositeProperty(propertyTemplate, propertyType,
+								initializerContext);
+					}
+				} else if (EntityUtils.isSimpleType(propertyType)
+						|| propertyType.equals(Class.class)
+						|| propertyType.isArray()
+						&& propertyType.getComponentType().equals(String.class)) {
+					propertyTemplate = new AutoPropertyTemplate(propertyName,
+							readMethod, xmlProperty);
 				}
 
-				if (originProperty != null) {
-					if (originProperty instanceof AutoProperty) {
-						AutoProperty autoProperty = (AutoProperty) originProperty;
-						if (autoProperty.getAnnotationMethod() == readMethod
-								&& (propertyParser == null || autoProperty
-										.getPropertyParser() == propertyParser)) {
-							continue;
+				if (propertyTemplate != null) {
+					propertyTemplate.setType(propertyDescriptor
+							.getPropertyType().getName());
+
+					if (propertyType.isEnum()) {
+						Object[] ecs = propertyType.getEnumConstants();
+						String[] enumValues = new String[ecs.length];
+						for (int i = 0; i < ecs.length; i++) {
+							enumValues[i] = ecs[i].toString();
 						}
+						propertyTemplate.setEnumValues(enumValues);
 					}
-				}
 
-				Object defaultValue = null;
-				String referenceComponentName = null, enumValues = null, editor = null;
-				boolean ignored = false, visible = true, highlight = false;
-				if (viewAttribute != null) {
-					ignored = viewAttribute.ignored();
-					visible = viewAttribute.visible();
-					defaultValue = viewAttribute.defaultValue();
-					referenceComponentName = viewAttribute
-							.referenceComponentName();
-					enumValues = viewAttribute.enumValues();
-					editor = viewAttribute.editor();
-					highlight = viewAttribute.highlight();
-				}
-
-				if (defaultValue == null && outputter != null) {
-					defaultValue = outputter.getConfigProperties().get(name);
-					if (defaultValue != null) {
-						if (defaultValue instanceof PropertyOutputter) {
-							try {
-								defaultValue = PropertyUtils.getProperty(
-										defaultValue, "escapeValue");
-							} catch (Exception e) {
-								// do nothing
-							}
-						}
+					ComponentReference componentReference = readMethod
+							.getAnnotation(ComponentReference.class);
+					if (componentReference != null) {
+						ReferenceTemplate referenceTemplate = new LazyReferenceTemplate(
+								ruleTemplateManager,
+								componentReference.value(), "id");
+						propertyTemplate.setReference(referenceTemplate);
 					}
-				}
-				if (defaultValue != null) {
-					if (defaultValue instanceof Outputter) {
-						defaultValue = null;
-					} else if (OutputUtils.IGNORE_VALUE.equals(defaultValue)) {
-						defaultValue = null;
-					} else if (OutputUtils.ESCAPE_VALUE.equals(defaultValue)) {
-						defaultValue = null;
-					}
-				}
 
-				PropertyTemplate property = new AutoProperty(readMethod,
-						propertyParser);
-				if (originProperty != null) {
-					BeanUtils.copyProperties(originProperty, property);
-				}
-				property.setName(name);
-				property.setIgnored(ignored);
-				property.setVisible(visible);
-
-				property.setType(propertyDescriptor.getPropertyType().getName());
-				if (defaultValue != null) {
-					property.setDefaultValue(defaultValue);
-				}
-				if (StringUtils.isNotEmpty(referenceComponentName)) {
-					ReferenceTemplate referenceTemplate = new LazyReferenceTemplate(
-							ruleTemplateManager, referenceComponentName, "id");
-					property.setReference(referenceTemplate);
-				}
-				if (StringUtils.isNotEmpty(enumValues)) {
-					property.setEnumValues(StringUtils.split(enumValues, ','));
-				}
-				property.setEditor(editor);
-				property.setHighlight(highlight);
-
-				if (propertyParser != null
-						&& propertyParser instanceof CompositePropertyParser) {
-					((ObjectParser) propertyParser).init();
-
-					String impl = ((CompositePropertyParser) propertyParser)
-							.getImpl();
-					Class<?> compositeType = ClassUtils.getClass(impl);
-					DispatchableXmlParser dispatchablePropertyParser = null;
-					if (propertyParser instanceof DispatchableXmlParser) {
-						dispatchablePropertyParser = (DispatchableXmlParser) propertyParser;
-					}
-					ObjectOutputter propertyOutputter = null;
-					if (outputter != null) {
-						Object obj = outputter.getConfigProperties().get(name);
-						if (obj instanceof ObjectOutputter) {
-							propertyOutputter = (ObjectOutputter) obj;
+					IdeProperty ideProperty = readMethod
+							.getAnnotation(IdeProperty.class);
+					if (ideProperty != null) {
+						propertyTemplate.setVisible(ideProperty.visible());
+						propertyTemplate.setEditor(ideProperty.editor());
+						propertyTemplate.setHighlight(ideProperty.highlight());
+						if (StringUtils.isNotEmpty(ideProperty.enumValues())) {
+							propertyTemplate.setEnumValues(StringUtils.split(
+									ideProperty.enumValues(), ','));
 						}
 					}
 
-					Collection<PropertyTemplate> subProperties = getProperties(
-							compositeType, dispatchablePropertyParser,
-							propertyOutputter, null, null, initializerContext);
-					if (subProperties != null) {
-						if (((CompositePropertyParser) propertyParser).isOpen()) {
-							property.setCompositeType(CompositeType.Open);
-						} else {
-							property.setCompositeType(CompositeType.Fixed);
-						}
-						for (PropertyTemplate subProperty : subProperties) {
-							property.addProperty(subProperty);
-							initProperty(subProperty);
-						}
+					ClientProperty clientProperty = readMethod
+							.getAnnotation(ClientProperty.class);
+					if (clientProperty != null) {
+						propertyTemplate.setDefaultValue(clientProperty
+								.escapeValue());
 					}
-				}
 
-				properties.add(property);
+					properties.add(propertyTemplate);
+				}
 			}
 		}
 		return properties;
 	}
 
-	protected void initProperties(RuleTemplate ruleTemplate,
-			InitializerContext initializerContext) throws Exception {
-		Class<?> type = getType(ruleTemplate);
-		if (type != null) {
-			DispatchableXmlParser parser = getDispatchableXmlParser(ruleTemplate);
-			ObjectOutputter outputter = getObjectOutputter(ruleTemplate);
-
-			Map<String, PropertyTemplate> finalPrimitiveProperties = ruleTemplate
-					.getFinalPrimitiveProperties();
-			Map<String, PropertyTemplate> finalProperties = ruleTemplate
-					.getFinalProperties();
-
-			Collection<PropertyTemplate> properties = getProperties(type,
-					parser, outputter, finalPrimitiveProperties,
-					finalProperties, initializerContext);
-			if (properties != null) {
-				for (PropertyTemplate property : properties) {
-					ruleTemplate.addProperty(property);
-				}
-			}
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	protected void initClientEvent(RuleTemplate ruleTemplate) throws Exception {
-		Class<?> type = getType(ruleTemplate);
-		if (type != null && ClientEventSupported.class.isAssignableFrom(type)) {
-			Map<String, ClientEvent> finalClientEvents = ruleTemplate
-					.getFinalClientEvents();
-			Map<String, ClientEventRegisterInfo> clientEventRegisterInfos = ClientEventRegistry
-					.getClientEventRegisterInfos((Class<ClientEventSupported>) type);
-			if (clientEventRegisterInfos != null) {
-				for (ClientEventRegisterInfo clientEventRegisterInfo : clientEventRegisterInfos
-						.values()) {
-					String name = clientEventRegisterInfo.getName();
-					ClientEvent originClientEvent = finalClientEvents.get(name);
-					if (originClientEvent != null) {
-						if (((AutoClientEvent) originClientEvent)
-								.getClientEventRegisterInfo() == clientEventRegisterInfo)
-							continue;
-					}
-
-					ClientEvent clientEvent = new AutoClientEvent(
-							clientEventRegisterInfo);
-					clientEvent.setName(name);
-					String[] signature = clientEventRegisterInfo.getSignature();
-					clientEvent.setParameters(signature);
-					ruleTemplate.addClientEvent(clientEvent);
-				}
-			}
-		}
-	}
-
-	protected void initChildren(RuleTemplate ruleTemplate,
-			InitializerContext initializerContext) throws Exception {
-		XmlParser parser = ruleTemplate.getParser();
-		if (parser instanceof CollectionToPropertyParser) {
-			initChildrenByCollectionParser(ruleTemplate,
-					(CollectionToPropertyParser) parser, initializerContext);
-		} else if (parser instanceof DispatchableXmlParser) {
-			initChildrenByDispatchableXmlParser(ruleTemplate,
-					(DispatchableXmlParser) parser, initializerContext);
-		}
-	}
-
-	protected void initChildrenByCollectionParser(RuleTemplate ruleTemplate,
-			CollectionToPropertyParser parser,
-			InitializerContext initializerContext) throws Exception {
-		XmlSubNode xmlSubNode = null;
-		Class<?> objectType = initializerContext.getCurrentType();
-		String property = initializerContext.getCurrentProperty();
-		Class<?> propertyType = parser.getElementType();
-		if (StringUtils.isEmpty(property)) {
-			property = parser.getProperty();
-		}
-		if (objectType != null && StringUtils.isNotEmpty(property)) {
-			PropertyDescriptor propertyDescriptor = BeanUtils
-					.getPropertyDescriptor(objectType, property);
-			if (propertyDescriptor != null) {
-				if (propertyType == null) {
-					propertyType = propertyDescriptor.getPropertyType();
-				}
-				Method readMethod = propertyDescriptor.getReadMethod();
-				if (readMethod != null) {
-					if (readMethod.getDeclaringClass() != objectType) {
-						readMethod = objectType.getMethod(readMethod.getName(),
-								readMethod.getParameterTypes());
-					}
-					xmlSubNode = readMethod.getAnnotation(XmlSubNode.class);
-				}
-			}
-		}
-		addChildrenByCollectionParser(ruleTemplate, initializerContext, parser,
-				xmlSubNode, propertyType);
-	}
-
-	protected void addChildrenByCollectionParser(RuleTemplate ruleTemplate,
-			InitializerContext initializerContext,
-			CollectionToPropertyParser parser, XmlSubNode xmlSubNode,
-			Class<?> propertyType) throws Exception {
-		Set<String> nodeNames = new HashSet<String>();
-		for (Class<?> implType : parser.getImplTypes()) {
-			TypeAnnotationInfo typeAnnotationInfo = getTypeAnnotationInfo(
-					initializerContext, implType);
-			if (typeAnnotationInfo != null) {
-				String nodeName = typeAnnotationInfo.getNodeName();
-				nodeNames.add(nodeName);
-				doAddChildBySubParser(ruleTemplate, initializerContext,
-						nodeName, nodeName, typeAnnotationInfo.getParser(),
-						null, implType, true);
-			}
-		}
-
-		for (Map.Entry<String, XmlParser> entry : parser.getSubParsers()
-				.entrySet()) {
-			String nodeName = entry.getKey();
-			if (nodeNames.contains(nodeName)) {
-				continue;
-			}
-
-			XmlParser subParser = entry.getValue();
-			Class<?> subType = null;
-			if (subParser instanceof ObjectParser) {
-				String impl = ((ObjectParser) subParser).getImpl();
-				if (StringUtils.isNotEmpty(impl))
-					subType = ClassUtils.getClass(impl);
-			}
-			if (subType == null) {
-				subType = propertyType;
-			}
-			addChildBySubParser(ruleTemplate, initializerContext, nodeName,
-					subParser, xmlSubNode, subType, true);
-		}
-	}
-
-	protected void initChildrenByDispatchableXmlParser(
-			RuleTemplate ruleTemplate, DispatchableXmlParser parser,
-			InitializerContext initializerContext) throws Exception {
-		Class<?> type = getType(ruleTemplate);
-		if (type != null) {
-			initializerContext.pushType(type);
-		}
-		initializerContext.pushOutputter(ruleTemplate.getOutputter());
-		try {
-			addChildrenByDispatchableParser(ruleTemplate, initializerContext,
-					parser);
-		} finally {
-			if (type != null) {
-				initializerContext.popType();
-			}
-			initializerContext.popOutputter();
-		}
-	}
-
-	protected void addChildrenByDispatchableParser(RuleTemplate ruleTemplate,
-			InitializerContext initializerContext, DispatchableXmlParser parser)
+	protected void initCompositeProperty(AutoPropertyTemplate propertyTemplate,
+			Class<?> propertyType, InitializerContext initializerContext)
 			throws Exception {
-		for (Map.Entry<String, XmlParser> entry : parser.getSubParsers()
-				.entrySet()) {
-			String nodeName = entry.getKey();
-			XmlParser subParser = entry.getValue();
-			if ("ClientEvent".equals(nodeName)) {
-				continue;
-			} else if (DispatchableXmlParser.SELF.equals(nodeName)
-					&& !(subParser instanceof CollectionToPropertyParser)) {
-				ruleTemplate.setParser(subParser);
-			}
+		if (propertyType != null) {
+			propertyTemplate.setCompositeType((Map.class
+					.isAssignableFrom(propertyType)) ? CompositeType.Open
+					: CompositeType.Fixed);
 
-			XmlSubNode xmlSubNode = null;
-			Class<?> propertyType = null;
-			boolean aggregated = true;
-
-			Class<?> objectType = initializerContext.getCurrentType();
-			if (objectType != null) {
-				String property = null;
-				if (subParser instanceof CollectionToPropertyParser) {
-					property = ((CollectionToPropertyParser) subParser)
-							.getProperty();
-				} else if (subParser instanceof SubNodeToPropertyParser) {
-					SubNodeToPropertyParser subNodeParser = (SubNodeToPropertyParser) subParser;
-					property = subNodeParser.getProperty();
-					XmlParser tempParser = subNodeParser.getSubParsers().get(
-							DispatchableXmlParser.SELF);
-					if (tempParser != null) {
-						subParser = tempParser;
-					}
-				} else if (!DispatchableXmlParser.WILDCARD.equals(nodeName)) {
-					property = StringUtils.uncapitalize(nodeName);
-					property = StringUtils.substringBefore(property, "/");
-				}
-
-				if (StringUtils.isNotEmpty(property)) {
-					PropertyDescriptor propertyDescriptor = BeanUtils
-							.getPropertyDescriptor(objectType, property);
-					if (propertyDescriptor != null) {
-						propertyType = propertyDescriptor.getPropertyType();
-						Method readMethod = propertyDescriptor.getReadMethod();
-						if (readMethod != null) {
-							if (readMethod.getDeclaringClass() != objectType) {
-								readMethod = objectType.getMethod(
-										readMethod.getName(),
-										readMethod.getParameterTypes());
-							}
-							xmlSubNode = readMethod
-									.getAnnotation(XmlSubNode.class);
-						}
-
-						if (propertyType != null) {
-							aggregated = Collection.class
-									.isAssignableFrom(propertyType);
-							if (aggregated && readMethod != null) {
-								Type parameterType = readMethod
-										.getGenericReturnType();
-								if (parameterType instanceof ParameterizedType) {
-									propertyType = (Class<?>) ((ParameterizedType) parameterType)
-											.getActualTypeArguments()[0];
-								} else {
-									propertyType = null;
-								}
-							}
-						}
-					}
-				}
-
-				if (subParser instanceof CollectionToPropertyParser) {
-					aggregated = false;
-				}
-			}
-
-			addChildBySubParser(ruleTemplate, initializerContext, nodeName,
-					subParser, xmlSubNode, propertyType, aggregated);
-		}
-	}
-
-	protected void addChildBySubParser(RuleTemplate ruleTemplate,
-			InitializerContext initializerContext, String nodeName,
-			XmlParser subParser, XmlSubNode xmlSubNode, Class<?> propertyType,
-			boolean aggregated) throws Exception {
-		String childName = null;
-		if (xmlSubNode != null) {
-			childName = xmlSubNode.name();
-		}
-		if (nodeName.indexOf("/") > 0) {
-			int index = nodeName.indexOf("/");
-			String nodeName1 = nodeName.substring(0, index);
-			String nodeName2 = nodeName.substring(index + 1);
-
-			if (DispatchableXmlParser.SELF.equals(nodeName1)) {
-				if (StringUtils.isEmpty(childName)) {
-					childName = nodeName2;
-				}
-				doAddChildBySubParser(ruleTemplate, initializerContext,
-						childName, nodeName2, subParser, xmlSubNode,
-						propertyType, aggregated);
-			} else {
-				String name = ruleTemplate.getName() + '.' + nodeName1;
-				RuleTemplate subRuleTemplate = new RuleTemplate(name);
-				subRuleTemplate.setNodeName(nodeName1);
-
-				if (StringUtils.isEmpty(childName)) {
-					childName = nodeName1;
-				}
-
-				ChildTemplate childTemplate = new ChildTemplate(childName,
-						subRuleTemplate);
-				childTemplate.setAggregated(false);
-				if (xmlSubNode != null) {
-					childTemplate.setFixed(xmlSubNode.fixed());
-				}
-				// else {
-				// childTemplate.setFixed(true);
-				// }
-
-				if (subParser instanceof SubNodeToPropertyParser) {
-					subRuleTemplate.setParser(subParser);
-				} else {
-					initializerContext.pushProperty(StringUtils
-							.uncapitalize(nodeName1));
-					try {
-						doAddChildBySubParser(subRuleTemplate,
-								initializerContext, nodeName2, nodeName2,
-								subParser, null, propertyType, aggregated);
-					} finally {
-						initializerContext.popProperty();
-					}
-				}
-				ruleTemplate.addChild(childTemplate);
+			Collection<AutoPropertyTemplate> subProperties = getProperties(
+					propertyType, null, initializerContext);
+			for (PropertyTemplate subProperty : subProperties) {
+				propertyTemplate.addProperty(subProperty);
 			}
 		} else {
-			if (StringUtils.isEmpty(childName)) {
-				childName = nodeName;
+			propertyTemplate.setCompositeType(CompositeType.Open);
+		}
+	}
+
+	protected Set<Class<?>> discoverImplTypes(String[] implTypes,
+			Class<?> targetType) throws Exception {
+		Set<Class<?>> types = new HashSet<Class<?>>();
+		for (String implExpression : implTypes) {
+			if (StringUtils.isEmpty(implExpression)) {
+				continue;
 			}
-			doAddChildBySubParser(ruleTemplate, initializerContext, childName,
-					nodeName, subParser, xmlSubNode, propertyType, aggregated);
+
+			if (implExpression.indexOf(WILCARD) >= 0) {
+				String pathExpression = "classpath*:"
+						+ implExpression.replace('.', '/') + ".class";
+				Resource[] resources = ResourceUtils
+						.getResources(pathExpression);
+				for (Resource resource : resources) {
+					String path = resource.getPath();
+					int i1 = path.lastIndexOf('/');
+					String simpleClassName = path.substring((i1 < 0) ? 0
+							: (i1 + 1), path.length() - 6);
+					int i2 = implExpression.lastIndexOf('.');
+					String className = implExpression.substring(0, i2 + 1)
+							+ simpleClassName;
+
+					try {
+						Class<?> type = ClassUtils.getClass(className);
+						if (targetType != null
+								&& targetType.isAssignableFrom(type)) {
+							types.add(type);
+						}
+					} catch (Throwable e) {
+						// do nothing
+					}
+				}
+			} else {
+				Class<?> type = ClassUtils.getClass(implExpression);
+				if (targetType != null && targetType.isAssignableFrom(type)) {
+					types.add(type);
+				}
+			}
 		}
+		return types;
 	}
 
-	private String getNodeNameByType(Class<?> type) {
-		String nodeName = FAIL_SAFE_NODE_NAME;
-		XmlNode xmlNode = type.getAnnotation(XmlNode.class);
-		if (xmlNode != null) {
-			nodeName = xmlNode.nodeName();
-		}
-		if (StringUtils.isEmpty(nodeName)) {
-			nodeName = type.getSimpleName();
-		}
-		return nodeName;
-	}
-
-	private void doAddChildBySubParser(RuleTemplate ruleTemplate,
-			InitializerContext initializerContext, String childName,
-			String nodeName, XmlParser subParser, XmlSubNode xmlSubNode,
-			Class<?> propertyType, boolean aggregated) throws Exception {
-		if (subParser instanceof IgnoreParser) {
+	protected void initChildTemplates(RuleTemplate ruleTemplate,
+			TypeInfo typeInfo, XmlNodeInfo xmlNodeInfo,
+			InitializerContext initializerContext) throws Exception {
+		List<AutoChildTemplate> childTemplates = getChildTemplates(typeInfo,
+				xmlNodeInfo, initializerContext);
+		if (childTemplates.isEmpty()) {
 			return;
 		}
 
-		if (DispatchableXmlParser.WILDCARD.equals(childName)) {
-			if (propertyType != null) {
-				childName = propertyType.getSimpleName();
-			} else if (subParser instanceof ComponentParserDispatcher) {
-				childName = "Component";
-			} else if (subParser instanceof ChildComponentParser) {
-				childName = "Children";
-			} else {
-				childName = UNNAMED;
-			}
+		for (ChildTemplate childTemplate : childTemplates) {
+			ruleTemplate.addChild(childTemplate);
 		}
-
-		if (DispatchableXmlParser.WILDCARD.equals(nodeName)) {
-			if (propertyType != null) {
-				nodeName = getNodeNameByType(propertyType);
-			} else {
-				nodeName = FAIL_SAFE_NODE_NAME;
-			}
-
-			// if (subParser instanceof DispatchableXmlParser) {
-			// XmlParser realSubParser = ((DispatchableXmlParser) subParser)
-			// .getSubParsers().get(DispatchableXmlParser.SELF);
-			// if (realSubParser != null)
-			// subParser = realSubParser;
-			// }
-		}
-
-		boolean fixed = false;
-		if (!aggregated && xmlSubNode != null && xmlSubNode.fixed()) {
-			fixed = true;
-			aggregated = false;
-		}
-
-		RuleTemplate subRuleTemplate = null;
-		RuleTemplateManager ruleTemplateManager = initializerContext
-				.getRuleTemplateManager();
-
-		Map<MultiKey, ChildTemplate> childTemplateMap = initializerContext
-				.getChildTemplateMap();
-		MultiKey childKey = new MultiKey(subParser, childName, propertyType);
-		ChildTemplate childTemplate = childTemplateMap.get(childKey);
-		if (childTemplate == null) {
-			boolean processed = false;
-			if (subParser instanceof ComponentParserDispatcher
-					|| subParser instanceof ChildComponentParser) {
-				if (propertyType == null) {
-					if (subParser instanceof ComponentParserDispatcher) {
-						propertyType = ((ComponentParserDispatcher) subParser)
-								.getComponentType();
-					}
-				}
-				subRuleTemplate = ruleTemplateManager
-						.getRuleTemplate(propertyType);
-				if (subRuleTemplate == null) {
-					subRuleTemplate = ruleTemplateManager
-							.getRuleTemplate("Component");
-					processed = (propertyType == null);
-				} else {
-					processed = true;
-				}
-			}
-
-			if (!processed) {
-				if (propertyType != null
-						&& FAIL_SAFE_NODE_NAME.equals(nodeName)
-						&& xmlSubNode == null) {
-					nodeName = getNodeNameByType(propertyType);
-				}
-
-				String name = ruleTemplate.getName() + '.' + childName;
-				subRuleTemplate = new AutoRuleTemplate(name);
-				subRuleTemplate.setNodeName(nodeName);
-				subRuleTemplate.setParser(subParser);
-				subRuleTemplate
-						.setSortFactor(ruleTemplate.getChildren().size() + 1);
-
-				Class<?> subType = propertyType;
-				if (subType == null && subParser instanceof ObjectParser) {
-					String impl = ((ObjectParser) subParser).getImpl();
-					if (StringUtils.isNotEmpty(impl)) {
-						subType = ClassUtils.getClass(impl);
-					}
-				}
-				if (subType != null
-						&& !(subParser instanceof CollectionToPropertyParser)) {
-					subRuleTemplate.setType(subType.getName());
-				}
-
-				String property = initializerContext.getCurrentProperty();
-				if (StringUtils.isNotEmpty(property)
-						&& initializerContext.getCurrentOutputter() instanceof ObjectOutputter) {
-					Object subOutputter = ((ObjectOutputter) initializerContext
-							.getCurrentOutputter()).getConfigProperties().get(
-							property);
-					if (subOutputter != null
-							&& subOutputter instanceof Outputter) {
-						subRuleTemplate.setOutputter((Outputter) subOutputter);
-					}
-				}
-			}
-
-			childTemplate = new AutoChildTemplate(childName, subParser);
-			childTemplate.setRuleTemplate(subRuleTemplate);
-			childTemplate.setAggregated(aggregated);
-			childTemplate.setFixed(fixed);
-			childTemplateMap.put(childKey, childTemplate);
-		} else {
-			subRuleTemplate = childTemplate.getRuleTemplate();
-			if (!subRuleTemplate.isGlobal()) {
-				ruleTemplateManager.addRuleTemplate(subRuleTemplate);
-			}
-
-			childTemplate = new AutoChildTemplate(childName, subParser);
-			childTemplate.setRuleTemplate(subRuleTemplate);
-			childTemplate.setAggregated(aggregated);
-			childTemplate.setFixed(fixed);
-		}
-
-		ChildTemplate originChildTemplate = ruleTemplate.getFinalChildren()
-				.get(childName);
-		if (originChildTemplate != null) {
-			if (childTemplate instanceof AutoChildTemplate) {
-				if (originChildTemplate instanceof AutoChildTemplate) {
-					AutoChildTemplate act = (AutoChildTemplate) childTemplate;
-					AutoChildTemplate oact = (AutoChildTemplate) originChildTemplate;
-					if (act.getXmlParser() == oact.getXmlParser()) {
-						return;
-					}
-				} else {
-					return;
-				}
-			}
-		}
-		ruleTemplate.addChild(childTemplate);
 	}
 
-	private TypeAnnotationInfo getTypeAnnotationInfo(
-			InitializerContext initializerContext, Class<?> type)
+	protected List<AutoChildTemplate> getChildTemplates(TypeInfo typeInfo,
+			XmlNodeInfo xmlNodeInfo, InitializerContext initializerContext)
 			throws Exception {
-		TypeAnnotationInfo typeAnnotationInfo = initializerContext
-				.getTypeAnnotationInfoMap().get(type);
-		if (typeAnnotationInfo == null) {
-			typeAnnotationInfo = xmlParserAnnotationHelper
-					.getTypeAnnotationInfo(type);
-			if (typeAnnotationInfo != null) {
-				initializerContext.getTypeAnnotationInfoMap().put(type,
-						typeAnnotationInfo);
+		List<AutoChildTemplate> childTemplates = new ArrayList<AutoChildTemplate>();
+		if (xmlNodeInfo != null) {
+			for (XmlSubNode xmlSubNode : xmlNodeInfo.getSubNodes()) {
+				TypeInfo propertyTypeInfo = TypeInfo.parse(xmlSubNode
+						.propertyType());
+				List<AutoChildTemplate> childRulesBySubNode = getChildTemplatesBySubNode(
+						typeInfo, xmlSubNode.propertyName(), xmlSubNode,
+						propertyTypeInfo, initializerContext);
+				if (childRulesBySubNode != null) {
+					childTemplates.addAll(childRulesBySubNode);
+				}
 			}
 		}
-		return typeAnnotationInfo;
+
+		Class<?> type = typeInfo.getType();
+		PropertyDescriptor[] propertyDescriptors = PropertyUtils
+				.getPropertyDescriptors(type);
+		for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
+			Method readMethod = propertyDescriptor.getReadMethod();
+			if (readMethod != null && readMethod.getDeclaringClass() == type) {
+				XmlSubNode xmlSubNode = readMethod
+						.getAnnotation(XmlSubNode.class);
+				if (xmlSubNode != null) {
+					TypeInfo propertyTypeInfo;
+					Class<?> propertyType = propertyDescriptor
+							.getPropertyType();
+					if (Collection.class.isAssignableFrom(propertyType)) {
+						propertyTypeInfo = TypeInfo.parse(
+								(ParameterizedType) readMethod
+										.getGenericReturnType(), true);
+						propertyType = propertyTypeInfo.getType();
+					} else {
+						propertyTypeInfo = new TypeInfo(propertyType, false);
+					}
+					List<AutoChildTemplate> childTemplatesBySubNode = getChildTemplatesBySubNode(
+							typeInfo, propertyDescriptor.getName(), xmlSubNode,
+							propertyTypeInfo, initializerContext);
+					if (childTemplatesBySubNode != null) {
+						childTemplates.addAll(childTemplatesBySubNode);
+					}
+				}
+			}
+		}
+		return childTemplates;
+	}
+
+	protected List<AutoChildTemplate> getChildTemplatesBySubNode(
+			TypeInfo typeInfo, String propertyName, XmlSubNode xmlSubNode,
+			TypeInfo propertyTypeInfo, InitializerContext initializerContext)
+			throws Exception {
+		List<AutoChildTemplate> childTemplates = new ArrayList<AutoChildTemplate>();
+
+		boolean aggregated = xmlSubNode.aggregated();
+		Class<?> propertyType = null;
+		if (propertyTypeInfo != null) {
+			propertyType = propertyTypeInfo.getType();
+			aggregated = propertyTypeInfo.isAggregated();
+		}
+
+		Set<Class<?>> implTypes = discoverImplTypes(xmlSubNode.implTypes(),
+				propertyType);
+		for (Class<?> implType : implTypes) {
+			if (implType.equals(typeInfo.getType())) {
+				continue;
+			}
+
+			AutoChildTemplate childTemplate = getChildNodeByBeanType(null,
+					xmlSubNode, aggregated, implType, "protected",
+					initializerContext);
+			if (childTemplate != null) {
+				childTemplates.add(childTemplate);
+			}
+		}
+
+		if (propertyType != null) {
+			AutoChildTemplate childTemplate = getChildNodeByBeanType(
+					StringUtils.capitalize(propertyName), xmlSubNode,
+					aggregated, propertyType, null, initializerContext);
+			if (childTemplate != null) {
+				childTemplates.add(childTemplate);
+			}
+		}
+
+		XmlNodeWrapper wrapper = xmlSubNode.wrapper();
+		String wrapperName = wrapper.nodeName();
+		if (StringUtils.isNotEmpty(wrapperName)) {
+			List<AutoChildTemplate> wrapperTemplates = new ArrayList<AutoChildTemplate>();
+			AutoRuleTemplate wrapperRuleTemplate = new AutoRuleTemplate(null);
+			wrapperRuleTemplate.setNodeName(wrapper.nodeName());
+			for (ChildTemplate childTemplate : childTemplates) {
+				wrapperRuleTemplate.addChild(childTemplate);
+			}
+
+			AutoChildTemplate wrapperChildTemplate = new AutoChildTemplate(
+					wrapperName, wrapperRuleTemplate, xmlSubNode);
+			wrapperChildTemplate.setFixed(wrapper.fixed());
+			wrapperTemplates.add(wrapperChildTemplate);
+			return wrapperTemplates;
+		} else {
+			return childTemplates;
+		}
+	}
+
+	protected AutoChildTemplate getChildNodeByBeanType(String name,
+			XmlSubNode xmlSubNode, boolean aggregated, Class<?> beanType,
+			String scope, InitializerContext initializerContext)
+			throws Exception {
+		XmlNodeInfo xmlNodeInfo = getXmlNodeInfo(beanType);
+		if (xmlNodeInfo == null) {
+			return null;
+		}
+
+		RuleTemplateManager ruleTemplateManager = initializerContext
+				.getRuleTemplateManager();
+		RuleTemplate ruleTemplate = ruleTemplateManager
+				.getRuleTemplate(beanType);
+		if (ruleTemplate == null) {
+			ruleTemplate = createRuleTemplate(ruleTemplateManager, beanType,
+					null);
+			if (StringUtils.isNotEmpty(scope)) {
+				ruleTemplate.setScope(scope);
+			}
+		}
+
+		if (StringUtils.isEmpty(name)) {
+			name = xmlNodeInfo.getNodeName();
+			if (StringUtils.isEmpty(name)) {
+				name = beanType.getSimpleName();
+			}
+			if (!xmlNodeInfo.getFixedProperties().isEmpty()) {
+				StringBuffer buf = new StringBuffer();
+				for (Map.Entry<String, String> entry : xmlNodeInfo
+						.getFixedProperties().entrySet()) {
+					if ((buf.length() > 0)) {
+						buf.append(';');
+					}
+					buf.append(entry.getKey()).append('=')
+							.append(entry.getValue());
+				}
+				name += '[' + buf.toString() + ']';
+			}
+		}
+
+		AutoChildTemplate childTemplate = new AutoChildTemplate(name,
+				ruleTemplate, xmlSubNode);
+		childTemplate.setAggregated(aggregated);
+		childTemplate.setFixed(xmlSubNode.fixed());
+		return childTemplate;
+	}
+
+	protected void initClientEvent(RuleTemplate ruleTemplate,
+			TypeInfo typeInfo, InitializerContext initializerContext)
+			throws Exception {
+		Class<?> type = typeInfo.getType();
+		if (type != null && ClientEventSupported.class.isAssignableFrom(type)) {
+			Map<String, ClientEventRegisterInfo> allClientEvents = new HashMap<String, ClientEventRegisterInfo>();
+			Map<String, ClientEventRegisterInfo> clientEvents;
+
+			for (Class<?> i : type.getInterfaces()) {
+				clientEvents = ClientEventRegistry
+						.getOwnClientEventRegisterInfos(i);
+				if (clientEvents != null) {
+					allClientEvents.putAll(clientEvents);
+				}
+			}
+
+			clientEvents = ClientEventRegistry
+					.getOwnClientEventRegisterInfos(type);
+			if (clientEvents != null) {
+				allClientEvents.putAll(clientEvents);
+			}
+
+			for (ClientEventRegisterInfo clientEventRegisterInfo : allClientEvents
+					.values()) {
+				String name = clientEventRegisterInfo.getName();
+
+				ClientEvent clientEvent = new AutoClientEvent(
+						clientEventRegisterInfo);
+				clientEvent.setName(name);
+				String[] signature = clientEventRegisterInfo.getSignature();
+				clientEvent.setParameters(signature);
+				ruleTemplate.addClientEvent(clientEvent);
+			}
+		}
 	}
 }

@@ -2,10 +2,9 @@ package com.bstek.dorado.view.widget.base;
 
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.FloatControlShadowMode;
 
 /**
@@ -13,8 +12,7 @@ import com.bstek.dorado.view.widget.FloatControlShadowMode;
  * @since 2010-6-2
  */
 @Widget(name = "Dialog", category = "Floatable", dependsPackage = "base-widget")
-@ViewObject(prototype = "dorado.widget.Dialog", shortTypeName = "Dialog")
-@XmlNode(nodeName = "Dialog")
+@ClientObject(prototype = "dorado.widget.Dialog", shortTypeName = "Dialog")
 @ClientEvents({ @ClientEvent(name = "beforeMinimize"),
 		@ClientEvent(name = "onMinimize") })
 public class Dialog extends FloatPanel {
@@ -33,7 +31,7 @@ public class Dialog extends FloatPanel {
 	}
 
 	@Override
-	@ViewAttribute(defaultValue = "frame")
+	@ClientProperty(escapeValue = "frame")
 	public FloatControlShadowMode getShadowMode() {
 		return super.getShadowMode();
 	}
@@ -55,7 +53,7 @@ public class Dialog extends FloatPanel {
 	}
 
 	@Override
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isDraggable() {
 		return draggable;
 	}
@@ -65,7 +63,7 @@ public class Dialog extends FloatPanel {
 		this.draggable = draggable;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isResizeable() {
 		return resizeable;
 	}
@@ -106,7 +104,7 @@ public class Dialog extends FloatPanel {
 	}
 
 	@Override
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isCloseable() {
 		return super.isCloseable();
 	}

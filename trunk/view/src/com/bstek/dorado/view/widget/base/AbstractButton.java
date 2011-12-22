@@ -1,7 +1,8 @@
 package com.bstek.dorado.view.widget.base;
 
-
-import com.bstek.dorado.annotation.ViewAttribute;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.IdeProperty;
+import com.bstek.dorado.view.annotation.ComponentReference;
 import com.bstek.dorado.view.widget.Control;
 import com.bstek.dorado.view.widget.action.ActionSupport;
 
@@ -13,7 +14,8 @@ public abstract class AbstractButton extends Control implements ActionSupport {
 	private String menu;
 	private boolean toggleOnShowMenu = true;
 
-	@ViewAttribute(referenceComponentName = "Action")
+	@ComponentReference("Action")
+	@IdeProperty(highlight = 1)
 	public String getAction() {
 		return action;
 	}
@@ -46,7 +48,7 @@ public abstract class AbstractButton extends Control implements ActionSupport {
 		this.toggled = toggled;
 	}
 
-	@ViewAttribute(referenceComponentName = "Menu")
+	@ComponentReference("Menu")
 	public String getMenu() {
 		return menu;
 	}
@@ -55,7 +57,7 @@ public abstract class AbstractButton extends Control implements ActionSupport {
 		this.menu = menu;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isToggleOnShowMenu() {
 		return toggleOnShowMenu;
 	}

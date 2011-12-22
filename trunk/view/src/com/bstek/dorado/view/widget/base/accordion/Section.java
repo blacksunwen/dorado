@@ -6,9 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.bstek.dorado.annotation.ClientEvents;
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.common.Ignorable;
@@ -26,9 +25,10 @@ import com.bstek.dorado.view.widget.InnerElementReference;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-8-9
  */
-@ViewObject(prototype = "dorado.widget.accordion.Section", shortTypeName = "Section")
-@XmlNode(nodeName = "Section")
-@ClientEvents({ @com.bstek.dorado.annotation.ClientEvent(name = "onCaptionClick") })
+@ClientObject(prototype = "dorado.widget.accordion.Section",
+		shortTypeName = "Section")
+@ClientEvents({ @com.bstek.dorado.annotation.ClientEvent(
+		name = "onCaptionClick") })
 public class Section implements ClientEventSupported, Ignorable, TagSupport,
 		ViewElement {
 	private ViewElement parent;
@@ -126,7 +126,7 @@ public class Section implements ClientEventSupported, Ignorable, TagSupport,
 		this.style = style;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isVisible() {
 		return visible;
 	}
@@ -184,8 +184,8 @@ public class Section implements ClientEventSupported, Ignorable, TagSupport,
 		return clientEventHolder.getAllClientEventListeners();
 	}
 
-	@ViewAttribute
-	@XmlSubNode(path = "*")
+	@XmlSubNode
+	@ClientProperty
 	public Control getControl() {
 		return controlRef.get();
 	}

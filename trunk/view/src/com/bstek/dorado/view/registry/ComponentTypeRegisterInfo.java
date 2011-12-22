@@ -3,19 +3,19 @@ package com.bstek.dorado.view.registry;
 import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.lang.StringUtils;
 
-import com.bstek.dorado.config.Parser;
 import com.bstek.dorado.view.widget.Component;
 
 /**
  * 组件类型注册信息。
+ * 
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Jan 21, 2008
  */
-public abstract class ComponentTypeRegisterInfo {
+public class ComponentTypeRegisterInfo {
 	private String name;
 	private Class<? extends Component> classType;
 	private String category;
-	private Parser parser;
+	private String dependsPackage;
 
 	public ComponentTypeRegisterInfo(String name) {
 		this.name = name;
@@ -54,16 +54,20 @@ public abstract class ComponentTypeRegisterInfo {
 	}
 
 	/**
-	 * 返回该种组件使用的配置信息解析器。
+	 * 返回该组件依赖的JavaScript Package。
+	 * 
+	 * @see com.bstek.dorado.view.registry.DefaultComponentTypeRegister#setDependsPackage(String)
 	 */
-	public Parser getParser() {
-		return parser;
+	public String getDependsPackage() {
+		return dependsPackage;
 	}
 
 	/**
-	 * 设置该种组件使用的配置信息解析器。
+	 * 设置该组件依赖的JavaScript Package。
+	 * 
+	 * @see com.bstek.dorado.view.registry.DefaultComponentTypeRegister#setDependsPackage(String)
 	 */
-	public void setParser(Parser parser) {
-		this.parser = parser;
+	public void setDependsPackage(String dependsPackage) {
+		this.dependsPackage = dependsPackage;
 	}
 }

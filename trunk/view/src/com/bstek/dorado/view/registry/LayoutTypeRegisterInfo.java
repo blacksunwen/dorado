@@ -1,13 +1,12 @@
 package com.bstek.dorado.view.registry;
 
-import com.bstek.dorado.config.Parser;
 import com.bstek.dorado.util.Assert;
-import com.bstek.dorado.view.output.Outputter;
 import com.bstek.dorado.view.widget.layout.Layout;
 import com.bstek.dorado.view.widget.layout.LayoutConstraintSupport;
 
 /**
  * 布局管理器类型的注册信息对象。
+ * 
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Sep 16, 2008
  */
@@ -15,8 +14,6 @@ public class LayoutTypeRegisterInfo {
 	private String type;
 	private Class<? extends Layout> classType;
 	private Class<? extends LayoutConstraintSupport> constraintClassType;
-	private Parser parser;
-	private Outputter outputter;
 
 	public LayoutTypeRegisterInfo(String type,
 			Class<? extends Layout> classType,
@@ -63,34 +60,6 @@ public class LayoutTypeRegisterInfo {
 	public void setConstraintClassType(
 			Class<? extends LayoutConstraintSupport> constraintClassType) {
 		this.constraintClassType = constraintClassType;
-	}
-
-	/**
-	 * 返回布局管理器的解析器。
-	 */
-	public Parser getParser() {
-		return parser;
-	}
-
-	/**
-	 * 设置布局管理器的解析器。
-	 */
-	public void setParser(Parser parser) {
-		this.parser = parser;
-	}
-
-	/**
-	 * 返回布局管理器的输出器。
-	 */
-	public Outputter getOutputter() {
-		return outputter;
-	}
-
-	/**
-	 * 设置布局管理器的输出器。
-	 */
-	public void setOutputter(Outputter outputter) {
-		this.outputter = outputter;
 	}
 
 }

@@ -7,18 +7,22 @@ import java.lang.reflect.Method;
 
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
-import com.bstek.dorado.annotation.ViewObject;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.IdeProperty;
+import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.common.method.MethodAutoMatchingUtils;
 import com.bstek.dorado.common.service.ExposedService;
 import com.bstek.dorado.common.service.ExposedServiceManager;
 import com.bstek.dorado.core.Context;
 import com.bstek.dorado.core.bean.BeanFactoryUtils;
-import com.bstek.dorado.util.method.MethodAutoMatchingUtils;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2011-5-25
  */
-@ViewObject(prototype = "dorado.validator.AjaxValidator", shortTypeName = "Ajax")
+@XmlNode(fixedProperties = "type=ajax")
+@ClientObject(prototype = "dorado.validator.AjaxValidator",
+		shortTypeName = "Ajax")
 @ClientEvents(@ClientEvent(name = "beforeExecute"))
 public class AjaxValidator extends AbstractAjaxValidator {
 	private static ExposedServiceManager exposedServiceManager;
@@ -33,6 +37,7 @@ public class AjaxValidator extends AbstractAjaxValidator {
 		return exposedServiceManager;
 	}
 
+	@IdeProperty(highlight = 1)
 	public String getService() {
 		return service;
 	}

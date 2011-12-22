@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:d="http://www.bstek.com/dorado/schema"
-	xsi:schemaLocation="
-http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
 http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dorado-7.0.xsd">
 	<import resource="parser-context.xml" />
 	<import resource="outputter-context.xml" />
@@ -48,7 +47,6 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 	</bean>
 	<bean id="dorado.layoutTypeRegister" abstract="true" class="com.bstek.dorado.view.registry.LayoutTypeRegister">
 		<property name="layoutTypeRegistry" ref="dorado.layoutTypeRegistry" />
-		<property name="parser" ref="dorado.dispatchableTextParser" />
 	</bean>
 
 	<!-- Expression -->

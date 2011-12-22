@@ -6,8 +6,11 @@ package com.bstek.dorado.view.manager;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.bstek.dorado.annotation.ViewAttribute;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.IdeProperty;
+import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
+import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.common.MetaDataSupport;
 import com.bstek.dorado.common.Namable;
 import com.bstek.dorado.core.Context;
@@ -15,16 +18,28 @@ import com.bstek.dorado.data.provider.DataProvider;
 import com.bstek.dorado.data.resolver.DataResolver;
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.util.proxy.BeanExtender;
+import com.bstek.dorado.view.View;
 import com.bstek.dorado.view.InnerDataProviderManager;
 import com.bstek.dorado.view.InnerDataResolverManager;
 import com.bstek.dorado.view.InnerDataTypeManager;
-import com.bstek.dorado.view.View;
 import com.bstek.dorado.view.ViewState;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2011-7-11
  */
+@XmlNode(
+		properties = { @XmlProperty(propertyName = "template", ignored = true) },
+		subNodes = {
+				@XmlSubNode(nodeName = "Model",
+						parser = "spring:dorado.viewModelParser",
+						resultProcessed = true),
+				@XmlSubNode(nodeName = "Arguments",
+						parser = "spring:dorado.viewArgumentsParser",
+						resultProcessed = true),
+				@XmlSubNode(nodeName = "Context",
+						parser = "spring:dorado.viewContextParser",
+						resultProcessed = true) })
 public class ViewConfig implements Namable, MetaDataSupport {
 	protected static final String VIEW_STATE_ATTRIBUTE_KEY = ViewState.class
 			.getName();
@@ -37,7 +52,9 @@ public class ViewConfig implements Namable, MetaDataSupport {
 	private InnerDataResolverManager innerDataResolverManager;
 	private View view;
 
-	@ViewAttribute(ignored = true)
+	@XmlProperty(unsupported = true)
+	@ClientProperty(ignored = true)
+	@IdeProperty(visible = false)
 	public String getName() {
 		return name;
 	}
@@ -49,6 +66,8 @@ public class ViewConfig implements Namable, MetaDataSupport {
 		}
 	}
 
+	@XmlProperty(unsupported = true)
+	@IdeProperty(visible = false)
 	public ViewState getState() {
 		ViewState viewState = (ViewState) Context.getCurrent().getAttribute(
 				VIEW_STATE_ATTRIBUTE_KEY);
@@ -56,7 +75,6 @@ public class ViewConfig implements Namable, MetaDataSupport {
 	}
 
 	@XmlProperty(composite = true)
-	@ViewAttribute(outputter = "#ignore")
 	public Map<String, Object> getMetaData() {
 		return metaData;
 	}
@@ -124,7 +142,8 @@ public class ViewConfig implements Namable, MetaDataSupport {
 		return dataType;
 	}
 
-	@ViewAttribute(ignored = true)
+	@XmlSubNode(resultProcessed = true)
+	@IdeProperty(visible = false)
 	public View getView() {
 		return view;
 	}

@@ -1,13 +1,12 @@
 package com.bstek.dorado.ofc.element;
 
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
 
-@ViewObject(prototype = "dorado.widget.ofc.FilledColumn", shortTypeName = "ofc.FilledColumn")
-@XmlNode(nodeName = "FilledColumn")
-public class FilledColumn extends Column{
+@ClientObject(prototype = "dorado.widget.ofc.FilledColumn",
+		shortTypeName = "ofc.FilledColumn")
+public class FilledColumn extends Column {
 	private String outlineColor;
-	
+
 	/**
 	 * @return the outlineColor
 	 */
@@ -16,11 +15,11 @@ public class FilledColumn extends Column{
 	}
 
 	/**
-	 * @param outlineColor the outlineColor to set
+	 * @param outlineColor
+	 *            the outlineColor to set
 	 */
 	public void setOutlineColor(String outlineColor) {
 		this.outlineColor = outlineColor;
 	}
-	
-	
+
 }

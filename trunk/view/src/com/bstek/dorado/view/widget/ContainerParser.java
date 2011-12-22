@@ -59,7 +59,7 @@ public class ContainerParser extends ControlParser {
 		}
 		viewContext.setCurrentLayout(new ViewParseContext.LayoutInfo(element,
 				layoutTypeInfo));
-		
+
 		ContainerDefinition containerDefinition = (ContainerDefinition) super
 				.internalParse(node, context);
 		if (layout != null) {
@@ -77,13 +77,15 @@ public class ContainerParser extends ControlParser {
 		LayoutInfo layoutInfo = viewContext.getCurrentLayout();
 		boolean restored = (layoutInfo != null && layoutInfo
 				.getContainerElement() == element);
-		if (restored)
+		if (restored) {
 			viewContext.restoreCurrentLayout();
+		}
 		try {
 			return super.parseProperties(element, context);
 		} finally {
-			if (restored)
+			if (restored) {
 				viewContext.setCurrentLayout(layoutInfo);
+			}
 		}
 	}
 }

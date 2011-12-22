@@ -10,8 +10,6 @@ import com.bstek.dorado.data.config.ConfigManagerTestSupport;
 import com.bstek.dorado.data.provider.DataProvider;
 import com.bstek.dorado.data.provider.DirectDataProvider;
 import com.bstek.dorado.data.provider.PagingList;
-import com.bstek.dorado.view.output.DataOutputter;
-import com.bstek.dorado.view.output.OutputContext;
 
 public class DataOutputterTest extends ConfigManagerTestSupport {
 
@@ -36,7 +34,7 @@ public class DataOutputterTest extends ConfigManagerTestSupport {
 		map.put("key4", null);
 
 		String output = getOutput(map);
-		assertEquals("{\"key1\":\"value1\",\"key2\":88,\"key3\":false}", output);
+		assertEquals("{\"key1\":\"value1\",\"key2\":88,\"key3\":false,\"key4\":null}", output);
 	}
 
 	public void testList() throws Exception {

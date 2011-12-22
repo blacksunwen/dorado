@@ -5,6 +5,7 @@ package com.bstek.dorado.view;
 
 import java.util.Map;
 
+import com.bstek.dorado.core.Context;
 import com.bstek.dorado.view.output.DataOutputter;
 import com.bstek.dorado.view.output.JsonBuilder;
 import com.bstek.dorado.view.output.OutputContext;
@@ -21,10 +22,14 @@ public class ViewContextPropertyOutputter extends DataOutputter implements
 
 	public void output(Object object, String property, OutputContext context)
 			throws Exception {
+		Context doradoContext = Context.getCurrent();
+		if (!(doradoContext instanceof DoradoContext)) {
+			return;
+		}
+
 		View view = (View) object;
-		DoradoContext doradoContext = DoradoContext.getCurrent();
 		Map<String, Object> viewContext = DoradoContextUtils
-				.getViewContextByBindingObject(doradoContext,
+				.getViewContextByBindingObject((DoradoContext) doradoContext,
 						view.getViewConfig());
 		if (viewContext != null && !viewContext.isEmpty()) {
 			JsonBuilder json = context.getJsonBuilder();

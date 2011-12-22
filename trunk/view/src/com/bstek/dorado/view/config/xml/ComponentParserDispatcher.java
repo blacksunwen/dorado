@@ -1,15 +1,19 @@
 package com.bstek.dorado.view.config.xml;
 
-import org.apache.commons.lang.ClassUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import com.bstek.dorado.config.ParseContext;
 import com.bstek.dorado.config.xml.XmlParseException;
 import com.bstek.dorado.config.xml.XmlParser;
+import com.bstek.dorado.config.xml.XmlParserHelper;
+import com.bstek.dorado.util.CloneUtils;
+import com.bstek.dorado.view.config.definition.ComponentDefinition;
+import com.bstek.dorado.view.registry.AssembledComponentTypeRegisterInfo;
 import com.bstek.dorado.view.registry.ComponentTypeRegisterInfo;
 import com.bstek.dorado.view.registry.ComponentTypeRegistry;
 import com.bstek.dorado.view.widget.Component;
+import com.bstek.dorado.view.widget.ComponentParser;
 
 /**
  * Component解析任务的分配器。
@@ -21,22 +25,12 @@ import com.bstek.dorado.view.widget.Component;
  * @since Jan 22, 2008
  */
 public class ComponentParserDispatcher implements XmlParser {
-	private Class<Component> componentType;
+	private XmlParserHelper xmlParserHelper;
 	private ComponentTypeRegistry componentTypeRegistry;
 
-	@SuppressWarnings("unchecked")
-	public void setComponentTypeName(String componentTypeName)
-			throws ClassNotFoundException {
-		this.componentType = (Class<Component>) ClassUtils
-				.getClass(componentTypeName);
-	}
-
-	public void setComponentType(Class<Component> componentType) {
-		this.componentType = componentType;
-	}
-
-	public Class<Component> getComponentType() {
-		return componentType;
+	public void setXmlParserHelper(
+			XmlParserHelper xmlParserHelper) {
+		this.xmlParserHelper = xmlParserHelper;
 	}
 
 	/**
@@ -49,20 +43,30 @@ public class ComponentParserDispatcher implements XmlParser {
 
 	public Object parse(Node node, ParseContext context) throws Exception {
 		ViewParseContext viewContext = (ViewParseContext) context;
-		XmlParser parser = null;
+		ComponentParser componentParser = null;
 		Element element = (Element) node;
 
 		String type = element.getTagName();
 		ComponentTypeRegisterInfo registerInfo = componentTypeRegistry
 				.getRegisterInfo(type);
 		if (registerInfo != null) {
-			parser = (XmlParser) registerInfo.getParser();
+			Class<? extends Component> classType = registerInfo.getClassType();
+			componentParser = (ComponentParser) xmlParserHelper
+					.getXmlParser(classType);
+
+			if (registerInfo instanceof AssembledComponentTypeRegisterInfo) {
+				ComponentDefinition superComponentDefinition = ((AssembledComponentTypeRegisterInfo) registerInfo)
+						.getSuperComponentDefinition();
+				componentParser = CloneUtils.clone(componentParser);
+				componentParser
+						.setAssembledComponentDefinition(superComponentDefinition);
+			}
 		} else {
 			throw new XmlParseException("Unrecognized Component type [" + type
 					+ "].", element, context);
 		}
 
-		if (parser == null) {
+		if (componentParser == null) {
 			throw new XmlParseException(
 					"Can not get Parser for DataProvider of [" + type
 							+ "] type.", element, context);
@@ -72,7 +76,7 @@ public class ComponentParserDispatcher implements XmlParser {
 				.getCurrentComponentTypeRegisterInfo();
 		viewContext.setCurrentComponentTypeRegisterInfo(registerInfo);
 		try {
-			return parser.parse(element, context);
+			return componentParser.parse(element, context);
 		} finally {
 			viewContext.setCurrentComponentTypeRegisterInfo(originRegisterInfo);
 		}

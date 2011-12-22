@@ -1,5 +1,6 @@
 package com.bstek.dorado.data.config;
 
+import java.util.Collection;
 import java.util.Map;
 
 import com.bstek.dorado.config.definition.Definition;
@@ -218,7 +219,9 @@ public class DataTypeDefinitionManagerTest extends ConfigManagerTestSupport {
 		assertNotNull(providerDefinition);
 		assertEquals("providerLookupData", providerDefinition.getName());
 
-		assertEquals(1, propertyDef.getInitOperations().size());
+		Collection<?> constraints = (Collection<?>) propertyDef
+				.getProperty("constraints");
+		assertEquals(1, constraints.size());
 
 		propertyDef = lookupType.getPropertyDef("lookup2");
 		assertNotNull(propertyDef);
@@ -231,6 +234,7 @@ public class DataTypeDefinitionManagerTest extends ConfigManagerTestSupport {
 				.getDefinition();
 		assertNotNull(providerDefinition);
 
-		assertEquals(1, propertyDef.getInitOperations().size());
+		constraints = (Collection<?>) propertyDef.getProperty("constraints");
+		assertEquals(1, constraints.size());
 	}
 }

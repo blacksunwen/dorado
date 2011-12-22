@@ -2,20 +2,19 @@ package com.bstek.dorado.desktop;
 
 import java.util.List;
 
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
 
-@ViewObject(prototype = "dorado.widget.desktop.DesktopCarousel", shortTypeName = "desktop.DesktopCarousel")
-@XmlNode(nodeName = "DesktopCarousel")
+@ClientObject(prototype = "dorado.widget.desktop.DesktopCarousel",
+		shortTypeName = "desktop.DesktopCarousel")
 public class DesktopCarousel extends AbstractDesktop {
 
 	/**
 	 * @return the controls
 	 */
-	@ViewAttribute
-	@XmlSubNode(path = "#self")
+	@XmlSubNode
+	@ClientProperty
 	public List<Desktop> getControls() {
 		return controls;
 	}

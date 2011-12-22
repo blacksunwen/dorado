@@ -24,37 +24,29 @@ import com.bstek.dorado.util.xml.DomUtils;
  * @since 2009-12-30
  */
 public class DataObjectParseHelper {
-	private XmlParser globalDataTypeParser;
-	private XmlParser innerDataTypeParser;
-	private XmlParser innerDataProviderParser;
-	private XmlParser innerDataResolverParser;
+	private XmlParser dataTypeParser;
+	private XmlParser dataProviderParser;
+	private XmlParser dataResolverParser;
 
 	/**
 	 * 设置全局DataType的解析器。
 	 */
-	public void setGlobalDataTypeParser(XmlParser globalDataTypeParser) {
-		this.globalDataTypeParser = globalDataTypeParser;
-	}
-
-	/**
-	 * 设置私有DataType的解析器。
-	 */
-	public void setInnerDataTypeParser(XmlParser innerDataTypeParser) {
-		this.innerDataTypeParser = innerDataTypeParser;
+	public void setDataTypeParser(XmlParser dataTypeParser) {
+		this.dataTypeParser = dataTypeParser;
 	}
 
 	/**
 	 * 设置私有DataProvider的解析器。
 	 */
-	public void setInnerDataProviderParser(XmlParser innerDataProviderParser) {
-		this.innerDataProviderParser = innerDataProviderParser;
+	public void setDataProviderParser(XmlParser dataProviderParser) {
+		this.dataProviderParser = dataProviderParser;
 	}
 
 	/**
 	 * 设置私有DataResolver的解析器。
 	 */
-	public void setInnerDataResolverParser(XmlParser innerDataResolverParser) {
-		this.innerDataResolverParser = innerDataResolverParser;
+	public void setDataResolverParser(XmlParser dataResolverParser) {
+		this.dataResolverParser = dataResolverParser;
 	}
 
 	/**
@@ -108,7 +100,7 @@ public class DataObjectParseHelper {
 					Resource oldRecource = context.getResource();
 					context.setResource(refDataTypeResource);
 
-					dataType = (DataTypeDefinition) globalDataTypeParser.parse(
+					dataType = (DataTypeDefinition) dataTypeParser.parse(
 							refDataTypeElement, context);
 
 					context.setResource(oldRecource);
@@ -164,7 +156,7 @@ public class DataObjectParseHelper {
 						childTagName);
 			}
 			if (dataTypeElement != null) {
-				DataTypeDefinition dataType = (DataTypeDefinition) innerDataTypeParser
+				DataTypeDefinition dataType = (DataTypeDefinition) dataTypeParser
 						.parse(dataTypeElement, context);
 				if (dataType == null) {
 					throw new XmlParseException(
@@ -216,7 +208,7 @@ public class DataObjectParseHelper {
 						childTagName);
 			}
 			if (dataProviderElement != null) {
-				DataProviderDefinition dataProvider = (DataProviderDefinition) innerDataProviderParser
+				DataProviderDefinition dataProvider = (DataProviderDefinition) dataProviderParser
 						.parse(dataProviderElement, context);
 				if (dataProvider == null) {
 					throw new XmlParseException(
@@ -268,7 +260,7 @@ public class DataObjectParseHelper {
 						childTagName);
 			}
 			if (dataResolverElement != null) {
-				DataResolverDefinition dataResolver = (DataResolverDefinition) innerDataResolverParser
+				DataResolverDefinition dataResolver = (DataResolverDefinition) dataResolverParser
 						.parse(dataResolverElement, context);
 				if (dataResolver == null) {
 					throw new XmlParseException(

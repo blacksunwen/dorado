@@ -1,16 +1,16 @@
 package com.bstek.dorado.view.widget.base;
 
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.view.annotation.Widget;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-8-1
  */
-@Widget(name = "SimpleButton", category = "General", dependsPackage = "base-widget")
-@ViewObject(prototype = "dorado.widget.SimpleButton", shortTypeName = "SimpleButton")
-@XmlNode(nodeName = "SimpleButton")
+@Widget(name = "SimpleButton", category = "General",
+		dependsPackage = "base-widget")
+@ClientObject(prototype = "dorado.widget.SimpleButton",
+		shortTypeName = "SimpleButton")
 public class SimpleButton extends AbstractButton {
 	private String mouseDownClassName;
 	private String hoverClassName;

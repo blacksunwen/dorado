@@ -9,17 +9,19 @@ import org.apache.commons.lang.StringUtils;
 
 /**
  * 用于将InputStream包装成资源描述对象的包装器。
+ * 
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Nov 5, 2008
  */
 public class InputStreamResource implements Resource {
-
 	private InputStream in;
 	private String description;
 
 	/**
 	 * 构造器。
-	 * @param in 将被包装的InputStream。
+	 * 
+	 * @param in
+	 *            将被包装的InputStream。
 	 */
 	public InputStreamResource(InputStream in) {
 		this.in = in;
@@ -27,8 +29,11 @@ public class InputStreamResource implements Resource {
 
 	/**
 	 * 构造器。
-	 * @param in 将被包装的InputStream。
-	 * @param description 资源描述。
+	 * 
+	 * @param in
+	 *            将被包装的InputStream。
+	 * @param description
+	 *            资源描述。
 	 */
 	public InputStreamResource(InputStream in, String description) {
 		this(in);

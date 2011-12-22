@@ -1,10 +1,12 @@
 package com.bstek.dorado.view.widget.form;
 
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.IdeProperty;
+import com.bstek.dorado.annotation.XmlNodeWrapper;
 import com.bstek.dorado.annotation.XmlSubNode;
+import com.bstek.dorado.view.annotation.ComponentReference;
+import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Align;
 import com.bstek.dorado.view.widget.Control;
 import com.bstek.dorado.view.widget.InnerElementReference;
@@ -14,8 +16,8 @@ import com.bstek.dorado.view.widget.InnerElementReference;
  * @since 2010-8-10
  */
 @Widget(name = "FormElement", category = "Form", dependsPackage = "base-widget")
-@ViewObject(prototype = "dorado.widget.FormElement", shortTypeName = "FormElement")
-@XmlNode(nodeName = "FormElement")
+@ClientObject(prototype = "dorado.widget.FormElement",
+		shortTypeName = "FormElement")
 public class FormElement extends Control implements FormConfig {
 	private FormElementType type = FormElementType.text;
 	private String dataSet;
@@ -41,7 +43,7 @@ public class FormElement extends Control implements FormConfig {
 	private InnerElementReference<Control> editorRef = new InnerElementReference<Control>(
 			this);
 
-	@ViewAttribute(defaultValue = "text")
+	@ClientProperty(escapeValue = "text")
 	public FormElementType getType() {
 		return type;
 	}
@@ -50,7 +52,7 @@ public class FormElement extends Control implements FormConfig {
 		this.type = type;
 	}
 
-	@ViewAttribute(referenceComponentName = "DataSet")
+	@ComponentReference("DataSet")
 	public String getDataSet() {
 		return dataSet;
 	}
@@ -91,7 +93,9 @@ public class FormElement extends Control implements FormConfig {
 		this.property = property;
 	}
 
-	@ViewAttribute(referenceComponentName = "Trigger", enumValues = "triggerClear,autoMappingDropDown1,autoMappingDropDown2,defaultDateDropDown")
+	@ComponentReference("Trigger")
+	@IdeProperty(
+			enumValues = "triggerClear,autoMappingDropDown1,autoMappingDropDown2,defaultDateDropDown")
 	public String getTrigger() {
 		return trigger;
 	}
@@ -108,7 +112,7 @@ public class FormElement extends Control implements FormConfig {
 		this.labelSeparator = labelSeparator;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isShowLabel() {
 		return showLabel;
 	}
@@ -133,7 +137,7 @@ public class FormElement extends Control implements FormConfig {
 		this.labelSpacing = labelSpacing;
 	}
 
-	@ViewAttribute(defaultValue = "left")
+	@ClientProperty(escapeValue = "left")
 	public FormElementLabelPosition getLabelPosition() {
 		return labelPosition;
 	}
@@ -142,7 +146,7 @@ public class FormElement extends Control implements FormConfig {
 		this.labelPosition = labelPosition;
 	}
 
-	@ViewAttribute(defaultValue = "left")
+	@ClientProperty(escapeValue = "left")
 	public Align getLabelAlign() {
 		return labelAlign;
 	}
@@ -159,7 +163,7 @@ public class FormElement extends Control implements FormConfig {
 		this.editorWidth = editorWidth;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isShowHint() {
 		return showHint;
 	}
@@ -208,7 +212,7 @@ public class FormElement extends Control implements FormConfig {
 		this.readOnly = readOnly;
 	}
 
-	@ViewAttribute(referenceComponentName = "FormProfile")
+	@ComponentReference("FormProfile")
 	public String getFormProfile() {
 		return formProfile;
 	}
@@ -217,8 +221,8 @@ public class FormElement extends Control implements FormConfig {
 		this.formProfile = formProfile;
 	}
 
-	@ViewAttribute
-	@XmlSubNode(path = "Editor/*", fixed = true)
+	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "Editor"))
+	@ClientProperty
 	public Control getEditor() {
 		return editorRef.get();
 	}

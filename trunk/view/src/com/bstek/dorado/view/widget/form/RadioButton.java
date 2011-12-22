@@ -6,7 +6,7 @@ import com.bstek.dorado.annotation.XmlNode;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2009-11-5
  */
-@XmlNode(nodeName = "RadioButton")
+@XmlNode
 public class RadioButton {
 	private String text;
 	private Object value;

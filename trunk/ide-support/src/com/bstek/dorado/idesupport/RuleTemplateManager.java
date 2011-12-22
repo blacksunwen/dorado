@@ -18,24 +18,35 @@ import com.bstek.dorado.util.Assert;
  * @since 2009-11-18
  */
 public class RuleTemplateManager {
+	private String version;
 	private List<PackageInfo> packageInfos = new ArrayList<PackageInfo>();
 	private Map<String, RuleTemplate> ruleTemplateMap = new LinkedHashMap<String, RuleTemplate>();
 	private List<RuleTemplateManagerListener> listeners;
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
 
 	public List<PackageInfo> getPackageInfos() {
 		return packageInfos;
 	}
 
 	public void addRuleTemplate(RuleTemplate ruleTemplate) throws Exception {
+		String name = ruleTemplate.getName();
+		Assert.notEmpty(name);
 		ruleTemplate.setGlobal(true);
+		ruleTemplateMap.put(name, ruleTemplate);
+
 		if (listeners != null) {
 			for (RuleTemplateManagerListener listener : listeners) {
 				listener.ruleTemplateAdded(this, ruleTemplate);
 			}
 		}
-		String name = ruleTemplate.getName();
-		Assert.notEmpty(name);
-		ruleTemplateMap.put(name, ruleTemplate);
+
 	}
 
 	public void removeRuleTemplate(String name) throws Exception {

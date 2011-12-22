@@ -1,6 +1,11 @@
 package com.bstek.dorado.data.type.property;
 
-import com.bstek.dorado.annotation.ViewAttribute;
+import com.bstek.dorado.annotation.ClientEvents;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.IdeProperty;
+import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.core.el.Expression;
 import com.bstek.dorado.data.provider.DataProvider;
 
@@ -10,6 +15,11 @@ import com.bstek.dorado.data.provider.DataProvider;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Apirl 21, 2007
  */
+@XmlNode(parser = "spring:dorado.referenceParser")
+@ClientObject(prototype = "dorado.Reference", shortTypeName = "Reference")
+@ClientEvents({
+		@com.bstek.dorado.annotation.ClientEvent(name = "beforeLoadData"),
+		@com.bstek.dorado.annotation.ClientEvent(name = "onLoadData") })
 public class Reference extends LazyPropertyDef {
 	private boolean activeOnNewEntity;
 	private DataProvider dataProvider;
@@ -34,6 +44,8 @@ public class Reference extends LazyPropertyDef {
 	/**
 	 * 返回该属性内部使用的数据提供器(DataProvider)。
 	 */
+	@XmlProperty(ignored = true)
+	@ClientProperty(outputter = "spring:dorado.dataProviderPropertyOutputter")
 	public DataProvider getDataProvider() {
 		return dataProvider;
 	}
@@ -49,7 +61,10 @@ public class Reference extends LazyPropertyDef {
 	/**
 	 * 返回将要传递给DataProvider的参数。
 	 */
-	@ViewAttribute(outputter = "dorado.dataPropertyOutputter", editor = "pojo")
+	@XmlProperty(parser = "spring:dorado.preloadDataParser")
+	@ClientProperty(outputter = "spring:dorado.doradoMapPropertyOutputter",
+			evaluateExpression = false)
+	@IdeProperty(editor = "pojo")
 	public Object getParameter() {
 		if (parameter instanceof Expression) {
 			return ((Expression) parameter).evaluate();

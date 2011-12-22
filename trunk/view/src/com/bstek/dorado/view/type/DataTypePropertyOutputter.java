@@ -3,32 +3,23 @@ package com.bstek.dorado.view.type;
 import java.io.Writer;
 import java.util.Map;
 
-
 import com.bstek.dorado.data.type.AggregationDataType;
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.util.proxy.BeanExtender;
 import com.bstek.dorado.view.output.JsonBuilder;
-import com.bstek.dorado.view.output.ObjectPropertyOutputter;
+import com.bstek.dorado.view.output.ObjectOutputterDispatcher;
 import com.bstek.dorado.view.output.OutputContext;
-import com.bstek.dorado.view.output.Outputter;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Oct 23, 2008
  */
-public class DataTypePropertyOutputter extends ObjectPropertyOutputter {
-	private Outputter dataTypeOutputter;
+public class DataTypePropertyOutputter extends ObjectOutputterDispatcher {
 	private boolean useLazyDataType;
 
 	/**
-	 * @param dataTypeOutputter
-	 */
-	public void setDataTypeOutputter(Outputter dataTypeOutputter) {
-		this.dataTypeOutputter = dataTypeOutputter;
-	}
-
-	/**
-	 * @param useLazyDataType the useLazyDataType to set
+	 * @param useLazyDataType
+	 *            the useLazyDataType to set
 	 */
 	public void setUseLazyDataType(boolean useLazyDataType) {
 		this.useLazyDataType = useLazyDataType;
@@ -48,19 +39,16 @@ public class DataTypePropertyOutputter extends ObjectPropertyOutputter {
 		Writer writer = context.getWriter();
 		if (BeanExtender.getUserData(dataType, "dorado.dynamicDataType") != null) {
 			writer.write("dorado.DataTypeRepository.parseSingleDataType(");
-			dataTypeOutputter.output(dataType, context);
+			outputObject(dataType, context);
 			writer.write(")");
-		}
-		else {
+		} else {
 			if (useLazyDataType) {
-				writer
-						.write("dorado.LazyLoadDataType.create(v.dataTypeRepository,");
+				writer.write("dorado.LazyLoadDataType.create(v.dataTypeRepository,");
 			}
 			writer.write("\"" + dataType.getId() + "\"");
 			if (useLazyDataType) {
 				writer.write(")");
-			}
-			else {
+			} else {
 				if (context.isShouldOutputDataTypes()) {
 					if (dataType instanceof AggregationDataType) {
 						dataType = ((AggregationDataType) dataType)

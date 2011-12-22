@@ -2,20 +2,20 @@ package com.bstek.dorado.ofc;
 
 import java.util.List;
 
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.XmlNodeWrapper;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.ofc.axis.RadarAxis;
 import com.bstek.dorado.ofc.axis.XAxis;
 import com.bstek.dorado.ofc.axis.YAxis;
+import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Control;
 
 @Widget(name = "OpenFlashCart", category = "Advance", dependsPackage = "chart")
-@ViewObject(prototype = "dorado.widget.ofc.OpenFlashChart", shortTypeName = "ofc.OpenFlashChart")
-@XmlNode(nodeName = "OpenFlashCart")
+@ClientObject(prototype = "dorado.widget.ofc.OpenFlashChart",
+		shortTypeName = "ofc.OpenFlashChart")
 public class OpenFlashChart extends Control {
 	private String backgroundColor;
 	private List<Element> elements;
@@ -48,14 +48,15 @@ public class OpenFlashChart extends Control {
 	/**
 	 * @return the elements
 	 */
-	@ViewAttribute
-	@XmlSubNode( parser = "dorado.OpenFlashChart.ElementsParser", fixed = true)
+	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "Elements", fixed = true))
+	@ClientProperty
 	public List<Element> getElements() {
 		return elements;
 	}
 
 	/**
-	 * @param elements the elements to set
+	 * @param elements
+	 *            the elements to set
 	 */
 	public void setElements(List<Element> elements) {
 		this.elements = elements;
@@ -64,14 +65,15 @@ public class OpenFlashChart extends Control {
 	/**
 	 * @return the legend
 	 */
-	@ViewAttribute
 	@XmlProperty(composite = true)
+	@ClientProperty
 	public Legend getLegend() {
 		return legend;
 	}
 
 	/**
-	 * @param legend the legend to set
+	 * @param legend
+	 *            the legend to set
 	 */
 	public void setLegend(Legend legend) {
 		this.legend = legend;
@@ -80,14 +82,15 @@ public class OpenFlashChart extends Control {
 	/**
 	 * @return the radarAxis
 	 */
-	@ViewAttribute
 	@XmlSubNode
+	@ClientProperty
 	public RadarAxis getRadarAxis() {
 		return radarAxis;
 	}
 
 	/**
-	 * @param radarAxis the radarAxis to set
+	 * @param radarAxis
+	 *            the radarAxis to set
 	 */
 	public void setRadarAxis(RadarAxis radarAxis) {
 		this.radarAxis = radarAxis;
@@ -96,14 +99,15 @@ public class OpenFlashChart extends Control {
 	/**
 	 * @return the title
 	 */
-	@ViewAttribute
 	@XmlProperty(composite = true)
+	@ClientProperty
 	public Text getTitle() {
 		return title;
 	}
 
 	/**
-	 * @param title the title to set
+	 * @param title
+	 *            the title to set
 	 */
 	public void setTitle(Text title) {
 		this.title = title;
@@ -112,14 +116,15 @@ public class OpenFlashChart extends Control {
 	/**
 	 * @return the xAxis
 	 */
-	@ViewAttribute
 	@XmlSubNode
+	@ClientProperty
 	public XAxis getxAxis() {
 		return xAxis;
 	}
 
 	/**
-	 * @param xAxis the xAxis to set
+	 * @param xAxis
+	 *            the xAxis to set
 	 */
 	public void setxAxis(XAxis xAxis) {
 		this.xAxis = xAxis;
@@ -128,14 +133,15 @@ public class OpenFlashChart extends Control {
 	/**
 	 * @return the yAxis
 	 */
-	@ViewAttribute
 	@XmlSubNode
+	@ClientProperty
 	public YAxis getyAxis() {
 		return yAxis;
 	}
 
 	/**
-	 * @param yAxis the yAxis to set
+	 * @param yAxis
+	 *            the yAxis to set
 	 */
 	public void setyAxis(YAxis yAxis) {
 		this.yAxis = yAxis;
@@ -144,14 +150,15 @@ public class OpenFlashChart extends Control {
 	/**
 	 * @return the xLegend
 	 */
-	@ViewAttribute
 	@XmlProperty(composite = true)
+	@ClientProperty
 	public Text getxLegend() {
 		return xLegend;
 	}
 
 	/**
-	 * @param xLegend the xLegend to set
+	 * @param xLegend
+	 *            the xLegend to set
 	 */
 	public void setxLegend(Text xLegend) {
 		this.xLegend = xLegend;
@@ -160,14 +167,15 @@ public class OpenFlashChart extends Control {
 	/**
 	 * @return the yLegend
 	 */
-	@ViewAttribute
 	@XmlProperty(composite = true)
+	@ClientProperty
 	public Text getyLegend() {
 		return yLegend;
 	}
 
 	/**
-	 * @param yLegend the yLegend to set
+	 * @param yLegend
+	 *            the yLegend to set
 	 */
 	public void setyLegend(Text yLegend) {
 		this.yLegend = yLegend;
@@ -176,14 +184,15 @@ public class OpenFlashChart extends Control {
 	/**
 	 * @return the yAxisRight
 	 */
-	@ViewAttribute
 	@XmlSubNode
+	@ClientProperty
 	public YAxis getyAxisRight() {
 		return yAxisRight;
 	}
 
 	/**
-	 * @param yAxisRight the yAxisRight to set
+	 * @param yAxisRight
+	 *            the yAxisRight to set
 	 */
 	public void setyAxisRight(YAxis yAxisRight) {
 		this.yAxisRight = yAxisRight;
@@ -192,8 +201,8 @@ public class OpenFlashChart extends Control {
 	/**
 	 * @return the yLegendRight
 	 */
-	@ViewAttribute
 	@XmlProperty(composite = true)
+	@ClientProperty
 	public Text getyLegendRight() {
 		return yLegendRight;
 	}
@@ -209,18 +218,18 @@ public class OpenFlashChart extends Control {
 	/**
 	 * @return the toolTip
 	 */
-	@ViewAttribute
 	@XmlProperty(composite = true)
+	@ClientProperty
 	public ToolTip getToolTip() {
 		return toolTip;
 	}
 
 	/**
-	 * @param toolTip the toolTip to set
+	 * @param toolTip
+	 *            the toolTip to set
 	 */
 	public void setToolTip(ToolTip toolTip) {
 		this.toolTip = toolTip;
 	}
-	
-	
+
 }

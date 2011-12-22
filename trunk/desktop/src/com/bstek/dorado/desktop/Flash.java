@@ -1,13 +1,11 @@
 package com.bstek.dorado.desktop;
 
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Control;
 
 @Widget(name = "Flash", category = "Desktop", dependsPackage = "desktop")
-@ViewObject(prototype = "dorado.widget.Flash", shortTypeName = "Flash")
-@XmlNode(nodeName = "Flash")
+@ClientObject(prototype = "dorado.widget.Flash", shortTypeName = "Flash")
 public class Flash extends Control {
 	private String path;
 
@@ -19,10 +17,11 @@ public class Flash extends Control {
 	}
 
 	/**
-	 * @param path the path to set
+	 * @param path
+	 *            the path to set
 	 */
 	public void setPath(String path) {
 		this.path = path;
 	}
-	
+
 }

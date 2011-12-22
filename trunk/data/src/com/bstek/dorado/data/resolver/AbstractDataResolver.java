@@ -3,24 +3,23 @@ package com.bstek.dorado.data.resolver;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.common.Namable;
 import com.bstek.dorado.core.bean.Scopable;
 import com.bstek.dorado.core.bean.Scope;
-import com.bstek.dorado.core.io.Resource;
-import com.bstek.dorado.core.io.ResourceCorrelative;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Apr 29, 2009
  */
 public abstract class AbstractDataResolver implements DataResolver, Namable,
-		ResourceCorrelative, Scopable {
+		Scopable {
 	private String name;
 	private String id;
 	private Scope scope;
-	private Resource resource;
 	private Object parameter;
 
+	@XmlProperty(ignored = true, attributeOnly = true)
 	public String getName() {
 		return name;
 	}
@@ -35,6 +34,7 @@ public abstract class AbstractDataResolver implements DataResolver, Namable,
 		}
 	}
 
+	@XmlProperty(unsupported = true)
 	public String getId() {
 		return id;
 	}
@@ -43,6 +43,7 @@ public abstract class AbstractDataResolver implements DataResolver, Namable,
 		this.id = id;
 	}
 
+	@XmlProperty(ignored = true, attributeOnly = true)
 	public Scope getScope() {
 		return scope;
 	}
@@ -51,18 +52,7 @@ public abstract class AbstractDataResolver implements DataResolver, Namable,
 		this.scope = scope;
 	}
 
-	public Resource getResource() {
-		return resource;
-	}
-
-	/**
-	 * 设置DataResolver归属的文件资源。
-	 */
-
-	public void setResource(Resource resource) {
-		this.resource = resource;
-	}
-
+	@XmlProperty(parser = "spring:dorado.preloadDataParser")
 	public Object getParameter() {
 		return parameter;
 	}

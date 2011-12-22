@@ -1,17 +1,15 @@
 package com.bstek.dorado.view.widget.form;
 
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.view.annotation.Widget;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-9-24
  */
 @Widget(name = "DateTimeSpinner", category = "Form", dependsPackage = "base-widget")
-@ViewObject(prototype = "dorado.widget.DateTimeSpinner", shortTypeName = "DateTimeSpinner")
-@XmlNode(nodeName = "DateTimeSpinner")
+@ClientObject(prototype = "dorado.widget.DateTimeSpinner", shortTypeName = "DateTimeSpinner")
 public class DateTimeSpinner extends Spinner {
 	private DateTimeSpinnerType type = DateTimeSpinnerType.time;
 	private int year;
@@ -21,7 +19,7 @@ public class DateTimeSpinner extends Spinner {
 	private int minutes;
 	private int seconds;
 
-	@ViewAttribute(defaultValue = "time")
+	@ClientProperty(escapeValue = "time")
 	public DateTimeSpinnerType getType() {
 		return type;
 	}

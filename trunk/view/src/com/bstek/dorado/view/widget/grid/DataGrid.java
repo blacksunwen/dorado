@@ -1,11 +1,11 @@
 package com.bstek.dorado.view.widget.grid;
 
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.data.type.EntityDataType;
+import com.bstek.dorado.view.annotation.ComponentReference;
+import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.datacontrol.DataControl;
 
 /**
@@ -13,8 +13,7 @@ import com.bstek.dorado.view.widget.datacontrol.DataControl;
  * @since 2009-9-29
  */
 @Widget(name = "DataGrid", category = "Collection", dependsPackage = "grid")
-@ViewObject(prototype = "dorado.widget.DataGrid", shortTypeName = "DataGrid")
-@XmlNode(nodeName = "DataGrid")
+@ClientObject(prototype = "dorado.widget.DataGrid", shortTypeName = "DataGrid")
 public class DataGrid extends AbstractGrid implements DataControl {
 	private String dataSet;
 	private String dataPath;
@@ -24,7 +23,7 @@ public class DataGrid extends AbstractGrid implements DataControl {
 	private FilterMode filterMode = FilterMode.clientSide;
 	private SortMode sortModel = SortMode.clientSide;
 
-	@ViewAttribute(referenceComponentName = "DataSet")
+	@ComponentReference("DataSet")
 	public String getDataSet() {
 		return dataSet;
 	}
@@ -41,8 +40,8 @@ public class DataGrid extends AbstractGrid implements DataControl {
 		this.dataPath = dataPath;
 	}
 
-	@XmlProperty(parser = "dorado.dataTypePropertyParser")
-	@ViewAttribute(outputter = "dorado.dataTypePropertyOutputter")
+	@XmlProperty(parser = "spring:dorado.dataTypePropertyParser")
+	@ClientProperty
 	public EntityDataType getDataType() {
 		return dataType;
 	}
@@ -59,7 +58,7 @@ public class DataGrid extends AbstractGrid implements DataControl {
 		this.supportsPaging = supportsPaging;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isAutoCreateColumns() {
 		return autoCreateColumns;
 	}
@@ -68,7 +67,7 @@ public class DataGrid extends AbstractGrid implements DataControl {
 		this.autoCreateColumns = autoCreateColumns;
 	}
 
-	@ViewAttribute(defaultValue = "clientSide")
+	@ClientProperty(escapeValue = "clientSide")
 	public FilterMode getFilterMode() {
 		return filterMode;
 	}
@@ -77,7 +76,7 @@ public class DataGrid extends AbstractGrid implements DataControl {
 		this.filterMode = filterMode;
 	}
 
-	@ViewAttribute(defaultValue = "clientSide")
+	@ClientProperty(escapeValue = "clientSide")
 	public SortMode getSortModel() {
 		return sortModel;
 	}

@@ -1,7 +1,5 @@
 package com.bstek.dorado.data.type.validator;
 
-import com.bstek.dorado.config.Parser;
-
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-7-27
@@ -9,7 +7,6 @@ import com.bstek.dorado.config.Parser;
 public class ValidatorTypeRegisterInfo {
 	private String type;
 	private Class<?> classType;
-	private Parser parser;
 
 	/**
 	 * @param type
@@ -28,14 +25,6 @@ public class ValidatorTypeRegisterInfo {
 
 	public Class<?> getClassType() {
 		return classType;
-	}
-
-	public Parser getParser() {
-		return parser;
-	}
-
-	public void setParser(Parser parser) {
-		this.parser = parser;
 	}
 
 }

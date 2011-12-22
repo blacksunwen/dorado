@@ -6,14 +6,14 @@
 		<Reference name="reference1" dataProvider="providerReference" cacheMode="noCache" />
 		<Reference name="reference2">
 			<DataProvider parent="providerReturnParameter" />
-			<Parameter>
+			<Property name="parameter">
 				<Entity>
 					<Property name="key1" value="${this.referenceKey}" />
 					<Property name="key2" value="abc" />
 					<Property name="key3" value="${3*8}" />
 					<Property name="key4" value="${3*8}abc${this.referenceKey}" />
 				</Entity>
-			</Parameter>
+			</Property>
 		</Reference>
 	</DataType>
 
@@ -34,12 +34,12 @@
 	<DataProvider name="testProvider1" type="direct" scope="instant">
 		<ResultDataType parent="List">
 			<ElementDataType parent="Map">
-				<PropertyDef name="key1" key="true" />
+				<PropertyDef name="key1" />
 				<PropertyDef name="key2" dataType="String" />
 				<PropertyDef name="key3" dataType="String" />
 			</ElementDataType>
 		</ResultDataType>
-		<Result>
+		<Property name="result">
 			<List>
 				<Entity>
 					<Property name="key1" value="A1" />
@@ -57,7 +57,7 @@
 					<Property name="key3" value="C3" />
 				</Entity>
 			</List>
-		</Result>
+		</Property>
 	</DataProvider>
 
 	<DataProvider name="testProvider2" type="direct" scope="singleton">
@@ -68,7 +68,7 @@
 				<PropertyDef name="key3" dataType="String" />
 			</ElementDataType>
 		</ResultDataType>
-		<Result>
+		<Property name="result">
 			<List>
 				<Entity>
 					<Property name="key1" value="A1" />
@@ -76,7 +76,7 @@
 					<Property name="key3" value="A3" />
 				</Entity>
 			</List>
-		</Result>
+		</Property>
 	</DataProvider>
 
 	<DataProvider name="testProvider3" type="direct">
@@ -87,19 +87,19 @@
 
 	<!-- Master/Reference -->
 	<DataProvider name="providerMaster" resultDataType="[test.Master]">
-		<Result>
+		<Property name="result">
 			<List>
 				<Entity>
 					<Property name="referenceKey" value="key1" />
 				</Entity>
 			</List>
-		</Result>
+		</Property>
 	</DataProvider>
 	<DataProvider name="providerReference" result="54321" />
 
 	<!-- Lookup -->
 	<DataProvider name="providerLookupData">
-		<Result>
+		<Property name="result">
 			<List>
 				<Entity>
 					<Property name="key" value="key1" />
@@ -122,10 +122,10 @@
 					<Property name="value" value="value5" />
 				</Entity>
 			</List>
-		</Result>
+		</Property>
 	</DataProvider>
 	<DataProvider name="providerLookup" resultDataType="[test.Lookup]">
-		<Result>
+		<Property name="result">
 			<List>
 				<Entity>
 					<Property name="lookupKey" value="key5" />
@@ -143,24 +143,19 @@
 					<Property name="lookupKey" value="key1" />
 				</Entity>
 			</List>
-		</Result>
+		</Property>
 	</DataProvider>
 
 	<!-- Interceptor -->
 	<DataProvider name="abstractProviderWithInterceptor" interceptor="com.bstek.dorado.data.provider.manager.TestDataProviderInterceptor" />
 
-	<DataProvider name="providerReturnParameter" parent="abstractProviderWithInterceptor"
-		interceptor="com.bstek.dorado.data.provider.manager.TestDataProviderInterceptor#returnParameter" />
-	<DataProvider name="providerWithInterceptor1" parent="abstractProviderWithInterceptor"
-		interceptor="com.bstek.dorado.data.provider.manager.TestDataProviderInterceptor#method1" />
-	<DataProvider name="providerWithInterceptor2" parent="abstractProviderWithInterceptor"
-		interceptor="com.bstek.dorado.data.provider.manager.TestDataProviderInterceptor#method2" result="oooops" />
-	<DataProvider name="providerWithInterceptor3" parent="abstractProviderWithInterceptor"
-		interceptor="com.bstek.dorado.data.provider.manager.TestDataProviderInterceptor#method3" />
-	<DataProvider name="providerWithInterceptor4" parent="abstractProviderWithInterceptor"
-		interceptor="com.bstek.dorado.data.provider.manager.TestDataProviderInterceptor#method4" />
-	<DataProvider name="providerPagingData1" parent="abstractProviderWithInterceptor"
-		interceptor="com.bstek.dorado.data.provider.manager.TestDataProviderInterceptor#getPagingData1" />
+	<DataProvider name="providerReturnParameter" parent="abstractProviderWithInterceptor" interceptor="com.bstek.dorado.data.provider.manager.TestDataProviderInterceptor#returnParameter" />
+	<DataProvider name="providerWithInterceptor1" parent="abstractProviderWithInterceptor" interceptor="com.bstek.dorado.data.provider.manager.TestDataProviderInterceptor#method1" />
+	<DataProvider name="providerWithInterceptor2" parent="abstractProviderWithInterceptor" interceptor="com.bstek.dorado.data.provider.manager.TestDataProviderInterceptor#method2"
+		result="oooops" />
+	<DataProvider name="providerWithInterceptor3" parent="abstractProviderWithInterceptor" interceptor="com.bstek.dorado.data.provider.manager.TestDataProviderInterceptor#method3" />
+	<DataProvider name="providerWithInterceptor4" parent="abstractProviderWithInterceptor" interceptor="com.bstek.dorado.data.provider.manager.TestDataProviderInterceptor#method4" />
+	<DataProvider name="providerPagingData1" parent="abstractProviderWithInterceptor" interceptor="com.bstek.dorado.data.provider.manager.TestDataProviderInterceptor#getPagingData1" />
 
 	<DataProvider name="testHRDomainObjectProvider1" interceptor="com.bstek.dorado.data.provider.TestHRDomainObjectProvider1" />
 	<DataProvider name="testHRMapObjectProvider1" resultDataType="[map.Department]" interceptor="com.bstek.dorado.data.provider.TestHRMapObjectProvider1" />

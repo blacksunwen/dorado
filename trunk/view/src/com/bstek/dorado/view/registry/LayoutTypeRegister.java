@@ -5,8 +5,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
 
-import com.bstek.dorado.config.Parser;
-import com.bstek.dorado.view.output.Outputter;
 import com.bstek.dorado.view.widget.layout.Layout;
 import com.bstek.dorado.view.widget.layout.LayoutConstraintSupport;
 
@@ -24,8 +22,6 @@ public class LayoutTypeRegister implements InitializingBean {
 	private String type;
 	private String classType;
 	private String constraintClassType;
-	private Parser parser;
-	private Outputter outputter;
 
 	/**
 	 * 返回布局管理器类型的注册管理器。
@@ -52,20 +48,6 @@ public class LayoutTypeRegister implements InitializingBean {
 		this.constraintClassType = constraintClassType;
 	}
 
-	/**
-	 * 设置布局管理器的解析器。
-	 */
-	public void setParser(Parser parser) {
-		this.parser = parser;
-	}
-
-	/**
-	 * 设置布局管理器的输出器。
-	 */
-	public void setOutputter(Outputter outputter) {
-		this.outputter = outputter;
-	}
-
 	@SuppressWarnings("unchecked")
 	public void afterPropertiesSet() throws Exception {
 		try {
@@ -82,8 +64,6 @@ public class LayoutTypeRegister implements InitializingBean {
 
 			LayoutTypeRegisterInfo registerInfo = new LayoutTypeRegisterInfo(
 					type, cl, constraintCl);
-			registerInfo.setParser(parser);
-			registerInfo.setOutputter(outputter);
 			layoutTypeRegistry.registerType(registerInfo);
 		} catch (ClassNotFoundException e) {
 			logger.equals(e);

@@ -108,7 +108,7 @@ public abstract class AbstractTextualResolver extends AbstractResolver {
 		return null;
 	}
 
-	protected abstract void execute(HttpServletRequest request,
+	public abstract void execute(HttpServletRequest request,
 			HttpServletResponse response) throws Exception;
 
 }

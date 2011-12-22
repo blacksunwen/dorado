@@ -2,13 +2,16 @@ package com.bstek.dorado.view.type.property.validator;
 
 import java.text.MessageFormat;
 
-import com.bstek.dorado.annotation.ViewObject;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.XmlNode;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-7-27
  */
-@ViewObject(prototype = "dorado.validator.LengthValidator", shortTypeName = "Length")
+@XmlNode(fixedProperties = "type=length")
+@ClientObject(prototype = "dorado.validator.LengthValidator",
+		shortTypeName = "Length")
 public class LengthValidator extends BaseValidator {
 
 	public int getMinLength() {

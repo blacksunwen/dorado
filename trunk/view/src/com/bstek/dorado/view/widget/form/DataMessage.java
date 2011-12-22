@@ -1,8 +1,7 @@
 package com.bstek.dorado.view.widget.form;
 
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.datacontrol.AbstractPropertyDataControl;
 
 /**
@@ -10,8 +9,7 @@ import com.bstek.dorado.view.widget.datacontrol.AbstractPropertyDataControl;
  * @since 2011-5-26
  */
 @Widget(name = "DataMessage", category = "Form", dependsPackage = "base-widget")
-@ViewObject(prototype = "dorado.widget.DataMessage", shortTypeName = "DataMessage")
-@XmlNode(nodeName = "DataMessage")
+@ClientObject(prototype = "dorado.widget.DataMessage", shortTypeName = "DataMessage")
 public class DataMessage extends AbstractPropertyDataControl {
 	private boolean showIconOnly;
 	private boolean showMultiMessage;

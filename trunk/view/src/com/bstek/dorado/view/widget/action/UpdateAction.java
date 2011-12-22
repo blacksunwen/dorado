@@ -5,21 +5,24 @@ import java.util.List;
 
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.data.resolver.DataResolver;
+import com.bstek.dorado.view.annotation.Widget;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since May 13, 2009
  */
-@Widget(name = "UpdateAction", category = "Action", dependsPackage = "base-widget")
-@ViewObject(prototype = "dorado.widget.UpdateAction", shortTypeName = "UpdateAction")
-@XmlNode(nodeName = "UpdateAction")
+@Widget(name = "UpdateAction", category = "Action",
+		dependsPackage = "base-widget")
+@ClientObject(prototype = "dorado.widget.UpdateAction",
+		shortTypeName = "UpdateAction")
+@XmlNode(parser = "spring:dorado.updateActionParser")
 @ClientEvents({ @ClientEvent(name = "onGetUpdateData") })
 public class UpdateAction extends Action {
 	private boolean async = true;
@@ -28,7 +31,7 @@ public class UpdateAction extends Action {
 	private boolean alwaysExecute;
 
 	@Override
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isAsync() {
 		return async;
 	}
@@ -38,8 +41,9 @@ public class UpdateAction extends Action {
 		this.async = async;
 	}
 
-	@XmlProperty(parser = "dorado.ignoreParser")
-	@ViewAttribute(outputter = "dorado.dataResolverOutputter")
+	@XmlProperty(ignored = true)
+	@ClientProperty(outputter = "spring:dorado.dataResolverPropertyOutputter")
+	@IdeProperty(highlight = 1)
 	public DataResolver getDataResolver() {
 		return dataResolver;
 	}
@@ -48,8 +52,8 @@ public class UpdateAction extends Action {
 		this.dataResolver = dataResolver;
 	}
 
-	@ViewAttribute
-	@XmlSubNode(path = "#self")
+	@XmlSubNode
+	@ClientProperty
 	public List<UpdateItem> getUpdateItems() {
 		return UpdateItems;
 	}

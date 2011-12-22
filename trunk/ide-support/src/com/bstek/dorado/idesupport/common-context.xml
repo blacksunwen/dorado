@@ -32,13 +32,11 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 		<d:property-parser key="*" value-ref="dorado.staticPropertyParser" />
 	</bean>
 
-	<bean id="dorado.idesupport.ruleTemplateManager" class="com.bstek.dorado.idesupport.RuleTemplateManager"
-		scope="prototype" />
 	<bean id="dorado.idesupport.ruleSetBuilder" class="com.bstek.dorado.idesupport.RuleSetBuilder">
 		<property name="xmlDocumentBuilder" ref="dorado.xmlDocumentBuilder" />
-		<property name="preloadParser">
-			<bean class="com.bstek.dorado.idesupport.parse.PreloadParser" />
-		</property>
-		<property name="ruleTemplateParser" ref="dorado.idesupport.ruleTemplateParser" />
+	<property name="preloadParser">
+		<bean class="com.bstek.dorado.idesupport.parse.PreloadParser" />
+	</property>
+	<property name="ruleTemplateParser" ref="dorado.idesupport.ruleTemplateParser" />
 	</bean>
 </beans>

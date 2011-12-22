@@ -15,8 +15,8 @@ import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.core.Context;
 import com.bstek.dorado.view.View;
 import com.bstek.dorado.view.output.OutputContext;
+import com.bstek.dorado.view.output.OutputUtils;
 import com.bstek.dorado.view.output.Outputter;
-import com.bstek.dorado.view.output.ViewOutputUtils;
 import com.bstek.dorado.web.WebConfigure;
 
 /**
@@ -69,7 +69,7 @@ public abstract class PageOutputUtils {
 	public static void outputException(Writer writer, Throwable throwable)
 			throws IOException {
 		writer.append("<h1 style=\"font-size:12pt; color:red\">");
-		ViewOutputUtils.outputString(writer, StringUtils.defaultString(
+		OutputUtils.outputString(writer, StringUtils.defaultString(
 				throwable.getMessage(), throwable.getClass().getName()));
 		writer.append("</h1>\n");
 		writer.append("<ul>\n");
@@ -77,7 +77,7 @@ public abstract class PageOutputUtils {
 		for (int i = 0; i < stes.length; i++) {
 			StackTraceElement ste = stes[i];
 			writer.append("<li>").append("at ");
-			ViewOutputUtils.outputString(writer, ste.toString());
+			OutputUtils.outputString(writer, ste.toString());
 			writer.append("</li>\n");
 		}
 		writer.append("</ul>\n");

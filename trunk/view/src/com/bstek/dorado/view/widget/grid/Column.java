@@ -4,7 +4,9 @@ import java.util.Map;
 
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
-import com.bstek.dorado.annotation.ViewAttribute;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.IdeProperty;
+import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.common.Ignorable;
 import com.bstek.dorado.common.MetaDataSupport;
@@ -19,6 +21,7 @@ import com.bstek.dorado.view.widget.Align;
 @ClientEvents({ @ClientEvent(name = "onRenderHeaderCell"),
 		@ClientEvent(name = "onHeaderClick"),
 		@ClientEvent(name = "onGetCellEditor") })
+@XmlNode(implTypes = "com.bstek.dorado.view.widget.grid.*")
 public abstract class Column extends ClientEventSupportedObject implements
 		Ignorable, TagSupport, MetaDataSupport {
 	private String name;
@@ -64,7 +67,7 @@ public abstract class Column extends ClientEventSupportedObject implements
 		this.headerRenderer = headerRenderer;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isVisible() {
 		return visible;
 	}
@@ -73,7 +76,7 @@ public abstract class Column extends ClientEventSupportedObject implements
 		this.visible = visible;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isSupportsOptionMenu() {
 		return supportsOptionMenu;
 	}
@@ -90,7 +93,7 @@ public abstract class Column extends ClientEventSupportedObject implements
 		this.ignored = ignored;
 	}
 
-	@ViewAttribute(editor = "any")
+	@IdeProperty(editor = "any")
 	public Object getUserData() {
 		return userData;
 	}
@@ -108,7 +111,7 @@ public abstract class Column extends ClientEventSupportedObject implements
 	}
 
 	@XmlProperty(composite = true)
-	@ViewAttribute(outputter = "#ignore")
+	@ClientProperty(ignored = true)
 	public Map<String, Object> getMetaData() {
 		return metaData;
 	}

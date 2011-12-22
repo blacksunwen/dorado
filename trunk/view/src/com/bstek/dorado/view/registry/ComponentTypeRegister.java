@@ -9,17 +9,9 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.util.Assert;
 
-import com.bstek.dorado.annotation.Widget;
-import com.bstek.dorado.annotation.XmlNode;
-import com.bstek.dorado.config.Parser;
-import com.bstek.dorado.data.config.xml.GenericObjectParser;
-import com.bstek.dorado.view.View;
+import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Component;
-import com.bstek.dorado.view.widget.ComponentParser;
-import com.bstek.dorado.view.widget.Container;
-import com.bstek.dorado.view.widget.Control;
 
 /**
  * 用于配置在Spring文件中的组件类型信息的注册器。
@@ -32,17 +24,11 @@ public abstract class ComponentTypeRegister implements InitializingBean,
 	private static final Log logger = LogFactory
 			.getLog(ComponentTypeRegister.class);
 
-	private static final String COMPONENT_PARSER = "dorado.prototype.componentParser";
-	private static final String CONTROL_PARSER = "dorado.prototype.controlParser";
-	private static final String CONTAINER_PARSER = "dorado.prototype.containerParser";
-	private static final String VIEW_PARSER = "dorado.prototype.viewParser";
-
 	private BeanFactory beanFactory;
 	private String beanName;
 	private String name;
 	private String classType;
 	private String category;
-	private Parser parser;
 	private ComponentTypeRegistry componentTypeRegistry;
 
 	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
@@ -103,17 +89,6 @@ public abstract class ComponentTypeRegister implements InitializingBean,
 		this.category = category;
 	}
 
-	/**
-	 * 设置该种组件使用的配置信息解析器。
-	 */
-	public void setParser(Parser parser) {
-		this.parser = parser;
-	}
-
-	public Parser getParser() {
-		return parser;
-	}
-
 	protected abstract ComponentTypeRegisterInfo createRegisterInfo(String name);
 
 	@SuppressWarnings("unchecked")
@@ -144,43 +119,6 @@ public abstract class ComponentTypeRegister implements InitializingBean,
 		registerInfo.setClassType(cl);
 		if (widget != null) {
 			registerInfo.setCategory(widget.category());
-		}
-
-		if (cl != null) {
-			if (registerInfo.getParser() == null) {
-				XmlNode xmlNode = cl.getAnnotation(XmlNode.class);
-				if (xmlNode != null) {
-					String beanId = xmlNode.parser();
-					if (StringUtils.isNotEmpty(beanId)) {
-						parser = (Parser) getBeanFactory().getBean(beanId);
-					}
-				}
-			}
-			if (parser == null) {
-				String parserId;
-				if (View.class.isAssignableFrom(cl)) {
-					parserId = VIEW_PARSER;
-				} else if (Container.class.isAssignableFrom(cl)) {
-					parserId = CONTAINER_PARSER;
-				} else if (Control.class.isAssignableFrom(cl)) {
-					parserId = CONTROL_PARSER;
-				} else {
-					parserId = COMPONENT_PARSER;
-				}
-				parser = (Parser) getBeanFactory().getBean(parserId);
-				Assert.notNull(parser);
-				registerInfo.setParser(parser);
-			}
-		}
-
-		if (parser != null) {
-			if (parser instanceof GenericObjectParser) {
-				((GenericObjectParser) parser).setDefaultImpl(classType);
-			}
-			if (parser instanceof ComponentParser) {
-				((ComponentParser) parser).setComponentType(name);
-			}
-			registerInfo.setParser(parser);
 		}
 		return registerInfo;
 	}

@@ -2,6 +2,11 @@ package com.bstek.dorado.data.type;
 
 import java.util.Map;
 
+import com.bstek.dorado.annotation.ClientEvents;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.XmlProperty;
+import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.common.event.ClientEventSupported;
 import com.bstek.dorado.data.type.property.PropertyDef;
 import com.bstek.dorado.data.type.validator.MessageState;
@@ -16,6 +21,30 @@ import com.bstek.dorado.data.type.validator.MessageState;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Feb 13, 2007
  */
+@XmlNode(
+		nodeName = "DataType",
+		definitionType = "com.bstek.dorado.data.config.definition.DataTypeDefinition",
+		scopable = true,
+		inheritable = true,
+		properties = { @XmlProperty(
+				propertyName = "overwrite,elementDataType,keyDataType,valueDataType",
+				ignored = true) },
+		subNodes = { @XmlSubNode(
+				propertyType = "com.bstek.dorado.data.type.property.PropertyDef[]") })
+@ClientObject(prototype = "dorado.EntityDataType", shortTypeName = "Default")
+@ClientEvents({
+		@com.bstek.dorado.annotation.ClientEvent(name = "beforeCurrentChange"),
+		@com.bstek.dorado.annotation.ClientEvent(name = "onCurrentChange"),
+		@com.bstek.dorado.annotation.ClientEvent(name = "beforeInsert"),
+		@com.bstek.dorado.annotation.ClientEvent(name = "onInsert"),
+		@com.bstek.dorado.annotation.ClientEvent(name = "beforeRemove"),
+		@com.bstek.dorado.annotation.ClientEvent(name = "onRemove"),
+		@com.bstek.dorado.annotation.ClientEvent(name = "beforeDataChange"),
+		@com.bstek.dorado.annotation.ClientEvent(name = "onDataChange"),
+		@com.bstek.dorado.annotation.ClientEvent(name = "beforeStateChange"),
+		@com.bstek.dorado.annotation.ClientEvent(name = "onStateChange"),
+		@com.bstek.dorado.annotation.ClientEvent(name = "onMessageChange"),
+		@com.bstek.dorado.annotation.ClientEvent(name = "onEntityToText") })
 public interface EntityDataType extends MutableDataType, ClientEventSupported {
 	/**
 	 * 返回属性声明的集合。

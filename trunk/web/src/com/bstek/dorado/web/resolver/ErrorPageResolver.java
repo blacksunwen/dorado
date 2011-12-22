@@ -59,8 +59,8 @@ public class ErrorPageResolver extends AbstractTextualResolver {
 	}
 
 	@Override
-	protected void execute(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+	public void execute(HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
 		try {
 			doExcecute(request, response);
 		} catch (Throwable t) {

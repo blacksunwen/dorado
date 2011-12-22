@@ -1,13 +1,13 @@
 package com.bstek.dorado.view.widget.layout;
 
-import com.bstek.dorado.annotation.ViewObject;
+import com.bstek.dorado.annotation.ClientObject;
 
 /**
  * Border型布局管理器。
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Feb 5, 2008
  */
-@ViewObject(shortTypeName = "Dock")
+@ClientObject(shortTypeName = "Dock")
 public class DockLayout extends Layout {
 	private int regionPadding;
 

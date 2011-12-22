@@ -35,7 +35,8 @@ public abstract class ViewElementUtils {
 		}
 	}
 
-	private static void unregisterFromView(ViewElement element, View view) {
+	private static void unregisterFromView(ViewElement element,
+			View view) {
 		Collection<ViewElement> innerElements = element.getInnerElements();
 		if (innerElements != null) {
 			for (ViewElement innerElement : innerElements) {

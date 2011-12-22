@@ -4,9 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.util.ClassUtils;
 
+import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.manager.ViewConfigManager;
 import com.bstek.dorado.view.widget.AssembledComponent;
 import com.bstek.dorado.view.widget.Component;
@@ -62,6 +64,18 @@ public class AssembledComponentTypeRegister extends ComponentTypeRegister {
 		}
 
 		registerInfo.setSrc(src);
+
+		String category = null;
+		Widget widget = null;
+		if (cl != null) {
+			widget = cl.getAnnotation(Widget.class);
+			if (widget != null
+					&& ArrayUtils.indexOf(cl.getDeclaredAnnotations(), widget) >= 0) {
+				category = widget.category();
+			}
+		}
+		registerInfo.setCategory((StringUtils.isEmpty(category)) ? "Others"
+				: category);
 
 		Map<String, VirtualPropertyDescriptor> propertieDescriptors = new HashMap<String, VirtualPropertyDescriptor>();
 		if (virtualProperties != null) {

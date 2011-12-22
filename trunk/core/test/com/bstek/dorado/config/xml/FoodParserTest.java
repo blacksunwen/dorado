@@ -1,0 +1,52 @@
+package com.bstek.dorado.config.xml;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import com.bstek.dorado.config.ParseContext;
+import com.bstek.dorado.config.definition.CreationContext;
+import com.bstek.dorado.config.definition.ObjectDefinition;
+import com.bstek.dorado.config.xml.XmlParserHelper.XmlParserInfo;
+import com.bstek.dorado.core.Context;
+import com.bstek.dorado.core.ContextTestCase;
+import com.bstek.dorado.core.io.Resource;
+import com.bstek.dorado.core.xml.DefaultXmlDocumentBuilder;
+
+public class FoodParserTest extends ContextTestCase {
+	private static final String MOCK_XML = "com/bstek/dorado/config/xml/Food.xml";
+	private DefaultXmlDocumentBuilder xmlDocumentBuilder = null;
+
+	@Override
+	protected void setUp() throws Exception {
+		super.setUp();
+		xmlDocumentBuilder = new DefaultXmlDocumentBuilder();
+	}
+
+	@Override
+	protected void tearDown() throws Exception {
+		xmlDocumentBuilder = null;
+		super.tearDown();
+	}
+
+	public void test() throws Exception {
+		Context context = Context.getCurrent();
+		Resource resource = context.getResource(MOCK_XML);
+		XmlParserHelper xmlParserHelper = (XmlParserHelper) context
+				.getServiceBean("xmlParserHelper");
+
+		Document document = xmlDocumentBuilder.loadDocument(resource);
+		XmlParserInfo xmlParserInfo = xmlParserHelper
+				.getXmlParserInfos(Food.class).get(0);
+		XmlParser foodParser = xmlParserInfo.getParser();
+
+		ParseContext parseContext = new ParseContext();
+		Element documentElement = document.getDocumentElement();
+		ObjectDefinition foodDefinition = (ObjectDefinition) foodParser.parse(
+				documentElement, parseContext);
+		assertNotNull(foodDefinition);
+
+		Food food = (Food) foodDefinition.create(new CreationContext());
+		assertNotNull(food);
+		assertEquals("Nothing to say...", food.getDescription());
+	}
+}

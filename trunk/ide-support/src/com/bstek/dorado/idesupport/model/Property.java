@@ -12,7 +12,7 @@ public class Property {
 	private String name;
 	private String type;
 	private Object defaultValue;
-	private boolean highlight;
+	private int highlight;
 	private boolean fixed;
 	private String[] enumValues;
 	private String editor;
@@ -71,11 +71,11 @@ public class Property {
 		this.defaultValue = defaultValue;
 	}
 
-	public boolean isHighlight() {
+	public int getHighlight() {
 		return highlight;
 	}
 
-	public void setHighlight(boolean highlight) {
+	public void setHighlight(int highlight) {
 		this.highlight = highlight;
 	}
 

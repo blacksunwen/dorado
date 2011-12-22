@@ -1,9 +1,8 @@
 package com.bstek.dorado.view.widget.base;
 
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Container;
 import com.bstek.dorado.view.widget.FloatControl;
 import com.bstek.dorado.view.widget.FloatControlAlign;
@@ -16,9 +15,10 @@ import com.bstek.dorado.view.widget.ModalType;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-8-7
  */
-@Widget(name = "FloatContainer", category = "Floatable", dependsPackage = "base-widget")
-@ViewObject(prototype = "dorado.widget.FloatContainer", shortTypeName = "FloatContainer")
-@XmlNode(nodeName = "FloatContainer")
+@Widget(name = "FloatContainer", category = "Floatable",
+		dependsPackage = "base-widget")
+@ClientObject(prototype = "dorado.widget.FloatContainer",
+		shortTypeName = "FloatContainer")
 public class FloatContainer extends Container implements FloatControl {
 	private FloatControlAnimateType animateType = FloatControlAnimateType.zoom;
 	private FloatControlAnimateType showAnimateType;
@@ -48,12 +48,12 @@ public class FloatContainer extends Container implements FloatControl {
 	}
 
 	@Override
-	@ViewAttribute(defaultValue = "false")
+	@ClientProperty(escapeValue = "false")
 	public boolean isVisible() {
 		return super.isVisible();
 	}
 
-	@ViewAttribute(defaultValue = "zoom")
+	@ClientProperty(escapeValue = "zoom")
 	public FloatControlAnimateType getAnimateType() {
 		return animateType;
 	}
@@ -120,7 +120,7 @@ public class FloatContainer extends Container implements FloatControl {
 		this.modalType = modalType;
 	}
 
-	@ViewAttribute(defaultValue = "sides")
+	@ClientProperty(escapeValue = "sides")
 	public FloatControlShadowMode getShadowMode() {
 		return shadowMode;
 	}
@@ -129,7 +129,7 @@ public class FloatContainer extends Container implements FloatControl {
 		this.shadowMode = shadowMode;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isFocusAfterShow() {
 		return focusAfterShow;
 	}
@@ -141,7 +141,7 @@ public class FloatContainer extends Container implements FloatControl {
 	/**
 	 * @return the floating
 	 */
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isFloating() {
 		return floating;
 	}
@@ -277,7 +277,7 @@ public class FloatContainer extends Container implements FloatControl {
 	/**
 	 * @return the autoAdjustPosition
 	 */
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isAutoAdjustPosition() {
 		return autoAdjustPosition;
 	}
@@ -293,7 +293,7 @@ public class FloatContainer extends Container implements FloatControl {
 	/**
 	 * @return the handleOverflow
 	 */
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isHandleOverflow() {
 		return handleOverflow;
 	}

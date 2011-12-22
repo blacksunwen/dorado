@@ -2,6 +2,8 @@ package com.bstek.dorado.data.type.property;
 
 import org.apache.commons.lang.ObjectUtils;
 
+import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.core.el.Expression;
 
 /**
@@ -10,6 +12,7 @@ import com.bstek.dorado.core.el.Expression;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Dec 17, 2007
  */
+@XmlNode(nodeName = "Constraint")
 public class LookupConstraint {
 	private String lookupKeyProperty;
 	private String keyProperty;
@@ -18,6 +21,7 @@ public class LookupConstraint {
 	/**
 	 * 返回约束条件对应的属性名。
 	 */
+	@XmlProperty(parser = "spring:dorado.staticDataPropertyParser")
 	public String getLookupKeyProperty() {
 		return lookupKeyProperty;
 	}

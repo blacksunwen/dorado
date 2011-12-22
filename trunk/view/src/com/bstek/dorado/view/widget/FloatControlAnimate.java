@@ -3,7 +3,7 @@
  */
 package com.bstek.dorado.view.widget;
 
-import com.bstek.dorado.annotation.ViewAttribute;
+import com.bstek.dorado.annotation.ClientProperty;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -15,7 +15,7 @@ public class FloatControlAnimate {
 	private FloatControlAnimateType hideAnimateType;
 	private String animateTarget;
 
-	@ViewAttribute(defaultValue = "zoom")
+	@ClientProperty(escapeValue = "zoom")
 	public FloatControlAnimateType getAnimateType() {
 		return animateType;
 	}

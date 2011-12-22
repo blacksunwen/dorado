@@ -1,17 +1,18 @@
 package com.bstek.dorado.view.widget.action;
 
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.IdeProperty;
+import com.bstek.dorado.view.annotation.Widget;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-8-10
  */
-@Widget(name = "AjaxAction", category = "Action", dependsPackage = "base-widget")
-@ViewObject(prototype = "dorado.widget.AjaxAction", shortTypeName = "AjaxAction")
-@XmlNode(nodeName = "AjaxAction")
+@Widget(name = "AjaxAction", category = "Action",
+		dependsPackage = "base-widget")
+@ClientObject(prototype = "dorado.widget.AjaxAction",
+		shortTypeName = "AjaxAction")
 public class AjaxAction extends Action {
 	private boolean async = true;
 	private long timeout;
@@ -20,7 +21,7 @@ public class AjaxAction extends Action {
 	private boolean supportsEntity = true;
 
 	@Override
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isAsync() {
 		return async;
 	}
@@ -38,7 +39,7 @@ public class AjaxAction extends Action {
 		this.timeout = timeout;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isBatchable() {
 		return batchable;
 	}
@@ -47,6 +48,7 @@ public class AjaxAction extends Action {
 		this.batchable = batchable;
 	}
 
+	@IdeProperty(highlight = 1)
 	public String getService() {
 		return service;
 	}
@@ -55,7 +57,7 @@ public class AjaxAction extends Action {
 		this.service = service;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isSupportsEntity() {
 		return supportsEntity;
 	}

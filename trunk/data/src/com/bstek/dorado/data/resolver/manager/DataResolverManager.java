@@ -6,7 +6,7 @@ import com.bstek.dorado.data.resolver.DataResolver;
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Apr 29, 2009
- * @see com.bstek.dorado.data.provider.DataResolver
+ * @see com.com.bstek.dorado.data.annotation.DataResolver
  * @see com.bstek.dorado.data.config.definition.DataResolverDefinitionManager
  */
 public interface DataResolverManager {

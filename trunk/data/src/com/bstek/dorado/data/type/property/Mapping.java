@@ -1,6 +1,6 @@
 package com.bstek.dorado.data.type.property;
 
-import com.bstek.dorado.annotation.ViewAttribute;
+import com.bstek.dorado.annotation.IdeProperty;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -11,7 +11,7 @@ public class Mapping {
 	private String keyProperty;
 	private String valueProperty;
 
-	@ViewAttribute(editor = "collection[pojo]")
+	@IdeProperty(editor = "collection[pojo]")
 	public Object getMapValues() {
 		return mapValues;
 	}

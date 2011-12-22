@@ -4,9 +4,11 @@ import java.util.List;
 
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
-import com.bstek.dorado.annotation.ViewAttribute;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.common.event.ClientEventSupported;
+import com.bstek.dorado.view.annotation.ComponentReference;
 import com.bstek.dorado.view.widget.IconPosition;
 import com.bstek.dorado.view.widget.IconSize;
 import com.bstek.dorado.view.widget.InnerElementList;
@@ -16,9 +18,11 @@ import com.bstek.dorado.view.widget.action.ActionSupport;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2009-11-4
  */
+@ClientObject(prototype = "dorado.widget.menu.TextMenuItem",
+		shortTypeName = "Text")
 @ClientEvents({ @ClientEvent(name = "onClick") })
-public abstract class TextMenuItem extends BaseMenuItem implements
-		MenuItemGroup, ActionSupport, ClientEventSupported {
+public class TextMenuItem extends BaseMenuItem implements MenuItemGroup,
+		ActionSupport, ClientEventSupported {
 	private String caption;
 	private String icon;
 	private String iconClass;
@@ -31,7 +35,7 @@ public abstract class TextMenuItem extends BaseMenuItem implements
 	private List<BaseMenuItem> menuItems = new InnerElementList<BaseMenuItem>(
 			this);
 
-	@ViewAttribute(defaultValue = "left")
+	@ClientProperty(escapeValue = "left")
 	public IconPosition getIconPosition() {
 		return iconPosition;
 	}
@@ -40,7 +44,7 @@ public abstract class TextMenuItem extends BaseMenuItem implements
 		this.iconPosition = iconPosition;
 	}
 
-	@ViewAttribute(defaultValue = "normal")
+	@ClientProperty(escapeValue = "normal")
 	public IconSize getIconSize() {
 		return iconSize;
 	}
@@ -53,8 +57,8 @@ public abstract class TextMenuItem extends BaseMenuItem implements
 		menuItems.add(menuItem);
 	}
 
-	@ViewAttribute
-	@XmlSubNode(path = "#self", parser = "dorado.Menu.ItemsParser")
+	@XmlSubNode
+	@ClientProperty
 	public List<BaseMenuItem> getItems() {
 		return menuItems;
 	}
@@ -83,7 +87,7 @@ public abstract class TextMenuItem extends BaseMenuItem implements
 		this.iconClass = iconClass;
 	}
 
-	@ViewAttribute(referenceComponentName = "Action")
+	@ComponentReference("Action")
 	public String getAction() {
 		return action;
 	}
@@ -100,7 +104,7 @@ public abstract class TextMenuItem extends BaseMenuItem implements
 		this.disabled = disabled;
 	}
 
-	@ViewAttribute(defaultValue = "true")
+	@ClientProperty(escapeValue = "true")
 	public boolean isHideOnClick() {
 		return hideOnClick;
 	}

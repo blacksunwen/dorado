@@ -3,12 +3,13 @@ package com.bstek.dorado.view.widget;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
-import com.bstek.dorado.annotation.Widget;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.util.proxy.ChildrenListSupport;
+import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.layout.Layout;
 
 /**
@@ -18,8 +19,12 @@ import com.bstek.dorado.view.widget.layout.Layout;
  * @since Feb 23, 2008
  */
 @Widget(name = "Container", category = "General", dependsPackage = "widget")
-@ViewObject(prototype = "dorado.widget.Container", shortTypeName = "Container")
-@XmlNode(nodeName = "Container")
+@XmlNode(
+		definitionType = "com.bstek.dorado.view.config.definition.ContainerDefinition",
+		parser = "spring:dorado.containerParser")
+@ClientObject(prototype = "dorado.widget.Container",
+		shortTypeName = "Container",
+		outputter = "spring:dorado.containerOutputter")
 public class Container extends Control {
 
 	private class ChildrenList<E> extends ChildrenListSupport<E> {
@@ -47,6 +52,8 @@ public class Container extends Control {
 	/**
 	 * 返回布局管理对象。
 	 */
+	@XmlProperty(ignored = true)
+	@ClientProperty
 	public Layout getLayout() {
 		return layout;
 	}
@@ -58,7 +65,7 @@ public class Container extends Control {
 		this.layout = layout;
 	}
 
-	@ViewAttribute(defaultValue = "auto")
+	@ClientProperty(escapeValue = "auto")
 	public Overflow getContentOverflow() {
 		return contentOverflow;
 	}
@@ -156,7 +163,8 @@ public class Container extends Control {
 	/**
 	 * 返回所有子控件的集合。
 	 */
-	@XmlSubNode(path = "*", parser = "dorado.childComponentParser")
+	@XmlSubNode(nodeName = "*", parser = "spring:dorado.childComponentParser")
+	@ClientProperty
 	public List<Component> getChildren() {
 		if (childrenProxy == null) {
 			childrenProxy = new ChildrenList<Component>(internalGetChildren());

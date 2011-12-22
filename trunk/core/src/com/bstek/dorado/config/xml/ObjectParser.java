@@ -1,24 +1,13 @@
 package com.bstek.dorado.config.xml;
 
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import com.bstek.dorado.annotation.XmlProperty;
-import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.config.ParseContext;
 import com.bstek.dorado.config.definition.Definition;
 import com.bstek.dorado.config.definition.DefinitionInitOperation;
@@ -26,35 +15,24 @@ import com.bstek.dorado.config.definition.DefinitionReference;
 import com.bstek.dorado.config.definition.ObjectDefinition;
 import com.bstek.dorado.config.definition.Operation;
 import com.bstek.dorado.core.bean.Scope;
-import com.bstek.dorado.util.clazz.BeanPropertyUtils;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2009-12-30
  */
-public class ObjectParser extends ConfigurableDispatchableXmlParser implements
-		BeanFactoryAware {
-	private static final String SELF_PREFIX = DispatchableXmlParser.SELF + '/';
-	private static final String COMPOSITE_PROPERTY_PARSER = "dorado.prototype.compositePropertyParser";
-	private static final String COLLECTION_PARSER = "dorado.prototype.collectionToPropertyParser";
-	private static final String SUBNODE_PARSER = "dorado.prototype.subNodeToPropertyParser";
-
-	private BeanFactory beanFactory;
-	private XmlParserAnnotationHelper xmlParserAnnotationHelper;
+public class ObjectParser extends ConfigurableDispatchableXmlParser {
 	private Class<? extends ObjectDefinition> definitionType = ObjectDefinition.class;
+	private Class<?> annotationOwnerType;
 	private String impl;
 	private boolean scopable;
 	private boolean inheritable;
-	private String defaultImpl;
-	private boolean annotationProcessed;
 
-	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-		this.beanFactory = beanFactory;
+	public Class<?> getAnnotationOwnerType() {
+		return annotationOwnerType;
 	}
 
-	public void setXmlParserAnnotationHelper(
-			XmlParserAnnotationHelper xmlParserAnnotationHelper) {
-		this.xmlParserAnnotationHelper = xmlParserAnnotationHelper;
+	public void setAnnotationOwnerType(Class<?> annotationOwnerType) {
+		this.annotationOwnerType = annotationOwnerType;
 	}
 
 	/**
@@ -117,17 +95,6 @@ public class ObjectParser extends ConfigurableDispatchableXmlParser implements
 	}
 
 	/**
-	 * 设置默认的实现类。
-	 */
-	public void setDefaultImpl(String defaultImpl) {
-		this.defaultImpl = defaultImpl;
-	}
-
-	public String getDefaultImpl() {
-		return defaultImpl;
-	}
-
-	/**
 	 * 返回默认的最终对象作用范围。
 	 */
 	protected Scope getDefaultScope() {
@@ -180,12 +147,9 @@ public class ObjectParser extends ConfigurableDispatchableXmlParser implements
 	protected void initDefinition(ObjectDefinition definition, Element element,
 			ParseContext context) throws Exception {
 		definition.setResource(context.getResource());
-		definition.setDefaultImpl(defaultImpl);
 
-		String realImpl = element.getAttribute(XmlConstants.ATTRIBUTE_IMPL);
-		if (StringUtils.isEmpty(realImpl))
-			realImpl = this.impl;
-
+		String realImpl = StringUtils.defaultIfEmpty(
+				element.getAttribute(XmlConstants.ATTRIBUTE_IMPL), impl);
 		String parent = element.getAttribute(XmlConstants.ATTRIBUTE_PARENT);
 		if (StringUtils.isNotEmpty(realImpl)) {
 			/*
@@ -195,7 +159,9 @@ public class ObjectParser extends ConfigurableDispatchableXmlParser implements
 			 */
 			ClassUtils.getClass(realImpl);
 			definition.setImpl(realImpl);
-		} else if (StringUtils.isNotEmpty(parent)) {
+		}
+
+		if (StringUtils.isNotEmpty(parent)) {
 			if (!inheritable) {
 				throw new XmlParseException("[" + XmlConstants.ATTRIBUTE_PARENT
 						+ "] attribute not supported.", element, context);
@@ -221,19 +187,20 @@ public class ObjectParser extends ConfigurableDispatchableXmlParser implements
 		definition.getProperties().putAll(properties);
 
 		List<?> results = dispatchChildElements(element, context);
-		for (Object result : results) {
-			if (result instanceof DefinitionInitOperation) {
-				((DefinitionInitOperation) result).execute(definition, null);
-			} else if (result instanceof Operation) {
-				definition.addInitOperation((Operation) result);
+		if (results != null) {
+			for (Object result : results) {
+				if (result instanceof DefinitionInitOperation) {
+					((DefinitionInitOperation) result)
+							.execute(definition, null);
+				} else if (result instanceof Operation) {
+					definition.addInitOperation((Operation) result);
+				}
 			}
 		}
 	}
 
 	protected Object internalParse(Node node, ParseContext context)
 			throws Exception {
-		init();
-
 		Element element = (Element) node;
 		ObjectDefinition definition = createDefinition(element, context);
 		initDefinition(definition, element, context);
@@ -245,154 +212,4 @@ public class ObjectParser extends ConfigurableDispatchableXmlParser implements
 		return internalParse(node, context);
 	}
 
-	public void init() throws Exception {
-		if (!annotationProcessed) {
-			annotationProcessed = true;
-			collectAnnotationConfig();
-		}
-	}
-
-	protected void collectAnnotationConfig() throws Exception {
-		String impl = StringUtils.defaultIfEmpty(this.impl, defaultImpl);
-		if (StringUtils.isEmpty(impl)) {
-			return;
-		}
-
-		Class<?> classType = ClassUtils.getClass(impl);
-		Map<String, XmlParser> propertyParsers = getPropertyParsers();
-		Map<String, XmlParser> subParsers = getSubParsers();
-		PropertyDescriptor[] propertyDescriptors = PropertyUtils
-				.getPropertyDescriptors(classType);
-		for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
-			Method readMethod = propertyDescriptor.getReadMethod();
-			if (readMethod == null) {
-				continue;
-			}
-			if (readMethod.getDeclaringClass() != classType) {
-				readMethod = classType.getMethod(readMethod.getName(),
-						readMethod.getParameterTypes());
-			}
-
-			String propertyName = propertyDescriptor.getName();
-			if (!BeanPropertyUtils.isValidProperty(classType, propertyName)) {
-				continue;
-			}
-
-			Class<?> propertyType = propertyDescriptor.getPropertyType();
-			boolean isCollection = Collection.class
-					.isAssignableFrom(propertyType);
-
-			XmlSubNode xmlSubNode = readMethod.getAnnotation(XmlSubNode.class);
-			if (xmlSubNode != null) {
-				String path = StringUtils.defaultIfEmpty(xmlSubNode.path(),
-						StringUtils.capitalize(propertyName));
-				String parserId = xmlSubNode.parser();
-				XmlParser elementParser = null;
-
-				if (StringUtils.isEmpty(parserId)) {
-					if (isCollection) {
-						Type parameterType = readMethod.getGenericReturnType();
-						if (parameterType instanceof ParameterizedType) {
-							propertyType = (Class<?>) ((ParameterizedType) parameterType)
-									.getActualTypeArguments()[0];
-						} else {
-							propertyType = null;
-						}
-					}
-
-					TypeAnnotationInfo typeAnnotationInfo = null;
-					if (propertyType != null) {
-						typeAnnotationInfo = xmlParserAnnotationHelper
-								.getTypeAnnotationInfo(propertyType);
-						if (typeAnnotationInfo != null) {
-							elementParser = typeAnnotationInfo.getParser();
-						}
-						if (elementParser == null) {
-							elementParser = xmlParserAnnotationHelper
-									.getDefaultSubParser(propertyType);
-						}
-					}
-
-					if (elementParser != null) {
-						if (isCollection) {
-							String subNodeName = null;
-							int lastDelim = path.lastIndexOf("/");
-							if (lastDelim > 0) {
-								subNodeName = path.substring(lastDelim + 1);
-								path = path.substring(0, lastDelim);
-							}
-							if (subParsers.containsKey(path)) {
-								continue;
-							}
-
-							// if (typeAnnotationInfo != null
-							// && (StringUtils.isEmpty(subNodeName) ||
-							// DispatchableXmlParser.WILDCARD
-							// .equals(subNodeName))) {
-							// subNodeName = typeAnnotationInfo.getNodeName();
-							// }
-
-							CollectionToPropertyParser collectionToPropertyParser = (CollectionToPropertyParser) beanFactory
-									.getBean(COLLECTION_PARSER);
-							collectionToPropertyParser
-									.setProperty(propertyName);
-							collectionToPropertyParser.registerSubParser(
-									StringUtils.defaultIfEmpty(subNodeName,
-											DispatchableXmlParser.WILDCARD),
-									elementParser);
-							subParsers.put(path, collectionToPropertyParser);
-						} else {
-							if (path.startsWith(SELF_PREFIX)) {
-								path = path.substring(SELF_PREFIX.length());
-							}
-							if (subParsers.containsKey(path)) {
-								continue;
-							}
-
-							SubNodeToPropertyParser subNodeToPropertyParser = (SubNodeToPropertyParser) beanFactory
-									.getBean(SUBNODE_PARSER);
-							subNodeToPropertyParser.setProperty(propertyName);
-							subNodeToPropertyParser.registerSubParser(
-									DispatchableXmlParser.SELF, elementParser);
-							subParsers.put(path, subNodeToPropertyParser);
-						}
-					}
-				} else {
-					if (subParsers.containsKey(path)) {
-						continue;
-					}
-
-					XmlParser subParser = (XmlParser) beanFactory
-							.getBean(parserId);
-					subParsers.put(path, subParser);
-				}
-				continue;
-			}
-
-			if (propertyParsers.containsKey(propertyName)) {
-				continue;
-			}
-			XmlProperty xmlProperty = readMethod
-					.getAnnotation(XmlProperty.class);
-			XmlParser parser = null;
-			if (xmlProperty != null) {
-				if (StringUtils.isNotEmpty(xmlProperty.parser())) {
-					parser = (XmlParser) beanFactory.getBean(xmlProperty
-							.parser());
-				} else if (xmlProperty.composite()) {
-					CompositePropertyParser compositePropertyParser = (CompositePropertyParser) beanFactory
-							.getBean(COMPOSITE_PROPERTY_PARSER);
-					parser = compositePropertyParser;
-					compositePropertyParser.setImpl(propertyType.getName());
-					compositePropertyParser.setOpen(Map.class
-							.isAssignableFrom(propertyType));
-				}
-			}
-			if (parser == null) {
-				parser = xmlParserAnnotationHelper
-						.getDefaultPropertyParser(propertyType);
-			}
-			propertyParsers.put(propertyName, parser);
-		}
-	}
 }

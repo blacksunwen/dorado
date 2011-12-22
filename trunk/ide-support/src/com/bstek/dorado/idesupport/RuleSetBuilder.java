@@ -12,7 +12,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import com.bstek.dorado.config.xml.XmlParser;
-import com.bstek.dorado.core.Context;
 import com.bstek.dorado.core.io.InputStreamResource;
 import com.bstek.dorado.core.pkgs.PackageInfo;
 import com.bstek.dorado.core.xml.XmlDocumentBuilder;
@@ -50,24 +49,16 @@ public class RuleSetBuilder {
 		this.ruleTemplateParser = ruleTemplateParser;
 	}
 
-	@SuppressWarnings("unchecked")
 	public RuleSet buildRuleSet(InputStream in) throws Exception {
 		Document document = xmlDocumentBuilder
 				.loadDocument(new InputStreamResource(in));
 
+		RuleTemplateManager ruleTemplateManager = new RuleTemplateManager();
 		ConfigRuleParseContext parserContext = new ConfigRuleParseContext();
-		RuleTemplateManager ruleTemplateManager = (RuleTemplateManager) Context
-				.getCurrent().getServiceBean("idesupport.ruleTemplateManager");
 		parserContext.setRuleTemplateManager(ruleTemplateManager);
 
-		preloadParser.parse(document.getDocumentElement(), parserContext);
-
-		ruleTemplateManager.getPackageInfos().clear();
-		List<PackageInfo> packageInfos = (List<PackageInfo>) parserContext
-				.getAttributes().get("packageInfos");
-		if (packageInfos != null) {
-			ruleTemplateManager.getPackageInfos().addAll(packageInfos);
-		}
+		Element documentElement = document.getDocumentElement();
+		preloadParser.parse(documentElement, parserContext);
 
 		Map<String, Element> ruleElementMap = parserContext.getRuleElementMap();
 		for (String name : ruleElementMap.keySet().toArray(new String[0])) {
@@ -86,6 +77,7 @@ public class RuleSetBuilder {
 	public RuleSet buildRuleSet(RuleTemplateManager ruleTemplateManager)
 			throws Exception {
 		RuleSet ruleSet = new RuleSet();
+		ruleSet.setVersion(ruleTemplateManager.getVersion());
 
 		List<PackageInfo> packageInfos = ruleTemplateManager.getPackageInfos();
 		if (packageInfos != null) {
@@ -111,8 +103,9 @@ public class RuleSetBuilder {
 		}
 
 		rule = new Rule(name);
-		if (ruleTemplate.isGlobal())
+		if (ruleTemplate.isGlobal()) {
 			ruleSet.addRule(rule);
+		}
 
 		RuleTemplate[] parentTemplates = ruleTemplate.getParents();
 		if (parentTemplates != null && parentTemplates.length > 0) {
@@ -131,8 +124,10 @@ public class RuleSetBuilder {
 
 	protected void applyTemplateToRule(RuleTemplate ruleTemplate, Rule rule,
 			RuleSet ruleSet) throws Exception {
-		applyProperties(ruleTemplate, rule,
-				"abstract,nodeName,type,supportsCustomProperty,category,robots,sortFactor,reserve");
+		applyProperties(
+				ruleTemplate,
+				rule,
+				"label,abstract,nodeName,type,category,robots,sortFactor,icon,labelProperty,autoGenerateId,reserve");
 
 		Map<String, PropertyTemplate> primitiveProperties = ruleTemplate
 				.getFinalPrimitiveProperties();
@@ -212,22 +207,23 @@ public class RuleSetBuilder {
 	}
 
 	private void findConcreteRules(RuleTemplate ruleTemplate,
-			Set<Rule> concreteRules, RuleSet ruleSet) throws Exception {
-		if (!ruleTemplate.isAbstract()) {
+			Set<Rule> concreteRules, RuleSet ruleSet, boolean validateScope)
+			throws Exception {
+		String scope = ruleTemplate.getScope();
+		if (validateScope && "private".equals(scope)) {
+			return;
+		}
+
+		if (!ruleTemplate.isAbstract()
+				&& (!validateScope || "public".equals(scope))) {
 			concreteRules.add(exportRule(ruleTemplate, ruleSet));
 		}
 
 		RuleTemplate[] subRuleTemplates = ruleTemplate.getSubRuleTemplates();
 		if (subRuleTemplates != null && subRuleTemplates.length > 0) {
 			for (RuleTemplate subRuleTemplate : subRuleTemplates) {
-				String scope = subRuleTemplate.getScope();
-				if ("private".equals(scope)) {
-					continue;
-				}
-				if ("protected".equals(scope) && !subRuleTemplate.isAbstract()) {
-					continue;
-				}
-				findConcreteRules(subRuleTemplate, concreteRules, ruleSet);
+				findConcreteRules(subRuleTemplate, concreteRules, ruleSet,
+						validateScope);
 			}
 		}
 	}
@@ -238,9 +234,12 @@ public class RuleSetBuilder {
 		applyTemplateToChild(childTemplate, child, ruleSet);
 		rule.addChild(child);
 
+		String childRuleName = child.getRule().getName();
 		Set<Rule> concreteRules = child.getConcreteRules();
 		findConcreteRules(childTemplate.getRuleTemplate(), concreteRules,
-				ruleSet);
+				ruleSet,
+				("Component".equals(childRuleName) || "Control"
+						.equals(childRuleName)));
 	}
 
 	protected void applyTemplateToChild(ChildTemplate childTemplate,

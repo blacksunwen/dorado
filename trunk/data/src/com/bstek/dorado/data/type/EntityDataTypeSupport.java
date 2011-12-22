@@ -10,7 +10,8 @@ import java.util.Map;
 
 import org.apache.commons.beanutils.PropertyUtils;
 
-import com.bstek.dorado.annotation.ViewAttribute;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.common.Namable;
 import com.bstek.dorado.common.ParentAware;
 import com.bstek.dorado.common.event.ClientEvent;
@@ -62,6 +63,7 @@ public abstract class EntityDataTypeSupport extends NonAggregationDataType
 	private MessageState acceptValidationState = MessageState.ok;
 	private boolean autoCreatePropertyDefs;
 	private String defaultDisplayProperty;
+	private Object userData;
 
 	private boolean autuCreatepropertyDefinitonsProcessed;
 	private Map<String, PropertyDef> propertyDefs = new PropertyDefMap<String, PropertyDef>(
@@ -85,6 +87,7 @@ public abstract class EntityDataTypeSupport extends NonAggregationDataType
 		acceptUnknownPropertyChanged = true;
 	}
 
+	@ClientProperty(ignored = true)
 	public boolean isAutoCreatePropertyDefs() {
 		return autoCreatePropertyDefs;
 	}
@@ -93,7 +96,7 @@ public abstract class EntityDataTypeSupport extends NonAggregationDataType
 		this.autoCreatePropertyDefs = autoCreatePropertyDefs;
 	}
 
-	@ViewAttribute(defaultValue = "ok")
+	@ClientProperty(escapeValue = "ok")
 	public MessageState getAcceptValidationState() {
 		return acceptValidationState;
 	}
@@ -110,6 +113,16 @@ public abstract class EntityDataTypeSupport extends NonAggregationDataType
 		this.defaultDisplayProperty = defaultDisplayProperty;
 	}
 
+	@IdeProperty(editor = "any")
+	public Object getUserData() {
+		return userData;
+	}
+
+	public void setUserData(Object userData) {
+		this.userData = userData;
+	}
+
+	@ClientProperty(outputter = "spring:dorado.propertyDefsOutputter")
 	public Map<String, PropertyDef> getPropertyDefs() {
 		return propertyDefs;
 	}

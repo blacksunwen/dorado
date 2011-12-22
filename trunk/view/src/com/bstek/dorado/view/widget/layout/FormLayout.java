@@ -1,13 +1,14 @@
 package com.bstek.dorado.view.widget.layout;
 
-import com.bstek.dorado.annotation.ViewAttribute;
-import com.bstek.dorado.annotation.ViewObject;
+import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.IdeProperty;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-8-5
  */
-@ViewObject(shortTypeName = "Form")
+@ClientObject(shortTypeName = "Form")
 public class FormLayout extends Layout {
 	private String cols;
 	private boolean stretchWidth;
@@ -15,6 +16,7 @@ public class FormLayout extends Layout {
 	private int cellSpacing;
 	private int cellPadding = 3;
 
+	@IdeProperty(highlight = 1)
 	public String getCols() {
 		return cols;
 	}
@@ -47,7 +49,7 @@ public class FormLayout extends Layout {
 		this.cellSpacing = cellSpacing;
 	}
 
-	@ViewAttribute(defaultValue = "3")
+	@ClientProperty(escapeValue = "3")
 	public int getCellPadding() {
 		return cellPadding;
 	}

@@ -1,8 +1,7 @@
 package com.bstek.dorado.view;
 
-import com.bstek.dorado.view.View;
 
-public class MockView extends View {
+public class MockView extends DefaultView {
 	private String title;
 
 	@Override
