@@ -17,7 +17,6 @@
 
 		<chain name="building" returnFirst="true">
 			<resolver ref="temp" />
-			<resolver ref="local" />
 			<resolver ref="bsdn" />
 		</chain>
 	</resolvers>
