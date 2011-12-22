@@ -5,14 +5,14 @@ ${ivy.pom.header}
 	<groupId>${ivy.pom.groupId}</groupId>
 	<artifactId>${ivy.pom.artifactId}</artifactId>
 	<packaging>${ivy.pom.packaging}</packaging>
-	<version>${ivy.pom.version}</version>
+	<version>%product.revision%</version>
 	<name>${ivy.pom.name}</name>
 	<description>${ivy.pom.description}</description>
 	<url>${ivy.pom.url}</url>
 	<parent>
 		<artifactId>dorado-parent</artifactId>
 		<groupId>${ivy.pom.groupId}</groupId>
-		<version>${ivy.pom.version}</version>
+		<version>%product.revision%</version>
 		<relativePath>dorado-parent.pom</relativePath>
 	</parent>
 	<organization>

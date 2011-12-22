@@ -116,9 +116,16 @@
 	</target>
 
 	<target name="make-pom" if="${ivy-presented}">
-		<ivy:makepom ivyfile="${workspace.dir}/${module}/ivy.xml" pomfile="${target.pom.dir}/${product.name}-${module}.pom" templateFile="${resources.dir}/dorado-module-template.pom" conf="compile">
+		<copy file="${resources.dir}/dorado-module-template.pom" todir="${target.pom.dir}" />
+		<replace dir="${target.pom.dir}" token="%product.revision%" value="${product.revision}" encoding="utf-8">
+			<include name="dorado-module-template.pom" />
+		</replace>
+		
+		<ivy:makepom ivyfile="${workspace.dir}/${module}/ivy.xml" pomfile="${target.pom.dir}/${product.name}-${module}.pom" templateFile="${target.pom.dir}/dorado-module-template.pom" conf="compile">
 			<mapping conf="compile" scope="compile" />
 		</ivy:makepom>
+
+		<delete file="${target.pom.dir}/dorado-module-template.pom" />
 	</target>
 
 	<target name="build" depends="jar,publish-to-temp-repository,make-pom" />
