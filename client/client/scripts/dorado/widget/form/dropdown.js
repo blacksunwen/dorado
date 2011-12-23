@@ -252,7 +252,7 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 		var config = {
 			editor : editor,
 			dropDown : this,
-			hideAnimateType : "none",
+			hideAnimateType : "none"
 		};
 		if (dorado.Browser.msie && dorado.Browser.version < '9') {
 			config.showAnimateType =  "none";
