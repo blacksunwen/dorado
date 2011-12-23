@@ -588,7 +588,9 @@
 					caption: $resource("dorado.baseWidget.DatePickerClear"),
 					listener: {
 						onClick: function() {
-							picker.fireEvent("onPick", picker, {});
+							picker.fireEvent("onPick", picker, {
+                                date: null
+                            });
 						}
 					}
 				});
