@@ -106,10 +106,15 @@
 		recordMaxRange: function(region) {
 			var controlDom = region.control.getDom();
 			if (controlDom.style.position == "absolute") {
-				var right = (region.left || 0) + region.realWidth;
-				var bottom = (region.top || 0) + region.realHeight;
-				if (right > this._maxRagionRight) this._maxRagionRight = right;
-				if (bottom > this._maxRagionBottom) this._maxRagionBottom = bottom;
+				if (!region.realignArg.left) {
+					var right = (region.left || 0) + region.realWidth;
+					if (right > this._maxRagionRight) this._maxRagionRight = right;
+				}
+				
+				if (!region.realignArg.top) {
+					var bottom = (region.top || 0) + region.realHeight;
+					if (bottom > this._maxRagionBottom) this._maxRagionBottom = bottom;
+				}
 			}
 		},
 		
@@ -371,7 +376,7 @@
 			}
 			
 			if (lp || rp || tp || bp || wp || hp) {
-				realignArg = {
+				region.realignArg = realignArg = {
 					left: lp,
 					right: rp,
 					top: tp,
