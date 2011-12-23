@@ -106,7 +106,7 @@ dorado.widget.tree.TreeNodeRenderer = $extend(dorado.Renderer, {
 							display: "inline-block",
 							width: tree._indent,
 							height: "100%"
-						},
+						}
 					});
 					return line;
 				});
