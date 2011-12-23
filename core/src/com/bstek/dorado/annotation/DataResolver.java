@@ -1,4 +1,4 @@
-package com.bstek.dorado.data.annotation;
+package com.bstek.dorado.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 @Inherited
-public @interface DataProvider {
+public @interface DataResolver {
 	String name() default "";
 
 	String scope() default "";
