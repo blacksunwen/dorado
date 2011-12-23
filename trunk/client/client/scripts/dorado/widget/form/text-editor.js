@@ -262,9 +262,10 @@
 					triggerButton.render(this._dom);
 					this._triggersWidth += triggerButton.getDom().offsetWidth;
 				}
-				this._triggersWidth = -1;
 				this.doOnResize = this.resizeTextDom;
+				this.resizeTextDom();
 			} else {
+				this._triggersWidth = -1;
 				this._textDom.style.width = "100%";
 				delete this.doOnResize;
 			}

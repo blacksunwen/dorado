@@ -389,7 +389,7 @@
 			}
 		},
 
-		createDropDownBox: function(editor, dropDown) {
+		createDropDownBox: function(editor) {
 			var dropDown = this, box = $invokeSuper.call(this, arguments), picker = new dorado.widget.YearMonthPicker({
 				listener: {
 					onPick: function(picker) {

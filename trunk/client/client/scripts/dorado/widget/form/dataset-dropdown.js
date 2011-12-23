@@ -101,15 +101,17 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.RowListDropDown,/** @scope
 		};
 		
 		if (this._useDataBinding && (this._filterOnOpen || this._reloadDataOnOpen || this._lastFilterValue)) {
-			var filterValue = (this._reloadDataOnOpen || this._lastFilterValue) ? undefined : editor.get("text");
+			var filterValue = (this._reloadDataOnOpen || this._lastFilterValue) ? this._lastFilterValue : editor.get("text");
 			this.onFilterItems(filterValue, doOpen);
 			this._lastFilterValue = filterValue;
-		} else doOpen();
+		} else {
+			doOpen();
+		}
 	},
 	
-	createDropDownBox: function(editor, dropDown) {
+	createDropDownBox: function(editor) {
 		if (this._useDataBinding) {
-			var box = dorado.widget.DropDown.prototype.createDropDownBox.call(this, editor, dropDown), rowList;
+			var dropDown = this, box = dorado.widget.DropDown.prototype.createDropDownBox.call(this, editor), rowList;
 			if (this._columns) {
 				rowList = new dorado.widget.DataGrid({
 					dataSet: this._dataSet,
@@ -157,6 +159,7 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.RowListDropDown,/** @scope
 	},
 	
 	onFilterItems: function(filterValue, callback) {
+		var dataSet = this._dataSet;
 		if (this._useDataBinding) {
 			var arg = {
 				filterValue: filterValue,
@@ -164,7 +167,6 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.RowListDropDown,/** @scope
 			};
 			this.fireEvent("onFilterItems", this, arg);
 			if (arg.processDefault) {
-				var dataSet = this._dataSet;
 				arg = {
 					dataSet: dataSet,
 					filterValue: filterValue,
@@ -186,10 +188,15 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.RowListDropDown,/** @scope
 	},
 	
 	onDropDownBoxShow: function() {
-		var filterOnOpen = this._filterOnOpen;
-		this._filterOnOpen = false;
-		$invokeSuper.call(this, arguments);
-		this._filterOnOpen = filterOnOpen;
+		if (this._useDataBinding) {
+			var filterOnOpen = this._filterOnOpen;
+			this._filterOnOpen = false;
+			$invokeSuper.call(this, arguments);
+			this._filterOnOpen = filterOnOpen;
+		}
+		else {
+			$invokeSuper.call(this, arguments);
+		}
 	}
 	
 });
