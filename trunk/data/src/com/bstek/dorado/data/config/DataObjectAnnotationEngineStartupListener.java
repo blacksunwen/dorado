@@ -12,10 +12,10 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.support.MergedBeanDefinitionPostProcessor;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 
+import com.bstek.dorado.annotation.DataProvider;
+import com.bstek.dorado.annotation.DataResolver;
 import com.bstek.dorado.core.EngineStartupListener;
 import com.bstek.dorado.core.bean.Scope;
-import com.bstek.dorado.data.annotation.DataProvider;
-import com.bstek.dorado.data.annotation.DataResolver;
 import com.bstek.dorado.data.config.definition.DataProviderDefinition;
 import com.bstek.dorado.data.config.definition.DataProviderDefinitionManager;
 import com.bstek.dorado.data.config.definition.DataResolverDefinition;
