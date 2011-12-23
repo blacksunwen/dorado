@@ -203,7 +203,7 @@
 				}
 				tr.style.height = this._rowHeight + "px";
 				
-				var cols = grid[row], cellForRenders = [];
+				var cols = grid[row], cellForRenders = [], colIndex = 0;;
 				for (var col = 0; col < cols.length; col++) {
 					var region = grid[row][col];
 					if (region && region.regionIndex <= index) {
@@ -215,8 +215,9 @@
 						td = this.createRegionContainer(region);
 						tr.appendChild(td);
 					} else {
-						td = tr.childNodes[col];
+						td = tr.childNodes[colIndex];
 					}
+					colIndex++;
 					
 					var cls = this._colClss[col];
 					if (cls) {
