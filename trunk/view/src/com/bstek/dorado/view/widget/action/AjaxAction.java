@@ -16,6 +16,7 @@ import com.bstek.dorado.view.annotation.Widget;
 public class AjaxAction extends Action {
 	private boolean async = true;
 	private long timeout;
+	private boolean modal = true;
 	private boolean batchable = true;
 	private String service;
 	private boolean supportsEntity = true;
@@ -37,6 +38,15 @@ public class AjaxAction extends Action {
 
 	public void setTimeout(long timeout) {
 		this.timeout = timeout;
+	}
+
+	@ClientProperty(escapeValue = "true")
+	public boolean isModal() {
+		return modal;
+	}
+
+	public void setModal(boolean modal) {
+		this.modal = modal;
 	}
 
 	@ClientProperty(escapeValue = "true")
