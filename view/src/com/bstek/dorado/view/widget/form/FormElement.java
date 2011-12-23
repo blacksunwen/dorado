@@ -37,7 +37,7 @@ public class FormElement extends Control implements FormConfig {
 	private int hintWidth;
 	private int hintSpacing;
 	private boolean showHintMessage;
-	private FormElementHintPosition hintPosition;
+	private FormElementHintPosition hintPosition = FormElementHintPosition.right;
 	private boolean readOnly;
 	private String formProfile;
 	private InnerElementReference<Control> editorRef = new InnerElementReference<Control>(
@@ -196,6 +196,7 @@ public class FormElement extends Control implements FormConfig {
 		this.showHintMessage = showHintMessage;
 	}
 
+	@ClientProperty(escapeValue = "right")
 	public FormElementHintPosition getHintPosition() {
 		return hintPosition;
 	}
