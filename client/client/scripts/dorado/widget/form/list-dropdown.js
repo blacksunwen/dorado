@@ -152,8 +152,8 @@
 			return value;
 		},
 		
-		createDropDownBox: function(editor, dropDown) {
-			var box = $invokeSuper.call(this, arguments), rowList;
+		createDropDownBox: function(editor) {
+			var dropDown = this, box = $invokeSuper.call(this, arguments), rowList;
 			if (this._columns) {
 				rowList = new dorado.widget.Grid({
 					stretchColumnsMode: "stretchableColumns",
@@ -275,7 +275,9 @@
 					}, dropDown._minFilterInterval);
 				};
 				var text = editor.get("text");
-				if (text && text.length > 0 && this._filterOnOpen) filterFn();
+				if (text && text.length > 0 && this._filterOnOpen) {
+					dropDown.onFilterItems(editor.get("text"));
+				}
 				editor.addListener("onTextEdit", function() {
 					if (dropDown._filterOnTyping) filterFn();
 				});

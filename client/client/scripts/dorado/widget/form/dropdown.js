@@ -248,10 +248,10 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 		onValueSelect : {}
 	},
 
-	createDropDownBox : function(editor, dropDown) {
+	createDropDownBox : function(editor) {
 		var config = {
 			editor : editor,
-			dropDown : dropDown,
+			dropDown : this,
 			hideAnimateType : "none",
 		};
 		if (dorado.Browser.msie && dorado.Browser.version < '9') {
@@ -333,7 +333,7 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 		var boxCache = getBoxCache(win);
 		var box = boxCache ? boxCache[dorado.id + '$' + this._id] : null;
 		if (!box) {
-			box = this.createDropDownBox(editor, dropdown);
+			box = this.createDropDownBox(editor);
 			box.addListener("onDropDownBoxShow", function() {
 				if (dropdown.onDropDownBoxShow)
 					dropdown.onDropDownBoxShow();
