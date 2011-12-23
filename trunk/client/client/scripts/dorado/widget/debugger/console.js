@@ -364,7 +364,7 @@
 	window.$log = dorado.Debugger.log;
     window.$dir = dorado.Debugger.dir;
 
-    if (console && console.log) {
+    if (window.console && console.log) {
         var log = console.log;
         console.log = function() {
             var args = [];
