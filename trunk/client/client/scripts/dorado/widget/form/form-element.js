@@ -876,7 +876,6 @@
 					if (this._labelPosition == "top") hintEl.style.top = labelHeight + "px";
 					if (this._editorWidth > 0) {
 						var hintWidth = editorWidth - this._editorWidth - this._hintSpacing;
-						if (hintWidth <= 0) debugger;
 						hintEl.style.width = ((hintWidth > 0) ? hintWidth : 0)+ "px";
 					} else {
 						hintEl.style.width = this._hintWidth + "px";
