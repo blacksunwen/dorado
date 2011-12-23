@@ -415,6 +415,34 @@
 				context.executingValidationNum += contextForMerge.executingValidationNum;
 				return context;
 			}
+			
+			function validateEntity(validateContext, entity, validateOptions, validateSubEntities) {
+				if (entity.isDirty()) {
+					validateOptions.context = {};
+					entity.validate(validateOptions);
+					validateContext = mergeValidateContext(validateContext, validateOptions.context);
+				}
+				
+				if (validateSubEntities) {
+					for (var p in entity._data) {
+						if (p.charAt(0) == '$') continue;
+						var v = entity._data[p];
+						if (!v) continue;
+						
+						if (v instanceof dorado.Entity) {
+							validateContext = validateEntity(validateContext, v, validateOptions, validateSubEntities)
+						}
+						else if (v instanceof dorado.EntityList) {
+							var it = v.iterator();
+							while(it.hasNext()) {
+								var e = it.next();
+								validateContext = validateEntity(validateContext, e, validateOptions, validateSubEntities)
+							}
+						}
+					}
+				}
+				return validateContext;
+			}
 
 			var dataItems = [], updateInfos = [], aliasMap = {}, hasUpdateData = false, updateItems = this.get("updateItems");
 			for(var i = 0; i < updateItems.length; i++) {
@@ -481,29 +509,22 @@
 						force: false,
 						validateSimplePropertyOnly : updateItem.submitSimplePropertyOnly
 					};
-
+					var validateSubEntities = !updateItem.submitSimplePropertyOnly;
+					
 					if( data instanceof Array) {
 						for(var j = 0; j < data.length; j++) {
 							var entity = data[j];
-							if( entity instanceof dorado.Entity && entity.isDirty()) {
-								validateOptions.context = {};
-								entity.validate(validateOptions);
-								validateContext = mergeValidateContext(validateContext, validateOptions.context);
+							if( entity instanceof dorado.Entity) {
+								validateContext = validateEntity(validateContext, entity, validateOptions, validateSubEntities);
 							}
 						}
 					} else if( data instanceof dorado.EntityList) {
 						for(var it = data.iterator(); it.hasNext(); ) {
 							var entity = it.next();
-							if(entity.isDirty()) {
-								validateOptions.context = {};
-								entity.validate(validateOptions);
-								validateContext = mergeValidateContext(validateContext, validateOptions.context);
-							}
+							validateContext = validateEntity(validateContext, entity, validateOptions, validateSubEntities);
 						}
 					} else if( data instanceof dorado.Entity && data.isDirty()) {
-						validateOptions.context = {};
-						data.validate(validateOptions);
-						validateContext = mergeValidateContext(validateContext, validateOptions.context);
+						validateContext = validateEntity(validateContext, data, validateOptions, validateSubEntities);
 					}
 				}
 
