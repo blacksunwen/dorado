@@ -679,7 +679,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		
 		_validateProperty: function(dataType, propertyDef, propertyInfo, value) {
 			var messages = [], property = propertyDef._name, validating;
-			if (propertyDef._required && (!value && value !== false)) {
+			if (propertyDef._required && !dataType._validatorsDisabled && (!value && value !== false)) {
 				messages.push({
 					state: "error",
 					text: $resource("dorado.data.ErrorContentRequired")
