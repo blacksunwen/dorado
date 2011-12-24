@@ -71,6 +71,7 @@ public class AutoForm extends Control implements FormConfig {
 	}
 
 	@ComponentReference("DataSet")
+	@IdeProperty(highlight = 1)
 	public String getDataSet() {
 		return dataSet;
 	}
@@ -79,6 +80,7 @@ public class AutoForm extends Control implements FormConfig {
 		this.dataSet = dataSet;
 	}
 
+	@IdeProperty(highlight = 1)
 	public String getDataPath() {
 		return dataPath;
 	}
@@ -157,8 +159,7 @@ public class AutoForm extends Control implements FormConfig {
 		elements.add(element);
 	}
 
-	@XmlSubNode(
-			implTypes = "com.bstek.dorado.view.widget.form.autoform.*")
+	@XmlSubNode(implTypes = "com.bstek.dorado.view.widget.form.autoform.*")
 	@ClientProperty
 	public List<Control> getElements() {
 		return elements;

@@ -7,6 +7,7 @@ import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNodeWrapper;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.view.annotation.ComponentReference;
@@ -29,6 +30,7 @@ public class DataTree extends AbstractTree implements DataControl {
 	private List<BindingConfig> bindingConfigs = new ArrayList<BindingConfig>();
 
 	@ComponentReference("DataSet")
+	@IdeProperty(highlight = 1)
 	public String getDataSet() {
 		return dataSet;
 	}
@@ -37,6 +39,7 @@ public class DataTree extends AbstractTree implements DataControl {
 		this.dataSet = dataSet;
 	}
 
+	@IdeProperty(highlight = 1)
 	public String getDataPath() {
 		return dataPath;
 	}

@@ -6,6 +6,7 @@ import java.util.List;
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
 import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.view.widget.grid.Column;
 import com.bstek.dorado.view.widget.grid.ColumnHolder;
@@ -25,6 +26,7 @@ public abstract class RowListDropDown extends DropDown implements ColumnHolder {
 	private boolean filterOnOpen;
 	private int minFilterInterval = 300;
 
+	@IdeProperty(highlight = 1)
 	public String getProperty() {
 		return property;
 	}

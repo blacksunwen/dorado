@@ -53,6 +53,7 @@ public class FormElement extends Control implements FormConfig {
 	}
 
 	@ComponentReference("DataSet")
+	@IdeProperty(highlight = 1)
 	public String getDataSet() {
 		return dataSet;
 	}
@@ -61,6 +62,7 @@ public class FormElement extends Control implements FormConfig {
 		this.dataSet = dataSet;
 	}
 
+	@IdeProperty(highlight = 1)
 	public String getDataPath() {
 		return dataPath;
 	}
@@ -85,6 +87,7 @@ public class FormElement extends Control implements FormConfig {
 		this.hint = hint;
 	}
 
+	@IdeProperty(highlight = 1)
 	public String getProperty() {
 		return property;
 	}

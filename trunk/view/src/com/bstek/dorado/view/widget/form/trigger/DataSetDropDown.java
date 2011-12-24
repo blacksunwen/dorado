@@ -4,6 +4,7 @@ import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.view.annotation.ComponentReference;
 import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.datacontrol.PropertyDataControl;
@@ -25,6 +26,7 @@ public class DataSetDropDown extends RowListDropDown implements
 	private boolean reloadDataOnOpen;
 
 	@ComponentReference("DataSet")
+	@IdeProperty(highlight = 1)
 	public String getDataSet() {
 		return dataSet;
 	}
@@ -33,6 +35,7 @@ public class DataSetDropDown extends RowListDropDown implements
 		this.dataSet = dataSet;
 	}
 
+	@IdeProperty(highlight = 1)
 	public String getDataPath() {
 		return dataPath;
 	}
@@ -42,6 +45,7 @@ public class DataSetDropDown extends RowListDropDown implements
 	}
 
 	@Override
+	@IdeProperty(highlight = 1)
 	public String getProperty() {
 		return property;
 	}

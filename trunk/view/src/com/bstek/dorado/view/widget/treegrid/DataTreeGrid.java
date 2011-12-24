@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNodeWrapper;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
@@ -32,6 +33,7 @@ public class DataTreeGrid extends AbstractTreeGrid implements DataControl {
 	private List<BindingConfig> bindingConfigs = new ArrayList<BindingConfig>();
 
 	@ComponentReference("DataSet")
+	@IdeProperty(highlight = 1)
 	public String getDataSet() {
 		return dataSet;
 	}
@@ -40,6 +42,7 @@ public class DataTreeGrid extends AbstractTreeGrid implements DataControl {
 		this.dataSet = dataSet;
 	}
 
+	@IdeProperty(highlight = 1)
 	public String getDataPath() {
 		return dataPath;
 	}

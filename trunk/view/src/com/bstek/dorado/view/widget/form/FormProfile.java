@@ -221,6 +221,7 @@ public class FormProfile extends Component implements FormConfig {
 	}
 
 	@ComponentReference("DataSet")
+	@IdeProperty(highlight = 1)
 	public String getDataSet() {
 		return dataSet;
 	}
@@ -229,6 +230,7 @@ public class FormProfile extends Component implements FormConfig {
 		this.dataSet = dataSet;
 	}
 
+	@IdeProperty(highlight = 1)
 	public String getDataPath() {
 		return dataPath;
 	}
