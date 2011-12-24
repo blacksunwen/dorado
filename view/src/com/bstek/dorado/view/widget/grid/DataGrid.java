@@ -2,6 +2,7 @@ package com.bstek.dorado.view.widget.grid;
 
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.data.type.EntityDataType;
 import com.bstek.dorado.view.annotation.ComponentReference;
@@ -24,6 +25,7 @@ public class DataGrid extends AbstractGrid implements DataControl {
 	private SortMode sortModel = SortMode.clientSide;
 
 	@ComponentReference("DataSet")
+	@IdeProperty(highlight = 1)
 	public String getDataSet() {
 		return dataSet;
 	}
@@ -32,6 +34,7 @@ public class DataGrid extends AbstractGrid implements DataControl {
 		this.dataSet = dataSet;
 	}
 
+	@IdeProperty(highlight = 1)
 	public String getDataPath() {
 		return dataPath;
 	}

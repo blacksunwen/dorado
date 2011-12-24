@@ -26,6 +26,7 @@ public class UpdateItem {
 	private Properties options;
 
 	@ComponentReference("DataSet")
+	@IdeProperty(highlight = 1)
 	public String getDataSet() {
 		return dataSet;
 	}
