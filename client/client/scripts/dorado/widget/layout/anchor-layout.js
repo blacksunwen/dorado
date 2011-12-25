@@ -104,6 +104,8 @@
 		},
 		
 		recordMaxRange: function(region) {
+			if (!region.realignArg) return;
+			
 			var controlDom = region.control.getDom();
 			if (controlDom.style.position == "absolute") {
 				if (!region.realignArg.left) {
