@@ -249,8 +249,7 @@ dorado.widget.tree.Node = $extend([dorado.AttributeSupport, dorado.EventSupport]
 			setter: function(expanded) {
 				if (this._tree) {
 					(expanded) ? this.expandAsync() : this.collapse();
-				}
-				else {
+				} else {
 					this._expanded = expanded;
 				}
 			}
@@ -365,7 +364,7 @@ dorado.widget.tree.Node = $extend([dorado.AttributeSupport, dorado.EventSupport]
 		return this._timestamp;
 	},
 	
-	_nodeCheckedChanged: function(checked, processChildren, processParent, ignoreThis) {
+	_nodeCheckedChanged: function(checked, processChildren, processParent) {
 		var tree = this._tree;
 		if (!tree) return;
 		
@@ -387,17 +386,22 @@ dorado.widget.tree.Node = $extend([dorado.AttributeSupport, dorado.EventSupport]
 				if (!tree._autoChecking) tree._autoCheckingParent = true;
 				if (tree._autoCheckingParent && parent && parent.get("checkable")) {
 					tree._autoCheckingChildren = false;
-					var checkedCount = 0, checkableCount = 0, self = this;
+					var checkedCount = 0, checkableCount = 0, halfCheck = false, self = this;
 					parent._nodes.each(function(child) {
-						if (child == self && ignoreThis) return;
 						if (child.get("checkable")) {
 							checkableCount++;
-							if (child.get("checked") === true) checkedCount++;
+							var c = (child == self) ? checked : child.get("checked");
+							if (c === true) checkedCount++;
+							else if (c == null) halfCheck = true;
 						}
 					});
 					if (checkableCount) {
 						tree._autoChecking = true;
-						parent.set("checked", (checkedCount == 0) ? false : ((checkedCount == checkableCount) ? true : null));
+						var c = null;
+						if (!halfCheck) {
+							c = (checkedCount == 0) ? false : ((checkedCount == checkableCount) ? true : null)
+						}
+						parent.set("checked", c);
 						tree._autoChecking = false;
 					}
 				}
@@ -454,7 +458,7 @@ dorado.widget.tree.Node = $extend([dorado.AttributeSupport, dorado.EventSupport]
 	 */
 	remove: function() {
 		if (this._parent) {
-			if (this.get("checkable")) this._nodeCheckedChanged(false, false, true, true);
+			if (this.get("checkable")) this._nodeCheckedChanged(false, false, true);
 			this._parent._nodes.remove(this);
 		}
 	},
