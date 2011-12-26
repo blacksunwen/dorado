@@ -6,7 +6,6 @@ import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -15,7 +14,6 @@ import javassist.Modifier;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.annotation.ClientProperty;
@@ -30,8 +28,6 @@ import com.bstek.dorado.common.event.ClientEventRegistry;
 import com.bstek.dorado.common.event.ClientEventSupported;
 import com.bstek.dorado.common.event.ClientEventSupportedObject;
 import com.bstek.dorado.core.bean.Scope;
-import com.bstek.dorado.core.io.Resource;
-import com.bstek.dorado.core.io.ResourceUtils;
 import com.bstek.dorado.data.config.definition.ListenableObjectDefinition;
 import com.bstek.dorado.data.entity.EntityUtils;
 import com.bstek.dorado.idesupport.RuleTemplateManager;
@@ -49,6 +45,7 @@ import com.bstek.dorado.idesupport.template.PropertyTemplate;
 import com.bstek.dorado.idesupport.template.ReferenceTemplate;
 import com.bstek.dorado.idesupport.template.RuleTemplate;
 import com.bstek.dorado.util.PathUtils;
+import com.bstek.dorado.util.clazz.ClassUtils;
 import com.bstek.dorado.util.clazz.TypeInfo;
 import com.bstek.dorado.view.annotation.ComponentReference;
 import com.bstek.dorado.view.annotation.Widget;
@@ -60,8 +57,6 @@ import com.bstek.dorado.view.widget.datacontrol.DataControl;
  * @since 2009-11-20
  */
 public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
-	private static final String WILCARD = "*";
-
 	private RobotRegistry robotRegistry;
 
 	public void setRobotRegistry(RobotRegistry robotRegistry) {
@@ -166,7 +161,7 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 		initClientEvent(ruleTemplate, typeInfo, initializerContext);
 
 		if (xmlNodeInfo != null && !xmlNodeInfo.getImplTypes().isEmpty()) {
-			Set<Class<?>> implTypes = discoverImplTypes(xmlNodeInfo
+			Set<Class<?>> implTypes = ClassUtils.foundClassTypes(xmlNodeInfo
 					.getImplTypes().toArray(new String[0]), type);
 			for (Class<?> implType : implTypes) {
 				if (implType.equals(type)) {
@@ -381,7 +376,7 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 			}
 
 			if (StringUtils.isNotEmpty(xmlNodeInfo.getDefinitionType())) {
-				Class<?> definitionType = ClassUtils.getClass(xmlNodeInfo
+				Class<?> definitionType = ClassUtils.forName(xmlNodeInfo
 						.getDefinitionType());
 				if (ListenableObjectDefinition.class
 						.isAssignableFrom(definitionType)) {
@@ -555,48 +550,6 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 		}
 	}
 
-	protected Set<Class<?>> discoverImplTypes(String[] implTypes,
-			Class<?> targetType) throws Exception {
-		Set<Class<?>> types = new HashSet<Class<?>>();
-		for (String implExpression : implTypes) {
-			if (StringUtils.isEmpty(implExpression)) {
-				continue;
-			}
-
-			if (implExpression.indexOf(WILCARD) >= 0) {
-				String pathExpression = "classpath*:"
-						+ implExpression.replace('.', '/') + ".class";
-				Resource[] resources = ResourceUtils
-						.getResources(pathExpression);
-				for (Resource resource : resources) {
-					String path = resource.getPath();
-					int i1 = path.lastIndexOf('/');
-					String simpleClassName = path.substring((i1 < 0) ? 0
-							: (i1 + 1), path.length() - 6);
-					int i2 = implExpression.lastIndexOf('.');
-					String className = implExpression.substring(0, i2 + 1)
-							+ simpleClassName;
-
-					try {
-						Class<?> type = ClassUtils.getClass(className);
-						if (targetType != null
-								&& targetType.isAssignableFrom(type)) {
-							types.add(type);
-						}
-					} catch (Throwable e) {
-						// do nothing
-					}
-				}
-			} else {
-				Class<?> type = ClassUtils.getClass(implExpression);
-				if (targetType != null && targetType.isAssignableFrom(type)) {
-					types.add(type);
-				}
-			}
-		}
-		return types;
-	}
-
 	protected void initChildTemplates(RuleTemplate ruleTemplate,
 			TypeInfo typeInfo, XmlNodeInfo xmlNodeInfo,
 			InitializerContext initializerContext) throws Exception {
@@ -673,8 +626,8 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 			aggregated = propertyTypeInfo.isAggregated();
 		}
 
-		Set<Class<?>> implTypes = discoverImplTypes(xmlSubNode.implTypes(),
-				propertyType);
+		Set<Class<?>> implTypes = ClassUtils.foundClassTypes(
+				xmlSubNode.implTypes(), propertyType);
 		for (Class<?> implType : implTypes) {
 			if (implType.equals(typeInfo.getType())) {
 				continue;

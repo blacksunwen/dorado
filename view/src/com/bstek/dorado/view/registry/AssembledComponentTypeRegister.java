@@ -6,8 +6,8 @@ import java.util.Properties;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.util.ClassUtils;
 
+import com.bstek.dorado.util.clazz.ClassUtils;
 import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.manager.ViewConfigManager;
 import com.bstek.dorado.view.widget.AssembledComponent;
@@ -87,8 +87,7 @@ public class AssembledComponentTypeRegister extends ComponentTypeRegister {
 				propertyDescriptor.setName(propertyName);
 				String type = properties.getProperty("type");
 				if (StringUtils.isNotEmpty(type)) {
-					propertyDescriptor.setType(ClassUtils.forName(type,
-							ClassUtils.getDefaultClassLoader()));
+					propertyDescriptor.setType(ClassUtils.forName(type));
 				}
 				propertyDescriptor.setDefaultValue(properties
 						.getProperty("defaultValue"));

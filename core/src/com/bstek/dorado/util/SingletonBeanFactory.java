@@ -3,7 +3,7 @@ package com.bstek.dorado.util;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang.ClassUtils;
+import com.bstek.dorado.util.clazz.ClassUtils;
 
 /**
  * 单例对象的创建工厂。
@@ -31,7 +31,7 @@ public abstract class SingletonBeanFactory {
 			throws IllegalAccessException, InstantiationException,
 			ClassNotFoundException {
 		Assert.notNull(className, "\"className\" is required");
-		return getInstance(ClassUtils.getClass(className));
+		return getInstance(ClassUtils.forName(className));
 	}
 
 	/**

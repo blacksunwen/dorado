@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.springframework.util.ClassUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -16,6 +15,7 @@ import com.bstek.dorado.config.definition.Definition;
 import com.bstek.dorado.config.definition.DefinitionInitOperation;
 import com.bstek.dorado.config.definition.DefinitionSupportedList;
 import com.bstek.dorado.util.Assert;
+import com.bstek.dorado.util.clazz.ClassUtils;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -47,8 +47,7 @@ public class CollectionToPropertyParser extends
 
 	public void setElementType(String elementType)
 			throws ClassNotFoundException, LinkageError {
-		this.elementType = ClassUtils.forName(elementType,
-				ClassUtils.getDefaultClassLoader());
+		this.elementType = ClassUtils.forName(elementType);
 	}
 
 	public Class<?> getElementType() {

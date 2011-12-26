@@ -1,6 +1,5 @@
 package com.bstek.dorado.view.registry;
 
-import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -10,6 +9,7 @@ import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
 
+import com.bstek.dorado.util.clazz.ClassUtils;
 import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Component;
 
@@ -101,7 +101,7 @@ public abstract class ComponentTypeRegister implements InitializingBean,
 
 		Class<? extends Component> cl = null;
 		if (StringUtils.isNotEmpty(classType)) {
-			cl = ClassUtils.getClass(classType);
+			cl = ClassUtils.forName(classType);
 		}
 
 		Widget widget = null;

@@ -1,11 +1,11 @@
 package com.bstek.dorado.data.resolver.manager;
 
-import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
 
 import com.bstek.dorado.data.resolver.DataResolver;
+import com.bstek.dorado.util.clazz.ClassUtils;
 
 /**
  * 用于利用外部的Spring配置文件完成DataResolver类型注册功能的辅助类。
@@ -48,7 +48,7 @@ public class DataResolverTypeRegister implements InitializingBean {
 	@SuppressWarnings("unchecked")
 	public void afterPropertiesSet() throws Exception {
 		try {
-			Class<? extends DataResolver> cl = ClassUtils.getClass(classType);
+			Class<? extends DataResolver> cl = ClassUtils.forName(classType);
 			DataResolverTypeRegisterInfo registerInfo = new DataResolverTypeRegisterInfo(
 					type, cl);
 			dataResolverTypeRegistry.registerType(registerInfo);

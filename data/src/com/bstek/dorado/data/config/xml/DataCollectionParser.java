@@ -3,12 +3,12 @@ package com.bstek.dorado.data.config.xml;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.commons.lang.ClassUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import com.bstek.dorado.config.definition.DefinitionReference;
 import com.bstek.dorado.data.config.definition.DataTypeDefinition;
+import com.bstek.dorado.util.clazz.ClassUtils;
 
 /**
  * 集合类对象实例的抽象解析器。
@@ -29,7 +29,7 @@ public class DataCollectionParser extends DataElementParserSupport {
 	@SuppressWarnings("unchecked")
 	public void setCollectionType(String collectionType)
 			throws ClassNotFoundException {
-		this.collectionType = ClassUtils.getClass(collectionType);
+		this.collectionType = ClassUtils.forName(collectionType);
 	}
 
 	/**

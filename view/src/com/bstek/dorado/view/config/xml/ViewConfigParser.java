@@ -56,7 +56,7 @@ public class ViewConfigParser extends GenericObjectParser {
 				documentElement, context.getResource());
 		if (argumentsElement != null) {
 			Map<String, Object> argumentMap = (Map<String, Object>) dispatchElement(
-					argumentsElement, viewContext);
+					null, argumentsElement, viewContext);
 			arguments.putAll(argumentMap);
 		}
 		viewConfigDefinition.setArguments(arguments);
@@ -71,7 +71,7 @@ public class ViewConfigParser extends GenericObjectParser {
 					documentElement, context.getResource());
 			if (contextElement != null) {
 				Map<String, Object> attributes = (Map<String, Object>) dispatchElement(
-						contextElement, viewContext);
+						null, contextElement, viewContext);
 				viewContextAttributes.putAll(attributes);
 			}
 			viewConfigDefinition.setViewContext(viewContextAttributes);
@@ -79,14 +79,14 @@ public class ViewConfigParser extends GenericObjectParser {
 			Element modelElement = ViewConfigParserUtils.findModelElement(
 					documentElement, context.getResource());
 			if (modelElement != null) {
-				dispatchElement(modelElement, viewContext);
+				dispatchElement(null, modelElement, viewContext);
 			}
 
 			Element viewElement = ViewConfigParserUtils.findViewElement(
 					documentElement, context.getResource());
 			// parse view element
 			ViewDefinition viewDefinition = (ViewDefinition) dispatchElement(
-					viewElement, viewContext);
+					null, viewElement, viewContext);
 
 			viewDefinition.setDependentResources(viewContext
 					.getDependentResources().toArray(new Resource[0]));

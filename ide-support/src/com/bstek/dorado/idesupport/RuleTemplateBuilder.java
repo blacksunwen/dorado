@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.springframework.util.ClassUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -22,6 +21,7 @@ import com.bstek.dorado.idesupport.parse.ConfigRuleParseContext;
 import com.bstek.dorado.idesupport.template.ChildTemplate;
 import com.bstek.dorado.idesupport.template.RuleTemplate;
 import com.bstek.dorado.util.PathUtils;
+import com.bstek.dorado.util.clazz.ClassUtils;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -64,8 +64,8 @@ public class RuleTemplateBuilder implements RuleTemplateManagerListener {
 				.entrySet()) {
 			String key = entry.getKey();
 			if (key.startsWith("classType:")) {
-				initializerTypeMap.put(ClassUtils.forName(key.substring(10),
-						getClass().getClassLoader()), entry.getValue());
+				initializerTypeMap.put(ClassUtils.forName(key.substring(10)),
+						entry.getValue());
 			} else {
 				initializerNameMap.put(key, entry.getValue());
 			}
@@ -208,7 +208,7 @@ public class RuleTemplateBuilder implements RuleTemplateManagerListener {
 		String typeName = ruleTemplate.getType();
 		Class<?> type = null;
 		if (StringUtils.isNotEmpty(typeName)) {
-			type = ClassUtils.forName(typeName, getClass().getClassLoader());
+			type = ClassUtils.forName(typeName);
 		}
 		if (type != null) {
 			for (Map.Entry<Class<?>, RuleTemplateInitializer> entry : initializerTypeMap

@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.context.ApplicationContext;
-import org.springframework.util.ClassUtils;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -17,6 +16,7 @@ import com.bstek.dorado.core.Context;
 import com.bstek.dorado.core.SpringContextSupport;
 import com.bstek.dorado.core.io.ResourceLoader;
 import com.bstek.dorado.util.Assert;
+import com.bstek.dorado.util.clazz.ClassUtils;
 
 /**
  * Web应用中使用的上下文对象。
@@ -72,8 +72,7 @@ public class DoradoContext extends SpringContextSupport {
 				Assert.notEmpty(resourceLoaderClass, "\""
 						+ RESOURCE_LOADER_PROPERTY + "\" not configured.");
 
-				Class<?> cl = ClassUtils.forName(resourceLoaderClass,
-						ClassUtils.getDefaultClassLoader());
+				Class<?> cl = ClassUtils.forName(resourceLoaderClass);
 				if (WebResourceLoader.class.isAssignableFrom(cl)) {
 					WebApplicationContext wac = getWebApplicationContext();
 					if (wac == null) {

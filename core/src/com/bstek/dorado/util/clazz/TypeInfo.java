@@ -4,7 +4,6 @@ import java.lang.reflect.ParameterizedType;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -43,7 +42,7 @@ public class TypeInfo {
 			typeName = className;
 		}
 
-		return new TypeInfo(ClassUtils.getClass(typeName), aggregated);
+		return new TypeInfo(ClassUtils.forName(typeName), aggregated);
 	}
 
 	public static TypeInfo parse(ParameterizedType type, boolean aggregated)

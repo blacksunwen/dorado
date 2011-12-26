@@ -32,8 +32,9 @@ public abstract class PathUtils {
 	public static String concatPath(String... paths) {
 		StringBuffer result = new StringBuffer();
 		for (String path : paths) {
-			if (StringUtils.isEmpty(path))
+			if (StringUtils.isEmpty(path)) {
 				continue;
+			}
 			if (result.length() > 0) {
 				boolean endsWithDelim = (result.charAt(result.length() - 1) == PATH_DELIM);
 				boolean startsWithDelim = (path.charAt(0) == PATH_DELIM);

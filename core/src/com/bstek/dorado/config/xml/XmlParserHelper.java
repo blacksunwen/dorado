@@ -17,7 +17,6 @@ import javassist.Modifier;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeansException;
@@ -37,8 +36,7 @@ import com.bstek.dorado.config.text.TextParserHelper;
 import com.bstek.dorado.core.bean.BeanFactoryUtils;
 import com.bstek.dorado.core.bean.BeanWrapper;
 import com.bstek.dorado.core.bean.Scope;
-import com.bstek.dorado.core.io.Resource;
-import com.bstek.dorado.core.io.ResourceUtils;
+import com.bstek.dorado.util.clazz.ClassUtils;
 import com.bstek.dorado.util.clazz.TypeInfo;
 
 /**
@@ -286,7 +284,7 @@ public class XmlParserHelper implements BeanFactoryAware {
 		}
 
 		if (beanType == null && !StringUtils.isEmpty(objectParser.getImpl())) {
-			beanType = ClassUtils.getClass(objectParser.getImpl());
+			beanType = ClassUtils.forName(objectParser.getImpl());
 		}
 		if (beanType != null) {
 			XmlNodeInfo xmlNodeInfo = getXmlNodeInfo(beanType);
@@ -735,7 +733,7 @@ public class XmlParserHelper implements BeanFactoryAware {
 				propertyType = typeInfo.getType();
 			}
 			if (StringUtils.isNotEmpty(xmlProperty.propertyType())) {
-				propertyType = ClassUtils.getClass(xmlProperty.propertyType());
+				propertyType = ClassUtils.forName(xmlProperty.propertyType());
 			}
 
 			if (xmlProperty.unsupported()) {
@@ -880,39 +878,17 @@ public class XmlParserHelper implements BeanFactoryAware {
 			List<XmlParserInfo> xmlParserInfos, Set<Class<?>> blackTypes)
 			throws Exception {
 		if (implExpression.indexOf(WILCARD) >= 0) {
-			String pathExpression = "classpath*:"
-					+ implExpression.replace('.', '/') + ".class";
-			Resource[] resources = ResourceUtils.getResources(pathExpression);
-			for (Resource resource : resources) {
-				String path = resource.getPath();
-				int i1 = path.lastIndexOf('/');
-				String simpleClassName = path.substring(
-						(i1 < 0) ? 0 : (i1 + 1), path.length() - 6);
-				int i2 = implExpression.lastIndexOf('.');
-				String className = implExpression.substring(0, i2 + 1)
-						+ simpleClassName;
-
-				Class<?> implType = null;
-				try {
-					implType = ClassUtils.getClass(className);
-				} catch (Throwable e) {
-					// do nothing
-				}
-				if (implType != null
-						&& (blackTypes == null || !blackTypes
-								.contains(implType))) {
+			Set<Class<?>> implTypes = ClassUtils.foundClassTypes(
+					implExpression, targetType);
+			for (Class<?> implType : implTypes) {
+				if (blackTypes == null || !blackTypes.contains(implType)) {
 					collectConcereteXmlParsersByClassName(context, targetType,
 							implType, xmlParserInfos, false);
 				}
 			}
 		} else {
 			try {
-				Class<?> implType = null;
-				try {
-					implType = ClassUtils.getClass(implExpression);
-				} catch (Throwable e) {
-					// do nothing
-				}
+				Class<?> implType = ClassUtils.forName(implExpression);
 				if (implType != null
 						&& (blackTypes == null || !blackTypes
 								.contains(implType))) {

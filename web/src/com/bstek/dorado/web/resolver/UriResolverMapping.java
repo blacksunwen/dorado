@@ -17,7 +17,7 @@ import org.springframework.web.util.UrlPathHelper;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-7-15
  */
-public class UrlResolverMapping extends AbstractHandlerMapping {
+public class UriResolverMapping extends AbstractHandlerMapping {
 	private UrlPathHelper urlPathHelper = new UrlPathHelper();
 	private PathMatcher pathMatcher = new AntPathMatcher();
 	private boolean lazyInitHandlers = false;

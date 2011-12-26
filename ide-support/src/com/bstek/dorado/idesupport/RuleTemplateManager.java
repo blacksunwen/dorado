@@ -7,11 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import org.apache.commons.lang.ClassUtils;
-
 import com.bstek.dorado.core.pkgs.PackageInfo;
 import com.bstek.dorado.idesupport.template.RuleTemplate;
 import com.bstek.dorado.util.Assert;
+import com.bstek.dorado.util.clazz.ClassUtils;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -65,7 +64,7 @@ public class RuleTemplateManager {
 			throws ClassNotFoundException {
 		for (RuleTemplate ruleTemplate : ruleTemplateMap.values()) {
 			if (ruleTemplate.getType() != null) {
-				Class<?> ruleType = ClassUtils.getClass(ruleTemplate.getType());
+				Class<?> ruleType = ClassUtils.forName(ruleTemplate.getType());
 				if (ruleType.equals(type)) {
 					return ruleTemplate;
 				}

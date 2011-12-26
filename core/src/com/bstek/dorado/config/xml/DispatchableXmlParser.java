@@ -2,10 +2,12 @@ package com.bstek.dorado.config.xml;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
@@ -17,6 +19,8 @@ import com.bstek.dorado.config.ConfigUtils;
 import com.bstek.dorado.config.ParseContext;
 import com.bstek.dorado.core.el.ExpressionHandler;
 import com.bstek.dorado.util.Assert;
+import com.bstek.dorado.util.PathUtils;
+import com.bstek.dorado.util.proxy.ChildrenMapSupport;
 import com.bstek.dorado.util.xml.DomUtils;
 
 /**
@@ -37,7 +41,7 @@ public class DispatchableXmlParser implements XmlParser {
 	public static final String WILDCARD = "*";
 
 	private Map<String, XmlParser> propertyParsers = new LinkedHashMap<String, XmlParser>();
-	private Map<String, XmlParser> subParsers = new LinkedHashMap<String, XmlParser>();
+	private SubParserMap subParsers = new SubParserMap();
 
 	/**
 	 * 返回EL表达式的处理器。
@@ -122,6 +126,10 @@ public class DispatchableXmlParser implements XmlParser {
 	}
 
 	public final Object parse(Node node, ParseContext context) throws Exception {
+		if (!subParsers.cacheBuilded) {
+			subParsers.buildCache();
+		}
+
 		return doParse(node, context);
 	}
 
@@ -131,58 +139,6 @@ public class DispatchableXmlParser implements XmlParser {
 		} else {
 			return null;
 		}
-	}
-
-	private List<Element> findSubElementsByPath(Element element, String[] path,
-			int deepth) {
-		PathSection pathSection = PathSection.parse(path[deepth]);
-		String nodeName = pathSection.getNodeName();
-		Map<String, String> fixedProperties = pathSection.getFixedProperties();
-
-		List<Element> children;
-		if (WILDCARD.equals(nodeName)) {
-			children = DomUtils.getChildElements(element);
-		} else {
-			children = DomUtils.getChildrenByTagName(element, nodeName);
-		}
-
-		if (deepth < path.length - 1) {
-			List<Element> result = null;
-			for (Element child : children) {
-				List<Element> l = findSubElementsByPath(child, path, deepth + 1);
-				if (l != null && !l.isEmpty()) {
-					if (result == null) {
-						result = new ArrayList<Element>();
-					}
-					result.addAll(l);
-				}
-			}
-			children = result;
-		}
-
-		if (fixedProperties != null && !fixedProperties.isEmpty()) {
-			List<Element> result = null;
-			for (Element child : children) {
-				boolean according = true;
-				for (Map.Entry<String, String> entry : fixedProperties
-						.entrySet()) {
-					if (!ObjectUtils.equals(child.getAttribute(entry.getKey()),
-							entry.getValue())) {
-						according = false;
-						break;
-					}
-				}
-
-				if (according) {
-					if (result == null) {
-						result = new ArrayList<Element>();
-					}
-					result.add(child);
-				}
-			}
-			children = result;
-		}
-		return children;
 	}
 
 	/**
@@ -197,7 +153,7 @@ public class DispatchableXmlParser implements XmlParser {
 	 */
 	protected List<?> dispatchChildElements(Element element,
 			ParseContext context) throws Exception {
-		List<Object> list = new ArrayList<Object>();
+		List<Object> results = new ArrayList<Object>();
 		for (Element childElement : DomUtils.getChildElements(element)) {
 			String nodeName = childElement.getNodeName();
 			if (!XmlConstants.PROPERTY.equals(nodeName)
@@ -207,54 +163,69 @@ public class DispatchableXmlParser implements XmlParser {
 					&& !XmlConstants.PLACE_HOLDER.equals(nodeName)
 					&& !XmlConstants.PLACE_HOLDER_START.equals(nodeName)
 					&& !XmlConstants.PLACE_HOLDER_END.equals(nodeName)) {
-				Object value = dispatchElement(childElement, context);
+				Object value = dispatchElement(null, childElement, context);
 				if (value != ConfigUtils.IGNORE_VALUE) {
-					list.add(value);
+					results.add(value);
 				}
 			}
 		}
 
-		for (Map.Entry<String, XmlParser> entry : subParsers.entrySet()) {
-			String key = entry.getKey();
-			XmlParser subParser = entry.getValue();
-			if (key.indexOf(SUB_PARSER_PATH_SEPERATOR) > 0) {
-				String[] path = StringUtils.split(key,
-						SUB_PARSER_PATH_SEPERATOR);
-				List<Element> elements = findSubElementsByPath(element, path, 0);
-				if (elements != null && !elements.isEmpty()) {
-					for (Element childElement : elements) {
-						Object value = subParser.parse(childElement, context);
-						if (value != ConfigUtils.IGNORE_VALUE) {
-							list.add(value);
-						}
+		if (subParsers.hasDeepParser) {
+			Set<String> parsedPaths = new HashSet<String>();
+			for (Map.Entry<String, ParserInfo> entry : subParsers.subParserInfoMap
+					.entrySet()) {
+				String path = entry.getKey();
+				ParserInfo parserInfo = entry.getValue();
+				XmlParser subParser = parserInfo.getParser();
+				PathSection[] pathSections = parserInfo.getPathSections();
+				if (pathSections.length > 1) {
+					dispatchChildElementsWithConditionalPath(results,
+							parsedPaths, pathSections, 0, null, element,
+							context);
+				} else if (SELF.equals(path)) {
+					Object value = subParser.parse(element, context);
+					if (value != ConfigUtils.IGNORE_VALUE) {
+						results.add(value);
 					}
 				}
-			} else if (SELF.equals(key)) {
+			}
+		} else {
+			XmlParser subParser = subParsers.get(SELF);
+			if (subParser != null) {
 				Object value = subParser.parse(element, context);
 				if (value != ConfigUtils.IGNORE_VALUE) {
-					list.add(value);
+					results.add(value);
 				}
 			}
 		}
-		return list;
+		return results;
 	}
 
-	/**
-	 * 根据传入的XML节点返回子解析器的约束条件。在此类的实现方式中直接使用子节点的名称作为约束条件。
-	 * 
-	 * @param node
-	 *            XML节点
-	 * @param context
-	 *            解析的上下文对象
-	 * @return String 约束条件
-	 * @throws Exception
-	 */
-	protected String getConstraint(Node node, ParseContext context)
+	private void dispatchChildElementsWithConditionalPath(List<Object> results,
+			Set<String> parsedPaths, PathSection[] pathSections, int deepth,
+			String pathPrefix, Element element, ParseContext context)
 			throws Exception {
-		if (node instanceof Element) {
-			return ((Element) node).getTagName();
+		if (deepth < pathSections.length - 1) {
+			String root = pathSections[deepth].getNodeName();
+			String subPathPrefix = PathUtils.concatPath(pathPrefix, root);
+			if (!parsedPaths.contains(subPathPrefix)) {
+				parsedPaths.add(subPathPrefix);
+				Element childRootNode = DomUtils.getChildByTagName(element,
+						root);
+				if (childRootNode != null) {
+					dispatchChildElementsWithConditionalPath(results,
+							parsedPaths, pathSections, deepth + 1,
+							subPathPrefix, childRootNode, context);
+				}
+			}
 		} else {
-			return node.getNodeName();
+			for (Element childElement : DomUtils.getChildElements(element)) {
+				Object value = dispatchElement(pathPrefix, childElement,
+						context);
+				if (value != ConfigUtils.IGNORE_VALUE) {
+					results.add(value);
+				}
+			}
 		}
 	}
 
@@ -268,31 +239,50 @@ public class DispatchableXmlParser implements XmlParser {
 	 * @return 解析结果
 	 * @throws Exception
 	 */
-	protected Object dispatchElement(Element element, ParseContext context)
-			throws Exception {
-		String constraint = getConstraint(element, context);
-		return dispatchElement(constraint, element, context);
-	}
-
-	/**
-	 * 根据传入的约束条件将某个XML节点的解析任务分发给匹配的子解析器。
-	 * 
-	 * @param constraint
-	 *            约束条件
-	 * @param element
-	 *            XML节点
-	 * @param context
-	 *            解析的上下文对象
-	 * @return 解析结果
-	 * @throws Exception
-	 */
-	protected Object dispatchElement(String constraint, Element element,
+	protected Object dispatchElement(String pathPrefix, Element child,
 			ParseContext context) throws Exception {
-		XmlParser parser = findSubParser(constraint);
+		String path = PathUtils.concatPath(pathPrefix, child.getNodeName());
+		XmlParser parser = subParsers.get(path);
 		if (parser != null) {
-			return parser.parse(element, context);
+			return parser.parse(child, context);
 		} else {
-			return ConfigUtils.IGNORE_VALUE;
+			if (subParsers.hasConditionalParser) {
+				for (Map.Entry<String, ParserInfo> entry : subParsers.subParserInfoMap
+						.entrySet()) {
+					String subParserPath = entry.getKey();
+					ParserInfo parserInfo = entry.getValue();
+					Map<String, String> fixedProperties = parserInfo
+							.getFixedProperties();
+
+					if (fixedProperties == null
+							|| !subParserPath.startsWith(path + '[')) {
+						continue;
+					}
+
+					boolean according = true;
+					for (Map.Entry<String, String> propEntry : fixedProperties
+							.entrySet()) {
+						if (!ObjectUtils.equals(
+								child.getAttribute(propEntry.getKey()),
+								propEntry.getValue())) {
+							according = false;
+							break;
+						}
+					}
+
+					if (according) {
+						parser = parserInfo.getParser();
+						return parser.parse(child, context);
+					}
+				}
+			}
+
+			parser = subParsers.get(PathUtils.concatPath(pathPrefix, WILDCARD));
+			if (parser != null) {
+				return parser.parse(child, context);
+			} else {
+				return ConfigUtils.IGNORE_VALUE;
+			}
 		}
 	}
 
@@ -431,5 +421,92 @@ class PathSection {
 
 	public Map<String, String> getFixedProperties() {
 		return fixedProperties;
+	}
+}
+
+class ParserInfo {
+	private XmlParser parser;
+	private PathSection[] pathSections;
+	private Map<String, String> fixedProperties;
+
+	public ParserInfo(XmlParser parser, PathSection[] pathSections) {
+		this.parser = parser;
+		this.pathSections = pathSections;
+		fixedProperties = pathSections[pathSections.length - 1]
+				.getFixedProperties();
+	}
+
+	public XmlParser getParser() {
+		return parser;
+	}
+
+	public PathSection[] getPathSections() {
+		return pathSections;
+	}
+
+	public Map<String, String> getFixedProperties() {
+		return fixedProperties;
+	}
+}
+
+class SubParserMap extends ChildrenMapSupport<String, XmlParser> {
+	public boolean cacheBuilded;
+	public boolean hasDeepParser;
+	public boolean hasConditionalParser;
+	public Map<String, ParserInfo> subParserInfoMap = new HashMap<String, ParserInfo>();
+
+	public SubParserMap() {
+		super(new LinkedHashMap<String, XmlParser>());
+	}
+
+	@Override
+	protected void childAdded(String key, XmlParser child) {
+		clearCache();
+	}
+
+	@Override
+	protected void childRemoved(String key, XmlParser child) {
+		clearCache();
+	}
+
+	private void clearCache() {
+		cacheBuilded = false;
+		hasDeepParser = false;
+		hasConditionalParser = false;
+		subParserInfoMap.clear();
+	}
+
+	public void buildCache() {
+		cacheBuilded = true;
+
+		for (Map.Entry<String, XmlParser> entry : target.entrySet()) {
+			String path = entry.getKey();
+			String[] ps = StringUtils.split(path,
+					DispatchableXmlParser.SUB_PARSER_PATH_SEPERATOR);
+			if (ps.length > 1) {
+				hasDeepParser = true;
+			}
+			PathSection[] pathSections = new PathSection[ps.length];
+			int i = 0;
+			for (String p : ps) {
+				PathSection pathSection = PathSection.parse(p);
+				if (pathSection.getFixedProperties() != null) {
+					if (i < ps.length - 1) {
+						throw new IllegalArgumentException(
+								"Conditions is only supported in last section ["
+										+ path + "].");
+					}
+					hasConditionalParser = true;
+				}
+				pathSections[i++] = pathSection;
+			}
+
+			subParserInfoMap.put(path, new ParserInfo(entry.getValue(),
+					pathSections));
+		}
+	}
+
+	public ParserInfo getParserInfo(String path) {
+		return subParserInfoMap.get(path);
 	}
 }

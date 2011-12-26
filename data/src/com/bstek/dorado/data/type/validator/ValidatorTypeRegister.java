@@ -1,9 +1,10 @@
 package com.bstek.dorado.data.type.validator;
 
-import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
+
+import com.bstek.dorado.util.clazz.ClassUtils;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -52,7 +53,7 @@ public class ValidatorTypeRegister implements InitializingBean {
 
 	public void afterPropertiesSet() throws Exception {
 		try {
-			Class<?> cl = ClassUtils.getClass(classType);
+			Class<?> cl = ClassUtils.forName(classType);
 			ValidatorTypeRegisterInfo registerInfo = new ValidatorTypeRegisterInfo(
 					type, cl);
 			validatorTypeRegistry.registerType(registerInfo);
