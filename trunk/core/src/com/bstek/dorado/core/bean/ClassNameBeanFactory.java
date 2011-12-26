@@ -1,8 +1,8 @@
 package com.bstek.dorado.core.bean;
 
 import org.aopalliance.intercept.MethodInterceptor;
-import org.apache.commons.lang.ClassUtils;
 
+import com.bstek.dorado.util.clazz.ClassUtils;
 import com.bstek.dorado.util.proxy.ProxyBeanUtils;
 
 /**
@@ -18,7 +18,7 @@ public class ClassNameBeanFactory implements BeanFactory {
 	}
 
 	private Class<?> getBeanType(String beanName) throws ClassNotFoundException {
-		Class<?> cl = ClassUtils.getClass(beanName);
+		Class<?> cl = ClassUtils.forName(beanName);
 		if (cl == null) {
 			throw new IllegalArgumentException("Can not resolve bean type ["
 					+ beanName + "].");

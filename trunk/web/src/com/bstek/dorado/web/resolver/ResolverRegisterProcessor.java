@@ -14,9 +14,9 @@ import com.bstek.dorado.core.EngineStartupListener;
  */
 public class ResolverRegisterProcessor extends EngineStartupListener {
 	private Map<String, ResolverRegister> resolverRegisters = new HashMap<String, ResolverRegister>();
-	private UrlResolverMapping urlResolverMapping;
+	private UriResolverMapping urlResolverMapping;
 
-	public void setUrlResolverMapping(UrlResolverMapping urlResolverMapping) {
+	public void setUrlResolverMapping(UriResolverMapping urlResolverMapping) {
 		this.urlResolverMapping = urlResolverMapping;
 	}
 

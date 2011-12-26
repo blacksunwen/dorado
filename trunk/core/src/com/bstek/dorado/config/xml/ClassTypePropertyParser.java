@@ -1,10 +1,10 @@
 package com.bstek.dorado.config.xml;
 
-import org.apache.commons.lang.ClassUtils;
 import org.w3c.dom.Node;
 
 import com.bstek.dorado.config.ConfigUtils;
 import com.bstek.dorado.config.ParseContext;
+import com.bstek.dorado.util.clazz.ClassUtils;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -26,8 +26,8 @@ public class ClassTypePropertyParser extends StaticPropertyParser {
 
 		if (value instanceof String) {
 			try {
-				return ClassUtils.getClass((String) value);
-			} catch (Exception e) {
+				return ClassUtils.forName((String) value);
+			} catch (ClassNotFoundException e) {
 				if (failSafe) {
 					return ConfigUtils.IGNORE_VALUE;
 				} else {

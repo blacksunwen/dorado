@@ -1,11 +1,11 @@
 package com.bstek.dorado.core;
 
-import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.bstek.dorado.core.io.ResourceLoader;
 import com.bstek.dorado.util.Assert;
+import com.bstek.dorado.util.clazz.ClassUtils;
 
 /**
  * 通用的上下文对象。
@@ -25,7 +25,7 @@ public class CommonContext extends SpringApplicationContext {
 			Assert.notEmpty(resourceLoaderClass, "\""
 					+ RESOURCE_LOADER_PROPERTY + "\" not configured.");
 
-			Class<?> cl = ClassUtils.getClass(resourceLoaderClass);
+			Class<?> cl = ClassUtils.forName(resourceLoaderClass);
 			resourceLoader = (ResourceLoader) cl.newInstance();
 		}
 		catch (Exception e) {

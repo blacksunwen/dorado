@@ -6,7 +6,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.lang.StringUtils;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -24,6 +23,7 @@ import com.bstek.dorado.idesupport.template.ChildTemplate;
 import com.bstek.dorado.idesupport.template.PropertyTemplate;
 import com.bstek.dorado.idesupport.template.ReferenceTemplate;
 import com.bstek.dorado.idesupport.template.RuleTemplate;
+import com.bstek.dorado.util.clazz.ClassUtils;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -166,12 +166,12 @@ public class RuleSetOutputter {
 
 		if (StringUtils.isNotEmpty(property.getType())) {
 			try {
-				Class<?> type = ClassUtils.getClass(property.getType());
+				Class<?> type = ClassUtils.forName(property.getType());
 				if (EntityUtils.isSimpleType(type)
 						&& !String.class.equals(type) && !type.isEnum()) {
 					element.addAttribute("type", type.getName());
 				}
-			} catch (Exception e) {
+			} catch (ClassNotFoundException e) {
 				// do nothing
 			}
 		}

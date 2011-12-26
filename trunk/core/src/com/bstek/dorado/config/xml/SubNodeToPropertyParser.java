@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.springframework.util.ClassUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -16,6 +15,7 @@ import com.bstek.dorado.config.definition.Definition;
 import com.bstek.dorado.config.definition.DefinitionInitOperation;
 import com.bstek.dorado.config.definition.ObjectDefinition;
 import com.bstek.dorado.util.Assert;
+import com.bstek.dorado.util.clazz.ClassUtils;
 
 public class SubNodeToPropertyParser extends ConfigurableDispatchableXmlParser {
 	private String property;
@@ -42,8 +42,7 @@ public class SubNodeToPropertyParser extends ConfigurableDispatchableXmlParser {
 
 	public void setElementType(String elementType)
 			throws ClassNotFoundException, LinkageError {
-		this.elementType = ClassUtils.forName(elementType,
-				ClassUtils.getDefaultClassLoader());
+		this.elementType = ClassUtils.forName(elementType);
 	}
 
 	public Class<?> getElementType() {

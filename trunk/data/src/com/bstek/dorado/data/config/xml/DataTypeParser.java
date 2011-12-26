@@ -3,7 +3,6 @@ package com.bstek.dorado.data.config.xml;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -21,6 +20,7 @@ import com.bstek.dorado.data.config.DataTypeName;
 import com.bstek.dorado.data.config.definition.DataTypeDefinition;
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.data.type.EntityDataType;
+import com.bstek.dorado.util.clazz.ClassUtils;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -202,7 +202,7 @@ public class DataTypeParser extends GenericObjectParser implements
 			boolean useDefaultParent = false;
 			String impl = dataType.getImpl();
 			if (StringUtils.isNotEmpty(impl)) {
-				Class<? extends DataType> type = ClassUtils.getClass(impl);
+				Class<? extends DataType> type = ClassUtils.forName(impl);
 				useDefaultParent = EntityDataType.class.isAssignableFrom(type);
 			} else {
 				useDefaultParent = true;

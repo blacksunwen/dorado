@@ -6,8 +6,10 @@ import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import com.bstek.dorado.config.ConfigUtils;
 import com.bstek.dorado.config.xml.XmlConstants;
 import com.bstek.dorado.config.xml.XmlParseException;
+import com.bstek.dorado.config.xml.XmlParser;
 import com.bstek.dorado.core.el.Expression;
 import com.bstek.dorado.util.xml.DomUtils;
 
@@ -41,9 +43,14 @@ public class DataElementParser extends DataElementParserSupport {
 				List<Element> elements = DomUtils.getChildElements(element);
 				int size = elements.size();
 				if (size == 0) {
-					data = dispatchElement(XmlConstants.VALUE, element, context);
+					XmlParser parser = findSubParser(XmlConstants.VALUE);
+					if (parser != null) {
+						data = parser.parse(element, context);
+					} else {
+						data = ConfigUtils.IGNORE_VALUE;
+					}
 				} else if (size == 1) {
-					data = dispatchElement(elements.get(0), context);
+					data = dispatchElement(null, elements.get(0), context);
 				} else if (size > 1) {
 					throw new XmlParseException(
 							"Can not contains more than one data elements.",

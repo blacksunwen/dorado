@@ -61,7 +61,7 @@ public class RuleSetBuilderTest extends IdeSupportContextTestCase {
 			RuleSet ruleSet = getRuleSetBuilder().buildRuleSet(in);
 			assertNotNull(ruleSet);
 			assertFalse(ruleSet.getRuleMap().isEmpty());
-			
+
 			List<PackageInfo> packageInfos = ruleSet.getPackageInfos();
 			assertNotNull(packageInfos);
 			assertTrue(!packageInfos.isEmpty());
@@ -152,14 +152,6 @@ public class RuleSetBuilderTest extends IdeSupportContextTestCase {
 			property = dataTreeGridRule.getProperty("dataSet");
 			assertNotNull(property);
 			assertEquals("DataSet", property.getReference().getRule().getName());
-
-			// Rule columnGroupRule = ruleSet
-			// .getRule("ListDropDown.#self.ColumnGroup");
-			// for (Child child : columnGroupRule.getChildren().values()) {
-			// Rule childRule = child.getRule();
-			// System.out.println(childRule.getName() + " : "
-			// + childRule.getNodeName());
-			// }
 
 			Rule treeRule = ruleSet.getRule("Tree");
 			assertNotNull(treeRule);

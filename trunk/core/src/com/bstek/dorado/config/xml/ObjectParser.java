@@ -3,7 +3,6 @@ package com.bstek.dorado.config.xml;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -15,6 +14,7 @@ import com.bstek.dorado.config.definition.DefinitionReference;
 import com.bstek.dorado.config.definition.ObjectDefinition;
 import com.bstek.dorado.config.definition.Operation;
 import com.bstek.dorado.core.bean.Scope;
+import com.bstek.dorado.util.clazz.ClassUtils;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -44,7 +44,7 @@ public class ObjectParser extends ConfigurableDispatchableXmlParser {
 	@SuppressWarnings("unchecked")
 	public void setDefinitionType(String definitionType)
 			throws ClassNotFoundException {
-		setDefinitionType(ClassUtils.getClass(definitionType));
+		setDefinitionType(ClassUtils.forName(definitionType));
 	}
 
 	public void setDefinitionType(
@@ -157,7 +157,7 @@ public class ObjectParser extends ConfigurableDispatchableXmlParser {
 			 * XmlParseException("[" + XmlConstants.ATTRIBUTE_PARENT +
 			 * "] attribute should be empty", element, context); }
 			 */
-			ClassUtils.getClass(realImpl);
+			ClassUtils.forName(realImpl);
 			definition.setImpl(realImpl);
 		}
 

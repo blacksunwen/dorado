@@ -1,11 +1,11 @@
 package com.bstek.dorado.data.provider.manager;
 
-import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
 
 import com.bstek.dorado.data.provider.DataProvider;
+import com.bstek.dorado.util.clazz.ClassUtils;
 
 /**
  * 用于利用外部的Spring配置文件完成DataProvider类型注册功能的辅助类。
@@ -47,7 +47,7 @@ public class DataProviderTypeRegister implements InitializingBean {
 	@SuppressWarnings("unchecked")
 	public void afterPropertiesSet() throws Exception {
 		try {
-			Class<? extends DataProvider> cl = ClassUtils.getClass(classType);
+			Class<? extends DataProvider> cl = ClassUtils.forName(classType);
 			DataProviderTypeRegisterInfo registerInfo = new DataProviderTypeRegisterInfo(
 					type, cl);
 			dataProviderTypeRegistry.registerType(registerInfo);
