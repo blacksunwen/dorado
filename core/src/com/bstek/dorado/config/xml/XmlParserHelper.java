@@ -288,7 +288,8 @@ public class XmlParserHelper implements BeanFactoryAware {
 		}
 		if (beanType != null) {
 			XmlNodeInfo xmlNodeInfo = getXmlNodeInfo(beanType);
-			if (xmlNodeInfo != null) {
+			if (xmlNodeInfo != null
+					|| objectParser instanceof CompositePropertyParser) {
 				Context context = new Context();
 				initObjectParser(context, objectParser, xmlNodeInfo, beanType);
 			}
@@ -573,76 +574,85 @@ public class XmlParserHelper implements BeanFactoryAware {
 			objectParser.setImpl(beanType.getName());
 		}
 
-		if (StringUtils.isNotEmpty(xmlNodeInfo.getDefinitionType())) {
-			objectParser.setDefinitionType(xmlNodeInfo.getDefinitionType());
-		}
-
-		Map<String, XmlParser> propertyParsers = objectParser
-				.getPropertyParsers();
-		Map<String, XmlParser> subParsers = objectParser.getSubParsers();
-
-		boolean inheritable = objectParser.isInheritable()
-				|| xmlNodeInfo.isInheritable();
-		objectParser.setInheritable(inheritable);
-		if (inheritable) {
-			if (propertyParsers.get("parent") == null) {
-				objectParser.registerPropertyParser("parent",
-						beanFactory.getBean(IGNORE_PARSER, XmlParser.class));
+		if (xmlNodeInfo != null) {
+			if (StringUtils.isNotEmpty(xmlNodeInfo.getDefinitionType())) {
+				objectParser.setDefinitionType(xmlNodeInfo.getDefinitionType());
 			}
-		}
 
-		boolean scopable = objectParser.isScopable()
-				|| xmlNodeInfo.isScopable();
-		objectParser.setScopable(scopable);
-		if (scopable) {
-			if (propertyParsers.get("scope") == null) {
-				objectParser.registerPropertyParser("scope",
-						beanFactory.getBean(IGNORE_PARSER, XmlParser.class));
-			}
-		}
+			Map<String, XmlParser> propertyParsers = objectParser
+					.getPropertyParsers();
+			Map<String, XmlParser> subParsers = objectParser.getSubParsers();
 
-		for (String fixedProperty : xmlNodeInfo.getFixedProperties().keySet()) {
-			if (propertyParsers.get(fixedProperty) == null) {
-				objectParser.registerPropertyParser(fixedProperty,
-						beanFactory.getBean(IGNORE_PARSER, XmlParser.class));
-			}
-		}
-
-		for (XmlSubNode xmlSubNode : xmlNodeInfo.getSubNodes()) {
-			if (StringUtils.isNotEmpty(xmlSubNode.propertyType())) {
-				List<XmlParserInfo> xmlParserInfos = getSubNodeXmlParserInfos(
-						context, beanType, xmlSubNode.propertyName(), null,
-						xmlSubNode);
-				if (xmlParserInfos != null) {
-					for (XmlParserInfo xmlParserInfo : xmlParserInfos) {
-						objectParser.registerSubParser(xmlParserInfo.getPath(),
-								xmlParserInfo.getParser());
+			if (!(objectParser instanceof CompositePropertyParser)) {
+				boolean inheritable = objectParser.isInheritable()
+						|| xmlNodeInfo.isInheritable();
+				objectParser.setInheritable(inheritable);
+				if (inheritable) {
+					if (propertyParsers.get("parent") == null) {
+						objectParser.registerPropertyParser("parent",
+								beanFactory.getBean(IGNORE_PARSER,
+										XmlParser.class));
 					}
 				}
-			} else if (StringUtils.isNotEmpty(xmlSubNode.nodeName())
-					&& StringUtils.isNotEmpty(xmlSubNode.parser())) {
-				BeanWrapper beanWrapper = BeanFactoryUtils.getBean(
-						xmlSubNode.parser(), Scope.instant);
-				objectParser.registerSubParser(xmlSubNode.nodeName(),
-						(XmlParser) beanWrapper.getBean());
-			}
-		}
 
-		for (Map.Entry<String, XmlProperty> entry : xmlNodeInfo.getProperties()
-				.entrySet()) {
-			XmlProperty xmlProperty = entry.getValue();
-			XmlParserInfo xmlParserInfo = getPropertyXmlParserInfo(context,
-					beanType, xmlProperty.propertyName(), null, xmlProperty);
-			if (xmlParserInfo != null) {
-				objectParser.registerPropertyParser(xmlParserInfo.getPath(),
-						xmlParserInfo.getParser());
-			}
-		}
+				boolean scopable = objectParser.isScopable()
+						|| xmlNodeInfo.isScopable();
+				objectParser.setScopable(scopable);
+				if (scopable) {
+					if (propertyParsers.get("scope") == null) {
+						objectParser.registerPropertyParser("scope",
+								beanFactory.getBean(IGNORE_PARSER,
+										XmlParser.class));
+					}
+				}
 
-		if (ClientEventSupported.class.isAssignableFrom(beanType)
-				&& subParsers.get("ClientEvent") == null) {
-			objectParser.registerSubParser("ClientEvent",
-					beanFactory.getBean(CLIENT_EVENT_PARSER, XmlParser.class));
+				for (String fixedProperty : xmlNodeInfo.getFixedProperties()
+						.keySet()) {
+					if (propertyParsers.get(fixedProperty) == null) {
+						objectParser.registerPropertyParser(fixedProperty,
+								beanFactory.getBean(IGNORE_PARSER,
+										XmlParser.class));
+					}
+				}
+			}
+
+			for (XmlSubNode xmlSubNode : xmlNodeInfo.getSubNodes()) {
+				if (StringUtils.isNotEmpty(xmlSubNode.propertyType())) {
+					List<XmlParserInfo> xmlParserInfos = getSubNodeXmlParserInfos(
+							context, beanType, xmlSubNode.propertyName(), null,
+							xmlSubNode);
+					if (xmlParserInfos != null) {
+						for (XmlParserInfo xmlParserInfo : xmlParserInfos) {
+							objectParser.registerSubParser(
+									xmlParserInfo.getPath(),
+									xmlParserInfo.getParser());
+						}
+					}
+				} else if (StringUtils.isNotEmpty(xmlSubNode.nodeName())
+						&& StringUtils.isNotEmpty(xmlSubNode.parser())) {
+					BeanWrapper beanWrapper = BeanFactoryUtils.getBean(
+							xmlSubNode.parser(), Scope.instant);
+					objectParser.registerSubParser(xmlSubNode.nodeName(),
+							(XmlParser) beanWrapper.getBean());
+				}
+			}
+
+			for (Map.Entry<String, XmlProperty> entry : xmlNodeInfo
+					.getProperties().entrySet()) {
+				XmlProperty xmlProperty = entry.getValue();
+				XmlParserInfo xmlParserInfo = getPropertyXmlParserInfo(context,
+						beanType, xmlProperty.propertyName(), null, xmlProperty);
+				if (xmlParserInfo != null) {
+					objectParser.registerPropertyParser(
+							xmlParserInfo.getPath(), xmlParserInfo.getParser());
+				}
+			}
+
+			if (ClientEventSupported.class.isAssignableFrom(beanType)
+					&& subParsers.get("ClientEvent") == null) {
+				objectParser.registerSubParser("ClientEvent", beanFactory
+						.getBean(CLIENT_EVENT_PARSER, XmlParser.class));
+			}
 		}
 
 		PropertyDescriptor[] propertyDescriptors = PropertyUtils
@@ -754,6 +764,10 @@ public class XmlParserHelper implements BeanFactoryAware {
 					compositePropertyParser.setImpl(propertyType.getName());
 					compositePropertyParser.setOpen(Map.class
 							.isAssignableFrom(propertyType));
+					if (!compositePropertyParser.isOpen()) {
+						initObjectParser(compositePropertyParser);
+					}
+
 					propertyParser = compositePropertyParser;
 				} else {
 					ExpressionMode expressionMode = xmlProperty

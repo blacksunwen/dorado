@@ -112,6 +112,10 @@ public class StandaloneRuleSetBuilderTest extends IdeSupportContextTestCase {
 		Set<Rule> componentRules = containerRule.getChild("Children")
 				.getConcreteRules();
 		assertFalse(componentRules.contains(defaultViewRule));
+		
+		Rule label1Rule = ruleSet.getRule("Label_1");
+		assertNotNull(label1Rule);
+		assertEquals(Integer.MAX_VALUE, label1Rule.getSortFactor());
 
 		Rule toolBarButtonRule = ruleSet.getRule("Button_1");
 		assertNotNull(toolBarButtonRule);
