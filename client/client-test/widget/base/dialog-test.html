@@ -16,7 +16,7 @@
             minWidth: 150
             //,left: 200
             //,top: 50
-            //,modal: true
+            ,modal: true
             //,closeable: false
             ,minimizeable: true
             ,maximizeable: true
@@ -71,7 +71,10 @@
             ,icon: "del.gif"
             ,buttons: [new dorado.widget.Button({
                 caption: "确定",
-                width: 80
+                width: 80,
+                onClick: function() {
+                    dialog2.hide();
+                }
             }), new dorado.widget.Button({
                 caption: "取消",
                 width: 80
@@ -85,7 +88,7 @@
                     listener: {
                         onClick: function(self) {
                             dialog.show({animateTarget: self});
-                            this.id("button1").set("visible", false);
+                            //this.id("button1").set("visible", false);
                         }
                     }
                 },

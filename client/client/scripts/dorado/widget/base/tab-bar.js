@@ -876,7 +876,6 @@
 			var tabsWidth = tabbar.getTabsWidth(), tabsEl = doms.tabs, currentLeft = parseInt(tabsEl.style.left || 0, 10);
 			var visibleWidth = $fly(doms.tabsWrap).width();
 			
-			//console.log("tabsWidth + currentLeft:" + (tabsWidth + currentLeft) + "\tvisibleWidth:" + visibleWidth + "\ttabsWidth:" + tabsWidth);
 			if (tabsWidth > 0) {
 				if (tabbar._alwaysShowNavButtons !== true && visibleWidth > tabsWidth) {//没有必要显示NavButtons
 					tabbar._overflowing = false;

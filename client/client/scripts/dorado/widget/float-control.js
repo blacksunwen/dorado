@@ -408,7 +408,7 @@ dorado.dequeue = function(namespace) {
 			var control = this, dom = control.getDom(), anim = true, handleModal = true;
 
 			//left:0是为了解决IE下的一个bug：如果Control在右侧，dom的offsetWidth取得错误，dom实际不超出，导致宽度取值失败
-			$fly(dom).css({ display: "", visibility: "hidden", left: -99999, top: -99999 })
+			$fly(dom).css({ display: "", visibility: "hidden", left: -99999, top: -99999 });
 
 			var arg = {};
 			control.fireEvent("beforeShow", control, arg);
@@ -423,6 +423,7 @@ dorado.dequeue = function(namespace) {
 			}
 
 			control._visible = true;
+            control.setActualVisible(true);
 
 			var position = control.getShowPosition(options);
 
@@ -466,8 +467,6 @@ dorado.dequeue = function(namespace) {
 					visibility: "",
 					display: ""
 				}).bringToFront();
-
-                this.setActualVisible(true);
 
 				if(control._shadowMode != "none"){
 					$fly(dom).shadow({
@@ -585,6 +584,8 @@ dorado.dequeue = function(namespace) {
 				}
 
 				control._visible = false;
+
+                control.setActualVisible(false);
 
 				var animateType = options.animateType || control._hideAnimateType || control._animateType;
 				options.animateTarget = control._animateTarget;

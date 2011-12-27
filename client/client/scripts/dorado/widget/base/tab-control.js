@@ -129,7 +129,7 @@ dorado.widget.TabControl = $extend(dorado.widget.TabBar, /** @scope dorado.widge
 		}
 		
 		var tabs = tabcontrol._tabs, currentTab = tabcontrol._currentTab, currentTabIndex = tabs.indexOf(currentTab);
-		// console.log("tabcontrol._currentTab:" + tabcontrol._currentTab + "\tcurrentTabIndex:" + currentTabIndex + "\tcontrols size:" + this._card._controls.size + "\titem:" + this._card._controls.get(currentTabIndex));
+
 		if (currentTabIndex != -1) {
 			card._currentControl = card._controls.get(currentTabIndex);
 		}
