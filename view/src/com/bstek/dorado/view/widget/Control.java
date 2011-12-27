@@ -4,11 +4,9 @@ import java.util.Map;
 
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
-import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
-import com.bstek.dorado.view.annotation.Widget;
 
 /**
  * 控件的抽象类。
@@ -16,13 +14,9 @@ import com.bstek.dorado.view.annotation.Widget;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Feb 4, 2008
  */
-
-@Widget(name = "Control", category = "General", dependsPackage = "widget")
 @XmlNode(
 		definitionType = "com.bstek.dorado.view.config.definition.ControlDefinition",
 		parser = "spring:dorado.controlParser")
-@ClientObject(prototype = "dorado.widget.Control", shortTypeName = "Control",
-		outputter = "spring:dorado.controlOutputter")
 @ClientEvents({ @ClientEvent(name = "onCreateDom"),
 		@ClientEvent(name = "beforeRefreshDom"),
 		@ClientEvent(name = "onRefreshDom"), @ClientEvent(name = "onClick"),
