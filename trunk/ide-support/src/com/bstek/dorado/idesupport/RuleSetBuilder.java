@@ -127,7 +127,11 @@ public class RuleSetBuilder {
 		applyProperties(
 				ruleTemplate,
 				rule,
-				"label,abstract,nodeName,type,category,robots,sortFactor,icon,labelProperty,autoGenerateId,reserve");
+				"label,abstract,nodeName,type,category,robots,icon,labelProperty,autoGenerateId,reserve");
+
+		if (ruleTemplate.getSortFactor() > 0) {
+			rule.setSortFactor(ruleTemplate.getSortFactor());
+		}
 
 		Map<String, PropertyTemplate> primitiveProperties = ruleTemplate
 				.getFinalPrimitiveProperties();

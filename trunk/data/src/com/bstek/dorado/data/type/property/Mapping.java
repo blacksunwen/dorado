@@ -1,6 +1,7 @@
 package com.bstek.dorado.data.type.property;
 
 import com.bstek.dorado.annotation.IdeProperty;
+import com.bstek.dorado.annotation.XmlProperty;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -11,6 +12,7 @@ public class Mapping {
 	private String keyProperty;
 	private String valueProperty;
 
+	@XmlProperty(parser = "spring:dorado.preloadDataParser")
 	@IdeProperty(editor = "collection[pojo]")
 	public Object getMapValues() {
 		return mapValues;
