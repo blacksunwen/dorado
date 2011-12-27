@@ -91,11 +91,7 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 		}, null, doms);
 		
 		toolbar._doms = doms;
-		
-		if (toolbar._fixRight) {
-			$fly(dom).addClass("i-toolbar-fixright " + toolbar._className + "-fixright");
-		}
-		
+
 		toolbar.doRenderItems();
 		
 		return dom;
@@ -203,10 +199,11 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 		}
 	},
 	
-	convertItem: function(item, overflowMenu) {
-		if (item instanceof dorado.widget.toolbar.Button) {
+	hideOverflowItem: function(item, overflowMenu) {
+		if (item instanceof dorado.widget.Button) {
 			overflowMenu.addItem({
 				caption: item._caption,
+                visible: item._visible,
 				submenu: item._menu,
 				listener: {
 					onClick: function() {
@@ -217,17 +214,39 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 		} else if (item instanceof dorado.widget.toolbar.Separator) {
 			overflowMenu.addItem("-");
 		}
-		item._visible = false;
-		$fly(item._dom).css("visibility", "hidden");
+        item._visibleByOverflow = false;
+        if (item._hideMode == "display") {
+            $fly(item._dom).css({ display: "none" });
+        } else {
+            $fly(item._dom).css({ visibility: "hidden" });
+        }
 	},
+
+    showUnoverflowItem: function(item) {
+        item._visibleByOverflow = true;
+        var visible = item._visible;
+        if (item._hideMode == "display") {
+            $fly(item._dom).css({ display: visible ? "" : "none" });
+        } else {
+            $fly(item._dom).css({ visibility: visible ? "" : "hidden" });
+        }
+    },
 	
 	refreshDom: function(dom) {
 		$invokeSuper.call(this, arguments);
+        var toolbar = this;
+        if (toolbar._fixRight) {
+            $fly(dom).addClass("i-toolbar-fixright " + toolbar._className + "-fixright");
+        } else {
+            $fly(dom).removeClass("i-toolbar-fixright " + toolbar._className + "-fixright");
+        }
 	},
 	
 	doOnResize: function() {
 		$invokeSuper.call(this, arguments);
-		var toolbar = this, dom = toolbar._dom, doms = toolbar._doms, overflowMenu = toolbar._overflowMenu, overflowButton = toolbar._overflowButton, items = toolbar._items, lastChild = doms.toolbarLeft.lastChild, overflow = false;
+		var toolbar = this, dom = toolbar._dom, doms = toolbar._doms, overflowMenu = toolbar._overflowMenu,
+            overflowButton = toolbar._overflowButton, items = toolbar._items,
+            lastChild = doms.toolbarLeft.lastChild, overflow = false;
 		
 		if (items && lastChild) {
 			var leftRealWidth = lastChild.offsetWidth + lastChild.offsetLeft, leftVisibleWidth = dom.offsetWidth - doms.toolbarRight.offsetWidth;
@@ -260,9 +279,8 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 					if (item instanceof dorado.widget.toolbar.Fill) {
 						break;
 					}
-					item._visible = true;
-					$fly(item._dom).css("visibility", "");
-					
+                    toolbar.showUnoverflowItem(item);
+
 					leftWidthSum += $fly(item._dom).outerWidth(true);
 					if (leftWidthSum >= leftVisibleWidth) {
 						startHideIndex = i;
@@ -276,7 +294,7 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 						if (item instanceof dorado.widget.toolbar.Fill) {
 							break;
 						}
-						toolbar.convertItem(item, overflowMenu);
+						toolbar.hideOverflowItem(item, overflowMenu);
 					}
 				}
 			} else {
@@ -297,9 +315,8 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 				
 				for (i = 0, j = items.size; i < j; i++) {
 					item = items.get(i);
-					item._visible = true;
-					$fly(item._dom).css("visibility", "");
-					
+                    toolbar.showUnoverflowItem(item);
+
 					leftWidthSum += $fly(item._dom).outerWidth(true);
 					if (leftWidthSum >= leftVisibleWidth) {
 						startHideIndex = i;
@@ -311,9 +328,9 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 					for (i = startHideIndex, j = items.size; i < j; i++) {
 						item = items.get(i);
 						if (item instanceof dorado.widget.toolbar.Fill) {
-							break;
+							continue;
 						}
-						toolbar.convertItem(item, overflowMenu);
+						toolbar.hideOverflowItem(item, overflowMenu);
 					}
 				}
 			}
@@ -336,8 +353,7 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 			}
 			for (i = 0, j = items.size; i < j; i++) {
 				item = items.get(i);
-				item._visible = true;
-				$fly(item._dom).css("visibility", "");
+                toolbar.showUnoverflowItem(item);
 			}
 		}
 	},

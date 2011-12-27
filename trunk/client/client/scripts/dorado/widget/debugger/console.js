@@ -321,16 +321,6 @@
 		control: consolePanel
 	});
 
-    function format(tpl) {
-        tpl = tpl || "";
-        if (tpl.indexOf("\r") != -1 || tpl.indexOf("\n") != -1)
-            return tpl;
-        else
-            return eval("('" + tpl.replace(/\$\{(.+?)\}/g, function($1, $2) {
-                return "'+" + $2 + "+'";
-            }) + "')");
-    }
-
 	dorado.Debugger.extend(/** @scope dorado.Debugger */{
 		consolePanel: consolePanel,
 
@@ -344,7 +334,7 @@
 			if (!deb.inited) {
 				deb.init();
 			}
-			return deb.consolePanel.log(format(msg), level);
+			return deb.consolePanel.log(msg, level);
 		},
 
 		/**
@@ -364,17 +354,7 @@
 	window.$log = dorado.Debugger.log;
     window.$dir = dorado.Debugger.dir;
 
-    if (window.console && console.log) {
-        var log = console.log;
-        console.log = function() {
-            var args = [];
-            for (var i = 0, j = arguments.length; i < j; i++) {
-                var arg = arguments[i];
-                args.push(typeof arg == "string" ? format(arg) : arg);
-            }
-            log.apply(this, args);
-        }
-    } else {
+    if (!window.console) {
         window.console = {
             log: function() {
                 $log.apply(null, arguments);
