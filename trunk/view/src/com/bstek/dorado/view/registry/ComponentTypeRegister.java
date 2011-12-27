@@ -93,12 +93,6 @@ public abstract class ComponentTypeRegister implements InitializingBean,
 
 	@SuppressWarnings("unchecked")
 	protected ComponentTypeRegisterInfo getRegisterInfo() throws Exception {
-		if (StringUtils.isEmpty(name)) {
-			int i = beanName.lastIndexOf(".");
-			if (i >= 0)
-				name = beanName.substring(i + 1);
-		}
-
 		Class<? extends Component> cl = null;
 		if (StringUtils.isNotEmpty(classType)) {
 			cl = ClassUtils.forName(classType);
@@ -107,12 +101,16 @@ public abstract class ComponentTypeRegister implements InitializingBean,
 		Widget widget = null;
 		if (cl != null) {
 			widget = cl.getAnnotation(Widget.class);
-			// 此段逻辑带来不便，当子控件中没有定义@Widget时，会自动继承父类的@Widget，导致父控件被覆盖。
-			// 屏蔽此代码后，@Widget.name()事实上已成为冗余属性。
-			// if (widget != null && StringUtils.isEmpty(name)
-			// && StringUtils.isNotEmpty(widget.name())) {
-			// name = widget.name();
-			// }
+			if (widget != null && StringUtils.isEmpty(name)
+					&& StringUtils.isNotEmpty(widget.name())) {
+				name = widget.name();
+			}
+		}
+		
+		if (StringUtils.isEmpty(name)) {
+			int i = beanName.lastIndexOf(".");
+			if (i >= 0)
+				name = beanName.substring(i + 1);
 		}
 
 		ComponentTypeRegisterInfo registerInfo = createRegisterInfo(name);

@@ -66,7 +66,7 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 	</bean>
 
 	<bean id="com.bstek.dorado.view.widget.data.DataSet" parent="dorado.defaultComponentTypeRegister" />
-	<bean id="com.bstek.dorado.view.widget.Control" parent="dorado.defaultComponentTypeRegister" />
+	<bean id="com.bstek.dorado.view.widget.DefaultControl" parent="dorado.defaultComponentTypeRegister" />
 	<bean id="com.bstek.dorado.view.widget.Container" parent="dorado.defaultComponentTypeRegister" />
 
 	<bean id="com.bstek.dorado.view.widget.HtmlContainer" parent="dorado.defaultComponentTypeRegister" />
