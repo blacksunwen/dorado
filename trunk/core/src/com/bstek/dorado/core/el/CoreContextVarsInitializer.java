@@ -1,5 +1,6 @@
 package com.bstek.dorado.core.el;
 
+import java.util.Collections;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -22,7 +23,7 @@ public class CoreContextVarsInitializer implements ContextVarsInitializer {
 	public void initializeContext(Map<String, Object> vars) {
 		try {
 			vars.put("null", null);
-			vars.put("this", null); // 避免jexl在编译时报出警告
+			vars.put("this", Collections.EMPTY_MAP); // 避免jexl在编译时报出警告
 			vars.put("env", System.getenv());
 			vars.put("system", System.getProperties());
 			vars.put("configure", Configure.getStore());
