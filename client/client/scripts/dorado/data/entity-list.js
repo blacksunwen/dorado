@@ -343,6 +343,26 @@
 		},
 		
 		/**
+		 * 返回当前集合中的第一个数据实体。
+		 * <p>注意：此方法不会导致集合的自动装载动作。</p>
+		 * @return {dorado.Entity} 第一个数据实体。
+		 */
+		getFirst: function() {
+			var entry = this._findNextEntry();
+			return (entry) ? entry.data : null;
+		},
+		
+		/**
+		 * 返回当前集合中的最后一个数据实体。
+		 * <p>注意：此方法不会导致集合的自动装载动作。</p>
+		 * @return {dorado.Entity} 最后一个数据实体。
+		 */
+		getLast: function() {
+			var entry = this._findPreviousEntry();
+			return (entry) ? entry.data : null;
+		},
+		
+		/**
 		 * 将集合中的第一个数据实体设置为当前数据实体。
 		 * @return {dorado.Entity} 返回第一个数据实体。
 		 */
