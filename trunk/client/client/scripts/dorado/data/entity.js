@@ -946,7 +946,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		
 		/**
 		 * 创建并返回一个兄弟实体对象。即创建一个与本实体对象相同类型的新实体对象。
-		 * @param {Object} [data] 新创建的实体对象要封装JSON数据对象，可以不指定此参数。
+		 * @param {Object|dorado.Entity} [data] 新创建的实体对象要封装JSON数据对象，可以不指定此参数。
 		 * @param {boolean} [detached] 是否需要返回一个游离的实体对象。
 		 * 如果本实体对象已经隶属于一个实体集合，那么默认情况下此方法会将新创建的实体对象追加到该集合中。
 		 * 通过detached参数可以指定本方法不将新的实体对象追加到集合；<br>
@@ -954,6 +954,8 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		 * @return {dorado.Entity} 新创建的实体对象。
 		 */
 		createBrother : function(data, detached) {
+			if (data instanceof dorado.Entity) data = data.getData();
+			
 			var brother = new dorado.Entity(data, this.dataTypeRepository, this.dataType);
 			if (!detached && this.parent instanceof dorado.EntityList) {
 				this.parent.insert(brother);
@@ -964,7 +966,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		/**
 		 * 创建并返回一个子实体对象。
 		 * @param {String} property 子实体对象对应的属性名。
-		 * @param {Object} [data] 新创建的实体对象要封装JSON数据对象，可以不指定此参数。
+		 * @param {Object|dorado.Entity} [data] 新创建的实体对象要封装JSON数据对象，可以不指定此参数。
 		 * @param {boolean} [detached] 是否需要返回一个游离的实体对象。
 		 * 默认情况下，新创建的子实体对象会直接被设置到本实体对象的属性中。
 		 * 通过detached参数可以指定本方法不将新的子实体对象附着到本实体对象中。<br>
@@ -973,6 +975,8 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		 * @return {dorado.Entity} 新创建的实体对象。
 		 */
 		createChild : function(property, data, detached) {
+			if (data instanceof dorado.Entity) data = data.getData();
+			
 			var child = null;
 			if (this.dataType) {
 				var propertyDef = this._getPropertyDef(property);
@@ -1010,6 +1014,37 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			}
 			return child;
 		},
+		
+		/**
+		 * 返回与当前数据实体平级的前一个数据实体。
+		 * <p>注意：此方法不会导致集合的自动装载动作。如果本数据实体不在某个实体集合中,那么此方法将直接返回null。</p>
+		 * @return {dorado.Entity} 前一个数据实体。
+		 */
+		getPrevious: function() {
+			var entityList = this.parent;
+			if (!entityList || !(entityList instanceof dorado.EntityList)) return null;
+			
+			var page = this.page;
+			var entry = page.findEntry(this);
+			entry = entityList._findPreviousEntry(entry);
+			return (entry) ? entry.data : null;
+		},
+		
+		/**
+		 * 返回与当前数据实体平级的下一个数据实体。
+		 * <p>注意：此方法不会导致集合的自动装载动作。如果本数据实体不在某个实体集合中,那么此方法将直接返回null。</p>
+		 * @return {dorado.Entity} 下一个数据实体。
+		 */
+		getNext: function() {
+			var entityList = this.parent;
+			if (!entityList || !(entityList instanceof dorado.EntityList)) return null;
+			
+			var page = this.page;
+			var entry = page.findEntry(this);
+			entry = entityList._findNextEntry(entry);
+			return (entry) ? entry.data : null;
+		},
+		
 		/**
 		 * 将此数据实体设置为其目前所在的实体集合中的当前实体。
 		 * <p>
@@ -1023,6 +1058,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				this.parent.setCurrent(this);
 			}
 		},
+		
 		/**
 		 * 清空本数据实体中所有的数据。
 		 */
@@ -1035,6 +1071,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			}
 			this.sendMessage(0);
 		},
+		
 		/**
 		 * 将给定的JSON对象中的数据转换成为数据实体。
 		 * @param {Object} json 要转换的JSON对象。
@@ -1047,6 +1084,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			this.timestamp = dorado.Core.getTimestamp();
 			this.sendMessage(0);
 		},
+		
 		/**
 		 * 将实体对象转换成一个JSON数据对象。
 		 * @param {Object} [options] 转换选项。
@@ -1608,8 +1646,9 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				newData = {};
 				for(var attr in data) {
 					var v = data[attr];
-					if ( v instanceof dorado.Entity || v instanceof dorado.EntityList)
+					if (v instanceof dorado.Entity || v instanceof dorado.EntityList) {
 						continue;
+					}
 					newData[attr] = v;
 				}
 			}
