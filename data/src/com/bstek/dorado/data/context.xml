@@ -106,7 +106,6 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 		<property name="validateThreadIntervalSeconds" value="${data.config.validateThreadIntervalSeconds}" />
 		<property name="minResourceValidateSeconds" value="${data.config.minResourceValidateSeconds}" />
 		<property name="recalcLocationsThreadIntervalSeconds" value="${data.config.recalcLocationsThreadIntervalSeconds}" />
-
 		<property name="configLocations">
 			<list>
 				<value>classpath:com/bstek/dorado/data/base-types.xml</value>

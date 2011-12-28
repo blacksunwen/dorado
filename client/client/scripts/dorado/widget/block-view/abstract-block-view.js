@@ -31,16 +31,13 @@
 		 * 返回总的行数或列数。 return {int} 行数或列数。
 		 */
 		getLineCount: function() {
-			return parseInt((this.getItemCount() - 1) / this._lineSize +
-			1);
+			return parseInt((this.getItemCount() - 1) / this._lineSize + 1);
 		},
 		
 		setScrollPos: function(scrollPos) {
 			var itemCount = this.getItemCount(), lineCount = this.getLineCount();
 			if (lineCount > 0) {
-				this._startIndex = parseInt(((scrollPos / this._scrollSize) || 0) *
-				lineCount) *
-				this._lineSize;
+				this._startIndex = parseInt(((scrollPos / this._scrollSize) || 0) * lineCount) * this._lineSize;
 			} else {
 				this._startIndex = 0;
 			}
@@ -504,11 +501,13 @@
 			
 			var lineSize = this._lineSize, blockWidth = this._blockWidth, blockHeight = this._blockHeight;
 			if (this._blockLayout == "vertical") {
-				if (!(lineSize > 0)) lineSize = (dom.clientWidth - this._horiPadding * 2) /
-				(this._blockWidth + this._horiSpacing);
+				if (!(lineSize > 0)) {
+					lineSize = (dom.clientWidth - this._horiPadding * 2) / (this._blockWidth + this._horiSpacing);
+				}
 			} else {
-				if (!(lineSize > 0)) lineSize = (dom.clientHeight - this._vertPadding * 2) /
-				(this._blockHeight + this._vertSpacing);
+				if (!(lineSize > 0)) {
+					lineSize = (dom.clientHeight - this._vertPadding * 2) / (this._blockHeight + this._vertSpacing);
+				}
 			}
 			this._realLineSize = lineSize = (lineSize < 1) ? 1 : parseInt(lineSize);
 			this._itemModel.setLineSize(lineSize);
@@ -527,20 +526,12 @@
 			if (this._blockLayout == "vertical") {
 				$container.height(pos[1]).width(dom.clientWidth);
 				if (this._lineSize > 0 && this._fillLine) {
-					blockWidth = (dom.clientWidth -
-					this._horiPadding *
-					2 -
-					this._horiSpacing * (lineSize - 1)) /
-					lineSize;
+					blockWidth = (dom.clientWidth - this._horiPadding * 2 - this._horiSpacing * (lineSize - 1)) / lineSize;
 				}
 			} else {
 				$container.width(pos[0]).height(dom.clientHeight);
 				if (this._lineSize > 0 && this._fillLine) {
-					blockHeight = (dom.clientHeight -
-					this._vertPadding *
-					2 -
-					this._vertSpacing * (lineSize - 1)) /
-					lineSize;
+					blockHeight = (dom.clientHeight - this._vertPadding * 2 - this._vertSpacing * (lineSize - 1)) / lineSize;
 				}
 			}
 			
@@ -565,20 +556,12 @@
 			var scroller = this._dom, blockSize, end;
 			if (this._blockLayout == "vertical") {
 				blockSize = this._blockHeight + this._vertSpacing;
-				start = parseInt((scroller.scrollTop - this._vertPadding) /
-				blockSize);
-				end = start +
-				Math.round((scroller.clientHeight - this._vertPadding) /
-				blockSize +
-				0.5);
+				start = parseInt((scroller.scrollTop - this._vertPadding) / blockSize);
+				end = start + Math.round((scroller.clientHeight - this._vertPadding) / blockSize + 0.5);
 			} else {
 				blockSize = this._blockWidth + this._horiSpacing;
-				start = parseInt((scroller.scrollLeft - this._horiPadding) /
-				blockSize);
-				end = start +
-				Math.round((scroller.clientWidth - this._horiPadding) /
-				blockSize +
-				0.5);
+				start = parseInt((scroller.scrollLeft - this._horiPadding) / blockSize);
+				end = start + Math.round((scroller.clientWidth - this._horiPadding) / blockSize + 0.5);
 			}
 			return [start * this._realLineSize, end * this._realLineSize];
 		},
@@ -601,23 +584,16 @@
 			var topOrLeft, bottomOrRight;
 			if (this._blockLayout == "vertical") {
 				topOrLeft = scroller.scrollTop;
-				bottomOrRight = scroller.scrollTop +
-				scroller.clientHeight;
+				bottomOrRight = scroller.scrollTop + scroller.clientHeight;
 			} else {
 				topOrLeft = scroller.scrollLeft;
-				bottomOrRight = scroller.scrollLeft +
-				scroller.clientWidth;
+				bottomOrRight = scroller.scrollLeft + scroller.clientWidth;
 			}
 			var itemDomCount, self = this;
 			if (bottomOrRight > topOrLeft) {
 				itemDomCount = this.refreshItemDoms(container, itemModel.isReverse(), function(itemDom) {
 					if (itemDom.subIndex == self._realLineSize - 1) {
-						return ((self._blockLayout == "vertical") ? (itemDom.offsetTop +
-						itemDom.offsetHeight +
-						self._vertSpacing) : (itemDom.offsetLeft +
-						itemDom.offsetWidth +
-						self._horiSpacing)) <
-						bottomOrRight;
+						return ((self._blockLayout == "vertical") ? (itemDom.offsetTop + itemDom.offsetHeight + self._vertSpacing) : (itemDom.offsetLeft + itemDom.offsetWidth + self._horiSpacing)) < bottomOrRight;
 					}
 					return true;
 				}, true);
@@ -1025,15 +1001,11 @@
 			var blockWidth = this._blockWidth, blockHeight = this._blockHeight;
 			if (this._blockLayout == "vertical") {
 				hasScroller = dom.scrollHeight > dom.clientHeight;
-				height = this._vertPadding * 2 +
-				(blockHeight + this._vertSpacing) * lineCount -
-				this._vertSpacing;
+				height = this._vertPadding * 2 + (blockHeight + this._vertSpacing) * lineCount - this._vertSpacing;
 				result = (height > dom.clientHeight) ^ hasScroller;
 			} else {
 				hasScroller = dom.scrollWidth > dom.clientWidth;
-				width = this._horiPadding * 2 +
-				(blockWidth + this._horiSpacing) * lineCount -
-				this._horiSpacing;
+				width = this._horiPadding * 2 + (blockWidth + this._horiSpacing) * lineCount - this._horiSpacing;
 				result = (width > dom.clientWidth) ^ hasScroller;
 			}
 			return [width, height, result];

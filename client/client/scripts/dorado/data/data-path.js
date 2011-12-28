@@ -157,6 +157,7 @@
 		constructor : function(path) {
 			this.path = (path != null) ? $.trim(path) : path;
 		},
+		
 		_throw : function(message, position) {
 			var text = "DataPath syntax error";
 			if(message) {
@@ -173,6 +174,7 @@
 			}
 			throw new SyntaxError(text);
 		},
+		
 		/**
 		 * 编译数据路径表达式。
 		 * @throws {SyntaxError}
@@ -422,6 +424,7 @@
 			compiledPath.singleResult = singleResult;
 			this._compiledPath = compiledPath;
 		},
+		
 		_selectEntityIf : function(context, entity, isLeaf) {
 			var section = context.section;
 			if(!section.leaf || isLeaf) {
@@ -433,6 +436,7 @@
 				}
 			}
 		},
+		
 		_evaluateSectionOnEntity : function(context, entity, nextSection) {
 			var oldLevel = context.level;
 			if(nextSection) {
@@ -484,6 +488,7 @@
 				context.setCurrentLevel(oldLevel);
 			}
 		},
+		
 		_evaluateSectionOnAggregation : function(context, entities, isRoot) {
 
 			function selectEntityIf(entity) {
@@ -588,6 +593,7 @@
 					throw e;
 			}
 		},
+		
 		/**
 		 * 针对传入的数据应用(执行)路径表达式，并返回表达式的执行结果。
 		 * @param {Object} data 将被应用(执行)的数据。
@@ -649,6 +655,7 @@
 				}
 			}
 		},
+		
 		/**
 		 * 返回某数据路径所对应的子数据类型。
 		 * @param {dorado.DataType} dataType 根数据类型。
@@ -669,8 +676,7 @@
 		 * @return {dorado.DataType} 子数据类型。
 		 */
 		getDataType : function(dataType, options) {
-			if(!dataType)
-				return null;
+			if(!dataType) return null;
 
 			var acceptAggregationDataType, loadMode;
 			if(options === true) {
@@ -699,28 +705,33 @@
 				dataType = dataType.get(loadMode);
 			}
 
-			if(this._compiledPath === undefined)
+			if (this._compiledPath === undefined) {
 				this.compile();
+			}
 
-			var compiledPath = this._compiledPath;
-			for(var i = 0; i < compiledPath.length; i++) {
-				var section = compiledPath[i];
-
-				if(section.interceptor) {
-					var interceptors = dorado.DataPath.interceptors[section.interceptor];
-					if(interceptors && interceptors.dataTypeInterceptor) {
-						dataType = interceptors.dataTypeInterceptor.call(this, dataType, section.interceptor);
-					} else {
-						dataType = null;
+			if (dataType) {
+				var compiledPath = this._compiledPath;
+				for (var i = 0; i < compiledPath.length; i++) {
+					var section = compiledPath[i];
+					
+					if (section.interceptor) {
+						var interceptors = dorado.DataPath.interceptors[section.interceptor];
+						if (interceptors && interceptors.dataTypeInterceptor) {
+							dataType = interceptors.dataTypeInterceptor.call(this, dataType, section.interceptor);
+						} else {
+							dataType = null;
+						}
+					} else if (section.property) {
+						if (dataType instanceof dorado.AggregationDataType) {
+							dataType = dataType.getElementDataType(loadMode);
+						}
+						var p = dataType.getPropertyDef(section.property);
+						dataType = (p) ? p.get("dataType") : null;
 					}
-				} else if(section.property) {
-					if( dataType instanceof dorado.AggregationDataType)
-						dataType = dataType.getElementDataType(loadMode);
-					var p = dataType.getPropertyDef(section.property);
-					dataType = (p) ? p.get("dataType") : null;
+					if (!dataType) {
+						break;
+					}
 				}
-				if(!dataType)
-					break;
 			}
 
 			cache[this.path] = dataType;
@@ -729,6 +740,7 @@
 			}
 			return dataType;
 		},
+		
 		_section2Path : function(section) {
 			var path = (section.visibility == 2) ? '#' : '';
 			path += (section.property) ? section.property : '';
@@ -744,6 +756,7 @@
 			}
 			return (path) ? path : '*';
 		},
+		
 		_compiledPath2Path : function() {
 			var compiledPath = this._compiledPath;
 			var sections = [];
@@ -752,6 +765,7 @@
 			}
 			return sections.join('.');
 		},
+		
 		toString : function() {
 			this.compile();
 			return this._compiledPath2Path();

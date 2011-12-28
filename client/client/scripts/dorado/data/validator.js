@@ -517,7 +517,7 @@ dorado.validator.AjaxValidator = $extend(dorado.validator.RemoteValidator, /** @
 	constructor : function(config) {
 		if(!dorado.widget || !dorado.widget.AjaxAction) {
 			this._disabled = true;
-			alert("'dorado.validator.AjaxValidator' is disabled because the 'dorado.widget.AjaxAction' is not available.");
+			throw new dorado.Exception("'dorado.validator.AjaxValidator' is disabled because the 'dorado.widget.AjaxAction' is not available.");
 		}
 		$invokeSuper.call(this, arguments);
 	},

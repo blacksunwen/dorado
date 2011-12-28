@@ -201,8 +201,10 @@
 			 * </ul>
 			 * @type boolean
 			 * @default "visibility"
+			 * @attribute skipRefresh
 			 */
 			hideMode : {
+				skipRefresh: true,
 				defaultValue : "visibility"
 			},
 
@@ -232,7 +234,7 @@
 			 * 然后TextEditor与Grid又确实具有上下级的关系，尤其是在处理控制焦点时，此时系统会将TextEditor的focusParent属性设置为Grid。
 			 * </p>
 			 * @type dorado.widget.Control
-			 * @attribute readOnly
+			 * @attribute readOnly skipRefresh
 			 */
 			focusParent : {
 				skipRefresh : true,
@@ -245,9 +247,11 @@
 			/**
 			 * 提示信息。
 			 * @type String
-			 * @attribute
+			 * @attribute skipRefresh
 			 */
-			tip : {},
+			tip : {
+				skipRefresh : true
+			},
 
 			/**
 			 * 控件使用的布局条件。

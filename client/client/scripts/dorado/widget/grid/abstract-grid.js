@@ -1,5 +1,31 @@
 (function() {
 	var MIN_COL_WIDTH = 8;
+	
+	function getEntityValue(entity, property) {
+		if (property.indexOf('.') > 0) {
+			return dorado.DataPath.create(property).evaluate(entity, true);
+		}
+		else {
+			return (entity instanceof dorado.Entity) ? entity.get(property) : entity[property];
+		}
+	}
+	
+	function getEntityText(entity, property) {
+		var i = property.lastIndexOf('.');
+		if (i > 0) {
+			if (entity instanceof dorado.Entity) {
+				var dataPath = dorado.DataPath.create(property.substring(0, i));
+				var subProperty = property.substring(i + 1);
+				entity = dataPath.evaluate(entity);
+				return entity ? entity.getText(subProperty) : "";
+			} else {
+				return dorado.DataPath.create(property).evaluate(entity, true) || "";
+			}
+		}
+		else {
+			return (entity instanceof dorado.Entity) ? entity.getText(property) : entity[property];
+		}
+	}
 
 	GroupedItemIterator = $extend(dorado.util.Iterator, {
 		constructor: function(groups, showFooter, nextIndex) {
@@ -116,10 +142,10 @@
 		constructor: function(grid) {
 			this.grid = grid;
 
-			var items = this._items, footerData = {
-				$expired: true
-			};
+			var items = this._items, footerData = {};
 			var footerEntity = this.footerEntity = (items instanceof dorado.EntityList) ? items.createChild(footerData, true) : new dorado.Entity(footerData);
+			footerEntity.rowType = "footer";
+			footerEntity.ignorePropertyPath = true;
 			footerEntity.acceptUnknownProperty = true;
 			footerEntity.disableEvents = true;
 			footerEntity._setObserver({
@@ -137,6 +163,8 @@
 			});
 
 			var filterEntity = this.filterEntity = new dorado.Entity();
+			filterEntity.rowType = "filter";
+			filterEntity.ignorePropertyPath = true;
 			filterEntity.acceptUnknownProperty = true;
 			filterEntity.disableEvents = true;
 			filterEntity._setObserver({
@@ -278,7 +306,7 @@
 
 			for (var i = 0; i < entities.length; i++) {
 				entity = entities[i];
-				groupValue = ((entity instanceof dorado.Entity) ? entity.getText(groupProperty) : (entity[groupProperty] + '')) + '';
+				groupValue = getEntityText(entity, groupProperty);
 				if (curGroupValue != groupValue) {
 					if (curGroup) {
 						headerEntity.set("$count", groupEntities.length);
@@ -289,14 +317,15 @@
 
 					headerEntity = isArray ? new dorado.Entity() : items.createChild(null, true);
 					headerEntity.rowType = "header";
+					headerEntity.ignorePropertyPath = true;
 					headerEntity.acceptUnknownProperty = true;
 					headerEntity.disableEvents = true;
 					headerEntity.set("$groupValue", groupValue);
 					headerEntity._setObserver(getGroupSysEntityObserver(grid));
 
 					footerEntity = isArray ? new dorado.Entity() : items.createChild(null, true);
-
 					footerEntity.rowType = "footer";
+					footerEntity.ignorePropertyPath = true;
 					footerEntity.acceptUnknownProperty = true;
 					footerEntity.disableEvents = true;
 					footerEntity.set("$groupValue", groupValue);
@@ -1728,13 +1757,15 @@
 
 		doOnBlur: function() {
 			if (this._currentCell) $fly(this._currentCell).removeClass("current-cell");
-			if (this._currentCellEditor) this._currentCellEditor.hide();
+			if (this._currentCellEditor) {
+				this._currentCellEditor.hide();
+				delete this._currentCellEditor;
+			}
 		},
 
 		shouldEditing: function(column) {
 			return this._editing && this._focused && column && !column.get("readOnly") && !this.get("readOnly") &&
-			column._property && column._property != "none" &&
-			column._property != this._groupProperty;
+			column._property && column._property != "none" && column._property != this._groupProperty;
 		},
 
 		setCurrentColumn: function(column) {
@@ -1774,19 +1805,27 @@
 				}
 			}
 			
-			var eventArg = {
-				data: entity,
-				column: column,
-				cellEditor: cellEditor
-			};
-			column.fireEvent("onGetCellEditor", column, eventArg);
-			this.fireEvent("onGetCellEditor", this, eventArg);
-			
-			cellEditor = eventArg.cellEditor;
-			if (cellEditor && cellEditor.cachable) cellEditorCache[column._id] = cellEditor;
-			
-			if (cellEditor) cellEditor.data = entity;
-			return cellEditor;
+			if (entity && column._propertyPath) {
+				entity = column._propertyPath.evaluate(entity, true);
+			}
+			if (entity) {
+				var eventArg = {
+					data: entity,
+					column: column,
+					cellEditor: cellEditor
+				};
+				column.fireEvent("onGetCellEditor", column, eventArg);
+				this.fireEvent("onGetCellEditor", this, eventArg);
+				
+				cellEditor = eventArg.cellEditor;
+				if (cellEditor && cellEditor.cachable) cellEditorCache[column._id] = cellEditor;
+				
+				if (cellEditor) cellEditor.data = entity;
+				return cellEditor;
+			}
+			else {
+				return null;
+			}
 		},
 
 		/**

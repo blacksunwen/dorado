@@ -218,8 +218,19 @@
 					var col = cols[i];
 					if (col instanceof dorado.widget.grid.ColumnGroup) {
 						doInitColumns(col._columns.items, dataType);
-					} else {
+					} else if (col._propertyPath) {
+						var subDataType = col._propertyPath.getDataType(dataType);
+						col._propertyDef = (subDataType) ? subDataType.getPropertyDef(col._subProperty) : null;
+					}
+					else {
 						col._propertyDef = (col._property) ? dataType.getPropertyDef(col._property) : null;
+					}
+					
+					if (!col._align && col._propertyDef) {
+						var dt = col._propertyDef.get("dataType");
+						if (dt && dt._code >= dorado.DataType.PRIMITIVE_INT && dt._code <= dorado.DataType.FLOAT) {
+							col.set("align", "right");
+						}
 					}
 				}
 			}
