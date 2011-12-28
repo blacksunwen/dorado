@@ -22,6 +22,8 @@
 	<DataType name="String" matchType="java.lang.String" impl="com.bstek.dorado.data.type.StringDataType" />
 	<DataType name="BigDecimal" matchType="java.math.BigDecimal" impl="com.bstek.dorado.data.type.BigDecimalDataType" />
 	<DataType name="Date" matchType="java.util.Date" impl="com.bstek.dorado.data.type.DateDataType" />
+	<DataType name="Time" parent="Date" />
+	<DataType name="DateTime" parent="Date" />
 	<DataType name="Calendar" matchType="java.util.Calendar" impl="com.bstek.dorado.data.type.CalendarDataType" />
 
 	<!-- AggreagationDataTypes -->

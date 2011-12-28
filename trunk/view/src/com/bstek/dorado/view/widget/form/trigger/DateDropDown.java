@@ -1,7 +1,6 @@
 package com.bstek.dorado.view.widget.form.trigger;
 
 import com.bstek.dorado.annotation.ClientObject;
-import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.view.annotation.Widget;
 
 /**
@@ -19,7 +18,6 @@ public class DateDropDown extends DropDown {
 		return showTimeSpinner;
 	}
 
-	@ClientProperty(escapeValue = "false")
 	public void setShowTimeSpinner(boolean showTimeSpinner) {
 		this.showTimeSpinner = showTimeSpinner;
 	}

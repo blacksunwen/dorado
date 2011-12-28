@@ -2230,6 +2230,9 @@
 						else if (dataType._code == dorado.DataType.DATE) {
 							textEditor.set("trigger", "defaultDateDropDown");
 						}
+						else if (dataType._code == dorado.DataType.DATETIME) {
+							textEditor.set("trigger", "defaultDateTimeDropDown");
+						}
 					}
 				}
 				return textEditor;
