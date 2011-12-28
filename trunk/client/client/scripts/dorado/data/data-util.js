@@ -200,7 +200,14 @@
 	
 	
 	function getValueForSummary(entity, property) {
-		return parseFloat((entity instanceof dorado.Entity) ? entity.get(property) : entity[property]) || 0;
+		var value;
+		if (property.indexOf('.') > 0) {
+			value = dorado.DataPath.create(property).evaluate(entity);
+		}
+		else {
+			value = (entity instanceof dorado.Entity) ? entity.get(property) : entity[property];
+		}
+		return parseFloat(value) || 0;
 	}
 	
 	/**

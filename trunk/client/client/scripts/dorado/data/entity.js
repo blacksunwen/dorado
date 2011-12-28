@@ -480,19 +480,26 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		 */
 		get : function(property, loadMode) {
 			loadMode = loadMode || "always";
-			var properties = property.split('.'), result;
-			for(var i = 0; i < properties.length; i++) {
-				property = properties[i];
-				if (i == 0) {
-					var propertyDef = this._getPropertyDef(property);
-					result = this._get(property, propertyDef, null, loadMode);
-				} else {
-					if (!result) break;
-					result = ( result instanceof dorado.Entity) ? result.get(property) : result[property];
+			var result;
+			if (this.ignorePropertyPath) {
+				var propertyDef = this._getPropertyDef(property);
+				result = this._get(property, propertyDef, null, loadMode);
+			} else {
+				var properties = property.split('.');
+				for (var i = 0; i < properties.length; i++) {
+					property = properties[i];
+					if (i == 0) {
+						var propertyDef = this._getPropertyDef(property);
+						result = this._get(property, propertyDef, null, loadMode);
+					} else {
+						if (!result) break;
+						result = (result instanceof dorado.Entity) ? result.get(property) : result[property];
+					}
 				}
 			}
 			return result;
 		},
+		
 		/**
 		 * 以一部操作的方式获取属性值。
 		 * <p>
@@ -513,7 +520,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 
 			function _getAsync(entity, property, callback, loadMode) {
 				var i = property.indexOf('.');
-				if (i > 0) {
+				if (i > 0 && entity.ignorePropertyPath) {
 					var p1 = property.substring(0, i);
 					var p2 = property.substring(i + 1);
 					if ( entity instanceof dorado.Entity) {
@@ -590,6 +597,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				return text;
 			}
 		},
+		
 		/**
 		 * 获取属性的文本值。
 		 * <p>
@@ -607,15 +615,20 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		 */
 		getText : function(property, loadMode) {
 			loadMode = loadMode || "always";
-			var properties = property.split('.'), result = this;
-			for(var i = 0; i < properties.length; i++) {
-				property = properties[i];
-				if (i == (properties.length - 1)) {
-					result = result.doGetText(property, null, loadMode);
-				} else {
-					result = ( result instanceof dorado.Entity) ? result.get(property) : result[property];
+			var result;
+			if (this.ignorePropertyPath) {
+				result = this.doGetText(property, null, loadMode);
+			} else {
+				var properties = property.split('.'), result = this;
+				for (var i = 0; i < properties.length; i++) {
+					property = properties[i];
+					if (i == (properties.length - 1)) {
+						result = result.doGetText(property, null, loadMode);
+					} else {
+						result = (result instanceof dorado.Entity) ? result.get(property) : result[property];
+					}
+					if (result == null) break;
 				}
-				if (result == null) break;
 			}
 			return result;
 		},
@@ -677,7 +690,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			}
 		},
 		
-		_validateProperty: function(dataType, propertyDef, propertyInfo, value) {
+		_validateProperty: function(dataType, propertyDef, propertyInfo, value, preformAsyncValidator) {
 			var messages = [], property = propertyDef._name, validating;
 			if (propertyDef._required && !dataType._validatorsDisabled && (!value && value !== false)) {
 				messages.push({
@@ -706,7 +719,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 							continue;
 						}
 						
-						if (validator instanceof dorado.validator.RemoteValidator && validator._async) {
+						if (validator instanceof dorado.validator.RemoteValidator && validator._async && preformAsyncValidator) {
 							propertyInfo.validating++;
 							validator.validate(value, validateArg, {
 								callback: function(success, result) {
@@ -806,7 +819,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			if (property.charAt(0) != '$') {
 				var messages;
 				if (propertyDef) {
-					messages = this._validateProperty(dataType, propertyDef, propertyInfo, value);
+					messages = this._validateProperty(dataType, propertyDef, propertyInfo, value, true);
 				}
 				else {
 					messages = null;
@@ -1312,6 +1325,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		 * @param {boolean} [options.force=true] 是否强制重新验证所有子属性及校验器。
 		 * @param {boolean} [options.validateSimplePropertyOnly=true] 只验证简单数据类型的属性中的数据，如String、boolean、int、Date等数据类型。
 		 * 设置此属性产生的实际结果是验证逻辑将忽略对此数据实体中的所有子数据实体的有效性验证。
+		 * @param {boolean} [options.preformAsyncValidator] 是否重新执行那些异步的校验器。
 		 * @param {Object} [options.context] 验证上下文。<br>
 		 * 传入此参数的目的通常是用于获得更加验证详尽的验证结果。此上下文对象中可以包含如下的返回属性：
 		 * <ul>
@@ -1383,6 +1397,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			}
 			var force = (options && options.force === false) ? false : true;
 			var simplePropertyOnly =  (options && options.validateSimplePropertyOnly === false) ? false : true;
+			var preformAsyncValidator = (options ? options.preformAsyncValidator : false);
 			var context = options ? options.context : null;
 			var result, topResult, resultCode, topResultCode = -1, hasValidate = false;
 			
@@ -1430,7 +1445,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					
 					var value = entity._data[property];
 					hasValidate = true;
-					var messages = entity._validateProperty(dataType, pd, propertyInfo, value);
+					var messages = entity._validateProperty(dataType, pd, propertyInfo, value, preformAsyncValidator);
 					if (context && messages) {
 						addMessages2Context(context, entity, property, messages);
 					}

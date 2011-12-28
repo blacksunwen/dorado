@@ -582,10 +582,7 @@
 							align = "center";
 						}
 					} 
-					else if (dtCode >= dorado.DataType.PRIMITIVE_INT && dtCode <= dorado.DataType.FLOAT) {
-						renderer = $singleton(dorado.widget.grid.DefaultCellRenderer);
-						align = "right";
-					} else {
+					else {
 						renderer = $singleton(dorado.widget.grid.DefaultCellRenderer);
 					}
 				}
@@ -670,17 +667,26 @@
 		 */
 		getText: function(entity, column) {
 			var text = '';
-			if (entity) {
+			if (entity) {				
 				if (column._property) {
-					var dataType = column.get("dataType"), displayFormat = column.get("displayFormat");
-					if (displayFormat) {
-						var value = (entity instanceof dorado.Entity) ? entity.get(column._property) : entity[column._property];
-						text = (dataType || dorado.$String).toText(value, displayFormat);
-					} else {
-						text = (entity instanceof dorado.Entity) ? entity.getText(column._property) : entity[column._property];
+					var property;
+					if (column._propertyPath && !entity.rowType) {
+						entity = column._propertyPath.evaluate(entity, true);
+						property = column._subProperty;
 					}
-				} else {
-					text = '';
+					else {
+						property = column._property;
+					}
+					
+					if (entity) {
+						var dataType = column.get("dataType"), displayFormat = column.get("displayFormat");
+						if (displayFormat) {
+							var value = (entity instanceof dorado.Entity) ? entity.get(property) : entity[property];
+							text = (dataType || dorado.$String).toText(value, displayFormat);
+						} else {
+							text = (entity instanceof dorado.Entity) ? entity.getText(property) : (entity[property] || "");
+						}
+					}
 				}
 			}
 			if (text && text.replace && !column._wrappable) {
@@ -713,16 +719,26 @@
 		},
 		
 		renderFlag: function(dom, arg) {
-			var entity = arg.data, property = arg.column._property;
-			if (!entity.rowType && entity instanceof dorado.Entity && property) {
-				var state = entity.getMessageState(property), exCls;
-				if (state == "error" || state == "warn") {
-					exCls = "cell-flag-" + state;
+			var entity = arg.data, column = arg.column;
+			if (!entity.rowType && entity instanceof dorado.Entity && column._property) {
+				var property;
+				if (column._propertyPath) {
+					entity = column._propertyPath.evaluate(entity, true);
+					property = column._subProperty;
 				}
-				else if (entity.isDirty(property)) {
-					exCls = "cell-flag-dirty";
+				else {
+					property = column._property;
 				}
-				dom.className = "cell" + (exCls ? (" " + exCls) : '');
+				
+				if (entity) {
+					var state = entity.getMessageState(property), exCls;
+					if (state == "error" || state == "warn") {
+						exCls = "cell-flag-" + state;
+					} else if (entity.isDirty(property)) {
+						exCls = "cell-flag-dirty";
+					}
+					dom.className = "cell" + (exCls ? (" " + exCls) : '');
+				}
 			}
 		},
 		
@@ -844,22 +860,42 @@
 			return new dorado.widget.CheckBox({
 				readOnly: arg.grid.get("readOnly"),
 				iconOnly: true,
+				
 				beforePost: function(control, arg) {
 					arg.processDefault = self.beforeCellValueEdit(control._cellEntity, control._cellColumn, control.get("value"));
 				},
+				
 				onPost: function(control) {
-					var entity = control._cellEntity, property = control._cellColumn._property, value = control.get("value");
+					var column = control._cellColumn, entity = control._cellEntity, value = control.get("value"), property;
+					if (column._propertyPath) {
+						entity = column._propertyPath.evaluate(entity, true);
+						if (!entity) return;
+						property = column._subProperty;
+					}
+					else {
+						property = column._property;
+					}
+					
 					(entity instanceof dorado.Entity) ? entity.set(property, value) : entity[property] = value;
-					self.onCellValueEdit(entity, control._cellColumn);
+					self.onCellValueEdit(entity, Column);
 				}
 			});
 		},
 		
 		refreshSubControl: function(checkbox, arg) {
-			var entity = arg.data, property = arg.column._property;
+			var column = arg.column, entity = arg.data, property;
+			if (column._propertyPath) {
+				entity = column._propertyPath.evaluate(entity, true);
+				if (!entity) return;
+				property = column._subProperty;
+			}
+			else {
+				property = column._property;
+			}
+			
 			var value = (entity instanceof dorado.Entity) ? entity.get(property) : entity[property];
 			checkbox._cellEntity = entity;
-			checkbox._cellColumn = arg.column;
+			checkbox._cellColumn = column;
 			checkbox.disableListeners();
 			checkbox.set("value", !!value);
 			checkbox.refresh();
@@ -904,22 +940,42 @@
 				layout: "flow",
 				width: "100%",
 				radioButtons: this.getRadioButtons(arg),
+				
 				beforePost: function(control, arg) {
 					arg.processDefault = self.beforeCellValueEdit(control._cellEntity, control._cellColumn, control.get("value"));
 				},
+				
 				onPost: function(control) {
-					var entity = control._cellEntity, property = control._cellColumn._property, value = control.get("value");
+					var column = control._cellColumn, entity = control._cellEntity, value = control.get("value"), property;
+					if (column._propertyPath) {
+						entity = column._propertyPath.evaluate(entity, true);
+						if (!entity) return;						
+						property = column._subProperty;
+					}
+					else {
+						property = column._property;
+					}
+					
 					(entity instanceof dorado.Entity) ? entity.set(property, value) : entity[property] = value;
-					self.onCellValueEdit(entity, control._cellColumn);
+					self.onCellValueEdit(entity, Column);
 				}
 			});
 		},
 		
 		refreshSubControl: function(radioGroup, arg) {
-			var entity = arg.data, property = arg.column._property;
+			var column = arg.column, entity = arg.data, property;
+			if (column._propertyPath) {
+				entity = column._propertyPath.evaluate(entity, true);
+				if (!entity) return;				
+				property = column._subProperty;
+			}
+			else {
+				property = column._property;
+			}
+			
 			var value = (entity instanceof dorado.Entity) ? entity.get(property) : entity[property];
 			radioGroup._cellEntity = entity;
-			radioGroup._cellColumn = arg.column;
+			radioGroup._cellColumn = column;
 			radioGroup.disableListeners();
 			radioGroup.set("value", value);
 			radioGroup.refresh();
@@ -1131,7 +1187,7 @@
 		 * @return {boolean} 是否要显示编辑器。
 		 */
 		shouldShow: function() {
-			return this.column && this.column._property;
+			return this.column && this.column._property && !this.column._propertyPath;
 		},
 		
 		/**
@@ -1303,7 +1359,14 @@
 	 */
 	dorado.widget.grid.SimpleCellEditor = $extend(dorado.widget.grid.ControlCellEditor, /** @scope dorado.widget.grid.SimpleCellEditor.prototype */ {
 		refresh: function() {
-			var entity = this.data, column = this.column, editor = this.getEditorControl(), property = column._property, value;
+			var entity = this.data, column = this.column, editor = this.getEditorControl(), property, value;
+			if (column._propertyPath) {
+				property = column._subProperty;
+			}
+			else {
+				property = column._property;
+			}
+			
 			if (entity) {
 				if (entity instanceof dorado.Entity) {
 					if (editor instanceof dorado.widget.AbstractTextEditor) {
@@ -1335,22 +1398,28 @@
 		},
 		
 		onPost: function(arg) {
-			var entity = this.data;
-			if (!entity) return null;
-			var column = this.column, editor = this.getEditorControl(), value;
-			if (entity instanceof dorado.Entity) {
-				if (editor instanceof dorado.widget.AbstractTextEditor) {
+			var entity = this.data, column = this.column, editor = this.getEditorControl(), property, value;
+			if (column._propertyPath) {
+				property = column._subProperty;
+			}
+			else {
+				property = column._property;
+			}
+			
+			if (entity) {
+				if (entity instanceof dorado.Entity) {
+					if (editor instanceof dorado.widget.AbstractTextEditor) {
+						value = editor.get("value");
+						if (value instanceof dorado.Entity) entity.set(property, value);
+						else entity.setText(property, editor.get("text"));
+					} else {
+						value = editor.get("value");
+						entity.set(property, value);
+					}
+				} else {
 					value = editor.get("value");
-					if (value instanceof dorado.Entity) entity.set(column._property, value);
-					else entity.setText(column._property, editor.get("text"));
+					entity[property] = value;
 				}
-				else {
-					value = editor.get("value");
-					entity.set(column._property, value);
-				}
-			} else {
-				value = editor.get("value");
-				entity[column._property] = value;
 			}
 			$invokeSuper.call(this, [arg]);
 		}
@@ -1472,9 +1541,23 @@
 			 */
 			property: {
 				writeOnce: true,				
-				setter: function(v) {
-					this._property = v;
-					if (!this.getAttributeWatcher().getWritingTimes("name") && !this.ATTRIBUTES.name.defaultValue) this._name = v;
+				setter: function(property) {
+					this._property = property;
+					
+					var i = 0;
+					if (property) {
+						i = property.lastIndexOf('.');
+						if (i > 0) {
+							this._propertyPath = dorado.DataPath.create(property.substring(0, i));
+							this._subProperty = property.substring(i + 1);
+						}
+					}
+					
+					if (i <= 0) {
+						delete this._propertyPath;
+						delete this._subProperty;
+					}
+					if (!this.getAttributeWatcher().getWritingTimes("name") && !this.ATTRIBUTES.name.defaultValue) this._name = property;
 				}
 			},			
 			
@@ -1488,7 +1571,15 @@
 			 * @type String
 			 * @attribute
 			 */
-			align: {},
+			align: {
+				setter: function(align) {
+					this._align = align;
+					if (align) {
+						if (!this._headerAlign) this._headerAlign = align;
+						if (!this._footerAlign) this._footerAlign = align;
+					}
+				}
+			},
 			
 			/**
 			 * 列头中内容的水平对齐方式。 取值范围如下：
@@ -1798,6 +1889,9 @@
 			resizeable: {
 				defaultValue: false
 			},
+			filterable: {
+				defaultValue: false
+			},
 			headerRenderer: {
 				neverEvalDefaultValue: true,
 				defaultValue: function(dom, arg) {
@@ -1858,6 +1952,9 @@
 				defaultValue: false
 			},
 			resizeable: {
+				defaultValue: false
+			},
+			filterable: {
 				defaultValue: false
 			},
 			headerRenderer: {
@@ -1987,6 +2084,9 @@
 			resizeable: {
 				defaultValue: false
 			},
+			filterable: {
+				defaultValue: false
+			},
 			headerRenderer: {
 				neverEvalDefaultValue: true,
 				defaultValue: function(dom, arg) {
@@ -2058,7 +2158,6 @@
 				var self = this, grid = arg.grid;
 				var textEditor = new dorado.widget.TextEditor({
 					width: "100%",
-					property: column._property,
 					onPost: function(textEditor) {
 						var value = "";
 						if (textEditor.get("mapping")) {
