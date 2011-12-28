@@ -5,6 +5,7 @@ import com.bstek.dorado.annotation.ClientEvents;
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.IdeProperty;
+import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Component;
 
@@ -71,6 +72,7 @@ public class Action extends Component {
 		this.disabled = disabled;
 	}
 
+	@XmlProperty
 	@ClientProperty(outputter = "spring:dorado.doradoMapPropertyOutputter")
 	@IdeProperty(editor = "any")
 	public Object getParameter() {

@@ -62,6 +62,9 @@ public class StandaloneRuleSetBuilderTest extends IdeSupportContextTestCase {
 		Child propertyDef = dataTypeRule.getChild("PropertyDef");
 		assertNotNull(propertyDef);
 
+		Rule referenceRule = ruleSet.getRule("Reference");
+		assertEquals("pojo", referenceRule.getProperty("parameter").getEditor());
+
 		Set<Rule> concreteRules = propertyDef.getConcreteRules();
 		assertNotNull(concreteRules);
 
@@ -92,7 +95,7 @@ public class StandaloneRuleSetBuilderTest extends IdeSupportContextTestCase {
 		assertNotNull(ruleSet.getRule("UpdateAction"));
 
 		Rule componentRule = ruleSet.getRule("Component");
-		Rule controlRule = ruleSet.getRule("Control");
+		Rule controlRule = ruleSet.getRule("Control_1");
 		Rule containerRule = ruleSet.getRule("Container");
 		Rule datasetRule = ruleSet.getRule("DataSet");
 		Rule panelRule = ruleSet.getRule("Panel");
@@ -108,11 +111,13 @@ public class StandaloneRuleSetBuilderTest extends IdeSupportContextTestCase {
 
 		assertFalse(datasetRule.isSubRuleOf(controlRule));
 		assertFalse(componentRule.isSubRuleOf(controlRule));
+		
+		assertEquals("Button", buttonRule.getNodeName());
 
 		Set<Rule> componentRules = containerRule.getChild("Children")
 				.getConcreteRules();
 		assertFalse(componentRules.contains(defaultViewRule));
-		
+
 		Rule label1Rule = ruleSet.getRule("Label_1");
 		assertNotNull(label1Rule);
 		assertEquals(Integer.MAX_VALUE, label1Rule.getSortFactor());
