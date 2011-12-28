@@ -517,6 +517,12 @@
 	root.register("Date", dataType);
 	root.register("Calendar", dataType);
 	
+	dataType = dorado.$Time;
+	root.register("Time", dataType);
+	
+	dataType = dorado.$DateTime;
+	root.register("DateTime", dataType);
+	
 	var AggregationDataType = dorado.AggregationDataType;
 	root.register(new AggregationDataType("List"));
 	root.register(new AggregationDataType("Set"));

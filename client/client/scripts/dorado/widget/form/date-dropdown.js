@@ -871,9 +871,11 @@
 			width: {
 				defaultValue: 260
 			},
+			
 			iconClass: {
 				defaultValue: "d-trigger-icon-date"
 			},
+			
 			/**
 			 * 是否显示TimeSpinner。
 			 * @attribute
@@ -881,11 +883,16 @@
 			 * @type boolean
 			 */
 			showTimeSpinner: {
-				path: "picker.showTimeSpinner"
+				setter: function(showTimeSpinner) {
+					this._showTimeSpinner = showTimeSpinner;
+					if (this._picker) this._picker.set("showTimeSpinner", showTimeSpinner);
+				}
 			}
 		},
+		
 		createDropDownBox: function(editor) {
 			var dropDown = this, box = $invokeSuper.call(this, arguments), picker = new dorado.widget.DatePicker({
+				showTimeSpinner: this._showTimeSpinner,
 				listener: {
 					onPick: function(picker, value) {
 						dropDown.close(value.date);
@@ -906,6 +913,7 @@
 			});
 			return box;
 		},
+		
 		doOnKeyPress: function(evt) {
 			var dropDown = this, retValue = true, datePicker = this.get("box.control"), ymPicker = datePicker._yearMonthPicker;
 			switch (evt.keyCode) {
@@ -925,6 +933,7 @@
 			}
 			return retValue;
 		},
+		
 		initDropDownBox: function(box, editor) {
 			var dropDown = this, datePicker = dropDown.get("box.control");
 			if (datePicker) {
@@ -939,5 +948,10 @@
 	
 	dorado.widget.View.registerDefaultComponent("defaultDateDropDown", function() {
 		return new dorado.widget.DateDropDown();
+	});
+	dorado.widget.View.registerDefaultComponent("defaultDateTimeDropDown", function() {
+		return new dorado.widget.DateDropDown({
+			showTimeSpinner: true
+		});
 	});
 })();

@@ -608,6 +608,8 @@
 	DataType.PRIMITIVE_BOOLEAN = 6;
 	DataType.BOOLEAN = 7;
 	DataType.DATE = 8;
+	DataType.TIME = 9;
+	DataType.DATETIME = 10;
 
 	/**
 	 * @class 字符串类型。
@@ -866,7 +868,13 @@
 				var format = $setting["common.defaultTimeFormat"];
 				if(format) {
 					date = Date.parseDate(data, format);
-					if(date == null) data = new Date(data);
+					if(date == null) {
+						var format = $setting["common.defaultDateTimeFormat"];
+						if (format) {
+							date = Date.parseDate(data, format);
+							if(date == null) data = new Date(data);
+						}
+					}
 				}
 			}
 			if (date == null) {
@@ -893,5 +901,27 @@
 	 * @constant
 	 */
 	dorado.$Date = new dorado.datatype.DateDataType("Date");
+
+	/**
+	 * 默认的时间类型的实例。
+	 * @type dorado.datatype.DateDataType
+	 * @constant
+	 */
+	var time = dorado.$Time = new dorado.datatype.DateDataType("Time");
+	time._code = DataType.TIME;
+	time.doToText = function(data, argument) {
+		return (data != null && data instanceof Date) ? data.formatDate(argument || $setting["common.defaultTimeFormat"]) : '';
+	};
+
+	/**
+	 * 默认的日期时间类型的实例。
+	 * @type dorado.datatype.DateDataType
+	 * @constant
+	 */
+	var datetime = dorado.$DateTime = new dorado.datatype.DateDataType("DateTime");
+	datetime._code = DataType.DATETIME;
+	datetime.doToText = function(data, argument) {
+		return (data != null && data instanceof Date) ? data.formatDate(argument || $setting["common.defaultDateTimeFormat"]) : '';
+	};
 
 })();

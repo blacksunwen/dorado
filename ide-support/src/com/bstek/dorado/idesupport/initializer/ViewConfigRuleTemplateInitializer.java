@@ -85,7 +85,6 @@ public class ViewConfigRuleTemplateInitializer implements
 			}
 			componentRuleTemplate.setSortFactor(++sortFactor);
 			componentRuleTemplate.setCategory(registerInfo.getCategory());
-			componentRuleTemplate.setNodeName(registerInfo.getName());
 
 			if (registerInfo instanceof AssembledComponentTypeRegisterInfo) {
 				AssembledComponentTypeRegisterInfo assembledComponentTypeRegisterInfo = (AssembledComponentTypeRegisterInfo) registerInfo;
