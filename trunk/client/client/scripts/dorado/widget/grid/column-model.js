@@ -557,8 +557,6 @@
 				var cell = row.cells[i];
 				
 				var label = cell.firstChild;
-				if(!label) debugger;
-				
 				if (grid._dynaRowHeight) {
 					label.style.overflowY = "visible";
 					cell.style.height = grid._rowHeight + "px";
