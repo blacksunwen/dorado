@@ -111,8 +111,7 @@ public final class JsonUtils {
 	public static boolean getBoolean(ObjectNode objectNode, String property,
 			boolean defaultValue) {
 		JsonNode propertyNode = objectNode.get(property);
-		return (propertyNode != null) ? propertyNode.asBoolean()
-				: defaultValue;
+		return (propertyNode != null) ? propertyNode.asBoolean() : defaultValue;
 	}
 
 	public static boolean getBoolean(ObjectNode objectNode, String property) {
@@ -310,6 +309,16 @@ public final class JsonUtils {
 		}
 
 		if (value instanceof Number || value instanceof Boolean) {
+			if (value instanceof Float
+					&& (!Float.isInfinite((Float) value) || !Float
+							.isNaN((Float) value))) {
+				return "undefined";
+			}
+			if (value instanceof Double
+					&& (!Double.isInfinite((Double) value) || !Double
+							.isNaN((Double) value))) {
+				return "undefined";
+			}
 			return value.toString();
 		}
 		return quote(value.toString());
