@@ -140,8 +140,7 @@ dorado.widget.DataListBox = $extend([dorado.widget.AbstractListBox, dorado.widge
 			if (row) {
 				var nextRow = row.nextSibling;
 				this.removeItemDom(row);
-				if (this._forceRefreshRearRows) {
-					this._ignoreItemTimestamp = true;
+				if (this._forceRefreshRearRows !== false) {
 					while (nextRow) {
 						this.refreshItemDom(tbody, $fly(nextRow).data("item"), nextRow.sectionRowIndex);
 						nextRow = nextRow.nextSibling;
@@ -151,10 +150,7 @@ dorado.widget.DataListBox = $extend([dorado.widget.AbstractListBox, dorado.widge
 			}
 		} else {
 			var itemModel = this._itemModel;
-			if (this._forceRefreshRearRows) {
-				if (this._forceRefreshRearRows) this._ignoreItemTimestamp = true;
-				this.refresh(true);
-			} else if (row) {
+			if (row) {
 				if (row == tbody.firstChild) {
 					itemModel.setStartIndex(itemModel.getStartIndex() - 1);
 					if (itemModel.getStartIndex() < 0) itemModel.setStartIndex(0);
@@ -214,8 +210,7 @@ dorado.widget.DataListBox = $extend([dorado.widget.AbstractListBox, dorado.widge
 					}
 			}
 			this.refreshItemDom(tbody, entity, row.sectionRowIndex);
-			if (this._forceRefreshRearRows) {
-				this._ignoreItemTimestamp = true;
+			if (this._forceRefreshRearRows != false) {
 				row = row.nextSibling;
 				while (row) {
 					this.refreshItemDom(tbody, $fly(row).data("item"), row.sectionRowIndex);
@@ -227,10 +222,7 @@ dorado.widget.DataListBox = $extend([dorado.widget.AbstractListBox, dorado.widge
 			var itemModel = this._itemModel;
 			var i = itemModel.getItemIndex(entity);
 			if (i >= 0) {
-				if (this._forceRefreshRearRows) {
-					if (this._forceRefreshRearRows) this._ignoreItemTimestamp = true;
-					this.refresh(true);
-				} else if (i < this.startIndex) {
+				if (i < this.startIndex) {
 					this.startIndex++;
 					itemModel.setStartIndex(itemModel.getStartIndex() + 1);
 					this._adjustBeginBlankRow();

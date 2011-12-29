@@ -1235,13 +1235,13 @@
 			var columnsInfo = this._columnsInfo = this.getColumnsInfo(fixedColumnCount);
 			if (columnsInfo) {
 				var cols = columnsInfo.dataColumns;
-				this._forceRefreshRearRows = false;
+				// this._forceRefreshRearRows = false;	// TODO: 如果未来为List、Grid提供pianoKey选项，则此处的默认值应考虑改为false
 				for (var i = 0; i < cols.length; i++) {
 					var col = cols[i];
 					col._realWidth = parseInt(col._realWidth || col._width) || 80;
-					if (col instanceof dorado.widget.grid.RowNumColumn) {
-						this._forceRefreshRearRows = true;
-					}
+					// if (col instanceof dorado.widget.grid.RowNumColumn) {
+					// 	this._forceRefreshRearRows = true;
+					// }
 				}
 			}
 
