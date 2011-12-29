@@ -688,6 +688,7 @@
 		_nodeRemoved: TreePrototype._nodeRemoved,
 		_insertChildNodes: TreePrototype._insertChildNodes,
 		_removeChildNodes: TreePrototype._removeChildNodes,
+		_refreshRearRows: TreePrototype._refreshRearRows,
 		_nodeExpanded: TreePrototype._nodeExpanded,
 		_nodeCollapsed: TreePrototype._nodeCollapsed
 	});

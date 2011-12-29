@@ -71,7 +71,24 @@
 			return row;
 		},
 		
+		_refreshRearRows: function(fromRow) {
+			if (fromRow && this._forceRefreshRearRows !== false) {
+				var nextRow = fromRow, tbody = this._dataTBody;
+				while (nextRow) {
+					var item = $fly(nextRow).data("item");
+					this.refreshItemDom(tbody, item, nextRow.sectionRowIndex);
+					nextRow = nextRow.nextSibling;
+				}
+			}
+		},
+		
 		_insertChildNodes: function(node, row, animated, callback) {
+			
+			function invokdCallback(refRow, callback, node) {
+				this._refreshRearRows(refRow);
+				if (callback) $callback(callback, true, node);
+			}
+			
 			var tbody = this._dataTBody, refRow = row ? row.nextSibling : null;
 			var it = new dorado.widget.tree.TreeNodeIterator(node), count = 0, bottom = -1;
 			while (it.hasNext()) {
@@ -104,16 +121,25 @@
 						if (childRow) childRow.style.display = "";
 					}
 					self.notifySizeChange();
-					$callback(callback, true, node);
+					invokdCallback.call(self, refRow, callback, node);
 					self._duringAnimation = false;
 				});
 			} else {
 				this.notifySizeChange();
-				$callback(callback, true, node);
+				invokdCallback.call(this, refRow, callback, node);
 			}
 		},
 		
 		_removeChildNodes: function(node, animated, callback) {
+			
+			function invokdCallback(node, callback, node) {
+				if (this._forceRefreshRearRows !== false) {
+					var row = this._itemDomMap[node._id];
+					if (row) this._refreshRearRows(row);
+				}
+				if (callback) $callback(callback, true, node);
+			}
+			
 			var it = new dorado.widget.tree.TreeNodeIterator(node);
 			var rowsToRemove = [];
 			while (it.hasNext()) {
@@ -133,8 +159,8 @@
 				}
 				
 				for (var i = 0; i < rowsToRemove.length; i++) {
-					var row = rowsToRemove[i];
-					this.removeItemDom(row);
+					var childRow = rowsToRemove[i];
+					this.removeItemDom(childRow);
 				}
 				
 				if (animated && !this._duringAnimation) {
@@ -145,13 +171,13 @@
 					}, 200, "swing", function() {
 						$fly(indicator).remove();
 						self.notifySizeChange();
-						if (callback) $callback(callback, true, node);
+						invokdCallback.call(self, node, callback, node);
 						self._duringAnimation = false;
 					});
 				}
 			} else {
 				this.notifySizeChange();
-				if (callback) $callback(callback, true, node);
+				invokdCallback.call(this, node, callback, node);
 			}
 		},
 		
@@ -320,9 +346,15 @@
 			if (this._scrollMode != "viewport") {
 				if (parentNode) {
 					if (parentNode._expanded) {
+						this._forceRefreshRearRows = false;
 						if (node._expanded) this._removeChildNodes(node);
+						this._forceRefreshRearRows = true;
 						var row = this._itemDomMap[node._id];
-						if (row) this.removeItemDom(row);
+						if (row) {
+							var nextRow = row.nextSibling;
+							this.removeItemDom(row);
+							if (nextRow) this._refreshRearRows(nextRow);
+						}
 					}
 					
 					if (!parentNode.get("hasChild")) {

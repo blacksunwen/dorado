@@ -702,13 +702,13 @@ dorado.widget.DataTree = $extend([dorado.widget.Tree, dorado.widget.DataControl]
 				}
 
 				if (parentNode && parentNode._expanded) {
-					if (this._scrollMode == "simple") {
-						parentNode.rebuildChildNodes();
-					} else {
+					if (this._scrollMode == "viewport") {
 						this.disableAutoRefresh();
 						parentNode._prepareChildren();
 						this.enableAutoRefresh();
 						this.refresh(true);
+					} else {
+						parentNode.rebuildChildNodes();
 					}
 				}
 				break;
