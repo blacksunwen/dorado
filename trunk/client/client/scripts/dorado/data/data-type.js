@@ -891,7 +891,7 @@
 		 * @see Date
 		 */
 		doToText : function(data, argument) {
-			return (data != null && data instanceof Date) ? data.formatDate(argument || $setting["common.defaultDateFormat"]) : '';
+			return (data != null && data instanceof Date) ? data.formatDate(argument || $setting["common.defaultDisplayDateFormat"]) : '';
 		}
 	});
 
@@ -910,7 +910,7 @@
 	var time = dorado.$Time = new dorado.datatype.DateDataType("Time");
 	time._code = DataType.TIME;
 	time.doToText = function(data, argument) {
-		return (data != null && data instanceof Date) ? data.formatDate(argument || $setting["common.defaultTimeFormat"]) : '';
+		return (data != null && data instanceof Date) ? data.formatDate(argument || $setting["common.defaultDisplayTimeFormat"]) : '';
 	};
 
 	/**
@@ -921,7 +921,7 @@
 	var datetime = dorado.$DateTime = new dorado.datatype.DateDataType("DateTime");
 	datetime._code = DataType.DATETIME;
 	datetime.doToText = function(data, argument) {
-		return (data != null && data instanceof Date) ? data.formatDate(argument || $setting["common.defaultDateTimeFormat"]) : '';
+		return (data != null && data instanceof Date) ? data.formatDate(argument || $setting["common.defaultDisplayDateTimeFormat"]) : '';
 	};
 
 })();
