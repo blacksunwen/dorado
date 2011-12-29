@@ -127,7 +127,6 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 		if (Component.class.isAssignableFrom(type)) {
 			Widget widget = type.getAnnotation(Widget.class);
 			if (widget != null) {
-				ruleTemplate.setNodeName(widget.name());
 				if (ArrayUtils.indexOf(type.getDeclaredAnnotations(), widget) >= 0) {
 					if (StringUtils.isEmpty(ruleTemplate.getCategory())) {
 						ruleTemplate.setCategory(widget.category());
@@ -180,13 +179,11 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 	protected RuleTemplate createRuleTemplate(
 			RuleTemplateManager ruleTemplateManager, Class<?> type,
 			RuleTemplate parentRuleTemplate) throws Exception {
-		String name = type.getSimpleName(), nodeName = null, label = null;
+		String name = type.getSimpleName(), label = null;
 		String tempName = name;
 		int tryCount = 0;
 		while (ruleTemplateManager.getRuleTemplate(name) != null) {
 			name = tempName + '_' + (++tryCount);
-			nodeName = type.getSimpleName();
-			label = type.getSimpleName();
 		}
 
 		String scope = null;
@@ -213,9 +210,6 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 		}
 		if (scope != null) {
 			newRuleTemplate.setScope(scope);
-		}
-		if (nodeName != null) {
-			newRuleTemplate.setNodeName(nodeName);
 		}
 		ruleTemplateManager.addRuleTemplate(newRuleTemplate);
 		return newRuleTemplate;

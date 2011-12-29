@@ -283,14 +283,16 @@ public class RuleTemplate {
 			return;
 		}
 		inheritanceProcessed = true;
+
+		final String InheritablePropertyNames = "label,nodeName,type";
 		if (parents != null && parents.length > 0) {
 			Map<String, Object> props = new HashMap<String, Object>();
-			applyProperties(this, props, "nodeName");
+			applyProperties(this, props, InheritablePropertyNames);
 			for (RuleTemplate parent : parents) {
 				parent.processInheritance();
-				applyProperties(parent, this, "nodeName");
+				applyProperties(parent, this, InheritablePropertyNames);
 			}
-			applyProperties(props, this, "nodeName");
+			applyProperties(props, this, InheritablePropertyNames);
 		}
 	}
 

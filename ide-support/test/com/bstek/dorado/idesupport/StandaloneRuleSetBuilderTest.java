@@ -134,5 +134,8 @@ public class StandaloneRuleSetBuilderTest extends IdeSupportContextTestCase {
 		Child child = autoFormRule.getChild("AutoFormElement");
 		assertNotNull(child);
 
+		Rule dataColumnRule = ruleSet.getRule("DataColumn");
+		assertNotNull(dataColumnRule);
+		assertEquals("DataColumn", dataColumnRule.getNodeName());
 	}
 }

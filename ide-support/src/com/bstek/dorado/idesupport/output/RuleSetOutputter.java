@@ -105,7 +105,7 @@ public class RuleSetOutputter {
 		setElementAttributes(
 				element,
 				ruleTempalte,
-				"label,abstract,nodeName,scope,sortFactor,category,robots,icon,labelProperty,autoGenerateId,reserve");
+				"label,abstract,nodeName,type,scope,sortFactor,category,robots,icon,labelProperty,autoGenerateId,reserve");
 
 		xmlWriter.writeOpen(element);
 
