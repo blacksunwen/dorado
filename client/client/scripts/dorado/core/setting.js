@@ -27,8 +27,12 @@
 	 */
 	dorado.Setting = {
 		"common.defaultDateFormat": "Y-m-d",
-		"common.defaultTimeFormat": "H:i:s",
-		"common.defaultDateTimeFormat": "Y-m-d H:i:s",
+		"common.defaultTimeFormat": "H:i:s\\Z",
+		"common.defaultDateTimeFormat": "Y-m-d\\TH:i:s\\Z",
+
+		"common.defaultDisplayDateFormat": "Y-m-d",
+		"common.defaultDisplayTimeFormat": "H:i:s",
+		"common.defaultDisplayDateTimeFormat": "Y-m-d H:i:s",
 		
 		"ajax.defaultOptions": null,
 		"ajax.autoBatchSupportedUris": [doradoServierURI],
