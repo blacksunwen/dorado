@@ -427,8 +427,16 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 		for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
 			Method readMethod = propertyDescriptor.getReadMethod();
 			if (readMethod != null
-					&& propertyDescriptor.getWriteMethod() != null
-					&& readMethod.getDeclaringClass() == type) {
+					&& propertyDescriptor.getWriteMethod() != null) {
+				if (readMethod.getDeclaringClass() != type) {
+					try {
+						readMethod = type.getDeclaredMethod(readMethod.getName(),
+								readMethod.getParameterTypes());
+					} catch (NoSuchMethodException e) {
+						continue;
+					}
+				}
+
 				String propertyName = propertyDescriptor.getName();
 
 				XmlSubNode xmlSubNode = readMethod
@@ -581,7 +589,16 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 				.getPropertyDescriptors(type);
 		for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
 			Method readMethod = propertyDescriptor.getReadMethod();
-			if (readMethod != null && readMethod.getDeclaringClass() == type) {
+			if (readMethod != null) {
+				if (readMethod.getDeclaringClass() != type) {
+					try {
+						readMethod = type.getDeclaredMethod(readMethod.getName(),
+								readMethod.getParameterTypes());
+					} catch (NoSuchMethodException e) {
+						continue;
+					}
+				}
+
 				XmlSubNode xmlSubNode = readMethod
 						.getAnnotation(XmlSubNode.class);
 				if (xmlSubNode != null) {
