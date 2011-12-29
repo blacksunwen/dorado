@@ -129,6 +129,12 @@ public class RuleSetBuilder {
 				rule,
 				"label,abstract,nodeName,type,category,robots,icon,labelProperty,autoGenerateId,reserve");
 
+		if (StringUtils.isEmpty(rule.getNodeName())
+				&& StringUtils.isNotEmpty(rule.getType())) {
+			String type = rule.getType();
+			rule.setNodeName(StringUtils.substringAfterLast(type, "."));
+		}
+
 		if (ruleTemplate.getSortFactor() > 0) {
 			rule.setSortFactor(ruleTemplate.getSortFactor());
 		}
