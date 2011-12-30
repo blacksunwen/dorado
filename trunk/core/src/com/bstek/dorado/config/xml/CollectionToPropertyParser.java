@@ -77,8 +77,7 @@ class AddElementsOperation implements DefinitionInitOperation {
 	public void execute(Object object, CreationContext context)
 			throws Exception {
 		Collection collection = null;
-		boolean useNativeProperty = false, isDefinition = false;
-		;
+		boolean useNativeProperty = false, isDefinition = false, shouldSetCollection = true;
 		if (object instanceof Definition) {
 			isDefinition = true;
 			try {
@@ -90,12 +89,10 @@ class AddElementsOperation implements DefinitionInitOperation {
 			}
 
 			if (!useNativeProperty) {
-				Definition parentDefinition = (Definition) object;
-				collection = (Collection) parentDefinition
+				collection = (Collection) ((Definition) object)
 						.getProperty(property);
 				if (collection == null) {
 					collection = new DefinitionSupportedList();
-					parentDefinition.setProperty(property, collection);
 				}
 			}
 		} else {
@@ -105,14 +102,8 @@ class AddElementsOperation implements DefinitionInitOperation {
 		if (useNativeProperty) {
 			collection = (Collection) PropertyUtils.getSimpleProperty(object,
 					property);
-			if (collection == null) {
-				if (List.class.isAssignableFrom(PropertyUtils.getPropertyType(
-						object, property))) {
-					collection = new ArrayList();
-				} else {
-					collection = new HashSet();
-				}
-				PropertyUtils.setSimpleProperty(object, property, collection);
+			if (collection != null) {
+				shouldSetCollection = false;
 			}
 		}
 
@@ -133,6 +124,20 @@ class AddElementsOperation implements DefinitionInitOperation {
 				}
 			} else {
 				collection.addAll(elements);
+			}
+		}
+
+		if (shouldSetCollection) {
+			if (useNativeProperty) {
+				if (List.class.isAssignableFrom(PropertyUtils.getPropertyType(
+						object, property))) {
+					collection = new ArrayList();
+				} else {
+					collection = new HashSet();
+				}
+				PropertyUtils.setSimpleProperty(object, property, collection);
+			} else {
+				((Definition) object).setProperty(property, collection);
 			}
 		}
 	}
