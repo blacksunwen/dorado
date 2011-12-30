@@ -45,7 +45,6 @@ public class RuleTemplateManager {
 				listener.ruleTemplateAdded(this, ruleTemplate);
 			}
 		}
-
 	}
 
 	public void removeRuleTemplate(String name) throws Exception {

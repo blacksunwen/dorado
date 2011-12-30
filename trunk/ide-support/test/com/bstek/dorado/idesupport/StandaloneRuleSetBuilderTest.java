@@ -120,6 +120,7 @@ public class StandaloneRuleSetBuilderTest extends IdeSupportContextTestCase {
 
 		Rule label1Rule = ruleSet.getRule("Label_1");
 		assertNotNull(label1Rule);
+		assertEquals("Label", label1Rule.getNodeName());
 		assertEquals(Integer.MAX_VALUE, label1Rule.getSortFactor());
 
 		Rule toolBarButtonRule = ruleSet.getRule("Button_1");
