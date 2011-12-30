@@ -4,11 +4,36 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.XmlNodeWrapper;
+import com.bstek.dorado.annotation.XmlProperty;
+import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.jdbc.model.AbstractTable;
 import com.bstek.dorado.jdbc.model.Column;
 
+@XmlNode(
+	parser = "spring:dorado.jdbc.tableParser",
+	definitionType = "com.bstek.dorado.jdbc.model.table.TableDefinition", 
+	properties = {
+		@XmlProperty(
+			propertyName="autoCreateColumns", 
+			parser = "spring:dorado.staticPropertyParser"
+		)
+	},
+	subNodes = {
+		@XmlSubNode(
+			wrapper = @XmlNodeWrapper(nodeName = "Columns", fixed = true), 
+			propertyName="!columns",
+			propertyType = "List<com.bstek.dorado.jdbc.model.Column>", 
+			implTypes="com.bstek.dorado.jdbc.model.table.*"
+		)
+	}
+)
+
 public class Table extends AbstractTable {
 
+	public static final String TYPE = "Table";
+	
 	private String tableName;
 	private String catalog;
 	private String schema;
@@ -33,9 +58,10 @@ public class Table extends AbstractTable {
 	
 	@Override
 	public String getType() {
-		return "Table";
+		return TYPE;
 	}
 
+	@XmlProperty(attributeOnly=true)
 	public String getTableName() {
 		return tableName;
 	}
@@ -44,6 +70,7 @@ public class Table extends AbstractTable {
 		this.tableName = tableName;
 	}
 
+	@XmlProperty(attributeOnly=true)
 	public String getCatalog() {
 		return catalog;
 	}
@@ -52,6 +79,7 @@ public class Table extends AbstractTable {
 		this.catalog = spaceName;
 	}
 
+	@XmlProperty(attributeOnly=true)
 	public String getSchema() {
 		return schema;
 	}
@@ -87,8 +115,13 @@ public class Table extends AbstractTable {
 	public List<TableColumn> getTableColumns() {
 		return Collections.unmodifiableList(tableColumns);
 	}
-
+	
 	public List<TableKeyColumn> getKeyColumns() {
 		return Collections.unmodifiableList(keyColumns);
+	}
+
+	@Override
+	protected String getDefaultSQLGeneratorName() {
+		return "spring:dorado.jdbc.tableSqlGenerator";
 	}
 }

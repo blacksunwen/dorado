@@ -7,15 +7,13 @@ import com.bstek.dorado.data.entity.EntityState;
 import com.bstek.dorado.data.entity.EntityUtils;
 import com.bstek.dorado.data.provider.Page;
 import com.bstek.dorado.data.variant.Record;
-import com.bstek.dorado.jdbc.config.JdbcConfigManager;
+import com.bstek.dorado.jdbc.config.DbmManager;
 import com.bstek.dorado.jdbc.config.JdbcEnviromentManager;
 import com.bstek.dorado.jdbc.model.DbElement;
+import com.bstek.dorado.jdbc.model.DbElementCreationContext;
+import com.bstek.dorado.jdbc.model.DbElementDefinition;
 import com.bstek.dorado.jdbc.model.DbTable;
 import com.bstek.dorado.jdbc.model.TableTrigger;
-import com.bstek.dorado.jdbc.model.storedprogram.StoredProgram;
-import com.bstek.dorado.jdbc.model.storedprogram.StoredProgramContext;
-import com.bstek.dorado.jdbc.model.storedprogram.StoredProgramOperation;
-import com.bstek.dorado.jdbc.sql.SqlGenerator;
 import com.bstek.dorado.util.Assert;
 
 /**
@@ -36,26 +34,27 @@ public abstract class JdbcUtils {
 		}
 	}
 	
-	public static JdbcConfigManager getJdbcConfigManager() {
+	public static DbmManager getDbmManager() {
 		Context context = Context.getCurrent();
 		try {
-			JdbcConfigManager parser = (JdbcConfigManager)context.getServiceBean("jdbc.jdbcConfigManager");
+			DbmManager parser = (DbmManager)context.getServiceBean("jdbc.dbmManager");
 			return parser;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 	
-	public static SqlGenerator getSqlGenerator(DbElement dbElement) {
-		SqlGenerator generator = getJdbcConfigManager().getSqlGenerator(dbElement.getType());
-		return generator;
-	}
-	
-	public static DbElement getDbElement(String elementName) {
+	public static DbTable getDbTable(String elementName) {
 		Assert.notEmpty(elementName, "DbElement name must not be null.");
-		DbElement dbElement = JdbcUtils.getJdbcConfigManager().getDbElement(elementName);
+		DbElementDefinition definition = JdbcUtils.getDbmManager().getDefinition(elementName);
+		DbElementCreationContext context = new DbElementCreationContext();
 		
-		return dbElement;
+		try {
+			DbTable dbElement = (DbTable)definition.create(context);
+			return dbElement;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -68,11 +67,8 @@ public abstract class JdbcUtils {
 	@SuppressWarnings("rawtypes") 
 	public static void query(String tableName, Object parameter, Page page) {
 		Assert.notEmpty(tableName, "tableName must not be null.");
-
-		DbElement dbElement = JdbcUtils.getDbElement(tableName);
-		Assert.isTrue(dbElement instanceof DbTable, "[" + tableName + "] is not a table.");
+		DbTable table = JdbcUtils.getDbTable(tableName);
 		
-		DbTable table = (DbTable)dbElement;
 		JdbcDataProviderContext rCtx = new JdbcDataProviderContext(table.getJdbcEnviroment(),parameter, page);
 		JdbcDataProviderOperation operation = new JdbcDataProviderOperation(table, rCtx);
 		TableTrigger trigger = table.getTrigger();
@@ -97,7 +93,7 @@ public abstract class JdbcUtils {
 	}
 	
 	public static void doSave(String tableName, Record record, EntityState state) {
-		DbElement dbe = getDbElement(tableName);
+		DbElement dbe = getDbTable(tableName);
 		Assert.isTrue(dbe instanceof DbTable, "[" + tableName + "] is not a table.");
 		DbTable table = (DbTable)dbe;
 		
@@ -121,22 +117,4 @@ public abstract class JdbcUtils {
 			trigger.doSave(operation);
 		}
 	}
-	
-	public static Object call(String spName, Object parameter) {
-		StoredProgram sp = null;
-		StoredProgramContext spContext = new StoredProgramContext(null, parameter);
-		StoredProgramOperation operation = new StoredProgramOperation(sp, spContext);
-		operation.execute();
-		
-		return spContext.getReturnValue();
-	}
-	
-	public static Object call(StoredProgram sp, Object parameter) {
-		StoredProgramContext spContext = new StoredProgramContext(null, parameter);
-		StoredProgramOperation operation = new StoredProgramOperation(sp, spContext);
-		operation.execute();
-		
-		return spContext.getReturnValue();
-	}
-	
 }

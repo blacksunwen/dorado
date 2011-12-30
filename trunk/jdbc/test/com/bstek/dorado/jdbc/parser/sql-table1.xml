@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SqlTable name="sqlTable1" jdbcEnviroment="ora11">
+  <Columns>
+    <Column propertyName="DEPT_NAME" columnName="DEPT_NAME"/>
+    <Column propertyName="DEPT_ID" columnName="DEPT_ID"/>
+    <Column propertyName="PARENT_ID" columnName="PARENT_ID"/>
+  </Columns>
+  <Property name="querySql"><![CDATA[select * from DEPT]]></Property>
+</SqlTable>

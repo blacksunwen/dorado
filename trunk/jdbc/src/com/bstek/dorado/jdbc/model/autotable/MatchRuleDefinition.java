@@ -5,7 +5,7 @@ import com.bstek.dorado.config.definition.ObjectDefinition;
 import com.bstek.dorado.config.definition.Operation;
 import com.bstek.dorado.jdbc.model.DbElementCreationContext;
 
-public class MatchRuleDefinition extends ObjectDefinition implements Operation{
+public class MatchRuleDefinition extends ObjectDefinition implements Operation {
 
 	@Override
 	public void execute(Object object, CreationContext context)

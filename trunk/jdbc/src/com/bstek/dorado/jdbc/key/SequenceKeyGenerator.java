@@ -33,7 +33,7 @@ public class SequenceKeyGenerator extends AbstractKeyGenerator<Number> {
 		
 		JdbcEnviroment jdbcEnviroment = operation.getJdbcContext().getJdbcEnviroment();
 		if (jdbcEnviroment == null) {
-			jdbcEnviroment = operation.getDbElement().getJdbcEnviroment();
+			jdbcEnviroment = operation.getDbTable().getJdbcEnviroment();
 		}
 		
 		Dialect dialect = jdbcEnviroment.getDialect();

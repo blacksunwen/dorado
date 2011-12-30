@@ -1,8 +1,9 @@
 package com.bstek.dorado.jdbc.model;
 
+import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.jdbc.type.JdbcType;
 
-public class Column {
+public abstract class Column {
 	
 	private String columnName;
 
@@ -28,6 +29,7 @@ public class Column {
 		return propertyName;
 	}
 
+	@XmlProperty(parser="spring:dorado.jdbc.jdbcTypeParser")
 	public JdbcType getJdbcType() {
 		return jdbcType;
 	}

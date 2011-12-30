@@ -13,18 +13,18 @@ import com.bstek.dorado.jdbc.JdbcEnviroment;
 public abstract class DbElementJdbcOperation<T extends AbstractJdbcContext> {
 	private T jdbcContext;
 
-	public DbElementJdbcOperation(DbElement dbElement, T jdbcContext) {
+	public DbElementJdbcOperation(DbTable dbElement, T jdbcContext) {
 		this.dbElement = dbElement;
 		this.jdbcContext = jdbcContext;
 	}
 
-	private DbElement dbElement;
+	private DbTable dbElement;
 
-	public DbElement getDbElement() {
+	public DbTable getDbTable() {
 		return dbElement;
 	}
 
-	public void setDbElement(DbElement dbElement) {
+	public void setDbTable(DbTable dbElement) {
 		this.dbElement = dbElement;
 	}
 
@@ -36,7 +36,7 @@ public abstract class DbElementJdbcOperation<T extends AbstractJdbcContext> {
 		AbstractJdbcContext jdbcContext = getJdbcContext();
 		JdbcEnviroment env = jdbcContext.getJdbcEnviroment();
 		if (env == null) {
-			env = this.getDbElement().getJdbcEnviroment();
+			env = this.getDbTable().getJdbcEnviroment();
 		}
 		return env;
 	}

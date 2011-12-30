@@ -55,8 +55,8 @@ public class JdbcDataResolverOperation {
 	
 	protected void doResolve(JdbcDataResolverItem item, Record record, JdbcDataResolverContext jdbcContext) {
 		String eName = item.getTableName();
-		DbElement dbElement = JdbcUtils.getDbElement(eName); 
-		JdbcRecordOperation operation = new JdbcRecordOperation(dbElement, record, jdbcContext);
+		DbTable dbTable = JdbcUtils.getDbTable(eName); 
+		JdbcRecordOperation operation = new JdbcRecordOperation(dbTable, record, jdbcContext);
 		
 		this.doResolve(item, operation);
 	}
@@ -85,7 +85,7 @@ public class JdbcDataResolverOperation {
 			}
 		}
 		
-		DbElement dbElement = operation.getDbElement();
+		DbElement dbElement = operation.getDbTable();
 		Assert.isTrue(dbElement instanceof DbTable, "["+dbElement.getName()+"] is not table.");
 
 		DbTable table = (DbTable)dbElement;

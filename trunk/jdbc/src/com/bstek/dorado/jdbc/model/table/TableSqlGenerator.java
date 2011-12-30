@@ -5,30 +5,28 @@ import java.util.List;
 import com.bstek.dorado.data.entity.EntityEnhancer;
 import com.bstek.dorado.data.entity.EntityUtils;
 import com.bstek.dorado.data.variant.Record;
+import com.bstek.dorado.jdbc.Dialect;
 import com.bstek.dorado.jdbc.JdbcDataProviderOperation;
 import com.bstek.dorado.jdbc.JdbcParameterSource;
 import com.bstek.dorado.jdbc.JdbcRecordOperation;
 import com.bstek.dorado.jdbc.key.KeyGenerator;
 import com.bstek.dorado.jdbc.model.Column;
+import com.bstek.dorado.jdbc.sql.CurdSqlGenerator;
 import com.bstek.dorado.jdbc.sql.DeleteSql;
 import com.bstek.dorado.jdbc.sql.InsertSql;
 import com.bstek.dorado.jdbc.sql.SelectSql;
-import com.bstek.dorado.jdbc.sql.SqlGenerator;
 import com.bstek.dorado.jdbc.sql.SqlUtils;
 import com.bstek.dorado.jdbc.sql.UpdateSql;
 import com.bstek.dorado.jdbc.type.JdbcType;
 import com.bstek.dorado.util.Assert;
 
-public class TableSqlGenerator implements SqlGenerator {
+public class TableSqlGenerator implements CurdSqlGenerator {
 
-	public String getType() {
-		return "Table";
-	}
-	
 	@Override
 	public SelectSql selectSql(JdbcDataProviderOperation operation) {
-		Table table = (Table)operation.getDbElement();
+		Table table = (Table)operation.getDbTable();
 		Object parameter = operation.getJdbcContext().getParameter();
+		Dialect dialect = operation.getJdbcEnviroment().getDialect();
 		
 		//SelectSql
 		TableSelectSql selectSql = new TableSelectSql();
@@ -50,7 +48,7 @@ public class TableSqlGenerator implements SqlGenerator {
 		selectSql.setColumnsToken(columnsToken.toString());
 		
 		//tableToken
-		String tableToken = SqlUtils.token(table);
+		String tableToken = dialect.token(table);
 		selectSql.setTableToken(tableToken);
 		
 		//dynamicToken
@@ -68,13 +66,15 @@ public class TableSqlGenerator implements SqlGenerator {
 
 	@Override
 	public InsertSql insertSql(JdbcRecordOperation operation) {
-		Table table = (Table)operation.getDbElement();
+		Dialect dialect = operation.getJdbcEnviroment().getDialect();
+		
+		Table table = (Table)operation.getDbTable();
 		Record record = operation.getRecord();
 		
 		InsertSql sql = new InsertSql();
 		JdbcParameterSource parameterSource = SqlUtils.createJdbcParameter(record);
 		sql.setParameterSource(parameterSource);
-		sql.setTableToken(SqlUtils.token(table));
+		sql.setTableToken(dialect.token(table));
 		
 		for (TableKeyColumn keyColumn: table.getKeyColumns()) {
 			String propertyName = keyColumn.getPropertyName();
@@ -164,13 +164,15 @@ public class TableSqlGenerator implements SqlGenerator {
 	
 	@Override
 	public UpdateSql updateSql(JdbcRecordOperation operation) {
-		Table table = (Table)operation.getDbElement();
+		Dialect dialect = operation.getJdbcEnviroment().getDialect();
+		
+		Table table = (Table)operation.getDbTable();
 		Record record = operation.getRecord();
 		
 		UpdateSql sql = new UpdateSql();
 		JdbcParameterSource parameterSource = SqlUtils.createJdbcParameter(record);
 		sql.setParameterSource(parameterSource);
-		sql.setTableToken(SqlUtils.token(table));
+		sql.setTableToken(dialect.token(table));
 		
 		for (TableKeyColumn keyColumn: table.getKeyColumns()) {
 			String propertyName = keyColumn.getPropertyName();
@@ -233,13 +235,15 @@ public class TableSqlGenerator implements SqlGenerator {
 
 	@Override
 	public DeleteSql deleteSql(JdbcRecordOperation operation) {
-		Table table = (Table)operation.getDbElement();
+		Dialect dialect = operation.getJdbcEnviroment().getDialect();
+		
+		Table table = (Table)operation.getDbTable();
 		Record record = operation.getRecord();
 		
 		DeleteSql sql = new DeleteSql();
 		JdbcParameterSource parameterSource = SqlUtils.createJdbcParameter(record);
 		sql.setParameterSource(parameterSource);
-		sql.setTableToken(SqlUtils.token(table));
+		sql.setTableToken(dialect.token(table));
 		
 		for (TableKeyColumn keyColumn: table.getKeyColumns()) {
 			String propertyName = keyColumn.getPropertyName();

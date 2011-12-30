@@ -2,10 +2,14 @@ package com.bstek.dorado.jdbc.model.autotable;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.jdbc.sql.SqlConstants.NullsModel;
 import com.bstek.dorado.jdbc.sql.SqlConstants.OrderModel;
 import com.bstek.dorado.util.Assert;
 
+@XmlNode(
+	definitionType = "com.bstek.dorado.jdbc.model.autotable.OrderDefinition"
+)
 public class Order {
 	
 	private String tableAlias;

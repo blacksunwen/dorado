@@ -9,26 +9,21 @@ import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.JdbcDataProviderOperation;
 import com.bstek.dorado.jdbc.JdbcParameterSource;
 import com.bstek.dorado.jdbc.JdbcRecordOperation;
-import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.model.Column;
 import com.bstek.dorado.jdbc.model.table.Table;
+import com.bstek.dorado.jdbc.sql.CurdSqlGenerator;
 import com.bstek.dorado.jdbc.sql.DeleteSql;
 import com.bstek.dorado.jdbc.sql.InsertSql;
 import com.bstek.dorado.jdbc.sql.SelectSql;
-import com.bstek.dorado.jdbc.sql.SqlGenerator;
 import com.bstek.dorado.jdbc.sql.SqlUtils;
 import com.bstek.dorado.jdbc.sql.UpdateSql;
 import com.bstek.dorado.util.Assert;
 
-public class SqlTableSqlGenerator implements SqlGenerator {
-
-	public String getType() {
-		return "SqlTable";
-	}
+public class SqlTableSqlGenerator implements CurdSqlGenerator {
 	
 	@Override
 	public SelectSql selectSql(JdbcDataProviderOperation operation) {
-		SqlTable t = (SqlTable)operation.getDbElement();
+		SqlTable t = (SqlTable)operation.getDbTable();
 		Object parameter = operation.getJdbcContext().getParameter();
 		SqlSelectSql selectSql = new SqlSelectSql();
 		
@@ -45,7 +40,7 @@ public class SqlTableSqlGenerator implements SqlGenerator {
 
 	@Override
 	public InsertSql insertSql(JdbcRecordOperation operation) {
-		SqlTable sqlTable = (SqlTable)operation.getDbElement();
+		SqlTable sqlTable = (SqlTable)operation.getDbTable();
 		Table table = sqlTable.getTable();
 		Assert.notNull(table, sqlTable.getType() + " [" + sqlTable.getName() + "] " + "has no table to be inserted into.");
 		
@@ -70,14 +65,14 @@ public class SqlTableSqlGenerator implements SqlGenerator {
 		}
 		
 		JdbcRecordOperation sOperation = new JdbcRecordOperation(table, sRecord, operation.getJdbcContext());
-		SqlGenerator generator = JdbcUtils.getSqlGenerator(table);
+		CurdSqlGenerator generator = table.getCurdSqlGenerator();
 		operation.setSubstitute(sOperation, propertyMap);
 		return generator.insertSql(sOperation);
 	}
 
 	@Override
 	public UpdateSql updateSql(JdbcRecordOperation operation) {
-		SqlTable sqlTable = (SqlTable)operation.getDbElement();
+		SqlTable sqlTable = (SqlTable)operation.getDbTable();
 		Table table = sqlTable.getTable();
 		Assert.notNull(table, sqlTable.getType() + " [" + sqlTable.getName() + "] " + "has no table to be updated.");
 		
@@ -102,14 +97,14 @@ public class SqlTableSqlGenerator implements SqlGenerator {
 		}
 		
 		JdbcRecordOperation sOperation = new JdbcRecordOperation(table, sRecord, operation.getJdbcContext());
-		SqlGenerator generator = JdbcUtils.getSqlGenerator(table);
+		CurdSqlGenerator generator = table.getCurdSqlGenerator();
 		operation.setSubstitute(sOperation, propertyMap);
 		return generator.updateSql(sOperation);
 	}
 
 	@Override
 	public DeleteSql deleteSql(JdbcRecordOperation operation) {
-		SqlTable sqlTable = (SqlTable)operation.getDbElement();
+		SqlTable sqlTable = (SqlTable)operation.getDbTable();
 		Table table = sqlTable.getTable();
 		Assert.notNull(table, sqlTable.getType() + " [" + sqlTable.getName() + "] " + "has no table to be updated.");
 		
@@ -134,7 +129,7 @@ public class SqlTableSqlGenerator implements SqlGenerator {
 		}
 		
 		JdbcRecordOperation sOperation = new JdbcRecordOperation(table, sRecord, operation.getJdbcContext());
-		SqlGenerator generator = JdbcUtils.getSqlGenerator(table);
+		CurdSqlGenerator generator = table.getCurdSqlGenerator();
 		operation.setSubstitute(sOperation, propertyMap);
 		return generator.deleteSql(sOperation);
 	}

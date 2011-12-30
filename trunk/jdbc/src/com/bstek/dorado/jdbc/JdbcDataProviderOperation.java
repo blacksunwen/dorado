@@ -1,7 +1,7 @@
 package com.bstek.dorado.jdbc;
 
 import com.bstek.dorado.jdbc.model.DbElementJdbcOperation;
-import com.bstek.dorado.jdbc.model.DbElement;
+import com.bstek.dorado.jdbc.model.DbTable;
 
 /**
  * {@link com.bstek.dorado.jdbc.JdbcDataProvider}对应的数据库操作
@@ -12,9 +12,9 @@ import com.bstek.dorado.jdbc.model.DbElement;
 public class JdbcDataProviderOperation extends
 		DbElementJdbcOperation<JdbcDataProviderContext> {
 
-	public JdbcDataProviderOperation(DbElement dbElement,
+	public JdbcDataProviderOperation(DbTable dbTable,
 			JdbcDataProviderContext jdbcContext) {
-		super(dbElement, jdbcContext);
+		super(dbTable, jdbcContext);
 	}
 
 	@Override

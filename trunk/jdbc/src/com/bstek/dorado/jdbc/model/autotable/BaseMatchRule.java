@@ -1,9 +1,14 @@
 package com.bstek.dorado.jdbc.model.autotable;
 
+import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.jdbc.model.Column;
 import com.bstek.dorado.jdbc.model.table.Table;
 import com.bstek.dorado.util.Assert;
 
+@XmlNode(
+	nodeName = "Rule",
+	definitionType = "com.bstek.dorado.jdbc.model.autotable.MatchRuleDefinition"
+)
 public class BaseMatchRule extends AbstractMatchRule {
 
 	private String tableAlias;

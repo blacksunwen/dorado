@@ -6,6 +6,6 @@ public class TableKeyColumnDefinition extends ColumnDefinition {
 
 	public TableKeyColumnDefinition() {
 		super();
-		this.setDefaultImpl(TableKeyColumn.class.getName());
+		this.setImpl(TableKeyColumn.class.getName());
 	}
 }

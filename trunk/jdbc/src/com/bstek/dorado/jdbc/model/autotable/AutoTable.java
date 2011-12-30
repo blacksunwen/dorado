@@ -7,19 +7,47 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.XmlNodeWrapper;
+import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.jdbc.model.AbstractTable;
 import com.bstek.dorado.jdbc.model.Column;
 import com.bstek.dorado.util.Assert;
 
+@XmlNode(
+	definitionType="com.bstek.dorado.jdbc.model.autotable.AutoTableDefinition",
+	subNodes = {
+		@XmlSubNode(
+			wrapper = @XmlNodeWrapper(nodeName="FromTables", fixed = true),
+			propertyName = "fromTables",
+			propertyType = "List<com.bstek.dorado.jdbc.model.autotable.FromTable>"
+		),
+		@XmlSubNode(
+			wrapper = @XmlNodeWrapper(nodeName = "JoinTables"),
+			propertyName = "joinTables",
+			propertyType = "List<com.bstek.dorado.jdbc.model.autotable.JoinTable>"
+		),
+		@XmlSubNode(
+			wrapper = @XmlNodeWrapper(nodeName = "Columns", fixed = true),
+			propertyName = "allColumns2",
+			propertyType = "List<com.bstek.dorado.jdbc.model.autotable.AutoTableColumn>"
+		),
+		@XmlSubNode(
+			wrapper = @XmlNodeWrapper(nodeName = "Orders"),
+			propertyName = "orders",
+			propertyType = "List<com.bstek.dorado.jdbc.model.autotable.Order>"
+		)
+	}
+)
 public class AutoTable extends AbstractTable {
 
 	private Map<String, FromTable> fromTables = new LinkedHashMap<String, FromTable>();
 	
-	private List<JoinTable> joinTables = new ArrayList<JoinTable>();
+	private List<JoinTable> joinTables = new ArrayList<JoinTable>(5);
 	
 	private Where where;
 	
-	private List<Order> orders = new ArrayList<Order>();
+	private List<Order> orders = new ArrayList<Order>(5);
 
 	private String mainTableAlias;
 	
@@ -45,6 +73,7 @@ public class AutoTable extends AbstractTable {
 		return joinTables;
 	}
 
+	@XmlSubNode
 	public Where getWhere() {
 		return where;
 	}
@@ -67,9 +96,11 @@ public class AutoTable extends AbstractTable {
 	}
 
 	public FromTable getMainTable() {
-		Assert.notEmpty(mainTableAlias, getType() + " [" + getName()+ "] " + "mainTableAlias must not be null.");
-		
-		return this.getFromTable(mainTableAlias);
+		if (StringUtils.isEmpty(mainTableAlias)) {
+			return null;
+		} else {
+			return this.getFromTable(mainTableAlias);
+		}
 	}
 
 	public void setMainTableAlias(String mainTableAlias) {
@@ -102,6 +133,11 @@ public class AutoTable extends AbstractTable {
 		} else {
 			return super.getColumnKey(column);
 		}
+	}
+
+	@Override
+	protected String getDefaultSQLGeneratorName() {
+		return "spring:dorado.jdbc.autoTableSqlGenerator";
 	}
 	
 }

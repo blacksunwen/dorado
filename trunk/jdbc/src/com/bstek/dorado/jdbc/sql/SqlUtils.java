@@ -11,10 +11,6 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 
 import com.bstek.dorado.jdbc.JdbcParameterSource;
-import com.bstek.dorado.jdbc.model.autotable.FromTable;
-import com.bstek.dorado.jdbc.model.table.Table;
-import com.bstek.dorado.jdbc.sql.SqlConstants.KeyWord;
-import com.bstek.dorado.util.Assert;
 import com.bstek.dorado.util.proxy.UnmutableMap;
 
 /**
@@ -41,34 +37,6 @@ public abstract class SqlUtils {
 	}
 	public static String brackets(String token) {
 		return '(' + token + ')';
-	}
-	
-	public static String token(Table table) {
-		Assert.notNull(table, "Table must not be null.");
-		
-		String name = table.getTableName();
-		String catalog = table.getCatalog();
-		String schema = table.getSchema();
-		if (StringUtils.isEmpty(catalog) && StringUtils.isEmpty(schema)) {
-			return name;
-		} else if(StringUtils.isNotEmpty(catalog)){
-			return catalog + "." + name;
-		} else if(StringUtils.isNotEmpty(schema)){
-			return schema + "." + name;
-		} else {
-			return catalog + "." + schema + "." + name;
-		}
-	}
-	
-	public static String token(Table table, String alias) {
-		String token = token(table);
-		return token + " " + KeyWord.AS + " " + alias;
-	}
-	
-	public static String token(FromTable fromTable) {
-		Table table = fromTable.getTable();
-		String alias = fromTable.getTableAlias();
-		return token(table, alias);
 	}
 	
 	public static String build(String sql, Object parameter) {

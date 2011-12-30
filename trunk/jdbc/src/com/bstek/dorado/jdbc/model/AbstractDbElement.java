@@ -1,6 +1,7 @@
 package com.bstek.dorado.jdbc.model;
 
-import com.bstek.dorado.annotation.ViewAttribute;
+import com.bstek.dorado.annotation.IdeProperty;
+import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.JdbcUtils;
 
@@ -19,7 +20,8 @@ public abstract class AbstractDbElement implements DbElement {
 		this.name = name;
 	}
 	
-	@ViewAttribute(visible=false)
+	@XmlProperty(parser="spring:dorado.jdbc.jdbcEnviromentParser")
+	@IdeProperty(visible=false)
 	@Override
 	public JdbcEnviroment getJdbcEnviroment() {
 		if (env != null) {

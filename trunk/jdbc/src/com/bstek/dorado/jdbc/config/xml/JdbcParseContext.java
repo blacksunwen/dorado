@@ -7,6 +7,10 @@ public class JdbcParseContext extends /*ParseContext*/ DataParseContext {
 
 	private JdbcEnviroment jdbcEnviroment;
 	
+	public JdbcParseContext(){
+		super();
+	}
+	
 	public JdbcParseContext(JdbcEnviroment jdbcEnviroment) {
 		super();
 		this.jdbcEnviroment = jdbcEnviroment;

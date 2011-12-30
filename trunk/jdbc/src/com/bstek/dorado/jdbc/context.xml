@@ -8,92 +8,28 @@
 	<import resource="jdbc-key-generator.xml"/>
 	<import resource="jdbc-ide.xml"/>
 	<import resource="jdbc-parser.xml"/>
-	
-	<!-- Dorado -->
-	<bean id="dorado.jdbc.dataProviderTypeRegister" parent="dorado.dataProviderTypeRegisterSupport">
-		<property name="type" value="jdbc" />
-		<property name="classType" value="com.bstek.dorado.jdbc.JdbcDataProvider" />
-	</bean>
-
-	<!-- Config -->
-	<bean id="dorado.jdbc.jdbcLoader" class="com.bstek.dorado.jdbc.JdbcLoader">
-		<property name="configManager" ref="dorado.jdbc.jdbcConfigManager"/>
-	</bean>
-	<bean id="dorado.jdbc.jdbcConfigManager" class="com.bstek.dorado.jdbc.config.DefaultJdbcConfigManager">
-		<property name="xmlDocumentBuilder" ref="dorado.xmlDocumentBuilder" />
-		<property name="dataProviderDefinitionManager" ref="dorado.dataProviderDefinitionManager" />
-        <property name="dataResolverDefinitionManager" ref="dorado.dataResolverDefinitionManager" />
-		<property name="parsers">
-			<list>
-				<ref bean="dorado.jdbc.config.xml.tableParser"/>
-				<ref bean="dorado.jdbc.config.xml.sqlTableParser"/>
-				<ref bean="dorado.jdbc.config.xml.autoTableParser"/>
-			</list>
-		</property>
-		<property name="sqlGenerators">
-			<list>
-				<bean class="com.bstek.dorado.jdbc.model.table.TableSqlGenerator"/>
-				<bean class="com.bstek.dorado.jdbc.model.sqltable.SqlTableSqlGenerator"/>
-				<bean class="com.bstek.dorado.jdbc.model.autotable.AutoTableSqlGenerator"/>
-			</list>
-		</property>
-	</bean>
-	
-	<bean id="dorado.jdbc.enviromentManager" class="com.bstek.dorado.jdbc.config.DefaultJdbcEnviromentManager"/>
+	<import resource="jdbc-dialect.xml"/>
 	
 	<bean id="dorado.jdbc.defaultModelGeneratorSuit" class="com.bstek.dorado.jdbc.support.DefaultModelGeneratorSuit"/>
-	
-	<!-- Template -->
-	<bean id="dorado.jdbcConfigTemplate" class="com.bstek.dorado.jdbc.config.GlobalDbModelConfig" abstract="true"/>
 	<bean id="dorado.jdbcEnvTemplate" class="com.bstek.dorado.jdbc.JdbcEnviroment" abstract="true">
 		<property name="modelGeneratorSuit" ref="dorado.jdbc.defaultModelGeneratorSuit"/>
 	</bean>
 	
-	<!-- Dialect -->
-	<bean id="dorado.dialectTemplate" abstract="true">
-		<property name="keyGenerators">
-			<list>
-				<bean class="com.bstek.dorado.jdbc.key.IdentityKeyGenerator"/>
-				<bean class="com.bstek.dorado.jdbc.key.JdkUuidKeyGenerator"/>
-				<bean class="com.bstek.dorado.jdbc.key.SequenceKeyGenerator"/>
-			</list>
-		</property>
-		<property name="jdbcTypes">
-			<list>
-				<bean class="com.bstek.dorado.jdbc.type.BitBoolean"/>
-				<bean class="com.bstek.dorado.jdbc.type.BooleanBoolean"/>
-				<bean class="com.bstek.dorado.jdbc.type.CharBoolean"/>
-				
-				<bean class="com.bstek.dorado.jdbc.type.SmallintShort"/>
-				<bean class="com.bstek.dorado.jdbc.type.IntegerInteger"/>
-				<bean class="com.bstek.dorado.jdbc.type.BigintLong"/>
-				<bean class="com.bstek.dorado.jdbc.type.RealFloat"/>
-				<bean class="com.bstek.dorado.jdbc.type.FloatDouble"/>
-				<bean class="com.bstek.dorado.jdbc.type.DoubleFloat"/>
-				<bean class="com.bstek.dorado.jdbc.type.NumricBigDecimal"/>
-				<bean class="com.bstek.dorado.jdbc.type.DecimalBigDecimal"/>
-				
-				<bean class="com.bstek.dorado.jdbc.type.TinyintByte"/>
-				
-				<bean class="com.bstek.dorado.jdbc.type.DateDate"/>
-				<bean class="com.bstek.dorado.jdbc.type.TimeDate"/>
-				<bean class="com.bstek.dorado.jdbc.type.TimestampDate"/>
-								
-				<bean class="com.bstek.dorado.jdbc.type.CharString"/>
-                <bean class="com.bstek.dorado.jdbc.type.VarcharString"/>
-                <bean class="com.bstek.dorado.jdbc.type.LongvarcharString"/>
-                <bean class="com.bstek.dorado.jdbc.type.ClobString"/>
-			</list>
-		</property>
+	<bean id="dorado.jdbc.enviromentManager" class="com.bstek.dorado.jdbc.config.DefaultJdbcEnviromentManager"/>
+	
+	<bean id="dorado.jdbc.jdbcLoader" class="com.bstek.dorado.jdbc.JdbcLoader">
+		<property name="xmlDocumentBuilder" ref="dorado.xmlDocumentBuilder" />
+		<property name="xmlParserHelper" ref="dorado.xmlParserHelper"/>
 	</bean>
-	<bean id="dorado.jdbc.h2Dialect" class="com.bstek.dorado.jdbc.support.h2.H2Dialect" parent="dorado.dialectTemplate" abstract="true">
-	   <property name="defaultSchema" value="PUBLIC"/>
-	</bean>
-	<bean id="dorado.jdbc.oracleDialect" class="com.bstek.dorado.jdbc.support.oracle.OracleDialect" parent="dorado.dialectTemplate" abstract="true"/>
-	<bean id="dorado.jdbc.mssqlDialect" class="com.bstek.dorado.jdbc.support.mssql.MssqlDialect" parent="dorado.dialectTemplate" abstract="true">
-	   <property name="defaultSchema" value="dbo"/>
-	</bean>
-	<bean id="dorado.jdbc.mysqlDialect" class="com.bstek.dorado.jdbc.support.mysql.MysqlDialect" parent="dorado.dialectTemplate" abstract="true"/>
-	<bean id="dorado.jdbc.db2Dialect" class="com.bstek.dorado.jdbc.support.db2.Db2Dialect" parent="dorado.dialectTemplate" abstract="true"/>
-	<bean id="dorado.jdbc.derbyDialect" class="com.bstek.dorado.jdbc.support.derby.DerbyDialect" parent="dorado.dialectTemplate" abstract="true"/>
+	
+	<bean id="dorado.jdbc.dbmManager" class="com.bstek.dorado.jdbc.config.DefaultDmbManager"/>
+	
+	<!-- Template -->
+	<bean id="dorado.jdbcConfigTemplate" class="com.bstek.dorado.jdbc.config.GlobalDbModelConfig" abstract="true"/>
+	
+	<!-- SQL Generator -->
+	<bean id="dorado.jdbc.tableSqlGenerator" class="com.bstek.dorado.jdbc.model.table.TableSqlGenerator"/>
+	<bean id="dorado.jdbc.sqlTableSqlGenerator" class="com.bstek.dorado.jdbc.model.sqltable.SqlTableSqlGenerator"/>
+	<bean id="dorado.jdbc.autoTableSqlGenerator" class="com.bstek.dorado.jdbc.model.autotable.AutoTableSqlGenerator"/>
+	
 </beans>
