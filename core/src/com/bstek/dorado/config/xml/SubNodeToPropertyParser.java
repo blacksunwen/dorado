@@ -14,6 +14,7 @@ import com.bstek.dorado.config.definition.CreationContext;
 import com.bstek.dorado.config.definition.Definition;
 import com.bstek.dorado.config.definition.DefinitionInitOperation;
 import com.bstek.dorado.config.definition.ObjectDefinition;
+import com.bstek.dorado.config.definition.Operation;
 import com.bstek.dorado.util.Assert;
 import com.bstek.dorado.util.clazz.ClassUtils;
 
@@ -84,15 +85,23 @@ class SetElementOperation implements DefinitionInitOperation {
 	public void execute(Object object, CreationContext context)
 			throws Exception {
 		if (object instanceof Definition) {
-			PropertyDescriptor propertyDescriptor = PropertyUtils
-					.getPropertyDescriptor(object, property);
-			if (propertyDescriptor != null
-					&& propertyDescriptor.getWriteMethod() != null
-					&& !NATIVE_DEFINITION_PROPERTIES.contains(property)) {
-				PropertyUtils.setSimpleProperty(object, property, element);
+			if (element instanceof Operation) {
+				if (element instanceof DefinitionInitOperation) {
+					((DefinitionInitOperation) element)
+							.execute(object, context);
+				} else {
+					((Definition) object).addInitOperation((Operation) element);
+				}
 			} else {
-				Definition parentDefinition = (Definition) object;
-				parentDefinition.setProperty(property, element);
+				PropertyDescriptor propertyDescriptor = PropertyUtils
+						.getPropertyDescriptor(object, property);
+				if (propertyDescriptor != null
+						&& propertyDescriptor.getWriteMethod() != null
+						&& !NATIVE_DEFINITION_PROPERTIES.contains(property)) {
+					PropertyUtils.setSimpleProperty(object, property, element);
+				} else {
+					((Definition) object).setProperty(property, element);
+				}
 			}
 		} else {
 			PropertyUtils.setSimpleProperty(object, property, element);

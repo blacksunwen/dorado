@@ -14,6 +14,7 @@ import com.bstek.dorado.config.definition.CreationContext;
 import com.bstek.dorado.config.definition.Definition;
 import com.bstek.dorado.config.definition.DefinitionInitOperation;
 import com.bstek.dorado.config.definition.DefinitionSupportedList;
+import com.bstek.dorado.config.definition.Operation;
 import com.bstek.dorado.util.Assert;
 import com.bstek.dorado.util.clazz.ClassUtils;
 
@@ -76,8 +77,10 @@ class AddElementsOperation implements DefinitionInitOperation {
 	public void execute(Object object, CreationContext context)
 			throws Exception {
 		Collection collection = null;
-		boolean useNativeProperty = false;
+		boolean useNativeProperty = false, isDefinition = false;
+		;
 		if (object instanceof Definition) {
+			isDefinition = true;
 			try {
 				useNativeProperty = Collection.class
 						.isAssignableFrom(PropertyUtils.getPropertyType(object,
@@ -114,7 +117,23 @@ class AddElementsOperation implements DefinitionInitOperation {
 		}
 
 		if (collection != null) {
-			collection.addAll(elements);
+			if (isDefinition) {
+				for (Object element : elements) {
+					if (element instanceof Operation) {
+						if (element instanceof DefinitionInitOperation) {
+							((DefinitionInitOperation) element).execute(object,
+									context);
+						} else {
+							((Definition) object)
+									.addInitOperation((Operation) element);
+						}
+					} else {
+						collection.add(element);
+					}
+				}
+			} else {
+				collection.addAll(elements);
+			}
 		}
 	}
 }
