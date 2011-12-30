@@ -11,7 +11,6 @@ import java.util.TreeMap;
 
 import org.apache.commons.collections.map.UnmodifiableMap;
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.util.Assert;
 
@@ -142,7 +141,7 @@ public class Rule {
 	}
 
 	public String getNodeName() {
-		return StringUtils.isEmpty(nodeName) ? name : nodeName;
+		return nodeName;
 	}
 
 	public void setNodeName(String nodeName) {
