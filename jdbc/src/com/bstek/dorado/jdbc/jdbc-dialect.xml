@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- Dialect -->
+	<bean id="dorado.dialectTemplate" abstract="true">
+		<property name="keyGenerators">
+			<list>
+				<bean class="com.bstek.dorado.jdbc.key.IdentityKeyGenerator"/>
+				<bean class="com.bstek.dorado.jdbc.key.JdkUuidKeyGenerator"/>
+				<bean class="com.bstek.dorado.jdbc.key.SequenceKeyGenerator"/>
+			</list>
+		</property>
+		<property name="jdbcTypes">
+			<list>
+				<bean class="com.bstek.dorado.jdbc.type.BitBoolean"/>
+				<bean class="com.bstek.dorado.jdbc.type.BooleanBoolean"/>
+				<bean class="com.bstek.dorado.jdbc.type.CharBoolean"/>
+				
+				<bean class="com.bstek.dorado.jdbc.type.SmallintShort"/>
+				<bean class="com.bstek.dorado.jdbc.type.IntegerInteger"/>
+				<bean class="com.bstek.dorado.jdbc.type.BigintLong"/>
+				<bean class="com.bstek.dorado.jdbc.type.RealFloat"/>
+				<bean class="com.bstek.dorado.jdbc.type.FloatDouble"/>
+				<bean class="com.bstek.dorado.jdbc.type.DoubleFloat"/>
+				<bean class="com.bstek.dorado.jdbc.type.NumricBigDecimal"/>
+				<bean class="com.bstek.dorado.jdbc.type.DecimalBigDecimal"/>
+				
+				<bean class="com.bstek.dorado.jdbc.type.TinyintByte"/>
+				
+				<bean class="com.bstek.dorado.jdbc.type.DateDate"/>
+				<bean class="com.bstek.dorado.jdbc.type.TimeDate"/>
+				<bean class="com.bstek.dorado.jdbc.type.TimestampDate"/>
+								
+				<bean class="com.bstek.dorado.jdbc.type.CharString"/>
+                <bean class="com.bstek.dorado.jdbc.type.VarcharString"/>
+                <bean class="com.bstek.dorado.jdbc.type.LongvarcharString"/>
+                <bean class="com.bstek.dorado.jdbc.type.ClobString"/>
+			</list>
+		</property>
+	</bean>
+	<bean id="dorado.jdbc.h2Dialect" class="com.bstek.dorado.jdbc.support.h2.H2Dialect" parent="dorado.dialectTemplate" abstract="true">
+	   <property name="defaultSchema" value="PUBLIC"/>
+	</bean>
+	<bean id="dorado.jdbc.oracleDialect" class="com.bstek.dorado.jdbc.support.oracle.OracleDialect" parent="dorado.dialectTemplate" abstract="true"/>
+	<bean id="dorado.jdbc.mssqlDialect" class="com.bstek.dorado.jdbc.support.mssql.MssqlDialect" parent="dorado.dialectTemplate" abstract="true">
+	   <property name="defaultSchema" value="dbo"/>
+	</bean>
+	<bean id="dorado.jdbc.mysqlDialect" class="com.bstek.dorado.jdbc.support.mysql.MysqlDialect" parent="dorado.dialectTemplate" abstract="true"/>
+	<bean id="dorado.jdbc.db2Dialect" class="com.bstek.dorado.jdbc.support.db2.Db2Dialect" parent="dorado.dialectTemplate" abstract="true"/>
+	<bean id="dorado.jdbc.derbyDialect" class="com.bstek.dorado.jdbc.support.derby.DerbyDialect" parent="dorado.dialectTemplate" abstract="true"/>
+	
+</beans>

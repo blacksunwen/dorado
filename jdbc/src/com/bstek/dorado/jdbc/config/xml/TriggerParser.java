@@ -12,12 +12,14 @@ public class TriggerParser extends PropertyParser {
 
 	@Override
 	protected Object doParse(Node node, ParseContext context) throws Exception {
-		String triggerName = (String) super.doParse(node, context);
-		if (StringUtils.isNotEmpty(triggerName)) {
-			return (TableTrigger)BeanFactoryUtils.getBean(triggerName);
-		} else {
-			return null;
-		}
+//		String triggerName = (String) super.doParse(node, context);
+//		if (StringUtils.isNotEmpty(triggerName)) {
+//			return (TableTrigger)BeanFactoryUtils.getBean(triggerName);
+//		} else {
+//			return null;
+//		}
+		
+		return super.doParse(node, context);
 	}
 
 }

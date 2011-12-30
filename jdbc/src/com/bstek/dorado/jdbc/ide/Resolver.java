@@ -70,7 +70,7 @@ public abstract class Resolver extends AbstractTextualResolver {
 	}
 	
 	@Override
-	protected void execute(HttpServletRequest request,
+	public void execute(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String content = getContent(request, response);
 		if (StringUtils.isEmpty(content)) {

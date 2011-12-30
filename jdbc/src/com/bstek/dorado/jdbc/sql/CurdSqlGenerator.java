@@ -3,10 +3,8 @@ package com.bstek.dorado.jdbc.sql;
 import com.bstek.dorado.jdbc.JdbcDataProviderOperation;
 import com.bstek.dorado.jdbc.JdbcRecordOperation;
 
-public interface SqlGenerator {
+public interface CurdSqlGenerator {
 
-	String getType();
-	
 	SelectSql selectSql(JdbcDataProviderOperation operation);
 	
 	InsertSql insertSql(JdbcRecordOperation operation);

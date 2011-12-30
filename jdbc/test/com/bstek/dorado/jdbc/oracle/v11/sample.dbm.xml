@@ -36,4 +36,184 @@
       </Columns>
       <Property name="dynamicClause"><![CDATA[#if ($ID) WHERE DEPT_ID=:ID #end]]></Property>
     </Table>
+
+	<Table name="CATEGORIES" tableName="CATEGORIES">
+		<Columns>
+			<KeyColumn columnName="ID" propertyName="ID" jdbcType="INTEGER-Integer"/>
+			<Column columnName="CATEGORY_NAME" propertyName="CATEGORY_NAME" jdbcType="VARCHAR-String"/>
+			<Column columnName="DESCRIPTION" propertyName="DESCRIPTION" jdbcType="VARCHAR-String"/>
+		</Columns>
+	</Table>
+	
+	<Table name="PRODUCTS" tableName="PRODUCTS">
+		<Columns>
+			<KeyColumn columnName="ID" propertyName="ID" jdbcType="INTEGER-Integer"/>
+			<Column columnName="PRODUCT_NAME" propertyName="PRODUCT_NAME" jdbcType="VARCHAR-String"/>
+			<Column columnName="SUPPLIER_ID"  propertyName="SUPPLIER_ID"  jdbcType="INTEGER-Integer"/>
+			<Column columnName="CATEGORY_ID"  propertyName="CATEGORY_ID"  jdbcType="INTEGER-Integer"/>
+			<Column columnName="QUANTITY_PER_UNIT" propertyName="QUANTITY_PER_UNIT" jdbcType="VARCHAR-String"/>
+			<Column columnName="UNIT_PRICE"        propertyName="UNIT_PRICE"        jdbcType="DECIMAL-BigDecimal"/>
+			<Column columnName="UNITS_IN_STOCK" propertyName="UNITS_IN_STOCK" jdbcType="INTEGER-Integer"/>
+			<Column columnName="UNITS_ON_ORDER" propertyName="UNITS_ON_ORDER" jdbcType="INTEGER-Integer"/>
+			<Column columnName="REORDER_LEVEL"  propertyName="REORDER_LEVEL"  jdbcType="INTEGER-Integer"/>
+			<Column columnName="DISCONTINUED"   propertyName="DISCONTINUED"   jdbcType="SMALLINT-Short"/>
+		</Columns>
+	</Table>
+	
+    <SqlTable name="sql_dept" table="DEPT">
+	  <Columns>
+	    <Column propertyName="DEPT_NAME" columnName="DEPT_NAME"  nativeColumnName="DEPT_NAME"/>
+	    <Column propertyName="DEPT_ID"   columnName="DEPT_ID"    nativeColumnName="DEPT_ID"/>
+	    <Column propertyName="PARENT_ID" columnName="PARENT_ID"  nativeColumnName="PARENT_ID"/>
+	  </Columns>
+	  <Property name="querySql"><![CDATA[select * from DEPT]]></Property>
+	</SqlTable>
+	
+	<!-- Employee -->
+	<AutoTable name="emp_auto1" mainTableAlias="emp">
+		<Columns>
+		    <Column columnAlias="n_id"          tableAlias="emp" columnName="ID"          propertyName="p_id"            />
+			<Column columnAlias="n_last_name"   tableAlias="emp" columnName="LAST_NAME"   propertyName="p_last_name"     />
+			<Column columnAlias="n_first_name"  tableAlias="emp" columnName="FIRST_NAME"  propertyName="p_first_name"    />
+			<Column columnAlias="n_title"       tableAlias="emp" columnName="TITLE"       propertyName="p_title"         />
+			<Column columnAlias="n_sex"         tableAlias="emp" columnName="SEX"         propertyName="p_sex"           />
+			<Column columnAlias="n_birthday"    tableAlias="emp" columnName="BIRTHDAY"    propertyName="p_birthday"    />
+		</Columns>
+		<FromTables>
+			<FromTable tableAlias="emp" table="EMPLOYEE"/>
+		</FromTables>
+	</AutoTable>
+	<AutoTable name="emp_auto2" mainTableAlias="emp">
+		<Columns>
+		    <Column columnAlias="n_id"          tableAlias="emp" columnName="ID"          propertyName="p_id"            />
+			<Column columnAlias="n_last_name"   tableAlias="emp" columnName="LAST_NAME"   propertyName="p_last_name"     />
+			<Column columnAlias="n_first_name"  tableAlias="emp" columnName="FIRST_NAME"  propertyName="p_first_name"    />
+			<Column columnAlias="n_title"       tableAlias="emp" columnName="TITLE"       propertyName="p_title"         />
+			<Column columnAlias="n_sex"         tableAlias="emp" columnName="SEX"         propertyName="p_sex"           />
+			<Column columnAlias="n_birth_date"  tableAlias="emp" columnName="BIRTHDAY"    propertyName="p_birth_date"    />
+			<Column columnAlias="n_hire_date"   tableAlias="emp" columnName="HIRE_DATE"   propertyName="p_hire_date"     />
+			<Column columnAlias="n_address"     tableAlias="emp" columnName="ADDRESS"     propertyName="p_address"       />
+			<Column columnAlias="n_city"        tableAlias="emp" columnName="CITY"        propertyName="p_city"          />
+			<Column columnAlias="n_region"      tableAlias="emp" columnName="REGION"      propertyName="p_region"        />
+			<Column columnAlias="n_postal_code" tableAlias="emp" columnName="POSTAL_CODE" propertyName="p_postal_code"   />
+			<Column columnAlias="n_country"     tableAlias="emp" columnName="COUNTRY"     propertyName="p_country"       />
+			<Column columnAlias="n_phone"       tableAlias="emp" columnName="PHONE"       propertyName="p_phone"         />
+			<Column columnAlias="n_reports_to"  tableAlias="emp" columnName="REPORT_TO"  propertyName="p_reports_to"    />
+			<Column columnAlias="n_notes"       tableAlias="emp" columnName="NOTES"       propertyName="p_notes"         />
+			<Column columnAlias="n_photo_path"  tableAlias="emp" columnName="PHOTO_PATH"  propertyName="p_photo_path"    />
+		</Columns>
+		<FromTables>
+			<FromTable tableAlias="emp" table="EMPLOYEE"/>
+		</FromTables>
+		<Where>
+			<Rule tableAlias="emp" columnName="ID" operator="=" value=":ID"/>
+		</Where>
+	</AutoTable>
+	<AutoTable name="emp_auto3" mainTableAlias="emp">
+		<Columns>
+		    <Column columnAlias="n_id"          tableAlias="emp" columnName="ID"          propertyName="p_id"            />
+			<Column columnAlias="n_last_name"   tableAlias="emp" columnName="LAST_NAME"   propertyName="p_last_name"     />
+			<Column columnAlias="n_first_name"  tableAlias="emp" columnName="FIRST_NAME"  propertyName="p_first_name"    />
+			<Column columnAlias="n_title"       tableAlias="emp" columnName="TITLE"       propertyName="p_title"         />
+			<Column columnAlias="n_sex"         tableAlias="emp" columnName="SEX"         propertyName="p_sex"           />
+			<Column columnAlias="n_birth_date"  tableAlias="emp" columnName="BIRTHDAY"    propertyName="p_birth_date"    />
+			<Column columnAlias="n_hire_date"   tableAlias="emp" columnName="HIRE_DATE"   propertyName="p_hire_date"     />
+			<Column columnAlias="n_address"     tableAlias="emp" columnName="ADDRESS"     propertyName="p_address"       />
+			<Column columnAlias="n_city"        tableAlias="emp" columnName="CITY"        propertyName="p_city"          />
+			<Column columnAlias="n_region"      tableAlias="emp" columnName="REGION"      propertyName="p_region"        />
+			<Column columnAlias="n_postal_code" tableAlias="emp" columnName="POSTAL_CODE" propertyName="p_postal_code"   />
+			<Column columnAlias="n_country"     tableAlias="emp" columnName="COUNTRY"     propertyName="p_country"       />
+			<Column columnAlias="n_phone"       tableAlias="emp" columnName="PHONE"       propertyName="p_phone"         />
+			<Column columnAlias="n_reports_to"  tableAlias="emp" columnName="REPORT_TO"  propertyName="p_reports_to"    />
+			<Column columnAlias="n_notes"       tableAlias="emp" columnName="NOTES"       propertyName="p_notes"         />
+			<Column columnAlias="n_photo_path"  tableAlias="emp" columnName="PHOTO_PATH"  propertyName="p_photo_path"    />
+		</Columns>
+		<FromTables>
+			<FromTable tableAlias="emp" table="EMPLOYEE"/>
+		</FromTables>
+		<Where>
+			<Junction model="OR">
+				<Rule tableAlias="emp" columnName="LAST_NAME" operator="like%" value=":lastName"/>
+				<Rule tableAlias="emp" columnName="FIRST_NAME" operator="%like%" value=":firstName"/>
+			</Junction>
+		</Where>
+	</AutoTable>
+	<AutoTable name="emp_auto4" mainTableAlias="emp">
+		<Columns>
+		    <Column columnAlias="n_id"          tableAlias="emp" columnName="ID"          propertyName="p_id"            />
+			<Column columnAlias="n_last_name"   tableAlias="emp" columnName="LAST_NAME"   propertyName="p_last_name"     />
+			<Column columnAlias="n_first_name"  tableAlias="emp" columnName="FIRST_NAME"  propertyName="p_first_name"    />
+			<Column columnAlias="n_title"       tableAlias="emp" columnName="TITLE"       propertyName="p_title"         />
+			<Column columnAlias="n_sex"         tableAlias="emp" columnName="SEX"         propertyName="p_sex"           />
+			<Column columnAlias="n_birth_date"  tableAlias="emp" columnName="BIRTHDAY"    propertyName="p_birth_date"    />
+			<Column columnAlias="n_hire_date"   tableAlias="emp" columnName="HIRE_DATE"   propertyName="p_hire_date"     />
+			<Column columnAlias="n_address"     tableAlias="emp" columnName="ADDRESS"     propertyName="p_address"       />
+			<Column columnAlias="n_city"        tableAlias="emp" columnName="CITY"        propertyName="p_city"          />
+			<Column columnAlias="n_region"      tableAlias="emp" columnName="REGION"      propertyName="p_region"        />
+			<Column columnAlias="n_postal_code" tableAlias="emp" columnName="POSTAL_CODE" propertyName="p_postal_code"   />
+			<Column columnAlias="n_country"     tableAlias="emp" columnName="COUNTRY"     propertyName="p_country"       />
+			<Column columnAlias="n_phone"       tableAlias="emp" columnName="PHONE"       propertyName="p_phone"         />
+			<Column columnAlias="n_reports_to"  tableAlias="emp" columnName="REPORT_TO"  propertyName="p_reports_to"    />
+			<Column columnAlias="n_notes"       tableAlias="emp" columnName="NOTES"       propertyName="p_notes"         />
+			<Column columnAlias="n_photo_path"  tableAlias="emp" columnName="PHOTO_PATH"  propertyName="p_photo_path"    />
+		</Columns>
+		<FromTables>
+			<FromTable tableAlias="emp" table="EMPLOYEE"/>
+		</FromTables>
+		<Where>
+			<Rule tableAlias="emp" columnName="ID" operator="=" value=":id"/>
+			<Junction model="OR">
+				<Rule tableAlias="emp" columnName="LAST_NAME" operator="like%" value=":lastName"/>
+				<Rule tableAlias="emp" columnName="FIRST_NAME" operator="%like%" value=":firstName"/>
+			</Junction>
+		</Where>
+	</AutoTable>
+	
+	<!-- Produce & Category -->
+	<AutoTable name="product_cat_auto1">
+		<Columns>
+			<Column columnAlias="n_pid"        tableAlias="p" columnName="ID"                propertyName="p_pid" />
+			<Column columnAlias="n_pname"      tableAlias="p" columnName="PRODUCT_NAME"      propertyName="p_pname" />
+			<Column columnAlias="n_psupplier"  tableAlias="p" columnName="SUPPLIER_ID"       propertyName="p_psupplier" />
+			<Column columnAlias="n_pcategory"  tableAlias="p" columnName="CATEGORY_ID"       propertyName="p_pcategory" />
+			<Column columnAlias="n_pquanitity" tableAlias="p" columnName="QUANTITY_PER_UNIT" propertyName="p_pquanitity" />
+			<Column columnAlias="n_punitprice" tableAlias="p" columnName="UNIT_PRICE"        propertyName="p_punitprice" />
+			<Column columnAlias="n_ccategory"  tableAlias="c" columnName="CATEGORY_NAME"     propertyName="p_ccategory" />
+		</Columns>
+		<FromTables>
+			<FromTable tableAlias="p" table="PRODUCTS"/>
+			<FromTable tableAlias="c" table="CATEGORIES"/>
+		</FromTables>
+		<JoinTables>
+			<JoinTable leftFromTableAlias="p" leftColumnNames="CATEGORY_ID" rightFromTableAlias="c" rightColumnNames="ID" joinModel="LEFT_JOIN"/>
+		</JoinTables>
+	</AutoTable>
+	
+	<AutoTable name="product_cat_auto2">
+		<Columns>
+			<Column columnAlias="n_pid"        tableAlias="p" columnName="ID"                propertyName="p_pid" />
+			<Column columnAlias="n_pname"      tableAlias="p" columnName="PRODUCT_NAME"      propertyName="p_pname" />
+			<Column columnAlias="n_psupplier"  tableAlias="p" columnName="SUPPLIER_ID"       propertyName="p_psupplier" />
+			<Column columnAlias="n_pcategory"  tableAlias="p" columnName="CATEGORY_ID"       propertyName="p_pcategory" />
+			<Column columnAlias="n_pquanitity" tableAlias="p" columnName="QUANTITY_PER_UNIT" propertyName="p_pquanitity" />
+			<Column columnAlias="n_punitprice" tableAlias="p" columnName="UNIT_PRICE"        propertyName="p_punitprice" />
+			<Column columnAlias="n_ccategory"  tableAlias="c" columnName="CATEGORY_NAME"     propertyName="p_ccategory" />
+		</Columns>
+		<FromTables>
+			<FromTable tableAlias="c" table="CATEGORIES"/>
+			<FromTable tableAlias="p" table="PRODUCTS"/>
+		</FromTables>
+		<JoinTables>
+			<JoinTable leftFromTableAlias="p" leftColumnNames="CATEGORY_ID" rightFromTableAlias="c" rightColumnNames="ID" joinModel="LEFT_JOIN"/>
+		</JoinTables>
+		<Orders>
+			<Order tableAlias="c" columnName="ID"/>
+			<Order tableAlias="p" columnName="ID" orderModel="ASC"/>
+			<Order tableAlias="p" columnName="PRODUCT_NAME" nullsModel="NULLS_LAST"/>
+			<Order tableAlias="p" columnName="SUPPLIER_ID" orderModel="DESC" nullsModel="NULLS_FIRST"/>
+			<Order columnName="n_pname"/>
+		</Orders>
+	</AutoTable>
+	
+
 </DbModel>

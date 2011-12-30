@@ -6,6 +6,6 @@ public class TableColumnDefinition extends ColumnDefinition {
 
 	public TableColumnDefinition() {
 		super();
-		this.setDefaultImpl(TableColumn.class.getName());
+		this.setImpl(TableColumn.class.getName());
 	}
 }

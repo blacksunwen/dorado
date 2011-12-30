@@ -14,8 +14,7 @@ public class TableRefrenceParser extends PropertyParser{
 	@Override
 	protected Object doParse(Node node, ParseContext context) throws Exception {
 		String elementName = (String)super.doParse(node, context);
-		DefinitionManager<DbElementDefinition> manager = 
-				JdbcUtils.getJdbcConfigManager().getDefinitionManager();
+		DefinitionManager<DbElementDefinition> manager = JdbcUtils.getDbmManager();
 		
 		DefaultDefinitionReference<DbElementDefinition> defRef = 
 				new DefaultDefinitionReference<DbElementDefinition>(manager, elementName);

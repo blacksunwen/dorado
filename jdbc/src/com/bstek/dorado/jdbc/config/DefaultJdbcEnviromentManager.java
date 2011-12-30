@@ -4,14 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 
 
-public class DefaultJdbcEnviromentManager implements JdbcEnviromentManager, ApplicationContextAware {
+public class DefaultJdbcEnviromentManager implements JdbcEnviromentManager {
 
 	private Map<String, JdbcEnviroment> enviroments = new HashMap<String, JdbcEnviroment>(2);
 	
@@ -56,20 +54,6 @@ public class DefaultJdbcEnviromentManager implements JdbcEnviromentManager, Appl
 
 	public JdbcEnviroment[] listAll() {
 		return enviroments.values().toArray(new JdbcEnviroment[0]);
-	}
-	
-	@Override
-	public void initialize() {
-		Map<String, JdbcEnviroment> envMap = ctx.getBeansOfType(JdbcEnviroment.class);
-		for (JdbcEnviroment env: envMap.values()) {
-			this.register(env);
-		}
-	}
-
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext)
-			throws BeansException {
-		this.ctx = applicationContext;
 	}
 
 }

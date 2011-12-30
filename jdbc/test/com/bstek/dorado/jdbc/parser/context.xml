@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- JdbcEnviroment -->
+    <bean parent="dorado.jdbcEnvTemplate">
+        <property name="name" value="ora11" />
+        <property name="dataSource">
+            <bean class="oracle.jdbc.pool.OracleDataSource">
+                <property name="user" value="dorado"/>
+                <property name="password" value="dorado"/>
+                <property name="URL" value="jdbc:oracle:thin:@192.168.18.235:1521/DORADOJDBC"/>
+            </bean>
+        </property>
+        <property name="dialect">
+            <bean parent="dorado.jdbc.oracleDialect"/>
+        </property>
+    </bean>
+    
+    <bean parent="dorado.jdbcConfigTemplate">
+        <property name="configLocations">
+            <list>
+                <value>classpath:com/bstek/dorado/jdbc/parser/*.dbm.xml</value>
+            </list>
+        </property>
+    </bean>
+</beans>

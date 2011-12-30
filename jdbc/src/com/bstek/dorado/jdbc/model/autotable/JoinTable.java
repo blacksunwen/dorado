@@ -1,7 +1,11 @@
 package com.bstek.dorado.jdbc.model.autotable;
 
+import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.jdbc.sql.SqlConstants.JoinModel;
 
+@XmlNode(
+	definitionType = "com.bstek.dorado.jdbc.model.autotable.JoinTableDefinition"
+)
 public class JoinTable {
 
 	private JoinModel joinModel = JoinModel.INNER_JOIN;

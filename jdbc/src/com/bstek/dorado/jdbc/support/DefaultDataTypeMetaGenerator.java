@@ -83,7 +83,7 @@ public class DefaultDataTypeMetaGenerator implements DataTypeMetaGenerator {
 	}
 	
 	protected DbTable getDbTable(String tableName) {
-		DbElement dbe = JdbcUtils.getDbElement(tableName);
+		DbElement dbe = JdbcUtils.getDbTable(tableName);
 		Assert.isTrue(dbe instanceof DbTable, "[" + tableName + "] is not a table.");
 		
 		DbTable table = (DbTable) dbe;

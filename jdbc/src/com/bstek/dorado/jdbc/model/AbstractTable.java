@@ -5,12 +5,18 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+
+import com.bstek.dorado.annotation.XmlProperty;
+import com.bstek.dorado.core.bean.BeanFactoryUtils;
+import com.bstek.dorado.jdbc.sql.CurdSqlGenerator;
 import com.bstek.dorado.util.Assert;
 
 public abstract class AbstractTable extends AbstractDbElement implements DbTable {
 
 	private Map<String,Column> columnMap = new LinkedHashMap<String,Column>();
 	private TableTrigger trigger;
+	private CurdSqlGenerator sqlGenerator;
 	
 	public List<Column> getAllColumns() {
 		return new ArrayList<Column>(columnMap.values());
@@ -34,6 +40,7 @@ public abstract class AbstractTable extends AbstractDbElement implements DbTable
 		return column.getColumnName();
 	}
 
+	@XmlProperty(parser="spring:dorado.jdbc.triggerParser")
 	public TableTrigger getTrigger() {
 		return trigger;
 	}
@@ -42,4 +49,24 @@ public abstract class AbstractTable extends AbstractDbElement implements DbTable
 		this.trigger = trigger;
 	}
 	
+	public CurdSqlGenerator getCurdSqlGenerator() {
+		if(sqlGenerator == null) {
+			String beanName = getDefaultSQLGeneratorName();
+			if (StringUtils.isNotEmpty(beanName)) {
+				try {
+					sqlGenerator = (CurdSqlGenerator)BeanFactoryUtils.getBean(beanName);
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
+			}
+		}
+		
+		return sqlGenerator;
+	}
+	
+	public void setCurdSqlGenerator(CurdSqlGenerator sqlGenerator) {
+		this.sqlGenerator = sqlGenerator;
+	}
+	
+	protected abstract String getDefaultSQLGeneratorName();
 }

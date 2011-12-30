@@ -15,6 +15,7 @@ public abstract class AbstractJdbcTestCase extends ConfigManagerTestSupport {
 
 	protected AbstractJdbcTestCase () {
 		super();
+		this.addExtensionContextConfigLocation("classpath:com/bstek/dorado/jdbc/context.xml");
 		for (String location: getExtConfigLocations()) {
 			this.addExtensionContextConfigLocation(location);
 		}
@@ -29,6 +30,7 @@ public abstract class AbstractJdbcTestCase extends ConfigManagerTestSupport {
 			Record r = new Record();
 			r.put("DEPT_ID", RandomStringUtils.randomAlphabetic(6));
 			r.put("DEPT_NAME", RandomStringUtils.randomAlphabetic(6));
+			r.put("PARENT_ID", RandomStringUtils.randomAlphabetic(6));
 			return r;
 		}
 		
@@ -39,6 +41,18 @@ public abstract class AbstractJdbcTestCase extends ConfigManagerTestSupport {
 			
 			Record dept = (Record)records.iterator().next();
 			return dept;
+		}
+		
+		public static boolean has(String id) {
+			Collection<Record> records = JdbcUtils.query(TABLE, 
+					Collections.singletonMap("ID", id));
+			Assert.assertTrue("Dept id=" + id, records.size() <= 1);
+			
+			if (records.size() == 0) {
+				return false;
+			} else {
+				return true;
+			} 
 		}
 	}
 	

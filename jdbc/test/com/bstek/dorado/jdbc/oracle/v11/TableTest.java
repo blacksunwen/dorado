@@ -33,4 +33,28 @@ public class TableTest extends Oracle11JdbcTestCase {
 			Assert.assertTrue(!Employee.has(id));
 		}
 	}
+	
+	public void testDept() {
+		Record dept = Dept.random();
+		String id = dept.getString("DEPT_ID");
+		{
+			JdbcUtils.insert(Dept.TABLE, dept);
+			Record dept2 = Dept.get(id);
+			TestJdbcUtils.assertEquals(dept, dept2);
+		}
+		{
+			Record dept2 = Dept.get(id);
+			dept2.put("DEPT_ID", id);
+			
+			JdbcUtils.update(Dept.TABLE, dept2);
+			
+			Record dept3 = Dept.get(id);
+			TestJdbcUtils.assertEquals(dept2, dept3);
+		}
+		{
+			JdbcUtils.delete(Dept.TABLE, dept);
+			Assert.assertTrue(!Dept.has(id));
+		}
+	}
+	
 }

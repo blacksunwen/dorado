@@ -3,14 +3,14 @@
 	<classpathentry excluding="META_INF/" kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="src" path="ksrc"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
-	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?ivyXmlPath=ivy.xml&amp;confs=*"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/core"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/data"/>
+	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?ivyXmlPath=ivy.xml&amp;confs=*"/>
 	<classpathentry kind="lib" path="jdbc-driver/mssql2008/sqljdbc4.jar"/>
 	<classpathentry kind="lib" path="jdbc-driver/mysql/mysql-connector-java-5.1.17-bin.jar"/>
 	<classpathentry kind="lib" path="jdbc-driver/oracle11/orai18n.jar"/>
 	<classpathentry kind="lib" path="jdbc-driver/oracle11/runtime12.jar"/>
 	<classpathentry kind="lib" path="jdbc-driver/oracle11/ojdbc5_g.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

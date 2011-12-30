@@ -7,7 +7,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.model.DbElementJdbcOperation;
-import com.bstek.dorado.jdbc.model.DbElement;
+import com.bstek.dorado.jdbc.model.DbTable;
 
 /**
  * {@link com.bstek.dorado.jdbc.JdbcDataResolver}对应的数据库操作
@@ -26,9 +26,9 @@ public class JdbcRecordOperation extends
 	
 	private Map<String, String> propertyMap;
 	
-	public JdbcRecordOperation(DbElement dbElement, Record record,
+	public JdbcRecordOperation(DbTable dbTable, Record record,
 			JdbcDataResolverContext jdbcContext) {
-		super(dbElement, jdbcContext);
+		super(dbTable, jdbcContext);
 		this.setRecord(record);
 	}
 
@@ -62,11 +62,11 @@ public class JdbcRecordOperation extends
 		String eName = item.getTableName();
 		Object childValue = record.get(item.getName());
 		if (StringUtils.isNotEmpty(eName) && childValue != null) {
-			DbElement dbElement = JdbcUtils.getDbElement(eName); 
+			DbTable dbTable = JdbcUtils.getDbTable(eName); 
 			JdbcDataResolverContext jdbcContext = this.getJdbcContext();
 			if (childValue instanceof Record) {
 				Record childRecord = (Record)childValue;
-				JdbcRecordOperation operation = new JdbcRecordOperation(dbElement, childRecord, jdbcContext);
+				JdbcRecordOperation operation = new JdbcRecordOperation(dbTable, childRecord, jdbcContext);
 				operation.parent = this;
 				
 				return new JdbcRecordOperation[]{operation};
@@ -76,7 +76,7 @@ public class JdbcRecordOperation extends
 				JdbcRecordOperation[] operations = new JdbcRecordOperation[records.length];
 				for (int i=0; i<records.length; i++) {
 					Record record = records[i];
-					JdbcRecordOperation operation = new JdbcRecordOperation(dbElement, record, jdbcContext);
+					JdbcRecordOperation operation = new JdbcRecordOperation(dbTable, record, jdbcContext);
 					operation.parent = this;
 					operations[i] = operation;
 				}
@@ -96,7 +96,7 @@ public class JdbcRecordOperation extends
 	public void execute() {
 		JdbcEnviroment jdbcEnviroment = this.getJdbcContext().getJdbcEnviroment();
 		if (jdbcEnviroment == null) {
-			jdbcEnviroment = this.getDbElement().getJdbcEnviroment();
+			jdbcEnviroment = this.getDbTable().getJdbcEnviroment();
 		}
 		jdbcEnviroment.getDialect().execute(this);
 	}

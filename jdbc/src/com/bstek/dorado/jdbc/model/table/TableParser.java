@@ -8,19 +8,20 @@ import org.w3c.dom.Node;
 
 import com.bstek.dorado.config.ParseContext;
 import com.bstek.dorado.config.definition.Operation;
+import com.bstek.dorado.config.xml.ObjectParser;
 import com.bstek.dorado.jdbc.JdbcConstants;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.ModelGeneratorSuit;
-import com.bstek.dorado.jdbc.config.xml.DbElementParser;
 import com.bstek.dorado.jdbc.config.xml.JdbcParseContext;
 import com.bstek.dorado.jdbc.meta.TableMetaDataGenerator;
 import com.bstek.dorado.jdbc.model.ColumnDefinition;
 
-public class TableParser extends DbElementParser {
-
+public class TableParser extends ObjectParser {
+	
 	@Override
 	protected Object doParse(Node node, ParseContext context) throws Exception {
 		TableDefinition tableDef = (TableDefinition)super.doParse(node, context);
+		
 		if (tableDef.isAutoCreateColumns()) {
 			List<Operation> ops = tableDef.getInitOperations();
 			Map<String,ColumnDefinition> columnMap = new HashMap<String,ColumnDefinition>(ops.size());

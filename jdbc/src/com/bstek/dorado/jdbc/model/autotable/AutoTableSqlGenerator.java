@@ -13,9 +13,9 @@ import com.bstek.dorado.jdbc.JdbcDataProviderContext;
 import com.bstek.dorado.jdbc.JdbcDataProviderOperation;
 import com.bstek.dorado.jdbc.JdbcParameterSource;
 import com.bstek.dorado.jdbc.JdbcRecordOperation;
-import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.model.Column;
 import com.bstek.dorado.jdbc.model.table.Table;
+import com.bstek.dorado.jdbc.sql.CurdSqlGenerator;
 import com.bstek.dorado.jdbc.sql.DeleteSql;
 import com.bstek.dorado.jdbc.sql.InsertSql;
 import com.bstek.dorado.jdbc.sql.SelectSql;
@@ -24,21 +24,15 @@ import com.bstek.dorado.jdbc.sql.SqlConstants;
 import com.bstek.dorado.jdbc.sql.SqlConstants.JoinModel;
 import com.bstek.dorado.jdbc.sql.SqlConstants.JunctionModel;
 import com.bstek.dorado.jdbc.sql.SqlConstants.KeyWord;
-import com.bstek.dorado.jdbc.sql.SqlGenerator;
 import com.bstek.dorado.jdbc.sql.SqlUtils;
 import com.bstek.dorado.jdbc.sql.UpdateSql;
 import com.bstek.dorado.util.Assert;
 
-public class AutoTableSqlGenerator implements SqlGenerator{
+public class AutoTableSqlGenerator implements CurdSqlGenerator{
 
 	@Override
-	public String getType() {
-		return "AutoTable";
-	}
-	
-	@Override
 	public SelectSql selectSql(JdbcDataProviderOperation operation) {
-		AutoTable t = (AutoTable)operation.getDbElement();
+		AutoTable t = (AutoTable)operation.getDbTable();
 		JdbcDataProviderContext jdbcContext = operation.getJdbcContext();
 		Object parameter = operation.getJdbcContext().getParameter();
 		
@@ -84,9 +78,14 @@ public class AutoTableSqlGenerator implements SqlGenerator{
 		return selectSql;
 	}
 
+	protected String token(Dialect dialect, FromTable fromTable) {
+		return dialect.token(fromTable.getTable(), fromTable.getTableAlias());
+	}
 	protected StringBuilder fromToken(AutoTable t, JdbcDataProviderContext jdbcContext) {
 		StringBuilder fromToken = new StringBuilder();
 		List<JoinTable> joinTables = t.getJoinTables();
+		Dialect dialect = jdbcContext.getJdbcEnviroment().getDialect();
+		
 		if (joinTables.size() == 0) {
 			List<FromTable> fromTables = t.getFromTables();
 			Assert.isTrue(fromTables.size() > 0, "no from tables defined.");
@@ -97,7 +96,7 @@ public class AutoTableSqlGenerator implements SqlGenerator{
 					fromToken.append(',');
 				}
 				
-				String token = SqlUtils.token(fromTable);
+				String token = token(dialect, fromTable);
 				fromToken.append(token);
 			}
 		} else {
@@ -117,7 +116,7 @@ public class AutoTableSqlGenerator implements SqlGenerator{
 				Assert.isTrue(leftColumnNames.length == rightColumnNames.length, 
 						"length of LeftColumnNames and length of RightColumnNames not equals.");
 				
-				Dialect dialect = jdbcContext.getJdbcEnviroment().getDialect();
+				
 				FromTable leftFromTable = t.getFromTable(joinTable.getLeftFromTableAlias());
 				FromTable rightFromTable = t.getFromTable(joinTable.getRightFromTableAlias());
 				String token = this.joinToken(dialect, joinModel, leftFromTable, leftColumnNames, rightFromTable, rightColumnNames);
@@ -142,8 +141,8 @@ public class AutoTableSqlGenerator implements SqlGenerator{
 		Table leftTable = leftFromTable.getTable();
 		Table rightTable = rightFromTable.getTable();
 		
-		String tl = SqlUtils.token(leftFromTable);
-		String tr = SqlUtils.token(rightFromTable);
+		String tl = token(dialect, leftFromTable);
+		String tr = token(dialect, rightFromTable);
 		String jm = dialect.token(joinModel);
 		
 		token.append(tl).bothSpace(jm).append(tr);
@@ -310,7 +309,7 @@ public class AutoTableSqlGenerator implements SqlGenerator{
 
 	@Override
 	public InsertSql insertSql(JdbcRecordOperation operation) {
-		AutoTable autoTable = ( AutoTable)operation.getDbElement();
+		AutoTable autoTable = ( AutoTable)operation.getDbTable();
 		FromTable fromTable = autoTable.getMainTable();
 		Table table = fromTable.getTable();
 		Assert.notNull(table, autoTable.getType() + " [" + autoTable.getName() + "] " + "has no table to be inserted into.");
@@ -337,14 +336,14 @@ public class AutoTableSqlGenerator implements SqlGenerator{
 		}
 		
 		JdbcRecordOperation sOperation = new JdbcRecordOperation(table, sRecord, operation.getJdbcContext());
-		SqlGenerator generator = JdbcUtils.getSqlGenerator(table);
+		CurdSqlGenerator generator = table.getCurdSqlGenerator();
 		operation.setSubstitute(sOperation,propertyMap);
 		return generator.insertSql(sOperation);
 	}
 
 	@Override
 	public UpdateSql updateSql(JdbcRecordOperation operation) {
-		AutoTable autoTable = ( AutoTable)operation.getDbElement();
+		AutoTable autoTable = ( AutoTable)operation.getDbTable();
 		FromTable fromTable = autoTable.getMainTable();
 		Table table = fromTable.getTable();
 		Assert.notNull(table, autoTable.getType() + " [" + autoTable.getName() + "] " + "has no table to be inserted into.");
@@ -371,14 +370,14 @@ public class AutoTableSqlGenerator implements SqlGenerator{
 		}
 		
 		JdbcRecordOperation sOperation = new JdbcRecordOperation(table, sRecord, operation.getJdbcContext());
-		SqlGenerator generator = JdbcUtils.getSqlGenerator(table);
+		CurdSqlGenerator generator = table.getCurdSqlGenerator();
 		operation.setSubstitute(sOperation, propertyMap);
 		return generator.updateSql(sOperation);
 	}
 
 	@Override
 	public DeleteSql deleteSql(JdbcRecordOperation operation) {
-		AutoTable autoTable = ( AutoTable)operation.getDbElement();
+		AutoTable autoTable = ( AutoTable)operation.getDbTable();
 		FromTable fromTable = autoTable.getMainTable();
 		Table table = fromTable.getTable();
 		Assert.notNull(table, autoTable.getType() + " [" + autoTable.getName() + "] " + "has no table to be inserted into.");
@@ -405,7 +404,7 @@ public class AutoTableSqlGenerator implements SqlGenerator{
 		}
 		
 		JdbcRecordOperation sOperation = new JdbcRecordOperation(table, sRecord, operation.getJdbcContext());
-		SqlGenerator generator = JdbcUtils.getSqlGenerator(table);
+		CurdSqlGenerator generator = table.getCurdSqlGenerator();
 		operation.setSubstitute(sOperation, propertyMap);
 		return generator.deleteSql(sOperation);
 	}

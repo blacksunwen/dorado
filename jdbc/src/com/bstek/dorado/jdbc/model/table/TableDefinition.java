@@ -9,7 +9,7 @@ public class TableDefinition extends DbElementDefinition {
 
 	public TableDefinition() {
 		super();
-		this.setDefaultImpl(Table.class.getName());
+		this.setImpl(Table.class.getName());
 	}
 	
 	private Boolean autoCreateColumns = null;
@@ -52,4 +52,5 @@ public class TableDefinition extends DbElementDefinition {
 	public String getTableName() {
 		return (String)this.getProperties().get(XmlConstants.TABLE_NAME);
 	}
+	
 }

@@ -8,15 +8,15 @@ import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.util.Assert;
 
 import com.bstek.dorado.jdbc.JdbcEnviroment;
-import com.bstek.dorado.jdbc.model.DbElement;
 import com.bstek.dorado.jdbc.model.DbElementJdbcOperation;
+import com.bstek.dorado.jdbc.model.DbTable;
 import com.bstek.dorado.jdbc.type.JdbcType;
 
 public class StoredProgramOperation extends DbElementJdbcOperation<StoredProgramContext> {
 
-	public StoredProgramOperation(DbElement dbElement,
+	public StoredProgramOperation(DbTable dbTable,
 			StoredProgramContext jdbcContext) {
-		super(dbElement, jdbcContext);
+		super(dbTable, jdbcContext);
 	}
 
 	@Override
@@ -31,12 +31,12 @@ public class StoredProgramOperation extends DbElementJdbcOperation<StoredProgram
 	}
 
 	protected StoredProgram getStoredProgram() {
-		StoredProgram sp = (StoredProgram) this.getDbElement();
+		StoredProgram sp = (StoredProgram) this.getDbTable();
 		return sp;
 	}
 	
 	protected SimpleJdbcCall newCall() {
-		Assert.notNull(this.getDbElement(), "StoredPropgram must not be null.");
+		Assert.notNull(this.getDbTable(), "StoredPropgram must not be null.");
 		JdbcEnviroment jdbcEnv = this.getJdbcEnviroment();
 		JdbcTemplate jdbcTemplate = jdbcEnv.getNamedDao().getJdbcTemplate();
 		SimpleJdbcCall call = new SimpleJdbcCall(jdbcTemplate);

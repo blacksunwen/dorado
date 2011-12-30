@@ -1,7 +1,13 @@
 package com.bstek.dorado.jdbc.model.table;
 
+import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.jdbc.model.Column;
 
+@XmlNode(
+	nodeName="Column", 
+	definitionType="com.bstek.dorado.jdbc.model.table.TableColumnDefinition"
+)
 public class TableColumn extends Column {
 
 	private boolean insertable = true;
@@ -20,10 +26,12 @@ public class TableColumn extends Column {
 		return updatable;
 	}
 
+	@XmlProperty
 	public Object getInsertDefaultValue() {
 		return insertDefaultValue;
 	}
 
+	@XmlProperty
 	public Object getUpdateDefaultValue() {
 		return updateDefaultValue;
 	}

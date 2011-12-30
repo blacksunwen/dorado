@@ -33,9 +33,4 @@ public interface JdbcEnviromentManager {
 	 * @param env
 	 */
 	void register(JdbcEnviroment env);
-	
-	/**
-	 * 初始化，根据默认规则读取并注册{@link JdbcEnviroment}
-	 */
-	void initialize();
 }

@@ -8,6 +8,7 @@ import javax.sql.DataSource;
 
 import com.bstek.dorado.jdbc.key.KeyGenerator;
 import com.bstek.dorado.jdbc.model.autotable.Order;
+import com.bstek.dorado.jdbc.model.table.Table;
 import com.bstek.dorado.jdbc.sql.SelectSql;
 import com.bstek.dorado.jdbc.sql.SqlConstants.JoinModel;
 import com.bstek.dorado.jdbc.type.JdbcType;
@@ -20,6 +21,10 @@ import com.bstek.dorado.jdbc.type.JdbcType;
  */
 public interface Dialect {
 
+	String token(Table table);
+	
+	String token(Table table, String alias);
+	
 	/**
 	 * 构造{@link JoinModel}的SQL语句的token
 	 * @param joinModel
