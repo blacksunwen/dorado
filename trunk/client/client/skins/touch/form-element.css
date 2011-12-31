@@ -1,0 +1,188 @@
+.form-element {
+    display: -webkit-box;
+    -webkit-box-orient: horizontal;
+    position: relative;
+}
+
+.form-element .element-label {
+    padding: 0.6em;
+}
+
+.form-element .element-wrapper {
+    display: -webkit-box;
+    -webkit-box-flex: 1;
+    -webkit-box-orient: vertical;
+    -webkit-box-pack: center;
+    background-color: white;
+}
+
+.form-element .element-clear {
+    clear: left;
+    font-size: 0px;
+    height: 0px;
+    line-height: 0;
+}
+
+.form-element-labelalign-left .element-label {
+    text-align: left;
+}
+
+.form-element-labelalign-right .element-label {
+    text-align: right;
+}
+
+.form-element-labelalign-top {
+    -webkit-box-orient: vertical;
+}
+
+.form-element-labelalign-top .element-label {
+    display: block;
+}
+
+.form-element-labelalign-top .element-wrapper {
+    display: block;
+}
+
+.check-box {
+    height: 2.5em;
+    width: 100%;
+    display: block;
+    border: 0;
+    background: white none;
+    -webkit-appearance: none;
+}
+
+.check-box::after, .check-box:checked::after {
+    content: "";
+    position: absolute;
+    width: 0.75em;
+    height: 1.25em;
+    top: 50%;
+    left: auto;
+    -webkit-transform: rotate(45deg) skew(5deg);
+    -webkit-transform-origin: 50% 50%;
+    right: 1.1em;
+    border: .35em solid;
+    border-top: none;
+    border-left: none;
+    margin-top: -0.75em;
+    -webkit-transform-origin-x: 50%;
+    -webkit-transform-origin-y: 50%;
+}
+
+.check-box::after {
+    border-color: #DDD;
+}
+
+.check-box:checked::after {
+    border-color: #06346A;
+}
+
+.radio-button {
+    height: 2.5em;
+    width: 100%;
+    display: block;
+    border: 0;
+    background: white none;
+    -webkit-appearance: none;
+}
+
+.radio-button::after, .radio-button:checked::after {
+    content: "";
+    position: absolute;
+    width: 0.75em;
+    height: 1.25em;
+    top: 50%;
+    left: auto;
+    -webkit-transform: rotate(45deg) skew(5deg);
+    -webkit-transform-origin: 50% 50%;
+    right: 1.1em;
+    border: .35em solid;
+    border-top: none;
+    border-left: none;
+    margin-top: -0.75em;
+    -webkit-transform-origin-x: 50%;
+    -webkit-transform-origin-y: 50%;
+}
+
+.radio-button::after {
+    border-color: #DDD;
+}
+
+.radio-button:checked::after {
+    border-color: #06346A;
+}
+
+.toggle {
+    -webkit-border-radius: 13px;
+    border: 1px solid #cccccc;
+    width: 72px;
+    height: 26px;
+}
+
+.toggle .thumb {
+    -webkit-transition: all 0.3s;
+    display: block;
+    height: 24px;
+    width: 25px;
+    -webkit-border-radius: 12px;
+    -webkit-box-shadow: 1px 1px 2px #666;
+    background-image:
+        -webkit-gradient(linear, left top, left bottom,
+            from(#d1d1d1),
+            to(#fdfdfd));
+}
+
+.toggle-on {
+    background-image:
+        -webkit-gradient(linear, left top ,left bottom,
+           from(#c9d3e7),
+           color-stop(.5, #75a9f5),
+           color-stop(.5, #2d6fc6),
+           to(#3195e7));
+}
+
+.toggle-on .thumb{
+    -webkit-transform: translate3d(45px, 0px, 0px);
+}
+
+.slider {
+    position: relative;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    -webkit-border-radius: 4px;
+    height: 9px;
+    background-image:
+        -webkit-gradient(linear, left top ,left bottom,
+           from(#c9d3e7),
+           color-stop(.5, #75a9f5),
+           color-stop(.5, #2d6fc6),
+           to(#3195e7)),
+        -webkit-gradient(linear, left top, left bottom,
+            from(#f0f0f0),
+            color-stop(.2, #9a9a9a),
+            color-stop(.3, #cbcbcb),
+            color-stop(.4, #f0f0f0),
+            to(#f0f0f0));
+
+    background-repeat: no-repeat, repeat-x;
+    -webkit-background-size: 0px 9px, 100% 9px;
+}
+
+.slider > .thumb {
+    -webkit-box-size: border-box;
+    position: absolute;
+    -webkit-box-shadow: 1px 1px 2px #666;
+    height:24px;
+    width:25px;
+    left: 0px;
+    top: -10px;
+    -webkit-border-radius: 12px;
+    background-image:
+        -webkit-gradient(linear, left top, left bottom,
+            from(#d1d1d1),
+            to(#fdfdfd));
+    cursor: move;
+    -webkit-tap-highlight-color: transparent;
+    overflow: hidden;
+}
