@@ -202,7 +202,11 @@
 
     dorado.widget.CalEvent = function(options) {
         for (var prop in options) {
-            this[prop] = options[prop];
+            var value = options[prop];
+            if (value instanceof Date){
+                value = new XDate(value);
+            }
+            this[prop] = value;
         }
     };
 

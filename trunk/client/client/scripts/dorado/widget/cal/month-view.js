@@ -54,16 +54,33 @@
                 defaultValue: "d-month-view"
             },
             date: {
+                defaultValue: function() {
+                    return new XDate()
+                },
                 setter: function(value) {
                     this._date = value;
                     if (this._rendered && this._visible) {
                         this.refreshOnDateChange();
                     }
                 }
-            }
+            },
+            eventSource: {}
+        },
+        EVENTS: {
+            onDateChange: {}
         },
         doOnResize: function() {
             this.refreshEvents();
+        },
+        prev: function() {
+            var view = this, date = view._date;
+            date.addMonths(-1, true);
+            view.refreshOnDateChange();
+        },
+        next: function() {
+            var view = this, date = view._date;
+            date.addMonths(1, true);
+            view.refreshOnDateChange();
         },
         createDom: function() {
             var view = this, doms = {}, dom = $DomUtils.xCreate({
@@ -138,8 +155,18 @@
 
             return dom;
         },
+        refreshDom: function(dom) {
+            $invokeSuper.call(this, [dom]);
+            this.refreshOnDateChange();
+        },
+        getEventSource: function() {
+            if (this._eventSource) return this._eventSource;
+            if (this._parent && this._parent._parent && this._parent._parent instanceof dorado.widget.Calendar) {
+                return this._parent._parent._eventSource;
+            }
+        },
         refreshEvents: function() {
-            var view = this, eventRange = view.getDateRange(), eventSource = view._parent._parent._eventSource, events;
+            var view = this, eventRange = view.getDateRange(), eventSource = view.getEventSource(), events;
 
             if (eventSource) {
                 events = eventSource.getEventsByRange(eventRange[0], eventRange[1]);
@@ -310,6 +337,9 @@
         },
         refreshOnDateChange: function() {
             var view = this, date = view._date || new XDate();
+            view.fireEvent("onDateChange", view, {
+                date: date
+            });
             view.refreshDate(date);
             view.refreshEvents();
         },
