@@ -1,0 +1,171 @@
+.d-icon-plus, .d-icon-minus, .d-icon-delete, .d-icon-arrow-r,
+.d-icon-arrow-l, .d-icon-arrow-u, .d-icon-arrow-d, .d-icon-check,
+.d-icon-gear, .d-icon-refresh, .d-icon-forward, .d-icon-back,
+.d-icon-grid, .d-icon-star, .d-icon-alert, .d-icon-info, .d-icon-home, .d-icon-search,
+.d-icon-checkbox-off, .d-icon-checkbox-on, .d-icon-radio-off, .d-icon-radio-on {
+    background-image: url(icons-36-white.png);
+    -moz-background-size: 1548px 36px;
+    -o-background-size: 1548px 36px;
+    -webkit-background-size: 1548px 36px;
+    background-size: 1548px 36px;
+}
+
+/* plus minus */
+.d-icon-plus {
+	background-position: 	-0 50%;
+}
+.d-icon-minus {
+	background-position: 	-72px 50%;
+}
+
+/* delete/close */
+.d-icon-delete {
+	background-position: 	-144px 50%;
+}
+
+/* arrows */
+.d-icon-arrow-r {
+	background-position: 	-216px 50%;
+}
+.d-icon-arrow-l {
+	background-position: 	-288px 50%;
+}
+.d-icon-arrow-u {
+	background-position: 	-360px 50%;
+}
+.d-icon-arrow-d {
+	background-position: 	-432px 50%;
+}
+
+/* misc */
+.d-icon-check {
+	background-position: 	-504px 50%;
+}
+.d-icon-gear {
+	background-position: 	-576px 50%;
+}
+.d-icon-refresh {
+	background-position: 	-648px 50%;
+}
+.d-icon-forward {
+	background-position: 	-720px 50%;
+}
+.d-icon-back {
+	background-position: 	-792px 50%;
+}
+.d-icon-grid {
+	background-position: 	-864px 50%;
+}
+.d-icon-star {
+	background-position: 	-936px 50%;
+}
+.d-icon-alert {
+	background-position: 	-1008px 50%;
+}
+.d-icon-info {
+	background-position: 	-1080px 50%;
+}
+.d-icon-home {
+	background-position: 	-1152px 50%;
+}
+.d-icon-search {
+	background-position: 	-1224px 50%;
+}
+.d-icon-checkbox-off {
+	background-position: 	-1368px 50%;
+}
+.d-icon-checkbox-on {
+	background-position: 	-1296px 50%;
+}
+.d-icon-radio-off {
+	background-position: 	-1512px 50%;
+}
+.d-icon-radio-on {
+	background-position: 	-1440px 50%;
+}
+
+.d-icon-small-plus, .d-icon-small-minus, .d-icon-small-delete, .d-icon-small-arrow-r,
+.d-icon-small-arrow-l, .d-icon-small-arrow-u, .d-icon-small-arrow-d, .d-icon-small-check,
+.d-icon-small-gear, .d-icon-small-refresh, .d-icon-small-forward, .d-icon-small-back,
+.d-icon-small-grid, .d-icon-small-star, .d-icon-small-alert, .d-icon-small-info, .d-icon-small-home, .d-icon-small-search,
+.d-icon-small-checkbox-off, .d-icon-small-checkbox-on, .d-icon-small-radio-off, .d-icon-small-radio-on {
+    background-image: url(icons-36-white.png);
+    -moz-background-size: 774px 18px;
+    -o-background-size: 774px 18px;
+    -webkit-background-size: 774px 18px;
+    background-size: 774px 18px;
+}
+
+/* plus minus */
+.d-icon-small-plus {
+	background-position: 	-0 50%;
+}
+.d-icon-small-minus {
+	background-position: 	-36px 50%;
+}
+
+/* delete/close */
+.d-icon-small-delete {
+	background-position: 	-72px 50%;
+}
+
+/* arrows */
+.d-icon-small-arrow-r {
+	background-position: 	-108px 50%;
+}
+.d-icon-small-arrow-l {
+	background-position: 	-144px 50%;
+}
+.d-icon-small-arrow-u {
+	background-position: 	-180px 50%;
+}
+.d-icon-small-arrow-d {
+	background-position: 	-216px 50%;
+}
+
+/* misc */
+.d-icon-small-check {
+	background-position: 	-252px 50%;
+}
+.d-icon-small-gear {
+	background-position: 	-288px 50%;
+}
+.d-icon-small-refresh {
+	background-position: 	-324px 50%;
+}
+.d-icon-small-forward {
+	background-position: 	-360px 50%;
+}
+.d-icon-small-back {
+	background-position: 	-396px 50%;
+}
+.d-icon-small-grid {
+	background-position: 	-432px 50%;
+}
+.d-icon-small-star {
+	background-position: 	-468px 50%;
+}
+.d-icon-small-alert {
+	background-position: 	-504px 50%;
+}
+.d-icon-small-info {
+	background-position: 	-540px 50%;
+}
+.d-icon-small-home {
+	background-position: 	-576px 50%;
+}
+.d-icon-small-search {
+	background-position: 	-612px 50%;
+}
+.d-icon-small-checkbox-off {
+	background-position: 	-684px 50%;
+}
+.d-icon-small-checkbox-on {
+	background-position: 	-648px 50%;
+}
+.d-icon-small-radio-off {
+	background-position: 	-756px 50%;
+}
+.d-icon-small-radio-on {
+	background-position: 	-720px 50%;
+}

@@ -1,0 +1,50 @@
+html, body{
+    margin: 0;
+    padding: 0;
+
+    -webkit-backface-visibility: hidden;
+}
+
+body{
+}
+
+*:focus {
+	outline: 0;
+}
+
+div, span, input{
+    outline: 0;
+}
+
+.b-border-layout{
+	position: relative;
+    overflow: hidden;
+}
+
+.b-border-layout-item{
+	position: absolute;
+	left: 0;
+	top: 0;
+}
+
+.column-layout-item {
+    float: left;
+}
+
+.box-layout{
+    display: -webkit-box;
+}
+
+.box-layout .flow-layout-item{
+}
+
+.d-floating-control{
+    position: absolute !important;
+}
+
+.dialog-anim-cover {
+    position: absolute;
+    background-color: #D0D0D0;
+    filter: alpha( opacity = 50);
+	opacity: 0.5;
+}

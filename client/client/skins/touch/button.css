@@ -1,0 +1,223 @@
+/* Bordered Button Styles */
+.button {
+    position: relative;
+    display: -webkit-box;
+    -webkit-box-align: center;
+    -webkit-box-pack: center;
+    border: solid 1px #54617d;
+    border-color: #484e59 #54617d #4c5c7a #54617d;
+    cursor: pointer;
+    padding: 0px 10px;
+    font-size: 12px;
+    margin-top: 1px;
+    -webkit-box-sizing: border-box;
+    -webkit-border-radius: 5px;
+    background: 			#eee;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#fdfdfd), to(#eee)); /* Saf4+, Chrome */
+    color: #444;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+}
+
+.button .label, .badge{
+    -webkit-box-flex: 1;
+    box-flex: 1;
+    -webkit-box-align: center;
+    box-align: center;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: center;
+    font-weight: bold;
+    line-height: 1.2em;
+    display: block;
+    overflow: hidden;
+}
+
+.button-hasbadge .badge {
+    -webkit-border-radius: 1em;
+    border-radius: 1em;
+    -webkit-background-clip: padding;
+    background-clip: padding-box;
+    padding: .15em .25em;
+    z-index: 30;
+    text-shadow: rgba(0, 0, 0, 0.5) 0 -0.08em 0;
+    -webkit-box-shadow: #000 0 .1em .2em;
+    overflow: hidden;
+    color: white;
+    border: 2px solid white;
+    position: absolute;
+    width: auto;
+    /**
+    min-width: 2em;
+    height: 2em;
+    line-height: 1.2em;
+    font-size: .6em;
+    */
+    top: -0.15em;
+    right: 0px;
+    max-width: 90%;
+    background-color: #900;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #e60000), color-stop(50%, #b30000), color-stop(51%, #990000), color-stop(100%, #800000));
+    background-image: linear-gradient(#e60000,#b30000 50%,#990000 51%,#800000);
+    display: inline-block;
+}
+
+.button .icon {
+    background-repeat: no-repeat;
+    display: block;
+}
+
+.button-iconalign-left, .button-iconalign-right {
+    -webkit-box-orient: horizontal;
+    box-orient: horizontal;
+    -webkit-box-direction: reverse;
+    box-direction: reverse;
+}
+
+.button-iconalign-top, .button-iconalign-bottom {
+    -webkit-box-orient: vertical;
+    box-orient: vertical;
+}
+
+.button-iconalign-left, .button-iconalign-top {
+  -webkit-box-direction: reverse;
+  box-direction: reverse;
+}
+
+.button-iconalign-bottom, .button-iconalign-right {
+  -webkit-box-direction: normal;                                    box-direction: normal;
+}
+
+.button:hover, .button.touched {
+	background: 			#dadada;
+	color: 					#101010;
+    border: 1px solid 		#bbb;
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#ededed), to(#dadada)); /* Saf4+, Chrome */
+    -webkit-tap-highlight-color: transparent;
+}
+/* End Bordered Button Styles */
+
+/* Back Bordered Button Styles */
+.button.back {
+    padding: 0px 7px 0px 3px;
+    margin-left: 10px;
+    position: relative;
+}
+.button.back > span {
+    position: relative;
+    z-index: 1;
+}
+.button.back:before {
+    content: " ";
+    display: block;
+    z-index: 0;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#fdfdfd), to(#eee)); /* Saf4+, Chrome */
+    border-left: solid 1px #484e59;
+    border-bottom: solid 1px #9aa5bb;
+    -webkit-border-top-left-radius: 5px;
+    -webkit-border-bottom-right-radius: 5px;
+    -webkit-border-bottom-left-radius: 4px;
+    height: 23.5px;
+    width: 23.5px;
+    -webkit-transform: rotate(45deg);
+    -webkit-mask-image:
+        -webkit-gradient(linear, left bottom, right top,
+            from(#000000),
+            color-stop(0.5,#000000),
+            color-stop(0.5, transparent),
+            to(transparent));
+    position: absolute;
+    left: -9px;
+    top: 2.5px;
+    -webkit-background-clip: content;
+}
+
+.button.back:hover:before, .button.back.touched:before {
+    border: 1px solid 		#bbb;
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#ededed), to(#dadada)); /* Saf4+, Chrome */
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* End Back Bordered Button Styles */
+
+/* Next Bordered Button Styles */
+.button.next {
+    padding: 0px 3px 0px 7px;
+    margin-right: 10px;
+    position: relative;
+}
+
+.button.next > span {
+    position: relative;
+    z-index: 1;
+}
+
+.button.next:before {
+    content: " ";
+    display: block;
+    z-index: 0;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#fdfdfd), to(#eee)); /* Saf4+, Chrome */
+    border-right: solid 1px #9aa5bb;
+    border-top: solid 1px #484e59;
+    -webkit-border-top-left-radius: 5px;
+    -webkit-border-bottom-right-radius: 5px;
+    -webkit-border-top-right-radius: 4px;
+    height: 23.5px;
+    width: 23.5px;
+    -webkit-transform: rotate(45deg);
+    -webkit-mask-image:
+        -webkit-gradient(linear, right top, left bottom,
+            from(#000000),
+            color-stop(0.5,#000000),
+            color-stop(0.5, transparent),
+            to(transparent));
+    position: absolute;
+    right: -9px;
+    top: 2.5px;
+    -webkit-background-clip: content;
+}
+
+.button.next:hover:before, .button.next.touched:before {
+    border: 1px solid 		#bbb;
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#ededed), to(#dadada)); /* Saf4+, Chrome */
+    -webkit-tap-highlight-color: transparent;
+}
+/* End Next Bordered Button Styles */
+
+.button-plain {
+    line-height: 28px;
+    height: 30px;
+}
+
+.button-free {
+    line-height: 100%;
+    height: auto;
+}
+
+.button-gray {
+    background-color: #cccccc;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f2f2f2), color-stop(50%, #d9d9d9), color-stop(51%, #cccccc), color-stop(100%, #bfbfbf));
+}
+
+.button-gray:hover, .button-gray.touched{
+    background-color: #bababa;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #a1a1a1), color-stop(10%, #adadad), color-stop(65%, #bababa), color-stop(100%, #bbbbbb));
+}
+
+.button-gray .label{
+    color: black;
+}
+
+.decline {
+    background-color: #C70505;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fb6a6a), color-stop(2%, #ea0606), color-stop(100%, #a40404));
+}
+
+.decline:hover, .decline.touched{
+    background-color: #a40404;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #720303), color-stop(10%, #8b0404), color-stop(65%, #a40404), color-stop(100%, #a70404));
+}
+
+.decline .label{
+    color: black;
+}

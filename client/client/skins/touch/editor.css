@@ -1,0 +1,92 @@
+.text-editor{
+	border:1px solid #57A8D2;
+	background:#FFFFFF url(text-bg.gif) repeat-x 0 0;
+    height: 26px;
+
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+}
+
+.text-editor-focused{
+}
+
+.text-editor .editor-wrap{
+}
+
+.text-editor .editor-wrap .editor{
+	background-color: transparent;
+
+	width: 100%;
+    border: 0;
+    margin: 0;
+
+	min-height: 0;
+    line-height: 24px;
+
+    color: #6E6E6E;
+}
+
+.text-editor .icon{
+	width:20px;
+	height:100%;
+	float:left;
+
+	background:center center no-repeat;
+
+	display:none;
+}
+
+.text-editor .trigger{
+	float: right;
+    margin-top: 8px;
+    margin-right: 4px;
+	width: 0;
+    height: 0;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+
+    border-top: 16px solid #ccc;
+
+	display: none;
+}
+
+.text-editor .trigger-hover{
+}
+
+.text-editor .trigger-click{
+}
+
+.text-editor-readonly{
+}
+
+.text-editor-readonly .editor-wrap .editor{
+    background-color: lightgray;
+}
+
+.text-editor-readonly .trigger{
+	filter:alpha(opacity=50);
+	opacity: 0.5;
+}
+
+.text-editor-empty{
+}
+
+.text-editor-empty .editor-wrap .editor{
+	color:gray;
+}
+
+.text-editor-icon .editor-wrap{
+	margin-left:20px;
+}
+
+.text-editor-icon .icon{
+	display: block;
+}
+
+.text-editor-holder .editor-wrap{
+	margin-right: 34px;
+}
+
+.text-editor-holder .trigger{
+	display:block;
+}
