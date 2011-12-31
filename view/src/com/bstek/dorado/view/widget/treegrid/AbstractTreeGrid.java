@@ -11,6 +11,7 @@ import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.view.widget.grid.Column;
 import com.bstek.dorado.view.widget.grid.GridSupport;
 import com.bstek.dorado.view.widget.list.DropMode;
+import com.bstek.dorado.view.widget.tree.ExpandingMode;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -23,10 +24,37 @@ import com.bstek.dorado.view.widget.list.DropMode;
 		@ClientEvent(name = "onNodeDetached"),
 		@ClientEvent(name = "onRenderNode") })
 public abstract class AbstractTreeGrid extends GridSupport {
+	private String treeColumn;
 	private int indent;
 	private boolean showLines;
-	private String treeColumn;
+	private ExpandingMode expandingMode = ExpandingMode.async;
+	private boolean expandingAnimated = true;
+	private String defaultIcon;
+	private String defaultIconClass;
+	private String defaultExpandedIcon;
+	private String defaultExpandedIconClass;
 	private DropMode dropMode = DropMode.onItem;
+
+	@IdeProperty(highlight = 1)
+	public String getTreeColumn() {
+		return treeColumn;
+	}
+
+	public void setTreeColumn(String treeColumn) {
+		this.treeColumn = treeColumn;
+	}
+
+	@Override
+	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "Columns"))
+	@ClientProperty
+	public List<Column> getColumns() {
+		return super.getColumns();
+	}
+
+	@ClientProperty(escapeValue = "async")
+	public ExpandingMode getExpandingMode() {
+		return expandingMode;
+	}
 
 	public int getIndent() {
 		return indent;
@@ -44,20 +72,49 @@ public abstract class AbstractTreeGrid extends GridSupport {
 		this.showLines = showLines;
 	}
 
-	@IdeProperty(highlight = 1)
-	public String getTreeColumn() {
-		return treeColumn;
+	public void setExpandingMode(ExpandingMode expandingMode) {
+		this.expandingMode = expandingMode;
 	}
 
-	public void setTreeColumn(String treeColumn) {
-		this.treeColumn = treeColumn;
+	@ClientProperty(escapeValue = "true")
+	public boolean isExpandingAnimated() {
+		return expandingAnimated;
 	}
 
-	@Override
-	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "Columns"))
-	@ClientProperty
-	public List<Column> getColumns() {
-		return super.getColumns();
+	public void setExpandingAnimated(boolean expandingAnimated) {
+		this.expandingAnimated = expandingAnimated;
+	}
+
+	public String getDefaultIcon() {
+		return defaultIcon;
+	}
+
+	public void setDefaultIcon(String defaultIcon) {
+		this.defaultIcon = defaultIcon;
+	}
+
+	public String getDefaultIconClass() {
+		return defaultIconClass;
+	}
+
+	public void setDefaultIconClass(String defaultIconClass) {
+		this.defaultIconClass = defaultIconClass;
+	}
+
+	public String getDefaultExpandedIcon() {
+		return defaultExpandedIcon;
+	}
+
+	public void setDefaultExpandedIcon(String defaultExpandedIcon) {
+		this.defaultExpandedIcon = defaultExpandedIcon;
+	}
+
+	public String getDefaultExpandedIconClass() {
+		return defaultExpandedIconClass;
+	}
+
+	public void setDefaultExpandedIconClass(String defaultExpandedIconClass) {
+		this.defaultExpandedIconClass = defaultExpandedIconClass;
 	}
 
 	@Override
