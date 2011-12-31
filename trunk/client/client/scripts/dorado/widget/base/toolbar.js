@@ -133,7 +133,7 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 		if (toolbar._rendered) {
 			var refDom = null, doms = toolbar._doms;
 			if (typeof index == "number") {
-				var refItem = items[index];
+				var refItem = items.get(index);
 				refDom = refItem._dom;
 			}
 			items.insert(item, index);
