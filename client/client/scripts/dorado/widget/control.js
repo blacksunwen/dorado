@@ -727,15 +727,15 @@
 		 */
 		getDom : function() {
 			if(!this._dom) {
-				var dom = this._dom = this.createDom();
+				var dom = this._dom = this.createDom(), $dom = $fly(this._dom);
 				
 				var className = (this._inherentClassName) ? this._inherentClassName : "";
 				if (this._className) className += (" " + this._className);
-				if (className) dom.className = className;
+				if (className) $dom.addClass(className);
 				if (this.focusable) dom.tabIndex = 1;
 
 				var self = this;
-				$fly(this._dom).mousedown(function(evt) {
+				$dom.mousedown(function(evt) {
 					if (!self._eventBinded) {
 						self._eventBinded = true;
 						
