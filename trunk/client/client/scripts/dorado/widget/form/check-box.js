@@ -135,7 +135,6 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 	},
 
 	onClick : function() {
-		debugger;
 		var checkBox = this;
 
 		if(checkBox._readOnly || this._readOnly2) {
