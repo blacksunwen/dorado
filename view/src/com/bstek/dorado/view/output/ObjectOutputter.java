@@ -120,12 +120,12 @@ public class ObjectOutputter implements Outputter {
 	/**
 	 * 输出一个Java的POJO对象中在{@link #getConfigProperties()}配置过的各个POJO属性。
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected void outputObjectProperties(Object object, OutputContext context)
 			throws Exception {
-		Map<String, ?> beanMap;
-		if (object instanceof Map<?, ?>) {
-			beanMap = (Map<String, ?>) object;
+		Map beanMap;
+		if (object instanceof Map) {
+			beanMap = (Map) object;
 		} else if (object.getClass() == Object.class) {
 			beanMap = Collections.EMPTY_MAP;
 		} else {
@@ -141,7 +141,7 @@ public class ObjectOutputter implements Outputter {
 		}
 
 		JsonBuilder json = context.getJsonBuilder();
-		for (String property : beanMap.keySet()) {
+		for (String property : ((Map<String, ?>) beanMap).keySet()) {
 			if ("class".equals(property)) {
 				continue;
 			}

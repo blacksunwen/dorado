@@ -667,6 +667,15 @@ public class XmlParserHelper implements BeanFactoryAware {
 			if (readMethod == null) {
 				continue;
 			}
+			if (readMethod.getDeclaringClass() != beanType) {
+				try {
+					readMethod = beanType.getDeclaredMethod(
+							readMethod.getName(),
+							readMethod.getParameterTypes());
+				} catch (NoSuchMethodException e) {
+					// do nothing
+				}
+			}
 
 			TypeInfo typeInfo;
 			Class<?> propertyType = propertyDescriptor.getPropertyType();
