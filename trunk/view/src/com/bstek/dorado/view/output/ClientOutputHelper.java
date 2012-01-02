@@ -330,6 +330,15 @@ public class ClientOutputHelper {
 				.getPropertyDescriptors(beanType)) {
 			String property = propertyDescriptor.getName();
 			Method readMethod = propertyDescriptor.getReadMethod();
+			if (readMethod.getDeclaringClass() != beanType) {
+				try {
+					readMethod = beanType.getDeclaredMethod(
+							readMethod.getName(),
+							readMethod.getParameterTypes());
+				} catch (NoSuchMethodException e) {
+					// do nothing
+				}
+			}
 
 			TypeInfo typeInfo;
 			Class<?> propertyType = propertyDescriptor.getPropertyType();
