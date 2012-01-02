@@ -266,7 +266,7 @@
 			 * @see dorado.widget.Container#addChild
 			 */
 			layoutConstraint: {
-				setter: function(layoutConstraint) {
+				setter: function(layoutConstraint) {					
 					if (!this._visible && this._hideMode == "display") {
 						this._oldLayoutConstraint = layoutConstraint;
 					}
@@ -534,7 +534,8 @@
 		},
 		
 		isActualVisible : function() {
-			return this._parentActualVisible && this._actualVisible && this._visible && this._layoutConstraint != dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT;
+			return this._parentActualVisible && this._actualVisible && 
+				(this._visible || this._layoutConstraint != dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT);
 		},
 		
 		onActualVisibleChange : function() {
@@ -551,10 +552,12 @@
 
 			var actualVisible = this.isActualVisible();
 			if(actualVisible) {
-				this._skipResize = this._shouldResizeOnVisible;
-				if(this._shouldRefreshOnVisible) this.refresh();
-				this._skipResize = false;
-				if(this._shouldResizeOnVisible) this.onResize();
+				if (!this._currentVisible || this._shouldRefreshOnVisible) {
+					this._skipResize = this._shouldResizeOnVisible;
+					this.refresh();
+					this._skipResize = false;
+				}
+				else if(this._shouldResizeOnVisible) this.onResize();
 			}
 
 			notifyChildren(this, actualVisible);
@@ -645,7 +648,7 @@
 								dom.style.display = "none";
 
 								this._oldLayoutConstraint = this._layoutConstraint || null;
-								this.set("layoutConstraint", dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT);
+								this._layoutConstraint = dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT;
 							}
 						} else {
 							dom.style.visibility = (this._visible) ? '' : "hidden";
