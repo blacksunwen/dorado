@@ -4,6 +4,7 @@ import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.view.annotation.Widget;
 
 /**
@@ -24,6 +25,7 @@ public class CheckBox extends AbstractDataEditor {
 	private boolean triState;
 	private boolean iconOnly;
 
+	@XmlProperty
 	@ClientProperty(escapeValue = "true")
 	public Object getOnValue() {
 		return onValue;
@@ -33,6 +35,7 @@ public class CheckBox extends AbstractDataEditor {
 		this.onValue = onValue;
 	}
 
+	@XmlProperty
 	@ClientProperty(escapeValue = "false")
 	public Object getOffValue() {
 		return offValue;
