@@ -26,8 +26,7 @@ import com.bstek.dorado.view.widget.Container;
 @ClientEvents({ @ClientEvent(name = "onDataLoaded"),
 		@ClientEvent(name = "onComponentRegistered"),
 		@ClientEvent(name = "onComponentUnregistered") })
-public abstract class View extends Container implements Namable,
-		Scopable {
+public abstract class View extends Container implements Namable, Scopable {
 	private String name;
 	private ViewConfig viewConfig;
 	private Scope scope = Scope.request;
@@ -44,6 +43,7 @@ public abstract class View extends Container implements Namable,
 	}
 
 	@ClientProperty(ignored = true)
+	@IdeProperty(visible = false)
 	public String getName() {
 		return name;
 	}
