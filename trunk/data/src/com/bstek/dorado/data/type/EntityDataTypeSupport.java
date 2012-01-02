@@ -12,6 +12,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 
 import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.IdeProperty;
+import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.common.Namable;
 import com.bstek.dorado.common.ParentAware;
 import com.bstek.dorado.common.event.ClientEvent;
@@ -113,6 +114,8 @@ public abstract class EntityDataTypeSupport extends NonAggregationDataType
 		this.defaultDisplayProperty = defaultDisplayProperty;
 	}
 
+	@XmlProperty
+	@ClientProperty
 	@IdeProperty(editor = "any")
 	public Object getUserData() {
 		return userData;

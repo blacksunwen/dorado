@@ -163,6 +163,8 @@ public abstract class Component implements Ignorable, TagSupport,
 		this.tags = tags;
 	}
 
+	@XmlProperty
+	@ClientProperty
 	@IdeProperty(editor = "any")
 	public Object getUserData() {
 		return userData;
