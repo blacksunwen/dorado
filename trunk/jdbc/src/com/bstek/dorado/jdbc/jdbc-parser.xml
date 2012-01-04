@@ -7,6 +7,8 @@
 
 	<bean id="dorado.jdbc.jdbcEnviromentParser" class="com.bstek.dorado.jdbc.config.xml.JdbcEnviromentParser" parent="dorado.propertyParser"/>
 	
+	<bean id="dorado.jdbc.transactionTemplateParser" class="com.bstek.dorado.jdbc.config.xml.TransactionTemplateParser" parent="dorado.propertyParser"/>
+	
 	<bean id="dorado.jdbc.triggerParser" class="com.bstek.dorado.jdbc.config.xml.TriggerParser" parent="dorado.propertyParser"/>
 	
 	<bean id="dorado.jdbc.jdbcTypeParser" class="com.bstek.dorado.jdbc.config.xml.JdbcTypeParser" parent="dorado.propertyParser"/>

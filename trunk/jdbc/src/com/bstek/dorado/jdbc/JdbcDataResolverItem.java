@@ -3,11 +3,15 @@ package com.bstek.dorado.jdbc;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.XmlSubNode;
+
 /**
  * 与UpdateAction的Item对应的Item
  * @author mark
  *
  */
+@XmlNode(nodeName="Item")
 public class JdbcDataResolverItem {
 
 	private String name;
@@ -52,6 +56,7 @@ public class JdbcDataResolverItem {
 		this.foreignKeyProperties = refrencedProperties;
 	}
 
+	@XmlSubNode
 	public List<JdbcDataResolverItem> getItems() {
 		return this.items;
 	}

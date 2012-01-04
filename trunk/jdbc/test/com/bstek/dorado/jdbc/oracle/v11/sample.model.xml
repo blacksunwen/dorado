@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Model>
+	<DataProvider name="ora11.provider.01" type="jdbc">
+		<Property name="tableName">EMPLOYEE</Property>
+	</DataProvider>
+	
+	<DataResolver name="ora11.resolver.01" type="jdbc">
+		<Items>
+			<Item name="employee" tableName="EMPLOYEE"/>
+		</Items>
+	</DataResolver>
+	<DataResolver name="ora11.resolver.02" type="jdbc">
+		<Items>
+			<Item name="dept" tableName="DEPT">
+				<Item name="employee" tableName="EMPLOYEE" parentKeyProperties="DEPT_ID" foreignKeyProperties="DEPT_ID"/>
+			</Item>
+		</Items>
+	</DataResolver>
+	
+	<DataResolver name="ora11.resolver.03" type="jdbc" transactionTemplate="spring:transactionTemplate">
+		<Items>
+			<Item name="dept" tableName="DEPT">
+				<Item name="employee" tableName="EMPLOYEE" parentKeyProperties="DEPT_ID" foreignKeyProperties="DEPT_ID"/>
+			</Item>
+		</Items>
+	</DataResolver>
+</Model>
