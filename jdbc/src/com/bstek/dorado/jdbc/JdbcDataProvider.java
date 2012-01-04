@@ -1,5 +1,6 @@
 package com.bstek.dorado.jdbc;
 
+import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.data.provider.AbstractDataProvider;
 import com.bstek.dorado.data.provider.Page;
 import com.bstek.dorado.data.type.DataType;
@@ -11,6 +12,7 @@ import com.bstek.dorado.util.Assert;
  * @author mark
  * 
  */
+@XmlNode(fixedProperties = "type=jdbc")
 public class JdbcDataProvider extends AbstractDataProvider {
 
 	private String tableName;

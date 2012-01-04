@@ -21,6 +21,20 @@ public abstract class AbstractJdbcTestCase extends ConfigManagerTestSupport {
 		}
 	}
 	
+	protected JdbcDataProvider getProvider(String name) throws Exception {
+		JdbcDataProvider provider = (JdbcDataProvider)this.getDataProviderManager().getDataProvider(name);
+		Assert.assertNotNull("no provider named [" + name + "] defined.", provider);
+		
+		return provider;
+	}
+	
+	protected JdbcDataResolver getResolver(String name) throws Exception {
+		JdbcDataResolver resolver = (JdbcDataResolver)this.getDataResolverManager().getDataResolver(name);
+		Assert.assertNotNull("no resolver named [" + name + "] defined.", resolver);
+		
+		return resolver;
+	}
+	
 	protected abstract List<String> getExtConfigLocations(); 
 	
 	protected static class Dept {

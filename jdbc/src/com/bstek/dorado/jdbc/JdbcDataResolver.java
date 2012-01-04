@@ -6,6 +6,10 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.XmlNodeWrapper;
+import com.bstek.dorado.annotation.XmlProperty;
+import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.data.resolver.AbstractDataResolver;
 import com.bstek.dorado.data.resolver.DataItems;
 
@@ -15,6 +19,9 @@ import com.bstek.dorado.data.resolver.DataItems;
  * @author mark
  * 
  */
+@XmlNode(
+	fixedProperties = "type=jdbc"
+)
 public class JdbcDataResolver extends AbstractDataResolver {
 
 	private List<JdbcDataResolverItem> items;
@@ -23,6 +30,7 @@ public class JdbcDataResolver extends AbstractDataResolver {
 	
 	private TransactionTemplate transactionTemplate;
 	
+	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "Items"))
 	public List<JdbcDataResolverItem> getItems() {
 		return items;
 	}
@@ -31,6 +39,7 @@ public class JdbcDataResolver extends AbstractDataResolver {
 		this.items = items;
 	}
 
+	@XmlProperty(parser="spring:dorado.jdbc.jdbcEnviromentParser")
 	public JdbcEnviroment getJdbcEnviroment() {
 		return jdbcEnviroment;
 	}
@@ -43,6 +52,7 @@ public class JdbcDataResolver extends AbstractDataResolver {
 		this.transactionTemplate = transactionTemplate;
 	}
 	
+	@XmlProperty(parser="spring:dorado.jdbc.transactionTemplateParser")
 	public TransactionTemplate getTransactionTemplate() {
 		if (transactionTemplate == null) {
 			JdbcEnviroment jdbcEnv = this.getJdbcEnviroment();
@@ -54,7 +64,7 @@ public class JdbcDataResolver extends AbstractDataResolver {
 		return transactionTemplate;
 	}
 	
-	public JdbcDataResolverOperation creatOperation(DataItems dataItems, Object parameter) {
+	protected JdbcDataResolverOperation creatOperation(DataItems dataItems, Object parameter) {
 		JdbcEnviroment jdbcEnv = this.getJdbcEnviroment();
 		
 		JdbcDataResolverContext jdbcContext = new JdbcDataResolverContext(jdbcEnv, parameter, dataItems, this.getItems());

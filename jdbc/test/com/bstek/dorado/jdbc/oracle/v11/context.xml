@@ -4,18 +4,27 @@
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <!-- JdbcEnviroment -->
+    <bean id="dataSource" class="oracle.jdbc.pool.OracleDataSource">
+        <property name="user" value="dorado"/>
+        <property name="password" value="dorado"/>
+        <property name="URL" value="jdbc:oracle:thin:@192.168.18.90:1521/DORADO"/>
+    </bean>
     <bean parent="dorado.jdbcEnvTemplate">
         <property name="name" value="ora11" />
-        <property name="dataSource">
-            <bean class="oracle.jdbc.pool.OracleDataSource">
-                <property name="user" value="dorado"/>
-                <property name="password" value="dorado"/>
-                <property name="URL" value="jdbc:oracle:thin:@192.168.18.90:1521/DORADO"/>
-            </bean>
-        </property>
+        <property name="dataSource" ref="dataSource"/>
         <property name="dialect">
             <bean parent="dorado.jdbc.oracleDialect"/>
         </property>
+    </bean>
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	<bean id="transactionTemplate" class="org.springframework.transaction.support.TransactionTemplate">
+		<property name="transactionManager" ref="transactionManager"/>
+	</bean>
+	
+    <bean parent="dorado.dataConfigLoader">
+    	<property name="configLocation" value="classpath:com/bstek/dorado/jdbc/oracle/v11/*.model.xml"/>
     </bean>
     
     <bean parent="dorado.jdbcConfigTemplate">
@@ -25,4 +34,6 @@
             </list>
         </property>
     </bean>
+    
+    
 </beans>

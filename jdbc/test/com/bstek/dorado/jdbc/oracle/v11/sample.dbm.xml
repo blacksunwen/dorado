@@ -28,7 +28,7 @@
       <Property name="dynamicClause"><![CDATA[#if ($ID) WHERE ID=:ID #end]]></Property>
     </Table>
 
-    <Table name="DEPT" tableName="DEPT">
+    <Table name="DEPT" tableName="DEPT" trigger="com.bstek.dorado.jdbc.oracle.v11.DeptTableTrigger">
       <Columns>
         <KeyColumn propertyName="DEPT_ID" jdbcType="VARCHAR-String" columnName="DEPT_ID"/>
         <Column propertyName="DEPT_NAME" jdbcType="VARCHAR-String" columnName="DEPT_NAME"/>

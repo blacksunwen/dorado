@@ -10,6 +10,16 @@
 	<import resource="jdbc-parser.xml"/>
 	<import resource="jdbc-dialect.xml"/>
 	
+	<!-- Dorado -->
+	<bean parent="dorado.dataProviderTypeRegister">
+		<property name="type" value="jdbc" />
+		<property name="classType" value="com.bstek.dorado.jdbc.JdbcDataProvider" />
+	</bean>
+	<bean parent="dorado.dataResolverTypeRegister">
+		<property name="type" value="jdbc" />
+		<property name="classType" value="com.bstek.dorado.jdbc.JdbcDataResolver" />
+	</bean>
+	
 	<bean id="dorado.jdbc.defaultModelGeneratorSuit" class="com.bstek.dorado.jdbc.support.DefaultModelGeneratorSuit"/>
 	<bean id="dorado.jdbcEnvTemplate" class="com.bstek.dorado.jdbc.JdbcEnviroment" abstract="true">
 		<property name="modelGeneratorSuit" ref="dorado.jdbc.defaultModelGeneratorSuit"/>
