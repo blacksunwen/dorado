@@ -14,6 +14,9 @@ import com.bstek.dorado.jdbc.model.DbElementCreationContext;
 import com.bstek.dorado.jdbc.model.DbElementDefinition;
 import com.bstek.dorado.jdbc.model.DbTable;
 import com.bstek.dorado.jdbc.model.TableTrigger;
+import com.bstek.dorado.jdbc.model.storedprogram.StoredProgram;
+import com.bstek.dorado.jdbc.model.storedprogram.StoredProgramContext;
+import com.bstek.dorado.jdbc.model.storedprogram.StoredProgramOperation;
 import com.bstek.dorado.util.Assert;
 
 /**
@@ -44,9 +47,9 @@ public abstract class JdbcUtils {
 		}
 	}
 	
-	public static DbTable getDbTable(String elementName) {
-		Assert.notEmpty(elementName, "DbElement name must not be null.");
-		DbElementDefinition definition = JdbcUtils.getDbmManager().getDefinition(elementName);
+	public static DbTable getDbTable(String tableName) {
+		Assert.notEmpty(tableName, "name of DbTable must not be null.");
+		DbElementDefinition definition = JdbcUtils.getDbmManager().getDefinition(tableName);
 		DbElementCreationContext context = new DbElementCreationContext();
 		
 		try {
@@ -116,5 +119,35 @@ public abstract class JdbcUtils {
 		} else {
 			trigger.doSave(operation);
 		}
+	}
+	
+	public static StoredProgram getStoredProgram(String spName) {
+		Assert.notEmpty(spName, "name of StoredProgram must not be null.");
+		DbElementDefinition definition = JdbcUtils.getDbmManager().getDefinition(spName);
+		DbElementCreationContext context = new DbElementCreationContext();
+		
+		try {
+			StoredProgram dbElement = (StoredProgram)definition.create(context);
+			return dbElement;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public static Object call(String spName, Object parameter) {
+		StoredProgram sp = null;
+		StoredProgramContext spContext = new StoredProgramContext(null, parameter);
+		StoredProgramOperation operation = new StoredProgramOperation(sp, spContext);
+		operation.execute();
+		
+		return spContext.getReturnValue();
+	}
+	
+	public static Object call(StoredProgram sp, Object parameter) {
+		StoredProgramContext spContext = new StoredProgramContext(null, parameter);
+		StoredProgramOperation operation = new StoredProgramOperation(sp, spContext);
+		operation.execute();
+		
+		return spContext.getReturnValue();
 	}
 }

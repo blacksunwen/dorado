@@ -11,6 +11,11 @@ import org.springframework.jdbc.core.SqlReturnType;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 
+import com.bstek.dorado.annotation.IdeProperty;
+import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.XmlNodeWrapper;
+import com.bstek.dorado.annotation.XmlProperty;
+import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.jdbc.JdbcParameterSource;
 import com.bstek.dorado.jdbc.model.AbstractDbElement;
 import com.bstek.dorado.jdbc.model.storedprogram.ProgramParameter.Type;
@@ -18,6 +23,16 @@ import com.bstek.dorado.jdbc.sql.SqlUtils;
 import com.bstek.dorado.jdbc.type.JdbcType;
 import com.bstek.dorado.util.Assert;
 
+@XmlNode(
+	definitionType = "com.bstek.dorado.jdbc.model.DbElementDefinition",
+	subNodes = {
+		@XmlSubNode(
+			wrapper = @XmlNodeWrapper(nodeName = "Parameters", fixed = true),
+			propertyName = "!parameters",
+			propertyType = "List<com.bstek.dorado.jdbc.model.storedprogram.ProgramParameter>"
+		)
+	}
+)
 public class StoredProgram extends AbstractDbElement {
 
 	public static final String TYPE = "StoredProgram";
@@ -55,6 +70,22 @@ public class StoredProgram extends AbstractDbElement {
 	@Override
 	public String getType() {
 		return StoredProgram.TYPE;
+	}
+	
+	@IdeProperty(visible=false)
+	public String getReturnValueName() {
+		return returnValueName;
+	}
+	public void setReturnValueName(String returnValueName) {
+		this.returnValueName = returnValueName;
+	}
+	
+	@XmlProperty(parser="spring:dorado.jdbc.jdbcTypeParser")
+	public JdbcType getReturnValueType() {
+		return returnValueType;
+	}
+	public void setReturnValueType(JdbcType returnValueType) {
+		this.returnValueType = returnValueType;
 	}
 	
 	public ProgramParameter[] getParameters() {
@@ -106,20 +137,6 @@ public class StoredProgram extends AbstractDbElement {
 			}
 		}
 		return ins;
-	}
-	
-	public String getReturnValueName() {
-		return returnValueName;
-	}
-	public void setReturnValueName(String returnValueName) {
-		this.returnValueName = returnValueName;
-	}
-	
-	public JdbcType getReturnValueType() {
-		return returnValueType;
-	}
-	public void setReturnValueType(JdbcType returnValueType) {
-		this.returnValueType = returnValueType;
 	}
 	
 	public void addParameter(ProgramParameter parameter) {

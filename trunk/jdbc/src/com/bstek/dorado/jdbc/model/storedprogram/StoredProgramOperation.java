@@ -7,21 +7,36 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.util.Assert;
 
+import com.bstek.dorado.jdbc.AbstractJdbcContext;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
-import com.bstek.dorado.jdbc.model.DbElementJdbcOperation;
-import com.bstek.dorado.jdbc.model.DbTable;
 import com.bstek.dorado.jdbc.type.JdbcType;
 
-public class StoredProgramOperation extends DbElementJdbcOperation<StoredProgramContext> {
+public class StoredProgramOperation {
 
-	public StoredProgramOperation(DbTable dbTable,
+	private StoredProgram storedProgram;
+	private StoredProgramContext jdbcContext;
+	
+	public StoredProgramOperation(StoredProgram storedProgram,
 			StoredProgramContext jdbcContext) {
-		super(dbTable, jdbcContext);
+		this.storedProgram = storedProgram;
+		this.jdbcContext = jdbcContext;
 	}
 
-	@Override
+	public StoredProgramContext getJdbcContext() {
+		return this.jdbcContext;
+	}
+	
+	public JdbcEnviroment getJdbcEnviroment() {
+		AbstractJdbcContext jdbcContext = getJdbcContext();
+		JdbcEnviroment env = jdbcContext.getJdbcEnviroment();
+		if (env == null) {
+			env = storedProgram.getJdbcEnviroment();
+		}
+		return env;
+	}
+	
 	public void execute() {
-		StoredProgram sp = getStoredProgram();
+		StoredProgram sp = storedProgram;
 		SimpleJdbcCall call = newCall();
 		
 		StoredProgramContext spContext = getJdbcContext();
@@ -29,14 +44,9 @@ public class StoredProgramOperation extends DbElementJdbcOperation<StoredProgram
 		
 		doCall(call);
 	}
-
-	protected StoredProgram getStoredProgram() {
-		StoredProgram sp = (StoredProgram) this.getDbTable();
-		return sp;
-	}
 	
 	protected SimpleJdbcCall newCall() {
-		Assert.notNull(this.getDbTable(), "StoredPropgram must not be null.");
+		Assert.notNull(storedProgram, "StoredPropgram must not be null.");
 		JdbcEnviroment jdbcEnv = this.getJdbcEnviroment();
 		JdbcTemplate jdbcTemplate = jdbcEnv.getNamedDao().getJdbcTemplate();
 		SimpleJdbcCall call = new SimpleJdbcCall(jdbcTemplate);
@@ -45,7 +55,7 @@ public class StoredProgramOperation extends DbElementJdbcOperation<StoredProgram
 	}
 	
 	protected void doCall(SimpleJdbcCall call) {
-		StoredProgram sp = getStoredProgram();
+		StoredProgram sp = storedProgram;
 		StoredProgramContext spContext = getJdbcContext();
 		
 		MapSqlParameterSource spSource = spContext.getSqlParameterSource();

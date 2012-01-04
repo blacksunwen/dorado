@@ -1,7 +1,13 @@
 package com.bstek.dorado.jdbc.model.storedprogram;
 
+import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.jdbc.type.JdbcType;
 
+@XmlNode(
+	nodeName="Parameter",
+	definitionType="com.bstek.dorado.jdbc.model.storedprogram.ProgramParameterDefinition"
+)
 public class ProgramParameter {
 	private String name;
 	
@@ -23,6 +29,7 @@ public class ProgramParameter {
 		this.name = name;
 	}
 
+	@XmlProperty(parser="spring:dorado.jdbc.jdbcTypeParser")
 	public JdbcType getJdbcType() {
 		return jdbcType;
 	}
@@ -31,6 +38,7 @@ public class ProgramParameter {
 		this.jdbcType = jdbcType;
 	}
 
+	@XmlProperty(parser="spring:dorado.staticPropertyParser")
 	public Object getValue() {
 		return value;
 	}
