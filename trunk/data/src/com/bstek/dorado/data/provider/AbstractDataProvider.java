@@ -64,7 +64,7 @@ public abstract class AbstractDataProvider implements DataProvider, Namable,
 		this.resultDataType = resultDataType;
 	}
 
-	@XmlProperty(parser = "spring:dorado.preloadDataParser")
+	@XmlProperty
 	public Object getParameter() {
 		return parameter;
 	}

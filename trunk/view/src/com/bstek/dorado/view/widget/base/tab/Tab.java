@@ -183,6 +183,8 @@ public class Tab implements RenderableElement, Ignorable, TagSupport,
 		this.ignored = ignored;
 	}
 
+	@XmlProperty
+	@ClientProperty
 	@IdeProperty(editor = "any")
 	public Object getUserData() {
 		return userData;

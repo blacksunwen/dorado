@@ -93,6 +93,8 @@ public abstract class Column extends ClientEventSupportedObject implements
 		this.ignored = ignored;
 	}
 
+	@XmlProperty
+	@ClientProperty
 	@IdeProperty(editor = "any")
 	public Object getUserData() {
 		return userData;
