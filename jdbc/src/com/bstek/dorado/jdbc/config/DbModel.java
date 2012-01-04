@@ -18,7 +18,8 @@ import com.bstek.dorado.jdbc.model.DbElementDefinition;
 	subNodes = {
 		@XmlSubNode(propertyType="com.bstek.dorado.jdbc.model.table.Table"),
 		@XmlSubNode(propertyType="com.bstek.dorado.jdbc.model.sqltable.SqlTable"),
-		@XmlSubNode(propertyType="com.bstek.dorado.jdbc.model.autotable.AutoTable")
+		@XmlSubNode(propertyType="com.bstek.dorado.jdbc.model.autotable.AutoTable"),
+		@XmlSubNode(propertyType="com.bstek.dorado.jdbc.model.storedprogram.StoredProgram")
 	}
 )
 public class DbModel {

@@ -7,11 +7,6 @@ import com.bstek.dorado.jdbc.model.DbElementDefinition;
 
 public class TableDefinition extends DbElementDefinition {
 
-	public TableDefinition() {
-		super();
-		this.setImpl(Table.class.getName());
-	}
-	
 	private Boolean autoCreateColumns = null;
 
 	public boolean isAutoCreateColumns() {
