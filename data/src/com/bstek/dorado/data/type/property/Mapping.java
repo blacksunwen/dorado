@@ -12,7 +12,7 @@ public class Mapping {
 	private String keyProperty;
 	private String valueProperty;
 
-	@XmlProperty(parser = "spring:dorado.preloadDataParser")
+	@XmlProperty
 	@IdeProperty(editor = "collection[pojo]")
 	public Object getMapValues() {
 		return mapValues;

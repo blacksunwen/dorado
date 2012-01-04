@@ -61,7 +61,7 @@ public class Reference extends LazyPropertyDef {
 	/**
 	 * 返回将要传递给DataProvider的参数。
 	 */
-	@XmlProperty(parser = "spring:dorado.preloadDataParser")
+	@XmlProperty
 	@ClientProperty(outputter = "spring:dorado.doradoMapPropertyOutputter",
 			evaluateExpression = false)
 	@IdeProperty(editor = "pojo")

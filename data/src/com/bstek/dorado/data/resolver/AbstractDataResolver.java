@@ -52,7 +52,7 @@ public abstract class AbstractDataResolver implements DataResolver, Namable,
 		this.scope = scope;
 	}
 
-	@XmlProperty(parser = "spring:dorado.preloadDataParser")
+	@XmlProperty
 	public Object getParameter() {
 		return parameter;
 	}
