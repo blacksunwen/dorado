@@ -245,9 +245,9 @@
 									scope: this,
 									callback: function(success, result) {
 										if (isNewPipe) this.sendMessage(dorado.Entity._MESSAGE_LOADING_END, arg);
-								
+										
 										if (success && !page.loaded) {
-											this._fillPage(page, result);
+											this._fillPage(page, result, false, true);
 											page.loaded = true;
 										}
 										$callback(callback, success, ((success) ? page : result));
@@ -256,7 +256,7 @@
 								if (isNewPipe) this.sendMessage(dorado.Entity._MESSAGE_LOADING_START, arg);
 							} else {
 								var result = pipe.get();
-								this._fillPage(page, result);
+								this._fillPage(page, result, false, true);
 								page.loaded = true;
 							}
 						} else {
@@ -666,7 +666,7 @@
 			return this._keyMap[id];
 		},
 		
-		_fillPage: function(page, jsonArray, changeCurrent) {
+		_fillPage: function(page, jsonArray, changeCurrent, fireEvent) {
 			page.entityCount = 0;
 			
 			if (jsonArray == null) return;
@@ -677,7 +677,9 @@
 			if (dataType) dataType._disableObserversCounter++;
 			this._disableObserversCounter++;
 			try {
-				var elementDataType = this.elementDataType;
+				var elementDataType = this.elementDataType, eventArg;
+				if (fireEvent && elementDataType != null) eventArg = {};
+				
 				for (var i = 0; i < jsonArray.length; i++) {
 					if (elementDataType != null) {
 						entity = elementDataType.parse(jsonArray[i]);
@@ -696,6 +698,11 @@
 					if (entity.state != dorado.Entity.STATE_DELETED) {
 						page.entityCount++;
 						this.entityCount++;
+						
+						if (fireEvent && elementDataType != null) {
+							eventArg.entity = entity;
+							elementDataType.fireEvent("onEntityLoad", elementDataType, eventArg);
+						}
 					}
 				}
 				
@@ -950,6 +957,10 @@
 		},
 		
 		insert: function(data, insertMode, refData) {
+			if (this.entityList.mock) {
+				throw new dorado.ResourceException("dorado.data.CannotModifyMockEntityList");
+			}
+			
 			$invokeSuper.call(this, arguments);
 			data.page = this;
 			data.parent = this.entityList;
@@ -1188,6 +1199,7 @@
 	});
 	
 	LoadPagePipe = $extend(dorado.DataPipe, {
+		shouldFireEvent: false,
 	
 		constructor: function(entityList, pageNo) {
 			this.entityList = entityList;
@@ -1214,6 +1226,7 @@
 		doGetAsync: function(callback) {
 			var dataProvider = this.entityList.dataProvider, dataProviderArg = this.dataProviderArg, oldSupportsEntity = dataProvider.supportsEntity;
 			dataProvider.supportsEntity = false;
+			dataProvider.shouldFireEvent = this.shouldFireEvent;
 			try {
 				if (callback) {
 					dataProvider.getResultAsync(dataProviderArg, callback);

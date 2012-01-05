@@ -297,23 +297,46 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		
 		_get : function(property, propertyDef, callback, loadMode) {
 
-			function transferAndReplaceIf(propertyDef, value) {
-				if (value && typeof value == "object" && value.parent == this)
-					return value;
-
+			function transferAndReplaceIf(entity, propertyDef, value, replaceValue) {
 				var dataType = propertyDef.get("dataType");
 				if (dataType == null) return value;
 
-				var replaceValue = (!( value instanceof dorado.EntityList) && dataType instanceof dorado.AggregationDataType) || (!( value instanceof dorado.Entity) && dataType instanceof dorado.EntityDataType);
-				value = dataType.parse(value, propertyDef.get("typeFormat"));
+				var shouldTransfer = (!(value instanceof dorado.EntityList || value instanceof dorado.EntityList) &&
+					(dataType instanceof dorado.AggregationDataType || dataType instanceof dorado.EntityDataType));
+				if (shouldTransfer) value = dataType.parse(value, propertyDef.get("typeFormat"));
+				replaceValue = replaceValue && (shouldTransfer || value.parent !== entity);
 
-				if (( value instanceof dorado.Entity || value instanceof dorado.EntityList) && value.parent != this) {
-					value.parent = this;
-					value._setObserver(this._observer);
+				if ((value instanceof dorado.Entity || value instanceof dorado.EntityList) && value.parent != this) {
+					value.parent = entity;
+					value._setObserver(entity._observer);
 				}
 
 				if (replaceValue) {
-					this._data[propertyDef._name] = value;
+					var oldValue = entity._data[propertyDef._name];
+					if (oldValue && oldValue.isDataPipeWrapper) {
+						oldValue = oldValue.value;
+					}
+					if (oldValue instanceof dorado.Entity || oldValue instanceof dorado.EntityList) {
+						oldValue.parent = null;
+						oldValue._setObserver(null);
+					}
+					
+					entity._data[propertyDef._name] = value;
+					
+					var eventArg = {};
+					if (value instanceof dorado.Entity) {
+						eventArg.entity = value;
+						dataType.fireEvent("onEntityLoad", dataType, eventArg);
+					}
+					else if (value instanceof dorado.EntityList) {
+						var elementDataType = dataType.get("elementDataType");
+						if (elementDataType) {
+							for (var it = value.iterator(); it.hasNext();) {
+								eventArg.entity = it.next();
+								elementDataType.fireEvent("onEntityLoad", dataType, eventArg);
+							}
+						}
+					}
 				}
 				return value;
 			}
@@ -353,20 +376,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 												result = eventArg.value;
 												
 												if (propertyDef.get("cacheable")) {
-													var oldValue = this._data[property];
-													if (oldValue && oldValue.isDataPipeWrapper) {
-														oldValue = oldValue.value;
-													}
-													if (oldValue instanceof dorado.Entity || oldValue instanceof dorado.EntityList) {
-														oldValue.parent = null;
-														oldValue._setObserver(null);
-													}
-													
-													if (result instanceof dorado.Entity || result instanceof dorado.EntityList) {
-														result.parent = this;
-														result._setObserver(this._observer);
-													}
-													this._data[property] = result;
+													result = transferAndReplaceIf(this, propertyDef, result, true);
 													this.sendMessage(dorado.Entity._MESSAGE_DATA_CHANGED, {
 														entity: this,
 														property: property,
@@ -401,11 +411,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 									value = eventArg.value;
 
 									if (propertyDef._cacheable) {
-										if (value instanceof dorado.Entity || value instanceof dorado.EntityList) {
-											value.parent = this;
-											value._setObserver(this._observer);
-										}
-										this._data[property] = value;
+										value = transferAndReplaceIf(this, propertyDef, value, true);
 									}
 								}
 							}
@@ -415,12 +421,12 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					if (dorado.Entity.ALWAYS_RETURN_VALID_ENTITY_LIST) {
 						var aggregationDataType = propertyDef.get("dataType");
 						if (value === undefined && aggregationDataType instanceof dorado.AggregationDataType) {
-							value = aggregationDataType.parse([], propertyDef.get("typeFormat"));
-							value.parent = this;
-							value._setObserver(this._observer);
+							value = transferAndReplaceIf(this, propertyDef, [], false);
+							
 							if (dataPipeWrapper) {
 								dataPipeWrapper.value = value;
 							} else if (loadMode != "never") {
+								value.mock = true;
 								this._data[property] = value;
 							}
 						}
@@ -437,7 +443,9 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					}
 				}
 			} else if (propertyDef) {
-				value = transferAndReplaceIf.call(this, propertyDef, value);
+				if (!value && typeof value == "object") {
+					value = transferAndReplaceIf(this, propertyDef, value, true);
+				}
 			}
 
 			if (propertyDef && propertyDef.getListenerCount("onGet")) {
@@ -843,17 +851,46 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		
 		/**
 		 * 设置属性值。
-		 * @param {String} property 要设置的属性名。
+		 * @param {String} property 此参数具有下列两种设置方式：
+		 * <ul>
+		 * <li>当property为String时，系统会将property的作为要设置属性名处理。属性值为value参数代表的值。</li>
+		 * <li>当property为Object时，系统会将忽略value参数。此时，可以通过attr参数的JSON对象定义一组要设置的属性值。</li>
+		 * </ul>
 		 * @param {Object} value 要设置的属性值。
+		 * @return 
 		 */
 		set : function(property, value) {
-			var propertyDef = this._getPropertyDef(property);
-			if (propertyDef) {
-				var dataType = propertyDef.get("dataType");
-				if (dataType)
-					value = dataType.parse(value, propertyDef._typeFormat);
+			
+			function doSet(entity, property, value) {
+				var propertyDef = entity._getPropertyDef(property);
+				if (propertyDef) {
+					var dataType = propertyDef.get("dataType");
+					if (dataType)
+						value = dataType.parse(value, propertyDef._typeFormat);
+				}
+				entity._set(property, value, propertyDef);
 			}
-			this._set(property, value, propertyDef);
+			
+			if (property.constructor != String) {
+				this.disableObservers();
+				try {
+					for (var p in property) {
+						if (property.hasOwnProperty(p)) {
+							doSet(this, p, property[p]);
+						}
+					}
+				}
+				finally {
+					this.enableObservers();
+					this.sendMessage(dorado.Entity._MESSAGE_REFRESH_ENTITY, {
+						entity: this
+					});
+				}
+			}
+			else {
+				doSet(this, property, value);
+			}
+			return this;
 		},
 		
 		/**

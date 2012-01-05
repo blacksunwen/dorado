@@ -247,12 +247,14 @@ public class RuleSetBuilder {
 		applyTemplateToChild(childTemplate, child, ruleSet);
 		rule.addChild(child);
 
-		String childRuleName = child.getRule().getName();
+		String typeName = child.getRule().getType();
 		Set<Rule> concreteRules = child.getConcreteRules();
-		findConcreteRules(childTemplate.getRuleTemplate(), concreteRules,
+		findConcreteRules(
+				childTemplate.getRuleTemplate(),
+				concreteRules,
 				ruleSet,
-				("Component".equals(childRuleName) || "Control"
-						.equals(childRuleName)));
+				("com.bstek.dorado.view.widget.Component".equals(typeName) || "com.bstek.dorado.view.widget.Control"
+						.equals(typeName)));
 	}
 
 	protected void applyTemplateToChild(ChildTemplate childTemplate,

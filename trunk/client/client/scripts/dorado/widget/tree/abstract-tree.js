@@ -114,7 +114,7 @@ dorado.widget.tree.TreeNodeRenderer = $extend(dorado.Renderer, {
 				if (lineType) {
 					line.style.backgroundImage = "url(" + $url("skin>tree/tree-line" + lineType + ".gif") + ")";
 				} else {
-					line.style.backgroundImage = "url(none)";
+					line.style.backgroundImage = "";
 				}
 				$DomUtils.removeChildrenFrom(linesContainer, level);
 			}

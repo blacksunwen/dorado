@@ -27,6 +27,8 @@
 			}
 			return extractName(name);
 		},
+		
+		FIRE_ON_ENTITY_LOAD: true,
 	
 		/**
 		 * 如果定义了明确的数据类型，则将传入的数据转换成该数据类型。
@@ -65,7 +67,25 @@
 						elementDataType: dataType
 					});
 				}
-				if (dataType instanceof dorado.DataType) data = dataType.parse(data);
+				if (dataType instanceof dorado.DataType) {
+					data = dataType.parse(data);
+					
+					if (this.FIRE_ON_ENTITY_LOAD) {
+						var eventArg = {};
+						if (data instanceof dorado.Entity) {
+							eventArg.entity = data;
+							dataType.fireEvent("onEntityLoad", dataType, eventArg);
+						} else if (data instanceof dorado.EntityList) {
+							var elementDataType = dataType.get("elementDataType");
+							if (elementDataType) {
+								for (var it = data.iterator(); it.hasNext();) {
+									eventArg.entity = it.next();
+									elementDataType.fireEvent("onEntityLoad", dataType, eventArg);
+								}
+							}
+						}
+					}
+				}
 			}
 			return data;
 		},
