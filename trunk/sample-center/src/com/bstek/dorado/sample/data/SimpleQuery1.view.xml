@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ViewConfig>
   <View title="简单查询  1">
-    <DataSet id="dsOrders" dataType="[Order]" dataProvider="orderInterceptor#query" loadMode="manual" pageSize="10"/>
-    <DataSet id="dsCustomers" dataType="[BaseCustomer]" dataProvider="customerInterceptor#findCustomersByCompanyName"/>
-    <DataSet id="dsEmployees" dataType="[BaseEmployee]" dataProvider="employeeInterceptor#getAll"/>
+    <DataSet id="dsOrders" dataProvider="orderInterceptor#query" dataType="[Order]" loadMode="manual" pageSize="10"/>
+    <DataSet id="dsCustomers" dataProvider="customerInterceptor#findCustomersByCompanyName" dataType="[BaseCustomer]"/>
+    <DataSet id="dsEmployees" dataProvider="employeeInterceptor#getAll" dataType="[BaseEmployee]"/>
     <ToolBar layoutConstraint="top">
       <DataPilot dataSet="dsOrders"/>
       <Separator/>
@@ -18,7 +18,7 @@ dsOrders.flushAsync();
     </ToolBar>
     <DataSetDropDown id="ddCustomers" dataSet="dsCustomers" dynaFilter="true"/>
     <DataSetDropDown id="ddEmployees" dataSet="dsEmployees"/>
-    <AutoForm id="formCondition" layoutConstraint="top" cols="300,300" padding="8" showHint="false">
+    <AutoForm id="formCondition" cols="300,300" layoutConstraint="top" padding="8" showHint="false">
       <AutoFormElement label="日期（起）" property="orderDate1">
         <Editor>
           <TextEditor dataType="Date"/>
@@ -32,6 +32,6 @@ dsOrders.flushAsync();
       <AutoFormElement label="客户" property="customer" trigger="ddCustomers"/>
       <AutoFormElement label="业务员" property="employee" trigger="ddEmployees"/>
     </AutoForm>
-    <DataGrid dataSet="dsOrders" stretchColumnsMode="stretchableColumns"/>
+    <DataGrid dataSet="dsOrders"/>
   </View>
 </ViewConfig>

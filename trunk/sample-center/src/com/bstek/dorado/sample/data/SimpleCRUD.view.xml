@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ViewConfig>
   <Model>
-    <DataType matchType="com.bstek.dorado.sample.entity.Product" name="ProductType" parent="Bean" meta="x:75;y:45" autoCreatePropertyDefs="true">
+    <DataType name="ProductType" parent="Bean" meta="x:75;y:45" autoCreatePropertyDefs="true" matchType="com.bstek.dorado.sample.entity.Product">
       <PropertyDef name="productName" required="true"/>
     </DataType>
   </Model>
