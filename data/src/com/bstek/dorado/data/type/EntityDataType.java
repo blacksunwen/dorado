@@ -43,6 +43,7 @@ import com.bstek.dorado.data.type.validator.MessageState;
 		@com.bstek.dorado.annotation.ClientEvent(name = "onDataChange"),
 		@com.bstek.dorado.annotation.ClientEvent(name = "beforeStateChange"),
 		@com.bstek.dorado.annotation.ClientEvent(name = "onStateChange"),
+		@com.bstek.dorado.annotation.ClientEvent(name = "onEntityLoad"),
 		@com.bstek.dorado.annotation.ClientEvent(name = "onMessageChange"),
 		@com.bstek.dorado.annotation.ClientEvent(name = "onEntityToText") })
 public interface EntityDataType extends MutableDataType, ClientEventSupported {

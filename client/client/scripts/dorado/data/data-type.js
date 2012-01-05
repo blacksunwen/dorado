@@ -14,6 +14,16 @@
 	 */
 	dorado.DataType = $extend(dorado.AttributeSupport, /** @scope dorado.DataType.prototype */
 	{
+		/**
+		 * @function
+		 * @name dorado.DataType#parse
+		 * @description 尝试将一个任意类型的值转换成本数据类型所描述的类型。
+		 * @param {Object} data 要转换的数据。
+		 * @param {Object} [argument] 转换时可能需要用到的参数。
+		 * @return {Object} 转换后得到的数据。
+		 */
+		// =====
+		
 		$className : "dorado.DataType",
 	
 		ATTRIBUTES : /** @scope dorado.DataType.prototype */
@@ -93,16 +103,6 @@
 					}
 				}
 			}
-		},
-		
-		/**
-		 * 尝试将一个任意类型的值转换成本数据类型所描述的类型。
-		 * @param {Object} data 要转换的数据。
-		 * @param {Object} [argument] 转换时可能需要用到的参数。
-		 * @return {Object} 转换后得到的数据。
-		 */
-		parse : function(data, argument) {
-			return data;
 		},
 		
 		getListenerScope : function() {
@@ -446,6 +446,17 @@
 			 * @see dorado.Entity#setState
 			 */
 			onStateChange : {},
+			
+			/**
+			 * 当某个此类型的{@link dorado.Entity}的被装载是触发的事件。<br>
+			 * 此处所说的装载一般指数据实体从服务端被装载到客户端，在客户端添加一个数据实体不会触发此事件。
+			 * @param {Object} self 事件的发起者，即EntityDataType本身。
+			 * @param {Object} arg 事件参数。
+			 * @param {dorado.Entity} arg.entity 触发事件的实体对象
+			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+			 * @event
+			 */
+			onEntityLoad : {},
 	
 			/**
 			 * 当某个此类型的{@link dorado.Entity}的额外信息被改变后触发的事件。
@@ -543,11 +554,10 @@
 		 * @return {dorado.Entity} 转换后得到的实体。
 		 */
 		parse : function(data) {
-			if(data != null) {
+			if (data != null) {
 				if (data instanceof dorado.Entity) {
 					return data
-				}
-				else {
+				} else {
 					var oldProcessDefaultValue = SHOULD_PROCESS_DEFAULT_VALUE;
 					SHOULD_PROCESS_DEFAULT_VALUE = false;
 					try {

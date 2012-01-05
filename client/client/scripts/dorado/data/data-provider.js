@@ -50,6 +50,8 @@
 		 */
 		supportsEntity: true,
 		
+		shouldFireEvent: true,
+		
 		constructor: function(id) {
 			this.id = id;
 			this.name = dorado.DataUtil.extractNameFromId(id);
@@ -107,7 +109,16 @@
 		
 		convertEntity: function(data, dataTypeRepository, dataType, ajaxOptions) {
 			if (data == null) return data;
-			data = dorado.DataUtil.convertIfNecessary(data, dataTypeRepository, dataType);
+			
+			var oldFireEvent = dorado.DataUtil.FIRE_ON_ENTITY_LOAD;
+			dorado.DataUtil.FIRE_ON_ENTITY_LOAD = this.shouldFireEvent;
+			try {
+				data = dorado.DataUtil.convertIfNecessary(data, dataTypeRepository, dataType);
+			}
+			finally {
+				dorado.DataUtil.FIRE_ON_ENTITY_LOAD = oldFireEvent;
+			}
+			
 			if (data instanceof dorado.EntityList) {
 				data.dataProvider = this;
 				data.parameter = ajaxOptions.jsonData.parameter;
@@ -269,6 +280,7 @@
 			var dataProviderArg = this.getDataProviderArg(), dataProvider = this.getDataProvider();
 			dataProvider.dataTypeRepository = this.dataTypeRepository;
 			dataProvider.dataType = this.dataType;
+			dataProvider.shouldFireEvent = this.shouldFireEvent;
 			if (callback) {
 				dataProvider.getResultAsync(dataProviderArg, callback);
 			} else {

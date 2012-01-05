@@ -373,6 +373,7 @@
 	
 	dorado.ReferenceDataPipe = $extend(dorado.DataProviderPipe, {
 		$className: "dorado.ReferenceDataPipe",
+		shouldFireEvent: false,
 		
 		constructor: function(propertyDef, entity) {
 			this.propertyDef = propertyDef;

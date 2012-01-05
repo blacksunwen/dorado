@@ -76,7 +76,7 @@
 				var nextRow = fromRow, tbody = this._dataTBody;
 				while (nextRow) {
 					var item = $fly(nextRow).data("item");
-					this.refreshItemDom(tbody, item, nextRow.sectionRowIndex);
+					if(item) this.refreshItemDom(tbody, item, nextRow.sectionRowIndex);
 					nextRow = nextRow.nextSibling;
 				}
 			}

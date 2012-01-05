@@ -53,8 +53,17 @@ dorado.DataPipe = $class(/** @scope dorado.DataPipe.prototype */{
 	 */
 	runningProcNum: 0,
 	
+	shouldFireEvent: true,
+	
 	convertIfNecessary: function(data, dataTypeRepository, dataType) {
-		return dorado.DataUtil.convertIfNecessary(data, dataTypeRepository, dataType);
+		var oldFireEvent = dorado.DataUtil.FIRE_ON_ENTITY_LOAD;
+		dorado.DataUtil.FIRE_ON_ENTITY_LOAD = this.shouldFireEvent;
+		try {
+			return dorado.DataUtil.convertIfNecessary(data, dataTypeRepository, dataType);
+		}
+		finally {
+			dorado.DataUtil.FIRE_ON_ENTITY_LOAD = oldFireEvent;
+		}
 	},
 	
 	/**
@@ -66,8 +75,8 @@ dorado.DataPipe = $class(/** @scope dorado.DataPipe.prototype */{
 	 * @see dorado.DataPipe#doGet
 	 */
 	get: function() {
-		dorado.DataPipe.MONITOR.executionTimes ++;
-		dorado.DataPipe.MONITOR.syncExecutionTimes ++;
+		dorado.DataPipe.MONITOR.executionTimes++;
+		dorado.DataPipe.MONITOR.syncExecutionTimes++;
 		return this.convertIfNecessary(this.doGet(), this.dataTypeRepository, this.dataType);
 	},
 	
@@ -80,8 +89,8 @@ dorado.DataPipe = $class(/** @scope dorado.DataPipe.prototype */{
 	 * @see dorado.DataPipe#doGetAsync
 	 */
 	getAsync: function(callback) {
-		dorado.DataPipe.MONITOR.executionTimes ++;
-		dorado.DataPipe.MONITOR.asyncExecutionTimes ++;
+		dorado.DataPipe.MONITOR.executionTimes++;
+		dorado.DataPipe.MONITOR.asyncExecutionTimes++;
 		
 		callback = callback || dorado._NULL_FUNCTION;
 		var callbacks = this._waitingCallbacks;
@@ -93,7 +102,7 @@ dorado.DataPipe = $class(/** @scope dorado.DataPipe.prototype */{
 			
 			this.doGetAsync({
 				scope: this,
-				callback: function(success, result) {					
+				callback: function(success, result) {
 					if (success) {
 						result = this.convertIfNecessary(result, this.dataTypeRepository, this.dataType);
 					}
@@ -117,7 +126,7 @@ dorado.DataPipe = $class(/** @scope dorado.DataPipe.prototype */{
 		}
 	}
 });
-	
+
 dorado.DataPipe.MONITOR = {
 	executionTimes: 0,
 	asyncExecutionTimes: 0,
