@@ -341,7 +341,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				return value;
 			}
 
-			var value = this._data[property];
+			var value = this._data[property], loadingSkipForNewEntity = false;;
 			if (value === undefined) {
 				if (propertyDef) {
 					var dataPipeWrapper = null;
@@ -350,6 +350,9 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 						if ( propertyDef instanceof dorado.Reference) {
 							if (this.state != dorado.Entity.STATE_NEW || propertyDef._activeOnNewEntity) {
 								pipe = propertyDef.getDataPipe(this);
+							}
+							else {
+								loadingSkipForNewEntity = true;
 							}
 						} else {
 							pipe = propertyDef.getDataPipe(this);
@@ -426,7 +429,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 							if (dataPipeWrapper) {
 								dataPipeWrapper.value = value;
 							} else if (loadMode != "never") {
-								value.mock = true;
+								if (!loadingSkipForNewEntity) value.mock = true;
 								this._data[property] = value;
 							}
 						}

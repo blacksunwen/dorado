@@ -260,7 +260,9 @@
 		},
 		
 		createInnerGrid: function(fixed) {
-			return new dorado.widget.treegrid.InnerTreeGrid(this, fixed);
+			var innerGrid = new dorado.widget.treegrid.InnerTreeGrid(this, fixed);
+			innerGrid._root = this._root;
+			return innerGrid;
 		},
 		
 		createItemModel: function() {
