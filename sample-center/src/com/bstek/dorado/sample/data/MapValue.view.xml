@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ViewConfig>
   <Model>
-    <DataType parent="global:Employee" name="Employee">
+    <DataType name="Employee" parent="global:Employee">
       <PropertyDef name="titleOfCourtesy">
         <Property name="mapping">
           <Property name="mapValues">${dorado.getDataProvider(&quot;employeeInterceptor#getTitlesOfCourtesy&quot;).getResult()}</Property>
@@ -10,12 +10,6 @@
     </DataType>
   </Model>
   <View title="Employee Maintain">
-    <DataSet id="dsEmployees" dataType="[Employee]" dataProvider="employeeInterceptor#getAll"/>
-    <DataGrid dataSet="dsEmployees" stretchColumnsMode="stretchableColumns">
-      <DataColumn property="firstName"/>
-      <DataColumn property="lastName"/>
-      <DataColumn property="sex"/>
-      <DataColumn property="titleOfCourtesy" width="120"/>
-    </DataGrid>
+    <DataSet id="dsEmployees" dataProvider="employeeInterceptor#getAll" dataType="[Employee]"/>
   </View>
 </ViewConfig>
