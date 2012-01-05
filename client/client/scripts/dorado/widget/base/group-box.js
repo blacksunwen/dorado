@@ -83,7 +83,7 @@ dorado.widget.FieldSet = $extend(dorado.widget.AbstractPanel, /** @scope dorado.
 
     _createCollapseButton: function() {
         var fieldset = this, doms = fieldset._doms;
-        var button = document.createElement("div");
+        var button = document.createElement("span");
         button.className = "collapse-button";
         doms.icon = button;
 
