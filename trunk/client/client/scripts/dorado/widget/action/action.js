@@ -208,6 +208,14 @@
 			});
 		},
 		
+		doAddBindObject: function(object) {
+			this._bindingObjects.objects.push(object);
+		},
+		
+		doRemoveBindObject: function(object) {
+			this._bindingObjects.objects.remove(object);
+		},
+		
 		/**
 		 * 内部以同步方式执行的抽象方法。
 		 * @function
@@ -386,7 +394,7 @@
 				componentReference: true,
 				setter: function(action) {
 					if (this._action instanceof dorado.widget.Action) {
-						this._action._bindingObjects.objects.remove(this);
+						this._action.doAddBindObject(this);
 					}
 					if (action && !(action instanceof dorado.widget.Action)) {
 						var ref = action;
@@ -394,7 +402,7 @@
 					}
 					this._action = action;
 					if (action) {
-						action._bindingObjects.objects.push(this);
+						action.doRemoveBindObject(this);
 					}
 				}
 			}
