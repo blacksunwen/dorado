@@ -208,11 +208,11 @@
 			});
 		},
 		
-		doAddBindObject: function(object) {
+		doAddBindingObject: function(object) {
 			this._bindingObjects.objects.push(object);
 		},
 		
-		doRemoveBindObject: function(object) {
+		doRemoveBindingObject: function(object) {
 			this._bindingObjects.objects.remove(object);
 		},
 		
