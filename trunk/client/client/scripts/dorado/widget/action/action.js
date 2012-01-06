@@ -394,7 +394,7 @@
 				componentReference: true,
 				setter: function(action) {
 					if (this._action instanceof dorado.widget.Action) {
-						this._action.doAddBindObject(this);
+						this._action.doAddBindingObject(this);
 					}
 					if (action && !(action instanceof dorado.widget.Action)) {
 						var ref = action;
@@ -402,7 +402,7 @@
 					}
 					this._action = action;
 					if (action) {
-						action.doRemoveBindObject(this);
+						action.doRemoveBindingObject(this);
 					}
 				}
 			}
