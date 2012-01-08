@@ -37,6 +37,7 @@ public class RuleTemplate {
 	private String reserve;
 
 	private boolean global;
+	private boolean autoInitialize = true;
 	private boolean initialized;
 	private boolean inheritanceProcessed;
 
@@ -142,6 +143,14 @@ public class RuleTemplate {
 
 	public void setGlobal(boolean global) {
 		this.global = global;
+	}
+
+	public boolean isAutoInitialize() {
+		return autoInitialize;
+	}
+
+	public void setAutoInitialize(boolean autoInitialize) {
+		this.autoInitialize = autoInitialize;
 	}
 
 	public boolean isInitialized() {

@@ -248,13 +248,13 @@ public class RuleSetBuilder {
 		rule.addChild(child);
 
 		String typeName = child.getRule().getType();
+		boolean validateScope = "com.bstek.dorado.view.widget.Component"
+				.equals(typeName)
+				|| "com.bstek.dorado.view.widget.Control".equals(typeName);
+
 		Set<Rule> concreteRules = child.getConcreteRules();
-		findConcreteRules(
-				childTemplate.getRuleTemplate(),
-				concreteRules,
-				ruleSet,
-				("com.bstek.dorado.view.widget.Component".equals(typeName) || "com.bstek.dorado.view.widget.Control"
-						.equals(typeName)));
+		findConcreteRules(childTemplate.getRuleTemplate(), concreteRules,
+				ruleSet, validateScope);
 	}
 
 	protected void applyTemplateToChild(ChildTemplate childTemplate,

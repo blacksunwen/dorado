@@ -1,7 +1,12 @@
 package com.bstek.dorado.idesupport.initializer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 
+import com.bstek.dorado.idesupport.RuleTemplateBuilder;
+import com.bstek.dorado.idesupport.RuleTemplateBuilderAware;
 import com.bstek.dorado.idesupport.RuleTemplateManager;
 import com.bstek.dorado.idesupport.template.AutoChildTemplate;
 import com.bstek.dorado.idesupport.template.AutoPropertyTemplate;
@@ -23,9 +28,14 @@ import com.bstek.dorado.view.widget.Component;
  * @since 2011-12-9
  */
 public class ViewConfigRuleTemplateInitializer implements
-		RuleTemplateInitializer {
+		RuleTemplateInitializer, RuleTemplateBuilderAware {
 	private LayoutTypeRegistry layoutTypeRegistry;
 	private ComponentTypeRegistry componentTypeRegistry;
+	private RuleTemplateBuilder ruleTemplateBuilder;
+
+	public void setRuleTemplateBuilder(RuleTemplateBuilder ruleTemplateBuilder) {
+		this.ruleTemplateBuilder = ruleTemplateBuilder;
+	}
 
 	public void setLayoutTypeRegistry(LayoutTypeRegistry layoutTypeRegistry) {
 		this.layoutTypeRegistry = layoutTypeRegistry;
@@ -70,6 +80,7 @@ public class ViewConfigRuleTemplateInitializer implements
 		}
 
 		sortFactor = 2000;
+		List<RuleTemplate> componentRuleTemplates = new ArrayList<RuleTemplate>();
 		for (ComponentTypeRegisterInfo registerInfo : componentTypeRegistry
 				.getRegisterInfos()) {
 			String name = registerInfo.getName();
@@ -81,6 +92,8 @@ public class ViewConfigRuleTemplateInitializer implements
 			if (componentRuleTemplate == null) {
 				componentRuleTemplate = new AutoRuleTemplate(name,
 						classType.getName());
+				componentRuleTemplate.setAutoInitialize(false);
+				componentRuleTemplates.add(componentRuleTemplate);
 				isNew = true;
 			}
 			componentRuleTemplate.setSortFactor(++sortFactor);
@@ -127,6 +140,10 @@ public class ViewConfigRuleTemplateInitializer implements
 				ruleTemplateManager.addRuleTemplate(componentRuleTemplate);
 			}
 		}
-	}
 
+		for (RuleTemplate componentRuleTemplate : componentRuleTemplates) {
+			ruleTemplateBuilder.initRuleTemplate(initializerContext,
+					componentRuleTemplate);
+		}
+	}
 }

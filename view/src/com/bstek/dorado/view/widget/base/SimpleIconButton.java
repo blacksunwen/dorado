@@ -1,6 +1,7 @@
 package com.bstek.dorado.view.widget.base;
 
 import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.view.annotation.Widget;
 
 /**
@@ -15,6 +16,7 @@ public class SimpleIconButton extends SimpleButton {
 	private String icon;
 	private String iconClass;
 
+	@IdeProperty(highlight = 1)
 	public String getIcon() {
 		return icon;
 	}

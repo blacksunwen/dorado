@@ -38,7 +38,7 @@ public class Rule {
 	private String type;
 	private String category;
 	private String[] robots;
-	private int sortFactor = Integer.MAX_VALUE;
+	private int sortFactor;
 	private String icon;
 	private String labelProperty = "name,id";
 	private boolean autoGenerateId;

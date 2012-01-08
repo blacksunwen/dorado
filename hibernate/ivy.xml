@@ -12,7 +12,7 @@
 
 	<dependencies defaultconfmapping="compile->compile(*),master(*);runtime->master(*),compile(*),runtime(*);test->default(*)">
 		<!-- RUNTIME -->
-		<dependency org="com.bstek.dorado" name="dorado-core" rev="${depended-dorado.version}" conf="compile,runtime" />
+		<dependency org="com.bstek.dorado" name="dorado-core" rev="${depended-dorado.version}" conf="compile,runtime"/>
 		<dependency org="org.hibernate" name="hibernate-core" rev="3.6.5.Final" conf="compile,runtime" />
 
 		<!-- TEST -->

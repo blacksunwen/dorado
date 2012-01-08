@@ -11,6 +11,7 @@ import com.bstek.dorado.annotation.ClientEvents;
 import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.common.Namable;
 import com.bstek.dorado.core.bean.Scopable;
@@ -38,8 +39,10 @@ public abstract class View extends Container implements Namable, Scopable {
 	private String javaScriptFile;
 	private String styleSheetFile;
 
-	public View() {
-		super();
+	@XmlProperty(ignored = true, attributeOnly = true)
+	@IdeProperty(visible = false)
+	public String getId() {
+		return super.getId();
 	}
 
 	@ClientProperty(ignored = true)

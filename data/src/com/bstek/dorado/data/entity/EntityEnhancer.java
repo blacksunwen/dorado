@@ -13,7 +13,6 @@ import net.sf.ehcache.Element;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.jexl2.JexlContext;
-import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -21,7 +20,6 @@ import org.apache.commons.logging.LogFactory;
 import com.bstek.dorado.core.Context;
 import com.bstek.dorado.core.el.ExpressionHandler;
 import com.bstek.dorado.data.provider.DataProvider;
-import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.data.type.EntityDataType;
 import com.bstek.dorado.data.type.property.BasePropertyDef;
 import com.bstek.dorado.data.type.property.CacheMode;
@@ -284,111 +282,6 @@ public abstract class EntityEnhancer {
 				.contains(property);
 	}
 
-	protected Object readValueByPropertyPath(Object entity,
-			String propertyName, String propertyPath) throws Throwable {
-		String[] paths = StringUtils.split(propertyPath, '.');
-		Object value = entity;
-		for (int i = 0; i < paths.length; i++) {
-			String path = paths[i];
-			if (i == 0 && path.equals(propertyName)) {
-				throw new IllegalStateException(
-						"[propertyPath] must not base on itself \""
-								+ propertyPath + "\".");
-			}
-
-			if (EntityUtils.isEntity(value)) {
-				value = EntityUtils.getValue(value, path);
-			} else if (value instanceof Map<?, ?>) {
-				value = ((Map<?, ?>) value).get(path);
-			} else {
-				value = PropertyUtils.getSimpleProperty(value, path);
-			}
-
-			if (value == null)
-				break;
-		}
-		return value;
-	}
-
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	protected void writeValueByPropertyPath(Object entity, String propertyName,
-			String propertyPath, Object value) throws Exception {
-		String[] paths = StringUtils.split(propertyPath, '.');
-		Object currentEntity = entity;
-		EntityDataType currentDataType = dataType;
-		for (int i = 0; i < paths.length - 1; i++) {
-			String path = paths[i];
-			if (i == 0 && path.equals(propertyName)) {
-				throw new IllegalStateException(
-						"[propertyPath] must not base on itself ["
-								+ propertyPath + "].");
-			}
-
-			Object tempEntity;
-			boolean isMap = currentEntity instanceof Map;
-			if (EntityUtils.isEntity(currentEntity)) {
-				tempEntity = EntityUtils.getValue(currentEntity, path);
-			} else if (currentEntity instanceof Map) {
-				tempEntity = ((Map) currentEntity).get(path);
-			} else {
-				tempEntity = PropertyUtils.getSimpleProperty(currentEntity,
-						path);
-			}
-
-			if (tempEntity == null) {
-				if (currentDataType != null) {
-					PropertyDef propertyDef = currentDataType
-							.getPropertyDef(path);
-					if (propertyDef != null) {
-						DataType dataType = propertyDef.getDataType();
-						if (dataType instanceof EntityDataType) {
-							currentDataType = (EntityDataType) dataType;
-							tempEntity = currentDataType.getCreationType()
-									.newInstance();
-						}
-					}
-				} else if (isMap) {
-					tempEntity = new HashMap();
-					currentDataType = null;
-				} else {
-					Class cl = PropertyUtils.getPropertyType(currentEntity,
-							path);
-					if (cl.isAssignableFrom(Map.class)) {
-						tempEntity = new HashMap();
-					} else if (!cl.isInterface()) {
-						tempEntity = cl.newInstance();
-					}
-					currentDataType = null;
-				}
-
-				if (tempEntity != null) {
-					if (isMap) {
-						((Map) currentEntity).put(path, tempEntity);
-					} else {
-						PropertyUtils.setSimpleProperty(currentEntity, path,
-								tempEntity);
-					}
-				} else {
-					throw new IllegalArgumentException(
-							"Can not write value to ["
-									+ StringUtils.join(paths, '.') + "] on ["
-									+ ObjectUtils.identityToString(entity)
-									+ "].");
-				}
-			}
-			currentEntity = tempEntity;
-		}
-
-		String path = paths[paths.length - 1];
-		if (EntityUtils.isEntity(currentEntity)) {
-			EntityUtils.setValue(currentEntity, path, value);
-		} else if (currentEntity instanceof Map) {
-			((Map) currentEntity).put(path, value);
-		} else {
-			PropertyUtils.setSimpleProperty(currentEntity, path, value);
-		}
-	}
-
 	protected abstract Object internalReadProperty(Object entity,
 			String property) throws Exception;
 
@@ -437,8 +330,8 @@ public abstract class EntityEnhancer {
 					BasePropertyDef basePropertyDef = (BasePropertyDef) propertyDef;
 					propertyPath = basePropertyDef.getPropertyPath();
 					if (StringUtils.isNotEmpty(propertyPath)) {
-						result = readValueByPropertyPath(entity, property,
-								propertyPath);
+						result = PropertyPathUtils.getValueByPath(dataType,
+								entity, propertyPath);
 					}
 				}
 
@@ -518,8 +411,8 @@ public abstract class EntityEnhancer {
 			BasePropertyDef basePropertyDef = (BasePropertyDef) propertyDef;
 			String propertyPath = basePropertyDef.getPropertyPath();
 			if (StringUtils.isNotEmpty(propertyPath)) {
-				writeValueByPropertyPath(entity, property, propertyPath,
-						newValue);
+				PropertyPathUtils.setValueByPath(dataType, entity,
+						propertyPath, newValue);
 				return false;
 			}
 		}

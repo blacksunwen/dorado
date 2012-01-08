@@ -283,9 +283,6 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 		}
 		if (hasPropertyAnnotation) {
 			for (XmlProperty xmlProperty : annotationProperties) {
-				if (xmlProperty.ignored()) {
-					continue;
-				}
 				if (StringUtils.isEmpty(xmlProperty.propertyName())) {
 					throw new IllegalArgumentException(
 							"@XmlProperty.propertyName undefined. ["
