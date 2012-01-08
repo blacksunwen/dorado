@@ -48,6 +48,10 @@ public class StandaloneRuleSetBuilderTest extends IdeSupportContextTestCase {
 		assertNotNull(ruleSet);
 		assertFalse(ruleSet.getRuleMap().isEmpty());
 
+		for (Rule rule : ruleSet.getRuleMap().values()) {
+			rule.getPrimitiveProperties();
+		}
+
 		Rule modelRule = ruleSet.getRule("Model");
 		assertNotNull(modelRule);
 
@@ -101,6 +105,7 @@ public class StandaloneRuleSetBuilderTest extends IdeSupportContextTestCase {
 		Rule panelRule = ruleSet.getRule("Panel");
 		Rule buttonRule = ruleSet.getRule("Button");
 		Rule autoFormRule = ruleSet.getRule("AutoForm");
+		Rule toolBarRule = ruleSet.getRule("ToolBar");
 
 		assertTrue(datasetRule.isSubRuleOf(componentRule));
 		assertTrue(controlRule.isSubRuleOf(componentRule));
@@ -111,7 +116,15 @@ public class StandaloneRuleSetBuilderTest extends IdeSupportContextTestCase {
 
 		assertFalse(datasetRule.isSubRuleOf(controlRule));
 		assertFalse(componentRule.isSubRuleOf(controlRule));
-		
+
+		Property layoutProperty = containerRule.getProperty("layout");
+		assertNotNull(layoutProperty);
+		assertFalse(layoutProperty.isVisible());
+
+		Property idProperty = defaultViewRule.getPrimitiveProperty("id");
+		assertNotNull(idProperty);
+		assertFalse(idProperty.isVisible());
+
 		assertEquals("Button", buttonRule.getNodeName());
 
 		Set<Rule> componentRules = containerRule.getChild("Children")
@@ -120,13 +133,24 @@ public class StandaloneRuleSetBuilderTest extends IdeSupportContextTestCase {
 
 		Rule label1Rule = ruleSet.getRule("Label_1");
 		assertNotNull(label1Rule);
-		assertEquals("Label", label1Rule.getNodeName());
-		assertEquals(Integer.MAX_VALUE, label1Rule.getSortFactor());
+		assertEquals("ToolBarLabel", label1Rule.getNodeName());
 
 		Rule toolBarButtonRule = ruleSet.getRule("Button_1");
 		assertNotNull(toolBarButtonRule);
 		assertEquals("ToolBar", toolBarButtonRule.getCategory());
 		assertFalse(componentRules.contains(toolBarButtonRule));
+
+		Set<Rule> concreteToolBarRules = toolBarRule.getChild("Items")
+				.getConcreteRules();
+		assertFalse(concreteToolBarRules
+				.contains(ruleSet.getRule("MenuButton")));
+		assertFalse(concreteToolBarRules.contains(ruleSet
+				.getRule("AutoFormElement")));
+		assertTrue(concreteToolBarRules.contains(ruleSet.getRule("TextEditor")));
+
+		Set<Rule> concreteToolBarButtonRules = toolBarRule.getChild(
+				"ToolBarButton").getConcreteRules();
+		assertEquals(1, concreteToolBarButtonRules.size());
 
 		assertNotNull(viewRule.getPrimitiveProperty("listener"));
 		assertNotNull(datasetRule.getPrimitiveProperty("id"));

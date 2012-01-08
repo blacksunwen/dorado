@@ -32,7 +32,7 @@ import com.bstek.dorado.annotation.XmlProperty;
 		@ClientEvent(name = "onDraggingSourceOut"),
 		@ClientEvent(name = "onDraggingSourceMove"),
 		@ClientEvent(name = "onDraggingSourceDrop") })
-public class Control extends Component implements HtmlElement,
+public abstract class Control extends Component implements HtmlElement,
 		RenderableElement {
 	private Object layoutConstraint;
 	private String width;

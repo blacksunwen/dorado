@@ -2,6 +2,7 @@ package com.bstek.dorado.view.widget.base;
 
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNodeWrapper;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.view.annotation.Widget;
@@ -33,6 +34,7 @@ public class SplitPanel extends Control {
 	private boolean previewable;
 
 	@ClientProperty(escapeValue = "left")
+	@IdeProperty(highlight = 1)
 	public Direction getDirection() {
 		return direction;
 	}
@@ -62,6 +64,7 @@ public class SplitPanel extends Control {
 	}
 
 	@ClientProperty(escapeValue = "100")
+	@IdeProperty(highlight = 1)
 	public int getPosition() {
 		return position;
 	}

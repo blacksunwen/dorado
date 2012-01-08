@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
@@ -54,6 +55,7 @@ public class Container extends Control {
 	 */
 	@XmlProperty(ignored = true)
 	@ClientProperty
+	@IdeProperty(visible = false)
 	public Layout getLayout() {
 		return layout;
 	}

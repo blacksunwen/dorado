@@ -221,8 +221,7 @@
 					} else if (col._propertyPath) {
 						var subDataType = col._propertyPath.getDataType(dataType);
 						col._propertyDef = (subDataType) ? subDataType.getPropertyDef(col._subProperty) : null;
-					}
-					else {
+					} else {
 						col._propertyDef = (col._property) ? dataType.getPropertyDef(col._property) : null;
 					}
 					
@@ -443,8 +442,17 @@
 				
 				case dorado.widget.DataSet.MESSAGE_DATA_CHANGED:
 				case dorado.widget.DataSet.MESSAGE_REFRESH_ENTITY:{
-					// 此处items._observer != this._dataSet判断的用意是什么？
-					return (!items || items._observer != this._dataSet || arg.entity.parent == items || dorado.DataUtil.isOwnerOf(items, arg.newValue));
+					// 此处items._observer != this._dataSet说明当前Grid中的数据已不再属于DataSet
+					var b = (!items || items._observer != this._dataSet ||
+					arg.entity.parent == items ||
+					dorado.DataUtil.isOwnerOf(items, arg.newValue));
+					if (!b && this._columnsInfo.propertyPaths) {
+						b = dorado.DataUtil.isOwnerOf(arg.entity, items);
+						if (b && arg.property) {
+							b = this._columnsInfo.propertyPaths.contains('.' + arg.property) > 0;
+						}
+					}
+					return b;
 				}
 				
 				case dorado.widget.DataSet.MESSAGE_DELETED:{

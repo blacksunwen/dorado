@@ -446,7 +446,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					}
 				}
 			} else if (propertyDef) {
-				if (!value && typeof value == "object") {
+				if (value && (typeof value == "object" || typeof value == "array")) {
 					value = transferAndReplaceIf(this, propertyDef, value, true);
 				}
 			}

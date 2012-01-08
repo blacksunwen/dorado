@@ -87,11 +87,11 @@ public class RuleSetOutputter {
 	}
 
 	protected void outputRuleTemplate(XMLWriter xmlWriter,
-			RuleTemplate ruleTempalte, OutputContext context) throws Exception {
+			RuleTemplate ruleTemplate, OutputContext context) throws Exception {
 		Element element = DocumentHelper.createElement("Rule");
-		setElementAttribute(element, ruleTempalte, "name");
+		setElementAttribute(element, ruleTemplate, "name");
 
-		RuleTemplate[] parents = ruleTempalte.getParents();
+		RuleTemplate[] parents = ruleTemplate.getParents();
 		if (parents != null && parents.length > 0) {
 			String parentsText = "";
 			for (RuleTemplate parent : parents) {
@@ -104,12 +104,12 @@ public class RuleSetOutputter {
 
 		setElementAttributes(
 				element,
-				ruleTempalte,
+				ruleTemplate,
 				"label,abstract,nodeName,type,scope,sortFactor,category,robots,icon,labelProperty,autoGenerateId,reserve");
 
 		xmlWriter.writeOpen(element);
 
-		Collection<PropertyTemplate> primitiveProperties = ruleTempalte
+		Collection<PropertyTemplate> primitiveProperties = ruleTemplate
 				.getPrimitiveProperties().values();
 		if (!primitiveProperties.isEmpty()) {
 			Element subElement = DocumentHelper.createElement("PrimitiveProps");
@@ -120,7 +120,7 @@ public class RuleSetOutputter {
 			xmlWriter.writeClose(subElement);
 		}
 
-		Collection<PropertyTemplate> properties = ruleTempalte.getProperties()
+		Collection<PropertyTemplate> properties = ruleTemplate.getProperties()
 				.values();
 		if (!properties.isEmpty()) {
 			Element subElement = DocumentHelper.createElement("Props");
@@ -131,7 +131,7 @@ public class RuleSetOutputter {
 			xmlWriter.writeClose(subElement);
 		}
 
-		Collection<ClientEvent> clientEvents = ruleTempalte.getClientEvents()
+		Collection<ClientEvent> clientEvents = ruleTemplate.getClientEvents()
 				.values();
 		if (!clientEvents.isEmpty()) {
 			Element subElement = DocumentHelper.createElement("ClientEvents");
@@ -141,7 +141,7 @@ public class RuleSetOutputter {
 			}
 			xmlWriter.writeClose(subElement);
 		}
-		Collection<ChildTemplate> children = ruleTempalte.getChildren()
+		Collection<ChildTemplate> children = ruleTemplate.getChildren()
 				.values();
 		if (!children.isEmpty()) {
 			Element subElement = DocumentHelper.createElement("Children");

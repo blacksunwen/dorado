@@ -6,6 +6,7 @@ import java.util.Map;
 import com.bstek.dorado.annotation.ClientEvents;
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
@@ -103,6 +104,7 @@ public abstract class PropertyDef implements Ignorable, TagSupport,
 
 	@XmlProperty(ignored = true)
 	@ClientProperty
+	@IdeProperty(highlight = 1)
 	public DataType getDataType() {
 		return dataType;
 	}
@@ -115,6 +117,7 @@ public abstract class PropertyDef implements Ignorable, TagSupport,
 		this.label = label;
 	}
 
+	@IdeProperty(highlight = 1)
 	public String getLabel() {
 		return label;
 	}

@@ -2,6 +2,7 @@ package com.bstek.dorado.view.widget.base;
 
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.FloatControl;
 import com.bstek.dorado.view.widget.FloatControlAlign;
@@ -95,6 +96,7 @@ public class FloatPanel extends Panel implements FloatControl {
 		this.renderTo = renderTo;
 	}
 
+	@IdeProperty(highlight = 1)
 	public boolean isCenter() {
 		return center;
 	}
@@ -103,6 +105,7 @@ public class FloatPanel extends Panel implements FloatControl {
 		this.center = center;
 	}
 
+	@IdeProperty(highlight = 1)
 	public boolean isModal() {
 		return modal;
 	}

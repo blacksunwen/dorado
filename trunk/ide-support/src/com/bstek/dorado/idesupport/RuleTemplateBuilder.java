@@ -63,11 +63,17 @@ public class RuleTemplateBuilder implements RuleTemplateManagerListener {
 		for (Map.Entry<String, RuleTemplateInitializer> entry : initializerMap
 				.entrySet()) {
 			String key = entry.getKey();
+			RuleTemplateInitializer initialier = entry.getValue();
+			if (initialier instanceof RuleTemplateBuilderAware) {
+				((RuleTemplateBuilderAware) initialier)
+						.setRuleTemplateBuilder(this);
+			}
+
 			if (key.startsWith("classType:")) {
 				initializerTypeMap.put(ClassUtils.forName(key.substring(10)),
-						entry.getValue());
+						initialier);
 			} else {
-				initializerNameMap.put(key, entry.getValue());
+				initializerNameMap.put(key, initialier);
 			}
 		}
 	}
@@ -143,7 +149,7 @@ public class RuleTemplateBuilder implements RuleTemplateManagerListener {
 		}
 	}
 
-	protected void initRuleTemplate(InitializerContext initializerContext,
+	public void initRuleTemplate(InitializerContext initializerContext,
 			RuleTemplate ruleTemplate) throws Exception {
 		if (ruleTemplate.isInitialized()) {
 			return;
@@ -224,7 +230,7 @@ public class RuleTemplateBuilder implements RuleTemplateManagerListener {
 
 	public void ruleTemplateAdded(RuleTemplateManager ruleTemplateManager,
 			RuleTemplate ruleTemplate) throws Exception {
-		if (initializingRuleTemplate > 0) {
+		if (initializingRuleTemplate > 0 && ruleTemplate.isAutoInitialize()) {
 			initRuleTemplate(initializerContext, ruleTemplate);
 		}
 	}

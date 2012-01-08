@@ -99,6 +99,7 @@ public class AutoForm extends Control implements FormConfig {
 		this.dataType = dataType;
 	}
 
+	@IdeProperty(highlight = 1)
 	public String getCols() {
 		return cols;
 	}

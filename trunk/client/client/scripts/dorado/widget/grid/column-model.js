@@ -233,11 +233,21 @@
 			mainColumns.structure = extractStructure(tempStruct, fixedColumnCount);
 			mainColumns.dataColumns = extractDataColumns(dataColumnInfos, fixedColumnCount);
 			
+			var allDataColumns = [], propertyPaths = [];
+			for (var i = 0; i < dataColumnInfos.length; i++) {
+				var col = dataColumnInfos[i], column = col.column;
+				allDataColumns.push(col.column);
+				if (column._property && column._property.indexOf('.') > 0) {
+					propertyPaths.push(column._property);
+				}
+			}
+			
 			return {
 				idMap: idMap,
 				fixed: fixedColumns,
 				main: mainColumns,
-				dataColumns: extractDataColumns(dataColumnInfos, 0)
+				dataColumns: allDataColumns,
+				propertyPaths: (propertyPaths.length ? propertyPaths.join(',') : undefined)
 			};
 		}
 	});
@@ -1187,7 +1197,7 @@
 		 * @return {boolean} 是否要显示编辑器。
 		 */
 		shouldShow: function() {
-			return this.column && this.column._property && !this.column._propertyPath;
+			return this.column && this.column._property;
 		},
 		
 		/**
