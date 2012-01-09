@@ -12,7 +12,7 @@
 
 	<dependencies defaultconfmapping="compile->compile(*),master(*);runtime->master(*),compile(*),runtime(*);test->default(*)">
 		<!-- RUNTIME -->
-		<dependency org="com.bstek.dorado" name="dorado-console" rev="${depended-dorado.version}" conf="compile,runtime" />
+		<dependency org="com.bstek.dorado" name="dorado-core" rev="${depended-dorado.version}" conf="compile,runtime" />
 		<dependency org="dom4j" name="dom4j" rev="1.6.1" conf="compile,runtime" />
 
 		<!-- TEST -->
