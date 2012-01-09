@@ -19,4 +19,5 @@
 	<resource-type type=".swz" content-type="application/x-shockwave-flash" compressible="false" />
 	<resource-type type=".wav" content-type="audio/x-wav" compressible="false" />
 	<resource-type type=".mp3" content-type="audio/mpeg" compressible="false" />
+	<resource-type type=".xap" content-type="application/x-silverlight-2" compressible="false" />
 </resource-types>
