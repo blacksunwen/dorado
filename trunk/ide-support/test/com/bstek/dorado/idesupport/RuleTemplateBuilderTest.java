@@ -1,9 +1,6 @@
 package com.bstek.dorado.idesupport;
 
 import com.bstek.dorado.core.Context;
-import com.bstek.dorado.idesupport.RuleTemplateBuilder;
-import com.bstek.dorado.idesupport.RuleTemplateManager;
-import com.bstek.dorado.idesupport.template.ChildTemplate;
 import com.bstek.dorado.idesupport.template.RuleTemplate;
 
 public class RuleTemplateBuilderTest extends IdeSupportContextTestCase {
@@ -27,23 +24,8 @@ public class RuleTemplateBuilderTest extends IdeSupportContextTestCase {
 				dataTypeTemplate.getType());
 
 		RuleTemplate dataProviderTemplate = ruleTemplateManager
-				.getRuleTemplate("DataProvider");
+				.getRuleTemplate("AbstractDataProvider");
 		assertNotNull(dataProviderTemplate);
-
-		assertEquals(2, dataProviderTemplate.getChildren().size());
-
-		ChildTemplate[] children = dataProviderTemplate.getChildren().values()
-				.toArray(new ChildTemplate[0]);
-		ChildTemplate childTemplate = children[0];
-		assertNotNull(childTemplate);
-
-		RuleTemplate ruleTemplate = childTemplate.getRuleTemplate();
-		assertNotNull(ruleTemplate);
-		assertEquals("ParameterDataType", ruleTemplate.getNodeName());
-
-		RuleTemplate[] parents = ruleTemplate.getParents();
-		assertEquals(1, parents.length);
-		assertSame(ruleTemplateManager.getRuleTemplate("DataType"), parents[0]);
 
 		RuleTemplate layoutHolderTemplate = ruleTemplateManager
 				.getRuleTemplate("LayoutHolder");

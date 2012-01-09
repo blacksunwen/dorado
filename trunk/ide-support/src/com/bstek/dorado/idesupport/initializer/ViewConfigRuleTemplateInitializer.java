@@ -92,10 +92,12 @@ public class ViewConfigRuleTemplateInitializer implements
 			if (componentRuleTemplate == null) {
 				componentRuleTemplate = new AutoRuleTemplate(name,
 						classType.getName());
+				componentRuleTemplate.setGlobal(true);
 				componentRuleTemplate.setAutoInitialize(false);
 				componentRuleTemplates.add(componentRuleTemplate);
 				isNew = true;
 			}
+
 			componentRuleTemplate.setSortFactor(++sortFactor);
 			componentRuleTemplate.setCategory(registerInfo.getCategory());
 

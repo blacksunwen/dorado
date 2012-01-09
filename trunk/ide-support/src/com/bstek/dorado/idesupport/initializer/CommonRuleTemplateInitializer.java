@@ -427,7 +427,8 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 					&& propertyDescriptor.getWriteMethod() != null) {
 				if (readMethod.getDeclaringClass() != type) {
 					try {
-						readMethod = type.getDeclaredMethod(readMethod.getName(),
+						readMethod = type.getDeclaredMethod(
+								readMethod.getName(),
 								readMethod.getParameterTypes());
 					} catch (NoSuchMethodException e) {
 						continue;
@@ -589,7 +590,8 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 			if (readMethod != null) {
 				if (readMethod.getDeclaringClass() != type) {
 					try {
-						readMethod = type.getDeclaredMethod(readMethod.getName(),
+						readMethod = type.getDeclaredMethod(
+								readMethod.getName(),
 								readMethod.getParameterTypes());
 					} catch (NoSuchMethodException e) {
 						continue;
