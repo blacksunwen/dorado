@@ -3,6 +3,7 @@ package com.bstek.dorado.hibernate.provider;
 import org.hibernate.Session;
 
 import com.bstek.dorado.annotation.IdeProperty;
+import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.core.Context;
 import com.bstek.dorado.data.provider.Page;
 import com.bstek.dorado.data.type.AggregationDataType;
@@ -19,6 +20,7 @@ import com.bstek.dorado.util.Assert;
  * 
  * @author mark
  */
+@XmlNode(fixedProperties = "type=hibernateHql")
 public class HqlDataProvider extends HibernateDataProviderSupport {
 	private String hql;
 

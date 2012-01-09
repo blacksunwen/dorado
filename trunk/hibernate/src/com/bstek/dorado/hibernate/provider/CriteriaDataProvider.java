@@ -9,6 +9,7 @@ import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.impl.CriteriaImpl;
 
+import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.core.Context;
 import com.bstek.dorado.data.provider.Page;
@@ -24,6 +25,7 @@ import com.bstek.dorado.hibernate.criteria.UserCriteriaProcessor;
  * @author mark
  * 
  */
+@XmlNode(fixedProperties = "type=hibernateCriteria")
 public class CriteriaDataProvider extends HibernateDataProviderSupport {
 	private TopCriteria criterita;
 
