@@ -59,6 +59,7 @@ public class ModelRuleTemplateInitializer implements RuleTemplateInitializer {
 					.getRuleTemplate(providerName);
 			if (newRuleTemplate == null) {
 				newRuleTemplate = new RuleTemplate(providerName);
+				newRuleTemplate.setGlobal(true);
 				isNew = true;
 			}
 			newRuleTemplate.setSortFactor(++sortFactor);
@@ -81,6 +82,7 @@ public class ModelRuleTemplateInitializer implements RuleTemplateInitializer {
 					.getRuleTemplate(ResolverName);
 			if (newRuleTemplate == null) {
 				newRuleTemplate = new RuleTemplate(ResolverName);
+				newRuleTemplate.setGlobal(true);
 				isNew = true;
 			}
 			newRuleTemplate.setSortFactor(++sortFactor);
@@ -98,6 +100,7 @@ public class ModelRuleTemplateInitializer implements RuleTemplateInitializer {
 		if (validatorRuleTemplate == null) {
 			validatorRuleTemplate = new AutoRuleTemplate("Validator",
 					Validator.class.getName());
+			validatorRuleTemplate.setGlobal(true);
 			ruleTemplateManager.addRuleTemplate(validatorRuleTemplate);
 		}
 

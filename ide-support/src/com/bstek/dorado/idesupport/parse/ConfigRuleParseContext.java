@@ -1,6 +1,6 @@
 package com.bstek.dorado.idesupport.parse;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.w3c.dom.Element;
@@ -14,8 +14,8 @@ import com.bstek.dorado.idesupport.template.RuleTemplate;
  * @since 2009-11-18
  */
 public class ConfigRuleParseContext extends ParseContext {
-	private Map<String, Element> ruleElementMap = new HashMap<String, Element>();
-	private Map<String, RuleTemplate> ruleTemplateMap = new HashMap<String, RuleTemplate>();
+	private Map<String, Element> ruleElementMap = new LinkedHashMap<String, Element>();
+	private Map<String, RuleTemplate> ruleTemplateMap = new LinkedHashMap<String, RuleTemplate>();
 	private RuleTemplateManager ruleTemplateManager;
 
 	public Map<String, Element> getRuleElementMap() {
