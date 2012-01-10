@@ -609,16 +609,42 @@
 					}
 				}
 				
-				var parameter = dataSet.get("parameter"), criteria;
+				var parameter, criteria, propertyDef, parentEntity, subProperty;
+				if (this._dataPath) {
+					var notSupported = true;
+					if (this._dataPath.match(/\.[\w]*$/)) {
+						var i = this._dataPath.lastIndexOf('.');
+						var parentDataPath = this._dataPath.substring(0, i);
+						var subProperty = this._dataPath.substring(i + 1);
+						var parentEntity = dataSet.getData(parentDataPath);
+						if (parentEntity && parentEntity instanceof dorado.Entity) {
+							var parentDataType = parentEntity.dataType;
+							if (parentDataType && parentDataType instanceof dorado.EntityDataType) {
+								propertyDef = parentDataType.getPropertyDef(subProperty);
+								if (propertyDef && propertyDef instanceof dorado.Reference) {
+									parameter = propertyDef.get("parameter");
+									notSupported = false;
+								}
+							}
+						}
+					}
+					if (notSupported) {
+						throw new dorado.Exception("Can not perform filter on DataPath \"" + this._dataPath + "\"");
+					}
+				}
+				else {
+					parameter = dataSet.get("parameter");
+				}
+				
 				if (criterions.length) {
 					if (parameter != null && !(parameter instanceof dorado.util.Map)) {
-						dataSet.set("parameter", null);
+						(propertyDef || dataSet).set("parameter", null);
 					}
 					
-					if (parameter) criteria = parameter.get("criteria");
+					if (parameter && parameter instanceof dorado.util.Map) criteria = parameter.get("criteria");
 					criteria = criteria || {};
 					criteria.criterions = criterions;
-					dataSet.set("parameter", $map({
+					(propertyDef || dataSet).set("parameter", $map({
 						criteria: criteria
 					}));
 				} else if (parameter instanceof dorado.util.Map) {
@@ -628,7 +654,11 @@
 					}
 				}
 				
-				dataSet.flushAsync();
+				if (parentEntity && subProperty) {
+					parentEntity.reset(subProperty);
+				} else {
+					dataSet.flushAsync();
+				}
 			} else {
 				return $invokeSuper.call(this, arguments);
 			}

@@ -393,7 +393,7 @@
 					
 					var dataPath = dorado.DataPath.create(path);
 					if (data) data = dataPath.evaluate(data, options);
-					this._dataPathCache[key] = data;
+					this._dataPathCache[key] = data || null;
 				} else if (!path) {
 					var dataType = this.getDataType(null, true);
 					if (dataType instanceof dorado.AggregationDataType) {

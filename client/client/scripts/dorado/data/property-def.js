@@ -732,7 +732,7 @@
 		
 		constructor: function(name, dataType) {
 			this._constraints = [];
-			$invokeSuper.call(this, arguments);
+			$invokeSuper.call(this, [name, dataType]);
 		},
 		
 		/**
