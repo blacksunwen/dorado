@@ -34,9 +34,6 @@ public class ViewXmlParserHelper extends XmlParserHelper {
 			if (widget != null) {
 				((ComponentParser) objectParser)
 						.setComponentType(widget.name());
-			} else {
-				throw new IllegalArgumentException(
-						"@Widget not found on Class \"" + beanType + "\".");
 			}
 		}
 	}
