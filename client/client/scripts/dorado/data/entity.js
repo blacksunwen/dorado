@@ -734,6 +734,8 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 							propertyInfo.validating++;
 							validator.validate(value, validateArg, {
 								callback: function(success, result) {
+									if (propertyInfo.validating <= 0) return;
+									
 									propertyInfo.validating--;
 									if (propertyInfo.validating <= 0) {
 										propertyInfo.validating = 0;
@@ -960,8 +962,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		/**
 		 * 重设实体对象。
 		 * <p>
-		 * 此方法不仅仅会将Entity的状态置为dorado.Entity.STATE_NONE以及清空暂存的旧数据。
-		 * 同时也会重置那些通过引用属性(ReferencePropertyDef)装载的关联数据。
+		 * 此方法不会改变Entity的状态。但会重置那些通过引用属性(ReferencePropertyDef)装载的关联数据，引起这些关联数据的重新装载。
 		 * </p>
 		 * @param {String} [property] 要重置的引用属性的属性名。如果需要定义多个，可以用“,”分隔。
 		 */
@@ -975,11 +976,18 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 						var propertyDef = (this._propertyDefs) ? this._propertyDefs.get(prop) : null;
 						if (propertyDef && propertyDef instanceof dorado.Reference) delete data[prop];
 					}
+					
+					var propertyInfo = this._propertyInfoMap[prop];
+					delete propertyInfo.validating;
+					delete propertyInfo.validated;
+					
 					this.doSetMessages(prop, null);	
 				}
 				this.timestamp = dorado.Core.getTimestamp();
 			} else {
-				this.resetState();
+				this._propertyInfoMap = {};
+				delete this._messages;
+				delete this._messageState;
 			}
 			this.sendMessage(0);
 		},
