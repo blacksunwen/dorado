@@ -347,7 +347,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					var dataPipeWrapper = null;
 					if (loadMode != "never" && propertyDef.getDataPipe) {
 						var pipe;
-						if ( propertyDef instanceof dorado.Reference) {
+						if (propertyDef instanceof dorado.Reference) {
 							if (this.state != dorado.Entity.STATE_NEW || propertyDef._activeOnNewEntity) {
 								pipe = propertyDef.getDataPipe(this);
 							}
