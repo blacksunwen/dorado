@@ -10,7 +10,7 @@ import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Control;
 import com.bstek.dorado.view.widget.InnerElementReference;
 
-@Widget(name = "Shell", category = "Desktop", dependsPackage = "desktop")
+@Widget(name = "Shell", category = "Advance", dependsPackage = "desktop")
 @ClientObject(prototype = "dorado.widget.desktop.Shell",
 		shortTypeName = "desktop.Shell")
 public class Shell extends Control {
