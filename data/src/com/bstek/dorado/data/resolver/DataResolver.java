@@ -14,7 +14,9 @@ import com.bstek.dorado.data.DataModelObject;
 		parser = "spring:dorado.prototype.dataResolverParser",
 		definitionType = "com.bstek.dorado.data.config.definition.DataResolverDefinition",
 		scopable = true, inheritable = true, properties = {
-				@XmlProperty(propertyName = "overwrite", ignored = true),
+				@XmlProperty(propertyName = "overwrite",
+						propertyType = "boolean", attributeOnly = true,
+						ignored = true),
 				@XmlProperty(propertyName = "interceptor",
 						parser = "spring:dorado.staticPropertyParser") })
 public interface DataResolver extends DataModelObject {

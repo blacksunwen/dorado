@@ -8,11 +8,7 @@
 		</Children>
 	</Rule>
 
-	<Rule name="AbstractDataType" type="com.bstek.dorado.data.type.AbstractDataType">
-		<PrimitiveProps>
-			<Prop name="overwrite" />
-		</PrimitiveProps>
-	</Rule>
+	<Rule name="AbstractDataType" type="com.bstek.dorado.data.type.AbstractDataType" />
 	<Rule name="AbstractDataProvider" type="com.bstek.dorado.data.provider.AbstractDataProvider" />
 	<Rule name="AbstractDataResolver" type="com.bstek.dorado.data.resolver.AbstractDataResolver" />
 </RuleSet>

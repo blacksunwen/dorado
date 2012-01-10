@@ -26,9 +26,8 @@ import com.bstek.dorado.data.type.validator.MessageState;
 		definitionType = "com.bstek.dorado.data.config.definition.DataTypeDefinition",
 		scopable = true,
 		inheritable = true,
-		properties = { @XmlProperty(
-				propertyName = "overwrite,elementDataType,keyDataType,valueDataType",
-				ignored = true) },
+		properties = @XmlProperty(propertyName = "overwrite",
+				propertyType = "boolean", attributeOnly = true, ignored = true),
 		subNodes = { @XmlSubNode(
 				propertyType = "com.bstek.dorado.data.type.property.PropertyDef[]") })
 @ClientObject(prototype = "dorado.EntityDataType", shortTypeName = "Default")
