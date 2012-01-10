@@ -30,7 +30,8 @@ import com.bstek.dorado.data.type.DataType;
 		parser = "spring:dorado.prototype.dataProviderParser",
 		definitionType = "com.bstek.dorado.data.config.definition.DataProviderDefinition",
 		scopable = true, inheritable = true, properties = {
-				@XmlProperty(propertyName = "overwrite", ignored = true),
+				@XmlProperty(propertyName = "overwrite",
+						propertyType = "boolean", attributeOnly = true, ignored = true),
 				@XmlProperty(propertyName = "interceptor",
 						parser = "spring:dorado.staticPropertyParser") })
 public interface DataProvider extends DataModelObject {

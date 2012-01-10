@@ -15,6 +15,4 @@ public @interface ClientEvent {
 	public String name();
 
 	public String[] signature() default "";
-
-	public boolean output() default true;
 }

@@ -379,7 +379,10 @@ public class XmlParserHelper implements BeanFactoryAware {
 					.propertyName())
 					|| StringUtils.isNotEmpty(xmlProperty.propertyType())
 					|| StringUtils.isNotEmpty(xmlProperty.parser());
+		} else if (annotationProperties.length > 1) {
+			hasPropertyAnnotation = true;
 		}
+
 		if (hasPropertyAnnotation) {
 			for (XmlProperty xmlProperty : annotationProperties) {
 				if (StringUtils.isEmpty(xmlProperty.propertyName())) {
@@ -387,8 +390,8 @@ public class XmlParserHelper implements BeanFactoryAware {
 							"@XmlProperty.propertyName undefined. ["
 									+ type.getName() + "]");
 				}
-				for (String property : StringUtils.split(xmlProperty
-						.propertyName())) {
+				for (String property : StringUtils.split(
+						xmlProperty.propertyName(), ",;")) {
 					properties.put(property, xmlProperty);
 				}
 			}
@@ -799,8 +802,8 @@ public class XmlParserHelper implements BeanFactoryAware {
 				propertyParser = beanFactory.getBean(
 						STRING_ARRAY_PROPERTY_PARSER, XmlParser.class);
 			} else if (propertyType.equals(Object.class)) {
-				propertyParser = beanFactory.getBean(
-						DATA_PROPERTY_PARSER, XmlParser.class);
+				propertyParser = beanFactory.getBean(DATA_PROPERTY_PARSER,
+						XmlParser.class);
 			}
 		}
 

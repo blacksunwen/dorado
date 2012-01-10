@@ -281,7 +281,10 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 					.propertyName())
 					|| StringUtils.isNotEmpty(xmlProperty.propertyType())
 					|| StringUtils.isNotEmpty(xmlProperty.parser());
+		} else if (annotationProperties.length > 1) {
+			hasPropertyAnnotation = true;
 		}
+		
 		if (hasPropertyAnnotation) {
 			for (XmlProperty xmlProperty : annotationProperties) {
 				if (StringUtils.isEmpty(xmlProperty.propertyName())) {
@@ -289,8 +292,8 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 							"@XmlProperty.propertyName undefined. ["
 									+ type.getName() + "]");
 				}
-				for (String property : StringUtils.split(xmlProperty
-						.propertyName())) {
+				for (String property : StringUtils.split(
+						xmlProperty.propertyName(), ",;")) {
 					properties.put(property, xmlProperty);
 				}
 			}
@@ -524,7 +527,7 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 						propertyTemplate.setHighlight(ideProperty.highlight());
 						if (StringUtils.isNotEmpty(ideProperty.enumValues())) {
 							propertyTemplate.setEnumValues(StringUtils.split(
-									ideProperty.enumValues(), ','));
+									ideProperty.enumValues(), ",;"));
 						}
 					}
 
