@@ -977,11 +977,11 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 						if (propertyDef && propertyDef instanceof dorado.Reference) delete data[prop];
 					}
 					
+					this.doSetMessages(prop, null);	
+					
 					var propertyInfo = this._propertyInfoMap[prop];
 					delete propertyInfo.validating;
 					delete propertyInfo.validated;
-					
-					this.doSetMessages(prop, null);	
 				}
 				this.timestamp = dorado.Core.getTimestamp();
 			} else {
