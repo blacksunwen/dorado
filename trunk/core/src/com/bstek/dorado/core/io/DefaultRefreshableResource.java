@@ -9,6 +9,7 @@ import com.bstek.dorado.util.Assert;
 
 /**
  * 默认的可重装载资源的实现类。
+ * 
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Feb 19, 2007
  */
@@ -22,11 +23,13 @@ public class DefaultRefreshableResource implements RefreshableResource {
 	private long lastValidateMillis;
 
 	/**
-	 * @param resource 要包装的资源描述对象
+	 * @param resource
+	 *            要包装的资源描述对象
 	 */
 	public DefaultRefreshableResource(Resource resource) {
 		Assert.notNull(resource);
 		this.resource = resource;
+		resourceTimpstamp = getTimestampForValidate();
 	}
 
 	/**
@@ -35,8 +38,7 @@ public class DefaultRefreshableResource implements RefreshableResource {
 	protected long getTimestampForValidate() {
 		try {
 			return resource.getTimestamp();
-		}
-		catch (IOException ex) {
+		} catch (IOException ex) {
 			// do nothing
 			return 0L;
 		}
@@ -55,8 +57,7 @@ public class DefaultRefreshableResource implements RefreshableResource {
 		if ((currentTimeMillis - lastValidateMillis) > (minValidateSeconds * ONE_SECOND_MILLIS)) {
 			lastValidateMillis = currentTimeMillis;
 			return (resourceTimpstamp == getTimestampForValidate());
-		}
-		else {
+		} else {
 			return true;
 		}
 	}
@@ -74,6 +75,7 @@ public class DefaultRefreshableResource implements RefreshableResource {
 	}
 
 	public InputStream getInputStream() throws IOException {
+		resourceTimpstamp = getTimestampForValidate();
 		return resource.getInputStream();
 	}
 

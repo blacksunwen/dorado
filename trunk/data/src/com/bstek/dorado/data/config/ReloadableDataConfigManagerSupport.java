@@ -34,7 +34,7 @@ public abstract class ReloadableDataConfigManagerSupport extends
 
 	private class ValidateThread extends Thread {
 		private boolean shouldStop = false;
-		
+
 		public ValidateThread() {
 			setDaemon(true);
 		}
@@ -148,8 +148,8 @@ public abstract class ReloadableDataConfigManagerSupport extends
 					refreshableResources.add(refreshableResource);
 				}
 			}
+			return refreshableResources;
 		}
-		return refreshableResources;
 	}
 
 	/**
@@ -165,16 +165,16 @@ public abstract class ReloadableDataConfigManagerSupport extends
 				Set<RefreshableResource> resourceToReload = null;
 
 				if (!refreshableResource.isValid()) {
+					if (resourceToUnload == null) {
+						resourceToUnload = new HashSet<RefreshableResource>();
+					}
+					resourceToUnload.add(refreshableResource);
+
 					if (refreshableResource.exists()) {
 						if (resourceToReload == null) {
 							resourceToReload = new HashSet<RefreshableResource>();
 						}
 						resourceToReload.add(refreshableResource);
-					} else {
-						if (resourceToUnload == null) {
-							resourceToUnload = new HashSet<RefreshableResource>();
-						}
-						resourceToUnload.add(refreshableResource);
 					}
 				}
 
@@ -191,7 +191,7 @@ public abstract class ReloadableDataConfigManagerSupport extends
 				}
 
 				try {
-					if (resourceToUnload != null) {
+					if (resourceToReload != null) {
 						Resource[] resource = new Resource[resourceToReload
 								.size()];
 						resourceToReload.toArray(resource);
