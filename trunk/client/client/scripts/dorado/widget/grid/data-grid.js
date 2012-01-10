@@ -641,6 +641,7 @@
 						(propertyDef || dataSet).set("parameter", null);
 					}
 					
+					debugger;
 					if (parameter && parameter instanceof dorado.util.Map) criteria = parameter.get("criteria");
 					criteria = criteria || {};
 					criteria.criterions = criterions;
@@ -676,7 +677,7 @@
 						dataSet.set("parameter", null);
 					}
 					
-					if (parameter) criteria = parameter.get("criteria");
+					if (parameter && parameter instanceof dorado.util.Map) criteria = parameter.get("criteria");
 					criteria = criteria || {};
 					criteria.orders = orders = [{
 						property: column.get("property"),
