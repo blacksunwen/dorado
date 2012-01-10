@@ -419,6 +419,7 @@
 			function validateEntity(validateContext, entity, validateOptions, validateSubEntities) {
 				if (entity.isDirty()) {
 					validateOptions.context = {};
+					debugger;
 					entity.validate(validateOptions);
 					validateContext = mergeValidateContext(validateContext, validateOptions.context);
 				}

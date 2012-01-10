@@ -887,7 +887,7 @@
 					}
 					
 					(entity instanceof dorado.Entity) ? entity.set(property, value) : entity[property] = value;
-					self.onCellValueEdit(entity, Column);
+					self.onCellValueEdit(entity, column);
 				}
 			});
 		},
