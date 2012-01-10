@@ -28,6 +28,7 @@ import com.bstek.dorado.common.event.ClientEventRegistry;
 import com.bstek.dorado.common.event.ClientEventSupported;
 import com.bstek.dorado.common.event.ClientEventSupportedObject;
 import com.bstek.dorado.core.bean.Scope;
+import com.bstek.dorado.data.config.definition.InterceptableDefinition;
 import com.bstek.dorado.data.config.definition.ListenableObjectDefinition;
 import com.bstek.dorado.data.entity.EntityUtils;
 import com.bstek.dorado.idesupport.RuleTemplateManager;
@@ -374,6 +375,14 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 						.isAssignableFrom(definitionType)) {
 					AutoPropertyTemplate propertyTemplate = new AutoPropertyTemplate(
 							"listener");
+					propertyTemplate.setPrimitive(true);
+					properties.add(propertyTemplate);
+				}
+
+				if (InterceptableDefinition.class
+						.isAssignableFrom(definitionType)) {
+					AutoPropertyTemplate propertyTemplate = new AutoPropertyTemplate(
+							"interceptor");
 					propertyTemplate.setPrimitive(true);
 					properties.add(propertyTemplate);
 				}
