@@ -15,7 +15,6 @@ import org.dom4j.io.XMLWriter;
 import com.bstek.dorado.core.Constants;
 import com.bstek.dorado.core.pkgs.PackageInfo;
 import com.bstek.dorado.core.pkgs.PackageManager;
-import com.bstek.dorado.data.entity.EntityUtils;
 import com.bstek.dorado.idesupport.RuleTemplateManager;
 import com.bstek.dorado.idesupport.model.ClientEvent;
 import com.bstek.dorado.idesupport.model.CompositeType;
@@ -167,8 +166,7 @@ public class RuleSetOutputter {
 		if (StringUtils.isNotEmpty(property.getType())) {
 			try {
 				Class<?> type = ClassUtils.forName(property.getType());
-				if (EntityUtils.isSimpleType(type)
-						&& !String.class.equals(type) && !type.isEnum()) {
+				if (!String.class.equals(type) && !type.isEnum()) {
 					element.addAttribute("type", type.getName());
 				}
 			} catch (ClassNotFoundException e) {
