@@ -42,7 +42,7 @@
 		<dependency org="org.springframework" name="spring-asm" rev="3.0.5.RELEASE" conf="compile"/>
 		<dependency org="org.springframework" name="spring-expression" rev="3.0.5.RELEASE" conf="compile"/>
 		<dependency org="org.springframework" name="spring-web" rev="3.0.5.RELEASE" conf="compile"/>
-		<dependency org="org.springframework" name="spring-web-servlet" rev="3.0.5.RELEASE" conf="compile"/>
+		<dependency org="org.springframework" name="spring-webmvc" rev="3.0.5.RELEASE" conf="compile"/>
 
 		<!-- TEST -->
 		<dependency org="junit" name="junit" rev="4.8.2" conf="test"/>
