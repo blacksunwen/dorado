@@ -87,7 +87,7 @@
 		},
 		
 		refreshDom: function(dom) {
-			dom.style.overflow = "hidden";
+			// dom.style.overflow = "hidden";
 			dom.style.width = "100%";
 			dom.style.height = "100%";
 			

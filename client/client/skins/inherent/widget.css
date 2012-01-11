@@ -20,12 +20,10 @@
 
 .d-anchor-layout {
     position: relative;
-    overflow: hidden;
 }
 
 .d-dock-layout {
     position: relative;
-    overflow: hidden;
 }
 
 .d-form-layout {
