@@ -27,7 +27,7 @@ import com.bstek.dorado.core.io.Resource;
  */
 public abstract class ReloadableDataConfigManagerSupport extends
 		DataConfigManagerSupport {
-	private final static long ONE_SECOND = 100L;
+	private final static long ONE_SECOND = 1000L;
 
 	private static Log logger = LogFactory
 			.getLog(ReloadableDataConfigManagerSupport.class);
@@ -59,14 +59,12 @@ public abstract class ReloadableDataConfigManagerSupport extends
 	}
 
 	private boolean autoReloadEnabled = true;
+	private boolean useAutoReloadThread;
 	private long validateThreadIntervalSeconds = 5;
 	private long minResourceValidateSeconds = 2;
 
 	private ValidateThread validateThread;
 	private Set<RefreshableResource> refreshableResources;
-
-	public ReloadableDataConfigManagerSupport() {
-	}
 
 	/**
 	 * 返回是否启用配置文件的自动重装载。
@@ -80,6 +78,14 @@ public abstract class ReloadableDataConfigManagerSupport extends
 	 */
 	public void setAutoReloadEnabled(boolean autoReloadEnabled) {
 		this.autoReloadEnabled = autoReloadEnabled;
+	}
+
+	public boolean isUseAutoReloadThread() {
+		return useAutoReloadThread;
+	}
+
+	public void setUseAutoReloadThread(boolean useAutoReloadThread) {
+		this.useAutoReloadThread = useAutoReloadThread;
 	}
 
 	/**
@@ -157,7 +163,7 @@ public abstract class ReloadableDataConfigManagerSupport extends
 	 * 
 	 * @return 返回的逻辑值表示此过程是否实际发生了重新装载或卸载的动作。
 	 */
-	protected synchronized boolean validateAndReloadConfigs() {
+	public synchronized boolean validateAndReloadConfigs() {
 		boolean configsChanged = false;
 		if (refreshableResources != null) {
 			for (RefreshableResource refreshableResource : refreshableResources) {
@@ -209,12 +215,7 @@ public abstract class ReloadableDataConfigManagerSupport extends
 	/**
 	 * 启动验证并执行配置文件动态装载的线程。
 	 */
-	public synchronized void startValidateThead() {
-		if (!autoReloadEnabled) {
-			throw new IllegalStateException(
-					"Property [autoReloadEnabled] should be true.");
-		}
-
+	protected synchronized void startValidateThead() {
 		if (validateThread != null && validateThread.isAlive()) {
 			throw new IllegalStateException("Validate thead is alread started.");
 		}
@@ -228,11 +229,10 @@ public abstract class ReloadableDataConfigManagerSupport extends
 	/**
 	 * 终止验证并执行配置文件动态装载的线程。
 	 */
-	public synchronized void stopValidateThead() {
+	protected synchronized void stopValidateThead() {
 		if (validateThread != null) {
 			validateThread.kill();
 			validateThread = null;
 		}
 	}
-
 }

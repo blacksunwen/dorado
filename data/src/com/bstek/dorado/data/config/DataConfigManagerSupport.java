@@ -157,6 +157,15 @@ public abstract class DataConfigManagerSupport implements DataConfigManager {
 		event.setResource(resources);
 		event.setMode(DataConfigManagerEvent.MODE_UNLOAD);
 		fireOnConfigChanged(event);
+		
+		String message = "Configures unloaded [";
+		for (int i = 0; i < resources.length; i++) {
+			if (i > 0)
+				message += ',';
+			message += resources[i];
+		}
+		message += "].";
+		logger.info(message);
 	}
 
 	/**
