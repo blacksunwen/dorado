@@ -106,8 +106,11 @@ public class DefaultRefreshableResource implements RefreshableResource {
 
 	@Override
 	public boolean equals(Object obj) {
-		return (obj == this || (obj instanceof RefreshableResource && ((RefreshableResource) obj)
-				.getDescription().equals(getDescription())));
+		boolean b = (obj == this);
+		if (!b && obj instanceof Resource) {
+			b = resource.equals(obj);
+		}
+		return b;
 	}
 
 	@Override

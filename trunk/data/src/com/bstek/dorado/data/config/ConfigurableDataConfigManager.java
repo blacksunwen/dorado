@@ -215,7 +215,7 @@ public class ConfigurableDataConfigManager extends
 			loadConfigs(ResourceUtils.getResources(locations));
 		}
 
-		if (isAutoReloadEnabled()) {
+		if (isUseAutoReloadThread() && isAutoReloadEnabled()) {
 			startValidateThead();
 
 			if (autoRecalculatePaths && shouldStartRecalculateThread) {
@@ -426,7 +426,7 @@ public class ConfigurableDataConfigManager extends
 	 * 
 	 * @return 返回的逻辑值表示此过程是否实际发生了装载配置文件的动作。
 	 */
-	protected synchronized boolean recalcConfigLocations() {
+	public synchronized boolean recalcConfigLocations() {
 		boolean configsChanged = false;
 		try {
 			Context context = Context.getCurrent();
@@ -445,25 +445,24 @@ public class ConfigurableDataConfigManager extends
 
 			Set<Resource> resources = ResourceUtils
 					.getResourceSet(configLocationArray);
-
-			Set<Resource> newResources = null, removedResources = null;
 			Set<Resource> loadedResources = getResources();
+			Set<Resource> newResources = null, removedResources = null;
 
 			for (Resource resource : loadedResources) {
 				if (!resources.contains(resource)) {
-					if (removedResources == null) {
-						removedResources = new LinkedHashSet<Resource>();
+					if (newResources == null) {
+						newResources = new LinkedHashSet<Resource>();
 					}
-					removedResources.add(resource);
+					newResources.add(resource);
 				}
 			}
 
 			for (Resource resource : resources) {
 				if (!loadedResources.contains(resource)) {
-					if (newResources == null) {
-						newResources = new LinkedHashSet<Resource>();
+					if (removedResources == null) {
+						removedResources = new LinkedHashSet<Resource>();
 					}
-					newResources.add(resource);
+					removedResources.add(resource);
 				}
 			}
 

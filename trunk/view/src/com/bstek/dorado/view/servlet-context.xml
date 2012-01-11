@@ -64,6 +64,7 @@
 		<property name="resolver">
 			<bean class="com.bstek.dorado.view.resolver.HtmlViewResolver">
 				<property name="templateFile" value="home:w3c-html4-template.html" />
+				<property name="dataConfigManager" ref="dorado.dataConfigManager" />
 				<property name="viewConfigManager" ref="dorado.viewConfigManager" />
 				<property name="velocityHelper" ref="dorado.velocityHelper" />
 				<property name="uriSuffix" value=".d" />

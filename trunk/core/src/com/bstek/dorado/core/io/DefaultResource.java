@@ -7,6 +7,7 @@ import java.net.URL;
 
 /**
  * 默认的资源描述对象的实现类。
+ * 
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Feb 16, 2007
  */
@@ -19,19 +20,16 @@ public class DefaultResource implements Resource {
 		if (adaptee instanceof org.springframework.core.io.ClassPathResource) {
 			path = ((org.springframework.core.io.ClassPathResource) adaptee)
 					.getPath();
-		}
-		else if (adaptee instanceof org.springframework.core.io.FileSystemResource) {
+		} else if (adaptee instanceof org.springframework.core.io.FileSystemResource) {
 			path = ((org.springframework.core.io.FileSystemResource) adaptee)
 					.getPath();
-		}
-		else {
+		} else {
 			try {
 				URL url = adaptee.getURL();
 				if (url != null) {
 					path = url.getPath();
 				}
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
 				// do nothing
 			}
 		}
@@ -69,8 +67,7 @@ public class DefaultResource implements Resource {
 		File file = adaptee.getFile();
 		if (file != null && file.exists()) {
 			return file.lastModified();
-		}
-		else {
+		} else {
 			return 0L;
 		}
 	}
@@ -90,8 +87,16 @@ public class DefaultResource implements Resource {
 
 	@Override
 	public boolean equals(Object obj) {
-		return (obj == this || (obj instanceof Resource && ((Resource) obj)
-				.getDescription().equals(getDescription())));
+		boolean b = (obj == this);
+		if (!b) {
+			if (obj instanceof DefaultResource) {
+				b = adaptee.equals(((DefaultResource) obj).adaptee);
+			}
+			if (obj instanceof Resource) {
+				b = getDescription().equals(((Resource) obj).getDescription());
+			}
+		}
+		return b;
 	}
 
 	@Override

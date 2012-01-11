@@ -11,6 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.apache.velocity.Template;
 
+import com.bstek.dorado.data.config.ConfigurableDataConfigManager;
+import com.bstek.dorado.data.config.DataConfigManager;
+import com.bstek.dorado.data.config.ReloadableDataConfigManagerSupport;
 import com.bstek.dorado.util.PathUtils;
 import com.bstek.dorado.view.View;
 import com.bstek.dorado.view.manager.ViewConfig;
@@ -28,6 +31,10 @@ import com.bstek.dorado.web.resolver.PageNotFoundException;
  * @since Feb 26, 2008
  */
 public class HtmlViewResolver extends AbstractTextualResolver {
+	private final static long ONE_SECOND = 1000L;
+	private final static long MIN_DATA_CONFIG_VALIDATE_SECONDS = 5;
+
+	private DataConfigManager dataConfigManager;
 	private ViewConfigManager viewConfigManager;
 	private VelocityHelper velocityHelper;
 	private String templateFile;
@@ -36,8 +43,23 @@ public class HtmlViewResolver extends AbstractTextualResolver {
 	private String uriSuffix;
 	private int uriSuffixLen;
 
+	private boolean shouldAutoLoadDataConfigResources;
+	private long lastValidateTimestamp;
+
 	public HtmlViewResolver() {
 		setContentType(HttpConstants.CONTENT_TYPE_HTML);
+	}
+
+	public void setDataConfigManager(DataConfigManager dataConfigManager) {
+		this.dataConfigManager = dataConfigManager;
+
+		if (dataConfigManager instanceof ReloadableDataConfigManagerSupport) {
+			final ReloadableDataConfigManagerSupport reloadableDataConfigManagerSupport = (ReloadableDataConfigManagerSupport) dataConfigManager;
+			shouldAutoLoadDataConfigResources = (reloadableDataConfigManagerSupport
+					.isAutoReloadEnabled() && !reloadableDataConfigManagerSupport
+					.isUseAutoReloadThread());
+			lastValidateTimestamp = System.currentTimeMillis();
+		}
 	}
 
 	public void setViewConfigManager(ViewConfigManager viewConfigManager) {
@@ -75,6 +97,21 @@ public class HtmlViewResolver extends AbstractTextualResolver {
 		if (!PathUtils.isSafePath(viewName)) {
 			throw new PageAccessDeniedException("[" + request.getRequestURI()
 					+ "] Request forbidden.");
+		}
+
+		if (shouldAutoLoadDataConfigResources) {
+			if (System.currentTimeMillis() - lastValidateTimestamp > MIN_DATA_CONFIG_VALIDATE_SECONDS
+					* ONE_SECOND) {
+				lastValidateTimestamp = System.currentTimeMillis();
+
+				((ReloadableDataConfigManagerSupport) dataConfigManager)
+						.validateAndReloadConfigs();
+
+				if (dataConfigManager instanceof ConfigurableDataConfigManager) {
+					((ConfigurableDataConfigManager) dataConfigManager)
+							.recalcConfigLocations();
+				}
+			}
 		}
 
 		if (uriPrefix != null && viewName.startsWith(uriPrefix)) {
