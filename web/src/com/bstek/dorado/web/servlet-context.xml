@@ -16,7 +16,7 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
 		<property name="alwaysUseFullPath" value="true" />
 	</bean>
 	<bean id="dorado.mappingExceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
-		<property name="defaultErrorView" value="forward:/dorado/ErrorPage" />
+		<property name="defaultErrorView" value="/dorado/ErrorPage" />
 	</bean>
 
 	<bean id="dorado.resolverRegister" abstract="true" class="com.bstek.dorado.web.resolver.ResolverRegister">
