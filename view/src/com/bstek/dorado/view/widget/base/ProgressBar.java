@@ -17,7 +17,7 @@ public class ProgressBar extends Control {
 	private float minValue;
 	private float maxValue = 100;
 	private String value;
-	private String textPattern = "${percent}%";
+	private String textPattern = "{percent}%";
 	private boolean showText = true;
 	private boolean effectEnable = false;
 
