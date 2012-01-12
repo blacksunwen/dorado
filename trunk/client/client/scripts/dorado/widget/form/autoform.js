@@ -249,8 +249,7 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 						object.resetEditorReadOnly();
 					}
 				}
-			} else if (!dorado.widget.Control.prototype.ATTRIBUTES[attr] &&
-			dorado.widget.FormConfig.prototype.ATTRIBUTES[attr]) {
+			} else if (!dorado.widget.Control.prototype.ATTRIBUTES[attr] && dorado.widget.FormConfig.prototype.ATTRIBUTES[attr]) {
 				dorado.Toolkits.setDelayedAction(self, "$profileChangeTimerId", function() {
 					self._bindingElements.invoke("onProfileChange");
 				}, 20);

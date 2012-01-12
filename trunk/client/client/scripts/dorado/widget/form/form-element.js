@@ -87,8 +87,7 @@
 			 * @attribute writeBeforeReady
 			 */
 			dataSet: {
-				componentReference: true,
-				writeBeforeReady: true
+				componentReference: true
 			},
 			
 			/**

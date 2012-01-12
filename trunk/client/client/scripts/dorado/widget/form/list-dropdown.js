@@ -120,7 +120,7 @@
 			 * 当下拉框尝试对下拉数据项进行过滤时触发的事件。
 			 * @param {Object} self 事件的发起者，即控件本身。
 			 * @param {Object} arg 事件参数。
-			 * @param {Object} arg.filterValue 过滤条件。
+			 * @param {String} arg.filterValue 过滤条件。
 			 * @param {boolean} #arg.processDefault=true 是否继续使用系统默认的过滤处理逻辑。
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
@@ -131,8 +131,8 @@
 			 * 当下拉框尝试对下拉中的某一个数据项进行过滤时触发的事件。
 			 * @param {Object} self 事件的发起者，即控件本身。
 			 * @param {Object} arg 事件参数。
-			 * @param {Object|dorado.Entity} arg.item 将被过滤的数据项。
-			 * @param {Object} arg.filterValue 过滤条件。
+			 * @param {Object|dorado.Entity} arg.entity 将被过滤的数据项。
+			 * @param {String} arg.filterValue 过滤条件。
 			 * @param {boolean} #arg.accept 该数据项是否通过过滤，即该数据项是否可被接受。
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
@@ -326,10 +326,11 @@
 		/**
 		 * 对下拉数据项进行过滤。
 		 * @protected
-		 * @param {Object} filterValue
+		 * @param {String} filterValue
 		 */
 		onFilterItems: function(filterValue) {
-			if (!this._items) return;
+			var items = getDropDownItems;
+			if (!items) return;
 			
 			var rowList = this.get("box.control");
 			if (!rowList) return;
@@ -340,33 +341,40 @@
 			};
 			this.fireEvent("onFilterItems", this, arg);
 			if (!arg.processDefault) {
-				rowList.set("items", this._items);
+				rowList.set("items", items);
 				return;
 			}
 			
 			filterValue += '';
-			var items;
+			var filteredItems;
 			if (filterValue && filterValue.length > 0) {
-				items = [];
-				filterValue = filterValue.toUpperCase();
-				var originItems = this._items, property = this._displayProperty || this._property, textLen = filterValue.length;
+				filteredItems = [];
+				var realFilterValue = filterValue.toUpperCase();
+				var originItems = this._items, property = this._displayProperty || this._property, textLen = realFilterValue.length;
 				
 				var self = this;
 				function filterEntity(entity) {
-					var s;
-					if (property) {
-						s = (entity instanceof dorado.Entity) ? entity.get(property) : entity[property];
-					} else {
-						s = entity;
+					var accept = false;
+					if (self.getListenerCount("onFilterItem")) {
+						var arg = {
+							item: entity,
+							filterValue: filterValue,
+							accept: accept
+						};
+						self.fireEvent("onFilterItem", self, arg);
+						accept = arg.accept;
 					}
-					var accept = (s && (s + '').toUpperCase().substring(0, textLen) == filterValue);
-					var arg = {
-						item: entity,
-						accept: accept
-					};
-					self.fireEvent("onFilterItem", self, arg);
-					accept = arg.accept;
-					if (accept) items.push(entity);
+					else {
+						var s;
+						if (property) {
+							s = (entity instanceof dorado.Entity) ? entity.get(property) : entity[property];
+						} else {
+							s = entity;
+						}
+						accept = (s && (s + '').toUpperCase().indexOf(realFilterValue) >= 0);
+					}
+					
+					if (accept) filteredItems.push(entity);
 				}
 				
 				if (originItems instanceof dorado.EntityList) {
@@ -379,9 +387,9 @@
 					});
 				}
 			} else {
-				items = this._items;
+				filteredItems = items;
 			}
-			rowList.set("items", items);
+			rowList.set("items", filteredItems);
 		},
 		
 		doOnEditorKeyPress: function(evt) {
