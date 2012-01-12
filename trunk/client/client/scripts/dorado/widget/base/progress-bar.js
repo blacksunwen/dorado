@@ -51,7 +51,7 @@ dorado.widget.ProgressBar = $extend(dorado.widget.Control, /** @scope dorado.wid
         /**
          * 该进度条限制文本的格式，进度使用{percent}来替换，默认值为{percent}%。
          * @attribute
-         * @default "${percent}%"
+         * @default "{percent}%"
          * @type String
          */
 		textPattern: {
