@@ -309,14 +309,10 @@ public final class JsonUtils {
 		}
 
 		if (value instanceof Number || value instanceof Boolean) {
-			if (value instanceof Float
-					&& (!Float.isInfinite((Float) value) || !Float
-							.isNaN((Float) value))) {
+			if (value instanceof Float && (Float.isNaN((Float) value))) {
 				return "undefined";
 			}
-			if (value instanceof Double
-					&& (!Double.isInfinite((Double) value) || !Double
-							.isNaN((Double) value))) {
+			if (value instanceof Double && (Double.isNaN((Double) value))) {
 				return "undefined";
 			}
 			return value.toString();
