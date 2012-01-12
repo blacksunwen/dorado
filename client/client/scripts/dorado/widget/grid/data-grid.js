@@ -56,9 +56,10 @@
 					page = item.page;
 				} else {
 					itemId = item;
-					page = entityList.getById(itemId).page;
+					item = entityList.getById(itemId);
+					if (item) page = item.page;
 				}
-				if (page.entityList != entityList) return -1;
+				if (!page || page.entityList != entityList) return -1;
 				
 				var index = 0, entry = page.first, found = false;
 				while (entry != null) {
