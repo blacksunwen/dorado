@@ -938,7 +938,7 @@
 			var dropDown = this, datePicker = dropDown.get("box.control");
 			if (datePicker) {
 				var date = editor.get("value");
-				if (date) datePicker.set("date", new Date(date.getTime()));
+				if (date && date instanceof Date) datePicker.set("date", new Date(date.getTime()));
 				if (datePicker._yearMonthPicker && datePicker._yearMonthPicker._opened) {
 					datePicker.hideYMPicker(false);
 				}

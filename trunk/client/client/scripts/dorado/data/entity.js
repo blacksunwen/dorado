@@ -297,14 +297,15 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		
 		_get : function(property, propertyDef, callback, loadMode) {
 
-			function transferAndReplaceIf(entity, propertyDef, value, replaceValue) {
+			function transferAndReplaceIf(entity, propertyDef, value, replaceValue) {				
+				if (value && typeof value == "object" && value.parent == entity) return value;
+				
 				var dataType = propertyDef.get("dataType");
 				if (dataType == null) return value;
 
-				var shouldTransfer = (!(value instanceof dorado.EntityList || value instanceof dorado.EntityList) &&
-					(dataType instanceof dorado.AggregationDataType || dataType instanceof dorado.EntityDataType));
-				if (shouldTransfer) value = dataType.parse(value, propertyDef.get("typeFormat"));
-				replaceValue = replaceValue && (shouldTransfer || value.parent !== entity);
+				var originValue = value; 
+				value = dataType.parse(originValue, propertyDef.get("typeFormat"));
+				replaceValue = replaceValue && (originValue !== value || (value && value.parent !== entity));
 
 				if ((value instanceof dorado.Entity || value instanceof dorado.EntityList) && value.parent != this) {
 					value.parent = entity;
@@ -445,10 +446,8 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 						value = pipe.get();
 					}
 				}
-			} else if (propertyDef) {
-				if (value && (typeof value == "object" || typeof value == "array")) {
-					value = transferAndReplaceIf(this, propertyDef, value, true);
-				}
+			} else if (propertyDef && value) {
+				value = transferAndReplaceIf(this, propertyDef, value, true);
 			}
 
 			if (propertyDef && propertyDef.getListenerCount("onGet")) {
