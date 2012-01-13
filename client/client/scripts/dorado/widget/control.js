@@ -859,15 +859,6 @@
 			} else if(this._attached) {
 				this.onDetachFromDocument();
 			}
-			
-			if(!this._ready) {
-				this.onReady();
-				
-				var view = this._view;
-				if (view && view != $topView && !view._ready && !view._rendering) {
-					view.onReady();
-				}
-			}
 		},
 		
 		/**
@@ -899,6 +890,15 @@
 					jQuery.each(this._innerControls, function(i, control) {
 						control.onAttachToDocument();
 					});
+				}
+			
+				if(!this._ready) {
+					this.onReady();
+					
+					var view = this._view;
+					if (view && view != $topView && !view._ready && !view._rendering) {
+						view.onReady();
+					}
 				}
 			}
 		},
