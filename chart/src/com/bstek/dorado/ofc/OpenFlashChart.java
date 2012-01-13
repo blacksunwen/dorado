@@ -13,7 +13,7 @@ import com.bstek.dorado.ofc.axis.YAxis;
 import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Control;
 
-@Widget(name = "OpenFlashCart", category = "Advance", dependsPackage = "chart")
+@Widget(name = "OpenFlashChart", category = "Advance", dependsPackage = "chart")
 @ClientObject(prototype = "dorado.widget.ofc.OpenFlashChart",
 		shortTypeName = "ofc.OpenFlashChart")
 public class OpenFlashChart extends Control {
