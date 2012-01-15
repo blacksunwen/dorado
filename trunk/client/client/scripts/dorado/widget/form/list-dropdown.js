@@ -329,7 +329,7 @@
 		 * @param {String} filterValue
 		 */
 		onFilterItems: function(filterValue) {
-			var items = getDropDownItems;
+			var items = this.getDropDownItems();
 			if (!items) return;
 			
 			var rowList = this.get("box.control");
