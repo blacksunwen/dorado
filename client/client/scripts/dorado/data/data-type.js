@@ -873,16 +873,21 @@
 			
 			if( data instanceof Date) return data;
 			if(isFinite(data)) return new Date(data);
-			var date = Date.parseDate(data, argument || $setting["common.defaultDateFormat"]);
-			if(date == null) {
-				var format = $setting["common.defaultTimeFormat"];
-				if(format) {
-					date = Date.parseDate(data, format);
-					if(date == null) {
-						var format = $setting["common.defaultDateTimeFormat"];
-						if (format) {
-							date = Date.parseDate(data, format);
-							if(date == null) data = new Date(data);
+			
+			var format = argument || $setting["common.defaultDateFormat"];
+			var date = Date.parseDate(data, "Y-m-d\\TH:i:s\\Z");
+			if (date == null) {
+				var date = Date.parseDate(data, format);
+				if (date == null) {
+					format = $setting["common.defaultTimeFormat"];
+					if (format) {
+						date = Date.parseDate(data, format);
+						if (date == null) {
+							var format = $setting["common.defaultDateTimeFormat"];
+							if (format) {
+								date = Date.parseDate(data, format);
+								if (date == null) data = new Date(data);
+							}
 						}
 					}
 				}

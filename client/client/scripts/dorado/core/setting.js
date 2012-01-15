@@ -27,8 +27,8 @@
 	 */
 	dorado.Setting = {
 		"common.defaultDateFormat": "Y-m-d",
-		"common.defaultTimeFormat": "H:i:s\\Z",
-		"common.defaultDateTimeFormat": "Y-m-d\\TH:i:s\\Z",
+		"common.defaultTimeFormat": "H:i:s",
+		"common.defaultDateTimeFormat": "Y-m-d H:i:s",
 
 		"common.defaultDisplayDateFormat": "Y-m-d",
 		"common.defaultDisplayTimeFormat": "H:i:s",
