@@ -121,7 +121,7 @@
 		},
 		
 		refreshDom: function(dom) {
-		
+					
 			function isSameGrid(oldGrid, newGrid) {
 				if (!oldGrid) {
 					return false;
@@ -251,7 +251,7 @@
 						}
 						region.width = w;
 						td.style.width = w + "px";
-						if (dorado.Browser.msie && dorado.Browser.version < '8') td.style.paddingTop = "0px";
+						if (dorado.Browser.msie && dorado.Browser.version < 8) td.style.paddingTop = "0px";
 						td.style.paddingBottom = (-region.autoHeightAdjust || 0) + "px";
 						
 						cellForRenders.push({
@@ -424,7 +424,7 @@
 			if (this._stretchWidth || this.dynaColCount > 0) {
 				table.style.width = (containerWidth + adjust) + "px";
 			}
-			if (dorado.Browser.msie && dorado.Browser.version < '8') {
+			if (dorado.Browser.msie && dorado.Browser.version < 8) {
 				table.style.margin = padding + "px";
 			} else {
 				table.style.padding = padding + "px";

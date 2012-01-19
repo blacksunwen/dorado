@@ -574,7 +574,7 @@
 		
 		createDom: function() {
 			var dom = $invokeSuper.call(this, arguments);
-			if (dorado.Browser.msie && dorado.Browser.version >= '8') dom.hideFocus = true;
+			if (dorado.Browser.msie && dorado.Browser.version >= 8) dom.hideFocus = true;
 			$fly(dom).bind("scroll", $scopify(this, this.onScroll));
 			return dom;
 		},

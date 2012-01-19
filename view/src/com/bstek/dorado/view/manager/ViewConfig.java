@@ -29,6 +29,7 @@ import com.bstek.dorado.view.ViewState;
  * @since 2011-7-11
  */
 @XmlNode(
+		definitionType = "com.bstek.dorado.view.config.definition.ViewConfigDefinition",
 		properties = { @XmlProperty(propertyName = "template", ignored = true) },
 		subNodes = {
 				@XmlSubNode(nodeName = "Model",

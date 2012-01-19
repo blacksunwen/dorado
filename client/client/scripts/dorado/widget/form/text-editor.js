@@ -226,6 +226,8 @@
 			var self = this;
 			jQuery(dom).addClassOnHover(this._className + "-hover", null, function() {
 				return !self._realReadOnly;
+			}).mousedown(function(evt) {
+				evt.stopPropagation();
 			});
 			dom.appendChild(textDom);
 			
@@ -372,13 +374,16 @@
 		},
 		
 		doOnFocus: function() {
-			var readOnly = this._readOnly || this._readOnly2;
-			this._textDom.readOnly = (readOnly || !this._editable); // 避免在IE8中出现的DIV异常滚动的BUG
 			this.resetReadOnly();
-			if (readOnly) return;
-			
+			if (dorado.Browser.msie && dorado.Browser.version < 9 && !this._editable != this._realReadOnly) {
+				this._textDom.readOnly = !this._editable; // 避免在IE8中出现的DIV异常滚动的BUG
+			}
+			if (this._realReadOnly) return;
+
 			this._focusTime = new Date();
 			this._lastPost = this._lastObserve = this.doGetText();
+			
+			if (this._editObserverId) clearInterval(this._editObserverId);
 			this._editObserverId = $setInterval(this, function() {
 				var text = this.get("text");
 				if (this._lastObserve != text) {
@@ -399,9 +404,12 @@
 		
 		doOnBlur: function() {
 			this.resetReadOnly();
+			if (dorado.Browser.msie && dorado.Browser.version < 9 && this._textDom.readOnly) {
+				this._textDom.readOnly = false; // 避免在IE8中出现的DIV异常滚动的BUG
+			}
 			if (this._realReadOnly) return;
 			
-			clearInterval(this._editObserverId);
+			if (this._editObserverId) clearInterval(this._editObserverId);
 			delete this._editObserverId;
 			this.post();
 		},
@@ -742,7 +750,7 @@
 		 * @protected
 		 * @parem text {String} 编辑框中的文本。
 		 */
-		doSetText: function(text) {
+		doSetText: function(text) {			
 			this._useBlankText = (!this._focused && text == '' && this._blankText);
 			if (this._textDom) {
 				if (this._useBlankText) text = this._blankText;
@@ -817,8 +825,11 @@
 		doOnFocus: function() {
 			$invokeSuper.call(this);
 			if (this._selectTextOnFocus) {
-				$setTimeout(this, function() {
-					this._textDom.select();
+				var self = this;
+				setTimeout(function() {
+//					if (self.get("focused") && self._editorFocused) {
+						self._textDom.select();
+//					}
 				}, 0);
 			}
 		},
@@ -1015,8 +1026,8 @@
 			var textDom = document.createElement("INPUT");
 			textDom.className = "editor";
 			if (this._password) textDom.type = "password";
-			if (!(dorado.Browser.msie && dorado.Browser.version < '7')) textDom.style.padding = 0;
-			if (dorado.Browser.msie && dorado.Browser.version > '7') {
+			if (!(dorado.Browser.msie && dorado.Browser.version < 7)) textDom.style.padding = 0;
+			if (dorado.Browser.msie && dorado.Browser.version > 7) {
 				textDom.style.top = 0;
 				textDom.style.position = "absolute";
 			}
@@ -1053,17 +1064,16 @@
 				}
 			}
 			
-			$invokeSuper.call(this, arguments);
+			$invokeSuper.call(this);
 		},
 		
 		doOnBlur: function() {
 			if (this._realReadOnly) {
-				$invokeSuper.call(this, arguments);
+				$invokeSuper.call(this);
 			} else {
-				this._textDom.readOnly = false; // 避免在IE8中出现的DIV异常滚动的BUG
 				this._text = this.doGetText();
 				try {
-					$invokeSuper.call(this, arguments);
+					$invokeSuper.call(this);
 				}
 				finally {
 					var text, dataType = this.get("dataType");

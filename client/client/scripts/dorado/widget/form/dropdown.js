@@ -254,7 +254,7 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 			dropDown : this,
 			hideAnimateType : "none"
 		};
-		if (dorado.Browser.msie && dorado.Browser.version < '9') {
+		if (dorado.Browser.msie && dorado.Browser.version < 9) {
 			config.showAnimateType =  "none";
 		}
 		return new dorado.widget.DropDownBox(config);
@@ -574,7 +574,7 @@ dorado.widget.DropDownBox = $extend([ dorado.widget.Control, dorado.widget.Float
 				}
 			}
 		};
-		if (dorado.Browser.msie && dorado.Browser.version < '7') {
+		if (dorado.Browser.msie && dorado.Browser.version < 7) {
 			json.content.style.width = "100%";
 			json.content.style.height = "100%";
 		}

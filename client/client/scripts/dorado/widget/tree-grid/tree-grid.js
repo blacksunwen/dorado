@@ -145,7 +145,7 @@
 		
 		resize: function() {
 			var dom = this.getDom(), control = this.getEditorControl();
-			var ie6 = (dorado.Browser.msie && dorado.Browser.version < '7');
+			var ie6 = (dorado.Browser.msie && dorado.Browser.version < 7);
 			if (control) {
 				if (ie6) control.getDom().style.display = "none";
 			}

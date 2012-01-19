@@ -1212,7 +1212,7 @@
 				}
 				return wrapper;
 			}
-
+			
 			$invokeSuper.call(this, arguments);
 
 			if (!this._columns.size) {
@@ -1352,7 +1352,7 @@
 				fixedInnerGrid._ignoreItemTimestamp = ignoreItemTimestamp;
 				fixedInnerGrid.refreshDom(innerGrid.getDom());
 
-				var scrollLeft = ((dorado.Browser.msie && dorado.Browser.version < '7') ? fixedInnerGridWrapper.firstChild : fixedInnerGridWrapper).offsetWidth;
+				var scrollLeft = ((dorado.Browser.msie && dorado.Browser.version < 7) ? fixedInnerGridWrapper.firstChild : fixedInnerGridWrapper).offsetWidth;
 				if (scrollLeft >= divScroll.clientWidth) {
 					with (fixedInnerGridWrapper.style) {
 						overflowX = "hidden";
@@ -2385,7 +2385,7 @@
 				var panel = this.getFloatFilterPanel(), filterBar = this._innerGrid._filterBarRow;
 				var $panel = $fly(panel);
 				$panel.hide().top(filterBar.offsetTop + filterBar.offsetHeight - 1);
-				if (dorado.Browser.msie && dorado.Browser.version < '7') {
+				if (dorado.Browser.msie && dorado.Browser.version < 7) {
 					$panel.show();
 				}
 				else {
@@ -2397,7 +2397,7 @@
 		hideFilterPanel: function() {
 			dorado.Toolkits.cancelDelayedAction(this, "$filterPanelTimerId");
 			var panel = this.getFloatFilterPanel(), filterBar = this._innerGrid._filterBarRow;
-			if (dorado.Browser.msie && dorado.Browser.version < '7') {
+			if (dorado.Browser.msie && dorado.Browser.version < 7) {
 				$fly(panel).hide();
 			}
 			else {
@@ -2670,7 +2670,7 @@
 		},
 
 		refreshDom: function(dom) {
-			if (!this._columnsInfo) return;
+			if (!this._columnsInfo) return;			
 			dorado.widget.Control.prototype.refreshDom.apply(this, arguments);
 
 			this.refreshFrameHeader();
@@ -3073,7 +3073,7 @@
 						var row = this._itemDomMap[unmatched[i]];
 						if (row) {
 							var h = rows[unmatched[i]];
-							if (dorado.Browser.msie && dorado.Browser.version >= '8') {
+							if (dorado.Browser.msie && dorado.Browser.version >= 8) {
 								row.style.height = h + "px";
 								$fly(row).toggleClass("fix-row-bug");
 							} else if (dorado.Browser.chrome || dorado.Browser.safari) {
@@ -3132,7 +3132,7 @@
 			var row = this._itemDomMap[itemId];
 			if (!row) return;
 			var h = this.grid._rowHeightInfos.rows[itemId];
-			if (dorado.Browser.msie && dorado.Browser.version >= '8') {
+			if (dorado.Browser.msie && dorado.Browser.version >= 8) {
 				row.style.height = h + "px";
 				$fly(row).toggleClass("fix-row-bug");
 			} else if (dorado.Browser.chrome || dorado.Browser.safari) {

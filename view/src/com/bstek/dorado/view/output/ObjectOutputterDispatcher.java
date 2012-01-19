@@ -9,8 +9,17 @@ import com.bstek.dorado.common.Ignorable;
  * @since 2011-12-4
  */
 public class ObjectOutputterDispatcher implements Outputter, PropertyOutputter {
+	private boolean escapeable = true;
 	private ClientOutputHelper clientOutputHelper;
 	private Outputter defaultObjectOutputter;
+
+	public boolean isEscapeable() {
+		return escapeable;
+	}
+
+	public void setEscapeable(boolean escapeable) {
+		this.escapeable = escapeable;
+	}
 
 	public void setClientOutputHelper(ClientOutputHelper clientOutputHelper) {
 		this.clientOutputHelper = clientOutputHelper;
@@ -30,7 +39,12 @@ public class ObjectOutputterDispatcher implements Outputter, PropertyOutputter {
 			JsonBuilder json = context.getJsonBuilder();
 			if (object instanceof Collection<?>) {
 				Collection<?> collection = (Collection<?>) object;
-				json.escapeableArray();
+				if (escapeable) {
+					json.escapeableArray();
+				} else {
+					json.array();
+				}
+
 				for (Object element : collection) {
 					if (!(element instanceof Ignorable)
 							|| !((Ignorable) element).isIgnored()) {

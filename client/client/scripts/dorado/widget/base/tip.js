@@ -876,11 +876,6 @@
 			}
 		},
 
-		doShow: function() {
-			$invokeSuper.call(this, arguments);
-			//this.refresh();
-		},
-
 		hide: function() {
 			var tip = this;
 			if (tip._showTimer) {

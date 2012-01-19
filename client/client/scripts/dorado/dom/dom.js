@@ -412,7 +412,7 @@
 			if (!content) return;
 			
 			container.style.overflowX = "auto";
-			container.style.overflowY = (dorado.Browser.version < '7') ? 'scroll' : "";
+			container.style.overflowY = (dorado.Browser.version < 7) ? 'scroll' : "";
 			
 			var offsetWidth = content.offsetWidth;
 			if (offsetWidth > container.clientWidth) {

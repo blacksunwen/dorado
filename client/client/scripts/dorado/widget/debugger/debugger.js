@@ -157,16 +157,17 @@
 		}
 	};
 
-	$(document).ready(function() {
+	jQuery(document).ready(function() {
 		var showOnVisible = getCookie(DEBUGGER_SHOW_ON_VISIBLE_KEY);
 		if (showOnVisible) {
 			dorado.Debugger.show();
 		}
+		
 		jQuery(document).bind("keydown", "f2", function() {
 			dorado.Debugger.show();
-		});
-		jQuery(document).bind("keydown", "ctrl+f12", function() {
+		}).bind("keydown", "ctrl+f12", function() {
 			dorado.Debugger.show();
 		});
 	});
+
 })();

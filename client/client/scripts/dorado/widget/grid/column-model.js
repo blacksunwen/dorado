@@ -428,7 +428,7 @@
 			var grid = this._grid;
 			if (!grid || !grid._rendered) return;
 			var def = this.ATTRIBUTES[attr];
-			if ((this._visible || attr == "visible") && grid._ignoreRefresh < 1 && def && !def.skipRefresh) {
+			if (grid._rendered && grid._ready && (this._visible || attr == "visible") && grid._ignoreRefresh < 1 && def && !def.skipRefresh) {
 				grid._ignoreItemTimestamp = true;
 				dorado.Toolkits.setDelayedAction(grid, "$refreshDelayTimerId", grid.refresh, 50);
 			}
@@ -552,7 +552,7 @@
 					oldHeight = row.clientHeight;
 				}
 				
-				if (dorado.Browser.msie && dorado.Browser.version >= '8') {
+				if (dorado.Browser.msie && dorado.Browser.version >= 8) {
 					row.style.height = '';
 					$fly(row).addClass("fix-valign-bug");
 				} else if (dorado.Browser.chrome || dorado.Browser.safari) {
@@ -632,7 +632,7 @@
 									grid._fixedInnerGrid.syncroRowHeight(itemId);
 								}
 							} else if (fh > 0) {
-								if (dorado.Browser.msie && dorado.Browser.version >= '8') {
+								if (dorado.Browser.msie && dorado.Browser.version >= 8) {
 									row.style.height = fh + "px";
 									$fly(row).toggleClass("fix-valign-bug");
 								} else if (dorado.Browser.chrome || dorado.Browser.safari) {
@@ -1309,7 +1309,7 @@
 		
 		resize: function() {
 			var dom = this.getDom(), control = this.getEditorControl();
-			var ie6 = (dorado.Browser.msie && dorado.Browser.version < '7');
+			var ie6 = (dorado.Browser.msie && dorado.Browser.version < 7);
 			if (control) {
 				if (ie6) control.getDom().style.display = "none";
 			}
@@ -1765,7 +1765,9 @@
 			 * @type String
 			 * @attribute
 			 */
-			sortState: {},
+			sortState: {
+				skipRefresh: true
+			},
 			
 			/**
 			 * 是否支持文本换行。

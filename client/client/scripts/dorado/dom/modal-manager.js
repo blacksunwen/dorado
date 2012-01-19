@@ -17,7 +17,7 @@ dorado.ModalManager = {
         var manager = dorado.ModalManager, maskDom = manager._dom;
         if (!maskDom) {
             maskDom = manager._dom = document.createElement("div");
-            $fly(maskDom).mousedown(function(event) {
+            $fly(maskDom).mousedown(function(evt) {
                 var repeat = function(fn, times, delay) {
                     var first = true;
                     return function() {
@@ -35,7 +35,7 @@ dorado.ModalManager = {
                         }
                     };
                 };
-                if (event.target == maskDom) {
+                if (evt.target == maskDom) {
                     var stack = manager._controlStack, stackEl = stack[stack.length - 1], dom;
                     if (stackEl)
                         dom = stackEl.dom;
@@ -49,7 +49,22 @@ dorado.ModalManager = {
                         }
                     }
                 }
-            });
+				
+				evt.stopPropagation();
+				evt.preventDefault();
+				evt.returnValue = false;
+				return false;
+            }).mouseenter(function(evt) {
+				evt.stopPropagation();
+				evt.preventDefault();
+				evt.returnValue = false;
+				return false;
+			}).mouseleave(function(evt) {
+				evt.stopPropagation();
+				evt.preventDefault();
+				evt.returnValue = false;
+				return false;
+			});
             $fly(document.body).append(maskDom);
         }
         manager.resizeMask();
@@ -91,7 +106,7 @@ dorado.ModalManager = {
             maskClass = maskClass || "d-modal-mask";
             $fly(maskDom).css({
                 display : ""
-            }).attr("className", "i-modal-mask " + maskClass).bringToFront();
+            }).attr("class", "i-modal-mask " + maskClass).bringToFront();
 
             stack.push({
                 dom: dom,
@@ -133,7 +148,7 @@ dorado.ModalManager = {
                     target = stack[stack.length - 1];
                     $fly(maskDom).css({
                         zIndex : target.zIndex
-                    }).attr("className", "i-modal-mask " + target.maskClass);
+                    }).attr("class", "i-modal-mask " + target.maskClass);
                 }
             }
         }

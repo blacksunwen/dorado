@@ -115,7 +115,7 @@
 			var domCache = this.domCache || {}, newDomCache = this.domCache = {};
 			
 			var padding = parseInt(this._padding) || 0, regionPadding = this._regionPadding || 0;
-			if (dorado.Browser.msie && dorado.Browser.version < '8') {
+			if (dorado.Browser.msie && dorado.Browser.version < 8) {
 				table.style.margin = padding + "px";
 			} else {
 				table.style.padding = padding + "px";
@@ -324,7 +324,7 @@
 			var domCache = this.domCache || {}, newDomCache = this.domCache = {};
 			
 			var padding = parseInt(this._padding) || 0, regionPadding = this._regionPadding || 0;
-			if (dorado.Browser.msie && dorado.Browser.version < '8') {
+			if (dorado.Browser.msie && dorado.Browser.version < 8) {
 				table.style.margin = padding + "px";
 			} else {
 				table.style.padding = padding + "px";

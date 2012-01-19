@@ -505,7 +505,7 @@
 	 */
 	var getSuperClasses = window.$getSuperClasses = function() {
 		var fn = getSuperClasses.caller, superClass;
-		if (dorado.Browser.opera && dorado.Browser.version < "10") fn = fn.caller;
+		if (dorado.Browser.opera && dorado.Browser.version < 10) fn = fn.caller;
 		if (fn.caller && fn.caller._doradoAdapter) fn = fn.caller;
 		
 		if (fn.declaringClass) superClasses = fn.declaringClass.superClasses;
@@ -530,7 +530,7 @@
 	 */
 	var invokeSuper = window.$invokeSuper = function(args) {			
 		var fn = invokeSuper.caller;
-		if (dorado.Browser.opera && dorado.Browser.version < "10") fn = fn.caller;
+		if (dorado.Browser.opera && dorado.Browser.version < 10) fn = fn.caller;
 		if (fn.caller && fn.caller._doradoAdapter) fn = fn.caller;
 		
 		if (fn.declaringClass) {

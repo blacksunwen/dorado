@@ -209,9 +209,13 @@ dorado.util.TaskGroupPanel = $extend(dorado.RenderableElement, { /** @scope dora
 		
 		panel._doms = doms;
 		
-		$fly(dom).addClass(taskGroupConfig.className).shadow({
-			mode: "sides"
-		});
+		var $dom = $fly(dom);
+		$dom.addClass(taskGroupConfig.className);
+		if (!dorado.Browser.msie || dorado.Browser.version >= 9) {
+			$dom.shadow({
+				mode: "sides"
+			});
+		}
 		
 		taskGroupConfig.caption = taskGroupConfig.caption ? taskGroupConfig.caption : $resource("dorado.core.DefaultTaskCountInfo");
 		taskGroupConfig.executeTimeCaption = taskGroupConfig.executeTimeCaption ? taskGroupConfig.executeTimeCaption : $resource("dorado.core.DefaultTaskExecuteTime");

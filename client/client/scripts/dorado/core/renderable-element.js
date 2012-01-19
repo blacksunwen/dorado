@@ -213,7 +213,7 @@ dorado.RenderableElement = $extend(dorado.AttributeSupport, /** @scope dorado.Re
 	 */
 	getDom: function() {
 		if (!this._dom) {
-			this._dom = this.createDom();
+			this._dom = this.createDom();			
 			var $dom = $fly(this._dom);
 			if (this._inherentClassName) {
 				$dom.addClass(this._inherentClassName);
