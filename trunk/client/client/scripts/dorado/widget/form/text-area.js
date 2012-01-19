@@ -29,7 +29,7 @@
 		createTextDom: function() {
 			var textDom = document.createElement("TEXTAREA");
 			textDom.className = "textarea";
-			if (dorado.Browser.msie && dorado.Browser.version < '8') {
+			if (dorado.Browser.msie && dorado.Browser.version < 8) {
 				this.doOnAttachToDocument = this.doOnResize;
 			}
 			return textDom;

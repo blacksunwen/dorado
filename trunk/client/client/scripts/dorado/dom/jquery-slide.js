@@ -1,5 +1,9 @@
 (function() {
+	// Commented by Benny
+	// 下面这段扩展在jQuery 1.7.1下似乎导致动画不能播放
+	
 	//fix jquery bug.jQuery不能保证动画队列中的前一个complete一定会在下一个动画的step之前执行。
+	/*
 	jQuery.extend({
 		speed: function( speed, easing, fn ) {
 			var opt = speed && typeof speed === "object" ? speed : {
@@ -26,6 +30,7 @@
 			return opt;
 		}
 	});
+	*/
 
 	jQuery.fn.region = function(){
 		var self = this, element = self[0];

@@ -65,9 +65,10 @@ dorado.widget.AbstractList = $extend(dorado.widget.Control, /** @scope dorado.wi
 		/**
 		 * 表格中的当前选中项。
 		 * @type Object|Object[]
-		 * @attribute
+		 * @attribute skipRefresh
 		 */
 		selection: {
+			skipRefresh: true,
 			getter: function() {
 				if (this._selectionMode == "multiRows" && this._selection) {
 					return [];

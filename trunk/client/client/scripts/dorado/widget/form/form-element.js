@@ -812,7 +812,7 @@
 			return required;
 		},
 		
-		refreshDom: function(dom) {
+		refreshDom: function(dom) {			
 			var height = this._height || this._realHeight;
 			$invokeSuper.call(this, arguments);
 			

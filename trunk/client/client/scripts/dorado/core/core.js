@@ -34,7 +34,7 @@ var dorado = {
 	/**
 	 * @name dorado.Browser.version
 	 * @property
-	 * @type String
+	 * @type Number
 	 * @description 返回浏览器的版本号。
 	 */
 	/**
@@ -102,7 +102,7 @@ if (dorado.Browser.webkit) {
 	dorado.Browser.chrome = /chrome/.test(ua);
 	if (dorado.Browser.chrome) {
 		var match = /(chrome)[ \/]([\w.]+)/.exec(ua);
-		dorado.Browser.version = match[2];
+		dorado.Browser.version = parseInt(match[2]);
 	}
 }
 
@@ -184,9 +184,9 @@ dorado.Core = {
 	 * }, 1000);
 	 */
 	setTimeout: function(scope, fn, timeMillis) {
-		if (dorado.Browser.mozilla && dorado.Browser.version == '8') {
+		if (dorado.Browser.mozilla && dorado.Browser.version >= 8) {
 			// FF8莫名其妙的向setTimeout、setInterval的闭包函数中传入timerID
-			return setTimeout(function() {
+			return window.setTimeout(function() {
 				dorado.Core.scopify(scope, fn);
 			}, timeMillis);
 		} else {
@@ -205,7 +205,7 @@ dorado.Core = {
 	 * @see $setInterval
 	 */
 	setInterval: function(scope, fn, timeMillis) {
-		if (dorado.Browser.mozilla && dorado.Browser.version == '8') {
+		if (dorado.Browser.mozilla && dorado.Browser.version >= 8) {
 			// FF8莫名其妙的向setTimeout、setInterval的闭包函数中传入timerID
 			return setInterval(function() {
 				dorado.Core.scopify(scope, fn);
@@ -259,7 +259,7 @@ dorado.Core = {
 	 * @example
 	 * var div = $create("DIV"); // 相当于document.createElement("DIV")
 	 */
-	window.$create = (dorado.Browser.msie && dorado.Browser.version < '9') ? document.createElement : function(arg) {
+	window.$create = (dorado.Browser.msie && dorado.Browser.version < 9) ? document.createElement : function(arg) {
 		return document.createElement(arg);
 	};
 	

@@ -471,7 +471,8 @@
 				$setTimeout(this, function() {
 					var container = renderTo || renderOn;
 					if( typeof container == "string") container = jQuery(container)[0];
-					if(container && container.nodeType) {(renderTo) ? this.render(container) : this.replace(container);
+					if(container && container.nodeType) {
+						(renderTo) ? this.render(container) : this.replace(container);
 					}
 				}, 0);
 			}
@@ -504,12 +505,13 @@
 
 			var dom = this._dom;
 			if(dom) {
+				delete this._dom;
 				try {
 					dom.doradoUniqueId = null;
 				} catch (e) {
 					// do nothing
 				}
-				if(!isClosed) $fly(dom).remove();
+				$fly(dom).unbind().remove();
 			}
 			$invokeSuper.call(this);
 		},
@@ -519,7 +521,7 @@
 			if(!this._rendered) return;
 			var def = this.ATTRIBUTES[attr];
 			if(!this._duringRefreshDom && (this._visible || attr == "visible") && this._ignoreRefresh < 1 && def && !def.skipRefresh) {
-				dorado.Toolkits.setDelayedAction(this, "$refreshDelayTimerId", this.refresh, 50);
+				this.refresh(true);
 			}
 		},
 		
@@ -571,7 +573,7 @@
 				return;
 			}
 			this._shouldRefreshOnVisible = false;
-
+			
 			if(delay) {
 				dorado.Toolkits.setDelayedAction(this, "$refreshDelayTimerId", function() {
 					this._duringRefreshDom = true;
@@ -731,6 +733,10 @@
 		getDom : function() {
 			if(!this._dom) {
 				var dom = this._dom = this.createDom(), $dom = $fly(this._dom);
+				
+				if (!dom.id) {
+					dom.id = "d_" + (this._id || dorado.Core.newId());
+				}
 				
 				var className = (this._inherentClassName) ? this._inherentClassName : "";
 				if (this._className) className += (" " + this._className);
@@ -1057,11 +1063,13 @@
 		/**
 		 * 使控件获得控制焦点。
 		 */
-		setFocus: function() {
+		setFocus: function() {			
 			dorado._LAST_FOCUS_CONTROL = this;
 			var self = this;
 			setTimeout(function() {
-				if (dorado._LAST_FOCUS_CONTROL == self) self.doSetFocus();
+				if (dorado._LAST_FOCUS_CONTROL === self && dorado.widget.focusedControl.peek() !== self) {
+					self.doSetFocus();
+				}
 				dorado._LAST_FOCUS_CONTROL = null;
 			}, 0);
 		},
@@ -1200,7 +1208,8 @@
 	dorado.widget.focusedControl = [];
 
 	dorado.widget.onControlGainedFocus = function(control) {
-		if(dorado.widget.focusedControl && dorado.widget.focusedControl.peek() == control) return;
+		if (dorado.widget.focusedControl.peek() === control) return;
+		
 		var ov = dorado.widget.focusedControl;
 		var nv = [];
 		if(control) {
@@ -1228,26 +1237,23 @@
 		}
 	};
 
-	dorado.widget.onControlLostFocus = function(control) {
-		if(!control.get("focused")) return;
-		do {
-			control = control.get("focusParent");
-		} while (control && !control.isFocusable());
-		dorado.widget.onControlGainedFocus(control);
-	};
-
 	dorado.widget.setFocusedControl = function(control) {
-		if(dorado.widget.focusedControl && dorado.widget.focusedControl.peek() == control) return;
+		if(dorado.widget.focusedControl.peek() === control) return;
+		
 		while(control && !control.isFocusable()) {
 			control = control.get("focusParent");
 		}
 		if(control) {
 			control.setFocus();
-			dorado.widget.onControlGainedFocus(control);
 		} else {
-			if(document.body)
-				document.body.focus();
-			dorado.widget.onControlGainedFocus(null);
+			if (document.body) {
+				setTimeout(function() {
+					if (dorado._LAST_FOCUS_CONTROL === null) {
+						document.body.focus();
+						dorado.widget.onControlGainedFocus(null);
+					}
+				}, 0);
+			}
 		}
 	};
 
@@ -1425,7 +1431,7 @@
 				if(parentFrames) {
 					var frame;
 					parentFrames.each(function() {
-						if(this.contentWindow == win) {	// IE8下使用===判断会失败
+						if(this.contentWindow == win) {		// IE8下使用===判断会失败
 							frame = this;
 							return false;
 						}

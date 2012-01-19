@@ -4,7 +4,7 @@
     function initBrowserButton(button, id, action, pathEditor, callback) {
         var dom = button._dom, parentNode = dom.parentNode, wrapNode = document.createElement("div");
         $fly(wrapNode).addClass("browse-button-wrap");
-        if (dorado.Browser.msie && parseInt(dorado.Browser.version, 10) < 9) {
+        if (dorado.Browser.msie && dorado.Browser.version < 9) {
             hiddenFile = document.createElement("<input type='file' name='filename' class='hidden-file'/>");
         } else {
             hiddenFile = document.createElement("input");
@@ -14,7 +14,7 @@
         }
 
         var form, hiddenFile, iframe, iframeName = id + "UploadIframe";
-        if (dorado.Browser.msie && parseInt(dorado.Browser.version, 10) < 9) {
+        if (dorado.Browser.msie && dorado.Browser.version < 9) {
             iframe = document.createElement("<iframe name='" + iframeName + "'></iframe>")
         } else {
             iframe = document.createElement("iframe");
@@ -22,7 +22,7 @@
         }
         iframe.style.display = "none";
 
-        if (dorado.Browser.msie && parseInt(dorado.Browser.version, 10) < 9) {
+        if (dorado.Browser.msie && dorado.Browser.version < 9) {
             form = document.createElement("<form name ='" + id + "UploadForm' action='" + action + "' enctype='multipart/form-data' method='post' target='" + iframeName + "'></form>");
         } else {
             form = document.createElement("form");

@@ -46,7 +46,11 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 	<bean id="dorado.containerOutputter" parent="dorado.controlOutputter" class="com.bstek.dorado.view.widget.ContainerOutputter" />
 
 	<bean id="dorado.viewOutputter" parent="dorado.containerOutputter" class="com.bstek.dorado.view.ViewOutputter">
-		<property name="childrenComponentOutputter" ref="dorado.componentOutputterDispatcher" />
+		<property name="childrenComponentOutputter">
+			<bean parent="dorado.componentOutputterDispatcher">
+				<property name="escapeable" value="false" />
+			</bean>
+		</property>
 		<property name="includeDataTypesOutputter" ref="dorado.includeDataTypesOutputter" />
 	</bean>
 	<bean id="dorado.topViewOutputter" class="com.bstek.dorado.view.TopViewOutputter">

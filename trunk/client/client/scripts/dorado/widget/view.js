@@ -398,8 +398,8 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			if (control == null) {
 				dorado.widget.setFocusedControl(null);
 			}
-			else if (!control._isFocused) {
-				control.setFocus();
+			else {
+				dorado.widget.setFocusedControl(control);
 			}
 		}).keydown(function(evt) {
 			var b, c = dorado.widget.getFocusedControl();
@@ -448,13 +448,14 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			cls = "d-opera";
 		}
 		if (v) {
-			var i = v.indexOf('.');
-			cls += " " + cls + ((i > 0) ? v.substring(0, i) : v);
+			cls += " " + cls + v;
 		}
 		
 		$fly(document.body).addClass(cls).focusin(function(evt) {
 			var control = getControlByElement(evt.target);
-			if (control) dorado.widget.onControlGainedFocus(control);
+			if (control) {
+				dorado.widget.onControlGainedFocus(control);
+			}
 		});
 		
 		setTimeout(function() {
