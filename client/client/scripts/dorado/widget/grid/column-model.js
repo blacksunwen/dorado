@@ -398,6 +398,7 @@
 			 * 当系统渲染列头时触发的事件。
 			 * @param {Object} self 事件的发起者，即列本身。
 			 * @param {Object} arg 事件参数。
+			 * @param {dorado.widget.grid.Column} arg.column 表格列。
 			 * @param {HTMLElement} arg.dom 列头对应的DOM对象。
 			 * @param {boolean} #arg.processDefault 是否在事件结束后继续使用系统默认的渲染逻辑。
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
@@ -409,6 +410,8 @@
 			 * 当用户点击列头时触发的事件。
 			 * @param {Object} self 事件的发起者，即组件本身。
 			 * @param {Object} arg 事件参数。
+			 * @param {dorado.widget.grid.Column} arg.column 表格列。
+			 * @param {boolean} #arg.processDefault=true 是否在事件结束后继续执行系统默认的逻辑，即排序逻辑。
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
 			 */
