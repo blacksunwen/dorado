@@ -29,7 +29,13 @@ var dorado = {
 	 * @class 用于获取当前浏览器信息的静态对象。
 	 * @static
 	 */
-	Browser: jQuery.browser,
+	Browser: (function() {
+		var browser = {};
+		for (var p in jQuery.browser) {
+			if (jQuery.browser.hasOwnProperty(p)) browser[p] = jQuery.browser[p];
+		}
+		return browser;
+	})(),
 	
 	/**
 	 * @name dorado.Browser.version
@@ -42,6 +48,12 @@ var dorado = {
 	 * @property
 	 * @type boolean
 	 * @description 返回是否Safari浏览器。
+	 */
+	/**
+	 * @name dorado.Browser.chrome
+	 * @property
+	 * @type boolean
+	 * @description 返回是否Chrome浏览器。
 	 */
 	/**
 	 * @name dorado.Browser.opera
@@ -60,6 +72,12 @@ var dorado = {
 	 * @property
 	 * @type boolean
 	 * @description 返回是否Mozilla浏览器。
+	 */
+	/**
+	 * @name dorado.Browser.webkit
+	 * @property
+	 * @type boolean
+	 * @description 返回是否Webkit浏览器。
 	 */
 	// =====
 	
@@ -95,10 +113,6 @@ var dorado = {
 if (dorado.Browser.webkit) {
 	var ua = navigator.userAgent.toLowerCase();
 	
-	/**
-	 * 返回是否Chrome浏览器。
-	 * @type boolean
-	 */
 	dorado.Browser.chrome = /chrome/.test(ua);
 	if (dorado.Browser.chrome) {
 		var match = /(chrome)[ \/]([\w.]+)/.exec(ua);
