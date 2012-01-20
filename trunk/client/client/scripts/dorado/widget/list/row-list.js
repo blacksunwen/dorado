@@ -784,15 +784,16 @@
 			var refObject = draggingInfo.get("refObject");
 			var sourceControl = draggingInfo.get("sourceControl");
 			if (insertMode && refObject || this._dropMode == "insertItems" || this._dropMode == "onOrInsertItems" || this._dropMode == "onAnyWhere") {
-				var sourceList = getItemList(sourceControl, object);
+				var sourceList = getItemList(sourceControl, object), oldState = object.state;
 				if (sourceList) {
 					sourceList.remove(object, true);
 					if (!dorado.Object.isInstanceOf(sourceControl, dorado.widget.DataControl)) {
 						sourceControl.refresh();
 					}
 				}
-				if (object instanceof dorado.Entity && object.state != dorado.Entity.STATE_NEW) {
-					object.setState(dorado.Entity.STATE_MOVED);
+
+				if (object instanceof dorado.Entity) {
+					object.setState((oldState == dorado.Entity.STATE_NEW) ? dorado.Entity.STATE_NEW : dorado.Entity.STATE_MOVED);
 				}
 				
 				var targetList = this.get("itemModel").getItems(), highlight;
