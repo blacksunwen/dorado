@@ -404,7 +404,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 									this._data[property] = dataPipeWrapper = {
 										isDataPipeWrapper : true,
 										pipe : pipe
-									};			
+									};	
 									if (isNewPipe) this.sendMessage(dorado.Entity._MESSAGE_LOADING_START, eventArg);
 									if (callback) return;
 								} else {
@@ -1027,8 +1027,9 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			var child = null;
 			if (this.dataType) {
 				var propertyDef = this._getPropertyDef(property);
-				if (!propertyDef)
+				if (!propertyDef) {
 					throw new dorado.ResourceException("dorado.data.UnknownProperty", property);
+				}
 				var elementDataType = propertyDef.get("dataType"), aggregationDataType;
 				if (elementDataType && elementDataType instanceof dorado.AggregationDataType) {
 					aggregationDataType = elementDataType;

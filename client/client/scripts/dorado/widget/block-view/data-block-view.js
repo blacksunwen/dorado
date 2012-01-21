@@ -145,7 +145,7 @@ dorado.widget.DataBlockView = $extend([dorado.widget.AbstractBlockView, dorado.w
 				return true;
 				
 			case dorado.widget.DataSet.MESSAGE_CURRENT_CHANGED:
-				return (arg.entityList == items || dorado.DataUtil.isOwnerOf(items, arg.entityList));
+				return (!items || arg.entityList == items || dorado.DataUtil.isOwnerOf(items, arg.entityList));
 				
 			case dorado.widget.DataSet.MESSAGE_DATA_CHANGED:
 			case dorado.widget.DataSet.MESSAGE_REFRESH_ENTITY:

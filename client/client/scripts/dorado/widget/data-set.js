@@ -389,11 +389,21 @@
 
 					var key = (path || "$EMPTY") + '~' + optionsCode;
 					var cachedData = this._dataPathCache[key];
-					if (cachedData !== undefined) return cachedData;
+					if (cachedData !== undefined) {
+						// 下面两行是为了确保MESSAGE_LOADING_START消息总是能被正确的处理
+						dorado.DataPipe.MONITOR.asyncExecutionTimes += (cachedData.asyncExecutionTimes || 0);
+						dorado.DataPipe.MONITOR.executionTimes += (cachedData.asyncExecutionTimes || 0);
+						return cachedData.data;
+					}
 					
+					var asyncExecutionTimes = dorado.DataPipe.MONITOR.asyncExecutionTimes;
 					var dataPath = dorado.DataPath.create(path);
 					if (data) data = dataPath.evaluate(data, options);
-					this._dataPathCache[key] = data || null;
+					
+					this._dataPathCache[key] = {
+						data: data,
+						asyncExecutionTimes: dorado.DataPipe.MONITOR.asyncExecutionTimes - asyncExecutionTimes
+					} || null;
 				} else if (!path) {
 					var dataType = this.getDataType(null, true);
 					if (dataType instanceof dorado.AggregationDataType) {

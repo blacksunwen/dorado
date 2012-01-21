@@ -440,8 +440,9 @@
 		_evaluateSectionOnEntity : function(context, entity, nextSection) {
 			var oldLevel = context.level;
 			if(nextSection) {
-				if(context.level >= (context.sections.length - 1))
-					reutrn;
+				if(context.level >= (context.sections.length - 1)) {
+					return;
+				}
 				context.setCurrentLevel(context.level + 1);
 			}
 
