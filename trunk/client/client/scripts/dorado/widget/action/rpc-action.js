@@ -764,13 +764,21 @@
 			if(this._alwaysExecute || !this._updateItems.length || context.hasUpdateData) {
 				if(this._realConfirmMessage) {
 					var self = this;
-					dorado.MessageBox.confirm(this._realConfirmMessage, function() {
-						doUpdate.call(self, context, dataResolverArg);
+					dorado.MessageBox.confirm(this._realConfirmMessage, {
+						detailCallback: function(buttonId) {
+							if (self._confirmMessage === null) {
+								self._confirmMessage = self._realConfirmMessage;
+								self._realConfirmMessage = null;
+							}
+							
+							if (buttonId == "yes") {
+								doUpdate.call(self, context, dataResolverArg);
+							}
+							else {
+								$callback(callback, false);
+							}
+						}
 					});
-					if(this._confirmMessage === null) {
-						this._confirmMessage = this._realConfirmMessage;
-						this._realConfirmMessage = null;
-					}
 				} else {
 					doUpdate.call(this, context, dataResolverArg);
 				}

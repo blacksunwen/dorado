@@ -278,7 +278,7 @@
 			}
 		},
 		
-		refreshDom: function(dom) {
+		refreshDom: function(dom) {			
 			var columnsInited = false;
 			if (this._dataSet) {
 				var entityList = this.getBindingData({
@@ -438,7 +438,7 @@
 				}
 				
 				case dorado.widget.DataSet.MESSAGE_CURRENT_CHANGED:{
-					return (arg.entityList == items || dorado.DataUtil.isOwnerOf(items, arg.entityList));
+					return (!items || arg.entityList == items || dorado.DataUtil.isOwnerOf(items, arg.entityList));
 				}
 				
 				case dorado.widget.DataSet.MESSAGE_DATA_CHANGED:

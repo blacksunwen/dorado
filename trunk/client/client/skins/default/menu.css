@@ -3,6 +3,10 @@
 	background: #FDFDFD url(base/menu-bg.gif) repeat-y;
 }
 
+.d-menu-floating{
+	border-radius: 3px;
+}
+
 .d-menu .group-content{
 	background: transparent none repeat scroll 0 0;
 	border: 0 none;
@@ -15,6 +19,7 @@
 
 .d-menu .group-content .menu-item-hover{
 	border: 1px solid #84AFE1;
+	border-radius: 3px;
 	background: #DDEEFB url(base/menu-item-hover-bg.gif) repeat-x 0 0;
 }
 

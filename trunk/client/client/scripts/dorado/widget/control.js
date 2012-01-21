@@ -740,7 +740,19 @@
 				
 				var className = (this._inherentClassName) ? this._inherentClassName : "";
 				if (this._className) className += (" " + this._className);
+				if (this._exClassName) className += (" " + this._exClassName);
 				if (className) $dom.addClass(className);
+				
+				var classNames = [];
+				if (this._inherentClassName) classNames.push(this._inherentClassName);
+				if (this._className) classNames.push(this._className);
+				if (this._floating) {
+					classNames.push("d-floating");
+					if (this._className) classNames.push(this._className + "-floating");
+					if (this._floatingClassName) classNames.push(this._floatingClassName);
+				}
+				if (classNames.length) $dom.addClass(classNames.join(' '));
+				
 				if (this.focusable) dom.tabIndex = 1;
 
 				var self = this;

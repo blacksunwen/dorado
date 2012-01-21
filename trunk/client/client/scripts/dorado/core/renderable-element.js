@@ -14,9 +14,10 @@ dorado.RenderableElement = $extend(dorado.AttributeSupport, /** @scope dorado.Re
 		/**
 		 * CSS类名。
 		 * @type String
-		 * @attribute
+		 * @attribute writeBeforeReady
 		 */
 		className: {
+			writeBeforeReady: true,
 			setter: function(v) {
 				if (this._className && this._dom) {
 					$fly(this._dom).removeClass(this._className);
@@ -134,14 +135,6 @@ dorado.RenderableElement = $extend(dorado.AttributeSupport, /** @scope dorado.Re
 	 */
 	refreshDom: function(dom) {
 		if (dom.nodeType != 3) {
-			var el = $fly(dom);
-			if (this._exClassName) {
-				el.addClass(this._exClassName);
-			}
-			if (this._floating) {
-				el.addClass(this._floatingClassName);
-			}
-			
 			if (this._style) {
 				var style = this._style;
 				if (typeof this._style == "string") {
@@ -153,7 +146,7 @@ dorado.RenderableElement = $extend(dorado.AttributeSupport, /** @scope dorado.Re
 					});
 					style = map;
 				}
-				el.css(style);
+				$fly(dom).css(style);
 				delete this._style;
 			}
 			this.resetDimension();
@@ -213,7 +206,7 @@ dorado.RenderableElement = $extend(dorado.AttributeSupport, /** @scope dorado.Re
 	 */
 	getDom: function() {
 		if (!this._dom) {
-			this._dom = this.createDom();			
+			this._dom = this.createDom();
 			var $dom = $fly(this._dom);
 			if (this._inherentClassName) {
 				$dom.addClass(this._inherentClassName);

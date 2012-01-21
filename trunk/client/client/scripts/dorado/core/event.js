@@ -375,15 +375,17 @@ dorado.EventSupport = $class(/** @scope dorado.EventSupport.prototype */{
 		if (!def) throw new dorado.ResourceException("dorado.core.UnknownEvent", name);
 		
 		var handlers = (this._events) ? this._events[name] : null;
-		if (!handlers || !handlers.length) return;
+		if ((!handlers || !handlers.length) && !def.interceptor) return;
 		
 		var self = this;
 		var superFire = function() {
-			for (var i = 0; i < handlers.length;) {
-				var handler = handlers[i];
-				if (handler.once) handlers.removeAt(i);
-				else i++;
-				if (self.notifyListener(handler, arguments) === false) return false;
+			if (handlers) {
+				for (var i = 0; i < handlers.length;) {
+					var handler = handlers[i];
+					if (handler.once) handlers.removeAt(i);
+					else i++;
+					if (self.notifyListener(handler, arguments) === false) return false;
+				}
 			}
 			return true;
 		};

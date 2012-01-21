@@ -102,13 +102,3 @@
 .d-ie6 .i-menu .overflow-top-arrow, .d-ie6 .i-menu .overflow-bottom-arrow{
 	width: 1px;
 }
-
-.i-menu-floating{
-	position: absolute;
-	float: none;
-	left: -9999px;
-	top: -9999px;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	border-radius: 3px;
-}

@@ -50,45 +50,10 @@ body, input, textarea, button {
     opacity: 0.5;
 }
 
-.d-task-group-panel .panel-header-left {
-    background: url(common/tip-corners.gif) no-repeat scroll 0 top;
-    margin-right: 2px;
-}
-
-.d-task-group-panel .panel-header-right {
-    background: url(common/tip-corners.gif) no-repeat scroll right -4px;
-    padding: 2px 0 0 0;
-    margin-right: -2px;
-}
-
-.d-task-group-panel .panel-body-left {
-    background: url(common/tip-lr.gif) repeat-y 0 0;
-    padding-left: 2px;
-}
-
-.d-task-group-panel .panel-body-right {
-    background: url(common/tip-lr.gif) repeat-y right 0;
-    padding-right: 2px;
-}
-
-.d-task-group-panel .panel-body {
-    background: white;
-}
-
-.d-task-group-panel .panel-footer-left {
-    background: url(common/tip-corners.gif) no-repeat scroll 0 -2px;
-    margin-right: 2px;
-}
-
-.d-task-group-panel .panel-footer-right {
-    background: url(common/tip-corners.gif) no-repeat scroll right bottom;
-    padding: 2px 0 0 0;
-    margin-right: -2px;
-}
-
-.d-task-group-panel .content-panel {
-    padding: 0 3px;
-    background-color: white;
+.d-task-group-panel {
+	border: 1px #D0D0D0 solid;
+	border-radius: 5px;
+    background: #FFFFFF;
 }
 
 .d-daemon-task-indicator {

@@ -44,18 +44,35 @@ dorado.dequeue = function(namespace) {
 		
 			/**
 			 * 是否浮动，默认为true。
-			 * @attribute
+			 * @attribute writeBeforeReady
 			 * @type boolean
 			 * @default true
 			 */
 			floating: {
 				defaultValue: true,
-				setter: function(value) {
+				writeBeforeReady: true,
+				setter: function(floating) {
+					if (this._floating == floating) return;
+					
 					var attributeWatcher = this.getAttributeWatcher();
 					if (attributeWatcher.getWritingTimes("visible") == 0) {
 						this._visible = !value;
 					}
-					this._floating = value;
+					this._floating = floating;
+					
+					if (this._dom) {
+						var classNames = [];
+						classNames.push("d-floating");
+						if (this._inherentClassName) classNames.push(this._inherentClassName + "-floating");
+						if (this._className) classNames.push(this._className + "-floating");
+						if (this._floatingClassName) classNames.push(this._floatingClassName);
+						
+						if (floating) {
+							$fly(this._dom).addClass(classNames.join(' '));
+						} else {
+							$fly(this._dom).removeClass(classNames.join(' '));
+						}
+					}
 				}
 			},
 			
@@ -65,7 +82,15 @@ dorado.dequeue = function(namespace) {
 			 * @type String
 			 */
 			floatingClassName: {
-				defaultValue: "d-floating"
+				setter: function(className) {
+					if (this._floating && this._dom && this._floatingClassName) {
+						$fly(this._dom).removeClass(this._floatingClassName);
+					}
+					this._floatingClassName = className;
+					if (this._floating && this._dom && className) {
+						$fly(this._dom).addClass(className);
+					}
+				}
 			},
 			
 			visible: {
@@ -357,7 +382,7 @@ dorado.dequeue = function(namespace) {
 		 * @param {String} options.animateType 动画类型。
 		 * @param {Function} options.callback 在FloatControl显示完成之后，调用的回调函数，与onShow事件调用的时间相同。
 		 */
-		show: function(options) {	
+		show: function(options) {
 			if (typeof options == "function") {
 				var callback = options;
 				options = {
@@ -375,7 +400,7 @@ dorado.dequeue = function(namespace) {
 					options[attr] = control["_" + attr];
 				}
 			}
-
+			
 			dorado.queue(control._id + SHOWHIDE_SUFFIX, function() {
 				options = options || {};
 				if (!control._rendered) {
@@ -395,7 +420,7 @@ dorado.dequeue = function(namespace) {
 						left: -99999,
 						top: -99999
 					});
-
+					
 					var oldVisible = control._visible;
 					control._visible = true;
 					control.render(renderTo);
@@ -421,14 +446,10 @@ dorado.dequeue = function(namespace) {
 			// 另外，下面这句关于left:0的comment是否已经过时？
 			
 			//left:0是为了解决IE下的一个bug：如果Control在右侧，dom的offsetWidth取得错误，dom实际不超出，导致宽度取值失败
-			/*
 			$fly(dom).css({
 				display: "",
-				visibility: "hidden",
-				left: -99999,
-				top: -99999
+				visibility: "hidden"
 			});
-			*/
 			
 			var arg = {};
 			control.fireEvent("beforeShow", control, arg);
@@ -562,7 +583,6 @@ dorado.dequeue = function(namespace) {
 		 * @param {boolean} options.atOnce 是否立即关闭，忽略hideDelay参数。
 		 */
 		hide: function(options) {
-			//$log(this._id + "\thide..");
 			var control = this, args = arguments;
 			if (!control._visible) {
 				dorado.dequeue(control._id + SHOWHIDE_SUFFIX);
