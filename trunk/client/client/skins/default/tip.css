@@ -1,6 +1,8 @@
 .d-tip{
 	border: 1px solid #a17900;
 	background-color: #fdfcc2;
+    filter: alpha(opacity = 80);
+    opacity: 0.8;
 }
 
 .d-ie .d-tip{

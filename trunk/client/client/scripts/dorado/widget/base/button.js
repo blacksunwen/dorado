@@ -123,7 +123,7 @@
 
 		doOnKeyDown: function(event) {
 			var button = this;
-			if (event.keyCode == 32) {
+			if (event.keyCode == 32 || event.keyCode == 13) {
 				button.fireEvent("onClick", button);
 			}
 			return true;

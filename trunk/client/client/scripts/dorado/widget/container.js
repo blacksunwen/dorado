@@ -347,7 +347,7 @@
 			}
 			var layout = this._layout;
 			if (layout) {
-				layout._overflow = (this._contentOverflow == "hidden") ? "hidden" : "visible";
+				layout._overflow = (this._contentOverflow == "scroll") ? "visible" : this._contentOverflow;
 				if (this._contentContainerVisible && !(layout._regions.size == 0 && !layout._rendered)) {
 					layout.onAttachToDocument(this.getContentContainer());
 				}

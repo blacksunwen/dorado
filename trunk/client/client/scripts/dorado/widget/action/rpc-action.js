@@ -760,9 +760,10 @@
 				}
 			}
 
+debugger;
 			var context = this.getResolveContext(), dataResolverArg = context.dataResolverArg;
 			if(this._alwaysExecute || !this._updateItems.length || context.hasUpdateData) {
-				if(this._realConfirmMessage) {
+				if (this._realConfirmMessage) {
 					var self = this;
 					dorado.MessageBox.confirm(this._realConfirmMessage, {
 						detailCallback: function(buttonId) {
@@ -780,9 +781,23 @@
 						}
 					});
 				} else {
+					if (this._confirmMessage === null) {
+						this._confirmMessage = this._realConfirmMessage;
+						this._realConfirmMessage = null;
+					}
+					
 					doUpdate.call(this, context, dataResolverArg);
 				}
 			} else {
+				if (this._confirmMessage === null) {
+					this._confirmMessage = this._realConfirmMessage;
+					this._realConfirmMessage = null;
+				}
+					
+				if (!this._alwaysExecute && this._updateItems.length && !context.hasUpdateData) {
+					dorado.widget.NotifyTipManager.notify($resource("dorado.baseWidget.NoDataToSubmit"));
+				}
+				
 				if(callback) {
 					$callback(callback, false);
 				} else {

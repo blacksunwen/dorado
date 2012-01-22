@@ -514,7 +514,7 @@ dorado.dequeue = function(namespace) {
 						mode: control._shadowMode || "sides"
 					});
 				}
-				if (control.isFocusable() && control._focusAfterShow) {
+				if (control._focusAfterShow) {
 					dorado.widget.setFocusedControl(control);
 				}
 			}
