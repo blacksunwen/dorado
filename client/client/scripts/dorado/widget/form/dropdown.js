@@ -398,10 +398,9 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 	},
 
 	/**
-	 * TODO:
-	 * 
-	 * @param {Object}
-	 *            selectedValue
+	 * 关闭下拉框。
+	 * @param {Object} selectedValue 下拉框返回给编辑框的选中值。<br>
+	 * 如果设置此参数的值为undefined，那么相当于只是简单的关闭下拉框而不会向编辑框传递任何数值。
 	 */
 	close : function(selectedValue) {
 		var editor = this._editor;

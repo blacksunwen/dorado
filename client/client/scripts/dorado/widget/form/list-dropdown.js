@@ -173,7 +173,7 @@
 						dropDown.close(dropDown.getSelectedValue(rowList));
 					}
 				});
-			}		
+			}
 			box.set({
 				style: {
 					overflow: "hidden"
@@ -222,20 +222,24 @@
 		initDropDownBox: function(box, editor) {
 			$invokeSuper.call(this, arguments);
 			
-			if (this.initDropDownData) this.initDropDownData(box, editor);
-			
-			var rowList = box.get("control"), itemCount = rowList._itemModel.getItemCount();
+			var rowList = box.get("control")
+			if (this.initDropDownData) {
+				rowList._ignoreRefresh++;
+				this.initDropDownData(box, editor);
+				rowList._ignoreRefresh--;
+			}
+			var itemCount = rowList._itemModel.getItemCount();
 			var cellCount = itemCount;
 			if (dorado.widget.AbstractGrid && rowList instanceof dorado.widget.AbstractGrid) {
 				cellCount = rowList.get("dataColumns").length * itemCount;
 			}
-			 
+			
 			if (!this._height) {
 				var useMaxHeight = true, refreshed = false;
 				if (this._maxHeight &&
-				(!itemCount || (this._maxHeight / (rowList._rowHeight + 2) > (itemCount + 1)))) {
+					(!itemCount || (this._maxHeight / (rowList._rowHeight + 2) > (itemCount + 1)))) {
 					rowList.set({
-						scrollMode: "lazyRender"
+						scrollMode: "simple"
 					});
 					rowList.refresh();
 					refreshed = true;
@@ -246,7 +250,7 @@
 				if (useMaxHeight) {
 					rowList.set({
 						height: this._maxHeight,
-						scrollMode:  ((cellCount > 300) ? "viewport" : "lazyRender")
+						scrollMode: ((cellCount > 300) ? "viewport" : "lazyRender")
 					});
 					rowList.refresh();
 					refreshed = true;
@@ -363,8 +367,7 @@
 						};
 						self.fireEvent("onFilterItem", self, arg);
 						accept = arg.accept;
-					}
-					else {
+					} else {
 						var s;
 						if (property) {
 							s = (entity instanceof dorado.Entity) ? entity.get(property) : entity[property];
@@ -472,8 +475,7 @@
 				}
 				this._property = "value";
 				this._displayProperty = null;
-			}
-			else {
+			} else {
 				this._property = "key";
 				this._displayProperty = "value";
 			}
