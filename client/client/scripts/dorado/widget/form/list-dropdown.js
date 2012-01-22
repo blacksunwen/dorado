@@ -458,8 +458,8 @@
 		},
 		
 		getDropDownItems: function() {
-			var items = this._items, editor = this._editor, pd = editor._propertyDef;
-			items = this._items || editor.get("mapping");
+			var editor = this._editor, pd = editor._propertyDef;
+			var items = editor.get("mapping");
 			if (!items) {
 				if (!pd) {
 					if (dorado.Object.isInstanceOf(editor, dorado.widget.PropertyDataControl)) {
