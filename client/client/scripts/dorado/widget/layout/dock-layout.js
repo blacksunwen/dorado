@@ -22,7 +22,8 @@
 			bottom: undefined,
 			anchorLeft: getLastRegionFuncs.left,
 			anchorRight: getLastRegionFuncs.right,
-			anchorTop: getLastRegionFuncs.top
+			anchorTop: getLastRegionFuncs.top,
+			anchorBottom: undefined
 		},
 		bottom: {
 			type: "bottom",
@@ -32,6 +33,7 @@
 			bottom: 0,
 			anchorLeft: getLastRegionFuncs.left,
 			anchorRight: getLastRegionFuncs.right,
+			anchorTop: undefined,
 			anchorBottom: getLastRegionFuncs.bottom
 		},
 		left: {
@@ -41,6 +43,7 @@
 			top: 0,
 			bottom: 0,
 			anchorLeft: getLastRegionFuncs.left,
+			anchorRight: undefined,
 			anchorTop: getLastRegionFuncs.top,
 			anchorBottom: getLastRegionFuncs.bottom
 		},
@@ -50,6 +53,7 @@
 			right: 0,
 			top: 0,
 			bottom: 0,
+			anchorLeft: undefined,
 			anchorRight: getLastRegionFuncs.right,
 			anchorTop: getLastRegionFuncs.top,
 			anchorBottom: getLastRegionFuncs.bottom
@@ -155,6 +159,13 @@
 			var lastRegion = (regions.size > 0) ? regions.last.data : null;
 			if (lastRegion && lastRegion.constraint.type == "center") {
 				if (layoutConstraint.type == "center") {
+					var lastControl = lastRegion.control;
+					if (!lastControl._layoutConstraint || typeof lastControl._layoutConstraint != "object") {
+						lastControl._layoutConstraint = "top";
+					}
+					else {
+						lastControl._layoutConstraint.type = "top";
+					}
 					dorado.Object.apply(lastRegion.constraint, getDefaultConstraint("top"));
 					if (this._rendered) this.refreshControl(control);
 					
@@ -187,7 +198,7 @@
 				default:
 					{
 						autoWidth = autoHeight = true;
-					// autoHeight = (this._container._height != null || this._container._contentOverflow == "hidden");
+						// autoHeight = (this._container._height != null || this._container._contentOverflow == "hidden");
 					}
 			}
 			return $invokeSuper.call(this, [region, containerDom, autoWidth, autoHeight]);

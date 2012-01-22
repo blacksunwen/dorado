@@ -411,8 +411,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			} else {
 				if (b === true) {
 					switch (evt.keyCode || evt.which) {
-						case 9: // Tab
-						case 13: { // Enter
+						case 9: {	// Tab
 							var c = (evt.shiftKey) ? dorado.widget.findPreviousFocusableControl() : dorado.widget.findNextFocusableControl();
 							if (c) c.setFocus();
 							evt.preventDefault();

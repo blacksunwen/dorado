@@ -391,13 +391,13 @@
 			iconClass: {},
 
 			/**
-			 * 显示时间，默认为5s，5s后自动隐藏。
+			 * 显示时间，默认为3s，3s后自动隐藏。
 			 * @attribute
 			 * @type int
-			 * @default 5
+			 * @default 3
 			 */
 			showDuration: {
-				defaultValue: 5
+				defaultValue: 3
 			}
 		},
 
