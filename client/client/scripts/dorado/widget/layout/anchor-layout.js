@@ -107,26 +107,18 @@
 		},
 		
 		refreshDom: function(dom) {
-			dom.style.width = "100%";
-			dom.style.height = "100%";
+			var overflowX = this._overflowX, overflowY = this._overflowY;
 
-			this._realOverflowX = (this._overflowX == "auto") ? "visible" : this._overflowX;
-			this._realOverflowY = (this._overflowY == "auto") ? "visible" : this._overflowY;
+			dom.style.width = "";
+			dom.style.height = "";
+
+			this._realOverflowX = (overflowX == "auto") ? "visible" : overflowX;
+			this._realOverflowY = (overflowY == "auto") ? "visible" : overflowY;
 			
 			this.doRefreshDom(dom);
-			
-			if (this._realOverflowX == "visible" && dom.style.width == "100%" && dom.scrollWidth > dom.clientWidth) {
-				dom.style.width = "";
-			}
-			if (this._realOverflowY == "visible" && dom.style.height == "100%" && dom.scrollHeight > dom.clientHeight) {
-				dom.style.height = "";
-			}
 		},
 		
-		doRefreshDom: function(dom) {
-			dom.style.overflowX = this._realOverflowX;
-			dom.style.overflowY = this._realOverflowY;
-			
+		doRefreshDom: function(dom) {			
 			this._maxRagionRight = this._maxRagionBottom = 0;
 			for (var it = this._regions.iterator(); it.hasNext();) {
 				var region = it.next();
@@ -243,9 +235,9 @@
 				}
 				return anchor;
 			}
-			
+				
 			var constraint = region.constraint, realignArg;
-			var containerDom = this.getDom(), controlDom = region.control.getDom();
+			var containerDom = this._dom.parentNode, controlDom = region.control.getDom();
 			
 			var left, right, width, top, bottom, height;
 			left = right = width = top = bottom = height = -1;
@@ -254,9 +246,9 @@
 
 			var padding = (parseInt(this._padding) || 0);
 			var regionPadding = (parseInt(this._regionPadding) || 0) + (parseInt(constraint.padding) || 0);
-			var clientWidth = containerDom.offsetWidth, realContainerWidth = clientWidth - padding * 2;
-			var clientHeight = containerDom.offsetHeight, realContainerHeight = clientHeight - padding * 2;
-			
+			var clientWidth = containerDom.clientWidth, realContainerWidth = clientWidth - padding * 2;
+			var clientHeight = containerDom.clientHeight, realContainerHeight = clientHeight - padding * 2;
+
 			if (constraint.anchorLeft == "previous" && constraint.left == null) constraint.left = 0;
 			if (constraint.left != null && constraint.anchorLeft != "none") {
 				var l = constraint.left;
@@ -439,7 +431,14 @@
 			region.width = (width >= 0) ? width : undefined;
 			region.height = (height >= 0) ? height : undefined;
 			
-			this.renderControl(region, containerDom, true, true);
+			var dom = this._dom;
+			if (region.right >= 0 && !dom.style.width) {
+				dom.style.width = clientWidth + "px";
+			}
+			if (region.bottom >= 0 && !dom.style.height) {
+				dom.style.height = clientHeight + "px";
+			}
+			this.renderControl(region, dom, true, true);
 			
 			var controlDom = region.control.getDom();
 			if (controlDom) {
@@ -460,7 +459,7 @@
 			var left, right, width, top, bottom, height;
 			left = right = width = top = bottom = height = -1;
 			
-			var constraint = region.constraint, containerDom = this.getDom();
+			var constraint = region.constraint, containerDom = this._dom.parentNode;
 			var padding = (parseInt(this._padding) || 0);
 			var regionPadding = (parseInt(this._regionPadding) || 0) + (parseInt(constraint.padding) || 0);
 			var clientWidth = containerDom.clientWidth, realContainerWidth = clientWidth - padding * 2;
@@ -496,7 +495,7 @@
 			}
 		},
 		
-		resetControlDimension: function(region, containerDom, autoWidth, autoHeight) {
+		resetControlDimension: function(region, layoutDom, autoWidth, autoHeight) {
 			var control = region.control, controlDom = control.getDom();
 			var style = controlDom.style;
 			if (region.left >= 0 || region.top >= 0 || region.right >= 0 || region.bottom >= 0) style.position = "absolute";
@@ -505,7 +504,7 @@
 			style.top = (region.top >= 0) ? (region.top + "px") : '';
 			style.bottom = (region.bottom >= 0) ? (region.bottom + "px") : '';
 			
-			$invokeSuper.call(this, [region, containerDom, autoWidth, autoHeight]);
+			$invokeSuper.call(this, [region, layoutDom, autoWidth, autoHeight]);
 		}
 		
 	});

@@ -128,9 +128,7 @@
 			
 			$(parentDom).css("text-align", HBOX_PACKS[this._pack]);
 			row.style.verticalAlign = HBOX_ALIGNS[this._align];
-			table.style.height = realContainerHeight + "px";
-			var currentHeight = table.offsetHeight;
-			
+			table.style.height = realContainerHeight + "px";			
 			for (var it = this._regions.iterator(); it.hasNext();) {
 				var region = it.next(), cell = domCache[region.id];
 				if (cell) {
@@ -206,9 +204,9 @@
 			}
 			
 			var rowHeight = row.offsetHeight;
-			if (this._stretch && rowHeight > currentHeight) {
+			if (this._stretch && rowHeight > realContainerHeight) {
 				table.style.height = "";
-				realContainerHeight += (rowHeight - currentHeight);
+				realContainerHeight += (rowHeight - realContainerHeight);
 				for (var it = this._regions.iterator(); it.hasNext();) {
 					var region = it.next();
 					var constraint = region.constraint;
@@ -313,7 +311,7 @@
 		},
 		
 		refreshDom: function(dom) {
-			var parentDom = this._container.getContentContainer();
+			var parentDom = this._dom.parentNode;
 			if (this._pack == "start") {
 				this.removePackTable(parentDom);
 			} else {
@@ -335,9 +333,7 @@
 			if (realContainerWidth < 0) realContainerWidth = 0;
 			if (realContainerHeight < 0) realContainerHeight = 0;
 			
-			table.style.width = realContainerWidth + "px";
-			var currentWidth = table.offsetWidth;
-			
+			table.style.width = realContainerWidth + "px";			
 			for (var it = this._regions.iterator(); it.hasNext();) {
 				var region = it.next(), row = domCache[region.id];
 				if (row) {
@@ -426,8 +422,8 @@
 			}
 			
 			var tableWidth = table.offsetWidth;
-			if (this._stretch && tableWidth > currentWidth) {
-				realContainerWidth += (tableWidth - currentWidth);
+			if (this._stretch && (tableWidth - padding * 2) > realContainerWidth) {
+				realContainerWidth += (tableWidth - padding * 2 - realContainerWidth);
 				for (var it = this._regions.iterator(); it.hasNext();) {
 					var region = it.next();
 					var constraint = region.constraint;
