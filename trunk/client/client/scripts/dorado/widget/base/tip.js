@@ -637,7 +637,7 @@
 	var elementMouseEnter = function(event) {
 		var element = this, tip = dorado.TipManager.getTip(element);
 
-		//$log("tip._text:" + tip._text + "\ttip._visible:" + tip._visible);
+		// $log("tip._text:" + tip._text + "\ttip._visible:" + tip._visible);
 		if (tip._text && !tip._visible) {
 			dorado.TipManager.showTip(element, tip._showDelay || 0, event);
 		}
@@ -805,6 +805,7 @@
 		},
 
 		getDom: function() {
+			debugger;
 			var dom = this._dom;
 			if (!dom) {
 				dom = tipCanUsePool.pop();

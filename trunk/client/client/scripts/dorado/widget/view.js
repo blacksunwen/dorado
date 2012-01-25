@@ -472,7 +472,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 				topView.onResizeTimerId = setTimeout(function() {
 					delete topView.onResizeTimerId;
 					topView._children.each(function(child) {
-						if (child.resetDimension) child.resetDimension();
+						if (child.resetDimension && child._visible) child.resetDimension();
 					});
 				}, 200);
 			});

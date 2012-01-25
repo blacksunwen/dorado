@@ -34,6 +34,7 @@ var dorado = {
 		for (var p in jQuery.browser) {
 			if (jQuery.browser.hasOwnProperty(p)) browser[p] = jQuery.browser[p];
 		}
+		browser.version = parseInt(browser.version);
 		return browser;
 	})(),
 	

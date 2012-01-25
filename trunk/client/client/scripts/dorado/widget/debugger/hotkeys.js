@@ -22,7 +22,9 @@
 			var panel = this;
 
 			var codePreview = new dorado.widget.HtmlContainer({
-				style: "border: 1px solid #B0B0B0"
+				width: "100%",
+				height: "100%",
+				style: "display: block; border: 1px solid #B0B0B0"
 			});
 
 			var keyList = new dorado.widget.ListBox({

@@ -644,7 +644,7 @@
 
 		refreshDom: function(dom) {
 			var dialog = this;
-
+			
 			$invokeSuper.call(dialog, arguments);
 
 			if (!dialog._maximized) {

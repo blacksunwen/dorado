@@ -395,7 +395,26 @@
 		doOnResize: function() {
 			var layout = this._layout;
 			if (this._contentContainerVisible && layout && layout._attached) {
+				var overflowX = (this._contentOverflowX == "auto") ? this._contentOverflow : this._contentOverflowX;
+				var overflowY = (this._contentOverflowY == "auto") ? this._contentOverflow : this._contentOverflowY;
+				var contentCt = this.getContentContainer();
+			
+				var overflowedX = false, overflowedY = false;
+				if (overflowX == "scroll" || overflowX == "auto") overflowedX = (contentCt.scrollWidth > contentCt.clientWidth);
+				if (overflowY == "scroll" || overflowY == "auto") overflowedY = (contentCt.scrollHeight > contentCt.clientHeight);
+					
 				layout.onResize();
+					
+				if (overflowY == "scroll" || overflowY == "auto") {
+					if (overflowedY != (contentCt.scrollHeight > contentCt.clientHeight)) {
+						layout.onResize();
+					}
+				}
+				else if (overflowX == "scroll" || overflowX == "auto") {
+					if (overflowedX != (contentCt.scrollWidth > contentCt.clientWidth)) {
+						layout.onResize();
+					}
+				}
 			}
 		},
 		
