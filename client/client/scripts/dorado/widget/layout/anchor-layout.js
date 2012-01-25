@@ -1,6 +1,4 @@
 (function() {
-	
-	var OVERFLOW_ADJ = dorado.Browser.mozilla ? 0 : 2;
 
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -64,7 +62,7 @@
 			},
 			
 			/**
-			 * 溢出模式。
+			 * 横向溢出模式。
 			 * <p>
 			 * 即当布局管理器中的内容的位置或尺寸超出布局管理器的边界时，布局管理器应该如何处理。
 			 * 此属性的值通常是由使用该布局管理器的容器控件来自动维护的，所以通常您不必主动的修改此属性。
@@ -80,7 +78,26 @@
 			 * </p>
 			 * @attribute
 			 */
-			overflow: {}
+			overflowX: {},
+			
+			/**
+			 * 纵向溢出模式。
+			 * <p>
+			 * 即当布局管理器中的内容的位置或尺寸超出布局管理器的边界时，布局管理器应该如何处理。
+			 * 此属性的值通常是由使用该布局管理器的容器控件来自动维护的，所以通常您不必主动的修改此属性。
+			 * </p>
+			 * <p>
+			 * 可选的值包括：
+			 * <ul>
+			 * 	<li>hidden	-	当内容超出边界时，超出的部分将不可见。</li>
+			 * 	<li>visible	-	当内容超出边界时，尝试调整布局管理器的尺寸使其依然可见。
+			 * 这样很可能也会引起使用此布局管理器的容器控件的尺寸发生变化。</li>
+			 * 	<li>auto	-	交由系统自动判断。</li>
+			 * </ul>
+			 * </p>
+			 * @attribute
+			 */
+			overflowY: {}
 		},
 		
 		createDom: function() {
@@ -89,24 +106,26 @@
 			return dom;
 		},
 		
-		refreshDom: function(dom) {			
-			dom.style.width = dom.style.height = "100%";
-			if (this._overflow == "auto") {
-				if (this._container) {
-					this._overflowX = this._container.getRealWidth() ? "hidden" : "visible";
-					dom.style.overflowX = this._overflowX;
-					
-					this._overflowY = this._container.getRealHeight() ? "hidden" : "visible";
-					dom.style.overflowY = this._overflowY;
-				} else {
-					this._overflowX = this._overflowY = "visible";
-					dom.style.overflowX = dom.style.overflowY = "visible";
-				}
+		refreshDom: function(dom) {
+			dom.style.width = "100%";
+			dom.style.height = "100%";
+
+			this._realOverflowX = (this._overflowX == "auto") ? "visible" : this._overflowX;
+			this._realOverflowY = (this._overflowY == "auto") ? "visible" : this._overflowY;
+			
+			this.doRefreshDom(dom);
+			
+			if (this._realOverflowX == "visible" && dom.style.width == "100%" && dom.scrollWidth > dom.clientWidth) {
+				dom.style.width = "";
 			}
-			else {
-				this._overflowX = this._overflowY = this._overflow;
-				dom.style.overflowX = dom.style.overflowY = this._overflow;
+			if (this._realOverflowY == "visible" && dom.style.height == "100%" && dom.scrollHeight > dom.clientHeight) {
+				dom.style.height = "";
 			}
+		},
+		
+		doRefreshDom: function(dom) {
+			dom.style.overflowX = this._realOverflowX;
+			dom.style.overflowY = this._realOverflowY;
 			
 			this._maxRagionRight = this._maxRagionBottom = 0;
 			for (var it = this._regions.iterator(); it.hasNext();) {
@@ -122,38 +141,35 @@
 		
 		recordMaxRange: function(region) {
 			var controlDom = region.control.getDom();
-			if (controlDom.style.position == "absolute") {				
+			if (controlDom.style.position == "absolute") {	
 				if (region.right === undefined) {
 					var right = (region.left || 0) + region.realWidth;
-					if (right > this._maxRagionRight) this._maxRagionRight = right+ OVERFLOW_ADJ;
+					if (right > this._maxRagionRight) this._maxRagionRight = right;
 				}
-				
-				if (region.botto === undefined) {
+
+				if (region.bottom === undefined) {
 					var bottom = (region.top || 0) + region.realHeight;
-					if (bottom > this._maxRagionBottom) this._maxRagionBottom = bottom + OVERFLOW_ADJ;
+					if (bottom > this._maxRagionBottom) this._maxRagionBottom = bottom;
 				}
 			}
 		},
 		
 		processOverflow: function(dom) {
-			var overflowed = false;
-			if (this._overflow != "hidden") {
-				var padding = parseInt(this._padding) || 0;
-				
-				if (this._overflowX == "visible") {
-					var width = this._maxRagionRight;
-					if (width > dom.offsetWidth) {
-						dom.style.width = (width + padding) + "px";
-						overflowed = true;
-					}
+			var overflowed = false, padding = parseInt(this._padding) || 0;
+			
+			if (this._realOverflowX == "visible") {
+				var width = this._maxRagionRight;
+				if (width > dom.offsetWidth) {
+					dom.style.width = (width + padding) + "px";
+					overflowed = true;
 				}
-				
-				if (this._overflowY == "visible") {
-					var height = this._maxRagionBottom;
-					if (height > dom.offsetHeight) {
-						dom.style.height = (height + padding) + "px";
-						overflowed = true;
-					}
+			}
+			
+			if (this._realOverflowY == "visible") {
+				var height = this._maxRagionBottom;
+				if (height > dom.offsetHeight) {
+					dom.style.height = (height + padding) + "px";
+					overflowed = true;
 				}
 			}
 			return overflowed;
@@ -235,11 +251,11 @@
 			left = right = width = top = bottom = height = -1;
 			var lp, rp, tp, bp, wp, hp;
 			lp = rp = tp = bp = wp = hp = 0;
-			
+
 			var padding = (parseInt(this._padding) || 0);
 			var regionPadding = (parseInt(this._regionPadding) || 0) + (parseInt(constraint.padding) || 0);
-			var clientWidth = containerDom.clientWidth, realContainerWidth = clientWidth - padding * 2;
-			var clientHeight = containerDom.clientHeight, realContainerHeight = clientHeight - padding * 2;
+			var clientWidth = containerDom.offsetWidth, realContainerWidth = clientWidth - padding * 2;
+			var clientHeight = containerDom.offsetHeight, realContainerHeight = clientHeight - padding * 2;
 			
 			if (constraint.anchorLeft == "previous" && constraint.left == null) constraint.left = 0;
 			if (constraint.left != null && constraint.anchorLeft != "none") {
