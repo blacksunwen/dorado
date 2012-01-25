@@ -2847,15 +2847,11 @@
 					this.refreshFilterBar();
 					filterBarHeight = tFoot.offsetHeight;
 				} else if (tFoot) {
-					headerTable.removeChild(tFoot);
+					$fly(tFoot).remove();
 				}
 
 				if (!(dorado.Browser.mozilla || dorado.Browser.opera)) {
-					headerTable.style.height = ((grid._headerRowHeight + (dorado.Browser.msie ? 2 : 1)) *
-					structure.length +
-					filterBarHeight +
-					1) +
-					"px";
+					headerTable.style.height = ((grid._headerRowHeight + (dorado.Browser.msie ? 2 : 1)) * structure.length + filterBarHeight + 1) + "px";
 				}
 				$tableFrameHeader.show();
 			} else {
