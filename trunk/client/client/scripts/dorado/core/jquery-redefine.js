@@ -12,22 +12,22 @@
 	// 在jQuery 1.2.6、jQuery 1.3.2中Safari下的ready事件总是在document.readyState
 	// 变为complete之前触发，这导致在此事件中进行渲染的DOM对象无法正确的提取offsetHeight等属性。
 	// 1.4.x下此现象似乎又转移到了Chrome中，但只在个别情况下出现，如访问一个已经被缓存的页面时。
-	//	var superReady = $.prototype.ready;
-	//	$.prototype.ready = function(fn) {
-	//		if (jQuery.browser.chrome) {
-	//			var self = this;
-	//			function waitForReady() {
-	//				if (document.readyState !== "complete") {
-	//					setTimeout(waitForReady, 20);
-	//				} else {
-	//					superReady.call(self, fn);
-	//				}
-	//			}
-	//			waitForReady();
-	//		} else {
-	//			superReady.call(this, fn);
-	//		}
-	//	};
+	var superReady = $.prototype.ready;
+	$.prototype.ready = function(fn) {
+		if (jQuery.browser.webkit) {
+			var self = this;
+			function waitForReady() {
+				if (document.readyState !== "complete") {
+					setTimeout(waitForReady, 10);
+				} else {
+					superReady.call(self, fn);
+				}
+			}
+			waitForReady();
+		} else {
+			superReady.call(this, fn);
+		}
+	};
 	
 	var flyableElem = $();
 	flyableElem.length = 1;

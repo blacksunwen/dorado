@@ -132,6 +132,24 @@
 			}
 		},
 		
+		doRefreshDom: function(dom) {
+			if (this._overflowX == "auto") {
+				this._realOverflowX = this._container.getRealWidth() ? "hidden" : "visible";
+			}
+			else {
+				this._realOverflowX = this._overflowX;
+			}
+			
+			if (this._overflowY == "auto") {
+				this._realOverflowY = this._container.getRealHeight() ? "hidden" : "visible";
+			}
+			else {
+				this._realOverflowY = this._overflowY;
+			}
+			
+			$invokeSuper.call(this, [dom]);
+		},
+		
 		preprocessLayoutConstraint: function(layoutConstraint) {
 			if (layoutConstraint) {
 				if (layoutConstraint != dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT) {
@@ -198,7 +216,6 @@
 				default:
 					{
 						autoWidth = autoHeight = true;
-						// autoHeight = (this._container._height != null || this._container._contentOverflow == "hidden");
 					}
 			}
 			return $invokeSuper.call(this, [region, containerDom, autoWidth, autoHeight]);

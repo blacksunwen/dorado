@@ -19,7 +19,7 @@
 }
 
 .i-radiogroup{
-	height: 18px;
+	overflow: visible;
 }
 
 .i-radiogroup-flow .i-radio{

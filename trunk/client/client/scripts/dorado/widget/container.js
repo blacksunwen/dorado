@@ -140,23 +140,35 @@
 			 * 该值默认为auto，可选值为visible, hidden, scroll, auto。<br />
 			 * 该值的含义与CSS中overflow的属性的意义相同，在实现上也仅仅是把这个值添加到内容容器上。
 			 * </p>
-			 * @attribute skipRefresh
+			 * @attribute writeBeforeReady
 			 * @default "auto"
 			 * @type String
 			 */
 			contentOverflow: {
-				skipRefresh: true,
-				defaultValue: "auto",
-				setter: function(value) {
-					var container = this;
-					if (container._rendered) {
-						var contentContainer = container.getContentContainer();
-						if (contentContainer) {
-							contentContainer.style.overflow = value;
-						}
-					}
-					container._contentOverflow = value;
-				}
+				writeBeforeReady: true,
+				defaultValue: "auto"
+			},
+			
+			/**
+			 * 容器控件中的内容在水平方向上超出了以后的处理方法。
+			 * @attribute writeBeforeReady
+			 * @default "auto"
+			 * @type String
+			 */
+			contentOverflowX: {
+				writeBeforeReady: true,
+				defaultValue: "auto"
+			},
+
+			/**
+			 * 容器控件中的内容在垂直方向上超出了以后的处理方法。
+			 * @attribute writeBeforeReady
+			 * @default "auto"
+			 * @type String
+			 */
+			contentOverflowY: {
+				writeBeforeReady: true,
+				defaultValue: "auto"
 			},
 			
 			view: {
@@ -341,15 +353,36 @@
 		},
 		
 		doOnAttachToDocument: function() {
+			var overflowX = (this._contentOverflowX == "auto") ? this._contentOverflow : this._contentOverflowX;
+			var overflowY = (this._contentOverflowY == "auto") ? this._contentOverflow : this._contentOverflowY;
+			
 			var contentCt = this.getContentContainer();
 			if (contentCt.nodeType && contentCt.nodeType == 1 && !contentCt.style.overflow) {
-				contentCt.style.overflow = this._contentOverflow;
+				contentCt.style.overflowX = overflowX;
+				contentCt.style.overflowY = overflowY;
 			}
+			
 			var layout = this._layout;
 			if (layout) {
-				layout._overflow = (this._contentOverflow == "scroll") ? "visible" : this._contentOverflow;
+				layout._overflowX = (overflowX == "scroll") ? "visible" : overflowX;
+				layout._overflowY = (overflowY == "scroll") ? "visible" : overflowY;
 				if (this._contentContainerVisible && !(layout._regions.size == 0 && !layout._rendered)) {
-					layout.onAttachToDocument(this.getContentContainer());
+					var overflowedX = false, overflowedY = false;
+					if (overflowX == "scroll" || overflowX == "auto") overflowedX = contentCt.scrollWidth > contentCt.clientWidth;
+					if (overflowY == "scroll" || overflowY == "auto") overflowedY = contentCt.scrollHeight > contentCt.clientHeight;
+
+					layout.onAttachToDocument(contentCt);
+					
+					if (overflowY == "scroll" || overflowY == "auto") {
+						if (overflowedY != (contentCt.scrollHeight > contentCt.clientHeight)) {
+							layout.onResize();
+						}
+					}
+					else if (overflowX == "scroll" || overflowX == "auto") {
+						if (overflowedX != (contentCt.scrollWidth > contentCt.clientWidth)) {
+							layout.onResize();
+						}
+					}
 				}
 			}
 		},
