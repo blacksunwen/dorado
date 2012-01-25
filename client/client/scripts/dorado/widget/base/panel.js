@@ -657,6 +657,8 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 				}
 				$fly(dom).height("auto");
 			} else {
+				height -= ((parseInt(jQuery.curCSS(dom, "borderTopWidth")) || 0) +
+					(parseInt(jQuery.curCSS(dom, "borderBottomWidth")) || 0));
 				var buttonPanelHeight = 0, captionBarHeight = 0;
 				if (doms.buttonPanel) {
 					buttonPanelHeight = $fly(doms.buttonPanel).outerHeight(true);

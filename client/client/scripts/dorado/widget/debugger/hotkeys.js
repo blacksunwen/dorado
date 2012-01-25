@@ -28,6 +28,7 @@
 			});
 
 			var keyList = new dorado.widget.ListBox({
+				style: "border: 0",
 				onCurrentChange: function(self, arg) {
 					var item = self.getCurrentItem(), code = "";
 					if (item && item.callback) {
@@ -43,9 +44,10 @@
 				position: 200,
 				sideControl: {
 					$type: "Panel",
+					caption: "Hotkey",
 					tools: [{
 						$type: "SimpleIconButton",
-						icon: "url(>skin>common/icons.gif) -140px 0",
+						icon: "url(>skin>common/icons.gif) -40px -240px",
 						listener: {
 							onClick: function() {
 								panel.reload();
