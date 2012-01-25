@@ -102,6 +102,8 @@ public class ViewConfigRuleTemplateInitializer implements
 			componentRuleTemplate.setCategory(registerInfo.getCategory());
 
 			if (registerInfo instanceof AssembledComponentTypeRegisterInfo) {
+				componentRuleTemplate.setNodeName(name);
+				
 				AssembledComponentTypeRegisterInfo assembledComponentTypeRegisterInfo = (AssembledComponentTypeRegisterInfo) registerInfo;
 				ComponentDefinition superComponentDefinition = assembledComponentTypeRegisterInfo
 						.getSuperComponentDefinition();
