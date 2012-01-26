@@ -44,15 +44,15 @@
 }
 
 .d-toolbar-button-focused {
-	background-position: 0 -66px;
+	background-position: 0 -132px;
 }
 
 .d-toolbar-button-focused .button-left {
-	background-position: 0 -88px;
+	background-position: 0 -154px;
 }
 
 .d-toolbar-button-focused .button-right {
-	background-position: right -110px;
+	background-position: right -176px;
 }
 
 .d-toolbar-button-hover {

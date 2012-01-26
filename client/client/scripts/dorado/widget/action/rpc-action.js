@@ -760,7 +760,6 @@
 				}
 			}
 
-debugger;
 			var context = this.getResolveContext(), dataResolverArg = context.dataResolverArg;
 			if(this._alwaysExecute || !this._updateItems.length || context.hasUpdateData) {
 				if (this._realConfirmMessage) {
