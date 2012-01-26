@@ -42,6 +42,10 @@
 				defaultValue: "fade",
 				skipRefresh: true
 			},
+			
+			focusAfterShow: {
+				defaultValue: false
+			},
 
 			/**
              * 显示的标题。
