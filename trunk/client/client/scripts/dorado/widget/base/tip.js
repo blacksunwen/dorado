@@ -809,7 +809,6 @@
 		},
 
 		getDom: function() {
-			debugger;
 			var dom = this._dom;
 			if (!dom) {
 				dom = tipCanUsePool.pop();
