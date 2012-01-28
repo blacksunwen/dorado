@@ -398,7 +398,6 @@
 		},
 		
 		refreshViewPortContent: function(container) {
-			debugger;
 			var beginBlankRow = this._beginBlankRow;
 			var endBlankRow = this._endBlankRow;
 			
