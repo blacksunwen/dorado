@@ -17,15 +17,15 @@ import com.bstek.dorado.view.widget.list.AbstractList;
 public abstract class AbstractBlockView extends AbstractList {
 	private BlockLayout blockLayout = BlockLayout.vertical;
 	private int lineSize;
-	private int blockWidth;
-	private int blockHeight;
 	private boolean fillLine;
+	private int blockWidth = 80;
+	private int blockHeight = 80;
 	private String renderer;
-	private int horiSpacing;
-	private int vertSpacing;
-	private int horiPadding;
-	private int vertPadding;
-	private int blockDecoratorSize;
+	private int horiSpacing = 8;
+	private int vertSpacing = 8;
+	private int horiPadding = 8;
+	private int vertPadding = 8;
+	private int blockDecoratorSize = 4;
 
 	@ClientProperty(escapeValue = "vertical")
 	public BlockLayout getBlockLayout() {
@@ -44,6 +44,15 @@ public abstract class AbstractBlockView extends AbstractList {
 		this.lineSize = lineSize;
 	}
 
+	public boolean isFillLine() {
+		return fillLine;
+	}
+
+	public void setFillLine(boolean fillLine) {
+		this.fillLine = fillLine;
+	}
+
+	@ClientProperty(escapeValue = "80")
 	public int getBlockWidth() {
 		return blockWidth;
 	}
@@ -52,20 +61,13 @@ public abstract class AbstractBlockView extends AbstractList {
 		this.blockWidth = blockWidth;
 	}
 
+	@ClientProperty(escapeValue = "80")
 	public int getBlockHeight() {
 		return blockHeight;
 	}
 
 	public void setBlockHeight(int blockHeight) {
 		this.blockHeight = blockHeight;
-	}
-
-	public boolean isFillLine() {
-		return fillLine;
-	}
-
-	public void setFillLine(boolean fillLine) {
-		this.fillLine = fillLine;
 	}
 
 	public String getRenderer() {
@@ -76,6 +78,7 @@ public abstract class AbstractBlockView extends AbstractList {
 		this.renderer = renderer;
 	}
 
+	@ClientProperty(escapeValue = "8")
 	public int getHoriSpacing() {
 		return horiSpacing;
 	}
@@ -84,6 +87,7 @@ public abstract class AbstractBlockView extends AbstractList {
 		horiSpacing = spacing;
 	}
 
+	@ClientProperty(escapeValue = "8")
 	public int getVertSpacing() {
 		return vertSpacing;
 	}
@@ -92,6 +96,7 @@ public abstract class AbstractBlockView extends AbstractList {
 		vertSpacing = spacing;
 	}
 
+	@ClientProperty(escapeValue = "8")
 	public int getHoriPadding() {
 		return horiPadding;
 	}
@@ -100,6 +105,7 @@ public abstract class AbstractBlockView extends AbstractList {
 		horiPadding = padding;
 	}
 
+	@ClientProperty(escapeValue = "8")
 	public int getVertPadding() {
 		return vertPadding;
 	}
@@ -108,6 +114,7 @@ public abstract class AbstractBlockView extends AbstractList {
 		vertPadding = padding;
 	}
 
+	@ClientProperty(escapeValue = "4")
 	public int getBlockDecoratorSize() {
 		return blockDecoratorSize;
 	}
