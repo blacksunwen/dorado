@@ -136,7 +136,7 @@
 				<property name="maven.repository" value="${bsdn.nexus-snapshots}" />
 			</then>
 			<else>
-				<property name="maven.repository" value="${bsdn.nexus-release}" />
+				<property name="maven.repository" value="${bsdn.nexus-releases}" />
 			</else>
 		</if>
 		<antcall target="publish-to-bsdn" inheritAll="true" />
