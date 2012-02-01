@@ -9,6 +9,7 @@ import java.util.Set;
 import com.bstek.dorado.config.Parser;
 import com.bstek.dorado.config.xml.DispatchableXmlParser;
 import com.bstek.dorado.config.xml.XmlParser;
+import com.bstek.dorado.config.xml.XmlParserHelper;
 import com.bstek.dorado.core.Context;
 
 class ParserContext {
@@ -20,6 +21,14 @@ class ParserContext {
 		doneParsers = new HashSet<Parser>();
 	}
 
+	private XmlParserHelper xmlParserHelper;
+	public XmlParserHelper getXmlParserHelper() throws Exception {
+		if (xmlParserHelper == null) {
+			xmlParserHelper = (XmlParserHelper)doradoContext.getServiceBean("xmlParserHelper");
+		}
+		return xmlParserHelper;
+	}
+	
 	ParserContext createSubContext() {
 		ParserContext subCtx = new ParserContext();
 		subCtx.doneParsers.addAll(this.doneParsers);
@@ -30,37 +39,14 @@ class ParserContext {
 		return doradoContext;
 	}
 
-	void properties(Node node) throws Exception {
-		if (node.parser == null) {
-			return;
-		}
-
-		Parser parser = node.parser;
-		if (parser instanceof DispatchableXmlParser) {
-			Map<String, XmlParser> parsers = ((DispatchableXmlParser) parser)
-					.getPropertyParsers();
-			if (parsers.isEmpty())
-				return;
-
-			Iterator<Entry<String, XmlParser>> entryItr = parsers.entrySet()
-					.iterator();
-			while (entryItr.hasNext()) {
-				Entry<String, XmlParser> entry = entryItr.next();
-				String key = entry.getKey();
-				XmlParser p = entry.getValue();
-				node.addProperty(key, p.getClass().getName());
-			}
-		}
-	}
-
 	void children(Node parentNode) throws Exception {
-		if (parentNode.parser == null)
+		if (parentNode.parserObject == null)
 			return;
 
-		Parser parentParser = parentNode.parser;
+		Parser parentParser = parentNode.parserObject;
 		if (parentParser instanceof DispatchableXmlParser) {
-			Map<String, XmlParser> parsers = ((DispatchableXmlParser) parentParser)
-					.getSubParsers();
+			DispatchableXmlParser dispatchParser = (DispatchableXmlParser) parentParser;
+			Map<String, XmlParser> parsers = dispatchParser.getSubParsers();
 			if (parsers.isEmpty())
 				return;
 
@@ -72,8 +58,8 @@ class ParserContext {
 				XmlParser parser = entry.getValue();
 
 				Node node = new Node(parser, name);
+				node.initProperties();
 				parentNode.getChildren().add(node);
-				properties(node);
 
 				if (this.accept(parser)) {
 					this.addDoneParser(name, parser);
@@ -81,10 +67,6 @@ class ParserContext {
 				}
 			}
 		}
-	}
-
-	void resetDoneParsers() {
-		doneParsers.clear();
 	}
 
 	boolean accept(Parser parser) {

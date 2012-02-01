@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Arguments/>
+  <Context/>
+  <Model/>
+  <View listener="spring:dorado.console.Login#onViewInit">
+    <TextEditor id="textEditorToken"/>
+    <Button>
+      <ClientEvent name="onClick">var token = this.get('#textEditorToken').get(&quot;text&quot;);&#xD;
+var action = this.get(&quot;#loginAction&quot;);&#xD;
+action.set('parameter',{&#xD;
+	inputToken: token&#xD;
+});&#xD;
+action.execute();&#xD;
+</ClientEvent>
+      <Property name="caption">登陆</Property>
+    </Button>
+    <AjaxAction id="loginAction">
+      <ClientEvent name="onSuccess">if (true === arg.result) {&#xD;
+	open(&quot;Main.d&quot;,&quot;_self&quot;);&#xD;
+} else {&#xD;
+	dorado.widget.NotifyTipManager.notify(&quot;登陆失败&quot;);&#xD;
+}&#xD;
+</ClientEvent>
+      <Property name="service">dorado.console.Login#login</Property>
+    </AjaxAction>
+  </View>
+</ViewConfig>
