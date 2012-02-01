@@ -311,15 +311,17 @@
 						});
 					} 
 					catch (e) {
+						if (taskId) dorado.util.TaskIndicator.hideTaskIndicator(taskId);
+						
 						if (self._modal) {
 							self.set("disabled", false);
-						}
-								
-						if (self._modal && hasIcon) {
-							self.set({
-								icon: oldIcon,
-								iconClass: oldIconClass
-							});
+							
+							if (hasIcon) {
+								self.set({
+									icon: oldIcon,
+									iconClass: oldIconClass
+								});
+							}
 						}
 						
 						if (!(e instanceof dorado.AbstractException)) {
