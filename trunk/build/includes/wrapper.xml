@@ -1,27 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:ivy="antlib:org.apache.ivy.ant" name="wrapper" default="build">
-	<taskdef resource="net/sf/antcontrib/antlib.xml">
-		<classpath>
-			<pathelement location="${lib.dir}/ant-contrib-1.0b3.jar" />
-		</classpath>
-	</taskdef>
-				
 	<property file="${basedir}/build.properties" />
-
-	<if>
-		<equals arg1="${product.qualifier}" arg2="" />
-		<then>
-			<property name="product.revision" value="${product.version}" />
-		</then>
-		<else>
-			<property name="product.revision" value="${product.version}-${product.qualifier}" />
-		</else>
-	</if>
-
-	<tstamp>
-		<format property="product.publication" pattern="yyMMdd.HHmm" locale="true" />
-	</tstamp>
-	<property name="product.fullversion" value="${product.revision}.${product.publication}" />
 
 	<property name="work.dir" value="${basedir}/work" />
 	<property name="target.dir" value="${basedir}/target" />
@@ -40,6 +19,12 @@
 
 	<property name="oro.jar" value="oro-${oro.version}.jar" />
 
+	<taskdef resource="net/sf/antcontrib/antlib.xml">
+		<classpath>
+			<pathelement location="${lib.dir}/ant-contrib-1.0b3.jar" />
+		</classpath>
+	</taskdef>
+
 	<target name="do-resolve-env-libs" unless="ivy.installed">
 		<mkdir dir="${ivy.repository}" />
 		<get src="http://repo1.maven.org/maven2/oro/oro/${oro.version}/${oro.jar}" dest="${lib.dir}/${oro.jar}" />
@@ -55,6 +40,21 @@
 	</target>
 
 	<target name="build" depends="resolve-env-libs">
+		<if>
+			<equals arg1="${product.qualifier}" arg2="" />
+			<then>
+				<property name="product.revision" value="${product.version}" />
+			</then>
+			<else>
+				<property name="product.revision" value="${product.version}-${product.qualifier}" />
+			</else>
+		</if>
+
+		<tstamp>
+			<format property="product.publication" pattern="yyMMdd.HHmm" locale="true" />
+		</tstamp>
+		<property name="product.fullversion" value="${product.revision}.${product.publication}" />
+
 		<foreach list="${build-files}" param="build-file" target="invoke-sub-ant" inheritall="true" />
 	</target>
 </project>
