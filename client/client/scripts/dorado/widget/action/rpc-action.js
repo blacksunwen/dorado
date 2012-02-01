@@ -342,6 +342,8 @@
 			beforeExecute : {
 				interceptor : function(superFire, self, arg) {
 					var retval = superFire(self, arg);
+					this._realExecutingMessage = this._executingMessage;
+					this._executingMessage = null;
 					this._realConfirmMessage = this._confirmMessage;
 					this._confirmMessage = null;
 					return retval;
@@ -417,7 +419,7 @@
 			}
 			
 			function validateEntity(validateContext, entity, validateOptions, validateSubEntities) {
-				if (entity.isDirty()) {
+				if (entity.isDirty() && entity.state != dorado.Entity.STATE_DELETED) {
 					validateOptions.context = {};
 					entity.validate(validateOptions);
 					validateContext = mergeValidateContext(validateContext, validateOptions.context);
@@ -632,6 +634,16 @@
 		},
 		
 		doExecuteAsync : function(callback) {
+			
+			var confirmMessage = this._realConfirmMessage, executingMessage = this._realExecutingMessage;
+			if (this._executingMessage === null) {
+				this._executingMessage =executingMessage;
+				this._realExecutingMessage = null;
+			}
+			if (this._confirmMessage === null) {
+				this._confirmMessage = confirmMessage;
+				this._realConfirmMessage = null;
+			}
 
 			function processEntityStates(entityStates, context) {
 
@@ -731,22 +743,22 @@
 
 			function doUpdate(context, dataResolverArg) {
 				var eventArg = {
-					dataItems : dataResolverArg.dataItems,
-					parameter : dataResolverArg.parameter,
-					processDefault : true
+					dataItems: dataResolverArg.dataItems,
+					parameter: dataResolverArg.parameter,
+					processDefault: true
 				};
 				this.fireEvent("beforeUpdate", this, eventArg);
-				if(eventArg.processDefault && this._dataResolver) {
+				if (eventArg.processDefault && this._dataResolver) {
 					var dataResolver = this._dataResolver;
 					dataResolver.supportsEntity = this._supportsEntity;
 					dataResolver.dataTypeRepository = this.get("dataTypeRepository");
-					dataResolver.message = this._executingMessage ? '' : null;
+					dataResolver.message = executingMessage ? executingMessage : "";
 					dataResolver.modal = this._modal;
-					if(callback) {
+					if (callback) {
 						return dataResolver.resolveAsync(dataResolverArg, {
-							scope : this,
-							callback : function(success, result) {
-								if(success)	processEntityStates.call(this, result.entityStates, context);
+							scope: this,
+							callback: function(success, result) {
+								if (success) processEntityStates.call(this, result.entityStates, context);
 								$callback(callback, success, (success) ? result.returnValue : result);
 								this.fireEvent("onUpdate", this, eventArg);
 							}
@@ -761,16 +773,12 @@
 			}
 
 			var context = this.getResolveContext(), dataResolverArg = context.dataResolverArg;
+					
 			if(this._alwaysExecute || !this._updateItems.length || context.hasUpdateData) {
-				if (this._realConfirmMessage) {
+				if (confirmMessage) {
 					var self = this;
 					dorado.MessageBox.confirm(this._realConfirmMessage, {
 						detailCallback: function(buttonId) {
-							if (self._confirmMessage === null) {
-								self._confirmMessage = self._realConfirmMessage;
-								self._realConfirmMessage = null;
-							}
-							
 							if (buttonId == "yes") {
 								doUpdate.call(self, context, dataResolverArg);
 							}
@@ -780,19 +788,9 @@
 						}
 					});
 				} else {
-					if (this._confirmMessage === null) {
-						this._confirmMessage = this._realConfirmMessage;
-						this._realConfirmMessage = null;
-					}
-					
 					doUpdate.call(this, context, dataResolverArg);
 				}
 			} else {
-				if (this._confirmMessage === null) {
-					this._confirmMessage = this._realConfirmMessage;
-					this._realConfirmMessage = null;
-				}
-					
 				if (!this._alwaysExecute && this._updateItems.length && !context.hasUpdateData) {
 					dorado.widget.NotifyTipManager.notify($resource("dorado.baseWidget.NoDataToSubmit"));
 				}
