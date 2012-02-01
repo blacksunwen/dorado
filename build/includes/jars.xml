@@ -130,12 +130,14 @@
 	</target>
 
 	<target name="publish" if="publish-jars">
-		<property name="maven.repository" value="${bsdn.nexus-snapshots}" />
 		<if>
 			<equals arg1="${product.qualifier}" arg2="RELEASE" />
 			<then>
 				<property name="maven.repository" value="${bsdn.nexus-release}" />
 			</then>
+			<else>
+				<property name="maven.repository" value="${bsdn.nexus-snapshots}" />
+			</else>
 		</if>
 		<antcall target="publish-to-bsdn" inheritAll="true" />
 	</target>
