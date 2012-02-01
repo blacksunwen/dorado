@@ -9,7 +9,10 @@
       <PropertyDef name="type">
         <Property name="dataType">String</Property>
       </PropertyDef>
-      <PropertyDef name="parserName">
+      <PropertyDef name="parser">
+        <Property name="dataType">String</Property>
+      </PropertyDef>
+      <PropertyDef name="component">
         <Property name="dataType">String</Property>
       </PropertyDef>
       <PropertyDef name="properties">
@@ -27,11 +30,10 @@
         <Property name="dataType">String</Property>
       </PropertyDef>
     </DataType>
-    <DataProvider name="viewTree" interceptor="spring:dorado.console.parserTree#getViewConfigNodes"/>
   </Model>
   <View>
     <DataSet id="dataSetViewConfig">
-      <Property name="dataProvider">viewTree</Property>
+      <Property name="dataProvider">dorado.console.parserTree#getViewConfigNodes</Property>
       <Property name="dataType">[Node]</Property>
     </DataSet>
     <SplitPanel id="splitPanel1">
@@ -40,18 +42,38 @@
       <Property name="position">300</Property>
       <MainControl>
         <Container id="container1">
-          <DataLabel id="dataLabel1" layoutConstraint="top">
-            <Property name="dataPath">!CURRENT_NODE.parserName</Property>
+          <AutoForm layoutConstraint="top">
             <Property name="dataSet">dataSetViewConfig</Property>
-            <Property name="height">20</Property>
-          </DataLabel>
+            <Property name="dataPath">!CURRENT_NODE</Property>
+            <Property name="cols">*</Property>
+            <AutoFormElement>
+              <Property name="name">name</Property>
+              <Property name="property">name</Property>
+              <Editor>
+                <DataLabel/>
+              </Editor>
+            </AutoFormElement>
+            <AutoFormElement>
+              <Property name="name">component</Property>
+              <Property name="property">component</Property>
+              <Editor>
+                <DataLabel/>
+              </Editor>
+            </AutoFormElement>
+            <AutoFormElement>
+              <Property name="name">parser</Property>
+              <Property name="property">parser</Property>
+              <Editor>
+                <DataLabel/>
+              </Editor>
+            </AutoFormElement>
+          </AutoForm>
           <DataGrid id="dataGridViewConfig">
             <Property name="dataSet">dataSetViewConfig</Property>
             <Property name="dataPath">!CURRENT_NODE.properties</Property>
-            <Property name="height">100%</Property>
-            <Property name="width">100%</Property>
             <Property name="autoCreateColumns">false</Property>
             <Property name="stretchColumnsMode">stretchableColumns</Property>
+            <Property name="readOnly">true</Property>
             <DataColumn>
               <Property name="name">key</Property>
               <Property name="width">150</Property>

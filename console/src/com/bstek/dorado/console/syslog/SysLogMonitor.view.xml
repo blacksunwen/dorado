@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Arguments/>
+  <Context/>
+  <Model>
+    <DataType name="dataTypeLog">
+      <Property name="matchType">com.bstek.dorado.console.syslog.LogLine</Property>
+      <PropertyDef name="level">
+        <Property name="dataType">String</Property>
+      </PropertyDef>
+      <PropertyDef name="line">
+        <Property name="dataType">String</Property>
+      </PropertyDef>
+    </DataType>
+  </Model>
+  <View>
+    <DataSet id="dataSetLog">
+      <Property name="dataType">dataTypeLog</Property>
+      <Property name="parameter"/>
+      <Property name="dataProvider">dorado.console.SystemLogMonitor#last</Property>
+    </DataSet>
+    <Button>
+      <ClientEvent name="onClick">this.get(&quot;#dataSetLog&quot;).flushAsync()&#xD;
+</ClientEvent>
+    </Button>
+    <DataGrid id="gridLog">
+      <Property name="dataSet">dataSetLog</Property>
+      <DataColumn>
+        <Property name="property">level</Property>
+        <Property name="name">level</Property>
+        <Property name="width">30</Property>
+      </DataColumn>
+      <DataColumn>
+        <Property name="name">line</Property>
+        <Property name="property">line</Property>
+      </DataColumn>
+    </DataGrid>
+  </View>
+</ViewConfig>

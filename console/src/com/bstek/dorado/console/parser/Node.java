@@ -1,38 +1,47 @@
 package com.bstek.dorado.console.parser;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import com.bstek.dorado.config.Parser;
+import com.bstek.dorado.config.xml.CollectionToPropertyParser;
+import com.bstek.dorado.config.xml.DispatchableXmlParser;
+import com.bstek.dorado.config.xml.ObjectParser;
+import com.bstek.dorado.config.xml.XmlParser;
+import com.bstek.dorado.config.xml.SubNodeToPropertyParser;
 
 public class Node {
 	private String name;
-	private String type;
-	Parser parser;
+	private String component;
+	Parser parserObject;
 	private List<KeyValue> properties = new ArrayList<KeyValue>();
 	private List<Node> children = new ArrayList<Node>();
 
 	public Node(){}
-	public Node(Parser parser, String name) {
-		this.parser = parser;
+	public Node(String name){
+		this(null, name);
+	}
+	public Node(Parser parserObject, String name) {
+		this.parserObject = parserObject;
 		this.name = name;
 	}
+	
 	public String getName() {
 		return name;
 	}
 
-	public String getType() {
-		return type;
+	public String getParser() {
+		return (parserObject == null)? null : parserObject.getClass().getName();
 	}
-	public void setType(String type) {
-		this.type = type;
+	
+	public String getComponent() {
+		return component;
 	}
-
-	public String getParserName() {
-		return (parser == null)? null : parser.getClass().getName();
-	}
-	public void setParserName(String parser) {
-		//
+	public void setComponent(String component) {
+		this.component = component;
 	}
 	
 	public List<KeyValue> getProperties() {
@@ -46,6 +55,46 @@ public class Node {
 		properties.add(kv);
 	}
 
+	void initProperties() throws Exception {
+		if (this.parserObject == null) {
+			return;
+		}
+
+		Parser parser = this.parserObject;
+		if (parser instanceof CollectionToPropertyParser) {
+			CollectionToPropertyParser collectionParser = (CollectionToPropertyParser) parser;
+			Class<?> elementType = collectionParser.getElementType();
+			if (elementType != null) {
+				this.setComponent(elementType.getName());
+			}
+		} else if (parser instanceof SubNodeToPropertyParser) {
+			SubNodeToPropertyParser subParser = (SubNodeToPropertyParser) parser;
+			Class<?> elementType = subParser.getElementType();
+			if (elementType != null) {
+				this.setComponent(elementType.getName());
+			}
+		} else if (parser instanceof ObjectParser) {
+			ObjectParser objectParser = (ObjectParser) parser;
+			this.setComponent(objectParser.getImpl());
+		}
+		
+		if (parser instanceof DispatchableXmlParser) {
+			DispatchableXmlParser dispatchParser = (DispatchableXmlParser) parser;
+			Map<String, XmlParser> parsers = dispatchParser.getPropertyParsers();
+			if (parsers.isEmpty())
+				return;
+
+			Iterator<Entry<String, XmlParser>> entryItr = parsers.entrySet()
+					.iterator();
+			while (entryItr.hasNext()) {
+				Entry<String, XmlParser> entry = entryItr.next();
+				String key = entry.getKey();
+				XmlParser p = entry.getValue();
+				this.addProperty(key, p.getClass().getName());
+			}
+		}
+	}
+	
 	public List<Node> getChildren() {
 		return children;
 	}

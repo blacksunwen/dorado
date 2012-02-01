@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Arguments/>
+  <Context/>
+  <Model/>
+  <View>
+    <TextArea id="text" layoutConstraint="center">
+      <Property name="property">text</Property>
+    </TextArea>
+    <TextEditor id="logLevel"/>
+    <Button layoutConstraint="bottom">
+      <Property name="caption">发送</Property>
+    </Button>
+  </View>
+</ViewConfig>
