@@ -825,12 +825,12 @@ public class XmlParserHelper implements BeanFactoryAware {
 		Class<?> propertyType = typeInfo.getType();
 
 		xmlParserInfos = new ArrayList<XmlParserInfo>();
-		if (StringUtils.isNotEmpty(xmlSubNode.nodeName())
-				|| StringUtils.isNotEmpty(xmlSubNode.parser())) {
+		String nodeName = xmlSubNode.nodeName();
+		if (StringUtils.isNotEmpty(nodeName)
+				&& StringUtils.isNotEmpty(xmlSubNode.parser())) {
 			XmlParser subParser = (XmlParser) BeanFactoryUtils
 					.getBean(xmlSubNode.parser());
-			XmlParserInfo parserInfo = new XmlParserInfo(xmlSubNode.nodeName(),
-					subParser);
+			XmlParserInfo parserInfo = new XmlParserInfo(nodeName, subParser);
 			xmlParserInfos.add(parserInfo);
 		} else {
 			String[] implTypes = xmlSubNode.implTypes();
@@ -851,6 +851,21 @@ public class XmlParserHelper implements BeanFactoryAware {
 					context, propertyType);
 			if (xpis != null) {
 				xmlParserInfos.addAll(xpis);
+			}
+
+			if (StringUtils.isNotEmpty(nodeName)
+					&& !nodeName.contains(DispatchableXmlParser.WILDCARD)
+					&& !xmlParserInfos.isEmpty()) {
+				if (xmlParserInfos.size() == 1) {
+					XmlParserInfo parserInfo = xmlParserInfos.get(0);
+					xmlParserInfos.set(0, new XmlParserInfo(nodeName,
+							parserInfo.getParser()));
+				} else {
+					throw new IllegalArgumentException(
+							"Assign nodeName for mora than one parse. ["
+									+ beanType.getName() + "." + propertyName
+									+ "], [" + nodeName + "].");
+				}
 			}
 		}
 

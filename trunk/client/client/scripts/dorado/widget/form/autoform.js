@@ -38,8 +38,8 @@ dorado.widget.autoform.AutoFormElement = $extend(dorado.widget.FormElement, /** 
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
- * @class 自动表单。
  * @component Form
+ * @class 自动表单。
  * <p>
  * AutoForm的get方法在{@link dorado.AttributeSupport#get}的基础上做了增强。
  * 除了原有的读取属性值的功能之外，此方法还另外提供了下面的用法。

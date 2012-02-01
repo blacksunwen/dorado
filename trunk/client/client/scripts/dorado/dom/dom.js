@@ -341,14 +341,6 @@
 			return el;
 		},
 		
-		/**
-		 * @deprecated
-		 * @see $DomUtils.xCreate
-		 */
-		xCreateElement: function() {
-			return this.xCreate.apply(this, arguments);
-		},
-		
 		BLANK_IMG: dorado.Setting["common.contextPath"] + "dorado/client/resources/blank.gif",
 		
 		setImgSrc: function(img, src) {

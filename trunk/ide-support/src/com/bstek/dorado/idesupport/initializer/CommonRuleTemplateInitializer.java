@@ -27,6 +27,7 @@ import com.bstek.dorado.common.event.ClientEventRegisterInfo;
 import com.bstek.dorado.common.event.ClientEventRegistry;
 import com.bstek.dorado.common.event.ClientEventSupported;
 import com.bstek.dorado.common.event.ClientEventSupportedObject;
+import com.bstek.dorado.config.xml.DispatchableXmlParser;
 import com.bstek.dorado.core.bean.Scope;
 import com.bstek.dorado.data.config.definition.InterceptableDefinition;
 import com.bstek.dorado.data.config.definition.ListenableObjectDefinition;
@@ -284,7 +285,7 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 		} else if (annotationProperties.length > 1) {
 			hasPropertyAnnotation = true;
 		}
-		
+
 		if (hasPropertyAnnotation) {
 			for (XmlProperty xmlProperty : annotationProperties) {
 				if (StringUtils.isEmpty(xmlProperty.propertyName())) {
@@ -702,18 +703,6 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 			return null;
 		}
 
-		RuleTemplateManager ruleTemplateManager = initializerContext
-				.getRuleTemplateManager();
-		RuleTemplate ruleTemplate = ruleTemplateManager
-				.getRuleTemplate(beanType);
-		if (ruleTemplate == null) {
-			ruleTemplate = createRuleTemplate(ruleTemplateManager, beanType,
-					null);
-			if (StringUtils.isNotEmpty(scope)) {
-				ruleTemplate.setScope(scope);
-			}
-		}
-
 		if (StringUtils.isEmpty(name)) {
 			name = xmlNodeInfo.getNodeName();
 			if (StringUtils.isEmpty(name)) {
@@ -731,6 +720,28 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 				}
 				name += '[' + buf.toString() + ']';
 			}
+		}
+
+		RuleTemplateManager ruleTemplateManager = initializerContext
+				.getRuleTemplateManager();
+		RuleTemplate ruleTemplate = ruleTemplateManager
+				.getRuleTemplate(beanType);
+		if (ruleTemplate == null) {
+			ruleTemplate = createRuleTemplate(ruleTemplateManager, beanType,
+					null);
+			if (StringUtils.isNotEmpty(scope)) {
+				ruleTemplate.setScope(scope);
+			}
+		}
+
+		String nodeName = xmlSubNode.nodeName();
+		if (StringUtils.isNotEmpty(nodeName)
+				&& !nodeName.contains(DispatchableXmlParser.WILDCARD)
+				&& StringUtils.isEmpty(xmlSubNode.parser())) {
+			RuleTemplate privateRuleTemplate = new AutoRuleTemplate(name);
+			privateRuleTemplate.setParents(new RuleTemplate[] { ruleTemplate });
+			privateRuleTemplate.setNodeName(nodeName);
+			ruleTemplate = privateRuleTemplate;
 		}
 
 		AutoChildTemplate childTemplate = new AutoChildTemplate(name,
