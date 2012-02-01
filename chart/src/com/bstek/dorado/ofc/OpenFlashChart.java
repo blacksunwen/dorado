@@ -133,7 +133,7 @@ public class OpenFlashChart extends Control {
 	/**
 	 * @return the yAxis
 	 */
-	@XmlSubNode
+	@XmlSubNode(nodeName = "YAxis")
 	@ClientProperty
 	public YAxis getyAxis() {
 		return yAxis;
@@ -184,7 +184,7 @@ public class OpenFlashChart extends Control {
 	/**
 	 * @return the yAxisRight
 	 */
-	@XmlSubNode
+	@XmlSubNode(nodeName = "YAxisRight")
 	@ClientProperty
 	public YAxis getyAxisRight() {
 		return yAxisRight;

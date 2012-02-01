@@ -37,7 +37,6 @@ import com.bstek.dorado.data.type.validator.Validator;
 				attributeOnly = true))
 @ClientObject
 @ClientEvents({
-		@com.bstek.dorado.annotation.ClientEvent(name = "beforeCurrentChange"),
 		@com.bstek.dorado.annotation.ClientEvent(name = "onGet"),
 		@com.bstek.dorado.annotation.ClientEvent(name = "onGetText"),
 		@com.bstek.dorado.annotation.ClientEvent(name = "onSet"),

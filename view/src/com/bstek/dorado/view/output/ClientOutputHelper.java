@@ -377,7 +377,8 @@ public class ClientOutputHelper {
 						BeanWrapper beanWrapper = BeanFactoryUtils.getBean(
 								DATA_OUTPUTTER, Scope.instant);
 						propertyConfig.setOutputter(beanWrapper.getBean());
-					} else if (!EntityUtils.isSimpleType(propertyType)) {
+					} else if (!EntityUtils.isSimpleType(propertyType)
+							&& !propertyType.isArray()) {
 						BeanWrapper beanWrapper = BeanFactoryUtils.getBean(
 								OBJECT_OUTPUTTER, Scope.instant);
 						propertyConfig.setOutputter(beanWrapper.getBean());
