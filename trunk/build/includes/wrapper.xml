@@ -2,7 +2,16 @@
 <project xmlns:ivy="antlib:org.apache.ivy.ant" name="wrapper" default="build">
 	<property file="${basedir}/build.properties" />
 
-	<property name="product.revision" value="${product.version}-${product.qualifier}" />
+	<if>
+		<equals arg1="${product.qualifier}" arg2="" />
+		<then>
+			<property name="product.revision" value="${product.version}" />
+		</then>
+		<else>
+			<property name="product.revision" value="${product.version}-${product.qualifier}" />
+		</else>
+	</if>
+
 	<tstamp>
 		<format property="product.publication" pattern="yyMMdd.HHmm" locale="true" />
 	</tstamp>
