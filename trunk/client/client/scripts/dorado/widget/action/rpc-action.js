@@ -777,7 +777,7 @@
 			if(this._alwaysExecute || !this._updateItems.length || context.hasUpdateData) {
 				if (confirmMessage) {
 					var self = this;
-					dorado.MessageBox.confirm(this._realConfirmMessage, {
+					dorado.MessageBox.confirm(confirmMessage, {
 						detailCallback: function(buttonId) {
 							if (buttonId == "yes") {
 								doUpdate.call(self, context, dataResolverArg);

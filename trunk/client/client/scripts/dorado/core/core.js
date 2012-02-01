@@ -202,7 +202,7 @@ dorado.Core = {
 		if (dorado.Browser.mozilla && dorado.Browser.version >= 8) {
 			// FF8莫名其妙的向setTimeout、setInterval的闭包函数中传入timerID
 			return window.setTimeout(function() {
-				dorado.Core.scopify(scope, fn);
+				(dorado.Core.scopify(scope, fn))();
 			}, timeMillis);
 		} else {
 			return setTimeout(dorado.Core.scopify(scope, fn), timeMillis);
