@@ -41,7 +41,7 @@
 
 	<target name="build" depends="resolve-env-libs">
 		<if>
-			<equals arg1="${product.qualifier}" arg2="" />
+			<equals arg1="${product.qualifier}" arg2="RELEASE" />
 			<then>
 				<property name="product.revision" value="${product.version}" />
 			</then>
