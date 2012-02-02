@@ -136,7 +136,6 @@
             if (editor.get("rendered")) {
                 var doms = editor._doms, editorEl = doms["editor"], emptyText = editor.get("emptyText"), value = editor.get("value");
                 editorEl.placeholder = emptyText || "";
-                console.log("emptyText:" + emptyText);
                 if(value){
                     editorEl.value = value;
                 } else {
@@ -222,7 +221,7 @@
         createDom: function() {
             var toggle = this, dom = $DomUtils.xCreate({
                 tagName: "div",
-                className: this.className,
+                className: this._className,
                 content: {
                     tagName: "div",
                     className: "thumb"
@@ -230,10 +229,102 @@
             });
 
             $fly(dom).bind("tap", function() {
-                $fly(dom).toggleClass(toggle.className + "-on");
+                $fly(dom).toggleClass(toggle._className + "-on");
             });
 
             return dom;
         }
+    });
+
+    dorado.touch.Spinner = $extend(dorado.widget.AbstractEditor, {
+        ATTRIBUTES: {
+            className: {
+                defaultValue: "spinner"
+            },
+            min: {},
+            max: {},
+            step: {
+                defaultValue: 1
+            },
+            textPattern: {
+                defaultValue: "{value}"
+            }
+        },
+
+        createDom: function() {
+            var spinner = this, doms = {}, dom = $DomUtils.xCreate({
+                tagName: "div",
+                className: this._className,
+                content: [{
+                    tagName: "div",
+                    className: "down-button",
+                    contextKey: "downButton",
+                    content: {
+                        tagName: "div",
+                        className: "icon"
+                    }
+                }, {
+                    tagName: "div",
+                    className: "up-button",
+                    contextKey: "upButton",
+                    content: {
+                        tagName: "div",
+                        className: "icon"
+                    }
+                }, {
+                    tagName: "div",
+                    className: "editor-wrap",
+                    content: {
+                        tagName: "input",
+                        type: "text",
+                        readOnly: true,
+                        className: "editor",
+                        contextKey: "editor"
+                    }
+                }]
+            }, null, doms);
+
+            spinner._doms = doms;
+
+            $fly(doms.downButton).bind("tap", function() {
+                spinner.doDown();
+            });
+
+            $fly(doms.upButton).bind("tap", function() {
+                spinner.doUp();
+            });
+
+            return dom;
+        },
+
+        doUp: function() {
+            var spinner = this, value = spinner.get("value") || 0, step = spinner.get("step") || 1;
+            spinner.set("value", value + step);
+        },
+
+        doDown: function() {
+            var spinner = this, value = spinner.get("value") || 0, step = spinner.get("step") || 1;
+            spinner.set("value", value - step);
+        },
+
+        formatValue: function(value) {
+            var format = this._textPattern || "{value}";
+            return format.replace("{value}", value);
+        },
+
+        refreshDom: function(){
+            $invokeSuper.call(this, arguments);
+
+            var spinner = this, dom = spinner._dom;
+            if (spinner.get("rendered")) {
+                var doms = spinner._doms, editorEl = doms["editor"], value = spinner.get("value");
+                if(value){
+                    editorEl.value = spinner.formatValue(value);
+                } else {
+                    editorEl.value = "";
+                }
+            }
+        },
+
     });
 })();

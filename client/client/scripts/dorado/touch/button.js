@@ -47,9 +47,9 @@ dorado.touch.Button = $extend(dorado.widget.Control, {
         }, null, doms);
 
         button._doms = doms;
-        $fly(dom).bind("tap", function() {
+        $fly(dom).bind("tap click", function() {
             button.onTap();
-        });
+        }).bind("tap click", false);
 
         $fly(dom).addClass("button-iconalign-" + button._iconAlign).addClass(button._ui || "");
 

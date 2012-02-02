@@ -1,0 +1,184 @@
+body, input, textarea, button {
+    font-size: 1em;
+}
+
+.i-radio{
+    height: 28px;
+}
+
+.i-radio .icon{
+    display: inline-block;
+    width: 24px;
+    height: 28px;
+    line-height: 28px;
+}
+
+.i-radio .text{
+    vertical-align: middle;
+    white-space: nowrap;
+    line-height: 28px;
+}
+
+.i-radiogroup{
+    height: 28px;
+}
+
+.d-radio .icon{
+    background: url(check-radio.png) 0 -24px;
+}
+
+.d-radio .unchecked{
+    background-position: 0 center;
+}
+
+.d-radio-hover .unchecked{
+    background-position: 0 center;
+}
+
+.d-radio-click .unchecked{
+    background-position: -24px center;
+}
+
+.d-radio .checked{
+    background-position: -48px center;
+}
+
+.d-radio-hover .checked{
+    background-position: -48px center;
+}
+
+.d-radio-click .checked{
+    background-position: -72px center;
+}
+
+.i-checkbox{
+    height: 28px;
+}
+
+.d-ie6 .i-checkbox, .d-ie7 .i-checkbox {
+    position: relative;
+}
+
+.i-checkbox .icon{
+    display: inline-block;
+    width: 24px;
+    height: 28px;
+}
+
+.i-checkbox .caption{
+    line-height: 28px;
+}
+
+.d-ie6 .i-checkbox .caption, .d-ie7 .i-checkbox .caption {
+    left: 24px;
+}
+
+.i-checkbox-icononly{
+    width: 28px;
+}
+
+.d-checkbox .icon{
+    background: url(check-radio.png) no-repeat -82px center;
+}
+
+.d-checkbox .halfchecked{
+    background-position: -192px center;
+}
+
+.d-checkbox-hover .halfchecked{
+    background-position: -192px center;
+}
+
+.d-checkbox-click .halfchecked{
+    background-position: -216px center;
+}
+
+.d-checkbox .unchecked{
+    background-position: -96px center;
+}
+
+.d-checkbox-hover .unchecked{
+    background-position: -96px center;
+}
+
+.d-checkbox-click .unchecked{
+    background-position: -120px center;
+}
+
+.d-checkbox .checked{
+    background-position: -144px center;
+}
+
+.d-checkbox-hover .checked{
+    background-position: -144px center;
+}
+
+.d-checkbox-click .checked{
+    background-position: -168px center;
+}
+
+.d-checkbox-center{
+    float: none;
+    position: relative;
+    left: 50%;
+    top: 50%;
+    margin: -10px 0 0 -7px;
+    padding: 0;
+}
+
+.d-checkbox-icononly{
+    background: url(check-radio.png) no-repeat;
+}
+
+.d-checkbox-halfchecked{
+    background-position: -192px center;
+}
+
+.d-checkbox-halfchecked-hover{
+    background-position: -192px center;
+}
+
+.d-checkbox-halfchecked-click{
+    background-position: -216px center;
+}
+
+.d-checkbox-unchecked{
+    background-position: -96px center;
+}
+
+.d-checkbox-unchecked-hover{
+    background-position: -96px center;
+}
+
+.d-checkbox-unchecked-click{
+    background-position: -120px center;
+}
+
+.d-checkbox-checked{
+    background-position: -144px center;
+}
+
+.d-checkbox-checked-hover{
+    background-position: -144px center;
+}
+
+.d-checkbox-checked-click{
+    background-position: -168px center;
+}
+
+.d-auto-form .form-label {
+    height: 30px;
+    line-height: 30px;
+}
+
+.i-data-label {
+    height: 30px;
+}
+
+.d-panel .button-panel {
+    height: 50px;
+}
+
+.d-panel .button-panel .button{
+    margin-right: 8px;
+}

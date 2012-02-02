@@ -143,6 +143,7 @@
         "touch/button.js",
         "touch/toolbar.js",
         "touch/panel.js",
+        "touch/group-box.js",
         "touch/form-element.js",
         "touch/editor.js"
     ];
@@ -156,7 +157,8 @@
         "list.css",
         "form-element.css",
         "picker.css",
-        "icon.css"
+        "icon.css",
+        "d7-reset.css"
 	];
 	
 	var cacheBuster = "";
@@ -173,8 +175,26 @@
     writeIncludeStyleSheet(CLIENT_ROOT + "client/skins/inherent/common.css");
     writeIncludeStyleSheet(CLIENT_ROOT + "client/skins/inherent/widget.css");
 
-    writeIncludeStyleSheet(CLIENT_ROOT + "client/skins/inherent/inherent.css");
-    writeIncludeStyleSheet(CLIENT_ROOT + "client/skins/default/default.css");
+    var d7is = [
+        "common.css",
+        "widget.css",
+        "tab-bar.css",
+        "iframe.css",
+        "tip.css",
+        "text-editor.css",
+        "trigger.css",
+        "checkbox.css",
+        "radio-button.css",
+        "form.css"
+    ];
+
+    for (var i = 0, j = d7is.length; i < j; i++) {
+        writeIncludeStyleSheet(CLIENT_ROOT + "client/skins/inherent/" + d7is[i]);
+        writeIncludeStyleSheet(CLIENT_ROOT + "client/skins/default/" + d7is[i]);
+    }
+
+    //writeIncludeStyleSheet(CLIENT_ROOT + "client/skins/inherent/inherent.css");
+    //writeIncludeStyleSheet(CLIENT_ROOT + "client/skins/default/default.css");
 
     for (var i = 0; i < styleSheets.length; i++) {
 		writeIncludeStyleSheet(CLIENT_ROOT + "client/skins/touch/" + styleSheets[i]);
