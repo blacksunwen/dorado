@@ -1422,9 +1422,11 @@
 			if (entity) {
 				if (entity instanceof dorado.Entity) {
 					if (editor instanceof dorado.widget.AbstractTextEditor) {
-						value = editor.get("value");
-						if (value instanceof dorado.Entity) entity.set(property, value);
-						else entity.setText(property, editor.get("text"));
+						if (editor.get("validationState") != "error") {
+							value = editor.get("value");
+							if (value instanceof dorado.Entity) entity.set(property, value);
+							else entity.setText(property, editor.get("text"));
+						}
 					} else {
 						value = editor.get("value");
 						entity.set(property, value);
