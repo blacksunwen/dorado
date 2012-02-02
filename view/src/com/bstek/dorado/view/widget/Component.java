@@ -30,9 +30,7 @@ import com.bstek.dorado.view.manager.ViewConfig;
  */
 @XmlNode(
 		definitionType = "com.bstek.dorado.view.config.definition.ComponentDefinition",
-		parser = "spring:dorado.componentParser", properties = { @XmlProperty(
-				propertyName = "interceptor",
-				parser = "spring:dorado.staticPropertyParser") })
+		parser = "spring:dorado.componentParser")
 @ClientObject(prototype = "dorado.widget.Component",
 		shortTypeName = "Component",
 		outputter = "spring:dorado.componentOutputter")
