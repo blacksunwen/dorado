@@ -867,12 +867,15 @@
 		 * @return {Date} 转换后得到的日期值。
 		 */
 		parse : function(data, argument) {
-			if(data == null) return null;
+			if (data == null) return null;
 			if (typeof data == "string") data = jQuery.trim(data);
-			if(data == '') return null;
+			if (data == '') return null;
 			
-			if( data instanceof Date) return data;
-			if(isFinite(data)) return new Date(data);
+			if (data instanceof Date) return data;
+			if (isFinite(data)) {
+				var date = new Date(data);
+				return (isNaN(date.getTime())) ? null : date;
+			}
 			
 			var format = argument || $setting["common.defaultDateFormat"];
 			var date = Date.parseDate(data, "Y-m-d\\TH:i:s\\Z");
