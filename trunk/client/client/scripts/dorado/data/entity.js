@@ -1657,8 +1657,9 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		 * 这样做的目的是为了便于在今后提交时能够清晰的掌握集合中的元素究竟做过哪些改变。
 		 */
 		remove : function(detach) {
-			if (this.parent)
+			if (this.parent instanceof dorado.EntityList) {
 				this.parent.remove(this, detach);
+			}
 		},
 		
 		toString : function() {
