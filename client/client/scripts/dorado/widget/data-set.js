@@ -878,13 +878,15 @@
 	DataSet.MESSAGE_LOADING_START = dorado.Entity._MESSAGE_LOADING_START;
 	DataSet.MESSAGE_LOADING_END = dorado.Entity._MESSAGE_LOADING_END;
 	
+	/**
+	 * @function
+	 * @name dorado.widget.DataSet.getOwnerDataSet
+	 * @description 返回某数据实体或实体集合当前所隶属的DataSet。
+	 * @param {dorado.Entity|dorado.EntityList} data 数据实体或实体集合。
+	 * @return {dorado.widget.DataSet} 隶属的DataSet。
+	 */
 	DataSet.getOwnerDataSet = function(data) {
-		var p = data.parent;
-		while (p) {
-			if (p instanceof DataSet) return p;
-			p = p.parent;
-		}
-		return null;
+		return (data._observer instanceof dorado.widget.DataSet) ? data._observer : null;
 	};
 
 	/**
