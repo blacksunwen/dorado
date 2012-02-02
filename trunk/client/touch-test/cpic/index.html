@@ -2,9 +2,10 @@
 <html>
 <head>
 <title>Cpic</title>
-<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-<script type="text/javascript" src="../include-all.js">
-</script>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0;"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<script type="text/javascript" src="../include-all.js"></script>
 <script type="text/javascript">
 var view = new dorado.widget.View({
     layout:"Dock"
@@ -22,10 +23,16 @@ var autoform = new dorado.widget.AutoForm({
     layoutConstraint:{
         width:700
     },
+    style:{
+        margin:"0 auto"
+    },
     elements:[
         {
             property:"name",
-            label:"请录入车牌号码"
+            label:"请录入车牌号码",
+            editor:new dorado.touch.TextEditor({
+                icon:"jing.png"
+            })
         },
         {
             property:"salary",
@@ -35,18 +42,23 @@ var autoform = new dorado.widget.AutoForm({
 });
 
 var indexPanel = new dorado.touch.Panel({
-    layout:"Dock",
+    layout:new dorado.widget.layout.NativeLayout(),
     buttonAlign:"right",
     children:[new dorado.widget.HtmlContainer({
-        content:"<img src='cpic_logo.jpg' width=979 height=253></img><br /><p style='font-size: 24px;color: #ed8508'>尊敬的客户,欢迎使用太平洋保险自助测算保费系统!</p>",
-        height:350
+        content:"<img class='cpiclogo' src='cpic_logo.jpg' width=979 height=253></img><br /><p style='font-size: 24px;color: #ed8508'>尊敬的客户,欢迎使用太平洋保险自助测算保费系统!</p>",
+        height:350,
+        style:{
+            display:"block",
+            margin:"0 auto",
+            textAlign:"center"
+        }
     }), autoform],
     buttons:[
         new dorado.touch.Button({
-            caption:"Exit"
-        }),
-        new dorado.touch.Button({
-            caption:"Next",
+            icon:"next.png",
+            iconAlign:"top",
+            ui:"button-none",
+            caption:"登陆",
             onTap:function () {
                 cardbook.set("currentControl", personalPanel);
             }
@@ -55,73 +67,95 @@ var indexPanel = new dorado.touch.Panel({
 });
 
 var personalPanel = new dorado.touch.Panel({
-    caption:"个人信息",
-    children:[new dorado.widget.HtmlContainer({
-        content:"<p>您的上一张有效交强险保单的到期日期:2011/12/1 本次测算保险的保险期间:2011/12/2——2012/12/1</p>" +
-                "<p>上年度出险记录:</p>" +
-                "<p>交强险:出险次数  2 次  合计理赔金额  2000 元</p>" +
-                "<p>商业险:出险次数  1 次  合计理赔金额  2000 元</p>"
-    }), new dorado.widget.AutoForm({
-        labelWidth:200,
-        cols:"*,*",
-        layoutConstraint:{
-            width:700
-        },
-        elements:[
-            {
-                property:"name",
-                label:"号牌号码",
-                type:"label"
+    layout: new dorado.widget.layout.NativeLayout(),
+    children:[
+        new dorado.widget.HtmlContainer({
+            layoutConstraint:{
+                type:"top"
             },
-            {
-                property:"salary",
-                label:"号牌种类",
-                type:"label"
-            },
-            {
-                property:"name",
-                label:"车辆所有人",
-                type:"label"
-            },
-            {
-                property:"salary",
-                label:"厂牌型号",
-                type:"label"
-            },
-            {
-                property:"name",
-                label:"使用年限",
-                type:"label"
-            },
-            {
-                property:"salary",
-                label:"初登日期",
-                type:"label"
-            },
-            {
-                property:"name",
-                label:"车主名称",
-                type:"label"
-            },
-            {
-                property:"salary",
-                label:"联系方式",
-                type:"label"
-            }
-        ]
-    })],
+            content:"<div class='detail-region-topbar'><span class='title'>基本信息：</span><img class='logo' src='cpic_logo_white.png' /></div>",
+            height:100
+        }),
+        new dorado.widget.HtmlContainer({
+            content:"<p>您的上一张有效交强险保单的到期日期:2011/12/1</p><p>本次测算保险的保险期间:2011/12/2——2012/12/1</p>"
+        }),
+        new dorado.touch.GroupBox({
+            caption:"上年度出险记录",
+            children:[new dorado.widget.HtmlContainer({
+                content:"<p>交强险:出险次数  2 次  合计理赔金额  2000 元</p>" +
+                        "<p>商业险:出险次数  1 次  合计理赔金额  2000 元</p>",
+
+            })],
+            height:100
+        }),
+        new dorado.touch.GroupBox({
+            caption:"个人信息",
+            children:[new dorado.widget.AutoForm({
+                labelWidth:200,
+                cols:"*,*",
+                layoutConstraint:{
+                    width:700
+                },
+                elements:[
+                    {
+                        property:"name",
+                        label:"号牌号码",
+                        type:"label"
+                    },
+                    {
+                        property:"salary",
+                        label:"号牌种类",
+                        type:"label"
+                    },
+                    {
+                        property:"name",
+                        label:"车辆所有人",
+                        type:"label"
+                    },
+                    {
+                        property:"salary",
+                        label:"厂牌型号",
+                        type:"label"
+                    },
+                    {
+                        property:"name",
+                        label:"使用年限",
+                        type:"label"
+                    },
+                    {
+                        property:"salary",
+                        label:"初登日期",
+                        type:"label"
+                    },
+                    {
+                        property:"name",
+                        label:"车主名称",
+                        type:"label"
+                    },
+                    {
+                        property:"salary",
+                        label:"联系方式",
+                        type:"label"
+                    }
+                ]
+            })],
+            height:200
+        })],
     buttons:[
         new dorado.touch.Button({
-            caption:"Prev",
+            icon:"back.png",
+            iconAlign:"top",
+            ui:"button-none",
+            caption:"返回",
             onTap:function () {
                 cardbook.set("currentControl", indexPanel);
             }
         }),
         new dorado.touch.Button({
-            caption:"Exit"
-        }),
-        new dorado.touch.Button({
-            caption:"Next",
+            icon:"next.png",
+            iconAlign:"top",
+            ui:"button-none",
+            caption:"继续",
             onTap:function () {
                 cardbook.set("currentControl", selectPanel);
             }
@@ -129,226 +163,263 @@ var personalPanel = new dorado.touch.Panel({
 });
 
 var selectPanel = new dorado.touch.Panel({
-    caption:"请选择承保险种",
-    children:[new dorado.touch.Panel({
-        layout:{
-            $type:"Form",
-            cols:"*,*"
-        },
-        children:[
-            {
-                $type:"Container",
-                layout:new dorado.widget.layout.NativeLayout(),
-                children:[
-                    new dorado.widget.CheckBox({
-                        caption:"交强险及车船税",
-                        exClassName:"block-el"
-                    }),
-                    new dorado.widget.CheckBox({
-                        caption:"机动车损失险",
-                        exClassName:"block-el  region-top"
-                    }),
-                    new dorado.widget.Container({
-                        layout:new dorado.widget.layout.NativeLayout(),
-                        exClassName:"detail-region",
-                        children:[
-                            new dorado.widget.Label({
-                                style:{
-                                    display:"inline-block",
-                                    marginRight:20
-                                },
-                                text:"保额"
-                            }),
-                            new dorado.touch.TextEditor({
-                                style:{
-                                    display:"inline-block"
-                                },
-                                width:70
-                            }),
-                            new dorado.widget.Label({
-                                style:{
-                                    display:"inline-block"
-                                },
-                                text:"万"
-                            }),
-                            new dorado.widget.CheckBox({
-                                caption:"不计免赔",
-                                exClassName:"block-el"
-                            }), new dorado.widget.CheckBox({
-                                caption:"玻璃单独破碎险"
-                            }), new dorado.widget.RadioGroup({
-                                layout:"flow",
-                                style:{
-                                    display:"inline-block"
-                                },
-                                radioButtons:[
-                                    {
-                                        value:false,
-                                        text:"Female"
-                                    },
-                                    {
-                                        value:true,
-                                        text:"Male"
-                                    }
-                                ]
-                            }),
-                            new dorado.widget.HtmlContainer({
-                                content:"<br />"
-                            }),
-                            new dorado.widget.CheckBox({
-                                caption:"车身油漆单独损伤险",
-                                style:{
-                                    marginRight:"40px"
-                                }
-                            }),
-                            new dorado.widget.Label({
-                                style:{
-                                    display:"inline-block",
-                                    marginRight:20
-                                },
-                                text:"保额"
-                            }),
-                            new dorado.touch.TextEditor({
-                                style:{
-                                    display:"inline-block"
-                                },
-                                width:70
-                            }),
-                            new dorado.widget.Label({
-                                style:{
-                                    display:"inline-block"
-                                },
-                                text:"元"
-                            }),
-                            new dorado.widget.CheckBox({
-                                caption:"涉水损失险",
-                                exClassName:"block-el"
-                            })]
-                    }),
-                    new dorado.widget.CheckBox({
-                        caption:"机动车全车盗抢损失险",
-                        exClassName:"block-el region-top"
-                    }),
-                    new dorado.widget.Container({
-                        layout:new dorado.widget.layout.NativeLayout(),
-                        exClassName:"detail-region",
-                        children:[new dorado.widget.Label({
-                            style:{
-                                display:"inline-block",
-                                marginRight:20
-                            },
-                            text:"保额"
-                        }),
-                            new dorado.touch.TextEditor({
-                                style:{
-                                    display:"inline-block"
-                                },
-                                width:70
-                            }),
-                            new dorado.widget.Label({
-                                style:{
-                                    display:"inline-block"
-                                },
-                                text:"万"
-                            }),
-                            new dorado.widget.CheckBox({
-                                caption:"不计免赔",
-                                exClassName:"block-el"
-                            })]
-                    })
-                ]
+    //caption:"请选择承保险种",
+    children:[
+        new dorado.widget.HtmlContainer({
+            layoutConstraint:{
+                type:"top"
             },
-            {
-                $type:"Container",
-                layout:new dorado.widget.layout.NativeLayout(),
-                children:[
-                    new dorado.widget.CheckBox({
-                        caption:"机动车第三者责任险",
-                        exClassName:"block-el"
-                    }),
-                    new dorado.widget.Container({
-                        layout:new dorado.widget.layout.NativeLayout(),
-                        exClassName:"detail-region",
-                        children:[
-                            new dorado.widget.Label({
+            content:"<div class='detail-region-topbar'><span class='title'>请选择承保险种：</span><img class='logo' src='cpic_logo_white.png' /></div>",
+            height:100
+        }),
+        new dorado.touch.Panel({
+            layout:{
+                $type:"Form",
+                cols:"*,*"
+            },
+            children:[
+                {
+                    $type:"Container",
+                    layout:new dorado.widget.layout.NativeLayout(),
+                    children:[
+                        new dorado.widget.CheckBox({
+                            checked:true,
+                            caption:"交强险及车船税",
+                            exClassName:"block-el"
+                        }),
+                        new dorado.widget.CheckBox({
+                            checked:true,
+                            caption:"机动车损失险",
+                            exClassName:"block-el  region-top"
+                        }),
+                        new dorado.widget.Container({
+                            layout:new dorado.widget.layout.NativeLayout(),
+                            exClassName:"detail-region",
+                            children:[
+                                new dorado.widget.Label({
+                                    style:{
+                                        display:"inline-block",
+                                        marginRight:20
+                                    },
+                                    text:"保额"
+                                }),
+                                new dorado.touch.Spinner({
+                                    style:{
+                                        display:"inline-block"
+                                    },
+                                    width:100,
+                                    value:20,
+                                    textPattern:"{value}万"
+                                }),
+                                new dorado.widget.CheckBox({
+                                    checked:true,
+                                    caption:"不计免赔",
+                                    exClassName:"block-el"
+                                }),
+                                new dorado.widget.Container({
+                                    height: 30,
+                                    layout: new dorado.widget.layout.NativeLayout(),
+                                    children: [
+                                        new dorado.widget.CheckBox({
+                                            checked:true,
+                                            caption:"玻璃单独破碎险",
+                                            style: {
+                                                "float": "left"
+                                            }
+                                        }), new dorado.widget.RadioGroup({
+                                            layout:"flow",
+                                            style:{
+                                                display:"inline-block",
+                                                "float": "left"
+                                            },
+                                            value:true,
+                                            radioButtons:[
+                                                {
+                                                    value:true,
+                                                    text:"国产"
+                                                },
+                                                {
+                                                    value:false,
+                                                    text:"进口"
+                                                }
+                                            ]
+                                        })
+                                    ]
+                                }),
+                                new dorado.widget.CheckBox({
+                                    checked:true,
+                                    caption:"车身油漆单独损伤险",
+                                    style:{
+                                        marginRight:"40px"
+                                    }
+                                }),
+                                new dorado.widget.Label({
+                                    style:{
+                                        display:"inline-block",
+                                        marginRight:20
+                                    },
+                                    text:"保额"
+                                }),
+                                new dorado.touch.Spinner({
+                                    style:{
+                                        display:"inline-block"
+                                    },
+                                    width:140,
+                                    value:5000,
+                                    step:1000,
+                                    textPattern:"{value}元"
+                                }),
+                                new dorado.widget.CheckBox({
+                                    checked:true,
+                                    caption:"涉水损失险",
+                                    exClassName:"block-el"
+                                })]
+                        }),
+                        new dorado.widget.CheckBox({
+                            checked:true,
+                            caption:"机动车全车盗抢损失险",
+                            exClassName:"block-el region-top"
+                        }),
+                        new dorado.widget.Container({
+                            layout:new dorado.widget.layout.NativeLayout(),
+                            exClassName:"detail-region",
+                            children:[new dorado.widget.Label({
                                 style:{
                                     display:"inline-block",
                                     marginRight:20
                                 },
                                 text:"保额"
                             }),
-                            new dorado.touch.TextEditor({
-                                style:{
-                                    display:"inline-block"
-                                },
-                                width:70
-                            }),
-                            new dorado.widget.Label({
-                                style:{
-                                    display:"inline-block"
-                                },
-                                text:"万"
-                            }),
-                            new dorado.widget.CheckBox({
-                                caption:"不计免赔",
-                                exClassName:"block-el"
-                            })]
-                    }),
-                    new dorado.widget.CheckBox({
-                        caption:"车上人员责任险",
-                        exClassName:"block-el region-top"
-                    }),
-                    new dorado.widget.Container({
-                        layout:new dorado.widget.layout.NativeLayout(),
-                        exClassName:"detail-region",
-                        children:[
-                            new dorado.widget.Label({
-                                style:{
-                                    display:"inline-block",
-                                    marginRight:20
-                                },
-                                text:"保额"
-                            }),
-                            new dorado.touch.TextEditor({
-                                style:{
-                                    display:"inline-block"
-                                },
-                                width:70
-                            }),
-                            new dorado.widget.Label({
-                                style:{
-                                    display:"inline-block"
-                                },
-                                text:"万"
-                            }),
-                            new dorado.widget.CheckBox({
-                                caption:"不计免赔",
-                                exClassName:"block-el"
-                            }), new dorado.widget.CheckBox({
-                                caption:"玻璃单独破碎险",
-                                exClassName:"block-el"
-                            })]
-                    }),
-                    new dorado.widget.CheckBox({
-                        caption:"附加险不计免赔险",
-                        exClassName:"block-el region-top"
-                    })
-                ]
-            }
-        ]
-    })],
+                                new dorado.touch.Spinner({
+                                    style:{
+                                        display:"inline-block"
+                                    },
+                                    width:100,
+                                    value:20,
+                                    textPattern:"{value}万"
+                                }),
+                                new dorado.widget.CheckBox({
+                                    checked:true,
+                                    caption:"不计免赔",
+                                    exClassName:"block-el"
+                                })]
+                        })
+                    ]
+                },
+                {
+                    $type:"Container",
+                    layout:new dorado.widget.layout.NativeLayout(),
+                    children:[
+                        new dorado.widget.CheckBox({
+                            checked:true,
+                            caption:"机动车第三者责任险",
+                            exClassName:"block-el"
+                        }),
+                        new dorado.widget.Container({
+                            layout:new dorado.widget.layout.NativeLayout(),
+                            exClassName:"detail-region",
+                            children:[
+                                new dorado.widget.Label({
+                                    style:{
+                                        display:"inline-block",
+                                        marginRight:20
+                                    },
+                                    text:"保额"
+                                }),
+                                new dorado.touch.Spinner({
+                                    style:{
+                                        display:"inline-block"
+                                    },
+                                    width:100,
+                                    value:20,
+                                    textPattern:"{value}万"
+                                }),
+                                new dorado.widget.CheckBox({
+                                    checked:true,
+                                    caption:"不计免赔",
+                                    exClassName:"block-el"
+                                })]
+                        }),
+                        new dorado.widget.CheckBox({
+                            checked:true,
+                            caption:"车上人员责任险",
+                            exClassName:"block-el region-top"
+                        }),
+                        new dorado.widget.Container({
+                            layout:new dorado.widget.layout.NativeLayout(),
+                            exClassName:"detail-region",
+                            children:[
+                                new dorado.widget.CheckBox({
+                                    checked:true,
+                                    caption:"司机"
+                                }),
+                                new dorado.widget.Label({
+                                    style:{
+                                        display:"inline-block",
+                                        marginRight:20,
+                                        marginLeft:40
+                                    },
+                                    text:"保额"
+                                }),
+                                new dorado.touch.Spinner({
+                                    style:{
+                                        display:"inline-block"
+                                    },
+                                    width:100,
+                                    value:5,
+                                    textPattern:"{value}万"
+                                }),
+                                new dorado.widget.Label({ text:"", style:{ height:0 } }),
+                                new dorado.widget.CheckBox({
+                                    checked:true,
+                                    caption:"乘客"
+                                }),
+                                new dorado.widget.Label({
+                                    style:{
+                                        display:"inline-block",
+                                        marginRight:20,
+                                        marginLeft:40
+                                    },
+                                    text:"保额"
+                                }),
+                                new dorado.touch.Spinner({
+                                    style:{
+                                        display:"inline-block"
+                                    },
+                                    width:100,
+                                    value:5,
+                                    textPattern:"{value}万"
+                                }),
+                                new dorado.widget.CheckBox({
+                                    checked:true,
+                                    caption:"不计免赔",
+                                    exClassName:"block-el"
+                                })]
+                        }),
+                        new dorado.widget.CheckBox({
+                            checked:true,
+                            caption:"附加险不计免赔险",
+                            exClassName:"block-el region-top"
+                        })
+                    ]
+                }
+            ]
+        })],
     buttons:[
         new dorado.touch.Button({
-            caption:"Prev",
+            icon:"back.png",
+            iconAlign:"top",
+            ui:"button-none",
+            caption:"返回",
             onTap:function () {
                 cardbook.set("currentControl", personalPanel);
             }
         }),
         new dorado.touch.Button({
-            caption:"Exit"
-        }),
-        new dorado.touch.Button({
-            caption:"Next",
+            icon:"next.png",
+            iconAlign:"top",
+            ui:"button-none",
+            caption:"保费试算",
             onTap:function () {
                 cardbook.set("currentControl", resultPanel);
             }
@@ -356,12 +427,19 @@ var selectPanel = new dorado.touch.Panel({
 });
 
 var resultPanel = new dorado.touch.Panel({
-    caption:"保费试算结果",
+    //caption:"保费试算结果",
     children:[new dorado.widget.HtmlContainer({
-        content:"<p>恭喜您完成太保车险自主测算信息填写!</p>" +
-                "<p>一切测算结果基于测算当日时间为准,实际保单</p>" +
-                "<p>价格应以实际出单日价格为准。</p>",
+        layoutConstraint:{
+            type:"top"
+        },
+        content:"<div class='detail-region-topbar'><span class='title'>保费试算结果：</span><img class='logo' src='cpic_logo_white.png' /></div>",
         height:100
+    }), new dorado.widget.HtmlContainer({
+        content:"<div style='font-size: 24px;color: #ed8508;text-align: center;'>" +
+                "<p>恭喜您完成太保车险自主测算信息填写!</p>" +
+                "<p>一切测算结果基于测算当日时间为准,实际保单价格应以实际出单日价格为准。</p>" +
+                "</div>",
+        height:120
     }), new dorado.widget.AutoForm({
         labelWidth:200,
         cols:"*,*",
@@ -414,16 +492,19 @@ var resultPanel = new dorado.touch.Panel({
     })],
     buttons:[
         new dorado.touch.Button({
-            caption:"Prev",
+            icon:"back.png",
+            iconAlign:"top",
+            ui:"button-none",
+            caption:"返回",
             onTap:function () {
                 cardbook.set("currentControl", selectPanel);
             }
         }),
         new dorado.touch.Button({
-            caption:"Exit"
-        }),
-        new dorado.touch.Button({
-            caption:"Next",
+            icon:"next.png",
+            iconAlign:"top",
+            ui:"button-none",
+            caption:"保费明细",
             onTap:function () {
                 cardbook.set("currentControl", resultDetailPanel);
             }
@@ -434,8 +515,14 @@ var triColTpl = "<table width='100%' class='detail-region'>{{#table}}<tr><td>{{n
 var twoColTpl = "<table width='100%' class='detail-region'>{{#table}}<tr><td>{{name}}</td><td width=80>{{fee}}</td></tr>{{/table}}</table>";
 
 var resultDetailPanel = new dorado.touch.Panel({
-    caption:"保费明细",
-    children:[new dorado.touch.Panel({
+    //caption:"保费明细",
+    children:[new dorado.widget.HtmlContainer({
+        layoutConstraint:{
+            type:"top"
+        },
+        content:"<div class='detail-region-topbar'><span class='title'>保费明细：</span><img class='logo' src='cpic_logo_white.png' /></div>",
+        height:100
+    }), new dorado.touch.Panel({
         layout:{
             $type:"Form",
             cols:"*,*"
@@ -589,7 +676,10 @@ var resultDetailPanel = new dorado.touch.Panel({
     })],
     buttons:[
         new dorado.touch.Button({
-            caption:"Exit",
+            icon:"stop.png",
+            iconAlign:"top",
+            ui:"button-none",
+            caption:"退出",
             onTap:function () {
                 cardbook.set("currentControl", indexPanel);
             }
@@ -650,8 +740,45 @@ $(document).ready(function () {
     .detail-region {
         margin-left: 20px;
     }
+
+    .detail-region-topbar {
+        background-color: #079ee7;
+        height: 100px;
+        overflow: hidden;
+    }
+
+    .detail-region-topbar .title {
+        color: white;
+        font-size: 24pt;
+        line-height: 120px;
+        vertical-align: bottom;
+    }
+
+    .detail-region-topbar .logo {
+        margin-top: 10px;
+        margin-right: 10px;
+        width: 300px;
+        height: 82px;
+        float: right;
+    }
+
+    .cpiclogo {
+        margin: 0 auto;
+    }
+
+    .button-none {
+        line-height: 100%;
+        background-image: none !important;
+        border: 0 !important;
+        height: 50px;
+    }
+
+    .button-none .icon {
+        width: 32px;
+        height: 32px;
+    }
 </style>
 </head>
-<body>
+<body style="margin: 0;padding: 0;overflow: hidden;">
 </body>
 </html>

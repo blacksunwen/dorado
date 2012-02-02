@@ -307,8 +307,6 @@
         },
 
         onResize: function() {
-            console.log("panel onResize:" + this._height);
-
             var panel = this, border = panel._border, dom = panel._dom, doms = panel._doms, height = panel._height;
 
             if (!panel._autoHeight/*!isNaN(height)*/) {

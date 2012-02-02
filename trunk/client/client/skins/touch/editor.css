@@ -27,7 +27,7 @@
 }
 
 .text-editor .icon{
-	width:20px;
+	width:30px;
 	height:100%;
 	float:left;
 
@@ -76,7 +76,7 @@
 }
 
 .text-editor-icon .editor-wrap{
-	margin-left:20px;
+	margin-left:30px;
 }
 
 .text-editor-icon .icon{
@@ -89,4 +89,67 @@
 
 .text-editor-holder .trigger{
 	display:block;
+}
+
+.spinner {
+}
+
+.spinner .editor-wrap {
+    margin-left: 24px;
+    margin-right: 26px;
+}
+.spinner .editor {
+    border: 1px solid #57A8D2;
+    background-color: transparent;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    min-height: 0;
+    line-height: 28px;
+    color: #6E6E6E;
+    border-radius: 0;
+}
+
+.spinner .up-button {
+    background-image: -webkit-gradient(linear,left top,left bottom,from(rgba(255, 255, 255, .5)),color-stop(0.5,rgba(30, 30, 30, .5)),color-stop(0.5,rgba(0, 0, 0, .5)),to(rgba(0, 0, 0, .5)));
+    border: solid 1px gray;
+    border-color: #6F6F6F #4D4D4D #676767 #616161;
+    float: right;
+    background-color: red;
+    width: 22px;
+    height: 28px;
+}
+
+.spinner .up-button .icon {
+    background-color: white!important;
+    -webkit-mask-image: url(arrow_up.svg);
+    background-position: center center;
+    -webkit-mask-position: 50% 50%;
+    -webkit-mask-size: 22px 22px;
+    background-size: 23px 23px;
+    margin: 2px auto 0 auto;
+    height: 23px;
+    width: 23px;
+}
+
+.spinner .down-button {
+    background-image: -webkit-gradient(linear,left top,left bottom,from(rgba(255, 255, 255, .5)),color-stop(0.5,rgba(30, 30, 30, .5)),color-stop(0.5,rgba(0, 0, 0, .5)),to(rgba(0, 0, 0, .5)));
+    border: solid 1px gray;
+    border-color: #6F6F6F #4D4D4D #676767 #616161;
+    float: left;
+    background-color: lightGreen;
+    width: 22px;
+    height: 28px;
+}
+
+.spinner .down-button .icon {
+    background-color: white!important;
+    -webkit-mask-image: url(arrow_down.svg);
+    background-position: center center;
+    -webkit-mask-position: 50% 50%;
+    -webkit-mask-size: 22px 22px;
+    background-size: 23px 23px;
+    margin: 2px auto 0 auto;
+    height: 23px;
+    width: 23px;
 }
