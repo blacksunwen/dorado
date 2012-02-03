@@ -41,7 +41,7 @@ dorado.validator.Validator = $extend([dorado.AttributeSupport, dorado.EventSuppo
 		/**
 		 * 是否重新校验旧的数值。
 		 * <p>
-		 * 即当用户将某Field的数值修改会原始值时，是否要重新执行此校验器。
+		 * 即当用户将某Field的数值修改回原始值时，是否要重新执行此校验器。
 		 * </p>
 		 * @type Boolean
 		 * @attribute
