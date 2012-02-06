@@ -36,7 +36,7 @@ public class SqlTable extends AbstractTable {
 		if (column instanceof SqlTableColumn) {
 			super.addColumn(column);
 		} else {
-			throw new IllegalArgumentException("unknow column class " + column.getClass());
+			throw new IllegalArgumentException("unknown column class " + column.getClass());
 		}
 	}
 	

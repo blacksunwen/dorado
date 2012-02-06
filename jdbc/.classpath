@@ -5,6 +5,7 @@
 	<classpathentry kind="src" path="ksrc"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/core"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/data"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/web"/>
 	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?ivyXmlPath=ivy.xml&amp;confs=*"/>
 	<classpathentry kind="lib" path="jdbc-driver/mssql2008/sqljdbc4.jar"/>
 	<classpathentry kind="lib" path="jdbc-driver/mysql/mysql-connector-java-5.1.17-bin.jar"/>

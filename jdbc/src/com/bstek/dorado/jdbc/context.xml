@@ -42,4 +42,8 @@
 	<bean id="dorado.jdbc.sqlTableSqlGenerator" class="com.bstek.dorado.jdbc.model.sqltable.SqlTableSqlGenerator"/>
 	<bean id="dorado.jdbc.autoTableSqlGenerator" class="com.bstek.dorado.jdbc.model.autotable.AutoTableSqlGenerator"/>
 	
+	<!-- IDE -->
+	<bean parent="dorado.idesupport.ruleConfigLoader">
+		<property name="configLocation" value="com/bstek/dorado/jdbc/jdbc-config-rules.xml"/>
+	</bean>
 </beans>

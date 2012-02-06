@@ -14,7 +14,6 @@ import org.dom4j.Element;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
 
-import com.bstek.dorado.core.Constants;
 import com.bstek.dorado.web.resolver.AbstractTextualResolver;
 
 public abstract class Resolver extends AbstractTextualResolver {
@@ -44,7 +43,7 @@ public abstract class Resolver extends AbstractTextualResolver {
 	protected String toString(Document document) {
 		StringWriter writer = new StringWriter();
 		OutputFormat format = OutputFormat.createPrettyPrint();
-		format.setEncoding(Constants.DEFAULT_CHARSET);
+		format.setEncoding(getCharacterEncoding());
 
 		XMLWriter xmlWriter = new XMLWriter(writer, format);
 		try {
@@ -58,7 +57,7 @@ public abstract class Resolver extends AbstractTextualResolver {
 	protected String toString(Element element) {
 		StringWriter writer = new StringWriter();
 		OutputFormat format = OutputFormat.createPrettyPrint();
-		format.setEncoding(Constants.DEFAULT_CHARSET);
+		format.setEncoding(getCharacterEncoding());
 
 		XMLWriter xmlWriter = new XMLWriter(writer, format);
 		try {
@@ -83,7 +82,7 @@ public abstract class Resolver extends AbstractTextualResolver {
 	protected String toXml(String rootElementName, XML xml) {
 		StringWriter writer = new StringWriter();
 		OutputFormat format = OutputFormat.createPrettyPrint();
-		format.setEncoding(Constants.DEFAULT_CHARSET);
+		format.setEncoding(getCharacterEncoding());
 
 		XMLWriter xmlWriter = new XMLWriter(writer, format);
 		try {

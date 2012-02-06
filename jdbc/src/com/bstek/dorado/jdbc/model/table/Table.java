@@ -51,7 +51,7 @@ public class Table extends AbstractTable {
 		} else if (column instanceof TableColumn) {
 			tableColumns.add((TableColumn)column);
 		} else {
-			throw new IllegalArgumentException("unknow column class [" + column.getClass().getName() + "]");
+			throw new IllegalArgumentException("unknown column class [" + column.getClass().getName() + "]");
 		}
 		super.addColumn(column);
 	}

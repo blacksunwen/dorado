@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RuleSet>
+	<Rule name="DbModel" type="com.bstek.dorado.jdbc.config.DbModel">
+	</Rule>
+</RuleSet>
