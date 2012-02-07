@@ -122,7 +122,7 @@ dorado.util.TaskIndicator.registerTaskGroup("daemon", {
  * 一般情况下，不需要单独使用该类。该类被TaskIndicator中的每个Group使用，每个Group对应一个TaskGroupPanel.
  * </p>
  */
-dorado.util.TaskGroupPanel = $extend(dorado.RenderableElement, { /** @scope dorado.util.TaskList.prototype */
+dorado.util.TaskGroupPanel = $extend(dorado.RenderableElement, { /** @scope dorado.util.TaskGroupPanel.prototype */
 	$className: "dorado.util.TaskGroupPanel",
 	
 	_inherentClassName: "i-task-group-panel",
@@ -130,7 +130,7 @@ dorado.util.TaskGroupPanel = $extend(dorado.RenderableElement, { /** @scope dora
 	taskGroupConfig: null,
 	_intervalId: null,
 	
-	ATTRIBUTES: {
+	ATTRIBUTES: /** @scope dorado.util.TaskGroupPanel.prototype */ {
 		className: {
 			defaultValue: "d-task-group-panel"
 		}
