@@ -1,5 +1,5 @@
 .text-editor{
-	border:1px solid #57A8D2;
+    border: 1px solid 		#B3B3B3;
 	background:#FFFFFF url(text-bg.gif) repeat-x 0 0;
     height: 26px;
 
@@ -23,7 +23,7 @@
 	min-height: 0;
     line-height: 24px;
 
-    color: #6E6E6E;
+    color: #111111;
 }
 
 .text-editor .icon{
@@ -60,7 +60,7 @@
 }
 
 .text-editor-readonly .editor-wrap .editor{
-    background-color: lightgray;
+    color: #6E6E6E;
 }
 
 .text-editor-readonly .trigger{
@@ -99,7 +99,7 @@
     margin-right: 26px;
 }
 .spinner .editor {
-    border: 1px solid #57A8D2;
+    border: 1px solid #bbb;
     background-color: transparent;
     width: 100%;
     margin: 0;
@@ -111,18 +111,19 @@
 }
 
 .spinner .up-button {
-    background-image: -webkit-gradient(linear,left top,left bottom,from(rgba(255, 255, 255, .5)),color-stop(0.5,rgba(30, 30, 30, .5)),color-stop(0.5,rgba(0, 0, 0, .5)),to(rgba(0, 0, 0, .5)));
-    border: solid 1px gray;
-    border-color: #6F6F6F #4D4D4D #676767 #616161;
+    background: 			#dadada;
+    color: 					#101010;
+    border: 1px solid 		#bbb;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#ededed), to(#dadada)); /* Saf4+, Chrome */
+    -webkit-tap-highlight-color: transparent;
     float: right;
-    background-color: red;
     width: 22px;
     height: 28px;
 }
 
 .spinner .up-button .icon {
-    background-color: white!important;
-    -webkit-mask-image: url(arrow_up.svg);
+    background-color: #000!important;
+    -webkit-mask-image: url(arrow_up.png);
     background-position: center center;
     -webkit-mask-position: 50% 50%;
     -webkit-mask-size: 22px 22px;
@@ -133,18 +134,19 @@
 }
 
 .spinner .down-button {
-    background-image: -webkit-gradient(linear,left top,left bottom,from(rgba(255, 255, 255, .5)),color-stop(0.5,rgba(30, 30, 30, .5)),color-stop(0.5,rgba(0, 0, 0, .5)),to(rgba(0, 0, 0, .5)));
-    border: solid 1px gray;
-    border-color: #6F6F6F #4D4D4D #676767 #616161;
+    background: 			#dadada;
+    color: 					#101010;
+    border: 1px solid 		#bbb;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#ededed), to(#dadada)); /* Saf4+, Chrome */
+    -webkit-tap-highlight-color: transparent;
     float: left;
-    background-color: lightGreen;
     width: 22px;
     height: 28px;
 }
 
 .spinner .down-button .icon {
-    background-color: white!important;
-    -webkit-mask-image: url(arrow_down.svg);
+    background-color: #000!important;
+    -webkit-mask-image: url(arrow_down.png);
     background-position: center center;
     -webkit-mask-position: 50% 50%;
     -webkit-mask-size: 22px 22px;
@@ -152,4 +154,8 @@
     margin: 2px auto 0 auto;
     height: 23px;
     width: 23px;
+}
+
+.spinner-readonly {
+    opacity: 0.5;
 }

@@ -170,6 +170,7 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 		$invokeSuper.call(this, arguments);
 
 		var checkBox = this, checked = checkBox._checked, caption = checkBox._caption || '';
+        $fly(dom)[checkBox._readOnly || checkBox._readOnly2 ? "addClass" : "removeClass"](checkBox._className + "-readonly");
 		if(checkBox._dataSet) {
 			checked = undefined;
 			var value, dirty, readOnly = this._dataSet._readOnly;

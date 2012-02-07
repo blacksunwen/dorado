@@ -88,10 +88,10 @@
   -webkit-box-direction: normal;                                    box-direction: normal;
 }
 
-.button:hover, .button.touched {
+/** */
+.button:hover2 {
 	background: 			#dadada;
 	color: 					#101010;
-    border: 1px solid 		#bbb;
 	background-image: -webkit-gradient(linear, left top, left bottom, from(#ededed), to(#dadada)); /* Saf4+, Chrome */
     -webkit-tap-highlight-color: transparent;
 }

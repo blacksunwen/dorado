@@ -98,6 +98,7 @@
         "widget/action/form-action.js",
 		"widget/action/rpc-action.js",
 
+        "widget/base/float-container.js",
         "widget/base/abstract-button.js",
         "widget/base/simple-button.js",
 		"widget/base/button.js",
@@ -140,12 +141,16 @@
 
     var touchLibs = [
         "touch/touch.js",
+        "touch/loading.js",
         "touch/button.js",
+        "touch/button-group.js",
+        "touch/check-box.js",
         "touch/toolbar.js",
         "touch/panel.js",
         "touch/group-box.js",
         "touch/form-element.js",
-        "touch/editor.js"
+        "touch/editor.js",
+        "touch/msgbox.js"
     ];
 	
 	var styleSheets = [

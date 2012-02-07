@@ -4,6 +4,7 @@ body, input, textarea, button {
 
 .i-radio{
     height: 28px;
+    padding: 2px 0;
 }
 
 .i-radio .icon{
@@ -53,6 +54,7 @@ body, input, textarea, button {
 
 .i-checkbox{
     height: 28px;
+    padding: 2px 0;
 }
 
 .d-ie6 .i-checkbox, .d-ie7 .i-checkbox {
@@ -67,6 +69,8 @@ body, input, textarea, button {
 
 .i-checkbox .caption{
     line-height: 28px;
+    padding-left: 8px;
+    padding-right: 8px;
 }
 
 .d-ie6 .i-checkbox .caption, .d-ie7 .i-checkbox .caption {
@@ -126,6 +130,10 @@ body, input, textarea, button {
     padding: 0;
 }
 
+.d-checkbox-readonly {
+    opacity: 0.5
+}
+
 .d-checkbox-icononly{
     background: url(check-radio.png) no-repeat;
 }
@@ -173,6 +181,12 @@ body, input, textarea, button {
 
 .i-data-label {
     height: 30px;
+    line-height: 30px;
+}
+
+.i-label {
+    height: 30px;
+    line-height: 30px;
 }
 
 .d-panel .button-panel {
@@ -181,4 +195,103 @@ body, input, textarea, button {
 
 .d-panel .button-panel .button{
     margin-right: 8px;
+}
+
+.d-loading-panel {
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin: 0;
+    border: 0;
+    opacity: 0.8;
+}
+
+.d-loading-panel .panel-header-left {
+    font-size: 0;
+    line-height: 0;
+}
+
+.d-loading-panel .panel-header-right {
+    font-size: 0;
+    line-height: 0;
+    position: relative;
+}
+
+.d-loading-panel .panel-body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+}
+
+.d-loading-panel .panel-footer-right {
+    font-size: 0;
+    line-height: 0;
+    position: relative;
+}
+
+.d-loading-panel .panel-header-left{
+    background: url(panel-corners.gif) no-repeat scroll 0 top;
+    font-size: 0;
+    line-height: 0;
+    margin-right: 2px;
+}
+
+.d-loading-panel .panel-header-right{
+    background: url(panel-corners.gif) no-repeat scroll right -4px;
+    font-size: 0;
+    line-height: 0;
+    padding: 2px 0 0 0;
+    margin-right: -2px;
+    position: relative;
+}
+
+.d-loading-panel .panel-body-left {
+    background: url(panel-lr.gif) repeat-y 0 0;
+    padding-left: 2px;
+}
+
+.d-loading-panel .panel-body-right {
+    background: url(panel-lr.gif) repeat-y right 0;
+    padding-right: 2px;
+}
+
+.d-loading-panel .panel-body {
+    background: #FFFFFF;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+}
+
+.d-loading-panel .panel-footer-left {
+    background: url(panel-corners.gif) no-repeat scroll 0 -2px;
+    margin-right: 2px;
+}
+
+.d-loading-panel .panel-footer-right {
+    background: url(panel-corners.gif) no-repeat scroll right bottom;
+    font-size: 0;
+    padding: 2px 0 0 0;
+    line-height: 0;
+    margin-right: -2px;
+    position: relative;
+}
+
+.d-loading-panel .content-panel {
+    padding: 0 3px;
+    background-color: white;
+}
+
+.d-loading-panel .content-panel .loading-image {
+    width: 64px;
+    height: 64px;
+    background: url(ajax-loader.gif) center center no-repeat;
+    float: left;
+}
+
+.d-loading-panel .content-panel .loading-caption {
+    float: left;
+    line-height: 64px;
+    vertical-align: middle;
 }
