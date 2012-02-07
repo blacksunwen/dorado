@@ -1,0 +1,12 @@
+<ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
+	<info organisation="com.bstek.dorado" module="addon-builder" status="integration" />
+
+	<configurations>
+		<include file="../ivy/ivy-configurations.xml" />
+	</configurations>
+
+	<dependencies>
+		<!-- COMPILE -->
+		<dependency org="org.apache.ant" name="ant" rev="1.8.2" conf="compile" />
+	</dependencies>
+</ivy-module>
