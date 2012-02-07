@@ -1,0 +1,16 @@
+dorado.util.Resource.append("dorado.core",{
+"MultiListenersNotSupport":"Multi listeners not supported by event \"{0}\".",
+"UnknownEvent":"Unknown event \"{0}\".",
+"DefaultTaskExecuteTime":"${taskExecuteTime} Second",
+"UnknownAttribute":"Unknown attribute \"{0}\".",
+"DefaultTaskCountInfo":"${taskNum} Tasks is Running...",
+"BatchUrlUndefined":"\"defaultOptions.uri\" is required for AutoBatch.",
+"AttributeWriteOnce":"Attribute \"{0}\" is writeOnce.",
+"BooleanFalse":"False",
+"BooleanTrue":"True",
+"AttributeWriteOnly":"Attribute \"{0}\" is writeOnly.",
+"UnknownType":"Unknown type \"{0}\".",
+"AttributeValueRequired":"Attribute \"{0}\" can not be empty.",
+"TypeUndefined":"$type undefined.",
+"AttributeReadOnly":"Attribute \"{0}\" is readOnly.",
+"OperationNotSupported":"Operation not supported \"{0}\"."});
