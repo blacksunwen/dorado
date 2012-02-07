@@ -56,7 +56,7 @@ public class TestJdbcUtils {
 		
 		CreateTableResolver resolver = new CreateTableResolver();
 		
-		String xml = resolver.toContent(catalog, schema, tableName, jdbcEnv);
+		String xml = resolver.toContent(catalog, schema, tableName, jdbcEnv, null);
 		return xml;
 	}
 

@@ -58,4 +58,11 @@
             <ref bean="dorado.jdbc.ide.createDataTypeResolver"/>
         </property>
     </bean>
+    
+    <bean parent="dorado.resolverRegister">
+        <property name="url" value="/dorado/jdbc/ide/list-jdbctype.xml" />
+        <property name="resolver">
+            <ref bean="dorado.jdbc.ide.listJdbcTypeResolver"/>
+        </property>
+    </bean>
 </beans>

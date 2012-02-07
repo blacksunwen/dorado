@@ -1,5 +1,7 @@
 package com.bstek.dorado.jdbc.ide;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -9,8 +11,9 @@ import org.dom4j.io.XMLWriter;
 
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.JdbcUtils;
+import com.bstek.dorado.jdbc.type.JdbcType;
 
-public class ListTableTypeResolver extends Resolver {
+public class ListJdbcTypeResolver extends Resolver {
 
 	@Override
 	public String getContent(HttpServletRequest request,
@@ -19,22 +22,24 @@ public class ListTableTypeResolver extends Resolver {
 		
 		return toContent(envName);
 	}
-	
+
 	public String toContent(String envName) {
-		JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(envName);
-		final String[] types = jdbcEnv.getModelGeneratorSuit().getJdbcEnviromentMetaDataGenerator().listTableTypes(jdbcEnv);
+		final JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(envName);
 		
-		return toXml("TableTypes", new XML(){
+		final List<JdbcType> types = jdbcEnv.getDialect().getJdbcTypes();
+		
+		return toXml("JdbcTypes",  new XML() {
 
 			@Override
 			public void build(XMLWriter xmlWriter, Element rootElement)
 					throws Exception {
-				for (String type: types) {
-					Element element = DocumentHelper.createElement("TableType");
-					element.addAttribute("name", type);
+				for (JdbcType jdbcType: types) {
+					Element element = DocumentHelper.createElement("JdbcType");
+					element.addAttribute("name", jdbcType.getName());
 					xmlWriter.write(element);
 				}
 			}
-		});
+			
+		}); 
 	}
 }

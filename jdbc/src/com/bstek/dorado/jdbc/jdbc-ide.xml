@@ -3,12 +3,22 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<bean id="dorado.jdbc.ide.listEnviromentResolver" class="com.bstek.dorado.jdbc.ide.ListJdbcEnviromentResolver"/>
-	<bean id="dorado.jdbc.ide.listCatalogResolver" class="com.bstek.dorado.jdbc.ide.ListCatalogResolver"/>
-	<bean id="dorado.jdbc.ide.listSchemaResolver" class="com.bstek.dorado.jdbc.ide.ListSchemaResolver"/>
-	<bean id="dorado.jdbc.ide.listTablesResolver" class="com.bstek.dorado.jdbc.ide.ListTablesResolver"/>
-	<bean id="dorado.jdbc.ide.listTableTypeResolver" class="com.bstek.dorado.jdbc.ide.ListTableTypeResolver"/>
-	<bean id="dorado.jdbc.ide.createTableResolver" class="com.bstek.dorado.jdbc.ide.CreateTableResolver"/>
-	<bean id="dorado.jdbc.ide.createSqlTableResolver" class="com.bstek.dorado.jdbc.ide.CreateSqlTableResolver"/>
-	<bean id="dorado.jdbc.ide.createDataTypeResolver" class="com.bstek.dorado.jdbc.ide.CreateDataTypeResolver"/>
+	<bean id="dorado.jdbc.ide.listEnviromentResolver" 
+	   class="com.bstek.dorado.jdbc.ide.ListJdbcEnviromentResolver"/>
+	<bean id="dorado.jdbc.ide.listCatalogResolver" 
+	   class="com.bstek.dorado.jdbc.ide.ListCatalogResolver"/>
+	<bean id="dorado.jdbc.ide.listSchemaResolver" 
+	   class="com.bstek.dorado.jdbc.ide.ListSchemaResolver"/>
+	<bean id="dorado.jdbc.ide.listTablesResolver" 
+	   class="com.bstek.dorado.jdbc.ide.ListTablesResolver"/>
+	<bean id="dorado.jdbc.ide.listTableTypeResolver" 
+	   class="com.bstek.dorado.jdbc.ide.ListTableTypeResolver"/>
+	<bean id="dorado.jdbc.ide.createTableResolver" 
+	   class="com.bstek.dorado.jdbc.ide.CreateTableResolver"/>
+	<bean id="dorado.jdbc.ide.createSqlTableResolver" 
+	   class="com.bstek.dorado.jdbc.ide.CreateSqlTableResolver"/>
+	<bean id="dorado.jdbc.ide.createDataTypeResolver" 
+	   class="com.bstek.dorado.jdbc.ide.CreateDataTypeResolver"/>
+    <bean id="dorado.jdbc.ide.listJdbcTypeResolver" 
+        class="com.bstek.dorado.jdbc.ide.ListJdbcTypeResolver"/>
 </beans>
