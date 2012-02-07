@@ -75,6 +75,9 @@
 
     dorado.touch.TextEditor = $extend(dorado.widget.AbstractEditor, {
         ATTRIBUTES: {
+            className: {
+                defaultValue: "text-editor"
+            },
             icon: {},
             emptyText: {},
             popup: {},
@@ -136,6 +139,8 @@
             if (editor.get("rendered")) {
                 var doms = editor._doms, editorEl = doms["editor"], emptyText = editor.get("emptyText"), value = editor.get("value");
                 editorEl.placeholder = emptyText || "";
+                editorEl.readOnly = editor._readOnly;
+                $fly(dom)[editor._readOnly ? "addClass" : "removeClass"](editor._className + "-readonly");
                 if(value){
                     editorEl.value = value;
                 } else {
@@ -176,7 +181,7 @@
         }
     });
 
-    dorado.touch.CheckBox = $extend(dorado.widget.AbstractEditor, {
+    dorado.touch.CheckBox2 = $extend(dorado.widget.AbstractEditor, {
         ATTRIBUTES: {
             className: {
                 defaultValue: "check-box"
@@ -192,7 +197,7 @@
         }
     });
 
-    dorado.touch.RadioButton = $extend(dorado.widget.AbstractEditor, {
+    dorado.touch.RadioButton2 = $extend(dorado.widget.AbstractEditor, {
         ATTRIBUTES: {
             className: {
                 defaultValue: "radio-button"
@@ -287,11 +292,13 @@
             spinner._doms = doms;
 
             $fly(doms.downButton).bind("tap", function() {
-                spinner.doDown();
+                if (!(spinner._readOnly || spinner._readOnly2))
+                    spinner.doDown();
             });
 
             $fly(doms.upButton).bind("tap", function() {
-                spinner.doUp();
+                if (!(spinner._readOnly || spinner._readOnly2))
+                    spinner.doUp();
             });
 
             return dom;
@@ -318,13 +325,14 @@
             var spinner = this, dom = spinner._dom;
             if (spinner.get("rendered")) {
                 var doms = spinner._doms, editorEl = doms["editor"], value = spinner.get("value");
+                $fly(dom)[spinner._readOnly ? "addClass" : "removeClass"](spinner._className + "-readonly");
                 if(value){
                     editorEl.value = spinner.formatValue(value);
                 } else {
                     editorEl.value = "";
                 }
             }
-        },
+        }
 
     });
 })();

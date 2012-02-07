@@ -4,7 +4,7 @@
 
 .button-group .button {
     -webkit-border-radius: 0;
-    border-right-width: 0 !important;
+    border-right-width: 0;
 }
 
 .button-group .button-first{
@@ -17,6 +17,14 @@
 
     -webkit-border-top-right-radius: 0.4em;
     -webkit-border-bottom-right-radius: 0.4em;
+}
+
+.button-group .button-current {
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#aaa), to(#fdfdfd)); /* Saf4+, Chrome */
+}
+
+.button-group-disabled {
+    opacity: 0.5;
 }
 
 .tabbar {

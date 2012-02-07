@@ -32,7 +32,6 @@
              * @type Array
              */
             buttons: {
-                innerComponent: "dorado.touch.Button"
             },
 
             /**
@@ -275,6 +274,8 @@
                     }
                 }
             }
+
+            debugger;
 
             panel.initButtons(dom);
 

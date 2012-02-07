@@ -1,5 +1,6 @@
 var ALL_JS_PAGES = [
 	"client/touch-test/base/button-test.html",
+    "client/touch-test/base/buttongroup-test.html",
 	"client/touch-test/base/toolbar-test.html",
 	"client/touch-test/base/panel-test.html",
     "client/touch-test/form/form-test.html",
