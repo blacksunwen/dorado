@@ -16,10 +16,10 @@ import com.bstek.dorado.jdbc.model.DbElementDefinition;
 		@XmlProperty(propertyName="jdbcEnviroment", parser = "spring:dorado.staticPropertyParser", attributeOnly = true)
 	},
 	subNodes = {
-		@XmlSubNode(propertyType="com.bstek.dorado.jdbc.model.table.Table"),
-		@XmlSubNode(propertyType="com.bstek.dorado.jdbc.model.sqltable.SqlTable"),
-		@XmlSubNode(propertyType="com.bstek.dorado.jdbc.model.autotable.AutoTable"),
-		@XmlSubNode(propertyType="com.bstek.dorado.jdbc.model.storedprogram.StoredProgram")
+		@XmlSubNode(propertyType="List<com.bstek.dorado.jdbc.model.table.Table>"),
+		@XmlSubNode(propertyType="List<com.bstek.dorado.jdbc.model.sqltable.SqlTable>"),
+		@XmlSubNode(propertyType="List<com.bstek.dorado.jdbc.model.autotable.AutoTable>"),
+		@XmlSubNode(propertyType="List<com.bstek.dorado.jdbc.model.storedprogram.StoredProgram>")
 	}
 )
 public class DbModel {

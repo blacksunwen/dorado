@@ -3,9 +3,7 @@ package com.bstek.dorado.jdbc.ide;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
-import org.dom4j.io.XMLWriter;
+import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.JdbcUtils;
@@ -22,19 +20,7 @@ public class ListTableTypeResolver extends Resolver {
 	
 	public String toContent(String envName) {
 		JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(envName);
-		final String[] types = jdbcEnv.getModelGeneratorSuit().getJdbcEnviromentMetaDataGenerator().listTableTypes(jdbcEnv);
-		
-		return toXml("TableTypes", new XML(){
-
-			@Override
-			public void build(XMLWriter xmlWriter, Element rootElement)
-					throws Exception {
-				for (String type: types) {
-					Element element = DocumentHelper.createElement("TableType");
-					element.addAttribute("name", type);
-					xmlWriter.write(element);
-				}
-			}
-		});
+		String[] types = jdbcEnv.getModelGeneratorSuit().getJdbcEnviromentMetaDataGenerator().listTableTypes(jdbcEnv);
+		return StringUtils.join(types, ',');
 	}
 }

@@ -3,9 +3,7 @@ package com.bstek.dorado.jdbc.ide;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
-import org.dom4j.io.XMLWriter;
+import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.JdbcUtils;
@@ -24,18 +22,6 @@ public class ListCatalogResolver extends Resolver {
 		JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(envName);
 		ModelGeneratorSuit generator = jdbcEnv.getModelGeneratorSuit();
 		final String[] catalogs = generator.getJdbcEnviromentMetaDataGenerator().listCatalogs(jdbcEnv);
-		return toXml("Catalogs", new XML(){
-
-			@Override
-			public void build(XMLWriter xmlWriter, Element rootElement)
-					throws Exception {
-				for (String catalog: catalogs) {
-					Element element = DocumentHelper.createElement("Catalog");
-					element.addAttribute("name", catalog);
-					xmlWriter.write(element);
-				}
-			}
-			
-		});
+		return StringUtils.join(catalogs, ',');
 	}
 }

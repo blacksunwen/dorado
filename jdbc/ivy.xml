@@ -12,6 +12,9 @@
 		<dependency org="com.bstek.dorado" name="dorado-core" rev="${depended-dorado.version}" conf="compile">
 			<exclude org="com.bstek.dorado"/>
 		</dependency>
+		<dependency org="com.bstek.dorado" name="dorado-ide-support" rev="${depended-dorado.version}" conf="compile">
+			<exclude org="com.bstek.dorado"/>
+		</dependency>
 		
 		<dependency org="org.springframework" name="spring-core" rev="${springframework.version}" conf="compile" />
 		<dependency org="org.springframework" name="spring-beans" rev="${springframework.version}" conf="compile" />
