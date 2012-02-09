@@ -70,6 +70,7 @@ public class CheckBox extends AbstractDataEditor {
 		this.showCaption = showCaption;
 	}
 
+	@XmlProperty
 	@ClientProperty(escapeValue = "false")
 	public Object getValue() {
 		return value;
