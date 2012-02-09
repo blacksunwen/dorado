@@ -1,6 +1,8 @@
 package com.bstek.dorado.view.widget.form;
 
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.XmlProperty;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -20,6 +22,8 @@ public class RadioButton {
 		this.text = text;
 	}
 
+	@XmlProperty
+	@ClientProperty
 	public Object getValue() {
 		return value;
 	}
