@@ -9,7 +9,6 @@ import com.bstek.dorado.data.type.validator.Validator;
 import com.bstek.dorado.data.type.validator.ValidatorTypeRegisterInfo;
 import com.bstek.dorado.data.type.validator.ValidatorTypeRegistry;
 import com.bstek.dorado.idesupport.RuleTemplateManager;
-import com.bstek.dorado.idesupport.template.AutoPropertyTemplate;
 import com.bstek.dorado.idesupport.template.AutoRuleTemplate;
 import com.bstek.dorado.idesupport.template.RuleTemplate;
 import com.bstek.dorado.view.type.property.validator.AbstractValidator;
@@ -127,14 +126,6 @@ public class ModelRuleTemplateInitializer implements RuleTemplateInitializer {
 			newRuleTemplate.setScope("public");
 			newRuleTemplate.setType(validatorTypeRegisterInfo.getClassType()
 					.getName());
-
-			AutoPropertyTemplate propertyTemplate = new AutoPropertyTemplate(
-					"type");
-			propertyTemplate.setDefaultValue(validatorTypeRegisterInfo
-					.getType());
-			propertyTemplate.setFixed(true);
-			propertyTemplate.setVisible(false);
-			newRuleTemplate.addPrimitiveProperty(propertyTemplate);
 
 			ruleTemplateManager.addRuleTemplate(newRuleTemplate);
 		}
