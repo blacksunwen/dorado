@@ -400,6 +400,7 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 				AutoPropertyTemplate propertyTemplate = new AutoPropertyTemplate(
 						propertyName);
 				propertyTemplate.setDefaultValue(value);
+				propertyTemplate.setPrimitive(true);
 				propertyTemplate.setFixed(true);
 				propertyTemplate.setVisible(false);
 				properties.add(propertyTemplate);
@@ -738,7 +739,7 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 		if (StringUtils.isNotEmpty(nodeName)
 				&& !nodeName.contains(DispatchableXmlParser.WILDCARD)
 				&& StringUtils.isEmpty(xmlSubNode.parser())) {
-			RuleTemplate privateRuleTemplate = new AutoRuleTemplate(name);
+			RuleTemplate privateRuleTemplate = new AutoRuleTemplate('@' + name);
 			privateRuleTemplate.setParents(new RuleTemplate[] { ruleTemplate });
 			privateRuleTemplate.setNodeName(nodeName);
 			ruleTemplate = privateRuleTemplate;
