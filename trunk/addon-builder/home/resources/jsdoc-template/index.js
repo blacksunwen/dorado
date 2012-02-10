@@ -1,5 +1,5 @@
 var packageTree = PACKAGE_TREE, componentTree = COMPONENT_TREE;
-var appTitle = "Dorado 7.x Client Side API - %addon.name% %addon.revision%";
+var appTitle = "Dorado 7.x Client Side API - %name% %revision%";
 
 function showSymbolDocInTab(alias) {
 	var mainSymbolInfo = symbolDictionary[alias], mainSymbolAlias = alias;

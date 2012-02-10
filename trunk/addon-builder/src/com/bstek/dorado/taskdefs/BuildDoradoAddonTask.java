@@ -1,6 +1,17 @@
 package com.bstek.dorado.taskdefs;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.RandomAccessFile;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
+import java.nio.channels.OverlappingFileLockException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
@@ -9,10 +20,14 @@ import org.apache.tools.ant.taskdefs.Ant;
 import org.apache.tools.ant.taskdefs.Property;
 import org.apache.tools.ant.types.Path;
 
-public class BuildAddonTask extends Ant {
+public class BuildDoradoAddonTask extends Ant {
 	private static final String ADDON_BUILDER_XML = "addon-builder.xml";
+	private static final String OUTPUT_PROPERTIES_FILE = "output.properties";
+	private static final String LOCK_FILE = "lock";
 
 	private Path compileClasspath;
+	private List<Property> properties = new ArrayList<Property>();
+	private Set<String> propertyNames = new HashSet<String>();
 
 	private String name;
 	private String archieveName;
@@ -23,12 +38,13 @@ public class BuildAddonTask extends Ant {
 	private String baseDir;
 	private String workDir;
 	private String targetDir;
+	private boolean compileJava = true;
 	private boolean buildJar = true;
-	private boolean buildSourceJar = false;
+	private boolean buildSourceJar = true;
 	private boolean buildJsDoc = false;
 	private boolean buildJavaDoc = false;
 	private String skins = "default";
-	private String pomFile;
+	private boolean makePom = true;
 	private String ivyFile;
 	private String srcCharset = "utf-8";
 	private String clientSrc = "client";
@@ -36,18 +52,15 @@ public class BuildAddonTask extends Ant {
 	private String javaCompatSource = "1.5";
 	private String javaCompatTarget = "1.5";
 
-	public BuildAddonTask() {
-		super();
+	public BuildDoradoAddonTask() {
 		initialize();
 	}
 
-	public BuildAddonTask(Task owner) {
-		super(owner);
-		initialize();
+	public BuildDoradoAddonTask(Task owner) {
+		this();
 	}
 
 	private void initialize() {
-		setInheritRefs(true);
 		setUseNativeBasedir(true);
 	}
 
@@ -61,7 +74,7 @@ public class BuildAddonTask extends Ant {
 						"'name' undefined. etc: 'myaddon'");
 			}
 			if (StringUtils.isEmpty(archieveName)) {
-				archieveName = "dorado-" + name;
+				archieveName = name;
 			}
 			if (StringUtils.isEmpty(vendor)) {
 				throw new IllegalArgumentException(
@@ -77,9 +90,24 @@ public class BuildAddonTask extends Ant {
 			}
 
 			Preprocessor preprocessor = new Preprocessor();
-			File homeDirFile = preprocessor.prepareHome(getProject(), name,
-					homeDir);
+			File homeDirFile = preprocessor.prepareHome(getProject(), homeDir);
 			homeDir = homeDirFile.getCanonicalPath();
+
+			File lockFile = new File(homeDirFile, LOCK_FILE);
+			FileChannel channel = new RandomAccessFile(lockFile, "rw")
+					.getChannel();
+			FileLock lock = null;
+			try {
+				lock = channel.tryLock();
+				if (lock == null) {
+					throw new IllegalStateException("Lock file \"" + homeDir
+							+ "\" failed.");
+				}
+			} catch (OverlappingFileLockException e) {
+				throw new IllegalStateException("\"" + homeDir
+						+ "\" is already locked.", e);
+			}
+
 			File buildFile = new File(homeDirFile, ADDON_BUILDER_XML);
 
 			if (StringUtils.isEmpty(workDir)) {
@@ -97,36 +125,36 @@ public class BuildAddonTask extends Ant {
 
 			setAntfile(buildFile.getCanonicalPath());
 
-			createProperty("addon.name", name);
-			createProperty("addon.archieveName", archieveName);
-			createProperty("addon.vendor", vendor);
-			createProperty("addon.version", version);
-			createProperty("addon.qualifier", qualifier);
-			createProperty("homeDir", homeDir); // 注意此处没有addon前缀
-			createProperty("workDir", workDir); // 注意此处没有addon前缀
-			createProperty("addon.targetDir", targetDir);
-
-			if (buildJar) {
-				createProperty("addon.buildJar", buildJar);
-			}
-			if (buildSourceJar) {
-				createProperty("addon.buildSourceJar", buildSourceJar);
-			}
-			if (buildJsDoc) {
-				createProperty("addon.buildJsDoc", buildJsDoc);
-			}
-			if (buildJavaDoc) {
-				createProperty("addon.buildJavaDoc", buildJavaDoc);
+			for (Property property : properties) {
+				if (StringUtils.isNotEmpty(property.getName())) {
+					propertyNames.add(property.getName());
+				}
 			}
 
-			createProperty("addon.skins", skins);
-			createProperty("addon.pomFile", pomFile);
-			createProperty("addon.ivyFile", ivyFile);
-			createProperty("addon.clientSrc", clientSrc);
-			createProperty("addon.javaSrc", javaSrc);
-			createProperty("addon.srcCharset", srcCharset);
-			createProperty("addon.javaCompatSource", javaCompatSource);
-			createProperty("addon.javaCompatTarget", javaCompatTarget);
+			createProperty("homeDir", homeDir);
+			createProperty("workDir", workDir);
+
+			createProperty("name", name);
+			createProperty("archieveName", archieveName);
+			createProperty("vendor", vendor);
+			createProperty("version", version);
+			createProperty("qualifier", qualifier);
+			createProperty("targetDir", targetDir);
+
+			createProperty("compileJava", compileJava);
+			createProperty("buildJar", buildJar);
+			createProperty("buildSourceJar", buildSourceJar);
+			createProperty("buildJsDoc", buildJsDoc);
+			createProperty("buildJavaDoc", buildJavaDoc);
+
+			createProperty("skins", skins);
+			createProperty("makePom", makePom);
+			createProperty("ivyFile", ivyFile);
+			createProperty("clientSrc", clientSrc);
+			createProperty("javaSrc", javaSrc);
+			createProperty("srcCharset", srcCharset);
+			createProperty("javaCompatSource", javaCompatSource);
+			createProperty("javaCompatTarget", javaCompatTarget);
 
 			if (StringUtils.isNotEmpty(baseDir)) {
 				createProperty("basedir", baseDir);
@@ -140,6 +168,27 @@ public class BuildAddonTask extends Ant {
 			}
 
 			super.execute();
+
+			Properties outputProperties = new Properties();
+			InputStream in = new FileInputStream(new File(workDir + "/temp",
+					OUTPUT_PROPERTIES_FILE));
+			try {
+				outputProperties.load(in);
+				for (Object key : outputProperties.keySet()) {
+					String propertyName = (String) key;
+					project.setUserProperty(propertyName,
+							outputProperties.getProperty(propertyName));
+				}
+			} finally {
+				in.close();
+			}
+			project.setUserProperty("addonBuilder.homeDir", homeDir);
+
+			if (lock != null) {
+				lock.release();
+			}
+			channel.close();
+			lockFile.delete();
 
 			log("Dorado addon [" + name + "] build OK.");
 		} catch (Exception e) {
@@ -162,19 +211,27 @@ public class BuildAddonTask extends Ant {
 		}
 	}
 
+	public Property createProperty() {
+		Property property = super.createProperty();
+		properties.add(property);
+		return property;
+	}
+
 	protected void createProperty(String name, Object value) {
-		if (value != null) {
-			Property Property = createProperty();
-			Property.setName(name);
-			Property.setValue(value);
+		if (value != null && !propertyNames.contains(name)) {
+			Property property = super.createProperty();
+			property.setName(name);
+			property.setValue(value);
+			log("Property: " + name + "=" + value);
 		}
 	}
 
 	public void setClasspath(Path classpath) {
-		if (compileClasspath == null)
+		if (compileClasspath == null) {
 			compileClasspath = classpath;
-		else
+		} else {
 			compileClasspath.append(classpath);
+		}
 	}
 
 	public Path getClasspath() {
@@ -182,8 +239,9 @@ public class BuildAddonTask extends Ant {
 	}
 
 	private Path createClasspath() {
-		if (compileClasspath == null)
+		if (compileClasspath == null) {
 			compileClasspath = new Path(getProject());
+		}
 		return compileClasspath.createPath();
 	}
 
@@ -204,7 +262,6 @@ public class BuildAddonTask extends Ant {
 	}
 
 	public void setName(String name) {
-		System.out.println("Set: " + name);
 		this.name = name;
 	}
 
@@ -272,6 +329,14 @@ public class BuildAddonTask extends Ant {
 		this.targetDir = targetDir;
 	}
 
+	public boolean isCompileJava() {
+		return compileJava;
+	}
+
+	public void setCompileJava(boolean compileJava) {
+		this.compileJava = compileJava;
+	}
+
 	public boolean isBuildJar() {
 		return buildJar;
 	}
@@ -312,12 +377,12 @@ public class BuildAddonTask extends Ant {
 		this.skins = skins;
 	}
 
-	public String getPomFile() {
-		return pomFile;
+	public boolean isMakePom() {
+		return makePom;
 	}
 
-	public void setPomFile(String pomFile) {
-		this.pomFile = pomFile;
+	public void isMakePom(boolean makePom) {
+		this.makePom = makePom;
 	}
 
 	public String getIvyFile() {

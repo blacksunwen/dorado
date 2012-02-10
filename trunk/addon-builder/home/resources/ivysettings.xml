@@ -4,7 +4,7 @@
 	<settings defaultResolver="default" />
 	
 	<resolvers>
-		<ibiblio name="bsdn" m2compatible="true" root="${bsdn.nexus}"/>
+		<ibiblio name="bsdn" m2compatible="true" root="${bsdn.nexusPublic}"/>
 		<chain name="default" returnFirst="true">
 			<resolver ref="bsdn" />
 		</chain>
