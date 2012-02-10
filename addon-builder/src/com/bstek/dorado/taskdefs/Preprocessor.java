@@ -69,8 +69,7 @@ public class Preprocessor {
 		}
 	}
 
-	public File prepareHome(Project project, String archieveFileName,
-			String homeDir) throws Exception {
+	public File prepareHome(Project project, String homeDir) throws Exception {
 		if (StringUtils.isEmpty(homeDir)) {
 			homeDir = System.getProperty("user.home") + File.separator
 					+ DEFAULT_TARGET_DIR;
@@ -99,6 +98,7 @@ public class Preprocessor {
 			extractFiles(project, homeDirFile);
 		}
 
+		project.log("Home dir created.");
 		return homeDirFile;
 	}
 }

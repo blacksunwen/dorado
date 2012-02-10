@@ -44,31 +44,25 @@
 	<var name="resourcesDir" unset="true" />
 	<property name="resourcesDir" value="${homeDir}/resources" />
 
-	<echo message="Base Dir: ${basedir}" />
-	<echo message="Work Dir: ${workDir}" />
-	<echo message="Home Dir: ${homeDir}" />
-
 	<property name="ivy.fileNamePattern"
 	          value="[artifact]-[revision](-[classifier]).[ext]" />
-
 	<property name="jsdoc-toolkit.home"
-	          value="${homeDir}/lib/jsdoc_toolkit-2.4.0/" />
+	          value="${resourcesDir}/jsdoc_toolkit-2.4.0/" />
 
 	<target name="initVariables">
 		<if>
 			<not>
-				<isset property="addon.revision" />
+				<isset property="revision" />
 			</not>
 			<then>
 				<if>
-					<equals arg1="${addon.qualifier}" arg2="RELEASE" />
+					<equals arg1="${qualifier}" arg2="RELEASE" />
 					<then>
-						<property name="addon.revision"
-						          value="${addon.version}" />
+						<property name="revision" value="${version}" />
 					</then>
 					<else>
-						<property name="addon.revision"
-						          value="${addon.version}-${addon.qualifier}" />
+						<property name="revision"
+						          value="${version}-${qualifier}" />
 					</else>
 				</if>
 			</then>
@@ -76,31 +70,26 @@
 
 		<if>
 			<not>
-				<isset property="addon.publication" />
+				<isset property="publication" />
 			</not>
 			<then>
 				<tstamp>
-					<format property="addon.publication"
+					<format property="publication"
 					        pattern="yyMMdd.HHmm"
 					        locale="true" />
 				</tstamp>
-				<property name="addon.fullVersion"
-				          value="${addon.revision}.${addon.publication}" />
+				<property name="fullVersion"
+				          value="${revision}.${publication}" />
 			</then>
 		</if>
 
-		<if>
-			<not>
-				<isset property="workDir" />
-			</not>
-			<then>
-				<property name="workDir" value="${homeDir}/work" />
-			</then>
-		</if>
+		<var name="baseFileName" value="${archieveName}-${revision}" />
 	</target>
 
 	<target name="clean">
+		<!--
 		<delete dir="${workDir}" />
+		-->
 	</target>
 
 	<target name="prepareWorkDir">
@@ -113,7 +102,7 @@
 		<mkdir dir="${workDir}/jsdoc" />
 		<mkdir dir="${workDir}/temp" />
 
-		<mkdir dir="${addon.targetDir}" />
+		<mkdir dir="${targetDir}" />
 	</target>
 
 	<target name="init" depends="initVariables,clean,prepareWorkDir">
@@ -146,11 +135,11 @@
 	</target>
 
 	<target name="mergeSource">
-		<foreach list="${addon.javaSrc}" param="src" target="doMergeSource">
+		<foreach list="${javaSrc}" param="src" target="doMergeSource">
 			<param name="targetSourceDir" value="${workDir}/src" />
 		</foreach>
 
-		<foreach list="${addon.clientSrc}" param="src" target="doMergeSource">
+		<foreach list="${clientSrc}" param="src" target="doMergeSource">
 			<param name="targetSourceDir" value="${workDir}/client" />
 		</foreach>
 	</target>
@@ -158,8 +147,8 @@
 	<target name="preprocessClientSource">
 		<replace dir="${workDir}/client"
 		         token="%version%"
-		         value="${product.revision}"
-		         encoding="${addon.srcCharset}">
+		         value="${revision}"
+		         encoding="${srcCharset}">
 			<include name="**/*.js" />
 			<include name="**/*.css" />
 		</replace>
@@ -174,7 +163,7 @@
 				                toDir="${workDir}/bin/dorado/skins"
 				                warn="false"
 				                munge="true"
-				                charset="${addon.srcCharset}"
+				                charset="${srcCharset}"
 				                cssSuffix=".min.css"
 				                preserveAllSemiColons="false"
 				                optimize="true"
@@ -186,9 +175,9 @@
 		</if>
 	</target>
 
-	<target name="jsdoc" if="${addon.buildJsdoc}">
+	<target name="jsdoc" if="${buildJsDoc}">
 		<copy todir="${workDir}/jsdoc">
-			<fileset dir="${resourcesDir}/jsdoc" />
+			<fileset dir="${resourcesDir}/jsdoc-template" />
 		</copy>
 
 		<jsdoctoolkit jsdochome="${jsdoc-toolkit.home}"
@@ -196,24 +185,23 @@
 		              template="json"
 		              outputdir="${workDir}/jsdoc/data"
 		              verbose="true">
-			<fileset dir="${workDir}/client" includes="**/*.js" />
+			<fileset dir="${workDir}/client/scripts" includes="**/*.js" />
 		</jsdoctoolkit>
 
 		<replace dir="${workDir}/jsdoc"
-		         token="%addon.name%"
-		         value="${addon.name}"
-		         encoding="${addon.srcCharset}">
+		         token="%name%"
+		         value="${name}"
+		         encoding="${srcCharset}">
 			<include name="index.js" />
 		</replace>
 		<replace dir="${workDir}/jsdoc"
-		         token="%addon.revision%"
-		         value="${addon.fullVersion}"
-		         encoding="${addon.srcCharset}">
+		         token="%revision%"
+		         value="${fullVersion}"
+		         encoding="${srcCharset}">
 			<include name="index.js" />
 		</replace>
 
-		<zip compress="true"
-		     destfile="${addon.targetDir}/${addon.archieveName}-${addon.revision}-jsdoc.zip">
+		<zip compress="true" destfile="${targetDir}/${baseFileName}-jsdoc.zip">
 			<fileset dir="${workDir}/jsdoc" />
 		</zip>
 	</target>
@@ -239,7 +227,7 @@
 				                toDir="${workDir}/bin/dorado"
 				                warn="false"
 				                munge="true"
-				                charset="${addon.srcCharset}"
+				                charset="${srcCharset}"
 				                jsSuffix=".min.js"
 				                preserveAllSemiColons="false"
 				                optimize="true"
@@ -258,42 +246,40 @@
 	</target>
 
 	<target name="buildClient"
-	        depends="preprocessClientSource,compressCss,tidyJavaScript,compressJavaScript,buildI18N">
+	        depends="preprocessClientSource,jsdoc,compressCss,tidyJavaScript,compressJavaScript,buildI18N">
 		<copy todir="${workDir}/bin/dorado">
 			<fileset dir="${workDir}/client" />
 		</copy>
 	</target>
 
-	<target name="resolveDependencies">
-		<copy file="${resourcesDir}/ivysettings.properties"
-		      todir="${workDir}/temp" />
-		<copy file="${resourcesDir}/ivysettings.xml"
-		      tofile="${workDir}/temp/ivysettings.xml" />
-
-		<propertyfile file="${workDir}/temp/ivysettings.properties">
-			<entry key="product.revision" value="${addon.revision}" />
-			<entry key="product.status" value="${addon.status}" />
-			<entry key="product.publication" value="${addon.publication}" />
-		</propertyfile>
-
-		<ivy:configure file="${workDir}/temp/ivysettings.xml" />
-
-		<ivy:resolve file="${resourcesDir}/ivy.xml" />
-		<ivy:retrieve pattern="${workDir}/lib/${ivy.fileNamePattern}"
-		              conf="compile" />
-
-		<ivy:resolve file="${basedir}/ivy.xml" />
-		<ivy:retrieve pattern="${workDir}/lib/${ivy.fileNamePattern}"
-		              conf="compile" />
-	</target>
-
 	<target name="preprocessJavaSource">
 		<propertyfile file="${workDir}/src/META-INF/dorado-package.properties">
-			<entry key="version" value="${addon.fullVersion}" />
+			<entry key="version" value="${fullVersion}" />
 		</propertyfile>
 	</target>
 
-	<target name="compile" depends="resolveDependencies,preprocessJavaSource">
+	<target name="resolveDependencies">
+		<if>
+			<available file="${ivyFile}" />
+			<then>
+				<copy todir="${workDir}/temp">
+					<fileset dir="${resourcesDir}" includes="ivysettings.*" />
+				</copy>
+
+				<ivy:configure file="${workDir}/temp/ivysettings.xml" />
+
+				<ivy:resolve file="${resourcesDir}/ivy.xml" />
+				<ivy:retrieve pattern="${workDir}/lib/${ivy.fileNamePattern}"
+				              conf="compile" />
+
+				<ivy:resolve file="${ivyFile}" />
+				<ivy:retrieve pattern="${workDir}/lib/${ivy.fileNamePattern}"
+				              conf="compile" />
+			</then>
+		</if>
+	</target>
+
+	<target name="compile" depends="resolveDependencies" if="${compileJava}">
 		<javac classpathref="classpath"
 		       srcdir="${workDir}/src"
 		       destdir="${workDir}/bin"
@@ -301,32 +287,32 @@
 		       deprecation="true"
 		       nowarn="false"
 		       includeantruntime="true"
-		       source="${addon.javaCompatSource}"
-		       target="${addon.javaCompatTarget}"
-		       encoding="${addon.srcCharset}" />
+		       source="${javaCompatSource}"
+		       target="${javaCompatTarget}"
+		       encoding="${srcCharset}" />
 	</target>
 
-	<target name="javadoc" if="${addon.buildJavaDoc}">
+	<target name="javadoc" if="${buildJavaDoc}">
 		<javadoc access="protected"
 		         author="true"
-		         encoding="${addon.srcCharset}"
-		         docencoding="${addon.srcCharset}"
-		         charset="${addon.srcCharset}"
+		         encoding="${srcCharset}"
+		         docencoding="${srcCharset}"
+		         charset="${srcCharset}"
 		         destdir="${workDir}/javadoc"
-		         doctitle="${addon.name} API Documentation"
+		         doctitle="${name} API Documentation"
 		         nodeprecated="false"
 		         nodeprecatedlist="false"
 		         noindex="false"
 		         nonavbar="false"
 		         notree="false"
-		         source="${addon.javaCompatSource}"
+		         source="${javaCompatSource}"
 		         splitindex="true"
 		         use="true"
 		         version="true"
 		         useexternalfile="yes">
 			<classpath refid="classpath" />
 			<fileset dir="${workDir}/src" />
-			<doctitle>&lt;h1&gt;${addon.name} API Documentation&lt;/h1&gt;</doctitle>
+			<doctitle>&lt;h1&gt;${name} API Documentation&lt;/h1&gt;</doctitle>
 			<bottom>Copyright © 2001-2011 www.BSTEK.com All Rights Reserved.</bottom>
 			<link href="http://www.BSDN.org/projects/dorado7" />
 		</javadoc>
@@ -334,71 +320,92 @@
 		      todir="${workDir}/javadoc"
 		      overwrite="true" />
 
-		<jar compress="true"
-		     jarfile="${addon.targetDir}/${addon.archieveName}-${addon.revision}-javadoc.jar">
+		<jar compress="true" jarfile="${targetDir}/${baseFileName}-javadoc.jar">
 			<fileset dir="${workDir}/javadoc" />
 			<manifest>
-				<attribute name="Implementation-Title" value="${addon.name}" />
-				<attribute name="Implementation-Vendor"
-				           value="${addon.vendor}" />
+				<attribute name="Implementation-Title" value="${name}" />
+				<attribute name="Implementation-Vendor" value="${vendor}" />
 				<attribute name="Implementation-Version"
-				           value="${addon.fullVersion}" />
+				           value="${fullVersion}" />
 			</manifest>
 		</jar>
 	</target>
 
-	<target name="makeJar" if="${addon.buildJar}">
-		<jar compress="true"
-		     jarfile="${addon.targetDir}/${addon.archieveName}-${addon.revision}.jar">
+	<target name="buildJar" if="${buildJar}">
+		<jar compress="true" jarfile="${targetDir}/${baseFileName}.jar">
 			<fileset dir="${workDir}/bin" />
 			<fileset dir="${workDir}/src" excludes="**/*.java" />
 			<manifest>
-				<attribute name="Implementation-Title" value="${addon.name}" />
-				<attribute name="Implementation-Vendor"
-				           value="${addon.vendor}" />
+				<attribute name="Implementation-Title" value="${name}" />
+				<attribute name="Implementation-Vendor" value="${vendor}" />
 				<attribute name="Implementation-Version"
-				           value="${addon.fullVersion}" />
+				           value="${fullVersion}" />
 			</manifest>
 		</jar>
 	</target>
 
-	<target name="buildSourceJar" if="${addon.buildSourceJar}">
-		<jar compress="true"
-		     jarfile="${addon.targetDir}/${addon.archieveName}-${addon.revision}-sources.jar">
+	<target name="buildSourceJar" if="${buildSourceJar}">
+		<jar compress="true" jarfile="${targetDir}/${baseFileName}-sources.jar">
 			<fileset dir="${workDir}/src" />
 			<manifest>
 				<attribute name="Implementation-Title"
-				           value="${addon.name}-sources" />
-				<attribute name="Implementation-Vendor"
-				           value="${addon.vendor}" />
+				           value="${name}-sources" />
+				<attribute name="Implementation-Vendor" value="${vendor}" />
 				<attribute name="Implementation-Version"
-				           value="${addon.fullVersion}" />
+				           value="${fullVersion}" />
 			</manifest>
 		</jar>
 	</target>
 
 	<target name="makePom">
-		<copy file="${resourcesDir}/dorado-addon-template.pom"
-		      todir="${workDir}/temp" />
-		<replace dir="${workDir}/temp"
-		         token="%product.revision%"
-		         value="${addon.revision}"
-		         encoding="${addon.srcCharset}">
-			<include name="dorado-addon-template.pom" />
-		</replace>
+		<condition property="shouldMakePom">
+			<and>
+				<istrue value="${makePom}" />
+				<available file="${ivyFile}" />
+			</and>
+		</condition>
 
-		<ivy:makepom ivyfile="${basedir}/ivy.xml"
-		             pomfile="${addon.targetDir}/${addon.archieveName}-${addon.revision}.pom"
-		             templateFile="${workDir}/temp/dorado-addon-template.pom"
-		             conf="compile">
-			<mapping conf="compile" scope="compile" />
-		</ivy:makepom>
+		<if>
+			<istrue value="${shouldMakePom}" />
+			<then>
+				<copy file="${resourcesDir}/dorado-addon-template.pom"
+				      todir="${workDir}/temp" />
+				<replace dir="${workDir}/temp"
+				         token="%revision%"
+				         value="${revision}"
+				         encoding="${srcCharset}">
+					<include name="dorado-addon-template.pom" />
+				</replace>
+				<replace dir="${workDir}/temp"
+				         token="%vendor%"
+				         value="${vendor}"
+				         encoding="${srcCharset}">
+					<include name="dorado-addon-template.pom" />
+				</replace>
+
+				<ivy:makepom ivyfile="${ivyFile}"
+				             pomfile="${targetDir}/${baseFileName}.pom"
+				             templateFile="${workDir}/temp/dorado-addon-template.pom"
+				             conf="compile">
+					<mapping conf="compile" scope="compile" />
+				</ivy:makepom>
+			</then>
+		</if>
 	</target>
 
 	<target name="buildJava"
-	        depends="compile,javadoc,makeJar,buildSourceJar,makePom" />
+	        depends="preprocessJavaSource,compile,javadoc,buildJar,buildSourceJar,makePom" />
 
 	<target name="buildArchieves" depends="mergeSource,buildClient,buildJava" />
 
-	<target name="buildAll" depends="init,buildArchieves" />
+	<target name="outputProperties">
+		<propertyfile file="${workDir}/temp/output.properties">
+			<entry key="baseFileName" value="${baseFileName}" />
+			<entry key="revision" value="${revision}" />
+			<entry key="publication" value="${publication}" />
+			<entry key="fullVersion" value="${fullVersion}" />
+		</propertyfile>
+	</target>
+
+	<target name="buildAll" depends="init,buildArchieves,outputProperties" />
 </project>
