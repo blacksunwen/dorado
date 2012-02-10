@@ -28,6 +28,7 @@ import org.hibernate.transform.ResultTransformer;
 import com.bstek.dorado.data.entity.EntityState;
 import com.bstek.dorado.data.entity.EntityUtils;
 import com.bstek.dorado.data.provider.Page;
+import com.bstek.dorado.util.Assert;
 import com.bstek.dorado.util.clazz.BeanPropertyUtils;
 
 /**
@@ -162,18 +163,23 @@ public class HibernateDao<T, PK extends Serializable> {
 
 	@SuppressWarnings("unchecked")
 	public Page<T> find(Page<T> page, Criteria criteria) {
+		notNull(page, "page");
+		
 		long totalCount = countCriteriaResult(criteria);
 		page.setEntityCount((int) totalCount);
 		setPageParameterToCriteria(criteria, page);
 		page.setEntities(criteria.list());
 		return page;
 	}
+	
+
 
 	public List<T> find(Criterion... criterions) {
 		return find(createCriteria(criterions));
 	}
 
 	public Page<T> find(Page<T> page, Criterion... criterions) {
+		notNull(page, "page");
 		return find(page, createCriteria(criterions));
 	}
 
@@ -278,6 +284,8 @@ public class HibernateDao<T, PK extends Serializable> {
 
 	@SuppressWarnings("unchecked")
 	public Page<T> find(Page<T> page, String hql, Object... parameters) {
+		notNull(page, "page");
+		
 		Query q = createQuery(hql, parameters);
 		long totalCount = countHqlResult(hql, parameters);
 		page.setEntityCount((int) totalCount);
@@ -288,11 +296,17 @@ public class HibernateDao<T, PK extends Serializable> {
 
 	@SuppressWarnings("unchecked")
 	public Page<T> find(Page<T> page, String hql, Map<String, ?> parameters) {
+		notNull(page, "page");
+		
 		Query q = createQuery(hql, parameters);
 		long totalCount = countHqlResult(hql, parameters);
 		page.setEntityCount((int) totalCount);
 		setPageParameterToQuery(q, page);
 		page.setEntities(q.list());
 		return page;
+	}
+	
+	protected void notNull(Object obj, String name) {
+		Assert.notNull(obj, "[" + name + "] must not be null.");
 	}
 }
