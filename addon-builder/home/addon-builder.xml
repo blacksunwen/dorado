@@ -9,9 +9,9 @@
 			<pathelement location="${homeDir}/lib/ant-contrib-1.0b3.jar" />
 		</classpath>
 	</taskdef>
-	<taskdef resource="com/bstek/dorado/ant/task.properties">
+	<taskdef resource="com/bstek/dorado/taskdefs/task.properties">
 		<classpath>
-			<pathelement path="${homeDir}/lib/dorado-ant-task.jar" />
+			<pathelement path="${homeDir}/lib/dorado-ant-tasks.jar" />
 			<pathelement path="${homeDir}/lib/js.jar" />
 			<pathelement path="${homeDir}/lib/commons-lang-2.5.jar" />
 		</classpath>
@@ -210,9 +210,9 @@
 		<if>
 			<available file="${workDir}/client" />
 			<then>
-				<js-tidy>
+				<tidyJavaScript>
 					<fileset dir="${workDir}/client" includes="**/*.js" />
-				</js-tidy>
+				</tidyJavaScript>
 			</then>
 		</if>
 	</target>
@@ -241,8 +241,8 @@
 
 	<target name="buildI18N">
 		<mkdir dir="${workDir}/bin/dorado/resources/i18n" />
-		<build-i18n-resource inputDir="${workDir}/client/resources/i18n"
-		                     outputDir="${workDir}/bin/dorado/resources/i18n" />
+		<buildI18NResource inputDir="${workDir}/client/resources/i18n"
+		                   outputDir="${workDir}/bin/dorado/resources/i18n" />
 	</target>
 
 	<target name="buildClient"
