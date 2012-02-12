@@ -4,11 +4,8 @@
          default="buildAll">
 	<property environment="env" />
 
-	<taskdef resource="net/sf/antcontrib/antlib.xml">
-		<classpath>
-			<pathelement location="${homeDir}/lib/ant-contrib-1.0b3.jar" />
-		</classpath>
-	</taskdef>
+	<taskdef resource="net/sf/antcontrib/antlib.xml"
+	         classpath="${homeDir}/lib/ant-contrib-1.0b3.jar" />
 	<taskdef resource="com/bstek/dorado/taskdefs/task.properties">
 		<classpath>
 			<pathelement path="${homeDir}/lib/dorado-ant-tasks.jar" />
@@ -122,29 +119,58 @@
 		</if>
 	</target>
 
-	<target name="doMergeSource">
-		<echo message="Merge Source: ${src} --> ${targetSourceDir}" />
+	<target name="doMergeClientSource">
+		<echo message="Merge Client Source: ${src} --> ${dist}" />
 		<if>
 			<available file="${src}" />
 			<then>
-				<copy todir="${targetSourceDir}">
+				<if>
+					<available file="${src}/build-client.xml" />
+					<then>
+						<echo message="Custom Client Build File: ${src}/build-client.xml" />
+						<ant antfile="${src}/build-client.xml"
+						     inheritRefs="false">
+							<property name="src" value="${src}" />
+							<property name="dist" value="${dist}" />
+						</ant>
+					</then>
+					<else>
+						<copy todir="${dist}">
+							<fileset dir="${src}" excludes="*.xml" />
+						</copy>
+					</else>
+				</if>
+
+				<delete file="${dist}/skins/**/all.*" />
+			</then>
+		</if>
+	</target>
+
+	<target name="mergeClientSource">
+		<foreach list="${clientSrc}" param="src" target="doMergeClientSource">
+			<param name="dist" value="${workDir}/client" />
+		</foreach>
+	</target>
+
+	<target name="doMergeJavaSource">
+		<echo message="Merge Java Source: ${src} --> ${dist}" />
+		<if>
+			<available file="${src}" />
+			<then>
+				<copy todir="${dist}">
 					<fileset dir="${src}" excludes="**/.*/**" />
 				</copy>
 			</then>
 		</if>
 	</target>
 
-	<target name="mergeSource">
-		<foreach list="${javaSrc}" param="src" target="doMergeSource">
-			<param name="targetSourceDir" value="${workDir}/src" />
-		</foreach>
-
-		<foreach list="${clientSrc}" param="src" target="doMergeSource">
-			<param name="targetSourceDir" value="${workDir}/client" />
+	<target name="mergeJavaSource">
+		<foreach list="${javaSrc}" param="src" target="doMergeJavaSource">
+			<param name="dist" value="${workDir}/src" />
 		</foreach>
 	</target>
 
-	<target name="preprocessClientSource">
+	<target name="preprocessClientSource" depends="initVariables">
 		<replace dir="${workDir}/client"
 		         token="%version%"
 		         value="${revision}"
@@ -175,7 +201,7 @@
 		</if>
 	</target>
 
-	<target name="jsdoc" if="${buildJsDoc}">
+	<target name="jsdoc" if="${buildJsDoc}" depends="initVariables">
 		<copy todir="${workDir}/jsdoc">
 			<fileset dir="${resourcesDir}/jsdoc-template" />
 		</copy>
@@ -185,7 +211,8 @@
 		              template="json"
 		              outputdir="${workDir}/jsdoc/data"
 		              verbose="true">
-			<fileset dir="${workDir}/client/scripts" includes="**/*.js" />
+			<fileset dir="${workDir}/client/scripts/dorado"
+			         includes="**/*.js" />
 		</jsdoctoolkit>
 
 		<replace dir="${workDir}/jsdoc"
@@ -252,13 +279,21 @@
 		</copy>
 	</target>
 
-	<target name="preprocessJavaSource">
-		<propertyfile file="${workDir}/src/META-INF/dorado-package.properties">
-			<entry key="version" value="${fullVersion}" />
-		</propertyfile>
+	<target name="preprocessJavaSource" if="${compileJava}">
+		<if>
+			<available file="${workDir}/src/META-INF/dorado-package.properties" />
+			<then>
+				<propertyfile file="${workDir}/src/META-INF/dorado-package.properties">
+					<entry key="version" value="${fullVersion}" />
+				</propertyfile>
+			</then>
+			<else>
+				<fail>"META-INF/dorado-package.properties" not found.</fail>
+			</else>
+		</if>
 	</target>
 
-	<target name="resolveDependencies">
+	<target name="resolveDependencies" if="${compileJava}">
 		<if>
 			<available file="${ivyFile}" />
 			<then>
@@ -279,7 +314,9 @@
 		</if>
 	</target>
 
-	<target name="compile" depends="resolveDependencies" if="${compileJava}">
+	<target name="compile"
+	        depends="preprocessJavaSource,resolveDependencies"
+	        if="${compileJava}">
 		<javac classpathref="classpath"
 		       srcdir="${workDir}/src"
 		       destdir="${workDir}/bin"
@@ -357,7 +394,7 @@
 		</jar>
 	</target>
 
-	<target name="makePom">
+	<target name="makePom" depends="initVariables">
 		<condition property="shouldMakePom">
 			<and>
 				<istrue value="${makePom}" />
@@ -394,9 +431,10 @@
 	</target>
 
 	<target name="buildJava"
-	        depends="preprocessJavaSource,compile,javadoc,buildJar,buildSourceJar,makePom" />
+	        depends="compile,javadoc,buildJar,buildSourceJar,makePom" />
 
-	<target name="buildArchieves" depends="mergeSource,buildClient,buildJava" />
+	<target name="buildArchieves"
+	        depends="mergeClientSource,mergeJavaSource,buildClient,buildJava" />
 
 	<target name="outputProperties">
 		<propertyfile file="${workDir}/temp/output.properties">
