@@ -2,7 +2,10 @@ package com.bstek.dorado.addonbuilder;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
@@ -61,6 +64,7 @@ public class BuildDoradoAddonTask extends Ant {
 	}
 
 	private void initialize() {
+		setInheritAll(false);
 		setUseNativeBasedir(true);
 	}
 
@@ -192,19 +196,19 @@ public class BuildDoradoAddonTask extends Ant {
 
 			log("Dorado addon [" + name + "] build OK.");
 		} catch (Exception e) {
-			// try {
-			// File file = new File("e:/temp/log.txt");
-			// file.createNewFile();
-			// FileOutputStream out = new FileOutputStream(file);
-			// PrintWriter writer = new PrintWriter(out);
-			// e.printStackTrace(writer);
-			// writer.flush();
-			// writer.close();
-			// out.flush();
-			// out.close();
-			// } catch (IOException e1) {
-			// e1.printStackTrace();
-			// }
+			try {
+				File file = new File("e:/temp/log.txt");
+				file.createNewFile();
+				FileOutputStream out = new FileOutputStream(file);
+				PrintWriter writer = new PrintWriter(out);
+				e.printStackTrace(writer);
+				writer.flush();
+				writer.close();
+				out.flush();
+				out.close();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 
 			log(e, Project.MSG_ERR);
 			throw new BuildException(e.getMessage(), e);
@@ -381,7 +385,7 @@ public class BuildDoradoAddonTask extends Ant {
 		return makePom;
 	}
 
-	public void isMakePom(boolean makePom) {
+	public void setMakePom(boolean makePom) {
 		this.makePom = makePom;
 	}
 
