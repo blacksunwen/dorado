@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlNodeWrapper;
 import com.bstek.dorado.annotation.XmlProperty;
@@ -23,9 +24,9 @@ import com.bstek.dorado.jdbc.model.Column;
 	subNodes = {
 		@XmlSubNode(
 			wrapper = @XmlNodeWrapper(nodeName = "Columns", fixed = true), 
-			propertyName="!columns",
-			propertyType = "List<com.bstek.dorado.jdbc.model.Column>", 
-			implTypes="com.bstek.dorado.jdbc.model.table.*"
+			propertyName="Jdbc_TableColumns",
+			propertyType = "List<com.bstek.dorado.jdbc.model.table.AbstractTableColumn>", 
+			implTypes="com.bstek.dorado.jdbc.model.table.Table*"
 		)
 	}
 )
@@ -62,15 +63,7 @@ public class Table extends AbstractTable {
 	}
 
 	@XmlProperty(attributeOnly=true)
-	public String getTableName() {
-		return tableName;
-	}
-	
-	public void setTableName(String tableName) {
-		this.tableName = tableName;
-	}
-
-	@XmlProperty(attributeOnly=true)
+	@IdeProperty(highlight=1, editor="jdbc:list-catalogs")
 	public String getCatalog() {
 		return catalog;
 	}
@@ -80,6 +73,7 @@ public class Table extends AbstractTable {
 	}
 
 	@XmlProperty(attributeOnly=true)
+	@IdeProperty(highlight=1, editor="jdbc:list-schemas")
 	public String getSchema() {
 		return schema;
 	}
@@ -88,6 +82,16 @@ public class Table extends AbstractTable {
 		this.schema = schema;
 	}
 
+	@XmlProperty(attributeOnly=true)
+	@IdeProperty(highlight=1, editor="jdbc:list-tables.xml")
+	public String getTableName() {
+		return tableName;
+	}
+	
+	public void setTableName(String tableName) {
+		this.tableName = tableName;
+	}
+	
 	public String getDynamicClause() {
 		return dynamicClause;
 	}

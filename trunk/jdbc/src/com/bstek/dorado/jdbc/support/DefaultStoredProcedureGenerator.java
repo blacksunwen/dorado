@@ -11,13 +11,13 @@ import java.util.Map;
 import javax.sql.DataSource;
 
 import org.apache.commons.lang.StringUtils;
-import org.dom4j.Document;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
 import org.springframework.jdbc.support.DatabaseMetaDataCallback;
 import org.springframework.jdbc.support.MetaDataAccessException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import com.bstek.dorado.jdbc.JdbcEnviroment;
+import com.bstek.dorado.jdbc.config.xml.DomHelper;
 import com.bstek.dorado.jdbc.meta.StoredProcedureGenerator;
 import com.bstek.dorado.jdbc.model.storedprogram.ProgramParameter;
 import com.bstek.dorado.jdbc.model.storedprogram.StoredProgram;
@@ -73,18 +73,18 @@ public class DefaultStoredProcedureGenerator implements
 			this.init(dbmd);
 			this.check(dbmd);
 			
-			Document document = DocumentHelper.createDocument();
+			Document document = DomHelper.newDocument();
 			
-			Element rootElement = this.rootElement();
-			document.setRootElement(rootElement);
+			Element rootElement = this.rootElement(document);
+			document.appendChild(rootElement);
 			
 			ResultSet columnRS = dbmd.getProcedureColumns(usedCatalog, usedSchema, usedProcedureName, null);
 			List<Map<String,String>> columnMetaList = Utils.toListMap(columnRS);
 			for (Map<String,String> columnMeta: columnMetaList) {
 				Map<String,String> columnProperties = columnProperties(columnMeta);
 				if (columnProperties != null) {
-					Element parameterElement = createParameterElement(columnProperties);
-					rootElement.add(parameterElement);
+					Element parameterElement = createParameterElement(columnProperties, document);
+					rootElement.appendChild(parameterElement);
 				}
 			}
 			
@@ -169,28 +169,28 @@ public class DefaultStoredProcedureGenerator implements
 			}
 		}
 		
-		protected Element createParameterElement(Map<String,String> columnProperties) {
-			Element element = DocumentHelper.createElement("Parameter");
+		protected Element createParameterElement(Map<String,String> columnProperties, Document document) {
+			Element element = document.createElement("Parameter");
 			for (Iterator<String> keyItr = columnProperties.keySet().iterator(); keyItr.hasNext();){
 				String key = keyItr.next();
 				String value = columnProperties.get(key);
 				if (StringUtils.isNotEmpty(value)) {
-					element.addAttribute(key, value);
+					element.setAttribute(key, value);
 				}
 			}
 			return element;
 		}
 		
-		protected Element rootElement() {
-			Element rootElement = DocumentHelper.createElement(StoredProgram.TYPE);
+		protected Element rootElement(Document document) {
+			Element rootElement = document.createElement(StoredProgram.TYPE);
 			if (StringUtils.isNotEmpty(schema)) {
-				rootElement.addAttribute("schema", schema);
+				rootElement.setAttribute("schema", schema);
 			}
 			if (StringUtils.isNotEmpty(catalog)) {
-				rootElement.addAttribute("catalog", catalog);
+				rootElement.setAttribute("catalog", catalog);
 			}
-			rootElement.addAttribute("programName", usedProcedureName);
-			rootElement.addAttribute("name", procedureName);
+			rootElement.setAttribute("programName", usedProcedureName);
+			rootElement.setAttribute("name", procedureName);
 			
 			return rootElement;
 		}

@@ -1,13 +1,13 @@
 package com.bstek.dorado.jdbc.model.sqltable;
 
 import com.bstek.dorado.annotation.XmlNode;
-import com.bstek.dorado.jdbc.model.table.TableColumn;
+import com.bstek.dorado.jdbc.model.AbstractUpdatableColumn;
 
 @XmlNode(
 	nodeName="Column", 
 	definitionType="com.bstek.dorado.jdbc.model.ColumnDefinition"
 )
-public class SqlTableColumn extends TableColumn {
+public class SqlTableColumn extends AbstractUpdatableColumn {
 	
 	private String nativeColumnName;
 

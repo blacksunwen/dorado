@@ -1,7 +1,4 @@
-package com.bstek.dorado.jdbc.ide;
-
-import java.util.ArrayList;
-import java.util.List;
+package com.bstek.dorado.jdbc.ide.resolver;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -10,26 +7,22 @@ import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.JdbcUtils;
-import com.bstek.dorado.jdbc.type.JdbcType;
+import com.bstek.dorado.jdbc.ModelGeneratorSuit;
+import com.bstek.dorado.jdbc.ide.Constants;
 
-public class ListJdbcTypeResolver extends Resolver {
+public class ListCatalogResolver extends Resolver {
 
 	@Override
 	public String getContent(HttpServletRequest request,
 			HttpServletResponse response) {
-		String envName = request.getParameter(PARAM_ENV);
-		
+		String envName = request.getParameter(Constants.PARAM_ENV);
 		return toContent(envName);
 	}
 
 	public String toContent(String envName) {
 		JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(envName);
-		
-		List<JdbcType> types = jdbcEnv.getDialect().getJdbcTypes();
-		List<String> names = new ArrayList<String>(types.size());
-		for (JdbcType type: types) {
-			names.add(type.getName());
-		}
-		return StringUtils.join(names, ',');
+		ModelGeneratorSuit generator = jdbcEnv.getModelGeneratorSuit();
+		final String[] catalogs = generator.getJdbcEnviromentMetaDataGenerator().listCatalogs(jdbcEnv);
+		return StringUtils.join(catalogs, ',');
 	}
 }

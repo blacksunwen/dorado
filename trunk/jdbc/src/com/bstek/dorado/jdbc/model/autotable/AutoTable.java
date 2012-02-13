@@ -29,7 +29,7 @@ import com.bstek.dorado.util.Assert;
 		),
 		@XmlSubNode(
 			wrapper = @XmlNodeWrapper(nodeName = "Columns", fixed = true),
-			propertyName = "allColumns2",
+			propertyName = "Jdbc_AutoTableColumns",
 			propertyType = "List<com.bstek.dorado.jdbc.model.autotable.AutoTableColumn>"
 		),
 		@XmlSubNode(

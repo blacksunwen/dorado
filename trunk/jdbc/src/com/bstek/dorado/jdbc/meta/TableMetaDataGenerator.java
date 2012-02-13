@@ -3,7 +3,7 @@ package com.bstek.dorado.jdbc.meta;
 import java.util.List;
 import java.util.Map;
 
-import org.dom4j.Document;
+import org.w3c.dom.Document;
 
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.model.ColumnDefinition;

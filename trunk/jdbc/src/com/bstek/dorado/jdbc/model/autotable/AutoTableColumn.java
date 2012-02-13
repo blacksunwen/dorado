@@ -1,14 +1,14 @@
 package com.bstek.dorado.jdbc.model.autotable;
 
 import com.bstek.dorado.annotation.XmlNode;
-import com.bstek.dorado.jdbc.model.table.TableColumn;
+import com.bstek.dorado.jdbc.model.AbstractUpdatableColumn;
 import com.bstek.dorado.util.Assert;
 
 @XmlNode(
 	nodeName="Column",
 	definitionType = "com.bstek.dorado.jdbc.model.ColumnDefinition"
 )
-public class AutoTableColumn extends TableColumn {
+public class AutoTableColumn extends AbstractUpdatableColumn {
 
 	private String tableAlias;
 	private String columnAlias;
