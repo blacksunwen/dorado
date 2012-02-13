@@ -73,7 +73,7 @@ public class Table extends AbstractTable {
 	}
 
 	@XmlProperty(attributeOnly=true)
-	@IdeProperty(highlight=1, editor="jdbc:list-schemas")
+	@IdeProperty(highlight=1, editor="jdbc:list-schemas.xml")
 	public String getSchema() {
 		return schema;
 	}
