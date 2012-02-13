@@ -24,6 +24,19 @@ public class JdbcDataResolverItem {
 	
 	private List<JdbcDataResolverItem> items = new ArrayList<JdbcDataResolverItem>(5);
 	
+	public JdbcDataResolverItem clone() {
+		JdbcDataResolverItem cloned = new JdbcDataResolverItem();
+		cloned.setName(name);
+		cloned.setTableName(tableName);
+		cloned.setForeignKeyProperties(foreignKeyProperties);
+		cloned.setParentKeyProperties(parentKeyProperties);
+		
+		for (JdbcDataResolverItem item: items) {
+			cloned.getItems().add(item.clone());
+		}
+		return cloned;
+	}
+	
 	public String getTableName() {
 		return tableName;
 	}
@@ -44,16 +57,16 @@ public class JdbcDataResolverItem {
 		return parentKeyProperties;
 	}
 
-	public void setParentKeyProperties(String refrencedParentProperties) {
-		this.parentKeyProperties = refrencedParentProperties;
+	public void setParentKeyProperties(String parentKeyProperties) {
+		this.parentKeyProperties = parentKeyProperties;
 	}
 
 	public String getForeignKeyProperties() {
 		return foreignKeyProperties;
 	}
 
-	public void setForeignKeyProperties(String refrencedProperties) {
-		this.foreignKeyProperties = refrencedProperties;
+	public void setForeignKeyProperties(String foreignKeyProperties) {
+		this.foreignKeyProperties = foreignKeyProperties;
 	}
 
 	@XmlSubNode

@@ -27,7 +27,12 @@ public class JdbcDataResolverOperation {
 	}
 	
 	public void execute() {
-		for (JdbcDataResolverItem item: jdbcContext.getResolverItems()) {
+		List<JdbcDataResolverItem> items = jdbcContext.getResolverItems();
+		if (items.isEmpty()) {
+			return;
+		}
+		
+		for (JdbcDataResolverItem item: items) {
 			String iName = item.getName();
 			String eName = item.getTableName();
 			Assert.notEmpty(iName, "value of name property must not be empty.");
