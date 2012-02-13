@@ -12,17 +12,18 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.dom4j.Document;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import com.bstek.dorado.jdbc.JdbcConstants;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
+import com.bstek.dorado.jdbc.config.xml.DomHelper;
 import com.bstek.dorado.jdbc.meta.SqlTableMetaDataGenerator;
 import com.bstek.dorado.jdbc.type.JdbcType;
+import com.bstek.dorado.util.xml.DomUtils;
 
 public class DefaultSqlTableMetaDataGenerator implements
 		SqlTableMetaDataGenerator {
@@ -99,28 +100,28 @@ public class DefaultSqlTableMetaDataGenerator implements
 	
 	@Override
 	public Document createDocument(JdbcEnviroment jdbcEnv, String sql) {
-		Document document = DocumentHelper.createDocument();
-		Element tableElement = document.addElement("SqlTable");
-		Element columnsElement = tableElement.addElement("Columns");
+		Document document = DomHelper.newDocument();
+		Element tableElement = DomHelper.addElement(document, "SqlTable");
+		Element columnsElement = DomHelper.addElement(tableElement, "Columns");
 		
 		List<Map<String,String>> columnMetas = this.listColumnMetas(jdbcEnv, sql);
 		for (Map<String,String> columnMeta: columnMetas) {
-			Element columnElement = createColumnElement(columnMeta, jdbcEnv);
-			columnsElement.add(columnElement);
+			Element columnElement = createColumnElement(columnMeta, jdbcEnv, document);
+			columnsElement.appendChild(columnElement);
 		}
 		
 		return document;
 	}
 
-	protected Element createColumnElement(Map<String, String> columnMeta, JdbcEnviroment jdbcEnv) {
+	protected Element createColumnElement(Map<String, String> columnMeta, JdbcEnviroment jdbcEnv, Document document) {
 		Map<String,String> columnProperties = columnProperties(columnMeta, jdbcEnv);
 		columnProperties.put("nativeColumnName", columnMeta.get(JdbcConstants.COLUMN_NAME));
-		Element columnElement = DocumentHelper.createElement("Column");
+		Element columnElement = document.createElement("Column");
 		for (Iterator<String> keyItr = columnProperties.keySet().iterator(); keyItr.hasNext();){
 			String key = keyItr.next();
 			String value = columnProperties.get(key);
 			if (StringUtils.isNotEmpty(value)) {
-				columnElement.addAttribute(key, value);
+				columnElement.setAttribute(key, value);
 			}
 		}
 		return columnElement;
@@ -129,26 +130,25 @@ public class DefaultSqlTableMetaDataGenerator implements
 	@Override
 	public Document mergeDocument(JdbcEnviroment jdbcEnv, String sql,
 			Document document) {
-		Element tableElement = document.getRootElement();
-		Element columnsElement = tableElement.element("Columns");
+		Element tableElement = document.getDocumentElement();
+		Element columnsElement = DomUtils.getChildByTagName(tableElement, "Columns");
 		if (columnsElement == null) {
-			columnsElement = tableElement.addElement("Columns");
+			columnsElement = DomHelper.addElement(tableElement, "Columns");
 		}
 		
 		Set<String> columnNameSet = new HashSet<String>();
-		for (@SuppressWarnings("unchecked")
-		Iterator<Element> itr = columnsElement.elementIterator(); itr.hasNext();) {
-			Element element = itr.next();
-			String columnName = element.attributeValue("columnName");
+		List<Element> columnElements = DomUtils.getChildElements(columnsElement);
+		for (Element columnElement: columnElements) {
+			String columnName = columnElement.getAttribute("columnName");
 			columnNameSet.add(columnName);
 		}
 		
 		List<Map<String,String>> columnMetas = this.listColumnMetas(jdbcEnv, sql);
 		for (Map<String,String> columnMeta: columnMetas) {
-			Element columnElement = createColumnElement(columnMeta, jdbcEnv);
-			String columnName = columnElement.attributeValue("columnName");
+			Element columnElement = createColumnElement(columnMeta, jdbcEnv, document);
+			String columnName = columnElement.getAttribute("columnName");
 			if (!columnNameSet.contains(columnName)) {
-				columnsElement.add(columnElement);
+				columnsElement.appendChild(columnElement);
 			}
 		}
 		

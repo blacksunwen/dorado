@@ -18,22 +18,23 @@ import javax.sql.DataSource;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.dom4j.Document;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
 import org.springframework.jdbc.support.DatabaseMetaDataCallback;
 import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.jdbc.support.MetaDataAccessException;
 import org.springframework.util.LinkedCaseInsensitiveMap;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import com.bstek.dorado.jdbc.JdbcConstants;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
+import com.bstek.dorado.jdbc.config.xml.DomHelper;
 import com.bstek.dorado.jdbc.key.KeyGenerator;
 import com.bstek.dorado.jdbc.meta.TableMetaDataGenerator;
 import com.bstek.dorado.jdbc.model.ColumnDefinition;
 import com.bstek.dorado.jdbc.model.table.TableColumnDefinition;
 import com.bstek.dorado.jdbc.model.table.TableKeyColumnDefinition;
 import com.bstek.dorado.jdbc.type.JdbcType;
+import com.bstek.dorado.util.xml.DomUtils;
 
 public class DefaultTableMetaDataGenerator implements TableMetaDataGenerator {
 
@@ -332,61 +333,61 @@ public class DefaultTableMetaDataGenerator implements TableMetaDataGenerator {
 		UsedTable usedTable = new UsedTable(catalog, schema, table);
 		usedTable.init(jdbcEnv);
 		
-		Document document = DocumentHelper.createDocument();
-		Element tableElement = this.createTableElement(usedTable, jdbcEnv);
-		document.setRootElement(tableElement);
+		Document document = DomHelper.newDocument();
+		Element tableElement = this.createTableElement(usedTable, jdbcEnv, document);
+		document.appendChild(tableElement);
 		
 		List<Element> keyColumnElementList = new ArrayList<Element>();
 		List<Element> columnElementList = new ArrayList<Element>();
 
 		List<Map<String,String>> columnMetaList = this.listColumnMetas(jdbcEnv, usedTable.usedCatalog, usedTable.usedSchema, usedTable.usedTable);
 		for (Map<String,String> columnMeta: columnMetaList) {
-			Element element = createColumnElement(columnMeta, jdbcEnv);
-			if (element.getName().equals("KeyColumn")) {
+			Element element = createColumnElement(columnMeta, jdbcEnv, document);
+			if (element.getNodeName().equals("KeyColumn")) {
 				keyColumnElementList.add(element);
 			} else {
 				columnElementList.add(element);
 			}
 		}
 		
-		Element columnsElement = tableElement.addElement("Columns");
+		Element columnsElement = DomHelper.addElement(tableElement, "Columns");
 		for (Element element: keyColumnElementList) {
-			columnsElement.add(element);
+			columnsElement.appendChild(element);
 		}
 		for (Element element: columnElementList) {
-			columnsElement.add(element);
+			columnsElement.appendChild(element);
 		}
 		
 		return document;
 	}
 	
-	protected Element createTableElement(UsedTable usedTable, JdbcEnviroment jdbcEnv) {
+	protected Element createTableElement(UsedTable usedTable, JdbcEnviroment jdbcEnv, Document document) {
 		Map<String,String> tableMeta = this.tableMeta(jdbcEnv, usedTable.usedCatalog, usedTable.usedSchema, usedTable.usedTable);
 		
 		String name = tableName(tableMeta, jdbcEnv);
-		Element tableElement = DocumentHelper.createElement("Table");
-		tableElement.addAttribute("name", name);
-		tableElement.addAttribute("tableName", usedTable.table);
+		Element tableElement = document.createElement("Table");
+		tableElement.setAttribute("name", name);
+		tableElement.setAttribute("tableName", usedTable.table);
 
 		if (StringUtils.isNotEmpty(usedTable.catalog)) {
-			tableElement.addAttribute("catalog", usedTable.catalog);
+			tableElement.setAttribute("catalog", usedTable.catalog);
 		}
 		if (StringUtils.isNotEmpty(usedTable.schema)) {
-			tableElement.addAttribute("schema", usedTable.schema);
+			tableElement.setAttribute("schema", usedTable.schema);
 		}
 		
 		return tableElement;
 	}
 	
-	protected Element createColumnElement(Map<String,String> columnMeta, JdbcEnviroment jdbcEnv) {
+	protected Element createColumnElement(Map<String,String> columnMeta, JdbcEnviroment jdbcEnv, Document document) {
 		Map<String,String> columnProperties = this.columnProperties(columnMeta, jdbcEnv);
 		Element element = null;
 		if (JdbcConstants.YES.equalsIgnoreCase(columnProperties.get(JdbcConstants.IS_KEY))) {
 			String elementName = "KeyColumn";
-			element = DocumentHelper.createElement(elementName);
+			element = document.createElement(elementName);
 		} else {
 			String elementName = "Column";
-			element = DocumentHelper.createElement(elementName);
+			element = document.createElement(elementName);
 		}
 		columnProperties.remove(JdbcConstants.IS_KEY);
 		
@@ -394,7 +395,7 @@ public class DefaultTableMetaDataGenerator implements TableMetaDataGenerator {
 			String key = keyItr.next();
 			String value = columnProperties.get(key);
 			if (StringUtils.isNotEmpty(value)) {
-				element.addAttribute(key, value);
+				element.setAttribute(key, value);
 			}
 		}
 		
@@ -407,27 +408,26 @@ public class DefaultTableMetaDataGenerator implements TableMetaDataGenerator {
 		UsedTable usedTable = new UsedTable(catalog, schema, table);
 		usedTable.init(jdbcEnv);
 		
-		Element tableElement = document.getRootElement();
-		Element columnsElement = tableElement.element("Columns");
+		Element tableElement = document.getDocumentElement();
+		Element columnsElement = DomUtils.getChildByTagName(tableElement, "Columns");
 		if (columnsElement == null) {
-			columnsElement = DocumentHelper.createElement("Columns");
-			tableElement.add(columnsElement);
+			columnsElement = document.createElement("Columns");
+			tableElement.appendChild(columnsElement);
 		}
 		
 		Set<String> columnNameSet = new HashSet<String>();
-		for (@SuppressWarnings("unchecked")
-		Iterator<Element> itr = columnsElement.elementIterator(); itr.hasNext();) {
-			Element element = itr.next();
-			String columnName = element.attributeValue("columnName");
+		List<Element> columnElements = DomUtils.getChildElements(columnsElement);
+		for (Element columnElement: columnElements) {
+			String columnName = columnElement.getAttribute("columnName");
 			columnNameSet.add(columnName);
 		}
 		
 		List<Map<String,String>> columnMetaList = this.listColumnMetas(jdbcEnv, usedTable.usedCatalog, usedTable.usedSchema, usedTable.usedTable);
 		for (Map<String,String> columnMeta: columnMetaList) {
-			Element columnElement = createColumnElement(columnMeta, jdbcEnv);
-			String columnName = columnElement.attributeValue("columnName");
+			Element columnElement = createColumnElement(columnMeta, jdbcEnv, document);
+			String columnName = columnElement.getAttribute("columnName");
 			if (!columnNameSet.contains(columnName)) {
-				columnsElement.add(columnElement);
+				columnsElement.appendChild(columnElement);
 			}
 		}
 		

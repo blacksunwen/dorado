@@ -3,11 +3,10 @@ package com.bstek.dorado.jdbc.model.table;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.jdbc.key.KeyGenerator;
-import com.bstek.dorado.jdbc.model.Column;
 
 @XmlNode(nodeName="KeyColumn", 
 		definitionType="com.bstek.dorado.jdbc.model.table.TableKeyColumnDefinition")
-public class TableKeyColumn extends Column {
+public class TableKeyColumn extends AbstractTableColumn {
 
 	private KeyGenerator<?> keyGenerator;
 

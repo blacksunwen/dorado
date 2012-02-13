@@ -3,22 +3,69 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<bean id="dorado.jdbc.ide.listEnviromentResolver" 
-	   class="com.bstek.dorado.jdbc.ide.ListJdbcEnviromentResolver"/>
-	<bean id="dorado.jdbc.ide.listCatalogResolver" 
-	   class="com.bstek.dorado.jdbc.ide.ListCatalogResolver"/>
-	<bean id="dorado.jdbc.ide.listSchemaResolver" 
-	   class="com.bstek.dorado.jdbc.ide.ListSchemaResolver"/>
-	<bean id="dorado.jdbc.ide.listTablesResolver" 
-	   class="com.bstek.dorado.jdbc.ide.ListTablesResolver"/>
-	<bean id="dorado.jdbc.ide.listTableTypeResolver" 
-	   class="com.bstek.dorado.jdbc.ide.ListTableTypeResolver"/>
-	<bean id="dorado.jdbc.ide.createTableResolver" 
-	   class="com.bstek.dorado.jdbc.ide.CreateTableResolver"/>
-	<bean id="dorado.jdbc.ide.createSqlTableResolver" 
-	   class="com.bstek.dorado.jdbc.ide.CreateSqlTableResolver"/>
-	<bean id="dorado.jdbc.ide.createDataTypeResolver" 
-	   class="com.bstek.dorado.jdbc.ide.CreateDataTypeResolver"/>
-    <bean id="dorado.jdbc.ide.listJdbcTypeResolver" 
-        class="com.bstek.dorado.jdbc.ide.ListJdbcTypeResolver"/>
+	<bean parent="dorado.idesupport.ruleConfigLoader">
+		<property name="configLocation" value="com/bstek/dorado/jdbc/jdbc-config-rules.xml"/>
+	</bean>
+	
+	<!-- Resolver -->
+	<bean id="dorado.jdbc.ide.resolver.listEnviromentResolver" 
+	   class="com.bstek.dorado.jdbc.ide.resolver.ListJdbcEnviromentResolver"/>
+	<bean id="dorado.jdbc.ide.resolver.listCatalogResolver" 
+	   class="com.bstek.dorado.jdbc.ide.resolver.ListCatalogResolver"/>
+	<bean id="dorado.jdbc.ide.resolver.listSchemaResolver" 
+	   class="com.bstek.dorado.jdbc.ide.resolver.ListSchemaResolver"/>
+	<bean id="dorado.jdbc.ide.resolver.listTablesResolver" 
+	   class="com.bstek.dorado.jdbc.ide.resolver.ListTablesResolver"/>
+	<bean id="dorado.jdbc.ide.resolver.listTableTypeResolver" 
+	   class="com.bstek.dorado.jdbc.ide.resolver.ListTableTypeResolver"/>
+	<bean id="dorado.jdbc.ide.resolver.createTableResolver" 
+	   class="com.bstek.dorado.jdbc.ide.resolver.CreateTableResolver"/>
+	<bean id="dorado.jdbc.ide.resolver.createSqlTableResolver" 
+	   class="com.bstek.dorado.jdbc.ide.resolver.CreateSqlTableResolver"/>
+	<bean id="dorado.jdbc.ide.resolver.createDataTypeResolver" 
+	   class="com.bstek.dorado.jdbc.ide.resolver.CreateDataTypeResolver"/>
+    <bean id="dorado.jdbc.ide.resolver.listJdbcTypeResolver" 
+        class="com.bstek.dorado.jdbc.ide.resolver.ListJdbcTypeResolver"/>
+
+    <!-- Robot -->
+    <bean parent="dorado.idesupport.robotRegister">
+		<property name="name" value="jdbc-createDataType" />
+		<property name="label" value="Create DataType" />
+		<property name="viewObject" value="**Table" />
+		<property name="robot">
+			<bean class="com.bstek.dorado.jdbc.ide.robot.CreateDataTypeRobot" />
+		</property>
+    </bean>
+    <bean parent="dorado.idesupport.robotRegister">
+		<property name="name" value="jdbc-createTable" />
+		<property name="label" value="Generate Columns" />
+		<property name="viewObject" value="Table" />
+		<property name="robot">
+			<bean class="com.bstek.dorado.jdbc.ide.robot.CreateTableRobot" />
+		</property>
+    </bean>
+    <bean parent="dorado.idesupport.robotRegister">
+		<property name="name" value="jdbc-createSqlTable" />
+		<property name="label" value="Generate Columns" />
+		<property name="viewObject" value="SqlTable" />
+		<property name="robot">
+			<bean class="com.bstek.dorado.jdbc.ide.robot.CreateSqlTableRobot" />
+		</property>
+    </bean>
+<!-- 	<bean parent="dorado.idesupport.robotRegister"> -->
+<!-- 		<property name="name" value="jdbc-listJdbcEnviroments" /> -->
+<!-- 		<property name="label" value="List JdbcEnviroments" /> -->
+<!-- 		<property name="viewObject" value="DbModel" /> -->
+<!-- 		<property name="robot"> -->
+<!-- 			<bean class="com.bstek.dorado.jdbc.ide.robot.ListJdbcEnviromentRobot" /> -->
+<!-- 		</property> -->
+<!-- 	</bean> -->
+<!-- 	<bean parent="dorado.idesupport.robotRegister"> -->
+<!-- 		<property name="name" value="jdbc-listCatalogs" /> -->
+<!-- 		<property name="label" value="List Catalogs" /> -->
+<!-- 		<property name="viewObject" value="DbModel" /> -->
+<!-- 		<property name="robot"> -->
+<!-- 			<bean class="com.bstek.dorado.jdbc.ide.robot.ListJdbcEnviromentRobot" /> -->
+<!-- 		</property> -->
+<!-- 	</bean> -->
 </beans>

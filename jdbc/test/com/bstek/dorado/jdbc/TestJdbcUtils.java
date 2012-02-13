@@ -1,37 +1,19 @@
 package com.bstek.dorado.jdbc;
 
-import java.io.IOException;
-import java.io.StringWriter;
 import java.util.Iterator;
 import java.util.Set;
 
 import junit.framework.Assert;
 
-import org.dom4j.Document;
-import org.dom4j.io.OutputFormat;
-import org.dom4j.io.XMLWriter;
+import org.w3c.dom.Document;
 
-import com.bstek.dorado.core.Constants;
 import com.bstek.dorado.data.variant.Record;
-import com.bstek.dorado.jdbc.ide.CreateTableResolver;
+import com.bstek.dorado.jdbc.config.xml.DomHelper;
+import com.bstek.dorado.jdbc.ide.resolver.CreateTableResolver;
 import com.bstek.dorado.jdbc.support.DefaultDataTypeMetaGenerator;
 import com.bstek.dorado.jdbc.support.DefaultStoredProcedureGenerator;
 
 public class TestJdbcUtils {
-
-	public static String toString(org.dom4j.Document document) {
-		StringWriter writer = new StringWriter();
-		OutputFormat format = OutputFormat.createPrettyPrint();
-		format.setEncoding(Constants.DEFAULT_CHARSET);
-
-		XMLWriter xmlWriter = new XMLWriter(writer, format);
-		try {
-			xmlWriter.write(document);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-		return writer.toString();
-	}
 	
 	/**
 	 * 输出一个表的xml
@@ -65,7 +47,7 @@ public class TestJdbcUtils {
 		DefaultStoredProcedureGenerator generator = new DefaultStoredProcedureGenerator();
 		Document document = generator.createDocument(jdbcEnv, catalog, schema, procedureName);
 		
-		String xml = TestJdbcUtils.toString(document);
+		String xml = DomHelper.toString(document);
 		return xml;
 	}
 	
@@ -74,7 +56,7 @@ public class TestJdbcUtils {
 		DefaultDataTypeMetaGenerator generator = new DefaultDataTypeMetaGenerator();
 		Document document = generator.createDocument(jdbcEnv, tableName);
 		
-		String xml = TestJdbcUtils.toString(document);
+		String xml = DomHelper.toString(document);
 		return xml;
 	}
 	

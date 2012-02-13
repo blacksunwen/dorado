@@ -1,14 +1,8 @@
-package com.bstek.dorado.jdbc.model.table;
+package com.bstek.dorado.jdbc.model;
 
-import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
 
-@XmlNode(
-	nodeName="Column", 
-	definitionType="com.bstek.dorado.jdbc.model.table.TableColumnDefinition"
-)
-public class TableColumn extends AbstractTableColumn {
-
+public abstract class AbstractUpdatableColumn extends Column {
 	private boolean insertable = true;
 	
 	private boolean updatable = true;
@@ -50,5 +44,4 @@ public class TableColumn extends AbstractTableColumn {
 	public void setUpdateDefaultValue(Object updateDefaultValue) {
 		this.updateDefaultValue = updateDefaultValue;
 	}
-
 }

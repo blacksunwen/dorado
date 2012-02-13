@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
@@ -30,6 +31,7 @@ public class DbModel {
 	
 	private Map<String, DbElementDefinition>  definitionMap = new LinkedHashMap<String, DbElementDefinition>();
 	
+	@IdeProperty(highlight=1, editor="jdbc:list-envs")
 	public String getJdbcEnviroment() {
 		return jdbcEnviroment;
 	}

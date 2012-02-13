@@ -6,7 +6,6 @@
 	http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dorado-7.0.xsd">
 
 	<import resource="jdbc-key-generator.xml"/>
-	<import resource="jdbc-ide.xml"/>
 	<import resource="jdbc-parser.xml"/>
 	<import resource="jdbc-dialect.xml"/>
 	

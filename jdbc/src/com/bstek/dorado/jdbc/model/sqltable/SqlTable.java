@@ -19,7 +19,7 @@ import com.bstek.dorado.jdbc.model.table.Table;
 	subNodes = {
 		@XmlSubNode(
 			wrapper = @XmlNodeWrapper(nodeName = "Columns", fixed = true), 
-			propertyName="!columns",
+			propertyName="Jdbc_SqlTableColumns",
 			propertyType = "List<com.bstek.dorado.jdbc.model.sqltable.SqlTableColumn>"
 		)
 	}

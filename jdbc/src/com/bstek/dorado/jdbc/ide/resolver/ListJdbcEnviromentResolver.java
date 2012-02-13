@@ -1,4 +1,4 @@
-package com.bstek.dorado.jdbc.ide;
+package com.bstek.dorado.jdbc.ide.resolver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ public class ListJdbcEnviromentResolver extends Resolver {
 	}
 
 	public String toContent() {
-		final JdbcEnviroment[] envs = JdbcUtils.getEnviromentManager().listAll();
+		JdbcEnviroment[] envs = JdbcUtils.getEnviromentManager().listAll();
 		List<String> names = new ArrayList<String>(envs.length);
 		for (JdbcEnviroment env: envs) {
 			names.add(env.getName());

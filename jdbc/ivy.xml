@@ -12,9 +12,6 @@
 		<dependency org="com.bstek.dorado" name="dorado-core" rev="${depended-dorado.version}" conf="compile">
 			<exclude org="com.bstek.dorado"/>
 		</dependency>
-		<dependency org="com.bstek.dorado" name="dorado-ide-support" rev="${depended-dorado.version}" conf="compile">
-			<exclude org="com.bstek.dorado"/>
-		</dependency>
 		
 		<dependency org="org.springframework" name="spring-core" rev="${springframework.version}" conf="compile" />
 		<dependency org="org.springframework" name="spring-beans" rev="${springframework.version}" conf="compile" />
@@ -25,7 +22,7 @@
 		<dependency org="org.springframework" name="spring-jdbc" rev="${springframework.version}" conf="compile" />
 		<dependency org="org.springframework" name="spring-tx" rev="${springframework.version}" conf="compile" />
 		
-		<dependency org="dom4j" name="dom4j" rev="1.6.1" conf="compile" />
+<!-- 		<dependency org="dom4j" name="dom4j" rev="1.6.1" conf="compile" /> -->
 		<dependency org="org.apache.geronimo.specs" name="geronimo-servlet_2.5_spec" rev="1.2" conf="runtime" />
 		
 		<!-- TEST -->

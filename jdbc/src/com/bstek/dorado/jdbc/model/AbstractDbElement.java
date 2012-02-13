@@ -12,6 +12,7 @@ public abstract class AbstractDbElement implements DbElement {
 	private JdbcEnviroment env;
 	
 	@Override
+	@IdeProperty(highlight=1)
 	public String getName() {
 		return name;
 	}
