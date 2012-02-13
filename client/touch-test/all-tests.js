@@ -3,6 +3,10 @@ var ALL_JS_PAGES = [
     "client/touch-test/base/buttongroup-test.html",
 	"client/touch-test/base/toolbar-test.html",
 	"client/touch-test/base/panel-test.html",
+    "client/touch-test/base/dialog-test.html",
+    "client/touch-test/base/msgbox-test.html",
+    "client/touch-test/base/iscroll-test.html",
+    "client/touch-test/base/list-test.html",
     "client/touch-test/form/form-test.html",
 
 	"client/touch-test/base/float-panel-test.html",
@@ -10,11 +14,7 @@ var ALL_JS_PAGES = [
 	"client/touch-test/base/groupbox-test.html",
 	"client/touch-test/base/accordion-test.html",
 
-    "client/touch-test/base/dialog-test.html",
-    "client/touch-test/base/msgbox-test.html",
 	"client/touch-test/base/notifytip-test.html",
-
-	"client/touch-test/base/tabbar-test.html",
 	"client/touch-test/base/card-book-test.html",
     "client/touch-test/base/tabcontrol-test.html",
 
@@ -41,7 +41,7 @@ var ALL_JS_PAGES = [
 	
 	"client/touch-test/data-control/data-pilot-test.html",
 
-	"client/touch-test/list/list-box-test.html",
+
 	"client/touch-test/list/data-list-box-test.html",
 
 	"client/touch-test/grid/column-model-test.html",

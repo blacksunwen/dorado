@@ -150,6 +150,9 @@
         "touch/group-box.js",
         "touch/form-element.js",
         "touch/editor.js",
+        "touch/dialog.js",
+        "touch/iscroll.js",
+        "touch/list.js",
         "touch/msgbox.js"
     ];
 	

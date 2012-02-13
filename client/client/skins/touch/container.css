@@ -22,8 +22,8 @@
 
 .toolbar {
     position: relative;
-    height: 29px;
-    padding: 3px 5px;
+    height: 35px;
+    padding: 5px 5px;
     background: 			#e9eaeb;
     background-image: -webkit-gradient(linear, left top, left bottom, from(#f0f0f0), to(#e9eaeb)); /* Saf4+, Chrome */
     border: 1px solid 		#B3B3B3;
@@ -78,7 +78,6 @@
     margin: 0px;
     font: bold 20px/32px Helvetica, Sans-serif;
     letter-spacing: -1px;
-    text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.5);
     color: #fff;
 }
 
@@ -91,6 +90,7 @@
 }
 
 .d-panel .content-panel{
+    position: relative;
 }
 
 .d-panel .button-panel {
@@ -204,7 +204,6 @@
 }
 
 .d-group-box .group-box-bar .bar-caption{
-    text-shadow: white 0 1px 1px;
     color: #333;
     margin: 1em 0.7em 0.3em;
     color: #333;
@@ -213,8 +212,10 @@
 
 .d-group-box .body{
     padding: 0;
+    /**
     -webkit-border-radius: 4px;
     border-radius: 4px;
+    **/
     overflow: hidden;
 
     border: 1px solid 		#B3B3B3;
