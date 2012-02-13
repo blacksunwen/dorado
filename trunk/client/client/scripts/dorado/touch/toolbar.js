@@ -72,16 +72,16 @@ dorado.touch.ToolBar = $extend(dorado.widget.Control, {
     },
 
     applyLayout: function() {
-        var layout = this, ctDom = this.getContentContainer(), items = this.get("items");
-        var containerSize = { width: $fly(ctDom).width(), height: $fly(ctDom).height() } ,
-            align = "center", pack = "start";
+        var layout = this, ctDom = this.getContentContainer(), items = this.get("items") || [];
+        var containerSize = { width: $fly(ctDom).width(), height: $fly(ctDom).height() };
 
-        $fly(ctDom).addClass("box-layout").css(ctDom, {
-            "-webkit-box-orient": layout.orientation,
+        $fly(ctDom).addClass("box-layout").css({
+            "-webkit-box-orient": "horizontal",
             "-webkit-box-direction": "normal",
-            "-webkit-box-pack": pack,
-            "-webkit-box-align": align
+            "-webkit-box-pack": "center",
+            "-webkit-box-align": "start"
         });
+
         var flexItems = [], flexItemValues = [], flexSum = 0, noneFlexSum = 0;
 
         items.each(function(item) {

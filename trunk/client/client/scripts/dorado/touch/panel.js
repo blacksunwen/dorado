@@ -211,6 +211,10 @@
              */
             closeAction: {
                 defaultValue: "hide"
+            },
+
+            scrollbar: {
+                defaultValue: false
             }
         },
 
@@ -274,8 +278,6 @@
                     }
                 }
             }
-
-            debugger;
 
             panel.initButtons(dom);
 
@@ -344,6 +346,13 @@
             }
 
             panel.onResize();
+        },
+
+        doOnAttachToDocument: function() {
+            $invokeSuper.call(this, arguments);
+            if (this._scrollbar) {
+                new iScroll(this.getContentContainer());
+            }
         },
 
         getContentContainer: function() {
