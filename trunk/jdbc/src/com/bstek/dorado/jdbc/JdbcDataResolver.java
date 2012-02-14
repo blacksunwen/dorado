@@ -17,6 +17,7 @@ import com.bstek.dorado.data.entity.EntityUtils;
 import com.bstek.dorado.data.resolver.AbstractDataResolver;
 import com.bstek.dorado.data.resolver.DataItems;
 import com.bstek.dorado.data.type.DataType;
+import com.bstek.dorado.data.type.EntityDataType;
 
 /**
  * JDBC模块的{@link com.bstek.dorado.data.resolver.DataResolver}
@@ -180,9 +181,14 @@ public class JdbcDataResolver extends AbstractDataResolver {
 	}
 	
 	protected JdbcDataResolverItem createItem(String name, DataType dataType) {
-		JdbcDataResolverItem item = new JdbcDataResolverItem();
-		item.setName(name);
+		if (dataType instanceof EntityDataType) {
+			JdbcDataResolverItem item = new JdbcDataResolverItem();
+			item.setName(name);
+			String tableName = dataType.getName();
+			item.setTableName(tableName);
+			return item;
+		}
 		
-		return item;
+		return null;
 	}
 }

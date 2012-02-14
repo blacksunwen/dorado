@@ -31,7 +31,7 @@ public class CreateDataTypeResolver extends Resolver {
 
 	public String toContent(String envName, String tableName, Document document) {
 		JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(envName);
-		ModelGeneratorSuit generator =jdbcEnv.getModelGeneratorSuit();
+		ModelGeneratorSuit generator = JdbcUtils.getModelGeneratorSuit();
 		if (document == null) {
 			document = generator.getDataTypeMetaGenerator().createDocument(jdbcEnv, tableName);
 		} else {

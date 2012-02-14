@@ -39,7 +39,7 @@ public class ListTablesResolver extends Resolver {
 
 	public String toContent(String envName, String catalog, String schema, String[] tableTypes, String tableNamePattern) {
 		JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(envName);
-		ModelGeneratorSuit generator = jdbcEnv.getModelGeneratorSuit();
+		ModelGeneratorSuit generator = JdbcUtils.getModelGeneratorSuit();
 		TableMetaDataGenerator tg = generator.getTableMetaDataGenerator();
 		List<Map<String,String>> tableList = tg.listTableMetas(jdbcEnv, catalog, schema, tableNamePattern, tableTypes);
 		

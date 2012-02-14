@@ -1,10 +1,32 @@
 package com.bstek.dorado.jdbc.model;
 
 import com.bstek.dorado.config.definition.ObjectDefinition;
+import com.bstek.dorado.core.el.Expression;
+import com.bstek.dorado.data.variant.VariantUtils;
 
 public class DbElementDefinition extends ObjectDefinition {
 
 	public String getName() {
 		return (String)this.getProperties().get("name");
+	}
+	
+	protected boolean getFinalPropertyBoolean(String propertyName, boolean defult) {
+		Object value = this.getProperties().get(propertyName);
+		this.getProperties().remove(propertyName);
+		
+		try {
+			value = this.getFinalValueOrExpression(value, null);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		
+		if (value != null) {
+			if (value instanceof Expression) {
+				throw new IllegalArgumentException("not support EL expression.");
+			}
+			return VariantUtils.toBoolean(value);
+		} else {
+			return defult;
+		}
 	}
 }

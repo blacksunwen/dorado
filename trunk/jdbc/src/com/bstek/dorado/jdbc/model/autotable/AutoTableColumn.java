@@ -45,5 +45,10 @@ public class AutoTableColumn extends AbstractUpdatableColumn {
 	public void setColumnAlias(String columnAlias) {
 		this.columnAlias = columnAlias;
 	}
+
+	@Override
+	public String getKeyName() {
+		return getColumnAlias();
+	}
 }
 

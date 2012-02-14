@@ -18,5 +18,10 @@ public class SqlTableColumn extends AbstractUpdatableColumn {
 	public void setNativeColumnName(String nativeColumnName) {
 		this.nativeColumnName = nativeColumnName;
 	}
+
+	@Override
+	public String getKeyName() {
+		return getColumnName();
+	}
 	
 }

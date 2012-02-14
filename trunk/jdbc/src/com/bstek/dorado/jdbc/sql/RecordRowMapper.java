@@ -38,14 +38,16 @@ public class RecordRowMapper implements RowMapper<Record> {
 			}
 			
 			String propertyName = c.getPropertyName();
-			JdbcType jdbcType = c.getJdbcType();
-			Object dbValue = rs.getObject(name);
-			
-			if (jdbcType != null) {
-				Object value = jdbcType.fromDB(dbValue);
-				map.put(propertyName, value);	
-			} else {
-				map.put(propertyName, dbValue);
+			if (StringUtils.isNotEmpty(propertyName)) {
+				JdbcType jdbcType = c.getJdbcType();
+				Object dbValue = rs.getObject(name);
+				
+				if (jdbcType != null) {
+					Object value = jdbcType.fromDB(dbValue);
+					map.put(propertyName, value);	
+				} else {
+					map.put(propertyName, dbValue);
+				}
 			}
 		}
 		

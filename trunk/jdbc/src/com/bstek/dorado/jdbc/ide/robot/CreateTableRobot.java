@@ -27,7 +27,7 @@ public class CreateTableRobot implements Robot {
 		Element tableElement = DomUtils.getChildByTagName(element, "Table");
 		
 		JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(envName);
-		ModelGeneratorSuit generator =jdbcEnv.getModelGeneratorSuit();
+		ModelGeneratorSuit generator = JdbcUtils.getModelGeneratorSuit();
 		if (tableElement == null) {
 			Document document = generator.getTableMetaDataGenerator().createDocument(catalog, schema, table, jdbcEnv);
 			return document.getDocumentElement();

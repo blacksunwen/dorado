@@ -31,7 +31,7 @@ public class CreateSqlTableResolver extends Resolver {
 
 	public String toContent(String envName, String sql, Document document) {
 		JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(envName);
-		ModelGeneratorSuit generator =jdbcEnv.getModelGeneratorSuit();
+		ModelGeneratorSuit generator = JdbcUtils.getModelGeneratorSuit();
 		if (document == null) {
 			document = generator.getSqlTableMetaDataGenerator().createDocument(jdbcEnv, sql);
 		} else {

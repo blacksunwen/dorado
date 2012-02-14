@@ -20,7 +20,7 @@ public class ListCatalogRobot implements Robot {
 		Element element = (Element)node;
 		String envName = element.getAttribute(Constants.PARAM_ENV);
 		JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(envName);
-		ModelGeneratorSuit generator = jdbcEnv.getModelGeneratorSuit();
+		ModelGeneratorSuit generator = JdbcUtils.getModelGeneratorSuit();
 		String[] catalogs = generator.getJdbcEnviromentMetaDataGenerator().listCatalogs(jdbcEnv);
 		String text = StringUtils.join(catalogs, ',');
 		

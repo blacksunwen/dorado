@@ -151,7 +151,6 @@ public interface Dialect {
 	 */
 	String propertyName(Map<String,String> columnMeta);
 	
-	
 	/**
 	 * 默认的数据库catalog
 	 * @param dataSource

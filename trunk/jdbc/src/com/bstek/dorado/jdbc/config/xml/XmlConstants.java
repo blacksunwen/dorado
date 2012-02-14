@@ -8,6 +8,8 @@ public class XmlConstants {
 	
 	public static final String AUTO_CREATE_DATAPROVIDER = "autoCreateDataProvider";
 	
+	public static final String AUTO_CREATE_DATATYPE = "autoCreateDataType";
+	
 	public static final String CATALOG = "catalog";
 	
 	public static final String SCHEMA = "schema";

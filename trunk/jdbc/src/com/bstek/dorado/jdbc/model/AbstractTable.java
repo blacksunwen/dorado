@@ -7,11 +7,24 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.core.bean.BeanFactoryUtils;
 import com.bstek.dorado.jdbc.sql.CurdSqlGenerator;
 import com.bstek.dorado.util.Assert;
 
+@XmlNode (
+	properties = {
+		@XmlProperty(
+			propertyName = "autoCreateDataType",
+			propertyType = "boolean"
+		),
+		@XmlProperty(
+			propertyName = "autoCreateDataProvider",
+			propertyType = "boolean"
+		)
+	}
+)
 public abstract class AbstractTable extends AbstractDbElement implements DbTable {
 
 	private Map<String,Column> columnMap = new LinkedHashMap<String,Column>();
@@ -29,6 +42,8 @@ public abstract class AbstractTable extends AbstractDbElement implements DbTable
 	}
 	
 	public void addColumn(Column column) {
+		Assert.notEmpty(column.getColumnName(), "columnName must not be empty.");
+		
 		String key = this.getColumnKey(column);
 		if (columnMap.containsKey(key)) {
 			throw new IllegalArgumentException("Duplicate column named [" + key + "]");

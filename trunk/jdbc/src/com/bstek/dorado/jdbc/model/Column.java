@@ -1,5 +1,6 @@
 package com.bstek.dorado.jdbc.model;
 
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.jdbc.type.JdbcType;
 
@@ -25,11 +26,13 @@ public abstract class Column {
 		return columnName;
 	}
 
+	@IdeProperty(visible = false)
 	public String getPropertyName() {
 		return propertyName;
 	}
 
 	@XmlProperty(parser="spring:dorado.jdbc.jdbcTypeParser")
+	@IdeProperty(highlight=1, editor = "jdbc:list-jdbctype")
 	public JdbcType getJdbcType() {
 		return jdbcType;
 	}
@@ -46,4 +49,6 @@ public abstract class Column {
 		this.jdbcType = jdbcType;
 	}
 
+	@IdeProperty(visible = false)
+	public abstract String getKeyName();
 }
