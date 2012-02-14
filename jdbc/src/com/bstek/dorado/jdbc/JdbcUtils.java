@@ -47,6 +47,26 @@ public abstract class JdbcUtils {
 		}
 	}
 	
+	public static ModelGeneratorSuit getModelGeneratorSuit() {
+		Context context = Context.getCurrent();
+		try {
+			ModelGeneratorSuit strategy = (ModelGeneratorSuit)context.getServiceBean("jdbc.modelGeneratorSuit");
+			return strategy;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public static ModelStrategy getJdbcModelStrategy() {
+		Context context = Context.getCurrent();
+		try {
+			ModelStrategy strategy = (ModelStrategy)context.getServiceBean("jdbc.modelStrategy");
+			return strategy;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 	public static DbTable getDbTable(String tableName) {
 		Assert.notEmpty(tableName, "name of DbTable must not be null.");
 		DbElementDefinition definition = JdbcUtils.getDbmManager().getDefinition(tableName);

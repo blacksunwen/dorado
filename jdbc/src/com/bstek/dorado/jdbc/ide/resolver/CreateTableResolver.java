@@ -35,7 +35,7 @@ public class CreateTableResolver extends Resolver {
 
 	public String toContent(String catalog, String schema, String table, 
 			final JdbcEnviroment jdbcEnv, Document document) {
-		final ModelGeneratorSuit generator = jdbcEnv.getModelGeneratorSuit();
+		final ModelGeneratorSuit generator = JdbcUtils.getModelGeneratorSuit();
 		
 		if (document == null) {
 			document = generator.getTableMetaDataGenerator().createDocument(catalog, schema, table, jdbcEnv);

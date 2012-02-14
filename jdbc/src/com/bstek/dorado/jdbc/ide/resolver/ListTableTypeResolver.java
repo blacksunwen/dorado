@@ -21,7 +21,7 @@ public class ListTableTypeResolver extends Resolver {
 	
 	public String toContent(String envName) {
 		JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(envName);
-		String[] types = jdbcEnv.getModelGeneratorSuit().getJdbcEnviromentMetaDataGenerator().listTableTypes(jdbcEnv);
+		String[] types = JdbcUtils.getModelGeneratorSuit().getJdbcEnviromentMetaDataGenerator().listTableTypes(jdbcEnv);
 		return StringUtils.join(types, ',');
 	}
 }

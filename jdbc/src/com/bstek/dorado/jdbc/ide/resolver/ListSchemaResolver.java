@@ -29,7 +29,7 @@ public class ListSchemaResolver extends Resolver {
 
 	List<Map<String,String>> schemaList(String catalog, String envName) {
 		JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(envName);
-		ModelGeneratorSuit generator = jdbcEnv.getModelGeneratorSuit();
+		ModelGeneratorSuit generator = JdbcUtils.getModelGeneratorSuit();
 		
 		List<Map<String,String>> schemaList = generator.getJdbcEnviromentMetaDataGenerator().listSchemas(jdbcEnv, catalog);
 		
@@ -38,7 +38,7 @@ public class ListSchemaResolver extends Resolver {
 	
 	public String toContent(String envName, String catalog) {
 		JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(envName);
-		List<Map<String,String>> schemaList = jdbcEnv.getModelGeneratorSuit().getJdbcEnviromentMetaDataGenerator().listSchemas(jdbcEnv, catalog);
+		List<Map<String,String>> schemaList = JdbcUtils.getModelGeneratorSuit().getJdbcEnviromentMetaDataGenerator().listSchemas(jdbcEnv, catalog);
 		
 		Document document = DomHelper.newDocument();
 		Element schemas = DomHelper.addElement(document, "Schemas");

@@ -23,7 +23,7 @@ public class CreateSqlTableRobot implements Robot {
 		String sql = element.getAttribute(Constants.PARAM_SQL);
 		Element sqlTableElement = DomUtils.getChildByTagName(element, "SqlTable");
 		JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(envName);
-		ModelGeneratorSuit generator =jdbcEnv.getModelGeneratorSuit();
+		ModelGeneratorSuit generator = JdbcUtils.getModelGeneratorSuit();
 		
 		if (sqlTableElement == null) {
 			Document document = generator.getSqlTableMetaDataGenerator().createDocument(jdbcEnv, sql);

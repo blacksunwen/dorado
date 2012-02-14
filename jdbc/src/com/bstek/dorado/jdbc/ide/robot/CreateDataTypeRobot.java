@@ -24,7 +24,7 @@ public class CreateDataTypeRobot implements Robot{
 		Element dataTypeElement = DomUtils.getChildByTagName(element, "DataType");
 		
 		JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(envName);
-		ModelGeneratorSuit generator =jdbcEnv.getModelGeneratorSuit();
+		ModelGeneratorSuit generator = JdbcUtils.getModelGeneratorSuit();
 		if (dataTypeElement == null) {
 			Document document = generator.getDataTypeMetaGenerator().createDocument(jdbcEnv, tableName);
 			return document.getDocumentElement();

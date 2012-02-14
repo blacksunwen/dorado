@@ -17,8 +17,8 @@ import com.bstek.dorado.jdbc.model.Column;
 	definitionType = "com.bstek.dorado.jdbc.model.table.TableDefinition", 
 	properties = {
 		@XmlProperty(
-			propertyName="autoCreateColumns", 
-			parser = "spring:dorado.staticPropertyParser"
+			propertyName = "autoCreateColumns",
+			propertyType = "boolean"
 		)
 	},
 	subNodes = {
@@ -92,6 +92,7 @@ public class Table extends AbstractTable {
 		this.tableName = tableName;
 	}
 	
+	@IdeProperty(highlight=1, editor = "multiLines")
 	public String getDynamicClause() {
 		return dynamicClause;
 	}

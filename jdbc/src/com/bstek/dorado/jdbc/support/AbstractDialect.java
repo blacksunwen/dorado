@@ -359,7 +359,7 @@ public abstract class AbstractDialect implements Dialect {
 			List<Column> columnList = new ArrayList<Column>();
 			for(Column column: table.getAllColumns()) {
 				String propertyName = column.getPropertyName();
-				if (column.isSelectable() && record.containsKey(propertyName)) {
+				if (column.isSelectable() && StringUtils.isNotEmpty(propertyName) && record.containsKey(propertyName)) {
 					columnList.add(column);
 					retrieveSql.addColumnToken(column.getColumnName());
 				}
@@ -367,7 +367,7 @@ public abstract class AbstractDialect implements Dialect {
 			JdbcParameterSource parameterSource = SqlUtils.createJdbcParameter(null);
 			for (TableKeyColumn column: table.getKeyColumns()) {
 				String propertyName = column.getPropertyName();
-				if (column.isSelectable() && record.containsKey(propertyName)) {
+				if (column.isSelectable() && StringUtils.isNotEmpty(propertyName) && record.containsKey(propertyName)) {
 					String columnName = column.getColumnName();
 					Object columnValue = record.get(propertyName);
 					JdbcType jdbcType = column.getJdbcType();

@@ -19,5 +19,7 @@
 
 	<bean id="dorado.jdbc.dbmParser" class="com.bstek.dorado.jdbc.config.xml.DbModelParser" parent="dorado.objectParser"/>
 	
-	<bean id="dorado.jdbc.tableParser" class="com.bstek.dorado.jdbc.model.table.TableParser" parent="dorado.objectParser"/>	
+	<bean id="dorado.jdbc.tableParser" class="com.bstek.dorado.jdbc.model.table.TableParser" parent="dorado.objectParser">
+		<property name="dataTypeManager" ref="dorado.dataTypeManager"/>
+	</bean>	
 </beans>
