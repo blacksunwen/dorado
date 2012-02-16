@@ -11,11 +11,12 @@ import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlNodeWrapper;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.jdbc.model.AbstractTable;
-import com.bstek.dorado.jdbc.model.Column;
+import com.bstek.dorado.jdbc.model.AbstractColumn;
 import com.bstek.dorado.util.Assert;
 
 @XmlNode(
-	definitionType="com.bstek.dorado.jdbc.model.autotable.AutoTableDefinition",
+	parser = "spring:dorado.jdbc.autoTableParser",
+	definitionType = "com.bstek.dorado.jdbc.model.autotable.AutoTableDefinition",
 	subNodes = {
 		@XmlSubNode(
 			wrapper = @XmlNodeWrapper(nodeName="FromTables", fixed = true),
@@ -41,6 +42,8 @@ import com.bstek.dorado.util.Assert;
 )
 public class AutoTable extends AbstractTable {
 
+	public static final String TYPE = "AutoTable";
+	
 	private Map<String, FromTable> fromTables = new LinkedHashMap<String, FromTable>();
 	
 	private List<JoinTable> joinTables = new ArrayList<JoinTable>(5);
@@ -91,11 +94,12 @@ public class AutoTable extends AbstractTable {
 		order.setAutoTable(this);
 	}
 
+	
 	public String getType() {
-		return "AutoTable";
+		return TYPE;
 	}
 
-	public FromTable getMainTable() {
+	public FromTable getFromTable() {
 		if (StringUtils.isEmpty(mainTableAlias)) {
 			return null;
 		} else {
@@ -112,7 +116,7 @@ public class AutoTable extends AbstractTable {
 	}
 
 	@Override
-	public void addColumn(Column column) {
+	public void addColumn(AbstractColumn column) {
 		Assert.notNull(column);
 		
 		if (column instanceof AutoTableColumn) {
@@ -125,18 +129,7 @@ public class AutoTable extends AbstractTable {
 	}
 
 	@Override
-	protected String getColumnKey(Column column) {
-		AutoTableColumn atc = (AutoTableColumn)column;
-		String columnAlias = atc.getColumnAlias();
-		if (StringUtils.isNotEmpty(columnAlias)) {
-			return columnAlias;
-		} else {
-			return super.getColumnKey(column);
-		}
-	}
-
-	@Override
-	protected String getDefaultSQLGeneratorName() {
+	protected String getDefaultSQLGeneratorServiceName() {
 		return "spring:dorado.jdbc.autoTableSqlGenerator";
 	}
 	

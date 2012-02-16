@@ -1,8 +1,10 @@
-package com.bstek.dorado.jdbc.model;
+package com.bstek.dorado.jdbc.config;
 
 import com.bstek.dorado.config.definition.CreationContext;
 import com.bstek.dorado.config.definition.ObjectDefinition;
 import com.bstek.dorado.config.definition.Operation;
+import com.bstek.dorado.jdbc.model.AbstractColumn;
+import com.bstek.dorado.jdbc.model.AbstractTable;
 
 public class ColumnDefinition extends ObjectDefinition implements Operation {
 
@@ -13,7 +15,7 @@ public class ColumnDefinition extends ObjectDefinition implements Operation {
 	@Override
 	public void execute(Object object, CreationContext context)
 			throws Exception {
-		Column column = (Column)this.create(context);
+		AbstractColumn column = (AbstractColumn)this.create(context);
 		
 		AbstractTable dbElement = (AbstractTable)object;
 		dbElement.addColumn(column);

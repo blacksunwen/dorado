@@ -3,7 +3,6 @@ package com.bstek.dorado.jdbc.config;
 import java.util.Collection;
 
 import com.bstek.dorado.config.definition.DefinitionManager;
-import com.bstek.dorado.jdbc.model.DbElementDefinition;
 
 
 /**

@@ -7,7 +7,7 @@ import com.bstek.dorado.config.definition.DefaultDefinitionReference;
 import com.bstek.dorado.config.definition.DefinitionManager;
 import com.bstek.dorado.config.xml.PropertyParser;
 import com.bstek.dorado.jdbc.JdbcUtils;
-import com.bstek.dorado.jdbc.model.DbElementDefinition;
+import com.bstek.dorado.jdbc.config.DbElementDefinition;
 
 public class TableRefrenceParser extends PropertyParser{
 

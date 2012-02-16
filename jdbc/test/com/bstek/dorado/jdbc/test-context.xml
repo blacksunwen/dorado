@@ -18,27 +18,24 @@
 		<property name="type" value="jdbc" />
 		<property name="classType" value="com.bstek.dorado.jdbc.JdbcDataResolver" />
 	</bean>
-	
-	<bean id="dorado.jdbc.defaultModelGeneratorSuit" class="com.bstek.dorado.jdbc.support.DefaultModelGeneratorSuit"/>
-	<bean id="dorado.jdbcEnvTemplate" class="com.bstek.dorado.jdbc.JdbcEnviroment" abstract="true">
-		<property name="modelGeneratorSuit" ref="dorado.jdbc.defaultModelGeneratorSuit"/>
-	</bean>
-	
-	<bean id="dorado.jdbc.enviromentManager" class="com.bstek.dorado.jdbc.config.DefaultJdbcEnviromentManager"/>
-	
 	<bean id="dorado.jdbc.jdbcLoader" class="com.bstek.dorado.jdbc.JdbcLoader">
 		<property name="xmlDocumentBuilder" ref="dorado.xmlDocumentBuilder" />
 		<property name="xmlParserHelper" ref="dorado.xmlParserHelper"/>
 	</bean>
 	
+	<!-- Jdbc Components -->
+	<bean id="dorado.jdbc.enviromentManager" class="com.bstek.dorado.jdbc.config.DefaultJdbcEnviromentManager"/>
 	<bean id="dorado.jdbc.dbmManager" class="com.bstek.dorado.jdbc.config.DefaultDmbManager"/>
-	
-	<!-- Template -->
-	<bean id="dorado.jdbcConfigTemplate" class="com.bstek.dorado.jdbc.config.GlobalDbModelConfig" abstract="true"/>
+	<bean id="dorado.jdbc.modelGeneratorSuit" class="com.bstek.dorado.jdbc.support.DefaultModelGeneratorSuit"/>
+	<bean id="dorado.jdbc.modelStrategy" class="com.bstek.dorado.jdbc.support.DefaultModelStrategy"/>
 	
 	<!-- SQL Generator -->
 	<bean id="dorado.jdbc.tableSqlGenerator" class="com.bstek.dorado.jdbc.model.table.TableSqlGenerator"/>
 	<bean id="dorado.jdbc.sqlTableSqlGenerator" class="com.bstek.dorado.jdbc.model.sqltable.SqlTableSqlGenerator"/>
 	<bean id="dorado.jdbc.autoTableSqlGenerator" class="com.bstek.dorado.jdbc.model.autotable.AutoTableSqlGenerator"/>
+	
+	<!-- Template -->
+	<bean id="dorado.jdbcConfigTemplate" class="com.bstek.dorado.jdbc.config.GlobalDbModelConfig" abstract="true"/>
+	<bean id="dorado.jdbcEnvTemplate" class="com.bstek.dorado.jdbc.support.DefaultJdbcEnviroment" abstract="true"/>
 	
 </beans>

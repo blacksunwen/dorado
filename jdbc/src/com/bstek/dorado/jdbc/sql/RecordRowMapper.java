@@ -6,20 +6,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.jdbc.core.RowMapper;
 
 import com.bstek.dorado.data.variant.Record;
-import com.bstek.dorado.jdbc.model.Column;
-import com.bstek.dorado.jdbc.model.autotable.AutoTableColumn;
+import com.bstek.dorado.jdbc.model.AbstractColumn;
 import com.bstek.dorado.jdbc.type.JdbcType;
 import com.bstek.dorado.util.Assert;
 
 public class RecordRowMapper implements RowMapper<Record> {
 
-	public List<Column> columns;
+	public List<AbstractColumn> columns;
 	
-	public RecordRowMapper(List<Column> columns) {
+	public RecordRowMapper(List<AbstractColumn> columns) {
 		this.columns = columns;
 		Assert.notEmpty(this.columns, "columns must not be empty.");
 	}
@@ -27,27 +25,17 @@ public class RecordRowMapper implements RowMapper<Record> {
 	@Override
 	public Record mapRow(ResultSet rs, int rowNum) throws SQLException {
 		Map<String, Object> map = new HashMap<String, Object>(columns.size());
-		for (Column c: columns) {
-			String name = c.getColumnName();
-			if (c instanceof AutoTableColumn) {
-				AutoTableColumn atc = (AutoTableColumn)c;
-				String columnAlias = atc.getColumnAlias();
-				if (StringUtils.isNotEmpty(columnAlias)) {
-					name = columnAlias;
-				}
-			}
-			
+		for (AbstractColumn c: columns) {
+			String columnName = c.getColumnName();
 			String propertyName = c.getPropertyName();
-			if (StringUtils.isNotEmpty(propertyName)) {
-				JdbcType jdbcType = c.getJdbcType();
-				Object dbValue = rs.getObject(name);
-				
-				if (jdbcType != null) {
-					Object value = jdbcType.fromDB(dbValue);
-					map.put(propertyName, value);	
-				} else {
-					map.put(propertyName, dbValue);
-				}
+			JdbcType jdbcType = c.getJdbcType();
+			Object dbValue = rs.getObject(columnName);
+			
+			if (jdbcType != null) {
+				Object value = jdbcType.fromDB(dbValue);
+				map.put(propertyName, value);	
+			} else {
+				map.put(propertyName, dbValue);
 			}
 		}
 		

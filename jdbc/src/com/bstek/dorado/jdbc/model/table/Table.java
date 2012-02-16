@@ -10,7 +10,7 @@ import com.bstek.dorado.annotation.XmlNodeWrapper;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.jdbc.model.AbstractTable;
-import com.bstek.dorado.jdbc.model.Column;
+import com.bstek.dorado.jdbc.model.AbstractColumn;
 
 @XmlNode(
 	parser = "spring:dorado.jdbc.tableParser",
@@ -46,7 +46,7 @@ public class Table extends AbstractTable {
 	private List<TableColumn> tableColumns = new ArrayList<TableColumn>();
 	private List<TableKeyColumn> keyColumns = new ArrayList<TableKeyColumn>();
 	
-	public void addColumn(Column column) {
+	public void addColumn(AbstractColumn column) {
 		if (column instanceof TableKeyColumn) {
 			keyColumns.add((TableKeyColumn)column);
 		} else if (column instanceof TableColumn) {
@@ -126,7 +126,7 @@ public class Table extends AbstractTable {
 	}
 
 	@Override
-	protected String getDefaultSQLGeneratorName() {
+	protected String getDefaultSQLGeneratorServiceName() {
 		return "spring:dorado.jdbc.tableSqlGenerator";
 	}
 }

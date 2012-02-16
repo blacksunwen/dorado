@@ -2,27 +2,27 @@
 <DbModel>
 <Table name="dept1" tableName="DEPT" jdbcEnviroment="ora11">
   <Columns>
-    <Column propertyName="DEPT_NAME" columnName="DEPT_NAME"/>
-    <KeyColumn propertyName="DEPT_ID" columnName="DEPT_ID"/>
-    <Column propertyName="PARENT_ID" columnName="PARENT_ID"/>
+    <Column columnName="DEPT_NAME"/>
+    <KeyColumn columnName="DEPT_ID"/>
+    <Column columnName="PARENT_ID"/>
   </Columns>
   <Property name="dynamicClause"><![CDATA[#if ($ID) WHERE DEPT_ID=:ID #end]]></Property>
 </Table>
 
 <SqlTable name="sqlTable1" jdbcEnviroment="ora11">
   <Columns>
-    <Column propertyName="DEPT_NAME" columnName="DEPT_NAME"/>
-    <Column propertyName="DEPT_ID" columnName="DEPT_ID"/>
-    <Column propertyName="PARENT_ID" columnName="PARENT_ID"/>
+    <Column columnName="DEPT_NAME"/>
+    <Column columnName="DEPT_ID"/>
+    <Column columnName="PARENT_ID"/>
   </Columns>
   <Property name="querySql"><![CDATA[select * from DEPT]]></Property>
 </SqlTable>
 
 <Table name="dept2" tableName="DEPT" jdbcEnviroment="ora11">
   <Columns>
-    <Column propertyName="DEPT_NAME" columnName="DEPT_NAME"/>
-    <KeyColumn propertyName="DEPT_ID" columnName="DEPT_ID"/>
-    <Column propertyName="PARENT_ID" columnName="PARENT_ID"/>
+    <Column columnName="DEPT_NAME"/>
+    <KeyColumn columnName="DEPT_ID"/>
+    <Column columnName="PARENT_ID"/>
   </Columns>
   <Property name="dynamicClause"><![CDATA[#if ($ID) WHERE DEPT_ID=:ID #end]]></Property>
 </Table>

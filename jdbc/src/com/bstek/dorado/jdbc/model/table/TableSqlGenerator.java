@@ -9,16 +9,15 @@ import com.bstek.dorado.jdbc.Dialect;
 import com.bstek.dorado.jdbc.JdbcDataProviderOperation;
 import com.bstek.dorado.jdbc.JdbcParameterSource;
 import com.bstek.dorado.jdbc.JdbcRecordOperation;
-import com.bstek.dorado.jdbc.key.KeyGenerator;
-import com.bstek.dorado.jdbc.model.Column;
+import com.bstek.dorado.jdbc.model.AbstractColumn;
 import com.bstek.dorado.jdbc.sql.CurdSqlGenerator;
 import com.bstek.dorado.jdbc.sql.DeleteSql;
 import com.bstek.dorado.jdbc.sql.InsertSql;
 import com.bstek.dorado.jdbc.sql.SelectSql;
+import com.bstek.dorado.jdbc.sql.SqlConstants.KeyWord;
 import com.bstek.dorado.jdbc.sql.SqlUtils;
 import com.bstek.dorado.jdbc.sql.UpdateSql;
 import com.bstek.dorado.jdbc.type.JdbcType;
-import com.bstek.dorado.util.Assert;
 
 public class TableSqlGenerator implements CurdSqlGenerator {
 
@@ -33,15 +32,17 @@ public class TableSqlGenerator implements CurdSqlGenerator {
 				
 		//columnsToken
 		StringBuilder columnsToken = new StringBuilder();
-		List<Column> columns = table.getAllColumns();
+		List<AbstractColumn> columns = table.getAllColumns();
 		for (int i=0, j=columns.size(), ableColumnCount = 0; i<j; i++) {
-			Column column = columns.get(i);
+			AbstractColumn column = columns.get(i);
 			if (column.isSelectable()) {
 				if (ableColumnCount++ > 0) {
 					columnsToken.append(',');
 				}
 				
-				String token = column.getColumnName();
+				String columnName = column.getColumnName();
+				String propertyName = column.getPropertyName();
+				String token = columnName + " " + KeyWord.AS + " "  + propertyName;
 				columnsToken.append(token);
 			}
 		}
@@ -78,8 +79,6 @@ public class TableSqlGenerator implements CurdSqlGenerator {
 		
 		for (TableKeyColumn keyColumn: table.getKeyColumns()) {
 			String propertyName = keyColumn.getPropertyName();
-			Assert.notEmpty(propertyName, "propertyName of KeyColumn named [" + keyColumn.getColumnName() +"] must not be empty.");
-			
 			KeyGenerator<?> keyGenerator = keyColumn.getKeyGenerator();
 			if (keyGenerator != null) {
 				if (keyGenerator.isIdentity()) {
@@ -104,8 +103,6 @@ public class TableSqlGenerator implements CurdSqlGenerator {
 		for (TableColumn column: table.getTableColumns()) {
 			if (column.isInsertable()) {
 				String propertyName = column.getPropertyName();
-				Assert.notEmpty(propertyName, "propertyName of Column named [" + column.getColumnName() +"] must not be empty.");
-				
 				if (record.containsKey(propertyName)) {
 					Object value = record.get(propertyName);
 					if (value == null) {
@@ -146,7 +143,7 @@ public class TableSqlGenerator implements CurdSqlGenerator {
 			Object dbValue = jdbcType.toDB(value);
 			parameterSource.setValue(propertyName, dbValue, jdbcType.getSqlType());
 		}
-		sql.addColumnToken(columnName, ":"+propertyName);
+		sql.addColumnToken(columnName, ":" + propertyName);
 	}
 
 	private boolean hasOldValues(Object entity) {
@@ -176,31 +173,27 @@ public class TableSqlGenerator implements CurdSqlGenerator {
 		
 		for (TableKeyColumn keyColumn: table.getKeyColumns()) {
 			String propertyName = keyColumn.getPropertyName();
-			Assert.notEmpty(propertyName, "propertyName of KeyColumn named [" + keyColumn.getColumnName() +"] must not be empty.");
-			
 			String columnName = keyColumn.getColumnName();
 			Object oldValue = null;
 			if (hasOldValues(record) && (oldValue = EntityUtils.getOldValue(record, propertyName)) != null) {
 				if (keyColumn.isUpdatable()) {
-					sql.addColumnToken(columnName, ":"+propertyName);
+					sql.addColumnToken(columnName, ":" + propertyName);
 					
 					String oldPropertyVar = oldPropertyVar(propertyName);
 					parameterSource.setValue(oldPropertyVar, oldValue);
 					sql.addKeyToken(columnName, ":" + oldPropertyVar);
 				} else {
 					parameterSource.setValue(propertyName, oldValue);
-					sql.addKeyToken(columnName, ":"+propertyName);
+					sql.addKeyToken(columnName, ":" + propertyName);
 				}
 			} else {
-				sql.addKeyToken(columnName, ":"+propertyName);
+				sql.addKeyToken(columnName, ":" + propertyName);
 			}
 		}
 		
 		for (TableColumn column: table.getTableColumns()) {
 			if (column.isUpdatable()) {
 				String propertyName = column.getPropertyName();
-				Assert.notEmpty(propertyName, "propertyName of Column named [" + column.getColumnName() +"] must not be empty.");
-				
 				//如果record包含propertyName，那么一定更新到数据库，否则（不包含）如果column具有默认值那么也要更新，否则不更新
 				if (record.containsKey(propertyName)) {
 					Object value = record.get(propertyName);
@@ -230,7 +223,7 @@ public class TableSqlGenerator implements CurdSqlGenerator {
 			Object dbValue = jdbcType.toDB(value);
 			parameterSource.setValue(propertyName, dbValue, jdbcType.getSqlType());
 		}
-		sql.addColumnToken(columnName, ":"+propertyName);
+		sql.addColumnToken(columnName, ":" + propertyName);
 	}
 
 	@Override
@@ -247,10 +240,8 @@ public class TableSqlGenerator implements CurdSqlGenerator {
 		
 		for (TableKeyColumn keyColumn: table.getKeyColumns()) {
 			String propertyName = keyColumn.getPropertyName();
-			Assert.notEmpty(propertyName, "propertyName of KeyColumn named [" + keyColumn.getColumnName() +"] must not be empty.");
-			
 			String columnName = keyColumn.getColumnName();
-			sql.addKeyToken(columnName, ":"+propertyName);
+			sql.addKeyToken(columnName, ":" + propertyName);
 		}
 		
 		return sql;

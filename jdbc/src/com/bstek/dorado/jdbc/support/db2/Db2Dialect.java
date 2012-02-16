@@ -5,11 +5,11 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
-import com.bstek.dorado.jdbc.JdbcConstants;
 import com.bstek.dorado.jdbc.sql.SelectSql;
 import com.bstek.dorado.jdbc.sql.SqlConstants.KeyWord;
 import com.bstek.dorado.jdbc.sql.SqlConstants.NullsModel;
 import com.bstek.dorado.jdbc.support.AbstractDialect;
+import com.bstek.dorado.jdbc.support.JdbcConstants;
 
 /**
  * db2 database

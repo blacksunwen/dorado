@@ -1,10 +1,10 @@
 package com.bstek.dorado.jdbc.support.mssql;
 
-import com.bstek.dorado.jdbc.JdbcConstants;
 import com.bstek.dorado.jdbc.sql.SelectSql;
 import com.bstek.dorado.jdbc.sql.SqlConstants.KeyWord;
 import com.bstek.dorado.jdbc.sql.SqlConstants.NullsModel;
 import com.bstek.dorado.jdbc.support.AbstractDialect;
+import com.bstek.dorado.jdbc.support.JdbcConstants;
 
 /**
  * sqlserver database

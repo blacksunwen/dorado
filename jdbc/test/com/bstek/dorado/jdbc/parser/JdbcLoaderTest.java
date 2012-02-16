@@ -5,9 +5,9 @@ import java.util.List;
 
 import com.bstek.dorado.jdbc.AbstractJdbcTestCase;
 import com.bstek.dorado.jdbc.JdbcUtils;
+import com.bstek.dorado.jdbc.config.DbElementDefinition;
 import com.bstek.dorado.jdbc.config.DbModel;
 import com.bstek.dorado.jdbc.config.DbmManager;
-import com.bstek.dorado.jdbc.model.DbElementDefinition;
 import com.bstek.dorado.jdbc.model.sqltable.SqlTableDefinition;
 import com.bstek.dorado.jdbc.model.table.TableDefinition;
 

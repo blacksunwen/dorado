@@ -20,19 +20,17 @@ import com.bstek.dorado.data.entity.EntityUtils;
 import com.bstek.dorado.data.provider.Page;
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.Dialect;
-import com.bstek.dorado.jdbc.JdbcConstants;
 import com.bstek.dorado.jdbc.JdbcDataProviderContext;
 import com.bstek.dorado.jdbc.JdbcDataProviderOperation;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.JdbcParameterSource;
 import com.bstek.dorado.jdbc.JdbcRecordOperation;
-import com.bstek.dorado.jdbc.key.KeyGenerator;
-import com.bstek.dorado.jdbc.model.Column;
-import com.bstek.dorado.jdbc.model.DbElement;
+import com.bstek.dorado.jdbc.model.AbstractColumn;
 import com.bstek.dorado.jdbc.model.DbTable;
 import com.bstek.dorado.jdbc.model.autotable.AutoTableColumn;
 import com.bstek.dorado.jdbc.model.autotable.FromTable;
 import com.bstek.dorado.jdbc.model.autotable.Order;
+import com.bstek.dorado.jdbc.model.table.KeyGenerator;
 import com.bstek.dorado.jdbc.model.table.Table;
 import com.bstek.dorado.jdbc.model.table.TableKeyColumn;
 import com.bstek.dorado.jdbc.sql.CurdSqlGenerator;
@@ -349,35 +347,36 @@ public abstract class AbstractDialect implements Dialect {
 		this.sync(operation);
 	}
 	
-	protected void retrieve(Record record, DbElement dbElement, JdbcEnviroment jdbcEnv) {
+	protected void retrieve(Record record, DbTable dbTable, JdbcEnviroment jdbcEnv) {
 		Dialect dialect = jdbcEnv.getDialect();
-		if (dbElement instanceof Table) {
-			Table table = (Table)dbElement;
+		if (dbTable instanceof Table) {
+			Table table = (Table)dbTable;
 			RetrieveSql retrieveSql = new RetrieveSql();
 			retrieveSql.setTableToken(token(table));
 			
-			List<Column> columnList = new ArrayList<Column>();
-			for(Column column: table.getAllColumns()) {
+			List<AbstractColumn> columnList = new ArrayList<AbstractColumn>();
+			for(AbstractColumn column: table.getAllColumns()) {
+				String columnName = column.getColumnName();
 				String propertyName = column.getPropertyName();
-				if (column.isSelectable() && StringUtils.isNotEmpty(propertyName) && record.containsKey(propertyName)) {
+				if (column.isSelectable() && record.containsKey(propertyName)) {
 					columnList.add(column);
-					retrieveSql.addColumnToken(column.getColumnName());
+					retrieveSql.addColumnToken(columnName + " " + KeyWord.AS + " " + propertyName);
 				}
 			}
 			JdbcParameterSource parameterSource = SqlUtils.createJdbcParameter(null);
 			for (TableKeyColumn column: table.getKeyColumns()) {
 				String propertyName = column.getPropertyName();
-				if (column.isSelectable() && StringUtils.isNotEmpty(propertyName) && record.containsKey(propertyName)) {
+				if (column.isSelectable() && record.containsKey(propertyName)) {
 					String columnName = column.getColumnName();
 					Object columnValue = record.get(propertyName);
 					JdbcType jdbcType = column.getJdbcType();
 					if (jdbcType != null) {
-						parameterSource.setValue(columnName, columnValue, jdbcType.getSqlType());
+						parameterSource.setValue(propertyName, columnValue, jdbcType.getSqlType());
 					} else {
-						parameterSource.setValue(columnName, columnValue);
+						parameterSource.setValue(propertyName, columnValue);
 					}
 					
-					retrieveSql.addKeyToken(columnName, ":"+columnName);
+					retrieveSql.addKeyToken(columnName, ":" + propertyName);
 				}
 			}
 
@@ -392,7 +391,7 @@ public abstract class AbstractDialect implements Dialect {
 			Record rRecord = rs.get(0);
 			record.putAll(rRecord);
 		} else {
-			throw new UnsupportedOperationException("[" + dbElement.getName() + "] does not support retrieve operation.");
+			throw new UnsupportedOperationException("[" + dbTable.getName() + "] does not support retrieve operation.");
 		}
 	}
 	
@@ -437,16 +436,11 @@ public abstract class AbstractDialect implements Dialect {
 		FromTable fromTable = order.getFromTable();
 		if (fromTable == null) {
 			AutoTableColumn ac = order.getSelfColumn();
-			String columnAlias = ac.getColumnAlias();
-			if (StringUtils.isNotEmpty(columnAlias)) {
-				token.append(columnAlias);
-			} else {
-				token.append(ac.getColumnName());	
-			}
+			token.append(ac.getPropertyName());
 		} else {
 			String cn = order.getColumnName();
-			Column fromColumn = fromTable.getTable().getColumn(cn);
-			token.append(fromTable.getTableAlias()).append('.').append(fromColumn.getColumnName());
+			AbstractColumn fromColumn = fromTable.getTable().getColumn(cn);
+			token.append(fromTable.getTableAlias() + '.' + fromColumn.getColumnName());
 		}
 		
 		if (model != null) {

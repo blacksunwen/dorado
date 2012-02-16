@@ -2,37 +2,37 @@
 <DbModel jdbcEnviroment="mysql">
 	<Table name="EMPLOYEE" tableName="EMPLOYEE">
 	  <Columns>
-	    <KeyColumn propertyName="ID" jdbcType="INTEGER-Integer" columnName="ID"/>
-	    <Column propertyName="REPORT_TO" jdbcType="INTEGER-Integer" columnName="REPORT_TO"/>
+	    <KeyColumn jdbcType="INTEGER-Integer" columnName="ID"/>
+	    <Column jdbcType="INTEGER-Integer" columnName="REPORT_TO"/>
 	    
-	    <Column propertyName="HIRE_DATE" jdbcType="DATE-Date" columnName="HIRE_DATE"/>
-	    <Column propertyName="BIRTHDAY" jdbcType="DATE-Date" columnName="BIRTHDAY"/>
+	    <Column jdbcType="DATE-Date" columnName="HIRE_DATE"/>
+	    <Column jdbcType="DATE-Date" columnName="BIRTHDAY"/>
 	    
-	    <Column propertyName="SEX" jdbcType="BIT-Boolean" columnName="SEX"/>
+	    <Column jdbcType="BIT-Boolean" columnName="SEX"/>
 	    
-	    <Column propertyName="NOTES" jdbcType="LONGVARCHAR-String" columnName="NOTES"/>
+	    <Column jdbcType="LONGVARCHAR-String" columnName="NOTES"/>
 	    
-	    <Column propertyName="DEPT_ID" jdbcType="VARCHAR-String" columnName="DEPT_ID"/>
-	    <Column propertyName="COUNTRY" jdbcType="VARCHAR-String" columnName="COUNTRY"/>
-	    <Column propertyName="ADDRESS" jdbcType="VARCHAR-String" columnName="ADDRESS"/>
-	    <Column propertyName="LAST_NAME" jdbcType="VARCHAR-String" columnName="LAST_NAME"/>
-	    <Column propertyName="PHONE" jdbcType="VARCHAR-String" columnName="PHONE"/>
-	    <Column propertyName="FIRST_NAME" jdbcType="VARCHAR-String" columnName="FIRST_NAME"/>
-	    <Column propertyName="POSTAL_CODE" jdbcType="VARCHAR-String" columnName="POSTAL_CODE"/>
-	    <Column propertyName="CITY" jdbcType="VARCHAR-String" columnName="CITY"/>
-	    <Column propertyName="PHOTO_PATH" jdbcType="VARCHAR-String" columnName="PHOTO_PATH"/>
-	    <Column propertyName="REGION" jdbcType="VARCHAR-String" columnName="REGION"/>
-	    <Column propertyName="TITLE_OF_COURTESY" jdbcType="VARCHAR-String" columnName="TITLE_OF_COURTESY"/>
-	    <Column propertyName="TITLE" jdbcType="VARCHAR-String" columnName="TITLE"/>
+	    <Column jdbcType="VARCHAR-String" columnName="DEPT_ID"/>
+	    <Column jdbcType="VARCHAR-String" columnName="COUNTRY"/>
+	    <Column jdbcType="VARCHAR-String" columnName="ADDRESS"/>
+	    <Column jdbcType="VARCHAR-String" columnName="LAST_NAME"/>
+	    <Column jdbcType="VARCHAR-String" columnName="PHONE"/>
+	    <Column jdbcType="VARCHAR-String" columnName="FIRST_NAME"/>
+	    <Column jdbcType="VARCHAR-String" columnName="POSTAL_CODE"/>
+	    <Column jdbcType="VARCHAR-String" columnName="CITY"/>
+	    <Column jdbcType="VARCHAR-String" columnName="PHOTO_PATH"/>
+	    <Column jdbcType="VARCHAR-String" columnName="REGION"/>
+	    <Column jdbcType="VARCHAR-String" columnName="TITLE_OF_COURTESY"/>
+	    <Column jdbcType="VARCHAR-String" columnName="TITLE"/>
 	  </Columns>
 	  <Property name="dynamicClause"><![CDATA[#if ($ID) WHERE ID=:ID #end]]></Property>
 	</Table>
 	
 	<Table name="DEPT" tableName="DEPT">
 	  <Columns>
-	    <KeyColumn propertyName="DEPT_ID" jdbcType="VARCHAR-String" columnName="DEPT_ID"/>
-	    <Column propertyName="DEPT_NAME" jdbcType="VARCHAR-String" columnName="DEPT_NAME"/>
-	    <Column propertyName="PARENT_ID" jdbcType="VARCHAR-String" columnName="PARENT_ID"/>
+	    <KeyColumn jdbcType="VARCHAR-String" columnName="DEPT_ID"/>
+	    <Column jdbcType="VARCHAR-String" columnName="DEPT_NAME"/>
+	    <Column jdbcType="VARCHAR-String" columnName="PARENT_ID"/>
 	  </Columns>
 	</Table>
 </DbModel>

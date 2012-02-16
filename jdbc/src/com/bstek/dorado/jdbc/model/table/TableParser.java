@@ -7,45 +7,19 @@ import java.util.Map;
 import org.w3c.dom.Node;
 
 import com.bstek.dorado.config.ParseContext;
-import com.bstek.dorado.config.definition.ObjectDefinition;
 import com.bstek.dorado.config.definition.Operation;
-import com.bstek.dorado.config.xml.ObjectParser;
-import com.bstek.dorado.data.config.definition.DataTypeDefinition;
-import com.bstek.dorado.data.config.definition.DataTypeDefinitionManager;
-import com.bstek.dorado.data.config.definition.PropertyDefDefinition;
-import com.bstek.dorado.data.type.DataType;
-import com.bstek.dorado.data.type.EntityDataType;
-import com.bstek.dorado.data.type.manager.DataTypeManager;
-import com.bstek.dorado.jdbc.JdbcConstants;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.ModelGeneratorSuit;
-import com.bstek.dorado.jdbc.ModelStrategy;
-import com.bstek.dorado.jdbc.config.xml.JdbcParseContext;
+import com.bstek.dorado.jdbc.config.AbstractDbTableDefinition;
+import com.bstek.dorado.jdbc.config.AbstractDbTableParser;
+import com.bstek.dorado.jdbc.config.ColumnDefinition;
+import com.bstek.dorado.jdbc.config.JdbcParseContext;
 import com.bstek.dorado.jdbc.meta.TableMetaDataGenerator;
-import com.bstek.dorado.jdbc.model.ColumnDefinition;
+import com.bstek.dorado.jdbc.support.JdbcConstants;
 
-public class TableParser extends ObjectParser {
+public class TableParser extends AbstractDbTableParser {
 	
-	private DataTypeManager dataTypeManager;
-	private ModelStrategy modelStrategy;
-	
-	public DataTypeManager getDataTypeManager() {
-		return dataTypeManager;
-	}
-
-	public void setDataTypeManager(DataTypeManager dataTypeManager) {
-		this.dataTypeManager = dataTypeManager;
-	}
-
-	public ModelStrategy getModelStrategy() {
-		return modelStrategy;
-	}
-
-	public void setModelStrategy(ModelStrategy modelStrategy) {
-		this.modelStrategy = modelStrategy;
-	}
-
 	@Override
 	protected Object doParse(Node node, ParseContext context) throws Exception {
 		TableDefinition tableDef = (TableDefinition)super.doParse(node, context);
@@ -55,52 +29,24 @@ public class TableParser extends ObjectParser {
 			this.createColumns(tableDef, jdbcContext);
 		}
 		if (tableDef.isAutoCreateDataType()) {
-			
+			this.createDataType(tableDef);
+		}
+		if (tableDef.isAutoCreateDataProvider()) {
+			this.createDataProvider(tableDef);
 		}
 		return tableDef;
 	}
 	
-	protected void createDataType(TableDefinition tableDef) {
-		String dataTypeName = tableDef.getName();
-		DataType alreadyType = null;
-		try {
-			alreadyType = dataTypeManager.getDataType(dataTypeName);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+	@Override
+	protected void doAutoCreate(AbstractDbTableDefinition tableDef,
+			JdbcParseContext jdbcContext) throws Exception {
+		TableDefinition def = (TableDefinition)tableDef;
+		if (def.isAutoCreateColumns()) {
+			this.createColumns(def, jdbcContext);
 		}
-		
-		if (alreadyType == null) {
-			DataTypeDefinitionManager dataTypeDefManager = dataTypeManager.getDataTypeDefinitionManager();
-			DataTypeDefinition dataTypeDef = modelStrategy.createDataTypeDefinition(tableDef);
-			dataTypeDefManager.registerDefinition(dataTypeName, dataTypeDef);
-		} else {
-			if (alreadyType instanceof EntityDataType) {
-				EntityDataType dataType = (EntityDataType)alreadyType;
-				if (dataType.isAutoCreatePropertyDefs()) {
-					DataTypeDefinitionManager dataTypeDefManager = dataTypeManager.getDataTypeDefinitionManager();
-					DataTypeDefinition alreadyDef = dataTypeDefManager.getDefinition(dataTypeName);
-					
-					boolean isCache = alreadyDef.isCacheCreatedObject();
-					alreadyDef.setCacheCreatedObject(false);
-					DataTypeDefinition dataTypeDef = modelStrategy.createDataTypeDefinition(tableDef);
-					Map<String, ObjectDefinition> propertyDefMap = dataTypeDef.getPropertyDefs();
-					if (propertyDefMap != null && !propertyDefMap.isEmpty()) {
-						for (ObjectDefinition objDef: propertyDefMap.values()) {
-							PropertyDefDefinition pdef = (PropertyDefDefinition)objDef;
-							String propertyName = (String)pdef.getProperty("name");
-							
-							if (dataTypeDef.getPropertyDef(propertyName) == null) {
-								alreadyDef.addPropertyDef(propertyName, pdef);
-							}
-						}
-					}
-					
-					alreadyDef.setCacheCreatedObject(isCache);
-				}
-			}
-		}
+		super.doAutoCreate(tableDef, jdbcContext);
 	}
-	
+
 	protected void createColumns(TableDefinition tableDef, JdbcParseContext jdbcContext) {
 		List<Operation> ops = tableDef.getInitOperations();
 		Map<String,ColumnDefinition> columnMap = new HashMap<String,ColumnDefinition>(ops.size());
@@ -110,7 +56,6 @@ public class TableParser extends ObjectParser {
 				columnMap.put(column.getName(), column);
 			}
 		}
-		
 		
 		JdbcEnviroment jdbcEnv = jdbcContext.getJdbcEnviroment();
 		

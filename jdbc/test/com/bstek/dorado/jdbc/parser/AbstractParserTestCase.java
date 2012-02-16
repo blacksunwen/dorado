@@ -16,7 +16,7 @@ import com.bstek.dorado.core.io.Resource;
 import com.bstek.dorado.core.xml.DefaultXmlDocumentBuilder;
 import com.bstek.dorado.jdbc.AbstractJdbcTestCase;
 import com.bstek.dorado.jdbc.config.DbModel;
-import com.bstek.dorado.jdbc.config.xml.JdbcParseContext;
+import com.bstek.dorado.jdbc.config.JdbcParseContext;
 
 public class AbstractParserTestCase extends AbstractJdbcTestCase {
 
@@ -31,7 +31,7 @@ public class AbstractParserTestCase extends AbstractJdbcTestCase {
 				.getXmlParserInfos(clazz).get(0);
 		XmlParser parser = xmlParserInfo.getParser();
 
-		ParseContext parseContext = new ParseContext();
+		ParseContext parseContext = new JdbcParseContext();
 		Element documentElement = document.getDocumentElement();
 		ObjectDefinition definition = (ObjectDefinition) parser.parse(
 				documentElement, parseContext);

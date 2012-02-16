@@ -5,7 +5,7 @@ import com.bstek.dorado.jdbc.model.AbstractUpdatableColumn;
 
 @XmlNode(
 	nodeName="Column", 
-	definitionType="com.bstek.dorado.jdbc.model.ColumnDefinition"
+	definitionType="com.bstek.dorado.jdbc.config.ColumnDefinition"
 )
 public class SqlTableColumn extends AbstractUpdatableColumn {
 	
@@ -19,9 +19,4 @@ public class SqlTableColumn extends AbstractUpdatableColumn {
 		this.nativeColumnName = nativeColumnName;
 	}
 
-	@Override
-	public String getKeyName() {
-		return getColumnName();
-	}
-	
 }

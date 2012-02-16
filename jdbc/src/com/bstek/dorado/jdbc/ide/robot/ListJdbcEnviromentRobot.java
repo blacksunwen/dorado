@@ -11,7 +11,7 @@ import org.w3c.dom.Node;
 import com.bstek.dorado.idesupport.robot.Robot;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.JdbcUtils;
-import com.bstek.dorado.jdbc.config.xml.DomHelper;
+import com.bstek.dorado.jdbc.config.DomHelper;
 
 public class ListJdbcEnviromentRobot implements Robot {
 

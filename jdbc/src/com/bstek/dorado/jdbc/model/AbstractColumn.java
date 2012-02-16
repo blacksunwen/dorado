@@ -1,19 +1,30 @@
 package com.bstek.dorado.jdbc.model;
 
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.jdbc.type.JdbcType;
 
-public abstract class Column {
+public abstract class AbstractColumn {
 	
 	private String columnName;
-
-	private String propertyName;
 
 	private JdbcType jdbcType;
 	
 	private boolean selectable = true;
 
+	@IdeProperty(highlight=1)
+	public String getColumnName() {
+		return columnName;
+	}
+	
+	@XmlProperty(parser="spring:dorado.jdbc.jdbcTypeParser")
+	@IdeProperty(highlight=1, editor = "jdbc:list-jdbctype")
+	public JdbcType getJdbcType() {
+		return jdbcType;
+	}
+	
+	@ClientProperty(escapeValue = "true")
 	public boolean isSelectable() {
 		return selectable;
 	}
@@ -22,27 +33,8 @@ public abstract class Column {
 		this.selectable = selectable;
 	}
 
-	public String getColumnName() {
-		return columnName;
-	}
-
-	@IdeProperty(visible = false)
-	public String getPropertyName() {
-		return propertyName;
-	}
-
-	@XmlProperty(parser="spring:dorado.jdbc.jdbcTypeParser")
-	@IdeProperty(highlight=1, editor = "jdbc:list-jdbctype")
-	public JdbcType getJdbcType() {
-		return jdbcType;
-	}
-
 	public void setColumnName(String columnName) {
 		this.columnName = columnName;
-	}
-
-	public void setPropertyName(String propertyName) {
-		this.propertyName = propertyName;
 	}
 
 	public void setJdbcType(JdbcType jdbcType) {
@@ -50,5 +42,7 @@ public abstract class Column {
 	}
 
 	@IdeProperty(visible = false)
-	public abstract String getKeyName();
+	public String getPropertyName() {
+		return getColumnName();
+	}
 }

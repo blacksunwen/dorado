@@ -5,10 +5,11 @@ import com.bstek.dorado.annotation.XmlNodeWrapper;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.jdbc.model.AbstractTable;
-import com.bstek.dorado.jdbc.model.Column;
+import com.bstek.dorado.jdbc.model.AbstractColumn;
 import com.bstek.dorado.jdbc.model.table.Table;
 
 @XmlNode(
+	parser = "spring:dorado.jdbc.sqlTableParser",
 	definitionType="com.bstek.dorado.jdbc.model.sqltable.SqlTableDefinition",
 	properties = {
 		@XmlProperty(
@@ -25,14 +26,13 @@ import com.bstek.dorado.jdbc.model.table.Table;
 	}
 )
 public class SqlTable extends AbstractTable {
-
 	public static final String TYPE = "SqlTable";
 	
 	private String querySql;
 	
-	private Table table;
+	private Table mainTable;
 
-	public void addColumn(Column column) {
+	public void addColumn(AbstractColumn column) {
 		if (column instanceof SqlTableColumn) {
 			super.addColumn(column);
 		} else {
@@ -48,22 +48,23 @@ public class SqlTable extends AbstractTable {
 		this.querySql = querySql;
 	}
 	
-	public Table getTable() {
-		return table;
+	@XmlProperty(parser = "spring:dorado.jdbc.tableReferenceParser")
+	public Table getMainTable() {
+		return mainTable;
 	}
 
-	public void setTable(Table table) {
-		this.table = table;
+	public void setMainTable(Table table) {
+		this.mainTable = table;
 	}
 
+	@Override
+	protected String getDefaultSQLGeneratorServiceName() {
+		return "spring:dorado.jdbc.sqlTableSqlGenerator";
+	}
+	
 	@Override
 	public String getType() {
 		return TYPE;
-	}
-
-	@Override
-	protected String getDefaultSQLGeneratorName() {
-		return "spring:dorado.jdbc.sqlTableSqlGenerator";
 	}
 	
 }

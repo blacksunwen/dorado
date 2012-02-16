@@ -6,7 +6,7 @@ import java.util.Map;
 import org.w3c.dom.Document;
 
 import com.bstek.dorado.jdbc.JdbcEnviroment;
-import com.bstek.dorado.jdbc.model.ColumnDefinition;
+import com.bstek.dorado.jdbc.config.ColumnDefinition;
 
 /**
  * 数据库Table属性的输出

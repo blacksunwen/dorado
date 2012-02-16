@@ -1,5 +1,6 @@
 package com.bstek.dorado.jdbc.model.table;
 
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
 
@@ -17,10 +18,12 @@ public class TableColumn extends AbstractTableColumn {
 	
 	private Object updateDefaultValue;
 
+	@ClientProperty(escapeValue = "true")
 	public boolean isInsertable() {
 		return insertable;
 	}
 
+	@ClientProperty(escapeValue = "true")
 	public boolean isUpdatable() {
 		return updatable;
 	}

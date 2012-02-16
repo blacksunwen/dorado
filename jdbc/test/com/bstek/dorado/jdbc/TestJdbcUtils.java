@@ -8,7 +8,7 @@ import junit.framework.Assert;
 import org.w3c.dom.Document;
 
 import com.bstek.dorado.data.variant.Record;
-import com.bstek.dorado.jdbc.config.xml.DomHelper;
+import com.bstek.dorado.jdbc.config.DomHelper;
 import com.bstek.dorado.jdbc.ide.resolver.CreateTableResolver;
 import com.bstek.dorado.jdbc.support.DefaultDataTypeMetaGenerator;
 import com.bstek.dorado.jdbc.support.DefaultStoredProcedureGenerator;

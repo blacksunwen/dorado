@@ -5,11 +5,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
-
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.core.bean.BeanFactoryUtils;
+import com.bstek.dorado.jdbc.TableTrigger;
 import com.bstek.dorado.jdbc.sql.CurdSqlGenerator;
 import com.bstek.dorado.util.Assert;
 
@@ -27,32 +26,28 @@ import com.bstek.dorado.util.Assert;
 )
 public abstract class AbstractTable extends AbstractDbElement implements DbTable {
 
-	private Map<String,Column> columnMap = new LinkedHashMap<String,Column>();
+	private Map<String,AbstractColumn> columnMap = new LinkedHashMap<String,AbstractColumn>();
 	private TableTrigger trigger;
 	private CurdSqlGenerator sqlGenerator;
 	
-	public List<Column> getAllColumns() {
-		return new ArrayList<Column>(columnMap.values());
+	public List<AbstractColumn> getAllColumns() {
+		return new ArrayList<AbstractColumn>(columnMap.values());
 	}
 	
-	public Column getColumn(String name) {
-		Column c = columnMap.get(name);
-		Assert.notNull(c, getType() + "named [" + getName() + "]" + " has not column named [" + name + "]");
+	public AbstractColumn getColumn(String name) {
+		AbstractColumn c = columnMap.get(name);
+		Assert.notNull(c, "No column named [" + name + "] in table [" + this.getName() + "]");
 		return c;
 	}
 	
-	public void addColumn(Column column) {
-		Assert.notEmpty(column.getColumnName(), "columnName must not be empty.");
+	public void addColumn(AbstractColumn column) {
+		String columnName = column.getColumnName();
+		Assert.notEmpty(columnName, "columnName must not be empty in table [" + this.getName() + "]");
 		
-		String key = this.getColumnKey(column);
-		if (columnMap.containsKey(key)) {
-			throw new IllegalArgumentException("Duplicate column named [" + key + "]");
+		if (columnMap.containsKey(columnName)) {
+			throw new IllegalArgumentException("Duplicate column named [" + columnName + "] in table [" + this.getName() + "]");
 		}
-		columnMap.put(key, column);
-	}
-	
-	protected String getColumnKey(Column column) {
-		return column.getColumnName();
+		columnMap.put(columnName, column);
 	}
 
 	@XmlProperty(parser="spring:dorado.jdbc.triggerParser")
@@ -66,14 +61,7 @@ public abstract class AbstractTable extends AbstractDbElement implements DbTable
 	
 	public CurdSqlGenerator getCurdSqlGenerator() {
 		if(sqlGenerator == null) {
-			String beanName = getDefaultSQLGeneratorName();
-			if (StringUtils.isNotEmpty(beanName)) {
-				try {
-					sqlGenerator = (CurdSqlGenerator)BeanFactoryUtils.getBean(beanName);
-				} catch (Exception e) {
-					throw new RuntimeException(e);
-				}
-			}
+			sqlGenerator = getDefaultSQLGenerator();
 		}
 		
 		return sqlGenerator;
@@ -83,5 +71,14 @@ public abstract class AbstractTable extends AbstractDbElement implements DbTable
 		this.sqlGenerator = sqlGenerator;
 	}
 	
-	protected abstract String getDefaultSQLGeneratorName();
+	protected CurdSqlGenerator getDefaultSQLGenerator() {
+		String beanName = getDefaultSQLGeneratorServiceName();
+		try {
+			return (CurdSqlGenerator)BeanFactoryUtils.getBean(beanName);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	protected abstract String getDefaultSQLGeneratorServiceName();
 }

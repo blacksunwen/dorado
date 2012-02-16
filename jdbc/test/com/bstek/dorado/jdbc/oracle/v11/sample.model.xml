@@ -17,7 +17,7 @@
 		</Items>
 	</DataResolver>
 	
-	<DataResolver name="ora11.resolver.03" type="jdbc" transactionTemplate="spring:transactionTemplate">
+	<DataResolver name="ora11.resolver.03" type="jdbc" transactionOperations="spring:transactionTemplate">
 		<Items>
 			<Item name="dept" tableName="DEPT">
 				<Item name="employee" tableName="EMPLOYEE" parentKeyProperties="DEPT_ID" foreignKeyProperties="DEPT_ID"/>
