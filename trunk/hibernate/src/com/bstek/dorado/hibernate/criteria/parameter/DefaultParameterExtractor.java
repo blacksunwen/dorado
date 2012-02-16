@@ -56,7 +56,7 @@ public class DefaultParameterExtractor implements ParameterExtractor {
 	public Object value(Object value, String dataTypeName) throws Exception {
 		if (StringUtils.isNotEmpty(dataTypeName)) {
 			DataType dataType = DataUtils.getDataType(dataTypeName);
-			Assert.notNull(dataType, "unknown DataType '" + dataTypeName + "'.");
+			Assert.notNull(dataType, "Unknown DataType '" + dataTypeName + "'.");
 			return dataType.fromObject(value);
 		} else {
 			return value;

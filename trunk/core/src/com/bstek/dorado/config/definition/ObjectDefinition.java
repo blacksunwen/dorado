@@ -220,8 +220,9 @@ public class ObjectDefinition extends Definition {
 		BeanWrapper wrapper = createObject(creationInfo, methodInterceptors,
 				context);
 		object = wrapper.getBean();
-		if (creationInfo.getScope() == null && cacheCreatedObject)
+		if (creationInfo.getScope() == null && cacheCreatedObject) {
 			objectCache = object;
+		}
 
 		if (wrapper.isNewInstance()) {
 			context.pushInstanceStack(this, object);

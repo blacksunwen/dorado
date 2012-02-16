@@ -1,15 +1,8 @@
 <ivysettings>
 	<properties file="${ivy.settings.dir}/ivysettings.properties" />
-
 	<settings defaultResolver="default" />
-	<caches defaultCacheDir="${cache.dir}" />
-	<credentials host="nexus.bsdn.org" realm="Sonatype Nexus Repository Manager" username="${bsdn.nexus.user}" passwd="${bsdn.nexus.password}" />
-
 	<resolvers>
-		<ibiblio name="bsdn" m2compatible="true" usepoms="true" root="${bsdn.nexus}" pattern="${bsdn.respository.pattern}" />
-		<ibiblio name="global" m2compatible="true" usepoms="true" pattern="${global.respository.pattern}" />
-
-		<!-- <chain name="default" returnFirst="true" checkmodified="true"> -->
+		<ibiblio name="bsdn" m2compatible="true" root="${bsdn.nexusPublic}"/>
 		<chain name="default" returnFirst="true">
 			<resolver ref="bsdn" />
 		</chain>

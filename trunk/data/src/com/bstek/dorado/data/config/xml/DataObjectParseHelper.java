@@ -16,6 +16,7 @@ import com.bstek.dorado.data.config.DataTypeName;
 import com.bstek.dorado.data.config.definition.DataProviderDefinition;
 import com.bstek.dorado.data.config.definition.DataResolverDefinition;
 import com.bstek.dorado.data.config.definition.DataTypeDefinition;
+import com.bstek.dorado.data.config.definition.DataTypeDefinitionManager;
 import com.bstek.dorado.data.type.property.PropertyDef;
 import com.bstek.dorado.util.xml.DomUtils;
 
@@ -66,7 +67,9 @@ public class DataObjectParseHelper {
 			String name, DataParseContext context, boolean subDataTypeAllowed)
 			throws Exception {
 		DefinitionReference<DataTypeDefinition> definitionReference = null;
-		DataTypeDefinition dataType = context.getDataTypeDefinitionManager()
+		DataTypeDefinitionManager dataTypeDefinitionManager = context
+				.getDataTypeDefinitionManager();
+		DataTypeDefinition dataType = dataTypeDefinitionManager
 				.getDefinition(name);
 		if (dataType == null) {
 			dataType = context.getParsedDataTypes().get(name);

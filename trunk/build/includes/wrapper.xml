@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:ivy="antlib:org.apache.ivy.ant" name="wrapper" default="build">
-	<property file="${basedir}/build.properties" />
+	<property file="${basedir}/_build.properties" />
 
 	<property name="work.dir" value="${basedir}/work" />
 	<property name="target.dir" value="${basedir}/target" />

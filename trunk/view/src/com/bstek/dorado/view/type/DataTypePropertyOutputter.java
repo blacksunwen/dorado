@@ -3,6 +3,8 @@ package com.bstek.dorado.view.type;
 import java.io.Writer;
 import java.util.Map;
 
+import org.springframework.util.StringUtils;
+
 import com.bstek.dorado.data.type.AggregationDataType;
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.util.proxy.BeanExtender;
@@ -15,6 +17,8 @@ import com.bstek.dorado.view.output.OutputContext;
  * @since Oct 23, 2008
  */
 public class DataTypePropertyOutputter extends ObjectOutputterDispatcher {
+	private static final String AUTO = "%AUTO%";
+
 	private boolean useLazyDataType;
 
 	/**
@@ -38,16 +42,29 @@ public class DataTypePropertyOutputter extends ObjectOutputterDispatcher {
 		json.beginValue();
 		Writer writer = context.getWriter();
 		if (BeanExtender.getUserData(dataType, "dorado.dynamicDataType") != null) {
-			writer.write("dorado.DataTypeRepository.parseSingleDataType(");
+			writer.append("dorado.DataTypeRepository.parseSingleDataType(");
 			outputObject(dataType, context);
-			writer.write(")");
+			writer.append(")");
 		} else {
 			if (useLazyDataType) {
-				writer.write("dorado.LazyLoadDataType.create(v.dataTypeRepository,");
+				writer.append("dorado.LazyLoadDataType.create(v.dataTypeRepository,");
 			}
-			writer.write("\"" + dataType.getId() + "\"");
+
+			writer.append('"');
+			String id = dataType.getId();
+			if (dataType instanceof AggregationDataType && id.contains(AUTO)) {
+				String[] idSections = StringUtils.split(id, AUTO);
+				writer.append(idSections[0])
+						.append(((AggregationDataType) dataType)
+								.getElementDataType().getId())
+						.append(idSections[1]);
+			} else {
+				writer.append(id);
+			}
+			writer.append('"');
+
 			if (useLazyDataType) {
-				writer.write(")");
+				writer.append(")");
 			} else {
 				if (context.isShouldOutputDataTypes()) {
 					if (dataType instanceof AggregationDataType) {
@@ -66,5 +83,4 @@ public class DataTypePropertyOutputter extends ObjectOutputterDispatcher {
 		}
 		json.endValue();
 	}
-
 }

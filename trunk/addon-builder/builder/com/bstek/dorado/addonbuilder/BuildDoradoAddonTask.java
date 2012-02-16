@@ -2,10 +2,7 @@ package com.bstek.dorado.addonbuilder;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
@@ -165,8 +162,10 @@ public class BuildDoradoAddonTask extends Ant {
 			}
 
 			Project project = getProject();
-			Path userClasspath = (Path) project.createDataType("path");
-			project.addReference("userClasspath", userClasspath);
+			Project newProject = getNewProject();
+
+			Path userClasspath = (Path) newProject.createDataType("path");
+			newProject.addReference("userClasspath", userClasspath);
 			if (compileClasspath != null) {
 				userClasspath.append(compileClasspath);
 			}
@@ -180,8 +179,11 @@ public class BuildDoradoAddonTask extends Ant {
 				outputProperties.load(in);
 				for (Object key : outputProperties.keySet()) {
 					String propertyName = (String) key;
-					project.setUserProperty(propertyName,
-							outputProperties.getProperty(propertyName));
+					String propertyValue = outputProperties
+							.getProperty(propertyName);
+					project.setUserProperty(propertyName, propertyValue);
+					log("Set output property: " + propertyName + " = "
+							+ propertyValue);
 				}
 			} finally {
 				in.close();
@@ -196,19 +198,19 @@ public class BuildDoradoAddonTask extends Ant {
 
 			log("Dorado addon [" + name + "] build OK.");
 		} catch (Exception e) {
-			try {
-				File file = new File("e:/temp/log.txt");
-				file.createNewFile();
-				FileOutputStream out = new FileOutputStream(file);
-				PrintWriter writer = new PrintWriter(out);
-				e.printStackTrace(writer);
-				writer.flush();
-				writer.close();
-				out.flush();
-				out.close();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
+			// try {
+			// File file = new File("e:/temp/log.txt");
+			// file.createNewFile();
+			// FileOutputStream out = new FileOutputStream(file);
+			// PrintWriter writer = new PrintWriter(out);
+			// e.printStackTrace(writer);
+			// writer.flush();
+			// writer.close();
+			// out.flush();
+			// out.close();
+			// } catch (IOException e1) {
+			// e1.printStackTrace();
+			// }
 
 			log(e, Project.MSG_ERR);
 			throw new BuildException(e.getMessage(), e);
@@ -230,19 +232,15 @@ public class BuildDoradoAddonTask extends Ant {
 		}
 	}
 
-	public void setClasspath(Path classpath) {
-		if (compileClasspath == null) {
-			compileClasspath = classpath;
-		} else {
-			compileClasspath.append(classpath);
-		}
-	}
-
 	public Path getClasspath() {
 		return compileClasspath;
 	}
 
-	private Path createClasspath() {
+	public void setClasspath(Path classpath) {
+		compileClasspath = classpath;
+	}
+
+	public Path createClasspath() {
 		if (compileClasspath == null) {
 			compileClasspath = new Path(getProject());
 		}
@@ -251,14 +249,6 @@ public class BuildDoradoAddonTask extends Ant {
 
 	public void setClasspathRef(Reference r) {
 		createClasspath().setRefid(r);
-	}
-
-	public Path getCompileClasspath() {
-		return compileClasspath;
-	}
-
-	public void setCompileClasspath(Path compileClasspath) {
-		this.compileClasspath = compileClasspath;
 	}
 
 	public String getName() {

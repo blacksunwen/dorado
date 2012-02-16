@@ -37,12 +37,12 @@ public class DirectDataProviderDefinition extends DataProviderDefinition {
 					(DataTypeDefinition) dataType);
 		}
 		createContext
-				.setDataTypeDefinition((DefinitionReference<DataTypeDefinition>) dataType);
+				.setCurrentDataTypeDefinition((DefinitionReference<DataTypeDefinition>) dataType);
 		try {
 			return super
 					.createObject(creationInfo, methodInterceptors, context);
 		} finally {
-			createContext.setDataTypeDefinition(null);
+			createContext.setCurrentDataTypeDefinition(null);
 		}
 	}
 

@@ -14,10 +14,6 @@ public class InnerDataTypeDefinitionManager extends DataTypeDefinitionManager {
 
 	private String dataObjectIdPrefix;
 
-	public InnerDataTypeDefinitionManager() {
-		super();
-	}
-
 	public InnerDataTypeDefinitionManager(
 			DefinitionManager<DataTypeDefinition> parent) {
 		super(parent);

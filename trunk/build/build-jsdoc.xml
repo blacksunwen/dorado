@@ -1,18 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="build" default="build">
-	<property name="dont-resolve-env-libs" value="true" />
-	<property name="dont-compressor-css" value="true" />
-	<property name="dont-compressor-js" value="true" />
-	<property name="dont-tidy-js" value="true" />
-	<property name="jsdoc" value="true" />
-	<property name="project.dir" value="${basedir}/../client" />
+<project xmlns:artifact="antlib:org.apache.maven.artifact.ant"
+         name="build"
+         default="buildJsDoc">
+	<property file="build.properties" />
 
-	<target name="build">
-		<ant antfile="${basedir}/includes/wrapper.xml" inheritRefs="true">
-			<property name="build-files" value="client.xml,jsdoc.xml" />
-			<property name="src" value="${project.dir}/client" />
-			<property name="dist" value="${project.dir}/bin" />
-			<property name="module.projects" value="client,chart,desktop" />
+	<property name="vendor" value="www.BSTEK.com" />
+	<property name="version" value="7.0.8" />
+	<property name="qualifier" value="SNAPSHOT" />
+
+	<property name="targetDir" value="${rootWorkDir}/target" />
+
+	<taskdef resource="net/sf/antcontrib/antlib.xml"
+	         classpath="lib/ant-contrib-1.0b3.jar" />
+	<taskdef resource="com/bstek/dorado/addonbuilder/task.properties"
+	         classpath="lib/dorado-addon-builder-1.0.0.jar" />
+
+	<target name="buildJsDoc">
+		<delete dir="${rootWorkDir}/jsdoc" />
+
+		<mkdir dir="${rootWorkDir}/jsdoc/client" />
+		<ant antfile="${basedir}/includes/merge-client.xml" inheritRefs="true">
+			<property name="src" value="${workspaceDir}/client/client" />
+			<property name="dist" value="${rootWorkDir}/jsdoc/client" />
 		</ant>
+
+		<buildDoradoAddon baseDir="${workspaceDir}/client"
+		                  workDir="${rootWorkDir}/jsdoc"
+		                  targetDir="${targetDir}"
+		                  name="dorado-core"
+		                  vendor="${vendor}"
+		                  version="${version}"
+		                  qualifier="${qualifier}"
+		                  compileJava="false"
+		                  buildJar="false"
+		                  buildSourceJar="false"
+		                  buildJsDoc="true"
+		                  buildJavaDoc="false"
+		                  makePom="false"
+		                  clientSrc=""
+		                  javaSrc="" />
 	</target>
 </project>

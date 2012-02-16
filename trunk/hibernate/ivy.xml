@@ -2,18 +2,15 @@
 	<info organisation="com.bstek.dorado" module="dorado-hibernate" status="integration" />
 
 	<configurations>
-		<conf name="default" visibility="public" extends="runtime,master" />
-		<conf name="master" visibility="public" />
-		<conf name="compile" visibility="public" />
-		<conf name="provided" visibility="public" />
-		<conf name="runtime" visibility="public" />
-		<conf name="test" visibility="private" extends="runtime" />
+		<include file="../ivy/ivy-configurations.xml" />
 	</configurations>
 
-	<dependencies defaultconfmapping="compile->compile(*),master(*);runtime->master(*),compile(*),runtime(*);test->default(*)">
-		<!-- RUNTIME -->
-		<dependency org="com.bstek.dorado" name="dorado-core" rev="${depended-dorado.version}" conf="compile,runtime"/>
-		<dependency org="org.hibernate" name="hibernate-core" rev="3.6.5.Final" conf="compile,runtime" />
+	<dependencies>
+		<!-- COMPILE -->
+		<dependency org="com.bstek.dorado" name="dorado-core" rev="7.0.10-SNAPSHOT" conf="compile" />
+		<dependency org="org.hibernate" name="hibernate-core" rev="3.6.5.Final" conf="compile">
+			<exclude org="javax.transaction" />
+		</dependency>
 
 		<!-- TEST -->
 		<dependency org="junit" name="junit" rev="4.8.2" conf="test" />

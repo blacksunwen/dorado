@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="build" default="build">
-	<property name="skin.names" value="inherent,default,gray" />
+	<property name="skinNames" value="inherent,default" />
 
-	<target name="copy-skin">
-		<mkdir dir="${dist}/skins/${skin.name}" />
+	<target name="copySkin">
+		<mkdir dir="${dist}/skins/${skinName}" />
 
-		<copy todir="${dist}/skins/${skin.name}">
-			<fileset dir="${src}/skins/${skin.name}">
+		<copy todir="${dist}/skins/${skinName}">
+			<fileset dir="${src}/skins/${skinName}">
 				<include name="common.css" />
 				<include name="widget.css" />
 				<include name="list.css" />
@@ -18,8 +18,8 @@
 			</fileset>
 		</copy>
 
-		<concat destfile="${dist}/skins/${skin.name}/base-widget.css" fixlastline="true" encoding="utf-8">
-			<filelist dir="${src}/skins/${skin.name}">
+		<concat destfile="${dist}/skins/${skinName}/base-widget.css" fixlastline="true" encoding="utf-8">
+			<filelist dir="${src}/skins/${skinName}">
 				<file name="button.css" />
 				<file name="tab-bar.css" />
 				<file name="panel.css" />
@@ -47,8 +47,8 @@
 			</filelist>
 		</concat>
 
-		<concat destfile="${dist}/skins/${skin.name}/all.css" fixlastline="true" encoding="utf-8">
-			<filelist dir="${dist}/skins/${skin.name}">
+		<concat destfile="${dist}/skins/${skinName}/all.css" fixlastline="true" encoding="utf-8">
+			<filelist dir="${dist}/skins/${skinName}">
 				<file name="common.css" />
 				<file name="widget.css" />
 				<file name="base-widget.css" />
@@ -61,20 +61,23 @@
 			</filelist>
 		</concat>
 
-		<echo message="copy ${src}/skins/${skin.name} --> ${dist}/skins/${skin.name}" />
-		<copy todir="${dist}/skins/${skin.name}">
-			<fileset dir="${src}/skins/${skin.name}">
+		<echo message="copy ${src}/skins/${skinName} --> ${dist}/skins/${skinName}" />
+		<copy todir="${dist}/skins/${skinName}">
+			<fileset dir="${src}/skins/${skinName}">
 				<exclude name="*.css" />
 				<exclude name="advance/**/*" />
 			</fileset>
 		</copy>
 	</target>
 
-	<target name="copy-skins">
-		<foreach list="${skin.names}" param="skin.name" target="copy-skin" inheritall="true" />
+	<target name="copySkins">
+		<foreach list="${skinNames}"
+		         param="skinName"
+		         target="copySkin"
+		         inheritall="true" />
 	</target>
 
-	<target name="copy-js">
+	<target name="copyJavaScript">
 		<mkdir dir="${dist}/scripts/dorado" />
 
 		<copy file="${src}/scripts/dorado/core/boot.js" todir="${dist}/scripts/dorado" />
@@ -259,13 +262,7 @@
 		<copy file="${src}/scripts/dorado/widget/advance/portal.js" todir="${dist}/scripts/dorado" />
 	</target>
 
-	<target name="replace-revision">
-		<replace dir="${dist}/scripts/dorado" token="%version%" value="${product.revision}" encoding="utf-8">
-			<include name="core.js" />
-		</replace>
-	</target>
-
-	<target name="copy-libs">
+	<target name="copyLibs">
 		<mkdir dir="${dist}/scripts/jquery" />
 		<copy todir="${dist}/scripts/jquery">
 			<fileset dir="${src}/scripts/jquery">
@@ -289,11 +286,11 @@
 		</copy>
 	</target>
 
-	<target name="copy-resources">
+	<target name="copyResources">
 		<copy todir="${dist}/resources">
 			<fileset dir="${src}/resources" />
 		</copy>
 	</target>
 
-	<target name="build" depends="copy-skins,copy-js,replace-revision,copy-libs,copy-resources" />
+	<target name="build" depends="copySkins,copyJavaScript,copyLibs,copyResources" />
 </project>

@@ -4,9 +4,12 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.bstek.dorado.core.Context;
+import com.bstek.dorado.data.config.definition.DataTypeDefinition;
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.data.type.manager.DataTypeManager;
 import com.bstek.dorado.data.type.manager.DefaultDataTypeManager;
+import com.bstek.dorado.view.config.definition.ViewConfigDefinition;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -15,8 +18,11 @@ import com.bstek.dorado.data.type.manager.DefaultDataTypeManager;
 public class InnerDataTypeManager extends DefaultDataTypeManager {
 	private DataTypeManager parent;
 	private Map<String, DataType> privateDataTypeMap;
+	private ViewConfigDefinition viewConfigDefinition;
 
-	public InnerDataTypeManager(DataTypeManager parent) {
+	public InnerDataTypeManager(ViewConfigDefinition viewConfigDefinition,
+			DataTypeManager parent) {
+		this.viewConfigDefinition = viewConfigDefinition;
 		this.parent = parent;
 	}
 
@@ -52,4 +58,22 @@ public class InnerDataTypeManager extends DefaultDataTypeManager {
 		privateDataTypeMap.put(name, dataType);
 	}
 
+	@Override
+	protected DataType getDataTypeByDefinition(
+			DataTypeDefinition dataTypeDefinition) throws Exception {
+		Context context = Context.getCurrent();
+		context.setAttribute("privateDataTypeDefinitionManager",
+				viewConfigDefinition.getDataTypeDefinitionManager());
+		context.setAttribute("privateDataProviderDefinitionManager",
+				viewConfigDefinition.getDataProviderDefinitionManager());
+		context.setAttribute("privateDataResolverDefinitionManager",
+				viewConfigDefinition.getDataResolverDefinitionManager());
+		try {
+			return super.getDataTypeByDefinition(dataTypeDefinition);
+		} finally {
+			context.removeAttribute("privateDataTypeDefinitionManager");
+			context.removeAttribute("privateDataProviderDefinitionManager");
+			context.removeAttribute("privateDataResolverDefinitionManager");
+		}
+	}
 }

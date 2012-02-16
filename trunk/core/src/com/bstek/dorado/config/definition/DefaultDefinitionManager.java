@@ -54,6 +54,10 @@ public class DefaultDefinitionManager<T extends Definition> implements
 		return definitions;
 	}
 
+	public boolean hasOwnDefintion(String name) {
+		return definitions.containsKey(name);
+	}
+
 	public void clearAllDefinitions() {
 		definitions.clear();
 	}

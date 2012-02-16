@@ -221,49 +221,8 @@
         "grid.css",
         "tree.css"
     ];
-
-	var styleSheets = [
-		"common.css",
-		"widget.css",
-
-		"button.css",
-        "tab-bar.css",
-        "panel.css",
-        "iframe.css",
-        "caption-bar.css",
-        "slider.css",
-        "tip.css",
-        "progress-bar.css",
-        "toolbar.css",
-        "accordion.css",
-        "split-panel.css",
-        "ym-picker.css",
-        "date-picker.css",
-		"group-box.css",
-
-        "dialog.css",
-        "menu.css",
-        "portal.css",
-        "spinner.css",
-        "data-pilot.css",
-
-		"text-editor.css",
-		"trigger.css",
-        "checkbox.css",
-        "radio-button.css",
-        "form.css",
-
-		"list.css",
-		"grid.css",
-		"tree.css",
-		"block-view.css",
-		"image-canvas.css",
-		"html-editor.css"
-		
-//		"debugger.css"
-	];
 	
-	var addOnstyleSheets = [
+	var addOnStyleSheets = [
  		"desktop/client/skins/" + skin + "/desktop.css"
  	];
 
@@ -278,8 +237,8 @@
     writeIncludeStyleSheet(CLIENT_ROOT + "bin/skins/inherent/all.css");
     writeIncludeStyleSheet(CLIENT_ROOT + "bin/skins/default/all.css");
 
-    for (var i = 0; i < addOnstyleSheets.length; i++) {
-		writeIncludeStyleSheet(WORKSPACE_ROOT + addOnstyleSheets[i]);
+    for (var i = 0; i < addOnStyleSheets.length; i++) {
+		writeIncludeStyleSheet(WORKSPACE_ROOT + addOnStyleSheets[i]);
 	}
 
 	for (var i = 0; i < testLibsBefore.length; i++) {

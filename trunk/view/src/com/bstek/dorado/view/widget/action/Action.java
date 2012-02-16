@@ -26,7 +26,8 @@ public class Action extends Component {
 	private String tip;
 	private boolean disabled;
 	private Object parameter;
-	private boolean async;
+	private boolean async = true;
+	private boolean modal = true;
 	private String hotkey;
 	private String confirmMessage;
 	private String executingMessage;
@@ -90,6 +91,15 @@ public class Action extends Component {
 
 	public void setAsync(boolean async) {
 		this.async = async;
+	}
+
+	@ClientProperty(escapeValue = "true")
+	public boolean isModal() {
+		return modal;
+	}
+
+	public void setModal(boolean modal) {
+		this.modal = modal;
 	}
 
 	@IdeProperty(

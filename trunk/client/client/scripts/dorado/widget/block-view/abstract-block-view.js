@@ -201,9 +201,7 @@
 			
 			var self = this;
 			var maxWidth = dom.clientWidth - this.padding * 2;
-			var maxHeight = dom.clientHeight - labelHeight -
-			this.spacing -
-			this.padding * 2;
+			var maxHeight = dom.clientHeight - labelHeight - this.spacing - this.padding * 2;
 			if (this.stretchImage) {
 				$fly(imageDom).css({
 					left: this.padding,
@@ -215,23 +213,15 @@
 				$fly(imageDom).bind("load", function() {
 					var left, top, width = imageDom.offsetWidth, height = imageDom.offsetHeight;
 					if (width > maxWidth) {
-						height = Math.round(maxWidth *
-						height /
-						width);
+						height = Math.round(maxWidth * height / width);
 						width = maxWidth;
 					}
 					if (height > maxHeight) {
-						width = parseInt(maxHeight *
-						width /
-						height);
+						width = parseInt(maxHeight * width / height);
 						height = maxHeight;
 					}
 					left = Math.round((dom.clientWidth - width) / 2);
-					top = Math.round((dom.clientHeight -
-					labelHeight -
-					self.spacing -
-					height) /
-					2);
+					top = Math.round((dom.clientHeight - labelHeight - self.spacing - height) / 2);
 					$fly(imageDom).css({
 						left: left,
 						top: top,

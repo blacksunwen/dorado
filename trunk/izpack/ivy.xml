@@ -7,8 +7,6 @@
 
 	<dependencies>
 		<!-- COMPLIE -->
-		<dependency org="org.apache.ant" name="ant" rev="1.8.2" conf="compile" />
-		<dependency org="apache-bsf" name="bsf" rev="2.4.0" conf="compile" />
-		<dependency org="regexp" name="regexp" rev="1.3" conf="compile" />
+		<dependency org="org.codehaus.izpack" name="izpack-standalone-compiler" rev="4.3.5" conf="compile" />
 	</dependencies>
 </ivy-module>

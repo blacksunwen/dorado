@@ -47,7 +47,7 @@ public class XmlDataDefinition extends Definition {
 			DataCreationContext createContext = (DataCreationContext) context;
 			DataParseContext parseContext = new DataParseContext();
 			DefinitionReference<DataTypeDefinition> dataTypeDefinition = createContext
-					.getDataTypeDefinition();
+					.getCurrentDataTypeDefinition();
 			if (dataTypeDefinition == null) {
 				dataTypeDefinition = this.dataTypeDefinition;
 			}

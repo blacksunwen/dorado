@@ -11,7 +11,7 @@
 		</authors>
 		<writeinstallationinformation>no</writeinstallationinformation>
 		<webdir>ftp://bsdn.org/pub/projects/dorado7</webdir>
-		<pack200 />
+		<!-- pack200 / -->
 	</info>
 
 	<guiprefs width="640" height="480" resizable="yes">
@@ -77,7 +77,7 @@
 	</panels>
 
 	<listeners>
-		<listener installer="Unpack200InstallerListener" />
+		<!-- listener installer="Unpack200InstallerListener" / -->
 	</listeners>
 
 	<packs>
@@ -133,9 +133,9 @@
 			</fileset>
 		</pack>
 
-		<pack id="ivy-dorado" name="Ivy Dorado" required="no">
+		<pack id="dorado-updater" name="Dorado Updater (Recommended)" required="no">
 			<description>A Tool for retrieving latest Dorado7 SNAPSHOT jars.</description>
-			<fileset dir="ivy-dorado-1.1" targetdir="$INSTALL_PATH/ivy-dorado-1.1" />
+			<fileset dir="dorado7-updater" targetdir="$INSTALL_PATH/dorado7-updater" />
 		</pack>
 	</packs>
 
@@ -143,4 +143,5 @@
 
 	<!-- The native libraries to add. This is required for creating shortcuts on Windows -->
 	<native type="izpack" name="ShellLink.dll" />
+	<native type="izpack" name="ShellLink_x64.dll" />
 </installation>

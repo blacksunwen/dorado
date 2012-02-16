@@ -30,7 +30,6 @@ public abstract class AbstractDataType implements RudeDataType {
 	/**
 	 * 设置DataType的名称。
 	 */
-
 	public void setName(String name) {
 		this.name = name;
 		if (StringUtils.isEmpty(id)) {

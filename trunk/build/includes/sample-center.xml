@@ -2,9 +2,11 @@
 <project xmlns:ivy="antlib:org.apache.ivy.ant" default="build">
 	<property name="project.root" value="${workspace.dir}/sample-center" />
 	<property name="module.dir" value="${work.dir}/sample-center" />
-	<available property="ivy-presented" file="${workspace.dir}/sample-center/ivy.xml" />
+	<available property="ivy-presented"
+	           file="${workspace.dir}/sample-center/ivy.xml" />
 
-	<taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant">
+	<taskdef resource="org/apache/ivy/ant/antlib.xml"
+	         uri="antlib:org.apache.ivy.ant">
 		<classpath>
 			<pathelement location="${lib.dir}/${ivy.jar}" />
 			<pathelement location="${lib.dir}/${oro.jar}" />
@@ -24,11 +26,16 @@
 
 	<target name="prepare-dependencies">
 		<ivy:configure file="${work.dir}/ivysettings.xml" />
+
 		<ivy:resolve file="${project.root}/ivy.xml" />
-		<ivy:retrieve pattern="${module.dir}/lib/[artifact]-[revision](-[classifier]).[ext]" conf="compile" />
+		<ivy:retrieve pattern="${module.dir}/lib/[artifact]-[revision](-[classifier]).[ext]"
+		              conf="compile" />
 		<copy todir="${module.dir}/lib">
 			<fileset dir="${target.lib.dir}">
 				<include name="*.jar" />
+				<exclude name="servlet-api-*.jar" />
+				<exclude name="jsp-api-*.jar" />
+				<exclude name="xml-apis-*.jar" />
 			</fileset>
 		</copy>
 	</target>
@@ -40,7 +47,8 @@
 		</copy>
 
 		<echo message="copy ${project.root}/db --> ${module.dir}/db" />
-		<copy todir="${module.dir}/db" file="${project.root}/db/demo-data.h2.db" />
+		<copy todir="${module.dir}/db"
+		      file="${project.root}/db/demo-data.h2.db" />
 
 		<echo message="copy ${project.root}/web --> ${module.dir}/web" />
 		<copy todir="${module.dir}/web">
@@ -50,10 +58,14 @@
 			</fileset>
 		</copy>
 
-		<ivy:retrieve pattern="${module.dir}/web/WEB-INF/lib/[artifact]-[revision](-[classifier]).[ext]" conf="runtime" />
+		<ivy:retrieve pattern="${module.dir}/web/WEB-INF/lib/[artifact]-[revision](-[classifier]).[ext]"
+		              conf="runtime" />
 		<copy todir="${module.dir}/web/WEB-INF/lib">
 			<fileset dir="${target.lib.dir}">
 				<include name="*.jar" />
+				<exclude name="servlet-api-*.jar" />
+				<exclude name="jsp-api-*.jar" />
+				<exclude name="xml-apis-*.jar" />
 			</fileset>
 		</copy>
 	</target>
@@ -62,7 +74,13 @@
 		<path id="classpath">
 			<fileset dir="${module.dir}/lib" includes="*.jar" />
 		</path>
-		<javac classpathref="classpath" srcdir="${module.dir}/src" destdir="${module.dir}/bin" debug="true" deprecation="true" nowarn="false" encoding="UTF-8" />
+		<javac classpathref="classpath"
+		       srcdir="${module.dir}/src"
+		       destdir="${module.dir}/bin"
+		       debug="true"
+		       deprecation="true"
+		       nowarn="false"
+		       encoding="UTF-8" />
 	</target>
 
 	<target name="delete-provided-jar">
@@ -110,13 +128,16 @@
 		</copy>
 
 		<delete>
-			<fileset dir="${module.dir}/bsdn-war/WEB-INF/dorado-home" includes="*.properties" />
+			<fileset dir="${module.dir}/bsdn-war/WEB-INF/dorado-home"
+			         includes="*.properties" />
 		</delete>
 		<copy todir="${module.dir}/bsdn-war" overwrite="true">
 			<fileset dir="${resources.dir}/sample-center/bsdn-war" />
 		</copy>
 
-		<war destfile="${module.dir}/sample-center.war" compress="true" level="9">
+		<war destfile="${module.dir}/sample-center.war"
+		     compress="true"
+		     level="9">
 			<fileset dir="${module.dir}/bsdn-war">
 				<include name="**/*.*" />
 			</fileset>

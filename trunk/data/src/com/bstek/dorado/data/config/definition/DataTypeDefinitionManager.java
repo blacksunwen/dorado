@@ -11,7 +11,9 @@ import org.apache.commons.logging.LogFactory;
 import com.bstek.dorado.config.definition.DefaultDefinitionManager;
 import com.bstek.dorado.config.definition.Definition;
 import com.bstek.dorado.config.definition.DefinitionManager;
+import com.bstek.dorado.config.definition.DefinitionReference;
 import com.bstek.dorado.data.config.DataTypeName;
+import com.bstek.dorado.data.config.xml.DataXmlConstants;
 import com.bstek.dorado.util.Assert;
 
 /**
@@ -108,8 +110,7 @@ public class DataTypeDefinitionManager extends
 	@Override
 	public DataTypeDefinition getDefinition(String name) {
 		DataTypeDefinition definition = getDefinitions().get(name);
-		DataTypeDefinition dataType = definition;
-		if (dataType == null) {
+		if (definition == null) {
 			DataTypeName dataTypeName = new DataTypeName(name);
 			if (dataTypeName.hasSubDataType()) {
 				// 确保复合DataType名称中所有依赖的DataType都已被解析并有效。
@@ -146,20 +147,40 @@ public class DataTypeDefinitionManager extends
 
 	protected DataTypeDefinition createAggregationDataType(
 			DataTypeName dataTypeName) {
-		DataTypeDefinition definition = DataTypeDefinitionUtils.create(this,
-				dataTypeName);
+		DataTypeDefinition definition = new DataTypeDefinition();
+		definition.setName(dataTypeName.getFullName());
+
+		DefinitionReference<?> dataTypeRef = new DataTypeDefinitionReference(
+				dataTypeName.getDataType());
+		definition
+				.setParentReferences(new DefinitionReference<?>[] { dataTypeRef });
+
+		String[] subDataTypeNames = dataTypeName.getSubDataTypes();
+		Map<String, Object> properties = definition.getProperties();
+		if (subDataTypeNames.length == 1) {
+			DefinitionReference<?> elementDataType = new DataTypeDefinitionReference(
+					subDataTypeNames[0]);
+			properties.put(DataXmlConstants.ATTRIBUTE_ELEMENT_DATA_TYPE,
+					elementDataType);
+		} else if (subDataTypeNames.length == 2) {
+			DefinitionReference<?> keyDataType = new DataTypeDefinitionReference(
+					subDataTypeNames[0]);
+			DefinitionReference<?> valueDataType = new DataTypeDefinitionReference(
+					subDataTypeNames[1]);
+
+			properties.put(DataXmlConstants.ATTRIBUTE_KEY_DATA_TYPE,
+					keyDataType);
+			properties.put(DataXmlConstants.ATTRIBUTE_VALUE_DATA_TYPE,
+					valueDataType);
+		} else {
+			throw new IllegalArgumentException("Illegal DataType name ["
+					+ dataTypeName.getFullName() + "].");
+		}
 
 		StringBuffer id = new StringBuffer();
 		id.append(dataTypeName.getOriginDataType());
 		id.append(DataTypeName.BRACKET_LEFT);
-		int i = 0;
-		for (String subDataType : dataTypeName.getSubDataTypes()) {
-			if (i > 0) {
-				id.append(DataTypeName.SEPARATOR);
-			}
-			id.append(getDefinition(subDataType).getId());
-			i++;
-		}
+		id.append("%AUTO%");
 		id.append(DataTypeName.BRACKET_RIGHT);
 		definition.setId(id.toString());
 

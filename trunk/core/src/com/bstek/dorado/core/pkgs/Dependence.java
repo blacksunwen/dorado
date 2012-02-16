@@ -6,8 +6,7 @@ package com.bstek.dorado.core.pkgs;
  */
 public class Dependence {
 	private String packageName;
-	private String minVersion;
-	private String maxVersion;
+	private String version;
 
 	public String getPackageName() {
 		return packageName;
@@ -17,19 +16,11 @@ public class Dependence {
 		this.packageName = packageName;
 	}
 
-	public String getMinVersion() {
-		return minVersion;
+	public String getVersion() {
+		return version;
 	}
 
-	public void setMinVersion(String minVersion) {
-		this.minVersion = minVersion;
-	}
-
-	public String getMaxVersion() {
-		return maxVersion;
-	}
-
-	public void setMaxVersion(String maxVersion) {
-		this.maxVersion = maxVersion;
+	public void setVersion(String version) {
+		this.version = version;
 	}
 }
