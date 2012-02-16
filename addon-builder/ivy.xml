@@ -7,8 +7,12 @@
 
 	<dependencies>
 		<!-- COMPILE -->
-		<dependency org="commons-lang" name="commons-lang" rev="2.5" conf="compile" />
-		<dependency org="rhino" name="js" rev="1.7R2" conf="compile" />
 		<dependency org="org.apache.ant" name="ant" rev="1.8.2" conf="compile" />
+		<dependency org="commons-lang" name="commons-lang" rev="2.5" conf="compile" />
+		<dependency org="org.apache.ivy" name="ivy" rev="2.2.0" conf="compile" />
+		<dependency org="rhino" name="js" rev="1.7R2" conf="compile" />
+		<dependency org="dom4j" name="dom4j" rev="1.6.1" conf="compile">
+			<exclude org="xml-apis" />
+		</dependency>
 	</dependencies>
 </ivy-module>

@@ -12,7 +12,7 @@ import com.bstek.dorado.annotation.XmlNode;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-7-27
  */
-@XmlNode(fixedProperties = "type=regexp")
+@XmlNode(fixedProperties = "type=regExp")
 @ClientObject(prototype = "dorado.validator.RegExpValidator",
 		shortTypeName = "RegExp")
 public class RegExpValidator extends BaseValidator {

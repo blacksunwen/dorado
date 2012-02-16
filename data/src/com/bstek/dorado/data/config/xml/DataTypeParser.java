@@ -8,7 +8,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import com.bstek.dorado.config.ParseContext;
-import com.bstek.dorado.config.definition.DefaultDefinitionReference;
 import com.bstek.dorado.config.definition.DefinitionReference;
 import com.bstek.dorado.config.definition.ObjectDefinition;
 import com.bstek.dorado.config.xml.ObjectParser;
@@ -18,6 +17,7 @@ import com.bstek.dorado.config.xml.XmlParseException;
 import com.bstek.dorado.data.Constants;
 import com.bstek.dorado.data.config.DataTypeName;
 import com.bstek.dorado.data.config.definition.DataTypeDefinition;
+import com.bstek.dorado.data.config.definition.DataTypeDefinitionReference;
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.data.type.EntityDataType;
 import com.bstek.dorado.util.clazz.ClassUtils;
@@ -155,8 +155,9 @@ public class DataTypeParser extends GenericObjectParser implements
 					dataContext);
 
 			// 处理[Bean]这类数据类型的特殊情况
-			if (dataType.getParentReferences().length == 1) {
-				DefaultDefinitionReference<?> parentReference = (DefaultDefinitionReference<?>) dataType
+			if (dataType.getParentReferences() != null
+					&& dataType.getParentReferences().length == 1) {
+				DataTypeDefinitionReference parentReference = (DataTypeDefinitionReference) dataType
 						.getParentReferences()[0];
 				DataTypeName dataTypeName = new DataTypeName(
 						parentReference.getName());

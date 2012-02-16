@@ -1,66 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="build" default="build">
-	<property name="workspace.dir" value="${basedir}/.." />
-	<property name="lib.dir" value="${basedir}/lib" />
+	<property file="build.properties" />
 
-	<property name="dont-resolve-env-libs" value="true" />
-	<property name="dont-compressor-css" value="true" />
-	<property name="dont-compressor-js" value="true" />
-	<property name="dont-tidy-js" value="true" />
-	<property name="build-i18n" value="true" />
-	<property name="project.dir" value="${workspace.dir}/client" />
-	<property name="module.projects" value="client,chart,desktop,htmleditor" />
+	<property name="dist" value="${workspaceDir}/client/bin" />
+	<property name="clientSrc"
+	          value="${workspaceDir}/client/client,${workspaceDir}/chart/client,${workspaceDir}/desktop/client,${workspaceDir}/htmleditor/client" />
 
-	<taskdef resource="net/sf/antcontrib/antlib.xml">
-		<classpath>
-			<pathelement location="${lib.dir}/ant-contrib-1.0b3.jar" />
-		</classpath>
-	</taskdef>
+	<taskdef resource="net/sf/antcontrib/antlib.xml"
+	         classpath="lib/ant-contrib-1.0b3.jar" />
+	<taskdef resource="com/bstek/dorado/addonbuilder/task.properties"
+	         classpath="lib/dorado-addon-builder-1.0.0.jar" />
 
-	<target name="concat-css">
-		<property name="project.skin.dir" value="${workspace.dir}/${module.project}/bin/skins/${skin.name}" />
-		<property name="project.all.css" value="${project.skin.dir}/all.css" />
-		<property name="all.css" value="${project.dir}/bin/skins/${skin.name}/all.css" />
-		<property name="all.temp.css" value="${project.dir}/bin/skins/${skin.name}/all.temp.css" />
-
+	<target name="doMergeClientSource">
+		<echo message="Merge Client Source: ${src} --> ${dist}" />
 		<if>
-			<available file="${project.skin.dir}" />
+			<available file="${src}" />
 			<then>
-				<delete file="${all.temp.css}" />
 				<if>
-					<available file="${project.all.css}" />
+					<available file="${src}/build-client.xml" />
 					<then>
-						<concat destfile="${all.temp.css}" append="true" fixlastline="true" encoding="utf-8">
-							<fileset file="${project.all.css}" />
-						</concat>
+						<echo message="Custom Client Build File: ${src}/build-client.xml" />
+						<ant antfile="${src}/build-client.xml"
+						     inheritRefs="false">
+							<property name="src" value="${src}" />
+							<property name="dist" value="${dist}" />
+						</ant>
 					</then>
 					<else>
-						<concat destfile="${all.temp.css}" append="true" fixlastline="true" encoding="utf-8">
-							<fileset dir="${project.skin.dir}">
-								<include name="*.css" />
-								<exclude name="all.css" />
-							</fileset>
-						</concat>
+						<copy todir="${dist}">
+							<fileset dir="${src}" excludes="*.xml" />
+						</copy>
 					</else>
 				</if>
 
-				<move file="${all.temp.css}" tofile="${all.css}" />
+				<delete file="${dist}/skins/**/all.*" />
 			</then>
 		</if>
 	</target>
 
-	<target name="build">
-		<ant antfile="${basedir}/includes/wrapper.xml" inheritRefs="true">
-			<property name="build-files" value="client.xml" />
-			<property name="src" value="${project.dir}/client" />
-			<property name="dist" value="${project.dir}/bin" />
-		</ant>
-
-		<!-- concat all.css -->
-		<property name="skin.name" value="inherent" />
-		<foreach list="${module.projects}" param="module.project" target="concat-css" inheritall="true" />
-
-		<property name="skin.name" value="default" />
-		<foreach list="${module.projects}" param="module.project" target="concat-css" inheritall="true" />
+	<target name="mergeClientSource">
+		<foreach list="${clientSrc}" param="src" target="doMergeClientSource" />
 	</target>
+
+	<target name="buildI18N">
+		<makeAddonBuilderHome />
+		<taskdef resource="com/bstek/dorado/taskdefs/task.properties">
+			<classpath>
+				<pathelement path="${addonBuilder.homeDir}/lib/dorado-ant-tasks.jar" />
+				<pathelement path="${addonBuilder.homeDir}/lib/js.jar" />
+				<pathelement path="${addonBuilder.homeDir}/lib/commons-lang-2.5.jar" />
+			</classpath>
+		</taskdef>
+
+		<mkdir dir="${dist}/resources/i18n" />
+		<buildI18NResource inputDir="${dist}/resources/i18n"
+		                   outputDir="${dist}/resources/i18n" />
+	</target>
+
+	<target name="build" depends="mergeClientSource,buildI18N" />
 </project>

@@ -14,7 +14,10 @@ import org.w3c.dom.Node;
 
 import com.bstek.dorado.config.xml.XmlConstants;
 import com.bstek.dorado.config.xml.XmlParser;
+import com.bstek.dorado.config.xml.XmlParserHelper;
 import com.bstek.dorado.core.CommonContext;
+import com.bstek.dorado.core.Configure;
+import com.bstek.dorado.core.ConfigureStore;
 import com.bstek.dorado.core.Context;
 import com.bstek.dorado.data.config.DataConfigManager;
 import com.bstek.dorado.data.config.definition.DataProviderDefinitionManager;
@@ -24,6 +27,7 @@ import com.bstek.dorado.data.config.definition.DataTypeDefinitionManager;
 import com.bstek.dorado.data.config.xml.DataParseContext;
 import com.bstek.dorado.data.config.xml.DataXmlConstants;
 import com.bstek.dorado.data.type.DataType;
+import com.bstek.dorado.data.type.EntityDataType;
 import com.bstek.dorado.data.type.manager.DataTypeManager;
 import com.bstek.dorado.util.xml.DomUtils;
 
@@ -32,6 +36,10 @@ import com.bstek.dorado.util.xml.DomUtils;
  * @since 2010-11-2
  */
 public class EntityDataTypeReflectionRobot implements Robot {
+	private final static String CONFIG_LOCATIONS = "com/bstek/dorado/core/context.xml,"
+			+ "com/bstek/dorado/config/context.xml,"
+			+ "com/bstek/dorado/common/context.xml,"
+			+ "com/bstek/dorado/data/context.xml";
 	private static final Set<String> IGNORE_DATATYPES = new HashSet<String>();
 
 	static {
@@ -41,15 +49,21 @@ public class EntityDataTypeReflectionRobot implements Robot {
 	}
 
 	public Node execute(Node node, Properties properties) throws Exception {
-		RobotContext.init();
+		ConfigureStore configureStore = Configure.getStore();
+		configureStore.set("core.contextConfigLocation", CONFIG_LOCATIONS);
+		CommonContext.init();
 		try {
 			Context context = Context.getCurrent();
+
+			XmlParserHelper xmlParserHelper = (XmlParserHelper) context
+					.getServiceBean("xmlParserHelper");
+			XmlParser dataTypeParser = xmlParserHelper
+					.getXmlParser(EntityDataType.class);
+
 			DataConfigManager dataConfigManager = (DataConfigManager) context
 					.getServiceBean("dataConfigManager");
 			dataConfigManager.initialize();
 
-			XmlParser dataTypeParser = (XmlParser) context
-					.getServiceBean("globalDataTypeParser");
 			DataParseContext parseContext = new DataParseContext();
 			parseContext
 					.setDataTypeDefinitionManager((DataTypeDefinitionManager) context

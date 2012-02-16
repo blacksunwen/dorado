@@ -29,6 +29,7 @@ import com.izforge.izpack.compiler.PackagerHelper;
 public class CacheableJarPacker {
 	private static final String CACHE_EXT = ".pack.gz";
 	private static final String DEFAULT_PACK200_EXT = ".pack.gz";
+	private static final long MAX_FILE_SIZE = 3 * 1024 * 1024;
 
 	private JarProcessorExecutor jarProcessorExecutor;
 	private String sourceRootPath;
@@ -98,21 +99,29 @@ public class CacheableJarPacker {
 
 			if (isEclipseSignedJar(file)) {
 				if (org.eclipse.equinox.internal.p2.jarprocessor.Utils
-						.shouldSkipJar(file, false, true)) {
+						.shouldSkipJar(file, false, true) || file.length() > MAX_FILE_SIZE) {
 					type = -1;
 				} else {
 					type = 2;
 				}
 			} else {
-				if (isSignedJar(file) || path.startsWith(libRootPath)
-						|| name.indexOf(".doc.") >= 0
-						|| name.indexOf("dorado.") >= 0
-						|| name.indexOf(".bstek") >= 0
-						|| name.indexOf(".doc_") >= 0
-						|| name.indexOf(".source.") >= 0
-						|| name.indexOf(".source_") >= 0
-						|| name.indexOf(".help.") >= 0
-						|| name.indexOf(".help_") >= 0) {
+				if (isSignedJar(file) 
+						|| path.startsWith(libRootPath)
+						|| name.contains(".doc.")
+						|| name.contains(".doc_")
+						|| name.contains("-doc.")
+						|| name.contains("-doc_")
+						|| name.contains("dorado.")
+						|| name.contains(".bstek.")
+						|| name.contains(".source.")
+						|| name.contains(".source_")
+						|| name.contains("-source.")
+						|| name.contains("-source_")
+						|| name.contains(".help.")
+						|| name.contains(".help_")
+						|| name.contains("-help.")
+						|| name.contains("-help_")
+						|| file.length() > MAX_FILE_SIZE) {
 					type = -1;
 				}
 			}

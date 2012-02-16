@@ -20,6 +20,7 @@ import com.bstek.dorado.data.config.definition.DataResolverDefinition;
 import com.bstek.dorado.data.config.definition.DataResolverDefinitionManager;
 import com.bstek.dorado.data.config.definition.DataTypeDefinition;
 import com.bstek.dorado.data.config.definition.DataTypeDefinitionManager;
+import com.bstek.dorado.data.config.definition.DataTypeDefinitionReference;
 
 /**
  * 数据定义配置的解析上下文。
@@ -157,8 +158,7 @@ public class DataParseContext extends ParseContext {
 	 */
 	public DefinitionReference<DataTypeDefinition> getDataTypeReference(
 			String name) {
-		return new DefaultDefinitionReference<DataTypeDefinition>(
-				dataTypeDefinitionManager, name);
+		return new DataTypeDefinitionReference(name);
 	}
 
 	/**

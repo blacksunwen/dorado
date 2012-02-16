@@ -212,12 +212,15 @@ public class XmlViewConfigDefinitionFactory implements
 		parseContext
 				.setDataTypeDefinitionManager(innerDataTypeDefinitionManager);
 
+		InnerDataProviderDefinitionManager innerDataProviderDefinitionManager = new InnerDataProviderDefinitionManager(
+				dataProviderDefinitionManager);
 		parseContext
-				.setDataProviderDefinitionManager(new DataProviderDefinitionManager(
-						dataProviderDefinitionManager));
+				.setDataProviderDefinitionManager(innerDataProviderDefinitionManager);
+
+		InnerDataResolverDefinitionManager innerDataResolverDefinitionManager = new InnerDataResolverDefinitionManager(
+				dataResolverDefinitionManager);
 		parseContext
-				.setDataResolverDefinitionManager(new DataResolverDefinitionManager(
-						dataResolverDefinitionManager));
+				.setDataResolverDefinitionManager(innerDataResolverDefinitionManager);
 
 		Element documentElement = document.getDocumentElement();
 		ViewConfigDefinition viewConfigDefinition = (ViewConfigDefinition) xmlParser

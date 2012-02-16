@@ -1,20 +1,108 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="build" default="build">
-	<property name="package-jars" value="true" />
-	<property name="javadoc" value="true" />
-	<property name="jsdoc" value="true" />
-	<!--property name="izpack" value="true" /-->
-	<property name="standard-edition.dir" value="D:/projects/dorado7/build/standard-edition" />
+<project xmlns:artifact="antlib:org.apache.maven.artifact.ant"
+         name="build"
+         default="build">
+	<property environment="env" />
+	<property file="build.properties" />
 
-	<target name="prebuild">
-		<ant antfile="${basedir}/includes/wrapper.xml" inheritRefs="true">
-			<property name="build-files" value="jars.xml,jsdoc.xml,blank-project.xml,sample-center.xml" />
-		</ant>
+	<property name="version" value="7.0.11" />
+	<property name="qualifier" value="BETA" />
+
+	<property name="workDir" value="${rootWorkDir}/installer" />
+
+	<property name="templateDir"
+	          value="D:/projects/dorado7/build/standard-edition" />
+	<property name="targetDir" value="D:/projects/dorado7/dist" />
+
+	<taskdef resource="com/bstek/dorado/addonbuilder/task.properties"
+	         classpath="lib/dorado-addon-builder-1.0.0.jar" />
+
+	<target name="init">
+		<delete dir="${workDir}" />
+		<mkdir dir="${workDir}" />
+
+		<makeAddonBuilderHome />
+
+		<taskdef resource="net/sf/antcontrib/antlib.xml"
+		         classpath="${addonBuilder.homeDir}/lib/ant-contrib-1.0b3.jar" />
+		<taskdef resource="com/bstek/dorado/taskdefs/task.properties">
+			<classpath>
+				<pathelement path="${addonBuilder.homeDir}/lib/dorado-ant-tasks.jar" />
+				<pathelement path="${addonBuilder.homeDir}/lib/js.jar" />
+				<pathelement path="${addonBuilder.homeDir}/lib/commons-lang-2.5.jar" />
+				<pathelement path="${addonBuilder.homeDir}/lib/dom4j-1.6.1.jar" />
+				<pathelement path="${addonBuilder.homeDir}/lib/ivy-2.2.0.jar" />
+				<pathelement path="${addonBuilder.homeDir}/lib/oro-2.0.8.jar" />
+			</classpath>
+		</taskdef>
 	</target>
 
-	<target name="build" depends="prebuild">
-		<ant antfile="${basedir}/includes/wrapper.xml" inheritRefs="true">
-			<property name="build-files" value="installer.xml" />
-		</ant>
+
+	<target name="doRetrieveProperLibs">
+		<mkdir dir="${workDir}/lib/${addon.artifactId}" />
+
+		<property name="tempWorkDir"
+		          value="${workDir}/lib/${addon.artifactId}" />
+		<retrieveProperDependencies libDir="${tempWorkDir}"
+		                            dependenciesDir="${tempWorkDir}/lib"
+		                            workDir="${tempWorkDir}/inherited"
+		                            ivySettingsFile="resources/ivysettings.xml"
+		                            ivyTemplateFile="resources/ivytemplate.xml"
+		                            groupId="${addon.groupId}"
+		                            artifactId="${addon.artifactId}"
+		                            revision="${addon.revision}" />
+	</target>
+
+	<target name="retrieveProperDependencies">
+		<!--
+		<antcall target="doRetrieveProperLibs">
+			<param name="addon.groupId" value="com.bstek.dorado" />
+			<param name="addon.artifactId" value="dorado-core" />
+			<param name="addon.revision" value="7.0.9-SNAPSHOT" />
+		</antcall>
+
+		<antcall target="doRetrieveProperLibs">
+			<param name="addon.groupId" value="com.bstek.dorado" />
+			<param name="addon.artifactId" value="dorado-ide-support" />
+			<param name="addon.revision" value="7.0.9-SNAPSHOT" />
+		</antcall>
+		-->
+
+		<antcall target="doRetrieveProperLibs">
+			<param name="addon.groupId" value="com.bstek.dorado" />
+			<param name="addon.artifactId" value="dorado-hibernate" />
+			<param name="addon.revision" value="0.0.1-BETA" />
+		</antcall>
+
+
+		<!--
+		<antcall target="doRetrieveProperLibs">
+			<param name="addon.groupId" value="com.bstek.dorado" />
+			<param name="addon.artifactId" value="dorado-jdbc" />
+			<param name="addon.revision" value="0.0.1-BETA" />
+		</antcall>
+
+		<antcall target="doRetrieveProperLibs">
+			<param name="addon.groupId" value="com.bstek.dorado" />
+			<param name="addon.artifactId" value="dorado-chart" />
+			<param name="addon.revision" value="0.0.1-BETA" />
+		</antcall>
+
+		<antcall target="doRetrieveProperLibs">
+			<param name="addon.groupId" value="com.bstek.dorado" />
+			<param name="addon.artifactId" value="dorado-desktop" />
+			<param name="addon.revision" value="0.0.1-BETA" />
+		</antcall>
+
+		<antcall target="doRetrieveProperLibs">
+			<param name="addon.groupId" value="com.bstek.dorado" />
+			<param name="addon.artifactId" value="dorado-htmleditor" />
+			<param name="addon.revision" value="0.0.1-BETA" />
+		</antcall>
+		-->
+	</target>
+
+	<target name="build" depends="init,retrieveProperDependencies">
 	</target>
 </project>
+

@@ -7,7 +7,6 @@ import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.common.Namable;
 import com.bstek.dorado.config.definition.CreationContext;
-import com.bstek.dorado.config.definition.DefaultDefinitionReference;
 import com.bstek.dorado.config.definition.Definition;
 import com.bstek.dorado.config.definition.DefinitionUtils;
 import com.bstek.dorado.config.definition.ObjectDefinition;
@@ -188,8 +187,8 @@ public class DataTypeDefinition extends ListenableObjectDefinition implements
 					Object tempDataType = properties
 							.get(DataXmlConstants.ATTRIBUTE_DATA_TYPE);
 					if (tempDataType != null
-							&& tempDataType instanceof DefaultDefinitionReference<?>) {
-						DefaultDefinitionReference<?> dataTypeRef = (DefaultDefinitionReference<?>) tempDataType;
+							&& tempDataType instanceof DataTypeDefinitionReference) {
+						DataTypeDefinitionReference dataTypeRef = (DataTypeDefinitionReference) tempDataType;
 						String nameRef = dataTypeRef.getName();
 						if (nameRef.equals(PropertyDef.SELF_DATA_TYPE_NAME)) {
 							dataTypeRef.setName(name);

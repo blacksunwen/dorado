@@ -11,6 +11,9 @@
 			<pathelement path="${homeDir}/lib/dorado-ant-tasks.jar" />
 			<pathelement path="${homeDir}/lib/js.jar" />
 			<pathelement path="${homeDir}/lib/commons-lang-2.5.jar" />
+			<pathelement path="${homeDir}/lib/dom4j-1.6.1.jar" />
+			<pathelement path="${homeDir}/lib/ivy-2.2.0.jar" />
+			<pathelement path="${homeDir}/lib/oro-2.0.8.jar" />
 		</classpath>
 	</taskdef>
 	<taskdef name="yui-compressor"
@@ -30,8 +33,8 @@
 	<taskdef resource="org/apache/ivy/ant/antlib.xml"
 	         uri="antlib:org.apache.ivy.ant">
 		<classpath>
-			<pathelement location="${homeDir}/lib/ivy-2.2.0.jar" />
-			<pathelement location="${homeDir}/lib/oro-2.0.8.jar" />
+			<pathelement path="${homeDir}/lib/ivy-2.2.0.jar" />
+			<pathelement path="${homeDir}/lib/oro-2.0.8.jar" />
 		</classpath>
 	</taskdef>
 
@@ -108,11 +111,13 @@
 			<then>
 				<path id="classpath">
 					<path refid="userClasspath" />
+					<fileset dir="${workDir}/common-lib" includes="*.jar" />
 					<fileset dir="${workDir}/lib" includes="*.jar" />
 				</path>
 			</then>
 			<else>
 				<path id="classpath">
+					<fileset dir="${workDir}/common-lib" includes="*.jar" />
 					<fileset dir="${workDir}/lib" includes="*.jar" />
 				</path>
 			</else>
@@ -141,7 +146,7 @@
 					</else>
 				</if>
 
-				<delete file="${dist}/skins/**/all.*" />
+				<delete file="${dist}/dorado/skins/**/all.*" />
 			</then>
 		</if>
 	</target>
@@ -158,7 +163,7 @@
 			<available file="${src}" />
 			<then>
 				<copy todir="${dist}">
-					<fileset dir="${src}" excludes="**/.*/**" />
+					<fileset dir="${src}" />
 				</copy>
 			</then>
 		</if>
@@ -168,6 +173,10 @@
 		<foreach list="${javaSrc}" param="src" target="doMergeJavaSource">
 			<param name="dist" value="${workDir}/src" />
 		</foreach>
+
+		<copy todir="${workDir}/bin">
+			<fileset dir="${workDir}/src" excludes="**/*.java" />
+		</copy>
 	</target>
 
 	<target name="preprocessClientSource" depends="initVariables">
@@ -279,19 +288,7 @@
 		</copy>
 	</target>
 
-	<target name="preprocessJavaSource" if="${compileJava}">
-		<if>
-			<available file="${workDir}/src/META-INF/dorado-package.properties" />
-			<then>
-				<propertyfile file="${workDir}/src/META-INF/dorado-package.properties">
-					<entry key="version" value="${fullVersion}" />
-				</propertyfile>
-			</then>
-			<else>
-				<fail>"META-INF/dorado-package.properties" not found.</fail>
-			</else>
-		</if>
-	</target>
+	<target name="preprocessJavaSource" if="${compileJava}" />
 
 	<target name="resolveDependencies" if="${compileJava}">
 		<if>
@@ -303,12 +300,15 @@
 
 				<ivy:configure file="${workDir}/temp/ivysettings.xml" />
 
-				<ivy:resolve file="${resourcesDir}/ivy.xml" />
-				<ivy:retrieve pattern="${workDir}/lib/${ivy.fileNamePattern}"
+				<ivy:resolve resolveid="common"
+				             file="${resourcesDir}/ivy.xml" />
+				<ivy:retrieve resolveid="common"
+				              pattern="${workDir}/common-lib/${ivy.fileNamePattern}"
 				              conf="compile" />
 
-				<ivy:resolve file="${ivyFile}" />
-				<ivy:retrieve pattern="${workDir}/lib/${ivy.fileNamePattern}"
+				<ivy:resolve resolveid="addon" file="${ivyFile}" />
+				<ivy:retrieve resolveid="addon"
+				              pattern="${workDir}/lib/${ivy.fileNamePattern}"
 				              conf="compile" />
 			</then>
 		</if>
@@ -327,71 +327,6 @@
 		       source="${javaCompatSource}"
 		       target="${javaCompatTarget}"
 		       encoding="${srcCharset}" />
-	</target>
-
-	<target name="javadoc" if="${buildJavaDoc}">
-		<javadoc access="protected"
-		         author="true"
-		         encoding="${srcCharset}"
-		         docencoding="${srcCharset}"
-		         charset="${srcCharset}"
-		         destdir="${workDir}/javadoc"
-		         doctitle="${name} API Documentation"
-		         nodeprecated="false"
-		         nodeprecatedlist="false"
-		         noindex="false"
-		         nonavbar="false"
-		         notree="false"
-		         source="${javaCompatSource}"
-		         splitindex="true"
-		         use="true"
-		         version="true"
-		         useexternalfile="yes">
-			<classpath refid="classpath" />
-			<fileset dir="${workDir}/src" />
-			<doctitle>&lt;h1&gt;${name} API Documentation&lt;/h1&gt;</doctitle>
-			<bottom>Copyright © 2001-2011 www.BSTEK.com All Rights Reserved.</bottom>
-			<link href="http://www.BSDN.org/projects/dorado7" />
-		</javadoc>
-		<copy file="${resourcesDir}/stylesheet.css"
-		      todir="${workDir}/javadoc"
-		      overwrite="true" />
-
-		<jar compress="true" jarfile="${targetDir}/${baseFileName}-javadoc.jar">
-			<fileset dir="${workDir}/javadoc" />
-			<manifest>
-				<attribute name="Implementation-Title" value="${name}" />
-				<attribute name="Implementation-Vendor" value="${vendor}" />
-				<attribute name="Implementation-Version"
-				           value="${fullVersion}" />
-			</manifest>
-		</jar>
-	</target>
-
-	<target name="buildJar" if="${buildJar}">
-		<jar compress="true" jarfile="${targetDir}/${baseFileName}.jar">
-			<fileset dir="${workDir}/bin" />
-			<fileset dir="${workDir}/src" excludes="**/*.java" />
-			<manifest>
-				<attribute name="Implementation-Title" value="${name}" />
-				<attribute name="Implementation-Vendor" value="${vendor}" />
-				<attribute name="Implementation-Version"
-				           value="${fullVersion}" />
-			</manifest>
-		</jar>
-	</target>
-
-	<target name="buildSourceJar" if="${buildSourceJar}">
-		<jar compress="true" jarfile="${targetDir}/${baseFileName}-sources.jar">
-			<fileset dir="${workDir}/src" />
-			<manifest>
-				<attribute name="Implementation-Title"
-				           value="${name}-sources" />
-				<attribute name="Implementation-Vendor" value="${vendor}" />
-				<attribute name="Implementation-Version"
-				           value="${fullVersion}" />
-			</manifest>
-		</jar>
 	</target>
 
 	<target name="makePom" depends="initVariables">
@@ -426,12 +361,103 @@
 				             conf="compile">
 					<mapping conf="compile" scope="compile" />
 				</ivy:makepom>
+
+				<makeMavenDescriptor pom="${targetDir}/${baseFileName}.pom"
+				                     dist="${workDir}/bin"
+				                     doradoPackageFile="${workDir}/bin/META-INF/dorado-package.properties" />
 			</then>
 		</if>
 	</target>
 
+	<target name="javadoc" if="${buildJavaDoc}">
+		<javadoc access="protected"
+		         author="true"
+		         encoding="${srcCharset}"
+		         docencoding="${srcCharset}"
+		         charset="${srcCharset}"
+		         destdir="${workDir}/javadoc"
+		         doctitle="${name} API Documentation"
+		         nodeprecated="false"
+		         nodeprecatedlist="false"
+		         noindex="false"
+		         nonavbar="false"
+		         notree="false"
+		         source="${javaCompatSource}"
+		         splitindex="true"
+		         use="true"
+		         version="true"
+		         useexternalfile="yes">
+			<classpath refid="classpath" />
+			<fileset dir="${workDir}/src" />
+			<doctitle>&lt;h1&gt;${name} API Documentation&lt;/h1&gt;</doctitle>
+			<bottom>Copyright © 2001-2011 www.BSTEK.com All Rights Reserved.</bottom>
+			<link href="http://www.BSDN.org/projects/dorado7" />
+		</javadoc>
+		<copy file="${resourcesDir}/stylesheet.css"
+		      todir="${workDir}/javadoc"
+		      overwrite="true" />
+
+		<jar compress="true" jarfile="${targetDir}/${baseFileName}-javadoc.jar">
+			<fileset dir="${workDir}/javadoc" />
+			<manifest>
+				<attribute name="Implementation-Title"
+				           value="${name}-javadoc" />
+				<attribute name="Implementation-Vendor" value="${vendor}" />
+				<attribute name="Implementation-Version"
+				           value="${fullVersion}" />
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="buildJar" if="${buildJar}">
+		<if>
+			<available file="${workDir}/bin/META-INF/dorado-package.properties" />
+			<then>
+				<mkdir dir="${workDir}/temp/dependencies" />
+				<removeInheritedDependencies dependenciesDir="${workDir}/temp/dependencies"
+				                             workDir="${workDir}/temp/inhertied"
+				                             ivySettingsFile="resources/ivysettings.xml"
+				                             ivyTemplateFile="resources/ivytemplate.xml">
+					<classpath refid="classpath" />
+				</removeInheritedDependencies>
+
+				<propertyfile file="${workDir}/bin/META-INF/dorado-package.properties">
+					<entry key="version" value="${fullVersion}" />
+					<entry key="properDependencies"
+					       value="${properDependencies}" />
+				</propertyfile>
+			</then>
+			<else>
+				<fail>"META-INF/dorado-package.properties" not found.</fail>
+			</else>
+		</if>
+
+		<jar compress="true" jarfile="${targetDir}/${baseFileName}.jar">
+			<fileset dir="${workDir}/bin" />
+			<manifest>
+				<attribute name="Implementation-Title" value="${name}" />
+				<attribute name="Implementation-Vendor" value="${vendor}" />
+				<attribute name="Implementation-Version"
+				           value="${fullVersion}" />
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="buildSourceJar" if="${buildSourceJar}">
+		<jar compress="true" jarfile="${targetDir}/${baseFileName}-sources.jar">
+			<fileset dir="${workDir}/src" />
+			<manifest>
+				<attribute name="Implementation-Title"
+				           value="${name}-sources" />
+				<attribute name="Implementation-Vendor" value="${vendor}" />
+				<attribute name="Implementation-Version"
+				           value="${fullVersion}" />
+			</manifest>
+		</jar>
+	</target>
+
 	<target name="buildJava"
-	        depends="compile,javadoc,buildJar,buildSourceJar,makePom" />
+	        depends="compile,makePom,javadoc,buildJar,buildSourceJar" />
 
 	<target name="buildArchieves"
 	        depends="mergeClientSource,mergeJavaSource,buildClient,buildJava" />

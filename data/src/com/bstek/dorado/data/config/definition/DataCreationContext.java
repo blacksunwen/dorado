@@ -10,11 +10,11 @@ import com.bstek.dorado.config.definition.DefinitionReference;
 public class DataCreationContext extends CreationContext {
 	private DefinitionReference<DataTypeDefinition> dataTypeDefinition;
 
-	public DefinitionReference<DataTypeDefinition> getDataTypeDefinition() {
+	public DefinitionReference<DataTypeDefinition> getCurrentDataTypeDefinition() {
 		return dataTypeDefinition;
 	}
 
-	public void setDataTypeDefinition(
+	public void setCurrentDataTypeDefinition(
 			DefinitionReference<DataTypeDefinition> dataTypeDefinition) {
 		this.dataTypeDefinition = dataTypeDefinition;
 	}

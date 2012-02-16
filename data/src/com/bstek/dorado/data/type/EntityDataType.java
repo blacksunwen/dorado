@@ -23,6 +23,7 @@ import com.bstek.dorado.data.type.validator.MessageState;
  */
 @XmlNode(
 		nodeName = "DataType",
+		parser = "spring:dorado.dataTypeParser",
 		definitionType = "com.bstek.dorado.data.config.definition.DataTypeDefinition",
 		scopable = true,
 		inheritable = true,

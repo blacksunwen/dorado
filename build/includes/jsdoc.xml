@@ -6,7 +6,7 @@
 
 	<taskdef name="jsdoctoolkit" classname="uk.co.darrenhurley.ant.tasks.JsDocToolkit">
 		<classpath>
-			<pathelement path="${lib.dir}/jsdoctoolkit-ant-task-1.0.2.jar" />
+			<pathelement path="${lib.dir}/jsdoc-toolkit-ant-task-1.1.2.jar" />
 			<pathelement path="${lib.dir}/js.jar" />
 		</classpath>
 	</taskdef>
@@ -28,7 +28,6 @@
 		<jsdoctoolkit jsdochome="${jsdoc-toolkit.home}" suppresssourceout="true" template="json" outputdir="${jsdoc.dist}/data" verbose="true">
 			<fileset dir="${work.dir}/js-src">
 				<include name="**/*.js" />
-				<exclude name="**/chart.js" />
 				<exclude name="**/html-editor.js" />
 			</fileset>
 		</jsdoctoolkit>

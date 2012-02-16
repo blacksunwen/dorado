@@ -43,30 +43,26 @@ public final class PackageManager {
 			PackageInfo dependedPackageInfo = packageMap.get(dependence
 					.getPackageName());
 			if (dependedPackageInfo == null) {
-				throw new IllegalArgumentException("Depended package  ["
-						+ dependence.getPackageName() + "] not found.");
+				throw new IllegalArgumentException("Package  ["
+						+ dependence.getPackageName()
+						+ "] not found, Which is depended by ["
+						+ packageInfo.getName() + "].");
 			}
 
-			boolean versionMatch = true;
-			String minVersion = dependence.getMinVersion();
-			String maxVersion = dependence.getMaxVersion();
-			String dependedPackageVersion = dependedPackageInfo.getVersion();
-			if (minVersion != null) {
-				versionMatch = (minVersion.compareTo(dependedPackageVersion) <= 0);
-			}
-			if (versionMatch && maxVersion != null) {
-				versionMatch = (maxVersion.compareTo(dependedPackageVersion) >= 0);
-			}
-
-			if (!versionMatch) {
-				throw new IllegalArgumentException(
-						"Depended version mismatch. Expect ["
-								+ ((minVersion != null) ? minVersion : "*")
-								+ " ~ "
-								+ ((maxVersion != null) ? maxVersion : "*")
-								+ "] but [" + dependedPackageVersion
-								+ "] found.");
-			}
+			/*
+			 * boolean versionMatch = true; String minVersion =
+			 * dependence.getMinVersion(); String maxVersion =
+			 * dependence.getMaxVersion(); String dependedPackageVersion =
+			 * dependedPackageInfo.getVersion(); if (minVersion != null) {
+			 * versionMatch = (minVersion.compareTo(dependedPackageVersion) <=
+			 * 0); } if (versionMatch && maxVersion != null) { versionMatch =
+			 * (maxVersion.compareTo(dependedPackageVersion) >= 0); }
+			 * 
+			 * if (!versionMatch) { throw new IllegalArgumentException(
+			 * "Depended version mismatch. Expect [" + ((minVersion != null) ?
+			 * minVersion : "*") + " ~ " + ((maxVersion != null) ? maxVersion :
+			 * "*") + "] but [" + dependedPackageVersion + "] found."); }
+			 */
 
 			calculateDepends(dependedPackageInfo, calculatedPackages,
 					packageMap);
@@ -82,40 +78,19 @@ public final class PackageManager {
 
 		Dependence dependence = new Dependence();
 
-		String packageName = "", minVersion = null, maxVersion = null;
-		boolean leftBracketFound = false, rightBracketFound = false, versionDelimFound = false;
+		String packageName = "", version = "";
+		boolean colonFound = false;
 		char c;
 		for (int i = 0; i < text.length(); i++) {
 			c = text.charAt(i);
-			if (rightBracketFound) {
-				throw new IllegalArgumentException("Bad depends format.");
-			}
-			if (!leftBracketFound) {
-				if (c == '[') {
-					leftBracketFound = true;
+			if (!colonFound) {
+				if (c == ':') {
+					colonFound = true;
 				} else {
 					packageName += c;
 				}
 			} else {
-				if (c == ',') {
-					if (versionDelimFound) {
-						throw new IllegalArgumentException(
-								"Bad depends format.");
-					}
-					versionDelimFound = true;
-				} else if (c == ']') {
-					rightBracketFound = true;
-				} else if (!versionDelimFound) {
-					if (minVersion == null) {
-						minVersion = "";
-					}
-					minVersion += c;
-				} else {
-					if (maxVersion == null) {
-						maxVersion = "";
-					}
-					maxVersion += c;
-				}
+				version += c;
 			}
 		}
 
@@ -125,11 +100,8 @@ public final class PackageManager {
 		}
 		dependence.setPackageName(packageName);
 
-		if (minVersion != null && !minVersion.equals(ANY_VERSION)) {
-			dependence.setMinVersion(minVersion);
-		}
-		if (maxVersion != null && !maxVersion.equals(ANY_VERSION)) {
-			dependence.setMaxVersion(maxVersion);
+		if (version != null && !version.equals(ANY_VERSION)) {
+			dependence.setVersion(version);
 		}
 		return dependence;
 	}

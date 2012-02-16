@@ -21,10 +21,10 @@ import com.bstek.dorado.data.config.definition.ListenableObjectDefinition;
 import com.bstek.dorado.data.provider.manager.DataProviderManager;
 import com.bstek.dorado.data.resolver.manager.DataResolverManager;
 import com.bstek.dorado.data.type.manager.DataTypeManager;
-import com.bstek.dorado.view.View;
 import com.bstek.dorado.view.InnerDataProviderManager;
 import com.bstek.dorado.view.InnerDataResolverManager;
 import com.bstek.dorado.view.InnerDataTypeManager;
+import com.bstek.dorado.view.View;
 import com.bstek.dorado.view.ViewState;
 import com.bstek.dorado.view.manager.ViewConfig;
 import com.bstek.dorado.web.DoradoContext;
@@ -58,17 +58,17 @@ public class ViewConfigDefinition extends ListenableObjectDefinition implements
 		this.dataProviderDefinitionManager = dataProviderDefinitionManager;
 		this.dataResolverDefinitionManager = dataResolverDefinitionManager;
 
-		dataTypeManager = new InnerDataTypeManager(
+		dataTypeManager = new InnerDataTypeManager(this,
 				(DataTypeManager) context.getServiceBean("dataTypeManager"));
 		dataTypeManager.setDataTypeDefinitionManager(dataTypeDefinitionManager);
 
-		dataProviderManager = new InnerDataProviderManager(
+		dataProviderManager = new InnerDataProviderManager(this,
 				(DataProviderManager) context
 						.getServiceBean("dataProviderManager"));
 		dataProviderManager
 				.setDataProviderDefinitionManager(dataProviderDefinitionManager);
 
-		dataResolverManager = new InnerDataResolverManager(
+		dataResolverManager = new InnerDataResolverManager(this,
 				(DataResolverManager) context
 						.getServiceBean("dataResolverManager"));
 		dataResolverManager
@@ -141,16 +141,29 @@ public class ViewConfigDefinition extends ListenableObjectDefinition implements
 
 	@Override
 	protected Object doCreate(CreationContext context) throws Exception {
-		ExpressionHandler expressionHandler = (ExpressionHandler) Context
-				.getCurrent().getServiceBean("expressionHandler");
+		Context doradoContext = Context.getCurrent();
+		ExpressionHandler expressionHandler = (ExpressionHandler) doradoContext
+				.getServiceBean("expressionHandler");
 		JexlContext jexlContext = expressionHandler.getJexlContext();
 		final String ARGUMENT = "argument";
 		Object originArgumentsVar = jexlContext.get(ARGUMENT);
 		jexlContext.set(ARGUMENT, arguments);
+
+		doradoContext.setAttribute("privateDataTypeDefinitionManager",
+				dataTypeDefinitionManager);
+		doradoContext.setAttribute("privateDataProviderDefinitionManager",
+				dataProviderDefinitionManager);
+		doradoContext.setAttribute("privateDataResolverDefinitionManager",
+				dataResolverDefinitionManager);
 		try {
 			return super.doCreate(context);
 		} finally {
 			jexlContext.set(ARGUMENT, originArgumentsVar);
+			doradoContext.removeAttribute("privateDataTypeDefinitionManager");
+			doradoContext
+					.removeAttribute("privateDataProviderDefinitionManager");
+			doradoContext
+					.removeAttribute("privateDataResolverDefinitionManager");
 		}
 	}
 

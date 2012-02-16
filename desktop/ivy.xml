@@ -2,16 +2,11 @@
 	<info organisation="com.bstek.dorado" module="dorado-desktop" status="integration" />
 
 	<configurations>
-		<conf name="default" visibility="public" extends="runtime,master" />
-		<conf name="master" visibility="public" />
-		<conf name="compile" visibility="public" />
-		<conf name="provided" visibility="public" />
-		<conf name="runtime" visibility="public" />
-		<conf name="test" visibility="private" extends="runtime" />
+		<include file="../ivy/ivy-configurations.xml" />
 	</configurations>
 
-	<dependencies defaultconfmapping="compile->compile(*),master(*);runtime->master(*),compile(*),runtime(*);test->default(*)">
-		<!-- RUNTIME -->
-		<dependency org="com.bstek.dorado" name="dorado-core" rev="${depended-dorado.version}" conf="compile,runtime" />
+	<dependencies>
+		<!-- COMPILE -->
+		<dependency org="com.bstek.dorado" name="dorado-core" rev="7.0.10-SNAPSHOT" conf="compile" />
 	</dependencies>
 </ivy-module>
