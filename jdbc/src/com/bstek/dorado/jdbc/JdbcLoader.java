@@ -27,7 +27,7 @@ import com.bstek.dorado.jdbc.config.DbModel;
 import com.bstek.dorado.jdbc.config.DbmManager;
 import com.bstek.dorado.jdbc.config.GlobalDbModelConfig;
 import com.bstek.dorado.jdbc.config.JdbcEnviromentManager;
-import com.bstek.dorado.jdbc.config.xml.JdbcParseContext;
+import com.bstek.dorado.jdbc.config.JdbcParseContext;
 
 /**
  * JDBC模块的启动器

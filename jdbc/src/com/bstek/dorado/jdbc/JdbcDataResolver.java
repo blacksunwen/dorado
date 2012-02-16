@@ -7,7 +7,7 @@ import java.util.Set;
 
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.transaction.support.TransactionOperations;
 
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlNodeWrapper;
@@ -34,7 +34,7 @@ public class JdbcDataResolver extends AbstractDataResolver {
 	
 	private JdbcEnviroment jdbcEnviroment;
 	
-	private TransactionTemplate transactionTemplate;
+	private TransactionOperations transactionOperations;
 	
 	private boolean autoCreateItems = false;
 	
@@ -64,29 +64,29 @@ public class JdbcDataResolver extends AbstractDataResolver {
 		this.jdbcEnviroment = jdbcEnviroment;
 	}
 
-	public void setTransactionTemplate(TransactionTemplate transactionTemplate) {
-		this.transactionTemplate = transactionTemplate;
+	public void setTransactionOperations(TransactionOperations transactionTemplate) {
+		this.transactionOperations = transactionTemplate;
 	}
 	
 	@XmlProperty(parser="spring:dorado.jdbc.transactionTemplateParser")
-	public TransactionTemplate getTransactionTemplate() {
-		if (transactionTemplate == null) {
+	public TransactionOperations getTransactionOperations() {
+		if (transactionOperations == null) {
 			JdbcEnviroment jdbcEnv = this.getJdbcEnviroment();
 			if (jdbcEnv != null) {
-				transactionTemplate = jdbcEnv.getTransactionTemplate();
+				transactionOperations = jdbcEnv.getTransactionOperations();
 			}
 		}
 		
-		return transactionTemplate;
+		return transactionOperations;
 	}
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	protected Object internalResolve(final DataItems dataItems, final Object parameter)
 			throws Exception {
-		TransactionTemplate transactionTemplate = this.getTransactionTemplate();
-		if (transactionTemplate != null) {
-			return transactionTemplate.execute(new TransactionCallback() {
+		TransactionOperations transactionOperations = this.getTransactionOperations();
+		if (transactionOperations != null) {
+			return transactionOperations.execute(new TransactionCallback() {
 				public Object doInTransaction(TransactionStatus status) {
 					return doResolve(dataItems, parameter);
 				}
@@ -104,8 +104,7 @@ public class JdbcDataResolver extends AbstractDataResolver {
 	
 	protected JdbcDataResolverOperation creatOperation(DataItems dataItems, Object parameter) {
 		JdbcEnviroment jdbcEnv = this.getJdbcEnviroment();
-		
-		List<JdbcDataResolverItem> resolverItems = createResolverItems(dataItems);
+		List<JdbcDataResolverItem> resolverItems = getResolverItems(dataItems);
 		
 		JdbcDataResolverContext jdbcContext = new JdbcDataResolverContext(jdbcEnv, parameter, dataItems, resolverItems);
 		JdbcDataResolverOperation operation = new JdbcDataResolverOperation(jdbcContext);
@@ -114,6 +113,56 @@ public class JdbcDataResolver extends AbstractDataResolver {
 	}
 	
 	protected List<JdbcDataResolverItem> createResolverItems(DataItems dataItems) {
+		List<JdbcDataResolverItem> resolverItems = this.getItems();
+		if (resolverItems == null || resolverItems.isEmpty()) {
+			resolverItems = new ArrayList<JdbcDataResolverItem>();
+			if (dataItems.isEmpty()) {
+				return null;
+			}
+			
+			Set<String> nameSet = dataItems.keySet();
+			for (String name: nameSet) {
+				Object dataObject = dataItems.get(name);
+				DataType dataType = getDataType(dataObject);
+				JdbcDataResolverItem resolverItem = createItem(name, dataType);
+				if (resolverItem != null) {
+					resolverItems.add(resolverItem);
+				}
+			}
+			
+			return resolverItems;
+		} else {
+			List<JdbcDataResolverItem> items2 = new ArrayList<JdbcDataResolverItem>();
+			for (JdbcDataResolverItem item: resolverItems) {
+				items2.add(item.clone());
+			}
+			
+			Set<String> nameSet = dataItems.keySet();
+			for (String name: nameSet) {
+				JdbcDataResolverItem newItem = null;
+				for (JdbcDataResolverItem item: items2) {
+					if (name.equals(item.getName())) {
+						newItem = item;
+						break;
+					}
+				}
+				
+				if (newItem == null) {
+					Object dataObject = dataItems.get(name);
+					DataType dataType = getDataType(dataObject);
+					newItem = createItem(name, dataType);
+					
+					if (newItem != null) {
+						items2.add(newItem);
+					}
+				}
+			}
+			
+			return items2;
+		}
+	}
+		
+	protected List<JdbcDataResolverItem> getResolverItems(DataItems dataItems) {
 		if (!this.isAutoCreateItems()) {
 			List<JdbcDataResolverItem> items = this.getItems();
 			if (items == null || items.isEmpty()) {
@@ -122,53 +171,7 @@ public class JdbcDataResolver extends AbstractDataResolver {
 				return items;
 			}
 		} else {
-			List<JdbcDataResolverItem> resolverItems = this.getItems();
-			if (resolverItems == null || resolverItems.isEmpty()) {
-				resolverItems = new ArrayList<JdbcDataResolverItem>();
-				if (dataItems.isEmpty()) {
-					return null;
-				}
-				
-				Set<String> nameSet = dataItems.keySet();
-				for (String name: nameSet) {
-					Object dataObject = dataItems.get(name);
-					DataType dataType = getDataType(dataObject);
-					JdbcDataResolverItem resolverItem = createItem(name, dataType);
-					if (resolverItem != null) {
-						resolverItems.add(resolverItem);
-					}
-				}
-				
-				return resolverItems;
-			} else {
-				List<JdbcDataResolverItem> items2 = new ArrayList<JdbcDataResolverItem>();
-				for (JdbcDataResolverItem item: resolverItems) {
-					items2.add(item.clone());
-				}
-				
-				Set<String> nameSet = dataItems.keySet();
-				for (String name: nameSet) {
-					JdbcDataResolverItem newItem = null;
-					for (JdbcDataResolverItem item: items2) {
-						if (name.equals(item.getName())) {
-							newItem = item;
-							break;
-						}
-					}
-					
-					if (newItem == null) {
-						Object dataObject = dataItems.get(name);
-						DataType dataType = getDataType(dataObject);
-						newItem = createItem(name, dataType);
-						
-						if (newItem != null) {
-							items2.add(newItem);
-						}
-					}
-				}
-				
-				return items2;
-			}
+			return createResolverItems(dataItems);
 		}
 	}
 	

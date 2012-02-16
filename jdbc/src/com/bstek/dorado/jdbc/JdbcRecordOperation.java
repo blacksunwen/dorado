@@ -6,7 +6,6 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.data.variant.Record;
-import com.bstek.dorado.jdbc.model.DbTableJdbcOperation;
 import com.bstek.dorado.jdbc.model.DbTable;
 
 /**
@@ -16,7 +15,7 @@ import com.bstek.dorado.jdbc.model.DbTable;
  * 
  */
 public class JdbcRecordOperation extends
-		DbTableJdbcOperation<JdbcDataResolverContext> {
+		AbstractJdbcOperation<JdbcDataResolverContext> {
 
 	private Record record;
 
@@ -89,16 +88,17 @@ public class JdbcRecordOperation extends
 		}
 	}
 	
-	/*
-	 * @see com.bstek.dorado.jdbc.model.AbstractJdbcOperation#execute()
-	 */
 	@Override
 	public void execute() {
+		JdbcEnviroment jdbcEnviroment = getJdbcEnviroment();
+		jdbcEnviroment.getDialect().execute(this);
+	}
+
+	public JdbcEnviroment getJdbcEnviroment() {
 		JdbcEnviroment jdbcEnviroment = this.getJdbcContext().getJdbcEnviroment();
 		if (jdbcEnviroment == null) {
 			jdbcEnviroment = this.getDbTable().getJdbcEnviroment();
 		}
-		jdbcEnviroment.getDialect().execute(this);
+		return jdbcEnviroment;
 	}
-
 }

@@ -1,6 +1,7 @@
 package com.bstek.dorado.jdbc;
 
 import com.bstek.dorado.data.provider.Page;
+import com.bstek.dorado.data.variant.Record;
 
 /**
  * {@link JdbcDataProvider}执行时的上下文
@@ -9,22 +10,18 @@ import com.bstek.dorado.data.provider.Page;
  * 
  */
 public class JdbcDataProviderContext extends AbstractJdbcContext {
-
-	@SuppressWarnings("rawtypes")
-	public JdbcDataProviderContext(JdbcEnviroment enviroment, Object parameter, Page page) {
+	private Page<Record> page;
+	
+	public JdbcDataProviderContext(JdbcEnviroment enviroment, Object parameter, Page<Record> page) {
 		super(enviroment, parameter);
 		if (page == null) {
-			page = new Page(0,0);
+			page = new Page<Record>(0,0);
 		}
 		this.page = page;
 	}
 
-	@SuppressWarnings("rawtypes")
-	private Page page;
-
-	@SuppressWarnings("rawtypes")
-	public Page getPage() {
+	public Page<Record> getPage() {
 		return page;
 	}
-
+	
 }

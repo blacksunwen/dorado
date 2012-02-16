@@ -7,13 +7,11 @@ import com.bstek.dorado.data.entity.EntityState;
 import com.bstek.dorado.data.entity.EntityUtils;
 import com.bstek.dorado.data.provider.Page;
 import com.bstek.dorado.data.variant.Record;
+import com.bstek.dorado.jdbc.config.DbElementDefinition;
 import com.bstek.dorado.jdbc.config.DbmManager;
+import com.bstek.dorado.jdbc.config.JdbcCreationContext;
 import com.bstek.dorado.jdbc.config.JdbcEnviromentManager;
-import com.bstek.dorado.jdbc.model.DbElement;
-import com.bstek.dorado.jdbc.model.DbElementCreationContext;
-import com.bstek.dorado.jdbc.model.DbElementDefinition;
 import com.bstek.dorado.jdbc.model.DbTable;
-import com.bstek.dorado.jdbc.model.TableTrigger;
 import com.bstek.dorado.jdbc.model.storedprogram.StoredProgram;
 import com.bstek.dorado.jdbc.model.storedprogram.StoredProgramContext;
 import com.bstek.dorado.jdbc.model.storedprogram.StoredProgramOperation;
@@ -70,7 +68,7 @@ public abstract class JdbcUtils {
 	public static DbTable getDbTable(String tableName) {
 		Assert.notEmpty(tableName, "name of DbTable must not be null.");
 		DbElementDefinition definition = JdbcUtils.getDbmManager().getDefinition(tableName);
-		DbElementCreationContext context = new DbElementCreationContext();
+		JdbcCreationContext context = new JdbcCreationContext();
 		
 		try {
 			DbTable dbElement = (DbTable)definition.create(context);
@@ -80,27 +78,36 @@ public abstract class JdbcUtils {
 		}
 	}
 	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static Collection<Record> query(String tableName, Object parameter) {
-		Page page = new Page(0, 0);
-		query(tableName, parameter, page);
-		return (Collection<Record>)page.getEntities();
-	}
+
 	
-	@SuppressWarnings("rawtypes") 
-	public static void query(String tableName, Object parameter, Page page) {
-		Assert.notEmpty(tableName, "tableName must not be null.");
+	public static Collection<Record> query(String tableName, QueryArg arg) {
+		if (arg == null) {
+			arg = new QueryArg();
+		}
+		
+		JdbcEnviroment jdbcEnviroment = arg.getJdbcEnviroment();
+		Page<Record> page = arg.getPage();
+		Object parameter = arg.getParameter();
+		
 		DbTable table = JdbcUtils.getDbTable(tableName);
 		
-		JdbcDataProviderContext rCtx = new JdbcDataProviderContext(table.getJdbcEnviroment(),parameter, page);
+		JdbcDataProviderContext rCtx = new JdbcDataProviderContext(jdbcEnviroment, parameter, page);
 		JdbcDataProviderOperation operation = new JdbcDataProviderOperation(table, rCtx);
-		TableTrigger trigger = table.getTrigger();
 		
+		TableTrigger trigger = table.getTrigger();
 		if (trigger != null) {
 			trigger.doQuery(operation);
 		} else {
 			operation.execute();
 		}
+		return page.getEntities();
+	}
+	
+	public static Collection<Record> query(String tableName, Object parameter) {
+		QueryArg arg = new QueryArg();
+		arg.setParameter(parameter);
+		
+		return query(tableName, arg);
 	}
 	
 	public static void insert(String tableName, Record record) {
@@ -116,10 +123,7 @@ public abstract class JdbcUtils {
 	}
 	
 	public static void doSave(String tableName, Record record, EntityState state) {
-		DbElement dbe = getDbTable(tableName);
-		Assert.isTrue(dbe instanceof DbTable, "[" + tableName + "] is not a table.");
-		DbTable table = (DbTable)dbe;
-		
+		DbTable table = getDbTable(tableName);
 		Record enRecord = record;
 		if (!EntityUtils.isEntity(enRecord)) {
 			try {
@@ -144,7 +148,7 @@ public abstract class JdbcUtils {
 	public static StoredProgram getStoredProgram(String spName) {
 		Assert.notEmpty(spName, "name of StoredProgram must not be null.");
 		DbElementDefinition definition = JdbcUtils.getDbmManager().getDefinition(spName);
-		DbElementCreationContext context = new DbElementCreationContext();
+		JdbcCreationContext context = new JdbcCreationContext();
 		
 		try {
 			StoredProgram dbElement = (StoredProgram)definition.create(context);

@@ -7,9 +7,9 @@
 	<bean id="dorado.dialectTemplate" abstract="true">
 		<property name="keyGenerators">
 			<list>
-				<bean class="com.bstek.dorado.jdbc.key.IdentityKeyGenerator"/>
-				<bean class="com.bstek.dorado.jdbc.key.JdkUuidKeyGenerator"/>
-				<bean class="com.bstek.dorado.jdbc.key.SequenceKeyGenerator"/>
+				<bean class="com.bstek.dorado.jdbc.model.table.IdentityKeyGenerator"/>
+				<bean class="com.bstek.dorado.jdbc.model.table.JdkUuidKeyGenerator"/>
+				<bean class="com.bstek.dorado.jdbc.model.table.SequenceKeyGenerator"/>
 			</list>
 		</property>
 		<property name="jdbcTypes">

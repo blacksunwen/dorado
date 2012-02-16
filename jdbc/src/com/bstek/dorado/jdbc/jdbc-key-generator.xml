@@ -3,8 +3,8 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<bean id="dorado.jdbc.key.identityKeyGenerator" class="com.bstek.dorado.jdbc.key.IdentityKeyGenerator" />
-	<bean id="dorado.jdbc.key.jdkUuidKeyGenerator" class="com.bstek.dorado.jdbc.key.JdkUuidKeyGenerator" />
-	<bean id="dorado.jdbc.key.sequenceKeyGenerator" class="com.bstek.dorado.jdbc.key.SequenceKeyGenerator" />
+	<bean id="dorado.jdbc.key.identityKeyGenerator" class="com.bstek.dorado.jdbc.model.table.IdentityKeyGenerator" />
+	<bean id="dorado.jdbc.key.jdkUuidKeyGenerator" class="com.bstek.dorado.jdbc.model.table.JdkUuidKeyGenerator" />
+	<bean id="dorado.jdbc.key.sequenceKeyGenerator" class="com.bstek.dorado.jdbc.model.table.SequenceKeyGenerator" />
 	
 </beans>

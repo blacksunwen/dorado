@@ -9,9 +9,7 @@ import com.bstek.dorado.data.entity.EntityState;
 import com.bstek.dorado.data.entity.EntityUtils;
 import com.bstek.dorado.data.resolver.DataItems;
 import com.bstek.dorado.data.variant.Record;
-import com.bstek.dorado.jdbc.model.DbElement;
 import com.bstek.dorado.jdbc.model.DbTable;
-import com.bstek.dorado.jdbc.model.TableTrigger;
 import com.bstek.dorado.util.Assert;
 
 public class JdbcDataResolverOperation {
@@ -35,7 +33,6 @@ public class JdbcDataResolverOperation {
 		for (JdbcDataResolverItem item: items) {
 			String iName = item.getName();
 			String eName = item.getTableName();
-			Assert.notEmpty(iName, "value of name property must not be empty.");
 			
 			if (StringUtils.isNotEmpty(eName)) {
 				DataItems dataItems = jdbcContext.getDataItems();
@@ -90,10 +87,7 @@ public class JdbcDataResolverOperation {
 			}
 		}
 		
-		DbElement dbElement = operation.getDbTable();
-		Assert.isTrue(dbElement instanceof DbTable, "["+dbElement.getName()+"] is not table.");
-
-		DbTable table = (DbTable)dbElement;
+		DbTable table = operation.getDbTable();
 		TableTrigger trigger = table.getTrigger();
 		if (trigger == null) {
 			operation.execute();

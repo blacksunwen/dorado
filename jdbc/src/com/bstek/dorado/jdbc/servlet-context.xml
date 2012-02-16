@@ -65,4 +65,11 @@
             <ref bean="dorado.jdbc.ide.resolver.listJdbcTypeResolver"/>
         </property>
     </bean>
+    
+    <bean parent="dorado.resolverRegister">
+        <property name="url" value="/dorado/jdbc/ide/list-keyGenerator" />
+        <property name="resolver">
+            <ref bean="dorado.jdbc.ide.resolver.listKeyGeneratorResolver"/>
+        </property>
+    </bean>
 </beans>

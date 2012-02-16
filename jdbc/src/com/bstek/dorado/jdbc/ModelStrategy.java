@@ -2,7 +2,7 @@ package com.bstek.dorado.jdbc;
 
 import com.bstek.dorado.data.config.definition.DataProviderDefinition;
 import com.bstek.dorado.data.config.definition.DataTypeDefinition;
-import com.bstek.dorado.jdbc.model.DbElementDefinition;
+import com.bstek.dorado.jdbc.config.DbElementDefinition;
 
 public interface ModelStrategy {
 

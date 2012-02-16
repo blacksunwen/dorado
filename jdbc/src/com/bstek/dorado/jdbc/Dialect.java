@@ -6,8 +6,8 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import com.bstek.dorado.jdbc.key.KeyGenerator;
 import com.bstek.dorado.jdbc.model.autotable.Order;
+import com.bstek.dorado.jdbc.model.table.KeyGenerator;
 import com.bstek.dorado.jdbc.model.table.Table;
 import com.bstek.dorado.jdbc.sql.SelectSql;
 import com.bstek.dorado.jdbc.sql.SqlConstants.JoinModel;
@@ -111,7 +111,7 @@ public interface Dialect {
 	List<JdbcType> getJdbcTypes();
 
 	/**
-	 * 根据名称获取{@link com.bstek.dorado.jdbc.key.KeyGenerator}
+	 * 根据名称获取{@link com.bstek.dorado.jdbc.model.table.KeyGenerator}
 	 * 
 	 * @param name
 	 * @return
@@ -119,7 +119,7 @@ public interface Dialect {
 	KeyGenerator<Object> getKeyGenerator(String name);
 
 	/**
-	 * 获取全部的{@link com.bstek.dorado.jdbc.key.KeyGenerator}
+	 * 获取全部的{@link com.bstek.dorado.jdbc.model.table.KeyGenerator}
 	 * 
 	 * @return
 	 */
