@@ -416,8 +416,8 @@
 				<mkdir dir="${workDir}/temp/dependencies" />
 				<removeInheritedDependencies dependenciesDir="${workDir}/temp/dependencies"
 				                             workDir="${workDir}/temp/inhertied"
-				                             ivySettingsFile="resources/ivysettings.xml"
-				                             ivyTemplateFile="resources/ivytemplate.xml">
+				                             ivySettingsFile="${resourcesDir}/ivysettings.xml"
+				                             ivyTemplateFile="${resourcesDir}/ivytemplate.xml">
 					<classpath refid="classpath" />
 				</removeInheritedDependencies>
 

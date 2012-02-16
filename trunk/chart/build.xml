@@ -12,8 +12,9 @@
 	<property name="buildJavaDoc" value="true" />
 	<property name="buildJsDoc" value="true" />
 
-	<property name="buildDir" value="${basedir}/.build" />
-	<property name="libDir" value="${buildDir}/lib" />
+	<property name="buildDir"
+	          value="${user.home}/.dorado-builder/addons/${addonName}" />
+	<property name="libDir" value="${user.home}/.dorado-builder" />
 	<property name="workDir" value="${buildDir}/work" />
 	<property name="targetDir" value="${buildDir}/target" />
 	<property name="addonBuilderVersion" value="1.0.0" />
