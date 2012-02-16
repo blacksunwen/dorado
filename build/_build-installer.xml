@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="build" default="build">
+	<property name="prebuild" value="true" />
+	<property name="package-jars" value="true" />
+	<property name="javadoc" value="true" />
+	<property name="jsdoc" value="true" />
+	<property name="izpack" value="true" />
+	<property name="standard-edition.dir"
+	          value="D:/projects/dorado7/build/standard-edition" />
+
+	<target name="prebuild" if="prebuild">
+		<ant antfile="${basedir}/includes/wrapper.xml" inheritRefs="true">
+			<property name="build-files"
+			          value="blank-project.xml,sample-center.xml" />
+		</ant>
+	</target>
+
+	<target name="build" depends="prebuild">
+		<ant antfile="${basedir}/includes/wrapper.xml" inheritRefs="true">
+			<property name="build-files" value="installer.xml" />
+		</ant>
+	</target>
+</project>

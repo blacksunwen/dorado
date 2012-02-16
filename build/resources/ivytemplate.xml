@@ -1,0 +1,16 @@
+<ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
+	<info organisation="${groupId}" module="${artifactId}-caller" />
+
+	<configurations defaultconfmapping="compile->compile(*),master(*);runtime->master(*),compile(*),runtime(*);test->default(*)">
+		<conf name="default" visibility="public" extends="runtime,master" />
+		<conf name="master" visibility="public" />
+		<conf name="compile" visibility="public" />
+		<conf name="provided" visibility="public" />
+		<conf name="runtime" visibility="public" />
+		<conf name="test" visibility="private" extends="runtime" />
+	</configurations>
+
+	<dependencies>
+		<dependency org="${groupId}" name="${artifactId}" rev="${revision}" conf="compile" />
+	</dependencies>
+</ivy-module>
