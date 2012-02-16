@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:ivy="antlib:org.apache.ivy.ant"
+         xmlns:artifact="antlib:org.apache.maven.artifact.ant"
+         name="publish"
+         default="publish">
+	<property environment="env" />
+
+	<property name="addonName" value="dorado-chart" />
+	<property name="vendor" value="www.BSTEK.com" />
+	<property name="version" value="0.0.1" />
+	<property name="qualifier" value="SNAPSHOT" />
+	<property name="buildJavaDoc" value="true" />
+	<property name="buildJsDoc" value="true" />
+
+	<property name="buildDir" value="${basedir}/.build" />
+	<property name="libDir" value="${buildDir}/lib" />
+	<property name="workDir" value="${buildDir}/work" />
+	<property name="targetDir" value="${buildDir}/target" />
+	<property name="addonBuilderVersion" value="1.0.0" />
+	<property name="bsdn.nexusReleases"
+	          value="http://nexus.bsdn.org:82/content/repositories/dorado_releases" />
+	<property name="bsdn.nexusSnapshots"
+	          value="http://nexus.bsdn.org:82/content/repositories/dorado_snapshots" />
+
+	<target name="init">
+		<delete dir="${workDir}" />
+		<delete dir="${targetDir}" />
+
+		<mkdir dir="${buildDir}" />
+		<mkdir dir="${libDir}" />
+		<mkdir dir="${workDir}" />
+		<mkdir dir="${targetDir}" />
+	</target>
+
+	<target name="getAddonBuilder">
+		<get src="http://nexus.bsdn.org:82/content/groups/public/com/bstek/dorado/dorado-addon-builder/${addonBuilderVersion}/dorado-addon-builder-${addonBuilderVersion}.jar"
+		     dest="${libDir}"
+		     verbose="true"
+		     skipExisting="true" />
+		<taskdef resource="com/bstek/dorado/addonbuilder/task.properties"
+		         classpath="${libDir}/dorado-addon-builder-${addonBuilderVersion}.jar" />
+
+		<makeAddonBuilderHome />
+		<taskdef resource="net/sf/antcontrib/antlib.xml"
+		         classpath="${addonBuilder.homeDir}/lib/ant-contrib-1.0b3.jar" />
+		<typedef resource="org/apache/maven/artifact/ant/antlib.xml"
+		         uri="antlib:org.apache.maven.artifact.ant"
+		         classpath="${addonBuilder.homeDir}/lib/maven-ant-tasks-2.1.3.jar" />
+	</target>
+
+	<target name="package" depends="init,getAddonBuilder">
+		<buildDoradoAddon baseDir="${basedir}"
+		                  workDir="${workDir}"
+		                  targetDir="${targetDir}"
+		                  name="${addonName}"
+		                  vendor="${vendor}"
+		                  version="${version}"
+		                  qualifier="${qualifier}"
+		                  buildJavaDoc="${buildJavaDoc}"
+		                  buildJsDoc="${buildJsDoc}" />
+	</target>
+
+	<target name="publish" depends="package">
+		<if>
+			<equals arg1="${qualifier}" arg2="SNAPSHOT" />
+			<then>
+				<property name="maven.repository"
+				          value="${bsdn.nexusSnapshots}" />
+			</then>
+			<else>
+				<property name="maven.repository"
+				          value="${bsdn.nexusReleases}" />
+			</else>
+		</if>
+
+		<artifact:deploy file="${targetDir}/${baseFileName}.jar">
+			<remoteRepository url="${maven.repository}">
+				<authentication username="${env.BSDN_NEXUS_USER}"
+				                password="${env.BSDN_NEXUS_PASSWORD}" />
+			</remoteRepository>
+			<pom file="${targetDir}/${baseFileName}.pom" />
+			<attach file="${targetDir}/${baseFileName}-sources.jar"
+			        type="jar"
+			        classifier="sources" />
+			<attach file="${targetDir}/${baseFileName}-javadoc.jar"
+			        type="jar"
+			        classifier="javadoc" />
+			<attach file="${targetDir}/${baseFileName}-jsdoc.zip"
+			        type="zip"
+			        classifier="jsdoc" />
+		</artifact:deploy>
+	</target>
+</project>
