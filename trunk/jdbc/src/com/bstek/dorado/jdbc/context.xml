@@ -37,6 +37,6 @@
 	
 	<!-- Template -->
 	<bean id="dorado.jdbcConfigTemplate" class="com.bstek.dorado.jdbc.config.GlobalDbModelConfig" abstract="true"/>
-	<bean id="dorado.jdbcEnvTemplate" class="com.bstek.dorado.jdbc.JdbcEnviroment" abstract="true"/>
+	<bean id="dorado.jdbcEnvTemplate" class="com.bstek.dorado.jdbc.support.DefaultJdbcEnviroment" abstract="true"/>
 	
 </beans>

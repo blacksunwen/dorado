@@ -26,6 +26,8 @@
 	   class="com.bstek.dorado.jdbc.ide.resolver.CreateDataTypeResolver"/>
     <bean id="dorado.jdbc.ide.resolver.listJdbcTypeResolver" 
         class="com.bstek.dorado.jdbc.ide.resolver.ListJdbcTypeResolver"/>
+    <bean id="dorado.jdbc.ide.resolver.listKeyGeneratorResolver" 
+    	class="com.bstek.dorado.jdbc.ide.resolver.ListKeyGeneratorResolver"/>
 
     <!-- Robot -->
     <bean parent="dorado.idesupport.robotRegister">
@@ -52,20 +54,4 @@
 			<bean class="com.bstek.dorado.jdbc.ide.robot.CreateSqlTableRobot" />
 		</property>
     </bean>
-<!-- 	<bean parent="dorado.idesupport.robotRegister"> -->
-<!-- 		<property name="name" value="jdbc-listJdbcEnviroments" /> -->
-<!-- 		<property name="label" value="List JdbcEnviroments" /> -->
-<!-- 		<property name="viewObject" value="DbModel" /> -->
-<!-- 		<property name="robot"> -->
-<!-- 			<bean class="com.bstek.dorado.jdbc.ide.robot.ListJdbcEnviromentRobot" /> -->
-<!-- 		</property> -->
-<!-- 	</bean> -->
-<!-- 	<bean parent="dorado.idesupport.robotRegister"> -->
-<!-- 		<property name="name" value="jdbc-listCatalogs" /> -->
-<!-- 		<property name="label" value="List Catalogs" /> -->
-<!-- 		<property name="viewObject" value="DbModel" /> -->
-<!-- 		<property name="robot"> -->
-<!-- 			<bean class="com.bstek.dorado.jdbc.ide.robot.ListJdbcEnviromentRobot" /> -->
-<!-- 		</property> -->
-<!-- 	</bean> -->
 </beans>

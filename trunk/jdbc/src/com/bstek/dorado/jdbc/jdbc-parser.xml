@@ -5,21 +5,30 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 	http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dorado-7.0.xsd">
 
-	<bean id="dorado.jdbc.jdbcEnviromentParser" class="com.bstek.dorado.jdbc.config.xml.JdbcEnviromentParser" parent="dorado.propertyParser"/>
+	<bean id="dorado.jdbc.jdbcEnviromentParser" class="com.bstek.dorado.jdbc.config.JdbcEnviromentParser" parent="dorado.propertyParser"/>
 	
-	<bean id="dorado.jdbc.transactionTemplateParser" class="com.bstek.dorado.jdbc.config.xml.TransactionTemplateParser" parent="dorado.propertyParser"/>
+	<bean id="dorado.jdbc.transactionTemplateParser" class="com.bstek.dorado.jdbc.config.TransactionTemplateParser" parent="dorado.propertyParser"/>
 	
-	<bean id="dorado.jdbc.triggerParser" class="com.bstek.dorado.jdbc.config.xml.TriggerParser" parent="dorado.propertyParser"/>
+	<bean id="dorado.jdbc.triggerParser" class="com.bstek.dorado.jdbc.config.TriggerParser" parent="dorado.propertyParser"/>
 	
-	<bean id="dorado.jdbc.jdbcTypeParser" class="com.bstek.dorado.jdbc.config.xml.JdbcTypeParser" parent="dorado.propertyParser"/>
+	<bean id="dorado.jdbc.jdbcTypeParser" class="com.bstek.dorado.jdbc.config.JdbcTypeParser" parent="dorado.propertyParser"/>
 	
 	<bean id="dorado.jdbc.keyGeneratorParser" class="com.bstek.dorado.jdbc.model.table.KeyGeneratorParser" parent="dorado.propertyParser"/>
 	
 	<bean id="dorado.jdbc.tableReferenceParser" class="com.bstek.dorado.jdbc.model.table.TableRefrenceParser" parent="dorado.propertyParser" />
 
-	<bean id="dorado.jdbc.dbmParser" class="com.bstek.dorado.jdbc.config.xml.DbModelParser" parent="dorado.objectParser"/>
+	<bean id="dorado.jdbc.dbmParser" class="com.bstek.dorado.jdbc.config.DbModelParser" parent="dorado.objectParser"/>
 	
-	<bean id="dorado.jdbc.tableParser" class="com.bstek.dorado.jdbc.model.table.TableParser" parent="dorado.objectParser">
+	<bean id="dorado.jdbc.abstractTableParser" parent="dorado.objectParser" abstract="true">
+		<property name="modelStrategy" ref="dorado.jdbc.modelStrategy"/>
 		<property name="dataTypeManager" ref="dorado.dataTypeManager"/>
-	</bean>	
+		<property name="dataProviderManager" ref="dorado.dataProviderManager"/>
+	</bean>
+	
+	<bean id="dorado.jdbc.tableParser" class="com.bstek.dorado.jdbc.model.table.TableParser" 
+		parent="dorado.jdbc.abstractTableParser"/>
+	<bean id="dorado.jdbc.sqlTableParser" class="com.bstek.dorado.jdbc.model.sqltable.SqlTableParser" 
+		parent="dorado.jdbc.abstractTableParser"/>
+	<bean id="dorado.jdbc.autoTableParser" class="com.bstek.dorado.jdbc.model.autotable.AutoTableParser"
+		parent="dorado.jdbc.abstractTableParser"/>
 </beans>
