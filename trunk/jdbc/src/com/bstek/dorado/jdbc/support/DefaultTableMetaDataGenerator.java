@@ -25,12 +25,11 @@ import org.springframework.util.LinkedCaseInsensitiveMap;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import com.bstek.dorado.jdbc.JdbcConstants;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
-import com.bstek.dorado.jdbc.config.xml.DomHelper;
-import com.bstek.dorado.jdbc.key.KeyGenerator;
+import com.bstek.dorado.jdbc.config.ColumnDefinition;
+import com.bstek.dorado.jdbc.config.DomHelper;
 import com.bstek.dorado.jdbc.meta.TableMetaDataGenerator;
-import com.bstek.dorado.jdbc.model.ColumnDefinition;
+import com.bstek.dorado.jdbc.model.table.KeyGenerator;
 import com.bstek.dorado.jdbc.model.table.TableColumnDefinition;
 import com.bstek.dorado.jdbc.model.table.TableKeyColumnDefinition;
 import com.bstek.dorado.jdbc.type.JdbcType;

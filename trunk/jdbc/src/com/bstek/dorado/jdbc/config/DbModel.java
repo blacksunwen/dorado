@@ -9,7 +9,6 @@ import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.core.io.Resource;
-import com.bstek.dorado.jdbc.model.DbElementDefinition;
 
 @XmlNode(
 	parser = "spring:dorado.jdbc.dbmParser",

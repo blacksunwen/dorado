@@ -19,14 +19,53 @@ public class AutoTableTest extends Oracle11JdbcTestCase {
 		Assert.assertTrue(!emps.isEmpty());
 		{
 			Record emp = emps.iterator().next();
-			int id = emp.getInt("p_id");
-			emp.put("p_first_name", RandomStringUtils.randomAlphabetic(6));
-			emp.put("p_last_name", RandomStringUtils.randomAlphabetic(6));
+			int id = emp.getInt("n_id");
+			emp.put("n_first_name", RandomStringUtils.randomAlphabetic(6));
+			emp.put("n_last_name", RandomStringUtils.randomAlphabetic(6));
 			JdbcUtils.update(tableName, emp);
 			
 			Record emp2 = Employee.get(id);
-			Assert.assertEquals(emp.get("p_first_name"), emp2.getString("FIRST_NAME"));
-			Assert.assertEquals(emp.get("p_last_name"), emp2.getString("LAST_NAME"));
+			Assert.assertEquals(emp.get("n_first_name"), emp2.getString("FIRST_NAME"));
+			Assert.assertEquals(emp.get("n_last_name"), emp2.getString("LAST_NAME"));
+		}
+		{
+			Record emp = Employee.random();
+			Integer id = (Integer)emp.get("ID");
+			System.out.println("ID: " + id);
+			
+			Record autoEmp = new Record();
+			autoEmp.put("n_id",         emp.get("ID"));
+			autoEmp.put("n_last_name",  emp.get("LAST_NAME"));
+			autoEmp.put("n_first_name", emp.get("FIRST_NAME"));
+			autoEmp.put("n_title",      emp.get("TITLE"));
+			autoEmp.put("n_sex",        emp.get("SEX"));
+			autoEmp.put("n_birthday",   emp.get("BIRTHDAY"));
+			
+			{
+				JdbcUtils.insert(tableName, autoEmp);
+				
+				Record emp2 = Employee.get(id);
+				Assert.assertEquals(emp.get("ID"), emp2.get("ID"));
+				Assert.assertEquals(emp.get("LAST_NAME"), emp2.get("LAST_NAME"));
+				Assert.assertEquals(emp.get("FIRST_NAME"), emp2.get("FIRST_NAME"));
+				Assert.assertEquals(emp.get("TITLE"), emp2.get("TITLE"));
+				Assert.assertEquals(emp.get("SEX"), emp2.get("SEX"));
+				Assert.assertEquals(emp.get("BIRTHDAY"), emp2.get("BIRTHDAY"));
+			}{
+				autoEmp.put("n_last_name", RandomStringUtils.randomAlphabetic(6));
+				JdbcUtils.update(tableName, autoEmp);
+				
+				Record emp2 = Employee.get(id);
+				Assert.assertEquals(autoEmp.get("n_id"),         emp2.get("ID"));
+				Assert.assertEquals(autoEmp.get("n_last_name"),  emp2.get("LAST_NAME"));
+				Assert.assertEquals(autoEmp.get("n_first_name"), emp2.get("FIRST_NAME"));
+				Assert.assertEquals(autoEmp.get("n_title"),      emp2.get("TITLE"));
+				Assert.assertEquals(autoEmp.get("n_sex"),        emp2.get("SEX"));
+				Assert.assertEquals(autoEmp.get("n_birthday"),   emp2.get("BIRTHDAY"));
+			}{
+				JdbcUtils.delete(tableName, autoEmp);
+				Assert.assertEquals(false, Employee.has(id));
+			}
 		}
 	}
 	

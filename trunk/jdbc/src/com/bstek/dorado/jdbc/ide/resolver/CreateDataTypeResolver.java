@@ -9,7 +9,7 @@ import org.w3c.dom.Document;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.ModelGeneratorSuit;
-import com.bstek.dorado.jdbc.config.xml.DomHelper;
+import com.bstek.dorado.jdbc.config.DomHelper;
 import com.bstek.dorado.jdbc.ide.Constants;
 
 public class CreateDataTypeResolver extends Resolver {

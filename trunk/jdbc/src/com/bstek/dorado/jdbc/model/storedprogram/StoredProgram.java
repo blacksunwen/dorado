@@ -24,7 +24,7 @@ import com.bstek.dorado.jdbc.type.JdbcType;
 import com.bstek.dorado.util.Assert;
 
 @XmlNode(
-	definitionType = "com.bstek.dorado.jdbc.model.DbElementDefinition",
+	definitionType = "com.bstek.dorado.jdbc.config.DbElementDefinition",
 	subNodes = {
 		@XmlSubNode(
 			wrapper = @XmlNodeWrapper(nodeName = "Parameters", fixed = true),

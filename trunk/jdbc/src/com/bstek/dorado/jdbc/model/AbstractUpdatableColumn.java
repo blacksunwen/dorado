@@ -1,8 +1,9 @@
 package com.bstek.dorado.jdbc.model;
 
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlProperty;
 
-public abstract class AbstractUpdatableColumn extends Column {
+public abstract class AbstractUpdatableColumn extends AbstractColumn {
 	private boolean insertable = true;
 	
 	private boolean updatable = true;
@@ -11,10 +12,12 @@ public abstract class AbstractUpdatableColumn extends Column {
 	
 	private Object updateDefaultValue;
 
+	@ClientProperty(escapeValue = "true")
 	public boolean isInsertable() {
 		return insertable;
 	}
 
+	@ClientProperty(escapeValue = "true")
 	public boolean isUpdatable() {
 		return updatable;
 	}

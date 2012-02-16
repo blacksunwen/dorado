@@ -17,7 +17,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import com.bstek.dorado.jdbc.JdbcEnviroment;
-import com.bstek.dorado.jdbc.config.xml.DomHelper;
+import com.bstek.dorado.jdbc.config.DomHelper;
 import com.bstek.dorado.jdbc.meta.StoredProcedureGenerator;
 import com.bstek.dorado.jdbc.model.storedprogram.ProgramParameter;
 import com.bstek.dorado.jdbc.model.storedprogram.StoredProgram;

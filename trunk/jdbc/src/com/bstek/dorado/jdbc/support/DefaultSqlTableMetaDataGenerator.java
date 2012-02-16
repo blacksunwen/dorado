@@ -18,9 +18,8 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import com.bstek.dorado.jdbc.JdbcConstants;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
-import com.bstek.dorado.jdbc.config.xml.DomHelper;
+import com.bstek.dorado.jdbc.config.DomHelper;
 import com.bstek.dorado.jdbc.meta.SqlTableMetaDataGenerator;
 import com.bstek.dorado.jdbc.type.JdbcType;
 import com.bstek.dorado.util.xml.DomUtils;

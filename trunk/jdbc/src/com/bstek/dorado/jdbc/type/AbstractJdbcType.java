@@ -6,7 +6,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.data.util.DataUtils;
-import com.bstek.dorado.jdbc.JdbcConstants;
+import com.bstek.dorado.jdbc.support.JdbcConstants;
 
 public abstract class AbstractJdbcType implements JdbcType {
 

@@ -11,9 +11,10 @@ import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.Dialect;
 import com.bstek.dorado.jdbc.JdbcDataProviderContext;
 import com.bstek.dorado.jdbc.JdbcDataProviderOperation;
+import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.JdbcParameterSource;
 import com.bstek.dorado.jdbc.JdbcRecordOperation;
-import com.bstek.dorado.jdbc.model.Column;
+import com.bstek.dorado.jdbc.model.AbstractColumn;
 import com.bstek.dorado.jdbc.model.table.Table;
 import com.bstek.dorado.jdbc.sql.CurdSqlGenerator;
 import com.bstek.dorado.jdbc.sql.DeleteSql;
@@ -34,11 +35,11 @@ public class AutoTableSqlGenerator implements CurdSqlGenerator{
 	public SelectSql selectSql(JdbcDataProviderOperation operation) {
 		AutoTable t = (AutoTable)operation.getDbTable();
 		JdbcDataProviderContext jdbcContext = operation.getJdbcContext();
-		Object parameter = operation.getJdbcContext().getParameter();
+		Object parameter = jdbcContext.getParameter();
 		
 		//columnsToken
 		StringBuilder columnsToken = new StringBuilder();
-		List<Column> columns = t.getAllColumns();
+		List<AbstractColumn> columns = t.getAllColumns();
 		for (int i=0, j=columns.size(), ableColumnCount = 0; i<j; i++) {
 			AutoTableColumn column = (AutoTableColumn)columns.get(i);
 			if (column.isSelectable()) {
@@ -49,23 +50,24 @@ public class AutoTableSqlGenerator implements CurdSqlGenerator{
 				FromTable fromTable = column.getFromTable();
 				String tableAlias = fromTable.getTableAlias();
 				
-				String columnName = column.getColumnName();
-				String columnAlias = column.getColumnAlias();
-				if (StringUtils.isEmpty(columnAlias)) {
-					columnAlias = columnName;
+				String nativeName = column.getNativeColumnName();
+				if (StringUtils.isNotEmpty(nativeName)) {
+					String propertyName = column.getPropertyName();
+					String token = tableAlias + "." + nativeName + " " + KeyWord.AS + " " + propertyName;
+					columnsToken.append(token);
 				}
-				String token = tableAlias + "." + columnName + " " + KeyWord.AS + " " + columnAlias;
-				columnsToken.append(token);
 			}
 		}
 		
+		JdbcEnviroment jdbcEnv = operation.getJdbcEnviroment();
+		Dialect dialect = jdbcEnv.getDialect();
 		//fromToken
-		StringBuilder fromToken = fromToken(t,jdbcContext);
+		StringBuilder fromToken = fromToken(t, dialect);
 		//where
 		JdbcParameterSource p = SqlUtils.createJdbcParameter(parameter);
 		StringBuilder whereToken = whereToken(t, p);
 		//order
-		StringBuilder orderbyToken = orderByToken(t, p, jdbcContext);
+		StringBuilder orderbyToken = orderByToken(t, p, dialect);
 		
 		//--
 		AutoTableSelectSql selectSql = new AutoTableSelectSql();
@@ -81,10 +83,10 @@ public class AutoTableSqlGenerator implements CurdSqlGenerator{
 	protected String token(Dialect dialect, FromTable fromTable) {
 		return dialect.token(fromTable.getTable(), fromTable.getTableAlias());
 	}
-	protected StringBuilder fromToken(AutoTable t, JdbcDataProviderContext jdbcContext) {
+	
+	protected StringBuilder fromToken(AutoTable t, Dialect dialect) {
 		StringBuilder fromToken = new StringBuilder();
 		List<JoinTable> joinTables = t.getJoinTables();
-		Dialect dialect = jdbcContext.getJdbcEnviroment().getDialect();
 		
 		if (joinTables.size() == 0) {
 			List<FromTable> fromTables = t.getFromTables();
@@ -154,8 +156,8 @@ public class AutoTableSqlGenerator implements CurdSqlGenerator{
 			
 			String leftColumnName = leftColumnNames[i];
 			String rightColumnName = rightColumnNames[i];
-			Column leftColumn = leftTable.getColumn(leftColumnName);
-			Column rightColumn = rightTable.getColumn(rightColumnName);
+			AbstractColumn leftColumn = leftTable.getColumn(leftColumnName);
+			AbstractColumn rightColumn = rightTable.getColumn(rightColumnName);
 			
 			token.append(leftTableAlias, ".", leftColumn.getColumnName());
 			token.bothSpace("=");
@@ -185,7 +187,7 @@ public class AutoTableSqlGenerator implements CurdSqlGenerator{
 		} else {
 			FromTable fromTable = bmr.getFromTable();
 			String tableAlias = fromTable.getTableAlias();
-			Column column = bmr.getColumn();
+			AbstractColumn column = bmr.getColumn();
 			String columnName = column.getColumnName();
 			Object value = bmr.getValue();
 			String operator = bmr.getOperator();
@@ -276,12 +278,11 @@ public class AutoTableSqlGenerator implements CurdSqlGenerator{
 		}
 	}
 	
-	protected StringBuilder orderByToken(AutoTable t, JdbcParameterSource p, JdbcDataProviderContext jdbcContext) {
+	protected StringBuilder orderByToken(AutoTable t, JdbcParameterSource p, Dialect dialect) {
 		StringBuilder r = new StringBuilder();
 		
 		List<Order> orders = t.getOrders();
 		if (orders != null && !orders.isEmpty()) {
-			Dialect dialect = jdbcContext.getJdbcEnviroment().getDialect();
 			List<String> tokens = new ArrayList<String>(orders.size());
 			for (int i=0; i<orders.size(); i++) {
 				Order order = orders.get(i);
@@ -309,90 +310,77 @@ public class AutoTableSqlGenerator implements CurdSqlGenerator{
 
 	@Override
 	public InsertSql insertSql(JdbcRecordOperation operation) {
-		AutoTable autoTable = ( AutoTable)operation.getDbTable();
-		FromTable fromTable = autoTable.getMainTable();
-		Table table = fromTable.getTable();
-		Assert.notNull(table, autoTable.getType() + " [" + autoTable.getName() + "] " + "has no table to be inserted into.");
-		
-		Record record = operation.getRecord();
-		Record sRecord = new Record();
-		String tableAlias = fromTable.getTableAlias();
-		Map<String, String> propertyMap = new HashMap<String, String>();
-		for (Column c: autoTable.getAllColumns()) {
-			AutoTableColumn column = (AutoTableColumn)c;
-			String columnName = column.getColumnName();
-			String propertyName = column.getPropertyName();
-			if (StringUtils.isNotEmpty(columnName) && StringUtils.isNotEmpty(propertyName)) {
-				if (column.isInsertable() && tableAlias.equals(column.getTableAlias())) {
-					Column tableColumn = table.getColumn(columnName);
-					String tpn = tableColumn.getPropertyName();
-					if (StringUtils.isNotEmpty(tpn)) {
-						Object value = record.get(propertyName);
-						sRecord.put(tpn, value);
-						propertyMap.put(propertyName, tpn);
-					}
-				}
+		JdbcRecordOperation sOperation = createOperation(operation, new OperationConfig() {
+			@Override
+			public boolean accept(AutoTableColumn column) {
+				return column.isInsertable();
 			}
-		}
+		});
 		
-		JdbcRecordOperation sOperation = new JdbcRecordOperation(table, sRecord, operation.getJdbcContext());
+		AutoTable autoTable = ( AutoTable)operation.getDbTable();
+		FromTable fromTable = autoTable.getFromTable();
+		Table table = fromTable.getTable();
+		
 		CurdSqlGenerator generator = table.getCurdSqlGenerator();
-		operation.setSubstitute(sOperation,propertyMap);
 		return generator.insertSql(sOperation);
 	}
 
 	@Override
 	public UpdateSql updateSql(JdbcRecordOperation operation) {
-		AutoTable autoTable = ( AutoTable)operation.getDbTable();
-		FromTable fromTable = autoTable.getMainTable();
-		Table table = fromTable.getTable();
-		Assert.notNull(table, autoTable.getType() + " [" + autoTable.getName() + "] " + "has no table to be inserted into.");
-		
-		Record record = operation.getRecord();
-		Record sRecord = new Record();
-		String tableAlias = fromTable.getTableAlias();
-		Map<String, String> propertyMap = new HashMap<String, String>();
-		for (Column c: autoTable.getAllColumns()) {
-			AutoTableColumn column = (AutoTableColumn)c;
-			String columnName = column.getColumnName();
-			String propertyName = column.getPropertyName();
-			if (StringUtils.isNotEmpty(columnName) && StringUtils.isNotEmpty(propertyName)) {
-				if (column.isUpdatable() && tableAlias.equals(column.getTableAlias())) {
-					Column tableColumn = table.getColumn(columnName);
-					String tpn = tableColumn.getPropertyName();
-					if (StringUtils.isNotEmpty(tpn)) {
-						Object value = record.get(propertyName);
-						sRecord.put(tpn, value);
-						propertyMap.put(propertyName, tpn);
-					}
-				}
+		JdbcRecordOperation sOperation = createOperation(operation, new OperationConfig() {
+			@Override
+			public boolean accept(AutoTableColumn column) {
+				return column.isUpdatable();
 			}
-		}
+		});
 		
-		JdbcRecordOperation sOperation = new JdbcRecordOperation(table, sRecord, operation.getJdbcContext());
+		AutoTable autoTable = ( AutoTable)operation.getDbTable();
+		FromTable fromTable = autoTable.getFromTable();
+		Table table = fromTable.getTable();
+		
 		CurdSqlGenerator generator = table.getCurdSqlGenerator();
-		operation.setSubstitute(sOperation, propertyMap);
 		return generator.updateSql(sOperation);
 	}
 
 	@Override
 	public DeleteSql deleteSql(JdbcRecordOperation operation) {
+		JdbcRecordOperation sOperation = createOperation(operation, new OperationConfig() {
+			@Override
+			public boolean accept(AutoTableColumn column) {
+				return true;
+			}
+		});
+		
 		AutoTable autoTable = ( AutoTable)operation.getDbTable();
-		FromTable fromTable = autoTable.getMainTable();
+		FromTable fromTable = autoTable.getFromTable();
 		Table table = fromTable.getTable();
-		Assert.notNull(table, autoTable.getType() + " [" + autoTable.getName() + "] " + "has no table to be inserted into.");
+		
+		CurdSqlGenerator generator = table.getCurdSqlGenerator();
+		return generator.deleteSql(sOperation);
+	}
+
+	interface OperationConfig {
+		boolean accept(AutoTableColumn column);
+	}
+	
+	protected JdbcRecordOperation createOperation(JdbcRecordOperation operation, OperationConfig config) {
+		AutoTable autoTable = ( AutoTable)operation.getDbTable();
+		FromTable fromTable = autoTable.getFromTable();
+		Assert.notNull(fromTable, " [" + autoTable.getName() + "] " + "has no fromTable.");
+		
+		Table table = fromTable.getTable();
 		
 		Record record = operation.getRecord();
 		Record sRecord = new Record();
 		String tableAlias = fromTable.getTableAlias();
 		Map<String, String> propertyMap = new HashMap<String, String>();
-		for (Column c: autoTable.getAllColumns()) {
+		for (AbstractColumn c: autoTable.getAllColumns()) {
 			AutoTableColumn column = (AutoTableColumn)c;
-			String columnName = column.getColumnName();
+			String columnName = column.getNativeColumnName();
 			String propertyName = column.getPropertyName();
-			if (StringUtils.isNotEmpty(columnName) && StringUtils.isNotEmpty(propertyName)) {
-				if (column.isInsertable() && tableAlias.equals(column.getTableAlias())) {
-					Column tableColumn = table.getColumn(columnName);
+			if (StringUtils.isNotEmpty(columnName)) {
+				if (tableAlias.equals(column.getTableAlias()) && config.accept(column)) {
+					AbstractColumn tableColumn = table.getColumn(columnName);
 					String tpn = tableColumn.getPropertyName();
 					if (StringUtils.isNotEmpty(tpn)) {
 						Object value = record.get(propertyName);
@@ -404,9 +392,8 @@ public class AutoTableSqlGenerator implements CurdSqlGenerator{
 		}
 		
 		JdbcRecordOperation sOperation = new JdbcRecordOperation(table, sRecord, operation.getJdbcContext());
-		CurdSqlGenerator generator = table.getCurdSqlGenerator();
-		operation.setSubstitute(sOperation, propertyMap);
-		return generator.deleteSql(sOperation);
+		operation.setSubstitute(sOperation,propertyMap);
+		
+		return sOperation;
 	}
-
 }

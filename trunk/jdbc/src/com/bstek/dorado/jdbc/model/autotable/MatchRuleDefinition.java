@@ -3,7 +3,7 @@ package com.bstek.dorado.jdbc.model.autotable;
 import com.bstek.dorado.config.definition.CreationContext;
 import com.bstek.dorado.config.definition.ObjectDefinition;
 import com.bstek.dorado.config.definition.Operation;
-import com.bstek.dorado.jdbc.model.DbElementCreationContext;
+import com.bstek.dorado.jdbc.config.JdbcCreationContext;
 
 public class MatchRuleDefinition extends ObjectDefinition implements Operation {
 
@@ -11,7 +11,7 @@ public class MatchRuleDefinition extends ObjectDefinition implements Operation {
 	public void execute(Object object, CreationContext context)
 			throws Exception {
 		MatchRule rule = (MatchRule)this.create(context);
-		DbElementCreationContext jdbcCreatetionContext = (DbElementCreationContext)context;
+		JdbcCreationContext jdbcCreatetionContext = (JdbcCreationContext)context;
 		AutoTable table = (AutoTable)jdbcCreatetionContext.getDbElement();
 		rule.setAutoTable(table);
 		

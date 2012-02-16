@@ -6,14 +6,23 @@ import com.bstek.dorado.util.Assert;
 
 @XmlNode(
 	nodeName="Column",
-	definitionType = "com.bstek.dorado.jdbc.model.ColumnDefinition"
+	definitionType = "com.bstek.dorado.jdbc.config.ColumnDefinition"
 )
 public class AutoTableColumn extends AbstractUpdatableColumn {
 
+	private String nativeColumnName;
+	
 	private String tableAlias;
-	private String columnAlias;
 	
 	private AutoTable autoTable;
+
+	public String getNativeColumnName() {
+		return nativeColumnName;
+	}
+
+	public void setNativeColumnName(String nativeColumnName) {
+		this.nativeColumnName = nativeColumnName;
+	}
 	
 	public FromTable getFromTable() {
 		Assert.notNull(autoTable);
@@ -38,17 +47,5 @@ public class AutoTableColumn extends AbstractUpdatableColumn {
 		this.autoTable = autoTable;
 	}
 	
-	public String getColumnAlias() {
-		return columnAlias;
-	}
-
-	public void setColumnAlias(String columnAlias) {
-		this.columnAlias = columnAlias;
-	}
-
-	@Override
-	public String getKeyName() {
-		return getColumnAlias();
-	}
 }
 

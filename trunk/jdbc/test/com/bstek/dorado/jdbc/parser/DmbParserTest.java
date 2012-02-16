@@ -1,7 +1,7 @@
 package com.bstek.dorado.jdbc.parser;
 
+import com.bstek.dorado.jdbc.config.DbElementDefinition;
 import com.bstek.dorado.jdbc.config.DbModel;
-import com.bstek.dorado.jdbc.model.DbElementDefinition;
 import com.bstek.dorado.jdbc.model.sqltable.SqlTableDefinition;
 import com.bstek.dorado.jdbc.model.table.TableDefinition;
 

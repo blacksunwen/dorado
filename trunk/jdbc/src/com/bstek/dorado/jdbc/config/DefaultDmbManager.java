@@ -5,7 +5,6 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import com.bstek.dorado.config.definition.DefaultDefinitionManager;
-import com.bstek.dorado.jdbc.model.DbElementDefinition;
 
 public class DefaultDmbManager extends  DefaultDefinitionManager<DbElementDefinition> implements DbmManager {
 

@@ -1,4 +1,4 @@
-package com.bstek.dorado.jdbc.model;
+package com.bstek.dorado.jdbc.config;
 
 import com.bstek.dorado.config.definition.ObjectDefinition;
 import com.bstek.dorado.core.el.Expression;

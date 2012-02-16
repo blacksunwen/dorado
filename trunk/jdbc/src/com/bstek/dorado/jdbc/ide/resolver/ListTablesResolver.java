@@ -10,13 +10,13 @@ import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import com.bstek.dorado.jdbc.JdbcConstants;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.ModelGeneratorSuit;
-import com.bstek.dorado.jdbc.config.xml.DomHelper;
+import com.bstek.dorado.jdbc.config.DomHelper;
 import com.bstek.dorado.jdbc.ide.Constants;
 import com.bstek.dorado.jdbc.meta.TableMetaDataGenerator;
+import com.bstek.dorado.jdbc.support.JdbcConstants;
 
 public class ListTablesResolver extends Resolver {
 

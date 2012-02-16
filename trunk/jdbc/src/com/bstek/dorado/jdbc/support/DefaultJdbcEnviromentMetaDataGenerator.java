@@ -11,7 +11,6 @@ import javax.sql.DataSource;
 import org.springframework.jdbc.support.DatabaseMetaDataCallback;
 import org.springframework.jdbc.support.MetaDataAccessException;
 
-import com.bstek.dorado.jdbc.JdbcConstants;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.meta.JdbcEnviromentMetaDataGenerator;
 import com.bstek.dorado.jdbc.type.JdbcType;

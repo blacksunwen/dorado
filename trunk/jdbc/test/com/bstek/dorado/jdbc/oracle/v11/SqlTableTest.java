@@ -13,7 +13,6 @@ public class SqlTableTest  extends Oracle11JdbcTestCase {
 	public void testSqlDept() {
 		String tableName = "sql_dept";
 		Collection<Record> depts = JdbcUtils.query(tableName, null);
-		Assert.assertEquals(2, depts.size());
 		
 		Assert.assertTrue(depts.size() > 0);
 		{

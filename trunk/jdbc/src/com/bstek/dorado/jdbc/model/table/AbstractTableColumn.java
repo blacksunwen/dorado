@@ -1,12 +1,7 @@
 package com.bstek.dorado.jdbc.model.table;
 
-import com.bstek.dorado.jdbc.model.Column;
+import com.bstek.dorado.jdbc.model.AbstractColumn;
 
-public abstract class AbstractTableColumn extends Column {
-
-	@Override
-	public String getKeyName() {
-		return getColumnName();
-	}
+public abstract class AbstractTableColumn extends AbstractColumn {
 
 }

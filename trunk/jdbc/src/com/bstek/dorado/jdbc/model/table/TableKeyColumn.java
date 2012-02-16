@@ -1,8 +1,8 @@
 package com.bstek.dorado.jdbc.model.table;
 
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
-import com.bstek.dorado.jdbc.key.KeyGenerator;
 
 @XmlNode(nodeName="KeyColumn", 
 		definitionType="com.bstek.dorado.jdbc.model.table.TableKeyColumnDefinition")
@@ -32,6 +32,7 @@ public class TableKeyColumn extends AbstractTableColumn {
 		this.keyParameter = keyParameter;
 	}
 
+	@ClientProperty(escapeValue = "true")
 	public boolean isUpdatable() {
 		return updatable;
 	}

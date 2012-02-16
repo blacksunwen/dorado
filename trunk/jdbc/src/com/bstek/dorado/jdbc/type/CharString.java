@@ -2,7 +2,7 @@ package com.bstek.dorado.jdbc.type;
 
 import java.util.Map;
 
-import com.bstek.dorado.jdbc.JdbcConstants;
+import com.bstek.dorado.jdbc.support.JdbcConstants;
 
 public class CharString extends AbstractString {
 
