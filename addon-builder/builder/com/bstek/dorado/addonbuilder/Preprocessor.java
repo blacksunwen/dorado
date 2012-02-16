@@ -11,7 +11,7 @@ import java.util.zip.ZipInputStream;
 import org.apache.tools.ant.Project;
 
 public class Preprocessor {
-	private static final String DEFAULT_TARGET_DIR = "dorado-builder";
+	private static final String DEFAULT_TARGET_DIR = ".dorado-builder/addon-builder";
 	private static final String SYSTEM_DATA_FILE = "system.data";
 	private static final String RESOURCES_FILE = "/resources/home.zip";
 
