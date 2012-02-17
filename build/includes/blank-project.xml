@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project default="build">
-	<property name="module.dir" value="${work.dir}/blank" />
+	<property name="workDir" value="${rootWorkDir}/blank" />
+	<property name="templateDir" value="${workspaceDir}/blank" />
 
 	<target name="clean">
-		<delete dir="${module.dir}" />
+		<delete dir="${workDir}" />
 	</target>
 
 	<target name="build" depends="clean">
-		<mkdir dir="${module.dir}" />
+		<mkdir dir="${workDir}" />
 
-		<copy todir="${module.dir}">
-			<fileset dir="${resources.dir}/blank-project" />
+		<copy todir="${workDir}">
+			<fileset dir="resources/blank-project" />
 		</copy>
 
-		<copy todir="${module.dir}/web/WEB-INF/lib">
-			<fileset dir="${work.dir}/lib">
+		<copy todir="${workDir}/web/WEB-INF/lib">
+			<fileset dir="${workDir}/lib">
 				<include name="*.jar" />
 				<exclude name="dorado-*.jar" />
 			</fileset>

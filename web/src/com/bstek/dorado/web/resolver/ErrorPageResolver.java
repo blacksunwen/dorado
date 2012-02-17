@@ -7,14 +7,15 @@ import java.util.Properties;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.context.Context;
 import org.apache.velocity.runtime.RuntimeConstants;
-import org.apache.velocity.tools.ToolManager;
 
 import com.bstek.dorado.core.Constants;
 
@@ -23,12 +24,18 @@ import com.bstek.dorado.core.Constants;
  * @since 2011-1-31
  */
 public class ErrorPageResolver extends AbstractTextualResolver {
-	public static final String EXCEPTION_ATTRIBUTE = "exception";
-
 	private static Log logger = LogFactory.getLog(ErrorPageResolver.class);
 
+	public static final String EXCEPTION_ATTRIBUTE = "exception";
+
+	private static Object stringEscapeHelper = new Object() {
+		@SuppressWarnings("unused")
+		public String html(String s) {
+			return StringEscapeUtils.escapeHtml(s);
+		}
+	};
+
 	private VelocityEngine velocityEngine;
-	private ToolManager toolManager;
 	private Properties velocityProperties = new Properties();
 
 	public ErrorPageResolver() {
@@ -51,13 +58,6 @@ public class ErrorPageResolver extends AbstractTextualResolver {
 		return velocityEngine;
 	}
 
-	private ToolManager getToolManager() throws Exception {
-		if (toolManager == null) {
-			toolManager = new ToolManager();
-		}
-		return toolManager;
-	}
-
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
@@ -74,8 +74,8 @@ public class ErrorPageResolver extends AbstractTextualResolver {
 		response.setContentType(HttpConstants.CONTENT_TYPE_HTML);
 		response.setCharacterEncoding(Constants.DEFAULT_CHARSET);
 
-		Context velocityContext = getToolManager().createContext();
-
+		Context velocityContext = new VelocityContext();
+		velocityContext.put("esc", stringEscapeHelper);
 		Exception e = (Exception) request.getAttribute(EXCEPTION_ATTRIBUTE);
 		if (e != null) {
 			logger.error(e, e);

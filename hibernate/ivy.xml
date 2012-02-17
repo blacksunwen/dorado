@@ -7,7 +7,7 @@
 
 	<dependencies>
 		<!-- COMPILE -->
-		<dependency org="com.bstek.dorado" name="dorado-core" rev="7.0.10-SNAPSHOT" conf="compile" />
+		<dependency org="com.bstek.dorado" name="dorado-core" rev="7.0.11-BETA" conf="compile" />
 		<dependency org="org.hibernate" name="hibernate-core" rev="3.6.5.Final" conf="compile">
 			<exclude org="javax.transaction" />
 		</dependency>

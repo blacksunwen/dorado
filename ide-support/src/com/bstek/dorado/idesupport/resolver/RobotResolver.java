@@ -67,8 +67,8 @@ public class RobotResolver extends AbstractTextualResolver {
 	}
 
 	@Override
-	public void execute(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+	public void execute(HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
 		DoradoContext context = DoradoContext.getCurrent();
 		Document document = null;
 		List<Element> resultElements = null;
@@ -110,10 +110,10 @@ public class RobotResolver extends AbstractTextualResolver {
 					.getChildElements(propertiesElement);
 			if (!propertieElements.isEmpty()) {
 				properties = new Properties();
-				for (Element propertieElement : propertieElements) {
+				for (Element propertyElement : propertieElements) {
 					properties.setProperty(
-							propertieElement.getAttribute("name"),
-							DomUtils.getTextContent(propertieElement));
+							propertyElement.getAttribute("name"),
+							DomUtils.getTextContent(propertyElement));
 				}
 			}
 		}

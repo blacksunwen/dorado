@@ -19,9 +19,9 @@
 	<property name="targetDir" value="${buildDir}/target" />
 	<property name="addonBuilderVersion" value="1.0.0" />
 	<property name="bsdn.nexusReleases"
-	          value="http://nexus.bsdn.org:82/content/repositories/dorado_releases" />
+	          value="http://nexus.bsdn.org:80/content/repositories/dorado_releases" />
 	<property name="bsdn.nexusSnapshots"
-	          value="http://nexus.bsdn.org:82/content/repositories/dorado_snapshots" />
+	          value="http://nexus.bsdn.org:80/content/repositories/dorado_snapshots" />
 
 	<target name="init">
 		<delete dir="${workDir}" />
@@ -34,7 +34,7 @@
 	</target>
 
 	<target name="getAddonBuilder">
-		<get src="http://nexus.bsdn.org:82/content/groups/public/com/bstek/dorado/dorado-addon-builder/${addonBuilderVersion}/dorado-addon-builder-${addonBuilderVersion}.jar"
+		<get src="http://nexus.bsdn.org:80/content/groups/public/com/bstek/dorado/dorado-addon-builder/${addonBuilderVersion}/dorado-addon-builder-${addonBuilderVersion}.jar"
 		     dest="${libDir}"
 		     verbose="true"
 		     skipExisting="true" />

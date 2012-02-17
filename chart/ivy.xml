@@ -7,7 +7,7 @@
 
 	<dependencies>
 		<!-- COMPILE -->
-		<dependency org="com.bstek.dorado" name="dorado-core" rev="7.0.10-SNAPSHOT" conf="compile" />
+		<dependency org="com.bstek.dorado" name="dorado-core" rev="7.0.11-BETA" conf="compile" />
 
 		<!-- TEST -->
 		<dependency org="junit" name="junit" rev="4.8.2" conf="test" />

@@ -114,6 +114,8 @@ public class Node implements NodeHolder {
 		this.tip = tip;
 	}
 
+	@XmlSubNode
+	@ClientProperty
 	public Object getData() {
 		return data;
 	}

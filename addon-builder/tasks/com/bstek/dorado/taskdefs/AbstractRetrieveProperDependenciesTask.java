@@ -161,7 +161,7 @@ public abstract class AbstractRetrieveProperDependenciesTask extends Task {
 
 					String groupId = properties.getProperty("groupId");
 					String artifactId = properties.getProperty("artifactId");
-					String revision = properties.getProperty("version");
+					String revision = properties.getProperty("revision");
 
 					if (StringUtils.isNotEmpty(groupId)
 							&& StringUtils.isNotEmpty(artifactId)
