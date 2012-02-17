@@ -85,13 +85,13 @@ public class VelocityHelperFactoryBean implements FactoryBean<VelocityHelper> {
 						.forName("org.apache.velocity.tools.config.PropertiesFactoryConfiguration");
 				Object config = configType.newInstance();
 				for (Map.Entry entry : velocityToolProperties.entrySet()) {
-					MethodUtils.invokeExactMethod(config, "setProperty",
+					MethodUtils.invokeMethod(config, "setProperty",
 							new Object[] { entry.getKey(), entry.getValue() });
 				}
-				MethodUtils.invokeExactMethod(toolManager, "configure",
+				MethodUtils.invokeMethod(toolManager, "configure",
 						new Object[] { config });
 			}
-			MethodUtils.invokeExactMethod(toolManager, "setVelocityEngine",
+			MethodUtils.invokeMethod(toolManager, "setVelocityEngine",
 					new Object[] { getVelocityEngine() });
 
 			return new VelocityWithToolsHelper(toolManager);
