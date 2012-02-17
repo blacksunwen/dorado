@@ -20,13 +20,13 @@ public class VelocityWithToolsHelper extends VelocityHelper {
 
 	@Override
 	protected Context createContext() throws Exception {
-		return (Context) MethodUtils.invokeExactMethod(toolManager,
-				"createContext", new Object[0]);
+		return (Context) MethodUtils.invokeMethod(toolManager, "createContext",
+				new Object[0]);
 	}
 
 	@Override
 	public VelocityEngine getVelocityEngine() throws Exception {
-		return (VelocityEngine) MethodUtils.invokeExactMethod(toolManager,
+		return (VelocityEngine) MethodUtils.invokeMethod(toolManager,
 				"getVelocityEngine", new Object[0]);
 	}
 
