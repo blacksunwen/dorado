@@ -7,7 +7,7 @@
 
 	<property name="vendor" value="www.BSTEK.com" />
 	<property name="version" value="7.0.11" />
-	<property name="qualifier" value="SNAPSHOT" />
+	<property name="qualifier" value="BETA" />
 
 	<property name="targetDir" value="${rootWorkDir}/target" />
 
@@ -19,7 +19,21 @@
 	         uri="antlib:org.apache.maven.artifact.ant"
 	         classpath="lib/maven-ant-tasks-2.1.3.jar" />
 
-	<target name="buildCore">
+	<target name="init">
+		<if>
+			<equals arg1="${qualifier}" arg2="SNAPSHOT" />
+			<then>
+				<property name="maven.repository"
+				          value="${bsdn.nexusSnapshots}" />
+			</then>
+			<else>
+				<property name="maven.repository"
+				          value="${bsdn.nexusReleases}" />
+			</else>
+		</if>
+	</target>
+
+	<target name="build" depends="init">
 		<delete dir="${rootWorkDir}/core" />
 		<mkdir dir="${rootWorkDir}/core" />
 
@@ -34,107 +48,55 @@
 		                  buildJsDoc="${buildJsDoc}"
 		                  buildJavaDoc="${buildJavaDoc}"
 		                  clientSrc="${workspaceDir}/client/client"
-		                  javaSrc="${workspaceDir}/core/src,${workspaceDir}/data/src,${workspaceDir}/web/src,${workspaceDir}/view/src" />
+		                  javaSrc="${workspaceDir}/core/src,${workspaceDir}/data/src,${workspaceDir}/web/src,${workspaceDir}/view/src,${workspaceDir}/ide-support/src" />
 		<echo message="Build Dorado Addon Succeed: ${baseFileName}" />
 		<property name="coreBaseFileName" value="${baseFileName}" />
 	</target>
 
-	<target name="buildIdeSupport">
-		<delete dir="${rootWorkDir}/ide-support" />
-		<mkdir dir="${rootWorkDir}/ide-support" />
+	<target name="publish" depends="build">
+		<var name="fileName" value="${coreBaseFileName}" />
+		<echo message="Publish to bsdn: ${targetDir}/${fileName}.jar --> ${maven.repository}" />
 
-		<buildDoradoAddon baseDir="${workspaceDir}/ide-support"
-		                  workDir="${rootWorkDir}/ide-support"
-		                  targetDir="${targetDir}"
-		                  name="dorado-ide-support"
-		                  vendor="${vendor}"
-		                  version="${version}"
-		                  qualifier="${qualifier}"
-		                  buildJavaDoc="${buildJavaDoc}" />
-		<echo message="Build Dorado Addon Succeed: ${baseFileName}" />
-		<property name="ideSupportBaseFileName" value="${baseFileName}" />
-	</target>
-
-	<target name="publishCore">
-		<var name="archieveName" value="${coreBaseFileName}" />
-		<echo message="Publish to bsdn: ${targetDir}/${archieveName}.jar --> ${maven.repository}" />
-
-		<artifact:deploy file="${targetDir}/${archieveName}.jar"
+		<artifact:deploy file="${targetDir}/${fileName}.jar"
 		                 settingsfile="resources/maven-settings.xml">
 			<remoteRepository url="${maven.repository}">
 				<authentication username="${env.BSDN_NEXUS_USER}"
 				                password="${env.BSDN_NEXUS_PASSWORD}" />
 			</remoteRepository>
-			<pom file="${targetDir}/${archieveName}.pom" />
-			<attach file="${targetDir}/${archieveName}-sources.jar"
+			<pom file="${targetDir}/${fileName}.pom" />
+			<attach file="${targetDir}/${fileName}-sources.jar"
 			        type="jar"
 			        classifier="sources" />
-			<attach file="${targetDir}/${archieveName}-javadoc.jar"
+			<attach file="${targetDir}/${fileName}-javadoc.jar"
 			        type="jar"
 			        classifier="javadoc" />
-			<attach file="${targetDir}/${archieveName}-jsdoc.zip"
+			<attach file="${targetDir}/${fileName}-jsdoc.zip"
 			        type="zip"
 			        classifier="jsdoc" />
 		</artifact:deploy>
 	</target>
 
-	<target name="publishIdeSupport">
-		<var name="archieveName" value="${ideSupportBaseFileName}" />
-		<echo message="Publish to bsdn: ${targetDir}/${archieveName}.jar --> ${maven.repository}" />
-
-		<artifact:deploy file="${targetDir}/${archieveName}.jar"
-		                 settingsfile="resources/maven-settings.xml">
-			<remoteRepository url="${maven.repository}">
-				<authentication username="${env.BSDN_NEXUS_USER}"
-				                password="${env.BSDN_NEXUS_PASSWORD}" />
-			</remoteRepository>
-			<pom file="${targetDir}/${archieveName}.pom" />
-			<attach file="${targetDir}/${archieveName}-sources.jar"
-			        type="jar"
-			        classifier="sources" />
-		</artifact:deploy>
-	</target>
-
-	<target name="publish" if="${publish}">
-		<if>
-			<equals arg1="${qualifier}" arg2="SNAPSHOT" />
-			<then>
-				<property name="maven.repository"
-				          value="${bsdn.nexusSnapshots}" />
-			</then>
-			<else>
-				<property name="maven.repository"
-				          value="${bsdn.nexusReleases}" />
-			</else>
-		</if>
-
-		<antcall target="publishCore" />
-		<antcall target="publishIdeSupport" />
-	</target>
-
-	<target name="doBuild" depends="buildCore,buildIdeSupport,publish" />
-
 	<target name="buildJars">
 		<property name="buildSourceJar" value="false" />
 		<property name="buildJsDoc" value="false" />
 		<property name="buildJavaDoc" value="false" />
-		<property name="publish" value="false" />
-		<antcall target="doBuild" />
+
+		<antcall target="build" />
 	</target>
 
 	<target name="buildLibraries">
 		<property name="buildSourceJar" value="true" />
 		<property name="buildJsDoc" value="true" />
 		<property name="buildJavaDoc" value="true" />
-		<property name="publish" value="false" />
-		<antcall target="doBuild" />
+
+		<antcall target="build" />
 	</target>
 
 	<target name="buildAndPublish">
 		<property name="buildSourceJar" value="true" />
 		<property name="buildJsDoc" value="true" />
 		<property name="buildJavaDoc" value="true" />
-		<property name="publish" value="true" />
-		<antcall target="doBuild" />
+
+		<antcall target="publish" />
 	</target>
 </project>

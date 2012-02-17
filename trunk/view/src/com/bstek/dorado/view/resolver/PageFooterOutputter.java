@@ -98,7 +98,7 @@ public class PageFooterOutputter implements Outputter {
 		VelocityHelper velocityHelper = (VelocityHelper) doradoContext
 				.getServiceBean("velocityHelper");
 		org.apache.velocity.context.Context subContext = velocityHelper
-				.createContext(view, request, response);
+				.getContext(view, request, response);
 		Template template = velocityHelper.getVelocityEngine().getTemplate(
 				templateFile);
 		template.merge(subContext, writer);

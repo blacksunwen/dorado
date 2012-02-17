@@ -18,8 +18,6 @@
 		<dependency org="com.thoughtworks.paranamer" name="paranamer" rev="2.3" conf="compile" />
 
 		<dependency org="org.apache.velocity" name="velocity" rev="1.7" conf="compile" />
-		<dependency org="org.apache.velocity" name="velocity-tools-generic" rev="2.0" conf="compile" />
-
 		<dependency org="commons-lang" name="commons-lang" rev="2.5" conf="compile" />
 		<dependency org="commons-beanutils" name="commons-beanutils" rev="1.8.3" conf="compile" />
 		<dependency org="commons-codec" name="commons-codec" rev="1.5" conf="compile" />
@@ -35,6 +33,10 @@
 		<dependency org="org.springframework" name="spring-expression" rev="3.0.5.RELEASE" conf="compile" />
 		<dependency org="org.springframework" name="spring-web" rev="3.0.5.RELEASE" conf="compile" />
 		<dependency org="org.springframework" name="spring-webmvc" rev="3.0.5.RELEASE" conf="compile" />
+
+		<dependency org="dom4j" name="dom4j" rev="1.6.1" conf="compile">
+			<exclude org="xml-apis" />
+		</dependency>
 
 		<!-- TEST -->
 		<dependency org="junit" name="junit" rev="4.8.2" conf="test" />

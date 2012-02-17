@@ -146,7 +146,7 @@ public class HtmlViewResolver extends AbstractTextualResolver {
 			requestDispatcher.include(request, response);
 		} else {
 			org.apache.velocity.context.Context velocityContext = velocityHelper
-					.createContext(view, request, response);
+					.getContext(view, request, response);
 
 			String templateFile = StringUtils.defaultIfEmpty(pageTemplate,
 					this.templateFile);

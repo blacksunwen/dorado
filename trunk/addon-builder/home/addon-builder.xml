@@ -50,6 +50,10 @@
 	          value="${resourcesDir}/jsdoc_toolkit-2.4.0/" />
 
 	<target name="initVariables">
+		<echo message="archieveName: ${archieveName}" />
+		<echo message="version: ${version}" />
+		<echo message="qualifier: ${qualifier}" />
+
 		<if>
 			<not>
 				<isset property="revision" />
@@ -84,6 +88,10 @@
 		</if>
 
 		<var name="baseFileName" value="${archieveName}-${revision}" />
+
+		<echo message="revision: ${revision}" />
+		<echo message="publication: ${publication}" />
+		<echo message="baseFileName: ${baseFileName}" />
 	</target>
 
 	<target name="clean">
@@ -300,15 +308,12 @@
 
 				<ivy:configure file="${workDir}/temp/ivysettings.xml" />
 
-				<ivy:resolve resolveid="common"
-				             file="${resourcesDir}/ivy.xml" />
-				<ivy:retrieve resolveid="common"
-				              pattern="${workDir}/common-lib/${ivy.fileNamePattern}"
+				<ivy:resolve file="${resourcesDir}/ivy.xml" />
+				<ivy:retrieve pattern="${workDir}/common-lib/${ivy.fileNamePattern}"
 				              conf="compile" />
 
-				<ivy:resolve resolveid="addon" file="${ivyFile}" />
-				<ivy:retrieve resolveid="addon"
-				              pattern="${workDir}/lib/${ivy.fileNamePattern}"
+				<ivy:resolve file="${ivyFile}" />
+				<ivy:retrieve pattern="${workDir}/lib/${ivy.fileNamePattern}"
 				              conf="compile" />
 			</then>
 		</if>
@@ -423,6 +428,10 @@
 
 				<propertyfile file="${workDir}/bin/META-INF/dorado-package.properties">
 					<entry key="version" value="${fullVersion}" />
+					<entry key="marjoVersion" value="${version}" />
+					<entry key="publication" value="${publication}" />
+					<entry key="qualifier" value="${qualifier}" />
+					<entry key="revision" value="${version}-${qualifier}" />
 					<entry key="properDependencies"
 					       value="${properDependencies}" />
 				</propertyfile>

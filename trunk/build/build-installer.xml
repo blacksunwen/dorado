@@ -44,7 +44,7 @@
 		<property name="tempWorkDir"
 		          value="${workDir}/lib/${addon.artifactId}" />
 		<retrieveProperDependencies libDir="${tempWorkDir}"
-		                            dependenciesDir="${tempWorkDir}/lib"
+		                            dependenciesDir="${tempWorkDir}/dependencies"
 		                            workDir="${tempWorkDir}/inherited"
 		                            ivySettingsFile="resources/ivysettings.xml"
 		                            ivyTemplateFile="resources/ivytemplate.xml"
@@ -54,7 +54,6 @@
 	</target>
 
 	<target name="retrieveProperDependencies">
-		<!--
 		<antcall target="doRetrieveProperLibs">
 			<param name="addon.groupId" value="com.bstek.dorado" />
 			<param name="addon.artifactId" value="dorado-core" />
@@ -66,14 +65,12 @@
 			<param name="addon.artifactId" value="dorado-ide-support" />
 			<param name="addon.revision" value="7.0.9-SNAPSHOT" />
 		</antcall>
-		-->
 
 		<antcall target="doRetrieveProperLibs">
 			<param name="addon.groupId" value="com.bstek.dorado" />
 			<param name="addon.artifactId" value="dorado-hibernate" />
 			<param name="addon.revision" value="0.0.1-BETA" />
 		</antcall>
-
 
 		<!--
 		<antcall target="doRetrieveProperLibs">
@@ -100,6 +97,13 @@
 			<param name="addon.revision" value="0.0.1-BETA" />
 		</antcall>
 		-->
+	</target>
+
+	<target name="buildBlankProject">
+		<mkdir dir="${workDir}/blank-project" />
+		<copy todir="${workDir}/blank-project">
+			<fileset dir="resources/blank-project" />
+		</copy>
 	</target>
 
 	<target name="build" depends="init,retrieveProperDependencies">
