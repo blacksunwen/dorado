@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.bstek.dorado.view.resolver;
 
 import org.apache.velocity.VelocityContext;
