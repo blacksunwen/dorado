@@ -7,7 +7,6 @@ import java.util.Properties;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,31 +27,26 @@ public class ErrorPageResolver extends AbstractTextualResolver {
 
 	public static final String EXCEPTION_ATTRIBUTE = "exception";
 
-	private static Object stringEscapeHelper = new Object() {
-		@SuppressWarnings("unused")
-		public String html(String s) {
-			return StringEscapeUtils.escapeHtml(s);
-		}
-	};
-
 	private VelocityEngine velocityEngine;
-	private Properties velocityProperties = new Properties();
+	private Properties velocityProperties;
+	private StringEscapeHelper stringEscapeHelper = new StringEscapeHelper();
 
 	public ErrorPageResolver() {
 		setContentType(HttpConstants.CONTENT_TYPE_HTML);
-
-		velocityProperties.setProperty(RuntimeConstants.INPUT_ENCODING,
-				Constants.DEFAULT_CHARSET);
-		velocityProperties.setProperty(RuntimeConstants.OUTPUT_ENCODING,
-				Constants.DEFAULT_CHARSET);
-		velocityProperties
-				.setProperty("file.resource.loader.class",
-						"org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
 	}
 
 	private VelocityEngine getVelocityEngine() throws Exception {
 		if (velocityEngine == null) {
 			velocityEngine = new VelocityEngine();
+
+			velocityProperties = new Properties();
+			velocityProperties.setProperty(RuntimeConstants.INPUT_ENCODING,
+					Constants.DEFAULT_CHARSET);
+			velocityProperties.setProperty(RuntimeConstants.OUTPUT_ENCODING,
+					Constants.DEFAULT_CHARSET);
+			velocityProperties
+					.setProperty("file.resource.loader.class",
+							"org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
 			velocityEngine.init(velocityProperties);
 		}
 		return velocityEngine;
@@ -75,7 +69,6 @@ public class ErrorPageResolver extends AbstractTextualResolver {
 		response.setCharacterEncoding(Constants.DEFAULT_CHARSET);
 
 		Context velocityContext = new VelocityContext();
-		velocityContext.put("esc", stringEscapeHelper);
 		Exception e = (Exception) request.getAttribute(EXCEPTION_ATTRIBUTE);
 		if (e != null) {
 			logger.error(e, e);
@@ -104,6 +97,7 @@ public class ErrorPageResolver extends AbstractTextualResolver {
 			velocityContext.put("message",
 					"Can not gain exception information!");
 		}
+		velocityContext.put("esc", stringEscapeHelper);
 
 		Template template = getVelocityEngine().getTemplate(
 				"com/bstek/dorado/web/resolver/ErrorPage.html");
