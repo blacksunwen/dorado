@@ -1422,11 +1422,12 @@
 			if (entity) {
 				if (entity instanceof dorado.Entity) {
 					if (editor instanceof dorado.widget.AbstractTextEditor) {
-						if (editor.get("validationState") != "error") {
-							value = editor.get("value");
-							if (value instanceof dorado.Entity) entity.set(property, value);
-							else entity.setText(property, editor.get("text"));
-						}
+						// 此处的判断导致一旦Grid中的校验出错后，就再也无法通过Grid来录入内容。因为validationState是在post完成之后才设置的。
+						// if (editor.get("validationState") != "error") {
+						value = editor.get("value");
+						if (value instanceof dorado.Entity) entity.set(property, value);
+						else entity.setText(property, editor.get("text"));
+						// }
 					} else {
 						value = editor.get("value");
 						entity.set(property, value);
