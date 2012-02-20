@@ -6,6 +6,7 @@ import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -341,7 +342,7 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 	protected Collection<AutoPropertyTemplate> getProperties(Class<?> type,
 			XmlNodeInfo xmlNodeInfo, InitializerContext initializerContext)
 			throws Exception {
-		Collection<AutoPropertyTemplate> properties = new ArrayList<AutoPropertyTemplate>();
+		HashMap<String, AutoPropertyTemplate> properties = new LinkedHashMap<String, AutoPropertyTemplate>();
 		RuleTemplateManager ruleTemplateManager = initializerContext
 				.getRuleTemplateManager();
 
@@ -350,11 +351,11 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 				AutoPropertyTemplate propertyTemplate = new AutoPropertyTemplate(
 						"impl");
 				propertyTemplate.setPrimitive(true);
-				properties.add(propertyTemplate);
+				properties.put(propertyTemplate.getName(), propertyTemplate);
 
 				propertyTemplate = new AutoPropertyTemplate("parent");
 				propertyTemplate.setPrimitive(true);
-				properties.add(propertyTemplate);
+				properties.put(propertyTemplate.getName(), propertyTemplate);
 			}
 
 			if (xmlNodeInfo.isScopable()) {
@@ -369,7 +370,7 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 				}
 				propertyTemplate.setEnumValues(enumValues);
 
-				properties.add(propertyTemplate);
+				properties.put(propertyTemplate.getName(), propertyTemplate);
 			}
 
 			if (StringUtils.isNotEmpty(xmlNodeInfo.getDefinitionType())) {
@@ -380,7 +381,8 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 					AutoPropertyTemplate propertyTemplate = new AutoPropertyTemplate(
 							"listener");
 					propertyTemplate.setPrimitive(true);
-					properties.add(propertyTemplate);
+					properties
+							.put(propertyTemplate.getName(), propertyTemplate);
 				}
 
 				if (InterceptableDefinition.class
@@ -388,7 +390,8 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 					AutoPropertyTemplate propertyTemplate = new AutoPropertyTemplate(
 							"interceptor");
 					propertyTemplate.setPrimitive(true);
-					properties.add(propertyTemplate);
+					properties
+							.put(propertyTemplate.getName(), propertyTemplate);
 				}
 			}
 
@@ -403,7 +406,7 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 				propertyTemplate.setPrimitive(true);
 				propertyTemplate.setFixed(true);
 				propertyTemplate.setVisible(false);
-				properties.add(propertyTemplate);
+				properties.put(propertyName, propertyTemplate);
 			}
 
 			for (Map.Entry<String, XmlProperty> entry : xmlNodeInfo
@@ -429,7 +432,7 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 							initializerContext);
 				}
 
-				properties.add(propertyTemplate);
+				properties.put(propertyName, propertyTemplate);
 			}
 		}
 
@@ -476,9 +479,13 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 						continue;
 					}
 
-					propertyTemplate = new AutoPropertyTemplate(propertyName,
-							readMethod, xmlProperty);
-					propertyTemplate.setPrimitive(xmlProperty.attributeOnly());
+					propertyTemplate = properties.get(propertyName);
+					if (propertyTemplate == null) {
+						propertyTemplate = new AutoPropertyTemplate(
+								propertyName, readMethod, xmlProperty);
+						propertyTemplate.setPrimitive(xmlProperty
+								.attributeOnly());
+					}
 
 					if (("dataSet".equals(propertyName)
 							|| "dataPath".equals(propertyName) || "property"
@@ -540,11 +547,11 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 								.escapeValue());
 					}
 
-					properties.add(propertyTemplate);
+					properties.put(propertyName, propertyTemplate);
 				}
 			}
 		}
-		return properties;
+		return properties.values();
 	}
 
 	protected void initCompositeProperty(AutoPropertyTemplate propertyTemplate,
