@@ -8,11 +8,13 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
+import com.bstek.dorado.core.Constants;
 import com.bstek.dorado.core.io.Resource;
 
 /**
@@ -54,6 +56,10 @@ public class DefaultXmlDocumentBuilder implements XmlDocumentBuilder {
 			throws Exception {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Loading XML from " + resource);
+		}
+
+		if (StringUtils.isEmpty(charset)) {
+			charset = Constants.DEFAULT_CHARSET;
 		}
 
 		InputStream in = resource.getInputStream();
