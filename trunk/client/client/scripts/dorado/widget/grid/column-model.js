@@ -2037,8 +2037,8 @@
 			var checkbox = new dorado.widget.CheckBox({
 				onValueChange: function(checkbox) {
 					var grid = arg.grid, innerGrid = grid._innerGrid, selectionMode = grid._selectionMode;
-					var entity = grid.get("itemModel").getItemById(checkbox._selectionEntityId), checked = checkbox.get("checked");
-					var selection = (selectionMode == "multiRows") ? [entity] : entity;
+					var data = grid.get("itemModel").getItemById(checkbox._selectDataId), checked = checkbox.get("checked");
+					var selection = (selectionMode == "multiRows") ? [data] : data;
 					innerGrid.replaceSelection.apply(innerGrid, checked ? [null, selection] : [selection, null]);
 				}
 			});
@@ -2053,10 +2053,9 @@
 				checkbox.destroy();
 				return;
 			}
-			
-			var grid = arg.grid, entity = arg.data, selection = this.selection, selectionMode = grid._selectionMode, config = {};
+			var grid = arg.grid, data = arg.dataForSelection || arg.data, selection = this.selection, selectionMode = grid._selectionMode, config = {};			
 			if (selectionMode == "multiRows") {
-				config.checked = (selection && selection.indexOf(entity) >= 0);
+				config.checked = (selection && selection.indexOf(data) >= 0);
 				config.readOnly = false;
 			} else if (selectionMode == "singleRow") {
 				config.checked = (arg.data == selection);
@@ -2065,12 +2064,12 @@
 				config.checked = false;
 				config.readOnly = true;
 			}
-			var oldId = checkbox._selectionEntityId;
+			var oldId = checkbox._selectDataId;
 			if (oldId != null) delete this.checkboxMap[oldId];
 			checkbox.set(config);
 			checkbox.refresh();
-			checkbox._selectionEntityId = grid._itemModel.getItemId(entity);
-			this.checkboxMap[checkbox._selectionEntityId] = checkbox;
+			checkbox._selectDataId = grid._itemModel.getItemId(data);
+			this.checkboxMap[checkbox._selectDataId] = checkbox;
 		}
 	});
 	

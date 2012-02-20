@@ -44,6 +44,7 @@
 		renderCell: function(cellRenderer, dom, arg) {
 			var node = arg.node = arg.data;
 			arg.data = (node instanceof dorado.widget.tree.DataNode) ? node._data : node;
+			arg.dataForSelection = node;
 			dorado.widget.grid.DefaultRowRenderer.prototype.renderCell.call(this, cellRenderer, dom, arg);
 		}
 	});

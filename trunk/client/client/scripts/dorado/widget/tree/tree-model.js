@@ -642,7 +642,10 @@ dorado.widget.tree.DataNode = $extend(dorado.widget.tree.Node, /** @scope dorado
 		 */
 		data: {
 			setter: function(data) {
+				if (this._data) delete this._data._node;
+				
 				if (!(data instanceof dorado.Entity)) data = new dorado.Entity(data);
+				data._node = this;
 				this._data = data;
 			}
 		}

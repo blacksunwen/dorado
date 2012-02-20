@@ -2772,7 +2772,12 @@
 									if (eventArg.processDefault) {
 										if (column instanceof dorado.widget.grid.DataColumn) {
 											var sortState = column.get("sortState");
-											grid.sort(column, !(sortState == null || sortState == "desc"));
+											try {
+												grid.sort(column, !(sortState == null || sortState == "desc"));
+											}
+											catch (e) {
+												dorado.Exception.removeException(e);
+											}
 										}
 									}
 								}
