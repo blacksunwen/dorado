@@ -490,7 +490,7 @@
 		
 		destroy : function() {
 			if(this._innerControls) {
-				jQuery.each(this._innerControls.slice(0, -1), function(i, control) {
+				jQuery.each(this._innerControls.slice(0), function(i, control) {
 					if(!control._destroyed)
 						control.destroy();
 				});
