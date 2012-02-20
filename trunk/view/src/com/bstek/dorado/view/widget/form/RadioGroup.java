@@ -23,6 +23,8 @@ public class RadioGroup extends AbstractDataEditor {
 	private RadioGroupLayout layout = RadioGroupLayout.vertical;
 	private List<RadioButton> radioButtons = new ArrayList<RadioButton>();
 
+	@XmlSubNode
+	@ClientProperty
 	public Object getValue() {
 		return value;
 	}
