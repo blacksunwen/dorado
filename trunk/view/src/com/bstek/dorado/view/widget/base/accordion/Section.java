@@ -8,6 +8,7 @@ import java.util.Map;
 import com.bstek.dorado.annotation.ClientEvents;
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.common.Ignorable;
@@ -25,6 +26,7 @@ import com.bstek.dorado.view.widget.InnerElementReference;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-8-9
  */
+@XmlNode
 @ClientObject(prototype = "dorado.widget.accordion.Section",
 		shortTypeName = "Section")
 @ClientEvents({ @com.bstek.dorado.annotation.ClientEvent(
