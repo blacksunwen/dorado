@@ -564,7 +564,6 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		},
 		
 		doGetText : function(property, callback, loadMode) {
-
 			function toText(value, propertyDef) {
 				var text;
 				if (propertyDef) {

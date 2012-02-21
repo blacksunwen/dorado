@@ -797,6 +797,21 @@
 			return validationResults;
 		},
 		
+		doRefreshData: function() {
+			var p = this._property, e = this._entity;
+			if (e instanceof dorado.Entity) {
+				if (this._dataType) {
+					this.set("value", e.get(p));
+				} else {
+					this.set("text", e.getText(p));
+				}
+			}
+			else {
+				this.set("value", e[p]);
+			}
+			this.setDirty(false);
+		},
+		
 		doPost: function() {
 			var p = this._property, e = this._entity;
 			if (!p || !e) return false;
