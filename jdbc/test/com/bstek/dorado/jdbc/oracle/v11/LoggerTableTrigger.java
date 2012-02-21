@@ -2,11 +2,11 @@ package com.bstek.dorado.jdbc.oracle.v11;
 
 import java.util.Date;
 
-import com.bstek.dorado.jdbc.AbstractTableTrigger;
+import com.bstek.dorado.jdbc.AbstractDbTableTrigger;
 import com.bstek.dorado.jdbc.JdbcDataProviderOperation;
 import com.bstek.dorado.jdbc.JdbcRecordOperation;
 
-public class LoggerTableTrigger extends AbstractTableTrigger {
+public class LoggerTableTrigger extends AbstractDbTableTrigger {
 
 	@Override
 	public void doQuery(JdbcDataProviderOperation operation) {

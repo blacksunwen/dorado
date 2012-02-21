@@ -10,12 +10,14 @@ import org.apache.commons.lang.RandomStringUtils;
 
 import com.bstek.dorado.data.config.ConfigManagerTestSupport;
 import com.bstek.dorado.data.variant.Record;
+import com.bstek.dorado.jdbc.model.DbTable;
 
 public abstract class AbstractJdbcTestCase extends ConfigManagerTestSupport {
 
 	protected AbstractJdbcTestCase () {
 		super();
 		this.addExtensionContextConfigLocation("classpath:com/bstek/dorado/jdbc/test-context.xml");
+//		this.addExtensionContextConfigLocation("classpath:com/bstek/dorado/jdbc/context.xml");
 		for (String location: getExtConfigLocations()) {
 			this.addExtensionContextConfigLocation(location);
 		}
@@ -37,8 +39,25 @@ public abstract class AbstractJdbcTestCase extends ConfigManagerTestSupport {
 	
 	protected abstract List<String> getExtConfigLocations(); 
 	
-	protected static class Dept {
+	static abstract class TestTable {
+		abstract String getTableName();
+		
+		Collection<Record> query(Object parameter) {
+			JdbcDataProviderContext jCtx = new JdbcDataProviderContext(null, parameter);
+			DbTable table = JdbcUtils.getDbTable(getTableName());
+			JdbcDataProviderOperation operation = new JdbcDataProviderOperation(table, jCtx);
+			
+			return JdbcUtils.query(operation);
+		}
+	}
+	
+	protected static class Dept extends TestTable {
 		public static String TABLE = "DEPT";
+		
+		@Override
+		String getTableName() {
+			return TABLE;
+		}
 		
 		public static Record random(){
 			Record r = new Record();
@@ -49,8 +68,8 @@ public abstract class AbstractJdbcTestCase extends ConfigManagerTestSupport {
 		}
 		
 		public static Record get(String id) {
-			Collection<Record> records = JdbcUtils.query(TABLE, 
-					Collections.singletonMap("ID", id));
+			Dept t = new Dept();
+			Collection<Record> records = t.query(Collections.singletonMap("ID", id));
 			Assert.assertEquals("Dept id=" + id, 1, records.size());
 			
 			Record dept = (Record)records.iterator().next();
@@ -58,8 +77,8 @@ public abstract class AbstractJdbcTestCase extends ConfigManagerTestSupport {
 		}
 		
 		public static boolean has(String id) {
-			Collection<Record> records = JdbcUtils.query(TABLE, 
-					Collections.singletonMap("ID", id));
+			Dept t = new Dept();
+			Collection<Record> records = t.query(Collections.singletonMap("ID", id));
 			Assert.assertTrue("Dept id=" + id, records.size() <= 1);
 			
 			if (records.size() == 0) {
@@ -68,10 +87,16 @@ public abstract class AbstractJdbcTestCase extends ConfigManagerTestSupport {
 				return true;
 			} 
 		}
+
 	}
 	
-	protected static class Employee {
+	protected static class Employee extends TestTable  {
 		public static String TABLE = "EMPLOYEE";
+		
+		@Override
+		String getTableName() {
+			return TABLE;
+		}
 		
 		public static Record random() {
 			Record r = new Record();
@@ -98,8 +123,8 @@ public abstract class AbstractJdbcTestCase extends ConfigManagerTestSupport {
 		}
 		
 		public static Record get(Integer id) {
-			Collection<Record> records = JdbcUtils.query(TABLE, 
-					Collections.singletonMap("ID", id));
+			Employee t = new Employee();
+			Collection<Record> records = t.query(Collections.singletonMap("ID", id));
 			Assert.assertEquals("Employee id=" + id, 1, records.size());
 			
 			Record employee = (Record)records.iterator().next();
@@ -107,8 +132,8 @@ public abstract class AbstractJdbcTestCase extends ConfigManagerTestSupport {
 		}
 		
 		public static boolean has(Integer id) {
-			Collection<Record> records = JdbcUtils.query(TABLE, 
-					Collections.singletonMap("ID", id));
+			Employee t = new Employee();
+			Collection<Record> records = t.query(Collections.singletonMap("ID", id));
 			Assert.assertTrue("Employee id=" + id, records.size() <= 1);
 			
 			if (records.size() == 0) {
@@ -117,5 +142,7 @@ public abstract class AbstractJdbcTestCase extends ConfigManagerTestSupport {
 				return true;
 			} 
 		}
+
+		
 	}
 }

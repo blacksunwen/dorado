@@ -22,7 +22,7 @@ public class TestJdbcUtils {
 	 * @return
 	 */
 	public static String outputTable(String jdbcEnvName, String tableName) {
-		return outputTable(jdbcEnvName, null, null, tableName);
+		return outputTable(jdbcEnvName, null, tableName);
 	}
 	
 	/**
@@ -33,12 +33,10 @@ public class TestJdbcUtils {
 	 * @param tableName
 	 * @return
 	 */
-	public static String outputTable(String jdbcEnvName, String catalog, String schema, String tableName) {
-		JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(jdbcEnvName);
-		
+	public static String outputTable(String jdbcEnvName, String spaceName, String tableName) {
 		CreateTableResolver resolver = new CreateTableResolver();
 		
-		String xml = resolver.toContent(catalog, schema, tableName, jdbcEnv, null);
+		String xml = resolver.toContent(jdbcEnvName, spaceName, tableName, null);
 		return xml;
 	}
 

@@ -8,11 +8,11 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import com.bstek.dorado.data.entity.EntityState;
 import com.bstek.dorado.data.entity.EntityUtils;
 import com.bstek.dorado.data.variant.Record;
-import com.bstek.dorado.jdbc.AbstractTableTrigger;
+import com.bstek.dorado.jdbc.AbstractDbTableTrigger;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.JdbcRecordOperation;
 
-public class DeptTableTrigger extends AbstractTableTrigger {
+public class DeptTableTrigger extends AbstractDbTableTrigger {
 
 	@Override
 	public void doSave(JdbcRecordOperation operation) {
