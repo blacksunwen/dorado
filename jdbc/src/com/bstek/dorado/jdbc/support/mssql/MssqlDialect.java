@@ -1,5 +1,6 @@
 package com.bstek.dorado.jdbc.support.mssql;
 
+import com.bstek.dorado.jdbc.JdbcSpace;
 import com.bstek.dorado.jdbc.sql.SelectSql;
 import com.bstek.dorado.jdbc.sql.SqlConstants.KeyWord;
 import com.bstek.dorado.jdbc.sql.SqlConstants.NullsModel;
@@ -74,6 +75,11 @@ public class MssqlDialect extends AbstractDialect {
 	@Override
 	protected String token(NullsModel nullsModel) {
 		return null;
+	}
+
+	@Override
+	public JdbcSpace getTableJdbcSpace() {
+		return JdbcSpace.SCHEMA;
 	}
 
 }

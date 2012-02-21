@@ -5,6 +5,7 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
+import com.bstek.dorado.jdbc.JdbcSpace;
 import com.bstek.dorado.jdbc.sql.SelectSql;
 import com.bstek.dorado.jdbc.sql.SqlConstants.JoinModel;
 import com.bstek.dorado.jdbc.support.AbstractDialect;
@@ -77,5 +78,10 @@ public class DerbyDialect extends AbstractDialect {
 			}
 		}
 		return schema;
+	}
+
+	@Override
+	public JdbcSpace getTableJdbcSpace() {
+		return JdbcSpace.SCHEMA;
 	}
 }

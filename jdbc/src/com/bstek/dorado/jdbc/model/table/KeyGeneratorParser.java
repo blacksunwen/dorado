@@ -12,15 +12,14 @@ public class KeyGeneratorParser extends PropertyParser {
 
 	@Override
 	protected Object doParse(Node node, ParseContext context) throws Exception {
-//		String name = (String)super.doParse(node, context);
-//		if (StringUtils.isNotEmpty(name)) {
-//			JdbcParseContext jdbcContext = (JdbcParseContext) context; 
-//			JdbcEnviroment env = jdbcContext.getJdbcEnviroment();
-//			KeyGenerator<Object> kg = env.getDialect().getKeyGenerator(name);
-//			return kg;
-//		} else {
-//			return null;
-//		}
-		return super.doParse(node, context);
+		String name = (String)super.doParse(node, context);
+		if (StringUtils.isNotEmpty(name)) {
+			JdbcParseContext jdbcContext = (JdbcParseContext) context; 
+			JdbcEnviroment env = jdbcContext.getJdbcEnviroment();
+			KeyGenerator<Object> kg = env.getDialect().getKeyGenerator(name);
+			return kg;
+		} else {
+			return null;
+		}
 	}
 }

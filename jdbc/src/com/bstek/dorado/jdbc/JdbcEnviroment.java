@@ -3,7 +3,8 @@ package com.bstek.dorado.jdbc;
 import javax.sql.DataSource;
 
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
-import org.springframework.transaction.support.TransactionOperations;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
 
 /**
  * JDBC环境配置，主要配置数据库方言和数据源连接<br>
@@ -23,6 +24,8 @@ public interface JdbcEnviroment {
 
 	public NamedParameterJdbcDaoSupport getNamedDao();
 
-	public TransactionOperations getTransactionOperations();
+	public PlatformTransactionManager getTransactionManager();
+	
+	public TransactionDefinition getTransactionDefinition();
 
 }

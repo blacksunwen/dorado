@@ -4,46 +4,18 @@ import javax.sql.DataSource;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
-import org.springframework.transaction.support.TransactionOperations;
-import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
 
-import com.bstek.dorado.jdbc.Dialect;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.util.Assert;
 
-public class DefaultJdbcEnviroment implements JdbcEnviroment, InitializingBean {
+public class DefaultJdbcEnviroment extends AbstractJdbcEnviroment implements JdbcEnviroment, InitializingBean {
 
-	private String name;
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	private boolean isdefault = false;
-
-	public boolean isDefault() {
-		return isdefault;
-	}
-
-	public void setDefault(boolean isdefault) {
-		this.isdefault = isdefault;
-	}
-
-	private Dialect dialect;
-
-	public Dialect getDialect() {
-		return dialect;
-	}
-
-	public void setDialect(Dialect dialect) {
-		this.dialect = dialect;
-	}
 
 	private DataSource dataSource;
+	private PlatformTransactionManager transactionManager;
+	private TransactionDefinition transactionDefinition;
 
 	public DataSource getDataSource() {
 		return dataSource;
@@ -67,22 +39,30 @@ public class DefaultJdbcEnviroment implements JdbcEnviroment, InitializingBean {
 
 		return namedParameterJdbcDaoSupport;
 	}
-
-	private TransactionTemplate transactionTemplate;
-	
-	public void setTransactionTemplate(TransactionTemplate transactionTemplate) {
-		this.transactionTemplate = transactionTemplate;
-	}
-	
-	public TransactionOperations getTransactionOperations() {
-		return transactionTemplate;
-	}
 	
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		Assert.notNull(this.getName(), "name can not be null.");
 		Assert.notNull(this.getDataSource(), "dataSource can not be null.");
 		Assert.notNull(this.getDialect(), "dialect can not be null.");
+	}
+
+	@Override
+	public PlatformTransactionManager getTransactionManager() {
+		return transactionManager;
+	}
+
+	public void setTransactionManager(PlatformTransactionManager transactionManager) {
+		this.transactionManager = transactionManager;
+	}
+
+	@Override
+	public TransactionDefinition getTransactionDefinition() {
+		return transactionDefinition;
+	}
+
+	public void setTransactionDefinition(TransactionDefinition transactionDefinition) {
+		this.transactionDefinition = transactionDefinition;
 	}
 
 }

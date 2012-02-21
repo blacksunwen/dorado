@@ -5,6 +5,7 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
+import com.bstek.dorado.jdbc.JdbcSpace;
 import com.bstek.dorado.jdbc.sql.SelectSql;
 import com.bstek.dorado.jdbc.sql.SqlConstants.KeyWord;
 import com.bstek.dorado.jdbc.sql.SqlConstants.NullsModel;
@@ -108,5 +109,10 @@ public class Db2Dialect extends AbstractDialect {
 			}
 		}
 		return schema;
+	}
+
+	@Override
+	public JdbcSpace getTableJdbcSpace() {
+		return JdbcSpace.SCHEMA;
 	}
 }

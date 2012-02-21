@@ -55,11 +55,21 @@ public abstract class JdbcUtils {
 		}
 	}
 	
-	public static ModelStrategy getJdbcModelStrategy() {
+	public static ModelStrategy getModelStrategy() {
 		Context context = Context.getCurrent();
 		try {
 			ModelStrategy strategy = (ModelStrategy)context.getServiceBean("jdbc.modelStrategy");
 			return strategy;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public static JdbcIntercepter getGlobalIntercepter() {
+		Context context = Context.getCurrent();
+		try {
+			JdbcIntercepter intercepter = (JdbcIntercepter)context.getServiceBean("jdbc.globalIntercepter");
+			return intercepter;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -78,36 +88,34 @@ public abstract class JdbcUtils {
 		}
 	}
 	
-
-	
-	public static Collection<Record> query(String tableName, QueryArg arg) {
-		if (arg == null) {
-			arg = new QueryArg();
-		}
-		
-		JdbcEnviroment jdbcEnviroment = arg.getJdbcEnviroment();
-		Page<Record> page = arg.getPage();
-		Object parameter = arg.getParameter();
-		
+	public static Collection<Record> query(String tableName, Object parameter) {
+		JdbcDataProviderContext jCtx = new JdbcDataProviderContext(null, parameter);
 		DbTable table = JdbcUtils.getDbTable(tableName);
+		JdbcDataProviderOperation operation = new JdbcDataProviderOperation(table, jCtx);
 		
-		JdbcDataProviderContext rCtx = new JdbcDataProviderContext(jdbcEnviroment, parameter, page);
-		JdbcDataProviderOperation operation = new JdbcDataProviderOperation(table, rCtx);
-		
-		TableTrigger trigger = table.getTrigger();
-		if (trigger != null) {
-			trigger.doQuery(operation);
-		} else {
-			operation.execute();
-		}
-		return page.getEntities();
+		return query(operation);
 	}
 	
-	public static Collection<Record> query(String tableName, Object parameter) {
-		QueryArg arg = new QueryArg();
-		arg.setParameter(parameter);
+	public static Collection<Record> query(JdbcDataProviderOperation operation) {
+		JdbcIntercepter intercepter = getGlobalIntercepter();
+		operation = intercepter.getJdbcDataProviderOperation(operation);
 		
-		return query(tableName, arg);
+		if (operation.isProcessDefault()) {
+			DbTable table = operation.getDbTable();
+			Assert.notNull(table, "DbTable must not be null.");
+			
+			DbTableTrigger trigger = table.getTrigger();
+			if (trigger != null) {
+				trigger.doQuery(operation);
+			} 
+			
+			if (operation.isProcessDefault()) {
+				operation.execute();
+			}
+		}
+		
+		Page<Record> page = operation.getJdbcContext().getPage();
+		return page.getEntities();
 	}
 	
 	public static void insert(String tableName, Record record) {
@@ -137,12 +145,20 @@ public abstract class JdbcUtils {
 		JdbcDataResolverContext jdbcContext = new JdbcDataResolverContext(table.getJdbcEnviroment(), null, null, null);
 		JdbcRecordOperation operation = new JdbcRecordOperation(table, enRecord, jdbcContext);
 		
-		TableTrigger trigger = table.getTrigger();
-		if (trigger == null) {
-			operation.execute();
-		} else {
-			trigger.doSave(operation);
+		JdbcIntercepter intercepter = getGlobalIntercepter();
+		operation = intercepter.getJdbcRecordOperation(operation);
+		
+		if (operation.isProcessDefault()) {
+			DbTableTrigger trigger = table.getTrigger();
+			if (trigger != null) {
+				trigger.doSave(operation);
+			}
+			
+			if (operation.isProcessDefault()) {
+				operation.execute();
+			}
 		}
+		
 	}
 	
 	public static StoredProgram getStoredProgram(String spName) {

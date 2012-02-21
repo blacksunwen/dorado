@@ -7,6 +7,7 @@ import javax.sql.DataSource;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.bstek.dorado.jdbc.JdbcSpace;
 import com.bstek.dorado.jdbc.model.table.Table;
 import com.bstek.dorado.jdbc.sql.SelectSql;
 import com.bstek.dorado.jdbc.support.AbstractDialect;
@@ -18,7 +19,7 @@ import com.bstek.dorado.jdbc.support.JdbcConstants;
  * @see <a href='http://download.oracle.com/docs/cd/E11882_01/server.112/e26088/toc.htm'>http://download.oracle.com/docs/cd/E11882_01/server.112/e26088/toc.htm</a>
  */
 public class OracleDialect extends AbstractDialect {
-
+	
 	@Override
 	public String token(Table table, String alias) {
 		String token = token(table);
@@ -69,5 +70,10 @@ public class OracleDialect extends AbstractDialect {
 		}
 		return schema;
 	}
-	
+
+	@Override
+	public JdbcSpace getTableJdbcSpace() {
+		return JdbcSpace.SCHEMA;
+	}
+
 }

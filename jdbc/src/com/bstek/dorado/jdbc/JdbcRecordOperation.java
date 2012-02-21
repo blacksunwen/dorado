@@ -15,7 +15,7 @@ import com.bstek.dorado.jdbc.model.DbTable;
  * 
  */
 public class JdbcRecordOperation extends
-		AbstractJdbcOperation<JdbcDataResolverContext> {
+		AbstractDbTableOperation<JdbcDataResolverContext> {
 
 	private Record record;
 
@@ -56,6 +56,12 @@ public class JdbcRecordOperation extends
 		return this.propertyMap;
 	}
 	
+	@Override
+	protected void doExecute() {
+		JdbcEnviroment jdbcEnviroment = getJdbcEnviroment();
+		jdbcEnviroment.getDialect().execute(this);
+	}
+
 	@SuppressWarnings("unchecked")
 	public JdbcRecordOperation[] children(JdbcDataResolverItem item) {
 		String eName = item.getTableName();
@@ -87,18 +93,5 @@ public class JdbcRecordOperation extends
 			return new JdbcRecordOperation[0];
 		}
 	}
-	
-	@Override
-	public void execute() {
-		JdbcEnviroment jdbcEnviroment = getJdbcEnviroment();
-		jdbcEnviroment.getDialect().execute(this);
-	}
 
-	public JdbcEnviroment getJdbcEnviroment() {
-		JdbcEnviroment jdbcEnviroment = this.getJdbcContext().getJdbcEnviroment();
-		if (jdbcEnviroment == null) {
-			jdbcEnviroment = this.getDbTable().getJdbcEnviroment();
-		}
-		return jdbcEnviroment;
-	}
 }
