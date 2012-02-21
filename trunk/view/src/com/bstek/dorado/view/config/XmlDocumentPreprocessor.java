@@ -398,17 +398,17 @@ public class XmlDocumentPreprocessor {
 
 	private void mergeTemplateProperty(Element templteViewElement,
 			Element viewElement, String property) {
-		String templatePackages = getPropertyValue(templteViewElement, property);
-		String packages = getPropertyValue(viewElement, property);
-		if (StringUtils.isNotEmpty(packages)) {
-			if (StringUtils.isNotEmpty(templatePackages)) {
-				packages = templatePackages + ',' + packages;
+		String templateValue = getPropertyValue(templteViewElement, property);
+		String value = getPropertyValue(viewElement, property);
+		if (StringUtils.isNotEmpty(value)) {
+			if (StringUtils.isNotEmpty(templateValue)) {
+				value = templateValue + ',' + value;
 			}
 		} else {
-			packages = templatePackages;
+			value = templateValue;
 		}
-		if (StringUtils.isNotEmpty(templatePackages)) {
-			templteViewElement.setAttribute(property, packages);
+		if (StringUtils.isNotEmpty(value)) {
+			templteViewElement.setAttribute(property, value);
 		}
 	}
 
