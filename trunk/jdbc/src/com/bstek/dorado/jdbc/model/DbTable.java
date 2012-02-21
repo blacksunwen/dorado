@@ -2,7 +2,7 @@ package com.bstek.dorado.jdbc.model;
 
 import java.util.List;
 
-import com.bstek.dorado.jdbc.TableTrigger;
+import com.bstek.dorado.jdbc.DbTableTrigger;
 import com.bstek.dorado.jdbc.sql.CurdSqlGenerator;
 
 public interface DbTable extends DbElement {
@@ -11,7 +11,7 @@ public interface DbTable extends DbElement {
 	
 	AbstractColumn getColumn(String name);
 	
-	TableTrigger getTrigger();
+	DbTableTrigger getTrigger();
 	
 	CurdSqlGenerator getCurdSqlGenerator();
 }

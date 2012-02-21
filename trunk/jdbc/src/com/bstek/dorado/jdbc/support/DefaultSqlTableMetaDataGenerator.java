@@ -34,9 +34,6 @@ public class DefaultSqlTableMetaDataGenerator implements
 		String columnName = this.columnName(columnMeta, jdbcEnv);
 		properties.put("columnName", columnName);
 		
-		String propertyName = this.propertyName(columnMeta, jdbcEnv);
-		properties.put("propertyName", propertyName);
-		
 		String jdbcType = this.jdbcType(columnMeta, jdbcEnv);
 		properties.put("jdbcType", jdbcType);
 
@@ -51,11 +48,7 @@ public class DefaultSqlTableMetaDataGenerator implements
 			return label;
 		}
 	}
-	
-	protected String propertyName(Map<String,String> column, JdbcEnviroment jdbcEnv) {
-		return jdbcEnv.getDialect().propertyName(column);
-	}
-	
+
 	protected String jdbcType(Map<String,String> column, JdbcEnviroment jdbcEnv) {
 		JdbcType jdbcType = jdbcEnv.getDialect().jdbcType(column);
 		if (jdbcType != null) {

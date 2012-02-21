@@ -25,7 +25,9 @@ import org.springframework.util.LinkedCaseInsensitiveMap;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import com.bstek.dorado.jdbc.Dialect;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
+import com.bstek.dorado.jdbc.JdbcSpace;
 import com.bstek.dorado.jdbc.config.ColumnDefinition;
 import com.bstek.dorado.jdbc.config.DomHelper;
 import com.bstek.dorado.jdbc.meta.TableMetaDataGenerator;
@@ -52,7 +54,24 @@ public class DefaultTableMetaDataGenerator implements TableMetaDataGenerator {
 				@Override
 				public Object processMetaData(DatabaseMetaData dbmd)
 						throws SQLException, MetaDataAccessException {
-					ResultSet rs = dbmd.getTables(catalogPattern, schemaPattern, tableNamePattern, types);
+					String tableNameArg = tableNamePattern;
+					if (StringUtils.isEmpty(tableNameArg)) {
+						tableNameArg = "%";
+					} else if (tableNameArg.indexOf('%') < 0) {
+						tableNameArg += "%";
+					}
+					
+					if (!dbmd.supportsMixedCaseIdentifiers()) {
+						if (dbmd.storesLowerCaseIdentifiers()) {
+							tableNameArg = tableNameArg.toLowerCase();
+						}
+						if (dbmd.storesUpperCaseIdentifiers()) {
+							tableNameArg = tableNameArg.toUpperCase();
+						}
+					}
+					
+					String catalogArg = catalogPattern;
+					ResultSet rs = dbmd.getTables(catalogArg, schemaPattern, tableNameArg, types);
 					return Utils.toListMap(rs);
 				}
 				
@@ -74,7 +93,6 @@ public class DefaultTableMetaDataGenerator implements TableMetaDataGenerator {
 			throw new IllegalArgumentException("more than one tables found from JdbcEnviroment [" + jdbcEnv.getName() + "], it is " +tables.size() + ", " +
 					"catalog[" + catalog + "]scheme[" + schema + "]table[" + table + "]");
 		}
-		
 		
 		Map<String, String> meta = tables.get(0);
 		if (logger.isDebugEnabled()) {
@@ -164,9 +182,6 @@ public class DefaultTableMetaDataGenerator implements TableMetaDataGenerator {
 		String columnName = this.columnName(columnMeta, jdbcEnv);
 		properties.put("columnName", columnName);
 		
-		String propertyName = this.propertyName(columnMeta, jdbcEnv);
-		properties.put("propertyName", propertyName);
-		
 		String jdbcType = this.jdbcType(columnMeta, jdbcEnv);
 		properties.put("jdbcType", jdbcType);
 		
@@ -192,11 +207,6 @@ public class DefaultTableMetaDataGenerator implements TableMetaDataGenerator {
 		String columnName = columnProperties.get("columnName");
 		columnDef.getProperties().put("columnName", columnName);
 		
-		String propertyName = columnProperties.get("propertyName");
-		if (StringUtils.isNotEmpty(propertyName)) {
-			columnDef.getProperties().put("propertyName", propertyName);
-		}
-		
 		String jdbcType = columnProperties.get("jdbcType");
 		if (StringUtils.isNotEmpty(jdbcType)) {
 			JdbcType jdbcTypeObj = jdbcEnv.getDialect().getJdbcType(jdbcType);
@@ -221,10 +231,6 @@ public class DefaultTableMetaDataGenerator implements TableMetaDataGenerator {
 		} else {
 			return label;
 		}
-	}
-	
-	protected String propertyName(Map<String,String> column, JdbcEnviroment jdbcEnv) {
-		return jdbcEnv.getDialect().propertyName(column);
 	}
 	
 	protected String keyGenerator(Map<String,String> column, JdbcEnviroment jdbcEnv) {
@@ -366,13 +372,18 @@ public class DefaultTableMetaDataGenerator implements TableMetaDataGenerator {
 		String name = tableName(tableMeta, jdbcEnv);
 		Element tableElement = document.createElement("Table");
 		tableElement.setAttribute("name", name);
-		tableElement.setAttribute("tableName", usedTable.table);
+		tableElement.setAttribute("tableName", usedTable.usedTable);
 
-		if (StringUtils.isNotEmpty(usedTable.catalog)) {
-			tableElement.setAttribute("catalog", usedTable.catalog);
+		Dialect dialect = jdbcEnv.getDialect();
+		String spaceName = null;
+		if (dialect.getTableJdbcSpace() == JdbcSpace.CATALOG) {
+			spaceName = usedTable.catalog;
+		} else if (dialect.getTableJdbcSpace() == JdbcSpace.SCHEMA) {
+			spaceName = usedTable.schema;
 		}
-		if (StringUtils.isNotEmpty(usedTable.schema)) {
-			tableElement.setAttribute("schema", usedTable.schema);
+		
+		if (StringUtils.isNotEmpty(spaceName)) {
+			tableElement.setAttribute("spaceName", spaceName);
 		}
 		
 		return tableElement;

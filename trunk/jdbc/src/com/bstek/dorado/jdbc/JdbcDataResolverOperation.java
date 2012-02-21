@@ -4,6 +4,9 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionOperations;
 
 import com.bstek.dorado.data.entity.EntityState;
 import com.bstek.dorado.data.entity.EntityUtils;
@@ -16,15 +19,58 @@ public class JdbcDataResolverOperation {
 
 	private JdbcDataResolverContext jdbcContext;
 	
+	private TransactionOperations transactionOperations;
+	
+	private boolean _processDefault = true;
+
+	public JdbcDataResolverOperation (JdbcDataResolverContext jdbcContext) {
+		this(jdbcContext, null);
+	}
+	
+	public JdbcDataResolverOperation (JdbcDataResolverContext jdbcContext, TransactionOperations transactionOperations) {
+		this.jdbcContext = jdbcContext;
+		this.transactionOperations = transactionOperations;
+	}
+	
+	public boolean isProcessDefault() {
+		return _processDefault;
+	}
+
+	public void setProcessDefault(boolean _processDefault) {
+		this._processDefault = _processDefault;
+	}
+	
 	public JdbcDataResolverContext getJdbcContext() {
 		return this.jdbcContext;
 	}
 	
-	public JdbcDataResolverOperation (JdbcDataResolverContext jdbcContext) {
+	public void setJdbcContext(JdbcDataResolverContext jdbcContext) {
 		this.jdbcContext = jdbcContext;
 	}
 	
+	public TransactionOperations getTransactionOperations() {
+		return transactionOperations;
+	}
+
+	public void setTransactionOperations(TransactionOperations transactionOperations) {
+		this.transactionOperations = transactionOperations;
+	}
+
 	public void execute() {
+		if (transactionOperations != null) {
+			transactionOperations.execute(new TransactionCallback<Object>() {
+				@Override
+				public Object doInTransaction(TransactionStatus status) {
+					doExecute();
+					return null;
+				}
+			});
+		} else {
+			doExecute();
+		}
+	}
+	
+	protected void doExecute() {
 		List<JdbcDataResolverItem> items = jdbcContext.getResolverItems();
 		if (items.isEmpty()) {
 			return;
@@ -88,7 +134,7 @@ public class JdbcDataResolverOperation {
 		}
 		
 		DbTable table = operation.getDbTable();
-		TableTrigger trigger = table.getTrigger();
+		DbTableTrigger trigger = table.getTrigger();
 		if (trigger == null) {
 			operation.execute();
 		} else {

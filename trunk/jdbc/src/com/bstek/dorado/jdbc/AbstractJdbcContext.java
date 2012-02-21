@@ -20,6 +20,10 @@ public abstract class AbstractJdbcContext {
 		return enviroment;
 	}
 
+	public void setJdbcEnviroment(JdbcEnviroment enviroment) {
+		this.enviroment = enviroment;
+	}
+	
 	public Object getParameter() {
 		return parameter;
 	}

@@ -9,16 +9,16 @@ import com.bstek.dorado.jdbc.model.DbTable;
  * 
  */
 public class JdbcDataProviderOperation extends
-		AbstractJdbcOperation<JdbcDataProviderContext> {
+		AbstractDbTableOperation<JdbcDataProviderContext> {
 
+	
+	
 	public JdbcDataProviderOperation(DbTable dbTable,
 			JdbcDataProviderContext jdbcContext) {
 		super(dbTable, jdbcContext);
 	}
 
-	@Override
-	public void execute() {
+	protected void doExecute() {
 		getJdbcEnviroment().getDialect().execute(this);
 	}
-
 }

@@ -6,6 +6,7 @@ import com.bstek.dorado.data.provider.AbstractDataProvider;
 import com.bstek.dorado.data.provider.Page;
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.data.variant.Record;
+import com.bstek.dorado.jdbc.model.DbTable;
 import com.bstek.dorado.util.Assert;
 
 /**
@@ -14,7 +15,9 @@ import com.bstek.dorado.util.Assert;
  * @author mark
  * 
  */
-@XmlNode(fixedProperties = "type=jdbc")
+@XmlNode(
+	fixedProperties = "type=jdbc"
+)
 public class JdbcDataProvider extends AbstractDataProvider {
 
 	private String tableName;
@@ -43,11 +46,11 @@ public class JdbcDataProvider extends AbstractDataProvider {
 			throws Exception {
 		Assert.notEmpty(tableName, "tableName must not be empty.");
 		
-		QueryArg arg = new QueryArg();
-		arg.setJdbcEnviroment(getJdbcEnviroment());
-		arg.setParameter(parameter);
+		JdbcDataProviderContext jCtx = new JdbcDataProviderContext(getJdbcEnviroment(), parameter);
+		DbTable table = JdbcUtils.getDbTable(tableName);
+		JdbcDataProviderOperation operation = new JdbcDataProviderOperation(table, jCtx);
 		
-		return JdbcUtils.query(tableName, arg);
+		return JdbcUtils.query(operation);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -55,12 +58,12 @@ public class JdbcDataProvider extends AbstractDataProvider {
 	protected void internalGetResult(Object parameter, Page<?> page,
 			DataType resultDataType) throws Exception {
 		Assert.notEmpty(tableName, "tableName must not be empty.");
-		QueryArg arg = new QueryArg();
-		arg.setJdbcEnviroment(getJdbcEnviroment());
-		arg.setParameter(parameter);
-		arg.setPage((Page<Record>)page);
 		
-		JdbcUtils.query(tableName, arg);
+		JdbcDataProviderContext jCtx = new JdbcDataProviderContext(getJdbcEnviroment(), parameter, (Page<Record>) page);
+		DbTable table = JdbcUtils.getDbTable(tableName);
+		JdbcDataProviderOperation operation = new JdbcDataProviderOperation(table, jCtx);
+		
+		JdbcUtils.query(operation);
 	}
 
 }

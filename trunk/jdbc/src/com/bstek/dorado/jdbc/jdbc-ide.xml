@@ -10,12 +10,10 @@
 	<!-- Resolver -->
 	<bean id="dorado.jdbc.ide.resolver.listEnviromentResolver" 
 	   class="com.bstek.dorado.jdbc.ide.resolver.ListJdbcEnviromentResolver"/>
-	<bean id="dorado.jdbc.ide.resolver.listCatalogResolver" 
-	   class="com.bstek.dorado.jdbc.ide.resolver.ListCatalogResolver"/>
-	<bean id="dorado.jdbc.ide.resolver.listSchemaResolver" 
-	   class="com.bstek.dorado.jdbc.ide.resolver.ListSchemaResolver"/>
-	<bean id="dorado.jdbc.ide.resolver.listTablesResolver" 
-	   class="com.bstek.dorado.jdbc.ide.resolver.ListTablesResolver"/>
+	<bean id="dorado.jdbc.ide.resolver.listSpaceResolver" 
+		class="com.bstek.dorado.jdbc.ide.resolver.ListSpaceResolver"/>
+	<bean id="dorado.jdbc.ide.resolver.listTableResolver" 
+	   class="com.bstek.dorado.jdbc.ide.resolver.ListTableResolver"/>
 	<bean id="dorado.jdbc.ide.resolver.listTableTypeResolver" 
 	   class="com.bstek.dorado.jdbc.ide.resolver.ListTableTypeResolver"/>
 	<bean id="dorado.jdbc.ide.resolver.createTableResolver" 

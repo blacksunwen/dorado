@@ -145,13 +145,6 @@ public interface Dialect {
 	JdbcType jdbcType(Map<String,String> columnMeta);
 	
 	/**
-	 * 根据Column的数据库属性获取propertyName，用于IDE
-	 * @param columnMeta
-	 * @return
-	 */
-	String propertyName(Map<String,String> columnMeta);
-	
-	/**
 	 * 默认的数据库catalog
 	 * @param dataSource
 	 * @param databaseMetaData
@@ -167,4 +160,9 @@ public interface Dialect {
 	 */
 	String defaultSchema(DataSource dataSource, DatabaseMetaData databaseMetaData);
 	
+	/**
+	 * 获取Table所在的空间类型
+	 * @return
+	 */
+	JdbcSpace getTableJdbcSpace();
 }

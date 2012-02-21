@@ -54,22 +54,19 @@ public abstract class AbstractDialect implements Dialect {
 	private static Log logger = LogFactory.getLog(AbstractDialect.class);
 	
 	private Map<String, JdbcType> jdbcTypeMap = new LinkedHashMap<String, JdbcType>();
+	
 	private LinkedHashMap<String, KeyGenerator<Object>> keyGeneratorMap = new LinkedHashMap<String, KeyGenerator<Object>>();
 	
 	public String token(Table table) {
 		Assert.notNull(table, "Table must not be null.");
 		
-		String name = table.getTableName();
-		String catalog = table.getCatalog();
-		String schema = table.getSchema();
-		if (StringUtils.isEmpty(catalog) && StringUtils.isEmpty(schema)) {
-			return name;
-		} else if(StringUtils.isNotEmpty(catalog)){
-			return catalog + "." + name;
-		} else if(StringUtils.isNotEmpty(schema)){
-			return schema + "." + name;
+		String tableName = table.getTableName();
+		String spaceName = table.getSpaceName();
+		
+		if (StringUtils.isNotEmpty(spaceName)) {
+			return spaceName + "." + tableName;
 		} else {
-			return catalog + "." + schema + "." + name;
+			return tableName;
 		}
 	}
 	
@@ -149,7 +146,6 @@ public abstract class AbstractDialect implements Dialect {
 		return selectSql.toCountSQL(this);
 	}
 	
-	@SuppressWarnings("unchecked")
 	public void execute(JdbcDataProviderOperation operation) {
 		Page<Record> page = operation.getJdbcContext().getPage();
 		if (page.getPageSize() > 0) {
@@ -162,7 +158,6 @@ public abstract class AbstractDialect implements Dialect {
 	/**
 	 * 加载全部的记录
 	 */
-	@SuppressWarnings({ "unchecked" })
 	protected void loadAllRecords(JdbcDataProviderOperation operation) {
 		JdbcDataProviderContext jdbcContext = operation.getJdbcContext();
 		JdbcEnviroment env = operation.getJdbcEnviroment();
@@ -187,7 +182,6 @@ public abstract class AbstractDialect implements Dialect {
 	/**
 	 * 加载当前分页的记录
 	 */
-	@SuppressWarnings({ "unchecked" })
 	protected void loadPageRecord(JdbcDataProviderOperation operation) {
 		JdbcDataProviderContext jdbcContext = operation.getJdbcContext();
 		Page<Record> page = jdbcContext.getPage();

@@ -5,9 +5,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.support.TransactionOperations;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlNodeWrapper;
@@ -34,10 +35,28 @@ public class JdbcDataResolver extends AbstractDataResolver {
 	
 	private JdbcEnviroment jdbcEnviroment;
 	
-	private TransactionOperations transactionOperations;
+	private PlatformTransactionManager transactionManager;
+
+	private TransactionDefinition transactionDefinition;
 	
 	private boolean autoCreateItems = false;
 	
+	public PlatformTransactionManager getTransactionManager() {
+		return transactionManager;
+	}
+	
+	public void setTransactionManager(PlatformTransactionManager transactionManager) {
+		this.transactionManager = transactionManager;
+	}
+	
+	public TransactionDefinition getTransactionDefinition() {
+		return transactionDefinition;
+	}
+
+	public void setTransactionDefinition(TransactionDefinition transactionDefinition) {
+		this.transactionDefinition = transactionDefinition;
+	}
+
 	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "Items"))
 	public List<JdbcDataResolverItem> getItems() {
 		return items;
@@ -63,53 +82,62 @@ public class JdbcDataResolver extends AbstractDataResolver {
 	public void setJdbcEnviroment(JdbcEnviroment jdbcEnviroment) {
 		this.jdbcEnviroment = jdbcEnviroment;
 	}
-
-	public void setTransactionOperations(TransactionOperations transactionTemplate) {
-		this.transactionOperations = transactionTemplate;
-	}
 	
-	@XmlProperty(parser="spring:dorado.jdbc.transactionTemplateParser")
-	public TransactionOperations getTransactionOperations() {
-		if (transactionOperations == null) {
-			JdbcEnviroment jdbcEnv = this.getJdbcEnviroment();
-			if (jdbcEnv != null) {
-				transactionOperations = jdbcEnv.getTransactionOperations();
+	@Override
+	protected Object internalResolve(DataItems dataItems, Object parameter)
+			throws Exception {
+		JdbcDataResolverOperation operation = creatResolverOperation(dataItems, parameter);
+		
+		JdbcIntercepter intercepter = JdbcUtils.getGlobalIntercepter();
+		operation = intercepter.getJdbcDataResolverOperation(operation);
+		if (operation.isProcessDefault()) {
+			operation.execute();
+		}
+		
+		return operation.getJdbcContext().getReturnValue();
+	}
+
+	protected JdbcDataResolverOperation creatResolverOperation(DataItems dataItems, Object parameter) {
+		PlatformTransactionManager transactionManager = this.getTransactionManager();
+		TransactionDefinition transactionDefinition = this.getTransactionDefinition();
+		JdbcEnviroment jdbcEnviroment = this.getJdbcEnviroment();
+		
+		TransactionOperations transactionOperations = null;
+		if (transactionManager == null && jdbcEnviroment != null) {
+			transactionManager = jdbcEnviroment.getTransactionManager();
+		}
+		
+		if (transactionDefinition == null && jdbcEnviroment != null) {
+			transactionDefinition = jdbcEnviroment.getTransactionDefinition();
+		}
+		
+		if (transactionManager != null) {
+			if (transactionDefinition != null) {
+				transactionOperations = new TransactionTemplate(transactionManager, transactionDefinition);
+			} else {
+				transactionOperations = new TransactionTemplate(transactionManager);
 			}
 		}
 		
-		return transactionOperations;
-	}
-	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@Override
-	protected Object internalResolve(final DataItems dataItems, final Object parameter)
-			throws Exception {
-		TransactionOperations transactionOperations = this.getTransactionOperations();
-		if (transactionOperations != null) {
-			return transactionOperations.execute(new TransactionCallback() {
-				public Object doInTransaction(TransactionStatus status) {
-					return doResolve(dataItems, parameter);
-				}
-			});
-		} else {
-			return this.doResolve(dataItems, parameter);
-		}
-	}
-
-	protected Object doResolve(DataItems dataItems, Object parameter) {
-		JdbcDataResolverOperation operation = creatOperation(dataItems, parameter);
-		operation.execute();
-		return operation.getJdbcContext().getReturnValue();
-	}
-	
-	protected JdbcDataResolverOperation creatOperation(DataItems dataItems, Object parameter) {
-		JdbcEnviroment jdbcEnv = this.getJdbcEnviroment();
 		List<JdbcDataResolverItem> resolverItems = getResolverItems(dataItems);
 		
-		JdbcDataResolverContext jdbcContext = new JdbcDataResolverContext(jdbcEnv, parameter, dataItems, resolverItems);
-		JdbcDataResolverOperation operation = new JdbcDataResolverOperation(jdbcContext);
+		JdbcDataResolverContext jdbcContext = new JdbcDataResolverContext(jdbcEnviroment, parameter, dataItems, resolverItems);
+		JdbcDataResolverOperation operation = new JdbcDataResolverOperation(jdbcContext, transactionOperations);
 		
 		return operation;
+	}
+	
+	protected List<JdbcDataResolverItem> getResolverItems(DataItems dataItems) {
+		if (!this.isAutoCreateItems()) {
+			List<JdbcDataResolverItem> items = this.getItems();
+			if (items == null || items.isEmpty()) {
+				return null;
+			} else {
+				return items;
+			}
+		} else {
+			return createResolverItems(dataItems);
+		}
 	}
 	
 	protected List<JdbcDataResolverItem> createResolverItems(DataItems dataItems) {
@@ -161,27 +189,6 @@ public class JdbcDataResolver extends AbstractDataResolver {
 			return items2;
 		}
 	}
-		
-	protected List<JdbcDataResolverItem> getResolverItems(DataItems dataItems) {
-		if (!this.isAutoCreateItems()) {
-			List<JdbcDataResolverItem> items = this.getItems();
-			if (items == null || items.isEmpty()) {
-				return null;
-			} else {
-				return items;
-			}
-		} else {
-			return createResolverItems(dataItems);
-		}
-	}
-	
-	protected DataType getDataType(Object dataObject) {
-		if (dataObject instanceof Collection) {
-			return EntityUtils.getDataType((Collection<?>) dataObject); 
-		} else {
-			return EntityUtils.getDataType(dataObject);
-		}
-	}
 	
 	protected JdbcDataResolverItem createItem(String name, DataType dataType) {
 		if (dataType instanceof EntityDataType) {
@@ -194,4 +201,13 @@ public class JdbcDataResolver extends AbstractDataResolver {
 		
 		return null;
 	}
+	
+	protected DataType getDataType(Object dataObject) {
+		if (dataObject instanceof Collection) {
+			return EntityUtils.getDataType((Collection<?>) dataObject); 
+		} else {
+			return EntityUtils.getDataType(dataObject);
+		}
+	}
+
 }

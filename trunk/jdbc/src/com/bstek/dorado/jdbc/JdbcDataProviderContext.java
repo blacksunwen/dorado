@@ -12,6 +12,18 @@ import com.bstek.dorado.data.variant.Record;
 public class JdbcDataProviderContext extends AbstractJdbcContext {
 	private Page<Record> page;
 	
+	public JdbcDataProviderContext() {
+		this(null, null, null);
+	}
+
+	public JdbcDataProviderContext(JdbcEnviroment enviroment){
+		this(enviroment, null, null);
+	}
+	
+	public JdbcDataProviderContext(JdbcEnviroment enviroment, Object parameter) {
+		this(enviroment, parameter, null);
+	}
+	
 	public JdbcDataProviderContext(JdbcEnviroment enviroment, Object parameter, Page<Record> page) {
 		super(enviroment, parameter);
 		if (page == null) {

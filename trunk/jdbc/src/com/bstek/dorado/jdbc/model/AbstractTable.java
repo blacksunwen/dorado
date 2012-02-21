@@ -8,7 +8,7 @@ import java.util.Map;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.core.bean.BeanFactoryUtils;
-import com.bstek.dorado.jdbc.TableTrigger;
+import com.bstek.dorado.jdbc.DbTableTrigger;
 import com.bstek.dorado.jdbc.sql.CurdSqlGenerator;
 import com.bstek.dorado.util.Assert;
 
@@ -27,7 +27,7 @@ import com.bstek.dorado.util.Assert;
 public abstract class AbstractTable extends AbstractDbElement implements DbTable {
 
 	private Map<String,AbstractColumn> columnMap = new LinkedHashMap<String,AbstractColumn>();
-	private TableTrigger trigger;
+	private DbTableTrigger trigger;
 	private CurdSqlGenerator sqlGenerator;
 	
 	public List<AbstractColumn> getAllColumns() {
@@ -51,11 +51,11 @@ public abstract class AbstractTable extends AbstractDbElement implements DbTable
 	}
 
 	@XmlProperty(parser="spring:dorado.jdbc.triggerParser")
-	public TableTrigger getTrigger() {
+	public DbTableTrigger getTrigger() {
 		return trigger;
 	}
 	
-	public void setTrigger(TableTrigger trigger) {
+	public void setTrigger(DbTableTrigger trigger) {
 		this.trigger = trigger;
 	}
 	

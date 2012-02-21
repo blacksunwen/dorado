@@ -12,9 +12,6 @@ import com.bstek.dorado.core.io.Resource;
 
 @XmlNode(
 	parser = "spring:dorado.jdbc.dbmParser",
-	properties = {
-		@XmlProperty(propertyName="jdbcEnviroment", parser = "spring:dorado.staticPropertyParser", attributeOnly = true)
-	},
 	subNodes = {
 		@XmlSubNode(propertyType="List<com.bstek.dorado.jdbc.model.table.Table>"),
 		@XmlSubNode(propertyType="List<com.bstek.dorado.jdbc.model.sqltable.SqlTable>"),
@@ -30,6 +27,7 @@ public class DbModel {
 	
 	private Map<String, DbElementDefinition>  definitionMap = new LinkedHashMap<String, DbElementDefinition>();
 	
+	@XmlProperty(attributeOnly = true)
 	@IdeProperty(highlight=1, editor="jdbc:list-envs")
 	public String getJdbcEnviroment() {
 		return jdbcEnviroment;
