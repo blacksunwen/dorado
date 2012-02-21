@@ -414,7 +414,7 @@
 		</jar>
 	</target>
 
-	<target name="buildJar" if="${buildJar}">
+	<target name="buildDoradoPackageDescriptor">
 		<if>
 			<available file="${workDir}/bin/META-INF/dorado-package.properties" />
 			<then>
@@ -440,7 +440,9 @@
 				<fail>"META-INF/dorado-package.properties" not found.</fail>
 			</else>
 		</if>
+	</target>
 
+	<target name="buildJar" if="${buildJar}">
 		<jar compress="true" jarfile="${targetDir}/${baseFileName}.jar">
 			<fileset dir="${workDir}/bin" />
 			<manifest>
@@ -466,7 +468,7 @@
 	</target>
 
 	<target name="buildJava"
-	        depends="compile,makePom,javadoc,buildJar,buildSourceJar" />
+	        depends="compile,makePom,javadoc,buildDoradoPackageDescriptor,buildJar,buildSourceJar" />
 
 	<target name="buildArchieves"
 	        depends="mergeClientSource,mergeJavaSource,buildClient,buildJava" />
