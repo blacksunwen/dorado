@@ -28,13 +28,16 @@ public class Panel extends AbstractPanel {
 	private boolean maximized;
 
 	private boolean closeable;
-	private boolean collapseable = false;
 	private String iconClass;
 	private String background;
 	private CloseAction closeAction = CloseAction.hide;
 	private String icon;
 	private List<SimpleIconButton> tools = new InnerElementList<SimpleIconButton>(
 			this);
+
+	public Panel() {
+		setCollapseable(false);
+	}
 
 	@ClientProperty(escapeValue = "normal")
 	public PanelBorder getBorder() {
@@ -108,11 +111,7 @@ public class Panel extends AbstractPanel {
 	@Override
 	@ClientProperty(escapeValue = "false")
 	public boolean isCollapseable() {
-		return collapseable;
-	}
-
-	public void setCollapseable(boolean collapseable) {
-		this.collapseable = collapseable;
+		return super.isCollapseable();
 	}
 
 	public String getIconClass() {
