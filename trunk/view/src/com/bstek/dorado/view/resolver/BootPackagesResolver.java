@@ -14,6 +14,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 
 import com.bstek.dorado.core.Configure;
+import com.bstek.dorado.core.DoradoAbout;
 import com.bstek.dorado.core.io.Resource;
 import com.bstek.dorado.util.PathUtils;
 import com.bstek.dorado.view.output.JsonBuilder;
@@ -147,7 +148,8 @@ public class BootPackagesResolver extends WebFileResolver {
 		String contextPath = DoradoContext.getAttachedRequest()
 				.getContextPath();
 		writeSetting(writer, "common.contextPath", contextPath, true, true);
-		writeSetting(writer, "widget.skinRoot", ">dorado/client/skins/", true, false);
+		writeSetting(writer, "widget.skinRoot", ">dorado/client/skins/", true,
+				false);
 		writer.write("};\n");
 
 		writer.write(CLIENT_PACKAGES_CONFIG
@@ -196,7 +198,10 @@ public class BootPackagesResolver extends WebFileResolver {
 			jsonBuilder.key("charset").value(pattern.getCharset());
 		}
 		jsonBuilder.key("url").value(
-				PathUtils.concatPath(pattern.getBaseUri(), "${fileName}.dpkg"));
+				PathUtils.concatPath(
+						pattern.getBaseUri(),
+						"${fileName}.dpkg?cacheBuster="
+								+ DoradoAbout.getVersion()));
 		if (pattern.isMergeRequests()) {
 			jsonBuilder.escapeableKey("mergeRequests").value(
 					pattern.isMergeRequests());

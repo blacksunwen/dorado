@@ -14,6 +14,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.core.Constants;
+import com.bstek.dorado.core.DoradoAbout;
 import com.bstek.dorado.core.io.Resource;
 import com.bstek.dorado.core.io.ResourceUtils;
 import com.bstek.dorado.view.View;
@@ -71,7 +72,8 @@ public class PageHeaderOutputter implements Outputter {
 		writer.append(
 				"<script language=\"javascript\" type=\"text/javascript\" charset=\"UTF-8\" src=\"")
 				.append(request.getContextPath())
-				.append("/dorado/client/boot.dpkg\"></script>\n")
+				.append("/dorado/client/boot.dpkg?cacheBuster="
+						+ DoradoAbout.getVersion() + "\"></script>\n")
 				.append("<script language=\"javascript\" type=\"text/javascript\">\n");
 
 		writeSetting(writer, "code.debugEnabled",
