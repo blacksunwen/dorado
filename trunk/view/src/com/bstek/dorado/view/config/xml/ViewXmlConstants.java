@@ -32,6 +32,8 @@ public abstract class ViewXmlConstants {
 
 	public static final String ATTRIBUTE_STYLESHEET_FILE = "styleSheetFile";
 
+	public static final String ATTRIBUTE_METADATA = "metaData";
+
 	/**
 	 * ID属性的属性名。
 	 */

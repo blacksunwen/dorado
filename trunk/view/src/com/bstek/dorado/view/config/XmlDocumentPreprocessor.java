@@ -2,8 +2,10 @@ package com.bstek.dorado.view.config;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Document;
@@ -29,6 +31,15 @@ import com.bstek.dorado.view.registry.ComponentTypeRegistry;
  * @since 2010-12-26
  */
 public class XmlDocumentPreprocessor {
+	private static Set<String> specialMergeProperties = new HashSet<String>();
+
+	{
+		specialMergeProperties.add(ViewXmlConstants.ATTRIBUTE_PACKAGES);
+		specialMergeProperties.add(ViewXmlConstants.ATTRIBUTE_JAVASCRIPT_FILE);
+		specialMergeProperties.add(ViewXmlConstants.ATTRIBUTE_STYLESHEET_FILE);
+		specialMergeProperties.add(ViewXmlConstants.ATTRIBUTE_METADATA);
+	}
+
 	private ViewConfigManager viewConfigManager;
 	private ComponentTypeRegistry componentTypeRegistry;
 
@@ -401,6 +412,17 @@ public class XmlDocumentPreprocessor {
 		}
 	}
 
+	private Element findPropertyElement(Element element, String propertyName) {
+		for (Element propertyElement : DomUtils.getChildrenByTagName(element,
+				XmlConstants.PROPERTY)) {
+			if (propertyName.equals(propertyElement
+					.getAttribute(XmlConstants.ATTRIBUTE_NAME))) {
+				return propertyElement;
+			}
+		}
+		return null;
+	}
+
 	private void gothroughPlaceHolders(Document templateDocument,
 			TemplateContext templateContext) throws Exception {
 		Element templteViewElement = ViewConfigParserUtils.findViewElement(
@@ -417,13 +439,25 @@ public class XmlDocumentPreprocessor {
 		for (int i = 0; i < len; i++) {
 			Node item = attributes.item(i);
 			String nodeName = item.getNodeName();
-			templteViewElement.setAttribute(nodeName, item.getNodeValue());
+			if (!specialMergeProperties.contains(nodeName)) {
+				templteViewElement.setAttribute(nodeName, item.getNodeValue());
+			}
 		}
 
+		List<Element> viewProperties = DomUtils.getChildrenByTagName(
+				viewElement, XmlConstants.PROPERTY);
+		for (Element propertyElement : viewProperties) {
+			String propertyName = propertyElement
+					.getAttribute(XmlConstants.ATTRIBUTE_NAME);
+			if (!specialMergeProperties.contains(propertyName)) {
+				templteViewElement.appendChild(templateDocument.importNode(
+						propertyElement, true));
+			}
+		}
+
+		mergeMetaData(templateDocument, templteViewElement, viewElement);
 		mergeTemplateProperty(templteViewElement, viewElement,
 				ViewXmlConstants.ATTRIBUTE_PACKAGES);
-		mergeTemplateProperty(templteViewElement, viewElement,
-				ViewXmlConstants.ATTRIBUTE_PAGE_TEMPALTE);
 		mergeTemplateProperty(templteViewElement, viewElement,
 				ViewXmlConstants.ATTRIBUTE_JAVASCRIPT_FILE);
 		mergeTemplateProperty(templteViewElement, viewElement,
@@ -431,7 +465,8 @@ public class XmlDocumentPreprocessor {
 
 		for (Element element : DomUtils.getChildElements(viewElement)) {
 			String nodeName = element.getNodeName();
-			if (nodeName.equals(XmlConstants.GROUP_START)
+			if (nodeName.equals(XmlConstants.PROPERTY)
+					|| nodeName.equals(XmlConstants.GROUP_START)
 					|| nodeName.equals(XmlConstants.GROUP_END)
 					|| nodeName.equals(XmlConstants.IMPORT)
 					|| nodeName.equals(XmlConstants.PLACE_HOLDER)
@@ -446,6 +481,35 @@ public class XmlDocumentPreprocessor {
 		}
 
 		processPlaceHolders(templteViewElement, templateContext);
+	}
+
+	protected void mergeMetaData(Document templateDocument,
+			Element templteElement, Element element) {
+		if (element.getAttributeNode(ViewXmlConstants.ATTRIBUTE_METADATA) != null) {
+			templteElement.setAttribute(ViewXmlConstants.ATTRIBUTE_METADATA,
+					element.getAttribute(ViewXmlConstants.ATTRIBUTE_METADATA));
+		}
+
+		Element templateMetaDataElement = findPropertyElement(templteElement,
+				ViewXmlConstants.ATTRIBUTE_METADATA);
+		Element metaDataElement = findPropertyElement(element,
+				ViewXmlConstants.ATTRIBUTE_METADATA);
+		if (metaDataElement != null) {
+			if (templateMetaDataElement == null) {
+				templateMetaDataElement = templateDocument
+						.createElement(XmlConstants.PROPERTY);
+				templateMetaDataElement.setAttribute(
+						XmlConstants.ATTRIBUTE_NAME,
+						ViewXmlConstants.ATTRIBUTE_METADATA);
+				templteElement.appendChild(templateMetaDataElement);
+			}
+
+			for (Element metaPropertyElement : DomUtils.getChildrenByTagName(
+					metaDataElement, XmlConstants.PROPERTY)) {
+				templateMetaDataElement.appendChild(templateDocument
+						.importNode(metaPropertyElement, true));
+			}
+		}
 	}
 
 	private Map<String, Element> getArgumentElements(Document document,
@@ -542,6 +606,9 @@ public class XmlDocumentPreprocessor {
 
 		Document templateDocument = (Document) viewConfigInfo.getConfigModel();
 		templateDocument = (Document) templateDocument.cloneNode(true);
+
+		mergeMetaData(templateDocument, templateDocument.getDocumentElement(),
+				templateContext.getSourceDocument().getDocumentElement());
 
 		mergeArguments(templateDocument, templateContext);
 		mergeModels(templateDocument, templateContext);
