@@ -673,8 +673,7 @@ public class XmlParserHelper implements BeanFactoryAware {
 			}
 			if (readMethod.getDeclaringClass() != beanType) {
 				try {
-					readMethod = beanType.getDeclaredMethod(
-							readMethod.getName(),
+					readMethod = beanType.getMethod(readMethod.getName(),
 							readMethod.getParameterTypes());
 				} catch (NoSuchMethodException e) {
 					// do nothing
