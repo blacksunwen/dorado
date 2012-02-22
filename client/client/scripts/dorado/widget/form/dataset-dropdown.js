@@ -83,8 +83,7 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.RowListDropDown,/** @scope
 		 * @param {Object} self 事件的发起者，即控件本身。
 		 * @param {Object} arg 事件参数。
 		 * @param {dorado.widget.DataSet} arg.dataSet 绑定的DataSet。
-		 * @param {Object} arg.filterValue 过滤条件。
-		 * @param {boolean} #arg.processDefault=false 是否继续使用系统默认的过滤处理逻辑。
+		 * @param {Object} #arg.filterValue 过滤条件。
 		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 		 * @event
 		 */
@@ -165,21 +164,19 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.RowListDropDown,/** @scope
 		var dataSet = this._dataSet;
 		if (this._useDataBinding) {
 			var arg = {
-				filterValue: filterValue,
-				processDefault: true
+				filterValue: filterValue
 			};
 			this.fireEvent("onFilterItems", this, arg);
 			if (arg.processDefault) {
 				arg = {
 					dataSet: dataSet,
-					filterValue: filterValue,
-					processDefault: true
+					filterValue: filterValue
 				};
 				if (this.getListenerCount("onSetFilterParameter") > 0) {
-					arg.processDefault = false;
 					this.fireEvent("onSetFilterParameter", this, arg);
+					filterValue = arg.filterValue;
 				}
-				if (arg.processDefault) dataSet.set("parameter", filterValue);
+				dataSet.set("parameter", filterValue);
 				
 				dataSet.clear();
 				dataSet.loadAsync(callback);
