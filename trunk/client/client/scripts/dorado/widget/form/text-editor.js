@@ -419,7 +419,7 @@
 			var readOnly = !!(this._readOnly || this._readOnly2);
 			if (this._realReadOnly != readOnly) {
 				this._realReadOnly = readOnly;
-				if (this.get("focused") && isInputOrTextArea(this._textDom)) this._textDom.readOnly = readOnly;
+				if (isInputOrTextArea(this._textDom)) this._textDom.readOnly = readOnly;
 				$fly(this.getDom()).toggleClass(this._className + "-readonly", readOnly);
 			}
 		},
