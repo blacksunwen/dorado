@@ -10,8 +10,6 @@ public class JoinTable {
 
 	private JoinModel joinModel = JoinModel.INNER_JOIN;
 	
-	private AutoTable autoTable;
-	
 	private String leftFromTableAlias;
 	private String[] leftColumnNames = new String[0];
 	private String rightFromTableAlias;
@@ -23,14 +21,6 @@ public class JoinTable {
 
 	public JoinModel getJoinModel() {
 		return this.joinModel;
-	}
-	
-	public AutoTable getAutoTable() {
-		return autoTable;
-	}
-
-	public void setAutoTable(AutoTable autoTable) {
-		this.autoTable = autoTable;
 	}
 
 	public String getLeftFromTableAlias() {

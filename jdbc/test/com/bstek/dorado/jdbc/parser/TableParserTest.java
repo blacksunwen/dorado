@@ -32,7 +32,7 @@ public class TableParserTest extends AbstractParserTestCase{
 			assertNotNull(table);
 			assertEquals("dept1", table.getName());
 			assertEquals("DEPT", table.getTableName());
-			assertNull(table.getSpaceName());
+			assertNull(table.getNamespace());
 			assertEquals("ora11", table.getJdbcEnviroment().getName());
 			assertEquals("#if ($ID) WHERE DEPT_ID=:ID #end", table.getDynamicClause());
 			

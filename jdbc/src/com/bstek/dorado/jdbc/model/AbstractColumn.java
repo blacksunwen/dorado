@@ -13,12 +13,13 @@ public abstract class AbstractColumn {
 	
 	private boolean selectable = true;
 
+	@XmlProperty(attributeOnly=true)
 	@IdeProperty(highlight=1)
 	public String getColumnName() {
 		return columnName;
 	}
 	
-	@XmlProperty(parser="spring:dorado.jdbc.jdbcTypeParser")
+	@XmlProperty(parser="spring:dorado.jdbc.jdbcTypeParser", attributeOnly=true)
 	@IdeProperty(highlight=1, editor = "jdbc:list-jdbctype")
 	public JdbcType getJdbcType() {
 		return jdbcType;

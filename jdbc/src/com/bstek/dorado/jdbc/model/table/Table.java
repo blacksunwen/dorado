@@ -35,8 +35,8 @@ public class Table extends AbstractTable {
 
 	public static final String TYPE = "Table";
 	
+	private String namespace;
 	private String tableName;
-	private String spaceName;
 	private String dynamicClause;
 	
 	private boolean retrieveAfterInsert = false;
@@ -61,32 +61,13 @@ public class Table extends AbstractTable {
 		return TYPE;
 	}
 
-//	@XmlProperty(attributeOnly=true)
-//	@IdeProperty(highlight=1, editor="jdbc:list-catalogs")
-//	public String getCatalog() {
-//		return catalog;
-//	}
-//
-//	public void setCatalog(String spaceName) {
-//		this.catalog = spaceName;
-//	}
-//
-//	@XmlProperty(attributeOnly=true)
-//	@IdeProperty(highlight=1, editor="jdbc:list-schemas.xml")
-//	public String getSchema() {
-//		return schema;
-//	}
-//
-//	public void setSchema(String schema) {
-//		this.schema = schema;
-//	}
-
-	public String getSpaceName() {
-		return spaceName;
+	@IdeProperty(highlight=1, editor="jdbc:list-space")
+	public String getNamespace() {
+		return namespace;
 	}
 
-	public void setSpaceName(String spaceName) {
-		this.spaceName = spaceName;
+	public void setNamespace(String spaceName) {
+		this.namespace = spaceName;
 	}
 
 	@XmlProperty(attributeOnly=true)

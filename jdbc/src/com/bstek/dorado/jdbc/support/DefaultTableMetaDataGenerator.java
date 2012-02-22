@@ -383,7 +383,7 @@ public class DefaultTableMetaDataGenerator implements TableMetaDataGenerator {
 		}
 		
 		if (StringUtils.isNotEmpty(spaceName)) {
-			tableElement.setAttribute("spaceName", spaceName);
+			tableElement.setAttribute("namespace", spaceName);
 		}
 		
 		return tableElement;

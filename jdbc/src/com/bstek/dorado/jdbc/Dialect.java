@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
+import com.bstek.dorado.jdbc.model.autotable.AutoTable;
 import com.bstek.dorado.jdbc.model.autotable.Order;
 import com.bstek.dorado.jdbc.model.table.KeyGenerator;
 import com.bstek.dorado.jdbc.model.table.Table;
@@ -27,17 +28,19 @@ public interface Dialect {
 	
 	/**
 	 * 构造{@link JoinModel}的SQL语句的token
+	 * @param autoTable
 	 * @param joinModel
 	 * @return
 	 */
-	String token(JoinModel joinModel);
+	String token(AutoTable autoTable, JoinModel joinModel);
 	
 	/**
 	 * 构造{@link Order}的SQL语句的token
+	 * @param autoTable
 	 * @param order
 	 * @return
 	 */
-	String token(Order order);
+	String token(AutoTable autoTable, Order order);
 
 	/**
 	 * 将{@link com.bstek.dorado.jdbc.sql.SelectSql}输出成SQL

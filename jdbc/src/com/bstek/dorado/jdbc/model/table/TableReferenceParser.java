@@ -9,7 +9,7 @@ import com.bstek.dorado.config.xml.PropertyParser;
 import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.config.DbElementDefinition;
 
-public class TableRefrenceParser extends PropertyParser{
+public class TableReferenceParser extends PropertyParser{
 
 	@Override
 	protected Object doParse(Node node, ParseContext context) throws Exception {

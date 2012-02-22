@@ -1,11 +1,8 @@
 package com.bstek.dorado.jdbc.model.autotable;
 
-import org.apache.commons.lang.StringUtils;
-
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.jdbc.sql.SqlConstants.NullsModel;
 import com.bstek.dorado.jdbc.sql.SqlConstants.OrderModel;
-import com.bstek.dorado.util.Assert;
 
 @XmlNode(
 	definitionType = "com.bstek.dorado.jdbc.model.autotable.OrderDefinition"
@@ -20,8 +17,6 @@ public class Order {
 	
 	private NullsModel nullsModel;
 	
-	private AutoTable autoTable;
-	
 	private boolean available = true;
 	
 	public boolean isAvailable() {
@@ -29,23 +24,6 @@ public class Order {
 	}
 	public void setAvailable(boolean available) {
 		this.available = available;
-	}
-	
-	public AutoTableColumn getSelfColumn() {
-		Assert.notNull(autoTable);
-		Assert.notEmpty(columnName);
-		
-		AutoTableColumn column = (AutoTableColumn)autoTable.getColumn(columnName);
-		return column;
-	}
-
-	public FromTable getFromTable() {
-		Assert.notNull(autoTable);
-		if (StringUtils.isEmpty(tableAlias)) {
-			return null;
-		} else {
-			return autoTable.getFromTable(tableAlias);
-		}
 	}
 	
 	public String getTableAlias() {
@@ -62,14 +40,6 @@ public class Order {
 	
 	public String getColumnName() {
 		return this.columnName;
-	}
-
-	public AutoTable getAutoTable() {
-		return autoTable;
-	}
-
-	public void setAutoTable(AutoTable autoTable) {
-		this.autoTable = autoTable;
 	}
 
 	public OrderModel getOrderModel() {
