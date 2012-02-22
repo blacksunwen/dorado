@@ -700,8 +700,9 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		},
 		
 		_validateProperty: function(dataType, propertyDef, propertyInfo, value, preformAsyncValidator) {
-			var messages = [], property = propertyDef._name, validating;
-			if (propertyDef._required && !dataType._validatorsDisabled && (!value && value !== false)) {
+			var messages = [], property = propertyDef._name, validating, propertyDataType = propertyDef.get("dataType");
+			if (propertyDef._required && !dataType._validatorsDisabled &&
+				!value && (!propertyDataType || propertyDataType._code == dorado.DataType.STRING)) {
 				messages.push({
 					state: "error",
 					text: $resource("dorado.data.ErrorContentRequired")
