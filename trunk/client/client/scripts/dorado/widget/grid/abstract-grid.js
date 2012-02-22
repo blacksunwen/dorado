@@ -2746,9 +2746,10 @@
 					var row = $DomUtils.getOrCreateChild(headerTBody, i, function() {
 						var row = document.createElement("TR");
 						$DomUtils.disableUserSelection(row);
-						row.style.height = grid._headerRowHeight +
-						((dorado.Browser.msie && cellInfos.length == 0) ? 1 : 0) +
-						"px";
+						row.style.height = grid._headerRowHeight + ((dorado.Browser.msie && cellInfos.length == 0) ? 1 : 0) + "px";
+						if (dorado.Browser.msie && dorado.Browser.version < 7) {
+							row.style.position = "static";
+						}
 						return row;
 					});
 
@@ -2787,6 +2788,9 @@
 						cell.className = "header";
 						cell.colSpan = cellInfo.colSpan;
 						cell.rowSpan = cellInfo.rowSpan || (structure.length - i);
+						if (dorado.Browser.msie && dorado.Browser.version < 7) {
+							cell.style.position = "static";
+						}
 
 						var label = cell.firstChild;
 						if (col instanceof dorado.widget.grid.DataColumn) {
@@ -2856,7 +2860,7 @@
 				}
 
 				if (!(dorado.Browser.mozilla || dorado.Browser.opera)) {
-					headerTable.style.height = ((grid._headerRowHeight + (dorado.Browser.msie ? 2 : 1)) * structure.length + filterBarHeight + 1) + "px";
+					// headerTable.style.height = ((grid._headerRowHeight + (dorado.Browser.msie ? 2 : 1)) * structure.length + filterBarHeight + 1) + "px";
 				}
 				$tableFrameHeader.show();
 			} else {
