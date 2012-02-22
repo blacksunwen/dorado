@@ -61,9 +61,9 @@ public class ListTableResolver extends Resolver {
 			element.setAttribute("name", name);
 			element.setAttribute("tableName", tableObj.get(JdbcConstants.TABLE_NAME));
 			if (dialect.getTableJdbcSpace() == JdbcSpace.CATALOG) {
-				element.setAttribute("spaceName", tableObj.get(JdbcConstants.TABLE_CAT));
+				element.setAttribute("namespace", tableObj.get(JdbcConstants.TABLE_CAT));
 			} else if (dialect.getTableJdbcSpace() == JdbcSpace.SCHEMA) {
-				element.setAttribute("spaceName", tableObj.get(JdbcConstants.TABLE_SCHEM));
+				element.setAttribute("namespace", tableObj.get(JdbcConstants.TABLE_SCHEM));
 			}
 		}
 		

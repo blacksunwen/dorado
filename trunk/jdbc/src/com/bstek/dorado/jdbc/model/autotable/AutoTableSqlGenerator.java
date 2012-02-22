@@ -33,13 +33,13 @@ public class AutoTableSqlGenerator implements CurdSqlGenerator{
 
 	@Override
 	public SelectSql selectSql(JdbcDataProviderOperation operation) {
-		AutoTable t = (AutoTable)operation.getDbTable();
+		AutoTable autoTable = (AutoTable)operation.getDbTable();
 		JdbcDataProviderContext jdbcContext = operation.getJdbcContext();
 		Object parameter = jdbcContext.getParameter();
 		
 		//columnsToken
 		StringBuilder columnsToken = new StringBuilder();
-		List<AbstractColumn> columns = t.getAllColumns();
+		List<AbstractColumn> columns = autoTable.getAllColumns();
 		for (int i=0, j=columns.size(), ableColumnCount = 0; i<j; i++) {
 			AutoTableColumn column = (AutoTableColumn)columns.get(i);
 			if (column.isSelectable()) {
@@ -47,9 +47,7 @@ public class AutoTableSqlGenerator implements CurdSqlGenerator{
 					columnsToken.append(',');
 				}
 				
-				FromTable fromTable = column.getFromTable();
-				String tableAlias = fromTable.getTableAlias();
-				
+				String tableAlias = column.getTableAlias();
 				String nativeName = column.getNativeColumnName();
 				if (StringUtils.isNotEmpty(nativeName)) {
 					String propertyName = column.getPropertyName();
@@ -62,12 +60,12 @@ public class AutoTableSqlGenerator implements CurdSqlGenerator{
 		JdbcEnviroment jdbcEnv = operation.getJdbcEnviroment();
 		Dialect dialect = jdbcEnv.getDialect();
 		//fromToken
-		StringBuilder fromToken = fromToken(t, dialect);
+		StringBuilder fromToken = fromToken(autoTable, dialect);
 		//where
 		JdbcParameterSource p = SqlUtils.createJdbcParameter(parameter);
-		StringBuilder whereToken = whereToken(t, p);
+		StringBuilder whereToken = whereToken(autoTable, p);
 		//order
-		StringBuilder orderbyToken = orderByToken(t, p, dialect);
+		StringBuilder orderbyToken = orderByToken(autoTable, p, dialect);
 		
 		//--
 		AutoTableSelectSql selectSql = new AutoTableSelectSql();
@@ -121,7 +119,7 @@ public class AutoTableSqlGenerator implements CurdSqlGenerator{
 				
 				FromTable leftFromTable = t.getFromTable(joinTable.getLeftFromTableAlias());
 				FromTable rightFromTable = t.getFromTable(joinTable.getRightFromTableAlias());
-				String token = this.joinToken(dialect, joinModel, leftFromTable, leftColumnNames, rightFromTable, rightColumnNames);
+				String token = this.joinToken(dialect, t, joinModel, leftFromTable, leftColumnNames, rightFromTable, rightColumnNames);
 				
 				if (i > 0) {
 					fromToken.append(',');
@@ -133,7 +131,7 @@ public class AutoTableSqlGenerator implements CurdSqlGenerator{
 		return fromToken;
 	}
 
-	protected String joinToken(Dialect dialect, JoinModel joinModel, FromTable leftFromTable,
+	protected String joinToken(Dialect dialect, AutoTable autoTable, JoinModel joinModel, FromTable leftFromTable,
 			String[] leftColumnNames, FromTable rightFromTable,
 			String[] rightColumnNames) {
 		SqlBuilder token = new SqlBuilder();
@@ -145,7 +143,7 @@ public class AutoTableSqlGenerator implements CurdSqlGenerator{
 		
 		String tl = token(dialect, leftFromTable);
 		String tr = token(dialect, rightFromTable);
-		String jm = dialect.token(joinModel);
+		String jm = dialect.token(autoTable,joinModel);
 		
 		token.append(tl).bothSpace(jm).append(tr);
 		token.bothSpace(KeyWord.ON);
@@ -287,7 +285,7 @@ public class AutoTableSqlGenerator implements CurdSqlGenerator{
 			for (int i=0; i<orders.size(); i++) {
 				Order order = orders.get(i);
 				if (order.isAvailable()) {
-					String token = dialect.token(order);
+					String token = dialect.token(t, order);
 					if (StringUtils.isNotEmpty(token)) {
 						tokens.add(token);
 					}
@@ -318,7 +316,7 @@ public class AutoTableSqlGenerator implements CurdSqlGenerator{
 		});
 		
 		AutoTable autoTable = ( AutoTable)operation.getDbTable();
-		FromTable fromTable = autoTable.getFromTable();
+		FromTable fromTable = autoTable.getMainFromTable();
 		Table table = fromTable.getTable();
 		
 		CurdSqlGenerator generator = table.getCurdSqlGenerator();
@@ -335,7 +333,7 @@ public class AutoTableSqlGenerator implements CurdSqlGenerator{
 		});
 		
 		AutoTable autoTable = ( AutoTable)operation.getDbTable();
-		FromTable fromTable = autoTable.getFromTable();
+		FromTable fromTable = autoTable.getMainFromTable();
 		Table table = fromTable.getTable();
 		
 		CurdSqlGenerator generator = table.getCurdSqlGenerator();
@@ -352,7 +350,7 @@ public class AutoTableSqlGenerator implements CurdSqlGenerator{
 		});
 		
 		AutoTable autoTable = ( AutoTable)operation.getDbTable();
-		FromTable fromTable = autoTable.getFromTable();
+		FromTable fromTable = autoTable.getMainFromTable();
 		Table table = fromTable.getTable();
 		
 		CurdSqlGenerator generator = table.getCurdSqlGenerator();
@@ -365,7 +363,7 @@ public class AutoTableSqlGenerator implements CurdSqlGenerator{
 	
 	protected JdbcRecordOperation createOperation(JdbcRecordOperation operation, OperationConfig config) {
 		AutoTable autoTable = ( AutoTable)operation.getDbTable();
-		FromTable fromTable = autoTable.getFromTable();
+		FromTable fromTable = autoTable.getMainFromTable();
 		Assert.notNull(fromTable, " [" + autoTable.getName() + "] " + "has no fromTable.");
 		
 		Table table = fromTable.getTable();

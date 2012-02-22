@@ -15,7 +15,7 @@
 	
 	<bean id="dorado.jdbc.keyGeneratorParser" class="com.bstek.dorado.jdbc.model.table.KeyGeneratorParser" parent="dorado.propertyParser"/>
 	
-	<bean id="dorado.jdbc.tableReferenceParser" class="com.bstek.dorado.jdbc.model.table.TableRefrenceParser" parent="dorado.propertyParser" />
+	<bean id="dorado.jdbc.tableReferenceParser" class="com.bstek.dorado.jdbc.model.table.TableReferenceParser" parent="dorado.propertyParser" />
 
 	<bean id="dorado.jdbc.dbmParser" class="com.bstek.dorado.jdbc.config.DbModelParser" parent="dorado.objectParser"/>
 	

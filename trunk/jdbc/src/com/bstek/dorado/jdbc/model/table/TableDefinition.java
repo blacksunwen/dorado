@@ -18,16 +18,12 @@ public class TableDefinition extends AbstractDbTableDefinition {
 		this.autoCreateColumns = autoCreateColumns;
 	}
 	
-	public String getCatalog() {
-		return (String)this.getProperties().get(XmlConstants.CATALOG);
-	}
-	
-	public String getSchema() {
-		return (String)this.getProperties().get(XmlConstants.SCHEMA);
-	}
-	
 	public String getTableName() {
 		return (String)this.getProperties().get(XmlConstants.TABLE_NAME);
+	}
+	
+	public String getNamespace() {
+		return (String)this.getProperties().get(XmlConstants.NAME_SPACE);
 	}
 	
 }

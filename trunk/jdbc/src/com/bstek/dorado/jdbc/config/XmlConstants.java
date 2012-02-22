@@ -10,10 +10,8 @@ public class XmlConstants {
 	
 	public static final String AUTO_CREATE_DATATYPE = "autoCreateDataType";
 	
-	public static final String CATALOG = "catalog";
-	
-	public static final String SCHEMA = "schema";
-	
 	public static final String TABLE_NAME = "tableName";
+	
+	public static final String NAME_SPACE = "namespace";
 	
 }

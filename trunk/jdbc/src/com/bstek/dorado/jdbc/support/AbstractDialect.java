@@ -27,6 +27,7 @@ import com.bstek.dorado.jdbc.JdbcParameterSource;
 import com.bstek.dorado.jdbc.JdbcRecordOperation;
 import com.bstek.dorado.jdbc.model.AbstractColumn;
 import com.bstek.dorado.jdbc.model.DbTable;
+import com.bstek.dorado.jdbc.model.autotable.AutoTable;
 import com.bstek.dorado.jdbc.model.autotable.AutoTableColumn;
 import com.bstek.dorado.jdbc.model.autotable.FromTable;
 import com.bstek.dorado.jdbc.model.autotable.Order;
@@ -61,7 +62,7 @@ public abstract class AbstractDialect implements Dialect {
 		Assert.notNull(table, "Table must not be null.");
 		
 		String tableName = table.getTableName();
-		String spaceName = table.getSpaceName();
+		String spaceName = table.getNamespace();
 		
 		if (StringUtils.isNotEmpty(spaceName)) {
 			return spaceName + "." + tableName;
@@ -408,7 +409,7 @@ public abstract class AbstractDialect implements Dialect {
 		}
 	}
 	
-	public String token(JoinModel joinModel) {
+	public String token(AutoTable autoTable, JoinModel joinModel) {
 		switch (joinModel) {
 		case INNER_JOIN:
 			return "INNER JOIN";
@@ -422,18 +423,20 @@ public abstract class AbstractDialect implements Dialect {
 	}
 	
 	@Override
-	public String token(Order order) {
+	public String token(AutoTable autoTable, Order order) {
 		OrderModel model = order.getOrderModel();
 		NullsModel nullsModel = order.getNullsModel(); 
+		String columnName = order.getColumnName();
+		Assert.notEmpty(columnName, "[" + autoTable.getName() + "] columnName must not be null in order");
 		
 		StringBuilder token = new StringBuilder();
-		FromTable fromTable = order.getFromTable();
-		if (fromTable == null) {
-			AutoTableColumn ac = order.getSelfColumn();
-			token.append(ac.getPropertyName());
+		String tableAlias = order.getTableAlias();
+		if (StringUtils.isEmpty(tableAlias)) {
+			AutoTableColumn column = (AutoTableColumn)autoTable.getColumn(columnName);
+			token.append(column.getColumnName());
 		} else {
-			String cn = order.getColumnName();
-			AbstractColumn fromColumn = fromTable.getTable().getColumn(cn);
+			FromTable fromTable = autoTable.getFromTable(tableAlias);
+			AbstractColumn fromColumn = fromTable.getTable().getColumn(columnName);
 			token.append(fromTable.getTableAlias() + '.' + fromColumn.getColumnName());
 		}
 		

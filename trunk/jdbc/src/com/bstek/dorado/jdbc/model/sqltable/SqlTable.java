@@ -1,5 +1,6 @@
 package com.bstek.dorado.jdbc.model.sqltable;
 
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlNodeWrapper;
 import com.bstek.dorado.annotation.XmlProperty;
@@ -11,12 +12,6 @@ import com.bstek.dorado.jdbc.model.table.Table;
 @XmlNode(
 	parser = "spring:dorado.jdbc.sqlTableParser",
 	definitionType="com.bstek.dorado.jdbc.model.sqltable.SqlTableDefinition",
-	properties = {
-		@XmlProperty(
-			propertyName = "table", 
-			parser = "spring:dorado.jdbc.tableReferenceParser"
-		)
-	},
 	subNodes = {
 		@XmlSubNode(
 			wrapper = @XmlNodeWrapper(nodeName = "Columns", fixed = true), 
@@ -40,6 +35,7 @@ public class SqlTable extends AbstractTable {
 		}
 	}
 	
+	@IdeProperty(highlight=1, editor = "multiLines")
 	public String getQuerySql() {
 		return querySql;
 	}
@@ -58,13 +54,13 @@ public class SqlTable extends AbstractTable {
 	}
 
 	@Override
-	protected String getDefaultSQLGeneratorServiceName() {
-		return "spring:dorado.jdbc.sqlTableSqlGenerator";
+	public String getType() {
+		return TYPE;
 	}
 	
 	@Override
-	public String getType() {
-		return TYPE;
+	protected String getDefaultSQLGeneratorServiceName() {
+		return "spring:dorado.jdbc.sqlTableSqlGenerator";
 	}
 	
 }

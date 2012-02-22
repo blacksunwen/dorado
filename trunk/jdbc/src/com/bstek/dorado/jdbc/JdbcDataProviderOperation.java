@@ -11,8 +11,6 @@ import com.bstek.dorado.jdbc.model.DbTable;
 public class JdbcDataProviderOperation extends
 		AbstractDbTableOperation<JdbcDataProviderContext> {
 
-	
-	
 	public JdbcDataProviderOperation(DbTable dbTable,
 			JdbcDataProviderContext jdbcContext) {
 		super(dbTable, jdbcContext);

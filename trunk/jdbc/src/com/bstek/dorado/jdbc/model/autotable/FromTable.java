@@ -23,12 +23,13 @@ public class FromTable {
 		return this.tableAlias;
 	}
 	
-	public Table getTable() {
-		return table;
-	}
-
 	public void setTableAlias(String tableAlias) {
 		this.tableAlias = tableAlias;
+	}
+	
+	@XmlProperty(parser = "spring:dorado.jdbc.tableReferenceParser")
+	public Table getTable() {
+		return table;
 	}
 
 	public void setTable(Table table) {

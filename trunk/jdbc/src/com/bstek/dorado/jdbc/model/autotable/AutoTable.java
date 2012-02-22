@@ -48,13 +48,17 @@ public class AutoTable extends AbstractTable {
 	
 	private List<JoinTable> joinTables = new ArrayList<JoinTable>(5);
 	
-	private Where where;
-	
 	private List<Order> orders = new ArrayList<Order>(5);
+
+	private Where where;
 
 	private String mainTableAlias;
 	
 	public void addFromTable(FromTable fromTable) {
+		String tableAlias = fromTable.getTableAlias();
+		Assert.notEmpty(tableAlias, "[" + this.getName() + "] tableAlias must not be null");
+		Assert.isTrue(!fromTables.containsKey(tableAlias), "[" + this.getName() + "] duplicate fromTable '" + tableAlias + "'");
+		
 		this.fromTables.put(fromTable.getTableAlias(), fromTable);
 	}
 	
@@ -68,7 +72,7 @@ public class AutoTable extends AbstractTable {
 	
 	public FromTable getFromTable(String alias) {
 		FromTable fromTable = fromTables.get(alias);
-		Assert.notNull(fromTable, getType() + " [" + getName()+ "] " + "No FromTable named [" + alias + "]");
+		Assert.notNull(fromTable, "[" + getName()+ "] " + "No FromTable named [" + alias + "]");
 		return fromTable;
 	}
 
@@ -91,15 +95,13 @@ public class AutoTable extends AbstractTable {
 	
 	public void addOrder(Order order) {
 		this.orders.add(order);
-		order.setAutoTable(this);
 	}
-
 	
 	public String getType() {
 		return TYPE;
 	}
 
-	public FromTable getFromTable() {
+	public FromTable getMainFromTable() {
 		if (StringUtils.isEmpty(mainTableAlias)) {
 			return null;
 		} else {
@@ -120,9 +122,7 @@ public class AutoTable extends AbstractTable {
 		Assert.notNull(column);
 		
 		if (column instanceof AutoTableColumn) {
-			AutoTableColumn c = (AutoTableColumn)column;
 			super.addColumn(column);
-			c.setAutoTable(this);
 		} else {
 			throw new IllegalArgumentException(getType() + " [" + getName()+ "] " + "Unknown column class [" + column.getClass() + "]");
 		}
