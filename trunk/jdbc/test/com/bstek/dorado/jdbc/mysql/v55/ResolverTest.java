@@ -19,11 +19,11 @@ public class ResolverTest extends Mysql55JdbcTestCase{
 		ListTableResolver resolver = new ListTableResolver();
 		
 		String envName = "mysql";
-		String spaceName = "dorado";
+		String namespace = "dorado";
 		String[] tableTypes = null;
 		String tableNamePattern = null;
 		
-		String xml = resolver.toContent(envName, spaceName, tableTypes, tableNamePattern);
+		String xml = resolver.toContent(envName, namespace, tableTypes, tableNamePattern);
 		System.out.println("Tables:" + xml);
 		
 		Assert.assertTrue(xml.indexOf("employee") >=0);
@@ -33,11 +33,11 @@ public class ResolverTest extends Mysql55JdbcTestCase{
 		ListTableResolver resolver = new ListTableResolver();
 		
 		String envName = "mysql";
-		String spaceName = "dorado";
+		String namespace = "dorado";
 		String[] tableTypes = null;
 		String tableNamePattern = null;
 		
-		String xml = resolver.toContent(envName, spaceName, tableTypes, tableNamePattern);
+		String xml = resolver.toContent(envName, namespace, tableTypes, tableNamePattern);
 		System.out.println("Tables:" + xml);
 		
 		Assert.assertTrue(xml.indexOf("employee") >=0);

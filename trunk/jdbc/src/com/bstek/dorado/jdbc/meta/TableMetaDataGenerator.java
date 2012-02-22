@@ -19,25 +19,22 @@ public interface TableMetaDataGenerator {
 	/**
 	 * 列出{@link JdbcEnviroment}的Table原始属性的列表
 	 * @param jdbcEnv
-	 * @param catalogPattern
-	 * @param schemaPattern
+	 * @param namespace
 	 * @param tableNamePattern
 	 * @param types
 	 * @return
 	 */
-	List<Map<String,String>> listTableMetas(JdbcEnviroment jdbcEnv, 
-			String catalogPattern, String schemaPattern, String tableNamePattern, String[] types);
+	List<Map<String,String>> listTableMetas(JdbcEnviroment jdbcEnv, String namespace, String tableNamePattern, String[] types);
 	
 	/**
 	 * 输出特定Table的原始属性
 	 * 
 	 * @param jdbcEnv
-	 * @param catalog
-	 * @param schema
+	 * @param namespace
 	 * @param table
 	 * @return
 	 */
-	Map<String,String> tableMeta(JdbcEnviroment jdbcEnv, String catalog, String schema, String table);
+	Map<String,String> tableMeta(JdbcEnviroment jdbcEnv, String namespace, String table);
 	
 	/**
 	 * 输出程序内部使用的名称，即name属性
@@ -52,12 +49,11 @@ public interface TableMetaDataGenerator {
 	 * 输出Table的Column原始属性的列表
 	 * 
 	 * @param jdbcEnv
-	 * @param catalog
-	 * @param schema
+	 * @param namespace
 	 * @param tableName
 	 * @return
 	 */
-	List<Map<String,String>> listColumnMetas(JdbcEnviroment jdbcEnv, String catalog, String schema, String tableName);
+	List<Map<String,String>> listColumnMetas(JdbcEnviroment jdbcEnv, String namespace, String tableName);
 	
 	/**
 	 * 根据Column的原始属性，输出程序内部使用的属性
@@ -79,22 +75,20 @@ public interface TableMetaDataGenerator {
 	
 	/**
 	 * 构造特定Table的Document对象
-	 * @param catalog
-	 * @param schema
+	 * @param namespace
 	 * @param table
 	 * @param jdbcEnv
 	 * @return
 	 */
-	Document createDocument(String catalog, String schema, String table, JdbcEnviroment jdbcEnv);
+	Document createDocument(String namespace, String table, JdbcEnviroment jdbcEnv);
 	
 	/**
 	 * 在已有的Document基础上输出特定Table的Document对象
-	 * @param catalog
-	 * @param schema
+	 * @param namespace
 	 * @param table
 	 * @param jdbcEnv
 	 * @param oldDocument
 	 * @return
 	 */
-	Document mergeDocument(String catalog, String schema, String table, JdbcEnviroment jdbcEnv, Document oldDocument);
+	Document mergeDocument(String namespace, String table, JdbcEnviroment jdbcEnv, Document oldDocument);
 }

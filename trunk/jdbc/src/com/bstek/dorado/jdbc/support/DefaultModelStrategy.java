@@ -8,6 +8,7 @@ import com.bstek.dorado.data.config.definition.PropertyDefDefinition;
 import com.bstek.dorado.jdbc.ModelStrategy;
 import com.bstek.dorado.jdbc.config.DbElementDefinition;
 import com.bstek.dorado.jdbc.config.JdbcCreationContext;
+import com.bstek.dorado.jdbc.config.XmlConstants;
 import com.bstek.dorado.jdbc.model.AbstractColumn;
 import com.bstek.dorado.jdbc.model.DbTable;
 import com.bstek.dorado.jdbc.type.JdbcType;
@@ -55,7 +56,7 @@ public class DefaultModelStrategy implements ModelStrategy {
 		providerDef.setName(providerName);
 		providerDef.setGlobal(true);
 		providerDef.setProperty("type", "jdbc");
-		providerDef.setProperty("tableName", dbeDef.getName());
+		providerDef.setProperty(XmlConstants.TABLE_NAME, dbeDef.getName());
 		
 		return providerDef;
 	}
