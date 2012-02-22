@@ -14,7 +14,8 @@ import com.bstek.dorado.view.widget.Component;
 @Widget(name = "Trigger", category = "Trigger", dependsPackage = "base-widget",
 		autoGenerateId = true)
 @ClientObject(prototype = "dorado.widget.Trigger", shortTypeName = "Trigger")
-@ClientEvents({ @ClientEvent(name = "onExecute") })
+@ClientEvents({ @ClientEvent(name = "beforeExecute"),
+		@ClientEvent(name = "onExecute") })
 public class Trigger extends Component {
 	private String icon;
 	private String iconClass;

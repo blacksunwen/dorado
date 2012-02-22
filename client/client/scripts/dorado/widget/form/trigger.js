@@ -60,6 +60,20 @@ dorado.widget.Trigger = $extend(dorado.widget.Component, /** @scope dorado.widge
 	},
 	
 	EVENTS: /** @scope dorado.widget.Trigger.prototype */ {
+		
+		/**
+		 * 当触发器被触发之前激活的事件。
+		 * <p>
+		 * 即当用户点击关联在编辑框上的触发器按钮时，本事件将被触发。
+		 * </p>
+		 * @param {Object} self 事件的发起者，即控件本身。
+		 * @param {Object} arg 事件参数。
+		 * @param {dorado.widget.AbstractTextEditor} arg.editor 激活此触发器的编辑框。
+		 * @param {boolean} #arg.processDefault=true 是否继续执行后续的触发器动作。
+		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+		 * @event
+		 */
+		beforeExecute: {},
 	
 		/**
 		 * 当触发器被触发时激活的事件。
