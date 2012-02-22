@@ -97,11 +97,14 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.RowListDropDown,/** @scope
 			self._dataSet.getDataAsync(self._dataPath, function(data) {
 				if (!self._useDataBinding) self._items = data;
 				superClass.prototype.open.call(self, editor);
-			}, "auto");
+			}, {
+				loadMode: "auto",
+				flush: self._reloadDataOnOpen
+			});
 		};
 		
-		if (this._useDataBinding && (this._filterOnOpen || this._reloadDataOnOpen || this._lastFilterValue)) {
-			var filterValue = (this._reloadDataOnOpen || this._lastFilterValue) ? this._lastFilterValue : editor.get("text");
+		if (this._useDataBinding && (this._filterOnOpen || this._lastFilterValue)) {
+			var filterValue = (this._lastFilterValue) ? this._lastFilterValue : editor.get("text");
 			this.onFilterItems(filterValue, doOpen);
 			this._lastFilterValue = filterValue;
 		} else {
@@ -193,8 +196,7 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.RowListDropDown,/** @scope
 			this._filterOnOpen = false;
 			$invokeSuper.call(this, arguments);
 			this._filterOnOpen = filterOnOpen;
-		}
-		else {
+		} else {
 			$invokeSuper.call(this, arguments);
 		}
 	}

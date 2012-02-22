@@ -425,9 +425,9 @@
 			 * @param {Object} self 事件的发起者，即控件本身。
 			 * @param {Object} arg 事件参数。
 			 * @param {int} arg.keyCode 按键对应的keyCode。
-			 * @param {boolean} arg.shift Shift键是否按下。
-			 * @param {boolean} arg.ctrl Ctrl键是否按下。
-			 * @param {boolean} arg.alt Alt键是否按下。
+			 * @param {boolean} arg.shiftKey Shift键是否按下。
+			 * @param {boolean} arg.ctrlKey Ctrl键是否按下。
+			 * @param {boolean} arg.altKey Alt键是否按下。
 			 * @param {Event} arg.event DHTML中的事件event参数。
 			 * @patam {Boolean} #arg.returnValue=undefined 用于通知系统如何进行下一步处理的返回值。<br>
 			 * 有下列三种可能结果:
@@ -446,9 +446,9 @@
 			 * @param {Object} self 事件的发起者，即控件本身。
 			 * @param {Object} arg 事件参数。
 			 * @param {int} arg.keyCode 按键对应的keyCode。
-			 * @param {boolean} arg.shift Shift键是否按下。
-			 * @param {boolean} arg.ctrl Ctrl键是否按下。
-			 * @param {boolean} arg.alt Alt键是否按下。
+			 * @param {boolean} arg.shiftKey Shift键是否按下。
+			 * @param {boolean} arg.ctrlKey Ctrl键是否按下。
+			 * @param {boolean} arg.altKey Alt键是否按下。
 			 * @param {Event} arg.event DHTML中的事件event参数。
 			 * @patam {Boolean} #arg.returnValue=undefined 用于通知系统如何进行下一步处理的返回值。<br>
 			 * 有下列三种可能结果:
