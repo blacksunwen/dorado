@@ -294,13 +294,22 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 	},
 
 	execute : function(editor) {
-		if (this._skipExecute)
-			return;
+		if (this._skipExecute) return;
 		this._skipExecute = true;
 		$setTimeout(this, function() {
 			delete this._skipExecute;
 		}, 300);
-		(this.get("opened")) ? this.close() : this.open(editor);
+		if (this.get("opened")) {
+			this.close();
+		} else {
+			var arg = {
+				editor: editor,
+				processDefault: true
+			}
+			this.fireEvent("beforeExecute", this, arg);
+			if (!arg.processDefault) return;
+			this.open(editor);
+		}
 		$invokeSuper.call(this, arguments);
 	},
 
