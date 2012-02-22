@@ -8,9 +8,7 @@ import org.w3c.dom.Node;
 
 import com.bstek.dorado.config.ParseContext;
 import com.bstek.dorado.config.definition.Operation;
-import com.bstek.dorado.jdbc.Dialect;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
-import com.bstek.dorado.jdbc.JdbcSpace;
 import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.ModelGeneratorSuit;
 import com.bstek.dorado.jdbc.config.AbstractDbTableDefinition;
@@ -60,24 +58,15 @@ public class TableParser extends AbstractDbTableParser {
 		}
 		
 		JdbcEnviroment jdbcEnv = jdbcContext.getJdbcEnviroment();
-		Dialect dialect = jdbcEnv.getDialect();
-		
 		ModelGeneratorSuit generator = JdbcUtils.getModelGeneratorSuit();
 		
 		String tableName = tableDef.getTableName();
 		String namespace = tableDef.getNamespace();
-		String catalog = null;
-		String schema = null;
-		if (dialect.getTableJdbcSpace() == JdbcSpace.CATALOG) {
-			catalog = namespace;
-		} else if (dialect.getTableJdbcSpace() == JdbcSpace.SCHEMA) {
-			schema = namespace;
-		}
 		
 		TableMetaDataGenerator tg = generator.getTableMetaDataGenerator();
-		Map<String,String> tableMeta = tg.tableMeta(jdbcEnv, catalog, schema, tableName);
+		Map<String,String> tableMeta = tg.tableMeta(jdbcEnv, namespace, tableName);
 		
-		List<Map<String,String>> columnList = tg.listColumnMetas(jdbcEnv, catalog, schema, tableName);
+		List<Map<String,String>> columnList = tg.listColumnMetas(jdbcEnv, namespace, tableName);
 		for (Map<String,String> columnMeta: columnList) {
 			String columnName = columnMeta.get(JdbcConstants.COLUMN_NAME);
 			ColumnDefinition columnDef = columnMap.get(columnName);

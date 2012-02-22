@@ -66,8 +66,8 @@ public class Table extends AbstractTable {
 		return namespace;
 	}
 
-	public void setNamespace(String spaceName) {
-		this.namespace = spaceName;
+	public void setNamespace(String namespace) {
+		this.namespace = namespace;
 	}
 
 	@XmlProperty(attributeOnly=true)

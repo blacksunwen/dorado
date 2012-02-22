@@ -33,10 +33,10 @@ public class TestJdbcUtils {
 	 * @param tableName
 	 * @return
 	 */
-	public static String outputTable(String jdbcEnvName, String spaceName, String tableName) {
+	public static String outputTable(String jdbcEnvName, String namespace, String tableName) {
 		CreateTableResolver resolver = new CreateTableResolver();
 		
-		String xml = resolver.toContent(jdbcEnvName, spaceName, tableName, null);
+		String xml = resolver.toContent(jdbcEnvName, namespace, tableName, null);
 		return xml;
 	}
 

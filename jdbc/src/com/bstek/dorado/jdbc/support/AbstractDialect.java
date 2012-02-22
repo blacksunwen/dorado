@@ -62,10 +62,10 @@ public abstract class AbstractDialect implements Dialect {
 		Assert.notNull(table, "Table must not be null.");
 		
 		String tableName = table.getTableName();
-		String spaceName = table.getNamespace();
+		String namespace = table.getNamespace();
 		
-		if (StringUtils.isNotEmpty(spaceName)) {
-			return spaceName + "." + tableName;
+		if (StringUtils.isNotEmpty(namespace)) {
+			return namespace + "." + tableName;
 		} else {
 			return tableName;
 		}

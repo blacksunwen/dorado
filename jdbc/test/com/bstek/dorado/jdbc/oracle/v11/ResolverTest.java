@@ -20,11 +20,11 @@ public class ResolverTest extends Oracle11JdbcTestCase {
 		ListTableResolver resolver = new ListTableResolver();
 		
 		String envName = "ora11";
-		String spaceName = "DORADO";
+		String namespace = "DORADO";
 		String[] tableTypes = null;
 		String tableNamePattern = null;
 		
-		String xml = resolver.toContent(envName, spaceName, tableTypes, tableNamePattern);
+		String xml = resolver.toContent(envName, namespace, tableTypes, tableNamePattern);
 		System.out.println("Tables:" + xml);
 		
 		Assert.assertTrue(xml.indexOf("EMPLOYEE") >=0);
@@ -32,13 +32,13 @@ public class ResolverTest extends Oracle11JdbcTestCase {
 	
 	public void testListTable2() {
 		String envName = "ora11";
-		String spaceName = "DORADO";
+		String namespace = "DORADO";
 		String[] tableTypes = null;
 		String tableNamePattern = "emp";
 		
 		ListTableResolver resolver = new ListTableResolver();
 		
-		String xml = resolver.toContent(envName, spaceName, tableTypes, tableNamePattern);
+		String xml = resolver.toContent(envName, namespace, tableTypes, tableNamePattern);
 		System.out.println("Tables:" + xml);
 		
 		Assert.assertTrue(xml.indexOf("EMPLOYEE") >=0);
@@ -47,12 +47,12 @@ public class ResolverTest extends Oracle11JdbcTestCase {
 	
 	public void testCreateTable() {
 		String envName = "ora11";
-		String spaceName = "DORADO";
+		String namespace = "DORADO";
 		String tableName = "employee";
 		
 		CreateTableResolver resolver = new CreateTableResolver();
 		
-		String xml = resolver.toContent(envName, spaceName, tableName, null);
+		String xml = resolver.toContent(envName, namespace, tableName, null);
 		System.out.println("Table:" + xml);
 		
 	}

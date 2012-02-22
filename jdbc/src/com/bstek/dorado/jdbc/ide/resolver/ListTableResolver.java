@@ -16,6 +16,7 @@ import com.bstek.dorado.jdbc.JdbcSpace;
 import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.ModelGeneratorSuit;
 import com.bstek.dorado.jdbc.config.DomHelper;
+import com.bstek.dorado.jdbc.config.XmlConstants;
 import com.bstek.dorado.jdbc.ide.Constants;
 import com.bstek.dorado.jdbc.meta.TableMetaDataGenerator;
 import com.bstek.dorado.jdbc.support.JdbcConstants;
@@ -26,7 +27,7 @@ public class ListTableResolver extends Resolver {
 	public String getContent(HttpServletRequest request,
 			HttpServletResponse response) {
 		String envName = request.getParameter(Constants.PARAM_ENV);
-		String spaceName = request.getParameter(Constants.PARAM_SPACE);
+		String namespace = request.getParameter(Constants.PARAM_SPACE);
 		String tbTypes = request.getParameter(Constants.PARAM_TBTY);
 		String tbName  = request.getParameter(Constants.PARAM_TBNM);
 		
@@ -35,23 +36,15 @@ public class ListTableResolver extends Resolver {
 			tableTypes = StringUtils.split(tbTypes, ',');
 		}
 		
-		return this.toContent(envName, spaceName, tableTypes, tbName);
+		return this.toContent(envName, namespace, tableTypes, tbName);
 	}
 
-	public String toContent(String envName, String spaceName, String[] tableTypes, String tableNamePattern) {
+	public String toContent(String envName, String namespace, String[] tableTypes, String tableNamePattern) {
 		JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(envName);
 		ModelGeneratorSuit generator = JdbcUtils.getModelGeneratorSuit();
 		TableMetaDataGenerator tg = generator.getTableMetaDataGenerator();
 		Dialect dialect = jdbcEnv.getDialect();
-		String catalog = null;
-		String schema = null;
-		if (dialect.getTableJdbcSpace() == JdbcSpace.CATALOG) {
-			catalog = spaceName;
-		} else if (dialect.getTableJdbcSpace() == JdbcSpace.SCHEMA) {
-			schema = spaceName;
-		}
-		
-		List<Map<String,String>> tableList = tg.listTableMetas(jdbcEnv, catalog, schema, tableNamePattern, tableTypes);
+		List<Map<String,String>> tableList = tg.listTableMetas(jdbcEnv, namespace, tableNamePattern, tableTypes);
 		
 		Document document = DomHelper.newDocument();
 		Element tables = DomHelper.addElement(document, "Tables");
@@ -59,11 +52,11 @@ public class ListTableResolver extends Resolver {
 			Element element = DomHelper.addElement(tables, "Table");
 			String name = tg.tableName(tableObj, jdbcEnv);
 			element.setAttribute("name", name);
-			element.setAttribute("tableName", tableObj.get(JdbcConstants.TABLE_NAME));
+			element.setAttribute(XmlConstants.TABLE_NAME, tableObj.get(JdbcConstants.TABLE_NAME));
 			if (dialect.getTableJdbcSpace() == JdbcSpace.CATALOG) {
-				element.setAttribute("namespace", tableObj.get(JdbcConstants.TABLE_CAT));
+				element.setAttribute(XmlConstants.NAME_SPACE, tableObj.get(JdbcConstants.TABLE_CAT));
 			} else if (dialect.getTableJdbcSpace() == JdbcSpace.SCHEMA) {
-				element.setAttribute("namespace", tableObj.get(JdbcConstants.TABLE_SCHEM));
+				element.setAttribute(XmlConstants.NAME_SPACE, tableObj.get(JdbcConstants.TABLE_SCHEM));
 			}
 		}
 		

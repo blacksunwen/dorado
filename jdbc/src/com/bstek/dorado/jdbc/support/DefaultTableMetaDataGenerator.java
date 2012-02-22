@@ -30,6 +30,7 @@ import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.JdbcSpace;
 import com.bstek.dorado.jdbc.config.ColumnDefinition;
 import com.bstek.dorado.jdbc.config.DomHelper;
+import com.bstek.dorado.jdbc.config.XmlConstants;
 import com.bstek.dorado.jdbc.meta.TableMetaDataGenerator;
 import com.bstek.dorado.jdbc.model.table.KeyGenerator;
 import com.bstek.dorado.jdbc.model.table.TableColumnDefinition;
@@ -42,9 +43,22 @@ public class DefaultTableMetaDataGenerator implements TableMetaDataGenerator {
 	private static Log logger = LogFactory.getLog(DefaultTableMetaDataGenerator.class);
 	
 	@Override
-	public List<Map<String, String>> listTableMetas(JdbcEnviroment jdbcEnv,
-			final String catalogPattern, final String schemaPattern,
-			final String tableNamePattern, final String[] types) {
+	public List<Map<String, String>> listTableMetas(final JdbcEnviroment jdbcEnv, 
+			final String namespace, final String tableNamePattern, final String[] types) {
+		Dialect dialect = jdbcEnv.getDialect();
+		String catalog = null;
+		String schema = null;
+		if (dialect.getTableJdbcSpace() == JdbcSpace.CATALOG) {
+			catalog = namespace;
+		} else if (dialect.getTableJdbcSpace() == JdbcSpace.SCHEMA) {
+			schema = namespace;
+		}
+		
+		return listTableMetas(jdbcEnv, catalog, schema, tableNamePattern, types);
+	}
+	
+	protected List<Map<String, String>> listTableMetas(JdbcEnviroment jdbcEnv, 
+			final String catalog, final String schema, final String tableNamePattern, final String[] types) {
 		DataSource dataSource = jdbcEnv.getDataSource();
 		try {
 			@SuppressWarnings("unchecked")
@@ -70,8 +84,7 @@ public class DefaultTableMetaDataGenerator implements TableMetaDataGenerator {
 						}
 					}
 					
-					String catalogArg = catalogPattern;
-					ResultSet rs = dbmd.getTables(catalogArg, schemaPattern, tableNameArg, types);
+					ResultSet rs = dbmd.getTables(catalog, schema, tableNameArg, types);
 					return Utils.toListMap(rs);
 				}
 				
@@ -83,9 +96,24 @@ public class DefaultTableMetaDataGenerator implements TableMetaDataGenerator {
 	}
 	
 	@Override
-	public Map<String, String> tableMeta(JdbcEnviroment jdbcEnv,
-			String catalog, String schema, String table) {
+	public Map<String, String> tableMeta(JdbcEnviroment jdbcEnv, String namespace, String table) {
+		
+		
+		Dialect dialect = jdbcEnv.getDialect();
+		String catalog = null;
+		String schema = null;
+		if (dialect.getTableJdbcSpace() == JdbcSpace.CATALOG) {
+			catalog = namespace;
+		} else if (dialect.getTableJdbcSpace() == JdbcSpace.SCHEMA) {
+			schema = namespace;
+		}
+		
+		return tableMeta(jdbcEnv, catalog, schema, table);
+	}
+	
+	protected Map<String, String> tableMeta(JdbcEnviroment jdbcEnv, String catalog, String schema, String table) {
 		List<Map<String,String>> tables = listTableMetas(jdbcEnv, catalog, schema, table, null);
+		
 		if (tables.size() == 0) {
 			throw new IllegalArgumentException("no table found from JdbcEnviroment [" + jdbcEnv.getName() + "], " +
 					"catalog[" + catalog + "]scheme[" + schema + "]table[" + table + "]");
@@ -100,18 +128,15 @@ public class DefaultTableMetaDataGenerator implements TableMetaDataGenerator {
 		}
 		return meta;
 	}
+	
 
 	@Override
 	public String tableName(Map<String, String> tableMeta, JdbcEnviroment jdbcEnv) {
 		return tableMeta.get(JdbcConstants.TABLE_NAME);
 	}
 
-	@Override
-	public List<Map<String, String>> listColumnMetas(final JdbcEnviroment jdbcEnv,
+	protected List<Map<String, String>> listColumnMetas(final JdbcEnviroment jdbcEnv,
 			final String catalog, final String schema, final String table) {
-		
-		this.tableMeta(jdbcEnv, catalog, schema, table);
-		
 		DataSource dataSource = jdbcEnv.getDataSource();
 		try {
 			@SuppressWarnings("unchecked")
@@ -171,6 +196,22 @@ public class DefaultTableMetaDataGenerator implements TableMetaDataGenerator {
 		} catch (MetaDataAccessException e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	@Override
+	public List<Map<String, String>> listColumnMetas(JdbcEnviroment jdbcEnv, String namespace, String table) {
+		this.tableMeta(jdbcEnv, namespace, table);
+		
+		Dialect dialect = jdbcEnv.getDialect();
+		String catalog = null;
+		String schema = null;
+		if (dialect.getTableJdbcSpace() == JdbcSpace.CATALOG) {
+			catalog = namespace;
+		} else if (dialect.getTableJdbcSpace() == JdbcSpace.SCHEMA) {
+			schema = namespace;
+		}
+		
+		return listColumnMetas(jdbcEnv, catalog, schema, table);
 	}
 
 	@Override
@@ -251,14 +292,9 @@ public class DefaultTableMetaDataGenerator implements TableMetaDataGenerator {
 	}
 	
 	private static class UsedTable {
-		String catalog; String schema; String table;
 		String usedCatalog; String usedSchema;String usedTable;
 		
 		public UsedTable(String catalog, String schema, String table) {
-			this.catalog = catalog;
-			this.schema = schema;
-			this.table = table;
-			
 			this.usedCatalog = catalog;
 			this.usedSchema = schema;
 			this.usedTable = table;
@@ -333,8 +369,17 @@ public class DefaultTableMetaDataGenerator implements TableMetaDataGenerator {
 		}
 	}
 	@Override
-	public Document createDocument(String catalog, String schema, String table,
+	public Document createDocument(String namespace, String table,
 			JdbcEnviroment jdbcEnv) {
+		Dialect dialect = jdbcEnv.getDialect();
+		String catalog = null;
+		String schema = null;
+		if (dialect.getTableJdbcSpace() == JdbcSpace.CATALOG) {
+			catalog = namespace;
+		} else if (dialect.getTableJdbcSpace() == JdbcSpace.SCHEMA) {
+			schema = namespace;
+		}
+		
 		UsedTable usedTable = new UsedTable(catalog, schema, table);
 		usedTable.init(jdbcEnv);
 		
@@ -372,18 +417,18 @@ public class DefaultTableMetaDataGenerator implements TableMetaDataGenerator {
 		String name = tableName(tableMeta, jdbcEnv);
 		Element tableElement = document.createElement("Table");
 		tableElement.setAttribute("name", name);
-		tableElement.setAttribute("tableName", usedTable.usedTable);
+		tableElement.setAttribute(XmlConstants.TABLE_NAME, usedTable.usedTable);
 
 		Dialect dialect = jdbcEnv.getDialect();
-		String spaceName = null;
+		String namespace = null;
 		if (dialect.getTableJdbcSpace() == JdbcSpace.CATALOG) {
-			spaceName = usedTable.catalog;
+			namespace = usedTable.usedCatalog;
 		} else if (dialect.getTableJdbcSpace() == JdbcSpace.SCHEMA) {
-			spaceName = usedTable.schema;
+			namespace = usedTable.usedSchema;
 		}
 		
-		if (StringUtils.isNotEmpty(spaceName)) {
-			tableElement.setAttribute("namespace", spaceName);
+		if (StringUtils.isNotEmpty(namespace)) {
+			tableElement.setAttribute(XmlConstants.NAME_SPACE, namespace);
 		}
 		
 		return tableElement;
@@ -413,8 +458,17 @@ public class DefaultTableMetaDataGenerator implements TableMetaDataGenerator {
 	}
 
 	@Override
-	public Document mergeDocument(String catalog, String schema, String table,
+	public Document mergeDocument(String namespace, String table,
 			JdbcEnviroment jdbcEnv, Document document) {
+		Dialect dialect = jdbcEnv.getDialect();
+		String catalog = null;
+		String schema = null;
+		if (dialect.getTableJdbcSpace() == JdbcSpace.CATALOG) {
+			catalog = namespace;
+		} else if (dialect.getTableJdbcSpace() == JdbcSpace.SCHEMA) {
+			schema = namespace;
+		}
+		
 		UsedTable usedTable = new UsedTable(catalog, schema, table);
 		usedTable.init(jdbcEnv);
 		
