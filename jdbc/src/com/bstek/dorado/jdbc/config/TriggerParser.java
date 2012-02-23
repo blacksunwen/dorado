@@ -1,23 +1,13 @@
 package com.bstek.dorado.jdbc.config;
 
-import org.apache.commons.lang.StringUtils;
-import org.w3c.dom.Node;
-
-import com.bstek.dorado.config.ParseContext;
-import com.bstek.dorado.config.xml.PropertyParser;
-import com.bstek.dorado.core.bean.BeanFactoryUtils;
 import com.bstek.dorado.jdbc.DbTableTrigger;
 
-public class TriggerParser extends PropertyParser {
-
-	@Override
-	protected Object doParse(Node node, ParseContext context) throws Exception {
-		String triggerName = (String) super.doParse(node, context);
-		if (StringUtils.isNotEmpty(triggerName)) {
-			return (DbTableTrigger)BeanFactoryUtils.getBean(triggerName);
-		} else {
-			return null;
-		}
-	}
+/**
+ * {@link DbTableTrigger}解析器
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
+public class TriggerParser extends AbstractBeanPropertyParser<DbTableTrigger> {
 
 }

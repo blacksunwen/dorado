@@ -7,7 +7,7 @@ import com.bstek.dorado.jdbc.support.AbstractDialect;
 
 /**
  * mysql database
- * @author mark
+ * @author mark.li@bstek.com
  * @see <a href='http://dev.mysql.com/doc/refman/5.5/en/sql-syntax.html'>http://dev.mysql.com/doc/refman/5.5/en/sql-syntax.html</a>
  */
 public class MysqlDialect extends AbstractDialect {

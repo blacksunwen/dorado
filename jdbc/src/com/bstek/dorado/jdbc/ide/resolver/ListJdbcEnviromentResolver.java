@@ -11,7 +11,12 @@ import org.apache.commons.lang.StringUtils;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.JdbcUtils;
 
-public class ListJdbcEnviromentResolver extends Resolver {
+/**
+ * {@link JdbcEnviroment}列表
+ * @author mark.li@bstek.com
+ *
+ */
+public class ListJdbcEnviromentResolver extends AbstractResolver {
 
 	@Override
 	public String getContent(HttpServletRequest request,

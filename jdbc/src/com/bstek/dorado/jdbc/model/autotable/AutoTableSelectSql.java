@@ -8,6 +8,11 @@ import com.bstek.dorado.jdbc.sql.SqlBuilder;
 import com.bstek.dorado.jdbc.sql.SqlConstants.KeyWord;
 import com.bstek.dorado.util.Assert;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 public class AutoTableSelectSql  extends SelectSql {
 	private String columnsToken;
 	private String fromToken;

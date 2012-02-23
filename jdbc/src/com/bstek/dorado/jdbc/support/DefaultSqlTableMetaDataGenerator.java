@@ -24,6 +24,11 @@ import com.bstek.dorado.jdbc.meta.SqlTableMetaDataGenerator;
 import com.bstek.dorado.jdbc.type.JdbcType;
 import com.bstek.dorado.util.xml.DomUtils;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 public class DefaultSqlTableMetaDataGenerator implements
 		SqlTableMetaDataGenerator {
 
@@ -91,7 +96,7 @@ public class DefaultSqlTableMetaDataGenerator implements
 	}
 	
 	@Override
-	public Document createDocument(JdbcEnviroment jdbcEnv, String sql) {
+	public Document create(JdbcEnviroment jdbcEnv, String sql) {
 		Document document = DomHelper.newDocument();
 		Element tableElement = DomHelper.addElement(document, "SqlTable");
 		Element columnsElement = DomHelper.addElement(tableElement, "Columns");
@@ -120,7 +125,7 @@ public class DefaultSqlTableMetaDataGenerator implements
 	}
 
 	@Override
-	public Document mergeDocument(JdbcEnviroment jdbcEnv, String sql,
+	public Document merge(JdbcEnviroment jdbcEnv, String sql,
 			Document document) {
 		Element tableElement = document.getDocumentElement();
 		Element columnsElement = DomUtils.getChildByTagName(tableElement, "Columns");

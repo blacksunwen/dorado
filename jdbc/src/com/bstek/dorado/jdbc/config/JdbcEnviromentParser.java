@@ -7,6 +7,12 @@ import com.bstek.dorado.config.ParseContext;
 import com.bstek.dorado.config.xml.PropertyParser;
 import com.bstek.dorado.jdbc.JdbcUtils;
 
+/**
+ * {@link com.bstek.dorado.jdbc.JdbcEnviroment}的解析器
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 public class JdbcEnviromentParser extends PropertyParser {
 	
 	@Override

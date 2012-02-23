@@ -5,6 +5,11 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import com.bstek.dorado.jdbc.AbstractJdbcContext;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 public class StoredProgramContext extends AbstractJdbcContext {
 
 	private MapSqlParameterSource parameterSource = new MapSqlParameterSource();

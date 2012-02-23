@@ -19,6 +19,11 @@ import com.bstek.dorado.jdbc.sql.SqlUtils;
 import com.bstek.dorado.jdbc.sql.UpdateSql;
 import com.bstek.dorado.util.Assert;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 public class SqlTableSqlGenerator implements CurdSqlGenerator {
 	
 	@Override

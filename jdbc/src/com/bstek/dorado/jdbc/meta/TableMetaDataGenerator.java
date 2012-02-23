@@ -11,7 +11,7 @@ import com.bstek.dorado.jdbc.config.ColumnDefinition;
 /**
  * 数据库Table属性的输出
  * 
- * @author mark
+ * @author mark.li@bstek.com
  *
  */
 public interface TableMetaDataGenerator {

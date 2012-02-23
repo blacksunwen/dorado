@@ -2,11 +2,10 @@ package com.bstek.dorado.jdbc.oracle.v11;
 
 import junit.framework.Assert;
 
-import com.bstek.dorado.jdbc.ide.resolver.CreateTableResolver;
 import com.bstek.dorado.jdbc.ide.resolver.ListSpaceResolver;
 import com.bstek.dorado.jdbc.ide.resolver.ListTableResolver;
 
-public class ResolverTest extends Oracle11JdbcTestCase {
+public class ResolverTest extends AbstractOracle11JdbcTestCase {
 
 	public void testListSpace() {
 		ListSpaceResolver resolver = new ListSpaceResolver();
@@ -44,16 +43,4 @@ public class ResolverTest extends Oracle11JdbcTestCase {
 		Assert.assertTrue(xml.indexOf("EMPLOYEE") >=0);
 	}
 	
-	
-	public void testCreateTable() {
-		String envName = "ora11";
-		String namespace = "DORADO";
-		String tableName = "employee";
-		
-		CreateTableResolver resolver = new CreateTableResolver();
-		
-		String xml = resolver.toContent(envName, namespace, tableName, null);
-		System.out.println("Table:" + xml);
-		
-	}
 }

@@ -8,6 +8,11 @@ import com.bstek.dorado.config.xml.PropertyParser;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.config.JdbcParseContext;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 public class KeyGeneratorParser extends PropertyParser {
 
 	@Override

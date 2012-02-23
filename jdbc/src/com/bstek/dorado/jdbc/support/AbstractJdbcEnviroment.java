@@ -3,6 +3,11 @@ package com.bstek.dorado.jdbc.support;
 import com.bstek.dorado.jdbc.Dialect;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 public abstract class AbstractJdbcEnviroment implements JdbcEnviroment {
 
 	private String name;

@@ -16,7 +16,13 @@ import com.bstek.dorado.jdbc.ModelGeneratorSuit;
 import com.bstek.dorado.jdbc.ide.Constants;
 import com.bstek.dorado.jdbc.support.JdbcConstants;
 
-public class ListSpaceResolver extends Resolver {
+/**
+ * {@link JdbcSpace}列表
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
+public class ListSpaceResolver extends AbstractResolver {
 
 	@Override
 	public String getContent(HttpServletRequest request,

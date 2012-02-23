@@ -4,7 +4,8 @@ import java.util.List;
 
 /**
  * 全局共享的{@link DbElement}的配置对象
- * @author mark
+ * 
+ * @author mark.li@bstek.com
  *
  */
 public class GlobalDbModelConfig {

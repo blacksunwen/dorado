@@ -5,6 +5,11 @@ import com.bstek.dorado.config.definition.ObjectDefinition;
 import com.bstek.dorado.config.definition.Operation;
 import com.bstek.dorado.jdbc.config.JdbcCreationContext;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 public class MatchRuleDefinition extends ObjectDefinition implements Operation {
 
 	@Override

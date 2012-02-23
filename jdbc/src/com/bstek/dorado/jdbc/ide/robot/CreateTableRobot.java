@@ -14,6 +14,12 @@ import com.bstek.dorado.jdbc.config.DomHelper;
 import com.bstek.dorado.jdbc.ide.Constants;
 import com.bstek.dorado.util.xml.DomUtils;
 
+/**
+ * 用于创建{@link com.bstek.dorado.jdbc.model.table.Table}
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 public class CreateTableRobot implements Robot {
 
 	@Override

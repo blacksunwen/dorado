@@ -1,5 +1,10 @@
 package com.bstek.dorado.jdbc.model.autotable;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 public class AbstractMatchRule implements MatchRule {
 	private AutoTable autoTable;
 	private boolean available = true;

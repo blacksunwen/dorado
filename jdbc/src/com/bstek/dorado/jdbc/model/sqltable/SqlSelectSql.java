@@ -4,6 +4,11 @@ import com.bstek.dorado.jdbc.Dialect;
 import com.bstek.dorado.jdbc.sql.SelectSql;
 import com.bstek.dorado.util.Assert;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 public class SqlSelectSql  extends SelectSql {
 
 	private String dynamicToken;

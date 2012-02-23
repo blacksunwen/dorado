@@ -14,6 +14,11 @@ import com.bstek.dorado.jdbc.config.DomHelper;
 import com.bstek.dorado.jdbc.ide.Constants;
 import com.bstek.dorado.util.xml.DomUtils;
 
+/**
+ * 用于创建{@link com.bstek.dorado.jdbc.model.sqltable.SqlTable}
+ * @author mark.li@bstek.com
+ *
+ */
 public class CreateSqlTableRobot implements Robot {
 
 	@Override
@@ -26,13 +31,13 @@ public class CreateSqlTableRobot implements Robot {
 		ModelGeneratorSuit generator = JdbcUtils.getModelGeneratorSuit();
 		
 		if (sqlTableElement == null) {
-			Document document = generator.getSqlTableMetaDataGenerator().createDocument(jdbcEnv, sql);
+			Document document = generator.getSqlTableMetaDataGenerator().create(jdbcEnv, sql);
 			return document.getDocumentElement();
 		} else {
 			Document oldDocument = DomHelper.newDocument();
 			oldDocument.appendChild(DomHelper.adoptElement(sqlTableElement));
 			
-			Document document = generator.getSqlTableMetaDataGenerator().mergeDocument(jdbcEnv, sql, oldDocument);
+			Document document = generator.getSqlTableMetaDataGenerator().merge(jdbcEnv, sql, oldDocument);
 			return document.getDocumentElement();
 		}
 	}

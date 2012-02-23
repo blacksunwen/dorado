@@ -5,8 +5,7 @@ import com.bstek.dorado.jdbc.JdbcRecordOperation;
 /**
  * 主键生成器
  * 
- * @author mark
- * 
+ * @author mark.li@bstek.com
  * @param <T>
  */
 public interface KeyGenerator<T> {

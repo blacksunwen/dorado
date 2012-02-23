@@ -2,6 +2,11 @@ package com.bstek.dorado.jdbc.sql;
 
 import org.apache.commons.lang.StringUtils;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 public class SqlConstants {
 
 	public static class KeyWord {

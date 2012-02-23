@@ -8,7 +8,12 @@ import org.springframework.context.ApplicationContext;
 
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 
-
+/**
+ * 默认的JdbcEnviroment的管理器
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 public class DefaultJdbcEnviromentManager implements JdbcEnviromentManager {
 
 	private Map<String, JdbcEnviroment> enviroments = new HashMap<String, JdbcEnviroment>(2);

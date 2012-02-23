@@ -9,6 +9,11 @@ import com.bstek.dorado.jdbc.model.AbstractTable;
 import com.bstek.dorado.jdbc.model.AbstractColumn;
 import com.bstek.dorado.jdbc.model.table.Table;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 @XmlNode(
 	parser = "spring:dorado.jdbc.sqlTableParser",
 	definitionType="com.bstek.dorado.jdbc.model.sqltable.SqlTableDefinition",

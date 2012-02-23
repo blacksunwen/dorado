@@ -4,6 +4,11 @@ import com.bstek.dorado.config.definition.CreationContext;
 import com.bstek.dorado.config.definition.ObjectDefinition;
 import com.bstek.dorado.config.definition.Operation;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 public class JoinTableDefinition extends ObjectDefinition implements Operation {
 
 	@Override

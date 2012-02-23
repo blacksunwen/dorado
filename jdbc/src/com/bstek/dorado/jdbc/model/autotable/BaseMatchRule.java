@@ -5,6 +5,11 @@ import com.bstek.dorado.jdbc.model.AbstractColumn;
 import com.bstek.dorado.jdbc.model.table.Table;
 import com.bstek.dorado.util.Assert;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 @XmlNode(
 	nodeName = "Rule",
 	definitionType = "com.bstek.dorado.jdbc.model.autotable.MatchRuleDefinition"

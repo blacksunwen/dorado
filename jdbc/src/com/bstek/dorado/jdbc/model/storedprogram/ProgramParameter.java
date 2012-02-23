@@ -4,6 +4,11 @@ import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.jdbc.type.JdbcType;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 @XmlNode(
 	nodeName="Parameter",
 	definitionType="com.bstek.dorado.jdbc.model.storedprogram.ProgramParameterDefinition"

@@ -3,6 +3,11 @@ package com.bstek.dorado.jdbc.model.table;
 import com.bstek.dorado.jdbc.config.AbstractDbTableDefinition;
 import com.bstek.dorado.jdbc.config.XmlConstants;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 public class TableDefinition extends AbstractDbTableDefinition {
 
 	private Boolean autoCreateColumns = null;

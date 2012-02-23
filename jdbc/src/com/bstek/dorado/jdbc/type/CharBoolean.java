@@ -2,6 +2,11 @@ package com.bstek.dorado.jdbc.type;
 
 import java.util.Map;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 public class CharBoolean extends AbstractBoolean {
 
 	private String trueValue = "0";

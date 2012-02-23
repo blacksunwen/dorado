@@ -12,6 +12,11 @@ import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.jdbc.model.AbstractTable;
 import com.bstek.dorado.jdbc.model.AbstractColumn;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 @XmlNode(
 	parser = "spring:dorado.jdbc.tableParser",
 	definitionType = "com.bstek.dorado.jdbc.model.table.TableDefinition", 

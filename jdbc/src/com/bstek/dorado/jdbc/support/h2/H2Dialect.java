@@ -7,7 +7,7 @@ import com.bstek.dorado.util.Assert;
 
 /**
  * h2 database
- * @author mark
+ * @author mark.li@bstek.com
  * @see <a href='http://www.h2database.com/html/grammar.html#table_expression'>http://www.h2database.com/html/grammar.html#table_expression</a>
  */
 public class H2Dialect extends AbstractDialect {

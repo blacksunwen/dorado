@@ -6,7 +6,7 @@ import com.bstek.dorado.jdbc.support.JdbcConstants;
 /**
  * 自增主键生成器
  * 
- * @author mark
+ * @author mark.li@bstek.com
  * 
  */
 public class IdentityKeyGenerator extends AbstractKeyGenerator<Number> {

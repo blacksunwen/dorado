@@ -4,6 +4,11 @@ import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.jdbc.sql.SqlConstants.NullsModel;
 import com.bstek.dorado.jdbc.sql.SqlConstants.OrderModel;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 @XmlNode(
 	definitionType = "com.bstek.dorado.jdbc.model.autotable.OrderDefinition"
 )

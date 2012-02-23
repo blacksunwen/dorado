@@ -13,7 +13,13 @@ import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.ide.Constants;
 import com.bstek.dorado.jdbc.type.JdbcType;
 
-public class ListJdbcTypeResolver extends Resolver {
+/**
+ * {@link JdbcType}列表
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
+public class ListJdbcTypeResolver extends AbstractResolver {
 
 	@Override
 	public String getContent(HttpServletRequest request,

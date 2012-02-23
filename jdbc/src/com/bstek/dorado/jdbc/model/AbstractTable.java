@@ -12,6 +12,12 @@ import com.bstek.dorado.jdbc.DbTableTrigger;
 import com.bstek.dorado.jdbc.sql.CurdSqlGenerator;
 import com.bstek.dorado.util.Assert;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
+
 @XmlNode (
 	properties = {
 		@XmlProperty(

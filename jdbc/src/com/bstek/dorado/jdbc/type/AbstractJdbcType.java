@@ -8,6 +8,11 @@ import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.data.util.DataUtils;
 import com.bstek.dorado.jdbc.support.JdbcConstants;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 public abstract class AbstractJdbcType implements JdbcType {
 
 	private String   name;

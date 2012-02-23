@@ -15,7 +15,7 @@ import com.bstek.dorado.util.proxy.UnmutableMap;
 
 /**
  * JDBC模块的工具类
- * @author mark
+ * @author mark.li@bstek.com
  *
  */
 public abstract class SqlUtils {

@@ -10,6 +10,11 @@ import java.util.Map;
 import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.util.LinkedCaseInsensitiveMap;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 abstract class Utils {
 	static String[] toArray(ResultSet rs, String columnName) throws SQLException {
 		List<String> list = new ArrayList<String>();

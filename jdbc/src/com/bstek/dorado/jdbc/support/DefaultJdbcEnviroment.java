@@ -10,8 +10,12 @@ import org.springframework.transaction.TransactionDefinition;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.util.Assert;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 public class DefaultJdbcEnviroment extends AbstractJdbcEnviroment implements JdbcEnviroment, InitializingBean {
-
 
 	private DataSource dataSource;
 	private PlatformTransactionManager transactionManager;

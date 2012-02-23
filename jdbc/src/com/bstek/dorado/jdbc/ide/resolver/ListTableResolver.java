@@ -21,7 +21,13 @@ import com.bstek.dorado.jdbc.ide.Constants;
 import com.bstek.dorado.jdbc.meta.TableMetaDataGenerator;
 import com.bstek.dorado.jdbc.support.JdbcConstants;
 
-public class ListTableResolver extends Resolver {
+/**
+ * 数据库表的列表
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
+public class ListTableResolver extends AbstractResolver {
 
 	@Override
 	public String getContent(HttpServletRequest request,

@@ -6,7 +6,7 @@ import com.bstek.dorado.jdbc.JdbcParameterSource;
 /**
  * 可执行SQL的抽象类
  * 
- * @author mark
+ * @author mark.li@bstek.com
  * 
  */
 public abstract class AbstractSql {

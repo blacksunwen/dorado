@@ -10,6 +10,11 @@ import com.bstek.dorado.jdbc.model.table.TableKeyColumn;
 import com.bstek.dorado.jdbc.sql.SqlConstants.KeyWord;
 import com.bstek.dorado.util.Assert;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 public class InsertSql extends AbstractTableSql {
 
 	private List<String> columnTokenList = new ArrayList<String>();

@@ -11,6 +11,12 @@ import com.bstek.dorado.config.xml.ObjectParser;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.JdbcUtils;
 
+/**
+ * {@link com.bstek.dorado.jdbc.config.DbModel}的解析器
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 public class DbModelParser extends ObjectParser {
 
 	private static final String ALL_ELEMENTS_ATTR = "allDbElements";

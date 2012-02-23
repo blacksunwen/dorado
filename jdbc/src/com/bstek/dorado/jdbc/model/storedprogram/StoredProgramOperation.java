@@ -11,6 +11,11 @@ import com.bstek.dorado.jdbc.AbstractJdbcContext;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.type.JdbcType;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 public class StoredProgramOperation {
 
 	private StoredProgram storedProgram;

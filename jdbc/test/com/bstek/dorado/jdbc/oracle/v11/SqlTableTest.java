@@ -8,7 +8,7 @@ import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.TestJdbcUtils;
 
-public class SqlTableTest  extends Oracle11JdbcTestCase {
+public class SqlTableTest  extends AbstractOracle11JdbcTestCase {
 
 	public void testSqlDept() {
 		String tableName = "sql_dept";

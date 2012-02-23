@@ -14,6 +14,11 @@ import com.bstek.dorado.jdbc.model.AbstractTable;
 import com.bstek.dorado.jdbc.model.AbstractColumn;
 import com.bstek.dorado.util.Assert;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 @XmlNode(
 	parser = "spring:dorado.jdbc.autoTableParser",
 	definitionType = "com.bstek.dorado.jdbc.model.autotable.AutoTableDefinition",

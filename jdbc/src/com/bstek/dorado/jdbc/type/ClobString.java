@@ -3,6 +3,11 @@ package com.bstek.dorado.jdbc.type;
 import java.sql.Clob;
 import java.sql.SQLException;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 public class ClobString extends AbstractString {
 
 	public ClobString() {

@@ -6,7 +6,7 @@ import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.TestJdbcUtils;
 
-public class TableTest extends Oracle11JdbcTestCase {
+public class TableTest extends AbstractOracle11JdbcTestCase {
 	
 	public void testEmployee() {
 		Record employee = Employee.random();

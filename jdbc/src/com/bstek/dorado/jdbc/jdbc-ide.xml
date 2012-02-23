@@ -16,12 +16,6 @@
 	   class="com.bstek.dorado.jdbc.ide.resolver.ListTableResolver"/>
 	<bean id="dorado.jdbc.ide.resolver.listTableTypeResolver" 
 	   class="com.bstek.dorado.jdbc.ide.resolver.ListTableTypeResolver"/>
-	<bean id="dorado.jdbc.ide.resolver.createTableResolver" 
-	   class="com.bstek.dorado.jdbc.ide.resolver.CreateTableResolver"/>
-	<bean id="dorado.jdbc.ide.resolver.createSqlTableResolver" 
-	   class="com.bstek.dorado.jdbc.ide.resolver.CreateSqlTableResolver"/>
-	<bean id="dorado.jdbc.ide.resolver.createDataTypeResolver" 
-	   class="com.bstek.dorado.jdbc.ide.resolver.CreateDataTypeResolver"/>
     <bean id="dorado.jdbc.ide.resolver.listJdbcTypeResolver" 
         class="com.bstek.dorado.jdbc.ide.resolver.ListJdbcTypeResolver"/>
     <bean id="dorado.jdbc.ide.resolver.listKeyGeneratorResolver" 

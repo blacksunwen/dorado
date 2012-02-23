@@ -7,6 +7,11 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 public class ThreadLocalJdbcEnviroment extends AbstractJdbcEnviroment {
 
 	private ThreadLocal<DataSource> localDataSource = new ThreadLocal<DataSource>();

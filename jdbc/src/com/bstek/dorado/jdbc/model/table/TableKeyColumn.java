@@ -5,6 +5,11 @@ import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 @XmlNode(nodeName="KeyColumn", 
 		definitionType="com.bstek.dorado.jdbc.model.table.TableKeyColumnDefinition")
 public class TableKeyColumn extends AbstractTableColumn {

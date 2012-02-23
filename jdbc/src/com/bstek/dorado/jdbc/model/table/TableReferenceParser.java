@@ -9,6 +9,11 @@ import com.bstek.dorado.config.xml.PropertyParser;
 import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.config.DbElementDefinition;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 public class TableReferenceParser extends PropertyParser{
 
 	@Override

@@ -4,6 +4,11 @@ import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.jdbc.model.table.Table;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 @XmlNode(
 	definitionType = "com.bstek.dorado.jdbc.model.autotable.FromTableDefinition",
 	properties = {

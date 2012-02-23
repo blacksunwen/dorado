@@ -5,6 +5,10 @@ import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.JdbcUtils;
 
+/**
+ * @author mark.li@bstek.com
+ *
+ */
 public abstract class AbstractDbElement implements DbElement {
 
 	private String name;

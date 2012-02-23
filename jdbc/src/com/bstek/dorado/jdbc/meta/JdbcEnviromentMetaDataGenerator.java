@@ -8,7 +8,7 @@ import com.bstek.dorado.jdbc.JdbcEnviroment;
 /**
  * 与{@link JdbcEnviroment}相关的属性输出
  * 
- * @author mark
+ * @author mark.li@bstek.com
  *
  */
 public interface JdbcEnviromentMetaDataGenerator {

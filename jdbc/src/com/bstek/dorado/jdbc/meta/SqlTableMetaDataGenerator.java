@@ -6,7 +6,8 @@ import com.bstek.dorado.jdbc.JdbcEnviroment;
 
 /**
  * 数据库SQL属性的输出
- * @author mark
+ * 
+ * @author mark.li@bstek.com
  *
  */
 public interface SqlTableMetaDataGenerator {
@@ -17,7 +18,7 @@ public interface SqlTableMetaDataGenerator {
 	 * @param sql
 	 * @return
 	 */
-	Document createDocument(JdbcEnviroment jdbcEnv, String sql);
+	Document create(JdbcEnviroment jdbcEnv, String sql);
 	
 	/**
 	 * 在已有的Document基础上输出特定SQL的Document对象
@@ -26,5 +27,5 @@ public interface SqlTableMetaDataGenerator {
 	 * @param oldDocument
 	 * @return
 	 */
-	Document mergeDocument(JdbcEnviroment jdbcEnv, String sql, Document oldDocument);
+	Document merge(JdbcEnviroment jdbcEnv, String sql, Document oldDocument);
 }
