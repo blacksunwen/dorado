@@ -27,6 +27,13 @@
     white-space: nowrap;
 }
 
+.i-grid .data-table td .wrappable {
+    white-space: normal;
+    word-wrap: break-word;
+    word-break: normal;
+}
+
+
 .i-grid .float-refresh-panel {
     position: absolute;
 }
