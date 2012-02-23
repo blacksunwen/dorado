@@ -17,6 +17,7 @@ import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.core.DoradoAbout;
 import com.bstek.dorado.core.io.Resource;
 import com.bstek.dorado.util.PathUtils;
+import com.bstek.dorado.util.TempFileUtils;
 import com.bstek.dorado.view.output.JsonBuilder;
 import com.bstek.dorado.view.output.OutputUtils;
 import com.bstek.dorado.web.DoradoContext;
@@ -73,8 +74,8 @@ public class BootPackagesResolver extends WebFileResolver {
 	@Override
 	protected ResourcesWrapper createResourcesWrapper(
 			HttpServletRequest request, DoradoContext context) throws Exception {
-		File tempFile = File.createTempFile("packages-config-",
-				JAVASCRIPT_SUFFIX);
+		File tempFile = TempFileUtils.createTempFile("packages-config",
+				"packages-config-", JAVASCRIPT_SUFFIX);
 		tempFile.deleteOnExit();
 
 		PackagesConfig packagesConfig = getPackagesConfigManager()
