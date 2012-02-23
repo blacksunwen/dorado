@@ -6,7 +6,6 @@ import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import com.bstek.dorado.common.StringAliasUtils;
 import com.bstek.dorado.config.definition.DefinitionManager;
 import com.bstek.dorado.config.xml.XmlParser;
 import com.bstek.dorado.core.io.Resource;
@@ -20,6 +19,7 @@ import com.bstek.dorado.data.config.definition.DataResolverDefinitionManager;
 import com.bstek.dorado.data.config.definition.DataTypeDefinition;
 import com.bstek.dorado.data.config.definition.DataTypeDefinitionManager;
 import com.bstek.dorado.util.PathUtils;
+import com.bstek.dorado.util.StringAliasUtils;
 import com.bstek.dorado.view.config.definition.ViewConfigDefinition;
 import com.bstek.dorado.view.config.xml.PreparseContext;
 import com.bstek.dorado.view.config.xml.ViewConfigParserUtils;

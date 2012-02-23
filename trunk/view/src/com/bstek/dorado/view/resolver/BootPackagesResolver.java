@@ -1,8 +1,5 @@
 package com.bstek.dorado.view.resolver;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
@@ -16,6 +13,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.core.DoradoAbout;
 import com.bstek.dorado.core.io.Resource;
+import com.bstek.dorado.util.FileHandler;
 import com.bstek.dorado.util.PathUtils;
 import com.bstek.dorado.util.TempFileUtils;
 import com.bstek.dorado.view.output.JsonBuilder;
@@ -38,6 +36,7 @@ public class BootPackagesResolver extends WebFileResolver {
 	private static final String JAVASCRIPT_SUFFIX = ".js";
 	private static final String MIN_JAVASCRIPT_SUFFIX = ".min.js";
 	private static final String CLIENT_PACKAGES_CONFIG = "$packagesConfig";
+	private static final String TEMP_FILE_ID = "packages-config";
 	private PackagesConfigManager packagesConfigManager;
 
 	private String bootFile;
@@ -74,22 +73,17 @@ public class BootPackagesResolver extends WebFileResolver {
 	@Override
 	protected ResourcesWrapper createResourcesWrapper(
 			HttpServletRequest request, DoradoContext context) throws Exception {
-		File tempFile = TempFileUtils.createTempFile("packages-config",
+		FileHandler fileHandler = TempFileUtils.createTempFile(TEMP_FILE_ID,
 				"packages-config-", JAVASCRIPT_SUFFIX);
-		tempFile.deleteOnExit();
 
 		PackagesConfig packagesConfig = getPackagesConfigManager()
 				.getPackagesConfig();
-		Writer writer = new BufferedWriter(new FileWriter(tempFile));
-		try {
-			outputPackagesConfig(writer, packagesConfig);
-			writer.flush();
-		} finally {
-			writer.close();
-		}
+		Writer writer = fileHandler.getWriter();
+		outputPackagesConfig(writer, packagesConfig);
+		writer.flush();
 
-		Resource resource = context.getResource("file:"
-				+ tempFile.getAbsolutePath());
+		Resource resource = context
+				.getResource("file:" + fileHandler.getPath());
 		String resourcePrefix = getResourcePrefix();
 		Resource[] bootResourceArray = getResourcesByFileName(context,
 				resourcePrefix, bootFile, JAVASCRIPT_SUFFIX);

@@ -1,6 +1,6 @@
 package com.bstek.dorado.view.output;
 
-import com.bstek.dorado.common.StringAliasUtils;
+import com.bstek.dorado.util.StringAliasUtils;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)

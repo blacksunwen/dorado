@@ -5,9 +5,6 @@ package com.bstek.dorado.util;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.nio.channels.FileChannel;
-import java.nio.channels.FileLock;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -16,67 +13,70 @@ import java.util.Map;
  * @since 2012-2-23
  */
 public final class TempFileUtils {
-
-	private static class FileHandler {
-		private File file;
-		private FileChannel fileChannel;
-		private FileLock fileLock;
-
-		public FileHandler(File file, FileChannel fileChannel, FileLock fileLock) {
-			this.file = file;
-			this.fileChannel = fileChannel;
-			this.fileLock = fileLock;
-		}
-
-		public File getFile() {
-			return file;
-		}
-
-		public FileChannel getFileChannel() {
-			return fileChannel;
-		}
-
-		public FileLock getFileLock() {
-			return fileLock;
-		}
-	}
-
 	private static Map<String, FileHandler> fileHandleMap = new Hashtable<String, FileHandler>();
+	private static File rootDir;
+	private static File tempDir;
 
 	private TempFileUtils() {
 	}
 
-	public static File createTempFile(String id, String fileNamePrefix,
+	private static File getRootDir() throws IOException {
+		if (rootDir == null) {
+			rootDir = new File(System.getProperty("java.io.tmpdir")
+					+ File.separator + ".dorado");
+			if (!rootDir.exists()) {
+				if (!rootDir.mkdirs()) {
+					throw new IOException("Make directory \""
+							+ rootDir.getAbsolutePath() + "\" failed.");
+				}
+			} else if (!rootDir.isDirectory()) {
+				throw new IOException("\"" + rootDir.getAbsolutePath()
+						+ "\" is not a directory.");
+			}
+		}
+		return rootDir;
+	}
+
+	private static File getTempDir() throws IOException {
+		if (tempDir == null) {
+			File rootDir = getRootDir();
+			FileUtils.clearDirectory(rootDir);
+
+			int seed = 1;
+			do {
+				tempDir = new File(rootDir, "instance-" + (seed++));
+			} while (tempDir.exists());
+
+			if (!tempDir.mkdirs()) {
+				throw new IOException("Make directory \""
+						+ tempDir.getAbsolutePath() + "\" failed.");
+			}
+			tempDir.deleteOnExit();
+		}
+		return tempDir;
+	}
+
+	public static FileHandler createTempFile(String id, String fileNamePrefix,
 			String fileNamesuffix) throws IOException {
 		Assert.notEmpty(id);
 
-//		deleteTempFile(id);
+		deleteTempFile(id);
 
-		File file = File.createTempFile(fileNamePrefix, fileNamesuffix);
+		File file = File.createTempFile(fileNamePrefix, fileNamesuffix,
+				getTempDir());
 		file.deleteOnExit();
 
-//		FileChannel channel = new RandomAccessFile(file, "rw").getChannel();
-//		FileLock lock = channel.tryLock();
-//		if (lock == null) {
-//			throw new IOException("Lock file \"" + file.getCanonicalPath()
-//					+ "\" failed.");
-//		}
-//
-//		FileHandler handler = new FileHandler(file, channel, lock);
-//		fileHandleMap.put(id, handler);
-		return file;
+		FileHandler handler = new FileHandler(file);
+		fileHandleMap.put(id, handler);
+		return handler;
 	}
 
-	public static boolean deleteTempFile(String id) throws IOException {
+	public static void deleteTempFile(String id) throws IOException {
 		Assert.notEmpty(id);
 
-		boolean deleted = false;
-		FileHandler handler = fileHandleMap.get(id);
+		FileHandler handler = fileHandleMap.remove(id);
 		if (handler != null) {
-			handler.getFileLock().release();
-			handler.getFileChannel().close();
-			deleted = handler.getFile().delete();
+			handler.delete();
 		}
-		return deleted;
 	}
 }
