@@ -23,6 +23,7 @@ import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.core.io.AbstractResourceAdapter;
 import com.bstek.dorado.core.io.Resource;
 import com.bstek.dorado.util.PathUtils;
+import com.bstek.dorado.util.TempFileUtils;
 import com.bstek.dorado.view.output.JsonBuilder;
 import com.bstek.dorado.web.DoradoContext;
 import com.bstek.dorado.web.WebConfigure;
@@ -57,8 +58,8 @@ public class LibraryFileResolver extends
 				Properties properties = new Properties();
 				properties.load(adaptee.getInputStream());
 
-				file = File.createTempFile("i18n-", JAVASCRIPT_SUFFIX);
-				file.deleteOnExit();
+				file = TempFileUtils.createTempFile("client-i18n",
+						"client-i18n-", JAVASCRIPT_SUFFIX);
 
 				Writer writer = new BufferedWriter(new FileWriter(file));
 				try {
