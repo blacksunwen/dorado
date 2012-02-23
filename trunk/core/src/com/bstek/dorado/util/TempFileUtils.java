@@ -50,20 +50,20 @@ public final class TempFileUtils {
 			String fileNamesuffix) throws IOException {
 		Assert.notEmpty(id);
 
-		deleteTempFile(id);
+//		deleteTempFile(id);
 
 		File file = File.createTempFile(fileNamePrefix, fileNamesuffix);
 		file.deleteOnExit();
 
-		FileChannel channel = new RandomAccessFile(file, "rw").getChannel();
-		FileLock lock = channel.tryLock();
-		if (lock == null) {
-			throw new IOException("Lock file \"" + file.getCanonicalPath()
-					+ "\" failed.");
-		}
-
-		FileHandler handler = new FileHandler(file, channel, lock);
-		fileHandleMap.put(id, handler);
+//		FileChannel channel = new RandomAccessFile(file, "rw").getChannel();
+//		FileLock lock = channel.tryLock();
+//		if (lock == null) {
+//			throw new IOException("Lock file \"" + file.getCanonicalPath()
+//					+ "\" failed.");
+//		}
+//
+//		FileHandler handler = new FileHandler(file, channel, lock);
+//		fileHandleMap.put(id, handler);
 		return file;
 	}
 
