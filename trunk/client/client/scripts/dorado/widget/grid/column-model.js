@@ -778,7 +778,7 @@
 	dorado.widget.grid.DefaultCellRenderer = $extend(dorado.widget.grid.CellRenderer, /** @scope dorado.widget.grid.DefaultCellRenderer.prototype */{
 		doRender: function(dom, arg) {
 			dom.innerText = this.getText(arg.data, arg.column);
-			dom.style.whiteSpace = (arg.column._wrappable) ? "" : "nowrap";
+			dom.parentNode.style.whiteSpace = (arg.column._wrappable) ? "normal" : "nowrap";
 			this.renderFlag(dom, arg);
 		}
 	});
