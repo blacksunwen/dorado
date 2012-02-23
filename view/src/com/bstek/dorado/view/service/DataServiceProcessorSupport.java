@@ -9,7 +9,6 @@ import java.util.Map.Entry;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 
-import com.bstek.dorado.common.StringAliasUtils;
 import com.bstek.dorado.data.Constants;
 import com.bstek.dorado.data.DataTypeResolver;
 import com.bstek.dorado.data.JsonConvertContext;
@@ -17,6 +16,7 @@ import com.bstek.dorado.data.JsonUtils;
 import com.bstek.dorado.data.config.DataTypeName;
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.data.type.manager.DataTypeManager;
+import com.bstek.dorado.util.StringAliasUtils;
 import com.bstek.dorado.view.ViewState;
 import com.bstek.dorado.view.config.xml.ViewXmlConstants;
 import com.bstek.dorado.view.manager.ViewConfig;

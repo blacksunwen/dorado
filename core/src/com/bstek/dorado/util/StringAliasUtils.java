@@ -1,4 +1,4 @@
-package com.bstek.dorado.common;
+package com.bstek.dorado.util;
 
 import java.util.HashMap;
 import java.util.Map;

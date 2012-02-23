@@ -1,6 +1,6 @@
 package com.bstek.dorado.common;
 
-import com.bstek.dorado.common.StringAliasUtils;
+import com.bstek.dorado.util.StringAliasUtils;
 
 import junit.framework.TestCase;
 
