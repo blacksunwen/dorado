@@ -18,6 +18,11 @@ import com.bstek.dorado.data.type.EntityDataType;
 import com.bstek.dorado.data.type.manager.DataTypeManager;
 import com.bstek.dorado.jdbc.ModelStrategy;
 
+/**
+ * 抽象的{@link com.bstek.dorado.jdbc.model.DbTable}的解析器
+ * @author mark.li@bstek.com
+ *
+ */
 public abstract class AbstractDbTableParser extends ObjectParser {
 	private ModelStrategy modelStrategy;
 	private DataTypeManager dataTypeManager;

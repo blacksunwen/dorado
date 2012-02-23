@@ -17,17 +17,28 @@ import com.bstek.dorado.jdbc.type.JdbcType;
 /**
  * 数据库方言
  * 
- * @author mark
+ * @author mark.li@bstek.com
  * 
  */
 public interface Dialect {
 
+	/**
+	 * 生成SQL的片段
+	 * @param table
+	 * @return
+	 */
 	String token(Table table);
 	
+	/**
+	 * 生成SQL的片段
+	 * @param table
+	 * @param alias
+	 * @return
+	 */
 	String token(Table table, String alias);
 	
 	/**
-	 * 构造{@link JoinModel}的SQL语句的token
+	 * 生成SQL的片段
 	 * @param autoTable
 	 * @param joinModel
 	 * @return
@@ -35,7 +46,7 @@ public interface Dialect {
 	String token(AutoTable autoTable, JoinModel joinModel);
 	
 	/**
-	 * 构造{@link Order}的SQL语句的token
+	 * 生成SQL的片段
 	 * @param autoTable
 	 * @param order
 	 * @return
@@ -148,7 +159,7 @@ public interface Dialect {
 	JdbcType jdbcType(Map<String,String> columnMeta);
 	
 	/**
-	 * 默认的数据库catalog
+	 * 默认的数据库catalog，用于IDE
 	 * @param dataSource
 	 * @param databaseMetaData
 	 * @return
@@ -156,7 +167,7 @@ public interface Dialect {
 	String defaultCatalog(DataSource dataSource, DatabaseMetaData databaseMetaData);
 	
 	/**
-	 * 默认的数据库catalog
+	 * 默认的数据库catalog，用于IDE
 	 * @param dataSource
 	 * @param databaseMetaData
 	 * @return

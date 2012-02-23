@@ -8,7 +8,7 @@ import com.bstek.dorado.annotation.XmlSubNode;
 
 /**
  * 与UpdateAction的Item对应的Item
- * @author mark
+ * @author mark.li@bstek.com
  *
  */
 @XmlNode(nodeName="Item")

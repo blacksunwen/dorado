@@ -5,7 +5,7 @@ import com.bstek.dorado.jdbc.model.DbTable;
 /**
  * {@link com.bstek.dorado.jdbc.JdbcDataProvider}对应的数据库操作
  * 
- * @author mark
+ * @author mark.li@bstek.com
  * 
  */
 public class JdbcDataProviderOperation extends

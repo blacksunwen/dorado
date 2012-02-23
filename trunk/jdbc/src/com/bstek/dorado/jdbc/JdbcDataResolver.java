@@ -10,6 +10,7 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.support.TransactionOperations;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlNodeWrapper;
 import com.bstek.dorado.annotation.XmlProperty;
@@ -23,7 +24,7 @@ import com.bstek.dorado.data.type.EntityDataType;
 /**
  * JDBC模块的{@link com.bstek.dorado.data.resolver.DataResolver}
  * 
- * @author mark
+ * @author mark.li@bstek.com
  * 
  */
 @XmlNode(
@@ -41,6 +42,7 @@ public class JdbcDataResolver extends AbstractDataResolver {
 	
 	private boolean autoCreateItems = false;
 	
+	@XmlProperty(parser="spring:dorado.jdbc.platformTransactionManagerBeanPropertyParser")
 	public PlatformTransactionManager getTransactionManager() {
 		return transactionManager;
 	}
@@ -49,6 +51,7 @@ public class JdbcDataResolver extends AbstractDataResolver {
 		this.transactionManager = transactionManager;
 	}
 	
+	@XmlProperty(parser="spring:dorado.jdbc.transactionDefinitionBeanPropertyParser")
 	public TransactionDefinition getTransactionDefinition() {
 		return transactionDefinition;
 	}
@@ -57,21 +60,13 @@ public class JdbcDataResolver extends AbstractDataResolver {
 		this.transactionDefinition = transactionDefinition;
 	}
 
-	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "Items"))
+	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "Items", fixed = true))
 	public List<JdbcDataResolverItem> getItems() {
 		return items;
 	}
 
 	public void setItems(List<JdbcDataResolverItem> items) {
 		this.items = items;
-	}
-
-	public boolean isAutoCreateItems() {
-		return autoCreateItems;
-	}
-
-	public void setAutoCreateItems(boolean autoCreateItems) {
-		this.autoCreateItems = autoCreateItems;
 	}
 
 	@XmlProperty(parser="spring:dorado.jdbc.jdbcEnviromentParser")
@@ -83,13 +78,22 @@ public class JdbcDataResolver extends AbstractDataResolver {
 		this.jdbcEnviroment = jdbcEnviroment;
 	}
 	
+	public boolean isAutoCreateItems() {
+		return autoCreateItems;
+	}
+
+	@ClientProperty(escapeValue="false")
+	public void setAutoCreateItems(boolean autoCreateItems) {
+		this.autoCreateItems = autoCreateItems;
+	}
+	
 	@Override
 	protected Object internalResolve(DataItems dataItems, Object parameter)
 			throws Exception {
-		JdbcDataResolverOperation operation = creatResolverOperation(dataItems, parameter);
+		JdbcDataResolverOperation operation = createOperation(dataItems, parameter);
 		
 		JdbcIntercepter intercepter = JdbcUtils.getGlobalIntercepter();
-		operation = intercepter.getJdbcDataResolverOperation(operation);
+		operation = intercepter.getOperation(operation);
 		if (operation.isProcessDefault()) {
 			operation.execute();
 		}
@@ -97,7 +101,7 @@ public class JdbcDataResolver extends AbstractDataResolver {
 		return operation.getJdbcContext().getReturnValue();
 	}
 
-	protected JdbcDataResolverOperation creatResolverOperation(DataItems dataItems, Object parameter) {
+	protected JdbcDataResolverOperation createOperation(DataItems dataItems, Object parameter) {
 		PlatformTransactionManager transactionManager = this.getTransactionManager();
 		TransactionDefinition transactionDefinition = this.getTransactionDefinition();
 		JdbcEnviroment jdbcEnviroment = this.getJdbcEnviroment();
@@ -152,7 +156,7 @@ public class JdbcDataResolver extends AbstractDataResolver {
 			for (String name: nameSet) {
 				Object dataObject = dataItems.get(name);
 				DataType dataType = getDataType(dataObject);
-				JdbcDataResolverItem resolverItem = createItem(name, dataType);
+				JdbcDataResolverItem resolverItem = createResolverItem(name, dataType);
 				if (resolverItem != null) {
 					resolverItems.add(resolverItem);
 				}
@@ -160,37 +164,35 @@ public class JdbcDataResolver extends AbstractDataResolver {
 			
 			return resolverItems;
 		} else {
-			List<JdbcDataResolverItem> items2 = new ArrayList<JdbcDataResolverItem>();
-			for (JdbcDataResolverItem item: resolverItems) {
-				items2.add(item.clone());
-			}
+			List<JdbcDataResolverItem> resolverItems2 = new ArrayList<JdbcDataResolverItem>();
+			resolverItems2.addAll(resolverItems);
 			
-			Set<String> nameSet = dataItems.keySet();
-			for (String name: nameSet) {
-				JdbcDataResolverItem newItem = null;
-				for (JdbcDataResolverItem item: items2) {
-					if (name.equals(item.getName())) {
-						newItem = item;
+			Set<String> itemNameSet = dataItems.keySet();
+			for (String itemName: itemNameSet) {
+				JdbcDataResolverItem resolverItem = null;
+				for (JdbcDataResolverItem item: resolverItems2) {
+					if (itemName.equals(item.getName())) {
+						resolverItem = item;
 						break;
 					}
 				}
 				
-				if (newItem == null) {
-					Object dataObject = dataItems.get(name);
+				if (resolverItem == null) {
+					Object dataObject = dataItems.get(itemName);
 					DataType dataType = getDataType(dataObject);
-					newItem = createItem(name, dataType);
+					resolverItem = createResolverItem(itemName, dataType);
 					
-					if (newItem != null) {
-						items2.add(newItem);
+					if (resolverItem != null) {
+						resolverItems2.add(resolverItem);
 					}
 				}
 			}
 			
-			return items2;
+			return resolverItems2;
 		}
 	}
 	
-	protected JdbcDataResolverItem createItem(String name, DataType dataType) {
+	protected JdbcDataResolverItem createResolverItem(String name, DataType dataType) {
 		if (dataType instanceof EntityDataType) {
 			JdbcDataResolverItem item = new JdbcDataResolverItem();
 			item.setName(name);

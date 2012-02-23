@@ -1,9 +1,9 @@
 package com.bstek.dorado.jdbc;
 
 /**
- * JDBC操作的上下文。当{@link JdbcDataProvider}或{@link JdbcDataResolver}执行时产生这个对象
+ * 抽象的JDBC操作的上下文
  * 
- * @author mark
+ * @author mark.li@bstek.com
  * 
  */
 public abstract class AbstractJdbcContext {

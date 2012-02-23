@@ -5,6 +5,12 @@ import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.jdbc.type.JdbcType;
 
+/**
+ * 抽象的JDBC列对象
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 public abstract class AbstractColumn {
 	
 	private String columnName;
@@ -19,10 +25,18 @@ public abstract class AbstractColumn {
 		return columnName;
 	}
 	
+	public void setColumnName(String columnName) {
+		this.columnName = columnName;
+	}
+	
 	@XmlProperty(parser="spring:dorado.jdbc.jdbcTypeParser", attributeOnly=true)
 	@IdeProperty(highlight=1, editor = "jdbc:list-jdbctype")
 	public JdbcType getJdbcType() {
 		return jdbcType;
+	}
+	
+	public void setJdbcType(JdbcType jdbcType) {
+		this.jdbcType = jdbcType;
 	}
 	
 	@ClientProperty(escapeValue = "true")
@@ -32,14 +46,6 @@ public abstract class AbstractColumn {
 
 	public void setSelectable(boolean selectable) {
 		this.selectable = selectable;
-	}
-
-	public void setColumnName(String columnName) {
-		this.columnName = columnName;
-	}
-
-	public void setJdbcType(JdbcType jdbcType) {
-		this.jdbcType = jdbcType;
 	}
 
 	@IdeProperty(visible = false)

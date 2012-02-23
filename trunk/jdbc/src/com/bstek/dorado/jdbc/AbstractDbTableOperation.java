@@ -3,17 +3,20 @@ package com.bstek.dorado.jdbc;
 import com.bstek.dorado.jdbc.model.DbTable;
 
 /**
- * JDBC数据库操作
+ * 抽象的对{@link DbTable} 数据库操作
  * 
- * @author mark
- * 
+ * @author mark.li@bstek.com
  * @param <T>
  */
 public abstract class AbstractDbTableOperation<T extends AbstractJdbcContext> {
 	private T jdbcContext;
-
+	private DbTable dbTable;
 	private boolean _processDefault = true;
 
+	/**
+	 * 是否触发默认的数据库操作
+	 * @return
+	 */
 	public boolean isProcessDefault() {
 		return _processDefault;
 	}
@@ -27,8 +30,10 @@ public abstract class AbstractDbTableOperation<T extends AbstractJdbcContext> {
 		this.jdbcContext = jdbcContext;
 	}
 
-	private DbTable dbTable;
-
+	/**
+	 * 获取操作的{@link DbTable}
+	 * @return
+	 */
 	public DbTable getDbTable() {
 		return dbTable;
 	}
@@ -37,6 +42,10 @@ public abstract class AbstractDbTableOperation<T extends AbstractJdbcContext> {
 		this.dbTable = dbTable;
 	}
 
+	/**
+	 * 获取数据库操作的上下文
+	 * @return
+	 */
 	public T getJdbcContext() {
 		return this.jdbcContext;
 	}

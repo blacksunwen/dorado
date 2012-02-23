@@ -1,10 +1,16 @@
 package com.bstek.dorado.jdbc;
 
+/**
+ * JDBC模块的拦截器
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 public interface JdbcIntercepter {
 
-	JdbcDataProviderOperation getJdbcDataProviderOperation(JdbcDataProviderOperation operation);
+	JdbcDataProviderOperation getOperation(JdbcDataProviderOperation operation);
 	
-	JdbcDataResolverOperation getJdbcDataResolverOperation(JdbcDataResolverOperation operation);
+	JdbcDataResolverOperation getOperation(JdbcDataResolverOperation operation);
 	
-	JdbcRecordOperation getJdbcRecordOperation(JdbcRecordOperation operation);
+	JdbcRecordOperation getOperation(JdbcRecordOperation operation);
 }

@@ -20,59 +20,44 @@ import com.bstek.dorado.util.Assert;
 /**
  * JDBC模块的工具类
  * 
- * @author mark
+ * @author mark.li@bstek.com
  *
  */
 public abstract class JdbcUtils {
 
-	public static JdbcEnviromentManager getEnviromentManager() {
+	@SuppressWarnings("unchecked")
+	private static <T> T getServiceBean(String serviceName) {
 		Context ctx = Context.getCurrent();
 		try {
-			JdbcEnviromentManager manager = (JdbcEnviromentManager)ctx.getServiceBean("jdbc.enviromentManager");
-			return manager;
+			return (T)ctx.getServiceBean(serviceName);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	public static JdbcEnviromentManager getEnviromentManager() {
+		JdbcEnviromentManager manager = getServiceBean("jdbc.enviromentManager");
+		return manager;
 	}
 	
 	public static DbmManager getDbmManager() {
-		Context context = Context.getCurrent();
-		try {
-			DbmManager parser = (DbmManager)context.getServiceBean("jdbc.dbmManager");
-			return parser;
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+		DbmManager manager = (DbmManager)getServiceBean("jdbc.dbmManager");
+		return manager;
 	}
 	
 	public static ModelGeneratorSuit getModelGeneratorSuit() {
-		Context context = Context.getCurrent();
-		try {
-			ModelGeneratorSuit strategy = (ModelGeneratorSuit)context.getServiceBean("jdbc.modelGeneratorSuit");
-			return strategy;
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+		ModelGeneratorSuit suit = getServiceBean("jdbc.modelGeneratorSuit");
+		return suit;
 	}
 	
 	public static ModelStrategy getModelStrategy() {
-		Context context = Context.getCurrent();
-		try {
-			ModelStrategy strategy = (ModelStrategy)context.getServiceBean("jdbc.modelStrategy");
-			return strategy;
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+		ModelStrategy strategy = getServiceBean("jdbc.modelStrategy");
+		return strategy;
 	}
 	
 	public static JdbcIntercepter getGlobalIntercepter() {
-		Context context = Context.getCurrent();
-		try {
-			JdbcIntercepter intercepter = (JdbcIntercepter)context.getServiceBean("jdbc.globalIntercepter");
-			return intercepter;
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+		JdbcIntercepter intercepter = getServiceBean("jdbc.globalIntercepter");
+		return intercepter;
 	}
 	
 	public static DbTable getDbTable(String tableName) {
@@ -81,8 +66,8 @@ public abstract class JdbcUtils {
 		JdbcCreationContext context = new JdbcCreationContext();
 		
 		try {
-			DbTable dbElement = (DbTable)definition.create(context);
-			return dbElement;
+			DbTable table = (DbTable)definition.create(context);
+			return table;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -98,7 +83,7 @@ public abstract class JdbcUtils {
 	
 	public static Collection<Record> query(JdbcDataProviderOperation operation) {
 		JdbcIntercepter intercepter = getGlobalIntercepter();
-		operation = intercepter.getJdbcDataProviderOperation(operation);
+		operation = intercepter.getOperation(operation);
 		
 		if (operation.isProcessDefault()) {
 			DbTable table = operation.getDbTable();
@@ -146,7 +131,7 @@ public abstract class JdbcUtils {
 		JdbcRecordOperation operation = new JdbcRecordOperation(table, enRecord, jdbcContext);
 		
 		JdbcIntercepter intercepter = getGlobalIntercepter();
-		operation = intercepter.getJdbcRecordOperation(operation);
+		operation = intercepter.getOperation(operation);
 		
 		if (operation.isProcessDefault()) {
 			DbTableTrigger trigger = table.getTrigger();

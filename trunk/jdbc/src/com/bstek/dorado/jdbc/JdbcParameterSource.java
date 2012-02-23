@@ -13,7 +13,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
  * <b>注意：</b>通过{@link #addValue(Object)}或{@link #setValue(String, Object)} 添加或设置的参数并不操作“原始对象”
  * 
  * @see org.springframework.jdbc.core.namedparam.SqlParameterSource
- * @author mark
+ * @author mark.li@bstek.com
  * 
  */
 public class JdbcParameterSource implements SqlParameterSource {
@@ -203,8 +203,7 @@ public class JdbcParameterSource implements SqlParameterSource {
 				String subParamName2 = subSourceName.substring(subIndex2 + 1);
 				String subSourceName2 = subSourceName.substring(0, subIndex2);
 
-				SqlParameterSource subSource2 = this
-						.getSubSource(subSourceName2);
+				SqlParameterSource subSource2 = this.getSubSource(subSourceName2);
 				Object subObject2 = subSource2.getValue(subParamName2);
 				subSource = new JdbcParameterSource(subObject2);
 			} else {

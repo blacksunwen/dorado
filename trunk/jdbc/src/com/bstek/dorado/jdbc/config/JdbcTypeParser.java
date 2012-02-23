@@ -8,6 +8,11 @@ import com.bstek.dorado.config.xml.PropertyParser;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.type.JdbcType;
 
+/**
+ * {@link JdbcType}的解析器
+ * @author mark.li@bstek.com
+ *
+ */
 public class JdbcTypeParser extends PropertyParser {
 
 	@Override
@@ -19,7 +24,7 @@ public class JdbcTypeParser extends PropertyParser {
 			JdbcType jdbcType = env.getDialect().getJdbcType(name);
 			return jdbcType;
 		} else {
-			return null;	
+			return null;
 		}
 	}
 }
