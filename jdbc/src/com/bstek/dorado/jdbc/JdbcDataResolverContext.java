@@ -6,7 +6,7 @@ import com.bstek.dorado.data.resolver.DataItems;
 
 /**
  * 执行DataResolver时的上下文对象
- * @author mark
+ * @author mark.li@bstek.com
  *
  */
 public class JdbcDataResolverContext extends AbstractJdbcContext {

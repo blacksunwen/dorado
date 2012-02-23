@@ -7,14 +7,12 @@
 
 	<bean id="dorado.jdbc.jdbcEnviromentParser" class="com.bstek.dorado.jdbc.config.JdbcEnviromentParser" parent="dorado.propertyParser"/>
 	
-	<bean id="dorado.jdbc.transactionTemplateParser" class="com.bstek.dorado.jdbc.config.TransactionTemplateParser" parent="dorado.propertyParser"/>
+	<bean id="dorado.jdbc.platformTransactionManagerBeanPropertyParser" class="com.bstek.dorado.jdbc.config.PlatformTransactionManagerBeanPropertyParser" parent="dorado.propertyParser"/>
+	<bean id="dorado.jdbc.transactionDefinitionBeanPropertyParser" class="com.bstek.dorado.jdbc.config.TransactionDefinitionBeanPropertyParser" parent="dorado.propertyParser"/>
 	
 	<bean id="dorado.jdbc.triggerParser" class="com.bstek.dorado.jdbc.config.TriggerParser" parent="dorado.propertyParser"/>
-	
 	<bean id="dorado.jdbc.jdbcTypeParser" class="com.bstek.dorado.jdbc.config.JdbcTypeParser" parent="dorado.propertyParser"/>
-	
 	<bean id="dorado.jdbc.keyGeneratorParser" class="com.bstek.dorado.jdbc.model.table.KeyGeneratorParser" parent="dorado.propertyParser"/>
-	
 	<bean id="dorado.jdbc.tableReferenceParser" class="com.bstek.dorado.jdbc.model.table.TableReferenceParser" parent="dorado.propertyParser" />
 
 	<bean id="dorado.jdbc.dbmParser" class="com.bstek.dorado.jdbc.config.DbModelParser" parent="dorado.objectParser"/>

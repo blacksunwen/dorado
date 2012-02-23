@@ -8,7 +8,7 @@ import com.bstek.dorado.jdbc.meta.TableMetaDataGenerator;
 /**
  * 数据库模型的输出工具
  * 
- * @author mark
+ * @author mark.li@bstek.com
  *
  */
 public interface ModelGeneratorSuit {

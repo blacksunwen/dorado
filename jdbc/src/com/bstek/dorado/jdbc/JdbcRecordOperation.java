@@ -11,8 +11,8 @@ import com.bstek.dorado.jdbc.model.DbTable;
 /**
  * {@link com.bstek.dorado.jdbc.JdbcDataResolver}对应的数据库操作
  * 
- * @author mark
- * 
+ * @author mark.li@bstek.com
+ *
  */
 public class JdbcRecordOperation extends
 		AbstractDbTableOperation<JdbcDataResolverContext> {

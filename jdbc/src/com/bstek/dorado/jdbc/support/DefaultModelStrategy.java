@@ -6,27 +6,33 @@ import com.bstek.dorado.data.config.definition.DataProviderDefinition;
 import com.bstek.dorado.data.config.definition.DataTypeDefinition;
 import com.bstek.dorado.data.config.definition.PropertyDefDefinition;
 import com.bstek.dorado.jdbc.ModelStrategy;
-import com.bstek.dorado.jdbc.config.DbElementDefinition;
+import com.bstek.dorado.jdbc.config.AbstractDbTableDefinition;
 import com.bstek.dorado.jdbc.config.JdbcCreationContext;
 import com.bstek.dorado.jdbc.config.XmlConstants;
 import com.bstek.dorado.jdbc.model.AbstractColumn;
 import com.bstek.dorado.jdbc.model.DbTable;
 import com.bstek.dorado.jdbc.type.JdbcType;
 
+/**
+ * 默认的JDBC模型与dorado模型转换器
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 public class DefaultModelStrategy implements ModelStrategy {
 
 	@Override
 	public DataTypeDefinition createDataTypeDefinition(
-			DbElementDefinition dbeDef) {
+			AbstractDbTableDefinition tableDef) {
 		JdbcCreationContext context = new JdbcCreationContext();
 		DbTable table = null;
 		try {
-			table = (DbTable)dbeDef.create(context);
+			table = (DbTable)tableDef.create(context);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 		
-		String dataTypeName = this.getDataTypeName(dbeDef);
+		String dataTypeName = this.getDataTypeName(tableDef);
 		DataTypeDefinition dataType = new DataTypeDefinition();
 		dataType.setName(dataTypeName);
 		dataType.setGlobal(true);
@@ -50,7 +56,7 @@ public class DefaultModelStrategy implements ModelStrategy {
 	
 	@Override
 	public DataProviderDefinition createDataProviderDifinition(
-			DbElementDefinition dbeDef) {
+			AbstractDbTableDefinition dbeDef) {
 		DataProviderDefinition providerDef = new DataProviderDefinition();
 		String providerName = this.getDataProviderName(dbeDef);
 		providerDef.setName(providerName);
@@ -65,11 +71,11 @@ public class DefaultModelStrategy implements ModelStrategy {
 		return column.getPropertyName();
 	}
 	
-	protected String getDataTypeName(DbElementDefinition dbeDef) {
+	protected String getDataTypeName(AbstractDbTableDefinition dbeDef) {
 		return dbeDef.getName();
 	}
 
-	protected String getDataProviderName(DbElementDefinition dbeDef) {
+	protected String getDataProviderName(AbstractDbTableDefinition dbeDef) {
 		return dbeDef.getName();
 	}
 }

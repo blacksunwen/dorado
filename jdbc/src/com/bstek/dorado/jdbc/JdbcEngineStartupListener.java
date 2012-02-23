@@ -35,10 +35,10 @@ import com.bstek.dorado.jdbc.config.JdbcParseContext;
  * @author mark
  * 
  */
-public class JdbcLoader extends EngineStartupListener implements
+public class JdbcEngineStartupListener extends EngineStartupListener implements
 		ApplicationContextAware {
 
-	private static Log logger = LogFactory.getLog(JdbcLoader.class);
+	private static Log logger = LogFactory.getLog(JdbcEngineStartupListener.class);
 	
 	private ApplicationContext ctx;
 
@@ -74,11 +74,14 @@ public class JdbcLoader extends EngineStartupListener implements
 
 	@Override
 	public void onStartup() throws Exception {
-		initEnviroments();
-		initDbModels();
+		this.registerEnviroments();
+		this.registerDbModels();
 	}
 
-	protected void initEnviroments() {
+	/**
+	 * 注册{@link JdbcEnviroment}
+	 */
+	protected void registerEnviroments() {
 		JdbcEnviromentManager manager = JdbcUtils.getEnviromentManager();
 		Map<String, JdbcEnviroment> envMap = ctx.getBeansOfType(JdbcEnviroment.class);
 		for (JdbcEnviroment env: envMap.values()) {
@@ -86,16 +89,12 @@ public class JdbcLoader extends EngineStartupListener implements
 		}
 	}
 	
-	protected void initDbModels() throws Exception {
-		DbmManager configManager = JdbcUtils.getDbmManager();
-		
-		Map<String, GlobalDbModelConfig> configMap = ctx.getBeansOfType(GlobalDbModelConfig.class);
-		Set<String> locationSet = new HashSet<String>();
-		for (GlobalDbModelConfig config: configMap.values()) {
-			locationSet.addAll(config.getConfigLocations());
-		}
-		String[] locations = locationSet.toArray(new String[locationSet.size()]);
-		Resource[] resources = ResourceUtils.getResources(locations);
+	/**
+	 * 注册{@link JdbcEnviroment}
+	 * @throws Exception
+	 */
+	protected void registerDbModels() throws Exception {
+		Resource[] resources = getDbmResources();
 		
 		if (logger.isInfoEnabled()) {
 			String msg = "dbm already found: [";
@@ -109,10 +108,10 @@ public class JdbcLoader extends EngineStartupListener implements
 			logger.info(msg);
 		}
 		
-		XmlParserInfo xmlParserInfo = getXmlParserHelper().getXmlParserInfos(DbModel.class).get(0);
+		DbmManager configManager = JdbcUtils.getDbmManager();
+		XmlParser parser = getDbmParser();
 		for (Resource resource: resources) {
 			Document document = getXmlDocumentBuilder().loadDocument(resource);
-			XmlParser parser = xmlParserInfo.getParser();
 			Element documentElement = document.getDocumentElement();
 			
 			JdbcParseContext parseContext = new JdbcParseContext();
@@ -121,5 +120,28 @@ public class JdbcLoader extends EngineStartupListener implements
 			
 			configManager.registerDbm(dbm);
 		}
+	}
+	
+	/**
+	 * 获取DBM的资源对象
+	 * @return
+	 * @throws Exception
+	 */
+	protected Resource[] getDbmResources() throws Exception {
+		Map<String, GlobalDbModelConfig> configMap = ctx.getBeansOfType(GlobalDbModelConfig.class);
+		Set<String> locationSet = new HashSet<String>();
+		for (GlobalDbModelConfig config: configMap.values()) {
+			locationSet.addAll(config.getConfigLocations());
+		}
+		String[] locations = locationSet.toArray(new String[locationSet.size()]);
+		Resource[] resources = ResourceUtils.getResources(locations);
+		
+		return resources;
+	}
+	
+	protected XmlParser getDbmParser() throws Exception {
+		XmlParserInfo xmlParserInfo = getXmlParserHelper().getXmlParserInfos(DbModel.class).get(0);
+		XmlParser parser = xmlParserInfo.getParser();
+		return parser;
 	}
 }

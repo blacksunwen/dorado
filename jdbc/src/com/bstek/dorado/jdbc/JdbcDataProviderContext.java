@@ -6,7 +6,7 @@ import com.bstek.dorado.data.variant.Record;
 /**
  * {@link JdbcDataProvider}执行时的上下文
  * 
- * @author mark
+ * @author mark.li@bstek.com
  * 
  */
 public class JdbcDataProviderContext extends AbstractJdbcContext {
