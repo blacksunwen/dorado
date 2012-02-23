@@ -58,17 +58,15 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 				}
 				cardbook._currentControl = control;
 				var dom = cardbook._dom;
-				if (dom && control) {
+				if (dom && control) {					
 					if (!control._rendered) {
-                        control.set("width", $fly(dom).innerWidth());
-					    control.set("height", $fly(dom).innerHeight());
+						this._resetInnerControlDemension(control);
 						cardbook.registerInnerControl(control);
 						control.render(dom);
 					} else {
 						$fly(control._dom).css("display", "block");
 						control.setActualVisible(true);
-                        control.set("width", $fly(dom).innerWidth());
-					    control.set("height", $fly(dom).innerHeight());
+						this._resetInnerControlDemension(control);
 
                         control.resetDimension();
 
@@ -226,11 +224,26 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
         }
         return -1;
     },
+	
+	_resetInnerControlDemension: function(control) {
+		var dom = this.getDom(), width, height;
+		if (this.getRealWidth()) {
+			width = $fly(dom).innerWidth();
+			if (width) {
+				control.set("width", width);
+			}
+		}
+		if (this.getRealHeight()) {
+			height = $fly(dom).innerHeight();
+			if (height) {
+				control.set("height", height);
+			}
+		}
+	},
 
 	createDom: function() {
 		var dom = $invokeSuper.call(this, arguments);
 		dom.className = this._className;
-		
 		return dom;
 	},
 	
@@ -246,8 +259,7 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 		 }
 		 */
 		if (currentControl) {
-			currentControl.set("width", $fly(dom).innerWidth());
-			currentControl.set("height", $fly(dom).innerHeight());
+			this._resetInnerControlDemension(currentControl);
 			
 			if (!currentControl._rendered) {
 				card.registerInnerControl(currentControl);

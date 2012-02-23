@@ -53,538 +53,509 @@
 	 * @shortTypeName Anchor
 	 * @extends dorado.widget.layout.Layout
 	 */
-	dorado.widget.layout.AnchorLayout = $extend(
-			dorado.widget.layout.Layout,
-			/** @scope dorado.widget.layout.AnchorLayout.prototype */
-			{
-				$className : "dorado.widget.layout.AnchorLayout",
-
-				ATTRIBUTES : /** @scope dorado.widget.layout.AnchorLayout.prototype */
-				{
-
-					className : {
-						defaultValue : "d-anchor-layout"
-					},
-
-					/**
-					 * 横向溢出模式。
-					 * <p>
-					 * 即当布局管理器中的内容的位置或尺寸超出布局管理器的边界时，布局管理器应该如何处理。
-					 * 此属性的值通常是由使用该布局管理器的容器控件来自动维护的，所以通常您不必主动的修改此属性。
-					 * </p>
-					 * <p>
-					 * 可选的值包括：
-					 * <ul>
-					 * <li>hidden - 当内容超出边界时，超出的部分将不可见。</li>
-					 * <li>visible - 当内容超出边界时，尝试调整布局管理器的尺寸使其依然可见。
-					 * 这样很可能也会引起使用此布局管理器的容器控件的尺寸发生变化。</li>
-					 * <li>auto - 交由系统自动判断。</li>
-					 * </ul>
-					 * </p>
-					 * 
-					 * @attribute
-					 */
-					overflowX : {},
-
-					/**
-					 * 纵向溢出模式。
-					 * <p>
-					 * 即当布局管理器中的内容的位置或尺寸超出布局管理器的边界时，布局管理器应该如何处理。
-					 * 此属性的值通常是由使用该布局管理器的容器控件来自动维护的，所以通常您不必主动的修改此属性。
-					 * </p>
-					 * <p>
-					 * 可选的值包括：
-					 * <ul>
-					 * <li>hidden - 当内容超出边界时，超出的部分将不可见。</li>
-					 * <li>visible - 当内容超出边界时，尝试调整布局管理器的尺寸使其依然可见。
-					 * 这样很可能也会引起使用此布局管理器的容器控件的尺寸发生变化。</li>
-					 * <li>auto - 交由系统自动判断。</li>
-					 * </ul>
-					 * </p>
-					 * 
-					 * @attribute
-					 */
-					overflowY : {}
-				},
-
-				createDom : function() {
-					var dom = document.createElement("DIV");
-					dom.className = this._className;
-					return dom;
-				},
-
-				refreshDom : function(dom) {
-					var overflowX = this._overflowX, overflowY = this._overflowY;
-					dom.style.width = "";
-					dom.style.height = "";
-					this.doRefreshDom(dom);
-				},
-
-				doRefreshDom : function(dom) {
-					this._maxRagionRight = this._maxRagionBottom = 0;
-					for ( var it = this._regions.iterator(); it.hasNext();) {
-						var region = it.next();
-						var constraint = region.constraint;
-						if (constraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT)
-							continue;
-
-						var realignArg = this.adjustRegion(region);
-						if (realignArg)
-							this.realignRegion(region, realignArg);
-					}
-					if (this.processOverflow(dom))
-						this.calculateRegions();
-				},
-
-				recordMaxRange : function(region) {
-					var controlDom = region.control.getDom();
-					if (controlDom.style.position == "absolute") {
-						if (region.right === undefined) {
-							var right = (region.left || 0) + region.realWidth;
-							if (right > this._maxRagionRight)
-								this._maxRagionRight = right;
-						}
-
-						if (region.bottom === undefined) {
-							var bottom = (region.top || 0) + region.realHeight;
-							if (bottom > this._maxRagionBottom)
-								this._maxRagionBottom = bottom;
-						}
-					}
-				},
-
-				processOverflow : function(dom) {
-					var overflowed = false, padding = parseInt(this._padding) || 0;
-					var width = this._maxRagionRight;
-					if (width > 0 && width > dom.offsetWidth) {
-						dom.style.width = (width + padding) + "px";
-						overflowed = true;
-					}
-
-					var height = this._maxRagionBottom;
-					if (height > 0 && height > dom.offsetHeight) {
-						dom.style.height = (height + padding) + "px";
-						overflowed = true;
-					}
-					return overflowed;
-				},
-
-				onAddControl : function(control) {
-					if (!this._attached || this._disableRendering)
-						return;
-					var region = this._regions.get(control._id);
-					if (region) {
-						var realignArg = this.adjustRegion(region, true);
-						if (realignArg)
-							this.realignRegion(region, realignArg);
-						if (this.processOverflow(this.getDom()))
-							this.calculateRegions();
-					}
-				},
-
-				onRemoveControl : function(control) {
-					if (!this._attached || this._disableRendering)
-						return;
-					var region = this._regions.get(control._id);
-					if (region) {
-						this.getDom().removeChild(control.getDom());
-						var nextRegion = this.getNextRegion(region);
-						if (nextRegion)
-							this.calculateRegions(nextRegion);
-					}
-				},
-
-				doOnControlSizeChange : function(control) {
-					this.refreshControl(control);
-				},
-
-				doRefreshRegion : function(region) {
-					var control = region.control, controlDom = control.getDom(), dom = this
-							.getDom();
-					var hidden = (region.constraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT), visibilityChanged = false;
-					if (hidden) {
-						if (controlDom.parentNode == dom) {
-							dom.removeChild(controlDom);
-							this.refresh();
-						}
-					} else {
-						var oldWidth = region.realWidth, oldHeight = region.realHeight;
-						if (controlDom.parentNode != dom
-								|| controlDom.offsetWidth != oldWidth
-								|| controlDom.offsetHeight != oldHeight) {
-							this.refresh();
-						}
-					}
-				},
-
-				calculateRegions : function(fromRegion) {
-					var regions = this._regions;
-					if (regions.size == 0)
-						return;
-					var found = !fromRegion;
-					regions.each(function(region) {
-						if (!found) {
-							found = (fromRegion == region);
-							if (!found)
-								return;
-						}
-						var realignArg = this.adjustRegion(region);
-						if (realignArg)
-							this.realignRegion(region, realignArg);
-					}, this);
-				},
-
-				adjustRegion : function(region) {
-
-					function getAnchorRegion(region, p) {
-						var anchor = constraint[p];
-						if (anchor) {
-							if (anchor.constructor == String) {
-								if (anchor == "previous")
-									anchor = this.getPreviousRegion(region);
-								else
-									anchor = null;
-							} else if (anchor instanceof Function) {
-								anchor = anchor.call(this, region);
-							}
-						}
-						return anchor;
-					}
-
-					var constraint = region.constraint, realignArg;
-					var containerDom = this._dom.parentNode, controlDom = region.control
-							.getDom();
-
-					var left, right, width, top, bottom, height;
-					left = right = width = top = bottom = height = -1;
-					var lp, rp, tp, bp, wp, hp;
-					lp = rp = tp = bp = wp = hp = 0;
-
-					var padding = (parseInt(this._padding) || 0);
-					var regionPadding = (parseInt(this._regionPadding) || 0)
-							+ (parseInt(constraint.padding) || 0);
-					var clientWidth = containerDom.clientWidth, realContainerWidth = clientWidth
-							- padding * 2;
-					var clientHeight = containerDom.clientHeight, realContainerHeight = clientHeight
-							- padding * 2;
-
-					if (constraint.anchorLeft == "previous"
-							&& constraint.left == null)
-						constraint.left = 0;
-					if (constraint.left != null
-							&& constraint.anchorLeft != "none") {
-						var l = constraint.left;
-						if (l.constructor == String && l.match('%')) {
-							var rate = lp = parseInt(l);
-							if (!isNaN(rate)) {
-								left = rate * realContainerWidth / 100
-										+ regionPadding;
-							}
-						}
-						if (left < 0) {
-							var anchorRegion = getAnchorRegion.call(this,
-									region, "anchorLeft");
-							if (anchorRegion) {
-								var anchorDom = anchorRegion.control.getDom();
-								left = anchorDom.offsetLeft
-										+ anchorRegion.realWidth
-										+ regionPadding + parseInt(l);
-							} else {
-								left = parseInt(l) + padding + regionPadding;
-							}
-						}
-					}
-
-					if (constraint.anchorRight == "previous"
-							&& constraint.right == null)
-						constraint.right = 0;
-					if (constraint.right != null
-							&& constraint.anchorRight != "none") {
-						var r = constraint.right;
-						if (r.constructor == String && r.match('%')) {
-							var rate = rp = parseInt(r);
-							if (!isNaN(rate)) {
-								right = rate * realContainerWidth / 100
-										+ regionPadding;
-							}
-						}
-						if (right < 0) {
-							var anchorRegion = getAnchorRegion.call(this,
-									region, "anchorRight");
-							if (anchorRegion) {
-								var anchorDom = anchorRegion.control.getDom();
-								right = clientWidth - anchorDom.offsetLeft
-										+ regionPadding + parseInt(r);
-							} else {
-								right = parseInt(r) + padding + regionPadding;
-							}
-						}
-					}
-
-					if (constraint.anchorTop == "previous"
-							&& constraint.top == null)
-						constraint.top = 0;
-					if (constraint.top != null
-							&& constraint.anchorTop != "none") {
-						var t = constraint.top;
-						if (t.constructor == String && t.match('%')) {
-							var rate = tp = parseInt(t);
-							if (!isNaN(rate)) {
-								top = rate * realContainerHeight / 100
-										+ regionPadding;
-							}
-						}
-						if (top < 0) {
-							var anchorRegion = getAnchorRegion.call(this,
-									region, "anchorTop");
-							if (anchorRegion) {
-								var anchorDom = anchorRegion.control.getDom();
-								top = anchorDom.offsetTop
-										+ anchorRegion.realHeight
-										+ regionPadding + parseInt(t);
-							} else {
-								top = parseInt(t) + padding + regionPadding;
-							}
-						}
-					}
-
-					if (constraint.anchorBottom == "previous"
-							&& constraint.bottom == null)
-						constraint.bottom = 0;
-					if (constraint.bottom != null
-							&& constraint.anchorBottom != "none") {
-						var b = constraint.bottom;
-						if (b.constructor == String && b.match('%')) {
-							var rate = bp = parseInt(b);
-							if (!isNaN(rate)) {
-								bottom = rate * realContainerWidth / 100
-										+ regionPadding;
-							}
-						}
-						if (bottom < 0) {
-							var anchorRegion = getAnchorRegion.call(this,
-									region, "anchorBottom");
-							if (anchorRegion) {
-								var anchorDom = anchorRegion.control.getDom();
-								bottom = clientHeight - anchorDom.offsetTop
-										+ regionPadding + parseInt(b);
-							} else {
-								bottom = parseInt(b) + padding + regionPadding;
-							}
-						}
-					}
-
-					var useControlWidth = region.control.getAttributeWatcher()
-							.getWritingTimes("width");
-					if (useControlWidth || left < 0 || right < 0) {
-						var w = region.control._width;
-						if (w && w.constructor == String && w.match('%')) {
-							var rate = wp = parseInt(w);
-							if (!isNaN(rate)) {
-								width = rate * realContainerWidth / 100;
-							}
-						} else {
-							width = parseInt(w);
-						}
-
-						if (left >= 0 && right >= 0) {
-							right = -1;
-							rp = false;
-						}
-					} else if (left >= 0 && right >= 0) {
-						if (lp && rp) {
-							width = clientWidth - left - right;
-							right = -1;
-							lp = rp = false;
-						} else {
-							width = clientWidth;
-							if (lp) {
-								left = -1;
-								width -= right;
-							}
-							if (rp) {
-								right = -1;
-								width -= left;
-							}
-							if (!lp && !rp) {
-								width -= (left + right);
-								right = -1;
-							}
-						}
-					}
-
-					var useControlHeight = region.control.getAttributeWatcher()
-							.getWritingTimes("height");
-					if (useControlHeight || top < 0 || bottom < 0) {
-						var h = region.control._height;
-						if (h && h.constructor == String && h.match('%')) {
-							var rate = hp = parseInt(h);
-							if (!isNaN(rate)) {
-								height = rate * realContainerHeight / 100;
-							}
-						} else {
-							height = parseInt(h);
-						}
-
-						if (top >= 0 && bottom >= 0) {
-							bottom = -1;
-							bp = false;
-						}
-					} else if (top >= 0 && bottom >= 0) {
-						if (tp && bp) {
-							height = clientHeight - top - bottom;
-							bottom = -1;
-							tp = bp = false;
-						} else {
-							height = clientHeight;
-							if (tp) {
-								top = -1;
-								height -= bottom;
-							}
-							if (bp) {
-								bottom = -1;
-								height -= top;
-							}
-							if (!tp && !bp) {
-								height -= (top + bottom);
-								bottom = -1;
-							}
-						}
-					}
-
-					if (lp || rp || tp || bp || wp || hp) {
-						region.realignArg = realignArg = {
-							left : lp,
-							right : rp,
-							top : tp,
-							bottom : bp,
-							width : wp,
-							height : hp
-						};
-					}
-
-					if (left >= 0 || right >= 0 || top >= 0 || bottom >= 0) {
-						if (padding > 0) {
-							if ((left >= 0 || right >= 0) && top < 0
-									&& bottom < 0)
-								top = padding + regionPadding;
-							if ((top >= 0 || bottom >= 0) && left < 0
-									&& right < 0)
-								left = padding + regionPadding;
-						}
-					} else if (padding > 0) {
-						left = top = padding + regionPadding;
-					}
-					region.left = (left >= 0) ? left : undefined;
-					region.right = (right >= 0) ? right : undefined;
-					region.top = (top >= 0) ? top : undefined;
-					region.bottom = (bottom >= 0) ? bottom : undefined;
-					region.width = (width >= 0) ? width : undefined;
-					region.height = (height >= 0) ? height : undefined;
-
-					var dom = this._dom;
-					if (region.right >= 0 && !dom.style.width) {
-						dom.style.width = clientWidth + "px";
-					}
-					if (region.bottom >= 0 && !dom.style.height) {
-						dom.style.height = clientHeight + "px";
-					}
-					this.renderControl(region, dom, true, true);
-
-					var controlDom = region.control.getDom();
-					if (controlDom) {
-						region.realWidth = controlDom.offsetWidth;
-						region.realHeight = controlDom.offsetHeight;
-					} else {
-						region.realWidth = region.control.getRealWidth() || 0;
-						region.realHeight = region.control.getRealHeight() || 0;
-					}
-					this.recordMaxRange(region);
-
-					return realignArg;
-				},
-
-				realignRegion : function(region, realignArg) {
-					var controlDom = region.control.getDom();
-
-					var left, right, width, top, bottom, height;
-					left = right = width = top = bottom = height = -1;
-
-					var constraint = region.constraint, containerDom = this._dom.parentNode;
-					var padding = (parseInt(this._padding) || 0);
-					var regionPadding = (parseInt(this._regionPadding) || 0)
-							+ (parseInt(constraint.padding) || 0);
-					var clientWidth = containerDom.clientWidth, realContainerWidth = clientWidth
-							- padding * 2;
-					var clientHeight = containerDom.clientHeight, realContainerHeight = clientHeight
-							- padding * 2;
-
-					if (realignArg.left) {
-						left = Math
-								.round((realContainerWidth - region.realWidth - (region.right > 0 ? region.right
-										: 0))
-										* realignArg.left / 100)
-								+ padding + regionPadding;
-					} else if (realignArg.right) {
-						right = Math
-								.round((realContainerWidth - region.realWidth - (region.left > 0 ? region.left
-										: 0))
-										* realignArg.right / 100)
-								+ padding + regionPadding;
-					}
-					if (realignArg.top) {
-						top = Math
-								.round((realContainerHeight - region.realHeight - (region.bottom > 0 ? region.bottom
-										: 0))
-										* realignArg.top / 100)
-								+ padding + regionPadding;
-					} else if (realignArg.bottom) {
-						bottom = Math
-								.round((realContainerHeight - region.realHeight - (region.top > 0 ? region.top
-										: 0))
-										* realignArg.bottom / 100)
-								+ padding + regionPadding;
-					}
-
-					var style = controlDom.style;
-					if (left >= 0) {
-						region.left = left;
-						style.left = left + "px";
-					}
-					if (right >= 0) {
-						region.right = right;
-						style.right = right + "px";
-					}
-					if (top >= 0) {
-						region.top = top;
-						style.top = top + "px";
-					}
-					if (bottom >= 0) {
-						region.bottom = bottom;
-						style.bottom = bottom + "px";
-					}
-				},
-
-				resetControlDimension : function(region, layoutDom, autoWidth,
-						autoHeight) {
-					var control = region.control, controlDom = control.getDom();
-					var style = controlDom.style;
-					if (region.left >= 0 || region.top >= 0
-							|| region.right >= 0 || region.bottom >= 0)
-						style.position = "absolute";
-					style.left = (region.left >= 0) ? (region.left + "px") : '';
-					style.right = (region.right >= 0) ? (region.right + "px")
-							: '';
-					style.top = (region.top >= 0) ? (region.top + "px") : '';
-					style.bottom = (region.bottom >= 0) ? (region.bottom + "px")
-							: '';
-
-					$invokeSuper.call(this, [ region, layoutDom, autoWidth,
-							autoHeight ]);
+	dorado.widget.layout.AnchorLayout = $extend(dorado.widget.layout.Layout, /** @scope dorado.widget.layout.AnchorLayout.prototype */
+	{
+		$className: "dorado.widget.layout.AnchorLayout",
+		
+		ATTRIBUTES: /** @scope dorado.widget.layout.AnchorLayout.prototype */ {
+		
+			className: {
+				defaultValue: "d-anchor-layout"
+			},
+			
+			/**
+			 * 横向溢出模式。
+			 * <p>
+			 * 即当布局管理器中的内容的位置或尺寸超出布局管理器的边界时，布局管理器应该如何处理。
+			 * 此属性的值通常是由使用该布局管理器的容器控件来自动维护的，所以通常您不必主动的修改此属性。
+			 * </p>
+			 * <p>
+			 * 可选的值包括：
+			 * <ul>
+			 * <li>hidden - 当内容超出边界时，超出的部分将不可见。</li>
+			 * <li>visible - 当内容超出边界时，尝试调整布局管理器的尺寸使其依然可见。
+			 * 这样很可能也会引起使用此布局管理器的容器控件的尺寸发生变化。</li>
+			 * <li>auto - 交由系统自动判断。</li>
+			 * </ul>
+			 * </p>
+			 *
+			 * @attribute
+			 */
+			overflowX: {},
+			
+			/**
+			 * 纵向溢出模式。
+			 * <p>
+			 * 即当布局管理器中的内容的位置或尺寸超出布局管理器的边界时，布局管理器应该如何处理。
+			 * 此属性的值通常是由使用该布局管理器的容器控件来自动维护的，所以通常您不必主动的修改此属性。
+			 * </p>
+			 * <p>
+			 * 可选的值包括：
+			 * <ul>
+			 * <li>hidden - 当内容超出边界时，超出的部分将不可见。</li>
+			 * <li>visible - 当内容超出边界时，尝试调整布局管理器的尺寸使其依然可见。
+			 * 这样很可能也会引起使用此布局管理器的容器控件的尺寸发生变化。</li>
+			 * <li>auto - 交由系统自动判断。</li>
+			 * </ul>
+			 * </p>
+			 *
+			 * @attribute
+			 */
+			overflowY: {}
+		},
+		
+		createDom: function() {
+			var dom = document.createElement("DIV");
+			dom.className = this._className;
+			return dom;
+		},
+		
+		refreshDom: function(dom) {
+			var overflowX = this._overflowX, overflowY = this._overflowY;
+			dom.style.width = "";
+			dom.style.height = "";
+			this.doRefreshDom(dom);
+		},
+		
+		doRefreshDom: function(dom) {
+			this._maxRagionRight = this._maxRagionBottom = 0;
+			for (var it = this._regions.iterator(); it.hasNext();) {
+				var region = it.next();
+				var constraint = region.constraint;
+				if (constraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT) continue;
+				
+				var realignArg = this.adjustRegion(region);
+				if (realignArg) this.realignRegion(region, realignArg);
+			}
+			if (this.processOverflow(dom)) this.calculateRegions();
+		},
+		
+		recordMaxRange: function(region) {
+			var controlDom = region.control.getDom();
+			if (controlDom.style.position == "absolute") {
+				if (region.right === undefined) {
+					var right = (region.left || 0) + region.realWidth;
+					if (right > this._maxRagionRight) this._maxRagionRight = right;
 				}
-
-			});
-
-	dorado.Toolkits.registerPrototype("layout", "Default",
-			dorado.widget.layout.AnchorLayout);
+				
+				if (region.bottom === undefined) {
+					var bottom = (region.top || 0) + region.realHeight;
+					if (bottom > this._maxRagionBottom) this._maxRagionBottom = bottom;
+				}
+			}
+		},
+		
+		processOverflow: function(dom) {
+			var overflowed = false, padding = parseInt(this._padding) || 0;
+			var width = this._maxRagionRight;
+			if (width > 0 && width > dom.offsetWidth) {
+				dom.style.width = (width + padding) + "px";
+				overflowed = true;
+			}
+			
+			var height = this._maxRagionBottom;
+			if (height > 0 && height > dom.offsetHeight) {
+				dom.style.height = (height + padding) + "px";
+				overflowed = true;
+			}
+			return overflowed;
+		},
+		
+		onAddControl: function(control) {
+			if (!this._attached || this._disableRendering) return;
+			var region = this._regions.get(control._id);
+			if (region) {
+				var realignArg = this.adjustRegion(region, true);
+				if (realignArg) this.realignRegion(region, realignArg);
+				if (this.processOverflow(this.getDom())) this.calculateRegions();
+			}
+		},
+		
+		onRemoveControl: function(control) {
+			if (!this._attached || this._disableRendering) return;
+			var region = this._regions.get(control._id);
+			if (region) {
+				this.getDom().removeChild(control.getDom());
+				var nextRegion = this.getNextRegion(region);
+				if (nextRegion) this.calculateRegions(nextRegion);
+			}
+		},
+		
+		doOnControlSizeChange: function(control) {
+			this.refreshControl(control);
+		},
+		
+		doRefreshRegion: function(region) {
+			var control = region.control, controlDom = control.getDom(), dom = this.getDom();
+			var hidden = (region.constraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT), visibilityChanged = false;
+			if (hidden) {
+				if (controlDom.parentNode == dom) {
+					dom.removeChild(controlDom);
+					this.refresh();
+				}
+			} else {
+				var oldWidth = region.realWidth, oldHeight = region.realHeight;
+				if (controlDom.parentNode != dom ||
+				controlDom.offsetWidth != oldWidth ||
+				controlDom.offsetHeight != oldHeight) {
+					this.refresh();
+				}
+			}
+		},
+		
+		calculateRegions: function(fromRegion) {
+			var regions = this._regions;
+			if (regions.size == 0) return;
+			var found = !fromRegion;
+			regions.each(function(region) {
+				if (!found) {
+					found = (fromRegion == region);
+					if (!found) return;
+				}
+				var realignArg = this.adjustRegion(region);
+				if (realignArg) this.realignRegion(region, realignArg);
+			}, this);
+		},
+		
+		adjustRegion: function(region) {
+		
+			function getAnchorRegion(region, p) {
+				var anchor = constraint[p];
+				if (anchor) {
+					if (anchor.constructor == String) {
+						if (anchor == "previous") anchor = this.getPreviousRegion(region);
+						else anchor = null;
+					} else if (anchor instanceof Function) {
+						anchor = anchor.call(this, region);
+					}
+				}
+				return anchor;
+			}
+			
+			var constraint = region.constraint, realignArg;
+			var containerDom = this._dom.parentNode, controlDom = region.control.getDom();
+			
+			var left, right, width, top, bottom, height;
+			left = right = width = top = bottom = height = -1;
+			var lp, rp, tp, bp, wp, hp;
+			lp = rp = tp = bp = wp = hp = 0;
+			
+			var padding = (parseInt(this._padding) || 0);
+			var regionPadding = (parseInt(this._regionPadding) || 0) +
+			(parseInt(constraint.padding) || 0);
+			var clientWidth = containerDom.clientWidth, realContainerWidth = clientWidth -
+			padding * 2;
+			var clientHeight = containerDom.clientHeight, realContainerHeight = clientHeight -
+			padding * 2;
+			
+			if (constraint.anchorLeft == "previous" &&
+			constraint.left == null) constraint.left = 0;
+			if (constraint.left != null &&
+			constraint.anchorLeft != "none") {
+				var l = constraint.left;
+				if (l.constructor == String && l.match('%')) {
+					var rate = lp = parseInt(l);
+					if (!isNaN(rate)) {
+						left = rate * realContainerWidth / 100 +
+						regionPadding;
+					}
+				}
+				if (left < 0) {
+					var anchorRegion = getAnchorRegion.call(this, region, "anchorLeft");
+					if (anchorRegion) {
+						var anchorDom = anchorRegion.control.getDom();
+						left = anchorDom.offsetLeft +
+						anchorRegion.realWidth +
+						regionPadding +
+						parseInt(l);
+					} else {
+						left = parseInt(l) + padding + regionPadding;
+					}
+				}
+			}
+			
+			if (constraint.anchorRight == "previous" &&
+			constraint.right == null) constraint.right = 0;
+			if (constraint.right != null &&
+			constraint.anchorRight != "none") {
+				var r = constraint.right;
+				if (r.constructor == String && r.match('%')) {
+					var rate = rp = parseInt(r);
+					if (!isNaN(rate)) {
+						right = rate * realContainerWidth / 100 +
+						regionPadding;
+					}
+				}
+				if (right < 0) {
+					var anchorRegion = getAnchorRegion.call(this, region, "anchorRight");
+					if (anchorRegion) {
+						var anchorDom = anchorRegion.control.getDom();
+						right = clientWidth - anchorDom.offsetLeft +
+						regionPadding +
+						parseInt(r);
+					} else {
+						right = parseInt(r) + padding + regionPadding;
+					}
+				}
+			}
+			
+			if (constraint.anchorTop == "previous" &&
+			constraint.top == null) constraint.top = 0;
+			if (constraint.top != null &&
+			constraint.anchorTop != "none") {
+				var t = constraint.top;
+				if (t.constructor == String && t.match('%')) {
+					var rate = tp = parseInt(t);
+					if (!isNaN(rate)) {
+						top = rate * realContainerHeight / 100 +
+						regionPadding;
+					}
+				}
+				if (top < 0) {
+					var anchorRegion = getAnchorRegion.call(this, region, "anchorTop");
+					if (anchorRegion) {
+						var anchorDom = anchorRegion.control.getDom();
+						top = anchorDom.offsetTop +
+						anchorRegion.realHeight +
+						regionPadding +
+						parseInt(t);
+					} else {
+						top = parseInt(t) + padding + regionPadding;
+					}
+				}
+			}
+			
+			if (constraint.anchorBottom == "previous" &&
+			constraint.bottom == null) constraint.bottom = 0;
+			if (constraint.bottom != null &&
+			constraint.anchorBottom != "none") {
+				var b = constraint.bottom;
+				if (b.constructor == String && b.match('%')) {
+					var rate = bp = parseInt(b);
+					if (!isNaN(rate)) {
+						bottom = rate * realContainerWidth / 100 +
+						regionPadding;
+					}
+				}
+				if (bottom < 0) {
+					var anchorRegion = getAnchorRegion.call(this, region, "anchorBottom");
+					if (anchorRegion) {
+						var anchorDom = anchorRegion.control.getDom();
+						bottom = clientHeight - anchorDom.offsetTop +
+						regionPadding +
+						parseInt(b);
+					} else {
+						bottom = parseInt(b) + padding + regionPadding;
+					}
+				}
+			}
+			
+			var useControlWidth = region.control.getAttributeWatcher().getWritingTimes("width");
+			if (useControlWidth || left < 0 || right < 0) {
+				var w = region.control._width;
+				if (w && w.constructor == String && w.match('%')) {
+					var rate = wp = parseInt(w);
+					if (!isNaN(rate)) {
+						width = rate * realContainerWidth / 100;
+					}
+				} else {
+					width = parseInt(w);
+				}
+				
+				if (left >= 0 && right >= 0) {
+					right = -1;
+					rp = false;
+				}
+			} else if (left >= 0 && right >= 0) {
+				if (lp && rp) {
+					width = clientWidth - left - right;
+					right = -1;
+					lp = rp = false;
+				} else {
+					width = clientWidth;
+					if (lp) {
+						left = -1;
+						width -= right;
+					}
+					if (rp) {
+						right = -1;
+						width -= left;
+					}
+					if (!lp && !rp) {
+						width -= (left + right);
+						right = -1;
+					}
+				}
+			}
+			
+			var useControlHeight = region.control.getAttributeWatcher().getWritingTimes("height");
+			if (useControlHeight || top < 0 || bottom < 0) {
+				var h = region.control._height;
+				if (h && h.constructor == String && h.match('%')) {
+					var rate = hp = parseInt(h);
+					if (!isNaN(rate)) {
+						height = rate * realContainerHeight / 100;
+					}
+				} else {
+					height = parseInt(h);
+				}
+				
+				if (top >= 0 && bottom >= 0) {
+					bottom = -1;
+					bp = false;
+				}
+			} else if (top >= 0 && bottom >= 0) {
+				if (tp && bp) {
+					height = clientHeight - top - bottom;
+					bottom = -1;
+					tp = bp = false;
+				} else {
+					height = clientHeight;
+					if (tp) {
+						top = -1;
+						height -= bottom;
+					}
+					if (bp) {
+						bottom = -1;
+						height -= top;
+					}
+					if (!tp && !bp) {
+						height -= (top + bottom);
+						bottom = -1;
+					}
+				}
+			}
+			
+			if (lp || rp || tp || bp || wp || hp) {
+				region.realignArg = realignArg = {
+					left: lp,
+					right: rp,
+					top: tp,
+					bottom: bp,
+					width: wp,
+					height: hp
+				};
+			}
+			
+			if (left >= 0 || right >= 0 || top >= 0 || bottom >= 0) {
+				if (padding > 0) {
+					if ((left >= 0 || right >= 0) && top < 0 &&
+					bottom < 0) top = padding + regionPadding;
+					if ((top >= 0 || bottom >= 0) && left < 0 &&
+					right < 0) left = padding + regionPadding;
+				}
+			} else if (padding > 0) {
+				left = top = padding + regionPadding;
+			}
+			region.left = (left >= 0) ? left : undefined;
+			region.right = (right >= 0) ? right : undefined;
+			region.top = (top >= 0) ? top : undefined;
+			region.bottom = (bottom >= 0) ? bottom : undefined;
+			region.width = (width >= 0) ? width : undefined;
+			region.height = (height >= 0) ? height : undefined;
+			
+			var dom = this._dom;
+			if (region.right >= 0 && !dom.style.width) {
+				dom.style.width = clientWidth + "px";
+			}
+			if (region.bottom >= 0 && !dom.style.height) {
+				dom.style.height = clientHeight + "px";
+			}
+			this.renderControl(region, dom, true, true);
+			
+			var controlDom = region.control.getDom();
+			if (controlDom) {
+				region.realWidth = controlDom.offsetWidth;
+				region.realHeight = controlDom.offsetHeight;
+			} else {
+				region.realWidth = region.control.getRealWidth() || 0;
+				region.realHeight = region.control.getRealHeight() || 0;
+			}
+			this.recordMaxRange(region);
+			
+			return realignArg;
+		},
+		
+		realignRegion: function(region, realignArg) {
+			var controlDom = region.control.getDom();
+			
+			var left, right, width, top, bottom, height;
+			left = right = width = top = bottom = height = -1;
+			
+			var constraint = region.constraint, containerDom = this._dom.parentNode;
+			var padding = (parseInt(this._padding) || 0);
+			var regionPadding = (parseInt(this._regionPadding) || 0) +
+			(parseInt(constraint.padding) || 0);
+			var clientWidth = containerDom.clientWidth, realContainerWidth = clientWidth -
+			padding * 2;
+			var clientHeight = containerDom.clientHeight, realContainerHeight = clientHeight -
+			padding * 2;
+			
+			if (realignArg.left) {
+				left = Math.round((realContainerWidth - region.realWidth -
+				(region.right > 0 ? region.right : 0)) *
+				realignArg.left /
+				100) +
+				padding +
+				regionPadding;
+			} else if (realignArg.right) {
+				right = Math.round((realContainerWidth - region.realWidth -
+				(region.left > 0 ? region.left : 0)) *
+				realignArg.right /
+				100) +
+				padding +
+				regionPadding;
+			}
+			if (realignArg.top) {
+				top = Math.round((realContainerHeight - region.realHeight -
+				(region.bottom > 0 ? region.bottom : 0)) *
+				realignArg.top /
+				100) +
+				padding +
+				regionPadding;
+			} else if (realignArg.bottom) {
+				bottom = Math.round((realContainerHeight - region.realHeight -
+				(region.top > 0 ? region.top : 0)) *
+				realignArg.bottom /
+				100) +
+				padding +
+				regionPadding;
+			}
+			
+			var style = controlDom.style;
+			if (left >= 0) {
+				region.left = left;
+				style.left = left + "px";
+			}
+			if (right >= 0) {
+				region.right = right;
+				style.right = right + "px";
+			}
+			if (top >= 0) {
+				region.top = top;
+				style.top = top + "px";
+			}
+			if (bottom >= 0) {
+				region.bottom = bottom;
+				style.bottom = bottom + "px";
+			}
+		},
+		
+		resetControlDimension: function(region, layoutDom, autoWidth, autoHeight) {
+			var control = region.control, controlDom = control.getDom();
+			var style = controlDom.style;
+			if (region.left >= 0 || region.top >= 0 || region.right >= 0 || region.bottom >= 0) {
+				style.position = "absolute";
+			}
+			style.left = (region.left >= 0) ? (region.left + "px") : '';
+			style.right = (region.right >= 0) ? (region.right + "px") : '';
+			style.top = (region.top >= 0) ? (region.top + "px") : '';
+			style.bottom = (region.bottom >= 0) ? (region.bottom + "px") : '';
+			
+			$invokeSuper.call(this, [region, layoutDom, autoWidth, autoHeight]);
+		}
+		
+	});
+	
+	dorado.Toolkits.registerPrototype("layout", "Default", dorado.widget.layout.AnchorLayout);
 })();
