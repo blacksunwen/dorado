@@ -7,7 +7,7 @@ import com.bstek.dorado.data.type.DataType;
 /**
  * 数据库相关的数据类型
  * 
- * @author mark
+ * @author mark.li@bstek.com
  *
  */
 public interface JdbcType {

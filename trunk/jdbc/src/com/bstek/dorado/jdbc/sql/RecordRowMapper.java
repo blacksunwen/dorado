@@ -13,6 +13,11 @@ import com.bstek.dorado.jdbc.model.AbstractColumn;
 import com.bstek.dorado.jdbc.type.JdbcType;
 import com.bstek.dorado.util.Assert;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 public class RecordRowMapper implements RowMapper<Record> {
 
 	public List<AbstractColumn> columns;

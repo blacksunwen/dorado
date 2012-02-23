@@ -3,8 +3,9 @@ package com.bstek.dorado.jdbc.config;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 
 /**
- * JdbcEnviroment的管理器
- * @author mark
+ * {@link com.bstek.dorado.jdbc.JdbcEnviroment}的管理器
+ * 
+ * @author mark.li@bstek.com
  *
  */
 public interface JdbcEnviromentManager {

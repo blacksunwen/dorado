@@ -1,5 +1,10 @@
 package com.bstek.dorado.jdbc.model.table;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 public abstract class AbstractKeyGenerator<T> implements KeyGenerator<T> {
 
 	private String name;

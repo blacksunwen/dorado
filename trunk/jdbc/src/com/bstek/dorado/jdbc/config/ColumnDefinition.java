@@ -6,6 +6,12 @@ import com.bstek.dorado.config.definition.Operation;
 import com.bstek.dorado.jdbc.model.AbstractColumn;
 import com.bstek.dorado.jdbc.model.AbstractTable;
 
+/**
+ * “列”的定义对象
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 public class ColumnDefinition extends ObjectDefinition implements Operation {
 
 	public String getName() {

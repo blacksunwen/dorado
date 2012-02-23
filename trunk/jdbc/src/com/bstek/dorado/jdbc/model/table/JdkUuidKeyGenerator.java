@@ -7,7 +7,7 @@ import com.bstek.dorado.jdbc.JdbcRecordOperation;
 /**
  * UUID的主键生成器
  * @see java.util.UUID
- * @author mark
+ * @author mark.li@bstek.com
  *
  */
 public class JdkUuidKeyGenerator extends AbstractKeyGenerator<String> {

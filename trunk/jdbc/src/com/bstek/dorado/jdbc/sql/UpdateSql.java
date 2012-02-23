@@ -6,6 +6,11 @@ import com.bstek.dorado.jdbc.Dialect;
 import com.bstek.dorado.jdbc.sql.SqlConstants.KeyWord;
 import com.bstek.dorado.util.Assert;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 public class UpdateSql extends AbstractTableSql{
 	private LinkedHashMap<String, String> columnTokenMap = new LinkedHashMap<String, String>();
 	private LinkedHashMap<String, String> keyTokenMap = new LinkedHashMap<String, String>(2);

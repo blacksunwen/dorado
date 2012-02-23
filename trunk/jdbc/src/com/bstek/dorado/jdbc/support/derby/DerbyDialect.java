@@ -13,7 +13,7 @@ import com.bstek.dorado.jdbc.support.AbstractDialect;
 
 /**
  * derby database
- * @author mark
+ * @author mark.li@bstek.com
  * @see <a href='http://db.apache.org/derby/docs/10.8/ref/'>http://db.apache.org/derby/docs/10.8/ref/</a>
  */
 public class DerbyDialect extends AbstractDialect {

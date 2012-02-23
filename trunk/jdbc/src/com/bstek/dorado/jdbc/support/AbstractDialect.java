@@ -50,6 +50,11 @@ import com.bstek.dorado.jdbc.sql.UpdateSql;
 import com.bstek.dorado.jdbc.type.JdbcType;
 import com.bstek.dorado.util.Assert;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 public abstract class AbstractDialect implements Dialect {
 
 	private static Log logger = LogFactory.getLog(AbstractDialect.class);

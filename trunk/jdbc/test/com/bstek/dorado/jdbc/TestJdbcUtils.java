@@ -9,50 +9,23 @@ import org.w3c.dom.Document;
 
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.config.DomHelper;
-import com.bstek.dorado.jdbc.ide.resolver.CreateTableResolver;
-import com.bstek.dorado.jdbc.support.DefaultDataTypeMetaGenerator;
+import com.bstek.dorado.jdbc.support.DefaultDataTypeMetaDataGenerator;
 import com.bstek.dorado.jdbc.support.DefaultStoredProcedureGenerator;
 
 public class TestJdbcUtils {
 	
-	/**
-	 * 输出一个表的xml
-	 * @param jdbcEnvName
-	 * @param tableName
-	 * @return
-	 */
-	public static String outputTable(String jdbcEnvName, String tableName) {
-		return outputTable(jdbcEnvName, null, tableName);
-	}
-	
-	/**
-	 * 输出一个表的xml
-	 * @param jdbcEnvName
-	 * @param catalog
-	 * @param schema
-	 * @param tableName
-	 * @return
-	 */
-	public static String outputTable(String jdbcEnvName, String namespace, String tableName) {
-		CreateTableResolver resolver = new CreateTableResolver();
-		
-		String xml = resolver.toContent(jdbcEnvName, namespace, tableName, null);
-		return xml;
-	}
-
 	public static String outputSP(String jdbcEnvName, String catalog, String schema, String procedureName) {
 		JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(jdbcEnvName);
 		DefaultStoredProcedureGenerator generator = new DefaultStoredProcedureGenerator();
-		Document document = generator.createDocument(jdbcEnv, catalog, schema, procedureName);
+		Document document = generator.create(jdbcEnv, catalog, schema, procedureName);
 		
 		String xml = DomHelper.toString(document);
 		return xml;
 	}
 	
-	public static String outputDataType(String jdbcEnvName, String tableName) {
-		JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(jdbcEnvName);
-		DefaultDataTypeMetaGenerator generator = new DefaultDataTypeMetaGenerator();
-		Document document = generator.createDocument(jdbcEnv, tableName);
+	public static String outputDataType(String tableName) {
+		DefaultDataTypeMetaDataGenerator generator = new DefaultDataTypeMetaDataGenerator();
+		Document document = generator.create(tableName);
 		
 		String xml = DomHelper.toString(document);
 		return xml;

@@ -15,7 +15,7 @@ import com.bstek.dorado.jdbc.support.JdbcConstants;
 
 /**
  * oracle database
- * @author mark
+ * @author mark.li@bstek.com
  * @see <a href='http://download.oracle.com/docs/cd/E11882_01/server.112/e26088/toc.htm'>http://download.oracle.com/docs/cd/E11882_01/server.112/e26088/toc.htm</a>
  */
 public class OracleDialect extends AbstractDialect {

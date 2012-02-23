@@ -9,7 +9,7 @@ import com.bstek.dorado.jdbc.support.JdbcConstants;
 
 /**
  * sqlserver database
- * @author mark
+ * @author mark.li@bstek.com
  * @see <a href='http://technet.microsoft.com/en-us/library/ms173372.aspx'>http://technet.microsoft.com/en-us/library/ms173372.aspx</a>
  */
 public class MssqlDialect extends AbstractDialect {

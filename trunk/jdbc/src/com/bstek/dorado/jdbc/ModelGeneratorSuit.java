@@ -1,6 +1,6 @@
 package com.bstek.dorado.jdbc;
 
-import com.bstek.dorado.jdbc.meta.DataTypeMetaGenerator;
+import com.bstek.dorado.jdbc.meta.DataTypeMetaDataGenerator;
 import com.bstek.dorado.jdbc.meta.JdbcEnviromentMetaDataGenerator;
 import com.bstek.dorado.jdbc.meta.SqlTableMetaDataGenerator;
 import com.bstek.dorado.jdbc.meta.TableMetaDataGenerator;
@@ -19,5 +19,5 @@ public interface ModelGeneratorSuit {
 	
 	SqlTableMetaDataGenerator getSqlTableMetaDataGenerator();
 	
-	DataTypeMetaGenerator getDataTypeMetaGenerator();
+	DataTypeMetaDataGenerator getDataTypeMetaDataGenerator();
 }

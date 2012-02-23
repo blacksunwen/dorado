@@ -10,6 +10,11 @@ import org.springframework.jdbc.core.RowMapper;
 
 import com.bstek.dorado.data.variant.Record;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 public class ShiftRowMapperResultSetExtractor implements ResultSetExtractor<List<Record>>{
 	private RowMapper<Record> rowMapper;
 	private int maxResults;

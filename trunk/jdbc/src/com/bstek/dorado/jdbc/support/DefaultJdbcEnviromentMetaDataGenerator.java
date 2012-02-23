@@ -15,6 +15,11 @@ import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.meta.JdbcEnviromentMetaDataGenerator;
 import com.bstek.dorado.jdbc.type.JdbcType;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 public class DefaultJdbcEnviromentMetaDataGenerator implements
 		JdbcEnviromentMetaDataGenerator {
 

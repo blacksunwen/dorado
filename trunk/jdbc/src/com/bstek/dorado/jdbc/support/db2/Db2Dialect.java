@@ -14,7 +14,7 @@ import com.bstek.dorado.jdbc.support.JdbcConstants;
 
 /**
  * db2 database
- * @author mark
+ * @author mark.li@bstek.com
  * @see <a href='http://publib.boulder.ibm.com/infocenter/dzichelp/v2r2/index.jsp?topic=%2Fcom.ibm.db2.doc.sqlref%2Fbjnrspsh.htm'>http://publib.boulder.ibm.com/infocenter/dzichelp/v2r2/index.jsp?topic=%2Fcom.ibm.db2.doc.sqlref%2Fbjnrspsh.htm</a>
  */
 public class Db2Dialect extends AbstractDialect {

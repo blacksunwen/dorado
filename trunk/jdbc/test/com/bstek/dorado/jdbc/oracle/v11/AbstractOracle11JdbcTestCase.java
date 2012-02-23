@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.bstek.dorado.jdbc.AbstractJdbcTestCase;
 
-public class Oracle11JdbcTestCase extends AbstractJdbcTestCase {
+public abstract class AbstractOracle11JdbcTestCase extends AbstractJdbcTestCase {
 
 	public static final String ENV_NAME = "ora11";
 	

@@ -4,6 +4,12 @@ import com.bstek.dorado.config.definition.ObjectDefinition;
 import com.bstek.dorado.core.el.Expression;
 import com.bstek.dorado.data.variant.VariantUtils;
 
+/**
+ * {@link com.bstek.dorado.jdbc.model.DbElement}的定义对象
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 public class DbElementDefinition extends ObjectDefinition {
 
 	public String getName() {

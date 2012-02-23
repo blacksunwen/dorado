@@ -13,7 +13,13 @@ import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.ide.Constants;
 import com.bstek.dorado.jdbc.model.table.KeyGenerator;
 
-public class ListKeyGeneratorResolver extends Resolver {
+/**
+ * {@link KeyGenerator}列表
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
+public class ListKeyGeneratorResolver extends AbstractResolver {
 
 	@Override
 	public String getContent(HttpServletRequest request,

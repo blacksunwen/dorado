@@ -18,6 +18,11 @@ import com.bstek.dorado.jdbc.config.JdbcParseContext;
 import com.bstek.dorado.jdbc.meta.TableMetaDataGenerator;
 import com.bstek.dorado.jdbc.support.JdbcConstants;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 public class TableParser extends AbstractDbTableParser {
 	
 	@Override

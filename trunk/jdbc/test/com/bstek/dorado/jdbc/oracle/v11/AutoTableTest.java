@@ -10,7 +10,7 @@ import org.junit.Assert;
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.JdbcUtils;
 
-public class AutoTableTest extends Oracle11JdbcTestCase {
+public class AutoTableTest extends AbstractOracle11JdbcTestCase {
 
 	public void testEmp1() {
 		String tableName = "emp_auto1";

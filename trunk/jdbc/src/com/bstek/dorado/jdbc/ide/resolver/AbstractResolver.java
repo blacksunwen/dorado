@@ -9,7 +9,13 @@ import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.web.resolver.AbstractTextualResolver;
 
-public abstract class Resolver extends AbstractTextualResolver {
+/**
+ * 抽象的处理器
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
+public abstract class AbstractResolver extends AbstractTextualResolver {
 
 	public abstract String getContent(HttpServletRequest request,
 			HttpServletResponse response);

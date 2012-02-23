@@ -10,18 +10,17 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import com.bstek.dorado.data.type.DataType;
-import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.config.DomHelper;
-import com.bstek.dorado.jdbc.meta.DataTypeMetaGenerator;
+import com.bstek.dorado.jdbc.meta.DataTypeMetaDataGenerator;
 import com.bstek.dorado.jdbc.model.AbstractColumn;
 import com.bstek.dorado.jdbc.model.DbTable;
 import com.bstek.dorado.jdbc.type.JdbcType;
 
-public class DefaultDataTypeMetaGenerator implements DataTypeMetaGenerator {
+public class DefaultDataTypeMetaDataGenerator implements DataTypeMetaDataGenerator {
 
 	@Override
-	public Document createDocument(JdbcEnviroment jdbcEnv, String tableName) {
+	public Document create(String tableName) {
 		Document document = DomHelper.newDocument();
 		Element rootElement = document.createElement("DataType");
 		document.appendChild(rootElement);
@@ -39,8 +38,7 @@ public class DefaultDataTypeMetaGenerator implements DataTypeMetaGenerator {
 	}
 
 	@Override
-	public Document mergeDocument(JdbcEnviroment jdbcEnv, String tableName,
-			Document document) {
+	public Document merge(String tableName, Document document) {
 		Element rootElement = document.getDocumentElement();
 		
 		List<Element> propertyDefList = DomUtils.getChildElementsByTagName(rootElement, "PropertyDef");

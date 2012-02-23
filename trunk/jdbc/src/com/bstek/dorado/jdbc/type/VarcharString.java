@@ -4,6 +4,11 @@ import java.util.Map;
 
 import com.bstek.dorado.jdbc.support.JdbcConstants;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 public class VarcharString extends AbstractString {
 
 	public VarcharString() {

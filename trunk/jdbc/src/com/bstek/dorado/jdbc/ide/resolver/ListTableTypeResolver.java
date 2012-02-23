@@ -9,7 +9,13 @@ import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.ide.Constants;
 
-public class ListTableTypeResolver extends Resolver {
+/**
+ * 数据库表类型列表
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
+public class ListTableTypeResolver extends AbstractResolver {
 
 	@Override
 	public String getContent(HttpServletRequest request,

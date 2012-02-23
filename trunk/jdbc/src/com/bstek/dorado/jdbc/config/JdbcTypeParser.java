@@ -10,6 +10,7 @@ import com.bstek.dorado.jdbc.type.JdbcType;
 
 /**
  * {@link JdbcType}的解析器
+ * 
  * @author mark.li@bstek.com
  *
  */

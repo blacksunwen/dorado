@@ -20,7 +20,7 @@ import com.bstek.dorado.core.xml.XmlDocumentBuilder;
 public class DomHelper {
 	static private XmlDocumentBuilder xmlDocumentBuilder;
 	
-	static public XmlDocumentBuilder getXmlDocumentBuilder(){
+	public static XmlDocumentBuilder getXmlDocumentBuilder(){
 		if (xmlDocumentBuilder == null) {
 			Context context = Context.getCurrent();
 			try {
@@ -32,7 +32,13 @@ public class DomHelper {
 		return xmlDocumentBuilder;
 	}
 	
-	static public Document parseText(String text) {
+	/**
+	 * 将字符串解析成XML文档
+	 * 
+	 * @param text
+	 * @return
+	 */
+	public static Document parseText(String text) {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setIgnoringElementContentWhitespace(true);
 		factory.setIgnoringComments(true);
@@ -45,7 +51,7 @@ public class DomHelper {
 		}
 	}
 	
-	static public Document newDocument() {
+	public static Document newDocument() {
 		try {
 			return getXmlDocumentBuilder().newDocument();
 		} catch (Exception e) {
@@ -53,7 +59,13 @@ public class DomHelper {
 		}
 	}
 	
-	static public Element adoptElement(Element element) {
+	/**
+	 * 将XML节点冲所在的文档中卸载
+	 * 
+	 * @param element
+	 * @return
+	 */
+	public static Element adoptElement(Element element) {
 		Document document = element.getOwnerDocument();
 		if (document != null) {
 			return (Element) document.adoptNode(element);
@@ -62,19 +74,39 @@ public class DomHelper {
 		}
 	}
 	
-	static public Element addElement(Element e, String elementName) {
+	/**
+	 * 为节点新增子节点
+	 * 
+	 * @param e
+	 * @param elementName
+	 * @return
+	 */
+	public static Element addElement(Element e, String elementName) {
 		Element element = e.getOwnerDocument().createElement(elementName);
 		e.appendChild(element);
 		return element;
 	}
 	
-	static public Element addElement(Document document, String elementName) {
+	/**
+	 * 为文档新增子节点
+	 * 
+	 * @param document
+	 * @param elementName
+	 * @return
+	 */
+	public static Element addElement(Document document, String elementName) {
 		Element element = document.createElement(elementName);
 		document.appendChild(element);
 		return element;
 	}
 	
-	static public String toString(Document document) {
+	/**
+	 * 将文档转化成字符串
+	 * 
+	 * @param document
+	 * @return
+	 */
+	public static String toString(Document document) {
 		StringWriter writer = new StringWriter();
 		TransformerFactory tFactory = TransformerFactory.newInstance();
 		try {
@@ -88,8 +120,13 @@ public class DomHelper {
 		return writer.toString();
 	}
 	
-	
-	static public String toString(Element element) {
+	/**
+	 * 将节点转化成字符串
+	 * 
+	 * @param element
+	 * @return
+	 */
+	public static String toString(Element element) {
 		StringWriter writer = new StringWriter();
 		TransformerFactory tFactory = TransformerFactory.newInstance();
 		try {

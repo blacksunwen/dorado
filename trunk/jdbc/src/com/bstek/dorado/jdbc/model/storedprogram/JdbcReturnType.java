@@ -7,6 +7,11 @@ import org.springframework.jdbc.core.SqlReturnType;
 
 import com.bstek.dorado.jdbc.type.JdbcType;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 public class JdbcReturnType implements SqlReturnType {
 
 	private JdbcType jdbcType;

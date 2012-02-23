@@ -4,6 +4,11 @@ import com.bstek.dorado.config.definition.CreationContext;
 import com.bstek.dorado.jdbc.config.AbstractDbTableDefinition;
 import com.bstek.dorado.jdbc.config.JdbcCreationContext;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 public class AutoTableDefinition extends AbstractDbTableDefinition {
 
 	@Override

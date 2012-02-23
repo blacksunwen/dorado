@@ -11,7 +11,7 @@ import org.junit.Assert;
 import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.model.storedprogram.StoredProgram;
 
-public class StoredProgramTest extends Oracle11JdbcTestCase {
+public class StoredProgramTest extends AbstractOracle11JdbcTestCase {
 	
 	public void testNoop1() {
 		StoredProgram sp = JdbcUtils.getStoredProgram("noop1");

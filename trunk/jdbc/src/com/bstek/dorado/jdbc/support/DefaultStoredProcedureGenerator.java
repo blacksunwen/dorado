@@ -23,11 +23,16 @@ import com.bstek.dorado.jdbc.model.storedprogram.ProgramParameter;
 import com.bstek.dorado.jdbc.model.storedprogram.StoredProgram;
 import com.bstek.dorado.jdbc.type.JdbcType;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 public class DefaultStoredProcedureGenerator implements
 		StoredProcedureGenerator {
 
 	@Override
-	public Document createDocument(JdbcEnviroment jdbcEnv, String catalog,
+	public Document create(JdbcEnviroment jdbcEnv, String catalog,
 			String schema, String procedureName) {
 		DataSource dataSource = jdbcEnv.getDataSource();
 		try {
@@ -40,7 +45,7 @@ public class DefaultStoredProcedureGenerator implements
 	}
 
 	@Override
-	public Document mergeDocument(JdbcEnviroment jdbcEnv, String catalog,
+	public Document merge(JdbcEnviroment jdbcEnv, String catalog,
 			String schema, String spName, Document oldDocument) {
 
 		return null;

@@ -10,6 +10,12 @@ import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.core.io.Resource;
 
+/**
+ * JDBC模块的模型对象
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 @XmlNode(
 	parser = "spring:dorado.jdbc.dbmParser",
 	subNodes = {

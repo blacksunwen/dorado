@@ -10,6 +10,11 @@ import com.bstek.dorado.jdbc.Dialect;
 import com.bstek.dorado.jdbc.sql.SqlConstants.KeyWord;
 import com.bstek.dorado.util.Assert;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 public class RetrieveSql extends AbstractTableSql {
 
 	private List<String> columnTokenList = new ArrayList<String>();

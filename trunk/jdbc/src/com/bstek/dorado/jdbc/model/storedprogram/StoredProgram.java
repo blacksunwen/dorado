@@ -23,6 +23,11 @@ import com.bstek.dorado.jdbc.sql.SqlUtils;
 import com.bstek.dorado.jdbc.type.JdbcType;
 import com.bstek.dorado.util.Assert;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 @XmlNode(
 	definitionType = "com.bstek.dorado.jdbc.config.DbElementDefinition",
 	subNodes = {

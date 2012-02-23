@@ -38,6 +38,11 @@ import com.bstek.dorado.jdbc.model.table.TableKeyColumnDefinition;
 import com.bstek.dorado.jdbc.type.JdbcType;
 import com.bstek.dorado.util.xml.DomUtils;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 public class DefaultTableMetaDataGenerator implements TableMetaDataGenerator {
 
 	private static Log logger = LogFactory.getLog(DefaultTableMetaDataGenerator.class);

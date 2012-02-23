@@ -15,7 +15,7 @@ import com.bstek.dorado.util.Assert;
 /**
  * 数据库序列的主键生成器
  * 
- * @author mark
+ * @author mark.li@bstek.com
  * 
  */
 public class SequenceKeyGenerator extends AbstractKeyGenerator<Number> {

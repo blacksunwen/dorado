@@ -7,6 +7,11 @@ import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.jdbc.sql.SqlConstants.JunctionModel;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 @XmlNode(
 	nodeName = "Junction",
 	definitionType = "com.bstek.dorado.jdbc.model.autotable.MatchRuleDefinition",

@@ -7,7 +7,7 @@ import org.springframework.core.Constants;
 /**
  * JDBC模块使用的常量
  * 
- * @author mark
+ * @author mark.li@bstek.com
  * 
  */
 public class JdbcConstants {

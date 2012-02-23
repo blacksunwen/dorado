@@ -14,7 +14,7 @@ import com.bstek.dorado.jdbc.JdbcDataProvider;
 import com.bstek.dorado.jdbc.JdbcDataResolver;
 import com.bstek.dorado.jdbc.JdbcDataResolverItem;
 
-public class DoradoTest extends Oracle11JdbcTestCase {
+public class DoradoTest extends AbstractOracle11JdbcTestCase {
 
 	@SuppressWarnings("unchecked")
 	public void test01() throws Exception {

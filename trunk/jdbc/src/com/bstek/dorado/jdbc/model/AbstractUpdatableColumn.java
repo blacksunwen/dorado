@@ -3,6 +3,11 @@ package com.bstek.dorado.jdbc.model;
 import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlProperty;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 public abstract class AbstractUpdatableColumn extends AbstractColumn {
 	private boolean insertable = true;
 	
