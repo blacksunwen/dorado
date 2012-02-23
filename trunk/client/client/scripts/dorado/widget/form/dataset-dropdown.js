@@ -164,7 +164,8 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.RowListDropDown,/** @scope
 		var dataSet = this._dataSet;
 		if (this._useDataBinding) {
 			var arg = {
-				filterValue: filterValue
+				filterValue: filterValue,
+				processDefault: true
 			};
 			this.fireEvent("onFilterItems", this, arg);
 			if (arg.processDefault) {
