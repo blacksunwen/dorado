@@ -226,7 +226,7 @@ public class DefaultTableMetaDataGenerator implements TableMetaDataGenerator {
 		properties.put(JdbcConstants.IS_KEY, columnMeta.get(JdbcConstants.IS_KEY));
 		
 		String columnName = this.columnName(columnMeta, jdbcEnv);
-		properties.put("columnName", columnName);
+		properties.put("name", columnName);
 		
 		String jdbcType = this.jdbcType(columnMeta, jdbcEnv);
 		properties.put("jdbcType", jdbcType);
@@ -250,8 +250,8 @@ public class DefaultTableMetaDataGenerator implements TableMetaDataGenerator {
 			columnDef = new TableColumnDefinition();
 		}
 		
-		String columnName = columnProperties.get("columnName");
-		columnDef.getProperties().put("columnName", columnName);
+		String columnName = columnProperties.get("name");
+		columnDef.getProperties().put("name", columnName);
 		
 		String jdbcType = columnProperties.get("jdbcType");
 		if (StringUtils.isNotEmpty(jdbcType)) {
@@ -486,21 +486,37 @@ public class DefaultTableMetaDataGenerator implements TableMetaDataGenerator {
 		
 		Set<String> columnNameSet = new HashSet<String>();
 		List<Element> columnElements = DomUtils.getChildElements(columnsElement);
-		for (Element columnElement: columnElements) {
-			String columnName = columnElement.getAttribute("columnName");
-			columnNameSet.add(columnName);
-		}
 		
-		List<Map<String,String>> columnMetaList = this.listColumnMetas(jdbcEnv, usedTable.usedCatalog, usedTable.usedSchema, usedTable.usedTable);
-		for (Map<String,String> columnMeta: columnMetaList) {
-			Element columnElement = createColumnElement(columnMeta, jdbcEnv, document);
-			String columnName = columnElement.getAttribute("columnName");
-			if (!columnNameSet.contains(columnName)) {
-				columnsElement.appendChild(columnElement);
+		if (columnElements.isEmpty()) {
+			Document document2 = createDocument(namespace, table, jdbcEnv);
+			Element columnsElement2 = DomUtils.getChildByTagName(document2.getDocumentElement(), "Columns");
+			
+			List<Element> columns2 = DomUtils.getChildElements(columnsElement2);
+			logger.info(columns2.size());
+			
+			for (Element e: columns2) {
+				columnsElement.appendChild(document.adoptNode(e));
 			}
+			
+			return document;
+		} else {
+			for (Element columnElement: columnElements) {
+				String columnName = columnElement.getAttribute("name");
+				columnNameSet.add(columnName);
+			}
+			
+			List<Map<String,String>> columnMetaList = this.listColumnMetas(jdbcEnv, usedTable.usedCatalog, usedTable.usedSchema, usedTable.usedTable);
+			for (Map<String,String> columnMeta: columnMetaList) {
+				Element columnElement = createColumnElement(columnMeta, jdbcEnv, document);
+				String columnName = columnElement.getAttribute("name");
+				if (!columnNameSet.contains(columnName)) {
+					columnsElement.appendChild(columnElement);
+				}
+			}
+			
+			return document;
 		}
 		
-		return document;
 	}
 
 }

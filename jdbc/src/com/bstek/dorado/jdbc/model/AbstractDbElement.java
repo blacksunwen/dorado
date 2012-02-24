@@ -17,6 +17,7 @@ public abstract class AbstractDbElement implements DbElement {
 	
 	@Override
 	@IdeProperty(highlight=1)
+	@XmlProperty(attributeOnly=true)
 	public String getName() {
 		return name;
 	}

@@ -2,6 +2,8 @@ package com.bstek.dorado.jdbc.ide.robot;
 
 import java.util.Properties;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -12,7 +14,6 @@ import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.ModelGeneratorSuit;
 import com.bstek.dorado.jdbc.config.DomHelper;
 import com.bstek.dorado.jdbc.ide.Constants;
-import com.bstek.dorado.util.xml.DomUtils;
 
 /**
  * 用于创建{@link com.bstek.dorado.jdbc.model.table.Table}
@@ -22,28 +23,36 @@ import com.bstek.dorado.util.xml.DomUtils;
  */
 public class CreateTableRobot implements Robot {
 
+	private static Log logger = LogFactory.getLog(CreateTableRobot.class);
+	
 	@Override
 	public Node execute(Node node, Properties properties) throws Exception {
-		Element element = (Element)node;
+		Element tableElement = (Element)node;
 		
-		String envName = element.getAttribute(Constants.PARAM_ENV);
-		String namespace = element.getAttribute(Constants.PARAM_SPACE);
-		String table   = element.getAttribute(Constants.PARAM_TBNM);
-		Element tableElement = DomUtils.getChildByTagName(element, "Table");
+		if (logger.isInfoEnabled()) {
+			logger.info("CreateTable::---------------------------");
+			logger.info(DomHelper.toString(tableElement));
+			logger.info(properties);
+		}
+		
+		String envName = tableElement.getAttribute(Constants.PARAM_ENV);
+		String namespace = tableElement.getAttribute(Constants.PARAM_SPACE);
+		String table   = tableElement.getAttribute(Constants.PARAM_TBNM);
 		
 		JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(envName);
 		ModelGeneratorSuit generator = JdbcUtils.getModelGeneratorSuit();
 		
-		if (tableElement == null) {
-			Document document = generator.getTableMetaDataGenerator().createDocument(namespace, table, jdbcEnv);
-			return document.getDocumentElement();
-		} else {
-			Document oldDocument = DomHelper.newDocument();
-			oldDocument.appendChild(DomHelper.adoptElement(tableElement));
-			
-			Document document = generator.getTableMetaDataGenerator().mergeDocument(namespace, table, jdbcEnv, oldDocument);
-			return document.getDocumentElement();
+		Document documentOld = DomHelper.newDocument();
+		Element tableElementOld = (Element)tableElement.cloneNode(true);
+		tableElementOld = (Element)documentOld.adoptNode(tableElementOld);
+		documentOld.appendChild(tableElementOld);
+		
+		Document document = generator.getTableMetaDataGenerator().mergeDocument(namespace, table, jdbcEnv, documentOld);
+		if (logger.isInfoEnabled()) {
+			logger.info(DomHelper.toString(document));
 		}
+		
+		return document.getDocumentElement();
 	}
 
 }

@@ -2,69 +2,69 @@
 <DbModel jdbcEnviroment="ora11">
     <Table name="EMPLOYEE" tableName="EMPLOYEE">
       <Columns>
-        <KeyColumn jdbcType="INTEGER-Integer" columnName="ID" />
-        <Column jdbcType="INTEGER-Integer" columnName="REPORT_TO" />
+        <KeyColumn jdbcType="INTEGER-Integer" name="ID" />
+        <Column jdbcType="INTEGER-Integer" name="REPORT_TO" />
         
-        <Column jdbcType="DATE-Date" columnName="HIRE_DATE" />
-        <Column jdbcType="DATE-Date" columnName="BIRTHDAY"  />
+        <Column jdbcType="DATE-Date" name="HIRE_DATE" />
+        <Column jdbcType="DATE-Date" name="BIRTHDAY"  />
         
-        <Column jdbcType="CHAR-Boolean" columnName="SEX"/>
+        <Column jdbcType="CHAR-Boolean" name="SEX"/>
         
-        <Column jdbcType="CLOB-String" columnName="NOTES"/>
+        <Column jdbcType="CLOB-String" name="NOTES"/>
         
-        <Column jdbcType="VARCHAR-String" columnName="FIRST_NAME"/>
-        <Column jdbcType="VARCHAR-String" columnName="LAST_NAME"/>
-        <Column jdbcType="VARCHAR-String" columnName="DEPT_ID"/>
-        <Column jdbcType="VARCHAR-String" columnName="COUNTRY"/>
-        <Column jdbcType="VARCHAR-String" columnName="ADDRESS"/>
-        <Column jdbcType="VARCHAR-String" columnName="PHONE"/>
-        <Column jdbcType="VARCHAR-String" columnName="PHOTO_PATH"/>
-        <Column jdbcType="VARCHAR-String" columnName="CITY"/>
-        <Column jdbcType="VARCHAR-String" columnName="POSTAL_CODE"/>
-        <Column jdbcType="VARCHAR-String" columnName="TITLE_OF_COURTESY"/>
-        <Column jdbcType="VARCHAR-String" columnName="REGION"/>
-        <Column jdbcType="VARCHAR-String" columnName="TITLE"/>
+        <Column jdbcType="VARCHAR-String" name="FIRST_NAME"/>
+        <Column jdbcType="VARCHAR-String" name="LAST_NAME"/>
+        <Column jdbcType="VARCHAR-String" name="DEPT_ID"/>
+        <Column jdbcType="VARCHAR-String" name="COUNTRY"/>
+        <Column jdbcType="VARCHAR-String" name="ADDRESS"/>
+        <Column jdbcType="VARCHAR-String" name="PHONE"/>
+        <Column jdbcType="VARCHAR-String" name="PHOTO_PATH"/>
+        <Column jdbcType="VARCHAR-String" name="CITY"/>
+        <Column jdbcType="VARCHAR-String" name="POSTAL_CODE"/>
+        <Column jdbcType="VARCHAR-String" name="TITLE_OF_COURTESY"/>
+        <Column jdbcType="VARCHAR-String" name="REGION"/>
+        <Column jdbcType="VARCHAR-String" name="TITLE"/>
       </Columns>
       <Property name="dynamicClause"><![CDATA[#if ($ID) WHERE ID=:ID #end]]></Property>
     </Table>
 
     <Table name="DEPT" tableName="DEPT" trigger="com.bstek.dorado.jdbc.oracle.v11.DeptTableTrigger">
       <Columns>
-        <KeyColumn jdbcType="VARCHAR-String" columnName="DEPT_ID"/>
-        <Column jdbcType="VARCHAR-String" columnName="DEPT_NAME"/>
-        <Column jdbcType="VARCHAR-String" columnName="PARENT_ID"/>
+        <KeyColumn jdbcType="VARCHAR-String" name="DEPT_ID"/>
+        <Column jdbcType="VARCHAR-String" name="DEPT_NAME"/>
+        <Column jdbcType="VARCHAR-String" name="PARENT_ID"/>
       </Columns>
       <Property name="dynamicClause"><![CDATA[#if ($ID) WHERE DEPT_ID=:ID #end]]></Property>
     </Table>
 
 	<Table name="CATEGORIES" tableName="CATEGORIES">
 		<Columns>
-			<KeyColumn columnName="ID" jdbcType="INTEGER-Integer"/>
-			<Column columnName="CATEGORY_NAME" jdbcType="VARCHAR-String"/>
-			<Column columnName="DESCRIPTION" jdbcType="VARCHAR-String"/>
+			<KeyColumn name="ID" jdbcType="INTEGER-Integer"/>
+			<Column name="CATEGORY_NAME" jdbcType="VARCHAR-String"/>
+			<Column name="DESCRIPTION" jdbcType="VARCHAR-String"/>
 		</Columns>
 	</Table>
 	
 	<Table name="PRODUCTS" tableName="PRODUCTS">
 		<Columns>
-			<KeyColumn columnName="ID" jdbcType="INTEGER-Integer"/>
-			<Column columnName="PRODUCT_NAME" jdbcType="VARCHAR-String"/>
-			<Column columnName="SUPPLIER_ID"  jdbcType="INTEGER-Integer"/>
-			<Column columnName="CATEGORY_ID"  jdbcType="INTEGER-Integer"/>
-			<Column columnName="QUANTITY_PER_UNIT" jdbcType="VARCHAR-String"/>
-			<Column columnName="UNIT_PRICE"        jdbcType="DECIMAL-BigDecimal"/>
-			<Column columnName="UNITS_IN_STOCK" jdbcType="INTEGER-Integer"/>
-			<Column columnName="UNITS_ON_ORDER" jdbcType="INTEGER-Integer"/>
-			<Column columnName="REORDER_LEVEL"  jdbcType="INTEGER-Integer"/>
-			<Column columnName="DISCONTINUED"   jdbcType="SMALLINT-Short"/>
+			<KeyColumn name="ID" jdbcType="INTEGER-Integer"/>
+			<Column name="PRODUCT_NAME" jdbcType="VARCHAR-String"/>
+			<Column name="SUPPLIER_ID"  jdbcType="INTEGER-Integer"/>
+			<Column name="CATEGORY_ID"  jdbcType="INTEGER-Integer"/>
+			<Column name="QUANTITY_PER_UNIT" jdbcType="VARCHAR-String"/>
+			<Column name="UNIT_PRICE"        jdbcType="DECIMAL-BigDecimal"/>
+			<Column name="UNITS_IN_STOCK" jdbcType="INTEGER-Integer"/>
+			<Column name="UNITS_ON_ORDER" jdbcType="INTEGER-Integer"/>
+			<Column name="REORDER_LEVEL"  jdbcType="INTEGER-Integer"/>
+			<Column name="DISCONTINUED"   jdbcType="SMALLINT-Short"/>
 		</Columns>
 	</Table>
 	
     <SqlTable name="sql_dept" mainTable="DEPT">
 	  <Columns>
-	    <Column columnName="DEPT_NAME"  nativeColumnName="DEPT_NAME"/>
-	    <Column columnName="DEPT_ID"    nativeColumnName="DEPT_ID"/>
-	    <Column columnName="PARENT_ID"  nativeColumnName="PARENT_ID"/>
+	    <Column name="DEPT_NAME"  nativeColumnName="DEPT_NAME"/>
+	    <Column name="DEPT_ID"    nativeColumnName="DEPT_ID"/>
+	    <Column name="PARENT_ID"  nativeColumnName="PARENT_ID"/>
 	  </Columns>
 	  <Property name="querySql"><![CDATA[select * from DEPT]]></Property>
 	</SqlTable>
@@ -72,12 +72,12 @@
 	<!-- Employee -->
 	<AutoTable name="emp_auto1" mainTableAlias="emp">
 		<Columns>
-		    <Column columnName="n_id"          tableAlias="emp" nativeColumnName="ID"/>
-			<Column columnName="n_last_name"   tableAlias="emp" nativeColumnName="LAST_NAME"/>
-			<Column columnName="n_first_name"  tableAlias="emp" nativeColumnName="FIRST_NAME"/>
-			<Column columnName="n_title"       tableAlias="emp" nativeColumnName="TITLE"/>
-			<Column columnName="n_sex"         tableAlias="emp" nativeColumnName="SEX"/>
-			<Column columnName="n_birthday"    tableAlias="emp" nativeColumnName="BIRTHDAY"/>
+		    <Column name="n_id"          tableAlias="emp" nativeColumnName="ID"/>
+			<Column name="n_last_name"   tableAlias="emp" nativeColumnName="LAST_NAME"/>
+			<Column name="n_first_name"  tableAlias="emp" nativeColumnName="FIRST_NAME"/>
+			<Column name="n_title"       tableAlias="emp" nativeColumnName="TITLE"/>
+			<Column name="n_sex"         tableAlias="emp" nativeColumnName="SEX"/>
+			<Column name="n_birthday"    tableAlias="emp" nativeColumnName="BIRTHDAY"/>
 		</Columns>
 		<FromTables>
 			<FromTable tableAlias="emp" table="EMPLOYEE"/>
@@ -85,22 +85,22 @@
 	</AutoTable>
 	<AutoTable name="emp_auto2" mainTableAlias="emp">
 		<Columns>
-		    <Column columnName="n_id"          tableAlias="emp" nativeColumnName="ID"          />
-			<Column columnName="n_last_name"   tableAlias="emp" nativeColumnName="LAST_NAME"   />
-			<Column columnName="n_first_name"  tableAlias="emp" nativeColumnName="FIRST_NAME"  />
-			<Column columnName="n_title"       tableAlias="emp" nativeColumnName="TITLE"       />
-			<Column columnName="n_sex"         tableAlias="emp" nativeColumnName="SEX"         />
-			<Column columnName="n_birth_date"  tableAlias="emp" nativeColumnName="BIRTHDAY"    />
-			<Column columnName="n_hire_date"   tableAlias="emp" nativeColumnName="HIRE_DATE"   />
-			<Column columnName="n_address"     tableAlias="emp" nativeColumnName="ADDRESS"     />
-			<Column columnName="n_city"        tableAlias="emp" nativeColumnName="CITY"        />
-			<Column columnName="n_region"      tableAlias="emp" nativeColumnName="REGION"      />
-			<Column columnName="n_postal_code" tableAlias="emp" nativeColumnName="POSTAL_CODE" />
-			<Column columnName="n_country"     tableAlias="emp" nativeColumnName="COUNTRY"     />
-			<Column columnName="n_phone"       tableAlias="emp" nativeColumnName="PHONE"       />
-			<Column columnName="n_reports_to"  tableAlias="emp" nativeColumnName="REPORT_TO"   />
-			<Column columnName="n_notes"       tableAlias="emp" nativeColumnName="NOTES"       />
-			<Column columnName="n_photo_path"  tableAlias="emp" nativeColumnName="PHOTO_PATH"  />
+		    <Column name="n_id"          tableAlias="emp" nativeColumnName="ID"          />
+			<Column name="n_last_name"   tableAlias="emp" nativeColumnName="LAST_NAME"   />
+			<Column name="n_first_name"  tableAlias="emp" nativeColumnName="FIRST_NAME"  />
+			<Column name="n_title"       tableAlias="emp" nativeColumnName="TITLE"       />
+			<Column name="n_sex"         tableAlias="emp" nativeColumnName="SEX"         />
+			<Column name="n_birth_date"  tableAlias="emp" nativeColumnName="BIRTHDAY"    />
+			<Column name="n_hire_date"   tableAlias="emp" nativeColumnName="HIRE_DATE"   />
+			<Column name="n_address"     tableAlias="emp" nativeColumnName="ADDRESS"     />
+			<Column name="n_city"        tableAlias="emp" nativeColumnName="CITY"        />
+			<Column name="n_region"      tableAlias="emp" nativeColumnName="REGION"      />
+			<Column name="n_postal_code" tableAlias="emp" nativeColumnName="POSTAL_CODE" />
+			<Column name="n_country"     tableAlias="emp" nativeColumnName="COUNTRY"     />
+			<Column name="n_phone"       tableAlias="emp" nativeColumnName="PHONE"       />
+			<Column name="n_reports_to"  tableAlias="emp" nativeColumnName="REPORT_TO"   />
+			<Column name="n_notes"       tableAlias="emp" nativeColumnName="NOTES"       />
+			<Column name="n_photo_path"  tableAlias="emp" nativeColumnName="PHOTO_PATH"  />
 		</Columns>
 		<FromTables>
 			<FromTable tableAlias="emp" table="EMPLOYEE"/>
@@ -111,22 +111,22 @@
 	</AutoTable>
 	<AutoTable name="emp_auto3" mainTableAlias="emp">
 		<Columns>
-		    <Column columnName="n_id"          tableAlias="emp" nativeColumnName="ID"          />
-			<Column columnName="n_last_name"   tableAlias="emp" nativeColumnName="LAST_NAME"   />
-			<Column columnName="n_first_name"  tableAlias="emp" nativeColumnName="FIRST_NAME"  />
-			<Column columnName="n_title"       tableAlias="emp" nativeColumnName="TITLE"       />
-			<Column columnName="n_sex"         tableAlias="emp" nativeColumnName="SEX"         />
-			<Column columnName="n_birth_date"  tableAlias="emp" nativeColumnName="BIRTHDAY"    />
-			<Column columnName="n_hire_date"   tableAlias="emp" nativeColumnName="HIRE_DATE"   />
-			<Column columnName="n_address"     tableAlias="emp" nativeColumnName="ADDRESS"     />
-			<Column columnName="n_city"        tableAlias="emp" nativeColumnName="CITY"        />
-			<Column columnName="n_region"      tableAlias="emp" nativeColumnName="REGION"      />
-			<Column columnName="n_postal_code" tableAlias="emp" nativeColumnName="POSTAL_CODE" />
-			<Column columnName="n_country"     tableAlias="emp" nativeColumnName="COUNTRY"     />
-			<Column columnName="n_phone"       tableAlias="emp" nativeColumnName="PHONE"       />
-			<Column columnName="n_reports_to"  tableAlias="emp" nativeColumnName="REPORT_TO"   />
-			<Column columnName="n_notes"       tableAlias="emp" nativeColumnName="NOTES"       />
-			<Column columnName="n_photo_path"  tableAlias="emp" nativeColumnName="PHOTO_PATH"  />
+		    <Column name="n_id"          tableAlias="emp" nativeColumnName="ID"          />
+			<Column name="n_last_name"   tableAlias="emp" nativeColumnName="LAST_NAME"   />
+			<Column name="n_first_name"  tableAlias="emp" nativeColumnName="FIRST_NAME"  />
+			<Column name="n_title"       tableAlias="emp" nativeColumnName="TITLE"       />
+			<Column name="n_sex"         tableAlias="emp" nativeColumnName="SEX"         />
+			<Column name="n_birth_date"  tableAlias="emp" nativeColumnName="BIRTHDAY"    />
+			<Column name="n_hire_date"   tableAlias="emp" nativeColumnName="HIRE_DATE"   />
+			<Column name="n_address"     tableAlias="emp" nativeColumnName="ADDRESS"     />
+			<Column name="n_city"        tableAlias="emp" nativeColumnName="CITY"        />
+			<Column name="n_region"      tableAlias="emp" nativeColumnName="REGION"      />
+			<Column name="n_postal_code" tableAlias="emp" nativeColumnName="POSTAL_CODE" />
+			<Column name="n_country"     tableAlias="emp" nativeColumnName="COUNTRY"     />
+			<Column name="n_phone"       tableAlias="emp" nativeColumnName="PHONE"       />
+			<Column name="n_reports_to"  tableAlias="emp" nativeColumnName="REPORT_TO"   />
+			<Column name="n_notes"       tableAlias="emp" nativeColumnName="NOTES"       />
+			<Column name="n_photo_path"  tableAlias="emp" nativeColumnName="PHOTO_PATH"  />
 		</Columns>
 		<FromTables>
 			<FromTable tableAlias="emp" table="EMPLOYEE"/>
@@ -140,22 +140,22 @@
 	</AutoTable>
 	<AutoTable name="emp_auto4" mainTableAlias="emp">
 		<Columns>
-		    <Column columnName="n_id"          tableAlias="emp" nativeColumnName="ID"          />
-			<Column columnName="n_last_name"   tableAlias="emp" nativeColumnName="LAST_NAME"   />
-			<Column columnName="n_first_name"  tableAlias="emp" nativeColumnName="FIRST_NAME"  />
-			<Column columnName="n_title"       tableAlias="emp" nativeColumnName="TITLE"       />
-			<Column columnName="n_sex"         tableAlias="emp" nativeColumnName="SEX"         />
-			<Column columnName="n_birth_date"  tableAlias="emp" nativeColumnName="BIRTHDAY"    />
-			<Column columnName="n_hire_date"   tableAlias="emp" nativeColumnName="HIRE_DATE"   />
-			<Column columnName="n_address"     tableAlias="emp" nativeColumnName="ADDRESS"     />
-			<Column columnName="n_city"        tableAlias="emp" nativeColumnName="CITY"        />
-			<Column columnName="n_region"      tableAlias="emp" nativeColumnName="REGION"      />
-			<Column columnName="n_postal_code" tableAlias="emp" nativeColumnName="POSTAL_CODE" />
-			<Column columnName="n_country"     tableAlias="emp" nativeColumnName="COUNTRY"     />
-			<Column columnName="n_phone"       tableAlias="emp" nativeColumnName="PHONE"       />
-			<Column columnName="n_reports_to"  tableAlias="emp" nativeColumnName="REPORT_TO"   />
-			<Column columnName="n_notes"       tableAlias="emp" nativeColumnName="NOTES"       />
-			<Column columnName="n_photo_path"  tableAlias="emp" nativeColumnName="PHOTO_PATH"  />
+		    <Column name="n_id"          tableAlias="emp" nativeColumnName="ID"          />
+			<Column name="n_last_name"   tableAlias="emp" nativeColumnName="LAST_NAME"   />
+			<Column name="n_first_name"  tableAlias="emp" nativeColumnName="FIRST_NAME"  />
+			<Column name="n_title"       tableAlias="emp" nativeColumnName="TITLE"       />
+			<Column name="n_sex"         tableAlias="emp" nativeColumnName="SEX"         />
+			<Column name="n_birth_date"  tableAlias="emp" nativeColumnName="BIRTHDAY"    />
+			<Column name="n_hire_date"   tableAlias="emp" nativeColumnName="HIRE_DATE"   />
+			<Column name="n_address"     tableAlias="emp" nativeColumnName="ADDRESS"     />
+			<Column name="n_city"        tableAlias="emp" nativeColumnName="CITY"        />
+			<Column name="n_region"      tableAlias="emp" nativeColumnName="REGION"      />
+			<Column name="n_postal_code" tableAlias="emp" nativeColumnName="POSTAL_CODE" />
+			<Column name="n_country"     tableAlias="emp" nativeColumnName="COUNTRY"     />
+			<Column name="n_phone"       tableAlias="emp" nativeColumnName="PHONE"       />
+			<Column name="n_reports_to"  tableAlias="emp" nativeColumnName="REPORT_TO"   />
+			<Column name="n_notes"       tableAlias="emp" nativeColumnName="NOTES"       />
+			<Column name="n_photo_path"  tableAlias="emp" nativeColumnName="PHOTO_PATH"  />
 		</Columns>
 		<FromTables>
 			<FromTable tableAlias="emp" table="EMPLOYEE"/>
@@ -172,13 +172,13 @@
 	<!-- Produce & Category -->
 	<AutoTable name="product_cat_auto1">
 		<Columns>
-			<Column columnName="n_pid"        tableAlias="p" nativeColumnName="ID"                />
-			<Column columnName="n_pname"      tableAlias="p" nativeColumnName="PRODUCT_NAME"      />
-			<Column columnName="n_psupplier"  tableAlias="p" nativeColumnName="SUPPLIER_ID"       />
-			<Column columnName="n_pcategory"  tableAlias="p" nativeColumnName="CATEGORY_ID"       />
-			<Column columnName="n_pquanitity" tableAlias="p" nativeColumnName="QUANTITY_PER_UNIT" />
-			<Column columnName="n_punitprice" tableAlias="p" nativeColumnName="UNIT_PRICE"        />
-			<Column columnName="n_ccategory"  tableAlias="c" nativeColumnName="CATEGORY_NAME"     />
+			<Column name="n_pid"        tableAlias="p" nativeColumnName="ID"                />
+			<Column name="n_pname"      tableAlias="p" nativeColumnName="PRODUCT_NAME"      />
+			<Column name="n_psupplier"  tableAlias="p" nativeColumnName="SUPPLIER_ID"       />
+			<Column name="n_pcategory"  tableAlias="p" nativeColumnName="CATEGORY_ID"       />
+			<Column name="n_pquanitity" tableAlias="p" nativeColumnName="QUANTITY_PER_UNIT" />
+			<Column name="n_punitprice" tableAlias="p" nativeColumnName="UNIT_PRICE"        />
+			<Column name="n_ccategory"  tableAlias="c" nativeColumnName="CATEGORY_NAME"     />
 		</Columns>
 		<FromTables>
 			<FromTable tableAlias="p" table="PRODUCTS"/>
@@ -191,13 +191,13 @@
 	
 	<AutoTable name="product_cat_auto2">
 		<Columns>
-			<Column columnName="n_pid"        tableAlias="p" nativeColumnName="ID"                />
-			<Column columnName="n_pname"      tableAlias="p" nativeColumnName="PRODUCT_NAME"      />
-			<Column columnName="n_psupplier"  tableAlias="p" nativeColumnName="SUPPLIER_ID"       />
-			<Column columnName="n_pcategory"  tableAlias="p" nativeColumnName="CATEGORY_ID"       />
-			<Column columnName="n_pquanitity" tableAlias="p" nativeColumnName="QUANTITY_PER_UNIT" />
-			<Column columnName="n_punitprice" tableAlias="p" nativeColumnName="UNIT_PRICE"        />
-			<Column columnName="n_ccategory"  tableAlias="c" nativeColumnName="CATEGORY_NAME"     />
+			<Column name="n_pid"        tableAlias="p" nativeColumnName="ID"                />
+			<Column name="n_pname"      tableAlias="p" nativeColumnName="PRODUCT_NAME"      />
+			<Column name="n_psupplier"  tableAlias="p" nativeColumnName="SUPPLIER_ID"       />
+			<Column name="n_pcategory"  tableAlias="p" nativeColumnName="CATEGORY_ID"       />
+			<Column name="n_pquanitity" tableAlias="p" nativeColumnName="QUANTITY_PER_UNIT" />
+			<Column name="n_punitprice" tableAlias="p" nativeColumnName="UNIT_PRICE"        />
+			<Column name="n_ccategory"  tableAlias="c" nativeColumnName="CATEGORY_NAME"     />
 		</Columns>
 		<FromTables>
 			<FromTable tableAlias="c" table="CATEGORIES"/>

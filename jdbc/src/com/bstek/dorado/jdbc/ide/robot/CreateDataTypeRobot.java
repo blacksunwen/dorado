@@ -33,7 +33,7 @@ public class CreateDataTypeRobot implements Robot{
 			return document.getDocumentElement();
 		} else {
 			Document oldDocument = DomHelper.newDocument();
-			oldDocument.appendChild(DomHelper.adoptElement(dataTypeElement));
+			oldDocument.appendChild(oldDocument.adoptNode(dataTypeElement));
 			Document document = generator.getDataTypeMetaDataGenerator().merge(tableName, oldDocument);
 			return document.getDocumentElement();
 		}

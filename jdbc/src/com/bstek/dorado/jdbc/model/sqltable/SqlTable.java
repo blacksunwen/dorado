@@ -50,6 +50,7 @@ public class SqlTable extends AbstractTable {
 	}
 	
 	@XmlProperty(parser = "spring:dorado.jdbc.tableReferenceParser")
+	@IdeProperty(highlight=1, editor="jdbc:refrence:Table")
 	public Table getMainTable() {
 		return mainTable;
 	}

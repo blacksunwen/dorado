@@ -60,21 +60,6 @@ public class DomHelper {
 	}
 	
 	/**
-	 * 将XML节点冲所在的文档中卸载
-	 * 
-	 * @param element
-	 * @return
-	 */
-	public static Element adoptElement(Element element) {
-		Document document = element.getOwnerDocument();
-		if (document != null) {
-			return (Element) document.adoptNode(element);
-		} else {
-			return element;
-		}
-	}
-	
-	/**
 	 * 为节点新增子节点
 	 * 
 	 * @param e

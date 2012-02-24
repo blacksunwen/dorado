@@ -23,9 +23,9 @@
 
     <!-- Robot -->
     <bean parent="dorado.idesupport.robotRegister">
-		<property name="name" value="jdbc-createDataType" />
+		<property name="name" value="jdbc-table-createDataType" />
 		<property name="label" value="Create DataType" />
-		<property name="viewObject" value="**Table" />
+		<property name="viewObject" value="Table" />
 		<property name="robot">
 			<bean class="com.bstek.dorado.jdbc.ide.robot.CreateDataTypeRobot" />
 		</property>
@@ -38,6 +38,7 @@
 			<bean class="com.bstek.dorado.jdbc.ide.robot.CreateTableRobot" />
 		</property>
     </bean>
+    
     <bean parent="dorado.idesupport.robotRegister">
 		<property name="name" value="jdbc-createSqlTable" />
 		<property name="label" value="Generate Columns" />
