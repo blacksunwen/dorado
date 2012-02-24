@@ -95,7 +95,7 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 						for (var i = 0; i < value.length; i++) {
 							controls.insert(value[i]);
 						}
-					} else if (value.constructor == Object.prototype.constructor) {
+					} else {
 						controls.insert(value);
 					}
 				}
@@ -262,7 +262,6 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 			this._resetInnerControlDemension(currentControl);
 			
 			if (!currentControl._rendered) {
-				card.registerInnerControl(currentControl);
 				currentControl.render(dom);
 			} else {
 				$fly(currentControl._dom).css("display", "block");

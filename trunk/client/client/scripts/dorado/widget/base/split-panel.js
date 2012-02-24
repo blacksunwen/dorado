@@ -488,13 +488,11 @@
 		doOnAttachToDocument: function() {
 			var panel = this, sideControl = panel._sideControl, mainControl = panel._mainControl, doms = panel._doms;
 			if (sideControl) {
-				panel.registerInnerControl(sideControl);
 				sideControl.render(doms.sidePanel);
                 sideControl.setActualVisible(!panel._collapsed);
 			}
 
 			if (mainControl) {
-				panel.registerInnerControl(mainControl);
 				mainControl.render(doms.mainPanel);
 			}
 		},

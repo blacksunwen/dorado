@@ -709,7 +709,6 @@
 					}
 					control.addListener("onPostFailed", $scopify(this, this.onEditorPostFailed));
 				}
-				this.registerInnerControl(control);
 			}
 			return control;
 		},
