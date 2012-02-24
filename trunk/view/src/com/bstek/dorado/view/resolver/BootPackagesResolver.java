@@ -11,8 +11,8 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 
 import com.bstek.dorado.core.Configure;
-import com.bstek.dorado.core.DoradoAbout;
 import com.bstek.dorado.core.io.Resource;
+import com.bstek.dorado.core.pkgs.PackageManager;
 import com.bstek.dorado.util.FileHandler;
 import com.bstek.dorado.util.PathUtils;
 import com.bstek.dorado.util.TempFileUtils;
@@ -196,7 +196,7 @@ public class BootPackagesResolver extends WebFileResolver {
 				PathUtils.concatPath(
 						pattern.getBaseUri(),
 						"${fileName}.dpkg?cacheBuster="
-								+ DoradoAbout.getVersion()));
+								+ PackageManager.getPackageInfoMD5()));
 		if (pattern.isMergeRequests()) {
 			jsonBuilder.escapeableKey("mergeRequests").value(
 					pattern.isMergeRequests());

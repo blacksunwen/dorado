@@ -3,6 +3,7 @@ package com.bstek.dorado.core.pkgs;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -23,8 +24,12 @@ import org.springframework.util.ClassUtils;
 public final class PackageManager {
 	private static final String PACKAGE_PROPERTIES_LOCATION = "META-INF/dorado-package.properties";
 	private static final String UNKNOWN_VERSION = "<Unknown Version>";
+	private static final char HEX_DIGITALS[] = { // 用来将字节转换成 16 进制表示的字符
+	'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e',
+			'f' };
 
 	private static final Map<String, PackageInfo> packageInfosMap = new LinkedHashMap<String, PackageInfo>();
+	private static String packageInfoMD5;
 	private static boolean packageInfoBuilded = false;
 
 	private PackageManager() {
@@ -106,7 +111,7 @@ public final class PackageManager {
 		return dependence;
 	}
 
-	private static void buildPackageInfos() throws Exception {
+	private static void doBuildPackageInfos() throws Exception {
 		Map<String, PackageInfo> packageMap = new HashMap<String, PackageInfo>();
 
 		Enumeration<URL> defaultContextFileResources = ClassUtils
@@ -171,17 +176,50 @@ public final class PackageManager {
 		}
 
 		packageInfosMap.clear();
+		StringBuffer stringForMD5 = new StringBuffer();
 		for (PackageInfo packageInfo : calculatedPackages) {
+			String addonVersion = packageInfo.getVersion();
+			if (UNKNOWN_VERSION.equals(addonVersion)) {
+				addonVersion = String.valueOf(System.currentTimeMillis());
+			}
+			stringForMD5.append(packageInfo.getName()).append(addonVersion);
 			packageInfosMap.put(packageInfo.getName(), packageInfo);
 		}
+
+		packageInfoMD5 = getMD5(stringForMD5.toString().getBytes());
+	}
+
+	protected static void buildPackageInfos() throws Exception {
+		if (!packageInfoBuilded) {
+			packageInfoBuilded = true;
+			doBuildPackageInfos();
+		}
+	}
+
+	public static String getMD5(byte[] source) throws NoSuchAlgorithmException {
+		java.security.MessageDigest md = java.security.MessageDigest
+				.getInstance("MD5");
+		md.update(source);
+		byte tmp[] = md.digest(); // MD5 的计算结果是一个 128 位的长整数，用字节表示就是 16 个字节
+		char str[] = new char[16 * 2]; // 每个字节用 16 进制表示的话，使用两个字符，所以表示成 16
+										// 进制需要 32 个字符
+		int k = 0; // 表示转换结果中对应的字符位置
+		for (int i = 0; i < 16; i++) { // 从第一个字节开始，对 MD5 的每一个字节转换成 16
+										// 进制字符的转换
+			byte byte0 = tmp[i]; // 取第 i 个字节
+			str[k++] = HEX_DIGITALS[byte0 >>> 4 & 0xf]; // 取字节中高 4 位的数字转换
+			str[k++] = HEX_DIGITALS[byte0 & 0xf]; // 取字节中低 4 位的数字转换
+		}
+		return new String(str); // 换后的结果转换为字符串
 	}
 
 	public static Map<String, PackageInfo> getPackageInfoMap() throws Exception {
-		if (!packageInfoBuilded) {
-			packageInfoBuilded = true;
-			buildPackageInfos();
-		}
+		buildPackageInfos();
 		return packageInfosMap;
 	}
 
+	public static String getPackageInfoMD5() throws Exception {
+		buildPackageInfos();
+		return packageInfoMD5;
+	}
 }
