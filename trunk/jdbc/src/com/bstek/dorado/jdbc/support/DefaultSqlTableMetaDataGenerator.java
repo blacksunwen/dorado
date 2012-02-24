@@ -37,7 +37,7 @@ public class DefaultSqlTableMetaDataGenerator implements
 		Map<String, String> properties = new HashMap<String, String>(3);
 		
 		String columnName = this.columnName(columnMeta, jdbcEnv);
-		properties.put("columnName", columnName);
+		properties.put("name", columnName);
 		
 		String jdbcType = this.jdbcType(columnMeta, jdbcEnv);
 		properties.put("jdbcType", jdbcType);
@@ -136,14 +136,14 @@ public class DefaultSqlTableMetaDataGenerator implements
 		Set<String> columnNameSet = new HashSet<String>();
 		List<Element> columnElements = DomUtils.getChildElements(columnsElement);
 		for (Element columnElement: columnElements) {
-			String columnName = columnElement.getAttribute("columnName");
+			String columnName = columnElement.getAttribute("name");
 			columnNameSet.add(columnName);
 		}
 		
 		List<Map<String,String>> columnMetas = this.listColumnMetas(jdbcEnv, sql);
 		for (Map<String,String> columnMeta: columnMetas) {
 			Element columnElement = createColumnElement(columnMeta, jdbcEnv, document);
-			String columnName = columnElement.getAttribute("columnName");
+			String columnName = columnElement.getAttribute("name");
 			if (!columnNameSet.contains(columnName)) {
 				columnsElement.appendChild(columnElement);
 			}

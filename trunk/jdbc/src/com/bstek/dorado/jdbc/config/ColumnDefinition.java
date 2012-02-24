@@ -15,7 +15,7 @@ import com.bstek.dorado.jdbc.model.AbstractTable;
 public class ColumnDefinition extends ObjectDefinition implements Operation {
 
 	public String getName() {
-		return (String)this.getProperties().get("columnName");
+		return (String)this.getProperties().get("name");
 	}
 	
 	@Override

@@ -21,7 +21,7 @@ public class TableKeyColumn extends AbstractTableColumn {
 	private boolean updatable = false;
 	
 	@XmlProperty(parser="spring:dorado.jdbc.keyGeneratorParser")
-	@IdeProperty(highlight=1, editor="jdbc:list-keyGenerator")
+	@IdeProperty(highlight=1, editor="jdbc:service:list-keyGenerator")
 	public KeyGenerator<?> getKeyGenerator() {
 		return keyGenerator;
 	}

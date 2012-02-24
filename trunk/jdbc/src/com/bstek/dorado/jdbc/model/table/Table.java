@@ -66,7 +66,8 @@ public class Table extends AbstractTable {
 		return TYPE;
 	}
 
-	@IdeProperty(highlight=1, editor="jdbc:list-space")
+	@IdeProperty(highlight=1, editor="jdbc:service:list-space")
+	@XmlProperty(attributeOnly=true)
 	public String getNamespace() {
 		return namespace;
 	}
@@ -76,7 +77,7 @@ public class Table extends AbstractTable {
 	}
 
 	@XmlProperty(attributeOnly=true)
-	@IdeProperty(highlight=1, editor="jdbc:list-tables.xml")
+	@IdeProperty(highlight=1, editor="jdbc:service:list-tables.xml")
 	public String getTableName() {
 		return tableName;
 	}

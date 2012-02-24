@@ -13,7 +13,7 @@ import com.bstek.dorado.jdbc.type.JdbcType;
  */
 public abstract class AbstractColumn {
 	
-	private String columnName;
+	private String name;
 
 	private JdbcType jdbcType;
 	
@@ -21,16 +21,16 @@ public abstract class AbstractColumn {
 
 	@XmlProperty(attributeOnly=true)
 	@IdeProperty(highlight=1)
-	public String getColumnName() {
-		return columnName;
+	public String getName() {
+		return name;
 	}
 	
-	public void setColumnName(String columnName) {
-		this.columnName = columnName;
+	public void setName(String name) {
+		this.name = name;
 	}
 	
 	@XmlProperty(parser="spring:dorado.jdbc.jdbcTypeParser", attributeOnly=true)
-	@IdeProperty(highlight=1, editor = "jdbc:list-jdbctype")
+	@IdeProperty(highlight=1, editor = "jdbc:service:list-jdbctype")
 	public JdbcType getJdbcType() {
 		return jdbcType;
 	}
@@ -50,6 +50,6 @@ public abstract class AbstractColumn {
 
 	@IdeProperty(visible = false)
 	public String getPropertyName() {
-		return getColumnName();
+		return getName();
 	}
 }

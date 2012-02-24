@@ -5,7 +5,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.core.bean.BeanFactoryUtils;
 import com.bstek.dorado.jdbc.DbTableTrigger;
@@ -17,19 +16,6 @@ import com.bstek.dorado.util.Assert;
  * @author mark.li@bstek.com
  *
  */
-
-@XmlNode (
-	properties = {
-		@XmlProperty(
-			propertyName = "autoCreateDataType",
-			propertyType = "boolean"
-		),
-		@XmlProperty(
-			propertyName = "autoCreateDataProvider",
-			propertyType = "boolean"
-		)
-	}
-)
 public abstract class AbstractTable extends AbstractDbElement implements DbTable {
 
 	private Map<String,AbstractColumn> columnMap = new LinkedHashMap<String,AbstractColumn>();
@@ -47,7 +33,7 @@ public abstract class AbstractTable extends AbstractDbElement implements DbTable
 	}
 	
 	public void addColumn(AbstractColumn column) {
-		String columnName = column.getColumnName();
+		String columnName = column.getName();
 		Assert.notEmpty(columnName, "columnName must not be empty in table [" + this.getName() + "]");
 		
 		if (columnMap.containsKey(columnName)) {

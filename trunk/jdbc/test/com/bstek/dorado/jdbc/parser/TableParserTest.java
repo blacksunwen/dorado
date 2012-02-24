@@ -43,13 +43,13 @@ public class TableParserTest extends AbstractParserTestCase{
 			assertTrue(columns.get(2) instanceof TableColumn);
 			
 			TableKeyColumn c1 = (TableKeyColumn)columns.get(0);
-			assertEquals("DEPT_ID", c1.getColumnName());
+			assertEquals("DEPT_ID", c1.getName());
 			
 			TableColumn c2 = (TableColumn)columns.get(1);
-			assertEquals("DEPT_NAME", c2.getColumnName());
+			assertEquals("DEPT_NAME", c2.getName());
 			
 			TableColumn c3 = (TableColumn)columns.get(2);
-			assertEquals("PARENT_ID", c3.getColumnName());
+			assertEquals("PARENT_ID", c3.getName());
 		}
 	}
 }

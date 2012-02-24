@@ -45,7 +45,7 @@ public class TableSqlGenerator implements CurdSqlGenerator {
 					columnsToken.append(',');
 				}
 				
-				String columnName = column.getColumnName();
+				String columnName = column.getName();
 				String propertyName = column.getPropertyName();
 				String token = columnName + " " + KeyWord.AS + " "  + propertyName;
 				columnsToken.append(token);
@@ -98,10 +98,10 @@ public class TableSqlGenerator implements CurdSqlGenerator {
 						record.put(propertyName, value);
 					}
 					
-					sql.addColumnToken(keyColumn.getColumnName(), ":"+propertyName);
+					sql.addColumnToken(keyColumn.getName(), ":"+propertyName);
 				}
 			} else {
-				sql.addColumnToken(keyColumn.getColumnName(), ":"+propertyName);
+				sql.addColumnToken(keyColumn.getName(), ":"+propertyName);
 			}
 		}
 		
@@ -142,7 +142,7 @@ public class TableSqlGenerator implements CurdSqlGenerator {
 	protected void addColumnToken(InsertSql sql,
 			JdbcParameterSource parameterSource, TableColumn column,
 			String propertyName, Object value) {
-		String columnName = column.getColumnName();
+		String columnName = column.getName();
 		JdbcType jdbcType = column.getJdbcType();
 		if (jdbcType != null) {
 			Object dbValue = jdbcType.toDB(value);
@@ -178,7 +178,7 @@ public class TableSqlGenerator implements CurdSqlGenerator {
 		
 		for (TableKeyColumn keyColumn: table.getKeyColumns()) {
 			String propertyName = keyColumn.getPropertyName();
-			String columnName = keyColumn.getColumnName();
+			String columnName = keyColumn.getName();
 			Object oldValue = null;
 			if (hasOldValues(record) && (oldValue = EntityUtils.getOldValue(record, propertyName)) != null) {
 				if (keyColumn.isUpdatable()) {
@@ -222,7 +222,7 @@ public class TableSqlGenerator implements CurdSqlGenerator {
 
 	protected void addColumnToken(UpdateSql sql, JdbcParameterSource parameterSource, 
 			TableColumn c, String propertyName, Object value) {
-		String columnName = c.getColumnName();
+		String columnName = c.getName();
 		JdbcType jdbcType = c.getJdbcType();
 		if (jdbcType != null) {
 			Object dbValue = jdbcType.toDB(value);
@@ -245,7 +245,7 @@ public class TableSqlGenerator implements CurdSqlGenerator {
 		
 		for (TableKeyColumn keyColumn: table.getKeyColumns()) {
 			String propertyName = keyColumn.getPropertyName();
-			String columnName = keyColumn.getColumnName();
+			String columnName = keyColumn.getName();
 			sql.addKeyToken(columnName, ":" + propertyName);
 		}
 		

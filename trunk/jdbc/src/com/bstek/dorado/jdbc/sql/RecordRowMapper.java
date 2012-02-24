@@ -31,7 +31,7 @@ public class RecordRowMapper implements RowMapper<Record> {
 	public Record mapRow(ResultSet rs, int rowNum) throws SQLException {
 		Map<String, Object> map = new HashMap<String, Object>(columns.size());
 		for (AbstractColumn c: columns) {
-			String columnName = c.getColumnName();
+			String columnName = c.getName();
 			String propertyName = c.getPropertyName();
 			JdbcType jdbcType = c.getJdbcType();
 			Object dbValue = rs.getObject(columnName);

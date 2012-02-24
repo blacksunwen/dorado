@@ -63,12 +63,14 @@ public abstract class AbstractDbTableParser extends ObjectParser {
 	}
 	
 	protected void doAutoCreate(AbstractDbTableDefinition tableDef, JdbcParseContext jdbcContext) throws Exception {
-		if (tableDef.isAutoCreateDataType()) {
-			this.createDataType(tableDef);
-		}
-		if (tableDef.isAutoCreateDataProvider()) {
-			this.createDataProvider(tableDef);
-		}
+		return;
+		
+//		if (tableDef.isAutoCreateDataType()) {
+//			this.createDataType(tableDef);
+//		}
+//		if (tableDef.isAutoCreateDataProvider()) {
+//			this.createDataProvider(tableDef);
+//		}
 	}
 	
 	protected void createDataProvider(AbstractDbTableDefinition tableDef) throws Exception {

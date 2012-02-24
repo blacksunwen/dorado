@@ -16,7 +16,7 @@ public abstract class AbstractDbTableDefinition extends DbElementDefinition {
 	 */
 	public boolean isAutoCreateDataProvider() {
 		if (autoCreateDataProvider == null) {
-			autoCreateDataProvider = this.getFinalPropertyBoolean(XmlConstants.AUTO_CREATE_DATAPROVIDER, false);
+			autoCreateDataProvider = this.getFinalPropertyBoolean(XmlConstants.AUTO_CREATE_DATAPROVIDER, true);
 		}
 		return autoCreateDataProvider;
 	}
@@ -31,7 +31,7 @@ public abstract class AbstractDbTableDefinition extends DbElementDefinition {
 	 */
 	public boolean isAutoCreateDataType() {
 		if (autoCreateDataType == null) {
-			autoCreateDataType = this.getFinalPropertyBoolean(XmlConstants.AUTO_CREATE_DATATYPE, false);
+			autoCreateDataType = this.getFinalPropertyBoolean(XmlConstants.AUTO_CREATE_DATATYPE, true);
 		}
 		return autoCreateDataType;
 	}

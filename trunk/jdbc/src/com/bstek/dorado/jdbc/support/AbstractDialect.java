@@ -356,7 +356,7 @@ public abstract class AbstractDialect implements Dialect {
 			
 			List<AbstractColumn> columnList = new ArrayList<AbstractColumn>();
 			for(AbstractColumn column: table.getAllColumns()) {
-				String columnName = column.getColumnName();
+				String columnName = column.getName();
 				String propertyName = column.getPropertyName();
 				if (column.isSelectable() && record.containsKey(propertyName)) {
 					columnList.add(column);
@@ -367,7 +367,7 @@ public abstract class AbstractDialect implements Dialect {
 			for (TableKeyColumn column: table.getKeyColumns()) {
 				String propertyName = column.getPropertyName();
 				if (column.isSelectable() && record.containsKey(propertyName)) {
-					String columnName = column.getColumnName();
+					String columnName = column.getName();
 					Object columnValue = record.get(propertyName);
 					JdbcType jdbcType = column.getJdbcType();
 					if (jdbcType != null) {
@@ -438,11 +438,11 @@ public abstract class AbstractDialect implements Dialect {
 		String tableAlias = order.getTableAlias();
 		if (StringUtils.isEmpty(tableAlias)) {
 			AutoTableColumn column = (AutoTableColumn)autoTable.getColumn(columnName);
-			token.append(column.getColumnName());
+			token.append(column.getName());
 		} else {
 			FromTable fromTable = autoTable.getFromTable(tableAlias);
 			AbstractColumn fromColumn = fromTable.getTable().getColumn(columnName);
-			token.append(fromTable.getTableAlias() + '.' + fromColumn.getColumnName());
+			token.append(fromTable.getTableAlias() + '.' + fromColumn.getName());
 		}
 		
 		if (model != null) {

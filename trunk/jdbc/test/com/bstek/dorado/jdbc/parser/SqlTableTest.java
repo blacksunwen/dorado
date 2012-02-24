@@ -37,13 +37,13 @@ public class SqlTableTest extends AbstractParserTestCase {
 			assertEquals(3, columns.size());
 			
 			SqlTableColumn c1 = (SqlTableColumn)columns.get(0);
-			assertEquals("DEPT_NAME", c1.getColumnName());
+			assertEquals("DEPT_NAME", c1.getName());
 			
 			SqlTableColumn c2 = (SqlTableColumn)columns.get(1);
-			assertEquals("DEPT_ID", c2.getColumnName());
+			assertEquals("DEPT_ID", c2.getName());
 			
 			SqlTableColumn c3 = (SqlTableColumn)columns.get(2);
-			assertEquals("PARENT_ID", c3.getColumnName());
+			assertEquals("PARENT_ID", c3.getName());
 		}
 	}
 }

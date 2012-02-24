@@ -162,9 +162,9 @@ public class AutoTableSqlGenerator implements CurdSqlGenerator{
 			AbstractColumn leftColumn = leftTable.getColumn(leftColumnName);
 			AbstractColumn rightColumn = rightTable.getColumn(rightColumnName);
 			
-			token.append(leftTableAlias, ".", leftColumn.getColumnName());
+			token.append(leftTableAlias, ".", leftColumn.getName());
 			token.bothSpace("=");
-			token.append(rightTableAlias, ".", rightColumn.getColumnName());
+			token.append(rightTableAlias, ".", rightColumn.getName());
 		}
 		
 		return token.build();
@@ -191,7 +191,7 @@ public class AutoTableSqlGenerator implements CurdSqlGenerator{
 			FromTable fromTable = bmr.getFromTable();
 			String tableAlias = fromTable.getTableAlias();
 			AbstractColumn column = bmr.getColumn();
-			String columnName = column.getColumnName();
+			String columnName = column.getName();
 			Object value = bmr.getValue();
 			String operator = bmr.getOperator();
 			

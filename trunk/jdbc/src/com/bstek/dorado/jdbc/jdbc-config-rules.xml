@@ -2,4 +2,11 @@
 <RuleSet>
 	<Rule name="DbModel" type="com.bstek.dorado.jdbc.config.DbModel">
 	</Rule>
+	
+	<Rule name="AbstractTable" type="com.bstek.dorado.jdbc.model.AbstractTable">
+		<PrimitiveProps>
+			<Prop name="autoCreateDataProvider" type="boolean" defaultValue="true"/>
+			<Prop name="autoCreateDataType" type="boolean" defaultValue="true"/>
+		</PrimitiveProps>
+	</Rule>
 </RuleSet>

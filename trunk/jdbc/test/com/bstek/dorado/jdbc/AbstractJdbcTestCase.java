@@ -17,6 +17,8 @@ public abstract class AbstractJdbcTestCase extends ConfigManagerTestSupport {
 	protected AbstractJdbcTestCase () {
 		super();
 		this.addExtensionContextConfigLocation("classpath:com/bstek/dorado/jdbc/context.xml");
+		this.addExtensionContextConfigLocation("classpath:com/bstek/dorado/idesupport/context.xml");
+		this.addExtensionContextConfigLocation("classpath:com/bstek/dorado/view/context.xml");
 		for (String location: getExtConfigLocations()) {
 			this.addExtensionContextConfigLocation(location);
 		}
