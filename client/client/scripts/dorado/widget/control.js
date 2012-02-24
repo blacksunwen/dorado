@@ -517,11 +517,46 @@
 		},
 		
 		doSet : function(attr, value, skipUnknownAttribute, lockWritingTimes) {
-			$invokeSuper.call(this, [attr, value, skipUnknownAttribute, lockWritingTimes]);
-			if(!this._rendered) return;
 			var def = this.ATTRIBUTES[attr];
-			if(!this._duringRefreshDom && (this._visible || attr == "visible") && this._ignoreRefresh < 1 && def && !def.skipRefresh) {
-				this.refresh(true);
+			if (def && def.innerComponent != null && def.autoRegisterInnerControl !== false) {
+				var originComponent = this.doGet(attr);
+				if (originComponent) {
+					if (originComponent instanceof Array) {
+						for (var i = 0; i < originComponent.length; i++) {
+							var c = originComponent[i];
+							if (c instanceof dorado.widget.Control) {
+								this.unregisterInnerControl(c);
+							}
+						}
+					}
+					else if (originComponent instanceof dorado.widget.Control) {
+						this.unregisterInnerControl(originComponent);
+					}
+				}
+			}
+			
+			$invokeSuper.call(this, [attr, value, skipUnknownAttribute, lockWritingTimes]);
+			
+			if (def) {
+				if (def.innerComponent != null && def.autoRegisterInnerControl !== false) {
+					var component = this.doGet(attr);
+					if (component instanceof Array) {
+						for (var i = 0; i < component.length; i++) {
+							var c = component[i];
+							if (c instanceof dorado.widget.Control) {
+								this.registerInnerControl(c);
+							}
+						}
+					}
+					else if (component instanceof dorado.widget.Control) {
+						this.registerInnerControl(component);
+					}
+				}
+				
+				if (!this._rendered) return;
+				if (!this._duringRefreshDom && (this._visible || attr == "visible") && this._ignoreRefresh < 1 && def && !def.skipRefresh) {
+					this.refresh(true);
+				}
 			}
 		},
 		

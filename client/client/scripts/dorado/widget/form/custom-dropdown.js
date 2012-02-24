@@ -16,7 +16,8 @@ dorado.widget.CustomDropDown = $extend(dorado.widget.DropDown,/** @scope dorado.
 		 */
 		control: {
 			writeBeforeReady: true,
-			innerComponent: ""
+			innerComponent: "",
+			autoRegisterInnerControl: false
 		}
 	},
 	
