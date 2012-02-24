@@ -616,10 +616,10 @@
 			 * 默认的标题栏行高。
 			 * @type int
 			 * @attribute
-			 * @default 20
+			 * @default 22
 			 */
 			headerRowHeight: {
-				defaultValue: 20
+				defaultValue: 22
 			},
 
 			/**

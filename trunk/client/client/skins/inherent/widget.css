@@ -8,6 +8,10 @@
     overflow: hidden;
 }
 
+.d-ie-scrollbar-fix {
+	position: relative;
+}
+
 .d-html-container {
     margin: 0;
 }

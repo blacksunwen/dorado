@@ -215,6 +215,12 @@
 				var realignArg = this.adjustRegion(region);
 				if (realignArg) this.realignRegion(region, realignArg);
 			}, this);
+					
+			if (dorado.Browser.msie && dorado.Browser.version < 8) {
+				var containerDom = this._dom.parentNode;
+				$fly(containerDom).toggleClass("d-ie-scrollbar-fix",
+					containerDom.scrollHeight > containerDom.clientHeight || containerDom.scrollWidth > containerDom.clientWidth);
+			}
 		},
 		
 		adjustRegion: function(region) {
