@@ -462,10 +462,10 @@
 			
 			var dom = this._dom;
 			if (region.right >= 0 && !dom.style.width) {
-				dom.style.width = clientWidth + "px";
+				dom.style.width = (clientWidth) ? (clientWidth + "px") : "100%";
 			}
 			if (region.bottom >= 0 && !dom.style.height) {
-				dom.style.height = clientHeight + "px";
+				dom.style.height =  (clientHeight) ? (clientHeight + "px") : "100%";
 			}
 			this.renderControl(region, dom, true, true);
 			
