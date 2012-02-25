@@ -462,7 +462,7 @@
 			
 			var dom = this._dom;
 			if (region.right >= 0 && !dom.style.width) {
-				dom.style.width = (clientWidth) ? (clientWidth + "px") : "100%";
+				dom.style.width = (clientWidth) ? (clientWidth + "px") : "";
 			}
 			if (region.bottom >= 0 && !dom.style.height) {
 				dom.style.height =  (clientHeight) ? (clientHeight + "px") : "100%";
