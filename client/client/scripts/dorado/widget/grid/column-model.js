@@ -2213,9 +2213,12 @@
 				}, function(invocation) {
 					var attr = invocation.arguments[0];
 					var value = invocation.arguments[1];
-					if (attr == "value") {
+					if (attr == "value" && value != null) {
 						var dataType = column.get("dataType");
-						if (dataType) value = dataType.toText(value, column.get("typeFormat"));
+						if (dataType) {
+							value = dataType.parse(value);
+							value = dataType.toText(value, column.get("typeFormat"));
+						}
 						invocation.arguments[1] = value;
 					}
 					return invocation.proceed();
