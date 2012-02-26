@@ -232,7 +232,10 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 		}
 	},
 	
-	preprocessLayoutConstraint: function(layoutConstraint) {
+	preprocessLayoutConstraint: function(layoutConstraint, control) {
+		if (!control._visible && control._hideMode == "display") {
+			layoutConstraint = dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT;
+		}
 		return layoutConstraint || {};
 	},
 	
@@ -246,7 +249,7 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 		var region = {
 			id: dorado.Core.newId(),
 			control: control,
-			constraint: this.preprocessLayoutConstraint(control._layoutConstraint)
+			constraint: this.preprocessLayoutConstraint(control._layoutConstraint, control)
 		};
 		this._regions.insert(region);
 		if (this.onAddControl) this.onAddControl(control);
@@ -321,7 +324,7 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 	refreshControl: function(control) {
 		var region = this.getRegion(control);
 		if (region) {
-			region.constraint = this.preprocessLayoutConstraint(control._layoutConstraint);
+			region.constraint = this.preprocessLayoutConstraint(control._layoutConstraint, control);
 			this._ignoreControlSizeChange = true;
 			if (this.doRefreshRegion) this.doRefreshRegion(region);
 			this._ignoreControlSizeChange = false;
@@ -334,7 +337,7 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 	 * @protected
 	 * @see dorado.widget.Control#onResize
 	 */
-	onResize: function() {	
+	onResize: function() {
 		if (this._ignoreControlSizeChange || !this.doOnResize) return;
 		var containerDom = this.getDom();
 		if (containerDom.offsetWidth == 0 /* || containerDom.offsetHeight == 0*/) return;
@@ -388,13 +391,13 @@ dorado.widget.layout.NativeLayout = $extend(dorado.widget.layout.Layout, /** @sc
 		 * @type Object|String
 		 * @attribute
 		 * @example
-		 * 
+		 *
 		 * // 当我们需要为DOM元素指定背景色和字体颜色时可以使用这样的style
 		 * layout.set("style", {
 		 * 	color : "yellow",
 		 * 	backgroundColor : "blue"
 		 * });
-		 * 
+		 *
 		 * @example
 		 * layout.set("style", "color: yellow; background-color: blue");
 		 */
@@ -402,8 +405,7 @@ dorado.widget.layout.NativeLayout = $extend(dorado.widget.layout.Layout, /** @sc
 			setter: function(v) {
 				if (typeof v == "string" || !this._style) {
 					this._style = v;
-				}
-				else if (v) {
+				} else if (v) {
 					dorado.Object.apply(this._style, v);
 				}
 			}
