@@ -828,9 +828,9 @@
 		},
 		
 		onDraggingSourceDrop: function(draggingInfo, evt) {
-			var dropped = $invokeSuper.call(this, arguments);
-			if (!dropped) dropped = this.processItemDrop(draggingInfo, evt);
-			return dropped;
+			if (this.processItemDrop(draggingInfo, evt)) {
+				$invokeSuper.call(this, arguments);
+			}
 		}
 	});
 	

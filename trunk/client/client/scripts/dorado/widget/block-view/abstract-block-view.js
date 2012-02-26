@@ -1186,7 +1186,7 @@
 		
 		onDraggingSourceDrop: function(draggingInfo, evt) {
 			this.showDraggingInsertIndicator();
-			return dorado.widget.RowList.prototype.onDraggingSourceDrop.apply(this, arguments);
+			dorado.widget.RowList.prototype.onDraggingSourceDrop.apply(this, arguments);
 		},
 		
 		processItemDrop: dorado.widget.RowList.prototype.processItemDrop
