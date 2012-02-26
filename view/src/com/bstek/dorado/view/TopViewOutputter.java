@@ -18,8 +18,7 @@ import com.bstek.dorado.web.WebConfigure;
 public class TopViewOutputter extends ViewOutputter {
 	private ClientOutputHelper clientOutputHelper;
 
-	public void setClientOutputHelper(
-			ClientOutputHelper clientOutputHelper) {
+	public void setClientOutputHelper(ClientOutputHelper clientOutputHelper) {
 		this.clientOutputHelper = clientOutputHelper;
 	}
 

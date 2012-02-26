@@ -341,7 +341,7 @@ public class DataOutputter implements Outputter, PropertyOutputter {
 				Map<String, DataType> includeDataTypes = context
 						.getIncludeDataTypes(true);
 				if (!includeDataTypes.containsKey(dataType.getName())) {
-					includeDataTypes.put(dataType.getName(), dataType);
+					includeDataTypes.put(dataType.getId(), dataType);
 				}
 			}
 		}
