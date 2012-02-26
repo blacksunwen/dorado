@@ -2230,7 +2230,7 @@
 						});
 					}
 				} 
-				if (!trigger) {
+				if (!textEditor.get("trigger")) {
 					var dataType = column.get("dataType");
 					if (dataType) {
 						if (dataType._code == dorado.DataType.PRIMITIVE_BOOLEAN || dataType._code == dorado.DataType.BOOLEAN) {
