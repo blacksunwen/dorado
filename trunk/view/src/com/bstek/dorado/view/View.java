@@ -45,6 +45,7 @@ public abstract class View extends Container implements Namable, Scopable {
 		return super.getId();
 	}
 
+	@XmlProperty(ignored = true)
 	@IdeProperty(visible = false)
 	public String getName() {
 		return name;

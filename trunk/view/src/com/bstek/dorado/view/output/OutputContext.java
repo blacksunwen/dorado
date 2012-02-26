@@ -24,6 +24,7 @@ public class OutputContext {
 	private Stack<JsonBuilder> jsonBuilders = new Stack<JsonBuilder>();
 	private boolean usePrettyJson;
 	private boolean shouldOutputDataTypes = true;
+	private String outputtableDataTypeIdPrefix;
 	private boolean shouldOutputEntityState;
 	private boolean escapeable = false;
 	private Set<String> loadedDataTypes;
@@ -97,6 +98,15 @@ public class OutputContext {
 	 */
 	public void setShouldOutputDataTypes(boolean shouldOutputDataTypes) {
 		this.shouldOutputDataTypes = shouldOutputDataTypes;
+	}
+
+	public String getOutputtableDataTypeIdPrefix() {
+		return outputtableDataTypeIdPrefix;
+	}
+
+	public void setOutputtableDataTypeIdPrefix(
+			String outputtableDataTypeIdPrefix) {
+		this.outputtableDataTypeIdPrefix = outputtableDataTypeIdPrefix;
 	}
 
 	/**

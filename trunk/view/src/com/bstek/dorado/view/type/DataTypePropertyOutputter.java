@@ -75,7 +75,7 @@ public class DataTypePropertyOutputter extends ObjectOutputterDispatcher {
 						Map<String, DataType> includeDataTypes = context
 								.getIncludeDataTypes(true);
 						if (!includeDataTypes.containsKey(dataType.getName())) {
-							includeDataTypes.put(dataType.getName(), dataType);
+							includeDataTypes.put(dataType.getId(), dataType);
 						}
 					}
 				}
