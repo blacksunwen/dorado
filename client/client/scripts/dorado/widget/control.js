@@ -167,10 +167,8 @@
 						this._visible = visible;
 						this.onActualVisibleChange();
 					}
-					if (visible && this._hideMode == "display" && !this._rendered && this._oldLayoutConstraint !== undefined) {
+					if (this._hideMode == "display") {
 						if (this._parent && this._parent._layout) {
-							this._layoutConstraint = this._oldLayoutConstraint;
-							delete this._oldLayoutConstraint;
 							this._parent._layout.refreshControl(this);
 						}
 					}
@@ -201,10 +199,11 @@
 			 * </ul>
 			 * @type boolean
 			 * @default "visibility"
-			 * @attribute skipRefresh
+			 * @attribute skipRefresh writeBeforeReady
 			 */
 			hideMode : {
 				skipRefresh: true,
+				writeBeforeReady: true,
 				defaultValue : "visibility"
 			},
 
@@ -266,11 +265,8 @@
 			 * @see dorado.widget.Container#addChild
 			 */
 			layoutConstraint: {
-				setter: function(layoutConstraint) {					
-					if (!this._visible && this._hideMode == "display") {
-						this._oldLayoutConstraint = layoutConstraint;
-					}
-					else if (this._layoutConstraint != layoutConstraint) {
+				setter: function(layoutConstraint) {
+					if (this._layoutConstraint != layoutConstraint || this._visible || this._hideMode != "display") {
 						this._layoutConstraint = layoutConstraint;
 						if (this._layoutConstraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT || layoutConstraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT) {
 							this.onActualVisibleChange();
@@ -678,14 +674,9 @@
 						if(this._hideMode == "display") {
 							if(this._visible) {
 								dom.style.display = this._oldDisplay;
-								this.set("layoutConstraint", this._oldLayoutConstraint);
-								delete this._oldLayoutConstraint;
 							} else {
 								this._oldDisplay = dom.style.display;
 								dom.style.display = "none";
-
-								this._oldLayoutConstraint = this._layoutConstraint || null;
-								this._layoutConstraint = dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT;
 							}
 						} else {
 							dom.style.visibility = (this._visible) ? '' : "hidden";

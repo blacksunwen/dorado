@@ -212,6 +212,7 @@
 					found = (fromRegion == region);
 					if (!found) return;
 				}
+				if (region.constraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT) return;
 				var realignArg = this.adjustRegion(region);
 				if (realignArg) this.realignRegion(region, realignArg);
 			}, this);
@@ -249,10 +250,8 @@
 			var padding = (parseInt(this._padding) || 0);
 			var regionPadding = (parseInt(this._regionPadding) || 0) +
 			(parseInt(constraint.padding) || 0);
-			var clientWidth = containerDom.clientWidth, realContainerWidth = clientWidth -
-			padding * 2;
-			var clientHeight = containerDom.clientHeight, realContainerHeight = clientHeight -
-			padding * 2;
+			var clientWidth = containerDom.clientWidth, realContainerWidth = clientWidth - 	padding * 2;
+			var clientHeight = containerDom.clientHeight, realContainerHeight = clientHeight - padding * 2;
 			
 			if (constraint.anchorLeft == "previous" &&
 			constraint.left == null) constraint.left = 0;

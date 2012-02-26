@@ -37,7 +37,7 @@ public class UpdateItem {
 
 	@ClientProperty(escapeValue = "!DIRTY_TREE")
 	@IdeProperty(
-			enumValues = "!DIRTY_TREE,!CASCADE_DIRTY,[#dirty],[#all],[#visible]")
+			enumValues = "!DIRTY_TREE,!CASCADE_DIRTY,[#dirty],[#all],[#visible],[#current]")
 	public String getDataPath() {
 		return dataPath;
 	}

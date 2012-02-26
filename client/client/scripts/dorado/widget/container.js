@@ -289,10 +289,6 @@
 				if (layout) {
 					if (!(dorado.Object.isInstanceOf(component, dorado.widget.FloatControl) && component._floating)) {
 						var shouldFireOnAttach = (this._attached && layout._regions.size == 0 && !layout._rendered);
-						if (!component._visible && component._hideMode == "display") {
-							component._oldLayoutConstraint = component._layoutConstraint || null;
-							component._layoutConstraint = dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT;
-						}
 						layout.addControl(component);
 						if (shouldFireOnAttach) layout.onAttachToDocument(this.getContentContainer());
 					}

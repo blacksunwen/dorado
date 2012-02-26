@@ -12,7 +12,7 @@
 			return null;
 		};
 	});
-
+	
 	var defaultConstraintsCache = {
 		top: {
 			type: "top",
@@ -135,22 +135,21 @@
 		doRefreshDom: function(dom) {
 			if (this._overflowX == "auto") {
 				this._realOverflowX = this._container.getRealWidth() ? "hidden" : "visible";
-			}
-			else {
+			} else {
 				this._realOverflowX = this._overflowX;
 			}
-			
 			if (this._overflowY == "auto") {
 				this._realOverflowY = this._container.getRealHeight() ? "hidden" : "visible";
-			}
-			else {
+			} else {
 				this._realOverflowY = this._overflowY;
 			}
-			
 			$invokeSuper.call(this, [dom]);
 		},
 		
-		preprocessLayoutConstraint: function(layoutConstraint) {
+		preprocessLayoutConstraint: function(layoutConstraint, control) {
+			if (!control._visible && control._hideMode == "display") {
+				layoutConstraint = dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT;
+			}
 			if (layoutConstraint) {
 				if (layoutConstraint != dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT) {
 					if (layoutConstraint.constructor == String) {
@@ -161,12 +160,12 @@
 				}
 			} else {
 				layoutConstraint = dorado.Object.apply({}, getDefaultConstraint(null));
-			}			
+			}
 			return layoutConstraint;
 		},
 		
 		addControl: function(control) {
-			var layoutConstraint = this.preprocessLayoutConstraint(control._layoutConstraint);
+			var layoutConstraint = this.preprocessLayoutConstraint(control._layoutConstraint, control);
 			var region = {
 				id: dorado.Core.newId(),
 				control: control,
@@ -180,8 +179,7 @@
 					var lastControl = lastRegion.control;
 					if (!lastControl._layoutConstraint || typeof lastControl._layoutConstraint != "object") {
 						lastControl._layoutConstraint = "top";
-					}
-					else {
+					} else {
 						lastControl._layoutConstraint.type = "top";
 					}
 					dorado.Object.apply(lastRegion.constraint, getDefaultConstraint("top"));
