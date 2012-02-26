@@ -421,6 +421,18 @@
 			onDraggingSourceMove: {},
 			
 			/**
+			 * 当有某被拖拽对象在此对象的区域内被释放之前触发的事件。
+			 * @param {Object} self 事件的发起者，即对象本身。
+			 * @param {Object} arg 事件参数。
+			 * @param {dorado.DraggingInfo} arg.draggingInfo 拖拽信息对象。
+			 * @param {Event} arg.event 系统Event对象。
+			 * @param {boolean} #arg.processDefault=true 是否要继续系统默认的操作。
+			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+			 * @event
+			 */
+			beforeDraggingSourceDrop: {},
+			
+			/**
 			 * 当有某被拖拽对象在此对象的区域内被释放时触发的事件。
 			 * @param {Object} self 事件的发起者，即对象本身。
 			 * @param {Object} arg 事件参数。
@@ -489,6 +501,16 @@
 				event: evt
 			};
 			this.fireEvent("onDraggingSourceMove", this, eventArg);
+		},
+		
+		beforeDraggingSourceDrop: function(draggingInfo, evt) {
+			var eventArg = {
+				draggingInfo: draggingInfo,
+				event: evt,
+				processDefault: true
+			};
+			this.fireEvent("beforeDraggingSourceDrop", this, eventArg);
+			return eventArg.processDefault;
 		},
 		
 		onDraggingSourceDrop: function(draggingInfo, evt) {

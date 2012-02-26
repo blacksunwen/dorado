@@ -31,6 +31,7 @@ import com.bstek.dorado.annotation.XmlProperty;
 		@ClientEvent(name = "onDraggingSourceOver"),
 		@ClientEvent(name = "onDraggingSourceOut"),
 		@ClientEvent(name = "onDraggingSourceMove"),
+		@ClientEvent(name = "beforeDraggingSourceDrop"),
 		@ClientEvent(name = "onDraggingSourceDrop") })
 public abstract class Control extends Component implements HtmlElement,
 		RenderableElement {

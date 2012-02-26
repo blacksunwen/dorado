@@ -2573,9 +2573,9 @@
 		onDraggingSourceDrop: function(draggingInfo, evt) {
 			var pos = this.getMousePosition(evt);
 			if (pos.y < this._innerGrid._frameTBody.offsetTop) {
-				return this.onHeaderDragDrop(draggingInfo, evt);
+				this.onHeaderDragDrop(draggingInfo, evt);
 			} else {
-				return dorado.widget.RowList.prototype.onDraggingSourceDrop.apply(this, arguments);
+				dorado.widget.RowList.prototype.onDraggingSourceDrop.apply(this, arguments);
 			}
 		},
 			

@@ -183,7 +183,9 @@
 						var draggingInfo = dorado.DraggingInfo.getFromJQueryUI(ui);
 						if (draggingInfo) {
 							setTimeout(function() {
-								doradoDroppable.onDraggingSourceDrop(draggingInfo, evt);
+								if (doradoDroppable.beforeDraggingSourceDrop(draggingInfo, evt)) {
+									doradoDroppable.onDraggingSourceDrop(draggingInfo, evt);
+								}
 							}, 20);
 						}
 					}
