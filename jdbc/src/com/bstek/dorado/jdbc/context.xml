@@ -19,14 +19,17 @@
 		<property name="type" value="jdbc" />
 		<property name="classType" value="com.bstek.dorado.jdbc.JdbcDataResolver" />
 	</bean>
-	<bean id="dorado.jdbc.jdbcEngineStartupListener" class="com.bstek.dorado.jdbc.JdbcEngineStartupListener">
-		<property name="xmlDocumentBuilder" ref="dorado.xmlDocumentBuilder" />
-		<property name="xmlParserHelper" ref="dorado.xmlParserHelper"/>
-	</bean>
+	<bean id="dorado.jdbc.jdbcEngineStartupListener" class="com.bstek.dorado.jdbc.JdbcEngineStartupListener"/>
 	
 	<!-- Jdbc Components -->
 	<bean id="dorado.jdbc.enviromentManager" class="com.bstek.dorado.jdbc.config.DefaultJdbcEnviromentManager"/>
-	<bean id="dorado.jdbc.dbmManager" class="com.bstek.dorado.jdbc.config.DefaultDmbManager"/>
+	<bean id="dorado.jdbc.dbmManager" class="com.bstek.dorado.jdbc.config.DefaultDmbManager">
+		<property name="xmlDocumentBuilder" ref="dorado.xmlDocumentBuilder" />
+		<property name="xmlParserHelper" ref="dorado.xmlParserHelper"/>
+		<property name="modelStrategy" ref="dorado.jdbc.modelStrategy"/>
+		<property name="dataTypeManager" ref="dorado.dataTypeManager"/>
+<!-- 		<property name="dataProviderManager" ref="dorado.dataProviderManager"/> -->
+	</bean>
 	<bean id="dorado.jdbc.modelGeneratorSuit" class="com.bstek.dorado.jdbc.support.DefaultModelGeneratorSuit"/>
 	<bean id="dorado.jdbc.modelStrategy" class="com.bstek.dorado.jdbc.support.DefaultModelStrategy"/>
 	<bean id="dorado.jdbc.globalIntercepter" class="com.bstek.dorado.jdbc.support.DefaultJdbcIntercepter"/>

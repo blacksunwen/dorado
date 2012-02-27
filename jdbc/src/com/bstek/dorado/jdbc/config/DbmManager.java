@@ -1,7 +1,5 @@
 package com.bstek.dorado.jdbc.config;
 
-import java.util.Collection;
-
 import com.bstek.dorado.config.definition.DefinitionManager;
 
 /**
@@ -16,16 +14,7 @@ public interface DbmManager extends DefinitionManager<DbElementDefinition>{
 	 * 注册一个{@link com.bstek.dorado.jdbc.config.DbModel}
 	 * @param dbm
 	 */
-	void registerDbm(DbModel dbm);
+	void register(DbModel dbm);
 	
-	/**
-	 * 返回全部的{@link com.bstek.dorado.jdbc.config.DbModel}
-	 * @return
-	 */
-	Collection<DbModel> listAllDbms();
-
-	/**
-	 * 清空全部的{@link com.bstek.dorado.jdbc.config.DbModel}
-	 */
-	void clearDbms();
+	void refresh(GlobalDbModelConfig[] configs);
 }

@@ -11,7 +11,6 @@ import com.bstek.dorado.config.definition.Operation;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.ModelGeneratorSuit;
-import com.bstek.dorado.jdbc.config.AbstractDbTableDefinition;
 import com.bstek.dorado.jdbc.config.AbstractDbTableParser;
 import com.bstek.dorado.jdbc.config.ColumnDefinition;
 import com.bstek.dorado.jdbc.config.JdbcParseContext;
@@ -28,28 +27,17 @@ public class TableParser extends AbstractDbTableParser {
 	@Override
 	protected Object doParse(Node node, ParseContext context) throws Exception {
 		TableDefinition tableDef = (TableDefinition)super.doParse(node, context);
-		
 		JdbcParseContext jdbcContext = (JdbcParseContext) context;
-		if (tableDef.isAutoCreateColumns()) {
-			this.createColumns(tableDef, jdbcContext);
-		}
-		if (tableDef.isAutoCreateDataType()) {
-			this.createDataType(tableDef);
-		}
-		if (tableDef.isAutoCreateDataProvider()) {
-			this.createDataProvider(tableDef);
-		}
+		
+		this.doAutoCreate(tableDef, jdbcContext);
+		
 		return tableDef;
 	}
 	
-	@Override
-	protected void doAutoCreate(AbstractDbTableDefinition tableDef,
-			JdbcParseContext jdbcContext) throws Exception {
-		TableDefinition def = (TableDefinition)tableDef;
-		if (def.isAutoCreateColumns()) {
-			this.createColumns(def, jdbcContext);
+	protected void doAutoCreate(TableDefinition tableDef, JdbcParseContext jdbcContext) throws Exception {
+		if (tableDef.isAutoCreateColumns()) {
+			this.createColumns(tableDef, jdbcContext);
 		}
-		super.doAutoCreate(tableDef, jdbcContext);
 	}
 
 	protected void createColumns(TableDefinition tableDef, JdbcParseContext jdbcContext) {

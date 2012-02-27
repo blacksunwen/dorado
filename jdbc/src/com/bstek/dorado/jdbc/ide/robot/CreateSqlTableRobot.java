@@ -9,11 +9,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import com.bstek.dorado.idesupport.robot.Robot;
-import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.ModelGeneratorSuit;
 import com.bstek.dorado.jdbc.config.DomHelper;
-import com.bstek.dorado.jdbc.ide.Constants;
 
 /**
  * 用于创建{@link com.bstek.dorado.jdbc.model.sqltable.SqlTable}
@@ -35,10 +33,6 @@ public class CreateSqlTableRobot implements Robot {
 			logger.info(properties);
 		}
 		
-		String envName = tableElement.getAttribute(Constants.PARAM_ENV);
-		String sql = properties.getProperty(Constants.PARAM_QUERY_SQL);
-		
-		JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(envName);
 		ModelGeneratorSuit generator = JdbcUtils.getModelGeneratorSuit();
 		
 		Document documentOld = DomHelper.newDocument();
@@ -46,7 +40,7 @@ public class CreateSqlTableRobot implements Robot {
 		tableElementOld = (Element)documentOld.adoptNode(tableElementOld);
 		documentOld.appendChild(tableElementOld);
 		
-		Document document = generator.getSqlTableMetaDataGenerator().merge(jdbcEnv, sql, documentOld);
+		Document document = generator.getSqlTableMetaDataGenerator().merge(properties, documentOld);
 		if (logger.isInfoEnabled()) {
 			logger.info(DomHelper.toString(document));
 		}
