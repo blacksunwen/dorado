@@ -17,7 +17,6 @@ import com.bstek.dorado.jdbc.sql.InsertSql;
 import com.bstek.dorado.jdbc.sql.SelectSql;
 import com.bstek.dorado.jdbc.sql.SqlUtils;
 import com.bstek.dorado.jdbc.sql.UpdateSql;
-import com.bstek.dorado.util.Assert;
 
 /**
  * 
@@ -55,7 +54,7 @@ public class SqlTableSqlGenerator implements CurdSqlGenerator {
 		});
 		
 		SqlTable sqlTable = (SqlTable)operation.getDbTable();
-		Table table = sqlTable.getMainTable();
+		Table table = sqlTable.getMainTableObject();
 		CurdSqlGenerator generator = table.getCurdSqlGenerator();
 		return generator.insertSql(sOperation);
 	}
@@ -70,7 +69,7 @@ public class SqlTableSqlGenerator implements CurdSqlGenerator {
 		});
 		
 		SqlTable sqlTable = (SqlTable)operation.getDbTable();
-		Table table = sqlTable.getMainTable();
+		Table table = sqlTable.getMainTableObject();
 		CurdSqlGenerator generator = table.getCurdSqlGenerator();
 		return generator.updateSql(sOperation);
 	}
@@ -85,7 +84,8 @@ public class SqlTableSqlGenerator implements CurdSqlGenerator {
 		});
 		
 		SqlTable sqlTable = (SqlTable)operation.getDbTable();
-		Table table = sqlTable.getMainTable();
+		
+		Table table = sqlTable.getMainTableObject();
 		CurdSqlGenerator generator = table.getCurdSqlGenerator();
 		return generator.deleteSql(sOperation);
 	}
@@ -96,8 +96,7 @@ public class SqlTableSqlGenerator implements CurdSqlGenerator {
 	
 	protected JdbcRecordOperation createOperation(JdbcRecordOperation operation, OperationConfig config) {
 		SqlTable sqlTable = (SqlTable)operation.getDbTable();
-		Table table = sqlTable.getMainTable();
-		Assert.notNull(table, sqlTable.getType() + " [" + sqlTable.getName() + "] " + "has no mainTable.");
+		Table table = sqlTable.getMainTableObject();
 		
 		Record record = operation.getRecord();
 		Record sRecord = new Record();

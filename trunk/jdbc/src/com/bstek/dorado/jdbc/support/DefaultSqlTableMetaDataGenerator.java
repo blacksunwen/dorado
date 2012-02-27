@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -19,8 +20,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import com.bstek.dorado.jdbc.JdbcEnviroment;
+import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.config.DomHelper;
+import com.bstek.dorado.jdbc.ide.Constants;
 import com.bstek.dorado.jdbc.meta.SqlTableMetaDataGenerator;
+import com.bstek.dorado.jdbc.model.table.Table;
 import com.bstek.dorado.jdbc.type.JdbcType;
 import com.bstek.dorado.util.xml.DomUtils;
 
@@ -32,7 +36,7 @@ import com.bstek.dorado.util.xml.DomUtils;
 public class DefaultSqlTableMetaDataGenerator implements
 		SqlTableMetaDataGenerator {
 
-	protected Map<String, String> columnProperties(Map<String, String> columnMeta,
+	protected Map<String, String> columnProperties(Map<String, String> columnMeta, String mainTable,
 			JdbcEnviroment jdbcEnv) {
 		Map<String, String> properties = new HashMap<String, String>(3);
 		
@@ -42,6 +46,14 @@ public class DefaultSqlTableMetaDataGenerator implements
 		String jdbcType = this.jdbcType(columnMeta, jdbcEnv);
 		properties.put("jdbcType", jdbcType);
 
+		String tableName = columnMeta.get(JdbcConstants.TABLE_NAME);
+		if (StringUtils.isNotEmpty(mainTable) && StringUtils.isNotEmpty(tableName) && mainTable.equalsIgnoreCase(tableName)) {
+			String nativeColumnName = columnMeta.get(JdbcConstants.COLUMN_NAME);
+			if (StringUtils.isNotEmpty(nativeColumnName)) {
+				properties.put("nativeColumnName", nativeColumnName);
+			}
+		}
+		
 		return properties;
 	}
 	
@@ -87,32 +99,32 @@ public class DefaultSqlTableMetaDataGenerator implements
 	protected Map<String, String> columnMeta(ResultSetMetaData rsmd, int i) throws SQLException {
 		Map<String,String> columnMeta = new HashMap<String,String>(4);
 		
-		columnMeta.put(JdbcConstants.DATA_TYPE,String.valueOf(rsmd.getColumnType(i)));
-		columnMeta.put(JdbcConstants.TYPE_NAME, rsmd.getColumnTypeName(i));
+		columnMeta.put(JdbcConstants.DATA_TYPE,    String.valueOf(rsmd.getColumnType(i)));
+		columnMeta.put(JdbcConstants.TYPE_NAME,    rsmd.getColumnTypeName(i));
 		columnMeta.put(JdbcConstants.COLUMN_LABEL, rsmd.getColumnLabel(i));
-		columnMeta.put(JdbcConstants.COLUMN_NAME, rsmd.getColumnName(i));
+		columnMeta.put(JdbcConstants.COLUMN_NAME,  rsmd.getColumnName(i));
+		columnMeta.put(JdbcConstants.TABLE_NAME,   rsmd.getTableName(i));
 		
 		return columnMeta;
 	}
 	
-	@Override
-	public Document create(JdbcEnviroment jdbcEnv, String sql) {
-		Document document = DomHelper.newDocument();
-		Element tableElement = DomHelper.addElement(document, "SqlTable");
-		Element columnsElement = DomHelper.addElement(tableElement, "Columns");
-		
-		List<Map<String,String>> columnMetas = this.listColumnMetas(jdbcEnv, sql);
-		for (Map<String,String> columnMeta: columnMetas) {
-			Element columnElement = createColumnElement(columnMeta, jdbcEnv, document);
-			columnsElement.appendChild(columnElement);
-		}
-		
-		return document;
-	}
+//	@Override
+//	public Document create(JdbcEnviroment jdbcEnv, String sql) {
+//		Document document = DomHelper.newDocument();
+//		Element tableElement = DomHelper.addElement(document, "SqlTable");
+//		Element columnsElement = DomHelper.addElement(tableElement, "Columns");
+//		
+//		List<Map<String,String>> columnMetas = this.listColumnMetas(jdbcEnv, sql);
+//		for (Map<String,String> columnMeta: columnMetas) {
+//			Element columnElement = createColumnElement(columnMeta, jdbcEnv, document);
+//			columnsElement.appendChild(columnElement);
+//		}
+//		
+//		return document;
+//	}
 
-	protected Element createColumnElement(Map<String, String> columnMeta, JdbcEnviroment jdbcEnv, Document document) {
-		Map<String,String> columnProperties = columnProperties(columnMeta, jdbcEnv);
-		columnProperties.put("nativeColumnName", columnMeta.get(JdbcConstants.COLUMN_NAME));
+	protected Element createColumnElement(Map<String, String> columnMeta, String mainTable, JdbcEnviroment jdbcEnv, Document document) {
+		Map<String,String> columnProperties = columnProperties(columnMeta, mainTable, jdbcEnv);
 		Element columnElement = document.createElement("Column");
 		for (Iterator<String> keyItr = columnProperties.keySet().iterator(); keyItr.hasNext();){
 			String key = keyItr.next();
@@ -125,8 +137,21 @@ public class DefaultSqlTableMetaDataGenerator implements
 	}
 
 	@Override
-	public Document merge(JdbcEnviroment jdbcEnv, String sql,
+	public Document merge(Properties properties,
 			Document document) {
+		String sql = properties.getProperty(Constants.PARAM_QUERY_SQL);
+		JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(properties.getProperty(Constants.PARAM_ENV));
+		String mainTable = properties.getProperty(Constants.PARAM_MAIN_TABLE);
+		
+		if (StringUtils.isNotEmpty(mainTable)) {
+			try {
+				Table table = (Table)JdbcUtils.getDbTable(mainTable);
+				mainTable = table.getTableName();
+			} catch (Exception e) {
+				mainTable = null;
+			}
+		}
+		
 		Element tableElement = document.getDocumentElement();
 		Element columnsElement = DomUtils.getChildByTagName(tableElement, "Columns");
 		if (columnsElement == null) {
@@ -142,7 +167,7 @@ public class DefaultSqlTableMetaDataGenerator implements
 		
 		List<Map<String,String>> columnMetas = this.listColumnMetas(jdbcEnv, sql);
 		for (Map<String,String> columnMeta: columnMetas) {
-			Element columnElement = createColumnElement(columnMeta, jdbcEnv, document);
+			Element columnElement = createColumnElement(columnMeta, mainTable, jdbcEnv, document);
 			String columnName = columnElement.getAttribute("name");
 			if (!columnNameSet.contains(columnName)) {
 				columnsElement.appendChild(columnElement);

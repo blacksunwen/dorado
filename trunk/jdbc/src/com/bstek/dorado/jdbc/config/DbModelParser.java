@@ -19,7 +19,7 @@ import com.bstek.dorado.jdbc.JdbcUtils;
  */
 public class DbModelParser extends ObjectParser {
 
-	private static final String ALL_ELEMENTS_ATTR = "allDbElements";
+	private static final String ALL_ELEMENTS_ATTR = "ALL_DBELEMENTS";
 	
 	@Override
 	protected List<?> dispatchChildElements(Element element,
@@ -34,7 +34,8 @@ public class DbModelParser extends ObjectParser {
 			ParseContext context) throws Exception {
 		Element parent = (Element)child.getParentNode();
 		if (parent.hasAttribute(XmlConstants.JDBC_ENVIROMENT)) {
-			child.setAttribute(XmlConstants.JDBC_ENVIROMENT, parent.getAttribute(XmlConstants.JDBC_ENVIROMENT));
+			child.setAttribute(XmlConstants.JDBC_ENVIROMENT, 
+					parent.getAttribute(XmlConstants.JDBC_ENVIROMENT));
 		}
 		return super.dispatchElement(pathPrefix, child, context);
 	}
@@ -53,9 +54,7 @@ public class DbModelParser extends ObjectParser {
 		}
 		
 		ObjectDefinition definition = (ObjectDefinition)super.doParse(element, context);
-		JdbcCreationContext createContext = new JdbcCreationContext();
-		
-		DbModel dbModel = (DbModel)definition.create(createContext);
+		DbModel dbModel = (DbModel)definition.create(new JdbcCreationContext());
 		dbModel.setResource(context.getResource());
 		
 		List<DbElementDefinition> list = (List<DbElementDefinition>)context.getAttributes().get(ALL_ELEMENTS_ATTR);

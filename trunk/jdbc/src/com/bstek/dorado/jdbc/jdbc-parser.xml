@@ -17,11 +17,7 @@
 
 	<bean id="dorado.jdbc.dbmParser" class="com.bstek.dorado.jdbc.config.DbModelParser" parent="dorado.objectParser"/>
 	
-	<bean id="dorado.jdbc.abstractTableParser" parent="dorado.objectParser" abstract="true">
-		<property name="modelStrategy" ref="dorado.jdbc.modelStrategy"/>
-		<property name="dataTypeManager" ref="dorado.dataTypeManager"/>
-		<property name="dataProviderManager" ref="dorado.dataProviderManager"/>
-	</bean>
+	<bean id="dorado.jdbc.abstractTableParser" parent="dorado.objectParser" abstract="true"/>
 	
 	<bean id="dorado.jdbc.tableParser" class="com.bstek.dorado.jdbc.model.table.TableParser" 
 		parent="dorado.jdbc.abstractTableParser"/>

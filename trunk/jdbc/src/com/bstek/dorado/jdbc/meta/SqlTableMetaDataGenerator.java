@@ -1,8 +1,8 @@
 package com.bstek.dorado.jdbc.meta;
 
-import org.w3c.dom.Document;
+import java.util.Properties;
 
-import com.bstek.dorado.jdbc.JdbcEnviroment;
+import org.w3c.dom.Document;
 
 /**
  * 数据库SQL属性的输出
@@ -13,19 +13,10 @@ import com.bstek.dorado.jdbc.JdbcEnviroment;
 public interface SqlTableMetaDataGenerator {
 	
 	/**
-	 * 构造特定SQL的Document对象
-	 * @param jdbcEnv
-	 * @param sql
-	 * @return
-	 */
-	Document create(JdbcEnviroment jdbcEnv, String sql);
-	
-	/**
 	 * 在已有的Document基础上输出特定SQL的Document对象
-	 * @param jdbcEnv
-	 * @param sql
+	 * @param properties
 	 * @param oldDocument
 	 * @return
 	 */
-	Document merge(JdbcEnviroment jdbcEnv, String sql, Document oldDocument);
+	Document merge(Properties properties, Document oldDocument);
 }

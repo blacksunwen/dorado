@@ -3,11 +3,12 @@ package com.bstek.dorado.jdbc.model.sqltable;
 import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlNodeWrapper;
-import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
-import com.bstek.dorado.jdbc.model.AbstractTable;
+import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.model.AbstractColumn;
+import com.bstek.dorado.jdbc.model.AbstractTable;
 import com.bstek.dorado.jdbc.model.table.Table;
+import com.bstek.dorado.util.Assert;
 
 /**
  * 
@@ -30,8 +31,10 @@ public class SqlTable extends AbstractTable {
 	
 	private String querySql;
 	
-	private Table mainTable;
+	private String mainTableName;
 
+	private Table mainTable;
+	
 	public void addColumn(AbstractColumn column) {
 		if (column instanceof SqlTableColumn) {
 			super.addColumn(column);
@@ -49,19 +52,29 @@ public class SqlTable extends AbstractTable {
 		this.querySql = querySql;
 	}
 	
-	@XmlProperty(parser = "spring:dorado.jdbc.tableReferenceParser")
 	@IdeProperty(highlight=1, editor="jdbc:refrence:Table")
-	public Table getMainTable() {
-		return mainTable;
+	public String getMainTable() {
+		return mainTableName;
 	}
 
-	public void setMainTable(Table table) {
-		this.mainTable = table;
+	public void setMainTable(String table) {
+		this.mainTableName = table;
 	}
 
 	@Override
 	public String getType() {
 		return TYPE;
+	}
+	
+	public Table getMainTableObject() {
+		if (mainTable == null) {
+			String tableName = this.getMainTable();
+			Assert.notEmpty(tableName, "mainTable must not be null. [" + tableName + "]");
+			
+			mainTable = (Table)JdbcUtils.getDbTable(tableName);
+		}
+		
+		return mainTable;
 	}
 	
 	@Override

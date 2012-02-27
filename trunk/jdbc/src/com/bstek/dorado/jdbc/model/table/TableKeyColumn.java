@@ -39,7 +39,7 @@ public class TableKeyColumn extends AbstractTableColumn {
 		this.keyParameter = keyParameter;
 	}
 
-	@ClientProperty(escapeValue = "true")
+	@ClientProperty(escapeValue = "false")
 	public boolean isUpdatable() {
 		return updatable;
 	}
