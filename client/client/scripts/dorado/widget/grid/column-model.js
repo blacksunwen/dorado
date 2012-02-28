@@ -1629,7 +1629,7 @@
 			 */
 			dataType: {
 				getter: function() {
-					var dt = dorado.LazyLoadDataType.dataTypeGetter.apply(this, arguments);
+					var dt = dorado.LazyLoadDataType.dataTypeGetter.call(this);
 					if (!dt && this._propertyDef) dt = this._propertyDef.get("dataType");
 					return dt;
 				}
