@@ -116,11 +116,13 @@
 		return dataType;
 	};
 	
-	dorado.LazyLoadDataType.dataTypeGetter = function(loadMode) {
+	dorado.LazyLoadDataType.dataTypeGetter = function() {
 		var dataType = this._dataType;
 		if (dataType != null) {
-			dataType = dorado.LazyLoadDataType.dataTypeTranslator.call(this, dataType, loadMode);
-			if (dataType instanceof dorado.DataType) this._dataType = dataType;
+			dataType = dorado.LazyLoadDataType.dataTypeTranslator.call(this, dataType);
+			if (this._dataType != dataType && dataType instanceof dorado.DataType) {
+				this._dataType = dataType;
+			}
 		}
 		return dataType;
 	};

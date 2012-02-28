@@ -1403,11 +1403,13 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		 * <p>
 		 * 关于是否有效的判断会与{@link dorado.EntityDataType#attribute:acceptValidationResult}的设置相关。
 		 * </p>
-		 * @param {Object|boolean} [options=true] 此参数有如下两种使用方式：
+		 * @param {String|boolean|Object} [options=true] 此参数有如下三种使用方式：
 		 * <ul>
-		 * <li>当传入一个boolean类型的数值时，表示是否强制重新验证所有子属性及校验器。默认为true。</li>
+		 * <li>当传入一个String类型的值时，表示要校验的子属性，如果不指定则表示校验所有属性。</li>
+		 * <li>当传入一个boolean类型的值时，表示是否强制重新验证所有子属性及校验器。默认为true。</li>
 		 * <li>当传入一个JSON对象时，其中有可以包含如下的更多选项。</li>
 		 * </ul>
+		 * @param {String} [options.property] 要校验的子属性，如果不指定则表示校验所有属性。
 		 * @param {boolean} [options.force=true] 是否强制重新验证所有子属性及校验器。
 		 * @param {boolean} [options.validateSimplePropertyOnly=true] 只验证简单数据类型的属性中的数据，如String、boolean、int、Date等数据类型。
 		 * 设置此属性产生的实际结果是验证逻辑将忽略对此数据实体中的所有子数据实体的有效性验证。
@@ -1476,11 +1478,17 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				mergeValidationContext(context, "executing", subContext);
 			}
 
-			if (typeof options == "boolean") {
+			if (typeof options == "string") {
+				options = {
+					property: options
+				};
+			}
+			else if (typeof options == "boolean") {
 				options = {
 					force: options
 				};
 			}
+			var property = options && options.property;
 			var force = (options && options.force === false) ? false : true;
 			var simplePropertyOnly =  (options && options.validateSimplePropertyOnly === false) ? false : true;
 			var preformAsyncValidator = (options ? options.preformAsyncValidator : false);
@@ -1488,7 +1496,12 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			var result, topResult, resultCode, topResultCode = -1, hasValidate = false;
 			
 			if (force) {
-				this._propertyInfoMap = {};
+				if (property) {
+					this._propertyInfoMap = {};
+				}
+				else {
+					delete this._propertyInfoMap[property];
+				}
 			}
 
 			var dataType = this.dataType, propertyInfoMap = this._propertyInfoMap;
@@ -1503,7 +1516,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			
 			if (dataType) {
 				var entity = this;
-				dataType._propertyDefs.each(function(pd) {
+				var doValidate = function(pd) {
 					var property = pd._name, propertyInfo = propertyInfoMap[property];
 					if (property.charAt(0) == '$') return;
 					
@@ -1535,14 +1548,19 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					if (context && messages) {
 						addMessages2Context(context, entity, property, messages);
 					}
-				});
+				};
+				
+				if (property) {
+					var pd = dataType.getPropertyDef(property);
+					if (pd) doValidate(pd);
+				} else {
+					dataType._propertyDefs.each(doValidate);
+				}
 			}
 			
 			if (!simplePropertyOnly) {
 				var data = this._data;
-				for(var p in data) {
-					if (!data.hasOwnProperty(p) || p.charAt(0) == '$') continue;
-
+				var doValidateEntity = function(p) {
 					var value = data[p];
 					if (value instanceof dorado.Entity) {
 						if (context) options.context = {};
@@ -1553,9 +1571,9 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 							topResultCode = resultCode;
 							topResult = result;
 						}
-					} else if ( value instanceof dorado.EntityList) {
+					} else if (value instanceof dorado.EntityList) {
 						var it = value.iterator();
-						while(it.hasNext()) {
+						while (it.hasNext()) {
 							if (context) options.context = {};
 							result = it.next().validate(options);
 							if (context) mergeValidationContexts(context, options.context);
@@ -1566,10 +1584,19 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 							}
 						}
 					}
+				};
+				
+				if (property) {
+					doValidateEntity(property);
+				} else {
+					for (var p in data) {
+						if (!data.hasOwnProperty(p) || p.charAt(0) == '$') continue;
+						doValidateEntity(p);
+					}
 				}
 			}
 			
-			state = this.getMessageState();
+			state = this.getMessageState(property);
 			var acceptState = dataType ? dataType.get("acceptValidationState") : null;
 			if (STATE_CODE[state || "info"] <= STATE_CODE[acceptState || "ok"]) {
 				result = "ok";

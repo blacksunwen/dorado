@@ -636,7 +636,14 @@
 			else {
 				loadMode = options ? options.loadMode : undefined;
 			}
-			var dataType = dorado.LazyLoadDataType.dataTypeGetter.call(this, loadMode);
+			
+			var dataType = this._dataType;
+			if (dataType != null) {
+				dataType = dorado.LazyLoadDataType.dataTypeTranslator.call(this, dataType);
+				if (this._dataType != dataType && dataType instanceof dorado.DataType) {
+					this._dataType = dataType;
+				}
+			}
 			if (!dataType && this._data) dataType = this._data.dataType;
 
 			if (dataType) {
