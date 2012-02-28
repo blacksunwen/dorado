@@ -274,10 +274,10 @@
 					doms.arrow = arrowEl;
 				}
 
-				$fly(dom).addClass(cls + "-arrow-" + arrowDirection);
+				$fly(dom).addClass("i-tip-arrow-" + arrowDirection + " " + cls + "-arrow-" + arrowDirection);
 			} else {
-                $fly(dom).removeClass(cls + "-arrow-top").removeClass(cls + "-arrow-bottom")
-	                .removeClass(cls + "-arrow-left").removeClass(cls + "-arrow-right");
+                $fly(dom).removeClass("i-tip-arrow-top " + cls + "-arrow-top").removeClass("i-tip-arrow-bottom " +cls + "-arrow-bottom")
+	                .removeClass("i-tip-arrow-left " + cls + "-arrow-left").removeClass("i-tip-arrow-right " +cls + "-arrow-right");
             }
 
 			var captionDom = doms.caption;
