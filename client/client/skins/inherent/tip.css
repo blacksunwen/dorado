@@ -10,6 +10,8 @@
 
 .d-ie .i-tip{
 	padding: 0;
+	border: 0;
+	background-color: transparent;
 }
 
 .i-tip-arrow-top .arrow, .i-tip-arrow-bottom .arrow{
