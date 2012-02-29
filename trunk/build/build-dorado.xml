@@ -6,7 +6,7 @@
 	<property file="build.properties" />
 
 	<property name="vendor" value="www.BSTEK.com" />
-	<property name="version" value="7.0.13" />
+	<property name="version" value="7.0.14" />
 	<property name="qualifier" value="SNAPSHOT" />
 
 	<property name="targetDir" value="${rootWorkDir}/target" />

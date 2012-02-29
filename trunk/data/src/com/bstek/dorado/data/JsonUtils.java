@@ -100,7 +100,8 @@ public final class JsonUtils {
 	public static String getString(ObjectNode objectNode, String property,
 			String defaultValue) {
 		JsonNode propertyNode = objectNode.get(property);
-		return (propertyNode != null) ? propertyNode.asText() : defaultValue;
+		return (propertyNode != null) ? propertyNode.getTextValue()
+				: defaultValue;
 	}
 
 	public static String getString(ObjectNode objectNode, String property) {
@@ -162,7 +163,7 @@ public final class JsonUtils {
 			Date defaultValue) {
 		JsonNode propertyNode = objectNode.get(property);
 		return (propertyNode != null) ? VariantUtils.toDate(propertyNode
-				.asText()) : defaultValue;
+				.getTextValue()) : defaultValue;
 	}
 
 	public static Date getDate(ObjectNode objectNode, String property) {
@@ -335,13 +336,13 @@ public final class JsonUtils {
 		Object value = null;
 		if (valueNode != null) {
 			if (valueNode instanceof TextNode) {
-				value = ((TextNode) valueNode).asText();
+				value = ((TextNode) valueNode).getTextValue();
 			} else if (valueNode instanceof NumericNode) {
 				value = ((NumericNode) valueNode).getNumberValue();
 			} else if (valueNode instanceof BooleanNode) {
 				value = ((BooleanNode) valueNode).asBoolean();
 			} else {
-				value = valueNode.asText();
+				value = valueNode.getTextValue();
 			}
 		}
 
