@@ -544,6 +544,14 @@
 							}
 						}
 					}
+					else if (component.each || component.each instanceof Function) {
+						var self = this;
+						component.each(function(c) {
+							if (c instanceof dorado.widget.Control) {
+								self.registerInnerControl(c);
+							}
+						});
+					}
 					else if (component instanceof dorado.widget.Control) {
 						this.registerInnerControl(component);
 					}
