@@ -9,6 +9,9 @@ import com.bstek.dorado.annotation.XmlProperty;
  *
  */
 public abstract class AbstractUpdatableColumn extends AbstractColumn {
+	
+	private String nativeColumnName;
+	
 	private boolean insertable = true;
 	
 	private boolean updatable = true;
@@ -17,6 +20,14 @@ public abstract class AbstractUpdatableColumn extends AbstractColumn {
 	
 	private Object updateDefaultValue;
 
+	public String getNativeColumn() {
+		return nativeColumnName;
+	}
+
+	public void setNativeColumn(String nativeColumnName) {
+		this.nativeColumnName = nativeColumnName;
+	}
+	
 	@ClientProperty(escapeValue = "true")
 	public boolean isInsertable() {
 		return insertable;
@@ -52,4 +63,6 @@ public abstract class AbstractUpdatableColumn extends AbstractColumn {
 	public void setUpdateDefaultValue(Object updateDefaultValue) {
 		this.updateDefaultValue = updateDefaultValue;
 	}
+
+	
 }

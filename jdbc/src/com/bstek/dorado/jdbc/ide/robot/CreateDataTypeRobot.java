@@ -2,6 +2,8 @@ package com.bstek.dorado.jdbc.ide.robot;
 
 import java.util.Properties;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -21,22 +23,31 @@ import com.bstek.dorado.util.xml.DomUtils;
  */
 public class CreateDataTypeRobot implements Robot{
 
+	private static Log logger = LogFactory.getLog(CreateDataTypeRobot.class);
+	
 	@Override
 	public Node execute(Node node, Properties properties) throws Exception {
-		Element element = (Element)node;
-		String tableName = element.getAttribute(Constants.PARAM_TBNM);
-		Element dataTypeElement = DomUtils.getChildByTagName(element, "DataType");
+		Element tableElement = (Element)node;
+		
+		if (logger.isInfoEnabled()) {
+			logger.info("CreateDataType::---------------------------");
+			logger.info(DomHelper.toString(tableElement));
+			logger.info(properties);
+		}
+		
+		String tableName = tableElement.getAttribute(Constants.PARAM_TBNM);
+		Element dataTypeElement = DomUtils.getChildByTagName(tableElement, "DataType");
 		
 		ModelGeneratorSuit generator = JdbcUtils.getModelGeneratorSuit();
-		if (dataTypeElement == null) {
-			Document document = generator.getDataTypeMetaDataGenerator().create(tableName);
-			return document.getDocumentElement();
-		} else {
-			Document oldDocument = DomHelper.newDocument();
-			oldDocument.appendChild(oldDocument.adoptNode(dataTypeElement));
-			Document document = generator.getDataTypeMetaDataGenerator().merge(tableName, oldDocument);
-			return document.getDocumentElement();
+		
+		Document oldDocument = DomHelper.newDocument();
+		oldDocument.appendChild(oldDocument.adoptNode(dataTypeElement));
+		Document document = generator.getDataTypeMetaDataGenerator().merge(tableName, oldDocument);
+		if (logger.isInfoEnabled()) {
+			logger.info(DomHelper.toString(document));
 		}
+		
+		return document.getDocumentElement();
 	}
 
 }

@@ -1,14 +1,29 @@
 package com.bstek.dorado.jdbc.model.sqltable;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+
 import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlNodeWrapper;
 import com.bstek.dorado.annotation.XmlSubNode;
+import com.bstek.dorado.data.entity.EntityState;
+import com.bstek.dorado.data.entity.EntityUtils;
+import com.bstek.dorado.data.variant.Record;
+import com.bstek.dorado.jdbc.JdbcDataProviderOperation;
+import com.bstek.dorado.jdbc.JdbcDataResolverContext;
+import com.bstek.dorado.jdbc.JdbcParameterSource;
+import com.bstek.dorado.jdbc.JdbcRecordOperation;
+import com.bstek.dorado.jdbc.JdbcRecordOperationProxy;
 import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.model.AbstractColumn;
 import com.bstek.dorado.jdbc.model.AbstractTable;
+import com.bstek.dorado.jdbc.model.AbstractUpdatableColumn;
 import com.bstek.dorado.jdbc.model.table.Table;
-import com.bstek.dorado.util.Assert;
+import com.bstek.dorado.jdbc.sql.SelectSql;
+import com.bstek.dorado.jdbc.sql.SqlUtils;
 
 /**
  * 
@@ -65,21 +80,83 @@ public class SqlTable extends AbstractTable {
 	public String getType() {
 		return TYPE;
 	}
-	
-	public Table getMainTableObject() {
-		if (mainTable == null) {
-			String tableName = this.getMainTable();
-			Assert.notEmpty(tableName, "mainTable must not be null. [" + tableName + "]");
-			
-			mainTable = (Table)JdbcUtils.getDbTable(tableName);
+
+	@Override
+	public boolean supportResolverTable() {
+		return true;
+	}
+
+	@Override
+	public Table getResolverTable() {
+		if (mainTable == null && StringUtils.isNotEmpty(mainTableName)) {
+			mainTable = (Table)JdbcUtils.getDbTable(mainTableName);
+		}
+		return mainTable;
+	}
+
+	@Override
+	public JdbcRecordOperationProxy createOperationProxy(Record record, JdbcDataResolverContext jdbcContext) {
+		if (EntityUtils.isEntity(record)) {
+			EntityState state = EntityUtils.getState(record);
+			if (EntityState.isDirty(state)) {
+				Table proxyTable = this.getResolverTable();
+				Record proxyRecord = new Record();
+				try {
+					proxyRecord = EntityUtils.toEntity(proxyRecord);
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
+				EntityUtils.setState(proxyRecord, EntityUtils.getState(record));
+				JdbcRecordOperation proxyOperation = new JdbcRecordOperation(proxyTable, proxyRecord, jdbcContext);
+				
+				Map<String, String> proxyPropertyMap = new HashMap<String, String>();
+				for (AbstractColumn c: this.getAllColumns()) {
+					AbstractUpdatableColumn column = (AbstractUpdatableColumn)c;
+					String nativeColumnName = column.getNativeColumn();
+					String propertyName = column.getPropertyName();
+					if (StringUtils.isNotEmpty(nativeColumnName)) {
+						if ((EntityState.NEW.equals(state) && column.isInsertable()) || 
+							(EntityState.MODIFIED.equals(state) && column.isUpdatable()) ||
+							(EntityState.MOVED.equals(state) && column.isUpdatable()) ||
+							(EntityState.DELETED.equals(state))
+							) {
+							AbstractColumn tableColumn = proxyTable.getColumn(nativeColumnName);
+							String tpn = tableColumn.getPropertyName();
+							if (StringUtils.isNotEmpty(tpn)) {
+								Object value = record.get(propertyName);
+								proxyRecord.put(tpn, value);
+								proxyPropertyMap.put(propertyName, tpn);
+							}
+						}
+					}
+				}
+				
+				JdbcRecordOperationProxy proxy = new JdbcRecordOperationProxy();
+				proxy.setProxyOperation(proxyOperation);
+				proxy.setProxyPropertyMap(proxyPropertyMap);
+				proxy.setRecord(proxyRecord);
+				
+				return proxy;
+			}
 		}
 		
-		return mainTable;
+		return null;
 	}
 	
 	@Override
-	protected String getDefaultSQLGeneratorServiceName() {
-		return "spring:dorado.jdbc.sqlTableSqlGenerator";
+	public SelectSql selectSql(JdbcDataProviderOperation operation) {
+		SqlTable t = (SqlTable)operation.getDbTable();
+		Object parameter = operation.getParameter();
+		SqlSelectSql selectSql = new SqlSelectSql();
+		
+		//querySql
+		String querySql = t.getQuerySql();
+		querySql = SqlUtils.build(querySql, parameter);
+		selectSql.setDynamicToken(querySql);
+		
+		//SqlParameterSource
+		JdbcParameterSource p = SqlUtils.createJdbcParameter(parameter);
+		selectSql.setParameterSource(p);
+		return selectSql;
 	}
-	
 }

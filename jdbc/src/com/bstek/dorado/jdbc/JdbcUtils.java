@@ -1,6 +1,8 @@
 package com.bstek.dorado.jdbc;
 
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
 
 import com.bstek.dorado.core.Context;
 import com.bstek.dorado.data.entity.EntityState;
@@ -15,6 +17,7 @@ import com.bstek.dorado.jdbc.model.DbTable;
 import com.bstek.dorado.jdbc.model.storedprogram.StoredProgram;
 import com.bstek.dorado.jdbc.model.storedprogram.StoredProgramContext;
 import com.bstek.dorado.jdbc.model.storedprogram.StoredProgramOperation;
+import com.bstek.dorado.jdbc.model.table.Table;
 import com.bstek.dorado.util.Assert;
 
 /**
@@ -69,6 +72,7 @@ public abstract class JdbcUtils {
 			DbTable table = (DbTable)definition.create(context);
 			return table;
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
 	}
@@ -104,46 +108,76 @@ public abstract class JdbcUtils {
 	}
 	
 	public static void insert(String tableName, Record record) {
-		doSave(tableName, record, EntityState.NEW);
+		record = getStateRecord(record, EntityState.NEW);
+		DbTable dbTable = getDbTable(tableName);
+		doSave(dbTable, record, null);
 	}
 	
 	public static void update(String tableName, Record record) {
-		doSave(tableName, record, EntityState.MODIFIED);
+		record = getStateRecord(record, EntityState.MODIFIED);
+		DbTable dbTable = getDbTable(tableName);
+		doSave(dbTable, record, null);
 	}
 	
 	public static void delete(String tableName, Record record) {
-		doSave(tableName, record, EntityState.DELETED);
+		record = getStateRecord(record, EntityState.DELETED);
+		DbTable dbTable = getDbTable(tableName);
+		doSave(dbTable, record, null);
 	}
 	
-	public static void doSave(String tableName, Record record, EntityState state) {
-		DbTable table = getDbTable(tableName);
-		Record enRecord = record;
-		if (!EntityUtils.isEntity(enRecord)) {
+	public static Record getStateRecord(Record record, EntityState state) {
+		if (!EntityUtils.isEntity(record)) {
 			try {
-				enRecord = EntityUtils.toEntity(enRecord);
+				record = EntityUtils.toEntity(record);
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
 		}
-		EntityUtils.setState(enRecord, state);
-		
-		JdbcDataResolverContext jdbcContext = new JdbcDataResolverContext(table.getJdbcEnviroment(), null, null, null);
-		JdbcRecordOperation operation = new JdbcRecordOperation(table, enRecord, jdbcContext);
-		
-		JdbcIntercepter intercepter = getGlobalIntercepter();
-		operation = intercepter.getOperation(operation);
-		
-		if (operation.isProcessDefault()) {
-			DbTableTrigger trigger = table.getTrigger();
-			if (trigger != null) {
-				trigger.doSave(operation);
+		EntityUtils.setState(record, state);
+		return record;
+	}
+	
+	public static void doSave(DbTable dbTable, Record record, JdbcDataResolverContext jdbcContext) {
+		if (dbTable.supportResolverTable()) {
+			Table table = dbTable.getResolverTable();
+			if (table != null) {
+				JdbcRecordOperationProxy proxy = dbTable.createOperationProxy(record, jdbcContext);
+				if (proxy != null) {
+					JdbcRecordOperation proxyOperation = proxy.getProxyOperation();
+					if (doResolve(proxyOperation)) {
+						Map<String, String> propertyMap = proxy.getProxyPropertyMap();
+						if (propertyMap != null) {
+							Record proxyRecord = proxyOperation.getRecord();
+							
+							Iterator<String> keyItr = propertyMap.keySet().iterator();
+							while (keyItr.hasNext()) {
+								String propertyName = keyItr.next();
+								String proxyPropertyName = propertyMap.get(propertyName);
+								Object proxyValue = proxyRecord.get(proxyPropertyName);
+								record.put(propertyName, proxyValue);
+							}
+						}
+					}
+				}
 			}
-			
+		} else {
+			JdbcRecordOperation operation = new JdbcRecordOperation((Table)dbTable, record, jdbcContext);
+			doResolve(operation);
+		}
+	}
+	
+	public static boolean doResolve(JdbcRecordOperation operation) {
+		DbTable table = operation.getDbTable();
+		DbTableTrigger trigger = table.getTrigger();
+		if (trigger == null) {
+			return operation.execute();
+		} else {
+			trigger.doSave(operation);
 			if (operation.isProcessDefault()) {
 				operation.execute();
 			}
+			return true;
 		}
-		
 	}
 	
 	public static StoredProgram getStoredProgram(String spName) {

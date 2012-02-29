@@ -8,7 +8,7 @@ import javax.sql.DataSource;
 import com.bstek.dorado.jdbc.JdbcSpace;
 import com.bstek.dorado.jdbc.sql.SelectSql;
 import com.bstek.dorado.jdbc.sql.SqlConstants.KeyWord;
-import com.bstek.dorado.jdbc.sql.SqlConstants.NullsModel;
+import com.bstek.dorado.jdbc.sql.SqlConstants.NullsDirection;
 import com.bstek.dorado.jdbc.support.AbstractDialect;
 import com.bstek.dorado.jdbc.support.JdbcConstants;
 
@@ -93,7 +93,7 @@ public class Db2Dialect extends AbstractDialect {
 	}
 
 	@Override
-	protected String token(NullsModel nullsModel) {
+	protected String token(NullsDirection nullsModel) {
 		return null;
 	}
 

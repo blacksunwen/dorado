@@ -5,8 +5,8 @@
 	
 	<Rule name="AbstractTable" type="com.bstek.dorado.jdbc.model.AbstractTable">
 		<PrimitiveProps>
-			<Prop name="autoCreateDataProvider" type="boolean" defaultValue="true"/>
-			<Prop name="autoCreateDataType" type="boolean" defaultValue="true"/>
+			<Prop name="autoCreateDataProvider" type="boolean" defaultValue="false"/>
+			<Prop name="autoCreateDataType" type="boolean" defaultValue="false"/>
 		</PrimitiveProps>
 	</Rule>
 </RuleSet>

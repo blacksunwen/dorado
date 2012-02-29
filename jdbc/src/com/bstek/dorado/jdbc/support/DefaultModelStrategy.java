@@ -2,9 +2,17 @@ package com.bstek.dorado.jdbc.support;
 
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.bstek.dorado.data.config.definition.DataProviderDefinition;
+import com.bstek.dorado.data.config.definition.DataProviderDefinitionManager;
 import com.bstek.dorado.data.config.definition.DataTypeDefinition;
+import com.bstek.dorado.data.config.definition.DataTypeDefinitionManager;
 import com.bstek.dorado.data.config.definition.PropertyDefDefinition;
+import com.bstek.dorado.data.provider.manager.DataProviderManager;
+import com.bstek.dorado.data.type.DefaultEntityDataType;
+import com.bstek.dorado.data.type.manager.DataTypeManager;
 import com.bstek.dorado.jdbc.ModelStrategy;
 import com.bstek.dorado.jdbc.config.AbstractDbTableDefinition;
 import com.bstek.dorado.jdbc.config.JdbcCreationContext;
@@ -21,8 +29,66 @@ import com.bstek.dorado.jdbc.type.JdbcType;
  */
 public class DefaultModelStrategy implements ModelStrategy {
 
+	private static Log logger = LogFactory.getLog(DefaultModelStrategy.class);
+	
+	private DataTypeManager dataTypeManager;
+	private DataProviderManager dataProviderManager;
+	
+	public void setDataTypeManager(DataTypeManager dataTypeManager) {
+		this.dataTypeManager = dataTypeManager;
+	}
+	
+	public DataTypeManager getDataTypeManager() {
+		return dataTypeManager;
+	}
+	
+	public DataProviderManager getDataProviderManager() {
+		return dataProviderManager;
+	}
+
+	public void setDataProviderManager(DataProviderManager dataProviderManager) {
+		this.dataProviderManager = dataProviderManager;
+	}
+
 	@Override
-	public DataTypeDefinition createDataTypeDefinition(
+	public void createDataType(AbstractDbTableDefinition tableDef) throws Exception {
+		String name = tableDef.getName();
+		DataTypeDefinitionManager manager = dataTypeManager.getDataTypeDefinitionManager();
+		DataTypeDefinition def = manager.getDefinition(name);
+		if (def == null) {
+			def = this.createDataTypeDefinition(tableDef);
+			def.setImpl(DefaultEntityDataType.class.getName());
+			def.setName(name);
+			def.setGlobal(true);
+			manager.registerDefinition(name, def);
+			
+			if (logger.isInfoEnabled()) {
+				logger.info("** auto create dataType [" + name + "]");
+			}
+		} 
+	}
+	
+	@Override
+	public void createDataProvider(AbstractDbTableDefinition tableDef)
+			throws Exception {
+		String name = tableDef.getName();
+		DataProviderDefinitionManager manager = dataProviderManager.getDataProviderDefinitionManager();
+		DataProviderDefinition def = manager.getDefinition(name);
+		if (def == null) {
+			def = createDataProviderDifinition(tableDef);
+			def.setName(name);
+			def.setGlobal(true);
+			def.setProperty("type", "jdbc");
+			def.setProperty(XmlConstants.TABLE_NAME, name);
+			manager.registerDefinition(name, def);
+			
+			if (logger.isInfoEnabled()) {
+				logger.info("** auto create dataProvider [" + name + "]");
+			}
+		}
+	}
+	
+	protected DataTypeDefinition createDataTypeDefinition(
 			AbstractDbTableDefinition tableDef) {
 		JdbcCreationContext context = new JdbcCreationContext();
 		DbTable table = null;
@@ -32,16 +98,12 @@ public class DefaultModelStrategy implements ModelStrategy {
 			throw new RuntimeException(e);
 		}
 		
-		String dataTypeName = this.getDataTypeName(tableDef);
 		DataTypeDefinition dataType = new DataTypeDefinition();
-		dataType.setName(dataTypeName);
-		dataType.setGlobal(true);
-		
 		List<AbstractColumn> columns = table.getAllColumns();
 		for (AbstractColumn column: columns) {
 			PropertyDefDefinition propertyDef = new PropertyDefDefinition();
 			
-			String propertyName = this.getPropertyName(table, column);
+			String propertyName = column.getPropertyName();
 			propertyDef.setProperty("name", propertyName);
 			
 			JdbcType jdbcType = column.getJdbcType();
@@ -54,28 +116,10 @@ public class DefaultModelStrategy implements ModelStrategy {
 		return dataType;
 	}
 	
-	@Override
-	public DataProviderDefinition createDataProviderDifinition(
-			AbstractDbTableDefinition dbeDef) {
-		DataProviderDefinition providerDef = new DataProviderDefinition();
-		String providerName = this.getDataProviderName(dbeDef);
-		providerDef.setName(providerName);
-		providerDef.setGlobal(true);
-		providerDef.setProperty("type", "jdbc");
-		providerDef.setProperty(XmlConstants.TABLE_NAME, dbeDef.getName());
-		
-		return providerDef;
+	protected DataProviderDefinition createDataProviderDifinition(
+			AbstractDbTableDefinition tableDef) {
+		DataProviderDefinition def = new DataProviderDefinition();
+		return def;
 	}
 	
-	protected String getPropertyName(DbTable table, AbstractColumn column) {
-		return column.getPropertyName();
-	}
-	
-	protected String getDataTypeName(AbstractDbTableDefinition dbeDef) {
-		return dbeDef.getName();
-	}
-
-	protected String getDataProviderName(AbstractDbTableDefinition dbeDef) {
-		return dbeDef.getName();
-	}
 }

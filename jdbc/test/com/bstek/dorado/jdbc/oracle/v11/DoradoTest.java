@@ -87,7 +87,7 @@ public class DoradoTest extends AbstractOracle11JdbcTestCase {
 			resolver.resolve(dataItems);
 		}
 		{
-			EntityUtils.setState(dept, EntityState.NONE);
+			EntityUtils.setState(dept, EntityState.MODIFIED);
 			EntityUtils.setState(employee, EntityState.MODIFIED);
 			resolver.resolve(dataItems);
 		} 

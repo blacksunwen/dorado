@@ -14,14 +14,4 @@ import com.bstek.dorado.jdbc.model.AbstractUpdatableColumn;
 )
 public class SqlTableColumn extends AbstractUpdatableColumn {
 	
-	private String nativeColumnName;
-
-	public String getNativeColumnName() {
-		return nativeColumnName;
-	}
-
-	public void setNativeColumnName(String nativeColumnName) {
-		this.nativeColumnName = nativeColumnName;
-	}
-
 }

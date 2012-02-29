@@ -1,8 +1,8 @@
 package com.bstek.dorado.jdbc.model.autotable;
 
 import com.bstek.dorado.annotation.XmlNode;
-import com.bstek.dorado.jdbc.sql.SqlConstants.NullsModel;
-import com.bstek.dorado.jdbc.sql.SqlConstants.OrderModel;
+import com.bstek.dorado.jdbc.sql.SqlConstants.NullsDirection;
+import com.bstek.dorado.jdbc.sql.SqlConstants.OrderDirection;
 
 /**
  * 
@@ -14,13 +14,13 @@ import com.bstek.dorado.jdbc.sql.SqlConstants.OrderModel;
 )
 public class Order {
 	
-	private String tableAlias;
+	private String fromTable;
 
 	private String columnName;
 	
-	private OrderModel orderModel;
+	private OrderDirection direction;
 	
-	private NullsModel nullsModel;
+	private NullsDirection nullsDirection;
 	
 	private boolean available = true;
 	
@@ -31,35 +31,31 @@ public class Order {
 		this.available = available;
 	}
 	
-	public String getTableAlias() {
-		return tableAlias;
+	public String getFromTable() {
+		return fromTable;
 	}
-
-	public void setTableAlias(String tableAlias) {
-		this.tableAlias = tableAlias;
-	}
-
-	public void setColumnName(String column) {
-		this.columnName = column;
+	public void setFromTable(String fromTable) {
+		this.fromTable = fromTable;
 	}
 	
-	public String getColumnName() {
+	public void setColumn(String column) {
+		this.columnName = column;
+	}
+	public String getColumn() {
 		return this.columnName;
 	}
 
-	public OrderModel getOrderModel() {
-		return orderModel;
+	public OrderDirection getDirection() {
+		return direction;
+	}
+	public void setDirection(OrderDirection direction) {
+		this.direction = direction;
 	}
 
-	public void setOrderModel(OrderModel model) {
-		this.orderModel = model;
+	public NullsDirection getNullsDirection() {
+		return nullsDirection;
 	}
-
-	public NullsModel getNullsModel() {
-		return nullsModel;
-	}
-
-	public void setNullsModel(NullsModel nullsModel) {
-		this.nullsModel = nullsModel;
+	public void setNullsDirection(NullsDirection nullsDirection) {
+		this.nullsDirection = nullsDirection;
 	}
 }

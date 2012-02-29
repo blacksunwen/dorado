@@ -24,7 +24,7 @@ public class DeptTableTrigger extends AbstractDbTableTrigger {
 			Map<String, Object> paramMap = new HashMap<String, Object>();
 			paramMap.put("DEPT_ID", dept.get("DEPT_ID"));
 			
-			System.out.println(sql + " " + paramMap);
+			System.out.println("|- "+sql + " " + paramMap);
 			dao.getNamedParameterJdbcTemplate().update(sql, paramMap);
 		}
 		super.doSave(operation);

@@ -2,7 +2,7 @@ package com.bstek.dorado.jdbc.support.mysql;
 
 import com.bstek.dorado.jdbc.JdbcSpace;
 import com.bstek.dorado.jdbc.sql.SelectSql;
-import com.bstek.dorado.jdbc.sql.SqlConstants.NullsModel;
+import com.bstek.dorado.jdbc.sql.SqlConstants.NullsDirection;
 import com.bstek.dorado.jdbc.support.AbstractDialect;
 
 /**
@@ -44,7 +44,7 @@ public class MysqlDialect extends AbstractDialect {
 	}
 
 	@Override
-	protected String token(NullsModel nullsModel) {
+	protected String token(NullsDirection nullsModel) {
 		return null;
 	}
 
