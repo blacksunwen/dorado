@@ -6,13 +6,14 @@ import java.util.List;
 import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlSubNode;
+import com.bstek.dorado.common.TagSupport;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2009-9-30
  */
 @XmlNode
-public class Node implements NodeHolder {
+public class Node implements NodeHolder, TagSupport {
 	private List<Node> nodes;
 
 	private String label;
@@ -25,9 +26,10 @@ public class Node implements NodeHolder {
 	private boolean autoCheckChildren = true;
 	private String tip;
 	private Object data;
+	private Object userData;
 	private boolean hasChild;
 	private boolean expanded;
-	private Object tags;
+	private String tags;
 
 	@XmlSubNode
 	@ClientProperty
@@ -124,6 +126,16 @@ public class Node implements NodeHolder {
 		this.data = data;
 	}
 
+	@XmlSubNode
+	@ClientProperty
+	public Object getUserData() {
+		return userData;
+	}
+
+	public void setUserData(Object userData) {
+		this.userData = userData;
+	}
+
 	public boolean isHasChild() {
 		return hasChild;
 	}
@@ -140,11 +152,11 @@ public class Node implements NodeHolder {
 		this.expanded = expanded;
 	}
 
-	public Object getTags() {
+	public String getTags() {
 		return tags;
 	}
 
-	public void setTags(Object tags) {
+	public void setTags(String tags) {
 		this.tags = tags;
 	}
 }
