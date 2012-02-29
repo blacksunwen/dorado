@@ -179,20 +179,21 @@ public class SqlConstants {
 		}
 	}
 	
-	public enum JoinModel {
+	public enum JoinOperator {
 		LEFT_JOIN, RIGHT_JOIN, INNER_JOIN
 	}
+
+	public enum JunctionOperator {
+		AND, OR
+	}
 	
-	public enum OrderModel {
+	public enum OrderDirection {
 		ASC, DESC 
 	}
 	
-	public enum NullsModel {
+	public enum NullsDirection {
 		NULLS_FIRST,
 		NULLS_LAST
 	}
 	
-	public enum JunctionModel {
-		AND, OR
-	}
 }

@@ -19,10 +19,7 @@
 	
 	<bean id="dorado.jdbc.abstractTableParser" parent="dorado.objectParser" abstract="true"/>
 	
-	<bean id="dorado.jdbc.tableParser" class="com.bstek.dorado.jdbc.model.table.TableParser" 
-		parent="dorado.jdbc.abstractTableParser"/>
-	<bean id="dorado.jdbc.sqlTableParser" class="com.bstek.dorado.jdbc.model.sqltable.SqlTableParser" 
-		parent="dorado.jdbc.abstractTableParser"/>
-	<bean id="dorado.jdbc.autoTableParser" class="com.bstek.dorado.jdbc.model.autotable.AutoTableParser"
-		parent="dorado.jdbc.abstractTableParser"/>
+	<bean id="dorado.jdbc.tableParser" class="com.bstek.dorado.jdbc.model.table.TableParser" parent="dorado.jdbc.abstractTableParser"/>
+	<bean id="dorado.jdbc.sqlTableParser" class="com.bstek.dorado.jdbc.model.sqltable.SqlTableParser" parent="dorado.jdbc.abstractTableParser"/>
+	<bean id="dorado.jdbc.autoTableParser" class="com.bstek.dorado.jdbc.model.autotable.AutoTableParser" parent="dorado.jdbc.abstractTableParser"/>
 </beans>

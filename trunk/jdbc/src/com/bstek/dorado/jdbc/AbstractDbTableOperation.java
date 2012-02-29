@@ -52,7 +52,11 @@ public abstract class AbstractDbTableOperation<T extends AbstractJdbcContext> {
 
 	public JdbcEnviroment getJdbcEnviroment() {
 		AbstractJdbcContext jdbcContext = getJdbcContext();
-		JdbcEnviroment env = jdbcContext.getJdbcEnviroment();
+		JdbcEnviroment env = null;
+		
+		if (jdbcContext != null) {
+			env = jdbcContext.getJdbcEnviroment();
+		}
 		if (env == null) {
 			env = this.getDbTable().getJdbcEnviroment();
 		}
@@ -60,9 +64,9 @@ public abstract class AbstractDbTableOperation<T extends AbstractJdbcContext> {
 		return env;
 	}
 	
-	public void execute() {
+	public boolean execute() {
 		try {
-			doExecute();
+			return doExecute();
 		} finally {
 			setProcessDefault(false);
 		}
@@ -71,5 +75,5 @@ public abstract class AbstractDbTableOperation<T extends AbstractJdbcContext> {
 	/**
 	 * 执行操作动作
 	 */
-	protected abstract void doExecute();
+	protected abstract boolean doExecute();
 }

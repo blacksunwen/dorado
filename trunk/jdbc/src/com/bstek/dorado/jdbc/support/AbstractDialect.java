@@ -2,7 +2,6 @@ package com.bstek.dorado.jdbc.support;
 
 import java.sql.DatabaseMetaData;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,17 +33,17 @@ import com.bstek.dorado.jdbc.model.autotable.Order;
 import com.bstek.dorado.jdbc.model.table.KeyGenerator;
 import com.bstek.dorado.jdbc.model.table.Table;
 import com.bstek.dorado.jdbc.model.table.TableKeyColumn;
-import com.bstek.dorado.jdbc.sql.CurdSqlGenerator;
 import com.bstek.dorado.jdbc.sql.DeleteSql;
 import com.bstek.dorado.jdbc.sql.InsertSql;
 import com.bstek.dorado.jdbc.sql.RecordRowMapper;
 import com.bstek.dorado.jdbc.sql.RetrieveSql;
 import com.bstek.dorado.jdbc.sql.SelectSql;
 import com.bstek.dorado.jdbc.sql.ShiftRowMapperResultSetExtractor;
-import com.bstek.dorado.jdbc.sql.SqlConstants.JoinModel;
+import com.bstek.dorado.jdbc.sql.SqlConstants.JoinOperator;
 import com.bstek.dorado.jdbc.sql.SqlConstants.KeyWord;
-import com.bstek.dorado.jdbc.sql.SqlConstants.NullsModel;
-import com.bstek.dorado.jdbc.sql.SqlConstants.OrderModel;
+import com.bstek.dorado.jdbc.sql.SqlConstants.NullsDirection;
+import com.bstek.dorado.jdbc.sql.SqlConstants.OrderDirection;
+import com.bstek.dorado.jdbc.sql.SqlGenerator;
 import com.bstek.dorado.jdbc.sql.SqlUtils;
 import com.bstek.dorado.jdbc.sql.UpdateSql;
 import com.bstek.dorado.jdbc.type.JdbcType;
@@ -58,11 +57,19 @@ import com.bstek.dorado.util.Assert;
 public abstract class AbstractDialect implements Dialect {
 
 	private static Log logger = LogFactory.getLog(AbstractDialect.class);
-	
+	private SqlGenerator sqlGenerator;
 	private Map<String, JdbcType> jdbcTypeMap = new LinkedHashMap<String, JdbcType>();
 	
 	private LinkedHashMap<String, KeyGenerator<Object>> keyGeneratorMap = new LinkedHashMap<String, KeyGenerator<Object>>();
 	
+	public SqlGenerator getSqlGenerator() {
+		return sqlGenerator;
+	}
+
+	public void setSqlGenerator(SqlGenerator sqlGenerator) {
+		this.sqlGenerator = sqlGenerator;
+	}
+
 	public String token(Table table) {
 		Assert.notNull(table, "Table must not be null.");
 		
@@ -152,13 +159,14 @@ public abstract class AbstractDialect implements Dialect {
 		return selectSql.toCountSQL(this);
 	}
 	
-	public void execute(JdbcDataProviderOperation operation) {
+	public boolean execute(JdbcDataProviderOperation operation) {
 		Page<Record> page = operation.getJdbcContext().getPage();
 		if (page.getPageSize() > 0) {
 			this.loadPageRecord(operation);
 		} else {
 			this.loadAllRecords(operation);
 		}
+		return true;
 	}
 	
 	/**
@@ -169,8 +177,7 @@ public abstract class AbstractDialect implements Dialect {
 		JdbcEnviroment env = operation.getJdbcEnviroment();
 		DbTable dbTable = operation.getDbTable();
 		
-		CurdSqlGenerator generator = dbTable.getCurdSqlGenerator();
-		SelectSql selectSql = generator.selectSql(operation);
+		SelectSql selectSql = dbTable.selectSql(operation);
 		JdbcParameterSource jps = selectSql.getParameterSource();
 		
 		RecordRowMapper rowMapper = new RecordRowMapper(dbTable.getAllColumns());
@@ -195,8 +202,7 @@ public abstract class AbstractDialect implements Dialect {
 		Dialect dialect = env.getDialect();
 
 		DbTable dbTable = operation.getDbTable();
-		CurdSqlGenerator generator = dbTable.getCurdSqlGenerator();
-		SelectSql selectSql = generator.selectSql(operation);
+		SelectSql selectSql = dbTable.selectSql(operation);
 
 		RecordRowMapper rowMapper = new RecordRowMapper(dbTable.getAllColumns());
 
@@ -233,7 +239,7 @@ public abstract class AbstractDialect implements Dialect {
 		page.setEntityCount(count);
 	}
 	
-	public void execute(JdbcRecordOperation operation) {
+	public boolean execute(JdbcRecordOperation operation) {
 		Record record = operation.getRecord();
 		Assert.notNull(record, "record must not null.");
 
@@ -241,17 +247,18 @@ public abstract class AbstractDialect implements Dialect {
 		switch (state) {
 			case NEW: {
 				this.doInsert(operation);
-				break;
+				return true;
 			}
 			case MODIFIED: {
 				this.doUpdate(operation);
-				break;
+				return true;
 			}
 			case DELETED: {
 				this.doDelete(operation);
-				break;
+				return true;
 			}
 		}
+		return false;
 	}
 	
 	/**
@@ -259,10 +266,10 @@ public abstract class AbstractDialect implements Dialect {
 	 */
 	protected void doInsert(JdbcRecordOperation operation) {
 		JdbcEnviroment env = operation.getJdbcEnviroment();
-		DbTable dbTable = operation.getDbTable();
-		CurdSqlGenerator generator = dbTable.getCurdSqlGenerator();
+		Table table = operation.getTable();
+		Record record = operation.getRecord();
 		
-		InsertSql insertSql = generator.insertSql(operation);
+		InsertSql insertSql = this.getSqlGenerator().insertSql(operation);
 		Dialect dialect = env.getDialect();
 		String sql = insertSql.toSQL(dialect);
 		if (logger.isDebugEnabled()) {
@@ -286,30 +293,26 @@ public abstract class AbstractDialect implements Dialect {
 					value = jdbcType.fromDB(value);
 				}
 				
-				JdbcRecordOperation o = (operation.getSubstitute() == null)? operation: operation.getSubstitute();
-				Record record = o.getRecord();
 				record.put(propertyName, value);
 			}
 		}
 		
 		if(insertSql.isRetrieveAfterExecute()) {
-			JdbcRecordOperation o = (operation.getSubstitute() == null)? operation: operation.getSubstitute();
-			this.retrieve(o.getRecord(), o.getDbTable(), operation.getJdbcEnviroment());
+			this.retrieve(record, table, env);
 		}
-		
-		this.sync(operation);
 	}
 	
 	/**
 	 * 执行UPDATE动作
 	 */
 	protected void doUpdate(JdbcRecordOperation operation) {
-		DbTable dbTable = operation.getDbTable();
+		Table table = operation.getTable();
 		JdbcEnviroment env = operation.getJdbcEnviroment();
+		Record record = operation.getRecord();
+		
 		Dialect dialect = env.getDialect();
 		NamedParameterJdbcTemplate jdbcTemplate = env.getNamedDao().getNamedParameterJdbcTemplate();
-		CurdSqlGenerator generator = dbTable.getCurdSqlGenerator();
-		UpdateSql updateSql = generator.updateSql(operation);
+		UpdateSql updateSql = this.getSqlGenerator().updateSql(operation);
 		String sql = updateSql.toSQL(dialect);
 		if (logger.isDebugEnabled()) {
 			logger.debug("[UPDATE-SQL]" + sql);
@@ -318,103 +321,71 @@ public abstract class AbstractDialect implements Dialect {
 		jdbcTemplate.update(sql, parameterSource);
 		
 		if(updateSql.isRetrieveAfterExecute()) {
-			JdbcRecordOperation o = (operation.getSubstitute() == null)? operation: operation.getSubstitute();
-			this.retrieve(o.getRecord(), o.getDbTable(), operation.getJdbcEnviroment());
+			this.retrieve(record, table, env);
 		}
-		
-		this.sync(operation);
 	}
 	
 	/**
 	 * 执行DELETE动作
 	 */
 	protected void doDelete(JdbcRecordOperation operation) {
-		DbTable dbTable = operation.getDbTable();
 		JdbcEnviroment env = operation.getJdbcEnviroment();
 		Dialect dialect = env.getDialect();
 		NamedParameterJdbcTemplate jdbcTemplate = env.getNamedDao().getNamedParameterJdbcTemplate();
-		CurdSqlGenerator generator = dbTable.getCurdSqlGenerator();
 		
-		DeleteSql deleteSql = generator.deleteSql(operation);
+		DeleteSql deleteSql = this.getSqlGenerator().deleteSql(operation);
 		String sql = deleteSql.toSQL(dialect);
 		if (logger.isDebugEnabled()) {
 			logger.debug("[DELETE-SQL]" + sql);
 		}
 		JdbcParameterSource parameterSource = deleteSql.getParameterSource();
 		jdbcTemplate.update(sql, parameterSource);
-		
-		Assert.isTrue(deleteSql.isRetrieveAfterExecute() == false, "delete sql does not support retrieve operation.");
-		this.sync(operation);
 	}
 	
-	protected void retrieve(Record record, DbTable dbTable, JdbcEnviroment jdbcEnv) {
+	protected void retrieve(Record record, Table table, JdbcEnviroment jdbcEnv) {
 		Dialect dialect = jdbcEnv.getDialect();
-		if (dbTable instanceof Table) {
-			Table table = (Table)dbTable;
-			RetrieveSql retrieveSql = new RetrieveSql();
-			retrieveSql.setTableToken(token(table));
-			
-			List<AbstractColumn> columnList = new ArrayList<AbstractColumn>();
-			for(AbstractColumn column: table.getAllColumns()) {
+		RetrieveSql retrieveSql = new RetrieveSql();
+		retrieveSql.setTableToken(token(table));
+		
+		List<AbstractColumn> columnList = new ArrayList<AbstractColumn>();
+		for(AbstractColumn column: table.getAllColumns()) {
+			String columnName = column.getName();
+			String propertyName = column.getPropertyName();
+			if (column.isSelectable() && record.containsKey(propertyName)) {
+				columnList.add(column);
+				retrieveSql.addColumnToken(columnName + " " + KeyWord.AS + " " + propertyName);
+			}
+		}
+		JdbcParameterSource parameterSource = SqlUtils.createJdbcParameter(null);
+		for (TableKeyColumn column: table.getKeyColumns()) {
+			String propertyName = column.getPropertyName();
+			if (column.isSelectable() && record.containsKey(propertyName)) {
 				String columnName = column.getName();
-				String propertyName = column.getPropertyName();
-				if (column.isSelectable() && record.containsKey(propertyName)) {
-					columnList.add(column);
-					retrieveSql.addColumnToken(columnName + " " + KeyWord.AS + " " + propertyName);
+				Object columnValue = record.get(propertyName);
+				JdbcType jdbcType = column.getJdbcType();
+				if (jdbcType != null) {
+					parameterSource.setValue(propertyName, columnValue, jdbcType.getSqlType());
+				} else {
+					parameterSource.setValue(propertyName, columnValue);
 				}
-			}
-			JdbcParameterSource parameterSource = SqlUtils.createJdbcParameter(null);
-			for (TableKeyColumn column: table.getKeyColumns()) {
-				String propertyName = column.getPropertyName();
-				if (column.isSelectable() && record.containsKey(propertyName)) {
-					String columnName = column.getName();
-					Object columnValue = record.get(propertyName);
-					JdbcType jdbcType = column.getJdbcType();
-					if (jdbcType != null) {
-						parameterSource.setValue(propertyName, columnValue, jdbcType.getSqlType());
-					} else {
-						parameterSource.setValue(propertyName, columnValue);
-					}
-					
-					retrieveSql.addKeyToken(columnName, ":" + propertyName);
-				}
-			}
-
-			String sql = retrieveSql.toSQL(dialect);
-			if (logger.isDebugEnabled()) {
-				logger.debug("[RETRIEVE-SQL]" + sql);
-			}
-			NamedParameterJdbcTemplate jdbcTemplate = jdbcEnv.getNamedDao().getNamedParameterJdbcTemplate();
-			List<Record> rs = jdbcTemplate.query(sql, parameterSource, new RecordRowMapper(columnList));
-			Assert.isTrue(rs.size() == 1, "[" + rs.size() +"] records retrieved, only 1 excepted.");
-			
-			Record rRecord = rs.get(0);
-			record.putAll(rRecord);
-		} else {
-			throw new UnsupportedOperationException("[" + dbTable.getName() + "] does not support retrieve operation.");
-		}
-	}
-	
-	protected void sync(JdbcRecordOperation operation) {
-		JdbcRecordOperation sOperation = operation.getSubstitute();
-		if (sOperation != null) {
-			Map<String, String> propertyMap = operation.getPropertyMap();
-			if (propertyMap != null) {
-				Record record = operation.getRecord();
-				Record sRecord = sOperation.getRecord();
 				
-				Iterator<String> keyItr = propertyMap.keySet().iterator();
-				while (keyItr.hasNext()) {
-					String propertyName = keyItr.next();
-					String sPropertyName = propertyMap.get(propertyName);
-					Object sValue = sRecord.get(sPropertyName);
-					record.put(propertyName, sValue);
-				}
+				retrieveSql.addKeyToken(columnName, ":" + propertyName);
 			}
 		}
+
+		String sql = retrieveSql.toSQL(dialect);
+		if (logger.isDebugEnabled()) {
+			logger.debug("[RETRIEVE-SQL]" + sql);
+		}
+		NamedParameterJdbcTemplate jdbcTemplate = jdbcEnv.getNamedDao().getNamedParameterJdbcTemplate();
+		List<Record> rs = jdbcTemplate.query(sql, parameterSource, new RecordRowMapper(columnList));
+		Assert.isTrue(rs.size() == 1, "[" + rs.size() +"] records retrieved, only 1 excepted.");
+		
+		Record rRecord = rs.get(0);
+		record.putAll(rRecord);
 	}
 	
-	public String token(AutoTable autoTable, JoinModel joinModel) {
+	public String token(AutoTable autoTable, JoinOperator joinModel) {
 		switch (joinModel) {
 		case INNER_JOIN:
 			return "INNER JOIN";
@@ -429,20 +400,20 @@ public abstract class AbstractDialect implements Dialect {
 	
 	@Override
 	public String token(AutoTable autoTable, Order order) {
-		OrderModel model = order.getOrderModel();
-		NullsModel nullsModel = order.getNullsModel(); 
-		String columnName = order.getColumnName();
+		OrderDirection model = order.getDirection();
+		NullsDirection nullsModel = order.getNullsDirection(); 
+		String columnName = order.getColumn();
 		Assert.notEmpty(columnName, "[" + autoTable.getName() + "] columnName must not be null in order");
 		
 		StringBuilder token = new StringBuilder();
-		String tableAlias = order.getTableAlias();
+		String tableAlias = order.getFromTable();
 		if (StringUtils.isEmpty(tableAlias)) {
 			AutoTableColumn column = (AutoTableColumn)autoTable.getColumn(columnName);
 			token.append(column.getName());
 		} else {
 			FromTable fromTable = autoTable.getFromTable(tableAlias);
-			AbstractColumn fromColumn = fromTable.getTable().getColumn(columnName);
-			token.append(fromTable.getTableAlias() + '.' + fromColumn.getName());
+			AbstractColumn fromColumn = fromTable.getTableObject().getColumn(columnName);
+			token.append(fromTable.getName() + '.' + fromColumn.getName());
 		}
 		
 		if (model != null) {
@@ -460,7 +431,7 @@ public abstract class AbstractDialect implements Dialect {
 		return token.toString();
 	}
 	
-	protected String token(NullsModel nullsModel) {
+	protected String token(NullsDirection nullsModel) {
 		switch(nullsModel) {
 		case NULLS_FIRST:
 			return "NULLS FIRST";

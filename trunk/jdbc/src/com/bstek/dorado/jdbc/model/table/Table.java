@@ -9,8 +9,17 @@ import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlNodeWrapper;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
+import com.bstek.dorado.data.variant.Record;
+import com.bstek.dorado.jdbc.Dialect;
+import com.bstek.dorado.jdbc.JdbcDataProviderOperation;
+import com.bstek.dorado.jdbc.JdbcDataResolverContext;
+import com.bstek.dorado.jdbc.JdbcParameterSource;
+import com.bstek.dorado.jdbc.JdbcRecordOperationProxy;
 import com.bstek.dorado.jdbc.model.AbstractTable;
 import com.bstek.dorado.jdbc.model.AbstractColumn;
+import com.bstek.dorado.jdbc.sql.SelectSql;
+import com.bstek.dorado.jdbc.sql.SqlUtils;
+import com.bstek.dorado.jdbc.sql.SqlConstants.KeyWord;
 
 /**
  * 
@@ -120,7 +129,61 @@ public class Table extends AbstractTable {
 	}
 
 	@Override
-	protected String getDefaultSQLGeneratorServiceName() {
-		return "spring:dorado.jdbc.tableSqlGenerator";
+	public boolean supportResolverTable() {
+		return false;
+	}
+
+	@Override
+	public Table getResolverTable() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public JdbcRecordOperationProxy createOperationProxy(Record record, JdbcDataResolverContext jdbcContext) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public SelectSql selectSql(JdbcDataProviderOperation operation) {
+		Table table = (Table)operation.getDbTable();
+		Object parameter = operation.getParameter();
+		Dialect dialect = operation.getJdbcEnviroment().getDialect();
+		
+		//SelectSql
+		TableSelectSql selectSql = new TableSelectSql();
+
+		//columnsToken
+		StringBuilder columnsToken = new StringBuilder();
+		List<AbstractColumn> columns = table.getAllColumns();
+		for (int i=0, j=columns.size(), ableColumnCount = 0; i<j; i++) {
+			AbstractColumn column = columns.get(i);
+			if (column.isSelectable()) {
+				if (ableColumnCount++ > 0) {
+					columnsToken.append(',');
+				}
+				
+				String columnName = column.getName();
+				String propertyName = column.getPropertyName();
+				String token = columnName + " " + KeyWord.AS + " "  + propertyName;
+				columnsToken.append(token);
+			}
+		}
+		selectSql.setColumnsToken(columnsToken.toString());
+		
+		//tableToken
+		String tableToken = dialect.token(table);
+		selectSql.setTableToken(tableToken);
+		
+		//dynamicToken
+		String dynamicToken = table.getDynamicClause();
+		dynamicToken = SqlUtils.build(dynamicToken, parameter);
+		
+		selectSql.setDynamicToken(dynamicToken);
+		
+		//JdbcParameterSource
+		JdbcParameterSource p = SqlUtils.createJdbcParameter(parameter);
+		selectSql.setParameterSource(p);
+		
+		return selectSql;
 	}
 }

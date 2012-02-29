@@ -16,7 +16,16 @@ public class JdbcDataProviderOperation extends
 		super(dbTable, jdbcContext);
 	}
 
-	protected void doExecute() {
-		getJdbcEnviroment().getDialect().execute(this);
+	protected boolean doExecute() {
+		return getJdbcEnviroment().getDialect().execute(this);
+	}
+	
+	public Object getParameter() {
+		JdbcDataProviderContext ctx = this.getJdbcContext();
+		if (ctx != null) {
+			return ctx.getParameter();
+		} else {
+			return null;
+		}
 	}
 }

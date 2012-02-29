@@ -14,24 +14,14 @@ import com.bstek.dorado.jdbc.model.AbstractUpdatableColumn;
 )
 public class AutoTableColumn extends AbstractUpdatableColumn {
 
-	private String nativeColumnName;
-	
-	private String tableAlias;
-	
-	public String getNativeColumnName() {
-		return nativeColumnName;
+	private String fromTable;
+
+	public String getFromTable() {
+		return fromTable;
 	}
 
-	public void setNativeColumnName(String nativeColumnName) {
-		this.nativeColumnName = nativeColumnName;
-	}
-	
-	public String getTableAlias() {
-		return tableAlias;
-	}
-
-	public void setTableAlias(String tableAlias) {
-		this.tableAlias = tableAlias;
+	public void setFromTable(String fromTable) {
+		this.fromTable = fromTable;
 	}
 	
 }

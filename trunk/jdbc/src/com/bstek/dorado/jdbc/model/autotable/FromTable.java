@@ -1,8 +1,9 @@
 package com.bstek.dorado.jdbc.model.autotable;
 
 import com.bstek.dorado.annotation.XmlNode;
-import com.bstek.dorado.annotation.XmlProperty;
+import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.model.table.Table;
+import com.bstek.dorado.util.Assert;
 
 /**
  * 
@@ -10,35 +11,37 @@ import com.bstek.dorado.jdbc.model.table.Table;
  *
  */
 @XmlNode(
-	definitionType = "com.bstek.dorado.jdbc.model.autotable.FromTableDefinition",
-	properties = {
-		@XmlProperty(
-			propertyName = "table", 
-			parser = "spring:dorado.jdbc.tableReferenceParser"
-		)
-	}
+	definitionType = "com.bstek.dorado.jdbc.model.autotable.FromTableDefinition"
 )
 public class FromTable {
-
-	private String tableAlias;
-	
+	private String name;
+	private String tableName;
 	private Table table;
 	
-	public String getTableAlias() {
-		return this.tableAlias;
-	}
-	
-	public void setTableAlias(String tableAlias) {
-		this.tableAlias = tableAlias;
-	}
-	
-	@XmlProperty(parser = "spring:dorado.jdbc.tableReferenceParser")
-	public Table getTable() {
-		return table;
+	public String getName() {
+		return name;
 	}
 
-	public void setTable(Table table) {
-		this.table = table;
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getTable() {
+		return tableName;
+	}
+
+	public void setTable(String tableName) {
+		this.tableName = tableName;
 	}
 	
+	public Table getTableObject() {
+		if (table == null) {
+			String tableName = this.getTable();
+			Assert.notEmpty(tableName, "table must not be null. [" + name + "]");
+			
+			table = (Table)JdbcUtils.getDbTable(tableName);
+		}
+		
+		return table;
+	}
 }

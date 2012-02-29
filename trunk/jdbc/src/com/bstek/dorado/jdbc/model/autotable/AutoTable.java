@@ -10,8 +10,23 @@ import org.apache.commons.lang.StringUtils;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlNodeWrapper;
 import com.bstek.dorado.annotation.XmlSubNode;
-import com.bstek.dorado.jdbc.model.AbstractTable;
+import com.bstek.dorado.data.entity.EntityState;
+import com.bstek.dorado.jdbc.Dialect;
+import com.bstek.dorado.jdbc.JdbcDataProviderContext;
+import com.bstek.dorado.jdbc.JdbcDataProviderOperation;
+import com.bstek.dorado.jdbc.JdbcEnviroment;
+import com.bstek.dorado.jdbc.JdbcParameterSource;
 import com.bstek.dorado.jdbc.model.AbstractColumn;
+import com.bstek.dorado.jdbc.model.AbstractTable;
+import com.bstek.dorado.jdbc.model.AbstractUpdatableColumn;
+import com.bstek.dorado.jdbc.model.table.Table;
+import com.bstek.dorado.jdbc.sql.SelectSql;
+import com.bstek.dorado.jdbc.sql.SqlBuilder;
+import com.bstek.dorado.jdbc.sql.SqlConstants;
+import com.bstek.dorado.jdbc.sql.SqlConstants.JoinOperator;
+import com.bstek.dorado.jdbc.sql.SqlConstants.JunctionOperator;
+import com.bstek.dorado.jdbc.sql.SqlConstants.KeyWord;
+import com.bstek.dorado.jdbc.sql.SqlUtils;
 import com.bstek.dorado.util.Assert;
 
 /**
@@ -57,14 +72,15 @@ public class AutoTable extends AbstractTable {
 
 	private Where where;
 
-	private String mainTableAlias;
+	private String mainFromTable;
+	private Table mainTable;
 	
 	public void addFromTable(FromTable fromTable) {
-		String tableAlias = fromTable.getTableAlias();
+		String tableAlias = fromTable.getName();
 		Assert.notEmpty(tableAlias, "[" + this.getName() + "] tableAlias must not be null");
 		Assert.isTrue(!fromTables.containsKey(tableAlias), "[" + this.getName() + "] duplicate fromTable '" + tableAlias + "'");
 		
-		this.fromTables.put(fromTable.getTableAlias(), fromTable);
+		this.fromTables.put(tableAlias, fromTable);
 	}
 	
 	public void addJoinTable(JoinTable joinTable) {
@@ -106,20 +122,20 @@ public class AutoTable extends AbstractTable {
 		return TYPE;
 	}
 
-	public FromTable getMainFromTable() {
-		if (StringUtils.isEmpty(mainTableAlias)) {
+	public FromTable getMainFromTableObject() {
+		if (StringUtils.isEmpty(mainFromTable)) {
 			return null;
 		} else {
-			return this.getFromTable(mainTableAlias);
+			return this.getFromTable(mainFromTable);
 		}
 	}
 
-	public void setMainTableAlias(String mainTableAlias) {
-		this.mainTableAlias = mainTableAlias;
+	public void setMainFromTable(String mainTableAlias) {
+		this.mainFromTable = mainTableAlias;
 	}
 	
-	public String getMainTableAlias() {
-		return this.mainTableAlias;
+	public String getMainFromTable() {
+		return this.mainFromTable;
 	}
 
 	@Override
@@ -134,8 +150,306 @@ public class AutoTable extends AbstractTable {
 	}
 
 	@Override
-	protected String getDefaultSQLGeneratorServiceName() {
-		return "spring:dorado.jdbc.autoTableSqlGenerator";
+	public boolean supportResolverTable() {
+		return true;
+	}
+
+	@Override
+	public Table getResolverTable() {
+		if (mainTable == null) {
+			FromTable fromTable = this.getMainFromTableObject();
+			mainTable = fromTable.getTableObject();
+		}
+		return mainTable;
+	}
+
+	@Override
+	protected boolean acceptByProxy(AbstractUpdatableColumn column,
+			EntityState state) {
+		String mainFromTableName = this.getMainFromTable();
+		Assert.notEmpty(mainFromTableName, "[" + this.getName() + "] mainFromTable must not be null");
+		boolean superResult = super.acceptByProxy(column, state);
+		if (superResult) {
+			AutoTableColumn autoColumn = (AutoTableColumn)column;
+			String fromTableName = autoColumn.getFromTable();
+			return mainFromTableName.equals(fromTableName);
+		}
+		
+		return false;
+	}
+
+	@Override
+	public SelectSql selectSql(JdbcDataProviderOperation operation) {
+		AutoTable autoTable = (AutoTable)operation.getDbTable();
+		JdbcDataProviderContext jdbcContext = operation.getJdbcContext();
+		Object parameter = jdbcContext.getParameter();
+		
+		//columnsToken
+		StringBuilder columnsToken = new StringBuilder();
+		List<AbstractColumn> columns = autoTable.getAllColumns();
+		for (int i=0, j=columns.size(), ableColumnCount = 0; i<j; i++) {
+			AutoTableColumn column = (AutoTableColumn)columns.get(i);
+			if (column.isSelectable()) {
+				if (ableColumnCount++ > 0) {
+					columnsToken.append(',');
+				}
+				
+				String tableAlias = column.getFromTable();
+				String nativeName = column.getNativeColumn();
+				if (StringUtils.isNotEmpty(nativeName)) {
+					String propertyName = column.getPropertyName();
+					String token = tableAlias + "." + nativeName + " " + KeyWord.AS + " " + propertyName;
+					columnsToken.append(token);
+				}
+			}
+		}
+		
+		JdbcEnviroment jdbcEnv = operation.getJdbcEnviroment();
+		Dialect dialect = jdbcEnv.getDialect();
+		//fromToken
+		StringBuilder fromToken = fromToken(autoTable, dialect);
+		//where
+		JdbcParameterSource p = SqlUtils.createJdbcParameter(parameter);
+		StringBuilder whereToken = whereToken(autoTable, p);
+		//order
+		StringBuilder orderbyToken = orderByToken(autoTable, p, dialect);
+		
+		//--
+		AutoTableSelectSql selectSql = new AutoTableSelectSql();
+		selectSql.setParameterSource(p);
+		selectSql.setColumnsToken(columnsToken.toString());
+		selectSql.setFromToken(fromToken.toString());
+		selectSql.setWhereToken(whereToken.toString());
+		selectSql.setOrderToken(orderbyToken.toString());
+		
+		return selectSql;
 	}
 	
+	private String token(Dialect dialect, FromTable fromTable) {
+		return dialect.token(fromTable.getTableObject(), fromTable.getName());
+	}
+	
+	private StringBuilder fromToken(AutoTable t, Dialect dialect) {
+		StringBuilder fromToken = new StringBuilder();
+		List<JoinTable> joinTables = t.getJoinTables();
+		
+		if (joinTables.size() == 0) {
+			List<FromTable> fromTables = t.getFromTables();
+			Assert.isTrue(fromTables.size() > 0, "no from tables defined.");
+			
+			for (int i=0; i<fromTables.size(); i++) {
+				FromTable fromTable = fromTables.get(i);
+				if (i > 0) {
+					fromToken.append(',');
+				}
+				
+				String token = token(dialect, fromTable);
+				fromToken.append(token);
+			}
+		} else {
+			for (int i=0; i<joinTables.size(); i++) {
+				JoinTable joinTable = joinTables.get(i);
+				
+				JoinOperator joinModel = joinTable.getOperator();
+				String[] leftColumnNames = joinTable.getLeftColumns();
+				String[] rightColumnNames = joinTable.getRightColumns();
+				
+				Assert.isTrue(leftColumnNames.length > 0, 
+						"length of LeftColumnNames must greate than 0.");
+				
+				Assert.isTrue(rightColumnNames.length > 0, 
+						"length of RightColumnNames length must greate than 0.");
+				
+				Assert.isTrue(leftColumnNames.length == rightColumnNames.length, 
+						"length of LeftColumnNames and length of RightColumnNames not equals.");
+				
+				
+				FromTable leftFromTable = t.getFromTable(joinTable.getLeftFromTable());
+				FromTable rightFromTable = t.getFromTable(joinTable.getRightFromTable());
+				String token = this.joinToken(dialect, t, joinModel, leftFromTable, leftColumnNames, rightFromTable, rightColumnNames);
+				
+				if (i > 0) {
+					fromToken.append(',');
+				}
+				fromToken.append(token);
+			}
+		}
+		
+		return fromToken;
+	}
+	
+	private StringBuilder whereToken(AutoTable t, JdbcParameterSource p) {
+		StringBuilder whereToken = new StringBuilder();
+		
+		Where where = t.getWhere();
+		if (where != null) {
+			String token = junctionMatchRuleToken(where, p);
+			if (StringUtils.isNotEmpty(token)) {
+				whereToken.append(token);
+			}
+		}
+		
+		return whereToken;
+	}
+	
+	private String baseMatchRuleToken(BaseMatchRule bmr, JdbcParameterSource p) {
+		if (!bmr.isAvailable()) {
+			return "";
+		} else {
+			FromTable fromTable = bmr.getFromTableObject();
+			String tableAlias = fromTable.getName();
+			AbstractColumn column = bmr.getColumnObject();
+			String columnName = column.getName();
+			Object value = bmr.getValue();
+			String operator = bmr.getOperator();
+			
+			if (value == null || StringUtils.isEmpty(operator)) {
+				return "";
+			}
+			
+			String parameterName = null;
+			if (value instanceof String) {
+				String strValue = (String)value;
+				if (StringUtils.isNotEmpty(strValue) && strValue.length() > 1) {
+					if(strValue.charAt(0) == ':') {
+						String pn = strValue.substring(1);
+						if (p.hasValue(pn)) {
+							parameterName = pn;
+							value = p.getValue(pn);
+						} else {
+							value = null;
+						}
+					}
+				}
+			}
+			
+			if (value != null) {
+				if (parameterName == null) {
+					parameterName = p.addValue(value);
+				}
+				
+				SqlConstants.Operator sqlOperator = SqlConstants.Operator.value(operator.trim());
+				String opToken = bmr.isNot() ? sqlOperator.notSQL(): sqlOperator.toSQL();
+				
+				Object parameterValue = sqlOperator.parameterValue(value);
+				p.setValue(parameterName, parameterValue);
+				
+				return tableAlias + "." + columnName + " " + opToken + " :" + parameterName;
+			}
+			
+			return "";
+		}
+	}
+	
+	private String junctionMatchRuleToken(JunctionMatchRule amr, JdbcParameterSource p) {
+		if (!amr.isAvailable()) {
+			return "";
+		} else {
+			List<MatchRule> matchRules = amr.getMatchRules();
+			if (matchRules.size() > 0) {
+				JunctionOperator model = amr.getOperator();
+				Assert.notNull(model, "JunctionModel must not be null.");
+				
+				List<String> tokens = new ArrayList<String>(matchRules.size());
+				for (MatchRule mr: matchRules) {
+					if (mr instanceof BaseMatchRule) {
+						BaseMatchRule bmr = (BaseMatchRule)mr;
+						String token = baseMatchRuleToken(bmr, p);
+						if (StringUtils.isNotEmpty(token)) {
+							tokens.add(token);
+						}
+					} else if (mr instanceof JunctionMatchRule) {
+						JunctionMatchRule amr1 = (JunctionMatchRule)mr;
+						String token = junctionMatchRuleToken(amr1, p);
+						if (StringUtils.isNotEmpty(token)) {
+							tokens.add("("+token+")");
+						}
+					} else {
+						throw new IllegalArgumentException("unknown MatchRule class [" + mr.getClass().getName() + "]");
+					}
+				}
+				
+				if (tokens.size() > 0) {
+					String token;
+					if (tokens.size() == 1) {
+						token = tokens.get(0);
+					} else {
+						String m = SqlUtils.bothSpace(model.toString());
+						token = StringUtils.join(tokens, m);
+					}
+					if (amr.isNot()) {
+						return KeyWord.NOT + "(" + token + ")";
+					} else {
+						return token;
+					}
+				}
+			}
+			
+			return "";
+		}
+	}
+	
+	private StringBuilder orderByToken(AutoTable t, JdbcParameterSource p, Dialect dialect) {
+		StringBuilder r = new StringBuilder();
+		
+		List<Order> orders = t.getOrders();
+		if (orders != null && !orders.isEmpty()) {
+			List<String> tokens = new ArrayList<String>(orders.size());
+			for (int i=0; i<orders.size(); i++) {
+				Order order = orders.get(i);
+				if (order.isAvailable()) {
+					String token = dialect.token(t, order);
+					if (StringUtils.isNotEmpty(token)) {
+						tokens.add(token);
+					}
+				}
+			}
+			
+			if (tokens.size() > 0) {
+				if (tokens.size() == 1) {
+					String s = tokens.get(0).toString(); 
+					r.append(s);
+				} else {
+					String s = StringUtils.join(tokens, ',');
+					r.append(s);
+				}
+			}
+		}
+		
+		return r;
+	}
+	
+	private String joinToken(Dialect dialect, AutoTable autoTable, JoinOperator joinModel, FromTable leftFromTable,
+			String[] leftColumnNames, FromTable rightFromTable,
+			String[] rightColumnNames) {
+		SqlBuilder token = new SqlBuilder();
+		String leftTableAlias = leftFromTable.getName();
+		String rightTableAlias = rightFromTable.getName();
+		
+		Table leftTable = leftFromTable.getTableObject();
+		Table rightTable = rightFromTable.getTableObject();
+		
+		String tl = token(dialect, leftFromTable);
+		String tr = token(dialect, rightFromTable);
+		String jm = dialect.token(autoTable,joinModel);
+		
+		token.append(tl).bothSpace(jm).append(tr);
+		token.bothSpace(KeyWord.ON);
+		for (int i=0; i<leftColumnNames.length; i++) {
+			if (i>0) {
+				token.bothSpace(KeyWord.AND);
+			}
+			
+			String leftColumnName = leftColumnNames[i];
+			String rightColumnName = rightColumnNames[i];
+			AbstractColumn leftColumn = leftTable.getColumn(leftColumnName);
+			AbstractColumn rightColumn = rightTable.getColumn(rightColumnName);
+			
+			token.append(leftTableAlias, ".", leftColumn.getName());
+			token.bothSpace("=");
+			token.append(rightTableAlias, ".", rightColumn.getName());
+		}
+		
+		return token.build();
+	}
 }

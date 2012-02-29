@@ -3,9 +3,10 @@ package com.bstek.dorado.jdbc.model.autotable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlSubNode;
-import com.bstek.dorado.jdbc.sql.SqlConstants.JunctionModel;
+import com.bstek.dorado.jdbc.sql.SqlConstants.JunctionOperator;
 
 /**
  * 
@@ -28,16 +29,17 @@ import com.bstek.dorado.jdbc.sql.SqlConstants.JunctionModel;
 )
 public class JunctionMatchRule extends AbstractMatchRule {
 
-	private JunctionModel model = JunctionModel.AND;
+	private JunctionOperator operator = JunctionOperator.AND;
 	
 	private List<MatchRule> matchRules = new ArrayList<MatchRule>();
 
-	public JunctionModel getModel() {
-		return model;
+	@ClientProperty(escapeValue = "AND")
+	public JunctionOperator getOperator() {
+		return operator;
 	}
 
-	public void setModel(JunctionModel model) {
-		this.model = model;
+	public void setOperator(JunctionOperator o) {
+		this.operator = o;
 	}
 	
 	public List<MatchRule> getMatchRules() {

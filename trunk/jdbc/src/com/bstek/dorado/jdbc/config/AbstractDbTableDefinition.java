@@ -1,5 +1,6 @@
 package com.bstek.dorado.jdbc.config;
 
+
 /**
  * 抽象的{@link com.bstek.dorado.jdbc.model.DbTable}的定义对象
  * 
@@ -16,7 +17,7 @@ public abstract class AbstractDbTableDefinition extends DbElementDefinition {
 	 */
 	public boolean isAutoCreateDataProvider() {
 		if (autoCreateDataProvider == null) {
-			autoCreateDataProvider = this.getFinalPropertyBoolean(XmlConstants.AUTO_CREATE_DATAPROVIDER, true);
+			autoCreateDataProvider = this.getFinalPropertyBoolean(XmlConstants.AUTO_CREATE_DATAPROVIDER, false);
 		}
 		return autoCreateDataProvider;
 	}
@@ -31,7 +32,7 @@ public abstract class AbstractDbTableDefinition extends DbElementDefinition {
 	 */
 	public boolean isAutoCreateDataType() {
 		if (autoCreateDataType == null) {
-			autoCreateDataType = this.getFinalPropertyBoolean(XmlConstants.AUTO_CREATE_DATATYPE, true);
+			autoCreateDataType = this.getFinalPropertyBoolean(XmlConstants.AUTO_CREATE_DATATYPE, false);
 		}
 		return autoCreateDataType;
 	}

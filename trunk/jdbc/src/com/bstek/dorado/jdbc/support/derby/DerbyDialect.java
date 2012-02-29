@@ -8,7 +8,7 @@ import javax.sql.DataSource;
 import com.bstek.dorado.jdbc.JdbcSpace;
 import com.bstek.dorado.jdbc.model.autotable.AutoTable;
 import com.bstek.dorado.jdbc.sql.SelectSql;
-import com.bstek.dorado.jdbc.sql.SqlConstants.JoinModel;
+import com.bstek.dorado.jdbc.sql.SqlConstants.JoinOperator;
 import com.bstek.dorado.jdbc.support.AbstractDialect;
 
 /**
@@ -54,7 +54,7 @@ public class DerbyDialect extends AbstractDialect {
 	 * @see <a href='http://db.apache.org/derby/docs/10.8/ref/rrefsqlj29840.html'>http://db.apache.org/derby/docs/10.8/ref/rrefsqlj29840.html</a>
 	 */
 	@Override
-	public String token(AutoTable autoTable, JoinModel joinModel) {
+	public String token(AutoTable autoTable, JoinOperator joinModel) {
 		switch (joinModel) {
 		case INNER_JOIN:
 			return "INNER JOIN";

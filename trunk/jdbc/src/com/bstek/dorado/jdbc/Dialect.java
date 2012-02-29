@@ -11,7 +11,7 @@ import com.bstek.dorado.jdbc.model.autotable.Order;
 import com.bstek.dorado.jdbc.model.table.KeyGenerator;
 import com.bstek.dorado.jdbc.model.table.Table;
 import com.bstek.dorado.jdbc.sql.SelectSql;
-import com.bstek.dorado.jdbc.sql.SqlConstants.JoinModel;
+import com.bstek.dorado.jdbc.sql.SqlConstants.JoinOperator;
 import com.bstek.dorado.jdbc.type.JdbcType;
 
 /**
@@ -43,7 +43,7 @@ public interface Dialect {
 	 * @param joinModel
 	 * @return
 	 */
-	String token(AutoTable autoTable, JoinModel joinModel);
+	String token(AutoTable autoTable, JoinOperator joinModel);
 	
 	/**
 	 * 生成SQL的片段
@@ -143,13 +143,14 @@ public interface Dialect {
 	 * 执行查询操作
 	 * @param operation
 	 */
-	void execute(JdbcDataProviderOperation operation);
+	boolean execute(JdbcDataProviderOperation operation);
 	
 	/**
 	 * 执行数据库操作
 	 * @param operation
+	 * @return 是否成功执行
 	 */
-	void execute(JdbcRecordOperation operation);
+	boolean execute(JdbcRecordOperation operation);
 	
 	/**
 	 * 根据Column的数据库属性获取{@link com.bstek.dorado.jdbc.type.JdbcType}，用于IDE

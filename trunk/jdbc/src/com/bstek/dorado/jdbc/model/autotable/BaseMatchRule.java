@@ -16,39 +16,39 @@ import com.bstek.dorado.util.Assert;
 )
 public class BaseMatchRule extends AbstractMatchRule {
 
-	private String tableAlias;
+	private String fromTableName;
 	private String columnName;
 	private String operator;
 	private Object value;
 
-	public FromTable getFromTable() {
+	public FromTable getFromTableObject() {
 		Assert.notNull(this.getAutoTable());
-		Assert.notEmpty(tableAlias);
+		Assert.notEmpty(fromTableName);
 		
-		return this.getAutoTable().getFromTable(tableAlias);
+		return this.getAutoTable().getFromTable(fromTableName);
 	}
 
-	public void setTableAlias(String tableAlias) {
-		this.tableAlias = tableAlias;
+	public void setFromTable(String tableAlias) {
+		this.fromTableName = tableAlias;
 	}
 	
-	public String getTableAlias() {
-		return this.tableAlias;
+	public String getFromTable() {
+		return this.fromTableName;
 	}
 
-	public AbstractColumn getColumn() {
-		FromTable fromTable = this.getFromTable();
+	public AbstractColumn getColumnObject() {
+		FromTable fromTable = this.getFromTableObject();
 		Assert.notEmpty(columnName);
 		
-		Table table = fromTable.getTable();
+		Table table = fromTable.getTableObject();
 		return table.getColumn(columnName);
 	}
 
-	public void setColumnName(String columnName) {
+	public void setColumn(String columnName) {
 		this.columnName = columnName;
 	}
 	
-	public String getColumnName() {
+	public String getColumn() {
 		return this.columnName;
 	}
 

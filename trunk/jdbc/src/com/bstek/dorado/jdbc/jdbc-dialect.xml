@@ -5,6 +5,7 @@
 
 	<!-- Dialect -->
 	<bean id="dorado.dialectTemplate" abstract="true">
+		<property name="sqlGenerator" ref="dorado.jdbc.sqlGenerator"/>
 		<property name="keyGenerators">
 			<list>
 				<bean class="com.bstek.dorado.jdbc.model.table.IdentityKeyGenerator"/>

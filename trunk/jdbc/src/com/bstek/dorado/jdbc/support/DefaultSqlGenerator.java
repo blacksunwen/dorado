@@ -1,20 +1,18 @@
-package com.bstek.dorado.jdbc.model.table;
-
-import java.util.List;
+package com.bstek.dorado.jdbc.support;
 
 import com.bstek.dorado.data.entity.EntityEnhancer;
 import com.bstek.dorado.data.entity.EntityUtils;
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.Dialect;
-import com.bstek.dorado.jdbc.JdbcDataProviderOperation;
 import com.bstek.dorado.jdbc.JdbcParameterSource;
 import com.bstek.dorado.jdbc.JdbcRecordOperation;
-import com.bstek.dorado.jdbc.model.AbstractColumn;
-import com.bstek.dorado.jdbc.sql.CurdSqlGenerator;
+import com.bstek.dorado.jdbc.model.table.KeyGenerator;
+import com.bstek.dorado.jdbc.model.table.Table;
+import com.bstek.dorado.jdbc.model.table.TableColumn;
+import com.bstek.dorado.jdbc.model.table.TableKeyColumn;
 import com.bstek.dorado.jdbc.sql.DeleteSql;
 import com.bstek.dorado.jdbc.sql.InsertSql;
-import com.bstek.dorado.jdbc.sql.SelectSql;
-import com.bstek.dorado.jdbc.sql.SqlConstants.KeyWord;
+import com.bstek.dorado.jdbc.sql.SqlGenerator;
 import com.bstek.dorado.jdbc.sql.SqlUtils;
 import com.bstek.dorado.jdbc.sql.UpdateSql;
 import com.bstek.dorado.jdbc.type.JdbcType;
@@ -24,51 +22,7 @@ import com.bstek.dorado.jdbc.type.JdbcType;
  * @author mark.li@bstek.com
  *
  */
-public class TableSqlGenerator implements CurdSqlGenerator {
-
-	@Override
-	public SelectSql selectSql(JdbcDataProviderOperation operation) {
-		Table table = (Table)operation.getDbTable();
-		Object parameter = operation.getJdbcContext().getParameter();
-		Dialect dialect = operation.getJdbcEnviroment().getDialect();
-		
-		//SelectSql
-		TableSelectSql selectSql = new TableSelectSql();
-				
-		//columnsToken
-		StringBuilder columnsToken = new StringBuilder();
-		List<AbstractColumn> columns = table.getAllColumns();
-		for (int i=0, j=columns.size(), ableColumnCount = 0; i<j; i++) {
-			AbstractColumn column = columns.get(i);
-			if (column.isSelectable()) {
-				if (ableColumnCount++ > 0) {
-					columnsToken.append(',');
-				}
-				
-				String columnName = column.getName();
-				String propertyName = column.getPropertyName();
-				String token = columnName + " " + KeyWord.AS + " "  + propertyName;
-				columnsToken.append(token);
-			}
-		}
-		selectSql.setColumnsToken(columnsToken.toString());
-		
-		//tableToken
-		String tableToken = dialect.token(table);
-		selectSql.setTableToken(tableToken);
-		
-		//dynamicToken
-		String dynamicToken = table.getDynamicClause();
-		dynamicToken = SqlUtils.build(dynamicToken, parameter);
-		
-		selectSql.setDynamicToken(dynamicToken);
-		
-		//JdbcParameterSource
-		JdbcParameterSource p = SqlUtils.createJdbcParameter(parameter);
-		selectSql.setParameterSource(p);
-		
-		return selectSql;
-	}
+public class DefaultSqlGenerator implements SqlGenerator {
 
 	@Override
 	public InsertSql insertSql(JdbcRecordOperation operation) {

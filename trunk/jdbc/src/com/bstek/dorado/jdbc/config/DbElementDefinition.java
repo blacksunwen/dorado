@@ -16,7 +16,7 @@ public class DbElementDefinition extends ObjectDefinition {
 		return (String)this.getProperties().get("name");
 	}
 	
-	protected boolean getFinalPropertyBoolean(String propertyName, boolean defult) {
+	public boolean getFinalPropertyBoolean(String propertyName, boolean defult) {
 		Object value = this.getProperties().get(propertyName);
 		this.getProperties().remove(propertyName);
 		
@@ -35,4 +35,5 @@ public class DbElementDefinition extends ObjectDefinition {
 			return defult;
 		}
 	}
+	
 }

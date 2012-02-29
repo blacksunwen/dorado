@@ -27,17 +27,18 @@
 		<property name="xmlDocumentBuilder" ref="dorado.xmlDocumentBuilder" />
 		<property name="xmlParserHelper" ref="dorado.xmlParserHelper"/>
 		<property name="modelStrategy" ref="dorado.jdbc.modelStrategy"/>
-		<property name="dataTypeManager" ref="dorado.dataTypeManager"/>
-<!-- 		<property name="dataProviderManager" ref="dorado.dataProviderManager"/> -->
 	</bean>
 	<bean id="dorado.jdbc.modelGeneratorSuit" class="com.bstek.dorado.jdbc.support.DefaultModelGeneratorSuit"/>
-	<bean id="dorado.jdbc.modelStrategy" class="com.bstek.dorado.jdbc.support.DefaultModelStrategy"/>
+	
+	<!-- Custom Point -->
+	<bean id="dorado.jdbc.modelStrategy" class="com.bstek.dorado.jdbc.support.DefaultModelStrategy">
+		<property name="dataTypeManager" ref="dorado.dataTypeManager"/>
+		<property name="dataProviderManager" ref="dorado.dataProviderManager"/>
+	</bean>
 	<bean id="dorado.jdbc.globalIntercepter" class="com.bstek.dorado.jdbc.support.DefaultJdbcIntercepter"/>
 	
 	<!-- SQL Generator -->
-	<bean id="dorado.jdbc.tableSqlGenerator" class="com.bstek.dorado.jdbc.model.table.TableSqlGenerator"/>
-	<bean id="dorado.jdbc.sqlTableSqlGenerator" class="com.bstek.dorado.jdbc.model.sqltable.SqlTableSqlGenerator"/>
-	<bean id="dorado.jdbc.autoTableSqlGenerator" class="com.bstek.dorado.jdbc.model.autotable.AutoTableSqlGenerator"/>
+	<bean id="dorado.jdbc.sqlGenerator" class="com.bstek.dorado.jdbc.support.DefaultSqlGenerator"/>
 	
 	<!-- Template -->
 	<bean id="dorado.jdbcConfigTemplate" class="com.bstek.dorado.jdbc.config.GlobalDbModelConfig" abstract="true"/>

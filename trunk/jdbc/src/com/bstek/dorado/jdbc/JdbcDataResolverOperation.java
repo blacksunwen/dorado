@@ -71,59 +71,84 @@ public class JdbcDataResolverOperation {
 	}
 	
 	protected void doExecute() {
-		List<JdbcDataResolverItem> items = jdbcContext.getResolverItems();
-		if (items.isEmpty()) {
-			return;
-		}
-		
-		for (JdbcDataResolverItem item: items) {
-			String iName = item.getName();
-			String eName = item.getTableName();
-			
-			if (StringUtils.isNotEmpty(eName)) {
-				DataItems dataItems = jdbcContext.getDataItems();
-				if (dataItems.containsKey(iName)) {
-					Object dataItem = dataItems.get(iName);
-					if (dataItem instanceof Record) {
-						Record record = (Record) dataItem;
-						this.doResolve(item, record, jdbcContext);
-					} else if (dataItem instanceof Collection) {
-						@SuppressWarnings("unchecked")
-						Collection<Record> records = (Collection<Record>)dataItem;
-						for (Record record: records) {
-							this.doResolve(item, record, jdbcContext);
+		List<JdbcDataResolverItem> resolverItems = jdbcContext.getResolverItems();
+		if (!resolverItems.isEmpty()) {
+			for (JdbcDataResolverItem resolverItem: resolverItems) {
+				String resolverItemName = resolverItem.getName();
+				String tableName = resolverItem.getTableName();
+				if (StringUtils.isNotEmpty(tableName)) {
+					DataItems dataItems = jdbcContext.getDataItems();
+					if (dataItems.containsKey(resolverItemName)) {
+						Object dataValue = dataItems.get(resolverItemName);
+						if (dataValue != null) {
+							if (dataValue instanceof Record) {
+								Record record = (Record)dataValue;
+								this.doExecute(null, resolverItem, record);
+							} else if (dataValue instanceof Collection) {
+								@SuppressWarnings("unchecked")
+								Collection<Record> records = (Collection<Record>)dataValue;
+								for (Record record: records) {
+									this.doExecute(null, resolverItem, record);
+								}
+							}
 						}
-					} else {
-						throw new IllegalArgumentException("Unknown dataItem class [" + dataItem.getClass().getName() + "]");
 					}
-				} 
+				}
+			}
+		} 
+	}
+	
+	private void doChildrenExecute(Record parentRecord, List<JdbcDataResolverItem> resolverItems) {
+		for (JdbcDataResolverItem resolverItem: resolverItems) {
+			String resolverItemName = resolverItem.getName();
+			String tableName = resolverItem.getTableName();
+			if (StringUtils.isNotEmpty(tableName)) {
+				Object dataValue = parentRecord.get(resolverItemName);
+				if (dataValue != null) {
+					if (dataValue instanceof Record) {
+						Record record = (Record)dataValue;
+						this.doExecute(parentRecord, resolverItem, record);
+					} else if (dataValue instanceof Collection) {
+						@SuppressWarnings("unchecked")
+						Collection<Record> records = (Collection<Record>)dataValue;
+						for (Record record: records) {
+							this.doExecute(parentRecord, resolverItem, record);
+						}
+					}
+				}
 			}
 		}
 	}
-	
-	protected void doResolve(JdbcDataResolverItem item, Record record, JdbcDataResolverContext jdbcContext) {
-		String eName = item.getTableName();
-		DbTable dbTable = JdbcUtils.getDbTable(eName); 
-		JdbcRecordOperation operation = new JdbcRecordOperation(dbTable, record, jdbcContext);
-		
-		this.doResolve(item, operation);
+
+	private void doExecute(Record parentRecord, JdbcDataResolverItem resolverItem, Record record) {
+		if (parentRecord != null) {
+			this.syncWithParent(resolverItem, record, parentRecord);
+		} 
+		this.doExecute(resolverItem, record);
+		if (!EntityState.DELETED.equals(EntityUtils.getState(record))) {
+			this.doChildrenExecute(record, resolverItem.getItems());
+		}
 	}
 	
-	protected void doResolve(JdbcDataResolverItem item, JdbcRecordOperation operation) {
+	private void doExecute(JdbcDataResolverItem item, Record record) {
+		String eName = item.getTableName();
+		DbTable dbTable = JdbcUtils.getDbTable(eName);
+		JdbcUtils.doSave(dbTable, record, jdbcContext);
+	}
+	
+	private void syncWithParent(JdbcDataResolverItem item, Record record, Record parentRecord) {
 		String parentPropertiesStr = item.getParentKeyProperties();
 		String propertiesStr = item.getForeignKeyProperties();
 		if (StringUtils.isNotEmpty(parentPropertiesStr) && StringUtils.isNotEmpty(propertiesStr)) {
-			JdbcRecordOperation parentOperation = operation.getParent();
-			Assert.notNull(parentOperation, "parent operation must not be null.");
+			Assert.notNull(record);
+			Assert.notNull(parentRecord);
 			
 			String[] parentProperties = StringUtils.split(parentPropertiesStr,',');
 			String[] properties = StringUtils.split(propertiesStr, ',');
 			
 			Assert.isTrue(parentProperties.length == properties.length, "the count of propertyName not equals " +
-					"[" + parentPropertiesStr+"]["+propertiesStr+"]");
+					"[" + parentPropertiesStr +"][" + propertiesStr + "]");
 			
-			Record parentRecord = parentOperation.getRecord();
-			Record record = operation.getRecord();
 			for (int i=0; i<parentProperties.length; i++) {
 				String parentPropery = parentProperties[i];
 				String property = properties[i];
@@ -132,30 +157,5 @@ public class JdbcDataResolverOperation {
 				record.set(property, parentPropertyValue);
 			}
 		}
-		
-		DbTable table = operation.getDbTable();
-		DbTableTrigger trigger = table.getTrigger();
-		if (trigger == null) {
-			operation.execute();
-		} else {
-			trigger.doSave(operation);
-		}
-		
-		if (isContinue(operation)) {
-			List<JdbcDataResolverItem> items = item.getItems();
-			if (!items.isEmpty()) {
-				for (JdbcDataResolverItem i: items) {
-					JdbcRecordOperation[] childOperations = operation.children(i);
-					for (JdbcRecordOperation childOperation: childOperations) {
-						this.doResolve(i, childOperation);
-					}
-				}
-			}
-		}
-	}
-	
-	protected boolean isContinue(JdbcRecordOperation operation) {
-		Record record = operation.getRecord();
-		return EntityUtils.getState(record) != EntityState.DELETED;
 	}
 }

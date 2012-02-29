@@ -1,7 +1,8 @@
 package com.bstek.dorado.jdbc.model.autotable;
 
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlNode;
-import com.bstek.dorado.jdbc.sql.SqlConstants.JoinModel;
+import com.bstek.dorado.jdbc.sql.SqlConstants.JoinOperator;
 
 /**
  * 
@@ -13,50 +14,51 @@ import com.bstek.dorado.jdbc.sql.SqlConstants.JoinModel;
 )
 public class JoinTable {
 
-	private JoinModel joinModel = JoinModel.INNER_JOIN;
+	private JoinOperator operator = JoinOperator.INNER_JOIN;
 	
-	private String leftFromTableAlias;
+	private String leftFromTableName;
 	private String[] leftColumnNames = new String[0];
-	private String rightFromTableAlias;
+	private String rightFromTableName;
 	private String[] rightColumnNames = new String[0];
 	
-	public void setJoinModel(JoinModel joinModel) {
-		this.joinModel = joinModel;
+	public String getLeftFromTable() {
+		return leftFromTableName;
 	}
 
-	public JoinModel getJoinModel() {
-		return this.joinModel;
+	public void setLeftFromTable(String leftFromTableName) {
+		this.leftFromTableName = leftFromTableName;
 	}
 
-	public String getLeftFromTableAlias() {
-		return leftFromTableAlias;
+	public String getRightFromTable() {
+		return rightFromTableName;
 	}
 
-	public void setLeftFromTableAlias(String leftFromTableAlias) {
-		this.leftFromTableAlias = leftFromTableAlias;
+	public void setRightFromTable(String rightFromTableName) {
+		this.rightFromTableName = rightFromTableName;
 	}
 
-	public String[] getLeftColumnNames() {
+	public void setOperator(JoinOperator operator) {
+		this.operator = operator;
+	}
+
+	@ClientProperty(escapeValue = "INNER_JOIN")
+	public JoinOperator getOperator() {
+		return this.operator;
+	}
+
+	public String[] getLeftColumns() {
 		return leftColumnNames;
 	}
 
-	public void setLeftColumnNames(String[] leftColumnNames) {
+	public void setLeftColumns(String[] leftColumnNames) {
 		this.leftColumnNames = leftColumnNames;
 	}
 
-	public String getRightFromTableAlias() {
-		return rightFromTableAlias;
-	}
-
-	public void setRightFromTableAlias(String rightFromTableAlias) {
-		this.rightFromTableAlias = rightFromTableAlias;
-	}
-
-	public String[] getRightColumnNames() {
+	public String[] getRightColumns() {
 		return rightColumnNames;
 	}
 
-	public void setRightColumnNames(String[] rightColumnNames) {
+	public void setRightColumns(String[] rightColumnNames) {
 		this.rightColumnNames = rightColumnNames;
 	}
 	
