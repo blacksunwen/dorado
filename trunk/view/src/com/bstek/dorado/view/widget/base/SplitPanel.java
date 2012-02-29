@@ -30,7 +30,6 @@ public class SplitPanel extends Control {
 	private boolean resizeable = true;
 	private boolean collapsed;
 	private boolean collapsable = true;
-	private boolean showCollapseBar;
 	private boolean previewable;
 
 	@ClientProperty(escapeValue = "left")
@@ -113,14 +112,6 @@ public class SplitPanel extends Control {
 
 	public void setCollapsable(boolean collapsable) {
 		this.collapsable = collapsable;
-	}
-
-	public boolean isShowCollapseBar() {
-		return showCollapseBar;
-	}
-
-	public void setShowCollapseBar(boolean showCollapseBar) {
-		this.showCollapseBar = showCollapseBar;
 	}
 
 	public boolean isPreviewable() {
