@@ -310,10 +310,8 @@
 					if(updateItems) {
 						var self = this;
 						jQuery.each(updateItems, function(i, updateItem) {
-							if(updateItem.refreshMode == null)
-								updateItem.refreshMode = "value";
-							if(updateItem.autoResetEntityState == null)
-								updateItem.autoResetEntityState = true;
+							if(updateItem.refreshMode == null) updateItem.refreshMode = "value";
+							if(updateItem.autoResetEntityState == null) updateItem.autoResetEntityState = true;
 
 							if(updateItem.dataSet == null) return;
 							if( typeof updateItem.dataSet == "string") {
@@ -662,33 +660,39 @@
 						}
 					}
 
-					var state = entityStates[entity.entityId] || 0;
-					if(state.constructor == Number) {
-						delete entity._oldData;
-						if(state == dorado.Entity.STATE_DELETED) entity.remove(true);
-						else if(entity.state == state) return b;
-						else entity.setState(state);
-					} else {
-						var s = state.$state || 0;
-						delete state.$state;
-						if(refreshMode == "cascade") {
-							entity.fromJSON(state);
+					entity.disableEvents = true;
+					try {
+						var state = entityStates[entity.entityId] || 0;
+						if (state.constructor == Number) {
+							delete entity._oldData;
+							if (state == dorado.Entity.STATE_DELETED) entity.remove(true);
+							else if (entity.state == state) return b;
+							else entity.setState(state);
 						} else {
-							var dataType = entity.dataType;
-							if(dataType) {
-								dataType.set("validatorsDisabled", true);
-							}
-							for(var p in state) {
-								if(state.hasOwnProperty(p)) {
-									entity.set(p, state[p]);
+							var s = state.$state || 0;
+							delete state.$state;
+							if (refreshMode == "cascade") {
+								entity.fromJSON(state);
+							} else {
+								var dataType = entity.dataType;
+								if (dataType) {
+									dataType.set("validatorsDisabled", true);
+								}
+								for (var p in state) {
+									if (state.hasOwnProperty(p)) {
+										entity.set(p, state[p]);
+									}
+								}
+								if (dataType) {
+									dataType.set("validatorsDisabled", false);
 								}
 							}
-							if(dataType) {
-								dataType.set("validatorsDisabled", false);
-							}
+							delete entity._oldData;
+							entity.setState(s);
 						}
-						delete entity._oldData;
-						entity.setState(s);
+					}
+					finally {
+						entity.disableEvents = false;
 					}
 					return true;
 				}
