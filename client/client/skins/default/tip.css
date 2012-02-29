@@ -8,6 +8,8 @@
 .d-ie .d-tip{
 	border: 0;
 	background-color: transparent;
+    filter: alpha(opacity = 100);
+    opacity: 1;
 }
 
 .d-tip-arrow-top .arrow, .d-tip-arrow-bottom .arrow, .d-tip-arrow-left .arrow, .d-tip-arrow-right .arrow{
