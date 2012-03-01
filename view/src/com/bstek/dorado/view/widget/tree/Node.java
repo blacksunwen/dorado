@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.common.TagSupport;
 
@@ -126,7 +127,7 @@ public class Node implements NodeHolder, TagSupport {
 		this.data = data;
 	}
 
-	@XmlSubNode
+	@XmlProperty
 	@ClientProperty
 	public Object getUserData() {
 		return userData;
