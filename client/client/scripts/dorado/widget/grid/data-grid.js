@@ -602,13 +602,19 @@
 					for (var i = 0; i < dataColumns.length; i++) {
 						var column = dataColumns[i];
 						if (!column._property) continue;
-						var text = filterEntity.get(column._property);
-						if (text != null) {
-							var dataType = column.get("dataType");
+						var expression = filterEntity.get(column._property);
+						if (expression != null) {
+							var dataType = column.get("dataType"), typeFormat = column.get("typeFormat");
+							var v = dorado.Toolkits.parseFilterValue(expression), operator = v[0], value = v[1];
+							if (dataType) {
+								value = dataType.parse(value, typeFormat);
+								expression = operator + ' ' + dorado.JSON.stringify(value);
+							}
+							
 							criterions.push({
 								property: column._property,
 								dataType: ((dataType instanceof dorado.EntityDataType || dataType instanceof dorado.AggregationDataType) ? undefined : dataType._name),
-								expression: text
+								expression: expression
 							});
 						}
 					}
