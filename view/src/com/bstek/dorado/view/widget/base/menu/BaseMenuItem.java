@@ -34,6 +34,7 @@ public abstract class BaseMenuItem extends ClientEventSupportedObject implements
 	private boolean visible = true;
 	private String tip;
 	private boolean ignored;
+	private Object userData;
 	private String tags;
 
 	public ViewElement getParent() {
@@ -123,6 +124,16 @@ public abstract class BaseMenuItem extends ClientEventSupportedObject implements
 
 	public void setIgnored(boolean ignored) {
 		this.ignored = ignored;
+	}
+
+	@XmlProperty
+	@ClientProperty
+	public Object getUserData() {
+		return userData;
+	}
+
+	public void setUserData(Object userData) {
+		this.userData = userData;
 	}
 
 	public String getTags() {
