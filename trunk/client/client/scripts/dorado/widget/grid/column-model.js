@@ -1306,7 +1306,24 @@
 		},
 		
 		initDom: function(dom) {
-			var control = this._editorControl = this.createEditorControl();
+			var control = this._editorControl;
+			if (!control) {
+				control = this._editorControl = this.createEditorControl();
+				var column = this.column, cellEditor = this;
+				control.addListener("onBlur", function(self) {
+					if ((new Date() - cellEditor._showTimestamp) > 300) cellEditor.hide();
+				})
+				if (control instanceof dorado.widget.AbstractEditor) {
+					control.addListener("beforePost", function(self, arg) {
+						cellEditor.beforePost(arg);
+					}).addListener("onPost", function(self, arg) {
+						cellEditor.onPost(arg);
+					});
+					control._cellEditor = cellEditor; // 主要供DropDown进行判断
+					control._propertyDef = column._propertyDef; // 主要供AutoMappingDropDown使用
+				}
+			}
+			
 			this.grid.registerInnerControl(control);
 			if (!control.get("rendered")) control.render(this.getContainerElement(dom));
 		},
@@ -1450,53 +1467,40 @@
 	dorado.widget.grid.DefaultCellEditor = $extend(dorado.widget.grid.SimpleCellEditor, /** @scope dorado.widget.grid.DefaultCellEditor.prototype */ {
 	
 		createEditorControl: function() {
-			var column = this.column, editor = this.getEditorControl(), grid = column._grid;
+			var editor, column = this.column, grid = column._grid;
+			var dt = column.get("dataType"), dtCode = dt ? dt._code : -1;
+			var trigger = column.get("trigger"), displayFormat = column.get("displayFormat"), typeFormat = column.get("typeFormat");
+			var pd = column._propertyDef;
+			if (!trigger) {
+				if (pd && pd._mapping) {
+					trigger = new dorado.widget.AutoMappingDropDown({
+						items: pd._mapping
+					});
+				} else if (dtCode == dorado.DataType.PRIMITIVE_BOOLEAN || dtCode == dorado.DataType.BOOLEAN) {
+					editor = new dorado.widget.CheckBox({
+						onValue: true,
+						offValue: false
+					});
+					$fly(editor.getDom()).addClass("d-checkbox-center");
+				}
+			}
+			
 			if (!editor) {
-				var dt = column.get("dataType"), dtCode = dt ? dt._code : -1;
-				var trigger = column.get("trigger"), displayFormat = column.get("displayFormat"), typeFormat = column.get("typeFormat");
-				var pd = column._propertyDef;
-				if (!trigger) {
-					if (pd && pd._mapping) {
-						trigger = new dorado.widget.AutoMappingDropDown({
-							items: pd._mapping
-						});
-					} else if (dtCode == dorado.DataType.PRIMITIVE_BOOLEAN || dtCode == dorado.DataType.BOOLEAN) {
-						editor = new dorado.widget.CheckBox({
-							onValue: true,
-							offValue: false
-						});
-						$fly(editor.getDom()).addClass("d-checkbox-center");
-					}
+				if (column._wrappable) {
+					editor = new dorado.widget.TextArea({
+						trigger: trigger
+					});
+					this.minWidth = 120;
+					this.minHeight = 40;
+				} else {
+					if (!dtCode || (pd && pd._mapping)) dt = undefined;
+					editor = new dorado.widget.TextEditor({
+						dataType: dt,
+						displayFormat: displayFormat,
+						typeFormat: typeFormat,
+						trigger: trigger
+					});
 				}
-				
-				if (!editor) {
-					if (column._wrappable) {
-						editor = new dorado.widget.TextArea({
-							trigger: trigger
-						});
-						this.minWidth = 120;
-						this.minHeight = 40;
-					} else {
-						if (!dtCode || (pd && pd._mapping)) dt = undefined;
-						editor = new dorado.widget.TextEditor({
-							dataType: dt,
-							displayFormat: displayFormat,
-							typeFormat: typeFormat,
-							trigger: trigger
-						});
-					}
-				}
-				
-				var cellEditor = this;
-				editor.addListener("beforePost", function(self, arg) {
-					cellEditor.beforePost(arg);
-				}).addListener("onPost", function(self, arg) {
-					cellEditor.onPost(arg);
-				}).addListener("onBlur", function(self) {
-					if ((new Date() - cellEditor._showTimestamp) > 300) cellEditor.hide();
-				});
-				editor._cellEditor = cellEditor; // 主要供DropDown进行判断
-				editor._propertyDef = column._propertyDef; // 主要供AutoMappingDropDown使用
 			}
 			return editor;
 		},
