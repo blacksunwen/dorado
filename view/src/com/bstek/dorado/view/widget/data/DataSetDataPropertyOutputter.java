@@ -20,9 +20,8 @@ public class DataSetDataPropertyOutputter extends DataOutputter implements
 		if (LoadMode.preload.equals(loadMode)) {
 			Object data = dataSet.getData();
 
-			jsonBuilder.escapeableKey(property).beginValue();
+			jsonBuilder.escapeableKey(property);
 			outputData(data, context);
-			jsonBuilder.endValue();
 		} else if (LoadMode.manual.equals(loadMode)) {
 			jsonBuilder.key(property).value(null);
 		}

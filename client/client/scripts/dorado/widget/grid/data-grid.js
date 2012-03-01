@@ -603,10 +603,14 @@
 						var column = dataColumns[i];
 						if (!column._property) continue;
 						var text = filterEntity.get(column._property);
-						if (text != null) criterions.push({
-							property: column._property,
-							expression: text
-						});
+						if (text != null) {
+							var dataType = column.get("dataType");
+							criterions.push({
+								property: column._property,
+								dataType: ((dataType instanceof dorado.EntityDataType || dataType instanceof dorado.AggregationDataType) ? undefined : dataType._name),
+								expression: text
+							});
+						}
 					}
 				}
 				

@@ -15,11 +15,11 @@ import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.data.JsonUtils;
 import com.bstek.dorado.data.entity.EntityUtils;
 import com.bstek.dorado.data.provider.Criteria;
-import com.bstek.dorado.data.provider.Criterion;
 import com.bstek.dorado.data.provider.DataProvider;
-import com.bstek.dorado.data.provider.FilterCriterion;
 import com.bstek.dorado.data.provider.Order;
 import com.bstek.dorado.data.provider.Page;
+import com.bstek.dorado.data.provider.filter.FilterCriterion;
+import com.bstek.dorado.data.provider.filter.FilterCriterionParser;
 import com.bstek.dorado.data.provider.manager.DataProviderManager;
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.data.variant.Record;
@@ -35,12 +35,18 @@ import com.bstek.dorado.web.DoradoContext;
  */
 public class LoadDataServiceProcessor extends DataServiceProcessorSupport {
 	private DataProviderManager dataProviderManager;
+	private FilterCriterionParser filterCriterionParser;
 
 	/**
 	 * 设置数据提供器的管理器。
 	 */
 	public void setDataProviderManager(DataProviderManager dataProviderManager) {
 		this.dataProviderManager = dataProviderManager;
+	}
+
+	public void setFilterCriterionParser(
+			FilterCriterionParser filterCriterionParser) {
+		this.filterCriterionParser = filterCriterionParser;
 	}
 
 	protected DataProvider getDataProvider(String dataProviderName)
@@ -98,7 +104,7 @@ public class LoadDataServiceProcessor extends DataServiceProcessorSupport {
 		}
 	}
 
-	protected Criteria getCriteria(ObjectNode rudeCriteria) {
+	protected Criteria getCriteria(ObjectNode rudeCriteria) throws Exception {
 		Criteria criteria = new Criteria();
 		if (rudeCriteria.has("criterions")) {
 			ArrayNode criterions = (ArrayNode) rudeCriteria.get("criterions");
@@ -106,9 +112,21 @@ public class LoadDataServiceProcessor extends DataServiceProcessorSupport {
 				for (Iterator<JsonNode> it = criterions.iterator(); it
 						.hasNext();) {
 					ObjectNode rudeCriterion = (ObjectNode) it.next();
-					Criterion criterion = new FilterCriterion(
-							JsonUtils.getString(rudeCriterion, "property"),
-							JsonUtils.getString(rudeCriterion, "expression"));
+
+					String property = JsonUtils.getString(rudeCriterion,
+							"property");
+					String expression = JsonUtils.getString(rudeCriterion,
+							"expression");
+					String dataTypeName = JsonUtils.getString(rudeCriterion,
+							"dataType");
+					DataType dataType = null;
+					if (StringUtils.isNotEmpty(dataTypeName)) {
+						dataType = getDataType(dataTypeName);
+					}
+
+					FilterCriterion criterion = filterCriterionParser
+							.createFilterCriterion(property, dataType,
+									expression);
 					criteria.AddCriterion(criterion);
 				}
 			}
