@@ -1869,7 +1869,7 @@
 					var text = filterEntity.get(column._property);
 					if (text == null) continue;
 
-					var v = dorado.Toolkits.parseFilterValue(text), operator = v[0], value = v[1];
+					var v = dorado.Toolkits.parseFilterValue(text + ''), operator = v[0], value = v[1];
 					var dataType = column.get("dataType");
 					if (!operator && (!dataType || dataType._code == dorado.DataType.STRING)) {
 						operator = "like";

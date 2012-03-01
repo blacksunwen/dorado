@@ -605,7 +605,7 @@
 						var expression = filterEntity.get(column._property);
 						if (expression != null) {
 							var dataType = column.get("dataType"), typeFormat = column.get("typeFormat");
-							var v = dorado.Toolkits.parseFilterValue(expression), operator = v[0], value = v[1];
+							var v = dorado.Toolkits.parseFilterValue(expression + ''), operator = v[0], value = v[1];
 							if (dataType) {
 								value = dataType.parse(value, typeFormat);
 								expression = operator + ' ' + dorado.JSON.stringify(value);
