@@ -1,6 +1,6 @@
 (function() {
 
-	var validItemCodes = ["|<", "<", ">", ">|", "goto", "+", "-", "x", "|"];
+	var validItemCodes = ["|<", "<", ">", ">|", "goto", "info", "+", "-", "x", "|"];
 	var defaultShowTextItemCodes = ["goto", "+", "-", "x"];
 	
 	/**
@@ -282,6 +282,9 @@
 						}
 					});
 					break;
+				case "info":
+					item = new dorado.widget.Label();
+					break;
 				case "+":
 					item = new ToolBarButton({
 						icon: itemCode.showIcon ? "url(>skin>common/icons.gif) -120px 0px" : null,
@@ -389,7 +392,7 @@
 			
 			var list = this._entities;
 			if (!(list instanceof dorado.EntityList)) list = null;
-			var pageNo = list ? list.pageNo : 1, pageCount = list ? list.pageCount : 1;
+			var pageNo = list ? list.pageNo : 1, pageCount = list ? list.pageCount : 1, entityCount = list ? list.entityCount : 0;
 			var current = list ? list.current : null, disabled = this._disabled;
 			switch (itemCode.code) {
 				case "|<":
@@ -408,8 +411,13 @@
 					item.set({
 						disabled: disabled || pageCount == 1,
 						pageNo: pageNo,
-						pageCount: pageCount
+						pageCount: pageCount,
+						entityCount: entityCount
 					});
+					break;
+				case "info":
+					var text = $resource("dorado.baseWidget.DataPilotInfo", pageNo, pageCount, entityCount);
+					item.set("text", text);
 					break;
 				case "+":
 					item.set("disabled", disabled || (this._dataSet ? this._dataSet._readOnly : true));
@@ -440,6 +448,10 @@
 			
 			pageCount: {
 				defaultValue: 1
+			},
+			
+			entityCount: {
+				defaultValue: 0
 			},
 			
 			disabled: {}
@@ -511,8 +523,8 @@
 			
 			var spinner = this._spinner, pageCountChanged = false;
 			if (this._pageCount != this._currentPageCount) {
-				$fly(this._labelPrefix).text($resource("dorado.baseWidget.DataPilotGotoPagePrefix", this._pageCount));
-				$fly(this._labelSuffix).text($resource("dorado.baseWidget.DataPilotGotoPageSuffix", this._pageCount));
+				$fly(this._labelPrefix).text($resource("dorado.baseWidget.DataPilotGotoPagePrefix", this._pageNo, this._pageCount, this._entityCount));
+				$fly(this._labelSuffix).text($resource("dorado.baseWidget.DataPilotGotoPageSuffix", this._pageNo, this._pageCount, this._entityCount));
 				
 				this._currentPageCount = this._pageCount;
 				spinner.set("max", this._pageCount);
