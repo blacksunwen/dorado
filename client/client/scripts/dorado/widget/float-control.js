@@ -56,7 +56,7 @@ dorado.dequeue = function(namespace) {
 					
 					var attributeWatcher = this.getAttributeWatcher();
 					if (attributeWatcher.getWritingTimes("visible") == 0) {
-						this._visible = !value;
+						this._visible = !floating;
 					}
 					this._floating = floating;
 					
