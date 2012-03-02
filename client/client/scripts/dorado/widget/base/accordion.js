@@ -199,7 +199,17 @@ dorado.widget.Accordion = $extend(dorado.widget.Control, /** @scope dorado.widge
 		className: {
 			defaultValue: "d-accordion"
 		},
-		
+
+		/**
+		 * 在切换Section的是否要使用动画。<br />
+		 * 在IE下，该属性默认值为false，其他浏览器为true。
+		 * @attribute
+		 * @type boolean
+		 */
+		animate: {
+	         defaultValue: dorado.Browser.msie ? false : true
+		},
+
 		/**
 		 * Accordion中的Section。
 		 * @attribute
@@ -433,7 +443,7 @@ dorado.widget.Accordion = $extend(dorado.widget.Control, /** @scope dorado.widge
 			}
 			section.fireEvent("onCaptionClick", section);
 			if (section._expandable) {
-				accordion.doSetCurrentSection(section, true);
+				accordion.doSetCurrentSection(section, !!accordion._animate);
 			}
 		});
 	},
