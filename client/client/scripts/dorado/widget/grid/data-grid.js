@@ -613,7 +613,7 @@
 							
 							criterions.push({
 								property: column._property,
-								dataType: ((dataType instanceof dorado.EntityDataType || dataType instanceof dorado.AggregationDataType) ? undefined : dataType._name),
+								dataType: ((!dataType || dataType instanceof dorado.EntityDataType || dataType instanceof dorado.AggregationDataType) ? undefined : dataType._name),
 								expression: expression
 							});
 						}
