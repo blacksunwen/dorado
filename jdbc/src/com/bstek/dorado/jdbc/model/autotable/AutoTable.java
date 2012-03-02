@@ -292,7 +292,7 @@ public class AutoTable extends AbstractTable {
 		return whereToken;
 	}
 	
-	private String baseMatchRuleToken(BaseMatchRule bmr, JdbcParameterSource p) {
+	private String baseMatchRuleToken(BaseMatchRule bmr, JdbcParameterSource parameterSource) {
 		if (!bmr.isAvailable()) {
 			return "";
 		} else {
@@ -313,9 +313,9 @@ public class AutoTable extends AbstractTable {
 				if (StringUtils.isNotEmpty(strValue) && strValue.length() > 1) {
 					if(strValue.charAt(0) == ':') {
 						String pn = strValue.substring(1);
-						if (p.hasValue(pn)) {
+						if (parameterSource.hasValue(pn)) {
 							parameterName = pn;
-							value = p.getValue(pn);
+							value = parameterSource.getValue(pn);
 						} else {
 							value = null;
 						}
@@ -325,14 +325,14 @@ public class AutoTable extends AbstractTable {
 			
 			if (value != null) {
 				if (parameterName == null) {
-					parameterName = p.addValue(value);
+					parameterName = parameterSource.addValue(value);
 				}
 				
 				SqlConstants.Operator sqlOperator = SqlConstants.Operator.value(operator.trim());
 				String opToken = bmr.isNot() ? sqlOperator.notSQL(): sqlOperator.toSQL();
 				
 				Object parameterValue = sqlOperator.parameterValue(value);
-				p.setValue(parameterName, parameterValue);
+				parameterSource.setValue(parameterName, parameterValue);
 				
 				return tableAlias + "." + columnName + " " + opToken + " :" + parameterName;
 			}

@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.bstek.dorado.jdbc.AbstractJdbcTestCase;
 
-public class Mssql2008JdbcTestCase extends AbstractJdbcTestCase {
+class Mssql2008JdbcTestCase extends AbstractJdbcTestCase {
 
 	public static final String ENV_NAME = "mssql2000";
 	

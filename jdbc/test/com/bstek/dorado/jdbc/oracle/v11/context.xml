@@ -27,12 +27,12 @@
     	<property name="configLocation" value="classpath:com/bstek/dorado/jdbc/oracle/v11/*.model.xml"/>
     </bean>
     
-    <bean parent="dorado.jdbcConfigTemplate">
-        <property name="configLocations">
-            <list>
-                <value>classpath:com/bstek/dorado/jdbc/oracle/v11/*.dbm.xml</value>
-            </list>
-        </property>
-    </bean>
+	<bean parent="dorado.jdbcConfigTemplate">
+	    <property name="configLocations">
+	        <list>
+	            <value>classpath:com/bstek/dorado/jdbc/oracle/v11/*.dbm.xml</value>
+	        </list>
+	    </property>
+	</bean>
     
 </beans>

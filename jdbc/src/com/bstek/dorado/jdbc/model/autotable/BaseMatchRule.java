@@ -1,5 +1,6 @@
 package com.bstek.dorado.jdbc.model.autotable;
 
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.jdbc.model.AbstractColumn;
 import com.bstek.dorado.jdbc.model.table.Table;
@@ -52,6 +53,7 @@ public class BaseMatchRule extends AbstractMatchRule {
 		return this.columnName;
 	}
 
+	@IdeProperty(enumValues="=,<>,>,<,>=,<=,in,like,like%,%like,%like%,is null,is not null")
 	public String getOperator() {
 		return operator;
 	}

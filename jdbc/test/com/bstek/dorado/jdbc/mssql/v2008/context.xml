@@ -10,8 +10,8 @@
             <bean class="com.microsoft.sqlserver.jdbc.SQLServerDataSource">
                 <property name="user" value="sa"/>
                 <property name="password" value="bstek"/>
-                <property name="databaseName" value="DORADOJDBC"/>
-                <property name="serverName" value="192.168.18.235"/>
+                <property name="databaseName" value="DORADO"/>
+                <property name="serverName" value="192.168.18.92"/>
                 <property name="portNumber" value="1433"/>
             </bean>
         </property>
