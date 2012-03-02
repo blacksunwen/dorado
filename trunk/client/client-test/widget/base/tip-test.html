@@ -5,7 +5,12 @@
 	<script type="text/javascript" src="../../include-all.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<script type="text/javascript">
-		var view = new dorado.widget.View({ layout: "Anchor" });
+		var view = new dorado.widget.View({
+            layout: "Anchor",
+            children: [{
+               "$type":"Tip","visible":true,"center":true,"text":"测试一下！","arrowDirection":"top","caption":"Hello","modalType":"dark"
+            }]
+        });
 
 		var tip = new dorado.widget.Tip({
 			id: "tip1",

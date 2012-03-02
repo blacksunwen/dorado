@@ -1,0 +1,26 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="expires" content="0" />
+    <script type="text/javascript" src="../../include-all.js"></script>
+    <script language="javascript" type="text/javascript">
+        jQuery(document).ready(function(){
+            AUTO_APPEND_TO_TOPVIEW=false;
+            var v=new dorado.widget.View({"id":"viewMain","name":"sample.a"});
+            function f(v){v.set("children",[{"$type":"Tip","animateType":"slide","closeable":true,"autoAdjustPosition":false,"offsetTop":10,"text":"<div class=\"bTips\">亲，我们<span>强烈推荐<\/span>您使用：<br><a href=\"http://www.google.com/chrome\" target=\"_blank\" title=\"下载Chrome\">谷歌浏览器<\/a>或者<a href=\"http://windows.microsoft.com/zh-CN/internet-explorer/products/ie/home\" target=\"_blank\" title=\"下载IE9\">IE9<\/a>浏览器，可以使您的操作更加流畅！<\/div>","width":"340","arrowDirection":"bottom","caption":"<font color=red>温馨提示：<\/font>","modalType":"dark","offsetLeft":10,"listener":{"onCreate":(function(self,arg){
+                self.show();
+            })}}]);}
+            f(v);
+            AUTO_APPEND_TO_TOPVIEW=true;
+            var doradoView = document.getElementById("doradoView");
+            if (doradoView) v.replace(doradoView);
+        });
+    </script>
+</head>
+<body scroll="no" style="margin:0px; overflow:hidden">
+<label id="doradoView" style="display:none" />
+</body>
+</html>
