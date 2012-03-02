@@ -27,7 +27,7 @@
     white-space: nowrap;
 }
 
-.i-grid .data-table td .wrappable {
+.i-grid .data-table .wrappable {
     white-space: normal;
     word-wrap: break-word;
     word-break: normal;
