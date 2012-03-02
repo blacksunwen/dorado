@@ -147,11 +147,11 @@ public class JdbcDataResolver extends AbstractDataResolver {
 	protected List<JdbcDataResolverItem> createResolverItems(DataItems dataItems) {
 		List<JdbcDataResolverItem> resolverItems = this.getItems();
 		if (resolverItems == null || resolverItems.isEmpty()) {
-			resolverItems = new ArrayList<JdbcDataResolverItem>();
 			if (dataItems.isEmpty()) {
 				return null;
 			}
 			
+			resolverItems = new ArrayList<JdbcDataResolverItem>();
 			Set<String> nameSet = dataItems.keySet();
 			for (String name: nameSet) {
 				Object dataObject = dataItems.get(name);
@@ -170,9 +170,9 @@ public class JdbcDataResolver extends AbstractDataResolver {
 			Set<String> itemNameSet = dataItems.keySet();
 			for (String itemName: itemNameSet) {
 				JdbcDataResolverItem resolverItem = null;
-				for (JdbcDataResolverItem item: resolverItems2) {
-					if (itemName.equals(item.getName())) {
-						resolverItem = item;
+				for (JdbcDataResolverItem item2: resolverItems2) {
+					if (itemName.equals(item2.getName())) {
+						resolverItem = item2;
 						break;
 					}
 				}
@@ -206,7 +206,7 @@ public class JdbcDataResolver extends AbstractDataResolver {
 	
 	protected DataType getDataType(Object dataObject) {
 		if (dataObject instanceof Collection) {
-			return EntityUtils.getDataType((Collection<?>) dataObject); 
+			return EntityUtils.getDataType((Collection<?>) dataObject).getElementDataType(); 
 		} else {
 			return EntityUtils.getDataType(dataObject);
 		}

@@ -1,5 +1,7 @@
 package com.bstek.dorado.jdbc;
 
+import com.bstek.dorado.data.variant.MetaData;
+
 /**
  * 抽象的JDBC操作的上下文
  * 
@@ -10,7 +12,8 @@ public abstract class AbstractJdbcContext {
 
 	private JdbcEnviroment enviroment;
 	private Object parameter;
-
+	private MetaData metaData;
+	
 	public AbstractJdbcContext(JdbcEnviroment enviroment, Object parameter) {
 		this.enviroment = enviroment;
 		this.parameter= parameter;
@@ -32,4 +35,11 @@ public abstract class AbstractJdbcContext {
 		this.parameter = parameter;
 	}
 
+	public MetaData getMetaData() {
+		if (metaData == null) {
+			metaData = new MetaData();
+		}
+		
+		return metaData;
+	}
 }
