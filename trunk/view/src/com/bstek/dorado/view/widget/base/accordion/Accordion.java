@@ -23,7 +23,8 @@ import com.bstek.dorado.view.widget.InnerElementList;
 		@ClientEvent(name = "onCurrentSectionChange") })
 public class Accordion extends Control {
 	private List<Section> sections = new InnerElementList<Section>(this);
-
+	private boolean animate;
+	
 	public void addSection(Section section) {
 		sections.add(section);
 	}
@@ -32,5 +33,13 @@ public class Accordion extends Control {
 	@ClientProperty
 	public List<Section> getSections() {
 		return sections;
+	}
+
+	public boolean isAnimate() {
+		return animate;
+	}
+
+	public void setAnimate(boolean animate) {
+		this.animate = animate;
 	}
 }
