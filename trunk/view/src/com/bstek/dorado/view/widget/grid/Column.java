@@ -27,6 +27,7 @@ public abstract class Column extends ClientEventSupportedObject implements
 	private String name;
 	private String caption;
 	private Align align;
+	private Align headerAlign = Align.left;
 	private String headerRenderer;
 	private boolean visible = true;
 	private boolean supportsOptionMenu = true;
@@ -57,6 +58,15 @@ public abstract class Column extends ClientEventSupportedObject implements
 
 	public void setAlign(Align align) {
 		this.align = align;
+	}
+
+	@ClientProperty(escapeValue = "left")
+	public Align getHeaderAlign() {
+		return headerAlign;
+	}
+
+	public void setHeaderAlign(Align headerAlign) {
+		this.headerAlign = headerAlign;
 	}
 
 	public String getHeaderRenderer() {
