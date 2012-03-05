@@ -12,9 +12,9 @@
 	<classpathentry kind="lib" path="jdbc-driver/mysql/mysql-connector-java-5.1.17-bin.jar"/>
 	<classpathentry kind="lib" path="jdbc-driver/oracle11/orai18n.jar"/>
 	<classpathentry kind="lib" path="jdbc-driver/oracle11/runtime12.jar"/>
-	<classpathentry kind="lib" path="jdbc-driver/oracle11/ojdbc5_g.jar"/>
 	<classpathentry kind="lib" path="jdbc-driver/db2/db2jcc_license_cisuz.jar"/>
 	<classpathentry kind="lib" path="jdbc-driver/db2/db2jcc.jar"/>
+	<classpathentry kind="lib" path="jdbc-driver/oracle11/ojdbc6.jar"/>
 	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?ivyXmlPath=..%2Fivy%2Fivy.xml&amp;confs=*">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.nondependency" value=""/>

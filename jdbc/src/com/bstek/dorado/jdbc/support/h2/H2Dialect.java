@@ -12,6 +12,11 @@ import com.bstek.dorado.util.Assert;
  */
 public class H2Dialect extends AbstractDialect {
 
+	public H2Dialect() {
+		super();
+		this.setDefaultSchema("PUBLIC");
+	}
+	
 	@Override
 	public boolean isNarrowSupport() {
 		return true;
