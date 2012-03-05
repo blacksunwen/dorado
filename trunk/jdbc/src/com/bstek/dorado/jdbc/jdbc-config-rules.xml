@@ -9,4 +9,6 @@
 			<Prop name="autoCreateDataType" type="boolean" defaultValue="false"/>
 		</PrimitiveProps>
 	</Rule>
+	
+	<Rule name="JdbcAgent" type="com.bstek.dorado.jdbc.ide.DefaultAgent"/>
 </RuleSet>

@@ -2,6 +2,7 @@ package com.bstek.dorado.jdbc.oracle.v11;
 
 import junit.framework.Assert;
 
+import com.bstek.dorado.jdbc.ide.resolver.ListJdbcTypeResolver;
 import com.bstek.dorado.jdbc.ide.resolver.ListSpaceResolver;
 import com.bstek.dorado.jdbc.ide.resolver.ListTableResolver;
 
@@ -13,6 +14,13 @@ public class ResolverTest extends AbstractOracle11JdbcTestCase {
 		
 		System.out.println(xml);
 		Assert.assertTrue(xml.indexOf("DORADO") >=0);
+	}
+	
+	public void testListJdbcType() {
+		ListJdbcTypeResolver resolver = new ListJdbcTypeResolver();
+		String str = resolver.toContent(null);
+		
+		System.out.println(str);
 	}
 	
 	public void testListTable1() {

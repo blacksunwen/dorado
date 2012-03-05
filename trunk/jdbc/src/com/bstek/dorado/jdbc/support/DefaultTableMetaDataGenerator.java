@@ -59,12 +59,11 @@ public class DefaultTableMetaDataGenerator implements TableMetaDataGenerator {
 			schema = namespace;
 		}
 		
-		return listTableMetas(jdbcEnv, catalog, schema, tableNamePattern, types);
+		return listTableMetas(jdbcEnv.getDataSource(), catalog, schema, tableNamePattern, types);
 	}
 	
-	protected List<Map<String, String>> listTableMetas(JdbcEnviroment jdbcEnv, 
+	protected List<Map<String, String>> listTableMetas(DataSource dataSource, 
 			final String catalog, final String schema, final String tableNamePattern, final String[] types) {
-		DataSource dataSource = jdbcEnv.getDataSource();
 		try {
 			@SuppressWarnings("unchecked")
 			List<Map<String, String>> metaData = (List<Map<String, String>>)
@@ -117,7 +116,7 @@ public class DefaultTableMetaDataGenerator implements TableMetaDataGenerator {
 	}
 	
 	protected Map<String, String> tableMeta(JdbcEnviroment jdbcEnv, String catalog, String schema, String table) {
-		List<Map<String,String>> tables = listTableMetas(jdbcEnv, catalog, schema, table, null);
+		List<Map<String,String>> tables = listTableMetas(jdbcEnv.getDataSource(), catalog, schema, table, null);
 		
 		if (tables.size() == 0) {
 			throw new IllegalArgumentException("no table found from JdbcEnviroment [" + jdbcEnv.getName() + "], " +

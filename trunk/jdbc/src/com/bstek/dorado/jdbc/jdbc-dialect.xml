@@ -41,13 +41,10 @@
 			</list>
 		</property>
 	</bean>
-	<bean id="dorado.jdbc.h2Dialect" class="com.bstek.dorado.jdbc.support.h2.H2Dialect" parent="dorado.dialectTemplate" abstract="true">
-	   <property name="defaultSchema" value="PUBLIC"/>
-	</bean>
+	
+	<bean id="dorado.jdbc.h2Dialect" class="com.bstek.dorado.jdbc.support.h2.H2Dialect" parent="dorado.dialectTemplate" abstract="true"/>
 	<bean id="dorado.jdbc.oracleDialect" class="com.bstek.dorado.jdbc.support.oracle.OracleDialect" parent="dorado.dialectTemplate" abstract="true"/>
-	<bean id="dorado.jdbc.mssqlDialect" class="com.bstek.dorado.jdbc.support.mssql.MssqlDialect" parent="dorado.dialectTemplate" abstract="true">
-	   <property name="defaultSchema" value="dbo"/>
-	</bean>
+	<bean id="dorado.jdbc.mssqlDialect" class="com.bstek.dorado.jdbc.support.mssql.MssqlDialect" parent="dorado.dialectTemplate" abstract="true"/>
 	<bean id="dorado.jdbc.mysqlDialect" class="com.bstek.dorado.jdbc.support.mysql.MysqlDialect" parent="dorado.dialectTemplate" abstract="true"/>
 	<bean id="dorado.jdbc.db2Dialect" class="com.bstek.dorado.jdbc.support.db2.Db2Dialect" parent="dorado.dialectTemplate" abstract="true"/>
 	<bean id="dorado.jdbc.derbyDialect" class="com.bstek.dorado.jdbc.support.derby.DerbyDialect" parent="dorado.dialectTemplate" abstract="true"/>
