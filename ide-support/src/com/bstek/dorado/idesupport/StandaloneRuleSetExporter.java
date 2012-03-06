@@ -195,6 +195,11 @@ public class StandaloneRuleSetExporter {
 					+ "configure.properties";
 			loadConfigureProperties(configureStore, resourceLoader,
 					configureLocation, false);
+
+			configureLocation = HOME_LOCATION_PREFIX
+					+ "configure-debug.properties";
+			loadConfigureProperties(configureStore, resourceLoader,
+					configureLocation, false);
 		}
 
 		List<String> contextLocations = new ArrayList<String>();
