@@ -6,7 +6,9 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.Driver;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Enumeration;
 import java.util.Map;
 
@@ -42,7 +44,9 @@ public abstract class AbstractAgent implements IAgent {
 			throws Exception {
 		this.resetContext(paramerters);
 		try {
-			return doListSpaces();
+			String spaces = doListSpaces();
+			System.out.println("*> " + spaces);
+			return spaces;
 		} finally {
 			this.clearContext();
 		}
@@ -55,7 +59,9 @@ public abstract class AbstractAgent implements IAgent {
 			throws Exception {
 		this.resetContext(paramerters);
 		try {
-			return doListTables();
+			String tables = doListTables();
+			System.out.println("*> " + tables);
+			return tables;
 		} finally {
 			this.clearContext();
 		}
@@ -69,7 +75,9 @@ public abstract class AbstractAgent implements IAgent {
 		this.resetContext(paramerters);
 		try {
 			String[] typeAry = getJdbcTypeNames();
-			return StringUtils.join(typeAry, ",");
+			String types = StringUtils.join(typeAry, ",");
+			System.out.println("*> " + types);
+			return types;
 		} finally {
 			this.clearContext();
 		}
@@ -83,7 +91,9 @@ public abstract class AbstractAgent implements IAgent {
 		this.resetContext(paramerters);
 		try {
 			String[] typeAry = getKeyGeneratorNames();
-			return StringUtils.join(typeAry, ",");
+			String keyGenerators = StringUtils.join(typeAry, ",");
+			System.out.println("*> " + keyGenerators);
+			return keyGenerators;
 		} finally {
 			this.clearContext();
 		}
@@ -104,7 +114,9 @@ public abstract class AbstractAgent implements IAgent {
 				document = createSqlTableColumns(document);
 			}
 			
-			return toString(document);
+			String xml = toString(document);
+			System.out.println("*> " + xml);
+			return xml;
 		} finally {
 			this.clearContext();
 		}
@@ -145,7 +157,9 @@ public abstract class AbstractAgent implements IAgent {
 	@SuppressWarnings("unchecked")
 	protected void resetContext(Map<String, String> paramerters) throws Exception {
 		clearContext();
+		
 		this.paramerters = paramerters;
+		this.getDataSource();
 		
 		String driverClassName = paramerters.get(IAgent.DRIVER);
 		Class<?> driverClass = Class.forName(driverClassName, true, ClassUtils.getDefaultClassLoader());
@@ -154,7 +168,7 @@ public abstract class AbstractAgent implements IAgent {
 		Driver foundDriver = null;
 		while (driverEnu.hasMoreElements()) {
 			Driver driver = driverEnu.nextElement();
-			if(driverEnu.getClass().getName().equals(driverClassName)) {
+			if(driver.getClass().getName().equals(driverClassName)) {
 				foundDriver = driver;
 				break;
 			}
@@ -162,12 +176,12 @@ public abstract class AbstractAgent implements IAgent {
 		
 		if (foundDriver != null) {
 			this.driver = foundDriver;
-			System.out.println(" * found driver: " + foundDriver);
+			System.out.println("*> [DRIVER]found driver: " + driver);
 		} else {
 			this.driver = BeanUtils.instantiateClass((Class<Driver>)driverClass);
 			try {
 				DriverManager.registerDriver(driver);
-				System.out.println("* register driver: " + driver);
+				System.out.println("*> [DRIVER]register driver: " + driver);
 			} catch(Exception e) {
 				e.printStackTrace();
 			}
@@ -178,7 +192,7 @@ public abstract class AbstractAgent implements IAgent {
 		if (driver != null) {
 			try {
 				DriverManager.deregisterDriver(driver);
-				System.out.println("* deregister driver: " + driver);
+				System.out.println("*> [DRIVER]deregister driver: " + driver);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -228,4 +242,33 @@ public abstract class AbstractAgent implements IAgent {
 		return writer.toString();
 	}
 	
+	protected static void close(Connection conn) {
+		if (conn != null) {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	protected static void close(Statement stmt) {
+		if (stmt != null) {
+			try {
+				stmt.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	protected static void close(ResultSet rs) {
+		if (rs != null) {
+			try {
+				rs.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 }

@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import com.bstek.dorado.jdbc.ide.DefaultAgent;
 import com.bstek.dorado.jdbc.ide.IAgent;
+import com.bstek.dorado.jdbc.model.sqltable.SqlTable;
 import com.bstek.dorado.jdbc.model.table.Table;
 
 public class AgentTest {
@@ -19,7 +20,6 @@ public class AgentTest {
 		DefaultAgent agent = new DefaultAgent();
 		String spaces = agent.listSpaces(paramerters);
 		
-		System.out.println("Spaces: " + spaces);
 		Assert.assertTrue(spaces.indexOf("dorado") >= 0);
 	}
 	
@@ -30,30 +30,39 @@ public class AgentTest {
 		
 		DefaultAgent agent = new DefaultAgent();
 		String tables = agent.listTables(paramerters);
-		System.out.println("Tables: " + tables);
 	}
 	
 	@Test
-	public void testCreateColumns() throws Exception {
+	public void testTableCreateColumns() throws Exception {
 		Map<String, String> paramerters = makeParamerters();
+		paramerters.put(IAgent.TABLE_TYPE, Table.TYPE);
 		paramerters.put(IAgent.NAMESPACE, "dorado");
 		paramerters.put(IAgent.TABLE_NAME, "employee");
-		paramerters.put(IAgent.TABLE_TYPE, Table.TYPE);
 		paramerters.put(IAgent.XML, "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Table name=\"EMPLOYEE\" tableName=\"EMPLOYEE\"></Table>");
 		
 		{
 			DefaultAgent agent = new DefaultAgent();
 			String xml = agent.createColumns(paramerters);
-			System.out.println(xml);
 		}
 		
 		{
 			DefaultAgent agent = new DefaultAgent();
 			paramerters.put(IAgent.XML, "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Table name=\"EMPLOYEE\" tableName=\"EMPLOYEE\"><Columns><KeyColumn jdbcType=\"INTEGER-Integer\" name=\"ID\"/></Columns></Table>");
 			String xml = agent.createColumns(paramerters);
-			System.out.println(xml);
 		}
-		
+	}
+	
+	@Test
+	public void testSqlTableCreateColumns() throws Exception {
+		Map<String, String> paramerters = makeParamerters();
+		paramerters.put(IAgent.TABLE_TYPE, SqlTable.TYPE);
+		paramerters.put(IAgent.XML, "<?xml version=\"1.0\" encoding=\"UTF-8\"?><SqlTable name=\"sql_dept\" mainTable=\"DEPT\"></SqlTable>");
+		paramerters.put(IAgent.QUERY_SQL, "select * from DEPT");
+	
+		{
+			DefaultAgent agent = new DefaultAgent();
+			String xml = agent.createColumns(paramerters);
+		}
 	}
 	
 	private Map<String, String> makeParamerters() {
