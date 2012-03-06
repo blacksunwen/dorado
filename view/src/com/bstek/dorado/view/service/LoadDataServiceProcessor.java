@@ -224,7 +224,6 @@ public class LoadDataServiceProcessor extends DataServiceProcessorSupport {
 		outputContext.setUsePrettyJson(Configure
 				.getBoolean("view.outputPrettyJson"));
 		outputContext.setShouldOutputDataTypes(supportsEntity);
-		outputContext.setShouldOutputEntityState(supportsEntity);
 
 		outputResult(result, outputContext);
 	}
