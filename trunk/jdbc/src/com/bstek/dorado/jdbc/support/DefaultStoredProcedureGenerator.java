@@ -17,6 +17,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import com.bstek.dorado.jdbc.JdbcEnviroment;
+import com.bstek.dorado.jdbc.JdbcTypeManager;
 import com.bstek.dorado.jdbc.config.DomHelper;
 import com.bstek.dorado.jdbc.meta.StoredProcedureGenerator;
 import com.bstek.dorado.jdbc.model.storedprogram.ProgramParameter;
@@ -30,6 +31,16 @@ import com.bstek.dorado.jdbc.type.JdbcType;
  */
 public class DefaultStoredProcedureGenerator implements
 		StoredProcedureGenerator {
+
+	private JdbcTypeManager jdbcTypeManager;
+	
+	public JdbcTypeManager getJdbcTypeManager() {
+		return jdbcTypeManager;
+	}
+
+	public void setJdbcTypeManager(JdbcTypeManager jdbcTypeManager) {
+		this.jdbcTypeManager = jdbcTypeManager;
+	}
 
 	@Override
 	public Document create(JdbcEnviroment jdbcEnv, String catalog,
@@ -164,10 +175,11 @@ public class DefaultStoredProcedureGenerator implements
 					properties.put("type", ProgramParameter.Type.OUT.name());
 				}
 				
-				JdbcType jdbcType = jdbcEnv.getDialect().jdbcType(columnMeta);
-				if (jdbcType != null) {
-					properties.put("jdbcType", jdbcType.getName());
-				}
+				//TODO 重新实现
+//				JdbcType jdbcType = jdbcEnv.getDialect().jdbcType(columnMeta);
+//				if (jdbcType != null) {
+//					properties.put("jdbcType", jdbcType.getName());
+//				}
 				return properties;
 			} else {
 				return null;

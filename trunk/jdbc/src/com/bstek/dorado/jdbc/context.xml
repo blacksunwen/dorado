@@ -6,6 +6,7 @@
 	http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dorado-7.0.xsd">
 
 	<import resource="jdbc-parser.xml"/>
+	<import resource="jdbc-jdbctype.xml"/>
 	<import resource="jdbc-dialect.xml"/>
 	<import resource="jdbc-key-generator.xml"/>
 	<import resource="jdbc-ide.xml"/>
@@ -29,6 +30,8 @@
 		<property name="modelStrategy" ref="dorado.jdbc.modelStrategy"/>
 	</bean>
 	<bean id="dorado.jdbc.modelGeneratorSuit" class="com.bstek.dorado.jdbc.support.DefaultModelGeneratorSuit"/>
+	<bean id="dorado.jdbc.jdbcTypeManager" class="com.bstek.dorado.jdbc.support.DefaultJdbcTypeManager"/>
+	<bean id="dorado.jdbc.keyGeneratorManager" class="com.bstek.dorado.jdbc.support.DefaultKeyGeneratorManager"/>
 	
 	<!-- Custom Point -->
 	<bean id="dorado.jdbc.modelStrategy" class="com.bstek.dorado.jdbc.support.DefaultModelStrategy">

@@ -2,6 +2,8 @@ package com.bstek.dorado.jdbc.oracle.v11;
 
 import junit.framework.Assert;
 
+import com.bstek.dorado.core.Context;
+import com.bstek.dorado.jdbc.JdbcTypeManager;
 import com.bstek.dorado.jdbc.ide.resolver.ListJdbcTypeResolver;
 import com.bstek.dorado.jdbc.ide.resolver.ListSpaceResolver;
 import com.bstek.dorado.jdbc.ide.resolver.ListTableResolver;
@@ -16,9 +18,12 @@ public class ResolverTest extends AbstractOracle11JdbcTestCase {
 		Assert.assertTrue(xml.indexOf("DORADO") >=0);
 	}
 	
-	public void testListJdbcType() {
+	public void testListJdbcType() throws Exception {
+		Context context = Context.getCurrent();
+		JdbcTypeManager jdbcTypeManager = (JdbcTypeManager)context.getServiceBean("jdbc.jdbcTypeManager");
 		ListJdbcTypeResolver resolver = new ListJdbcTypeResolver();
-		String str = resolver.toContent(null);
+		resolver.setJdbcTypeManager(jdbcTypeManager);
+		String str = resolver.toContent();
 		
 		System.out.println(str);
 	}

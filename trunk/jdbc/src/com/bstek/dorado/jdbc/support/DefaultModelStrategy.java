@@ -17,7 +17,7 @@ import com.bstek.dorado.jdbc.ModelStrategy;
 import com.bstek.dorado.jdbc.config.AbstractDbTableDefinition;
 import com.bstek.dorado.jdbc.config.JdbcCreationContext;
 import com.bstek.dorado.jdbc.config.XmlConstants;
-import com.bstek.dorado.jdbc.model.AbstractColumn;
+import com.bstek.dorado.jdbc.model.AbstractDbColumn;
 import com.bstek.dorado.jdbc.model.DbTable;
 import com.bstek.dorado.jdbc.type.JdbcType;
 
@@ -99,8 +99,8 @@ public class DefaultModelStrategy implements ModelStrategy {
 		}
 		
 		DataTypeDefinition dataType = new DataTypeDefinition();
-		List<AbstractColumn> columns = table.getAllColumns();
-		for (AbstractColumn column: columns) {
+		List<AbstractDbColumn> columns = table.getAllColumns();
+		for (AbstractDbColumn column: columns) {
 			PropertyDefDefinition propertyDef = new PropertyDefDefinition();
 			
 			String propertyName = column.getPropertyName();

@@ -26,20 +26,20 @@ import com.bstek.dorado.util.Assert;
  */
 public abstract class AbstractTable extends AbstractDbElement implements DbTable {
 
-	private Map<String,AbstractColumn> columnMap = new LinkedHashMap<String,AbstractColumn>();
+	private Map<String,AbstractDbColumn> columnMap = new LinkedHashMap<String,AbstractDbColumn>();
 	private DbTableTrigger trigger;
 	
-	public List<AbstractColumn> getAllColumns() {
-		return new ArrayList<AbstractColumn>(columnMap.values());
+	public List<AbstractDbColumn> getAllColumns() {
+		return new ArrayList<AbstractDbColumn>(columnMap.values());
 	}
 	
-	public AbstractColumn getColumn(String name) {
-		AbstractColumn c = columnMap.get(name);
+	public AbstractDbColumn getColumn(String name) {
+		AbstractDbColumn c = columnMap.get(name);
 		Assert.notNull(c, "No column named [" + name + "] in table [" + this.getName() + "]");
 		return c;
 	}
 	
-	public void addColumn(AbstractColumn column) {
+	public void addColumn(AbstractDbColumn column) {
 		String columnName = column.getName();
 		Assert.notEmpty(columnName, "columnName must not be empty in table [" + this.getName() + "]");
 		
@@ -74,12 +74,12 @@ public abstract class AbstractTable extends AbstractDbElement implements DbTable
 				JdbcRecordOperation proxyOperation = new JdbcRecordOperation(proxyTable, proxyRecord, jdbcContext);
 				
 				Map<String, String> proxyPropertyMap = new HashMap<String, String>();
-				for (AbstractColumn c: this.getAllColumns()) {
+				for (AbstractDbColumn c: this.getAllColumns()) {
 					AbstractUpdatableColumn column = (AbstractUpdatableColumn)c;
 					if (this.acceptByProxy(column, state)) {
 						String nativeColumnName = column.getNativeColumn();
 						String propertyName = column.getPropertyName();
-						AbstractColumn tableColumn = proxyTable.getColumn(nativeColumnName);
+						AbstractDbColumn tableColumn = proxyTable.getColumn(nativeColumnName);
 						String tpn = tableColumn.getPropertyName();
 						if (StringUtils.isNotEmpty(tpn)) {
 							Object value = record.get(propertyName);

@@ -8,7 +8,7 @@ import com.bstek.dorado.annotation.XmlProperty;
  * @author mark.li@bstek.com
  *
  */
-public abstract class AbstractUpdatableColumn extends AbstractColumn {
+public abstract class AbstractUpdatableColumn extends AbstractDbColumn {
 	
 	private String nativeColumnName;
 	

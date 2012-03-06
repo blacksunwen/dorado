@@ -2,7 +2,7 @@ package com.bstek.dorado.jdbc.model.autotable;
 
 import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
-import com.bstek.dorado.jdbc.model.AbstractColumn;
+import com.bstek.dorado.jdbc.model.AbstractDbColumn;
 import com.bstek.dorado.jdbc.model.table.Table;
 import com.bstek.dorado.util.Assert;
 
@@ -37,7 +37,7 @@ public class BaseMatchRule extends AbstractMatchRule {
 		return this.fromTableName;
 	}
 
-	public AbstractColumn getColumnObject() {
+	public AbstractDbColumn getColumnObject() {
 		FromTable fromTable = this.getFromTableObject();
 		Assert.notEmpty(columnName);
 		

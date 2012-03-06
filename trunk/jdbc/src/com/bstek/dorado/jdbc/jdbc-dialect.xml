@@ -6,40 +6,6 @@
 	<!-- Dialect -->
 	<bean id="dorado.dialectTemplate" abstract="true">
 		<property name="sqlGenerator" ref="dorado.jdbc.sqlGenerator"/>
-		<property name="keyGenerators">
-			<list>
-				<bean class="com.bstek.dorado.jdbc.model.table.IdentityKeyGenerator"/>
-				<bean class="com.bstek.dorado.jdbc.model.table.JdkUuidKeyGenerator"/>
-				<bean class="com.bstek.dorado.jdbc.model.table.SequenceKeyGenerator"/>
-			</list>
-		</property>
-		<property name="jdbcTypes">
-			<list>
-				<bean class="com.bstek.dorado.jdbc.type.BitBoolean"/>
-				<bean class="com.bstek.dorado.jdbc.type.BooleanBoolean"/>
-				<bean class="com.bstek.dorado.jdbc.type.CharBoolean"/>
-				
-				<bean class="com.bstek.dorado.jdbc.type.SmallintShort"/>
-				<bean class="com.bstek.dorado.jdbc.type.IntegerInteger"/>
-				<bean class="com.bstek.dorado.jdbc.type.BigintLong"/>
-				<bean class="com.bstek.dorado.jdbc.type.RealFloat"/>
-				<bean class="com.bstek.dorado.jdbc.type.FloatDouble"/>
-				<bean class="com.bstek.dorado.jdbc.type.DoubleFloat"/>
-				<bean class="com.bstek.dorado.jdbc.type.NumricBigDecimal"/>
-				<bean class="com.bstek.dorado.jdbc.type.DecimalBigDecimal"/>
-				
-				<bean class="com.bstek.dorado.jdbc.type.TinyintByte"/>
-				
-				<bean class="com.bstek.dorado.jdbc.type.DateDate"/>
-				<bean class="com.bstek.dorado.jdbc.type.TimeDate"/>
-				<bean class="com.bstek.dorado.jdbc.type.TimestampDate"/>
-								
-				<bean class="com.bstek.dorado.jdbc.type.CharString"/>
-                <bean class="com.bstek.dorado.jdbc.type.VarcharString"/>
-                <bean class="com.bstek.dorado.jdbc.type.LongvarcharString"/>
-                <bean class="com.bstek.dorado.jdbc.type.ClobString"/>
-			</list>
-		</property>
 	</bean>
 	
 	<bean id="dorado.jdbc.h2Dialect" class="com.bstek.dorado.jdbc.support.h2.H2Dialect" parent="dorado.dialectTemplate" abstract="true"/>

@@ -5,46 +5,21 @@
 
 	<bean parent="dorado.idesupport.ruleConfigLoader">
 		<property name="configLocation" value="com/bstek/dorado/jdbc/jdbc-config-rules.xml"/>
+		<property name="initializerMap">
+			<map>
+				<entry key="AbstractDbColumn">
+					<bean class="com.bstek.dorado.jdbc.ide.AbstractDbColumnRuleTemplateInitializer"/>
+				</entry>
+				<entry key="TableKeyColumn">
+					<bean class="com.bstek.dorado.jdbc.ide.TableKeyColumnRuleTemplateInitializer"/>
+				</entry>
+				<entry key="JdbcDataResolver">
+					<bean class="com.bstek.dorado.jdbc.ide.JdbcDataResolverRuleTemplateInitializer"/>
+				</entry>
+				<entry key="Table">
+					<bean class="com.bstek.dorado.jdbc.ide.TableRuleTemplateInitializer"/>
+				</entry>
+			</map>
+		</property>
 	</bean>
-	
-	<!-- Resolver -->
-	<bean id="dorado.jdbc.ide.resolver.listEnviromentResolver" 
-	   class="com.bstek.dorado.jdbc.ide.resolver.ListJdbcEnviromentResolver"/>
-	<bean id="dorado.jdbc.ide.resolver.listSpaceResolver" 
-		class="com.bstek.dorado.jdbc.ide.resolver.ListSpaceResolver"/>
-	<bean id="dorado.jdbc.ide.resolver.listTableResolver" 
-	   class="com.bstek.dorado.jdbc.ide.resolver.ListTableResolver"/>
-	<bean id="dorado.jdbc.ide.resolver.listTableTypeResolver" 
-	   class="com.bstek.dorado.jdbc.ide.resolver.ListTableTypeResolver"/>
-    <bean id="dorado.jdbc.ide.resolver.listJdbcTypeResolver" 
-        class="com.bstek.dorado.jdbc.ide.resolver.ListJdbcTypeResolver"/>
-    <bean id="dorado.jdbc.ide.resolver.listKeyGeneratorResolver" 
-    	class="com.bstek.dorado.jdbc.ide.resolver.ListKeyGeneratorResolver"/>
-
-    <!-- Robot -->
-    <bean parent="dorado.idesupport.robotRegister">
-		<property name="name" value="jdbc-table-createDataType" />
-		<property name="label" value="Create DataType" />
-		<property name="viewObject" value="Table" />
-		<property name="robot">
-			<bean class="com.bstek.dorado.jdbc.ide.robot.CreateDataTypeRobot" />
-		</property>
-    </bean>
-    <bean parent="dorado.idesupport.robotRegister">
-		<property name="name" value="jdbc-createTable" />
-		<property name="label" value="Generate Columns" />
-		<property name="viewObject" value="Table" />
-		<property name="robot">
-			<bean class="com.bstek.dorado.jdbc.ide.robot.CreateTableRobot" />
-		</property>
-    </bean>
-    
-    <bean parent="dorado.idesupport.robotRegister">
-		<property name="name" value="jdbc-createSqlTable" />
-		<property name="label" value="Generate Columns" />
-		<property name="viewObject" value="SqlTable" />
-		<property name="robot">
-			<bean class="com.bstek.dorado.jdbc.ide.robot.CreateSqlTableRobot" />
-		</property>
-    </bean>
 </beans>

@@ -34,12 +34,13 @@ public class AgentTest {
 	}
 	
 	private Map<String, String> makeParamerters() {
-		Map<String, String> paramerters = new HashMap<String,String>();
+		Map<String, String> parameters = new HashMap<String,String>();
 		
-		paramerters.put(IAgent.URL, "jdbc:oracle:thin:@192.168.18.90:1521/DORADO");
-		paramerters.put(IAgent.USER, "dorado");
-		paramerters.put(IAgent.PASSWORD, "dorado");
-		return paramerters;
+		parameters.put(IAgent.URL, "jdbc:oracle:thin:@192.168.18.90:1521/DORADO");
+		parameters.put(IAgent.USER, "dorado");
+		parameters.put(IAgent.PASSWORD, "dorado");
+		parameters.put(IAgent.DRIVER, "oracle.jdbc.OracleDriver");
+		return parameters;
 	}
 	
 }

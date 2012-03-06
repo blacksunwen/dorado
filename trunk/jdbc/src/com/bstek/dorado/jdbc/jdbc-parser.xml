@@ -11,7 +11,9 @@
 	<bean id="dorado.jdbc.transactionDefinitionBeanPropertyParser" class="com.bstek.dorado.jdbc.config.TransactionDefinitionBeanPropertyParser" parent="dorado.propertyParser"/>
 	
 	<bean id="dorado.jdbc.triggerParser" class="com.bstek.dorado.jdbc.config.TriggerParser" parent="dorado.propertyParser"/>
-	<bean id="dorado.jdbc.jdbcTypeParser" class="com.bstek.dorado.jdbc.config.JdbcTypeParser" parent="dorado.propertyParser"/>
+	<bean id="dorado.jdbc.jdbcTypeParser" class="com.bstek.dorado.jdbc.config.JdbcTypeParser" parent="dorado.propertyParser">
+		<property name="jdbcTypeManager" ref="dorado.jdbc.jdbcTypeManager"/>
+	</bean>
 	<bean id="dorado.jdbc.keyGeneratorParser" class="com.bstek.dorado.jdbc.model.table.KeyGeneratorParser" parent="dorado.propertyParser"/>
 	<bean id="dorado.jdbc.tableReferenceParser" class="com.bstek.dorado.jdbc.model.table.TableReferenceParser" parent="dorado.propertyParser" />
 

@@ -8,9 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.bstek.dorado.jdbc.JdbcEnviroment;
-import com.bstek.dorado.jdbc.JdbcUtils;
-import com.bstek.dorado.jdbc.ide.Constants;
+import com.bstek.dorado.jdbc.JdbcTypeManager;
 import com.bstek.dorado.jdbc.type.JdbcType;
 
 /**
@@ -21,19 +19,25 @@ import com.bstek.dorado.jdbc.type.JdbcType;
  */
 public class ListJdbcTypeResolver extends AbstractResolver {
 
+	private JdbcTypeManager jdbcTypeManager;
+	
+	public JdbcTypeManager getJdbcTypeManager() {
+		return jdbcTypeManager;
+	}
+
+	public void setJdbcTypeManager(JdbcTypeManager jdbcTypeManager) {
+		this.jdbcTypeManager = jdbcTypeManager;
+	}
+	
 	@Override
 	public String getContent(HttpServletRequest request,
 			HttpServletResponse response) {
-		String envName = request.getParameter(Constants.PARAM_ENV);
-		
-		return toContent(envName);
+		return toContent();
 	}
 
-	public String toContent(String envName) {
-		JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(envName);
-		
-		List<JdbcType> types = jdbcEnv.getDialect().getJdbcTypes();
-		List<String> names = new ArrayList<String>(types.size());
+	public String toContent() {
+		JdbcType[] types = jdbcTypeManager.list();
+		List<String> names = new ArrayList<String>(types.length);
 		for (JdbcType type: types) {
 			names.add(type.getName());
 		}

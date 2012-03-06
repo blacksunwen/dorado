@@ -1,7 +1,6 @@
 package com.bstek.dorado.jdbc.model.table;
 
 import com.bstek.dorado.annotation.ClientProperty;
-import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
 
@@ -21,7 +20,6 @@ public class TableKeyColumn extends AbstractTableColumn {
 	private boolean updatable = false;
 	
 	@XmlProperty(parser="spring:dorado.jdbc.keyGeneratorParser")
-	@IdeProperty(highlight=1, editor="jdbc:service:list-keyGenerator")
 	public KeyGenerator<?> getKeyGenerator() {
 		return keyGenerator;
 	}

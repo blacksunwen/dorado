@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean class="com.bstek.dorado.jdbc.type.BitBoolean"/>
+	<bean class="com.bstek.dorado.jdbc.type.BooleanBoolean"/>
+	<bean class="com.bstek.dorado.jdbc.type.CharBoolean"/>
+	
+	<bean class="com.bstek.dorado.jdbc.type.SmallintShort"/>
+	<bean class="com.bstek.dorado.jdbc.type.IntegerInteger"/>
+	<bean class="com.bstek.dorado.jdbc.type.BigintLong"/>
+	<bean class="com.bstek.dorado.jdbc.type.RealFloat"/>
+	<bean class="com.bstek.dorado.jdbc.type.FloatDouble"/>
+	<bean class="com.bstek.dorado.jdbc.type.DoubleFloat"/>
+	<bean class="com.bstek.dorado.jdbc.type.NumricBigDecimal"/>
+	<bean class="com.bstek.dorado.jdbc.type.DecimalBigDecimal"/>
+	
+	<bean class="com.bstek.dorado.jdbc.type.TinyintByte"/>
+	
+	<bean class="com.bstek.dorado.jdbc.type.DateDate"/>
+	<bean class="com.bstek.dorado.jdbc.type.TimeDate"/>
+	<bean class="com.bstek.dorado.jdbc.type.TimestampDate"/>
+					
+	<bean class="com.bstek.dorado.jdbc.type.CharString"/>
+    <bean class="com.bstek.dorado.jdbc.type.VarcharString"/>
+    <bean class="com.bstek.dorado.jdbc.type.LongvarcharString"/>
+    <bean class="com.bstek.dorado.jdbc.type.ClobString"/>
+	
+</beans>

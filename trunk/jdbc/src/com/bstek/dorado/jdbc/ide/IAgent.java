@@ -16,14 +16,14 @@ public interface IAgent {
 	public static final String XML             = "xml";
 	public static final String TABLE_TYPE      = "tableType";//Table,SqlTable
 	
-	String listSpaces(Map<String, String> paramerters) throws Exception;
-	
 	String listTables(Map<String, String> paramerters) throws Exception;
 	
-	String listJdbcTypes(Map<String, String> paramerters) throws Exception;
-	
-	String listKeyGenerators(Map<String, String> paramerters) throws Exception;
-
 	String createColumns(Map<String, String> paramerters) throws Exception;
 	
+	@Deprecated
+	String listSpaces(Map<String, String> paramerters) throws Exception;
+	@Deprecated
+	String listJdbcTypes(Map<String, String> paramerters) throws Exception;
+	@Deprecated
+	String listKeyGenerators(Map<String, String> paramerters) throws Exception;
 }

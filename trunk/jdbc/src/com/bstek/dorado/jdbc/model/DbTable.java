@@ -17,9 +17,9 @@ import com.bstek.dorado.jdbc.sql.SelectSql;
  */
 public interface DbTable extends DbElement {
 
-	List<AbstractColumn> getAllColumns();
+	List<AbstractDbColumn> getAllColumns();
 	
-	AbstractColumn getColumn(String name);
+	AbstractDbColumn getColumn(String name);
 	
 	DbTableTrigger getTrigger();
 

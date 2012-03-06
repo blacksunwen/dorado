@@ -16,7 +16,7 @@ import com.bstek.dorado.jdbc.JdbcDataResolverContext;
 import com.bstek.dorado.jdbc.JdbcParameterSource;
 import com.bstek.dorado.jdbc.JdbcRecordOperationProxy;
 import com.bstek.dorado.jdbc.model.AbstractTable;
-import com.bstek.dorado.jdbc.model.AbstractColumn;
+import com.bstek.dorado.jdbc.model.AbstractDbColumn;
 import com.bstek.dorado.jdbc.sql.SelectSql;
 import com.bstek.dorado.jdbc.sql.SqlUtils;
 import com.bstek.dorado.jdbc.sql.SqlConstants.KeyWord;
@@ -59,7 +59,7 @@ public class Table extends AbstractTable {
 	private List<TableColumn> tableColumns = new ArrayList<TableColumn>();
 	private List<TableKeyColumn> keyColumns = new ArrayList<TableKeyColumn>();
 	
-	public void addColumn(AbstractColumn column) {
+	public void addColumn(AbstractDbColumn column) {
 		if (column instanceof TableKeyColumn) {
 			keyColumns.add((TableKeyColumn)column);
 		} else if (column instanceof TableColumn) {
@@ -75,7 +75,7 @@ public class Table extends AbstractTable {
 		return TYPE;
 	}
 
-	@IdeProperty(highlight=1, editor="jdbc:service:list-space")
+	@IdeProperty(highlight=1)
 	@XmlProperty(attributeOnly=true)
 	public String getNamespace() {
 		return namespace;
@@ -86,7 +86,7 @@ public class Table extends AbstractTable {
 	}
 
 	@XmlProperty(attributeOnly=true)
-	@IdeProperty(highlight=1, editor="jdbc:service:list-tables.xml")
+	@IdeProperty(highlight=1)
 	public String getTableName() {
 		return tableName;
 	}
@@ -154,9 +154,9 @@ public class Table extends AbstractTable {
 
 		//columnsToken
 		StringBuilder columnsToken = new StringBuilder();
-		List<AbstractColumn> columns = table.getAllColumns();
+		List<AbstractDbColumn> columns = table.getAllColumns();
 		for (int i=0, j=columns.size(), ableColumnCount = 0; i<j; i++) {
-			AbstractColumn column = columns.get(i);
+			AbstractDbColumn column = columns.get(i);
 			if (column.isSelectable()) {
 				if (ableColumnCount++ > 0) {
 					columnsToken.append(',');

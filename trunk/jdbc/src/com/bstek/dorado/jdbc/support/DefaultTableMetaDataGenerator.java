@@ -28,6 +28,8 @@ import org.w3c.dom.Element;
 import com.bstek.dorado.jdbc.Dialect;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.JdbcSpace;
+import com.bstek.dorado.jdbc.JdbcTypeManager;
+import com.bstek.dorado.jdbc.KeyGeneratorManager;
 import com.bstek.dorado.jdbc.config.ColumnDefinition;
 import com.bstek.dorado.jdbc.config.DomHelper;
 import com.bstek.dorado.jdbc.config.XmlConstants;
@@ -47,6 +49,24 @@ public class DefaultTableMetaDataGenerator implements TableMetaDataGenerator {
 
 	private static Log logger = LogFactory.getLog(DefaultTableMetaDataGenerator.class);
 	
+	private JdbcTypeManager jdbcTypeManager;
+	private KeyGeneratorManager keyGeneratorManager;
+	
+	public KeyGeneratorManager getKeyGeneratorManager() {
+		return keyGeneratorManager;
+	}
+
+	public void setKeyGeneratorManager(KeyGeneratorManager keyGeneratorManager) {
+		this.keyGeneratorManager = keyGeneratorManager;
+	}
+	public JdbcTypeManager getJdbcTypeManager() {
+		return jdbcTypeManager;
+	}
+
+	public void setJdbcTypeManager(JdbcTypeManager jdbcTypeManager) {
+		this.jdbcTypeManager = jdbcTypeManager;
+	}
+
 	@Override
 	public List<Map<String, String>> listTableMetas(final JdbcEnviroment jdbcEnv, 
 			final String namespace, final String tableNamePattern, final String[] types) {
@@ -254,14 +274,14 @@ public class DefaultTableMetaDataGenerator implements TableMetaDataGenerator {
 		
 		String jdbcType = columnProperties.get("jdbcType");
 		if (StringUtils.isNotEmpty(jdbcType)) {
-			JdbcType jdbcTypeObj = jdbcEnv.getDialect().getJdbcType(jdbcType);
+			JdbcType jdbcTypeObj = jdbcTypeManager.get(jdbcType);
 			columnDef.getProperties().put("jdbcType", jdbcTypeObj);
 		}
 		
 		if (JdbcConstants.YES.equalsIgnoreCase(columnProperties.get(JdbcConstants.IS_KEY))) {
 			String keyGenerator = columnProperties.get("keyGenerator");
 			if (StringUtils.isNotEmpty(keyGenerator)) {
-				KeyGenerator<Object> kg = jdbcEnv.getDialect().getKeyGenerator(keyGenerator);
+				KeyGenerator<Object> kg = keyGeneratorManager.get(keyGenerator);
 				columnDef.getProperties().put("keyGenerator", kg);
 			}
 		}
@@ -286,13 +306,15 @@ public class DefaultTableMetaDataGenerator implements TableMetaDataGenerator {
 		}
 	}
 	
+	//TODO 重新实现
 	protected String jdbcType(Map<String,String> column, JdbcEnviroment jdbcEnv) {
-		JdbcType jdbcType = jdbcEnv.getDialect().jdbcType(column);
-		if (jdbcType != null) {
-			return jdbcType.getName();
-		} else {
-			return null;
-		}
+		return null;
+//		JdbcType jdbcType = jdbcEnv.getDialect().jdbcType(column);
+//		if (jdbcType != null) {
+//			return jdbcType.getName();
+//		} else {
+//			return null;
+//		}
 	}
 	
 	private static class UsedTable {
