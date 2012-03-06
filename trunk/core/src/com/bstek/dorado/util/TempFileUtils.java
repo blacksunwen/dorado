@@ -40,7 +40,12 @@ public final class TempFileUtils {
 	private static File getTempDir() throws IOException {
 		if (tempDir == null) {
 			File rootDir = getRootDir();
-			FileUtils.clearDirectory(rootDir);
+
+			try {
+				FileUtils.clearDirectory(rootDir);
+			} catch (Exception e) {
+				// do nothing
+			}
 
 			int seed = 1;
 			do {
