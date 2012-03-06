@@ -12,9 +12,11 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 		<property name="impl" value="com.bstek.dorado.view.manager.ViewConfig" />
 	</bean>
 	<bean id="dorado.viewArgumentsParser" parent="dorado.dispatchableXmlParser" class="com.bstek.dorado.view.config.xml.ViewArgumentsParser">
+		<d:property-parser key="name" value-ref="dorado.ignoreParser" />
 		<d:property-parser key="value" value-ref="dorado.staticPropertyParser" />
 	</bean>
 	<bean id="dorado.viewContextParser" parent="dorado.dispatchableXmlParser" class="com.bstek.dorado.view.config.xml.ContextParser">
+		<d:property-parser key="name" value-ref="dorado.ignoreParser" />
 		<d:property-parser key="value" value-ref="dorado.staticPropertyParser" />
 	</bean>
 	<bean id="dorado.viewModelParser" class="com.bstek.dorado.view.config.xml.ModelParser">
