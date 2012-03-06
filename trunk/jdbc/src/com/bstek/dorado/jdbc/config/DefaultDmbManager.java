@@ -71,8 +71,12 @@ public class DefaultDmbManager extends AbstractDbmManager {
 		return super.getDefinition(name);
 	}
 	
+	private Boolean debug;
 	private boolean isDebug() {
-		return "debug".equalsIgnoreCase(Configure.getString("core.runMode"));
+		if (debug == null) {
+			debug = "debug".equalsIgnoreCase(Configure.getString("core.runMode"));
+		}
+		return debug;
 	}
 
 	@Override
@@ -123,7 +127,7 @@ public class DefaultDmbManager extends AbstractDbmManager {
 	
 	private void logResources(Resource[] resources) {
 		if (logger.isInfoEnabled()) {
-			String msg = "dbm already found: [";
+			String msg = "Registered dbm : [";
 			List<String> resourceNames = new ArrayList<String>(resources.length);
 			for (Resource resource: resources) {
 				resourceNames.add(resource.getPath());
