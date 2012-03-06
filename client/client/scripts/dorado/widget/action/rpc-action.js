@@ -187,18 +187,21 @@
 			var isDirty = entity.isDirty();
 
 			var data = entity._data;
-			for(var property in data) {
-				if(!data.hasOwnProperty(property)) continue;
-				if(property.charAt(0) == '$') continue;
+			for (var property in data) {
+				if (!data.hasOwnProperty(property)) continue;
+				if (property.charAt(0) == '$') continue;
 				var propertyDef = (entity._propertyDefs) ? entity._propertyDefs.get(property) : null;
-				if(!propertyDef || !propertyDef._submittable) continue;
-
+				if (!propertyDef || !propertyDef._submittable) continue;
+				
 				var value = entity.get(property, "never");
-				if( value instanceof dorado.EntityList) {
+				if (value instanceof dorado.EntityList) {
 					var it = value.iterator(true);
-					while(it.hasNext()) {
-						if(gothrough(it.next())) isDirty = true;
+					while (it.hasNext()) {
+						if (gothrough(it.next())) isDirty = true;
 					}
+				}
+				else if (value instanceof dorado.Entity) {
+					if (gothrough(value)) isDirty = true;
 				}
 			}
 			if(!isDirty) CASCADE_NOT_DRITY_ENTITYS[entity.entityId] = true;
@@ -220,6 +223,7 @@
 	}, function(dataType) {
 		return dataType;
 	});
+	
 	function filterCascadeDrityEntity(entity) {
 		return !CASCADE_NOT_DRITY_ENTITYS[entity.entityId];
 	}
@@ -451,16 +455,11 @@
 
 				var options = updateItem.options;
 				if(!options && options instanceof Object) {
-					if(options.loadMode !== false)
-						options.loadMode = true;
-					if(options.includeUnsubmittableProperties !== true)
-						options.includeUnsubmittableProperties = false;
-					if(options.generateDataType !== false)
-						options.generateDataType = true;
-					if(options.generateState !== false)
-						options.generateState = true;
-					if(options.generateEntityId !== false)
-						options.generateEntityId = true;
+					if(options.loadMode !== false) options.loadMode = true;
+					if(options.includeUnsubmittableProperties !== true) options.includeUnsubmittableProperties = false;
+					if(options.generateDataType !== false) options.generateDataType = true;
+					if(options.generateState !== false) options.generateState = true;
+					if(options.generateEntityId !== false) options.generateEntityId = true;
 				} else {
 					options = {
 						loadMode : "never",
