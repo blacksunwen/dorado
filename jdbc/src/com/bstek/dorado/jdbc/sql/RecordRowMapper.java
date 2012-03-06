@@ -9,7 +9,7 @@ import java.util.Map;
 import org.springframework.jdbc.core.RowMapper;
 
 import com.bstek.dorado.data.variant.Record;
-import com.bstek.dorado.jdbc.model.AbstractColumn;
+import com.bstek.dorado.jdbc.model.AbstractDbColumn;
 import com.bstek.dorado.jdbc.type.JdbcType;
 import com.bstek.dorado.util.Assert;
 
@@ -20,9 +20,9 @@ import com.bstek.dorado.util.Assert;
  */
 public class RecordRowMapper implements RowMapper<Record> {
 
-	public List<AbstractColumn> columns;
+	public List<AbstractDbColumn> columns;
 	
-	public RecordRowMapper(List<AbstractColumn> columns) {
+	public RecordRowMapper(List<AbstractDbColumn> columns) {
 		this.columns = columns;
 		Assert.notEmpty(this.columns, "columns must not be empty.");
 	}
@@ -30,7 +30,7 @@ public class RecordRowMapper implements RowMapper<Record> {
 	@Override
 	public Record mapRow(ResultSet rs, int rowNum) throws SQLException {
 		Map<String, Object> map = new HashMap<String, Object>(columns.size());
-		for (AbstractColumn c: columns) {
+		for (AbstractDbColumn c: columns) {
 			String columnName = c.getName();
 			String propertyName = c.getPropertyName();
 			JdbcType jdbcType = c.getJdbcType();

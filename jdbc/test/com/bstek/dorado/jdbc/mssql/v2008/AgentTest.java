@@ -32,11 +32,12 @@ public class AgentTest {
 	}
 	
 	private Map<String, String> makeParamerters() {
-		Map<String, String> paramerters = new HashMap<String,String>();
+		Map<String, String> parameters = new HashMap<String,String>();
 		
-		paramerters.put(IAgent.URL, "jdbc:sqlserver://192.168.18.92:1433;databaseName=DORADO");
-		paramerters.put(IAgent.USER, "dorado");
-		paramerters.put(IAgent.PASSWORD, "dorado");
-		return paramerters;
+		parameters.put(IAgent.URL, "jdbc:sqlserver://192.168.18.92:1433;databaseName=DORADO");
+		parameters.put(IAgent.USER, "dorado");
+		parameters.put(IAgent.PASSWORD, "dorado");
+		parameters.put(IAgent.DRIVER, "com.microsoft.sqlserver.jdbc.SQLServerDriver");
+		return parameters;
 	}
 }

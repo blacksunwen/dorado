@@ -10,12 +10,5 @@
 		</PrimitiveProps>
 	</Rule>
 	
-	<Rule name="JdbcAgent" type="com.bstek.dorado.jdbc.ide.DefaultAgent">
-		<Props>
-			<Prop name="jdbcType" type="java.lang.String" enumValues="BIT-Boolean,BOOLEAN-Boolean,CHAR-Boolean,SMALLINT-Short,INTEGER-Integer,BIGINT-Long,REAL-Float,FLOAT-Double,DOUBLE-Float,NUMERIC-BigDecimal,DECIMAL-BigDecimal,TINYINT-Byte,DATE-Date,TIME-Date,TIMESTAMP-Date,CHAR-String,VARCHAR-String,LONGVARCHAR-String,CLOB-String"/>
-			<Prop name="keyGenerator" type="java.lang.String" enumValues="IDENTITY,JDK-UUID,SEQUENCE"/>
-			<Prop name="transactionManager" type="java.lang.String" enumValues="transactionManager"/>
-			<Prop name="transactionDefinition" type="java.lang.String" enumValues="transactionDefinition"/>
-		</Props>
-	</Rule>
+	<Rule name="JdbcAgent" type="com.bstek.dorado.jdbc.ide.DefaultAgent"/>
 </RuleSet>

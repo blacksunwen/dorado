@@ -16,7 +16,7 @@ import com.bstek.dorado.jdbc.JdbcDataProviderContext;
 import com.bstek.dorado.jdbc.JdbcDataProviderOperation;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.JdbcParameterSource;
-import com.bstek.dorado.jdbc.model.AbstractColumn;
+import com.bstek.dorado.jdbc.model.AbstractDbColumn;
 import com.bstek.dorado.jdbc.model.AbstractTable;
 import com.bstek.dorado.jdbc.model.AbstractUpdatableColumn;
 import com.bstek.dorado.jdbc.model.table.Table;
@@ -139,7 +139,7 @@ public class AutoTable extends AbstractTable {
 	}
 
 	@Override
-	public void addColumn(AbstractColumn column) {
+	public void addColumn(AbstractDbColumn column) {
 		Assert.notNull(column);
 		
 		if (column instanceof AutoTableColumn) {
@@ -186,7 +186,7 @@ public class AutoTable extends AbstractTable {
 		
 		//columnsToken
 		StringBuilder columnsToken = new StringBuilder();
-		List<AbstractColumn> columns = autoTable.getAllColumns();
+		List<AbstractDbColumn> columns = autoTable.getAllColumns();
 		for (int i=0, j=columns.size(), ableColumnCount = 0; i<j; i++) {
 			AutoTableColumn column = (AutoTableColumn)columns.get(i);
 			if (column.isSelectable()) {
@@ -298,7 +298,7 @@ public class AutoTable extends AbstractTable {
 		} else {
 			FromTable fromTable = bmr.getFromTableObject();
 			String tableAlias = fromTable.getName();
-			AbstractColumn column = bmr.getColumnObject();
+			AbstractDbColumn column = bmr.getColumnObject();
 			String columnName = column.getName();
 			Object value = bmr.getValue();
 			String operator = bmr.getOperator();
@@ -442,8 +442,8 @@ public class AutoTable extends AbstractTable {
 			
 			String leftColumnName = leftColumnNames[i];
 			String rightColumnName = rightColumnNames[i];
-			AbstractColumn leftColumn = leftTable.getColumn(leftColumnName);
-			AbstractColumn rightColumn = rightTable.getColumn(rightColumnName);
+			AbstractDbColumn leftColumn = leftTable.getColumn(leftColumnName);
+			AbstractDbColumn rightColumn = rightTable.getColumn(rightColumnName);
 			
 			token.append(leftTableAlias, ".", leftColumn.getName());
 			token.bothSpace("=");

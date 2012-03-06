@@ -2,7 +2,6 @@ package com.bstek.dorado.jdbc.support;
 
 import java.sql.DatabaseMetaData;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,13 +23,12 @@ import com.bstek.dorado.jdbc.JdbcDataProviderOperation;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.JdbcParameterSource;
 import com.bstek.dorado.jdbc.JdbcRecordOperation;
-import com.bstek.dorado.jdbc.model.AbstractColumn;
+import com.bstek.dorado.jdbc.model.AbstractDbColumn;
 import com.bstek.dorado.jdbc.model.DbTable;
 import com.bstek.dorado.jdbc.model.autotable.AutoTable;
 import com.bstek.dorado.jdbc.model.autotable.AutoTableColumn;
 import com.bstek.dorado.jdbc.model.autotable.FromTable;
 import com.bstek.dorado.jdbc.model.autotable.Order;
-import com.bstek.dorado.jdbc.model.table.KeyGenerator;
 import com.bstek.dorado.jdbc.model.table.Table;
 import com.bstek.dorado.jdbc.model.table.TableKeyColumn;
 import com.bstek.dorado.jdbc.sql.DeleteSql;
@@ -58,9 +56,6 @@ public abstract class AbstractDialect implements Dialect {
 
 	private static Log logger = LogFactory.getLog(AbstractDialect.class);
 	private SqlGenerator sqlGenerator;
-	private Map<String, JdbcType> jdbcTypeMap = new LinkedHashMap<String, JdbcType>();
-	
-	private LinkedHashMap<String, KeyGenerator<Object>> keyGeneratorMap = new LinkedHashMap<String, KeyGenerator<Object>>();
 	
 	public SqlGenerator getSqlGenerator() {
 		return sqlGenerator;
@@ -92,40 +87,6 @@ public abstract class AbstractDialect implements Dialect {
 		}
 	}
 	
-	public JdbcType getJdbcType(String name) {
-		JdbcType jdbcType = jdbcTypeMap.get(name);
-		Assert.notNull(jdbcType, "could not look up for JdbcType named [" + name + "].");
-		return jdbcType;
-	}
-	
-	public void setJdbcTypes(List<JdbcType> jdbcTypes) {
-		jdbcTypeMap.clear();
-		for (JdbcType jdbcType: jdbcTypes) {
-			jdbcTypeMap.put(jdbcType.getName(), jdbcType);
-		}
-	}
-	
-	public List<JdbcType> getJdbcTypes() {
-		return new ArrayList<JdbcType>(jdbcTypeMap.values());
-	}
-	
-	public KeyGenerator<Object> getKeyGenerator(String name) {
-		KeyGenerator<Object> kg = keyGeneratorMap.get(name);
-		Assert.notNull(kg, "could not look up for KeyGenerator named [" + name + "].");
-		return kg;
-	}
-	
-	public JdbcType jdbcType(Map<String,String> columnMeta) {
-		List<JdbcType> jdbcTypes = this.getJdbcTypes();
-		for (JdbcType jdbcType: jdbcTypes) {
-			if (jdbcType.is(columnMeta)) {
-				return jdbcType;
-			}
-		}
-		
-		return null;
-	}
-	
 	public String propertyName(Map<String,String> columnMeta) {
 		String label = columnMeta.get(JdbcConstants.COLUMN_LABEL);
 		if (StringUtils.isEmpty(label)) {
@@ -133,18 +94,6 @@ public abstract class AbstractDialect implements Dialect {
 		} else {
 			return label;
 		}
-	}
-	
-	@SuppressWarnings("rawtypes")
-	public void setKeyGenerators(List<KeyGenerator> kgs) {
-		keyGeneratorMap.clear();
-		for (KeyGenerator<Object> kg : kgs) {
-			keyGeneratorMap.put(kg.getName(), kg);
-		}
-	}
-	
-	public List<KeyGenerator<Object>> getKeyGenerators() {
-		return new ArrayList<KeyGenerator<Object>>(keyGeneratorMap.values());
 	}
 	
 	public String toCountSQL(String sql) {
@@ -347,8 +296,8 @@ public abstract class AbstractDialect implements Dialect {
 		RetrieveSql retrieveSql = new RetrieveSql();
 		retrieveSql.setTableToken(token(table));
 		
-		List<AbstractColumn> columnList = new ArrayList<AbstractColumn>();
-		for(AbstractColumn column: table.getAllColumns()) {
+		List<AbstractDbColumn> columnList = new ArrayList<AbstractDbColumn>();
+		for(AbstractDbColumn column: table.getAllColumns()) {
 			String columnName = column.getName();
 			String propertyName = column.getPropertyName();
 			if (column.isSelectable() && record.containsKey(propertyName)) {
@@ -412,7 +361,7 @@ public abstract class AbstractDialect implements Dialect {
 			token.append(column.getName());
 		} else {
 			FromTable fromTable = autoTable.getFromTable(tableAlias);
-			AbstractColumn fromColumn = fromTable.getTableObject().getColumn(columnName);
+			AbstractDbColumn fromColumn = fromTable.getTableObject().getColumn(columnName);
 			token.append(fromTable.getName() + '.' + fromColumn.getName());
 		}
 		

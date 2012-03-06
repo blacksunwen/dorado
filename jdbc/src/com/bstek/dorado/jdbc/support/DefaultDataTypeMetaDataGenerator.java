@@ -15,7 +15,7 @@ import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.config.DomHelper;
 import com.bstek.dorado.jdbc.meta.DataTypeMetaDataGenerator;
-import com.bstek.dorado.jdbc.model.AbstractColumn;
+import com.bstek.dorado.jdbc.model.AbstractDbColumn;
 import com.bstek.dorado.jdbc.model.DbTable;
 import com.bstek.dorado.jdbc.type.JdbcType;
 
@@ -30,8 +30,8 @@ public class DefaultDataTypeMetaDataGenerator implements DataTypeMetaDataGenerat
 		rootElement.setAttribute(XmlConstants.ATTRIBUTE_NAME, tableName);
 		
 		DbTable table = JdbcUtils.getDbTable(tableName);
-		List<AbstractColumn> columns = table.getAllColumns();
-		for (AbstractColumn column: columns) {
+		List<AbstractDbColumn> columns = table.getAllColumns();
+		for (AbstractDbColumn column: columns) {
 			Element propertyDef = createPropertyDefElement(column, document);
 			rootElement.appendChild(propertyDef);
 		}
@@ -52,8 +52,8 @@ public class DefaultDataTypeMetaDataGenerator implements DataTypeMetaDataGenerat
 		}
 		
 		DbTable table = JdbcUtils.getDbTable(tableName);
-		List<AbstractColumn> columns = table.getAllColumns();
-		for (AbstractColumn column: columns) {
+		List<AbstractDbColumn> columns = table.getAllColumns();
+		for (AbstractDbColumn column: columns) {
 			Element propertyDef = createPropertyDefElement(column, document);
 			String propertyName = propertyDef.getAttribute(XmlConstants.ATTRIBUTE_NAME);
 			if (!propertyNameSet.contains(propertyName)) {
@@ -64,7 +64,7 @@ public class DefaultDataTypeMetaDataGenerator implements DataTypeMetaDataGenerat
 		return document;
 	}
 
-	protected Element createPropertyDefElement(AbstractColumn column, Document document) {
+	protected Element createPropertyDefElement(AbstractDbColumn column, Document document) {
 		String propertyName = column.getPropertyName();
 		if (StringUtils.isNotEmpty(propertyName)) {
 			Element propertyDef = document.createElement(DataXmlConstants.PROPERTY_DEF);

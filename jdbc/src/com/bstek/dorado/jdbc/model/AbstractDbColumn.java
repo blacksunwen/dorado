@@ -11,7 +11,7 @@ import com.bstek.dorado.jdbc.type.JdbcType;
  * @author mark.li@bstek.com
  *
  */
-public abstract class AbstractColumn {
+public abstract class AbstractDbColumn {
 	
 	private String name;
 
@@ -29,8 +29,7 @@ public abstract class AbstractColumn {
 		this.name = name;
 	}
 	
-	@XmlProperty(parser="spring:dorado.jdbc.jdbcTypeParser", attributeOnly=true)
-	@IdeProperty(highlight=1, editor = "jdbc:service:list-jdbctype")
+	@XmlProperty(parser="spring:dorado.jdbc.jdbcTypeParser")
 	public JdbcType getJdbcType() {
 		return jdbcType;
 	}

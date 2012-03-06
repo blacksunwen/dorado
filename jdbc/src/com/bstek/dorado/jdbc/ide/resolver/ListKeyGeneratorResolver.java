@@ -8,9 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.bstek.dorado.jdbc.JdbcEnviroment;
-import com.bstek.dorado.jdbc.JdbcUtils;
-import com.bstek.dorado.jdbc.ide.Constants;
+import com.bstek.dorado.jdbc.KeyGeneratorManager;
 import com.bstek.dorado.jdbc.model.table.KeyGenerator;
 
 /**
@@ -20,19 +18,25 @@ import com.bstek.dorado.jdbc.model.table.KeyGenerator;
  *
  */
 public class ListKeyGeneratorResolver extends AbstractResolver {
+	private KeyGeneratorManager keyGeneratorManager;
+	
+	public KeyGeneratorManager getKeyGeneratorManager() {
+		return keyGeneratorManager;
+	}
+
+	public void setKeyGeneratorManager(KeyGeneratorManager keyGeneratorManager) {
+		this.keyGeneratorManager = keyGeneratorManager;
+	}
 
 	@Override
 	public String getContent(HttpServletRequest request,
 			HttpServletResponse response) {
-		String envName = request.getParameter(Constants.PARAM_ENV);
-		return toContent(envName);
+		return toContent();
 	}
 
-	public String toContent(String envName) {
-		JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(envName);
-		List<KeyGenerator<Object>> keyGenerators = jdbcEnv.getDialect().getKeyGenerators();
-		
-		List<String> names = new ArrayList<String>(keyGenerators.size());
+	public String toContent() {
+		KeyGenerator<Object>[] keyGenerators = keyGeneratorManager.list();
+		List<String> names = new ArrayList<String>(keyGenerators.length);
 		for (KeyGenerator<Object> kg: keyGenerators) {
 			names.add(kg.getName());
 		}

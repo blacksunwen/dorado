@@ -1,18 +1,14 @@
 package com.bstek.dorado.jdbc;
 
 import java.sql.DatabaseMetaData;
-import java.util.List;
-import java.util.Map;
 
 import javax.sql.DataSource;
 
 import com.bstek.dorado.jdbc.model.autotable.AutoTable;
 import com.bstek.dorado.jdbc.model.autotable.Order;
-import com.bstek.dorado.jdbc.model.table.KeyGenerator;
 import com.bstek.dorado.jdbc.model.table.Table;
 import com.bstek.dorado.jdbc.sql.SelectSql;
 import com.bstek.dorado.jdbc.sql.SqlConstants.JoinOperator;
-import com.bstek.dorado.jdbc.type.JdbcType;
 
 /**
  * 数据库方言
@@ -110,36 +106,6 @@ public interface Dialect {
 	String sequenceSql(String sequenceName);
 
 	/**
-	 * 根据名称获取{@link com.bstek.dorado.jdbc.type.JdbcType}
-	 * 
-	 * @param name
-	 * @return
-	 */
-	JdbcType getJdbcType(String name);
-
-	/**
-	 * 获取全部的{@link com.bstek.dorado.jdbc.type.JdbcType}
-	 * 
-	 * @return
-	 */
-	List<JdbcType> getJdbcTypes();
-
-	/**
-	 * 根据名称获取{@link com.bstek.dorado.jdbc.model.table.KeyGenerator}
-	 * 
-	 * @param name
-	 * @return
-	 */
-	KeyGenerator<Object> getKeyGenerator(String name);
-
-	/**
-	 * 获取全部的{@link com.bstek.dorado.jdbc.model.table.KeyGenerator}
-	 * 
-	 * @return
-	 */
-	List<KeyGenerator<Object>> getKeyGenerators();
-	
-	/**
 	 * 执行查询操作
 	 * @param operation
 	 */
@@ -151,13 +117,6 @@ public interface Dialect {
 	 * @return 是否成功执行
 	 */
 	boolean execute(JdbcRecordOperation operation);
-	
-	/**
-	 * 根据Column的数据库属性获取{@link com.bstek.dorado.jdbc.type.JdbcType}，用于IDE
-	 * @param columnMeta
-	 * @return
-	 */
-	JdbcType jdbcType(Map<String,String> columnMeta);
 	
 	/**
 	 * 默认的数据库catalog，用于IDE

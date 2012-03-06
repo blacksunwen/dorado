@@ -5,7 +5,7 @@ import java.util.List;
 import com.bstek.dorado.config.definition.ObjectDefinition;
 import com.bstek.dorado.config.definition.Operation;
 import com.bstek.dorado.jdbc.config.JdbcCreationContext;
-import com.bstek.dorado.jdbc.model.AbstractColumn;
+import com.bstek.dorado.jdbc.model.AbstractDbColumn;
 import com.bstek.dorado.jdbc.model.table.Table;
 import com.bstek.dorado.jdbc.model.table.TableColumn;
 import com.bstek.dorado.jdbc.model.table.TableKeyColumn;
@@ -36,7 +36,7 @@ public class TableParserTest extends AbstractParserTestCase{
 			assertEquals("ora11", table.getJdbcEnviroment().getName());
 			assertEquals("#if ($ID) WHERE DEPT_ID=:ID #end", table.getDynamicClause());
 			
-			List<AbstractColumn> columns = table.getAllColumns();
+			List<AbstractDbColumn> columns = table.getAllColumns();
 			assertEquals(3, columns.size());
 			assertTrue(columns.get(0) instanceof TableKeyColumn);
 			assertTrue(columns.get(1) instanceof TableColumn);

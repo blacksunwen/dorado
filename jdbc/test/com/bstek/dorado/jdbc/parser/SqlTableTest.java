@@ -6,7 +6,7 @@ import java.util.List;
 import com.bstek.dorado.config.definition.ObjectDefinition;
 import com.bstek.dorado.config.definition.Operation;
 import com.bstek.dorado.jdbc.config.JdbcCreationContext;
-import com.bstek.dorado.jdbc.model.AbstractColumn;
+import com.bstek.dorado.jdbc.model.AbstractDbColumn;
 import com.bstek.dorado.jdbc.model.sqltable.SqlTable;
 import com.bstek.dorado.jdbc.model.sqltable.SqlTableColumn;
 
@@ -33,7 +33,7 @@ public class SqlTableTest extends AbstractParserTestCase {
 			assertEquals("ora11", table.getJdbcEnviroment().getName());
 			assertEquals("select * from DEPT", table.getQuerySql());
 			
-			List<AbstractColumn> columns = table.getAllColumns();
+			List<AbstractDbColumn> columns = table.getAllColumns();
 			assertEquals(3, columns.size());
 			
 			SqlTableColumn c1 = (SqlTableColumn)columns.get(0);

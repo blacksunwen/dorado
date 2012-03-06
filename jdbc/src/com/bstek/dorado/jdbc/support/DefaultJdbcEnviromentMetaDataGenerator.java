@@ -12,6 +12,7 @@ import org.springframework.jdbc.support.DatabaseMetaDataCallback;
 import org.springframework.jdbc.support.MetaDataAccessException;
 
 import com.bstek.dorado.jdbc.JdbcEnviroment;
+import com.bstek.dorado.jdbc.JdbcTypeManager;
 import com.bstek.dorado.jdbc.meta.JdbcEnviromentMetaDataGenerator;
 import com.bstek.dorado.jdbc.type.JdbcType;
 
@@ -22,6 +23,16 @@ import com.bstek.dorado.jdbc.type.JdbcType;
  */
 public class DefaultJdbcEnviromentMetaDataGenerator implements
 		JdbcEnviromentMetaDataGenerator {
+
+	private JdbcTypeManager jdbcTypeManager;
+	
+	public JdbcTypeManager getJdbcTypeManager() {
+		return jdbcTypeManager;
+	}
+
+	public void setJdbcTypeManager(JdbcTypeManager jdbcTypeManager) {
+		this.jdbcTypeManager = jdbcTypeManager;
+	}
 
 	@Override
 	public String[] listCatalogs(JdbcEnviroment jdbcEnv) {
@@ -99,10 +110,10 @@ public class DefaultJdbcEnviromentMetaDataGenerator implements
 	
 	@Override
 	public String[] listJdbcTypes(JdbcEnviroment jdbcEnv) {
-		List<JdbcType> typeList = jdbcEnv.getDialect().getJdbcTypes();
-		String[] nameArray = new String[typeList.size()];
-		for (int i=0; i<typeList.size(); i++) {
-			JdbcType jdbcType = typeList.get(i);
+		JdbcType[] types = jdbcTypeManager.list();
+		String[] nameArray = new String[types.length];
+		for (int i=0; i<types.length; i++) {
+			JdbcType jdbcType = types[i];
 			nameArray[i] = jdbcType.getName();
 		}
 		return nameArray;

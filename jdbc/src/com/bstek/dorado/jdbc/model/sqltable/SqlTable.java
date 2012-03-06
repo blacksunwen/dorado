@@ -18,7 +18,7 @@ import com.bstek.dorado.jdbc.JdbcParameterSource;
 import com.bstek.dorado.jdbc.JdbcRecordOperation;
 import com.bstek.dorado.jdbc.JdbcRecordOperationProxy;
 import com.bstek.dorado.jdbc.JdbcUtils;
-import com.bstek.dorado.jdbc.model.AbstractColumn;
+import com.bstek.dorado.jdbc.model.AbstractDbColumn;
 import com.bstek.dorado.jdbc.model.AbstractTable;
 import com.bstek.dorado.jdbc.model.AbstractUpdatableColumn;
 import com.bstek.dorado.jdbc.model.table.Table;
@@ -50,7 +50,7 @@ public class SqlTable extends AbstractTable {
 
 	private Table mainTable;
 	
-	public void addColumn(AbstractColumn column) {
+	public void addColumn(AbstractDbColumn column) {
 		if (column instanceof SqlTableColumn) {
 			super.addColumn(column);
 		} else {
@@ -110,7 +110,7 @@ public class SqlTable extends AbstractTable {
 				JdbcRecordOperation proxyOperation = new JdbcRecordOperation(proxyTable, proxyRecord, jdbcContext);
 				
 				Map<String, String> proxyPropertyMap = new HashMap<String, String>();
-				for (AbstractColumn c: this.getAllColumns()) {
+				for (AbstractDbColumn c: this.getAllColumns()) {
 					AbstractUpdatableColumn column = (AbstractUpdatableColumn)c;
 					String nativeColumnName = column.getNativeColumn();
 					String propertyName = column.getPropertyName();
@@ -120,7 +120,7 @@ public class SqlTable extends AbstractTable {
 							(EntityState.MOVED.equals(state) && column.isUpdatable()) ||
 							(EntityState.DELETED.equals(state))
 							) {
-							AbstractColumn tableColumn = proxyTable.getColumn(nativeColumnName);
+							AbstractDbColumn tableColumn = proxyTable.getColumn(nativeColumnName);
 							String tpn = tableColumn.getPropertyName();
 							if (StringUtils.isNotEmpty(tpn)) {
 								Object value = record.get(propertyName);

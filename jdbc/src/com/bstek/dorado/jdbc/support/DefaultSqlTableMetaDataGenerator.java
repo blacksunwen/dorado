@@ -20,9 +20,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import com.bstek.dorado.jdbc.JdbcEnviroment;
+import com.bstek.dorado.jdbc.JdbcTypeManager;
 import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.config.DomHelper;
 import com.bstek.dorado.jdbc.ide.Constants;
+import com.bstek.dorado.jdbc.ide.IAgent;
 import com.bstek.dorado.jdbc.meta.SqlTableMetaDataGenerator;
 import com.bstek.dorado.jdbc.model.table.Table;
 import com.bstek.dorado.jdbc.type.JdbcType;
@@ -35,6 +37,22 @@ import com.bstek.dorado.util.xml.DomUtils;
  */
 public class DefaultSqlTableMetaDataGenerator implements
 		SqlTableMetaDataGenerator {
+
+	private JdbcTypeManager jdbcTypeManager;
+	
+	private IAgent agent;
+	
+	public void setAgent(IAgent agent) {
+		this.agent = agent;
+	}
+
+	public JdbcTypeManager getJdbcTypeManager() {
+		return jdbcTypeManager;
+	}
+
+	public void setJdbcTypeManager(JdbcTypeManager jdbcTypeManager) {
+		this.jdbcTypeManager = jdbcTypeManager;
+	}
 
 	protected Map<String, String> columnProperties(Map<String, String> columnMeta, String mainTable,
 			JdbcEnviroment jdbcEnv) {
@@ -66,13 +84,16 @@ public class DefaultSqlTableMetaDataGenerator implements
 		}
 	}
 
+	//TODO 重新实现
 	protected String jdbcType(Map<String,String> column, JdbcEnviroment jdbcEnv) {
-		JdbcType jdbcType = jdbcEnv.getDialect().jdbcType(column);
-		if (jdbcType != null) {
-			return jdbcType.getName();
-		} else {
-			return null;
-		}
+		return null;
+		
+//		JdbcType jdbcType = jdbcEnv.getDialect().jdbcType(column);
+//		if (jdbcType != null) {
+//			return jdbcType.getName();
+//		} else {
+//			return null;
+//		}
 	}
 	
 	public List<Map<String,String>> listColumnMetas(JdbcEnviroment jdbcEnv, String sql) {
