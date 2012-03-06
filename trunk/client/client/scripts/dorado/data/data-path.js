@@ -467,6 +467,7 @@
 							dorado.Entity.ALWAYS_RETURN_VALID_ENTITY_LIST = true;
 						}
 					} else {
+						if(!entity)debugger;
 						result = entity[section.property];
 					}
 					if(result == null && section.leaf && section == oldLastSection) {
@@ -478,7 +479,7 @@
 
 				if( result instanceof dorado.EntityList || result instanceof Array) {
 					this._evaluateSectionOnAggregation(context, result);
-				} else if(result !== undefined) {
+				} else if(result != null) {
 					this._selectEntityIf(context, result);
 					if(result != null && section.repeat) {
 						this._evaluateSectionOnEntity(context, entity);
@@ -540,8 +541,7 @@
 					}
 				}
 
-				if(b)
-					this._selectEntityIf(context, entity);
+				if(b) this._selectEntityIf(context, entity);
 				if(section.repeat) {
 					this._evaluateSectionOnEntity(context, entity);
 				}
