@@ -32,6 +32,7 @@
 	<bean id="dorado.jdbc.modelGeneratorSuit" class="com.bstek.dorado.jdbc.support.DefaultModelGeneratorSuit"/>
 	<bean id="dorado.jdbc.jdbcTypeManager" class="com.bstek.dorado.jdbc.support.DefaultJdbcTypeManager"/>
 	<bean id="dorado.jdbc.keyGeneratorManager" class="com.bstek.dorado.jdbc.support.DefaultKeyGeneratorManager"/>
+	<bean class="com.bstek.dorado.jdbc.support.OddLogger"/>
 	
 	<!-- Custom Point -->
 	<bean id="dorado.jdbc.modelStrategy" class="com.bstek.dorado.jdbc.support.DefaultModelStrategy">
