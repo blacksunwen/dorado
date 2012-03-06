@@ -94,7 +94,6 @@ public class RemoteServiceProcessor extends DataServiceProcessorSupport {
 		outputContext.setUsePrettyJson(Configure
 				.getBoolean("view.outputPrettyJson"));
 		outputContext.setShouldOutputDataTypes(supportsEntity);
-		outputContext.setShouldOutputEntityState(supportsEntity);
 
 		outputResult(returnValue, outputContext);
 	}

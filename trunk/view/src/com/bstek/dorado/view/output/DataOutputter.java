@@ -245,8 +245,13 @@ public class DataOutputter implements Outputter, PropertyOutputter {
 
 	protected void outputEntity(Object object, OutputContext context)
 			throws Exception {
-		JsonBuilder json = context.getJsonBuilder();
 		EntityWrapper entity = EntityWrapper.create(object);
+		if (!context.isShouldOutputEntityState()
+				&& entity.getState() == EntityState.DELETED) {
+			return;
+		}
+
+		JsonBuilder json = context.getJsonBuilder();
 		EntityDataType dataType = entity.getDataType();
 
 		json.object();
