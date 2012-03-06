@@ -109,15 +109,6 @@ dorado.widget.Section = $extend(dorado.widget.Control, /** @scope dorado.widget.
 			componentReference: true,
 			innerComponent: "",
 			setter: function(value) {
-				// Commented by Benny
-				// control.js中已对具有innerComponent标注的子控件做了unregisterInnerControl、registerInnerControl的统一处理。
-				/*
-				var oldValue = this._value;
-				if (oldValue) {
-					this.unregisterInnerControl(oldValue);
-					oldValue.destroy();
-				}
-				*/
 				if (value instanceof dorado.widget.Menu) {
 					value.set("floating", false);
 				}

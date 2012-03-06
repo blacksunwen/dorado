@@ -20,7 +20,7 @@ public class DataGrid extends AbstractGrid implements DataControl {
 	private String dataPath;
 	private EntityDataType dataType;
 	private boolean supportsPaging;
-	private boolean autoCreateColumns = true;
+	private Boolean autoCreateColumns;
 	private FilterMode filterMode = FilterMode.clientSide;
 	private SortMode sortModel = SortMode.clientSide;
 
@@ -57,16 +57,15 @@ public class DataGrid extends AbstractGrid implements DataControl {
 		return supportsPaging;
 	}
 
-	public void setSupportsPaging(boolean supportsPaging) {
+	public void setSupportsPaging(Boolean supportsPaging) {
 		this.supportsPaging = supportsPaging;
 	}
 
-	@ClientProperty(escapeValue = "true")
-	public boolean isAutoCreateColumns() {
+	public Boolean getAutoCreateColumns() {
 		return autoCreateColumns;
 	}
 
-	public void setAutoCreateColumns(boolean autoCreateColumns) {
+	public void setAutoCreateColumns(Boolean autoCreateColumns) {
 		this.autoCreateColumns = autoCreateColumns;
 	}
 

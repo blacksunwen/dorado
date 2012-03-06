@@ -19,7 +19,11 @@ import com.bstek.dorado.view.widget.InnerElementReference;
 @ClientObject(prototype = "dorado.widget.FormElement",
 		shortTypeName = "FormElement")
 public class FormElement extends Control implements FormConfig {
+	@Deprecated
 	private FormElementType type = FormElementType.text;
+	@Deprecated
+	private boolean editorTypeChanged;
+
 	private String dataSet;
 	private String dataPath;
 	private String label;
@@ -40,16 +44,36 @@ public class FormElement extends Control implements FormConfig {
 	private FormElementHintPosition hintPosition = FormElementHintPosition.right;
 	private boolean readOnly;
 	private String formProfile;
+
+	private String editorType = "TextEditor";
 	private InnerElementReference<Control> editorRef = new InnerElementReference<Control>(
 			this);
 
+	@Deprecated
 	@ClientProperty(escapeValue = "text")
+	@IdeProperty(visible = false)
 	public FormElementType getType() {
 		return type;
 	}
 
+	@Deprecated
 	public void setType(FormElementType type) {
 		this.type = type;
+		if (!editorTypeChanged) {
+			if (FormElementType.text.equals(type)) {
+				editorType = "TextEditor";
+			} else if (FormElementType.password.equals(type)) {
+				editorType = "Password";
+			} else if (FormElementType.textArea.equals(type)) {
+				editorType = "TextArea";
+			} else if (FormElementType.checkBox.equals(type)) {
+				editorType = "CheckBox";
+			} else if (FormElementType.radioGroup.equals(type)) {
+				editorType = "RadioGroup";
+			} else if (type == null) {
+				editorType = "TextEditor";
+			}
+		}
 	}
 
 	@ComponentReference("DataSet")
@@ -223,6 +247,18 @@ public class FormElement extends Control implements FormConfig {
 
 	public void setFormProfile(String formProfile) {
 		this.formProfile = formProfile;
+	}
+
+	@ClientProperty(escapeValue = "TextEditor")
+	@IdeProperty(
+			highlight = 1,
+			enumValues = "TextEditor,PasswordEditor,TextArea,CheckBox,RadioGroup,DataLabel,NumberSpinner")
+	public String getEditorType() {
+		return editorType;
+	}
+
+	public void setEditorType(String editorType) {
+		this.editorType = editorType;
 	}
 
 	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "Editor"))

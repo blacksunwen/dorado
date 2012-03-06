@@ -18,7 +18,7 @@
 		
 		createTriggerButton: function(editor) {
 			var trigger = this, control = new dorado.widget.HtmlContainer({
-				exClassName:  (trigger._inherentClassName || '') + " " + (trigger._className || ''),
+				exClassName: (trigger._inherentClassName || '') + " " + (trigger._className || ''),
 				content: {
 					tagName: "div",
 					content: [{
@@ -67,6 +67,16 @@
 		
 		ATTRIBUTES: /** @scope dorado.widget.Spinner.prototype */ {
 		
+			width: {
+				defaultValue: 150,
+				independent: true
+			},
+			
+			height: {
+				independent: true,
+				readOnly: true
+			},
+			
 			trigger: {
 				getter: function() {
 					var triggers = this._trigger;
@@ -381,6 +391,10 @@
 			return dom;
 		},
 		
+		doSetFocus: function() {
+			dorado.widget.onControlGainedFocus(this);
+		},
+		
 		/**
 		 * 取得某个槽的取值范围。
 		 * @protected
@@ -468,9 +482,9 @@
 			if (text == null) {
 				if (config.digit > 0) {
 					text = '';
-					for (var i = 0; i < config.digit; i++) text += "&nbsp;";
-				}
-				else {
+					for (var i = 0; i < config.digit; i++) 
+						text += "&nbsp;";
+				} else {
 					text = "&nbsp;";
 				}
 			} else {

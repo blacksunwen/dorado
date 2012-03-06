@@ -5,10 +5,14 @@ import com.bstek.dorado.annotation.ClientEvents;
 import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.IdeObject;
 import com.bstek.dorado.annotation.IdeProperty;
+import com.bstek.dorado.annotation.XmlNodeWrapper;
 import com.bstek.dorado.annotation.XmlProperty;
+import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.view.annotation.ComponentReference;
 import com.bstek.dorado.view.widget.Align;
+import com.bstek.dorado.view.widget.Control;
+import com.bstek.dorado.view.widget.InnerElementReference;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -31,12 +35,15 @@ public class DataColumn extends Column {
 	private String dropDown;
 	private String summaryType;
 	private String summaryRenderer;
-	private String editor;
 	private String trigger;
 	private SortState sortState = SortState.none;
 	private boolean wrappable;
 	private boolean filterable = true;
 	private boolean resizeable = true;
+
+	private String editorType = "TextEditor";
+	private InnerElementReference<Control> editorRef = new InnerElementReference<Control>(
+			this);
 
 	@IdeProperty(highlight = 1)
 	public String getProperty() {
@@ -149,14 +156,6 @@ public class DataColumn extends Column {
 		this.summaryRenderer = summaryRenderer;
 	}
 
-	public String getEditor() {
-		return editor;
-	}
-
-	public void setEditor(String editor) {
-		this.editor = editor;
-	}
-
 	@ComponentReference("Trigger")
 	@IdeProperty(
 			enumValues = "triggerClear,autoMappingDropDown1,autoMappingDropDown2,defaultDateDropDown")
@@ -201,5 +200,27 @@ public class DataColumn extends Column {
 
 	public void setResizeable(boolean resizeable) {
 		this.resizeable = resizeable;
+	}
+
+	@ClientProperty(escapeValue = "TextEditor")
+	@IdeProperty(
+			highlight = 1,
+			enumValues = "None,TextEditor,PasswordEditor,TextArea,CheckBox,RadioGroup,NumberSpinner")
+	public String getEditorType() {
+		return editorType;
+	}
+
+	public void setEditorType(String editorType) {
+		this.editorType = editorType;
+	}
+
+	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "Editor"))
+	@ClientProperty
+	public Control getEditor() {
+		return editorRef.get();
+	}
+
+	public void setEditor(Control editor) {
+		editorRef.set(editor);
 	}
 }

@@ -693,11 +693,12 @@
 							SHOULD_PROCESS_DEFAULT_VALUE = oldProcessDefaultValue;
 						}
 					}
-					if (i == 0) firstEntity = entity;
+					
 					page.insert(entity);
 					if (entity.state != dorado.Entity.STATE_DELETED) {
 						page.entityCount++;
 						this.entityCount++;
+						if (!firstEntity) firstEntity = entity;
 						
 						if (fireEvent && elementDataType != null) {
 							eventArg.entity = entity;

@@ -1213,10 +1213,7 @@
 			this.cell = cell;
 			var dom = this.getDom();
 			document.body.appendChild(dom);
-			if (!this.inited) {
-				this.initDom(dom);
-				this.inited = true;
-			}
+			this.initDom(dom);
 			this.refresh();
 			
 			var self = this;
@@ -1297,8 +1294,85 @@
 		 */
 		// ====
 		
+		shouldShow: function() {
+			var shouldShow = $invokeSuper.call(this);
+			if (shouldShow) {
+				var column = this.column, dataType = column.get("dataType"), dtCode = dataType ? dataType._code : -1;
+				var trigger = column.get("trigger"), pd = column._propertyDef;
+				if (!trigger && !(pd && pd._mapping) && (dtCode == dorado.DataType.PRIMITIVE_BOOLEAN || dtCode == dorado.DataType.BOOLEAN)) {
+					shouldShow = false;
+				}
+			}
+			return shouldShow;
+		},
+		
+		/**
+		 * 设置具体的单元格编辑器控件。
+		 * @param {dorado.widget.Control} editorControl
+		 */
+		setEditorControl: function(editorControl) {
+			this._editorControl = editorControl;
+		},
+		
 		getEditorControl: function() {
-			return this._editorControl;
+			var editorControl = null;
+			if (this._editorControl) {
+				editorControl = this._editorControl;
+			} else {
+				var column = this.column;
+				if (column._editor) {
+					editorControl = column._editor;
+				} else if (column._editorType) {
+					if (column._editorType != "None") {
+						var cacheKey = "_cache_" + column._editorType;
+						editorControl = this[cacheKey];
+						if (!editorControl) {
+							editorControl = dorado.Toolkits.createInstance("widget", column._editorType);
+							this[cacheKey] = editorControl;
+						}
+					}
+				}
+				else {
+					editorControl = this.createEditorControl();
+					if (this.cachable) this._editorControl = editorControl;
+				}
+			}
+			
+			if (editorControl && !editorControl._initedForCellEditor) {
+				editorControl._initedForCellEditor = true;
+				
+				var column = this.column, cellEditor = this, pd = column._propertyDef;
+				var dataType = column.get("dataType"), dtCode = dataType ? dataType._code : -1;
+				var trigger = column.get("trigger"), displayFormat = column.get("displayFormat"), typeFormat = column.get("typeFormat");
+				if (!dtCode || (pd && pd._mapping)) dataType = undefined;
+			
+				editorControl.set({
+					dataType: dataType,
+					displayFormat: displayFormat,
+					typeFormat: typeFormat,
+					trigger: trigger
+				}, {
+					skipUnknownAttribute: true,
+					tryNextOnError: true,
+					preventOverwriting: true
+				});
+				
+				editorControl.addListener("onBlur", function(self) {
+					if ((new Date() - cellEditor._showTimestamp) > 300) cellEditor.hide();
+				})
+				if (editorControl instanceof dorado.widget.AbstractEditor) {
+					editorControl.addListener("beforePost", function(self, arg) {
+						cellEditor.beforePost(arg);
+					}).addListener("onPost", function(self, arg) {
+						cellEditor.onPost(arg);
+					});
+					editorControl._cellEditor = cellEditor; // 主要供DropDown进行判断
+					editorControl._propertyDef = column._propertyDef; // 主要供AutoMappingDropDown使用
+				}
+				
+				this.grid.registerInnerControl(editorControl);
+			}
+			return editorControl;
 		},
 		
 		getContainerElement: function(dom) {
@@ -1306,26 +1380,17 @@
 		},
 		
 		initDom: function(dom) {
-			var control = this._editorControl;
-			if (!control) {
-				control = this._editorControl = this.createEditorControl();
-				var column = this.column, cellEditor = this;
-				control.addListener("onBlur", function(self) {
-					if ((new Date() - cellEditor._showTimestamp) > 300) cellEditor.hide();
-				})
-				if (control instanceof dorado.widget.AbstractEditor) {
-					control.addListener("beforePost", function(self, arg) {
-						cellEditor.beforePost(arg);
-					}).addListener("onPost", function(self, arg) {
-						cellEditor.onPost(arg);
-					});
-					control._cellEditor = cellEditor; // 主要供DropDown进行判断
-					control._propertyDef = column._propertyDef; // 主要供AutoMappingDropDown使用
+			var editorControl = this.getEditorControl();
+			var containerElement = this.getContainerElement(dom);
+			if (containerElement.firstChild) {
+				var originControl = dorado.widget.findParentControl(containerElement.firstChild);
+				if (originControl && originControl != editorControl) {
+					originControl.unrender();
 				}
 			}
-			
-			this.grid.registerInnerControl(control);
-			if (!control.get("rendered")) control.render(this.getContainerElement(dom));
+			if (editorControl && !editorControl._rendered) {
+				editorControl.render(containerElement);
+			}
 		},
 		
 		resize: function() {
@@ -1354,6 +1419,7 @@
 			$invokeSuper.call(this, [parent, cell]);
 			
 			var control = this.getEditorControl();
+			if (!control) return;
 			control._focusParent = parent;
 			setTimeout(function() {
 				try {
@@ -1390,7 +1456,10 @@
 	 */
 	dorado.widget.grid.SimpleCellEditor = $extend(dorado.widget.grid.ControlCellEditor, /** @scope dorado.widget.grid.SimpleCellEditor.prototype */ {
 		refresh: function() {
-			var entity = this.data, column = this.column, editor = this.getEditorControl(), property, value;
+			var editor = this.getEditorControl();
+			if (!editor) return;
+			
+			var entity = this.data, column = this.column, property, value;
 			if (column._propertyPath) {
 				property = column._subProperty;
 			}
@@ -1485,21 +1554,13 @@
 				}
 			}
 			
-			if (!editor) {
+			if (editor === undefined) {
 				if (column._wrappable) {
-					editor = new dorado.widget.TextArea({
-						trigger: trigger
-					});
+					editor = new dorado.widget.TextArea();
 					this.minWidth = 120;
 					this.minHeight = 40;
 				} else {
-					if (!dtCode || (pd && pd._mapping)) dt = undefined;
-					editor = new dorado.widget.TextEditor({
-						dataType: dt,
-						displayFormat: displayFormat,
-						typeFormat: typeFormat,
-						trigger: trigger
-					});
+					editor = new dorado.widget.TextEditor();
 				}
 			}
 			return editor;
@@ -1758,12 +1819,36 @@
 			summaryRenderer: {},
 			
 			/**
-			 * 单元格编辑器。
-			 * @type dorado.widget.grid.CellEditor
-			 * @attribute skipRefresh
+			 * 表单项类型。
+			 * <p>
+			 * 此属性的值实质为编辑器控件的$type。<br>
+			 * 例如当我们希望其中的编辑器为{@link dorado.widget.TextEditor}时，可以定义此属性的值为TextEditor。
+			 * 因为{@link dorado.widget.TextEditor}的$type为TextEditor。<br>
+			 * 当我们希望其中的编辑器为{@link dorado.widget.CheckBox}时，可以定义此属性的值为CheckBox。
+			 * </p>
+			 * <p>
+			 * 通过此方法定义编辑器控件具有一定的局限性，很多编辑控件在实际使用时往往需要定义额外的属性。
+			 * 如{@link dorado.widget.CustomSpinner}必须定义pattern属性才能正常使用，在这种情况下应该通过editor属性直接声明具体的编辑器。
+			 * </p>
+			 * @type String
+			 * @attribute 
+			 */
+			editorType: {},
+			
+			/**
+			 * 内部使用的编辑器。
+			 * @type dorado.widget.Control
+			 * @attribute
 			 */
 			editor: {
-				skipRefresh: true
+				setter: function(editor) {
+					if (!(editor instanceof dorado.widget.Control)) {
+						editor = dorado.Toolkits.createInstance("widget", editor, function(type) {
+							return dorado.Toolkits.getPrototype("widget", type || "TextEditor");
+						});
+					}
+					this._editor = editor;
+				}
 			},
 			
 			/**

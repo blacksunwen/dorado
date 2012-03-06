@@ -1,5 +1,7 @@
 package com.bstek.dorado.view.widget.grid;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 
 import com.bstek.dorado.annotation.ClientEvent;
@@ -12,6 +14,9 @@ import com.bstek.dorado.common.Ignorable;
 import com.bstek.dorado.common.MetaDataSupport;
 import com.bstek.dorado.common.TagSupport;
 import com.bstek.dorado.common.event.ClientEventSupportedObject;
+import com.bstek.dorado.view.View;
+import com.bstek.dorado.view.ViewElement;
+import com.bstek.dorado.view.ViewElementUtils;
 import com.bstek.dorado.view.widget.Align;
 
 /**
@@ -23,7 +28,10 @@ import com.bstek.dorado.view.widget.Align;
 		@ClientEvent(name = "onGetCellEditor") })
 @XmlNode(implTypes = "com.bstek.dorado.view.widget.grid.*")
 public abstract class Column extends ClientEventSupportedObject implements
-		Ignorable, TagSupport, MetaDataSupport {
+		Ignorable, TagSupport, MetaDataSupport, ViewElement {
+	private ViewElement parent;
+	private Collection<ViewElement> innerElements;
+
 	private String name;
 	private String caption;
 	private Align align;
@@ -35,6 +43,38 @@ public abstract class Column extends ClientEventSupportedObject implements
 	private Object userData;
 	private String tags;
 	private Map<String, Object> metaData;
+
+	public ViewElement getParent() {
+		return parent;
+	}
+
+	public void setParent(ViewElement parent) {
+		ViewElementUtils.clearParentViewElement(this, this.parent);
+
+		this.parent = parent;
+
+		View view = ViewElementUtils.getParentView(parent);
+		if (view != null) {
+			ViewElementUtils.setParentViewElement(this, parent);
+		}
+	}
+
+	public void registerInnerElement(ViewElement element) {
+		if (innerElements == null) {
+			innerElements = new HashSet<ViewElement>();
+		}
+		innerElements.add(element);
+	}
+
+	public void unregisterInnerElement(ViewElement element) {
+		if (innerElements != null) {
+			innerElements.remove(element);
+		}
+	}
+
+	public Collection<ViewElement> getInnerElements() {
+		return innerElements;
+	}
 
 	public String getName() {
 		return name;
