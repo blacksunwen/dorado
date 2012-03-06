@@ -23,8 +23,8 @@ public class ViewArgumentsParser extends ConfigurableDispatchableXmlParser {
 		for (Element element : DomUtils.getChildrenByTagName((Element) node,
 				ViewXmlConstants.ARGUMENT)) {
 			String name = element.getAttribute(XmlConstants.ATTRIBUTE_NAME);
-			Object value = parseProperty(XmlConstants.ATTRIBUTE_VALUE, element,
-					context);
+			Map<String, Object> properties = parseProperties(element, context);
+			Object value = properties.get(XmlConstants.ATTRIBUTE_VALUE);
 			arguments.put(name, value);
 		}
 		return arguments;
