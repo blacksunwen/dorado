@@ -2,8 +2,10 @@ package com.bstek.dorado.view.widget.form;
 
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.data.type.DataType;
+import com.bstek.dorado.data.type.property.Mapping;
 import com.bstek.dorado.view.annotation.Widget;
 
 /**
@@ -14,30 +16,41 @@ import com.bstek.dorado.view.annotation.Widget;
 @ClientObject(prototype = "dorado.widget.TextEditor",
 		shortTypeName = "TextEditor")
 public class TextEditor extends AbstractTextEditor {
-	private DataType dataType;
+	@Deprecated
 	private boolean password;
+
+	private Mapping mapping;
+	private DataType dataType;
 	private String typeFormat;
 	private String displayFormat;
-	private boolean required;
-	private int minLength;
-	private int maxLength;
 
-	@Override
+	@XmlProperty(composite = true)
+	@ClientProperty(outputter = "spring:dorado.mappingPropertyOutputter")
+	public Mapping getMapping() {
+		return mapping;
+	}
+
+	public void setMapping(Mapping mapping) {
+		this.mapping = mapping;
+	}
+
 	@XmlProperty(parser = "spring:dorado.dataTypePropertyParser")
 	@ClientProperty
 	public DataType getDataType() {
 		return dataType;
 	}
 
-	@Override
 	public void setDataType(DataType dataType) {
 		this.dataType = dataType;
 	}
 
+	@Deprecated
+	@IdeProperty(visible = false)
 	public boolean isPassword() {
 		return password;
 	}
 
+	@Deprecated
 	public void setPassword(boolean password) {
 		this.password = password;
 	}
@@ -56,29 +69,5 @@ public class TextEditor extends AbstractTextEditor {
 
 	public void setDisplayFormat(String displayFormat) {
 		this.displayFormat = displayFormat;
-	}
-
-	public boolean isRequired() {
-		return required;
-	}
-
-	public void setRequired(boolean required) {
-		this.required = required;
-	}
-
-	public int getMinLength() {
-		return minLength;
-	}
-
-	public void setMinLength(int minLength) {
-		this.minLength = minLength;
-	}
-
-	public int getMaxLength() {
-		return maxLength;
-	}
-
-	public void setMaxLength(int maxLength) {
-		this.maxLength = maxLength;
 	}
 }

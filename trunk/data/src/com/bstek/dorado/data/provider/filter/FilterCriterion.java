@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.bstek.dorado.data.provider.filter;
 
 import com.bstek.dorado.data.provider.Criterion;

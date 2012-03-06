@@ -47,22 +47,21 @@
 			/**
 			 * 表单项类型。
 			 * <p>
-			 * 目前支持以下几种取值：
-			 * <ul>
-			 * <li>label - 文本标签。</li>
-			 * <li>text - 文本编辑框。</li>
-			 * <li>password - 口令编辑框。</li>
-			 * <li>textArea - 多行文本编辑框。</li>
-			 * <li>checkBox - 单选框。</li>
-			 * <li>radioGroup - 多选框组合。
-			 * 此选项在FormElement不与某个DataSet绑定的情况下意义不大，因为基本上radioGroup都需要做一些特别的设置之后开可以开始使用。
-			 * 而在于DataSet绑定时，内部创建的DataRadioGroup则可以根据相应PropertyDef中的mapping属性自动的初始化其中的单选框。</li>
-			 * </ul>
+			 * 此属性的值实质为编辑器控件的$type。<br>
+			 * 例如当我们希望其中的编辑器为{@link dorado.widget.TextEditor}时，可以定义此属性的值为TextEditor。
+			 * 因为{@link dorado.widget.TextEditor}的$type为TextEditor。<br>
+			 * 当我们希望其中的编辑器为{@link dorado.widget.CheckBox}时，可以定义此属性的值为CheckBox。<br>
+			 * 当我们希望其中的编辑器为{@link dorado.widget.Label}时，可以定义此属性的值为Label。
+			 * 由于Label并不是一个继承自{@link dorado.widget.AbstractEditor}，因此FormElement将不具备数据编辑的功能。
+			 * </p>
+			 * <p>
+			 * 通过此方法定义编辑器控件具有一定的局限性，很多编辑控件在实际使用时往往需要定义额外的属性。
+			 * 如{@link dorado.widget.CustomSpinner}必须定义pattern属性才能正常使用，在这种情况下应该通过editor属性直接声明具体的编辑器。
 			 * </p>
 			 * @type String
 			 * @attribute writeBeforeReady
 			 */
-			type: {
+			editorType: {
 				writeBeforeReady: true
 			},
 			
@@ -272,9 +271,7 @@
 					}
 					
 					var def = attrs[attr];
-					if (def.writeOnly ||
-					(!attrWatcher.getWritingTimes(attr) &&
-					!(def.defaultValue instanceof Function))) {
+					if (def.writeOnly || (!attrWatcher.getWritingTimes(attr) &&!(def.defaultValue instanceof Function))) {
 						continue;
 					}
 					
@@ -611,27 +608,10 @@
 			return dom;
 		},
 		
-		createEditor: function(type) {
-			switch (type) {
-				case "textArea":{
-					return new dorado.widget.TextArea();
-				}
-				case "checkBox":{
-					return new dorado.widget.CheckBox();
-				}
-				case "radioGroup":{
-					return new dorado.widget.RadioGroup({
-						layout: "flow"
-					});
-				}
-				case "label":{
-					return new dorado.widget.DataLabel();
-				}
-				default:
-					{
-						return new dorado.widget.TextEditor();
-					}
-			}
+		createEditor: function(editorType) {
+			return dorado.Toolkits.createInstance("widget", editorType, function() {
+				return dorado.Toolkits.getPrototype("widget", editorType) || dorado.widget.TextEditor;
+			});
 		},
 		
 		getEditor: function() {
@@ -670,17 +650,17 @@
 			if (!control) {
 				var propertyDef = this.getBindingPropertyDef();
 				if (propertyDef) {
-					if (!this._type) {
+					if (!this._editorType) {
 						var propertyDataType = propertyDef.get("dataType");
 						if (propertyDataType) {
 							if (propertyDataType._code == dorado.DataType.PRIMITIVE_BOOLEAN || propertyDataType._code == dorado.DataType.BOOLEAN) {
-								this._type = (!propertyDef._mapping) ? "checkBox" : "radioGroup";
+								this._editorType = (!propertyDef._mapping) ? "CheckBox" : "RadioGroup";
 							}
 						}
 					}
 					
 					if (propertyDef._mapping) {
-						if ((!this._type || this._type == "textEditor")) {
+						if ((!this._editorType || this._editorType == "TextEditor")) {
 							this._trigger = new dorado.widget.AutoMappingDropDown({
 								items: propertyDef._mapping
 							});
@@ -688,7 +668,7 @@
 					}
 				}
 				
-				this._editor = control = this.createEditor(this._type);
+				this._editor = control = this.createEditor(this._editorType);
 			}
 			
 			if (control) {
@@ -736,7 +716,6 @@
 		},
 		
 		initEditorConfig: function(config) {
-			if (this._type == "password") config.password = true;
 			if (this._trigger) config.trigger = this._trigger;
 			if (this._readOnly) config.readOnly = this._readOnly || this._realReadOnly;
 			if (this._dataSet && this._property) {
@@ -805,13 +784,13 @@
 			if (!required) {
 				var editor = this._editor;
 				required = (editor &&
-					editor instanceof dorado.widget.TextEditor &&
-					editor.get("required"));
+				editor instanceof dorado.widget.TextEditor &&
+				editor.get("required"));
 			}
 			return required;
 		},
 		
-		refreshDom: function(dom) {			
+		refreshDom: function(dom) {
 			var height = this._height || this._realHeight;
 			$invokeSuper.call(this, arguments);
 			
@@ -874,7 +853,7 @@
 					if (this._labelPosition == "top") hintEl.style.top = labelHeight + "px";
 					if (this._editorWidth > 0) {
 						var hintWidth = editorWidth - this._editorWidth - this._hintSpacing;
-						hintEl.style.width = ((hintWidth > 0) ? hintWidth : 0)+ "px";
+						hintEl.style.width = ((hintWidth > 0) ? hintWidth : 0) + "px";
 					} else {
 						hintEl.style.width = this._hintWidth + "px";
 					}

@@ -409,7 +409,7 @@
 					break;
 				case "goto":
 					item.set({
-						disabled: disabled || pageCount == 1,
+						disabled: (disabled || pageCount == 1),
 						pageNo: pageNo,
 						pageCount: pageCount,
 						entityCount: entityCount
@@ -521,15 +521,12 @@
 		refreshDom: function(dom) {
 			$invokeSuper.call(this, arguments);
 			
-			var spinner = this._spinner, pageCountChanged = false;
-			if (this._pageCount != this._currentPageCount) {
-				$fly(this._labelPrefix).text($resource("dorado.baseWidget.DataPilotGotoPagePrefix", this._pageNo, this._pageCount, this._entityCount));
-				$fly(this._labelSuffix).text($resource("dorado.baseWidget.DataPilotGotoPageSuffix", this._pageNo, this._pageCount, this._entityCount));
-				
-				this._currentPageCount = this._pageCount;
-				spinner.set("max", this._pageCount);
-				pageCountChanged = true;
-			}
+			var spinner = this._spinner;
+			$fly(this._labelPrefix).text($resource("dorado.baseWidget.DataPilotGotoPagePrefix", this._pageNo, this._pageCount, this._entityCount));
+			$fly(this._labelSuffix).text($resource("dorado.baseWidget.DataPilotGotoPageSuffix", this._pageNo, this._pageCount, this._entityCount));
+			
+			this._currentPageCount = this._pageCount;
+			spinner.set("max", this._pageCount);
 			spinner.set("value", this._pageNo);
 			spinner.set("readOnly", this._disabled);
 		}

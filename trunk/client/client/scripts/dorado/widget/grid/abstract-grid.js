@@ -1787,17 +1787,11 @@
 		getCellEditor: function(column, entity) {
 			var cellEditorCache = this._cellEditorCache;
 			if (!cellEditorCache) this._cellEditorCache = cellEditorCache = {};
-			var cellEditor = cellEditorCache[column._id] || column._editor;
+			var cellEditor = cellEditorCache[column._id];
 			
 			if (cellEditor === undefined) {
-				var dt = column.get("dataType"), dtCode = dt ? dt._code : -1, trigger = column.get("trigger");
-				var pd = column._propertyDef;
-				if (trigger || 
-					(dtCode != dorado.DataType.PRIMITIVE_BOOLEAN && dtCode != dorado.DataType.BOOLEAN) ||
-					(pd && pd._mapping)) {
-					cellEditor = new dorado.widget.grid.DefaultCellEditor();
-					cellEditor.bindColumn(column);
-				}
+				cellEditor = new dorado.widget.grid.DefaultCellEditor();
+				cellEditor.bindColumn(column);
 			} else if (cellEditor) {
 				if (cellEditor.column) {
 					if (cellEditor.column != column) throw new ResourceException("dorado.grid.CellEditorShareError");
@@ -1813,12 +1807,12 @@
 				var eventArg = {
 					data: entity,
 					column: column,
-					cellEditor: cellEditor
+					editorHolder: cellEditor
 				};
 				column.fireEvent("onGetCellEditor", column, eventArg);
 				this.fireEvent("onGetCellEditor", this, eventArg);
 				
-				cellEditor = eventArg.cellEditor;
+				cellEditor = eventArg.editorHolder;
 				if (cellEditor && cellEditor.cachable) cellEditorCache[column._id] = cellEditor;
 				
 				if (cellEditor) cellEditor.data = entity;

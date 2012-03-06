@@ -375,11 +375,11 @@
 		
 		doOnFocus: function() {
 			this.resetReadOnly();
-			if (dorado.Browser.msie && dorado.Browser.version < 9 && !this._editable != this._realReadOnly) {
+			if (!this._editable != this._realReadOnly) {
 				this._textDom.readOnly = !this._editable; // 避免在IE8中出现的DIV异常滚动的BUG
 			}
 			if (this._realReadOnly) return;
-
+			
 			this._focusTime = new Date();
 			this._lastPost = this._lastObserve = this.doGetText();
 			
@@ -404,8 +404,8 @@
 		
 		doOnBlur: function() {
 			this.resetReadOnly();
-			if (dorado.Browser.msie && dorado.Browser.version < 9 && this._textDom.readOnly) {
-				this._textDom.readOnly = false; // 避免在IE8中出现的DIV异常滚动的BUG
+			if (this._textDom.readOnly != this._realReadOnly) {
+				this._textDom.readOnly = this._realReadOnly;
 			}
 			if (this._realReadOnly) return;
 			
@@ -583,42 +583,6 @@
 		
 		ATTRIBUTES: /** @scope dorado.widget.AbstractTextEditor.prototype */ {
 		
-			/**
-			 * 一组用于定义改变属性编辑框中文字显示方式的"代码"/"名称"键值对。
-			 * @type Object[]
-			 * @attribute
-			 *
-			 * @example
-			 * // 例如对于一个以逻辑型表示性别的属性，我们可能希望在显示属性值时将true显示为"男"、将false显示为"女"。
-			 * textEditor.set("mapping", [
-			 * 	{
-			 * 		key : "true",
-			 * 		value : "男"
-			 * 	},
-			 * 	{
-			 * 		key : "false",
-			 * 		value : "女"
-			 * 	}
-			 * ]);
-			 */
-			mapping: {
-				setter: function(mapping) {
-					this._mapping = mapping;
-					if (mapping && mapping.length > 0) {
-						var index = this._mappingIndex = {};
-						for (var i = 0; i < mapping.length; i++) {
-							var key = mapping[i].key;
-							if (key == null) key = "${null}";
-							else if (key === '') key = "${empty}";
-							index[key + ''] = mapping[i].value || null;
-						}
-					} else {
-						delete this._mappingIndex;
-					}
-					delete this._mappingRevIndex;
-				}
-			},
-			
 			value: {
 				skipRefresh: true,
 				getter: function() {
@@ -626,7 +590,6 @@
 					if (this._value !== undefined && text === this._valueText) {
 						return this._value;
 					} else {
-						if (text && this._mapping) text = this.getMappedKey(text);
 						if (text === undefined) text = null;
 						return text;
 					}
@@ -634,7 +597,6 @@
 				setter: function(value) {
 					this._value = value;
 					var text = dorado.$String.toText(value);
-					if (text && this._mapping) text = this.getMappedValue(text);
 					this._skipValidateEmpty = true;
 					this.validate(text);
 					this._text = this._lastPost = this._valueText = text;
@@ -750,7 +712,7 @@
 		 * @protected
 		 * @parem text {String} 编辑框中的文本。
 		 */
-		doSetText: function(text) {			
+		doSetText: function(text) {
 			this._useBlankText = (!this._focused && text == '' && this._blankText);
 			if (this._textDom) {
 				if (this._useBlankText) text = this._blankText;
@@ -772,13 +734,6 @@
 				});
 			}
 			if (text.length) {
-				if (this._mapping && this.getMappedKey(text) === undefined) {
-					validationResults.push({
-						state: "error",
-						text: $resource("dorado.baseWidget.InputTextOutOfMapping")
-					});
-				}
-				
 				var validator = $singleton(dorado.validator.LengthValidator);
 				validator.set({
 					minLength: this._minLength,
@@ -805,8 +760,7 @@
 				} else {
 					this.set("text", e.getText(p));
 				}
-			}
-			else {
+			} else {
 				this.set("value", e[p]);
 			}
 			this.setDirty(false);
@@ -842,44 +796,11 @@
 			if (this._selectTextOnFocus) {
 				var self = this;
 				setTimeout(function() {
-//					if (self.get("focused") && self._editorFocused) {
+					if (self.get("focused") && self._editorFocused) {
 						self._textDom.select();
-//					}
+					}
 				}, 0);
 			}
-		},
-		
-		/**
-		 * 将给定的数值翻译成显示值。
-		 * @param {String} key 要翻译的键值。
-		 * @return {Object} 显示值。
-		 * @see dorado.widget.AbstractTextEditor#attribute:mapping
-		 */
-		getMappedValue: function(key) {
-			if (key == null) key = "${null}";
-			else if (key === '') key = "${empty}";
-			return this._mappingIndex ? this._mappingIndex[key + ''] : undefined;
-		},
-		
-		/**
-		 * 根据给定的显示值返回与其匹配的键值。
-		 * @param {Object} value 要翻译的显示值。
-		 * @return {String} 键值。
-		 * @see dorado.widget.AbstractTextEditor#attribute:mapping
-		 */
-		getMappedKey: function(value) {
-			if (!this._mappingRevIndex) {
-				var index = this._mappingRevIndex = {}, mapping = this._mapping;
-				for (var i = 0; i < mapping.length; i++) {
-					var v = mapping[i].value;
-					if (v == null) v = "${null}";
-					else if (v === '') v = "${empty}";
-					index[v + ''] = mapping[i].key;
-				}
-			}
-			if (value == null) value = "${null}";
-			else if (value === '') value = "${empty}";
-			return this._mappingRevIndex[value + ''];
 		}
 		
 	});
@@ -903,6 +824,42 @@
 			height: {
 				independent: true,
 				readOnly: true
+			},
+			
+			/**
+			 * 一组用于定义改变属性编辑框中文字显示方式的"代码"/"名称"键值对。
+			 * @type Object[]
+			 * @attribute
+			 *
+			 * @example
+			 * // 例如对于一个以逻辑型表示性别的属性，我们可能希望在显示属性值时将true显示为"男"、将false显示为"女"。
+			 * textEditor.set("mapping", [
+			 * 	{
+			 * 		key : "true",
+			 * 		value : "男"
+			 * 	},
+			 * 	{
+			 * 		key : "false",
+			 * 		value : "女"
+			 * 	}
+			 * ]);
+			 */
+			mapping: {
+				setter: function(mapping) {
+					this._mapping = mapping;
+					if (mapping && mapping.length > 0) {
+						var index = this._mappingIndex = {};
+						for (var i = 0; i < mapping.length; i++) {
+							var key = mapping[i].key;
+							if (key == null) key = "${null}";
+							else if (key === '') key = "${empty}";
+							index[key + ''] = mapping[i].value || null;
+						}
+					} else {
+						delete this._mappingIndex;
+					}
+					delete this._mappingRevIndex;
+				}
 			},
 			
 			value: {
@@ -999,6 +956,7 @@
 			 * 是否密码模式。
 			 * @type boolean
 			 * @attribute
+			 * @deprecated
 			 */
 			password: {},
 			
@@ -1041,10 +999,12 @@
 			var textDom = document.createElement("INPUT");
 			textDom.className = "editor";
 			if (this._password) textDom.type = "password";
-			if (!(dorado.Browser.msie && dorado.Browser.version < 7)) textDom.style.padding = 0;
 			if (dorado.Browser.msie && dorado.Browser.version > 7) {
 				textDom.style.top = 0;
 				textDom.style.position = "absolute";
+			}
+			else {
+				textDom.style.padding = 0;
 			}
 			return textDom;
 		},
@@ -1052,6 +1012,15 @@
 		doValidate: function(text) {
 			var validationResults;
 			try {
+				if (text.length) {
+					if (this._mapping && this.getMappedKey(text) === undefined) {
+						validationResults.push({
+							state: "error",
+							text: $resource("dorado.baseWidget.InputTextOutOfMapping")
+						});
+					}
+				}
+				
 				var dataType = this.get("dataType");
 				if (dataType) dataType.parse(text, this._typeFormat);
 				validationResults = $invokeSuper.call(this, arguments);
@@ -1064,6 +1033,40 @@
 				}];
 			}
 			return validationResults;
+		},
+		
+		
+		/**
+		 * 将给定的数值翻译成显示值。
+		 * @param {String} key 要翻译的键值。
+		 * @return {Object} 显示值。
+		 * @see dorado.widget.AbstractTextEditor#attribute:mapping
+		 */
+		getMappedValue: function(key) {
+			if (key == null) key = "${null}";
+			else if (key === '') key = "${empty}";
+			return this._mappingIndex ? this._mappingIndex[key + ''] : undefined;
+		},
+		
+		/**
+		 * 根据给定的显示值返回与其匹配的键值。
+		 * @param {Object} value 要翻译的显示值。
+		 * @return {String} 键值。
+		 * @see dorado.widget.AbstractTextEditor#attribute:mapping
+		 */
+		getMappedKey: function(value) {
+			if (!this._mappingRevIndex) {
+				var index = this._mappingRevIndex = {}, mapping = this._mapping;
+				for (var i = 0; i < mapping.length; i++) {
+					var v = mapping[i].value;
+					if (v == null) v = "${null}";
+					else if (v === '') v = "${empty}";
+					index[v + ''] = mapping[i].key;
+				}
+			}
+			if (value == null) value = "${null}";
+			else if (value === '') value = "${empty}";
+			return this._mappingRevIndex[value + ''];
 		},
 		
 		doOnFocus: function() {
@@ -1125,6 +1128,45 @@
 					break;
 			}
 			return b;
+		}
+	});
+	
+	
+	
+	/**
+	 * @author Benny Bao (mailto:benny.bao@bstek.com)
+	 * @component Form
+	 * @class 密码编辑器。
+	 * @extends dorado.widget.AbstractTextEditor
+	 */
+	dorado.widget.PasswordEditor = $extend(dorado.widget.AbstractTextEditor, /** @scope dorado.widget.PasswordEditor.prototype */ {
+		$className: "dorado.widget.PasswordEditor",
+		
+		ATTRIBUTES: /** @scope dorado.widget.PasswordEditor.prototype */ {
+		
+			width: {
+				defaultValue: 150,
+				independent: true
+			},
+			
+			height: {
+				independent: true,
+				readOnly: true
+			}
+		},
+		
+		createTextDom: function() {
+			var textDom = document.createElement("INPUT");
+			textDom.className = "editor";
+			textDom.type = "password";
+			if (dorado.Browser.msie && dorado.Browser.version > 7) {
+				textDom.style.top = 0;
+				textDom.style.position = "absolute";
+			}
+			else {
+				textDom.style.padding = 0;
+			}
+			return textDom;
 		}
 	});
 })();

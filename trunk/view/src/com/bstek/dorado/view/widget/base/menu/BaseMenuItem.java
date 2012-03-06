@@ -22,9 +22,9 @@ import com.bstek.dorado.view.widget.RenderableElement;
 @XmlNode(implTypes = "com.bstek.dorado.view.widget.base.menu.*")
 public abstract class BaseMenuItem extends ClientEventSupportedObject implements
 		RenderableElement, Ignorable, TagSupport, ViewElement {
-	private Collection<ViewElement> innerElements;
-
 	private ViewElement parent;
+	private Collection<ViewElement> innerElements;
+	
 	private String name;
 	private String width;
 	private String height;

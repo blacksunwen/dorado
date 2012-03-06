@@ -28,7 +28,7 @@ public class DataTreeGrid extends AbstractTreeGrid implements DataControl {
 	private String dataPath;
 	private EntityDataType dataType;
 	private String currentNodeDataPath;
-	private boolean autoCreateColumns;
+	private Boolean autoCreateColumns;
 
 	private List<BindingConfig> bindingConfigs = new ArrayList<BindingConfig>();
 
@@ -69,12 +69,11 @@ public class DataTreeGrid extends AbstractTreeGrid implements DataControl {
 		this.currentNodeDataPath = currentNodeDataPath;
 	}
 
-	@ClientProperty(escapeValue = "true")
-	public boolean isAutoCreateColumns() {
+	public Boolean getAutoCreateColumns() {
 		return autoCreateColumns;
 	}
 
-	public void setAutoCreateColumns(boolean autoCreateColumns) {
+	public void setAutoCreateColumns(Boolean autoCreateColumns) {
 		this.autoCreateColumns = autoCreateColumns;
 	}
 
