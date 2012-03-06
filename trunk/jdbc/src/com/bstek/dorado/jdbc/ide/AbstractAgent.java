@@ -4,7 +4,10 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
+import java.sql.Driver;
+import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Enumeration;
 import java.util.Map;
 
 import javax.sql.DataSource;
@@ -18,7 +21,9 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
+import org.springframework.util.ClassUtils;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
@@ -30,15 +35,16 @@ public abstract class AbstractAgent implements IAgent {
 	private Map<String, String> paramerters;
 	private DatabaseMetaData databaseMetaData;
 	private SingleConnectionDataSource dataSource;
+	private Driver driver;
 	
 	@Override
 	public String listSpaces(Map<String, String> paramerters)
 			throws Exception {
-		this.resetParameters(paramerters);
+		this.resetContext(paramerters);
 		try {
 			return doListSpaces();
 		} finally {
-			this.clearParameters();
+			this.clearContext();
 		}
 	}
 	
@@ -47,11 +53,11 @@ public abstract class AbstractAgent implements IAgent {
 	@Override
 	public String listTables(Map<String, String> paramerters)
 			throws Exception {
-		this.resetParameters(paramerters);
+		this.resetContext(paramerters);
 		try {
 			return doListTables();
 		} finally {
-			this.clearParameters();
+			this.clearContext();
 		}
 	}
 	
@@ -60,12 +66,12 @@ public abstract class AbstractAgent implements IAgent {
 	@Override
 	public String listJdbcTypes(Map<String, String> paramerters)
 			throws Exception {
-		this.resetParameters(paramerters);
+		this.resetContext(paramerters);
 		try {
 			String[] typeAry = getJdbcTypeNames();
 			return StringUtils.join(typeAry, ",");
 		} finally {
-			this.clearParameters();
+			this.clearContext();
 		}
 	}
 	
@@ -74,12 +80,12 @@ public abstract class AbstractAgent implements IAgent {
 	@Override
 	public String listKeyGenerators(Map<String, String> paramerters)
 			throws Exception {
-		this.resetParameters(paramerters);
+		this.resetContext(paramerters);
 		try {
 			String[] typeAry = getKeyGeneratorNames();
 			return StringUtils.join(typeAry, ",");
 		} finally {
-			this.clearParameters();
+			this.clearContext();
 		}
 	}
 	
@@ -88,7 +94,7 @@ public abstract class AbstractAgent implements IAgent {
 	@Override
 	public String createColumns(Map<String, String> paramerters)
 			throws Exception {
-		this.resetParameters(paramerters);
+		this.resetContext(paramerters);
 		try {
 			String tableType = paramerters.get(IAgent.TABLE_TYPE);
 			Document document = parseText(paramerters.get(IAgent.XML));
@@ -100,7 +106,7 @@ public abstract class AbstractAgent implements IAgent {
 			
 			return toString(document);
 		} finally {
-			this.clearParameters();
+			this.clearContext();
 		}
 	}
 	
@@ -136,11 +142,49 @@ public abstract class AbstractAgent implements IAgent {
 		return dataSource;
 	}
 	
-	protected void resetParameters(Map<String, String> paramerters) {
-		clearParameters();
+	@SuppressWarnings("unchecked")
+	protected void resetContext(Map<String, String> paramerters) throws Exception {
+		clearContext();
 		this.paramerters = paramerters;
+		
+		String driverClassName = paramerters.get(IAgent.DRIVER);
+		Class<?> driverClass = Class.forName(driverClassName, true, ClassUtils.getDefaultClassLoader());
+
+		Enumeration<Driver> driverEnu = DriverManager.getDrivers();
+		Driver foundDriver = null;
+		while (driverEnu.hasMoreElements()) {
+			Driver driver = driverEnu.nextElement();
+			if(driverEnu.getClass().getName().equals(driverClassName)) {
+				foundDriver = driver;
+				break;
+			}
+		}
+		
+		if (foundDriver != null) {
+			this.driver = foundDriver;
+			System.out.println(" * found driver: " + foundDriver);
+		} else {
+			this.driver = BeanUtils.instantiateClass((Class<Driver>)driverClass);
+			try {
+				DriverManager.registerDriver(driver);
+				System.out.println("* register driver: " + driver);
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
-	protected void clearParameters() {
+	
+	protected void clearContext() throws Exception {
+		if (driver != null) {
+			try {
+				DriverManager.deregisterDriver(driver);
+				System.out.println("* deregister driver: " + driver);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			this.driver = null;
+		}
+		
 		if (this.dataSource != null) {
 			this.dataSource.resetConnection();
 			this.dataSource = null;
