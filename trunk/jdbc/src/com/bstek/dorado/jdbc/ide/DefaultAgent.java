@@ -1,9 +1,12 @@
 package com.bstek.dorado.jdbc.ide;
 
+import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -198,7 +201,9 @@ public class DefaultAgent extends AbstractAgent {
 				
 				Map<String,String> column = new HashMap<String,String>();
 				column.put("name", columnName);
-				column.put("jdbcType", jdbcTypeName);
+				if (StringUtils.isNotEmpty(jdbcTypeName)) {
+					column.put("jdbcType", jdbcTypeName);
+				}
 				
 				if (primaryKeys.contains(columnName)) {
 					keyColumns.add(column);
@@ -240,26 +245,123 @@ public class DefaultAgent extends AbstractAgent {
 		
 		return document;
 	}
-
-	protected String getJdbcTypeName(Map<String,String> columnMeta) {
-		String type = columnMeta.get(JdbcConstants.DATA_TYPE);
-		String typeName = JdbcConstants.getTypeName(Integer.valueOf(type));
-		if (StringUtils.isNotEmpty(typeName)) {
-			String[] jdbcTypeNameAry = getJdbcTypeNames();
-			for (String jdbcTypeName: jdbcTypeNameAry) {
-				if (jdbcTypeName.startsWith(typeName+"-")){
-					return jdbcTypeName;
-				}
-			}
-		}
-		
-		return null;
-	}
 	
 	@Override
 	protected Document createSqlTableColumns(Document document)
 			throws Exception {
-		return null;
+		Element tableElement = document.getDocumentElement();
+		Element columnsElement = DomUtils.getChildByTagName(tableElement, "Columns");
+		if (columnsElement == null) {
+			columnsElement = document.createElement("Columns");
+			tableElement.appendChild(columnsElement);
+		}
+		
+		List<Element> columnElements = DomUtils.getChildElements(columnsElement);
+		Set<String> columnNameSet = new HashSet<String>();
+		for (Element element: columnElements) {
+			String columnName = element.getAttribute("name");
+			columnNameSet.add(columnName);
+		}
+		
+		String querySql = this.getParamerters().get(IAgent.QUERY_SQL);
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		ResultSetMetaData rsmd = null;
+		
+		List<Map<String, String>> commonColumns = new ArrayList<Map<String, String>>();
+		try {
+			conn = this.getDataSource().getConnection();
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(querySql);
+			rsmd = rs.getMetaData();
+			
+			for (int i=1,j=rsmd.getColumnCount(); i<=j; i++) {
+				Map<String,String> columnMeta = new HashMap<String,String>(4);
+				
+				columnMeta.put(JdbcConstants.DATA_TYPE,    String.valueOf(rsmd.getColumnType(i)));
+				columnMeta.put(JdbcConstants.TYPE_NAME,    rsmd.getColumnTypeName(i));
+				columnMeta.put(JdbcConstants.COLUMN_LABEL, rsmd.getColumnLabel(i));
+				columnMeta.put(JdbcConstants.COLUMN_NAME,  rsmd.getColumnName(i));
+				columnMeta.put(JdbcConstants.TABLE_NAME,   rsmd.getTableName(i));
+				
+				commonColumns.add(columnMeta);
+			}
+		} finally {
+			close(rs);
+			close(stmt);
+			close(conn);
+		}
+		
+		for (Map<String, String> commonColumn: commonColumns) {
+			String columnName = commonColumn.get(JdbcConstants.COLUMN_NAME);
+			if (StringUtils.isEmpty(columnName)) {
+				columnName = commonColumn.get(JdbcConstants.COLUMN_LABEL);
+			}
+			
+			if (StringUtils.isNotEmpty(columnName) && !columnNameSet.contains(columnName)) {
+				Element element = document.createElement("Column");
+				element.setAttribute("name", columnName);
+				String jdbcTypeName = getJdbcTypeName(commonColumn);
+				
+				if (StringUtils.isNotEmpty(jdbcTypeName)) {
+					element.setAttribute("jdbcType", jdbcTypeName);
+				}
+				
+				columnsElement.appendChild(element);
+			}
+		}
+		
+		return document;
 	}
 	
+	/**
+	 * @see java.sql.DatabaseMetaData#getColumns(String, String, String, String)
+	 * @param columnMeta
+	 * @return
+	 */
+	protected String getJdbcTypeName(Map<String,String> columnMeta) {
+		String typeStr = columnMeta.get(JdbcConstants.DATA_TYPE);
+		int type = Integer.valueOf(typeStr);
+		switch (type) {
+		case Types.BIT:
+			return "BIT-Boolean";
+		case Types.BOOLEAN:
+			return "BOOLEAN-Boolean";
+		case Types.CHAR:
+			return "CHAR-Boolean";
+		case Types.SMALLINT:
+			return "SMALLINT-Short";
+		case Types.INTEGER:
+			return "INTEGER-Integer";
+		case Types.BIGINT:
+			return "BIGINT-Long";
+		case Types.REAL:
+			return "REAL-Float";
+		case Types.FLOAT:
+			return "FLOAT-Double";
+		case Types.DOUBLE:
+			return "DOUBLE-Float";
+		case Types.NUMERIC:
+			return "NUMERIC-BigDecimal";
+		case Types.DECIMAL:
+			return "DECIMAL-BigDecimal";
+		case Types.TINYINT:
+			return "TINYINT-Byte";
+		case Types.DATE:
+			return "DATE-Date";
+		case Types.TIME:
+			return "TIME-Date";
+		case Types.TIMESTAMP:
+			return "TIMESTAMP-Date";
+		case Types.VARCHAR:
+			return "VARCHAR-String";
+		case Types.LONGVARCHAR:
+			return "LONGVARCHAR-String";
+		case Types.CLOB:
+			return "CLOB-String";
+		default:
+			return null;
+		}
+	}
 }

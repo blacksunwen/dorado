@@ -30,7 +30,7 @@ public class ThreadLocalJdbcEnviroment extends AbstractJdbcEnviroment {
 		
 		localDao.remove();
 		localTxMgr.remove();
-		licalTxDef.remove();
+		localTxDef.remove();
 	}
 
 	private ThreadLocal<NamedParameterJdbcDaoSupport> localDao = new ThreadLocal<NamedParameterJdbcDaoSupport>();
@@ -87,18 +87,18 @@ public class ThreadLocalJdbcEnviroment extends AbstractJdbcEnviroment {
 		}
 	}
 
-	private ThreadLocal<TransactionDefinition> licalTxDef = new ThreadLocal<TransactionDefinition>();
+	private ThreadLocal<TransactionDefinition> localTxDef = new ThreadLocal<TransactionDefinition>();
 	
 	@Override
 	public TransactionDefinition getTransactionDefinition() {
-		return licalTxDef.get();
+		return localTxDef.get();
 	}
 
 	public void setTransactionDefinition(TransactionDefinition transactionDefinition) {
 		if (transactionDefinition != null) {
-			this.licalTxDef.set(transactionDefinition);
+			this.localTxDef.set(transactionDefinition);
 		} else {
-			this.licalTxDef.remove();
+			this.localTxDef.remove();
 		}
 	}
 
