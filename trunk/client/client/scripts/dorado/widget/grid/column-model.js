@@ -281,6 +281,7 @@
 			label.innerText = column.get("caption");
 			
 			if (column instanceof dorado.widget.grid.DataColumn) {
+				if (column._headerAlign) cell.align = column._headerAlign;
 				$fly(label).toggleClass("caption-required", !!column.get("required"));
 				
 				var sortState = column.get("sortState"), sortIndicator;
