@@ -5,8 +5,11 @@ package com.bstek.dorado.idesupport;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.InitializingBean;
+
+import com.bstek.dorado.idesupport.initializer.RuleTemplateInitializer;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -15,7 +18,9 @@ import org.springframework.beans.factory.InitializingBean;
 public class RuleConfigLoader implements InitializingBean {
 	private RuleTemplateBuilder ruleTemplateBuilder;
 	private String configLocation;
-
+	private Map<String, RuleTemplateInitializer> initializerMap;
+	
+	
 	public void setRuleTemplateBuilder(RuleTemplateBuilder ruleTemplateBuilder) {
 		this.ruleTemplateBuilder = ruleTemplateBuilder;
 	}
@@ -25,6 +30,15 @@ public class RuleConfigLoader implements InitializingBean {
 	 */
 	public void setConfigLocation(String configLocation) {
 		this.configLocation = configLocation;
+	}
+
+	/**
+	 * 设置生成规则文件的拦截器
+	 * @param initializerMap
+	 */
+	public void setInitializerMap(
+			Map<String, RuleTemplateInitializer> initializerMap) {
+		this.initializerMap = initializerMap;
 	}
 
 	public void afterPropertiesSet() throws Exception {
@@ -38,6 +52,10 @@ public class RuleConfigLoader implements InitializingBean {
 				configTemplateFiles.add(configLocation);
 				ruleTemplateBuilder.setConfigTemplateFiles(configTemplateFiles);
 			}
+		}
+		
+		if (initializerMap != null) {
+			ruleTemplateBuilder.appendInitializerMap(initializerMap);
 		}
 	}
 }

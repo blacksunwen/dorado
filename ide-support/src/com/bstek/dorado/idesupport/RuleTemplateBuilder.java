@@ -31,8 +31,8 @@ public class RuleTemplateBuilder implements RuleTemplateManagerListener {
 	private XmlDocumentBuilder xmlDocumentBuilder;
 	private XmlParser preloadParser;
 	private XmlParser ruleTemplateParser;
-	private Map<String, RuleTemplateInitializer> initializerNameMap;
-	private Map<Class<?>, RuleTemplateInitializer> initializerTypeMap;
+	private Map<String, RuleTemplateInitializer> initializerNameMap = new LinkedHashMap<String, RuleTemplateInitializer>();
+	private Map<Class<?>, RuleTemplateInitializer> initializerTypeMap = new LinkedHashMap<Class<?>, RuleTemplateInitializer>();
 
 	private List<String> configTemplateFiles;
 
@@ -60,6 +60,12 @@ public class RuleTemplateBuilder implements RuleTemplateManagerListener {
 			throws ClassNotFoundException, LinkageError {
 		this.initializerNameMap = new LinkedHashMap<String, RuleTemplateInitializer>();
 		this.initializerTypeMap = new LinkedHashMap<Class<?>, RuleTemplateInitializer>();
+		
+		appendInitializerMap(initializerMap);
+	}
+	
+	public void appendInitializerMap(
+			Map<String, RuleTemplateInitializer> initializerMap) throws ClassNotFoundException {
 		for (Map.Entry<String, RuleTemplateInitializer> entry : initializerMap
 				.entrySet()) {
 			String key = entry.getKey();
