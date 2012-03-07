@@ -36,6 +36,17 @@ dorado.widget.DataTreeGrid = $extend([dorado.widget.TreeGrid, dorado.widget.Data
 	},
 	
 	onCellValueEdited: null,
+		
+	addColumn: function() {
+		var column = $invokeSuper.call(this, arguments);
+		if (this._autoCreateColumns && column instanceof dorado.widget.grid.DataColumn && column._property && column._property != "none") {
+			var watcher = this.getAttributeWatcher();
+			if (watcher.getWritingTimes("autoCreateColumns") == 0) {
+				this._autoCreateColumns = false;
+			}
+		}
+		return column;
+	},
 	
 	initColumns: dorado.widget.DataGrid.prototype.initColumns,
 	
