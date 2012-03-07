@@ -467,7 +467,6 @@
 							dorado.Entity.ALWAYS_RETURN_VALID_ENTITY_LIST = true;
 						}
 					} else {
-						if(!entity)debugger;
 						result = entity[section.property];
 					}
 					if(result == null && section.leaf && section == oldLastSection) {
