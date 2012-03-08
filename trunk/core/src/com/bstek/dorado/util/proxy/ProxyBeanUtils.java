@@ -1,9 +1,8 @@
 package com.bstek.dorado.util.proxy;
 
+import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Hashtable;
-import java.util.Map;
 
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyFactory;
@@ -24,9 +23,12 @@ public abstract class ProxyBeanUtils {
 	public static final int CGLIB = 1;
 
 	private static int defaultByteCodeProvider = JAVASSIST;
+	private static final Class<?>[] SERIALIZABLE_INTERFACES = new Class[] { SerializationReplaceable.class };
 
-	private static Map<Class<?>, Class<?>> javassistProxyClassCache = new Hashtable<Class<?>, Class<?>>();
-	private static Map<Class<?>, Enhancer> cglibEnhancerCache = new Hashtable<Class<?>, Enhancer>();
+	// private static Map<Class<?>, Class<?>> javassistProxyClassCache = new
+	// Hashtable<Class<?>, Class<?>>();
+	// private static Map<Class<?>, Enhancer> cglibEnhancerCache = new
+	// Hashtable<Class<?>, Enhancer>();
 
 	public static int getDefaultByteCodeProvider() {
 		return defaultByteCodeProvider;
@@ -116,19 +118,47 @@ public abstract class ProxyBeanUtils {
 	public static Object createBean(Class<?> cl,
 			MethodInterceptor[] methodInterceptors, Class<?>[] argTypes,
 			Object[] args) throws Exception {
+		Object proxyBean;
 		if (methodInterceptors != null && methodInterceptors.length > 0) {
-			Enhancer enhancer = new Enhancer();
-			enhancer.setSuperclass(cl);
-			enhancer.setCallback(new BaseMethodInterceptorDispatcher(
-					methodInterceptors));
-			if (argTypes == null || argTypes.length == 0) {
-				return enhancer.create();
+			BaseMethodInterceptorDispatcher mipd = new BaseMethodInterceptorDispatcher(
+					methodInterceptors);
+			if (defaultByteCodeProvider == JAVASSIST) {
+				ProxyFactory proxyFactory = new ProxyFactory();
+				proxyFactory.setUseCache(true);
+				proxyFactory.setSuperclass(cl);
+				if (Serializable.class.isAssignableFrom(cl)) {
+					proxyFactory.setInterfaces(SERIALIZABLE_INTERFACES);
+				}
+
+				Class<?> proxyCl = proxyFactory.createClass();
+				if (argTypes == null || argTypes.length == 0) {
+					proxyBean = proxyCl.newInstance();
+				} else {
+					Constructor<?> constr = proxyCl.getConstructor(argTypes);
+					if (constr == null) {
+						throw new NoSuchMethodException(
+								"Can not found a suitable constructor for ["
+										+ proxyCl + "].");
+					}
+					proxyBean = constr.newInstance(args);
+				}
+				((ProxyObject) proxyBean).setHandler(mipd);
 			} else {
-				return enhancer.create(argTypes, args);
+				Enhancer enhancer = new Enhancer();
+				enhancer.setSuperclass(cl);
+				if (Serializable.class.isAssignableFrom(cl)) {
+					enhancer.setInterfaces(SERIALIZABLE_INTERFACES);
+				}
+				enhancer.setCallback(mipd);
+				if (argTypes == null || argTypes.length == 0) {
+					proxyBean = enhancer.create();
+				} else {
+					proxyBean = enhancer.create(argTypes, args);
+				}
 			}
 		} else {
 			if (argTypes == null || argTypes.length == 0) {
-				return cl.newInstance();
+				proxyBean = cl.newInstance();
 			} else {
 				Constructor<?> constr = cl.getConstructor(argTypes);
 				if (constr == null) {
@@ -136,9 +166,10 @@ public abstract class ProxyBeanUtils {
 							"Can not found a suitable constructor for [" + cl
 									+ "].");
 				}
-				return constr.newInstance(args);
+				proxyBean = constr.newInstance(args);
 			}
 		}
+		return proxyBean;
 	}
 
 	public static boolean isProxy(Class<?> cl) {
@@ -213,12 +244,13 @@ public abstract class ProxyBeanUtils {
 				target, methodInterceptors);
 
 		boolean useJavassist;
-		if (target instanceof ProxyObject)
+		if (target instanceof ProxyObject) {
 			useJavassist = true;
-		else if (target instanceof net.sf.cglib.proxy.Factory)
+		} else if (target instanceof net.sf.cglib.proxy.Factory) {
 			useJavassist = false;
-		else
+		} else {
 			useJavassist = (defaultByteCodeProvider == JAVASSIST);
+		}
 
 		if (useJavassist) {
 			return proxyBeanWithJavassist(target, cl, argTypes, args, mipd);
@@ -236,14 +268,17 @@ public abstract class ProxyBeanUtils {
 		if (target instanceof ProxyObject) {
 			proxyCl = target.getClass();
 		} else {
-			proxyCl = javassistProxyClassCache.get(cl);
-			if (proxyCl == null) {
-				ProxyFactory proxyFactory = new ProxyFactory();
-				proxyFactory.setUseCache(true);
-				proxyFactory.setSuperclass(cl);
-				proxyCl = proxyFactory.createClass();
-				javassistProxyClassCache.put(cl, proxyCl);
+			// proxyCl = javassistProxyClassCache.get(cl);
+			// if (proxyCl == null) {
+			ProxyFactory proxyFactory = new ProxyFactory();
+			proxyFactory.setUseCache(true);
+			proxyFactory.setSuperclass(cl);
+			if (target instanceof Serializable) {
+				proxyFactory.setInterfaces(SERIALIZABLE_INTERFACES);
 			}
+			proxyCl = proxyFactory.createClass();
+			// javassistProxyClassCache.put(cl, proxyCl);
+			// }
 		}
 
 		Object proxyBean;
@@ -259,13 +294,16 @@ public abstract class ProxyBeanUtils {
 	private static Object proxyBeanWithCglib(Object target, Class<?> cl,
 			Class<?>[] argTypes, Object[] args,
 			MethodInterceptorProxyDispatcher mipd) {
-		Enhancer enhancer = cglibEnhancerCache.get(cl);
-		if (enhancer == null) {
-			enhancer = new Enhancer();
-			enhancer.setUseCache(true);
-			enhancer.setSuperclass(cl);
-			cglibEnhancerCache.put(cl, enhancer);
+		// Enhancer enhancer = cglibEnhancerCache.get(cl);
+		// if (enhancer == null) {
+		Enhancer enhancer = new Enhancer();
+		enhancer.setUseCache(true);
+		enhancer.setSuperclass(cl);
+		if (target instanceof Serializable) {
+			enhancer.setInterfaces(SERIALIZABLE_INTERFACES);
 		}
+		// cglibEnhancerCache.put(cl, enhancer);
+		// }
 		enhancer.setCallback(mipd);
 		if (argTypes == null || argTypes.length == 0) {
 			return enhancer.create();

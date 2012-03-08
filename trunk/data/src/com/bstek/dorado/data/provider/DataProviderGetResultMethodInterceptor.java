@@ -11,7 +11,6 @@ import com.bstek.dorado.data.type.DataType;
 
 public class DataProviderGetResultMethodInterceptor implements
 		MethodInterceptor {
-
 	public static final String METHOD_NAME = "getResult";
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

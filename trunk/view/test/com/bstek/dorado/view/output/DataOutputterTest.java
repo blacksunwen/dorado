@@ -34,7 +34,9 @@ public class DataOutputterTest extends ConfigManagerTestSupport {
 		map.put("key4", null);
 
 		String output = getOutput(map);
-		assertEquals("{\"key1\":\"value1\",\"key2\":88,\"key3\":false,\"key4\":null}", output);
+		assertEquals(
+				"{\"key1\":\"value1\",\"key2\":88,\"key3\":false,\"key4\":null}",
+				output);
 	}
 
 	public void testList() throws Exception {
@@ -59,6 +61,7 @@ public class DataOutputterTest extends ConfigManagerTestSupport {
 		assertEquals("{\"referenceKey\":\"key1\"}", output);
 	}
 
+	@SuppressWarnings("rawtypes")
 	public void testPagingList() throws Exception {
 		List<Integer> list = new ArrayList<Integer>();
 		for (int i = 0; i < 1000; i++) {

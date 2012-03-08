@@ -6,17 +6,20 @@ import java.util.List;
 
 /**
  * 用于辅助实现子对象管理功能的抽象List。
+ * 
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Jan 2, 2008
  */
 public abstract class ChildrenListSupport<E> extends ListProxySupport<E> {
+	private static final long serialVersionUID = 4563965086060066431L;
 
 	public ChildrenListSupport() {
 		super(new ArrayList<E>());
 	}
 
 	/**
-	 * @param target 被代理的List。
+	 * @param target
+	 *            被代理的List。
 	 */
 	public ChildrenListSupport(List<E> target) {
 		super(target);
@@ -24,20 +27,25 @@ public abstract class ChildrenListSupport<E> extends ListProxySupport<E> {
 
 	/**
 	 * 当有新的子对象被添加到Set时被激活的方法。
-	 * @param child 子对象
+	 * 
+	 * @param child
+	 *            子对象
 	 */
 	protected abstract void childAdded(E child);
 
 	/**
 	 * 当有新的子对象被添加到Set时被激活的方法。
-	 * @param child 子对象
+	 * 
+	 * @param child
+	 *            子对象
 	 */
 	protected abstract void childRemoved(E child);
 
 	@Override
 	public boolean add(E o) {
 		boolean retval = super.add(o);
-		if (retval) childAdded(o);
+		if (retval)
+			childAdded(o);
 		return retval;
 	}
 
@@ -81,14 +89,16 @@ public abstract class ChildrenListSupport<E> extends ListProxySupport<E> {
 	@SuppressWarnings("unchecked")
 	public boolean remove(Object o) {
 		boolean retval = super.remove(o);
-		if (retval) childRemoved((E) o);
+		if (retval)
+			childRemoved((E) o);
 		return retval;
 	}
 
 	@Override
 	public E remove(int index) {
 		E o = super.remove(index);
-		if (o != null) childRemoved(o);
+		if (o != null)
+			childRemoved(o);
 		return o;
 	}
 

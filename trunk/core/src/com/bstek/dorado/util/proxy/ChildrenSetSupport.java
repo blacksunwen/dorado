@@ -9,16 +9,20 @@ import java.util.Set;
 
 /**
  * 用于辅助实现子对象管理功能的抽象Set。
+ * 
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Dec 30, 2007
  */
 public abstract class ChildrenSetSupport<E> extends SetProxySupport<E> {
+	private static final long serialVersionUID = 2739659901414574963L;
+
 	public ChildrenSetSupport() {
 		super(new HashSet<E>());
 	}
 
 	/**
-	 * @param target 被代理的Set。
+	 * @param target
+	 *            被代理的Set。
 	 */
 	public ChildrenSetSupport(Set<E> target) {
 		super(target);
@@ -26,20 +30,25 @@ public abstract class ChildrenSetSupport<E> extends SetProxySupport<E> {
 
 	/**
 	 * 当有新的子对象被添加到Set时被激活的方法。
-	 * @param child 子对象
+	 * 
+	 * @param child
+	 *            子对象
 	 */
 	protected abstract void childAdded(E child);
 
 	/**
 	 * 当有新的子对象被添加到Set时被激活的方法。
-	 * @param child 子对象
+	 * 
+	 * @param child
+	 *            子对象
 	 */
 	protected abstract void childRemoved(E child);
 
 	@Override
 	public boolean add(E o) {
 		boolean retval = super.add(o);
-		if (retval) childAdded(o);
+		if (retval)
+			childAdded(o);
 		return retval;
 	}
 
@@ -66,7 +75,8 @@ public abstract class ChildrenSetSupport<E> extends SetProxySupport<E> {
 	@SuppressWarnings("unchecked")
 	public boolean remove(Object o) {
 		boolean retval = super.remove(o);
-		if (retval) childRemoved((E) o);
+		if (retval)
+			childRemoved((E) o);
 		return retval;
 	}
 

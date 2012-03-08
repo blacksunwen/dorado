@@ -932,6 +932,11 @@
 		 */
 		onAttachToDocument : function() {
 			if(this._rendered && !this._attached) {
+				var view = this._view;
+				if (view && view != $topView && !view._ready && !view._rendering) {
+					view.onReady();
+				}
+				
 				var dom = this.getDom();
 				this._attached = true;
 				this._ignoreRefresh--;
@@ -946,11 +951,6 @@
 			
 				if(!this._ready) {
 					this.onReady();
-					
-					var view = this._view;
-					if (view && view != $topView && !view._ready && !view._rendering) {
-						view.onReady();
-					}
 				}
 			}
 		},

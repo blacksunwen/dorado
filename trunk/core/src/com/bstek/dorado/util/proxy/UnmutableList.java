@@ -8,6 +8,7 @@ import java.util.List;
  * @since Apr 10, 2008
  */
 public class UnmutableList<E> extends ChildrenListSupport<E> {
+	private static final long serialVersionUID = 7796147072959964853L;
 
 	/**
 	 * @param target

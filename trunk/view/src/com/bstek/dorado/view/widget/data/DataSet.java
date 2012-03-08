@@ -128,6 +128,7 @@ public class DataSet extends Component {
 		this.readOnly = readOnly;
 	}
 
+	@SuppressWarnings("rawtypes")
 	public Object getData() throws Exception {
 		if (data == null && dataProvider != null) {
 			if (pageSize > 0) {
