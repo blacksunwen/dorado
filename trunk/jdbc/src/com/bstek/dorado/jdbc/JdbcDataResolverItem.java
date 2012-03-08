@@ -18,9 +18,11 @@ public class JdbcDataResolverItem {
 	
 	private String tableName;
 	
-	private String parentKeyProperties;
+	private String[] parentKeyProperties = new String[0];
 	
-	private String foreignKeyProperties;
+	private String[] foreignKeyProperties = new String[0];
+	
+	private String recursiveProperty;
 	
 	private List<JdbcDataResolverItem> items = new ArrayList<JdbcDataResolverItem>(5);
 	
@@ -30,6 +32,7 @@ public class JdbcDataResolverItem {
 		cloned.setTableName(tableName);
 		cloned.setForeignKeyProperties(foreignKeyProperties);
 		cloned.setParentKeyProperties(parentKeyProperties);
+		cloned.setRecursiveProperty(recursiveProperty);
 		
 		for (JdbcDataResolverItem item: items) {
 			cloned.getItems().add(item.clone());
@@ -53,20 +56,28 @@ public class JdbcDataResolverItem {
 		this.name = name;
 	}
 
-	public String getParentKeyProperties() {
+	public String[] getParentKeyProperties() {
 		return parentKeyProperties;
 	}
 
-	public void setParentKeyProperties(String parentKeyProperties) {
+	public void setParentKeyProperties(String[] parentKeyProperties) {
 		this.parentKeyProperties = parentKeyProperties;
 	}
 
-	public String getForeignKeyProperties() {
+	public String[] getForeignKeyProperties() {
 		return foreignKeyProperties;
 	}
 
-	public void setForeignKeyProperties(String foreignKeyProperties) {
+	public void setForeignKeyProperties(String[] foreignKeyProperties) {
 		this.foreignKeyProperties = foreignKeyProperties;
+	}
+
+	public String getRecursiveProperty() {
+		return recursiveProperty;
+	}
+
+	public void setRecursiveProperty(String recursiveProperty) {
+		this.recursiveProperty = recursiveProperty;
 	}
 
 	@XmlSubNode

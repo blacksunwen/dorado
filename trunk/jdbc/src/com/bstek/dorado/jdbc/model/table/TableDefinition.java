@@ -14,7 +14,7 @@ public class TableDefinition extends AbstractDbTableDefinition {
 
 	public boolean isAutoCreateColumns() {
 		if (autoCreateColumns == null) {
-			autoCreateColumns = this.getFinalPropertyBoolean(XmlConstants.AUTO_CREATE_COLUMNS, false);
+			autoCreateColumns = this.getVirtualPropertyBoolean(XmlConstants.AUTO_CREATE_COLUMNS, false);
 		}
 		return autoCreateColumns;
 	}

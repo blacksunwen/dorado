@@ -1,5 +1,6 @@
 package com.bstek.dorado.jdbc;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -59,16 +60,29 @@ public class JdbcDataResolverOperation {
 	}
 
 	public void execute() {
-		if (transactionOperations != null) {
-			transactionOperations.execute(new TransactionCallback<Object>() {
-				@Override
-				public Object doInTransaction(TransactionStatus status) {
-					doExecute();
-					return null;
-				}
-			});
-		} else {
-			doExecute();
+		if (this.isProcessDefault()) {
+			if (transactionOperations != null) {
+				transactionOperations.execute(new TransactionCallback<Object>() {
+					@Override
+					public Object doInTransaction(TransactionStatus status) {
+						doExecute();
+						return null;
+					}
+				});
+			} else {
+				doExecute();
+			}
+		}
+	}
+	
+	private static class RecordItem {
+		JdbcDataResolverItem resolverItem;
+		Record record;
+		
+		RecordItem(JdbcDataResolverItem resolverItem,
+				Record record) {
+			this.resolverItem = resolverItem;
+			this.record = record;
 		}
 	}
 	
@@ -79,32 +93,36 @@ public class JdbcDataResolverOperation {
 		} 
 	}
 
-	private void doChildrenExecute(Record parentRecord, List<JdbcDataResolverItem> resolverItems) {
+	private void doChildrenExecute(RecordItem parentRecordItem, List<JdbcDataResolverItem> resolverItems) {
 		for (JdbcDataResolverItem resolverItem: resolverItems) {
 			String resolverItemName = resolverItem.getName();
-			Object dataValue = (parentRecord !=null) ? parentRecord.get(resolverItemName) : jdbcContext.getDataItems().get(resolverItemName);;
+			Object dataValue = (parentRecordItem !=null) ? parentRecordItem.record.get(resolverItemName) : jdbcContext.getDataItems().get(resolverItemName);;
 			if (dataValue != null) {
 				if (dataValue instanceof Record) {
 					Record record = (Record)dataValue;
 					
 					this.calculateResolverItem(resolverItem, record);
-					this.doExecute(parentRecord, resolverItem, record);
+					this.doExecute(parentRecordItem, new RecordItem (resolverItem, record));
 				} else if (dataValue instanceof Collection) {
 					@SuppressWarnings("unchecked")
 					Collection<Record> records = (Collection<Record>)dataValue;
-					
-					this.calculateResolverItem(resolverItem, records);
-					for (Record record: records) {
-						this.doExecute(parentRecord, resolverItem, record);
+					if (!records.isEmpty()) {
+						this.calculateResolverItem(resolverItem, records);
+						for (Record record: records) {
+							this.doExecute(parentRecordItem, new RecordItem (resolverItem, record));
+						}
 					}
 				}
 			}
 		}
 	}
 
-	private void doExecute(Record parentRecord, JdbcDataResolverItem resolverItem, Record record) {
-		if (parentRecord != null) {
-			this.syncWithParent(resolverItem, record, parentRecord);
+	private void doExecute(RecordItem parentRecordItem, RecordItem recordItem) {
+		JdbcDataResolverItem resolverItem = recordItem.resolverItem;
+		Record record = recordItem.record;
+		
+		if (parentRecordItem != null) {
+			this.syncWithParent(resolverItem, record, parentRecordItem.record);
 		} 
 		
 		String tableName = resolverItem.getTableName();
@@ -112,29 +130,40 @@ public class JdbcDataResolverOperation {
 		JdbcUtils.doSave(dbTable, record, jdbcContext);
 		
 		if (!EntityState.DELETED.equals(EntityUtils.getState(record))) {
-			this.doChildrenExecute(record, resolverItem.getItems());
+			List<JdbcDataResolverItem> items = resolverItem.getItems();
+			JdbcDataResolverItem parentResolverItem = parentRecordItem.resolverItem;
+			
+			if (StringUtils.isNotEmpty(parentResolverItem.getRecursiveProperty())){
+				List<JdbcDataResolverItem> items2 = new ArrayList<JdbcDataResolverItem>(items.size() + 1);
+				JdbcDataResolverItem recursiveItemm = parentResolverItem.clone();
+				recursiveItemm.setName(parentResolverItem.getRecursiveProperty());
+				
+				items2.add(recursiveItemm);
+				items2.addAll(items);
+				
+				this.doChildrenExecute(recordItem, items2);
+			} else {
+				if (items.size() > 0) {
+					this.doChildrenExecute(recordItem, items);
+				}
+			}
 		}
 	}
 	
 	private void syncWithParent(JdbcDataResolverItem item, Record record, Record parentRecord) {
-		String parentPropertiesStr = item.getParentKeyProperties();
-		String propertiesStr = item.getForeignKeyProperties();
-		if (StringUtils.isNotEmpty(parentPropertiesStr) && StringUtils.isNotEmpty(propertiesStr)) {
-			Assert.notNull(record);
-			Assert.notNull(parentRecord);
-			
-			String[] parentProperties = StringUtils.split(parentPropertiesStr,',');
-			String[] properties = StringUtils.split(propertiesStr, ',');
-			
-			Assert.isTrue(parentProperties.length == properties.length, "the count of propertyName not equals " +
-					"[" + parentPropertiesStr +"][" + propertiesStr + "]");
-			
-			for (int i=0; i<parentProperties.length; i++) {
-				String parentPropery = parentProperties[i];
-				String property = properties[i];
-				Object parentPropertyValue = parentRecord.get(parentPropery);
+		String[] parentKeyProperties = item.getParentKeyProperties();
+		String[] foreignKeyProperties = item.getForeignKeyProperties();
+		if (parentKeyProperties!= null && foreignKeyProperties != null) {
+			if (parentKeyProperties.length > 0 && foreignKeyProperties.length > 0) {
+				Assert.isTrue(parentKeyProperties.length == foreignKeyProperties.length, "the length of parentKeyProperties and foreignKeyProperties does not equals.");
 				
-				record.set(property, parentPropertyValue);
+				for (int i=0; i<parentKeyProperties.length; i++) {
+					String parentPropery = parentKeyProperties[i];
+					String property = foreignKeyProperties[i];
+					Object parentPropertyValue = parentRecord.get(parentPropery);
+					
+					record.set(property, parentPropertyValue);
+				}
 			}
 		}
 	}

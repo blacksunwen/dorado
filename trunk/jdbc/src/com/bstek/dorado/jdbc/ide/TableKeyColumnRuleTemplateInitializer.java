@@ -12,12 +12,14 @@ import com.bstek.dorado.idesupport.template.RuleTemplate;
 public class TableKeyColumnRuleTemplateInitializer implements
 		RuleTemplateInitializer {
 
+	public static final String KEY_GENERATORS_STORE_KEY = "jdbc.ide.keyGenerators";
+	
 	@Override
 	public void initRuleTemplate(RuleTemplate columnRule,
 			InitializerContext initializerContext) throws Exception {
 		ConfigureStore configureStore = Configure.getStore();
 		String propertyName = "keyGenerator";
-		String storeKey = "jdbc.ide.keyGenerators";
+		String storeKey = KEY_GENERATORS_STORE_KEY;
 		String valueStr = configureStore.getString(storeKey);
 		if (StringUtils.isNotEmpty(valueStr)) {
 			String[] typeAry = StringUtils.split(valueStr, ",");

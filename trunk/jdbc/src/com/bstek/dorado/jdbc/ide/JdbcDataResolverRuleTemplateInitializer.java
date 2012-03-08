@@ -11,12 +11,15 @@ import com.bstek.dorado.idesupport.template.RuleTemplate;
 public class JdbcDataResolverRuleTemplateInitializer implements
 		com.bstek.dorado.idesupport.initializer.RuleTemplateInitializer {
 
+	public static final String TRANSACTION_MANAGERS_STORE_KEY = "jdbc.ide.transactionManagers";
+	public static final String TRANSACTION_DEFINITIONS_STORE_KEY = "jdbc.ide.transactionDefinitions";
+	
 	@Override
 	public void initRuleTemplate(RuleTemplate resolverRule,
 			InitializerContext initializerContext) throws Exception {
 		ConfigureStore configureStore = Configure.getStore();
 		String[] propertyNameAry = new String[]{"transactionManager", "transactionDefinition"};
-		String[] storeKeyAry = new String[]{"jdbc.ide.transactionManagers", "jdbc.ide.transactionDefinitions"};
+		String[] storeKeyAry = new String[]{TRANSACTION_MANAGERS_STORE_KEY, TRANSACTION_DEFINITIONS_STORE_KEY};
 		for (int i=0; i<propertyNameAry.length; i++){
 			String propertyName = propertyNameAry[i];
 			String storeKey = storeKeyAry[i];

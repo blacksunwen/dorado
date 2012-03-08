@@ -34,7 +34,7 @@ public class DbModel {
 	private Map<String, DbElementDefinition>  definitionMap = new LinkedHashMap<String, DbElementDefinition>();
 	
 	@XmlProperty(attributeOnly = true)
-	@IdeProperty(highlight=1)
+	@IdeProperty(highlight=1, editor="jdbc:list-envs")
 	public String getJdbcEnviroment() {
 		return jdbcEnviroment;
 	}

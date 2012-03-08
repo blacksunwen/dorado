@@ -15,6 +15,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 import com.bstek.dorado.jdbc.JdbcTypeManager;
+import com.bstek.dorado.jdbc.ide.AbstractDbColumnRuleTemplateInitializer;
 import com.bstek.dorado.jdbc.type.JdbcType;
 import com.bstek.dorado.util.Assert;
 
@@ -61,7 +62,7 @@ public class DefaultJdbcTypeManager implements JdbcTypeManager, InitializingBean
 	
 	private void doLog() {
 		if (logger.isInfoEnabled()) {
-			String msg = "Registered JdbcTypes: [";
+			String msg = "Registered JdbcTypes: "+ AbstractDbColumnRuleTemplateInitializer.DATA_TYPES_STORE_KEY +" [";
 			JdbcType[] types = list();
 			List<String> names = new ArrayList<String>();
 			for (JdbcType type: types) {

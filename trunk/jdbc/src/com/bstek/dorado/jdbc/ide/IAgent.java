@@ -2,7 +2,12 @@ package com.bstek.dorado.jdbc.ide;
 
 import java.util.Map;
 
-
+/**
+ * 为了配合IDE离线功能的代理接口
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 public interface IAgent {
 
 	public static final String DRIVER          = "driver";
@@ -20,10 +25,10 @@ public interface IAgent {
 	
 	String createColumns(Map<String, String> paramerters) throws Exception;
 	
-	@Deprecated
-	String listSpaces(Map<String, String> paramerters) throws Exception;
-	@Deprecated
-	String listJdbcTypes(Map<String, String> paramerters) throws Exception;
-	@Deprecated
-	String listKeyGenerators(Map<String, String> paramerters) throws Exception;
+//	@Deprecated
+//	String listSpaces(Map<String, String> paramerters) throws Exception;
+//	@Deprecated
+//	String listJdbcTypes(Map<String, String> paramerters) throws Exception;
+//	@Deprecated
+//	String listKeyGenerators(Map<String, String> paramerters) throws Exception;
 }

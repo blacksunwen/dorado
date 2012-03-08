@@ -5,9 +5,9 @@ package com.bstek.dorado.jdbc.type;
  * @author mark.li@bstek.com
  *
  */
-public class DoubleFloat extends AbstractFloat {
+public class DoubleDouble extends AbstractDouble {
 
-	public DoubleFloat() {
+	public DoubleDouble() {
 		super("DOUBLE");
 	}
 

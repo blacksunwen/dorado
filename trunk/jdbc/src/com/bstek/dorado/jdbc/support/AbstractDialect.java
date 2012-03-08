@@ -198,7 +198,8 @@ public abstract class AbstractDialect implements Dialect {
 				this.doInsert(operation);
 				return true;
 			}
-			case MODIFIED: {
+			case MODIFIED: 
+			case MOVED:{
 				this.doUpdate(operation);
 				return true;
 			}

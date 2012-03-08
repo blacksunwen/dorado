@@ -3,7 +3,6 @@ package com.bstek.dorado.jdbc.mysql.v55;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.bstek.dorado.jdbc.ide.DefaultAgent;
@@ -13,15 +12,15 @@ import com.bstek.dorado.jdbc.model.table.Table;
 
 public class AgentTest {
 
-	@Test
-	public void testListSpaces() throws Exception {
-		Map<String, String> paramerters = makeParamerters();
-		
-		DefaultAgent agent = new DefaultAgent();
-		String spaces = agent.listSpaces(paramerters);
-		
-		Assert.assertTrue(spaces.indexOf("dorado") >= 0);
-	}
+//	@Test
+//	public void testListSpaces() throws Exception {
+//		Map<String, String> paramerters = makeParamerters();
+//		
+//		DefaultAgent agent = new DefaultAgent();
+//		String spaces = agent.listSpaces(paramerters);
+//		
+//		Assert.assertTrue(spaces.indexOf("dorado") >= 0);
+//	}
 	
 	@Test
 	public void testListTables() throws Exception {

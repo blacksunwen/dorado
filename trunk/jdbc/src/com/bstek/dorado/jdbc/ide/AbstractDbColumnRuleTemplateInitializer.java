@@ -11,13 +11,14 @@ import com.bstek.dorado.idesupport.template.RuleTemplate;
 
 public class AbstractDbColumnRuleTemplateInitializer implements RuleTemplateInitializer {
 
+	public static final String DATA_TYPES_STORE_KEY = "jdbc.ide.jdbcTypes";
 	@Override
 	public void initRuleTemplate(RuleTemplate columnRule,
 			InitializerContext initializerContext) throws Exception {
 		{
 			ConfigureStore configureStore = Configure.getStore();
 			String propertyName = "jdbcType";
-			String storeKey = "jdbc.ide.jdbcTypes";
+			String storeKey = DATA_TYPES_STORE_KEY;
 			String valueStr = configureStore.getString(storeKey);
 			if (StringUtils.isNotEmpty(valueStr)) {
 				String[] typeAry = StringUtils.split(valueStr, ",");

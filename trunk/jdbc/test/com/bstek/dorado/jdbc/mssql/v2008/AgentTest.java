@@ -10,16 +10,16 @@ import com.bstek.dorado.jdbc.ide.DefaultAgent;
 import com.bstek.dorado.jdbc.ide.IAgent;
 
 public class AgentTest {
-	@Test
-	public void testListSpaces() throws Exception {
-		DefaultAgent agent = new DefaultAgent();;
-		Map<String, String> paramerters = makeParamerters();
-		
-		String spaces = agent.listSpaces(paramerters);
-		System.out.println("Spaces: " + spaces);
-		
-		Assert.assertTrue(spaces.indexOf("dbo") >= 0);
-	}
+//	@Test
+//	public void testListSpaces() throws Exception {
+//		DefaultAgent agent = new DefaultAgent();;
+//		Map<String, String> paramerters = makeParamerters();
+//		
+//		String spaces = agent.listSpaces(paramerters);
+//		System.out.println("Spaces: " + spaces);
+//		
+//		Assert.assertTrue(spaces.indexOf("dbo") >= 0);
+//	}
 	
 	@Test
 	public void testListTables() throws Exception {
