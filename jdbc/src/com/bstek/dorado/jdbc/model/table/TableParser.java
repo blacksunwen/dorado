@@ -9,11 +9,11 @@ import org.w3c.dom.Node;
 import com.bstek.dorado.config.ParseContext;
 import com.bstek.dorado.config.definition.Operation;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
-import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.ModelGeneratorSuit;
 import com.bstek.dorado.jdbc.config.AbstractDbTableParser;
 import com.bstek.dorado.jdbc.config.ColumnDefinition;
 import com.bstek.dorado.jdbc.config.JdbcParseContext;
+import com.bstek.dorado.jdbc.config.XmlConstants;
 import com.bstek.dorado.jdbc.meta.TableMetaDataGenerator;
 import com.bstek.dorado.jdbc.support.JdbcConstants;
 
@@ -24,10 +24,24 @@ import com.bstek.dorado.jdbc.support.JdbcConstants;
  */
 public class TableParser extends AbstractDbTableParser {
 	
+	ModelGeneratorSuit generatorSuit;
+	
+	public ModelGeneratorSuit getGeneratorSuit() {
+		return generatorSuit;
+	}
+
+	public void setGeneratorSuit(ModelGeneratorSuit generatorSuit) {
+		this.generatorSuit = generatorSuit;
+	}
+
 	@Override
 	protected Object doParse(Node node, ParseContext context) throws Exception {
 		TableDefinition tableDef = (TableDefinition)super.doParse(node, context);
 		JdbcParseContext jdbcContext = (JdbcParseContext) context;
+		
+		boolean autoCreateColumns = tableDef.getVirtualPropertyBoolean(XmlConstants.AUTO_CREATE_COLUMNS, false);
+		tableDef.getProperties().remove(XmlConstants.AUTO_CREATE_COLUMNS);
+		tableDef.setAutoCreateColumns(autoCreateColumns);
 		
 		this.doAutoCreate(tableDef, jdbcContext);
 		
@@ -51,12 +65,11 @@ public class TableParser extends AbstractDbTableParser {
 		}
 		
 		JdbcEnviroment jdbcEnv = jdbcContext.getJdbcEnviroment();
-		ModelGeneratorSuit generator = JdbcUtils.getModelGeneratorSuit();
 		
 		String tableName = tableDef.getTableName();
 		String namespace = tableDef.getNamespace();
 		
-		TableMetaDataGenerator tg = generator.getTableMetaDataGenerator();
+		TableMetaDataGenerator tg = generatorSuit.getTableMetaDataGenerator();
 		Map<String,String> tableMeta = tg.tableMeta(jdbcEnv, namespace, tableName);
 		
 		List<Map<String,String>> columnList = tg.listColumnMetas(jdbcEnv, namespace, tableName);

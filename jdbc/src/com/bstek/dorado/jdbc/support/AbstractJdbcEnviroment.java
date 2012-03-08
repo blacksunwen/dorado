@@ -1,16 +1,29 @@
 package com.bstek.dorado.jdbc.support;
 
+import org.springframework.beans.factory.InitializingBean;
+
 import com.bstek.dorado.jdbc.Dialect;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
+import com.bstek.dorado.jdbc.config.JdbcEnviromentManager;
 
 /**
  * 
  * @author mark.li@bstek.com
  *
  */
-public abstract class AbstractJdbcEnviroment implements JdbcEnviroment {
+public abstract class AbstractJdbcEnviroment implements JdbcEnviroment, InitializingBean {
 
 	private String name;
+
+	private JdbcEnviromentManager manager;
+	
+	public JdbcEnviromentManager getManager() {
+		return manager;
+	}
+
+	public void setManager(JdbcEnviromentManager manager) {
+		this.manager = manager;
+	}
 
 	public String getName() {
 		return name;
@@ -38,6 +51,11 @@ public abstract class AbstractJdbcEnviroment implements JdbcEnviroment {
 
 	public void setDialect(Dialect dialect) {
 		this.dialect = dialect;
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		manager.register(this);
 	}
 
 }

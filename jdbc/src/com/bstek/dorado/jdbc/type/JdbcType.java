@@ -1,5 +1,7 @@
 package com.bstek.dorado.jdbc.type;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Map;
 
 import com.bstek.dorado.data.type.DataType;
@@ -42,6 +44,14 @@ public interface JdbcType {
 	 * @return
 	 */
 	DataType getDataType();
+	
+	/**
+	 * 从ResultSet中获取Java对象
+	 * @param rs
+	 * @param columnName
+	 * @return
+	 */
+	Object fromDB(ResultSet rs, String columnName) throws SQLException;
 	
 	/**
 	 * 将数据库数据对象映射成Java对象

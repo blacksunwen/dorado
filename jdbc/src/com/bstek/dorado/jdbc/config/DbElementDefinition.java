@@ -18,7 +18,7 @@ public class DbElementDefinition extends ObjectDefinition {
 	
 	public boolean getVirtualPropertyBoolean(String propertyName, boolean defult) {
 		Object value = this.getProperties().get(propertyName);
-		this.getProperties().remove(propertyName);
+//		this.getProperties().remove(propertyName);
 		
 		try {
 			value = this.getFinalValueOrExpression(value, null);

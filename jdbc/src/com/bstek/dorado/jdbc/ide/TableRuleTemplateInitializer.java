@@ -35,6 +35,8 @@ public class TableRuleTemplateInitializer implements RuleTemplateInitializer {
 		} else {
 			ConsoleUtils.outputLoadingInfo("[WARN] " + NAMESPACES_STORE_KEY + " is null.");
 		}
+		
+		tableRule.setRobots(new String[]{"jdbc-createTable|Generate Columns"});
 	}
 
 }

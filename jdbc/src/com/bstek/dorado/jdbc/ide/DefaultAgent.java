@@ -294,7 +294,7 @@ public class DefaultAgent extends AbstractAgent {
 		case Types.BOOLEAN:
 			return "BOOLEAN-Boolean";
 		case Types.CHAR:
-			return "CHAR-String";
+			return "CHAR-Boolean";
 		case Types.SMALLINT:
 			return "SMALLINT-Short";
 		case Types.INTEGER:

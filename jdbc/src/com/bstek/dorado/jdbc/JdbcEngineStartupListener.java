@@ -1,8 +1,7 @@
 package com.bstek.dorado.jdbc;
 
-import java.util.Collection;
-import java.util.Map;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -10,8 +9,7 @@ import org.springframework.context.ApplicationContextAware;
 import com.bstek.dorado.core.EngineStartupListener;
 import com.bstek.dorado.data.config.DataConfigEngineStartupListener;
 import com.bstek.dorado.jdbc.config.DbmManager;
-import com.bstek.dorado.jdbc.config.GlobalDbModelConfig;
-import com.bstek.dorado.jdbc.config.JdbcEnviromentManager;
+import com.bstek.dorado.jdbc.support.DefaultKeyGeneratorManager;
 
 /**
  * JDBC模块的启动器
@@ -22,7 +20,31 @@ import com.bstek.dorado.jdbc.config.JdbcEnviromentManager;
 public class JdbcEngineStartupListener extends EngineStartupListener implements
 		ApplicationContextAware {
 
+	private static Log logger = LogFactory.getLog(DefaultKeyGeneratorManager.class);
+	
 	private ApplicationContext ctx;
+
+	private DbmManager dbmManager;
+	
+	private KeyGeneratorManager keyGeneratorManager;
+	
+	private JdbcTypeManager jdbcTypeManager;
+	
+	public DbmManager getDbmManager() {
+		return dbmManager;
+	}
+
+	public void setDbmManager(DbmManager dbmManager) {
+		this.dbmManager = dbmManager;
+	}
+	
+	public void setKeyGeneratorManager(KeyGeneratorManager keyGeneratorManager) {
+		this.keyGeneratorManager = keyGeneratorManager;
+	}
+
+	public void setJdbcTypeManager(JdbcTypeManager jdbcTypeManager) {
+		this.jdbcTypeManager = jdbcTypeManager;
+	}
 
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext)
@@ -31,36 +53,17 @@ public class JdbcEngineStartupListener extends EngineStartupListener implements
 		/*
 		 * JDBC模块一定是在DataType被加载之后启动（由于JdbcType的缘故）
 		 */
-		DataConfigEngineStartupListener l = applicationContext.getBean(DataConfigEngineStartupListener.class);
+		DataConfigEngineStartupListener l = ctx.getBean(DataConfigEngineStartupListener.class);
 		this.setOrder(l.getOrder() + 10);
 	}
 
 	@Override
 	public void onStartup() throws Exception {
-		this.registerEnviroments();
-		this.registerDbModels();
-	}
-
-	/**
-	 * 注册{@link JdbcEnviroment}
-	 */
-	protected void registerEnviroments() {
-		JdbcEnviromentManager manager = JdbcUtils.getEnviromentManager();
-		Map<String, JdbcEnviroment> envMap = ctx.getBeansOfType(JdbcEnviroment.class);
-		for (JdbcEnviroment env: envMap.values()) {
-			manager.register(env);
-		}
+		dbmManager.refresh();
+		
+		logger.info(jdbcTypeManager.toString());
+		logger.info(keyGeneratorManager.toString());
+		logger.info(dbmManager.toString());
 	}
 	
-	/**
-	 * 注册{@link JdbcEnviroment}
-	 * @throws Exception
-	 */
-	protected void registerDbModels() throws Exception {
-		Collection<GlobalDbModelConfig> configs = ctx.getBeansOfType(GlobalDbModelConfig.class).values();
-		
-		GlobalDbModelConfig[] configArray = configs.toArray(new GlobalDbModelConfig[0]);
-		DbmManager configManager = JdbcUtils.getDbmManager();
-		configManager.refresh(configArray);
-	}
 }

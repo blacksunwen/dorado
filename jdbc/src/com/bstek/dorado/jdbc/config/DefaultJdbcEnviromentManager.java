@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.springframework.context.ApplicationContext;
 
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 
@@ -19,8 +18,6 @@ public class DefaultJdbcEnviromentManager implements JdbcEnviromentManager {
 	private Map<String, JdbcEnviroment> enviroments = new HashMap<String, JdbcEnviroment>(2);
 	
 	private JdbcEnviroment defaultEnviroment;
-	
-	protected ApplicationContext ctx;
 	
 	public JdbcEnviroment getEnviroment(String name) {
 		if (StringUtils.isNotEmpty(name)) {
@@ -54,6 +51,7 @@ public class DefaultJdbcEnviromentManager implements JdbcEnviromentManager {
 				throw new IllegalArgumentException("no default JdbcEnviroment can be found.");
 			}
 		}
+		
 		return defaultEnviroment;
 	}
 
@@ -61,4 +59,9 @@ public class DefaultJdbcEnviromentManager implements JdbcEnviromentManager {
 		return enviroments.values().toArray(new JdbcEnviroment[0]);
 	}
 
+	@Override
+	public String toString() {
+		return super.toString();
+	}
+	
 }

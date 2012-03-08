@@ -3,9 +3,11 @@ package com.bstek.dorado.jdbc.type;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.InitializingBean;
 
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.data.util.DataUtils;
+import com.bstek.dorado.jdbc.JdbcTypeManager;
 import com.bstek.dorado.jdbc.support.JdbcConstants;
 
 /**
@@ -13,7 +15,7 @@ import com.bstek.dorado.jdbc.support.JdbcConstants;
  * @author mark.li@bstek.com
  *
  */
-public abstract class AbstractJdbcType implements JdbcType {
+public abstract class AbstractJdbcType implements JdbcType, InitializingBean {
 
 	private String   name;
 	private int      sqlType;
@@ -21,6 +23,8 @@ public abstract class AbstractJdbcType implements JdbcType {
 	private DataType dataType;
 	private String   dataTypeName;
 	private Integer  scale;
+	
+	private JdbcTypeManager manager;
 	
 	public AbstractJdbcType(String name, String typeName, String dataTypeName) {
 		this.setName(name);
@@ -32,6 +36,19 @@ public abstract class AbstractJdbcType implements JdbcType {
 		this(typeName + "-" + dataTypeName, typeName, dataTypeName);
 	}
 	
+	public void setManager(JdbcTypeManager manager) {
+		this.manager = manager;
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		manager.register(this);
+	}
+
+	public JdbcTypeManager getManager() {
+		return manager;
+	}
+
 	public void setName(String name) {
 		this.name = name;
 	}

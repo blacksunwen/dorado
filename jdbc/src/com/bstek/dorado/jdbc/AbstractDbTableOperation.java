@@ -65,11 +65,14 @@ public abstract class AbstractDbTableOperation<T extends AbstractJdbcContext> {
 	}
 	
 	public boolean execute() {
-		try {
-			return doExecute();
-		} finally {
-			setProcessDefault(false);
+		if (this.isProcessDefault()) {
+			try {
+				return doExecute();
+			} finally {
+				setProcessDefault(false);
+			}
 		}
+		return false;
 	}
 	
 	/**

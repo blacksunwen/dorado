@@ -131,12 +131,11 @@ public class JdbcDataResolverOperation {
 		
 		if (!EntityState.DELETED.equals(EntityUtils.getState(record))) {
 			List<JdbcDataResolverItem> items = resolverItem.getItems();
-			JdbcDataResolverItem parentResolverItem = parentRecordItem.resolverItem;
 			
-			if (StringUtils.isNotEmpty(parentResolverItem.getRecursiveProperty())){
+			if (StringUtils.isNotEmpty(resolverItem.getRecursiveProperty())){
 				List<JdbcDataResolverItem> items2 = new ArrayList<JdbcDataResolverItem>(items.size() + 1);
-				JdbcDataResolverItem recursiveItemm = parentResolverItem.clone();
-				recursiveItemm.setName(parentResolverItem.getRecursiveProperty());
+				JdbcDataResolverItem recursiveItemm = resolverItem.clone();
+				recursiveItemm.setName(resolverItem.getRecursiveProperty());
 				
 				items2.add(recursiveItemm);
 				items2.addAll(items);

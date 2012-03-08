@@ -17,18 +17,16 @@ public class ClobString extends AbstractString {
 	@Override
 	public Object fromDB(Object obj) {
 		Object dbValue = obj;
-		if (dbValue == null) {
-			return null;
+		if (dbValue instanceof Clob) {
+			Clob clob = (Clob)dbValue;
+			try {
+				dbValue = clob.getSubString(1, (int) clob.length());
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
 		}
-		if (dbValue instanceof String){
-			return (String)dbValue;
-		}
-		Clob clob = (Clob)dbValue;
-		try {
-			return clob.getSubString(1, (int) clob.length());
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
+		
+		return super.fromDB(dbValue);
 	}
 
 	@Override

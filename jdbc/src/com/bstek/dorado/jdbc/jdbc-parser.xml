@@ -14,14 +14,22 @@
 	<bean id="dorado.jdbc.jdbcTypeParser" class="com.bstek.dorado.jdbc.config.JdbcTypeParser" parent="dorado.propertyParser">
 		<property name="jdbcTypeManager" ref="dorado.jdbc.jdbcTypeManager"/>
 	</bean>
-	<bean id="dorado.jdbc.keyGeneratorParser" class="com.bstek.dorado.jdbc.model.table.KeyGeneratorParser" parent="dorado.propertyParser"/>
-	<bean id="dorado.jdbc.tableReferenceParser" class="com.bstek.dorado.jdbc.model.table.TableReferenceParser" parent="dorado.propertyParser" />
+	<bean id="dorado.jdbc.keyGeneratorParser" class="com.bstek.dorado.jdbc.model.table.KeyGeneratorParser" parent="dorado.propertyParser">
+		<property name="keyGeneratorManager" ref="dorado.jdbc.keyGeneratorManager"/>
+	</bean>
+	<bean id="dorado.jdbc.tableReferenceParser" class="com.bstek.dorado.jdbc.model.table.TableReferenceParser" parent="dorado.propertyParser">
+		<property name="dbmManager" ref="dorado.jdbc.dbmManager"/>
+	</bean>
 
-	<bean id="dorado.jdbc.dbmParser" class="com.bstek.dorado.jdbc.config.DbModelParser" parent="dorado.objectParser"/>
+	<bean id="dorado.jdbc.dbmParser" class="com.bstek.dorado.jdbc.config.DbModelParser" parent="dorado.objectParser">
+		<property name="enviromentManager" ref="dorado.jdbc.enviromentManager"/>
+	</bean>
 	
 	<bean id="dorado.jdbc.abstractTableParser" parent="dorado.objectParser" abstract="true"/>
 	
-	<bean id="dorado.jdbc.tableParser" class="com.bstek.dorado.jdbc.model.table.TableParser" parent="dorado.jdbc.abstractTableParser"/>
+	<bean id="dorado.jdbc.tableParser" class="com.bstek.dorado.jdbc.model.table.TableParser" parent="dorado.jdbc.abstractTableParser">
+		<property name="generatorSuit" ref="dorado.jdbc.modelGeneratorSuit"/>
+	</bean>
 	<bean id="dorado.jdbc.sqlTableParser" class="com.bstek.dorado.jdbc.model.sqltable.SqlTableParser" parent="dorado.jdbc.abstractTableParser"/>
 	<bean id="dorado.jdbc.autoTableParser" class="com.bstek.dorado.jdbc.model.autotable.AutoTableParser" parent="dorado.jdbc.abstractTableParser"/>
 </beans>

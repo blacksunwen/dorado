@@ -1,9 +1,19 @@
 package com.bstek.dorado.jdbc.type;
 
-public class AbstractDateTime extends AbstractJdbcType {
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+
+public abstract class AbstractDateTime extends AbstractJdbcType {
 
 	public AbstractDateTime(String jdbcName) {
 		super(jdbcName, "DateTime");
+	}
+
+	@Override
+	public Object fromDB(ResultSet rs, String columnName) throws SQLException {
+		Timestamp value = rs.getTimestamp(columnName);
+		return fromDB(value);
 	}
 
 }

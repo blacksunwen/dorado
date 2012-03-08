@@ -1,50 +1,30 @@
 package com.bstek.dorado.jdbc.support;
 
 import java.sql.DatabaseMetaData;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import javax.sql.DataSource;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
 
 import com.bstek.dorado.data.entity.EntityState;
 import com.bstek.dorado.data.entity.EntityUtils;
-import com.bstek.dorado.data.provider.Page;
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.Dialect;
-import com.bstek.dorado.jdbc.JdbcDataProviderContext;
 import com.bstek.dorado.jdbc.JdbcDataProviderOperation;
-import com.bstek.dorado.jdbc.JdbcEnviroment;
-import com.bstek.dorado.jdbc.JdbcParameterSource;
+import com.bstek.dorado.jdbc.JdbcIntercepter;
 import com.bstek.dorado.jdbc.JdbcRecordOperation;
 import com.bstek.dorado.jdbc.model.AbstractDbColumn;
-import com.bstek.dorado.jdbc.model.DbTable;
 import com.bstek.dorado.jdbc.model.autotable.AutoTable;
 import com.bstek.dorado.jdbc.model.autotable.AutoTableColumn;
 import com.bstek.dorado.jdbc.model.autotable.FromTable;
 import com.bstek.dorado.jdbc.model.autotable.Order;
 import com.bstek.dorado.jdbc.model.table.Table;
-import com.bstek.dorado.jdbc.model.table.TableKeyColumn;
-import com.bstek.dorado.jdbc.sql.DeleteSql;
-import com.bstek.dorado.jdbc.sql.InsertSql;
-import com.bstek.dorado.jdbc.sql.RecordRowMapper;
-import com.bstek.dorado.jdbc.sql.RetrieveSql;
 import com.bstek.dorado.jdbc.sql.SelectSql;
-import com.bstek.dorado.jdbc.sql.ShiftRowMapperResultSetExtractor;
 import com.bstek.dorado.jdbc.sql.SqlConstants.JoinOperator;
 import com.bstek.dorado.jdbc.sql.SqlConstants.KeyWord;
 import com.bstek.dorado.jdbc.sql.SqlConstants.NullsDirection;
 import com.bstek.dorado.jdbc.sql.SqlConstants.OrderDirection;
-import com.bstek.dorado.jdbc.sql.SqlGenerator;
-import com.bstek.dorado.jdbc.sql.SqlUtils;
-import com.bstek.dorado.jdbc.sql.UpdateSql;
-import com.bstek.dorado.jdbc.type.JdbcType;
 import com.bstek.dorado.util.Assert;
 
 /**
@@ -54,15 +34,31 @@ import com.bstek.dorado.util.Assert;
  */
 public abstract class AbstractDialect implements Dialect {
 
-	private static Log logger = LogFactory.getLog(AbstractDialect.class);
-	private SqlGenerator sqlGenerator;
+	private QueryCommand  queryCommand;
+	private InsertCommand insertCommand;
+	private UpdateCommand updateCommand;
+	private DeleteCommand deleteCommand;
 	
-	public SqlGenerator getSqlGenerator() {
-		return sqlGenerator;
+	private JdbcIntercepter intercepter;
+
+	public void setIntercepter(JdbcIntercepter intercepter) {
+		this.intercepter = intercepter;
 	}
 
-	public void setSqlGenerator(SqlGenerator sqlGenerator) {
-		this.sqlGenerator = sqlGenerator;
+	public void setQueryCommand(QueryCommand queryCommand) {
+		this.queryCommand = queryCommand;
+	}
+
+	public void setInsertCommand(InsertCommand insertCommand) {
+		this.insertCommand = insertCommand;
+	}
+
+	public void setUpdateCommand(UpdateCommand updateCommand) {
+		this.updateCommand = updateCommand;
+	}
+
+	public void setDeleteCommand(DeleteCommand deleteCommand) {
+		this.deleteCommand = deleteCommand;
 	}
 
 	public String token(Table table) {
@@ -109,231 +105,38 @@ public abstract class AbstractDialect implements Dialect {
 	}
 	
 	public boolean execute(JdbcDataProviderOperation operation) {
-		Page<Record> page = operation.getJdbcContext().getPage();
-		if (page.getPageSize() > 0) {
-			this.loadPageRecord(operation);
-		} else {
-			this.loadAllRecords(operation);
+		if (intercepter != null) {
+			operation = intercepter.getOperation(operation);
 		}
-		return true;
-	}
-	
-	/**
-	 * 加载全部的记录
-	 */
-	protected void loadAllRecords(JdbcDataProviderOperation operation) {
-		JdbcDataProviderContext jdbcContext = operation.getJdbcContext();
-		JdbcEnviroment env = operation.getJdbcEnviroment();
-		DbTable dbTable = operation.getDbTable();
-		
-		SelectSql selectSql = dbTable.selectSql(operation);
-		JdbcParameterSource jps = selectSql.getParameterSource();
-		
-		RecordRowMapper rowMapper = new RecordRowMapper(dbTable.getAllColumns());
-
-		NamedParameterJdbcTemplate jdbcTemplate = env.getNamedDao().getNamedParameterJdbcTemplate();
-
-		String sql = env.getDialect().toSQL(selectSql);
-		if (logger.isDebugEnabled()) {
-			logger.debug("[SELECT-SQL]" + sql);
-		}
-		List<Record> rs = jdbcTemplate.query(sql, jps, rowMapper);
-		jdbcContext.getPage().setEntities(rs);
-	}
-
-	/**
-	 * 加载当前分页的记录
-	 */
-	protected void loadPageRecord(JdbcDataProviderOperation operation) {
-		JdbcDataProviderContext jdbcContext = operation.getJdbcContext();
-		Page<Record> page = jdbcContext.getPage();
-		JdbcEnviroment env = operation.getJdbcEnviroment();
-		Dialect dialect = env.getDialect();
-
-		DbTable dbTable = operation.getDbTable();
-		SelectSql selectSql = dbTable.selectSql(operation);
-
-		RecordRowMapper rowMapper = new RecordRowMapper(dbTable.getAllColumns());
-
-		NamedParameterJdbcTemplate jdbcTemplate = env.getNamedDao().getNamedParameterJdbcTemplate();
-
-		int pageSize = page.getPageSize();
-		int firstIndex = page.getFirstEntityIndex();
-
-		if (dialect.isNarrowSupport()) {
-			JdbcParameterSource jps = selectSql.getParameterSource();
-			String sql = dialect.narrowSql(selectSql, pageSize, firstIndex);
-			if (logger.isDebugEnabled()) {
-				logger.debug("[SELECT-SQL]" + sql);
-			}
-			List<Record> rs = jdbcTemplate.query(sql, jps, rowMapper);
-			page.setEntities(rs);
-		} else {
-			ShiftRowMapperResultSetExtractor rse = new ShiftRowMapperResultSetExtractor(
-					rowMapper, pageSize, firstIndex);
-			String sql = dialect.toSQL(selectSql);
-			if (logger.isDebugEnabled()) {
-				logger.debug("[SELECT-SQL]" + sql);
-			}
-			JdbcParameterSource jps = selectSql.getParameterSource();
-			List<Record> rs = jdbcTemplate.query(sql, jps, rse);
-			page.setEntities(rs);
-		}
-
-		String countSql = dialect.toCountSQL(selectSql);
-		if (logger.isDebugEnabled()) {
-			logger.debug("[COUNT-SQL]" + countSql);
-		}
-		int count = jdbcTemplate.queryForInt(countSql, selectSql.getParameterSource());
-		page.setEntityCount(count);
+		return queryCommand.execute(operation);
 	}
 	
 	public boolean execute(JdbcRecordOperation operation) {
+		if (intercepter != null) {
+			operation = intercepter.getOperation(operation);
+		}
 		Record record = operation.getRecord();
 		Assert.notNull(record, "record must not null.");
 
 		EntityState state = EntityUtils.getState(record);
 		switch (state) {
 			case NEW: {
-				this.doInsert(operation);
+				insertCommand.execute(operation);
 				return true;
 			}
 			case MODIFIED: 
 			case MOVED:{
-				this.doUpdate(operation);
+				updateCommand.execute(operation);
 				return true;
 			}
 			case DELETED: {
-				this.doDelete(operation);
+				deleteCommand.execute(operation);
 				return true;
 			}
 		}
 		return false;
 	}
 	
-	/**
-	 * 执行INSERT动作
-	 */
-	protected void doInsert(JdbcRecordOperation operation) {
-		JdbcEnviroment env = operation.getJdbcEnviroment();
-		Table table = operation.getTable();
-		Record record = operation.getRecord();
-		
-		InsertSql insertSql = this.getSqlGenerator().insertSql(operation);
-		Dialect dialect = env.getDialect();
-		String sql = insertSql.toSQL(dialect);
-		if (logger.isDebugEnabled()) {
-			logger.debug("[INSERT-SQL]" + sql);
-		}
-		
-		NamedParameterJdbcTemplate jdbcTemplate = env.getNamedDao().getNamedParameterJdbcTemplate();
-		TableKeyColumn identityColumn = insertSql.getIdentityColumn();
-		if (identityColumn == null) {
-			JdbcParameterSource parameterSource = insertSql.getParameterSource();
-			jdbcTemplate.update(sql, parameterSource);
-		} else {
-			JdbcParameterSource parameterSource = insertSql.getParameterSource();
-			GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-			jdbcTemplate.update(sql, parameterSource, keyHolder);
-			String propertyName = identityColumn.getPropertyName();
-			if (StringUtils.isNotEmpty(propertyName)) {
-				Object value = keyHolder.getKey();
-				JdbcType jdbcType = identityColumn.getJdbcType();
-				if (jdbcType != null) {
-					value = jdbcType.fromDB(value);
-				}
-				
-				record.put(propertyName, value);
-			}
-		}
-		
-		if(insertSql.isRetrieveAfterExecute()) {
-			this.retrieve(record, table, env);
-		}
-	}
-	
-	/**
-	 * 执行UPDATE动作
-	 */
-	protected void doUpdate(JdbcRecordOperation operation) {
-		Table table = operation.getTable();
-		JdbcEnviroment env = operation.getJdbcEnviroment();
-		Record record = operation.getRecord();
-		
-		Dialect dialect = env.getDialect();
-		NamedParameterJdbcTemplate jdbcTemplate = env.getNamedDao().getNamedParameterJdbcTemplate();
-		UpdateSql updateSql = this.getSqlGenerator().updateSql(operation);
-		String sql = updateSql.toSQL(dialect);
-		if (logger.isDebugEnabled()) {
-			logger.debug("[UPDATE-SQL]" + sql);
-		}
-		JdbcParameterSource parameterSource = updateSql.getParameterSource();
-		jdbcTemplate.update(sql, parameterSource);
-		
-		if(updateSql.isRetrieveAfterExecute()) {
-			this.retrieve(record, table, env);
-		}
-	}
-	
-	/**
-	 * 执行DELETE动作
-	 */
-	protected void doDelete(JdbcRecordOperation operation) {
-		JdbcEnviroment env = operation.getJdbcEnviroment();
-		Dialect dialect = env.getDialect();
-		NamedParameterJdbcTemplate jdbcTemplate = env.getNamedDao().getNamedParameterJdbcTemplate();
-		
-		DeleteSql deleteSql = this.getSqlGenerator().deleteSql(operation);
-		String sql = deleteSql.toSQL(dialect);
-		if (logger.isDebugEnabled()) {
-			logger.debug("[DELETE-SQL]" + sql);
-		}
-		JdbcParameterSource parameterSource = deleteSql.getParameterSource();
-		jdbcTemplate.update(sql, parameterSource);
-	}
-	
-	protected void retrieve(Record record, Table table, JdbcEnviroment jdbcEnv) {
-		Dialect dialect = jdbcEnv.getDialect();
-		RetrieveSql retrieveSql = new RetrieveSql();
-		retrieveSql.setTableToken(token(table));
-		
-		List<AbstractDbColumn> columnList = new ArrayList<AbstractDbColumn>();
-		for(AbstractDbColumn column: table.getAllColumns()) {
-			String columnName = column.getName();
-			String propertyName = column.getPropertyName();
-			if (column.isSelectable() && record.containsKey(propertyName)) {
-				columnList.add(column);
-				retrieveSql.addColumnToken(columnName + " " + KeyWord.AS + " " + propertyName);
-			}
-		}
-		JdbcParameterSource parameterSource = SqlUtils.createJdbcParameter(null);
-		for (TableKeyColumn column: table.getKeyColumns()) {
-			String propertyName = column.getPropertyName();
-			if (column.isSelectable() && record.containsKey(propertyName)) {
-				String columnName = column.getName();
-				Object columnValue = record.get(propertyName);
-				JdbcType jdbcType = column.getJdbcType();
-				if (jdbcType != null) {
-					parameterSource.setValue(propertyName, columnValue, jdbcType.getSqlType());
-				} else {
-					parameterSource.setValue(propertyName, columnValue);
-				}
-				
-				retrieveSql.addKeyToken(columnName, ":" + propertyName);
-			}
-		}
-
-		String sql = retrieveSql.toSQL(dialect);
-		if (logger.isDebugEnabled()) {
-			logger.debug("[RETRIEVE-SQL]" + sql);
-		}
-		NamedParameterJdbcTemplate jdbcTemplate = jdbcEnv.getNamedDao().getNamedParameterJdbcTemplate();
-		List<Record> rs = jdbcTemplate.query(sql, parameterSource, new RecordRowMapper(columnList));
-		Assert.isTrue(rs.size() == 1, "[" + rs.size() +"] records retrieved, only 1 excepted.");
-		
-		Record rRecord = rs.get(0);
-		record.putAll(rRecord);
-	}
 	
 	public String token(AutoTable autoTable, JoinOperator joinModel) {
 		switch (joinModel) {
