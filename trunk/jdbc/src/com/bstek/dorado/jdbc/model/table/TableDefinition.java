@@ -10,12 +10,9 @@ import com.bstek.dorado.jdbc.config.XmlConstants;
  */
 public class TableDefinition extends AbstractDbTableDefinition {
 
-	private Boolean autoCreateColumns = null;
+	private Boolean autoCreateColumns = false;
 
 	public boolean isAutoCreateColumns() {
-		if (autoCreateColumns == null) {
-			autoCreateColumns = this.getVirtualPropertyBoolean(XmlConstants.AUTO_CREATE_COLUMNS, false);
-		}
 		return autoCreateColumns;
 	}
 

@@ -16,5 +16,7 @@ public interface DbmManager extends DefinitionManager<DbElementDefinition>{
 	 */
 	void register(DbModel dbm);
 	
-	void refresh(GlobalDbModelConfig[] configs);
+	void register(JdbcConfigLoader loader);
+	
+	void refresh();
 }

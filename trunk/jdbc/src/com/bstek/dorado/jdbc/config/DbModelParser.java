@@ -9,7 +9,6 @@ import com.bstek.dorado.config.ParseContext;
 import com.bstek.dorado.config.definition.ObjectDefinition;
 import com.bstek.dorado.config.xml.ObjectParser;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
-import com.bstek.dorado.jdbc.JdbcUtils;
 
 /**
  * {@link com.bstek.dorado.jdbc.config.DbModel}的解析器
@@ -21,6 +20,16 @@ public class DbModelParser extends ObjectParser {
 
 	private static final String ALL_ELEMENTS_ATTR = "ALL_DBELEMENTS";
 	
+	private JdbcEnviromentManager enviromentManager;
+	
+	public JdbcEnviromentManager getEnviromentManager() {
+		return enviromentManager;
+	}
+
+	public void setEnviromentManager(JdbcEnviromentManager enviromentManager) {
+		this.enviromentManager = enviromentManager;
+	}
+
 	@Override
 	protected List<?> dispatchChildElements(Element element,
 			ParseContext context) throws Exception {
@@ -47,10 +56,10 @@ public class DbModelParser extends ObjectParser {
 		JdbcParseContext jdbcContext = (JdbcParseContext)context;
 		if (element.hasAttribute(XmlConstants.JDBC_ENVIROMENT)) {
 			String envName = element.getAttribute(XmlConstants.JDBC_ENVIROMENT);
-			JdbcEnviroment jdbcEnviroment = JdbcUtils.getEnviromentManager().getEnviroment(envName);
+			JdbcEnviroment jdbcEnviroment = enviromentManager.getEnviroment(envName);
 			jdbcContext.setJdbcEnviroment(jdbcEnviroment);
 		} else {
-			jdbcContext.setJdbcEnviroment(JdbcUtils.getEnviromentManager().getDefault());
+			jdbcContext.setJdbcEnviroment(enviromentManager.getDefault());
 		}
 		
 		ObjectDefinition definition = (ObjectDefinition)super.doParse(element, context);

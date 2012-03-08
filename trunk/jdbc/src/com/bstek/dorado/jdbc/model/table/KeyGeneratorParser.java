@@ -24,7 +24,6 @@ public class KeyGeneratorParser extends PropertyParser {
 		this.keyGeneratorManager = keyGeneratorManager;
 	}
 
-
 	@Override
 	protected Object doParse(Node node, ParseContext context) throws Exception {
 		String name = (String)super.doParse(node, context);

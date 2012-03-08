@@ -1,19 +1,19 @@
 package com.bstek.dorado.jdbc.config;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.config.definition.DefaultDefinitionManager;
 
 public abstract class AbstractDbmManager extends DefaultDefinitionManager<DbElementDefinition> implements DbmManager {
 
-	private GlobalDbModelConfig[] configs = null;
+	private List<JdbcConfigLoader> configs = new ArrayList<JdbcConfigLoader>();
 
-	public GlobalDbModelConfig[] getConfigs() {
-		return configs;
-	}
-
-	public void setConfigs(GlobalDbModelConfig[] configs) {
-		this.configs = configs;
+	public JdbcConfigLoader[] getConfigs() {
+		return configs.toArray(new JdbcConfigLoader[0]);
 	}
 
 	@Override
@@ -29,8 +29,7 @@ public abstract class AbstractDbmManager extends DefaultDefinitionManager<DbElem
 	}
 
 	@Override
-	public void refresh(GlobalDbModelConfig[] configs) {
-		this.setConfigs(configs);
+	public void refresh() {
 		try {
 			this.doRefresh();
 		} catch (Exception e) {
@@ -38,5 +37,20 @@ public abstract class AbstractDbmManager extends DefaultDefinitionManager<DbElem
 		}
 	}
 
+	
+	
+	@Override
+	public void register(JdbcConfigLoader loader) {
+		configs.add(loader);
+	}
+
 	abstract protected void doRefresh() throws Exception;
+
+	@Override
+	public String toString() {
+		String msg = "Registered DbElements: [";
+		msg += StringUtils.join(this.getDefinitions().keySet(), ',');
+		msg += "]";
+		return msg;
+	}
 }

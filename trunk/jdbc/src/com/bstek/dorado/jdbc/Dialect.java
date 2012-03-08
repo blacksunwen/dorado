@@ -4,6 +4,9 @@ import java.sql.DatabaseMetaData;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.bstek.dorado.jdbc.model.autotable.AutoTable;
 import com.bstek.dorado.jdbc.model.autotable.Order;
 import com.bstek.dorado.jdbc.model.table.Table;
@@ -18,6 +21,8 @@ import com.bstek.dorado.jdbc.sql.SqlConstants.JoinOperator;
  */
 public interface Dialect {
 
+	static final Log logger = LogFactory.getLog(Dialect.class);
+	
 	/**
 	 * 生成SQL的片段
 	 * @param table
@@ -106,7 +111,7 @@ public interface Dialect {
 	String sequenceSql(String sequenceName);
 
 	/**
-	 * 执行查询操作
+	 * 执行{@link com.bstek.dorado.jdbc.JdbcDataProvider}操作
 	 * @param operation
 	 */
 	boolean execute(JdbcDataProviderOperation operation);

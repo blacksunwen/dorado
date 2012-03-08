@@ -8,17 +8,14 @@ package com.bstek.dorado.jdbc.config;
  *
  */
 public abstract class AbstractDbTableDefinition extends DbElementDefinition {
-	private Boolean autoCreateDataType = null;
-	private Boolean autoCreateDataProvider = null;
+	private boolean autoCreateDataType = false;
+	private boolean autoCreateDataProvider = false;
 
 	/**
 	 * 是否自动创建DataProvider
 	 * @return
 	 */
 	public boolean isAutoCreateDataProvider() {
-		if (autoCreateDataProvider == null) {
-			autoCreateDataProvider = this.getVirtualPropertyBoolean(XmlConstants.AUTO_CREATE_DATAPROVIDER, false);
-		}
 		return autoCreateDataProvider;
 	}
 
@@ -31,9 +28,6 @@ public abstract class AbstractDbTableDefinition extends DbElementDefinition {
 	 * @return
 	 */
 	public boolean isAutoCreateDataType() {
-		if (autoCreateDataType == null) {
-			autoCreateDataType = this.getVirtualPropertyBoolean(XmlConstants.AUTO_CREATE_DATATYPE, false);
-		}
 		return autoCreateDataType;
 	}
 

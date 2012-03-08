@@ -3,9 +3,23 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
+	<bean id="dorado.jdbc.queryCommand" class="com.bstek.dorado.jdbc.support.QueryCommand"/>
+	<bean id="dorado.jdbc.retrieveCommand" class="com.bstek.dorado.jdbc.support.RetrieveCommand"/>
+	<bean id="dorado.jdbc.deleteCommand" class="com.bstek.dorado.jdbc.support.DeleteCommand"/>
+	<bean id="dorado.jdbc.insertCommand" class="com.bstek.dorado.jdbc.support.InsertCommand">
+		<property name="retrieveCommand" ref="dorado.jdbc.retrieveCommand"/>
+	</bean>
+	<bean id="dorado.jdbc.updateCommand" class="com.bstek.dorado.jdbc.support.UpdateCommand">
+		<property name="retrieveCommand" ref="dorado.jdbc.retrieveCommand"/>
+	</bean>
+	
 	<!-- Dialect -->
 	<bean id="dorado.dialectTemplate" abstract="true">
-		<property name="sqlGenerator" ref="dorado.jdbc.sqlGenerator"/>
+		<property name="intercepter" ref="dorado.jdbc.globalIntercepter"/>
+		<property name="queryCommand" ref="dorado.jdbc.queryCommand"/>
+		<property name="insertCommand" ref="dorado.jdbc.insertCommand"/>
+		<property name="updateCommand" ref="dorado.jdbc.updateCommand"/>
+		<property name="deleteCommand" ref="dorado.jdbc.deleteCommand"/>
 	</bean>
 	
 	<bean id="dorado.jdbc.h2Dialect" class="com.bstek.dorado.jdbc.support.h2.H2Dialect" parent="dorado.dialectTemplate" abstract="true"/>

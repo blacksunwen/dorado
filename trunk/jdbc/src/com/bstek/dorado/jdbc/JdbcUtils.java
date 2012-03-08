@@ -86,9 +86,6 @@ public abstract class JdbcUtils {
 	}
 	
 	public static Collection<Record> query(JdbcDataProviderOperation operation) {
-		JdbcIntercepter intercepter = getGlobalIntercepter();
-		operation = intercepter.getOperation(operation);
-		
 		if (operation.isProcessDefault()) {
 			DbTable table = operation.getDbTable();
 			Assert.notNull(table, "DbTable must not be null.");
@@ -167,9 +164,6 @@ public abstract class JdbcUtils {
 	}
 	
 	public static boolean doResolve(JdbcRecordOperation operation) {
-		JdbcIntercepter intercepter = JdbcUtils.getGlobalIntercepter();
-		operation = intercepter.getOperation(operation);
-		
 		DbTable table = operation.getDbTable();
 		DbTableTrigger trigger = table.getTrigger();
 		if (trigger == null) {

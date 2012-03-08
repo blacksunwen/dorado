@@ -34,12 +34,12 @@ public class RecordRowMapper implements RowMapper<Record> {
 			String columnName = c.getName();
 			String propertyName = c.getPropertyName();
 			JdbcType jdbcType = c.getJdbcType();
-			Object dbValue = rs.getObject(columnName);
 			
 			if (jdbcType != null) {
-				Object value = jdbcType.fromDB(dbValue);
-				map.put(propertyName, value);	
+				Object dbValue = jdbcType.fromDB(rs, columnName);
+				map.put(propertyName, dbValue);	
 			} else {
+				Object dbValue = rs.getObject(columnName);
 				map.put(propertyName, dbValue);
 			}
 		}

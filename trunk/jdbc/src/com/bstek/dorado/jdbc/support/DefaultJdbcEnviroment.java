@@ -2,7 +2,6 @@ package com.bstek.dorado.jdbc.support;
 
 import javax.sql.DataSource;
 
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
@@ -15,7 +14,7 @@ import com.bstek.dorado.util.Assert;
  * @author mark.li@bstek.com
  *
  */
-public class DefaultJdbcEnviroment extends AbstractJdbcEnviroment implements JdbcEnviroment, InitializingBean {
+public class DefaultJdbcEnviroment extends AbstractJdbcEnviroment implements JdbcEnviroment {
 
 	private DataSource dataSource;
 	private PlatformTransactionManager transactionManager;
@@ -49,6 +48,8 @@ public class DefaultJdbcEnviroment extends AbstractJdbcEnviroment implements Jdb
 		Assert.notNull(this.getName(), "name can not be null.");
 		Assert.notNull(this.getDataSource(), "dataSource can not be null.");
 		Assert.notNull(this.getDialect(), "dialect can not be null.");
+		
+		super.afterPropertiesSet();
 	}
 
 	@Override

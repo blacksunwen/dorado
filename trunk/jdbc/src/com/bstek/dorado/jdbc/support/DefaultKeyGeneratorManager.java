@@ -1,30 +1,19 @@
 package com.bstek.dorado.jdbc.support;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 
 import com.bstek.dorado.jdbc.KeyGeneratorManager;
 import com.bstek.dorado.jdbc.ide.TableKeyColumnRuleTemplateInitializer;
 import com.bstek.dorado.jdbc.model.table.KeyGenerator;
 import com.bstek.dorado.util.Assert;
 
-public class DefaultKeyGeneratorManager implements KeyGeneratorManager, InitializingBean, ApplicationContextAware {
+public class DefaultKeyGeneratorManager implements KeyGeneratorManager{
 
-	private static Log logger = LogFactory.getLog(DefaultKeyGeneratorManager.class);
-	
-	private ApplicationContext applicationContext;
-	
 	@SuppressWarnings("rawtypes")
 	private Map<String, KeyGenerator> elements = new HashMap<String, KeyGenerator>();
 	
@@ -54,37 +43,19 @@ public class DefaultKeyGeneratorManager implements KeyGeneratorManager, Initiali
 		return elements.containsKey(name);
 	}
 	
-	@SuppressWarnings("rawtypes")
 	@Override
-	public void afterPropertiesSet() throws Exception {
-		Map<String, KeyGenerator> typeMap = applicationContext.getBeansOfType(KeyGenerator.class, false, true);
-		Collection<KeyGenerator> types = typeMap.values();
-		for (KeyGenerator type: types) {
-			this.register(type);
+	public String toString() {
+		String msg = "Registered KeyGenerators: " + TableKeyColumnRuleTemplateInitializer.KEY_GENERATORS_STORE_KEY+" [";
+		KeyGenerator<Object>[] types = list();
+		List<String> names = new ArrayList<String>();
+		for (KeyGenerator<Object> type: types) {
+			names.add(type.getName());
 		}
 		
-		doLog();
-	}
-
-	private void doLog() {
-		if (logger.isInfoEnabled()) {
-			String msg = "Registered KeyGenerators: " + TableKeyColumnRuleTemplateInitializer.KEY_GENERATORS_STORE_KEY+" [";
-			KeyGenerator<Object>[] types = list();
-			List<String> names = new ArrayList<String>();
-			for (KeyGenerator<Object> type: types) {
-				names.add(type.getName());
-			}
-			
-			msg += StringUtils.join(names, ',');
-			msg += "]";
-			logger.info(msg);
-		}
+		msg += StringUtils.join(names, ',');
+		msg += "]";
+		
+		return msg;
 	}
 	
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext)
-			throws BeansException {
-		this.applicationContext = applicationContext;
-	}
-
 }
