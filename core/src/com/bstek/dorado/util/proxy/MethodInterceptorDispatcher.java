@@ -1,5 +1,6 @@
 package com.bstek.dorado.util.proxy;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
 
 import javassist.util.proxy.MethodHandler;
@@ -7,6 +8,7 @@ import net.sf.cglib.proxy.MethodProxy;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -24,10 +26,10 @@ import org.apache.commons.logging.LogFactory;
  */
 public abstract class MethodInterceptorDispatcher implements MethodInterceptor,
 		net.sf.cglib.proxy.MethodInterceptor, MethodHandler {
-
 	private static final Log logger = LogFactory
 			.getLog(MethodInterceptorDispatcher.class);
 
+	private static final String WRITE_REPLACE = "writeReplace";
 	private static Method EQUALS_METHOD;
 
 	static {
@@ -115,11 +117,9 @@ public abstract class MethodInterceptorDispatcher implements MethodInterceptor,
 	 *            用于迭代所有子方法拦截器的迭代器（包含
 	 *            {@link #createFinalMethodInterceptor(MethodProxy)}返回的拦截器）
 	 */
-	protected MethodInvocation createMethodInvocation(Object object,
+	protected abstract MethodInvocation createMethodInvocation(Object object,
 			Method method, Object[] args,
-			MethodInterceptorChain methodInterceptorChain) {
-		return null;
-	}
+			MethodInterceptorChain methodInterceptorChain);
 
 	protected MethodInterceptor createFinalAopallianceMethodInterceptor(
 			MethodInvocation methodInvocation) {
@@ -141,8 +141,6 @@ public abstract class MethodInterceptorDispatcher implements MethodInterceptor,
 	}
 
 	public Object invoke(MethodInvocation methodInvocation) throws Throwable {
-		// 此处为提供针对equals()方法的特殊处理，因为dorado中并没有提供以AOP为基础的现有对象动态代理。
-
 		Object object = methodInvocation.getThis();
 		Method method = methodInvocation.getMethod();
 		Object[] arguments = methodInvocation.getArguments();
@@ -165,6 +163,7 @@ public abstract class MethodInterceptorDispatcher implements MethodInterceptor,
 
 	public Object intercept(Object object, Method method, Object[] args,
 			MethodProxy methodProxy) throws Throwable {
+		// 此处为提供针对equals()方法的特殊处理，因为dorado中并没有提供以AOP为基础的现有对象动态代理。
 		if (method.equals(EQUALS_METHOD)) {
 			Object proxyTarget = ProxyBeanUtils.getProxyTarget(args[0]);
 			if (proxyTarget == object)
@@ -188,6 +187,17 @@ public abstract class MethodInterceptorDispatcher implements MethodInterceptor,
 		}
 	}
 
+	protected Object getObjectForSerialization(Object object) throws Exception {
+		Class<?> cl = ProxyBeanUtils.getProxyTargetType(object);
+		if (cl != object.getClass()) {
+			Object beanForSerialization = cl.newInstance();
+			BeanUtils.copyProperties(beanForSerialization, object);
+			return beanForSerialization;
+		} else {
+			return object;
+		}
+	}
+
 	public Object invoke(Object object, Method method, Method procssed,
 			Object[] args) throws Throwable {
 		if (method.equals(EQUALS_METHOD)) {
@@ -195,6 +205,15 @@ public abstract class MethodInterceptorDispatcher implements MethodInterceptor,
 			if (proxyTarget == object)
 				return Boolean.TRUE;
 			args = new Object[] { proxyTarget };
+		} else if (object instanceof Serializable
+				&& method.getName().equals(WRITE_REPLACE)
+				&& method.getReturnType().equals(Object.class)) {
+			try {
+				Class<?> realClass = ProxyBeanUtils.getProxyTargetType(object);
+				realClass.getMethod(WRITE_REPLACE, new Class<?>[0]);
+			} catch (NoSuchMethodException e) {
+				return getObjectForSerialization(object);
+			}
 		}
 
 		if (subMethodInterceptors != null && filterMethod(method)) {

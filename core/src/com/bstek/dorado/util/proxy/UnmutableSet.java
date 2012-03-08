@@ -8,6 +8,7 @@ import java.util.Set;
  * @since Apr 10, 2008
  */
 public class UnmutableSet<E> extends ChildrenSetSupport<E> {
+	private static final long serialVersionUID = -1449090065345660683L;
 
 	/**
 	 * @param target

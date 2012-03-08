@@ -6,16 +6,19 @@ import java.util.ListIterator;
 
 /**
  * {@link java.util.List}代理的抽象支持类。
+ * 
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Feb 28, 2007
  */
 public abstract class ListProxySupport<E> extends CollectionProxySupport<E>
 		implements List<E> {
+	private static final long serialVersionUID = -8081714401030525016L;
 
 	private List<E> listTarget;
 
 	/**
-	 * @param target 被代理{@link java.util.List}对象。
+	 * @param target
+	 *            被代理{@link java.util.List}对象。
 	 */
 	public ListProxySupport(Collection<E> target) {
 		super(target);

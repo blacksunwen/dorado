@@ -1,18 +1,25 @@
 package com.bstek.dorado.util.proxy;
 
+import java.io.ObjectStreamException;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
 
 /**
  * {@link java.util.Collection}代理的抽象支持类。
+ * 
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Apirl 15, 2007
  */
-public abstract class CollectionProxySupport<E> implements Collection<E> {
+public abstract class CollectionProxySupport<E> implements Collection<E>,
+		Serializable {
+	private static final long serialVersionUID = -6529194580197068453L;
+
 	private Collection<E> target;
 
 	/**
-	 * @param target 被代理的{@link java.util.Collection}对象。
+	 * @param target
+	 *            被代理的{@link java.util.Collection}对象。
 	 */
 	public CollectionProxySupport(Collection<E> target) {
 		setTarget(target);
@@ -92,6 +99,10 @@ public abstract class CollectionProxySupport<E> implements Collection<E> {
 
 	public <T> T[] toArray(T[] a) {
 		return target.toArray(a);
+	}
+
+	public Object writeReplace() throws ObjectStreamException {
+		return target;
 	}
 
 }

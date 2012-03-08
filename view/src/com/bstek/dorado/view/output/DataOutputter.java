@@ -99,6 +99,7 @@ public class DataOutputter implements Outputter, PropertyOutputter {
 		}
 	}
 
+	@SuppressWarnings("rawtypes")
 	private void outputPagingList(PagingList pagingList, OutputContext context)
 			throws Exception {
 		JsonBuilder json = context.getJsonBuilder();
@@ -210,6 +211,7 @@ public class DataOutputter implements Outputter, PropertyOutputter {
 		}
 	}
 
+	@SuppressWarnings("rawtypes")
 	private void internalOutputData(Object object, OutputContext context)
 			throws Exception {
 		JsonBuilder json = context.getJsonBuilder();

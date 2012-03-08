@@ -1,6 +1,15 @@
 package com.bstek.dorado.data.provider;
 
+import java.io.InvalidObjectException;
+import java.io.ObjectStreamException;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import com.bstek.dorado.util.proxy.ListProxySupport;
 
@@ -10,14 +19,18 @@ import com.bstek.dorado.util.proxy.ListProxySupport;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Apr 3, 2008
  */
-@SuppressWarnings({ "unchecked", "rawtypes" })
-public class PagingList extends ListProxySupport {
+public class PagingList<E> extends ListProxySupport<E> {
+	private static final long serialVersionUID = -2663699029002561283L;
+	private static final Log logger = LogFactory.getLog(PagingList.class);
+
 	private DataProvider dataProvider;
 	private Object parameter;
 	private int pageSize;
 	private int pageNo;
 	private int entityCount;
 	private int pageCount;
+
+	private Map<Integer, Page<E>> pageMap = new HashMap<Integer, Page<E>>();
 
 	/**
 	 * @param dataProvider
@@ -30,9 +43,10 @@ public class PagingList extends ListProxySupport {
 	 *            初始装载的页号
 	 * @throws Exception
 	 */
+	@SuppressWarnings("unchecked")
 	public PagingList(DataProvider dataProvider, Object parameter,
 			int pageSize, int pageNo) throws Exception {
-		super(Collections.emptyList());
+		super((List<E>) Collections.emptyList());
 		this.dataProvider = dataProvider;
 		this.parameter = parameter;
 		this.pageSize = pageSize;
@@ -141,6 +155,16 @@ public class PagingList extends ListProxySupport {
 		gotoPage(pageCount);
 	}
 
+	protected Page<E> getPage(int pageNo) throws Exception {
+		Page<E> page = pageMap.get(pageNo);
+		if (page == null) {
+			page = new Page<E>(pageSize, pageNo);
+			dataProvider.getResult(parameter, page);
+			pageMap.put(pageNo, page);
+		}
+		return page;
+	}
+
 	/**
 	 * 跳转到指定的页。<br>
 	 * 执行此操作后List中封装的数据将变为指定页的数据。
@@ -157,14 +181,26 @@ public class PagingList extends ListProxySupport {
 		}
 
 		if (pageNo != this.pageNo) {
-			Page page = new Page(pageSize, pageNo);
-			dataProvider.getResult(parameter, page);
-
+			Page<E> page = getPage(pageNo);
 			setTarget(page.getEntities());
 
 			this.pageNo = pageNo;
 			entityCount = page.getEntityCount();
 			pageCount = page.getPageCount();
+		}
+	}
+
+	public Object writeReplace() throws ObjectStreamException {
+		try {
+			List<E> list = new ArrayList<E>();
+			for (int i = 1; i <= pageCount; i++) {
+				Page<E> page = getPage(pageNo);
+				list.addAll(page.getEntities());
+			}
+			return list;
+		} catch (Exception e) {
+			logger.error(e, e);
+			throw new InvalidObjectException(e.getMessage());
 		}
 	}
 }
