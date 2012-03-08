@@ -10,5 +10,5 @@
 		</PrimitiveProps>
 	</Rule>
 	
-	<Rule name="JdbcAgent" type="com.bstek.dorado.jdbc.ide.DefaultAgent"/>
+	<Rule name="JdbcAgent"/>
 </RuleSet>

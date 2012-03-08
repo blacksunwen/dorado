@@ -16,7 +16,7 @@ public class DbElementDefinition extends ObjectDefinition {
 		return (String)this.getProperties().get("name");
 	}
 	
-	public boolean getFinalPropertyBoolean(String propertyName, boolean defult) {
+	public boolean getVirtualPropertyBoolean(String propertyName, boolean defult) {
 		Object value = this.getProperties().get(propertyName);
 		this.getProperties().remove(propertyName);
 		
@@ -28,7 +28,7 @@ public class DbElementDefinition extends ObjectDefinition {
 		
 		if (value != null) {
 			if (value instanceof Expression) {
-				throw new IllegalArgumentException("not support EL expression.");
+				throw new IllegalArgumentException("["+propertyName+"] not support EL expression.");
 			}
 			return VariantUtils.toBoolean(value);
 		} else {

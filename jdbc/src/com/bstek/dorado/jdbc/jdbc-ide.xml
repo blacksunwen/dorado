@@ -19,7 +19,11 @@
 				<entry key="Table">
 					<bean class="com.bstek.dorado.jdbc.ide.TableRuleTemplateInitializer"/>
 				</entry>
+				<entry key="JdbcAgent">
+					<bean class="com.bstek.dorado.jdbc.ide.JdbcAgentRuleTemplateInitializer"/>
+				</entry>
 			</map>
 		</property>
 	</bean>
+	
 </beans>

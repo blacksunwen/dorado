@@ -28,6 +28,7 @@
 		<property name="xmlDocumentBuilder" ref="dorado.xmlDocumentBuilder" />
 		<property name="xmlParserHelper" ref="dorado.xmlParserHelper"/>
 		<property name="modelStrategy" ref="dorado.jdbc.modelStrategy"/>
+		<property name="interceper" ref="dorado.jdbc.globalIntercepter"/>
 	</bean>
 	<bean id="dorado.jdbc.modelGeneratorSuit" class="com.bstek.dorado.jdbc.support.DefaultModelGeneratorSuit"/>
 	<bean id="dorado.jdbc.jdbcTypeManager" class="com.bstek.dorado.jdbc.support.DefaultJdbcTypeManager"/>

@@ -19,6 +19,7 @@ import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.core.io.Resource;
 import com.bstek.dorado.core.io.ResourceUtils;
 import com.bstek.dorado.core.xml.XmlDocumentBuilder;
+import com.bstek.dorado.jdbc.JdbcIntercepter;
 import com.bstek.dorado.jdbc.ModelStrategy;
 
 /**
@@ -34,6 +35,7 @@ public class DefaultDmbManager extends AbstractDbmManager {
 	private XmlDocumentBuilder xmlDocumentBuilder;
 	private ModelStrategy modelStrategy;
 	private boolean onRefresh = false;
+	private JdbcIntercepter interceper;
 	
 	public XmlParserHelper getXmlParserHelper() {
 		return xmlParserHelper;
@@ -57,6 +59,24 @@ public class DefaultDmbManager extends AbstractDbmManager {
 	
 	public ModelStrategy getModelStrategy() {
 		return modelStrategy;
+	}
+
+	public JdbcIntercepter getInterceper() {
+		return interceper;
+	}
+
+	public void setInterceper(JdbcIntercepter interceper) {
+		this.interceper = interceper;
+	}
+
+	@Override
+	protected void register(DbElementDefinition def) {
+		if (interceper != null) {
+			def = interceper.getDefinition(def);
+		}
+		if (def != null) {
+			super.register(def);
+		}
 	}
 
 	@Override

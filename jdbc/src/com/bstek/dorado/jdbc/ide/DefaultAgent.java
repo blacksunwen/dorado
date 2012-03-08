@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
@@ -24,34 +23,12 @@ import com.bstek.dorado.jdbc.config.XmlConstants;
 import com.bstek.dorado.jdbc.support.JdbcConstants;
 import com.bstek.dorado.util.xml.DomUtils;
 
+/**
+ * 
+ * @author mark.li@bstek.com
+ *
+ */
 public class DefaultAgent extends AbstractAgent {
-
-	@Override
-	protected String doListSpaces() throws SQLException {
-		DatabaseMetaData dbmd = getDatabaseMetaData();
-		ResultSet rs = null;
-		String columnName = null;
-		if (dbmd.supportsSchemasInDataManipulation()) {
-			rs = dbmd.getSchemas(dbmd.getConnection().getCatalog(), null);
-			columnName = "TABLE_SCHEM";
-		} else {
-			rs = dbmd.getCatalogs();
-			columnName = "TABLE_CAT";
-		}
-		
-		String spaces = "";
-		int index = 0;
-		while (rs.next()) {
-			String space = rs.getString(columnName);
-			index++;
-			if (index > 1) {
-				spaces += ",";
-			}
-			spaces += space;
-		}
-		
-		return spaces;
-	}
 
 	@Override
 	protected String doListTables() throws Exception {
@@ -104,18 +81,6 @@ public class DefaultAgent extends AbstractAgent {
 		}
 		
 		return toString(document);
-	}
-
-	@Override
-	protected String[] getJdbcTypeNames() {
-		return new String[]{"BIT-Boolean","BOOLEAN-Boolean","CHAR-Boolean","SMALLINT-Short","INTEGER-Integer","BIGINT-Long",
-				"REAL-Float","FLOAT-Double","DOUBLE-Float","NUMERIC-BigDecimal","DECIMAL-BigDecimal","TINYINT-Byte",
-				"DATE-Date","TIME-Date","TIMESTAMP-Date","CHAR-String","VARCHAR-String","LONGVARCHAR-String","CLOB-String"};
-	}
-
-	@Override
-	protected String[] getKeyGeneratorNames() {
-		return new String[]{JdbcConstants.IDENTITY, "JDK-UUID", "SEQUENCE"};
 	}
 
 	@Override
@@ -329,7 +294,7 @@ public class DefaultAgent extends AbstractAgent {
 		case Types.BOOLEAN:
 			return "BOOLEAN-Boolean";
 		case Types.CHAR:
-			return "CHAR-Boolean";
+			return "CHAR-String";
 		case Types.SMALLINT:
 			return "SMALLINT-Short";
 		case Types.INTEGER:
@@ -341,7 +306,7 @@ public class DefaultAgent extends AbstractAgent {
 		case Types.FLOAT:
 			return "FLOAT-Double";
 		case Types.DOUBLE:
-			return "DOUBLE-Float";
+			return "DOUBLE-Double";
 		case Types.NUMERIC:
 			return "NUMERIC-BigDecimal";
 		case Types.DECIMAL:
@@ -351,9 +316,9 @@ public class DefaultAgent extends AbstractAgent {
 		case Types.DATE:
 			return "DATE-Date";
 		case Types.TIME:
-			return "TIME-Date";
+			return "TIME-Time";
 		case Types.TIMESTAMP:
-			return "TIMESTAMP-Date";
+			return "TIMESTAMP-DateTime";
 		case Types.VARCHAR:
 			return "VARCHAR-String";
 		case Types.LONGVARCHAR:
@@ -364,4 +329,44 @@ public class DefaultAgent extends AbstractAgent {
 			return null;
 		}
 	}
+	
+	
+//	@Override
+//	protected String doListSpaces() throws SQLException {
+//		DatabaseMetaData dbmd = getDatabaseMetaData();
+//		ResultSet rs = null;
+//		String columnName = null;
+//		if (dbmd.supportsSchemasInDataManipulation()) {
+//			rs = dbmd.getSchemas(dbmd.getConnection().getCatalog(), null);
+//			columnName = "TABLE_SCHEM";
+//		} else {
+//			rs = dbmd.getCatalogs();
+//			columnName = "TABLE_CAT";
+//		}
+//		
+//		String spaces = "";
+//		int index = 0;
+//		while (rs.next()) {
+//			String space = rs.getString(columnName);
+//			index++;
+//			if (index > 1) {
+//				spaces += ",";
+//			}
+//			spaces += space;
+//		}
+//		
+//		return spaces;
+//	}
+//	
+//	@Override
+//	protected String[] getJdbcTypeNames() {
+//		return new String[]{"BIT-Boolean","BOOLEAN-Boolean","CHAR-Boolean","SMALLINT-Short","INTEGER-Integer","BIGINT-Long",
+//				"REAL-Float","FLOAT-Double","DOUBLE-Float","NUMERIC-BigDecimal","DECIMAL-BigDecimal","TINYINT-Byte",
+//				"DATE-Date","TIME-Date","TIMESTAMP-Date","CHAR-String","VARCHAR-String","LONGVARCHAR-String","CLOB-String"};
+//	}
+//
+//	@Override
+//	protected String[] getKeyGeneratorNames() {
+//		return new String[]{JdbcConstants.IDENTITY, "JDK-UUID", "SEQUENCE"};
+//	}
 }

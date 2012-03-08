@@ -16,11 +16,11 @@ public abstract class AbstractDbTableParser extends ObjectParser {
 	protected Object doParse(Node node, ParseContext context) throws Exception {
 		AbstractDbTableDefinition def = (AbstractDbTableDefinition) super.doParse(node, context);
 		
-		boolean autoCreateDataType = def.getFinalPropertyBoolean(XmlConstants.AUTO_CREATE_DATATYPE, false);
+		boolean autoCreateDataType = def.getVirtualPropertyBoolean(XmlConstants.AUTO_CREATE_DATATYPE, false);
 		def.setAutoCreateDataType(autoCreateDataType);
 		def.getProperties().remove(XmlConstants.AUTO_CREATE_DATATYPE);
 		
-		boolean autoCreateDataProvider = def.getFinalPropertyBoolean(XmlConstants.AUTO_CREATE_DATAPROVIDER, false);
+		boolean autoCreateDataProvider = def.getVirtualPropertyBoolean(XmlConstants.AUTO_CREATE_DATAPROVIDER, false);
 		def.setAutoCreateDataProvider(autoCreateDataProvider);
 		def.getProperties().remove(XmlConstants.AUTO_CREATE_DATAPROVIDER);
 		

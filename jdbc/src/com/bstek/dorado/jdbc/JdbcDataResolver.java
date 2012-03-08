@@ -94,9 +94,7 @@ public class JdbcDataResolver extends AbstractDataResolver {
 		
 		JdbcIntercepter intercepter = JdbcUtils.getGlobalIntercepter();
 		operation = intercepter.getOperation(operation);
-		if (operation.isProcessDefault()) {
-			operation.execute();
-		}
+		operation.execute();
 		
 		return operation.getJdbcContext().getReturnValue();
 	}

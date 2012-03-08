@@ -4,6 +4,7 @@ import com.bstek.dorado.jdbc.JdbcDataProviderOperation;
 import com.bstek.dorado.jdbc.JdbcDataResolverOperation;
 import com.bstek.dorado.jdbc.JdbcIntercepter;
 import com.bstek.dorado.jdbc.JdbcRecordOperation;
+import com.bstek.dorado.jdbc.config.DbElementDefinition;
 
 /**
  * 默认的JDBC模块的拦截器
@@ -28,6 +29,11 @@ public class DefaultJdbcIntercepter implements JdbcIntercepter {
 	@Override
 	public JdbcRecordOperation getOperation(JdbcRecordOperation operation) {
 		return operation;
+	}
+
+	@Override
+	public DbElementDefinition getDefinition(DbElementDefinition def) {
+		return def;
 	}
 
 }

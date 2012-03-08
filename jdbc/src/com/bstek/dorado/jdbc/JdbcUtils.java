@@ -108,24 +108,24 @@ public abstract class JdbcUtils {
 	}
 	
 	public static void insert(String tableName, Record record) {
-		record = getStateRecord(record, EntityState.NEW);
+		record = getRecordWithState(record, EntityState.NEW);
 		DbTable dbTable = getDbTable(tableName);
 		doSave(dbTable, record, null);
 	}
 	
 	public static void update(String tableName, Record record) {
-		record = getStateRecord(record, EntityState.MODIFIED);
+		record = getRecordWithState(record, EntityState.MODIFIED);
 		DbTable dbTable = getDbTable(tableName);
 		doSave(dbTable, record, null);
 	}
 	
 	public static void delete(String tableName, Record record) {
-		record = getStateRecord(record, EntityState.DELETED);
+		record = getRecordWithState(record, EntityState.DELETED);
 		DbTable dbTable = getDbTable(tableName);
 		doSave(dbTable, record, null);
 	}
 	
-	public static Record getStateRecord(Record record, EntityState state) {
+	public static Record getRecordWithState(Record record, EntityState state) {
 		if (!EntityUtils.isEntity(record)) {
 			try {
 				record = EntityUtils.toEntity(record);
@@ -167,6 +167,9 @@ public abstract class JdbcUtils {
 	}
 	
 	public static boolean doResolve(JdbcRecordOperation operation) {
+		JdbcIntercepter intercepter = JdbcUtils.getGlobalIntercepter();
+		operation = intercepter.getOperation(operation);
+		
 		DbTable table = operation.getDbTable();
 		DbTableTrigger trigger = table.getTrigger();
 		if (trigger == null) {
@@ -174,7 +177,7 @@ public abstract class JdbcUtils {
 		} else {
 			trigger.doSave(operation);
 			if (operation.isProcessDefault()) {
-				operation.execute();
+				return operation.execute();
 			}
 			return true;
 		}

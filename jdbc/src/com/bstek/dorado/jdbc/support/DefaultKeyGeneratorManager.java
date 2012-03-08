@@ -15,6 +15,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 import com.bstek.dorado.jdbc.KeyGeneratorManager;
+import com.bstek.dorado.jdbc.ide.TableKeyColumnRuleTemplateInitializer;
 import com.bstek.dorado.jdbc.model.table.KeyGenerator;
 import com.bstek.dorado.util.Assert;
 
@@ -67,7 +68,7 @@ public class DefaultKeyGeneratorManager implements KeyGeneratorManager, Initiali
 
 	private void doLog() {
 		if (logger.isInfoEnabled()) {
-			String msg = "Registered KeyGenerators: [";
+			String msg = "Registered KeyGenerators: " + TableKeyColumnRuleTemplateInitializer.KEY_GENERATORS_STORE_KEY+" [";
 			KeyGenerator<Object>[] types = list();
 			List<String> names = new ArrayList<String>();
 			for (KeyGenerator<Object> type: types) {

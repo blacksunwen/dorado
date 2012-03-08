@@ -10,6 +10,8 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 
+import com.bstek.dorado.jdbc.ide.JdbcDataResolverRuleTemplateInitializer;
+
 public class OddLogger implements InitializingBean, ApplicationContextAware{
 
 	private static Log logger = LogFactory.getLog(OddLogger.class);
@@ -25,7 +27,7 @@ public class OddLogger implements InitializingBean, ApplicationContextAware{
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		if (logger.isInfoEnabled()) {
-			String msg = "Registered TransactionManagers: [";
+			String msg = "Registered TransactionManagers: "+JdbcDataResolverRuleTemplateInitializer.TRANSACTION_MANAGERS_STORE_KEY+" [";
 			String [] names = applicationContext.getBeanNamesForType(PlatformTransactionManager.class);
 			msg += StringUtils.join(names, ',');
 			msg += "]";
@@ -33,7 +35,7 @@ public class OddLogger implements InitializingBean, ApplicationContextAware{
 		}
 		
 		if (logger.isInfoEnabled()) {
-			String msg = "Registered TransactionDefinitions: [";
+			String msg = "Registered TransactionDefinitions: "+JdbcDataResolverRuleTemplateInitializer.TRANSACTION_DEFINITIONS_STORE_KEY+" [";
 			String [] names = applicationContext.getBeanNamesForType(TransactionDefinition.class);
 			msg += StringUtils.join(names, ',');
 			msg += "]";

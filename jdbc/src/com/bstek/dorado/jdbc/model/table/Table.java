@@ -29,12 +29,12 @@ import com.bstek.dorado.jdbc.sql.SqlConstants.KeyWord;
 @XmlNode(
 	parser = "spring:dorado.jdbc.tableParser",
 	definitionType = "com.bstek.dorado.jdbc.model.table.TableDefinition", 
-	properties = {
-		@XmlProperty(
-			propertyName = "autoCreateColumns",
-			propertyType = "boolean"
-		)
-	},
+//	properties = {
+//		@XmlProperty(
+//			propertyName = "autoCreateColumns",
+//			propertyType = "boolean"
+//		)
+//	},
 	subNodes = {
 		@XmlSubNode(
 			wrapper = @XmlNodeWrapper(nodeName = "Columns", fixed = true), 
@@ -75,7 +75,6 @@ public class Table extends AbstractTable {
 		return TYPE;
 	}
 
-	@IdeProperty(highlight=1)
 	@XmlProperty(attributeOnly=true)
 	public String getNamespace() {
 		return namespace;
@@ -86,7 +85,7 @@ public class Table extends AbstractTable {
 	}
 
 	@XmlProperty(attributeOnly=true)
-	@IdeProperty(highlight=1)
+	@IdeProperty(highlight=1, editor="jdbc:service:list-tables.xml")
 	public String getTableName() {
 		return tableName;
 	}

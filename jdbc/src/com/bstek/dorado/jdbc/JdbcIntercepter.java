@@ -1,5 +1,7 @@
 package com.bstek.dorado.jdbc;
 
+import com.bstek.dorado.jdbc.config.DbElementDefinition;
+
 /**
  * JDBC模块的拦截器
  * 
@@ -13,4 +15,6 @@ public interface JdbcIntercepter {
 	JdbcDataResolverOperation getOperation(JdbcDataResolverOperation operation);
 	
 	JdbcRecordOperation getOperation(JdbcRecordOperation operation);
+	
+	DbElementDefinition getDefinition(DbElementDefinition def);
 }
