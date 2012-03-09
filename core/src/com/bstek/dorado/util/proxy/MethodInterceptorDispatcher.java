@@ -8,7 +8,7 @@ import net.sf.cglib.proxy.MethodProxy;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -191,7 +191,7 @@ public abstract class MethodInterceptorDispatcher implements MethodInterceptor,
 		Class<?> cl = ProxyBeanUtils.getProxyTargetType(object);
 		if (cl != object.getClass()) {
 			Object beanForSerialization = cl.newInstance();
-			BeanUtils.copyProperties(beanForSerialization, object);
+			PropertyUtils.copyProperties(beanForSerialization, object);
 			return beanForSerialization;
 		} else {
 			return object;
