@@ -369,12 +369,17 @@
 						self._refreshAndScroll(node, "insert", node._parent);
 					}
 				}
+				self.fireEvent("onExpand", self, {
+					async: async,
+					node: node
+				});
 			};
 			
+			var async = false;
 			if (node._expanded) {
 				if (this.getListenerCount("beforeExpand")) {
+					async = (this._expandingMode == "async");
 					node._expanding = true;
-					var async = (this._expandingMode == "async");
 					var eventArg = {
 						async: async,
 						node: node,
@@ -404,7 +409,7 @@
 			}
 		},
 		
-		_nodeExpanded: function(node) {
+		_nodeExpanded: function(node, callback) {
 			if (!this._rendered || !this._attached || this._autoRefreshLock > 0) return;
 			if (this._currentScrollMode != "viewport") {
 				if (this._domMode == 2) this._fixedInnerGrid._nodeExpanded(node);
@@ -412,6 +417,7 @@
 				this._innerGrid._nodeExpanded(node, function() {
 					self.updateScroller(self._innerGrid._container);
 					self.notifySizeChange();
+					$callback(callback, true, node);
 				});
 				this.updateScroller(this._innerGrid._container);
 			} else {
@@ -419,7 +425,7 @@
 			}
 		},
 		
-		_nodeCollapsed: function(node) {
+		_nodeCollapsed: function(node, callback) {
 			if (!this._rendered || !this._attached || this._autoRefreshLock > 0) return;
 			if (this._currentScrollMode != "viewport") {
 				if (this._domMode == 2) this._fixedInnerGrid._nodeCollapsed(node);
@@ -427,6 +433,7 @@
 				this._innerGrid._nodeCollapsed(node, function() {
 					self.updateScroller(self._innerGrid._container);
 					self.notifySizeChange();
+					$callback(callback, true, node);
 				});
 				this.updateScroller(this._innerGrid._container);
 			} else {

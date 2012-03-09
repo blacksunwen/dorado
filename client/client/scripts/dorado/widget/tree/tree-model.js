@@ -547,7 +547,7 @@ dorado.widget.tree.Node = $extend([dorado.AttributeSupport, dorado.EventSupport]
 			
 			self._expanding = false;
 			if (success === false) {
-				$callback(callback, success, result);
+				$callback(callback, false, result);
 			} else {
 				self.doExpandAsync({
 					callback: function(success, result) {

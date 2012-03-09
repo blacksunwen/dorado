@@ -39,8 +39,9 @@ public abstract class PathUtils {
 				boolean endsWithDelim = (result.charAt(result.length() - 1) == PATH_DELIM);
 				boolean startsWithDelim = (path.charAt(0) == PATH_DELIM);
 				if (endsWithDelim) {
-					if (startsWithDelim)
+					if (startsWithDelim) {
 						result.setLength(result.length() - 1);
+					}
 				} else if (!startsWithDelim)
 					result.append(PATH_DELIM);
 			}
@@ -51,7 +52,7 @@ public abstract class PathUtils {
 
 	public static boolean isSafePath(String path) {
 		boolean dangerous = (path.contains("..") || StringUtils.containsAny(
-				path, ",;: \n\r"));
+				path, ",: \n\r"));
 		return !dangerous;
 	}
 }
