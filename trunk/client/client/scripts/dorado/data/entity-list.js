@@ -961,7 +961,6 @@
 			// if (this.entityList.mock) {
 			//	throw new dorado.ResourceException("dorado.data.CannotModifyMockEntityList");
 			// }
-			
 			$invokeSuper.call(this, arguments);
 			data.page = this;
 			data.parent = this.entityList;
