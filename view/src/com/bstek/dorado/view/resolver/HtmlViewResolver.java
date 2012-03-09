@@ -93,8 +93,8 @@ public class HtmlViewResolver extends AbstractTextualResolver {
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
-		String viewName = getRelativeRequestURI(request);
-		if (!PathUtils.isSafePath(viewName)) {
+		String uri = getRelativeRequestURI(request);
+		if (!PathUtils.isSafePath(uri)) {
 			throw new PageAccessDeniedException("[" + request.getRequestURI()
 					+ "] Request forbidden.");
 		}
@@ -114,13 +114,7 @@ public class HtmlViewResolver extends AbstractTextualResolver {
 			}
 		}
 
-		if (uriPrefix != null && viewName.startsWith(uriPrefix)) {
-			viewName = viewName.substring(uriPrefixLen);
-		}
-		if (uriSuffix != null && viewName.endsWith(uriSuffix)) {
-			viewName = viewName.substring(0, viewName.length() - uriSuffixLen);
-		}
-
+		String viewName = extractViewName(uri);
 		DoradoContext context = DoradoContext.getCurrent();
 		ViewConfig viewConfig = null;
 		try {
@@ -161,5 +155,16 @@ public class HtmlViewResolver extends AbstractTextualResolver {
 				writer.close();
 			}
 		}
+	}
+
+	protected String extractViewName(String uri) {
+		String viewName = StringUtils.substringBefore(uri, ";");
+		if (uriPrefix != null && viewName.startsWith(uriPrefix)) {
+			viewName = viewName.substring(uriPrefixLen);
+		}
+		if (uriSuffix != null && viewName.endsWith(uriSuffix)) {
+			viewName = viewName.substring(0, viewName.length() - uriSuffixLen);
+		}
+		return viewName;
 	}
 }

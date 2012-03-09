@@ -201,7 +201,10 @@
 				} else {
 					tr = tbody.childNodes[row + rowIndexOffset];
 				}
-				tr.style.height = this._rowHeight + "px";
+				
+				if (!dorado.Browser.webkit) {
+					tr.style.height = this._rowHeight + "px";
+				}
 				
 				var cols = grid[row], cellForRenders = [], colIndex = 0;;
 				for (var col = 0; col < cols.length; col++) {
@@ -213,6 +216,9 @@
 					var td;
 					if (structureChanged) {
 						td = this.createRegionContainer(region);
+						if (dorado.Browser.webkit) {
+							td.style.height = this._rowHeight + "px";
+						}
 						tr.appendChild(td);
 					} else {
 						td = tr.childNodes[colIndex];
