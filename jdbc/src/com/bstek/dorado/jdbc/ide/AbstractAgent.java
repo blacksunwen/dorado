@@ -117,6 +117,8 @@ public abstract class AbstractAgent implements IAgent {
 		clearContext();
 		
 		this.paramerters = paramerters;
+		System.out.println("*> [CONTEXT]parameters: " + this.paramerters);
+		
 		this.getDataSource();
 		
 		String driverClassName = paramerters.get(IAgent.DRIVER);
@@ -230,51 +232,4 @@ public abstract class AbstractAgent implements IAgent {
 		}
 	}
 	
-	
-//	@Override
-//	public String listSpaces(Map<String, String> paramerters)
-//			throws Exception {
-//		this.resetContext(paramerters);
-//		try {
-//			String spaces = doListSpaces();
-//			System.out.println("*> " + spaces);
-//			return spaces;
-//		} finally {
-//			this.clearContext();
-//		}
-//	}
-	
-//	protected abstract String doListSpaces() throws Exception;
-//	
-//	@Override
-//	public String listJdbcTypes(Map<String, String> paramerters)
-//			throws Exception {
-//		this.resetContext(paramerters);
-//		try {
-//			String[] typeAry = getJdbcTypeNames();
-//			String types = StringUtils.join(typeAry, ",");
-//			System.out.println("*> " + types);
-//			return types;
-//		} finally {
-//			this.clearContext();
-//		}
-//	}
-	
-//	protected abstract String[] getJdbcTypeNames();
-
-//	@Override
-//	public String listKeyGenerators(Map<String, String> paramerters)
-//			throws Exception {
-//		this.resetContext(paramerters);
-//		try {
-//			String[] typeAry = getKeyGeneratorNames();
-//			String keyGenerators = StringUtils.join(typeAry, ",");
-//			System.out.println("*> " + keyGenerators);
-//			return keyGenerators;
-//		} finally {
-//			this.clearContext();
-//		}
-//	}
-	
-//	protected abstract String[] getKeyGeneratorNames();
 }

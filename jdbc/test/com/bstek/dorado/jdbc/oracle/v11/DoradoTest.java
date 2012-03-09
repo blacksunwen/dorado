@@ -27,7 +27,7 @@ public class DoradoTest extends AbstractOracle11JdbcTestCase {
 		String resolverName = "ora11.resolver.01";
 		JdbcDataResolver resolver = this.getResolver(resolverName);
 		{
-			List<JdbcDataResolverItem> items = resolver.getItems();
+			List<JdbcDataResolverItem> items = resolver.getResolverItems();
 			Assert.assertEquals(1, items.size());
 		}
 		

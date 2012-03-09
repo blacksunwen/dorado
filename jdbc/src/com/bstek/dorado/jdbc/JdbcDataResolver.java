@@ -11,8 +11,8 @@ import org.springframework.transaction.support.TransactionOperations;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
-import com.bstek.dorado.annotation.XmlNodeWrapper;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.data.entity.EntityUtils;
@@ -42,6 +42,16 @@ public class JdbcDataResolver extends AbstractDataResolver {
 	
 	private boolean autoCreateItems = false;
 	
+	@XmlProperty(parser="spring:dorado.jdbc.jdbcEnviromentParser")
+	@IdeProperty(enumValues="default")
+	public JdbcEnviroment getJdbcEnviroment() {
+		return jdbcEnviroment;
+	}
+
+	public void setJdbcEnviroment(JdbcEnviroment jdbcEnviroment) {
+		this.jdbcEnviroment = jdbcEnviroment;
+	}
+	
 	@XmlProperty(parser="spring:dorado.jdbc.platformTransactionManagerBeanPropertyParser")
 	public PlatformTransactionManager getTransactionManager() {
 		return transactionManager;
@@ -60,24 +70,15 @@ public class JdbcDataResolver extends AbstractDataResolver {
 		this.transactionDefinition = transactionDefinition;
 	}
 
-	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "Items", fixed = true))
-	public List<JdbcDataResolverItem> getItems() {
+	@XmlSubNode
+	public List<JdbcDataResolverItem> getResolverItems() {
 		return items;
 	}
 
-	public void setItems(List<JdbcDataResolverItem> items) {
+	public void setResolverItems(List<JdbcDataResolverItem> items) {
 		this.items = items;
 	}
 
-	@XmlProperty(parser="spring:dorado.jdbc.jdbcEnviromentParser")
-	public JdbcEnviroment getJdbcEnviroment() {
-		return jdbcEnviroment;
-	}
-
-	public void setJdbcEnviroment(JdbcEnviroment jdbcEnviroment) {
-		this.jdbcEnviroment = jdbcEnviroment;
-	}
-	
 	public boolean isAutoCreateItems() {
 		return autoCreateItems;
 	}
@@ -131,7 +132,7 @@ public class JdbcDataResolver extends AbstractDataResolver {
 	
 	protected List<JdbcDataResolverItem> getResolverItems(DataItems dataItems) {
 		if (!this.isAutoCreateItems()) {
-			List<JdbcDataResolverItem> items = this.getItems();
+			List<JdbcDataResolverItem> items = this.getResolverItems();
 			if (items == null || items.isEmpty()) {
 				return null;
 			} else {
@@ -143,7 +144,7 @@ public class JdbcDataResolver extends AbstractDataResolver {
 	}
 	
 	protected List<JdbcDataResolverItem> createResolverItems(DataItems dataItems) {
-		List<JdbcDataResolverItem> resolverItems = this.getItems();
+		List<JdbcDataResolverItem> resolverItems = this.getResolverItems();
 		if (resolverItems == null || resolverItems.isEmpty()) {
 			if (dataItems.isEmpty()) {
 				return null;

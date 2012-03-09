@@ -27,7 +27,6 @@ public class RetrieveCommand {
 	private static Log logger = LogFactory.getLog(RetrieveCommand.class);
 	
 	public void execute(JdbcRecordOperation operation) {
-		
 		Table table = operation.getTable();
 		JdbcEnviroment jdbcEnv = operation.getJdbcEnviroment();
 		Record record = operation.getRecord();
@@ -73,4 +72,5 @@ public class RetrieveCommand {
 		Record rRecord = rs.get(0);
 		record.putAll(rRecord);
 	}
+	
 }

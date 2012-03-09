@@ -24,11 +24,4 @@ public interface IAgent {
 	String listTables(Map<String, String> paramerters) throws Exception;
 	
 	String createColumns(Map<String, String> paramerters) throws Exception;
-	
-//	@Deprecated
-//	String listSpaces(Map<String, String> paramerters) throws Exception;
-//	@Deprecated
-//	String listJdbcTypes(Map<String, String> paramerters) throws Exception;
-//	@Deprecated
-//	String listKeyGenerators(Map<String, String> paramerters) throws Exception;
 }

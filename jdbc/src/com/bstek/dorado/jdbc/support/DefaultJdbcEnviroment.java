@@ -3,10 +3,11 @@ package com.bstek.dorado.jdbc.support;
 import javax.sql.DataSource;
 
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
-import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.util.Assert;
 
 /**
@@ -14,32 +15,32 @@ import com.bstek.dorado.util.Assert;
  * @author mark.li@bstek.com
  *
  */
-public class DefaultJdbcEnviroment extends AbstractJdbcEnviroment implements JdbcEnviroment {
+public class DefaultJdbcEnviroment extends AbstractJdbcEnviroment {
 
 	private DataSource dataSource;
 	private PlatformTransactionManager transactionManager;
 	private TransactionDefinition transactionDefinition;
-
+	private NamedParameterJdbcDaoSupport namedParameterJdbcDaoSupport;
+	
+	public DefaultJdbcEnviroment() {
+		transactionDefinition = new DefaultTransactionDefinition();
+	}
+	
 	public DataSource getDataSource() {
 		return dataSource;
 	}
 
 	public void setDataSource(DataSource dataSource) {
 		this.dataSource = dataSource;
-		this.namedParameterJdbcDaoSupport = null;
+		this.transactionManager = new DataSourceTransactionManager(this.dataSource);
+		
+		NamedParameterJdbcDaoSupport dao = new NamedParameterJdbcDaoSupport();
+		dao.setDataSource(getDataSource());
+		dao.afterPropertiesSet();
+		this.namedParameterJdbcDaoSupport = dao;
 	}
 
-	private NamedParameterJdbcDaoSupport namedParameterJdbcDaoSupport;
-
 	public NamedParameterJdbcDaoSupport getNamedDao() {
-		if (namedParameterJdbcDaoSupport == null) {
-			NamedParameterJdbcDaoSupport dao = new NamedParameterJdbcDaoSupport();
-			dao.setDataSource(getDataSource());
-			dao.afterPropertiesSet();
-
-			namedParameterJdbcDaoSupport = dao;
-		}
-
 		return namedParameterJdbcDaoSupport;
 	}
 	

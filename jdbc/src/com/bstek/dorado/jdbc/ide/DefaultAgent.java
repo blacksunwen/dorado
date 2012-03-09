@@ -330,43 +330,4 @@ public class DefaultAgent extends AbstractAgent {
 		}
 	}
 	
-	
-//	@Override
-//	protected String doListSpaces() throws SQLException {
-//		DatabaseMetaData dbmd = getDatabaseMetaData();
-//		ResultSet rs = null;
-//		String columnName = null;
-//		if (dbmd.supportsSchemasInDataManipulation()) {
-//			rs = dbmd.getSchemas(dbmd.getConnection().getCatalog(), null);
-//			columnName = "TABLE_SCHEM";
-//		} else {
-//			rs = dbmd.getCatalogs();
-//			columnName = "TABLE_CAT";
-//		}
-//		
-//		String spaces = "";
-//		int index = 0;
-//		while (rs.next()) {
-//			String space = rs.getString(columnName);
-//			index++;
-//			if (index > 1) {
-//				spaces += ",";
-//			}
-//			spaces += space;
-//		}
-//		
-//		return spaces;
-//	}
-//	
-//	@Override
-//	protected String[] getJdbcTypeNames() {
-//		return new String[]{"BIT-Boolean","BOOLEAN-Boolean","CHAR-Boolean","SMALLINT-Short","INTEGER-Integer","BIGINT-Long",
-//				"REAL-Float","FLOAT-Double","DOUBLE-Float","NUMERIC-BigDecimal","DECIMAL-BigDecimal","TINYINT-Byte",
-//				"DATE-Date","TIME-Date","TIMESTAMP-Date","CHAR-String","VARCHAR-String","LONGVARCHAR-String","CLOB-String"};
-//	}
-//
-//	@Override
-//	protected String[] getKeyGeneratorNames() {
-//		return new String[]{JdbcConstants.IDENTITY, "JDK-UUID", "SEQUENCE"};
-//	}
 }

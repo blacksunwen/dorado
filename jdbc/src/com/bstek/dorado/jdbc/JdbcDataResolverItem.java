@@ -11,7 +11,7 @@ import com.bstek.dorado.annotation.XmlSubNode;
  * @author mark.li@bstek.com
  *
  */
-@XmlNode(nodeName="Item")
+@XmlNode(nodeName="ResolverItem")
 public class JdbcDataResolverItem {
 
 	private String name;

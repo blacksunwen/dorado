@@ -190,20 +190,20 @@ public abstract class JdbcUtils {
 		}
 	}
 	
-	public static Object call(String spName, Object parameter) {
-		StoredProgram sp = null;
-		StoredProgramContext spContext = new StoredProgramContext(null, parameter);
-		StoredProgramOperation operation = new StoredProgramOperation(sp, spContext);
-		operation.execute();
-		
-		return spContext.getReturnValue();
-	}
-	
-	public static Object call(StoredProgram sp, Object parameter) {
-		StoredProgramContext spContext = new StoredProgramContext(null, parameter);
-		StoredProgramOperation operation = new StoredProgramOperation(sp, spContext);
-		operation.execute();
-		
-		return spContext.getReturnValue();
-	}
+//	public static Object call(String spName, Object parameter) {
+//		StoredProgram sp = null;
+//		StoredProgramContext spContext = new StoredProgramContext(null, parameter);
+//		StoredProgramOperation operation = new StoredProgramOperation(sp, spContext);
+//		operation.execute();
+//		
+//		return spContext.getReturnValue();
+//	}
+//	
+//	public static Object call(StoredProgram sp, Object parameter) {
+//		StoredProgramContext spContext = new StoredProgramContext(null, parameter);
+//		StoredProgramOperation operation = new StoredProgramOperation(sp, spContext);
+//		operation.execute();
+//		
+//		return spContext.getReturnValue();
+//	}
 }

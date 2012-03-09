@@ -32,7 +32,7 @@ public class DeleteCommand {
 		jdbcTemplate.update(sql, parameterSource);
 	}
 	
-	public DeleteSql deleteSql(JdbcRecordOperation operation) {
+	private DeleteSql deleteSql(JdbcRecordOperation operation) {
 		Dialect dialect = operation.getJdbcEnviroment().getDialect();
 		
 		Table table = (Table)operation.getDbTable();

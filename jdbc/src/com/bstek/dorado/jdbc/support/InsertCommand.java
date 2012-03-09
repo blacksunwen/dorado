@@ -70,7 +70,7 @@ public class InsertCommand {
 		}
 	}
 	
-	public InsertSql insertSql(JdbcRecordOperation operation) {
+	private InsertSql insertSql(JdbcRecordOperation operation) {
 		Dialect dialect = operation.getJdbcEnviroment().getDialect();
 		
 		Table table = (Table)operation.getDbTable();
@@ -138,7 +138,7 @@ public class InsertCommand {
 		return sql;
 	}
 	
-	protected void addColumnToken(InsertSql sql,
+	private void addColumnToken(InsertSql sql,
 			JdbcParameterSource parameterSource, TableColumn column,
 			String propertyName, Object value) {
 		String columnName = column.getName();
