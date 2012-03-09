@@ -958,9 +958,9 @@
 		},
 		
 		insert: function(data, insertMode, refData) {
-			if (this.entityList.mock) {
-				throw new dorado.ResourceException("dorado.data.CannotModifyMockEntityList");
-			}
+			// if (this.entityList.mock) {
+			//	throw new dorado.ResourceException("dorado.data.CannotModifyMockEntityList");
+			// }
 			
 			$invokeSuper.call(this, arguments);
 			data.page = this;
