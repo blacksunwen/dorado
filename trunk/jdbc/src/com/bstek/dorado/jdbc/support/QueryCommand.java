@@ -35,7 +35,7 @@ public class QueryCommand {
 	/**
 	 * 加载全部的记录
 	 */
-	protected void loadAllRecords(JdbcDataProviderOperation operation) {
+	private void loadAllRecords(JdbcDataProviderOperation operation) {
 		JdbcDataProviderContext jdbcContext = operation.getJdbcContext();
 		JdbcEnviroment env = operation.getJdbcEnviroment();
 		DbTable dbTable = operation.getDbTable();
@@ -58,7 +58,7 @@ public class QueryCommand {
 	/**
 	 * 加载当前分页的记录
 	 */
-	protected void loadPageRecord(JdbcDataProviderOperation operation) {
+	private void loadPageRecord(JdbcDataProviderOperation operation) {
 		JdbcDataProviderContext jdbcContext = operation.getJdbcContext();
 		Page<Record> page = jdbcContext.getPage();
 		JdbcEnviroment env = operation.getJdbcEnviroment();
