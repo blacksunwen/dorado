@@ -383,6 +383,10 @@
 			this._focusTime = new Date();
 			this._lastPost = this._lastObserve = this.doGetText();
 			
+			
+			this._editorFocused = true;
+			if (this._useBlankText) this.doSetText('');
+			
 			if (this._editObserverId) clearInterval(this._editObserverId);
 			this._editObserverId = $setInterval(this, function() {
 				var text = this.get("text");
@@ -402,7 +406,7 @@
 			}
 		},
 		
-		doOnBlur: function() {
+		doOnBlur: function() {			
 			this.resetReadOnly();
 			if (this._textDom.readOnly != this._realReadOnly) {
 				this._textDom.readOnly = this._realReadOnly;
@@ -412,6 +416,11 @@
 			if (this._editObserverId) clearInterval(this._editObserverId);
 			delete this._editObserverId;
 			this.post();
+			
+			this._editorFocused = false;
+			if (this._blankText) {
+				this.doSetText(this.doGetText());
+			}
 		},
 		
 		resetReadOnly: function() {
@@ -717,6 +726,14 @@
 			if (this._textDom) {
 				if (this._useBlankText) text = this._blankText;
 				$fly(this._textDom).toggleClass("blank-text", !!this._useBlankText);
+				if (this._useBlankText && this._textDom.type == "password") {
+					this._textDom.type = "";
+					this._isPassword = true;
+				}
+				else if (!this._useBlankText && this._isPassword) {
+					this._textDom.type = "password";
+					delete this._isPassword;
+				}
 				this._textDom.value = text || '';
 			} else {
 				this._text = text;
@@ -1074,11 +1091,7 @@
 				var dataType = this.get("dataType");
 				if (dataType && this._validationState != "error") {
 					var text = dataType.toText(this.get("value"), this._typeFormat);
-					this._editorFocused = true;
 					this.doSetText(text);
-				} else {
-					this._editorFocused = true;
-					if (this._useBlankText) this.doSetText('');
 				}
 			}
 			
@@ -1097,7 +1110,6 @@
 					var text, dataType = this.get("dataType");
 					if (dataType && this._validationState != "error") {
 						text = dataType.toText(this.get("value"), this._displayFormat);
-						this._editorFocused = false;
 					} else {
 						text = this._text;
 					}
@@ -1130,8 +1142,6 @@
 			return b;
 		}
 	});
-	
-	
 	
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
