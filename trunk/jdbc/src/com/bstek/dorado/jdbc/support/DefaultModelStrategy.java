@@ -13,6 +13,7 @@ import com.bstek.dorado.data.config.definition.PropertyDefDefinition;
 import com.bstek.dorado.data.provider.manager.DataProviderManager;
 import com.bstek.dorado.data.type.DefaultEntityDataType;
 import com.bstek.dorado.data.type.manager.DataTypeManager;
+import com.bstek.dorado.jdbc.JdbcDataProvider;
 import com.bstek.dorado.jdbc.ModelStrategy;
 import com.bstek.dorado.jdbc.config.AbstractDbTableDefinition;
 import com.bstek.dorado.jdbc.config.JdbcCreationContext;
@@ -78,8 +79,8 @@ public class DefaultModelStrategy implements ModelStrategy {
 			def = createDataProviderDifinition(tableDef);
 			def.setName(name);
 			def.setGlobal(true);
-			def.setProperty("type", "jdbc");
 			def.setProperty(XmlConstants.TABLE_NAME, name);
+			def.setImpl(JdbcDataProvider.class.getName());
 			manager.registerDefinition(name, def);
 			
 			if (logger.isInfoEnabled()) {
