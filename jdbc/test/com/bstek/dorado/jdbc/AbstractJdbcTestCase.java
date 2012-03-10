@@ -45,10 +45,10 @@ public abstract class AbstractJdbcTestCase extends ConfigManagerTestSupport {
 		
 		Collection<Record> query(Object parameter) {
 			JdbcDataProviderContext jCtx = new JdbcDataProviderContext(null, parameter);
-			DbTable table = JdbcUtils.getDbTable(getTableName());
+			DbTable table = JdbcOperationUtils.getDbTable(getTableName());
 			JdbcDataProviderOperation operation = new JdbcDataProviderOperation(table, jCtx);
 			
-			return JdbcUtils.query(operation);
+			return JdbcOperationUtils.query(operation);
 		}
 	}
 	

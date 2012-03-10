@@ -5,23 +5,17 @@
 	</DataProvider>
 	
 	<DataResolver name="ora11.resolver.01" type="jdbc">
-		<Items>
-			<Item name="employee" tableName="EMPLOYEE"/>
-		</Items>
+		<ResolverItem name="employee" tableName="EMPLOYEE"/>
 	</DataResolver>
 	<DataResolver name="ora11.resolver.02" type="jdbc">
-		<Items>
-			<Item name="dept" tableName="DEPT">
-				<Item name="employee" tableName="EMPLOYEE" parentKeyProperties="DEPT_ID" foreignKeyProperties="DEPT_ID"/>
-			</Item>
-		</Items>
+		<ResolverItem name="dept" tableName="DEPT">
+			<ResolverItem name="employee" tableName="EMPLOYEE" parentKeyProperties="DEPT_ID" foreignKeyProperties="DEPT_ID"/>
+		</ResolverItem>
 	</DataResolver>
 	
 	<DataResolver name="ora11.resolver.03" type="jdbc" transactionManager="spring:transactionManager">
-		<Items>
-			<Item name="dept" tableName="DEPT">
-				<Item name="employee" tableName="EMPLOYEE" parentKeyProperties="DEPT_ID" foreignKeyProperties="DEPT_ID"/>
-			</Item>
-		</Items>
+		<ResolverItem name="dept" tableName="DEPT">
+			<ResolverItem name="employee" tableName="EMPLOYEE" parentKeyProperties="DEPT_ID" foreignKeyProperties="DEPT_ID"/>
+		</ResolverItem>
 	</DataResolver>
 </Model>

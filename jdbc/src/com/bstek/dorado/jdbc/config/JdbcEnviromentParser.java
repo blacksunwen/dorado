@@ -5,7 +5,6 @@ import org.w3c.dom.Node;
 
 import com.bstek.dorado.config.ParseContext;
 import com.bstek.dorado.config.xml.PropertyParser;
-import com.bstek.dorado.jdbc.JdbcUtils;
 
 /**
  * {@link com.bstek.dorado.jdbc.JdbcEnviroment}的解析器
@@ -15,14 +14,20 @@ import com.bstek.dorado.jdbc.JdbcUtils;
  */
 public class JdbcEnviromentParser extends PropertyParser {
 	
+	private JdbcEnviromentManager enviromentManager;
+	
+	public void setEnviromentManager(JdbcEnviromentManager enviromentManager) {
+		this.enviromentManager = enviromentManager;
+	}
+
 	@Override
 	protected Object doParse(Node node, ParseContext context) throws Exception {
 		String name = (String)super.doParse(node, context);
 		if (StringUtils.isNotEmpty(name)) {
 			if ("default".equals(name)) {
-				return JdbcUtils.getEnviromentManager().getDefault();
+				return enviromentManager.getDefault();
 			} else {
-				return JdbcUtils.getEnviromentManager().getEnviroment(name);
+				return enviromentManager.getEnviroment(name);
 			}
 		} else {
 			return null;

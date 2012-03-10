@@ -20,14 +20,13 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import com.bstek.dorado.jdbc.JdbcEnviroment;
+import com.bstek.dorado.jdbc.JdbcOperationUtils;
 import com.bstek.dorado.jdbc.JdbcTypeManager;
 import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.config.DomHelper;
 import com.bstek.dorado.jdbc.ide.Constants;
-import com.bstek.dorado.jdbc.ide.IAgent;
 import com.bstek.dorado.jdbc.meta.SqlTableMetaDataGenerator;
 import com.bstek.dorado.jdbc.model.table.Table;
-import com.bstek.dorado.jdbc.type.JdbcType;
 import com.bstek.dorado.util.xml.DomUtils;
 
 /**
@@ -40,12 +39,6 @@ public class DefaultSqlTableMetaDataGenerator implements
 
 	private JdbcTypeManager jdbcTypeManager;
 	
-	private IAgent agent;
-	
-	public void setAgent(IAgent agent) {
-		this.agent = agent;
-	}
-
 	public JdbcTypeManager getJdbcTypeManager() {
 		return jdbcTypeManager;
 	}
@@ -166,7 +159,7 @@ public class DefaultSqlTableMetaDataGenerator implements
 		
 		if (StringUtils.isNotEmpty(mainTable)) {
 			try {
-				Table table = (Table)JdbcUtils.getDbTable(mainTable);
+				Table table = (Table)JdbcOperationUtils.getDbTable(mainTable);
 				mainTable = table.getTableName();
 			} catch (Exception e) {
 				mainTable = null;

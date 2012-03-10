@@ -1,7 +1,7 @@
 package com.bstek.dorado.jdbc.model.autotable;
 
 import com.bstek.dorado.annotation.XmlNode;
-import com.bstek.dorado.jdbc.JdbcUtils;
+import com.bstek.dorado.jdbc.JdbcOperationUtils;
 import com.bstek.dorado.jdbc.model.table.Table;
 import com.bstek.dorado.util.Assert;
 
@@ -39,7 +39,7 @@ public class FromTable {
 			String tableName = this.getTable();
 			Assert.notEmpty(tableName, "table must not be null. [" + name + "]");
 			
-			table = (Table)JdbcUtils.getDbTable(tableName);
+			table = (Table)JdbcOperationUtils.getDbTable(tableName);
 		}
 		
 		return table;

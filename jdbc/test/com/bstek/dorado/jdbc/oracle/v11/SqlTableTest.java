@@ -14,14 +14,14 @@ import com.bstek.dorado.jdbc.JdbcDataResolverContext;
 import com.bstek.dorado.jdbc.JdbcDataResolverItem;
 import com.bstek.dorado.jdbc.JdbcDataResolverOperation;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
-import com.bstek.dorado.jdbc.JdbcUtils;
+import com.bstek.dorado.jdbc.JdbcOperationUtils;
 import com.bstek.dorado.jdbc.TestJdbcUtils;
 
 public class SqlTableTest  extends AbstractOracle11JdbcTestCase {
 
 	public void testSqlDept() {
 		String tableName = "sql_dept";
-		Collection<Record> depts = JdbcUtils.query(tableName, null);
+		Collection<Record> depts = JdbcOperationUtils.query(tableName, null);
 		
 		Assert.assertTrue(depts.size() > 0);
 		{
@@ -31,7 +31,7 @@ public class SqlTableTest  extends AbstractOracle11JdbcTestCase {
 			Record dept2 = Dept.random();
 			dept2.put("DEPT_ID", id);
 			
-			JdbcUtils.update(tableName, dept2);
+			JdbcOperationUtils.update(tableName, dept2);
 			
 			Record dept3 = Dept.get(id);
 			TestJdbcUtils.assertEquals(dept2, dept3);
@@ -40,7 +40,7 @@ public class SqlTableTest  extends AbstractOracle11JdbcTestCase {
 	
 	public void testSqlDeptResolver() throws Exception {
 		String tableName = "sql_dept";
-		Collection<Record> depts = JdbcUtils.query(tableName, null);
+		Collection<Record> depts = JdbcOperationUtils.query(tableName, null);
 		
 		Assert.assertTrue(depts.size() > 0);
 		{

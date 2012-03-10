@@ -12,7 +12,7 @@ import org.w3c.dom.Element;
 import com.bstek.dorado.config.xml.XmlConstants;
 import com.bstek.dorado.data.config.xml.DataXmlConstants;
 import com.bstek.dorado.data.type.DataType;
-import com.bstek.dorado.jdbc.JdbcUtils;
+import com.bstek.dorado.jdbc.JdbcOperationUtils;
 import com.bstek.dorado.jdbc.config.DomHelper;
 import com.bstek.dorado.jdbc.meta.DataTypeMetaDataGenerator;
 import com.bstek.dorado.jdbc.model.AbstractDbColumn;
@@ -29,7 +29,7 @@ public class DefaultDataTypeMetaDataGenerator implements DataTypeMetaDataGenerat
 		
 		rootElement.setAttribute(XmlConstants.ATTRIBUTE_NAME, tableName);
 		
-		DbTable table = JdbcUtils.getDbTable(tableName);
+		DbTable table = JdbcOperationUtils.getDbTable(tableName);
 		List<AbstractDbColumn> columns = table.getAllColumns();
 		for (AbstractDbColumn column: columns) {
 			Element propertyDef = createPropertyDefElement(column, document);
@@ -51,7 +51,7 @@ public class DefaultDataTypeMetaDataGenerator implements DataTypeMetaDataGenerat
 			propertyNameSet.add(propertyName);
 		}
 		
-		DbTable table = JdbcUtils.getDbTable(tableName);
+		DbTable table = JdbcOperationUtils.getDbTable(tableName);
 		List<AbstractDbColumn> columns = table.getAllColumns();
 		for (AbstractDbColumn column: columns) {
 			Element propertyDef = createPropertyDefElement(column, document);
