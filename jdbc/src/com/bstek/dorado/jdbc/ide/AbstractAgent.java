@@ -58,7 +58,6 @@ public abstract class AbstractAgent implements IAgent {
 	
 	protected abstract String doListTables() throws Exception;
 
-
 	@Override
 	public String createColumns(Map<String, String> paramerters)
 			throws Exception {
@@ -232,4 +231,32 @@ public abstract class AbstractAgent implements IAgent {
 		}
 	}
 	
+	protected interface ResultSetCallback<T> {
+		T call(ResultSet rs) throws Exception;
+	}
+	
+	protected <T>T doCall(ResultSet rs, ResultSetCallback<T> callback) throws Exception {
+		try {
+			return callback.call(rs);
+		} finally {
+			close(rs);
+		}
+	}
+	
+	protected <T>T doCall(String querySql, ResultSetCallback<T> callback) throws Exception {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		try {
+			conn = this.getDataSource().getConnection();
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(querySql);
+			
+			return callback.call(rs);
+		} finally {
+			close(rs);
+			close(stmt);
+			close(conn);
+		}
+	}
 }

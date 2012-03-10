@@ -1,10 +1,8 @@
 package com.bstek.dorado.jdbc.ide;
 
-import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,8 +30,7 @@ public class DefaultAgent extends AbstractAgent {
 
 	@Override
 	protected String doListTables() throws Exception {
-		DatabaseMetaData dbmd = getDatabaseMetaData();
-		ResultSet rs = null;
+		final DatabaseMetaData dbmd = getDatabaseMetaData();
 		String catalog = null;
 		String schemaPattern = null;
 		String tableNamePattern = null;
@@ -62,25 +59,31 @@ public class DefaultAgent extends AbstractAgent {
 			}
 		}
 		
-		rs = dbmd.getTables(catalog, schemaPattern, tableNamePattern, types);
-		Document document = newDocument();
-		Element tables = (Element) document.appendChild(document.createElement("Tables"));
-		while (rs.next()) {
-			Element table = (Element) tables.appendChild(document.createElement("Table"));
-			String tn = rs.getString("TABLE_NAME");
-			String tc = rs.getString("TABLE_CAT");
-			String ts = rs.getString("TABLE_SCHEM");
-			
-			table.setAttribute("name", tn);
-			table.setAttribute(XmlConstants.TABLE_NAME, tn);
-			if (dbmd.supportsSchemasInDataManipulation()) {
-				table.setAttribute(XmlConstants.NAME_SPACE, ts);
-			} else {
-				table.setAttribute(XmlConstants.NAME_SPACE, tc);
-			}
-		}
+		final Document document = newDocument();
+		final Element tables = (Element) document.appendChild(document.createElement("Tables"));
 		
-		return toString(document);
+		return doCall(dbmd.getTables(catalog, schemaPattern, tableNamePattern, types), new ResultSetCallback<String>(){
+
+			@Override
+			public String call(ResultSet rs) throws Exception {
+				while (rs.next()) {
+					Element table = (Element) tables.appendChild(document.createElement("Table"));
+					String tn = rs.getString("TABLE_NAME");
+					String tc = rs.getString("TABLE_CAT");
+					String ts = rs.getString("TABLE_SCHEM");
+					
+					table.setAttribute("name", tn);
+					table.setAttribute(XmlConstants.TABLE_NAME, tn);
+					if (dbmd.supportsSchemasInDataManipulation()) {
+						table.setAttribute(XmlConstants.NAME_SPACE, ts);
+					} else {
+						table.setAttribute(XmlConstants.NAME_SPACE, tc);
+					}
+				}
+				
+				return AbstractAgent.toString(document);
+			}
+		});
 	}
 
 	@Override
@@ -115,12 +118,28 @@ public class DefaultAgent extends AbstractAgent {
 			}
 		}
 		
-		ResultSet tableRs = dbmd.getTables(catalog, schema, tableName, null);
-		if (!tableRs.next()) {
-			throw new IllegalArgumentException("No table be found. [" + catalog +"," + schema + "," + tableName);
-		}
-		if (tableRs.next()) {
-			throw new IllegalArgumentException("More than one table be found. [" + catalog +"," + schema + "," + tableName);
+		{
+			List<String> tables = doCall(dbmd.getTables(catalog, schema, tableName, null), new ResultSetCallback<List<String>>() {
+
+				@Override
+				public List<String> call(ResultSet rs) throws Exception {
+					List<String> tables = new ArrayList<String>();
+					while (rs.next()) {
+						tables.add("[" + rs.getString("TABLE_CAT") + "," + rs.getString("TABLE_SCHEM") + "," + rs.getString("TABLE_NAME") + "]");
+					}
+					
+					return tables;
+				}
+				
+			});
+			
+			if (tables.size() == 0) {
+				throw new IllegalArgumentException("No table be found. [" + catalog +"," + schema + "," + tableName + "]");
+			}
+			if (tables.size() > 1) {
+				throw new IllegalArgumentException("More than one table be found. [" + catalog +"," + schema + "," + tableName + "] ==> " +
+						StringUtils.join(tables.toArray()));
+			}
 		}
 		
 		Element tableElement = document.getDocumentElement();
@@ -137,48 +156,53 @@ public class DefaultAgent extends AbstractAgent {
 			columnNameSet.add(columnName);
 		}
 		
-		ResultSet columnRs = dbmd.getPrimaryKeys(catalog, schema, tableName);
-		List<String> primaryKeys = new ArrayList<String>();
-		try {
-			while(columnRs.next()) {
-				primaryKeys.add(columnRs.getString("COLUMN_NAME"));
+		final List<String> primaryKeys = doCall(dbmd.getPrimaryKeys(catalog, schema, tableName), new ResultSetCallback<List<String>>(){
+
+			@Override
+			public List<String> call(ResultSet rs) throws Exception {
+				List<String> primaryKeys = new ArrayList<String>();
+				while(rs.next()) {
+					primaryKeys.add(rs.getString("COLUMN_NAME"));
+				}
+				return primaryKeys;
 			}
-		} finally {
-			columnRs.close();
-		}
+			
+		});
 		
-		columnRs = dbmd.getColumns(catalog, schema, tableName, null);
-		ResultSetMetaData rsmd = columnRs.getMetaData();
-		List<Map<String, String>> keyColumns = new ArrayList<Map<String, String>>(primaryKeys.size());
-		List<Map<String, String>> commonColumns = new ArrayList<Map<String, String>>();
+		final List<Map<String, String>> keyColumns = new ArrayList<Map<String, String>>(primaryKeys.size());
+		final List<Map<String, String>> commonColumns = new ArrayList<Map<String, String>>();
 		
-		try {
-			while (columnRs.next()) {
-				Map<String,String> columnMeta = new LinkedCaseInsensitiveMap<String>();
-				for (int i=1,j=rsmd.getColumnCount(); i<=j; i++) {
-					String key = JdbcUtils.lookupColumnName(rsmd, i);
-					String value = columnRs.getString(i);
-					columnMeta.put(key, value);
+		doCall(dbmd.getColumns(catalog, schema, tableName, null), new ResultSetCallback<String>(){
+
+			@Override
+			public String call(ResultSet rs) throws Exception {
+				ResultSetMetaData rsmd = rs.getMetaData();
+				while (rs.next()) {
+					Map<String,String> columnMeta = new LinkedCaseInsensitiveMap<String>();
+					for (int i=1,j=rsmd.getColumnCount(); i<=j; i++) {
+						String key = JdbcUtils.lookupColumnName(rsmd, i);
+						String value = rs.getString(i);
+						columnMeta.put(key, value);
+					}
+					
+					String columnName = columnMeta.get("COLUMN_NAME");
+					String jdbcTypeName = getJdbcTypeName(columnMeta);
+					
+					Map<String,String> column = new HashMap<String,String>();
+					column.put("name", columnName);
+					if (StringUtils.isNotEmpty(jdbcTypeName)) {
+						column.put("jdbcType", jdbcTypeName);
+					}
+					
+					if (primaryKeys.contains(columnName)) {
+						keyColumns.add(column);
+					} else {
+						commonColumns.add(column);
+					}
 				}
-				
-				String columnName = columnMeta.get("COLUMN_NAME");
-				String jdbcTypeName = getJdbcTypeName(columnMeta);
-				
-				Map<String,String> column = new HashMap<String,String>();
-				column.put("name", columnName);
-				if (StringUtils.isNotEmpty(jdbcTypeName)) {
-					column.put("jdbcType", jdbcTypeName);
-				}
-				
-				if (primaryKeys.contains(columnName)) {
-					keyColumns.add(column);
-				} else {
-					commonColumns.add(column);
-				}
-			}
-		} finally {
-			columnRs.close();
-		}
+				return null;
+			}}
+		);
 		
 		for (Map<String, String> keyColumn: keyColumns) {
 			String columnName = keyColumn.get("name");
@@ -201,7 +225,10 @@ public class DefaultAgent extends AbstractAgent {
 				element.setAttribute("name", columnName);
 				String jdbcTypeName = commonColumn.get("jdbcType");
 				if (StringUtils.isNotEmpty(jdbcTypeName)) {
-					element.setAttribute("jdbcType", jdbcTypeName);
+					Element jdbcTypeElement = document.createElement(com.bstek.dorado.config.xml.XmlConstants.PROPERTY);
+					jdbcTypeElement.setAttribute(com.bstek.dorado.config.xml.XmlConstants.ATTRIBUTE_NAME, "jdbcType");
+					jdbcTypeElement.setTextContent(jdbcTypeName);
+					element.appendChild(jdbcTypeElement);
 				}
 				
 				columnsElement.appendChild(element);
@@ -229,34 +256,28 @@ public class DefaultAgent extends AbstractAgent {
 		}
 		
 		String querySql = this.getParamerters().get(IAgent.QUERY_SQL);
-		Connection conn = null;
-		Statement stmt = null;
-		ResultSet rs = null;
-		ResultSetMetaData rsmd = null;
-		
-		List<Map<String, String>> commonColumns = new ArrayList<Map<String, String>>();
-		try {
-			conn = this.getDataSource().getConnection();
-			stmt = conn.createStatement();
-			rs = stmt.executeQuery(querySql);
-			rsmd = rs.getMetaData();
-			
-			for (int i=1,j=rsmd.getColumnCount(); i<=j; i++) {
-				Map<String,String> columnMeta = new HashMap<String,String>(4);
-				
-				columnMeta.put(JdbcConstants.DATA_TYPE,    String.valueOf(rsmd.getColumnType(i)));
-				columnMeta.put(JdbcConstants.TYPE_NAME,    rsmd.getColumnTypeName(i));
-				columnMeta.put(JdbcConstants.COLUMN_LABEL, rsmd.getColumnLabel(i));
-				columnMeta.put(JdbcConstants.COLUMN_NAME,  rsmd.getColumnName(i));
-				columnMeta.put(JdbcConstants.TABLE_NAME,   rsmd.getTableName(i));
-				
-				commonColumns.add(columnMeta);
+		List<Map<String, String>> commonColumns = doCall(querySql, new ResultSetCallback<List<Map<String, String>>>(){
+
+			@Override
+			public List<Map<String, String>> call(ResultSet rs)
+					throws Exception {
+				List<Map<String, String>> commonColumns = new ArrayList<Map<String, String>>();
+				ResultSetMetaData rsmd = rs.getMetaData();
+				for (int i=1,j=rsmd.getColumnCount(); i<=j; i++) {
+					Map<String,String> columnMeta = new HashMap<String,String>(4);
+					
+					columnMeta.put(JdbcConstants.DATA_TYPE,    String.valueOf(rsmd.getColumnType(i)));
+					columnMeta.put(JdbcConstants.TYPE_NAME,    rsmd.getColumnTypeName(i));
+					columnMeta.put(JdbcConstants.COLUMN_LABEL, rsmd.getColumnLabel(i));
+					columnMeta.put(JdbcConstants.COLUMN_NAME,  rsmd.getColumnName(i));
+					columnMeta.put(JdbcConstants.TABLE_NAME,   rsmd.getTableName(i));
+					
+					commonColumns.add(columnMeta);
+				}
+				return commonColumns;
 			}
-		} finally {
-			close(rs);
-			close(stmt);
-			close(conn);
-		}
+			
+		});
 		
 		for (Map<String, String> commonColumn: commonColumns) {
 			String columnName = commonColumn.get(JdbcConstants.COLUMN_NAME);
@@ -270,7 +291,10 @@ public class DefaultAgent extends AbstractAgent {
 				String jdbcTypeName = getJdbcTypeName(commonColumn);
 				
 				if (StringUtils.isNotEmpty(jdbcTypeName)) {
-					element.setAttribute("jdbcType", jdbcTypeName);
+					Element jdbcTypeElement = document.createElement(com.bstek.dorado.config.xml.XmlConstants.PROPERTY);
+					jdbcTypeElement.setAttribute(com.bstek.dorado.config.xml.XmlConstants.ATTRIBUTE_NAME, "jdbcType");
+					jdbcTypeElement.setTextContent(jdbcTypeName);
+					element.appendChild(jdbcTypeElement);
 				}
 				
 				columnsElement.appendChild(element);

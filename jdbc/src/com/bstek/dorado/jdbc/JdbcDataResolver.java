@@ -18,6 +18,7 @@ import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.data.entity.EntityUtils;
 import com.bstek.dorado.data.resolver.AbstractDataResolver;
 import com.bstek.dorado.data.resolver.DataItems;
+import com.bstek.dorado.data.type.AggregationDataType;
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.data.type.EntityDataType;
 
@@ -205,7 +206,8 @@ public class JdbcDataResolver extends AbstractDataResolver {
 	
 	protected DataType getDataType(Object dataObject) {
 		if (dataObject instanceof Collection) {
-			return EntityUtils.getDataType((Collection<?>) dataObject).getElementDataType(); 
+			AggregationDataType collectionType = EntityUtils.getDataType((Collection<?>) dataObject);
+			return collectionType.getElementDataType(); 
 		} else {
 			return EntityUtils.getDataType(dataObject);
 		}
