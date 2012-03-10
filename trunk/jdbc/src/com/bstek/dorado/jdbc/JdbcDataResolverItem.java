@@ -24,7 +24,7 @@ public class JdbcDataResolverItem {
 	
 	private String recursiveProperty;
 	
-	private List<JdbcDataResolverItem> items = new ArrayList<JdbcDataResolverItem>(5);
+	private List<JdbcDataResolverItem> resolverItems = new ArrayList<JdbcDataResolverItem>(5);
 	
 	public JdbcDataResolverItem clone() {
 		JdbcDataResolverItem cloned = new JdbcDataResolverItem();
@@ -34,8 +34,8 @@ public class JdbcDataResolverItem {
 		cloned.setParentKeyProperties(parentKeyProperties);
 		cloned.setRecursiveProperty(recursiveProperty);
 		
-		for (JdbcDataResolverItem item: items) {
-			cloned.getItems().add(item.clone());
+		for (JdbcDataResolverItem item: resolverItems) {
+			cloned.getResolverItems().add(item.clone());
 		}
 		return cloned;
 	}
@@ -81,7 +81,12 @@ public class JdbcDataResolverItem {
 	}
 
 	@XmlSubNode
-	public List<JdbcDataResolverItem> getItems() {
-		return this.items;
+	public List<JdbcDataResolverItem> getResolverItems() {
+		return this.resolverItems;
 	}
+
+	public void setResolverItems(List<JdbcDataResolverItem> resolverItems) {
+		this.resolverItems = resolverItems;
+	}
+	
 }

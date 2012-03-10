@@ -14,10 +14,10 @@ import com.bstek.dorado.data.entity.EntityUtils;
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.JdbcDataProviderOperation;
 import com.bstek.dorado.jdbc.JdbcDataResolverContext;
+import com.bstek.dorado.jdbc.JdbcOperationUtils;
 import com.bstek.dorado.jdbc.JdbcParameterSource;
 import com.bstek.dorado.jdbc.JdbcRecordOperation;
 import com.bstek.dorado.jdbc.JdbcRecordOperationProxy;
-import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.model.AbstractDbColumn;
 import com.bstek.dorado.jdbc.model.AbstractTable;
 import com.bstek.dorado.jdbc.model.AbstractUpdatableColumn;
@@ -89,7 +89,7 @@ public class SqlTable extends AbstractTable {
 	@Override
 	public Table getResolverTable() {
 		if (mainTable == null && StringUtils.isNotEmpty(mainTableName)) {
-			mainTable = (Table)JdbcUtils.getDbTable(mainTableName);
+			mainTable = (Table)JdbcOperationUtils.getDbTable(mainTableName);
 		}
 		return mainTable;
 	}

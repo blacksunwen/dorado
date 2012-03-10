@@ -126,11 +126,11 @@ public class JdbcDataResolverOperation {
 		} 
 		
 		String tableName = resolverItem.getTableName();
-		DbTable dbTable = JdbcUtils.getDbTable(tableName);
-		JdbcUtils.doSave(dbTable, record, jdbcContext);
+		DbTable dbTable = JdbcOperationUtils.getDbTable(tableName);
+		JdbcOperationUtils.doSave(dbTable, record, jdbcContext);
 		
 		if (!EntityState.DELETED.equals(EntityUtils.getState(record))) {
-			List<JdbcDataResolverItem> items = resolverItem.getItems();
+			List<JdbcDataResolverItem> items = resolverItem.getResolverItems();
 			
 			if (StringUtils.isNotEmpty(resolverItem.getRecursiveProperty())){
 				List<JdbcDataResolverItem> items2 = new ArrayList<JdbcDataResolverItem>(items.size() + 1);
