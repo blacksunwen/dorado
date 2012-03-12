@@ -290,6 +290,15 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 
 			this.state = state;
 			this.timestamp = dorado.Core.getTimestamp();
+			
+			if (this.parent && this.parent instanceof dorado.EntityList) {
+				if (eventArg.oldState == dorado.Entity.STATE_DELETED) {
+					this.parent.changeEntityCount(page, 1);
+				}
+				else if (eventArg.newState == dorado.Entity.STATE_DELETED) {
+					this.parent.changeEntityCount(page, -1);
+				}
+			}
 
 			if (dataType && !this.disableEvents) dataType.fireEvent("onStateChange", dataType, eventArg);
 			this.sendMessage(dorado.Entity._MESSAGE_ENTITY_STATE_CHANGED, eventArg);

@@ -527,6 +527,11 @@
 			this.gotoPage(this.pageCount, callback);
 		},
 		
+		changeEntityCount: function(page, num) {
+			page.entityCount += num;
+			this.entityCount += num;
+		},
+		
 		/**
 		 * 向集合中插入一个数据实体。
 		 * @param {dorado.Entity|Object} entity {optional} 要插入的数据实体或数据实体对应的JSON数据对象。
@@ -572,9 +577,8 @@
 			if (this.pageCount == 0 && this.pageNo == 1) this.pageCount = 1;
 			var page = this.getPage(this.pageNo, true);
 			page.insert(entity, insertMode, refEntity);
+			if (entity.state != dorado.Entity.STATE_DELETED) this.changeEntityCount(page, 1);
 			if (entity.state != dorado.Entity.STATE_MOVED) entity.setState(dorado.Entity.STATE_NEW);
-			page.entityCount++;
-			this.entityCount++;
 			this.timestamp = dorado.Core.getTimestamp();
 			
 			if (dataType) dataType.fireEvent("onInsert", dataType, eventArg);
@@ -623,18 +627,20 @@
 			if (simpleDetach) {
 				detach = true;
 			} else {
-				page.entityCount--;
-				this.entityCount--;
 				detach = detach || entity.state == dorado.Entity.STATE_NEW;
 				entity.setState(dorado.Entity.STATE_DELETED);
 			}
+			if (detach) {
+				page.remove(entity);
+				if (entity.state != dorado.Entity.STATE_DELETED) this.changeEntityCount(page, -1);
+			}
+			
 			this.timestamp = dorado.Core.getTimestamp();
 			
 			if (!simpleDetach) {
 				if (dataType) dataType.fireEvent("onRemove", dataType, eventArg);
 				this.sendMessage(dorado.EntityList._MESSAGE_DELETED, eventArg);
 			}
-			if (detach) page.remove(entity);
 			
 			if (isCurrent) this.setCurrent(newCurrent);
 		},
@@ -1200,7 +1206,7 @@
 	
 	LoadPagePipe = $extend(dorado.DataPipe, {
 		shouldFireEvent: false,
-	
+		
 		constructor: function(entityList, pageNo) {
 			this.entityList = entityList;
 			var dataType = entityList.dataType, view;
