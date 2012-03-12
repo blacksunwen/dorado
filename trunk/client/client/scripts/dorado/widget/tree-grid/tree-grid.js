@@ -642,7 +642,6 @@
 				setter: function(currentNode) {
 					if (this._currentNode == currentNode) return;
 					this._currentNode = currentNode;
-					if (this._selectionMode == "singleRow") this.replaceSelection(null, currentNode);
 					
 					// 确保先让fixedInnerGrid执行刷新动作，以便于更高效的完成与innerGrid之间的行高同步
 					if (this._rendered && this._itemDomMap) {

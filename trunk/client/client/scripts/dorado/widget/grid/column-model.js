@@ -2113,10 +2113,14 @@
 					}
 				}
 			} else if (selectionMode == "singleRow") {
-				checkbox = this.checkboxMap[itemModel.getItemId(removed)];
-				if (checkbox) checkbox.set("checked", false);
-				checkbox = this.checkboxMap[itemModel.getItemId(added)];
-				if (checkbox) checkbox.set("checked", true);
+				if (removed) {
+					checkbox = this.checkboxMap[itemModel.getItemId(removed)];
+					if (checkbox) checkbox.set("checked", false);
+				}
+				if (added) {
+					checkbox = this.checkboxMap[itemModel.getItemId(added)];
+					if (checkbox) checkbox.set("checked", true);
+				}
 			}
 		},
 		
@@ -2153,7 +2157,7 @@
 				config.checked = (selection && selection.indexOf(data) >= 0);
 				config.readOnly = false;
 			} else if (selectionMode == "singleRow") {
-				config.checked = (arg.data == selection);
+				config.checked = (data == selection);
 				config.readOnly = false;
 			} else {
 				config.checked = false;

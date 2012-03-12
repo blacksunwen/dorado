@@ -1702,7 +1702,7 @@
 					}, true);
 					column = this._columnsInfo.idMap[cell.colId];
 
-					if (this._currentColumn == column) {
+					if (this._currentColumn == column && column) {
 						this.showColumnEditor(column);
 					} else {
 						this.setCurrentColumn(column);
@@ -1807,12 +1807,12 @@
 				var eventArg = {
 					data: entity,
 					column: column,
-					editorHolder: cellEditor
+					cellEditor: cellEditor
 				};
 				column.fireEvent("onGetCellEditor", column, eventArg);
 				this.fireEvent("onGetCellEditor", this, eventArg);
 				
-				cellEditor = eventArg.editorHolder;
+				cellEditor = eventArg.cellEditor;
 				if (cellEditor && cellEditor.cachable) cellEditorCache[column._id] = cellEditor;
 				
 				if (cellEditor) cellEditor.data = entity;
