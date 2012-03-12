@@ -1541,6 +1541,7 @@
 			var dt = column.get("dataType"), dtCode = dt ? dt._code : -1;
 			var trigger = column.get("trigger"), displayFormat = column.get("displayFormat"), typeFormat = column.get("typeFormat");
 			var pd = column._propertyDef;
+			
 			if (!trigger) {
 				if (pd && pd._mapping) {
 					trigger = new dorado.widget.AutoMappingDropDown({
@@ -1564,6 +1565,8 @@
 					editor = new dorado.widget.TextEditor();
 				}
 			}
+			
+			if (trigger) editor.set("trigger", trigger);
 			return editor;
 		},
 		
