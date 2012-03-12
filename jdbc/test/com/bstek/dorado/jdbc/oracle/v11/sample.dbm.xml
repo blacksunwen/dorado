@@ -214,4 +214,32 @@
 <!-- 			<Order column="n_pname"/> -->
 <!-- 		</Orders> -->
 <!-- 	</AutoTable> -->
+
+
+
+	<AutoTable name="product_cat_auto2">
+		<Columns>
+			<Column name="n_pid"        fromTable="p" nativeColumn="ID"                />
+			<Column name="n_pname"      fromTable="p" nativeColumn="PRODUCT_NAME"      />
+			<Column name="n_psupplier"  fromTable="p" nativeColumn="SUPPLIER_ID"       />
+			<Column name="n_pcategory"  fromTable="p" nativeColumn="CATEGORY_ID"       />
+			<Column name="n_pquanitity" fromTable="p" nativeColumn="QUANTITY_PER_UNIT" />
+			<Column name="n_punitprice" fromTable="p" nativeColumn="UNIT_PRICE"        />
+			<Column name="n_ccategory"  fromTable="c" nativeColumn="CATEGORY_NAME"     />
+		</Columns>
+		<FromTables>
+			<FromTable name="c" table="CATEGORIES"/>
+			<FromTable name="p" table="PRODUCTS"/>
+		</FromTables>
+		<JoinTables>
+			<JoinTable leftFromTable="p" leftColumns="CATEGORY_ID" rightFromTable="c" rightColumns="ID" operator="LEFT_JOIN"/>
+		</JoinTables>
+		<Orders>
+			<Order fromTable="c" column="ID"/>
+			<Order fromTable="p" column="ID" direction="ASC"/>
+			<Order fromTable="p" column="PRODUCT_NAME" nullsDirection="NULLS_LAST"/>
+			<Order fromTable="p" column="SUPPLIER_ID" direction="DESC" nullsDirection="NULLS_FIRST"/>
+			<Order column="n_pname"/>
+		</Orders>
+	</AutoTable>
 </DbModel>
