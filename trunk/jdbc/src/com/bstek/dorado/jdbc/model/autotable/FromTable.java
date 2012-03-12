@@ -1,5 +1,6 @@
 package com.bstek.dorado.jdbc.model.autotable;
 
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.jdbc.JdbcOperationUtils;
 import com.bstek.dorado.jdbc.model.table.Table;
@@ -26,6 +27,7 @@ public class FromTable {
 		this.name = name;
 	}
 
+	@IdeProperty(highlight=1, editor="jdbc:refrence:Table")
 	public String getTable() {
 		return tableName;
 	}

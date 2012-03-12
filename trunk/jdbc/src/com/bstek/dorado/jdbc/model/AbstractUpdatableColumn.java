@@ -63,6 +63,5 @@ public abstract class AbstractUpdatableColumn extends AbstractDbColumn {
 	public void setUpdateDefaultValue(Object updateDefaultValue) {
 		this.updateDefaultValue = updateDefaultValue;
 	}
-
 	
 }

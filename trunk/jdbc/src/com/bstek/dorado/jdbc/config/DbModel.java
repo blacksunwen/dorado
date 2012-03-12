@@ -20,8 +20,8 @@ import com.bstek.dorado.core.io.Resource;
 	parser = "spring:dorado.jdbc.dbmParser",
 	subNodes = {
 		@XmlSubNode(propertyType="List<com.bstek.dorado.jdbc.model.table.Table>"),
-		@XmlSubNode(propertyType="List<com.bstek.dorado.jdbc.model.sqltable.SqlTable>")
-//		@XmlSubNode(propertyType="List<com.bstek.dorado.jdbc.model.autotable.AutoTable>")
+		@XmlSubNode(propertyType="List<com.bstek.dorado.jdbc.model.sqltable.SqlTable>"),
+		@XmlSubNode(propertyType="List<com.bstek.dorado.jdbc.model.autotable.AutoTable>")
 //		@XmlSubNode(propertyType="List<com.bstek.dorado.jdbc.model.storedprogram.StoredProgram>")
 	}
 )
