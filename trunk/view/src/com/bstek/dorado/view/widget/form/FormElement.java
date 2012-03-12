@@ -50,7 +50,7 @@ public class FormElement extends Control implements FormConfig {
 			this);
 
 	@Deprecated
-	@ClientProperty(escapeValue = "text")
+	@ClientProperty(ignored = true)
 	@IdeProperty(visible = false)
 	public FormElementType getType() {
 		return type;
@@ -63,7 +63,7 @@ public class FormElement extends Control implements FormConfig {
 			if (FormElementType.text.equals(type)) {
 				editorType = "TextEditor";
 			} else if (FormElementType.password.equals(type)) {
-				editorType = "Password";
+				editorType = "PasswordEditor";
 			} else if (FormElementType.textArea.equals(type)) {
 				editorType = "TextArea";
 			} else if (FormElementType.checkBox.equals(type)) {
