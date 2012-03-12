@@ -3,7 +3,6 @@ package com.bstek.dorado.jdbc.model.autotable;
 import com.bstek.dorado.config.definition.CreationContext;
 import com.bstek.dorado.config.definition.ObjectDefinition;
 import com.bstek.dorado.config.definition.Operation;
-import com.bstek.dorado.jdbc.config.JdbcCreationContext;
 
 /**
  * 
@@ -15,14 +14,12 @@ public class MatchRuleDefinition extends ObjectDefinition implements Operation {
 	@Override
 	public void execute(Object object, CreationContext context)
 			throws Exception {
-		MatchRule rule = (MatchRule)this.create(context);
-		JdbcCreationContext jdbcCreatetionContext = (JdbcCreationContext)context;
-		AutoTable table = (AutoTable)jdbcCreatetionContext.getDbElement();
-		rule.setAutoTable(table);
-		
+		AbstractMatchRule rule = (AbstractMatchRule)this.create(context);
 		if (object instanceof JunctionMatchRule) {
-			JunctionMatchRule amr = (JunctionMatchRule)object;
-			amr.addMatchRule(rule);
+			JunctionMatchRule jmr = (JunctionMatchRule)object;
+			jmr.addMatchRule(rule);
+		} else if (object instanceof AutoTable) {
+			((AutoTable)object).setWhere((JunctionMatchRule)rule);
 		} else {
 			throw new IllegalStateException("Error Oject class [" + object.getClass() + "]");
 		}

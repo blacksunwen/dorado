@@ -2,6 +2,8 @@ package com.bstek.dorado.jdbc.ide;
 
 import java.util.Map;
 
+import org.w3c.dom.Document;
+
 /**
  * 为了配合IDE离线功能的代理接口
  * 
@@ -20,8 +22,11 @@ public interface IAgent {
 	public static final String JDBC_ENVIROMENT = "jdbcEnviroment";
 	public static final String XML             = "xml";
 	public static final String TABLE_TYPE      = "tableType";//Table,SqlTable
+	public static final String CONNECTION      = "Connection";
 	
-	String listTables(Map<String, String> paramerters) throws Exception;
+	String listTables(Map<String, Object> parameters) throws Exception;
 	
-	String createColumns(Map<String, String> paramerters) throws Exception;
+	String createColumns(Map<String, Object> parameters) throws Exception;
+	
+	Document parseText(String text) throws Exception;
 }

@@ -86,22 +86,30 @@ public class AutoTableTest extends AbstractOracle11JdbcTestCase {
 		}
 		{
 			Map<String, Object> parameter = new HashMap<String, Object>();
-			parameter.put("lastName", "last");
+			parameter.put("lastName", "last777");
 			
 			Collection<Record> records = JdbcOperationUtils.query(tableName, parameter);
 			Assert.assertTrue(records.isEmpty());
 		}
 		{
 			Map<String, Object> parameter = new HashMap<String, Object>();
-			parameter.put("firstName", "first");
+			parameter.put("firstName", "firstklhlkh");
 			
 			Collection<Record> records = JdbcOperationUtils.query(tableName, parameter);
 			Assert.assertTrue(records.isEmpty());
 		}
 		{
 			Map<String, Object> parameter = new HashMap<String, Object>();
-			parameter.put("lastName", "last");
-			parameter.put("firstName", "first");
+			parameter.put("lastName", "last777hg");
+			parameter.put("firstName", "first;lj;j;o");
+			
+			Collection<Record> records = JdbcOperationUtils.query(tableName, parameter);
+			Assert.assertTrue(records.isEmpty());
+		}
+		{
+			Map<String, Object> parameter = new HashMap<String, Object>();
+			parameter.put("title", "last777hg");
+			parameter.put("phone", "last777hg");
 			
 			Collection<Record> records = JdbcOperationUtils.query(tableName, parameter);
 			Assert.assertTrue(records.isEmpty());

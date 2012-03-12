@@ -47,7 +47,7 @@ public class TableSelectSql extends SelectSql {
 		SqlBuilder sql = new SqlBuilder();
 		sql.rightSpace(KeyWord.SELECT, columnsToken, KeyWord.FROM).append(tableToken);
 		
-		if (StringUtils.isNotEmpty(dynamicToken)) {
+		if (StringUtils.isNotBlank(dynamicToken)) {
 			sql.leftSpace(dynamicToken);
 		}
 		

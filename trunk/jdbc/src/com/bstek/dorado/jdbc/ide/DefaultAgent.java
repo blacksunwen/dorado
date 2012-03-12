@@ -37,13 +37,13 @@ public class DefaultAgent extends AbstractAgent {
 		String types[] = null;
 		if (dbmd.supportsSchemasInDataManipulation()) {
 			catalog = dbmd.getConnection().getCatalog();
-			schemaPattern = this.getParamerters().get(IAgent.NAMESPACE);
+			schemaPattern = (String)this.getParameters().get(IAgent.NAMESPACE);
 		} else {
-			catalog = this.getParamerters().get(IAgent.NAMESPACE);
+			catalog = (String)this.getParameters().get(IAgent.NAMESPACE);
 			schemaPattern = null;
 		}
 		
-		String tableName = this.getParamerters().get(IAgent.TABLE_NAME);
+		String tableName = (String)this.getParameters().get(IAgent.TABLE_NAME);
 		if (tableName == null || tableName.length() == 0) {
 			tableNamePattern = "%";
 		} else {
@@ -81,7 +81,7 @@ public class DefaultAgent extends AbstractAgent {
 					}
 				}
 				
-				return AbstractAgent.toString(document);
+				return DefaultAgent.this.toString(document);
 			}
 		});
 	}
@@ -90,7 +90,7 @@ public class DefaultAgent extends AbstractAgent {
 	protected Document createTableColumns(Document document) throws Exception {
 		DatabaseMetaData dbmd = getDatabaseMetaData();
 		
-		String namespace = this.getParamerters().get(IAgent.NAMESPACE);
+		String namespace = (String)this.getParameters().get(IAgent.NAMESPACE);
 		if (StringUtils.isNotEmpty(namespace)){
 			if (dbmd.storesLowerCaseIdentifiers()) {
 				namespace = namespace.toLowerCase();
@@ -108,7 +108,7 @@ public class DefaultAgent extends AbstractAgent {
 			catalog = namespace;
 		}
 		
-		String tableName = this.getParamerters().get(IAgent.TABLE_NAME);
+		String tableName = (String)this.getParameters().get(IAgent.TABLE_NAME);
 		if (StringUtils.isNotEmpty(tableName)){
 			if (dbmd.storesLowerCaseIdentifiers()) {
 				tableName = tableName.toLowerCase();
@@ -255,7 +255,7 @@ public class DefaultAgent extends AbstractAgent {
 			columnNameSet.add(columnName);
 		}
 		
-		String querySql = this.getParamerters().get(IAgent.QUERY_SQL);
+		String querySql = (String)this.getParameters().get(IAgent.QUERY_SQL);
 		List<Map<String, String>> commonColumns = doCall(querySql, new ResultSetCallback<List<Map<String, String>>>(){
 
 			@Override

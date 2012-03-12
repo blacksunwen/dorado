@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlNodeWrapper;
@@ -29,12 +31,12 @@ import com.bstek.dorado.jdbc.sql.SqlConstants.KeyWord;
 @XmlNode(
 	parser = "spring:dorado.jdbc.tableParser",
 	definitionType = "com.bstek.dorado.jdbc.model.table.TableDefinition", 
-//	properties = {
-//		@XmlProperty(
-//			propertyName = "autoCreateColumns",
-//			propertyType = "boolean"
-//		)
-//	},
+	properties = {
+		@XmlProperty(
+			propertyName = "autoCreateColumns",
+			propertyType = "boolean"
+		)
+	},
 	subNodes = {
 		@XmlSubNode(
 			wrapper = @XmlNodeWrapper(nodeName = "Columns", fixed = true), 
@@ -175,7 +177,9 @@ public class Table extends AbstractTable {
 		
 		//dynamicToken
 		String dynamicToken = table.getDynamicClause();
-		dynamicToken = SqlUtils.build(dynamicToken, parameter);
+		if (StringUtils.isNotBlank(dynamicToken)) {
+			dynamicToken = SqlUtils.build(dynamicToken, parameter);
+		}
 		
 		selectSql.setDynamicToken(dynamicToken);
 		

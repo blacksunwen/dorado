@@ -70,7 +70,7 @@ public class AutoTable extends AbstractTable {
 	
 	private List<Order> orders = new ArrayList<Order>(5);
 
-	private Where where;
+	private JunctionMatchRule where;
 
 	private String mainFromTable;
 	private Table mainTable;
@@ -101,12 +101,12 @@ public class AutoTable extends AbstractTable {
 		return joinTables;
 	}
 
-	@XmlSubNode
-	public Where getWhere() {
+	@XmlSubNode(nodeName="Where", fixed=true)
+	public JunctionMatchRule getWhere() {
 		return where;
 	}
 
-	public void setWhere(Where where) {
+	public void setWhere(JunctionMatchRule where) {
 		this.where = where;
 	}
 
@@ -281,9 +281,9 @@ public class AutoTable extends AbstractTable {
 	private StringBuilder whereToken(AutoTable t, JdbcParameterSource p) {
 		StringBuilder whereToken = new StringBuilder();
 		
-		Where where = t.getWhere();
+		JunctionMatchRule where = t.getWhere();
 		if (where != null) {
-			String token = junctionMatchRuleToken(where, p);
+			String token = junctionMatchRuleToken(t,where, p);
 			if (StringUtils.isNotEmpty(token)) {
 				whereToken.append(token);
 			}
@@ -292,13 +292,19 @@ public class AutoTable extends AbstractTable {
 		return whereToken;
 	}
 	
-	private String baseMatchRuleToken(BaseMatchRule bmr, JdbcParameterSource parameterSource) {
+	private String baseMatchRuleToken(AutoTable t,BaseMatchRule bmr, JdbcParameterSource parameterSource) {
 		if (!bmr.isAvailable()) {
 			return "";
 		} else {
-			FromTable fromTable = bmr.getFromTableObject();
-			String tableAlias = fromTable.getName();
-			AbstractDbColumn column = bmr.getColumnObject();
+			
+			String fromColumnName = bmr.getColumn();
+			String fromTableName = bmr.getFromTable();
+			
+			FromTable fromTable = t.getFromTable(fromTableName);
+			String tableAlias = fromTableName;
+			
+			AbstractDbColumn column = fromTable.getTableObject().getColumn(fromColumnName);
+			
 			String columnName = column.getName();
 			Object value = bmr.getValue();
 			String operator = bmr.getOperator();
@@ -341,26 +347,26 @@ public class AutoTable extends AbstractTable {
 		}
 	}
 	
-	private String junctionMatchRuleToken(JunctionMatchRule amr, JdbcParameterSource p) {
+	private String junctionMatchRuleToken(AutoTable t,JunctionMatchRule amr, JdbcParameterSource p) {
 		if (!amr.isAvailable()) {
 			return "";
 		} else {
-			List<MatchRule> matchRules = amr.getMatchRules();
+			List<AbstractMatchRule> matchRules = amr.getMatchRules();
 			if (matchRules.size() > 0) {
 				JunctionOperator model = amr.getOperator();
 				Assert.notNull(model, "JunctionModel must not be null.");
 				
 				List<String> tokens = new ArrayList<String>(matchRules.size());
-				for (MatchRule mr: matchRules) {
+				for (AbstractMatchRule mr: matchRules) {
 					if (mr instanceof BaseMatchRule) {
 						BaseMatchRule bmr = (BaseMatchRule)mr;
-						String token = baseMatchRuleToken(bmr, p);
+						String token = baseMatchRuleToken(t,bmr, p);
 						if (StringUtils.isNotEmpty(token)) {
 							tokens.add(token);
 						}
 					} else if (mr instanceof JunctionMatchRule) {
 						JunctionMatchRule amr1 = (JunctionMatchRule)mr;
-						String token = junctionMatchRuleToken(amr1, p);
+						String token = junctionMatchRuleToken(t,amr1, p);
 						if (StringUtils.isNotEmpty(token)) {
 							tokens.add("("+token+")");
 						}

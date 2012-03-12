@@ -38,15 +38,15 @@ import com.bstek.dorado.jdbc.model.table.Table;
  */
 public abstract class AbstractAgent implements IAgent {
 
-	private Map<String, String> paramerters;
+	private Map<String, Object> parameters;
 	private DatabaseMetaData databaseMetaData;
 	private SingleConnectionDataSource dataSource;
 	private Driver driver;
 
 	@Override
-	public String listTables(Map<String, String> paramerters)
+	public String listTables(Map<String, Object> parameters)
 			throws Exception {
-		this.resetContext(paramerters);
+		this.resetContext(parameters);
 		try {
 			String tables = doListTables();
 			System.out.println("*> " + tables);
@@ -59,12 +59,12 @@ public abstract class AbstractAgent implements IAgent {
 	protected abstract String doListTables() throws Exception;
 
 	@Override
-	public String createColumns(Map<String, String> paramerters)
+	public String createColumns(Map<String, Object> parameters)
 			throws Exception {
-		this.resetContext(paramerters);
+		this.resetContext(parameters);
 		try {
-			String tableType = paramerters.get(IAgent.TABLE_TYPE);
-			Document document = parseText(paramerters.get(IAgent.XML));
+			String tableType = (String)parameters.get(IAgent.TABLE_TYPE);
+			Document document = parseText((String)parameters.get(IAgent.XML));
 			if (Table.TYPE.equals(tableType)) {
 				document = createTableColumns(document);
 			} else if (SqlTable.TYPE.equals(tableType)) {
@@ -84,11 +84,11 @@ public abstract class AbstractAgent implements IAgent {
 	
 	protected DatabaseMetaData getDatabaseMetaData() throws SQLException {
 		if (databaseMetaData == null) {
-			databaseMetaData = this.makeDatabaseMetaData(paramerters);
+			databaseMetaData = this.makeDatabaseMetaData(parameters);
 		}
 		return databaseMetaData;
 	}
-	protected DatabaseMetaData makeDatabaseMetaData(Map<String, String> paramerters) throws SQLException {
+	protected DatabaseMetaData makeDatabaseMetaData(Map<String, Object> parameters) throws SQLException {
 		DataSource dataSource = getDataSource();
 		Connection conn = dataSource.getConnection();
 		return conn.getMetaData();
@@ -96,31 +96,38 @@ public abstract class AbstractAgent implements IAgent {
 	
 	protected SingleConnectionDataSource getDataSource() {
 		if (dataSource == null) {
-			dataSource = this.makeDataSource(paramerters);
+			dataSource = this.makeDataSource(parameters);
 		}
 		return dataSource;
 	}
-	protected SingleConnectionDataSource makeDataSource(Map<String, String> paramerters) {
-		String url = paramerters.get(IAgent.URL);
-		String user = paramerters.get(IAgent.USER);
-		String password = paramerters.get(IAgent.PASSWORD);
-		String driverClassName = paramerters.get(IAgent.DRIVER);
-		
-		SingleConnectionDataSource dataSource = new SingleConnectionDataSource(url, user, password, false);
-		dataSource.setDriverClassName(driverClassName);
-		return dataSource;
+	
+	protected SingleConnectionDataSource makeDataSource(Map<String, Object> parameters) {
+		Connection conn = (Connection)parameters.get(IAgent.CONNECTION);
+		if (conn == null) {
+			String url = (String)parameters.get(IAgent.URL);
+			String user = (String)parameters.get(IAgent.USER);
+			String password = (String)parameters.get(IAgent.PASSWORD);
+			String driverClassName = (String)parameters.get(IAgent.DRIVER);
+			
+			SingleConnectionDataSource dataSource = new SingleConnectionDataSource(url, user, password, false);
+			dataSource.setDriverClassName(driverClassName);
+			return dataSource;
+		} else {
+			SingleConnectionDataSource dataSource = new SingleConnectionDataSource(conn, true);
+			return dataSource;
+		}
 	}
 	
 	@SuppressWarnings("unchecked")
-	protected void resetContext(Map<String, String> paramerters) throws Exception {
+	protected void resetContext(Map<String, Object> parameters) throws Exception {
 		clearContext();
 		
-		this.paramerters = paramerters;
-		System.out.println("*> [CONTEXT]parameters: " + this.paramerters);
+		this.parameters = parameters;
+		System.out.println("*> [CONTEXT]parameters: " + this.parameters);
 		
 		this.getDataSource();
 		
-		String driverClassName = paramerters.get(IAgent.DRIVER);
+		String driverClassName = (String)parameters.get(IAgent.DRIVER);
 		Class<?> driverClass = Class.forName(driverClassName, true, ClassUtils.getDefaultClassLoader());
 
 		Enumeration<Driver> driverEnu = DriverManager.getDrivers();
@@ -162,25 +169,25 @@ public abstract class AbstractAgent implements IAgent {
 			this.dataSource.resetConnection();
 			this.dataSource = null;
 		}
-		this.paramerters = null;
+		this.parameters = null;
 		this.databaseMetaData = null;
 	}
-	protected Map<String, String> getParamerters() {
-		if (paramerters == null) {
+	protected Map<String, Object> getParameters() {
+		if (parameters == null) {
 			throw new IllegalArgumentException("parameters is null");
 		}
 		
-		return paramerters;
+		return parameters;
 	}
 	
-	protected static Document newDocument() throws ParserConfigurationException {
+	protected Document newDocument() throws ParserConfigurationException {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setIgnoringElementContentWhitespace(true);
 		factory.setIgnoringComments(true);
 		return factory.newDocumentBuilder().newDocument();
 	}
 	
-	protected static Document parseText(String text) throws Exception {
+	public Document parseText(String text) throws Exception {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setIgnoringElementContentWhitespace(true);
 		factory.setIgnoringComments(true);
@@ -188,7 +195,7 @@ public abstract class AbstractAgent implements IAgent {
 		return builder.parse(new InputSource(new StringReader(text)));
 	}
 	
-	protected static String toString(Document document) throws Exception {
+	protected String toString(Document document) throws Exception {
 		StringWriter writer = new StringWriter();
 		TransformerFactory tFactory = TransformerFactory.newInstance();
 		Transformer transformer = tFactory.newTransformer();
@@ -201,7 +208,7 @@ public abstract class AbstractAgent implements IAgent {
 		return writer.toString();
 	}
 	
-	protected static void close(Connection conn) {
+	protected void close(Connection conn) {
 		if (conn != null) {
 			try {
 				conn.close();
@@ -211,7 +218,7 @@ public abstract class AbstractAgent implements IAgent {
 		}
 	}
 	
-	protected static void close(Statement stmt) {
+	protected void close(Statement stmt) {
 		if (stmt != null) {
 			try {
 				stmt.close();
@@ -221,7 +228,7 @@ public abstract class AbstractAgent implements IAgent {
 		}
 	}
 	
-	protected static void close(ResultSet rs) {
+	protected void close(ResultSet rs) {
 		if (rs != null) {
 			try {
 				rs.close();

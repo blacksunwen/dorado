@@ -22,7 +22,6 @@ import com.bstek.dorado.jdbc.config.DomHelper;
 import com.bstek.dorado.jdbc.meta.StoredProcedureGenerator;
 import com.bstek.dorado.jdbc.model.storedprogram.ProgramParameter;
 import com.bstek.dorado.jdbc.model.storedprogram.StoredProgram;
-import com.bstek.dorado.jdbc.type.JdbcType;
 
 /**
  * 

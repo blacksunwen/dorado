@@ -9,7 +9,6 @@ import org.w3c.dom.Document;
 
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.config.DomHelper;
-import com.bstek.dorado.jdbc.support.DefaultDataTypeMetaDataGenerator;
 import com.bstek.dorado.jdbc.support.DefaultStoredProcedureGenerator;
 
 public class TestJdbcUtils {
@@ -18,14 +17,6 @@ public class TestJdbcUtils {
 		JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(jdbcEnvName);
 		DefaultStoredProcedureGenerator generator = new DefaultStoredProcedureGenerator();
 		Document document = generator.create(jdbcEnv, catalog, schema, procedureName);
-		
-		String xml = DomHelper.toString(document);
-		return xml;
-	}
-	
-	public static String outputDataType(String tableName) {
-		DefaultDataTypeMetaDataGenerator generator = new DefaultDataTypeMetaDataGenerator();
-		Document document = generator.create(tableName);
 		
 		String xml = DomHelper.toString(document);
 		return xml;

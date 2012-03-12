@@ -15,23 +15,13 @@ import com.bstek.dorado.jdbc.sql.SqlConstants.JunctionOperator;
  */
 @XmlNode(
 	nodeName = "Junction",
-	definitionType = "com.bstek.dorado.jdbc.model.autotable.MatchRuleDefinition",
-	subNodes = {
-		@XmlSubNode(
-			propertyName = "matchRules", 
-			propertyType = "List<com.bstek.dorado.jdbc.model.autotable.AbstractMatchRule>",
-			implTypes = {
-				"com.bstek.dorado.jdbc.model.autotable.JunctionMatchRule", 
-				"com.bstek.dorado.jdbc.model.autotable.BaseMatchRule"
-			}
-		)
-	}
+	definitionType = "com.bstek.dorado.jdbc.model.autotable.MatchRuleDefinition"
 )
 public class JunctionMatchRule extends AbstractMatchRule {
 
 	private JunctionOperator operator = JunctionOperator.AND;
 	
-	private List<MatchRule> matchRules = new ArrayList<MatchRule>();
+	private List<AbstractMatchRule> matchRules = new ArrayList<AbstractMatchRule>();
 
 	@ClientProperty(escapeValue = "AND")
 	public JunctionOperator getOperator() {
@@ -41,16 +31,18 @@ public class JunctionMatchRule extends AbstractMatchRule {
 	public void setOperator(JunctionOperator o) {
 		this.operator = o;
 	}
-	
-	public List<MatchRule> getMatchRules() {
+
+	@XmlSubNode
+	public List<AbstractMatchRule> getMatchRules() {
 		return matchRules;
 	}
+	
+	public void setMatchRules(List<AbstractMatchRule> rules) {
+		this.matchRules = rules;
+	}
 
-	public void addMatchRule(MatchRule matchRule) {
+	public void addMatchRule(AbstractMatchRule matchRule) {
 		this.matchRules.add(matchRule);
-		if (this.getAutoTable() != null) {
-			matchRule.setAutoTable(this.getAutoTable());
-		}
 	}
 
 }
