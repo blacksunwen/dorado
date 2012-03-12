@@ -244,13 +244,22 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 	
 	doOnResize: function() {
 		$invokeSuper.call(this, arguments);
+
 		var toolbar = this, dom = toolbar._dom, doms = toolbar._doms, overflowMenu = toolbar._overflowMenu,
             overflowButton = toolbar._overflowButton, items = toolbar._items,
             lastChild = doms.toolbarLeft.lastChild, overflow = false;
-		
+
+		if (dorado.Browser.msie) {
+			items.each(function(item) {
+				if (item instanceof dorado.widget.TextEditor) {
+					item.resetDimension();
+				}
+			});
+		}
+
 		if (items && lastChild) {
 			var leftRealWidth = lastChild.offsetWidth + lastChild.offsetLeft, leftVisibleWidth = dom.offsetWidth - doms.toolbarRight.offsetWidth;
-			
+
 			overflow = leftRealWidth > leftVisibleWidth;
 		}
 		
