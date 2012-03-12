@@ -25,7 +25,7 @@ import com.bstek.dorado.jdbc.ModelStrategy;
  * @author mark.li@bstek.com
  *
  */
-public class DefaultDmbManager extends AbstractDbmManager {
+public class DefaultDbmManager extends AbstractDbmManager {
 	private XmlParserHelper xmlParserHelper;
 	private XmlDocumentBuilder xmlDocumentBuilder;
 	private ModelStrategy modelStrategy;

@@ -1,21 +1,18 @@
 package com.bstek.dorado.jdbc.model.table;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 import com.bstek.dorado.config.ParseContext;
 import com.bstek.dorado.config.definition.Operation;
-import com.bstek.dorado.jdbc.JdbcEnviroment;
-import com.bstek.dorado.jdbc.ModelGeneratorSuit;
 import com.bstek.dorado.jdbc.config.AbstractDbTableParser;
 import com.bstek.dorado.jdbc.config.ColumnDefinition;
 import com.bstek.dorado.jdbc.config.JdbcParseContext;
 import com.bstek.dorado.jdbc.config.XmlConstants;
-import com.bstek.dorado.jdbc.meta.TableMetaDataGenerator;
-import com.bstek.dorado.jdbc.support.JdbcConstants;
+import com.bstek.dorado.jdbc.ide.IAgent;
 
 /**
  * 
@@ -23,15 +20,14 @@ import com.bstek.dorado.jdbc.support.JdbcConstants;
  *
  */
 public class TableParser extends AbstractDbTableParser {
+	private IAgent agent;
 	
-	ModelGeneratorSuit generatorSuit;
-	
-	public ModelGeneratorSuit getGeneratorSuit() {
-		return generatorSuit;
+	public IAgent getAgent() {
+		return agent;
 	}
 
-	public void setGeneratorSuit(ModelGeneratorSuit generatorSuit) {
-		this.generatorSuit = generatorSuit;
+	public void setAgent(IAgent agent) {
+		this.agent = agent;
 	}
 
 	@Override
@@ -54,36 +50,37 @@ public class TableParser extends AbstractDbTableParser {
 		}
 	}
 
-	protected void createColumns(TableDefinition tableDef, JdbcParseContext jdbcContext) {
-		List<Operation> ops = tableDef.getInitOperations();
-		Map<String,ColumnDefinition> columnMap = new HashMap<String,ColumnDefinition>(ops.size());
-		for (Operation o: ops) {
+	protected void createColumns(TableDefinition tableDef, JdbcParseContext jdbcContext) throws Exception {
+		Map<String,ColumnDefinition> columnMap = new HashMap<String,ColumnDefinition>();
+		for (Operation o: tableDef.getInitOperations()) {
 			if (o instanceof ColumnDefinition) {
 				ColumnDefinition column = (ColumnDefinition)o;
 				columnMap.put(column.getName(), column);
 			}
 		}
 		
-		JdbcEnviroment jdbcEnv = jdbcContext.getJdbcEnviroment();
-		
-		String tableName = tableDef.getTableName();
-		String namespace = tableDef.getNamespace();
-		
-		TableMetaDataGenerator tg = generatorSuit.getTableMetaDataGenerator();
-		Map<String,String> tableMeta = tg.tableMeta(jdbcEnv, namespace, tableName);
-		
-		List<Map<String,String>> columnList = tg.listColumnMetas(jdbcEnv, namespace, tableName);
-		for (Map<String,String> columnMeta: columnList) {
-			String columnName = columnMeta.get(JdbcConstants.COLUMN_NAME);
-			ColumnDefinition columnDef = columnMap.get(columnName);
-			if (columnDef == null) {
-				Map<String,String> columnProperties = tg.columnProperties(columnMeta, jdbcEnv);
-				columnDef = tg.createColumnDefinition(tableMeta, columnProperties, jdbcEnv);
-				if (columnDef != null) {
-					tableDef.addInitOperation(columnDef);
+		TableDefinition tableDef2 = this.createDefinition(tableDef, jdbcContext);
+		for (Operation o: tableDef2.getInitOperations()) {
+			if (o instanceof ColumnDefinition) {
+				if (!columnMap.containsKey(((ColumnDefinition)o).getName())) {
+					tableDef.addInitOperation(o);
 				}
 			}
 		}
+	}
+	
+	protected TableDefinition createDefinition(TableDefinition tableDef, JdbcParseContext jdbcContext) throws Exception {
+		
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put(IAgent.CONNECTION, jdbcContext.getJdbcEnviroment().getDataSource().getConnection());
+		parameters.put(IAgent.NAMESPACE, tableDef.getNamespace());
+		parameters.put(IAgent.TABLE_NAME, tableDef.getTableName());
+		
+		String xml = agent.createColumns(parameters);
+		Document document = agent.parseText(xml);
+		TableDefinition tableDef2 = (TableDefinition)doParse(document.getDocumentElement(), jdbcContext);
+		
+		return tableDef2;
 	}
 
 }

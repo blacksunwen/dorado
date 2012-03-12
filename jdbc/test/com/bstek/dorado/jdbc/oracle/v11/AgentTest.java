@@ -12,15 +12,15 @@ public class AgentTest {
 
 	@Test
 	public void testListTables() throws Exception {
-		Map<String, String> paramerters = makeParamerters();
-		paramerters.put(IAgent.NAMESPACE, "DORADO");
+		Map<String, Object> parameters = makeParamerters();
+		parameters.put(IAgent.NAMESPACE, "DORADO");
 		
 		DefaultAgent agent = new DefaultAgent();
-		agent.listTables(paramerters);
+		agent.listTables(parameters);
 	}
 	
-	private Map<String, String> makeParamerters() {
-		Map<String, String> parameters = new HashMap<String,String>();
+	private Map<String, Object> makeParamerters() {
+		Map<String, Object> parameters = new HashMap<String,Object>();
 		
 		parameters.put(IAgent.URL, "jdbc:oracle:thin:@192.168.18.90:1521/DORADO");
 		parameters.put(IAgent.USER, "dorado");

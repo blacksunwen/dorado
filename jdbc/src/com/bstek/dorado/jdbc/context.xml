@@ -27,14 +27,14 @@
 	</bean>
 	
 	<!-- Jdbc Components -->
+	<bean id="dorado.jdbcAgent" class="com.bstek.dorado.jdbc.ide.DefaultAgent"/>
 	<bean id="dorado.jdbc.enviromentManager" class="com.bstek.dorado.jdbc.config.DefaultJdbcEnviromentManager"/>
-	<bean id="dorado.jdbc.dbmManager" class="com.bstek.dorado.jdbc.config.DefaultDmbManager">
+	<bean id="dorado.jdbc.dbmManager" class="com.bstek.dorado.jdbc.config.DefaultDbmManager">
 		<property name="xmlDocumentBuilder" ref="dorado.xmlDocumentBuilder" />
 		<property name="xmlParserHelper" ref="dorado.xmlParserHelper"/>
 		<property name="modelStrategy" ref="dorado.jdbc.modelStrategy"/>
 		<property name="interceper" ref="dorado.jdbc.globalIntercepter"/>
 	</bean>
-	<bean id="dorado.jdbc.modelGeneratorSuit" class="com.bstek.dorado.jdbc.support.DefaultModelGeneratorSuit"/>
 	<bean id="dorado.jdbc.jdbcTypeManager" class="com.bstek.dorado.jdbc.support.DefaultJdbcTypeManager"/>
 	<bean id="dorado.jdbc.keyGeneratorManager" class="com.bstek.dorado.jdbc.support.DefaultKeyGeneratorManager"/>
 	<bean class="com.bstek.dorado.jdbc.support.OddLogger"/>
