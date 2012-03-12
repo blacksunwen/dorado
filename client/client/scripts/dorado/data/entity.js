@@ -291,12 +291,14 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			this.state = state;
 			this.timestamp = dorado.Core.getTimestamp();
 			
-			if (this.parent && this.parent instanceof dorado.EntityList) {
+			var entityList = this.parent;
+			if (entityList && entityList instanceof dorado.EntityList) {
+				var page = entity.page;
 				if (eventArg.oldState == dorado.Entity.STATE_DELETED) {
-					this.parent.changeEntityCount(page, 1);
+					entityList.changeEntityCount(page, 1);
 				}
 				else if (eventArg.newState == dorado.Entity.STATE_DELETED) {
-					this.parent.changeEntityCount(page, -1);
+					entityList.changeEntityCount(page, -1);
 				}
 			}
 
