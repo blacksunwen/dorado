@@ -2760,7 +2760,8 @@
 										column: column,
 										processDefault: true
 									};
-									if (grid.fireEvent("onHeaderClick", grid, eventArg)) {
+									grid.fireEvent("onHeaderClick", grid, eventArg);
+									if (eventArg.processDefault) {
 										column.fireEvent("onHeaderClick", column, eventArg);
 									}
 									
