@@ -1158,6 +1158,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		 * @param {boolean} [options.includeDeletedEntity] 是否转换那些被标记为"已删除"的数据实体。
 		 * 此属性对于{@link dorado.Entity}的toJSON而言是没有意义的，但是由于options参数会自动被传递到实体对象内部{@link dorado.EntityList}的toJSON方法中，
 		 * 因此它会影响内部{@link dorado.EntityList}的处理过程。 默认按false进行处理。
+		 * @param {boolean} [options.simplePropertyOnly] 是否只生成简单类型的属性到JSON中。
 		 * @param {boolean} [options.generateDataType] 是否在JSON对象中生成DataType信息，生成的DataType信息将被放置在名为$dataType的特殊子属性中。
 		 * 注意：此属性的只对顶层JSON对象有效，即此方法永远不会为子JSON对象生成DataType信息。
 		 * @param {boolean} [options.generateState] 是否在JSON对象中生成实体对象的状态信息(即新增、已更改等状态)，生成的状态信息将被放置在名为$state的特殊子属性中。
@@ -1170,11 +1171,12 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		 */
 		toJSON : function(options, context) {
 			var result = {};
-			var includeUnsubmittableProperties = includeReferenceProperties = includeLookupProperties = true, generateDataType = generateState = generateEntityId = generateOldData = false, properties = null, entityFilter = null;
+			var includeUnsubmittableProperties = includeReferenceProperties = includeLookupProperties = true, simplePropertyOnly = generateDataType = generateState = generateEntityId = generateOldData = false, properties = null, entityFilter = null;
 			if (options != null) {
 				if (options.includeUnsubmittableProperties === false) includeUnsubmittableProperties = false;
 				if (options.includeReferenceProperties === false) includeReferenceProperties = false;
 				if (options.includeLookupProperties === false) includeLookupProperties = false;
+				simplePropertyOnly = options.simplePropertyOnly;
 				generateDataType = options.generateDataType;
 				generateState = options.generateState;
 				generateEntityId = options.generateEntityId;
@@ -1190,25 +1192,31 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				if (!data.hasOwnProperty(property)) continue;
 				if (property.charAt(0) == '$') continue;
 				if (properties && properties.indexOf(property) < 0) continue;
-
+				
 				var propertyDef = (this._propertyDefs) ? this._propertyDefs.get(property) : null;
-
+				if (propertyDef && simplePropertyOnly) {
+					var pdt = propertyDef.getDataType("never");
+					if (pdt && pdt instanceof dorado.EntityDataType) continue;
+				}
+				
 				if (!includeUnsubmittableProperties && propertyDef && !propertyDef._submittable) continue;
-				if ( propertyDef instanceof dorado.Reference) {
+				if (propertyDef instanceof dorado.Reference) {
 					if (!includeReferenceProperties) continue;
-				} else if ( propertyDef instanceof dorado.Lookup) {
+				} else if (propertyDef instanceof dorado.Lookup) {
 					if (!includeLookupProperties) continue;
 				}
-
+				
 				var value = this._get(property, propertyDef);
 				if (value != null) {
-					if ( value instanceof dorado.Entity) {
+					if (value instanceof dorado.Entity) {
+						if (simplePropertyOnly) continue;
+					
 						if (!entityFilter || entityFilter(value)) {
 							value = value.toJSON(options, context);
 						} else {
 							value = null;
 						}
-					} else if ( value instanceof dorado.EntityList) {
+					} else if (value instanceof dorado.EntityList) {
 						value = value.toJSON(options, context);
 					}
 				}
@@ -1216,7 +1224,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					if (!oldDataHolder) oldDataHolder = {};
 					oldDataHolder[property] = oldData[property];
 				}
-
+				
 				result[property] = value;
 			}
 

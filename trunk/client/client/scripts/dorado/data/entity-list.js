@@ -631,7 +631,6 @@
 				entity.setState(dorado.Entity.STATE_DELETED);
 			}
 			if (detach) {
-				page.remove(entity);
 				if (entity.state != dorado.Entity.STATE_DELETED) this.changeEntityCount(page, -1);
 			}
 			
@@ -641,6 +640,7 @@
 				if (dataType) dataType.fireEvent("onRemove", dataType, eventArg);
 				this.sendMessage(dorado.EntityList._MESSAGE_DELETED, eventArg);
 			}
+			if (detach) page.remove(entity);
 			
 			if (isCurrent) this.setCurrent(newCurrent);
 		},
@@ -837,6 +837,9 @@
 		 * @param {boolean} [options.includeLookupProperties=true] 是否转换实体对象中{@link dorado.Lookup}类型的属性。默认按true进行处理。
 		 * @param {boolean} [options.includeUnloadPage=true] 是否转换{@link dorado.EntityList}中尚未装载的页中的数据。默认按false进行处理。
 		 * @param {boolean} [options.includeDeletedEntity] 是否转换那些被标记为"已删除"的数据实体。
+		 * @param {boolean} [options.simplePropertyOnly] 是否只生成简单类型的属性到JSON中。
+		 * 此属性对于{@link dorado.EntityList}的toJSON而言是没有意义的，但是由于options参数会自动被传递到集合中{@link dorado.Entity}的toJSON方法中，
+		 * 因此它会影响内部{@link dorado.Entity}的处理过程。
 		 * @param {boolean} [options.generateDataType] 是否在JSON对象中生成DataType信息，生成的DataType信息将被放置在名为$dataType的特殊子属性中。
 		 * 此属性对于{@link dorado.EntityList}的toJSON而言是没有意义的，但是由于options参数会自动被传递到集合中{@link dorado.Entity}的toJSON方法中，
 		 * 因此它会影响内部{@link dorado.Entity}的处理过程。
@@ -977,8 +980,8 @@
 		
 		remove: function(data) {
 			$invokeSuper.call(this, arguments);
-			data.page = null;
 			data.parent = null;
+			data.page = null;
 			data._setObserver(null);
 			delete this.entityList._keyMap[data.entityId];
 		}
