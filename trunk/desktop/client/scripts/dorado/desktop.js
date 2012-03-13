@@ -117,7 +117,7 @@ dorado.widget.desktop.Shortcut = $extend([dorado.RenderableElement, dorado.Event
 	},
 
 	createDom: function() {
-		var cut = this, doms = {}, dom = $DomUtils.xCreateElement({
+		var cut = this, doms = {}, dom = $DomUtils.xCreate({
 			tagName: "div",
 			className: cut._className,
 			content: [
@@ -302,7 +302,7 @@ dorado.widget.desktop.Desktop = $extend(dorado.widget.desktop.AbstractDesktop, /
 				helper.bringToFront();
 
 				if (!desktop._shortcutHolder) {
-					desktop._shortcutHolder = $DomUtils.xCreateElement({
+					desktop._shortcutHolder = $DomUtils.xCreate({
 						tagName: "div",
 						className: "shortcut-place-holder shortcut-place-holder-" + (desktop._iconSize || "medium")
 					});
@@ -654,7 +654,7 @@ dorado.widget.desktop.Widget = $extend([dorado.widget.Control, dorado.widget.Flo
 		}
 	},
 	createDom: function() {
-		var widget = this, doms = {}, dom = $DomUtils.xCreateElement({
+		var widget = this, doms = {}, dom = $DomUtils.xCreate({
 			tagName: "div",
 			className: widget._className,
 			content: [{
@@ -875,7 +875,7 @@ dorado.widget.desktop.DesktopCarousel = $extend(dorado.widget.desktop.AbstractDe
 	},
 
 	createDom: function() {
-		var card = this, doms = {}, dom = $DomUtils.xCreateElement({
+		var card = this, doms = {}, dom = $DomUtils.xCreate({
 			tagName: "div",
 			className: this._className,
 			content: [{

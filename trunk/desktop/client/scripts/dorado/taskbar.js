@@ -161,7 +161,7 @@ dorado.widget.desktop.TaskButton = $extend(dorado.widget.AbstractButton, /** @sc
 	createDom: function() {
 		var button = this, cls = button._className, doms = {}, action = button._action || {};
 		
-		var dom = $DomUtils.xCreateElement({
+		var dom = $DomUtils.xCreate({
 			tagName: "span",
 			className: cls,
 			content: [{
@@ -411,7 +411,7 @@ dorado.widget.desktop.Taskbar = $extend(dorado.widget.Control, /** @scope dorado
 	},
 	
 	createDom: function() {
-		var taskbar = this, doms = {}, dom = $DomUtils.xCreateElement({
+		var taskbar = this, doms = {}, dom = $DomUtils.xCreate({
 			tagName: "div",
 			className: taskbar._className,
 			content: [{
