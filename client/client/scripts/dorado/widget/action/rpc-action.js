@@ -183,8 +183,8 @@
 
 	dorado.DataPath.registerInterceptor("DIRTY_TREE", function(data) {
 
-		function gothrough(entity) {
-			var isDirty = entity.isDirty();
+		function gothrough(entity, ignoreSelf) {
+			var isDirty = ignoreSelf ? false : entity.isDirty();
 
 			var data = entity._data;
 			for (var property in data) {
@@ -201,7 +201,7 @@
 					}
 				}
 				else if (value instanceof dorado.Entity) {
-					if (gothrough(value)) isDirty = true;
+					if (gothrough(value, true)) isDirty = true;
 				}
 			}
 			if(!isDirty) CASCADE_NOT_DRITY_ENTITYS[entity.entityId] = true;
@@ -473,6 +473,7 @@
 
 				options.firstResultOnly = updateItem.firstResultOnly;
 				options.generateOldData = updateItem.submitOldData;
+				options.simplePropertyOnly = updateItem.submitSimplePropertyOnly;
 
 				var alias = updateItem.alias;
 				if(dataSet) {
@@ -575,31 +576,19 @@
 								} else {
 									options.generateDataType = false;
 								}
-
-								if(updateItem.submitSimplePropertyOnly) {
-									CASCADE_NOT_DRITY_ENTITYS[entity.entityId] = true;
-								}
 								entities.push(entity);
 								data.push(entity.toJSON(options, context));
 							}
 						}
 					} else if( data instanceof dorado.EntityList || data instanceof dorado.Entity) {
 						hasUpdateData = true;
-						if(updateItem.refreshMode == "cascade" || updateItem.submitSimplePropertyOnly) {
+						if(updateItem.refreshMode == "cascade") {
 							if( data instanceof dorado.Entity) {
-								if(updateItem.submitSimplePropertyOnly) {
-									CASCADE_NOT_DRITY_ENTITYS[data.entityId] = true;
-								}
-								if(updateItem.refreshMode == "cascade")
-									entities.push(data);
+								if(updateItem.refreshMode == "cascade") entities.push(data);
 							} else {
 								for(var it = data.iterator(); it.hasNext(); ) {
 									var entity = it.next();
-									if(updateItem.submitSimplePropertyOnly) {
-										CASCADE_NOT_DRITY_ENTITYS[entity.entityId] = true;
-									}
-									if(updateItem.refreshMode == "cascade")
-										entities.push(entity);
+									if(updateItem.refreshMode == "cascade") entities.push(entity);
 								}
 							}
 						}
