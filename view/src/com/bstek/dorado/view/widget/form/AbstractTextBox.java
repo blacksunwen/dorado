@@ -22,7 +22,7 @@ public abstract class AbstractTextBox extends AbstractDataEditor {
 
 	@ComponentReference("Trigger")
 	@IdeProperty(
-			enumValues = "triggerClear,autoMappingDropDown1,autoMappingDropDown2,defaultDateDropDown")
+			enumValues = "triggerClear,autoMappingDropDown1,autoMappingDropDown2,defaultDateDropDown,defaultDateTimeDropDown,defaultYearMonthDropDown")
 	public String getTrigger() {
 		return trigger;
 	}

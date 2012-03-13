@@ -217,7 +217,7 @@ public class AutoForm extends Control implements FormConfig {
 
 	@ComponentReference("Trigger")
 	@IdeProperty(
-			enumValues = "triggerClear,autoMappingDropDown1,autoMappingDropDown2,defaultDateDropDown")
+			enumValues = "triggerClear,autoMappingDropDown1,autoMappingDropDown2,defaultDateDropDown,defaultDateTimeDropDown,defaultYearMonthDropDown")
 	public String getTrigger() {
 		return trigger;
 	}

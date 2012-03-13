@@ -2330,6 +2330,7 @@
 						});
 					}
 				} 
+				
 				if (!textEditor.get("trigger")) {
 					var dataType = column.get("dataType");
 					if (dataType) {
