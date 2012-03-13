@@ -293,7 +293,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			
 			var entityList = this.parent;
 			if (entityList && entityList instanceof dorado.EntityList) {
-				var page = entity.page;
+				var page = this.page;
 				if (eventArg.oldState == dorado.Entity.STATE_DELETED) {
 					entityList.changeEntityCount(page, 1);
 				}
