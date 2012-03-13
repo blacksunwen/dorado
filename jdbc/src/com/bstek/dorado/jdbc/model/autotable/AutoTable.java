@@ -15,6 +15,7 @@ import com.bstek.dorado.jdbc.Dialect;
 import com.bstek.dorado.jdbc.JdbcDataProviderContext;
 import com.bstek.dorado.jdbc.JdbcDataProviderOperation;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
+import com.bstek.dorado.jdbc.JdbcOperationUtils;
 import com.bstek.dorado.jdbc.JdbcParameterSource;
 import com.bstek.dorado.jdbc.model.AbstractDbColumn;
 import com.bstek.dorado.jdbc.model.AbstractTable;
@@ -39,6 +40,11 @@ import com.bstek.dorado.util.Assert;
 	definitionType = "com.bstek.dorado.jdbc.model.autotable.AutoTableDefinition",
 	subNodes = {
 		@XmlSubNode(
+			wrapper = @XmlNodeWrapper(nodeName = "Columns", fixed = true),
+			propertyName = "Jdbc_AutoTableColumns",
+			propertyType = "List<com.bstek.dorado.jdbc.model.autotable.AutoTableColumn>"
+		),
+		@XmlSubNode(
 			wrapper = @XmlNodeWrapper(nodeName="FromTables", fixed = true),
 			propertyName = "fromTables",
 			propertyType = "List<com.bstek.dorado.jdbc.model.autotable.FromTable>"
@@ -49,14 +55,15 @@ import com.bstek.dorado.util.Assert;
 			propertyType = "List<com.bstek.dorado.jdbc.model.autotable.JoinTable>"
 		),
 		@XmlSubNode(
-			wrapper = @XmlNodeWrapper(nodeName = "Columns", fixed = true),
-			propertyName = "Jdbc_AutoTableColumns",
-			propertyType = "List<com.bstek.dorado.jdbc.model.autotable.AutoTableColumn>"
-		),
-		@XmlSubNode(
 			wrapper = @XmlNodeWrapper(nodeName = "Orders"),
 			propertyName = "orders",
 			propertyType = "List<com.bstek.dorado.jdbc.model.autotable.Order>"
+		),
+		@XmlSubNode(
+			nodeName="Where",
+			propertyName="where",
+			propertyType="com.bstek.dorado.jdbc.model.autotable.JunctionMatchRule",
+			fixed=true
 		)
 	}
 )
@@ -101,7 +108,7 @@ public class AutoTable extends AbstractTable {
 		return joinTables;
 	}
 
-	@XmlSubNode(nodeName="Where", fixed=true)
+//	@XmlSubNode(nodeName="Where", fixed=true)
 	public JunctionMatchRule getWhere() {
 		return where;
 	}
@@ -158,7 +165,10 @@ public class AutoTable extends AbstractTable {
 	public Table getResolverTable() {
 		if (mainTable == null) {
 			FromTable fromTable = this.getMainFromTableObject();
-			mainTable = fromTable.getTableObject();
+			String fromTableName = fromTable.getName();
+			Table table = (Table)JdbcOperationUtils.getDbTable(fromTableName);
+			
+			mainTable = table;
 		}
 		return mainTable;
 	}
@@ -226,7 +236,10 @@ public class AutoTable extends AbstractTable {
 	}
 	
 	private String token(Dialect dialect, FromTable fromTable) {
-		return dialect.token(fromTable.getTableObject(), fromTable.getName());
+		String fromTableName = fromTable.getName();
+		Table table = (Table)JdbcOperationUtils.getDbTable(fromTableName);
+		
+		return dialect.token(table, fromTable.getName());
 	}
 	
 	private StringBuilder fromToken(AutoTable t, Dialect dialect) {
@@ -303,7 +316,9 @@ public class AutoTable extends AbstractTable {
 			FromTable fromTable = t.getFromTable(fromTableName);
 			String tableAlias = fromTableName;
 			
-			AbstractDbColumn column = fromTable.getTableObject().getColumn(fromColumnName);
+			Table table = fromTable.getTableObject();
+			
+			AbstractDbColumn column = table.getColumn(fromColumnName);
 			
 			String columnName = column.getName();
 			Object value = bmr.getValue();

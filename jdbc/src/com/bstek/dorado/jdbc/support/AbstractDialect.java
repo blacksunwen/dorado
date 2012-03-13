@@ -165,7 +165,8 @@ public abstract class AbstractDialect implements Dialect {
 			token.append(column.getName());
 		} else {
 			FromTable fromTable = autoTable.getFromTable(tableAlias);
-			AbstractDbColumn fromColumn = fromTable.getTableObject().getColumn(columnName);
+			Table table = fromTable.getTableObject();
+			AbstractDbColumn fromColumn = table.getColumn(columnName);
 			token.append(fromTable.getName() + '.' + fromColumn.getName());
 		}
 		
