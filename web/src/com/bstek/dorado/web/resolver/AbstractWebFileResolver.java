@@ -199,7 +199,6 @@ public abstract class AbstractWebFileResolver extends AbstractResolver {
 						}
 						outputFile(out, resources[i]);
 					}
-					out.flush();
 				} finally {
 					out.close();
 				}
