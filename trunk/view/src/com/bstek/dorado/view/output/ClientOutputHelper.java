@@ -414,6 +414,17 @@ public class ClientOutputHelper {
 				}
 			}
 
+			if (!propertyType.isPrimitive()
+					&& (Number.class.isAssignableFrom(propertyType) || Boolean.class
+							.isAssignableFrom(propertyType))) {
+				if (propertyConfig == null) {
+					propertyConfig = new PropertyConfig();
+				}
+				if (propertyConfig.getEscapeValue() == PropertyConfig.NONE_VALUE) {
+					propertyConfig.setEscapeValue(null);
+				}
+			}
+
 			if (propertyConfig != null) {
 				propertyConfigs.put(property, propertyConfig);
 			}
