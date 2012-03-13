@@ -747,6 +747,7 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 				&& !nodeName.contains(DispatchableXmlParser.WILDCARD)
 				&& StringUtils.isEmpty(xmlSubNode.parser())) {
 			RuleTemplate privateRuleTemplate = new AutoRuleTemplate('@' + name);
+			privateRuleTemplate.setScope("private");
 			privateRuleTemplate.setParents(new RuleTemplate[] { ruleTemplate });
 			privateRuleTemplate.setNodeName(nodeName);
 			ruleTemplate = privateRuleTemplate;

@@ -118,6 +118,7 @@ public class RuleSetBuilder {
 		}
 		ruleTemplate.processInheritance();
 
+		System.out.println(rule.getName());
 		applyTemplateToRule(ruleTemplate, rule, ruleSet);
 		return rule;
 	}
@@ -222,19 +223,19 @@ public class RuleSetBuilder {
 	private void findConcreteRules(RuleTemplate ruleTemplate,
 			Set<Rule> concreteRules, RuleSet ruleSet, boolean validateScope)
 			throws Exception {
-		String scope = ruleTemplate.getScope();
-		if (validateScope && "private".equals(scope)) {
-			return;
-		}
-
-		if (!ruleTemplate.isAbstract()
-				&& (!validateScope || "public".equals(scope))) {
-			concreteRules.add(exportRule(ruleTemplate, ruleSet));
-		}
-
 		RuleTemplate[] subRuleTemplates = ruleTemplate.getSubRuleTemplates();
 		if (subRuleTemplates != null && subRuleTemplates.length > 0) {
 			for (RuleTemplate subRuleTemplate : subRuleTemplates) {
+				String scope = subRuleTemplate.getScope();
+				if (validateScope && "private".equals(scope)) {
+					continue;
+				}
+
+				if (!subRuleTemplate.isAbstract()
+						&& (!validateScope || "public".equals(scope))) {
+					concreteRules.add(exportRule(subRuleTemplate, ruleSet));
+				}
+
 				findConcreteRules(subRuleTemplate, concreteRules, ruleSet,
 						validateScope);
 			}
@@ -247,14 +248,13 @@ public class RuleSetBuilder {
 		applyTemplateToChild(childTemplate, child, ruleSet);
 		rule.addChild(child);
 
-		String typeName = child.getRule().getType();
-		boolean validateScope = "com.bstek.dorado.view.widget.Component"
-				.equals(typeName)
-				|| "com.bstek.dorado.view.widget.Control".equals(typeName);
-
 		Set<Rule> concreteRules = child.getConcreteRules();
-		findConcreteRules(childTemplate.getRuleTemplate(), concreteRules,
-				ruleSet, validateScope);
+		RuleTemplate childRuleTemplate = childTemplate.getRuleTemplate();
+		if (!childRuleTemplate.isAbstract()) {
+			concreteRules.add(exportRule(childRuleTemplate, ruleSet));
+		}
+
+		findConcreteRules(childRuleTemplate, concreteRules, ruleSet, true);
 	}
 
 	protected void applyTemplateToChild(ChildTemplate childTemplate,
