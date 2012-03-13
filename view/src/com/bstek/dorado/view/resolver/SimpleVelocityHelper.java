@@ -9,6 +9,12 @@ import org.apache.velocity.context.Context;
  * @since 2011-5-14
  */
 public class SimpleVelocityHelper extends VelocityHelper {
+	private VelocityEngine velocityEngine;
+
+	public SimpleVelocityHelper(VelocityEngine velocityEngine) {
+		this.velocityEngine = velocityEngine;
+	}
+
 	@Override
 	protected Context createContext() throws Exception {
 		return new VelocityContext();
@@ -16,7 +22,7 @@ public class SimpleVelocityHelper extends VelocityHelper {
 
 	@Override
 	public VelocityEngine getVelocityEngine() throws Exception {
-		return new VelocityEngine();
+		return velocityEngine;
 	}
 
 }
