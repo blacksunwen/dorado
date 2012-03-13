@@ -1002,7 +1002,7 @@
 			trigger: {
 				getter: function(p, v) {
 					var trigger = this._trigger;
-					if (!trigger && this._view) {
+					if (trigger === undefined && this._view) {
 						var dataType = this.get("dataType"), dtCode = dataType ? dataType._code : 0;
 						if (dtCode == dorado.DataType.DATE) trigger = this._view.id("defaultDateDropDown");
 						else if (dtCode == dorado.DataType.DATETIME) trigger = this._view.id("defaultDateTimeDropDown");

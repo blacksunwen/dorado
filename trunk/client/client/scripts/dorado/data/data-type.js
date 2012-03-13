@@ -877,24 +877,27 @@
 				return (isNaN(date.getTime())) ? null : date;
 			}
 			
-			var format = argument || $setting["common.defaultDateFormat"];
-			var date = Date.parseDate(data, "Y-m-d\\TH:i:s\\Z");
-			if (date == null) {
-				var date = Date.parseDate(data, format);
+			if (typeof data == "string") {
+				var format = argument || $setting["common.defaultDateFormat"];
+				var date = Date.parseDate(data, "Y-m-d\\TH:i:s\\Z");
 				if (date == null) {
-					format = $setting["common.defaultTimeFormat"];
-					if (format) {
-						date = Date.parseDate(data, format);
-						if (date == null) {
-							var format = $setting["common.defaultDateTimeFormat"];
-							if (format) {
-								date = Date.parseDate(data, format);
-								if (date == null) data = new Date(data);
+					var date = Date.parseDate(data, format);
+					if (date == null) {
+						format = $setting["common.defaultTimeFormat"];
+						if (format) {
+							date = Date.parseDate(data, format);
+							if (date == null) {
+								var format = $setting["common.defaultDateTimeFormat"];
+								if (format) {
+									date = Date.parseDate(data, format);
+									if (date == null) data = new Date(data);
+								}
 							}
 						}
 					}
 				}
 			}
+			
 			if (date == null) {
 				throw new dorado.ResourceException("dorado.data.BadDateFormat", data);
 			}

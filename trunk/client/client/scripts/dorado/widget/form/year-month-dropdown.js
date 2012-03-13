@@ -379,24 +379,14 @@
 			}
 		},
 
-		EVENTS: {
-			onValueSelected: {
-				interceptor: function(superFire, self, arg) {
-					var value = arg.selectedValue;
-					arg.selectedValue = [value.year, value.month];
-					return superFire(self, arg);
-				}
-			}
-		},
-
 		createDropDownBox: function(editor) {
 			var dropDown = this, box = $invokeSuper.call(this, arguments), picker = new dorado.widget.YearMonthPicker({
 				listener: {
 					onPick: function(picker) {
-						dropDown.close({
-							year: picker._year,
-							month: picker._month
-						});
+						var retval = new Date(picker._year, picker._month);
+						retval.year = picker._year;
+						retval.month = picker._month;
+						dropDown.close(retval);
 					},
 					onCancel: function() {
 						dropDown.close();
@@ -430,5 +420,9 @@
 			}
 			return retValue;
 		}
+	});
+	
+	dorado.widget.View.registerDefaultComponent("defaultYearMonthDropDown", function() {
+		return new dorado.widget.YearMonthDropDown();
 	});
 })();
