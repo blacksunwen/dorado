@@ -96,7 +96,7 @@ public class VelocityHelperFactoryBean implements FactoryBean<VelocityHelper> {
 
 			return new VelocityWithToolsHelper(toolManager);
 		} else {
-			return new SimpleVelocityHelper();
+			return new SimpleVelocityHelper(getVelocityEngine());
 		}
 	}
 }
