@@ -668,7 +668,12 @@
 					}
 				}
 				
+				var originEditor = this._editor;
 				this._editor = control = this.createEditor(this._editorType);
+				if (originEditor != control) {
+					if (originEditor) this.unregisterInnerControl(originEditor);
+					if (control) this.registerInnerControl(control);
+				}
 			}
 			
 			if (control) {
