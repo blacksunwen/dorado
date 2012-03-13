@@ -42,6 +42,8 @@ public class FromTable {
 			Assert.notEmpty(tableName, "table must not be null. [" + name + "]");
 			
 			table = (Table)JdbcOperationUtils.getDbTable(tableName);
+		} else if (!table.getName().equals(tableName)) {
+			table = (Table)JdbcOperationUtils.getDbTable(tableName);
 		}
 		
 		return table;
