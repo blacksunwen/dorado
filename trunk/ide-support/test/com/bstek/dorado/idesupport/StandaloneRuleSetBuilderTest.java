@@ -34,8 +34,8 @@ public class StandaloneRuleSetBuilderTest extends IdeSupportContextTestCase {
 	private String outputTemplateToFile() throws Exception {
 		RuleTemplateManager ruleTemplateManager = getRuleTemplateBuilder()
 				.getRuleTemplateManager();
-		// File file = File.createTempFile("rules", "xml");
-		File file = new File("e:/temp/rule.xml");
+		File file = File.createTempFile("rules", "xml");
+		// File file = new File("e:/temp/rule.xml");
 		getRuleSetOutputter().output(new FileWriter(file), ruleTemplateManager);
 		return file.getAbsolutePath();
 	}
@@ -162,5 +162,10 @@ public class StandaloneRuleSetBuilderTest extends IdeSupportContextTestCase {
 		Rule dataColumnRule = ruleSet.getRule("DataColumn");
 		assertNotNull(dataColumnRule);
 		assertEquals("DataColumn", dataColumnRule.getNodeName());
+	}
+	
+	public void testLoadRuleFile() throws Exception {
+		InputStream in = new FileInputStream("e:/temp/.rules.xml");
+		StandaloneRuleSetBuilder.getRuleSet(in);
 	}
 }
