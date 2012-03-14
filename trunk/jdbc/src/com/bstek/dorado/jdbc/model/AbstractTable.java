@@ -11,8 +11,10 @@ import org.apache.commons.lang.StringUtils;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.data.entity.EntityState;
 import com.bstek.dorado.data.entity.EntityUtils;
+import com.bstek.dorado.data.provider.Criteria;
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.DbTableTrigger;
+import com.bstek.dorado.jdbc.JdbcDataProviderOperation;
 import com.bstek.dorado.jdbc.JdbcDataResolverContext;
 import com.bstek.dorado.jdbc.JdbcRecordOperation;
 import com.bstek.dorado.jdbc.JdbcRecordOperationProxy;
@@ -115,4 +117,15 @@ public abstract class AbstractTable extends AbstractDbElement implements DbTable
 		
 		return false;
 	}
+	
+	protected Criteria getCriteria(JdbcDataProviderOperation operation) {
+		Object paraObject = operation.getParameter();
+		if (paraObject instanceof Record) {
+			Record paraRecord = (Record)paraObject;
+			return (Criteria)paraRecord.get("criteria");
+		}
+		
+		return null;
+	}
+
 }

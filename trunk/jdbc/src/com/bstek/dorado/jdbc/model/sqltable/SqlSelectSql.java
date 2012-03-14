@@ -2,6 +2,7 @@ package com.bstek.dorado.jdbc.model.sqltable;
 
 import com.bstek.dorado.jdbc.Dialect;
 import com.bstek.dorado.jdbc.sql.SelectSql;
+import com.bstek.dorado.jdbc.sql.SqlUtils;
 import com.bstek.dorado.util.Assert;
 
 /**
@@ -12,6 +13,7 @@ import com.bstek.dorado.util.Assert;
 public class SqlSelectSql  extends SelectSql {
 
 	private String dynamicToken;
+	private Object parameter;
 	
 	public String getDynamicToken() {
 		return dynamicToken;
@@ -20,8 +22,18 @@ public class SqlSelectSql  extends SelectSql {
 		this.dynamicToken = dynamicToken;
 	}
 	
-	public String toSQL(Dialect dialect) {
+	public Object getParameter() {
+		return parameter;
+	}
+	public void setParameter(Object parameter) {
+		this.parameter = parameter;
+	}
+	
+	@Override
+	protected String doBuild(Dialect dialect) {
 		Assert.notEmpty(dynamicToken, "DynamicToken must not be empty.");
-		return this.getDynamicToken();
+		String sql = SqlUtils.build(dynamicToken, parameter);
+		
+		return sql;
 	}
 }

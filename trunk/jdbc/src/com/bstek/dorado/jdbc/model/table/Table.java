@@ -4,24 +4,23 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-
 import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlNodeWrapper;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
+import com.bstek.dorado.data.provider.Criteria;
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.Dialect;
 import com.bstek.dorado.jdbc.JdbcDataProviderOperation;
 import com.bstek.dorado.jdbc.JdbcDataResolverContext;
 import com.bstek.dorado.jdbc.JdbcParameterSource;
 import com.bstek.dorado.jdbc.JdbcRecordOperationProxy;
-import com.bstek.dorado.jdbc.model.AbstractTable;
 import com.bstek.dorado.jdbc.model.AbstractDbColumn;
+import com.bstek.dorado.jdbc.model.AbstractTable;
 import com.bstek.dorado.jdbc.sql.SelectSql;
-import com.bstek.dorado.jdbc.sql.SqlUtils;
 import com.bstek.dorado.jdbc.sql.SqlConstants.KeyWord;
+import com.bstek.dorado.jdbc.sql.SqlUtils;
 
 /**
  * 
@@ -147,7 +146,7 @@ public class Table extends AbstractTable {
 	@Override
 	public SelectSql selectSql(JdbcDataProviderOperation operation) {
 		Table table = (Table)operation.getDbTable();
-		Object parameter = operation.getParameter();
+		
 		Dialect dialect = operation.getJdbcEnviroment().getDialect();
 		
 		//SelectSql
@@ -177,15 +176,19 @@ public class Table extends AbstractTable {
 		
 		//dynamicToken
 		String dynamicToken = table.getDynamicClause();
-		if (StringUtils.isNotBlank(dynamicToken)) {
-			dynamicToken = SqlUtils.build(dynamicToken, parameter);
-		}
-		
 		selectSql.setDynamicToken(dynamicToken);
 		
+		//parameter
+		Object parameter = operation.getParameter();
+		selectSql.setParameter(parameter);
 		//JdbcParameterSource
-		JdbcParameterSource p = SqlUtils.createJdbcParameter(parameter);
-		selectSql.setParameterSource(p);
+		JdbcParameterSource parameterSource = SqlUtils.createJdbcParameter(parameter);
+		selectSql.setParameterSource(parameterSource);
+		
+		Criteria criteria = this.getCriteria(operation);
+		if (criteria != null) {
+			selectSql.setCriteria(criteria);
+		}
 		
 		return selectSql;
 	}
