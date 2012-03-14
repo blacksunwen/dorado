@@ -567,15 +567,8 @@
 						var v = data, data = [];
 						hasUpdateData = hasUpdateData || (v.length > 0);
 						for(var j = 0; j < v.length; j++) {
-							var generateDataType = options.generateDataType, lastDataType;
 							var entity = v[j];
-							if( entity instanceof dorado.Entity) {
-								if(generateDataType && lastDataType != entity.dataType) {
-									lastDataType = entity.dataType;
-									options.generateDataType = true;
-								} else {
-									options.generateDataType = false;
-								}
+							if (entity instanceof dorado.Entity) {
 								entities.push(entity);
 								data.push(entity.toJSON(options, context));
 							}

@@ -872,9 +872,7 @@
 				} else {
 					result.push(null);
 				}
-				if (generateDataType) options.generateDataType = false;
 			}
-			if (generateDataType) options.generateDataType = true;
 			if (result.length == 0 && entityFilter) result = null;
 			return result;
 		},
