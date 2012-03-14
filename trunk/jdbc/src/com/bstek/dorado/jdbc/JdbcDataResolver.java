@@ -29,7 +29,8 @@ import com.bstek.dorado.data.type.EntityDataType;
  * 
  */
 @XmlNode(
-	fixedProperties = "type=jdbc"
+	fixedProperties = "type=jdbc",
+	parser = "spring:dorado.jdbc.dataResolverParser"
 )
 public class JdbcDataResolver extends AbstractDataResolver {
 
@@ -43,6 +44,8 @@ public class JdbcDataResolver extends AbstractDataResolver {
 	
 	private boolean autoCreateItems = false;
 	
+	private JdbcIntercepter jdbcIntercepter;
+
 	@XmlProperty(parser="spring:dorado.jdbc.jdbcEnviromentParser")
 	@IdeProperty(enumValues="default")
 	public JdbcEnviroment getJdbcEnviroment() {
@@ -89,13 +92,20 @@ public class JdbcDataResolver extends AbstractDataResolver {
 		this.autoCreateItems = autoCreateItems;
 	}
 	
+	public JdbcIntercepter getJdbcIntercepter() {
+		return jdbcIntercepter;
+	}
+
+	public void setJdbcIntercepter(JdbcIntercepter jdbcIntercepter) {
+		this.jdbcIntercepter = jdbcIntercepter;
+	}
+	
 	@Override
 	protected Object internalResolve(DataItems dataItems, Object parameter)
 			throws Exception {
 		JdbcDataResolverOperation operation = createOperation(dataItems, parameter);
 		
-		JdbcIntercepter intercepter = JdbcUtils.getGlobalIntercepter();
-		operation = intercepter.getOperation(operation);
+		operation = jdbcIntercepter.getOperation(operation);
 		operation.execute();
 		
 		return operation.getJdbcContext().getReturnValue();

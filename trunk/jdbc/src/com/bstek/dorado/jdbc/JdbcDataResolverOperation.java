@@ -126,8 +126,8 @@ public class JdbcDataResolverOperation {
 		} 
 		
 		String tableName = resolverItem.getTableName();
-		DbTable dbTable = JdbcOperationUtils.getDbTable(tableName);
-		JdbcOperationUtils.doSave(dbTable, record, jdbcContext);
+		DbTable dbTable = JdbcUtils.getDbTable(tableName);
+		JdbcUtils.doSave(dbTable, record, jdbcContext);
 		
 		if (!EntityState.DELETED.equals(EntityUtils.getState(record))) {
 			List<JdbcDataResolverItem> items = resolverItem.getResolverItems();

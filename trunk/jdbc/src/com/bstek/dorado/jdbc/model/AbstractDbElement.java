@@ -3,7 +3,7 @@ package com.bstek.dorado.jdbc.model;
 import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
-import com.bstek.dorado.jdbc.JdbcUtils;
+import com.bstek.dorado.jdbc.config.JdbcEnviromentManager;
 
 /**
  * @author mark.li@bstek.com
@@ -15,6 +15,16 @@ public abstract class AbstractDbElement implements DbElement {
 	
 	private JdbcEnviroment env;
 	
+	private JdbcEnviromentManager enviromentManager;
+	
+	public JdbcEnviromentManager getEnviromentManager() {
+		return enviromentManager;
+	}
+
+	public void setEnviromentManager(JdbcEnviromentManager enviromentManager) {
+		this.enviromentManager = enviromentManager;
+	}
+
 	@Override
 	@IdeProperty(highlight=1)
 	@XmlProperty(attributeOnly=true)
@@ -33,7 +43,7 @@ public abstract class AbstractDbElement implements DbElement {
 		if (env != null) {
 			return env;
 		} else {
-			return JdbcUtils.getEnviromentManager().getDefault();
+			return getEnviromentManager().getDefault();
 		}
 	}
 

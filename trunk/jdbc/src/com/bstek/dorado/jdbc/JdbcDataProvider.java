@@ -45,7 +45,7 @@ public class JdbcDataProvider extends AbstractDataProvider {
 	protected Object internalGetResult(Object parameter, DataType resultDataType)
 			throws Exception {
 		JdbcDataProviderOperation operation = createOperation(parameter, null);
-		return JdbcOperationUtils.query(operation);
+		return JdbcUtils.query(operation);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -53,14 +53,14 @@ public class JdbcDataProvider extends AbstractDataProvider {
 	protected void internalGetResult(Object parameter, Page<?> page,
 			DataType resultDataType) throws Exception {
 		JdbcDataProviderOperation operation = createOperation(parameter, (Page<Record>) page);
-		JdbcOperationUtils.query(operation);
+		JdbcUtils.query(operation);
 	}
 
 	protected JdbcDataProviderOperation createOperation(Object parameter, Page<Record> page) {
 		Assert.notEmpty(tableName, "tableName must not be empty.");
 		
 		JdbcDataProviderContext jCtx = new JdbcDataProviderContext(getJdbcEnviroment(), parameter, page);
-		DbTable table = JdbcOperationUtils.getDbTable(tableName);
+		DbTable table = JdbcUtils.getDbTable(tableName);
 		JdbcDataProviderOperation operation = new JdbcDataProviderOperation(table, jCtx);
 		
 		return operation;

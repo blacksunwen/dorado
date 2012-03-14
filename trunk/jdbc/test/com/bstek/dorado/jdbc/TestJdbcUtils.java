@@ -7,14 +7,31 @@ import junit.framework.Assert;
 
 import org.w3c.dom.Document;
 
+import com.bstek.dorado.core.Context;
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.config.DomHelper;
+import com.bstek.dorado.jdbc.config.JdbcEnviromentManager;
 import com.bstek.dorado.jdbc.support.DefaultStoredProcedureGenerator;
 
 public class TestJdbcUtils {
 	
+	@SuppressWarnings("unchecked")
+	private static <T> T getServiceBean(String serviceName) {
+		Context ctx = Context.getCurrent();
+		try {
+			return (T)ctx.getServiceBean(serviceName);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public static JdbcEnviromentManager getEnviromentManager() {
+		JdbcEnviromentManager manager = getServiceBean("jdbc.enviromentManager");
+		return manager;
+	}
+	
 	public static String outputSP(String jdbcEnvName, String catalog, String schema, String procedureName) {
-		JdbcEnviroment jdbcEnv = JdbcUtils.getEnviromentManager().getEnviroment(jdbcEnvName);
+		JdbcEnviroment jdbcEnv = getEnviromentManager().getEnviroment(jdbcEnvName);
 		DefaultStoredProcedureGenerator generator = new DefaultStoredProcedureGenerator();
 		Document document = generator.create(jdbcEnv, catalog, schema, procedureName);
 		
