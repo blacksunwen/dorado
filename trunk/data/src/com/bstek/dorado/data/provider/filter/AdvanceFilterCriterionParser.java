@@ -50,6 +50,7 @@ public class AdvanceFilterCriterionParser implements FilterCriterionParser {
 		filterCriterion.setProperty(property);
 		filterCriterion.setDataType(dataType);
 		filterCriterion.setExpression(expression);
+		filterCriterion.setFilterOperator(op);
 		filterCriterion.setValue((dataType != null) ? dataType
 				.fromText(valueExpression) : valueExpression);
 		return filterCriterion;

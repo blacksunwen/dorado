@@ -126,9 +126,13 @@
 			if (realContainerWidth < 0) realContainerWidth = 0;
 			if (realContainerHeight < 0) realContainerHeight = 0;
 			
+			if (dorado.Browser.webkit) {
+				realContainerHeight -= padding * 2; // 搞不懂为什么Webkit中一定要重复的减去一次padding后才刚好 2012/3/14
+			}
+			
 			$(parentDom).css("text-align", HBOX_PACKS[this._pack]);
 			row.style.verticalAlign = HBOX_ALIGNS[this._align];
-			table.style.height = realContainerHeight + "px";			
+			table.style.height = realContainerHeight + "px";
 			for (var it = this._regions.iterator(); it.hasNext();) {
 				var region = it.next(), cell = domCache[region.id];
 				if (cell) {
