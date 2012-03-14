@@ -16,6 +16,10 @@
 	<bean id="dorado.jdbc.jdbcTypeParser" class="com.bstek.dorado.jdbc.config.JdbcTypeParser" parent="dorado.propertyParser">
 		<property name="jdbcTypeManager" ref="dorado.jdbc.jdbcTypeManager"/>
 	</bean>
+	<bean id="dorado.jdbc.dataResolverParser" class="com.bstek.dorado.jdbc.config.JdbcDataResolverParser" parent="dorado.prototype.dataResolverParser">
+		<property name="jdbcIntercepter" ref="dorado.jdbc.globalIntercepter"/>
+	</bean>
+	
 	<bean id="dorado.jdbc.keyGeneratorParser" class="com.bstek.dorado.jdbc.model.table.KeyGeneratorParser" parent="dorado.propertyParser">
 		<property name="keyGeneratorManager" ref="dorado.jdbc.keyGeneratorManager"/>
 	</bean>

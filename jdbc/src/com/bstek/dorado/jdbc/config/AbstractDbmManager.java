@@ -9,9 +9,18 @@ import org.apache.commons.lang.StringUtils;
 import com.bstek.dorado.config.definition.DefaultDefinitionManager;
 
 public abstract class AbstractDbmManager extends DefaultDefinitionManager<DbElementDefinition> implements DbmManager {
-
 	private List<JdbcConfigLoader> configs = new ArrayList<JdbcConfigLoader>();
 
+	private JdbcEnviromentManager enviromentManager;
+	
+	public JdbcEnviromentManager getEnviromentManager() {
+		return enviromentManager;
+	}
+
+	public void setEnviromentManager(JdbcEnviromentManager enviromentManager) {
+		this.enviromentManager = enviromentManager;
+	}
+	
 	public JdbcConfigLoader[] getConfigs() {
 		return configs.toArray(new JdbcConfigLoader[0]);
 	}
@@ -26,6 +35,7 @@ public abstract class AbstractDbmManager extends DefaultDefinitionManager<DbElem
 
 	protected void register(DbElementDefinition def) {
 		this.registerDefinition(def.getName(), def);
+		def.getProperties().put("enviromentManager", enviromentManager);
 	}
 
 	@Override
@@ -36,8 +46,6 @@ public abstract class AbstractDbmManager extends DefaultDefinitionManager<DbElem
 			throw new RuntimeException(e);
 		}
 	}
-
-	
 	
 	@Override
 	public void register(JdbcConfigLoader loader) {
