@@ -1181,7 +1181,6 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				generateState = options.generateState;
 				generateEntityId = options.generateEntityId;
 				generateOldData = !!(options.generateOldData && this._oldData);
-				options.generateDataType = false;
 				properties = options.properties;
 				entityFilter = options.entityFilter;
 				if (properties != null && properties.length == 0) properties = null;
@@ -1232,8 +1231,6 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			if (generateState && this.state != dorado.Entity.STATE_NONE) result.$state = this.state;
 			if (generateEntityId) result.$entityId = this.entityId;
 			if (oldDataHolder) result.$oldData = oldDataHolder;
-
-			if (options) options.generateDataType = generateDataType;
 
 			if (context && context.entities) context.entities.push(this);
 			return result;

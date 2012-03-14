@@ -1785,25 +1785,29 @@
 		},
 
 		getCellEditor: function(column, entity) {
-			var cellEditorCache = this._cellEditorCache;
-			if (!cellEditorCache) this._cellEditorCache = cellEditorCache = {};
-			var cellEditor = cellEditorCache[column._id];
-			
-			if (cellEditor === undefined) {
-				cellEditor = new dorado.widget.grid.DefaultCellEditor();
-				cellEditor.bindColumn(column);
-			} else if (cellEditor) {
-				if (cellEditor.column) {
-					if (cellEditor.column != column) throw new ResourceException("dorado.grid.CellEditorShareError");
-				} else {
-					cellEditor.bindColumn(column);
-				}
-			}
-			
-			if (entity && column._propertyPath) {
-				entity = column._propertyPath.evaluate(entity, true);
-			}
 			if (entity) {
+				var cellEditorCache = this._cellEditorCache;
+				if (!cellEditorCache) this._cellEditorCache = cellEditorCache = {};
+				var cellEditor = cellEditorCache[column._id];
+				
+				if (cellEditor === undefined) {
+					cellEditor = column._cellEditor;
+					if (cellEditor === undefined) {
+						cellEditor = new dorado.widget.grid.DefaultCellEditor();
+					}
+					cellEditor.bindColumn(column);
+				} else if (cellEditor) {
+					if (cellEditor.column) {
+						if (cellEditor.column != column) throw new ResourceException("dorado.grid.CellEditorShareError");
+					} else {
+						cellEditor.bindColumn(column);
+					}
+				}
+				
+				if (column._propertyPath) {
+					entity = column._propertyPath.evaluate(entity, true);
+				}
+				
 				var eventArg = {
 					data: entity,
 					column: column,

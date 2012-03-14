@@ -294,7 +294,7 @@
 				if (!col) throw new dorado.Exception("TreeColumn [" + this._treeColumn + "] not found.");
 				if (!(col instanceof dorado.widget.grid.DataColumn)) throw new dorado.Exception("The [treeColumn] is not a DataColumn.");
 				if (!col._renderer) col._renderer = new dorado.widget.treegrid.TreeColumnCellRenderer();
-				if (!col._editor) col._editor = new dorado.widget.treegrid.TreeColumnCellEditor();
+				if (!col._editor) col._cellEditor = new dorado.widget.treegrid.TreeColumnCellEditor();
 			}
 			
 			$invokeSuper.call(this, arguments);
