@@ -2,6 +2,7 @@ package com.bstek.dorado.jdbc.model.autotable;
 
 import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.XmlProperty;
 
 /**
  * 
@@ -43,6 +44,7 @@ public class BaseMatchRule extends AbstractMatchRule {
 		this.operator = operator;
 	}
 
+	@XmlProperty
 	public Object getValue() {
 		return value;
 	}
