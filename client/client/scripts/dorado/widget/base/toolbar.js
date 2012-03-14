@@ -249,7 +249,7 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
             overflowButton = toolbar._overflowButton, items = toolbar._items,
             lastChild = doms.toolbarLeft.lastChild, overflow = false;
 
-		if (dorado.Browser.msie) {
+		if (dorado.Browser.msie && items) {
 			items.each(function(item) {
 				if (item instanceof dorado.widget.TextEditor) {
 					item.resetDimension();
