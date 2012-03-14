@@ -51,7 +51,8 @@ public class AutoTableSelectSql  extends SelectSql {
 		this.orderToken = orderToken;
 	}
 	
-	public String toSQL(Dialect dialect) {
+	@Override
+	protected String doBuild(Dialect dialect) {
 		Assert.notEmpty(columnsToken, "ColumnsToken must not be empty.");
 		Assert.notEmpty(fromToken, "FromToken must not be empty.");
 		
@@ -83,4 +84,5 @@ public class AutoTableSelectSql  extends SelectSql {
 		
 		return sql.build();
 	}
+
 }

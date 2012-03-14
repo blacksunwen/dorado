@@ -25,7 +25,6 @@ public class JdbcOperationUtils {
 			DbTable table = (DbTable)definition.create(context);
 			return table;
 		} catch (Exception e) {
-			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
 	}

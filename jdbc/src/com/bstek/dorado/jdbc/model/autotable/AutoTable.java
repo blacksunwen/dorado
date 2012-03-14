@@ -11,6 +11,7 @@ import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlNodeWrapper;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.data.entity.EntityState;
+import com.bstek.dorado.data.provider.Criteria;
 import com.bstek.dorado.jdbc.Dialect;
 import com.bstek.dorado.jdbc.JdbcDataProviderContext;
 import com.bstek.dorado.jdbc.JdbcDataProviderOperation;
@@ -165,8 +166,7 @@ public class AutoTable extends AbstractTable {
 	public Table getResolverTable() {
 		if (mainTable == null) {
 			FromTable fromTable = this.getMainFromTableObject();
-			String fromTableName = fromTable.getName();
-			Table table = (Table)JdbcOperationUtils.getDbTable(fromTableName);
+			Table table = fromTable.getTableObject();
 			
 			mainTable = table;
 		}
@@ -219,27 +219,29 @@ public class AutoTable extends AbstractTable {
 		//fromToken
 		StringBuilder fromToken = fromToken(autoTable, dialect);
 		//where
-		JdbcParameterSource p = SqlUtils.createJdbcParameter(parameter);
-		StringBuilder whereToken = whereToken(autoTable, p);
+		JdbcParameterSource parameterSource = SqlUtils.createJdbcParameter(parameter);
+		StringBuilder whereToken = whereToken(autoTable, parameterSource);
 		//order
-		StringBuilder orderbyToken = orderByToken(autoTable, p, dialect);
+		StringBuilder orderbyToken = orderByToken(autoTable, parameterSource, dialect);
 		
 		//--
 		AutoTableSelectSql selectSql = new AutoTableSelectSql();
-		selectSql.setParameterSource(p);
+		selectSql.setParameterSource(parameterSource);
 		selectSql.setColumnsToken(columnsToken.toString());
 		selectSql.setFromToken(fromToken.toString());
 		selectSql.setWhereToken(whereToken.toString());
 		selectSql.setOrderToken(orderbyToken.toString());
 		
+		Criteria criteria = this.getCriteria(operation);
+		if (criteria != null) {
+			selectSql.setCriteria(criteria);
+		}
+		
 		return selectSql;
 	}
 	
 	private String token(Dialect dialect, FromTable fromTable) {
-		String fromTableName = fromTable.getName();
-		Table table = (Table)JdbcOperationUtils.getDbTable(fromTableName);
-		
-		return dialect.token(table, fromTable.getName());
+		return dialect.token(fromTable.getTableObject(), fromTable.getName());
 	}
 	
 	private StringBuilder fromToken(AutoTable t, Dialect dialect) {

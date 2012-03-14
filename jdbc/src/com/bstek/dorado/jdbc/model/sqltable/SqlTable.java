@@ -11,6 +11,7 @@ import com.bstek.dorado.annotation.XmlNodeWrapper;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.data.entity.EntityState;
 import com.bstek.dorado.data.entity.EntityUtils;
+import com.bstek.dorado.data.provider.Criteria;
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.JdbcDataProviderOperation;
 import com.bstek.dorado.jdbc.JdbcDataResolverContext;
@@ -145,18 +146,26 @@ public class SqlTable extends AbstractTable {
 	
 	@Override
 	public SelectSql selectSql(JdbcDataProviderOperation operation) {
-		SqlTable t = (SqlTable)operation.getDbTable();
-		Object parameter = operation.getParameter();
 		SqlSelectSql selectSql = new SqlSelectSql();
 		
 		//querySql
+		SqlTable t = (SqlTable)operation.getDbTable();
 		String querySql = t.getQuerySql();
-		querySql = SqlUtils.build(querySql, parameter);
 		selectSql.setDynamicToken(querySql);
 		
+		//parameter
+		Object parameter = operation.getParameter();
+		selectSql.setParameter(parameter);
+		
 		//SqlParameterSource
-		JdbcParameterSource p = SqlUtils.createJdbcParameter(parameter);
-		selectSql.setParameterSource(p);
+		JdbcParameterSource parameterSource = SqlUtils.createJdbcParameter(parameter);
+		selectSql.setParameterSource(parameterSource);
+		
+		Criteria criteria = this.getCriteria(operation);
+		if (criteria != null) {
+			selectSql.setCriteria(criteria);
+		}
+		
 		return selectSql;
 	}
 }
