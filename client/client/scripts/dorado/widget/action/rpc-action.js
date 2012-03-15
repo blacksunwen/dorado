@@ -184,7 +184,7 @@
 	dorado.DataPath.registerInterceptor("DIRTY_TREE", function(data) {
 
 		function gothrough(entity, ignoreSelf) {
-			var isDirty = ignoreSelf ? false : entity.isDirty();
+			var isDirty = entity.isDirty();
 
 			var data = entity._data;
 			for (var property in data) {
@@ -204,7 +204,7 @@
 					if (gothrough(value, true)) isDirty = true;
 				}
 			}
-			if(!isDirty) CASCADE_NOT_DRITY_ENTITYS[entity.entityId] = true;
+			if (!isDirty && !ignoreSelf) CASCADE_NOT_DRITY_ENTITYS[entity.entityId] = true;
 			return isDirty;
 		}
 
