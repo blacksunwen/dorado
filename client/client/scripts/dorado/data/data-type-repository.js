@@ -485,17 +485,17 @@
 	
 	var dataType = dorado.$String;
 	root.register(dataType);
+	root.register("char", dataType);
+	root.register("Character", dataType);
 	
 	dataType = dorado.$int;
 	root.register("byte", dataType);
-	root.register("char", dataType);
 	root.register("short", dataType);
 	root.register("int", dataType);
 	root.register("long", dataType);
 	
 	dataType = dorado.$Integer;
 	root.register("Byte", dataType);
-	root.register("Character", dataType);
 	root.register("Short", dataType);
 	root.register("Integer", dataType);
 	root.register("Long", dataType);
