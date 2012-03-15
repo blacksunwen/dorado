@@ -438,18 +438,24 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 	
 	/**
 	 * 验证表单中所有编辑器中的数据。
+	 * @param {boolean} [silent] 是否要在验证失败时禁止Dorado7抛出异常信息。
 	 * @return {boolean} 返回本次验证结果是否全部正确。
 	 */
-	validate: function() {
+	validate: function(silent) {
 		var result = true, elements = this._elements;
 		this._elements.each(function(element) {
 			if (element instanceof dorado.widget.FormElement) {
 				var editor = element.get("editor");
 				if (editor && editor instanceof dorado.widget.AbstractTextBox) {
-					if (editor.get("validateState") == "none") {
-						editor.post();
+					if (editor.get("validationState") == "none") {
+						editor.post(false, true);
 					}
-					if (result && editor.get("validateState") == "invalid") result = false;
+					if (result && editor.get("validationState") == "error") {
+						result = false;
+						if (!silent) {
+							throw new dorado.widget.editor.PostException(editor.get("validationMessages"));
+						}
+					}
 				}
 			}
 		});

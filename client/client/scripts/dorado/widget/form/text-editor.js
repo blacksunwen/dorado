@@ -527,10 +527,11 @@
 		
 		/**
 		 * 当系统尝试确认编辑器中的编辑内容时执行的内部方法。
-		 * @param {boolean} force 是否强制确认，即忽略对编辑框中内容有没有被修改过的判断，直接确认其中的内容。
+		 * @param {boolean} [force] 是否强制确认，即忽略对编辑框中内容有没有被修改过的判断，直接确认其中的内容。
+		 * @param {boolean} [silent] 是否要在确认数据失败是禁止Dorado7抛出异常信息。
 		 * @return boolean 编辑器中的内容是否得到了确认。
 		 */
-		post: function(force) {
+		post: function(force, silent) {
 			try {
 				var text = this.get("text"), state, result, modified = (this._lastPost != text), validationResults;
 				if ((force || modified || (this._validationState == "none" && text == '') && (new Date() - (this._focusTime || 0)) > 300)) {
@@ -571,7 +572,7 @@
 					processDefault: true
 				};
 				this.fireEvent("onPostFailed", this, eventArg);
-				if (eventArg.processDefault) {
+				if (eventArg.processDefault && !silent) {
 					dorado.Exception.processException(e);
 				} else {
 					dorado.Exception.removeException(e);
