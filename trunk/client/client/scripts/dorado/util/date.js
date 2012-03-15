@@ -55,8 +55,8 @@ Date.formatFunctions = {
  * @example
  * var date = new Date();
  * date.formatDate("Y-m-d");	// 返回类似"2000-09-25"的字符串
- * date.formatDate("h:i:s");	// 返回类似"23:10:30"的字符串
- * date.formatDate("Y年m月d日 h点i分s秒");	// 返回类似"2000年09月25日 23点10分30秒"的字符串
+ * date.formatDate("H:i:s");	// 返回类似"23:10:30"的字符串
+ * date.formatDate("Y年m月d日 H点i分s秒");	// 返回类似"2000年09月25日 23点10分30秒"的字符串
  */
 Date.prototype.formatDate = function(format) {
 	if (Date.formatFunctions[format] == null) {
@@ -156,7 +156,7 @@ Date.getFormatCode = function(character) {
  * @example
  * var date1 = Date.parseDate("2000-09-25", "Y-m-d");
  * var date2 = Date.parseDate("20000925", "Ymd");
- * var date3 = Date.parseDate("2000-09-25 23:10:30", "Y-m-d h:i:s");
+ * var date3 = Date.parseDate("2000-09-25 23:10:30", "Y-m-d H:i:s");
  */
 Date.parseDate = function(input, format) {
 	if (Date.parseFunctions[format] == null) {
