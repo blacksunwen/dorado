@@ -24,7 +24,7 @@ public class RuleSetResolver extends AbstractTextualResolver {
 
 	public RuleSetResolver() {
 		setContentType(HttpConstants.CONTENT_TYPE_XML);
-		setCacheControl(HttpConstants.NO_STORE);
+		setCacheControl(HttpConstants.NO_CACHE);
 	}
 
 	public void setRuleTemplateBuilder(RuleTemplateBuilder ruleTemplateBuilder) {

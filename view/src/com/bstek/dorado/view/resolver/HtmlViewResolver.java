@@ -48,6 +48,7 @@ public class HtmlViewResolver extends AbstractTextualResolver {
 
 	public HtmlViewResolver() {
 		setContentType(HttpConstants.CONTENT_TYPE_HTML);
+		setCacheControl(HttpConstants.NO_CACHE);
 	}
 
 	public void setDataConfigManager(DataConfigManager dataConfigManager) {

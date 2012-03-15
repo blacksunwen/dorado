@@ -41,7 +41,7 @@ public class RobotResolver extends AbstractTextualResolver {
 
 	public RobotResolver() {
 		setContentType(HttpConstants.CONTENT_TYPE_XML);
-		setCacheControl(HttpConstants.NO_STORE);
+		setCacheControl(HttpConstants.NO_CACHE);
 	}
 
 	public void setRobotRegistry(RobotRegistry robotRegistry) {

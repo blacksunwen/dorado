@@ -21,6 +21,5 @@ public abstract class HttpConstants {
 	public static final String COMPRESS = "compress";
 
 	public static final String CACHE_CONTROL = "Cache-Control";
-	public static final String NO_CACHE = "no-cache";
-	public static final String NO_STORE = "no-store";
+	public static final String NO_CACHE = "no-cache, no-store";
 }

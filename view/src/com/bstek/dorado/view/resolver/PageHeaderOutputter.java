@@ -13,7 +13,6 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.core.Configure;
-import com.bstek.dorado.core.Constants;
 import com.bstek.dorado.core.io.Resource;
 import com.bstek.dorado.core.io.ResourceUtils;
 import com.bstek.dorado.core.pkgs.PackageManager;
@@ -55,13 +54,13 @@ public class PageHeaderOutputter implements Outputter {
 		Writer writer = context.getWriter();
 		HttpServletRequest request = DoradoContext.getAttachedRequest();
 
-		writer.append(
-				"<meta http-equiv=\"content-type\" content=\"text/html; charset=")
-				.append(Constants.DEFAULT_CHARSET)
-				.append("\" />\n")
-				.append("<meta http-equiv=\"pragma\" content=\"no-cache\" />\n")
-				.append("<meta http-equiv=\"cache-control\" content=\"no-cache\" />\n")
-				.append("<meta http-equiv=\"expires\" content=\"0\" />\n");
+		// writer.append(
+		// "<meta http-equiv=\"content-type\" content=\"text/html; charset=")
+		// .append(Constants.DEFAULT_CHARSET)
+		// .append("\" />\n")
+		// .append("<meta http-equiv=\"Pragma\" content=\"no-cache\" />\n")
+		// .append("<meta http-equiv=\"Cache-Control\" content=\"no-cache, no-store\" />\n")
+		// .append("<meta http-equiv=\"Expires\" content=\"0\" />\n");
 
 		if (StringUtils.isNotEmpty(view.getTitle())) {
 			writer.append("<title>")
