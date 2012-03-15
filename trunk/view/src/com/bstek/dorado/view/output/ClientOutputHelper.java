@@ -345,7 +345,9 @@ public class ClientOutputHelper {
 				typeInfo = TypeInfo.parse(
 						(ParameterizedType) readMethod.getGenericReturnType(),
 						true);
-				propertyType = typeInfo.getType();
+				if (typeInfo != null) {
+					propertyType = typeInfo.getType();
+				}
 			} else if (propertyType.isArray()) {
 				typeInfo = new TypeInfo(propertyType.getComponentType(), true);
 			} else {
