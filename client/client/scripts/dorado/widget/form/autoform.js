@@ -442,7 +442,7 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 	 * @return {boolean} 返回本次验证结果是否全部正确。
 	 */
 	validate: function(silent) {
-		var result = true, elements = this._elements;
+		var result = true, elements = this._elements, errorMessages;
 		this._elements.each(function(element) {
 			if (element instanceof dorado.widget.FormElement) {
 				var editor = element.get("editor");
@@ -452,13 +452,15 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 					}
 					if (result && editor.get("validationState") == "error") {
 						result = false;
-						if (!silent) {
-							throw new dorado.widget.editor.PostException(editor.get("validationMessages"));
-						}
+						errorMessages = editor.get("validationMessages");
 					}
 				}
 			}
 		});
+		
+		if (!result && !silent) {
+			throw new dorado.widget.editor.PostException(errorMessages);
+		}
 		return result;
 	},
 	
