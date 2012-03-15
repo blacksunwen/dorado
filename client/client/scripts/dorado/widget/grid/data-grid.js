@@ -203,7 +203,9 @@
 		
 		addColumn: function() {
 			var column = $invokeSuper.call(this, arguments);
-			if (this._autoCreateColumns && column instanceof dorado.widget.grid.DataColumn && column._property && column._property != "none") {
+			if (this._autoCreateColumns == null && 
+				(column instanceof dorado.widget.grid.DataColumn && column._property && column._property != "none" ||
+				column instanceof dorado.widget.grid.ColumnGroup)) {
 				var watcher = this.getAttributeWatcher();
 				if (watcher.getWritingTimes("autoCreateColumns") == 0) {
 					this._autoCreateColumns = false;
@@ -301,7 +303,7 @@
 					var grid = this;
 					this.get("dataTypeRepository").addListener("onDataTypeRegister", function(self, arg) {
 						var dataType = grid.getBindingDataType("never");
-						if (dataType) {
+						if (dataType && dataType instanceof dorado.EntityDataType) {
 							self.removeListener("onDataTypeRegister", arguments.callee);
 							grid._autoCreateColumns = true;
 							grid._listeningDataTypeRepository = false;
