@@ -291,7 +291,7 @@
 								
 								eventArg.success = success;
 								eventArg[success ? "result" : "error"] = result;
-								self.fireEvent("onExecute", eventArg);
+								self.fireEvent("onExecute", self, eventArg);
 								self.fireEvent((success) ? "onSuccess" : "onFailure", self, eventArg);
 								
 								if (!success && !eventArg.processDefault) {
