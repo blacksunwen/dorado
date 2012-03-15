@@ -3,7 +3,11 @@
 	<target name="build">
 		<concat destfile="${dist}/scripts/dorado/html-editor.js" fixlastline="true" encoding="utf-8">
 			<filelist dir="${src}/scripts/dorado">
-				<file name="html-editor.js" />
+                <file name="ueditor_all.js" />
+                <file name="color-picker.js" />
+                <file name="face-picker.js" />
+                <file name="html-editor.js" />
+                <file name="html-editor-plugins.js" />
 			</filelist>
 		</concat>
 
