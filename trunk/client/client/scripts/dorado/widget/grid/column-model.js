@@ -550,7 +550,7 @@
 			var grid = arg.grid, innerGrid = arg.innerGrid, entity = arg.data, dataColumns = innerGrid._columnsInfo.dataColumns;
 			var oldHeight;
 			if (grid._dynaRowHeight) {
-				if (dorado.Browser.chrome || dorado.Browser.safari) {
+				if (dorado.Browser.webkit) {
 					oldHeight = row.firstChild.clientHeight;
 				} else {
 					oldHeight = row.clientHeight;
@@ -559,7 +559,7 @@
 				if (dorado.Browser.msie && dorado.Browser.version >= 8) {
 					row.style.height = '';
 					$fly(row).addClass("fix-valign-bug");
-				} else if (dorado.Browser.chrome || dorado.Browser.safari) {
+				} else if (dorado.Browser.webkit) {
 					row.firstChild.style.height = '';
 				} else {
 					row.style.height = '';
@@ -613,7 +613,7 @@
 			
 			if (grid._dynaRowHeight) {
 				var h;
-				if (dorado.Browser.chrome || dorado.Browser.safari) {
+				if (dorado.Browser.webkit) {
 					h = row.firstChild.scrollHeight;
 				} else {
 					h = row.clientHeight;
@@ -639,7 +639,7 @@
 								if (dorado.Browser.msie && dorado.Browser.version >= 8) {
 									row.style.height = fh + "px";
 									$fly(row).toggleClass("fix-valign-bug");
-								} else if (dorado.Browser.chrome || dorado.Browser.safari) {
+								} else if (dorado.Browser.webkit) {
 									row.firstChild.style.height = fh + "px";
 								} else {
 									row.style.height = fh + "px";

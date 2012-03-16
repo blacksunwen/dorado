@@ -562,7 +562,7 @@
 	var PassiveItemModel = $extend(dorado.widget.list.ItemModel, overrides);
 
 	function getCellOffsetTop(cell, rowHeight) {
-		return (dorado.Browser.safari || dorado.Browser.chrome) ? (cell.parentNode.sectionRowIndex * (rowHeight + 1)) : cell.offsetTop;
+		return (dorado.Browser.webkit) ? (cell.parentNode.sectionRowIndex * (rowHeight + 1)) : cell.offsetTop;
 	}
 
 	/**
@@ -1102,7 +1102,9 @@
 		createDom: function() {
 			var dom = $invokeSuper.call(this, arguments);
 			$fly(dom).mousewheel($scopify(this, function(evt, delta) {
-				if (this._divScroll) this._divScroll.scrollTop -= delta * this._rowHeight * 2;
+				if (this._divScroll) {
+					this._divScroll.scrollTop -= delta * this._rowHeight * 2;
+				}
 				if (this._currentCellEditor) this._currentCellEditor.hide();
 				return false;
 			}));
@@ -1483,8 +1485,7 @@
 					var innerGrid = this._innerGrid;
 					var innerGridWrapper = this._innerGridWrapper;
 
-					var useOffsetWidth = !this._hScrollBarFixed &&
-					(dorado.Browser.safari || dorado.Browser.chrome);
+					var useOffsetWidth = !this._hScrollBarFixed && dorado.Browser.webkit;
 					var ofx = (divScroll.scrollWidth >
 					(useOffsetWidth ? divScroll.offsetWidth : divScroll.clientWidth)) ? "scroll" : "hidden";
 					this._hScrollBarFixed = true;
@@ -3090,7 +3091,7 @@
 							if (dorado.Browser.msie && dorado.Browser.version >= 8) {
 								row.style.height = h + "px";
 								$fly(row).toggleClass("fix-row-bug");
-							} else if (dorado.Browser.chrome || dorado.Browser.safari) {
+							} else if (dorado.Browser.webkit) {
 								row.firstChild.style.height = h + "px";
 							} else {
 								row.style.height = h + "px";
@@ -3149,7 +3150,7 @@
 			if (dorado.Browser.msie && dorado.Browser.version >= 8) {
 				row.style.height = h + "px";
 				$fly(row).toggleClass("fix-row-bug");
-			} else if (dorado.Browser.chrome || dorado.Browser.safari) {
+			} else if (dorado.Browser.webkit) {
 				row.firstChild.style.height = h + "px";
 			} else {
 				row.style.height = h + "px";
