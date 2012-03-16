@@ -309,7 +309,7 @@
 						tabbar.doChangeCurrentTab(tab);
 					}
 				}
-			});
+			}).addClass(tab._exClassName ? tab._exClassName : "");
 
 			if (tab._closeable) {
 				createTabCloseDom(tab, dom, doms);
