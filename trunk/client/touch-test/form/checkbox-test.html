@@ -1,0 +1,29 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+    <head>
+        <title>Button Test Page</title>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+        <script type="text/javascript" src="../include-all.js">
+        </script>
+        <script type="text/javascript">
+            var view = new dorado.widget.View({
+                layout: "Anchor"
+            });
+
+            var formProfile = new dorado.widget.FormProfile({
+                id: "defaultFormProfile",
+                labelAlign: "right"
+            });
+
+            var checkbox = new dorado.widget.CheckBox({ caption: "测试文字" });
+
+            view.addChild(checkbox);
+
+            $(document).ready(function() {
+            	view.render(document.body);
+            });
+        </script>
+    </head>
+    <body>
+    </body>
+</html>
