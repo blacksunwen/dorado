@@ -1,0 +1,1 @@
+{"data":[{"value":1},{"value":3},{"value":4},{"value":5},{"value":2},{"value":5},{"value":7},{"value":3},{"value":4},{"value":2},{"value":4},{"value":6}],"$dataTypeDefinitions":[{"propertyDefs":[{"name":"value"}],"id":"v:gY52BjoqAN$GuideData","name":"GuideData"}],"$context":{}}

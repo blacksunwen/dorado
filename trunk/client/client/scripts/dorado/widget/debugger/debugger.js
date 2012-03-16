@@ -58,7 +58,7 @@
 		/**
 		 * @private
 		 */
-		init: function() {			
+		init: function() {
 			var tabControl = new dorado.widget.TabControl({
 				$type: "TabControl",
 				tabs: dorado.Debugger.initTabs,
