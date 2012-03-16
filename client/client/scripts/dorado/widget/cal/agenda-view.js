@@ -56,7 +56,7 @@
                         currentLeft = parseInt($fly(dom).css("left"), 10), currentTop = parseInt($fly(dom).css("top"), 10);
 
                     widthPerSlot = Math.floor(($fly(agendaview._doms.eventTable).width() - 100) / agendaview._showDays);
-                    startScrollTop = $fly(agendaview._doms.eventTableWrap).attr("scrollTop");
+                    startScrollTop = $fly(agendaview._doms.eventTableWrap).prop("scrollTop");
                     startHeight = $fly(dom).outerHeight(true);
 
                     fakeOffset = {
@@ -86,7 +86,7 @@
                 },
                 drag: function(event) {
                     var agendaview = jQuery.data(dom, HOLD_AGENDAVIEW_KEY), inst = jQuery.data(this, "draggable"),
-                        scrollTop = $fly(agendaview._doms.eventTableWrap).attr("scrollTop"),
+                        scrollTop = $fly(agendaview._doms.eventTableWrap).prop("scrollTop"),
                         mouseChange = event.pageY - inst.originalPageY,
                         vertChange = mouseChange + scrollTop - startScrollTop;
 
@@ -126,7 +126,7 @@
 
                                 agendaview.refreshOnDateChange();
                             } else {
-                                var scrollTop = $fly(agendaview._doms.eventTableWrap).attr("scrollTop");
+                                var scrollTop = $fly(agendaview._doms.eventTableWrap).prop("scrollTop");
                                 var changeVUnit = (scrollTop - startScrollTop + parseInt($fly(fakeEvent).css("top"), 10) - startTop) / gridUnit;
                                 var changeHUnit = (parseInt($fly(fakeEvent).css("left"), 10) - startLeft) / ((agendaview._doms.eventTable.offsetWidth - 100) / agendaview._showDays);
 
@@ -148,7 +148,7 @@
 
                                 agendaview.refreshOnDateChange();
                             } else {
-                                var time = ($fly(agendaview._doms.eventTableWrap).attr("scrollTop") + parseInt($fly(fakeEvent).css("top"), 10) - fakeOffset.top) / gridUnit;
+                                var time = ($fly(agendaview._doms.eventTableWrap).prop("scrollTop") + parseInt($fly(fakeEvent).css("top"), 10) - fakeOffset.top) / gridUnit;
                                 var day = Math.round((parseInt($fly(fakeEvent).css("left"), 10) - startLeft) / ((agendaview._doms.eventTable.offsetWidth - 100) / agendaview._showDays));
 
                                 event.startTime = event.startTime.clone().addDays(day).minimizeTime().addMilliseconds(time * 1800000);
@@ -175,7 +175,7 @@
                     }
                     startHeight = $fly(dom).outerHeight(true);
                     startTop = parseInt($fly(dom).css("top"), 10);
-                    startScrollTop = $fly(agendaview._doms.eventTableWrap).attr("scrollTop");
+                    startScrollTop = $fly(agendaview._doms.eventTableWrap).prop("scrollTop");
                     gridUnit = Math.floor($fly(agendaview._doms.eventTable).outerHeight() / 48);
                     minHeight = gridUnit;
 
@@ -183,7 +183,7 @@
                 },
                 drag: function(event) {
                     var agendaview = jQuery.data(dom, HOLD_AGENDAVIEW_KEY), inst = jQuery.data(this, "draggable"),
-                        vertChange = event.pageY - inst.originalPageY + ($fly(agendaview._doms.eventTableWrap).attr("scrollTop") - startScrollTop);
+                        vertChange = event.pageY - inst.originalPageY + ($fly(agendaview._doms.eventTableWrap).prop("scrollTop") - startScrollTop);
 
                     vertChange = grid(vertChange);
 
@@ -218,7 +218,7 @@
                     }
                     startHeight = $fly(dom).outerHeight(true);
                     startTop = parseInt($fly(dom).css("top"), 10);
-                    startScrollTop = $fly(agendaview._doms.eventTableWrap).attr("scrollTop");
+                    startScrollTop = $fly(agendaview._doms.eventTableWrap).prop("scrollTop");
                     gridUnit = Math.floor($fly(agendaview._doms.eventTable).outerHeight() / 48);
                     minHeight = gridUnit;
 
@@ -227,7 +227,7 @@
                 },
                 drag: function(event) {
                     var agendaview = jQuery.data(dom, HOLD_AGENDAVIEW_KEY), inst = jQuery.data(this, "draggable"),
-                        vertChange = event.pageY - inst.originalPageY + ($fly(agendaview._doms.eventTableWrap).attr("scrollTop") - startScrollTop);
+                        vertChange = event.pageY - inst.originalPageY + ($fly(agendaview._doms.eventTableWrap).prop("scrollTop") - startScrollTop);
 
                     vertChange = grid(vertChange);
 

@@ -316,8 +316,8 @@
 				menu._focusItem = item;
 
 				if (menu._overflowing) {
-					var itemDom = item._dom, doms = menu._doms, viewTop = $fly(doms.groupContent).attr("scrollTop"),
-						contentTop = $fly(doms.groupContent).attr("offsetTop"), itemTop = itemDom.offsetTop, itemHeight = itemDom.offsetHeight,
+					var itemDom = item._dom, doms = menu._doms, viewTop = $fly(doms.groupContent).prop("scrollTop"),
+						contentTop = $fly(doms.groupContent).prop("offsetTop"), itemTop = itemDom.offsetTop, itemHeight = itemDom.offsetHeight,
 						itemBottom = itemTop + itemHeight, contentHeight = $fly(doms.groupContent).innerHeight(),
 						viewBottom = contentHeight + viewTop;
 
@@ -530,7 +530,7 @@
 		 */
 		doScrollDown: function() {
 			var menu = this, doms = menu._doms, groupContent = doms.groupContent, st = $fly(groupContent).scrollTop(),
-				target = st + 22, scrollHeight = $fly(groupContent).attr("scrollHeight");
+				target = st + 22, scrollHeight = $fly(groupContent).prop("scrollHeight");
 			if (target <= scrollHeight) {
 				$fly(groupContent).scrollTop(target);
 			} else {

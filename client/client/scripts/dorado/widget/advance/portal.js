@@ -659,7 +659,7 @@
 		 */
 		showColumns: function() {
 			var portal = this, columns = portal._columns, dom = portal._dom, columnDoms = portal._columnDoms,
-				widthMap = portal._columnWidthMap, height = $fly(dom).attr("scrollHeight") - portal._portletPadding;
+				widthMap = portal._columnWidthMap, height = $fly(dom).prop("scrollHeight") - portal._portletPadding;
 
 			for (var i = 0; i < columns.size; i++) {
 				var columnDom = columnDoms[i], columnWidth = widthMap[i];

@@ -9,8 +9,12 @@
 		var view = new dorado.widget.View({ layout: "Dock" });
 
         var dataSet = new dorado.widget.DataSet({
-			dataProvider: new dorado.AjaxDataProvider("phones.js"),
-			dataType: "Phone"	// Phone的声明实际位于data/common-types.js中，通过上面的$import("grid,common-types")引入。
+			//dataProvider: new dorado.AjaxDataProvider("phones.js"),
+            loadMode: "never",
+			dataType: "Phone",// Phone的声明实际位于data/common-types.js中，通过上面的$import("grid,common-types")引入。
+            data: [{
+                comment: "test"
+            }]
 		});
 
         dorado.htmleditor.registerMode("custom", [
@@ -21,13 +25,18 @@
 		var richEditor = new dorado.widget.HtmlEditor({
             dataSet: dataSet,
             property: "comment",
-            readOnly: true,
+            //readOnly: true,
             height: 300,
 			style: {
 				border: "1px solid gray"
 			},
             mode: 'custom'
 		});
+
+        var editor = new dorado.widget.TextEditor({
+            dataSet: dataSet,
+            property: "comment"
+        });
 
         var dialog = new dorado.widget.Dialog({
             caption: "test",
@@ -41,7 +50,8 @@
                 elements: [
                     { property: "alignment", label: "对齐方式", type: "text",
                         editor: richEditor
-                    }
+                    },
+                    editor
                 ]
             }],
             showAnimateType: "none",
@@ -61,6 +71,7 @@
         });
 
 		$(document).ready(function() {
+            editor.render(document.body);
             dialog.show();
 		});
 	</script>
