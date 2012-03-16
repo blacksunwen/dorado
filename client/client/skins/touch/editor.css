@@ -1,7 +1,7 @@
 .text-editor{
-    border: 1px solid 		#B3B3B3;
+    border: 1px solid 		#989898;
 	background:#FFFFFF url(text-bg.gif) repeat-x 0 0;
-    height: 26px;
+    height: 38px;
 
     -webkit-border-radius: 3px;
     border-radius: 3px;
@@ -21,9 +21,9 @@
     margin: 0;
 
 	min-height: 0;
-    line-height: 24px;
+    line-height: 36px;
 
-    color: #111111;
+    color: #135197;
 }
 
 .text-editor .icon{
@@ -38,12 +38,12 @@
 
 .text-editor .trigger{
 	float: right;
-    margin-top: 8px;
+    margin-top: 12px;
     margin-right: 4px;
 	width: 0;
     height: 0;
-    border-left: 15px solid transparent;
-    border-right: 15px solid transparent;
+    border-left: 14px solid transparent;
+    border-right: 14px solid transparent;
 
     border-top: 16px solid #ccc;
 

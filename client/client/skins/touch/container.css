@@ -1,28 +1,6 @@
-.d-modal-mask {
-    position: absolute;
-    left: 0;
-    top: 0;
-    margin: 0;
-    width: 100%;
-    filter: alpha(opacity = 30);
-    opacity: 0.3;
-    background: url(../../touchui/touch/model-cover-bg.gif);
-}
-
-.d-modal-mask-transparent {
-    position: absolute;
-    left: 0;
-    top: 0;
-    margin: 0;
-    width: 100%;
-    filter: alpha(opacity = 0);
-    opacity: 0;
-    background: white;
-}
-
 .toolbar {
     position: relative;
-    height: 35px;
+    height: 2.5em;
     padding: 5px 5px;
     background: 			#e9eaeb;
     background-image: -webkit-gradient(linear, left top, left bottom, from(#f0f0f0), to(#e9eaeb)); /* Saf4+, Chrome */
@@ -38,7 +16,7 @@
     bottom: 0;
     left: 0;
     z-index: 0;
-    line-height: 2.1em;
+    line-height: 2.5em;
     font-size: 1.2em;
     text-align: center;
     font-weight: bold;
@@ -143,15 +121,7 @@
 	background-image: -webkit-gradient(linear, left top, left bottom, from(#555), to(#333)); /* Saf4+, Chrome */
 }
 
-.d-panel .toolbar .button:hover {
-    border: 1px solid 		#000;
-	background: 			#444444;
-	font-weight: bold;
-	color: 					#fff;
-	background-image: -webkit-gradient(linear, left top, left bottom, from(#666), to(#444)); /* Saf4+, Chrome */
-}
-
-.d-panel .toolbar .button-down{
+.d-panel .toolbar .button-touched{
     border: 1px solid 		#000;
 	background: 			#3d3d3d;
 	font-weight: bold;
@@ -238,4 +208,107 @@
 .d-group-box .body .form-element .text-editor {
     border: 0;
     background-image: none;
+}
+
+.d-dialog{
+    overflow: hidden;
+    position: absolute;
+
+    padding: 6px;
+    -webkit-border-radius: 0.3em;
+    border-radius: 0.3em;
+    -webkit-box-shadow: rgba(0, 0, 0, 0.8) 0 0.2em 0.6em;
+    background-color: black;
+    background-image: none;
+}
+
+.d-dialog .panel-body {
+    background-color: #FFFFFF;
+    padding:  10px;
+}
+
+.d-dialog .content-panel{
+    position: relative;
+}
+
+.d-dialog .button-panel {
+    display: -webkit-box;
+    -webkit-box-pack: center;
+    padding: 2px 5px 5px 2px;
+    text-align: center;
+    height: 30px;
+}
+
+.d-dialog .button-panel-left{
+    text-align: left;
+}
+
+.d-dialog .button-panel-right{
+    text-align: right;
+}
+
+.d-dialog .button-panel .d-button {
+    margin-right: 3px;
+}
+
+.d-dialog-showcaptionbar .panel-body{
+    -moz-border-radius-topright: 0;
+    -webkit-border-top-right-radius: 0;
+    border-top-right-radius: 0;
+
+    -moz-border-radius-topleft: 0;
+    -webkit-border-top-left-radius: 0;
+    border-top-left-radius: 0;
+}
+
+.d-dialog .toolbar {
+    border: 1px solid 		#2A2A2A;
+    background: 			#111111;
+    color: 					#ffffff;
+    font-weight: bold;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#3c3c3c), to(#111)); /* Saf4+, Chrome */
+}
+
+.d-dialog .toolbar .caption{
+    color: white;
+}
+
+.d-dialog .toolbar .button {
+    border: 1px solid 		#222;
+    background: 			#333333;
+    font-weight: bold;
+    color: 					#fff;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#555), to(#333)); /* Saf4+, Chrome */
+}
+
+.d-dialog .toolbar .button:hover {
+    border: 1px solid 		#000;
+    background: 			#444444;
+    font-weight: bold;
+    color: 					#fff;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#666), to(#444)); /* Saf4+, Chrome */
+}
+
+.d-dialog .toolbar .button-down{
+    border: 1px solid 		#000;
+    background: 			#3d3d3d;
+    font-weight: bold;
+    color: 					#fff;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#333), to(#5a5a5a)); /* Saf4+, Chrome */
+}
+
+.d-dialog .toolbar .button.back:before {
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#555), to(#333)); /* Saf4+, Chrome */
+}
+
+.d-dialog .toolbar .button.back:hover:before, .d-dialog .toolbar .button.back.touched:before {
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#666), to(#444)); /* Saf4+, Chrome */
+}
+
+.d-dialog .toolbar .button.next:before {
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#555), to(#333)); /* Saf4+, Chrome */
+}
+
+.d-dialog .toolbar .button.next:hover:before, .d-dialog .toolbar .button.next.touched:before {
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#666), to(#444)); /* Saf4+, Chrome */
 }

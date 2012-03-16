@@ -7,6 +7,7 @@
     border: solid 1px #54617d;
     border-color: #484e59 #54617d #4c5c7a #54617d;
     cursor: pointer;
+    min-width: 80px;
     padding: 0px 10px;
     margin-top: 1px;
     -webkit-box-sizing: border-box;
@@ -84,11 +85,12 @@
 }
 
 .button-iconalign-bottom, .button-iconalign-right {
-  -webkit-box-direction: normal;                                    box-direction: normal;
+  -webkit-box-direction: normal;
+    box-direction: normal;
 }
 
 /** */
-.button:hover2 {
+.button-touched, .button-plain-touched {
 	background: 			#dadada;
 	color: 					#101010;
 	background-image: -webkit-gradient(linear, left top, left bottom, from(#ededed), to(#dadada)); /* Saf4+, Chrome */
@@ -184,8 +186,8 @@
 /* End Next Bordered Button Styles */
 
 .button-plain {
-    line-height: 28px;
-    height: 30px;
+    line-height: 36px;
+    height: 38px;
 }
 
 .button-free {

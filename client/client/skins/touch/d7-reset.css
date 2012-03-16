@@ -1,8 +1,14 @@
+
+* {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
 body, input, textarea, button {
     font-size: 1em;
 }
 
 .i-radio{
+    -webkit-tap-highlight-color: transparent;
     height: 28px;
     padding: 2px 0;
 }
@@ -53,7 +59,8 @@ body, input, textarea, button {
 }
 
 .i-checkbox{
-    height: 28px;
+    -webkit-tap-highlight-color: transparent;
+    height: 34px;
     padding: 2px 0;
 }
 
@@ -64,11 +71,12 @@ body, input, textarea, button {
 .i-checkbox .icon{
     display: inline-block;
     width: 24px;
-    height: 28px;
+    height: 34px;
 }
 
 .i-checkbox .caption{
-    line-height: 28px;
+    font-size: 1.1em;
+    line-height: 34px;
     padding-left: 8px;
     padding-right: 8px;
 }
@@ -175,6 +183,7 @@ body, input, textarea, button {
 }
 
 .d-auto-form .form-label {
+    font-size: 1.1em;
     height: 30px;
     line-height: 30px;
 }
@@ -185,6 +194,7 @@ body, input, textarea, button {
 }
 
 .i-label {
+    font-size: 1.1em;
     height: 30px;
     line-height: 30px;
 }

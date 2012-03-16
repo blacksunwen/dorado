@@ -5,6 +5,7 @@
 .button-group .button {
     -webkit-border-radius: 0;
     border-right-width: 0;
+    min-width: 20px !important;
 }
 
 .button-group .button-first{
