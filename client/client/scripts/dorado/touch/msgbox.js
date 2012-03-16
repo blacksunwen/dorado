@@ -85,7 +85,13 @@ dorado.MessageBox = {
         if (!dorado.MessageBox._dialog) {
             dorado.MessageBox.defaultTitle = "MessageBox";
 
-            var panel = dorado.MessageBox._panel = new dorado.touch.Panel({
+            var dialog = dorado.MessageBox._dialog = new dorado.touch.Dialog({
+                floating: true,
+                focusAfterShow: true,
+	            animateType: "none",
+                center: true,
+                modal: true,
+                width: dorado.MessageBox.maxWidth,
                 autoHeight: true,
                 extraClassName: "d-message-box",
                 visible: false,
@@ -111,21 +117,10 @@ dorado.MessageBox = {
                 })]
             });
 
-            dorado.MessageBox._dialog = new dorado.widget.FloatContainer({
-                floating: true,
-                focusAfterShow: true,
-                center: true,
-                animateType: "zoom",
-                modal: true,
-                width: dorado.MessageBox.maxWidth,
-                children: [dorado.MessageBox._panel]
-            });
-
             dorado.MessageBox._dialog.doOnAttachToDocument = function() {
-                panel.render(this._dom);
-                var dialog = this, dom = panel.getContentContainer(), doms = panel._doms;
+                var dialog = this, dom = dialog.getContentContainer(), doms = dialog._doms;
                 if (!doms) {
-                    doms = panel._doms = {};
+                    doms = dialog._doms = {};
                 }
                 //dorado.touch.Panel.prototype.doOnAttachToDocument.apply(dialog, []);
                 if (dom) {
@@ -154,7 +149,7 @@ dorado.MessageBox = {
                     editor.render(editorWrap);
                     $fly(editor._dom).css("display", "none");
                     dorado.MessageBox.SINGLE_EDITOR = editor;
-                    panel.registerInnerControl(editor);
+                    dialog.registerInnerControl(editor);
 
                     dom.appendChild(editorWrap);
 
@@ -169,7 +164,7 @@ dorado.MessageBox = {
                     textarea.render(textareaWrap);
                     $fly(textarea._dom).css("display", "none");
                     dorado.MessageBox.TEXTAREA = textarea;
-                    panel.registerInnerControl(textarea);
+                    dialog.registerInnerControl(textarea);
 
                     dom.appendChild(textareaWrap);
 
@@ -180,7 +175,7 @@ dorado.MessageBox = {
                     var dom = dialog._dom;
                     $fly(dom).width(dorado.MessageBox.maxWidth);
 
-                    var doms = panel._doms, contentWidth = $fly(doms.msgText).outerWidth(true) + $fly(doms.msgIcon).outerWidth(true);
+                    var doms = dialog._doms, contentWidth = $fly(doms.msgText).outerWidth(true) + $fly(doms.msgIcon).outerWidth(true);
 
                     if (contentWidth < dorado.MessageBox.minWidth) {
                         contentWidth = dorado.MessageBox.minWidth;
@@ -195,7 +190,7 @@ dorado.MessageBox = {
                 });
 
                 dialog.addListener("onShow", function(dialog) {
-                    var buttons = panel._buttons, button;
+                    var buttons = dialog._buttons, button;
                     if(buttons){
                         button = buttons[0];
                         if(button && button._dom.display != "none"){
@@ -409,11 +404,9 @@ dorado.MessageBox = {
         options = options || {};
         //dorado.widget.setFocusedControl(null);
 
-        debugger;
-
         var dialog = dorado.MessageBox.getDialog(), msg = options.message, defaultText = options.defaultText,
             title = options.title || dorado.MessageBox.defaultTitle, icon = options.icon, buttons = options.buttons || [],
-            buttonCount = buttons.length, editor = options.editor || "none", dlgButtons = dorado.MessageBox._panel._buttons;
+            buttonCount = buttons.length, editor = options.editor || "none", dlgButtons = dialog._buttons;
 
         dorado.MessageBox.updateText(msg, icon, editor, defaultText);
 
@@ -442,7 +435,6 @@ dorado.MessageBox = {
                 } else {
                     caption = button;
                 }
-                console.log("caption:" + caption);
                 dlgButtons[i].set("caption", caption.toUpperCase());
                 $fly(dlgButtons[i]._dom).css("display", "");
             }

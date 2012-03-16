@@ -278,9 +278,9 @@ dorado.touch.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope dor
                     return !checkBox._readOnly;
                 });
 
-            $fly(dom).bind("tap click", function() {
+            $fly(dom).bind("click", function() {
                 checkBox.onTap();
-            }).bind("tap click", false);
+            });
         }
 
         return dom;

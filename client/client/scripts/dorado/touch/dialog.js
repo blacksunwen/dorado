@@ -31,6 +31,10 @@ dorado.touch.Dialog = $extend(dorado.touch.FloatPanel, /** @scope dorado.widget.
             defaultValue: "d-dialog"
         },
 
+		animateType: {
+            defaultValue: "none"
+		},
+
         /**
          * 对话框的最小宽度，建议不要小于200。
          * @attribute
