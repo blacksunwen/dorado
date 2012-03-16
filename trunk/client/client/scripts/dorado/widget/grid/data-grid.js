@@ -100,12 +100,9 @@
 			/**
 			 * 是否自动根据绑定的EntityDataType自动创建其中的表格列。
 			 * @type boolean
-			 * @default true
 			 * @attribute
 			 */
-			autoCreateColumns: {
-				defaultValue: true
-			},
+			autoCreateColumns: {},
 			
 			/**
 			 * 是否支持分页显示及动态的分页数据下载。
@@ -206,10 +203,7 @@
 			if (this._autoCreateColumns == null && 
 				(column instanceof dorado.widget.grid.DataColumn && column._property && column._property != "none" ||
 				column instanceof dorado.widget.grid.ColumnGroup)) {
-				var watcher = this.getAttributeWatcher();
-				if (watcher.getWritingTimes("autoCreateColumns") == 0) {
-					this._autoCreateColumns = false;
-				}
+				this._autoCreateColumns = false;
 			}
 			return column;
 		},

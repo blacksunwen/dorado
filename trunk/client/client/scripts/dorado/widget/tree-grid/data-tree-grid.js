@@ -12,12 +12,9 @@ dorado.widget.DataTreeGrid = $extend([dorado.widget.TreeGrid, dorado.widget.Data
 		/**
 		 * 是否自动根据绑定的EntityDataType自动创建其中的表格列。
 		 * @type boolean
-		 * @default true
 		 * @attribute
 		 */
-		autoCreateColumns: {
-			defaultValue: true
-		},
+		autoCreateColumns: {},
 		
 		selection: {
 			setter: function(selection) {
