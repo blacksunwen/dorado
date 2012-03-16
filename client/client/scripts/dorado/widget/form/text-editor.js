@@ -375,9 +375,7 @@
 		
 		doOnFocus: function() {
 			this.resetReadOnly();
-			if (!this._editable != this._realReadOnly) {
-				this._textDom.readOnly = !this._editable; // 避免在IE8中出现的DIV异常滚动的BUG
-			}
+			this._textDom.readOnly = this._realReadOnly || !this._editable;
 			if (this._realReadOnly) return;
 			
 			this._focusTime = new Date();
@@ -408,9 +406,7 @@
 		
 		doOnBlur: function() {			
 			this.resetReadOnly();
-			if (this._textDom.readOnly != this._realReadOnly) {
-				this._textDom.readOnly = this._realReadOnly;
-			}
+			this._textDom.readOnly = false;
 			if (this._realReadOnly) return;
 			
 			if (this._editObserverId) clearInterval(this._editObserverId);
