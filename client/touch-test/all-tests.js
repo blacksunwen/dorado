@@ -1,4 +1,5 @@
 var ALL_JS_PAGES = [
+    "client/touch-test/base/nodelay.html",
 	"client/touch-test/base/button-test.html",
     "client/touch-test/base/buttongroup-test.html",
 	"client/touch-test/base/toolbar-test.html",
@@ -6,8 +7,10 @@ var ALL_JS_PAGES = [
     "client/touch-test/base/dialog-test.html",
     "client/touch-test/base/msgbox-test.html",
     "client/touch-test/base/iscroll-test.html",
+    "client/touch-test/base/jgestures-test.html",
     "client/touch-test/base/list-test.html",
     "client/touch-test/form/form-test.html",
+    "client/touch-test/base/grid-test.html",
 
 	"client/touch-test/base/float-panel-test.html",
 	"client/touch-test/util/task-indicator-test.html",
