@@ -47,11 +47,13 @@ dorado.touch.Button = $extend(dorado.widget.Control, {
         }, null, doms);
 
         button._doms = doms;
-        $fly(dom).bind("tap click", function() {
+        $fly(dom).bind("click", function(e) {
             button.onTap();
-        }).bind("tap click", false);
+	        return false;
+        });
 
         $fly(dom).addClass("button-iconalign-" + button._iconAlign).addClass(button._ui || "");
+        jQuery(dom).addClassOnClick(button._className + "-touched");
 
         button.doCreateIcon(dom);
         button.doCreateBadge(dom);

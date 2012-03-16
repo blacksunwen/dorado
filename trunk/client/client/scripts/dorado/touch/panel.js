@@ -309,10 +309,9 @@
             panel.fireEvent("onClose", panel);
         },
 
-        onResize: function() {
-            var panel = this, border = panel._border, dom = panel._dom, doms = panel._doms, height = panel._height;
-
-            if (!panel._autoHeight/*!isNaN(height)*/) {
+        doOnResize: function() {
+            var panel = this, border = panel._border, dom = panel._dom, doms = panel._doms, height = panel.getRealHeight();
+            if (typeof height == "number" && height > 0) {
                 if (panel._collapsed) {
                     if (border == "curve") {
                     }
@@ -334,6 +333,10 @@
                 }
             }
 
+            if (this._iscroll) {
+                this._iscroll.refresh();
+            }
+
             $invokeSuper.call(this, arguments);
         },
 
@@ -351,7 +354,7 @@
         doOnAttachToDocument: function() {
             $invokeSuper.call(this, arguments);
             if (this._scrollbar) {
-                new iScroll(this.getContentContainer());
+                this._iscroll = new iScroll(this.getContentContainer());
             }
         },
 

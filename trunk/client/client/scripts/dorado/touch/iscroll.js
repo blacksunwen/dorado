@@ -884,7 +884,6 @@ iScroll.prototype = {
 	},
 
 	refresh: function () {
-        debugger;
 		var that = this,
 			offset,
 			i, l,

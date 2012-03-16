@@ -139,7 +139,7 @@ dorado.touch.List = $extend(dorado.widget.Control, {
         offsetTop: {}
     },
     EVENTS: {
-        itemTap: {}
+        onItemTap: {}
     },
     createGroupDom: function(group) {
         if (group) {
@@ -174,8 +174,8 @@ dorado.touch.List = $extend(dorado.widget.Control, {
                 $fly(itemDom).addClass("list-item-holder");
             }
 
-            $fly(itemDom).bind("tap", function() {
-                list.fireEvent("itemTap", list, {
+            $fly(itemDom).bind("click", function() {
+                list.fireEvent("onItemTap", list, {
                     item: item,
                     itemText: itemText
                 });
@@ -239,16 +239,15 @@ dorado.touch.List = $extend(dorado.widget.Control, {
             }
         }
 
-        //scroller.initDom();
-
         return dom;
     },
     doOnAttachToDocument: function() {
         var dom = this._dom;
         var scroller = new iScroll(/** doms.itemsWrap */ dom, {
-            offsetTop: this.offsetTop || 0,
+            //offsetTop: this.offsetTop || 0,
             fadeScrollbar: true
         });
+	    this._scroller = scroller;
     },
     onItemChanged: function(start, end) {
         var list = this, dataModel = list._dataModel;
@@ -262,6 +261,7 @@ dorado.touch.List = $extend(dorado.widget.Control, {
             var itemDom = list._itemDoms[i], element = dataModel.getElementAt(i);
             $fly(itemDom).find(".label")[0].innerHTML = element;
         }
+	    this._scroller.refresh();
     },
     onItemAdded: function(start, end) {
         var list = this, dataModel = list._dataModel, itemDoms = list._itemDoms;
@@ -282,6 +282,7 @@ dorado.touch.List = $extend(dorado.widget.Control, {
                 beforeNode = itemDom;
             }
         }
+	    this._scroller.refresh();
     },
     onItemRemoved: function(start, end) {
         var list = this;
@@ -294,5 +295,6 @@ dorado.touch.List = $extend(dorado.widget.Control, {
         for (var i = start; i <= end; i++) {
             list.removeItemDom(i);
         }
+	    this._scroller.refresh();
     }
 });

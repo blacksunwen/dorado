@@ -13,15 +13,27 @@
             $fly(dom).addClass("text-editor-holder");
             jQuery(triggerDom).addClassOnHover("trigger-hover").addClassOnClick("trigger-click");
 
-            $fly(triggerDom).bind("tap", function() {
-                var popup = editor.popup;
-                if (popup.show) {
-                    popup.show({
-                        opener: editor,
-                        align: "center",
-                        valign: "bottom"
-                    });
+	        function show(popup) {
+		        if (popup && popup.show) {
+			        popup.show({
+				        anchorTarget: editor,
+				        align: "innerleft",
+				        vAlign: "bottom"
+			        });
+                    popup.sync(editor);
+		        }
+	        }
+
+            $fly(dom).bind("click", function() {
+                var popup = editor._popup;
+                if (popup && editor._editable == false) {
+	                show(popup);
                 }
+            });
+
+            $fly(triggerDom).bind("click", function() {
+                var popup = editor._popup;
+                show(popup);
             });
         }
     };
@@ -80,13 +92,66 @@
             },
             icon: {},
             emptyText: {},
+            editable: {
+                defaultValue: true
+            },
             popup: {},
+            text: {
+                setter: function(text) {
+                    var editor = this;
+
+                    if (editor._t2vmapping && editor._t2vmapping[text]) {
+                        editor._value = editor._t2vmapping[text];
+                    }
+
+                    if (editor._rendered) {
+                        editor._doms.editor.value = text;
+                    }
+
+                    this._text = text;
+                },
+                getter: function() {
+                    var editor = this, value = editor._value;
+                    return editor.formatValue(value);
+                }
+            },
+            mapping: {
+                setter: function(mapping) {
+                    if (mapping instanceof Array) {
+                        var v2tmapping = {}, t2vmapping = {};
+                        for (var i = 0, j = mapping.length; i < j; i++) {
+                            var record = mapping[i], text = record.text, value = record.value;
+                            v2tmapping[value] = text;
+                            t2vmapping[text] = value;
+                        }
+                        this._v2tmapping = v2tmapping;
+                        this._t2vmapping = t2vmapping;
+                    }
+                    this._mapping = mapping;
+                }
+            },
+            value: {
+                setter: function(value) {
+                    var editor = this;
+                    editor._text = editor.formatValue(value);
+                    if (editor._rendered) {
+                        editor._doms.editor.value = editor._text;
+                    }
+                    editor._value = value;
+                    console.log("before onValueChange value:" + editor._value);
+                    editor.fireEvent("onValueChange", editor, value);
+                    console.log("after onValueChange value:" + editor._value);
+                }
+            },
             type: {
                 defaultValue: "text"
+            },
+            format: {
+                defaultValue: "Y-m-d H:i:s"
             }
         },
         EVENTS: {
-            change: {}
+            onValueChange: {}
         },
         createDom: function() {
             var editor = this, doms = {}, dom, value = editor.get("value"), emptyText = editor.get("emptyText");
@@ -101,7 +166,7 @@
                         contextKey: "editor",
                         tagName: "input",
                         className: "editor",
-                        type: editor.type ? editor.type: "text",
+                        type: editor._type ? editor._type: "text",
                         value: value ? value : "",
                         placeholder: editor._emptyText ? editor._emptyText : ""
                     }
@@ -132,52 +197,40 @@
 
             return dom;
         },
+        formatValue: function(value) {
+            var editor = this, text;
+            if (editor._v2tmapping && editor._v2tmapping[value]) {
+                text = editor._v2tmapping[value];
+            } else if (value instanceof Date) {
+                text = value.formatDate(editor._format);
+            } else {
+                text = value;
+            }
+
+            return text;
+        },
         refreshDom: function(){
             $invokeSuper.call(this, arguments);
 
             var editor = this, dom = editor._dom;
             if (editor.get("rendered")) {
-                var doms = editor._doms, editorEl = doms["editor"], emptyText = editor.get("emptyText"), value = editor.get("value");
+                var doms = editor._doms, editorEl = doms["editor"], emptyText = editor.get("emptyText"), text = editor.get("text");
                 editorEl.placeholder = emptyText || "";
-                editorEl.readOnly = editor._readOnly;
+                editorEl.readOnly = !editor._editable || editor._readOnly;
                 $fly(dom)[editor._readOnly ? "addClass" : "removeClass"](editor._className + "-readonly");
-                if(value){
-                    editorEl.value = value;
+                if(text){
+                    editorEl.value = text;
                 } else {
                     if (!isValue(emptyText)) {
-                        editorEl.value = value || "";
+                        editorEl.value = text || "";
                     }
                 }
             }
         },
         doOnKeyDown: function(event){
             if(event.keyCode == 13){
-                alert("Enter a!!");
             }
             return true;
-        },
-        onFocus: function(){
-            var editor = this, dom = editor._dom, doms = editor._doms, editorEl = doms["editor"], emptyText = editor.get("emptyText");
-            $fly(dom).addClass("text-editor-focused");
-            if (isValue(emptyText)) {
-                if (!editor.get("value")) {
-                    editorEl.value = "";
-                    $fly(dom).removeClass("text-editor-empty");
-                }
-            }
-        },
-        onBlur: function(){
-            var editor = this, dom = editor._dom, doms = editor._doms, editorEl = doms["editor"], emptyText = editor.get("emptyText");
-            $fly(dom).removeClass("text-editor-focused");
-            editor.set("value", editorEl.value);
-            if (isValue(emptyText)) {
-                if (!editorEl.value) {
-                    editorEl.value = emptyText;
-                    $fly(dom).addClass("text-editor-empty");
-                } else {
-                    $fly(dom).removeClass("text-editor-empty");
-                }
-            }
         }
     });
 
@@ -233,7 +286,7 @@
                 }
             });
 
-            $fly(dom).bind("tap", function() {
+            $fly(dom).bind("click", function() {
                 $fly(dom).toggleClass(toggle._className + "-on");
             });
 
@@ -291,12 +344,12 @@
 
             spinner._doms = doms;
 
-            $fly(doms.downButton).bind("tap", function() {
+            $fly(doms.downButton).bind("click", function() {
                 if (!(spinner._readOnly || spinner._readOnly2))
                     spinner.doDown();
             });
 
-            $fly(doms.upButton).bind("tap", function() {
+            $fly(doms.upButton).bind("click", function() {
                 if (!(spinner._readOnly || spinner._readOnly2))
                     spinner.doUp();
             });

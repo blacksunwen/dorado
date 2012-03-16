@@ -145,6 +145,9 @@ dorado.touch.AbstractButtonGroup = $extend(dorado.widget.Control, {
         },
         dataModel: {}
     },
+    EVENTS: {
+        onCurrentButtonChange: {}
+    },
     removeItemDom: function(index) {
         var group = this, itemDom = group.itemDoms[index];
         if (itemDom) {
@@ -191,6 +194,8 @@ dorado.touch.AbstractButtonGroup = $extend(dorado.widget.Control, {
         } else {
             group._currentButton = null;
         }
+
+        group.fireEvent("onCurrentButtonChange", group, {});
 
         return true;
     },
@@ -267,6 +272,9 @@ dorado.touch.ButtonGroup = $extend(dorado.touch.AbstractButtonGroup, {
 });
 
 dorado.touch.RadioButton = $extend(dorado.touch.Button, {
+    ATTRIBUTES: {
+        value: {}
+    },
     onTap: function() {
         var button = this, group = button._parent, disabled = button._disabled || group._disabled;
         if (group) {
@@ -287,6 +295,15 @@ dorado.touch.RadioButtonGroup = $extend(dorado.touch.AbstractButtonGroup, {
         disabled: {},
         readOnly: {
             path: "_disabled"
+        },
+        value: {
+            getter: function() {
+                var currentButton = this._currentButton;
+                if (currentButton) {
+                    return currentButton._value;
+                }
+                return null;
+            }
         }
     },
 
