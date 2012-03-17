@@ -2,16 +2,19 @@ package com.bstek.dorado.jdbc.model.autotable;
 
 import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.jdbc.JdbcParameterSource;
 
 /**
  * 
  * @author mark.li@bstek.com
  *
  */
-@XmlNode(implTypes = {"com.bstek.dorado.jdbc.model.autotable.*"})
+@XmlNode(
+	implTypes = {"com.bstek.dorado.jdbc.model.autotable.*"},
+	definitionType = "com.bstek.dorado.jdbc.model.autotable.MatchRuleDefinition"
+)
 public abstract class AbstractMatchRule {
 	private boolean available = true;
-	private boolean not = false;
 	
 	@ClientProperty(escapeValue = "true")
 	public boolean isAvailable() {
@@ -20,14 +23,6 @@ public abstract class AbstractMatchRule {
 	public void setAvailable(boolean available) {
 		this.available = available;
 	}
-
-	@ClientProperty(escapeValue = "false")
-	public boolean isNot() {
-		return not;
-	}
-
-	public void setNot(boolean not) {
-		this.not = not;
-	}
 	
+	public abstract String token(AutoTable autoTable, JdbcParameterSource parameterSource);
 }

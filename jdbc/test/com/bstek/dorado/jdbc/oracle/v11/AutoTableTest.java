@@ -170,7 +170,54 @@ public class AutoTableTest extends AbstractOracle11JdbcTestCase {
 			Assert.assertTrue(records.isEmpty());
 		}
 	}
-	
+	public void testEmp5() {
+		String tableName = "emp_auto5"; 
+		{
+			Map<String, Object> parameter = new HashMap<String, Object>();
+			Collection<Record> records = JdbcUtils.query(tableName, parameter);
+			Assert.assertTrue(!records.isEmpty());
+		}
+		
+		{
+			Map<String, Object> parameter = new HashMap<String, Object>();
+			parameter.put("v1", 99999999);
+			
+			Collection<Record> records = JdbcUtils.query(tableName, parameter);
+			Assert.assertTrue(records.isEmpty());
+		}
+		{
+			Map<String, Object> parameter = new HashMap<String, Object>();
+			parameter.put("v2", 0);
+			
+			Collection<Record> records = JdbcUtils.query(tableName, parameter);
+			Assert.assertTrue(records.isEmpty());
+		}
+		
+		{
+			Map<String, Object> parameter = new HashMap<String, Object>();
+			parameter.put("v1", 10);
+			parameter.put("v2", 9);
+			
+			Collection<Record> records = JdbcUtils.query(tableName, parameter);
+			Assert.assertTrue(records.isEmpty());
+		}
+	}
+	public void testEmp6() {
+		String tableName = "emp_auto6";
+		{
+			Map<String, Object> parameter = new HashMap<String, Object>();
+			Collection<Record> records = JdbcUtils.query(tableName, parameter);
+			Assert.assertTrue(!records.isEmpty());
+		}
+	}
+	public void testEmp7() {
+		String tableName = "emp_auto7";
+		{
+			Map<String, Object> parameter = new HashMap<String, Object>();
+			Collection<Record> records = JdbcUtils.query(tableName, parameter);
+			Assert.assertTrue(!records.isEmpty());
+		}
+	}
 	
 	public void testProductCat1() {
 		String tableName = "product_cat_auto1";
