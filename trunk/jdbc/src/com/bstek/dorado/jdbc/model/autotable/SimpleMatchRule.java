@@ -13,7 +13,7 @@ import com.bstek.dorado.jdbc.sql.SqlConstants;
 @XmlNode (
 	nodeName = "Rule"
 )
-public class Value1MatchRule extends AbstractSingleColumnMatchRule {
+public class SimpleMatchRule extends AbstractSingleColumnMatchRule {
 
 	private String operator;
 	private Object value;
