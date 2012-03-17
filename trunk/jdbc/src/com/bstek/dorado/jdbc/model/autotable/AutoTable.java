@@ -23,9 +23,7 @@ import com.bstek.dorado.jdbc.model.AbstractUpdatableColumn;
 import com.bstek.dorado.jdbc.model.table.Table;
 import com.bstek.dorado.jdbc.sql.SelectSql;
 import com.bstek.dorado.jdbc.sql.SqlBuilder;
-import com.bstek.dorado.jdbc.sql.SqlConstants;
 import com.bstek.dorado.jdbc.sql.SqlConstants.JoinOperator;
-import com.bstek.dorado.jdbc.sql.SqlConstants.JunctionOperator;
 import com.bstek.dorado.jdbc.sql.SqlConstants.KeyWord;
 import com.bstek.dorado.jdbc.sql.SqlUtils;
 import com.bstek.dorado.util.Assert;
@@ -297,7 +295,7 @@ public class AutoTable extends AbstractTable {
 		
 		JunctionMatchRule where = t.getWhere();
 		if (where != null) {
-			String token = junctionMatchRuleToken(t,where, p);
+			String token = where.token(t, p);
 			if (StringUtils.isNotEmpty(token)) {
 				whereToken.append(token);
 			}
@@ -305,112 +303,7 @@ public class AutoTable extends AbstractTable {
 		
 		return whereToken;
 	}
-	
-	private String baseMatchRuleToken(AutoTable t,BaseMatchRule bmr, JdbcParameterSource parameterSource) {
-		if (!bmr.isAvailable()) {
-			return "";
-		} else {
-			
-			String fromColumnName = bmr.getColumn();
-			String fromTableName = bmr.getFromTable();
-			
-			FromTable fromTable = t.getFromTable(fromTableName);
-			String tableAlias = fromTableName;
-			
-			Table table = fromTable.getTableObject();
-			
-			AbstractDbColumn column = table.getColumn(fromColumnName);
-			
-			String columnName = column.getName();
-			Object value = bmr.getValue();
-			String operator = bmr.getOperator();
-			
-			if (value == null || StringUtils.isEmpty(operator)) {
-				return "";
-			}
-			
-			String parameterName = null;
-			if (value instanceof String) {
-				String strValue = (String)value;
-				if (StringUtils.isNotEmpty(strValue) && strValue.length() > 1) {
-					if(strValue.charAt(0) == ':') {
-						String pn = strValue.substring(1);
-						if (parameterSource.hasValue(pn)) {
-							parameterName = pn;
-							value = parameterSource.getValue(pn);
-						} else {
-							value = null;
-						}
-					}
-				}
-			}
-			
-			if (value != null) {
-				if (parameterName == null) {
-					parameterName = parameterSource.addValue(value);
-				}
-				
-				SqlConstants.Operator sqlOperator = SqlConstants.Operator.value(operator.trim());
-				String opToken = bmr.isNot() ? sqlOperator.notSQL(): sqlOperator.toSQL();
-				
-				Object parameterValue = sqlOperator.parameterValue(value);
-				parameterSource.setValue(parameterName, parameterValue);
-				
-				return tableAlias + "." + columnName + " " + opToken + " :" + parameterName;
-			}
-			
-			return "";
-		}
-	}
-	
-	private String junctionMatchRuleToken(AutoTable t,JunctionMatchRule amr, JdbcParameterSource p) {
-		if (!amr.isAvailable()) {
-			return "";
-		} else {
-			List<AbstractMatchRule> matchRules = amr.getMatchRules();
-			if (matchRules.size() > 0) {
-				JunctionOperator model = amr.getOperator();
-				Assert.notNull(model, "JunctionModel must not be null.");
-				
-				List<String> tokens = new ArrayList<String>(matchRules.size());
-				for (AbstractMatchRule mr: matchRules) {
-					if (mr instanceof BaseMatchRule) {
-						BaseMatchRule bmr = (BaseMatchRule)mr;
-						String token = baseMatchRuleToken(t,bmr, p);
-						if (StringUtils.isNotEmpty(token)) {
-							tokens.add(token);
-						}
-					} else if (mr instanceof JunctionMatchRule) {
-						JunctionMatchRule amr1 = (JunctionMatchRule)mr;
-						String token = junctionMatchRuleToken(t,amr1, p);
-						if (StringUtils.isNotEmpty(token)) {
-							tokens.add("("+token+")");
-						}
-					} else {
-						throw new IllegalArgumentException("unknown MatchRule class [" + mr.getClass().getName() + "]");
-					}
-				}
-				
-				if (tokens.size() > 0) {
-					String token;
-					if (tokens.size() == 1) {
-						token = tokens.get(0);
-					} else {
-						String m = SqlUtils.bothSpace(model.toString());
-						token = StringUtils.join(tokens, m);
-					}
-					if (amr.isNot()) {
-						return KeyWord.NOT + "(" + token + ")";
-					} else {
-						return token;
-					}
-				}
-			}
-			
-			return "";
-		}
-	}
-	
+
 	private StringBuilder orderByToken(AutoTable t, JdbcParameterSource p, Dialect dialect) {
 		StringBuilder r = new StringBuilder();
 		

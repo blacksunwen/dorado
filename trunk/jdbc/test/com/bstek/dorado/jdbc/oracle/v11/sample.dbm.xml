@@ -170,6 +170,85 @@
 			</Junction>
 		</Where>
 	</AutoTable>
+	<AutoTable name="emp_auto5" mainFromTable="emp">
+		<Columns>
+		    <Column name="n_id"          fromTable="emp" nativeColumn="ID"          />
+			<Column name="n_last_name"   fromTable="emp" nativeColumn="LAST_NAME"   />
+			<Column name="n_first_name"  fromTable="emp" nativeColumn="FIRST_NAME"  />
+			<Column name="n_title"       fromTable="emp" nativeColumn="TITLE"       />
+			<Column name="n_sex"         fromTable="emp" nativeColumn="SEX"         />
+			<Column name="n_birth_date"  fromTable="emp" nativeColumn="BIRTHDAY"    />
+			<Column name="n_hire_date"   fromTable="emp" nativeColumn="HIRE_DATE"   />
+			<Column name="n_address"     fromTable="emp" nativeColumn="ADDRESS"     />
+			<Column name="n_city"        fromTable="emp" nativeColumn="CITY"        />
+			<Column name="n_region"      fromTable="emp" nativeColumn="REGION"      />
+			<Column name="n_postal_code" fromTable="emp" nativeColumn="POSTAL_CODE" />
+			<Column name="n_country"     fromTable="emp" nativeColumn="COUNTRY"     />
+			<Column name="n_phone"       fromTable="emp" nativeColumn="PHONE"       />
+			<Column name="n_reports_to"  fromTable="emp" nativeColumn="REPORT_TO"   />
+			<Column name="n_notes"       fromTable="emp" nativeColumn="NOTES"       />
+			<Column name="n_photo_path"  fromTable="emp" nativeColumn="PHOTO_PATH"  />
+		</Columns>
+		<FromTables>
+			<FromTable name="emp" table="EMPLOYEE"/>
+		</FromTables>
+		<Where>
+			<Between fromTable="emp" column="ID" value1=":v1" value2=":v2"/>
+		</Where>
+	</AutoTable>
+	<AutoTable name="emp_auto6" mainFromTable="emp">
+		<Columns>
+		    <Column name="n_id"          fromTable="emp" nativeColumn="ID"          />
+			<Column name="n_last_name"   fromTable="emp" nativeColumn="LAST_NAME"   />
+			<Column name="n_first_name"  fromTable="emp" nativeColumn="FIRST_NAME"  />
+			<Column name="n_title"       fromTable="emp" nativeColumn="TITLE"       />
+			<Column name="n_sex"         fromTable="emp" nativeColumn="SEX"         />
+			<Column name="n_birth_date"  fromTable="emp" nativeColumn="BIRTHDAY"    />
+			<Column name="n_hire_date"   fromTable="emp" nativeColumn="HIRE_DATE"   />
+			<Column name="n_address"     fromTable="emp" nativeColumn="ADDRESS"     />
+			<Column name="n_city"        fromTable="emp" nativeColumn="CITY"        />
+			<Column name="n_region"      fromTable="emp" nativeColumn="REGION"      />
+			<Column name="n_postal_code" fromTable="emp" nativeColumn="POSTAL_CODE" />
+			<Column name="n_country"     fromTable="emp" nativeColumn="COUNTRY"     />
+			<Column name="n_phone"       fromTable="emp" nativeColumn="PHONE"       />
+			<Column name="n_reports_to"  fromTable="emp" nativeColumn="REPORT_TO"   />
+			<Column name="n_notes"       fromTable="emp" nativeColumn="NOTES"       />
+			<Column name="n_photo_path"  fromTable="emp" nativeColumn="PHOTO_PATH"  />
+		</Columns>
+		<FromTables>
+			<FromTable name="emp" table="EMPLOYEE"/>
+		</FromTables>
+		<Where>
+			<Rule fromTable="emp" column="ID" operator="=" value="=1"/>
+		</Where>
+	</AutoTable>
+	
+	<AutoTable name="emp_auto7" mainFromTable="emp">
+		<Columns>
+		    <Column name="n_id"          fromTable="emp" nativeColumn="ID"          />
+			<Column name="n_last_name"   fromTable="emp" nativeColumn="LAST_NAME"   />
+			<Column name="n_first_name"  fromTable="emp" nativeColumn="FIRST_NAME"  />
+			<Column name="n_title"       fromTable="emp" nativeColumn="TITLE"       />
+			<Column name="n_sex"         fromTable="emp" nativeColumn="SEX"         />
+			<Column name="n_birth_date"  fromTable="emp" nativeColumn="BIRTHDAY"    />
+			<Column name="n_hire_date"   fromTable="emp" nativeColumn="HIRE_DATE"   />
+			<Column name="n_address"     fromTable="emp" nativeColumn="ADDRESS"     />
+			<Column name="n_city"        fromTable="emp" nativeColumn="CITY"        />
+			<Column name="n_region"      fromTable="emp" nativeColumn="REGION"      />
+			<Column name="n_postal_code" fromTable="emp" nativeColumn="POSTAL_CODE" />
+			<Column name="n_country"     fromTable="emp" nativeColumn="COUNTRY"     />
+			<Column name="n_phone"       fromTable="emp" nativeColumn="PHONE"       />
+			<Column name="n_reports_to"  fromTable="emp" nativeColumn="REPORT_TO"   />
+			<Column name="n_notes"       fromTable="emp" nativeColumn="NOTES"       />
+			<Column name="n_photo_path"  fromTable="emp" nativeColumn="PHOTO_PATH"  />
+		</Columns>
+		<FromTables>
+			<FromTable name="emp" table="EMPLOYEE"/>
+		</FromTables>
+		<Where>
+			<Rule fromTable="emp" column="ID" operator="=" value="1"/>
+		</Where>
+	</AutoTable>
 	
 	<!-- Produce & Category -->
 	<AutoTable name="product_cat_auto1">

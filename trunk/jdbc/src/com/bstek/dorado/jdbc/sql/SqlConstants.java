@@ -124,6 +124,7 @@ public class SqlConstants {
 			
 			@Override
 			public Object parameterValue(Object value) {
+				if (value == null) value = "";
 				return String.valueOf(value) + "%";
 			}
 		},like_end{
@@ -138,6 +139,7 @@ public class SqlConstants {
 			
 			@Override
 			public Object parameterValue(Object value) {
+				if (value == null) value = "";
 				return "%"+ String.valueOf(value);
 			}
 		},like_anywhere{
@@ -152,8 +154,16 @@ public class SqlConstants {
 			
 			@Override
 			public Object parameterValue(Object value) {
+				if (value == null) value = "";
 				return "%" + String.valueOf(value) + "%";
 			}
+		}, between {
+
+			@Override
+			public String toSQL() {
+				return "BETWEEN";
+			}
+			
 		};
 		
 		public abstract String toSQL();
