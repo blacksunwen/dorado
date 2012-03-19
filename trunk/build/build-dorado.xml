@@ -7,7 +7,7 @@
 
 	<property name="vendor" value="www.BSTEK.com" />
 	<property name="version" value="7.0.17" />
-	<property name="qualifier" value="SNAPSHOT" />
+	<property name="qualifier" value="BETA" />
 
 	<property name="targetDir" value="${rootWorkDir}/target" />
 
