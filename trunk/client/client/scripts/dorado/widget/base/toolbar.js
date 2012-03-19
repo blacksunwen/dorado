@@ -447,7 +447,10 @@ dorado.widget.toolbar.Button = $extend(dorado.widget.Button, {
 				}
 			}
 		});
-		
+
+        if (button._menu)
+            this.registerInnerControl(this._menu);
+
 		return dom;
 	},
 	
