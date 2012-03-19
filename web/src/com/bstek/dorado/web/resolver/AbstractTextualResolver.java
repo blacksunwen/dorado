@@ -1,5 +1,6 @@
 package com.bstek.dorado.web.resolver;
 
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -88,7 +89,7 @@ public abstract class AbstractTextualResolver extends AbstractResolver {
 				out = new ZipOutputStream(out);
 			}
 		}
-		return out;
+		return new BufferedOutputStream(out);
 	}
 
 	@Override
@@ -102,6 +103,10 @@ public abstract class AbstractTextualResolver extends AbstractResolver {
 		}
 		if (cacheControl != null) {
 			response.addHeader(HttpConstants.CACHE_CONTROL, cacheControl);
+			if (HttpConstants.NO_CACHE.equals(cacheControl)) {
+				response.addHeader("Pragma", "no-cache");
+				response.addHeader("Expires", "0");
+			}
 		}
 
 		execute(request, response);
