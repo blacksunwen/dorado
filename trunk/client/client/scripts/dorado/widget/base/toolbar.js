@@ -213,7 +213,48 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 			});
 		} else if (item instanceof dorado.widget.toolbar.Separator) {
 			overflowMenu.addItem("-");
-		}
+		} else if (item instanceof dorado.widget.DataPilot) {
+            var map = {
+                "|<": $resource("dorado.baseWidget.DataPilotFirstPage"),
+                "<": $resource("dorado.baseWidget.DataPilotPreviousPage"),
+                ">": $resource("dorado.baseWidget.DataPilotNextPage"),
+                ">|": $resource("dorado.baseWidget.DataPilotLastPage"),
+                "+": $resource("dorado.baseWidget.DataPilotInsert"),
+                "-": $resource("dorado.baseWidget.DataPilotDelete"),
+                "x": $resource("dorado.baseWidget.DataPilotCancel")
+            };
+            var compiledItemCodes = item._compiledItemCodes || [];
+            for (var i = 0, j = compiledItemCodes.length; i < j; i++) {
+                var itemCode = compiledItemCodes[i], innerControl = item._itemObjects[itemCode.key];
+                switch(itemCode.code) {
+                    case "|<":
+                    case "<":
+                    case ">":
+                    case ">|":
+                    case "+":
+                    case "-":
+                    case "x":
+                        overflowMenu.addItem({
+                            caption: map[itemCode.code],
+                            visible: innerControl._visible,
+                            icon: innerControl._icon,
+                            disabled: innerControl._disabled,
+                            listener: {
+                                onClick: function() {
+                                    innerControl.fireEvent("onClick", item);
+                                }
+                            }
+                        });
+                        break;
+                    case "goto":
+                    case "info":
+                        break;
+                    case "|":
+                        overflowMenu.addItem("-");
+                        break;
+                }
+            }
+        }
         item._visibleByOverflow = false;
         if (item._hideMode == "display") {
             $fly(item._dom).css({ display: "none" });
