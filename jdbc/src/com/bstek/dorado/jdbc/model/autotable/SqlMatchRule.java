@@ -6,7 +6,7 @@ import com.bstek.dorado.jdbc.JdbcParameterSource;
 @XmlNode (
 	nodeName = "Sql"
 )
-public class SqlMatchRule extends BaseMatchRule {
+public class SqlMatchRule extends AbstractMatchRule {
 
 	private String sql;
 	
