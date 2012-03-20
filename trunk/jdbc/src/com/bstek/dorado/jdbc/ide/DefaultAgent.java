@@ -28,28 +28,56 @@ import com.bstek.dorado.util.xml.DomUtils;
  */
 public class DefaultAgent extends AbstractAgent {
 
-	@Override
-	protected String doListTables() throws Exception {
-		final DatabaseMetaData dbmd = getDatabaseMetaData();
-		String catalog = null;
-		String schemaPattern = null;
-		String tableNamePattern = null;
-		String types[] = null;
-		if (dbmd.supportsSchemasInDataManipulation()) {
-			catalog = dbmd.getConnection().getCatalog();
-			schemaPattern = (String)this.getParameters().get(IAgent.NAMESPACE);
-		} else {
-			catalog = (String)this.getParameters().get(IAgent.NAMESPACE);
-			schemaPattern = null;
+	protected String getNamespaceFromParameter() throws Exception {
+		DatabaseMetaData dbmd = getDatabaseMetaData();
+		
+		String namespace = (String)this.getParameters().get(IAgent.NAMESPACE);
+		if (StringUtils.isNotEmpty(namespace) && !dbmd.supportsMixedCaseIdentifiers()){
+			if (dbmd.storesLowerCaseIdentifiers()) {
+				namespace = namespace.toLowerCase();
+			}
+			if (dbmd.storesUpperCaseIdentifiers()) {
+				namespace = namespace.toUpperCase();
+			}
 		}
 		
+		return namespace;
+	}
+	
+	protected String getCatalogFromParameter() throws Exception {
+		DatabaseMetaData dbmd = getDatabaseMetaData();
+		String namespace = getNamespaceFromParameter();
+		String catalog = null;
+		if (dbmd.supportsCatalogsInDataManipulation()) {
+			catalog = namespace;
+		} else {
+			catalog = dbmd.getConnection().getCatalog();
+		}
+		return catalog;
+	}
+	
+	protected String getSchemaFromParameter() throws Exception {
+		DatabaseMetaData dbmd = getDatabaseMetaData();
+		String namespace = getNamespaceFromParameter();
+		String schema = null;
+		if (dbmd.supportsSchemasInDataManipulation()) {
+			schema = namespace;
+		}
+		
+		return schema;
+	}
+	
+	protected String getTableNameFromParameter() throws Exception {
 		String tableName = (String)this.getParameters().get(IAgent.TABLE_NAME);
+		
+		String tableNamePattern = null;
 		if (tableName == null || tableName.length() == 0) {
 			tableNamePattern = "%";
 		} else {
 			tableNamePattern = tableName + "%";
 		}
 		
+		DatabaseMetaData dbmd = getDatabaseMetaData();
 		if (!dbmd.supportsMixedCaseIdentifiers()) {
 			if (dbmd.storesLowerCaseIdentifiers()) {
 				tableNamePattern = tableNamePattern.toLowerCase();
@@ -59,13 +87,23 @@ public class DefaultAgent extends AbstractAgent {
 			}
 		}
 		
+		return tableNamePattern;
+	}
+	
+	@Override
+	protected Document doListTables() throws Exception {
+		String catalog = getCatalogFromParameter();
+		String schemaPattern = getSchemaFromParameter();
+		String tableNamePattern = getTableNameFromParameter();
+		String types[] = null;
+		
 		final Document document = newDocument();
 		final Element tables = (Element) document.appendChild(document.createElement("Tables"));
-		
-		return doCall(dbmd.getTables(catalog, schemaPattern, tableNamePattern, types), new ResultSetCallback<String>(){
+		final DatabaseMetaData dbmd = getDatabaseMetaData();
+		return this.doCall(dbmd.getTables(catalog, schemaPattern, tableNamePattern, types), new ResultSetCallback<Document>(){
 
 			@Override
-			public String call(ResultSet rs) throws Exception {
+			public Document call(ResultSet rs) throws Exception {
 				while (rs.next()) {
 					Element table = (Element) tables.appendChild(document.createElement("Table"));
 					String tn = rs.getString("TABLE_NAME");
@@ -81,7 +119,7 @@ public class DefaultAgent extends AbstractAgent {
 					}
 				}
 				
-				return DefaultAgent.this.toString(document);
+				return document;
 			}
 		});
 	}
@@ -90,54 +128,27 @@ public class DefaultAgent extends AbstractAgent {
 	protected Document createTableColumns(Document document) throws Exception {
 		DatabaseMetaData dbmd = getDatabaseMetaData();
 		
-		String namespace = (String)this.getParameters().get(IAgent.NAMESPACE);
-		if (StringUtils.isNotEmpty(namespace)){
-			if (dbmd.storesLowerCaseIdentifiers()) {
-				namespace = namespace.toLowerCase();
-			}
-			if (dbmd.storesUpperCaseIdentifiers()) {
-				namespace = namespace.toUpperCase();
-			}
-		}
-		
-		String catalog = null;
-		String schema = null;
-		if (dbmd.supportsSchemasInDataManipulation()) {
-			schema = namespace;
-		} else {
-			catalog = namespace;
-		}
-		
-		String tableName = (String)this.getParameters().get(IAgent.TABLE_NAME);
-		if (StringUtils.isNotEmpty(tableName)){
-			if (dbmd.storesLowerCaseIdentifiers()) {
-				tableName = tableName.toLowerCase();
-			}
-			if (dbmd.storesUpperCaseIdentifiers()) {
-				tableName = tableName.toUpperCase();
-			}
-		}
+		String catalog = getCatalogFromParameter();
+		String schema = getSchemaFromParameter();
+		String tableName = getTableNameFromParameter();
 		
 		{
-			List<String> tables = doCall(dbmd.getTables(catalog, schema, tableName, null), new ResultSetCallback<List<String>>() {
-
+			List<String> tables = this.doCall(dbmd.getTables(catalog, schema, tableName, null), new ResultSetCallback<List<String>>() {
 				@Override
 				public List<String> call(ResultSet rs) throws Exception {
 					List<String> tables = new ArrayList<String>();
 					while (rs.next()) {
 						tables.add("[" + rs.getString("TABLE_CAT") + "," + rs.getString("TABLE_SCHEM") + "," + rs.getString("TABLE_NAME") + "]");
 					}
-					
 					return tables;
 				}
-				
 			});
 			
 			if (tables.size() == 0) {
-				throw new IllegalArgumentException("No table be found. [" + catalog +"," + schema + "," + tableName + "]");
+				throw new IllegalArgumentException("No table be found. [" + catalog + "," + schema + "," + tableName + "]");
 			}
 			if (tables.size() > 1) {
-				throw new IllegalArgumentException("More than one table be found. [" + catalog +"," + schema + "," + tableName + "] ==> " +
+				throw new IllegalArgumentException("More than one table be found. [" + catalog + "," + schema + "," + tableName + "] ==> " +
 						StringUtils.join(tables.toArray()));
 			}
 		}
@@ -156,8 +167,7 @@ public class DefaultAgent extends AbstractAgent {
 			columnNameSet.add(columnName);
 		}
 		
-		final List<String> primaryKeys = doCall(dbmd.getPrimaryKeys(catalog, schema, tableName), new ResultSetCallback<List<String>>(){
-
+		final List<String> primaryKeys = this.doCall(dbmd.getPrimaryKeys(catalog, schema, tableName), new ResultSetCallback<List<String>>(){
 			@Override
 			public List<String> call(ResultSet rs) throws Exception {
 				List<String> primaryKeys = new ArrayList<String>();
@@ -166,13 +176,12 @@ public class DefaultAgent extends AbstractAgent {
 				}
 				return primaryKeys;
 			}
-			
 		});
 		
 		final List<Map<String, String>> keyColumns = new ArrayList<Map<String, String>>(primaryKeys.size());
 		final List<Map<String, String>> commonColumns = new ArrayList<Map<String, String>>();
 		
-		doCall(dbmd.getColumns(catalog, schema, tableName, null), new ResultSetCallback<String>(){
+		this.doCall(dbmd.getColumns(catalog, schema, tableName, null), new ResultSetCallback<String>(){
 
 			@Override
 			public String call(ResultSet rs) throws Exception {
@@ -208,13 +217,11 @@ public class DefaultAgent extends AbstractAgent {
 			String columnName = keyColumn.get("name");
 			if (!columnNameSet.contains(columnName)) {
 				Element element = document.createElement("KeyColumn");
-				element.setAttribute("name", columnName);
-				String jdbcTypeName = keyColumn.get("jdbcType");
-				if (StringUtils.isNotEmpty(jdbcTypeName)) {
-					element.setAttribute("jdbcType", jdbcTypeName);
+				element = this.createTableKeyColumn(document, keyColumn, columnName, element);
+				if (element != null) {
+					columnsElement.appendChild(element);
 				}
 				
-				columnsElement.appendChild(element);
 			}
 		}
 		
@@ -222,20 +229,52 @@ public class DefaultAgent extends AbstractAgent {
 			String columnName = commonColumn.get("name");
 			if (!columnNameSet.contains(columnName)) {
 				Element element = document.createElement("Column");
-				element.setAttribute("name", columnName);
-				String jdbcTypeName = commonColumn.get("jdbcType");
-				if (StringUtils.isNotEmpty(jdbcTypeName)) {
-					Element jdbcTypeElement = document.createElement(com.bstek.dorado.config.xml.XmlConstants.PROPERTY);
-					jdbcTypeElement.setAttribute(com.bstek.dorado.config.xml.XmlConstants.ATTRIBUTE_NAME, "jdbcType");
-					jdbcTypeElement.setTextContent(jdbcTypeName);
-					element.appendChild(jdbcTypeElement);
+				element = this.createTableColumn(document, commonColumn, columnName, element);
+				if (element != null) {
+					columnsElement.appendChild(element);
 				}
-				
-				columnsElement.appendChild(element);
 			}
 		}
 		
 		return document;
+	}
+
+	/**
+	 * 创建Table的一个Column
+	 * @param document
+	 * @param commonColumn
+	 * @param columnName
+	 * @param element
+	 * @return
+	 */
+	protected Element createTableColumn(Document document,
+			Map<String, String> commonColumn, String columnName, Element element) {
+		element.setAttribute("name", columnName);
+		String jdbcTypeName = commonColumn.get("jdbcType");
+		if (StringUtils.isNotEmpty(jdbcTypeName)) {
+			Element jdbcTypeElement = document.createElement(com.bstek.dorado.config.xml.XmlConstants.PROPERTY);
+			jdbcTypeElement.setAttribute(com.bstek.dorado.config.xml.XmlConstants.ATTRIBUTE_NAME, "jdbcType");
+			jdbcTypeElement.setTextContent(jdbcTypeName);
+			element.appendChild(jdbcTypeElement);
+		}
+		return element;
+	}
+
+	/**
+	 * 创建Table的一个KeyColumn
+	 * @param keyColumn
+	 * @param columnName
+	 * @param element
+	 * @return
+	 */
+	protected Element createTableKeyColumn(Document document, 
+			Map<String, String> keyColumn, String columnName, Element element) {
+		element.setAttribute("name", columnName);
+		String jdbcTypeName = keyColumn.get("jdbcType");
+		if (StringUtils.isNotEmpty(jdbcTypeName)) {
+			element.setAttribute("jdbcType", jdbcTypeName);
+		}
+		return element;
 	}
 	
 	@Override
@@ -287,21 +326,37 @@ public class DefaultAgent extends AbstractAgent {
 			
 			if (StringUtils.isNotEmpty(columnName) && !columnNameSet.contains(columnName)) {
 				Element element = document.createElement("Column");
-				element.setAttribute("name", columnName);
-				String jdbcTypeName = getJdbcTypeName(commonColumn);
-				
-				if (StringUtils.isNotEmpty(jdbcTypeName)) {
-					Element jdbcTypeElement = document.createElement(com.bstek.dorado.config.xml.XmlConstants.PROPERTY);
-					jdbcTypeElement.setAttribute(com.bstek.dorado.config.xml.XmlConstants.ATTRIBUTE_NAME, "jdbcType");
-					jdbcTypeElement.setTextContent(jdbcTypeName);
-					element.appendChild(jdbcTypeElement);
+				element = createSqlColumn(document, commonColumn, columnName, element);
+				if (element != null) {
+					columnsElement.appendChild(element);
 				}
-				
-				columnsElement.appendChild(element);
 			}
 		}
 		
 		return document;
+	}
+
+	/**
+	 * 创建SqlTable的一个Column
+	 * @param document
+	 * @param commonColumn
+	 * @param columnName
+	 * @param element
+	 * @return
+	 */
+	protected Element createSqlColumn(Document document,
+			Map<String, String> commonColumn, String columnName, Element element) {
+		element.setAttribute("name", columnName);
+		String jdbcTypeName = getJdbcTypeName(commonColumn);
+		
+		if (StringUtils.isNotEmpty(jdbcTypeName)) {
+			Element jdbcTypeElement = document.createElement(com.bstek.dorado.config.xml.XmlConstants.PROPERTY);
+			jdbcTypeElement.setAttribute(com.bstek.dorado.config.xml.XmlConstants.ATTRIBUTE_NAME, "jdbcType");
+			jdbcTypeElement.setTextContent(jdbcTypeName);
+			element.appendChild(jdbcTypeElement);
+		}
+		
+		return element;
 	}
 	
 	/**
@@ -311,46 +366,50 @@ public class DefaultAgent extends AbstractAgent {
 	 */
 	protected String getJdbcTypeName(Map<String,String> columnMeta) {
 		String typeStr = columnMeta.get(JdbcConstants.DATA_TYPE);
-		int type = Integer.valueOf(typeStr);
-		switch (type) {
-		case Types.BIT:
-			return "BIT-Boolean";
-		case Types.BOOLEAN:
-			return "BOOLEAN-Boolean";
-		case Types.CHAR:
-			return "CHAR-Boolean";
-		case Types.SMALLINT:
-			return "SMALLINT-Short";
-		case Types.INTEGER:
-			return "INTEGER-Integer";
-		case Types.BIGINT:
-			return "BIGINT-Long";
-		case Types.REAL:
-			return "REAL-Float";
-		case Types.FLOAT:
-			return "FLOAT-Double";
-		case Types.DOUBLE:
-			return "DOUBLE-Double";
-		case Types.NUMERIC:
-			return "NUMERIC-BigDecimal";
-		case Types.DECIMAL:
-			return "DECIMAL-BigDecimal";
-		case Types.TINYINT:
-			return "TINYINT-Byte";
-		case Types.DATE:
-			return "DATE-Date";
-		case Types.TIME:
-			return "TIME-Time";
-		case Types.TIMESTAMP:
-			return "TIMESTAMP-DateTime";
-		case Types.VARCHAR:
-			return "VARCHAR-String";
-		case Types.LONGVARCHAR:
-			return "LONGVARCHAR-String";
-		case Types.CLOB:
-			return "CLOB-String";
-		default:
+		if (typeStr == null || typeStr.length() == 0) {
 			return null;
+		} else {
+			int type = Integer.valueOf(typeStr);
+			switch (type) {
+			case Types.BIT:
+				return "BIT-Boolean";
+			case Types.BOOLEAN:
+				return "BOOLEAN-Boolean";
+			case Types.CHAR:
+				return "CHAR-Boolean";
+			case Types.SMALLINT:
+				return "SMALLINT-Short";
+			case Types.INTEGER:
+				return "INTEGER-Integer";
+			case Types.BIGINT:
+				return "BIGINT-Long";
+			case Types.REAL:
+				return "REAL-Float";
+			case Types.FLOAT:
+				return "FLOAT-Double";
+			case Types.DOUBLE:
+				return "DOUBLE-Double";
+			case Types.NUMERIC:
+				return "NUMERIC-BigDecimal";
+			case Types.DECIMAL:
+				return "DECIMAL-BigDecimal";
+			case Types.TINYINT:
+				return "TINYINT-Byte";
+			case Types.DATE:
+				return "DATE-Date";
+			case Types.TIME:
+				return "TIME-Time";
+			case Types.TIMESTAMP:
+				return "TIMESTAMP-DateTime";
+			case Types.VARCHAR:
+				return "VARCHAR-String";
+			case Types.LONGVARCHAR:
+				return "LONGVARCHAR-String";
+			case Types.CLOB:
+				return "CLOB-String";
+			default:
+				return null;
+			}
 		}
 	}
 	
