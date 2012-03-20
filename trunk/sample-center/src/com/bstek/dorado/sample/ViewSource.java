@@ -1,7 +1,5 @@
 package com.bstek.dorado.sample;
 
-import info.bliki.wiki.model.WikiModel;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,11 +32,9 @@ public class ViewSource {
 		ExampleSource exampleSource = exampleSourceDao.get(sourceId);
 		context.setAttribute("exampleSource", exampleSource);
 
-		String contextPath = request.getContextPath();
-		WikiModel wikiModel = new WikiModel(contextPath, contextPath);
 		String summary = exampleSource.getSummary();
 		if (StringUtils.isNotEmpty(summary)) {
-			String html = wikiModel.render(summary);
+			String html = BikiUtils.render(summary);
 			writer.append(html);
 		}
 	}
