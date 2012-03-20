@@ -410,9 +410,9 @@
 							self.accumulate(entity, totalSummary);
 						});
 					} else {
-						this._items.each(function(entity) {
-							self.accumulate(entity, totalSummary);
-						});
+						for (var it = this._items.iterator({ currentPage: true }); it.hasNext();) {
+							self.accumulate(it.next(), totalSummary);
+						}
 					}
 				}
 				this.finishSummary(totalSummary);

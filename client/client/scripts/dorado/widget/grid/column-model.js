@@ -1273,7 +1273,9 @@
 		 * @protected
 		 */
 		onPost: function(arg) {
-			this.grid.onCellValueEdit(this.data, this.column);
+			if (this.visible) {
+				this.grid.onCellValueEdit(this.data, this.column);
+			}
 		}
 	});
 	
