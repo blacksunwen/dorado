@@ -507,6 +507,7 @@
 						var oldCurrentEntity = this.getCurrentEntity();
 						if (!this._supportsPaging && (!oldCurrentEntity || oldCurrentEntity.page.pageNo != arg.entityList.pageNo)) {
 							this.refresh(true);
+							this.refreshSummary();
 						} else {
 							this.setCurrentEntity(arg.entityList.current);
 						}

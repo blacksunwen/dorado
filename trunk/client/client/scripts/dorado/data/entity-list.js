@@ -982,7 +982,20 @@
 			data.page = null;
 			data._setObserver(null);
 			delete this.entityList._keyMap[data.entityId];
-		}
+		},
+		
+		each: function(fn, scope) {
+			var entry = this.first, i = 0;
+			while (entry != null) {
+				var entity = entry.data;
+				if (entity && entity.state != dorado.Entity.STATE_DELETED) {
+					if (fn.call(scope || entity, entity, i++) === false) {
+						break;
+					}
+				}
+				entry = entry.next;
+			}
+		},
 	});
 	
 	dorado.EntityList.EntityListIterator = $extend(dorado.util.Iterator, {
@@ -1075,8 +1088,7 @@
 			if (page) {
 				if (page.loaded) {
 					result = reverse ? page.last : page.first;
-					while (result && !this._includeDeletedEntity &&
-					result.data.state == dorado.Entity.STATE_DELETED) {
+					while (result && !this._includeDeletedEntity && result.data.state == dorado.Entity.STATE_DELETED) {
 						result = reverse ? result.previous : result.next;
 					}
 				} else {
