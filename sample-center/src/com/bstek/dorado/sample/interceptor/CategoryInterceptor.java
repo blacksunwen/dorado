@@ -37,7 +37,6 @@ public class CategoryInterceptor {
 	@DataResolver
 	@Transactional
 	public void saveAll(Collection<Category> categories) {
-		if (1<2) return;
 		for (Category category : categories) {
 			EntityState state = categoryDao.persistEntity(category);
 			if (EntityState.isVisible(state)) {
