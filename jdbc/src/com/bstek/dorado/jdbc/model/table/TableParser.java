@@ -72,12 +72,10 @@ public class TableParser extends AbstractDbTableParser {
 	protected TableDefinition createDefinition(TableDefinition tableDef, JdbcParseContext jdbcContext) throws Exception {
 		
 		Map<String, Object> parameters = new HashMap<String, Object>();
-		parameters.put(IAgent.CONNECTION, jdbcContext.getJdbcEnviroment().getDataSource().getConnection());
 		parameters.put(IAgent.NAMESPACE, tableDef.getNamespace());
 		parameters.put(IAgent.TABLE_NAME, tableDef.getTableName());
 		
-		String xml = agent.createColumns(parameters);
-		Document document = agent.parseText(xml);
+		Document document = agent.createColumns(parameters, jdbcContext.getJdbcEnviroment().getDataSource());
 		TableDefinition tableDef2 = (TableDefinition)doParse(document.getDocumentElement(), jdbcContext);
 		
 		return tableDef2;

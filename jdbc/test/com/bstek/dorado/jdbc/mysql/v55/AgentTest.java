@@ -18,7 +18,7 @@ public class AgentTest {
 		parameters.put(IAgent.NAMESPACE, "dorado");
 		
 		DefaultAgent agent = new DefaultAgent();
-		String tables = agent.listTables(parameters);
+//		String tables = agent.listTables(parameters);
 	}
 	
 	@Test
@@ -31,13 +31,13 @@ public class AgentTest {
 		
 		{
 			DefaultAgent agent = new DefaultAgent();
-			String xml = (String)agent.createColumns(parameters);
+//			String xml = (String)agent.createColumns(parameters);
 		}
 		
 		{
 			DefaultAgent agent = new DefaultAgent();
 			parameters.put(IAgent.XML, "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Table name=\"EMPLOYEE\" tableName=\"EMPLOYEE\"><Columns><KeyColumn jdbcType=\"INTEGER-Integer\" name=\"ID\"/></Columns></Table>");
-			String xml = agent.createColumns(parameters);
+//			String xml = agent.createColumns(parameters);
 		}
 	}
 	
@@ -50,17 +50,17 @@ public class AgentTest {
 	
 		{
 			DefaultAgent agent = new DefaultAgent();
-			String xml = agent.createColumns(parameters);
+//			String xml = agent.createColumns(parameters);
 		}
 	}
 	
 	private Map<String, Object> makeParamerters() {
 		Map<String, Object> parameters = new HashMap<String,Object>();
 		
-		parameters.put(IAgent.URL, "jdbc:mysql://192.168.18.95/DORADO?useUnicode=true&amp;characterEncoding=UTF-8");
-		parameters.put(IAgent.DRIVER, "com.mysql.jdbc.Driver");
-		parameters.put(IAgent.USER, "dorado");
-		parameters.put(IAgent.PASSWORD, "dorado");
+//		parameters.put(IAgent.URL, "jdbc:mysql://192.168.18.95/DORADO?useUnicode=true&amp;characterEncoding=UTF-8");
+//		parameters.put(IAgent.DRIVER, "com.mysql.jdbc.Driver");
+//		parameters.put(IAgent.USER, "dorado");
+//		parameters.put(IAgent.PASSWORD, "dorado");
 		
 		return parameters;
 	}

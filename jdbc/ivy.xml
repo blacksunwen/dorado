@@ -8,7 +8,7 @@
 
 	<dependencies>
 		<!-- COMPILE -->
-		<dependency org="com.bstek.dorado" name="dorado-core" rev="7.0.11-BETA" conf="compile" transitive="true">
+		<dependency org="com.bstek.dorado" name="dorado-core" rev="7.0.17-SNAPSHOT" conf="compile" transitive="true">
 			<exclude org="xml-apis" />
 		</dependency>
 		
@@ -21,9 +21,7 @@
 		<dependency org="org.springframework" name="spring-aop" rev="3.0.5.RELEASE" conf="compile" />
 		<dependency org="org.springframework" name="spring-jdbc" rev="3.0.5.RELEASE" conf="compile" />
 		<dependency org="org.springframework" name="spring-tx" rev="3.0.5.RELEASE" conf="compile" />
-		<!-- <dependency org="dom4j" name="dom4j" rev="1.6.1" conf="compile" /> -->
-		<!-- <dependency org="org.apache.geronimo.specs" name="geronimo-servlet_2.5_spec" rev="1.2" conf="runtime" /> -->
-
+		
 		<!-- TEST -->
 		<dependency org="junit" name="junit" rev="4.8.2" conf="test" />
 		<dependency org="commons-dbcp" name="commons-dbcp" rev="1.4" conf="test" />
