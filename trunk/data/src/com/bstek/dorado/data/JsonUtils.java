@@ -464,11 +464,28 @@ public final class JsonUtils {
 							.getFields();
 					while (oldFields.hasNext()) {
 						Entry<String, JsonNode> entry = oldFields.next();
-						String oldKey = entry.getKey();
-						oldValues.put(
-								oldKey,
-								toJavaValue((ValueNode) entry.getValue(), null,
-										null));
+						String property = entry.getKey();
+						Object value;
+
+						JsonNode jsonNode = entry.getValue();
+						if (jsonNode instanceof ContainerNode) {
+							PropertyDef propertyDef = (dataType != null) ? dataType
+									.getPropertyDef(property) : null;
+							Class<?> type = entity.getPropertyType(property);
+							value = toJavaObject(
+									(ContainerNode) jsonNode,
+									(propertyDef != null) ? propertyDef
+											.getDataType() : null, type, proxy,
+									context);
+						} else if (jsonNode instanceof ValueNode) {
+							value = toJavaValue((ValueNode) jsonNode, null,
+									null);
+						} else {
+							throw new IllegalArgumentException(
+									"Value type mismatch. expect [JSON Value].");
+						}
+
+						oldValues.put(property, value);
 					}
 				}
 			}
@@ -514,8 +531,9 @@ public final class JsonUtils {
 				collection = new HashSet<Object>();
 			}
 		}
-		if (collection == null)
+		if (collection == null) {
 			collection = new ArrayList<Object>();
+		}
 
 		boolean isFirstElement = true;
 		EntityDataType elementDataType = (EntityDataType) ((dataType != null) ? dataType
