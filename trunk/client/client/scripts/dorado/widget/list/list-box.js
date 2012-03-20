@@ -15,7 +15,7 @@ dorado.widget.list.ListBoxRowRenderer = $extend(dorado.Renderer, /** @scope dora
 	 */
 	render: function(dom, arg) {
 		var item = arg.data, text = '';
-		if (item) {
+		if (item != null) {
 			if (arg.property) {
 				if (item instanceof dorado.Entity) {
 					text = item.getText(arg.property);
