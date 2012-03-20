@@ -734,15 +734,22 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 
 	/**
 	 * 返回树中所有被勾选选中的节点的数组。
+	 * @param {boolean} [includeHalfChecked] 是否包含那些半选状态的节点。
 	 * @return {dorado.widget.tree.Node[]} 节点数组。
 	 */
-	getCheckedNodes: function() {
+	getCheckedNodes: function(includeHalfChecked) {
 		var it = new dorado.widget.tree.TreeNodeIterator(this._root, {
 			includeInvisibleNodes: true
 		}), nodes = [];
 		while (it.hasNext()) {
 			var node = it.next();
-			if (node.get("checked")) nodes.push(node);
+			var checked = node.get("checked");
+			if (includeHalfChecked) {
+				if (checked !== false) nodes.push(node);
+			}
+			else {
+				if (checked) nodes.push(node);
+			}
 		}
 		return nodes;
 	},

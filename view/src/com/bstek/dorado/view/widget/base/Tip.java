@@ -50,13 +50,12 @@ public class Tip extends Control implements FloatControl {
 	private boolean handleOverflow = true;
 
 	public Tip() {
-		setVisible(false);
+		setVisible(null);
 	}
 
 	@Override
-	@ClientProperty(escapeValue = "false")
-	public boolean isVisible() {
-		return super.isVisible();
+	public Boolean getVisible() {
+		return super.getVisible();
 	}
 
 	@ClientProperty(escapeValue = "fade")

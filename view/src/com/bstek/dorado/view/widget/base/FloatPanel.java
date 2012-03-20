@@ -44,13 +44,12 @@ public class FloatPanel extends Panel implements FloatControl {
 	private boolean handleOverflow = true;
 
 	public FloatPanel() {
-		setVisible(false);
+		setVisible(null);
 	}
 
 	@Override
-	@ClientProperty(escapeValue = "false")
-	public boolean isVisible() {
-		return super.isVisible();
+	public Boolean getVisible() {
+		return super.getVisible();
 	}
 
 	@ClientProperty(escapeValue = "zoom")

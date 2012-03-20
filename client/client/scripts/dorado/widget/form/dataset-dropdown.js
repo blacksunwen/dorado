@@ -123,7 +123,7 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.RowListDropDown,/** @scope
 					readOnly: true,
 					style: "border: none",
 					onDataRowClick: function(rowList) {
-						dropDown.close(dropDown.getSelectedValue(rowList));
+						dropDown.close(dropDown.getSelectedValue());
 					}
 				});
 			} else {
@@ -134,7 +134,7 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.RowListDropDown,/** @scope
 					property: this._displayProperty || this._property,
 					style: "border: none",
 					onDataRowClick: function(rowList) {
-						dropDown.close(dropDown.getSelectedValue(rowList));
+						dropDown.close(dropDown.getSelectedValue());
 					}
 				});
 			}

@@ -55,13 +55,12 @@ public class Menu extends Control implements MenuItemGroup, FloatControl {
 	private boolean handleOverflow = true;
 
 	public Menu() {
-		setVisible(false);
+		setVisible(null);
 	}
 
 	@Override
-	@ClientProperty(escapeValue = "false")
-	public boolean isVisible() {
-		return super.isVisible();
+	public Boolean getVisible() {
+		return super.getVisible();
 	}
 
 	@ClientProperty(escapeValue = "zoom")

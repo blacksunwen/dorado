@@ -336,7 +336,24 @@
 			 * @type boolean
 			 * @attribute
 			 */
-			alwaysExecute : {}
+			alwaysExecute : {},
+
+			/**
+			 * 当前是否有需要提交的数据。
+			 * @type boolean
+			 * @attribute readOnly
+			 */
+			hasUpdateData: {
+				readOnly: true,
+				getter: function() {
+					if (!this._updateItems.length) {
+						return false;
+					} else {
+						var context = this.getResolveContext();
+						return context.hasUpdateData;
+					}
+				}
+			}
 		},
 
 		EVENTS : /** @scope dorado.widget.UpdateAction.prototype */

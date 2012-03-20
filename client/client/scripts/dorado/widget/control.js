@@ -156,13 +156,14 @@
 
 			/**
 			 * 是否可见。
-			 * @type boolean
+			 * @type Boolean
 			 * @attribute
 			 * @default true
 			 */
 			visible : {
 				defaultValue : true,
 				setter : function(visible) {
+					if (visible == null) visible = true;
 					if(this._visible != visible) {
 						this._visible = visible;
 						this.onActualVisibleChange();
