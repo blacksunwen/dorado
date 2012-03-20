@@ -36,10 +36,13 @@ public class Widget extends Control implements FloatControl {
 	private boolean autoAdjustPosition = true;
 	private boolean handleOverflow = true;
 
+	public Widget() {
+		setVisible(null);
+	}
+
 	@Override
-	@ClientProperty(escapeValue = "false")
-	public boolean isVisible() {
-		return super.isVisible();
+	public Boolean getVisible() {
+		return super.getVisible();
 	}
 
 	@ClientProperty(escapeValue = "none")
