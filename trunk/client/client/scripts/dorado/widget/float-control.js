@@ -412,15 +412,6 @@ dorado.dequeue = function(namespace) {
 						else if (!renderTo.nodeName) renderTo = null;
 					}
 					
-					// Added by Benny 见doShow方法中的Comment
-					var dom = control.getDom();
-					$fly(dom).css({
-						display: "",
-						visibility: "hidden",
-						left: -99999,
-						top: -99999
-					});
-					
 					var oldVisible = control._visible;
 					control._visible = true;
 					control.render(renderTo);
@@ -440,15 +431,12 @@ dorado.dequeue = function(namespace) {
 		doShow: function(options) {
 			var control = this, dom = control.getDom(), anim = true, handleModal = true;
 			
-			// Commented by Benny
-			// 我感觉下面这段处理移至show方法的render之前做效果更好，原因是在在执行doShow之前，render方法已令Control实际可见且其left、top均为0
-			// 而这在部分环境IE中，我确实看到了Dialog在开始播放动画之前首先在左上角显示出来的现象。我的虚拟机中不是这样，未找到规律。
-			// 另外，下面这句关于left:0的comment是否已经过时？
-			
-			//left:0是为了解决IE下的一个bug：如果Control在右侧，dom的offsetWidth取得错误，dom实际不超出，导致宽度取值失败
+			//移动到屏幕之外，避免对Document的宽高产生影响
 			$fly(dom).css({
 				display: "",
-				visibility: "hidden"
+				visibility: "hidden",
+                left: -99999,
+                top: -99999
 			});
 			
 			var arg = {};

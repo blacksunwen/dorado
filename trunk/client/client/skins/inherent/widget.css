@@ -18,8 +18,8 @@
 
 .d-floating {
     position: absolute;
-    left: 0;
-    top: 0;
+    left: -99999px;
+    top: -99999px;
 }
 
 .d-anchor-layout {
