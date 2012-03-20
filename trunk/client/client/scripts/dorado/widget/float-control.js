@@ -94,7 +94,11 @@ dorado.dequeue = function(namespace) {
 			},
 			
 			visible: {
-				defaultValue: false
+				defaultValue: false,
+				setter : function(visible) {
+					if (visible == null) visible = !this._floating;
+					$invokeSuper.call(this, [visible]);
+				}
 			},
 			
 			/**

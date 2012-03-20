@@ -139,6 +139,10 @@ public class RuleSetBuilder {
 			}
 		}
 
+		if (StringUtils.isEmpty(rule.getLabel())) {
+			rule.setLabel(rule.getNodeName());
+		}
+
 		if (ruleTemplate.getSortFactor() > 0) {
 			rule.setSortFactor(ruleTemplate.getSortFactor());
 		}

@@ -77,7 +77,7 @@
         },
 
 		getListenerScope: function() {
-			if (this._parent && this._parent._view) {
+			if (this._parent) {
                 var topMenu = this.getTopMenu();
                 if (!topMenu) {
                     topMenu = this._parent;

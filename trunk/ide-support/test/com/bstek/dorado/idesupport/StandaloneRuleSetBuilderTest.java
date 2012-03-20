@@ -162,6 +162,9 @@ public class StandaloneRuleSetBuilderTest extends IdeSupportContextTestCase {
 		Rule dataColumnRule = ruleSet.getRule("DataColumn");
 		assertNotNull(dataColumnRule);
 		assertEquals("DataColumn", dataColumnRule.getNodeName());
+		
+		Rule Separator1Rule = ruleSet.getRule("Separator_1");
+		assertEquals("Separator", Separator1Rule.getNodeName());
 	}
 	
 	public void testLoadRuleFile() throws Exception {

@@ -44,13 +44,12 @@ public class FloatContainer extends Container implements FloatControl {
 	private boolean handleOverflow = true;
 
 	public FloatContainer() {
-		setVisible(false);
+		setVisible(null);
 	}
 
 	@Override
-	@ClientProperty(escapeValue = "false")
-	public boolean isVisible() {
-		return super.isVisible();
+	public Boolean getVisible() {
+		return super.getVisible();
 	}
 
 	@ClientProperty(escapeValue = "zoom")

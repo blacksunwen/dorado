@@ -140,8 +140,8 @@
 			onFilterItem: {}
 		},
 		
-		getSelectedValue: function(rowList) {
-			var value = rowList.getCurrentItem();
+		getSelectedValue: function() {
+			var rowList = this.get("box.control"), value = rowList.getCurrentItem();
 			if (value && this._property) {
 				if (value instanceof dorado.Entity) {
 					value = value.get(this._property);
@@ -150,6 +150,11 @@
 				}
 			}
 			return value;
+		},
+		
+		getEntityForAssignment: function() {
+			var rowList = this.get("box.control");
+			return rowList.getCurrentItem();
 		},
 		
 		createDropDownBox: function(editor) {
@@ -161,7 +166,7 @@
 					readOnly: true,
 					style: "border: none",
 					onDataRowClick: function(rowList) {
-						dropDown.close(dropDown.getSelectedValue(rowList));
+						dropDown.close(dropDown.getSelectedValue());
 					}
 				});
 			} else {
@@ -170,7 +175,7 @@
 					property: this._displayProperty || this._property,
 					style: "border: none",
 					onDataRowClick: function(rowList) {
-						dropDown.close(dropDown.getSelectedValue(rowList));
+						dropDown.close(dropDown.getSelectedValue());
 					}
 				});
 			}

@@ -602,14 +602,47 @@
 		/**
 		 * 以异步方式刷新DataSet中的数据。即清除DataSet中原有的数据并重新提取。
 		 * 其作用等同于<pre>dataSet.getDataAsync(null, null, { flush: true });</pre>
-		 * @param {Function|dorado.Callback} callback 回调对象，传入回调对象的参数即为提取到的数据。
+		 * @param {Function|Object} [options] 执行选项。
+		 * 此参数有两种定义方式：
+		 * <ul>
+		 * 	<li>当参数的类型是Function时，系统会将其解释为下面提及的options.callback参数。<li>
+		 * 	<li>当参数的类型是Object时，系统会将其解释可能包含更多子设置的执行选项。具体支持的子设置见下面的描述。<li>
+		 * </ul>
+		 * @param {Function|dorado.Callback} [options.callback] 回调对象，传入回调对象的参数即为提取到的数据。
+		 * @param {boolean} [options.modal] 是否要在刷新动作执行期间显示模态操作的提示信息。
+		 * @param {String} [options.executingMessage] 如果要显示模态操作的提示信息，那么应该显示怎样的文字提示。
 		 * @see dorado.widget.DataSet#flush
 		 * @see dorado.widget.DataSet#getDataAsync
 		 */
-		flushAsync: function(callback) {
-			this.getDataAsync(null, callback, {
-				flush: true
-			});
+		flushAsync: function(options) {
+			if (options && options instanceof Function) {
+				options = {
+					callback: options
+				};
+			} else {
+				options = options || {};
+			}
+			var callback = options.callback, modal = options.modal, executingMessage = options.executingMessage;
+			var self = this, taskId;
+			
+			if (modal) {
+				taskId = dorado.util.TaskIndicator.showTaskIndicator(executingMessage || $resource("dorado.data.DataProviderTaskIndicator"), "main");
+			}
+			try {
+				this.getDataAsync(null, {
+					callback: function(success, result) {
+						if (taskId) dorado.util.TaskIndicator.hideTaskIndicator(taskId);
+						$callback(callback, success, result, {
+							scope: self._view
+						});
+					}
+				}, {
+					flush: true
+				});
+			}
+			finally {
+				if (taskId) dorado.util.TaskIndicator.hideTaskIndicator(taskId);
+			}
 		},
 
 		getDataTypeRepository: function() {

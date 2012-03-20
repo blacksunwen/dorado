@@ -44,7 +44,7 @@ public abstract class Control extends Component implements HtmlElement,
 	private String renderTo;
 	private String renderOn;
 	private String tip;
-	private boolean visible = true;
+	private Boolean visible = true;
 	private HideMode hideMode = HideMode.visibility;
 	private boolean draggable;
 	private String dragTags;
@@ -128,12 +128,11 @@ public abstract class Control extends Component implements HtmlElement,
 		this.tip = tip;
 	}
 
-	@ClientProperty(escapeValue = "true")
-	public boolean isVisible() {
+	public Boolean getVisible() {
 		return visible;
 	}
 
-	public void setVisible(boolean visible) {
+	public void setVisible(Boolean visible) {
 		this.visible = visible;
 	}
 
