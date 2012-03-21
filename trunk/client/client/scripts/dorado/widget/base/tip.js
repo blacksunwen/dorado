@@ -364,7 +364,7 @@
 	 * <p>
 	 * 提醒提示信息，主要用来通知用户某个动作已经完成。
 	 * 当动作完成不是那么重要，只需要给用户一个不屏蔽用户操作的提醒的时候，可以考虑使用该组件。
-	 * 该组件默认在右上角显示，如果显示不开，会按照从上倒下，从右到左的优先级来依次排列。
+	 * 该组件默认在左下角显示，如果显示不开，会按照从下到上，从右到左的优先级来依次排列。
 	 * </p>
 	 * @extends dorado.widget.Tip
 	 */
@@ -463,10 +463,12 @@
 		notify: function(msg, options) {
 			options = options || {};
 			var tip = dorado.NotifyTipPool.borrowObject();
-			tip._text = msg;
-			tip._caption = options.caption || $resource("dorado.baseWidget.NotifyTipDefaultCaption") || "dorado 7";
-			tip._icon = options.icon;
-            tip._iconClass = options.iconClass;
+            tip.set({
+                text: msg,
+                caption: options.caption || $resource("dorado.baseWidget.NotifyTipDefaultCaption") || "dorado 7",
+                icon: options.icon,
+                iconClass: options.iconClass
+            });
 			tip.show();
 		},
 
