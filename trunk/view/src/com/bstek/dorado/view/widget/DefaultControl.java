@@ -1,6 +1,5 @@
 package com.bstek.dorado.view.widget;
 
-import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.view.annotation.Widget;
 
@@ -10,7 +9,5 @@ import com.bstek.dorado.view.annotation.Widget;
  */
 @Widget(name = "Control", category = "General", dependsPackage = "widget")
 @XmlNode(nodeName = "Control")
-@ClientObject(prototype = "dorado.widget.Control", shortTypeName = "Control",
-		outputter = "spring:dorado.controlOutputter")
 public class DefaultControl extends Control {
 }

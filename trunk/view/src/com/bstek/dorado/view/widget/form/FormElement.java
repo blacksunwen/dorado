@@ -10,6 +10,7 @@ import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Align;
 import com.bstek.dorado.view.widget.Control;
 import com.bstek.dorado.view.widget.InnerElementReference;
+import com.bstek.dorado.view.widget.datacontrol.PropertyDataControl;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -18,7 +19,8 @@ import com.bstek.dorado.view.widget.InnerElementReference;
 @Widget(name = "FormElement", category = "Form", dependsPackage = "base-widget")
 @ClientObject(prototype = "dorado.widget.FormElement",
 		shortTypeName = "FormElement")
-public class FormElement extends Control implements FormConfig {
+public class FormElement extends Control implements FormConfig,
+		PropertyDataControl {
 	@Deprecated
 	private FormElementType type = FormElementType.text;
 	@Deprecated
@@ -32,14 +34,14 @@ public class FormElement extends Control implements FormConfig {
 	private String trigger;
 	private String labelSeparator = ":";
 	private boolean showLabel = true;
-	private int labelWidth;
-	private int labelSpacing;
+	private int labelWidth = 80;
+	private int labelSpacing = 3;
 	private FormElementLabelPosition labelPosition = FormElementLabelPosition.left;
 	private Align labelAlign = Align.left;
 	private int editorWidth;
 	private boolean showHint = true;
-	private int hintWidth;
-	private int hintSpacing;
+	private int hintWidth = 22;
+	private int hintSpacing = 3;
 	private boolean showHintMessage;
 	private FormElementHintPosition hintPosition = FormElementHintPosition.right;
 	private boolean readOnly;
@@ -149,6 +151,7 @@ public class FormElement extends Control implements FormConfig {
 		this.showLabel = showLabel;
 	}
 
+	@ClientProperty(escapeValue = "80")
 	public int getLabelWidth() {
 		return labelWidth;
 	}
@@ -157,6 +160,7 @@ public class FormElement extends Control implements FormConfig {
 		this.labelWidth = labelWidth;
 	}
 
+	@ClientProperty(escapeValue = "3")
 	public int getLabelSpacing() {
 		return labelSpacing;
 	}
@@ -200,6 +204,7 @@ public class FormElement extends Control implements FormConfig {
 		this.showHint = showHint;
 	}
 
+	@ClientProperty(escapeValue = "22")
 	public int getHintWidth() {
 		return hintWidth;
 	}
@@ -208,6 +213,7 @@ public class FormElement extends Control implements FormConfig {
 		this.hintWidth = hintWidth;
 	}
 
+	@ClientProperty(escapeValue = "3")
 	public int getHintSpacing() {
 		return hintSpacing;
 	}

@@ -17,7 +17,6 @@ import com.bstek.dorado.view.widget.InnerElementList;
 import com.bstek.dorado.view.widget.form.FormConfig;
 import com.bstek.dorado.view.widget.form.FormElementHintPosition;
 import com.bstek.dorado.view.widget.form.FormElementLabelPosition;
-import com.bstek.dorado.view.widget.form.FormElementType;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -43,8 +42,6 @@ public class AutoForm extends Control implements FormConfig {
 	private String height;
 	private String className;
 	private String exClassName;
-	private FormElementType type = FormElementType.text;
-	private String trigger;
 	private String labelSeparator;
 	private boolean showLabel = true;
 	private int labelWidth;
@@ -204,26 +201,6 @@ public class AutoForm extends Control implements FormConfig {
 	@Override
 	public void setExClassName(String exClassName) {
 		this.exClassName = exClassName;
-	}
-
-	@ClientProperty(escapeValue = "text")
-	public FormElementType getType() {
-		return type;
-	}
-
-	public void setType(FormElementType type) {
-		this.type = type;
-	}
-
-	@ComponentReference("Trigger")
-	@IdeProperty(
-			enumValues = "triggerClear,autoMappingDropDown1,autoMappingDropDown2,defaultDateDropDown,defaultDateTimeDropDown,defaultYearMonthDropDown")
-	public String getTrigger() {
-		return trigger;
-	}
-
-	public void setTrigger(String trigger) {
-		this.trigger = trigger;
 	}
 
 	public String getLabelSeparator() {

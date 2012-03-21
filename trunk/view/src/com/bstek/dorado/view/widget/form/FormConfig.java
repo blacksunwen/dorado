@@ -23,14 +23,6 @@ public interface FormConfig {
 
 	void setExClassName(String exClassName);
 
-	FormElementType getType();
-
-	void setType(FormElementType type);
-
-	String getTrigger();
-
-	void setTrigger(String trigger);
-
 	String getLabelSeparator();
 
 	void setLabelSeparator(String labelSeparator);
