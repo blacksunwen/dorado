@@ -456,8 +456,7 @@ dorado.dequeue = function(namespace) {
 			}
 			
 			control._visible = true;
-			control.setActualVisible(true);
-			
+
 			var position = control.getShowPosition(options);
 			
 			options.position = position;
@@ -496,11 +495,12 @@ dorado.dequeue = function(namespace) {
 		doAfterShow: function() {
 			var control = this, dom = control.getDom();
 			if (dom) {
+                control.setActualVisible(true);
 				$fly(dom).css({
 					visibility: "",
 					display: ""
 				}).bringToFront();
-				
+
 				if (control._shadowMode != "none" && (!dorado.Browser.msie || dorado.Browser.version >= 9)) {
 					$fly(dom).shadow({
 						mode: control._shadowMode || "sides"
