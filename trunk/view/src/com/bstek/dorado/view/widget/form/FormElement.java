@@ -30,7 +30,7 @@ public class FormElement extends Control implements FormConfig {
 	private String hint;
 	private String property;
 	private String trigger;
-	private String labelSeparator;
+	private String labelSeparator = ":";
 	private boolean showLabel = true;
 	private int labelWidth;
 	private int labelSpacing;
@@ -131,6 +131,7 @@ public class FormElement extends Control implements FormConfig {
 		this.trigger = trigger;
 	}
 
+	@ClientProperty(escapeValue = ":")
 	public String getLabelSeparator() {
 		return labelSeparator;
 	}
