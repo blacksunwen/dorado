@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="build" default="build">
-	<property name="dist" value="./" />
-	<property name="src" value="./" />
 	<target name="build">
-		<concat destfile="${dist}/chart.js" fixlastline="true" encoding="utf-8">
+		<concat destfile="${dist}/scripts/dorado/chart.js" fixlastline="true" encoding="utf-8">
 			<filelist dir="${src}/scripts/dorado">
 				<file name="chart.js" />
 				<file name="model.js" />
