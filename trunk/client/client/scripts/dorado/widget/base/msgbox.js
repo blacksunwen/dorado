@@ -244,6 +244,7 @@
                         if (dorado.MessageBox._lastFocusControl) {
                             dorado.widget.setFocusedControl(dorado.MessageBox._lastFocusControl);
                         }
+                        dorado.MessageBox._lastFocusControl = null;
                     });
 
                     dialog.addListener("beforeClose", function(self, arg) {
