@@ -865,6 +865,16 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			this.sendMessage(dorado.Entity._MESSAGE_DATA_CHANGED, eventArg);
 		},
 		
+		_dispatchOperationToSubEntity: function(property, create, method, args) {
+			var i = property.indexOf('.');
+			var property1 = property.substring(0, i), property2 = property.substring(i + 1);
+			var subEntity = this.get(property1);
+			if (subEntity == null && create) subEntity = this.createChild(property1);
+			if (subEntity != null) {
+				return subEntity[method].apply(subEntity, [property2].concat(args));
+			}
+		},
+		
 		/**
 		 * 设置属性值。
 		 * @param {String} property 此参数具有下列两种设置方式：
@@ -878,13 +888,19 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		set : function(property, value) {
 			
 			function doSet(entity, property, value) {
-				var propertyDef = entity._getPropertyDef(property);
-				if (propertyDef) {
-					var dataType = propertyDef.get("dataType");
-					if (dataType)
-						value = dataType.parse(value, propertyDef._typeFormat);
+				var i = property.indexOf('.');
+				if (i > 0) {
+					entity._dispatchOperationToSubEntity(property, true, "set", [value]);
+				} else {
+					var propertyDef = entity._getPropertyDef(property);
+					if (propertyDef) {
+						var dataType = propertyDef.get("dataType");
+						if (dataType) {
+							value = dataType.parse(value, propertyDef._typeFormat);
+						}
+					}
+					entity._set(property, value, propertyDef);
 				}
-				entity._set(property, value, propertyDef);
 			}
 			
 			if (property.constructor != String) {
@@ -917,19 +933,22 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		 * @param {String} property 要设置的属性名。
 		 * @param {String} text 要设置的属性值。
 		 */
-		setText : function(property, text) {
-			var propertyDef = this._getPropertyDef(property), value = text;
-			if (propertyDef) {
-				if (propertyDef._mapping && text != null) {
-					value = propertyDef.getMappedKey(text);
-					if (value === undefined)
-						value = text;
+		setText: function(property, text) {
+			var i = property.indexOf('.');
+			if (i > 0) {
+				this._dispatchOperationToSubEntity(property, true, "setText", [text]);
+			} else {
+				var propertyDef = this._getPropertyDef(property), value = text;
+				if (propertyDef) {
+					if (propertyDef._mapping && text != null) {
+						value = propertyDef.getMappedKey(text);
+						if (value === undefined) value = text;
+					}
+					var dataType = propertyDef.get("dataType");
+					if (dataType) value = dataType.parse(value, propertyDef._displayFormat);
 				}
-				var dataType = propertyDef.get("dataType");
-				if (dataType)
-					value = dataType.parse(value, propertyDef._displayFormat);
+				this._set(property, value, propertyDef);
 			}
-			this._set(property, value, propertyDef);
 		},
 		
 		/**
