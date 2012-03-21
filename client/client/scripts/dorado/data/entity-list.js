@@ -995,7 +995,7 @@
 				}
 				entry = entry.next;
 			}
-		},
+		}
 	});
 	
 	dorado.EntityList.EntityListIterator = $extend(dorado.util.Iterator, {
