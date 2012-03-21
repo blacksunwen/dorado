@@ -316,6 +316,14 @@ dorado.dequeue = function(namespace) {
 			 * @event
 			 */
 			onShow: {},
+
+            /**
+             * 在onShow的动画完成之后触发。
+             * @param {Object} self 事件的发起者，即控件本身。
+             * @param {Object} arg 事件参数。
+             * @event
+             */
+            afterShow: {},
 			
 			/**
 			 * 在隐藏之前触发。
@@ -334,7 +342,15 @@ dorado.dequeue = function(namespace) {
 			 * @event
 			 */
 			onHide: {},
-			
+
+            /**
+             * 在onHide的动画完成之后触发。
+             * @param {Object} self 事件的发起者，即控件本身。
+             * @param {Object} arg 事件参数。
+             * @event
+             */
+            afterHide: {},
+
 			/**
 			 * 在组件关闭之前触发。
 			 * @param {Object} self 事件的发起者，即组件本身。
@@ -502,6 +518,8 @@ dorado.dequeue = function(namespace) {
 					display: ""
 				}).bringToFront();
 
+                control.fireEvent("afterShow", control);
+
 				if (control._shadowMode != "none" && (!dorado.Browser.msie || dorado.Browser.version >= 9)) {
 					$fly(dom).shadow({
 						mode: control._shadowMode || "sides"
@@ -646,6 +664,7 @@ dorado.dequeue = function(namespace) {
 				display: "none"
 			});
             control._currentVisible = false;
+            control.fireEvent("afterHide", control);
 			dorado.dequeue(control._id + SHOWHIDE_SUFFIX);
 			//log.debug("dorado.dequeue after hide：" + control._id);
 		}

@@ -89,17 +89,29 @@
                             }
                         }
                     }
-                    if (typeof config.callback == "function" && (buttonId == "yes" || buttonId == "ok")) {
-                        config.callback.apply(null, [text]);
-                    }
-                    if (typeof config.detailCallback == "function") {
-                        config.detailCallback.apply(null, [buttonId, text]);
-                    }
+                    dorado.MessageBox._callbackConfig = {
+                        callback: config.callback,
+                        detailCallback: config.detailCallback,
+                        buttonId: buttonId,
+                        text: text
+                    };
                 }
 
                 dorado.MessageBox._runStack.splice(0, 1);
             }
             dorado.MessageBox._dialog.hide();
+        },
+
+        executeCallback: function() {
+            if (!dorado.MessageBox._callbackConfig) return;
+            var config = dorado.MessageBox._callbackConfig, buttonId = config.buttonId, text = config.text;
+            if (typeof config.callback == "function" && (buttonId == "yes" || buttonId == "ok")) {
+                config.callback.apply(null, [text]);
+            }
+            if (typeof config.detailCallback == "function") {
+                config.detailCallback.apply(null, [buttonId, text]);
+            }
+            dorado.MessageBox._callbackConfig = null;
         },
 
         getDialog: function() {
@@ -191,6 +203,7 @@
                     }
 
                     dialog.addListener("beforeShow", function(dialog) {
+                        dorado.MessageBox._lastFocusControl = dorado.widget.getFocusedControl();
                         var dom = dialog._dom;
                         $fly(dom).width(dorado.MessageBox.maxWidth);
 
@@ -221,7 +234,15 @@
                     dialog.addListener("beforeHide", function(self, arg) {
                         if (dorado.MessageBox._runStack.length > 0) {
                             arg.processDefault = false; //通知系统不再执行默认的后续动作。
+                            dorado.MessageBox.executeCallback();
                             dorado.MessageBox.doShow(dorado.MessageBox._runStack[0]);
+                        }
+                    });
+
+                    dialog.addListener("afterHide", function() {
+                        dorado.MessageBox.executeCallback();
+                        if (dorado.MessageBox._lastFocusControl) {
+                            dorado.widget.setFocusedControl(dorado.MessageBox._lastFocusControl);
                         }
                     });
 
