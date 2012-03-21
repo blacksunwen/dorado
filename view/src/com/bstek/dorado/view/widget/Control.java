@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
+import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
@@ -17,6 +18,8 @@ import com.bstek.dorado.annotation.XmlProperty;
 @XmlNode(
 		definitionType = "com.bstek.dorado.view.config.definition.ControlDefinition",
 		parser = "spring:dorado.controlParser")
+@ClientObject(prototype = "dorado.widget.Control", shortTypeName = "Control",
+		outputter = "spring:dorado.controlOutputter")
 @ClientEvents({ @ClientEvent(name = "onCreateDom"),
 		@ClientEvent(name = "beforeRefreshDom"),
 		@ClientEvent(name = "onRefreshDom"), @ClientEvent(name = "onClick"),
