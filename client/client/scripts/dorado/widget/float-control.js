@@ -436,9 +436,9 @@ dorado.dequeue = function(namespace) {
 			var control = this, dom = control.getDom(), anim = true, handleModal = true;
 			
 			//移动到屏幕之外，避免对Document的宽高产生影响
-			$fly(dom).css({
-				display: "",
-				visibility: "hidden",
+            $fly(dom).css({
+                display: "",
+                visibility: "hidden",
                 left: -99999,
                 top: -99999
 			});
@@ -456,6 +456,8 @@ dorado.dequeue = function(namespace) {
 			}
 			
 			control._visible = true;
+            control.setActualVisible(true);
+            $fly(dom).css({ display: "", visibility: "hidden" });
 
 			var position = control.getShowPosition(options);
 			
@@ -495,7 +497,6 @@ dorado.dequeue = function(namespace) {
 		doAfterShow: function() {
 			var control = this, dom = control.getDom();
 			if (dom) {
-                control.setActualVisible(true);
 				$fly(dom).css({
 					visibility: "",
 					display: ""
