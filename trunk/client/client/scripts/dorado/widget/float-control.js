@@ -581,7 +581,6 @@ dorado.dequeue = function(namespace) {
 				return;
 			}
 			
-			this.setActualVisible(false);
 			dorado.queue(control._id + SHOWHIDE_SUFFIX, function() {
 				var arg = {};
 				
@@ -645,6 +644,7 @@ dorado.dequeue = function(namespace) {
 				visibility: "hidden",
 				display: "none"
 			});
+            control._currentVisible = false;
 			dorado.dequeue(control._id + SHOWHIDE_SUFFIX);
 			//log.debug("dorado.dequeue after hide：" + control._id);
 		}
