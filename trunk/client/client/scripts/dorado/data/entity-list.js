@@ -348,7 +348,7 @@
 		 * @return {dorado.Entity} 第一个数据实体。
 		 */
 		getFirst: function() {
-			var entry = this._findNextEntry();
+			var entry = this._findNextEntry(null, false, 0);
 			return (entry) ? entry.data : null;
 		},
 		
@@ -358,7 +358,7 @@
 		 * @return {dorado.Entity} 最后一个数据实体。
 		 */
 		getLast: function() {
-			var entry = this._findPreviousEntry();
+			var entry = this._findPreviousEntry(null, false, this.pageCount + 1);
 			return (entry) ? entry.data : null;
 		},
 		
