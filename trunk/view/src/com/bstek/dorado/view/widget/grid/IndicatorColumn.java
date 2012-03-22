@@ -7,4 +7,5 @@ import com.bstek.dorado.annotation.ClientObject;
  * @since 2010-8-10
  */
 @ClientObject(shortTypeName = "*")
-public class IndicatorColumn extends Column {}
+public class IndicatorColumn extends AbstractDataColumn {
+}

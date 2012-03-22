@@ -47,8 +47,8 @@ public abstract class Component implements Ignorable, TagSupport,
 	private ViewElement parent;
 	private View view;
 	private boolean ignored;
-	private Object userData;
 	private String tags;
+	private Object userData;
 	private Map<String, Object> metaData;
 	private ClientEventHolder clientEventHolder = new ClientEventHolder(this);
 
