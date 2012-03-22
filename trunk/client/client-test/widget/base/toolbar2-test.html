@@ -1,0 +1,30 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="pragma" content="no-cache" />
+<meta http-equiv="cache-control" content="no-cache" />
+<meta http-equiv="expires" content="0" />
+<script type="text/javascript" src="../../include-all.js"></script>
+<script language="javascript" type="text/javascript">
+    jQuery(document).ready(function(){
+        AUTO_APPEND_TO_TOPVIEW=false;
+        var v=new dorado.widget.View({"id":"viewMain","name":"sample.Test"});
+        function f(v){v.set("children",[{"$type":"ToolBar","items":[{"$type":"ToolBarButton","caption":"菜单按钮","items":[{"caption":"打开对话框","name":"menuItem1","listener":{"onClick":(function(self,arg){
+            this.get("#dialog").show();
+
+        })}}],"menu":{"$type":"Menu","items":[{"caption":"打开对话框","name":"menuItem1","listener":{"onClick":(function(self,arg){
+            this.get("#dialog").show();
+
+        })}}],"id":"KqZ8CCqH3Cj2Qi9Y","modalType":"dark"}}]},{"$type":"Dialog","center":true,"height":"150","width":"500","id":"dialog","modal":true,"modalType":"dark"}]);}
+        f(v);
+        AUTO_APPEND_TO_TOPVIEW=true;
+        var doradoView = document.getElementById("doradoView");
+        if (doradoView) v.replace(doradoView);
+    });
+</script>
+</head>
+<body scroll="no" style="margin:0px; overflow:hidden">
+	<label id="doradoView" style="display:none" />
+</body>
+</html>
