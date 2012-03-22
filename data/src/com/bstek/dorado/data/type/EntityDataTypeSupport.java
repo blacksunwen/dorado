@@ -3,7 +3,6 @@ package com.bstek.dorado.data.type;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +20,7 @@ import com.bstek.dorado.data.type.property.BasePropertyDef;
 import com.bstek.dorado.data.type.property.PropertyDef;
 import com.bstek.dorado.data.type.validator.MessageState;
 import com.bstek.dorado.data.util.DataUtils;
+import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.util.clazz.BeanPropertyUtils;
 import com.bstek.dorado.util.proxy.ChildrenMapSupport;
 
@@ -74,7 +74,7 @@ public abstract class EntityDataTypeSupport extends NonAggregationDataType
 	public Class<?> getCreationType() {
 		Class<?> creationType = super.getCreationType();
 		if (creationType == null || creationType.equals(Object.class)) {
-			creationType = HashMap.class;
+			creationType = Record.class;
 		}
 		return creationType;
 	}

@@ -2,6 +2,8 @@ package com.bstek.dorado.data.type;
 
 import java.util.Map;
 
+import javassist.Modifier;
+
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 
@@ -53,7 +55,8 @@ public abstract class AbstractDataType implements RudeDataType {
 
 	public void setMatchType(Class<?> matchType) {
 		this.matchType = matchType;
-		if (creationType == null) {
+		if (creationType == null && !matchType.isInterface()
+				&& !Modifier.isAbstract(matchType.getModifiers())) {
 			creationType = matchType;
 		}
 	}
