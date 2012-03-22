@@ -414,7 +414,7 @@
             }
 
             $fly(doms.msgText).html(text || "&nbsp;");
-            $fly(doms.msgIcon).attr("className", "msg-icon");
+            $fly(doms.msgIcon).prop("className", "msg-icon");
 
             var extraClass;
 
@@ -422,6 +422,8 @@
                 extraClass = icons[icon];
                 icon = null;
             }
+
+            console.log("icon:" + icon + "\ticonClass:" + iconClass + "\textraClass:" + extraClass);
 
             if (icon || iconClass || extraClass) {
                 if (extraClass) $fly(doms.msgIcon).addClass(extraClass);
