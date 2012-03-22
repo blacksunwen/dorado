@@ -115,6 +115,7 @@
 					}
 				}
 			},
+
 			/**
 			 * 对话框是否已经最小化。
 			 * @attribute
@@ -130,7 +131,11 @@
 			shadowMode: {
 				defaultValue: "frame",
 				skipRefresh: true
-			}
+			},
+
+            animateType: {
+                defaultValue: dorado.Browser.msie ? "none" : "zoom"
+            }
 		},
 
 		EVENTS: /** @scope dorado.widget.Dialog.prototype */ {

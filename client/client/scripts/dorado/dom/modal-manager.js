@@ -35,7 +35,7 @@ dorado.ModalManager = {
                         }
                     };
                 };
-                if (evt.target == maskDom) {
+                if (!dorado.Browser.msie && evt.target == maskDom) {
                     var stack = manager._controlStack, stackEl = stack[stack.length - 1], dom;
                     if (stackEl)
                         dom = stackEl.dom;
