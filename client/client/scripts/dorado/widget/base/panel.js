@@ -720,7 +720,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 				if (captionBar) {
 					var button = captionBar.getButton(panel._id + "_maximize");
 					if (button) {
-						$fly(button._dom).attr("className", "d-maximize-button");
+						$fly(button._dom).prop("className", "d-maximize-button");
 						button._className = "d-maximize-button";
 					}
 				}
@@ -746,7 +746,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 			if (captionBar) {
 				var button = captionBar.getButton(panel._id + "_maximize");
 				if (button) {
-					$fly(button._dom).attr("className", "d-restore-button");
+					$fly(button._dom).prop("className", "d-restore-button");
 					button._className = "d-restore-button";
 				}
 			}

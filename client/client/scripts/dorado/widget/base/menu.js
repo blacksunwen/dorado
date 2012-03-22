@@ -330,10 +330,10 @@
 					//log.debug("contentTop:" + contentTop + "\titemTop:" + itemTop + "\titem-offsetTop:" + itemDom.offsetTop + "\tcontent-Top:" + contentTop);
 
 					if (itemTop < viewTop) {//top is not visible
-						$fly(doms.groupContent).attr("scrollTop", itemTop);
+						$fly(doms.groupContent).prop("scrollTop", itemTop);
 					}
 					else if (itemBottom > viewBottom) {//bottom is not visible
-						$fly(doms.groupContent).attr("scrollTop", itemBottom - contentHeight);
+						$fly(doms.groupContent).prop("scrollTop", itemBottom - contentHeight);
 					}
 				}
 

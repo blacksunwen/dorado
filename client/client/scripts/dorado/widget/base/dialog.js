@@ -206,7 +206,7 @@
 					if (captionBar) {
 						var button = captionBar.getButton(dialog._id + "_maximize");
 						if (button) {
-							$fly(button._dom).attr("className", "d-maximize-button");
+							$fly(button._dom).prop("className", "d-maximize-button");
 							button._className = "d-maximize-button";
 						}
 					}
@@ -256,7 +256,7 @@
 				if (captionBar) {
 					var button = captionBar.getButton(dialog._id + "_maximize");
 					if (button) {
-						$fly(button._dom).attr("className", "d-restore-button");
+						$fly(button._dom).prop("className", "d-restore-button");
 						button._className = "d-restore-button";
 					}
 				}

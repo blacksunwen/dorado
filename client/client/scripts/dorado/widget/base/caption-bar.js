@@ -220,7 +220,7 @@ dorado.widget.CaptionBar = $extend(dorado.widget.Control, /** @scope dorado.widg
 			$fly(doms.icon).css("display", "none");
 		} else {
 			if (doms.icon) {
-				$fly(doms.icon).attr("className", "caption-bar-icon").css("display", "");
+				$fly(doms.icon).prop("className", "caption-bar-icon").css("display", "");
 			}
 			if ((icon || iconCls) && !doms.icon) {
 				bar._createIcon();

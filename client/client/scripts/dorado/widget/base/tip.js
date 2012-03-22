@@ -263,7 +263,7 @@
 			var tip = this, text = (tip._text == undefined) ? "&nbsp;&nbsp;" : tip._text,
 				doms = tip._doms, arrowDirection = tip._arrowDirection, cls = tip._className;
 
-			$fly(dom).attr("className", "i-tip " + cls + " d-shadow-drop");
+			$fly(dom).prop("className", "i-tip " + cls + " d-shadow-drop");
 			$fly(doms.tipText).html(text);
 
 			if (arrowDirection && arrowDirection != "none") {
@@ -318,7 +318,7 @@
                 exClassName = icons[icon];
                 icon = null;
             }
-			$fly(doms.tipIcon).attr("className", "tip-icon");
+			$fly(doms.tipIcon).prop("className", "tip-icon");
 			if (icon || iconClass || exClassName) {
                 if (exClassName) $fly(doms.tipIcon).addClass(exClassName);
                 if (iconClass) $fly(doms.tipIcon).addClass(iconClass);

@@ -194,7 +194,7 @@
 			} else {
 				$fly(doms.icon).css("background-image", "");
 			}
-			$fly(doms.icon).attr("className", "icon");
+			$fly(doms.icon).prop("className", "icon");
 			if (iconCls) {
 				$fly(doms.icon).addClass(iconCls);
 			}
