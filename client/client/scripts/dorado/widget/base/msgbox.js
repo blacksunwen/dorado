@@ -127,6 +127,7 @@
                     exClassName: "d-message-box",
                     modal: true,
                     modalType: $setting["widget.messageBox.defaultModalType"] || "transparent",
+                    animateType: dorado.Browser.msie ? "none" : "zoom",
                     closeAction: "hide",
                     buttons: [ {
                         width: 60,
