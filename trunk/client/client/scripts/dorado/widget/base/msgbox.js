@@ -219,6 +219,32 @@
                         $fly(dom).width(dialog._width);
                         dialog._height = null;
                         dialog.doOnResize();
+
+                        var options = dorado.MessageBox._runStack[0];
+                        var buttons = options.buttons || [], buttonCount = buttons.length, editor = options.editor || "none",
+                            dlgButtons = dialog._buttons;
+
+                        if (editor != "none") {
+                            dorado.MessageBox.resetEditorWidth(editor);
+                        }
+
+                        for (var i = 0; i < 3; i++) {
+                            var button = buttons[i];
+                            if (i >= buttonCount) {
+                                $fly(dlgButtons[i]._dom).css("display", "none");
+                            }
+                            else {
+                                var caption;
+                                if (dorado.MessageBox.buttonText[button]) {
+                                    caption = $resource(dorado.MessageBox.buttonText[button]);
+                                } else {
+                                    caption = button;
+                                }
+                                dlgButtons[i].set("caption", caption);
+                                dlgButtons[i].refresh();
+                                $fly(dlgButtons[i]._dom).css("display", "");
+                            }
+                        }
                     });
 
                     dialog.addListener("onShow", function(dialog) {
@@ -459,8 +485,7 @@
 
             var dialog = dorado.MessageBox.getDialog(), msg = options.message, defaultText = options.defaultText,
                 title = options.title || dorado.MessageBox.defaultTitle, icon = options.icon, iconClass = options.iconClass,
-                buttons = options.buttons || [], buttonCount = buttons.length, editor = options.editor || "none",
-                dlgButtons = dialog._buttons;
+                editor = options.editor || "none";
 
             dorado.MessageBox.updateText(msg, icon, iconClass, editor, defaultText);
 
@@ -471,28 +496,6 @@
                     dialog.onResize();
                 }
             });
-
-            if (editor != "none") {
-                dorado.MessageBox.resetEditorWidth(editor);
-            }
-
-            for (var i = 0; i < 3; i++) {
-                var button = buttons[i];
-                if (i >= buttonCount) {
-                    $fly(dlgButtons[i]._dom).css("display", "none");
-                }
-                else {
-                    var caption;
-                    if (dorado.MessageBox.buttonText[button]) {
-                        caption = $resource(dorado.MessageBox.buttonText[button]);
-                    } else {
-                        caption = button;
-                    }
-                    dlgButtons[i].set("caption", caption);
-                    dlgButtons[i].refresh();
-                    $fly(dlgButtons[i]._dom).css("display", "");
-                }
-            }
         }
     };
 })();
