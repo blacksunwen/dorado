@@ -489,6 +489,7 @@
                         caption = button;
                     }
                     dlgButtons[i].set("caption", caption);
+                    dlgButtons[i].refresh();
                     $fly(dlgButtons[i]._dom).css("display", "");
                 }
             }
