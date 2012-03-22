@@ -248,8 +248,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		 * 允许dorado.Entity将消息发送给其观察者。
 		 */
 		enableObservers : function() {
-			if (this._disableObserversCounter > 0)
-				this._disableObserversCounter--;
+			if (this._disableObserversCounter > 0) this._disableObserversCounter--;
 		},
 		
 		/**
@@ -707,7 +706,11 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			if (this._oldData) return;
 			var data = this._data, oldData = this._oldData = {};
 			for(var p in data) {
-				if (data.hasOwnProperty(p)) oldData[p] = data[p];
+				if (data.hasOwnProperty(p)) {
+					var value = data[p];
+					if (value != null && value.isDataPipeWrapper) continue;
+					oldData[p] = value;
+				}
 			}
 		},
 		
@@ -968,12 +971,16 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				var data = this._data, oldData = this._oldData;
 				if (oldData) {
 					for(var p in data) {
-						if (data.hasOwnProperty(p))
+						if (data.hasOwnProperty(p)) {
+							var value = data[p];
+							if (value != null && value.isDataPipeWrapper) continue;
 							delete data[p];
+						}
 					}
 					for(var p in oldData) {
-						if (oldData.hasOwnProperty(p))
+						if (oldData.hasOwnProperty(p)) {
 							data[p] = oldData[p];
+						}
 					}
 				}
 				if (this.state != dorado.Entity.STATE_MOVED)this.resetState();
