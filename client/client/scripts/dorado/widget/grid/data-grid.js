@@ -617,7 +617,7 @@
 							var v = dorado.Toolkits.parseFilterValue(expression + ''), operator = v[0], value = v[1];
 							if (dataType) {
 								value = dataType.parse(value, typeFormat);
-								expression = operator + ' ' + dorado.JSON.stringify(value);
+								expression = operator + ' ' + dataType.toText(value);
 							}
 							
 							criterions.push({

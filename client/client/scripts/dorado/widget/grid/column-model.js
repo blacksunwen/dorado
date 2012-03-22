@@ -2372,9 +2372,9 @@
 					if (text) {
 						var v = dorado.Toolkits.parseFilterValue(text), operator = v[0], value = v[1];
 						if (pd && pd._mapping) {
-							text = pd.getMappedValue(value);
+							value = pd.getMappedValue(value);
 						}
-						text = operator + text;
+						text = operator + value;
 					}
 				}
 			}	
