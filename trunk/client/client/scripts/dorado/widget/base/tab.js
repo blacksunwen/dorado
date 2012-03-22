@@ -208,7 +208,7 @@
 				$fly(doms.icon).css("display", "none");
 			} else {
 				if (doms.icon) {
-					$fly(doms.icon).attr("className", ICON_CLASS).css("display", "");
+					$fly(doms.icon).prop("className", ICON_CLASS).css("display", "");
 				}
 				if ((icon || iconCls) && !doms.icon) {
 					tab._createIconSpan();

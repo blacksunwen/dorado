@@ -36,7 +36,7 @@
 
 					if (dom) {
 						$fly(doms.loadingCover).css("display", "block");
-						$fly(doms.iframe).attr("src", value || BLANK_PATH).addClass("hidden");
+						$fly(doms.iframe).prop("src", value || BLANK_PATH).addClass("hidden");
                         if (oldPath != value) {
                             frame._loaded = false;
                         }
@@ -77,7 +77,7 @@
 		
 		destroy: function() {
 			var frame = this, doms = frame._doms;
-			if (doms) $fly(doms.iframe).attr("src", BLANK_PATH);
+			if (doms) $fly(doms.iframe).prop("src", BLANK_PATH);
 			$invokeSuper.call(this);
 		},
 
@@ -114,7 +114,7 @@
         doLoad: function() {
             var frame = this, doms = frame._doms, iframe = doms.iframe;
             $fly(doms.loadingCover).css("display", "");
-			$fly(iframe).attr("src", $url(frame._path || BLANK_PATH)).load( function() {
+			$fly(iframe).prop("src", $url(frame._path || BLANK_PATH)).load( function() {
 				$fly(doms.loadingCover).css("display", "none");
 				// fix ie 6 bug....
 				if (!(dorado.Browser.msie && dorado.Browser.version == 6)) {
@@ -135,7 +135,7 @@
 
         cancelLoad: function() {
             var frame = this, doms = frame._doms, iframe = doms.iframe;
-            $fly(iframe).attr("src", BLANK_PATH);
+            $fly(iframe).prop("src", BLANK_PATH);
         },
 
 		refreshDom: function(dom) {

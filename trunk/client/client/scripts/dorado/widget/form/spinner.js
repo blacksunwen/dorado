@@ -376,7 +376,7 @@
 				});
 				if (config.prefix) {
 					var spEl = document.createElement("span");
-					$fly(spEl).text(config.prefix).attr("class", "text");
+					$fly(spEl).text(config.prefix).prop("class", "text");
 					$fly(doms.editor).append(spEl);
 				}
 				
@@ -384,7 +384,7 @@
 				
 				if (config.suffix) {
 					var spEl = document.createElement("span");
-					$fly(spEl).text(config.suffix).attr("class", "text");
+					$fly(spEl).text(config.suffix).prop("class", "text");
 					$fly(doms.editor).append(spEl);
 				}
 			}

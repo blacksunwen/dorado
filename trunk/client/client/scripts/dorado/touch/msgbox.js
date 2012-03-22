@@ -346,7 +346,7 @@ dorado.MessageBox = {
         }
 
         $fly(doms.msgText).html(text || "&nbsp;");
-        $fly(doms.msgIcon).attr("className", "msg-icon");
+        $fly(doms.msgIcon).prop("className", "msg-icon");
 
         if (icon) {
             $fly(doms.msgIcon).addClass(icon).css("display", "");
