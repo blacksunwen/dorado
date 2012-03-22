@@ -29,6 +29,7 @@ import org.codehaus.jackson.node.ValueNode;
 import org.codehaus.jackson.type.TypeReference;
 
 import com.bstek.dorado.core.Context;
+import com.bstek.dorado.data.entity.EnhanceableEntity;
 import com.bstek.dorado.data.entity.EnhanceableMapEntityEnhancer;
 import com.bstek.dorado.data.entity.EntityProxyMethodInterceptorFactory;
 import com.bstek.dorado.data.entity.EntityState;
@@ -371,16 +372,20 @@ public final class JsonUtils {
 		if (dataType != null) {
 			creationType = dataType.getCreationType();
 		}
+		if (creationType == null) {
+			creationType = Record.class;
+		}
 
 		Object result;
-		if (creationType != null) {
+		if (EnhanceableEntity.class.isAssignableFrom(creationType)) {
+			EnhanceableEntity ee = (EnhanceableEntity) creationType
+					.newInstance();
+			ee.setEntityEnhancer(new EnhanceableMapEntityEnhancer(dataType));
+			result = ee;
+		} else {
 			MethodInterceptor[] mis = getMethodInterceptorFactory()
 					.createInterceptors(dataType, creationType, null);
 			result = ProxyBeanUtils.createBean(creationType, mis);
-		} else {
-			Record record = new Record();
-			record.setEntityEnhancer(new EnhanceableMapEntityEnhancer(dataType));
-			result = record;
 		}
 
 		EntityWrapper entity = EntityWrapper.create(result);

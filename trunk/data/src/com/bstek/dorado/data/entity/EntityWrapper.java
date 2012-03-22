@@ -76,6 +76,8 @@ public class EntityWrapper {
 					}
 				}
 			}
+		} else if (entity instanceof EnhanceableEntity) {
+			return ((EnhanceableEntity) entity).getEntityEnhancer();
 		}
 		return null;
 	}
