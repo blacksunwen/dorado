@@ -5,15 +5,16 @@
 
     -webkit-border-radius: 3px;
     border-radius: 3px;
+    display: -webkit-box;
+    -webkit-box-orient: horizontal;
 }
 
 .text-editor-focused{
 }
 
-.text-editor .editor-wrap{
-}
-
-.text-editor .editor-wrap .editor{
+.text-editor .editor{
+    display: block;
+    -webkit-box-flex: 1;
 	background-color: transparent;
 
 	width: 100%;
@@ -29,7 +30,6 @@
 .text-editor .icon{
 	width:30px;
 	height:100%;
-	float:left;
 
 	background:center center no-repeat;
 
@@ -37,7 +37,6 @@
 }
 
 .text-editor .trigger{
-	float: right;
     margin-top: 12px;
     margin-right: 4px;
 	width: 0;
@@ -59,7 +58,7 @@
 .text-editor-readonly{
 }
 
-.text-editor-readonly .editor-wrap .editor{
+.text-editor-readonly .editor{
     color: #6E6E6E;
 }
 
@@ -71,20 +70,12 @@
 .text-editor-empty{
 }
 
-.text-editor-empty .editor-wrap .editor{
+.text-editor-empty .editor{
 	color:gray;
-}
-
-.text-editor-icon .editor-wrap{
-	margin-left:30px;
 }
 
 .text-editor-icon .icon{
 	display: block;
-}
-
-.text-editor-holder .editor-wrap{
-	margin-right: 34px;
 }
 
 .text-editor-holder .trigger{
@@ -98,6 +89,7 @@
     margin-left: 24px;
     margin-right: 26px;
 }
+
 .spinner .editor {
     border: 1px solid #bbb;
     background-color: transparent;

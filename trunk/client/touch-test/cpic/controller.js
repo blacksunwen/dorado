@@ -421,7 +421,7 @@ var traffic = "TRAFFICCOMPULSORYPRODUCT",//交强险
 					}
 					if (coverageConfig.twoColumn) {
 						var taxInfo = coverageMap[coverageName]["TAXINFO"];
-						console.log(taxInfo);
+						//console.log(taxInfo);
 						jQuery.each(table, function(index, item) {
 							if (item.fee) {
 								item.fee += "元";
@@ -502,6 +502,10 @@ var traffic = "TRAFFICCOMPULSORYPRODUCT",//交强险
 				item.fireEvent("onValueChange", item);
 			});
 		},
+        reloadImage: function() {
+            var image = controller.image, dom = image._dom;
+            $fly(dom).find("img").prop("src", "/CPIC09Auto/mobilecontroller/createRandomPicture.do?" + (new Date()).getTime());
+        },
 		login: function() {
 			var branchCode=controller.branchCodeEditor.get("value"),userCode=controller.userCodeEditor.get("value"),
 			password=controller.passwordEditor.get("value"),rand=controller.imageEditor.get("value");
@@ -521,6 +525,7 @@ var traffic = "TRAFFICCOMPULSORYPRODUCT",//交强险
 				dorado.touch.hideLoadingPanel();
 				dataSetLogin.set("data",data);
 				if (data.failed != null) {
+                    controller.reloadImage();
 					dorado.MessageBox.alert(data.failed);
 				} else {
 					if (data.branchCode == "1010100") {
@@ -550,10 +555,6 @@ var traffic = "TRAFFICCOMPULSORYPRODUCT",//交强险
 
             var startDate = controller.startDateEditor.get("value"), endDate = controller.endDateEditor.get("value"),
                 startDateAuto = controller.startDateAutoEditor.get("value"), endDateAuto = controller.endDateAutoEditor.get("value");
-
-            if (!controller.verifyDate(startDate, endDate, startDateAuto, endDateAuto)) {
-                return;
-            }
 
             var callback = function() {
                 //plateno = "京" + plateno;

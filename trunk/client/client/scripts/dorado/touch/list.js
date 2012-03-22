@@ -242,12 +242,13 @@ dorado.touch.List = $extend(dorado.widget.Control, {
         return dom;
     },
     doOnAttachToDocument: function() {
-        var dom = this._dom;
-        var scroller = new iScroll(/** doms.itemsWrap */ dom, {
-            //offsetTop: this.offsetTop || 0,
-            fadeScrollbar: true
-        });
-	    this._scroller = scroller;
+        var list = this, dom = list._dom;
+        setTimeout(function() {
+            var scroller = new iScroll(dom, {
+                fadeScrollbar: true
+            });
+            list._scroller = scroller;
+        }, 0);
     },
     onItemChanged: function(start, end) {
         var list = this, dataModel = list._dataModel;
@@ -261,7 +262,7 @@ dorado.touch.List = $extend(dorado.widget.Control, {
             var itemDom = list._itemDoms[i], element = dataModel.getElementAt(i);
             $fly(itemDom).find(".label")[0].innerHTML = element;
         }
-	    this._scroller.refresh();
+        this._scroller && this._scroller.refresh();
     },
     onItemAdded: function(start, end) {
         var list = this, dataModel = list._dataModel, itemDoms = list._itemDoms;
@@ -282,7 +283,7 @@ dorado.touch.List = $extend(dorado.widget.Control, {
                 beforeNode = itemDom;
             }
         }
-	    this._scroller.refresh();
+        this._scroller && this._scroller.refresh();
     },
     onItemRemoved: function(start, end) {
         var list = this;
@@ -295,6 +296,6 @@ dorado.touch.List = $extend(dorado.widget.Control, {
         for (var i = start; i <= end; i++) {
             list.removeItemDom(i);
         }
-	    this._scroller.refresh();
+        this._scroller && this._scroller.refresh();
     }
 });

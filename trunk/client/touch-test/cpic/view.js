@@ -8,12 +8,16 @@
 	var branchCodeEditor = new dorado.touch.TextEditor();
 	var userCodeEditor = new dorado.touch.TextEditor();
 	var passwordEditor = new dorado.touch.TextEditor({ type: "password" });
-    var imageEditor = new dorado.touch.TextEditor({ width: 300 });
+    var imageEditor = new dorado.touch.TextEditor({ width: 300, value: "3000" });
+    var image = new dorado.widget.HtmlContainer({
+        content: "<img src='/CPIC09Auto/mobilecontroller/createRandomPicture.do' class='verify-code'/>",
+        onClick: function(self, arg) {
+            controller.reloadImage();
+        }
+    });
     var imageContainer = new dorado.widget.Container({
         layout: { $type: "HBox" },
-        children: [imageEditor, new dorado.widget.HtmlContainer({
-            content: "<img src='/CPIC09Auto/mobilecontroller/createRandomPicture.do' class='verify-code'/>"
-        })]
+        children: [imageEditor, image]
     });
 
 
@@ -1446,7 +1450,8 @@
         endDateEditor1: endDateEditor1,
         startDateAutoEditor1: startDateAutoEditor1,
         endDateAutoEditor1: endDateAutoEditor1,
-        imageEditor: imageEditor
+        imageEditor: imageEditor,
+        image: image
 	});
 
 	view.addChild(cardbook);
