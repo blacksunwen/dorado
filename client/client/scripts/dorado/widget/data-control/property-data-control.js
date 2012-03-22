@@ -36,7 +36,11 @@ dorado.widget.PropertyDataControl = $extend(dorado.widget.DataControl, /** @scop
 		var b = true;
 		switch (messageCode) {
 			case dorado.widget.DataSet.MESSAGE_DATA_CHANGED:
-				b = (arg.property == this._property) || dorado.DataUtil.isOwnerOf(this.getBindingData(), arg.newValue);
+				b = (arg.property == this._property)
+				if (!b) {
+					var bindingData = this.getBindingData();
+					b = (bindingData == arg.newValue) || dorado.DataUtil.isOwnerOf(bindingData, arg.newValue);
+				}
 				break;
 			case dorado.widget.DataSet.MESSAGE_DELETED:
 			case dorado.widget.DataSet.MESSAGE_INSERTED:

@@ -170,7 +170,13 @@ dorado.widget.DataBlockView = $extend([dorado.widget.AbstractBlockView, dorado.w
 						firstResultOnly: true,
 						acceptAggregation: true
 					});
-					return (dorado.DataPipe.MONITOR.asyncExecutionTimes > asyncExecutionTimes);
+					if (dorado.DataPipe.MONITOR.asyncExecutionTimes > asyncExecutionTimes) {
+						return true;
+					}
+					else {
+						this.hideLoadingTip();
+						return false;
+					}
 				} else {
 					return true;
 				}

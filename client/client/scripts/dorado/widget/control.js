@@ -593,7 +593,7 @@
 			}
 
 			var actualVisible = this.isActualVisible();
-			if(actualVisible) {
+			if (actualVisible) {
 				if (!this._currentVisible || this._shouldRefreshOnVisible) {
 					this._skipResize = this._shouldResizeOnVisible;
 					this.refresh();
@@ -606,9 +606,9 @@
 		},
 		
 		refresh : function(delay) {
-			if(this._duringRefreshDom || !this._rendered || (!this._attached && this.renderUtilAttached)) return;
+			if (this._duringRefreshDom || !this._rendered || (!this._attached && this.renderUtilAttached)) return;
 
-			if(!this.isActualVisible() && !(!this._currentVisible && this._visible)) {
+			if (!this.isActualVisible() && !(!this._currentVisible && this._visible)) {
 				this._shouldRefreshOnVisible = !!this._rendered;
 				return;
 			}
@@ -737,9 +737,9 @@
 		 * @return {boolean} 返回在此次方法的调用过程中是否确实改变了控件的宽高设置。
 		 */
 		resetDimension : function() {
-			if(this._skipResetDimension) return;
+			if (this._skipResetDimension) return;
 			var changed = $invokeSuper.call(this) || !this._fixedWidth || !this._fixedHeight;
-			if((changed || !this._currentVisible) && this._visible) {
+			if ((changed || !this._currentVisible) && this._visible) {
 				this._skipResetDimension = true;
 				this.onResize();
 				this._skipResetDimension = false;

@@ -155,7 +155,7 @@
 				return same;
 			}
 			
-			tbody = dom.tBodies[0];
+			var tbody = dom.tBodies[0];
 			var grid = this.precalculateRegions();
 			var structureChanged = !isSameGrid(this._grid, grid);
 			if (structureChanged) {
