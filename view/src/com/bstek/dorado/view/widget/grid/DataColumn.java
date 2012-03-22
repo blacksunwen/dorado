@@ -1,7 +1,5 @@
 package com.bstek.dorado.view.widget.grid;
 
-import com.bstek.dorado.annotation.ClientEvent;
-import com.bstek.dorado.annotation.ClientEvents;
 import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.IdeObject;
 import com.bstek.dorado.annotation.IdeProperty;
@@ -18,28 +16,21 @@ import com.bstek.dorado.view.widget.InnerElementReference;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2009-9-28
  */
-@ClientEvents({ @ClientEvent(name = "onRenderCell"),
-		@ClientEvent(name = "onRenderFooterCell") })
 @IdeObject(labelProperty = "name,property")
-public class DataColumn extends Column {
+public class DataColumn extends AbstractDataColumn {
 	private String property;
 	private DataType dataType;
-	private String width;
 	private Align align = Align.left;
-	private String renderer;
-	private String footerRenderer;
 	private boolean readOnly;
 	private boolean required;
 	private String displayFormat;
 	private String typeFormat;
-	private String dropDown;
 	private String summaryType;
 	private String summaryRenderer;
 	private String trigger;
 	private SortState sortState = SortState.none;
 	private boolean wrappable;
 	private boolean filterable = true;
-	private boolean resizeable = true;
 
 	private String editorType = "TextEditor";
 	private InnerElementReference<Control> editorRef = new InnerElementReference<Control>(
@@ -62,30 +53,6 @@ public class DataColumn extends Column {
 
 	public void setDataType(DataType dataType) {
 		this.dataType = dataType;
-	}
-
-	public String getRenderer() {
-		return renderer;
-	}
-
-	public void setRenderer(String renderer) {
-		this.renderer = renderer;
-	}
-
-	public String getFooterRenderer() {
-		return footerRenderer;
-	}
-
-	public void setFooterRenderer(String footerRenderer) {
-		this.footerRenderer = footerRenderer;
-	}
-
-	public String getWidth() {
-		return width;
-	}
-
-	public void setWidth(String width) {
-		this.width = width;
 	}
 
 	@Override
@@ -129,14 +96,6 @@ public class DataColumn extends Column {
 
 	public void setTypeFormat(String typeFormat) {
 		this.typeFormat = typeFormat;
-	}
-
-	public String getDropDown() {
-		return dropDown;
-	}
-
-	public void setDropDown(String dropDown) {
-		this.dropDown = dropDown;
 	}
 
 	@IdeProperty(enumValues = "sum,average,count,max,min")
@@ -191,15 +150,6 @@ public class DataColumn extends Column {
 
 	public void setFilterable(boolean filterable) {
 		this.filterable = filterable;
-	}
-
-	@ClientProperty(escapeValue = "true")
-	public boolean isResizeable() {
-		return resizeable;
-	}
-
-	public void setResizeable(boolean resizeable) {
-		this.resizeable = resizeable;
 	}
 
 	@ClientProperty(escapeValue = "TextEditor")

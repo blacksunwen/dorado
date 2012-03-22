@@ -36,8 +36,7 @@ import com.bstek.dorado.data.type.validator.Validator;
 				parser = "spring:dorado.staticPropertyParser",
 				attributeOnly = true))
 @ClientObject
-@ClientEvents({
-		@com.bstek.dorado.annotation.ClientEvent(name = "onGet"),
+@ClientEvents({ @com.bstek.dorado.annotation.ClientEvent(name = "onGet"),
 		@com.bstek.dorado.annotation.ClientEvent(name = "onGetText"),
 		@com.bstek.dorado.annotation.ClientEvent(name = "onSet"),
 		@com.bstek.dorado.annotation.ClientEvent(name = "onValidate") })
@@ -59,6 +58,7 @@ public abstract class PropertyDef implements Ignorable, TagSupport,
 	private boolean submittable = true;
 	private List<Validator> validators;
 	private String tags;
+	private Object userData;
 	private Map<String, Object> metaData;
 
 	private ClientEventHolder clientEventHolder = new ClientEventHolder(this);
@@ -208,6 +208,17 @@ public abstract class PropertyDef implements Ignorable, TagSupport,
 
 	public void setTags(String tags) {
 		this.tags = tags;
+	}
+
+	@XmlProperty
+	@ClientProperty
+	@IdeProperty(editor = "any")
+	public Object getUserData() {
+		return userData;
+	}
+
+	public void setUserData(Object userData) {
+		this.userData = userData;
 	}
 
 	@XmlProperty(composite = true)
