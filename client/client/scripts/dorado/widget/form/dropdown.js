@@ -261,20 +261,27 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 	},
 
 	initDropDownBox : dorado._NULL_FUNCTION,
-
-	onEditorFocus : function(editor) {
+	
+	onEditorMouseDown: function(editor) {
 		if (this._autoOpen) {
+			this._skipEditorOnFocusProcedure= true;
+			this.execute(editor);
+		}
+	},
+
+	onEditorFocus: function(editor) {
+		if (this._autoOpen && !this._skipEditorOnFocusProcedure) {
 			$setTimeout(this, function() {
 				this.execute(editor);
 			}, 50);
 		}
+		delete this._skipEditorOnFocusProcedure;
 	},
 
-	onEditorKeyDown : function(editor, evt) {
+	onEditorKeyDown: function(editor, evt) {
 		dorado.widget.disableKeyBubble = this._editor;
 		try {
-			return this.doOnEditorKeyPress ? this
-					.doOnEditorKeyPress(evt) : true;
+			return this.doOnEditorKeyPress ? this.doOnEditorKeyPress(evt) : true;
 		} finally {
 			dorado.widget.disableKeyBubble = null;
 		}
