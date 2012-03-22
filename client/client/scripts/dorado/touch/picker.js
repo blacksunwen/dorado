@@ -1,4 +1,5 @@
 dorado.touch.Picker = $extend(dorado.touch.FloatPanel, {
+    $className: "dorado.touch.Picker",
     ATTRIBUTES: {
         className: {
             defaultValue: "picker"
@@ -27,17 +28,14 @@ dorado.touch.Picker = $extend(dorado.touch.FloatPanel, {
 
 		return $invokeSuper.call(this, arguments);
 	},
-	handleOverflow: function(overflowHeight) {
-        var picker = this;
-        picker._height = overflowHeight;
-        picker.resetDimension();
-    },
 	onBlur: function() {
+        console.log("Picker onBlur fired");
 		if (this._visible) this.hide();
 	}
 });
 
 dorado.touch.DatePicker = $extend(dorado.touch.Picker, {
+    $className: "dorado.touch.DatePicker",
     ATTRIBUTES: {
         width: {
             defaultValue: 380
@@ -81,6 +79,7 @@ dorado.touch.DatePicker = $extend(dorado.touch.Picker, {
 dorado.touch.defaultDatePicker = new dorado.touch.DatePicker();
 
 dorado.touch.ListPicker = $extend(dorado.touch.Picker, {
+    $className: "dorado.touch.ListPicker",
     ATTRIBUTES: {
         data: {},
 
@@ -88,9 +87,12 @@ dorado.touch.ListPicker = $extend(dorado.touch.Picker, {
             defaultValue: true
         }
     },
-	handleOverflow: function() {
-		this._list._scroller.refresh();
-	},
+    handleOverflow: function(overflowHeight) {
+        var picker = this;
+        picker._height = overflowHeight;
+        picker.resetDimension();
+        this._list._scroller && this._list._scroller.refresh();
+    },
     createDom: function() {
         var picker = this, list = new dorado.touch.List({
             data: this._data,
@@ -105,6 +107,7 @@ dorado.touch.ListPicker = $extend(dorado.touch.Picker, {
                 }
             }
         });
+        //picker._layout = new dorado.widget.layout.AnchorLayout();
 	    picker.addChild(list);
 	    picker._list = list;
 

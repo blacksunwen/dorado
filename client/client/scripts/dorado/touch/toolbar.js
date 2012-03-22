@@ -1,4 +1,5 @@
 dorado.touch.ToolBar = $extend(dorado.widget.Control, {
+    $className: "dorado.touch.ToolBar",
     ATTRIBUTES: {
         className: {
             defaultValue: "toolbar"

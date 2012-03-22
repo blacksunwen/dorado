@@ -48,7 +48,9 @@
 
 .picker {
     position: absolute;
-    
+    left: -99999px;
+    top: -99999px;
+
     padding: 6px;
     -webkit-border-radius: 0.3em;
     border-radius: 0.3em;

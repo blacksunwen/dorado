@@ -9,12 +9,13 @@
                 tagName: "div",
                 className: "trigger"
             }, null, doms);
-            $fly(triggerDom).prependTo(dom);
+            $fly(triggerDom).appendTo(dom);
             $fly(dom).addClass("text-editor-holder");
             jQuery(triggerDom).addClassOnHover("trigger-hover").addClassOnClick("trigger-click");
 
 	        function show(popup) {
 		        if (popup && popup.show) {
+                    popup._focusParent = editor;
 			        popup.show({
 				        anchorTarget: editor,
 				        align: "innerleft",
@@ -80,12 +81,13 @@
                 tagName: "div",
                 className: "icon"
             }, null, doms);
-            $fly(iconDom).insertBefore(doms["editorWrap"]);
+            $fly(iconDom).insertBefore(doms["editor"]);
             $fly(dom).addClass("text-editor-icon");
         }
     };
 
     dorado.touch.TextEditor = $extend(dorado.widget.AbstractEditor, {
+        $className: "dorado.touch.TextEditor",
         ATTRIBUTES: {
             className: {
                 defaultValue: "text-editor"
@@ -138,9 +140,9 @@
                         editor._doms.editor.value = editor._text;
                     }
                     editor._value = value;
-                    console.log("before onValueChange value:" + editor._value);
+                    //console.log("before onValueChange value:" + editor._value);
                     editor.fireEvent("onValueChange", editor, value);
-                    console.log("after onValueChange value:" + editor._value);
+                    //console.log("after onValueChange value:" + editor._value);
                 }
             },
             type: {
@@ -158,18 +160,13 @@
             dom = $DomUtils.xCreate({
                 tagName: "div",
                 className: "text-editor",
-                content:{
-                    contextKey: "editorWrap",
-                    tagName: "div",
-                    className: "editor-wrap",
-                    content: {
-                        contextKey: "editor",
-                        tagName: "input",
-                        className: "editor",
-                        type: editor._type ? editor._type: "text",
-                        value: value ? value : "",
-                        placeholder: editor._emptyText ? editor._emptyText : ""
-                    }
+                content: {
+                    contextKey: "editor",
+                    tagName: "input",
+                    className: "editor",
+                    type: editor._type ? editor._type: "text",
+                    value: value ? value : "",
+                    placeholder: editor._emptyText ? editor._emptyText : ""
                 }
             }, null, doms);
 
@@ -270,6 +267,7 @@
     });
 
     dorado.touch.Toggle = $extend(dorado.widget.AbstractEditor, {
+        $className: "dorado.touch.Toggle",
         ATTRIBUTES: {
             className: {
                 defaultValue: "toggle"
@@ -295,6 +293,7 @@
     });
 
     dorado.touch.Spinner = $extend(dorado.widget.AbstractEditor, {
+        $className: "dorado.touch.Spinner",
         ATTRIBUTES: {
             className: {
                 defaultValue: "spinner"

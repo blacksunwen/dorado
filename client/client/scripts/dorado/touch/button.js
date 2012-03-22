@@ -1,4 +1,5 @@
 dorado.touch.Button = $extend(dorado.widget.Control, {
+    $className: "dorado.touch.Button",
     _inherentClassName: "button",
     ATTRIBUTES: {
         className: {

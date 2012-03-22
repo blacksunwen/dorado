@@ -5,6 +5,7 @@
         <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
         <script type="text/javascript" src="../include-all.js">
         </script>
+        <script src="http://192.168.18.22:8081/target/target-script-min.js"></script>
         <script type="text/javascript">
             var view = new dorado.widget.View({
                 layout: "Anchor"
@@ -27,6 +28,7 @@
                     readOnly: true,
                     label: "姓名",
                     editor: new dorado.touch.TextEditor({
+                        editable: false,
                         popup: new dorado.touch.ListPicker({
                             data: ["aaaa", "bbbbbb", "ccccccc"]
                         })

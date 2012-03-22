@@ -255,6 +255,7 @@ dorado.touch.AbstractButtonGroup = $extend(dorado.widget.Control, {
 });
 
 dorado.touch.ButtonGroup = $extend(dorado.touch.AbstractButtonGroup, {
+    $className: "dorado.touch.ButtonGroup",
     ATTRIBUTES: {
         className: {
             defaultValue: "button-group"
@@ -272,6 +273,7 @@ dorado.touch.ButtonGroup = $extend(dorado.touch.AbstractButtonGroup, {
 });
 
 dorado.touch.RadioButton = $extend(dorado.touch.Button, {
+    $className: "dorado.touch.RadioButton",
     ATTRIBUTES: {
         value: {}
     },
@@ -287,6 +289,7 @@ dorado.touch.RadioButton = $extend(dorado.touch.Button, {
 });
 
 dorado.touch.RadioButtonGroup = $extend(dorado.touch.AbstractButtonGroup, {
+    $className: "dorado.touch.RadioButtonGroup",
     currentable: true,
     ATTRIBUTES: {
         className: {
