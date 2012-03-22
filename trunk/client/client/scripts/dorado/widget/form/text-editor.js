@@ -369,6 +369,17 @@
 			}
 		},
 		
+		onMouseDown: function() {			
+			var triggers = this.get("trigger");
+			if (triggers) {
+				if (!(triggers instanceof Array)) triggers = [triggers];
+				var self = this;
+				jQuery.each(triggers, function(i, trigger) {
+					if (trigger.onEditorMouseDown) trigger.onEditorMouseDown(self);
+				});
+			}
+		},
+		
 		doSetFocus: function() {
 			if (this._textDom) this._textDom.focus();
 		},

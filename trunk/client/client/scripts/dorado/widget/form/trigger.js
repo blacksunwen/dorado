@@ -90,6 +90,14 @@ dorado.widget.Trigger = $extend(dorado.widget.Component, /** @scope dorado.widge
 	},
 	
 	/**
+	 * 当鼠标在绑定了此触发器的编辑框中按下时触发的事件。
+	 * @dorado.widget.Trigger#onEditorMouseDown
+	 * @function
+	 * @abstract
+	 * @param {dorado.widget.AbstractTextEditor} editor 鼠标操作的编辑框。
+	 * @protected
+	 */
+	/**
 	 * 当绑定了此触发器的编辑框获得控制焦点时触发的事件。
 	 * @dorado.widget.Trigger#onEditorFocus
 	 * @function
@@ -127,8 +135,12 @@ dorado.widget.Trigger = $extend(dorado.widget.Component, /** @scope dorado.widge
 			exClassName:  (trigger._inherentClassName || '') + " " + (trigger._className || '') + " " + (trigger._exClassName || ''),
 			icon: trigger._icon,
 			iconClass: trigger._iconClass,
+			onMouseDown: function(self, arg) {
+				arg.returnValue = false;
+			},
 			onClick: function() {
 				editor.onTriggerClick(trigger);
+				arg.returnValue = false;
 			}
 		});
 		jQuery(control.getDom()).addClassOnClick("i-trigger-down d-trigger-down", null, function() {
