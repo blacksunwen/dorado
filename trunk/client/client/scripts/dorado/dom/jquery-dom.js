@@ -245,7 +245,7 @@
                         scrollTop: this.scrollTop
                     });
                     var overflowValue = this == document.body ? "hidden" : "visible";
-                    jQuery(this).attr("scrollTop", 0).css({
+                    jQuery(this).prop("scrollTop", 0).css({
                         overflow: overflowValue,
                         overflowY: overflowValue
                     }).mousewheel(disableMouseWheel);
@@ -341,7 +341,7 @@
 					jQuery(parentOverflow.parent).css({
 						overflow: parentOverflow.overflow,
 						overflowY: parentOverflow.overflowY
-					}).attr("scrollTop", parentOverflow.scrollTop).unmousewheel(disableMouseWheel);
+					}).prop("scrollTop", parentOverflow.scrollTop).unmousewheel(disableMouseWheel);
 				}
 			}
 
