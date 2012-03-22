@@ -169,10 +169,12 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 	 * 刷新布局。
 	 */
 	refresh: function() {
+		this._duringRefreshDom = true;
 		if (this._attached) {
 			this._shouldRefresh = false;
 			this.refreshDom(this.getDom());
 		}
+		this._duringRefreshDom = false;
 	},
 	
 	/**
@@ -351,7 +353,9 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 	 * @see dorado.widget.Control#onResize
 	 */
 	doOnResize: function() {
-		this.refresh();
+		if (!this._duringRefreshDom) {
+			this.refresh();
+		}
 	},
 	
 	/**
