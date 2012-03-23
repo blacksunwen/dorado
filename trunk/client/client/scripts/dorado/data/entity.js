@@ -1505,7 +1505,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				}
 			}
 			
-			function mergeValidationContext(context, state, subContextMessages) {
+			function mergeValidationContext(context, state, subContext) {
 				var subContextMessages = subContext[state];
 				if (!subContextMessages) return;
 				for (var i = 0; i < subContextMessages.length; i++) {
