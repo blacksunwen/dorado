@@ -351,8 +351,7 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 		if (!box) {
 			box = this.createDropDownBox(editor);
 			box.addListener("onDropDownBoxShow", function() {
-				if (dropdown.onDropDownBoxShow)
-					dropdown.onDropDownBoxShow();
+				if (dropdown.onDropDownBoxShow) dropdown.onDropDownBoxShow();
 			});
 			(this._view || $topView).registerInnerControl(box);
 			box.render(win.document.body);

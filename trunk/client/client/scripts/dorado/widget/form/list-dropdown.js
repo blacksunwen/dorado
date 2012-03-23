@@ -244,9 +244,14 @@
 				if (this._maxHeight &&
 					(!itemCount || (this._maxHeight / (rowList._rowHeight + 2) > (itemCount + 1)))) {
 					rowList.set({
+						height: -1,
 						scrollMode: "simple"
 					});
+					
+					rowList._forceRefresh = true;
 					rowList.refresh();
+					rowList._forceRefresh = false;
+					
 					refreshed = true;
 					var height = $fly(rowList._dom).outerHeight();
 					if (height < this._maxHeight) useMaxHeight = false;
@@ -257,7 +262,11 @@
 						height: this._maxHeight,
 						scrollMode: ((cellCount > 300) ? "viewport" : "lazyRender")
 					});
+					
+					rowList._forceRefresh = true;
 					rowList.refresh();
+					rowList._forceRefresh = false;
+					
 					refreshed = true;
 				}
 				

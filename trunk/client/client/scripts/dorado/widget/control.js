@@ -608,7 +608,7 @@
 		refresh : function(delay) {
 			if (this._duringRefreshDom || !this._rendered || (!this._attached && this.renderUtilAttached)) return;
 
-			if (!this.isActualVisible() && !(!this._currentVisible && this._visible)) {
+			if (!this.isActualVisible() && !(!this._currentVisible && this._visible) && !this._forceRefresh) {
 				this._shouldRefreshOnVisible = !!this._rendered;
 				return;
 			}

@@ -164,13 +164,23 @@ dorado.RenderableElement = $extend(dorado.AttributeSupport, /** @scope dorado.Re
 		var width = this.getRealWidth();
 		var height = this.getRealHeight();
 		if (forced || width && this._currentWidth != width) {
-			this._currentWidth = width;
-			el.outerWidth(width);
+			if (width < 0) {
+				this._currentWidth = null;
+				el.width("");
+			} else {
+				this._currentWidth = width;
+				el.outerWidth(width);
+			}
 			changed = true;
 		}
 		if (forced || height && this._currentHeight != height) {
-			this._currentHeight = height;
-			el.outerHeight(height);
+			if (height < 0) {
+				this._currentHeight = null;
+				el.height("");
+			} else {
+				this._currentHeight = height;
+				el.outerHeight(height);
+			}
 			changed = true;
 		}
 		return changed;
