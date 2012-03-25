@@ -423,7 +423,7 @@
                 icon = null;
             }
 
-            console.log("icon:" + icon + "\ticonClass:" + iconClass + "\textraClass:" + extraClass);
+            // console.log("icon:" + icon + "\ticonClass:" + iconClass + "\textraClass:" + extraClass);
 
             if (icon || iconClass || extraClass) {
                 if (extraClass) $fly(doms.msgIcon).addClass(extraClass);
