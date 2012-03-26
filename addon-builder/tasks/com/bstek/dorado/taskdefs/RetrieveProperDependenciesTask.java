@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.util.FileUtils;
 
 public class RetrieveProperDependenciesTask extends
@@ -61,23 +60,26 @@ public class RetrieveProperDependenciesTask extends
 	}
 
 	@Override
-	public void execute() throws BuildException {
-		try {
-			if (StringUtils.isEmpty(LibDir)) {
-				throw new IllegalArgumentException("\"LibDir\" undefined.");
-			}
-
-			File libDirFile = new File(LibDir);
-			if (!libDirFile.exists()) {
-				if (!libDirFile.mkdirs()) {
-					throw new IOException("Make dir \""
-							+ libDirFile.getCanonicalPath() + "\" failed.");
-				}
-			}
-		} catch (Exception e) {
-			throw new BuildException(e);
+	public void doExecute() throws Exception {
+		if (StringUtils.isEmpty(LibDir)) {
+			throw new IllegalArgumentException("\"LibDir\" undefined.");
 		}
 
-		super.execute();
+		File libDirFile = new File(LibDir);
+		if (!libDirFile.exists()) {
+			if (!libDirFile.mkdirs()) {
+				throw new IOException("Make dir \""
+						+ libDirFile.getCanonicalPath() + "\" failed.");
+			}
+		}
+
+		File dependenciesDirFile = new File(getDependenciesDir());
+		ArtifactDescriptor artifactDescriptor = new ArtifactDescriptor();
+		artifactDescriptor.setArtifactId(artifactId);
+		artifactDescriptor.setGroupId(groupId);
+		artifactDescriptor.setRevision(revision);
+		resolve(artifactDescriptor, CONFS, dependenciesDirFile);
+
+		super.doExecute();
 	}
 }

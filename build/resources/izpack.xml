@@ -81,27 +81,21 @@
 	</listeners>
 
 	<packs>
-		<pack id="core.libraries" name="Dorado Libraries" required="no">
+		<pack id="core.libraries" name="Dorado Core Libraries" required="no">
 			<description>Dorado7 Core Libraries.</description>
 			<fileset dir="." targetdir="$INSTALL_PATH">
 				<include name="*.txt" />
-				<include name="lib/dorado/**/*" />
+				<include name="lib/dorado-core/**/*" />
 			</fileset>
 		</pack>
 
-		<pack id="endorsed.libraries" name="Endorsed Libraries" required="no">
-			<description>Dorado7 Endorsed libraries.</description>
-			<depends packname="Dorado Libraries" />
+		<pack id="endorsed.libraries" name="Dorado Addon Libraries" required="no">
+			<description>Dorado7 Addon libraries.</description>
+			<depends packname="Dorado Core Libraries" />
 
 			<fileset dir="." targetdir="$INSTALL_PATH">
-				<include name="lib/endorsed/**/*" />
-			</fileset>
-		</pack>
-
-		<pack id="core.source" name="Source" required="no">
-			<description>Dorado7 Source Code.</description>
-			<fileset dir="." targetdir="$INSTALL_PATH">
-				<include name="src/**/*" />
+				<include name="lib/**/*" />
+				<exclude name="lib/dorado-core/**/*" />
 			</fileset>
 		</pack>
 

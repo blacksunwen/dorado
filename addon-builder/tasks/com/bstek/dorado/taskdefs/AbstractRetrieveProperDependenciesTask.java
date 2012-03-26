@@ -225,52 +225,58 @@ public abstract class AbstractRetrieveProperDependenciesTask extends Task {
 				}
 			}
 
-			for (File jarFile : dependenciesDirFile.listFiles()) {
-				if (jarFile.isFile()) {
-					String fileName = jarFile.getName();
-					if (fileName.startsWith("servlet-api-")
-							|| fileName.startsWith("jsp-api-")) {
-						jarFile.delete();
-						continue;
-					}
-
-					log("Go through \"" + fileName + "\"...");
-					ArtifactDescriptor artifactDescriptor = getArtifactDescriptor(jarFile);
-					if (artifactDescriptor != null) {
-						processDoradoAddon(artifactDescriptor, jarFile,
-								workDirFile);
-					}
-				}
-			}
-
-			for (File jarFile : workDirFile.listFiles()) {
-				File dependenciesJarFile = new File(dependenciesDirFile,
-						jarFile.getName());
-				if (dependenciesJarFile.exists()) {
-					log("Delete \"" + dependenciesJarFile.getName() + "\"...");
-					if (!dependenciesJarFile.delete()) {
-						throw new IOException("Delete \""
-								+ dependenciesJarFile.getCanonicalPath()
-								+ "\" failed.");
-					}
-				}
-				jarFile.delete();
-			}
-			workDirFile.delete();
-
-			StringBuffer properDependencies = new StringBuffer();
-			for (File jarFile : dependenciesDirFile.listFiles()) {
-				if (jarFile.isFile()) {
-					if (properDependencies.length() > 0) {
-						properDependencies.append(',');
-					}
-					properDependencies.append(jarFile.getName());
-				}
-			}
-			getProject().setUserProperty("properDependencies",
-					properDependencies.toString());
+			doExecute();
 		} catch (Exception e) {
 			throw new BuildException(e);
 		}
+	}
+
+	protected void doExecute() throws Exception {
+		File dependenciesDirFile = new File(dependenciesDir);
+		File workDirFile = new File(workDir);
+
+		for (File jarFile : dependenciesDirFile.listFiles()) {
+			if (jarFile.isFile()) {
+				String fileName = jarFile.getName();
+				if (fileName.startsWith("servlet-api-")
+						|| fileName.startsWith("jsp-api-")) {
+					jarFile.delete();
+					continue;
+				}
+
+				log("Go through \"" + fileName + "\"...");
+				ArtifactDescriptor artifactDescriptor = getArtifactDescriptor(jarFile);
+				if (artifactDescriptor != null) {
+					processDoradoAddon(artifactDescriptor, jarFile, workDirFile);
+				}
+			}
+		}
+
+		for (File jarFile : workDirFile.listFiles()) {
+			File dependenciesJarFile = new File(dependenciesDirFile,
+					jarFile.getName());
+			if (dependenciesJarFile.exists()) {
+				log("Delete \"" + dependenciesJarFile.getName() + "\"...");
+				if (!dependenciesJarFile.delete()) {
+					throw new IOException("Delete \""
+							+ dependenciesJarFile.getCanonicalPath()
+							+ "\" failed.");
+				}
+			}
+			jarFile.delete();
+		}
+		workDirFile.delete();
+
+		StringBuffer properDependencies = new StringBuffer();
+		for (File jarFile : dependenciesDirFile.listFiles()) {
+			if (jarFile.isFile()) {
+				if (properDependencies.length() > 0) {
+					properDependencies.append(',');
+				}
+				properDependencies.append(jarFile.getName());
+			}
+		}
+		getProject().setUserProperty("properDependencies",
+				properDependencies.toString());
 	}
 }

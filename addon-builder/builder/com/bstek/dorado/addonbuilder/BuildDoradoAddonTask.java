@@ -20,6 +20,8 @@ import org.apache.tools.ant.taskdefs.Ant;
 import org.apache.tools.ant.taskdefs.Property;
 import org.apache.tools.ant.types.Path;
 
+import com.bstek.dorado.ant.utils.StringUtils;
+
 public class BuildDoradoAddonTask extends Ant {
 	private static final String ADDON_BUILDER_XML = "addon-builder.xml";
 	private static final String OUTPUT_PROPERTIES_FILE = "output.properties";
