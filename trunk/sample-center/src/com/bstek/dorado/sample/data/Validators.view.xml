@@ -21,7 +21,7 @@
       </PropertyDef>
       <PropertyDef name="registerDate">
         <Property name="required">false</Property>
-        <Property name="dataType">DateTime</Property>
+        <Property name="dataType">Date</Property>
         <Property name="label">注册日期</Property>
       </PropertyDef>
       <PropertyDef name="email">
@@ -112,7 +112,8 @@ finally {&#xD;
       <Property name="width">600</Property>
       <Property name="height">200</Property>
       <Property name="stretchColumnsMode">stretchableColumns</Property>
-      <Column/>
+      <IndicatorColumn/>
     </DataGrid>
+    <UpdateAction/>
   </View>
 </ViewConfig>

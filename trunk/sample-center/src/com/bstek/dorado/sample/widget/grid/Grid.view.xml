@@ -17,6 +17,7 @@ $ajax.request(&quot;>dorado/res/com/bstek/dorado/sample/widget/grid/Phones.js&qu
       <Property name="width">800</Property>
       <Property name="showFooter">true</Property>
       <Property name="showGroupFooter">true</Property>
+      <Property name="dynaRowHeight">true</Property>
       <IndicatorColumn/>
       <RowNumColumn/>
       <DataColumn>
@@ -66,6 +67,7 @@ $ajax.request(&quot;>dorado/res/com/bstek/dorado/sample/widget/grid/Phones.js&qu
         <Property name="property">comment</Property>
         <Property name="caption">Comment</Property>
         <Property name="width">*</Property>
+        <Property name="wrappable">true</Property>
       </DataColumn>
     </Grid>
   </View>
