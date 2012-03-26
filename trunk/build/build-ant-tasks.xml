@@ -55,6 +55,10 @@
 			<fileset dir="${workDir}/bin" />
 			<fileset dir="${workDir}/src" excludes="**/*.java" />
 		</jar>
+
+		<copy file="${targetDir}/dorado-ant-tasks.jar"
+		      todir="../addon-builder/home/lib"
+		      overwrite="true" />
 	</target>
 
 	<target name="build" depends="init,compile,jar" />

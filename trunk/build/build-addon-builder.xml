@@ -6,7 +6,7 @@
 	<property file="build.properties" />
 
 	<property name="vendor" value="www.BSTEK.com" />
-	<property name="version" value="1.0.0" />
+	<property name="version" value="1.0.1" />
 	<property name="qualifier" value="RELEASE" />
 
 	<taskdef resource="net/sf/antcontrib/antlib.xml"
@@ -100,6 +100,10 @@
 				           value="${fullVersion}" />
 			</manifest>
 		</jar>
+
+		<copy file="${targetDir}/dorado-addon-builder-${version}.jar"
+		      tofile="lib/dorado-addon-builder.jar"
+		      overwrite="true" />
 	</target>
 
 	<target name="makePom">

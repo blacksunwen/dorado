@@ -17,7 +17,8 @@
 	<property name="libDir" value="${user.home}/.dorado-builder" />
 	<property name="workDir" value="${buildDir}/work" />
 	<property name="targetDir" value="${buildDir}/target" />
-	<property name="addonBuilderVersion" value="1.0.0" />
+	<property name="bsdn.nexusPublic"
+	          value="http://nexus.bsdn.org/content/groups/public" />
 	<property name="bsdn.nexusReleases"
 	          value="http://nexus.bsdn.org:80/content/repositories/dorado_releases" />
 	<property name="bsdn.nexusSnapshots"
@@ -33,8 +34,21 @@
 		<mkdir dir="${targetDir}" />
 	</target>
 
-	<target name="getAddonBuilder">
-		<get src="http://nexus.bsdn.org:80/content/groups/public/com/bstek/dorado/dorado-addon-builder/${addonBuilderVersion}/dorado-addon-builder-${addonBuilderVersion}.jar"
+	<target name="checkAddonBuilder">
+		<get src="${bsdn.nexusPublic}/com/bstek/dorado/dorado-addon-builder/maven-metadata.xml"
+		     dest="${libDir}"
+		     verbose="true" />
+		<xmlproperty file="${libDir}/maven-metadata.xml" />
+		<property name="addonBuilderVersion"
+		          value="${metadata.versioning.latest}" />
+		<echo message="Latest AddonBuilder Version: ${addonBuilderVersion}" />
+
+		<available file="dorado-addon-builder-${addonBuilderVersion}"
+		           property="addonBuilderAvailable" />
+	</target>
+
+	<target name="getAddonBuilder" unless="addonBuilderAvailable">
+		<get src="${bsdn.nexusPublic}/com/bstek/dorado/dorado-addon-builder/${addonBuilderVersion}/dorado-addon-builder-${addonBuilderVersion}.jar"
 		     dest="${libDir}"
 		     verbose="true"
 		     skipExisting="true" />
@@ -49,7 +63,7 @@
 		         classpath="${addonBuilder.homeDir}/lib/maven-ant-tasks-2.1.3.jar" />
 	</target>
 
-	<target name="package" depends="init,getAddonBuilder">
+	<target name="package" depends="init,checkAddonBuilder,getAddonBuilder">
 		<buildDoradoAddon baseDir="${basedir}"
 		                  workDir="${workDir}"
 		                  targetDir="${targetDir}"

@@ -10,7 +10,7 @@
 	<taskdef resource="net/sf/antcontrib/antlib.xml"
 	         classpath="lib/ant-contrib-1.0b3.jar" />
 	<taskdef resource="com/bstek/dorado/addonbuilder/task.properties"
-	         classpath="lib/dorado-addon-builder-1.0.0.jar" />
+	         classpath="lib/dorado-addon-builder.jar" />
 
 	<target name="buildJsDoc">
 		<delete dir="${rootWorkDir}/docs" />
@@ -19,7 +19,7 @@
 		<buildDoradoAddon baseDir="${workspaceDir}/core"
 		                  workDir="${rootWorkDir}/docs"
 		                  targetDir="${targetDir}"
-		                  name="dorado-docs"
+		                  name="FULL"
 		                  vendor="${vendor}"
 		                  version="${version}"
 		                  qualifier="${qualifier}"
