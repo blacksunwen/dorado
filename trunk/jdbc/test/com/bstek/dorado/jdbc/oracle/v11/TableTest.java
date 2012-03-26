@@ -5,6 +5,7 @@ import junit.framework.Assert;
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.TestJdbcUtils;
+import com.bstek.dorado.jdbc.model.table.Table;
 
 public class TableTest extends AbstractOracle11JdbcTestCase {
 	
@@ -57,4 +58,10 @@ public class TableTest extends AbstractOracle11JdbcTestCase {
 		}
 	}
 	
+	public void testByKey() {
+		Table table = (Table)JdbcUtils.getDbTable(Employee.TABLE);
+		Record record = JdbcUtils.getByKey(table, 3959991);
+		
+		Assert.assertNotNull(record);
+	}
 }
