@@ -5,11 +5,8 @@
 	<property environment="env" />
 	<property file="build.properties" />
 
-	<property name="vendor" value="www.BSTEK.com" />
-	<property name="version" value="7.0.19" />
-	<property name="qualifier" value="SNAPSHOT" />
-
-	<property name="targetDir" value="${rootWorkDir}/target" />
+	<property name="version" value="${coreVersion}" />
+	<property name="qualifier" value="${coreQualifier}" />
 
 	<taskdef resource="net/sf/antcontrib/antlib.xml"
 	         classpath="lib/ant-contrib-1.0b3.jar" />
