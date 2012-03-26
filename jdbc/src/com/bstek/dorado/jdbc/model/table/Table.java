@@ -2,7 +2,9 @@ package com.bstek.dorado.jdbc.model.table;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
@@ -14,13 +16,12 @@ import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.Dialect;
 import com.bstek.dorado.jdbc.JdbcDataProviderOperation;
 import com.bstek.dorado.jdbc.JdbcDataResolverContext;
-import com.bstek.dorado.jdbc.JdbcParameterSource;
 import com.bstek.dorado.jdbc.JdbcRecordOperationProxy;
 import com.bstek.dorado.jdbc.model.AbstractDbColumn;
 import com.bstek.dorado.jdbc.model.AbstractTable;
 import com.bstek.dorado.jdbc.sql.SelectSql;
 import com.bstek.dorado.jdbc.sql.SqlConstants.KeyWord;
-import com.bstek.dorado.jdbc.sql.SqlUtils;
+import com.bstek.dorado.jdbc.type.JdbcType;
 
 /**
  * 
@@ -145,16 +146,63 @@ public class Table extends AbstractTable {
 
 	@Override
 	public SelectSql selectSql(JdbcDataProviderOperation operation) {
-		Table table = (Table)operation.getDbTable();
+		//SelectSql
+		TableSelectSql selectSql = createSelectSql();
 		
+		//tableToken
 		Dialect dialect = operation.getJdbcEnviroment().getDialect();
+		String tableToken = dialect.token(this);
+		selectSql.setTableToken(tableToken);
 		
+		//parameter
+		Object parameter = operation.getParameter();
+		if (parameter instanceof KeyObject) {
+			KeyObject keyObj = (KeyObject)parameter;
+			Object[] keyValues = keyObj.getKeyValues();
+			
+			Map<String, Object> keyParameter = new HashMap<String, Object>();
+			List<TableKeyColumn> keyColumnList = this.getKeyColumns();
+			StringBuffer dynamicToken = new StringBuffer("WHERE ");
+			for (int i = 0; i < keyColumnList.size(); i++) {
+				TableKeyColumn keyColumn = keyColumnList.get(i);
+				String columnName = keyColumn.getName();
+				Object keyValue = keyValues[i];
+				
+				JdbcType jdbcType = keyColumn.getJdbcType();
+				if (jdbcType != null) {
+					keyValue = jdbcType.toDB(keyValue);
+				}
+				
+				keyParameter.put(keyColumn.getName(), keyValue);
+				
+				if (i > 0) {
+					dynamicToken.append(" AND ");
+				} 
+				dynamicToken.append(columnName + " = :" + columnName);
+			}
+			
+			selectSql.setDynamicToken(dynamicToken.toString());
+			selectSql.setParameter(keyParameter);
+		} else {
+			selectSql.setDynamicToken(this.getDynamicClause());
+			selectSql.setParameter(parameter);
+			
+			Criteria criteria = this.getCriteria(operation);
+			if (criteria != null) {
+				selectSql.setCriteria(criteria);
+			}
+		}
+		
+		return selectSql;
+	}
+	
+	private TableSelectSql createSelectSql() {
 		//SelectSql
 		TableSelectSql selectSql = new TableSelectSql();
 
 		//columnsToken
 		StringBuilder columnsToken = new StringBuilder();
-		List<AbstractDbColumn> columns = table.getAllColumns();
+		List<AbstractDbColumn> columns = this.getAllColumns();
 		for (int i=0, j=columns.size(), ableColumnCount = 0; i<j; i++) {
 			AbstractDbColumn column = columns.get(i);
 			if (column.isSelectable()) {
@@ -164,32 +212,20 @@ public class Table extends AbstractTable {
 				
 				String columnName = column.getName();
 				String propertyName = column.getPropertyName();
-				String token = columnName + " " + KeyWord.AS + " "  + propertyName;
-				columnsToken.append(token);
+				if (!columnName.equals(propertyName)) {
+					String token = columnName + " " + KeyWord.AS + " "  + propertyName;
+					columnsToken.append(token);
+				} else {
+					columnsToken.append(columnName);
+				}
 			}
 		}
 		selectSql.setColumnsToken(columnsToken.toString());
 		
-		//tableToken
-		String tableToken = dialect.token(table);
-		selectSql.setTableToken(tableToken);
-		
-		//dynamicToken
-		String dynamicToken = table.getDynamicClause();
-		selectSql.setDynamicToken(dynamicToken);
-		
-		//parameter
-		Object parameter = operation.getParameter();
-		selectSql.setParameter(parameter);
-		//JdbcParameterSource
-		JdbcParameterSource parameterSource = SqlUtils.createJdbcParameter(parameter);
-		selectSql.setParameterSource(parameterSource);
-		
-		Criteria criteria = this.getCriteria(operation);
-		if (criteria != null) {
-			selectSql.setCriteria(criteria);
-		}
-		
 		return selectSql;
+	}
+	
+	public KeyObject createKeyObject(Object...keys) {
+		return new KeyObject(this, keys);
 	}
 }

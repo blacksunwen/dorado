@@ -51,6 +51,7 @@ public class TableSelectSql extends SelectSql {
 
 	public void setParameter(Object parameter) {
 		this.parameter = parameter;
+		this.setParameterSource(SqlUtils.createJdbcParameter(parameter));
 	}
 
 	@Override

@@ -52,7 +52,7 @@ public abstract class SelectSql extends AbstractSql {
 		return querySql;
 	}
 	
-	private void build(final Dialect dialect) {
+	private void build(Dialect dialect) {
 		String sql = doBuild(dialect);
 		
 		Criteria criteria = this.getCriteria();

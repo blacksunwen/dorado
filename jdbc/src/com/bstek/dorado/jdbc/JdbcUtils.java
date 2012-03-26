@@ -13,6 +13,7 @@ import com.bstek.dorado.jdbc.config.DbElementDefinition;
 import com.bstek.dorado.jdbc.config.DbmManager;
 import com.bstek.dorado.jdbc.config.JdbcCreationContext;
 import com.bstek.dorado.jdbc.model.DbTable;
+import com.bstek.dorado.jdbc.model.table.KeyObject;
 import com.bstek.dorado.jdbc.model.table.Table;
 import com.bstek.dorado.util.Assert;
 
@@ -34,6 +35,12 @@ public abstract class JdbcUtils {
 		}
 	}
 
+	/**
+	 * 获取一个DbTable对象
+	 * 
+	 * @param tableName
+	 * @return
+	 */
 	public static <T extends DbTable> T getDbTable(String tableName) {
 		Assert.notEmpty(tableName, "name of DbTable must not be null.");
 		DbElementDefinition definition = getDbmManager().getDefinition(tableName);
@@ -56,6 +63,13 @@ public abstract class JdbcUtils {
 		return dbmManager;
 	}
 	
+	/**
+	 * 查询
+	 * 
+	 * @param tableName
+	 * @param parameter
+	 * @return
+	 */
 	public static Collection<Record> query(String tableName, Object parameter) {
 		JdbcDataProviderContext jCtx = new JdbcDataProviderContext(null, parameter);
 		DbTable table = getDbTable(tableName);
@@ -64,6 +78,12 @@ public abstract class JdbcUtils {
 		return query(operation);
 	}
 	
+	/**
+	 * 查询
+	 * 
+	 * @param operation
+	 * @return
+	 */
 	public static Collection<Record> query(JdbcDataProviderOperation operation) {
 		if (operation.isProcessDefault()) {
 			DbTable table = operation.getDbTable();
@@ -81,6 +101,31 @@ public abstract class JdbcUtils {
 		
 		Page<Record> page = operation.getJdbcContext().getPage();
 		return page.getEntities();
+	}
+	
+	/**
+	 * 根据Table的主键值获取记录
+	 * 
+	 * @param table
+	 * @param keys
+	 * @return
+	 */
+	public static Record getByKey(Table table, Object... keys) {
+		JdbcDataProviderContext jCtx = new JdbcDataProviderContext();
+		JdbcDataProviderOperation operation = new JdbcDataProviderOperation(table, jCtx);
+		KeyObject keyObject = table.createKeyObject(keys);
+		jCtx.setParameter(keyObject);
+		
+		Collection<Record> records = query(operation);
+		if (records == null || records.size() == 0){
+			return null;
+		} else if (records.size() == 1) {
+			return records.iterator().next();
+		} else if (records.size() > 1) {
+			throw new IllegalArgumentException("too many records be retrieved [" + records.size() + "], only one excepted.");
+		} else {
+			return null;
+		}
 	}
 	
 	public static void insert(String tableName, Record record) {

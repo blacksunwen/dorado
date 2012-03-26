@@ -15,7 +15,6 @@ import com.bstek.dorado.data.provider.Criteria;
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.JdbcDataProviderOperation;
 import com.bstek.dorado.jdbc.JdbcDataResolverContext;
-import com.bstek.dorado.jdbc.JdbcParameterSource;
 import com.bstek.dorado.jdbc.JdbcRecordOperation;
 import com.bstek.dorado.jdbc.JdbcRecordOperationProxy;
 import com.bstek.dorado.jdbc.JdbcUtils;
@@ -24,7 +23,6 @@ import com.bstek.dorado.jdbc.model.AbstractTable;
 import com.bstek.dorado.jdbc.model.AbstractUpdatableColumn;
 import com.bstek.dorado.jdbc.model.table.Table;
 import com.bstek.dorado.jdbc.sql.SelectSql;
-import com.bstek.dorado.jdbc.sql.SqlUtils;
 
 /**
  * 
@@ -154,12 +152,7 @@ public class SqlTable extends AbstractTable {
 		selectSql.setDynamicToken(querySql);
 		
 		//parameter
-		Object parameter = operation.getParameter();
-		selectSql.setParameter(parameter);
-		
-		//SqlParameterSource
-		JdbcParameterSource parameterSource = SqlUtils.createJdbcParameter(parameter);
-		selectSql.setParameterSource(parameterSource);
+		selectSql.setParameter(operation.getParameter());
 		
 		Criteria criteria = this.getCriteria(operation);
 		if (criteria != null) {
