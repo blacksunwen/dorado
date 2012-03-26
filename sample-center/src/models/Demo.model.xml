@@ -3,25 +3,25 @@
   <DataType name="CommonEntity" meta="x:371;y:10;child:BaseCustomer,BaseCategory,Order,BaseProduct,OrderDetail,BaseEmployee">
     <PropertyDef name="id" readOnly="true"/>
   </DataType>
-  <DataType parent="CommonEntity" name="BaseCategory" creationType="com.bstek.dorado.sample.entity.Category" meta="x:8;y:147;child:Category" defaultDisplayProperty="categoryName">
+  <DataType name="BaseCategory" parent="CommonEntity" meta="x:8;y:147;child:Category" creationType="com.bstek.dorado.sample.entity.Category" defaultDisplayProperty="categoryName">
     <PropertyDef name="categoryName" label="分类名称"/>
   </DataType>
-  <DataType parent="BaseCategory" name="Category" matchType="com.bstek.dorado.sample.entity.Category" meta="x:12;y:284" autoCreatePropertyDefs="true"/>
-  <DataType parent="CommonEntity" name="BaseProduct" creationType="com.bstek.dorado.sample.entity.Product" meta="x:151;y:147;child:Product" defaultDisplayProperty="productName">
+  <DataType name="Category" parent="BaseCategory" meta="x:12;y:284" autoCreatePropertyDefs="true" matchType="com.bstek.dorado.sample.entity.Category"/>
+  <DataType name="BaseProduct" parent="CommonEntity" meta="x:151;y:147;child:Product" creationType="com.bstek.dorado.sample.entity.Product" defaultDisplayProperty="productName">
     <PropertyDef name="productName" label="产品名称"/>
   </DataType>
-  <DataType parent="BaseProduct" name="Product" matchType="com.bstek.dorado.sample.entity.Product" meta="x:157;y:284" autoCreatePropertyDefs="true"/>
-  <DataType parent="CommonEntity" name="Order" matchType="com.bstek.dorado.sample.entity.Order" meta="x:294;y:147" autoCreatePropertyDefs="true"/>
-  <DataType parent="CommonEntity" name="OrderDetail" matchType="com.bstek.dorado.sample.entity.OrderDetail" meta="x:725;y:147" autoCreatePropertyDefs="true"/>
-  <DataType parent="CommonEntity" name="BaseCustomer" creationType="com.bstek.dorado.sample.entity.Customer" meta="x:437;y:147;child:Customer" defaultDisplayProperty="companyName">
+  <DataType name="Product" parent="BaseProduct" meta="x:157;y:284" autoCreatePropertyDefs="true" matchType="com.bstek.dorado.sample.entity.Product"/>
+  <DataType name="Order" parent="CommonEntity" meta="x:294;y:147" autoCreatePropertyDefs="true" matchType="com.bstek.dorado.sample.entity.Order"/>
+  <DataType name="OrderDetail" parent="CommonEntity" meta="x:725;y:147" autoCreatePropertyDefs="true" matchType="com.bstek.dorado.sample.entity.OrderDetail"/>
+  <DataType name="BaseCustomer" parent="CommonEntity" meta="x:437;y:147;child:Customer" creationType="com.bstek.dorado.sample.entity.Customer" defaultDisplayProperty="companyName">
     <PropertyDef name="companyName" label="公司名"/>
   </DataType>
-  <DataType parent="BaseCustomer" name="Customer" matchType="com.bstek.dorado.sample.entity.Customer" meta="x:440;y:284" autoCreatePropertyDefs="true"/>
-  <DataType parent="CommonEntity" name="BaseEmployee" creationType="com.bstek.dorado.sample.entity.Employee" meta="x:582;y:147;child:Employee" defaultDisplayProperty="firstName">
+  <DataType name="Customer" parent="BaseCustomer" meta="x:440;y:284" autoCreatePropertyDefs="true" matchType="com.bstek.dorado.sample.entity.Customer"/>
+  <DataType name="BaseEmployee" parent="CommonEntity" meta="x:582;y:147;child:Employee" creationType="com.bstek.dorado.sample.entity.Employee" defaultDisplayProperty="firstName">
     <PropertyDef name="firstName" label="姓"/>
     <PropertyDef name="lastName" label="名"/>
   </DataType>
-  <DataType parent="BaseEmployee" name="Employee" matchType="com.bstek.dorado.sample.entity.Employee" autoCreatePropertyDefs="true" meta="x:580;y:284">
+  <DataType name="Employee" parent="BaseEmployee" meta="x:580;y:284" autoCreatePropertyDefs="true" matchType="com.bstek.dorado.sample.entity.Employee">
     <PropertyDef name="sex" label="性别">
       <Property name="mapping">
         <Property name="mapValues">
