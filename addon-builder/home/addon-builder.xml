@@ -426,9 +426,14 @@
 					<classpath refid="classpath" />
 				</removeInheritedDependencies>
 
+				<parseVersion version="${version}" />
+
 				<propertyfile file="${workDir}/bin/META-INF/dorado-package.properties">
 					<entry key="version" value="${fullVersion}" />
-					<entry key="majorVersion" value="${version}" />
+					<entry key="majorVersion" value="${majorVersion}" />
+					<entry key="minorVersion" value="${minorVersion}" />
+					<entry key="incrementalVersion"
+					       value="${incrementalVersion}" />
 					<entry key="publication" value="${publication}" />
 					<entry key="qualifier" value="${qualifier}" />
 					<entry key="revision" value="${version}-${qualifier}" />

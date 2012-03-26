@@ -20,7 +20,7 @@
 	          value="${templateDir}/eclipse/dropins/dorado7/plugins" />
 
 	<taskdef resource="com/bstek/dorado/addonbuilder/task.properties"
-	         classpath="lib/dorado-addon-builder-1.0.0.jar" />
+	         classpath="lib/dorado-addon-builder.jar" />
 
 	<taskdef name="IzPack" classname="com.izforge.izpack.ant.IzPackTask">
 		<classpath>
@@ -125,7 +125,8 @@
 		<property name="standardTemplate"
 		          value="${workDir}/project-template/standard" />
 		<mkdir dir="${standardTemplate}" />
-		<copy todir="${standardTemplate}">
+
+		<copy todir="${standardTemplate}" overwrite="true">
 			<fileset dir="resources/blank-project" />
 		</copy>
 		<copy todir="${standardTemplate}/web/WEB-INF/lib">
@@ -199,10 +200,11 @@
 		</copy>
 		<copy todir="${sampleCenterDir}/web">
 			<fileset dir="${workspaceDir}/sample-center/web">
+				<exclude name="WEB-INF/dorado-7.0.tld" />
 				<exclude name="WEB-INF/classes" />
 			</fileset>
 		</copy>
-		<copy todir="${sampleCenterDir}">
+		<copy todir="${sampleCenterDir}" overwrite="true">
 			<fileset dir="resources/sample-center/facet" />
 		</copy>
 
