@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.Ant.Reference;
 import org.apache.tools.ant.types.Path;
@@ -34,39 +33,33 @@ public class RemoveInheritedDependenciesTask extends
 	}
 
 	@Override
-	public void execute() throws BuildException {
-		try {
-			String dependenciesDir = getDependenciesDir();
-			if (StringUtils.isEmpty(dependenciesDir)) {
-				throw new IllegalArgumentException(
-						"\"dependenciesDir\" undefined.");
+	public void doExecute() throws Exception {
+		String dependenciesDir = getDependenciesDir();
+		if (StringUtils.isEmpty(dependenciesDir)) {
+			throw new IllegalArgumentException("\"dependenciesDir\" undefined.");
+		}
+		File dependenciesDirFile = new File(dependenciesDir);
+		if (!dependenciesDirFile.exists()) {
+			if (!dependenciesDirFile.mkdirs()) {
+				throw new IOException("Make dir \""
+						+ dependenciesDirFile.getCanonicalPath() + "\" failed.");
 			}
-			File dependenciesDirFile = new File(dependenciesDir);
-			if (!dependenciesDirFile.exists()) {
-				if (!dependenciesDirFile.mkdirs()) {
-					throw new IOException("Make dir \""
-							+ dependenciesDirFile.getCanonicalPath()
-							+ "\" failed.");
-				}
-			}
-
-			if (compileClasspath != null) {
-				FileUtils fileUtils = FileUtils.getFileUtils();
-				for (String path : compileClasspath.list()) {
-					File jarFile = new File(path);
-					if (jarFile.exists()) {
-						fileUtils.copyFile(jarFile, new File(dependenciesDir,
-								jarFile.getName()));
-					} else {
-						log("Library File \"" + path + "\" not exists.",
-								Project.MSG_WARN);
-					}
-				}
-			}
-		} catch (Exception e) {
-			throw new BuildException(e);
 		}
 
-		super.execute();
+		if (compileClasspath != null) {
+			FileUtils fileUtils = FileUtils.getFileUtils();
+			for (String path : compileClasspath.list()) {
+				File jarFile = new File(path);
+				if (jarFile.exists()) {
+					fileUtils.copyFile(jarFile, new File(dependenciesDir,
+							jarFile.getName()));
+				} else {
+					log("Library File \"" + path + "\" not exists.",
+							Project.MSG_WARN);
+				}
+			}
+		}
+
+		super.doExecute();
 	}
 }

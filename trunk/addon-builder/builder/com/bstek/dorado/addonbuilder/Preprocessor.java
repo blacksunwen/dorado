@@ -10,6 +10,10 @@ import java.util.zip.ZipInputStream;
 
 import org.apache.tools.ant.Project;
 
+import com.bstek.dorado.ant.utils.FileUtils;
+import com.bstek.dorado.ant.utils.StringUtils;
+import com.bstek.dorado.ant.utils.ZipUtils;
+
 public class Preprocessor {
 	private static final String DEFAULT_TARGET_DIR = ".dorado-builder/addon-builder";
 	private static final String SYSTEM_DATA_FILE = "system.data";

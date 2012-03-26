@@ -32,6 +32,7 @@
 
 	<target name="compile" depends="resolveDependencies">
 		<copy todir="${workDir}/src">
+			<fileset dir="${projectDir}/commons" />
 			<fileset dir="${projectDir}/tasks" />
 		</copy>
 

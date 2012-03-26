@@ -1,21 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:artifact="antlib:org.apache.maven.artifact.ant"
+         xmlns:ivy="antlib:org.apache.ivy.ant"
          name="build"
          default="build">
 	<property environment="env" />
 	<property file="build.properties" />
 
-	<property name="version" value="7.0.11" />
-	<property name="qualifier" value="BETA" />
+	<property name="version" value="${coreVersion}" />
+	<property name="qualifier" value="${coreQualifier}" />
 
 	<property name="workDir" value="${rootWorkDir}/installer" />
-
 	<property name="templateDir"
 	          value="D:/projects/dorado7/build/standard-edition" />
-	<property name="targetDir" value="D:/projects/dorado7/dist" />
+	<property name="izpackDir" value="D:/projects/dorado7/build/IzPack435" />
+	<property name="installerTargetDir" value="D:/projects/dorado7/dist" />
+
+	<property name="templateLibDir" value="${templateDir}/lib" />
+	<property name="eclipsePlugins"
+	          value="${templateDir}/eclipse/dropins/dorado7/plugins" />
 
 	<taskdef resource="com/bstek/dorado/addonbuilder/task.properties"
 	         classpath="lib/dorado-addon-builder-1.0.0.jar" />
+
+	<taskdef name="IzPack" classname="com.izforge.izpack.ant.IzPackTask">
+		<classpath>
+			<pathelement path="${izpackDir}/lib/compiler.jar" />
+			<pathelement path="${izpackDir}/lib/org.eclipse.equinox.p2.jarprocessor_1.0.200.v20100503a.jar" />
+		</classpath>
+	</taskdef>
 
 	<target name="init">
 		<delete dir="${workDir}" />
@@ -25,6 +37,9 @@
 
 		<taskdef resource="net/sf/antcontrib/antlib.xml"
 		         classpath="${addonBuilder.homeDir}/lib/ant-contrib-1.0b3.jar" />
+		<taskdef resource="org/apache/ivy/ant/antlib.xml"
+		         uri="antlib:org.apache.ivy.ant"
+		         classpath="lib/ivy-2.2.0.jar" />
 		<taskdef resource="com/bstek/dorado/taskdefs/task.properties">
 			<classpath>
 				<pathelement path="${addonBuilder.homeDir}/lib/dorado-ant-tasks.jar" />
@@ -35,17 +50,35 @@
 				<pathelement path="${addonBuilder.homeDir}/lib/oro-2.0.8.jar" />
 			</classpath>
 		</taskdef>
+
+		<if>
+			<not>
+				<isset property="revision" />
+			</not>
+			<then>
+				<if>
+					<equals arg1="${qualifier}" arg2="RELEASE" />
+					<then>
+						<property name="revision" value="${version}" />
+					</then>
+					<else>
+						<property name="revision"
+						          value="${version}-${qualifier}" />
+					</else>
+				</if>
+			</then>
+		</if>
 	</target>
 
-
 	<target name="doRetrieveProperLibs">
-		<mkdir dir="${workDir}/lib/${addon.artifactId}" />
+		<echo message="Retrieve Proper Libs to ${templateLibDir}/${addon.artifactId}" />
+		<mkdir dir="${templateLibDir}/${addon.artifactId}" />
 
-		<property name="tempWorkDir"
-		          value="${workDir}/lib/${addon.artifactId}" />
-		<retrieveProperDependencies libDir="${tempWorkDir}"
-		                            dependenciesDir="${tempWorkDir}/dependencies"
-		                            workDir="${tempWorkDir}/inherited"
+		<property name="subWorkDir"
+		          value="${templateLibDir}/${addon.artifactId}" />
+		<retrieveProperDependencies libDir="${subWorkDir}"
+		                            dependenciesDir="${subWorkDir}/dependencies"
+		                            workDir="${subWorkDir}/inherited"
 		                            ivySettingsFile="resources/ivysettings.xml"
 		                            ivyTemplateFile="resources/ivytemplate.xml"
 		                            groupId="${addon.groupId}"
@@ -54,59 +87,174 @@
 	</target>
 
 	<target name="retrieveProperDependencies">
-		<antcall target="doRetrieveProperLibs">
-			<param name="addon.groupId" value="com.bstek.dorado" />
-			<param name="addon.artifactId" value="dorado-core" />
-			<param name="addon.revision" value="7.0.9-SNAPSHOT" />
-		</antcall>
+		<delete dir="${templateLibDir}" />
+		<mkdir dir="${templateLibDir}" />
 
 		<antcall target="doRetrieveProperLibs">
 			<param name="addon.groupId" value="com.bstek.dorado" />
-			<param name="addon.artifactId" value="dorado-ide-support" />
-			<param name="addon.revision" value="7.0.9-SNAPSHOT" />
+			<param name="addon.artifactId" value="dorado-core" />
+			<param name="addon.revision" value="latest.intergation" />
 		</antcall>
 
 		<antcall target="doRetrieveProperLibs">
 			<param name="addon.groupId" value="com.bstek.dorado" />
 			<param name="addon.artifactId" value="dorado-hibernate" />
-			<param name="addon.revision" value="0.0.1-BETA" />
-		</antcall>
-
-		<!--
-		<antcall target="doRetrieveProperLibs">
-			<param name="addon.groupId" value="com.bstek.dorado" />
-			<param name="addon.artifactId" value="dorado-jdbc" />
-			<param name="addon.revision" value="0.0.1-BETA" />
+			<param name="addon.revision" value="latest.intergation" />
 		</antcall>
 
 		<antcall target="doRetrieveProperLibs">
 			<param name="addon.groupId" value="com.bstek.dorado" />
 			<param name="addon.artifactId" value="dorado-chart" />
-			<param name="addon.revision" value="0.0.1-BETA" />
+			<param name="addon.revision" value="latest.intergation" />
 		</antcall>
 
 		<antcall target="doRetrieveProperLibs">
 			<param name="addon.groupId" value="com.bstek.dorado" />
 			<param name="addon.artifactId" value="dorado-desktop" />
-			<param name="addon.revision" value="0.0.1-BETA" />
+			<param name="addon.revision" value="latest.intergation" />
 		</antcall>
 
 		<antcall target="doRetrieveProperLibs">
 			<param name="addon.groupId" value="com.bstek.dorado" />
 			<param name="addon.artifactId" value="dorado-htmleditor" />
-			<param name="addon.revision" value="0.0.1-BETA" />
+			<param name="addon.revision" value="latest.intergation" />
 		</antcall>
-		-->
 	</target>
 
-	<target name="buildBlankProject">
-		<mkdir dir="${workDir}/blank-project" />
-		<copy todir="${workDir}/blank-project">
+	<target name="buildProjectTemplate">
+		<property name="standardTemplate"
+		          value="${workDir}/project-template/standard" />
+		<mkdir dir="${standardTemplate}" />
+		<copy todir="${standardTemplate}">
 			<fileset dir="resources/blank-project" />
 		</copy>
+		<copy todir="${standardTemplate}/web/WEB-INF/lib">
+			<fileset dir="${templateLibDir}/dorado-core" includes="*.jar" />
+		</copy>
+		<copy todir="${standardTemplate}/web/WEB-INF/lib">
+			<fileset dir="${templateLibDir}/dorado-core/dependencies"
+			         includes="*.jar" />
+		</copy>
+
+		<replaceZipResources zipFilePath="${eclipsePlugins}"
+		                     zipFileNamePattern="com\.bstek\.ide\.template2_[\w\.]+\.jar"
+		                     clean="standard">
+			<fileset dir="${workDir}/project-template" />
+		</replaceZipResources>
 	</target>
 
-	<target name="build" depends="init,retrieveProperDependencies">
+	<target name="doBuildAddon">
+		<property name="addon.workDir" value="${workDir}/${addon.artifactId}" />
+		<mkdir dir="${addon.workDir}" />
+
+		<copy todir="${addon.workDir}/web/WEB-INF/lib" flatten="true">
+			<fileset dir="${templateLibDir}/${addon.artifactId}"
+			         includes="**/*.jar" />
+		</copy>
+
+		<replaceZipResources zipFilePath="${eclipsePlugins}"
+		                     zipFileNamePattern="com\.bstek\.ide\.${addon.facetName}_[\w\.]+\.jar"
+		                     clean="web/WEB-INF/lib">
+			<fileset dir="${addon.workDir}" />
+		</replaceZipResources>
 	</target>
+
+	<target name="buildAddons">
+		<antcall target="doBuildAddon">
+			<param name="addon.artifactId" value="dorado-hibernate" />
+			<param name="addon.facetName" value="hibernate" />
+		</antcall>
+
+		<antcall target="doBuildAddon">
+			<param name="addon.artifactId" value="dorado-chart" />
+			<param name="addon.facetName" value="chart" />
+		</antcall>
+
+		<antcall target="doBuildAddon">
+			<param name="addon.artifactId" value="dorado-desktop" />
+			<param name="addon.facetName" value="desktop" />
+		</antcall>
+	</target>
+
+	<target name="buildHelloWorld">
+		<replaceZipResources zipFilePath="${eclipsePlugins}"
+		                     zipFileNamePattern="com\.bstek\.ide\.helloworld_[\w\.]+\.jar"
+		                     clean=".settings;source;web">
+			<fileset dir="resources/hello-world" />
+		</replaceZipResources>
+	</target>
+
+	<target name="buildSampleCenter">
+		<property name="sampleCenterDir" value="${workDir}/sample-center" />
+		<mkdir dir="${sampleCenterDir}" />
+
+		<copy todir="${sampleCenterDir}/source">
+			<fileset dir="${workspaceDir}/sample-center/src">
+				<exclude name="com/bstek/dorado/sample/test/**" />
+			</fileset>
+		</copy>
+		<copy todir="${sampleCenterDir}/db">
+			<fileset dir="${workspaceDir}/sample-center/db"
+			         includes="*.h2.db" />
+		</copy>
+		<copy todir="${sampleCenterDir}/web">
+			<fileset dir="${workspaceDir}/sample-center/web">
+				<exclude name="WEB-INF/classes" />
+			</fileset>
+		</copy>
+		<copy todir="${sampleCenterDir}">
+			<fileset dir="resources/sample-center/facet" />
+		</copy>
+
+		<ivy:configure file="${workspaceDir}/ivy/ivysettings.xml" />
+		<ivy:resolve file="${workspaceDir}/sample-center/ivy.xml" />
+		<ivy:retrieve pattern="${sampleCenterDir}/web/WEB-INF/lib/${ivy.fileNamePattern}"
+		              conf="runtime" />
+
+		<copy todir="${sampleCenterDir}/web/WEB-INF/lib" flatten="true">
+			<fileset dir="${templateLibDir}" includes="dorado-*/dorado-*.jar" />
+		</copy>
+
+		<removeInheritedDependencies dependenciesDir="${sampleCenterDir}/web/WEB-INF/lib"
+		                             workDir="${workDir}/temp"
+		                             ivySettingsFile="resources/ivysettings.xml"
+		                             ivyTemplateFile="resources/ivytemplate.xml" />
+
+		<replaceZipResources zipFilePath="${eclipsePlugins}"
+		                     zipFileNamePattern="com\.bstek\.ide\.samplecenter_[\w\.]+\.jar"
+		                     clean=".settings;source;db;web">
+			<fileset dir="${sampleCenterDir}" />
+		</replaceZipResources>
+	</target>
+
+	<target name="buildDocs">
+		<ant antfile="${basedir}/build-docs.xml" inheritRefs="true" />
+
+		<delete dir="${templateDir}/docs/javadoc" />
+		<mkdir dir="${templateDir}/docs/javadoc" />
+		<unzip src="${targetDir}/dorado-docs-${revision}-javadoc.jar"
+		       dest="${templateDir}/docs/javadoc" />
+
+		<delete dir="${templateDir}/docs/jsdoc" />
+		<mkdir dir="${templateDir}/docs/jsdoc" />
+		<unzip src="${targetDir}/dorado-docs-${revision}-jsdoc.zip"
+		       dest="${templateDir}/docs/jsdoc" />
+	</target>
+
+	<target name="buildIzpack" depends="init">
+		<echo message="Makes the installer using IzPack" />
+		<echo message="resources/izpack.xml" />
+		<echo message="${templateDir}" />
+		<echo message="${izpackDir}" />
+
+		<IzPack input="resources/izpack.xml"
+		        output="${installerTargetDir}/dorado-${revision}-installer.jar"
+		        installerType="standard"
+		        basedir="${templateDir}"
+		        IzPackDir="${izpackDir}/" />
+	</target>
+
+	<target name="build" depends="init,retrieveProperDependencies" />
+	<target name="izpack" depends="build" />
 </project>
 

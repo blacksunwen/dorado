@@ -296,9 +296,9 @@
 		</copy>
 	</target>
 
-	<target name="preprocessJavaSource" if="${compileJava}" />
+	<target name="preprocessJavaSource" />
 
-	<target name="resolveDependencies" if="${compileJava}">
+	<target name="resolveDependencies">
 		<if>
 			<available file="${ivyFile}" />
 			<then>
@@ -374,7 +374,7 @@
 		</if>
 	</target>
 
-	<target name="javadoc" if="${buildJavaDoc}">
+	<target name="javadoc" depends="resolveDependencies" if="${buildJavaDoc}">
 		<javadoc access="protected"
 		         author="true"
 		         encoding="${srcCharset}"
@@ -428,7 +428,7 @@
 
 				<propertyfile file="${workDir}/bin/META-INF/dorado-package.properties">
 					<entry key="version" value="${fullVersion}" />
-					<entry key="marjoVersion" value="${version}" />
+					<entry key="majorVersion" value="${version}" />
 					<entry key="publication" value="${publication}" />
 					<entry key="qualifier" value="${qualifier}" />
 					<entry key="revision" value="${version}-${qualifier}" />

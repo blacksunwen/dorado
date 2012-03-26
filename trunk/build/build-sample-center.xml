@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:artifact="antlib:org.apache.maven.artifact.ant"
+         xmlns:ivy="antlib:org.apache.ivy.ant"
+         name="build"
+         default="build">
+	<property file="build.properties" />
+
+	<property name="version" value="${coreVersion}" />
+	<property name="qualifier" value="${coreQualifier}" />
+	<property name="workDir" value="${rootWorkDir}/sample-center" />
+
+	<taskdef resource="net/sf/antcontrib/antlib.xml"
+	         classpath="lib/ant-contrib-1.0b3.jar" />
+	<taskdef resource="com/bstek/dorado/addonbuilder/task.properties"
+	         classpath="lib/dorado-addon-builder-1.0.0.jar" />
+
+	<target name="init">
+		<delete dir="${workDir}" />
+		<mkdir dir="${workDir}" />
+		<mkdir dir="${workDir}/common-lib" />
+
+		<makeAddonBuilderHome />
+
+		<taskdef resource="net/sf/antcontrib/antlib.xml"
+		         classpath="${addonBuilder.homeDir}/lib/ant-contrib-1.0b3.jar" />
+		<taskdef resource="org/apache/ivy/ant/antlib.xml"
+		         uri="antlib:org.apache.ivy.ant"
+		         classpath="lib/ivy-2.2.0.jar" />
+	</target>
+
+	<target name="build" depends="init">
+		<copy todir="${workDir}/db">
+			<fileset dir="${workspaceDir}/sample-center/db"
+			         includes="*.h2.db" />
+		</copy>
+		<copy todir="${workDir}/web">
+			<fileset dir="${workspaceDir}/sample-center/web">
+				<exclude name="WEB-INF/classes" />
+			</fileset>
+		</copy>
+		<copy todir="${workDir}/web/WEB-INF/classes">
+			<fileset dir="${workspaceDir}/sample-center/src">
+				<exclude name="**/*.java" />
+				<exclude name="com/bstek/dorado/sample/test" />
+			</fileset>
+		</copy>
+		<copy todir="${workDir}/web">
+			<fileset dir="resources/sample-center/bsdn-war" />
+		</copy>
+
+		<ivy:configure file="${workspaceDir}/ivy/ivysettings.xml" />
+
+		<ivy:resolve file="${workspaceDir}/ivy/ivy.xml" />
+		<ivy:retrieve pattern="${workDir}/common-lib/${ivy.fileNamePattern}"
+		              conf="compile" />
+
+		<ivy:resolve file="${workspaceDir}/sample-center/ivy.xml" />
+		<ivy:retrieve pattern="${workDir}/web/WEB-INF/lib/${ivy.fileNamePattern}"
+		              conf="runtime" />
+
+		<ivy:resolve file="resources/dorado-ivy.xml" />
+		<ivy:retrieve pattern="${workDir}/web/WEB-INF/lib/${ivy.fileNamePattern}"
+		              conf="runtime" />
+
+		<copy todir="${workDir}/src">
+			<fileset dir="${workspaceDir}/sample-center/src">
+				<include name="**/*.java" />
+				<exclude name="com/bstek/dorado/sample/test/**" />
+			</fileset>
+		</copy>
+		<javac srcdir="${workDir}/src"
+		       destdir="${workDir}/web/WEB-INF/classes"
+		       debug="true"
+		       deprecation="true"
+		       nowarn="false"
+		       encoding="UTF-8"
+		       includeantruntime="false">
+			<classpath>
+				<fileset dir="${workDir}/common-lib" includes="*.jar" />
+				<fileset dir="${workDir}/web/WEB-INF/lib" includes="*.jar" />
+			</classpath>
+		</javac>
+
+		<war destfile="${workDir}/sample-center.war" compress="true" level="9">
+			<fileset dir="${workDir}/web">
+				<include name="**/*.*" />
+			</fileset>
+		</war>
+	</target>
+</project>

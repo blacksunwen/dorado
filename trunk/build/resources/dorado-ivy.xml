@@ -1,0 +1,15 @@
+<ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
+	<info organisation="com.bstek.dorado" module="dorado-sample-center" />
+
+	<configurations>
+		<include file="../../ivy/ivy-configurations.xml" />
+	</configurations>
+
+	<dependencies>
+		<!-- RUNTIME -->
+		<dependency org="com.bstek.dorado" name="dorado-core" rev="latest.intergation" transitive="false" conf="runtime" />
+		<dependency org="com.bstek.dorado" name="dorado-hibernate" rev="latest.intergation" transitive="false" conf="runtime" />
+		<dependency org="com.bstek.dorado" name="dorado-chart" rev="latest.intergation" transitive="false" conf="runtime" />
+		<dependency org="com.bstek.dorado" name="dorado-desktop" rev="latest.intergation" transitive="false" conf="runtime" />
+	</dependencies>
+</ivy-module>
