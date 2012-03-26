@@ -508,7 +508,7 @@
 			 */
 			barWidth: {
 				jsonable: true,
-				jsonProperty: "bar-width"
+				jsonProperty: "barwidth"
 			},
 
 			/**
