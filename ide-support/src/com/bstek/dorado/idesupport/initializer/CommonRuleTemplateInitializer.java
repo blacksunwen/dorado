@@ -189,6 +189,10 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 			name = tempName + '_' + (++tryCount);
 		}
 
+		if (tryCount > 0 && !Modifier.isAbstract(type.getModifiers())) {
+			label = tempName;
+		}
+
 		String scope = null;
 		if (Component.class.isAssignableFrom(type)) {
 			Widget widget = type.getAnnotation(Widget.class);
