@@ -32,7 +32,7 @@ dorado.widget.tree.NodeList = $extend(dorado.util.KeyedArray, {
 	
 	beforeRemove: function(node) {
 		var tree = node._tree, parentNode = this.parent, index = this.indexOf(node);
-		if (tree && node == tree._currentNode && parentNode) {
+		if (tree && node == tree.get("currentNode") && parentNode) {
 			var newCurrent;
 			var size = parentNode._nodes.size;
 			if (size == 1) {
