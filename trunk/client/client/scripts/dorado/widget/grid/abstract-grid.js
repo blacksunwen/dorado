@@ -1193,7 +1193,7 @@
 					var wrapper = this._fixedInnerGridWrapper = document.createElement("DIV");
 					with (wrapper.style) {
 						overflowX = "visible";
-						overflowY = "hidden";
+						overflowY = this.getRealHeight() ? "hidden" : "visible";
 						position = "absolute";
 						left = top = 0;
 					}
@@ -1207,7 +1207,8 @@
 				if (!wrapper) {
 					var wrapper = this._innerGridWrapper = document.createElement("DIV");
 					with (wrapper.style) {
-						overflow = "hidden";
+						overflowX = this.getRealWidth() ? "hidden" : "visible";
+						overflowY = this.getRealHeight() ? "hidden" : "visible";
 						position = "absolute";
 						left = top = 0;
 					}

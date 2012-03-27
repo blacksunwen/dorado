@@ -244,7 +244,7 @@
 				if (this._maxHeight &&
 					(!itemCount || (this._maxHeight / (rowList._rowHeight + 2) > (itemCount + 1)))) {
 					rowList.set({
-						height: -1,
+						height: "none",
 						scrollMode: "simple"
 					});
 					
