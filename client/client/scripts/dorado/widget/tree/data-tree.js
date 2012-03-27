@@ -513,7 +513,11 @@ dorado.widget.DataTree = $extend([dorado.widget.Tree, dorado.widget.DataControl]
 				this.set("currentNode", node);
 			},
 			getter: function() {
-				return (this._currentNode) ? this._currentNode._data : null;
+				if (this._currentNode) {
+					var data = this._currentNode._data;
+					return (data instanceof dorado.Entity) ? data : null
+				}
+				return null;
 			}
 		}
 	},
