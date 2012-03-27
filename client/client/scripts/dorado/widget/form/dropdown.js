@@ -321,7 +321,6 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 	},
 
 	open : function(editor) {
-
 		function getBoxCache(win) {
 			var boxCache;
 			try {
