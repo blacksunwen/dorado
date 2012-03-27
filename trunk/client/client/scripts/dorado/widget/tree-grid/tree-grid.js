@@ -221,7 +221,8 @@
 					this.set("currentNode", node);
 				},
 				getter: function() {
-					return this.get("currentNode.data");
+					var data = this.get("currentNode.data");
+					return (data instanceof dorado.Entity) ? data : null
 				}
 			},
 			
