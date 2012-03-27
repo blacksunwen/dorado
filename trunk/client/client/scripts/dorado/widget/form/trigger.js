@@ -138,7 +138,7 @@ dorado.widget.Trigger = $extend(dorado.widget.Component, /** @scope dorado.widge
 			onMouseDown: function(self, arg) {
 				arg.returnValue = false;
 			},
-			onClick: function() {
+			onClick: function(self, arg) {
 				editor.onTriggerClick(trigger);
 				arg.returnValue = false;
 			}
