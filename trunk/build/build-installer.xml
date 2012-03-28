@@ -201,7 +201,7 @@
 		<copy todir="${sampleCenterDir}/web">
 			<fileset dir="${workspaceDir}/sample-center/web">
 				<exclude name="WEB-INF/dorado-7.0.tld" />
-				<exclude name="WEB-INF/classes" />
+				<exclude name="WEB-INF/classes/**" />
 			</fileset>
 		</copy>
 		<copy todir="${sampleCenterDir}" overwrite="true">
@@ -234,12 +234,12 @@
 
 		<delete dir="${templateDir}/docs/javadoc" />
 		<mkdir dir="${templateDir}/docs/javadoc" />
-		<unzip src="${targetDir}/dorado-docs-${revision}-javadoc.jar"
+		<unzip src="${targetDir}/FULL-${revision}-javadoc.jar"
 		       dest="${templateDir}/docs/javadoc" />
 
 		<delete dir="${templateDir}/docs/jsdoc" />
 		<mkdir dir="${templateDir}/docs/jsdoc" />
-		<unzip src="${targetDir}/dorado-docs-${revision}-jsdoc.zip"
+		<unzip src="${targetDir}/FULL-${revision}-jsdoc.zip"
 		       dest="${templateDir}/docs/jsdoc" />
 	</target>
 
@@ -250,13 +250,26 @@
 		<echo message="${izpackDir}" />
 
 		<IzPack input="resources/izpack.xml"
-		        output="${installerTargetDir}/dorado-${revision}-installer.jar"
+		        output="${installerTargetDir}/dorado-${revision}-installer-win32.jar"
 		        installerType="standard"
 		        basedir="${templateDir}"
 		        IzPackDir="${izpackDir}/" />
 	</target>
 
-	<target name="build" depends="init,retrieveProperDependencies" />
-	<target name="izpack" depends="build" />
+	<target name="buildZip" depends="init">
+		<zip destfile="${installerTargetDir}/dorado-${revision}.zip">
+			<fileset dir="${templateDir}">
+				<include name="apache-tomcat-*/**" />
+				<include name="docs/**" />
+				<include name="dorado7-updater/**" />
+				<include name="eclipse/dropins/**" />
+				<include name="lib/**" />
+			</fileset>
+		</zip>
+	</target>
+
+	<target name="build"
+	        depends="init,retrieveProperDependencies,buildProjectTemplate,buildAddons,buildHelloWorld,buildSampleCenter,buildDocs" />
+	<target name="izpack" depends="build,buildIzpack,buildZip" />
 </project>
 
