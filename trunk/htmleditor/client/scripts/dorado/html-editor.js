@@ -746,9 +746,8 @@
                     editor._setContenting = true;
                     editor._editor.setContent(value || "");
                     editor._setContenting = false;
+                    editor._value = value;
                 }
-
-                editor._value = value;
 
                 if (oldReadOnly !== readOnly) {
                     editor.doOnReadOnlyChange(!!readOnly);
