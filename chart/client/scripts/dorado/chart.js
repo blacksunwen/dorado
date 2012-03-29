@@ -553,6 +553,14 @@ function open_flash_chart_data() {
 			return dom;
 		},
 
+        onActualVisibleChange: function() {
+            $invokeSuper.call(this, arguments);
+            var visible = this._visible;
+            if (visible) {
+                this.reload();
+            }
+        },
+
 		reload: function(str) {
 			var chart = this;
 			if (chart._dom && chart._dom.id) {
