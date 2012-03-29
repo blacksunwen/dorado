@@ -386,9 +386,9 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 											if (isNewPipe) this.sendMessage(dorado.Entity._MESSAGE_LOADING_END, eventArg);
 											
 											if (success) {
-												eventArg.value = result;
+												eventArg.data = result;
 												propertyDef.fireEvent("onLoadData", propertyDef, eventArg);
-												result = eventArg.value;
+												result = eventArg.data;
 												
 												if (propertyDef.get("cacheable")) {
 													result = transferAndReplaceIf(this, propertyDef, result, true);
@@ -421,9 +421,9 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 								} else {
 									value = pipe.get();
 
-									eventArg.value = value;
+									eventArg.data = value;
 									propertyDef.fireEvent("onLoadData", propertyDef, eventArg);
-									value = eventArg.value;
+									value = eventArg.data;
 
 									if (propertyDef._cacheable) {
 										value = transferAndReplaceIf(this, propertyDef, value, true);
