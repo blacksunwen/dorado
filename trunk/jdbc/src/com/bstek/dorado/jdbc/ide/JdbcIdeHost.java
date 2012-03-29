@@ -25,6 +25,10 @@ import org.w3c.dom.Document;
 public class JdbcIdeHost {
 
 	public static void main(String[] args) throws Exception {
+		for (int i=0; i < args.length; i++) {
+			System.out.println("arg" + i + "=" + args[i]);
+		}
+		
 		Service service = new Service(args);
 		FileWriter fileWriter = new FileWriter(service.resultFile);
 		
@@ -37,9 +41,10 @@ public class JdbcIdeHost {
 			
 			fileWriter.write(result);
 		} catch (Exception t) {
+			fileWriter.write("-ERROR-\n");
+			t.printStackTrace(new PrintWriter(fileWriter));
+			
 			throw t;
-//			fileWriter.write("-ERROR-\n");
-//			t.printStackTrace(new PrintWriter(fileWriter));
 		} finally {
 			service.dataSource.destroy();
 			fileWriter.close();
