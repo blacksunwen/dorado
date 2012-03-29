@@ -388,7 +388,7 @@
                 minFrameHeight: 100,
                 defaultFontFamily: htmleditor._defaultFontFamily,
                 defaultFontSize: htmleditor._defaultFontSize,
-                iframeCssUrl: $url(">skin>/html-editor/iframe.css"),//给iframe样式的路径,
+                iframeCssUrl: $url(">skin>html-editor/iframe.css"),//给iframe样式的路径,
                 selectedTdClass : 'selectTdClass',
                 autoHeightEnabled: false,
                 removeFormatTags : 'b,big,code,del,dfn,em,font,i,ins,kbd,q,samp,small,span,strike,strong,sub,sup,tt,u,var',    //清除格式删除的标签
@@ -742,7 +742,7 @@
                 var oldReadOnly = editor._oldReadOnly;
                 editor._oldReadOnly = !!readOnly;
 
-                if (editor._editor && editor._value != value) {
+                if (editor._editor && editor.get("content") != value) {
                     editor._setContenting = true;
                     editor._editor.setContent(value || "");
                     editor._setContenting = false;
