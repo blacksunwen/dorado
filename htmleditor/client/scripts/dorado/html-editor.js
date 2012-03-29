@@ -116,6 +116,7 @@
     };
 
     dorado.htmleditor.ToolBar = $extend(dorado.widget.Control, {
+        $className: "dorado.htmleditor.ToolBar",
         focusable: true,
         ATTRIBUTES: {
             className: {
@@ -183,6 +184,7 @@
 	 * @extends dorado.widget.Control
 	 */
     dorado.widget.HtmlEditor = $extend(dorado.widget.AbstractDataEditor, /** @scope dorado.widget.HtmlEditor.prototype */{
+        $className: "dorado.widget.HtmlEditor",
         focusable: true,
         ATTRIBUTES: /** @scope dorado.widget.HtmlEditor.prototype */{
             className: {
@@ -217,7 +219,10 @@
                 setter: function(value) {
                     var editor = this._editor;
                     if (editor) {
-                        return editor.setContent(value || "");
+                        editor._setContenting = true;
+                        var result = editor.setContent(value || "");
+                        editor._setContenting = false;
+                        return result;
                     }
                 }
             },
@@ -304,14 +309,14 @@
             }
         },
 
-        setFocus: function() {},
+        //setFocus: function() {},
 
 	    doOnFocus: function() {
-		    console.log("doOnFocus...");
+		    //console.log("doOnFocus...");
 	    },
 
         doOnBlur: function() {
-	        console.log("doOnBlur...");
+	        //console.log("doOnBlur...");
             var editor = this;
             editor._lastPostValue = editor._value;
             editor._value = editor.get("content");
@@ -553,8 +558,7 @@
                 }
             });
 
-	        $fly(editor.iframe.contentWindow.document.body).click(function() {
-                console.log("editor.iframe.contentWindow.document clicked");
+	        $fly(editor.iframe.contentWindow.document.body).focus(function() {
 	            dorado.widget.setFocusedControl(htmleditor);
             });
         },
@@ -739,7 +743,9 @@
                 editor._oldReadOnly = !!readOnly;
 
                 if (editor._editor && editor._value != value) {
+                    editor._setContenting = true;
                     editor._editor.setContent(value || "");
+                    editor._setContenting = false;
                 }
 
                 editor._value = value;
