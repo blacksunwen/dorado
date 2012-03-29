@@ -662,6 +662,11 @@ dorado.widget.tree.DataNode = $extend(dorado.widget.tree.Node, /** @scope dorado
 	_getEntityProperty: function(entity, property) {
 		if (!entity || !property) return null;
 		return (entity instanceof dorado.Entity) ? entity.get(property) : entity[property];
+	},
+	
+	_getEntityPropertyText: function(entity, property) {
+		if (!entity || !property) return null;
+		return (entity instanceof dorado.Entity) ? entity.getText(property) : entity[property];
 	}
 });
 
