@@ -72,7 +72,7 @@ public class QueryCommand {
 		NamedParameterJdbcTemplate jdbcTemplate = env.getNamedDao().getNamedParameterJdbcTemplate();
 
 		int pageSize = page.getPageSize();
-		int firstIndex = page.getFirstEntityIndex();
+		int firstIndex = page.getFirstEntityIndex() + 1;
 
 		if (dialect.isNarrowSupport()) {
 			JdbcParameterSource jps = selectSql.getParameterSource();

@@ -70,24 +70,24 @@ public class DefaultAgent extends AbstractAgent {
 	protected String getTableNameFromParameter() throws Exception {
 		String tableName = (String)this.getParameters().get(IAgent.TABLE_NAME);
 		
-		String tableNamePattern = null;
-		if (tableName == null || tableName.length() == 0) {
-			tableNamePattern = "%";
-		} else {
-			tableNamePattern = tableName + "%";
-		}
+//		String tableNamePattern = null;
+//		if (tableName == null || tableName.length() == 0) {
+//			tableNamePattern = "%";
+//		} else {
+//			tableNamePattern = tableName + "%";
+//		}
 		
 		DatabaseMetaData dbmd = getDatabaseMetaData();
 		if (!dbmd.supportsMixedCaseIdentifiers()) {
 			if (dbmd.storesLowerCaseIdentifiers()) {
-				tableNamePattern = tableNamePattern.toLowerCase();
+				tableName = tableName.toLowerCase();
 			}
 			if (dbmd.storesUpperCaseIdentifiers()) {
-				tableNamePattern = tableNamePattern.toUpperCase();
+				tableName = tableName.toUpperCase();
 			}
 		}
 		
-		return tableNamePattern;
+		return tableName;
 	}
 	
 	@Override
@@ -95,6 +95,11 @@ public class DefaultAgent extends AbstractAgent {
 		String catalog = getCatalogFromParameter();
 		String schemaPattern = getSchemaFromParameter();
 		String tableNamePattern = getTableNameFromParameter();
+		if (tableNamePattern == null || tableNamePattern.length() == 0) {
+			tableNamePattern = "%";
+		} else {
+			tableNamePattern = tableNamePattern + "%";
+		}
 		String types[] = null;
 		
 		final Document document = newDocument();
