@@ -304,6 +304,8 @@
             }
         },
 
+        setFocus: function() {},
+
 	    doOnFocus: function() {
 		    console.log("doOnFocus...");
 	    },
@@ -551,7 +553,8 @@
                 }
             });
 
-	        $fly(editor.iframe.contentWindow.document).click(function() {
+	        $fly(editor.iframe.contentWindow.document.body).click(function() {
+                console.log("editor.iframe.contentWindow.document clicked");
 	            dorado.widget.setFocusedControl(htmleditor);
             });
         },
