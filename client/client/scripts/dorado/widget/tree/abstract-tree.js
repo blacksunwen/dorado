@@ -831,7 +831,7 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 	showDraggingInsertIndicator: function(draggingInfo, insertMode, itemDom) {
 
 		function getNodeContentOffsetLeft(nodeDom) {
-			return nodeDom.firstChild.childNodes[1].offsetLeft;
+			return nodeDom.firstChild.firstChild.offsetLeft;
 		}
 
 		if (insertMode) {

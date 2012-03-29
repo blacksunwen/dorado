@@ -417,7 +417,7 @@
 		
 		doOnBlur: function() {			
 			this.resetReadOnly();
-			this._textDom.readOnly = false;
+			if (dorado.Browser.msie && dorado.Browser.version < 9) this._textDom.readOnly = false;
 			if (this._realReadOnly) return;
 			
 			if (this._editObserverId) clearInterval(this._editObserverId);

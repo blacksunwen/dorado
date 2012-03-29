@@ -96,7 +96,7 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 		label: {
 			getter: function() {
 				if (this._label) return this._label;
-				return this._getEntityProperty(this._data, this._bindingConfig.labelProperty);
+				return this._getEntityPropertyText(this._data, this._bindingConfig.labelProperty);
 			}
 		},
 
@@ -172,7 +172,7 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 		tip: {
 			getter: function() {
 				if (this._tip) return this._tip;
-				return this._getEntityProperty(this._data, this._bindingConfig.tipProperty);
+				return this._getEntityPropertyText(this._data, this._bindingConfig.tipProperty);
 			}
 		}
 	},
