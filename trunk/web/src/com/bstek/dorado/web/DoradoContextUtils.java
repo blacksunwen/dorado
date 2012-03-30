@@ -44,8 +44,30 @@ public final class DoradoContextUtils {
 		return map;
 	}
 
-	public static void pushNewViewContext(DoradoContext context) {
-		Map<String, Object> viewContext = new HashMap<String, Object>();
+	public static void pushNewViewContextIfNecessary(DoradoContext context) {
+		Stack<Map<String, Object>> stack = getViewContextStack(context);
+		Map<String, Object> viewContext = null;
+		if (!stack.isEmpty()) {
+			viewContext = stack.peek();
+			if (viewContext != null) {
+				for (Map<String, Object> bindedViewContext : getViewContextMap(
+						context).values()) {
+					if (bindedViewContext == viewContext) {
+						viewContext = null;
+						break;
+					}
+				}
+			}
+		}
+
+		if (viewContext == null) {
+			viewContext = new HashMap<String, Object>();
+		}
+		pushNewViewContext(context, viewContext);
+	}
+
+	public static void pushNewViewContext(DoradoContext context,
+			Map<String, Object> viewContext) {
 		getViewContextStack(context).push(viewContext);
 		context.setViewContext(viewContext);
 	}
