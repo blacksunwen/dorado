@@ -4,7 +4,9 @@ import java.util.List;
 
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.XmlProperty;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -17,7 +19,9 @@ public class EnumValidator extends BaseValidator {
 
 	private List<?> enumValues;
 
+	@XmlProperty
 	@ClientProperty
+	@IdeProperty(editor = "collection[pojo]", highlight = 1)
 	public List<?> getEnumValues() {
 		return enumValues;
 	}
