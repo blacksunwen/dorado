@@ -1718,7 +1718,7 @@
 
 		_getCellByEvent: function(event) {
 			var tbody1 = this._innerGrid._dataTBody, tbody2 = (this._domMode == 2) ? this._fixedInnerGrid._dataTBody : null;
-			return $DomUtils.findParent(evt.target, function(parentNode) {
+			return $DomUtils.findParent(event.target, function(parentNode) {
 				var p = parentNode.parentNode;
 				if (!p) return;
 				p = p.parentNode;
@@ -2860,9 +2860,11 @@
 					$fly(tFoot).remove();
 				}
 
+				/*
 				if (!(dorado.Browser.mozilla || dorado.Browser.opera)) {
-					// headerTable.style.height = ((grid._headerRowHeight + (dorado.Browser.msie ? 2 : 1)) * structure.length + filterBarHeight + 1) + "px";
+					headerTable.style.height = ((grid._headerRowHeight + (dorado.Browser.msie ? 2 : 1)) * structure.length + filterBarHeight + 1) + "px";
 				}
+				*/
 				$tableFrameHeader.show();
 			} else {
 				$tableFrameHeader.hide();
