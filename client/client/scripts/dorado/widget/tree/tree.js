@@ -3,7 +3,7 @@
 	var originJQueryFxUpdate = jQuery.fx.prototype.update;
 	jQuery.fx.prototype.update = function() {
 		originJQueryFxUpdate.apply(this, arguments);
-		if (this.elem.nodeName.toUpperCase() == "TR") this.elem.style.display = "";
+		if (this.elem && this.elem.nodeName && this.elem.nodeName.toUpperCase() == "TR") this.elem.style.display = "";
 	};
 	
 	/**
