@@ -70,7 +70,8 @@ public abstract class ViewConfigManagerSupport implements ViewConfigManager {
 
 		Context context = Context.getCurrent();
 		if (context instanceof DoradoContext) {
-			DoradoContextUtils.pushNewViewContext((DoradoContext) context);
+			DoradoContextUtils
+					.pushNewViewContextIfNecessary((DoradoContext) context);
 		}
 
 		try {

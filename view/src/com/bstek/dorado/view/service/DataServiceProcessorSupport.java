@@ -103,8 +103,7 @@ public abstract class DataServiceProcessorSupport implements ServiceProcessor,
 				.getAttribute(VIEW_STATE_ATTRIBUTE_KEY);
 		context.setAttribute(VIEW_STATE_ATTRIBUTE_KEY, ViewState.servcing);
 
-		DoradoContextUtils.pushNewViewContext(context);
-
+		Map<String, Object> viewContext = new HashMap<String, Object>();
 		JsonNode rudeContext = (JsonNode) objectNode.get("context");
 		if (rudeContext != null && !rudeContext.isNull()) {
 			Iterator<Entry<String, JsonNode>> fields = rudeContext.getFields();
@@ -116,9 +115,10 @@ public abstract class DataServiceProcessorSupport implements ServiceProcessor,
 				if (jsonValue != null) {
 					value = JsonUtils.toJavaObject(jsonValue, null);
 				}
-				context.setAttribute(DoradoContext.VIEW, key, value);
+				viewContext.put(key, value);
 			}
 		}
+		DoradoContextUtils.pushNewViewContext(context, viewContext);
 
 		try {
 			doExecute(writer, objectNode, context);
@@ -145,7 +145,7 @@ public abstract class DataServiceProcessorSupport implements ServiceProcessor,
 			outputData(result, context);
 
 			if (context.isShouldOutputDataTypes()) {
-				jsonBuilder.key("$dataTypeDefinitions");				
+				jsonBuilder.key("$dataTypeDefinitions");
 				boolean hasDataTypes = false;
 				Map<String, DataType> includeDataTypes = context
 						.getIncludeDataTypes(false);
@@ -237,7 +237,7 @@ public abstract class DataServiceProcessorSupport implements ServiceProcessor,
 			Class<?> targetType, boolean proxy) throws Exception {
 		if (jsonContext == null) {
 			jsonContext = new JsonConvertContextImpl(false, false, this);
-		} 
+		}
 		return JsonUtils.toJavaObject(jsonNode, dataType, targetType, proxy,
 				jsonContext);
 
