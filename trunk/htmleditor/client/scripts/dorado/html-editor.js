@@ -384,11 +384,12 @@
             $invokeSuper.call(this, arguments);
             //editor的属性
             var option = {
+                UEDITOR_HOME_URL: "",
                 initialContent: htmleditor._value,//初始化编辑器的内容
                 minFrameHeight: 100,
                 defaultFontFamily: htmleditor._defaultFontFamily,
                 defaultFontSize: htmleditor._defaultFontSize,
-                iframeCssUrl: $url(">skin>html-editor/iframe.css"),//给iframe样式的路径,
+                iframeCssUrl: $url(">skin>/html-editor/iframe.css"),//给iframe样式的路径,
                 selectedTdClass : 'selectTdClass',
                 autoHeightEnabled: false,
                 removeFormatTags : 'b,big,code,del,dfn,em,font,i,ins,kbd,q,samp,small,span,strike,strong,sub,sup,tt,u,var',    //清除格式删除的标签
