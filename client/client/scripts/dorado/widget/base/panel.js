@@ -707,6 +707,8 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 						panel._maximized = false;
 						panel._width = panel._originalWidth;
 						panel._height = panel._originalHeight;
+                        panel._realWidth = panel._originalRealWidth;
+                        panel._realHeight = panel._originalRealHeight;
 						panel._left = panel._originalLeft;
 						panel._top = panel._originalTop;
 						panel.resetDimension();
@@ -739,6 +741,8 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 			
 			panel._originalWidth = panel._width;
 			panel._originalHeight = panel._height;
+            panel._originalRealWidth = panel._realWidth;
+            panel._originalRealHeight = panel._realHeight;
 			panel._originalLeft = panel._left;
 			panel._originalTop = panel._top;
 			
@@ -755,7 +759,9 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 				modifySize: false,
 				callback: function(docSize) {
 					panel._maximized = true;
-					panel.set(docSize);
+                    panel._width = docSize.width;
+                    panel._height = docSize.height;
+                    panel._realWidth = panel._realHeight = undefined;
 					panel.refresh();
 				}
 			});
