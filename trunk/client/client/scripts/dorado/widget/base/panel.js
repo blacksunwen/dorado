@@ -789,15 +789,9 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 				modifySize: false,
 				callback: function(docSize) {
 					panel._maximized = true;
-<<<<<<< .mine
 					panel._width = docSize.width;
 					panel._height = docSize.height;
 					panel._realWidth = panel._realHeight = undefined;
-=======
-                    panel._width = docSize.width;
-                    panel._height = docSize.height;
-                    panel._realWidth = panel._realHeight = undefined;
->>>>>>> .r1204
 					panel.refresh();
 				}
 			});
