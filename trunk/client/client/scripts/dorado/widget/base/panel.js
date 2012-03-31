@@ -1,15 +1,14 @@
 /**
  * @author Frank Zhang (mailto:frank.zhang@bstek.com)
  * @class 抽象面板。
- * <p>
- * 该类是抽象类，是FieldSet、GroupBox、Panel的超类。
- * 继承该类之后，会拥有以下功能：
- * <ul>
- *   <li>标题的显示</li>
- *   <li>面板下方的Button的显示。</li>
- *	 <li>收缩与展开。</li>
- * </ul>
- * </p>
+ *        <p>
+ *        该类是抽象类，是FieldSet、GroupBox、Panel的超类。 继承该类之后，会拥有以下功能：
+ *        <ul>
+ *        <li>标题的显示</li>
+ *        <li>面板下方的Button的显示。</li>
+ *        <li>收缩与展开。</li>
+ *        </ul>
+ *        </p>
  * @abstract
  * @extends dorado.widget.Container
  */
@@ -20,6 +19,7 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 	
 		/**
 		 * 显示的标题。
+		 * 
 		 * @attribute
 		 * @type String
 		 */
@@ -30,6 +30,7 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 		
 		/**
 		 * 显示在对话框下方的按钮。
+		 * 
 		 * @attribute writeBeforeReady
 		 * @type dorado.widget.Button[]|Object[]
 		 */
@@ -40,6 +41,7 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 		
 		/**
 		 * button的显示位置，可选值：center、left、right，默认值是center。
+		 * 
 		 * @attribute
 		 * @type String
 		 * @default "center"
@@ -64,6 +66,7 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 		
 		/**
 		 * 是否可折叠
+		 * 
 		 * @type boolean
 		 * @default false
 		 * @attribute
@@ -92,6 +95,7 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 		
 		/**
 		 * 是否处于已折叠的状态。
+		 * 
 		 * @type boolean
 		 * @default false
 		 * @attribute
@@ -120,16 +124,22 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 	EVENTS: /** @scope dorado.widget.AbstractPanel.prototype */ {
 		/**
 		 * 在容器折叠或者展开之前触发，只有当collapseable为true的时候才会触发该事件。
-		 * @param {Object} self 事件的发起者，即组件本身。
-		 * @param {Object} arg 事件参数。
+		 * 
+		 * @param {Object}
+		 *            self 事件的发起者，即组件本身。
+		 * @param {Object}
+		 *            arg 事件参数。
 		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 		 * @event
 		 */
 		beforeCollapsedChange: {},
 		/**
 		 * 在容器折叠或者展开之后触发，只有当collapseable为true的时候才会触发该事件。
-		 * @param {Object} self 事件的发起者，即组件本身。
-		 * @param {Object} arg 事件参数。
+		 * 
+		 * @param {Object}
+		 *            self 事件的发起者，即组件本身。
+		 * @param {Object}
+		 *            arg 事件参数。
 		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 		 * @event
 		 */
@@ -270,20 +280,20 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
  * @author Frank Zhang (mailto:frank.zhang@bstek.com)
  * @component Base
  * @class 面板容器
- * <p>
- * 面板容器默认支持三种类型的边框：
- * <ul>
- *   <li>none：无边框</li>
- *   <li>normal：普通边框</li>
- *   <li>curve：圆角边框</li>
- * </ul>
- * </p>
- *
+ *        <p>
+ *        面板容器默认支持三种类型的边框：
+ *        <ul>
+ *        <li>none：无边框</li>
+ *        <li>normal：普通边框</li>
+ *        <li>curve：圆角边框</li>
+ *        </ul>
+ *        </p>
+ * 
  * <p>
  * 面板容器可以支持显示标题栏，并且标题栏可以支持图标、工具按钮等。<br />
  * 面板容器可以支持收缩与展开的功能。<br />
  * </p>
- *
+ * 
  * <p>
  * 注意：一般情况下，如果需要标题栏显示标题、在容器下方默认添加一些Button，则可以使用此组件，否则，请使用Container替代之，可以取得更高的性能。
  * </p>
@@ -302,8 +312,8 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		},
 		
 		/**
-		 * 面板的边框类型。
-		 * none、normal、curve
+		 * 面板的边框类型。 none、normal、curve
+		 * 
 		 * @attribute
 		 * @default "normal"
 		 * @type String
@@ -315,6 +325,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		
 		/**
 		 * 面板的背景。
+		 * 
 		 * @attribute
 		 * @type String
 		 */
@@ -324,6 +335,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		 * 是否显示标题栏。<br />
 		 * 该属性没有默认值，当设定了caption属性以后，则该属性为true，否则为false。<br />
 		 * 当设定了caption属性，又不想显示标题栏，设置该属性为false即可。
+		 * 
 		 * @attribute writeBeforeReady
 		 * @type boolean
 		 */
@@ -333,6 +345,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		
 		/**
 		 * 显示的图标.
+		 * 
 		 * @attribute
 		 * @type String
 		 */
@@ -343,6 +356,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		
 		/**
 		 * 显示的图标的ClassName.
+		 * 
 		 * @attribute
 		 * @type String
 		 */
@@ -353,6 +367,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		
 		/**
 		 * 显示在标题栏右侧的工具按钮。
+		 * 
 		 * @attribute
 		 * @type dorado.util.KeyedArray
 		 */
@@ -362,6 +377,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		
 		/**
 		 * 是否显示最大化按钮。
+		 * 
 		 * @attribute
 		 * @default true
 		 * @type boolean
@@ -390,6 +406,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		
 		/**
 		 * 是否已经最大化。
+		 * 
 		 * @attribute
 		 * @default false
 		 * @type boolean
@@ -398,6 +415,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		
 		/**
 		 * 是否显示关闭按钮.
+		 * 
 		 * @attribute
 		 * @type boolean
 		 */
@@ -425,6 +443,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		
 		/**
 		 * 当用户点击关闭以后要做的动作，默认是hide，可选值为hide和close。hide仅仅是隐藏该对话框，close会完全销毁该对话框，销毁以后该对话框不能再使用。
+		 * 
 		 * @attribute
 		 * @type String
 		 */
@@ -436,8 +455,11 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 	EVENTS: {
 		/**
 		 * 在组件最大化之前触发此事件。
-		 * @param {Object} self 事件的发起者，即组件本身。
-		 * @param {Object} arg 事件参数。
+		 * 
+		 * @param {Object}
+		 *            self 事件的发起者，即组件本身。
+		 * @param {Object}
+		 *            arg 事件参数。
 		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 		 * @event
 		 */
@@ -445,8 +467,11 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		
 		/**
 		 * 在组件最大化之后触发此事件。
-		 * @param {Object} self 事件的发起者，即组件本身。
-		 * @param {Object} arg 事件参数。
+		 * 
+		 * @param {Object}
+		 *            self 事件的发起者，即组件本身。
+		 * @param {Object}
+		 *            arg 事件参数。
 		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 		 * @event
 		 */
@@ -454,8 +479,11 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		
 		/**
 		 * 在组件关闭之前触发。
-		 * @param {Object} self 事件的发起者，即组件本身。
-		 * @param {Object} arg 事件参数。
+		 * 
+		 * @param {Object}
+		 *            self 事件的发起者，即组件本身。
+		 * @param {Object}
+		 *            arg 事件参数。
 		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 		 * @event
 		 */
@@ -463,8 +491,11 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		
 		/**
 		 * 在组件关闭之后触发。
-		 * @param {Object} self 事件的发起者，即组件本身。
-		 * @param {Object} arg 事件参数。
+		 * 
+		 * @param {Object}
+		 *            self 事件的发起者，即组件本身。
+		 * @param {Object}
+		 *            arg 事件参数。
 		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 		 * @event
 		 */
@@ -707,11 +738,10 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 						panel._maximized = false;
 						panel._width = panel._originalWidth;
 						panel._height = panel._originalHeight;
-                        panel._realWidth = panel._originalRealWidth;
-                        panel._realHeight = panel._originalRealHeight;
+						panel._realWidth = panel._originalRealWidth;
+						panel._realHeight = panel._originalRealHeight;
 						panel._left = panel._originalLeft;
 						panel._top = panel._originalTop;
-						panel.resetDimension();
 						panel.refresh();
 					}
 				});
@@ -741,8 +771,13 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 			
 			panel._originalWidth = panel._width;
 			panel._originalHeight = panel._height;
+<<<<<<< .mine
+			panel._originalRealWidth = panel._realWidth;
+			panel._originalRealHeight = panel._realHeight;
+=======
             panel._originalRealWidth = panel._realWidth;
             panel._originalRealHeight = panel._realHeight;
+>>>>>>> .r1204
 			panel._originalLeft = panel._left;
 			panel._originalTop = panel._top;
 			
@@ -759,9 +794,15 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 				modifySize: false,
 				callback: function(docSize) {
 					panel._maximized = true;
+<<<<<<< .mine
+					panel._width = docSize.width;
+					panel._height = docSize.height;
+					panel._realWidth = panel._realHeight = undefined;
+=======
                     panel._width = docSize.width;
                     panel._height = docSize.height;
                     panel._realWidth = panel._realHeight = undefined;
+>>>>>>> .r1204
 					panel.refresh();
 				}
 			});
