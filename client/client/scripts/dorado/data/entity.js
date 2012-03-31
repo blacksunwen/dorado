@@ -1137,11 +1137,20 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		 * <b>一个数据实体某一时刻最多只能隶属于一个实体集合。</b><br>
 		 * 如果此数据实体目前不属于任何实体集合，则此方法什么也不做。
 		 * </p>
+		 * @param {boolean} [cascade] 是否同时要将此数据实体之上的每一级父对象都设置为当前数据实体。
 		 * @see dorado.EntityList#setCurrent
 		 */
-		setCurrent : function() {
+		setCurrent: function(cascade) {
+			var parentEntity;
 			if (this.parent instanceof dorado.EntityList) {
 				this.parent.setCurrent(this);
+				parentEntity = this.parent.parent;
+			} else {
+				parentEntity = this.parent;
+			}
+			
+			if (cascade && parentEntity && parentEntity instanceof dorado.Entity) {
+				parentEntity.setCurrent(true);
 			}
 		},
 		
@@ -1536,14 +1545,14 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			var simplePropertyOnly =  (options && options.validateSimplePropertyOnly === false) ? false : true;
 			var preformAsyncValidator = (options ? options.preformAsyncValidator : false);
 			var context = options ? options.context : null;
-			var result, topResult, resultCode, topResultCode = -1, hasValidate = false;
+			var result, topResult, resultCode, topResultCode = -1, hasValidated = false;
 			
 			if (force) {
 				if (property) {
-					this._propertyInfoMap = {};
+					delete this._propertyInfoMap[property];
 				}
 				else {
-					delete this._propertyInfoMap[property];
+					this._propertyInfoMap = {};
 				}
 			}
 
@@ -1586,7 +1595,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					}
 					
 					var value = entity._data[property];
-					hasValidate = true;
+					hasValidated = true;
 					var messages = entity._validateProperty(dataType, pd, propertyInfo, value, preformAsyncValidator);
 					if (context && messages) {
 						addMessages2Context(context, entity, property, messages);
@@ -1594,7 +1603,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				};
 				
 				if (property) {
-					var pd = dataType.getPropertyDef(property);
+					var pd = this._getPropertyDef(property);
 					if (pd) doValidate(pd);
 				} else {
 					dataType._propertyDefs.each(doValidate);
@@ -1653,7 +1662,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			}
 			
 			if (context) context.result = topResult;
-			if (hasValidate) this.sendMessage(0);
+			if (hasValidated) this.sendMessage(0);
 			return topResult;
 		},
 		
