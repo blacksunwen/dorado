@@ -145,16 +145,16 @@ dorado.widget.Link = $extend(dorado.widget.Label, /** @scope dorado.widget.Link.
 		 * @param {Object} arg 事件参数。
 		 * @param {int} arg.button 表示用户按下的是哪个按钮，具体请参考DHTML的相关文档。
 		 * @param {Event} arg.event DHTML中的事件event参数。
-		 * @param {boolean} #arg.processDefault=false 是否继续执行超链接默认的跳转动作。
+		 * @param {boolean} #arg.returnValue=false 是否继续执行超链接默认的跳转动作。
 		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 		 * @event
 		 */
 		onClick: {
 			interceptor: function(superFire, self, arg) {
 				if (this.getListenerCount("onClick") > 0) {
-					arg.processDefault == false;
+					arg.returnValue == false;
 					superFire(self, arg);
-					return !!arg.processDefault;
+					return !!arg.returnValue;
 				}
 			}
 		}

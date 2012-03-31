@@ -887,6 +887,9 @@
 		doRenderToOrReplace : function(replace, element, nextChildElement) {
 			var renderTarget = this._renderTo || this._renderOn;
 
+			if (!element && this._view && this._view._rendered) {
+				element = this._view.getDom();
+			}
 			$invokeSuper.call(this, [replace, element, nextChildElement]);
 
 			var dom = this._dom;
