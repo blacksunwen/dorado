@@ -771,13 +771,8 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 			
 			panel._originalWidth = panel._width;
 			panel._originalHeight = panel._height;
-<<<<<<< .mine
 			panel._originalRealWidth = panel._realWidth;
 			panel._originalRealHeight = panel._realHeight;
-=======
-            panel._originalRealWidth = panel._realWidth;
-            panel._originalRealHeight = panel._realHeight;
->>>>>>> .r1204
 			panel._originalLeft = panel._left;
 			panel._originalTop = panel._top;
 			
