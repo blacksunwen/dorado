@@ -35,7 +35,6 @@ public abstract class DataServiceProcessorSupport implements ServiceProcessor,
 		DataTypeResolver {
 
 	public static class ParsedDataObjectName {
-		private String viewType;
 		private String viewName;
 		private String dataObject;
 
@@ -51,14 +50,7 @@ public abstract class DataServiceProcessorSupport implements ServiceProcessor,
 				throw new IllegalArgumentException("Invalid ViewAlias ["
 						+ viewSectionAlias + "].");
 			}
-
-			i = viewSection.indexOf(ViewXmlConstants.VIEW_NAME_DELIM);
-			viewType = viewSection.substring(0, i);
-			viewName = viewSection.substring(i + 1);
-		}
-
-		public String getViewType() {
-			return viewType;
+			viewName = viewSection;
 		}
 
 		public String getViewName() {
