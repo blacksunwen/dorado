@@ -10,7 +10,6 @@ public abstract class ViewXmlConstants {
 
 	public static final String PATH_VIEW_SHORT_NAME = "v";
 	public static final String PATH_COMPONENT_PREFIX = "$";
-	public static final char VIEW_NAME_DELIM = '|';
 
 	/**
 	 * Model节点的节点名。

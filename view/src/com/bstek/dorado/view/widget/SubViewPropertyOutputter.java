@@ -40,9 +40,7 @@ public class SubViewPropertyOutputter extends ObjectOutputterDispatcher {
 							.getOutputtableDataTypeIdPrefix();
 					context.setOutputtableDataTypeIdPrefix(ViewXmlConstants.PATH_VIEW_SHORT_NAME
 							+ Constants.PRIVATE_DATA_OBJECT_SUBFIX
-							+ StringAliasUtils
-									.getUniqueAlias(ViewXmlConstants.VIEW_NAME_DELIM
-											+ view.getName())
+							+ StringAliasUtils.getUniqueAlias(view.getName())
 							+ ViewXmlConstants.PATH_COMPONENT_PREFIX);
 					try {
 						super.outputObject(view, context);

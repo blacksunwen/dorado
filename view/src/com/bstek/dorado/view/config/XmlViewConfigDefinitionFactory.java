@@ -199,9 +199,7 @@ public class XmlViewConfigDefinitionFactory implements
 
 		String viewObjectNamePrefix = ViewXmlConstants.PATH_VIEW_SHORT_NAME
 				+ Constants.PRIVATE_DATA_OBJECT_SUBFIX
-				+ StringAliasUtils
-						.getUniqueAlias(ViewXmlConstants.VIEW_NAME_DELIM
-								+ viewName)
+				+ StringAliasUtils.getUniqueAlias(viewName)
 				+ ViewXmlConstants.PATH_COMPONENT_PREFIX;
 		parseContext.setDataObjectIdPrefix(viewObjectNamePrefix);
 
