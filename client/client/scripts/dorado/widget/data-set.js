@@ -129,7 +129,14 @@
 			 */
 			readOnly: {
 				notifyObservers: true
-			}
+			},
+			
+			/**
+			 * 是否要根据parameter参数将每次装载的数据缓存起来。
+			 * @type boolean
+			 * @attribute
+			 */
+			cacheable: {}
 		},
 
 		EVENTS: /** @scope dorado.widget.DataSet.prototype */
@@ -299,6 +306,18 @@
 
 		doLoad: function(callback) {
 			var data = this._data, shouldFireOnDataLoad;
+			
+			var dataCache, hashCode;
+			if (this._cacheable) {
+				dataCache = this._dataCache;
+				if (!dataCache) {
+					this._dataCache = dataCache = {};
+				}
+				hashCode = dorado.Object.hashCode(this._parameter) + '';
+				data = dataCache[hashCode];
+				this.setData(data);
+			}
+			
 			if (data === undefined) {
 				if (this._dataProvider) {
 					data = this._dataPipe;
@@ -311,6 +330,7 @@
 					this.setData(null);
 				}
 			}
+			
 			if (data instanceof dorado.DataPipe) {
 				var pipe = data;
 				if (callback) {
@@ -328,6 +348,9 @@
 							
 							if (success && shouldFireOnDataLoad) {
 								this.setData(result);
+								if (this._cacheable) {
+									dataCache[hashCode] = this.getData();
+								}
 								this.fireEvent("onDataLoad", this);
 							}
 							
@@ -346,6 +369,9 @@
 						throw new dorado.ResourceException("dorado.widget.GetDataDuringLoading", this._id);
 					}
 					this.setData(pipe.get());
+					if (this._cacheable) {
+						dataCache[hashCode] = this.getData();
+					}
 					this.fireEvent("onDataLoad", this);
 				}
 			}

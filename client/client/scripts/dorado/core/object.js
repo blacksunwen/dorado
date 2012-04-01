@@ -410,7 +410,20 @@
 			} else {
 				return object;
 			}
+		},
+		
+		hashCode: function(object) {
+			if (object == null) return 0;
+			
+			var strKey = (typeof object) + '|' + dorado.JSON.stringify(object), hash = 0;
+			for (i = 0; i < strKey.length; i++) {
+				char = strKey.charCodeAt(i);
+				hash = ((hash << 5) - hash) + char;
+				hash = hash & hash; // Convert to 32bit integer
+			}
+			return hash;
 		}
+		
 	};
 	
 	/**
@@ -528,7 +541,7 @@
 	 * $invokeSuper.call(this, arguments); // 较简单的调用方式
 	 * $invokeSuper.call(this, [ "Sample Arg", true ]); // 自定义传给超类方法的参数数组
 	 */
-	var invokeSuper = window.$invokeSuper = function(args) {			
+	var invokeSuper = window.$invokeSuper = function(args) {
 		var fn = invokeSuper.caller;
 		if (dorado.Browser.opera && dorado.Browser.version < 10) fn = fn.caller;
 		if (fn.caller && fn.caller._doradoAdapter) fn = fn.caller;

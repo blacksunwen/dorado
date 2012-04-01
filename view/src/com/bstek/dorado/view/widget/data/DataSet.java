@@ -37,6 +37,7 @@ public class DataSet extends Component {
 	private Object parameter;
 	private LoadMode loadMode = LoadMode.lazy;
 	private boolean readOnly;
+	private boolean cacheable;
 	private Object data;
 
 	/**
@@ -126,6 +127,14 @@ public class DataSet extends Component {
 
 	public void setReadOnly(boolean readOnly) {
 		this.readOnly = readOnly;
+	}
+
+	public boolean isCacheable() {
+		return cacheable;
+	}
+
+	public void setCacheable(boolean cacheable) {
+		this.cacheable = cacheable;
 	}
 
 	@SuppressWarnings("rawtypes")
