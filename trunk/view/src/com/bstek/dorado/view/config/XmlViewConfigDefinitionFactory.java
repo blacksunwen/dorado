@@ -8,6 +8,7 @@ import org.w3c.dom.Element;
 
 import com.bstek.dorado.config.definition.DefinitionManager;
 import com.bstek.dorado.config.xml.XmlParser;
+import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.core.io.Resource;
 import com.bstek.dorado.core.io.ResourceUtils;
 import com.bstek.dorado.core.xml.XmlDocumentBuilder;
@@ -34,6 +35,16 @@ import com.bstek.dorado.view.config.xml.ViewXmlConstants;
  */
 public class XmlViewConfigDefinitionFactory implements
 		ViewConfigDefinitionFactory {
+	private static byte viewNameDelimMode = 0;
+
+	private static byte viewNameDelimDotOrBackLashMode = 1;
+	private static byte viewNameDelimDotMode = 2;
+	private static byte viewNameDelimBackLashMode = 3;
+
+	private static String viewNameDelimDot = "dot";
+	private static String viewNameDelimBackLash = "backlash";
+	private static String viewNameDelimDotOrBackLash = "dotOrBacklash";
+
 	private XmlDocumentBuilder xmlDocumentBuilder;
 	private String pathPrefix;
 	private String pathSubfix;
@@ -43,6 +54,21 @@ public class XmlViewConfigDefinitionFactory implements
 	private DataTypeDefinitionManager dataTypeDefinitionManager;
 	private DataProviderDefinitionManager dataProviderDefinitionManager;
 	private DataResolverDefinitionManager dataResolverDefinitionManager;
+
+	public static byte getViewNameDelimMode() {
+		if (viewNameDelimMode == 0) {
+			String setting = Configure.getString("view.viewNameDelim",
+					viewNameDelimDotOrBackLash);
+			if (viewNameDelimDot.equals(setting)) {
+				viewNameDelimMode = viewNameDelimDotMode;
+			} else if (viewNameDelimBackLash.equals(setting)) {
+				viewNameDelimMode = viewNameDelimBackLashMode;
+			} else {
+				viewNameDelimMode = viewNameDelimDotOrBackLashMode;
+			}
+		}
+		return viewNameDelimMode;
+	}
 
 	/**
 	 * 设置XML配置文件构建类。
@@ -133,9 +159,18 @@ public class XmlViewConfigDefinitionFactory implements
 
 	private String getResoucePath(String viewName, String pathSubfix) {
 		String path = viewName;
-		if (pathDelimChar != PathUtils.PATH_DELIM) {
-			path = path.replace(pathDelimChar, PathUtils.PATH_DELIM);
+		byte delimMode = getViewNameDelimMode();
+
+		if (delimMode != viewNameDelimBackLashMode) {
+			if (delimMode == viewNameDelimDotMode && path.indexOf('/') > 0) {
+				throw new IllegalArgumentException("Resource[" + path
+						+ "] not exists.");
+			}
+			if (pathDelimChar != PathUtils.PATH_DELIM) {
+				path = path.replace(pathDelimChar, PathUtils.PATH_DELIM);
+			}
 		}
+
 		if (StringUtils.isNotEmpty(pathPrefix)) {
 			path = PathUtils.concatPath(pathPrefix, path);
 		}
