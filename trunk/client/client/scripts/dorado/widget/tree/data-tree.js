@@ -210,8 +210,8 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 						nodes.insert(node);
 					}
 				} else {
-					node._bindingConfig = bindingConfig;
 					node._parent._changeVisibleChildNodeCount(1);
+					if (entity == currentEntity) tree._currentNode = node;
 				}
 
 				eventArg.node = node;
@@ -240,16 +240,14 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 				}
 			}
 
-			var tree = this._tree, nodes = this._nodes, expandedNodes = {};
+			var tree = this._tree, nodes = this._nodes, expandedNodes = {}, currentEntity = tree.get("currentEntity");
 			for (var it = nodes.iterator(); it.hasNext();) {
 				var node = it.next();
 				if (node._data) expandedNodes[node._data.entityId] = !!node._expanded;
 			}
 
 			if (entity instanceof dorado.EntityList) {
-				for (var it = entity.iterator({
-					currentPage: true
-				}); it.hasNext();) {
+				for (var it = entity.iterator({ currentPage: true }); it.hasNext();) {
 					var d = it.next();
 					addNode(d);
 					startIndex++;
@@ -264,8 +262,7 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 
 		this._childrenPrepared = true;
 		var bindingConfig = this._bindingConfig, tree = this._tree;
-		var isRoot = (this == tree._root);
-		var data = this._data;
+		var isRoot = (this == tree._root), data = this._data;
 		if (isRoot && tree) {
 			this._data = data = tree.getBindingData({
 				firstResultOnly: true,
@@ -403,26 +400,6 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 	doCollapse: function() {
 		$invokeSuper.call(this, arguments);
 		this._clearChildren();
-	},
-
-	rebuildChildNodes: function() {
-		var tree = this._tree;
-		// 添加此段的代码的作用在于放置执行clearChildren()时触发onCurrentChange，从而导致某些场景下DataTree的refresh()激活。
-		tree.disableBinding();
-		var oldExpandingAnimated = tree._expandingAnimated;
-		tree._expandingAnimated = false;
-		try {
-			var expanded = this._expanded;
-			if (expanded) this.doCollapse();
-			this.clearChildren();
-			if (expanded) this.doExpandAsync($scopify(this, function() {
-				if (tree._currentNode && tree._currentNode._tree != tree) tree.set("currentNode", this);
-			}));
-		}
-		finally {
-			tree._expandingAnimated = true;
-		}
-		tree.enableBinding();
 	}
 });
 
@@ -704,16 +681,12 @@ dorado.widget.DataTree = $extend([dorado.widget.Tree, dorado.widget.DataControl]
 				if (!parentNode && parentEntityList == this._root._data) {
 					parentNode = this._root;
 				}
-
+				
 				if (parentNode && parentNode._expanded) {
-					if (this._scrollMode == "viewport") {
-						this.disableAutoRefresh();
-						parentNode._prepareChildren();
-						this.enableAutoRefresh();
-						this.refresh(true);
-					} else {
-						parentNode.rebuildChildNodes();
-					}
+					this.disableAutoRefresh();
+					parentNode._prepareChildren();
+					this.enableAutoRefresh();
+					this.refresh(true);
 				}
 				break;
 			}

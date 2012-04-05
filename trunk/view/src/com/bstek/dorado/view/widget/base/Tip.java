@@ -2,6 +2,7 @@ package com.bstek.dorado.view.widget.base;
 
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Control;
 import com.bstek.dorado.view.widget.FloatControl;
@@ -151,6 +152,7 @@ public class Tip extends Control implements FloatControl {
 		this.caption = caption;
 	}
 
+	@IdeProperty(editor = "multilines")
 	public String getText() {
 		return text;
 	}
@@ -185,12 +187,12 @@ public class Tip extends Control implements FloatControl {
 	}
 
 	@ClientProperty(escapeValue = "center")
-	public TipArrowAlign getAnchorArrowAlign() {
+	public TipArrowAlign getArrowAlign() {
 		return arrowAlign;
 	}
 
-	public void setAnchorArrowAlign(TipArrowAlign anchorArrowAlign) {
-		this.arrowAlign = anchorArrowAlign;
+	public void setArrowAlign(TipArrowAlign arrowAlign) {
+		this.arrowAlign = arrowAlign;
 	}
 
 	public int getShowDuration() {
