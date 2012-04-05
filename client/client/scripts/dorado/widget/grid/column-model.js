@@ -557,7 +557,7 @@
 						oldHeight = row.clientHeight;
 					}
 				}
-				else {
+				else if (rowHeightInfos) {
 					oldHeight = rowHeightInfos[itemId];
 				}
 				
