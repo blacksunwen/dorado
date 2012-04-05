@@ -1569,7 +1569,15 @@
 
 		onScroll: function() {
 			if (this._currentCellEditor) {
-				this._currentCellEditor.resize();
+				if (dorado.Browser.webkit) { // webkit改变scrollLeft不能立即在onScroll事件的计算逻辑中反映出来
+					var self = this;
+					setTimeout(function() {
+						self._currentCellEditor.resize();
+					}, 0);
+				}
+				else {
+					this._currentCellEditor.resize();
+				}
 			}
 			if (this._currentCell) $fly(this._currentCell).removeClass("current-cell");
 
@@ -2744,9 +2752,12 @@
 				for (var i = 0; i < structure.length; i++) {
 					var cellInfos = structure[i];
 					var row = $DomUtils.getOrCreateChild(headerTBody, i, function() {
-						var row = document.createElement("TR");
+						var row = document.createElement("TR"), offset = 0;;
 						$DomUtils.disableUserSelection(row);
-						row.style.height = grid._headerRowHeight + ((dorado.Browser.msie && cellInfos.length == 0) ? 1 : 0) + "px";
+						if (dorado.Browser.msie && dorado.Browser.version < 8 && cellInfos.length == 0) {
+							offset = structure.length * 2;
+						}
+						row.style.height = (grid._headerRowHeight + offset) + "px";
 						if (dorado.Browser.msie && dorado.Browser.version < 7) {
 							row.style.position = "static";
 						}
@@ -3080,21 +3091,23 @@
 
 		setFocus: dorado._NULL_FUNCTION,
 		onScroll: dorado._NULL_FUNCTION,
+		doOnResize: dorado._NULL_FUNCTION,
+		
 		doOnKeyDown: function() {
 			return true;
 		},
 
-		syncroRowHeights: function(scrollInfo) {
+		syncroRowHeights: function(scrollInfo) {		
 			with (this.grid._rowHeightInfos) {
 				if (this.grid._dynaRowHeight) {
 					for (var i = 0; i < unmatched.length; i++) {
 						var row = this._itemDomMap[unmatched[i]];
 						if (row) {
 							var h = rows[unmatched[i]];
-							if (dorado.Browser.msie && dorado.Browser.version >= 8) {
+							if (dorado.Browser.msie && dorado.Browser.version == 8) {
 								row.style.height = h + "px";
 								$fly(row).toggleClass("fix-row-bug");
-							} else if (dorado.Browser.webkit) {
+							} else if (dorado.Browser.webkit || (dorado.Browser.msie && dorado.Browser.version > 8)) {
 								row.firstChild.style.height = h + "px";
 							} else {
 								row.style.height = h + "px";
@@ -3150,10 +3163,10 @@
 			var row = this._itemDomMap[itemId];
 			if (!row) return;
 			var h = this.grid._rowHeightInfos.rows[itemId];
-			if (dorado.Browser.msie && dorado.Browser.version >= 8) {
+			if (dorado.Browser.msie && dorado.Browser.version == 8) {
 				row.style.height = h + "px";
 				$fly(row).toggleClass("fix-row-bug");
-			} else if (dorado.Browser.webkit) {
+			} else if (dorado.Browser.webkit || (dorado.Browser.msie && dorado.Browser.version > 8)) {
 				row.firstChild.style.height = h + "px";
 			} else {
 				row.style.height = h + "px";
@@ -3245,12 +3258,13 @@
 
 					grid._currentCell = cell;
 					$fly(cell).addClass("current-cell");
-					
 					if (grid.shouldEditing(column)) {
 						var currentItem = this.getCurrentItem(), cellEditor;
 						if (currentItem) cellEditor = grid._currentCellEditor = grid.getCellEditor(column, currentItem);
 						if (cellEditor) {
-							if (cellEditor.shouldShow()) cellEditor.show(this, cell);
+							if (cellEditor.shouldShow()) {
+								cellEditor.show(this, cell);
+							}
 						} else {
 							var fc = dorado.widget.findFocusableControlInElement(cell);
 							if (fc) {

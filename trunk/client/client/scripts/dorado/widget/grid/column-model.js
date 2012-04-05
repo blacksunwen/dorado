@@ -548,18 +548,23 @@
 		doRender: function(row, arg) {
 			if (row._lazyRender) return;
 			var grid = arg.grid, innerGrid = arg.innerGrid, entity = arg.data, dataColumns = innerGrid._columnsInfo.dataColumns;
-			var oldHeight;
+			var rowHeightInfos = grid._rowHeightInfos, itemId = row.itemId, oldHeight;
 			if (grid._dynaRowHeight) {
-				if (dorado.Browser.webkit) {
-					oldHeight = row.firstChild.clientHeight;
-				} else {
-					oldHeight = row.clientHeight;
+				if (innerGrid.fixed) {
+					if (dorado.Browser.webkit || (dorado.Browser.msie && dorado.Browser.version > 8)) {
+						oldHeight = row.firstChild.clientHeight;
+					} else {
+						oldHeight = row.clientHeight;
+					}
+				}
+				else {
+					oldHeight = rowHeightInfos[itemId];
 				}
 				
-				if (dorado.Browser.msie && dorado.Browser.version >= 8) {
+				if (dorado.Browser.msie && dorado.Browser.version == 8) {
 					row.style.height = '';
 					$fly(row).addClass("fix-valign-bug");
-				} else if (dorado.Browser.webkit) {
+				} else if (dorado.Browser.webkit || (dorado.Browser.msie && dorado.Browser.version > 8)) {
 					row.firstChild.style.height = '';
 				} else {
 					row.style.height = '';
@@ -613,37 +618,37 @@
 			
 			if (grid._dynaRowHeight) {
 				var h;
-				if (dorado.Browser.webkit) {
+				if (dorado.Browser.webkit || (dorado.Browser.msie && dorado.Browser.version > 8)) {
 					h = row.firstChild.scrollHeight;
 				} else {
 					h = row.clientHeight;
 				}
+				
 				if (oldHeight != h) {
 					if (!grid.xScroll || !grid.yScroll) grid.notifySizeChange();
-					
-					if (grid._fixedColumnCount) {
-						var rowHeightInfos = grid._rowHeightInfos, itemId = row.itemId;
-						if (innerGrid.fixed) {
+				}
+				
+				if (grid._fixedColumnCount) {
+					if (innerGrid.fixed) {
+						rowHeightInfos.rows[itemId] = h;
+						rowHeightInfos.unfound[itemId] = true;
+					} else if (oldHeight != h) {
+						delete rowHeightInfos.unfound[itemId];
+						var fh = rowHeightInfos.rows[itemId];
+						if (h > fh) {
 							rowHeightInfos.rows[itemId] = h;
-							rowHeightInfos.unfound[itemId] = true;
-						} else {
-							delete rowHeightInfos.unfound[itemId];
-							var fh = rowHeightInfos.rows[itemId];
-							if (h > fh) {
-								rowHeightInfos.rows[itemId] = h;
-								rowHeightInfos.unmatched.push(itemId);
-								if (!innerGrid._duringRefreshDom) {
-									grid._fixedInnerGrid.syncroRowHeight(itemId);
-								}
-							} else if (fh > 0) {
-								if (dorado.Browser.msie && dorado.Browser.version >= 8) {
-									row.style.height = fh + "px";
-									$fly(row).toggleClass("fix-valign-bug");
-								} else if (dorado.Browser.webkit) {
-									row.firstChild.style.height = fh + "px";
-								} else {
-									row.style.height = fh + "px";
-								}
+							rowHeightInfos.unmatched.push(itemId);
+							if (!innerGrid._duringRefreshDom) {
+								grid._fixedInnerGrid.syncroRowHeight(itemId);
+							}
+						} else if (fh > 0) {
+							if (dorado.Browser.msie && dorado.Browser.version == 8) {
+								row.style.height = fh + "px";
+								$fly(row).toggleClass("fix-valign-bug");
+							} else if (dorado.Browser.webkit || (dorado.Browser.msie && dorado.Browser.version > 8)) {
+								row.firstChild.style.height = fh + "px";
+							} else {
+								row.style.height = fh + "px";
 							}
 						}
 					}
