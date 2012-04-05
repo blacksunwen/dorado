@@ -1,386 +1,300 @@
-(function() {
-	dorado.Browser.supportTouch = "ontouchstart" in window;
-	dorado.gesture = {};
+(function ($, window, document, undefined) {
+    if (!("ontouchstart" in window)) return;
 
-	var touch = {}, singleTapTimeout;
+    var dataPropertyName = "virtualMouseBindings", touchTargetPropertyName = "virtualTouchID",
+        virtualEventNames = "mouseover mousedown mousemove mouseup click mouseout mousecancel".split(" "),
+        touchEventProps = "clientX clientY pageX pageY screenX screenY".split(" "),
+        mouseHookProps = $.event.mouseHooks ? $.event.mouseHooks.props : [],
+        mouseEventProps = $.event.props.concat(mouseHookProps), activeDocHandlers = {}, resetTimerID = 0, startX = 0, startY = 0,
+        didScroll = false, clickBlockList = [], blockMouseTriggers = false,
+        blockTouchTriggers = false, eventCaptureSupported = "addEventListener" in document, $document = $(document), nextTouchID = 1, lastTouchID = 0;
 
-	function parentIfText(node){
-		return 'tagName' in node ? node : node.parentNode;
-	}
+    $.vmouse = {moveDistanceThreshold:10, clickDistanceThreshold:10, resetTimerDuration:1500};
 
-	function swipeDirection(x1, x2, y1, y2){
-		var xDelta = Math.abs(x1 - x2), yDelta = Math.abs(y1 - y2);
-		if (xDelta >= yDelta) {
-			return (x1 - x2 > 0 ? 'Left' : 'Right');
-		} else {
-			return (y1 - y2 > 0 ? 'Up' : 'Down');
-		}
-	}
+    //取得Html的Event
+    function getNativeEvent(event) {
+        while (event && typeof event.originalEvent !== "undefined") {
+            event = event.originalEvent;
+        }
+        return event;
+    }
 
-	dorado.GestureManager = {
-		eventStarted: false,
+    //创建一个虚拟事件对象，返回结果被triggerVirtualEvent调用，类似event的用法
+    function createVirtualEvent(event, eventType) {
+        var t = event.type, oe, props, ne, prop, ct, touch, i, j;
+        event = $.Event(event);
+        event.type = eventType;
+        oe = event.originalEvent;
+        props = $.event.props;
+        if (t.search(/^(mouse|click)/) > -1) {
+            props = mouseEventProps;
+        }
+        if (oe) {
+            for (i = props.length, prop; i;) {
+                prop = props[--i];
+                event[prop] = oe[prop];
+            }
+        }
+        if (t.search(/mouse(down|up)|click/) > -1 && !event.which) {
+            event.which = 1;
+        }
+        if (t.search(/^touch/) !== -1) {
+            ne = getNativeEvent(oe);
+            t = ne.touches;
+            ct = ne.changedTouches;
+            touch = (t && t.length) ? t[0] : ((ct && ct.length) ? ct[0] : undefined);
+            if (touch) {
+                for (j = 0, len = touchEventProps.length; j < len; j++) {
+                    prop = touchEventProps[j];
+                    event[prop] = touch[prop];
+                }
+            }
+        }
+        return event;
+    }
 
-		init: function() {
-			var manager = this, startEvent, endEvent, moveEvent;
+    function getVirtualBindingFlags(element) {
+        var flags = {}, b, k;
+        while (element) {
+            b = $.data(element, dataPropertyName);
+            for (k in b) {
+                if (b[k]) {
+                    flags[k] = flags.hasVirtualBinding = true;
+                }
+            }
+            element = element.parentNode;
+        }
+        return flags;
+    }
 
-			if (dorado.Browser.supportTouch) {
-				startEvent = "touchstart";
-				endEvent = "touchend";
-				moveEvent = "touchmove";
-			} else {
-				startEvent = "mousedown";
-				endEvent = "mouseup";
-				moveEvent = "mousemove";
-				return;
-			}
+    //取得绑定这个事件的最近的对象
+    function getClosestElementWithVirtualBinding(element, eventType) {
+        var b;
+        while (element) {
+            b = $.data(element, dataPropertyName);
+            if (b && (!eventType || b[eventType])) {
+                return element;
+            }
+            element = element.parentNode;
+        }
+        return null;
+    }
 
-			jQuery(document.body).bind(startEvent, function(e){
-				//window.ss = new Date();
-				if (e.originalEvent) e = e.originalEvent;
-				manager.onTouchStart.apply(manager, [e]);
-			}).bind(moveEvent, function(e){
-				//window.mms = new Date();
-				if (e.originalEvent) e = e.originalEvent;
-				manager.onTouchMove.apply(manager, [e]);
-			}).bind(endEvent, function(e){
-				//window.es = new Date();
-				//console.log("es - ms:" + (window.es - window.mms) + "\tes - ss:" + (window.es - window.ss));
-				if (e.originalEvent) e = e.originalEvent;
-				manager.onTouchEnd.apply(manager, [e]);
-			});
-		},
+    function enableTouchBindings() {
+        blockTouchTriggers = false;
+    }
 
-		onTouchStart: function(e) {
-			var eventObject;
-			if (dorado.Browser.supportTouch) {
-				eventObject = e.touches[0];
-			} else {
-				eventObject = e;
-				if (e.button == 2) {
-					return;
-				}
-			}
+    function disableTouchBindings() {
+        blockTouchTriggers = true;
+    }
 
-			this.currentTargets = [];
+    function enableMouseBindings() {
+        lastTouchID = 0;
+        clickBlockList.length = 0;
+        blockMouseTriggers = false;
+        disableTouchBindings();
+    }
 
-			touch.target = parentIfText(eventObject.target);
-			var target = touch.target;
-			while(target && target != document.body) {
-				var gestures = jQuery.data(target, 'dorado-gestures');
-				if (gestures) this.currentTargets.push(target);
-				target = target.parentNode;
-			}
+    function disableMouseBindings() {
+        enableTouchBindings();
+    }
 
-			touch.x1 = eventObject.pageX;
-			touch.y1 = eventObject.pageY;
+    function startResetTimer() {
+        clearResetTimer();
+        resetTimerID = setTimeout(function () {
+            resetTimerID = 0;
+            enableMouseBindings();
+        }, $.vmouse.resetTimerDuration);
+    }
 
-			this.targetGestures(function(gesture) {
-				gesture.onTouchStart(e);
-			});
+    function clearResetTimer() {
+        if (resetTimerID) {
+            clearTimeout(resetTimerID);
+            resetTimerID = 0;
+        }
+    }
 
-			this.eventStarted = true;
-		},
+    function triggerVirtualEvent(eventType, event, flags) {
+        var ve;
+        if ((flags && flags[eventType]) || (!flags && getClosestElementWithVirtualBinding(event.target, eventType))) {
+            ve = createVirtualEvent(event, eventType);
 
-		onTouchMove: function(e) {
-			if (!this.eventStarted) {
-				return;
-			}
+            var mouseEvent = document.createEvent('MouseEvents');
+            mouseEvent.initEvent(eventType, true, true);
+            event.target.dispatchEvent(mouseEvent);
 
-			var eventObject;
-			if (dorado.Browser.supportTouch) {
-				eventObject = e.touches[0];
-			} else {
-				eventObject = e;
-			}
-			touch.x2 = eventObject.pageX;
-			touch.y2 = eventObject.pageY;
+            console.log("-----------dispatchEvent:" + eventType + "\tevent.target:" + event.target.className);
 
-			this.targetGestures(function(gesture) {
-				gesture.onTouchMove(e);
-			});
-		},
+            $(event.target).trigger(ve);
+        }
+        return ve;
+    }
 
-		onTouchEnd: function(e) {
-			var manager = this;
+    //MouseEvent全部阻止？
+    function mouseEventCallback(event) {
+        var touchID = $.data(event.target, touchTargetPropertyName);
+        if (!blockMouseTriggers && (!lastTouchID || lastTouchID !== touchID)) {
+            var ve = triggerVirtualEvent(event.type, event);
+            if (ve) {
+                if (ve.isDefaultPrevented()) {
+                    event.preventDefault();
+                }
+                if (ve.isPropagationStopped()) {
+                    event.stopPropagation();
+                }
+                if (ve.isImmediatePropagationStopped()) {
+                    event.stopImmediatePropagation();
+                }
+            }
+        }
+    }
 
-			this.targetGestures(function(gesture) {
-				gesture.onTouchEnd(e);
-			});
+    function handleTouchStart(event) {
+        var touches = getNativeEvent(event).touches, target, flags;
+        if (touches && touches.length === 1) {
+            target = event.target;
+            flags = getVirtualBindingFlags(target);
+            if (flags.hasVirtualBinding) {
+                lastTouchID = nextTouchID++;
+                //缓存id到dom上
+                $.data(target, touchTargetPropertyName, lastTouchID);
+                clearResetTimer();
+                disableMouseBindings();
+                didScroll = false;
+                var t = getNativeEvent(event).touches[0];
+                startX = t.pageX;
+                startY = t.pageY;
+                triggerVirtualEvent("mouseover", event, flags);
+                triggerVirtualEvent("mousedown", event, flags);
+            }
+        }
+    }
 
-			this.eventStarted = false;
-		},
+    function handleScroll(event) {
+        if (blockTouchTriggers) {
+            return;
+        }
+        if (!didScroll) {
+            triggerVirtualEvent("mousecancel", event, getVirtualBindingFlags(event.target));
+        }
+        didScroll = true;
+        startResetTimer();
+    }
 
-		targetGestures: function(fn) {
-			var manager = this, targets = manager.currentTargets || [];
-			//TODO
-			for (var i = 0, j = targets.length; i < j; i++) {
-				var target = targets[i], gestures = jQuery.data(target, 'dorado-gestures');
-				for (var type in gestures) {
-					var gesture = gestures[type], result = fn(gesture);
-					//console.log("fn result:" + result);
-					if (result === false) return;
-				}
-			}
-		},
+    function handleTouchMove(event) {
+        if (blockTouchTriggers) {
+            return;
+        }
+        var t = getNativeEvent(event).touches[0], didCancel = didScroll, moveThreshold = $.vmouse.moveDistanceThreshold;
+        didScroll = didScroll || (Math.abs(t.pageX - startX) > moveThreshold || Math.abs(t.pageY - startY) > moveThreshold), flags = getVirtualBindingFlags(event.target);
+        if (didScroll && !didCancel) {
+            triggerVirtualEvent("mousecancel", event, flags);
+        }
+        triggerVirtualEvent("mousemove", event, flags);
+        startResetTimer();
+    }
 
-		bind: function(dom, eventName, func) {
-			var gesture = this.getGesture(dom, eventName, true);
-			//console.log("gesture");
-			gesture.addListener(eventName, func);
-		},
+    function handleTouchEnd(event) {
+        if (blockTouchTriggers) {
+            return;
+        }
+        disableTouchBindings();
+        var flags = getVirtualBindingFlags(event.target), t;
+        triggerVirtualEvent("mouseup", event, flags);
+        if (!didScroll) {
+            //TODO 排除掉本来就可以focus的元素，现在看不到a、input了
+            //document.activeElement.blur();
+            var ve = triggerVirtualEvent("click", event, flags);
+            if (ve && ve.isDefaultPrevented()) {
+                t = getNativeEvent(event).changedTouches[0];
+                clickBlockList.push({touchID:lastTouchID, x:t.clientX, y:t.clientY});
+                blockMouseTriggers = true;
+            }
+        }
+        triggerVirtualEvent("mouseout", event, flags);
+        didScroll = false;
+        startResetTimer();
+    }
 
-		getGesture: function(dom, eventName, createIfNull) {
-			var gestures = jQuery.data(dom, 'dorado-gestures');
-			if (!gestures) {
-				gestures = {};
-				jQuery.data(dom, 'dorado-gestures', gestures);
-			}
-			var type = this.gestureEventsMap[eventName];
-			if (gestures[type]) {
-				return gestures[type];
-			} else if (createIfNull) {
-				var result = this.createGesture(eventName, {});
-				//console.log("create an empty gesture:" + type);
-				gestures[type] = result;
-				return result;
-			}
-		},
+    function hasVirtualBindings(ele) {
+        var bindings = $.data(ele, dataPropertyName), k;
+        if (bindings) {
+            for (k in bindings) {
+                if (bindings[k]) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
-		fireEvent: function(dom, eventName, arg) {
-			var gesture = this.getGesture(dom, eventName);
-			if (gesture) {
-				gesture.fireEvent(eventName, arg);
-			}
-		},
+    function dummyMouseHandler() {
+    }
 
-		fireEvents: function(eventName, arg) {
-			var manager = this, targets = manager.currentTargets || [];
-			for (var i = 0, j = targets.length; i < j; i++) {
-				var target = targets[i];
-				manager.fireEvent(target, eventName, arg);
-			}
-		},
+    //jQuery的自定义事件的配置
+    function getSpecialEventObject(eventType) {
+        return {setup:function (data, namespace) {
+            if (!hasVirtualBindings(this)) {
+                $.data(this, dataPropertyName, {});
+            }
+            var bindings = $.data(this, dataPropertyName);
+            bindings[eventType] = true;
+            activeDocHandlers[eventType] = (activeDocHandlers[eventType] || 0) + 1;
+            if ( activeDocHandlers[ eventType ] === 1 ) {
+                //document.addEventListener(eventType, mouseEventCallback);
+            }
+            if (eventCaptureSupported) {
+                activeDocHandlers["touchstart"] = (activeDocHandlers["touchstart"] || 0) + 1;
+                if (activeDocHandlers["touchstart"] === 1) {
+                    $document.bind("touchstart", handleTouchStart).bind("touchend", handleTouchEnd).bind("touchmove", handleTouchMove).bind("scroll", handleScroll);
+                }
+            }
+        }, teardown:function (data, namespace) {
+            --activeDocHandlers[eventType];
+            if ( !activeDocHandlers[ eventType ] ) {
+                document.removeEventListener(eventType, mouseEventCallback);
+            }
+            if (eventCaptureSupported) {
+                --activeDocHandlers["touchstart"];
+                if (!activeDocHandlers["touchstart"]) {
+                    $document.unbind("touchstart", handleTouchStart).unbind("touchmove", handleTouchMove).unbind("touchend", handleTouchEnd).unbind("scroll", handleScroll);
+                }
+            }
+            var $this = $(this), bindings = $.data(this, dataPropertyName);
+            if (bindings) {
+                bindings[eventType] = false;
+            }
+            if (!hasVirtualBindings(this)) {
+                $this.removeData(dataPropertyName);
+            }
+        }};
+    }
 
-		unbind: function(dom, eventName, func) {
-			var gesture = this.getGesture(dom, eventName);
-			if (gesture) gesture.removeListener(eventName, func);
-		},
+    for (var i = 0; i < virtualEventNames.length; i++) {
+        $.event.special[virtualEventNames[i]] = getSpecialEventObject(virtualEventNames[i]);
+    }
 
-		gestureTypes: [],
-		gestureEventsMap: {},
-
-		registerGesture: function(type, cls) {
-			this.gestureTypes[type] = cls;
-			var events = cls.prototype.events || [], bindFn = function() {
-				dorado.GestureManager.bind.apply(dorado.GestureManager, arguments);
-			}, unbindFn = function() {
-				dorado.GestureManager.unbind.apply(dorado.GestureManager, arguments);
-			};
-			for (var i = 0, j = events.length; i < j; i++) {
-				var event = events[i];
-				this.gestureEventsMap[event] = type;
-			}
-		},
-
-		createGesture: function(eventName, options) {
-			var type = this.gestureEventsMap[eventName], cls = this.gestureTypes[type];
-			if (cls) {
-				return new cls(options);
-			}
-		}
-	};
-
-	jQuery(function() {
-		dorado.GestureManager.init();
-	});
-
-	dorado.gesture.Gesture = $extend([dorado.AttributeSupport, dorado.EventSupport], {
-		EVENTS: {},
-		constructor: function(options) {
-			var events = this.events || [];
-			for (var i = 0; i < events.length; i++) {
-				this.EVENTS[events[i]] = {};
-			}
-			$invokeSuper.call(this, arguments);
-			this.set(options);
-		},
-		onTouchStart: function(e) {},
-		onTouchMove: function(e) {},
-		onTouchEnd: function(e) {},
-		fireEvent: function() {
-			$invokeSuper.call(this, arguments);
-			//console.log("gesture event " + arguments[0] + " fired.");
-		}
-	});
-
-	dorado.gesture.Touch = $extend(dorado.gesture.Gesture, {
-		events: ['touchstart', 'touchmove', 'touchend', 'touchdown', 'tapstart', 'tapcancel', 'tap', 'doubletap', 'taphold', 'singletap', 'swipe'],
-		onTouchStart: function(e) {
-			var now = Date.now(), delta = now - (touch.last || now);
-			singleTapTimeout && clearTimeout(singleTapTimeout);
-			if (delta > 0 && delta <= 250) touch.isDoubleTap = true;
-			touch.last = now;
-
-			var gesture = this;
-
-			if (gesture.touchInterval) {
-				clearInterval(gesture.touchInterval);
-				gesture.touchInterval = null;
-			}
-
-			gesture.fireEvent("touchstart", e);
-			gesture.fireEvent("tapstart", e);
-
-			gesture.touchInterval = setInterval(function() {
-				gesture.fireEvent("touchdown", e);
-				var now = Date.now(), delta = now - (touch.last || now);
-				if (delta >= 1000 && !touch.tapholdFired) {
-					gesture.fireEvent("taphold", e);
-					touch.tapholdFired = true;
-				}
-			}, 500);
-		},
-		onTouchMove: function(e) {
-			var gesture = this;
-			gesture.fireEvent("touchmove", e);
-			if (!gesture.tapcancelled && (Math.abs(touch.x2 - touch.x1) > 5 || Math.abs(touch.y2 - touch.y1) > 5)) {
-				gesture.fireEvent("tapcancel", e);
-
-				gesture.tapcancelled = true;
-			}
-		},
-		onTouchEnd: function(e) {
-			var gesture = this;
-			gesture.fireEvent("touchend", e);
-
-			//console.log("touchend:" + (new Date() - window.es) + "\tlast in touch:" + ('last' in touch));
-
-			if ((Math.abs(touch.x1 - touch.x2) > 0 || Math.abs(touch.y1 - touch.y2) > 0) && (touch.x2 > 0 || touch.y2 > 0)) {
-				(Math.abs(touch.x1 - touch.x2) > 30 || Math.abs(touch.y1 - touch.y2) > 30)  &&
-					gesture.fireEvent('swipe', e) && false && /** delete this. */
-				gesture.fireEvent('swipe' + (swipeDirection(touch.x1, touch.x2, touch.y1, touch.y2)), e);
-				//console.log("swipe...");
-				touch.x1 = touch.x2 = touch.y1 = touch.y2 = touch.last = 0;
-			} else if (('last' in touch)) {
-				//console.log("beforetap:" + (new Date() - window.es));
-				gesture.fireEvent("tap", e);
-				if (touch.isDoubleTap) {
-					gesture.fireEvent("doubletap", e);
-
-					touch = {};
-				} else {
-					singleTapTimeout = setTimeout(function(){
-						singleTapTimeout = null;
-
-						gesture.fireEvent("singletap", e);
-
-						this.currentTargets = null;
-						touch = {};
-					}, 250);
-				}
-			}
-			clearInterval(gesture.touchInterval);
-			gesture.touchInterval = null;
-			gesture.tapcancelled = false;
-		}
-	});
-
-	dorado.gesture.Drag = $extend(dorado.gesture.Gesture, {
-		events: ['dragstart', 'drag', 'dragend'],
-		onTouchStart: function(e) {
-
-		},
-		onTouchMove: function(e) {
-			var gesture = this;
-			if (!gesture.dragstarted && (Math.abs(touch.x2 - touch.x1) > 5 || Math.abs(touch.y2 - touch.y1) > 5)) {
-				gesture.fireEvent("dragstart", e);
-
-				gesture.dragstarted = true;
-			} else if (gesture.dragstarted) {
-				gesture.fireEvent("drag", e);
-			}
-		},
-		onTouchEnd: function(e) {
-			var gesture = this;
-			if (gesture.dragstarted) {
-				gesture.fireEvent("dragend", e);
-			}
-			gesture.dragstarted = false;
-		}
-	});
-
-	dorado.gesture.Pinch = $extend(dorado.gesture.Gesture, {
-		events: ['pinchstart', 'pinch', 'pinchend'],
-		onTouchStart: function(e) {
-		},
-		onTouchMove: function(e) {
-		},
-		onTouchEnd: function(e) {
-		}
-	});
-
-	dorado.GestureManager.registerGesture('touch', dorado.gesture.Touch);
-	dorado.GestureManager.registerGesture('drag', dorado.gesture.Drag);
-	dorado.GestureManager.registerGesture('pinch', dorado.gesture.Pinch);
-})();
-(function() {
-	if (!("ontouchstart" in window)) return;
-
-	jQuery.event.special["mouseover"] = {
-		setup: function() {}
-	};
-
-	jQuery.event.special["mouseout"] = {
-		setup: function() {}
-	};
-
-	jQuery.event.special["click"] = {
-		setup: function() {
-			var elem = this;
-			$(elem).each(function() {
-				dorado.GestureManager.bind(elem, "tap", function(event) {
-                    var touch = event.targetTouches[0] || event.touches[0];
-                    console.log("tap event:" + event + "\ttouch:" + touch);
-					return jQuery.event.trigger( { type: "click", target: touch.target }, null, elem );
-				});
-			});
-		}
-	};
-
-	jQuery.event.special["mousedown"] = {
-		setup: function() {
-			var elem = this;
-			dorado.GestureManager.bind(elem, "touchstart", function(event) {
-				var touch = event.targetTouches[0];
-				$(elem).trigger({ type: "mousedown", target: touch.target });
-			});
-		}
-	};
-
-	jQuery.event.special["mouseup"] = {
-		setup: function() {
-			var elem = this;
-			dorado.GestureManager.bind(elem, "touchend", function(event) {
-				$(elem).trigger({ type: "mouseup" });
-			});
-		}
-	};
-
-	jQuery.fn.hover = function() {
-        return this;
-    };
-
-	$.fn.addClassOnClick = function(cls, clsOwner, fn) {
-		clsOwner = clsOwner || this;
-		this.mousedown(function() {
-			if (fn instanceof Function && !fn.call(this)) return;
-			clsOwner.addClass(cls);
-			//console.log("addClassOnClick mousedown");
-		});
-		this.mouseup(function() {
-			//console.log("addClassOnClick mouseup:" + (new Date - window.s));
-			clsOwner.removeClass(cls);
-		});
-		return this;
-	};
-})();
+    if (eventCaptureSupported) {//基本上手机浏览器都支持
+        document.addEventListener("click", function (e) {
+            var cnt = clickBlockList.length, target = e.target, x, y, ele, i, o, touchID;
+            if (cnt) {
+                x = e.clientX;
+                y = e.clientY;
+                threshold = $.vmouse.clickDistanceThreshold;
+                ele = target;
+                while (ele) {
+                    for (i = 0; i < cnt; i++) {
+                        o = clickBlockList[i];
+                        touchID = 0;
+                        if ((ele === target && Math.abs(o.x - x) < threshold && Math.abs(o.y - y) < threshold) || $.data(ele, touchTargetPropertyName) === o.touchID) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            return;
+                        }
+                    }
+                    ele = ele.parentNode;
+                }
+            }
+        }, true);
+    }
+})(jQuery, window, document);
