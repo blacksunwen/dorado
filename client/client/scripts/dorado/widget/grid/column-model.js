@@ -628,7 +628,7 @@
 					if (!grid.xScroll || !grid.yScroll) grid.notifySizeChange();
 				}
 				
-				if (grid._fixedColumnCount) {
+				if (grid._realFixedColumnCount && rowHeightInfos) {
 					if (innerGrid.fixed) {
 						rowHeightInfos.rows[itemId] = h;
 						rowHeightInfos.unfound[itemId] = true;

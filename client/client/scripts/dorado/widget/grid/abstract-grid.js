@@ -845,10 +845,8 @@
 			/**
 			 * 分组属性。
 			 * @type String
-			 * @attribute skipRefresh
 			 */
 			groupProperty: {
-				skipRefresh: true,
 				setter: function(v) {
 					if (this._groupProperty == v) return;
 					this._groupProperty = v;
@@ -1227,16 +1225,15 @@
 			}
 			var ignoreItemTimestamp = (this._ignoreItemTimestamp === undefined) ? true : this._ignoreItemTimestamp;
 			
-			var fixedColumnCount;
 			if (!this.getRealWidth() || !this.getRealHeight() || this._groupProperty) {
-				fixedColumnCount = 0;
+				this._realFixedColumnCount = 0;
 			} else {
-				fixedColumnCount = this._fixedColumnCount;
-				if (fixedColumnCount > this._columns.size) fixedColumnCount = this._columns.size;
+				this._realFixedColumnCount = this._fixedColumnCount;
+				if (this._realFixedColumnCount > this._columns.size) this._realFixedColumnCount = this._columns.size;
 			}
 
-			this._realStretchColumnsMode = (fixedColumnCount > 0) ? "off" : this._stretchColumnsMode;
-			var columnsInfo = this._columnsInfo = this.getColumnsInfo(fixedColumnCount);
+			this._realStretchColumnsMode = (this._realFixedColumnCount > 0) ? "off" : this._stretchColumnsMode;
+			var columnsInfo = this._columnsInfo = this.getColumnsInfo(this._realFixedColumnCount);
 			if (columnsInfo) {
 				var cols = columnsInfo.dataColumns;
 				// this._forceRefreshRearRows = false;	// TODO: 如果未来为List、Grid提供pianoKey选项，则此处的默认值应考虑改为false
@@ -1264,7 +1261,7 @@
 			var xScroll = this.xScroll = !!this.getRealWidth();
 			var yScroll = this.yScroll = !!this.getRealHeight();
 			var domMode;
-			if (fixedColumnCount > 0) {
+			if (this._realFixedColumnCount > 0) {
 				domMode = xScroll ? 2 : 0;
 			} else {
 				domMode = yScroll ? 1 : 0;
@@ -1840,10 +1837,14 @@
 		/**
 		 * 对指定的列中的数据进行排序。
 		 * @protected
-		 * @param {dorado.widget.grid.DataColumn} column 要排序的表格列。
+		 * @param {String|dorado.widget.grid.DataColumn} column 要排序的表格列。
 		 * @param {boolean} [desc] 是否倒序排序。
 		 */
 		sort: function(column, desc) {
+			if (!(column instanceof dorado.widget.grid.Column)) {
+				column = this.getColumn(column);
+			}
+			
 			var sortParams = column ? [{
 				property: column.get("property"),
 				desc: desc
@@ -1890,6 +1891,9 @@
 						value: value
 					});
 				}
+			}
+			else if (!(filterParams instanceof Array)) {
+				filterParams = [filterParams];
 			}
 			this._itemModel.filter(filterParams);
 			this.refresh();
@@ -2192,10 +2196,10 @@
 			var isTopColumn = (column.get("parent") == this), fixed = false;
 			if (isTopColumn) {
 				menu._columnIndex = columns.indexOf(column);
-				fixed = (this._fixedColumnCount > 0 && (menu._columnIndex + 1) == this._fixedColumnCount);
+				fixed = (this._realFixedColumnCount > 0 && (menu._columnIndex + 1) == this._realFixedColumnCount);
 			}
 			menu.findItem("fix").set("disabled", !isTopColumn || fixed || this._groupProperty);
-			menu.findItem("unfix").set("disabled", this._fixedColumnCount == 0 || this._groupProperty);
+			menu.findItem("unfix").set("disabled", this._realFixedColumnCount == 0 || this._groupProperty);
 			menu.findItem("toggleFilterBar").set("checked", this._showFilterBar);
 			menu.findItem("ungroupColumns").set("disabled", isDataColumn);
 			menu.findItem("group").set("disabled", !isDataColumn);
