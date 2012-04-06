@@ -2787,7 +2787,7 @@
 									}
 									
 									if (eventArg.processDefault) {
-										if (column instanceof dorado.widget.grid.DataColumn) {
+										if (column instanceof dorado.widget.grid.DataColumn && column._property != "none") {
 											var sortState = column.get("sortState");
 											try {
 												grid.sort(column, !(sortState == null || sortState == "desc"));
