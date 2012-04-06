@@ -133,6 +133,10 @@
 		},
 		
 		doRefreshDom: function(dom) {
+			// 这两句是完全是用来做性能优化的，避免在containerDom计算过程中（由大变小时）出现临时滚动条，引起二次重算。
+			var containerDom = this._dom.parentNode;
+			containerDom.style.overflowX = containerDom.style.overflowY = "visible";
+			
 			if (this._overflowX == "auto") {
 				this._realOverflowX = this._container.getRealWidth() ? "hidden" : "visible";
 			} else {

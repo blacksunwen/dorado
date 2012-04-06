@@ -291,14 +291,16 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 	},
 	
 	resetControlDimension: function(region, containerDom, autoWidth, autoHeight) {
-		var control = region.control;
+		var control = region.control, oldWidth = control._realWidth, oldHeight = control._realHeight;
 		if (autoWidth && (!control.ATTRIBUTES.width.independent || control._fixedWidth === false)) {
 			control._realWidth = (region.width || 0) + (region.autoWidthAdjust || 0);
 		}
 		if (autoHeight && (!control.ATTRIBUTES.height.independent || control._fixedHeight === false)) {
 			control._realHeight = (region.height || 0) + (region.autoHeightAdjust || 0);
 		}
-		if (control._attached) control.refresh();
+		if (control._attached && (oldWidth != control._realWidth || oldHeight != control._realHeight)) {
+			control.refresh();
+		}
 	},
 	
 	renderControl: function(region, containerDom, autoWidth, autoHeight) {
