@@ -411,7 +411,11 @@
 		},
 		
 		_nodeExpanded: function(node, callback) {
-			if (!this._rendered || !this._attached || this._autoRefreshLock > 0) return;
+			if (!this._rendered || !this._attached || this._autoRefreshLock > 0) {
+				$callback(callback);
+				return;
+			}
+			
 			if (this._currentScrollMode != "viewport") {
 				if (this._domMode == 2) this._fixedInnerGrid._nodeExpanded(node);
 				var self = this;
@@ -427,7 +431,11 @@
 		},
 		
 		_nodeCollapsed: function(node, callback) {
-			if (!this._rendered || !this._attached || this._autoRefreshLock > 0) return;
+			if (!this._rendered || !this._attached || this._autoRefreshLock > 0) {
+				$callback(callback);
+				return;
+			}
+			
 			if (this._currentScrollMode != "viewport") {
 				if (this._domMode == 2) this._fixedInnerGrid._nodeCollapsed(node);
 				var self = this;

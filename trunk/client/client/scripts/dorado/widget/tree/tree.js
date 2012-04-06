@@ -76,14 +76,14 @@
 				var nextRow = fromRow, tbody = this._dataTBody;
 				while (nextRow) {
 					var item = $fly(nextRow).data("item");
-					if(item) this.refreshItemDom(tbody, item, nextRow.sectionRowIndex);
+					if (item) this.refreshItemDom(tbody, item, nextRow.sectionRowIndex);
 					nextRow = nextRow.nextSibling;
 				}
 			}
 		},
 		
 		_insertChildNodes: function(node, row, animated, callback) {
-			
+		
 			function invokdCallback(refRow, callback, node) {
 				this._refreshRearRows(refRow);
 				if (callback) $callback(callback, true, node);
@@ -131,7 +131,7 @@
 		},
 		
 		_removeChildNodes: function(node, animated, callback) {
-			
+		
 			function invokdCallback(node, callback, node) {
 				if (this._forceRefreshRearRows !== false) {
 					var row = this._itemDomMap[node._id];
@@ -271,7 +271,11 @@
 		},
 		
 		_nodeExpanded: function(node, callback) {
-			if (!this._rendered || !this._attached || this._autoRefreshLock > 0) return;
+			if (!this._rendered || !this._attached || this._autoRefreshLock > 0) {
+				$callback(callback);
+				return;
+			}
+			
 			if (this._scrollMode != "viewport") {
 				if (node == this._root) {
 					this._insertChildNodes(node, null, this._getExpandingAnimated(), callback);
@@ -290,7 +294,11 @@
 		},
 		
 		_nodeCollapsed: function(node, callback) {
-			if (!this._rendered || !this._attached || this._autoRefreshLock > 0) return;
+			if (!this._rendered || !this._attached || this._autoRefreshLock > 0) {
+				$callback(callback);
+				return;
+			}
+			
 			if (this._scrollMode != "viewport") {
 				this._removeChildNodes(node, this._getExpandingAnimated(), callback);
 				var row = this._itemDomMap[node._id];
