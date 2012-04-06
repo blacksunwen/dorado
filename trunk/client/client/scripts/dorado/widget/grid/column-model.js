@@ -1561,6 +1561,12 @@
 					});
 					$fly(editor.getDom()).addClass("d-checkbox-center");
 				}
+				else if (dtCode == dorado.DataType.DATE) {
+					trigger = "defaultDateDropDown";
+				}
+				else if (dtCode == dorado.DataType.DATETIME) {
+					trigger = "defaultDateTimeDropDown";
+				}
 			}
 			
 			if (editor === undefined) {
