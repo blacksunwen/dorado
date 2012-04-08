@@ -44,6 +44,7 @@ public class ModelRuleTemplateInitializer implements RuleTemplateInitializer {
 				.getRuleTemplateManager();
 
 		RuleTemplate dataTypeRuleTemplate = new RuleTemplate("DataType");
+		dataTypeRuleTemplate.setLabel("DataType");
 		dataTypeRuleTemplate.setScope("public");
 		dataTypeRuleTemplate.setType(DefaultEntityDataType.class.getName());
 		ruleTemplateManager.addRuleTemplate(dataTypeRuleTemplate);
@@ -122,6 +123,7 @@ public class ModelRuleTemplateInitializer implements RuleTemplateInitializer {
 			if (newRuleTemplate == null) {
 				newRuleTemplate = new RuleTemplate(validatorName);
 			}
+			newRuleTemplate.setLabel(validatorName);
 			newRuleTemplate.setSortFactor(++sortFactor);
 			newRuleTemplate.setScope("public");
 			newRuleTemplate.setType(validatorTypeRegisterInfo.getClassType()

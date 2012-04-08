@@ -212,9 +212,10 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 			newRuleTemplate
 					.setParents(new RuleTemplate[] { parentRuleTemplate });
 		}
-		if (label != null) {
-			newRuleTemplate.setLabel(label);
+		if (label == null) {
+			label = type.getSimpleName();
 		}
+		newRuleTemplate.setLabel(label);
 		if (scope != null) {
 			newRuleTemplate.setScope(scope);
 		}
