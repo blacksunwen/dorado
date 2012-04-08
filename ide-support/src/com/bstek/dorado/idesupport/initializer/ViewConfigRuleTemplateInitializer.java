@@ -92,6 +92,7 @@ public class ViewConfigRuleTemplateInitializer implements
 			if (componentRuleTemplate == null) {
 				componentRuleTemplate = new AutoRuleTemplate(name,
 						classType.getName());
+				componentRuleTemplate.setLabel(name);
 				componentRuleTemplate.setGlobal(true);
 				componentRuleTemplate.setAutoInitialize(false);
 				componentRuleTemplates.add(componentRuleTemplate);
@@ -103,7 +104,7 @@ public class ViewConfigRuleTemplateInitializer implements
 
 			if (registerInfo instanceof AssembledComponentTypeRegisterInfo) {
 				componentRuleTemplate.setNodeName(name);
-				
+
 				AssembledComponentTypeRegisterInfo assembledComponentTypeRegisterInfo = (AssembledComponentTypeRegisterInfo) registerInfo;
 				ComponentDefinition superComponentDefinition = assembledComponentTypeRegisterInfo
 						.getSuperComponentDefinition();
