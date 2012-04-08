@@ -7,7 +7,7 @@ import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlSubNode;
 
-@XmlNode
+@XmlNode(nodeName = "Labels")
 @ClientObject
 public class XAxisLabels {
 	private String color;
