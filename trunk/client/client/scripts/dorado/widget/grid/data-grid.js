@@ -686,7 +686,7 @@
 		
 		sort: function(column, desc) {
 			var itemModel = this._itemModel;
-			if (this._filterMode == "serverSide") {
+			if (this._sortMode == "serverSide") {
 				var dataSet = this._dataSet;
 				if (!dataSet) return;
 				
@@ -707,12 +707,12 @@
 					}));
 				} else if (parameter instanceof dorado.util.Map) {
 					criteria = parameter.get("criteria");
-					if (criteria && (!criteria.criterions || !criteria.orders)) {
+					if (criteria && !criteria.criterions && !criteria.orders) {
 						parameter.remove("criteria");
 					}
 				}
 				
-				var dataColumns = this._columnsInfo.dataColumns;
+				var dataColumns = this._columnsInfo.dataColumns, grid = this;
 				dataSet.flushAsync(function() {
 					var sortOrderMap = {};
 					for (var i = 0; i < orders.length; i++) {
@@ -721,12 +721,13 @@
 					}
 					for (var i = 0; i < dataColumns.length; i++) {
 						var column = dataColumns[i], desc = sortOrderMap[column._property];
-						if (desc == null) {
+						if (desc === undefined) {
 							column.set("sortState", null);
 						} else {
 							column.set("sortState", desc ? "desc" : "asc");
 						}
 					}
+					grid._skipClearSortFlags = true;
 				});
 			} else {
 				return $invokeSuper.call(this, arguments);

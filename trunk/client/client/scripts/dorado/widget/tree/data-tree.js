@@ -144,7 +144,12 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 		
 		autoCheckChildren: {
 			getter: function() {
-				return this._autoCheckChildren || this._bindingConfig.autoCheckChildren;
+				if (this._bindingConfig.autoCheckChildren != null) {
+					return this._bindingConfig.autoCheckChildren;
+				}
+				else {
+					return this._autoCheckChildren;
+				}
 			}
 		},
 

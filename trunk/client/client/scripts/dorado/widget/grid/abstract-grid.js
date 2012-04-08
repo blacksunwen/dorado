@@ -205,6 +205,10 @@
 
 		clearSortFlags: function() {
 			var grid = this.grid;
+			if (grid._skipClearSortFlags) {
+				delete grid._skipClearSortFlags;
+				return;
+			}
 			if (grid._columnsInfo) {
 				var columns = grid._columnsInfo.dataColumns;
 				for (var i = 0; i < columns.length; i++) {
@@ -490,7 +494,7 @@
 			}
 			for (var i = 0; i < columns.length; i++) {
 				var column = columns[i], desc = sortParamMap[column._property];
-				if (desc == null) {
+				if (desc === undefined) {
 					column.set("sortState", null);
 				} else {
 					column.set("sortState", desc ? "desc" : "asc");

@@ -463,9 +463,9 @@
 		// =====
 	
 		rebuildRow: function(grid, innerGrid, row, rowType) {
-			var len = innerGrid._columnsInfo.dataColumns.length, oldRowType = row.rowType, $row = $fly(row);
+			var len = innerGrid._columnsInfo.dataColumns.length, oldRowType = row.rowType, $row = jQuery(row);
 			if (oldRowType == "header") $row.empty();
-			$row.toggleClass("group-header-row", rowType == "header").toggleClass("group-footer-row", rowType == "footer");
+			$row.toggleClass("group-header-row", (rowType == "header")).toggleClass("group-footer-row", (rowType == "footer"));
 			if (rowType == "header") {
 				$row.empty();
 				var cell = innerGrid.createCell();
@@ -1674,7 +1674,6 @@
 				setter: function(align) {
 					this._align = align;
 					if (align) {
-						if (!this._headerAlign) this._headerAlign = align;
 						if (!this._footerAlign) this._footerAlign = align;
 					}
 				}
@@ -1690,7 +1689,9 @@
 			 * @type String
 			 * @attribute
 			 */
-			headerAlign: {},
+			headerAlign: {
+				defaultValue: "center"
+			},
 			
 			/**
 			 * 列脚中内容的水平对齐方式。 取值范围如下：
