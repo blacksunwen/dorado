@@ -22,7 +22,7 @@ public class DataGrid extends AbstractGrid implements DataControl {
 	private boolean supportsPaging;
 	private Boolean autoCreateColumns;
 	private FilterMode filterMode = FilterMode.clientSide;
-	private SortMode sortModel = SortMode.clientSide;
+	private SortMode sortMode = SortMode.clientSide;
 
 	@ComponentReference("DataSet")
 	@IdeProperty(highlight = 1)
@@ -79,11 +79,11 @@ public class DataGrid extends AbstractGrid implements DataControl {
 	}
 
 	@ClientProperty(escapeValue = "clientSide")
-	public SortMode getSortModel() {
-		return sortModel;
+	public SortMode getSortMode() {
+		return sortMode;
 	}
 
-	public void setSortModel(SortMode sortModel) {
-		this.sortModel = sortModel;
+	public void setSortMode(SortMode sortMode) {
+		this.sortMode = sortMode;
 	}
 }

@@ -753,6 +753,7 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 			RuleTemplate privateRuleTemplate = new AutoRuleTemplate('@' + name);
 			privateRuleTemplate.setScope("private");
 			privateRuleTemplate.setParents(new RuleTemplate[] { ruleTemplate });
+			privateRuleTemplate.setLabel(name);
 			privateRuleTemplate.setNodeName(nodeName);
 			ruleTemplate = privateRuleTemplate;
 		}
