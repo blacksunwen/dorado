@@ -1927,7 +1927,7 @@
 			 * @param {dorado.Entity|Object} arg.data 行对应的数据实体。
 			 * @param {String} arg.rowType 行的类型，目前可能的取值包括：
 			 * <ul>
-			 * <li>null	-	普通的数据行。</li>
+			 * <li>null或undefined	-	普通的数据行。</li>
 			 * <li>header	-	数据分组模式下的分组标题行，参考{@link dorado.widget.AbstractGrid#attribute:groupProperty}。</li>
 			 * <li>footer	-	数据分组模式下的分组汇总行，参考{@link dorado.widget.AbstractGrid#attribute:groupProperty}。</li>
 			 * </ul>
