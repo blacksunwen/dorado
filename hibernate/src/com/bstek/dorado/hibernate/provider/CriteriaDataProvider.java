@@ -64,7 +64,7 @@ public class CriteriaDataProvider extends HibernateDataProviderSupport {
 		if (userCriteria != null) {
 			if (!this.isAutoFilter()) {
 				throw new Exception(
-						"Unsupported autofiler operation, please check out your configuration.");
+						"Unsupported autofilter operation, please check out your configuration.");
 			}
 
 			UserCriteriaProcessor processor = getUserCriteriaProcessor();
