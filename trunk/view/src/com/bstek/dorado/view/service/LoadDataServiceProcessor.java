@@ -127,7 +127,7 @@ public class LoadDataServiceProcessor extends DataServiceProcessorSupport {
 					FilterCriterion criterion = filterCriterionParser
 							.createFilterCriterion(property, dataType,
 									expression);
-					criteria.AddCriterion(criterion);
+					criteria.addCriterion(criterion);
 				}
 			}
 		}
