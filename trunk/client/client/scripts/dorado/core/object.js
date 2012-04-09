@@ -417,8 +417,8 @@
 			
 			var strKey = (typeof object) + '|' + dorado.JSON.stringify(object), hash = 0;
 			for (i = 0; i < strKey.length; i++) {
-				char = strKey.charCodeAt(i);
-				hash = ((hash << 5) - hash) + char;
+				var c = strKey.charCodeAt(i);
+				hash = ((hash << 5) - hash) + c;
 				hash = hash & hash; // Convert to 32bit integer
 			}
 			return hash;
