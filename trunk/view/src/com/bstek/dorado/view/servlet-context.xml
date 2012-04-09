@@ -6,9 +6,7 @@
 		<property name="url" value="/dorado/client/**/*.dpkg" />
 		<property name="resolver">
 			<bean class="com.bstek.dorado.view.resolver.LibraryFileResolver">
-				<property name="localeResolver">
-					<bean class="org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver" />
-				</property>
+				<property name="localeResolver" ref="dorado.localeResolver" />
 				<property name="resourcePrefix" value="${view.libraryRoot}" />
 			</bean>
 		</property>
