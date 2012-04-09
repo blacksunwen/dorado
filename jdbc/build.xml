@@ -9,7 +9,7 @@
 	<property name="vendor" value="www.BSTEK.com" />
 	<property name="version" value="0.0.1" />
 	<property name="qualifier" value="SNAPSHOT" />
-	<property name="buildJavaDoc" value="true" />
+	<property name="buildJavaDoc" value="false" />
 	<property name="buildJsDoc" value="false" />
 
 	<property name="buildDir"
@@ -77,7 +77,7 @@
 
 	<target name="publish" depends="package">
 		<if>
-			<equals arg1="${qualifier}" arg2="SNAPSHOT" />
+			<equals arg1=" ${qualifier}" arg2="SNAPSHOT" />
 			<then>
 				<property name="maven.repository"
 				          value="${bsdn.nexusSnapshots}" />

@@ -70,15 +70,8 @@ public class DefaultAgent extends AbstractAgent {
 	protected String getTableNameFromParameter() throws Exception {
 		String tableName = (String)this.getParameters().get(IAgent.TABLE_NAME);
 		
-//		String tableNamePattern = null;
-//		if (tableName == null || tableName.length() == 0) {
-//			tableNamePattern = "%";
-//		} else {
-//			tableNamePattern = tableName + "%";
-//		}
-		
 		DatabaseMetaData dbmd = getDatabaseMetaData();
-		if (!dbmd.supportsMixedCaseIdentifiers()) {
+		if (tableName != null && !dbmd.supportsMixedCaseIdentifiers()) {
 			if (dbmd.storesLowerCaseIdentifiers()) {
 				tableName = tableName.toLowerCase();
 			}
@@ -94,12 +87,7 @@ public class DefaultAgent extends AbstractAgent {
 	protected Document doListTables() throws Exception {
 		String catalog = getCatalogFromParameter();
 		String schemaPattern = getSchemaFromParameter();
-		String tableNamePattern = getTableNameFromParameter();
-		if (tableNamePattern == null || tableNamePattern.length() == 0) {
-			tableNamePattern = "%";
-		} else {
-			tableNamePattern = tableNamePattern + "%";
-		}
+		String tableNamePattern = "%";
 		String types[] = null;
 		
 		final Document document = newDocument();
@@ -274,11 +262,7 @@ public class DefaultAgent extends AbstractAgent {
 	 */
 	protected Element createTableKeyColumn(Document document, 
 			Map<String, String> keyColumn, String columnName, Element element) {
-		element.setAttribute("name", columnName);
-		String jdbcTypeName = keyColumn.get("jdbcType");
-		if (StringUtils.isNotEmpty(jdbcTypeName)) {
-			element.setAttribute("jdbcType", jdbcTypeName);
-		}
+		element = this.createTableColumn(document, keyColumn, columnName, element);
 		return element;
 	}
 	
