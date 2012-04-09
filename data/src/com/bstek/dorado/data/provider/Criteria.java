@@ -14,7 +14,7 @@ public class Criteria {
 	List<Criterion> criterions = new ArrayList<Criterion>();
 	List<Order> orders = new ArrayList<Order>();
 
-	public void AddCriterion(Criterion criterion) {
+	public void addCriterion(Criterion criterion) {
 		criterions.add(criterion);
 	}
 
