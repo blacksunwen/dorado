@@ -54,7 +54,7 @@
     padding: 6px;
     -webkit-border-radius: 0.3em;
     border-radius: 0.3em;
-    -webkit-box-shadow: rgba(0, 0, 0, 0.8) 0 0.2em 0.6em;
+    /**-webkit-box-shadow: rgba(0, 0, 0, 0.8) 0 0.2em 0.6em;**/
     background-color: black;
     background-image: none;
 }
@@ -78,7 +78,7 @@
     padding: 6px;
     -webkit-border-radius: 0.3em;
     border-radius: 0.3em;
-    -webkit-box-shadow: rgba(0, 0, 0, 0.8) 0 0.2em 0.6em;
+    /**-webkit-box-shadow: rgba(0, 0, 0, 0.8) 0 0.2em 0.6em;*/
     background-color: black;
     background-image: none;
 }
@@ -89,7 +89,7 @@
     padding: 6px;
     -webkit-border-radius: 0.3em;
     border-radius: 0.3em;
-    -webkit-box-shadow: rgba(0, 0, 0, 0.8) 0 0.2em 0.6em;
+    /**-webkit-box-shadow: rgba(0, 0, 0, 0.8) 0 0.2em 0.6em;*/
     background-color: black;
     background-image: none;
 }

@@ -27,6 +27,11 @@
     color: #135197;
 }
 
+/** remove input[type=password] border on android 3.2 */
+.text-editor input[type=password] {
+    -webkit-user-modify: read-write-plaintext-only;
+}
+
 .text-editor .icon{
 	width:30px;
 	height:100%;

@@ -1,14 +1,15 @@
 (function() {
 	var controller = window.controller;
 	var view = new dorado.widget.View({
-		layout:"Dock"
+		layout:"Dock",
+		height:650
 	});
 
 	// 登录页面
 	var branchCodeEditor = new dorado.touch.TextEditor();
 	var userCodeEditor = new dorado.touch.TextEditor();
 	var passwordEditor = new dorado.touch.TextEditor({ type: "password" });
-    var imageEditor = new dorado.touch.TextEditor({ width: 300, value: "3000" });
+    var imageEditor = new dorado.touch.TextEditor({ width: 300 });
     var image = new dorado.widget.HtmlContainer({
         content: "<img src='/CPIC09Auto/mobilecontroller/createRandomPicture.do' class='verify-code'/>",
         onClick: function(self, arg) {
@@ -20,6 +21,11 @@
         children: [imageEditor, image]
     });
 
+    var branchCode = controller.getCookie("cpic.branchCode"), userCode = controller.getCookie("cpic.userCode");
+    if (branchCode && userCode) {
+        branchCodeEditor.set("value", branchCode);
+        userCodeEditor.set("value", userCode);
+    }
 
 	var loginForm = new dorado.widget.AutoForm({
 		labelWidth:100,
@@ -193,11 +199,13 @@
 		]
 	});
 
-	var rackNoEditor, engineNoEditor, vehicleNameEditor, registerDateEditor;
+	var rackNoEditor, engineNoEditor, vehicleNameEditor, registerDateEditor,engineCapacityEditor,emptyWeightEditor;
 
 	rackNoEditor = new dorado.touch.TextEditor();
 	engineNoEditor = new dorado.touch.TextEditor();
 	vehicleNameEditor = new dorado.touch.TextEditor();
+	engineCapacityEditor = new dorado.touch.TextEditor();
+	emptyWeightEditor = new dorado.touch.TextEditor();
 	registerDateEditor = new dorado.touch.TextEditor({
         format: "Y-m-d",
 		popup: dorado.touch.defaultDatePicker,
@@ -277,6 +285,16 @@
 				editor: vehicleUsageEditorOther
 			},
 			{
+				property: "engineCapacity",
+				label: "排量(升)",
+				editor: engineCapacityEditor
+			},
+			{
+				property: "emptyWeight",
+				label: "整备质量(千克)",
+				editor: emptyWeightEditor
+			},
+			{
 				property: "registerDate",
 				label: "初次登记日期",
 				editor: registerDateEditor
@@ -349,8 +367,9 @@
 				wrappable: true
 			}
 		],
-		draggable: false,
-		droppable: false
+        scrollMode: "simple",
+        draggable: false,
+        droppable: false
 	});
 
 	var selectCarDialog = new dorado.touch.Dialog({
@@ -374,8 +393,6 @@
 			})
 		]
 	});
-
-
 
 	var indexPanel = new dorado.touch.Panel({
 		caption: "车辆信息录入",
@@ -573,7 +590,8 @@
 				resizeable: false,
 				property: "riskFlag"
 			}
-		]
+		],
+        scrollMode: "simple"
 	});
 
 	var selectModelPanel = new dorado.touch.Panel({
@@ -1236,7 +1254,7 @@
 	var resultPanel = new dorado.touch.Panel({
 		caption: "保费试算结果",
 		layout: new dorado.widget.layout.NativeLayout(),
-		scrollbar: true,
+		//scrollbar: true,
 		exClassName: "result-panel",
 		children:[
 			new dorado.touch.GroupBox({
@@ -1384,7 +1402,7 @@
 	var premiumDetailPanel = new dorado.touch.Panel({
 		caption: "保费明细",
 		layout: new dorado.widget.layout.NativeLayout(),
-		scrollbar: true,
+		//scrollbar: true,
 		exClassName: "result-panel",
 		children:[
 			resultDetailPanel
@@ -1445,6 +1463,8 @@
         endDateEditor: endDateEditor,
         startDateAutoEditor: startDateAutoEditor,
         endDateAutoEditor: endDateAutoEditor,
+        engineCapacityEditor :engineCapacityEditor,
+    	emptyWeightEditor :emptyWeightEditor,
         //other
         startDateEditor1: startDateEditor1,
         endDateEditor1: endDateEditor1,

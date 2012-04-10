@@ -13,7 +13,7 @@
     -webkit-box-sizing: border-box;
     -webkit-border-radius: 5px;
     background: 			#eee;
-    background-image: -webkit-gradient(linear, left top, left bottom, from(#fdfdfd), to(#eee)); /* Saf4+, Chrome */
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#fdfdfd), to(#eee));
     color: #444;
     -webkit-tap-highlight-color: transparent;
     -webkit-user-select: none;

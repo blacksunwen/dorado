@@ -1,3 +1,25 @@
+(function() {
+    var queue = [];
+    jQuery(function() {
+        document.onclick = function() {
+            //console.log("-------------!!!document click capture....." + queue.length);
+            if (queue.length > 0) {
+                queue.forEach(function(fn) {
+                    setTimeout(function() {
+                        fn && fn();
+                    }, 400);
+                });
+                queue.splice(0, queue.length);
+            }
+        };
+    });
+
+    dorado.doOnBodyClick = function(fn) {
+        //console.log("------------- push function");
+        queue.push(fn);
+    };
+})();
+
 dorado.touch.Picker = $extend(dorado.touch.FloatPanel, {
     $className: "dorado.touch.Picker",
     ATTRIBUTES: {
@@ -18,6 +40,49 @@ dorado.touch.Picker = $extend(dorado.touch.FloatPanel, {
         onPick: {}
     },
     sync: function(){},
+    getModalDom: function() {
+        var picker = this;
+        if (!picker._modalDom) {
+            var dom = document.createElement("div");
+            var width = $fly(document).width(), height = $fly(document).height();
+            $fly(dom).css({
+                position: "absolute",
+                left: 0,
+                top: 0,
+                width: width,
+                height: height,
+                opacity: 0.5,
+                background: "transparent",
+                zIndex: 1000,
+                display: "none"
+            });
+
+            document.body.appendChild(dom);
+
+            picker._modalDom = dom;
+        }
+
+        dorado.doOnBodyClick(function() {
+            //console.log("=================show modalDom");
+            picker._modalDom.style.display = "";
+        });
+
+        return picker._modalDom;
+    },
+    show: function() {
+        $invokeSuper.call(this, arguments);
+
+        this.getModalDom();
+    },
+    hide: function() {
+        var picker = this;
+        dorado.doOnBodyClick(function() {
+            //console.log("=================hide modalDom");
+            picker._modalDom.style.display = "none";
+        });
+
+        $invokeSuper.call(this, arguments);
+    },
 	getShowPosition: function(options){
 		var picker = this;
 
@@ -28,6 +93,10 @@ dorado.touch.Picker = $extend(dorado.touch.FloatPanel, {
 
 		return $invokeSuper.call(this, arguments);
 	},
+    createDom: function() {
+        var dom = $invokeSuper.call(this, arguments);
+        return dom;
+    },
 	onBlur: function() {
         console.log("Picker onBlur fired");
 		if (this._visible) this.hide();

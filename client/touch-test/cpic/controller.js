@@ -421,7 +421,7 @@ var traffic = "TRAFFICCOMPULSORYPRODUCT",//交强险
 					}
 					if (coverageConfig.twoColumn) {
 						var taxInfo = coverageMap[coverageName]["TAXINFO"];
-						//console.log(taxInfo);
+						console.log(taxInfo);
 						jQuery.each(table, function(index, item) {
 							if (item.fee) {
 								item.fee += "元";
@@ -494,6 +494,25 @@ var traffic = "TRAFFICCOMPULSORYPRODUCT",//交强险
 	};
 
 	var controller = {
+        setCookie: function (name, value, expire) {
+            var exp = new Date();
+            exp.setTime(exp.getTime() + expire);
+            document.cookie = name + "=" + escape(value) + ";expires=" + exp.toGMTString();
+        },
+
+        getCookie: function (name) {
+            var arr = document.cookie.match(new RegExp("(^| )" + name + "=([^;]*)(;|$)"));
+            if (arr != null) return unescape(arr[2]);
+            return null;
+        },
+
+        delCookie: function (name) {
+            var exp = new Date();
+            exp.setTime(exp.getTime() - 1);
+            var cval = getCookie(name);
+            if (cval != null) document.cookie = name + "=" + cval + ";expires=" + exp.toGMTString();
+        },
+
 		//不勾选全部的分类CheckBox
 		uncheckAllCategory: function() {
 			var result = this.view.tag("category");
@@ -528,6 +547,8 @@ var traffic = "TRAFFICCOMPULSORYPRODUCT",//交强险
                     controller.reloadImage();
 					dorado.MessageBox.alert(data.failed);
 				} else {
+                    controller.setCookie("cpic.branchCode", data.branchCode);
+                    controller.setCookie("cpic.userCode", userCode);
 					if (data.branchCode == "1010100") {
 						controller.beijing = true;
 						controller.cardbook.set("currentControl", controller.indexPanel);
@@ -660,9 +681,10 @@ var traffic = "TRAFFICCOMPULSORYPRODUCT",//交强险
 				vehicleUsage = controller.vehicleUsageEditorOther.get("value"),
 				rackNo = controller.rackNoEditor.get("value"), engineNo = controller.engineNoEditor.get("value"),
 				registerDate = controller.registerDateEditor.get("value"), vehicleName = controller.vehicleNameEditor.get("value"),
+				engineCapacity = controller.engineCapacityEditor.get("value"),emptyWeight = controller.emptyWeightEditor.get("value"),
 				licenseType = controller.licenseTypeEditor.get("value");
 
-			if (!plateno || !owner || !rackNo || !engineNo || !registerDate || !vehicleName || !licenseType) {
+			if (!plateno || !owner || !rackNo || !engineNo || !registerDate || !vehicleName || !licenseType||!engineCapacity||!emptyWeight) {
 				dorado.MessageBox.alert("所有的信息都为必须录入，请确认！");
 				return;
 			}
@@ -683,7 +705,9 @@ var traffic = "TRAFFICCOMPULSORYPRODUCT",//交强险
                     startDate: startDate.getTime(),
                     endDate: endDate.getTime(),
                     startDateAuto: startDateAuto.getTime(),
-                    endDateAuto: endDateAuto.getTime()
+                    endDateAuto: endDateAuto.getTime(),
+                    engineCapacity:engineCapacity,
+                    emptyWeight:emptyWeight
                 }, function(priceList) {
                     if (priceList.length == 1) {
                         controller.loadVehicleInfo(priceList[0].vehicleCode, function() {
@@ -744,10 +768,10 @@ var traffic = "TRAFFICCOMPULSORYPRODUCT",//交强险
 			});
 		},
 		//加载车型信息
-		loadVehicleModel: function(rackno, vehicleUsage, callback) {
+		loadVehicleModel: function(rackNo, vehicleUsage, callback) {
 			dorado.touch.showLoadingPanel("加载数据中...");
 			jQuery.post("/CPIC09Auto/mobilecontroller/queryVehicleModel.do", {
-				rackno: rackno,
+				rackNo: rackNo,
 				vehicleUsage: vehicleUsage
 			}, function(data) {
 				dorado.touch.hideLoadingPanel();
@@ -838,7 +862,8 @@ var traffic = "TRAFFICCOMPULSORYPRODUCT",//交强险
 			controller.loadVehicleModel(current["rackNo"],  vehicleUsage || "101", function(priceList) {
 				if (priceList.length == 1) {
 					controller.loadVehicleInfo(priceList[0].vehicleCode, function() {
-						controller.cardbook.set("currentControl", controller.personalPanel);
+						controller.cardbook.set("currentControl", controller.selectPanel);
+						controller.uncheckAllCategory();
 					});
 				} else {
 					controller.cardbook.set("currentControl", controller.selectModelPanel);
