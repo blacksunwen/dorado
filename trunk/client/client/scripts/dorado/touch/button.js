@@ -32,6 +32,8 @@ dorado.touch.Button = $extend(dorado.widget.Control, {
 
     onTap: function() {
         var button = this;
+        //TODO 可能有更好的方法解决这个问题
+        document.activeElement.blur();
         button.fireEvent("onTap", button);
     },
 

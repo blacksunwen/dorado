@@ -65,7 +65,9 @@
                 caption: "取消",
                 width: 80,
                 onClick: function() {
-                    dataSet.set("readOnly", false);
+                    dataSet.getData("#").cancel();
+                    richEditor.refresh();
+                    dialog.hide();
                 }
             })]
         });

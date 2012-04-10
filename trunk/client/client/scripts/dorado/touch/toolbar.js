@@ -76,6 +76,7 @@ dorado.touch.ToolBar = $extend(dorado.widget.Control, {
         var layout = this, ctDom = this.getContentContainer(), items = this.get("items") || [];
         var containerSize = { width: $fly(ctDom).width(), height: $fly(ctDom).height() };
 
+        //TODO 为了touch的性能优化删掉的，我记不清为啥当初要加上这段代码了。
         $fly(ctDom).addClass("box-layout").css({
             "-webkit-box-orient": "horizontal",
             "-webkit-box-direction": "normal",

@@ -5,8 +5,8 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Click delay on webkit for iPhone/iPod touch</title>
+<script type="text/javascript" src="../include-all.js"></script>
 <script type="text/javascript">
-
 /**
  * 
  * NoClickDelay
@@ -75,8 +75,29 @@ function loaded() {
 	}, false);
 	
 	theTap.addEventListener('click', function(e){
+        console.log("click .. click..");
 		result.innerHTML = 'Delay: ' + (e.timeStamp-this.timeStart) + 'ms';
 	}, false);
+
+//    jQuery(theTap).click(function(e) {
+//        console.log("jQuery click");
+//        result.innerHTML = 'Delay: ' + (new Date-this.timeStart) + 'ms';
+//    });
+
+    var divC = document.getElementById("divC");
+
+//    divC.addEventListener("click", function(e) {
+//        divC.style.display = "none";
+//    }, false);
+
+    document.addEventListener('touchstart', function(e){
+        window.timeStart = new Date;
+    }, false);
+
+    jQuery(divC).bind("click", function() {
+        divC.style.display = "none";
+        console.log("time:" + (new Date - window.timeStart));
+    });
 }
 
 window.addEventListener('load', function(){ setTimeout(function(){ loaded(); }, 100) }, true);
@@ -111,12 +132,19 @@ button {
 <button id="theClick">onClick event</button>
 <button id="theTap">touchStart/End events</button>
 </div>
-	
+
 <div id="result">Tap on the buttons above</div>
 
 <p>The first button triggers the standard <em>onClick</em> event with about 300ms delay.</p>
 <p>The second button ovverrides the <em>onClick</em> event, the "click" is triggered on touchEnd thus eliminating the 300ms delay.</p>
-<p><a href="http://cubiq.org/remove-onclick-delay-on-webkit-for-iphone/9">Read more about this on cubiq.org</a></p>
+<p>
+
+</p>
+
+<div style="position: relative">
+    <input type="text" style="position: absolute;left: 0;top: 0;">
+    <div id="divC" style="position: absolute;left:0;top:0;width: 200px;background-color: red;height: 20px;"></div>
+</div>
 
 </body>
 </html>

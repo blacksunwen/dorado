@@ -8,7 +8,6 @@ body, input, textarea, button {
 }
 
 .i-radio{
-    -webkit-tap-highlight-color: transparent;
     height: 28px;
     padding: 2px 0;
 }
@@ -59,7 +58,6 @@ body, input, textarea, button {
 }
 
 .i-checkbox{
-    -webkit-tap-highlight-color: transparent;
     height: 34px;
     padding: 2px 0;
 }
