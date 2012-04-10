@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.bstek.dorado.data.provider;
 
 /**
@@ -9,6 +6,7 @@ package com.bstek.dorado.data.provider;
  */
 public class Order {
 	private String property;
+	private String propertyPath;
 	private boolean desc;
 
 	public Order(String property, boolean desc) {
@@ -22,6 +20,14 @@ public class Order {
 
 	public void setProperty(String property) {
 		this.property = property;
+	}
+
+	public String getPropertyPath() {
+		return propertyPath;
+	}
+
+	public void setPropertyPath(String propertyPath) {
+		this.propertyPath = propertyPath;
 	}
 
 	public boolean isDesc() {
