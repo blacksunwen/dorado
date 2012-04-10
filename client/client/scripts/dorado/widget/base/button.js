@@ -374,6 +374,9 @@
 			$fly(button._doms.caption).html(button._caption || action._caption);
 			button._dom.disabled = disabled;
 
+			$fly(dom).toggleClass("i-button-trigger " +cls + BUTTON_TRIGGER_CLASS, button._showTrigger === true || (!!button._menu && button._showTrigger !== false))
+				.toggleClass(cls + "-disabled", !!(button._disabled || action._disabled));
+
             if (button._toggleable) {
                 if (button._toggled) {
                     $fly(dom).addClass(cls + BUTTON_TOGGLED_CLASS);
@@ -384,18 +387,14 @@
                     $fly(doms.buttonLeft).removeClass("button-left-toggled");
                     $fly(doms.buttonRight).removeClass("button-right-toggled");
                 }
-            }
-
-
-			$fly(dom).toggleClass("i-button-trigger " +cls + BUTTON_TRIGGER_CLASS, button._showTrigger === true || (!!button._menu && button._showTrigger !== false))
-				.toggleClass(cls + "-disabled", !!(button._disabled || action._disabled));
-
-            if (!needSplit(button)) {
-                $fly(dom).toggleClass(cls + BUTTON_TOGGLED_CLASS, !!button._triggerToggled);
-                $fly(doms.buttonLeft).toggleClass("button-left-toggled", !!button._triggerToggled);
-                $fly(doms.buttonRight).toggleClass("button-right-toggled", !!button._triggerToggled);
             } else {
-                $fly(doms.buttonRight).toggleClass("button-right-toggled", !!button._triggerToggled);
+                if (!needSplit(button)) {
+                    $fly(dom).toggleClass(cls + BUTTON_TOGGLED_CLASS, !!button._triggerToggled);
+                    $fly(doms.buttonLeft).toggleClass("button-left-toggled", !!button._triggerToggled);
+                    $fly(doms.buttonRight).toggleClass("button-right-toggled", !!button._triggerToggled);
+                } else {
+                    $fly(doms.buttonRight).toggleClass("button-right-toggled", !!button._triggerToggled);
+                }
             }
 
 			var icon = button._icon || action._icon, iconCls = button._iconClass || action._iconClass;
