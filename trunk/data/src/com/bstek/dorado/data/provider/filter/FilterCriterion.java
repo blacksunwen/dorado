@@ -8,9 +8,10 @@ import com.bstek.dorado.data.type.DataType;
  * @since 2011-6-18
  */
 public abstract class FilterCriterion implements Criterion {
-	String property;
-	DataType dataType;
-	String expression;
+	private String property;
+	private String propertyPath;
+	private DataType dataType;
+	private String expression;
 
 	public String getProperty() {
 		return property;
@@ -18,6 +19,14 @@ public abstract class FilterCriterion implements Criterion {
 
 	public void setProperty(String property) {
 		this.property = property;
+	}
+
+	public String getPropertyPath() {
+		return propertyPath;
+	}
+
+	public void setPropertyPath(String propertyPath) {
+		this.propertyPath = propertyPath;
 	}
 
 	public DataType getDataType() {
