@@ -1,13 +1,13 @@
 package com.bstek.dorado.hibernate.provider;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.impl.CriteriaImpl;
+import org.springframework.util.Assert;
 
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlSubNode;
@@ -57,7 +57,7 @@ public class CriteriaDataProvider extends HibernateDataProviderSupport {
 	 * @return
 	 * @throws Exception
 	 */
-	protected void prepare(final Object parameter, DataType resultDataType)
+	protected void prepareProviderCriteria(final Object parameter, DataType resultDataType)
 			throws Exception {
 		UserCriteria userCriteria = UserCriteriaUtils
 				.getUserCriteria(parameter);
@@ -85,15 +85,13 @@ public class CriteriaDataProvider extends HibernateDataProviderSupport {
 	protected DetachedCriteria createDetachedCriteria(Object parameter,
 			DataType resultDataType) throws Exception {
 		TopCriteria defCriteria = getCriteria();
-		if (defCriteria != null) {
-			prepare(parameter, resultDataType);
-			HibernateCriteriaTransformer transformer = getCriteriaTransformer();
-			DetachedCriteria detachedCriteria = transformer.toHibernate(
-					defCriteria, parameter, this.getSessionFactoryOject());
-			return detachedCriteria;
-		} else {
-			return null;
-		}
+		Assert.notNull(defCriteria, "Criteria must not be null.");
+		
+		this.prepareProviderCriteria(parameter, resultDataType);
+		HibernateCriteriaTransformer transformer = getCriteriaTransformer();
+		DetachedCriteria detachedCriteria = transformer.toHibernate(
+				defCriteria, parameter, this.getSessionFactoryOject());
+		return detachedCriteria;
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -102,78 +100,58 @@ public class CriteriaDataProvider extends HibernateDataProviderSupport {
 			throws Exception {
 		DetachedCriteria detachedCriteria = createDetachedCriteria(parameter,
 				resultDataType);
-		if (detachedCriteria != null) {
-			Session session = session();
-			try {
-				Criteria c = detachedCriteria.getExecutableCriteria(session);
-				if (!isUnique()) {
-					List list = c.list();
-					return list;
-				} else {
-					return c.uniqueResult();
-				}
-			} finally {
-				if (session.isOpen()) {
-					session.close();
-				}
+		Session session = session();
+		try {
+			Criteria c = detachedCriteria.getExecutableCriteria(session);
+			if (!isUnique()) {
+				List list = c.list();
+				return list;
+			} else {
+				return c.uniqueResult();
+			}
+		} finally {
+			if (session.isOpen()) {
+				session.close();
 			}
 		}
-		return null;
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	protected void internalGetResult(Object parameter, Page<?> page,
 			DataType resultDataType) throws Exception {
-		if (page.getPageSize() > 0) {
-			DetachedCriteria detachedCriteria = createDetachedCriteria(
-					parameter, resultDataType);
-			if (detachedCriteria != null) {
-				Session session = session();
-				try {
-					CriteriaImpl entityCriteria = (CriteriaImpl) detachedCriteria
-							.getExecutableCriteria(session);
-					if (!isUnique()) {
-						// 查询结果记录
-						entityCriteria.setFirstResult(page
-								.getFirstEntityIndex());
-						entityCriteria.setMaxResults(page.getPageSize());
-						List list = entityCriteria.list();
-						page.setEntities(list);
+		DetachedCriteria detachedCriteria = createDetachedCriteria(
+				parameter, resultDataType);
+		Session session = session();
+		try {
+			CriteriaImpl entityCriteria = (CriteriaImpl) detachedCriteria
+					.getExecutableCriteria(session);
+			if (!isUnique()) {
+				// 查询结果记录
+				entityCriteria.setFirstResult(page
+						.getFirstEntityIndex());
+				entityCriteria.setMaxResults(page.getPageSize());
+				List list = entityCriteria.list();
+				page.setEntities(list);
 
-						// 查询记录条数
-						CriteriaImpl countCriteria = entityCriteria;
-						HibernateUtils.makeCount(countCriteria);
+				// 查询记录条数
+				CriteriaImpl countCriteria = entityCriteria;
+				HibernateUtils.makeCount(countCriteria);
 
-						Number c = (Number) countCriteria.uniqueResult();
-						page.setEntityCount(c.intValue());
-					} else {
-						Object object = entityCriteria.uniqueResult();
-						if (object != null) {
-							List entities = new ArrayList(1);
-							entities.add(object);
-							page.setEntities(entities);
-							page.setEntityCount(entities.size());
-						}
-					}
-				} finally {
-					if (session.isOpen()) {
-						session.close();
-					}
-				}
-			}
-		} else {
-			Object object = internalGetResult(parameter, resultDataType);
-			if (object != null) {
-				if (object instanceof Collection) {
-					Collection entities = (Collection) object;
+				Number c = (Number) countCriteria.uniqueResult();
+				page.setEntityCount(c.intValue());
+			} else {
+				Object object = entityCriteria.uniqueResult();
+				if (object != null) {
+					List entities = new ArrayList(1);
+					entities.add(object);
 					page.setEntities(entities);
 					page.setEntityCount(entities.size());
-				} else {
-					Collection entities = new ArrayList(1);
-					entities.add(object);
-					page.setEntityCount(entities.size());
 				}
+			}
+		} finally {
+			if (session.isOpen()) {
+				session.close();
 			}
 		}
 	}

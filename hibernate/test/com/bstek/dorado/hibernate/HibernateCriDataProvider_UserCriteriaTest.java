@@ -96,7 +96,7 @@ public class HibernateCriDataProvider_UserCriteriaTest extends
 		this.buildCriterions(parameter, new String[][] {
 				new String[] { "id", "4" },
 				new String[] { "category.id", "4" },
-				new String[] { "category.id", "{1,2,3}" }, });
+				new String[] { "category.id", "(1,2,3)" }, });
 
 		DefaultEntityDataType productDataType = new DefaultEntityDataType();
 		productDataType.setAutoCreatePropertyDefs(true);
@@ -133,7 +133,7 @@ public class HibernateCriDataProvider_UserCriteriaTest extends
 				new String[] { "productName", "%C" },
 				new String[] { "category.categoryName", "C%" },
 				new String[] { "category.id", "[1,10]" },
-				new String[] { "category.categoryName", "{bbb,ccc,ddd}" },
+				new String[] { "category.categoryName", "(bbb,ccc,ddd)" },
 				new String[] { "category.categoryName", "C" },
 				new String[] { "category.id", "11" }, });
 		this.buildOrders(parameter, new Object[][] {

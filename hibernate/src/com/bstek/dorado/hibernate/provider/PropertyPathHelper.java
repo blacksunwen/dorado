@@ -27,72 +27,60 @@ public class PropertyPathHelper {
 	
 	public String getPropertyPath(final String fieldPath) throws Exception {
 		String propertyPath = pairMap.get(fieldPath);
-		if (propertyPath == null) {
-			Map<String, PropertyDef> propertyDefs = entityDataType.getPropertyDefs();
-			PropertyDef propertyDef = propertyDefs.get(fieldPath);
-			if (propertyDef != null) {
-				if (!(propertyDef instanceof BasePropertyDef)) 
-					throw new IllegalArgumentException("the type of property '" + fieldPath + "' is not BasePropertyDef.");
-				BasePropertyDef baseProperty = (BasePropertyDef) propertyDef;
-				propertyPath = baseProperty.getPropertyPath();
-				if (StringUtils.isNotEmpty(propertyPath)) {
-					return returnValue(propertyPath, fieldPath);
-				} else {
-					return returnValue(fieldPath, fieldPath);
-				}
-			} else {
-				String[] tokens = StringUtils.split(fieldPath, '.');
-				if (tokens.length == 1) {
-					throw new IllegalArgumentException("can not find any PropertyDef named '" + fieldPath + "'.");
-				}
-				EntityDataType currentEntityDataType = this.entityDataType;
-				for (int i=0; i<tokens.length-1; i++) {
-					String token = tokens[i];
-					if (currentEntityDataType.isAutoCreatePropertyDefs()) {
-						currentEntityDataType.createPropertyDefinitons();
-					}
-					propertyDef = currentEntityDataType.getPropertyDefs().get(token);
-					Assert.notNull(propertyDef, "can not find any PropertyDef named '" + fieldPath + "'.");
-					if (!(propertyDef instanceof BasePropertyDef)) {
-						throw new IllegalArgumentException("the type of property '" + fieldPath + "' is not BasePropertyDef.");
-					} else {
-						BasePropertyDef baseProperty = (BasePropertyDef) propertyDef;
-						propertyPath = baseProperty.getPropertyPath();
-						if (StringUtils.isNotEmpty(propertyPath)) {
-							tokens[i] = propertyPath;
-						} else {
-							tokens[i] = token;
-						}
-						
-						if (!(propertyDef.getDataType() instanceof EntityDataType)) {
-							throw new IllegalArgumentException("can not find any PropertyDef named '" + fieldPath + "'.");
-						} else {
-							currentEntityDataType = (EntityDataType)propertyDef.getDataType();
-						}
-					}
-				}
-				
-				String lastToken = tokens[tokens.length - 1];
+		if (propertyPath != null) {
+			return propertyPath;
+		}
+		
+		Map<String, PropertyDef> propertyDefs = entityDataType.getPropertyDefs();
+		PropertyDef propertyDef = propertyDefs.get(fieldPath);
+		if (propertyDef != null) {
+			if (!(propertyDef instanceof BasePropertyDef)) 
+				throw new IllegalArgumentException("the type of property '" + fieldPath + "' is not BasePropertyDef.");
+			BasePropertyDef baseProperty = (BasePropertyDef) propertyDef;
+			return returnValue(StringUtils.defaultIfEmpty(baseProperty.getPropertyPath(), fieldPath), fieldPath);
+		} else {
+			String[] tokens = StringUtils.split(fieldPath, '.');
+			if (tokens.length == 1) {
+				throw new IllegalArgumentException("can not find any PropertyDef named '" + fieldPath + "'.");
+			}
+			EntityDataType currentEntityDataType = this.entityDataType;
+			for (int i=0; i<tokens.length-1; i++) {
+				String token = tokens[i];
 				if (currentEntityDataType.isAutoCreatePropertyDefs()) {
 					currentEntityDataType.createPropertyDefinitons();
 				}
-				propertyDef = currentEntityDataType.getPropertyDef(lastToken);
+				propertyDef = currentEntityDataType.getPropertyDefs().get(token);
 				Assert.notNull(propertyDef, "can not find any PropertyDef named '" + fieldPath + "'.");
+				
 				if (!(propertyDef instanceof BasePropertyDef)) {
 					throw new IllegalArgumentException("the type of property '" + fieldPath + "' is not BasePropertyDef.");
 				} else {
 					BasePropertyDef baseProperty = (BasePropertyDef) propertyDef;
-					propertyPath = baseProperty.getPropertyPath();
-					if (StringUtils.isNotEmpty(propertyPath)) {
-						tokens[tokens.length - 1] = propertyPath;
+					tokens[i] = StringUtils.defaultIfEmpty(baseProperty.getPropertyPath(), token);
+					
+					if (!(propertyDef.getDataType() instanceof EntityDataType)) {
+						throw new IllegalArgumentException("can not find any PropertyDef named '" + fieldPath + "'.");
 					} else {
-						tokens[tokens.length - 1] = lastToken;
+						currentEntityDataType = (EntityDataType)propertyDef.getDataType();
 					}
 				}
-				return returnValue(StringUtils.join(tokens, '.'), fieldPath);
 			}
-		} else {
-			return propertyPath;
+			
+			String lastToken = tokens[tokens.length - 1];
+			if (currentEntityDataType.isAutoCreatePropertyDefs()) {
+				currentEntityDataType.createPropertyDefinitons();
+			}
+			propertyDef = currentEntityDataType.getPropertyDef(lastToken);
+			Assert.notNull(propertyDef, "can not find any PropertyDef named '" + fieldPath + "'.");
+			
+			if (!(propertyDef instanceof BasePropertyDef)) {
+				throw new IllegalArgumentException("the type of property '" + fieldPath + "' is not BasePropertyDef.");
+			} else {
+				BasePropertyDef baseProperty = (BasePropertyDef) propertyDef;
+				tokens[tokens.length - 1] = StringUtils.defaultIfEmpty(baseProperty.getPropertyPath(), lastToken);
+			}
+			
+			return returnValue(StringUtils.join(tokens, '.'), fieldPath);
 		}
 	}
 	

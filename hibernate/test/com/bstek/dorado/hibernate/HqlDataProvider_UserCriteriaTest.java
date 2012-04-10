@@ -150,7 +150,7 @@ public class HqlDataProvider_UserCriteriaTest extends HibernateContextTestCase {
 		this.buildCriterions(parameter, new String[][] {
 				new String[] { "id", "4" },
 				new String[] { "category.id", "4" },
-				new String[] { "category.id", "{1,2,3}" }, });
+				new String[] { "category.id", "(1,2,3)" }, });
 
 		provider.getResult(parameter, resultDataType);
 	}
@@ -189,7 +189,7 @@ public class HqlDataProvider_UserCriteriaTest extends HibernateContextTestCase {
 				new String[] { "productName", "%C" },
 				new String[] { "category.categoryName", "C%" },
 				new String[] { "category.id", "[1,10]" },
-				new String[] { "category.categoryName", "{bbb,ccc,ddd}" },
+				new String[] { "category.categoryName", "(bbb,ccc,ddd)" },
 				new String[] { "category.categoryName", "C" },
 				new String[] { "category.id", "11" }, });
 		this.buildOrders(parameter, new Object[][] {

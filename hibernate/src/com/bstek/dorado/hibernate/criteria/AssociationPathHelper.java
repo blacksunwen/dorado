@@ -79,11 +79,7 @@ public class AssociationPathHelper {
 				}
 				
 				String aliasName = alias.getAlias();
-				if (StringUtils.isEmpty(aliasName)) {
-					fieldPathMap.put(associationPath, associationPath);
-				} else {
-					fieldPathMap.put(associationPath, aliasName);
-				}
+				fieldPathMap.put(associationPath, StringUtils.defaultIfEmpty(aliasName, associationPath));
 			}
 		}
 		
