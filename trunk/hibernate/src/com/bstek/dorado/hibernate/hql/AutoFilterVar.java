@@ -1,6 +1,5 @@
 package com.bstek.dorado.hibernate.hql;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +38,7 @@ public class AutoFilterVar extends BaseUserCriteriaProcessor<String>{
 	private SessionFactoryImplementor factory;
 	private String entityClazz;
 	private String entityAlias;
-	private Map<String, String> aliasMap = Collections.emptyMap();
+	private Map<String, String> aliasMap = new HashMap<String, String>();
 	
 	private UserCriteria userCriteria;
 	private EntityDataType dataType;
@@ -103,7 +102,7 @@ public class AutoFilterVar extends BaseUserCriteriaProcessor<String>{
 				this.entityAlias = entityAlias;
 				this.entityClazz = factory.getImportedClassName(entityName);
 			} else {
-				this.entityClazz = factory.getImportedClassName(as);
+				this.entityClazz = factory.getImportedClassName(as.trim());
 			}
 		} else {
 			String[] aliases = StringUtils.split(as, ',');
@@ -199,8 +198,8 @@ public class AutoFilterVar extends BaseUserCriteriaProcessor<String>{
 				String propertyPath = parameter.getPropertyPath();
 				Type type = HibernateUtils.getHibernateType(propertyPath, classMetadata, factory);
 				
-				String propertyAlias = toPropertyAlias(propertyPath);
-				String whereToken  = createWhereToken(propertyAlias, expr, type, parameter);
+				String propertyAlias = this.toPropertyAlias(propertyPath);
+				String whereToken  = this.createWhereToken(propertyAlias, expr, type, parameter);
 				if (StringUtils.isNotEmpty(whereToken)) {
 					if (where.length() > 0) {
 						where += " and " + whereToken;

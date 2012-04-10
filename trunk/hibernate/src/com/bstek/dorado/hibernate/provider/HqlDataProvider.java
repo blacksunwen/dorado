@@ -52,7 +52,7 @@ public class HqlDataProvider extends HibernateDataProviderSupport {
 
 	protected void internalGetResult(Object parameter, Page<?> page,
 			DataType resultDataType) throws Exception {
-		Assert.notNull(this.hql);
+		Assert.notEmpty(this.hql, "Hql must not be empty.");
 
 		Hql hql = createHql(this.hql, parameter, resultDataType);
 		HqlQuerier querier = createHqlQuerier();
@@ -76,6 +76,7 @@ public class HqlDataProvider extends HibernateDataProviderSupport {
 	protected Hql createHql(String hqlClause, Object parameter,
 			DataType resultDataType) throws Exception {
 		Assert.notEmpty(hqlClause);
+		
 		UserCriteria userCriteria = UserCriteriaUtils
 				.getUserCriteria(parameter);
 		if (userCriteria != null) {

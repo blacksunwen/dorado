@@ -29,8 +29,8 @@ public class DefaultUserCriteriaProcessor extends BaseUserCriteriaProcessor<Base
 			SessionFactory sessionFactory) {
 		AssociationPathHelper pathHelper = new AssociationPathHelper(defCri);
 		
-		processCriterions(defCri, userCri, sessionFactory, pathHelper);
-		processOrder(defCri, userCri, pathHelper);
+		this.processCriterions(defCri, userCri, sessionFactory, pathHelper);
+		this.processOrder(defCri, userCri, pathHelper);
 	}
 
 	/**

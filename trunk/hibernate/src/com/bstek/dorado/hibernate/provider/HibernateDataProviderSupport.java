@@ -42,7 +42,7 @@ public abstract class HibernateDataProviderSupport extends AbstractDataProvider 
 				.getCurrent().getServiceBean("hibernateSessionFactoryManager");
 		SessionFactory sessionFactoryBean = sessionManager
 				.getSessionFactory(sessionFactory);
-		Assert.notNull(sessionFactoryBean);
+		Assert.notNull(sessionFactoryBean, "SessionFactory named [" + sessionFactory + "] cound not be found.");
 		return sessionFactoryBean;
 	}
 	

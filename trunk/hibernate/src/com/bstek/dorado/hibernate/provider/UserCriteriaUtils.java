@@ -7,10 +7,21 @@ import com.bstek.dorado.data.entity.EntityUtils;
 import com.bstek.dorado.data.type.AggregationDataType;
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.data.type.EntityDataType;
+import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.util.Assert;
 
 public class UserCriteriaUtils {
 
+	
+	public static com.bstek.dorado.data.provider.Criteria getProviderCriteria(Object parameter) {
+		if (parameter instanceof Record) {
+			Record paraRecord = (Record)parameter;
+			return (com.bstek.dorado.data.provider.Criteria)paraRecord.get("criteria");
+		}
+		
+		return null;
+	}
+	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static UserCriteria getUserCriteria(Object parameter) {
 		if (parameter == null) return null;
@@ -77,10 +88,6 @@ public class UserCriteriaUtils {
 			} else {
 				throw new IllegalArgumentException("the resultDataType is not an instance of EntityDataType.");
 			}
-		}
-
-		if (entityDataType.isAutoCreatePropertyDefs()) {
-			entityDataType.createPropertyDefinitons();
 		}
  		
 		PropertyPathHelper helper = new PropertyPathHelper(entityDataType);

@@ -14,7 +14,7 @@ public abstract class BaseUserCriteriaProcessor<T> {
 		if (StringUtils.isNotEmpty(expr2)) {
 			if (expr2.length() > 2) {
 				if (expr2.startsWith(">=") && expr2.indexOf('%') < 0) {
-					//对于">=12%3"是like还是>=呢？当然是like，因为<>中是不会出现%的
+					//对于">=12%3"是like还是>=呢？当然是like，因为>=中是不会出现%的
 					Object value = toValue(expr.substring(2), type);
 					if (value != null) {
 						return toGE(associationPath, value, parameter);
@@ -22,7 +22,7 @@ public abstract class BaseUserCriteriaProcessor<T> {
 						return null;
 					}
 				} else if (expr2.startsWith("<=") && expr2.indexOf('%') < 0) { 
-					//对于"<=12%3"是like还是<=呢？当然是like，因为<>中是不会出现%的
+					//对于"<=12%3"是like还是<=呢？当然是like，因为<=中是不会出现%的
 					Object value = toValue(expr.substring(2), type);
 					if (value != null) {
 						return toLE(associationPath, value, parameter);
@@ -46,12 +46,12 @@ public abstract class BaseUserCriteriaProcessor<T> {
 					} else {
 						return null;
 					}
-				} else if (expr2.startsWith("{") && expr2.endsWith("}")
-						&& expr2.indexOf("%%") < 0) {   
+				} else if (expr2.startsWith("(") && expr2.endsWith(")")
+						&& expr2.indexOf("%%") < 0) {
 					//1.需要转义逗号","，因为in中可能会出现逗号，为了更好的支持这种情况，运行自定义分隔符
-					//例如："{, 123,234}"的分隔符是','，"{| 123|,sdfd|k,k.k}"的分隔符是'|'
-					//2.对于"{12%3,123}"是like还是in呢？是in，如果希望是like，
-					//那么使用"%%"，即"{12%%3,123}"
+					//例如："(, 123,234)"的分隔符是','，"(| 123|,sdfd|k,k.k)"的分隔符是'|'
+					//2.对于"(12%3,123)"是like还是in呢？是in，如果希望是like，
+					//那么使用"%%"，即"(12%%3,123)"
 					Object[] objects = toInValue(expr, type);
 					if (objects != null && objects.length > 0) {
 						return toIn(associationPath, objects, parameter);

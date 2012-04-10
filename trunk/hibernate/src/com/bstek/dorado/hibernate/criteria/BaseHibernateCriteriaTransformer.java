@@ -42,12 +42,12 @@ public abstract class BaseHibernateCriteriaTransformer implements
 	
 	protected void attach(DetachedCriteria criteria, BaseCriteria defCriteria, 
 			Object parameter, SessionFactory sessionFactory) throws Exception {
-		alias(criteria, defCriteria, parameter, sessionFactory);
-		projection(criteria, defCriteria, sessionFactory);
-		criterion(criteria, defCriteria, parameter, sessionFactory);
-		order(criteria, defCriteria);
-		fetchMode(criteria, defCriteria);
-		subCriteria(criteria, defCriteria, parameter, sessionFactory);
+		this.alias(criteria, defCriteria, parameter, sessionFactory);
+		this.projection(criteria, defCriteria, sessionFactory);
+		this.criterion(criteria, defCriteria, parameter, sessionFactory);
+		this.order(criteria, defCriteria);
+		this.fetchMode(criteria, defCriteria);
+		this.subCriteria(criteria, defCriteria, parameter, sessionFactory);
 	}
 	
 	//-------------------------- Alias ---------------------------
