@@ -13,7 +13,6 @@ public class DefaultCriterionProcessor implements CriterionProcessor {
 			Object filterValue = (dataType != null) ? dataType.fromText(expression) : expression;
 			if (filterValue instanceof String) {
 				filterOperator = FilterOperator.like;
-				filterValue = "%" + filterValue + "%";
 			} else {
 				filterOperator = FilterOperator.eq;
 			}
