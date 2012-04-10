@@ -22,7 +22,7 @@ public class Criteria {
 		return criterions;
 	}
 
-	public void AddOrder(Order order) {
+	public void addOrder(Order order) {
 		orders.add(order);
 	}
 
