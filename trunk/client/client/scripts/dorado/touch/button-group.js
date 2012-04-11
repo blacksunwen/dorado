@@ -156,7 +156,7 @@ dorado.touch.AbstractButtonGroup = $extend(dorado.widget.Control, {
         }
     },
     createDom: function() {
-        var group = this, dom = document.createElement("span"), dataModel = group._dataModel;
+        var group = this, dom = document.createElement("div"), dataModel = group._dataModel;
         group.itemDoms = [];
         if (dataModel) {
             var size = dataModel.getSize();
@@ -291,6 +291,7 @@ dorado.touch.RadioButton = $extend(dorado.touch.Button, {
 dorado.touch.RadioButtonGroup = $extend(dorado.touch.AbstractButtonGroup, {
     $className: "dorado.touch.RadioButtonGroup",
     currentable: true,
+    focusable: true,
     ATTRIBUTES: {
         className: {
             defaultValue: "button-group"

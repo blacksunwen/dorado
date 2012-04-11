@@ -103,7 +103,6 @@
 
 .d-panel .toolbar {
     border: 1px solid 		#2A2A2A;
-	background: 			#111111;
 	color: 					#ffffff;
 	font-weight: bold;
 	background-image: -webkit-gradient(linear, left top, left bottom, from(#3c3c3c), to(#111)); /* Saf4+, Chrome */

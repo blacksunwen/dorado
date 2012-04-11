@@ -14,6 +14,8 @@
 			dataType: "Phone",// Phone的声明实际位于data/common-types.js中，通过上面的$import("grid,common-types")引入。
             data: [{
                 comment: "test"
+            }, {
+                comment: "test2"
             }]
 		});
 
@@ -25,7 +27,7 @@
 		var richEditor = new dorado.widget.HtmlEditor({
             dataSet: dataSet,
             property: "comment",
-            //readOnly: true,
+            readOnly: true,
             height: 300,
 			style: {
 				border: "1px solid gray"
@@ -45,14 +47,25 @@
             top: 50,
             //modal: true,
             children: [{
-                $type: "AutoForm",
-                cols: "*",
-                elements: [
-                    { property: "alignment", label: "对齐方式", type: "text",
-                        editor: richEditor
-                    },
-                    editor
-                ]
+                $type: "TabControl",
+                height: 500,
+                tabs: [{
+                    $type: "Control",
+                    caption: "test",
+                    control: {
+                        $type: "AutoForm",
+                        cols: "*",
+                        elements: [
+                            {
+                                property: "alignment",
+                                label: "对齐方式",
+                                type: "text",
+                                editor: richEditor
+                            },
+                            editor
+                        ]
+                    }
+                }]
             }],
             showAnimateType: "none",
             buttons: [new dorado.widget.Button({
@@ -72,9 +85,16 @@
             })]
         });
 
+        view.addChild(new dorado.widget.Button({
+            caption: "show",
+            onClick: function() {
+                dialog.show();
+            }
+        }));
+
 		$(document).ready(function() {
             editor.render(document.body);
-            dialog.show();
+            view.render(document.body);
 		});
 	</script>
 </head>
