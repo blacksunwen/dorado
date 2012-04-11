@@ -403,13 +403,13 @@
                 htmleditor.checkStatus();
             });
             editor.addListener("ready", function() {
-//                if (!htmleditor._dataSet) {
-//                    htmleditor.doOnReadOnlyChange(htmleditor._readOnly);
-//                } else {
-//                    htmleditor.doOnReadOnlyChange(htmleditor.doGetReadOnly());
-//                }
-//                htmleditor.checkStatus();
+                if (!htmleditor._dataSet) {
+                    htmleditor.doOnReadOnlyChange(htmleditor._readOnly);
+                } else {
+                    htmleditor.doOnReadOnlyChange(htmleditor.doGetReadOnly());
+                }
                 htmleditor.refresh();
+                htmleditor.checkStatus();
                 htmleditor.doOnResize();
             });
             var popup = new dorado.widget.FloatContainer({
