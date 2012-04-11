@@ -3519,7 +3519,7 @@ var dtd = dom.dtd = (function() {
             //防止在chrome下连接后边带# 会跳动的问题
             !browser.webkit && doc.open();
             var useBodyAsViewport = ie && browser.version < 9;
-            doc.write( ( ie && browser.version < 9 ? '' : '<!DOCTYPE html>') +
+            doc.write( ( ie && browser.version < 9 ? '' : '') +
                 '<html xmlns="http://www.w3.org/1999/xhtml"' + (!useBodyAsViewport ? ' class="view"' : '')  + '><head>' +
                 ( options.iframeCssUrl ? '<link rel="stylesheet" type="text/css" href="' + utils.unhtml( /^http/.test(options.iframeCssUrl) ? options.iframeCssUrl : (options.UEDITOR_HOME_URL + options.iframeCssUrl) ) + '"/>' : '' ) +
                 '<style type="text/css">'
