@@ -1,6 +1,7 @@
 dorado.touch.Button = $extend(dorado.widget.Control, {
     $className: "dorado.touch.Button",
     _inherentClassName: "button",
+    focusable: true,
     ATTRIBUTES: {
         className: {
             defaultValue: "button-plain"
@@ -39,7 +40,7 @@ dorado.touch.Button = $extend(dorado.widget.Control, {
 
     createDom: function() {
         var button = this, doms = {}, dom = $DomUtils.xCreate({
-            tagName: "span",
+            tagName: "button",
             className: this._className,
             content: {
                 tagName: "span",

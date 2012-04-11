@@ -926,7 +926,10 @@
 													           caption:"进口"
 												           })
 											           ]
-										           })
+										           }),
+                                                   new dorado.widget.HtmlContainer({
+                                                       className: "clear"
+                                                   })
 									           ]
 								           }),
 								           new dorado.touch.CheckBox({
@@ -1086,6 +1089,7 @@
 						           }),
 						           new dorado.widget.Container({
 							           layout:new dorado.widget.layout.NativeLayout(),
+                                       height: 45,
 							           exClassName:"detail-region",
 							           children:[
 								           new dorado.widget.Label({
@@ -1115,7 +1119,10 @@
 										           new dorado.touch.RadioButton({ caption: "50万", value: 500000 }),
 										           new dorado.touch.RadioButton({ caption: "100万", value: 1000000 })
 									           ]
-								           })
+								           }),
+                                           new dorado.widget.HtmlContainer({
+                                               className: "clear"
+                                           })
 							           ]
 						           }),
 						           new dorado.touch.CheckBox({
