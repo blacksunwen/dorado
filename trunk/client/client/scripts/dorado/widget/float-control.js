@@ -659,7 +659,7 @@ dorado.dequeue = function(namespace) {
 		doAfterHide: function() {
 			var control = this, dom = control._dom;
 			control.fireEvent("onHide", control);
-			$fly(dom).css({
+			jQuery(dom).css({
 				visibility: "hidden",
 				display: "none"
 			});
@@ -688,7 +688,7 @@ dorado.dequeue = function(namespace) {
 		
 		var position = options.position || {};
 		
-		$fly(dom).css(position).bringToFront()[safe ? "safeSlideIn" : "slideIn"]({
+		jQuery(dom).css(position).bringToFront()[safe ? "safeSlideIn" : "slideIn"]({
 			duration: options.animateDuration || 200,
 			easing: options.animateEasing,
 			direction: direction,
@@ -717,7 +717,7 @@ dorado.dequeue = function(namespace) {
 		}
 		control._slideInDir = null;
 		
-		$fly(dom)[safe ? "safeSlideOut" : "slideOut"]({
+		jQuery(dom)[safe ? "safeSlideOut" : "slideOut"]({
 			direction: direction,
 			duration: options.animateDuration || 200,
 			easing: options.animateEasing,
@@ -736,7 +736,7 @@ dorado.dequeue = function(namespace) {
 		zoom: {
 			show: function(options) {
 				var control = this, dom = control._dom;
-				$fly(dom).zoomIn(jQuery.extend(options, {
+				jQuery(dom).zoomIn(jQuery.extend(options, {
 					duration: options.animateDuration || 200,
 					easing: options.animateEasing,
 					complete: function() {
@@ -746,7 +746,7 @@ dorado.dequeue = function(namespace) {
 			},
 			hide: function(options) {
 				var control = this, dom = control._dom;
-				$fly(dom).css("visibility", "hidden").zoomOut(jQuery.extend(options, {
+				jQuery(dom).css("visibility", "hidden").zoomOut(jQuery.extend(options, {
 					duration: options.animateDuration || 200,
 					easing: options.animateEasing,
 					complete: function() {
@@ -777,7 +777,7 @@ dorado.dequeue = function(namespace) {
 		fade: {
 			show: function(options) {
 				var control = this, dom = control._dom;
-				$fly(dom).disableShadow().bringToFront().css({
+				jQuery(dom).disableShadow().bringToFront().css({
 					visibility: "",
 					opacity: 0
 				}).animate({
@@ -796,7 +796,7 @@ dorado.dequeue = function(namespace) {
 			},
 			hide: function(options) {
 				var control = this, dom = control._dom;
-				$fly(dom).disableShadow().animate({
+				jQuery(dom).disableShadow().animate({
 					opacity: 0
 				}, {
 					duration: options.animateDuration || 200,
