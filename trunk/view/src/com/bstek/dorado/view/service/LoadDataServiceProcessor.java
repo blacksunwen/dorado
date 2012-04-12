@@ -140,7 +140,7 @@ public class LoadDataServiceProcessor extends DataServiceProcessorSupport {
 					Order order = new Order(JsonUtils.getString(rudeCriterion,
 							"property"), JsonUtils.getBoolean(rudeCriterion,
 							"desc"));
-					criteria.AddOrder(order);
+					criteria.addOrder(order);
 				}
 			}
 		}
