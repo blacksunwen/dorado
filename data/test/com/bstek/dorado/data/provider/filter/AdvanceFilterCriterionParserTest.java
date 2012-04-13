@@ -256,13 +256,25 @@ public class AdvanceFilterCriterionParserTest  extends ConfigManagerTestSupport 
 			Assert.assertEquals(FilterOperator.eq, criterion.getFilterOperator());
 			Assert.assertEquals(30, criterion.getValue());
 		}
+		{
+			expression = "3";
+			SingleValueFilterCriterion criterion = (SingleValueFilterCriterion)parser.createFilterCriterion(property, dataType, expression);
+			Assert.assertEquals(FilterOperator.eq, criterion.getFilterOperator());
+			Assert.assertEquals(3, criterion.getValue());
+		}
 		
 		dataType = DataUtils.getDataType(String.class);
 		{
 			expression = "30";
 			SingleValueFilterCriterion criterion = (SingleValueFilterCriterion)parser.createFilterCriterion(property, dataType, expression);
 			Assert.assertEquals(FilterOperator.like, criterion.getFilterOperator());
-			Assert.assertEquals("%30%", criterion.getValue());
+			Assert.assertEquals("30", criterion.getValue());
+		}
+		{
+			expression = "3";
+			SingleValueFilterCriterion criterion = (SingleValueFilterCriterion)parser.createFilterCriterion(property, dataType, expression);
+			Assert.assertEquals(FilterOperator.like, criterion.getFilterOperator());
+			Assert.assertEquals("3", criterion.getValue());
 		}
 	}
 }

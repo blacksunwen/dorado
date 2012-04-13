@@ -40,6 +40,6 @@ public class AdvanceFilterCriterionParser implements FilterCriterionParser {
 			}
 		}
 
-		return null;
+		throw new IllegalArgumentException("Unsported expression [" + expression + "]");
 	}
 }
