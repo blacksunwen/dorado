@@ -119,4 +119,19 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 
 	<!-- Proxy -->
 	<bean id="dorado.entityProxyMethodInterceptorFactory" class="com.bstek.dorado.data.entity.DefaultEntityProxyMethodInterceptorFactory" />
+	
+	
+
+	<bean id="dorado.filterCriterionParser" class="com.bstek.dorado.data.provider.filter.AdvanceFilterCriterionParser">
+		<property name="criterionProcessors">
+			<list>
+				<bean class="com.bstek.dorado.data.provider.filter.LikeCriterionProcessor"/>
+				<bean class="com.bstek.dorado.data.provider.filter.Compare2CriterionProcessor"/>
+				<bean class="com.bstek.dorado.data.provider.filter.Compare1CriterionProcessor"/>
+				<bean class="com.bstek.dorado.data.provider.filter.BetweenCriterionProcessor"/>
+				<bean class="com.bstek.dorado.data.provider.filter.InCriterionProcessor"/>
+				<bean class="com.bstek.dorado.data.provider.filter.DefaultCriterionProcessor"/>
+			</list>
+		</property>
+	</bean>
 </beans>
