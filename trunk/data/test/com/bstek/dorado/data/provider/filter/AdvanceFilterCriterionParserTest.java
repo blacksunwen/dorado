@@ -1,10 +1,8 @@
 package com.bstek.dorado.data.provider.filter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import junit.framework.Assert;
 
+import com.bstek.dorado.core.Context;
 import com.bstek.dorado.data.config.ConfigManagerTestSupport;
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.data.util.DataUtils;
@@ -12,17 +10,9 @@ import com.bstek.dorado.data.util.DataUtils;
 public class AdvanceFilterCriterionParserTest  extends ConfigManagerTestSupport {
 
 	FilterCriterionParser getFilterCriterionParser() throws Exception {
-		AdvanceFilterCriterionParser parser = new AdvanceFilterCriterionParser();
-		List<CriterionProcessor> criterionProcessors = new ArrayList<CriterionProcessor>();
+		Context context = Context.getCurrent();
+		AdvanceFilterCriterionParser parser = (AdvanceFilterCriterionParser)context.getServiceBean("filterCriterionParser");
 		
-		criterionProcessors.add(new com.bstek.dorado.data.provider.filter.LikeCriterionProcessor());
-		criterionProcessors.add(new com.bstek.dorado.data.provider.filter.Compare2CriterionProcessor());
-		criterionProcessors.add(new com.bstek.dorado.data.provider.filter.Compare1CriterionProcessor());
-		criterionProcessors.add(new com.bstek.dorado.data.provider.filter.BetweenCriterionProcessor());
-		criterionProcessors.add(new com.bstek.dorado.data.provider.filter.InCriterionProcessor());
-		criterionProcessors.add(new com.bstek.dorado.data.provider.filter.DefaultCriterionProcessor());
-		
-		parser.setCriterionProcessors(criterionProcessors);
 		return parser;
 	}
 	
