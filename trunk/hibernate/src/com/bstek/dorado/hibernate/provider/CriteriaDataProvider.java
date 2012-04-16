@@ -62,25 +62,8 @@ public class CriteriaDataProvider extends AbstractDataProvider {
 		return sessionFactoryBean;
 	}
 	
-	protected Session openSession() throws Exception {
-		SessionFactory sessionFactory = this.getSessionFactoryOject();
-		return sessionFactory.openSession();
-	}
-	
-	protected Session currentSession() throws Exception {
-		SessionFactory sessionFactory = this.getSessionFactoryOject();
-		return sessionFactory.getCurrentSession();
-	}
-	
-	protected Session session() throws Exception{
-		Session session = null;
-		try {
-			session = this.currentSession();
-		} catch (Exception e) {
-			session = this.openSession();
-		}
-		
-		return session;
+	protected Session getSession() throws Exception{
+		return this.getSessionFactoryOject().getCurrentSession();
 	}
 	
 	private TopCriteria criterita;
@@ -124,19 +107,13 @@ public class CriteriaDataProvider extends AbstractDataProvider {
 	protected Object internalGetResult(Object parameter, DataType resultDataType)
 			throws Exception {
 		DetachedCriteria detachedCriteria = this.createDetachedCriteria(parameter);
-		Session session = session();
-		try {
-			Criteria c = detachedCriteria.getExecutableCriteria(session);
-			if (!isUnique()) {
-				List list = c.list();
-				return list;
-			} else {
-				return c.uniqueResult();
-			}
-		} finally {
-			if (session.isOpen()) {
-				session.close();
-			}
+		Session session = getSession();
+		Criteria c = detachedCriteria.getExecutableCriteria(session);
+		if (!isUnique()) {
+			List list = c.list();
+			return list;
+		} else {
+			return c.uniqueResult();
 		}
 	}
 
@@ -145,36 +122,30 @@ public class CriteriaDataProvider extends AbstractDataProvider {
 	protected void internalGetResult(Object parameter, Page<?> page,
 			DataType resultDataType) throws Exception {
 		DetachedCriteria detachedCriteria = this.createDetachedCriteria(parameter);
-		Session session = session();
-		try {
-			CriteriaImpl entityCriteria = (CriteriaImpl) detachedCriteria
-					.getExecutableCriteria(session);
-			if (!isUnique()) {
-				// 查询结果记录
-				entityCriteria.setFirstResult(page
-						.getFirstEntityIndex());
-				entityCriteria.setMaxResults(page.getPageSize());
-				List list = entityCriteria.list();
-				page.setEntities(list);
+		Session session = getSession();
+		CriteriaImpl entityCriteria = (CriteriaImpl) detachedCriteria
+				.getExecutableCriteria(session);
+		if (!isUnique()) {
+			// 查询结果记录
+			entityCriteria.setFirstResult(page
+					.getFirstEntityIndex());
+			entityCriteria.setMaxResults(page.getPageSize());
+			List list = entityCriteria.list();
+			page.setEntities(list);
 
-				// 查询记录条数
-				CriteriaImpl countCriteria = entityCriteria;
-				HibernateUtils.makeCount(countCriteria);
+			// 查询记录条数
+			CriteriaImpl countCriteria = entityCriteria;
+			HibernateUtils.makeCount(countCriteria);
 
-				Number c = (Number) countCriteria.uniqueResult();
-				page.setEntityCount(c.intValue());
-			} else {
-				Object object = entityCriteria.uniqueResult();
-				if (object != null) {
-					List entities = new ArrayList(1);
-					entities.add(object);
-					page.setEntities(entities);
-					page.setEntityCount(entities.size());
-				}
-			}
-		} finally {
-			if (session.isOpen()) {
-				session.close();
+			Number c = (Number) countCriteria.uniqueResult();
+			page.setEntityCount(c.intValue());
+		} else {
+			Object object = entityCriteria.uniqueResult();
+			if (object != null) {
+				List entities = new ArrayList(1);
+				entities.add(object);
+				page.setEntities(entities);
+				page.setEntityCount(entities.size());
 			}
 		}
 	}

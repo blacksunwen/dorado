@@ -28,7 +28,7 @@ public abstract class BaseCriteria {
 	}
 
 	// ********** Alias **********
-	@XmlSubNode(wrapper= @XmlNodeWrapper(nodeName="Aliases"))
+	@XmlSubNode(wrapper= @XmlNodeWrapper(nodeName="Aliases", fixed=false))
 	public List<Alias> getAliases() {
 		return aliases;
 	}
@@ -42,7 +42,7 @@ public abstract class BaseCriteria {
 	}
 
 	// ********** Projection **********
-	@XmlSubNode(wrapper= @XmlNodeWrapper(nodeName="Projections"))
+	@XmlSubNode(wrapper= @XmlNodeWrapper(nodeName="Projections", fixed=false))
 	public List<BaseProjection> getProjections() {
 		return projections;
 	}
@@ -52,7 +52,7 @@ public abstract class BaseCriteria {
 	}
 
 	// ********** Criterion **********
-	@XmlSubNode(wrapper= @XmlNodeWrapper(nodeName="Criterions"))
+	@XmlSubNode(wrapper= @XmlNodeWrapper(nodeName="Criterions", fixed=false))
 	public List<BaseCriterion> getCriterions() {
 		return criterions;
 	}
@@ -62,7 +62,7 @@ public abstract class BaseCriteria {
 	}
 
 	// ********** Order **********
-	@XmlSubNode(wrapper= @XmlNodeWrapper(nodeName="Orders"))
+	@XmlSubNode(wrapper= @XmlNodeWrapper(nodeName="Orders", fixed=false))
 	public List<Order> getOrders() {
 		return orders;
 	}
@@ -76,7 +76,7 @@ public abstract class BaseCriteria {
 	}
 
 	// ********** FetchMode **********
-	@XmlSubNode(wrapper= @XmlNodeWrapper(nodeName="FetchModes"))
+	@XmlSubNode(wrapper= @XmlNodeWrapper(nodeName="FetchModes", fixed=false))
 	public List<FetchMode> getFetchModes() {
 		return fetchModes;
 	}
@@ -86,7 +86,7 @@ public abstract class BaseCriteria {
 	}
 
 	// ********** SubCriteria **********
-	@XmlSubNode(wrapper= @XmlNodeWrapper(nodeName="SubCriterias"))
+	@XmlSubNode(wrapper= @XmlNodeWrapper(nodeName="SubCriterias", fixed=false))
 	public List<SubCriteria> getSubCriterias() {
 		return this.subCriterias;
 	}
