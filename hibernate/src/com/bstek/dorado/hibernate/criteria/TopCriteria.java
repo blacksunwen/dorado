@@ -11,6 +11,7 @@ import com.bstek.dorado.annotation.XmlNode;
 public class TopCriteria extends BaseCriteria {
 
 	private String entityName;
+	private Class<Object> entityClazz;
 
 	public String getEntityName() {
 		return entityName;
@@ -18,6 +19,14 @@ public class TopCriteria extends BaseCriteria {
 
 	public void setEntityName(String entityName) {
 		this.entityName = entityName;
+	}
+
+	public Class<Object> getEntityClazz() {
+		return entityClazz;
+	}
+
+	public void setEntityClazz(Class<Object> entityClazz) {
+		this.entityClazz = entityClazz;
 	}
 
 }

@@ -23,20 +23,31 @@ public abstract class BaseHibernateCriteriaTransformer implements
 	public DetachedCriteria toHibernate(TopCriteria topCriteria, Object parameter,
 			SessionFactory sessionFactory)
 			throws Exception {
-		DetachedCriteria criteria = create(topCriteria);
-		attach(criteria, topCriteria, parameter, sessionFactory);
+		DetachedCriteria criteria = this.create(topCriteria);
+		this.attach(criteria, topCriteria, parameter, sessionFactory);
 		return criteria;
 	}
 	
-	protected DetachedCriteria create(final TopCriteria topCriteria) {
+	protected DetachedCriteria create(TopCriteria topCriteria) {
 		String entityName = topCriteria.getEntityName();
-		Assert.notEmpty(entityName, "parameter 'entityName' must not be empty.");
+		Class<Object> entityClazz = topCriteria.getEntityClazz();
+		if (StringUtils.isEmpty(entityName) && entityClazz == null) {
+			throw new IllegalArgumentException("entityName or entityClazz must not be null.");
+		}
 		
 		String alias = topCriteria.getAlias();
 		if (StringUtils.isEmpty(alias)) {
-			return DetachedCriteria.forEntityName(entityName);
+			if (StringUtils.isNotEmpty(entityName)) {
+				return DetachedCriteria.forEntityName(entityName);
+			} else {
+				return DetachedCriteria.forClass(entityClazz); 
+			}
 		} else {
-			return DetachedCriteria.forEntityName(entityName, alias);
+			if (StringUtils.isNotEmpty(entityName)) {
+				return DetachedCriteria.forEntityName(entityName, alias);
+			} else {
+				return DetachedCriteria.forClass(entityClazz, alias); 
+			}
 		}
 	}
 	
@@ -58,7 +69,7 @@ public abstract class BaseHibernateCriteriaTransformer implements
 		
 		for (Alias alias: aliases) {
 			if (alias.isAvailable()) {
-				addAlias(criteria, alias, parameter, sessionFactory);
+				this.addAlias(criteria, alias, parameter, sessionFactory);
 			}
 		}
 	}
@@ -212,7 +223,7 @@ public abstract class BaseHibernateCriteriaTransformer implements
 					JoinType joinType = sub.getJoinType();
 					
 					if (joinType != null) {
-						DetachedCriteria subCriter = criteria.createCriteria(associationPath, alias, joinType.getFlag());
+						DetachedCriteria subCriter = criteria.createCriteria(associationPath, alias, joinType.getHibernateFlag());
 						this.attach(subCriter, sub, parameter, sessionFactory);
 					} else {
 						DetachedCriteria subCriter = criteria.createCriteria(associationPath, alias);

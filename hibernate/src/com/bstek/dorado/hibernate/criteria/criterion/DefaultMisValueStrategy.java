@@ -1,6 +1,5 @@
 package com.bstek.dorado.hibernate.criteria.criterion;
 
-import org.apache.commons.lang.StringUtils;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 
@@ -23,18 +22,14 @@ public class DefaultMisValueStrategy implements MisValueStrategy {
 	}
 
 	public Criterion criterion(BetweenCriterion defCri, Object value1, Object value2) {
-		String mis = defCri.getMisValue();
 		if (value1 == null && value2 == null) {
 			return null;
 		}
-		if (StringUtils.isEmpty(mis)) {
-			return null;
-		}
 		
-		if (value1 != null && mis.indexOf(">=") >= 0) {
+		if (value1 != null) {
 			return Restrictions.ge(defCri.getPropertyName(), value1);
 		}
-		if (value2 != null && mis.indexOf("<=") >= 0) {
+		if (value2 != null) {
 			return Restrictions.le(defCri.getPropertyName(), value2);
 		}
 		return null;

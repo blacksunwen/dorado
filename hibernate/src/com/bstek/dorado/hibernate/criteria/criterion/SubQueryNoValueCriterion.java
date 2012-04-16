@@ -6,6 +6,7 @@ import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Subqueries;
 
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.hibernate.criteria.HibernateCriteriaTransformer;
@@ -50,8 +51,8 @@ public class SubQueryNoValueCriterion extends BaseCriterion {
 		}
 	}
 
-	@XmlProperty(
-			parser = "com.bstek.dorado.hibernate.criteria.criterion.SubQueryNoValueCriterionOpParser")
+	@XmlProperty(parser = "spring:dorado.hibernate.subQueryNoValueCriterionOpParser")
+	@IdeProperty(enumValues="exists,!exists")
 	public OP getOp() {
 		return op;
 	}
@@ -60,7 +61,7 @@ public class SubQueryNoValueCriterion extends BaseCriterion {
 		this.op = op;
 	}
 
-	@XmlSubNode
+	@XmlSubNode(fixed=true)
 	public TopCriteria getCriteria() {
 		return innerCriteria;
 	}

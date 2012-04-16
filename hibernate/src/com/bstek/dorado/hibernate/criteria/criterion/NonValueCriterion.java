@@ -5,6 +5,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.hibernate.criteria.HibernateCriteriaTransformer;
 
@@ -66,8 +67,8 @@ public class NonValueCriterion extends SingleProperyCriterion {
 		}
 	}
 
-	@XmlProperty(
-			parser = "com.bstek.dorado.hibernate.criteria.criterion.NonValueCriterionOpParser")
+	@XmlProperty(parser = "spring:dorado.hibernate.nonValueCriterionOpParser", attributeOnly=true)
+	@IdeProperty(enumValues="null,!null,empty,!empty")
 	public OP getOp() {
 		return op;
 	}

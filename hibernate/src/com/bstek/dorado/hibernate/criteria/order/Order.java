@@ -1,7 +1,6 @@
 package com.bstek.dorado.hibernate.criteria.order;
 
-import org.apache.commons.lang.StringUtils;
-
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlNode;
 
 @XmlNode
@@ -23,18 +22,7 @@ public class Order {
 		this.direction = d;
 	}
 
-	public void setDirection(String direction) {
-		if (StringUtils.isNotEmpty(direction)) {
-			Direction d = Direction.valueOf(direction);
-			if (d != null) {
-				this.direction = d;
-			} else {
-				throw new IllegalArgumentException("unknown direction '"
-						+ direction + "'.");
-			}
-		}
-	}
-
+	@ClientProperty(escapeValue="true")
 	public boolean isAvailable() {
 		return available;
 	}

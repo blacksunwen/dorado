@@ -9,7 +9,9 @@ import org.hibernate.TypeHelper;
 import org.hibernate.criterion.Projection;
 import org.hibernate.criterion.Projections;
 
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.XmlNodeWrapper;
 import com.bstek.dorado.annotation.XmlSubNode;
 
 public class SqlProjection extends BaseProjection {
@@ -34,7 +36,7 @@ public class SqlProjection extends BaseProjection {
 		this.groupBy = groupBy;
 	}
 
-	@XmlSubNode
+	@XmlSubNode(wrapper= @XmlNodeWrapper(nodeName="Columns"))
 	public List<Column> getColumns() {
 		return columns;
 	}
@@ -56,6 +58,7 @@ public class SqlProjection extends BaseProjection {
 			this.columanAlias = alias;
 		}
 
+		@IdeProperty(enumValues="integer,long,short,float,double,character,byte,boolean,yes_no,true_false,string,date,time,timestamp,calendar,calendar_date,big_decimal,big_integer")
 		public String getHibernateType() {
 			return hibernateType;
 		}

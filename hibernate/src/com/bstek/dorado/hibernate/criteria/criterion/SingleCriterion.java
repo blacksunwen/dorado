@@ -6,6 +6,7 @@ import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
 
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.hibernate.criteria.HibernateCriteriaTransformer;
 
@@ -77,7 +78,13 @@ public class SingleCriterion extends SingleProperyCriterion {
 			}
 
 			public Criterion criterion(String propertyName, Object value) {
-				return Restrictions.like(propertyName, String.valueOf(value));
+				if (value != null) {
+					String valueStr = String.valueOf(value);
+					if (StringUtils.isNotEmpty(valueStr)) {
+						return Restrictions.like(propertyName, valueStr);
+					}
+				}
+				return null;
 			}
 		},
 		likeStart {
@@ -86,8 +93,13 @@ public class SingleCriterion extends SingleProperyCriterion {
 			}
 
 			public Criterion criterion(String propertyName, Object value) {
-				return Restrictions.like(propertyName, String.valueOf(value),
-						MatchMode.START);
+				if (value != null) {
+					String valueStr = String.valueOf(value);
+					if (StringUtils.isNotEmpty(valueStr)) {
+						return Restrictions.like(propertyName, valueStr, MatchMode.START);
+					}
+				}
+				return null;
 			}
 		},
 		likeEnd {
@@ -96,8 +108,13 @@ public class SingleCriterion extends SingleProperyCriterion {
 			}
 
 			public Criterion criterion(String propertyName, Object value) {
-				return Restrictions.like(propertyName, String.valueOf(value),
-						MatchMode.END);
+				if (value != null) {
+					String valueStr = String.valueOf(value);
+					if (StringUtils.isNotEmpty(valueStr)) {
+						return Restrictions.like(propertyName, valueStr, MatchMode.END);
+					}
+				}
+				return null;
 			}
 		},
 		likeAnyWhere {
@@ -106,8 +123,13 @@ public class SingleCriterion extends SingleProperyCriterion {
 			}
 
 			public Criterion criterion(String propertyName, Object value) {
-				return Restrictions.like(propertyName, String.valueOf(value),
-						MatchMode.ANYWHERE);
+				if (value != null) {
+					String valueStr = String.valueOf(value);
+					if (StringUtils.isNotEmpty(valueStr)) {
+						return Restrictions.like(propertyName, valueStr, MatchMode.ANYWHERE);
+					}
+				}
+				return null;
 			}
 		},
 
@@ -117,7 +139,13 @@ public class SingleCriterion extends SingleProperyCriterion {
 			}
 
 			public Criterion criterion(String propertyName, Object value) {
-				return Restrictions.ilike(propertyName, String.valueOf(value));
+				if (value != null) {
+					String valueStr = String.valueOf(value);
+					if (StringUtils.isNotEmpty(valueStr)) {
+						return Restrictions.ilike(propertyName, valueStr);
+					}
+				}
+				return null;
 			}
 		},
 		ilikeStart {
@@ -126,8 +154,13 @@ public class SingleCriterion extends SingleProperyCriterion {
 			}
 
 			public Criterion criterion(String propertyName, Object value) {
-				return Restrictions.ilike(propertyName, String.valueOf(value),
-						MatchMode.START);
+				if (value != null) {
+					String valueStr = String.valueOf(value);
+					if (StringUtils.isNotEmpty(valueStr)) {
+						return Restrictions.ilike(propertyName, valueStr, MatchMode.START);
+					}
+				}
+				return null;
 			}
 		},
 		ilikeEnd {
@@ -136,8 +169,13 @@ public class SingleCriterion extends SingleProperyCriterion {
 			}
 
 			public Criterion criterion(String propertyName, Object value) {
-				return Restrictions.ilike(propertyName, String.valueOf(value),
-						MatchMode.END);
+				if (value != null) {
+					String valueStr = String.valueOf(value);
+					if (StringUtils.isNotEmpty(valueStr)) {
+						return Restrictions.ilike(propertyName, valueStr, MatchMode.END);
+					}
+				}
+				return null;
 			}
 		},
 		ilikeAnyWhere {
@@ -146,8 +184,13 @@ public class SingleCriterion extends SingleProperyCriterion {
 			}
 
 			public Criterion criterion(String propertyName, Object value) {
-				return Restrictions.ilike(propertyName, String.valueOf(value),
-						MatchMode.ANYWHERE);
+				if (value != null) {
+					String valueStr = String.valueOf(value);
+					if (StringUtils.isNotEmpty(valueStr)) {
+						return Restrictions.ilike(propertyName, valueStr, MatchMode.ANYWHERE);
+					}
+				}
+				return null;
 			}
 		};
 
@@ -166,6 +209,7 @@ public class SingleCriterion extends SingleProperyCriterion {
 		}
 	}
 
+	@XmlProperty
 	public Object getValue() {
 		return value;
 	}
@@ -182,8 +226,8 @@ public class SingleCriterion extends SingleProperyCriterion {
 		this.dataType = dataType;
 	}
 
-	@XmlProperty(
-			parser = "com.bstek.dorado.hibernate.criteria.criterion.SingleCriterionOpParser")
+	@XmlProperty(parser = "spring:dorado.hibernate.singleCriterionOpParser")
+	@IdeProperty(enumValues="=,<>,>,<,<=,>=,like,like%,%like,%like%,ilike,ilike%,%ilike,%ilike%")
 	public OP getOp() {
 		return op;
 	}
@@ -200,8 +244,7 @@ public class SingleCriterion extends SingleProperyCriterion {
 		String propertyName = this.getPropertyName();
 		Object v1 = this.getValue();
 		if (v1 != null) {
-			Object value = transformer.getValueFromParameter(parameter,
-					dataType, v1);
+			Object value = transformer.getValueFromParameter(parameter, dataType, v1);
 			if (value != null) {
 				if (op != null) {
 					return op.criterion(propertyName, value);

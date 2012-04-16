@@ -3,6 +3,9 @@
 	xsi:schemaLocation="
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
 http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dorado-7.0.xsd">
+
+	<import resource="hibernate-parser.xml"/>
+	
 	<bean id="dorado.unByteCodeProxyInterceptor" class="com.bstek.dorado.hibernate.UnByteCodeProxyInterceptor" />
 
 	<bean id="dorado.hibernateSessionFactoryManager" class="com.bstek.dorado.hibernate.provider.SpringWebApplicationSessionFactoryManager">
@@ -33,5 +36,5 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 			<bean class="com.bstek.dorado.hibernate.criteria.criterion.DefaultMisValueStrategy" />
 		</property>
 	</bean>
-	<bean id="dorado.userCriteriaProcessor" class="com.bstek.dorado.hibernate.criteria.DefaultUserCriteriaProcessor" />
+	
 </beans>

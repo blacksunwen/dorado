@@ -23,7 +23,7 @@
 		]]></Property>
 	</DataProvider>
 	
-	<DataProvider name="testHqlProvider_vm_noset" type="hibernateHql">
+	<DataProvider name="testHqlProvider_vm_exset" type="hibernateHql">
 		<Property name="hql"><![CDATA[
 		#set($parent.id = 1)
 		from Category where 1=1  
