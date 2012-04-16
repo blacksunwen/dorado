@@ -52,20 +52,8 @@ public class HqlDataProvider extends AbstractDataProvider {
 		return sessionFactory.openSession();
 	}
 	
-	protected Session currentSession() throws Exception {
-		SessionFactory sessionFactory = this.getSessionFactoryOject();
-		return sessionFactory.getCurrentSession();
-	}
-	
-	protected Session session() throws Exception{
-		Session session = null;
-		try {
-			session = this.currentSession();
-		} catch (Exception e) {
-			session = this.openSession();
-		}
-		
-		return session;
+	protected Session getSession() throws Exception{
+		return this.getSessionFactoryOject().getCurrentSession();
 	}
 	
 	private String hql;
@@ -86,14 +74,8 @@ public class HqlDataProvider extends AbstractDataProvider {
 		Hql hql = createHql(this.hql, parameter, resultDataType);
 		HqlQuerier querier = createHqlQuerier();
 
-		Session session = session();
-		try {
-			return querier.query(session, parameter, hql, this);
-		} finally {
-			if (session.isOpen()) {
-				session.close();
-			}
-		}
+		Session session = getSession();
+		return querier.query(session, parameter, hql, this);
 	}
 
 	protected void internalGetResult(Object parameter, Page<?> page,
@@ -103,14 +85,8 @@ public class HqlDataProvider extends AbstractDataProvider {
 		Hql hql = createHql(this.hql, parameter, resultDataType);
 		HqlQuerier querier = createHqlQuerier();
 
-		Session session = session();
-		try {
-			querier.query(session, parameter, hql, page, this);
-		} finally {
-			if (session.isOpen()) {
-				session.close();
-			}
-		}
+		Session session = getSession();
+		querier.query(session, parameter, hql, page, this);
 	}
 
 	protected HqlQuerier createHqlQuerier() throws Exception {

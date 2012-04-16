@@ -22,19 +22,23 @@ public class DefaultParameterExtractor implements ParameterExtractor {
 	}
 
 	public Object expr(Object parameter, String expr) throws Exception {
-		String[] fields = StringUtils.split(expr, '.');
-		if (fields != null) {
-			Object obj = parameter;
-			for (String field : fields) {
-				obj = field(obj, field);
-				if (obj == null) {
-					break;
-				}
-			}
-
-			return obj;
+		if ("$".equals(expr)) {
+			return parameter;
 		} else {
-			return null;
+			String[] fields = StringUtils.split(expr, '.');
+			if (fields != null) {
+				Object obj = parameter;
+				for (String field : fields) {
+					obj = field(obj, field);
+					if (obj == null) {
+						break;
+					}
+				}
+
+				return obj;
+			} else {
+				return null;
+			}
 		}
 	}
 		

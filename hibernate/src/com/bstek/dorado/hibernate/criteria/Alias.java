@@ -53,7 +53,7 @@ public class Alias {
 	}
 
 	// ********** Criterion **********
-	@XmlSubNode(wrapper= @XmlNodeWrapper(nodeName="Criterions"))
+	@XmlSubNode(wrapper= @XmlNodeWrapper(nodeName="Criterions", fixed=false))
 	public List<BaseCriterion> getCriterions() {
 		return criterions;
 	}
