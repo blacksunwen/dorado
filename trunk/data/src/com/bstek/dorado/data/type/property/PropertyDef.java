@@ -89,6 +89,7 @@ public abstract class PropertyDef implements Ignorable, TagSupport,
 	 * 
 	 * @return
 	 */
+	@IdeProperty(highlight = 1)
 	public String getName() {
 		return name;
 	}

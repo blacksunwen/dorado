@@ -1,6 +1,6 @@
 dorado.widget.LabelRenderer = $extend(dorado.Renderer, {
 	render: function(dom, arg) {
-		dom.innerText = arg.text;
+		dom.innerText = arg.text || '';
 	}
 });
 
@@ -31,7 +31,12 @@ dorado.widget.Label = $extend(dorado.widget.Control, /** @scope dorado.widget.La
 		 * @type dorado.Renderer
 		 * @attribute
 		 */
-		renderer: {}
+		renderer: {
+			setter: function(value) {
+				if (typeof value == "string") value = eval("new " + value + "()");
+				this._renderer = value;
+			}
+		}
 	},
 	
 	refreshDom: function(dom) {

@@ -81,7 +81,7 @@
 			 * @default 6
 			 */
 			colPadding: {
-				defaultValue: 16
+				defaultValue: 6
 			},
 			
 			/**

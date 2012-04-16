@@ -475,9 +475,9 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		
 		_getPropertyDef : function(property) {
 			var propertyDef = null;
-			if (!this.acceptUnknownProperty && this._propertyDefs) {
+			if (this._propertyDefs) {
 				propertyDef = this._propertyDefs.get(property);
-				if (!propertyDef) {
+				if (!propertyDef && !this.acceptUnknownProperty) {
 					throw new dorado.ResourceException("dorado.data.UnknownProperty", property);
 				}
 			}

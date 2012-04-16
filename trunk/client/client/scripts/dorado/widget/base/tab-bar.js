@@ -44,6 +44,26 @@
 					}
 				}
 			},
+			
+			/**
+			 * 当前Tab的序号（自0开始计算）。
+			 * @type int
+			 * @attribute
+			 */
+			currentIndex: {
+				skipRefresh: true,
+				getter: function() {
+					var tabbar = this, tabs = tabbar._tabs;
+					if (tabbar._currentTab) {
+						return tabs.indexOf(tabbar._currentTab);
+					}
+					return -1;
+				},
+				setter: function(index) {
+					var tabbar = this;
+					tabbar.set("currentTab", tabbar._tabs.get(index));
+				}
+			},
 
 			/**
              * 可以使用Tab对象或者Tab的配置信息来设置，当设置该属性的时候，原来的tabs会被清空。

@@ -163,9 +163,11 @@
 			dorado.Debugger.show();
 		}
 		
-		jQuery(document).bind("keydown", "f2", function() {
+		var $document = jQuery(document);
+		$document.bind("keydown", "f2", function() {
 			dorado.Debugger.show();
-		}).bind("keydown", "ctrl+f12", function() {
+		});
+		$document.bind("keydown", "ctrl+f12", function() {
 			dorado.Debugger.show();
 		});
 	});

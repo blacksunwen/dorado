@@ -44,6 +44,7 @@ dorado.widget.tree.NodeList = $extend(dorado.util.KeyedArray, {
 				newCurrent = parentNode._nodes.get(i);
 			}
 			tree.set("currentNode", newCurrent);
+			
 		}
 		
 		node._setTree(null);

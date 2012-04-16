@@ -97,6 +97,7 @@ public class FormElement extends Control implements FormConfig,
 		this.dataPath = dataPath;
 	}
 
+	@IdeProperty(highlight = 1)
 	public String getLabel() {
 		return label;
 	}

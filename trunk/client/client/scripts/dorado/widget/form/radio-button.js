@@ -120,6 +120,7 @@ dorado.widget.RadioButton = $extend(dorado.widget.Control, /** @scope dorado.wid
 dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope dorado.widget.RadioGroup.prototype */ {
     $className: "dorado.widget.RadioGroup",
     _inherentClassName: "i-radiogroup",
+	
 	ATTRIBUTES: /** @scope dorado.widget.RadioGroup.prototype */ {
 		className: {
 			defaultValue: "d-radiogroup"

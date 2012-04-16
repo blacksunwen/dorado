@@ -44,8 +44,13 @@ dorado.widget.BlockView = $extend(dorado.widget.AbstractBlockView, /** @scope do
 	},
 	
 	refreshDom: function(dom) {
-		this.set("currentIndex", this._currentIndex);
 		$invokeSuper.call(this, arguments);
+		
+		var currentIndex = this._currentIndex;
+		if (currentIndex < 0 && !this._allowNoCurrent && this._itemModel.getItemCount()) {
+			currentIndex = 0;
+		}
+		this.set("currentIndex", currentIndex);
 	},
 	
 	getItemDomByItemIndex: function(index) {
@@ -130,11 +135,12 @@ dorado.widget.BlockView = $extend(dorado.widget.AbstractBlockView, /** @scope do
 	
 	/**
 	 * 高亮指定的子元素。
-	 * @param {int} index 要高亮的子元素的序号。
+	 * @param {int} [index] 要高亮的行的序号，如果不指定此参数则表示要高亮当前行。
 	 * @param {Object} [options] 高亮选项。见jQuery ui相关文档中关于highlight方法的说明。
 	 * @param {Object} [speed] 动画速度。
 	 */
 	highlightItem: function(index, options, speed) {
+		if (index == undefined) index = this._currentIndex;
 		var block = this.getItemDomByItemIndex(index);
 		if (block) {
 			$fly(block).effect("pulsate", {

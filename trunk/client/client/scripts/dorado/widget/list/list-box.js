@@ -175,9 +175,9 @@ dorado.widget.ListBox = $extend(dorado.widget.AbstractListBox, /** @scope dorado
 		 */
 		items: {
 			setter: function(v) {
+				this.set("selection", null);
 				this._currentIndex = -1;
 				this._itemModel.setItems(v);
-				this.set("selection", null);
 			},
 			getter: function() {
 				return this._itemModel.getItems();
@@ -186,8 +186,13 @@ dorado.widget.ListBox = $extend(dorado.widget.AbstractListBox, /** @scope dorado
 	},
 	
 	refreshDom: function(dom) {
-		this.set("currentIndex", this._currentIndex);
 		$invokeSuper.call(this, arguments);
+		
+		var currentIndex = this._currentIndex;
+		if (currentIndex < 0 && !this._allowNoCurrent && this._itemModel.getItemCount()) {
+			currentIndex = 0;
+		}
+		this.set("currentIndex", currentIndex);
 	},
 	
 	getItemDomByItemIndex: function(index) {
@@ -248,11 +253,12 @@ dorado.widget.ListBox = $extend(dorado.widget.AbstractListBox, /** @scope dorado
 		
 	/**
 	 * 高亮指定的列表行。
-	 * @param {int} index 要高亮的行的序号。
+	 * @param {int} [index] 要高亮的行的序号，如果不指定此参数则表示要高亮当前行。
 	 * @param {Object} [options] 高亮选项。见jQuery ui相关文档中关于highlight方法的说明。
 	 * @param {Object} [speed] 动画速度。
 	 */
 	highlightItem: function(index, options, speed) {
+		if (index == undefined) index = this._currentIndex;
 		var row = this.getItemDomByItemIndex(index);
 		if (row) {
 			$fly(row).addClass("highlighting-row").effect("highlight", options ||

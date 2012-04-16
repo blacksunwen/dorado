@@ -121,7 +121,7 @@
 	/**
      * @author Frank Zhang (mailto:frank.zhang@bstek.com)
 	 * @class 可以显示文本的菜单项。
-	 * @shortTypeName Text
+	 * @abstract
 	 * @extends dorado.widget.menu.AbstractMenuItem
 	 */
 	dorado.widget.menu.TextMenuItem = $extend([dorado.widget.menu.AbstractMenuItem, dorado.widget.ActionSupport], /** @scope dorado.widget.menu.TextMenuItem.prototype */ {
@@ -669,7 +669,6 @@
 		"-": dorado.widget.menu.Separator,
 		Separator: dorado.widget.menu.Separator,
 		Checkable: dorado.widget.menu.CheckableMenuItem,
-		Text: dorado.widget.menu.TextMenuItem,
 		Control: dorado.widget.menu.ControlMenuItem,
 		Default: dorado.widget.menu.MenuItem
 	});

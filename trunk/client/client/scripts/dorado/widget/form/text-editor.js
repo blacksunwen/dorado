@@ -842,8 +842,7 @@
 		ATTRIBUTES: /** @scope dorado.widget.TextEditor.prototype */ {
 		
 			width: {
-				defaultValue: 150,
-				independent: true
+				defaultValue: 150
 			},
 			
 			height: {

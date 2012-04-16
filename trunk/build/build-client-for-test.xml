@@ -11,6 +11,17 @@
 	<taskdef resource="com/bstek/dorado/addonbuilder/task.properties"
 	         classpath="lib/dorado-addon-builder.jar" />
 
+	<target name="init">
+		<makeAddonBuilderHome />
+		<taskdef resource="com/bstek/dorado/taskdefs/task.properties">
+			<classpath>
+				<pathelement path="${addonBuilder.homeDir}/lib/dorado-ant-tasks.jar" />
+				<pathelement path="${addonBuilder.homeDir}/lib/js.jar" />
+				<pathelement path="${addonBuilder.homeDir}/lib/commons-lang-2.5.jar" />
+			</classpath>
+		</taskdef>
+	</target>
+
 	<target name="doMergeClientSource">
 		<echo message="Merge Client Source: ${src} --> ${dist}" />
 		<if>
@@ -38,20 +49,17 @@
 		</if>
 	</target>
 
-	<target name="mergeClientSource">
+	<target name="mergeClientSource" depends="init">
 		<foreach list="${clientSrc}" param="src" target="doMergeClientSource" />
 	</target>
 
-	<target name="buildI18N">
-		<makeAddonBuilderHome />
-		<taskdef resource="com/bstek/dorado/taskdefs/task.properties">
-			<classpath>
-				<pathelement path="${addonBuilder.homeDir}/lib/dorado-ant-tasks.jar" />
-				<pathelement path="${addonBuilder.homeDir}/lib/js.jar" />
-				<pathelement path="${addonBuilder.homeDir}/lib/commons-lang-2.5.jar" />
-			</classpath>
-		</taskdef>
+	<target name="tidyJavaScript" depends="init">
+		<tidyJavaScript>
+			<fileset dir="${dist}" includes="**/*.js" />
+		</tidyJavaScript>
+	</target>
 
+	<target name="buildI18N" depends="init">
 		<mkdir dir="${dist}/resources/i18n" />
 		<buildI18NResource inputDir="${dist}/resources/i18n"
 		                   outputDir="${dist}/resources/i18n" />

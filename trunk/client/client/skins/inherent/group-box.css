@@ -23,7 +23,6 @@
 }
 
 .i-field-set .content-panel {
-    padding: 5px;
     display: block;
     overflow: hidden;
 }
@@ -80,7 +79,6 @@
 
 .i-group-box .content-panel {
     display: block;
-    padding: 5px;
 }
 
 .i-group-box .button-panel {

@@ -342,11 +342,12 @@ dorado.widget.DataListBox = $extend([dorado.widget.AbstractListBox, dorado.widge
 	
 	/**
 	 * 高亮指定的数据实体对应的行。
-	 * @param {dorado.Entity} entity 要高亮的数据实体。
+	 * @param {dorado.Entity} [entity] 要高亮的数据实体，如果不指定此参数则表示要高亮当前行。
 	 * @param {Object} [options] 高亮选项。见jQuery ui相关文档中关于highlight方法的说明。
 	 * @param {Object} [speed] 动画速度。
 	 */
 	highlightItem: function(entity, options, speed) {
+		entity = entity || this.getCurrentItem();
 		var row = this._itemDomMap[entity.entityId];
 		if (row) {
 			$fly(row).addClass("highlighting-row").effect("highlight", options ||

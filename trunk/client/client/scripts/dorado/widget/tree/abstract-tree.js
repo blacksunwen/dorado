@@ -675,18 +675,26 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 	onNodeAttached: function(node) {
 		if (this._itemModel) {
 			this._itemModel.onNodeAttached(node);
-			this.fireEvent("onNodeAttached", this, {
-				node: node
-			});
+			if (this._root != node) {
+				this.fireEvent("onNodeAttached", this, {
+					node: node
+				});
+				
+				if (!this._currentNode && !this._allowNoCurrent) {
+					this.set("currentNode", node);
+				}
+			}
 		}
 	},
 
 	onNodeDetached: function(node) {
 		if (this._itemModel) {
 			this._itemModel.onNodeDetached(node);
-			this.fireEvent("onNodeDetached", this, {
-				node: node
-			});
+			if (this._root != node) {
+				this.fireEvent("onNodeDetached", this, {
+					node: node
+				});
+			}
 		}
 	},
 	
@@ -756,12 +764,13 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 
 	/**
 	 * 高亮指定的树节点。
-	 * @param {dorado.widget.tree.Node} node 要高亮的树节点。
+	 * @param {dorado.widget.tree.Node} [node] 要高亮的树节点，如果不指定此参数则表示要高亮当前树节点。
 	 * @param {Object} [options] 高亮选项。见jQuery ui相关文档中关于highlight方法的说明。
 	 * @param {Object} [speed] 动画速度。
 	 */
 	highlightItem: function(node, options, speed) {
-		if (node._tree != this) return;
+		node = node || this.get("currentNode");
+		if (!node || node._tree != this) return;
 		var row = this._itemDomMap[node._id];
 		if (row) {
 			$fly(row.firstChild).effect("highlight", options|| {

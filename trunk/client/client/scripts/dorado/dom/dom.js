@@ -135,6 +135,13 @@
 		 * 		alert("Button clicked.");
 		 * 	}
 		 * });
+		 * 
+		 * @example
+		 * // 创建一个按钮
+		 * $DomUtils.xCreate({
+		 * 	tagName: "DIV",
+		 * 	contentText: "<Input>"	// contentText属性类似于content，但contentText中的文本内容不会被识别成为HTML
+		 * });
 		 *
 		 * @example
 		 * // 创建两个DIV, 同时将两个DIV注册到上下文中
@@ -238,6 +245,7 @@
 							
 						case "tagName":
 						case "content":
+						case "contentText":
 							continue;
 							
 						case "contextKey":
@@ -259,9 +267,9 @@
 				return el;
 			}
 			
-			function setText(el, content, jqEl) {
+			function setText(el, content, jqEl, isText) {
 				var isHtml = /(<\S[^><]*>)|(&.+;)/g;
-				if (content.match(isHtml) != null && el.tagName.toUpperCase() != "TEXTAREA") {
+				if (isText !== true && content.match(isHtml) != null && el.tagName.toUpperCase() != "TEXTAREA") {
 					el.innerHTML = content;
 				} else {
 					el.appendChild(document.createTextNode(content));
@@ -336,6 +344,12 @@
 					} else {
 						appendChild(el, this.xCreate(content, arg, context));
 					}
+				}
+			}
+			else {
+				var contentText = template.contentText;
+				if (contentText != null && contentText.constructor == String) {
+					el = setText(el, contentText, jqEl, true);
 				}
 			}
 			return el;

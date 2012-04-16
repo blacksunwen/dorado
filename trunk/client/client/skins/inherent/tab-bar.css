@@ -46,8 +46,9 @@
 .i-tabbar .tab .icon{
 	float: left;
 	display: inline-block;
-	padding: 0px 4px 0 12px;
-	height: 24px;
+	margin: 2px 0 0 2px;
+	width: 20px;
+	height: 20px;
 }
 
 .i-tabbar .tab .caption{

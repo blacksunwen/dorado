@@ -26,6 +26,13 @@
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @class 表格的列模型。
 	 * <p>表格的列模型是用于辅助表格控件管理其中的列信息的对象。</p>
+	 * <p>
+	 * ColumnModel的get方法在{@link dorado.AttributeSupport#get}的基础上做了增强。
+	 * 除了原有的读取属性值的功能之外，此方法还另外提供了下面的用法。
+	 * <ul>
+	 * 	<li>当传入一个以&开头的字符串时，@后面的内容将被识别成列的名称，表示根据名称获取表格列。参考{@link dorado.widget.grid.ColumnModel#getColumn}。</li>
+	 * </ul>
+	 * </p>
 	 * @abstract
 	 * @extends dorado.AttributeSupport
 	 */
@@ -65,6 +72,16 @@
 				setter: function(v) {
 					this.addColumns(v);
 				}
+			}
+		},
+		
+		doGet: function(attr) {
+			var c = attr.charAt(0);
+			if (c == '&') {
+				var col = attr.substring(1);
+				return this.getColumn(col);
+			} else {
+				return $invokeSuper.call(this, [attr]);
 			}
 		},
 		
@@ -281,7 +298,6 @@
 			label.innerText = column.get("caption");
 			
 			if (column instanceof dorado.widget.grid.DataColumn) {
-				if (column._headerAlign) cell.align = column._headerAlign;
 				$fly(label).toggleClass("caption-required", !!column.get("required"));
 				
 				var sortState = column.get("sortState"), sortIndicator;
@@ -354,6 +370,20 @@
 					if (caption == null) caption = this._name;
 					return caption;
 				}
+			},
+			
+			/**
+			 * 列头中内容的水平对齐方式。 取值范围如下：
+			 * <ul>
+			 * <li>left</li>
+			 * <li>center</li>
+			 * <li>right</li>
+			 * </ul>
+			 * @type String
+			 * @attribute
+			 */
+			headerAlign: {
+				defaultValue: "center"
 			},
 			
 			/**
@@ -805,13 +835,17 @@
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @abstract
 	 * @class 用于将一个控件填充到表格单元格中单元格渲染器。
-	 * @extends dorado.widget.grid.CellRenderer
+	 * @extends dorado.widget.grid.DefaultCellRenderer
 	 */
-	dorado.widget.grid.SubControlCellRenderer = $extend(dorado.widget.grid.CellRenderer, /** @scope dorado.widget.grid.SubControlCellRenderer.prototype */{
+	dorado.widget.grid.SubControlCellRenderer = $extend(dorado.widget.grid.DefaultCellRenderer, /** @scope dorado.widget.grid.SubControlCellRenderer.prototype */{
 		/**
 		 * @name dorado.widget.grid.SubControlCellRenderer#createSubControl
 		 * @function
 		 * @description 创建将被填充到表格单元格中的控件。
+		 * <ul>
+		 * <li>如果此方法返回null那么单元格中将不会显示任何内容。</li>
+		 * <li>如果此方法返回undefined那么渲染器将按照默认的方法渲染此单元格。</li>
+		 * </ul>
 		 * @protected
 		 * @param {Object} arg 渲染参数。
 		 * @param {dorado.widget.grid.AbstractGrid} arg.grid 对应的表格。
@@ -842,8 +876,13 @@
 				subControl = this.createSubControl(arg);
 				attach = true;
 			}
-			if (!subControl) {
+			
+			if (subControl === null) {
 				$fly(dom).empty();
+				return;
+			}
+			else if (subControl === undefined) {
+				$invokeSuper.call(this, arguments);
 				return;
 			}
 			
@@ -977,7 +1016,7 @@
 					}
 					
 					(entity instanceof dorado.Entity) ? entity.set(property, value) : entity[property] = value;
-					self.onCellValueEdit(entity, Column);
+					self.onCellValueEdit(entity, column);
 				}
 			});
 		},
@@ -1101,7 +1140,7 @@
 		 * @type int
 		 */
 		/**
-		 * 编辑器对应的DOM元素对象是否以初始化。
+		 * 编辑器对应的DOM元素对象是否已初始化。
 		 * @name dorado.widget.grid.CellEditor#inited
 		 * @property
 		 * @type boolean
@@ -1680,20 +1719,6 @@
 			},
 			
 			/**
-			 * 列头中内容的水平对齐方式。 取值范围如下：
-			 * <ul>
-			 * <li>left</li>
-			 * <li>center</li>
-			 * <li>right</li>
-			 * </ul>
-			 * @type String
-			 * @attribute
-			 */
-			headerAlign: {
-				defaultValue: "center"
-			},
-			
-			/**
 			 * 列脚中内容的水平对齐方式。 取值范围如下：
 			 * <ul>
 			 * <li>left</li>
@@ -1810,14 +1835,24 @@
 			 * @type dorado.Renderer
 			 * @attribute
 			 */
-			renderer: {},
+			renderer: {
+				setter: function(value) {
+					if (typeof value == "string") value = eval("new " + value + "()");
+					this._renderer = value;
+				}
+			},
 			
 			/**
 			 * 汇总栏的渲染器。
 			 * @type dorado.Renderer
 			 * @attribute
 			 */
-			footerRenderer: {},
+			footerRenderer: {
+				setter: function(value) {
+					if (typeof value == "string") value = eval("new " + value + "()");
+					this._footerRenderer = value;
+				}
+			},
 			
 			/**
 			 * 汇总值计算器的类型。
@@ -1834,7 +1869,12 @@
 			 * @type dorado.Renderer
 			 * @attribute
 			 */
-			summaryRenderer: {},
+			summaryRenderer: {
+				setter: function(value) {
+					if (typeof value == "string") value = eval("new " + value + "()");
+					this._summaryRenderer = value;
+				}
+			},
 			
 			/**
 			 * 表单项类型。

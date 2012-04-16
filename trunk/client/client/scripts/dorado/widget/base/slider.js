@@ -65,7 +65,7 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
             }
         },
 		/**
-		 * 滑动条的精度，默认为0. <br />
+		 * 滑动条的精度，默认为0。<br />
 		 * 该参数的含义是value的取值会取小数点后几位，设置值完毕以后，会根据该设置会进行四舍五入。
 		 * @attribute
 		 * @default 0

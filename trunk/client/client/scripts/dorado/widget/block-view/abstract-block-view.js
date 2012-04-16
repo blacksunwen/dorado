@@ -311,7 +311,12 @@
 			 * @type dorado.Renderer
 			 * @attribute
 			 */
-			renderer: {},
+			renderer: {
+				setter: function(value) {
+					if (typeof value == "string") value = eval("new " + value + "()");
+					this._renderer = value;
+				}
+			},
 			
 			/**
 			 * 水平方向上块与块之间空隙的大小。

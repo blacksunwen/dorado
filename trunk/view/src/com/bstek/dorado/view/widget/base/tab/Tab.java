@@ -85,6 +85,7 @@ public class Tab implements RenderableElement, Ignorable, TagSupport,
 		this.name = name;
 	}
 
+	@IdeProperty(highlight = 1)
 	public String getCaption() {
 		return caption;
 	}
