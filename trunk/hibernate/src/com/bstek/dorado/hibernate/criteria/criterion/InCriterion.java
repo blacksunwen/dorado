@@ -6,6 +6,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 
+import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.hibernate.criteria.HibernateCriteriaTransformer;
 
 public class InCriterion extends SingleProperyCriterion {
@@ -13,6 +14,7 @@ public class InCriterion extends SingleProperyCriterion {
 	private Object value;
 	private String dataType;
 	
+	@XmlProperty
 	public Object getValue() {
 		return value;
 	}
@@ -27,6 +29,7 @@ public class InCriterion extends SingleProperyCriterion {
 		this.dataType = dataType;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public Criterion toHibernate(Object parameter, SessionFactory sessionFactory, 
 			HibernateCriteriaTransformer transformer) throws Exception {
 		String dataType = this.getDataType();
@@ -36,17 +39,21 @@ public class InCriterion extends SingleProperyCriterion {
 			Object value2 = transformer.getValueFromParameter(parameter, dataType, value);
 			if (value2 != null) {
 				if (value instanceof Collection) {
-					return Restrictions.in(propertyName, (Collection<?>)value);
+					Collection<Object> cValue = (Collection<Object>) value;
+					if (!cValue.isEmpty()) {
+						return Restrictions.in(propertyName, (Collection<?>)value);
+					}
 				} else if (value.getClass().isArray()) {
-					return Restrictions.in(propertyName, (Object[])value);
+					Object[] aValue = (Object[])value;
+					if (aValue.length > 0) {
+						return Restrictions.in(propertyName, aValue);
+					}
 				} else {
 					return Restrictions.in(propertyName, new Object[]{value});
 				}
-			} else {
-				return transformer.getMisValueStrategy().criterion(this);
-			}
-		} else {
-			return transformer.getMisValueStrategy().criterion(this);
-		}
+			} 
+		} 
+		
+		return transformer.getMisValueStrategy().criterion(this);
 	}
 }

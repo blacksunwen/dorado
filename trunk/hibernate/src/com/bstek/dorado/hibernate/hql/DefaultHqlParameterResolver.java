@@ -7,13 +7,6 @@ import org.apache.commons.lang.StringUtils;
 
 public class DefaultHqlParameterResolver implements HqlParameterResolver {
 
-	public Object filterValue(AutoFilterVar filter, HqlParameter hqlParameter) 
-		throws Exception {
-		String expr = hqlParameter.getExpr();
-		Object obj = AutoFilterVar.getValue(filter, expr);
-		return obj;
-	}
-	
 	public Object parameterValue(final Object parameter, HqlParameter hqlParameter) throws Exception {
 		Object value = hqlParameter.getValue();
 		if (value != null) {

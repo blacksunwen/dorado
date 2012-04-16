@@ -5,14 +5,29 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.bstek.dorado.data.DataContextTestCase;
+import com.bstek.dorado.core.Context;
+import com.bstek.dorado.data.config.ConfigManagerTestSupport;
+import com.bstek.dorado.data.provider.filter.AdvanceFilterCriterionParser;
+import com.bstek.dorado.data.provider.filter.SingleValueFilterCriterion;
+import com.bstek.dorado.data.type.DataType;
 
-public abstract class HibernateContextTestCase extends DataContextTestCase {
+public abstract class HibernateContextTestCase extends ConfigManagerTestSupport {
 	public HibernateContextTestCase() {
+		super();
+		addExtensionContextConfigLocation("com/bstek/dorado/hibernate/context.xml");
 		addExtensionContextConfigLocation("com/bstek/dorado/hibernate/test-context.xml");
 	}
 
+	protected SingleValueFilterCriterion createFilterCriterion(String property, DataType dataType,
+			String expression) throws Exception {
+		Context context = Context.getCurrent();
+		AdvanceFilterCriterionParser parser = (AdvanceFilterCriterionParser)context.getServiceBean("filterCriterionParser");
+		
+		return (SingleValueFilterCriterion)parser.createFilterCriterion(property, dataType, expression);
+	}
+	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Deprecated
 	protected void buildOrders(Map parameter, Object[][] orders) {
 		if (orders == null)
 			return;
@@ -34,6 +49,7 @@ public abstract class HibernateContextTestCase extends DataContextTestCase {
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Deprecated
 	protected void buildCriterions(Map parameter, String[][] criterions) {
 		if (criterions == null)
 			return;

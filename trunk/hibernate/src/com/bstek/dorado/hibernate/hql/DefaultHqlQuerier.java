@@ -23,13 +23,14 @@ public class DefaultHqlQuerier implements HqlQuerier {
 		this.parameterResolver = parameterResolver;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public Object query(Session session, Object parameter, 
 			Hql hql, HqlDataProvider provider) throws Exception {
-		Query query = createQuery(session, parameter, hql);
 		if (!provider.isUnique()) {
-			return query.list();
+			List<Object> entities = createQuery(session, parameter, hql).list();
+			return entities;
 		} else {
-			return query.uniqueResult();
+			return createQuery(session, parameter, hql).uniqueResult();
 		}
 	}
 	
@@ -46,44 +47,41 @@ public class DefaultHqlQuerier implements HqlQuerier {
 				page.setEntityCount(list.size());
 			}
 		} else {
+			List entities = null;
 			if (page.getPageSize() > 0) {
 				Query query = createQuery(session, parameter, hql);
 				query.setFirstResult(page.getFirstEntityIndex());
 				query.setFetchSize(page.getPageSize());
 				
-				List entities = query.list();
+				entities = query.list();
 				page.setEntities(entities);
-				
-				int entityCount = count(session, parameter, hql, provider);
-				page.setEntityCount(entityCount);	
 			} else {
 				Query query = createQuery(session, parameter, hql);
-				List list = query.list();
-				page.setEntities(list);
-				page.setEntityCount(list.size());
+				entities = query.list();
+				page.setEntities(entities);
+			}
+			
+			if (page.getPageSize() > 0) {
+				int entityCount = count(session, parameter, hql, provider);
+				page.setEntityCount(entityCount);
+			} else {
+				page.setEntityCount(entities.size());
 			}
 		}
 	}
 
 	protected Query createQuery(Session session, Object parameter, Hql hql) 
 	 	throws Exception{
-		Assert.notNull(hql);
+		Assert.notNull(hql, "Hql must not be null.");
 		
-		AutoFilterVar filter = hql.getFilter();
 		String hqlClause = hql.getClause();
 		Query query = session.createQuery(hqlClause);
 		List<HqlParameter> hqlParameters = hql.getParameters();
 		if (!hqlParameters.isEmpty()) {
 			for (HqlParameter hp: hqlParameters) {
 				int i = hp.getIndex();
-				String expr = hp.getExpr();
-				if (filter != null && AutoFilterVar.isHolder(expr)) {
-					Object v = parameterResolver.filterValue(filter, hp);
-					query.setParameter(i, v);
-				} else {
-					Object v = parameterResolver.parameterValue(parameter, hp);
-					query.setParameter(i, v);
-				}
+				Object v = parameterResolver.parameterValue(parameter, hp);
+				query.setParameter(i, v);
 			}
 		}
 		return query;

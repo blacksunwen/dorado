@@ -17,14 +17,7 @@ import com.bstek.dorado.util.Assert;
 public class HqlUtil {
 
 	public static String build(String hql, Object parameter) {
-		AutoFilterVar filter = new AutoFilterVar();
-		return build(hql, parameter, filter);
-	}
-
-	public static String build(String hql, Object parameter,
-			AutoFilterVar filter) {
 		VelocityContext context = new VelocityContext();
-		context.put("filter", filter);
 
 		if (parameter != null) {
 			LazyProxyMap pmap = LazyProxyMap.create(parameter);

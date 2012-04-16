@@ -7,7 +7,10 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.XmlNodeWrapper;
+import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.hibernate.criteria.HibernateCriteriaTransformer;
 
@@ -24,7 +27,7 @@ public class SqlCriterion extends BaseCriterion {
 		this.clause = clause;
 	}
 
-	@XmlSubNode
+	@XmlSubNode(wrapper= @XmlNodeWrapper(nodeName="Parameters"))
 	public List<Parameter> getParameters() {
 		return parameters;
 	}
@@ -39,6 +42,7 @@ public class SqlCriterion extends BaseCriterion {
 		private String dataType;
 		private Object value;
 
+		@IdeProperty(enumValues="integer,long,short,float,double,character,byte,boolean,yes_no,true_false,string,date,time,timestamp,calendar,calendar_date,big_decimal,big_integer")
 		public String getHibernateType() {
 			return hibernateType;
 		}
@@ -55,6 +59,7 @@ public class SqlCriterion extends BaseCriterion {
 			this.dataType = dataType;
 		}
 
+		@XmlProperty
 		public Object getValue() {
 			return value;
 		}

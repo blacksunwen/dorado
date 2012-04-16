@@ -6,31 +6,31 @@ import org.hibernate.criterion.DetachedCriteria;
 
 public enum JoinType {
 	INNER_JOIN {
-		public int getFlag() {
+		public int getHibernateFlag() {
 			return Criteria.INNER_JOIN;
 		}
 	}, FULL_JOIN {
-		public int getFlag() {
+		public int getHibernateFlag() {
 			return Criteria.FULL_JOIN;
 		}
 	}, LEFT_JOIN {
-		public int getFlag() {
+		public int getHibernateFlag() {
 			return Criteria.LEFT_JOIN;
 		}
 	}, RIGHT_JOIN {
-		public int getFlag() {
+		public int getHibernateFlag() {
 			return org.hibernate.sql.JoinFragment.RIGHT_OUTER_JOIN;
 		}
 	};
 	
-	public abstract int getFlag();
+	public abstract int getHibernateFlag();
 	
 	public DetachedCriteria alias(DetachedCriteria criteria, 
 			String associationPath, String aliasName, Criterion withCriterion) {
 		if (withCriterion != null) {
-			return criteria.createAlias(associationPath, aliasName, getFlag(), withCriterion);
+			return criteria.createAlias(associationPath, aliasName, getHibernateFlag(), withCriterion);
 		} else {
-			return criteria.createAlias(associationPath, aliasName, getFlag());
+			return criteria.createAlias(associationPath, aliasName, getHibernateFlag());
 		}
 	}
 }

@@ -16,14 +16,6 @@ public class DefaultParameterExtractor implements ParameterExtractor {
 		if (parameter == null) {
 			return null;
 		} else {
-//			Object p = null;
-//			if (parameter instanceof UserCriteria) {
-//				UserCriteria autoFilterObject = (UserCriteria)parameter;
-//				p = autoFilterObject.getOriginalParameter();
-//			} else {
-//				p = parameter;
-//			}
-			
 			Object value = expr(parameter, expr);
 			return value(value, dataTypeName);
 		}

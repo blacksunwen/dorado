@@ -4,6 +4,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 
+import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.hibernate.criteria.HibernateCriteriaTransformer;
 
 public class IdEqCriterion extends BaseCriterion {
@@ -11,8 +12,7 @@ public class IdEqCriterion extends BaseCriterion {
 	private Object value;
 	private String dataType;
 
-	// private String misValue;
-
+	@XmlProperty
 	public Object getValue() {
 		return value;
 	}
@@ -39,12 +39,10 @@ public class IdEqCriterion extends BaseCriterion {
 					dataType, value);
 			if (value2 != null) {
 				return Restrictions.idEq(value2);
-			} else {
-				return transformer.getMisValueStrategy().criterion(this);
-			}
-		} else {
-			return transformer.getMisValueStrategy().criterion(this);
-		}
+			} 
+		} 
+		
+		return transformer.getMisValueStrategy().criterion(this);
 	}
 
 }

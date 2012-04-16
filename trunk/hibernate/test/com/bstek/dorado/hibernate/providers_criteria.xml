@@ -82,6 +82,22 @@
 		</Criteria>
 	</DataProvider>
 	
+	<DataProvider name="testCriProvider_SubCriteria2" type="hibernateCriteria">
+		<Criteria entityName="com.bstek.dorado.hibernate.entity.Product" alias="pdk">
+			<SubCriterias>
+				<SubCriteria associationPath="category" alias="cg" joinType="INNER_JOIN">
+					<SubCriterias>
+						<SubCriteria associationPath="parent" alias="pcg" joinType="INNER_JOIN">
+							<Criterions>
+								<SizeCriterion propertyName="products" value="1" op=">="/>
+							</Criterions>
+						</SubCriteria>
+					</SubCriterias>
+				</SubCriteria>
+			</SubCriterias>
+		</Criteria>
+	</DataProvider>
+	
 	<DataProvider name="testCriProvider_sqlProjection" type="hibernateCriteria">
 		<Criteria entityName="com.bstek.dorado.hibernate.entity.Product" alias="product">
 			<Projections>

@@ -1,309 +1,201 @@
 package com.bstek.dorado.hibernate;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import com.bstek.dorado.core.Context;
-import com.bstek.dorado.data.provider.manager.DataProviderManager;
-import com.bstek.dorado.data.type.AggregationDataType;
+import com.bstek.dorado.data.provider.Criteria;
+import com.bstek.dorado.data.provider.Order;
 import com.bstek.dorado.data.type.DefaultEntityDataType;
-import com.bstek.dorado.data.type.property.BasePropertyDef;
+import com.bstek.dorado.data.util.DataUtils;
+import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.hibernate.provider.CriteriaDataProvider;
 
 public class HibernateCriDataProvider_UserCriteriaTest extends
 		HibernateContextTestCase {
 
-	protected DataProviderManager getDataProviderManager() throws Exception {
-		Context conetxt = Context.getCurrent();
-		DataProviderManager dataProviderManager = (DataProviderManager) conetxt
-				.getServiceBean("dataProviderManager");
-		return dataProviderManager;
+	protected CriteriaDataProvider getDataProvider(String name) throws Exception {
+		return (CriteriaDataProvider)getDataProviderManager().getDataProvider(name);
 	}
-
-	protected CriteriaDataProvider getDataProvider(String id) throws Exception {
-		return (CriteriaDataProvider) getDataProviderManager().getDataProvider(
-				id);
-	}
+	
+	
 
 	// lower(this_.PRODUCT_NAME) asc
-	@SuppressWarnings("rawtypes")
 	public void test_1() throws Exception {
-		System.out
-				.println("test_1()=======================================================");
-		CriteriaDataProvider provider = this.getDataProvider("test_1");
+		System.out.println("test_1()=======================================================");
+		CriteriaDataProvider provider = getDataProvider("test_1");
 
-		DefaultEntityDataType elementDataType = new DefaultEntityDataType();
-		elementDataType
-				.setMatchType(com.bstek.dorado.hibernate.entity.Product.class);
-		elementDataType.setAutoCreatePropertyDefs(true);
-		AggregationDataType resultDataType = new AggregationDataType();
-		resultDataType.setElementDataType(elementDataType);
+		DefaultEntityDataType dataType = new DefaultEntityDataType();
+		dataType.setMatchType(com.bstek.dorado.hibernate.entity.Product.class);
+		dataType.setAutoCreatePropertyDefs(true);
 
-		Map parameter = new HashMap();
-		this.buildOrders(parameter, new Object[][] { new Object[] {
-				"productName", false } });
+		Criteria criteria = new Criteria();
+		{
+			criteria.addOrder(new Order("productName", false));
+		}
+		
+		Record parameter = new Record();
+		parameter.put("criteria", criteria);
 
-		provider.getResult(parameter, resultDataType);
+		provider.getResult(parameter);
 	}
 
 	// this_.UNITS_IN_STOCK desc
-	@SuppressWarnings("rawtypes")
 	public void test_2() throws Exception {
-		System.out
-				.println("test_2()=======================================================");
-		CriteriaDataProvider provider = this.getDataProvider("test_2");
-		Map parameter = new HashMap();
-		this.buildOrders(parameter, new Object[][] { new Object[] {
-				"unitsInStock", true } });
+		System.out.println("test_2()=======================================================");
+		CriteriaDataProvider provider = getDataProvider("test_2");
+		
+		Criteria criteria = new Criteria();
+		{
+			criteria.addOrder(new Order("unitsInStock", true));
+		}
 
-		DefaultEntityDataType elementDataType = new DefaultEntityDataType();
-		elementDataType
-				.setMatchType(com.bstek.dorado.hibernate.entity.Product.class);
-		elementDataType.setAutoCreatePropertyDefs(true);
-		AggregationDataType resultDataType = new AggregationDataType();
-		resultDataType.setElementDataType(elementDataType);
-
-		provider.getResult(parameter, resultDataType);
+		Record parameter = new Record();
+		parameter.put("criteria", criteria);
+		
+		provider.getResult(parameter);
 	}
 
-	@SuppressWarnings("rawtypes")
+	//this_.UNITS_IN_STOCK desc,
+	//lower(this_.PRODUCT_NAME) asc,
 	public void test_3() throws Exception {
-		System.out
-				.println("test_3()=======================================================");
-		CriteriaDataProvider provider = this.getDataProvider("test_3");
-		Map parameter = new HashMap();
-		this.buildOrders(parameter, new Object[][] {
-				new Object[] { "unitsInStock", true },
-				new Object[] { "productName", false } });
-
-		DefaultEntityDataType elementDataType = new DefaultEntityDataType();
-		elementDataType
-				.setMatchType(com.bstek.dorado.hibernate.entity.Product.class);
-		elementDataType.setAutoCreatePropertyDefs(true);
-		AggregationDataType resultDataType = new AggregationDataType();
-		resultDataType.setElementDataType(elementDataType);
-
-		provider.getResult(parameter, resultDataType);
+		System.out.println("test_3()=======================================================");
+		CriteriaDataProvider provider = getDataProvider("test_3");
+		
+		Criteria criteria = new Criteria();
+		{
+			criteria.addOrder(new Order("unitsInStock", true));
+			criteria.addOrder(new Order("productName", false));
+		}
+		
+		Record parameter = new Record();
+		parameter.put("criteria", criteria);
+		provider.getResult(parameter);
 	}
 
-	@SuppressWarnings("rawtypes")
+	/*
+	 this_.id=? 
+     and this_.CATEGORY_ID=? 
+     and this_.CATEGORY_ID in (
+        ?, ?, ?
+     )
+	 */
 	public void test_4() throws Exception {
-		System.out
-				.println("test_4()=======================================================");
-		CriteriaDataProvider provider = this.getDataProvider("test_4");
+		System.out.println("test_4()=======================================================");
+		CriteriaDataProvider provider = getDataProvider("test_4");
 
-		Map parameter = new HashMap();
-		this.buildCriterions(parameter, new String[][] {
-				new String[] { "id", "4" },
-				new String[] { "category.id", "4" },
-				new String[] { "category.id", "(1,2,3)" }, });
-
-		DefaultEntityDataType productDataType = new DefaultEntityDataType();
-		productDataType.setAutoCreatePropertyDefs(true);
-		productDataType
-				.setMatchType(com.bstek.dorado.hibernate.entity.Product.class);
-		AggregationDataType resultDataType = new AggregationDataType();
-		resultDataType.setElementDataType(productDataType);
-
-		DefaultEntityDataType categoryDataType = new DefaultEntityDataType();
-		categoryDataType.setAutoCreatePropertyDefs(true);
-		categoryDataType
-				.setMatchType(com.bstek.dorado.hibernate.entity.Category.class);
-		BasePropertyDef categoryProperty = new BasePropertyDef();
-		categoryProperty.setName("category");
-		categoryProperty.setDataType(categoryDataType);
-		productDataType.addPropertyDef(categoryProperty);
-
-		provider.getResult(parameter, resultDataType);
+		Criteria criteria = new Criteria();
+		{
+			criteria.addCriterion(createFilterCriterion("id", DataUtils.getDataType(long.class), "4"));
+			criteria.addCriterion(createFilterCriterion("category.id", DataUtils.getDataType(long.class), "4"));
+			criteria.addCriterion(createFilterCriterion("category.id", DataUtils.getDataType(long.class), "(1,2,3)"));
+		}
+		
+		Record parameter = new Record();
+		parameter.put("criteria", criteria);
+		provider.getResult(parameter);
 	}
-
-	@SuppressWarnings("rawtypes")
+/*
+    where
+        cg1_.id=? 
+        and this_.id>=? 
+        and cg1_.id<>? 
+        and this_.UNIT_PRICE<=? 
+        and this_.UNIT_PRICE<? 
+        and this_.UNIT_PRICE>? 
+        and this_.PRODUCT_NAME like ? 
+        and cg1_.CATEGORY_NAME like ? 
+        and cg1_.id between ? and ? 
+        and cg1_.CATEGORY_NAME in (
+            ?, ?, ?
+        ) 
+        and cg1_.CATEGORY_NAME like ? 
+        and cg1_.id=? 
+    order by
+        this_.UNIT_PRICE desc,
+        this_.PRODUCT_NAME desc
+ */
 	public void test_5() throws Exception {
-		System.out
-				.println("test_5()=======================================================");
-		CriteriaDataProvider provider = this.getDataProvider("test_5");
-		Map parameter = new HashMap();
-		this.buildCriterions(parameter, new String[][] {
-				new String[] { "category.id", "4" },
-				new String[] { "id", ">=4" },
-				new String[] { "category.id", "<>4" },
-				new String[] { "unitPrice", "<=6.8" },
-				new String[] { "unitPrice", "<6.9" },
-				new String[] { "unitPrice", ">8.99" },
-				new String[] { "productName", "%C" },
-				new String[] { "category.categoryName", "C%" },
-				new String[] { "category.id", "[1,10]" },
-				new String[] { "category.categoryName", "(bbb,ccc,ddd)" },
-				new String[] { "category.categoryName", "C" },
-				new String[] { "category.id", "11" }, });
-		this.buildOrders(parameter, new Object[][] {
-				new Object[] { "unitPrice", true },
-				new Object[] { "productName", true }, });
-
-		DefaultEntityDataType productDataType = new DefaultEntityDataType();
-		productDataType.setAutoCreatePropertyDefs(true);
-		productDataType
-				.setMatchType(com.bstek.dorado.hibernate.entity.Product.class);
-		AggregationDataType resultDataType = new AggregationDataType();
-		resultDataType.setElementDataType(productDataType);
-
-		DefaultEntityDataType categoryDataType = new DefaultEntityDataType();
-		categoryDataType.setAutoCreatePropertyDefs(true);
-		categoryDataType
-				.setMatchType(com.bstek.dorado.hibernate.entity.Category.class);
-		BasePropertyDef categoryProperty = new BasePropertyDef();
-		categoryProperty.setName("category");
-		categoryProperty.setDataType(categoryDataType);
-		productDataType.addPropertyDef(categoryProperty);
-
-		provider.getResult(parameter, resultDataType);
+		System.out.println("test_5()=======================================================");
+		CriteriaDataProvider provider = getDataProvider("test_5");
+		
+		Criteria criteria = new Criteria();
+		{
+			criteria.addCriterion(createFilterCriterion("category.id", DataUtils.getDataType(long.class), "4"));
+			criteria.addCriterion(createFilterCriterion("id", DataUtils.getDataType(long.class), ">=4"));
+			criteria.addCriterion(createFilterCriterion("category.id", DataUtils.getDataType(long.class), "<>4"));
+			criteria.addCriterion(createFilterCriterion("unitPrice", DataUtils.getDataType(float.class), "<=6.8"));
+			criteria.addCriterion(createFilterCriterion("unitPrice", DataUtils.getDataType(float.class), "<6.9"));
+			criteria.addCriterion(createFilterCriterion("unitPrice", DataUtils.getDataType(float.class), ">8.99"));
+			criteria.addCriterion(createFilterCriterion("productName", DataUtils.getDataType(String.class), "C"));
+			criteria.addCriterion(createFilterCriterion("category.categoryName", DataUtils.getDataType(String.class), "%C"));
+			criteria.addCriterion(createFilterCriterion("category.id", DataUtils.getDataType(long.class), "[1,10]"));
+			criteria.addCriterion(createFilterCriterion("category.categoryName", DataUtils.getDataType(String.class), "(bbb,ccc,ddd)"));
+			criteria.addCriterion(createFilterCriterion("category.categoryName", DataUtils.getDataType(String.class), "C"));
+			criteria.addCriterion(createFilterCriterion("category.id", DataUtils.getDataType(long.class), "11"));
+		}
+		{
+			criteria.addOrder(new Order("unitPrice", true));
+			criteria.addOrder(new Order("productName", true));
+		}
+		
+		Record parameter = new Record();
+		parameter.put("criteria", criteria);
+		provider.getResult(parameter);
 	}
 
-	@SuppressWarnings("rawtypes")
 	public void test_6() throws Exception {
-		System.out
-				.println("test_6()=======================================================");
-		CriteriaDataProvider provider = this.getDataProvider("test_6");
-		Map parameter = new HashMap();
-		this.buildCriterions(parameter, new String[][] { new String[] {
-				"category.categoryName", "%C" }, });
-
-		DefaultEntityDataType productDataType = new DefaultEntityDataType();
-		productDataType.setAutoCreatePropertyDefs(true);
-		productDataType
-				.setMatchType(com.bstek.dorado.hibernate.entity.Product.class);
-		AggregationDataType resultDataType = new AggregationDataType();
-		resultDataType.setElementDataType(productDataType);
-
-		DefaultEntityDataType categoryDataType = new DefaultEntityDataType();
-		categoryDataType.setAutoCreatePropertyDefs(true);
-		categoryDataType
-				.setMatchType(com.bstek.dorado.hibernate.entity.Category.class);
-		BasePropertyDef categoryProperty = new BasePropertyDef();
-		categoryProperty.setName("category");
-		categoryProperty.setDataType(categoryDataType);
-		productDataType.addPropertyDef(categoryProperty);
-
-		provider.getResult(parameter, resultDataType);
+		System.out.println("test_6()=======================================================");
+		CriteriaDataProvider provider = getDataProvider("test_6");
+		
+		Criteria criteria = new Criteria();
+		{
+			criteria.addCriterion(createFilterCriterion("category.categoryName", DataUtils.getDataType(String.class), "%C"));
+		}
+		
+		Record parameter = new Record();
+		parameter.put("criteria", criteria);
+		provider.getResult(parameter);
 	}
 
-	@SuppressWarnings("rawtypes")
 	public void test_7() throws Exception {
-		System.out
-				.println("test_7()=======================================================");
-		CriteriaDataProvider provider = this.getDataProvider("test_7");
+		System.out.println("test_7()=======================================================");
+		CriteriaDataProvider provider = getDataProvider("test_7");
 
-		Map parameter = new HashMap();
-		this.buildCriterions(parameter, new String[][] {
-				new String[] { "category.categoryName", "%C" },
-				new String[] { "category.parent.categoryName", "%B" }, });
-
-		DefaultEntityDataType productDataType = new DefaultEntityDataType();
-		productDataType.setAutoCreatePropertyDefs(true);
-		productDataType
-				.setMatchType(com.bstek.dorado.hibernate.entity.Product.class);
-		AggregationDataType resultDataType = new AggregationDataType();
-		resultDataType.setElementDataType(productDataType);
-
-		DefaultEntityDataType categoryDataType = new DefaultEntityDataType();
-		categoryDataType.setAutoCreatePropertyDefs(true);
-		categoryDataType
-				.setMatchType(com.bstek.dorado.hibernate.entity.Category.class);
-		BasePropertyDef categoryProperty = new BasePropertyDef();
-		categoryProperty.setName("category");
-		categoryProperty.setDataType(categoryDataType);
-
-		DefaultEntityDataType pcategoryDataType = new DefaultEntityDataType();
-		pcategoryDataType.setAutoCreatePropertyDefs(true);
-		pcategoryDataType
-				.setMatchType(com.bstek.dorado.hibernate.entity.Category.class);
-		BasePropertyDef pcategoryProperty = new BasePropertyDef();
-		pcategoryProperty.setName("parent");
-		pcategoryProperty.setDataType(pcategoryDataType);
-
-		categoryDataType.addPropertyDef(pcategoryProperty);
-		productDataType.addPropertyDef(categoryProperty);
-
-		provider.getResult(parameter, resultDataType);
+		Criteria criteria = new Criteria();
+		{
+			criteria.addCriterion(createFilterCriterion("category.categoryName", DataUtils.getDataType(String.class), "%C"));
+			criteria.addCriterion(createFilterCriterion("category.parent.categoryName", DataUtils.getDataType(String.class), "%B"));
+		}
+		
+		Record parameter = new Record();
+		parameter.put("criteria", criteria);
+		provider.getResult(parameter);
 	}
 
-	@SuppressWarnings("rawtypes")
 	public void test_8() throws Exception {
-		System.out
-				.println("test_8()=======================================================");
-		CriteriaDataProvider provider = this.getDataProvider("test_8");
+		System.out.println("test_8()=======================================================");
+		CriteriaDataProvider provider = getDataProvider("test_8");
 
-		Map parameter = new HashMap();
-		this.buildCriterions(parameter, new String[][] {
-				new String[] { "category.categoryName", "%C" },
-				new String[] { "category.parent.categoryName", "%B" }, });
-
-		DefaultEntityDataType productDataType = new DefaultEntityDataType();
-		productDataType.setAutoCreatePropertyDefs(true);
-		productDataType
-				.setMatchType(com.bstek.dorado.hibernate.entity.Product.class);
-		AggregationDataType resultDataType = new AggregationDataType();
-		resultDataType.setElementDataType(productDataType);
-
-		DefaultEntityDataType categoryDataType = new DefaultEntityDataType();
-		categoryDataType.setAutoCreatePropertyDefs(true);
-		categoryDataType
-				.setMatchType(com.bstek.dorado.hibernate.entity.Category.class);
-		BasePropertyDef categoryProperty = new BasePropertyDef();
-		categoryProperty.setName("category");
-		categoryProperty.setDataType(categoryDataType);
-
-		DefaultEntityDataType pcategoryDataType = new DefaultEntityDataType();
-		pcategoryDataType.setAutoCreatePropertyDefs(true);
-		pcategoryDataType
-				.setMatchType(com.bstek.dorado.hibernate.entity.Category.class);
-		BasePropertyDef pcategoryProperty = new BasePropertyDef();
-		pcategoryProperty.setName("parent");
-		pcategoryProperty.setDataType(pcategoryDataType);
-
-		categoryDataType.addPropertyDef(pcategoryProperty);
-		productDataType.addPropertyDef(categoryProperty);
-
-		provider.getResult(parameter, resultDataType);
+		Criteria criteria = new Criteria();
+		{
+			criteria.addCriterion(createFilterCriterion("category.categoryName", DataUtils.getDataType(String.class), "%C"));
+			criteria.addCriterion(createFilterCriterion("category.parent.categoryName", DataUtils.getDataType(String.class), "%B"));
+		}
+		
+		Record parameter = new Record();
+		parameter.put("criteria", criteria);
+		provider.getResult(parameter);
 	}
 
-	@SuppressWarnings("rawtypes")
 	public void test_9() throws Exception {
-		System.out
-				.println("test_9()=======================================================");
+		System.out.println("test_9()=======================================================");
 		CriteriaDataProvider provider = this.getDataProvider("test_9");
 
-		Map parameter = new HashMap();
-		this.buildCriterions(parameter, new String[][] {
-				new String[] { "category.categoryName", "%C" },
-				new String[] { "category.parent.categoryName", "%B" }, });
-
-		DefaultEntityDataType productDataType = new DefaultEntityDataType();
-		productDataType.setAutoCreatePropertyDefs(true);
-		productDataType
-				.setMatchType(com.bstek.dorado.hibernate.entity.Product.class);
-		AggregationDataType resultDataType = new AggregationDataType();
-		resultDataType.setElementDataType(productDataType);
-
-		DefaultEntityDataType categoryDataType = new DefaultEntityDataType();
-		categoryDataType.setAutoCreatePropertyDefs(true);
-		categoryDataType
-				.setMatchType(com.bstek.dorado.hibernate.entity.Category.class);
-		BasePropertyDef categoryProperty = new BasePropertyDef();
-		categoryProperty.setName("category");
-		categoryProperty.setDataType(categoryDataType);
-
-		DefaultEntityDataType pcategoryDataType = new DefaultEntityDataType();
-		pcategoryDataType.setAutoCreatePropertyDefs(true);
-		pcategoryDataType
-				.setMatchType(com.bstek.dorado.hibernate.entity.Category.class);
-		BasePropertyDef pcategoryProperty = new BasePropertyDef();
-		pcategoryProperty.setName("parent");
-		pcategoryProperty.setDataType(pcategoryDataType);
-
-		categoryDataType.addPropertyDef(pcategoryProperty);
-		productDataType.addPropertyDef(categoryProperty);
-
-		provider.getResult(parameter, resultDataType);
+		Criteria criteria = new Criteria();
+		{
+			criteria.addCriterion(createFilterCriterion("category.categoryName", DataUtils.getDataType(String.class), "%C"));
+			criteria.addCriterion(createFilterCriterion("category.parent.categoryName", DataUtils.getDataType(String.class), "%B"));
+		}
+		
+		Record parameter = new Record();
+		parameter.put("criteria", criteria);
+		provider.getResult(parameter);
 	}
 }

@@ -5,6 +5,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.hibernate.criteria.HibernateCriteriaTransformer;
 
@@ -101,8 +102,8 @@ public class DoublePropertyCriterion extends BaseCriterion {
 		this.propertyName2 = propertyName2;
 	}
 
-	@XmlProperty(
-			parser = "com.bstek.dorado.hibernate.criteria.criterion.DoublePropertyCriterionOpParser")
+	@XmlProperty(parser = "spring:dorado.hibernate.doublePropertyCriterionOpParser")
+	@IdeProperty(enumValues="=,<>,>,<,<=,>=")
 	public OP getOp() {
 		return op;
 	}

@@ -5,6 +5,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.hibernate.criteria.HibernateCriteriaTransformer;
 
@@ -92,8 +93,8 @@ public class SizeCriterion extends SingleProperyCriterion {
 		this.value = value;
 	}
 
-	@XmlProperty(
-			parser = "com.bstek.dorado.hibernate.criteria.criterion.SizeCriterionOpParser")
+	@XmlProperty(parser = "spring:dorado.hibernate.sizeCriterionOpParser")
+	@IdeProperty(enumValues="=,<>,>,<,>=,<=")
 	public OP getOp() {
 		return op;
 	}

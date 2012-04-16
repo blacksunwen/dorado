@@ -3,9 +3,9 @@ package com.bstek.dorado.hibernate.criteria;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.XmlNodeWrapper;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.hibernate.criteria.criterion.BaseCriterion;
 
@@ -19,6 +19,7 @@ public class Alias {
 
 	private List<BaseCriterion> criterions = new ArrayList<BaseCriterion>();
 
+	@ClientProperty(escapeValue="true")
 	public boolean isAvailable() {
 		return available;
 	}
@@ -51,22 +52,8 @@ public class Alias {
 		this.joinType = joinType;
 	}
 
-	public void setJoinType(String joinType) {
-		if (StringUtils.isNotEmpty(joinType)) {
-			JoinType j = JoinType.valueOf(joinType);
-			if (j != null) {
-				this.joinType = j;
-			} else {
-				throw new IllegalArgumentException("unknown joinType '"
-						+ joinType + "'.");
-			}
-		} else {
-			this.joinType = null;
-		}
-	}
-
 	// ********** Criterion **********
-	@XmlSubNode
+	@XmlSubNode(wrapper= @XmlNodeWrapper(nodeName="Criterions"))
 	public List<BaseCriterion> getCriterions() {
 		return criterions;
 	}

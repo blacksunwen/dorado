@@ -1,11 +1,16 @@
 package com.bstek.dorado.hibernate.criteria;
 
+import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.XmlNode;
+
+@XmlNode
 public class SubCriteria extends BaseCriteria {
 
 	private boolean available = true;
 	private String associationPath;
 	private JoinType joinType;
 
+	@ClientProperty(escapeValue="true")
 	public boolean isAvailable() {
 		return available;
 	}

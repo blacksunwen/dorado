@@ -3,13 +3,12 @@ package com.bstek.dorado.hibernate.criteria;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.XmlNodeWrapper;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.hibernate.criteria.criterion.BaseCriterion;
 import com.bstek.dorado.hibernate.criteria.order.Order;
 import com.bstek.dorado.hibernate.criteria.projection.BaseProjection;
 
-@XmlNode
 public abstract class BaseCriteria {
 
 	protected String alias;
@@ -29,11 +28,11 @@ public abstract class BaseCriteria {
 	}
 
 	// ********** Alias **********
-	@XmlSubNode
+	@XmlSubNode(wrapper= @XmlNodeWrapper(nodeName="Aliases"))
 	public List<Alias> getAliases() {
 		return aliases;
 	}
-
+	
 	public void setAliases(List<Alias> aliases) {
 		this.aliases = aliases;
 	}
@@ -43,7 +42,7 @@ public abstract class BaseCriteria {
 	}
 
 	// ********** Projection **********
-	@XmlSubNode
+	@XmlSubNode(wrapper= @XmlNodeWrapper(nodeName="Projections"))
 	public List<BaseProjection> getProjections() {
 		return projections;
 	}
@@ -53,7 +52,7 @@ public abstract class BaseCriteria {
 	}
 
 	// ********** Criterion **********
-	@XmlSubNode
+	@XmlSubNode(wrapper= @XmlNodeWrapper(nodeName="Criterions"))
 	public List<BaseCriterion> getCriterions() {
 		return criterions;
 	}
@@ -63,7 +62,7 @@ public abstract class BaseCriteria {
 	}
 
 	// ********** Order **********
-	@XmlSubNode
+	@XmlSubNode(wrapper= @XmlNodeWrapper(nodeName="Orders"))
 	public List<Order> getOrders() {
 		return orders;
 	}
@@ -77,21 +76,21 @@ public abstract class BaseCriteria {
 	}
 
 	// ********** FetchMode **********
-	@XmlSubNode
+	@XmlSubNode(wrapper= @XmlNodeWrapper(nodeName="FetchModes"))
 	public List<FetchMode> getFetchModes() {
 		return fetchModes;
 	}
-
+	
 	public void addFetchMode(FetchMode fm) {
 		fetchModes.add(fm);
 	}
 
 	// ********** SubCriteria **********
-	@XmlSubNode
+	@XmlSubNode(wrapper= @XmlNodeWrapper(nodeName="SubCriterias"))
 	public List<SubCriteria> getSubCriterias() {
 		return this.subCriterias;
 	}
-
+	
 	public void addSubCriteria(SubCriteria sub) {
 		subCriterias.add(sub);
 	}

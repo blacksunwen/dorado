@@ -14,7 +14,7 @@ public class DoublePropertyCriterionOpParser extends PropertyParser {
 
 	@Override
 	protected Object doParse(Node node, ParseContext context) throws Exception {
-		return DoublePropertyCriterion.OP
-				.value((String) doParse(node, context));
+		String operator = (String) super.doParse(node, context);
+		return DoublePropertyCriterion.OP.value(operator);
 	}
 }

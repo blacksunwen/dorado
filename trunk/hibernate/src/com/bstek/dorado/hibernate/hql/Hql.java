@@ -13,7 +13,6 @@ public class Hql {
 
 	private List<HqlParameter> parametets = EMPTY_PARAMETER_MAP;
 	private String clause;
-	private AutoFilterVar filter;
 	
 	public Hql(String clause) {
 		Assert.notEmpty(clause);
@@ -33,12 +32,5 @@ public class Hql {
 			parametets = new ArrayList<HqlParameter>();
 		}
 		parametets.add(parameter);
-	}
-
-	public AutoFilterVar getFilter() {
-		return filter;
-	}
-	public void setFilter(AutoFilterVar autoFilter) {
-		this.filter = autoFilter;
 	}
 }
