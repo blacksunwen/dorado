@@ -50,15 +50,15 @@ public class ExampleMaintain {
 	@DataProvider
 	@SuppressWarnings("rawtypes")
 	public Collection getExamplesByCategoryId(Long categoryId) throws Exception {
-		List<Example> examples = new ArrayList<Example>();
 		List<Object[]> rows = exampleDao.find("select e, r.sortFlag "
 				+ "from Example e, CategoryExampleRelation r "
 				+ "where e.id = r.exampleId and r.categoryId = " + categoryId
 				+ " order by r.sortFlag");
+
+		List<Example> examples = new ArrayList<Example>();
 		for (Object[] row : rows) {
 			Example example = EntityUtils.toEntity(row[0]);
 			EntityUtils.setValue(example, "sortFlag", row[1]);
-			EntityUtils.setState(example, EntityState.NONE);
 			examples.add(example);
 		}
 		return examples;

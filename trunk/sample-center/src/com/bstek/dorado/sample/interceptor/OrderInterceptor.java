@@ -32,20 +32,20 @@ public class OrderInterceptor {
 		Criteria criteria = orderDao.createCriteria();
 		if (parameter != null) {
 			if (parameter.get("orderDate1") != null) {
-				criteria.add(Restrictions.ge("orderDate", parameter
-						.get("orderDate1")));
+				criteria.add(Restrictions.ge("orderDate",
+						parameter.get("orderDate1")));
 			}
 			if (parameter.get("orderDate2") != null) {
-				criteria.add(Restrictions.le("orderDate", parameter
-						.get("orderDate2")));
+				criteria.add(Restrictions.le("orderDate",
+						parameter.get("orderDate2")));
 			}
 			if (parameter.get("customer") != null) {
-				criteria.add(Restrictions.eq("customer", parameter
-						.get("customer")));
+				criteria.add(Restrictions.eq("customer",
+						parameter.get("customer")));
 			}
 			if (parameter.get("employee") != null) {
-				criteria.add(Restrictions.eq("employee", parameter
-						.get("employee")));
+				criteria.add(Restrictions.eq("employee",
+						parameter.get("employee")));
 			}
 		}
 		orderDao.find(page, criteria);

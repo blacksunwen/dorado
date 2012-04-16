@@ -15,7 +15,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 @Entity
 @Table(name = "CATEGORIES")
@@ -68,8 +67,7 @@ public class Category implements Serializable {
 	}
 
 	@OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-	@JoinColumn(name = "PARENT_ID")
-	@Transient
+	@JoinColumn(name = "PARENT_ID", insertable = false, updatable = false)
 	public Collection<Category> getCategories() {
 		return categories;
 	}
@@ -79,8 +77,7 @@ public class Category implements Serializable {
 	}
 
 	@OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-	@JoinColumn(name = "CATEGORY_ID")
-	@Transient
+	@JoinColumn(name = "CATEGORY_ID", insertable = false, updatable = false)
 	public Collection<Product> getProducts() {
 		return products;
 	}

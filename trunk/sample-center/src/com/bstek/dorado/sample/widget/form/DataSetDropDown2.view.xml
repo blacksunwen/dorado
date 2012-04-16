@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Model>
+    <DataType name="Order" parent="global:Order">
+      <PropertyDef name="customer">
+        <Property name="dataType">BaseCustomer</Property>
+      </PropertyDef>
+      <PropertyDef name="employeeName"/>
+    </DataType>
+  </Model>
+  <View style="margin:30px" title="DataSetDropDown 1">
+    <DataSet id="dsOrders">
+      <Property name="dataProvider">orderInterceptor#getAll</Property>
+      <Property name="dataType">[Order]</Property>
+      <Property name="pageSize">1</Property>
+    </DataSet>
+    <DataSet id="dsCustomers">
+      <Property name="dataType">[BaseCustomer]</Property>
+      <Property name="dataProvider">customerInterceptor#findCustomersByCompanyName</Property>
+    </DataSet>
+    <DataSetDropDown id="ddCustomers" dynaFilter="true">
+      <Property name="dataSet">dsCustomers</Property>
+      <Property name="autoOpen">true</Property>
+    </DataSetDropDown>
+    <FieldSet>
+      <Property name="width">600</Property>
+      <Property name="height">260</Property>
+      <Property name="contentOverflow">visible</Property>
+      <Property name="caption">合同信息</Property>
+      <Children>
+        <AutoForm cols="*" dataSet="dsOrders">
+          <AutoFormElement>
+            <Property name="property">customer</Property>
+            <Property name="trigger">ddCustomers</Property>
+          </AutoFormElement>
+          <AutoFormElement property="orderDate">
+            <Editor>
+              <DateTimeSpinner>
+                <Property name="type">date</Property>
+                <Property name="trigger">defaultDateDropDown</Property>
+              </DateTimeSpinner>
+            </Editor>
+          </AutoFormElement>
+          <AutoFormElement>
+            <Property name="property">shipName</Property>
+          </AutoFormElement>
+          <AutoFormElement>
+            <Property name="property">shipAddress</Property>
+          </AutoFormElement>
+          <AutoFormElement>
+            <Property name="property">shipCity</Property>
+          </AutoFormElement>
+        </AutoForm>
+      </Children>
+    </FieldSet>
+  </View>
+</ViewConfig>

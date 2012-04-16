@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Model>
+    <DataType name="Order" parent="global:Order">
+      <PropertyDef name="customer">
+        <Property name="dataType">BaseCustomer</Property>
+      </PropertyDef>
+      <PropertyDef name="employeeName"/>
+    </DataType>
+  </Model>
+  <View style="margin:30px" title="DataSetDropDown 1">
+    <DataSet id="dsOrders">
+      <Property name="dataProvider">dataSetDropDown1#getOrders</Property>
+      <Property name="dataType">[Order]</Property>
+      <Property name="pageSize">1</Property>
+    </DataSet>
+    <DataSet id="dsEmployees">
+      <Property name="dataType">[BaseEmployee]</Property>
+      <Property name="dataProvider">employeeInterceptor#findEmployeesByFirstName</Property>
+    </DataSet>
+    <DataSetDropDown id="ddEmployees" dynaFilter="true">
+      <Property name="dataSet">dsEmployees</Property>
+      <Property name="autoOpen">true</Property>
+      <Property name="assignmentMap">employeeId=id,employeeName=firstName</Property>
+      <Property name="displayProperty">firstName</Property>
+    </DataSetDropDown>
+    <FieldSet>
+      <Property name="width">600</Property>
+      <Property name="height">260</Property>
+      <Property name="contentOverflow">visible</Property>
+      <Property name="caption">合同信息</Property>
+      <Children>
+        <AutoForm cols="*" dataSet="dsOrders">
+          <AutoFormElement>
+            <Property name="property">employeeName</Property>
+            <Property name="trigger">ddEmployees</Property>
+            <Editor/>
+          </AutoFormElement>
+          <AutoFormElement>
+            <Property name="property">employeeId</Property>
+            <Property name="readOnly">true</Property>
+          </AutoFormElement>
+          <AutoFormElement property="orderDate">
+            <Editor>
+              <DateTimeSpinner>
+                <Property name="type">date</Property>
+                <Property name="trigger">defaultDateDropDown</Property>
+              </DateTimeSpinner>
+            </Editor>
+          </AutoFormElement>
+          <AutoFormElement>
+            <Property name="property">shipName</Property>
+          </AutoFormElement>
+          <AutoFormElement>
+            <Property name="property">shipAddress</Property>
+          </AutoFormElement>
+          <AutoFormElement>
+            <Property name="property">shipCity</Property>
+          </AutoFormElement>
+        </AutoForm>
+      </Children>
+    </FieldSet>
+  </View>
+</ViewConfig>

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ViewConfig>
   <Model>
-    <DataType name="XExample" parent="Example">
+    <DataType name="Example" parent="global:Example">
       <PropertyDef name="sources" dataType="[ExampleSource]"/>
     </DataType>
   </Model>
   <View layout="Anchor" pageTemplate="com/bstek/dorado/sample/ExampleSummary.html" title="示例简述">
-    <DataSet id="dsExample" dataProvider="exampleSummary#getExample" dataType="XExample" loadMode="preload" parameter="${request.getParameter(&quot;exampleId&quot;)}">
+    <DataSet id="dsExample" dataProvider="exampleSummary#getExample" loadMode="preload" parameter="${request.getParameter(&quot;exampleId&quot;)}">
       <ClientEvent name="onReady">
 var id = self.getData(&quot;id&quot;);
 $(&quot;a&quot;).attr(&quot;target&quot;, &quot;doc_&quot; + id);
@@ -15,6 +15,7 @@ if (sources.entityCount == 0) {
 	sources.createChild({ label: &quot;(未定义源文件)&quot; });
 }
 </ClientEvent>
+      <Property name="dataType">Example</Property>
     </DataSet>
     <SimpleButton className="button-run" renderTo="#buttonRunHold"/>
     <DataGrid dataPath="sources" dataSet="dsExample" dynaRowHeight="true" highlightCurrentRow="false" readOnly="true" renderOn="#gridSource" width="600">

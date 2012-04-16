@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Arguments/>
+  <Context/>
+  <Model>
+    <DataType name="ChartData">
+      <PropertyDef name="area">
+        <Property name="label">Area</Property>
+        <Property name="dataType">float</Property>
+      </PropertyDef>
+      <PropertyDef name="line">
+        <Property name="label">Line</Property>
+        <Property name="dataType">float</Property>
+      </PropertyDef>
+      <PropertyDef name="bar">
+        <Property name="label">Bar</Property>
+        <Property name="dataType">float</Property>
+      </PropertyDef>
+    </DataType>
+  </Model>
+  <View layout="padding:20">
+    <DataSet id="dsChartData">
+      <Property name="dataType">[ChartData]</Property>
+      <Property name="dataProvider">chartDataProvider#getDualYAxisData</Property>
+    </DataSet>
+    <Container>
+      <Property name="width">800</Property>
+      <Property name="height">400</Property>
+      <OpenFlashChart>
+        <Property name="backgroundColor">#ffffff</Property>
+        <Property name="title">
+          <Property name="text">PopulationChart</Property>
+        </Property>
+        <YAxis>
+          <Property name="max">300</Property>
+          <Property name="min">260</Property>
+          <Property name="steps">10</Property>
+          <Labels>
+            <Property name="text">#val#M</Property>
+          </Labels>
+        </YAxis>
+        <YAxisRight>
+          <Property name="max">2</Property>
+          <Property name="min">0</Property>
+          <Property name="steps">0.5</Property>
+        </YAxisRight>
+        <Elements>
+          <Column>
+            <Property name="dataSet">dsChartData</Property>
+            <Property name="bindingConfig">
+              <Property name="valueProperty">bar</Property>
+            </Property>
+            <Property name="text">Population</Property>
+            <Property name="color">#afd8f8</Property>
+            <Property name="type">Glass</Property>
+          </Column>
+          <Line>
+            <Property name="bindingConfig">
+              <Property name="valueProperty">line</Property>
+            </Property>
+            <Property name="dataSet">dsChartData</Property>
+            <Property name="text">Birth Rate</Property>
+            <Property name="axis">right</Property>
+            <Property name="color">#f6bd0f</Property>
+          </Line>
+          <Area>
+            <Property name="dataSet">dsChartData</Property>
+            <Property name="bindingConfig">
+              <Property name="valueProperty">area</Property>
+            </Property>
+            <Property name="text">Death Rate</Property>
+            <Property name="axis">right</Property>
+            <Property name="color">#c2da79</Property>
+          </Area>
+        </Elements>
+        <XAxis>
+          <Property name="labelsShortcut">2000,2001,2002,2003,2004,2005</Property>
+        </XAxis>
+      </OpenFlashChart>
+      <DataGrid layoutConstraint="right">
+        <Property name="dataSet">dsChartData</Property>
+        <Property name="autoCreateColumns">true</Property>
+        <Property name="width">270</Property>
+      </DataGrid>
+    </Container>
+  </View>
+</ViewConfig>

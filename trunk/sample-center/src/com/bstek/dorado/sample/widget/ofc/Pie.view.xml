@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Arguments/>
+  <Context/>
+  <Model>
+    <DataType name="PieData">
+      <PropertyDef name="label"/>
+      <PropertyDef name="value"/>
+    </DataType>
+  </Model>
+  <View>
+    <DataSet id="dsPie">
+      <Property name="dataType">[PieData]</Property>
+      <Property name="dataProvider">chartDataProvider#getPieData</Property>
+    </DataSet>
+    <SplitPanel>
+      <Property name="direction">right</Property>
+      <Property name="position">180</Property>
+      <MainControl>
+        <OpenFlashChart>
+          <Property name="legend">
+            <Property name="visible">true</Property>
+            <Property name="position">top</Property>
+            <Property name="border">true</Property>
+            <Property name="shadow">true</Property>
+          </Property>
+          <Property name="title">
+            <Property name="text">Alphabet Usage in a Novel</Property>
+          </Property>
+          <Elements>
+            <Pie>
+              <Property name="bindingConfig">
+                <Property name="valueProperty">value</Property>
+                <Property name="labelProperty">label</Property>
+                <Property name="textProperty">label</Property>
+              </Property>
+              <Property name="gradientFill">true</Property>
+              <Property name="dataSet">dsPie</Property>
+              <Property name="colors">#DDDF0D,#55BF3B,#DF5353,#7798BF,#aaeeee,#ff0066,#eeaaee,#55BF3B,#DF5353,#7798BF,#aaeeee</Property>
+              <Property name="toolTip">#val#</Property>
+            </Pie>
+          </Elements>
+        </OpenFlashChart>
+      </MainControl>
+      <SideControl>
+        <DataGrid>
+          <Property name="dataSet">dsPie</Property>
+          <Property name="autoCreateColumns">true</Property>
+        </DataGrid>
+      </SideControl>
+    </SplitPanel>
+  </View>
+</ViewConfig>

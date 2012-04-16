@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Arguments/>
+  <Context/>
+  <Model>
+    <DataType name="ExampleCategory" parent="global:ExampleCategory">
+      <Reference name="categories" dataProvider="main#getCategories" dataType="[SELF]" parameter="$${this.id}"/>
+      <Reference name="examples" dataProvider="main#getExamplesByCategoryId" dataType="[Example]" parameter="$${this.id}"/>
+    </DataType>
+    <DataType name="Example" parent="global:Example">
+      <PropertyDef name="sortFlag" dataType="int"/>
+      <PropertyDef name="sources" dataType="[ExampleSource]"/>
+    </DataType>
+  </Model>
+  <View layout="anchor padding:20">
+    <DataSet id="dsExamples" dataProvider="main#getCategories" dataType="[ExampleCategory]"/>
+    <SplitPanel>
+      <Property name="position">280</Property>
+      <Property name="width">800</Property>
+      <Property name="height">600</Property>
+      <MainControl/>
+      <SideControl>
+        <Panel layout="padding:1">
+          <Property name="caption">操作的数据</Property>
+          <Buttons/>
+          <Children>
+            <DataTree id="treeExamples">
+              <Property name="expandingAnimated">true</Property>
+              <Property name="dataSet">dsExamples</Property>
+              <BindingConfigs>
+                <BindingConfig childrenProperty="categories" icon=">images/folder.gif" labelProperty="label" name="Category" recursive="true">
+                  <Property name="expandLevel">3</Property>
+                  <BindingConfig childrenProperty="examples" icon=">images/file.gif" labelProperty="label" name="Example"/>
+                </BindingConfig>
+              </BindingConfigs>
+            </DataTree>
+          </Children>
+          <Tools/>
+        </Panel>
+      </SideControl>
+    </SplitPanel>
+  </View>
+</ViewConfig>

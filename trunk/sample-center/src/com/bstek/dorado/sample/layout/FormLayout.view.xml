@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Arguments>
+    <Argument name="layoutRegion">
+      <Property name="value">background:#FDFEDA; border:1px #DBB74A solid; padding:4px; display:block; height: 100%; overflow: hidden</Property>
+    </Argument>
+  </Arguments>
+  <View layout="anchor padding:20">
+    <Property name="title">FormLayout</Property>
+    <Panel layout="form cols:120,*,120,*">
+      <Property name="contentOverflow">visible</Property>
+      <Property name="width">700</Property>
+      <Property name="caption">FormLayout - cols: 120,*,120,*</Property>
+      <Children>
+        <HtmlContainer layoutConstraint="left" style="${argument.layoutRegion}">
+          <Property name="content">&amp;nbsp;</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="left" style="${argument.layoutRegion}">
+          <Property name="content">&amp;nbsp;</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="left" style="${argument.layoutRegion}">
+          <Property name="content">&amp;nbsp;</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="left" style="${argument.layoutRegion}">
+          <Property name="content">&amp;nbsp;</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="type:left;colSpan:2" style="${argument.layoutRegion}">
+          <Property name="content">colSpan: 2</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="left" style="${argument.layoutRegion}">
+          <Property name="content">&amp;nbsp;</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="left" style="${argument.layoutRegion}">
+          <Property name="content">&amp;nbsp;</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="type:left;colSpan:3" style="${argument.layoutRegion}">
+          <Property name="content">colSpan: 3</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="type:left;colSpan:2" style="${argument.layoutRegion}">
+          <Property name="content">colSpan: 2</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="type:left;colSpan:2;rowSpan:2" style="${argument.layoutRegion}">
+          <Property name="content">colSpan: 2; rowSpan: 2</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="left" style="${argument.layoutRegion}">
+          <Property name="content">&amp;nbsp;</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="type:left;rowSpan:4" style="${argument.layoutRegion}">
+          <Property name="content">rowSpan: 4</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="left" style="${argument.layoutRegion}">
+          <Property name="content">&amp;nbsp;</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="left" style="${argument.layoutRegion}">
+          <Property name="content">&amp;nbsp;</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="left" style="${argument.layoutRegion}">
+          <Property name="content">&amp;nbsp;</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="type:left;rowSpan:4" style="${argument.layoutRegion}">
+          <Property name="content">rowSpan: 4</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="left" style="${argument.layoutRegion}">
+          <Property name="content">&amp;nbsp;</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="left" style="${argument.layoutRegion}">
+          <Property name="content">&amp;nbsp;</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="left" style="${argument.layoutRegion}">
+          <Property name="content">&amp;nbsp;</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="left" style="${argument.layoutRegion}">
+          <Property name="content">&amp;nbsp;</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="left" style="${argument.layoutRegion}">
+          <Property name="content">&amp;nbsp;</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="left" style="${argument.layoutRegion}">
+          <Property name="content">&amp;nbsp;</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="left" style="${argument.layoutRegion}">
+          <Property name="content">&amp;nbsp;</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="left" style="${argument.layoutRegion}">
+          <Property name="content">&amp;nbsp;</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="type:left;colSpan:4" style="${argument.layoutRegion}">
+          <Property name="content">colSpan: 4</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="type:left;colSpan:4" style="${argument.layoutRegion}">
+          <Property name="content">colSpan: 4</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="left" style="${argument.layoutRegion}">
+          <Property name="content">&amp;nbsp;</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="type:left;rowSpan:2;colSpan:3" style="${argument.layoutRegion}">
+          <Property name="content">colSpan: 3; rowSpan: 2</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="left" style="${argument.layoutRegion}">
+          <Property name="content">&amp;nbsp;</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="left" style="${argument.layoutRegion}">
+          <Property name="content">&amp;nbsp;</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="left" style="${argument.layoutRegion}">
+          <Property name="content">&amp;nbsp;</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="left" style="${argument.layoutRegion}">
+          <Property name="content">&amp;nbsp;</Property>
+        </HtmlContainer>
+      </Children>
+    </Panel>
+  </View>
+</ViewConfig>

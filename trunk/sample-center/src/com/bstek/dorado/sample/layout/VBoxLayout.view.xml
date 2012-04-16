@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Arguments>
+    <Argument name="layoutRegion">
+      <Property name="value">background:#FDFEDA; border:1px #DBB74A solid; padding:4px; display:block; overflow: hidden</Property>
+    </Argument>
+  </Arguments>
+  <View layout="hbox padding:20;regionPadding:20;align:top">
+    <Property name="title">VBoxLayout</Property>
+    <FieldSet layout="vbox pack:start">
+      <Property name="height">100%</Property>
+      <Property name="width">200</Property>
+      <Property name="caption">VBox - pack:start</Property>
+      <Buttons/>
+      <Children>
+        <HtmlContainer layoutConstraint="left" style="${argument.layoutRegion}">
+          <Property name="content">Region</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="left" style="${argument.layoutRegion}">
+          <Property name="content">Region</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="left" style="${argument.layoutRegion}">
+          <Property name="content">Region</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="left" style="${argument.layoutRegion}">
+          <Property name="content">Region</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="left" style="${argument.layoutRegion}">
+          <Property name="content">Region</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="left" style="${argument.layoutRegion}">
+          <Property name="content">Region</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="left" style="${argument.layoutRegion}">
+          <Property name="content">Region</Property>
+        </HtmlContainer>
+      </Children>
+    </FieldSet>
+    <FieldSet layout="vbox pack:center">
+      <Property name="height">100%</Property>
+      <Property name="width">200</Property>
+      <Property name="caption">VBox - pack:center</Property>
+      <Buttons/>
+      <Children>
+        <HtmlContainer layoutConstraint="left" style="${argument.layoutRegion}">
+          <Property name="content">Region</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="left" style="${argument.layoutRegion}">
+          <Property name="content">Region</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="left" style="${argument.layoutRegion}">
+          <Property name="content">Region</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="left" style="${argument.layoutRegion}">
+          <Property name="content">Region</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="left" style="${argument.layoutRegion}">
+          <Property name="content">Region</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="left" style="${argument.layoutRegion}">
+          <Property name="content">Region</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="left" style="${argument.layoutRegion}">
+          <Property name="content">Region</Property>
+        </HtmlContainer>
+      </Children>
+    </FieldSet>
+    <FieldSet layout="vbox pack:end">
+      <Property name="height">100%</Property>
+      <Property name="width">200</Property>
+      <Property name="caption">VBox - pack:start</Property>
+      <Buttons/>
+      <Children>
+        <HtmlContainer layoutConstraint="left" style="${argument.layoutRegion}">
+          <Property name="content">Region</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="left" style="${argument.layoutRegion}">
+          <Property name="content">Region</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="left" style="${argument.layoutRegion}">
+          <Property name="content">Region</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="left" style="${argument.layoutRegion}">
+          <Property name="content">Region</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="left" style="${argument.layoutRegion}">
+          <Property name="content">Region</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="left" style="${argument.layoutRegion}">
+          <Property name="content">Region</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="left" style="${argument.layoutRegion}">
+          <Property name="content">Region</Property>
+        </HtmlContainer>
+      </Children>
+    </FieldSet>
+  </View>
+</ViewConfig>

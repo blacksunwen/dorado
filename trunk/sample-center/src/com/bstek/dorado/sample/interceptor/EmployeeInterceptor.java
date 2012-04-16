@@ -6,6 +6,9 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +43,26 @@ public class EmployeeInterceptor {
 	@DataProvider
 	public void getEmployeesBySuperior(Page<Employee> page, Long parameter) {
 		employeeDao.find(page, "from Employee where reportsTo.id=" + parameter);
+	}
+
+	@DataProvider
+	public Collection<Employee> findEmployeesByFirstName(String namePattern) {
+		if (StringUtils.isEmpty(namePattern)) {
+			return employeeDao.getAll();
+		} else {
+			return employeeDao.find(Restrictions.like("firstName", namePattern,
+					MatchMode.ANYWHERE));
+		}
+	}
+
+	@DataProvider
+	public void findEmployeesByFirstName(Page<Employee> page, String namePattern) {
+		if (StringUtils.isEmpty(namePattern)) {
+			employeeDao.getAll(page);
+		} else {
+			employeeDao.find(page, Restrictions.like("firstName", namePattern,
+					MatchMode.ANYWHERE));
+		}
 	}
 
 	@DataProvider

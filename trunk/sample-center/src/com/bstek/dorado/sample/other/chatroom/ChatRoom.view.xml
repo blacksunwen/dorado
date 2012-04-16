@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Arguments/>
+  <Context/>
+  <Model/>
+  <View listener="spring:chatRoom#onReady" layout="padding:20">
+    <Panel id="panelChatRoom">
+      <Property name="width">600</Property>
+      <Property name="height">400</Property>
+      <Property name="maximizeable">true</Property>
+      <Property name="caption">Chat Room</Property>
+      <Buttons/>
+      <Children>
+        <CardBook id="cardbookChatRoom">
+          <Container layout="anchor">
+            <Container layout="vbox regionPadding:6" layoutConstraint="left:50%;top:50%">
+              <Label>
+                <Property name="text">请输入您的昵称：</Property>
+              </Label>
+              <TextEditor id="inputUser">
+                <ClientEvent name="onReady">self.set(&quot;text&quot;, this.get(&quot;userData&quot;));</ClientEvent>
+                <Property name="width">200</Property>
+              </TextEditor>
+              <Button layoutConstraint="align:right">
+                <ClientEvent name="onClick">var user = this.get(&quot;#inputUser.text&quot;);&#xD;
+if (!user) {&#xD;
+	throw new dorado.Exception(&quot;请输入一个有效的昵称！&quot;); &#xD;
+}&#xD;
+&#xD;
+this.set({&#xD;
+	userData: user,&#xD;
+	&quot;#cardbookChatRoom.currentIndex&quot;: 1,&#xD;
+	&quot;#panelChatRoom.caption&quot;: &quot;Chat Room - &quot; + user&#xD;
+});&#xD;
+this.get(&quot;#retrieveMessageAction&quot;).execute();</ClientEvent>
+                <Property name="caption">进入聊天室</Property>
+              </Button>
+            </Container>
+          </Container>
+          <Container layout="regionPadding:8">
+            <HtmlContainer id="messageList">
+              <Property name="style">
+                <Property name="border">1px gray solid</Property>
+              </Property>
+            </HtmlContainer>
+            <Container layout="anchor" layoutConstraint="bottom">
+              <Property name="contentOverflow">visible</Property>
+              <TextEditor id="inputMessage" layoutConstraint="left:0;right:54;top:1">
+                <ClientEvent name="onTextEdit">this.set(&quot;#sendMessageAction.disabled&quot;, self.get(&quot;text&quot;) == &quot;&quot;);&#xD;
+</ClientEvent>
+                <Property name="blankText">输入要发送的信息</Property>
+                <Property name="maxLength">144</Property>
+              </TextEditor>
+              <Button layoutConstraint="right:0">
+                <Property name="width">50</Property>
+                <Property name="action">sendMessageAction</Property>
+              </Button>
+            </Container>
+          </Container>
+        </CardBook>
+      </Children>
+      <Tools/>
+    </Panel>
+    <AjaxAction id="sendMessageAction">
+      <ClientEvent name="beforeExecute">self.set(&quot;parameter&quot;, {&#xD;
+	user: this.get(&quot;userData&quot;),&#xD;
+	message: this.get(&quot;#inputMessage.text&quot;)&#xD;
+});&#xD;
+this.set(&quot;#inputMessage.text&quot;, &quot;&quot;);&#xD;
+self.set(&quot;disabled&quot;, true);</ClientEvent>
+      <Property name="service">chatRoom#sendMessage</Property>
+      <Property name="caption">发送</Property>
+      <Property name="executingMessage">正在发送消息</Property>
+      <Property name="modal">false</Property>
+      <Property name="disabled">true</Property>
+    </AjaxAction>
+    <AjaxAction id="retrieveMessageAction">
+      <ClientEvent name="onReady">self.$lastMessageId = 0;</ClientEvent>
+      <ClientEvent name="onSuccess">function formatDate(time) {&#xD;
+	var date = Date.parseDate(time, &quot;Y-m-d\\TH:i:s\\Z&quot;);&#xD;
+	return date.formatDate(&quot;n-d H:i:s&quot;);&#xD;
+}&#xD;
+&#xD;
+var view = this, messagesDiv = view.get(&quot;#messageList&quot;).getDom();&#xD;
+if (arg.result) {&#xD;
+	arg.result.each(function(message){&#xD;
+		$(messagesDiv).xCreate([{&#xD;
+			tagName: &quot;DIV&quot;,&#xD;
+			className: &quot;message-author&quot;,&#xD;
+			contentText: message.user + &quot; - &quot; + formatDate(message.time)&#xD;
+		}, {&#xD;
+			tagName: &quot;DIV&quot;,&#xD;
+			className: &quot;message-text&quot;,&#xD;
+			contentText: message.text&#xD;
+		}]);&#xD;
+		messagesDiv.scrollTop = messagesDiv.scrollHeight - messagesDiv.clientHeight;&#xD;
+		&#xD;
+		if (message.id > self.$lastMessageId) {&#xD;
+			self.$lastMessageId = message.id;&#xD;
+		}&#xD;
+	});&#xD;
+}&#xD;
+self.execute();</ClientEvent>
+      <ClientEvent name="beforeExecute">self.set(&quot;parameter&quot;, self.$lastMessageId);&#xD;
+</ClientEvent>
+      <Property name="service">chatRoom#getMessages</Property>
+      <Property name="modal">false</Property>
+    </AjaxAction>
+  </View>
+</ViewConfig>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Arguments/>
+  <Context/>
+  <Model/>
+  <View layout="anchor padding:20">
+    <OpenFlashChart>
+      <Property name="height">300</Property>
+      <Property name="width">500</Property>
+      <YAxis>
+        <Property name="max">10</Property>
+      </YAxis>
+      <Elements>
+        <Shape>
+          <Property name="values">[{&quot;x&quot;:2,&quot;y&quot;:2},{&quot;x&quot;:4,&quot;y&quot;:2},{&quot;x&quot;:4,&quot;y&quot;:4},{&quot;x&quot;:3,&quot;y&quot;:5},{&quot;x&quot;:2,&quot;y&quot;:4}]</Property>
+        </Shape>
+      </Elements>
+      <XAxis>
+        <Property name="max">10</Property>
+      </XAxis>
+    </OpenFlashChart>
+  </View>
+</ViewConfig>

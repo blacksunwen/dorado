@@ -11,11 +11,13 @@
   </Model>
   <View title="Employee Maintain">
     <DataSet id="dsEmployees" dataProvider="employeeInterceptor#getAll" dataType="[Employee]"/>
-    <DataGrid dataSet="dsEmployees" stretchColumnsMode="stretchableColumns">
+    <DataGrid dataSet="dsEmployees">
       <DataColumn property="firstName"/>
       <DataColumn property="lastName"/>
       <DataColumn property="sex"/>
-      <DataColumn property="titleOfCourtesy" width="120"/>
+      <DataColumn property="titleOfCourtesy">
+        <Property name="width"></Property>
+      </DataColumn>
     </DataGrid>
   </View>
 </ViewConfig>

@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Arguments/>
+  <Context/>
+  <Model>
+    <DataType name="Phone">
+      <Property name="acceptUnknownProperty">true</Property>
+      <PropertyDef name="product">
+        <Property name="label">产品</Property>
+      </PropertyDef>
+      <PropertyDef name="manufacturer">
+        <Property name="label">制造商</Property>
+      </PropertyDef>
+      <PropertyDef name="price">
+        <Property name="label">价格</Property>
+        <Property name="dataType">float</Property>
+      </PropertyDef>
+      <PropertyDef name="storage">
+        <Property name="label">库存</Property>
+        <Property name="dataType">int</Property>
+      </PropertyDef>
+      <PropertyDef name="type">
+        <Property name="mapping">
+          <Property name="mapValues">
+            <Collection>
+              <Entity>
+                <Property name="key">A</Property>
+                <Property name="value">直板</Property>
+              </Entity>
+              <Entity>
+                <Property name="key">B</Property>
+                <Property name="value">翻盖</Property>
+              </Entity>
+              <Entity>
+                <Property name="key">C</Property>
+                <Property name="value">滑盖</Property>
+              </Entity>
+            </Collection>
+          </Property>
+          <Property name="keyProperty">key</Property>
+          <Property name="valueProperty">value</Property>
+        </Property>
+        <Property name="label">类型</Property>
+      </PropertyDef>
+      <PropertyDef name="length">
+        <Property name="label">长</Property>
+        <Property name="dataType">float</Property>
+      </PropertyDef>
+      <PropertyDef name="width">
+        <Property name="label">宽</Property>
+        <Property name="dataType">float</Property>
+      </PropertyDef>
+      <PropertyDef name="height">
+        <Property name="label">高</Property>
+        <Property name="dataType">float</Property>
+      </PropertyDef>
+      <PropertyDef name="commnet">
+        <Property name="label">备注</Property>
+      </PropertyDef>
+    </DataType>
+  </Model>
+  <View layout="vbox padding:20">
+    <DataSet id="dsPhones">
+      <ClientEvent name="onCreate">$ajax.request(&quot;>dorado/res/com/bstek/dorado/sample/data/Phones.js&quot;, function(result) {&#xD;
+	self.setData(result.getJsonData());&#xD;
+});</ClientEvent>
+      <Property name="dataType">[Phone]</Property>
+    </DataSet>
+    <DataGrid id="gridPhones">
+      <ClientEvent name="onRenderRow">arg.dom.style.background = (arg.data.get(&quot;discount&quot;)) ? &quot;#d5e4fc&quot; : &quot;&quot;;</ClientEvent>
+      <ClientEvent name="onCreate">var OperationCellRenderer = $extend(dorado.widget.grid.SubControlCellRenderer, {&#xD;
+	createSubControl: function(arg) {&#xD;
+		return new dorado.widget.Button({&#xD;
+			toggleable: true,&#xD;
+			onClick: function(self) {&#xD;
+				var entity = arg.data, originPrice, price;&#xD;
+				if (self.get(&quot;toggled&quot;)) {&#xD;
+					originPrice = entity.get(&quot;price&quot;);&#xD;
+					price = parseInt(originPrice * 0.8);&#xD;
+					entity.set({&#xD;
+						discount: true,&#xD;
+						price: price,&#xD;
+						originPrice: originPrice&#xD;
+					});&#xD;
+				}&#xD;
+				else {&#xD;
+					originPrice = entity.get(&quot;price&quot;);&#xD;
+					price = entity.get(&quot;originPrice&quot;);&#xD;
+					entity.set({&#xD;
+						discount: false,&#xD;
+						price: price&#xD;
+					});&#xD;
+				}&#xD;
+				&#xD;
+				dorado.widget.NotifyTipManager.notify(entity.get(&quot;product&quot;) + &quot;的价格已由&quot; + originPrice + &quot;调整为&quot; + price + &quot;!&quot;);&#xD;
+			},&#xD;
+			style: &quot;margin: 2px 16px&quot;&#xD;
+		});&#xD;
+	},&#xD;
+	&#xD;
+	refreshSubControl: function(button, arg) {&#xD;
+		var storage = arg.data.get(&quot;storage&quot;);&#xD;
+		button.set({&#xD;
+			caption: (storage > 0) ? &quot;折扣&quot; : &quot;无货&quot;,&#xD;
+			disabled: !(storage > 0),&#xD;
+			toggled: arg.data.get(&quot;discount&quot;)&#xD;
+		});&#xD;
+	}&#xD;
+});&#xD;
+&#xD;
+self.set(&quot;&amp;operation.renderer&quot;, new OperationCellRenderer());&#xD;
+</ClientEvent>
+      <Property name="height">380</Property>
+      <Property name="width">900</Property>
+      <Property name="showFooter">true</Property>
+      <Property name="showGroupFooter">true</Property>
+      <Property name="stretchColumnsMode">off</Property>
+      <Property name="selectionMode">multiRows</Property>
+      <Property name="dataSet">dsPhones</Property>
+      <Property name="fixedColumnCount">3</Property>
+      <Property name="rowHeight">28</Property>
+      <Property name="highlightCurrentRow">false</Property>
+      <Property name="headerRowHeight">30</Property>
+      <DataColumn>
+        <ClientEvent name="onRenderHeaderCell">var view = this;&#xD;
+$(arg.dom).empty();&#xD;
+var button = new dorado.widget.Button({&#xD;
+	caption: &quot;切换折扣&quot;,&#xD;
+	renderTo: arg.dom,&#xD;
+	style: &quot;margin: 0 2px&quot;,&#xD;
+	onClick: function() {&#xD;
+		view.get(&quot;#dsPhones.data&quot;).each(function(entity) {&#xD;
+			if (entity.get(&quot;storage&quot;) > 0) {&#xD;
+				var discount = entity.get(&quot;discount&quot;);&#xD;
+				if (discount) {&#xD;
+					originPrice = entity.get(&quot;price&quot;);&#xD;
+					price = entity.get(&quot;originPrice&quot;);&#xD;
+					entity.set({&#xD;
+						discount: false,&#xD;
+						price: price,&#xD;
+						originPrice: originPrice&#xD;
+					});&#xD;
+				}&#xD;
+				else {&#xD;
+					originPrice = entity.get(&quot;price&quot;);&#xD;
+					price = parseInt(originPrice * 0.8);&#xD;
+					entity.set({&#xD;
+						discount: true,&#xD;
+						price: price,&#xD;
+						originPrice: originPrice&#xD;
+					});&#xD;
+				}&#xD;
+			}&#xD;
+		});&#xD;
+	}&#xD;
+});&#xD;
+</ClientEvent>
+        <Property name="width">70</Property>
+        <Property name="name">operation</Property>
+        <Property name="align">left</Property>
+        <Property name="supportsOptionMenu">false</Property>
+        <Property name="readOnly">true</Property>
+        <Editor/>
+      </DataColumn>
+      <DataColumn>
+        <ClientEvent name="onRenderCell">$(arg.dom).empty().xCreate({&#xD;
+	tagName: &quot;IMG&quot;,&#xD;
+	src: $url(&quot;>dorado/res/com/bstek/dorado/sample/data/images/&quot; + arg.data.get(&quot;product&quot;) + &quot;-24.png&quot;),&#xD;
+	style: &quot;margin: 2px&quot;&#xD;
+});&#xD;
+&#xD;
+dorado.TipManager.initTip(arg.dom.parentNode, {&#xD;
+	content: {&#xD;
+		tagName: &quot;IMG&quot;,&#xD;
+		src: $url(&quot;>dorado/res/com/bstek/dorado/sample/data/images/&quot; + arg.data.get(&quot;product&quot;) + &quot;-128.png&quot;),&#xD;
+		style: &quot;width: 128px; height: 128px; margin: 8px&quot;&#xD;
+	},&#xD;
+	arrowDirection: &quot;top&quot;,&#xD;
+	arrowAlign: &quot;left&quot;&#xD;
+});</ClientEvent>
+        <Property name="caption">图片</Property>
+        <Property name="width">28</Property>
+        <Property name="supportsOptionMenu">false</Property>
+        <Editor/>
+      </DataColumn>
+      <DataColumn>
+        <Property name="property">product</Property>
+        <Property name="width">120</Property>
+      </DataColumn>
+      <DataColumn>
+        <Property name="property">manufacturer</Property>
+        <Property name="width">120</Property>
+      </DataColumn>
+      <DataColumn>
+        <ClientEvent name="onRenderCell">arg.dom.style.background = (arg.data.get(&quot;price&quot;) > 3000) ? &quot;#fcc5c5&quot; : &quot;&quot;;&#xD;
+arg.processDefault = true;</ClientEvent>
+        <ClientEvent name="onRenderFooterCell">arg.dom.innerText = &quot;平均：&quot; + dorado.util.Common.formatFloat(arg.data.get(&quot;price&quot;), &quot;#,##0&quot;);</ClientEvent>
+        <Property name="property">price</Property>
+        <Property name="summaryType">average</Property>
+        <Property name="displayFormat">#,##0.00</Property>
+        <Property name="dataType">float</Property>
+      </DataColumn>
+      <DataColumn>
+        <ClientEvent name="onRenderCell">arg.dom.style.background = (arg.data.get(&quot;storage&quot;) &lt;= 50) ? &quot;#d3d3d3&quot; : &quot;&quot;;&#xD;
+arg.dom.style.color = (arg.data.get(&quot;storage&quot;) &lt;= 50) ? &quot;red&quot; : &quot;&quot;;&#xD;
+arg.processDefault = true;</ClientEvent>
+        <ClientEvent name="onRenderFooterCell">arg.dom.innerText = &quot;总计：&quot; + arg.data.get(&quot;storage&quot;);</ClientEvent>
+        <Property name="property">storage</Property>
+        <Property name="summaryType">sum</Property>
+        <Property name="dataType">int</Property>
+        <Property name="editorType">NumberSpinner</Property>
+      </DataColumn>
+      <DataColumn>
+        <Property name="property">type</Property>
+        <Property name="renderer">dorado.widget.grid.RadioGroupCellRenderer</Property>
+        <Property name="width">150</Property>
+        <Property name="readOnly">true</Property>
+        <Property name="align">left</Property>
+        <Editor/>
+      </DataColumn>
+      <DataColumn>
+        <ClientEvent name="onRenderCell">var entity = arg.data;&#xD;
+arg.dom.innerText = entity.get(&quot;length&quot;) + &quot; x &quot; + entity.get(&quot;width&quot;) + &quot; x &quot; + entity.get(&quot;height&quot;);&#xD;
+</ClientEvent>
+        <Property name="caption">体积(mm)</Property>
+        <Property name="width">150</Property>
+        <Property name="supportsOptionMenu">false</Property>
+        <Editor/>
+      </DataColumn>
+      <DataColumn>
+        <Property name="property">comment</Property>
+        <Property name="width">200</Property>
+        <Property name="wrappable">true</Property>
+      </DataColumn>
+    </DataGrid>
+    <Tip>
+      <Property name="width">900</Property>
+      <Property name="floating">false</Property>
+      <Property name="arrowDirection">top</Property>
+      <Property name="arrowAlign">left</Property>
+      <Property name="content">此表格做了以下的自定义：&lt;br>1. Pic列可显示产品图片，且当鼠标移动到该列时可以显示出产品的大图。&lt;br>2. 当Price列大于3000时将显示为黑体。&lt;br>3. 当Storage列小于50时将显示为红色黑体。&lt;br>4. 正以折扣价销售的产品行将显示为特别的底色。&lt;br>5. Volumn列将三个属性的值合并显示在一起。&lt;br>6. Storage列可使用NumberSpinner进行编辑。&lt;br>7. Type列使用RadioGroupCellRenderer进行渲染。&lt;br>8. 每一行的第一列利用ControlCellRenderer在单元格中渲染了按钮。&lt;br>9. 自定义了Price和Storage列的列尾单元格的渲染方式。&lt;br>10. 第一列的列头中渲染了按钮。</Property>
+    </Tip>
+  </View>
+</ViewConfig>
