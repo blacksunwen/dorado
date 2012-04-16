@@ -11,5 +11,6 @@
 		<dependency org="com.bstek.dorado" name="dorado-hibernate" rev="latest.intergation" transitive="false" conf="runtime" />
 		<dependency org="com.bstek.dorado" name="dorado-chart" rev="latest.intergation" transitive="false" conf="runtime" />
 		<dependency org="com.bstek.dorado" name="dorado-desktop" rev="latest.intergation" transitive="false" conf="runtime" />
+		<dependency org="com.bstek.dorado" name="dorado-htmleditor" rev="latest.intergation" transitive="false" conf="runtime" />
 	</dependencies>
 </ivy-module>

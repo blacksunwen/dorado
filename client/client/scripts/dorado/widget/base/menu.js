@@ -341,7 +341,7 @@
 					focusItem.onBlur();
 				}
 
-				if (!item._disabled) {
+				if (!item._disabled && item.onFocus) {
 					item.onFocus(showSubmenu);
 				}
 			}

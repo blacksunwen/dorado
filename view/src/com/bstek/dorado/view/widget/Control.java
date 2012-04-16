@@ -47,7 +47,7 @@ public abstract class Control extends Component implements HtmlElement,
 	private String renderTo;
 	private String renderOn;
 	private String tip;
-	private Boolean visible = true;
+	private Boolean visible;
 	private HideMode hideMode = HideMode.visibility;
 	private boolean draggable;
 	private String dragTags;

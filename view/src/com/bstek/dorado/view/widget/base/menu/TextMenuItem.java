@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
-import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.common.event.ClientEventSupported;
@@ -18,11 +17,9 @@ import com.bstek.dorado.view.widget.action.ActionSupport;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2009-11-4
  */
-@ClientObject(prototype = "dorado.widget.menu.TextMenuItem",
-		shortTypeName = "Text")
 @ClientEvents({ @ClientEvent(name = "onClick") })
-public class TextMenuItem extends BaseMenuItem implements MenuItemGroup,
-		ActionSupport, ClientEventSupported {
+public abstract class TextMenuItem extends BaseMenuItem implements
+		MenuItemGroup, ActionSupport, ClientEventSupported {
 	private String caption;
 	private String icon;
 	private String iconClass;

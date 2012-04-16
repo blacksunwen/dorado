@@ -3,6 +3,7 @@ package com.bstek.dorado.view.widget.base;
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
 import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.view.annotation.Widget;
 
 /**
@@ -21,6 +22,7 @@ public class Button extends AbstractButton {
 	private boolean showTrigger;
 	private boolean splitButton;
 
+	@IdeProperty(highlight = 1)
 	public String getCaption() {
 		return caption;
 	}

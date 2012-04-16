@@ -19,7 +19,7 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 		
 		/**
 		 * 当前活动的组件。
-		 * @type dorado.widget.Control|int
+		 * @type dorado.widget.Control
 		 * @attribute
 		 */
 		currentControl: {
@@ -76,6 +76,26 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 					}
 				}
 				cardbook.fireEvent("onCurrentChange", this, eventArg);
+			}
+		},
+		
+		/**
+		 * 当前活动的组件的序号（自0开始计算）。
+		 * @type int
+		 * @attribute
+		 */
+		currentIndex: {
+			skipRefresh: true,
+			getter: function() {
+				var cardbook = this, controls = cardbook._controls;
+				if (cardbook._currentControl) {
+					return controls.indexOf(cardbook._currentControl);
+				}
+				return -1;
+			},
+			setter: function(index) {
+				var cardbook = this;
+				cardbook.set("currentControl", cardbook._controls.get(index));
 			}
 		},
 		
@@ -162,7 +182,7 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 		var card = this, controls = card._controls;
 		card.registerInnerControl(control);
 		controls.insert(control, index);
-		if (current !== false) {
+		if (current) {
 			card.set("currentControl", control);
 		}
 		return control;

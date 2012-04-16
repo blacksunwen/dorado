@@ -70,7 +70,12 @@
 		
 		refreshDom: function(dom) {
 			$invokeSuper.call(this, arguments);
-			this.set("currentIndex", this._currentIndex);
+			
+			var currentIndex = this._currentIndex;
+			if (currentIndex < 0 && !this._allowNoCurrent && this._itemModel.getItemCount()) {
+				currentIndex = 0;
+			}
+			this.set("currentIndex", currentIndex);
 		},
 		
 		_doOnKeyDown: function(evt) {

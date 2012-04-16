@@ -10,7 +10,6 @@ import org.apache.commons.lang.StringUtils;
  * @since Feb 27, 2007
  */
 public class DoradoAbout {
-
 	private static String instanceId = new VMID().toString();
 	private static long instantiationTime = System.currentTimeMillis();
 

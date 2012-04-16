@@ -103,7 +103,7 @@ public class Action extends Component {
 	}
 
 	@IdeProperty(
-			enumValues = "f1,f2,ctrl+s,alt+s,shift+s,ctrl+alt+shift+s,space,backspace,left,right,up,down")
+			enumValues = "f1,f2,ctrl+s,alt+s,shift+s,ctrl+alt+shift+s,return,space,backspace,left,right,up,down")
 	public String getHotkey() {
 		return hotkey;
 	}

@@ -515,6 +515,16 @@
 				path: "editor.value"
 			},
 			
+			entity: {
+				setter: function(entity) {
+					this._entity = entity;
+					var hintControl = this.getHintControl();
+					if (hintControl) {
+						hintControl.set("messages", null);
+					}
+				}
+			},
+			
 			readOnly: {
 				setter: function(v) {
 					this._readOnly = v;

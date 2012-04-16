@@ -217,7 +217,7 @@ jQuery.fn.unshadow = function() {
 };
 
 /**
- * @name jQuery#unshadow
+ * @name jQuery#disableShadow
  * @function
  * @description 禁用shadow效果，目前仅对非css阴影有效。如果发现在某些情况下，在IE浏览器下的阴影效果不理想(比如动画过程中)，可以考虑临时禁用阴影。
  * @return {jQuery} 调用此方法的jQuery对象自身。
@@ -237,7 +237,7 @@ jQuery.fn.disableShadow = function() {
 };
 
 /**
- * @name jQuery#unshadow
+ * @name jQuery#enableShadow
  * @function
  * @description 启用shadow效果，目前仅对非css阴影有效。
  * @return {jQuery} 调用此方法的jQuery对象自身。

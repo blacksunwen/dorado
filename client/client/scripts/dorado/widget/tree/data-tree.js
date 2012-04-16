@@ -216,7 +216,6 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 					}
 				} else {
 					node._parent._changeVisibleChildNodeCount(1);
-					if (entity == currentEntity) tree._currentNode = node;
 				}
 
 				eventArg.node = node;
@@ -245,7 +244,9 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 				}
 			}
 
-			var tree = this._tree, nodes = this._nodes, expandedNodes = {}, currentEntity = tree.get("currentEntity");
+			var tree = this._tree, nodes = this._nodes, expandedNodes = {}, currentNode = tree.get("currentNode");
+			if (currentNode && currentNode._parent == this) tree.set("currentNode", this);
+			
 			for (var it = nodes.iterator(); it.hasNext();) {
 				var node = it.next();
 				if (node._data) expandedNodes[node._data.entityId] = !!node._expanded;

@@ -3,6 +3,7 @@ package com.bstek.dorado.view.widget.base;
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.IdeProperty;
+import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Control;
 import com.bstek.dorado.view.widget.FloatControl;
@@ -32,6 +33,7 @@ public class Tip extends Control implements FloatControl {
 
 	private String caption;
 	private String text;
+	private Object content;
 	private boolean closeable;
 	private TipArrowDirection arrowDirection = TipArrowDirection.none;
 	private int arrowOffset;
@@ -159,6 +161,16 @@ public class Tip extends Control implements FloatControl {
 
 	public void setText(String text) {
 		this.text = text;
+	}
+
+	@XmlProperty
+	@ClientProperty
+	public Object getContent() {
+		return content;
+	}
+
+	public void setContent(Object content) {
+		this.content = content;
 	}
 
 	public boolean isCloseable() {

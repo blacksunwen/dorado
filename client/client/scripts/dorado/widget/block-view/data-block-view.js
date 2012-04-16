@@ -299,11 +299,12 @@ dorado.widget.DataBlockView = $extend([dorado.widget.AbstractBlockView, dorado.w
 	
 	/**
 	 * 高亮指定的子元素。
-	 * @param {int} index 要高亮的子元素的数据实体。
+	 * @param {dorado.Entity} [entity] 要高亮的数据实体，如果不指定此参数则表示要高亮当前行。
 	 * @param {Object} [options] 高亮选项。见jQuery ui相关文档中关于highlight方法的说明。
 	 * @param {Object} [speed] 动画速度。
 	 */
 	highlightItem: function(entity, options, speed) {
+		entity = entity || this.getCurrentItem();
 		var block = this._itemDomMap[entity.entityId];
 		if (block) {
 			$fly(block).effect("pulsate", {

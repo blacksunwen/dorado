@@ -7,6 +7,7 @@ import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.view.annotation.Widget;
 
@@ -23,7 +24,7 @@ public class RadioGroup extends AbstractDataEditor {
 	private RadioGroupLayout layout = RadioGroupLayout.vertical;
 	private List<RadioButton> radioButtons = new ArrayList<RadioButton>();
 
-	@XmlSubNode
+	@XmlProperty
 	@ClientProperty
 	public Object getValue() {
 		return value;

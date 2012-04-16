@@ -13,8 +13,8 @@ public class FormLayout extends Layout {
 	private String cols;
 	private boolean stretchWidth;
 	private int rowHeight;
-	private int cellSpacing;
-	private int cellPadding = 3;
+	private int colPadding = 6;
+	private int rowPadding = 6;
 
 	@IdeProperty(highlight = 1)
 	public String getCols() {
@@ -41,20 +41,21 @@ public class FormLayout extends Layout {
 		this.rowHeight = rowHeight;
 	}
 
-	public int getCellSpacing() {
-		return cellSpacing;
+	@ClientProperty(escapeValue = "6")
+	public int getColPadding() {
+		return colPadding;
 	}
 
-	public void setCellSpacing(int cellSpacing) {
-		this.cellSpacing = cellSpacing;
+	public void setColPadding(int colPadding) {
+		this.colPadding = colPadding;
 	}
 
-	@ClientProperty(escapeValue = "3")
-	public int getCellPadding() {
-		return cellPadding;
+	@ClientProperty(escapeValue = "6")
+	public int getRowPadding() {
+		return rowPadding;
 	}
 
-	public void setCellPadding(int cellPadding) {
-		this.cellPadding = cellPadding;
+	public void setRowPadding(int rowPadding) {
+		this.rowPadding = rowPadding;
 	}
 }

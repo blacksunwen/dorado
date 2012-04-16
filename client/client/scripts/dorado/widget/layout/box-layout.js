@@ -132,7 +132,14 @@
 			
 			$(parentDom).css("text-align", HBOX_PACKS[this._pack]);
 			row.style.verticalAlign = HBOX_ALIGNS[this._align];
-			table.style.height = realContainerHeight + "px";
+			
+			if (!dorado.Browser.webkit) {
+				table.style.height = realContainerHeight + "px";
+			}
+			else {
+				row.style.height = realContainerHeight + "px";
+			}
+			
 			for (var it = this._regions.iterator(); it.hasNext();) {
 				var region = it.next(), cell = domCache[region.id];
 				if (cell) {
@@ -165,6 +172,7 @@
 					(refCell) ? tbody.insertBefore(cell, refCell) : row.appendChild(cell);
 				}
 				cell.style.display = "";
+				if (constraint.align) cell.style.verticalAlign = constraint.align;
 				
 				var w = region.control._width;
 				if (w) {
@@ -417,7 +425,7 @@
 				}
 				region.height = h;
 				
-				cell.align = VBOX_ALIGNS[this._align];
+				cell.align = constraint.align || VBOX_ALIGNS[this._align];
 				if (i > 0) cell.style.paddingTop = regionPadding + "px";
 				
 				if (isNewRow) this.renderControl(region, div, true, true);

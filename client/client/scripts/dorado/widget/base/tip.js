@@ -55,11 +55,27 @@
 			caption: {},
 
 			/**
-             * Tip显示的文本，可以为Html。
+             * Tip显示的文本。
+             * <p>
+             * 如果用户同时定义了content属性，那么此属性的值将被忽略。
+             * </p>
 			 * @attribute
 			 * @type String
 			 */
 			text: {},
+			
+			/**
+             * Tip显示的内容。此属性有如下四种可能的定义方式：
+             * <ul>
+             * 	<li>String	-	表示以HTML方式定义Tip的内容。</li>
+             * 	<li>Object	-	表示该参数是将要传递给{@link $DomUtils.xCreate}的参数，即利用JSON定义的HTML。</li>
+             * 	<li>HTMLElement	-	表示直接将此Dom对象作为Tip的内容。</li>
+             * 	<li>dorado.widget.Control	-	表示直接将此Control渲染到Tip中作为其内容。</li>
+             * </ul>
+			 * @attribute
+			 * @type String|Object|HTMLElement|dorado.widget.Control
+			 */
+			content: {},
 
 			/**
 			 * 图标所在路径。
@@ -261,10 +277,29 @@
 			$invokeSuper.call(this, arguments);
 
 			var tip = this, text = (tip._text == undefined) ? "&nbsp;&nbsp;" : tip._text,
-				doms = tip._doms, arrowDirection = tip._arrowDirection, cls = tip._className;
+				doms = tip._doms, arrowDirection = tip._arrowDirection, cls = tip._className,
+				content = this._content;
 
 			$fly(dom).prop("className", "i-tip " + cls + " d-shadow-drop");
-			$fly(doms.tipText).html(text);
+			
+			$tipText = $fly(doms.tipText);
+			if (content) {
+				if (typeof content == "string") {
+					$tipText.html(content);
+				}
+				else if (content instanceof dorado.widget.Control) {
+					$tipText.empty();
+					content.render(doms.tipText);
+				}
+				else if (content.nodeType && content.nodeName) {
+					$tipText.empty().append(content);
+				}
+				else {
+					$tipText.empty().xCreate(content);
+				}
+			} else {
+				$tipText.text(text);
+			}
 
 			if (arrowDirection && arrowDirection != "none") {
 				if (doms.arrow == null) {
@@ -644,7 +679,7 @@
 		var element = this, tip = dorado.TipManager.getTip(element);
 
 		// $log("tip._text:" + tip._text + "\ttip._visible:" + tip._visible);
-		if (tip._text && !tip._visible) {
+		if ((tip._text || tip._content) && !tip._visible) {
 			dorado.TipManager.showTip(element, tip._showDelay || 0, event);
 		}
 

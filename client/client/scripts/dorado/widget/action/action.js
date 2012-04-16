@@ -113,6 +113,7 @@
 					var self = this;
 					if (hotkey) jQuery(document).bind("keydown", hotkey, function() {
 						self.execute();
+						return false;
 					});
 				}
 			},

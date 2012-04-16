@@ -6,6 +6,7 @@ import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Control;
@@ -21,12 +22,26 @@ import com.bstek.dorado.view.widget.InnerElementList;
 		@ClientEvent(name = "onCurrentChange") })
 public class CardBook extends Control {
 	private List<Control> controls = new InnerElementList<Control>(this);
+	private int currentIndex;
+
+	public int getCurrentIndex() {
+		return currentIndex;
+	}
+
+	public void setCurrentIndex(int currentIndex) {
+		this.currentIndex = currentIndex;
+	}
+
+	@Deprecated
 	private int currentControl;
 
+	@Deprecated
+	@IdeProperty(visible = false)
 	public int getCurrentControl() {
 		return currentControl;
 	}
 
+	@Deprecated
 	public void setCurrentControl(int currentControl) {
 		this.currentControl = currentControl;
 	}

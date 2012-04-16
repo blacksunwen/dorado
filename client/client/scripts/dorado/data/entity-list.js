@@ -533,6 +533,14 @@
 		},
 		
 		/**
+		 * 返回某实体集合是否为空。
+		 * @return {boolean} 是否是空。
+		 */
+		isEmpty: function() {
+			return this.entityCount == 0;
+		},
+		
+		/**
 		 * 向集合中插入一个数据实体。
 		 * @param {dorado.Entity|Object} entity {optional} 要插入的数据实体或数据实体对应的JSON数据对象。
 		 * 如果不指定此参数或设置其值为null，EntityList会自动根据elementDataType来创建一个新的数据实体并插入。

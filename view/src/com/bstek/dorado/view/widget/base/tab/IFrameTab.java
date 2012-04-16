@@ -1,6 +1,7 @@
 package com.bstek.dorado.view.widget.base.tab;
 
 import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.IdeProperty;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -11,6 +12,7 @@ import com.bstek.dorado.annotation.ClientObject;
 public class IFrameTab extends Tab {
 	private String path;
 
+	@IdeProperty(highlight = 1)
 	public String getPath() {
 		return path;
 	}

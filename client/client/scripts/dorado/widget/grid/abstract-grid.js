@@ -572,6 +572,13 @@
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @class 表格控件的抽象类。
+	 * <p>
+	 * AbstractGrid的get方法在{@link dorado.AttributeSupport#get}的基础上做了增强。
+	 * 除了原有的读取属性值的功能之外，此方法还另外提供了下面的用法。
+	 * <ul>
+	 * 	<li>当传入一个以&开头的字符串时，@后面的内容将被识别成列的名称，表示根据名称获取表格列。参考{@link dorado.widget.AbstractGrid#getColumn}。</li>
+	 * </ul>
+	 * </p>
 	 * @abstract
 	 * @extends dorado.widget.AbstractList
 	 * @extends dorado.widget.grid.ColumnModel
@@ -1020,6 +1027,7 @@
 			 * @param {Object} self 事件的发起者，即组件本身。
 			 * @param {Object} arg 事件参数。
 			 * @param {HTMLElement} arg.dom 列头对应的DOM对象。
+			 * @param {dorado.Entity|Object} arg.data 行对应的数据实体。
 			 * @param {dorado.widget.grid.Column} arg.column 列头对应的列。
 			 * @param {boolean} #arg.processDefault 是否在事件结束后继续使用系统默认的渲染逻辑。
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
@@ -1083,6 +1091,16 @@
 			this._columns = new dorado.widget.grid.ColumnList(this, dorado._GET_NAME);
 			this._grid = this; // for ColumnModel
 			$invokeSuper.call(this, arguments);
+		},
+		
+		doGet: function(attr) {
+			var c = attr.charAt(0);
+			if (c == '&') {
+				var col = attr.substring(1);
+				return this.getColumn(col);
+			} else {
+				return $invokeSuper.call(this, [attr]);
+			}
 		},
 
 		createItemModel: function() {
@@ -1687,7 +1705,7 @@
 			this._disableCellEditor = true;
 		},
 
-		onMouseUp: function(evt) {
+		onClick: function(evt) {
 			dorado.Toolkits.cancelDelayedAction(this, "$refreshPanelTimerId");
 			this._disableCellEditor = false;
 			
@@ -1723,6 +1741,8 @@
 				this._editing = false;
 				this.setCurrentColumn(null);
 			}
+			
+			return $invokeSuper.call(this, arguments);
 		},
 
 		_getCellByEvent: function(event) {
@@ -1905,7 +1925,7 @@
 
 		/**
 		 * 高亮指定的数据实体对应的表格行。
-		 * @param {Object|dorado.Entity} entity 要高亮的数据实体。
+		 * @param {dorado.Entity} [entity] 要高亮的数据实体，如果不指定此参数则表示要高亮当前行。
 		 * @param {Object} [options] 高亮选项。见jQuery ui相关文档中关于highlight方法的说明。
 		 * @param {Object} [speed] 动画速度。
 		 */
@@ -1920,7 +1940,7 @@
 				});
 			}
 
-			if (!entity) return;
+			entity = entity || this.getCurrentItem();
 			var itemId = this._itemModel.getItemId(entity), innerGrid, row1, row2;
 			if (this._domMode == 2) {
 				innerGrid = this._fixedInnerGrid;
@@ -2791,7 +2811,8 @@
 									}
 									
 									if (eventArg.processDefault) {
-										if (column instanceof dorado.widget.grid.DataColumn && column._property != "none") {
+										if (column instanceof dorado.widget.grid.DataColumn &&
+											column._property != "none" && column._supportsOptionMenu) {
 											var sortState = column.get("sortState");
 											try {
 												grid.sort(column, !(sortState == null || sortState == "desc"));
@@ -2811,14 +2832,13 @@
 						if (dorado.Browser.msie && dorado.Browser.version < 7) {
 							cell.style.position = "static";
 						}
+						cell.align = col._headerAlign;
 
 						var label = cell.firstChild;
 						if (col instanceof dorado.widget.grid.DataColumn) {
-							cell.align = "left";
 							if (col.get("sortState")) $fly(cell).addClass("sorted-header");
 							label.style.width = col._realWidth + "px";
 						} else {
-							cell.align = "center";
 							var w = 0;
 							col._columns.each(function(subCol) {
 								if (subCol._visible) w += (subCol._realWidth || 0);
@@ -2827,7 +2847,7 @@
 						}
 
 						var processDefault = true, arg = {
-							dom: cell,
+							dom: label,
 							column: col,
 							processDefault: false
 						};
@@ -2946,7 +2966,12 @@
 					var col = dataColumns[i];
 					var cell = $DomUtils.getOrCreateChild(footerRow, i, this.createCell);
 					cell.className = "footer";
-					cell.align = col._align || '';
+					if (col._align) {
+						cell.align = col._align;
+					}
+					else {
+						cell.removeAttribute("align");
+					}
 
 					var label = cell.firstChild;
 					if (col instanceof dorado.widget.grid.DataColumn) {
@@ -2955,6 +2980,7 @@
 
 					var processDefault = true, arg = {
 							dom: label,
+							data: grid._itemModel.footerEntity,
 							column: col,
 							processDefault: false
 						};
