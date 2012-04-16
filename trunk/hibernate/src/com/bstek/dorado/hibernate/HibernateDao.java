@@ -18,6 +18,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projection;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -164,18 +165,28 @@ public class HibernateDao<T, PK extends Serializable> {
 	@SuppressWarnings("unchecked")
 	public Page<T> find(Page<T> page, Criteria criteria) {
 		notNull(page, "page");
-		
+
 		long totalCount = countCriteriaResult(criteria);
 		page.setEntityCount((int) totalCount);
 		setPageParameterToCriteria(criteria, page);
 		page.setEntities(criteria.list());
 		return page;
 	}
-	
-
 
 	public List<T> find(Criterion... criterions) {
 		return find(createCriteria(criterions));
+	}
+
+	public List<T> find(DetachedCriteria detachedCriteria) {
+		Criteria criteria = detachedCriteria
+				.getExecutableCriteria(getSession());
+		return find(criteria);
+	}
+
+	public Page<T> find(Page<T> page, DetachedCriteria detachedCriteria) {
+		Criteria criteria = detachedCriteria
+				.getExecutableCriteria(getSession());
+		return find(page, criteria);
 	}
 
 	public Page<T> find(Page<T> page, Criterion... criterions) {
@@ -285,7 +296,7 @@ public class HibernateDao<T, PK extends Serializable> {
 	@SuppressWarnings("unchecked")
 	public Page<T> find(Page<T> page, String hql, Object... parameters) {
 		notNull(page, "page");
-		
+
 		Query q = createQuery(hql, parameters);
 		long totalCount = countHqlResult(hql, parameters);
 		page.setEntityCount((int) totalCount);
@@ -297,7 +308,7 @@ public class HibernateDao<T, PK extends Serializable> {
 	@SuppressWarnings("unchecked")
 	public Page<T> find(Page<T> page, String hql, Map<String, ?> parameters) {
 		notNull(page, "page");
-		
+
 		Query q = createQuery(hql, parameters);
 		long totalCount = countHqlResult(hql, parameters);
 		page.setEntityCount((int) totalCount);
@@ -305,7 +316,7 @@ public class HibernateDao<T, PK extends Serializable> {
 		page.setEntities(q.list());
 		return page;
 	}
-	
+
 	protected void notNull(Object obj, String name) {
 		Assert.notNull(obj, "[" + name + "] must not be null.");
 	}
