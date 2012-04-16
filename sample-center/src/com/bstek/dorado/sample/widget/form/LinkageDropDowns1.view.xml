@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Arguments/>
+  <Context/>
+  <Model>
+    <DataType name="Form">
+      <PropertyDef name="categoryId">
+        <Property name="dataType">Long</Property>
+        <Property name="readOnly">true</Property>
+        <Property name="label">分类ID</Property>
+      </PropertyDef>
+      <PropertyDef name="categoryName">
+        <Property name="label">分类名称</Property>
+      </PropertyDef>
+      <PropertyDef name="productId">
+        <Property name="dataType">Long</Property>
+        <Property name="readOnly">true</Property>
+        <Property name="label">产品ID</Property>
+      </PropertyDef>
+      <PropertyDef name="productName">
+        <Property name="label">产品名称</Property>
+      </PropertyDef>
+    </DataType>
+    <DataType name="Category" parent="global:Category" meta="x:15;y:0">
+      <Reference name="products" dataProvider="productInterceptor#getProductsByCategoryId" parameter="$${this.id}"/>
+    </DataType>
+  </Model>
+  <View>
+    <DataSet id="dsForm">
+      <ClientEvent name="onReady">self.insert();&#xD;
+</ClientEvent>
+      <Property name="dataType">Form</Property>
+    </DataSet>
+    <DataSet id="dsCategories" dataProvider="categoryInterceptor#getAll" dataType="[Category]"/>
+    <DataSetDropDown id="ddCategories">
+      <Property name="dataSet">dsCategories</Property>
+      <Property name="assignmentMap">categoryName,categoryId=id</Property>
+    </DataSetDropDown>
+    <DataSetDropDown id="ddProducts">
+      <Property name="dataSet">dsCategories</Property>
+      <Property name="dataPath">#.products</Property>
+      <Property name="assignmentMap">productName,productId=id</Property>
+    </DataSetDropDown>
+    <AutoForm>
+      <Property name="dataType">Form</Property>
+      <Property name="dataSet">dsForm</Property>
+      <Property name="cols">400</Property>
+      <Property name="labelWidth">150</Property>
+      <AutoFormElement>
+        <Property name="name">categoryId</Property>
+        <Property name="property">categoryId</Property>
+        <Editor/>
+      </AutoFormElement>
+      <AutoFormElement>
+        <Property name="name">categoryName</Property>
+        <Property name="property">categoryName</Property>
+        <Property name="trigger">ddCategories</Property>
+        <Editor/>
+      </AutoFormElement>
+      <AutoFormElement>
+        <Property name="name">productId</Property>
+        <Property name="property">productId</Property>
+        <Editor/>
+      </AutoFormElement>
+      <AutoFormElement>
+        <Property name="name">productName</Property>
+        <Property name="property">productName</Property>
+        <Property name="trigger">ddProducts</Property>
+        <Editor/>
+      </AutoFormElement>
+    </AutoForm>
+  </View>
+</ViewConfig>

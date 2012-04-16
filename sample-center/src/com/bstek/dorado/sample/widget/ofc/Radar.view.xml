@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Arguments/>
+  <Context/>
+  <Model>
+    <DataType name="LineData">
+      <PropertyDef name="valueBlue">
+        <Property name="dataType">float</Property>
+        <Property name="label">Blue</Property>
+      </PropertyDef>
+      <PropertyDef name="valueOrange">
+        <Property name="dataType">float</Property>
+        <Property name="label">Orange</Property>
+      </PropertyDef>
+    </DataType>
+  </Model>
+  <View>
+    <DataSet id="dsRadar">
+      <Property name="dataType">[LineData]</Property>
+      <Property name="dataProvider">chartDataProvider#getRadarData</Property>
+    </DataSet>
+    <SplitPanel>
+      <Property name="direction">right</Property>
+      <Property name="position">180</Property>
+      <MainControl>
+        <OpenFlashChart>
+          <Property name="title">
+            <Property name="text">RadarExample</Property>
+          </Property>
+          <Elements>
+            <Area>
+              <Property name="bindingConfig">
+                <Property name="valueProperty">valueOrange</Property>
+              </Property>
+              <Property name="color">#FA3D37</Property>
+              <Property name="text">Orange</Property>
+              <Property name="width">1</Property>
+              <Property name="fontSize">10</Property>
+              <Property name="dataSet">dsRadar</Property>
+              <Property name="loop">true</Property>
+              <Property name="fillAlpha">0.3</Property>
+              <Property name="fillColor">#FA3D37</Property>
+              <Property name="toolTip">Orange&lt;br>#val#</Property>
+            </Area>
+            <Area>
+              <Property name="bindingConfig">
+                <Property name="valueProperty">valueBlue</Property>
+              </Property>
+              <Property name="color">#3D37FA</Property>
+              <Property name="text">Blue</Property>
+              <Property name="width">1</Property>
+              <Property name="fontSize">10</Property>
+              <Property name="dataSet">dsRadar</Property>
+              <Property name="loop">true</Property>
+              <Property name="toolTip">Blue&lt;br>#val#</Property>
+            </Area>
+          </Elements>
+          <RadarAxis>
+            <Property name="max">4</Property>
+            <Property name="stroke">1</Property>
+            <Property name="color">#909090</Property>
+            <Property name="gridColor">#C0DEBF</Property>
+            <Property name="steps">4</Property>
+            <Property name="labelsShortcut">0,1,2,3,4</Property>
+            <Property name="spokeLabelsShortcut">Accuratesse,Analystich&lt;br>vermogen,Creativiteit,Plannen en&lt;br>organiseren,Probleemanalyse,Samenwerken in&lt;br>teamverband,Zelfstandigheid</Property>
+          </RadarAxis>
+        </OpenFlashChart>
+      </MainControl>
+      <SideControl>
+        <DataGrid>
+          <Property name="dataSet">dsRadar</Property>
+          <Property name="autoCreateColumns">true</Property>
+        </DataGrid>
+      </SideControl>
+    </SplitPanel>
+  </View>
+</ViewConfig>

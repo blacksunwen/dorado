@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Arguments/>
+  <Context/>
+  <Model>
+    <DataType name="BarData">
+      <PropertyDef name="value2006">
+        <Property name="label">2006</Property>
+      </PropertyDef>
+      <PropertyDef name="value2007">
+        <Property name="label">2007</Property>
+      </PropertyDef>
+      <PropertyDef name="value2008">
+        <Property name="label">2008</Property>
+      </PropertyDef>
+    </DataType>
+  </Model>
+  <View>
+    <DataSet id="dsBars">
+      <Property name="dataType">[BarData]</Property>
+      <Property name="dataProvider">chartDataProvider#getColumnData</Property>
+    </DataSet>
+    <SplitPanel>
+      <Property name="direction">right</Property>
+      <Property name="position">270</Property>
+      <MainControl>
+        <OpenFlashChart>
+          <Property name="title">
+            <Property name="text">Country Comparison</Property>
+          </Property>
+          <Property name="legend">
+            <Property name="visible">true</Property>
+            <Property name="position">right</Property>
+          </Property>
+          <YAxis>
+            <Property name="offset">1</Property>
+            <Property name="labelsShortcut">Austria, Brazil, France,Italy,USA</Property>
+          </YAxis>
+          <Elements>
+            <Bar>
+              <Property name="bindingConfig">
+                <Property name="valueProperty">value2006</Property>
+              </Property>
+              <Property name="dataSet">dsBars</Property>
+              <Property name="color">#AFD8F8</Property>
+              <Property name="text">1996</Property>
+            </Bar>
+            <Bar>
+              <Property name="dataSet">dsBars</Property>
+              <Property name="bindingConfig">
+                <Property name="valueProperty">value2007</Property>
+              </Property>
+              <Property name="text">1997</Property>
+              <Property name="color">#F6BD0F</Property>
+            </Bar>
+            <Bar>
+              <Property name="dataSet">dsBars</Property>
+              <Property name="bindingConfig">
+                <Property name="valueProperty">value2008</Property>
+              </Property>
+              <Property name="text">1998</Property>
+              <Property name="color">#8BBA00</Property>
+            </Bar>
+          </Elements>
+          <XAxis>
+            <Property name="max">120000</Property>
+            <Property name="steps">10000</Property>
+            <Property name="min">0</Property>
+          </XAxis>
+        </OpenFlashChart>
+      </MainControl>
+      <SideControl>
+        <DataGrid>
+          <Property name="dataSet">dsBars</Property>
+          <Property name="autoCreateColumns">true</Property>
+        </DataGrid>
+      </SideControl>
+    </SplitPanel>
+  </View>
+</ViewConfig>

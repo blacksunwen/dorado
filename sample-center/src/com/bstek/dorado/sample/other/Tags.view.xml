@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <View layout="anchor">
+    <Property name="tags">控件标签</Property>
+    <ToolBar>
+      <ToolBarButton>
+        <ClientEvent name="onClick">this.set(&quot;^button.toggled&quot;, false);&#xD;
+this.set(&quot;^odd.toggled&quot;, true);</ClientEvent>
+        <Property name="caption">奇数按钮</Property>
+      </ToolBarButton>
+      <ToolBarButton>
+        <ClientEvent name="onClick">this.set(&quot;^button.toggled&quot;, false);&#xD;
+this.set(&quot;^even.toggled&quot;, true);</ClientEvent>
+        <Property name="caption">偶数按钮</Property>
+      </ToolBarButton>
+      <Separator/>
+      <ToolBarButton>
+        <ClientEvent name="onClick">this.set(&quot;^button.toggled&quot;, false);&#xD;
+this.set(&quot;^red.toggled&quot;, true);</ClientEvent>
+        <Property name="caption">红色按钮</Property>
+      </ToolBarButton>
+      <ToolBarButton>
+        <ClientEvent name="onClick">this.set(&quot;^button.toggled&quot;, false);&#xD;
+this.set(&quot;^green.toggled&quot;, true);</ClientEvent>
+        <Property name="caption">绿色按钮</Property>
+      </ToolBarButton>
+      <Separator/>
+      <ToolBarButton>
+        <ClientEvent name="onClick">this.set(&quot;^button.toggled&quot;, true);</ClientEvent>
+        <Property name="caption">按下所有按钮</Property>
+      </ToolBarButton>
+      <ToolBarButton>
+        <ClientEvent name="onClick">this.set(&quot;^button.toggled&quot;, false);</ClientEvent>
+        <Property name="caption">还原所有按钮</Property>
+      </ToolBarButton>
+    </ToolBar>
+    <Container layout="form cols:*,*,*,*">
+      <ClientEvent name="onCreate">var buttons = [];&#xD;
+for (var i = 1; i &lt;= 40; i++) {&#xD;
+	var color = (Math.random() &lt; 0.5) ? &quot;red&quot; : &quot;green&quot;;&#xD;
+	var tags = [&quot;button&quot;, (i % 2 == 0) ? &quot;even&quot; : &quot;odd&quot;, color];&#xD;
+	&#xD;
+	var button = {&#xD;
+		$type: &quot;Button&quot;,&#xD;
+		caption: dorado.util.Common.formatFloat(i, &quot;00&quot;),&#xD;
+		icon: &quot;>dorado/res/com/bstek/dorado/sample/other/&quot; + color + &quot;.gif&quot;,&#xD;
+		width: 60, toggleable: true,&#xD;
+		layoutConstraint: { align: &quot;center&quot; },&#xD;
+		tags: tags,&#xD;
+		tip: &quot;标签: &quot; + tags.toString()&#xD;
+	};&#xD;
+	buttons.push(button);&#xD;
+}&#xD;
+self.set(&quot;children&quot;, buttons);</ClientEvent>
+      <Property name="width">400</Property>
+    </Container>
+  </View>
+</ViewConfig>

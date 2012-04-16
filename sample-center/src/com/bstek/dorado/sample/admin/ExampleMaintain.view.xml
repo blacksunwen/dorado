@@ -124,6 +124,7 @@ if (entity) entity.cancel();
       <ClientEvent name="onSuccess">this.$dirtyEntityNum = 0;
 this.$refreshActions();</ClientEvent>
       <Property name="successMessage">数据保存成功。</Property>
+      <Property name="hotkey">ctrl+s</Property>
       <UpdateItem dataSet="dsCategories">
         <Property name="dataPath">!DIRTY_TREE</Property>
       </UpdateItem>
@@ -262,7 +263,6 @@ if (targetNode) {
 </ClientEvent>
           <BindingConfigs>
             <BindingConfig childrenProperty="categories" icon=">images/folder.gif" labelProperty="label" name="Category" recursive="true">
-              <Property name="expandLevel">1</Property>
               <BindingConfig childrenProperty="examples" icon=">images/file.gif" labelProperty="label" name="Example"/>
             </BindingConfig>
           </BindingConfigs>

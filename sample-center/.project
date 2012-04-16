@@ -10,10 +10,11 @@
 		<project>view</project>
 		<project>data</project>
 		<project>util</project>
-		<project>hibernate</project>
 		<project>chart</project>
 		<project>desktop</project>
+		<project>hibernate</project>
 		<project>htmleditor</project>
+		<project>jdbc</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

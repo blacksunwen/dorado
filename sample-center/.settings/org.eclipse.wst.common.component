@@ -24,16 +24,19 @@
         <dependent-module archiveName="util.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/util/util">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="hibernate.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/hibernate/hibernate">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
         <dependent-module archiveName="chart.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/chart/chart">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="desktop.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/desktop/desktop">
             <dependency-type>uses</dependency-type>
         </dependent-module>
+        <dependent-module archiveName="hibernate.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/hibernate/hibernate">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <dependent-module archiveName="htmleditor.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/htmleditor/htmleditor">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="jdbc.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jdbc/jdbc">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <property name="context-root" value="sample-center"/>

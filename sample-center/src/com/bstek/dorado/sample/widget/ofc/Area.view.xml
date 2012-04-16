@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Arguments/>
+  <Context/>
+  <Model>
+    <DataType name="areaData">
+      <PropertyDef name="value"/>
+    </DataType>
+  </Model>
+  <View>
+    <DataSet id="dsArea">
+      <Property name="dataType">[areaData]</Property>
+      <Property name="dataProvider">chartDataProvider#getAreaData</Property>
+    </DataSet>
+    <SplitPanel>
+      <Property name="direction">right</Property>
+      <Property name="position">150</Property>
+      <MainControl>
+        <OpenFlashChart>
+          <Property name="title">
+            <Property name="text">Sales</Property>
+          </Property>
+          <YAxis>
+            <Property name="max">6000</Property>
+            <Property name="steps">1000</Property>
+          </YAxis>
+          <Elements>
+            <Area>
+              <Property name="bindingConfig">
+                <Property name="valueProperty">value</Property>
+              </Property>
+              <Property name="dataSet">dsArea</Property>
+            </Area>
+          </Elements>
+          <XAxis>
+            <Property name="labelsShortcut">A,B,C,D,E,F,G,H,I,J</Property>
+          </XAxis>
+        </OpenFlashChart>
+      </MainControl>
+      <SideControl>
+        <DataGrid>
+          <Property name="dataSet">dsArea</Property>
+          <Property name="autoCreateColumns">true</Property>
+        </DataGrid>
+      </SideControl>
+    </SplitPanel>
+  </View>
+</ViewConfig>

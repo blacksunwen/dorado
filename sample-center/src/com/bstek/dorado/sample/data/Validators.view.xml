@@ -10,13 +10,39 @@
         <Property name="readOnly">false</Property>
         <Validator type="length">
           <Property name="maxLength">10</Property>
-          <Property name="minLength">5</Property>
+          <Property name="minLength">3</Property>
           <Property name="defaultResultState">warn</Property>
           <Property name="defaultResultState">warn</Property>
         </Validator>
         <Validator type="ajax">
           <Property name="service">validators#checkAccountName</Property>
           <Property name="executingMessage">正在检查账户名...</Property>
+        </Validator>
+      </PropertyDef>
+      <PropertyDef name="password">
+        <Property name="label">口令</Property>
+        <Validator type="length">
+          <Property name="minLength">3</Property>
+        </Validator>
+      </PropertyDef>
+      <PropertyDef name="password2">
+        <Property name="label">重输口令</Property>
+        <Validator type="custom">
+          <ClientEvent name="onValidate">var password = arg.entity.get(&quot;password&quot;);&#xD;
+if (password != arg.data) {&#xD;
+	throw new dorado.Exception(&quot;两次输入的口令不一致！&quot;);&#xD;
+}</ClientEvent>
+        </Validator>
+      </PropertyDef>
+      <PropertyDef name="age">
+        <Property name="dataType">Integer</Property>
+        <Property name="label">年龄</Property>
+        <Validator type="range">
+          <Property name="minValue">3</Property>
+          <Property name="maxValue">100</Property>
+          <Property name="resultMessage">您确定刚才输入的是自己真实的年龄吗？</Property>
+          <Property name="minValueValidateMode">allowEquals</Property>
+          <Property name="maxValueValidateMode">allowEquals</Property>
         </Validator>
       </PropertyDef>
       <PropertyDef name="registerDate">
@@ -39,22 +65,31 @@
 try {&#xD;
     var accounts = self.get(&quot;data&quot;), account;&#xD;
     &#xD;
-    account = accounts.insert();&#xD;
-    account.set(&quot;accountName&quot;, &quot;Dorado&quot;);&#xD;
-    account.set(&quot;registerDate&quot;, new Date(2000, 8, 25));&#xD;
-    account.set(&quot;email&quot;, &quot;dorado7@bstek.com&quot;);&#xD;
+    account = accounts.insert({&#xD;
+		accountName: &quot;John&quot;,&#xD;
+		password: &quot;abc123&quot;,&#xD;
+		password2: &quot;abc123&quot;,&#xD;
+		age: 27,&#xD;
+		registerDate: new Date(2000, 8, 25),&#xD;
+		email: &quot;dorado7@bstek.com&quot;&#xD;
+	});&#xD;
     account.validate();&#xD;
     account.reset();&#xD;
     &#xD;
-    account = accounts.insert();&#xD;
-    account.set(&quot;accountName&quot;, &quot;Guest&quot;);&#xD;
-    account.set(&quot;registerDate&quot;, new Date(2006, 1, 7));&#xD;
-    account.set(&quot;email&quot;, &quot;www.bstek.com&quot;);&#xD;
+    account = accounts.insert({&#xD;
+		accountName: &quot;Margaret&quot;,&#xD;
+		password: &quot;454788&quot;,&#xD;
+		password2: &quot;454788&quot;,&#xD;
+		age: 32,&#xD;
+		registerDate: new Date(2006, 1, 7),&#xD;
+		email: &quot;www.bstek.com&quot;&#xD;
+	});&#xD;
     account.validate();&#xD;
     &#xD;
-    account = accounts.insert();&#xD;
-    account.set(&quot;accountName&quot;, &quot;Administrator&quot;);&#xD;
-    account.set(&quot;registerDate&quot;, new Date(2007, 9, 22));&#xD;
+    account = accounts.insert({&#xD;
+		accountName: &quot;Administrator&quot;,&#xD;
+		registerDate: new Date(2007, 9, 22)&#xD;
+	});&#xD;
     account.validate();&#xD;
 }&#xD;
 finally {&#xD;
@@ -88,17 +123,55 @@ finally {&#xD;
       <Property name="hideMode">visibility</Property>
       <Property name="visible">true</Property>
       <AutoFormElement>
-        <Property name="name">accountName</Property>
         <Property name="property">accountName</Property>
         <Editor/>
       </AutoFormElement>
       <AutoFormElement>
-        <Property name="name">accountName</Property>
+        <Property name="showLabel">false</Property>
+        <Property name="showHint">false</Property>
+        <Property name="height">40</Property>
+        <Editor>
+          <Tip>
+            <Property name="text">尝试输入这几个名字看看：Andrew，Nancy，Jane，Laura</Property>
+            <Property name="floating">false</Property>
+          </Tip>
+        </Editor>
+      </AutoFormElement>
+      <AutoFormElement>
+        <Property name="property">password</Property>
+        <Editor>
+          <PasswordEditor>
+            <Property name="blankText">请输入多于3个字符的口令...</Property>
+          </PasswordEditor>
+        </Editor>
+      </AutoFormElement>
+      <AutoFormElement>
+        <Property name="property">password2</Property>
+        <Property name="editorType">PasswordEditor</Property>
+        <Editor/>
+      </AutoFormElement>
+      <AutoFormElement>
+        <Property name="showLabel">false</Property>
+        <Property name="showHint">false</Property>
+        <Property name="height">40</Property>
+        <Editor>
+          <Tip>
+            <Property name="text">此处含有自定义校验器用于校验两次输入的口令是否一致。</Property>
+            <Property name="floating">false</Property>
+          </Tip>
+        </Editor>
+      </AutoFormElement>
+      <AutoFormElement>
+        <Property name="property">age</Property>
+        <Editor>
+          <NumberSpinner/>
+        </Editor>
+      </AutoFormElement>
+      <AutoFormElement>
         <Property name="property">registerDate</Property>
         <Editor/>
       </AutoFormElement>
       <AutoFormElement>
-        <Property name="name">email</Property>
         <Property name="property">email</Property>
         <Editor>
           <TextEditor>
@@ -106,13 +179,41 @@ finally {&#xD;
           </TextEditor>
         </Editor>
       </AutoFormElement>
+      <AutoFormElement>
+        <Property name="showLabel">false</Property>
+        <Property name="showHint">false</Property>
+        <Property name="height">40</Property>
+        <Editor>
+          <Tip>
+            <Property name="text">使用RegExpValidator，其正则表达式为\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*</Property>
+            <Property name="floating">false</Property>
+          </Tip>
+        </Editor>
+      </AutoFormElement>
     </AutoForm>
     <DataGrid id="dataGridAccount">
       <Property name="dataSet">dataSetAccount</Property>
-      <Property name="width">600</Property>
+      <Property name="width">800</Property>
       <Property name="height">200</Property>
       <Property name="stretchColumnsMode">stretchableColumns</Property>
+      <Property name="dataType">Account</Property>
       <IndicatorColumn/>
+      <DataColumn>
+        <Property name="property">accountName</Property>
+        <Property name="name"></Property>
+      </DataColumn>
+      <DataColumn>
+        <Property name="property">age</Property>
+        <Property name="name"></Property>
+      </DataColumn>
+      <DataColumn>
+        <Property name="property">registerDate</Property>
+        <Property name="name"></Property>
+      </DataColumn>
+      <DataColumn>
+        <Property name="property">email</Property>
+        <Property name="name"></Property>
+      </DataColumn>
     </DataGrid>
     <UpdateAction/>
   </View>

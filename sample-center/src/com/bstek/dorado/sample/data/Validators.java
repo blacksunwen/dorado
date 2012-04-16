@@ -1,21 +1,30 @@
 package com.bstek.dorado.sample.data;
 
+import javax.annotation.Resource;
+
 import org.springframework.stereotype.Component;
 
 import com.bstek.dorado.annotation.Expose;
+import com.bstek.dorado.sample.entity.Employee;
+import com.bstek.dorado.sample.dao.EmployeeDao;
 
 @Component
 @Expose
 public class Validators {
-	private static final String VALID_ACCOUNT = "Dorado";
+	@Resource
+	private EmployeeDao employeeDao;
 
 	public String checkAccountName(String parameter)
 			throws InterruptedException {
 		Thread.sleep(500);
-		if (VALID_ACCOUNT.equals(parameter)) {
+
+		Employee employee = employeeDao.findUnique(
+				"from Employee where firstName=?", parameter);
+
+		if (employee == null) {
 			return null;
 		} else {
-			return "Invalid User Name, Please try \"" + VALID_ACCOUNT + "\".";
+			return "帐户名\"" + parameter + "\"已经被人注册了 。";
 		}
 	}
 }

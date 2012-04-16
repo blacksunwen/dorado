@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Arguments/>
+  <Context/>
+  <Model/>
+  <View>
+    <DataSet id="dsOrders">
+      <Property name="dataType">[Order]</Property>
+      <Property name="dataProvider">serverSideFilterAndSort#getAll</Property>
+      <Property name="pageSize">20</Property>
+      <Property name="readOnly">true</Property>
+    </DataSet>
+    <ToolBar>
+      <DataPilot>
+        <Property name="dataSet">dsOrders</Property>
+      </DataPilot>
+      <Separator/>
+      <ToolBarButton>
+        <ClientEvent name="onClick">var dataGrid = this.get(&quot;#dataGrid&quot;);&#xD;
+dataGrid.set(&quot;filterEntity.freight&quot;, &quot;>700&quot;).filter();</ClientEvent>
+        <Property name="icon">url(skin>common/icons.gif) 0 -40px</Property>
+        <Property name="caption">过滤Freight</Property>
+      </ToolBarButton>
+      <ToolBarButton>
+        <ClientEvent name="onClick">var dataGrid = this.get(&quot;#dataGrid&quot;);&#xD;
+dataGrid.set(&quot;filterEntity.orderDate&quot;, &quot;&lt;=2011-03-15&quot;).filter();</ClientEvent>
+        <Property name="icon">url(skin>common/icons.gif) 0 -40px</Property>
+        <Property name="caption">过滤OrderDate</Property>
+      </ToolBarButton>
+      <ToolBarButton>
+        <ClientEvent name="onClick">var dataGrid = this.get(&quot;#dataGrid&quot;);&#xD;
+dataGrid.set(&quot;filterEntity.shipCity&quot;, &quot;Ber&quot;).filter();</ClientEvent>
+        <Property name="icon">url(skin>common/icons.gif) 0 -40px</Property>
+        <Property name="caption">过滤ShipCity</Property>
+      </ToolBarButton>
+      <Separator/>
+      <ToolBarButton>
+        <ClientEvent name="onClick">var dataGrid = this.get(&quot;#dataGrid&quot;);&#xD;
+dataGrid.get(&quot;filterEntity&quot;).clearData();&#xD;
+dataGrid.filter();</ClientEvent>
+        <Property name="icon">url(skin>common/icons.gif) -280px -220px</Property>
+        <Property name="caption">清除过滤条件</Property>
+      </ToolBarButton>
+    </ToolBar>
+    <DataGrid id="dataGrid">
+      <Property name="dataSet">dsOrders</Property>
+      <Property name="filterMode">serverSide</Property>
+      <Property name="showFilterBar">true</Property>
+      <Property name="autoCreateColumns">true</Property>
+      <Property name="sortMode">serverSide</Property>
+      <RowNumColumn/>
+    </DataGrid>
+  </View>
+</ViewConfig>

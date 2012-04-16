@@ -8,7 +8,9 @@
   </DataType>
   <DataType name="Category" parent="BaseCategory" meta="x:12;y:284" autoCreatePropertyDefs="true" matchType="com.bstek.dorado.sample.entity.Category"/>
   <DataType name="BaseProduct" parent="CommonEntity" meta="x:151;y:147;child:Product" creationType="com.bstek.dorado.sample.entity.Product" defaultDisplayProperty="productName">
-    <PropertyDef name="productName" label="产品名称"/>
+    <PropertyDef name="productName" label="产品名称">
+      <Property name="required">true</Property>
+    </PropertyDef>
   </DataType>
   <DataType name="Product" parent="BaseProduct" meta="x:157;y:284" autoCreatePropertyDefs="true" matchType="com.bstek.dorado.sample.entity.Product"/>
   <DataType name="Order" parent="CommonEntity" meta="x:294;y:147" autoCreatePropertyDefs="true" matchType="com.bstek.dorado.sample.entity.Order"/>

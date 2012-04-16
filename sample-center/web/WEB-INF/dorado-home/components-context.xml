@@ -10,15 +10,15 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 	</bean>
 	<bean parent="dorado.assembledComponentTypeRegister">
 		<property name="name" value="ToggleButton" />
-		<property name="src" value="com.bstek.dorado.sample.component.AssembledComponents#ToggleButton" />
+		<property name="src" value="com.bstek.dorado.sample.widget.customize.AssembledComponents#ToggleButton" />
 	</bean>
 	<bean parent="dorado.assembledComponentTypeRegister">
 		<property name="name" value="ButtonPanel" />
-		<property name="src" value="com.bstek.dorado.sample.component.AssembledComponents#ButtonPanel" />
+		<property name="src" value="com.bstek.dorado.sample.widget.customize.AssembledComponents#ButtonPanel" />
 		<d:virtual-property name="buttonCaption" />
 	</bean>
 	<bean parent="dorado.assembledComponentTypeRegister">
 		<property name="name" value="QuickForm" />
-		<property name="classType" value="com.bstek.dorado.sample.component.QuickForm" />
+		<property name="classType" value="com.bstek.dorado.sample.widget.customize.QuickForm" />
 	</bean>
 </beans>

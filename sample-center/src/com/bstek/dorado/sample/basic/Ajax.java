@@ -1,5 +1,7 @@
 package com.bstek.dorado.sample.basic;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import org.springframework.stereotype.Component;
@@ -26,6 +28,15 @@ public class Ajax {
 		info.setProperty("product", DoradoAbout.getProductTitle());
 		info.setProperty("vendor", DoradoAbout.getVendor());
 		info.setProperty("version", DoradoAbout.getVersion());
+		return info;
+	}
+
+	@Expose
+	public Map<String, Long> getMemInfo() {
+		Map<String, Long> info = new HashMap<String, Long>();
+		Runtime runtime = Runtime.getRuntime();
+		info.put("freeMemory", runtime.freeMemory());
+		info.put("totalMemory", runtime.totalMemory());
 		return info;
 	}
 }

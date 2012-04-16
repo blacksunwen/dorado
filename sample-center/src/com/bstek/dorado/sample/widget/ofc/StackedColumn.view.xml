@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Arguments/>
+  <Context/>
+  <Model>
+    <DataType name="StackValue">
+      <PropertyDef name="value"/>
+      <PropertyDef name="color"/>
+    </DataType>
+    <DataType name="Stack">
+      <PropertyDef name="values">
+        <Property name="dataType">[StackValue]</Property>
+      </PropertyDef>
+      <PropertyDef name="color"/>
+      <PropertyDef name="fontSize"/>
+      <PropertyDef name="text"/>
+    </DataType>
+  </Model>
+  <View layout="anchor padding:20">
+    <DataSet id="dsStack">
+      <Property name="dataType">[Stack]</Property>
+      <Property name="dataProvider">chartDataProvider#getStackData</Property>
+    </DataSet>
+    <OpenFlashChart>
+      <Property name="title">
+        <Property name="text">Product Comparison</Property>
+      </Property>
+      <Property name="height">300</Property>
+      <Property name="width">500</Property>
+      <YAxis>
+        <Property name="max">300000</Property>
+        <Property name="min">0</Property>
+        <Property name="steps">60000</Property>
+      </YAxis>
+      <Elements>
+        <StackedColumn>
+          <Property name="bindingConfig">
+            <Property name="valueProperty">value</Property>
+            <Property name="valuesProperty">values</Property>
+            <Property name="colorProperty">color</Property>
+          </Property>
+          <Property name="dataSet">dsStack</Property>
+          <Property name="colors">#AFD8F8,#F6BD0F,#8BBA00</Property>
+          <Key>
+            <Property name="text">2004</Property>
+            <Property name="color">#AFD8F8</Property>
+          </Key>
+          <Key>
+            <Property name="text">2005</Property>
+            <Property name="color">#F6BD0F</Property>
+          </Key>
+          <Key>
+            <Property name="text">2006</Property>
+            <Property name="color">#8BBA00</Property>
+          </Key>
+        </StackedColumn>
+      </Elements>
+      <XAxis>
+        <Property name="labelsShortcut">Product A,Product B,Product C,Product D,Product E</Property>
+      </XAxis>
+    </OpenFlashChart>
+  </View>
+</ViewConfig>

@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ViewConfig>
   <Model>
-    <DataType parent="BaseExampleCategory" name="ExampleCategory">
-      <Reference name="categories" dataType="[SELF]" dataProvider="main#getCategories" parameter="$${this.id}"/>
-      <Reference name="examples" dataType="[BaseExample]" dataProvider="main#getExamplesByCategoryId" parameter="$${this.id}"/>
+    <DataType name="ExampleCategory" parent="BaseExampleCategory">
+      <Reference name="categories" dataProvider="main#getCategories" dataType="[SELF]" parameter="$${this.id}"/>
+      <Reference name="examples" dataProvider="main#getExamplesByCategoryId" dataType="[BaseExample]" parameter="$${this.id}"/>
     </DataType>
   </Model>
   <View layout="Anchor padding:20" title="Recursive Tree">
-    <DataSet id="dsCategories" dataType="[ExampleCategory]" dataProvider="main#getCategories"/>
-    <DataTree id="treeExamples" height="400" width="300" dataSet="dsCategories">
+    <DataSet id="dsCategories" dataProvider="main#getCategories" dataType="[ExampleCategory]"/>
+    <DataTree id="treeExamples" dataSet="dsCategories" height="400" width="300">
       <BindingConfigs>
-        <BindingConfig childrenProperty="categories" icon=">images/folder.gif" labelProperty="label" recursive="true" expandLevel="1">
+        <BindingConfig childrenProperty="categories" icon=">images/folder.gif" labelProperty="label" recursive="true">
           <BindingConfig childrenProperty="examples" icon=">images/file.gif" labelProperty="label"/>
         </BindingConfig>
       </BindingConfigs>
