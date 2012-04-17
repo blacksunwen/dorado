@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Arguments/>
+  <Context/>
+  <Model>
+    <DataType name="Employee" parent="global:Employee">
+      <Reference name="underlings" dataProvider="employeeInterceptor#getEmployeesBySuperior" dataType="[SELF]">
+        <Property name="parameter">$${this.id}</Property>
+      </Reference>
+      <Reference name="orders">
+        <Property name="dataType">[Order]</Property>
+        <Property name="dataProvider">orderInterceptor#getOrdersByEmployeeId</Property>
+        <Property name="parameter">$${this.id}</Property>
+        <Property name="pageSize">20</Property>
+      </Reference>
+    </DataType>
+  </Model>
+  <View layout="anchor padding:20">
+    <DataSet id="dsEmployees" dataProvider="employeeInterceptor#getEmployeesBySuperior" dataType="[Employee]">
+      <Property name="readOnly">true</Property>
+    </DataSet>
+    <SplitPanel>
+      <Property name="width">800</Property>
+      <Property name="height">600</Property>
+      <Property name="position">200</Property>
+      <MainControl>
+        <Panel layout="padding:1">
+          <Property name="caption">订单</Property>
+          <Buttons/>
+          <Children>
+            <DataGrid>
+              <Property name="dataPath">!CURRENT_EMPLOYEE.orders</Property>
+              <Property name="dataSet">dsEmployees</Property>
+              <DataColumn>
+                <Property name="property">orderDate</Property>
+                <Editor/>
+              </DataColumn>
+              <DataColumn>
+                <Property name="property">freight</Property>
+                <Editor/>
+              </DataColumn>
+              <DataColumn>
+                <Property name="property">shipCountry</Property>
+                <Editor/>
+              </DataColumn>
+              <DataColumn>
+                <Property name="property">shipCity</Property>
+                <Editor/>
+              </DataColumn>
+              <DataColumn>
+                <Property name="property">shipAddress</Property>
+                <Editor/>
+              </DataColumn>
+            </DataGrid>
+          </Children>
+          <Tools/>
+        </Panel>
+      </MainControl>
+      <SideControl>
+        <Panel layout="padding:1">
+          <Property name="caption">业务员</Property>
+          <Buttons/>
+          <Children>
+            <DataTree>
+              <Property name="dataSet">dsEmployees</Property>
+              <Property name="currentNodeDataPath">CURRENT_EMPLOYEE</Property>
+              <BindingConfigs>
+                <BindingConfig>
+                  <Property name="labelProperty">firstName</Property>
+                  <Property name="recursive">true</Property>
+                  <Property name="childrenProperty">underlings</Property>
+                  <Property name="expandLevel">1</Property>
+                </BindingConfig>
+              </BindingConfigs>
+            </DataTree>
+          </Children>
+          <Tools/>
+        </Panel>
+      </SideControl>
+    </SplitPanel>
+  </View>
+</ViewConfig>

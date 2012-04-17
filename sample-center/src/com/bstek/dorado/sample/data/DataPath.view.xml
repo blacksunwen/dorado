@@ -3,28 +3,197 @@
   <Arguments/>
   <Context/>
   <Model>
-    <DataType name="ExampleCategory" parent="global:ExampleCategory">
+    <DataType name="Node" meta="child:Example,ExampleCategory">
+      <PropertyDef name="selected">
+        <Property name="dataType">boolean</Property>
+      </PropertyDef>
+    </DataType>
+    <DataType name="ExampleCategory" parent="global:ExampleCategory,Node">
       <Reference name="categories" dataProvider="main#getCategories" dataType="[SELF]" parameter="$${this.id}"/>
       <Reference name="examples" dataProvider="main#getExamplesByCategoryId" dataType="[Example]" parameter="$${this.id}"/>
     </DataType>
-    <DataType name="Example" parent="global:Example">
+    <DataType name="Example" parent="global:Example,Node">
       <PropertyDef name="sortFlag" dataType="int"/>
       <PropertyDef name="sources" dataType="[ExampleSource]"/>
     </DataType>
   </Model>
   <View layout="anchor padding:20">
     <DataSet id="dsExamples" dataProvider="main#getCategories" dataType="[ExampleCategory]"/>
+    <Action id="actionExecute">
+      <ClientEvent name="onExecute">function resultToString(result) {&#xD;
+	var s = &quot;&quot;;&#xD;
+	if (result == null) {&#xD;
+		s = &quot;&lt;null>&quot;;&#xD;
+	}&#xD;
+	else if (result instanceof dorado.Entity) {&#xD;
+		s = &quot;dorado.Entity [ &quot; + result.get(&quot;label&quot;) + &quot; ]&quot;;&#xD;
+		&#xD;
+		result.set(&quot;selected&quot;, true);&#xD;
+		selectedEntities.push(result);&#xD;
+	}&#xD;
+	else if (result instanceof Array) {&#xD;
+		s = &quot;Array [\n&quot;;&#xD;
+		for (var i = 0; i &lt; result.length; i++) {&#xD;
+			s += &quot;  &quot; + resultToString(result[i]) + &quot;,\n&quot;;&#xD;
+		}&#xD;
+		s += &quot;]&quot;;&#xD;
+	}&#xD;
+	else {&#xD;
+		s = result;&#xD;
+	}&#xD;
+	return s;&#xD;
+}&#xD;
+&#xD;
+var selectedEntities = this.$selectedEntities;&#xD;
+if (selectedEntities) {&#xD;
+	selectedEntities.each(function(entity) {&#xD;
+		entity.set(&quot;selected&quot;, false);&#xD;
+	});&#xD;
+}&#xD;
+this.$selectedEntities = selectedEntities = [];&#xD;
+&#xD;
+var dataPath = this.get(&quot;#inputDataPath.text&quot;);&#xD;
+var firstResultOnly = this.get(&quot;#checkboxFirstResultOnly.checked&quot;);&#xD;
+var acceptAggregation = this.get(&quot;#checkboxAcceptAggregation.checked&quot;);&#xD;
+var result = this.get(&quot;#dsExamples&quot;).getData(dataPath, {&#xD;
+	firstResultOnly: firstResultOnly,&#xD;
+	acceptAggregation: acceptAggregation&#xD;
+});&#xD;
+&#xD;
+var resultType;&#xD;
+if (result == null) {&#xD;
+	resultType = &quot;&lt;null>&quot;;&#xD;
+}&#xD;
+else if (result instanceof dorado.Entity) {&#xD;
+	resultType = &quot;dorado.Entity&quot;;&#xD;
+}&#xD;
+else if (result instanceof dorado.EntityList) {&#xD;
+	resultType = &quot;dorado.EntityList&quot;;&#xD;
+}&#xD;
+else if (result instanceof Array) {&#xD;
+	resultType = &quot;Array&quot;;&#xD;
+}&#xD;
+else {&#xD;
+	resultType = typeof result;&#xD;
+}&#xD;
+&#xD;
+&#xD;
+var message = &quot;DataPath: &quot; + (dataPath ? dataPath : &quot;&lt;empty>&quot;);&#xD;
+message += &quot;\n - firstResultOnly: &quot; + firstResultOnly;&#xD;
+message += &quot;\n - acceptAggregation: &quot; + acceptAggregation;&#xD;
+message += &quot;\n&quot;;&#xD;
+message += &quot;\nResult Type: &quot; + resultType;&#xD;
+message += &quot;\nResult: &quot; + resultToString(result);&#xD;
+&#xD;
+this.set(&quot;#dataPathResult.text&quot;, message);&#xD;
+</ClientEvent>
+      <Property name="hotkey">ctrl+return</Property>
+      <Property name="caption">测试 (Ctrl+Return)</Property>
+      <Property name="icon">url(skin>common/icons.gif) -180px -220px</Property>
+    </Action>
     <SplitPanel>
       <Property name="position">280</Property>
-      <Property name="width">800</Property>
+      <Property name="width">900</Property>
       <Property name="height">600</Property>
-      <MainControl/>
+      <MainControl>
+        <Container layout="regionPadding:1">
+          <Panel layout="form cols:*,*,*,*;padding:20" layoutConstraint="top">
+            <Property name="caption">要测试的DataPath</Property>
+            <Property name="contentOverflow">visible</Property>
+            <Buttons/>
+            <Children>
+              <ListDropDown id="dropDownDataPaths">
+                <ClientEvent name="onCreate">self.set(&quot;items&quot;, [&quot;*&quot;, &quot;#&quot;, &quot;[#current]&quot;, &quot;#.examples&quot;, &quot;#.#examples&quot;, &quot;categories(R)&quot;, &quot;.categories(R)&quot;, &quot;categories(R).label&quot;, &quot;.examples&quot;, &quot;categories(R).examples&quot;, &quot;categories(R).examples.label&quot;, &quot;#categories(R).examples&quot;, &quot;#categories(R).#examples&quot;, &quot;categories(R).examples[@.get(\&quot;new\&quot;)]&quot;, &quot;categories(R).examples[@.get(\&quot;label\&quot;).length > 5 &amp;&amp; !@.get(\&quot;new\&quot;)]&quot;]);</ClientEvent>
+              </ListDropDown>
+              <TextEditor id="inputDataPath" layoutConstraint="colSpan:4">
+                <Property name="trigger">dropDownDataPaths</Property>
+                <Property name="blankText">请输入要测试的DataPath...</Property>
+              </TextEditor>
+              <RadioGroup layoutConstraint="colSpan:4">
+                <ClientEvent name="onValueChange">var mode = self.get(&quot;value&quot;);&#xD;
+this.set(&quot;^freeMode.readOnly&quot;, mode != &quot;free&quot;);&#xD;
+if (mode == &quot;getData&quot;) {&#xD;
+	this.set({&#xD;
+		&quot;#checkboxFirstResultOnly.checked&quot;: true,&#xD;
+		&quot;#checkboxAcceptAggregation.checked&quot;: true&#xD;
+	});&#xD;
+}&#xD;
+else if (mode == &quot;queryData&quot;) {&#xD;
+	this.set({&#xD;
+		&quot;#checkboxFirstResultOnly.checked&quot;: false,&#xD;
+		&quot;#checkboxAcceptAggregation.checked&quot;: false&#xD;
+	});&#xD;
+}&#xD;
+</ClientEvent>
+                <Property name="layout">flow</Property>
+                <Property name="value">free</Property>
+                <RadioButton>
+                  <Property name="value">free</Property>
+                  <Property name="text">自定义参数</Property>
+                </RadioButton>
+                <RadioButton>
+                  <Property name="text">模拟DataSet.getData()</Property>
+                  <Property name="value">getData</Property>
+                </RadioButton>
+                <RadioButton>
+                  <Property name="text">模拟DataSet.queryData()</Property>
+                  <Property name="value">queryData</Property>
+                </RadioButton>
+              </RadioGroup>
+              <CheckBox id="checkboxFirstResultOnly">
+                <Property name="caption">firstResultOnly</Property>
+                <Property name="tags">freeMode</Property>
+              </CheckBox>
+              <CheckBox id="checkboxAcceptAggregation">
+                <Property name="caption">acceptAggregation</Property>
+                <Property name="tags">freeMode</Property>
+              </CheckBox>
+              <Button layoutConstraint="align:right;colSpan:2">
+                <Property name="action">actionExecute</Property>
+              </Button>
+            </Children>
+            <Tools/>
+          </Panel>
+          <Panel layout="padding:8">
+            <Property name="caption">DataPath的执行结果</Property>
+            <Buttons/>
+            <Children>
+              <TextArea id="dataPathResult">
+                <Property name="editable">false</Property>
+              </TextArea>
+            </Children>
+            <Tools/>
+          </Panel>
+        </Container>
+      </MainControl>
       <SideControl>
         <Panel layout="padding:1">
           <Property name="caption">操作的数据</Property>
           <Buttons/>
           <Children>
             <DataTree id="treeExamples">
+              <ClientEvent name="onCurrentChange">var entity = self.get(&quot;currentNode.data&quot;);&#xD;
+entity.setCurrent(true);</ClientEvent>
+              <ClientEvent name="onRenderNode">var selected = arg.node.get(&quot;data.selected&quot;);&#xD;
+arg.dom.style.fontWeight = selected ? &quot;bold&quot; : &quot;&quot;;&#xD;
+arg.dom.style.background = selected ? &quot;orange&quot; : &quot;&quot;;&#xD;
+arg.dom.style.padding = selected ? &quot;0 4px&quot; : &quot;&quot;;&#xD;
+arg.dom.style.color = selected ? &quot;white&quot; : &quot;&quot;;&#xD;
+&#xD;
+var node = arg.node, data = node.get(&quot;data&quot;);&#xD;
+if (data.get(&quot;new&quot;)) {&#xD;
+	$(arg.dom).empty().xCreate([{&#xD;
+		tagName: &quot;SPAN&quot;,&#xD;
+		contentText: node.get(&quot;label&quot;)&#xD;
+	}, {&#xD;
+		tagName: &quot;IMG&quot;,&#xD;
+		src: $url(&quot;>images/new.gif&quot;),&#xD;
+		style: &quot;position: relative; left: 4px; top: 4px&quot;&#xD;
+	}]);&#xD;
+}&#xD;
+else {&#xD;
+	arg.processDefault = true;&#xD;
+}</ClientEvent>
               <Property name="expandingAnimated">true</Property>
               <Property name="dataSet">dsExamples</Property>
               <BindingConfigs>
