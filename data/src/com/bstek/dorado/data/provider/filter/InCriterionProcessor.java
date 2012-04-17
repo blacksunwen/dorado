@@ -12,15 +12,14 @@ public class InCriterionProcessor implements CriterionProcessor {
 		DataType dataType = criterion.getDataType();
 		
 		if (expression.length() > 1 && '(' == expression.charAt(0)) {
-			String valueStr = (expression.charAt(expression.length()-1)==')') ? 
-					expression.substring(1, expression.length()-1) : expression.substring(1);
+			String valueStr = getValueString(expression);
 			
 			String[] valueStrAry = StringUtils.split(valueStr, ',');
 			Assert.isTrue(valueStrAry.length > 0, "[" + valueStr + "] must contains more than one value.");
 			
 			Object[] valueAry = new Object[valueStrAry.length];
 			for (int i=0; i<valueStrAry.length; i++) {
-				valueStr = valueStrAry[i];
+				valueStr = valueStrAry[i].trim();
 				valueAry[i] = (dataType != null) ? dataType.fromText(valueStr) : valueStr;
 			}
 			
@@ -29,4 +28,8 @@ public class InCriterionProcessor implements CriterionProcessor {
 		}
 	}
 
+	private String getValueString(String expression) {
+		return (expression.charAt(expression.length()-1)==')') ? 
+				expression.substring(1, expression.length()-1) : expression.substring(1);
+	}
 }

@@ -21,7 +21,8 @@ public class Compare2CriterionProcessor implements CriterionProcessor {
 			
 			if (filterOperator != null) {
 				criterion.setFilterOperator(filterOperator);
-				criterion.setValue((dataType != null) ? dataType.fromText(expression.substring(2)) : expression);
+				String valueStr = expression.substring(2).trim();
+				criterion.setValue((dataType != null) ? dataType.fromText(valueStr) : valueStr);
 			}
 		}
 	}
