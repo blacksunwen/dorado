@@ -36,7 +36,12 @@
 
 					if (dom) {
 						$fly(doms.loadingCover).css("display", "block");
-						$fly(doms.iframe).prop("src", value || BLANK_PATH).addClass("hidden");
+                        doms.iframe.contentWindow.document.write('');
+                        doms.iframe.contentWindow.close();
+                        if(dorado.Browser.msie){
+                            CollectGarbage();
+                        }
+                        $fly(doms.iframe).prop("src", value || BLANK_PATH).addClass("hidden");
                         if (oldPath != value) {
                             frame._loaded = false;
                         }
@@ -77,7 +82,14 @@
 		
 		destroy: function() {
 			var frame = this, doms = frame._doms;
-			if (doms) $fly(doms.iframe).prop("src", BLANK_PATH);
+			if (doms) {
+                doms.iframe.contentWindow.document.write('');
+                doms.iframe.contentWindow.close();
+                if(dorado.Browser.msie){
+                    CollectGarbage();
+                }
+                $fly(doms.iframe).prop("src", BLANK_PATH);
+            }
 			$invokeSuper.call(this);
 		},
 
