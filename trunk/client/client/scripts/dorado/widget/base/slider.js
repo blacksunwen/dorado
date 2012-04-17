@@ -163,7 +163,7 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
 					offset = parseInt($fly(helper).css("top"), 10);
 				}
 
-                slider.set("value", (maxValue - minValue) * offset / size);
+                slider.set("value", (maxValue - minValue) * offset / size + minValue);
 
 				tip.hide();
 			},
@@ -181,7 +181,7 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
 					$fly(doms.current).css("height", offset + thumbSize / 2);
 				}
 
-				tip.set("text", slider.getValidValue((maxValue - minValue) * offset / size));
+				tip.set("text", slider.getValidValue((maxValue - minValue) * offset / size) + minValue);
 				tip.refresh();
 				if (!tip._dom) return;
 				if (orientation == "horizental") {
@@ -220,8 +220,7 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
 			var result = value * Math.pow(10, precision);
 			if (result - Math.floor(result) >= 0.5) {
 				return (Math.floor(result) + 1) / Math.pow(10, precision);
-			}
-			else {
+			} else {
 				return Math.floor(result) / Math.pow(10, precision);
 			}
 		}
@@ -235,14 +234,13 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
 					right = left + 1;
 
 				if (right > total) {
-					result = maxValue;
+					result = formatDecimal(maxValue, slider._precision);
 				}
 				else {
 					if (Math.abs(minValue + step * right - result) > Math.abs(minValue + step * left - result)) {
-						result = minValue + step * left;
-					}
-					else {
-						result = minValue + step * right;
+						result = formatDecimal(minValue + step * left, slider._precision);
+					} else {
+						result = formatDecimal(minValue + step * right, slider._precision);
 					}
 				}
 			}
@@ -315,8 +313,8 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
 			endHeight = $fly(doms.end).innerHeight();
 
 			$fly(doms.body).height(height - startHeight - endHeight);
-			$fly(doms.thumb).css("top", (height - thumbSize) * value / (maxValue - minValue));
-			$fly(doms.current).css("height", (height - thumbSize) * value / (maxValue - minValue) + thumbSize / 2);
+			$fly(doms.thumb).css("top", (height - thumbSize) * (value - minValue) / (maxValue - minValue));
+			$fly(doms.current).css("height", (height - thumbSize) * (value - minValue) / (maxValue - minValue) + thumbSize / 2);
 
 			if (handleIncrease) {
 				$fly(doms.thumb).draggable("option", "grid", [0, (height - thumbSize) / stepCount]);
@@ -325,8 +323,8 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
 			thumbSize = $fly(doms.thumb).width();
 			var width = $fly(dom).innerWidth();
 
-			$fly(doms.thumb).css("left", (width - thumbSize) * value / (maxValue - minValue));
-			$fly(doms.current).css("width", (width - thumbSize) * value / (maxValue - minValue) + thumbSize / 2);
+			$fly(doms.thumb).css("left", (width - thumbSize) * (value - minValue) / (maxValue - minValue));
+			$fly(doms.current).css("width", (width - thumbSize) * (value - minValue) / (maxValue - minValue) + thumbSize / 2);
 
 			if (handleIncrease) {
 				$fly(doms.thumb).draggable("option", "grid", [(width - thumbSize) / stepCount, 0]);
