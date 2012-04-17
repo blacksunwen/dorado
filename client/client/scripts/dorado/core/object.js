@@ -390,7 +390,7 @@
 		 * 对一个对象进行浅度克隆。
 		 * @param {Object} object 要克隆的对象。
 		 * @param {Object} [options] 执行选项。
-		 * @param {Function} [options.onCreate] 用于创建的克隆对象的回调函数。
+		 * @param {Function} [options.onCreate] 用于创建克隆对象的回调函数。
 		 * @param {Function} [options.onCopyProperty] 用于拦截每一个属性复制的回调函数。
 		 * @return {Object} 新的克隆对象。
 		 */

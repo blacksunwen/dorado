@@ -614,10 +614,13 @@
 						var expression = filterEntity.get(column._property);
 						if (expression != null) {
 							var dataType = column.get("dataType"), typeFormat = column.get("typeFormat");
-							var v = dorado.Toolkits.parseFilterValue(expression + ''), operator = v[0], value = v[1];
-							if (dataType) {
+							var filerValue = dorado.Toolkits.parseFilterValue(expression + ''), operator = filerValue.operator, value = filerValue.value;
+							if (dataType && !filerValue.multiValue) {
 								value = dataType.parse(value, typeFormat);
-								expression = (operator ? (operator + ' ') : "")  + dataType.toText(value);
+								expression = (operator || "")  + dataType.toText(value);
+							}
+							else {
+								expression = value;
 							}
 							
 							criterions.push({

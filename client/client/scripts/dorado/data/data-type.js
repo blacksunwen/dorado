@@ -88,8 +88,7 @@
 				this.set(config);
 			}
 			this._name = name ? name : dorado.Core.newId();
-			if(!this._id)
-				this._id = this._name;
+			if(!this._id) this._id = this._name;
 	
 			if(this.id) {
 				if(window[this.id] === undefined) {
