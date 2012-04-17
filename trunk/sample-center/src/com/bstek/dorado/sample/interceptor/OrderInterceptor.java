@@ -28,6 +28,11 @@ public class OrderInterceptor {
 	}
 
 	@DataProvider
+	public void getOrdersByEmployeeId(Page<Order> page, long employeeId) {
+		orderDao.find(page, "from Order where employeeId=" + employeeId);
+	}
+
+	@DataProvider
 	public void query(Page<Order> page, Map<String, Object> parameter) {
 		Criteria criteria = orderDao.createCriteria();
 		if (parameter != null) {

@@ -100,6 +100,8 @@ $(arg.dom).empty().xCreate([&#xD;
                     </ToolBarButton>
                   </ToolBar>
                   <TextArea id="inputScript">
+                    <ClientEvent name="onReady">$(self.getDom()).find(&quot;.textarea&quot;).css(&quot;font-size&quot;, &quot;10pt&quot;);&#xD;
+</ClientEvent>
                     <Property name="blankText">此处可使用3个预设变量：list的值为包含所有根节点数据的EntityList；currentEntity的值为当前选择的树节点所代表的Entityt；dsExamples是数据所在的DataSet。</Property>
                     <Property name="tip">此处可使用两个预设变量：list的值为包含所有根节点数据的EntityList；currentEntity的值为当前选择的树节点所代表的Entity。</Property>
                   </TextArea>

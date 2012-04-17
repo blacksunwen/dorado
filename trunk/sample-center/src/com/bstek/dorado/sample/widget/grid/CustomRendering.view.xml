@@ -70,6 +70,8 @@
       <ClientEvent name="onRenderRow">arg.dom.style.background = (arg.data.get(&quot;discount&quot;)) ? &quot;#d5e4fc&quot; : &quot;&quot;;</ClientEvent>
       <ClientEvent name="onCreate">var OperationCellRenderer = $extend(dorado.widget.grid.SubControlCellRenderer, {&#xD;
 	createSubControl: function(arg) {&#xD;
+		if (arg.data.rowType) return null;&#xD;
+		&#xD;
 		return new dorado.widget.Button({&#xD;
 			toggleable: true,&#xD;
 			onClick: function(self) {&#xD;
@@ -117,10 +119,10 @@ self.set(&quot;&amp;operation.renderer&quot;, new OperationCellRenderer());&#xD;
       <Property name="stretchColumnsMode">off</Property>
       <Property name="selectionMode">multiRows</Property>
       <Property name="dataSet">dsPhones</Property>
-      <Property name="fixedColumnCount">3</Property>
       <Property name="rowHeight">28</Property>
       <Property name="highlightCurrentRow">false</Property>
       <Property name="headerRowHeight">30</Property>
+      <Property name="fixedColumnCount">3</Property>
       <DataColumn>
         <ClientEvent name="onRenderHeaderCell">var view = this;&#xD;
 $(arg.dom).empty();&#xD;
