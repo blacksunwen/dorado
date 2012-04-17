@@ -2334,9 +2334,7 @@
 						} else {
 							var text = textEditor.get("text"), operator;
 							if (text) {
-								var v = dorado.Toolkits.parseFilterValue(text);
-								operator = v[0];
-								value = v[1];
+								var filterValue = dorado.Toolkits.parseFilterValue(text), operator = filterValue.operator, value = filterValue.value;
 								var pd = column._propertyDef;
 								if (pd && pd._mapping) {
 									value = pd.getMappedKey(value);
@@ -2422,7 +2420,7 @@
 				} else {
 					text = entity.getText(property);
 					if (text) {
-						var v = dorado.Toolkits.parseFilterValue(text), operator = v[0], value = v[1];
+						var filterValue = dorado.Toolkits.parseFilterValue(text), operator = filterValue.operator, value = filterValue.value;
 						if (pd && pd._mapping) {
 							value = pd.getMappedValue(value);
 						}

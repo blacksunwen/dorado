@@ -279,7 +279,7 @@ dorado.Toolkits = {
 	},
 	
 	parseFilterValue: function(text) {
-		var operator, c = text.charAt(0);
+		var operator, c = text.charAt(0), multiValue = false;
 		if ('=' == c) {
 			operator = c;
 			text = text.substring(1);
@@ -292,8 +292,14 @@ dorado.Toolkits = {
 			} else {
 				text = text.substring(1);
 			}
+		} else if ("{[(".indexOf(c) >= 0) {
+			multiValue = true;
 		}
-		return [operator || '', text];
+		return {
+			operator: operator || '',
+			value: text,
+			multiValue: multiValue
+		};
 	},
 	
 	STATE_CODE: {

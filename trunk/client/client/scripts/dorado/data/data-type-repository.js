@@ -483,31 +483,37 @@
 	 */
 	window.$dataTypeRepository = DataTypeRepository.ROOT;
 	
+	function cloneDataType(dataType, name) {
+		var newDataType = dorado.Object.clone(dataType);
+		newDataType._name = name;
+		return newDataType;
+	}
+	
 	var dataType = dorado.$String;
 	root.register(dataType);
-	root.register("char", dataType);
-	root.register("Character", dataType);
+	root.register("char", cloneDataType(dataType, "char"));
+	root.register("Character", cloneDataType(dataType, "Character"));
 	
 	dataType = dorado.$int;
-	root.register("byte", dataType);
-	root.register("short", dataType);
 	root.register("int", dataType);
-	root.register("long", dataType);
+	root.register("byte", cloneDataType(dataType, "byte"));
+	root.register("short", cloneDataType(dataType, "short"));
+	root.register("long", cloneDataType(dataType, "long"));
 	
 	dataType = dorado.$Integer;
-	root.register("Byte", dataType);
-	root.register("Short", dataType);
 	root.register("Integer", dataType);
-	root.register("Long", dataType);
+	root.register("Byte", cloneDataType(dataType, "Byte"));
+	root.register("Short", cloneDataType(dataType, "Short"));
+	root.register("Long", cloneDataType(dataType, "Long"));
 	
 	dataType = dorado.$float;
 	root.register("float", dataType);
-	root.register("double", dataType);
+	root.register("double", cloneDataType(dataType, "double"));
 	
 	dataType = dorado.$Float;
 	root.register("Float", dataType);
-	root.register("Double", dataType);
-	root.register("BigDecimal", dataType);
+	root.register("Double", cloneDataType(dataType, "Double"));
+	root.register("BigDecimal", cloneDataType(dataType, "BigDecimal"));
 	
 	dataType = dorado.$boolean;
 	root.register(dataType);
@@ -517,7 +523,7 @@
 	
 	dataType = dorado.$Date;
 	root.register("Date", dataType);
-	root.register("Calendar", dataType);
+	root.register("Calendar", cloneDataType(dataType, "Calendar"));
 	
 	dataType = dorado.$Time;
 	root.register("Time", dataType);

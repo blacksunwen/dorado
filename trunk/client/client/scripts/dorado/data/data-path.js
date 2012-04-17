@@ -566,6 +566,7 @@
 						var sections = context.sections;
 						if(section == sections[sections.length - 1]) {
 							context.addResult(entities);
+							throw BREAK_LEVEL;
 						}
 					}
 				} else {
@@ -577,7 +578,7 @@
 						if(entities.current)
 							selectEntityIf.call(this, entities.current);
 					} else {
-						var includeDeleted = true;//(section.visibility == 1/*all*/ || section.visibility == 3/*dirty*/ || section.visibility == 6/*delete*/)
+						var includeDeleted = (section.visibility == 1/*all*/ || section.visibility == 3/*dirty*/ || section.visibility == 6/*delete*/);
 						var it = entities.iterator(includeDeleted);
 						while(it.hasNext()) {
 							selectEntityIf.call(this, it.next());
@@ -589,8 +590,7 @@
 					}
 				}
 			} catch (e) {
-				if(e != BREAK_LEVEL)
-					throw e;
+				if(e != BREAK_LEVEL) throw e;
 			}
 		},
 		
@@ -627,8 +627,7 @@
 			}
 			loadMode = loadMode || "always";
 
-			if(this._compiledPath === undefined)
-				this.compile();
+			if(this._compiledPath === undefined) this.compile();
 			firstResultOnly = firstResultOnly || this._compiledPath.singleResult;
 
 			var context = new dorado.DataPathContext(this._compiledPath, firstResultOnly);
