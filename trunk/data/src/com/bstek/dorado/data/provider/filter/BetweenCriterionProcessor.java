@@ -20,7 +20,7 @@ public class BetweenCriterionProcessor implements CriterionProcessor {
 			
 			Object[] valueAry = new Object[valueStrAry.length];
 			for (int i=0; i<valueStrAry.length; i++) {
-				valueStr = valueStrAry[i];
+				valueStr = valueStrAry[i].trim();
 				valueAry[i] = (dataType != null) ? dataType.fromText(valueStr) : valueStr;
 			}
 			

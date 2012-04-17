@@ -9,7 +9,8 @@ public class DefaultCriterionProcessor implements CriterionProcessor {
 		DataType dataType = criterion.getDataType();
 		FilterOperator filterOperator = null;
 		
-		Object filterValue = (dataType != null) ? dataType.fromText(expression) : expression;
+		String valueStr = expression.trim();
+		Object filterValue = (dataType != null) ? dataType.fromText(valueStr) : valueStr;
 		if (filterValue instanceof String) {
 			filterOperator = FilterOperator.like;
 		} else {
