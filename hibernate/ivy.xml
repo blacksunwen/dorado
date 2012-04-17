@@ -11,6 +11,7 @@
 		<dependency org="org.hibernate" name="hibernate-core" rev="3.6.5.Final" conf="compile">
 			<exclude org="javax.transaction" />
 		</dependency>
+		<dependency org="org.apache.geronimo.specs" name="geronimo-annotation_1.1_spec" rev="1.0"/>
 
 		<dependency org="org.springframework" name="spring-core" rev="3.0.5.RELEASE" conf="compile" />
 		<dependency org="org.springframework" name="spring-beans" rev="3.0.5.RELEASE" conf="compile" />
