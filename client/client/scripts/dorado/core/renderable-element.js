@@ -135,20 +135,6 @@ dorado.RenderableElement = $extend(dorado.AttributeSupport, /** @scope dorado.Re
 	 */
 	refreshDom: function(dom) {
 		if (dom.nodeType != 3) {
-			if (this._style) {
-				var style = this._style;
-				if (typeof this._style == "string") {
-					// 此段处理不能用jQuery.attr("style", style)替代，原因是该方法会覆盖DOM原有的inliine style设置。
-					var map = {};
-					jQuery.each(style.split(';'), function(i, section) {
-						var v = section.split(':');
-						map[jQuery.trim(v[0])] = jQuery.trim(v[1]);
-					});
-					style = map;
-				}
-				$fly(dom).css(style);
-				delete this._style;
-			}
 			this.resetDimension();
 		}
 	},
@@ -223,6 +209,21 @@ dorado.RenderableElement = $extend(dorado.AttributeSupport, /** @scope dorado.Re
 			}
 			if (this._className) {
 				$dom.addClass(this._className);
+			}
+			
+			if (this._style) {
+				var style = this._style;
+				if (typeof this._style == "string") {
+					// 此段处理不能用jQuery.attr("style", style)替代，原因是该方法会覆盖DOM原有的inliine style设置。
+					var map = {};
+					jQuery.each(style.split(';'), function(i, section) {
+						var v = section.split(':');
+						map[jQuery.trim(v[0])] = jQuery.trim(v[1]);
+					});
+					style = map;
+				}
+				$fly(dom).css(style);
+				delete this._style;
 			}
 		}
 		return this._dom;
