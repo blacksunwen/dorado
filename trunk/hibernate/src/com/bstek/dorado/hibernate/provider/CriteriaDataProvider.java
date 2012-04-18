@@ -11,6 +11,7 @@ import org.hibernate.impl.CriteriaImpl;
 import org.hibernate.transform.ResultTransformer;
 import org.springframework.util.Assert;
 
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
@@ -43,6 +44,7 @@ public class CriteriaDataProvider extends AbstractDataProvider {
 		this.sessionFactory = sessionFactory;
 	}
 
+	@ClientProperty(escapeValue="false")
 	public boolean isUnique() {
 		return unique;
 	}
@@ -53,6 +55,8 @@ public class CriteriaDataProvider extends AbstractDataProvider {
 	public void setAutoFilter(boolean autoFilter) {
 		this.autoFilter = autoFilter;
 	}
+	
+	@ClientProperty(escapeValue="false")
 	public boolean isAutoFilter() {
 		return this.autoFilter;
 	}

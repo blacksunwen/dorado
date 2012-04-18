@@ -3,8 +3,10 @@ package com.bstek.dorado.hibernate;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.bstek.dorado.core.Context;
 import com.bstek.dorado.data.entity.EntityList;
 import com.bstek.dorado.data.provider.Page;
+import com.bstek.dorado.data.provider.manager.DataProviderManager;
 import com.bstek.dorado.hibernate.entity.Category;
 import com.bstek.dorado.hibernate.provider.HqlDataProvider;
 
@@ -12,7 +14,10 @@ import com.bstek.dorado.hibernate.provider.HqlDataProvider;
 public class HibernateHqlDataProviderTest extends HibernateContextTestCase {
 	
 	private HqlDataProvider getDataProvider(String name) throws Exception {
-		return (HqlDataProvider)getDataProviderManager().getDataProvider(name);
+		Context conetxt = Context.getCurrent();
+		DataProviderManager dataProviderManager = (DataProviderManager) conetxt
+				.getServiceBean("dataProviderManager");
+		return (HqlDataProvider)dataProviderManager.getDataProvider(name);
 	}
 
 	public void testGetDataProvider1() throws Exception {
@@ -21,7 +26,7 @@ public class HibernateHqlDataProviderTest extends HibernateContextTestCase {
 		String hqlClause = "from Category where id = :id";
 		assertEquals(provider.getHql(), hqlClause);
 	}
-
+	
 	public void testQueryProvider1_map() throws Exception {
 		HqlDataProvider provider = getDataProvider("testHqlProvider1");
 		Map parameter = new HashMap();
@@ -105,20 +110,24 @@ public class HibernateHqlDataProviderTest extends HibernateContextTestCase {
 		assertEquals(objList.size(), 1);
 	}
 
-	public void testQueryProvider1_vm_exset() throws Exception {
-		HqlDataProvider provider = getDataProvider("testHqlProvider_vm_exset");
+	public void testQueryProvider1_vm_set1() throws Exception {
+		HqlDataProvider provider = getDataProvider("testHqlProvider_set1");
 		Category parameter = new Category();
 		Category parent = new Category();
 		parent.setId(1L);
 		parameter.setParent(parent);
 
-		boolean error = false;
-		try {
-			provider.getResult(parameter);
-		} catch (Exception e) {
-			error = true;
-		}
+		provider.getResult(parameter);
 
-		assertEquals(error, true);
+		assertEquals(99, parent.getId());
 	}
+	
+	public void testQueryProvider1_vm_set2() throws Exception {
+		HqlDataProvider provider = getDataProvider("testHqlProvider_set2");
+		Map<String, Object> parameter = new HashMap<String, Object>();
+		parameter.put("productName", "pn");
+		provider.getResult(parameter);
+
+		assertEquals("%pn%", parameter.get("productName"));
+	} 
 }

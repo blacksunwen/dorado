@@ -1,7 +1,9 @@
 package com.bstek.dorado.hibernate.criteria;
 
 import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.XmlNode;
 
+@XmlNode
 public class FetchMode {
 
 	private boolean available = true;

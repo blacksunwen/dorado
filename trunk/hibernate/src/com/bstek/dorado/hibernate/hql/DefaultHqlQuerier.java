@@ -56,7 +56,7 @@ public class DefaultHqlQuerier implements HqlQuerier {
 			List entities = null;
 			if (page.getPageSize() > 0) {
 				query.setFirstResult(page.getFirstEntityIndex());
-				query.setFetchSize(page.getPageSize());
+				query.setMaxResults(page.getPageSize());
 				
 				entities = query.list();
 				page.setEntities(entities);
