@@ -53,6 +53,10 @@ public class Lookup extends LazyPropertyDef {
 		setActiveAtClient(false);
 	}
 
+	public Lookup(String name) {
+		setName(name);
+	}
+
 	public void setDataProvider(DataProvider dataProvider) {
 		this.dataProvider = dataProvider;
 		cacheKey = null;

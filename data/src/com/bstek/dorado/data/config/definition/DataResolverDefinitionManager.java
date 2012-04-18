@@ -1,6 +1,7 @@
 package com.bstek.dorado.data.config.definition;
 
 import org.aopalliance.intercept.MethodInterceptor;
+import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.common.proxy.SortableMethodInterceptorSet;
 import com.bstek.dorado.config.definition.DefaultDefinitionManager;
@@ -28,6 +29,10 @@ public class DataResolverDefinitionManager extends
 	public void registerDefinition(String name,
 			DataResolverDefinition definition) {
 		Assert.notEmpty(name);
+
+		if (StringUtils.isEmpty(definition.getId())) {
+			definition.setId(name);
+		}
 
 		if (super.getDefinition(name) != null) {
 			throw new IllegalStateException("The DataResolver [" + name

@@ -134,11 +134,11 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 		 * </ul>
 		 * 默认的布局方式为vertical。
 		 * @type String
-		 * @default "vertical"
+		 * @default "flow"
 		 * @attribute
 		 */
 		layout: /** @scope dorado.widget.RadioGroup.prototype */ {
-			defaultValue: "vertical"
+			defaultValue: "flow"
 		},
 		
 		/**

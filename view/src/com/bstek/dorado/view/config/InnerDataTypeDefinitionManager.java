@@ -1,9 +1,11 @@
 package com.bstek.dorado.view.config;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.bstek.dorado.config.definition.DefinitionManager;
-import com.bstek.dorado.data.config.DataTypeName;
 import com.bstek.dorado.data.config.definition.DataTypeDefinition;
 import com.bstek.dorado.data.config.definition.DataTypeDefinitionManager;
+import com.bstek.dorado.util.Assert;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -28,12 +30,16 @@ public class InnerDataTypeDefinitionManager extends DataTypeDefinitionManager {
 	}
 
 	@Override
-	protected DataTypeDefinition createAggregationDataType(
-			DataTypeName dataTypeName) {
-		DataTypeDefinition definition = super
-				.createAggregationDataType(dataTypeName);
-		definition.setId(dataObjectIdPrefix + definition.getId());
-		return definition;
+	public void registerDefinition(String name, DataTypeDefinition definition) {
+		Assert.notEmpty(name);
+
+		String id = definition.getId();
+		if (StringUtils.isEmpty(id)) {
+			id = name;
+		}
+		definition.setId(dataObjectIdPrefix + id);
+
+		super.registerDefinition(name, definition);
 	}
 
 	@Override

@@ -172,8 +172,6 @@ public class DataTypeParser extends GenericObjectParser implements
 
 					DataTypeDefinition elementDataType = dataType;
 					elementDataType.setName(elementDataTypeName);
-					elementDataType.setId(dataContext.getDataObjectIdPrefix()
-							+ elementDataTypeName);
 					elementDataType
 							.setParentReferences(new DefinitionReference[] { dataObjectParseHelper
 									.getDataTypeByName(
@@ -195,7 +193,6 @@ public class DataTypeParser extends GenericObjectParser implements
 		}
 
 		dataType.setName(name);
-		dataType.setId(dataContext.getDataObjectIdPrefix() + name);
 		dataType.setGlobal(isGlobal);
 
 		if (dataType.getParentReferences() == null

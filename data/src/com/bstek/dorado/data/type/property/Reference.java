@@ -26,6 +26,14 @@ public class Reference extends LazyPropertyDef {
 	private int pageSize;
 	private Object parameter;
 
+	public Reference() {
+		setActiveAtClient(false);
+	}
+
+	public Reference(String name) {
+		setName(name);
+	}
+
 	public boolean isActiveOnNewEntity() {
 		return activeOnNewEntity;
 	}
@@ -46,6 +54,7 @@ public class Reference extends LazyPropertyDef {
 	 */
 	@XmlProperty(ignored = true)
 	@ClientProperty(outputter = "spring:dorado.dataProviderPropertyOutputter")
+	@IdeProperty(highlight = 1)
 	public DataProvider getDataProvider() {
 		return dataProvider;
 	}
@@ -64,7 +73,7 @@ public class Reference extends LazyPropertyDef {
 	@XmlProperty
 	@ClientProperty(outputter = "spring:dorado.doradoMapPropertyOutputter",
 			evaluateExpression = false)
-	@IdeProperty(editor = "pojo")
+	@IdeProperty(editor = "pojo", highlight = 1)
 	public Object getParameter() {
 		if (parameter instanceof Expression) {
 			return ((Expression) parameter).evaluate();

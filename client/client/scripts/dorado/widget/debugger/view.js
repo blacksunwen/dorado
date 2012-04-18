@@ -487,7 +487,7 @@
 							content = dorado.Debugger.format2HTML(getFnBody(value.listener));
 						}
 					}
-					preview._dom.innerHTML = content;
+					if (preview._dom) preview._dom.innerHTML = content;
 				}
 			});
 			panel._eventsTree = eventsTree;

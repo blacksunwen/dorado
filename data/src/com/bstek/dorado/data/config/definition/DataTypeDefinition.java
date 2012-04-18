@@ -216,7 +216,7 @@ public class DataTypeDefinition extends ListenableObjectDefinition implements
 		if (dataType instanceof EntityDataType) {
 			EntityDataType entityDataType = ((EntityDataType) dataType);
 			if (entityDataType.isAutoCreatePropertyDefs()) {
-				entityDataType.createPropertyDefinitons();
+				entityDataType.createPropertyDefs();
 			}
 		}
 	}

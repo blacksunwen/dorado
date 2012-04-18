@@ -46,6 +46,10 @@ public interface DataTypeManager {
 	 */
 	DataType getDataType(Type type) throws Exception;
 
+	DataType createDataType(String name) throws Exception;
+
+	DataType createDataType(String name, String parents) throws Exception;
+
 	/**
 	 * 清除用于提高getDataType(Type type)操作效率的缓存信息。
 	 */
