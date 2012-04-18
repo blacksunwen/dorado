@@ -3,38 +3,45 @@ package com.bstek.dorado.hibernate.hql;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import net.sf.cglib.beans.BeanMap;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.Velocity;
-import org.apache.velocity.exception.MethodInvocationException;
-import org.apache.velocity.exception.ParseErrorException;
-import org.apache.velocity.exception.ResourceNotFoundException;
+import org.apache.velocity.app.VelocityEngine;
 
-import com.bstek.dorado.hibernate.LazyProxyMap;
+import com.bstek.dorado.core.Context;
 import com.bstek.dorado.util.Assert;
+import com.bstek.dorado.view.resolver.VelocityHelper;
 
 public class HqlUtil {
 
-	public static String build(String hql, Object parameter) {
+	@SuppressWarnings("unchecked")
+	public static String build(String hql, Object parameter) throws Exception {
 		VelocityContext context = new VelocityContext();
 
+		Map<Object, Object> map = null;
 		if (parameter != null) {
-			LazyProxyMap pmap = LazyProxyMap.create(parameter);
-			context = new VelocityContext(pmap, context);
+			if (parameter instanceof Map) {
+				map = (Map<Object, Object>)parameter;
+			} else {
+				map = BeanMap.create(parameter);
+			}
 		}
 
+		if (map == null) {
+			context = new VelocityContext();
+		} else {
+			context = new VelocityContext(map);
+		}
+		
 		StringWriter result = new StringWriter(50);
-		try {
-			Velocity.evaluate(context, result, "", hql);
-		} catch (ParseErrorException e) {
-			throw new RuntimeException(e);
-		} catch (MethodInvocationException e) {
-			throw new RuntimeException(e);
-		} catch (ResourceNotFoundException e) {
-			throw new RuntimeException(e);
-		}
-
+		
+		Context doradoContext = Context.getCurrent();
+		VelocityHelper VelocityHelper = (VelocityHelper) doradoContext.getServiceBean("velocityHelper");
+		VelocityEngine volocityEngine = VelocityHelper.getVelocityEngine();
+		volocityEngine.evaluate(context, result, "", hql);
 		return result.toString();
 	}
 

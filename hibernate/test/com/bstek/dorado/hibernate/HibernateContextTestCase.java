@@ -1,17 +1,19 @@
 package com.bstek.dorado.hibernate;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.orm.hibernate3.SessionFactoryUtils;
+import org.springframework.orm.hibernate3.SessionHolder;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import com.bstek.dorado.core.Context;
-import com.bstek.dorado.data.config.ConfigManagerTestSupport;
 import com.bstek.dorado.data.provider.filter.AdvanceFilterCriterionParser;
 import com.bstek.dorado.data.provider.filter.SingleValueFilterCriterion;
 import com.bstek.dorado.data.type.DataType;
+import com.bstek.dorado.hibernate.provider.SessionFactoryManager;
+import com.bstek.dorado.view.ViewContextTestCase;
 
-public abstract class HibernateContextTestCase extends ConfigManagerTestSupport {
+public abstract class HibernateContextTestCase extends ViewContextTestCase {
 	public HibernateContextTestCase() {
 		super();
 		addExtensionContextConfigLocation("com/bstek/dorado/hibernate/context.xml");
@@ -25,48 +27,30 @@ public abstract class HibernateContextTestCase extends ConfigManagerTestSupport 
 		
 		return (SingleValueFilterCriterion)parser.createFilterCriterion(property, dataType, expression);
 	}
-	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@Deprecated
-	protected void buildOrders(Map parameter, Object[][] orders) {
-		if (orders == null)
-			return;
 
-		for (Object[] order : orders) {
-			String property = (String) order[0];
-			boolean desc = (Boolean) order[1];
-			Map map = new HashMap(2);
-			map.put("property", property);
-			map.put("desc", desc);
+	private SessionFactory getSessionFactory() throws Exception {
+		Context context = Context.getCurrent();
+		SessionFactoryManager m = (SessionFactoryManager)context.getServiceBean("hibernateSessionFactoryManager");
+		return m.getSessionFactory(null);
+	}
 
-			List $orders = (List) parameter.get("$orders");
-			if ($orders == null) {
-				$orders = new ArrayList();
-				parameter.put("$orders", $orders);
-			}
-			$orders.add(map);
+	@Override
+	protected void setUp() throws Exception {
+		super.setUp();
+		
+		SessionFactory sessionFactory = getSessionFactory();
+		if (!TransactionSynchronizationManager.hasResource(sessionFactory)) {
+			Session session = SessionFactoryUtils.doGetSession(sessionFactory, true);
+			TransactionSynchronizationManager.bindResource(sessionFactory, new SessionHolder(session));
 		}
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@Deprecated
-	protected void buildCriterions(Map parameter, String[][] criterions) {
-		if (criterions == null)
-			return;
-
-		for (String[] cri : criterions) {
-			String property = cri[0];
-			String expression = cri[1];
-			Map map = new HashMap(2);
-			map.put("property", property);
-			map.put("expression", expression);
-
-			List $criterions = (List) parameter.get("$criterions");
-			if ($criterions == null) {
-				$criterions = new ArrayList();
-				parameter.put("$criterions", $criterions);
-			}
-			$criterions.add(map);
-		}
+	@Override
+	protected void tearDown() throws Exception {
+		SessionFactory sessionFactory = getSessionFactory();
+		SessionHolder sessionHolder = (SessionHolder) TransactionSynchronizationManager.unbindResource(sessionFactory);
+		SessionFactoryUtils.closeSession(sessionHolder.getSession());
+		
+		super.tearDown();
 	}
 }

@@ -1,7 +1,9 @@
 package com.bstek.dorado.hibernate;
 
+import com.bstek.dorado.core.Context;
 import com.bstek.dorado.data.provider.Criteria;
 import com.bstek.dorado.data.provider.Order;
+import com.bstek.dorado.data.provider.manager.DataProviderManager;
 import com.bstek.dorado.data.type.DefaultEntityDataType;
 import com.bstek.dorado.data.util.DataUtils;
 import com.bstek.dorado.data.variant.Record;
@@ -11,7 +13,10 @@ public class HibernateCriDataProvider_UserCriteriaTest extends
 		HibernateContextTestCase {
 
 	protected CriteriaDataProvider getDataProvider(String name) throws Exception {
-		return (CriteriaDataProvider)getDataProviderManager().getDataProvider(name);
+		Context conetxt = Context.getCurrent();
+		DataProviderManager dataProviderManager = (DataProviderManager) conetxt
+				.getServiceBean("dataProviderManager");
+		return (CriteriaDataProvider)dataProviderManager.getDataProvider(name);
 	}
 	
 	

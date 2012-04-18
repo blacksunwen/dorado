@@ -4,6 +4,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.transform.ResultTransformer;
 
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
@@ -34,6 +35,7 @@ public class HqlDataProvider extends AbstractDataProvider {
 		this.sessionFactory = sessionFactory;
 	}
 
+	@ClientProperty(escapeValue="false")
 	public boolean isUnique() {
 		return unique;
 	}

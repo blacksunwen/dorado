@@ -4,8 +4,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.bstek.dorado.core.Context;
 import com.bstek.dorado.data.entity.EntityList;
 import com.bstek.dorado.data.provider.Page;
+import com.bstek.dorado.data.provider.manager.DataProviderManager;
 import com.bstek.dorado.hibernate.criteria.Alias;
 import com.bstek.dorado.hibernate.criteria.FetchMode;
 import com.bstek.dorado.hibernate.criteria.SubCriteria;
@@ -24,7 +26,10 @@ import com.bstek.dorado.hibernate.provider.CriteriaDataProvider;
 public class HibernateCriDataProviderTest extends HibernateContextTestCase {
 	
 	protected CriteriaDataProvider getDataProvider(String name) throws Exception {
-		return (CriteriaDataProvider)getDataProviderManager().getDataProvider(name);
+		Context conetxt = Context.getCurrent();
+		DataProviderManager dataProviderManager = (DataProviderManager) conetxt
+				.getServiceBean("dataProviderManager");
+		return (CriteriaDataProvider)dataProviderManager.getDataProvider(name);
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -140,8 +145,6 @@ public class HibernateCriDataProviderTest extends HibernateContextTestCase {
 		
 		provider.getResult();
 	}
-	
-
 	
 	public void testGetDataProvider_sqlProjection() throws Exception {
 		CriteriaDataProvider provider = getDataProvider("testCriProvider_sqlProjection");
