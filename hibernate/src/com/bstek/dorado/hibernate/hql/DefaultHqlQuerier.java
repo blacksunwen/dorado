@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.transform.ResultTransformer;
 
 import com.bstek.dorado.data.provider.Page;
 import com.bstek.dorado.hibernate.provider.HqlDataProvider;
@@ -37,8 +38,13 @@ public class DefaultHqlQuerier implements HqlQuerier {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void query(Session session, Object parameter, Hql hql, 
 			Page<?> page, HqlDataProvider provider) throws Exception {
+		ResultTransformer rtf = provider.getResultTransformer();
+		Query query = createQuery(session, parameter, hql);
+		if (rtf != null) {
+			query.setResultTransformer(rtf);
+		}
+		
 		if (provider.isUnique()) {
-			Query query = createQuery(session, parameter, hql);
 			Object object = query.uniqueResult();
 			if (object != null) {
 				List list = new ArrayList(1);
@@ -49,14 +55,12 @@ public class DefaultHqlQuerier implements HqlQuerier {
 		} else {
 			List entities = null;
 			if (page.getPageSize() > 0) {
-				Query query = createQuery(session, parameter, hql);
 				query.setFirstResult(page.getFirstEntityIndex());
 				query.setFetchSize(page.getPageSize());
 				
 				entities = query.list();
 				page.setEntities(entities);
 			} else {
-				Query query = createQuery(session, parameter, hql);
 				entities = query.list();
 				page.setEntities(entities);
 			}

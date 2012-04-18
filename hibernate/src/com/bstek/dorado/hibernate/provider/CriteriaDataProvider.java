@@ -8,9 +8,12 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.impl.CriteriaImpl;
+import org.hibernate.transform.ResultTransformer;
 import org.springframework.util.Assert;
 
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.core.Context;
 import com.bstek.dorado.data.provider.AbstractDataProvider;
@@ -31,7 +34,8 @@ public class CriteriaDataProvider extends AbstractDataProvider {
 	private String sessionFactory;
 	private boolean unique = false;
 	private boolean autoFilter = false;
-
+	private ResultTransformer resultTransformer;
+	
 	public String getSessionFactory() {
 		return sessionFactory;
 	}
@@ -51,6 +55,17 @@ public class CriteriaDataProvider extends AbstractDataProvider {
 	}
 	public boolean isAutoFilter() {
 		return this.autoFilter;
+	}
+	
+
+	@XmlProperty(parser="spring:dorado.hibernate.resultTransformerParser")
+	@IdeProperty(enumValues="ALIAS_TO_ENTITY_MAP,ROOT_ENTITY,DISTINCT_ROOT_ENTITY,PROJECTION")
+	public ResultTransformer getResultTransformer() {
+		return resultTransformer;
+	}
+
+	public void setResultTransformer(ResultTransformer resultTransformer) {
+		this.resultTransformer = resultTransformer;
 	}
 	
 	protected SessionFactory getSessionFactoryOject() throws Exception {
@@ -108,12 +123,18 @@ public class CriteriaDataProvider extends AbstractDataProvider {
 			throws Exception {
 		DetachedCriteria detachedCriteria = this.createDetachedCriteria(parameter);
 		Session session = getSession();
-		Criteria c = detachedCriteria.getExecutableCriteria(session);
+		Criteria criteria = detachedCriteria.getExecutableCriteria(session);
+		
+		ResultTransformer rtf = this.getResultTransformer();
+		if (rtf != null) {
+			criteria.setResultTransformer(rtf);
+		}
+		
 		if (!isUnique()) {
-			List list = c.list();
+			List list = criteria.list();
 			return list;
 		} else {
-			return c.uniqueResult();
+			return criteria.uniqueResult();
 		}
 	}
 
@@ -123,24 +144,27 @@ public class CriteriaDataProvider extends AbstractDataProvider {
 			DataType resultDataType) throws Exception {
 		DetachedCriteria detachedCriteria = this.createDetachedCriteria(parameter);
 		Session session = getSession();
-		CriteriaImpl entityCriteria = (CriteriaImpl) detachedCriteria
-				.getExecutableCriteria(session);
+		CriteriaImpl criteria = (CriteriaImpl) detachedCriteria.getExecutableCriteria(session);
+		ResultTransformer rtf = this.getResultTransformer();
+		if (rtf != null) {
+			criteria.setResultTransformer(rtf);
+		}
+		
 		if (!isUnique()) {
 			// 查询结果记录
-			entityCriteria.setFirstResult(page
-					.getFirstEntityIndex());
-			entityCriteria.setMaxResults(page.getPageSize());
-			List list = entityCriteria.list();
+			criteria.setFirstResult(page.getFirstEntityIndex());
+			criteria.setMaxResults(page.getPageSize());
+			List list = criteria.list();
 			page.setEntities(list);
 
 			// 查询记录条数
-			CriteriaImpl countCriteria = entityCriteria;
+			CriteriaImpl countCriteria = criteria;
 			HibernateUtils.makeCount(countCriteria);
 
 			Number c = (Number) countCriteria.uniqueResult();
 			page.setEntityCount(c.intValue());
 		} else {
-			Object object = entityCriteria.uniqueResult();
+			Object object = criteria.uniqueResult();
 			if (object != null) {
 				List entities = new ArrayList(1);
 				entities.add(object);
@@ -150,126 +174,4 @@ public class CriteriaDataProvider extends AbstractDataProvider {
 		}
 	}
 
-//	/**
-//	 * 从客户端传过来的参数中取出原始参数，因为Grid具有过滤栏的功能，所以
-//	 * 当启用这个功能时参数的类型是UserCriteria，必须从这里取出原始参数
-//	 * 
-//	 * @param parameter
-//	 * @return
-//	 * @throws Exception
-//	 */
-//	protected void prepareProviderCriteria(Object parameter)
-//			throws Exception {
-//		if (this.isAutoFilter()) {
-//			com.bstek.dorado.data.provider.Criteria providerCriteria = 
-//					HibernateUtils.getFilterCriteria(parameter);
-//			if (providerCriteria == null) return;
-//			
-//			TopCriteria topCriteria = this.getCriteria();
-//			CriteriaPathHelper criteriaPath = new CriteriaPathHelper(topCriteria);
-//			
-//			//Criterions
-//			List<com.bstek.dorado.data.provider.Criterion> providerCriterions = providerCriteria.getCriterions();
-//			for (com.bstek.dorado.data.provider.Criterion pCriterion : providerCriterions) {
-//				if (pCriterion instanceof SingleValueFilterCriterion) {
-//					SingleValueFilterCriterion filterCriterion = (SingleValueFilterCriterion)pCriterion;
-//					FilterOperator filterOperator = filterCriterion.getFilterOperator();
-//					Object filterValue = filterCriterion.getValue();
-//					String property = filterCriterion.getProperty();
-//					String propertyPath = StringUtils.defaultIfEmpty(filterCriterion.getPropertyPath(), property) ;;
-//					String propertyName = criteriaPath.getFieldAlias(propertyPath);
-//					
-//					if (FilterOperator.eq.equals(filterOperator)) {
-//						SingleCriterion cri = new SingleCriterion();
-//						cri.setOp(SingleCriterion.OP.eq);
-//						cri.setPropertyName(propertyName);
-//						cri.setValue(filterValue);
-//						topCriteria.addCriterion(cri);
-//					} else if (FilterOperator.ne.equals(filterOperator)) {
-//						SingleCriterion cri = new SingleCriterion();
-//						cri.setOp(SingleCriterion.OP.ne);
-//						cri.setPropertyName(propertyName);
-//						cri.setValue(filterValue);
-//						topCriteria.addCriterion(cri);
-//					} else if (FilterOperator.gt.equals(filterOperator)) {
-//						SingleCriterion cri = new SingleCriterion();
-//						cri.setOp(SingleCriterion.OP.gt);
-//						cri.setPropertyName(propertyName);
-//						cri.setValue(filterValue);
-//						topCriteria.addCriterion(cri);
-//					} else if (FilterOperator.lt.equals(filterOperator)) {
-//						SingleCriterion cri = new SingleCriterion();
-//						cri.setOp(SingleCriterion.OP.lt);
-//						cri.setPropertyName(propertyName);
-//						cri.setValue(filterValue);
-//						topCriteria.addCriterion(cri);
-//					} else if (FilterOperator.ge.equals(filterOperator)) {
-//						SingleCriterion cri = new SingleCriterion();
-//						cri.setOp(SingleCriterion.OP.ge);
-//						cri.setPropertyName(propertyName);
-//						cri.setValue(filterValue);
-//						topCriteria.addCriterion(cri);
-//					} else if (FilterOperator.le.equals(filterOperator)) {
-//						SingleCriterion cri = new SingleCriterion();
-//						cri.setOp(SingleCriterion.OP.le);
-//						cri.setPropertyName(propertyName);
-//						cri.setValue(filterValue);
-//						topCriteria.addCriterion(cri);
-//					} else if (FilterOperator.like.equals(filterOperator)) {
-//						SingleCriterion cri = new SingleCriterion();
-//						cri.setOp(SingleCriterion.OP.likeAnyWhere);
-//						cri.setPropertyName(propertyName);
-//						cri.setValue(filterValue);
-//						topCriteria.addCriterion(cri);
-//					} else if (FilterOperator.between.equals(filterOperator)) {
-//						Object[] values = (Object[])filterValue;
-//						BetweenCriterion cri = new BetweenCriterion();
-//						cri.setValue1(values[0]);
-//						cri.setValue2(values[1]);
-//						cri.setPropertyName(propertyName);
-//						topCriteria.addCriterion(cri);
-//					} else if (FilterOperator.in.equals(filterOperator)) {
-//						Object[] values = (Object[])filterValue;
-//						InCriterion cri = new InCriterion();
-//						cri.setPropertyName(propertyName);
-//						cri.setValue(values);
-//						topCriteria.addCriterion(cri);
-//					} else {
-//						throw new IllegalArgumentException("unknown FilterOperator [" + filterOperator + "]");
-//					}
-//				}
-//			}
-//			
-//			//Orders
-//			List<com.bstek.dorado.data.provider.Order> providerOrders = providerCriteria.getOrders();
-//			for (com.bstek.dorado.data.provider.Order pOrder: providerOrders) {
-//				List<com.bstek.dorado.hibernate.criteria.order.Order> hibernateOrders = topCriteria.getOrders();
-//				if (!hibernateOrders.isEmpty()) {
-//					String property = pOrder.getProperty();
-//					String propertyPath = StringUtils.defaultIfEmpty(pOrder.getPropertyPath(), property) ;
-//					String propertyName = criteriaPath.getFieldAlias(propertyPath);
-//					
-//					com.bstek.dorado.hibernate.criteria.order.Order foundOrder = null;
-//					for (com.bstek.dorado.hibernate.criteria.order.Order hOrder: hibernateOrders) {
-//						if (propertyName.equals(hOrder.getPropertyName())) {
-//							foundOrder = hOrder;
-//							break;
-//						}
-//					}
-//					
-//					if (foundOrder == null) {
-//						foundOrder = new com.bstek.dorado.hibernate.criteria.order.Order();
-//						foundOrder.setPropertyName(propertyName);
-//						topCriteria.addOrder(foundOrder);
-//					}
-//					
-//					if (pOrder.isDesc()) {
-//						foundOrder.setDirection(Direction.desc);
-//					} else {
-//						foundOrder.setDirection(Direction.asc);
-//					}
-//				}
-//			}
-//		}
-//	}
 }
