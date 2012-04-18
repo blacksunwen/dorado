@@ -135,6 +135,7 @@ dorado.RenderableElement = $extend(dorado.AttributeSupport, /** @scope dorado.Re
 	 */
 	refreshDom: function(dom) {
 		if (dom.nodeType != 3) {
+			this.applyStyle(dom);
 			this.resetDimension();
 		}
 	},
