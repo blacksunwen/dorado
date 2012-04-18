@@ -788,6 +788,8 @@
 				}
 				if (classNames.length) $dom.addClass(classNames.join(' '));
 				
+				this.applyStyle(dom);
+				
 				if (this.focusable) dom.tabIndex = 1;
 
 				var self = this;
