@@ -619,27 +619,13 @@
 		},
 		
 		createEditor: function(editorType) {
-			return dorado.Toolkits.createInstance("widget", editorType, function() {
+			var editor = dorado.Toolkits.createInstance("widget", editorType, function() {
 				return dorado.Toolkits.getPrototype("widget", editorType) || dorado.widget.TextEditor;
 			});
+			return editor;
 		},
 		
-		getEditor: function() {
-		
-			function getRadioButtons(propertyDef) {
-				var radioButtons = [], mapping = propertyDef._mapping;
-				if (mapping) {
-					for (var i = 0; i < mapping.length; i++) {
-						var item = mapping[i];
-						radioButtons.push({
-							value: item.key,
-							text: item.value
-						});
-					}
-				}
-				return radioButtons;
-			}
-			
+		getEditor: function() {			
 			var control = this._editor;
 			if (this._controlRegistered) {
 				var config1 = {}, config2 = {}, attrs = control.ATTRIBUTES;

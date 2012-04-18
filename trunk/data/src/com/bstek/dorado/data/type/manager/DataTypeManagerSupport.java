@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.bstek.dorado.data.config.definition.DataCreationContext;
 import com.bstek.dorado.data.config.definition.DataTypeDefinition;
 import com.bstek.dorado.data.config.definition.DataTypeDefinitionManager;
@@ -118,6 +120,39 @@ public abstract class DataTypeManagerSupport implements DataTypeManager {
 					"Can not found matching DataType for \"" + type + "\"!");
 		}
 		return getDataTypeByDefinition(dataTypeDefinition);
+	}
+
+	public DataType createDataType(String name) throws Exception {
+		return createDataType(name, "Entity");
+	}
+
+	public DataType createDataType(String name, String parents)
+			throws Exception {
+		if (getDataType(name) != null) {
+			throw new IllegalArgumentException("DataType [" + name
+					+ "] already exists.");
+		}
+
+		if (StringUtils.isEmpty(parents)) {
+			throw new IllegalArgumentException(
+					"Argument \"parents\" undefined.");
+		}
+
+		String[] parentNames = StringUtils.split(parents, ",");
+		DataTypeDefinition[] parentDefinitions = new DataTypeDefinition[parentNames.length];
+		int i = 0;
+		for (String parent : parentNames) {
+			DataTypeDefinition parentDefinition = dataTypeDefinitionManager
+					.getDefinition(parent);
+			parentDefinitions[i++] = parentDefinition;
+		}
+
+		DataTypeDefinition dataTypeDefinition = new DataTypeDefinition();
+		dataTypeDefinition.setName(name);
+		dataTypeDefinition.setParents(parentDefinitions);
+		dataTypeDefinitionManager.registerDefinition(name, dataTypeDefinition);
+		
+		return getDataType(name);
 	}
 
 	/**

@@ -148,7 +148,7 @@ public abstract class EntityDataTypeSupport extends NonAggregationDataType
 		throw new DataConvertException(String.class, getMatchType());
 	}
 
-	public final void createPropertyDefinitons() throws Exception {
+	public final void createPropertyDefs() throws Exception {
 		if (!autuCreatepropertyDefinitonsProcessed) {
 			autuCreatepropertyDefinitonsProcessed = true;
 			doCreatePropertyDefinitons();

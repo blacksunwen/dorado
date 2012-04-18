@@ -14,6 +14,13 @@ import com.bstek.dorado.annotation.XmlNode;
 public class BasePropertyDef extends PropertyDefSupport {
 	private String propertyPath;
 
+	public BasePropertyDef() {
+	}
+
+	public BasePropertyDef(String name) {
+		setName(name);
+	}
+
 	public String getPropertyPath() {
 		return propertyPath;
 	}

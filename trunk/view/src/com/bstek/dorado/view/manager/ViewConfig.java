@@ -130,16 +130,9 @@ public class ViewConfig implements Namable, MetaDataSupport {
 					+ "] already exists.");
 		}
 
-		DataType dataType = null;
-		if (parent != null) {
-			dataType = innerDataTypeManager.getDataType(parent);
-			if (dataType != null) {
-				dataType = (DataType) BeanExtender.setUserData(dataType,
-						"dorado.dynamicDataType", Boolean.TRUE);
-				((Namable) dataType).setName(name);
-				innerDataTypeManager.registerDataType(name, dataType);
-			}
-		}
+		DataType dataType = innerDataTypeManager.createDataType(name, parent);
+		dataType = (DataType) BeanExtender.setUserData(dataType,
+				"dorado.dynamicDataType", Boolean.TRUE);
 		return dataType;
 	}
 

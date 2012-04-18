@@ -873,7 +873,9 @@
 			}
 			var attach;
 			if (!subControl) {
-				subControl = this.createSubControl(arg);
+				if (arg.data && arg.data.rowType != "header" && arg.data.rowType != "footer") {
+					subControl = this.createSubControl(arg);
+				}
 				attach = true;
 			}
 			
@@ -996,7 +998,6 @@
 			var self = this;
 			return new dorado.widget.RadioGroup({
 				readOnly: arg.grid.get("readOnly"),
-				layout: "flow",
 				width: "100%",
 				radioButtons: this.getRadioButtons(arg),
 				
@@ -2179,8 +2180,6 @@
 		},
 		
 		createSubControl: function(arg) {
-			if (arg.data.rowType) return null;
-			
 			var self = this;
 			if (!this._listenerBinded) {
 				this._listenerBinded = true;

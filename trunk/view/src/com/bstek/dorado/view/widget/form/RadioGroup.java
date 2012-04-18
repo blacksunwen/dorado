@@ -21,7 +21,7 @@ import com.bstek.dorado.view.annotation.Widget;
 @ClientEvents({ @ClientEvent(name = "onValueChange") })
 public class RadioGroup extends AbstractDataEditor {
 	private Object value;
-	private RadioGroupLayout layout = RadioGroupLayout.vertical;
+	private RadioGroupLayout layout = RadioGroupLayout.flow;
 	private List<RadioButton> radioButtons = new ArrayList<RadioButton>();
 
 	@XmlProperty
@@ -34,7 +34,7 @@ public class RadioGroup extends AbstractDataEditor {
 		this.value = value;
 	}
 
-	@ClientProperty(escapeValue = "vertical")
+	@ClientProperty(escapeValue = "flow")
 	public RadioGroupLayout getLayout() {
 		return layout;
 	}

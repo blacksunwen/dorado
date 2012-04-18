@@ -82,7 +82,7 @@ public interface EntityDataType extends MutableDataType, ClientEventSupported {
 
 	void setAcceptValidationState(MessageState acceptValidationState);
 
-	void createPropertyDefinitons() throws Exception;
+	void createPropertyDefs() throws Exception;
 
 	String getDefaultDisplayProperty();
 

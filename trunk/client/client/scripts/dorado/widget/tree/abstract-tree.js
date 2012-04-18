@@ -680,7 +680,7 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 					node: node
 				});
 				
-				if (!this._currentNode && !this._allowNoCurrent) {
+				if (!this.get("currentNode") && !this._allowNoCurrent) {
 					this.set("currentNode", node);
 				}
 			}

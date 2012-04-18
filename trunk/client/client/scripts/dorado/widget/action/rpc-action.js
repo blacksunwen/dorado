@@ -349,8 +349,16 @@
 					if (!this._updateItems.length) {
 						return false;
 					} else {
-						var context = this.getResolveContext();
-						return context.hasUpdateData;
+						try {
+							var context = this.getResolveContext();
+							return context.hasUpdateData;
+						}
+						catch (e) {
+							if (e instanceof dorado.widget.UpdateAction.ValidateException) {
+								dorado.Exception.removeException(e);
+								return true;
+							}
+						}
 					}
 				}
 			}

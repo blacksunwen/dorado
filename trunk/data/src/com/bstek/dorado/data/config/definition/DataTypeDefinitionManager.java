@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -64,6 +65,10 @@ public class DataTypeDefinitionManager extends
 	@Override
 	public void registerDefinition(String name, DataTypeDefinition definition) {
 		Assert.notEmpty(name);
+
+		if (StringUtils.isEmpty(definition.getId())) {
+			definition.setId(name);
+		}
 
 		DataTypeDefinition registered = super.getDefinition(name);
 		if (registered != null && registered.getId().equals(definition.getId())) {
