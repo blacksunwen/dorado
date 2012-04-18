@@ -203,10 +203,20 @@
 			currentNode: {
 				skipRefresh: true,
 				getter: function(p) {
-					return (this._domMode == 2 ? this._fixedInnerGrid : this._innerGrid).get(p);
+					if (this._rendered) {
+						return (this._domMode == 2 ? this._fixedInnerGrid : this._innerGrid).get(p);
+					}
+					else {
+						return this._currentNode;
+					}
 				},
 				setter: function(v, p) {
-					(this._domMode == 2 ? this._fixedInnerGrid : this._innerGrid).set(p, v);
+					if (this._rendered) {
+						(this._domMode == 2 ? this._fixedInnerGrid : this._innerGrid).set(p, v);
+					}
+					else {
+						this._currentNode = v;
+					}
 				}
 			},
 			
@@ -299,6 +309,11 @@
 			}
 			
 			$invokeSuper.call(this, arguments);
+			
+			if (this._currentNode) {
+				(this._domMode == 2 ? this._fixedInnerGrid : this._innerGrid).set("currentNode", this._currentNode);
+				delete this._currentNode;
+			}
 		},
 		
 		refreshEntity: function(entity) {
