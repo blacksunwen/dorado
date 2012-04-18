@@ -2,9 +2,11 @@ package com.bstek.dorado.hibernate.provider;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.ResultTransformer;
 
 import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.core.Context;
 import com.bstek.dorado.data.provider.AbstractDataProvider;
 import com.bstek.dorado.data.provider.Page;
@@ -23,7 +25,8 @@ import com.bstek.dorado.util.Assert;
 public class HqlDataProvider extends AbstractDataProvider {
 	private String sessionFactory;
 	private boolean unique = false;
-
+	private ResultTransformer resultTransformer;
+	
 	public String getSessionFactory() {
 		return sessionFactory;
 	}
@@ -38,6 +41,16 @@ public class HqlDataProvider extends AbstractDataProvider {
 		this.unique = unique;
 	}
 	
+	@XmlProperty(parser="spring:dorado.hibernate.resultTransformerParser")
+	@IdeProperty(enumValues="ALIAS_TO_ENTITY_MAP,ROOT_ENTITY,DISTINCT_ROOT_ENTITY,PROJECTION")
+	public ResultTransformer getResultTransformer() {
+		return resultTransformer;
+	}
+
+	public void setResultTransformer(ResultTransformer resultTransformer) {
+		this.resultTransformer = resultTransformer;
+	}
+	
 	protected SessionFactory getSessionFactoryOject() throws Exception {
 		SessionFactoryManager sessionManager = (SessionFactoryManager) Context
 				.getCurrent().getServiceBean("hibernateSessionFactoryManager");
@@ -45,11 +58,6 @@ public class HqlDataProvider extends AbstractDataProvider {
 				.getSessionFactory(sessionFactory);
 		Assert.notNull(sessionFactoryBean, "SessionFactory named [" + sessionFactory + "] cound not be found.");
 		return sessionFactoryBean;
-	}
-	
-	protected Session openSession() throws Exception {
-		SessionFactory sessionFactory = this.getSessionFactoryOject();
-		return sessionFactory.openSession();
 	}
 	
 	protected Session getSession() throws Exception{
