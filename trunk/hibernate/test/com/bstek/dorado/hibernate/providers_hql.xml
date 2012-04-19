@@ -13,6 +13,25 @@
 	<DataProvider name="testHqlProvider_pojo2" type="hibernateHql">
 		<Property name="hql"><![CDATA[from Category where id = :parent.id]]></Property>
 	</DataProvider>
+	<DataProvider name="testHqlProvider_dataType1" type="hibernateHql">
+		<Property name="hql"><![CDATA[
+from Product 
+where 1=1 
+
+#if ($productName)
+#set($productName = "%" + $productName + "%")
+ and productName like :productName
+#end
+
+#if ($unitPrice1 && $unitPrice2)
+ and unitPrice between :(Float)unitPrice1 and :(Float)unitPrice2
+#elseif ($unitPrice1)
+ and unitPrice >= :(Float)unitPrice1
+#elseif ($unitPrice2)
+ and unitPrice <= :(Float)unitPrice2
+#end
+		]]></Property>
+	</DataProvider>
 	
 	<DataProvider name="testHqlProvider_vm1" type="hibernateHql">
 		<Property name="hql"><![CDATA[

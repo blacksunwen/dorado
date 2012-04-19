@@ -8,6 +8,7 @@ import com.bstek.dorado.data.entity.EntityList;
 import com.bstek.dorado.data.provider.Page;
 import com.bstek.dorado.data.provider.manager.DataProviderManager;
 import com.bstek.dorado.hibernate.entity.Category;
+import com.bstek.dorado.hibernate.entity.Product;
 import com.bstek.dorado.hibernate.provider.HqlDataProvider;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -96,6 +97,49 @@ public class HibernateHqlDataProviderTest extends HibernateContextTestCase {
 		EntityList objList = (EntityList) provider.getResult(parameter);
 
 		assertEquals(objList.size(), 1);
+	}
+	
+	public void testQueryProvider1_dataType1() throws Exception {
+		HqlDataProvider provider = getDataProvider("testHqlProvider_dataType1");
+		Map parameter = new HashMap();
+		{
+			parameter = new HashMap();
+			parameter.put("unitPrice1", Integer.valueOf(10));
+			EntityList objList = (EntityList) provider.getResult(parameter);
+			for (Product p: (Product[])objList.toArray(new Product[0])) {
+				assertTrue(p.getUnitPrice() >= 10);
+			}
+		} 
+		{
+			parameter = new HashMap();
+			parameter.put("unitPrice2", Integer.valueOf(20));
+			EntityList objList = (EntityList) provider.getResult(parameter);
+			for (Product p: (Product[])objList.toArray(new Product[0])) {
+				assertTrue(p.getUnitPrice() <= 20);
+			}
+		}
+		{
+			parameter = new HashMap();
+			parameter.put("unitPrice1", Integer.valueOf(10));
+			parameter.put("unitPrice2", Integer.valueOf(20));
+			EntityList objList = (EntityList) provider.getResult(parameter);
+			for (Product p: (Product[])objList.toArray(new Product[0])) {
+				assertTrue(p.getUnitPrice() >= 10);
+				assertTrue(p.getUnitPrice() <= 20);
+			}
+		}
+		{
+			parameter = new HashMap();
+			parameter.put("productName", "C");
+			parameter.put("unitPrice1", Integer.valueOf(10));
+			parameter.put("unitPrice2", Integer.valueOf(20));
+			EntityList objList = (EntityList) provider.getResult(parameter);
+			for (Product p: (Product[])objList.toArray(new Product[0])) {
+				assertTrue(p.getUnitPrice() >= 10);
+				assertTrue(p.getUnitPrice() <= 20);
+				assertTrue(p.getProductName().indexOf("C") >= 0);
+			}
+		}
 	}
 
 	public void testQueryProvider1_vm1() throws Exception {
