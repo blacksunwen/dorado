@@ -113,12 +113,12 @@
 }
 
 .i-tip .tip-content-hasicon{
-	min-height: 48px;
-	padding-left: 62px;
+	min-height: 16px;
+	padding-left: 24px;
 }
 
 .d-ie6 .i-tip .tip-content-hasicon{
-	height: 48px;
+	height: 16px;
 	overflow: visible;
 }
 
@@ -126,12 +126,16 @@
 	position: absolute;
 	left: 0;
 	top: 0;
-    height: 48px;
-	width: 48px;
+    height: 16px;
+	width: 16px;
 }
 
 .i-tip .tip-content .error-icon, .i-tip .tip-content .info-icon, .i-tip .tip-content .warning-icon, .i-tip .tip-content .question-icon{
-	height: 48px;
-	width: 48px;
+	height: 16px;
+	width: 16px;
 	margin: 0 12px 0 2px;
+}
+
+.i-tip .tip-content .tip-icon{
+	background: transparent none no-repeat center center;
 }

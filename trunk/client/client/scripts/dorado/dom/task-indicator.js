@@ -243,7 +243,7 @@ dorado.util.TaskGroupPanel = $extend(dorado.RenderableElement, { /** @scope dora
 			}]
 		});
 		
-		if (panel.tasks.size >= (panel.taskGroupConfig.showOptions.maxLines || 1)) {
+		if (panel.tasks.size >= (panel.taskGroupConfig.showOptions.maxLines || 3)) {
 			li.style.display = "none";
 			panel._doms.more.style.display = "";
 		}
@@ -275,7 +275,7 @@ dorado.util.TaskGroupPanel = $extend(dorado.RenderableElement, { /** @scope dora
 				$fly(target.dom).remove();
 				panel.tasks.remove(target);
 				
-				var maxLines = panel.taskGroupConfig.showOptions.maxLines || 1;
+				var maxLines = panel.taskGroupConfig.showOptions.maxLines || 3;
 				if (panel.tasks.size > maxLines) {
 					var i = 0;
 					panel.tasks.each(function(task) {

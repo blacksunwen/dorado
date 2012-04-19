@@ -1028,7 +1028,7 @@
 			 * @param {Object} arg 事件参数。
 			 * @param {HTMLElement} arg.dom 列头对应的DOM对象。
 			 * @param {dorado.Entity|Object} arg.data 行对应的数据实体。
-			 * @param {dorado.widget.grid.Column} arg.column 列头对应的列。
+			 * @param {dorado.widget.grid.Column} arg.column 对应的列。
 			 * @param {boolean} #arg.processDefault 是否在事件结束后继续使用系统默认的渲染逻辑。
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
@@ -1040,7 +1040,7 @@
 			 * @param {Object} self 事件的发起者，即组件本身。
 			 * @param {Object} arg 事件参数。
 			 * @param {HTMLElement} arg.dom 列头对应的DOM对象。
-			 * @param {dorado.widget.grid.Column} arg.column列头对应的列。
+			 * @param {dorado.widget.grid.Column} arg.column 对应的列。
 			 * @param {boolean} #arg.processDefault 是否在事件结束后继续使用系统默认的渲染逻辑。
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event

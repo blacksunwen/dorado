@@ -1,5 +1,6 @@
 .d-field-set{
 	border: 1px solid #6394BC;
+	border-radius: 3px; 
 }
 
 .d-field-set-collapsed{

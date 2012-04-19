@@ -69,10 +69,6 @@
 	background-position: -32px 0;
 }
 
-.d-tip .tip-content .tip-icon{
-	background: transparent none no-repeat center center;
-}
-
 .d-tip .tip-content .error-icon{
 	background-image: url(common/icon-error.gif);
 }

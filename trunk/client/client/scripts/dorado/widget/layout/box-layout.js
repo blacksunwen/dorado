@@ -376,7 +376,7 @@
 							content: {
 								tagName: "DIV",
 								// 用于防止TD.align=center的设置传染到内部子控件
-								style: "display:inline-block;text-align:left;zoom:1"
+								style: "display:block;text-align:left;zoom:1"
 							}
 						}
 					});
