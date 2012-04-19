@@ -7,6 +7,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.data.entity.EnhanceableEntity;
 import com.bstek.dorado.data.entity.EntityEnhancer;
+import com.bstek.dorado.data.type.DataType;
 
 public class DefaultHqlParameterResolver implements HqlParameterResolver {
 
@@ -19,8 +20,10 @@ public class DefaultHqlParameterResolver implements HqlParameterResolver {
 				return null;
 			} else {
 				String expr = hqlParameter.getExpr();
+				DataType dataType = hqlParameter.getDataType();
+				Object returnValue = null;
 				if ("$".equals(expr)) {
-					return parameter;
+					returnValue = parameter;
 				} else {
 					String[] fields = StringUtils.split(expr, '.');
 					if (fields != null) {
@@ -32,11 +35,14 @@ public class DefaultHqlParameterResolver implements HqlParameterResolver {
 							}
 						}
 
-						return obj;
-					} else {
-						return null;
+						returnValue = obj;
 					}
 				}
+				
+				if (dataType != null) {
+					returnValue = dataType.fromObject(returnValue);
+				}
+				return returnValue;
 			}
 		}
 	}
