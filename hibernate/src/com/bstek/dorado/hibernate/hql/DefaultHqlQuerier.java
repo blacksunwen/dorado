@@ -27,19 +27,25 @@ public class DefaultHqlQuerier implements HqlQuerier {
 	@SuppressWarnings("unchecked")
 	public Object query(Session session, Object parameter, 
 			Hql hql, HqlDataProvider provider) throws Exception {
+		Query query = createQuery(session, parameter, hql);
+		ResultTransformer rtf = provider.getResultTransformer();
+		if (rtf != null) {
+			query.setResultTransformer(rtf);
+		}
+		
 		if (!provider.isUnique()) {
-			List<Object> entities = createQuery(session, parameter, hql).list();
+			List<Object> entities = query.list();
 			return entities;
 		} else {
-			return createQuery(session, parameter, hql).uniqueResult();
+			return query.uniqueResult();
 		}
 	}
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void query(Session session, Object parameter, Hql hql, 
 			Page<?> page, HqlDataProvider provider) throws Exception {
-		ResultTransformer rtf = provider.getResultTransformer();
 		Query query = createQuery(session, parameter, hql);
+		ResultTransformer rtf = provider.getResultTransformer();
 		if (rtf != null) {
 			query.setResultTransformer(rtf);
 		}

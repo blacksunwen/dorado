@@ -5,6 +5,9 @@ import java.util.Map;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
 
+import com.bstek.dorado.data.entity.EnhanceableEntity;
+import com.bstek.dorado.data.entity.EntityEnhancer;
+
 public class DefaultHqlParameterResolver implements HqlParameterResolver {
 
 	public Object parameterValue(final Object parameter, HqlParameter hqlParameter) throws Exception {
@@ -40,7 +43,15 @@ public class DefaultHqlParameterResolver implements HqlParameterResolver {
 
 	@SuppressWarnings({"rawtypes"})
 	protected Object value(final Object obj, String field) throws Exception {
-		if (obj instanceof Map) {
+		if (obj instanceof EnhanceableEntity) {
+			EnhanceableEntity entity = (EnhanceableEntity) obj;
+			EntityEnhancer enhancer = entity.getEntityEnhancer();
+			try {
+				return enhancer.readProperty(obj, field, false);
+			} catch (Throwable e) {
+				throw new Exception(e);
+			}
+		} else if (obj instanceof Map) {
 			Map m = (Map) obj;
 			return m.get(field);
 		} else {
