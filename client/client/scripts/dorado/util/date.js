@@ -396,7 +396,6 @@ Date.prototype.getWeekOfYear = function() {
 	// Find the first Thursday of the year
 	var jan1 = new Date(this.getFullYear(), 0, 1);
 	var then = (7 - jan1.getDay() + 4);
-	document.write(then);
 	return String.leftPad(((now - then) / 7) + 1, 2, "0");
 };
 

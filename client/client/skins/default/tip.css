@@ -67,22 +67,18 @@
 	background-position: -32px 0;
 }
 
-.d-tip .tip-content .tip-icon{
-	background: transparent none no-repeat center center;
-}
-
 .d-tip .tip-content .error-icon{
-	background-image: url(common/icon-error.gif);
+	background-image: url(common/icon-error-small.gif);
 }
 
 .d-tip .tip-content .info-icon{
-	background-image: url(common/icon-info.gif);
+	background-image: url(common/icon-info-small.gif);
 }
 
 .d-tip .tip-content .warning-icon{
-	background-image: url(common/icon-warning.gif);
+	background-image: url(common/icon-warning-small.gif);
 }
 
 .d-tip .tip-content .question-icon{
-	background-image: url(common/icon-question.gif);
+	background-image: url(common/icon-question-small.gif);
 }

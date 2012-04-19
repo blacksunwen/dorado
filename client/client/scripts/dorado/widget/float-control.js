@@ -215,7 +215,7 @@ dorado.dequeue = function(namespace) {
 			},
 			
 			/**
-			 * 在水平方向上，组件停靠在anchorTarget的位置。可选值为left、innerleft、center、innerright、top。
+			 * 在水平方向上，组件停靠在anchorTarget的位置。可选值为left、innerleft、center、innerright、right。
 			 * @attribute
 			 * @type String
 			 */

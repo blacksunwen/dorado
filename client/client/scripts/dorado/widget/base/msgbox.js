@@ -80,10 +80,10 @@
                             text = "";
                         } else {
                             switch (config.editor) {
-                                case "single":
+                                case "singleLine":
                                     text = dorado.MessageBox.SINGLE_EDITOR.get("value");
                                     break;
-                                case "multiple":
+                                case "multiLines":
                                     text = dorado.MessageBox.TEXTAREA.get("value");
                                     break;
                             }
@@ -348,7 +348,7 @@
             options.message = msg;
             options.buttons = dorado.MessageBox.OKCANCEL;
             options.closeAction = "cancel";
-            options.editor = "single";
+            options.editor = "singleLine";
             dorado.MessageBox.show(options);
         },
 
@@ -359,7 +359,7 @@
          * 									如果是json类型，则里面的配置选项与show方法一样。
          * @see dorado.MessageBox.show
          */
-        promptMultiline: function(msg, options) {
+        promptMultiLines: function(msg, options) {
             if (typeof options == "function") {
                 var callback = options;
                 options = {
@@ -371,16 +371,16 @@
             options.message = msg;
             options.buttons = dorado.MessageBox.OKCANCEL;
             options.closeAction = "cancel";
-            options.editor = "multiple";
+            options.editor = "multiLines";
             dorado.MessageBox.show(options);
         },
 
         resetEditorWidth: function(editor) {
             var dialog = dorado.MessageBox.getDialog(), doms = dialog._doms, width;
-            if (editor == "multiple" && dorado.MessageBox.TEXTAREA) {
+            if (editor == "multiLines" && dorado.MessageBox.TEXTAREA) {
                 width = $fly(doms.textareaWrap).outerWidth();
                 dorado.MessageBox.TEXTAREA.set("width", width);
-            } else if (editor == "single" && dorado.MessageBox.SINGLE_EDITOR) {
+            } else if (editor == "singleLine" && dorado.MessageBox.SINGLE_EDITOR) {
                 width = $fly(doms.editorWrap).outerWidth();
                 dorado.MessageBox.SINGLE_EDITOR.set("width", width);
             }
@@ -444,13 +444,13 @@
                         $fly(dorado.MessageBox.SINGLE_EDITOR._dom).css("display", "none");
                         $fly(dorado.MessageBox.TEXTAREA._dom).css("display", "none");
                         break;
-                    case "single":
+                    case "singleLine":
                         $fly(doms.editorWrap).css("display", "");
                         $fly(dorado.MessageBox.SINGLE_EDITOR._dom).css("display", "");
                         $fly(dorado.MessageBox.TEXTAREA._dom).css("display", "none");
                         dorado.MessageBox.SINGLE_EDITOR.set("value", value || "");
                         break;
-                    case "multiple":
+                    case "multiLines":
                         $fly(doms.editorWrap).css("display", "");
                         $fly(dorado.MessageBox.SINGLE_EDITOR._dom).css("display", "none");
                         $fly(dorado.MessageBox.TEXTAREA._dom).css("display", "");
