@@ -27,7 +27,6 @@ public class Reference extends LazyPropertyDef {
 	private Object parameter;
 
 	public Reference() {
-		setActiveAtClient(false);
 	}
 
 	public Reference(String name) {

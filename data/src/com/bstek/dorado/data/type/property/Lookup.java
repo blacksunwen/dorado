@@ -50,7 +50,6 @@ public class Lookup extends LazyPropertyDef {
 	private String dataSet;
 
 	public Lookup() {
-		setActiveAtClient(false);
 	}
 
 	public Lookup(String name) {
