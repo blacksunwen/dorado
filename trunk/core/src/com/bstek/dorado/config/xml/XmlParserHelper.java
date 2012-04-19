@@ -460,8 +460,15 @@ public class XmlParserHelper implements BeanFactoryAware {
 								wrapperParser.registerSubParser(SELF,
 										xmlParserInfo.getParser());
 
-								newParserMap.put(xmlParserInfo.getPath(),
-										wrapperParser);
+								int i = path.lastIndexOf('/');
+								if (i > 0) {
+									path = path.substring(0, i + 1)
+											+ xmlParserInfo.getPath();
+								} else {
+									path = xmlParserInfo.getPath();
+								}
+
+								newParserMap.put(path, wrapperParser);
 							}
 						} else {
 							for (XmlParserInfo xmlParserInfo : xmlParserInfos) {
