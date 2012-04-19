@@ -36,11 +36,12 @@
 
 					if (dom) {
 						$fly(doms.loadingCover).css("display", "block");
-                        doms.iframe.contentWindow.document.write('');
-                        doms.iframe.contentWindow.close();
-                        if(dorado.Browser.msie){
-                            CollectGarbage();
-                        }
+                        try {
+                            doms.iframe.contentWindow.document.write('');
+                            if(dorado.Browser.msie){
+                                CollectGarbage();
+                            }
+                        } catch(e) {}
                         $fly(doms.iframe).prop("src", value || BLANK_PATH).addClass("hidden");
                         if (oldPath != value) {
                             frame._loaded = false;
@@ -83,11 +84,13 @@
 		destroy: function() {
 			var frame = this, doms = frame._doms;
 			if (doms) {
-                doms.iframe.contentWindow.document.write('');
-                doms.iframe.contentWindow.close();
-                if(dorado.Browser.msie){
-                    CollectGarbage();
-                }
+                try {
+                    doms.iframe.contentWindow.document.write('');
+                    doms.iframe.contentWindow.close();
+                    if(dorado.Browser.msie){
+                        CollectGarbage();
+                    }
+                } catch(e) {}
                 $fly(doms.iframe).prop("src", BLANK_PATH);
             }
 			$invokeSuper.call(this);
