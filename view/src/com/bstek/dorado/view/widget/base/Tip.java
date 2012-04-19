@@ -34,6 +34,7 @@ public class Tip extends Control implements FloatControl {
 	private String caption;
 	private String text;
 	private Object content;
+	private String icon;
 	private boolean closeable;
 	private TipArrowDirection arrowDirection = TipArrowDirection.none;
 	private int arrowOffset;
@@ -171,6 +172,15 @@ public class Tip extends Control implements FloatControl {
 
 	public void setContent(Object content) {
 		this.content = content;
+	}
+
+	@IdeProperty(enumValues = "INFO,WARNING,ERROR,QUESTION")
+	public String getIcon() {
+		return icon;
+	}
+
+	public void setIcon(String icon) {
+		this.icon = icon;
 	}
 
 	public boolean isCloseable() {
