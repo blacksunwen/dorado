@@ -171,11 +171,15 @@ public class ViewConfigDefinition extends ListenableObjectDefinition implements
 	protected BeanWrapper createObject(CreationInfo creationInfo,
 			MethodInterceptor[] methodInterceptors, CreationContext context)
 			throws Exception {
-		if (viewContext != null && !viewContext.isEmpty()) {
-			DoradoContext doradoContext = DoradoContext.getCurrent();
-			for (Map.Entry<String, Object> entry : viewContext.entrySet()) {
-				doradoContext.setAttribute(DoradoContext.VIEW, entry.getKey(),
-						entry.getValue());
+		ViewState viewState = (ViewState) Context.getCurrent().getAttribute(
+				ViewState.class.getName());
+		if (viewState == null || viewState == ViewState.rendering) {
+			if (viewContext != null && !viewContext.isEmpty()) {
+				DoradoContext doradoContext = DoradoContext.getCurrent();
+				for (Map.Entry<String, Object> entry : viewContext.entrySet()) {
+					doradoContext.setAttribute(DoradoContext.VIEW,
+							entry.getKey(), entry.getValue());
+				}
 			}
 		}
 
