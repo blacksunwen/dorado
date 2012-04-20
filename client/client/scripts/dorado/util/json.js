@@ -82,6 +82,10 @@
 				if (obj instanceof Function) {
 					obj = obj.call(dorado.$this || this);
 				}
+				else if (object instanceof dorado.util.Map) {
+					obj = obj.toJSON();
+				}
+				
 				var json;
 				if (obj instanceof dorado.Entity || obj instanceof dorado.EntityList) {
 					json = obj.toJSON({
