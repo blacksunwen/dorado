@@ -267,6 +267,7 @@ $packagesConfig.defaultContentType = $packagesConfig.defaultContentType || "text
 		var element;
 		if (isStyleSheet(request.contentType)) {
 			element = document.createElement("link");
+			if (request.id) element.id = request.id;
 			element.rel = "stylesheet";
 			element.type = request.contentType;
 			element.href = request.url;
@@ -286,6 +287,7 @@ $packagesConfig.defaultContentType = $packagesConfig.defaultContentType || "text
 					onLoaded(this);
 				};
 			}
+			if (request.id) element.id = request.id;
 			element.type = request.contentType;
 			element.charset = request.charset;
 			element.src = request.url;
@@ -311,15 +313,16 @@ $packagesConfig.defaultContentType = $packagesConfig.defaultContentType || "text
 
 	function loadResource(request, options) {
 		var typeAndCharset = "type=\"" + request.contentType + "\" " + (request.charset ? "charset=\"" + request.charset + "\" " : '');
+		var attrs = request.id ? ("id=\"" + request.id + "\" ") : ""; 
 		if (isStyleSheet(request.contentType)) {
 			if (Browser.mozilla) {
 				findHead();
 				loadResourceAsync(request, options);
 			} else {
-				document.writeln("<link rel=\"stylesheet\" " + typeAndCharset + "href=\"" + request.url + "\" />");
+				document.writeln("<link " + attrs + "rel=\"stylesheet\" " + typeAndCharset + "href=\"" + request.url + "\" />");
 			}
 		} else {
-			document.writeln("<script " + typeAndCharset + "src=\"" + request.url + "\"><\/script>");
+			document.writeln("<script " + attrs + typeAndCharset + "src=\"" + request.url + "\"><\/script>");
 		}
 		markRequestLoaded(request);
 	}
