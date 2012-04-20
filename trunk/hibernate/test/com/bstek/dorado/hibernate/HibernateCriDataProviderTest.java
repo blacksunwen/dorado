@@ -251,9 +251,13 @@ public class HibernateCriDataProviderTest extends HibernateContextTestCase {
 		List<SubCriteria> subcriteriaList = criteria.getSubCriterias();
 		assertEquals(1, subcriteriaList.size());
 		{
-			SubCriteria sc = subcriteriaList.get(0);
-			assertEquals("cg", sc.getAlias());
-			assertEquals(1, sc.getSubCriterias().size());
+			SubCriteria cg = subcriteriaList.get(0);
+			assertEquals("cg", cg.getAlias());
+			assertEquals(1, cg.getSubCriterias().size());
+			
+			SubCriteria pcg = cg.getSubCriterias().get(0);
+			assertEquals("pcg", pcg.getAlias());
+			assertEquals(1, pcg.getCriterions().size());
 		}
 		provider.getResult();
 	}
