@@ -68,7 +68,7 @@
  * };
  *
  * $packagesConfig.packages = {
- *	 "skin.js": { pattern: "css" },
+ *	 "skin.css": { pattern: "css" },
  *	 "jquery.js": { fileName: "jquery-1.2.6.js" },
  *	 "jquery.ui.js": { depends: ["jquery.js", "skin.css"] },
  * };
@@ -176,6 +176,7 @@ $packagesConfig.defaultContentType = $packagesConfig.defaultContentType || "text
 				var fileName = fileNames[j];
 				if (fileName.indexOf("(none)") >= 0) continue;
 				var request = {
+					id: "_package_" + pkg,
 					"package": pkg,
 					url: (pattern.url ? pattern.url.replace(/\$\{fileName\}/g, fileName) : fileName),
 					contentType: contentType,
@@ -193,27 +194,28 @@ $packagesConfig.defaultContentType = $packagesConfig.defaultContentType || "text
 		}
 		if (toLast) tempRequests.push.apply(tempRequests, toLast);
 
-		var requests = [], mergeRequest;
+		var requests = [], mergedRequest;
 		for (var i = 0; i < tempRequests.length; i++) {
 			var request = tempRequests[i];
-			if (mergeRequest && mergeRequest.pattern != request.pattern) {
-				mergePkgs(mergeRequest);
-				mergeRequest = null;
+			if (mergedRequest && mergedRequest.pattern != request.pattern) {
+				mergePkgs(mergedRequest);
+				mergedRequest = null;
 			}
 
 			if (request.pattern.mergeRequests) {
 				var pkg = request["package"];
-				if (!mergeRequest) {
-					mergeRequest = request;
+				if (!mergedRequest) {
+					mergedRequest = request;
+					delete mergedRequest.id;
 					request["package"] = [];
 					requests.push(request);
 				}
-				mergeRequest["package"].push(pkg);
+				mergedRequest["package"].push(pkg);
 			} else {
 				requests.push(request);
 			}
 		}
-		if (mergeRequest) mergePkgs(mergeRequest);
+		if (mergedRequest) mergePkgs(mergedRequest);
 
 		for (var i = 0; i < requests.length; i++) {
 			var request = requests[i];
@@ -284,7 +286,6 @@ $packagesConfig.defaultContentType = $packagesConfig.defaultContentType || "text
 					onLoaded(this);
 				};
 			}
-			element.language = "JavaScript";
 			element.type = request.contentType;
 			element.charset = request.charset;
 			element.src = request.url;
@@ -309,8 +310,7 @@ $packagesConfig.defaultContentType = $packagesConfig.defaultContentType || "text
 	}
 
 	function loadResource(request, options) {
-		var typeAndCharset = "type=\"" + request.contentType + "\" " +
-		(request.charset ? "charset=\"" + request.charset + "\" " : '');
+		var typeAndCharset = "type=\"" + request.contentType + "\" " + (request.charset ? "charset=\"" + request.charset + "\" " : '');
 		if (isStyleSheet(request.contentType)) {
 			if (Browser.mozilla) {
 				findHead();
@@ -319,8 +319,7 @@ $packagesConfig.defaultContentType = $packagesConfig.defaultContentType || "text
 				document.writeln("<link rel=\"stylesheet\" " + typeAndCharset + "href=\"" + request.url + "\" />");
 			}
 		} else {
-			document.writeln("<script language=\"JavaScript\" " + typeAndCharset + "src=\"" + request.url +
-			"\"><\/script>");
+			document.writeln("<script " + typeAndCharset + "src=\"" + request.url + "\"><\/script>");
 		}
 		markRequestLoaded(request);
 	}

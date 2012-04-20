@@ -219,6 +219,7 @@ dorado.MessageBox.alert(message);&#xD;
       <Property name="arrowDirection">top</Property>
       <Property name="arrowAlign">left</Property>
       <Property name="content">除以上的按钮之外，您可还以做以下的一些测试：&lt;br>1. 修改某产品的价格，观察合计值的变化。&lt;br>2. 通过列头中的菜单动态改变列的分组方式。&lt;br>3. 修改某产品&quot;Comment&quot;列的值，观察该值可能带来的行高的变化。</Property>
+      <Property name="icon">INFO</Property>
     </Tip>
   </View>
 </ViewConfig>

@@ -1,63 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ViewConfig>
-	<Arguments>
-		<Argument name="layoutRegion"
-			value="background:#FDFEDA; border:1px #DBB74A solid; padding:4px; white-space:nowrap; overflow:visible" />
-	</Arguments>
-	<View title="AnchorLayout" layout="Anchor">
-		<Button caption="锚定式布局-场景1" layoutConstraint="left:20; top:20">
-			<ClientEvent name="onClick"><![CDATA[
-this.id("dialog1").show();
-]]></ClientEvent>
-		</Button>
-		<Button caption="锚定式布局-场景2" layoutConstraint="left:20; top:4; anchorTop:previous">
-			<ClientEvent name="onClick"><![CDATA[
-this.id("dialog2").show();
-]]></ClientEvent>
-		</Button>
-		<Button caption="锚定式布局-场景3" layoutConstraint="left:20; top:4; anchorTop:previous">
-			<ClientEvent name="onClick"><![CDATA[
-this.id("dialog3").show();
-]]></ClientEvent>
-		</Button>
-
-		<Dialog id="dialog1" caption="场景1" layout="Anchor" width="600"
-			height="300" center="true" modal="true" maximizeable="true"
-			contentOverflow="hidden">
-			<Children>
-				<HtmlContainer content="1) left:20; top:20"
-					layoutConstraint="left:20; top:20" style="${argument.layoutRegion}" />
-				<HtmlContainer content="2) left:10; top:20; anchorLeft:previous"
-					layoutConstraint="left:10; top:20; anchorLeft:previous" style="${argument.layoutRegion}" />
-				<HtmlContainer content="3) right:20; bottom:20"
-					layoutConstraint="right:20; bottom:20" style="${argument.layoutRegion}" />
-				<HtmlContainer content="4) right:10; bottom:20; anchorRight:previous"
-					layoutConstraint="right:10; bottom:20; anchorRight:previous" style="${argument.layoutRegion}" />
-			</Children>
-		</Dialog>
-		<Dialog id="dialog2" caption="场景2" layout="Anchor" width="600"
-			height="300" center="true" modal="true" maximizeable="true"
-			contentOverflow="hidden">
-			<Children>
-				<HtmlContainer content="1) left:10; top:10; right:10"
-					layoutConstraint="left:10; top:10; right:10" style="${argument.layoutRegion}" />
-				<HtmlContainer
-					content="2) left:10; top:10; right:10; bottom:10; anchorTop:previous"
-					layoutConstraint="left:10; top:10; right:10; bottom:10; anchorTop:previous"
-					style="${argument.layoutRegion}" />
-			</Children>
-		</Dialog>
-		<Dialog id="dialog3" caption="场景3" layout="Anchor" width="600"
-			height="300" center="true" modal="true" maximizeable="true"
-			contentOverflow="hidden">
-			<Children>
-				<HtmlContainer content="1) left:50%; top:20"
-					layoutConstraint="left:50%; top:20" style="${argument.layoutRegion}" />
-				<HtmlContainer content="2) left:50%; top:50%; width:60%"
-					layoutConstraint="left:50%; top:50%; width:60%" style="${argument.layoutRegion}" />
-				<HtmlContainer content="3) left:100%; bottom:20; width:300"
-					layoutConstraint="left:100%; bottom:20; width:300" style="${argument.layoutRegion}" />
-			</Children>
-		</Dialog>
-	</View>
+  <Arguments>
+    <Argument name="layoutRegion" value="background:#FDFEDA; border:1px #DBB74A solid; padding:4px; white-space:nowrap; overflow:visible"/>
+  </Arguments>
+  <View layout="Anchor" title="AnchorLayout">
+    <Button caption="锚定式布局-场景1" layoutConstraint="left:20; top:20">
+      <ClientEvent name="onClick">
+this.id(&quot;dialog1&quot;).show();
+</ClientEvent>
+    </Button>
+    <Button caption="锚定式布局-场景2" layoutConstraint="left:20; top:4; anchorTop:previous">
+      <ClientEvent name="onClick">
+this.id(&quot;dialog2&quot;).show();
+</ClientEvent>
+    </Button>
+    <Button caption="锚定式布局-场景3" layoutConstraint="left:20; top:4; anchorTop:previous">
+      <ClientEvent name="onClick">
+this.id(&quot;dialog3&quot;).show();
+</ClientEvent>
+    </Button>
+    <Dialog id="dialog1" layout="Anchor" caption="场景1" center="true" contentOverflow="hidden" height="300" maximizeable="true" modal="true" width="600">
+      <Children>
+        <HtmlContainer content="1) left:20; top:20" layoutConstraint="left:20; top:20" style="${argument.layoutRegion}"/>
+        <HtmlContainer content="2) left:10; top:20; anchorLeft:previous" layoutConstraint="left:10; top:20; anchorLeft:previous" style="${argument.layoutRegion}"/>
+        <HtmlContainer content="3) right:20; bottom:20" layoutConstraint="right:20; bottom:20" style="${argument.layoutRegion}"/>
+        <HtmlContainer content="4) right:10; bottom:20; anchorRight:previous" layoutConstraint="right:10; bottom:20; anchorRight:previous" style="${argument.layoutRegion}"/>
+      </Children>
+    </Dialog>
+    <Dialog id="dialog2" layout="Anchor" caption="场景2" center="true" contentOverflow="hidden" height="300" maximizeable="true" modal="true" width="600">
+      <Children>
+        <HtmlContainer content="1) left:10; top:10; right:10" layoutConstraint="left:10; top:10; right:10" style="${argument.layoutRegion}"/>
+        <HtmlContainer content="2) left:10; top:10; right:10; bottom:10; anchorTop:previous" layoutConstraint="left:10; top:10; right:10; bottom:10; anchorTop:previous" style="${argument.layoutRegion}"/>
+      </Children>
+    </Dialog>
+    <Dialog id="dialog3" layout="Anchor" caption="场景3" center="true" contentOverflow="hidden" height="300" maximizeable="true" modal="true" width="600">
+      <Children>
+        <HtmlContainer content="1) left:50%; top:20" layoutConstraint="left:50%; top:20" style="${argument.layoutRegion}"/>
+        <HtmlContainer content="2) left:50%; top:50%; width:60%" layoutConstraint="left:50%; top:50%; width:60%" style="${argument.layoutRegion}"/>
+        <HtmlContainer content="3) left:100%; bottom:20; width:300" layoutConstraint="left:100%; bottom:20; width:300" style="${argument.layoutRegion}"/>
+      </Children>
+    </Dialog>
+  </View>
 </ViewConfig>
