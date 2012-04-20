@@ -76,14 +76,18 @@ public class LibraryFileResolver extends WebFileResolver {
 				if (StringUtils.isEmpty(contentType)) {
 					Pattern pattern = patterns.get(pkg.getPattern());
 					if (pattern != null) {
+						resourceSuffix = pattern.getResourceSuffix();
 						contentType = pattern.getContentType();
 					}
 				}
-				if (HttpConstants.CONTENT_TYPE_CSS
-						.equalsIgnoreCase(contentType)) {
-					resourceSuffix = STYLESHEET_SUFFIX;
-				} else {
-					resourceSuffix = JAVASCRIPT_SUFFIX;
+
+				if (StringUtils.isEmpty(resourceSuffix)) {
+					if (HttpConstants.CONTENT_TYPE_CSS
+							.equalsIgnoreCase(contentType)) {
+						resourceSuffix = STYLESHEET_SUFFIX;
+					} else {
+						resourceSuffix = JAVASCRIPT_SUFFIX;
+					}
 				}
 			}
 
