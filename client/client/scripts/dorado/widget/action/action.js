@@ -347,8 +347,13 @@
 					self.fireEvent("onExecute", self, eventArg);
 					self.fireEvent((success) ? "onSuccess" : "onFailure", self, eventArg);
 					
-					if (!success && !eventArg.processDefault) {
-						dorado.Exception.removeException(eventArg.error);
+					if (!success) {
+						if (eventArg.processDefault) {
+							if (result) throw result;
+						}
+						else {
+							dorado.Exception.removeException(eventArg.error);
+						}
 					}
 					if (success && eventArg.processDefault && self._successMessage) {
 						dorado.widget.NotifyTipManager.notify(self._successMessage);
