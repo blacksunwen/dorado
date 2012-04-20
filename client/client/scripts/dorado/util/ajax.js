@@ -847,8 +847,7 @@ dorado.util.AjaxResult = $class(/** @scope dorado.util.AjaxResult.prototype */
 					exception = new dorado.util.AjaxException("HTTP " + conn.status + " " + conn.statusText, null, connObj);
 				}
 			}
-			if(exception)
-				this._setException(exception);
+			if(exception) this._setException(exception);
 		}
 	},
 	_setException : function(exception) {

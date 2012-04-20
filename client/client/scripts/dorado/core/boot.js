@@ -101,6 +101,8 @@
 var $import, $load, $packagesConfig = window.$packagesConfig || {};
 $packagesConfig.defaultContentType = $packagesConfig.defaultContentType || "text/javascript";
 
+var _NULL_FUNCTION = function(){};
+
 (function() {
 
 	var failsafe = {};
@@ -108,6 +110,52 @@ $packagesConfig.defaultContentType = $packagesConfig.defaultContentType || "text
 	var Browser = {};
 	var ua = navigator.userAgent.toLowerCase(), s;
 	(s = ua.match(/msie ([\d.]+)/)) ? Browser.msie = s[1] : (s = ua.match(/firefox\/([\d.]+)/)) ? Browser.mozilla = s[1] : (s = ua.match(/chrome\/([\d.]+)/)) ? Browser.chrome = s[1] : (s = ua.match(/opera.([\d.]+)/)) ? Browser.opera = s[1] : (s = ua.match(/version\/([\d.]+).*safari/)) ? Browser.safari = s[1] : 0;
+
+	var activeX = ["MSXML2.XMLHTTP.6.0", "MSXML2.XMLHTTP.5.0", "MSXML2.XMLHTTP.4.0", "MSXML2.XMLHTTP.3.0", "MSXML2.XMLHTTP", "Microsoft.XMLHTTP"];
+	
+	function createXMLHttpRequest() {
+		try {
+			return new XMLHttpRequest();
+		} catch (e) {
+			for(var i = 0; i < this.activeX.length; ++i) {
+				try {
+					return new ActiveXObject(this.activeX[i]);
+				} catch (e) {
+				}
+			}
+		}
+	}
+	
+	function getContenxtViaAjax(url, callback) {
+		var xmlHttp = createXMLHttpRequest();
+		if (callback) {
+			xmlHttp.onReadyStateChange = function() {
+				if (xmlHttp.readyState == 4) {
+					xmlHttp.onreadystatechange = _NULL_FUNCTION;
+					
+					if (xmlHttp.status == 200 || xmlHttp.status == 304) {
+						callback(xmlHttp.responseText);
+					} else {
+						alert('XML request error: ' + xmlHttp.statusText + ' (' + xmlHttp.status + ')');
+					}
+				}
+			}
+			xmlHttp.open("GET", url, true); 
+			xmlHttp.send(null);
+		}
+		else {
+			xmlHttp.open("GET", url, false); 
+			xmlHttp.send(null);
+			xmlHttp.onreadystatechange = _NULL_FUNCTION;
+			if (xmlHttp.status == 200 || xmlHttp.status == 304) {
+				return xmlHttp.responseText;
+			}
+			else {
+				alert('XML request error: ' + xmlHttp.statusText + ' (' + xmlHttp.status + ')');
+				return "";
+			}
+		}
+	}
 
 	var head;
 
@@ -184,11 +232,11 @@ $packagesConfig.defaultContentType = $packagesConfig.defaultContentType || "text
 					pattern: pattern
 				};
 
-				if (isStyleSheet(contentType)) {
+				if (isJavaScript(request.contentType)) {
+					tempRequests.push(request);
+				} else {
 					if (!toLast) toLast = [];
 					toLast.push(request);
-				} else {
-					tempRequests.push(request);
 				}
 			}
 		}
@@ -247,6 +295,10 @@ $packagesConfig.defaultContentType = $packagesConfig.defaultContentType || "text
 	function isStyleSheet(contentType) {
 		return contentType == "text/css";
 	}
+	
+	function isJavaScript(contentType) {
+		return contentType == "text/javascript";
+	}
 
 	function markRequestLoaded(request) {
 		var pkg = request["package"];
@@ -272,7 +324,7 @@ $packagesConfig.defaultContentType = $packagesConfig.defaultContentType || "text
 			element.type = request.contentType;
 			element.href = request.url;
 			if (callback) callback(request);
-		} else {
+		} else if (isJavaScript(request.contentType)) {
 			element = document.createElement("script");
 			if (Browser.msie) {
 				element.onreadystatechange = function() {
@@ -291,7 +343,17 @@ $packagesConfig.defaultContentType = $packagesConfig.defaultContentType || "text
 			element.type = request.contentType;
 			element.charset = request.charset;
 			element.src = request.url;
-			element._request = request;
+		}
+		else {
+			element = document.createElement("script");
+			if (request.id) element.id = request.id;
+			element.type = request.contentType;
+			element.charset = request.charset;
+			
+			getContenxtViaAjax(request.url, function(content) {
+				element.text = content;
+				if (callback) callback(content);
+			});
 		}
 		head.insertBefore(element, head.firstChild);
 		markRequestLoaded(request);
@@ -315,14 +377,18 @@ $packagesConfig.defaultContentType = $packagesConfig.defaultContentType || "text
 		var typeAndCharset = "type=\"" + request.contentType + "\" " + (request.charset ? "charset=\"" + request.charset + "\" " : '');
 		var attrs = request.id ? ("id=\"" + request.id + "\" ") : ""; 
 		if (isStyleSheet(request.contentType)) {
-			if (Browser.mozilla) {
-				findHead();
-				loadResourceAsync(request, options);
-			} else {
-				document.writeln("<link " + attrs + "rel=\"stylesheet\" " + typeAndCharset + "href=\"" + request.url + "\" />");
-			}
-		} else {
+			document.writeln("<link " + attrs + "rel=\"stylesheet\" " + typeAndCharset + "href=\"" + request.url + "\" />");
+		} else if (isJavaScript(request.contentType)) {
 			document.writeln("<script " + attrs + typeAndCharset + "src=\"" + request.url + "\"><\/script>");
+		}
+		else {
+			findHead();
+			var element = document.createElement("script");
+			if (request.id) element.id = request.id;
+			element.type = request.contentType;
+			element.charset = request.charset;
+			element.text = getContenxtViaAjax(request.url);
+			head.insertBefore(element, head.firstChild);
 		}
 		markRequestLoaded(request);
 	}
