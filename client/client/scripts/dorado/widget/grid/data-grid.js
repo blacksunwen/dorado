@@ -512,6 +512,10 @@
 					if (arg.entityList == this._itemModel.getItems()) {
 						var oldCurrentEntity = this.getCurrentEntity();
 						if (!this._supportsPaging && (!oldCurrentEntity || oldCurrentEntity.page.pageNo != arg.entityList.pageNo)) {
+							if (this._itemModel._filterParams && this._filterMode == "clientSide") {
+								this.get("filterEntity").clearData();
+								this.filter();
+							}
 							this.refresh(true);
 							this.refreshSummary();
 						} else {

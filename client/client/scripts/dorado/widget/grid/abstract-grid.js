@@ -1916,11 +1916,11 @@
 					});
 				}
 			}
-			else if (!(filterParams instanceof Array)) {
+			else if (filterParams && !(filterParams instanceof Array)) {
 				filterParams = [filterParams];
 			}
 			this._itemModel.filter(filterParams);
-			this.refresh();
+			this.refresh(true);
 		},
 
 		/**

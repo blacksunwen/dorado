@@ -105,7 +105,7 @@
 		 * @param {Object[]|dorado.EntityList} items 数据。
 		 */
 		setItems: function(items) {
-			this.filter();
+			if (this._filterParams) this.filter();
 			if (items instanceof dorado.EntityList) this._items = items;
 			else if (items != null) this._items = (items instanceof Array) ? items : [items];
 			else this._items = [];
@@ -268,9 +268,11 @@
 					if (passed) filtered.push(entity);
 				}
 				this._items = filtered;
+				this._filterParams = filterParams;
 			} else if (this._originItems) {
 				this._items = this._originItems;
 				delete this._originItems;
+				delete this._filterParams;
 			}
 		},
 		
