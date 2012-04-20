@@ -1900,7 +1900,7 @@
 					var column = dataColumns[i];
 					if (!column._property || column._property == "none") continue;
 					var text = filterEntity.get(column._property);
-					if (text == null) continue;
+					if (text == null || text == "") continue;
 
 					var filerValue = dorado.Toolkits.parseFilterValue(text + ''), operator = filerValue.operator, value = filerValue.value;
 					var dataType = column.get("dataType");

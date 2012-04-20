@@ -616,7 +616,7 @@
 						var column = dataColumns[i];
 						if (!column._property) continue;
 						var expression = filterEntity.get(column._property);
-						if (expression != null) {
+						if (expression != null && expression != "") {
 							var dataType = column.get("dataType"), typeFormat = column.get("typeFormat");
 							var filerValue = dorado.Toolkits.parseFilterValue(expression + ''), operator = filerValue.operator, value = filerValue.value;
 							if (dataType && !filerValue.multiValue) {
