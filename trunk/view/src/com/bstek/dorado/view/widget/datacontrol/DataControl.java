@@ -1,9 +1,14 @@
 package com.bstek.dorado.view.widget.datacontrol;
 
+import com.bstek.dorado.annotation.ClientEvent;
+import com.bstek.dorado.annotation.ClientEvents;
+
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2009-9-22
  */
+@ClientEvents({ @ClientEvent(name = "onGetBindingData"),
+		@ClientEvent(name = "onGetBindingDataType") })
 public interface DataControl {
 
 	/**
@@ -12,7 +17,8 @@ public interface DataControl {
 	public String getDataSet();
 
 	/**
-	 * @param dataSet the dataSet to set
+	 * @param dataSet
+	 *            the dataSet to set
 	 */
 	public void setDataSet(String dataSet);
 
@@ -22,7 +28,8 @@ public interface DataControl {
 	public String getDataPath();
 
 	/**
-	 * @param dataPath the dataPath to set
+	 * @param dataPath
+	 *            the dataPath to set
 	 */
 	public void setDataPath(String dataPath);
 }
