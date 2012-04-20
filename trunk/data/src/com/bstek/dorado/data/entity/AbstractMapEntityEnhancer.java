@@ -6,7 +6,9 @@ import java.util.Set;
 
 import net.sf.cglib.beans.BeanMap;
 
+import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.data.type.EntityDataType;
+import com.bstek.dorado.data.type.property.PropertyDef;
 
 public abstract class AbstractMapEntityEnhancer extends EntityEnhancer {
 
@@ -41,11 +43,19 @@ public abstract class AbstractMapEntityEnhancer extends EntityEnhancer {
 			boolean ignoreInterceptors) throws Throwable {
 		boolean isExProp = isExProperty(entity, property);
 		Object result = internalReadProperty(entity, property, isExProp);
-		if (ignoreInterceptors) {
-			return result;
-		} else {
-			return interceptReadMethod(entity, property, result, isExProp);
+		if (!ignoreInterceptors) {
+			result = interceptReadMethod(entity, property, result, isExProp);
+			if (dataType != null) {
+				PropertyDef propertyDef = dataType.getPropertyDef(property);
+				if (propertyDef != null) {
+					DataType propertyDefDataType = propertyDef.getDataType();
+					if (propertyDefDataType != null) {
+						result = propertyDefDataType.fromObject(result);
+					}
+				}
+			}
 		}
+		return result;
 	}
 
 	@Override

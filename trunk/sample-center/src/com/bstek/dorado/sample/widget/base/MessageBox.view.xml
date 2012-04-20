@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Arguments/>
+  <Context/>
+  <Model/>
+  <View layout="vbox padding:20">
+    <Container layout="hbox">
+      <Button>
+        <ClientEvent name="onClick">dorado.MessageBox.alert(&quot;这是一段提示信息。&quot;);</ClientEvent>
+        <Property name="caption">alert</Property>
+      </Button>
+      <Button>
+        <ClientEvent name="onClick">dorado.MessageBox.alert(&quot;这是一段提示信息。&quot;, {&#xD;
+	icon: &quot;WARNING&quot;&#xD;
+});</ClientEvent>
+        <Property name="caption">alert（非默认图标）</Property>
+      </Button>
+    </Container>
+    <Container layout="hbox">
+      <Button>
+        <ClientEvent name="onClick">dorado.MessageBox.confirm(&quot;请作出您的选择...&quot;, function() {&#xD;
+	dorado.widget.NotifyTipManager.notify(&quot;您选择了\&quot;是\&quot;。&quot;);&#xD;
+});</ClientEvent>
+        <Property name="caption">confirm（仅关注肯定操作）</Property>
+      </Button>
+      <Button>
+        <ClientEvent name="onClick">dorado.MessageBox.confirm(&quot;请作出您的选择...&quot;, {&#xD;
+	detailCallback: function(button, text) {&#xD;
+		dorado.widget.NotifyTipManager.notify(&quot;您选择了\&quot;&quot; + button + &quot;\&quot;。&quot;);&#xD;
+	}&#xD;
+});</ClientEvent>
+        <Property name="caption">confirm（仅关注所有操作）</Property>
+      </Button>
+    </Container>
+    <Container layout="hbox">
+      <Button>
+        <ClientEvent name="onClick">dorado.MessageBox.prompt(&quot;请输入一段文本：&quot;, function(text) {&#xD;
+	dorado.widget.NotifyTipManager.notify(&quot;您输入了：&quot; + text);&#xD;
+});</ClientEvent>
+        <Property name="caption">prompt</Property>
+      </Button>
+      <Button>
+        <ClientEvent name="onClick">dorado.MessageBox.promptMultiLines(&quot;请输入一段文本：&quot;, {&#xD;
+	defaultText: &quot;这是一段默认的文字&quot;,&#xD;
+	callback: function(text){&#xD;
+		dorado.widget.NotifyTipManager.notify(&quot;您输入了：&quot; + text);&#xD;
+	}&#xD;
+});</ClientEvent>
+        <Property name="caption">promptMultiLines</Property>
+      </Button>
+    </Container>
+    <Container layout="hbox">
+      <Button>
+        <ClientEvent name="onClick">dorado.MessageBox.show({&#xD;
+	icon: &quot;WARNING&quot;,&#xD;
+	title: &quot;自定义个的标题&quot;,&#xD;
+	message: &quot;这是一个自定义的对话框&quot;,&#xD;
+	buttons: [&quot;yes&quot;, &quot;no&quot;, &quot;cancel&quot;],&#xD;
+	closeAction: &quot;cancel&quot;,&#xD;
+	detailCallback: function(button, text) {&#xD;
+		dorado.widget.NotifyTipManager.notify(&quot;您选择了\&quot;&quot; + button + &quot;\&quot;。&quot;);&#xD;
+	}&#xD;
+});</ClientEvent>
+        <Property name="caption">自定义对话框</Property>
+      </Button>
+    </Container>
+  </View>
+</ViewConfig>

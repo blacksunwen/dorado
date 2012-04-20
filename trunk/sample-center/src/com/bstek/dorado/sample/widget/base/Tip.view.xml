@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Arguments>
+    <Argument name="commonStyle">
+      <Property name="value">background:#e6f6fc; border:1px #91b8c8 dotted; border-radius:3px; padding:16px; display:block; overflow:visible</Property>
+    </Argument>
+  </Arguments>
+  <Context/>
+  <Model/>
+  <View layout="vbox padding:12;regionPadding:12">
+    <HtmlContainer layout="padding:20" style="${argument.commonStyle}">
+      <Property name="content">普通Tip - 只要直接指定控件的tip属性即可</Property>
+      <Property name="width">400</Property>
+      <Property name="tip">这是控件的提示信息...</Property>
+    </HtmlContainer>
+    <HtmlContainer style="${argument.commonStyle}">
+      <ClientEvent name="onReady">dorado.TipManager.initTip(self.getDom(), {&#xD;
+	text : self.get(&quot;tip&quot;),&#xD;
+	icon: &quot;QUESTION&quot;,&#xD;
+	trackMouse: true&#xD;
+});</ClientEvent>
+      <Property name="content">跟踪鼠标移动的Tip</Property>
+      <Property name="width">400</Property>
+      <Property name="tip">这是控件的提示信息...</Property>
+    </HtmlContainer>
+    <HtmlContainer style="${argument.commonStyle}">
+      <ClientEvent name="onReady">dorado.TipManager.initTip(self.getDom(), {&#xD;
+	caption: &quot;提示信息&quot;,&#xD;
+	text : self.get(&quot;tip&quot;),&#xD;
+	anchorToTarget: true,&#xD;
+	align: &quot;center&quot;,&#xD;
+	vAlign: &quot;bottom&quot;,&#xD;
+	arrowDirection: &quot;top&quot;&#xD;
+});</ClientEvent>
+      <Property name="width">400</Property>
+      <Property name="content">带有指示箭头的Tip</Property>
+      <Property name="tip">这是控件的提示信息...</Property>
+    </HtmlContainer>
+    <HtmlContainer style="${argument.commonStyle}">
+      <ClientEvent name="onReady">dorado.TipManager.initTip(self.getDom(), {&#xD;
+    caption: &quot;提示信息&quot;,&#xD;
+    content: [{&#xD;
+        tagName: &quot;IMG&quot;,&#xD;
+        src: $url(&quot;>images/dorado7.jpg&quot;),&#xD;
+        style: &quot;border: 1px lightgray solid; width: 180px; height: 180px&quot;&#xD;
+    }, {&#xD;
+        tagName: &quot;DIV&quot;,&#xD;
+        content: &quot;&lt;a href='http://dorado.bstek.com' target='_blank'>Dorado7&lt;/a>&quot;,&#xD;
+		style: &quot;text-align: center&quot;&#xD;
+    }],&#xD;
+    anchorToTarget: true,&#xD;
+    align: &quot;right&quot;,&#xD;
+	vAlign: &quot;center&quot;,&#xD;
+    arrowDirection: &quot;left&quot;,&#xD;
+	autoHide: false,&#xD;
+	closeable: true&#xD;
+});&#xD;
+</ClientEvent>
+      <Property name="width">400</Property>
+      <Property name="content">带有复杂内容的Tip</Property>
+      <Property name="tip">这是控件的提示信息...</Property>
+    </HtmlContainer>
+    <Tip>
+      <Property name="floating">false</Property>
+      <Property name="text">直接渲染在界面上的Tip</Property>
+      <Property name="arrowDirection">bottom</Property>
+      <Property name="width">400</Property>
+      <Property name="arrowAlign">left</Property>
+      <Property name="caption">直接渲染</Property>
+      <Property name="icon">QUESTION</Property>
+    </Tip>
+  </View>
+</ViewConfig>
