@@ -2889,14 +2889,15 @@
 							dorado.Toolkits.setDelayedAction(grid, "$filterPanelTimerId", grid.hideFilterPanel, 500);
 						});
 						tFoot.appendChild(filterBarRow);
+						headerTable.appendChild(tFoot);
 					} else {
 						tFoot = filterBarRow.parentNode;
+						$fly(tFoot).show();
 					}
-					if (tFoot.parentNode != headerTable) headerTable.appendChild(tFoot);
 					this.refreshFilterBar();
 					filterBarHeight = tFoot.offsetHeight;
 				} else if (tFoot) {
-					$fly(tFoot).remove();
+					$fly(tFoot).hide();
 				}
 
 				/*
