@@ -716,13 +716,26 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		
 		_validateProperty: function(dataType, propertyDef, propertyInfo, value, preformAsyncValidator) {
 			var messages = [], property = propertyDef._name, validating, propertyDataType = propertyDef.get("dataType");
-			if (propertyDef._required && !dataType._validatorsDisabled &&
-				!value && (!propertyDataType || propertyDataType._code == dorado.DataType.STRING)) {
-				messages.push({
-					state: "error",
-					text: $resource("dorado.data.ErrorContentRequired")
-				});
-			} else if (propertyDef._mapping && value != null && value != "") {
+			if (propertyDef._required && !dataType._validatorsDisabled) {
+				var blank = false;
+				if (value == null) {
+					if (propertyDataType && propertyDataType._code == dorado.DataType.STRING) {
+						blank = !value;
+					}
+					else {
+						blank = true;
+					}
+				}
+				
+				if (blank) {
+					messages.push({
+						state: "error",
+						text: $resource("dorado.data.ErrorContentRequired")
+					});
+				}
+			}
+
+			if (propertyDef._mapping && value != null && value != "") {
 				var mappedValue = propertyDef.getMappedValue(value);
 				if (propertyDef._acceptUnknownMapKey && mappedValue === undefined) {
 					messages.push({
