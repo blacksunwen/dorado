@@ -45,6 +45,7 @@ public class ClientOutputHelper {
 	private static final String COMPONENT_OUTPUTTER = "spring:dorado.componentOutputterDispatcher";
 	private static final String COMPONENT_REFERENCE_OUTPUTTER = "spring:dorado.componentReferencePropertyOutputter";
 	private static final String DATA_TYPE_PROPERTY_OUTPUTTER = "spring:dorado.dataTypePropertyOutputter";
+	private static final Object FAKE_ESCAPE_VALUE = new Object();
 
 	@SuppressWarnings("unchecked")
 	private static final Map<String, PropertyConfig> NULL_MAP = Collections.EMPTY_MAP;
@@ -304,7 +305,11 @@ public class ClientOutputHelper {
 								clientProperty.outputter(), Scope.instant);
 						propertyConfig.setOutputter(beanWrapper.getBean());
 					}
-					if (StringUtils.isNotEmpty(clientProperty.escapeValue())) {
+
+					if (clientProperty.alwaysOutput()) {
+						propertyConfig.setEscapeValue(FAKE_ESCAPE_VALUE);
+					} else if (StringUtils.isNotEmpty(clientProperty
+							.escapeValue())) {
 						propertyConfig.setEscapeValue(clientProperty
 								.escapeValue());
 					}
@@ -388,7 +393,11 @@ public class ClientOutputHelper {
 					if (!clientProperty.evaluateExpression()) {
 						propertyConfig.setEvaluateExpression(false);
 					}
-					if (StringUtils.isNotEmpty(clientProperty.escapeValue())) {
+
+					if (clientProperty.alwaysOutput()) {
+						propertyConfig.setEscapeValue(FAKE_ESCAPE_VALUE);
+					} else if (StringUtils.isNotEmpty(clientProperty
+							.escapeValue())) {
 						propertyConfig.setEscapeValue(clientProperty
 								.escapeValue());
 					}

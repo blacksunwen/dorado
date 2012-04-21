@@ -31,6 +31,12 @@ public class UpdateAction extends Action {
 	private boolean alwaysExecute;
 
 	@Override
+	@ClientProperty(alwaysOutput = true)
+	public String getExecutingMessage() {
+		return super.getExecutingMessage();
+	}
+
+	@Override
 	@ClientProperty(escapeValue = "true")
 	public boolean isAsync() {
 		return async;

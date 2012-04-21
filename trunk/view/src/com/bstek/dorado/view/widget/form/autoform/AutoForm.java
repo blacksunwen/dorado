@@ -30,11 +30,11 @@ public class AutoForm extends Control implements FormConfig {
 	private String dataPath;
 	private EntityDataType dataType;
 	private String cols;
-	private int rowHeight;
-	private int colPadding;
-	private int rowPadding;
+	private int rowHeight = 22;
+	private int colPadding = 6;
+	private int rowPadding = 6;
 	private boolean stretchWidth;
-	private int padding;
+	private int padding = 8;
 	private boolean autoCreateElements;
 	private List<Control> elements = new InnerElementList<Control>(this);
 
@@ -105,6 +105,7 @@ public class AutoForm extends Control implements FormConfig {
 		this.cols = cols;
 	}
 
+	@ClientProperty(escapeValue = "22")
 	public int getRowHeight() {
 		return rowHeight;
 	}
@@ -113,6 +114,7 @@ public class AutoForm extends Control implements FormConfig {
 		this.rowHeight = rowHeight;
 	}
 
+	@ClientProperty(escapeValue = "6")
 	public int getColPadding() {
 		return colPadding;
 	}
@@ -121,6 +123,7 @@ public class AutoForm extends Control implements FormConfig {
 		this.colPadding = colPadding;
 	}
 
+	@ClientProperty(escapeValue = "6")
 	public int getRowPadding() {
 		return rowPadding;
 	}
@@ -137,6 +140,7 @@ public class AutoForm extends Control implements FormConfig {
 		this.stretchWidth = stretchWidth;
 	}
 
+	@ClientProperty(escapeValue = "8")
 	public int getPadding() {
 		return padding;
 	}

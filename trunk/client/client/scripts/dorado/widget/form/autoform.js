@@ -100,25 +100,34 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 		 * 默认的行高。
 		 * @type int
 		 * @attribute
+		 * @default 22
 		 * @see dorado.widget.layout.FormLayout#attribute:rowHeight
 		 */
-		rowHeight: {},
+		rowHeight: {
+			defaultValue: 22
+		},
 		
 		/**
-		 * 表单区域之间的留白大小。像素值。
+		 * 表单列之间的留白大小。像素值。
 		 * @type int
 		 * @attribute
-		 * @see dorado.widget.layout.FormLayout#attribute:cellSpacing
+		 * @default 6
+		 * @see dorado.widget.layout.FormLayout#attribute:colPadding
 		 */
-		cellSpacing: {},
+		colPadding: {
+			defaultValue: 6
+		},
 		
 		/**
-		 * 表单区域之间的留白大小。像素值。
+		 * 表单行之间的留白大小。像素值。
 		 * @type int
 		 * @attribute
-		 * @see dorado.widget.layout.FormLayout#attribute:cellPadding
+		 * @default 6
+		 * @see dorado.widget.layout.FormLayout#attribute:rowPadding
 		 */
-		cellPadding: {},
+		rowPadding: {
+			defaultValue: 6
+		},
 		
 		/**
 		 * 是否将表单的宽度自动扩展为撑满容器。
@@ -131,10 +140,13 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 		/**
 		 * 表单四周的留白大小。像素值。
 		 * @type int
+		 * @default 8
 		 * @attribute
 		 * @see dorado.widget.layout.FormLayout#attribute:padding
 		 */
-		padding: {},
+		padding: {
+			defaultValue: 8
+		},
 		
 		/**
 		 * 此属性只影响自动创建表单元素的功能，即我们可以指定一个实体数据类型让表单根据此数据类型自动创建其中的表单元素。

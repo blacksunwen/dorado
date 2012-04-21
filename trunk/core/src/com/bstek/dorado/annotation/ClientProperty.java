@@ -25,5 +25,7 @@ public @interface ClientProperty {
 
 	String escapeValue() default "";
 
+	boolean alwaysOutput() default false;
+
 	boolean evaluateExpression() default true;
 }

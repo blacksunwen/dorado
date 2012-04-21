@@ -361,6 +361,10 @@
 						}
 					}
 				}
+			},
+			
+			executingMessage: {
+				defaultValue: $resource("dorado.baseWidget.SubmitingData")
 			}
 		},
 
