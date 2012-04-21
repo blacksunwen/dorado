@@ -75,7 +75,7 @@
 			},
 			
 			/**
-			 *
+			 * 表单列之间的留白大小。像素值。
 			 * @type int
 			 * @attribute
 			 * @default 6
@@ -85,7 +85,7 @@
 			},
 			
 			/**
-			 *
+			 * 表单行之间的留白大小。像素值。
 			 * @type int
 			 * @attribute
 			 * @default 6
