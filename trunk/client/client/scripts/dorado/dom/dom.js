@@ -218,12 +218,13 @@
 		
 			function setAttrs(el, attrs, jqEl) {
 				//attrName is not global. modified by frank
+				var $el = jQuery(el);
 				for (var attrName in attrs) {
 					var attrValue = attrs[attrName];
 					switch (attrName) {
 						case "style":
 							if (attrValue.constructor == String) {
-								$fly(el).attr("style", attrValue);
+								$el.attr("style", attrValue);
 							} else {
 								for (var styleName in attrValue) {
 									var v = attrValue[styleName];
@@ -253,6 +254,10 @@
 								context[attrValue] = el;
 							}
 							continue;
+						
+						case "data":
+							$el.data(attrValue);
+							break;
 							
 						default:
 							if (attrName.substr(0, 2) == "on") { // event?
