@@ -82,6 +82,18 @@ dorado.util.Map = $class(/** @scope dorado.util.Map.prototype */{
 	},
 	
 	/**
+	 * 返回是否为空。
+	 * @return {boolean} 是否为空。
+	 */
+	isEmpty: function() {
+		var map = this._map;
+		for (var k in map) {
+			if (map.hasOwnProperty(k)) return false;
+		}
+		return true;
+	},
+	
+	/**
 	 * 删除Map中的某个键值对。
 	 * @param {String} key 要删除的键。
 	 */

@@ -5,7 +5,6 @@
  * @static
  */
 dorado.util.Common = {
-
 	/**
 	 * 格式化输出数字的方法。
 	 * <p>

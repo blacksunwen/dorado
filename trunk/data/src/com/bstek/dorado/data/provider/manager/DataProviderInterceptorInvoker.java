@@ -1,6 +1,7 @@
 package com.bstek.dorado.data.provider.manager;
 
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.Map;
 
 import org.aopalliance.intercept.MethodInterceptor;
@@ -12,6 +13,7 @@ import org.apache.commons.logging.LogFactory;
 import com.bstek.dorado.common.method.MethodAutoMatchingException;
 import com.bstek.dorado.common.method.MethodAutoMatchingUtils;
 import com.bstek.dorado.core.bean.BeanFactoryUtils;
+import com.bstek.dorado.data.ParameterWrapper;
 import com.bstek.dorado.data.provider.DataProvider;
 import com.bstek.dorado.data.provider.Page;
 import com.bstek.dorado.data.resolver.DataResolver;
@@ -102,17 +104,43 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 		Object[] optionalParameters = null;
 
 		Object parameter = null;
+		Map<String, Object> sysParameter = null;
 		int parameterParameterIndex = MethodAutoMatchingUtils.indexOfTypes(
 				parameterTypes, Object.class);
 		if (parameterParameterIndex >= 0) {
 			parameter = proxyArgs[parameterParameterIndex];
 		}
+		if (parameter instanceof ParameterWrapper) {
+			ParameterWrapper parameterWrapper = (ParameterWrapper) parameter;
+			parameter = parameterWrapper.getParameter();
+			sysParameter = parameterWrapper.getSysParameter();
+		}
+		if (sysParameter == null) {
+			sysParameter = Collections.emptyMap();
+		}
 
+		Page<?> page = null;
 		int pageParameterIndex = MethodAutoMatchingUtils.indexOfTypes(
 				parameterTypes, Page.class);
 		if (pageParameterIndex >= 0) {
-			requiredParameterNames = new String[] { "page" };
-			requiredParameters = new Object[] { proxyArgs[pageParameterIndex] };
+			page = (Page<?>) proxyArgs[pageParameterIndex];
+		}
+
+		requiredParameterNames = new String[((page != null) ? 1 : 0)
+				+ sysParameter.size()];
+		requiredParameters = new Object[requiredParameterNames.length];
+		if (page != null) {
+			requiredParameterNames[0] = "page";
+			requiredParameters[0] = page;
+		}
+
+		if (!sysParameter.isEmpty()) {
+			int i = (page != null) ? 1 : 0;
+			for (Map.Entry<?, ?> entry : sysParameter.entrySet()) {
+				requiredParameterNames[i] = (String) entry.getKey();
+				requiredParameters[i] = entry.getValue();
+				i++;
+			}
 		}
 
 		String[] parameterParameterNames = EMPTY_NAMES;
@@ -136,14 +164,15 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 		}
 
 		optionalParameterNames = new String[parameterParameterNames.length + 2];
+		optionalParameters = new Object[optionalParameterNames.length];
+
 		optionalParameterNames[0] = "dataProvider";
 		optionalParameterNames[1] = "methodInvocation";
-		System.arraycopy(parameterParameterNames, 0, optionalParameterNames, 2,
-				parameterParameterNames.length);
-
-		optionalParameters = new Object[optionalParameterNames.length];
 		optionalParameters[0] = dataProvider;
 		optionalParameters[1] = methodInvocation;
+
+		System.arraycopy(parameterParameterNames, 0, optionalParameterNames, 2,
+				parameterParameterNames.length);
 		System.arraycopy(parameterParameters, 0, optionalParameters, 2,
 				parameterParameters.length);
 

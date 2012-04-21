@@ -459,9 +459,7 @@
 				if (this._preloadConfigsMap) {
 					var preloadConfigs = this._preloadConfigsMap[path || "#EMPTY"];
 					if (preloadConfigs) {
-						dorado.DataProvider._SYS_PARAMETER = {
-							preloadConfigs: preloadConfigs
-						};
+						dorado.Toolkits.getSysParameter().put("preloadConfigs", preloadConfigs);
 					}
 				}
 				
@@ -484,8 +482,6 @@
 						this.doLoad();
 					}
 				}
-				
-				dorado.DataProvider._SYS_PARAMETER = null;
 			}
 
 			var data = evaluatePath.call(this, path, options);

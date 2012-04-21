@@ -17,6 +17,8 @@ import com.bstek.dorado.common.service.ExposedServiceManager;
 import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.core.bean.BeanFactoryUtils;
 import com.bstek.dorado.data.JsonUtils;
+import com.bstek.dorado.data.ParameterWrapper;
+import com.bstek.dorado.data.variant.MetaData;
 import com.bstek.dorado.util.Assert;
 import com.bstek.dorado.view.output.OutputContext;
 import com.bstek.dorado.web.DoradoContext;
@@ -28,7 +30,6 @@ import com.bstek.dorado.web.DoradoContext;
 public class RemoteServiceProcessor extends DataServiceProcessorSupport {
 	private static final Log logger = LogFactory
 			.getLog(RemoteServiceProcessor.class);
-
 	private ExposedServiceManager exposedServiceManager;
 
 	public void setExposedServiceManager(
@@ -58,6 +59,12 @@ public class RemoteServiceProcessor extends DataServiceProcessorSupport {
 
 		Object parameter = jsonToJavaObject(objectNode.get("parameter"), null,
 				null, false);
+		MetaData sysParameter = (MetaData) jsonToJavaObject(
+				objectNode.get("sysParameter"), null, null, false);
+
+		if (sysParameter != null && !sysParameter.isEmpty()) {
+			parameter = new ParameterWrapper(parameter, sysParameter);
+		}
 
 		Object serviceBean = BeanFactoryUtils.getBean(exposedService
 				.getBeanName());
@@ -101,28 +108,68 @@ public class RemoteServiceProcessor extends DataServiceProcessorSupport {
 	protected Object invokeByParameterName(Object serviceBean,
 			Method[] methods, Object parameter)
 			throws MethodAutoMatchingException, Exception {
-		String[] optionalParameterNames = null;
-		Object[] optionalParameters = null;
+		Map<String, Object> sysParameter = null;
+		if (parameter instanceof ParameterWrapper) {
+			ParameterWrapper parameterWrapper = (ParameterWrapper) parameter;
+			parameter = parameterWrapper.getParameter();
+			sysParameter = parameterWrapper.getSysParameter();
+		}
+
+		String[] requiredParameterNames = null;
+		Object[] requiredParameters = null;
+		if (sysParameter != null) {
+			requiredParameterNames = new String[sysParameter.size()];
+			requiredParameters = new Object[requiredParameterNames.length];
+
+			int i = 0;
+			for (Map.Entry<?, ?> entry : sysParameter.entrySet()) {
+				requiredParameterNames[i] = (String) entry.getKey();
+				requiredParameters[i] = entry.getValue();
+				i++;
+			}
+		}
+
+		String[] parameterParameterNames = null;
+		Object[] parameterParameters = null;
 		if (parameter != null && parameter instanceof Map) {
 			Map<?, ?> map = (Map<?, ?>) parameter;
-			optionalParameterNames = new String[map.size() + 1];
-			optionalParameters = new Object[optionalParameterNames.length];
-			optionalParameterNames[0] = "parameter";
-			optionalParameters[0] = parameter;
+			parameterParameterNames = new String[map.size() + 1];
+			parameterParameters = new Object[parameterParameterNames.length];
+			parameterParameterNames[0] = "parameter";
+			parameterParameters[0] = parameter;
 
 			int i = 1;
 			for (Map.Entry<?, ?> entry : map.entrySet()) {
+				parameterParameterNames[i] = (String) entry.getKey();
+				parameterParameters[i] = entry.getValue();
+				i++;
+			}
+		} else if (parameter != null) {
+			parameterParameterNames = new String[] { "parameter" };
+			parameterParameters = new Object[] { parameter };
+		}
+
+		String[] optionalParameterNames = new String[parameterParameterNames.length
+				+ sysParameter.size()];
+		Object[] optionalParameters = new Object[optionalParameterNames.length];
+
+		System.arraycopy(parameterParameterNames, 0, optionalParameterNames, 0,
+				parameterParameterNames.length);
+		System.arraycopy(parameterParameters, 0, optionalParameters, 0,
+				parameterParameters.length);
+
+		if (!sysParameter.isEmpty()) {
+			int i = parameterParameterNames.length;
+			for (Map.Entry<?, ?> entry : sysParameter.entrySet()) {
 				optionalParameterNames[i] = (String) entry.getKey();
 				optionalParameters[i] = entry.getValue();
 				i++;
 			}
-		} else if (parameter != null) {
-			optionalParameterNames = new String[] { "parameter" };
-			optionalParameters = new Object[] { parameter };
 		}
 
-		return MethodAutoMatchingUtils.invokeMethod(methods, serviceBean, null,
-				null, optionalParameterNames, optionalParameters);
+		return MethodAutoMatchingUtils.invokeMethod(methods, serviceBean,
+				requiredParameterNames, requiredParameters,
+				optionalParameterNames, optionalParameters);
 	}
 
 	protected Object invokeByParameterType(Object serviceBean,
