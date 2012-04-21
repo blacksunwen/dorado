@@ -1206,7 +1206,11 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		 */
 		toJSON : function(options, context) {
 			var result = {};
-			var includeUnsubmittableProperties = includeReferenceProperties = includeLookupProperties = true, simplePropertyOnly = generateDataType = generateState = generateEntityId = generateOldData = false, properties = null, entityFilter = null;
+			var includeUnsubmittableProperties, includeReferenceProperties, includeLookupProperties, simplePropertyOnly, generateDataType, generateState, generateEntityId, generateOldData, properties, entityFilter;
+			includeUnsubmittableProperties = includeReferenceProperties = includeLookupProperties = true;
+			simplePropertyOnly = generateDataType = generateState = generateEntityId = generateOldData = false;
+			properties = entityFilter = null;
+			
 			if (options != null) {
 				if (options.includeUnsubmittableProperties === false) includeUnsubmittableProperties = false;
 				if (options.includeReferenceProperties === false) includeReferenceProperties = false;
