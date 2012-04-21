@@ -13,6 +13,7 @@ import org.codehaus.jackson.type.TypeReference;
 
 import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.data.JsonUtils;
+import com.bstek.dorado.data.ParameterWrapper;
 import com.bstek.dorado.data.entity.EntityUtils;
 import com.bstek.dorado.data.provider.Criteria;
 import com.bstek.dorado.data.provider.DataProvider;
@@ -22,7 +23,7 @@ import com.bstek.dorado.data.provider.filter.FilterCriterion;
 import com.bstek.dorado.data.provider.filter.FilterCriterionParser;
 import com.bstek.dorado.data.provider.manager.DataProviderManager;
 import com.bstek.dorado.data.type.DataType;
-import com.bstek.dorado.data.variant.Record;
+import com.bstek.dorado.data.variant.MetaData;
 import com.bstek.dorado.view.manager.ViewConfig;
 import com.bstek.dorado.view.output.OutputContext;
 import com.bstek.dorado.web.DoradoContext;
@@ -160,28 +161,35 @@ public class LoadDataServiceProcessor extends DataServiceProcessorSupport {
 		}
 
 		JsonNode rudeParameter = objectNode.get("parameter");
-		ObjectNode rudeCriteria = null;
-		if (rudeParameter instanceof ObjectNode) {
-			rudeCriteria = (ObjectNode) ((ObjectNode) rudeParameter)
-					.get("criteria");
-			if (rudeCriteria != null) {
-				((ObjectNode) rudeParameter).remove("criteria");
+		ObjectNode rudeSysParameter = (ObjectNode) objectNode
+				.get("sysParameter");
+
+		Collection<DataPreloadConfig> dataPreloadConfigs = null;
+		JsonNode rudeCriteria = null;
+
+		if (rudeSysParameter != null) {
+			if (rudeSysParameter.has("preloadConfigs")) {
+				dataPreloadConfigs = (Collection<DataPreloadConfig>) JsonUtils
+						.toJavaObject(
+								rudeSysParameter.remove("preloadConfigs"),
+								getDataType("[DataPreloadConfig]"));
 			}
+
+			rudeCriteria = rudeSysParameter.remove("criteria");
 		}
 
 		Object parameter = jsonToJavaObject(rudeParameter, null, null, false);
-		if (rudeCriteria != null) {
-			Criteria criteria = getCriteria(rudeCriteria);
-			((Record) parameter).put("criteria", criteria);
-		}
+		MetaData sysParameter = null;
 
-		JsonNode rudeSysParameter = objectNode.get("sysParameter");
-		Collection<DataPreloadConfig> dataPreloadConfigs = null;
-		if (rudeSysParameter instanceof ObjectNode) {
-			if (rudeSysParameter.has("preloadConfigs")) {
-				dataPreloadConfigs = (Collection<DataPreloadConfig>) JsonUtils
-						.toJavaObject(rudeSysParameter.get("preloadConfigs"),
-								getDataType("[DataPreloadConfig]"));
+		if (rudeSysParameter != null) {
+			sysParameter = (MetaData) jsonToJavaObject(rudeSysParameter, null,
+					null, false);
+			if (rudeCriteria != null && rudeCriteria instanceof ObjectNode) {
+				sysParameter.put("criteria",
+						getCriteria((ObjectNode) rudeCriteria));
+			}
+			if (sysParameter != null && !sysParameter.isEmpty()) {
+				parameter = new ParameterWrapper(parameter, sysParameter);
 			}
 		}
 

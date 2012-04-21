@@ -17,6 +17,7 @@ import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.data.DataTypeResolver;
 import com.bstek.dorado.data.JsonConvertContext;
 import com.bstek.dorado.data.JsonUtils;
+import com.bstek.dorado.data.ParameterWrapper;
 import com.bstek.dorado.data.entity.EntityEnhancer;
 import com.bstek.dorado.data.entity.EntityState;
 import com.bstek.dorado.data.entity.EntityUtils;
@@ -24,6 +25,7 @@ import com.bstek.dorado.data.entity.EntityWrapper;
 import com.bstek.dorado.data.resolver.DataItems;
 import com.bstek.dorado.data.resolver.DataResolver;
 import com.bstek.dorado.data.resolver.manager.DataResolverManager;
+import com.bstek.dorado.data.variant.MetaData;
 import com.bstek.dorado.view.manager.ViewConfig;
 import com.bstek.dorado.view.output.JsonBuilder;
 import com.bstek.dorado.view.output.OutputContext;
@@ -74,6 +76,12 @@ public class ResolveDataServiceProcessor extends DataServiceProcessorSupport {
 			DoradoContext context) throws Exception {
 		Object parameter = jsonToJavaObject(objectNode.get("parameter"), null,
 				null, false);
+		MetaData sysParameter = (MetaData) jsonToJavaObject(
+				objectNode.get("sysParameter"), null, null, false);
+
+		if (sysParameter != null && !sysParameter.isEmpty()) {
+			parameter = new ParameterWrapper(parameter, sysParameter);
+		}
 
 		String dataResolverName = JsonUtils.getString(objectNode,
 				"dataResolver");

@@ -12,6 +12,7 @@ import org.apache.commons.logging.LogFactory;
 import com.bstek.dorado.common.method.MethodAutoMatchingException;
 import com.bstek.dorado.common.method.MethodAutoMatchingUtils;
 import com.bstek.dorado.core.bean.BeanFactoryUtils;
+import com.bstek.dorado.data.ParameterWrapper;
 import com.bstek.dorado.data.provider.DataProvider;
 import com.bstek.dorado.data.resolver.DataItems;
 import com.bstek.dorado.data.resolver.DataResolver;
@@ -93,56 +94,80 @@ public class DataResolverInterceptorInvoker implements MethodInterceptor {
 		Object[] proxyArgs = methodInvocation.getArguments();
 		DataItems dataItems = (DataItems) proxyArgs[0];
 		Object parameter = (proxyArgs.length > 1) ? proxyArgs[1] : null;
+		Map<String, Object> sysParameter = null;
 
-		String[] optionalArgNames = null;
-		Object[] optionalArgs = null;
+		if (parameter instanceof ParameterWrapper) {
+			ParameterWrapper parameterWrapper = (ParameterWrapper) parameter;
+			parameter = parameterWrapper.getParameter();
+			sysParameter = parameterWrapper.getSysParameter();
+		}
 
-		String[] parameterArgNames = EMPTY_NAMES;
-		Object[] parameterArgs = EMPTY_ARGS;
+		String[] requiredParameterNames = null;
+		Object[] requiredParameters = null;
+		if (sysParameter != null) {
+			requiredParameterNames = new String[sysParameter.size()];
+			requiredParameters = new Object[requiredParameterNames.length];
+
+			int i = 0;
+			for (Map.Entry<?, ?> entry : sysParameter.entrySet()) {
+				requiredParameterNames[i] = (String) entry.getKey();
+				requiredParameters[i] = entry.getValue();
+				i++;
+			}
+		}
+
+		String[] optionalParameterNames = null;
+		Object[] optionalParameters = null;
+
+		String[] parameterParameterNames = EMPTY_NAMES;
+		Object[] parameterParameters = EMPTY_ARGS;
 		if (parameter != null && parameter instanceof Map<?, ?>) {
 			Map<?, ?> map = (Map<?, ?>) parameter;
-			parameterArgNames = new String[map.size() + 1];
-			parameterArgs = new Object[parameterArgNames.length];
-			parameterArgNames[0] = "parameter";
-			parameterArgs[0] = parameter;
+			parameterParameterNames = new String[map.size() + 1];
+			parameterParameters = new Object[parameterParameterNames.length];
+			parameterParameterNames[0] = "parameter";
+			parameterParameters[0] = parameter;
 
 			int i = 1;
 			for (Map.Entry<?, ?> entry : map.entrySet()) {
-				parameterArgNames[i] = (String) entry.getKey();
-				parameterArgs[i] = entry.getValue();
+				parameterParameterNames[i] = (String) entry.getKey();
+				parameterParameters[i] = entry.getValue();
 				i++;
 			}
 		} else {
-			parameterArgNames = new String[] { "parameter" };
-			parameterArgs = new Object[] { parameter };
+			parameterParameterNames = new String[] { "parameter" };
+			parameterParameters = new Object[] { parameter };
 		}
 
-		int dataItemsArgCount = (dataItems != null) ? dataItems.size() : 0;
-		optionalArgNames = new String[dataItemsArgCount
-				+ parameterArgNames.length + 3];
-		optionalArgs = new Object[optionalArgNames.length];
-		optionalArgNames[0] = "dataItems";
-		optionalArgNames[1] = "dataResolver";
-		optionalArgNames[2] = "methodInvocation";
-		optionalArgs[0] = dataItems;
-		optionalArgs[1] = dataResolver;
-		optionalArgs[2] = methodInvocation;
+		int dataItemsParameterCount = (dataItems != null) ? dataItems.size()
+				: 0;
+		optionalParameterNames = new String[dataItemsParameterCount
+				+ parameterParameterNames.length + 3];
+		optionalParameters = new Object[optionalParameterNames.length];
+		optionalParameterNames[0] = "dataItems";
+		optionalParameterNames[1] = "dataResolver";
+		optionalParameterNames[2] = "methodInvocation";
+		optionalParameters[0] = dataItems;
+		optionalParameters[1] = dataResolver;
+		optionalParameters[2] = methodInvocation;
 
 		if (dataItems != null) {
 			int i = 3;
 			for (Map.Entry<String, Object> entry : dataItems.entrySet()) {
-				optionalArgNames[i] = entry.getKey();
-				optionalArgs[i] = entry.getValue();
+				optionalParameterNames[i] = entry.getKey();
+				optionalParameters[i] = entry.getValue();
 				i++;
 			}
 		}
-		System.arraycopy(parameterArgNames, 0, optionalArgNames,
-				dataItemsArgCount + 3, parameterArgNames.length);
-		System.arraycopy(parameterArgs, 0, optionalArgs, dataItemsArgCount + 3,
-				parameterArgs.length);
 
-		return MethodAutoMatchingUtils.invokeMethod(methods, interceptor, null,
-				null, optionalArgNames, optionalArgs);
+		System.arraycopy(parameterParameterNames, 0, optionalParameterNames,
+				dataItemsParameterCount + 3, parameterParameterNames.length);
+		System.arraycopy(parameterParameters, 0, optionalParameters,
+				dataItemsParameterCount + 3, parameterParameters.length);
+
+		return MethodAutoMatchingUtils.invokeMethod(methods, interceptor,
+				requiredParameterNames, requiredParameters,
+				optionalParameterNames, optionalParameters);
 	}
 
 	private Object invokeInterceptorByParamType(DataResolver dataResolver,

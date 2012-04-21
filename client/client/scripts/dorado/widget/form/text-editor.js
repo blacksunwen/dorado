@@ -415,7 +415,7 @@
 			}
 		},
 		
-		doOnBlur: function() {			
+		doOnBlur: function() {
 			this.resetReadOnly();
 			if (dorado.Browser.msie && dorado.Browser.version < 9) this._textDom.readOnly = false;
 			if (this._realReadOnly) return;

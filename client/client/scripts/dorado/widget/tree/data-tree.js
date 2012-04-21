@@ -288,13 +288,10 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 					if (processPreload) {
 						var preloadConfigs = dorado.widget.DataTree.bindingConfigToPreloadConfig(bindingConfig, 0);
 						if (preloadConfigs) {
-							dorado.DataProvider._SYS_PARAMETER = {
-								preloadConfigs: preloadConfigs
-							};
+							dorado.Toolkits.getSysParameter().put("preloadConfigs", preloadConfigs);
 						}
 					}
 					data.getAsync(bindingConfig.childrenProperty, callback);
-					dorado.DataProvider._SYS_PARAMETER = null;
 				});
 			}
 			if (bindingConfig.childBindingConfigs) {			
@@ -305,13 +302,10 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 						if (processPreload) {
 							var preloadConfigs = dorado.widget.DataTree.bindingConfigToPreloadConfig(childBindingConfig, 0);
 							if (preloadConfigs) {
-								dorado.DataProvider._SYS_PARAMETER = {
-									preloadConfigs: preloadConfigs
-								};
+								dorado.Toolkits.getSysParameter().put("preloadConfigs", preloadConfigs);
 							}
 						}
 						data.getAsync(childrenProperty, callback);
-						dorado.DataProvider._SYS_PARAMETER = null;
 					});
 				}
 			}

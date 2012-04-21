@@ -854,12 +854,12 @@
 						});
 					}
 					
-					if(evt.srcElement != lastMouseDownTarget || (new Date() - lastMouseDownTimestamp) > 500) {
+					if (evt.srcElement != lastMouseDownTarget || (new Date() - lastMouseDownTimestamp) > 500) {
 						dorado.widget.setFocusedControl(self);
 						lastMouseDownTarget = evt.srcElement;
 						lastMouseDownTimestamp = new Date();
 					}
-					if(!self.processDefaultMouseListener()) return;
+					if (!self.processDefaultMouseListener()) return;
 					var defaultReturnValue;
 					if (self.onMouseDown) {
 						defaultReturnValue = self.onMouseDown(evt);
@@ -1120,12 +1120,13 @@
 		/**
 		 * 使控件获得控制焦点。
 		 */
-		setFocus: function() {			
+		setFocus: function() {
 			dorado._LAST_FOCUS_CONTROL = this;
 			var self = this;
 			setTimeout(function() {
 				if (dorado._LAST_FOCUS_CONTROL === self && dorado.widget.focusedControl.peek() !== self) {
 					self.doSetFocus();
+					dorado.widget.onControlGainedFocus(self);
 				}
 				dorado._LAST_FOCUS_CONTROL = null;
 			}, 0);
@@ -1291,6 +1292,10 @@
 		i++;
 		for(; i < nv.length; i++) {
 			if(nv[i].onFocus) nv[i].onFocus();
+		}
+		
+		if (dorado.widget.focusedControl.peek()) {
+			console.log(dorado.widget.focusedControl.peek().constructor.className);
 		}
 	};
 

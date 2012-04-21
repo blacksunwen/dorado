@@ -95,9 +95,9 @@
 				jsonData.pageNo = arg.pageNo;
 				jsonData.context = arg.view ? arg.view.get("context") : null;
 			}
-			if (dorado.DataProvider._SYS_PARAMETER) {
-				jsonData.sysParameter = dorado.DataProvider._SYS_PARAMETER;
-				dorado.DataProvider._SYS_PARAMETER = null;
+			if (!dorado.Toolkits.getSysParameter().isEmpty()) {
+				jsonData.sysParameter = dorado.Toolkits.getSysParameter().toJSON();
+				dorado.Toolkits.getSysParameter().clear();
 			}
 			if (this.supportsEntity && this.dataTypeRepository) {
 				jsonData.loadedDataTypes = this.dataTypeRepository.getLoadedDataTypes();
@@ -242,9 +242,9 @@
 				jsonData.pageSize = arg.pageSize;
 				jsonData.pageNo = arg.pageNo;
 			}
-			if (dorado.DataProvider._SYS_PARAMETER) {
-				jsonData.sysParameter = dorado.DataProvider._SYS_PARAMETER;
-				dorado.DataProvider._SYS_PARAMETER = null;
+			if (!dorado.Toolkits.getSysParameter().isEmpty()) {
+				jsonData.sysParameter = dorado.Toolkits.getSysParameter().toJSON();
+				dorado.Toolkits.getSysParameter().clear();
 			}
 			return options;
 		}

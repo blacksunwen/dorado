@@ -203,9 +203,9 @@
 		
 		addColumn: function() {
 			var column = $invokeSuper.call(this, arguments);
-			if (this._autoCreateColumns && 
-				(column instanceof dorado.widget.grid.DataColumn && column._property && column._property != "none" ||
-				column instanceof dorado.widget.grid.ColumnGroup)) {
+			if (this._autoCreateColumns &&
+			(column instanceof dorado.widget.grid.DataColumn && column._property && column._property != "none" ||
+			column instanceof dorado.widget.grid.ColumnGroup)) {
 				var watcher = this.getAttributeWatcher();
 				if (watcher.getWritingTimes("autoCreateColumns") == 0) {
 					this._autoCreateColumns = false;
@@ -280,7 +280,7 @@
 			}
 		},
 		
-		refreshDom: function(dom) {			
+		refreshDom: function(dom) {
 			var columnsInited = false;
 			if (this._dataSet) {
 				var entityList = this.getBindingData({
@@ -482,8 +482,7 @@
 						});
 						if (dorado.DataPipe.MONITOR.asyncExecutionTimes > asyncExecutionTimes) {
 							return true;
-						}
-						else {
+						} else {
 							this.hideLoadingTip();
 							return false;
 						}
@@ -604,6 +603,30 @@
 			}, timeout || 20);
 		},
 		
+		_getParentEntityInfo: function() {
+			var dataSet = this._dataSet;
+			if (!dataSet) return;
+			
+			if (this._dataPath.match(/\.[\w]*$/)) {
+				var i = this._dataPath.lastIndexOf('.');
+				var parentDataPath = this._dataPath.substring(0, i);
+				var subProperty = this._dataPath.substring(i + 1);
+				var parentEntity = dataSet.getData(parentDataPath);
+				if (parentEntity && parentEntity instanceof dorado.Entity) {
+					var parentDataType = parentEntity.dataType;
+					if (parentDataType && parentDataType instanceof dorado.EntityDataType) {
+						var propertyDef = parentDataType.getPropertyDef(subProperty);
+						if (propertyDef && propertyDef instanceof dorado.Reference) {
+							return {
+								parentEntity: parentEntity,
+								subProperty: subProperty
+							};
+						}
+					}
+				}
+			}
+		},
+		
 		filter: function(filterParams) {
 			if (this._filterMode == "serverSide") {
 				var dataSet = this._dataSet;
@@ -621,9 +644,8 @@
 							var filerValue = dorado.Toolkits.parseFilterValue(expression + ''), operator = filerValue.operator, value = filerValue.value;
 							if (dataType && !filerValue.multiValue) {
 								value = dataType.parse(value, typeFormat);
-								expression = (operator || "")  + dataType.toText(value);
-							}
-							else {
+								expression = (operator || "") + dataType.toText(value);
+							} else {
 								expression = value;
 							}
 							
@@ -636,49 +658,24 @@
 					}
 				}
 				
-				var parameter, criteria, propertyDef, parentEntity, subProperty;
+				var parentEntity, subProperty;
 				if (this._dataPath) {
-					var notSupported = true;
-					if (this._dataPath.match(/\.[\w]*$/)) {
-						var i = this._dataPath.lastIndexOf('.');
-						var parentDataPath = this._dataPath.substring(0, i);
-						var subProperty = this._dataPath.substring(i + 1);
-						var parentEntity = dataSet.getData(parentDataPath);
-						if (parentEntity && parentEntity instanceof dorado.Entity) {
-							var parentDataType = parentEntity.dataType;
-							if (parentDataType && parentDataType instanceof dorado.EntityDataType) {
-								propertyDef = parentDataType.getPropertyDef(subProperty);
-								if (propertyDef && propertyDef instanceof dorado.Reference) {
-									parameter = propertyDef.get("parameter");
-									notSupported = false;
-								}
-							}
-						}
+					var parentEntityInfo = this._getParentEntityInfo();
+					if (parentEntityInfo) {
+						parentEntity = parentEntityInfo.parentEntity;
+						subProperty = parentEntityInfo.subProperty;
+					} else {
+						throw new dorado.Exception("Can not perform server side filter on DataPath \"" + this._dataPath + "\"");
 					}
-					if (notSupported) {
-						throw new dorado.Exception("Can not perform filter on DataPath \"" + this._dataPath + "\"");
-					}
-				}
-				else {
-					parameter = dataSet.get("parameter");
 				}
 				
-				if (criterions.length) {
-					if (parameter != null && !(parameter instanceof dorado.util.Map)) {
-						(propertyDef || dataSet).set("parameter", null);
-					}
-					
-					if (parameter && parameter instanceof dorado.util.Map) criteria = parameter.get("criteria");
-					criteria = criteria || {};
-					criteria.criterions = criterions;
-					(propertyDef || dataSet).set("parameter", $map({
-						criteria: criteria
-					}));
-				} else if (parameter instanceof dorado.util.Map) {
-					criteria = parameter.get("criteria");
-					if (criteria && (!criteria.criterions || !criteria.orders)) {
-						parameter.remove("criteria");
-					}
+				var criteria = this._criteria || {};
+				criteria.criterions = criterions;
+				
+				if (!(criteria.criterions || criteria.criterions.length || criteria.orders || criteria.orders.length)) criteria = null;
+				this._criteria = criteria;
+				if (criteria) {
+					dorado.Toolkits.getSysParameter().put("criteria", criteria);
 				}
 				
 				if (parentEntity && subProperty) {
@@ -697,30 +694,35 @@
 				var dataSet = this._dataSet;
 				if (!dataSet) return;
 				
-				var parameter = dataSet.get("parameter"), criteria, orders;
-				if (column) {
-					if (parameter != null && !(parameter instanceof dorado.util.Map)) {
-						dataSet.set("parameter", null);
+				var parentEntity, subProperty;
+				if (this._dataPath) {
+					var parentEntityInfo = this._getParentEntityInfo();
+					if (parentEntityInfo) {
+						parentEntity = parentEntityInfo.parentEntity;
+						subProperty = parentEntityInfo.subProperty;
+					} else {
+						throw new dorado.Exception("Can not perform server side sort on DataPath \"" + this._dataPath + "\"");
 					}
-					
-					if (parameter && parameter instanceof dorado.util.Map) criteria = parameter.get("criteria");
-					criteria = criteria || {};
+				}
+				
+				var orders, criteria = this._criteria || {};
+				if (column) {
 					criteria.orders = orders = [{
 						property: column.get("property"),
 						desc: desc
 					}];
-					dataSet.set("parameter", $map({
-						criteria: criteria
-					}));
 				} else if (parameter instanceof dorado.util.Map) {
-					criteria = parameter.get("criteria");
-					if (criteria && !criteria.criterions && !criteria.orders) {
-						parameter.remove("criteria");
-					}
+					delete criteria.orders;
+				}
+				
+				if (!(criteria.criterions || criteria.criterions.length || criteria.orders || criteria.orders.length)) criteria = null;
+				this._criteria = criteria;
+				if (criteria) {
+					dorado.Toolkits.getSysParameter().put("criteria", criteria);
 				}
 				
 				var dataColumns = this._columnsInfo.dataColumns, grid = this;
-				dataSet.flushAsync(function() {
+				function setSortFlags() {
 					var sortOrderMap = {};
 					for (var i = 0; i < orders.length; i++) {
 						var order = orders[i];
@@ -735,7 +737,14 @@
 						}
 					}
 					grid._skipClearSortFlags = true;
-				});
+				}
+				
+				if (parentEntity && subProperty) {
+					parentEntity.reset(subProperty);
+					parentEntity.getAsync(subProperty, setSortFlags);
+				} else {
+					dataSet.flushAsync(setSortFlags);
+				}
 			} else {
 				return $invokeSuper.call(this, arguments);
 			}
