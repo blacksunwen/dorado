@@ -8,17 +8,30 @@
 	dorado.widget.grid.ColumnList = $extend(dorado.util.KeyedArray, {
 		$className: "dorado.widget.grid.ColumnList",
 		
-		constructor: function(parentColumn) {
+		constructor: function(parent) {
 			$invokeSuper.call(this, [dorado._GET_NAME]);
-			this.parentColumn = parentColumn;
+			this.parent = parent;
+		},
+		
+		updateGridColumnModelTimestamp: function() {
+			var p = this.parent;
+			while (p) {
+				if (p instanceof dorado.widget.AbstractGrid) {
+					p._columnModelTimestamp = dorado.Core.getTimestamp();;
+					return;
+				}
+				p = p._parent;
+			}
 		},
 		
 		beforeInsert: function(column) {
-			column._parent = this.parentColumn;
+			column._parent = this.parent;
+			this.updateGridColumnModelTimestamp();
 		},
 		
 		beforeRemove: function(column) {
 			delete column._parent;
+			this.updateGridColumnModelTimestamp();
 		}
 	});
 	
@@ -493,7 +506,7 @@
 		// =====
 	
 		rebuildRow: function(grid, innerGrid, row, rowType) {
-			var len = innerGrid._columnsInfo.dataColumns.length, oldRowType = row.rowType, $row = jQuery(row);
+			var dataColumns = innerGrid._columnsInfo.dataColumns, len = dataColumns.length, oldRowType = row.rowType, $row = jQuery(row);
 			if (oldRowType == "header") $row.empty();
 			$row.toggleClass("group-header-row", (rowType == "header")).toggleClass("group-footer-row", (rowType == "footer"));
 			if (rowType == "header") {
@@ -502,10 +515,11 @@
 				cell.colSpan = len;
 				row.appendChild(cell);
 			} else {
+				$fly(row).empty();
 				for (var i = 0; i < len; i++) {
 					$DomUtils.getOrCreateChild(row, i, innerGrid.createCell);
 				}
-				$DomUtils.removeChildrenFrom(row, len);
+				row.columnModelTimestamp = grid._columnModelTimestamp;
 			}
 			if (rowType) row.rowType = rowType;
 			else row.removeAttribute("rowType");
@@ -522,9 +536,12 @@
 		 */
 		render: function(row, arg) {
 			var grid = arg.grid, innerGrid = arg.innerGrid, entity = arg.data, dataColumns = innerGrid._columnsInfo.dataColumns;
-			if (row.rowType != entity.rowType ||
-				(entity.rowType != "header" && row.cells.length != dataColumns.length) ||
-				(entity.rowType == "header" && row.firstChild.colSpan != dataColumns.length)) {
+			var shouldRebuild = (row.rowType != entity.rowType || row.columnModelTimestamp != grid._columnModelTimestamp);
+			if (!shouldRebuild) {
+				shouldRebuild = (entity.rowType != "header" && row.cells.length != dataColumns.length) ||
+					(entity.rowType == "header" && row.firstChild.colSpan != dataColumns.length);
+			}
+			if (shouldRebuild) {
 				this.rebuildRow(grid, innerGrid, row, entity.rowType);
 			}
 			this.doRender(row, arg);
