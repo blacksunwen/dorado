@@ -2798,32 +2798,32 @@
 						var col = cellInfo.column;
 						var cell = col.headerCell = $DomUtils.getOrCreateChild(row, j, function() {
 							var cell = self.createCell();
-//							$fly(cell).click(function() {
-//								var column = grid._columnsInfo.idMap[cell.colId];
-//								if (column) {
-//									var eventArg = {
-//										column: column,
-//										processDefault: true
-//									};
-//									grid.fireEvent("onHeaderClick", grid, eventArg);
-//									if (eventArg.processDefault) {
-//										column.fireEvent("onHeaderClick", column, eventArg);
-//									}
-//									
-//									if (eventArg.processDefault) {
-//										if (column instanceof dorado.widget.grid.DataColumn &&
-//											column._property != "none" && column._supportsOptionMenu) {
-//											var sortState = column.get("sortState");
-//											try {
-//												grid.sort(column, !(sortState == null || sortState == "desc"));
-//											}
-//											catch (e) {
-//												dorado.Exception.removeException(e);
-//											}
-//										}
-//									}
-//								}
-//							});
+							$fly(cell).click(function() {
+								var column = grid._columnsInfo.idMap[cell.colId];
+								if (column) {
+									var eventArg = {
+										column: column,
+										processDefault: true
+									};
+									grid.fireEvent("onHeaderClick", grid, eventArg);
+									if (eventArg.processDefault) {
+										column.fireEvent("onHeaderClick", column, eventArg);
+									}
+									
+									if (eventArg.processDefault) {
+										if (column instanceof dorado.widget.grid.DataColumn &&
+											column._property != "none" && column._supportsOptionMenu) {
+											var sortState = column.get("sortState");
+											try {
+												grid.sort(column, !(sortState == null || sortState == "desc"));
+											}
+											catch (e) {
+												dorado.Exception.removeException(e);
+											}
+										}
+									}
+								}
+							});
 							return cell;
 						});
 						cell.className = "header";
