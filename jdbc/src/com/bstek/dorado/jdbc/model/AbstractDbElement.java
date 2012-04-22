@@ -25,7 +25,6 @@ public abstract class AbstractDbElement implements DbElement {
 		this.enviromentManager = enviromentManager;
 	}
 
-	@Override
 	@IdeProperty(highlight=1)
 	@XmlProperty(attributeOnly=true)
 	public String getName() {
@@ -38,7 +37,6 @@ public abstract class AbstractDbElement implements DbElement {
 	
 	@XmlProperty(parser="spring:dorado.jdbc.jdbcEnviromentParser")
 	@IdeProperty(visible=false)
-	@Override
 	public JdbcEnviroment getJdbcEnviroment() {
 		if (env != null) {
 			return env;
@@ -47,7 +45,6 @@ public abstract class AbstractDbElement implements DbElement {
 		}
 	}
 
-	@Override
 	public void setJdbcEnviroment(JdbcEnviroment env) {
 		this.env = env;
 	}

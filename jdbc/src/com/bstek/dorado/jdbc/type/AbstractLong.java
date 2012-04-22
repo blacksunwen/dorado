@@ -14,7 +14,6 @@ public abstract class AbstractLong extends AbstractJdbcType {
 		super(jdbcName, "Long");
 	}
 
-	@Override
 	public Object fromDB(ResultSet rs, String columnName) throws SQLException {
 		return rs.getLong(columnName);
 	}

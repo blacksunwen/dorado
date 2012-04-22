@@ -35,7 +35,7 @@ public abstract class SelectSql extends AbstractSql {
 		this.criteria = criteria;
 	}
 	
-	public String toCountSQL(Dialect dialect) {
+	public String toCountSQL(Dialect dialect) throws Exception {
 		if (!built) {
 			this.build(dialect);
 		} 
@@ -44,7 +44,7 @@ public abstract class SelectSql extends AbstractSql {
 	}
 	
 	@Override
-	public String toSQL(Dialect dialect) {
+	public String toSQL(Dialect dialect) throws Exception {
 		if (!built) {
 			this.build(dialect);
 		}
@@ -52,7 +52,7 @@ public abstract class SelectSql extends AbstractSql {
 		return querySql;
 	}
 	
-	private void build(Dialect dialect) {
+	private void build(Dialect dialect) throws Exception {
 		String sql = doBuild(dialect);
 		
 		Criteria criteria = this.getCriteria();
@@ -66,9 +66,9 @@ public abstract class SelectSql extends AbstractSql {
 		built = true;
 	}
 
-	abstract protected String doBuild(Dialect dialect);
+	abstract protected String doBuild(Dialect dialect) throws Exception;
 	
-	private void buildFilterSql(String sql, Criteria criteria, JdbcParameterSource parameterSource, Dialect dialect) {
+	private void buildFilterSql(String sql, Criteria criteria, JdbcParameterSource parameterSource, Dialect dialect) throws Exception {
 		SqlBuilder builder = new SqlBuilder(sql.length() + 50);
 		builder.rightSpace(KeyWord.SELECT, "*", KeyWord.FROM, "(", sql, ")");
 		

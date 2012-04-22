@@ -10,7 +10,6 @@ public abstract class AbstractCalendar extends AbstractJdbcType {
 		super(jdbcName, "Calendar");
 	}
 
-	@Override
 	public Object fromDB(ResultSet rs, String columnName) throws SQLException {
 		Timestamp value = rs.getTimestamp(columnName);
 		return fromDB(value);

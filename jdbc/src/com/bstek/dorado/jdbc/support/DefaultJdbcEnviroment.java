@@ -53,7 +53,6 @@ public class DefaultJdbcEnviroment extends AbstractJdbcEnviroment {
 		super.afterPropertiesSet();
 	}
 
-	@Override
 	public PlatformTransactionManager getTransactionManager() {
 		return transactionManager;
 	}
@@ -62,7 +61,6 @@ public class DefaultJdbcEnviroment extends AbstractJdbcEnviroment {
 		this.transactionManager = transactionManager;
 	}
 
-	@Override
 	public TransactionDefinition getTransactionDefinition() {
 		return transactionDefinition;
 	}

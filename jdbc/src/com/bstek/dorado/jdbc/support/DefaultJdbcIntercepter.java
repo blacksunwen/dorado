@@ -14,24 +14,20 @@ import com.bstek.dorado.jdbc.config.DbElementDefinition;
  */
 public class DefaultJdbcIntercepter implements JdbcIntercepter {
 
-	@Override
 	public JdbcDataProviderOperation getOperation(
 			JdbcDataProviderOperation operation) {
 		return operation;
 	}
 
-	@Override
 	public JdbcDataResolverOperation getOperation(
 			JdbcDataResolverOperation operation) {
 		return operation;
 	}
 
-	@Override
 	public JdbcRecordOperation getOperation(JdbcRecordOperation operation) {
 		return operation;
 	}
 
-	@Override
 	public DbElementDefinition getDefinition(DbElementDefinition def) {
 		return def;
 	}

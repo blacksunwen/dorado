@@ -16,7 +16,7 @@ public class JdbcDataProviderOperation extends
 		super(dbTable, jdbcContext);
 	}
 
-	protected boolean doExecute() {
+	protected boolean doExecute() throws Exception {
 		return getJdbcEnviroment().getDialect().execute(this);
 	}
 	

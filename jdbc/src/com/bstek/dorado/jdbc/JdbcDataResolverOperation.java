@@ -59,13 +59,16 @@ public class JdbcDataResolverOperation {
 		this.transactionOperations = transactionOperations;
 	}
 
-	public void execute() {
+	public void execute() throws Exception {
 		if (this.isProcessDefault()) {
 			if (transactionOperations != null) {
 				transactionOperations.execute(new TransactionCallback<Object>() {
-					@Override
 					public Object doInTransaction(TransactionStatus status) {
-						doExecute();
+						try {
+							doExecute();
+						} catch (Exception e) {
+							throw new RuntimeException(e);
+						}
 						return null;
 					}
 				});
@@ -86,14 +89,14 @@ public class JdbcDataResolverOperation {
 		}
 	}
 	
-	protected void doExecute() {
+	protected void doExecute() throws Exception {
 		List<JdbcDataResolverItem> resolverItems = jdbcContext.getResolverItems();
 		if (!resolverItems.isEmpty()) {
 			this.doChildrenExecute(null, resolverItems);
 		} 
 	}
 
-	private void doChildrenExecute(RecordItem parentRecordItem, List<JdbcDataResolverItem> resolverItems) {
+	private void doChildrenExecute(RecordItem parentRecordItem, List<JdbcDataResolverItem> resolverItems) throws Exception {
 		for (JdbcDataResolverItem resolverItem: resolverItems) {
 			String resolverItemName = resolverItem.getName();
 			Object dataValue = (parentRecordItem !=null) ? parentRecordItem.record.get(resolverItemName) : jdbcContext.getDataItems().get(resolverItemName);;
@@ -117,7 +120,7 @@ public class JdbcDataResolverOperation {
 		}
 	}
 
-	private void doExecute(RecordItem parentRecordItem, RecordItem recordItem) {
+	private void doExecute(RecordItem parentRecordItem, RecordItem recordItem) throws Exception {
 		JdbcDataResolverItem resolverItem = recordItem.resolverItem;
 		Record record = recordItem.record;
 		

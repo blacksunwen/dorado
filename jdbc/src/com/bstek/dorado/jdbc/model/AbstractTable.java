@@ -60,7 +60,6 @@ public abstract class AbstractTable extends AbstractDbElement implements DbTable
 		this.trigger = trigger;
 	}
 	
-	@Override
 	public JdbcRecordOperationProxy createOperationProxy(Record record, JdbcDataResolverContext jdbcContext) {
 		if (EntityUtils.isEntity(record)) {
 			EntityState state = EntityUtils.getState(record);

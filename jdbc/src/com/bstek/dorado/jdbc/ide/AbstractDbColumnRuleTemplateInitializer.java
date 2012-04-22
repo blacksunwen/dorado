@@ -8,11 +8,24 @@ import com.bstek.dorado.idesupport.initializer.InitializerContext;
 import com.bstek.dorado.idesupport.initializer.RuleTemplateInitializer;
 import com.bstek.dorado.idesupport.template.PropertyTemplate;
 import com.bstek.dorado.idesupport.template.RuleTemplate;
+import com.bstek.dorado.jdbc.JdbcTypeManager;
+import com.bstek.dorado.jdbc.type.JdbcType;
+import com.bstek.dorado.web.ConsoleUtils;
 
 public class AbstractDbColumnRuleTemplateInitializer implements RuleTemplateInitializer {
 
 	public static final String DATA_TYPES_STORE_KEY = "jdbc.ide.jdbcTypes";
-	@Override
+
+	private JdbcTypeManager jdbcTypeManager;
+	
+	public JdbcTypeManager getJdbcTypeManager() {
+		return jdbcTypeManager;
+	}
+
+	public void setJdbcTypeManager(JdbcTypeManager jdbcTypeManager) {
+		this.jdbcTypeManager = jdbcTypeManager;
+	}
+
 	public void initRuleTemplate(RuleTemplate columnRule,
 			InitializerContext initializerContext) throws Exception {
 		{
@@ -20,17 +33,34 @@ public class AbstractDbColumnRuleTemplateInitializer implements RuleTemplateInit
 			String propertyName = "jdbcType";
 			String storeKey = DATA_TYPES_STORE_KEY;
 			String valueStr = configureStore.getString(storeKey);
+			
+			String[] typeAry = null;
 			if (StringUtils.isNotEmpty(valueStr)) {
-				String[] typeAry = StringUtils.split(valueStr, ",");
+				typeAry = StringUtils.split(valueStr, ",");
+			} else {
+				typeAry = getDefaultValue();
+				String defaultValue = StringUtils.join(typeAry, ',');
 				
-				PropertyTemplate jdbcTypeProperty = columnRule.getProperty(propertyName);
-				if (jdbcTypeProperty == null) {
-					jdbcTypeProperty = new PropertyTemplate(propertyName);
-					columnRule.addProperty(jdbcTypeProperty);
-				}
-				jdbcTypeProperty.setHighlight(1);
-				jdbcTypeProperty.setEnumValues(typeAry);
+				ConsoleUtils.outputLoadingInfo("[WARN] " + DATA_TYPES_STORE_KEY + " is null, default value '" + defaultValue + "' be used.");
 			}
+			
+			PropertyTemplate jdbcTypeProperty = columnRule.getProperty(propertyName);
+			if (jdbcTypeProperty == null) {
+				jdbcTypeProperty = new PropertyTemplate(propertyName);
+				columnRule.addProperty(jdbcTypeProperty);
+			}
+			jdbcTypeProperty.setHighlight(1);
+			jdbcTypeProperty.setEnumValues(typeAry);
 		}
+	}
+	
+	protected String[] getDefaultValue() {
+		JdbcType[] types = getJdbcTypeManager().list();
+		String[] typeNames = new String[types.length];
+		for (int i=0; i<types.length; i++) {
+			typeNames[i] = types[i].getName();
+		}
+		
+		return typeNames;
 	}
 }

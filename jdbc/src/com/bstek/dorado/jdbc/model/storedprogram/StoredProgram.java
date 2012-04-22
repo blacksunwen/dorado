@@ -72,7 +72,6 @@ public class StoredProgram extends AbstractDbElement {
 		this.schema = schema;
 	}
 	
-	@Override
 	public String getType() {
 		return StoredProgram.TYPE;
 	}

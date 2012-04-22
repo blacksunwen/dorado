@@ -19,13 +19,11 @@ import com.bstek.dorado.jdbc.support.JdbcConstants;
  */
 public class Db2Dialect extends AbstractDialect {
 
-	@Override
 	public boolean isNarrowSupport() {
 		return true;
 	}
 
-	@Override
-	public String narrowSql(SelectSql selectSql, int maxResults, int firstResult) {
+	public String narrowSql(SelectSql selectSql, int maxResults, int firstResult) throws Exception{
 		String sql = this.toSQL(selectSql);
 		if (firstResult <= 0) {
 			return sql + " FETCH FIRST " + maxResults + " ROWS ONLY";
@@ -82,12 +80,10 @@ public class Db2Dialect extends AbstractDialect {
 		return false;
 	}
 	
-	@Override
 	public boolean isSequenceSupport() {
 		return true;
 	}
 
-	@Override
 	public String sequenceSql(String sequenceName) {
 		return "VALUES NEXTVAL FOR " + sequenceName;
 	}
@@ -111,7 +107,6 @@ public class Db2Dialect extends AbstractDialect {
 		return schema;
 	}
 
-	@Override
 	public JdbcSpace getTableJdbcSpace() {
 		return JdbcSpace.SCHEMA;
 	}

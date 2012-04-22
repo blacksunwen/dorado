@@ -9,13 +9,13 @@ import com.bstek.dorado.jdbc.JdbcRecordOperation;
 public class LoggerTableTrigger extends AbstractDbTableTrigger {
 
 	@Override
-	public void doQuery(JdbcDataProviderOperation operation) {
+	public void doQuery(JdbcDataProviderOperation operation) throws Exception{
 		System.out.println("Query:" + operation.getDbTable().getName() + ";Date=" + new Date());
 		super.doQuery(operation);
 	}
 
 	@Override
-	public void doSave(JdbcRecordOperation operation) {
+	public void doSave(JdbcRecordOperation operation) throws Exception {
 		System.out.println("Save:" + operation.getDbTable().getName() + ";Date=" + new Date());
 		super.doSave(operation);
 	}

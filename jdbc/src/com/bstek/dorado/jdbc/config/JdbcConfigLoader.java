@@ -46,7 +46,6 @@ public class JdbcConfigLoader implements InitializingBean{
 		this.configLocations = configLocations;
 	}
 
-	@Override
 	public void afterPropertiesSet() throws Exception {
 		dbmManager.register(this);
 	}

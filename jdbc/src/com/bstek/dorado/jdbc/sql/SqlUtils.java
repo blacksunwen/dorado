@@ -1,17 +1,16 @@
 package com.bstek.dorado.jdbc.sql;
 
 import java.io.StringWriter;
-import java.util.Collections;
 import java.util.Map;
 
 import net.sf.cglib.beans.BeanMap;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.Velocity;
+import org.apache.velocity.app.VelocityEngine;
 
+import com.bstek.dorado.core.Context;
 import com.bstek.dorado.jdbc.JdbcParameterSource;
-import com.bstek.dorado.util.proxy.UnmutableMap;
+import com.bstek.dorado.view.resolver.VelocityHelper;
 
 /**
  * JDBC模块的工具类
@@ -39,65 +38,32 @@ public abstract class SqlUtils {
 		return '(' + token + ')';
 	}
 	
-	public static String build(String sql, Object parameter) {
-		if (StringUtils.isEmpty(sql)) {
-			return "";
-		}
-		
+	@SuppressWarnings("unchecked")
+	public static String build(String sql, Object parameter) throws Exception {
 		VelocityContext context = new VelocityContext();
-		
+
+		Map<Object, Object> map = null;
 		if (parameter != null) {
-			LazyProxyMap pmap = LazyProxyMap.create(parameter);
-			context = new VelocityContext(pmap, context);
+			if (parameter instanceof Map) {
+				map = (Map<Object, Object>)parameter;
+			} else {
+				map = BeanMap.create(parameter);
+			}
 		}
 
+		if (map == null) {
+			context = new VelocityContext();
+		} else {
+			context = new VelocityContext(map);
+		}
+		
 		StringWriter result = new StringWriter(50);
-		try {
-			Velocity.evaluate(context, result, "", sql);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		} 
-
+		
+		Context doradoContext = Context.getCurrent();
+		VelocityHelper VelocityHelper = (VelocityHelper) doradoContext.getServiceBean("velocityHelper");
+		VelocityEngine volocityEngine = VelocityHelper.getVelocityEngine();
+		volocityEngine.evaluate(context, result, "", sql);
 		return result.toString();
 	}
 	
-	static class LazyProxyMap extends UnmutableMap<String, Object> {
-
-		private static final LazyProxyMap EMPTY_MAP = new LazyProxyMap(Collections.EMPTY_MAP);
-
-		@SuppressWarnings({ "rawtypes", "unchecked" })
-		public LazyProxyMap(Map target) {
-			super(target);
-		}
-
-		@SuppressWarnings("rawtypes")
-		public static LazyProxyMap create(Object bean) {
-			if (bean == null) {
-				return EMPTY_MAP;
-			}
-
-			if (bean instanceof Map) {
-				return new LazyProxyMap((Map)bean);
-			} else {
-				BeanMap beanMap = BeanMap.create(bean);
-				return new LazyProxyMap(beanMap);
-			}
-		}
-
-		@SuppressWarnings("rawtypes")
-		@Override
-		public Object get(Object key) {
-			Object value = super.get(key);
-			if (value != null) {
-				Class clazz = value.getClass();
-				if (!clazz.isPrimitive()) {
-					if (!clazz.equals(String.class)) {
-						LazyProxyMap valueMap = create(value);
-						value = valueMap;
-					}
-				}
-			}
-			return value;
-		}
-	}
 }

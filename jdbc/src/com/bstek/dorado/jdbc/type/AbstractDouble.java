@@ -14,7 +14,6 @@ public abstract class AbstractDouble extends AbstractJdbcType {
 		super(jdbcName, "Double");
 	}
 
-	@Override
 	public Object fromDB(ResultSet rs, String columnName) throws SQLException {
 		return rs.getDouble(columnName);
 	}

@@ -15,7 +15,6 @@ public class JdbcAgentRuleTemplateInitializer implements
 	public static final String AGENT_STORE_KEY = "jdbc.ide.jdbcAgent";
 	public static final String DEFAULT_AGENT_CLAZZ= DefaultAgent.class.getName();
 	
-	@Override
 	public void initRuleTemplate(RuleTemplate ruleTemplate,
 			InitializerContext initializerContext) throws Exception {
 		ConfigureStore configureStore = Configure.getStore();

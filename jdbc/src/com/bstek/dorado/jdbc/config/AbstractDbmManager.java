@@ -25,7 +25,6 @@ public abstract class AbstractDbmManager extends DefaultDefinitionManager<DbElem
 		return configs.toArray(new JdbcConfigLoader[0]);
 	}
 
-	@Override
 	public void register(DbModel dbm) {
 		Collection<DbElementDefinition> defs = dbm.listAll();
 		for (DbElementDefinition def: defs) {
@@ -38,7 +37,6 @@ public abstract class AbstractDbmManager extends DefaultDefinitionManager<DbElem
 		def.getProperties().put("enviromentManager", enviromentManager);
 	}
 
-	@Override
 	public void refresh() {
 		try {
 			this.doRefresh();
@@ -47,7 +45,6 @@ public abstract class AbstractDbmManager extends DefaultDefinitionManager<DbElem
 		}
 	}
 	
-	@Override
 	public void register(JdbcConfigLoader loader) {
 		configs.add(loader);
 	}

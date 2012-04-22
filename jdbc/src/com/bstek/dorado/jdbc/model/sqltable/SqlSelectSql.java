@@ -27,13 +27,13 @@ public class SqlSelectSql  extends SelectSql {
 	}
 	public void setParameter(Object parameter) {
 		this.parameter = parameter;
-		this.setParameterSource(SqlUtils.createJdbcParameter(parameter));
 	}
 	
 	@Override
-	protected String doBuild(Dialect dialect) {
+	protected String doBuild(Dialect dialect) throws Exception{
 		Assert.notEmpty(dynamicToken, "DynamicToken must not be empty.");
 		String sql = SqlUtils.build(dynamicToken, parameter);
+		this.setParameterSource(SqlUtils.createJdbcParameter(parameter));
 		
 		return sql;
 	}

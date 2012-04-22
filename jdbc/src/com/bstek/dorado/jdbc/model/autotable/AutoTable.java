@@ -154,12 +154,10 @@ public class AutoTable extends AbstractTable {
 		}
 	}
 
-	@Override
 	public boolean supportResolverTable() {
 		return true;
 	}
 
-	@Override
 	public Table getResolverTable() {
 		if (mainTable == null) {
 			FromTable fromTable = this.getMainFromTableObject();
@@ -185,7 +183,6 @@ public class AutoTable extends AbstractTable {
 		return false;
 	}
 
-	@Override
 	public SelectSql selectSql(JdbcDataProviderOperation operation) {
 		AutoTable autoTable = (AutoTable)operation.getDbTable();
 		JdbcDataProviderContext jdbcContext = operation.getJdbcContext();

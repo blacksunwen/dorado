@@ -19,13 +19,11 @@ public class MssqlDialect extends AbstractDialect {
 		this.setDefaultSchema("dbo");
 	}
 
-	@Override
 	public boolean isNarrowSupport() {
 		return true;
 	}
 
-	@Override
-	public String narrowSql(SelectSql selectSql, int maxResults, int firstResult) {
+	public String narrowSql(SelectSql selectSql, int maxResults, int firstResult) throws Exception{
 		String sql = this.toSQL(selectSql);
 		if (firstResult <= 0) {
 			String sql2 = sql.toUpperCase();
@@ -67,22 +65,18 @@ public class MssqlDialect extends AbstractDialect {
 		return "SELECT COUNT(1) FROM ( " + sql + " ) AS _CT_";
 	}
 
-	@Override
 	public boolean isSequenceSupport() {
 		return false;
 	}
 
-	@Override
 	public String sequenceSql(String sequenceName) {
 		throw new UnsupportedOperationException();
 	}
 
-	@Override
 	protected String token(NullsDirection nullsModel) {
 		return null;
 	}
 
-	@Override
 	public JdbcSpace getTableJdbcSpace() {
 		return JdbcSpace.SCHEMA;
 	}

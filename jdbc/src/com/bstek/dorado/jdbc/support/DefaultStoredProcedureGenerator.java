@@ -41,7 +41,6 @@ public class DefaultStoredProcedureGenerator implements
 		this.jdbcTypeManager = jdbcTypeManager;
 	}
 
-	@Override
 	public Document create(JdbcEnviroment jdbcEnv, String catalog,
 			String schema, String procedureName) {
 		DataSource dataSource = jdbcEnv.getDataSource();
@@ -54,7 +53,6 @@ public class DefaultStoredProcedureGenerator implements
 		
 	}
 
-	@Override
 	public Document merge(JdbcEnviroment jdbcEnv, String catalog,
 			String schema, String spName, Document oldDocument) {
 
@@ -82,7 +80,6 @@ public class DefaultStoredProcedureGenerator implements
 			this.usedProcedureName = procedureName;
 		}
 		
-		@Override
 		public Object processMetaData(DatabaseMetaData dbmd)
 				throws SQLException, MetaDataAccessException {
 			this.init(dbmd);

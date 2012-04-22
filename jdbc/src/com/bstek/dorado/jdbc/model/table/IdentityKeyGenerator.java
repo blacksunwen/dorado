@@ -20,7 +20,6 @@ public class IdentityKeyGenerator extends AbstractKeyGenerator<Number> {
 		return true;
 	}
 
-	@Override
 	public Number newKey(JdbcRecordOperation operation, TableKeyColumn keyColumn) {
 		throw new UnsupportedOperationException();
 	}

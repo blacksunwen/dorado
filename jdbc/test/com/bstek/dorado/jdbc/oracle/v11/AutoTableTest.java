@@ -12,7 +12,7 @@ import com.bstek.dorado.jdbc.JdbcUtils;
 
 public class AutoTableTest extends AbstractOracle11JdbcTestCase {
 
-	public void testEmp1() {
+	public void testEmp1() throws Exception {
 		String tableName = "emp_auto1";
 		
 		Collection<Record> emps = JdbcUtils.query(tableName, null);
@@ -69,7 +69,7 @@ public class AutoTableTest extends AbstractOracle11JdbcTestCase {
 		}
 	}
 	
-	public void testEmp2() {
+	public void testEmp2() throws Exception {
 		String tableName = "emp_auto2";
 		Map<String, Object> parameter = new HashMap<String, Object>();
 		parameter.put("ID", 333);
@@ -78,7 +78,7 @@ public class AutoTableTest extends AbstractOracle11JdbcTestCase {
 		Assert.assertTrue(records.isEmpty());
 	}
 	
-	public void testEmp3() {
+	public void testEmp3() throws Exception {
 		String tableName = "emp_auto3";
 		{
 			Collection<Record> records = JdbcUtils.query(tableName, null);
@@ -116,7 +116,7 @@ public class AutoTableTest extends AbstractOracle11JdbcTestCase {
 		}
 	}
 	
-	public void testEmp4() {
+	public void testEmp4() throws Exception {
 		String tableName = "emp_auto4";
 		{
 			Collection<Record> records = JdbcUtils.query(tableName, null);
@@ -170,7 +170,7 @@ public class AutoTableTest extends AbstractOracle11JdbcTestCase {
 			Assert.assertTrue(records.isEmpty());
 		}
 	}
-	public void testEmp5() {
+	public void testEmp5() throws Exception {
 		String tableName = "emp_auto5"; 
 		{
 			Map<String, Object> parameter = new HashMap<String, Object>();
@@ -202,7 +202,7 @@ public class AutoTableTest extends AbstractOracle11JdbcTestCase {
 			Assert.assertTrue(records.isEmpty());
 		}
 	}
-	public void testEmp6() {
+	public void testEmp6() throws Exception {
 		String tableName = "emp_auto6";
 		{
 			Map<String, Object> parameter = new HashMap<String, Object>();
@@ -210,7 +210,7 @@ public class AutoTableTest extends AbstractOracle11JdbcTestCase {
 			Assert.assertTrue(!records.isEmpty());
 		}
 	}
-	public void testEmp7() {
+	public void testEmp7() throws Exception{
 		String tableName = "emp_auto7";
 		{
 			Map<String, Object> parameter = new HashMap<String, Object>();
@@ -219,12 +219,12 @@ public class AutoTableTest extends AbstractOracle11JdbcTestCase {
 		}
 	}
 	
-	public void testProductCat1() {
+	public void testProductCat1() throws Exception{
 		String tableName = "product_cat_auto1";
 		Collection<Record> records = JdbcUtils.query(tableName, null);
 	}
 	
-	public void testProductCat2() {
+	public void testProductCat2() throws Exception{
 		String tableName = "product_cat_auto2";
 		Collection<Record> records = JdbcUtils.query(tableName, null);
 	}

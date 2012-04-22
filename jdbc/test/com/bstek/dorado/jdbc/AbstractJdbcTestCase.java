@@ -43,7 +43,7 @@ public abstract class AbstractJdbcTestCase extends ConfigManagerTestSupport {
 	static abstract class TestTable {
 		abstract String getTableName();
 		
-		Collection<Record> query(Object parameter) {
+		Collection<Record> query(Object parameter)throws Exception{
 			JdbcDataProviderContext jCtx = new JdbcDataProviderContext(null, parameter);
 			DbTable table = JdbcUtils.getDbTable(getTableName());
 			JdbcDataProviderOperation operation = new JdbcDataProviderOperation(table, jCtx);
@@ -68,7 +68,7 @@ public abstract class AbstractJdbcTestCase extends ConfigManagerTestSupport {
 			return r;
 		}
 		
-		public static Record get(String id) {
+		public static Record get(String id) throws Exception{
 			Dept t = new Dept();
 			Collection<Record> records = t.query(Collections.singletonMap("ID", id));
 			Assert.assertEquals("Dept id=" + id, 1, records.size());
@@ -77,7 +77,7 @@ public abstract class AbstractJdbcTestCase extends ConfigManagerTestSupport {
 			return dept;
 		}
 		
-		public static boolean has(String id) {
+		public static boolean has(String id) throws Exception{
 			Dept t = new Dept();
 			Collection<Record> records = t.query(Collections.singletonMap("ID", id));
 			Assert.assertTrue("Dept id=" + id, records.size() <= 1);
@@ -123,7 +123,7 @@ public abstract class AbstractJdbcTestCase extends ConfigManagerTestSupport {
 			return r;
 		}
 		
-		public static Record get(Integer id) {
+		public static Record get(Integer id) throws Exception{
 			Employee t = new Employee();
 			Collection<Record> records = t.query(Collections.singletonMap("ID", id));
 			Assert.assertEquals("Employee id=" + id, 1, records.size());
@@ -132,7 +132,7 @@ public abstract class AbstractJdbcTestCase extends ConfigManagerTestSupport {
 			return employee;
 		}
 		
-		public static boolean has(Integer id) {
+		public static boolean has(Integer id) throws Exception{
 			Employee t = new Employee();
 			Collection<Record> records = t.query(Collections.singletonMap("ID", id));
 			Assert.assertTrue("Employee id=" + id, records.size() <= 1);

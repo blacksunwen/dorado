@@ -18,19 +18,16 @@ public class DefaultKeyGeneratorManager implements KeyGeneratorManager{
 	private Map<String, KeyGenerator> elements = new HashMap<String, KeyGenerator>();
 	
 	@SuppressWarnings("rawtypes")
-	@Override
 	public void register(KeyGenerator keyGenerator) {
 		elements.put(keyGenerator.getName(), keyGenerator);
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
 	public KeyGenerator<Object>[] list() {
 		return elements.values().toArray(new KeyGenerator[0]);
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
 	public <T>KeyGenerator<T> get(String name) {
 		KeyGenerator<T> jdbcType = (KeyGenerator<T>)elements.get(name);
 		Assert.notNull(jdbcType, "no any KeyGenerator named [" + name + "]");
@@ -38,7 +35,6 @@ public class DefaultKeyGeneratorManager implements KeyGeneratorManager{
 		return jdbcType;
 	}
 
-	@Override
 	public boolean has(String name) {
 		return elements.containsKey(name);
 	}

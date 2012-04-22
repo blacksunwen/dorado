@@ -30,13 +30,11 @@ public class OracleDialect extends AbstractDialect {
 		}
 	}
 
-	@Override
 	public boolean isNarrowSupport() {
 		return true;
 	}
 
-	@Override
-	public String narrowSql(SelectSql selectSql, int maxResults, int firstResult) {
+	public String narrowSql(SelectSql selectSql, int maxResults, int firstResult) throws Exception {
 		String sql = this.toSQL(selectSql);
 		if (firstResult <= 0) {
 			return "SELECT * FROM ( " + sql + " ) WHERE ROWNUM <= " + maxResults;
@@ -47,12 +45,10 @@ public class OracleDialect extends AbstractDialect {
 		}
 	}
 
-	@Override
 	public boolean isSequenceSupport() {
 		return true;
 	}
 
-	@Override
 	public String sequenceSql(String sequenceName) {
 		return "SELECT " + sequenceName + ".NEXTVAL FROM DUAL";
 	}
@@ -71,7 +67,6 @@ public class OracleDialect extends AbstractDialect {
 		return schema;
 	}
 
-	@Override
 	public JdbcSpace getTableJdbcSpace() {
 		return JdbcSpace.SCHEMA;
 	}

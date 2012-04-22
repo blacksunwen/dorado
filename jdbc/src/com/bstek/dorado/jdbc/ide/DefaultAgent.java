@@ -44,29 +44,6 @@ public class DefaultAgent extends AbstractAgent {
 		return namespace;
 	}
 	
-	protected String getCatalogFromParameter() throws Exception {
-		DatabaseMetaData dbmd = getDatabaseMetaData();
-		String namespace = getNamespaceFromParameter();
-		String catalog = null;
-		if (dbmd.supportsCatalogsInDataManipulation()) {
-			catalog = namespace;
-		} else {
-			catalog = dbmd.getConnection().getCatalog();
-		}
-		return catalog;
-	}
-	
-	protected String getSchemaFromParameter() throws Exception {
-		DatabaseMetaData dbmd = getDatabaseMetaData();
-		String namespace = getNamespaceFromParameter();
-		String schema = null;
-		if (dbmd.supportsSchemasInDataManipulation()) {
-			schema = namespace;
-		}
-		
-		return schema;
-	}
-	
 	protected String getTableNameFromParameter() throws Exception {
 		String tableName = (String)this.getParameters().get(IAgent.TABLE_NAME);
 		
@@ -85,17 +62,26 @@ public class DefaultAgent extends AbstractAgent {
 	
 	@Override
 	protected Document doListTables() throws Exception {
-		String catalog = getCatalogFromParameter();
-		String schemaPattern = getSchemaFromParameter();
+		String namespace = getNamespaceFromParameter();
+		String catalog = null;
+		String schemaPattern = null;
+		
+		final DatabaseMetaData dbmd = getDatabaseMetaData();
+		if (dbmd.supportsSchemasInDataManipulation()) {
+			schemaPattern = namespace;
+		} else {
+			catalog = namespace;
+		}
+		
 		String tableNamePattern = "%";
 		String types[] = null;
 		
 		final Document document = newDocument();
 		final Element tables = (Element) document.appendChild(document.createElement("Tables"));
-		final DatabaseMetaData dbmd = getDatabaseMetaData();
+		
+		System.out.println(" * catalog=" + catalog +"; schemaPattern=" + schemaPattern);
 		return this.doCall(dbmd.getTables(catalog, schemaPattern, tableNamePattern, types), new ResultSetCallback<Document>(){
 
-			@Override
 			public Document call(ResultSet rs) throws Exception {
 				while (rs.next()) {
 					Element table = (Element) tables.appendChild(document.createElement("Table"));
@@ -119,15 +105,21 @@ public class DefaultAgent extends AbstractAgent {
 
 	@Override
 	protected Document createTableColumns(Document document) throws Exception {
-		DatabaseMetaData dbmd = getDatabaseMetaData();
+		String namespace = getNamespaceFromParameter();
+		String catalog = null;
+		String schemaPattern = null;
 		
-		String catalog = getCatalogFromParameter();
-		String schema = getSchemaFromParameter();
+		final DatabaseMetaData dbmd = getDatabaseMetaData();
+		if (dbmd.supportsSchemasInDataManipulation()) {
+			schemaPattern = namespace;
+		} else {
+			catalog = namespace;
+		}
+		
 		String tableName = getTableNameFromParameter();
 		
 		{
-			List<String> tables = this.doCall(dbmd.getTables(catalog, schema, tableName, null), new ResultSetCallback<List<String>>() {
-				@Override
+			List<String> tables = this.doCall(dbmd.getTables(catalog, schemaPattern, tableName, null), new ResultSetCallback<List<String>>() {
 				public List<String> call(ResultSet rs) throws Exception {
 					List<String> tables = new ArrayList<String>();
 					while (rs.next()) {
@@ -138,10 +130,10 @@ public class DefaultAgent extends AbstractAgent {
 			});
 			
 			if (tables.size() == 0) {
-				throw new IllegalArgumentException("No table be found. [" + catalog + "," + schema + "," + tableName + "]");
+				throw new IllegalArgumentException("No table be found. [" + catalog + "," + schemaPattern + "," + tableName + "]");
 			}
 			if (tables.size() > 1) {
-				throw new IllegalArgumentException("More than one table be found. [" + catalog + "," + schema + "," + tableName + "] ==> " +
+				throw new IllegalArgumentException("More than one table be found. [" + catalog + "," + schemaPattern + "," + tableName + "] ==> " +
 						StringUtils.join(tables.toArray()));
 			}
 		}
@@ -160,8 +152,7 @@ public class DefaultAgent extends AbstractAgent {
 			columnNameSet.add(columnName);
 		}
 		
-		final List<String> primaryKeys = this.doCall(dbmd.getPrimaryKeys(catalog, schema, tableName), new ResultSetCallback<List<String>>(){
-			@Override
+		final List<String> primaryKeys = this.doCall(dbmd.getPrimaryKeys(catalog, schemaPattern, tableName), new ResultSetCallback<List<String>>(){
 			public List<String> call(ResultSet rs) throws Exception {
 				List<String> primaryKeys = new ArrayList<String>();
 				while(rs.next()) {
@@ -174,9 +165,8 @@ public class DefaultAgent extends AbstractAgent {
 		final List<Map<String, String>> keyColumns = new ArrayList<Map<String, String>>(primaryKeys.size());
 		final List<Map<String, String>> commonColumns = new ArrayList<Map<String, String>>();
 		
-		this.doCall(dbmd.getColumns(catalog, schema, tableName, null), new ResultSetCallback<String>(){
+		this.doCall(dbmd.getColumns(catalog, schemaPattern, tableName, null), new ResultSetCallback<String>(){
 
-			@Override
 			public String call(ResultSet rs) throws Exception {
 				ResultSetMetaData rsmd = rs.getMetaData();
 				while (rs.next()) {
@@ -286,7 +276,6 @@ public class DefaultAgent extends AbstractAgent {
 		String querySql = (String)this.getParameters().get(IAgent.QUERY_SQL);
 		List<Map<String, String>> commonColumns = doCall(querySql, new ResultSetCallback<List<Map<String, String>>>(){
 
-			@Override
 			public List<Map<String, String>> call(ResultSet rs)
 					throws Exception {
 				List<Map<String, String>> commonColumns = new ArrayList<Map<String, String>>();

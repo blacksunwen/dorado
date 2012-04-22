@@ -14,7 +14,6 @@ public abstract class AbstractBoolean extends AbstractJdbcType {
 		super(jdbcName, "Boolean");
 	}
 
-	@Override
 	public Object fromDB(ResultSet rs, String columnName) throws SQLException {
 		return rs.getBoolean(columnName);
 	}

@@ -7,6 +7,7 @@ import com.bstek.dorado.core.ConfigureStore;
 import com.bstek.dorado.idesupport.initializer.InitializerContext;
 import com.bstek.dorado.idesupport.template.PropertyTemplate;
 import com.bstek.dorado.idesupport.template.RuleTemplate;
+import com.bstek.dorado.web.ConsoleUtils;
 
 public class JdbcDataResolverRuleTemplateInitializer implements
 		com.bstek.dorado.idesupport.initializer.RuleTemplateInitializer {
@@ -14,7 +15,6 @@ public class JdbcDataResolverRuleTemplateInitializer implements
 	public static final String TRANSACTION_MANAGERS_STORE_KEY = "jdbc.ide.transactionManagers";
 	public static final String TRANSACTION_DEFINITIONS_STORE_KEY = "jdbc.ide.transactionDefinitions";
 	
-	@Override
 	public void initRuleTemplate(RuleTemplate resolverRule,
 			InitializerContext initializerContext) throws Exception {
 		ConfigureStore configureStore = Configure.getStore();
@@ -34,6 +34,8 @@ public class JdbcDataResolverRuleTemplateInitializer implements
 				}
 				jdbcTypeProperty.setHighlight(1);
 				jdbcTypeProperty.setEnumValues(typeAry);
+			} else {
+				ConsoleUtils.outputLoadingInfo("[WARN] " + storeKey + " is null.'");
 			}
 		}
 	}

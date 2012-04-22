@@ -12,7 +12,6 @@ import com.bstek.dorado.jdbc.Dialect;
 import com.bstek.dorado.jdbc.JdbcDataProviderContext;
 import com.bstek.dorado.jdbc.JdbcDataProviderOperation;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
-import com.bstek.dorado.jdbc.JdbcParameterSource;
 import com.bstek.dorado.jdbc.model.DbTable;
 import com.bstek.dorado.jdbc.sql.RecordRowMapper;
 import com.bstek.dorado.jdbc.sql.SelectSql;
@@ -22,7 +21,7 @@ public class QueryCommand {
 
 	private static Log logger = LogFactory.getLog(QueryCommand.class);
 	
-	public boolean execute(JdbcDataProviderOperation operation) {
+	public boolean execute(JdbcDataProviderOperation operation) throws Exception {
 		Page<Record> page = operation.getJdbcContext().getPage();
 		if (page.getPageSize() > 0) {
 			this.loadPageRecord(operation);
@@ -35,13 +34,12 @@ public class QueryCommand {
 	/**
 	 * 加载全部的记录
 	 */
-	private void loadAllRecords(JdbcDataProviderOperation operation) {
+	private void loadAllRecords(JdbcDataProviderOperation operation) throws Exception {
 		JdbcDataProviderContext jdbcContext = operation.getJdbcContext();
 		JdbcEnviroment env = operation.getJdbcEnviroment();
 		DbTable dbTable = operation.getDbTable();
 		
 		SelectSql selectSql = dbTable.selectSql(operation);
-		JdbcParameterSource jps = selectSql.getParameterSource();
 		
 		RecordRowMapper rowMapper = new RecordRowMapper(dbTable.getAllColumns());
 
@@ -51,14 +49,14 @@ public class QueryCommand {
 		if (logger.isDebugEnabled()) {
 			logger.debug("[SELECT-SQL]" + sql);
 		}
-		List<Record> rs = jdbcTemplate.query(sql, jps, rowMapper);
+		List<Record> rs = jdbcTemplate.query(sql, selectSql.getParameterSource(), rowMapper);
 		jdbcContext.getPage().setEntities(rs);
 	}
 
 	/**
 	 * 加载当前分页的记录
 	 */
-	private void loadPageRecord(JdbcDataProviderOperation operation) {
+	private void loadPageRecord(JdbcDataProviderOperation operation) throws Exception {
 		JdbcDataProviderContext jdbcContext = operation.getJdbcContext();
 		Page<Record> page = jdbcContext.getPage();
 		JdbcEnviroment env = operation.getJdbcEnviroment();
@@ -75,12 +73,11 @@ public class QueryCommand {
 		int firstIndex = page.getFirstEntityIndex() + 1;
 
 		if (dialect.isNarrowSupport()) {
-			JdbcParameterSource jps = selectSql.getParameterSource();
 			String sql = dialect.narrowSql(selectSql, pageSize, firstIndex);
 			if (logger.isDebugEnabled()) {
 				logger.debug("[SELECT-SQL]" + sql);
 			}
-			List<Record> rs = jdbcTemplate.query(sql, jps, rowMapper);
+			List<Record> rs = jdbcTemplate.query(sql, selectSql.getParameterSource(), rowMapper);
 			page.setEntities(rs);
 		} else {
 			ShiftRowMapperResultSetExtractor rse = new ShiftRowMapperResultSetExtractor(
@@ -89,8 +86,7 @@ public class QueryCommand {
 			if (logger.isDebugEnabled()) {
 				logger.debug("[SELECT-SQL]" + sql);
 			}
-			JdbcParameterSource jps = selectSql.getParameterSource();
-			List<Record> rs = jdbcTemplate.query(sql, jps, rse);
+			List<Record> rs = jdbcTemplate.query(sql, selectSql.getParameterSource(), rse);
 			page.setEntities(rs);
 		}
 

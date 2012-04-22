@@ -46,7 +46,6 @@ public class JdbcEngineStartupListener extends EngineStartupListener implements
 		this.jdbcTypeManager = jdbcTypeManager;
 	}
 
-	@Override
 	public void setApplicationContext(ApplicationContext applicationContext)
 			throws BeansException {
 		this.ctx = applicationContext;

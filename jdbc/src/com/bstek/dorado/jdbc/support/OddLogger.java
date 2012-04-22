@@ -18,13 +18,11 @@ public class OddLogger implements InitializingBean, ApplicationContextAware{
 
 	private ApplicationContext applicationContext;
 	
-	@Override
 	public void setApplicationContext(ApplicationContext applicationContext)
 			throws BeansException {
 		this.applicationContext = applicationContext;
 	}
 
-	@Override
 	public void afterPropertiesSet() throws Exception {
 		if (logger.isInfoEnabled()) {
 			String msg = "Registered TransactionManagers: "+JdbcDataResolverRuleTemplateInitializer.TRANSACTION_MANAGERS_STORE_KEY+" [";

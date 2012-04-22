@@ -14,7 +14,6 @@ public abstract class AbstractDate extends AbstractJdbcType {
 		super(jdbcName, "Date");
 	}
 
-	@Override
 	public Object fromDB(ResultSet rs, String columnName) throws SQLException {
 		return rs.getDate(columnName);
 	}

@@ -9,7 +9,7 @@ import com.bstek.dorado.jdbc.model.table.Table;
 
 public class TableTest extends AbstractOracle11JdbcTestCase {
 	
-	public void testEmployee() {
+	public void testEmployee() throws Exception{
 		Record employee = Employee.random();
 		Integer id = (Integer)employee.get("ID");
 		{
@@ -35,7 +35,7 @@ public class TableTest extends AbstractOracle11JdbcTestCase {
 		}
 	}
 	
-	public void testDept() {
+	public void testDept() throws Exception{
 		Record dept = Dept.random();
 		String id = dept.getString("DEPT_ID");
 		{
@@ -58,7 +58,7 @@ public class TableTest extends AbstractOracle11JdbcTestCase {
 		}
 	}
 	
-	public void testByKey() {
+	public void testByKey() throws Exception{
 		Table table = (Table)JdbcUtils.getDbTable(Employee.TABLE);
 		Record record = JdbcUtils.getByKey(table, 3959991);
 		

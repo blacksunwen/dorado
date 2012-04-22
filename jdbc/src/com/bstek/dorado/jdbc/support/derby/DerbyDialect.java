@@ -18,7 +18,6 @@ import com.bstek.dorado.jdbc.support.AbstractDialect;
  */
 public class DerbyDialect extends AbstractDialect {
 
-	@Override
 	public boolean isNarrowSupport() {
 		return true;
 	}
@@ -27,8 +26,7 @@ public class DerbyDialect extends AbstractDialect {
 	 * @see <a href='http://db.apache.org/derby/docs/10.8/ref/rrefsqljoffsetfetch.html#rrefsqljoffsetfetch'>http://db.apache.org/derby/docs/10.8/ref/rrefsqljoffsetfetch.html#rrefsqljoffsetfetch</a>
 	 * @see com.bstek.dorado.jdbc.Dialect#narrowSql(com.bstek.dorado.jdbc.sql.SelectSql, int, int)
 	 */
-	@Override
-	public String narrowSql(SelectSql selectSql, int maxResults, int firstResult) {
+	public String narrowSql(SelectSql selectSql, int maxResults, int firstResult) throws Exception{
 		String sql = this.toSQL(selectSql);
 		if (firstResult <= 0) {
 			return sql + " FETCH NEXT " + maxResults + " ROWS ONLY";
@@ -37,7 +35,6 @@ public class DerbyDialect extends AbstractDialect {
 		}
 	}
 
-	@Override
 	public boolean isSequenceSupport() {
 		return true;
 	}
@@ -45,7 +42,6 @@ public class DerbyDialect extends AbstractDialect {
 	/**
 	 * @see <a href='http://db.apache.org/derby/docs/10.8/ref/rrefsqljnextvaluefor.html'>http://db.apache.org/derby/docs/10.8/ref/rrefsqljnextvaluefor.html</a>
 	 */
-	@Override
 	public String sequenceSql(String sequenceName) {
 		return "VALUES NEXT VALUE FOR " + sequenceName;
 	}
@@ -81,7 +77,6 @@ public class DerbyDialect extends AbstractDialect {
 		return schema;
 	}
 
-	@Override
 	public JdbcSpace getTableJdbcSpace() {
 		return JdbcSpace.SCHEMA;
 	}

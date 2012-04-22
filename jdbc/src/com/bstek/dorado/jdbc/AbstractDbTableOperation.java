@@ -64,7 +64,7 @@ public abstract class AbstractDbTableOperation<T extends AbstractJdbcContext> {
 		return env;
 	}
 	
-	public boolean execute() {
+	public boolean execute() throws Exception {
 		if (this.isProcessDefault()) {
 			try {
 				return doExecute();
@@ -78,5 +78,5 @@ public abstract class AbstractDbTableOperation<T extends AbstractJdbcContext> {
 	/**
 	 * 执行操作动作
 	 */
-	protected abstract boolean doExecute();
+	protected abstract boolean doExecute() throws Exception;
 }

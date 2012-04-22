@@ -16,7 +16,6 @@ public class ThreadLocalJdbcEnviroment extends AbstractJdbcEnviroment {
 
 	private ThreadLocal<DataSource> localDataSource = new ThreadLocal<DataSource>();
 	
-	@Override
 	public DataSource getDataSource() {
 		return localDataSource.get();
 	}
@@ -35,7 +34,6 @@ public class ThreadLocalJdbcEnviroment extends AbstractJdbcEnviroment {
 
 	private ThreadLocal<NamedParameterJdbcDaoSupport> localDao = new ThreadLocal<NamedParameterJdbcDaoSupport>();
 	
-	@Override
 	public NamedParameterJdbcDaoSupport getNamedDao() {
 		NamedParameterJdbcDaoSupport dao = localDao.get();
 		if (dao == null) {
@@ -56,7 +54,6 @@ public class ThreadLocalJdbcEnviroment extends AbstractJdbcEnviroment {
 	
 	private ThreadLocal<PlatformTransactionManager> localTxMgr = new ThreadLocal<PlatformTransactionManager>();
 
-	@Override
 	public PlatformTransactionManager getTransactionManager() {
 		PlatformTransactionManager txMgr = localTxMgr.get();
 		if (txMgr == null) {
@@ -89,7 +86,6 @@ public class ThreadLocalJdbcEnviroment extends AbstractJdbcEnviroment {
 
 	private ThreadLocal<TransactionDefinition> localTxDef = new ThreadLocal<TransactionDefinition>();
 	
-	@Override
 	public TransactionDefinition getTransactionDefinition() {
 		return localTxDef.get();
 	}
