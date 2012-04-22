@@ -40,11 +40,6 @@ public abstract class AbstractJdbcType implements JdbcType, InitializingBean {
 		this.manager = manager;
 	}
 
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		manager.register(this);
-	}
-
 	public JdbcTypeManager getManager() {
 		return manager;
 	}
@@ -123,5 +118,9 @@ public abstract class AbstractJdbcType implements JdbcType, InitializingBean {
 		}
 		
 		return false;
+	}
+
+	public void afterPropertiesSet() throws Exception {
+		manager.register(this);
 	}
 }

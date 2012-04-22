@@ -13,6 +13,7 @@ import com.bstek.dorado.data.config.definition.PropertyDefDefinition;
 import com.bstek.dorado.data.provider.manager.DataProviderManager;
 import com.bstek.dorado.data.type.DefaultEntityDataType;
 import com.bstek.dorado.data.type.manager.DataTypeManager;
+import com.bstek.dorado.data.type.property.BasePropertyDef;
 import com.bstek.dorado.jdbc.JdbcDataProvider;
 import com.bstek.dorado.jdbc.ModelStrategy;
 import com.bstek.dorado.jdbc.config.AbstractDbTableDefinition;
@@ -51,7 +52,6 @@ public class DefaultModelStrategy implements ModelStrategy {
 		this.dataProviderManager = dataProviderManager;
 	}
 
-	@Override
 	public void createDataType(AbstractDbTableDefinition tableDef) throws Exception {
 		String name = tableDef.getName();
 		DataTypeDefinitionManager manager = dataTypeManager.getDataTypeDefinitionManager();
@@ -69,7 +69,6 @@ public class DefaultModelStrategy implements ModelStrategy {
 		} 
 	}
 	
-	@Override
 	public void createDataProvider(AbstractDbTableDefinition tableDef)
 			throws Exception {
 		String name = tableDef.getName();
@@ -103,6 +102,7 @@ public class DefaultModelStrategy implements ModelStrategy {
 		List<AbstractDbColumn> columns = table.getAllColumns();
 		for (AbstractDbColumn column: columns) {
 			PropertyDefDefinition propertyDef = new PropertyDefDefinition();
+			propertyDef.setImpl(BasePropertyDef.class.getName());
 			
 			String propertyName = column.getPropertyName();
 			propertyDef.setProperty("name", propertyName);

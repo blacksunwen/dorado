@@ -53,7 +53,6 @@ public abstract class AbstractJdbcEnviroment implements JdbcEnviroment, Initiali
 		this.dialect = dialect;
 	}
 
-	@Override
 	public void afterPropertiesSet() throws Exception {
 		manager.register(this);
 	}

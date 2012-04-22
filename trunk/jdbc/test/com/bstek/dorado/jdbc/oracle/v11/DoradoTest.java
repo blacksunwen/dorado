@@ -1,7 +1,9 @@
 package com.bstek.dorado.jdbc.oracle.v11;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 
@@ -20,6 +22,13 @@ public class DoradoTest extends AbstractOracle11JdbcTestCase {
 	public void test01() throws Exception {
 		String providerName = "ora11.provider.01";
 		JdbcDataProvider provider = this.getProvider(providerName);
+		
+		{
+			Map<String, Object> parameter = new HashMap<String, Object>();
+			parameter.put("firstName", "W");
+			EntityList<Record> records = (EntityList<Record>)provider.getResult(parameter);
+			Assert.assertTrue(records.size() > 0);
+		}
 		
 		EntityList<Record> records = (EntityList<Record>)provider.getResult();
 		Assert.assertTrue(records.size() > 0);

@@ -27,7 +27,6 @@ public class RecordRowMapper implements RowMapper<Record> {
 		Assert.notEmpty(this.columns, "columns must not be empty.");
 	}
 	
-	@Override
 	public Record mapRow(ResultSet rs, int rowNum) throws SQLException {
 		Map<String, Object> map = new HashMap<String, Object>(columns.size());
 		for (AbstractDbColumn c: columns) {

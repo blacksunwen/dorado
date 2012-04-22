@@ -14,7 +14,6 @@ public abstract class AbstractBigDecimal extends AbstractJdbcType {
 		super(jdbcName, "BigDecimal");
 	}
 
-	@Override
 	public Object fromDB(ResultSet rs, String columnName) throws SQLException {
 		return rs.getBigDecimal(columnName);
 	}

@@ -25,7 +25,6 @@ public class SequenceKeyGenerator extends AbstractKeyGenerator<Number> {
 		this.setName("SEQUENCE");
 	}
 
-	@Override
 	public Number newKey(JdbcRecordOperation operation, TableKeyColumn keyColumn) {
 		String sequenceName = (String) keyColumn.getKeyParameter();
 		Assert.notEmpty(sequenceName, "sequenceName must not be empty.");

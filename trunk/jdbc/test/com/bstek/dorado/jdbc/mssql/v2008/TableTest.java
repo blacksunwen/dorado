@@ -8,7 +8,7 @@ import com.bstek.dorado.jdbc.TestJdbcUtils;
 
 public class TableTest extends Mssql2008JdbcTestCase {
 	
-	public void testEmployee() {
+	public void testEmployee() throws Exception {
 		Record employee = Employee.random();
 		Integer id = (Integer)employee.get("ID");
 		{

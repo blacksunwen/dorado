@@ -22,6 +22,8 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 
+import com.bstek.dorado.util.Assert;
+
 public class JdbcIdeHost {
 
 	public static void main(String[] args) throws Exception {
@@ -66,14 +68,21 @@ public class JdbcIdeHost {
 				String key = args[i];
 				if (key.startsWith("-")) {
 					key = key.substring(1);
-					String value = args[++i];
-					
-					argMap.put(key, value);
+					String value = args[i+1];
+//					String value = args[++i];
+					if (!value.startsWith("-")) {
+						argMap.put(key, value);
+						i++;
+					}
 				}
 			}
 			
 			String agentClassName = argMap.remove("jdbcAgent");
 			serviceMethodName = argMap.remove("service");
+			
+			Assert.notEmpty(agentClassName, "[jdbcAgent] must not be null");
+			Assert.notEmpty(serviceMethodName, "[service] must not be null");
+			
 			String resultFilePath = argMap.remove("file");
 			String driver = argMap.remove("driver");
 			String url = argMap.remove("url");
@@ -89,7 +98,6 @@ public class JdbcIdeHost {
 			agentObject = agentClass.newInstance();
 		}
 		
-		@SuppressWarnings("unchecked")
 		Document doService(Map<String, String> parameter) throws Exception {
 			Method serviceMethod = agentClass.getMethod(serviceMethodName, Map.class, DataSource.class);
 			Document document = (Document)serviceMethod.invoke(agentObject, parameter, dataSource);
@@ -128,36 +136,22 @@ public class JdbcIdeHost {
 			this.password = password;
 		}
 
-		@Override
 		public PrintWriter getLogWriter() throws SQLException {
 			return logWriter;
 		}
 
-		@Override
 		public void setLogWriter(PrintWriter out) throws SQLException {
 			logWriter = out;
 		}
 
-		@Override
 		public void setLoginTimeout(int seconds) throws SQLException {
 		}
 
-		@Override
 		public int getLoginTimeout() throws SQLException {
 			return 0;
 		}
 
-		@Override
-		public <T> T unwrap(Class<T> iface) throws SQLException {
-			return null;
-		}
 
-		@Override
-		public boolean isWrapperFor(Class<?> iface) throws SQLException {
-			return false;
-		}
-
-		@Override
 		public Connection getConnection() throws SQLException {
 			synchronized (connectionMonitor) {
 				Connection conn = DriverManager.getConnection(url, user, password);
@@ -169,7 +163,6 @@ public class JdbcIdeHost {
 			}
 		}
 
-		@Override
 		public Connection getConnection(String username, String password)
 				throws SQLException {
 			return getConnection();
@@ -192,6 +185,14 @@ public class JdbcIdeHost {
 					e.printStackTrace();
 				}
 			}
+		}
+
+		public <T> T unwrap(Class<T> iface) throws SQLException {
+			return null;
+		}
+
+		public boolean isWrapperFor(Class<?> iface) throws SQLException {
+			return false;
 		}
 	}
 }

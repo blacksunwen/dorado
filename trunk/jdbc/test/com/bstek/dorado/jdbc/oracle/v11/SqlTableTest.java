@@ -19,7 +19,7 @@ import com.bstek.dorado.jdbc.TestJdbcUtils;
 
 public class SqlTableTest  extends AbstractOracle11JdbcTestCase {
 
-	public void testSqlDept() {
+	public void testSqlDept() throws Exception{
 		String tableName = "sql_dept";
 		Collection<Record> depts = JdbcUtils.query(tableName, null);
 		

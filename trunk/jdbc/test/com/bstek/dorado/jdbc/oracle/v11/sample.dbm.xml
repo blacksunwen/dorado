@@ -25,7 +25,18 @@
         <Column jdbcType="VARCHAR-String" name="REGION"/>
         <Column jdbcType="VARCHAR-String" name="TITLE"/>
       </Columns>
-      <Property name="dynamicClause"><![CDATA[#if ($ID) WHERE ID=:ID #end]]></Property>
+      <Property name="dynamicClause"><![CDATA[
+where 1=1
+
+#if ($ID) 
+ and ID=:ID
+#end
+
+#if ($firstName)
+#set($firstName = "%" + $firstName + "%")
+ and FIRST_NAME like :firstName
+#end
+]]></Property>
     </Table>
 
     <Table name="DEPT" tableName="DEPT" trigger="com.bstek.dorado.jdbc.oracle.v11.DeptTableTrigger">

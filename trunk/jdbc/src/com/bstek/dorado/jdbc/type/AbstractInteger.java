@@ -14,7 +14,6 @@ public abstract class AbstractInteger extends AbstractJdbcType {
 		super(jdbcName, "Integer");
 	}
 
-	@Override
 	public Object fromDB(ResultSet rs, String columnName) throws SQLException {
 		return rs.getInt(columnName);
 	}

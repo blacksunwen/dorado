@@ -14,7 +14,6 @@ public class TableRuleTemplateInitializer implements RuleTemplateInitializer {
 
 	public static final String NAMESPACES_STORE_KEY = "jdbc.ide.namespaces";
 	
-	@Override
 	public void initRuleTemplate(RuleTemplate tableRule,
 			InitializerContext initializerContext) throws Exception {
 		ConfigureStore configureStore = Configure.getStore();

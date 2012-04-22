@@ -16,17 +16,14 @@ public class DefaultJdbcTypeManager implements JdbcTypeManager {
 
 	private Map<String, JdbcType> types = new HashMap<String, JdbcType>();
 	
-	@Override
 	public void register(JdbcType jdbcType) {
 		types.put(jdbcType.getName(), jdbcType);
 	}
 
-	@Override
 	public JdbcType[] list() {
 		return types.values().toArray(new JdbcType[0]);
 	}
 
-	@Override
 	public JdbcType get(String name) {
 		JdbcType jdbcType = types.get(name);
 		Assert.notNull(jdbcType, "no any JdbcType named [" + name + "]");
@@ -34,7 +31,6 @@ public class DefaultJdbcTypeManager implements JdbcTypeManager {
 		return jdbcType;
 	}
 
-	@Override
 	public boolean has(String name) {
 		return types.containsKey(name);
 	}

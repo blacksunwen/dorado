@@ -33,13 +33,13 @@ public class InsertCommand {
 		this.retrieveCommand = retrieveCommand;
 	}
 
-	public void execute(JdbcRecordOperation operation) {
+	public void execute(JdbcRecordOperation operation) throws Exception {
 		JdbcEnviroment env = operation.getJdbcEnviroment();
 		Record record = operation.getRecord();
 		
 		InsertSql insertSql = this.insertSql(operation);
 		Dialect dialect = env.getDialect();
-		String sql = insertSql.toSQL(dialect);
+		String sql = dialect.toSQL(insertSql);
 		if (logger.isDebugEnabled()) {
 			logger.debug("[INSERT-SQL]" + sql);
 		}

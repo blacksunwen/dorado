@@ -15,11 +15,12 @@ import com.bstek.dorado.jdbc.JdbcRecordOperation;
 public class DeptTableTrigger extends AbstractDbTableTrigger {
 
 	@Override
-	public void doSave(JdbcRecordOperation operation) {
+	public void doSave(JdbcRecordOperation operation) throws Exception{
 		Record dept = operation.getRecord();
 		if (EntityUtils.getState(dept) == EntityState.DELETED) {
 			JdbcEnviroment env = operation.getJdbcEnviroment();
 			NamedParameterJdbcDaoSupport dao = env.getNamedDao();
+			
 			String sql = "delete from EMPLOYEE where DEPT_ID = :DEPT_ID";
 			Map<String, Object> paramMap = new HashMap<String, Object>();
 			paramMap.put("DEPT_ID", dept.get("DEPT_ID"));

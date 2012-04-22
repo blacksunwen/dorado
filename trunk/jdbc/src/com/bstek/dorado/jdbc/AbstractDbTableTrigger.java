@@ -7,13 +7,11 @@ package com.bstek.dorado.jdbc;
  */
 public abstract class AbstractDbTableTrigger implements DbTableTrigger {
 
-	@Override
-	public void doQuery(JdbcDataProviderOperation operation) {
+	public void doQuery(JdbcDataProviderOperation operation) throws Exception {
 		operation.execute();
 	}
 
-	@Override
-	public void doSave(JdbcRecordOperation operation) {
+	public void doSave(JdbcRecordOperation operation) throws Exception {
 		operation.execute();
 	}
 

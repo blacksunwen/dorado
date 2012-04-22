@@ -9,7 +9,6 @@ public class AbstractTime extends AbstractJdbcType {
 		super(jdbcName, "Time");
 	}
 
-	@Override
 	public Object fromDB(ResultSet rs, String columnName) throws SQLException {
 		return rs.getTime(columnName);
 	}

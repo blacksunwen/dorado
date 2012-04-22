@@ -47,7 +47,6 @@ public abstract class AbstractString extends AbstractJdbcType {
 		}
 	}
 
-	@Override
 	public Object fromDB(ResultSet rs, String columnName) throws SQLException {
 		String value = rs.getString(columnName);
 		return fromDB(value);

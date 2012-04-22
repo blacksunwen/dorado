@@ -8,10 +8,14 @@
 		<property name="initializerMap">
 			<map>
 				<entry key="AbstractDbColumn">
-					<bean class="com.bstek.dorado.jdbc.ide.AbstractDbColumnRuleTemplateInitializer"/>
+					<bean class="com.bstek.dorado.jdbc.ide.AbstractDbColumnRuleTemplateInitializer">
+						<property name="jdbcTypeManager" ref="dorado.jdbc.jdbcTypeManager"/>
+					</bean>
 				</entry>
 				<entry key="TableKeyColumn">
-					<bean class="com.bstek.dorado.jdbc.ide.TableKeyColumnRuleTemplateInitializer"/>
+					<bean class="com.bstek.dorado.jdbc.ide.TableKeyColumnRuleTemplateInitializer">
+						<property name="keyGeneratorManager" ref="dorado.jdbc.keyGeneratorManager"/>
+					</bean>
 				</entry>
 				<entry key="JdbcDataResolver">
 					<bean class="com.bstek.dorado.jdbc.ide.JdbcDataResolverRuleTemplateInitializer"/>

@@ -38,7 +38,7 @@ public class JdbcRecordOperation extends
 	}
 
 	@Override
-	protected boolean doExecute() {
+	protected boolean doExecute() throws Exception{
 		JdbcEnviroment jdbcEnviroment = getJdbcEnviroment();
 		return jdbcEnviroment.getDialect().execute(this);
 	}

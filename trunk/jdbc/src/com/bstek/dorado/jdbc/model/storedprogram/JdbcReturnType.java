@@ -20,7 +20,6 @@ public class JdbcReturnType implements SqlReturnType {
 		this.jdbcType = jdbcType;
 	}
 	
-	@Override
 	public Object getTypeValue(CallableStatement cs, int paramIndex,
 			int sqlType, String typeName) throws SQLException {
 		Object dbValue = cs.getObject(paramIndex);

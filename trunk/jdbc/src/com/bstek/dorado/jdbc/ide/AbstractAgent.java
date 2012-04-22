@@ -30,7 +30,6 @@ public abstract class AbstractAgent implements IAgent {
 	private DatabaseMetaData databaseMetaData;
 	private DataSource dataSource;
 
-	@Override
 	public Document listTables(Map<String, Object> parameters, DataSource dataSource)
 			throws Exception {
 		this.resetContext(parameters, dataSource);
@@ -44,7 +43,6 @@ public abstract class AbstractAgent implements IAgent {
 	
 	protected abstract Document doListTables() throws Exception;
 
-	@Override
 	public Document createColumns(Map<String, Object> parameters, DataSource dataSource)
 			throws Exception {
 		this.resetContext(parameters, dataSource);

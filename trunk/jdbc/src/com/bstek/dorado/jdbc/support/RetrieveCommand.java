@@ -26,7 +26,7 @@ public class RetrieveCommand {
 
 	private static Log logger = LogFactory.getLog(RetrieveCommand.class);
 	
-	public void execute(JdbcRecordOperation operation) {
+	public void execute(JdbcRecordOperation operation) throws Exception {
 		Table table = operation.getTable();
 		JdbcEnviroment jdbcEnv = operation.getJdbcEnviroment();
 		Record record = operation.getRecord();
@@ -61,7 +61,7 @@ public class RetrieveCommand {
 			}
 		}
 
-		String sql = retrieveSql.toSQL(dialect);
+		String sql = dialect.toSQL(retrieveSql);
 		if (logger.isDebugEnabled()) {
 			logger.debug("[RETRIEVE-SQL]" + sql);
 		}

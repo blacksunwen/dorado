@@ -32,13 +32,13 @@ public class UpdateCommand {
 		this.retrieveCommand = retrieveCommand;
 	}
 	
-	public void execute(JdbcRecordOperation operation) {
+	public void execute(JdbcRecordOperation operation) throws Exception {
 		JdbcEnviroment env = operation.getJdbcEnviroment();
 		
 		Dialect dialect = env.getDialect();
 		NamedParameterJdbcTemplate jdbcTemplate = env.getNamedDao().getNamedParameterJdbcTemplate();
 		UpdateSql updateSql = this.updateSql(operation);
-		String sql = updateSql.toSQL(dialect);
+		String sql = dialect.toSQL(updateSql);
 		if (logger.isDebugEnabled()) {
 			logger.debug("[UPDATE-SQL]" + sql);
 		}

@@ -10,7 +10,6 @@ public abstract class AbstractDateTime extends AbstractJdbcType {
 		super(jdbcName, "DateTime");
 	}
 
-	@Override
 	public Object fromDB(ResultSet rs, String columnName) throws SQLException {
 		Timestamp value = rs.getTimestamp(columnName);
 		return fromDB(value);

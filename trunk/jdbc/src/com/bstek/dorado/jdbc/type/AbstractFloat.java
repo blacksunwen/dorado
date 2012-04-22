@@ -14,7 +14,6 @@ public abstract class AbstractFloat extends AbstractJdbcType {
 		super(jdbcName, "Float");
 	}
 
-	@Override
 	public Object fromDB(ResultSet rs, String columnName) throws SQLException {
 		return rs.getFloat(columnName);
 	}

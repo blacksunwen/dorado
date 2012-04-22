@@ -10,7 +10,11 @@ import org.apache.commons.logging.LogFactory;
 import com.bstek.dorado.jdbc.model.autotable.AutoTable;
 import com.bstek.dorado.jdbc.model.autotable.Order;
 import com.bstek.dorado.jdbc.model.table.Table;
+import com.bstek.dorado.jdbc.sql.DeleteSql;
+import com.bstek.dorado.jdbc.sql.InsertSql;
+import com.bstek.dorado.jdbc.sql.RetrieveSql;
 import com.bstek.dorado.jdbc.sql.SelectSql;
+import com.bstek.dorado.jdbc.sql.UpdateSql;
 import com.bstek.dorado.jdbc.sql.SqlConstants.JoinOperator;
 
 /**
@@ -60,15 +64,23 @@ public interface Dialect {
 	 * @param selectSql
 	 * @return
 	 */
-	String toSQL(SelectSql selectSql);
-
+	String toSQL(SelectSql selectSql) throws Exception;
+	
+	String toSQL(DeleteSql deleteSql) throws Exception;
+	
+	String toSQL(InsertSql insertSql) throws Exception;
+	
+	String toSQL(RetrieveSql retrieveSql) throws Exception;
+	
+	String toSQL(UpdateSql updateSql) throws Exception;
+	
 	/**
 	 * 根据{@link com.bstek.dorado.jdbc.sql.SelectSql}输出成查询记录总数的SQL
 	 * 
 	 * @param selectSql
 	 * @return
 	 */
-	String toCountSQL(SelectSql selectSql);
+	String toCountSQL(SelectSql selectSql) throws Exception;
 
 	/**
 	 * 将查询语句包装成查询记录总数的SQL
@@ -76,7 +88,7 @@ public interface Dialect {
 	 * @param sql
 	 * @return
 	 */
-	String toCountSQL(String sql);
+	String toCountSQL(String sql) throws Exception;
 
 	/**
 	 * 是否支持数据库分页查询
@@ -93,7 +105,7 @@ public interface Dialect {
 	 * @param firstResult
 	 * @return
 	 */
-	String narrowSql(SelectSql selectSql, int maxResults, int firstResult);
+	String narrowSql(SelectSql selectSql, int maxResults, int firstResult) throws Exception;
 
 	/**
 	 * 是否支持序列
@@ -114,14 +126,14 @@ public interface Dialect {
 	 * 执行{@link com.bstek.dorado.jdbc.JdbcDataProvider}操作
 	 * @param operation
 	 */
-	boolean execute(JdbcDataProviderOperation operation);
+	boolean execute(JdbcDataProviderOperation operation) throws Exception;
 	
 	/**
 	 * 执行数据库操作
 	 * @param operation
 	 * @return 是否成功执行
 	 */
-	boolean execute(JdbcRecordOperation operation);
+	boolean execute(JdbcRecordOperation operation) throws Exception;
 	
 	/**
 	 * 默认的数据库catalog，用于IDE

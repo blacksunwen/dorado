@@ -70,7 +70,7 @@ public abstract class JdbcUtils {
 	 * @param parameter
 	 * @return
 	 */
-	public static Collection<Record> query(String tableName, Object parameter) {
+	public static Collection<Record> query(String tableName, Object parameter) throws Exception {
 		JdbcDataProviderContext jCtx = new JdbcDataProviderContext(null, parameter);
 		DbTable table = getDbTable(tableName);
 		JdbcDataProviderOperation operation = new JdbcDataProviderOperation(table, jCtx);
@@ -84,7 +84,7 @@ public abstract class JdbcUtils {
 	 * @param operation
 	 * @return
 	 */
-	public static Collection<Record> query(JdbcDataProviderOperation operation) {
+	public static Collection<Record> query(JdbcDataProviderOperation operation) throws Exception{
 		if (operation.isProcessDefault()) {
 			DbTable table = operation.getDbTable();
 			Assert.notNull(table, "DbTable must not be null.");
@@ -110,7 +110,7 @@ public abstract class JdbcUtils {
 	 * @param keys
 	 * @return
 	 */
-	public static Record getByKey(Table table, Object... keys) {
+	public static Record getByKey(Table table, Object... keys) throws Exception{
 		JdbcDataProviderContext jCtx = new JdbcDataProviderContext();
 		JdbcDataProviderOperation operation = new JdbcDataProviderOperation(table, jCtx);
 		KeyObject keyObject = table.createKeyObject(keys);
@@ -128,19 +128,19 @@ public abstract class JdbcUtils {
 		}
 	}
 	
-	public static void insert(String tableName, Record record) {
+	public static void insert(String tableName, Record record) throws Exception {
 		record = getRecordWithState(record, EntityState.NEW);
 		DbTable dbTable = getDbTable(tableName);
 		doSave(dbTable, record, null);
 	}
 	
-	public static void update(String tableName, Record record) {
+	public static void update(String tableName, Record record) throws Exception {
 		record = getRecordWithState(record, EntityState.MODIFIED);
 		DbTable dbTable = getDbTable(tableName);
 		doSave(dbTable, record, null);
 	}
 	
-	public static void delete(String tableName, Record record) {
+	public static void delete(String tableName, Record record) throws Exception{
 		record = getRecordWithState(record, EntityState.DELETED);
 		DbTable dbTable = getDbTable(tableName);
 		doSave(dbTable, record, null);
@@ -158,7 +158,7 @@ public abstract class JdbcUtils {
 		return record;
 	}
 	
-	public static void doSave(DbTable dbTable, Record record, JdbcDataResolverContext jdbcContext) {
+	public static void doSave(DbTable dbTable, Record record, JdbcDataResolverContext jdbcContext) throws Exception{
 		if (dbTable.supportResolverTable()) {
 			Table table = dbTable.getResolverTable();
 			if (table != null) {
@@ -187,7 +187,7 @@ public abstract class JdbcUtils {
 		}
 	}
 	
-	public static boolean doResolve(JdbcRecordOperation operation) {
+	public static boolean doResolve(JdbcRecordOperation operation) throws Exception{
 		DbTable table = operation.getDbTable();
 		DbTableTrigger trigger = table.getTrigger();
 		if (trigger == null) {

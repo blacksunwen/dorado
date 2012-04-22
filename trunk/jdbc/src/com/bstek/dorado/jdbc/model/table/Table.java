@@ -72,7 +72,6 @@ public class Table extends AbstractTable {
 		super.addColumn(column);
 	}
 	
-	@Override
 	public String getType() {
 		return TYPE;
 	}
@@ -129,12 +128,10 @@ public class Table extends AbstractTable {
 		return Collections.unmodifiableList(keyColumns);
 	}
 
-	@Override
 	public boolean supportResolverTable() {
 		return false;
 	}
 
-	@Override
 	public Table getResolverTable() {
 		throw new UnsupportedOperationException();
 	}
@@ -144,7 +141,6 @@ public class Table extends AbstractTable {
 		throw new UnsupportedOperationException();
 	}
 
-	@Override
 	public SelectSql selectSql(JdbcDataProviderOperation operation) {
 		//SelectSql
 		TableSelectSql selectSql = createSelectSql();

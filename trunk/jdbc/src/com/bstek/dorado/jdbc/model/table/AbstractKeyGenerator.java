@@ -32,12 +32,10 @@ public abstract class AbstractKeyGenerator<T> implements KeyGenerator<T>, Initia
 		
 	}
 
-	@Override
 	public void afterPropertiesSet() throws Exception {
 		this.manager.register(this);
 	}
 
-	@Override
 	public boolean isIdentity() {
 		return false;
 	}

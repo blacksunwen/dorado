@@ -18,13 +18,13 @@ public class DeleteCommand {
 
 	private static Log logger = LogFactory.getLog(DeleteCommand.class);
 	
-	public void execute(JdbcRecordOperation operation) {
+	public void execute(JdbcRecordOperation operation) throws Exception {
 		JdbcEnviroment env = operation.getJdbcEnviroment();
 		Dialect dialect = env.getDialect();
 		NamedParameterJdbcTemplate jdbcTemplate = env.getNamedDao().getNamedParameterJdbcTemplate();
 		
 		DeleteSql deleteSql = this.deleteSql(operation);
-		String sql = deleteSql.toSQL(dialect);
+		String sql = dialect.toSQL(deleteSql);
 		if (logger.isDebugEnabled()) {
 			logger.debug("[DELETE-SQL]" + sql);
 		}

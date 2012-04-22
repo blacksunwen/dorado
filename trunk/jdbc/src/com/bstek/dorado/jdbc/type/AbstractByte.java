@@ -14,7 +14,6 @@ public abstract class AbstractByte extends AbstractJdbcType {
 		super(jdbcName, "Byte");
 	}
 
-	@Override
 	public Object fromDB(ResultSet rs, String columnName) throws SQLException {
 		return rs.getByte(columnName);
 	}

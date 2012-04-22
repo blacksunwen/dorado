@@ -1,5 +1,7 @@
 package com.bstek.dorado.jdbc.model.table;
 
+import java.util.HashMap;
+
 import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.jdbc.Dialect;
@@ -46,6 +48,9 @@ public class TableSelectSql extends SelectSql {
 	}
 	
 	public Object getParameter() {
+		if (parameter == null) {
+			parameter = new HashMap<Object, Object>();
+		}
 		return parameter;
 	}
 
@@ -55,13 +60,15 @@ public class TableSelectSql extends SelectSql {
 	}
 
 	@Override
-	protected String doBuild(Dialect dialect) {
+	protected String doBuild(Dialect dialect) throws Exception {
 		Assert.notEmpty(tableToken, "tableToken must not be empty.");
 		SqlBuilder builder = new SqlBuilder();
 		builder.rightSpace(KeyWord.SELECT, columnsToken, KeyWord.FROM).append(tableToken);
 		
 		if (StringUtils.isNotBlank(dynamicToken)) {
-			String token = SqlUtils.build(dynamicToken, parameter).trim();
+			String token = SqlUtils.build(dynamicToken, getParameter()).trim();
+			this.setParameter(getParameter());
+			
 			builder.leftSpace(token);
 		}
 		

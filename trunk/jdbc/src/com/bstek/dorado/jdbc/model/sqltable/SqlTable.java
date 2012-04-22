@@ -75,17 +75,14 @@ public class SqlTable extends AbstractTable {
 		this.mainTableName = table;
 	}
 
-	@Override
 	public String getType() {
 		return TYPE;
 	}
 
-	@Override
 	public boolean supportResolverTable() {
 		return true;
 	}
 
-	@Override
 	public Table getResolverTable() {
 		if (mainTable == null && StringUtils.isNotEmpty(mainTableName)) {
 			mainTable = (Table)JdbcUtils.getDbTable(mainTableName);
@@ -142,7 +139,6 @@ public class SqlTable extends AbstractTable {
 		return null;
 	}
 	
-	@Override
 	public SelectSql selectSql(JdbcDataProviderOperation operation) {
 		SqlSelectSql selectSql = new SqlSelectSql();
 		

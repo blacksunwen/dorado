@@ -20,7 +20,11 @@ import com.bstek.dorado.jdbc.model.autotable.AutoTableColumn;
 import com.bstek.dorado.jdbc.model.autotable.FromTable;
 import com.bstek.dorado.jdbc.model.autotable.Order;
 import com.bstek.dorado.jdbc.model.table.Table;
+import com.bstek.dorado.jdbc.sql.DeleteSql;
+import com.bstek.dorado.jdbc.sql.InsertSql;
+import com.bstek.dorado.jdbc.sql.RetrieveSql;
 import com.bstek.dorado.jdbc.sql.SelectSql;
+import com.bstek.dorado.jdbc.sql.UpdateSql;
 import com.bstek.dorado.jdbc.sql.SqlConstants.JoinOperator;
 import com.bstek.dorado.jdbc.sql.SqlConstants.KeyWord;
 import com.bstek.dorado.jdbc.sql.SqlConstants.NullsDirection;
@@ -96,22 +100,38 @@ public abstract class AbstractDialect implements Dialect {
 		return "SELECT COUNT(1) FROM ( " + sql + " )";
 	}
 	
-	public String toSQL(SelectSql selectSql) {
+	public String toSQL(SelectSql selectSql) throws Exception{
 		return selectSql.toSQL(this);
 	}
 	
-	public String toCountSQL(SelectSql selectSql) {
+	public String toSQL(RetrieveSql retrieveSql) throws Exception {
+		return retrieveSql.toSQL(this);
+	}
+	
+	public String toSQL(DeleteSql deleteSql) throws Exception {
+		return deleteSql.toSQL(this);
+	}
+	
+	public String toSQL(InsertSql insertSql) throws Exception {
+		return insertSql.toSQL(this);
+	}
+	
+	public String toSQL(UpdateSql updateSql) throws Exception {
+		return updateSql.toSQL(this);
+	}
+	
+	public String toCountSQL(SelectSql selectSql) throws Exception{
 		return selectSql.toCountSQL(this);
 	}
 	
-	public boolean execute(JdbcDataProviderOperation operation) {
+	public boolean execute(JdbcDataProviderOperation operation) throws Exception{
 		if (intercepter != null) {
 			operation = intercepter.getOperation(operation);
 		}
 		return queryCommand.execute(operation);
 	}
 	
-	public boolean execute(JdbcRecordOperation operation) {
+	public boolean execute(JdbcRecordOperation operation) throws Exception {
 		if (intercepter != null) {
 			operation = intercepter.getOperation(operation);
 		}
@@ -151,7 +171,6 @@ public abstract class AbstractDialect implements Dialect {
 		throw new IllegalArgumentException("unknown JoinModel '" + joinModel + "'");
 	}
 	
-	@Override
 	public String token(AutoTable autoTable, Order order) {
 		OrderDirection model = order.getDirection();
 		NullsDirection nullsModel = order.getNullsDirection(); 

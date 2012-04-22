@@ -8,30 +8,58 @@ import com.bstek.dorado.idesupport.initializer.InitializerContext;
 import com.bstek.dorado.idesupport.initializer.RuleTemplateInitializer;
 import com.bstek.dorado.idesupport.template.PropertyTemplate;
 import com.bstek.dorado.idesupport.template.RuleTemplate;
+import com.bstek.dorado.jdbc.KeyGeneratorManager;
+import com.bstek.dorado.jdbc.model.table.KeyGenerator;
+import com.bstek.dorado.web.ConsoleUtils;
 
 public class TableKeyColumnRuleTemplateInitializer implements
 		RuleTemplateInitializer {
 
 	public static final String KEY_GENERATORS_STORE_KEY = "jdbc.ide.keyGenerators";
 	
-	@Override
+	private KeyGeneratorManager keyGeneratorManager;
+	
+	public KeyGeneratorManager getKeyGeneratorManager() {
+		return keyGeneratorManager;
+	}
+
+	public void setKeyGeneratorManager(KeyGeneratorManager keyGeneratorManager) {
+		this.keyGeneratorManager = keyGeneratorManager;
+	}
+
 	public void initRuleTemplate(RuleTemplate columnRule,
 			InitializerContext initializerContext) throws Exception {
 		ConfigureStore configureStore = Configure.getStore();
 		String propertyName = "keyGenerator";
 		String storeKey = KEY_GENERATORS_STORE_KEY;
 		String valueStr = configureStore.getString(storeKey);
+		
+		String[] typeAry = null;
 		if (StringUtils.isNotEmpty(valueStr)) {
-			String[] typeAry = StringUtils.split(valueStr, ",");
+			typeAry = StringUtils.split(valueStr, ",");
+		} else {
+			typeAry = getDefaultValue();
+			String defaultValue = StringUtils.join(typeAry, ',');
 			
-			PropertyTemplate jdbcTypeProperty = columnRule.getProperty(propertyName);
-			if (jdbcTypeProperty == null) {
-				jdbcTypeProperty = new PropertyTemplate(propertyName);
-				columnRule.addProperty(jdbcTypeProperty);
-			}
-			jdbcTypeProperty.setHighlight(1);
-			jdbcTypeProperty.setEnumValues(typeAry);
+			ConsoleUtils.outputLoadingInfo("[WARN] " + KEY_GENERATORS_STORE_KEY + " is null, default value '" + defaultValue + "' be used.");
 		}
+		
+		PropertyTemplate jdbcTypeProperty = columnRule.getProperty(propertyName);
+		if (jdbcTypeProperty == null) {
+			jdbcTypeProperty = new PropertyTemplate(propertyName);
+			columnRule.addProperty(jdbcTypeProperty);
+		}
+		jdbcTypeProperty.setHighlight(1);
+		jdbcTypeProperty.setEnumValues(typeAry);
 	}
 
+	protected String[] getDefaultValue() {
+		KeyGenerator<Object>[] gens = getKeyGeneratorManager().list();
+		String[] genNames = new String[gens.length];
+		for (int i=0; i<gens.length; i++) {
+			genNames[i] = gens[i].getName();
+		}
+		
+		return genNames;
+	}
 }

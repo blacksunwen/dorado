@@ -17,7 +17,6 @@ public class JdkUuidKeyGenerator extends AbstractKeyGenerator<String> {
 		this.setName("JDK-UUID");
 	}
 
-	@Override
 	public String newKey(JdbcRecordOperation operation, TableKeyColumn keyColumn) {
 		UUID id = UUID.randomUUID();
 		return id.toString();

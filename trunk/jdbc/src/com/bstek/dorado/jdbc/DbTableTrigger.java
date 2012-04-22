@@ -12,11 +12,11 @@ public interface DbTableTrigger {
 	 * 查询动作
 	 * @param operation
 	 */
-	void doQuery(JdbcDataProviderOperation operation);
+	void doQuery(JdbcDataProviderOperation operation) throws Exception;
 	
 	/**
 	 * 更新、新增、删除动作
 	 * @param operation
 	 */
-	void doSave(JdbcRecordOperation operation);
+	void doSave(JdbcRecordOperation operation) throws Exception;
 }

@@ -17,13 +17,11 @@ public class H2Dialect extends AbstractDialect {
 		this.setDefaultSchema("PUBLIC");
 	}
 	
-	@Override
 	public boolean isNarrowSupport() {
 		return true;
 	}
 	
-	@Override
-	public String narrowSql(SelectSql selectSql, int maxResults, int firstResult) {
+	public String narrowSql(SelectSql selectSql, int maxResults, int firstResult) throws Exception {
 		String sql = this.toSQL(selectSql);
 		
 		if (firstResult <= 0) {
@@ -33,18 +31,15 @@ public class H2Dialect extends AbstractDialect {
 		}
 	}
 	
-	@Override
 	public boolean isSequenceSupport() {
 		return true;
 	}
 	
-	@Override
 	public String sequenceSql(String sequenceName) {
 		Assert.notNull(sequenceName, "'sequenceName' can not be empty.");
 		return "SELECT NEXT VALUE FOR " + sequenceName;
 	}
 
-	@Override
 	public JdbcSpace getTableJdbcSpace() {
 		return JdbcSpace.SCHEMA;
 	}

@@ -11,7 +11,6 @@ import com.bstek.dorado.config.definition.Operation;
  */
 public class MatchRuleDefinition extends ObjectDefinition implements Operation {
 
-	@Override
 	public void execute(Object object, CreationContext context)
 			throws Exception {
 		AbstractMatchRule rule = (AbstractMatchRule)this.create(context);

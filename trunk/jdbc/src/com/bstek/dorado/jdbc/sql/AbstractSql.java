@@ -25,5 +25,5 @@ public abstract class AbstractSql {
 	 * @param dialect
 	 * @return
 	 */
-	public abstract String toSQL(Dialect dialect);
+	public abstract String toSQL(Dialect dialect) throws Exception;
 }
