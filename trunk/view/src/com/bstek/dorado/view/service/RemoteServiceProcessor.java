@@ -149,23 +149,12 @@ public class RemoteServiceProcessor extends DataServiceProcessorSupport {
 			parameterParameters = new Object[] { parameter };
 		}
 
-		String[] optionalParameterNames = new String[parameterParameterNames.length
-				+ sysParameter.size()];
+		String[] optionalParameterNames = new String[parameterParameterNames.length];
 		Object[] optionalParameters = new Object[optionalParameterNames.length];
-
 		System.arraycopy(parameterParameterNames, 0, optionalParameterNames, 0,
 				parameterParameterNames.length);
 		System.arraycopy(parameterParameters, 0, optionalParameters, 0,
 				parameterParameters.length);
-
-		if (!sysParameter.isEmpty()) {
-			int i = parameterParameterNames.length;
-			for (Map.Entry<?, ?> entry : sysParameter.entrySet()) {
-				optionalParameterNames[i] = (String) entry.getKey();
-				optionalParameters[i] = entry.getValue();
-				i++;
-			}
-		}
 
 		return MethodAutoMatchingUtils.invokeMethod(methods, serviceBean,
 				requiredParameterNames, requiredParameters,
