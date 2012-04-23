@@ -71,6 +71,16 @@ public final class HibernateUtils {
 		return null;
 	}
 	
+	public static Object getRealParameter(Object parameter) {
+		if (parameter != null) {
+			if (parameter instanceof ParameterWrapper) {
+				return ((ParameterWrapper)parameter).getParameter();
+			}
+		}
+		
+		return parameter;
+	}
+	
 	public static DetachedCriteria createFilter(DetachedCriteria detachedCriteria, com.bstek.dorado.data.provider.Criteria filterCriteria) throws Exception {
 		CriteriaImplHelper helper = new CriteriaImplHelper(detachedCriteria);
 		mergeFilter(helper, filterCriteria);

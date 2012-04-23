@@ -112,7 +112,8 @@ public class CriteriaDataProvider extends AbstractDataProvider {
 	 */
 	protected DetachedCriteria createDetachedCriteria(Object parameter) throws Exception {
 		HibernateCriteriaTransformer transformer = getCriteriaTransformer();
-		DetachedCriteria detachedCriteria = transformer.toHibernate(getCriteria(), parameter, this.getSessionFactoryOject());
+		DetachedCriteria detachedCriteria = transformer.toHibernate(getCriteria(), 
+				HibernateUtils.getRealParameter(parameter), this.getSessionFactoryOject());
 		if (this.isAutoFilter()) {
 			com.bstek.dorado.data.provider.Criteria filterCriteria = HibernateUtils.getFilterCriteria(parameter);
 			if (filterCriteria != null) {

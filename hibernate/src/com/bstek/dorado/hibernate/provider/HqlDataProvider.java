@@ -12,6 +12,7 @@ import com.bstek.dorado.core.Context;
 import com.bstek.dorado.data.provider.AbstractDataProvider;
 import com.bstek.dorado.data.provider.Page;
 import com.bstek.dorado.data.type.DataType;
+import com.bstek.dorado.hibernate.HibernateUtils;
 import com.bstek.dorado.hibernate.hql.Hql;
 import com.bstek.dorado.hibernate.hql.HqlQuerier;
 import com.bstek.dorado.hibernate.hql.HqlUtil;
@@ -81,22 +82,22 @@ public class HqlDataProvider extends AbstractDataProvider {
 			throws Exception {
 		Assert.notEmpty(this.hql, "Hql must not be empty.");
 
-		Hql hql = createHql(this.hql, parameter, resultDataType);
+		Object realParameter = HibernateUtils.getRealParameter(parameter);
+		Hql hql = this.createHql(this.hql, realParameter, resultDataType);
 		HqlQuerier querier = createHqlQuerier();
 
-		Session session = getSession();
-		return querier.query(session, parameter, hql, this);
+		return querier.query(getSession(), parameter, hql, this);
 	}
 
 	protected void internalGetResult(Object parameter, Page<?> page,
 			DataType resultDataType) throws Exception {
 		Assert.notEmpty(this.hql, "Hql must not be empty.");
 
-		Hql hql = createHql(this.hql, parameter, resultDataType);
+		Object realParameter = HibernateUtils.getRealParameter(parameter);
+		Hql hql = this.createHql(this.hql, realParameter, resultDataType);
 		HqlQuerier querier = createHqlQuerier();
 
-		Session session = getSession();
-		querier.query(session, parameter, hql, page, this);
+		querier.query(getSession(), parameter, hql, page, this);
 	}
 
 	protected HqlQuerier createHqlQuerier() throws Exception {
@@ -105,9 +106,9 @@ public class HqlDataProvider extends AbstractDataProvider {
 		return querier;
 	}
 
-	protected Hql createHql(String hqlClause, Object parameter,
+	protected Hql createHql(String hqlClause, Object realParameter,
 			DataType resultDataType) throws Exception {
-		String clause = HqlUtil.build(hqlClause, parameter);
+		String clause = HqlUtil.build(hqlClause, realParameter);
 		Hql hql = HqlUtil.build(clause);
 		return hql;
 	}
