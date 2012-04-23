@@ -2,6 +2,7 @@ package com.bstek.dorado.hibernate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.SessionFactory;
@@ -13,6 +14,8 @@ import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.type.EntityType;
 import org.hibernate.type.Type;
 
+import com.bstek.dorado.data.ParameterWrapper;
+import com.bstek.dorado.data.provider.Criteria;
 import com.bstek.dorado.data.provider.filter.FilterOperator;
 import com.bstek.dorado.data.provider.filter.SingleValueFilterCriterion;
 import com.bstek.dorado.data.variant.Record;
@@ -55,9 +58,14 @@ public final class HibernateUtils {
 	}
 	
 	public static com.bstek.dorado.data.provider.Criteria getFilterCriteria(Object parameter) {
-		if (parameter instanceof Record) {
-			Record paraRecord = (Record)parameter;
-			return (com.bstek.dorado.data.provider.Criteria)paraRecord.get("criteria");
+		if (parameter instanceof ParameterWrapper) {
+			ParameterWrapper pw = (ParameterWrapper)parameter;
+			Map<String, Object> sysParameter = pw.getSysParameter();
+			
+			if (sysParameter instanceof Record) {
+				Record paraRecord = (Record)sysParameter;
+				return (Criteria)paraRecord.get("criteria");
+			}
 		}
 		
 		return null;
