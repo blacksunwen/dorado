@@ -48,7 +48,6 @@ public class HqlUtil {
 	}
 
 	public static Hql build(String clause) throws Exception {
-
 		if (StringUtils.isEmpty(clause)) {
 			return null;
 		} else {
