@@ -103,6 +103,8 @@ public class DataOutputter implements Outputter, PropertyOutputter {
 	private void outputPagingList(PagingList pagingList, OutputContext context)
 			throws Exception {
 		JsonBuilder json = context.getJsonBuilder();
+		json.beginValue();
+		
 		Writer writer = context.getWriter();
 		writer.write("(function(){\n");
 		writer.write("var a=");
@@ -120,6 +122,8 @@ public class DataOutputter implements Outputter, PropertyOutputter {
 
 		writer.write("return a;\n");
 		writer.write("})()");
+
+		json.endValue();
 	}
 
 	private void outputPage(Page<?> page, OutputContext context)

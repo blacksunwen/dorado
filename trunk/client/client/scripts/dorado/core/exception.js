@@ -238,7 +238,7 @@
 	//=====
 	
 	dorado.Exception.EXCEPTION_STACK = [];
-	
+	dorado.Exception.IGNORE_ALL_EXCEPTIONS = false;
 	
 	dorado.Exception.getExceptionMessage = function(e) {
 		if (!e || e instanceof dorado.AbortException) return null;
@@ -257,6 +257,8 @@
 	 * @param {dorado.Exception|Object} e 异常对象。
 	 */
 	dorado.Exception.processException = function(e) {
+		if (dorado.Exception.IGNORE_ALL_EXCEPTIONS) return;
+		
 		dorado.Exception.removeException(e);
 		if (!e || e instanceof dorado.AbortException) return;
 		
@@ -280,7 +282,6 @@
 			}
 		}
 	};
-	
 	
 	/**
 	 * 从系统的异常堆栈中移除一个异常对象。
@@ -508,6 +509,5 @@
 		}
 		return exceptionDetailDialog;
 	}
-	
 	
 })();

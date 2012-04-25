@@ -244,20 +244,18 @@ dorado.EventSupport = $class(/** @scope dorado.EventSupport.prototype */{
 		 * @example
 		 * // sample 2
 		 * // 利用数组一次性定义两个监听器
-		 * oop.set("listener", [
-		 *	 {
-		 *		 name: "onFocus",
-		 *		 listener: function(button) {
-		 *			 ... ...
-		 *		 }
-		 *	 },
-		 *	 {
-		 *		 name: "onBlur",
-		 *		 listener: function(button) {
-		 *			 ... ...
-		 *		 }
-		 *	 }
-		 * ]);
+		 * oop.set("listener", {
+		 * 	onFocus: [
+		 * 		{
+		 * 			fn: function(button) {
+		 * 				... ...
+		 * 			},
+		 * 			options:{ once: true }
+		 * 		},
+		 * 		function: (button) {
+		 * 			... ...
+		 * 		}
+		 * });
 		 */
 		listener: {
 			setter: function(v) {
@@ -268,10 +266,18 @@ dorado.EventSupport = $class(/** @scope dorado.EventSupport.prototype */{
 						if (listener) {
 							if (listener instanceof Array) {
 								for (var i = 0; i < listener.length; i++) {
-									this.addListener(p, listener[i]);
+									var l = listener[i];
+									if (l instanceof Function) {
+										this.addListener(p, l);
+									}
+									else if (l.fn instanceof Function) {
+										this.addListener(p, l.fn, l.options);
+									}
 								}
-							} else {
+							} else if (listener instanceof Function) {
 								this.addListener(p, listener);
+							} else if (listener.fn instanceof Function) {
+								this.addListener(p, listener.fn, listener.options);
 							}
 						}
 					}

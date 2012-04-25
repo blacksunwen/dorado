@@ -492,19 +492,29 @@
 
 		/**
 		 * 在屏幕上显示一个提示信息。
-		 * @param {String} msg 提醒信息。
-		 * @param {Object} options 选项。
+		 * @param {String|Object} msg 此参数有两种使用方法:
+		 * <ul>
+		 * 	<li>当此参数的类型为String时，Dorado7将其识别成提醒信息，并且您可以通过此方法的第二个参数来对通知消息进行更多的定制。</li>
+		 * 	<li>当此参数的类型为Object时，Dorado7将其识别成选项参数，即传递给dorado.widget.NotifyTip的构造参数，此时方法的第二个参数将被忽略。</li>
+		 * </ul>
+		 * @param {Object} [options] 选项。
+		 * @return {dorado.widget.NotifyTip} 内部创建的Tip对象。
 		 */
 		notify: function(msg, options) {
-			options = options || {};
+			if (typeof msg == "string") {
+				options = dorado.Object.apply({}, options);
+				options.text = msg;
+			}
+			else if (typeof msg == "object"){
+				options = dorado.Object.apply({}, msg);
+			}
+			options.caption = options.caption || $resource("dorado.baseWidget.NotifyTipDefaultCaption") || "Dorado7"
+			if (options.autoHide === false) options.showDuration = 0;
+			
 			var tip = dorado.NotifyTipPool.borrowObject();
-            tip.set({
-                text: msg,
-                caption: options.caption || $resource("dorado.baseWidget.NotifyTipDefaultCaption") || "dorado 7",
-                icon: options.icon,
-                iconClass: options.iconClass
-            });
+            tip.set(options);
 			tip.show();
+			return tip;
 		},
 
 		/**

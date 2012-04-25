@@ -646,7 +646,7 @@
 								value = dataType.parse(value, typeFormat);
 								expression = (operator || "") + dataType.toText(value);
 							} else {
-								expression = value;
+								expression = (operator || "") + value;
 							}
 							
 							criterions.push({
