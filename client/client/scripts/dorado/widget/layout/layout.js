@@ -184,8 +184,8 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 	 */
 	onAttachToDocument: function(containerElement) {
 		if (!this._attached) {
-			this._attached = true;
 			if (this._regions.size == 0) return;
+			this._attached = true;
 			var dom = this.getDom();
 			if (dom.parentNode != containerElement) containerElement.appendChild(dom);
 			this.refreshDom(dom);
