@@ -40,7 +40,11 @@ public class DefaultJdbcEnviromentManager implements JdbcEnviromentManager {
 						defaultEnviroment.getName() + "," + env.getName() + "]");
 			}
 		}
-		enviroments.put(env.getName(), env);
+		if (!enviroments.containsKey(env.getName())) {
+			enviroments.put(env.getName(), env);
+		} else {
+			throw new IllegalArgumentException("JdbcEnviroment named [" + env.getName() + "] already exists, cound not be overrided.");
+		}
 	}
 
 	public JdbcEnviroment getDefault() {
@@ -57,11 +61,6 @@ public class DefaultJdbcEnviromentManager implements JdbcEnviromentManager {
 
 	public JdbcEnviroment[] listAll() {
 		return enviroments.values().toArray(new JdbcEnviroment[0]);
-	}
-
-	@Override
-	public String toString() {
-		return super.toString();
 	}
 	
 }

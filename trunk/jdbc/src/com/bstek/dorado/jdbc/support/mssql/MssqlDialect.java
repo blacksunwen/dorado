@@ -16,7 +16,6 @@ public class MssqlDialect extends AbstractDialect {
 	
 	public MssqlDialect() {
 		super();
-		this.setDefaultSchema("dbo");
 	}
 
 	public boolean isNarrowSupport() {

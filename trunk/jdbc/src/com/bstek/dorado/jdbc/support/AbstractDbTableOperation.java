@@ -7,11 +7,11 @@ import com.bstek.dorado.jdbc.model.DbTable;
  * 抽象的对{@link DbTable} 数据库操作
  * 
  * @author mark.li@bstek.com
- * @param <T>
+ * @param <CTX>
  */
-public abstract class AbstractDbTableOperation<T extends AbstractJdbcContext, TB extends DbTable> {
-	private T jdbcContext;
-	private TB dbTable;
+public abstract class AbstractDbTableOperation<CTX extends AbstractJdbcContext, TAB extends DbTable> {
+	private CTX jdbcContext;
+	private TAB dbTable;
 	private boolean _processDefault = true;
 
 	/**
@@ -26,7 +26,7 @@ public abstract class AbstractDbTableOperation<T extends AbstractJdbcContext, TB
 		this._processDefault = _processDefault;
 	}
 	
-	public AbstractDbTableOperation(TB dbTable, T jdbcContext) {
+	public AbstractDbTableOperation(TAB dbTable, CTX jdbcContext) {
 		this.dbTable = dbTable;
 		this.jdbcContext = jdbcContext;
 	}
@@ -35,11 +35,11 @@ public abstract class AbstractDbTableOperation<T extends AbstractJdbcContext, TB
 	 * 获取操作的{@link DbTable}
 	 * @return
 	 */
-	public TB getDbTable() {
+	public TAB getDbTable() {
 		return dbTable;
 	}
 
-	public void setDbTable(TB dbTable) {
+	public void setDbTable(TAB dbTable) {
 		this.dbTable = dbTable;
 	}
 
@@ -47,7 +47,7 @@ public abstract class AbstractDbTableOperation<T extends AbstractJdbcContext, TB
 	 * 获取数据库操作的上下文
 	 * @return
 	 */
-	public T getJdbcContext() {
+	public CTX getJdbcContext() {
 		return this.jdbcContext;
 	}
 

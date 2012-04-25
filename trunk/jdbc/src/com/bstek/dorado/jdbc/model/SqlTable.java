@@ -88,10 +88,10 @@ public class SqlTable extends AbstractTable {
 		selectSql.setDynamicToken(querySql);
 		
 		//parameter
-		selectSql.setParameter(JdbcUtils.getRealParameter(operation.getParameter()));
+		selectSql.setParameter(operation.getParameter());
 		
 		if (operation.getJdbcContext().isAutoFilter()) {
-			Criteria criteria = this.getCriteria(operation);
+			Criteria criteria = operation.getCriteria();
 			if (criteria != null) {
 				selectSql.setCriteria(criteria);
 			}

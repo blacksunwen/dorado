@@ -2,9 +2,9 @@ package com.bstek.dorado.jdbc.parser;
 
 import java.util.List;
 
+import com.bstek.dorado.config.definition.CreationContext;
 import com.bstek.dorado.config.definition.ObjectDefinition;
 import com.bstek.dorado.config.definition.Operation;
-import com.bstek.dorado.jdbc.config.JdbcCreationContext;
 import com.bstek.dorado.jdbc.model.AbstractDbColumn;
 import com.bstek.dorado.jdbc.model.Table;
 import com.bstek.dorado.jdbc.model.table.TableColumn;
@@ -26,7 +26,7 @@ public class TableParserTest extends AbstractParserTestCase{
 			assertEquals(3, columns.size());
 		}
 		
-		JdbcCreationContext creationContext = new JdbcCreationContext();
+		CreationContext creationContext = new CreationContext();
 		Table table = (Table)definition.create(creationContext);
 		{
 			assertNotNull(table);

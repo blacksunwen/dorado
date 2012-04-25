@@ -1,9 +1,6 @@
 package com.bstek.dorado.jdbc.support;
 
-import java.sql.DatabaseMetaData;
 import java.util.Map;
-
-import javax.sql.DataSource;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -23,11 +20,11 @@ import com.bstek.dorado.jdbc.sql.DeleteSql;
 import com.bstek.dorado.jdbc.sql.InsertSql;
 import com.bstek.dorado.jdbc.sql.RetrieveSql;
 import com.bstek.dorado.jdbc.sql.SelectSql;
-import com.bstek.dorado.jdbc.sql.UpdateSql;
 import com.bstek.dorado.jdbc.sql.SqlConstants.JoinOperator;
 import com.bstek.dorado.jdbc.sql.SqlConstants.KeyWord;
 import com.bstek.dorado.jdbc.sql.SqlConstants.NullsDirection;
 import com.bstek.dorado.jdbc.sql.SqlConstants.OrderDirection;
+import com.bstek.dorado.jdbc.sql.UpdateSql;
 import com.bstek.dorado.util.Assert;
 
 /**
@@ -229,32 +226,6 @@ public abstract class AbstractDialect implements Dialect {
 		}
 		
 		return null;
-	}
-	
-	private String defaultCatalog;
-	public String defaultCatalog(DataSource dataSource, DatabaseMetaData databaseMetaData) {
-		return defaultCatalog;
-	}
-	
-	private String defaultSchema;
-	public String defaultSchema(DataSource dataSource, DatabaseMetaData databaseMetaData) {
-		return defaultSchema;
-	}
-
-	public String getDefaultCatalog() {
-		return defaultCatalog;
-	}
-
-	public void setDefaultCatalog(String defaultCatalog) {
-		this.defaultCatalog = defaultCatalog;
-	}
-
-	public String getDefaultSchema() {
-		return defaultSchema;
-	}
-
-	public void setDefaultSchema(String defaultSchema) {
-		this.defaultSchema = defaultSchema;
 	}
 	
 }

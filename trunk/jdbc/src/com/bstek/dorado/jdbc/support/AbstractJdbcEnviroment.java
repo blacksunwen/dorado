@@ -14,7 +14,7 @@ import com.bstek.dorado.jdbc.config.JdbcEnviromentManager;
  */
 public abstract class AbstractJdbcEnviroment implements JdbcEnviroment, InitializingBean {
 
-	private String name;
+	private String name = "default";
 	private JdbcEnviromentManager manager;
 	private boolean isdefault = false;
 	private Dialect dialect;

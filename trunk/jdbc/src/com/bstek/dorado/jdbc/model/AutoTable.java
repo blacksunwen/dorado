@@ -13,7 +13,6 @@ import com.bstek.dorado.data.provider.Criteria;
 import com.bstek.dorado.jdbc.Dialect;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.JdbcParameterSource;
-import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.model.autotable.AutoTableColumn;
 import com.bstek.dorado.jdbc.model.autotable.AutoTableSelectSql;
 import com.bstek.dorado.jdbc.model.autotable.FromTable;
@@ -202,7 +201,7 @@ public class AutoTable extends AbstractTable {
 		//fromToken
 		StringBuilder fromToken = fromToken(autoTable, dialect);
 		//where
-		JdbcParameterSource parameterSource = SqlUtils.createJdbcParameter(JdbcUtils.getRealParameter(parameter));
+		JdbcParameterSource parameterSource = SqlUtils.createJdbcParameter(parameter);
 		StringBuilder whereToken = whereToken(autoTable, parameterSource);
 		//order
 		StringBuilder orderbyToken = orderByToken(autoTable, parameterSource, dialect);
@@ -216,7 +215,7 @@ public class AutoTable extends AbstractTable {
 		selectSql.setOrderToken(orderbyToken.toString());
 		
 		if (jdbcContext.isAutoFilter()) {
-			Criteria criteria = this.getCriteria(operation);
+			Criteria criteria = operation.getCriteria();
 			if (criteria != null) {
 				selectSql.setCriteria(criteria);
 			}

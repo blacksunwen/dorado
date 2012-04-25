@@ -8,8 +8,7 @@ import org.springframework.context.ApplicationContextAware;
 
 import com.bstek.dorado.core.EngineStartupListener;
 import com.bstek.dorado.data.config.DataConfigEngineStartupListener;
-import com.bstek.dorado.jdbc.config.DbmManager;
-import com.bstek.dorado.jdbc.support.DefaultKeyGeneratorManager;
+import com.bstek.dorado.jdbc.config.DbmDefinitionManager;
 
 /**
  * JDBC模块的启动器
@@ -20,24 +19,24 @@ import com.bstek.dorado.jdbc.support.DefaultKeyGeneratorManager;
 public class JdbcEngineStartupListener extends EngineStartupListener implements
 		ApplicationContextAware {
 
-	private static Log logger = LogFactory.getLog(DefaultKeyGeneratorManager.class);
+	private static Log logger = LogFactory.getLog(JdbcEngineStartupListener.class);
 	
 	private ApplicationContext ctx;
 
-	private DbmManager dbmManager;
+	private DbmDefinitionManager dbmDefinitionManager;
 	
 	private KeyGeneratorManager keyGeneratorManager;
 	
 	private JdbcTypeManager jdbcTypeManager;
 	
-	public DbmManager getDbmManager() {
-		return dbmManager;
+	public DbmDefinitionManager getDbmDefinitionManager() {
+		return dbmDefinitionManager;
 	}
 
-	public void setDbmManager(DbmManager dbmManager) {
-		this.dbmManager = dbmManager;
+	public void setDbmDefinitionManager(DbmDefinitionManager dbmDefinitionManager) {
+		this.dbmDefinitionManager = dbmDefinitionManager;
 	}
-	
+
 	public void setKeyGeneratorManager(KeyGeneratorManager keyGeneratorManager) {
 		this.keyGeneratorManager = keyGeneratorManager;
 	}
@@ -58,11 +57,11 @@ public class JdbcEngineStartupListener extends EngineStartupListener implements
 
 	@Override
 	public void onStartup() throws Exception {
-		dbmManager.refresh();
+		dbmDefinitionManager.refresh();
 		
 		logger.info(jdbcTypeManager.toString());
 		logger.info(keyGeneratorManager.toString());
-		logger.info(dbmManager.toString());
+		logger.info(dbmDefinitionManager.toString());
 	}
 	
 }

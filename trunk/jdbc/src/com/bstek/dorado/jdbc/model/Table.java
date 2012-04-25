@@ -14,7 +14,6 @@ import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.data.provider.Criteria;
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.Dialect;
-import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.model.table.KeyObject;
 import com.bstek.dorado.jdbc.model.table.TableColumn;
 import com.bstek.dorado.jdbc.model.table.TableKeyColumn;
@@ -184,10 +183,10 @@ public class Table extends AbstractTable {
 			selectSql.setParameter(keyParameter);
 		} else {
 			selectSql.setDynamicToken(this.getDynamicClause());
-			selectSql.setParameter(JdbcUtils.getRealParameter(parameter));
+			selectSql.setParameter(parameter);
 			
 			if (operation.getJdbcContext().isAutoFilter()) {
-				Criteria criteria = this.getCriteria(operation);
+				Criteria criteria = operation.getCriteria();
 				if (criteria != null) {
 					selectSql.setCriteria(criteria);
 				}

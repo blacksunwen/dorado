@@ -8,7 +8,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.config.definition.DefaultDefinitionManager;
 
-public abstract class AbstractDbmManager extends DefaultDefinitionManager<DbElementDefinition> implements DbmManager {
+public abstract class AbstractDbmDefinitionManager extends DefaultDefinitionManager<DbElementDefinition> implements DbmDefinitionManager {
 	private List<JdbcConfigLoader> configs = new ArrayList<JdbcConfigLoader>();
 
 	private JdbcEnviromentManager enviromentManager;

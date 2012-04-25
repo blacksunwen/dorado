@@ -25,7 +25,7 @@ import com.bstek.dorado.jdbc.ModelStrategy;
  * @author mark.li@bstek.com
  *
  */
-public class DefaultDbmManager extends AbstractDbmManager {
+public class DefaultDbmDefinitionManager extends AbstractDbmDefinitionManager {
 	private XmlParserHelper xmlParserHelper;
 	private XmlDocumentBuilder xmlDocumentBuilder;
 	private ModelStrategy modelStrategy;
@@ -101,7 +101,7 @@ public class DefaultDbmManager extends AbstractDbmManager {
 		try {
 			this.clearAllDefinitions();
 			
-			Resource[] resources = getDbmResources();
+			Resource[] resources = getResources();
 			this.loadResources(resources);
 		} finally {
 			onRefresh = false;
@@ -117,7 +117,7 @@ public class DefaultDbmManager extends AbstractDbmManager {
 	 * @return
 	 * @throws Exception
 	 */
-	private Resource[] getDbmResources() throws Exception {
+	private Resource[] getResources() throws Exception {
 		JdbcConfigLoader[] configs = getConfigs();
 		if (configs == null || configs.length == 0) {
 			return new Resource[0];
