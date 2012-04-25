@@ -5,7 +5,7 @@ import junit.framework.Assert;
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.TestJdbcUtils;
-import com.bstek.dorado.jdbc.model.table.Table;
+import com.bstek.dorado.jdbc.model.Table;
 
 public class TableTest extends AbstractOracle11JdbcTestCase {
 	

@@ -6,7 +6,7 @@ import com.bstek.dorado.config.definition.ObjectDefinition;
 import com.bstek.dorado.config.definition.Operation;
 import com.bstek.dorado.jdbc.config.JdbcCreationContext;
 import com.bstek.dorado.jdbc.model.AbstractDbColumn;
-import com.bstek.dorado.jdbc.model.table.Table;
+import com.bstek.dorado.jdbc.model.Table;
 import com.bstek.dorado.jdbc.model.table.TableColumn;
 import com.bstek.dorado.jdbc.model.table.TableKeyColumn;
 

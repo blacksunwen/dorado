@@ -1,4 +1,4 @@
-package com.bstek.dorado.jdbc.model.table;
+package com.bstek.dorado.jdbc.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,8 +15,10 @@ import com.bstek.dorado.data.provider.Criteria;
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.Dialect;
 import com.bstek.dorado.jdbc.JdbcUtils;
-import com.bstek.dorado.jdbc.model.AbstractDbColumn;
-import com.bstek.dorado.jdbc.model.AbstractTable;
+import com.bstek.dorado.jdbc.model.table.KeyObject;
+import com.bstek.dorado.jdbc.model.table.TableColumn;
+import com.bstek.dorado.jdbc.model.table.TableKeyColumn;
+import com.bstek.dorado.jdbc.model.table.TableSelectSql;
 import com.bstek.dorado.jdbc.sql.SelectSql;
 import com.bstek.dorado.jdbc.sql.SqlConstants.KeyWord;
 import com.bstek.dorado.jdbc.support.JdbcDataProviderOperation;

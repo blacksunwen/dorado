@@ -5,13 +5,9 @@ import java.util.Set;
 
 import junit.framework.Assert;
 
-import org.w3c.dom.Document;
-
 import com.bstek.dorado.core.Context;
 import com.bstek.dorado.data.variant.Record;
-import com.bstek.dorado.jdbc.config.DomHelper;
 import com.bstek.dorado.jdbc.config.JdbcEnviromentManager;
-import com.bstek.dorado.jdbc.support.DefaultStoredProcedureGenerator;
 
 public class TestJdbcUtils {
 	
@@ -28,15 +24,6 @@ public class TestJdbcUtils {
 	public static JdbcEnviromentManager getEnviromentManager() {
 		JdbcEnviromentManager manager = getServiceBean("jdbc.enviromentManager");
 		return manager;
-	}
-	
-	public static String outputSP(String jdbcEnvName, String catalog, String schema, String procedureName) {
-		JdbcEnviroment jdbcEnv = getEnviromentManager().getEnviroment(jdbcEnvName);
-		DefaultStoredProcedureGenerator generator = new DefaultStoredProcedureGenerator();
-		Document document = generator.create(jdbcEnv, catalog, schema, procedureName);
-		
-		String xml = DomHelper.toString(document);
-		return xml;
 	}
 	
 	public static boolean assertEquals(Record r1, Record r2) {

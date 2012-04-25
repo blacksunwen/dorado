@@ -7,9 +7,9 @@ import javax.sql.DataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.bstek.dorado.jdbc.model.autotable.AutoTable;
+import com.bstek.dorado.jdbc.model.AutoTable;
+import com.bstek.dorado.jdbc.model.Table;
 import com.bstek.dorado.jdbc.model.autotable.Order;
-import com.bstek.dorado.jdbc.model.table.Table;
 import com.bstek.dorado.jdbc.sql.DeleteAllSql;
 import com.bstek.dorado.jdbc.sql.DeleteSql;
 import com.bstek.dorado.jdbc.sql.InsertSql;

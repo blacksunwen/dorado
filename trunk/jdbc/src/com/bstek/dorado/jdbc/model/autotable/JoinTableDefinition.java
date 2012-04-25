@@ -3,6 +3,7 @@ package com.bstek.dorado.jdbc.model.autotable;
 import com.bstek.dorado.config.definition.CreationContext;
 import com.bstek.dorado.config.definition.ObjectDefinition;
 import com.bstek.dorado.config.definition.Operation;
+import com.bstek.dorado.jdbc.model.AutoTable;
 
 /**
  * 

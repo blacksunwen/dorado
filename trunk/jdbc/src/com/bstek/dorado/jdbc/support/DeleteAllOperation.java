@@ -3,7 +3,7 @@ package com.bstek.dorado.jdbc.support;
 import java.util.Map;
 
 import com.bstek.dorado.jdbc.JdbcEnviroment;
-import com.bstek.dorado.jdbc.model.table.Table;
+import com.bstek.dorado.jdbc.model.Table;
 
 public class DeleteAllOperation extends AbstractDbTableOperation<DefaultJdbcContext, Table> {
 

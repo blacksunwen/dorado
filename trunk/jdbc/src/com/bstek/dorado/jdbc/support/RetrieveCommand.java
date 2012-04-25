@@ -12,7 +12,7 @@ import com.bstek.dorado.jdbc.Dialect;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.JdbcParameterSource;
 import com.bstek.dorado.jdbc.model.AbstractDbColumn;
-import com.bstek.dorado.jdbc.model.table.Table;
+import com.bstek.dorado.jdbc.model.Table;
 import com.bstek.dorado.jdbc.model.table.TableKeyColumn;
 import com.bstek.dorado.jdbc.sql.RecordRowMapper;
 import com.bstek.dorado.jdbc.sql.RetrieveSql;

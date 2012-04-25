@@ -1,4 +1,4 @@
-package com.bstek.dorado.jdbc.model.autotable;
+package com.bstek.dorado.jdbc.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,10 +14,12 @@ import com.bstek.dorado.jdbc.Dialect;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.JdbcParameterSource;
 import com.bstek.dorado.jdbc.JdbcUtils;
-import com.bstek.dorado.jdbc.model.AbstractDbColumn;
-import com.bstek.dorado.jdbc.model.AbstractTable;
-import com.bstek.dorado.jdbc.model.AbstractUpdatableColumn;
-import com.bstek.dorado.jdbc.model.table.Table;
+import com.bstek.dorado.jdbc.model.autotable.AutoTableColumn;
+import com.bstek.dorado.jdbc.model.autotable.AutoTableSelectSql;
+import com.bstek.dorado.jdbc.model.autotable.FromTable;
+import com.bstek.dorado.jdbc.model.autotable.JoinTable;
+import com.bstek.dorado.jdbc.model.autotable.JunctionMatchRule;
+import com.bstek.dorado.jdbc.model.autotable.Order;
 import com.bstek.dorado.jdbc.sql.SelectSql;
 import com.bstek.dorado.jdbc.sql.SqlBuilder;
 import com.bstek.dorado.jdbc.sql.SqlConstants.JoinOperator;
@@ -41,31 +43,6 @@ import com.bstek.dorado.util.Assert;
 			propertyName = "Jdbc_AutoTableColumns",
 			propertyType = "List<com.bstek.dorado.jdbc.model.autotable.AutoTableColumn>"
 		)
-//		,
-//		@XmlSubNode(
-//			wrapper = @XmlNodeWrapper(nodeName="FromTables", fixed = true),
-//			propertyName = "fromTables",
-//			propertyType = "List<com.bstek.dorado.jdbc.model.autotable.FromTable>"
-//		)
-//		,
-//		@XmlSubNode(
-//			wrapper = @XmlNodeWrapper(nodeName = "JoinTables"),
-//			propertyName = "joinTables",
-//			propertyType = "List<com.bstek.dorado.jdbc.model.autotable.JoinTable>"
-//		)
-//		,
-//		@XmlSubNode(
-//			wrapper = @XmlNodeWrapper(nodeName = "Orders"),
-//			propertyName = "orders",
-//			propertyType = "List<com.bstek.dorado.jdbc.model.autotable.Order>"
-//		)
-//		,
-//		@XmlSubNode(
-//			nodeName="Where",
-//			propertyName="where",
-//			propertyType="com.bstek.dorado.jdbc.model.autotable.JunctionMatchRule",
-//			fixed=true
-//		)
 	}
 )
 public class AutoTable extends AbstractTable {
@@ -109,7 +86,7 @@ public class AutoTable extends AbstractTable {
 	}
 
 	@XmlSubNode(
-		wrapper = @XmlNodeWrapper(nodeName = "JoinTables")
+		wrapper = @XmlNodeWrapper(nodeName = "JoinTables", fixed=true)
 	)
 	public List<JoinTable> getJoinTables() {
 		return joinTables;

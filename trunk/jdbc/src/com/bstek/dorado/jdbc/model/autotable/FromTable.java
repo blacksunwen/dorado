@@ -3,7 +3,7 @@ package com.bstek.dorado.jdbc.model.autotable;
 import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.jdbc.JdbcUtils;
-import com.bstek.dorado.jdbc.model.table.Table;
+import com.bstek.dorado.jdbc.model.Table;
 import com.bstek.dorado.util.Assert;
 
 /**
