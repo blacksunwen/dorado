@@ -14,7 +14,6 @@ public class H2Dialect extends AbstractDialect {
 
 	public H2Dialect() {
 		super();
-		this.setDefaultSchema("PUBLIC");
 	}
 	
 	public boolean isNarrowSupport() {

@@ -1,5 +1,6 @@
 package com.bstek.dorado.jdbc.support;
 
+import com.bstek.dorado.data.provider.Criteria;
 import com.bstek.dorado.jdbc.model.DbTable;
 
 /**
@@ -29,4 +30,12 @@ public class JdbcDataProviderOperation extends
 		}
 	}
 	
+	public Criteria getCriteria() {
+		JdbcDataProviderContext ctx = this.getJdbcContext();
+		if (ctx != null) {
+			return ctx.getCriteria();
+		} else {
+			return null;
+		}
+	}
 }

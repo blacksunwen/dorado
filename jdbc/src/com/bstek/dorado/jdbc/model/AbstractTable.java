@@ -9,13 +9,10 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.annotation.XmlProperty;
-import com.bstek.dorado.data.ParameterWrapper;
 import com.bstek.dorado.data.entity.EntityState;
 import com.bstek.dorado.data.entity.EntityUtils;
-import com.bstek.dorado.data.provider.Criteria;
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.DbTableTrigger;
-import com.bstek.dorado.jdbc.support.JdbcDataProviderOperation;
 import com.bstek.dorado.jdbc.support.JdbcDataResolverContext;
 import com.bstek.dorado.jdbc.support.JdbcRecordOperation;
 import com.bstek.dorado.jdbc.support.JdbcRecordOperationProxy;
@@ -116,21 +113,6 @@ public abstract class AbstractTable extends AbstractDbElement implements DbTable
 		}
 		
 		return false;
-	}
-	
-	protected Criteria getCriteria(JdbcDataProviderOperation operation) {
-		Object parameter = operation.getParameter();
-		if (parameter instanceof ParameterWrapper) {
-			ParameterWrapper pw = (ParameterWrapper)parameter;
-			Map<String, Object> sysParameter = pw.getSysParameter();
-			
-			if (sysParameter instanceof Record) {
-				Record paraRecord = (Record)sysParameter;
-				return (Criteria)paraRecord.get("criteria");
-			}
-		}
-		
-		return null;
 	}
 
 }

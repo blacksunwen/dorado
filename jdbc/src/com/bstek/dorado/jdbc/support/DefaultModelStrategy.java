@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.bstek.dorado.config.definition.CreationContext;
 import com.bstek.dorado.data.config.definition.DataProviderDefinition;
 import com.bstek.dorado.data.config.definition.DataProviderDefinitionManager;
 import com.bstek.dorado.data.config.definition.DataTypeDefinition;
@@ -17,7 +18,6 @@ import com.bstek.dorado.data.type.property.BasePropertyDef;
 import com.bstek.dorado.jdbc.JdbcDataProvider;
 import com.bstek.dorado.jdbc.ModelStrategy;
 import com.bstek.dorado.jdbc.config.AbstractDbTableDefinition;
-import com.bstek.dorado.jdbc.config.JdbcCreationContext;
 import com.bstek.dorado.jdbc.config.XmlConstants;
 import com.bstek.dorado.jdbc.model.AbstractDbColumn;
 import com.bstek.dorado.jdbc.model.DbTable;
@@ -90,7 +90,7 @@ public class DefaultModelStrategy implements ModelStrategy {
 	
 	protected DataTypeDefinition createDataTypeDefinition(
 			AbstractDbTableDefinition tableDef) {
-		JdbcCreationContext context = new JdbcCreationContext();
+		CreationContext context = new CreationContext();
 		DbTable table = null;
 		try {
 			table = (DbTable)tableDef.create(context);

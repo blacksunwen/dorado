@@ -7,7 +7,7 @@ import com.bstek.dorado.config.ParseContext;
 import com.bstek.dorado.config.definition.DefaultDefinitionReference;
 import com.bstek.dorado.config.xml.PropertyParser;
 import com.bstek.dorado.jdbc.config.DbElementDefinition;
-import com.bstek.dorado.jdbc.config.DbmManager;
+import com.bstek.dorado.jdbc.config.DbmDefinitionManager;
 
 /**
  * 
@@ -16,14 +16,14 @@ import com.bstek.dorado.jdbc.config.DbmManager;
  */
 public class TableReferenceParser extends PropertyParser{
 
-	private DbmManager dbmManager;
+	private DbmDefinitionManager dbmDefinitionManager;
 	
-	public DbmManager getDbmManager() {
-		return dbmManager;
+	public DbmDefinitionManager getDbmDefinitionManager() {
+		return dbmDefinitionManager;
 	}
 
-	public void setDbmManager(DbmManager dbmManager) {
-		this.dbmManager = dbmManager;
+	public void setDbmDefinitionManager(DbmDefinitionManager dbmDefinitionManager) {
+		this.dbmDefinitionManager = dbmDefinitionManager;
 	}
 
 	@Override
@@ -31,7 +31,7 @@ public class TableReferenceParser extends PropertyParser{
 		String elementName = (String)super.doParse(node, context);
 		if (StringUtils.isNotEmpty(elementName)) {
 			DefaultDefinitionReference<DbElementDefinition> defRef = 
-					new DefaultDefinitionReference<DbElementDefinition>(dbmManager, elementName);
+					new DefaultDefinitionReference<DbElementDefinition>(getDbmDefinitionManager(), elementName);
 			return defRef;
 		} else {
 			return null;

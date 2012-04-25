@@ -17,9 +17,9 @@ import com.bstek.dorado.core.io.Resource;
  *
  */
 @XmlNode(
-	parser = "spring:dorado.jdbc.dbmParser",
+	parser = "spring:dorado.jdbc.dbModelParser",
 	subNodes = {
-		@XmlSubNode(propertyType="List<com.bstek.dorado.jdbc.model.DbElement>")
+		@XmlSubNode(propertyType="List<com.bstek.dorado.jdbc.model.AbstractDbElement>")
 	}
 )
 public class DbModel {

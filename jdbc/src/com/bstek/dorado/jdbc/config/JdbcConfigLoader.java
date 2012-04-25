@@ -20,14 +20,14 @@ public class JdbcConfigLoader implements InitializingBean{
 
 	private List<String> configLocations;
 	
-	private DbmManager dbmManager;
+	private DbmDefinitionManager dbmDefinitionManager;
 	
-	public DbmManager getDbmManager() {
-		return dbmManager;
+	public DbmDefinitionManager getDbmDefinitionManager() {
+		return dbmDefinitionManager;
 	}
 
-	public void setDbmManager(DbmManager dbmManager) {
-		this.dbmManager = dbmManager;
+	public void setDbmDefinitionManager(DbmDefinitionManager dbmDefinitionManager) {
+		this.dbmDefinitionManager = dbmDefinitionManager;
 	}
 
 	public String getConfigLocation() {
@@ -47,7 +47,7 @@ public class JdbcConfigLoader implements InitializingBean{
 	}
 
 	public void afterPropertiesSet() throws Exception {
-		dbmManager.register(this);
+		getDbmDefinitionManager().register(this);
 	}
 
 }

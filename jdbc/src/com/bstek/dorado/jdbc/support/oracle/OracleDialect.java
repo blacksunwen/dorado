@@ -1,10 +1,5 @@
 package com.bstek.dorado.jdbc.support.oracle;
 
-import java.sql.DatabaseMetaData;
-import java.sql.SQLException;
-
-import javax.sql.DataSource;
-
 import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.jdbc.JdbcSpace;
@@ -51,20 +46,6 @@ public class OracleDialect extends AbstractDialect {
 
 	public String sequenceSql(String sequenceName) {
 		return "SELECT " + sequenceName + ".NEXTVAL FROM DUAL";
-	}
-
-	@Override
-	public String defaultSchema(DataSource dataSource,
-			DatabaseMetaData databaseMetaData) {
-		String schema = super.defaultSchema(dataSource, databaseMetaData);
-		if (schema == null) {
-			try {
-				schema = databaseMetaData.getUserName();
-			} catch (SQLException e) {
-				throw new RuntimeException();
-			}
-		}
-		return schema;
 	}
 
 	public JdbcSpace getTableJdbcSpace() {

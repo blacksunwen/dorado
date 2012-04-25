@@ -2,6 +2,7 @@ package com.bstek.dorado.jdbc;
 
 import java.util.Map;
 
+import com.bstek.dorado.config.definition.CreationContext;
 import com.bstek.dorado.core.Context;
 import com.bstek.dorado.data.ParameterWrapper;
 import com.bstek.dorado.data.entity.EntityState;
@@ -9,8 +10,7 @@ import com.bstek.dorado.data.entity.EntityUtils;
 import com.bstek.dorado.data.provider.Criteria;
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.config.DbElementDefinition;
-import com.bstek.dorado.jdbc.config.DbmManager;
-import com.bstek.dorado.jdbc.config.JdbcCreationContext;
+import com.bstek.dorado.jdbc.config.DbmDefinitionManager;
 import com.bstek.dorado.jdbc.model.DbTable;
 import com.bstek.dorado.util.Assert;
 
@@ -32,8 +32,8 @@ public final class JdbcUtils {
 	 */
 	public static <T extends DbTable> T getDbTable(String tableName) {
 		Assert.notEmpty(tableName, "name of DbTable must not be null.");
-		DbElementDefinition definition = getDbmManager().getDefinition(tableName);
-		JdbcCreationContext context = new JdbcCreationContext();
+		DbElementDefinition definition = getDbmDefinitionManager().getDefinition(tableName);
+		CreationContext context = new CreationContext();
 		
 		try {
 			@SuppressWarnings("unchecked")
@@ -44,6 +44,12 @@ public final class JdbcUtils {
 		}
 	}
 	
+	/**
+	 * 对记录加工，使其具有相应的状态
+	 * @param record
+	 * @param state
+	 * @return
+	 */
 	public static Record getRecordWithState(Record record, EntityState state) {
 		if (!EntityUtils.isEntity(record)) {
 			try {
@@ -56,6 +62,11 @@ public final class JdbcUtils {
 		return record;
 	}
 	
+	/**
+	 * 从前台参数中获取自动过滤条件
+	 * @param parameter
+	 * @return
+	 */
 	public static com.bstek.dorado.data.provider.Criteria getFilterCriteria(Object parameter) {
 		if (parameter instanceof ParameterWrapper) {
 			ParameterWrapper pw = (ParameterWrapper)parameter;
@@ -70,6 +81,11 @@ public final class JdbcUtils {
 		return null;
 	}
 	
+	/**
+	 * 从前台参数中获取查询参数
+	 * @param parameter
+	 * @return
+	 */
 	public static Object getRealParameter(Object parameter) {
 		if (parameter != null) {
 			if (parameter instanceof ParameterWrapper) {
@@ -90,41 +106,12 @@ public final class JdbcUtils {
 		}
 	}
 	
-	private static DbmManager dbmManager = null;
-	private static DbmManager getDbmManager() {
-		if (dbmManager == null) {
-			dbmManager = (DbmManager)getServiceBean("jdbc.dbmManager");
+	private static DbmDefinitionManager dbmDefinitionManager = null;
+	private static DbmDefinitionManager getDbmDefinitionManager() {
+		if (dbmDefinitionManager == null) {
+			dbmDefinitionManager = (DbmDefinitionManager)getServiceBean("jdbc.dbmDefinitionManager");
 		}
-		return dbmManager;
+		return dbmDefinitionManager;
 	}
-	
-//	public static StoredProgram getStoredProgram(String spName) {
-//		Assert.notEmpty(spName, "name of StoredProgram must not be null.");
-//		DbElementDefinition definition = JdbcUtils.getDbmManager().getDefinition(spName);
-//		JdbcCreationContext context = new JdbcCreationContext();
-//		
-//		try {
-//			StoredProgram dbElement = (StoredProgram)definition.create(context);
-//			return dbElement;
-//		} catch (Exception e) {
-//			throw new RuntimeException(e);
-//		}
-//	}
-	
-//	public static Object call(String spName, Object parameter) {
-//		StoredProgram sp = null;
-//		StoredProgramContext spContext = new StoredProgramContext(null, parameter);
-//		StoredProgramOperation operation = new StoredProgramOperation(sp, spContext);
-//		operation.execute();
-//		
-//		return spContext.getReturnValue();
-//	}
-//	
-//	public static Object call(StoredProgram sp, Object parameter) {
-//		StoredProgramContext spContext = new StoredProgramContext(null, parameter);
-//		StoredProgramOperation operation = new StoredProgramOperation(sp, spContext);
-//		operation.execute();
-//		
-//		return spContext.getReturnValue();
-//	}
+
 }

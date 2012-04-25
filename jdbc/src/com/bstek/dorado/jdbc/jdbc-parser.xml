@@ -24,10 +24,10 @@
 		<property name="keyGeneratorManager" ref="dorado.jdbc.keyGeneratorManager"/>
 	</bean>
 	<bean id="dorado.jdbc.tableReferenceParser" class="com.bstek.dorado.jdbc.model.table.TableReferenceParser" parent="dorado.propertyParser">
-		<property name="dbmManager" ref="dorado.jdbc.dbmManager"/>
+		<property name="dbmDefinitionManager" ref="dorado.jdbc.dbmDefinitionManager"/>
 	</bean>
 
-	<bean id="dorado.jdbc.dbmParser" class="com.bstek.dorado.jdbc.config.DbModelParser" parent="dorado.objectParser">
+	<bean id="dorado.jdbc.dbModelParser" class="com.bstek.dorado.jdbc.config.DbModelParser" parent="dorado.objectParser">
 		<property name="enviromentManager" ref="dorado.jdbc.enviromentManager"/>
 	</bean>
 	

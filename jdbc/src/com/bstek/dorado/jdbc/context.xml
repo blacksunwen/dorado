@@ -21,7 +21,7 @@
 		<property name="classType" value="com.bstek.dorado.jdbc.JdbcDataResolver" />
 	</bean>
 	<bean id="dorado.jdbc.jdbcEngineStartupListener" class="com.bstek.dorado.jdbc.JdbcEngineStartupListener">
-		<property name="dbmManager" ref="dorado.jdbc.dbmManager"/>
+		<property name="dbmDefinitionManager" ref="dorado.jdbc.dbmDefinitionManager"/>
 		<property name="keyGeneratorManager" ref="dorado.jdbc.keyGeneratorManager"/>
 		<property name="jdbcTypeManager" ref="dorado.jdbc.jdbcTypeManager"/>
 	</bean>
@@ -29,7 +29,7 @@
 	<!-- Jdbc Components -->
 	<bean id="dorado.jdbcAgent" class="com.bstek.dorado.jdbc.ide.DefaultAgent"/>
 	<bean id="dorado.jdbc.enviromentManager" class="com.bstek.dorado.jdbc.config.DefaultJdbcEnviromentManager"/>
-	<bean id="dorado.jdbc.dbmManager" class="com.bstek.dorado.jdbc.config.DefaultDbmManager">
+	<bean id="dorado.jdbc.dbmDefinitionManager" class="com.bstek.dorado.jdbc.config.DefaultDbmDefinitionManager">
 		<property name="xmlDocumentBuilder" ref="dorado.xmlDocumentBuilder" />
 		<property name="xmlParserHelper" ref="dorado.xmlParserHelper"/>
 		<property name="modelStrategy" ref="dorado.jdbc.modelStrategy"/>
@@ -49,7 +49,7 @@
 	
 	<!-- Template -->
 	<bean id="dorado.jdbcConfigLoader" class="com.bstek.dorado.jdbc.config.JdbcConfigLoader" abstract="true">
-		<property name="dbmManager" ref="dorado.jdbc.dbmManager"/>
+		<property name="dbmDefinitionManager" ref="dorado.jdbc.dbmDefinitionManager"/>
 	</bean>
 	<bean id="dorado.jdbcEnvTemplate" class="com.bstek.dorado.jdbc.support.DefaultJdbcEnviroment" abstract="true">
 		<property name="manager" ref="dorado.jdbc.enviromentManager"/>

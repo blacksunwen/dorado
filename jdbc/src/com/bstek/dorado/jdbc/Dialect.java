@@ -1,9 +1,5 @@
 package com.bstek.dorado.jdbc;
 
-import java.sql.DatabaseMetaData;
-
-import javax.sql.DataSource;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -142,22 +138,6 @@ public interface Dialect {
 	boolean execute(JdbcRecordOperation operation) throws Exception;
 	
 	boolean execute(DeleteAllOperation operation) throws Exception;
-	
-	/**
-	 * 默认的数据库catalog，用于IDE
-	 * @param dataSource
-	 * @param databaseMetaData
-	 * @return
-	 */
-	String defaultCatalog(DataSource dataSource, DatabaseMetaData databaseMetaData);
-	
-	/**
-	 * 默认的数据库catalog，用于IDE
-	 * @param dataSource
-	 * @param databaseMetaData
-	 * @return
-	 */
-	String defaultSchema(DataSource dataSource, DatabaseMetaData databaseMetaData);
 	
 	/**
 	 * 获取Table所在的空间类型
