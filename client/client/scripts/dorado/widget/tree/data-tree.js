@@ -604,6 +604,11 @@ dorado.widget.DataTree = $extend([dorado.widget.Tree, dorado.widget.DataControl]
 	},
 
 	refresh: function() {
+		var bindingConfigs = this.get("bindingConfigs");
+		if (!bindingConfigs || !bindingConfigs.length) {
+			throw new dorado.Exception("DataTree " + this._id + ".bindingConfigs is undefined.");
+		}
+		
 		if (this._dataSet) {
 			var data = this.getBindingData({
 				firstResultOnly: true,
