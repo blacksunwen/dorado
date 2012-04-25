@@ -7,8 +7,8 @@ import org.junit.Test;
 
 import com.bstek.dorado.jdbc.ide.DefaultAgent;
 import com.bstek.dorado.jdbc.ide.IAgent;
-import com.bstek.dorado.jdbc.model.sqltable.SqlTable;
-import com.bstek.dorado.jdbc.model.table.Table;
+import com.bstek.dorado.jdbc.model.SqlTable;
+import com.bstek.dorado.jdbc.model.Table;
 
 public class AgentTest {
 	

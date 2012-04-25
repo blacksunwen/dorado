@@ -16,8 +16,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
-import com.bstek.dorado.jdbc.model.sqltable.SqlTable;
-import com.bstek.dorado.jdbc.model.table.Table;
+import com.bstek.dorado.jdbc.model.SqlTable;
+import com.bstek.dorado.jdbc.model.Table;
 
 /**
  * 

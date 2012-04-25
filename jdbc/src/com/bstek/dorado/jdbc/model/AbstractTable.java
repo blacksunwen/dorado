@@ -15,7 +15,6 @@ import com.bstek.dorado.data.entity.EntityUtils;
 import com.bstek.dorado.data.provider.Criteria;
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.DbTableTrigger;
-import com.bstek.dorado.jdbc.model.table.Table;
 import com.bstek.dorado.jdbc.support.JdbcDataProviderOperation;
 import com.bstek.dorado.jdbc.support.JdbcDataResolverContext;
 import com.bstek.dorado.jdbc.support.JdbcRecordOperation;

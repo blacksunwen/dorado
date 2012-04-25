@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import javax.sql.DataSource;
 
 import com.bstek.dorado.jdbc.JdbcSpace;
-import com.bstek.dorado.jdbc.model.autotable.AutoTable;
+import com.bstek.dorado.jdbc.model.AutoTable;
 import com.bstek.dorado.jdbc.sql.SelectSql;
 import com.bstek.dorado.jdbc.sql.SqlConstants.JoinOperator;
 import com.bstek.dorado.jdbc.support.AbstractDialect;

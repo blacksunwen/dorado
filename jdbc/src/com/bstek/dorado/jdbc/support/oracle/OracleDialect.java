@@ -8,7 +8,7 @@ import javax.sql.DataSource;
 import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.jdbc.JdbcSpace;
-import com.bstek.dorado.jdbc.model.table.Table;
+import com.bstek.dorado.jdbc.model.Table;
 import com.bstek.dorado.jdbc.sql.SelectSql;
 import com.bstek.dorado.jdbc.support.AbstractDialect;
 import com.bstek.dorado.jdbc.support.JdbcConstants;

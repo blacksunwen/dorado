@@ -2,6 +2,7 @@ package com.bstek.dorado.jdbc.model.table;
 
 import java.util.List;
 
+import com.bstek.dorado.jdbc.model.Table;
 import com.bstek.dorado.util.Assert;
 
 public class KeyObject {

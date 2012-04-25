@@ -1,4 +1,4 @@
-package com.bstek.dorado.jdbc.model.sqltable;
+package com.bstek.dorado.jdbc.model;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -8,9 +8,8 @@ import com.bstek.dorado.annotation.XmlNodeWrapper;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.data.provider.Criteria;
 import com.bstek.dorado.jdbc.JdbcUtils;
-import com.bstek.dorado.jdbc.model.AbstractDbColumn;
-import com.bstek.dorado.jdbc.model.AbstractTable;
-import com.bstek.dorado.jdbc.model.table.Table;
+import com.bstek.dorado.jdbc.model.sqltable.SqlSelectSql;
+import com.bstek.dorado.jdbc.model.sqltable.SqlTableColumn;
 import com.bstek.dorado.jdbc.sql.SelectSql;
 import com.bstek.dorado.jdbc.support.JdbcDataProviderOperation;
 

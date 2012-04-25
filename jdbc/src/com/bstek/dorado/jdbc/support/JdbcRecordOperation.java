@@ -2,7 +2,7 @@ package com.bstek.dorado.jdbc.support;
 
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
-import com.bstek.dorado.jdbc.model.table.Table;
+import com.bstek.dorado.jdbc.model.Table;
 
 /**
  * {@link com.bstek.dorado.jdbc.JdbcDataResolver}对应的数据库操作

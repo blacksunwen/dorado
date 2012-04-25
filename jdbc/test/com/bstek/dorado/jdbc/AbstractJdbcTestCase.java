@@ -60,7 +60,7 @@ public abstract class AbstractJdbcTestCase extends ConfigManagerTestSupport {
 			DbTable table = JdbcUtils.getDbTable(getTableName());
 			JdbcDataProviderOperation operation = new JdbcDataProviderOperation(table, jCtx);
 			
-			return jCtx.getJdbcEnviroment().getJdbcDao().query(operation);
+			return operation.getJdbcEnviroment().getJdbcDao().query(operation);
 		}
 	}
 	
