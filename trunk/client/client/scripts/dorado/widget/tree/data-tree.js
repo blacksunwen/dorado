@@ -244,27 +244,6 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 				}
 			}
 
-			function setPreloadConfigs(entity, property, preloadConfig) {
-				if (entity.dataType) {
-					var propertyDef = entity.dataType.getPropertyDef(property);
-					if (propertyDef) {
-						var sysParameter = propertyDef._sysParameter;
-						if (!sysParameter) propertyDef._sysParameter = sysParameter = new dorado.util.Map();
-						sysParameter.put("preloadConfig", preloadConfig);
-					}
-				}
-			}
-			
-			function clearPreloadConfigs(entity, property) {
-				if (entity.dataType) {
-					var propertyDef = entity.dataType.getPropertyDef(property);
-					if (propertyDef) {
-						var sysParameter = propertyDef._sysParameter;
-						if (sysParameter) sysParameter.remove("preloadConfig");
-					}
-				}
-			}
-
 			var tree = this._tree, nodes = this._nodes, expandedNodes = {}, currentNode = tree.get("currentNode");
 			if (currentNode && currentNode._parent == this) tree.set("currentNode", this);
 			
@@ -285,6 +264,27 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 				startIndex++;
 			}
 			return startIndex;
+		}
+
+		function setPreloadConfigs(entity, property, preloadConfig) {
+			if (entity.dataType) {
+				var propertyDef = entity.dataType.getPropertyDef(property);
+				if (propertyDef) {
+					var sysParameter = propertyDef._sysParameter;
+					if (!sysParameter) propertyDef._sysParameter = sysParameter = new dorado.util.Map();
+					sysParameter.put("preloadConfig", preloadConfig);
+				}
+			}
+		}
+		
+		function clearPreloadConfigs(entity, property) {
+			if (entity.dataType) {
+				var propertyDef = entity.dataType.getPropertyDef(property);
+				if (propertyDef) {
+					var sysParameter = propertyDef._sysParameter;
+					if (sysParameter) sysParameter.remove("preloadConfig");
+				}
+			}
 		}
 
 		this._childrenPrepared = true;

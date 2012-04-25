@@ -19,7 +19,9 @@ import com.bstek.dorado.view.widget.list.RowList;
 		@ClientEvent(name = "onRenderCell"),
 		@ClientEvent(name = "onRenderHeaderCell"),
 		@ClientEvent(name = "onRenderFooterCell"),
-		@ClientEvent(name = "onHeaderClick") })
+		@ClientEvent(name = "onHeaderClick"),
+		@ClientEvent(name = "beforeCellValueEdit"),
+		@ClientEvent(name = "onCellValueEdit") })
 public abstract class GridSupport extends RowList implements ColumnHolder {
 	private int fixedColumnCount;
 	private boolean readOnly;
