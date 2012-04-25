@@ -618,6 +618,7 @@
 						var propertyDef = parentDataType.getPropertyDef(subProperty);
 						if (propertyDef && propertyDef instanceof dorado.Reference) {
 							return {
+								propertyDef: propertyDef,
 								parentEntity: parentEntity,
 								subProperty: subProperty
 							};
@@ -632,6 +633,7 @@
 				var dataSet = this._dataSet;
 				if (!dataSet) return;
 				
+				var criterions;
 				if (filterParams === undefined) {
 					var filterEntity = this._itemModel.filterEntity, criterions = [];
 					var dataColumns = this._columnsInfo.dataColumns;
@@ -657,29 +659,31 @@
 						}
 					}
 				}
+				else {
+					criterions = filterParams;
+				}
 				
-				var parentEntity, subProperty;
+				var parentEntityInfo, hostObject;
 				if (this._dataPath) {
-					var parentEntityInfo = this._getParentEntityInfo();
-					if (parentEntityInfo) {
-						parentEntity = parentEntityInfo.parentEntity;
-						subProperty = parentEntityInfo.subProperty;
-					} else {
+					parentEntityInfo = this._getParentEntityInfo();
+					if (!parentEntityInfo) {
 						throw new dorado.Exception("Can not perform server side filter on DataPath \"" + this._dataPath + "\"");
 					}
+					hostObject = parentEntityInfo.propertyDef;
+				}
+				else {
+					hostObject = dataSet;
 				}
 				
-				var criteria = this._criteria || {};
+				var sysParameter = hostObject._sysParameter;
+				if (!sysParameter) hostObject._sysParameter = sysParameter = new dorado.util.Map(); 
+				var criteria = sysParameter.get("criteria") || {};
 				criteria.criterions = criterions;
-				
 				if (!(criteria.criterions || criteria.criterions.length || criteria.orders || criteria.orders.length)) criteria = null;
-				this._criteria = criteria;
-				if (criteria) {
-					dorado.Toolkits.getSysParameter().put("criteria", criteria);
-				}
+				sysParameter.put("criteria", criteria);
 				
-				if (parentEntity && subProperty) {
-					parentEntity.reset(subProperty);
+				if (parentEntityInfo) {
+					parentEntityInfo.parentEntity.reset(parentEntityInfo.subProperty);
 				} else {
 					dataSet.flushAsync();
 				}
@@ -694,18 +698,21 @@
 				var dataSet = this._dataSet;
 				if (!dataSet) return;
 				
-				var parentEntity, subProperty;
+				var parentEntityInfo, hostObject;
 				if (this._dataPath) {
-					var parentEntityInfo = this._getParentEntityInfo();
-					if (parentEntityInfo) {
-						parentEntity = parentEntityInfo.parentEntity;
-						subProperty = parentEntityInfo.subProperty;
-					} else {
+					parentEntityInfo = this._getParentEntityInfo();
+					if (!parentEntityInfo) {
 						throw new dorado.Exception("Can not perform server side sort on DataPath \"" + this._dataPath + "\"");
 					}
+					hostObject = parentEntityInfo.propertyDef;
+				}
+				else {
+					hostObject = dataSet;
 				}
 				
-				var orders, criteria = this._criteria || {};
+				var sysParameter = hostObject._sysParameter;
+				if (sysParameter) hostObject._sysParameter = sysParameter = new dorado.util.Map(); 
+				var criteria = sysParameter.get("criteria") || {};
 				if (column) {
 					criteria.orders = orders = [{
 						property: column.get("property"),
@@ -714,11 +721,13 @@
 				} else if (parameter instanceof dorado.util.Map) {
 					delete criteria.orders;
 				}
-				
 				if (!(criteria.criterions || criteria.criterions.length || criteria.orders || criteria.orders.length)) criteria = null;
-				this._criteria = criteria;
-				if (criteria) {
-					dorado.Toolkits.getSysParameter().put("criteria", criteria);
+				sysParameter.put("criteria", criteria);
+				
+				if (parentEntityInfo) {
+					parentEntityInfo.parentEntity.reset(parentEntityInfo.subProperty);
+				} else {
+					dataSet.flushAsync();
 				}
 				
 				var dataColumns = this._columnsInfo.dataColumns, grid = this;
@@ -739,9 +748,9 @@
 					grid._skipClearSortFlags = true;
 				}
 				
-				if (parentEntity && subProperty) {
-					parentEntity.reset(subProperty);
-					parentEntity.getAsync(subProperty, setSortFlags);
+				if (parentEntityInfo) {
+					parentEntityInfo.parentEntity.reset(parentEntityInfo.subProperty);
+					parentEntityInfo.parentEntity.getAsync(parentEntityInfo.subProperty, setSortFlags);
 				} else {
 					dataSet.flushAsync(setSortFlags);
 				}

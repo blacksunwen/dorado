@@ -78,6 +78,7 @@
 				action : "remote-service",
 				service : this._service,
 				parameter : dorado.JSON.evaluate(this._parameter),
+				sysParameter : this._sysParameter ? this._sysParameter.toJSON() : undefined,
 				context : (this._view ? this._view.get("context") : null)
 			};
 			if(this._supportsEntity) {
@@ -631,6 +632,7 @@
 				dataResolverArg : {
 					dataItems : dataItems,
 					parameter : this._parameter,
+					sysParameter : this._sysParameter ? this._sysParameter.toJSON() : undefined,
 					view : this._view
 				},
 				hasUpdateData : hasUpdateData

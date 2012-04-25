@@ -83,7 +83,8 @@
 				supportsEntity: this.supportsEntity
 			};
 			if (arg) {
-				jsonData.parameter = dorado.JSON.evaluate(arg.parameter);
+				jsonData.parameter = arg.parameter;
+				jsonData.sysParameter = arg.sysParameter;
 				if (arg.dataType) {
 					var dataType = arg.dataType;
 					if (dataType instanceof dorado.DataType) dataType = dataType.get("id");
@@ -94,10 +95,6 @@
 				jsonData.pageSize = arg.pageSize;
 				jsonData.pageNo = arg.pageNo;
 				jsonData.context = arg.view ? arg.view.get("context") : null;
-			}
-			if (!dorado.Toolkits.getSysParameter().isEmpty()) {
-				jsonData.sysParameter = dorado.Toolkits.getSysParameter().toJSON();
-				dorado.Toolkits.getSysParameter().clear();
 			}
 			if (this.supportsEntity && this.dataTypeRepository) {
 				jsonData.loadedDataTypes = this.dataTypeRepository.getLoadedDataTypes();
@@ -122,10 +119,12 @@
 			if (data instanceof dorado.EntityList) {
 				data.dataProvider = this;
 				data.parameter = ajaxOptions.jsonData.parameter;
+				data.sysParameter = ajaxOptions.jsonData.sysParameter;
 				data.pageSize = ajaxOptions.jsonData.pageSize;
 			} else if (data instanceof dorado.Entity) {
 				data.dataProvider = this;
 				data.parameter = ajaxOptions.jsonData.parameter;
+				data.sysParameter = ajaxOptions.jsonData.sysParameter;
 			}
 			return data;
 		},
@@ -238,13 +237,10 @@
 			var options = dorado.Object.apply({}, this._baseOptions), jsonData = options.jsonData = {};
 			if (this._baseOptions.jsonData) dorado.Object.apply(jsonData, this._baseOptions.jsonData);
 			if (arg) {
-				jsonData.parameter = dorado.JSON.evaluate(arg.parameter);
+				jsonData.parameter = arg.parameter;
+				jsonData.sysParameter = arg.sysParameter;
 				jsonData.pageSize = arg.pageSize;
 				jsonData.pageNo = arg.pageNo;
-			}
-			if (!dorado.Toolkits.getSysParameter().isEmpty()) {
-				jsonData.sysParameter = dorado.Toolkits.getSysParameter().toJSON();
-				dorado.Toolkits.getSysParameter().clear();
 			}
 			return options;
 		}

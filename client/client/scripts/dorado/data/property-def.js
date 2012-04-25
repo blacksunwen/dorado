@@ -385,10 +385,12 @@
 		},
 		
 		getDataProviderArg: function() {
+			var propertyDef = this.propertyDef;
 			dorado.$this = this.entity;
 			return {
-				pageSize: this.propertyDef._pageSize,
-				parameter: dorado.JSON.evaluate(this.propertyDef._parameter),
+				pageSize: propertyDef._pageSize,
+				parameter: dorado.JSON.evaluate(propertyDef._parameter),
+				sysParameter: propertyDef._sysParameter ? propertyDef._sysParameter.toJSON() : undefined,
 				dataType: this.dataType,
 				view: this.view
 			};

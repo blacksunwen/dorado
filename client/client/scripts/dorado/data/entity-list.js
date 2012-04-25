@@ -1239,6 +1239,7 @@
 			
 			this.dataProviderArg = {
 				parameter: entityList.parameter,
+				sysParameter: entityList.sysParameter,
 				pageSize: entityList.pageSize,
 				pageNo: pageNo,
 				dataType: dataType,

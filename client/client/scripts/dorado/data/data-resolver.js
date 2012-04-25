@@ -62,12 +62,9 @@
 			};
 			if (arg) {
 				jsonData.dataItems = arg.dataItems;
-				jsonData.parameter = dorado.JSON.evaluate(arg.parameter);
+				jsonData.parameter = arg.parameter;
+				jsonData.sysParameter = arg.sysParameter;
 				jsonData.context = arg.view ? arg.view.get("context") : null;
-			}
-			if (!dorado.Toolkits.getSysParameter().isEmpty()) {
-				jsonData.sysParameter = dorado.Toolkits.getSysParameter().toJSON();
-				dorado.Toolkits.getSysParameter().clear();
 			}
 			if (this.supportsEntity && this.dataTypeRepository) {
 				jsonData.loadedDataTypes = this.dataTypeRepository.getLoadedDataTypes();
@@ -180,11 +177,9 @@
 			jsonData.dataResolver = this.name;
 			if (arg) {
 				jsonData.dataItems = arg.dataItems;
-				jsonData.parameter = dorado.JSON.evaluate(arg.parameter);
-			}
-			if (!dorado.Toolkits.getSysParameter().isEmpty()) {
-				jsonData.sysParameter = dorado.Toolkits.getSysParameter().toJSON();
-				dorado.Toolkits.getSysParameter().clear();
+				jsonData.parameter = arg.parameter;
+				jsonData.sysParameter = arg.sysParameter;
+				jsonData.context = arg.view ? arg.view.get("context") : null;
 			}
 			return options;
 		}

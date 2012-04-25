@@ -455,11 +455,14 @@
 			if (options.acceptAggregation) optionsCode += 'A';
 
 			this._getDataCalled = true;
-			if (this._data === undefined && loadMode != "never") {				
+			if (this._data === undefined && loadMode != "never") {	
+				var sysParameter;			
 				if (this._preloadConfigsMap) {
 					var preloadConfigs = this._preloadConfigsMap[path || "#EMPTY"];
 					if (preloadConfigs) {
-						dorado.Toolkits.getSysParameter().put("preloadConfigs", preloadConfigs);
+						sysParameter = this._sysParameter;
+						if (!sysParameter) this._sysParameter = sysParameter = new dorado.util.Map();
+						sysParameter.put("preloadConfigs", preloadConfigs);
 					}
 				}
 				
@@ -471,15 +474,18 @@
 							$callback(callback, success, result);
 						}
 					});
+					if (sysParameter) sysParameter.remove("preloadConfigs");
 					return;
 				}
 				else {
 					if (loadMode == "auto") {
 						this.doLoad(dorado._NULL_FUNCTION);
+						if (sysParameter) sysParameter.remove("preloadConfigs");
 						return;
 					}
 					else {
 						this.doLoad();
+						if (sysParameter) sysParameter.remove("preloadConfigs");
 					}
 				}
 			}
@@ -810,11 +816,12 @@
 		},
 
 		getDataProviderArg: function() {
-			var parameter = dorado.$this = this.dataSet._parameter;
+			var dataSet = this.dataSet, parameter = dorado.$this = this.dataSet._parameter;
 			return {
-				pageSize: this.dataSet._pageSize,
-				pageNo: this.dataSet._pageNo,
+				pageSize: dataSet._pageSize,
+				pageNo: dataSet._pageNo,
 				parameter: dorado.JSON.evaluate(parameter),
+				sysParameter: dataSet._sysParameter ? dataSet._sysParameter.toJSON() : undefined,
 				dataType: this.dataType,
 				view: this.view
 			};

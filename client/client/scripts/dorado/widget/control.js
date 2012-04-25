@@ -1293,10 +1293,6 @@
 		for(; i < nv.length; i++) {
 			if(nv[i].onFocus) nv[i].onFocus();
 		}
-		
-		if (dorado.widget.focusedControl.peek()) {
-			console.log(dorado.widget.focusedControl.peek().constructor.className);
-		}
 	};
 
 	dorado.widget.setFocusedControl = function(control) {

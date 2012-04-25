@@ -177,7 +177,10 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.RowListDropDown,/** @scope
 					this.fireEvent("onSetFilterParameter", this, arg);
 					filterValue = arg.filterValue;
 				}
-				dorado.Toolkits.getSysParameter().put("filterValue", filterValue);
+				
+				var sysParameter = dataSet._sysParameter;
+				if (!sysParameter) dataSet._sysParameter = sysParameter = new dorado.util.Map();
+				sysParameter.put("filterValue", filterValue);
 				
 				dataSet.clear();
 				dataSet.loadAsync(callback);

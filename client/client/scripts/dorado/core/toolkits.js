@@ -358,13 +358,6 @@ dorado.Toolkits = {
 			result = [this.trimSingleMessage(message, defaultState)];
 		}
 		return result;
-	},
-	
-	getSysParameter: function() {
-		if (!this._sysParameter) {
-			this._sysParameter = new dorado.util.Map();
-		}
-		return this._sysParameter;
 	}
 };
 
