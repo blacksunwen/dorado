@@ -9,8 +9,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import com.bstek.dorado.data.provider.Page;
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.Dialect;
-import com.bstek.dorado.jdbc.JdbcDataProviderContext;
-import com.bstek.dorado.jdbc.JdbcDataProviderOperation;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.model.DbTable;
 import com.bstek.dorado.jdbc.sql.RecordRowMapper;
@@ -43,7 +41,7 @@ public class QueryCommand {
 		
 		RecordRowMapper rowMapper = new RecordRowMapper(dbTable.getAllColumns());
 
-		NamedParameterJdbcTemplate jdbcTemplate = env.getNamedDao().getNamedParameterJdbcTemplate();
+		NamedParameterJdbcTemplate jdbcTemplate = env.getSpringNamedDao().getNamedParameterJdbcTemplate();
 
 		String sql = env.getDialect().toSQL(selectSql);
 		if (logger.isDebugEnabled()) {
@@ -67,7 +65,7 @@ public class QueryCommand {
 
 		RecordRowMapper rowMapper = new RecordRowMapper(dbTable.getAllColumns());
 
-		NamedParameterJdbcTemplate jdbcTemplate = env.getNamedDao().getNamedParameterJdbcTemplate();
+		NamedParameterJdbcTemplate jdbcTemplate = env.getSpringNamedDao().getNamedParameterJdbcTemplate();
 
 		int pageSize = page.getPageSize();
 		int firstIndex = page.getFirstEntityIndex() + 1;

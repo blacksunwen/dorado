@@ -1,4 +1,4 @@
-package com.bstek.dorado.jdbc;
+package com.bstek.dorado.jdbc.support;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,6 +15,9 @@ import com.bstek.dorado.data.type.AggregationDataType;
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.data.type.EntityDataType;
 import com.bstek.dorado.data.variant.Record;
+import com.bstek.dorado.jdbc.JdbcDataResolverItem;
+import com.bstek.dorado.jdbc.JdbcEnviroment;
+import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.model.DbTable;
 import com.bstek.dorado.util.Assert;
 
@@ -130,7 +133,12 @@ public class JdbcDataResolverOperation {
 		
 		String tableName = resolverItem.getTableName();
 		DbTable dbTable = JdbcUtils.getDbTable(tableName);
-		JdbcUtils.doSave(dbTable, record, jdbcContext);
+		
+		JdbcEnviroment jdbcEnv = jdbcContext.getJdbcEnviroment();
+		if (jdbcEnv == null) {
+			jdbcEnv = dbTable.getJdbcEnviroment();
+		}
+		jdbcEnv.getJdbcDao().doSave(dbTable, record, jdbcContext);
 		
 		if (!EntityState.DELETED.equals(EntityUtils.getState(record))) {
 			List<JdbcDataResolverItem> items = resolverItem.getResolverItems();

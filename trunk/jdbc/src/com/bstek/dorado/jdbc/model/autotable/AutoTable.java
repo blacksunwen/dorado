@@ -1,9 +1,7 @@
 package com.bstek.dorado.jdbc.model.autotable;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -13,10 +11,9 @@ import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.data.entity.EntityState;
 import com.bstek.dorado.data.provider.Criteria;
 import com.bstek.dorado.jdbc.Dialect;
-import com.bstek.dorado.jdbc.JdbcDataProviderContext;
-import com.bstek.dorado.jdbc.JdbcDataProviderOperation;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.JdbcParameterSource;
+import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.model.AbstractDbColumn;
 import com.bstek.dorado.jdbc.model.AbstractTable;
 import com.bstek.dorado.jdbc.model.AbstractUpdatableColumn;
@@ -26,6 +23,8 @@ import com.bstek.dorado.jdbc.sql.SqlBuilder;
 import com.bstek.dorado.jdbc.sql.SqlConstants.JoinOperator;
 import com.bstek.dorado.jdbc.sql.SqlConstants.KeyWord;
 import com.bstek.dorado.jdbc.sql.SqlUtils;
+import com.bstek.dorado.jdbc.support.JdbcDataProviderContext;
+import com.bstek.dorado.jdbc.support.JdbcDataProviderOperation;
 import com.bstek.dorado.util.Assert;
 
 /**
@@ -41,35 +40,39 @@ import com.bstek.dorado.util.Assert;
 			wrapper = @XmlNodeWrapper(nodeName = "Columns", fixed = true),
 			propertyName = "Jdbc_AutoTableColumns",
 			propertyType = "List<com.bstek.dorado.jdbc.model.autotable.AutoTableColumn>"
-		),
-		@XmlSubNode(
-			wrapper = @XmlNodeWrapper(nodeName="FromTables", fixed = true),
-			propertyName = "fromTables",
-			propertyType = "List<com.bstek.dorado.jdbc.model.autotable.FromTable>"
-		),
-		@XmlSubNode(
-			wrapper = @XmlNodeWrapper(nodeName = "JoinTables"),
-			propertyName = "joinTables",
-			propertyType = "List<com.bstek.dorado.jdbc.model.autotable.JoinTable>"
-		),
-		@XmlSubNode(
-			wrapper = @XmlNodeWrapper(nodeName = "Orders"),
-			propertyName = "orders",
-			propertyType = "List<com.bstek.dorado.jdbc.model.autotable.Order>"
-		),
-		@XmlSubNode(
-			nodeName="Where",
-			propertyName="where",
-			propertyType="com.bstek.dorado.jdbc.model.autotable.JunctionMatchRule",
-			fixed=true
 		)
+//		,
+//		@XmlSubNode(
+//			wrapper = @XmlNodeWrapper(nodeName="FromTables", fixed = true),
+//			propertyName = "fromTables",
+//			propertyType = "List<com.bstek.dorado.jdbc.model.autotable.FromTable>"
+//		)
+//		,
+//		@XmlSubNode(
+//			wrapper = @XmlNodeWrapper(nodeName = "JoinTables"),
+//			propertyName = "joinTables",
+//			propertyType = "List<com.bstek.dorado.jdbc.model.autotable.JoinTable>"
+//		)
+//		,
+//		@XmlSubNode(
+//			wrapper = @XmlNodeWrapper(nodeName = "Orders"),
+//			propertyName = "orders",
+//			propertyType = "List<com.bstek.dorado.jdbc.model.autotable.Order>"
+//		)
+//		,
+//		@XmlSubNode(
+//			nodeName="Where",
+//			propertyName="where",
+//			propertyType="com.bstek.dorado.jdbc.model.autotable.JunctionMatchRule",
+//			fixed=true
+//		)
 	}
 )
 public class AutoTable extends AbstractTable {
 
 	public static final String TYPE = "AutoTable";
 	
-	private Map<String, FromTable> fromTables = new LinkedHashMap<String, FromTable>();
+	private List<FromTable> fromTables = new ArrayList<FromTable>();
 	
 	private List<JoinTable> joinTables = new ArrayList<JoinTable>(5);
 	
@@ -81,32 +84,38 @@ public class AutoTable extends AbstractTable {
 	private Table mainTable;
 	
 	public void addFromTable(FromTable fromTable) {
-		String tableAlias = fromTable.getName();
-		Assert.notEmpty(tableAlias, "[" + this.getName() + "] tableAlias must not be null");
-		Assert.isTrue(!fromTables.containsKey(tableAlias), "[" + this.getName() + "] duplicate fromTable '" + tableAlias + "'");
-		
-		this.fromTables.put(tableAlias, fromTable);
+		fromTables.add(fromTable);
 	}
 	
 	public void addJoinTable(JoinTable joinTable) {
 		this.joinTables.add(joinTable);
 	}
-
+	
+	@XmlSubNode(
+		wrapper = @XmlNodeWrapper(nodeName="FromTables", fixed = true)
+	)
 	public List<FromTable> getFromTables() {
-		return new ArrayList<FromTable>(fromTables.values());
+		return fromTables;
 	}
 	
 	public FromTable getFromTable(String alias) {
-		FromTable fromTable = fromTables.get(alias);
-		Assert.notNull(fromTable, "[" + getName()+ "] " + "No FromTable named [" + alias + "]");
-		return fromTable;
+		for (FromTable fromTable: fromTables) {
+			if (fromTable.getName().equals(alias)) {
+				return fromTable;
+			}
+		}
+		
+		throw new IllegalArgumentException("No FromTable named [" + alias + "]");
 	}
 
+	@XmlSubNode(
+		wrapper = @XmlNodeWrapper(nodeName = "JoinTables")
+	)
 	public List<JoinTable> getJoinTables() {
 		return joinTables;
 	}
 
-//	@XmlSubNode(nodeName="Where", fixed=true)
+	@XmlSubNode(nodeName="Where", fixed=true)
 	public JunctionMatchRule getWhere() {
 		return where;
 	}
@@ -115,6 +124,9 @@ public class AutoTable extends AbstractTable {
 		this.where = where;
 	}
 
+	@XmlSubNode(
+		wrapper = @XmlNodeWrapper(nodeName = "Orders")
+	)
 	public List<Order> getOrders() {
 		return orders;
 	}
@@ -213,7 +225,7 @@ public class AutoTable extends AbstractTable {
 		//fromToken
 		StringBuilder fromToken = fromToken(autoTable, dialect);
 		//where
-		JdbcParameterSource parameterSource = SqlUtils.createJdbcParameter(parameter);
+		JdbcParameterSource parameterSource = SqlUtils.createJdbcParameter(JdbcUtils.getRealParameter(parameter));
 		StringBuilder whereToken = whereToken(autoTable, parameterSource);
 		//order
 		StringBuilder orderbyToken = orderByToken(autoTable, parameterSource, dialect);
@@ -226,9 +238,11 @@ public class AutoTable extends AbstractTable {
 		selectSql.setWhereToken(whereToken.toString());
 		selectSql.setOrderToken(orderbyToken.toString());
 		
-		Criteria criteria = this.getCriteria(operation);
-		if (criteria != null) {
-			selectSql.setCriteria(criteria);
+		if (jdbcContext.isAutoFilter()) {
+			Criteria criteria = this.getCriteria(operation);
+			if (criteria != null) {
+				selectSql.setCriteria(criteria);
+			}
 		}
 		
 		return selectSql;

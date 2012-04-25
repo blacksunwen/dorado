@@ -1,6 +1,7 @@
-package com.bstek.dorado.jdbc;
+package com.bstek.dorado.jdbc.support;
 
 import com.bstek.dorado.data.variant.Record;
+import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.model.table.Table;
 
 /**
@@ -10,7 +11,7 @@ import com.bstek.dorado.jdbc.model.table.Table;
  *
  */
 public class JdbcRecordOperation extends
-		AbstractDbTableOperation<JdbcDataResolverContext> {
+		AbstractDbTableOperation<JdbcDataResolverContext, Table> {
 
 	private JdbcRecordOperation parent;
 	private Record record;
@@ -31,10 +32,6 @@ public class JdbcRecordOperation extends
 
 	public JdbcRecordOperation getParent() {
 		return this.parent;
-	}
-	
-	public Table getTable() {
-		return (Table)getDbTable();
 	}
 
 	@Override

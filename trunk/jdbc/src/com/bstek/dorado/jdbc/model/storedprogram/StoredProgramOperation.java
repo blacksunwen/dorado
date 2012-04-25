@@ -7,8 +7,8 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.util.Assert;
 
-import com.bstek.dorado.jdbc.AbstractJdbcContext;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
+import com.bstek.dorado.jdbc.support.AbstractJdbcContext;
 import com.bstek.dorado.jdbc.type.JdbcType;
 
 /**
@@ -53,7 +53,7 @@ public class StoredProgramOperation {
 	protected SimpleJdbcCall newCall() {
 		Assert.notNull(storedProgram, "StoredPropgram must not be null.");
 		JdbcEnviroment jdbcEnv = this.getJdbcEnviroment();
-		JdbcTemplate jdbcTemplate = jdbcEnv.getNamedDao().getJdbcTemplate();
+		JdbcTemplate jdbcTemplate = jdbcEnv.getSpringNamedDao().getJdbcTemplate();
 		SimpleJdbcCall call = new SimpleJdbcCall(jdbcTemplate);
 		
 		return call;

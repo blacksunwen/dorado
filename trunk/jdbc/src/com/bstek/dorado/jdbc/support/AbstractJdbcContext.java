@@ -1,6 +1,7 @@
-package com.bstek.dorado.jdbc;
+package com.bstek.dorado.jdbc.support;
 
 import com.bstek.dorado.data.variant.MetaData;
+import com.bstek.dorado.jdbc.JdbcEnviroment;
 
 /**
  * 抽象的JDBC操作的上下文

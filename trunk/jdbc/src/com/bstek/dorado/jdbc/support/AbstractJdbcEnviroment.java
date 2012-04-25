@@ -3,6 +3,7 @@ package com.bstek.dorado.jdbc.support;
 import org.springframework.beans.factory.InitializingBean;
 
 import com.bstek.dorado.jdbc.Dialect;
+import com.bstek.dorado.jdbc.JdbcDao;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.config.JdbcEnviromentManager;
 
@@ -14,8 +15,10 @@ import com.bstek.dorado.jdbc.config.JdbcEnviromentManager;
 public abstract class AbstractJdbcEnviroment implements JdbcEnviroment, InitializingBean {
 
 	private String name;
-
 	private JdbcEnviromentManager manager;
+	private boolean isdefault = false;
+	private Dialect dialect;
+	private JdbcDao jdbcDao;
 	
 	public JdbcEnviromentManager getManager() {
 		return manager;
@@ -33,8 +36,6 @@ public abstract class AbstractJdbcEnviroment implements JdbcEnviroment, Initiali
 		this.name = name;
 	}
 
-	private boolean isdefault = false;
-
 	public boolean isDefault() {
 		return isdefault;
 	}
@@ -42,8 +43,6 @@ public abstract class AbstractJdbcEnviroment implements JdbcEnviroment, Initiali
 	public void setDefault(boolean isdefault) {
 		this.isdefault = isdefault;
 	}
-
-	private Dialect dialect;
 
 	public Dialect getDialect() {
 		return dialect;
@@ -57,4 +56,11 @@ public abstract class AbstractJdbcEnviroment implements JdbcEnviroment, Initiali
 		manager.register(this);
 	}
 
+	public JdbcDao getJdbcDao() {
+		return jdbcDao;
+	}
+
+	public void setJdbcDao(JdbcDao jdbcDao) {
+		this.jdbcDao = jdbcDao;
+	}
 }

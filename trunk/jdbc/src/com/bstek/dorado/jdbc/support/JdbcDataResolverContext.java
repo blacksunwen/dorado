@@ -1,8 +1,10 @@
-package com.bstek.dorado.jdbc;
+package com.bstek.dorado.jdbc.support;
 
 import java.util.List;
 
 import com.bstek.dorado.data.resolver.DataItems;
+import com.bstek.dorado.jdbc.JdbcDataResolverItem;
+import com.bstek.dorado.jdbc.JdbcEnviroment;
 
 /**
  * 执行DataResolver时的上下文对象

@@ -3,8 +3,8 @@ package com.bstek.dorado.jdbc.oracle.v11;
 import java.util.Date;
 
 import com.bstek.dorado.jdbc.AbstractDbTableTrigger;
-import com.bstek.dorado.jdbc.JdbcDataProviderOperation;
-import com.bstek.dorado.jdbc.JdbcRecordOperation;
+import com.bstek.dorado.jdbc.support.JdbcDataProviderOperation;
+import com.bstek.dorado.jdbc.support.JdbcRecordOperation;
 
 public class LoggerTableTrigger extends AbstractDbTableTrigger {
 

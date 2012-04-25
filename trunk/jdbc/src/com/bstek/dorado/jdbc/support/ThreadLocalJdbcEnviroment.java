@@ -34,7 +34,7 @@ public class ThreadLocalJdbcEnviroment extends AbstractJdbcEnviroment {
 
 	private ThreadLocal<NamedParameterJdbcDaoSupport> localDao = new ThreadLocal<NamedParameterJdbcDaoSupport>();
 	
-	public NamedParameterJdbcDaoSupport getNamedDao() {
+	public NamedParameterJdbcDaoSupport getSpringNamedDao() {
 		NamedParameterJdbcDaoSupport dao = localDao.get();
 		if (dao == null) {
 			DataSource dataSource = getDataSource();

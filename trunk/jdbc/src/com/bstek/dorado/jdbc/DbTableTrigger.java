@@ -1,5 +1,8 @@
 package com.bstek.dorado.jdbc;
 
+import com.bstek.dorado.jdbc.support.JdbcDataProviderOperation;
+import com.bstek.dorado.jdbc.support.JdbcRecordOperation;
+
 /**
  * 操作{@link com.bstek.dorado.jdbc.model.DbTable}的触发器
  * 

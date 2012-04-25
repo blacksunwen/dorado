@@ -40,7 +40,7 @@ public class DefaultJdbcEnviroment extends AbstractJdbcEnviroment {
 		this.namedParameterJdbcDaoSupport = dao;
 	}
 
-	public NamedParameterJdbcDaoSupport getNamedDao() {
+	public NamedParameterJdbcDaoSupport getSpringNamedDao() {
 		return namedParameterJdbcDaoSupport;
 	}
 	

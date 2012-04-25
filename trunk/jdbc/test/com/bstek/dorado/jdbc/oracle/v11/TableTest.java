@@ -14,7 +14,7 @@ public class TableTest extends AbstractOracle11JdbcTestCase {
 		Integer id = (Integer)employee.get("ID");
 		{
 			//保存前后比较
-			JdbcUtils.insert(Employee.TABLE, employee);
+			getDao().insert(Employee.TABLE, employee);
 			Record employee2 = Employee.get(id);
 			TestJdbcUtils.assertEquals(employee, employee2);
 		}
@@ -23,14 +23,14 @@ public class TableTest extends AbstractOracle11JdbcTestCase {
 			Record employee2 = Employee.random();
 			employee2.put("ID", id);
 			
-			JdbcUtils.update(Employee.TABLE, employee2);
+			getDao().update(Employee.TABLE, employee2);
 			
 			Record employee3 = Employee.get(id);
 			TestJdbcUtils.assertEquals(employee2, employee3);
 		}
 		{
 			//删除是否成功
-			JdbcUtils.delete(Employee.TABLE, employee);
+			getDao().delete(Employee.TABLE, employee);
 			Assert.assertTrue(!Employee.has(id));
 		}
 	}
@@ -39,7 +39,7 @@ public class TableTest extends AbstractOracle11JdbcTestCase {
 		Record dept = Dept.random();
 		String id = dept.getString("DEPT_ID");
 		{
-			JdbcUtils.insert(Dept.TABLE, dept);
+			getDao().insert(Dept.TABLE, dept);
 			Record dept2 = Dept.get(id);
 			TestJdbcUtils.assertEquals(dept, dept2);
 		}
@@ -47,20 +47,20 @@ public class TableTest extends AbstractOracle11JdbcTestCase {
 			Record dept2 = Dept.get(id);
 			dept2.put("DEPT_ID", id);
 			
-			JdbcUtils.update(Dept.TABLE, dept2);
+			getDao().update(Dept.TABLE, dept2);
 			
 			Record dept3 = Dept.get(id);
 			TestJdbcUtils.assertEquals(dept2, dept3);
 		}
 		{
-			JdbcUtils.delete(Dept.TABLE, dept);
+			getDao().delete(Dept.TABLE, dept);
 			Assert.assertTrue(!Dept.has(id));
 		}
 	}
 	
 	public void testByKey() throws Exception{
 		Table table = (Table)JdbcUtils.getDbTable(Employee.TABLE);
-		Record record = JdbcUtils.getByKey(table, 3959991);
+		Record record = getDao().getByKey(table, 3959991);
 		
 		Assert.assertNotNull(record);
 	}

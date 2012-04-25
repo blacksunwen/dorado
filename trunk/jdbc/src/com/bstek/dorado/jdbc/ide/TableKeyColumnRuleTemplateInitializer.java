@@ -37,6 +37,13 @@ public class TableKeyColumnRuleTemplateInitializer implements
 		String[] typeAry = null;
 		if (StringUtils.isNotEmpty(valueStr)) {
 			typeAry = StringUtils.split(valueStr, ",");
+			if (typeAry[0].equals("SYSTEM")) {
+				String[] defaultValue = getDefaultValue();
+				String[] newValue = new String[typeAry.length + defaultValue.length-1];
+				System.arraycopy(typeAry, 1, newValue, 0, typeAry.length-1);
+				System.arraycopy(defaultValue, 0, newValue, typeAry.length-1, defaultValue.length);
+				typeAry = newValue;
+			}
 		} else {
 			typeAry = getDefaultValue();
 			String defaultValue = StringUtils.join(typeAry, ',');

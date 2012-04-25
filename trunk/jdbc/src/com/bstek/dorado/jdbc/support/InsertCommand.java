@@ -10,7 +10,6 @@ import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.Dialect;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.JdbcParameterSource;
-import com.bstek.dorado.jdbc.JdbcRecordOperation;
 import com.bstek.dorado.jdbc.model.table.KeyGenerator;
 import com.bstek.dorado.jdbc.model.table.Table;
 import com.bstek.dorado.jdbc.model.table.TableColumn;
@@ -44,7 +43,7 @@ public class InsertCommand {
 			logger.debug("[INSERT-SQL]" + sql);
 		}
 		
-		NamedParameterJdbcTemplate jdbcTemplate = env.getNamedDao().getNamedParameterJdbcTemplate();
+		NamedParameterJdbcTemplate jdbcTemplate = env.getSpringNamedDao().getNamedParameterJdbcTemplate();
 		TableKeyColumn identityColumn = insertSql.getIdentityColumn();
 		if (identityColumn == null) {
 			JdbcParameterSource parameterSource = insertSql.getParameterSource();

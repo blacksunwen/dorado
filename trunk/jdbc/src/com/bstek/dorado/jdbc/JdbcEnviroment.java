@@ -39,10 +39,16 @@ public interface JdbcEnviroment {
 	public DataSource getDataSource();
 
 	/**
+	 * 获取Spring数据库操作对象
+	 * @return
+	 */
+	public NamedParameterJdbcDaoSupport getSpringNamedDao();
+	
+	/**
 	 * 获取数据库操作对象
 	 * @return
 	 */
-	public NamedParameterJdbcDaoSupport getNamedDao();
+	public JdbcDao getJdbcDao();
 
 	/**
 	 * 获取数据库事务管理器

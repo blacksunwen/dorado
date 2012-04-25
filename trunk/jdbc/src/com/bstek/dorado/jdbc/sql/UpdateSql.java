@@ -14,6 +14,7 @@ import com.bstek.dorado.util.Assert;
 public class UpdateSql extends AbstractTableSql{
 	private LinkedHashMap<String, String> columnTokenMap = new LinkedHashMap<String, String>();
 	private LinkedHashMap<String, String> keyTokenMap = new LinkedHashMap<String, String>(2);
+	private boolean retrieveAfterExecute = false;
 	
 	public void addColumnToken(String columnName, String value) {
 		columnTokenMap.put(columnName, value);
@@ -21,6 +22,14 @@ public class UpdateSql extends AbstractTableSql{
 	
 	public void addKeyToken(String columnName, String value) {
 		keyTokenMap.put(columnName, value);
+	}
+	
+	public boolean isRetrieveAfterExecute() {
+		return retrieveAfterExecute;
+	}
+
+	public void setRetrieveAfterExecute(boolean retrieveAfterExecute) {
+		this.retrieveAfterExecute = retrieveAfterExecute;
 	}
 	
 	@Override

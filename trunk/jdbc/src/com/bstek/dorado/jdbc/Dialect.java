@@ -10,12 +10,16 @@ import org.apache.commons.logging.LogFactory;
 import com.bstek.dorado.jdbc.model.autotable.AutoTable;
 import com.bstek.dorado.jdbc.model.autotable.Order;
 import com.bstek.dorado.jdbc.model.table.Table;
+import com.bstek.dorado.jdbc.sql.DeleteAllSql;
 import com.bstek.dorado.jdbc.sql.DeleteSql;
 import com.bstek.dorado.jdbc.sql.InsertSql;
 import com.bstek.dorado.jdbc.sql.RetrieveSql;
 import com.bstek.dorado.jdbc.sql.SelectSql;
-import com.bstek.dorado.jdbc.sql.UpdateSql;
 import com.bstek.dorado.jdbc.sql.SqlConstants.JoinOperator;
+import com.bstek.dorado.jdbc.sql.UpdateSql;
+import com.bstek.dorado.jdbc.support.DeleteAllOperation;
+import com.bstek.dorado.jdbc.support.JdbcDataProviderOperation;
+import com.bstek.dorado.jdbc.support.JdbcRecordOperation;
 
 /**
  * 数据库方言
@@ -64,15 +68,17 @@ public interface Dialect {
 	 * @param selectSql
 	 * @return
 	 */
-	String toSQL(SelectSql selectSql) throws Exception;
+	String toSQL(SelectSql sql) throws Exception;
 	
-	String toSQL(DeleteSql deleteSql) throws Exception;
+	String toSQL(DeleteSql sql) throws Exception;
 	
-	String toSQL(InsertSql insertSql) throws Exception;
+	String toSQL(DeleteAllSql sql) throws Exception;
 	
-	String toSQL(RetrieveSql retrieveSql) throws Exception;
+	String toSQL(InsertSql sql) throws Exception;
 	
-	String toSQL(UpdateSql updateSql) throws Exception;
+	String toSQL(RetrieveSql sql) throws Exception;
+	
+	String toSQL(UpdateSql sql) throws Exception;
 	
 	/**
 	 * 根据{@link com.bstek.dorado.jdbc.sql.SelectSql}输出成查询记录总数的SQL
@@ -134,6 +140,8 @@ public interface Dialect {
 	 * @return 是否成功执行
 	 */
 	boolean execute(JdbcRecordOperation operation) throws Exception;
+	
+	boolean execute(DeleteAllOperation operation) throws Exception;
 	
 	/**
 	 * 默认的数据库catalog，用于IDE
