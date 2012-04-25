@@ -148,6 +148,10 @@ public class RemoteServiceProcessor extends DataServiceProcessorSupport {
 			parameterParameterNames = new String[] { "parameter" };
 			parameterParameters = new Object[] { parameter };
 		}
+		else {
+			parameterParameterNames = new String[0];
+			parameterParameters = new Object[0];
+		}
 
 		String[] optionalParameterNames = new String[parameterParameterNames.length];
 		Object[] optionalParameters = new Object[optionalParameterNames.length];

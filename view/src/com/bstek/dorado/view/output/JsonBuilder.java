@@ -82,8 +82,9 @@ public class JsonBuilder {
 				|| state == 'v') {
 			try {
 				if (state == 'a') {
-					if (comma)
+					if (comma) {
 						write(',');
+					}
 					outputLeadingTab();
 				}
 				if (s != null) {

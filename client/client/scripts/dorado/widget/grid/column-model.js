@@ -1669,7 +1669,11 @@
 			 * @attribute
 			 */
 			width: {
-				defaultValue: "*"
+				defaultValue: "*",
+				setter: function(width) {
+					this._width = width;
+					delete this._realWidth;
+				}
 			},
 			
 			caption: {

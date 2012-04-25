@@ -85,6 +85,7 @@
 			var frame = this, doms = frame._doms;
 			if (doms) {
                 try {
+					doms.iframe.contentWindow.dorado.Exception.IGNORE_ALL_EXCEPTIONS = true;
                     doms.iframe.contentWindow.document.write('');
                     doms.iframe.contentWindow.close();
                     if(dorado.Browser.msie){
