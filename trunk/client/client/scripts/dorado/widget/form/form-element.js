@@ -796,6 +796,7 @@
 			$invokeSuper.call(this, arguments);
 			
 			var dom = this._dom, editorEl = this._editorEl, labelEl = this._labelEl, hintEl = this._hintEl, editor = this.getEditor();
+			var domWidth = dom.offsetWidth || this._realWidth || 0, domHeight = dom.offsetHeight || this._realHeight || 0;
 			if (this._showLabel) {
 				labelEl.style.display = '';
 				labelEl.style.textAlign = this._labelAlign || "left";
@@ -810,11 +811,11 @@
 			if (this._labelPosition == "top") {
 				labelHeight = labelEl.offsetHeight + this._labelSpacing;
 				editorEl.style.paddingTop = labelHeight + "px";
-				editorWidth = dom.offsetWidth;
-				if (height) editorEl.style.height = (dom.offsetHeight - labelHeight) + "px";
+				editorWidth = domWidth;
+				if (height) editorEl.style.height = (domHeight - labelHeight) + "px";
 			} else {
 				labelWidth = this._labelWidth + this._labelSpacing;
-				editorWidth = dom.offsetWidth - labelWidth;
+				editorWidth = domWidth - labelWidth;
 				if (editorWidth > 0) editorEl.style.width = editorWidth + "px";
 			}
 			
@@ -823,7 +824,7 @@
 				if (hintEl) {
 					var autoHeight = !editor.ATTRIBUTES.height.independent;
 					if (this._hintPosition == "bottom") {
-						config.width = dom.offsetWidth - labelWidth;
+						config.width = domWidth - labelWidth;
 						if (height && autoHeight) {
 							config.height = editorEl.offsetHeight - labelHeight - hintEl.offsetHeight;
 						}
@@ -837,7 +838,7 @@
 						}
 					}
 				} else {
-					config.width = dom.offsetWidth - labelWidth;
+					config.width = domWidth - labelWidth;
 				}
 				
 				if (config.width > 0) editor._realWidth = config.width;

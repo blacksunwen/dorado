@@ -51,6 +51,11 @@ dorado.widget.DataTreeGrid = $extend([dorado.widget.TreeGrid, dorado.widget.Data
 	initColumns: dorado.widget.DataGrid.prototype.initColumns,
 	
 	refresh: function() {
+		var bindingConfigs = this.get("bindingConfigs");
+		if (!bindingConfigs || !bindingConfigs.length) {
+			throw new dorado.Exception("DataTreeGrid " + this._id + ".bindingConfigs is undefined.");
+		}
+		
 		var columnsInited = false;
 		if (this._dataSet) {
 			var dataType, data = this.getBindingData({
@@ -90,5 +95,5 @@ dorado.widget.DataTreeGrid = $extend([dorado.widget.TreeGrid, dorado.widget.Data
 	},
 	
 	processItemDrop: dorado.widget.DataTree.prototype.processItemDrop,
-	filterDataSetMessage:  dorado.widget.DataTree.prototype.filterDataSetMessage
+	filterDataSetMessage: dorado.widget.DataTree.prototype.filterDataSetMessage
 });
