@@ -1,5 +1,8 @@
 package com.bstek.dorado.jdbc;
 
+import com.bstek.dorado.jdbc.support.JdbcDataProviderOperation;
+import com.bstek.dorado.jdbc.support.JdbcRecordOperation;
+
 /**
  * 抽象的{@link DbTableTrigger}
  * @author mark.li@bstek.com

@@ -8,7 +8,6 @@ import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.Dialect;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.JdbcParameterSource;
-import com.bstek.dorado.jdbc.JdbcRecordOperation;
 import com.bstek.dorado.jdbc.model.table.Table;
 import com.bstek.dorado.jdbc.model.table.TableKeyColumn;
 import com.bstek.dorado.jdbc.sql.DeleteSql;
@@ -21,7 +20,7 @@ public class DeleteCommand {
 	public void execute(JdbcRecordOperation operation) throws Exception {
 		JdbcEnviroment env = operation.getJdbcEnviroment();
 		Dialect dialect = env.getDialect();
-		NamedParameterJdbcTemplate jdbcTemplate = env.getNamedDao().getNamedParameterJdbcTemplate();
+		NamedParameterJdbcTemplate jdbcTemplate = env.getSpringNamedDao().getNamedParameterJdbcTemplate();
 		
 		DeleteSql deleteSql = this.deleteSql(operation);
 		String sql = dialect.toSQL(deleteSql);
@@ -35,7 +34,7 @@ public class DeleteCommand {
 	private DeleteSql deleteSql(JdbcRecordOperation operation) {
 		Dialect dialect = operation.getJdbcEnviroment().getDialect();
 		
-		Table table = (Table)operation.getDbTable();
+		Table table = operation.getDbTable();
 		Record record = operation.getRecord();
 		
 		DeleteSql sql = new DeleteSql();

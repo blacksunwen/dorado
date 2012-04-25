@@ -1,7 +1,9 @@
-package com.bstek.dorado.jdbc;
+package com.bstek.dorado.jdbc.support;
 
 import com.bstek.dorado.data.provider.Page;
 import com.bstek.dorado.data.variant.Record;
+import com.bstek.dorado.jdbc.JdbcDataProvider;
+import com.bstek.dorado.jdbc.JdbcEnviroment;
 
 /**
  * {@link JdbcDataProvider}执行时的上下文
@@ -11,6 +13,7 @@ import com.bstek.dorado.data.variant.Record;
  */
 public class JdbcDataProviderContext extends AbstractJdbcContext {
 	private Page<Record> page;
+	private boolean autoFilter = false;
 	
 	public JdbcDataProviderContext() {
 		this(null, null, null);
@@ -34,6 +37,14 @@ public class JdbcDataProviderContext extends AbstractJdbcContext {
 
 	public Page<Record> getPage() {
 		return page;
+	}
+
+	public boolean isAutoFilter() {
+		return autoFilter;
+	}
+
+	public void setAutoFilter(boolean autoFilter) {
+		this.autoFilter = autoFilter;
 	}
 	
 }

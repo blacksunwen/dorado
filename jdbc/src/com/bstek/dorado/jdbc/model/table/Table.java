@@ -14,13 +14,14 @@ import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.data.provider.Criteria;
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.Dialect;
-import com.bstek.dorado.jdbc.JdbcDataProviderOperation;
-import com.bstek.dorado.jdbc.JdbcDataResolverContext;
-import com.bstek.dorado.jdbc.JdbcRecordOperationProxy;
+import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.model.AbstractDbColumn;
 import com.bstek.dorado.jdbc.model.AbstractTable;
 import com.bstek.dorado.jdbc.sql.SelectSql;
 import com.bstek.dorado.jdbc.sql.SqlConstants.KeyWord;
+import com.bstek.dorado.jdbc.support.JdbcDataProviderOperation;
+import com.bstek.dorado.jdbc.support.JdbcDataResolverContext;
+import com.bstek.dorado.jdbc.support.JdbcRecordOperationProxy;
 import com.bstek.dorado.jdbc.type.JdbcType;
 
 /**
@@ -181,11 +182,13 @@ public class Table extends AbstractTable {
 			selectSql.setParameter(keyParameter);
 		} else {
 			selectSql.setDynamicToken(this.getDynamicClause());
-			selectSql.setParameter(parameter);
+			selectSql.setParameter(JdbcUtils.getRealParameter(parameter));
 			
-			Criteria criteria = this.getCriteria(operation);
-			if (criteria != null) {
-				selectSql.setCriteria(criteria);
+			if (operation.getJdbcContext().isAutoFilter()) {
+				Criteria criteria = this.getCriteria(operation);
+				if (criteria != null) {
+					selectSql.setCriteria(criteria);
+				}
 			}
 		}
 		

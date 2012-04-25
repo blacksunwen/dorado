@@ -9,16 +9,17 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.annotation.XmlProperty;
+import com.bstek.dorado.data.ParameterWrapper;
 import com.bstek.dorado.data.entity.EntityState;
 import com.bstek.dorado.data.entity.EntityUtils;
 import com.bstek.dorado.data.provider.Criteria;
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.DbTableTrigger;
-import com.bstek.dorado.jdbc.JdbcDataProviderOperation;
-import com.bstek.dorado.jdbc.JdbcDataResolverContext;
-import com.bstek.dorado.jdbc.JdbcRecordOperation;
-import com.bstek.dorado.jdbc.JdbcRecordOperationProxy;
 import com.bstek.dorado.jdbc.model.table.Table;
+import com.bstek.dorado.jdbc.support.JdbcDataProviderOperation;
+import com.bstek.dorado.jdbc.support.JdbcDataResolverContext;
+import com.bstek.dorado.jdbc.support.JdbcRecordOperation;
+import com.bstek.dorado.jdbc.support.JdbcRecordOperationProxy;
 import com.bstek.dorado.util.Assert;
 
 /**
@@ -79,6 +80,10 @@ public abstract class AbstractTable extends AbstractDbElement implements DbTable
 					AbstractUpdatableColumn column = (AbstractUpdatableColumn)c;
 					if (this.acceptByProxy(column, state)) {
 						String nativeColumnName = column.getNativeColumn();
+						if (StringUtils.isEmpty(nativeColumnName)) {
+							nativeColumnName = column.getName();
+						}
+						
 						String propertyName = column.getPropertyName();
 						AbstractDbColumn tableColumn = proxyTable.getColumn(nativeColumnName);
 						String tpn = tableColumn.getPropertyName();
@@ -103,25 +108,27 @@ public abstract class AbstractTable extends AbstractDbElement implements DbTable
 	}
 	
 	protected boolean acceptByProxy(AbstractUpdatableColumn column, EntityState state) {
-		String nativeColumnName = column.getNativeColumn();
-		if (StringUtils.isNotEmpty(nativeColumnName)) {
-			if ((EntityState.NEW.equals(state) && column.isInsertable()) || 
+		if ((EntityState.NEW.equals(state) && column.isInsertable()) || 
 				(EntityState.MODIFIED.equals(state) && column.isUpdatable()) ||
 				(EntityState.MOVED.equals(state) && column.isUpdatable()) ||
 				(EntityState.DELETED.equals(state))
-				) {
-				return true;
-			}
+			) {
+			return true;
 		}
 		
 		return false;
 	}
 	
 	protected Criteria getCriteria(JdbcDataProviderOperation operation) {
-		Object paraObject = operation.getParameter();
-		if (paraObject instanceof Record) {
-			Record paraRecord = (Record)paraObject;
-			return (Criteria)paraRecord.get("criteria");
+		Object parameter = operation.getParameter();
+		if (parameter instanceof ParameterWrapper) {
+			ParameterWrapper pw = (ParameterWrapper)parameter;
+			Map<String, Object> sysParameter = pw.getSysParameter();
+			
+			if (sysParameter instanceof Record) {
+				Record paraRecord = (Record)sysParameter;
+				return (Criteria)paraRecord.get("criteria");
+			}
 		}
 		
 		return null;

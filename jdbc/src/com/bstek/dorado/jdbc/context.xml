@@ -53,5 +53,9 @@
 	</bean>
 	<bean id="dorado.jdbcEnvTemplate" class="com.bstek.dorado.jdbc.support.DefaultJdbcEnviroment" abstract="true">
 		<property name="manager" ref="dorado.jdbc.enviromentManager"/>
+		<property name="jdbcDao" ref="dorado.jdbcDao"/>
 	</bean>
+	
+	<bean id="dorado.jdbcDao" class="com.bstek.dorado.jdbc.JdbcDao"/>
+	<alias name="dorado.jdbcDao" alias="jdbcDao"/>
 </beans>

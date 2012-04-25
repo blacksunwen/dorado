@@ -21,6 +21,8 @@ import com.bstek.dorado.data.resolver.DataItems;
 import com.bstek.dorado.data.type.AggregationDataType;
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.data.type.EntityDataType;
+import com.bstek.dorado.jdbc.support.JdbcDataResolverContext;
+import com.bstek.dorado.jdbc.support.JdbcDataResolverOperation;
 
 /**
  * JDBC模块的{@link com.bstek.dorado.data.resolver.DataResolver}

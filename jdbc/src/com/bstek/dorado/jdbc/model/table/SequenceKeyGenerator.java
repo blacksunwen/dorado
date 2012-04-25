@@ -9,7 +9,7 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 
 import com.bstek.dorado.jdbc.Dialect;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
-import com.bstek.dorado.jdbc.JdbcRecordOperation;
+import com.bstek.dorado.jdbc.support.JdbcRecordOperation;
 import com.bstek.dorado.util.Assert;
 
 /**
@@ -37,7 +37,7 @@ public class SequenceKeyGenerator extends AbstractKeyGenerator<Number> {
 
 		String sql = dialect.sequenceSql(sequenceName);
 
-		JdbcTemplate template = jdbcEnviroment.getNamedDao().getJdbcTemplate();
+		JdbcTemplate template = jdbcEnviroment.getSpringNamedDao().getJdbcTemplate();
 
 		Number value = template.query(sql, new ResultSetExtractor<Number>() {
 			public Number extractData(ResultSet resultSet) throws SQLException,

@@ -1,5 +1,6 @@
-package com.bstek.dorado.jdbc;
+package com.bstek.dorado.jdbc.support;
 
+import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.model.DbTable;
 
 /**
@@ -8,9 +9,9 @@ import com.bstek.dorado.jdbc.model.DbTable;
  * @author mark.li@bstek.com
  * @param <T>
  */
-public abstract class AbstractDbTableOperation<T extends AbstractJdbcContext> {
+public abstract class AbstractDbTableOperation<T extends AbstractJdbcContext, TB extends DbTable> {
 	private T jdbcContext;
-	private DbTable dbTable;
+	private TB dbTable;
 	private boolean _processDefault = true;
 
 	/**
@@ -25,8 +26,8 @@ public abstract class AbstractDbTableOperation<T extends AbstractJdbcContext> {
 		this._processDefault = _processDefault;
 	}
 	
-	public AbstractDbTableOperation(DbTable dbElement, T jdbcContext) {
-		this.dbTable = dbElement;
+	public AbstractDbTableOperation(TB dbTable, T jdbcContext) {
+		this.dbTable = dbTable;
 		this.jdbcContext = jdbcContext;
 	}
 
@@ -34,11 +35,11 @@ public abstract class AbstractDbTableOperation<T extends AbstractJdbcContext> {
 	 * 获取操作的{@link DbTable}
 	 * @return
 	 */
-	public DbTable getDbTable() {
+	public TB getDbTable() {
 		return dbTable;
 	}
 
-	public void setDbTable(DbTable dbTable) {
+	public void setDbTable(TB dbTable) {
 		this.dbTable = dbTable;
 	}
 

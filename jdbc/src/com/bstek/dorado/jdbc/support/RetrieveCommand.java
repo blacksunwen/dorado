@@ -11,7 +11,6 @@ import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.Dialect;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.JdbcParameterSource;
-import com.bstek.dorado.jdbc.JdbcRecordOperation;
 import com.bstek.dorado.jdbc.model.AbstractDbColumn;
 import com.bstek.dorado.jdbc.model.table.Table;
 import com.bstek.dorado.jdbc.model.table.TableKeyColumn;
@@ -27,7 +26,7 @@ public class RetrieveCommand {
 	private static Log logger = LogFactory.getLog(RetrieveCommand.class);
 	
 	public void execute(JdbcRecordOperation operation) throws Exception {
-		Table table = operation.getTable();
+		Table table = operation.getDbTable();
 		JdbcEnviroment jdbcEnv = operation.getJdbcEnviroment();
 		Record record = operation.getRecord();
 		
@@ -65,7 +64,7 @@ public class RetrieveCommand {
 		if (logger.isDebugEnabled()) {
 			logger.debug("[RETRIEVE-SQL]" + sql);
 		}
-		NamedParameterJdbcTemplate jdbcTemplate = jdbcEnv.getNamedDao().getNamedParameterJdbcTemplate();
+		NamedParameterJdbcTemplate jdbcTemplate = jdbcEnv.getSpringNamedDao().getNamedParameterJdbcTemplate();
 		List<Record> rs = jdbcTemplate.query(sql, parameterSource, new RecordRowMapper(columnList));
 		Assert.isTrue(rs.size() == 1, "[" + rs.size() +"] record(s) retrieved, only 1 excepted.");
 		

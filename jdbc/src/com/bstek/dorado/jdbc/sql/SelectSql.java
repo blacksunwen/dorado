@@ -6,12 +6,10 @@ import com.bstek.dorado.data.provider.Criteria;
 import com.bstek.dorado.data.provider.Criterion;
 import com.bstek.dorado.data.provider.Order;
 import com.bstek.dorado.data.provider.filter.FilterOperator;
-import com.bstek.dorado.data.provider.filter.SimpleFilterCriterion;
 import com.bstek.dorado.data.provider.filter.SingleValueFilterCriterion;
 import com.bstek.dorado.jdbc.Dialect;
 import com.bstek.dorado.jdbc.JdbcParameterSource;
 import com.bstek.dorado.jdbc.sql.SqlConstants.KeyWord;
-import com.bstek.dorado.jdbc.sql.SqlConstants.Operator;
 import com.bstek.dorado.jdbc.sql.SqlConstants.OrderDirection;
 
 /**
@@ -83,38 +81,54 @@ public abstract class SelectSql extends AbstractSql {
 					builder.rightSpace(KeyWord.WHERE);
 				}
 				
-				if (c instanceof SimpleFilterCriterion) {
-					SimpleFilterCriterion simpleCriterion = (SimpleFilterCriterion)c;
-					String property = simpleCriterion.getProperty();
-					Object value = simpleCriterion.getValue();
-					
-					if (value instanceof String) {
-						Operator operator = Operator.like_anywhere;
-						String varName = parameterSource.addValue(operator.parameterValue(value));
-						builder.rightSpace(property, operator.toSQL(), ":" + varName);
-					} else {
-						Operator operator = Operator.eq;
-						String varName = parameterSource.addValue(value);
-						builder.rightSpace(property, operator.toSQL(), ":" + varName);
-					}
-				} else if (c instanceof SingleValueFilterCriterion) {
+				if (c instanceof SingleValueFilterCriterion) {
 					SingleValueFilterCriterion valueCriterion = (SingleValueFilterCriterion)c;
 					FilterOperator operator = valueCriterion.getFilterOperator();
 					String property = valueCriterion.getProperty();
 					Object value = valueCriterion.getValue();
 					
 					if (value instanceof String) {
-						if (operator != null) {
+						if (operator == null) {
 							operator = FilterOperator.like;
 						}
-						String varName = parameterSource.addValue("%" + value + "%");
+						String valueStr = (String)value;
+						if (FilterOperator.like.equals(operator)) {
+							if (valueStr.indexOf('%') != 0 && valueStr.lastIndexOf('%') != valueStr.length()-1) {
+								valueStr = "%" + valueStr + "%";
+							}
+						}
+						
+						String varName = parameterSource.addValue(valueStr);
 						builder.rightSpace(property, operator.toString(), ":" + varName);
 					} else {
-						if (operator != null) {
+						if (operator == null) {
 							operator = FilterOperator.eq;
 						}
-						String varName = parameterSource.addValue(value);
-						builder.rightSpace(property, operator.toString(), ":" + varName);
+						
+						if (FilterOperator.between.equals(operator)) {
+							Object[] values = (Object[])value;
+							Object value1 = values[0];
+							Object value2 = values[1];
+							
+							String varName1 = parameterSource.addValue(value1);
+							String varName2 = parameterSource.addValue(value2);
+							
+							builder.rightSpace(property, "between", ":" + varName1, "and", ":" + varName2);
+						} else if (FilterOperator.in.equals(operator)) {
+							Object[] values = (Object[])value;
+							builder.rightSpace(property, "in", "(");
+							for (int i=0; i<values.length; i++) {
+								if (i > 0) {
+									builder.rightSpace(",");
+								}
+								String varName = parameterSource.addValue(values[i]);
+								builder.rightSpace(":" + varName);
+							}
+							builder.rightSpace(")");
+						} else {
+							String varName = parameterSource.addValue(value);
+							builder.rightSpace(property, operator.toString(), ":" + varName);
+						}
 					}
 				} else {
 					throw new IllegalArgumentException("Unknown type: " + c.getClass());
@@ -127,7 +141,7 @@ public abstract class SelectSql extends AbstractSql {
 		//设置countSql
 		String querySql = sql;
 		if (criterionIndex > 0) {
-			querySql = builder.toString();
+			querySql = builder.build();
 		}
 		this.countSql = dialect.toCountSQL(querySql);
 		

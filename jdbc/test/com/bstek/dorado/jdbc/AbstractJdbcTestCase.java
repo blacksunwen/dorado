@@ -8,9 +8,12 @@ import junit.framework.Assert;
 
 import org.apache.commons.lang.RandomStringUtils;
 
+import com.bstek.dorado.core.Context;
 import com.bstek.dorado.data.config.ConfigManagerTestSupport;
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.model.DbTable;
+import com.bstek.dorado.jdbc.support.JdbcDataProviderContext;
+import com.bstek.dorado.jdbc.support.JdbcDataProviderOperation;
 
 public abstract class AbstractJdbcTestCase extends ConfigManagerTestSupport {
 
@@ -23,6 +26,15 @@ public abstract class AbstractJdbcTestCase extends ConfigManagerTestSupport {
 			this.addExtensionContextConfigLocation(location);
 		}
 	}
+	
+	public JdbcDao getDao() {
+	try {
+		return (JdbcDao)Context.getCurrent().getServiceBean("jdbcDao");
+	} catch (Exception e) {
+		throw new RuntimeException(e);
+	}
+}
+
 	
 	protected JdbcDataProvider getProvider(String name) throws Exception {
 		JdbcDataProvider provider = (JdbcDataProvider)this.getDataProviderManager().getDataProvider(name);
@@ -48,7 +60,7 @@ public abstract class AbstractJdbcTestCase extends ConfigManagerTestSupport {
 			DbTable table = JdbcUtils.getDbTable(getTableName());
 			JdbcDataProviderOperation operation = new JdbcDataProviderOperation(table, jCtx);
 			
-			return JdbcUtils.query(operation);
+			return jCtx.getJdbcEnviroment().getJdbcDao().query(operation);
 		}
 	}
 	

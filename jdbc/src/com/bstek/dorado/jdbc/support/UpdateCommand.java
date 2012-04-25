@@ -10,7 +10,6 @@ import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.Dialect;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.JdbcParameterSource;
-import com.bstek.dorado.jdbc.JdbcRecordOperation;
 import com.bstek.dorado.jdbc.model.table.Table;
 import com.bstek.dorado.jdbc.model.table.TableColumn;
 import com.bstek.dorado.jdbc.model.table.TableKeyColumn;
@@ -36,7 +35,7 @@ public class UpdateCommand {
 		JdbcEnviroment env = operation.getJdbcEnviroment();
 		
 		Dialect dialect = env.getDialect();
-		NamedParameterJdbcTemplate jdbcTemplate = env.getNamedDao().getNamedParameterJdbcTemplate();
+		NamedParameterJdbcTemplate jdbcTemplate = env.getSpringNamedDao().getNamedParameterJdbcTemplate();
 		UpdateSql updateSql = this.updateSql(operation);
 		String sql = dialect.toSQL(updateSql);
 		if (logger.isDebugEnabled()) {

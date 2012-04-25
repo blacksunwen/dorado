@@ -21,6 +21,7 @@ public class InsertSql extends AbstractTableSql {
 	private List<String> valueTokenList = new ArrayList<String>();
 	
 	private TableKeyColumn identityColumn;
+	private boolean retrieveAfterExecute = false;
 	
 	public InsertSql() {
 		super();
@@ -40,6 +41,14 @@ public class InsertSql extends AbstractTableSql {
 		this.identityColumn = identityColumn;
 	}
 
+	public boolean isRetrieveAfterExecute() {
+		return retrieveAfterExecute;
+	}
+
+	public void setRetrieveAfterExecute(boolean retrieveAfterExecute) {
+		this.retrieveAfterExecute = retrieveAfterExecute;
+	}
+	
 	@Override
 	public String toSQL(Dialect dialect) {
 		String tableToken = this.getTableToken();

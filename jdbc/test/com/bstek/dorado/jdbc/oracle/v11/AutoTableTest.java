@@ -8,21 +8,20 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Assert;
 
 import com.bstek.dorado.data.variant.Record;
-import com.bstek.dorado.jdbc.JdbcUtils;
 
 public class AutoTableTest extends AbstractOracle11JdbcTestCase {
 
 	public void testEmp1() throws Exception {
 		String tableName = "emp_auto1";
 		
-		Collection<Record> emps = JdbcUtils.query(tableName, null);
+		Collection<Record> emps = getDao().query(tableName, null);
 		Assert.assertTrue(!emps.isEmpty());
 		{
 			Record emp = emps.iterator().next();
 			int id = emp.getInt("n_id");
 			emp.put("n_first_name", RandomStringUtils.randomAlphabetic(6));
 			emp.put("n_last_name", RandomStringUtils.randomAlphabetic(6));
-			JdbcUtils.update(tableName, emp);
+			getDao().update(tableName, emp);
 			
 			Record emp2 = Employee.get(id);
 			Assert.assertEquals(emp.get("n_first_name"), emp2.getString("FIRST_NAME"));
@@ -42,7 +41,7 @@ public class AutoTableTest extends AbstractOracle11JdbcTestCase {
 			autoEmp.put("n_birthday",   emp.get("BIRTHDAY"));
 			
 			{
-				JdbcUtils.insert(tableName, autoEmp);
+				getDao().insert(tableName, autoEmp);
 				
 				Record emp2 = Employee.get(id);
 				Assert.assertEquals(emp.get("ID"), emp2.get("ID"));
@@ -53,7 +52,7 @@ public class AutoTableTest extends AbstractOracle11JdbcTestCase {
 				Assert.assertEquals(emp.get("BIRTHDAY"), emp2.get("BIRTHDAY"));
 			}{
 				autoEmp.put("n_last_name", RandomStringUtils.randomAlphabetic(6));
-				JdbcUtils.update(tableName, autoEmp);
+				getDao().update(tableName, autoEmp);
 				
 				Record emp2 = Employee.get(id);
 				Assert.assertEquals(autoEmp.get("n_id"),         emp2.get("ID"));
@@ -63,7 +62,7 @@ public class AutoTableTest extends AbstractOracle11JdbcTestCase {
 				Assert.assertEquals(autoEmp.get("n_sex"),        emp2.get("SEX"));
 				Assert.assertEquals(autoEmp.get("n_birthday"),   emp2.get("BIRTHDAY"));
 			}{
-				JdbcUtils.delete(tableName, autoEmp);
+				getDao().delete(tableName, autoEmp);
 				Assert.assertEquals(false, Employee.has(id));
 			}
 		}
@@ -74,28 +73,28 @@ public class AutoTableTest extends AbstractOracle11JdbcTestCase {
 		Map<String, Object> parameter = new HashMap<String, Object>();
 		parameter.put("ID", 333);
 		
-		Collection<Record> records = JdbcUtils.query(tableName, parameter);
+		Collection<Record> records = getDao().query(tableName, parameter);
 		Assert.assertTrue(records.isEmpty());
 	}
 	
 	public void testEmp3() throws Exception {
 		String tableName = "emp_auto3";
 		{
-			Collection<Record> records = JdbcUtils.query(tableName, null);
+			Collection<Record> records = getDao().query(tableName, null);
 			Assert.assertTrue(!records.isEmpty());
 		}
 		{
 			Map<String, Object> parameter = new HashMap<String, Object>();
 			parameter.put("lastName", "last777");
 			
-			Collection<Record> records = JdbcUtils.query(tableName, parameter);
+			Collection<Record> records = getDao().query(tableName, parameter);
 			Assert.assertTrue(records.isEmpty());
 		}
 		{
 			Map<String, Object> parameter = new HashMap<String, Object>();
 			parameter.put("firstName", "firstklhlkh");
 			
-			Collection<Record> records = JdbcUtils.query(tableName, parameter);
+			Collection<Record> records = getDao().query(tableName, parameter);
 			Assert.assertTrue(records.isEmpty());
 		}
 		{
@@ -103,7 +102,7 @@ public class AutoTableTest extends AbstractOracle11JdbcTestCase {
 			parameter.put("lastName", "last777hg");
 			parameter.put("firstName", "first;lj;j;o");
 			
-			Collection<Record> records = JdbcUtils.query(tableName, parameter);
+			Collection<Record> records = getDao().query(tableName, parameter);
 			Assert.assertTrue(records.isEmpty());
 		}
 		{
@@ -111,7 +110,7 @@ public class AutoTableTest extends AbstractOracle11JdbcTestCase {
 			parameter.put("title", "last777hg");
 			parameter.put("phone", "last777hg");
 			
-			Collection<Record> records = JdbcUtils.query(tableName, parameter);
+			Collection<Record> records = getDao().query(tableName, parameter);
 			Assert.assertTrue(records.isEmpty());
 		}
 	}
@@ -119,21 +118,21 @@ public class AutoTableTest extends AbstractOracle11JdbcTestCase {
 	public void testEmp4() throws Exception {
 		String tableName = "emp_auto4";
 		{
-			Collection<Record> records = JdbcUtils.query(tableName, null);
+			Collection<Record> records = getDao().query(tableName, null);
 			Assert.assertTrue(!records.isEmpty());
 		}
 		{
 			Map<String, Object> parameter = new HashMap<String, Object>();
 			parameter.put("lastName", "last");
 			
-			Collection<Record> records = JdbcUtils.query(tableName, parameter);
+			Collection<Record> records = getDao().query(tableName, parameter);
 			Assert.assertTrue(records.isEmpty());
 		}
 		{
 			Map<String, Object> parameter = new HashMap<String, Object>();
 			parameter.put("firstName", "first");
 			
-			Collection<Record> records = JdbcUtils.query(tableName, parameter);
+			Collection<Record> records = getDao().query(tableName, parameter);
 			Assert.assertTrue(records.isEmpty());
 		}
 		{
@@ -141,7 +140,7 @@ public class AutoTableTest extends AbstractOracle11JdbcTestCase {
 			parameter.put("lastName", "last");
 			parameter.put("firstName", "first");
 			
-			Collection<Record> records = JdbcUtils.query(tableName, parameter);
+			Collection<Record> records = getDao().query(tableName, parameter);
 			Assert.assertTrue(records.isEmpty());
 		}
 		{
@@ -149,7 +148,7 @@ public class AutoTableTest extends AbstractOracle11JdbcTestCase {
 			parameter.put("id", 2323000);
 			parameter.put("firstName", "first");
 			
-			Collection<Record> records = JdbcUtils.query(tableName, parameter);
+			Collection<Record> records = getDao().query(tableName, parameter);
 			Assert.assertTrue(records.isEmpty());
 		}
 		{
@@ -157,7 +156,7 @@ public class AutoTableTest extends AbstractOracle11JdbcTestCase {
 			parameter.put("id", 2323000);
 			parameter.put("lastName", "last");
 			
-			Collection<Record> records = JdbcUtils.query(tableName, parameter);
+			Collection<Record> records = getDao().query(tableName, parameter);
 			Assert.assertTrue(records.isEmpty());
 		}
 		{
@@ -166,7 +165,7 @@ public class AutoTableTest extends AbstractOracle11JdbcTestCase {
 			parameter.put("lastName", "last");
 			parameter.put("firstName", "first");
 			
-			Collection<Record> records = JdbcUtils.query(tableName, parameter);
+			Collection<Record> records = getDao().query(tableName, parameter);
 			Assert.assertTrue(records.isEmpty());
 		}
 	}
@@ -174,7 +173,7 @@ public class AutoTableTest extends AbstractOracle11JdbcTestCase {
 		String tableName = "emp_auto5"; 
 		{
 			Map<String, Object> parameter = new HashMap<String, Object>();
-			Collection<Record> records = JdbcUtils.query(tableName, parameter);
+			Collection<Record> records = getDao().query(tableName, parameter);
 			Assert.assertTrue(!records.isEmpty());
 		}
 		
@@ -182,14 +181,14 @@ public class AutoTableTest extends AbstractOracle11JdbcTestCase {
 			Map<String, Object> parameter = new HashMap<String, Object>();
 			parameter.put("v1", 99999999);
 			
-			Collection<Record> records = JdbcUtils.query(tableName, parameter);
+			Collection<Record> records = getDao().query(tableName, parameter);
 			Assert.assertTrue(records.isEmpty());
 		}
 		{
 			Map<String, Object> parameter = new HashMap<String, Object>();
 			parameter.put("v2", 0);
 			
-			Collection<Record> records = JdbcUtils.query(tableName, parameter);
+			Collection<Record> records = getDao().query(tableName, parameter);
 			Assert.assertTrue(records.isEmpty());
 		}
 		
@@ -198,7 +197,7 @@ public class AutoTableTest extends AbstractOracle11JdbcTestCase {
 			parameter.put("v1", 10);
 			parameter.put("v2", 9);
 			
-			Collection<Record> records = JdbcUtils.query(tableName, parameter);
+			Collection<Record> records = getDao().query(tableName, parameter);
 			Assert.assertTrue(records.isEmpty());
 		}
 	}
@@ -206,7 +205,7 @@ public class AutoTableTest extends AbstractOracle11JdbcTestCase {
 		String tableName = "emp_auto6";
 		{
 			Map<String, Object> parameter = new HashMap<String, Object>();
-			Collection<Record> records = JdbcUtils.query(tableName, parameter);
+			Collection<Record> records = getDao().query(tableName, parameter);
 			Assert.assertTrue(!records.isEmpty());
 		}
 	}
@@ -214,18 +213,18 @@ public class AutoTableTest extends AbstractOracle11JdbcTestCase {
 		String tableName = "emp_auto7";
 		{
 			Map<String, Object> parameter = new HashMap<String, Object>();
-			Collection<Record> records = JdbcUtils.query(tableName, parameter);
+			Collection<Record> records = getDao().query(tableName, parameter);
 			Assert.assertTrue(!records.isEmpty());
 		}
 	}
 	
 	public void testProductCat1() throws Exception{
 		String tableName = "product_cat_auto1";
-		Collection<Record> records = JdbcUtils.query(tableName, null);
+		Collection<Record> records = getDao().query(tableName, null);
 	}
 	
 	public void testProductCat2() throws Exception{
 		String tableName = "product_cat_auto2";
-		Collection<Record> records = JdbcUtils.query(tableName, null);
+		Collection<Record> records = getDao().query(tableName, null);
 	}
 }

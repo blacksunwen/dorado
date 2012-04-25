@@ -1,6 +1,6 @@
 package com.bstek.dorado.jdbc.model.table;
 
-import com.bstek.dorado.jdbc.JdbcRecordOperation;
+import com.bstek.dorado.jdbc.support.JdbcRecordOperation;
 
 /**
  * 主键生成器

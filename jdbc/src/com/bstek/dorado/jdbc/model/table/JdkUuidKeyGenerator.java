@@ -2,7 +2,7 @@ package com.bstek.dorado.jdbc.model.table;
 
 import java.util.UUID;
 
-import com.bstek.dorado.jdbc.JdbcRecordOperation;
+import com.bstek.dorado.jdbc.support.JdbcRecordOperation;
 
 /**
  * UUID的主键生成器

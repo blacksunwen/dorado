@@ -11,15 +11,14 @@ import com.bstek.dorado.data.entity.EntityState;
 import com.bstek.dorado.data.entity.EntityUtils;
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.Dialect;
-import com.bstek.dorado.jdbc.JdbcDataProviderOperation;
 import com.bstek.dorado.jdbc.JdbcIntercepter;
-import com.bstek.dorado.jdbc.JdbcRecordOperation;
 import com.bstek.dorado.jdbc.model.AbstractDbColumn;
 import com.bstek.dorado.jdbc.model.autotable.AutoTable;
 import com.bstek.dorado.jdbc.model.autotable.AutoTableColumn;
 import com.bstek.dorado.jdbc.model.autotable.FromTable;
 import com.bstek.dorado.jdbc.model.autotable.Order;
 import com.bstek.dorado.jdbc.model.table.Table;
+import com.bstek.dorado.jdbc.sql.DeleteAllSql;
 import com.bstek.dorado.jdbc.sql.DeleteSql;
 import com.bstek.dorado.jdbc.sql.InsertSql;
 import com.bstek.dorado.jdbc.sql.RetrieveSql;
@@ -42,6 +41,7 @@ public abstract class AbstractDialect implements Dialect {
 	private InsertCommand insertCommand;
 	private UpdateCommand updateCommand;
 	private DeleteCommand deleteCommand;
+	private DeleteAllCommand deleteAllCommand; 
 	
 	private JdbcIntercepter intercepter;
 
@@ -63,6 +63,10 @@ public abstract class AbstractDialect implements Dialect {
 
 	public void setDeleteCommand(DeleteCommand deleteCommand) {
 		this.deleteCommand = deleteCommand;
+	}
+
+	public void setDeleteAllCommand(DeleteAllCommand deleteAllCommand) {
+		this.deleteAllCommand = deleteAllCommand;
 	}
 
 	public String token(Table table) {
@@ -112,6 +116,10 @@ public abstract class AbstractDialect implements Dialect {
 		return deleteSql.toSQL(this);
 	}
 	
+	public String toSQL(DeleteAllSql sql) throws Exception {
+		return sql.toSQL(this);
+	}
+	
 	public String toSQL(InsertSql insertSql) throws Exception {
 		return insertSql.toSQL(this);
 	}
@@ -157,6 +165,14 @@ public abstract class AbstractDialect implements Dialect {
 		return false;
 	}
 	
+	public boolean execute(DeleteAllOperation operation) throws Exception {
+		if (intercepter != null) {
+			operation = intercepter.getOperation(operation);
+		}
+		
+		deleteAllCommand.execute(operation);
+		return true;
+	}
 	
 	public String token(AutoTable autoTable, JoinOperator joinModel) {
 		switch (joinModel) {

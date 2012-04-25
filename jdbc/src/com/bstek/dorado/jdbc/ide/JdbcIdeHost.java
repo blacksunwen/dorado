@@ -58,8 +58,7 @@ public class JdbcIdeHost {
 		private File resultFile;
 		private DriverDataSource dataSource;
 		private Map<String, String> argMap = new HashMap<String, String>();
-		@SuppressWarnings("rawtypes")
-		private Class agentClass;
+		private Class<?> agentClass;
 		private Object agentObject;
 		
 		Service(String [] args) throws Exception {
@@ -69,7 +68,6 @@ public class JdbcIdeHost {
 				if (key.startsWith("-")) {
 					key = key.substring(1);
 					String value = args[i+1];
-//					String value = args[++i];
 					if (!value.startsWith("-")) {
 						argMap.put(key, value);
 						i++;

@@ -1,9 +1,6 @@
 package com.bstek.dorado.jdbc.support;
 
-import com.bstek.dorado.jdbc.JdbcDataProviderOperation;
-import com.bstek.dorado.jdbc.JdbcDataResolverOperation;
 import com.bstek.dorado.jdbc.JdbcIntercepter;
-import com.bstek.dorado.jdbc.JdbcRecordOperation;
 import com.bstek.dorado.jdbc.config.DbElementDefinition;
 
 /**
@@ -28,6 +25,10 @@ public class DefaultJdbcIntercepter implements JdbcIntercepter {
 		return operation;
 	}
 
+	public DeleteAllOperation getOperation(DeleteAllOperation operation) {
+		return operation;
+	}
+	
 	public DbElementDefinition getDefinition(DbElementDefinition def) {
 		return def;
 	}

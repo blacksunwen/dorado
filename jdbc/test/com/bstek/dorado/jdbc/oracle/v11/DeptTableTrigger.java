@@ -10,7 +10,7 @@ import com.bstek.dorado.data.entity.EntityUtils;
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.AbstractDbTableTrigger;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
-import com.bstek.dorado.jdbc.JdbcRecordOperation;
+import com.bstek.dorado.jdbc.support.JdbcRecordOperation;
 
 public class DeptTableTrigger extends AbstractDbTableTrigger {
 
@@ -19,7 +19,7 @@ public class DeptTableTrigger extends AbstractDbTableTrigger {
 		Record dept = operation.getRecord();
 		if (EntityUtils.getState(dept) == EntityState.DELETED) {
 			JdbcEnviroment env = operation.getJdbcEnviroment();
-			NamedParameterJdbcDaoSupport dao = env.getNamedDao();
+			NamedParameterJdbcDaoSupport dao = env.getSpringNamedDao();
 			
 			String sql = "delete from EMPLOYEE where DEPT_ID = :DEPT_ID";
 			Map<String, Object> paramMap = new HashMap<String, Object>();

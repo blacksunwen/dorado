@@ -4,11 +4,11 @@ import java.util.List;
 
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.DbTableTrigger;
-import com.bstek.dorado.jdbc.JdbcDataProviderOperation;
-import com.bstek.dorado.jdbc.JdbcDataResolverContext;
-import com.bstek.dorado.jdbc.JdbcRecordOperationProxy;
 import com.bstek.dorado.jdbc.model.table.Table;
 import com.bstek.dorado.jdbc.sql.SelectSql;
+import com.bstek.dorado.jdbc.support.JdbcDataProviderOperation;
+import com.bstek.dorado.jdbc.support.JdbcDataResolverContext;
+import com.bstek.dorado.jdbc.support.JdbcRecordOperationProxy;
 
 /**
  * 

@@ -1,4 +1,4 @@
-package com.bstek.dorado.jdbc;
+package com.bstek.dorado.jdbc.support;
 
 import com.bstek.dorado.jdbc.model.DbTable;
 
@@ -9,7 +9,7 @@ import com.bstek.dorado.jdbc.model.DbTable;
  * 
  */
 public class JdbcDataProviderOperation extends
-		AbstractDbTableOperation<JdbcDataProviderContext> {
+		AbstractDbTableOperation<JdbcDataProviderContext, DbTable> {
 
 	public JdbcDataProviderOperation(DbTable dbTable,
 			JdbcDataProviderContext jdbcContext) {
