@@ -254,7 +254,7 @@
 		},
 
 
-		doRenderToOrReplace: function(replace, element) {
+		doRenderToOrReplace: function(replace, element, nextChildElement) {
 			if (replace && this._children.size == 0 && element.childNodes.length > 0) {
 				var children = [];
 				for (var i = 0; i < element.childNodes.length; i++) {
@@ -265,7 +265,7 @@
 				});
 				this.addChild(htmlContrainer);
 			}
-			$invokeSuper.call(this, [replace, element]);
+			$invokeSuper.call(this, [replace, element, nextChildElement]);
 		},
 		
 		/**

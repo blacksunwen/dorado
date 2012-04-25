@@ -37,6 +37,7 @@ dorado.widget.HtmlContainer = $extend(dorado.widget.Container, /** @scope dorado
 					this._oldDom = this._dom;
 					this._dom = null;
 					
+					$fly(this._oldDom).empty();
 					this.replace(this._oldDom);
 					if (this._container && this._layout && this._layout._dom) {
 						var layoutDom = this._layout._dom;
