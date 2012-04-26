@@ -187,8 +187,8 @@
 			} else {
 				dataTypeRepository.unregister(this.name);
 				var result = ajax.requestSync(this.getAjaxOptions());
-				var dataType;
-				if (dataTypeRepository.parseJsonData(result.getJsonData()) > 0) {
+				var jsonData = result.getJsonData(), dataType;
+				if (jsonData && dataTypeRepository.parseJsonData(jsonData) > 0) {
 					dataType = dataTypeRepository._dataTypeMap[this.name];
 				}
 				if (!dataType) {
