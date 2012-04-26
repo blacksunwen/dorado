@@ -68,7 +68,7 @@ public class QueryCommand {
 		NamedParameterJdbcTemplate jdbcTemplate = env.getSpringNamedDao().getNamedParameterJdbcTemplate();
 
 		int pageSize = page.getPageSize();
-		int firstIndex = page.getFirstEntityIndex() + 1;
+		int firstIndex = page.getFirstEntityIndex();
 
 		if (dialect.isNarrowSupport()) {
 			String sql = dialect.narrowSql(selectSql, pageSize, firstIndex);

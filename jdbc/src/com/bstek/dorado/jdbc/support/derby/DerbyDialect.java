@@ -19,7 +19,6 @@ public class DerbyDialect extends AbstractDialect {
 
 	/**
 	 * @see <a href='http://db.apache.org/derby/docs/10.8/ref/rrefsqljoffsetfetch.html#rrefsqljoffsetfetch'>http://db.apache.org/derby/docs/10.8/ref/rrefsqljoffsetfetch.html#rrefsqljoffsetfetch</a>
-	 * @see com.bstek.dorado.jdbc.Dialect#narrowSql(com.bstek.dorado.jdbc.sql.SelectSql, int, int)
 	 */
 	public String narrowSql(SelectSql selectSql, int maxResults, int firstResult) throws Exception{
 		String sql = this.toSQL(selectSql);
