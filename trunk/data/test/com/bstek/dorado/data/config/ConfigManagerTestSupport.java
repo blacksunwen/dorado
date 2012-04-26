@@ -41,7 +41,7 @@ public abstract class ConfigManagerTestSupport extends DataContextTestCase {
 			Set<Resource> resourceSet = rcms.getResources();
 			Resource[] resources = new Resource[resourceSet.size()];
 			resourceSet.toArray(resources);
-			configManager.loadConfigs(resources);
+			configManager.loadConfigs(resources, true);
 		}
 	}
 

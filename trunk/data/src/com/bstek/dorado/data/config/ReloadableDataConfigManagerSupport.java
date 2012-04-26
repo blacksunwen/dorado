@@ -118,8 +118,9 @@ public abstract class ReloadableDataConfigManagerSupport extends
 	}
 
 	@Override
-	public synchronized void loadConfigs(Resource[] resources) throws Exception {
-		super.loadConfigs(resources);
+	public synchronized void loadConfigs(Resource[] resources,
+			boolean throwOnError) throws Exception {
+		super.loadConfigs(resources, throwOnError);
 		refreshableResources = getRefreshableResources();
 	}
 
@@ -202,7 +203,7 @@ public abstract class ReloadableDataConfigManagerSupport extends
 								.size()];
 						resourceToReload.toArray(resource);
 						configsChanged = true;
-						loadConfigs(resource);
+						loadConfigs(resource, false);
 					}
 				} catch (Exception e) {
 					logger.error(e, e);

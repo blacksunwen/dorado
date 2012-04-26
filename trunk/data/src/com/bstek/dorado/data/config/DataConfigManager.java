@@ -28,7 +28,7 @@ public interface DataConfigManager {
 	 *            用于表示一组配置文件的资源描述数组
 	 * @throws Exception
 	 */
-	void loadConfigs(Resource[] resources) throws Exception;
+	void loadConfigs(Resource[] resources, boolean throwOnError) throws Exception;
 
 	/**
 	 * 从已装载的信息中卸载与传入的配置文件相关的那部分配置信息。
