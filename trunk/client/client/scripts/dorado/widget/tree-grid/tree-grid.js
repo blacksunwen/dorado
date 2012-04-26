@@ -203,7 +203,7 @@
 			currentNode: {
 				skipRefresh: true,
 				getter: function(p) {
-					if (this._rendered) {
+					if (this._innerGrid || this._fixedInnerGrid) {
 						return (this._domMode == 2 ? this._fixedInnerGrid : this._innerGrid).get(p);
 					}
 					else {
@@ -211,7 +211,7 @@
 					}
 				},
 				setter: function(v, p) {
-					if (this._rendered) {
+					if (this._innerGrid || this._fixedInnerGrid) {
 						(this._domMode == 2 ? this._fixedInnerGrid : this._innerGrid).set(p, v);
 					}
 					else {
