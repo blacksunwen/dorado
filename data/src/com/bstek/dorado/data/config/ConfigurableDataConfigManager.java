@@ -212,7 +212,7 @@ public class ConfigurableDataConfigManager extends
 
 			String[] locations = new String[configLocations.size()];
 			configLocations.toArray(locations);
-			loadConfigs(ResourceUtils.getResources(locations));
+			loadConfigs(ResourceUtils.getResources(locations), true);
 		}
 
 		if (isUseAutoReloadThread() && isAutoReloadEnabled()) {
@@ -478,7 +478,7 @@ public class ConfigurableDataConfigManager extends
 				configsChanged = true;
 				Resource[] newResourceArray = new Resource[newResources.size()];
 				newResources.toArray(newResourceArray);
-				loadConfigs(newResourceArray);
+				loadConfigs(newResourceArray, false);
 			}
 		} catch (Exception e) {
 			logger.error(e, e);

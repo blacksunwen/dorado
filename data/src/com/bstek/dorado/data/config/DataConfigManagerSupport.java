@@ -99,7 +99,8 @@ public abstract class DataConfigManagerSupport implements DataConfigManager {
 		}
 	}
 
-	public synchronized void loadConfigs(Resource[] resources) throws Exception {
+	public synchronized void loadConfigs(Resource[] resources,
+			boolean throwOnError) throws Exception {
 		long startTime = System.currentTimeMillis();
 
 		CollectionUtils.addAll(resourceSet, resources);
@@ -109,7 +110,11 @@ public abstract class DataConfigManagerSupport implements DataConfigManager {
 			internalUnloadConfigs(resources);
 			internalLoadConfig(resources);
 		} catch (Exception ex) {
-			logger.error(ex, ex);
+			if (throwOnError) {
+				throw ex;
+			} else {
+				logger.error(ex, ex);
+			}
 		} finally {
 			ConfigUtils.setDuringBuildTemplate(false);
 		}
@@ -157,7 +162,7 @@ public abstract class DataConfigManagerSupport implements DataConfigManager {
 		event.setResource(resources);
 		event.setMode(DataConfigManagerEvent.MODE_UNLOAD);
 		fireOnConfigChanged(event);
-		
+
 		String message = "Configures unloaded [";
 		for (int i = 0; i < resources.length; i++) {
 			if (i > 0)
