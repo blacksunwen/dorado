@@ -2071,9 +2071,6 @@
 			property: {
 				defaultValue: "none"
 			},
-			supportsOptionMenu: {
-				defaultValue: false
-			},
 			resizeable: {
 				defaultValue: false
 			},
@@ -2135,9 +2132,6 @@
 			},
 			property: {
 				defaultValue: "none"
-			},
-			supportsOptionMenu: {
-				defaultValue: false
 			},
 			resizeable: {
 				defaultValue: false
@@ -2267,9 +2261,6 @@
 			property: {
 				defaultValue: "none"
 			},
-			supportsOptionMenu: {
-				defaultValue: false
-			},
 			resizeable: {
 				defaultValue: false
 			},
@@ -2316,12 +2307,14 @@
 					$cell.addClass("row-selector");
 					if (!$cell.data("selectionMenuBinded")) {
 						$cell.data("selectionMenuBinded", true).click(function() {
-							var menu = getMenu(column);
-							menu.show({
-								anchorTarget: cell,
-								align: "innerright",
-								vAlign: "bottom"
-							});
+							if (grid._selectionMode == "multiRows") {
+								var menu = getMenu(column);
+								menu.show({
+									anchorTarget: cell,
+									align: "innerright",
+									vAlign: "bottom"
+								});
+							}
 							return false;
 						});
 					}

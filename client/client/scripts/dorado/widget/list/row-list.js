@@ -39,13 +39,6 @@
 			 */
 			highlightHoverRow: {
 				defaultValue: true
-			},
-			
-			selection: {
-				setter: function(v) {
-					if (v == null && "multiRows" == this._selectionMode) v = [];
-					this.replaceSelection(this.get("selection"), v);
-				}
 			}
 		},
 		

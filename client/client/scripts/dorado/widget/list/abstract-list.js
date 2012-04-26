@@ -68,13 +68,28 @@ dorado.widget.AbstractList = $extend(dorado.widget.Control, /** @scope dorado.wi
 		 * @attribute skipRefresh
 		 */
 		selection: {
-			skipRefresh: true,
+			skipRefresh: true,			
 			getter: function() {
-				if (this._selectionMode == "multiRows" && this._selection) {
-					return [];
-				} else {
-					return this._selection;
+				var selection = this._selection;
+				if (selection instanceof dorado.Entity) {
+					if (selection.state == dorado.Entity.STATE_DELETED) {
+						this._selection = selection = null;
+					}
 				}
+				else if (selection instanceof Array) {
+					for (var i = selection.length; i >= 0; i--) {
+						var s = selection[i];
+						if (s instanceof dorado.Entity && s.state == dorado.Entity.STATE_DELETED) {
+							selection.removeAt(i);
+						}
+					}
+				}
+				if (this._selectionMode == "multiRows" && !selection) selection = [];
+				return selection;
+			},
+			setter: function(v) {
+				if (v == null && "multiRows" == this._selectionMode) v = [];
+				this.replaceSelection(this.get("selection"), v);
 			}
 		},
 		
