@@ -3533,7 +3533,7 @@
 		}
 		var columnCell = column.headerCell, $columnCell = $fly(columnCell);
 		var offset = $columnCell.offset();
-		$fly(handler).data("column", column).top(offset.top).left(offset.left + columnCell.offsetWidth - 3).height(columnCell.offsetHeight).show();
+		$fly(handler).data("column", column).bringToFront().top(offset.top).left(offset.left + columnCell.offsetWidth - 3).height(columnCell.offsetHeight).show();
 		return handler;
 	}
 	
