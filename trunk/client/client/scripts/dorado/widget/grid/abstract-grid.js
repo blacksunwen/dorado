@@ -2004,7 +2004,7 @@
 		},
 
 		showHeaderOptionButton: function(column) {
-			if (!column || !column._supportsOptionMenu) return;
+			if (!column || !column._supportsOptionMenu || column._property == "none") return;
 			var cell = column.headerCell, $cell = jQuery(cell);
 			$cell.addClass("menu-open-header");
 
