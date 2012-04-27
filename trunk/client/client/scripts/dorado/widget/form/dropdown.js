@@ -493,9 +493,7 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 				} finally {
 					editor._lastPost = lastPost;
 				}
-				if (this._postValueOnSelect) {
-					editor.post();
-				}
+				if (this._postValueOnSelect) editor.post();
 			}
 		}
 	}

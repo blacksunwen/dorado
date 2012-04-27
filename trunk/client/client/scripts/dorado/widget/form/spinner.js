@@ -106,6 +106,18 @@
 			 */
 			step: {
 				defaultValue: 1
+			},
+			
+			/**
+			 * 是否在用户操作Spinner按钮之后自动确认相应编辑框中的内容。
+			 * 
+			 * @type boolean
+			 * @attribute
+			 * @default true
+			 * @see dorado.widget.AbstractTextEditor#post
+			 */
+			postValueOnSpin: {
+				defaultValue: true
 			}
 		},
 		
@@ -216,6 +228,7 @@
 			var value = parseInt(spinner.get("value"), 10);
 			if (!isNaN(value)) {
 				spinner.set("value", value + spinner._step);
+				if (spinner._postValueOnSpin) spinner.post();
 			}
 		},
 		
@@ -224,6 +237,7 @@
 			var value = parseInt(spinner.get("value"), 10);
 			if (!isNaN(value)) {
 				spinner.set("value", value - spinner._step);
+				if (spinner._postValueOnSpin) spinner.post();
 			}
 		},
 		
@@ -514,6 +528,7 @@
 			if (value == null) value = minValue;
 			else if (maxValue != null && value > maxValue) value = minValue;
 			spinner.doSetSlotValue(currentSlotIndex, value || 0);
+			if (spinner._postValueOnSpin) spinner.post();
 		},
 		
 		/**
@@ -531,6 +546,7 @@
 			if (value == null) value = maxValue;
 			if (minValue != null && value < minValue) value = maxValue;
 			spinner.doSetSlotValue(currentSlotIndex, value || 0);
+			if (spinner._postValueOnSpin) spinner.post();
 		},
 		
 		doOnKeyDown: function(event) {
