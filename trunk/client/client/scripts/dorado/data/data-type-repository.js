@@ -162,8 +162,7 @@
 							if (json.$context) {
 								dataTypeJson = json.data;
 								context = json.$context;
-							}
-							else {
+							} else {
 								dataTypeJson = json;
 							}
 							
@@ -175,7 +174,7 @@
 							}
 							
 							if (context && dataTypeRepository._view) {
-								dataTypeRepository._view.set("context", context);  
+								dataTypeRepository._view.set("context", context);
 							}
 						} else {
 							$callback(callback, false, result.error, {
@@ -369,9 +368,9 @@
 		 * @return {dorado.DataType} 数据类型。
 		 */
 		get: function(name, loadMode) {
-			var id = name, name = dorado.DataUtil.extractNameFromId(id); 
+			var id = name, name = dorado.DataUtil.extractNameFromId(id);
 			var dataType = this._get(name);
-			if (dataType == DataTypeRepository.UNLOAD_DATATYPE) {	// 已认识但尚未下载的
+			if (dataType == DataTypeRepository.UNLOAD_DATATYPE) { // 已认识但尚未下载的
 				var subId = dorado.DataType.getSubName(id);
 				if (subId) {
 					dataType = newAggDataType.call(this, name, subId);
@@ -386,11 +385,11 @@
 						dataType = null;
 					}
 				}
-			} else if (dataType instanceof dorado.DataTypePipe) {	// 正在下载的
+			} else if (dataType instanceof dorado.DataTypePipe) { // 正在下载的
 				var pipe = dataType;
 				if (loadMode == "always") dataType = pipe.get(callback);
 				else dataType = null;
-			} else if (!dataType) {	// 不认识的
+			} else if (!dataType) { // 不认识的
 				var subId = dorado.DataType.getSubName(id);
 				if (subId) {
 					dataType = newAggDataType.call(this, name, subId);
@@ -414,7 +413,7 @@
 		 * </ul>
 		 */
 		getAsync: function(name, callback, loadMode) {
-			var id = name, name = dorado.DataUtil.extractNameFromId(id); 
+			var id = name, name = dorado.DataUtil.extractNameFromId(id);
 			var dataType = this._get(name);
 			if (dataType == DataTypeRepository.UNLOAD_DATATYPE) {
 				var subId = dorado.DataType.getSubName(id);
@@ -458,7 +457,8 @@
 			
 			var nameMap = {}, result = [];
 			collect(this, nameMap);
-			for (var name in nameMap) result.push(name);
+			for (var name in nameMap) 
+				result.push(name);
 			return result;
 		}
 	});
@@ -489,10 +489,9 @@
 		return newDataType;
 	}
 	
-	var dataType = dorado.$String;
-	root.register(dataType);
-	root.register("char", cloneDataType(dataType, "char"));
-	root.register("Character", cloneDataType(dataType, "Character"));
+	root.register(dorado.$String);
+	root.register(dorado.$char);
+	root.register(dorado.$Character);
 	
 	dataType = dorado.$int;
 	root.register("int", dataType);
@@ -515,21 +514,15 @@
 	root.register("Double", cloneDataType(dataType, "Double"));
 	root.register("BigDecimal", cloneDataType(dataType, "BigDecimal"));
 	
-	dataType = dorado.$boolean;
-	root.register(dataType);
-	
-	dataType = dorado.$Boolean;
-	root.register(dataType);
+	root.register(dorado.$boolean);
+	root.register(dorado.$Boolean);
 	
 	dataType = dorado.$Date;
 	root.register("Date", dataType);
 	root.register("Calendar", cloneDataType(dataType, "Calendar"));
 	
-	dataType = dorado.$Time;
-	root.register("Time", dataType);
-	
-	dataType = dorado.$DateTime;
-	root.register("DateTime", dataType);
+	root.register("Time", dorado.$Time);
+	root.register("DateTime", dorado.$DateTime);
 	
 	var AggregationDataType = dorado.AggregationDataType;
 	root.register(new AggregationDataType("List"));
