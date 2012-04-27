@@ -36,13 +36,13 @@ public class ProductInterceptor {
 	}
 
 	@DataProvider
-	public Collection<Product> findProductsByName(String namePattern) {
-		if (StringUtils.isEmpty(namePattern)) {
+	public Collection<Product> findProductsByName(String filterValue) {
+		if (StringUtils.isEmpty(filterValue)) {
 			return productDao.getAll();
 		} else {
 			return productDao.find(
 					"from Product where productName like '%'||?||'%'",
-					namePattern);
+					filterValue);
 		}
 	}
 
