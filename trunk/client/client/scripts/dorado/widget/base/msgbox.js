@@ -207,8 +207,6 @@
                         var dom = dialog._dom;
                         $fly(dom).width(dorado.MessageBox.maxWidth);
 
-                        debugger;
-
                         var doms = dialog._doms, contentWidth = $fly(doms.msgText).outerWidth(true) + $fly(doms.msgContent).outerWidth() - $fly(doms.msgContent).width();
 
                         if (contentWidth < dorado.MessageBox.minWidth) {
