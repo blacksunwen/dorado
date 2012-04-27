@@ -844,10 +844,15 @@
 			}
 
 			tabbar._currentTab = tab;
-			tabbar.fireEvent("onTabChange", tabbar, eventArg);
+			tabbar.doOnTabChange(eventArg);
 
 			return true;
 		},
+
+        doOnTabChange: function(eventArg) {
+            var tabbar = this;
+            tabbar.fireEvent("onTabChange", tabbar, eventArg);
+        },
 
 		/**
 		 * @private
