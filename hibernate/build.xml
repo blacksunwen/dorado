@@ -7,9 +7,9 @@
 
 	<property name="addonName" value="dorado-hibernate" />
 	<property name="vendor" value="www.BSTEK.com" />
-	<property name="version" value="0.2.0" />
+	<property name="version" value="0.2.1" />
 	<!-- SNAPSHOT,BETA -->
-	<property name="qualifier" value="BETA" />
+	<property name="qualifier" value="SNAPSHOT" />
 	<property name="buildJavaDoc" value="true" />
 	<property name="buildJsDoc" value="false" />
 
