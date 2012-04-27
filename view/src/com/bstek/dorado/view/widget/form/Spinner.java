@@ -9,6 +9,7 @@ import com.bstek.dorado.annotation.ClientProperty;
 public abstract class Spinner extends AbstractTextBox {
 	private int step = 1;
 	private boolean showSpinTrigger = true;
+	private boolean postValueOnSpin = true;
 
 	@ClientProperty(escapeValue = "1")
 	public int getStep() {
@@ -26,5 +27,14 @@ public abstract class Spinner extends AbstractTextBox {
 
 	public void setShowSpinTrigger(boolean showSpinTrigger) {
 		this.showSpinTrigger = showSpinTrigger;
+	}
+
+	@ClientProperty(escapeValue = "true")
+	public boolean isPostValueOnSpin() {
+		return postValueOnSpin;
+	}
+
+	public void setPostValueOnSpin(boolean postValueOnSpin) {
+		this.postValueOnSpin = postValueOnSpin;
 	}
 }
