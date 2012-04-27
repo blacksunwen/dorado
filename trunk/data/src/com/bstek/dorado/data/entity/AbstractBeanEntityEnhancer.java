@@ -113,7 +113,28 @@ public abstract class AbstractBeanEntityEnhancer extends EntityEnhancer {
 	@Override
 	protected void internalWriteProperty(Object entity, String property,
 			Object value) throws Exception {
+		BeanMap beanMap = getBeanMap(entity);
+		Class<?> propertyType = beanMap.getPropertyType(property);
+		if (!propertyType.isInstance(value)) {
+			value = tryConvertValue(propertyType, value);
+		}
 		PropertyUtils.setSimpleProperty(entity, property, value);
+	}
+
+	protected Object tryConvertValue(Class<?> propertyType, Object value) {
+		if (java.util.Date.class.isAssignableFrom(propertyType)
+				&& value instanceof java.util.Date) {
+			long time = ((java.util.Date) value).getTime();
+			if (java.sql.Date.class.isAssignableFrom(propertyType)) {
+				value = new java.sql.Date(time);
+			} else if (java.sql.Time.class.isAssignableFrom(propertyType)) {
+				value = new java.sql.Time(time);
+			} else if (java.sql.Timestamp.class
+					.isAssignableFrom(propertyType)) {
+				value = new java.sql.Timestamp(time);
+			}
+		}
+		return value;
 	}
 
 	@Override
