@@ -1198,6 +1198,9 @@
 				innerGrid.set({
 					allowNoCurrent: this._allowNoCurrent,
 					selectionMode: this._selectionMode,
+					onCurrentChange: function(innerGrid, arg) {
+						self.fireEvent("onCurrentChange", self, arg);
+					},
 					onSelectionChange: function(innerGrid, arg) {
 						self.fireEvent("onSelectionChange", self, arg);
 					}
@@ -1697,7 +1700,6 @@
 				if (this._scrollMode != "lazyRender") this._scrollTop = st;
 				this._divScroll.scrollTop = st;
 			}
-
 			this._processingCurrentRow = false;
 		},
 		

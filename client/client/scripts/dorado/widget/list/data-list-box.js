@@ -71,10 +71,13 @@ dorado.widget.DataListBox = $extend([dorado.widget.AbstractListBox, dorado.widge
 	 * @param {dorado.Entity} entity 数据实体。
 	 */
 	setCurrentEntity: function(entity) {
+		var currentItem = this._currentRow ? $fly(this._currentRow).data("item") : null;
+		if (currentItem == entity) return;
+		
 		var itemId = entity ? entity.entityId : null;
 		var row = this._itemDomMap[itemId];
 		this.setCurrentRow(row);
-		this.scrollCurrentIntoView();
+		if (row) this.scrollCurrentIntoView();
 		this.fireEvent("onCurrentChange", this);
 		return true;
 	},

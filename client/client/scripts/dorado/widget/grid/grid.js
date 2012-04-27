@@ -24,7 +24,6 @@
 					if (!this._ready) return;
 					if (index >= this._itemModel.getItemCount()) index = -1;
 					(this._domMode == 2 ? this._fixedInnerGrid : this._innerGrid).set(p, index);
-					this.fireEvent("onCurrentChange", this);
 				}
 			},
 			

@@ -675,7 +675,7 @@
 					}
 					
 					var grid = this.grid;
-					grid.fireEvent("onCurrentChange", grid);
+					// grid.fireEvent("onCurrentChange", grid);
 					grid.doInnerGridSetCurrentRow(this, currentNode ? currentNode._id : null);
 				}
 			}
