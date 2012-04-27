@@ -32,12 +32,12 @@ public class InsertCommand {
 		this.retrieveCommand = retrieveCommand;
 	}
 
-	public void execute(JdbcRecordOperation operation) throws Exception {
+	public void execute(TableRecordOperation operation) throws Exception {
 		JdbcEnviroment env = operation.getJdbcEnviroment();
 		Record record = operation.getRecord();
 		
 		InsertSql insertSql = this.insertSql(operation);
-		Dialect dialect = env.getDialect();
+		Dialect dialect = operation.getDialect();
 		String sql = dialect.toSQL(insertSql);
 		if (logger.isDebugEnabled()) {
 			logger.debug("[INSERT-SQL]" + sql);
@@ -69,8 +69,8 @@ public class InsertCommand {
 		}
 	}
 	
-	private InsertSql insertSql(JdbcRecordOperation operation) {
-		Dialect dialect = operation.getJdbcEnviroment().getDialect();
+	private InsertSql insertSql(TableRecordOperation operation) {
+		Dialect dialect = operation.getDialect();
 		
 		Table table = (Table)operation.getDbTable();
 		Record record = operation.getRecord();

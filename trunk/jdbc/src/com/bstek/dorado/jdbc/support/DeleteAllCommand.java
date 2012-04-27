@@ -30,7 +30,7 @@ public class DeleteAllCommand {
 
 	public void execute(DeleteAllOperation operation) throws Exception {
 		JdbcEnviroment env = operation.getJdbcEnviroment();
-		Dialect dialect = env.getDialect();
+		Dialect dialect = operation.getDialect();
 		NamedParameterJdbcTemplate jdbcTemplate = env.getSpringNamedDao().getNamedParameterJdbcTemplate();
 		
 		DeleteAllSql deleteSql = this.deleteAllSql(operation);
@@ -44,7 +44,7 @@ public class DeleteAllCommand {
 	}
 	
 	private DeleteAllSql deleteAllSql(DeleteAllOperation operation) {
-		Dialect dialect = operation.getJdbcEnviroment().getDialect();
+		Dialect dialect = operation.getDialect();
 		Table table = operation.getDbTable();
 		
 		DeleteAllSql sql = new DeleteAllSql();

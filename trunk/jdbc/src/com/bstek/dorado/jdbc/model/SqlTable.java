@@ -11,7 +11,7 @@ import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.model.sqltable.SqlSelectSql;
 import com.bstek.dorado.jdbc.model.sqltable.SqlTableColumn;
 import com.bstek.dorado.jdbc.sql.SelectSql;
-import com.bstek.dorado.jdbc.support.JdbcDataProviderOperation;
+import com.bstek.dorado.jdbc.support.QueryOperation;
 
 /**
  * 
@@ -79,7 +79,7 @@ public class SqlTable extends AbstractTable {
 		return mainTable;
 	}
 	
-	public SelectSql selectSql(JdbcDataProviderOperation operation) {
+	public SelectSql selectSql(QueryOperation operation) {
 		SqlSelectSql selectSql = new SqlSelectSql();
 		
 		//querySql

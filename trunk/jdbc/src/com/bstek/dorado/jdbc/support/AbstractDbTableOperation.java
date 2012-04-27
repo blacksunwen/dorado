@@ -1,7 +1,10 @@
 package com.bstek.dorado.jdbc.support;
 
+import com.bstek.dorado.jdbc.Dialect;
+import com.bstek.dorado.jdbc.JdbcDao;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.model.DbTable;
+import com.bstek.dorado.util.Assert;
 
 /**
  * 抽象的对{@link DbTable} 数据库操作
@@ -36,6 +39,7 @@ public abstract class AbstractDbTableOperation<CTX extends AbstractJdbcContext, 
 	 * @return
 	 */
 	public TAB getDbTable() {
+		Assert.notNull(dbTable, "dbTable must not be null.");
 		return dbTable;
 	}
 
@@ -65,10 +69,28 @@ public abstract class AbstractDbTableOperation<CTX extends AbstractJdbcContext, 
 		return env;
 	}
 	
-	public boolean execute() throws Exception {
+	public Dialect getDialect() {
+		JdbcEnviroment env = this.getJdbcEnviroment();
+		return env.getDialect();
+	}
+	
+	public JdbcDao getJdbcDao() {
+		JdbcEnviroment env = null;
+		if (jdbcContext != null) {
+			env = jdbcContext.getJdbcEnviroment();
+		}
+		
+		if (env == null) {
+			env = this.getDbTable().getJdbcEnviroment();
+		}
+		
+		return env.getJdbcDao();
+	}
+	
+	public boolean run() throws Exception {
 		if (this.isProcessDefault()) {
 			try {
-				return doExecute();
+				return doRun();
 			} finally {
 				setProcessDefault(false);
 			}
@@ -79,5 +101,5 @@ public abstract class AbstractDbTableOperation<CTX extends AbstractJdbcContext, 
 	/**
 	 * 执行操作动作
 	 */
-	protected abstract boolean doExecute() throws Exception;
+	protected abstract boolean doRun() throws Exception;
 }

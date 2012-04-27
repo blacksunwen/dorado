@@ -20,9 +20,9 @@ import com.bstek.dorado.jdbc.model.table.TableKeyColumn;
 import com.bstek.dorado.jdbc.model.table.TableSelectSql;
 import com.bstek.dorado.jdbc.sql.SelectSql;
 import com.bstek.dorado.jdbc.sql.SqlConstants.KeyWord;
-import com.bstek.dorado.jdbc.support.JdbcDataProviderOperation;
-import com.bstek.dorado.jdbc.support.JdbcDataResolverContext;
-import com.bstek.dorado.jdbc.support.JdbcRecordOperationProxy;
+import com.bstek.dorado.jdbc.support.QueryOperation;
+import com.bstek.dorado.jdbc.support.DataResolverContext;
+import com.bstek.dorado.jdbc.support.RecordOperationProxy;
 import com.bstek.dorado.jdbc.type.JdbcType;
 
 /**
@@ -139,16 +139,16 @@ public class Table extends AbstractTable {
 	}
 
 	@Override
-	public JdbcRecordOperationProxy createOperationProxy(Record record, JdbcDataResolverContext jdbcContext) {
+	public RecordOperationProxy createOperationProxy(Record record, DataResolverContext jdbcContext) {
 		throw new UnsupportedOperationException();
 	}
 
-	public SelectSql selectSql(JdbcDataProviderOperation operation) {
+	public SelectSql selectSql(QueryOperation operation) {
 		//SelectSql
 		TableSelectSql selectSql = createSelectSql();
 		
 		//tableToken
-		Dialect dialect = operation.getJdbcEnviroment().getDialect();
+		Dialect dialect = operation.getDialect();
 		String tableToken = dialect.token(this);
 		selectSql.setTableToken(tableToken);
 		

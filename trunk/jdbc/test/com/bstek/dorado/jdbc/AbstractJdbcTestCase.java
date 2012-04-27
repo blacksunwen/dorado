@@ -12,8 +12,8 @@ import com.bstek.dorado.core.Context;
 import com.bstek.dorado.data.config.ConfigManagerTestSupport;
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.model.DbTable;
-import com.bstek.dorado.jdbc.support.JdbcDataProviderContext;
-import com.bstek.dorado.jdbc.support.JdbcDataProviderOperation;
+import com.bstek.dorado.jdbc.support.DataProviderContext;
+import com.bstek.dorado.jdbc.support.QueryOperation;
 
 public abstract class AbstractJdbcTestCase extends ConfigManagerTestSupport {
 
@@ -56,11 +56,11 @@ public abstract class AbstractJdbcTestCase extends ConfigManagerTestSupport {
 		abstract String getTableName();
 		
 		Collection<Record> query(Object parameter)throws Exception{
-			JdbcDataProviderContext jCtx = new JdbcDataProviderContext(null, parameter);
+			DataProviderContext jCtx = new DataProviderContext(null, parameter);
 			DbTable table = JdbcUtils.getDbTable(getTableName());
-			JdbcDataProviderOperation operation = new JdbcDataProviderOperation(table, jCtx);
+			QueryOperation operation = new QueryOperation(table, jCtx);
 			
-			return operation.getJdbcEnviroment().getJdbcDao().query(operation);
+			return operation.getJdbcDao().query(operation);
 		}
 	}
 	

@@ -9,7 +9,7 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 
 import com.bstek.dorado.jdbc.Dialect;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
-import com.bstek.dorado.jdbc.support.JdbcRecordOperation;
+import com.bstek.dorado.jdbc.support.TableRecordOperation;
 import com.bstek.dorado.util.Assert;
 
 /**
@@ -25,12 +25,12 @@ public class SequenceKeyGenerator extends AbstractKeyGenerator<Number> {
 		this.setName("SEQUENCE");
 	}
 
-	public Number newKey(JdbcRecordOperation operation, TableKeyColumn keyColumn) {
+	public Number newKey(TableRecordOperation operation, TableKeyColumn keyColumn) {
 		String sequenceName = (String) keyColumn.getKeyParameter();
 		Assert.notEmpty(sequenceName, "sequenceName must not be empty.");
 		
 		JdbcEnviroment jdbcEnviroment = operation.getJdbcEnviroment();
-		Dialect dialect = jdbcEnviroment.getDialect();
+		Dialect dialect = operation.getDialect();
 		if (!dialect.isSequenceSupport()) {
 			throw new UnsupportedOperationException("[" + jdbcEnviroment.getName() + "] does not support db sequence.");
 		}

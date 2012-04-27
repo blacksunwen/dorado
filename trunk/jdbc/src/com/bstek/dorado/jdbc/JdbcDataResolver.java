@@ -21,8 +21,8 @@ import com.bstek.dorado.data.resolver.DataItems;
 import com.bstek.dorado.data.type.AggregationDataType;
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.data.type.EntityDataType;
-import com.bstek.dorado.jdbc.support.JdbcDataResolverContext;
-import com.bstek.dorado.jdbc.support.JdbcDataResolverOperation;
+import com.bstek.dorado.jdbc.support.DataResolverContext;
+import com.bstek.dorado.jdbc.support.DataResolverOperation;
 
 /**
  * JDBC模块的{@link com.bstek.dorado.data.resolver.DataResolver}
@@ -105,7 +105,7 @@ public class JdbcDataResolver extends AbstractDataResolver {
 	@Override
 	protected Object internalResolve(DataItems dataItems, Object parameter)
 			throws Exception {
-		JdbcDataResolverOperation operation = createOperation(dataItems, parameter);
+		DataResolverOperation operation = createOperation(dataItems, parameter);
 		
 		operation = jdbcIntercepter.getOperation(operation);
 		operation.execute();
@@ -113,7 +113,7 @@ public class JdbcDataResolver extends AbstractDataResolver {
 		return operation.getJdbcContext().getReturnValue();
 	}
 
-	protected JdbcDataResolverOperation createOperation(DataItems dataItems, Object parameter) {
+	protected DataResolverOperation createOperation(DataItems dataItems, Object parameter) {
 		PlatformTransactionManager transactionManager = this.getTransactionManager();
 		TransactionDefinition transactionDefinition = this.getTransactionDefinition();
 		JdbcEnviroment jdbcEnviroment = this.getJdbcEnviroment();
@@ -137,8 +137,8 @@ public class JdbcDataResolver extends AbstractDataResolver {
 		
 		List<JdbcDataResolverItem> resolverItems = getResolverItems(dataItems);
 		
-		JdbcDataResolverContext jdbcContext = new JdbcDataResolverContext(jdbcEnviroment, parameter, dataItems, resolverItems);
-		JdbcDataResolverOperation operation = new JdbcDataResolverOperation(jdbcContext, transactionOperations);
+		DataResolverContext jdbcContext = new DataResolverContext(jdbcEnviroment, parameter, dataItems, resolverItems);
+		DataResolverOperation operation = new DataResolverOperation(jdbcContext, transactionOperations);
 		
 		return operation;
 	}

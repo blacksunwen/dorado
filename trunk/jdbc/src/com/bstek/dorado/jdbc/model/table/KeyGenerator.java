@@ -1,6 +1,6 @@
 package com.bstek.dorado.jdbc.model.table;
 
-import com.bstek.dorado.jdbc.support.JdbcRecordOperation;
+import com.bstek.dorado.jdbc.support.TableRecordOperation;
 
 /**
  * 主键生成器
@@ -32,5 +32,5 @@ public interface KeyGenerator<T> {
 	 * @param record
 	 * @return
 	 */
-	T newKey(JdbcRecordOperation operation, TableKeyColumn keyColumn);
+	T newKey(TableRecordOperation operation, TableKeyColumn keyColumn);
 }
