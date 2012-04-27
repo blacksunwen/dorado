@@ -22,18 +22,16 @@ dorado.widget.TabControl = $extend(dorado.widget.TabBar, /** @scope dorado.widge
 		this.registerInnerControl(this._cardBook);
 	},
 	
-	doChangeCurrentTab: function(tab) {
-		var result = $invokeSuper.call(this, arguments);
+    doOnTabChange: function(eventArg) {
+        var tabControl = this, tabs = tabControl._tabs, tab = eventArg.newTab,
+            index = typeof tab == "number" ? tab : tabs.indexOf(tab), card = tabControl._cardBook;
 
-        if(!result) return false;
-		
-		var tabControl = this, tabs = tabControl._tabs, index = typeof tab == "number" ? tab : tabs.indexOf(tab), card = tabControl._cardBook;
-		if (card) {
-			card.set("currentControl", index);
-		}
-        
-        return true;
-	},
+        if (card) {
+            card.set("currentControl", index);
+        }
+
+        $invokeSuper.call(this, arguments);
+    },
 	
 	doChangeTabPlacement: function(value) {
 		var result = $invokeSuper.call(this, arguments);
