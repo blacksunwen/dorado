@@ -7,61 +7,53 @@ import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.data.entity.EnhanceableEntity;
 import com.bstek.dorado.data.entity.EntityEnhancer;
-import com.bstek.dorado.data.type.DataType;
 
 public class DefaultHqlParameterResolver implements HqlParameterResolver {
 
-	public Object parameterValue(final Object parameter, HqlParameter hqlParameter) throws Exception {
-		Object value = hqlParameter.getValue();
-		if (value != null) {
-			return value;
+	public Object parameterValue(final Object parameter, HqlVarExpr hqlParameter) throws Exception {
+		String varName = hqlParameter.getVarName();
+		Object value = null;
+		
+		if ("$".equals(varName)) {
+			value = parameter;
 		} else {
-			if (parameter == null) {
-				return null;
+			if (varName.indexOf('.') < 0) {
+				value = value(parameter, varName);
 			} else {
-				String expr = hqlParameter.getExpr();
-				DataType dataType = hqlParameter.getDataType();
-				Object returnValue = null;
-				if ("$".equals(expr)) {
-					returnValue = parameter;
-				} else {
-					String[] fields = StringUtils.split(expr, '.');
-					if (fields != null) {
-						Object obj = parameter;
-						for (String field : fields) {
-							obj = value(obj, field);
-							if (obj == null) {
-								break;
-							}
+				String[] fields = StringUtils.split(varName, '.');
+				if (fields != null) {
+					Object obj = parameter;
+					for (String field : fields) {
+						obj = value(obj, field);
+						if (obj == null) {
+							break;
 						}
-
-						returnValue = obj;
 					}
+
+					value = obj;
 				}
-				
-				if (dataType != null) {
-					returnValue = dataType.fromObject(returnValue);
-				}
-				return returnValue;
 			}
 		}
+		
+		value = hqlParameter.translatValue(value);
+		return value;
 	}
 
 	@SuppressWarnings({"rawtypes"})
-	protected Object value(final Object obj, String field) throws Exception {
-		if (obj instanceof EnhanceableEntity) {
-			EnhanceableEntity entity = (EnhanceableEntity) obj;
+	protected Object value(final Object parameter, String field) throws Exception {
+		if (parameter instanceof EnhanceableEntity) {
+			EnhanceableEntity entity = (EnhanceableEntity) parameter;
 			EntityEnhancer enhancer = entity.getEntityEnhancer();
 			try {
-				return enhancer.readProperty(obj, field, false);
+				return enhancer.readProperty(parameter, field, false);
 			} catch (Throwable e) {
 				throw new Exception(e);
 			}
-		} else if (obj instanceof Map) {
-			Map m = (Map) obj;
+		} else if (parameter instanceof Map) {
+			Map m = (Map) parameter;
 			return m.get(field);
 		} else {
-			return PropertyUtils.getProperty(obj, field);
+			return PropertyUtils.getProperty(parameter, field);
 		}
 	}
 }

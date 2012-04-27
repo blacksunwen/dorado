@@ -4,18 +4,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.bstek.dorado.util.Assert;
-
 @SuppressWarnings( { "unchecked", "rawtypes" })
 public class Hql {
 
 	private static final List EMPTY_PARAMETER_MAP = Collections.EMPTY_LIST;
 
-	private List<HqlParameter> parametets = EMPTY_PARAMETER_MAP;
+	private List<HqlVarExpr> vars = EMPTY_PARAMETER_MAP;
 	private String clause;
 	
 	public Hql(String clause) {
-		Assert.notEmpty(clause);
 		this.clause = clause;
 	}
 
@@ -23,14 +20,14 @@ public class Hql {
 		return clause;
 	}
 
-	public List<HqlParameter> getParameters() {
-		return parametets;
+	public List<HqlVarExpr> getVarExprs() {
+		return vars;
 	}
 
-	public void addParameter(HqlParameter parameter) {
-		if (parametets == EMPTY_PARAMETER_MAP) {
-			parametets = new ArrayList<HqlParameter>();
+	public void addVarExpr(HqlVarExpr var) {
+		if (vars == EMPTY_PARAMETER_MAP) {
+			vars = new ArrayList<HqlVarExpr>();
 		}
-		parametets.add(parameter);
+		vars.add(var);
 	}
 }
