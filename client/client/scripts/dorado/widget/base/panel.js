@@ -168,7 +168,7 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 	/**
 	 * @private
 	 */
-	doSetCollapsed: function(collapsed) {
+	doSetCollapsed: function(collapsed, animate) {
 	
 		function onCollapsedChange(panel, collapsed) {
 			panel._doOnResize(collapsed);
@@ -194,42 +194,60 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 			var orginalZIndex;
 			if (panel._rendered) {
 				if (collapsed) {
-					$fly(doms.body).safeSlideOut({
-						direction: "b2t",
-						start: function() {
-							orginalZIndex = dom.style.zIndex;
-							$fly(dom).bringToFront();
-						},
-						step: function() {
-						},
-						complete: function() {
-							$fly(dom).addClass("i-panel-collapsed " + panel._className + "-collapsed");
-							if (collapseButton) {
-								collapseButton.set("iconClass", "expand-icon");
-							}
-							onCollapsedChange(panel, collapsed);
-							dom.style.zIndex = orginalZIndex || "";
-							orginalZIndex = null;
-						}
-					});
+                    if (animate === false) {
+                        $fly(dom).addClass("i-panel-collapsed " + panel._className + "-collapsed");
+                        if (collapseButton) {
+                            collapseButton.set("iconClass", "expand-icon");
+                        }
+                        onCollapsedChange(panel, collapsed);
+                        $fly(doms.body).css("display", "none");
+                    } else {
+                        $fly(doms.body).safeSlideOut({
+                            direction: "b2t",
+                            start: function() {
+                                orginalZIndex = dom.style.zIndex;
+                                $fly(dom).bringToFront();
+                            },
+                            step: function() {
+                            },
+                            complete: function() {
+                                $fly(dom).addClass("i-panel-collapsed " + panel._className + "-collapsed");
+                                if (collapseButton) {
+                                    collapseButton.set("iconClass", "expand-icon");
+                                }
+                                onCollapsedChange(panel, collapsed);
+                                dom.style.zIndex = orginalZIndex || "";
+                                orginalZIndex = null;
+                            }
+                        });
+                    }
 				} else {
-					$fly(doms.body).safeSlideIn({
-						direction: "t2b",
-						start: function() {
-							orginalZIndex = dom.style.zIndex;
-							$fly(dom).bringToFront().removeClass("i-panel-collapsed " + panel._className + "-collapsed");
-						},
-						step: function() {
-						},
-						complete: function() {
-							if (collapseButton) {
-								collapseButton.set("iconClass", "collapse-icon");
-							}
-							onCollapsedChange(panel, collapsed);
-							dom.style.zIndex = orginalZIndex || "";
-							orginalZIndex = null;
-						}
-					});
+                    if (animate === false) {
+                        $fly(dom).removeClass("i-panel-collapsed " + panel._className + "-collapsed");
+                        if (collapseButton) {
+                            collapseButton.set("iconClass", "collapse-icon");
+                        }
+                        onCollapsedChange(panel, collapsed);
+                        $fly(doms.body).css("display", "");
+                    } else {
+                        $fly(doms.body).safeSlideIn({
+                            direction: "t2b",
+                            start: function() {
+                                orginalZIndex = dom.style.zIndex;
+                                $fly(dom).bringToFront().removeClass("i-panel-collapsed " + panel._className + "-collapsed");
+                            },
+                            step: function() {
+                            },
+                            complete: function() {
+                                if (collapseButton) {
+                                    collapseButton.set("iconClass", "collapse-icon");
+                                }
+                                onCollapsedChange(panel, collapsed);
+                                dom.style.zIndex = orginalZIndex || "";
+                                orginalZIndex = null;
+                            }
+                        });
+                    }
 				}
 			}
 		}
@@ -501,7 +519,17 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		 */
 		onClose: {}
 	},
-	
+
+    doOnAttachToDocument: function() {
+        if (this._collapseable && this._collapsed) {
+            this.doSetCollapsed(true, false);
+        }
+        if (this._maximizeable && this._maximized) {
+            this.maximize();
+        }
+        $invokeSuper.call(this, arguments);
+    },
+
 	createDom: function() {
 		var panel = this, doms = {}, border = panel._border, dom;
 		if ((dorado.Browser.msie || !$setting["widget.panel.useCssCurveBorder"]) && border == "curve") {

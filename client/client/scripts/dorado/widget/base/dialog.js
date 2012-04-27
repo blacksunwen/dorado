@@ -188,6 +188,14 @@
 			// do nothing
 		},
 
+        doOnAttachToDocument: function() {
+            //TODO 暂时没考虑清楚。
+//            if (this._minimizeable && this._minimized) {
+//                this.minimize();
+//            }
+            $invokeSuper.call(this, arguments);
+        },
+
 		maximizeRestore: function() {
 			var dialog = this, dom = dialog._dom, doms = dialog._doms;
 			if (dom) {
