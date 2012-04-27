@@ -284,7 +284,7 @@
 			this._hoverRow = row;
 		},
 		
-		setCurrentRow: function(row) {
+		setCurrentRow: function(row) {			
 			if (this._currentRow == row) return;
 			this.setHoverRow(null);
 			if (this._currentRow) $fly(this._currentRow).removeClass("current-row");
@@ -784,7 +784,7 @@
 						sourceControl.refresh();
 					}
 				}
-
+				
 				if (object instanceof dorado.Entity) {
 					object.setState((oldState == dorado.Entity.STATE_NEW) ? dorado.Entity.STATE_NEW : dorado.Entity.STATE_MOVED);
 				}

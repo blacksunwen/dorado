@@ -798,7 +798,6 @@
 			}
 			DataListBoxProtoType.setCurrentEntity.apply(this, arguments);
 			this.grid.doInnerGridSetCurrentRow(this, entity ? entity.entityId : null);
-			this.fireEvent("onCurrentChange", this);
 			return true;
 		},
 		

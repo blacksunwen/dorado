@@ -23,7 +23,8 @@ dorado.widget.BlockView = $extend(dorado.widget.AbstractBlockView, /** @scope do
 				if (this._rendered) {
 					var blockDom = this.getItemDomByItemIndex(index);
 					this.setCurrentBlock(blockDom);
-					this.scrollCurrentIntoView();
+					if (blockDom) this.scrollCurrentIntoView();
+					this.fireEvent("onCurrentChange", this);
 				}
 			}
 		},

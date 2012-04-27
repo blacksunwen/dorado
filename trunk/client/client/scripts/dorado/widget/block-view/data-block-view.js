@@ -68,7 +68,8 @@ dorado.widget.DataBlockView = $extend([dorado.widget.AbstractBlockView, dorado.w
 		var itemId = entity ? entity.entityId : null;
 		var blockDom = this._itemDomMap[itemId];
 		this.setCurrentBlock(blockDom);
-		this.scrollCurrentIntoView();
+		if (blockDom) this.scrollCurrentIntoView();
+		this.fireEvent("onCurrentChange", this);
 		return true;
 	},
 	
@@ -172,8 +173,7 @@ dorado.widget.DataBlockView = $extend([dorado.widget.AbstractBlockView, dorado.w
 					});
 					if (dorado.DataPipe.MONITOR.asyncExecutionTimes > asyncExecutionTimes) {
 						return true;
-					}
-					else {
+					} else {
 						this.hideLoadingTip();
 						return false;
 					}
