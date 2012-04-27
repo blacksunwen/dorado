@@ -35,14 +35,15 @@ public class EmployeeInterceptor {
 	}
 
 	@DataProvider
-	public Collection<Employee> getEmployeesBySuperior(Long parameter) {
-		return employeeDao
-				.find("from Employee where reportsTo.id=" + parameter);
+	public Collection<Employee> getEmployeesBySuperior(Long employeeId) {
+		return employeeDao.find("from Employee where reportsTo.id="
+				+ employeeId);
 	}
 
 	@DataProvider
-	public void getEmployeesBySuperior(Page<Employee> page, Long parameter) {
-		employeeDao.find(page, "from Employee where reportsTo.id=" + parameter);
+	public void getEmployeesBySuperior(Page<Employee> page, Long employeeId) {
+		employeeDao
+				.find(page, "from Employee where reportsTo.id=" + employeeId);
 	}
 
 	@DataProvider

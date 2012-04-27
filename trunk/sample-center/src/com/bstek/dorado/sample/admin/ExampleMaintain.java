@@ -73,8 +73,9 @@ public class ExampleMaintain {
 			doSaveCategory(null, category, persisContext);
 		}
 		for (Long exampleId : persisContext.getDetachedExamples()) {
-			if (exampleId == 0)
+			if (exampleId == 0) {
 				continue;
+			}
 			int relationNum = ((Number) exampleDao.createQuery(
 					"select count(*) from CategoryExampleRelation where exampleId="
 							+ exampleId).uniqueResult()).intValue();

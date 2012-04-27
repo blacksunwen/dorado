@@ -43,13 +43,37 @@ dorado.widget.NotifyTipManager.notify(&quot;通知信息&quot; + notifyNo);</Cli
           <Property name="caption">通知信息</Property>
         </Button>
         <Button>
-          <ClientEvent name="onClick">var notifyNo = self.get(&quot;userData&quot;) || 0;&#xD;
-self.set(&quot;userData&quot;, ++notifyNo);&#xD;
-dorado.widget.NotifyTipManager.notify(&quot;通知信息&quot; + notifyNo, {&#xD;
+          <ClientEvent name="onClick">function getMessage(num) {&#xD;
+	return &quot;您有&quot; + num + &quot;条带处理的消息...&quot;;&#xD;
+}&#xD;
+&#xD;
+self.set(&quot;disabled&quot;, true);&#xD;
+&#xD;
+var i = 1;&#xD;
+var tip = dorado.widget.NotifyTipManager.notify({&#xD;
+	text: getMessage(i),&#xD;
 	caption: &quot;&lt;重要通知>&quot;,&#xD;
-	icon: &quot;INFO&quot;&#xD;
-});</ClientEvent>
-          <Property name="caption">更多通知信息</Property>
+	icon: &quot;INFO&quot;,&#xD;
+	autoHide: false,&#xD;
+	listener: {&#xD;
+		onHide: {&#xD;
+			fn: function() {&#xD;
+				tip = null;&#xD;
+				self.set(&quot;disabled&quot;, false);&#xD;
+			}&#xD;
+		}&#xD;
+	}&#xD;
+});&#xD;
+&#xD;
+var timerId = setInterval(function() {&#xD;
+	if (!tip) {&#xD;
+		clearInterval(timerId);&#xD;
+		return;&#xD;
+	}&#xD;
+	tip.set(&quot;text&quot;, getMessage(++i));&#xD;
+}, 750);&#xD;
+</ClientEvent>
+          <Property name="caption">带有更多自定义特性的通知信息</Property>
         </Button>
       </Children>
     </GroupBox>

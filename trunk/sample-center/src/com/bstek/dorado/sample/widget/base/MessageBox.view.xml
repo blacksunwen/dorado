@@ -21,7 +21,7 @@
         <ClientEvent name="onClick">dorado.MessageBox.confirm(&quot;请作出您的选择...&quot;, function() {&#xD;
 	dorado.widget.NotifyTipManager.notify(&quot;您选择了\&quot;是\&quot;。&quot;);&#xD;
 });</ClientEvent>
-        <Property name="caption">confirm（仅关注肯定操作）</Property>
+        <Property name="caption">confirm（仅关注&quot;肯定&quot;操作）</Property>
       </Button>
       <Button>
         <ClientEvent name="onClick">dorado.MessageBox.confirm(&quot;请作出您的选择...&quot;, {&#xD;
@@ -29,7 +29,7 @@
 		dorado.widget.NotifyTipManager.notify(&quot;您选择了\&quot;&quot; + button + &quot;\&quot;。&quot;);&#xD;
 	}&#xD;
 });</ClientEvent>
-        <Property name="caption">confirm（仅关注所有操作）</Property>
+        <Property name="caption">confirm（关注所有操作）</Property>
       </Button>
     </Container>
     <Container layout="hbox">
