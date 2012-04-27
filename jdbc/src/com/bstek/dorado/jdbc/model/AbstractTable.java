@@ -13,9 +13,9 @@ import com.bstek.dorado.data.entity.EntityState;
 import com.bstek.dorado.data.entity.EntityUtils;
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.DbTableTrigger;
-import com.bstek.dorado.jdbc.support.JdbcDataResolverContext;
-import com.bstek.dorado.jdbc.support.JdbcRecordOperation;
-import com.bstek.dorado.jdbc.support.JdbcRecordOperationProxy;
+import com.bstek.dorado.jdbc.support.DataResolverContext;
+import com.bstek.dorado.jdbc.support.TableRecordOperation;
+import com.bstek.dorado.jdbc.support.RecordOperationProxy;
 import com.bstek.dorado.util.Assert;
 
 /**
@@ -57,7 +57,7 @@ public abstract class AbstractTable extends AbstractDbElement implements DbTable
 		this.trigger = trigger;
 	}
 	
-	public JdbcRecordOperationProxy createOperationProxy(Record record, JdbcDataResolverContext jdbcContext) {
+	public RecordOperationProxy createOperationProxy(Record record, DataResolverContext jdbcContext) {
 		if (EntityUtils.isEntity(record)) {
 			EntityState state = EntityUtils.getState(record);
 			if (EntityState.isDirty(state)) {
@@ -69,7 +69,7 @@ public abstract class AbstractTable extends AbstractDbElement implements DbTable
 					throw new RuntimeException(e);
 				}
 				EntityUtils.setState(proxyRecord, EntityUtils.getState(record));
-				JdbcRecordOperation proxyOperation = new JdbcRecordOperation(proxyTable, proxyRecord, jdbcContext);
+				TableRecordOperation proxyOperation = new TableRecordOperation(proxyTable, proxyRecord, jdbcContext);
 				
 				Map<String, String> proxyPropertyMap = new HashMap<String, String>();
 				for (AbstractDbColumn c: this.getAllColumns()) {
@@ -91,7 +91,7 @@ public abstract class AbstractTable extends AbstractDbElement implements DbTable
 					}
 				}
 				
-				JdbcRecordOperationProxy proxy = new JdbcRecordOperationProxy();
+				RecordOperationProxy proxy = new RecordOperationProxy();
 				proxy.setProxyOperation(proxyOperation);
 				proxy.setProxyPropertyMap(proxyPropertyMap);
 				proxy.setRecord(proxyRecord);

@@ -4,11 +4,11 @@ import java.util.Map;
 
 import com.bstek.dorado.data.variant.Record;
 
-public class JdbcRecordOperationProxy {
+public class RecordOperationProxy {
 	
 	private Record record;
 
-	private JdbcRecordOperation proxyOperation;
+	private TableRecordOperation proxyOperation;
 	
 	private Map<String, String> proxyPropertyMap;
 	
@@ -20,11 +20,11 @@ public class JdbcRecordOperationProxy {
 		this.record = record;
 	}
 
-	public JdbcRecordOperation getProxyOperation() {
+	public TableRecordOperation getProxyOperation() {
 		return proxyOperation;
 	}
 
-	public void setProxyOperation(JdbcRecordOperation proxyOperation) {
+	public void setProxyOperation(TableRecordOperation proxyOperation) {
 		this.proxyOperation = proxyOperation;
 	}
 

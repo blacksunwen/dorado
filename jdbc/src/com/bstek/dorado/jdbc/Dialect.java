@@ -14,8 +14,10 @@ import com.bstek.dorado.jdbc.sql.SelectSql;
 import com.bstek.dorado.jdbc.sql.SqlConstants.JoinOperator;
 import com.bstek.dorado.jdbc.sql.UpdateSql;
 import com.bstek.dorado.jdbc.support.DeleteAllOperation;
-import com.bstek.dorado.jdbc.support.JdbcDataProviderOperation;
-import com.bstek.dorado.jdbc.support.JdbcRecordOperation;
+import com.bstek.dorado.jdbc.support.QueryOperation;
+import com.bstek.dorado.jdbc.support.SaveOperation;
+import com.bstek.dorado.jdbc.support.SaveRecordOperation;
+import com.bstek.dorado.jdbc.support.TableRecordOperation;
 
 /**
  * 数据库方言
@@ -124,20 +126,18 @@ public interface Dialect {
 	 */
 	String sequenceSql(String sequenceName);
 
-	/**
-	 * 执行{@link com.bstek.dorado.jdbc.JdbcDataProvider}操作
-	 * @param operation
-	 */
-	boolean execute(JdbcDataProviderOperation operation) throws Exception;
+	boolean execute(QueryOperation operation) throws Exception;
 	
-	/**
-	 * 执行数据库操作
-	 * @param operation
-	 * @return 是否成功执行
-	 */
-	boolean execute(JdbcRecordOperation operation) throws Exception;
+	boolean execute(SaveOperation operation) throws Exception;
+	
+	boolean execute(SaveRecordOperation operation) throws Exception;
+	
+	boolean execute(TableRecordOperation operation) throws Exception;
 	
 	boolean execute(DeleteAllOperation operation) throws Exception;
+	
+
+	
 	
 	/**
 	 * 获取Table所在的空间类型

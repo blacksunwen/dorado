@@ -25,12 +25,12 @@ public class RetrieveCommand {
 
 	private static Log logger = LogFactory.getLog(RetrieveCommand.class);
 	
-	public void execute(JdbcRecordOperation operation) throws Exception {
+	public void execute(TableRecordOperation operation) throws Exception {
 		Table table = operation.getDbTable();
 		JdbcEnviroment jdbcEnv = operation.getJdbcEnviroment();
 		Record record = operation.getRecord();
 		
-		Dialect dialect = jdbcEnv.getDialect();
+		Dialect dialect = operation.getDialect();
 		RetrieveSql retrieveSql = new RetrieveSql();
 		retrieveSql.setTableToken(dialect.token(table));
 		

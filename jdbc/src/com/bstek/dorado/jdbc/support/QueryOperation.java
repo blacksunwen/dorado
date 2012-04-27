@@ -9,20 +9,16 @@ import com.bstek.dorado.jdbc.model.DbTable;
  * @author mark.li@bstek.com
  * 
  */
-public class JdbcDataProviderOperation extends
-		AbstractDbTableOperation<JdbcDataProviderContext, DbTable> {
+public class QueryOperation extends
+		AbstractDbTableOperation<DataProviderContext, DbTable> {
 
-	public JdbcDataProviderOperation(DbTable dbTable,
-			JdbcDataProviderContext jdbcContext) {
+	public QueryOperation(DbTable dbTable,
+			DataProviderContext jdbcContext) {
 		super(dbTable, jdbcContext);
 	}
 
-	protected boolean doExecute() throws Exception {
-		return getJdbcEnviroment().getDialect().execute(this);
-	}
-	
 	public Object getParameter() {
-		JdbcDataProviderContext ctx = this.getJdbcContext();
+		DataProviderContext ctx = this.getJdbcContext();
 		if (ctx != null) {
 			return ctx.getParameter();
 		} else {
@@ -31,11 +27,15 @@ public class JdbcDataProviderOperation extends
 	}
 	
 	public Criteria getCriteria() {
-		JdbcDataProviderContext ctx = this.getJdbcContext();
+		DataProviderContext ctx = this.getJdbcContext();
 		if (ctx != null) {
 			return ctx.getCriteria();
 		} else {
 			return null;
 		}
+	}
+	
+	protected boolean doRun() throws Exception {
+		return getDialect().execute(this);
 	}
 }

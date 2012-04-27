@@ -1,7 +1,5 @@
 package com.bstek.dorado.jdbc.support;
 
-import java.util.Map;
-
 import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.data.entity.EntityState;
@@ -38,7 +36,9 @@ public abstract class AbstractDialect implements Dialect {
 	private InsertCommand insertCommand;
 	private UpdateCommand updateCommand;
 	private DeleteCommand deleteCommand;
-	private DeleteAllCommand deleteAllCommand; 
+	private DeleteAllCommand deleteAllCommand;
+	private SaveCommand saveCommand;
+	private SaveRecordCommand saveRecordCommand;
 	
 	private JdbcIntercepter intercepter;
 
@@ -66,6 +66,14 @@ public abstract class AbstractDialect implements Dialect {
 		this.deleteAllCommand = deleteAllCommand;
 	}
 
+	public void setSaveCommand(SaveCommand saveCommand) {
+		this.saveCommand = saveCommand;
+	}
+
+	public void setSaveRecordCommand(SaveRecordCommand saveRecordCommand) {
+		this.saveRecordCommand = saveRecordCommand;
+	}
+
 	public String token(Table table) {
 		Assert.notNull(table, "Table must not be null.");
 		
@@ -86,89 +94,6 @@ public abstract class AbstractDialect implements Dialect {
 		} else {
 			return token + " " + KeyWord.AS + " " + alias;
 		}
-	}
-	
-	public String propertyName(Map<String,String> columnMeta) {
-		String label = columnMeta.get(JdbcConstants.COLUMN_LABEL);
-		if (StringUtils.isEmpty(label)) {
-			return columnMeta.get(JdbcConstants.COLUMN_NAME);
-		} else {
-			return label;
-		}
-	}
-	
-	public String toCountSQL(String sql) {
-		return "SELECT COUNT(1) FROM ( " + sql + " )";
-	}
-	
-	public String toSQL(SelectSql selectSql) throws Exception{
-		return selectSql.toSQL(this);
-	}
-	
-	public String toSQL(RetrieveSql retrieveSql) throws Exception {
-		return retrieveSql.toSQL(this);
-	}
-	
-	public String toSQL(DeleteSql deleteSql) throws Exception {
-		return deleteSql.toSQL(this);
-	}
-	
-	public String toSQL(DeleteAllSql sql) throws Exception {
-		return sql.toSQL(this);
-	}
-	
-	public String toSQL(InsertSql insertSql) throws Exception {
-		return insertSql.toSQL(this);
-	}
-	
-	public String toSQL(UpdateSql updateSql) throws Exception {
-		return updateSql.toSQL(this);
-	}
-	
-	public String toCountSQL(SelectSql selectSql) throws Exception{
-		return selectSql.toCountSQL(this);
-	}
-	
-	public boolean execute(JdbcDataProviderOperation operation) throws Exception{
-		if (intercepter != null) {
-			operation = intercepter.getOperation(operation);
-		}
-		return queryCommand.execute(operation);
-	}
-	
-	public boolean execute(JdbcRecordOperation operation) throws Exception {
-		if (intercepter != null) {
-			operation = intercepter.getOperation(operation);
-		}
-		Record record = operation.getRecord();
-		Assert.notNull(record, "record must not null.");
-
-		EntityState state = EntityUtils.getState(record);
-		switch (state) {
-			case NEW: {
-				insertCommand.execute(operation);
-				return true;
-			}
-			case MODIFIED: 
-			case MOVED:{
-				updateCommand.execute(operation);
-				return true;
-			}
-			case DELETED: {
-				deleteCommand.execute(operation);
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	public boolean execute(DeleteAllOperation operation) throws Exception {
-		if (intercepter != null) {
-			operation = intercepter.getOperation(operation);
-		}
-		
-		deleteAllCommand.execute(operation);
-		return true;
 	}
 	
 	public String token(AutoTable autoTable, JoinOperator joinModel) {
@@ -228,4 +153,101 @@ public abstract class AbstractDialect implements Dialect {
 		return null;
 	}
 	
+	public String toCountSQL(String sql) {
+		return "SELECT COUNT(1) FROM ( " + sql + " )";
+	}
+	
+	public String toSQL(SelectSql selectSql) throws Exception{
+		return selectSql.toSQL(this);
+	}
+	
+	public String toSQL(RetrieveSql retrieveSql) throws Exception {
+		return retrieveSql.toSQL(this);
+	}
+	
+	public String toSQL(DeleteSql deleteSql) throws Exception {
+		return deleteSql.toSQL(this);
+	}
+	
+	public String toSQL(DeleteAllSql sql) throws Exception {
+		return sql.toSQL(this);
+	}
+	
+	public String toSQL(InsertSql insertSql) throws Exception {
+		return insertSql.toSQL(this);
+	}
+	
+	public String toSQL(UpdateSql updateSql) throws Exception {
+		return updateSql.toSQL(this);
+	}
+	
+	public String toCountSQL(SelectSql selectSql) throws Exception{
+		return selectSql.toCountSQL(this);
+	}
+	
+	public boolean execute(QueryOperation operation) throws Exception{
+		if (operation.isProcessDefault()) {
+			if (intercepter != null) {
+				operation = intercepter.getOperation(operation);
+			}
+			queryCommand.execute(operation);
+		}
+		
+		return true;
+	}
+
+	public boolean execute(SaveOperation operation) throws Exception {
+		if (operation.isProcessDefault()) {
+			if (intercepter != null) {
+				operation = intercepter.getOperation(operation);
+			}
+			saveCommand.execute(operation);
+		} 
+		return true;
+	}
+	
+	public boolean execute(SaveRecordOperation operation) throws Exception {
+		if (operation.isProcessDefault()) {
+			if (intercepter != null) {
+				operation = intercepter.getOperation(operation);
+			}
+			saveRecordCommand.execute(operation);
+		}
+		return true;
+	}
+	
+	public boolean execute(TableRecordOperation operation) throws Exception {
+		if (intercepter != null) {
+			operation = intercepter.getOperation(operation);
+		}
+		Record record = operation.getRecord();
+		Assert.notNull(record, "record must not null.");
+
+		EntityState state = EntityUtils.getState(record);
+		switch (state) {
+			case NEW: {
+				insertCommand.execute(operation);
+				return true;
+			}
+			case MODIFIED: 
+			case MOVED:{
+				updateCommand.execute(operation);
+				return true;
+			}
+			case DELETED: {
+				deleteCommand.execute(operation);
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean execute(DeleteAllOperation operation) throws Exception {
+		if (intercepter != null) {
+			operation = intercepter.getOperation(operation);
+		}
+		
+		deleteAllCommand.execute(operation);
+		return true;
+	}
 }

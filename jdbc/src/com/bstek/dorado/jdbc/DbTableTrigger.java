@@ -1,7 +1,8 @@
 package com.bstek.dorado.jdbc;
 
-import com.bstek.dorado.jdbc.support.JdbcDataProviderOperation;
-import com.bstek.dorado.jdbc.support.JdbcRecordOperation;
+import com.bstek.dorado.jdbc.support.QueryOperation;
+import com.bstek.dorado.jdbc.support.SaveOperation;
+import com.bstek.dorado.jdbc.support.SaveRecordOperation;
 
 /**
  * 操作{@link com.bstek.dorado.jdbc.model.DbTable}的触发器
@@ -12,14 +13,23 @@ import com.bstek.dorado.jdbc.support.JdbcRecordOperation;
 public interface DbTableTrigger {
 
 	/**
-	 * 查询动作
+	 * 查询数据的时候触发
 	 * @param operation
 	 */
-	void doQuery(JdbcDataProviderOperation operation) throws Exception;
+	void doQuery(QueryOperation operation) throws Exception;
 	
 	/**
-	 * 更新、新增、删除动作
+	 * 保存数据的时候触发
 	 * @param operation
+	 * @throws Exception
 	 */
-	void doSave(JdbcRecordOperation operation) throws Exception;
+	void doSave(SaveOperation operation) throws Exception;
+	
+	/**
+	 * 保存每一条记录的时候触发
+	 * @param operation
+	 * @throws Exception
+	 */
+	void doSave(SaveRecordOperation operation) throws Exception;
+
 }

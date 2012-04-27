@@ -13,6 +13,8 @@
 		<property name="retrieveCommand" ref="dorado.jdbc.retrieveCommand"/>
 	</bean>
 	<bean id="dorado.jdbc.deleteAllCommand" class="com.bstek.dorado.jdbc.support.DeleteAllCommand"/>
+	<bean id="dorado.jdbc.saveCommand" class="com.bstek.dorado.jdbc.support.SaveCommand"/>
+	<bean id="dorado.jdbc.saveRecordCommand" class="com.bstek.dorado.jdbc.support.SaveRecordCommand"/>
 	
 	<!-- Dialect -->
 	<bean id="dorado.dialectTemplate" abstract="true">
@@ -22,6 +24,8 @@
 		<property name="updateCommand" ref="dorado.jdbc.updateCommand"/>
 		<property name="deleteCommand" ref="dorado.jdbc.deleteCommand"/>
 		<property name="deleteAllCommand" ref="dorado.jdbc.deleteAllCommand"/>
+		<property name="saveCommand" ref="dorado.jdbc.saveCommand"/>
+		<property name="saveRecordCommand" ref="dorado.jdbc.saveRecordCommand"/>
 	</bean>
 	
 	<bean id="dorado.jdbc.h2Dialect" class="com.bstek.dorado.jdbc.support.h2.H2Dialect" parent="dorado.dialectTemplate" abstract="true"/>

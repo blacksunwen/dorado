@@ -13,8 +13,8 @@ import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.JdbcDataResolverItem;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.TestJdbcUtils;
-import com.bstek.dorado.jdbc.support.JdbcDataResolverContext;
-import com.bstek.dorado.jdbc.support.JdbcDataResolverOperation;
+import com.bstek.dorado.jdbc.support.DataResolverContext;
+import com.bstek.dorado.jdbc.support.DataResolverOperation;
 
 public class SqlTableTest  extends AbstractOracle11JdbcTestCase {
 
@@ -64,8 +64,8 @@ public class SqlTableTest  extends AbstractOracle11JdbcTestCase {
 				resolverItem.setTableName(tableName);
 				resolverItems.add(resolverItem);
 			}
-			JdbcDataResolverContext resolverContext = new JdbcDataResolverContext(enviroment, parameter, dataItems, resolverItems);
-			JdbcDataResolverOperation resolverOperation = new JdbcDataResolverOperation(resolverContext);
+			DataResolverContext resolverContext = new DataResolverContext(enviroment, parameter, dataItems, resolverItems);
+			DataResolverOperation resolverOperation = new DataResolverOperation(resolverContext);
 			resolverOperation.execute();
 			//...
 			

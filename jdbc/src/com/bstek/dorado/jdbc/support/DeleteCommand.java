@@ -17,9 +17,9 @@ public class DeleteCommand {
 
 	private static Log logger = LogFactory.getLog(DeleteCommand.class);
 	
-	public void execute(JdbcRecordOperation operation) throws Exception {
+	public void execute(TableRecordOperation operation) throws Exception {
 		JdbcEnviroment env = operation.getJdbcEnviroment();
-		Dialect dialect = env.getDialect();
+		Dialect dialect = operation.getDialect();
 		NamedParameterJdbcTemplate jdbcTemplate = env.getSpringNamedDao().getNamedParameterJdbcTemplate();
 		
 		DeleteSql deleteSql = this.deleteSql(operation);
@@ -31,8 +31,8 @@ public class DeleteCommand {
 		jdbcTemplate.update(sql, parameterSource);
 	}
 	
-	private DeleteSql deleteSql(JdbcRecordOperation operation) {
-		Dialect dialect = operation.getJdbcEnviroment().getDialect();
+	private DeleteSql deleteSql(TableRecordOperation operation) {
+		Dialect dialect = operation.getDialect();
 		
 		Table table = operation.getDbTable();
 		Record record = operation.getRecord();

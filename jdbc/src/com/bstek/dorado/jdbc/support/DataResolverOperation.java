@@ -21,19 +21,19 @@ import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.model.DbTable;
 import com.bstek.dorado.util.Assert;
 
-public class JdbcDataResolverOperation {
+public class DataResolverOperation {
 
-	private JdbcDataResolverContext jdbcContext;
+	private DataResolverContext jdbcContext;
 	
 	private TransactionOperations transactionOperations;
 	
 	private boolean _processDefault = true;
 
-	public JdbcDataResolverOperation (JdbcDataResolverContext jdbcContext) {
+	public DataResolverOperation (DataResolverContext jdbcContext) {
 		this(jdbcContext, null);
 	}
 	
-	public JdbcDataResolverOperation (JdbcDataResolverContext jdbcContext, TransactionOperations transactionOperations) {
+	public DataResolverOperation (DataResolverContext jdbcContext, TransactionOperations transactionOperations) {
 		this.jdbcContext = jdbcContext;
 		this.transactionOperations = transactionOperations;
 	}
@@ -46,11 +46,11 @@ public class JdbcDataResolverOperation {
 		this._processDefault = _processDefault;
 	}
 	
-	public JdbcDataResolverContext getJdbcContext() {
+	public DataResolverContext getJdbcContext() {
 		return this.jdbcContext;
 	}
 	
-	public void setJdbcContext(JdbcDataResolverContext jdbcContext) {
+	public void setJdbcContext(DataResolverContext jdbcContext) {
 		this.jdbcContext = jdbcContext;
 	}
 	
@@ -114,11 +114,34 @@ public class JdbcDataResolverOperation {
 					Collection<Record> records = (Collection<Record>)dataValue;
 					if (!records.isEmpty()) {
 						this.calculateResolverItem(resolverItem, records);
-						for (Record record: records) {
-							this.doExecute(parentRecordItem, new RecordItem (resolverItem, record));
-						}
+						this.doExecute(parentRecordItem, resolverItem, records);
 					}
 				}
+			}
+		}
+	}
+	
+	private void doExecute(RecordItem parentRecordItem, JdbcDataResolverItem resolverItem, Collection<Record> records) throws Exception {
+		if (parentRecordItem != null) {
+			for (Record record: records) {
+				this.syncWithParent(resolverItem, record, parentRecordItem.record);
+			}
+		}
+		
+		String tableName = resolverItem.getTableName();
+		DbTable dbTable = JdbcUtils.getDbTable(tableName);
+		
+		JdbcEnviroment jdbcEnv = jdbcContext.getJdbcEnviroment();
+		if (jdbcEnv == null) {
+			jdbcEnv = dbTable.getJdbcEnviroment();
+		}
+		
+		SaveOperation saveOper = new SaveOperation(dbTable, records, jdbcContext);
+		saveOper.getJdbcDao().doSave(saveOper);
+		
+		for (Record record: records) {
+			if (!EntityState.DELETED.equals(EntityUtils.getState(record))) {
+				this.afterSave(new RecordItem(resolverItem, record));
 			}
 		}
 	}
@@ -138,24 +161,31 @@ public class JdbcDataResolverOperation {
 		if (jdbcEnv == null) {
 			jdbcEnv = dbTable.getJdbcEnviroment();
 		}
-		jdbcEnv.getJdbcDao().doSave(dbTable, record, jdbcContext);
+		
+		SaveOperation saveOper = new SaveOperation(dbTable, record, jdbcContext);
+		saveOper.getJdbcDao().doSave(saveOper);
 		
 		if (!EntityState.DELETED.equals(EntityUtils.getState(record))) {
-			List<JdbcDataResolverItem> items = resolverItem.getResolverItems();
+			this.afterSave(recordItem);
+		}
+	}
+
+	private void afterSave(RecordItem recordItem) throws Exception {
+		JdbcDataResolverItem resolverItem = recordItem.resolverItem;
+		List<JdbcDataResolverItem> items = resolverItem.getResolverItems();
+		
+		if (StringUtils.isNotEmpty(resolverItem.getRecursiveProperty())){
+			List<JdbcDataResolverItem> items2 = new ArrayList<JdbcDataResolverItem>(items.size() + 1);
+			JdbcDataResolverItem recursiveItemm = resolverItem.clone();
+			recursiveItemm.setName(resolverItem.getRecursiveProperty());
 			
-			if (StringUtils.isNotEmpty(resolverItem.getRecursiveProperty())){
-				List<JdbcDataResolverItem> items2 = new ArrayList<JdbcDataResolverItem>(items.size() + 1);
-				JdbcDataResolverItem recursiveItemm = resolverItem.clone();
-				recursiveItemm.setName(resolverItem.getRecursiveProperty());
-				
-				items2.add(recursiveItemm);
-				items2.addAll(items);
-				
-				this.doChildrenExecute(recordItem, items2);
-			} else {
-				if (items.size() > 0) {
-					this.doChildrenExecute(recordItem, items);
-				}
+			items2.add(recursiveItemm);
+			items2.addAll(items);
+			
+			this.doChildrenExecute(recordItem, items2);
+		} else {
+			if (items.size() > 0) {
+				this.doChildrenExecute(recordItem, items);
 			}
 		}
 	}

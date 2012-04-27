@@ -31,10 +31,9 @@ public class UpdateCommand {
 		this.retrieveCommand = retrieveCommand;
 	}
 	
-	public void execute(JdbcRecordOperation operation) throws Exception {
+	public void execute(TableRecordOperation operation) throws Exception {
 		JdbcEnviroment env = operation.getJdbcEnviroment();
-		
-		Dialect dialect = env.getDialect();
+		Dialect dialect = operation.getDialect();
 		NamedParameterJdbcTemplate jdbcTemplate = env.getSpringNamedDao().getNamedParameterJdbcTemplate();
 		UpdateSql updateSql = this.updateSql(operation);
 		String sql = dialect.toSQL(updateSql);
@@ -49,8 +48,8 @@ public class UpdateCommand {
 		}
 	}
 	
-	public UpdateSql updateSql(JdbcRecordOperation operation) {
-		Dialect dialect = operation.getJdbcEnviroment().getDialect();
+	public UpdateSql updateSql(TableRecordOperation operation) {
+		Dialect dialect = operation.getDialect();
 		
 		Table table = (Table)operation.getDbTable();
 		Record record = operation.getRecord();

@@ -11,13 +11,13 @@ import com.bstek.dorado.jdbc.JdbcEnviroment;
  * @author mark.li@bstek.com
  *
  */
-public class JdbcDataResolverContext extends AbstractJdbcContext {
+public class DataResolverContext extends AbstractJdbcContext {
 
 	private DataItems dataItems;
 	private List<JdbcDataResolverItem> resolverItems;
 	private Object returnValue;
 	
-	public JdbcDataResolverContext(JdbcEnviroment enviroment, Object parameter,
+	public DataResolverContext(JdbcEnviroment enviroment, Object parameter,
 			DataItems dataItems, List<JdbcDataResolverItem> resolverItems) {
 		super(enviroment, parameter);
 		
@@ -25,7 +25,7 @@ public class JdbcDataResolverContext extends AbstractJdbcContext {
 		this.resolverItems = resolverItems;
 	}
 
-	public JdbcDataResolverContext(Object parameter, DataItems dataItems, 
+	public DataResolverContext(Object parameter, DataItems dataItems, 
 			List<JdbcDataResolverItem> resolverItems) {
 		this(null, parameter, dataItems, resolverItems);
 	}

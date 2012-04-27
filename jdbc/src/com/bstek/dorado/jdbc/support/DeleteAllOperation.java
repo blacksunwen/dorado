@@ -2,7 +2,6 @@ package com.bstek.dorado.jdbc.support;
 
 import java.util.Map;
 
-import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.model.Table;
 
 public class DeleteAllOperation extends AbstractDbTableOperation<DefaultJdbcContext, Table> {
@@ -19,9 +18,8 @@ public class DeleteAllOperation extends AbstractDbTableOperation<DefaultJdbcCont
 	}
 
 	@Override
-	protected boolean doExecute() throws Exception {
-		JdbcEnviroment jdbcEnviroment = getJdbcEnviroment();
-		return jdbcEnviroment.getDialect().execute(this);
+	protected boolean doRun() throws Exception {
+		return getDialect().execute(this);
 	}
 
 }

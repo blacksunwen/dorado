@@ -15,24 +15,24 @@ import com.bstek.dorado.jdbc.JdbcEnviroment;
  * @author mark.li@bstek.com
  * 
  */
-public class JdbcDataProviderContext extends AbstractJdbcContext {
+public class DataProviderContext extends AbstractJdbcContext {
 	private Page<Record> page;
 	private boolean autoFilter = false;
 	private Criteria criteria;
 	
-	public JdbcDataProviderContext() {
+	public DataProviderContext() {
 		this(null, null, null);
 	}
 
-	public JdbcDataProviderContext(JdbcEnviroment enviroment){
+	public DataProviderContext(JdbcEnviroment enviroment){
 		this(enviroment, null, null);
 	}
 	
-	public JdbcDataProviderContext(JdbcEnviroment enviroment, Object parameter) {
+	public DataProviderContext(JdbcEnviroment enviroment, Object parameter) {
 		this(enviroment, parameter, null);
 	}
 	
-	public JdbcDataProviderContext(JdbcEnviroment enviroment, Object parameter, Page<Record> page) {
+	public DataProviderContext(JdbcEnviroment enviroment, Object parameter, Page<Record> page) {
 		super(enviroment, null);
 		if (parameter instanceof ParameterWrapper) {
 			ParameterWrapper pw = (ParameterWrapper)parameter;

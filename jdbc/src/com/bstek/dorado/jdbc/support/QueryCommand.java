@@ -19,21 +19,20 @@ public class QueryCommand {
 
 	private static Log logger = LogFactory.getLog(QueryCommand.class);
 	
-	public boolean execute(JdbcDataProviderOperation operation) throws Exception {
+	public void execute(QueryOperation operation) throws Exception {
 		Page<Record> page = operation.getJdbcContext().getPage();
 		if (page.getPageSize() > 0) {
 			this.loadPageRecord(operation);
 		} else {
 			this.loadAllRecords(operation);
 		}
-		return true;
 	}
 	
 	/**
 	 * 加载全部的记录
 	 */
-	private void loadAllRecords(JdbcDataProviderOperation operation) throws Exception {
-		JdbcDataProviderContext jdbcContext = operation.getJdbcContext();
+	private void loadAllRecords(QueryOperation operation) throws Exception {
+		DataProviderContext jdbcContext = operation.getJdbcContext();
 		JdbcEnviroment env = operation.getJdbcEnviroment();
 		DbTable dbTable = operation.getDbTable();
 		
@@ -43,7 +42,7 @@ public class QueryCommand {
 
 		NamedParameterJdbcTemplate jdbcTemplate = env.getSpringNamedDao().getNamedParameterJdbcTemplate();
 
-		String sql = env.getDialect().toSQL(selectSql);
+		String sql = operation.getDialect().toSQL(selectSql);
 		if (logger.isDebugEnabled()) {
 			logger.debug("[SELECT-SQL]" + sql);
 		}
@@ -54,11 +53,11 @@ public class QueryCommand {
 	/**
 	 * 加载当前分页的记录
 	 */
-	private void loadPageRecord(JdbcDataProviderOperation operation) throws Exception {
-		JdbcDataProviderContext jdbcContext = operation.getJdbcContext();
+	private void loadPageRecord(QueryOperation operation) throws Exception {
+		DataProviderContext jdbcContext = operation.getJdbcContext();
 		Page<Record> page = jdbcContext.getPage();
 		JdbcEnviroment env = operation.getJdbcEnviroment();
-		Dialect dialect = env.getDialect();
+		Dialect dialect = operation.getDialect();
 
 		DbTable dbTable = operation.getDbTable();
 		SelectSql selectSql = dbTable.selectSql(operation);

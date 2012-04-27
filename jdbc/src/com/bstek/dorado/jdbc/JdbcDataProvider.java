@@ -8,8 +8,8 @@ import com.bstek.dorado.data.provider.Page;
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.model.DbTable;
-import com.bstek.dorado.jdbc.support.JdbcDataProviderContext;
-import com.bstek.dorado.jdbc.support.JdbcDataProviderOperation;
+import com.bstek.dorado.jdbc.support.DataProviderContext;
+import com.bstek.dorado.jdbc.support.QueryOperation;
 import com.bstek.dorado.util.Assert;
 
 /**
@@ -56,25 +56,25 @@ public class JdbcDataProvider extends AbstractDataProvider {
 	@Override
 	protected Object internalGetResult(Object parameter, DataType resultDataType)
 			throws Exception {
-		JdbcDataProviderOperation operation = createOperation(parameter, null);
-		return operation.getJdbcEnviroment().getJdbcDao().query(operation);
+		QueryOperation operation = createOperation(parameter, null);
+		return operation.getJdbcDao().query(operation);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void internalGetResult(Object parameter, Page<?> page,
 			DataType resultDataType) throws Exception {
-		JdbcDataProviderOperation operation = createOperation(parameter, (Page<Record>) page);
-		operation.getJdbcEnviroment().getJdbcDao().query(operation);
+		QueryOperation operation = createOperation(parameter, (Page<Record>) page);
+		operation.getJdbcDao().query(operation);
 	}
 
-	protected JdbcDataProviderOperation createOperation(Object parameter, Page<Record> page) {
+	protected QueryOperation createOperation(Object parameter, Page<Record> page) {
 		Assert.notEmpty(tableName, "tableName must not be empty.");
 		
-		JdbcDataProviderContext jCtx = new JdbcDataProviderContext(getJdbcEnviroment(), parameter, page);
+		DataProviderContext jCtx = new DataProviderContext(getJdbcEnviroment(), parameter, page);
 		jCtx.setAutoFilter(isAutoFilter());
 		DbTable table = JdbcUtils.getDbTable(tableName);
-		JdbcDataProviderOperation operation = new JdbcDataProviderOperation(table, jCtx);
+		QueryOperation operation = new QueryOperation(table, jCtx);
 		
 		return operation;
 	}

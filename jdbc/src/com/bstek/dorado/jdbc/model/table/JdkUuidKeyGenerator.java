@@ -2,7 +2,7 @@ package com.bstek.dorado.jdbc.model.table;
 
 import java.util.UUID;
 
-import com.bstek.dorado.jdbc.support.JdbcRecordOperation;
+import com.bstek.dorado.jdbc.support.TableRecordOperation;
 
 /**
  * UUID的主键生成器
@@ -17,7 +17,7 @@ public class JdkUuidKeyGenerator extends AbstractKeyGenerator<String> {
 		this.setName("JDK-UUID");
 	}
 
-	public String newKey(JdbcRecordOperation operation, TableKeyColumn keyColumn) {
+	public String newKey(TableRecordOperation operation, TableKeyColumn keyColumn) {
 		UUID id = UUID.randomUUID();
 		return id.toString();
 	}

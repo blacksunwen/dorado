@@ -11,17 +11,15 @@ import com.bstek.dorado.jdbc.config.DbElementDefinition;
  */
 public class DefaultJdbcIntercepter implements JdbcIntercepter {
 
-	public JdbcDataProviderOperation getOperation(
-			JdbcDataProviderOperation operation) {
+	public QueryOperation getOperation(QueryOperation operation) {
 		return operation;
 	}
 
-	public JdbcDataResolverOperation getOperation(
-			JdbcDataResolverOperation operation) {
+	public DataResolverOperation getOperation(DataResolverOperation operation) {
 		return operation;
 	}
 
-	public JdbcRecordOperation getOperation(JdbcRecordOperation operation) {
+	public TableRecordOperation getOperation(TableRecordOperation operation) {
 		return operation;
 	}
 
@@ -31,6 +29,14 @@ public class DefaultJdbcIntercepter implements JdbcIntercepter {
 	
 	public DbElementDefinition getDefinition(DbElementDefinition def) {
 		return def;
+	}
+
+	public SaveOperation getOperation(SaveOperation operation) {
+		return operation;
+	}
+
+	public SaveRecordOperation getOperation(SaveRecordOperation operation) {
+		return operation;
 	}
 
 }

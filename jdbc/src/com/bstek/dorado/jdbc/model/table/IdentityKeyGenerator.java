@@ -1,7 +1,7 @@
 package com.bstek.dorado.jdbc.model.table;
 
 import com.bstek.dorado.jdbc.support.JdbcConstants;
-import com.bstek.dorado.jdbc.support.JdbcRecordOperation;
+import com.bstek.dorado.jdbc.support.TableRecordOperation;
 
 /**
  * 自增主键生成器
@@ -20,7 +20,7 @@ public class IdentityKeyGenerator extends AbstractKeyGenerator<Number> {
 		return true;
 	}
 
-	public Number newKey(JdbcRecordOperation operation, TableKeyColumn keyColumn) {
+	public Number newKey(TableRecordOperation operation, TableKeyColumn keyColumn) {
 		throw new UnsupportedOperationException();
 	}
 

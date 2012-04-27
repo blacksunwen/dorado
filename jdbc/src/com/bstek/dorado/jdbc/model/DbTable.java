@@ -5,9 +5,9 @@ import java.util.List;
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.DbTableTrigger;
 import com.bstek.dorado.jdbc.sql.SelectSql;
-import com.bstek.dorado.jdbc.support.JdbcDataProviderOperation;
-import com.bstek.dorado.jdbc.support.JdbcDataResolverContext;
-import com.bstek.dorado.jdbc.support.JdbcRecordOperationProxy;
+import com.bstek.dorado.jdbc.support.QueryOperation;
+import com.bstek.dorado.jdbc.support.DataResolverContext;
+import com.bstek.dorado.jdbc.support.RecordOperationProxy;
 
 /**
  * 
@@ -26,7 +26,7 @@ public interface DbTable extends DbElement {
 	
 	Table getResolverTable();
 	
-	JdbcRecordOperationProxy createOperationProxy(Record record, JdbcDataResolverContext jdbcContext);
+	RecordOperationProxy createOperationProxy(Record record, DataResolverContext jdbcContext);
 	
-	SelectSql selectSql(JdbcDataProviderOperation operation);
+	SelectSql selectSql(QueryOperation operation);
 }

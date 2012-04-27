@@ -1,10 +1,12 @@
 package com.bstek.dorado.jdbc;
 
 import com.bstek.dorado.jdbc.config.DbElementDefinition;
+import com.bstek.dorado.jdbc.support.DataResolverOperation;
 import com.bstek.dorado.jdbc.support.DeleteAllOperation;
-import com.bstek.dorado.jdbc.support.JdbcDataProviderOperation;
-import com.bstek.dorado.jdbc.support.JdbcDataResolverOperation;
-import com.bstek.dorado.jdbc.support.JdbcRecordOperation;
+import com.bstek.dorado.jdbc.support.QueryOperation;
+import com.bstek.dorado.jdbc.support.SaveOperation;
+import com.bstek.dorado.jdbc.support.SaveRecordOperation;
+import com.bstek.dorado.jdbc.support.TableRecordOperation;
 
 /**
  * JDBC模块的拦截器
@@ -14,13 +16,17 @@ import com.bstek.dorado.jdbc.support.JdbcRecordOperation;
  */
 public interface JdbcIntercepter {
 
-	JdbcDataProviderOperation getOperation(JdbcDataProviderOperation operation);
+	QueryOperation getOperation(QueryOperation operation);
 	
-	JdbcDataResolverOperation getOperation(JdbcDataResolverOperation operation);
+	DataResolverOperation getOperation(DataResolverOperation operation);
 	
-	JdbcRecordOperation getOperation(JdbcRecordOperation operation);
+	TableRecordOperation getOperation(TableRecordOperation operation);
 	
 	DeleteAllOperation getOperation(DeleteAllOperation operation);
+	
+	SaveOperation getOperation(SaveOperation operation);
+	
+	SaveRecordOperation getOperation(SaveRecordOperation operation);
 	
 	DbElementDefinition getDefinition(DbElementDefinition def);
 	

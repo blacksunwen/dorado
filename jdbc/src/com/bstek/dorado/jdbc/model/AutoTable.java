@@ -11,7 +11,6 @@ import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.data.entity.EntityState;
 import com.bstek.dorado.data.provider.Criteria;
 import com.bstek.dorado.jdbc.Dialect;
-import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.JdbcParameterSource;
 import com.bstek.dorado.jdbc.model.autotable.AutoTableColumn;
 import com.bstek.dorado.jdbc.model.autotable.AutoTableSelectSql;
@@ -24,8 +23,8 @@ import com.bstek.dorado.jdbc.sql.SqlBuilder;
 import com.bstek.dorado.jdbc.sql.SqlConstants.JoinOperator;
 import com.bstek.dorado.jdbc.sql.SqlConstants.KeyWord;
 import com.bstek.dorado.jdbc.sql.SqlUtils;
-import com.bstek.dorado.jdbc.support.JdbcDataProviderContext;
-import com.bstek.dorado.jdbc.support.JdbcDataProviderOperation;
+import com.bstek.dorado.jdbc.support.DataProviderContext;
+import com.bstek.dorado.jdbc.support.QueryOperation;
 import com.bstek.dorado.util.Assert;
 
 /**
@@ -171,9 +170,9 @@ public class AutoTable extends AbstractTable {
 		return false;
 	}
 
-	public SelectSql selectSql(JdbcDataProviderOperation operation) {
+	public SelectSql selectSql(QueryOperation operation) {
 		AutoTable autoTable = (AutoTable)operation.getDbTable();
-		JdbcDataProviderContext jdbcContext = operation.getJdbcContext();
+		DataProviderContext jdbcContext = operation.getJdbcContext();
 		Object parameter = jdbcContext.getParameter();
 		
 		//columnsToken
@@ -196,8 +195,7 @@ public class AutoTable extends AbstractTable {
 			}
 		}
 		
-		JdbcEnviroment jdbcEnv = operation.getJdbcEnviroment();
-		Dialect dialect = jdbcEnv.getDialect();
+		Dialect dialect = operation.getDialect();
 		//fromToken
 		StringBuilder fromToken = fromToken(autoTable, dialect);
 		//where
