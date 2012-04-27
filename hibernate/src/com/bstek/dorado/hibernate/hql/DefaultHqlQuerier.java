@@ -86,9 +86,9 @@ public class DefaultHqlQuerier implements HqlQuerier {
 		
 		String hqlClause = hql.getClause();
 		Query query = session.createQuery(hqlClause);
-		List<HqlParameter> hqlParameters = hql.getParameters();
+		List<HqlVarExpr> hqlParameters = hql.getVarExprs();
 		if (!hqlParameters.isEmpty()) {
-			for (HqlParameter hp: hqlParameters) {
+			for (HqlVarExpr hp: hqlParameters) {
 				int i = hp.getIndex();
 				Object v = parameterResolver.parameterValue(parameter, hp);
 				query.setParameter(i, v);
@@ -106,10 +106,10 @@ public class DefaultHqlQuerier implements HqlQuerier {
 		String countHqlClause = "select count(*) " + fromHql;
 		
 		Hql countHql = new Hql(countHqlClause);
-		List<HqlParameter> hqlParameters = hql.getParameters();
+		List<HqlVarExpr> hqlParameters = hql.getVarExprs();
 		if (!hqlParameters.isEmpty()) {
-			for (HqlParameter hp: hqlParameters) {
-				countHql.addParameter(hp);
+			for (HqlVarExpr hp: hqlParameters) {
+				countHql.addVarExpr(hp);
 			}
 		}
 		Query query = createQuery(session, parameter, countHql);

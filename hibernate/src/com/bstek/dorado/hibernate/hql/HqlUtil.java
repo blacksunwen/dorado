@@ -12,8 +12,6 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 
 import com.bstek.dorado.core.Context;
-import com.bstek.dorado.data.type.DataType;
-import com.bstek.dorado.data.util.DataUtils;
 import com.bstek.dorado.util.Assert;
 import com.bstek.dorado.view.resolver.VelocityHelper;
 
@@ -56,7 +54,7 @@ public class HqlUtil {
 
 			boolean inQuot = false;
 			boolean inParam = false;
-			String param = "";
+			String expr = "";
 
 			for (int i = 0; i < clause.length(); i++) {
 				char c = clause.charAt(i);
@@ -69,18 +67,18 @@ public class HqlUtil {
 				}
 
 				if (inParam) {
-					if (Character.isJavaIdentifierPart(c) || (c == '.') || (c == '(') || (c == ')')) {
-						param += c;
+					if (HqlVarExpr.acceptByExpr(c)) {
+						expr += c;
 
 						if ((i + 1) == clause.length()) {
-							paramExprs.add(param);
+							paramExprs.add(expr);
 						}
 						continue;
 					} else {
-						Assert.isTrue(param.length() > 0);
+						Assert.isTrue(expr.length() > 0, "Error when HQL parsing [" + clause + "]");
 
-						paramExprs.add(param);
-						param = "";
+						paramExprs.add(expr);
+						expr = "";
 						inParam = false;
 					}
 				}
@@ -91,26 +89,8 @@ public class HqlUtil {
 			if (paramExprs.size() > 0) {
 				for (int i = 0; i < paramExprs.size(); i++) {
 					String paramExpr = paramExprs.get(i);
-					String paramName = paramExpr;
-					DataType dataType = null;
-					if (paramExpr.charAt(0) == '(') {
-						int sprIdx = paramExpr.indexOf(')');
-						if (sprIdx>1) {
-							String dataTypeName = paramExpr.substring(1, sprIdx);
-							dataType = DataUtils.getDataType(dataTypeName);
-							paramName = paramExpr.substring(sprIdx + 1);
-						}
-					}
-					Assert.notEmpty(paramName, "Error when HQL parsing [" + clause + "]");
-					
-					HqlParameter p = new HqlParameter();
-					p.setExpr(paramName);
-					p.setIndex(i);
-					if (dataType != null) {
-						p.setDataType(dataType);
-					}
-
-					hql.addParameter(p);
+					HqlVarExpr p = new HqlVarExpr(paramExpr, i);
+					hql.addVarExpr(p);
 				}
 			}
 			return hql;
