@@ -619,6 +619,8 @@
 	DataType.DATE = 8;
 	DataType.TIME = 9;
 	DataType.DATETIME = 10;
+	DataType.PRIMITIVE_CHAR = 11;
+	DataType.CHARACTER = 12;
 
 	/**
 	 * @class 字符串类型。
@@ -644,6 +646,7 @@
 	 * @constant
 	 */
 	dorado.$String = new dorado.datatype.StringDataType("String");
+	
 	$parseFloat = dorado.util.Common.parseFloat;
 	$parseInt = function(s) {
 		var n = Math.round($parseFloat(s));
@@ -943,5 +946,49 @@
 	datetime.doToText = function(data, argument) {
 		return (data != null && data instanceof Date) ? data.formatDate(argument || $setting["common.defaultDisplayDateTimeFormat"]) : '';
 	};
+	
+	/**
+	 * @class 原生字符对象类型。
+	 * @extends dorado.DataType
+	 */
+	dorado.datatype.PrimitiveCharDataType = $extend(DataType, /** @scope dorado.datatype.PrimitiveCharDataType.prototype */
+	{
+		$className : "dorado.datatype.PrimitiveCharDataType",
+
+		_code : DataType.PRIMITIVE_CHAR,
+
+		parse : function(data, argument) {
+			var s = (data == null) ? '\0' : (data + '\0');
+			return s.charAt(0);
+		}
+	});
+	/**
+	 * 默认的原生字符对象类型的实例。
+	 * @type dorado.datatype.PrimitiveCharDataType
+	 * @constant
+	 */
+	dorado.$char = new dorado.datatype.PrimitiveCharDataType("char");
+	
+	/**
+	 * @class 字符对象类型。
+	 * @extends dorado.DataType
+	 */
+	dorado.datatype.CharacterDataType = $extend(DataType, /** @scope dorado.datatype.CharacterDataType.prototype */
+	{
+		$className : "dorado.datatype.CharacterDataType",
+
+		_code : DataType.CHARACTER,
+
+		parse : function(data, argument) {
+			var s = (data == null) ? '' : (data + '');
+			return (s.length > 0) ? s.charAt(0) : null;
+		}
+	});
+	/**
+	 * 默认的字符对象类型的实例。
+	 * @type dorado.datatype.CharacterDataType
+	 * @constant
+	 */
+	dorado.$Character = new dorado.datatype.CharacterDataType("Character");
 
 })();

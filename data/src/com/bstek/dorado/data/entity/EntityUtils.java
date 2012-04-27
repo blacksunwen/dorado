@@ -76,7 +76,8 @@ public abstract class EntityUtils {
 	public static boolean isSimpleValue(Object data) {
 		return (data == null || data instanceof String
 				|| data.getClass().isPrimitive() || data instanceof Boolean
-				|| data instanceof Number || data.getClass().isEnum() || data instanceof Date);
+				|| data instanceof Number || data.getClass().isEnum()
+				|| data instanceof Date || data instanceof Character);
 	}
 
 	/**
@@ -85,7 +86,8 @@ public abstract class EntityUtils {
 	public static boolean isSimpleType(Class<?> cl) {
 		return (String.class.equals(cl) || cl.isPrimitive()
 				|| Boolean.class.equals(cl)
-				|| Number.class.isAssignableFrom(cl) || cl.isEnum() || Date.class
+				|| Number.class.isAssignableFrom(cl) || cl.isEnum()
+				|| Date.class.isAssignableFrom(cl) || Character.class
 					.isAssignableFrom(cl));
 	}
 
