@@ -41,6 +41,9 @@ public class HqlUtil {
 		Context doradoContext = Context.getCurrent();
 		VelocityHelper VelocityHelper = (VelocityHelper) doradoContext.getServiceBean("velocityHelper");
 		VelocityEngine volocityEngine = VelocityHelper.getVelocityEngine();
+		if (hql.charAt(hql.length()-1) == '$') {
+			hql += " ";
+		}
 		volocityEngine.evaluate(context, result, "", hql);
 		return result.toString();
 	}
