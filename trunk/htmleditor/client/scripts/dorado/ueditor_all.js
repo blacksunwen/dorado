@@ -1,24 +1,29 @@
-(function(){UEDITOR_CONFIG = window.UEDITOR_CONFIG || {};
+UEDITOR_CONFIG = window.UEDITOR_CONFIG || {};
+var baidu = baidu || {};
 
-var baidu = window.baidu || {};
+/**
+ * @namespace baidu.editor
+ */
+baidu.editor = baidu.editor || {};
 
-window.baidu = baidu;
+/**
+ * @class baidu.editor.commands
+ */
+baidu.editor.commands = {};
+/**
+ * @class baidu.editor.plugins
+ */
+baidu.editor.plugins = {};
 
-window.UE = baidu.editor =  {};
+baidu.editor.version = "1.1.8.4";
 
-UE.plugins = {};
 
-UE.commands = {};
-
-UE.version = "1.2.0.0";
-
-var dom = UE.dom = {};
 ///import editor.js
 /**
  * @class baidu.editor.browser     判断浏览器
  */
 
-var browser = UE.browser = function(){
+baidu.editor.browser = function(){
     var agent = navigator.userAgent.toLowerCase(),
         opera = window.opera,
         browser = {
@@ -48,6 +53,15 @@ var browser = UE.browser = function(){
          * @return     {Boolean}    返回是否为WebKit内核
          */
         webkit	: ( agent.indexOf( ' applewebkit/' ) > -1 ),
+
+        /**
+         * 检测是否为Adobe AIR
+         * @name baidu.editor.browser.air
+         * @property    检测是否为Adobe AIR
+         * @grammar     baidu.editor.browser.air
+         * @return     {Boolean}    返回是否为Adobe AIR
+         */
+        air		: ( agent.indexOf( ' adobeair/' ) > -1 ),
 
         /**
          * 检查是否为Macintosh系统
@@ -197,19 +211,18 @@ var browser = UE.browser = function(){
         false );
     return browser;
 }();
-//快捷方式
-var ie = browser.ie,
-    webkit = browser.webkit,
-    gecko = browser.gecko;
 ///import editor.js
 ///import core/utils.js
 /**
  * @class baidu.editor.utils     工具类
  */
 
-    var utils = UE.utils =
+(function() {
+	baidu.editor.utils = {};
+	var noop = new Function();
+	var utils = baidu.editor.utils =
 	/**@lends baidu.editor.utils.prototype*/
-    {
+	{
 		/**
          * 以obj为原型创建实例
          * @public
@@ -218,7 +231,6 @@ var ie = browser.ie,
          * @return {Object} 返回新的对象
          */
 		makeInstance: function(obj) {
-            var noop = new Function();
 			noop.prototype = obj;
 			obj = new noop;
 			noop.prototype = null;
@@ -263,6 +275,25 @@ var ie = browser.ie,
 		isString: function(str) {
 			return typeof str == 'string' || str.constructor == String;
 		},
+//		/**
+//         * 遍历元素执行迭代器
+//         * @public
+//         * @function
+//         * @param {Array|Object} eachable    要迭代的对象
+//         * @param {Function} iterator        迭代函数
+//         * @param {Object} this_             传入对象
+//         */
+//		each: function(eachable, iterator, this_) {
+//			if (utils.isArray(eachable)) {
+//				for (var i = 0; i < eachable.length; i++) {
+//					iterator.call(this_, eachable[i], i, eachable);
+//				}
+//			} else {
+//				for (var k in eachable) {
+//					iterator.call(this_, eachable[k], k, eachable);
+//				}
+//			}
+//		},
 		/**
          * subClass继承superClass
          * @public
@@ -272,8 +303,8 @@ var ie = browser.ie,
          * @return    {Object}    扩展后的新对象
          */
 		inherits: function(subClass, superClass) {
-			var oldP = subClass.prototype,
-			    newP = utils.makeInstance(superClass.prototype);
+			var oldP = subClass.prototype;
+			var newP = utils.makeInstance(superClass.prototype);
 			utils.extend(newP, oldP, true);
 			subClass.prototype = newP;
 			return (newP.constructor = subClass);
@@ -324,21 +355,16 @@ var ie = browser.ie,
          * @returns {Number}        返回在数组中的索引
          */
 		indexOf: function(array, item, at) {
-            for(var i=at||0,l = array.length;i<l;i++){
-               if(array[i] === item){
-                   return i;
-               }
-            }
-            return -1;
+			at = at || 0;
+			while (at < array.length) {
+				if (array[at] === item) {
+					return at;
+				}
+				at++;
+			}
+			return - 1;
 		},
 
-        findNode : function(nodes,tagNames,fn){
-            for(var i=0,ci;ci=nodes[i++];){
-                if(fn? fn(ci) : this.indexOf(tagNames,ci.tagName.toLowerCase())!=-1){
-                    return ci;
-                }
-            }
-        },
 		/**
          * 移除数组中的元素
          * @public
@@ -347,12 +373,13 @@ var ie = browser.ie,
          * @param {*} item            要删除的元素
          */
 		removeItem: function(array, item) {
-            for(var i=0,l = array.length;i<l;i++){
-                if(array[i] === item){
-                    array.splice(i,1);
-                    i--;
-                }
-            }
+			var k = array.length;
+			if (k) while (k--) {
+				if (array[k] === item) {
+					array.splice(k, 1);
+					break;
+				}
+			}
 		},
 
 		/**
@@ -362,24 +389,32 @@ var ie = browser.ie,
          * @param {String} str        字符串
          * @return {String} str       删除空格后的字符串
          */
-		trim: function(str) {
-            return str.replace(/(^[ \t\n\r]+)|([ \t\n\r]+$)/g, '');
-		},
+		trim: function() {
+			// "non-breaking spaces" 就是&nbsp;不能被捕获，所以不用\s
+			var trimRegex = /(^[ \t\n\r]+)|([ \t\n\r]+$)/g;
+			return function(str) {
+				return str.replace(trimRegex, '');
+			};
+		}(),
 
 		/**
          * 将字符串转换成hashmap
          * @public
          * @function
-         * @param {String/Array} list       字符串，以‘，’隔开
+         * @param {String} list       字符串，以‘，’隔开
          * @returns {Object}          转成hashmap的对象
          */
 		listToMap: function(list) {
-            if(!list)return {};
-            list = utils.isArray(list) ? list : list.split(',');
-            for(var i=0,ci,obj={};ci=list[i++];){
-                obj[ci.toUpperCase()] = obj[ci] = 1;
-            }
-            return obj;
+			if (!list) {
+				return {};
+			}
+			var array = list.split(/,/g),
+			k = array.length,
+			map = {};
+			if (k) while (k--) {
+				map[array[k]] = 1;
+			}
+			return map;
 		},
 
 		/**
@@ -389,16 +424,20 @@ var ie = browser.ie,
          * @param {String} str      需要转义的字符串
          * @returns {String}        转义后的字符串
          */
-		unhtml: function(str) {
-           return str ? str.replace(/[&<">]/g, function(m){
-               return {
-                   '<': '&lt;',
-                   '&': '&amp',
-                   '"': '&quot;',
-                   '>': '&gt;'
-               }[m]
-           }) : '';
-		},
+		unhtml: function() {
+			var map = {
+				'<': '&lt;',
+				'&': '&amp',
+				'"': '&quot;',
+				'>': '&gt;'
+			};
+			function rep(m) {
+				return map[m];
+			}
+			return function(str) {
+				return str ? str.replace(/[&<">]/g, rep) : '';
+			};
+		}(),
 
 		/**
          * 将css样式转换为驼峰的形式。如font-size -> fontSize
@@ -408,14 +447,17 @@ var ie = browser.ie,
          * @returns {String}        转换后的样式
          */
 		cssStyleToDomStyle: function() {
-            var test = document.createElement('div').style,
-               cache = {
-                   'float': test.cssFloat != undefined ? 'cssFloat' : test.styleFloat != undefined ? 'styleFloat': 'float'
-               };
-
-            return function(cssName) {
-               return cache[cssName] || (cache[cssName] = cssName.toLowerCase().replace(/-./g, function(match){return match.charAt(1).toUpperCase();}));
-            };
+			var test = document.createElement('div').style,
+			cssFloat = test.cssFloat != undefined ? 'cssFloat': test.styleFloat != undefined ? 'styleFloat': 'float',
+			cache = {
+				'float': cssFloat
+			};
+			function replacer(match) {
+				return match.charAt(1).toUpperCase();
+			}
+			return function(cssName) {
+				return cache[cssName] || (cache[cssName] = cssName.toLowerCase().replace(/-./g, replacer));
+			};
 		}(),
 		/**
          * 加载css文件，执行回调函数
@@ -436,20 +478,15 @@ var ie = browser.ie,
                 element.setAttribute(p,obj[p]);
             }
 			element.onload = element.onreadystatechange = function() {
-                if (!this.readyState || /loaded|complete/.test(this.readyState)) {
-                    fun && fun();
-                    element.onload = element.onreadystatechange = null;
-                }
+				if (!this.readyState || this.readyState == 'loaded' || this.readyState == 'complete') {
+					if (fun) fun();
+					element.onload = element.onreadystatechange = null;
+				}
 			};
 
 			doc.getElementsByTagName("head")[0].appendChild(element);
 
         },
-        /**
-         * 判断对象是否为空
-         * @param {Object} obj
-         * @return {Boolean} true 空，false 不空
-         */
         isEmptyObject : function(obj){
             for ( var p in obj ) {
                 return false;
@@ -470,66 +507,17 @@ var ie = browser.ie,
                 value = value.toUpperCase();
             }
             return  value;
-        },
-        /**
-            * 只针对border,padding,margin做了处理，因为性能问题
-            * @public
-            * @function
-            * @param {String}    val style字符串
-        */
-        optCss : function(val){
-            var padding,margin,border;
-            val = val.replace(/(padding|margin|border)\-([^:]+):([^;]+);?/gi,function(str,key,name,val){
-                if(val.split(' ').length == 1){
-                    switch (key){
-                        case 'padding':
-                            !padding && (padding = {});
-                            padding[name] = val;
-                            return '';
-                        case 'margin':
-                            !margin && (margin = {});
-                            margin[name] = val;
-                            return '';
-                        case 'border':
-                            return val == 'initial' ? '' : str;
-
-                    }
-                }
-                return str
-            });
-
-            function opt(obj,name){
-                if(!obj)
-                    return ''
-                var t = obj.top ,b = obj.bottom,l = obj.left,r = obj.right,val = '';
-                if(!t || !l || !b || !r){
-                    for(var p in obj){
-                        val +=';'+name+'-' + p + ':' + obj[p]+';';
-                    }
-                }else{
-                    val += ';'+name+':' +
-                        (t == b && b == l && l == r ? t :
-                            t == b && l == r ? (t + ' ' + l) :
-                                l == r ?  (t + ' ' + l + ' ' + b) : (t + ' ' + r + ' ' + b + ' ' + l))+';'
-                }
-                return val;
-            }
-            val += opt(padding,'padding') + opt(margin,'margin');
-
-            return val.replace(/^[ \n\r\t;]*|[ \n\r\t]*$/,'').replace(/;([ \n\r\t]+)|\1;/g,';')
-                .replace(/(&((l|g)t|quot|#39))?;{2,}/g,function(a,b){
-
-                    return b ? b + ";;" : ';'
-                })
-
         }
 
-	};
-
-
+	}
+})();
 
 ///import editor.js
 ///import core/utils.js
+(function () {
+    baidu.editor.EventBase = EventBase;
+
+    var utils = baidu.editor.utils;
 
     /**
      * 事件基础类
@@ -537,7 +525,9 @@ var ie = browser.ie,
      * @class
      * @name baidu.editor.EventBase
      */
-    var EventBase = UE.EventBase = function(){};
+    function EventBase() {
+
+    }
 
     EventBase.prototype = /**@lends baidu.editor.EventBase.prototype*/{
         /**
@@ -575,6 +565,7 @@ var ie = browser.ie,
 
                 k = listeners.length;
                 while ( k -- ) {
+
                     t = listeners[k].apply( this, arguments );
                     if ( t !== undefined ) {
                         r = t;
@@ -604,16 +595,20 @@ var ie = browser.ie,
         return ( ( allListeners = ( obj.__allListeners || force && ( obj.__allListeners = {} ) ) )
             && ( allListeners[type] || force && ( allListeners[type] = [] ) ) );
     }
-
-
+})();
 ///import editor.js
+//注册命名空间
+/**
+ * @class baidu.editor.dom
+ */
+baidu.editor.dom = baidu.editor.dom || {};///import editor.js
 ///import core/dom/dom.js
 /**
  * dtd html语义化的体现类
  * @constructor
  * @namespace dtd
  */
-var dtd = dom.dtd = (function() {
+baidu.editor.dom.dtd = (function() {
     function _( s ) {
         for (var k in s) {
             s[k.toUpperCase()] = s[k];
@@ -657,9 +652,8 @@ var dtd = dom.dtd = (function() {
         V = _({html:1});
 
     var block = _({address:1,blockquote:1,center:1,dir:1,div:1,dl:1,fieldset:1,form:1,h1:1,h2:1,h3:1,h4:1,h5:1,h6:1,hr:1,isindex:1,menu:1,noframes:1,ol:1,p:1,pre:1,table:1,ul:1}),
-        //针对优酷的embed他添加了结束标识，导致粘贴进来会变成两个，暂时去掉 ,embed:1
-        empty =  _({area:1,base:1,br:1,col:1,hr:1,img:1,input:1,link:1,meta:1,param:1,embed:1});
-
+        empty =  _({area:1,base:1,br:1,col:1,hr:1,img:1,embed:1,input:1,link:1,meta:1,param:1});
+    
     return  _({
 
         // $ 表示自定的属性
@@ -750,7 +744,7 @@ var dtd = dom.dtd = (function() {
         noframes : P,
         big : L,
         small : L,
-        span :_({'#':1,br:1}),
+        span :{'#':1},
         hr : L,
         dt : L,
         sub : L,
@@ -792,7 +786,6 @@ var dtd = dom.dtd = (function() {
         dfn : L
     });
 })();
-
 ///import editor.js
 ///import core/utils.js
 ///import core/browser.js
@@ -801,6 +794,18 @@ var dtd = dom.dtd = (function() {
 /**
  * @class baidu.editor.dom.domUtils    dom工具类
  */
+baidu.editor.dom.domUtils = baidu.editor.dom.domUtils || {};
+(function() {
+    var editor = baidu.editor,
+        browser = editor.browser,
+        dtd = editor.dom.dtd,
+        utils = editor.utils,
+        ie = browser.ie,
+        eventList = {},
+        eventListIndex = 0;
+
+
+  
 
     //for getNextDomNode getPreviousDomNode
     function getDomNode(node, start, ltr, startFromChild, fn, guard) {
@@ -810,7 +815,9 @@ var dtd = dom.dtd = (function() {
         !tmpNode && (tmpNode = node[ltr]);
 
         while (!tmpNode && (parent = (parent || node).parentNode)) {
-            if (parent.tagName == 'BODY' || guard && !guard(parent))
+            if (parent.tagName == 'BODY')
+                return null;
+            if (guard && !guard(parent))
                 return null;
             tmpNode = parent[ltr];
         }
@@ -821,7 +828,7 @@ var dtd = dom.dtd = (function() {
         return tmpNode;
     }
 
-    var attrFix = ie && browser.version < 9 ? {
+    var attrFix = browser.ie && browser.version < 9 ? {
         tabindex: "tabIndex",
         readonly: "readOnly",
         "for": "htmlFor",
@@ -836,19 +843,9 @@ var dtd = dom.dtd = (function() {
     } : {
         tabindex: "tabIndex",
         readonly: "readOnly"
-    },
+    };
 
-    styleBlock = utils.listToMap([
-        '-webkit-box','-moz-box','block' ,
-        'list-item' ,'table' ,'table-row-group' ,
-        'table-header-group','table-footer-group' ,
-        'table-row' ,'table-column-group' ,'table-column' ,
-        'table-cell' ,'table-caption'
-    ]);
-
-
-
-    var domUtils = dom.domUtils = {
+    var domUtils = baidu.editor.dom.domUtils = {
         //节点常量
         NODE_ELEMENT : 1,
         NODE_DOCUMENT : 9,
@@ -864,7 +861,7 @@ var dtd = dom.dtd = (function() {
         POSITION_IS_CONTAINED : 8,
         POSITION_CONTAINS : 16,
         //ie6使用其他的会有一段空白出现
-        fillChar : ie && browser.version == '6' ? '\ufeff' : '\u200B',
+        fillChar : browser.ie && browser.version == '6' ? '\ufeff' : '\u200B',
         //-------------------------Node部分--------------------------------
 
         keys : {
@@ -886,6 +883,10 @@ var dtd = dom.dtd = (function() {
                 // domUtils.POSITION_IDENTICAL
                 return 0;
             }
+//            //chrome在nodeA,nodeB都不在树上时，会有问题
+//            if (browser.gecko) {
+//                return nodeA.compareDocumentPosition(nodeB);
+//            }
 
             var node,
                 parentsA = [nodeA],
@@ -944,26 +945,24 @@ var dtd = dom.dtd = (function() {
          * @returns {Number}      节点的索引
          */
         getNodeIndex : function (node) {
-            var child = node.parentNode.firstChild,i = 0;
-            while(node!==child){
-                i++;
-                child = child.nextSibling;
-            }
+            var childNodes = node.parentNode.childNodes,
+                i = 0;
+            while (childNodes[i] !== node) i++;
             return i;
         },
 
-        /**
-         * 判断节点是否在树上
-         * @param node
-         */
-        inDoc: function (node, doc){
-            while (node = node.parentNode) {
-                if (node === doc) {
-                    return true;
-                }
-            }
-            return false;
-        },
+//        /**
+//         * 判断节点是否在树上
+//         * @param node
+//         */
+//        inDoc: function (node, doc){
+//            while (node = node.parentNode) {
+//                if (node === doc) {
+//                    return true;
+//                }
+//            }
+//            return false;
+//        },
 
         /**
          * 查找祖先节点
@@ -974,7 +973,7 @@ var dtd = dom.dtd = (function() {
          * @returns {Node}      返回祖先节点
          */
         findParent : function (node, tester, includeSelf) {
-            if (!domUtils.isBody(node)) {
+            if (!this.isBody(node)) {
                 node = includeSelf ? node : node.parentNode;
                 while (node) {
 
@@ -999,12 +998,12 @@ var dtd = dom.dtd = (function() {
          */
         findParentByTagName : function(node, tagName, includeSelf,excludeFn) {
             if (node && node.nodeType && !this.isBody(node) && (node.nodeType == 1 || node.nodeType)) {
-                tagName = utils.listToMap(utils.isArray(tagName) ? tagName : [tagName]);
+                tagName = !utils.isArray(tagName) ? [tagName] : tagName;
                 node = node.nodeType == 3 || !includeSelf ? node.parentNode : node;
                 while (node && node.tagName && node.nodeType != 9) {
                     if(excludeFn && excludeFn(node))
-                        break;
-                    if (tagName[node.tagName])
+                        return null;
+                    if (utils.indexOf(tagName, node.tagName.toLowerCase()) > -1)
                         return node;
                     node = node.parentNode;
                 }
@@ -1025,7 +1024,10 @@ var dtd = dom.dtd = (function() {
             while (node = domUtils.findParent(node, tester)) {
                 parents.push(node);
             }
-            return closerFirst ? parents : parents.reverse();
+            if (!closerFirst) {
+                parents.reverse();
+            }
+            return parents;
         },
 
         /**
@@ -1055,6 +1057,15 @@ var dtd = dom.dtd = (function() {
                         parent.insertBefore(child, node);
                     }
                 }
+//                if ( browser.ie ) {
+//                    if ( orphanDiv == null ) {
+//                        orphanDiv = node.ownerDocument.createElement( 'div' );
+//                    }
+//                    orphanDiv.appendChild( node );
+//                    orphanDiv.innerHTML = '';
+//                } else {
+//                    parent.removeChild( node );
+//                }
                 parent.removeChild(node);
             }
             return node;
@@ -1132,10 +1143,10 @@ var dtd = dom.dtd = (function() {
         clearEmptySibling : function(node, ingoreNext, ingorePre) {
             function clear(next, dir) {
                 var tmpNode;
-                while(next && !domUtils.isBookmarkNode(next) && (domUtils.isEmptyInlineElement(next) || domUtils.isWhitespace(next) )){
+                if (next && (!domUtils.isBookmarkNode(next) && domUtils.isEmptyInlineElement(next) || domUtils.isWhitespace(next) )) {
                     tmpNode = next[dir];
                     domUtils.remove(next);
-                    next = tmpNode;
+                    tmpNode && clear(tmpNode, dir);
                 }
             }
 
@@ -1179,7 +1190,8 @@ var dtd = dom.dtd = (function() {
          * @return {Boolean}      返回是否为文本节点
          */
         isWhitespace : function(node) {
-            return !new RegExp('[^ \t\n\r' + domUtils.fillChar + ']').test(node.nodeValue);
+            var reg = new RegExp('[^ \t\n\r' + domUtils.fillChar + ']');
+            return !reg.test(node.nodeValue);
         },
 
         //------------------------------Element-------------------------------------------
@@ -1211,6 +1223,7 @@ var dtd = dom.dtd = (function() {
             var types = type instanceof Array ? type : [type],
                 k = types.length;
             if (k) while (k --) {
+                eventListIndex++;
                 type = types[k];
                 if (obj.addEventListener) {
                     obj.addEventListener(type, handler, false);
@@ -1225,6 +1238,9 @@ var dtd = dom.dtd = (function() {
 
                         obj.attachEvent('on' + type,handler._d[key]);
                     }
+
+
+
                 }
             }
 
@@ -1312,7 +1328,31 @@ var dtd = dom.dtd = (function() {
             }
             return 1;
         },
-
+        /**
+         * 判断是否为多余的span标签，该span没有显式定义的属性
+         * @param {Node}    node       节点
+         * @return   {boolean}     是否为多余的span标签
+         * @example
+         * 如&lt;span&gt;hello&lt;/span&gt;，这个span就是多余的
+         */
+        isRedundantSpan : function(node) {
+            if (node.nodeType == 3 || node.tagName.toLowerCase() != 'span')
+                return 0;
+            if (browser.ie) {
+                //ie 下判断实效，所以只能简单用style来判断
+                return node.style.cssText == '' ? 1 : 0;
+//                var attrs = node.attributes;
+//                if ( attrs.length ) {
+//                    for ( var i = 0,l = attrs.length; i<l; i++ ) {
+//                        if ( attrs[i].specified ) {
+//                            return 0;
+//                        }
+//                    }
+//                    return 1;
+//                }
+            }
+            return !node.attributes.length
+        },
         /**
          * 判断两个元素的style属性是不是一致
          * @param {Element} elementA       元素A
@@ -1345,9 +1385,15 @@ var dtd = dom.dtd = (function() {
          * @param {String} customNodeNames 自定义的块元素的tagName
          * @return {Boolean} 是否为块元素
          */
-        isBlockElm : function (node) {
-            return node.nodeType == 1 && (dtd.$block[node.tagName]||styleBlock[domUtils.getComputedStyle(node,'display')])&& !dtd.$nonChild[node.tagName];
-        },
+        isBlockElm : function () {
+            var blockBoundaryDisplayMatch = ['-webkit-box','-moz-box','block' ,'list-item' ,'table' ,'table-row-group' ,'table-header-group','table-footer-group' ,'table-row' ,'table-column-group' ,'table-column' ,'table-cell' ,'table-caption'],
+                blockBoundaryNodeNameMatch = { hr : 1 };
+            return function(node, customNodeNames) {
+                
+                return node.nodeType == 1 && (utils.indexOf(blockBoundaryDisplayMatch, domUtils.getComputedStyle(node, 'display')) != -1 ||
+                    utils.extend(blockBoundaryNodeNameMatch, customNodeNames || {})[ node.tagName.toLocaleLowerCase() ]) && !dtd.$nonChild[node.tagName];
+            }
+        }(),
 
         /**
          * 判断是否body
@@ -1592,11 +1638,11 @@ var dtd = dom.dtd = (function() {
          * @param   {Node}     node      节点
          */
         unselectable :
-            gecko ?
+            browser.gecko ?
                 function(node) {
                     node.style.MozUserSelect = 'none';
                 }
-                : webkit ?
+                : browser.webkit ?
                 function(node) {
                     node.style.KhtmlUserSelect = 'none';
                 }
@@ -1621,24 +1667,24 @@ var dtd = dom.dtd = (function() {
                         }
                     }
                 },
+        //todo yuxiang
         /**
          * 删除元素上的属性，可以删除多个
          * @function
          * @param {Element} element      元素
          * @param {Array} attrNames      要删除的属性数组
          */
-        removeAttributes : function (elm, attrNames) {
-            for(var i = 0,ci;ci=attrNames[i++];){
-                ci = attrFix[ci] || ci;
-                switch (ci){
-                    case 'className':
-                        elm[ci] = '';
-                        break;
-                    case 'style':
-                        elm.style.cssText = '';
-                        !browser.ie && elm.removeAttributeNode(elm.getAttributeNode('style'))
+        removeAttributes : function (element, attrNames) {
+            var k = attrNames.length;
+            if (k) while (k --) {
+                var attr = attrNames[k];
+                attr = attrFix[attr] || attr;
+                //for ie className
+                if(attr == 'className'){
+                    element[attr] = '';
                 }
-                elm.removeAttribute(ci);
+                element.removeAttribute(attr);
+
             }
         },
         /**
@@ -1649,23 +1695,15 @@ var dtd = dom.dtd = (function() {
          */
         setAttributes : function(node, attrs) {
             for (var name in attrs) {
-                var value = attrs[name];
-                switch (name) {
-                    case 'class':
-                        //ie下要这样赋值，setAttribute不起作用
-                        node.className = value;
+                switch (name.toLowerCase()) {
+                    case 'class' :
+                        node.className = attrs[name];
                         break;
                     case 'style' :
-                        node.style.cssText = node.style.cssText + ";" + value;
-                        break;
-                    case 'innerHTML':
-                        node[name] = value;
-                        break;
-                    case 'value':
-                        node.value = value;
+                        node.style.cssText = attrs[name];
                         break;
                     default:
-                        node.setAttribute(attrFix[name]||name, value);
+                        node.setAttribute(name.toLowerCase(), attrs[name]);
                 }
             }
 
@@ -1731,8 +1769,11 @@ var dtd = dom.dtd = (function() {
          */
         removeStyle : function(node, name) {
             node.style[utils.cssStyleToDomStyle(name)] = '';
-            if(!node.style.cssText)
-                domUtils.removeAttributes(node,['style'])
+            if (node.style.removeAttribute)
+                node.style.removeAttribute(utils.cssStyleToDomStyle(name));
+
+            if (!node.style.cssText)
+                node.removeAttribute('style');
         },
         /**
          * 判断元素属性中是否包含某一个classname
@@ -1801,7 +1842,38 @@ var dtd = dom.dtd = (function() {
             }
             return count;
         },
+        /**
+         * 清除冗余的inline标签
+         * @param node node下的冗余子孙节点
+         * @param tags 清除的节点的tagname
+         * @example <div><b><i></i></b></div> ==> <div></div>
+         */
+        clearReduent : function(node, tags) {
 
+            var nodes,
+                reg = new RegExp(domUtils.fillChar, 'g'),
+                _parent;
+            for (var t = 0,ti; ti = tags[t++];) {
+                nodes = node.getElementsByTagName(ti);
+
+                for (var i = 0,ci; ci = nodes[i++];) {
+                    if (ci.parentNode && ci[browser.ie ? 'innerText' : 'textContent'].replace(reg, '').length == 0 && ci.children.length == 0) {
+
+                        _parent = ci.parentNode;
+
+                        domUtils.remove(ci);
+                        while (_parent.childNodes.length == 0 && new RegExp(tags.join('|'), 'i').test(_parent.tagName)) {
+                            ci = _parent;
+                            _parent = _parent.parentNode;
+                            domUtils.remove(ci)
+
+                        }
+
+                    }
+                }
+            }
+
+        },
         /**
          * 判断是否为空节点
          * @function
@@ -1809,7 +1881,8 @@ var dtd = dom.dtd = (function() {
          * @return {Boolean}    是否为空节点
          */
         isEmptyNode : function(node) {
-            return !node.firstChild || domUtils.getChildCount(node, function(node) {
+            var first = node.firstChild;
+            return !first || domUtils.getChildCount(node, function(node) {
                 return  !domUtils.isBr(node) && !domUtils.isBookmarkNode(node) && !domUtils.isWhitespace(node)
             }) == 0
         },
@@ -1820,15 +1893,16 @@ var dtd = dom.dtd = (function() {
          */
         clearSelectedArr : function(nodes) {
             var node;
-            while(node = nodes.pop()){
+            while (node = nodes.pop()) {
                 domUtils.removeAttributes(node,['class']);
+
             }
         },
 
 
         /**
          * 将显示区域滚动到显示节点的位置
-         * @function
+         * @funciton
          * @param    {Node}   node    节点
          * @param    {window}   win      window对象
          * @param    {Number}    offsetTop    距离上方的偏移量
@@ -1887,7 +1961,8 @@ var dtd = dom.dtd = (function() {
         },
       
         isFillChar : function(node){
-            return node.nodeType == 3 && !node.nodeValue.replace(new RegExp( domUtils.fillChar ),'').length
+            var reg = new RegExp( domUtils.fillChar );
+            return node.nodeType == 3 && !node.nodeValue.replace(reg,'').length
         },
         isStartInblock : function(range){
             
@@ -1966,10 +2041,7 @@ var dtd = dom.dtd = (function() {
             }
         },
         fillNode : function(doc,node){
-            var tmpNode = browser.ie ? doc.createTextNode(domUtils.fillChar) : doc.createElement('br');
-            node.innerHTML = '';
-            node.appendChild(tmpNode);
-
+            node.appendChild(browser.ie ? doc.createTextNode(domUtils.fillChar) : doc.createElement('br'));
         },
         moveChild : function(src,tag,dir){
             while(src.firstChild){
@@ -1980,16 +2052,11 @@ var dtd = dom.dtd = (function() {
                 }
             }
            
-        },
-        //判断是否有额外属性
-        hasNoAttributes : function(node){
-            return browser.ie ? /^<\w+\s*?>/.test(node.outerHTML) :node.attributes.length == 0;
         }
 
 
     }; 
-
-    var fillCharReg = new RegExp( domUtils.fillChar, 'g' );
+})();
 ///import editor.js
 ///import core/utils.js
 ///import core/browser.js
@@ -1999,27 +2066,33 @@ var dtd = dom.dtd = (function() {
 /**
  * @class baidu.editor.dom.Range    Range类
  */
+baidu.editor.dom.Range = baidu.editor.dom.Range || {};
 /**
  * @description Range类实现
  * @author zhanyi
  */
 (function() {
-    var guid = 0,
-        fillChar = domUtils.fillChar,
-        fillData;
+    var editor = baidu.editor,
+        browser = editor.browser,
+        domUtils = editor.dom.domUtils,
+        dtd = editor.dom.dtd,
+        utils = editor.utils,
+        guid = 0,
+        fillChar = domUtils.fillChar;
+
 
     /**
      * 更新range的collapse状态
      * @param  {Range}   range    range对象
      */
-    function updateCollapse( range ) {
+    var updateCollapse = function( range ) {
         range.collapsed =
             range.startContainer && range.endContainer &&
                 range.startContainer === range.endContainer &&
                 range.startOffset == range.endOffset;
-    }
+    },
     
-    function setEndPoint( toStart, node, offset, range ) {
+    setEndPoint = function( toStart, node, offset, range ) {
         //如果node是自闭合标签要处理
         if ( node.nodeType == 1 && (dtd.$empty[node.tagName] || dtd.$nonChild[node.tagName])) {
             offset = domUtils.getNodeIndex( node ) + (toStart ? 0 : 1);
@@ -2040,9 +2113,8 @@ var dtd = dom.dtd = (function() {
         }
         updateCollapse( range );
         return range;
-    }
-
-    function execContentsAction ( range, action ) {
+    },
+    execContentsAction = function( range, action ) {
         //调整边界
         //range.includeBookmark();
 
@@ -2159,51 +2231,37 @@ var dtd = dom.dtd = (function() {
         tmpStart && domUtils.remove( tmpStart );
         tmpEnd && domUtils.remove( tmpEnd );
         return frag;
-    }
+    };
 
 
     /**
      * Range类
      * @param {Document} document 编辑器页面document对象
      */
-    var Range = dom.Range = function( document ) {
+    var Range = baidu.editor.dom.Range = function( document ) {
         var me = this;
         me.startContainer =
-        me.startOffset =
-        me.endContainer =
-        me.endOffset = null;
+            me.startOffset =
+                me.endContainer =
+                    me.endOffset = null;
         me.document = document;
         me.collapsed = true;
     };
-
-    function removeFillData(doc,excludeNode){
-        try{
-            if ( fillData && domUtils.inDoc(fillData,doc)  ) {
-
-                  if(!fillData.nodeValue.replace( fillCharReg, '' ).length){
-                      var tmpNode = fillData.parentNode;
-                      domUtils.remove(fillData);
-                      while(tmpNode && domUtils.isEmptyInlineElement(tmpNode) && !tmpNode.contains(excludeNode)){
-                          fillData = tmpNode.parentNode;
-                          domUtils.remove(tmpNode);
-                          tmpNode = fillData
-                      }
-
-                  }else
-                      fillData.nodeValue = fillData.nodeValue.replace( fillCharReg, '' )
+    /**
+     * 删除内容为空的祖先节点
+     * @function
+     * @param    {Node}    node     节点
+     */
+    function removeFillDataWithEmptyParentNode(node){
+         var parent = node.parentNode,
+            tmpNode;
+            domUtils.remove( node );
+            while(parent && dtd.$removeEmpty[parent.tagName] && parent.childNodes.length == 0){
+                tmpNode = parent;
+                domUtils.remove(parent);
+                parent = tmpNode.parentNode;
             }
-        }catch(e){}
-
     }
-    function mergSibling(node,dir){
-       var tmpNode;
-       node = node[dir];
-       while(node && domUtils.isFillChar(node)){
-           tmpNode = node[dir];
-           domUtils.remove(node);
-           node = tmpNode;
-       }
-   }
     Range.prototype = {
         /**
          * 克隆选中的内容到一个fragment里
@@ -2990,20 +3048,26 @@ var dtd = dom.dtd = (function() {
                 if ( !notInsertFillData && this.startContainer.nodeType != 3 ) {
 
                     //使用<span>|x<span>固定住光标
-                    var tmpText = this.document.createTextNode( fillChar ),
+                    var fillData = editor.fillData,
+                        tmpText,
                         tmp = this.document.createElement( 'span' );
 
+                    try {
+                        if ( fillData && fillData.parentNode && !fillData.nodeValue.replace( new RegExp( domUtils.fillChar, 'g' ), '' ).length) {
 
 
+                            removeFillDataWithEmptyParentNode(fillData)
+
+                        }
+
+                    } catch( e ) {
+                    }
+
+                    tmpText = editor.fillData = this.document.createTextNode( fillChar );
                     tmp.appendChild( this.document.createTextNode( fillChar) );
                     start.parentNode.insertBefore( tmp, start );
                     start.parentNode.insertBefore( tmpText, start );
-                    //当点b,i,u时，不能清除i上边的b
-                    removeFillData(this.document,tmpText);
-                    fillData = tmpText;
 
-                    mergSibling(tmp,'previousSibling');
-                    mergSibling(start,'nextSibling');
                     nativeRange.moveStart( 'character', -1 );
                     nativeRange.collapse( true );
 
@@ -3022,24 +3086,35 @@ var dtd = dom.dtd = (function() {
                 txtNode;
            
             browser.gecko ?  this.document.body.focus() : win.focus();
-
+            function mergSibling(node){
+                if(node && node.nodeType == 3 && !node.nodeValue.replace( new RegExp( domUtils.fillChar, 'g' ), '' ).length){
+                    domUtils.remove(node);
+                }
+            }
             if ( sel ) {
                 sel.removeAllRanges();
-
+              
                 // trace:870 chrome/safari后边是br对于闭合得range不能定位 所以去掉了判断
                 // this.startContainer.nodeType != 3 &&! ((child = this.startContainer.childNodes[this.startOffset]) && child.nodeType == 1 && child.tagName == 'BR'
                 if ( this.collapsed && !notInsertFillData  ){
 
-
+                    var fillData = editor.fillData;
 
                     txtNode =  this.document.createTextNode( fillChar );
-
+                    editor.fillData = txtNode;
                     //跟着前边走
                     this.insertNode( txtNode );
-                    removeFillData(this.document,txtNode);
-                    mergSibling(txtNode,'previousSibling');
-                    mergSibling(txtNode,'nextSibling');
-                    fillData = txtNode;
+                    //todo fillData有时会失效，不能关联到上一次的文本节点
+                    if ( fillData &&  fillData.parentNode  ) {
+
+                        if(!fillData.nodeValue.replace( new RegExp( domUtils.fillChar, 'g' ), '' ).length)
+                            removeFillDataWithEmptyParentNode(fillData);
+                        else
+                            fillData.nodeValue = fillData.nodeValue.replace( new RegExp( domUtils.fillChar, 'g' ), '' )
+
+                    }
+                    mergSibling(txtNode.previousSibling);
+                    mergSibling(txtNode.nextSibling);
                     this.setStart( txtNode, browser.webkit ? 1 : 0 ).collapse( true );
 
                 }
@@ -3077,8 +3152,7 @@ var dtd = dom.dtd = (function() {
         }
 
     };
-})();
-///import editor.js
+})();///import editor.js
 ///import core/browser.js
 ///import core/dom/dom.js
 ///import core/dom/dtd.js
@@ -3087,7 +3161,13 @@ var dtd = dom.dtd = (function() {
 /**
  * @class baidu.editor.dom.Selection    Selection类
  */
+baidu.editor.dom.Selection = baidu.editor.dom.Selection || {};
 (function () {
+    baidu.editor.dom.Selection = Selection;
+
+    var domUtils = baidu.editor.dom.domUtils,
+        dtd = baidu.editor.dom.dtd,
+        ie = baidu.editor.browser.ie;
 
     function getBoundaryInformation( range, start ) {
 
@@ -3126,6 +3206,10 @@ var dtd = dom.dtd = (function() {
             } else {
                 //trace:1043
                 return  {container:parent,offset:getIndex( child )};
+//                return  dtd.$empty[child.tagName.toLowerCase()] ?
+//                {container:parent,offset:getIndex( child )} :
+//                {container:child,offset:0}
+
             }
         }
 
@@ -3208,13 +3292,14 @@ var dtd = dom.dtd = (function() {
         }
         return null;
     }
-    var Selection = dom.Selection = function ( doc ) {
+    function Selection( doc ) {
         var me = this, iframe;
         me.document = doc;
 
         if ( ie ) {
             iframe = domUtils.getWindow(doc).frameElement;
             domUtils.on( iframe, 'beforedeactivate', function () {
+
                 me._bakIERange = me.getIERange();
             } );
             domUtils.on( iframe, 'activate', function () {
@@ -3228,7 +3313,7 @@ var dtd = dom.dtd = (function() {
             } );
         }
         iframe = doc = null;
-    };
+    }
 
     Selection.prototype = {
         /**
@@ -3239,8 +3324,14 @@ var dtd = dom.dtd = (function() {
          * @return {Selection}    获得selection对象
          */
         getNative : function () {
-            var doc = this.document;
-            return !doc ? null : ie ? doc.selection : domUtils.getWindow( doc ).getSelection();
+            if(!this.document){
+                return null;
+            }
+            if ( ie ) {
+                return this.document.selection;
+            } else {
+                return domUtils.getWindow( this.document ).getSelection();
+            }
         },
 
 
@@ -3273,20 +3364,8 @@ var dtd = dom.dtd = (function() {
             this.clear();
             this._cachedRange = this.getRange();
             this._cachedStartElement = this.getStart();
-
-            this._cachedStartElementPath = this.getStartElementPath();
         },
 
-        getStartElementPath : function(){
-            if(this._cachedStartElementPath){
-                return this._cachedStartElementPath;
-            }
-            var start = this.getStart();
-            if(start){
-                return domUtils.findParents(start,true,null,true)
-            }
-            return [];
-        },
         /**
          * 清空缓存
          * @public
@@ -3294,14 +3373,9 @@ var dtd = dom.dtd = (function() {
          * @name    baidu.editor.dom.Selection.clear
          */
         clear : function () {
-            this._cachedStartElementPath = this._cachedRange = this._cachedStartElement = null;
+            this._cachedRange = this._cachedStartElement = null;
         },
-        /**
-         * 编辑器是否得到了选区
-         */
-        isFocus : function(){
-            return browser.ie  && _getIERange(this) || !browser.ie &&  this.getNative().rangeCount ? true : false;
-        },
+
         /**
          * 获取选区对应的Range
          * @public
@@ -3342,23 +3416,21 @@ var dtd = dom.dtd = (function() {
             } else {
                 var sel = me.getNative();
                 if ( sel && sel.rangeCount ) {
-                    var firstRange = sel.getRangeAt( 0 ) ;
+                    var firstRange = sel.getRangeAt( 0 );
                     var lastRange = sel.getRangeAt( sel.rangeCount - 1 );
                     range.setStart( firstRange.startContainer, firstRange.startOffset ).setEnd( lastRange.endContainer, lastRange.endOffset );
                     if(range.collapsed && domUtils.isBody(range.startContainer) && !range.startOffset){
                         optimze(range)
                     }
                 } else {
-                    //trace:1734 有可能已经不在dom树上了，标识的节点
-                    if(this._bakRange && domUtils.inDoc(this._bakRange.startContainer,this.document))
-                        return this._bakRange;
+                    
                     optimze(range)
                         
                 }
                 
             }
 
-            return this._bakRange = range;
+            return range;
         },
 
         /**
@@ -3423,19 +3495,18 @@ var dtd = dom.dtd = (function() {
          * @return  {String}    选区中包含的文本
          */
         getText : function(){
-            if(this.isFocus()){
-                var nativeSel = this.getNative(),
-                    nativeRange = browser.ie ? nativeSel.createRange() : nativeSel.getRangeAt(0);
-
-                return nativeRange.text || nativeRange.toString();
-            }
-            return '';
+            var nativeSel = this.getNative(),
+                nativeRange;
+            if(nativeSel)
+                nativeRange = baidu.editor.browser.ie ? nativeSel.createRange() : nativeSel.getRangeAt(0);
+            else
+                return '';
+            return nativeRange.text || nativeRange.toString();
         }
     };
 
 
-})();
-///import editor.js
+})();///import editor.js
 ///import core/utils.js
 ///import core/EventBase.js
 ///import core/browser.js
@@ -3444,9 +3515,17 @@ var dtd = dom.dtd = (function() {
 ///import core/dom/Selection.js
 ///import core/dom/dtd.js
 (function () {
+    baidu.editor.Editor = Editor;
 
-
-    var uid = 0,
+    var editor = baidu.editor,
+        utils = editor.utils,
+        EventBase = editor.EventBase,
+        domUtils = editor.dom.domUtils,
+        Selection = editor.dom.Selection,
+        ie = editor.browser.ie,
+        uid = 0,
+        browser = editor.browser,
+        dtd = editor.dom.dtd,
         _selectionChangeTimer;
 
     function replaceSrc(div){
@@ -3476,17 +3555,14 @@ var dtd = dom.dtd = (function() {
      * @name baidu.editor.Editor
      * @param {Object} options
      */
-    var Editor = UE.Editor = function( options ) {
+    function Editor( options ) {
         var me = this;
         me.uid = uid ++;
         EventBase.call( me );
         me.commands = {};
         me.options = utils.extend( options || {}, UEDITOR_CONFIG, true );
-        //初始化插件
-        for ( var pi in UE.plugins ) {
-            UE.plugins[pi].call( me )
-        }
-    };
+        me.initPlugins();
+    }
     Editor.prototype = /**@lends baidu.editor.Editor.prototype*/{
 
         destroy : function(){
@@ -3506,7 +3582,7 @@ var dtd = dom.dtd = (function() {
                 container = document.getElementById(container);
             }
             if(container){
-                container.innerHTML = '<iframe id="' + 'baidu_editor_' + this.uid + '"' + 'width="100%" height="100%"  frameborder="0"></iframe>';
+                container.innerHTML = '<iframe id="' + 'baidu_editor_' + this.uid + '"' + 'width="100%" height="100%" scroll="no" frameborder="0"></iframe>';
                 container.style.overflow = 'hidden';
                 this._setup( container.firstChild.contentWindow.document );
             }
@@ -3519,7 +3595,7 @@ var dtd = dom.dtd = (function() {
             //防止在chrome下连接后边带# 会跳动的问题
             !browser.webkit && doc.open();
             var useBodyAsViewport = ie && browser.version < 9;
-            doc.write( ( ie && browser.version < 9 ? '' : '') +
+            doc.write( ( ie && browser.version < 9 ? '' : '<!DOCTYPE html>') +
                 '<html xmlns="http://www.w3.org/1999/xhtml"' + (!useBodyAsViewport ? ' class="view"' : '')  + '><head>' +
                 ( options.iframeCssUrl ? '<link rel="stylesheet" type="text/css" href="' + utils.unhtml( /^http/.test(options.iframeCssUrl) ? options.iframeCssUrl : (options.UEDITOR_HOME_URL + options.iframeCssUrl) ) + '"/>' : '' ) +
                 '<style type="text/css">'
@@ -3543,11 +3619,7 @@ var dtd = dom.dtd = (function() {
                 this.setHeight(this.options.minFrameHeight);
                 this.body.style.height = this.options.minFrameHeight;
             }
-            this.selection = new dom.Selection( doc );
-            //gecko初始化就能得到range,无法判断isFocus了
-            if(browser.gecko){
-                this.selection.getNative().removeAllRanges();
-            }
+            this.selection = new Selection( doc );
             this._initEvents();
             if(me.options.initialContent){
                 if(me.options.autoClearinitialContent){
@@ -3582,13 +3654,15 @@ var dtd = dom.dtd = (function() {
                 }
             }
             //编辑器不能为空内容
+
             if(domUtils.isEmptyNode(me.body)){
-                this.body.innerHTML = '<p>'+(browser.ie?'':'<br/>')+'</p>';
+
+                this.body.innerHTML = '<p>'+(browser.ie?domUtils.fillChar:'<br/>')+'</p>';
             }
             //如果要求focus, 就把光标定位到内容开始
             if(me.options.focus){
                 setTimeout(function(){
-                    me.focus();
+                    me.selection.getRange().setStartBefore(me.body.firstChild).setCursor(false,true);
                     //如果自动清除开着，就不需要做selectionchange;
                     !me.options.autoClearinitialContent &&  me._selectionChange()
                 });
@@ -3599,25 +3673,9 @@ var dtd = dom.dtd = (function() {
             if(!this.container){
                 this.container = this.iframe.parentNode;
             }
-
-            if(me.options.fullscreen && me.ui){
-                me.ui.setFullScreen(true)
-            }
             this.fireEvent( 'ready' );
-            if(!browser.ie){
-                domUtils.on(me.window,'blur',function(){
-                    me._bakRange = me.selection.getRange();
-                    me.selection.getNative().removeAllRanges();
-                });
-            }
-
             //trace:1518 ff3.6body不够寛，会导致点击空白处无法获得焦点
             if(browser.gecko && browser.version <= 10902){
-                //修复ff3.6初始化进来，不能点击获得焦点
-               me.body.contentEditable = false;
-               setTimeout(function(){
-                   me.body.contentEditable = true;
-               },100);
                 setInterval(function(){
                     me.body.style.height = me.iframe.offsetHeight - 20 + 'px'
                 },100)
@@ -3667,7 +3725,7 @@ var dtd = dom.dtd = (function() {
          */
         setHeight: function (height){
             if (height !== parseInt(this.iframe.parentNode.style.height)){
-                this.iframe.parentNode.style.height = height  +  'px';
+                this.iframe.parentNode.style.height = height + 'px';
 
             }
             //ie9下body 高度100%失效，改为手动设置
@@ -3685,8 +3743,7 @@ var dtd = dom.dtd = (function() {
         getContent : function (cmd) {
             this.fireEvent( 'beforegetcontent',cmd );
             var reg = new RegExp( domUtils.fillChar, 'g' ),
-                //ie下取得的html可能会有\n存在，要去掉，在处理replace(/[\t\r\n]*/g,'');代码高量的\n不能去除
-                html = this.document.body.innerHTML.replace(reg,'').replace(/>[\t\r\n]*?</g,'><');
+                html = this.document.body.innerHTML.replace(reg,'');
             this.fireEvent( 'aftergetcontent',cmd );
             if (this.serialize) {
                 var node = this.serialize.parseHTML(html);
@@ -3714,22 +3771,7 @@ var dtd = dom.dtd = (function() {
          * @param {String} html
          */
         setContent : function ( html,notFireSelectionchange) {
-            var me = this,
-                inline = utils.extend({a:1,A:1},dtd.$inline,true),
-                lastTagName;
-
-            html = html
-                .replace(/^[ \t\r\n]*?</,'<')
-                .replace(/>[ \t\r\n]*?$/,'>')
-                .replace(/>[\t\r\n]*?</g,'><')//代码高量的\n不能去除
-                .replace(/[\s\/]?(\w+)?>[ \t\r\n]*?<\/?(\w+)/gi,function(a,b,c){
-                    if(b){
-                        lastTagName = c;
-                    }else{
-                        b = lastTagName
-                    }
-                    return !inline[b] && !inline[c] ? a.replace(/>[ \t\r\n]*?</,'><') : a;
-                });
+            var me = this;
             me.fireEvent( 'beforesetcontent' );
             var serialize = this.serialize;
             if (serialize) {
@@ -3786,14 +3828,7 @@ var dtd = dom.dtd = (function() {
 
             me.adjustTable && me.adjustTable(me.body);
             me.fireEvent( 'aftersetcontent' );
-            me.fireEvent( 'contentchange' );
             !notFireSelectionchange && me._selectionChange();
-            //清除保存的选区
-            me._bakRange = me._bakIERange = null;
-            //trace:1742 setContent后gecko能得到焦点问题
-            if(browser.gecko){
-                me.selection.getNative().removeAllRanges();
-            }
         },
 
         /**
@@ -3802,9 +3837,44 @@ var dtd = dom.dtd = (function() {
          * @function
          */
         focus : function () {
-            this.selection.getRange().select(true);
+            browser.gecko ?  this.body.focus() :  domUtils.getWindow(this.document).focus();
+
         },
 
+        /**
+         * 加载插件
+         * @private
+         * @function
+         * @param {Array} plugins
+         */
+        initPlugins : function ( plugins ) {
+            var fn,originals = baidu.editor.plugins;
+            if ( plugins ) {
+                for ( var i = 0,pi; pi = plugins[i++]; ) {
+                    if ( utils.indexOf( this.options.plugins, pi ) == -1 && (fn = baidu.editor.plugins[pi]) ) {
+                        this.options.plugins.push( pi );
+                        fn.call( this )
+                    }
+                }
+            } else {
+
+                plugins = this.options.plugins;
+
+                if ( plugins ) {
+                    for ( i = 0; pi = originals[plugins[i++]]; ) {
+                        pi.call( this )
+                    }
+                } else {
+                    this.options.plugins = [];
+                    for ( pi in originals ) {
+                        this.options.plugins.push( pi );
+                        originals[pi].call( this )
+                    }
+                }
+            }
+
+
+        },
          /**
          * 初始化事件，绑定selectionchange
          * @private
@@ -3858,7 +3928,7 @@ var dtd = dom.dtd = (function() {
                                                             f.word(common.innerHTML)
                                                         )
                                                     )
-                                                );
+                                                )
                                         common.innerHTML = f.toHTML(node)
                                     }
 
@@ -3887,10 +3957,6 @@ var dtd = dom.dtd = (function() {
         _selectionChange : function ( delay, evt ) {
 
             var me = this;
-            //有光标才做selectionchange
-            if(!me.selection.isFocus())
-                return;
-
             var hackForMouseUp = false;
             var mouseX, mouseY;
             if (browser.ie && browser.version < 9 && evt && evt.type == 'mouseup') {
@@ -3943,7 +4009,7 @@ var dtd = dom.dtd = (function() {
             var cmdName = args[0].toLowerCase(),
                 cmd, cmdFn;
             cmdFn = ( cmd = this.commands[cmdName] ) && cmd[fnName] ||
-                ( cmd = UE.commands[cmdName]) && cmd[fnName];
+                ( cmd = baidu.editor.commands[cmdName]) && cmd[fnName];
             if ( cmd && !cmdFn && fnName == 'queryCommandState' ) {
                 return false;
             } else if ( cmdFn ) {
@@ -3962,19 +4028,16 @@ var dtd = dom.dtd = (function() {
             cmdName = cmdName.toLowerCase();
             var me = this,
                 result,
-                cmd = me.commands[cmdName] || UE.commands[cmdName];
+                cmd = me.commands[cmdName] || baidu.editor.commands[cmdName];
             if ( !cmd || !cmd.execCommand ) {
                 return;
             }
 
             if ( !cmd.notNeedUndo && !me.__hasEnterExecCommand ) {
                 me.__hasEnterExecCommand = true;
-                if(me.queryCommandState(cmdName) !=-1){
-                    me.fireEvent( 'beforeexeccommand', cmdName );
-                    result = this._callCmdFn( 'execCommand', arguments );
-                    me.fireEvent( 'afterexeccommand', cmdName );
-                }
-
+                me.fireEvent( 'beforeexeccommand', cmdName );
+                result = this._callCmdFn( 'execCommand', arguments );
+                me.fireEvent( 'afterexeccommand', cmdName );
                 me.__hasEnterExecCommand = false;
             } else {
                 result = this._callCmdFn( 'execCommand', arguments );
@@ -4042,12 +4105,11 @@ var dtd = dom.dtd = (function() {
              function clear(){
                 var me = this;
                 if(me.document.getElementById('initContent')){
-                    me.document.body.innerHTML = '<p>'+(ie ? '' : '<br/>')+'</p>';
+                    me.document.body.innerHTML = '<p>'+(baidu.editor.browser.ie ? '' : '<br/>')+'</p>';
                     var range = me.selection.getRange();
 
                     me.removeListener('firstBeforeExecCommand',clear);
-                    me.removeListener('focus',clear);
-                
+                    me.removeListener('mousedown',clear);
                     setTimeout(function(){
                         range.setStart(me.document.body.firstChild,0).collapse(true).select(true);
                         me._selectionChange();
@@ -4063,7 +4125,7 @@ var dtd = dom.dtd = (function() {
                     replaceSrc(me.document.body);
                 }
                 me.addListener('firstBeforeExecCommand',clear);
-                me.addListener('focus',clear);
+                me.addListener('mousedown',clear);
             }
 
 
@@ -4072,122 +4134,932 @@ var dtd = dom.dtd = (function() {
     };
     utils.inherits( Editor, EventBase );
 })();
+/*
+ *   处理特殊键的兼容性问题
+ */
+(function() {
+    var domUtils = baidu.editor.dom.domUtils,
+        browser = baidu.editor.browser,
+        dtd = baidu.editor.dom.dtd,
+        utils = baidu.editor.utils,
+        flag = 0,
+        keys = domUtils.keys,
+        trans = {
+            'B' : 'strong',
+            'I' : 'em',
+            'FONT' : 'span'
+        },
+        sizeMap = [0, 10, 12, 16, 18, 24, 32, 48],
+        listStyle = {
+            'OL':['decimal','lower-alpha','lower-roman','upper-alpha','upper-roman'],
 
-/**
- * Created by .
- * User: taoqili
- * Date: 11-8-18
- * Time: 下午3:18
- * To change this template use File | Settings | File Templates.
- */
-/**
- * ajax工具类
- */
-UE.ajax = function() {
-	return {
-		/**
-		 * 向url发送ajax请求
-		 * @param url
-		 * @param ajaxOptions
-		 */
-		request:function(url, ajaxOptions) {
-            var ajaxRequest = creatAjaxRequest(),
-                //是否超时
-                timeIsOut = false,
-                //默认参数
-                defaultAjaxOptions = {
-                    method:"POST",
-                    timeout:5000,
-                    async:true,
-                    data:{},//需要传递对象的话只能覆盖
-                    onsuccess:function() {
-                    },
-                    onerror:function() {
+            'UL':[ 'circle','disc','square']
+        };
+
+    baidu.editor.plugins['keystrokes'] = function() {
+        var me = this;
+        me.addListener('keydown', function(type, evt) {
+            var keyCode = evt.keyCode || evt.which;
+
+
+            //处理backspace/del
+            if (keyCode == 8 ) {//|| keyCode == 46
+
+
+                var range = me.selection.getRange(),
+                    tmpRange,
+                    start,end;
+
+                //当删除到body最开始的位置时，会删除到body,阻止这个动作
+                if(range.collapsed){
+                    start = range.startContainer;
+                    //有可能是展位符号
+                    if(domUtils.isWhitespace(start)){
+                        start = start.parentNode;
                     }
+                    if(domUtils.isEmptyNode(start) && start === me.body.firstChild){
+                        
+                        if(start.tagName != 'P'){
+                            p = me.document.createElement('p');
+                            me.body.insertBefore(p,start);
+                            domUtils.fillNode(me.document,p);
+                            range.setStart(p,0).setCursor(false,true);
+
+                        }
+                        domUtils.preventDefault(evt);
+                        return;
+
+                    }
+                }
+
+                if (range.collapsed && range.startContainer.nodeType == 3 && range.startContainer.nodeValue.replace(new RegExp(domUtils.fillChar, 'g'), '').length == 0) {
+                    range.setStartBefore(range.startContainer).collapse(true)
+                }
+                //解决选中control元素不能删除的问题
+                if (start = range.getClosedNode()) {
+                    me.undoManger && me.undoManger.save();
+                    range.setStartBefore(start);
+                    domUtils.remove(start);
+                    range.setCursor();
+                    me.undoManger && me.undoManger.save();
+                    domUtils.preventDefault(evt);
+                    return;
+                }
+                //阻止在table上的删除
+                if (!browser.ie) {
+
+                    start = domUtils.findParentByTagName(range.startContainer, 'table', true);
+                    end = domUtils.findParentByTagName(range.endContainer, 'table', true);
+                    if (start && !end || !start && end || start !== end) {
+                        evt.preventDefault();
+                        return;
+                    }
+                    if (browser.webkit && range.collapsed && start) {
+                        tmpRange = range.cloneRange().txtToElmBoundary();
+                        start = tmpRange.startContainer;
+
+                        if (domUtils.isBlockElm(start) && start.nodeType == 1 && !dtd.$tableContent[start.tagName] && !domUtils.getChildCount(start, function(node) {
+                            return node.nodeType == 1 ? node.tagName !== 'BR' : 1;
+                        })) {
+
+                            tmpRange.setStartBefore(start).setCursor();
+                            domUtils.remove(start, true);
+                            evt.preventDefault();
+                            return;
+                        }
+                    }
+                }
+
+        
+                if (me.undoManger) {
+
+                    if (!range.collapsed) {
+                        me.undoManger.save();
+                        flag = 1;
+                    }
+                }
+
+            }
+            //处理tab键的逻辑
+            if (keyCode == 9) {
+                range = me.selection.getRange();
+                me.undoManger && me.undoManger.save();
+                for (var i = 0,txt = ''; i < me.options.tabSize; i++) {
+                    txt += me.options.tabNode;
+                }
+                var span = me.document.createElement('span');
+                span.innerHTML = txt;
+                if (range.collapsed) {
+
+                    li = domUtils.findParentByTagName(range.startContainer, 'li', true);
+
+                    if (li && domUtils.isStartInblock(range)) {
+                        bk = range.createBookmark();
+                        var parentLi = li.parentNode,
+                            list = me.document.createElement(parentLi.tagName);
+                        var index = utils.indexOf(listStyle[list.tagName], domUtils.getComputedStyle(parentLi, 'list-style-type'));
+                        index = index + 1 == listStyle[list.tagName].length ? 0 : index + 1;
+                        domUtils.setStyle(list, 'list-style-type', listStyle[list.tagName][index]);
+
+                        parentLi.insertBefore(list, li);
+                        list.appendChild(li);
+                        range.moveToBookmark(bk).select()
+
+                    } else
+                        range.insertNode(span.cloneNode(true).firstChild).setCursor(true);
+
+                } else {
+                    //处理table
+                    start = domUtils.findParentByTagName(range.startContainer, 'table', true);
+                    end = domUtils.findParentByTagName(range.endContainer, 'table', true);
+                    if (start || end) {
+                        evt.preventDefault ? evt.preventDefault() : (evt.returnValue = false);
+                        return
+                    }
+                    //处理列表 再一个list里处理
+                    start = domUtils.findParentByTagName(range.startContainer, ['ol','ul'], true);
+                    end = domUtils.findParentByTagName(range.endContainer, ['ol','ul'], true);
+                    if (start && end && start === end) {
+                        var bk = range.createBookmark();
+                        start = domUtils.findParentByTagName(range.startContainer, 'li', true);
+                        end = domUtils.findParentByTagName(range.endContainer, 'li', true);
+                        //在开始单独处理
+                        if (start === start.parentNode.firstChild) {
+                            var parentList = me.document.createElement(start.parentNode.tagName);
+
+                            start.parentNode.parentNode.insertBefore(parentList, start.parentNode);
+                            parentList.appendChild(start.parentNode);
+                        } else {
+                            parentLi = start.parentNode,
+                                list = me.document.createElement(parentLi.tagName);
+
+                            index = utils.indexOf(listStyle[list.tagName], domUtils.getComputedStyle(parentLi, 'list-style-type'));
+                            index = index + 1 == listStyle[list.tagName].length ? 0 : index + 1;
+                            domUtils.setStyle(list, 'list-style-type', listStyle[list.tagName][index]);
+                            start.parentNode.insertBefore(list, start);
+                            var nextLi;
+                            while (start !== end) {
+                                nextLi = start.nextSibling;
+                                list.appendChild(start);
+                                start = nextLi;
+                            }
+                            list.appendChild(end);
+
+                        }
+                        range.moveToBookmark(bk).select();
+
+                    } else {
+                        if (start || end) {
+                            evt.preventDefault ? evt.preventDefault() : (evt.returnValue = false);
+                            return
+                        }
+                        //普通的情况
+                        start = domUtils.findParent(range.startContainer, filterFn);
+                        end = domUtils.findParent(range.endContainer, filterFn);
+                        if (start && end && start === end) {
+                            range.deleteContents();
+                            range.insertNode(span.cloneNode(true).firstChild).setCursor(true);
+                        } else {
+                            var bookmark = range.createBookmark(),
+                                filterFn = function(node) {
+                                    return domUtils.isBlockElm(node);
+
+                                };
+
+                            range.enlarge(true);
+                            var bookmark2 = range.createBookmark(),
+                                current = domUtils.getNextDomNode(bookmark2.start, false, filterFn);
+
+
+                            while (current && !(domUtils.getPosition(current, bookmark2.end) & domUtils.POSITION_FOLLOWING)) {
+
+
+                                current.insertBefore(span.cloneNode(true).firstChild, current.firstChild);
+
+                                current = domUtils.getNextDomNode(current, false, filterFn);
+
+                            }
+
+                            range.moveToBookmark(bookmark2).moveToBookmark(bookmark).select();
+                        }
+
+                    }
+
+
+                }
+                me.undoManger && me.undoManger.save();
+                evt.preventDefault ? evt.preventDefault() : (evt.returnValue = false);
+            }
+            //trace:1634
+            //ff的del键在容器空的时候，也会删除
+            if(browser.gecko && keyCode == 46){
+                range = me.selection.getRange();
+                if(range.collapsed){
+                    start = range.startContainer;
+                    if(domUtils.isEmptyBlock(start)){
+                        var parent = start.parentNode;
+                        while(domUtils.getChildCount(parent) == 1 && !domUtils.isBody(parent)){
+                            start = parent;
+                            parent = parent.parentNode;
+                        }
+                        if(start === parent.lastChild)
+                            evt.preventDefault();
+                        return;
+                    }
+                }
+            }
+        });
+        me.addListener('keyup', function(type, evt) {
+
+            var keyCode = evt.keyCode || evt.which;
+            //修复ie/chrome <strong><em>x|</em></strong> 当点退格后在输入文字后会出现  <b><i>x</i></b>
+            if (!browser.gecko && !keys[keyCode] && !evt.ctrlKey && !evt.metaKey && !evt.shiftKey && !evt.altKey) {
+                range = me.selection.getRange();
+                if (range.collapsed) {
+                    var start = range.startContainer,
+                        isFixed = 0;
+
+                    while (!domUtils.isBlockElm(start)) {
+                        if (start.nodeType == 1 && utils.indexOf(['FONT','B','I'], start.tagName) != -1) {
+
+                            var tmpNode = me.document.createElement(trans[start.tagName]);
+                            if (start.tagName == 'FONT') {
+                                //chrome only remember color property
+                                tmpNode.style.cssText = (start.getAttribute('size') ? 'font-size:' + (sizeMap[start.getAttribute('size')] || 12) + 'px' : '')
+                                    + ';' + (start.getAttribute('color') ? 'color:' + start.getAttribute('color') : '')
+                                    + ';' + (start.getAttribute('face') ? 'font-family:' + start.getAttribute('face') : '')
+                                    + ';' + start.style.cssText;
+                            }
+                            while (start.firstChild) {
+                                tmpNode.appendChild(start.firstChild)
+                            }
+                            start.parentNode.insertBefore(tmpNode, start);
+                            domUtils.remove(start);
+                            if (!isFixed) {
+                                range.setEnd(tmpNode, tmpNode.childNodes.length).collapse(true)
+
+                            }
+                            start = tmpNode;
+                            isFixed = 1;
+                        }
+                        start = start.parentNode;
+
+                    }
+
+                    isFixed && range.select()
+
+                }
+            }
+
+            if (keyCode == 8 ) {//|| keyCode == 46
+                
+                //针对ff下在列表首行退格，不能删除空格行的问题
+                if(browser.gecko){
+                    for(var i=0,li,lis = domUtils.getElementsByTagName(this.body,'li');li=lis[i++];){
+                        if(domUtils.isEmptyNode(li) && !li.previousSibling){
+                            var liOfPn = li.parentNode;
+                            domUtils.remove(li);
+                            if(domUtils.isEmptyNode(liOfPn)){
+                                domUtils.remove(liOfPn)
+                            }
+
+                        }
+                    }
+                }
+
+                var range,start,parent,
+                    tds = this.currentSelectedArr;
+                if (tds && tds.length > 0) {
+                    for (var i = 0,ti; ti = tds[i++];) {
+                        ti.innerHTML = browser.ie ? ( browser.version < 9 ? '&#65279' : '' ) : '<br/>';
+
+                    }
+                    range = new baidu.editor.dom.Range(this.document);
+                    range.setStart(tds[0], 0).setCursor();
+                    if (flag) {
+                        me.undoManger.save();
+                        flag = 0;
+                    }
+                    //阻止chrome执行默认的动作
+                    if (browser.webkit) {
+                        evt.preventDefault();
+                    }
+                    return;
+                }
+
+                range = me.selection.getRange();
+
+                //ctrl+a 后全部删除做处理
+
+                if (domUtils.isEmptyBlock(me.body) && !range.startOffset) {
+                    //trace:1633
+                    me.body.innerHTML = '<p>'+(browser.ie ? '&nbsp;' : '<br/>')+'</p>';
+                    range.setStart(me.body.firstChild,0).setCursor(false,true);
+                    me.undoManger && me.undoManger.save();
+                    //todo 对性能会有影响
+                    browser.ie && me._selectionChange();
+                    return;
+                }
+
+                //处理删除不干净的问题
+
+                start = range.startContainer;
+                if(domUtils.isWhitespace(start)){
+                    start = start.parentNode
+                }
+                //标志位防止空的p无法删除
+                var removeFlag = 0;
+                while (start.nodeType == 1 && domUtils.isEmptyNode(start) && dtd.$removeEmpty[start.tagName]) {
+                    removeFlag = 1;
+                    parent = start.parentNode;
+                    domUtils.remove(start);
+                    start = parent;
+                }
+
+                if ( removeFlag && start.nodeType == 1 && domUtils.isEmptyNode(start)) {
+                    //ie下的问题，虽然没有了相应的节点但一旦你输入文字还是会自动把删除的节点加上，
+                    if (browser.ie) {
+                        var span = range.document.createElement('span');
+                        start.appendChild(span);
+                        range.setStart(start,0).setCursor();
+                        //for ie
+                        li = domUtils.findParentByTagName(start,'li',true);
+                        if(li){
+                            var next = li.nextSibling;
+                            while(next){
+                                if(domUtils.isEmptyBlock(next)){
+                                    li = next;
+                                    next = next.nextSibling;
+                                    domUtils.remove(li);
+                                    continue;
+
+                                }
+                                break;
+                            }
+                        }
+                    } else {
+                        start.innerHTML = '<br/>';
+                        range.setStart(start, 0).setCursor(false,true);
+                    }
+
+                    setTimeout(function() {
+                        if (browser.ie) {
+                            domUtils.remove(span);
+                        }
+
+                        if (flag) {
+                            me.undoManger.save();
+                            flag = 0;
+                        }
+                    }, 0)
+                } else {
+
+                    if (flag) {
+                        me.undoManger.save();
+                        flag = 0;
+                    }
+
+                }
+            }
+        })
+    }
+})();///import core
+///commands 修复chrome下图片不能点击的问题
+///commandsName  FixImgClick
+///commandsTitle  修复chrome下图片不能点击的问题
+//修复chrome下图片不能点击的问题
+//todo 可以改大小
+baidu.editor.plugins['fiximgclick'] = function() {
+    var me = this,
+        browser = baidu.editor.browser;
+    if ( browser.webkit ) {
+        me.addListener( 'click', function( type, e ) {
+            if ( e.target.tagName == 'IMG' ) {
+                var range = new baidu.editor.dom.Range( me.document );
+                range.selectNode( e.target ).select();
+
+            }
+        } )
+    }
+};///import core
+///commands 格式
+///commandsName  Paragraph
+///commandsTitle  段落格式
+/**
+ * 段落样式
+ * @function
+ * @name baidu.editor.execCommand
+ * @param   {String}   cmdName     paragraph插入段落执行命令
+ * @param   {String}   style               标签值为：'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'
+ * @param   {String}   attrs               标签的属性
+ * @author zhanyi
+ */
+(function() {
+    var domUtils = baidu.editor.dom.domUtils,
+        block = domUtils.isBlockElm,
+        notExchange = ['TD','LI','PRE'],
+        utils = baidu.editor.utils,
+        browser = baidu.editor.browser,
+        
+        doParagraph = function(range,style,attrs){
+            var bookmark = range.createBookmark(),
+                filterFn = function( node ) {
+                    return   node.nodeType == 1 ? node.tagName.toLowerCase() != 'br' &&  !domUtils.isBookmarkNode(node) : !domUtils.isWhitespace( node )
+                },
+                para;
+
+            range.enlarge( true );
+            var bookmark2 = range.createBookmark(),
+                current = domUtils.getNextDomNode( bookmark2.start, false, filterFn ),
+                tmpRange = range.cloneRange(),
+                tmpNode;
+            while ( current && !(domUtils.getPosition( current, bookmark2.end ) & domUtils.POSITION_FOLLOWING) ) {
+                if ( current.nodeType == 3 || !block( current ) ) {
+                    tmpRange.setStartBefore( current );
+                    while ( current && current !== bookmark2.end && !block( current ) ) {
+                        tmpNode = current;
+                        current = domUtils.getNextDomNode( current, false, null, function( node ) {
+                            return !block( node )
+                        } );
+                    }
+                    tmpRange.setEndAfter( tmpNode );
+                    
+                    para = range.document.createElement( style );
+                    if(attrs){
+                        domUtils.setAttributes(para,attrs);
+//                        for(var pro in attrs){
+//                            para.style[utils.cssStyleToDomStyle(pro)] = attrs[pro];
+//                        }
+                    }
+                    para.appendChild( tmpRange.extractContents() );
+                    //需要内容占位
+                    if(domUtils.isEmptyNode(para)){
+                        domUtils.fillChar(range.document,para);
+                        
+                    }
+
+                    tmpRange.insertNode( para );
+
+                    var parent = para.parentNode;
+                    //如果para上一级是一个block元素且不是body,td就删除它
+                    if ( block( parent ) && !domUtils.isBody( para.parentNode ) && utils.indexOf(notExchange,parent.tagName)==-1) {
+                        //存储dir,style
+
+                        parent.getAttribute('dir') && para.setAttribute('dir',parent.getAttribute('dir'));
+                        //trace:1070
+                        parent.style.cssText && (para.style.cssText = parent.style.cssText + ';' + para.style.cssText);
+                        //trace:1030
+                        parent.style.textAlign && !para.style.textAlign && (para.style.textAlign = parent.style.textAlign);
+                        parent.style.textIndent && !para.style.textIndent && (para.style.textIndent = parent.style.textIndent);
+                        parent.style.padding && !para.style.padding && (para.style.padding = parent.style.padding);
+                        if(attrs && /h\d/i.test(parent.tagName)){
+//                           for(var pro in attrs){
+//                                parent.style[utils.cssStyleToDomStyle(pro)] = attrs[pro];
+//                           }
+                            domUtils.setAttributes(parent,attrs);
+                            domUtils.remove(para,true);
+                            para = parent;
+                        }else
+                            domUtils.remove( para.parentNode, true );
+
+                    }
+                    if(  utils.indexOf(notExchange,parent.tagName)!=-1){
+                        current = parent;
+                    }else{
+                       current = para;
+                    }
+
+
+                    current = domUtils.getNextDomNode( current, false, filterFn );
+                } else {
+                    current = domUtils.getNextDomNode( current, true, filterFn );
+                }
+            }
+            return range.moveToBookmark( bookmark2 ).moveToBookmark( bookmark );
+        };
+
+    baidu.editor.commands['paragraph'] = {
+        execCommand : function( cmdName, style,attrs ) {
+            var range = new baidu.editor.dom.Range(this.document);
+            if(this.currentSelectedArr && this.currentSelectedArr.length > 0){
+                for(var i=0,ti;ti=this.currentSelectedArr[i++];){
+                    //trace:1079 不显示的不处理，插入文本，空的td也能加上相应的标签
+                    if(ti.style.display == 'none') continue;
+                    if(domUtils.isEmptyNode(ti)){
+                      
+                        var tmpTxt = this.document.createTextNode('paragraph');
+                        ti.innerHTML = '';
+                        ti.appendChild(tmpTxt);
+                    }
+                    doParagraph(range.selectNodeContents(ti),style,attrs);
+                    if(tmpTxt){
+                        var pN = tmpTxt.parentNode;
+                        domUtils.remove(tmpTxt);
+                        if(domUtils.isEmptyNode(pN)){
+                            domUtils.fillNode(this.document,pN)
+                        }
+                         
+                    }
+
+
+                }
+                var td = this.currentSelectedArr[0];
+
+                if(domUtils.isEmptyBlock(td)){
+                    range.setStart(td,0).setCursor(false,true);
+                }else{
+                    range.selectNode(td).select()
+                }
+
+            }else{
+                range = this.selection.getRange();
+                 //闭合时单独处理
+                if(range.collapsed){
+                    var txt = this.document.createTextNode('p');
+                    range.insertNode(txt);
+                    //去掉冗余的fillchar
+                    if(browser.ie){
+                        var node = txt.previousSibling;
+                        if(node && domUtils.isWhitespace(node)){
+                            domUtils.remove(node)
+                        }
+                        node = txt.nextSibling;
+                        if(node && domUtils.isWhitespace(node)){
+                            domUtils.remove(node)
+                        } 
+                    }
+
+                }
+                range = doParagraph(range,style,attrs);
+                if(txt){
+                    range.setStartBefore(txt).collapse(true);
+                    pN = txt.parentNode;
+
+                    domUtils.remove(txt);
+                    
+                    if(domUtils.isBlockElm(pN)&&domUtils.isEmptyNode(pN)){
+                        domUtils.fillNode(this.document,pN)
+                    }
+
+                }
+
+                if(browser.gecko && range.collapsed && range.startContainer.nodeType == 1){
+                    var child = range.startContainer.childNodes[range.startOffset];
+                    if(child && child.nodeType == 1 && child.tagName.toLowerCase() == style){
+                        range.setStart(child,0).collapse(true)
+                    }
+                }
+                //trace:1097 原来有true，原因忘了，但去了就不能清除多余的占位符了
+                range.select()
+
+            }
+            return true;
+        },
+        queryCommandValue : function() {
+            var startNode = this.selection.getStart(),
+                parent =  domUtils.findParentByTagName( startNode, ['p','h1','h2','h3','h4','h5','h6'], true );
+
+            return  parent && parent.tagName.toLowerCase();
+        },
+        queryCommandState : function(){
+            return this.highlight ? -1 :0;
+        }
+    }
+
+
+})();
+///import core
+///commands 清除格式
+///commandsName  RemoveFormat
+///commandsTitle  清除格式
+/**
+ * @description 清除格式
+ * @name baidu.editor.execCommand
+ * @param   {String}   cmdName     removeformat清除格式命令
+ * @param   {String}   tags                以逗号隔开的标签。如：span,a
+ * @param   {String}   style               样式
+ * @param   {String}   attrs               属性
+ * @param   {String}   notIncluedA    是否把a标签切开
+ * @author zhanyi
+ */
+(function() {
+
+    var domUtils = baidu.editor.dom.domUtils,
+        dtd = baidu.editor.dom.dtd;
+    baidu.editor.commands['removeformat'] = {
+        execCommand : function( cmdName, tags, style, attrs,notIncludeA ) {
+            var tagReg = new RegExp( '^(?:' + (tags || this.options.removeFormatTags).replace( /,/g, '|' ) + ')$', 'i' ) ,
+                removeFormatAttributes = style ? [] : (attrs || this.options.removeFormatAttributes).split( ',' ),
+                range = new baidu.editor.dom.Range( this.document ),
+                bookmark,node,parent,
+                filter = function( node ) {
+                    return node.nodeType == 1;
                 };
 
-			if (typeof url === "object") {
-				ajaxOptions = url;
-				url = ajaxOptions.url;
-			}
-			if (!ajaxRequest || !url) return;
-			var ajaxOpts = ajaxOptions ? utils.extend(defaultAjaxOptions,ajaxOptions) : defaultAjaxOptions;
-
-			var submitStr = json2str(ajaxOpts);  // { name:"Jim",city:"Beijing" } --> "name=Jim&city=Beijing"
-			//如果用户直接通过data参数传递json对象过来，则也要将此json对象转化为字符串
-			if (!utils.isEmptyObject(ajaxOpts.data)){
-                submitStr += (submitStr? "&":"") + json2str(ajaxOpts.data);
-			}
-            //超时检测
-            var timerID = setTimeout(function() {
-                if (ajaxRequest.readyState != 4) {
-                    timeIsOut = true;
-                    ajaxRequest.abort();
-                    clearTimeout(timerID);
+            function doRemove( range ) {
+                
+                var bookmark1 = range.createBookmark();
+                if ( range.collapsed ) {
+                    range.enlarge( true );
                 }
-            }, ajaxOpts.timeout);
 
-			var method = ajaxOpts.method.toUpperCase();
-            var str = url + (url.indexOf("?")==-1?"?":"&") + (method=="POST"?"":submitStr) + "&noCache=" + +new Date;
-			ajaxRequest.open(method, str, ajaxOpts.async);
-			ajaxRequest.onreadystatechange = function() {
-				if (ajaxRequest.readyState == 4) {
-					if (!timeIsOut && ajaxRequest.status == 200) {
-						ajaxOpts.onsuccess(ajaxRequest);
-					} else {
-						ajaxOpts.onerror(ajaxRequest);
-					}
-				}
-			};
-			if (method == "POST") {
-				ajaxRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-				ajaxRequest.send(submitStr);
-			} else {
-				ajaxRequest.send(null);
-			}
-		}
-	};
+             //不能把a标签切了
+                if(!notIncludeA){
+                    var aNode = domUtils.findParentByTagName(range.startContainer,'a',true);
+                    if(aNode){
+                        range.setStartBefore(aNode)
+                    }
 
-	/**
-	 * 将json参数转化成适合ajax提交的参数列表
-	 * @param json
-	 */
-	function json2str(json) {
-		var strArr = [];
-		for (var i in json) {
-			//忽略默认的几个参数
-			if(i=="method" || i=="timeout" || i=="async") continue;
-			//传递过来的对象和函数不在提交之列
-			if (!((typeof json[i]).toLowerCase() == "function" || (typeof json[i]).toLowerCase() == "object")) {
-				strArr.push( encodeURIComponent(i) + "="+encodeURIComponent(json[i]) );
-			}
-		}
-		return strArr.join("&");
+                    aNode = domUtils.findParentByTagName(range.endContainer,'a',true);
+                    if(aNode){
+                        range.setEndAfter(aNode)
+                    }
 
-	}
+                }
+              
+                
+                bookmark = range.createBookmark();
 
-	/**
-	 * 创建一个ajaxRequest对象
-	 */
-	function creatAjaxRequest() {
-		var xmlHttp = null;
-		if (window.XMLHttpRequest) {
-			xmlHttp = new XMLHttpRequest();
-		} else {
-			try {
-				xmlHttp = new ActiveXObject("Msxml2.XMLHTTP");
-			} catch (e) {
-				try {
-					xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
-				} catch (e) {
-				}
-			}
-		}
-		return xmlHttp;
-	}
-}();
+                node = bookmark.start;
+                
+                //切开始
+                while ( (parent = node.parentNode) && !domUtils.isBlockElm( parent ) ) {
+                    domUtils.breakParent( node, parent );
 
-///import core
+                    domUtils.clearEmptySibling( node );
+                }
+                if ( bookmark.end ) {
+                    //切结束
+                    node = bookmark.end;
+                    while ( (parent = node.parentNode) && !domUtils.isBlockElm( parent ) ) {
+                        domUtils.breakParent( node, parent );
+                        domUtils.clearEmptySibling( node );
+                    }
+
+                    //开始去除样式
+                    var current = domUtils.getNextDomNode( bookmark.start, false, filter ),
+                        next;
+                    while ( current ) {
+                        if ( current == bookmark.end ) {
+                            break;
+                        }
+
+                        next = domUtils.getNextDomNode( current, true, filter );
+
+                        if ( !dtd.$empty[current.tagName.toLowerCase()] && !domUtils.isBookmarkNode( current ) ) {
+                            if ( tagReg.test( current.tagName ) ) {
+                                if ( style ) {
+                                    domUtils.removeStyle( current, style );
+                                    if ( domUtils.isRedundantSpan( current ) && style != 'text-decoration')
+                                        domUtils.remove( current, true );
+                                } else {
+                                    domUtils.remove( current, true )
+                                }
+                            } else {
+                                //trace:939  不能把list上的样式去掉
+                                if(!dtd.$tableContent[current.tagName] && !dtd.$list[current.tagName]){
+                                    domUtils.removeAttributes( current, removeFormatAttributes );
+                                    if ( domUtils.isRedundantSpan( current ) )
+                                        domUtils.remove( current, true );
+                                }
+
+                            }
+                        }
+                        current = next;
+                    }
+                }
+                //trace:1035
+                //trace:1096 不能把td上的样式去掉，比如边框
+                var pN = bookmark.start.parentNode;
+                if(domUtils.isBlockElm(pN) && !dtd.$tableContent[pN.tagName] && !dtd.$list[pN.tagName]){
+                    domUtils.removeAttributes(  pN,removeFormatAttributes );
+                }
+                pN = bookmark.end.parentNode;
+                if(bookmark.end && domUtils.isBlockElm(pN) && !dtd.$tableContent[pN.tagName]&& !dtd.$list[pN.tagName]){
+                    domUtils.removeAttributes(  pN,removeFormatAttributes );
+                }
+                range.moveToBookmark( bookmark ).moveToBookmark(bookmark1);
+                //清除冗余的代码 <b><bookmark></b>
+                var node = range.startContainer,
+                    tmp,
+                    collapsed = range.collapsed;
+                while(node.nodeType == 1 && domUtils.isEmptyNode(node) && dtd.$removeEmpty[node.tagName]){
+                    tmp = node.parentNode;
+                    range.setStartBefore(node);
+                    //trace:937
+                    //更新结束边界
+                    if(range.startContainer === range.endContainer){
+                        range.endOffset--;
+                    }
+                    domUtils.remove(node);
+                    node = tmp;
+                }
+             
+                if(!collapsed){
+                    node = range.endContainer;
+                    while(node.nodeType == 1 && domUtils.isEmptyNode(node) && dtd.$removeEmpty[node.tagName]){
+                        tmp = node.parentNode;
+                        range.setEndBefore(node);
+                        domUtils.remove(node);
+
+                        node = tmp;
+                    }
+
+
+                }
+            }
+
+            if ( this.currentSelectedArr && this.currentSelectedArr.length ) {
+                for ( var i = 0,ci; ci = this.currentSelectedArr[i++]; ) {
+                    range.selectNodeContents( ci );
+                    doRemove( range );
+                }
+                range.selectNodeContents( this.currentSelectedArr[0] ).select();
+            } else {
+                
+                range = this.selection.getRange();
+                doRemove( range );
+                range.select();
+            }
+        },
+        queryCommandState : function(){
+            return this.highlight ? -1 :0;
+        }
+
+    }
+//    baidu.editor.contextMenuItems.push({
+//        label : '清除样式',
+//        cmdName : 'removeformat'
+//    })
+})();///import core
+///import commands\removeformat.js
+///commands 字体颜色,背景色,字号,字体,下划线,删除线
+///commandsName  ForeColor,BackColor,FontSize,FontFamily,Underline,StrikeThrough
+///commandsTitle  字体颜色,背景色,字号,字体,下划线,删除线
+/**
+ * @description 字体
+ * @name baidu.editor.execCommand
+ * @param {String}     cmdName    执行的功能名称
+ * @param {String}    value             传入的值
+ */
+(function() {
+    var domUtils = baidu.editor.dom.domUtils,
+        fonts = {
+            'forecolor':'color',
+            'backcolor':'background-color',
+            'fontsize':'font-size',
+            'fontfamily':'font-family',
+           
+            'underline':'text-decoration',
+            'strikethrough':'text-decoration'
+        },
+        reg = new RegExp(domUtils.fillChar,'g'),
+        browser = baidu.editor.browser,
+        flag = 0;
+
+    for ( var p in fonts ) {
+        (function( cmd, style ) {
+            baidu.editor.commands[cmd] = {
+                execCommand : function( cmdName, value ) {
+                    value = value || (this.queryCommandState(cmdName) ? 'none' : cmdName == 'underline' ? 'underline' : 'line-through');
+                    var me = this,
+                        range = this.selection.getRange(),
+                        text;
+                    //执行了上述代码可能产生冗余的html代码，所以要注册 beforecontent去掉这些冗余的代码
+                    if(!flag){
+                        me.addListener('beforegetcontent',function(){
+                            domUtils.clearReduent(me.document,['span'])
+                        });
+                        flag = 1;
+                    }
+                    if ( value == 'default' ) {
+
+                        if(range.collapsed){
+                            text = me.document.createTextNode('font');
+                            range.insertNode(text).select()
+
+                        }
+                        me.execCommand( 'removeFormat', 'span,a', style);
+                        if(text){
+                            range.setStartBefore(text).setCursor();
+                            domUtils.remove(text)
+                        }
+
+
+                    } else {
+                        if(me.currentSelectedArr && me.currentSelectedArr.length > 0){
+                            for(var i=0,ci;ci=me.currentSelectedArr[i++];){
+                                range.selectNodeContents(ci);
+                                range.applyInlineStyle( 'span', {'style':style + ':' + value} );
+
+                            }
+                            range.selectNodeContents(this.currentSelectedArr[0]).select();
+                        }else{
+                            if ( !range.collapsed ) {
+                                if((cmd == 'underline'||cmd=='strikethrough') && me.queryCommandValue(cmd)){
+                                     me.execCommand( 'removeFormat', 'span,a', style );
+                                }
+                                range = me.selection.getRange();
+
+                                range.applyInlineStyle( 'span', {'style':style + ':' + value} ).select();
+                            } else {
+                                
+                                var span = domUtils.findParentByTagName(range.startContainer,'span',true);
+                                text = me.document.createTextNode('font');
+                                if(span && !span.children.length && !span[browser.ie ? 'innerText':'textContent'].replace(reg,'').length){
+                                    //for ie hack when enter
+                                    range.insertNode(text);
+                                     if(cmd == 'underline'||cmd=='strikethrough'){
+                                         range.selectNode(text).select();
+                                         me.execCommand( 'removeFormat','span,a', style, null );
+
+                                         span = domUtils.findParentByTagName(text,'span',true);
+                                         range.setStartBefore(text)
+
+                                    }
+                                    span.style.cssText = span.style.cssText +  ';' + style + ':' + value;
+                                    range.collapse(true).select();
+
+
+                                }else{
+
+
+                                    range.insertNode(text);
+                                    range.selectNode(text).select();
+                                    span = range.document.createElement( 'span' );
+
+                                    if(cmd == 'underline'||cmd=='strikethrough'){
+                                        //a标签内的不处理跳过
+                                        if(domUtils.findParentByTagName(text,'a',true)){
+                                            range.setStartBefore(text).setCursor();
+                                             domUtils.remove(text);
+                                             return;
+                                         }
+                                         me.execCommand( 'removeFormat','span,a', style );
+                                    }
+
+                                    span.style.cssText = style + ':' + value;
+
+
+                                    text.parentNode.insertBefore(span,text);
+                                    //修复，span套span 但样式不继承的问题
+                                    if(!browser.ie || browser.ie && browser.version == 9){
+                                        var spanParent = span.parentNode;
+                                        while(!domUtils.isBlockElm(spanParent)){
+                                            if(spanParent.tagName == 'SPAN'){
+                                                span.style.cssText = spanParent.style.cssText + span.style.cssText;
+                                            }
+                                            spanParent = spanParent.parentNode;
+                                        }
+                                    }
+
+
+
+                                    range.setStart(span,0).setCursor();
+                                    //trace:981
+                                    //domUtils.mergToParent(span)
+
+
+                                }
+                                domUtils.remove(text)
+                            }
+                        }
+
+                    }
+                    return true;
+                },
+                queryCommandValue : function (cmdName) {
+                    var startNode = this.selection.getStart();
+                    //trace:946
+                    if(cmdName == 'underline'||cmdName=='strikethrough' ){
+                        var tmpNode = startNode,value;
+                        while(tmpNode && !domUtils.isBlockElm(tmpNode) && !domUtils.isBody(tmpNode)){
+                            if(tmpNode.nodeType == 1){
+                                value = domUtils.getComputedStyle( tmpNode, style );
+
+                                if(value != 'none'){
+                                    return value;
+                                } 
+                            }
+
+                            tmpNode = tmpNode.parentNode;
+                        }
+                        return 'none'
+                    }
+                    return  domUtils.getComputedStyle( startNode, style );
+                },
+                queryCommandState : function(cmdName){
+                    if(this.highlight){
+                       return -1;
+                   }
+                    if(!(cmdName == 'underline'||cmdName=='strikethrough'))
+                        return 0;
+                    return this.queryCommandValue(cmdName) == (cmdName == 'underline' ? 'underline' : 'line-through')
+                }
+            }
+        })( p, fonts[p] );
+    }
+})();///import core
 /**
  * @description 插入内容
  * @name baidu.editor.execCommand
@@ -4195,21 +5067,26 @@ UE.ajax = function() {
  * @param   {String}   html                要插入的内容
  * @author zhanyi
     */
-    UE.commands['inserthtml'] = {
+(function(){
+    var domUtils = baidu.editor.dom.domUtils,
+        dtd = baidu.editor.dom.dtd,
+        utils = baidu.editor.utils,
+        browser = baidu.editor.browser;
+    baidu.editor.commands['inserthtml'] = {
         execCommand: function (command,html){
-            var me = this,
+            var editor = this,
                 range,deletedElms, i,ci,
                 div,
-                tds = me.currentSelectedArr;
+                tds = editor.currentSelectedArr;
 
-            range = me.selection.getRange();
+            range = editor.selection.getRange();
 
             div = range.document.createElement( 'div' );
             div.style.display = 'inline';
             div.innerHTML = utils.trim( html );
 
             try{
-                me.adjustTable && me.adjustTable(div);
+                editor.adjustTable && editor.adjustTable(div);
             }catch(e){}
 
 
@@ -4219,7 +5096,7 @@ UE.ajax = function() {
                 }
                 tds[0].innerHTML = '';
                 range.setStart(tds[0],0).collapse(true);
-                me.currentSelectedArr = [];
+                editor.currentSelectedArr = [];
             }
 
             if ( !range.collapsed ) {
@@ -4288,15 +5165,15 @@ UE.ajax = function() {
             child = range.startContainer;
             //用chrome可能有空白展位符
             if(domUtils.isBlockElm(child) && domUtils.isEmptyNode(child)){
-                child.innerHTML = browser.ie ? '' : '<br/>'
+                child.innerHTML = baidu.editor.browser.ie ? '' : '<br/>'
             }
             //加上true因为在删除表情等时会删两次，第一次是删的fillData
             range.select(true);
 
 
             setTimeout(function(){
-                range = me.selection.getRange();
-                range.scrollToView(me.autoHeightEnabled,me.autoHeightEnabled ? domUtils.getXY(me.iframe).y:0);
+                range = editor.selection.getRange();
+                range.scrollToView(editor.autoHeightEnabled,editor.autoHeightEnabled ? domUtils.getXY(editor.iframe).y:0);
             },200)
 
 
@@ -4304,1053 +5181,45 @@ UE.ajax = function() {
             
         }
     };
-
+}());
 ///import core
-///commands 自动排版
-///commandsName  autotypeset
-///commandsTitle  自动排版
-/**
- * 自动排版
- * @function
- * @name baidu.editor.execCommands
- */
-
-UE.plugins['autotypeset'] = function(){
-    //升级了版本，但配置项目里没有autotypeset
-    if(!this.options.autotypeset){
-        return;
-    }
-    var me = this,
-        opt = me.options.autotypeset,
-        remainClass = {
-            'selectTdClass':1,
-            'pagebreak':1,
-            'anchorclass':1
-        },
-        remainTag = {
-            'li':1
-        },
-        tags = {
-            div:1,
-            p:1
-        },
-        highlightCont;
-    function isLine(node,notEmpty){
-
-        if(node && node.parentNode && tags[node.tagName.toLowerCase()]){
-            if(highlightCont && highlightCont.contains(node)
-                ||
-                node.getAttribute('pagebreak')
-            ){
-                return 0;
-            }
-
-            return notEmpty ? !domUtils.isEmptyBlock(node) : domUtils.isEmptyBlock(node);
-        }
-    }
-
-    function removeNotAttributeSpan(node){
-        if(!node.style.cssText){
-            domUtils.removeAttributes(node,['style']);
-            if(node.tagName.toLowerCase() == 'span' && domUtils.hasNoAttributes(node)){
-                domUtils.remove(node,true)
-            }
-        }
-    }
-    function autotype(type,html){
-
-        var cont;
-        if(html){
-            if(!opt.pasteFilter)return;
-            cont = me.document.createElement('div');
-            cont.innerHTML = html.html;
-        }else{
-            cont = me.document.body;
-        }
-        var nodes = domUtils.getElementsByTagName(cont,'*');
-
-          // 行首缩进，段落方向，段间距，段内间距
-        for(var i=0,ci;ci=nodes[i++];){
-            if(!highlightCont && ci.tagName == 'DIV' && ci.getAttribute('highlighter')){
-                highlightCont = ci;
-            }
-             //font-size
-            if(opt.clearFontSize && ci.style.fontSize){
-                ci.style.fontSize = '';
-                removeNotAttributeSpan(ci)
-
-            }
-            //font-family
-            if(opt.clearFontFamily && ci.style.fontFamily){
-                ci.style.fontFamily = '';
-                removeNotAttributeSpan(ci)
-            }
-
-            if(isLine(ci)){
-                //合并空行
-                if(opt.mergeEmptyline ){
-                    var next = ci.nextSibling,tmpNode;
-                    while(isLine(next)){
-                        tmpNode = next;
-                        next = tmpNode.nextSibling;
-                        domUtils.remove(tmpNode);
-                    }
-
-                }
-                 //去掉空行，保留占位的空行
-                if(opt.removeEmptyline && domUtils.inDoc(ci,cont) && !remainTag[ci.parentNode.tagName.toLowerCase()] ){
-                    domUtils.remove(ci);
-                    continue;
-
-                }
-
-            }
-            if(isLine(ci,true) ){
-                if(opt.indent)
-                    ci.style.textIndent = opt.indentValue;
-                if(opt.textAlign)
-                    ci.style.textAlign = opt.textAlign;
-//                if(opt.lineHeight)
-//                    ci.style.lineHeight = opt.lineHeight + 'cm';
-
-
-            }
-
-            //去掉class,保留的class不去掉
-            if(opt.removeClass && ci.className && !remainClass[ci.className.toLowerCase()]){
-
-                if(highlightCont && highlightCont.contains(ci)){
-                     continue;
-                }
-                domUtils.removeAttributes(ci,['class'])
-            }
-
-            //表情不处理
-            if(opt.imageBlockLine && ci.tagName.toLowerCase() == 'img' && !ci.getAttribute('emotion')){
-                if(html){
-                    var img = ci;
-                    switch (opt.imageBlockLine){
-                        case 'left':
-                        case 'right':
-                        case 'none':
-                            var pN = img.parentNode,tmpNode,pre,next;
-                            while(dtd.$inline[pN.tagName] || pN.tagName == 'A'){
-                                pN = pN.parentNode;
-                            }
-                            tmpNode = pN;
-                            if(tmpNode.tagName == 'P' && domUtils.getStyle(tmpNode,'text-align') == 'center'){
-                                if(!domUtils.isBody(tmpNode) && domUtils.getChildCount(tmpNode,function(node){return !domUtils.isBr(node) && !domUtils.isWhitespace(node)}) == 1){
-                                    pre = tmpNode.previousSibling;
-                                    next = tmpNode.nextSibling;
-                                    if(pre && next && pre.nodeType == 1 &&  next.nodeType == 1 && pre.tagName == next.tagName && domUtils.isBlockElm(pre)){
-                                        pre.appendChild(tmpNode.firstChild);
-                                        while(next.firstChild){
-                                            pre.appendChild(next.firstChild)
-                                        }
-                                        domUtils.remove(tmpNode);
-                                        domUtils.remove(next);
-                                    }else{
-                                        domUtils.setStyle(tmpNode,'text-align','')
-                                    }
-
-
-                                }
-
-
-                            }
-                            domUtils.setStyle(img,'float',opt.imageBlockLine);
-                            break;
-                        case 'center':
-                            if(me.queryCommandValue('imagefloat') != 'center'){
-                                pN = img.parentNode;
-                                domUtils.setStyle(img,'float','none');
-                                tmpNode = img;
-                                while(pN && domUtils.getChildCount(pN,function(node){return !domUtils.isBr(node) && !domUtils.isWhitespace(node)}) == 1
-                                    && (dtd.$inline[pN.tagName] || pN.tagName == 'A')){
-                                    tmpNode = pN;
-                                    pN = pN.parentNode;
-                                }
-                                var pNode = me.document.createElement('p');
-                                domUtils.setAttributes(pNode,{
-
-                                    style:'text-align:center'
-                                });
-                                tmpNode.parentNode.insertBefore(pNode,tmpNode);
-                                pNode.appendChild(tmpNode);
-                                domUtils.setStyle(tmpNode,'float','');
-
-                            }
-
-
-                    }
-                }else{
-                    var range = me.selection.getRange();
-                    range.selectNode(ci).select();
-                    me.execCommand('imagefloat',opt.imageBlockLine);
-                }
-
-
-
-            }
-
-            //去掉冗余的标签
-            if(opt.removeEmptyNode){
-                if(opt.removeTagNames[ci.tagName.toLowerCase()] && domUtils.hasNoAttributes(ci) && domUtils.isEmptyBlock(ci)){
-                    domUtils.remove(ci)
-                }
-            }
-        }
-        if(html)
-            html.html = cont.innerHTML
-    }
-    if(opt.pasteFilter){
-        me.addListener('beforepaste',autotype);
-    }
-
-    me.commands['autotypeset'] = {
-        execCommand:function () {
-            me.removeListener('beforepaste',autotype);
-            if(opt.pasteFilter){
-                me.addListener('beforepaste',autotype);
-            }
-            autotype();
-        }
-
-    };
-
-};
-
-
-///import core
-///import plugins\inserthtml.js
-///import plugins\catchremoteimage.js
-///commands 插入图片，操作图片的对齐方式
-///commandsName  InsertImage,ImageNone,ImageLeft,ImageRight,ImageCenter
-///commandsTitle  图片,默认,居左,居右,居中
-///commandsDialog  dialogs\image\image.html
-/**
- * Created by .
- * User: zhanyi
- * for image
- */
-
-UE.commands['imagefloat'] = {
-    execCommand : function (cmd, align){
-        var me = this,
-            range = me.selection.getRange();
-        if(!range.collapsed ){
-            var img = range.getClosedNode();
-            if(img && img.tagName == 'IMG'){
-                switch (align){
-                    case 'left':
-                    case 'right':
-                    case 'none':
-                        var pN = img.parentNode,tmpNode,pre,next;
-                        while(dtd.$inline[pN.tagName] || pN.tagName == 'A'){
-                            pN = pN.parentNode;
-                        }
-                        tmpNode = pN;
-                        if(tmpNode.tagName == 'P' && domUtils.getStyle(tmpNode,'text-align') == 'center'){
-                            if(!domUtils.isBody(tmpNode) && domUtils.getChildCount(tmpNode,function(node){return !domUtils.isBr(node) && !domUtils.isWhitespace(node)}) == 1){
-                                pre = tmpNode.previousSibling;
-                                next = tmpNode.nextSibling;
-                                if(pre && next && pre.nodeType == 1 &&  next.nodeType == 1 && pre.tagName == next.tagName && domUtils.isBlockElm(pre)){
-                                    pre.appendChild(tmpNode.firstChild);
-                                    while(next.firstChild){
-                                        pre.appendChild(next.firstChild)
-                                    }
-                                    domUtils.remove(tmpNode);
-                                    domUtils.remove(next);
-                                }else{
-                                    domUtils.setStyle(tmpNode,'text-align','')
-                                }
-
-
-                            }
-
-                            range.selectNode(img).select()
-                        }
-                        domUtils.setStyle(img,'float',align);
-                        break;
-                    case 'center':
-                        if(me.queryCommandValue('imagefloat') != 'center'){
-                            pN = img.parentNode;
-                            domUtils.setStyle(img,'float','none');
-                            tmpNode = img;
-                            while(pN && domUtils.getChildCount(pN,function(node){return !domUtils.isBr(node) && !domUtils.isWhitespace(node)}) == 1
-                                && (dtd.$inline[pN.tagName] || pN.tagName == 'A')){
-                                tmpNode = pN;
-                                pN = pN.parentNode;
-                            }
-                            range.setStartBefore(tmpNode).setCursor(false);
-                            pN = me.document.createElement('div');
-                            pN.appendChild(tmpNode);
-                            domUtils.setStyle(tmpNode,'float','');
-
-                            me.execCommand('insertHtml','<p id="_img_parent_tmp" style="text-align:center">'+pN.innerHTML+'</p>');
-
-                            tmpNode = me.document.getElementById('_img_parent_tmp');
-                            tmpNode.removeAttribute('id');
-                            tmpNode = tmpNode.firstChild;
-                            range.selectNode(tmpNode).select();
-                            //去掉后边多余的元素
-                            next = tmpNode.parentNode.nextSibling;
-                            if(next && domUtils.isEmptyNode(next)){
-                                domUtils.remove(next)
-                            }
-
-                        }
-
-                        break;
-                }
-
-            }
-        }
-    },
-    queryCommandValue : function() {
-        var range = this.selection.getRange(),
-            startNode,floatStyle;
-        if(range.collapsed){
-            return 'none';
-        }
-        startNode = range.getClosedNode();
-        if(startNode && startNode.nodeType == 1 && startNode.tagName == 'IMG'){
-            floatStyle = domUtils.getComputedStyle(startNode,'float');
-            if(floatStyle == 'none'){
-                floatStyle = domUtils.getComputedStyle(startNode.parentNode,'text-align') == 'center' ? 'center' : floatStyle
-            }
-            return {
-                    left : 1,
-                    right : 1,
-                    center : 1
-                }[floatStyle] ? floatStyle : 'none'
-        }
-        return 'none'
-
-
-    },
-    queryCommandState : function(){
-        if(this.highlight){
-                   return -1;
-               }
-        var range = this.selection.getRange(),
-            startNode;
-        if(range.collapsed){
-            return -1;
-        }
-        startNode = range.getClosedNode();
-        if(startNode && startNode.nodeType == 1 && startNode.tagName == 'IMG'){
-            return 0;
-        }
-        return -1;
-    }
-};
-
-UE.commands['insertimage'] = {
-    execCommand : function (cmd, opt){
-
-        opt = utils.isArray(opt) ? opt : [opt];
-        if(!opt.length) return;
-        var me = this,
-            range = me.selection.getRange(),
-            img = range.getClosedNode();
-        if(img && /img/i.test( img.tagName ) && img.className != "edui-faked-video" &&!img.getAttribute("word_img") ){
-            var first = opt.shift();
-            var floatStyle = first['floatStyle'];
-            delete first['floatStyle'];
-////                img.style.border = (first.border||0) +"px solid #000";
-////                img.style.margin = (first.margin||0) +"px";
-//                img.style.cssText += ';margin:' + (first.margin||0) +"px;" + 'border:' + (first.border||0) +"px solid #000";
-            domUtils.setAttributes(img,first);
-            me.execCommand('imagefloat',floatStyle);
-            if(opt.length > 0){
-                range.setStartAfter(img).setCursor(false,true);
-                me.execCommand('insertimage',opt);
-            }
-
-        }else{
-            var html = [],str = '',ci;
-            ci = opt[0];
-            if(opt.length == 1){
-                str = '<img src="'+ci.src+'" '+ (ci.data_ue_src ? ' data_ue_src="' + ci.data_ue_src +'" ':'') +
-                        (ci.width ? 'width="'+ci.width+'" ':'') +
-                        (ci.height ? ' height="'+ci.height+'" ':'') +
-                        (ci['floatStyle']&&ci['floatStyle']!='center' ? ' style="float:'+ci['floatStyle']+';"':'') +
-                        (ci.title?' title="'+ci.title+'"':'') + ' border="'+ (ci.border||0) + '" hspace = "'+(ci.hspace||0)+'" vspace = "'+(ci.vspace||0)+'" />';
-                if(ci['floatStyle'] == 'center'){
-                        str = '<p style="text-align: center">'+str+'</p>'
-                 }
-                html.push(str)
-
-            }else{
-                for(var i=0;ci=opt[i++];){
-                    str =  '<p ' + (ci['floatStyle'] == 'center' ? 'style="text-align: center" ' : '') + '><img src="'+ci.src+'" '+
-                        (ci.width ? 'width="'+ci.width+'" ':'') +   (ci.data_ue_src ? ' data_ue_src="' + ci.data_ue_src +'" ':'') +
-                        (ci.height ? ' height="'+ci.height+'" ':'') +
-                        ' style="' + (ci['floatStyle']&&ci['floatStyle']!='center' ? 'float:'+ci['floatStyle']+';':'') +
-                        (ci.border||'') + '" ' +
-                        (ci.title?' title="'+ci.title+'"':'') + ' /></p>';
-//                        if(ci['floatStyle'] == 'center'){
-//                            str = '<p style="text-align: center">'+str+'</p>'
-//                        }
-                    html.push(str)
-                }
-            }
-
-            me.execCommand('insertHtml',html.join(''));
-        }
-    },
-    queryCommandState : function(){
-        return this.highlight ? -1 :0;
-    }
-};
-///import core
-///commands 段落格式,居左,居右,居中,两端对齐
-///commandsName  JustifyLeft,JustifyCenter,JustifyRight,JustifyJustify
-///commandsTitle  居左对齐,居中对齐,居右对齐,两端对齐
-/**
- * @description 居左右中
- * @name baidu.editor.execCommand
- * @param   {String}   cmdName     justify执行对齐方式的命令
- * @param   {String}   align               对齐方式：left居左，right居右，center居中，justify两端对齐
- * @author zhanyi
- */
-(function(){
-    var block = domUtils.isBlockElm,
-        defaultValue = {
-            left : 1,
-            right : 1,
-            center : 1,
-            justify : 1
-        },
-        doJustify = function(range,style){
-            var bookmark = range.createBookmark(),
-                filterFn = function( node ) {
-                    return node.nodeType == 1 ? node.tagName.toLowerCase() != 'br' &&  !domUtils.isBookmarkNode(node) : !domUtils.isWhitespace( node )
-                };
-
-            range.enlarge(true);
-            var bookmark2 = range.createBookmark(),
-                current = domUtils.getNextDomNode(bookmark2.start,false,filterFn),
-                tmpRange = range.cloneRange(),
-                tmpNode;
-            while(current &&  !(domUtils.getPosition(current,bookmark2.end)&domUtils.POSITION_FOLLOWING)){
-                if(current.nodeType == 3 || !block(current)){
-                    tmpRange.setStartBefore(current);
-                    while(current && current!==bookmark2.end &&  !block(current)){
-                        tmpNode = current;
-                        current = domUtils.getNextDomNode(current,false,null,function(node){
-                            return !block(node)
-                        });
-                    }
-                    tmpRange.setEndAfter(tmpNode);
-                    var common = tmpRange.getCommonAncestor();
-                    if( !domUtils.isBody(common) && block(common)){
-                        domUtils.setStyles(common,utils.isString(style) ? {'text-align':style} : style);
-                        current = common;
-                    }else{
-                        var p = range.document.createElement('p');
-                         domUtils.setStyles(p,utils.isString(style) ? {'text-align':style} : style);
-                        var frag = tmpRange.extractContents();
-                        p.appendChild(frag);
-                        tmpRange.insertNode(p);
-                        current = p;
-                    }
-                    current = domUtils.getNextDomNode(current,false,filterFn);
-                }else{
-                    current = domUtils.getNextDomNode(current,true,filterFn);
-                }
-            }
-            return range.moveToBookmark(bookmark2).moveToBookmark(bookmark)
-        };
-    UE.commands['justify'] =  {
-        execCommand : function( cmdName,align ) {
-
-            var  range = this.selection.getRange(),
-                txt;
-           
-            if(this.currentSelectedArr && this.currentSelectedArr.length > 0){
-                for(var i=0,ti;ti=this.currentSelectedArr[i++];){
-                    if(domUtils.isEmptyNode(ti)){
-                        txt = this.document.createTextNode('p');
-                        range.setStart(ti,0).collapse(true).insertNode(txt).selectNode(txt);
-                        
-                    }else{
-                        range.selectNodeContents(ti)
-                    }
-
-                    doJustify(range,align);
-                    txt && domUtils.remove(txt);
-                }
-                range.selectNode(this.currentSelectedArr[0]).select()
-            }else{
-
-                //闭合时单独处理
-                if(range.collapsed){
-                    txt = this.document.createTextNode('p');
-                    range.insertNode(txt);
-                }
-                doJustify(range,align);
-                if(txt){
-                    range.setStartBefore(txt).collapse(true);
-                    domUtils.remove(txt);
-                }
-                
-                range.select();
-
-            }
-            return true;
-        },
-        queryCommandValue : function() {
-            var startNode = this.selection.getStart(),
-                value = domUtils.getComputedStyle(startNode,'text-align');
-            return defaultValue[value] ? value : 'left';
-        },
-        queryCommandState : function(){
-            return this.highlight ? -1 : 0;
-                
-        }
-
-    }
-
-
-})();
-
-///import core
-///import plugins\removeformat.js
-///commands 字体颜色,背景色,字号,字体,下划线,删除线
-///commandsName  ForeColor,BackColor,FontSize,FontFamily,Underline,StrikeThrough
-///commandsTitle  字体颜色,背景色,字号,字体,下划线,删除线
-/**
- * @description 字体
- * @name baidu.editor.execCommand
- * @param {String}     cmdName    执行的功能名称
- * @param {String}    value             传入的值
- */
+///import commands\inserthtml.js
+///commands 特殊字符
+///commandsName  Spechars
+///commandsTitle  特殊字符
+///commandsDialog  dialogs\spechars\spechars.html
 (function() {
+    baidu.editor.commands['spechars'] = {
+        execCommand : function(){
 
-    var fonts = {
-            'forecolor':'color',
-            'backcolor':'background-color',
-            'fontsize':'font-size',
-            'fontfamily':'font-family',
-            'underline':'text-decoration',
-            'strikethrough':'text-decoration'
-        };
-
-
-
-    for ( var p in fonts ) {
-        (function( cmd, style ) {
-            UE.commands[cmd] = {
-                execCommand : function( cmdName, value ) {
-                    value = value || (this.queryCommandState(cmdName) ? 'none' : cmdName == 'underline' ? 'underline' : 'line-through');
-                    var me = this,
-                        range = this.selection.getRange(),
-                        text;
-
-                    if ( value == 'default' ) {
-
-                        if(range.collapsed){
-                            text = me.document.createTextNode('font');
-                            range.insertNode(text).select()
-
-                        }
-                        me.execCommand( 'removeFormat', 'span,a', style);
-                        if(text){
-                            range.setStartBefore(text).setCursor();
-                            domUtils.remove(text)
-                        }
-
-
-                    } else {
-                        if(me.currentSelectedArr && me.currentSelectedArr.length > 0){
-                            for(var i=0,ci;ci=me.currentSelectedArr[i++];){
-                                range.selectNodeContents(ci);
-                                range.applyInlineStyle( 'span', {'style':style + ':' + value} );
-
-                            }
-                            range.selectNodeContents(this.currentSelectedArr[0]).select();
-                        }else{
-                            if ( !range.collapsed ) {
-                                if((cmd == 'underline'||cmd=='strikethrough') && me.queryCommandValue(cmd)){
-                                     me.execCommand( 'removeFormat', 'span,a', style );
-                                }
-                                range = me.selection.getRange();
-
-                                range.applyInlineStyle( 'span', {'style':style + ':' + value} ).select();
-                            } else {
-
-                                var span = domUtils.findParentByTagName(range.startContainer,'span',true);
-                                text = me.document.createTextNode('font');
-                                if(span && !span.children.length && !span[browser.ie ? 'innerText':'textContent'].replace(fillCharReg,'').length){
-                                    //for ie hack when enter
-                                    range.insertNode(text);
-                                     if(cmd == 'underline'||cmd=='strikethrough'){
-                                         range.selectNode(text).select();
-                                         me.execCommand( 'removeFormat','span,a', style, null );
-
-                                         span = domUtils.findParentByTagName(text,'span',true);
-                                         range.setStartBefore(text)
-
-                                    }
-                                    span.style.cssText = span.style.cssText +  ';' + style + ':' + value;
-                                    range.collapse(true).select();
-
-
-                                }else{
-
-
-                                    range.insertNode(text);
-                                    range.selectNode(text).select();
-                                    span = range.document.createElement( 'span' );
-
-                                    if(cmd == 'underline'||cmd=='strikethrough'){
-                                        //a标签内的不处理跳过
-                                        if(domUtils.findParentByTagName(text,'a',true)){
-                                            range.setStartBefore(text).setCursor();
-                                             domUtils.remove(text);
-                                             return;
-                                         }
-                                         me.execCommand( 'removeFormat','span,a', style );
-                                    }
-
-                                    span.style.cssText = style + ':' + value;
-
-
-                                    text.parentNode.insertBefore(span,text);
-                                    //修复，span套span 但样式不继承的问题
-                                    if(!browser.ie || browser.ie && browser.version == 9){
-                                        var spanParent = span.parentNode;
-                                        while(!domUtils.isBlockElm(spanParent)){
-                                            if(spanParent.tagName == 'SPAN'){
-                                                span.style.cssText = spanParent.style.cssText + span.style.cssText;
-                                            }
-                                            spanParent = spanParent.parentNode;
-                                        }
-                                    }
-
-
-
-                                    range.setStart(span,0).setCursor();
-                                    //trace:981
-                                    //domUtils.mergToParent(span)
-
-
-                                }
-                                domUtils.remove(text)
-                            }
-                        }
-
-                    }
-                    return true;
-                },
-                queryCommandValue : function (cmdName) {
-                    var startNode = this.selection.getStart();
-
-                    //trace:946
-                    if(cmdName == 'underline'||cmdName=='strikethrough' ){
-                        var tmpNode = startNode,value;
-                        while(tmpNode && !domUtils.isBlockElm(tmpNode) && !domUtils.isBody(tmpNode)){
-                            if(tmpNode.nodeType == 1){
-                                value = domUtils.getComputedStyle( tmpNode, style );
-
-                                if(value != 'none'){
-                                    return value;
-                                }
-                            }
-
-                            tmpNode = tmpNode.parentNode;
-                        }
-                        return 'none'
-                    }
-                    return  domUtils.getComputedStyle( startNode, style );
-                },
-                queryCommandState : function(cmdName){
-                    if(this.highlight){
-                       return -1;
-                   }
-                    if(!(cmdName == 'underline'||cmdName=='strikethrough'))
-                        return 0;
-                    return this.queryCommandValue(cmdName) == (cmdName == 'underline' ? 'underline' : 'line-through')
-                }
-            }
-        })( p, fonts[p] );
-    }
-
-
-})();
-///import core
-///commands 超链接,取消链接
-///commandsName  Link,Unlink
-///commandsTitle  超链接,取消链接
-///commandsDialog  dialogs\link\link.html
-/**
- * 超链接
- * @function
- * @name baidu.editor.execCommand
- * @param   {String}   cmdName     link插入超链接
- * @param   {Object}  options         url地址，title标题，target是否打开新页
- * @author zhanyi
- */
-/**
- * 取消链接
- * @function
- * @name baidu.editor.execCommand
- * @param   {String}   cmdName     unlink取消链接
- * @author zhanyi
- */
-(function() {
-    function optimize( range ) {
-        var start = range.startContainer,end = range.endContainer;
-
-        if ( start = domUtils.findParentByTagName( start, 'a', true ) ) {
-            range.setStartBefore( start )
-        }
-        if ( end = domUtils.findParentByTagName( end, 'a', true ) ) {
-            range.setEndAfter( end )
-        }
-    }
-
-    UE.commands['unlink'] = {
-        execCommand : function() {
-            var as,
-                range = new dom.Range(this.document),
-                tds = this.currentSelectedArr,
-                bookmark;
-            if(tds && tds.length >0){
-                for(var i=0,ti;ti=tds[i++];){
-                    as = domUtils.getElementsByTagName(ti,'a');
-                    for(var j=0,aj;aj=as[j++];){
-                        domUtils.remove(aj,true);
-                    }
-                }
-                if(domUtils.isEmptyNode(tds[0])){
-                    range.setStart(tds[0],0).setCursor();
-                }else{
-                    range.selectNodeContents(tds[0]).select()
-                }
-            }else{
-                range = this.selection.getRange();
-                if(range.collapsed && !domUtils.findParentByTagName( range.startContainer, 'a', true )){
-                    return;
-                }
-                bookmark = range.createBookmark();
-                optimize( range );
-                range.removeInlineStyle( 'a' ).moveToBookmark( bookmark ).select();
-            }
         },
-        queryCommandState : function(){
-            return !this.highlight && this.queryCommandValue('link') ?  0 : -1;
-        }
-
-    };
-    function doLink(range,opt){
-
-        optimize( range = range.adjustmentBoundary() );
-        var start = range.startContainer;
-        if(start.nodeType == 1){
-            start = start.childNodes[range.startOffset];
-            if(start && start.nodeType == 1 && start.tagName == 'A' && /^(?:https?|ftp|file)\s*:\s*\/\//.test(start[browser.ie?'innerText':'textContent'])){
-                start.innerHTML = opt.href;
-            }
-        }
-        range.removeInlineStyle( 'a' );
-        if ( range.collapsed ) {
-            var a = range.document.createElement( 'a' );
-            domUtils.setAttributes( a, opt );
-            a.innerHTML = opt.href;
-            range.insertNode( a ).selectNode( a );
-        } else {
-            range.applyInlineStyle( 'a', opt )
-
-        }
-    }
-    UE.commands['link'] = {
-        queryCommandState : function(){
+         queryCommandState : function(){
             return this.highlight ? -1 :0;
-        },
-        execCommand : function( cmdName, opt ) {
-            var range = new dom.Range(this.document),
-                tds = this.currentSelectedArr;
-            
-            if(tds && tds.length){
-                for(var i=0,ti;ti=tds[i++];){
-                    if(domUtils.isEmptyNode(ti)){
-                        ti.innerHTML = opt.href
-                    }
-                    doLink(range.selectNodeContents(ti),opt)
-                }
-                range.selectNodeContents(tds[0]).select()
-
-               
-            }else{
-                doLink(range=this.selection.getRange(),opt);
-
-                range.collapse().select(browser.gecko ? true : false);
-
-            }
-        },
-        queryCommandValue : function() {
-
-            var range = new dom.Range(this.document),
-                tds = this.currentSelectedArr,
-                as,
-                node;
-            if(tds && tds.length){
-                for(var i=0,ti;ti=tds[i++];){
-                    as = ti.getElementsByTagName('a');
-                    if(as[0])
-                        return as[0]
-                }
-            }else{
-                range = this.selection.getRange();
-
-
-
-                if ( range.collapsed ) {
-                    node = this.selection.getStart();
-                    if ( node && (node = domUtils.findParentByTagName( node, 'a', true )) ) {
-                        return node;
-                    }
-                } else {
-                    //trace:1111  如果是<p><a>xx</a></p> startContainer是p就会找不到a
-                    range.shrinkBoundary();
-                    var start = range.startContainer.nodeType  == 3 || !range.startContainer.childNodes[range.startOffset] ? range.startContainer : range.startContainer.childNodes[range.startOffset],
-                        end =  range.endContainer.nodeType == 3 || range.endOffset == 0 ? range.endContainer : range.endContainer.childNodes[range.endOffset-1],
-
-                        common = range.getCommonAncestor();
-
-
-                    node = domUtils.findParentByTagName( common, 'a', true );
-                    if ( !node && common.nodeType == 1){
-
-                        var as = common.getElementsByTagName( 'a' ),
-                            ps,pe;
-
-                        for ( var i = 0,ci; ci = as[i++]; ) {
-                            ps = domUtils.getPosition( ci, start ),pe = domUtils.getPosition( ci,end);
-                            if ( (ps & domUtils.POSITION_FOLLOWING || ps & domUtils.POSITION_CONTAINS)
-                                &&
-                                (pe & domUtils.POSITION_PRECEDING || pe & domUtils.POSITION_CONTAINS)
-                                ) {
-                                node = ci;
-                                break;
-                            }
-                        }
-                    }
-
-                    return node;
-                }
-            }
-
-
         }
-    };
-
-
+};
 })();
-
 ///import core
-///import plugins\inserthtml.js
-///commands 地图
-///commandsName  Map,GMap
-///commandsTitle  Baidu地图,Google地图
-///commandsDialog  dialogs\map\map.html,dialogs\gmap\gmap.html
-UE.commands['gmap'] =
-UE.commands['map'] = {
-     queryCommandState : function(){
-        return this.highlight ? -1 :0;
-    }
-};
-
-///import core
-///import plugins\inserthtml.js
-///commands 插入框架
-///commandsName  InsertFrame
-///commandsTitle  插入Iframe
-///commandsDialog  dialogs\insertframe\insertframe.html
-
-UE.commands['insertframe'] = {
-     queryCommandState : function(){
-        return this.highlight ? -1 :0;
-    }
-};
-
-
-///import core
-///commands 清除格式
-///commandsName  RemoveFormat
-///commandsTitle  清除格式
+///commands 全选
+///commandsName  SelectAll
+///commandsTitle  全选
 /**
- * @description 清除格式
+ * 选中所有
+ * @function
  * @name baidu.editor.execCommand
- * @param   {String}   cmdName     removeformat清除格式命令
- * @param   {String}   tags                以逗号隔开的标签。如：span,a
- * @param   {String}   style               样式
- * @param   {String}   attrs               属性
- * @param   {String}   notIncluedA    是否把a标签切开
+ * @param   {String}   cmdName    selectall选中编辑器里的所有内容
  * @author zhanyi
- */
-UE.commands['removeformat'] = {
-    execCommand : function( cmdName, tags, style, attrs,notIncludeA ) {
-        var tagReg = new RegExp( '^(?:' + (tags || this.options.removeFormatTags).replace( /,/g, '|' ) + ')$', 'i' ) ,
-            removeFormatAttributes = style ? [] : (attrs || this.options.removeFormatAttributes).split( ',' ),
-            range = new dom.Range( this.document ),
-            bookmark,node,parent,
-            filter = function( node ) {
-                return node.nodeType == 1;
-            };
-
-        function isRedundantSpan (node) {
-           if (node.nodeType == 3 || node.tagName.toLowerCase() != 'span')
-               return 0;
-           if (browser.ie) {
-               //ie 下判断实效，所以只能简单用style来判断
-               //return node.style.cssText == '' ? 1 : 0;
-                var attrs = node.attributes;
-                if ( attrs.length ) {
-                    for ( var i = 0,l = attrs.length; i<l; i++ ) {
-                        if ( attrs[i].specified ) {
-                            return 0;
-                        }
-                    }
-                    return 1;
-                }
-           }
-           return !node.attributes.length
-        }
-        function doRemove( range ) {
-
-            var bookmark1 = range.createBookmark();
-            if ( range.collapsed ) {
-                range.enlarge( true );
-            }
-
-         //不能把a标签切了
-            if(!notIncludeA){
-                var aNode = domUtils.findParentByTagName(range.startContainer,'a',true);
-                if(aNode){
-                    range.setStartBefore(aNode)
-                }
-
-                aNode = domUtils.findParentByTagName(range.endContainer,'a',true);
-                if(aNode){
-                    range.setEndAfter(aNode)
-                }
-
-            }
-
-
-            bookmark = range.createBookmark();
-
-            node = bookmark.start;
-
-            //切开始
-            while ( (parent = node.parentNode) && !domUtils.isBlockElm( parent ) ) {
-                domUtils.breakParent( node, parent );
-
-                domUtils.clearEmptySibling( node );
-            }
-            if ( bookmark.end ) {
-                //切结束
-                node = bookmark.end;
-                while ( (parent = node.parentNode) && !domUtils.isBlockElm( parent ) ) {
-                    domUtils.breakParent( node, parent );
-                    domUtils.clearEmptySibling( node );
-                }
-
-                //开始去除样式
-                var current = domUtils.getNextDomNode( bookmark.start, false, filter ),
-                    next;
-                while ( current ) {
-                    if ( current == bookmark.end ) {
-                        break;
-                    }
-
-                    next = domUtils.getNextDomNode( current, true, filter );
-
-                    if ( !dtd.$empty[current.tagName.toLowerCase()] && !domUtils.isBookmarkNode( current ) ) {
-                        if ( tagReg.test( current.tagName ) ) {
-                            if ( style ) {
-                                domUtils.removeStyle( current, style );
-                                if ( isRedundantSpan( current ) && style != 'text-decoration')
-                                    domUtils.remove( current, true );
-                            } else {
-                                domUtils.remove( current, true )
-                            }
-                        } else {
-                            //trace:939  不能把list上的样式去掉
-                            if(!dtd.$tableContent[current.tagName] && !dtd.$list[current.tagName]){
-                                domUtils.removeAttributes( current, removeFormatAttributes );
-                                if ( isRedundantSpan( current ) )
-                                    domUtils.remove( current, true );
-                            }
-
-                        }
-                    }
-                    current = next;
-                }
-            }
-            //trace:1035
-            //trace:1096 不能把td上的样式去掉，比如边框
-            var pN = bookmark.start.parentNode;
-            if(domUtils.isBlockElm(pN) && !dtd.$tableContent[pN.tagName] && !dtd.$list[pN.tagName]){
-                domUtils.removeAttributes(  pN,removeFormatAttributes );
-            }
-            pN = bookmark.end.parentNode;
-            if(bookmark.end && domUtils.isBlockElm(pN) && !dtd.$tableContent[pN.tagName]&& !dtd.$list[pN.tagName]){
-                domUtils.removeAttributes(  pN,removeFormatAttributes );
-            }
-            range.moveToBookmark( bookmark ).moveToBookmark(bookmark1);
-            //清除冗余的代码 <b><bookmark></b>
-            var node = range.startContainer,
-                tmp,
-                collapsed = range.collapsed;
-            while(node.nodeType == 1 && domUtils.isEmptyNode(node) && dtd.$removeEmpty[node.tagName]){
-                tmp = node.parentNode;
-                range.setStartBefore(node);
-                //trace:937
-                //更新结束边界
-                if(range.startContainer === range.endContainer){
-                    range.endOffset--;
-                }
-                domUtils.remove(node);
-                node = tmp;
-            }
-
-            if(!collapsed){
-                node = range.endContainer;
-                while(node.nodeType == 1 && domUtils.isEmptyNode(node) && dtd.$removeEmpty[node.tagName]){
-                    tmp = node.parentNode;
-                    range.setEndBefore(node);
-                    domUtils.remove(node);
-
-                    node = tmp;
-                }
-
-
-            }
-        }
-
-        if ( this.currentSelectedArr && this.currentSelectedArr.length ) {
-            for ( var i = 0,ci; ci = this.currentSelectedArr[i++]; ) {
-                range.selectNodeContents( ci );
-                doRemove( range );
-            }
-            range.selectNodeContents( this.currentSelectedArr[0] ).select();
-        } else {
-
-            range = this.selection.getRange();
-            doRemove( range );
-            range.select();
-        }
-    },
-    queryCommandState : function(){
-        return this.highlight ? -1 :0;
-    }
-
-};
+*/
+(function() {
+    var browser = baidu.editor.browser;
+    baidu.editor.commands['selectall'] = {
+        execCommand : function(){
+            this.document.execCommand('selectAll',false,null);
+            //trace 1081
+            !browser.ie && this.focus();
+        },
+        notNeedUndo : 1
+    };
+})();
 
 ///import core
 ///commands 引用
@@ -5364,18 +5233,24 @@ UE.commands['removeformat'] = {
  * @param   {String}   cmdName     blockquote引用
  */
 (function() {
-    var getObj = function(editor){
-//        var startNode = editor.selection.getStart();
-//        return domUtils.findParentByTagName( startNode, 'blockquote', true )
-        return utils.findNode(editor.selection.getStartElementPath(),['blockquote'])
-    };
-    UE.commands['blockquote'] = {
+
+    var domUtils = baidu.editor.dom.domUtils,
+        dtd = baidu.editor.dom.dtd,
+        getObj = function(editor){
+            var startNode = editor.selection.getStart();
+            return domUtils.findParentByTagName( startNode, 'blockquote', true )
+        };
+
+    baidu.editor.commands['blockquote'] = {
         execCommand : function( cmdName, attrs ) {
+          
             var range = this.selection.getRange(),
                 obj = getObj(this),
                 blockquote = dtd.blockquote,
                 bookmark = range.createBookmark(),
                 tds = this.currentSelectedArr;
+
+
             if ( obj ) {
                 if(tds && tds.length){
                     domUtils.remove(obj,true)
@@ -5506,54 +5381,381 @@ UE.commands['removeformat'] = {
             return getObj(this) ? 1 : 0;
         }
     };
+//    baidu.editor.contextMenuItems.push({
+//        label : '引用',
+//        cmdName : 'blockquote'
+//    })
+
 })();
 
-
 ///import core
-///import plugins\paragraph.js
-///commands 首行缩进
-///commandsName  Outdent,Indent
-///commandsTitle  取消缩进,首行缩进
+///commands 锚点
+///commandsName  Anchor
+///commandsTitle  锚点
+///commandsDialog  dialogs\anchor\anchor.html
 /**
- * 首行缩进
+ * 锚点
  * @function
- * @name baidu.editor.execCommand
- * @param   {String}   cmdName     outdent取消缩进，indent缩进
+ * @name baidu.editor.execCommands
+ * @param    {String}    cmdName     cmdName="anchor"插入锚点
  */
-UE.commands['indent'] = {
-    execCommand : function() {
-         var me = this,value = me.queryCommandState("indent") ? "0em" : me.options.indentValue || '2em';
-         me.execCommand('Paragraph','p',{style:'text-indent:'+ value});
-    },
-    queryCommandState : function() {
-        if(this.highlight){return -1;}
-        var //start = this.selection.getStart(),
-//            pN = domUtils.findParentByTagName(start,['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],true),
-            pN = utils.findNode(this.selection.getStartElementPath(),['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']),
-            indent = pN && pN.style.textIndent ? parseInt(pN.style.textIndent) : '';
-        return indent ?  1 : 0;
-    }
+(function (){
+    var domUtils = baidu.editor.dom.domUtils;
+    baidu.editor.commands['anchor'] = {
+        execCommand : function (cmd, name){
+            var range = this.selection.getRange();
+            var img = range.getClosedNode();
+            if(img && img.getAttribute('anchorname')){
+                if(name){
+                    img.setAttribute('anchorname',name);
+                }else{
+                    range.setStartBefore(img).setCursor();
+                    domUtils.remove(img);
+                }
+            }else{
+                if(name){
+                    //只在选区的开始插入
+                    var anchor = this.document.createElement('img');
+                    range.collapse(true);
+                    anchor.setAttribute('anchorname',name);
+                    anchor.className = 'anchorclass';
 
-};
-
+                    range.insertNode(anchor).setStartAfter(anchor).collapse(true).select(true);
+                    //baidu.editor.browser.gecko && anchor.parentNode.insertBefore(this.document.createElement('br'),anchor.nextSibling)
+                }
+            }
+        },
+        queryCommandState : function(){
+          return this.highlight ? -1 :0;
+         }
+        
+    };
+})();
 ///import core
-///commands 打印
-///commandsName  Print
-///commandsTitle  打印
+///import commands\inserthtml.js
+///commands 插入图片，操作图片的对齐方式
+///commandsName  InsertImage,ImageNone,ImageLeft,ImageRight,ImageCenter
+///commandsTitle  图片,默认,居左,居右,居中
+///commandsDialog  dialogs\image\image.html
 /**
- * @description 打印
+ * Created by .
+ * User: zhanyi
+ * for image
+ */
+
+(function (){
+    var domUtils = baidu.editor.dom.domUtils,
+        utils =  baidu.editor.utils,
+        defaultValue = {
+            left : 1,
+            right : 1,
+            center : 1
+        },
+        dtd = baidu.editor.dom.dtd;
+    baidu.editor.commands['imagefloat'] = {
+        execCommand : function (cmd, align){
+            var range = this.selection.getRange();
+            if(!range.collapsed ){
+                var img = range.getClosedNode();
+                if(img && img.tagName == 'IMG'){
+                    switch (align){
+                        case 'left':
+                        case 'right':
+                        case 'none':
+                            var pN = img.parentNode,tmpNode,pre,next;
+                            while(dtd.$inline[pN.tagName] || pN.tagName == 'A'){
+                                pN = pN.parentNode;
+                            }
+                            tmpNode = pN;
+                            if(tmpNode.tagName == 'P' && domUtils.getStyle(tmpNode,'text-align') == 'center'){
+                                if(!domUtils.isBody(tmpNode) && domUtils.getChildCount(tmpNode,function(node){return !domUtils.isBr(node) && !domUtils.isWhitespace(node)}) == 1){
+                                    pre = tmpNode.previousSibling;
+                                    next = tmpNode.nextSibling;
+                                    if(pre && next && pre.nodeType == 1 &&  next.nodeType == 1 && pre.tagName == next.tagName && domUtils.isBlockElm(pre)){
+                                        pre.appendChild(tmpNode.firstChild);
+                                        while(next.firstChild){
+                                            pre.appendChild(next.firstChild)
+                                        }
+                                        domUtils.remove(tmpNode);
+                                        domUtils.remove(next);
+                                    }else{
+                                        domUtils.setStyle(tmpNode,'text-align','')
+                                    }
+
+
+                                }
+
+                                range.selectNode(img).select()
+                            }
+                            domUtils.setStyle(img,'float',align);
+                            break;
+                        case 'center':
+                            if(this.queryCommandValue('imagefloat') != 'center'){
+                                pN = img.parentNode;
+                                domUtils.setStyle(img,'float','none');
+                                tmpNode = img;
+                                while(pN && domUtils.getChildCount(pN,function(node){return !domUtils.isBr(node) && !domUtils.isWhitespace(node)}) == 1
+                                    && (dtd.$inline[pN.tagName] || pN.tagName == 'A')){
+                                    tmpNode = pN;
+                                    pN = pN.parentNode;
+                                }
+                                range.setStartBefore(tmpNode).setCursor(false);
+                                pN = this.document.createElement('div');
+                                pN.appendChild(tmpNode);
+                                domUtils.setStyle(tmpNode,'float','');
+                               
+                                this.execCommand('insertHtml','<p id="_img_parent_tmp" style="text-align:center">'+pN.innerHTML+'</p>');
+
+                                tmpNode = this.document.getElementById('_img_parent_tmp');
+                                tmpNode.removeAttribute('id');
+                                tmpNode = tmpNode.firstChild;
+                                range.selectNode(tmpNode).select();
+                                //去掉后边多余的元素
+                                next = tmpNode.parentNode.nextSibling;
+                                if(next && domUtils.isEmptyNode(next)){
+                                    domUtils.remove(next)
+                                }
+
+                            }
+
+                            break;
+                    }
+
+                }
+            }
+        },
+        queryCommandValue : function() {
+            var range = this.selection.getRange(),
+                startNode,floatStyle;
+            if(range.collapsed){
+                return 'none';
+            }
+            startNode = range.getClosedNode();
+            if(startNode && startNode.nodeType == 1 && startNode.tagName == 'IMG'){
+                floatStyle = domUtils.getComputedStyle(startNode,'float');
+                if(floatStyle == 'none'){
+                    floatStyle = domUtils.getComputedStyle(startNode.parentNode,'text-align') == 'center' ? 'center' : floatStyle
+                }
+                return defaultValue[floatStyle] ? floatStyle : 'none'
+            }
+            return 'none'
+
+
+        },
+        queryCommandState : function(){
+            if(this.highlight){
+                       return -1;
+                   }
+            var range = this.selection.getRange(),
+                startNode;
+            if(range.collapsed){
+                return -1;
+            }
+            startNode = range.getClosedNode();
+            if(startNode && startNode.nodeType == 1 && startNode.tagName == 'IMG'){
+                return 0;
+            }
+            return -1;
+        }
+    };
+
+    baidu.editor.commands['insertimage'] = {
+        execCommand : function (cmd, opt){
+            
+            opt = utils.isArray(opt) ? opt : [opt];
+
+            var range = this.selection.getRange(),
+                    img = range.getClosedNode();
+            if(img && /img/i.test( img.tagName ) && img.className != "edui-faked-video" &&!img.getAttribute("word_img") ){
+                var first = opt.shift();
+                var floatStyle = first['floatStyle'];
+                delete first['floatStyle'];
+////                img.style.border = (first.border||0) +"px solid #000";
+////                img.style.margin = (first.margin||0) +"px";
+//                img.style.cssText += ';margin:' + (first.margin||0) +"px;" + 'border:' + (first.border||0) +"px solid #000";
+                domUtils.setAttributes(img,first);
+                this.execCommand('imagefloat',floatStyle);
+                if(opt.length > 0){
+                    range.setStartAfter(img).setCursor(false,true);
+                    this.execCommand('insertimage',opt);
+                }
+
+            }else{
+                var html = [],str = '',ci;
+                ci = opt[0];
+                if(opt.length == 1){
+                    str = '<img src="'+ci.src+'" '+ (ci.data_ue_src ? ' data_ue_src="' + ci.data_ue_src +'" ':'') +
+                            (ci.width ? 'width="'+ci.width+'" ':'') +
+                            (ci.height ? ' height="'+ci.height+'" ':'') +
+                            (ci['floatStyle']&&ci['floatStyle']!='center' ? ' style="float:'+ci['floatStyle']+';"':'') +
+                            (ci.title?' title="'+ci.title+'"':'') + ' border="'+ (ci.border||0) + '" hspace = "'+(ci.hspace||0)+'" vspace = "'+(ci.vspace||0)+'" />';
+                    if(ci['floatStyle'] == 'center'){
+                            str = '<p style="text-align: center">'+str+'</p>'
+                     }
+                    html.push(str)
+                            
+                }else{
+                    for(var i=0;ci=opt[i++];){
+                        str =  '<p ' + (ci['floatStyle'] == 'center' ? 'style="text-align: center" ' : '') + '><img src="'+ci.src+'" '+
+                            (ci.width ? 'width="'+ci.width+'" ':'') +   (ci.data_ue_src ? ' data_ue_src="' + ci.data_ue_src +'" ':'') +
+                            (ci.height ? ' height="'+ci.height+'" ':'') +
+                            ' style="' + (ci['floatStyle']&&ci['floatStyle']!='center' ? 'float:'+ci['floatStyle']+';':'') +
+                            (ci.border||'') + '" ' +
+                            (ci.title?' title="'+ci.title+'"':'') + ' /></p>';
+//                        if(ci['floatStyle'] == 'center'){
+//                            str = '<p style="text-align: center">'+str+'</p>'
+//                        }
+                        html.push(str)
+                    }
+                }
+
+                this.execCommand('insertHtml',html.join(''));
+            }
+        },
+         queryCommandState : function(){
+          return this.highlight ? -1 :0;
+         }
+    };
+})();///import core
+///import commands\image.js
+///commands 插入表情
+///commandsName  Emotion
+///commandsTitle  表情
+///commandsDialog  dialogs\emotion\emotion.html
+(function() {
+    baidu.editor.commands['emotion'] = {
+
+         queryCommandState : function(){
+            return this.highlight ? -1 :0;
+        }
+};
+})();
+///import core
+///import commands\paragraph.js
+///commands 段间距
+///commandsName  RowSpacing
+///commandsTitle  段间距
+/**
+ * @description 设置行距
  * @name baidu.editor.execCommand
- * @param   {String}   cmdName     print打印编辑器内容
+ * @param   {String}   cmdName     rowspacing设置行间距
+ * @param   {String}   value              值，以px为单位
  * @author zhanyi
  */
-UE.commands['print'] = {
-    execCommand : function(){
-        this.window.print();
-    },
-    notNeedUndo : 1
+(function(){
+    
+    var domUtils = baidu.editor.dom.domUtils;
+    baidu.editor.commands['rowspacing'] =  {
+        execCommand : function( cmdName,value ) {
+            
+            this.execCommand('paragraph','p',{style:'padding:'+value + 'px 0'});
+            return true;
+        },
+        queryCommandValue : function() {
+            var startNode = this.selection.getStart(),
+                pN = domUtils.findParent(startNode,function(node){return domUtils.isBlockElm(node)},true),
+                value;
+            //trace:1026
+            if(pN){
+                value = domUtils.getComputedStyle(pN,'padding-top').replace(/[^\d]/g,'');
+                return value*1 <= 10 ? 0 : value;
+            }
+            return 0;
+             
+        },
+        queryCommandState : function(){
+            return this.highlight ? -1 :0;
+        }
+    }
+
+})();
+///import core
+///commands 清空文档
+///commandsName  ClearDoc
+///commandsTitle  清空文档
+/**
+ *
+ * 清空文档
+ * @function
+ * @name baidu.editor.execCommand
+ * @param   {String}   cmdName     cleardoc清空文档
+ */
+(function(){
+    function setRange(range,node){
+        range.setStart(node,0).setCursor();
+    }
+    baidu.editor.commands['cleardoc'] = {
+        execCommand : function( cmdName) {
+            var me = this,
+                enterTag = me.options.enterTag,
+                browser = baidu.editor.browser,
+                range = this.selection.getRange();
+            if(enterTag == "br"){
+                this.body.innerHTML = "<br/>";
+                setRange(range,this.body);
+            }else{
+                //不用&nbsp;也能定位，所以去掉，chrom也可以不要br,ff不行再想定位回去不行了，需要br
+                this.body.innerHTML = "<p>"+(browser.ie ? "" : "<br/>")+"</p>";
+                me.focus();
+                setRange(range,me.body.firstChild);
+            }
+        }
+    };
+})();
+///import core
+///import commands\inserthtml.js
+///commands 地图
+///commandsName  Map,GMap
+///commandsTitle  Baidu地图,Google地图
+///commandsDialog  dialogs\map\map.html,dialogs\gmap\gmap.html
+(function() {
+    baidu.editor.commands['gmap'] = 
+    baidu.editor.commands['map'] = {
+        execCommand : function(){
+
+        },
+         queryCommandState : function(){
+            return this.highlight ? -1 :0;
+        }
 };
+})();
+///import core
+///import commands\paragraph.js
+///commands 行间距
+///commandsName  LineHeight
+///commandsTitle  行间距
+/**
+ * @description 设置行内间距
+ * @name baidu.editor.execCommand
+ * @param   {String}   cmdName     lineheight设置行内间距
+ * @param   {String}   value              值
+ * @author zhuwenxuan
+ */
+(function(){
 
+    var domUtils = baidu.editor.dom.domUtils;
+    baidu.editor.commands['lineheight'] =  {
+        execCommand : function( cmdName,value ) {
+            this.execCommand('paragraph','p',{style:'line-height:'+value + '%' });
+            return true;
+        },
+        queryCommandValue : function() {
+            var startNode = this.selection.getStart(),
+                pN = domUtils.findParent(startNode,function(node){return domUtils.isBlockElm(node)},true),
+                value;
+            if(pN){
+                value = domUtils.getComputedStyle(pN,'line-height').replace(/[^\d]*/ig,"");
+                return (value == "normal" || value<100) ? 100 : value+"%";
+            }
+            return 100;
 
+        },
+        queryCommandState : function(){
+            return this.highlight ? -1 :0;
+        }
+    }
+
+})();
 ///import core
 ///commands 预览
 ///commandsName  Preview
@@ -5564,18 +5766,20 @@ UE.commands['print'] = {
  * @name baidu.editor.execCommand
  * @param   {String}   cmdName     preview预览编辑器内容
  */
-UE.commands['preview'] = {
+baidu.editor.commands['preview'] = {
+
     execCommand : function(){
         
         var me = this,
             w = window.open('', '_blank', ""),
             d = w.document,
+            utils = baidu.editor.utils,
             css = me.document.getElementById("syntaxhighlighter_css"),
             js = document.getElementById("syntaxhighlighter_js"),
             style = "<style type='text/css'>" + me.options.initialStyle + "</style>",
             cont = me.getContent();
 
-        if(browser.ie){
+        if(baidu.editor.browser.ie){
             cont = cont.replace(/<\s*br\s*\/?\s*>/gi,'<br/><br/>')
         }
         d.open();
@@ -5585,262 +5789,40 @@ UE.commands['preview'] = {
             + (css ? ' <script type="text/javascript" charset="utf-8" src="'+js.src+'"></script>':'')
             +'<title></title></head><body >' +
             cont +
-            (css ? '<script type="text/javascript">'+(baidu.editor.browser.ie ? 'window.onload = function(){SyntaxHighlighter.all()};' : 'SyntaxHighlighter.all();')+
-                'setTimeout(function(){' +
-                'for(var i=0,di;di=SyntaxHighlighter.highlightContainers[i++];){' +
-                    'var tds = di.getElementsByTagName("td");' +
-                    'for(var j=0,li,ri;li=tds[0].childNodes[j];j++){' +
-                        'ri = tds[1].firstChild.childNodes[j];' +
-                        'ri.style.height = li.style.height = ri.offsetHeight + "px";' +
-                    '}' +
-                '}},100)</script>':'') +
-                     '</body></html>');
+            (css ? '<script type="text/javascript">'+(baidu.editor.browser.ie ? 'window.onload = function(){SyntaxHighlighter.all()}' : 'SyntaxHighlighter.all()')+'</script>':'') +
+            '</body></html>');
         d.close();
     },
     notNeedUndo : 1
 };
-
 ///import core
-///import plugins\inserthtml.js
-///commands 特殊字符
-///commandsName  Spechars
-///commandsTitle  特殊字符
-///commandsDialog  dialogs\spechars\spechars.html
-UE.commands['spechars'] = {
-    queryCommandState : function(){
-        return this.highlight ? -1 :0;
-    }
-};
-
-///import core
-///import plugins\image.js
-///commands 插入表情
-///commandsName  Emotion
-///commandsTitle  表情
-///commandsDialog  dialogs\emotion\emotion.html
-UE.commands['emotion'] = {
-    queryCommandState : function(){
-        return this.highlight ? -1 :0;
-    }
-};
-
-///import core
-///commands 全选
-///commandsName  SelectAll
-///commandsTitle  全选
+///import commands\paragraph.js
+///commands 首行缩进
+///commandsName  Outdent,Indent
+///commandsTitle  取消缩进,首行缩进
 /**
- * 选中所有
+ * 首行缩进
  * @function
  * @name baidu.editor.execCommand
- * @param   {String}   cmdName    selectall选中编辑器里的所有内容
- * @author zhanyi
-*/
-UE.plugins['selectall'] = function(){
-    var me = this;
-    me.commands['selectall'] = {
-        execCommand : function(){
-            //去掉了原生的selectAll,因为会出现报错和当内容为空时，不能出现闭合状态的光标
-            var range = this.selection.getRange();
-            range.selectNodeContents(this.body);
-            if(domUtils.isEmptyBlock(this.body))
-                range.collapse(true);
-            range.select(true);
-            this.selectAll = true;
-        },
-        notNeedUndo : 1
-    };
-    me.addListener('ready',function(){
-
-        domUtils.on(me.document,'click',function(evt){
-
-            me.selectAll = false;
-        })
-    })
-
-};
-
-///import core
-///commands 格式
-///commandsName  Paragraph
-///commandsTitle  段落格式
-/**
- * 段落样式
- * @function
- * @name baidu.editor.execCommand
- * @param   {String}   cmdName     paragraph插入段落执行命令
- * @param   {String}   style               标签值为：'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'
- * @param   {String}   attrs               标签的属性
- * @author zhanyi
+ * @param   {String}   cmdName     outdent取消缩进，indent缩进
  */
-(function() {
-    var block = domUtils.isBlockElm,
-        notExchange = ['TD','LI','PRE'],
-
-        doParagraph = function(range,style,attrs,sourceCmdName){
-            var bookmark = range.createBookmark(),
-                filterFn = function( node ) {
-                    return   node.nodeType == 1 ? node.tagName.toLowerCase() != 'br' &&  !domUtils.isBookmarkNode(node) : !domUtils.isWhitespace( node )
-                },
-                para;
-
-            range.enlarge( true );
-            var bookmark2 = range.createBookmark(),
-                current = domUtils.getNextDomNode( bookmark2.start, false, filterFn ),
-                tmpRange = range.cloneRange(),
-                tmpNode;
-            while ( current && !(domUtils.getPosition( current, bookmark2.end ) & domUtils.POSITION_FOLLOWING) ) {
-                if ( current.nodeType == 3 || !block( current ) ) {
-                    tmpRange.setStartBefore( current );
-                    while ( current && current !== bookmark2.end && !block( current ) ) {
-                        tmpNode = current;
-                        current = domUtils.getNextDomNode( current, false, null, function( node ) {
-                            return !block( node )
-                        } );
-                    }
-                    tmpRange.setEndAfter( tmpNode );
-                    
-                    para = range.document.createElement( style );
-                    if(attrs){
-                        domUtils.setAttributes(para,attrs);
-                        if(sourceCmdName && sourceCmdName == 'customstyle' && attrs.style)
-                            para.style.cssText = attrs.style;
-                    }
-                    para.appendChild( tmpRange.extractContents() );
-                    //需要内容占位
-                    if(domUtils.isEmptyNode(para)){
-                        domUtils.fillChar(range.document,para);
-                        
-                    }
-
-                    tmpRange.insertNode( para );
-
-                    var parent = para.parentNode;
-                    //如果para上一级是一个block元素且不是body,td就删除它
-                    if ( block( parent ) && !domUtils.isBody( para.parentNode ) && utils.indexOf(notExchange,parent.tagName)==-1) {
-                        //存储dir,style
-                        if(!(sourceCmdName && sourceCmdName == 'customstyle')){
-                            parent.getAttribute('dir') && para.setAttribute('dir',parent.getAttribute('dir'));
-                            //trace:1070
-                            parent.style.cssText && (para.style.cssText = parent.style.cssText + ';' + para.style.cssText);
-                            //trace:1030
-                            parent.style.textAlign && !para.style.textAlign && (para.style.textAlign = parent.style.textAlign);
-                            parent.style.textIndent && !para.style.textIndent && (para.style.textIndent = parent.style.textIndent);
-                            parent.style.padding && !para.style.padding && (para.style.padding = parent.style.padding);
-                        }
-
-                        //trace:1706 选择的就是h1-6要删除
-                        if(attrs && /h\d/i.test(parent.tagName) && !/h\d/i.test(para.tagName) ){
-                            domUtils.setAttributes(parent,attrs);
-                            if(sourceCmdName && sourceCmdName == 'customstyle' && attrs.style)
-                                parent.style.cssText = attrs.style;
-                            domUtils.remove(para,true);
-                            para = parent;
-                        }else
-                            domUtils.remove( para.parentNode, true );
-
-                    }
-                    if(  utils.indexOf(notExchange,parent.tagName)!=-1){
-                        current = parent;
-                    }else{
-                       current = para;
-                    }
-
-
-                    current = domUtils.getNextDomNode( current, false, filterFn );
-                } else {
-                    current = domUtils.getNextDomNode( current, true, filterFn );
-                }
-            }
-            return range.moveToBookmark( bookmark2 ).moveToBookmark( bookmark );
-        };
-
-    UE.commands['paragraph'] = {
-        execCommand : function( cmdName, style,attrs,sourceCmdName ) {
-            var range = new dom.Range(this.document);
-            if(this.currentSelectedArr && this.currentSelectedArr.length > 0){
-                for(var i=0,ti;ti=this.currentSelectedArr[i++];){
-                    //trace:1079 不显示的不处理，插入文本，空的td也能加上相应的标签
-                    if(ti.style.display == 'none') continue;
-                    if(domUtils.isEmptyNode(ti)){
-                      
-                        var tmpTxt = this.document.createTextNode('paragraph');
-                        ti.innerHTML = '';
-                        ti.appendChild(tmpTxt);
-                    }
-                    doParagraph(range.selectNodeContents(ti),style,attrs,sourceCmdName);
-                    if(tmpTxt){
-                        var pN = tmpTxt.parentNode;
-                        domUtils.remove(tmpTxt);
-                        if(domUtils.isEmptyNode(pN)){
-                            domUtils.fillNode(this.document,pN)
-                        }
-                         
-                    }
-
-
-                }
-                var td = this.currentSelectedArr[0];
-
-                if(domUtils.isEmptyBlock(td)){
-                    range.setStart(td,0).setCursor(false,true);
-                }else{
-                    range.selectNode(td).select()
-                }
-
-            }else{
-                range = this.selection.getRange();
-                 //闭合时单独处理
-                if(range.collapsed){
-                    var txt = this.document.createTextNode('p');
-                    range.insertNode(txt);
-                    //去掉冗余的fillchar
-                    if(browser.ie){
-                        var node = txt.previousSibling;
-                        if(node && domUtils.isWhitespace(node)){
-                            domUtils.remove(node)
-                        }
-                        node = txt.nextSibling;
-                        if(node && domUtils.isWhitespace(node)){
-                            domUtils.remove(node)
-                        } 
-                    }
-
-                }
-                range = doParagraph(range,style,attrs,sourceCmdName);
-                if(txt){
-                    range.setStartBefore(txt).collapse(true);
-                    pN = txt.parentNode;
-
-                    domUtils.remove(txt);
-                    
-                    if(domUtils.isBlockElm(pN)&&domUtils.isEmptyNode(pN)){
-                        domUtils.fillNode(this.document,pN)
-                    }
-
-                }
-
-                if(browser.gecko && range.collapsed && range.startContainer.nodeType == 1){
-                    var child = range.startContainer.childNodes[range.startOffset];
-                    if(child && child.nodeType == 1 && child.tagName.toLowerCase() == style){
-                        range.setStart(child,0).collapse(true)
-                    }
-                }
-                //trace:1097 原来有true，原因忘了，但去了就不能清除多余的占位符了
-                range.select()
-
-            }
-            return true;
+(function (){
+    var domUtils = baidu.editor.dom.domUtils;
+    baidu.editor.commands['indent'] = {
+        execCommand : function() {
+             var me = this,value = me.queryCommandState("indent") ? "0em" : me.options.indentValue || '2em';
+             me.execCommand('Paragraph','p',{style:'text-indent:'+ value});
         },
-        queryCommandValue : function() {
-            var node = utils.findNode(this.selection.getStartElementPath(),['p','h1','h2','h3','h4','h5','h6']);
-            return node ? node.tagName.toLowerCase() : '';
-        },
-        queryCommandState : function(){
-            return this.highlight ? -1 :0;
+        queryCommandState : function() {
+            if(this.highlight){return -1;}
+            var start = this.selection.getStart(),
+                pN = domUtils.findParentByTagName(start,['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],true),
+                indent = pN && pN.style.textIndent ? parseInt(pN.style.textIndent) : '';
+            return indent ?  1 : 0;
         }
-    }
-})();
 
+    };
+})();
 ///import core
 ///commands 输入的方向
 ///commandsName  DirectionalityLtr,DirectionalityRtl
@@ -5853,21 +5835,22 @@ UE.plugins['selectall'] = function(){
  * @param {String}    forward    ltr从左向右输入，rtl从右向左输入
  */
 (function() {
-    var block = domUtils.isBlockElm ,
-        getObj = function(editor){
-//            var startNode = editor.selection.getStart(),
-//                parents;
-//            if ( startNode ) {
-//                //查找所有的是block的父亲节点
-//                parents = domUtils.findParents( startNode, true, block, true );
-//                for ( var i = 0,ci; ci = parents[i++]; ) {
-//                    if ( ci.getAttribute( 'dir' ) ) {
-//                        return ci;
-//                    }
-//                }
-//            }
-            return utils.findNode(editor.selection.getStartElementPath(),null,function(n){return n.getAttribute('dir')});
 
+    var domUtils = baidu.editor.dom.domUtils,
+        block = domUtils.isBlockElm ,
+        getObj = function(editor){
+            var startNode = editor.selection.getStart(),
+                parents;
+            if ( startNode ) {
+                //查找所有的是block的父亲节点
+                parents = domUtils.findParents( startNode, true, block, true );
+                for ( var i = 0,ci; ci = parents[i++]; ) {
+                    if ( ci.getAttribute( 'dir' ) ) {
+                        return ci;
+                    }
+
+                }
+            }
         },
         doDirectionality = function(range,editor,forward){
             
@@ -5920,9 +5903,11 @@ UE.plugins['selectall'] = function(){
             }
             return range.moveToBookmark( bookmark2 ).moveToBookmark( bookmark );
         };
-    UE.commands['directionality'] = {
+
+
+    baidu.editor.commands['directionality'] = {
         execCommand : function( cmdName,forward ) {
-            var range = new dom.Range(this.document);
+            var range = new baidu.editor.dom.Range(this.document);
             if(this.currentSelectedArr && this.currentSelectedArr.length > 0){
                 for(var i=0,ti;ti=this.currentSelectedArr[i++];){
                     if(ti.style.display != 'none')
@@ -5959,327 +5944,9 @@ UE.plugins['selectall'] = function(){
     }
 })();
 
-
-///import core
-///import plugins\inserthtml.js
-///commands 分割线
-///commandsName  Horizontal
-///commandsTitle  分隔线
-/**
- * 分割线
- * @function
- * @name baidu.editor.execCommand
- * @param {String}     cmdName    horizontal插入分割线
- */
-UE.commands['horizontal'] = {
-    execCommand : function( cmdName ) {
-        var me = this;
-        if(me.queryCommandState(cmdName)!==-1){
-            me.execCommand('insertHtml','<hr>');
-            var range = me.selection.getRange(),
-                start = range.startContainer;
-            if(start.nodeType == 1 && !start.childNodes[range.startOffset] ){
-
-                var tmp;
-                if(tmp = start.childNodes[range.startOffset - 1]){
-                    if(tmp.nodeType == 1 && tmp.tagName == 'HR'){
-                        if(me.options.enterTag == 'p'){
-                            tmp = me.document.createElement('p');
-                            range.insertNode(tmp);
-                            range.setStart(tmp,0).setCursor();
-
-                        }else{
-                            tmp = me.document.createElement('br');
-                            range.insertNode(tmp);
-                            range.setStartBefore(tmp).setCursor();
-                        }
-                    }
-                }
-
-            }
-            return true;
-        }
-
-    },
-    //边界在table里不能加分隔线
-    queryCommandState : function() {
-        return this.highlight || utils.findNode(this.selection.getStartElementPath(),['table']) ? -1 : 0;
-    }
-};
-
-///import core
-///import plugins\inserthtml.js
-///commands 日期,时间
-///commandsName  Date,Time
-///commandsTitle  日期,时间
-/**
- * 插入日期
- * @function
- * @name baidu.editor.execCommand
- * @param   {String}   cmdName    date插入日期
- * @author zhuwenxuan
-*/
-/**
- * 插入时间
- * @function
- * @name baidu.editor.execCommand
- * @param   {String}   cmdName    time插入时间
- * @author zhuwenxuan
-*/
-UE.commands['time'] = UE.commands["date"] = {
-    execCommand : function(cmd){
-        var date = new Date;
-        this.execCommand('insertHtml',cmd == "time" ?
-            (date.getHours()+":"+ (date.getMinutes()<10 ? "0"+date.getMinutes() : date.getMinutes())+":"+(date.getSeconds()<10 ? "0"+date.getSeconds() : date.getSeconds())) :
-            (date.getFullYear()+"-"+((date.getMonth()+1)<10 ? "0"+(date.getMonth()+1) : date.getMonth()+1)+"-"+(date.getDate()<10?"0"+date.getDate():date.getDate())));
-    },
-    queryCommandState : function(){
-            return this.highlight ? -1 :0;
-    }
-};
-
-
-
-
-///import core
-///import plugins\paragraph.js
-///commands 段间距
-///commandsName  RowSpacingBottom,RowSpacingTop
-///commandsTitle  段间距
-/**
- * @description 设置段前距,段后距
- * @name baidu.editor.execCommand
- * @param   {String}   cmdName     rowspacing设置段间距
- * @param   {String}   value              值，以px为单位
- * @param   {String}   dir          top或bottom段前后段后
- * @author zhanyi
- */
-UE.commands['rowspacing'] =  {
-    execCommand : function( cmdName,value,dir ) {
-        this.execCommand('paragraph','p',{style:'margin-'+dir+':'+value + 'px'});
-        return true;
-    },
-    queryCommandValue : function(cmdName,dir) {
-        var pN = utils.findNode(this.selection.getStartElementPath(),null,function(node){return domUtils.isBlockElm(node) }),
-            value;
-        //trace:1026
-        if(pN){
-            value = domUtils.getComputedStyle(pN,'margin-'+dir).replace(/[^\d]/g,'');
-            return !value ? 0 : value;
-        }
-        return 0;
-
-    },
-    queryCommandState : function(){
-        return this.highlight ? -1 :0;
-    }
-};
-
-
-///import core
-///import plugins\paragraph.js
-///commands 行间距
-///commandsName  LineHeight
-///commandsTitle  行间距
-/**
- * @description 设置行内间距
- * @name baidu.editor.execCommand
- * @param   {String}   cmdName     lineheight设置行内间距
- * @param   {String}   value              值
- * @author zhuwenxuan
- */
-UE.plugins['lineheight'] = function(){
-    var me = this;
-    me.commands['lineheight'] =  {
-        execCommand : function( cmdName,value ) {
-            this.execCommand('paragraph','p',{style:'line-height:'+ (value == "1" ? "normal" : value + 'em') });
-            return true;
-        },
-        queryCommandValue : function() {
-            var pN = utils.findNode(this.selection.getStartElementPath(),null,function(node){return domUtils.isBlockElm(node)});
-            if(pN){
-                var value = domUtils.getComputedStyle(pN,'line-height');
-                return value == 'normal' ? 1 : value.replace(/[^\d.]*/ig,"")
-            }
-        },
-        queryCommandState : function(){
-            return this.highlight ? -1 :0;
-        }
-    };
-};
-
-
-
-///import core
-///commands 清空文档
-///commandsName  ClearDoc
-///commandsTitle  清空文档
-/**
- *
- * 清空文档
- * @function
- * @name baidu.editor.execCommand
- * @param   {String}   cmdName     cleardoc清空文档
- */
-
-UE.commands['cleardoc'] = {
-    execCommand : function( cmdName) {
-        var me = this,
-            enterTag = me.options.enterTag,
-            range = me.selection.getRange();
-        if(enterTag == "br"){
-            me.body.innerHTML = "<br/>";
-            range.setStart(me.body,0).setCursor();
-        }else{
-            me.body.innerHTML = "<p>"+(ie ? "" : "<br/>")+"</p>";
-            range.setStart(me.body.firstChild,0).setCursor(false,true);
-        }
-    }
-};
-
-
-///import core
-///commands 锚点
-///commandsName  Anchor
-///commandsTitle  锚点
-///commandsDialog  dialogs\anchor\anchor.html
-/**
- * 锚点
- * @function
- * @name baidu.editor.execCommands
- * @param    {String}    cmdName     cmdName="anchor"插入锚点
- */
-
-UE.commands['anchor'] = {
-    execCommand:function (cmd, name) {
-        var range = this.selection.getRange(),img = range.getClosedNode();
-        if (img && img.getAttribute('anchorname')) {
-            if (name) {
-                img.setAttribute('anchorname', name);
-            } else {
-                range.setStartBefore(img).setCursor();
-                domUtils.remove(img);
-            }
-        } else {
-            if (name) {
-                //只在选区的开始插入
-                var anchor = this.document.createElement('img');
-                range.collapse(true);
-                domUtils.setAttributes(anchor,{
-                    'anchorname':name,
-                    'class':'anchorclass'
-                });
-                range.insertNode(anchor).setStartAfter(anchor).setCursor(false,true);
-            }
-        }
-    },
-    queryCommandState:function () {
-        return this.highlight ? -1 : 0;
-    }
-
-};
-
-
-///import core
-///commands 删除
-///commandsName  Delete
-///commandsTitle  删除
-/**
- * 删除
- * @function
- * @name baidu.editor.execCommand
- * @param  {String}    cmdName    delete删除
- */
-UE.commands['delete'] = {
-    execCommand : function (){
-
-        var range = this.selection.getRange(),
-            mStart = 0,
-            mEnd = 0,
-            me = this;
-        if(this.selectAll ){
-            //trace:1633
-            me.body.innerHTML = '<p>'+(browser.ie ? '&nbsp;' : '<br/>')+'</p>';
-
-            range.setStart(me.body.firstChild,0).setCursor(false,true);
-
-            me.selectAll = false;
-            return;
-        }
-        if(me.currentSelectedArr && me.currentSelectedArr.length > 0){
-            for(var i=0,ci;ci=me.currentSelectedArr[i++];){
-                if(ci.style.display != 'none'){
-                    ci.innerHTML = browser.ie ? domUtils.fillChar : '<br/>'
-                }
-
-            }
-            range.setStart(me.currentSelectedArr[0],0).setCursor();
-            return;
-        }
-        if(range.collapsed)
-            return;
-        range.txtToElmBoundary();
-        //&& !domUtils.isBlockElm(range.startContainer)
-        while(!range.startOffset &&  !domUtils.isBody(range.startContainer) &&  !dtd.$tableContent[range.startContainer.tagName] ){
-            mStart = 1;
-            range.setStartBefore(range.startContainer);
-        }
-        //&& !domUtils.isBlockElm(range.endContainer)
-        while(!domUtils.isBody(range.endContainer)&&  !dtd.$tableContent[range.endContainer.tagName]  ){
-            var child,endContainer = range.endContainer,endOffset = range.endOffset;
-//                if(endContainer.nodeType == 3 &&  endOffset == endContainer.nodeValue.length){
-//                    range.setEndAfter(endContainer);
-//                    continue;
-//                }
-            child = endContainer.childNodes[endOffset];
-            if(!child || domUtils.isBr(child) && endContainer.lastChild === child){
-                range.setEndAfter(endContainer);
-                continue;
-            }
-            break;
-
-        }
-        if(mStart){
-            var start = me.document.createElement('span');
-            start.innerHTML = 'start';
-            start.id = '_baidu_cut_start';
-            range.insertNode(start).setStartBefore(start)
-        }
-        if(mEnd){
-            var end = me.document.createElement('span');
-            end.innerHTML = 'end';
-            end.id = '_baidu_cut_end';
-            range.cloneRange().collapse(false).insertNode(end);
-            range.setEndAfter(end)
-
-        }
-
-
-
-        range.deleteContents();
-
-
-        if(domUtils.isBody(range.startContainer) && domUtils.isEmptyBlock(me.body)){
-            me.body.innerHTML = '<p>'+(browser.ie?'':'<br/>')+'</p>';
-            range.setStart(me.body.firstChild,0).collapse(true);
-        }else if ( !browser.ie && domUtils.isEmptyBlock(range.startContainer)){
-            range.startContainer.innerHTML = '<br/>'
-        }
-
-        range.select(true)
-    },
-    queryCommandState : function(){
-
-        if(this.currentSelectedArr && this.currentSelectedArr.length > 0){
-            return 0;
-        }
-        return this.highlight || this.selection.getRange().collapsed ? -1 : 0;
-    }
-};
-
 ///import core
 ///commands 字数统计
-///commandsName  WordCount,wordCount
+///commandsName  WordCount
 ///commandsTitle  字数统计
 /**
  * Created by JetBrains WebStorm.
@@ -6288,7 +5955,7 @@ UE.commands['delete'] = {
  * Time: 下午8:18
  * To change this template use File | Settings | File Templates.
  */
-UE.commands["wordcount"]={
+baidu.editor.commands["wordcount"]={
     queryCommandValue:function(cmd,onlyCount){
         var length,contentText,reg;
         if(onlyCount){
@@ -6313,8 +5980,555 @@ UE.commands["wordcount"]={
 
         return msg;
     }
-};
+};///import core
+///import commands\inserthtml.js
+///commands 分割线
+///commandsName  Horizontal
+///commandsTitle  分隔线
+/**
+ * 分割线
+ * @function
+ * @name baidu.editor.execCommand
+ * @param {String}     cmdName    horizontal插入分割线
+ */
+(function (){
+    var domUtils = baidu.editor.dom.domUtils;
+    baidu.editor.commands['horizontal'] = {
+        execCommand : function( cmdName ) {
+            if(this.queryCommandState(cmdName)!==-1){
+                this.execCommand('insertHtml','<hr>');
+                var range = this.selection.getRange(),
+                    start = range.startContainer;
+                if(start.nodeType == 1 && !start.childNodes[range.startOffset] ){
+
+                    var tmp;
+                    if(tmp = start.childNodes[range.startOffset - 1]){
+                        if(tmp.nodeType == 1 && tmp.tagName == 'HR'){
+                            if(this.options.enterTag == 'p'){
+                                tmp = this.document.createElement('p');
+                                range.insertNode(tmp);
+                                range.setStart(tmp,0).setCursor();
+        
+                            }else{
+                                tmp = this.document.createElement('br');
+                                range.insertNode(tmp);
+                                range.setStartBefore(tmp).setCursor();
+                            }
+                        }
+                    }
+
+                }
+                return true;
+            }
+
+        },
+        //边界在table里不能加分隔线
+        queryCommandState : function() {
+            if(this.highlight){
+                       return -1;
+                   }
+            var range = this.selection.getRange();
+            return domUtils.findParentByTagName(range.startContainer,'table') ||
+                domUtils.findParentByTagName(range.endContainer,'table') ? -1 : 0;
+        }
+    };
+})();
 ///import core
+///commands 打印
+///commandsName  Print
+///commandsTitle  打印
+/**
+ * @description 打印
+ * @name baidu.editor.execCommand
+ * @param   {String}   cmdName     print打印编辑器内容
+ * @author zhanyi
+ */
+(function() {
+    baidu.editor.commands['print'] = {
+        execCommand : function(){
+            this.window.print();
+        },
+        notNeedUndo : 1
+    };
+})();
+
+///import core
+///commands 超链接,取消链接
+///commandsName  Link,Unlink
+///commandsTitle  超链接,取消链接
+///commandsDialog  dialogs\link\link.html
+/**
+ * 超链接
+ * @function
+ * @name baidu.editor.execCommand
+ * @param   {String}   cmdName     link插入超链接
+ * @param   {Object}  options         url地址，title标题，target是否打开新页
+ * @author zhanyi
+ */
+/**
+ * 取消链接
+ * @function
+ * @name baidu.editor.execCommand
+ * @param   {String}   cmdName     unlink取消链接
+ * @author zhanyi
+ */
+(function() {
+    var dom = baidu.editor.dom,
+        domUtils = dom.domUtils,
+        browser = baidu.editor.browser;
+
+    function optimize( range ) {
+        var start = range.startContainer,end = range.endContainer;
+
+        if ( start = domUtils.findParentByTagName( start, 'a', true ) ) {
+            range.setStartBefore( start )
+        }
+        if ( end = domUtils.findParentByTagName( end, 'a', true ) ) {
+            range.setEndAfter( end )
+        }
+    }
+
+    baidu.editor.commands['unlink'] = {
+        execCommand : function() {
+            var as,
+                range = new baidu.editor.dom.Range(this.document),
+                tds = this.currentSelectedArr,
+                bookmark;
+            if(tds && tds.length >0){
+                for(var i=0,ti;ti=tds[i++];){
+                    as = domUtils.getElementsByTagName(ti,'a');
+                    for(var j=0,aj;aj=as[j++];){
+                        domUtils.remove(aj,true);
+                    }
+                }
+                if(domUtils.isEmptyNode(tds[0])){
+                    range.setStart(tds[0],0).setCursor();
+                }else{
+                    range.selectNodeContents(tds[0]).select()
+                }
+            }else{
+                range = this.selection.getRange();
+                if(range.collapsed && !domUtils.findParentByTagName( range.startContainer, 'a', true )){
+                    return;
+                }
+                bookmark = range.createBookmark();
+                optimize( range );
+                range.removeInlineStyle( 'a' ).moveToBookmark( bookmark ).select();
+            }
+        },
+        queryCommandState : function(){
+            if(this.highlight){
+                       return -1;
+                   }
+            return this.queryCommandValue('link') ?  0 : -1;
+        }
+
+    };
+    function doLink(range,opt){
+
+        optimize( range = range.adjustmentBoundary() );
+        var start = range.startContainer;
+        if(start.nodeType == 1){
+            start = start.childNodes[range.startOffset];
+            if(start && start.nodeType == 1 && start.tagName == 'A' && /^(?:https?|ftp|file)\s*:\s*\/\//.test(start[browser.ie?'innerText':'textContent'])){
+                start.innerHTML = opt.href;
+            }
+        }
+        range.removeInlineStyle( 'a' );
+        if ( range.collapsed ) {
+            var a = range.document.createElement( 'a' );
+            domUtils.setAttributes( a, opt );
+            a.innerHTML = opt.href;
+            range.insertNode( a ).selectNode( a );
+        } else {
+            range.applyInlineStyle( 'a', opt )
+
+        }
+    }
+    baidu.editor.commands['link'] = {
+        queryCommandState : function(){
+            return this.highlight ? -1 :0;
+        },
+        execCommand : function( cmdName, opt ) {
+            var range = new baidu.editor.dom.Range(this.document),
+                tds = this.currentSelectedArr;
+            
+            if(tds && tds.length){
+                for(var i=0,ti;ti=tds[i++];){
+                    if(domUtils.isEmptyNode(ti)){
+                        ti.innerHTML = opt.href
+                    }
+                    doLink(range.selectNodeContents(ti),opt)
+                }
+                range.selectNodeContents(tds[0]).select()
+
+               
+            }else{
+                doLink(range=this.selection.getRange(),opt);
+
+                range.collapse().select(browser.gecko ? true : false);
+
+            }
+        },
+        queryCommandValue : function() {
+
+            var range = new baidu.editor.dom.Range(this.document),
+                tds = this.currentSelectedArr,
+                as,
+                node;
+            if(tds && tds.length){
+                for(var i=0,ti;ti=tds[i++];){
+                    as = ti.getElementsByTagName('a');
+                    if(as[0])
+                        return as[0]
+                }
+            }else{
+                range = this.selection.getRange();
+
+
+
+                if ( range.collapsed ) {
+                    node = this.selection.getStart();
+                    if ( node && (node = domUtils.findParentByTagName( node, 'a', true )) ) {
+                        return node;
+                    }
+                } else {
+                    //trace:1111  如果是<p><a>xx</a></p> startContainer是p就会找不到a
+                    range.shrinkBoundary();
+                    var start = range.startContainer.nodeType  == 3 || !range.startContainer.childNodes[range.startOffset] ? range.startContainer : range.startContainer.childNodes[range.startOffset],
+                        end =  range.endContainer.nodeType == 3 || range.endOffset == 0 ? range.endContainer : range.endContainer.childNodes[range.endOffset-1],
+
+                        common = range.getCommonAncestor();
+
+
+                    node = domUtils.findParentByTagName( common, 'a', true );
+                    if ( !node && common.nodeType == 1){
+
+                        var as = common.getElementsByTagName( 'a' ),
+                            ps,pe;
+
+                        for ( var i = 0,ci; ci = as[i++]; ) {
+                            ps = domUtils.getPosition( ci, start ),pe = domUtils.getPosition( ci,end);
+                            if ( (ps & domUtils.POSITION_FOLLOWING || ps & domUtils.POSITION_CONTAINS)
+                                &&
+                                (pe & domUtils.POSITION_PRECEDING || pe & domUtils.POSITION_CONTAINS)
+                                ) {
+                                node = ci;
+                                break;
+                            }
+                        }
+                    }
+
+                    return node;
+                }
+            }
+
+
+        }
+    };
+
+
+})();
+///import core
+///commands 段落格式,居左,居右,居中,两端对齐
+///commandsName  JustifyLeft,JustifyCenter,JustifyRight,JustifyJustify
+///commandsTitle  居左对齐,居中对齐,居右对齐,两端对齐
+/**
+ * @description 居左右中
+ * @name baidu.editor.execCommand
+ * @param   {String}   cmdName     justify执行对齐方式的命令
+ * @param   {String}   align               对齐方式：left居左，right居右，center居中，justify两端对齐
+ * @author zhanyi
+ */
+(function(){
+    var domUtils = baidu.editor.dom.domUtils,
+        dtd = baidu.editor.dom.dtd,
+        block = domUtils.isBlockElm,
+        defaultValue = {
+            left : 1,
+            right : 1,
+            center : 1,
+            justify : 1
+        },
+        utils = baidu.editor.utils,
+        doJustify = function(range,style){
+            var bookmark = range.createBookmark(),
+                filterFn = function( node ) {
+                    return node.nodeType == 1 ? node.tagName.toLowerCase() != 'br' &&  !domUtils.isBookmarkNode(node) : !domUtils.isWhitespace( node )
+                };
+
+            range.enlarge(true);
+            var bookmark2 = range.createBookmark(),
+                current = domUtils.getNextDomNode(bookmark2.start,false,filterFn),
+                tmpRange = range.cloneRange(),
+                tmpNode;
+            while(current &&  !(domUtils.getPosition(current,bookmark2.end)&domUtils.POSITION_FOLLOWING)){
+                if(current.nodeType == 3 || !block(current)){
+                    tmpRange.setStartBefore(current);
+                    while(current && current!==bookmark2.end &&  !block(current)){
+                        tmpNode = current;
+                        current = domUtils.getNextDomNode(current,false,null,function(node){
+                            return !block(node)
+                        });
+                    }
+                    tmpRange.setEndAfter(tmpNode);
+                    var common = tmpRange.getCommonAncestor();
+                    if( !domUtils.isBody(common) && block(common)){
+                        domUtils.setStyles(common,utils.isString(style) ? {'text-align':style} : style);
+                        current = common;
+                    }else{
+                        var p = range.document.createElement('p');
+                         domUtils.setStyles(p,utils.isString(style) ? {'text-align':style} : style);
+                        var frag = tmpRange.extractContents();
+                        p.appendChild(frag);
+                        tmpRange.insertNode(p);
+                        current = p;
+                    }
+                    current = domUtils.getNextDomNode(current,false,filterFn);
+                }else{
+                    current = domUtils.getNextDomNode(current,true,filterFn);
+                }
+            }
+            return range.moveToBookmark(bookmark2).moveToBookmark(bookmark)
+        };
+    baidu.editor.commands['justify'] =  {
+        execCommand : function( cmdName,align ) {
+
+            var  range = this.selection.getRange(),
+                txt;
+           
+            if(this.currentSelectedArr && this.currentSelectedArr.length > 0){
+                for(var i=0,ti;ti=this.currentSelectedArr[i++];){
+                    if(domUtils.isEmptyNode(ti)){
+                        txt = this.document.createTextNode('p');
+                        range.setStart(ti,0).collapse(true).insertNode(txt).selectNode(txt);
+                        
+                    }else{
+                        range.selectNodeContents(ti)
+                    }
+
+                    doJustify(range,align);
+                    txt && domUtils.remove(txt);
+                }
+                range.selectNode(this.currentSelectedArr[0]).select()
+            }else{
+
+                //闭合时单独处理
+                if(range.collapsed){
+                    txt = this.document.createTextNode('p');
+                    range.insertNode(txt);
+                }
+                doJustify(range,align);
+                if(txt){
+                    range.setStartBefore(txt).collapse(true);
+                    domUtils.remove(txt);
+                }
+                
+                range.select();
+
+            }
+            return true;
+        },
+        queryCommandValue : function() {
+            var startNode = this.selection.getStart(),
+                value = domUtils.getComputedStyle(startNode,'text-align');
+            return defaultValue[value] ? value : 'left';
+        },
+        queryCommandState : function(){
+            if(this.highlight){
+                       return -1;
+                   }
+            return this.queryCommandState('highlightcode') == 1 ? -1 : 0;
+                
+        }
+
+    }
+
+
+})();
+///import core
+///import commands\inserthtml.js
+///commands 日期,时间
+///commandsName  Date,Time
+///commandsTitle  日期,时间
+/**
+ * 插入日期
+ * @function
+ * @name baidu.editor.execCommand
+ * @param   {String}   cmdName    date插入日期
+ * @author zhuwenxuan
+*/
+/**
+ * 插入时间
+ * @function
+ * @name baidu.editor.execCommand
+ * @param   {String}   cmdName    time插入时间
+ * @author zhuwenxuan
+*/
+
+baidu.editor.commands['time'] = {
+    execCommand : function() {
+        var date = new Date,
+            min = date.getMinutes(),
+            sec = date.getSeconds(),
+            arr = [date.getHours(),min<10 ? "0"+min : min,sec<10 ? "0"+sec : sec];
+        this.execCommand('insertHtml',arr.join(":"));
+        return true;
+    },
+    queryCommandState : function(){
+            return this.highlight ? -1 :0;
+        }
+};
+baidu.editor.commands['date'] = {
+    execCommand : function() {
+        var date = new Date,
+            month = date.getMonth()+1,
+            day = date.getDate(),
+            arr = [date.getFullYear(),month<10 ? "0"+month : month,day<10?"0"+day:day];
+        this.execCommand('insertHtml',arr.join("-"));
+        return true;
+    },
+    queryCommandState : function(){
+            return this.highlight ? -1 :0;
+    }
+};
+
+
+
+///import core
+///commands 删除
+///commandsName  Delete
+///commandsTitle  删除
+/**
+ * 删除
+ * @function
+ * @name baidu.editor.execCommand
+ * @param  {String}    cmdName    delete删除
+ */
+(function (){
+    var domUtils = baidu.editor.dom.domUtils,
+        browser = baidu.editor.browser,
+            dtd = baidu.editor.dom.dtd;
+    baidu.editor.commands['delete'] = {
+        execCommand : function (){
+            
+            var range = this.selection.getRange(),
+            
+                mStart = 0,
+                mEnd = 0,
+                me = this;
+            if(me.currentSelectedArr && me.currentSelectedArr.length > 0){
+                for(var i=0,ci;ci=me.currentSelectedArr[i++];){
+                    if(ci.style.display != 'none'){
+                        ci.innerHTML = browser.ie ? domUtils.fillChar : '<br/>'
+                    }
+
+                }
+                range.setStart(me.currentSelectedArr[0],0).setCursor();
+                return;
+            }
+            if(range.collapsed)
+                return;
+            range.txtToElmBoundary();
+            //&& !domUtils.isBlockElm(range.startContainer)
+            while(!range.startOffset &&  !domUtils.isBody(range.startContainer) &&  !dtd.$tableContent[range.startContainer.tagName] ){
+                mStart = 1;
+                range.setStartBefore(range.startContainer);
+            }
+            //&& !domUtils.isBlockElm(range.endContainer)
+            while(!domUtils.isBody(range.endContainer)&&  !dtd.$tableContent[range.endContainer.tagName]  ){
+                var child,endContainer = range.endContainer,endOffset = range.endOffset;
+//                if(endContainer.nodeType == 3 &&  endOffset == endContainer.nodeValue.length){
+//                    range.setEndAfter(endContainer);
+//                    continue;
+//                }
+                child = endContainer.childNodes[endOffset];
+                if(!child || domUtils.isBr(child) && endContainer.lastChild === child){
+                    range.setEndAfter(endContainer);
+                    continue;
+                }
+                break;
+
+            }
+            if(mStart){
+                var start = me.document.createElement('span');
+                start.innerHTML = 'start';
+                start.id = '_baidu_cut_start';
+                range.insertNode(start).setStartBefore(start)
+            }
+            if(mEnd){
+                var end = me.document.createElement('span');
+                end.innerHTML = 'end';
+                end.id = '_baidu_cut_end';
+                range.cloneRange().collapse(false).insertNode(end);
+                range.setEndAfter(end)
+
+            }
+
+
+
+            range.deleteContents();
+
+
+            if(domUtils.isBody(range.startContainer) && domUtils.isEmptyBlock(me.body)){
+                me.body.innerHTML = '<p>'+(browser.ie?'':'<br/>')+'</p>';
+                range.setStart(me.body.firstChild,0).collapse(true);
+            }else if ( !browser.ie && domUtils.isEmptyBlock(range.startContainer)){
+                range.startContainer.innerHTML = '<br/>'
+            }
+            
+            range.select(true)
+        },
+        queryCommandState : function(){
+            if(this.currentSelectedArr && this.currentSelectedArr.length > 0){
+                return 0;
+            }
+            return this.selection.getRange().collapsed ? -1 : 0;
+        }
+    };
+})();
+///import core
+///import commands\inserthtml.js
+///commands 插入框架
+///commandsName  InsertFrame
+///commandsTitle  插入Iframe
+///commandsDialog  dialogs\insertframe\insertframe.html
+(function() {
+    baidu.editor.commands['insertframe'] = {
+        execCommand : function(){
+
+        },
+         queryCommandState : function(){
+            return this.highlight ? -1 :0;
+        }
+};
+})();
+///import core
+///commands 本地图片引导上传
+///commandsName  CheckImage
+///commandsTitle  本地图片引导上传
+
+
+baidu.editor.plugins["checkimage"] = function(){
+    var checkedImgs=[],me = this;
+    me.commands['checkimage'] = {
+        execCommand : function( cmdName,checkType) {
+            if(checkedImgs.length){
+                this[checkType] = checkedImgs;
+            }
+        },
+        queryCommandState: function(cmdName,checkType){
+            checkedImgs=[];
+            var images = this.document.getElementsByTagName("img");
+            for(var i=0,ci;ci =images[i++];){
+                if(ci.getAttribute(checkType)){
+                    checkedImgs.push(ci.getAttribute(checkType));
+                }
+            }
+            return checkedImgs.length ? 1:-1;
+        }
+    };
+};///import core
 ///commands 添加分页功能
 ///commandsName  PageBreak
 ///commandsTitle  分页
@@ -6322,2173 +6536,89 @@ UE.commands["wordcount"]={
  * @description 添加分页功能
  * @author zhanyi
  */
-UE.plugins['pagebreak'] = function () {
-    var me = this,
-        notBreakTags = ['td'];
-    //重写了Editor.hasContents
-//    var hasContentsOrg = me.hasContents;
-//    me.hasContents = function (tags) {
-//        for (var i = 0, di, divs = me.document.getElementsByTagName('div'); di = divs[i++];) {
-//            if (domUtils.hasClass(di, 'pagebreak')) {
-//                return true;
-//            }
-//        }
-//        return hasContentsOrg.call(me, tags);
-//    };
-    function fillNode(node){
-        if(domUtils.isEmptyBlock(node)){
-            var firstChild = node.firstChild,tmpNode;
-
-            while(firstChild && firstChild.nodeType == 1 && domUtils.isEmptyBlock(firstChild)){
-                tmpNode = firstChild;
-                firstChild = firstChild.firstChild;
-            }
-            !tmpNode && (tmpNode = node);
-            domUtils.fillNode(me.document,tmpNode);
-        }
-    }
-    function isHr(node){
-        return node && node.nodeType == 1 && node.tagName == 'HR' && node.className == 'pagebreak';
-    }
-    me.commands['pagebreak'] = {
-        execCommand:function () {
-            var range = me.selection.getRange(),hr = me.document.createElement('hr');
-            domUtils.setAttributes(hr,{
-                'class' : 'pagebreak',
-                noshade:"noshade",
-                size:"5"
-            });
-            domUtils.unselectable(hr);
-            //table单独处理
-            var node = domUtils.findParentByTagName(range.startContainer, notBreakTags, true),
-
-                parents = [], pN;
-            if (node) {
-                switch (node.tagName) {
-                    case 'TD':
-                        pN = node.parentNode;
-                        if (!pN.previousSibling) {
-                            var table = domUtils.findParentByTagName(pN, 'table');
-                            table.parentNode.insertBefore(hr, table);
-                            parents = domUtils.findParents(hr, true);
-
-                        } else {
-                            pN.parentNode.insertBefore(hr, pN);
-                            parents = domUtils.findParents(hr);
-
-                        }
-                        pN = parents[1];
-                        if (hr !== pN) {
-                            domUtils.breakParent(hr, pN);
-                        }
-
-
-                        domUtils.clearSelectedArr(me.currentSelectedArr);
-                }
-
-            } else {
-
-                if (!range.collapsed) {
-                    range.deleteContents();
-                    var start = range.startContainer;
-                    while (domUtils.isBlockElm(start) && domUtils.isEmptyNode(start)) {
-                        range.setStartBefore(start).collapse(true);
-                        domUtils.remove(start);
-                        start = range.startContainer;
-                    }
-
-                }
-                range.insertNode(hr);
-
-                var pN = hr.parentNode, nextNode;
-                while (!domUtils.isBody(pN)) {
-                    domUtils.breakParent(hr, pN);
-                    nextNode = hr.nextSibling;
-                    if (nextNode && domUtils.isEmptyBlock(nextNode)) {
-                        domUtils.remove(nextNode)
-                    }
-                    pN = hr.parentNode;
-                }
-                nextNode = hr.nextSibling;
-                var pre = hr.previousSibling;
-                if(isHr(pre)){
-                    domUtils.remove(pre)
-                }else{
-                    fillNode(pre);
-                }
-
-                if(!nextNode){
-                    var p = me.document.createElement('p');
-
-                    hr.parentNode.appendChild(p);
-                    domUtils.fillNode(me.document,p);
-                    range.setStart(p,0).collapse(true)
-                }else{
-                    if(isHr(nextNode)){
-                        domUtils.remove(nextNode)
-                    }else{
-                        fillNode(nextNode);
-                    }
-                    range.setEndAfter(hr).collapse(false)
-                }
-
-                range.select(true)
-
-            }
-
-        },
-        queryCommandState:function () {
-            return this.highlight ? -1 : 0;
-        }
-    }
-};
-///import core
-///commands 本地图片引导上传
-///commandsName  WordImage
-///commandsTitle  本地图片引导上传
-
-
-UE.plugins["wordimage"] = function(){
-    var me = this,
-        images;
-    me.commands['wordimage'] = {
-        execCommand : function() {
-            images = domUtils.getElementsByTagName(me.document.body,"img");
-            var urlList = [];
-            for(var i=0,ci;ci=images[i++];){
-                var url=ci.getAttribute("word_img");
-                url && urlList.push(url);
-            }
-            if(images.length){
-                this["word_img"] = urlList;
-            }
-        },
-        queryCommandState: function(){
-            images = domUtils.getElementsByTagName(me.document.body,"img");
-            for(var i=0,ci;ci =images[i++];){
-                if(ci.getAttribute("word_img")){
-                    return 1;
-                }
-            }
-            return -1;
-        }
-    };
-};
-///import core
-///commands 撤销和重做
-///commandsName  Undo,Redo
-///commandsTitle  撤销,重做
-/**
-* @description 回退
-* @author zhanyi
-*/
-
-UE.plugins['undo'] = function() {
-    var me = this,
-        maxUndoCount = me.options.maxUndoCount,
-        maxInputCount = me.options.maxInputCount,
-        fillchar = new RegExp(domUtils.fillChar + '|<\/hr>','gi'),// ie会产生多余的</hr>
-        //在比较时，需要过滤掉这些属性
-        specialAttr = /\b(?:href|src|name)="[^"]*?"/gi;
-
-    function UndoManager() {
-
-        this.list = [];
-        this.index = 0;
-        this.hasUndo = false;
-        this.hasRedo = false;
-        this.undo = function() {
-
-            if ( this.hasUndo ) {
-                var currentScene = this.getScene(),
-                    lastScene = this.list[this.index];
-                if ( lastScene.content.replace(specialAttr,'') != currentScene.content.replace(specialAttr,'') ) {
-                    this.save();
-                }
-                                    if(!this.list[this.index - 1] && this.list.length == 1){
-                    this.reset();
-                    return;
-                }
-                while ( this.list[this.index].content == this.list[this.index - 1].content ) {
-                    this.index--;
-                    if ( this.index == 0 ) {
-                        return this.restore( 0 )
-                    }
-                }
-                this.restore( --this.index );
-            }
-        };
-        this.redo = function() {
-            if ( this.hasRedo ) {
-                while ( this.list[this.index].content == this.list[this.index + 1].content ) {
-                    this.index++;
-                    if ( this.index == this.list.length - 1 ) {
-                        return this.restore( this.index )
-                    }
-                }
-                this.restore( ++this.index );
-            }
-        };
-
-        this.restore = function() {
-
-            var scene = this.list[this.index];
-            //trace:873
-            //去掉展位符
-            me.document.body.innerHTML = scene.bookcontent.replace(fillchar,'');
-            //处理undo后空格不展位的问题
-            if(browser.ie){
-                for(var i=0,pi,ps = me.document.getElementsByTagName('p');pi = ps[i++];){
-                    if(pi.innerHTML == ''){
-                        domUtils.fillNode(me.document,pi);
-                    }
-                }
-            }
-
-            var range = new dom.Range( me.document );
-            range.moveToBookmark( {
-                start : '_baidu_bookmark_start_',
-                end : '_baidu_bookmark_end_',
-                id : true
-            //去掉true 是为了<b>|</b>，回退后还能在b里
-            //todo safari里输入中文时，会因为改变了dom而导致丢字
-            } );
-            //trace:1278 ie9block元素为空，将出现光标定位的问题，必须填充内容
-            if(browser.ie && browser.version == 9 && range.collapsed && domUtils.isBlockElm(range.startContainer) && domUtils.isEmptyNode(range.startContainer)){
-                domUtils.fillNode(range.document,range.startContainer);
-
-            }
-            range.select(!browser.gecko);
-             setTimeout(function(){
-                range.scrollToView(me.autoHeightEnabled,me.autoHeightEnabled ? domUtils.getXY(me.iframe).y:0);
-            },200);
-
-            this.update();
-            //table的单独处理
-            if(me.currentSelectedArr){
-                me.currentSelectedArr = [];
-                var tds = me.document.getElementsByTagName('td');
-                for(var i=0,td;td=tds[i++];){
-                    if(td.className == me.options.selectedTdClass){
-                         me.currentSelectedArr.push(td);
-                    }
-                }
-            }
-             this.clearKey();
-
-            //不能把自己reset了
-            me.fireEvent('reset',true);
-            me.fireEvent('contentchange')
-        };
-
-        this.getScene = function() {
-            var range = me.selection.getRange(),
-                cont = me.body.innerHTML.replace(fillchar,'');
-            //有可能边界落到了<table>|<tbody>这样的位置，所以缩一下位置
-            range.shrinkBoundary();
-            browser.ie && (cont = cont.replace(/>&nbsp;</g,'><').replace(/\s*</g,'').replace(/>\s*/g,'>'));
-            var bookmark = range.createBookmark( true, true ),
-                bookCont = me.body.innerHTML.replace(fillchar,'');
-
-            range.moveToBookmark( bookmark ).select( true );
-            return {
-                bookcontent : bookCont,
-                content : cont
-            }
-        };
-        this.save = function() {
-
-            var currentScene = this.getScene(),
-                lastScene = this.list[this.index];
-            //内容相同位置相同不存
-            if ( lastScene && lastScene.content == currentScene.content &&
-                    lastScene.bookcontent == currentScene.bookcontent
-            ) {
-                return;
-            }
-
-            this.list = this.list.slice( 0, this.index + 1 );
-            this.list.push( currentScene );
-            //如果大于最大数量了，就把最前的剔除
-            if ( this.list.length > maxUndoCount ) {
-                this.list.shift();
-            }
-            this.index = this.list.length - 1;
-            this.clearKey();
-            //跟新undo/redo状态
-            this.update();
-            me.fireEvent('contentchange')
-        };
-        this.update = function() {
-            this.hasRedo = this.list[this.index + 1] ? true : false;
-            this.hasUndo = this.list[this.index - 1] || this.list.length == 1 ? true : false;
-
-        };
-        this.reset = function() {
-            this.list = [];
-            this.index = 0;
-            this.hasUndo = false;
-            this.hasRedo = false;
-            this.clearKey();
-
-
-        };
-        this.clearKey = function(){
-             keycont = 0;
-            lastKeyCode = null;
-        }
-    }
-
-    me.undoManger = new UndoManager();
-    function saveScene() {
-
-        this.undoManger.save()
-    }
-
-    me.addListener( 'beforeexeccommand', saveScene );
-    me.addListener( 'afterexeccommand', saveScene );
-
-    me.addListener('reset',function(type,exclude){
-        if(!exclude)
-            me.undoManger.reset();
-    });
-    me.commands['redo'] = me.commands['undo'] = {
-        execCommand : function( cmdName ) {
-            me.undoManger[cmdName]();
-        },
-        queryCommandState : function( cmdName ) {
-
-            return me.undoManger['has' + (cmdName.toLowerCase() == 'undo' ? 'Undo' : 'Redo')] ? 0 : -1;
-        },
-        notNeedUndo : 1
-    };
-
-    var keys = {
-         //  /*Backspace*/ 8:1, /*Delete*/ 46:1,
-            /*Shift*/ 16:1, /*Ctrl*/ 17:1, /*Alt*/ 18:1,
-            37:1, 38:1, 39:1, 40:1,
-            13:1 /*enter*/
-        },
-        keycont = 0,
-        lastKeyCode;
-
-    me.addListener( 'keydown', function( type, evt ) {
-        var keyCode = evt.keyCode || evt.which;
-
-        if ( !keys[keyCode] && !evt.ctrlKey && !evt.metaKey && !evt.shiftKey && !evt.altKey ) {
-
-            if ( me.undoManger.list.length == 0 || ((keyCode == 8 ||keyCode == 46) && lastKeyCode != keyCode) ) {
-
-                me.undoManger.save();
-                lastKeyCode = keyCode;
-                return
-
-            }
-            //trace:856
-            //修正第一次输入后，回退，再输入要到keycont>maxInputCount才能在回退的问题
-            if(me.undoManger.list.length == 2 && me.undoManger.index == 0 && keycont == 0){
-                me.undoManger.list.splice(1,1);
-                me.undoManger.update();
-            }
-            lastKeyCode = keyCode;
-            keycont++;
-            if ( keycont > maxInputCount ) {
-
-                setTimeout( function() {
-                    me.undoManger.save();
-                }, 0 );
-
-            }
-        }
-    } )
-};
-
-///import core
-///import plugins/inserthtml.js
-///import plugins/undo.js
-///import plugins/serialize.js
-///commands 粘贴
-///commandsName  PastePlain
-///commandsTitle  纯文本粘贴模式
-/*
- ** @description 粘贴
- * @author zhanyi
- */
 (function() {
-    function getClipboardData( callback ) {
 
-        var doc = this.document;
+    var editor = baidu.editor,
+        domUtils = editor.dom.domUtils,
+        notBreakTags = ['td'];
 
-        if ( doc.getElementById( 'baidu_pastebin' ) ) {
-            return;
-        }
-
-        var range = this.selection.getRange(),
-            bk = range.createBookmark(),
-            //创建剪贴的容器div
-            pastebin = doc.createElement( 'div' );
-
-        pastebin.id = 'baidu_pastebin';
-
-
-        // Safari 要求div必须有内容，才能粘贴内容进来
-        browser.webkit && pastebin.appendChild( doc.createTextNode( domUtils.fillChar + domUtils.fillChar ) );
-        doc.body.appendChild( pastebin );
-        //trace:717 隐藏的span不能得到top
-        //bk.start.innerHTML = '&nbsp;';
-        bk.start.style.display = '';
-        pastebin.style.cssText = "position:absolute;width:1px;height:1px;overflow:hidden;left:-1000px;white-space:nowrap;top:" +
-            //要在现在光标平行的位置加入，否则会出现跳动的问题
-            domUtils.getXY( bk.start ).y + 'px';
-
-        range.selectNodeContents( pastebin ).select( true );
-
-        setTimeout( function() {
-            
-            if (browser.webkit) {
-                
-                for(var i=0,pastebins = doc.querySelectorAll('#baidu_pastebin'),pi;pi=pastebins[i++];){
-                    if(domUtils.isEmptyNode(pi)){
-                        domUtils.remove(pi)
-                    }else{
-                        pastebin = pi;
-                        break;
-                    }
-                }
-
-
-            }
-
-			try{
-                pastebin.parentNode.removeChild(pastebin);
-            }catch(e){}
-
-            range.moveToBookmark( bk ).select(true);
-            callback( pastebin );
-        }, 0 );
-
-
-    }
-
-    UE.plugins['paste'] = function() {
+    baidu.editor.plugins['pagebreak'] = function() {
         var me = this;
-        var word_img_flag = {flag:""};
-
-        var pasteplain = me.options.pasteplain;
-        var modify_num = {flag:""};
-        me.commands['pasteplain'] = {
-            queryCommandState: function (){
-                return pasteplain;
-            },
-            execCommand: function (){
-                pasteplain = !pasteplain|0;
-            },
-            notNeedUndo : 1
-        };
-
-        function filter(div){
-            
-            var html;
-            if ( div.firstChild ) {
-                    //去掉cut中添加的边界值
-                    var nodes = domUtils.getElementsByTagName(div,'span');
-                    for(var i=0,ni;ni=nodes[i++];){
-                        if(ni.id == '_baidu_cut_start' || ni.id == '_baidu_cut_end'){
-                            domUtils.remove(ni)
-                        }
-                    }
-
-                    if(browser.webkit){
-
-                        var brs = div.querySelectorAll('div br');
-                        for(var i=0,bi;bi=brs[i++];){
-                            var pN = bi.parentNode;
-                            if(pN.tagName == 'DIV' && pN.childNodes.length ==1){
-                                pN.innerHTML = '<p><br/></p>';
-                                
-                                domUtils.remove(pN)
-                            }
-                        }
-                        var divs = div.querySelectorAll('#baidu_pastebin');
-                        for(var i=0,di;di=divs[i++];){
-                            var tmpP = me.document.createElement('p');
-                            di.parentNode.insertBefore(tmpP,di);
-                            while(di.firstChild){
-                                tmpP.appendChild(di.firstChild)
-                            }
-                            domUtils.remove(di)
-                        }
-
-
-
-                        var metas = div.querySelectorAll('meta');
-                        for(var i=0,ci;ci=metas[i++];){
-                            domUtils.remove(ci);
-                        }
-
-                        var brs = div.querySelectorAll('br');
-                        for(i=0;ci=brs[i++];){
-                            if(/^apple-/.test(ci)){
-                                domUtils.remove(ci)
-                            }
-                        }
-
-                    }
-                    if(browser.gecko){
-                        var dirtyNodes = div.querySelectorAll('[_moz_dirty]')
-                        for(i=0;ci=dirtyNodes[i++];){
-                            ci.removeAttribute( '_moz_dirty' )
-                        }
-                    }
-                    if(!browser.ie ){
-                        var spans = div.querySelectorAll('span.apple-style-span');
-                        for(var i=0,ci;ci=spans[i++];){
-                            domUtils.remove(ci,true);
-                        }
-                    }
-
-
-                    html = div.innerHTML;
-
-                    var f = me.serialize;
-                    if(f){
-                        //如果过滤出现问题，捕获它，直接插入内容，避免出现错误导致粘贴整个失败
-                        try{
-                            var node =  f.transformInput(
-                                        f.parseHTML(
-                                            //todo: 暂时不走dtd的过滤
-                                            f.word(html)//, true
-                                        ),word_img_flag
-                                    );
-                            //trace:924
-                            //纯文本模式也要保留段落
-                            node = f.filter(node,pasteplain ? {
-                                whiteList: {
-                                    'p': {'br':1,'BR':1},
-                                    'br':{'$':{}},
-                                    'div':{'br':1,'BR':1,'$':{}},
-                                    'li':{'$':{}},
-                                    'tr':{'td':1,'$':{}},
-                                    'td':{'$':{}}
-
-                                },
-                                blackList: {
-                                    'style':1,
-                                    'script':1,
-                                    'object':1
-                                }
-                            } : null, !pasteplain ? modify_num : null);
-
-                            if(browser.webkit){
-                                var length = node.children.length,
-                                    child;
-                                while((child = node.children[length-1]) && child.tag == 'br'){
-                                    node.children.splice(length-1,1);
-                                    length = node.children.length;
-                                }
-                            }
-                            html = f.toHTML(node,pasteplain)
-
-                        }catch(e){}
-
-                    }
-
-
-                    //自定义的处理
-                   html = {'html':html};
-
-                   me.fireEvent('beforepaste',html);
-
-                   me.execCommand( 'insertHtml',html.html);
-
-	               me.fireEvent("afterpaste");
-
+        //重写了Editor.hasContents
+        var hasContentsOrg = me.hasContents;
+        me.hasContents = function(tags){
+            for(var i=0,di,divs = me.document.getElementsByTagName('div');di=divs[i++];){
+                if(domUtils.hasClass(di,'pagebreak')){
+                    return true;
                 }
-        }
-
-        me.addListener('ready',function(){
-            domUtils.on(me.body,'cut',function(){
-
+            }
+            return hasContentsOrg.call(me,tags);
+        };
+        me.commands['pagebreak'] = {
+            execCommand:function(){
+                
                 var range = me.selection.getRange();
-                if(!range.collapsed && me.undoManger){
-                    me.undoManger.save()
-                }
-       
-            });
-            //ie下beforepaste在点击右键时也会触发，所以用监控键盘才处理
-                domUtils.on(me.body, browser.ie ? 'keydown' : 'paste',function(e){
-                    if(browser.ie && (!e.ctrlKey || e.keyCode != '86'))
-                        return;
-                    getClipboardData.call( me, function( div ) {
-                        filter(div);
-                        function hideMsg(){
-                             me.ui.hideToolbarMsg();
-                             me.removeListener("selectionchange",hideMsg);
-                        }
-                        if ( modify_num.flag && me.ui){
-                            me.ui.showToolbarMsg( me.options.messages.pasteMsg, word_img_flag.flag );
-                            modify_num.flag = "";
-                            //trance:为了解决fireevent  (selectionchange)事件的延时
-                            setTimeout(function(){
-                                me.addListener("selectionchange",hideMsg);
-                            },100);
-                        }
-                         if ( word_img_flag.flag && !me.queryCommandState("pasteplain") && me.ui){
-                            me.ui.showToolbarMsg( me.options.messages.pasteWordImgMsg,true);
-                             word_img_flag.flag = '';
-                            //trance:为了解决fireevent  (selectionchange)事件的延时
-                            setTimeout(function(){
-                                me.addListener("selectionchange",hideMsg);
-                            },100);
-                        }
-                    } );
 
-
-                })
-
-        });
-
-    }
-
-})();
-
-
-///import core
-///commands 有序列表,无序列表
-///commandsName  InsertOrderedList,InsertUnorderedList
-///commandsTitle  有序列表,无序列表
-/**
- * 有序列表
- * @function
- * @name baidu.editor.execCommand
- * @param   {String}   cmdName     insertorderlist插入有序列表
- * @param   {String}   style               值为：decimal,lower-alpha,lower-roman,upper-alpha,upper-roman
- * @author zhanyi
- */
-/**
- * 无序链接
- * @function
- * @name baidu.editor.execCommand
- * @param   {String}   cmdName     insertunorderlist插入无序列表
- * * @param   {String}   style            值为：circle,disc,square
- * @author zhanyi
- */
-
-    UE.plugins['list'] = function(){
-        var me = this,
-            notExchange = {
-                'TD':1,
-                'PRE':1,
-                'BLOCKQUOTE':1
-            };
-        function adjustList(list,tag,style){
-            var nextList = list.nextSibling;
-            if(nextList && nextList.nodeType == 1 && nextList.tagName.toLowerCase() == tag && (domUtils.getStyle(nextList,'list-style-type')||(tag == 'ol'?'decimal' : 'disc')) == style){
-                domUtils.moveChild(nextList,list);
-                if(nextList.childNodes.length == 0){
-                    domUtils.remove(nextList);
-                }
-            }
-            var preList = list.previousSibling;
-            if(preList && preList.nodeType == 1 && preList.tagName.toLowerCase() == tag && (domUtils.getStyle(preList,'list-style-type')||(tag == 'ol'?'decimal' : 'disc')) == style){
-                domUtils.moveChild(list,preList)
-            }
-
-
-            if(list.childNodes.length == 0){
-                domUtils.remove(list);
-            }
-        }
-        me.addListener('keydown', function(type, evt) {
-            function preventAndSave(){
-                evt.preventDefault ? evt.preventDefault() : (evt.returnValue = false)
-                me.undoManger && me.undoManger.save()
-            }
-            
-            var keyCode = evt.keyCode || evt.which;
-            if (keyCode == 13) {//回车
-                
-                var range = me.selection.getRange(),
-                    start = domUtils.findParentByTagName(range.startContainer, ['ol','ul'], true,function(node){return node.tagName == 'TABLE'}),
-                    end = domUtils.findParentByTagName(range.endContainer, ['ol','ul'], true,function(node){return node.tagName == 'TABLE'});
-                if (start && end && start === end) {
-                    
-                    if(!range.collapsed){
-                        start = domUtils.findParentByTagName(range.startContainer, 'li', true);
-                        end = domUtils.findParentByTagName(range.endContainer, 'li', true);
-                        if(start && end && start === end){
-                            range.deleteContents();
-                            li =  domUtils.findParentByTagName(range.startContainer, 'li', true);
-                            if(li && domUtils.isEmptyBlock(li)){
-                               
-                                pre = li.previousSibling;
-                                next = li.nextSibling;
-                                p = me.document.createElement('p');
-                              
-                                domUtils.fillNode(me.document,p);
-                                parentList = li.parentNode;
-                                if(pre && next){
-                                    range.setStart(next,0).collapse(true).select(true);
-                                    domUtils.remove(li);
-
-                                }else{
-                                    if(!pre && !next || !pre){
-
-                                        parentList.parentNode.insertBefore(p,parentList);
-
-
-
-                                    } else{
-                                        li.parentNode.parentNode.insertBefore(p,parentList.nextSibling);
-                                    }
-                                    domUtils.remove(li);
-                                    if(!parentList.firstChild){
-                                        domUtils.remove(parentList)
-                                    }
-                                    range.setStart(p,0).setCursor();
-
-
-                                }
-                                preventAndSave();
-                                return;
-
-                            }
-                        }else{
-                            var tmpRange = range.cloneRange(),
-                                bk = tmpRange.collapse(false).createBookmark();
-
-                            range.deleteContents();
-                            tmpRange.moveToBookmark(bk);
-                            var li = domUtils.findParentByTagName(tmpRange.startContainer, 'li', true),
-                                pre = li.previousSibling,
-                                next = li.nextSibling;
-
-                            if (pre ) {
-                                li = pre;
-                                if(pre.firstChild && domUtils.isBlockElm(pre.firstChild)){
-                                    pre = pre.firstChild;
-
-                                }
-                                if(domUtils.isEmptyNode(pre))
-                                    domUtils.remove(li);
-                            }
-                            if (next ) {
-                                li = next;
-                                if(next.firstChild && domUtils.isBlockElm(next.firstChild)){
-                                    next = next.firstChild;
-                                }
-                                if(domUtils.isEmptyNode(next))
-                                    domUtils.remove(li);
-                            }
-                            tmpRange.select();
-                            preventAndSave();
-                            return;
-                        }
-                    }
-
-
-                    li = domUtils.findParentByTagName(range.startContainer, 'li', true);
-
-                    if (li) {
-                        if(domUtils.isEmptyBlock(li)){
-                            bk = range.createBookmark();
-                            var parentList = li.parentNode;
-                            if(li!==parentList.lastChild){
-                                domUtils.breakParent(li,parentList);
-                            }else{
-
-                                parentList.parentNode.insertBefore(li,parentList.nextSibling);
-                                if(domUtils.isEmptyNode(parentList)){
-                                    domUtils.remove(parentList);
-                                }
-                            }
-                            //嵌套不处理
-                            if(!dtd.$list[li.parentNode.tagName]){
-                                if(!domUtils.isBlockElm(li.firstChild)){
-                                    p = me.document.createElement('p');
-                                    li.parentNode.insertBefore(p,li);
-                                    while(li.firstChild){
-                                        p.appendChild(li.firstChild);
-                                    }
-                                    domUtils.remove(li);
-                                }else{
-                                    domUtils.remove(li,true);
-                                }
-                            }
-                            range.moveToBookmark(bk).select();
-
-
-                        }else{
-                            var first = li.firstChild;
-                            if(!first || !domUtils.isBlockElm(first)){
-                                 var p = me.document.createElement('p');
+                var div = me.document.createElement('div');
+                div.className = 'pagebreak';
+                domUtils.unselectable(div);
+                //table单独处理
+                var node = domUtils.findParentByTagName(range.startContainer,notBreakTags,true),
+                 
+                    parents = [],pN;
+                if(node){
+                    switch (node.tagName){
+                        case 'TD':
+                            pN = node.parentNode;
+                            if(!pN.previousSibling){
+                                var table = domUtils.findParentByTagName(pN,'table');
+                                table.parentNode.insertBefore(div,table);
+                                parents = domUtils.findParents(div,true);
                                 
-                                !li.firstChild && domUtils.fillNode(me.document,p);
-                                while(li.firstChild){
-
-                                    p.appendChild(li.firstChild);
-                                }
-                                li.appendChild(p);
-                                first = p;
-                            }
-
-                                var span = me.document.createElement('span');
-
-                                range.insertNode(span);
-                                domUtils.breakParent(span, li);
-
-                                var nextLi = span.nextSibling;
-                                first = nextLi.firstChild;
-
-                                if (!first) {
-                                    p = me.document.createElement('p');
-                                    
-                                    domUtils.fillNode(me.document,p);
-                                    nextLi.appendChild(p);
-                                    first = p;
-                                }
-                                if (domUtils.isEmptyNode(first)) {
-                                    first.innerHTML = '';
-                                    domUtils.fillNode(me.document,first);
-                                }
-
-                                range.setStart(first, 0).collapse(true).shrinkBoundary().select();
-                                domUtils.remove(span);
-                                pre = nextLi.previousSibling;
-                                if(pre && domUtils.isEmptyBlock(pre)){
-                                    pre.innerHTML = '<p></p>';
-                                    domUtils.fillNode(me.document,pre.firstChild);
-                                }
-
-                            }
-//                        }
-
-                        preventAndSave();
-                    }
-
-
-                }
-            }
-            if(keyCode == 8){
-                //修中ie中li下的问题
-                range = me.selection.getRange();
-                if (range.collapsed && domUtils.isStartInblock(range)) {
-                   tmpRange = range.cloneRange().trimBoundary();
-                   li = domUtils.findParentByTagName(range.startContainer, 'li', true);
-
-                    //要在li的最左边，才能处理
-                    if (li && domUtils.isStartInblock(tmpRange)) {
-
-                        if (li && (pre = li.previousSibling)) {
-                            if (keyCode == 46 && li.childNodes.length)
-                                return;
-                            //有可能上边的兄弟节点是个2级菜单，要追加到2级菜单的最后的li
-                            if(dtd.$list[pre.tagName]){
-                                pre = pre.lastChild;
-                            }
-                            me.undoManger && me.undoManger.save();
-                            first = li.firstChild;
-                            if (domUtils.isBlockElm(first)) {
-                                if (domUtils.isEmptyNode(first)) {
-//                                    range.setEnd(pre, pre.childNodes.length).shrinkBoundary().collapse().select(true);
-                                    pre.appendChild(first);
-                                    range.setStart(first,0).setCursor(false,true);
-                                    //first不是唯一的节点
-                                    while(li.firstChild){
-                                        pre.appendChild(li.firstChild)
-                                    }
-                                } else {
-                                    start = domUtils.findParentByTagName(range.startContainer, 'p', true);
-                                    if(start && start !== first){
-                                        return;
-                                    }
-                                    span = me.document.createElement('span');
-                                    range.insertNode(span);
-
-//                                    if (domUtils.isBlockElm(pre.firstChild)) {
-//
-//                                        pre.firstChild.appendChild(span);
-//                                        while (first.firstChild) {
-//                                            pre.firstChild.appendChild(first.firstChild);
-//                                        }
-//
-//                                    } else {
-//                                        while (first.firstChild) {
-//                                            pre.appendChild(first.firstChild);
-//                                        }
-//                                    }
-                                    domUtils.moveChild(li,pre);
-                                    range.setStartBefore(span).collapse(true).select(true);
-
-                                    domUtils.remove(span)
-
-                                }
-                            } else {
-                                if (domUtils.isEmptyNode(li)) {
-                                    var p = me.document.createElement('p');
-                                    pre.appendChild(p);
-                                     range.setStart(p,0).setCursor();
-//                                    range.setEnd(pre, pre.childNodes.length).shrinkBoundary().collapse().select(true);
-                                } else {
-                                    range.setEnd(pre, pre.childNodes.length).collapse().select(true);
-                                    while (li.firstChild) {
-                                        pre.appendChild(li.firstChild)
-                                    }
-
-
-                                }
-                            }
-
-                            domUtils.remove(li);
-
-                            me.undoManger && me.undoManger.save();
-                            domUtils.preventDefault(evt);
-                            return;
-
-                        }
-                        //trace:980
-
-                        if (li && !li.previousSibling) {
-                            first = li.firstChild;
-                            //trace:1648 要判断li下只有一个节点
-                            if (!first ||  li.lastChild === first && domUtils.isEmptyNode(domUtils.isBlockElm(first) ? first : li)) {
-                                var p = me.document.createElement('p');
-
-                                li.parentNode.parentNode.insertBefore(p, li.parentNode);
-                                domUtils.fillNode(me.document,p);
-                                range.setStart(p, 0).setCursor();
-                                domUtils.remove(!li.nextSibling ? li.parentNode : li);
-                                me.undoManger && me.undoManger.save();
-                                domUtils.preventDefault(evt);
-                                return;
-                            }
-
-
-                        }
-
-
-                    }
-
-
-                }
-
-            }
-        });
-        me.commands['insertorderedlist'] =
-        me.commands['insertunorderedlist'] = {
-            execCommand : function( command, style ) {
-                if(!style){
-                    style = command.toLowerCase() == 'insertorderedlist' ? 'decimal' : 'disc'
-                }
-                var me = this,
-                    range = this.selection.getRange(),
-                    filterFn = function( node ) {
-                        return   node.nodeType == 1 ? node.tagName.toLowerCase() != 'br' : !domUtils.isWhitespace( node )
-                    },
-                    tag =  command.toLowerCase() == 'insertorderedlist' ? 'ol' : 'ul',
-                    frag = me.document.createDocumentFragment();
-                //去掉是因为会出现选到末尾，导致adjustmentBoundary缩到ol/ul的位置
-                //range.shrinkBoundary();//.adjustmentBoundary();
-                range.adjustmentBoundary().shrinkBoundary();
-                var bko = range.createBookmark(true),
-                    start = domUtils.findParentByTagName(me.document.getElementById(bko.start),'li'),
-                    modifyStart = 0,
-                    end = domUtils.findParentByTagName(me.document.getElementById(bko.end),'li'),
-                    modifyEnd = 0,
-                    startParent,endParent,
-                    list,tmp;
-
-                if(start || end){
-                    start && (startParent = start.parentNode);
-                    if(!bko.end){
-                        end = start;
-                    }
-                    end && (endParent = end.parentNode);
-
-                    if(startParent === endParent){
-                        while(start !== end){
-                            tmp = start;
-                            start = start.nextSibling;
-                            if(!domUtils.isBlockElm(tmp.firstChild)){
-                                var p = me.document.createElement('p');
-                                while(tmp.firstChild){
-                                    p.appendChild(tmp.firstChild)
-                                }
-                                tmp.appendChild(p);
-                            }
-                            frag.appendChild(tmp);
-                        }
-                        tmp = me.document.createElement('span');
-                        startParent.insertBefore(tmp,end);
-                        if(!domUtils.isBlockElm(end.firstChild)){
-                            p = me.document.createElement('p');
-                            while(end.firstChild){
-                                p.appendChild(end.firstChild)
-                            }
-                            end.appendChild(p);
-                        }
-                        frag.appendChild(end);
-                        domUtils.breakParent(tmp,startParent);
-                        if(domUtils.isEmptyNode(tmp.previousSibling)){
-                            domUtils.remove(tmp.previousSibling)
-                        }
-                        if(domUtils.isEmptyNode(tmp.nextSibling)){
-                            domUtils.remove(tmp.nextSibling)
-                        }
-                        var nodeStyle = domUtils.getComputedStyle( startParent, 'list-style-type' ) || (command.toLowerCase() == 'insertorderedlist' ? 'decimal' : 'disc');
-                        if(startParent.tagName.toLowerCase() == tag && nodeStyle == style){
-                            for(var i=0,ci,tmpFrag = me.document.createDocumentFragment();ci=frag.childNodes[i++];){
-                                while(ci.firstChild){
-                                    tmpFrag.appendChild(ci.firstChild);
-                                }
-                               
-                            }
-                            tmp.parentNode.insertBefore(tmpFrag,tmp);
-                        }else{
-                            list = me.document.createElement(tag);
-                            domUtils.setStyle(list,'list-style-type',style);
-                            list.appendChild(frag);
-                            tmp.parentNode.insertBefore(list,tmp);
-                        }
-
-                        domUtils.remove(tmp);
-                         list && adjustList(list,tag,style);
-                        range.moveToBookmark(bko).select();
-                        return;
-                    }
-                    //开始
-                    if(start){
-                        while(start){
-                            tmp = start.nextSibling;
-                            var tmpfrag = me.document.createDocumentFragment(),
-                                hasBlock = 0;
-                            while(start.firstChild){
-                                if(domUtils.isBlockElm(start.firstChild))
-                                    hasBlock = 1;
-                                tmpfrag.appendChild(start.firstChild);
-                            }
-                            if(!hasBlock){
-                                var tmpP = me.document.createElement('p');
-                                tmpP.appendChild(tmpfrag);
-                                frag.appendChild(tmpP)
                             }else{
-                                frag.appendChild(tmpfrag);
+                                pN.parentNode.insertBefore(div,pN);
+                                parents = domUtils.findParents(div);
+
                             }
-                            domUtils.remove(start);
-                            start = tmp;
-                        }
-                        startParent.parentNode.insertBefore(frag,startParent.nextSibling);
-                        if(domUtils.isEmptyNode(startParent)){
-                            range.setStartBefore(startParent);
-                            domUtils.remove(startParent)
-                        }else{
-                           range.setStartAfter(startParent);
-                        }
-
-
-                         modifyStart = 1;
+                            pN = parents[1];
+                            if(div!==pN){
+                                domUtils.breakParent(div,pN);
+                            }
+                            
+                         
+                            domUtils.clearSelectedArr(me.currentSelectedArr);
                     }
-
-                    if(end){
-                        //结束
-                        start = endParent.firstChild;
-                        while(start !== end){
-                           tmp = start.nextSibling;
-
-                           tmpfrag = me.document.createDocumentFragment();
-                           hasBlock = 0;
-                            while(start.firstChild){
-                                if(domUtils.isBlockElm(start.firstChild))
-                                    hasBlock = 1;
-                                tmpfrag.appendChild(start.firstChild);
-                            }
-                            if(!hasBlock){
-                                tmpP = me.document.createElement('p');
-                                tmpP.appendChild(tmpfrag);
-                                frag.appendChild(tmpP)
-                            }else{
-                                frag.appendChild(tmpfrag);
-                            }
-                            domUtils.remove(start);
-                            start = tmp;
-                        }
-                        frag.appendChild(end.firstChild);
-                        domUtils.remove(end);
-                        endParent.parentNode.insertBefore(frag,endParent);
-                        range.setEndBefore(endParent);
-                        if(domUtils.isEmptyNode(endParent)){
-                            domUtils.remove(endParent)
-                        }
-
-                         modifyEnd = 1;
-                    }
-
-
-
-                }
-
-                if(!modifyStart){
-                    range.setStartBefore(me.document.getElementById(bko.start))
-                }
-                if(bko.end && !modifyEnd){
-                    range.setEndAfter(me.document.getElementById(bko.end))
-                }
-                range.enlarge(true,function(node){return notExchange[node.tagName] });
-
-                frag = me.document.createDocumentFragment();
-
-                var bk = range.createBookmark(),
-                    current = domUtils.getNextDomNode( bk.start, false, filterFn ),
-                    tmpRange = range.cloneRange(),
-                    tmpNode,
-                    block = domUtils.isBlockElm;
-
-                while ( current && current !== bk.end && (domUtils.getPosition( current, bk.end ) & domUtils.POSITION_PRECEDING)  ) {
-
-                    if ( current.nodeType == 3 || dtd.li[current.tagName] ) {
-                        if(current.nodeType == 1 && dtd.$list[current.tagName]){
-                            while(current.firstChild){
-                                frag.appendChild(current.firstChild)
-                            }
-                            tmpNode = domUtils.getNextDomNode( current, false, filterFn );
-                            domUtils.remove(current);
-                            current = tmpNode;
-                            continue;
-
-                        }
-                        tmpNode = current;
-                        tmpRange.setStartBefore( current );
-
-                        while ( current && current !== bk.end && (!block(current) || domUtils.isBookmarkNode(current) )) {
-                            tmpNode = current;
-                            current = domUtils.getNextDomNode( current, false, null, function( node ) {
-                                return !notExchange[node.tagName]
-                            } );
-                        }
-
-                        if(current && block(current)){
-                            tmp = domUtils.getNextDomNode( tmpNode, false, filterFn );
-                            if(tmp && domUtils.isBookmarkNode(tmp)){
-                                current = domUtils.getNextDomNode( tmp, false, filterFn );
-                                tmpNode = tmp;
-                            }
-                        }
-                        tmpRange.setEndAfter( tmpNode );
-
-                        current = domUtils.getNextDomNode( tmpNode, false, filterFn );
-
-                        var li = range.document.createElement( 'li' );
-
-                        li.appendChild(tmpRange.extractContents());
-                        frag.appendChild(li);
-
-
-
-                    } else {
-
-                        current = domUtils.getNextDomNode( current, true, filterFn );
-                    }
-                }
-                range.moveToBookmark(bk).collapse(true);
-                list = me.document.createElement(tag);
-                domUtils.setStyle(list,'list-style-type',style);
-                list.appendChild(frag);
-                range.insertNode(list);
-                //当前list上下看能否合并
-                adjustList(list,tag,style);
-                range.moveToBookmark(bko).select();
-
-            },
-            queryCommandState : function( command ) {
-                return this.highlight ? -1 :
-                    utils.findNode(this.selection.getStartElementPath(),[command.toLowerCase() == 'insertorderedlist' ? 'ol' : 'ul']) ? 1: 0;
-            },
-            queryCommandValue : function( command ) {
-                var   node = utils.findNode(this.selection.getStartElementPath(),[command.toLowerCase() == 'insertorderedlist' ? 'ol' : 'ul']);
-                return node ? domUtils.getComputedStyle( node, 'list-style-type' ) : null;
-            }
-        }
-    };
-
-
-///import core
-///import plugins/serialize.js
-///import plugins/undo.js
-///commands 查看源码
-///commandsName  Source
-///commandsTitle  查看源码
-(function (){
-    function SourceFormater(config){
-        config = config || {};
-        this.indentChar = config.indentChar || '    ';
-        this.breakChar = config.breakChar || '\n';
-        this.selfClosingEnd = config.selfClosingEnd || ' />';
-    }
-    var unhtml1 = function (){
-        var map = { '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
-        function rep( m ){ return map[m]; }
-        return function ( str ) {
-            str = str + '';
-            return str ? str.replace( /[<>"']/g, rep ) : '';
-        };
-    }();
-    var inline = utils.extend({a:1,A:1},dtd.$inline,true);
-
-
-    function printAttrs(attrs){
-        var buff = [];
-        for (var k in attrs) {
-            buff.push(k + '="' + unhtml1(attrs[k]) + '"');
-        }
-        return buff.join(' ');
-    }
-    SourceFormater.prototype = {
-        format: function (html){
-            var node = UE.serialize.parseHTML(html);
-            this.buff = [];
-            this.indents = '';
-            this.indenting = 1;
-            this.visitNode(node);
-            return this.buff.join('');
-        },
-        visitNode: function (node){
-            if (node.type == 'fragment') {
-                this.visitChildren(node.children);
-            } else if (node.type == 'element') {
-                var selfClosing = dtd.$empty[node.tag];
-                this.visitTag(node.tag, node.attributes, selfClosing);
-
-                this.visitChildren(node.children);
-
-                if (!selfClosing) {
-                    this.visitEndTag(node.tag);
-                }
-            } else if (node.type == 'comment') {
-                this.visitComment(node.data);
-            } else {
-                this.visitText(node.data,dtd.$notTransContent[node.parent.tag]);
-            }
-        },
-        visitChildren: function (children){
-            for (var i=0; i<children.length; i++) {
-                this.visitNode(children[i]);
-            }
-        },
-        visitTag: function (tag, attrs, selfClosing){
-            if (this.indenting) {
-                this.indent();
-            } else if (!inline[tag]) { // todo: 去掉a, 因为dtd的inline里面没有a
-                this.newline();
-                this.indent();
-            }
-            this.buff.push('<', tag);
-            var attrPart = printAttrs(attrs);
-            if (attrPart) {
-                this.buff.push(' ', attrPart);
-            }
-            if (selfClosing) {
-                this.buff.push(this.selfClosingEnd);
-                if (tag == 'br') {
-                    this.newline();
-                }
-            } else {
-                this.buff.push('>');
-                this.indents += this.indentChar;
-            }
-            if (!inline[tag]) {
-                this.newline();
-            }
-        },
-        indent: function (){
-            this.buff.push(this.indents);
-            this.indenting = 0;
-        },
-        newline: function (){
-            this.buff.push(this.breakChar);
-            this.indenting = 1;
-        },
-        visitEndTag: function (tag){
-            
-            this.indents = this.indents.slice(0, -this.indentChar.length);
-            if (this.indenting) {
-                this.indent();
-            } else if (!inline[tag]) {
-                this.newline();
-                this.indent();
-            }
-            this.buff.push('</', tag, '>');
-        },
-        visitText: function (text,notTrans){
-            if (this.indenting) {
-                this.indent();
-            }
-      
-//            if(!notTrans){
-//                 text = text.replace(/&nbsp;/g, ' ').replace(/[ ][ ]+/g, function (m){
-//                    return new Array(m.length + 1).join('&nbsp;');
-//                }).replace(/(?:^ )|(?: $)/g, '&nbsp;');
-//            }
-            text = text.replace(/&nbsp;/g, ' ')
-            this.buff.push(text);
-
-        },
-        visitComment: function (text){
-            if (this.indenting) {
-                this.indent();
-            }
-            this.buff.push('<!--', text, '-->');
-        }
-    };
-
-    var sourceEditors = {
-        textarea: function (editor, holder){
-            var textarea = holder.ownerDocument.createElement('textarea');
-            textarea.style.cssText = 'position:absolute;resize:none;width:100%;height:100%;border:0;padding:0;margin:0;overflow-y:auto;';
-            // todo: IE下只有onresize属性可用... 很纠结
-            if (browser.ie && browser.version < 8) {
-                textarea.style.width = holder.offsetWidth + 'px';
-                textarea.style.height = holder.offsetHeight + 'px';
-                holder.onresize = function (){
-                    textarea.style.width = holder.offsetWidth + 'px';
-                    textarea.style.height = holder.offsetHeight + 'px';
-                };
-            }
-            holder.appendChild(textarea);
-            return {
-                setContent: function (content){
-                    textarea.value = content;
-                },
-                getContent: function (){
-                    return textarea.value;
-                },
-                select: function (){
-                    var range;
-                    if (browser.ie) {
-                        range = textarea.createTextRange();
-                        range.collapse(true);
-                        range.select();
-                    } else {
-                        //todo: chrome下无法设置焦点
-                        textarea.setSelectionRange(0, 0);
-                        textarea.focus();
-                    }
-                },
-                dispose: function (){
-                    holder.removeChild(textarea);
-                    // todo
-                    holder.onresize = null;
-                    textarea = null;
-                    holder = null;
-                }
-            };
-        },
-        codemirror: function (editor, holder){
-            var options = {
-                mode: "text/html",
-                tabMode: "indent",
-                lineNumbers: true,
-                lineWrapping:true
-            };
-            var codeEditor = window.CodeMirror(holder, options);
-            var dom = codeEditor.getWrapperElement();
-            dom.style.cssText = 'position:absolute;left:0;top:0;width:100%;height:100%;font-family:consolas,"Courier new",monospace;font-size:13px;';
-            codeEditor.getScrollerElement().style.cssText = 'position:absolute;left:0;top:0;width:100%;height:100%;';
-            codeEditor.refresh();
-            return {
-                setContent: function (content){
-                    codeEditor.setValue(content);
-                },
-                getContent: function (){
-                    return codeEditor.getValue();
-                },
-                select: function (){
-                    codeEditor.focus();
-                },
-                dispose: function (){
-                    holder.removeChild(dom);
-                    dom = null;
-                    codeEditor = null;
-                }
-            };
-        }
-    };
-
-    UE.plugins['source'] = function (){
-        var me = this;
-        var opt = this.options;
-        var formatter = new SourceFormater(opt.source);
-        var sourceMode = false;
-        var sourceEditor;
-
-        function createSourceEditor(holder){
-            var useCodeMirror = opt.sourceEditor == 'codemirror' && window.CodeMirror;
-            return sourceEditors[useCodeMirror ? 'codemirror' : 'textarea'](me, holder);
-        }
-
-        var bakCssText;
-        me.commands['source'] = {
-            execCommand: function (){
-
-                sourceMode = !sourceMode;
-                if (sourceMode) {
-                    me.undoManger && me.undoManger.save();
-                    this.currentSelectedArr && domUtils.clearSelectedArr(this.currentSelectedArr);
-                    if(browser.gecko)
-                        me.body.contentEditable = false;
                     
-                    bakCssText = me.iframe.style.cssText;
-                    me.iframe.style.cssText += 'position:absolute;left:-32768px;top:-32768px;';
+                }else{
 
-                    var content = formatter.format(me.hasContents() ? me.getContent() : '');
-
-                    sourceEditor = createSourceEditor(me.iframe.parentNode);
-
-                    sourceEditor.setContent(content);
-                    setTimeout(function (){
-                        sourceEditor.select();
-                    });
-                } else {
-                    
-                    me.iframe.style.cssText = bakCssText;
-                    var cont = sourceEditor.getContent() || '<p>' + (browser.ie ? '' : '<br/>')+'</p>';
-                    cont = cont.replace(/>[\n\r\t]+([ ]{4})+/g,'>').replace(/[\n\r\t]+([ ]{4})+</g,'<').replace(/>[\n\r\t]+</g,'><');
-
-
-                    me.setContent(cont);
-                    sourceEditor.dispose();
-                    sourceEditor = null;
-                    setTimeout(function(){
+                    if(!range.collapsed){
+                        range.deleteContents();
+                        var start = range.startContainer;
+                        while(domUtils.isBlockElm(start) && domUtils.isEmptyNode(start)){
+                            range.setStartBefore(start).collapse(true);
+                            domUtils.remove(start);
+                            start = range.startContainer;
+                        }
                         
-                        var first = me.body.firstChild;
-                        //trace:1106 都删除空了，下边会报错，所以补充一个p占位
-                        if(!first){
-                            me.body.innerHTML = '<p>'+(browser.ie?'':'<br/>')+'</p>';
-                            first = me.body.firstChild;
-                        }
-                        //要在ifm为显示时ff才能取到selection,否则报错
-                        me.undoManger && me.undoManger.save();
+                    }
+                    parents = domUtils.findParents(range.startContainer,true);
+                    pN = parents[1];
+                    range.insertNode(div);
+                    pN && domUtils.breakParent(div,pN);
+                    range.setEndAfter(div).setCursor(true,true)
 
-                        while(first && first.firstChild){
-
-                            first = first.firstChild;
-                        }
-                        var range = me.selection.getRange();
-                        if(first.nodeType == 3 || dtd.$empty[first.tagName]){
-                            range.setStartBefore(first)
-                        }else{
-                            range.setStart(first,0);
-                        }
-
-                        if(browser.gecko){
-
-                            var input = document.createElement('input');
-                            input.style.cssText = 'position:absolute;left:0;top:-32768px';
-
-                            document.body.appendChild(input);
-
-                            me.body.contentEditable = false;
-                            setTimeout(function(){
-                                domUtils.setViewportOffset(input, { left: -32768, top: 0 });
-                                input.focus();
-                                setTimeout(function(){
-                                    me.body.contentEditable = true;
-                                    range.setCursor(false,true);
-                                    domUtils.remove(input)
-                                })
-
-                            })
-                        }else{
-                            range.setCursor(false,true);
-                        }
-
-                    })
                 }
-                this.fireEvent('sourcemodechanged', sourceMode);
+                
             },
-            queryCommandState: function (){
-                return sourceMode|0;
+            queryCommandState : function(){
+                return this.highlight ? -1 :0;
             }
-        };
-        var oldQueryCommandState = me.queryCommandState;
-        me.queryCommandState = function (cmdName){
-            cmdName = cmdName.toLowerCase();
-            if (sourceMode) {
-                return cmdName == 'source' ? 1 : -1;
-            }
-            return oldQueryCommandState.apply(this, arguments);
-        };
-        //解决在源码模式下getContent不能得到最新的内容问题
-        var oldGetContent = me.getContent;
-        me.getContent = function (){
+        }
 
-            if(sourceMode && sourceEditor ){
-                var html = sourceEditor.getContent();
-                if (this.serialize) {
-                    var node = this.serialize.parseHTML(html);
-                    node = this.serialize.filter(node);
-                    html = this.serialize.toHTML(node);
-                }
-                return html;
-            }else{
-                return oldGetContent.apply(this, arguments)
-            }
-        };
-        me.addListener("ready",function(){
-            if(opt.sourceEditor == "codemirror"){
-                utils.loadFile(document,{
-                    src : opt.codeMirrorJsUrl,
-                    tag : "script",
-                    type : "text/javascript",
-                    defer : "defer"
-                });
-                utils.loadFile(document,{
-                    tag : "link",
-                    rel : "stylesheet",
-                    type : "text/css",
-                    href : opt.codeMirrorCssUrl
-                });
-            }
-        });
-    };
+     
+    }
 
 })();
-///import core
-///commands 快捷键
-///commandsName  ShortCutKeys
-///commandsTitle  快捷键
-//配置快捷键
-UE.plugins['shortcutkeys'] = function(){
-    var me = this,
-        shortcutkeys =  utils.extend({
-    		 "ctrl+66" : "Bold" //^B
-        	,"ctrl+90" : "Undo" //undo
-        	,"ctrl+89" : "Redo" //redo
-       		,"ctrl+73" : "Italic" //^I
-       		,"ctrl+85" : "Underline" //^U
-        	,"ctrl+shift+67" : "removeformat" //清除格式
-        	,"ctrl+shift+76" : "justify:left" //居左
-        	,"ctrl+shift+82" : "justify:right" //居右
-        	,"ctrl+65" : "selectAll"
-//        	,"9"	   : "indent" //tab
-    	},me.options.shortcutkeys);
-    me.addListener('keydown',function(type,e){
-
-        var keyCode = e.keyCode || e.which,value;
-		for ( var i in shortcutkeys ) {
-		    if ( /^(ctrl)(\+shift)?\+(\d+)$/.test( i.toLowerCase() ) || /^(\d+)$/.test( i ) ) {
-		        if ( ( (RegExp.$1 == 'ctrl' ? (e.ctrlKey||e.metaKey) : 0)
-                        && (RegExp.$2 != "" ? e[RegExp.$2.slice(1) + "Key"] : 1)
-                        && keyCode == RegExp.$3
-                    ) ||
-                     keyCode == RegExp.$1
-                ){
-
-                    value = shortcutkeys[i].split(':');
-                    me.execCommand( value[0],value[1]);
-                    domUtils.preventDefault(e)
-
-		        }
-		    }
-		}
-    });
-};
-///import core
-///import plugins/undo.js
-///commands 设置回车标签p或br
-///commandsName  EnterKey
-///commandsTitle  设置回车标签p或br
-/**
- * @description 处理回车
- * @author zhanyi
- */
-UE.plugins['enterkey'] = function() {
-    var hTag,
-        me = this,
-        tag = me.options.enterTag;
-    me.addListener('keyup', function(type, evt) {
-
-        var keyCode = evt.keyCode || evt.which;
-        if (keyCode == 13) {
-            var range = me.selection.getRange(),
-                start = range.startContainer,
-                doSave;
-
-            //修正在h1-h6里边回车后不能嵌套p的问题
-            if (!browser.ie) {
-
-                if (/h\d/i.test(hTag)) {
-                    if (browser.gecko) {
-                        var h = domUtils.findParentByTagName(start, [ 'h1', 'h2', 'h3', 'h4', 'h5', 'h6','blockquote'], true);
-                        if (!h) {
-                            me.document.execCommand('formatBlock', false, '<p>');
-                            doSave = 1;
-                        }
-                    } else {
-                        //chrome remove div
-                        if (start.nodeType == 1) {
-                            var tmp = me.document.createTextNode(''),div;
-                            range.insertNode(tmp);
-                            div = domUtils.findParentByTagName(tmp, 'div', true);
-                            if (div) {
-                                var p = me.document.createElement('p');
-                                while (div.firstChild) {
-                                    p.appendChild(div.firstChild);
-                                }
-                                div.parentNode.insertBefore(p, div);
-                                domUtils.remove(div);
-                                range.setStartBefore(tmp).setCursor();
-                                doSave = 1;
-                            }
-                            domUtils.remove(tmp);
-
-                        }
-                    }
-
-                    if (me.undoManger && doSave) {
-                        me.undoManger.save()
-                    }
-                }
-
-            }
-
-
-
-            setTimeout(function() {
-                me.selection.getRange().scrollToView(me.autoHeightEnabled, me.autoHeightEnabled ? domUtils.getXY(me.iframe).y : 0);
-            }, 50)
-
-        }
-    });
-
-    me.addListener('keydown', function(type, evt) {
-
-        var keyCode = evt.keyCode || evt.which;
-        if (keyCode == 13) {//回车
-            if (me.undoManger) {
-                me.undoManger.save()
-            }
-            hTag = '';
-
-
-            var range = me.selection.getRange();
-
-            if (!range.collapsed) {
-                //跨td不能删
-                var start = range.startContainer,
-                    end = range.endContainer,
-                    startTd = domUtils.findParentByTagName(start, 'td', true),
-                    endTd = domUtils.findParentByTagName(end, 'td', true);
-                if (startTd && endTd && startTd !== endTd || !startTd && endTd || startTd && !endTd) {
-                    evt.preventDefault ? evt.preventDefault() : ( evt.returnValue = false);
-                    return;
-                }
-            }
-            me.currentSelectedArr && domUtils.clearSelectedArr(me.currentSelectedArr);
-
-            if (tag == 'p') {
-
-
-                if (!browser.ie) {
-
-                    start = domUtils.findParentByTagName(range.startContainer, ['ol','ul','p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6','blockquote'], true);
-
-
-                    if (!start) {
-
-                        me.document.execCommand('formatBlock', false, '<p>');
-                        if (browser.gecko) {
-                            range = me.selection.getRange();
-                            start = domUtils.findParentByTagName(range.startContainer, 'p', true);
-                            start && domUtils.removeDirtyAttr(start);
-                        }
-
-
-                    } else {
-                        hTag = start.tagName;
-                        start.tagName.toLowerCase() == 'p' && browser.gecko && domUtils.removeDirtyAttr(start);
-                    }
-
-                }
-
-            } else {
-                evt.preventDefault ? evt.preventDefault() : ( evt.returnValue = false);
-
-                if (!range.collapsed) {
-                    range.deleteContents();
-                    start = range.startContainer;
-                    if (start.nodeType == 1 && (start = start.childNodes[range.startOffset])) {
-                        while (start.nodeType == 1) {
-                            if (dtd.$empty[start.tagName]) {
-                                range.setStartBefore(start).setCursor();
-                                if (me.undoManger) {
-                                    me.undoManger.save()
-                                }
-                                return false;
-                            }
-                            if (!start.firstChild) {
-                                var br = range.document.createElement('br');
-                                start.appendChild(br);
-                                range.setStart(start, 0).setCursor();
-                                if (me.undoManger) {
-                                    me.undoManger.save()
-                                }
-                                return false;
-                            }
-                            start = start.firstChild
-                        }
-                        if (start === range.startContainer.childNodes[range.startOffset]) {
-                            br = range.document.createElement('br');
-                            range.insertNode(br).setCursor();
-
-                        } else {
-                            range.setStart(start, 0).setCursor();
-                        }
-
-
-                    } else {
-                        br = range.document.createElement('br');
-                        range.insertNode(br).setStartAfter(br).setCursor();
-                    }
-
-
-                } else {
-                    br = range.document.createElement('br');
-                    range.insertNode(br);
-                    var parent = br.parentNode;
-                    if (parent.lastChild === br) {
-                        br.parentNode.insertBefore(br.cloneNode(true), br);
-                        range.setStartBefore(br)
-                    } else {
-                        range.setStartAfter(br)
-                    }
-                    range.setCursor();
-
-                }
-
-            }
-
-        }
-    });
-};
-
-/*
-*   处理特殊键的兼容性问题
-*/
-UE.plugins['keystrokes'] = function() {
-    var me = this,
-        flag = 0,
-        keys = domUtils.keys,
-        trans = {
-            'B' : 'strong',
-            'I' : 'em',
-            'FONT' : 'span'
-        },
-        sizeMap = [0, 10, 12, 16, 18, 24, 32, 48],
-        listStyle = {
-            'OL':['decimal','lower-alpha','lower-roman','upper-alpha','upper-roman'],
-
-            'UL':[ 'circle','disc','square']
-        };
-    me.addListener('keydown', function(type, evt) {
-        var keyCode = evt.keyCode || evt.which;
-
-        if(this.selectAll){
-            this.selectAll = false;
-            if((keyCode == 8 || keyCode == 46)){
-                me.undoManger && me.undoManger.save();
-                 //trace:1633
-                me.body.innerHTML = '<p>'+(browser.ie ? '' : '<br/>')+'</p>';
-
-                new dom.Range(me.document).setStart(me.body.firstChild,0).setCursor(false,true);
-                me.undoManger && me.undoManger.save();
-                //todo 对性能会有影响
-                browser.ie && me._selectionChange();
-                domUtils.preventDefault(evt);
-                return;
-            }
-
-
-        }
-
-        //处理backspace/del
-        if (keyCode == 8 ) {//|| keyCode == 46
-
-
-            var range = me.selection.getRange(),
-                tmpRange,
-                start,end;
-
-            //当删除到body最开始的位置时，会删除到body,阻止这个动作
-            if(range.collapsed){
-                start = range.startContainer;
-                //有可能是展位符号
-                if(domUtils.isWhitespace(start)){
-                    start = start.parentNode;
-                }
-                if(domUtils.isEmptyNode(start) && start === me.body.firstChild){
-
-                    if(start.tagName != 'P'){
-                        p = me.document.createElement('p');
-                        me.body.insertBefore(p,start);
-                        domUtils.fillNode(me.document,p);
-                        range.setStart(p,0).setCursor(false,true);
-                        //trace:1645
-                        domUtils.remove(start);
-                    }
-                    domUtils.preventDefault(evt);
-                    return;
-
-                }
-            }
-
-            if (range.collapsed && range.startContainer.nodeType == 3 && range.startContainer.nodeValue.replace(new RegExp(domUtils.fillChar, 'g'), '').length == 0) {
-                range.setStartBefore(range.startContainer).collapse(true)
-            }
-            //解决选中control元素不能删除的问题
-            if (start = range.getClosedNode()) {
-                me.undoManger && me.undoManger.save();
-                range.setStartBefore(start);
-                domUtils.remove(start);
-                range.setCursor();
-                me.undoManger && me.undoManger.save();
-                domUtils.preventDefault(evt);
-                return;
-            }
-            //阻止在table上的删除
-            if (!browser.ie) {
-
-                start = domUtils.findParentByTagName(range.startContainer, 'table', true);
-                end = domUtils.findParentByTagName(range.endContainer, 'table', true);
-                if (start && !end || !start && end || start !== end) {
-                    evt.preventDefault();
-                    return;
-                }
-                if (browser.webkit && range.collapsed && start) {
-                    tmpRange = range.cloneRange().txtToElmBoundary();
-                    start = tmpRange.startContainer;
-
-                    if (domUtils.isBlockElm(start) && start.nodeType == 1 && !dtd.$tableContent[start.tagName] && !domUtils.getChildCount(start, function(node) {
-                        return node.nodeType == 1 ? node.tagName !== 'BR' : 1;
-                    })) {
-
-                        tmpRange.setStartBefore(start).setCursor();
-                        domUtils.remove(start, true);
-                        evt.preventDefault();
-                        return;
-                    }
-                }
-            }
-
-
-            if (me.undoManger) {
-
-                if (!range.collapsed) {
-                    me.undoManger.save();
-                    flag = 1;
-                }
-            }
-
-        }
-        //处理tab键的逻辑
-        if (keyCode == 9) {
-            range = me.selection.getRange();
-            me.undoManger && me.undoManger.save();
-            for (var i = 0,txt = ''; i < me.options.tabSize; i++) {
-                txt += me.options.tabNode;
-            }
-            var span = me.document.createElement('span');
-            span.innerHTML = txt;
-            if (range.collapsed) {
-
-                var li = domUtils.findParentByTagName(range.startContainer, 'li', true);
-
-                if (li && domUtils.isStartInblock(range)) {
-                    bk = range.createBookmark();
-                    var parentLi = li.parentNode,
-                        list = me.document.createElement(parentLi.tagName);
-                    var index = utils.indexOf(listStyle[list.tagName], domUtils.getComputedStyle(parentLi, 'list-style-type'));
-                    index = index + 1 == listStyle[list.tagName].length ? 0 : index + 1;
-                    domUtils.setStyle(list, 'list-style-type', listStyle[list.tagName][index]);
-
-                    parentLi.insertBefore(list, li);
-                    list.appendChild(li);
-                    range.moveToBookmark(bk).select()
-
-                } else
-                    range.insertNode(span.cloneNode(true).firstChild).setCursor(true);
-
-            } else {
-                //处理table
-                start = domUtils.findParentByTagName(range.startContainer, 'table', true);
-                end = domUtils.findParentByTagName(range.endContainer, 'table', true);
-                if (start || end) {
-                    evt.preventDefault ? evt.preventDefault() : (evt.returnValue = false);
-                    return
-                }
-                //处理列表 再一个list里处理
-                start = domUtils.findParentByTagName(range.startContainer, ['ol','ul'], true);
-                end = domUtils.findParentByTagName(range.endContainer, ['ol','ul'], true);
-                if (start && end && start === end) {
-                    var bk = range.createBookmark();
-                    start = domUtils.findParentByTagName(range.startContainer, 'li', true);
-                    end = domUtils.findParentByTagName(range.endContainer, 'li', true);
-                    //在开始单独处理
-                    if (start === start.parentNode.firstChild) {
-                        var parentList = me.document.createElement(start.parentNode.tagName);
-
-                        start.parentNode.parentNode.insertBefore(parentList, start.parentNode);
-                        parentList.appendChild(start.parentNode);
-                    } else {
-                        parentLi = start.parentNode,
-                            list = me.document.createElement(parentLi.tagName);
-
-                        index = utils.indexOf(listStyle[list.tagName], domUtils.getComputedStyle(parentLi, 'list-style-type'));
-                        index = index + 1 == listStyle[list.tagName].length ? 0 : index + 1;
-                        domUtils.setStyle(list, 'list-style-type', listStyle[list.tagName][index]);
-                        start.parentNode.insertBefore(list, start);
-                        var nextLi;
-                        while (start !== end) {
-                            nextLi = start.nextSibling;
-                            list.appendChild(start);
-                            start = nextLi;
-                        }
-                        list.appendChild(end);
-
-                    }
-                    range.moveToBookmark(bk).select();
-
-                } else {
-                    if (start || end) {
-                        evt.preventDefault ? evt.preventDefault() : (evt.returnValue = false);
-                        return
-                    }
-                    //普通的情况
-                    start = domUtils.findParent(range.startContainer, filterFn);
-                    end = domUtils.findParent(range.endContainer, filterFn);
-                    if (start && end && start === end) {
-                        range.deleteContents();
-                        range.insertNode(span.cloneNode(true).firstChild).setCursor(true);
-                    } else {
-                        var bookmark = range.createBookmark(),
-                            filterFn = function(node) {
-                                return domUtils.isBlockElm(node);
-
-                            };
-
-                        range.enlarge(true);
-                        var bookmark2 = range.createBookmark(),
-                            current = domUtils.getNextDomNode(bookmark2.start, false, filterFn);
-
-
-                        while (current && !(domUtils.getPosition(current, bookmark2.end) & domUtils.POSITION_FOLLOWING)) {
-
-
-                            current.insertBefore(span.cloneNode(true).firstChild, current.firstChild);
-
-                            current = domUtils.getNextDomNode(current, false, filterFn);
-
-                        }
-
-                        range.moveToBookmark(bookmark2).moveToBookmark(bookmark).select();
-                    }
-
-                }
-
-
-            }
-            me.undoManger && me.undoManger.save();
-            evt.preventDefault ? evt.preventDefault() : (evt.returnValue = false);
-        }
-        //trace:1634
-        //ff的del键在容器空的时候，也会删除
-        if(browser.gecko && keyCode == 46){
-            range = me.selection.getRange();
-            if(range.collapsed){
-                start = range.startContainer;
-                if(domUtils.isEmptyBlock(start)){
-                    var parent = start.parentNode;
-                    while(domUtils.getChildCount(parent) == 1 && !domUtils.isBody(parent)){
-                        start = parent;
-                        parent = parent.parentNode;
-                    }
-                    if(start === parent.lastChild)
-                        evt.preventDefault();
-                    return;
-                }
-            }
-        }
-    });
-    me.addListener('keyup', function(type, evt) {
-        var keyCode = evt.keyCode || evt.which;
-        //修复ie/chrome <strong><em>x|</em></strong> 当点退格后在输入文字后会出现  <b><i>x</i></b>
-        if (!browser.gecko && !keys[keyCode] && !evt.ctrlKey && !evt.metaKey && !evt.shiftKey && !evt.altKey) {
-            range = me.selection.getRange();
-            if (range.collapsed) {
-                var start = range.startContainer,
-                    isFixed = 0;
-
-                while (!domUtils.isBlockElm(start)) {
-                    if (start.nodeType == 1 && utils.indexOf(['FONT','B','I'], start.tagName) != -1) {
-
-                        var tmpNode = me.document.createElement(trans[start.tagName]);
-                        if (start.tagName == 'FONT') {
-                            //chrome only remember color property
-                            tmpNode.style.cssText = (start.getAttribute('size') ? 'font-size:' + (sizeMap[start.getAttribute('size')] || 12) + 'px' : '')
-                                + ';' + (start.getAttribute('color') ? 'color:' + start.getAttribute('color') : '')
-                                + ';' + (start.getAttribute('face') ? 'font-family:' + start.getAttribute('face') : '')
-                                + ';' + start.style.cssText;
-                        }
-                        while (start.firstChild) {
-                            tmpNode.appendChild(start.firstChild)
-                        }
-                        start.parentNode.insertBefore(tmpNode, start);
-                        domUtils.remove(start);
-                        if (!isFixed) {
-                            range.setEnd(tmpNode, tmpNode.childNodes.length).collapse(true)
-
-                        }
-                        start = tmpNode;
-                        isFixed = 1;
-                    }
-                    start = start.parentNode;
-
-                }
-
-                isFixed && range.select()
-
-            }
-        }
-
-        if (keyCode == 8 ) {//|| keyCode == 46
-
-            //针对ff下在列表首行退格，不能删除空格行的问题
-            if(browser.gecko){
-                for(var i=0,li,lis = domUtils.getElementsByTagName(this.body,'li');li=lis[i++];){
-                    if(domUtils.isEmptyNode(li) && !li.previousSibling){
-                        var liOfPn = li.parentNode;
-                        domUtils.remove(li);
-                        if(domUtils.isEmptyNode(liOfPn)){
-                            domUtils.remove(liOfPn)
-                        }
-
-                    }
-                }
-            }
-
-            var range,start,parent,
-                tds = this.currentSelectedArr;
-            if (tds && tds.length > 0) {
-                for (var i = 0,ti; ti = tds[i++];) {
-                    ti.innerHTML = browser.ie ? ( browser.version < 9 ? '&#65279' : '' ) : '<br/>';
-
-                }
-                range = new dom.Range(this.document);
-                range.setStart(tds[0], 0).setCursor();
-                if (flag) {
-                    me.undoManger.save();
-                    flag = 0;
-                }
-                //阻止chrome执行默认的动作
-                if (browser.webkit) {
-                    evt.preventDefault();
-                }
-                return;
-            }
-
-            range = me.selection.getRange();
-
-            //ctrl+a 后全部删除做处理
-//
-//            if (domUtils.isEmptyBlock(me.body) && !range.startOffset) {
-//                //trace:1633
-//                me.body.innerHTML = '<p>'+(browser.ie ? '&nbsp;' : '<br/>')+'</p>';
-//                range.setStart(me.body.firstChild,0).setCursor(false,true);
-//                me.undoManger && me.undoManger.save();
-//                //todo 对性能会有影响
-//                browser.ie && me._selectionChange();
-//                return;
-//            }
-
-            //处理删除不干净的问题
-
-            start = range.startContainer;
-            if(domUtils.isWhitespace(start)){
-                start = start.parentNode
-            }
-            //标志位防止空的p无法删除
-            var removeFlag = 0;
-            while (start.nodeType == 1 && domUtils.isEmptyNode(start) && dtd.$removeEmpty[start.tagName]) {
-                removeFlag = 1;
-                parent = start.parentNode;
-                domUtils.remove(start);
-                start = parent;
-            }
-
-            if ( removeFlag && start.nodeType == 1 && domUtils.isEmptyNode(start)) {
-                //ie下的问题，虽然没有了相应的节点但一旦你输入文字还是会自动把删除的节点加上，
-                if (browser.ie) {
-                    var span = range.document.createElement('span');
-                    start.appendChild(span);
-                    range.setStart(start,0).setCursor();
-                    //for ie
-                    li = domUtils.findParentByTagName(start,'li',true);
-                    if(li){
-                        var next = li.nextSibling;
-                        while(next){
-                            if(domUtils.isEmptyBlock(next)){
-                                li = next;
-                                next = next.nextSibling;
-                                domUtils.remove(li);
-                                continue;
-
-                            }
-                            break;
-                        }
-                    }
-                } else {
-                    start.innerHTML = '<br/>';
-                    range.setStart(start, 0).setCursor(false,true);
-                }
-
-                setTimeout(function() {
-                    if (browser.ie) {
-                        domUtils.remove(span);
-                    }
-
-                    if (flag) {
-                        me.undoManger.save();
-                        flag = 0;
-                    }
-                }, 0)
-            } else {
-
-                if (flag) {
-                    me.undoManger.save();
-                    flag = 0;
-                }
-
-            }
-        }
-    })
-};
-///import core
-///commands 修复chrome下图片不能点击的问题
-///commandsName  FixImgClick
-///commandsTitle  修复chrome下图片不能点击的问题
-//修复chrome下图片不能点击的问题
-//todo 可以改大小
-UE.plugins['fiximgclick'] = function() {
-    var me = this;
-    if ( browser.webkit ) {
-        me.addListener( 'click', function( type, e ) {
-            if ( e.target.tagName == 'IMG' ) {
-                var range = new dom.Range( me.document );
-                range.selectNode( e.target ).select();
-
-            }
-        } )
-    }
-};
 ///import core
 ///commands 为非ie浏览器自动添加a标签
 ///commandsName  AutoLink
@@ -8497,11 +6627,20 @@ UE.plugins['fiximgclick'] = function() {
  * @description 为非ie浏览器自动添加a标签
  * @author zhanyi
  */
-    UE.plugins['autolink'] = function() {
+(function() {
+
+    var editor = baidu.editor,
+        browser = editor.browser,
+        domUtils = editor.dom.domUtils;
+
+    baidu.editor.plugins['autolink'] = function() {
         var cont = 0;
+
+
         if (browser.ie) {
             return;
         }
+
         var me = this;
         me.addListener('reset',function(){
            cont = 0;
@@ -8521,6 +6660,7 @@ UE.plugins['fiximgclick'] = function() {
                     start = range.startContainer.childNodes[range.startOffset - 1];
                     if (!start)
                         break;
+
                     range.setStart(start, start.nodeType == 1 ? start.childNodes.length : start.nodeValue.length);
                     range.collapse(true);
                     start = range.startContainer;
@@ -8544,316 +6684,1834 @@ UE.plugins['fiximgclick'] = function() {
                     charCode = range.toString().charCodeAt(0);
                 } while (charCode != 160 && charCode != 32);
 
-                if (range.toString().replace(new RegExp(domUtils.fillChar, 'g'), '').match(/(?:https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.)/i)) {
-                    while(range.toString().length){
-                        if(/^(?:https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.)/i.test(range.toString())){
-                            break;
-                        }
-                        try{
-                            range.setStart(range.startContainer,range.startOffset+1)
-                        }catch(e){
-                            range.setStart(range.startContainer.nextSibling,0)
+                if (range.toString().replace(new RegExp(domUtils.fillChar, 'g'), '').match(/^(\s*)(?:https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.)/i)) {
 
-                        }
-
-                    }
                     var a = me.document.createElement('a'),text = me.document.createTextNode(' '),href;
-
-                    me.undoManger && me.undoManger.save();
+                    //去掉开头的空格
+                    if (RegExp.$1.length) {
+                        range.setStart(range.startContainer, range.startOffset + RegExp.$1.length);
+                    }
                     a.appendChild(range.extractContents());
                     a.href = a.innerHTML = a.innerHTML.replace(/<[^>]+>/g,'');
                     href = a.getAttribute("href").replace(new RegExp(domUtils.fillChar,'g'),'');
-                    href = /^(?:https?:\/\/)/ig.test(href) ? href : "http://"+ href;
-                    a.setAttribute('data_ue_src',href);
-                    a.href = href;
+
+                    a.href = /^(?:https?:\/\/)/ig.test(href) ? href : "http://"+href;
 
                     range.insertNode(a);
                     a.parentNode.insertBefore(text, a.nextSibling);
                     range.setStart(text, 0);
                     range.collapse(true);
                     sel.removeAllRanges();
-                    sel.addRange(range);
-                    me.undoManger && me.undoManger.save();
+                    sel.addRange(range)
                 }
             }
-        })
-    };
 
+
+        })
+    }
+
+})();
 ///import core
-///commands 当输入内容超过编辑器高度时，编辑器自动增高
-///commandsName  AutoHeight,autoHeightEnabled
-///commandsTitle  自动增高
+///commands 撤销和重做
+///commandsName  Undo,Redo
+///commandsTitle  撤销,重做
 /**
- * @description 自动伸展
+ * @description 回退
  * @author zhanyi
  */
-UE.plugins['autoheight'] = function () {
-    var me = this;
-    //提供开关，就算加载也可以关闭
-    me.autoHeightEnabled = me.options.autoHeightEnabled;
-    if (!me.autoHeightEnabled)return;
+(function() {
 
-    var bakOverflow,
-        span, tmpNode,
-        lastHeight = 0,
-        currentHeight,
-        timer;
-    function adjustHeight() {
-        clearTimeout(timer);
-        timer = setTimeout(function () {
-            if (me.queryCommandState('source') != 1) {
-                if (!span) {
-                    span = me.document.createElement('span');
-                    //trace:1764
-                    span.style.cssText = 'display:block;width:0;margin:0;padding:0;border:0;clear:both;';
-                    span.innerHTML = '.';
+    var domUtils = baidu.editor.dom.domUtils,
+        fillchar = new RegExp(baidu.editor.dom.domUtils.fillChar + '|<\/hr>','gi'),// ie会产生多余的</hr>
+        browser = baidu.editor.browser;
+    baidu.editor.plugins['undo'] = function() {
+        var me = this,
+            maxUndoCount = me.options.maxUndoCount,
+            maxInputCount = me.options.maxInputCount,
+            //在比较时，需要过滤掉这些属性
+            specialAttr = /\b(?:href|src|name)="[^"]*?"/gi;
+
+        function UndoManager() {
+
+            this.list = [];
+            this.index = 0;
+            this.hasUndo = false;
+            this.hasRedo = false;
+            this.undo = function() {
+
+                if ( this.hasUndo ) {
+                    var currentScene = this.getScene(),
+                        lastScene = this.list[this.index];
+                    if ( lastScene.content.replace(specialAttr,'') != currentScene.content.replace(specialAttr,'') ) {
+                        this.save();
+                    }
+                                        if(!this.list[this.index - 1] && this.list.length == 1){
+                        this.reset();
+                        return;
+                    }
+                    while ( this.list[this.index].content == this.list[this.index - 1].content ) {
+                        this.index--;
+                        if ( this.index == 0 ) {
+                            return this.restore( 0 )
+                        }
+                    }
+                    this.restore( --this.index );
                 }
-                tmpNode = span.cloneNode(true);
-                me.body.appendChild(tmpNode);
+            };
+            this.redo = function() {
+                if ( this.hasRedo ) {
+                    while ( this.list[this.index].content == this.list[this.index + 1].content ) {
+                        this.index++;
+                        if ( this.index == this.list.length - 1 ) {
+                            return this.restore( this.index )
+                        }
+                    }
+                    this.restore( ++this.index );
+                }
+            };
 
-                currentHeight = Math.max(domUtils.getXY(tmpNode).y + tmpNode.offsetHeight, me.options.minFrameHeight);
+            this.restore = function() {
 
-                if (currentHeight != lastHeight) {
+                var scene = this.list[this.index];
+                //trace:873
+                //去掉展位符
+                me.document.body.innerHTML = scene.bookcontent.replace(fillchar,'');
+                var range = new baidu.editor.dom.Range( me.document );
+                range.moveToBookmark( {
+                    start : '_baidu_bookmark_start_',
+                    end : '_baidu_bookmark_end_',
+                    id : true
+                //去掉true 是为了<b>|</b>，回退后还能在b里
+                //todo safari里输入中文时，会因为改变了dom而导致丢字
+                } );
+                //trace:1278 ie9block元素为空，将出现光标定位的问题，必须填充内容
+                if(browser.ie && browser.version == 9 && range.collapsed && domUtils.isBlockElm(range.startContainer) && domUtils.isEmptyNode(range.startContainer)){
+                    domUtils.fillNode(range.document,range.startContainer);
+                    
+                }
+                range.select(!browser.gecko);
+                 setTimeout(function(){
+                    range.scrollToView(me.autoHeightEnabled,me.autoHeightEnabled ? domUtils.getXY(me.iframe).y:0);
+                },200);
 
-                    me.setHeight(currentHeight);
+                this.update();
+                //table的单独处理
+                if(me.currentSelectedArr){
+                    me.currentSelectedArr = [];
+                    var tds = me.document.getElementsByTagName('td');
+                    for(var i=0,td;td=tds[i++];){
+                        if(td.className == me.options.selectedTdClass){
+                             me.currentSelectedArr.push(td);
+                        }
+                    }
+                }
+                 this.clearKey();
+                //不能把自己reset了
+                me.fireEvent('reset',true)
+            };
 
-                    lastHeight = currentHeight;
+            this.getScene = function() {
+                var range = me.selection.getRange(),
+                    cont = me.body.innerHTML.replace(fillchar,'');
+                baidu.editor.browser.ie && (cont = cont.replace(/>&nbsp;</g,'><').replace(/\s*</g,'').replace(/>\s*/g,'>'));
+                var bookmark = range.createBookmark( true, true ),
+                    bookCont = me.body.innerHTML.replace(fillchar,'');
+                
+                range.moveToBookmark( bookmark ).select( true );
+                return {
+                    bookcontent : bookCont,
+                    content : cont
+                }
+            };
+            this.save = function() {
+
+                var currentScene = this.getScene(),
+                    lastScene = this.list[this.index];
+                //内容相同位置相同不存
+                if ( lastScene && lastScene.content == currentScene.content &&
+                        lastScene.bookcontent == currentScene.bookcontent
+                ) {
+                    return;
                 }
 
-                domUtils.remove(tmpNode);
+                this.list = this.list.slice( 0, this.index + 1 );
+                this.list.push( currentScene );
+                //如果大于最大数量了，就把最前的剔除
+                if ( this.list.length > maxUndoCount ) {
+                    this.list.shift();
+                }
+                this.index = this.list.length - 1;
+                this.clearKey();
+                //跟新undo/redo状态
+                this.update()
+            };
+            this.update = function() {
+                this.hasRedo = this.list[this.index + 1] ? true : false;
+                this.hasUndo = this.list[this.index - 1] || this.list.length == 1 ? true : false;
 
+            };
+            this.reset = function() {
+                this.list = [];
+                this.index = 0;
+                this.hasUndo = false;
+                this.hasRedo = false;
+                this.clearKey();
+
+            };
+            this.clearKey = function(){
+                 keycont = 0;
+                lastKeyCode = null;
             }
-        }, 50)
-    }
-    me.addListener('destroy', function () {
-        me.removeListener('contentchange', adjustHeight);
-        me.removeListener('keyup', adjustHeight);
-        me.removeListener('mouseup', adjustHeight);
-    });
-    me.enableAutoHeight = function () {
-        if(!me.autoHeightEnabled)return;
-        var doc = me.document;
-        me.autoHeightEnabled = true;
-        bakOverflow = doc.body.style.overflowY;
-        doc.body.style.overflowY = 'hidden';
-        me.addListener('contentchange', adjustHeight);
-        me.addListener('keyup', adjustHeight);
-        me.addListener('mouseup', adjustHeight);
-        //ff不给事件算得不对
-        setTimeout(function () {
-            adjustHeight();
-        }, browser.gecko ? 100 : 0);
-        me.fireEvent('autoheightchanged', me.autoHeightEnabled);
-    };
-    me.disableAutoHeight = function () {
+        }
 
-        me.body.style.overflowY = bakOverflow || '';
+        me.undoManger = new UndoManager();
+        function saveScene() {
 
-        me.removeListener('contentchange', adjustHeight);
-        me.removeListener('keyup', adjustHeight);
-        me.removeListener('mouseup', adjustHeight);
-        me.autoHeightEnabled = false;
-        me.fireEvent('autoheightchanged', me.autoHeightEnabled);
-    };
-    me.addListener('ready', function () {
-        me.enableAutoHeight();
-        //trace:1764
-        var timer;
-        domUtils.on(browser.ie ? me.body : me.document,browser.webkit ? 'dragover' : 'drop',function(){
-            clearTimeout(timer);
-            timer = setTimeout(function(){
-                adjustHeight()
-            },100)
+            this.undoManger.save()
+        }
 
+        me.addListener( 'beforeexeccommand', saveScene );
+        me.addListener( 'afterexeccommand', saveScene );
+        
+        me.addListener('reset',function(type,exclude){
+            if(!exclude)
+                me.undoManger.reset();
         });
-    });
+        me.commands['redo'] = me.commands['undo'] = {
+            execCommand : function( cmdName ) {
+                me.undoManger[cmdName]();
+            },
+            queryCommandState : function( cmdName ) {
 
+                return me.undoManger['has' + (cmdName.toLowerCase() == 'undo' ? 'Undo' : 'Redo')] ? 0 : -1;
+            },
+            notNeedUndo : 1
+        };
 
+        var keys = {
+             //  /*Backspace*/ 8:1, /*Delete*/ 46:1,
+                /*Shift*/ 16:1, /*Ctrl*/ 17:1, /*Alt*/ 18:1,
+                37:1, 38:1, 39:1, 40:1,
+                13:1 /*enter*/
+            },
+            keycont = 0,
+            lastKeyCode;
 
+        me.addListener( 'keydown', function( type, evt ) {
+            var keyCode = evt.keyCode || evt.which;
 
+            if ( !keys[keyCode] && !evt.ctrlKey && !evt.metaKey && !evt.shiftKey && !evt.altKey ) {
 
+                if ( me.undoManger.list.length == 0 || ((keyCode == 8 ||keyCode == 46) && lastKeyCode != keyCode) ) {
 
-};
+                    me.undoManger.save();
+                    lastKeyCode = keyCode;
+                    return
 
+                }
+                //trace:856
+                //修正第一次输入后，回退，再输入要到keycont>maxInputCount才能在回退的问题
+                if(me.undoManger.list.length == 2 && me.undoManger.index == 0 && keycont == 0){
+                    me.undoManger.list.splice(1,1);
+                    me.undoManger.update();
+                }
+                lastKeyCode = keyCode;
+                keycont++;
+                if ( keycont > maxInputCount ) {
 
+                    setTimeout( function() {
+                        me.undoManger.save();
+                    }, 0 );
+
+                }
+            }
+        } )
+    };
+})();
 ///import core
-///commands 悬浮工具栏
-///commandsName  AutoFloat,autoFloatEnabled
-///commandsTitle  悬浮工具栏
-/*
- *  modified by chengchao01
- *
- *  注意： 引入此功能后，在IE6下会将body的背景图片覆盖掉！
+///import plugins/undo/undo.js
+///commands 设置回车标签p或br
+///commandsName  EnterKey
+///commandsTitle  设置回车标签p或br
+/**
+ * @description 处理回车
+ * @author zhanyi
  */
-    UE.plugins['autofloat'] = function() {
-        var uiUtils,
-       		LteIE6 = browser.ie && browser.version <= 6,
-            quirks = browser.quirks;
+(function() {
 
-        function checkHasUI(editor){
-           if(!editor.ui){
-              alert('autofloat插件功能依赖于UEditor UI\nautofloat定义位置: _src/plugins/autofloat.js');
+    var browser = baidu.editor.browser,
+        domUtils = baidu.editor.dom.domUtils,
+        hTag;
+    baidu.editor.plugins['enterkey'] = function() {
+        var me = this,
+            tag = me.options.enterTag;
 
-              throw({
-                  name: '未包含UI文件',
-                  message: 'autofloat功能依赖于UEditor UI。autofloat定义位置: _src/plugins/autofloat.js'
-              });
-           }
-            uiUtils = UE.ui.uiUtils;
+        me.addListener('keyup', function(type, evt) {
 
-           return 1;
-       }
-        function fixIE6FixedPos(){
-            var docStyle = document.body.style;
-           docStyle.backgroundImage = 'url("about:blank")';
-           docStyle.backgroundAttachment = 'fixed';
-        }
-		var optsAutoFloatEnabled = this.options.autoFloatEnabled;
+            var keyCode = evt.keyCode || evt.which;
+            if (keyCode == 13) {
+                var range = me.selection.getRange(),
+                    start = range.startContainer,
+                    doSave;
 
-        //如果不固定toolbar的位置，则直接退出
-        if(!optsAutoFloatEnabled){
-			return;
-		}
+                //修正在h1-h6里边回车后不能嵌套p的问题
+                if (!browser.ie) {
 
-		var me = this,
-			bakCssText,
-			placeHolder = document.createElement('div'),
-            toolbarBox,orgTop,
-            getPosition,
-            flag =true;   //ie7模式下需要偏移
-		function setFloating(){
-			var toobarBoxPos = domUtils.getXY(toolbarBox),
-				origalFloat = domUtils.getComputedStyle(toolbarBox,'position'),
-                origalLeft = domUtils.getComputedStyle(toolbarBox,'left');
-			toolbarBox.style.width = toolbarBox.offsetWidth + 'px';
-            toolbarBox.style.zIndex = me.options.zIndex * 1 + 1;
-			toolbarBox.parentNode.insertBefore(placeHolder, toolbarBox);
-			if (LteIE6 || quirks) {
-                if(toolbarBox.style.position != 'absolute'){
-                    toolbarBox.style.position = 'absolute';
+                    if (/h\d/i.test(hTag)) {
+                        if (browser.gecko) {
+                            var h = domUtils.findParentByTagName(start, [ 'h1', 'h2', 'h3', 'h4', 'h5', 'h6','blockquote'], true);
+                            if (!h) {
+                                me.document.execCommand('formatBlock', false, '<p>');
+                                doSave = 1;
+                            }
+                        } else {
+                            //chrome remove div
+                            if (start.nodeType == 1) {
+                                var tmp = me.document.createTextNode(''),div;
+                                range.insertNode(tmp);
+                                div = domUtils.findParentByTagName(tmp, 'div', true);
+                                if (div) {
+                                    var p = me.document.createElement('p');
+                                    while (div.firstChild) {
+                                        p.appendChild(div.firstChild);
+                                    }
+                                    div.parentNode.insertBefore(p, div);
+                                    domUtils.remove(div);
+                                    range.setStartBefore(tmp).setCursor();
+                                    doSave = 1;
+                                }
+                                domUtils.remove(tmp);
+
+                            }
+                        }
+
+                        if (me.undoManger && doSave) {
+                            me.undoManger.save()
+                        }
+                    }
+
                 }
 
-                toolbarBox.style.top = (document.body.scrollTop||document.documentElement.scrollTop) - orgTop + 'px';
-			} else {
-                if (browser.ie7Compat && flag) {
-                   flag = false;
-                   toolbarBox.style.left =  getPosition(toolbarBox).left - document.documentElement.getBoundingClientRect().left+2  + 'px';
-                }
-                if(toolbarBox.style.position != 'fixed'){
-                    toolbarBox.style.position = 'fixed';
-                    toolbarBox.style.top = '0';
+                range = me.selection.getRange();
 
-                    ((origalFloat == 'absolute' || origalFloat == 'relative') && parseFloat(origalLeft)) && (toolbarBox.style.left = toobarBoxPos.x + 'px');
-                }
+                setTimeout(function() {
+                    range.scrollToView(me.autoHeightEnabled, me.autoHeightEnabled ? domUtils.getXY(me.iframe).y : 0);
+                }, 50)
 
-			}
-
-
-		}
-		function unsetFloating(){
-            flag = true;
-            if(placeHolder.parentNode)
-			    placeHolder.parentNode.removeChild(placeHolder);
-
-			toolbarBox.style.cssText = bakCssText;
-		}
-
-        function updateFloating(){
-            var rect3 = getPosition(me.container);
-
-            if (rect3.top < 0 && rect3.bottom - toolbarBox.offsetHeight > 0) {
-                setFloating();
-            }else{
-                unsetFloating();
             }
-
-
-        }
-        var defer_updateFloating = utils.defer(function(){
-            updateFloating();
-        },browser.ie ? 200 : 100,true);
-
-        me.addListener('destroy',function(){
-            domUtils.un(window, ['scroll','resize'], updateFloating);
-            me.removeListener('keydown', defer_updateFloating);
         });
-        me.addListener('ready', function(){
-            if(checkHasUI(me)){
 
-                getPosition = uiUtils.getClientRect;
-                toolbarBox = me.ui.getDom('toolbarbox');
-                orgTop = getPosition(toolbarBox).top;
-                bakCssText = toolbarBox.style.cssText;
+        me.addListener('keydown', function(type, evt) {
 
-
-                placeHolder.style.height = toolbarBox.offsetHeight + 'px';
-                if(LteIE6){
-                    fixIE6FixedPos();
+            var keyCode = evt.keyCode || evt.which;
+            if (keyCode == 13) {//回车
+                if (me.undoManger) {
+                    me.undoManger.save()
                 }
-                me.addListener('autoheightchanged', function (t, enabled){
-                    if (enabled) {
-                        domUtils.on(window, ['scroll','resize'], updateFloating);
-                        me.addListener('keydown', defer_updateFloating);
+                hTag = '';
+
+
+                var range = me.selection.getRange();
+
+                if (!range.collapsed) {
+                    //跨td不能删
+                    var start = range.startContainer,
+                        end = range.endContainer,
+                        startTd = domUtils.findParentByTagName(start, 'td', true),
+                        endTd = domUtils.findParentByTagName(end, 'td', true);
+                    if (startTd && endTd && startTd !== endTd || !startTd && endTd || startTd && !endTd) {
+                        evt.preventDefault ? evt.preventDefault() : ( evt.returnValue = false);
+                        return;
+                    }
+                }
+                me.currentSelectedArr && domUtils.clearSelectedArr(me.currentSelectedArr);
+
+                if (tag == 'p') {
+
+
+                    if (!browser.ie) {
+
+                        start = domUtils.findParentByTagName(range.startContainer, ['ol','ul','p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6','blockquote'], true);
+
+
+                        if (!start) {
+
+                            me.document.execCommand('formatBlock', false, '<p>');
+                            if (browser.gecko) {
+                                range = me.selection.getRange();
+                                start = domUtils.findParentByTagName(range.startContainer, 'p', true);
+                                start && domUtils.removeDirtyAttr(start);
+                            }
+                            
+
+                        } else {
+                            hTag = start.tagName;
+                            start.tagName.toLowerCase() == 'p' && browser.gecko && domUtils.removeDirtyAttr(start);
+                        }
+
+                    }
+
+                } else {
+                    evt.preventDefault ? evt.preventDefault() : ( evt.returnValue = false);
+                    
+                    if (!range.collapsed) {
+                        range.deleteContents();
+                        start = range.startContainer;
+                        if (start.nodeType == 1 && (start = start.childNodes[range.startOffset])) {
+                            while (start.nodeType == 1) {
+                                if (baidu.editor.dom.dtd.$empty[start.tagName]) {
+                                    range.setStartBefore(start).setCursor();
+                                    if (me.undoManger) {
+                                        me.undoManger.save()
+                                    }
+                                    return false;
+                                }
+                                if (!start.firstChild) {
+                                    var br = range.document.createElement('br');
+                                    start.appendChild(br);
+                                    range.setStart(start, 0).setCursor();
+                                    if (me.undoManger) {
+                                        me.undoManger.save()
+                                    }
+                                    return false;
+                                }
+                                start = start.firstChild
+                            }
+                            if (start === range.startContainer.childNodes[range.startOffset]) {
+                                br = range.document.createElement('br');
+                                range.insertNode(br).setCursor();
+
+                            } else {
+                                range.setStart(start, 0).setCursor();
+                            }
+
+
+                        } else {
+                            br = range.document.createElement('br');
+                            range.insertNode(br).setStartAfter(br).setCursor();
+                        }
+
+
                     } else {
-                        domUtils.un(window, ['scroll','resize'], updateFloating);
-                        me.removeListener('keydown', defer_updateFloating);
-                    }
-                });
+                        br = range.document.createElement('br');
+                        range.insertNode(br);
+                        var parent = br.parentNode;
+                        if (parent.lastChild === br) {
+                            br.parentNode.insertBefore(br.cloneNode(true), br);
+                            range.setStartBefore(br)
+                        } else {
+                            range.setStartAfter(br)
+                        }
+                        range.setCursor();
 
-                me.addListener('beforefullscreenchange', function (t, enabled){
-                    if (enabled) {
-                        unsetFloating();
                     }
-                });
-                me.addListener('fullscreenchanged', function (t, enabled){
-                    if (!enabled) {
-                        updateFloating();
-                    }
-                });
-                me.addListener('sourcemodechanged', function (t, enabled){
-                    setTimeout(function (){
-                        updateFloating();
-                    });
-                });
+                    
+                }
+
             }
-        })
-	};
+        });
+    }
 
+})();
+///import core
+///commands 表格
+///commandsName  InsertTable,DeleteTable,InsertParagraphBeforeTable,InsertRow,DeleteRow,InsertCol,DeleteCol,MergeCells,MergeRight,MergeDown,SplittoCells,SplittoRows,SplittoCols
+///commandsTitle  表格,删除表格,表格前插行,前插入行,删除行,前插入列,删除列,合并多个单元格,右合并单元格,下合并单元格,完全拆分单元格,拆分成行,拆分成列
+///commandsDialog  dialogs\table\table.html
+/**
+ * Created by .
+ * User: taoqili
+ * Date: 11-5-5
+ * Time: 下午2:06
+ * To change this template use File | Settings | File Templates.
+ */
+(function() {
+
+    /**
+     * table操作插件
+     */
+    baidu.editor.plugins['table'] = function() {
+
+        var editor = baidu.editor,
+            browser = editor.browser,
+            domUtils = editor.dom.domUtils,
+            keys = domUtils.keys,
+            clearSelectedTd = domUtils.clearSelectedArr;
+        //框选时用到的几个全局变量
+        var anchorTd,
+            tableOpt,
+            _isEmpty = domUtils.isEmptyNode;
+
+        function getIndex(cell) {
+            var cells = cell.parentNode.cells;
+            for (var i = 0,ci; ci = cells[i]; i++) {
+                if (ci === cell) {
+                    return i;
+                }
+            }
+        }
+
+        /**
+         * 判断当前单元格是否处于隐藏状态
+         * @param cell 待判断的单元格
+         * @return {Boolean} 隐藏时返回true，否则返回false
+         */
+        function _isHide(cell) {
+            return cell.style.display == "none";
+        }
+
+        function getCount(arr) {
+            var count = 0;
+            for (var i = 0,ti; ti = arr[i++];) {
+                if (!_isHide(ti)) {
+                    count++
+                }
+
+            }
+            return count;
+        }
+
+        var me = this;
+
+        me.currentSelectedArr = [];
+        me.addListener('mousedown', _mouseDownEvent);
+        me.addListener('keydown', function(type, evt) {
+            var keyCode = evt.keyCode || evt.which;
+            if (!keys[keyCode] && !evt.ctrlKey && !evt.metaKey && !evt.shiftKey && !evt.altKey) {
+                clearSelectedTd(me.currentSelectedArr)
+            }
+        });
+        me.addListener('mouseup', function() {
+
+            anchorTd = null;
+            me.removeListener('mouseover', _mouseDownEvent);
+            var td = me.currentSelectedArr[0];
+            if (td) {
+                me.document.body.style.webkitUserSelect = '';
+                var range = new baidu.editor.dom.Range(me.document);
+                if (_isEmpty(td)) {
+                    range.setStart(me.currentSelectedArr[0], 0).setCursor();
+                } else {
+                    range.selectNodeContents(me.currentSelectedArr[0]).select();
+                }
+
+            } else {
+
+                //浏览器能从table外边选到里边导致currentSelectedArr为空，清掉当前选区回到选区的最开始
+
+                var range = me.selection.getRange().shrinkBoundary();
+
+                if (!range.collapsed) {
+                    var start = domUtils.findParentByTagName(range.startContainer, 'td', true),
+                        end = domUtils.findParentByTagName(range.endContainer, 'td', true);
+                    //在table里边的不能清除
+                    if (start && !end || !start && end || start && end && start !== end) {
+                        range.collapse(true).select(true)
+                    }
+                }
+
+
+            }
+
+        });
+
+        function reset() {
+            me.currentSelectedArr = [];
+            anchorTd = null;
+
+        }
+
+        /**
+         * 插入表格
+         * @param numRows 行数
+         * @param numCols 列数
+         */
+        me.commands['inserttable'] = {
+            queryCommandState: function () {
+               if(this.highlight || this.queryCommandState('highlightcode')){
+                       return -1;
+                   }
+                var range = this.selection.getRange();
+
+                return domUtils.findParentByTagName(range.startContainer, 'table', true)
+                    || domUtils.findParentByTagName(range.endContainer, 'table', true)
+                    || me.currentSelectedArr.length > 0 ? -1 : 0;
+            },
+            execCommand: function (cmdName, tableobj) {
+                tableOpt = tableobj;
+                var arr = [];
+                arr.push('cellpadding="' + (tableobj.cellpadding || 0) + '"');
+                if(tableobj.cellspacing > 0){
+                    arr.push('cellspacing="'+tableobj.cellspacing+'" style="border-collapse:separate;"')
+                }else{
+                    arr.push('cellspacing="' + (tableobj.cellspacing || 0) + '"');
+                }
+                tableobj.width ? arr.push('width="' + tableobj.width + '"') : arr.push('width="500"');
+                arr.push('borderColor="' + (tableobj.bordercolor || '#000000') + '"');
+                arr.push('border="' + (tableobj.border || 1) + '"');
+                var html,rows = [],j = tableobj.numRows;
+                if (j) while (j --) {
+                    var cols = [];
+                    var k = tableobj.numCols;
+                    while (k --) {
+                        var cssStyle = 'style="';
+                        if(tableobj.cellpadding){
+                            cssStyle += 'padding:'+ tableobj.cellpadding + 'px; '
+                        }
+                        if(tableobj.border || tableobj.bordercolor){
+                            cssStyle += 'border:' + (tableobj.border||1) +'px solid '+ (tableobj.bordercolor||'#000000') + ';';
+                        }
+                        cssStyle += '" ';
+                        cols[k] = '<td '+ cssStyle + ' width="' + Math.floor((tableobj.width || 500) / tableobj.numCols) + '" height="'+(this.options.tdHeight||20)+'">' +
+                            //trace: IE6下占位符
+                            (browser.ie ? domUtils.fillChar : '<br/>') + '</td>';
+                    }
+                    rows.push('<tr ' + (tableobj.align ? 'style=text-align:' + tableobj.align + '' : '') + '>' + cols.join('') + '</tr>');
+                }
+
+                html = '<table ' + arr.join(" ") + (tableobj.tablealign ? "align='" + tableobj.tablealign + "'" : "") + (tableobj.backgroundcolor ? ' bgcolor="' + tableobj.backgroundcolor + '"' : '')
+
+                    + '>' + rows.join('') + '</table>';
+                html += tableobj.tablealign ? "<p class='tableclear'></p>" : "";
+                this.execCommand('insertHtml', html);
+
+                reset();
+            }
+        };
+
+        function insertClearNode(node) {
+            var clearnode = node.nextSibling,p;
+            if (!(clearnode && clearnode.nodeType == 1 && domUtils.hasClass(clearnode, "tableclear"))) {
+                p = me.document.createElement("p");
+                p.className = "tableclear";
+                domUtils.insertAfter(node, p);
+            }
+        }
+
+        me.commands['edittable'] = {
+            queryCommandState: function () {
+
+                var range = this.selection.getRange();
+               if(this.highlight || this.queryCommandState('highlightcode')){
+                       return -1;
+                   }
+
+                return domUtils.findParentByTagName(range.startContainer, 'table', true)
+                    || me.currentSelectedArr.length > 0 ? 0 : -1;
+            },
+            execCommand: function (cmdName, tableobj) {
+                var start = this.selection.getStart();
+                var table = domUtils.findParentByTagName(start, 'table', true);
+                if (table) {
+                    var tmp = table.getAttribute("cellPadding");
+                    if(tmp != tableobj.cellpadding){
+                        table.setAttribute("cellPadding", tableobj.cellpadding||0);
+                        var tds = table.getElementsByTagName("td");
+                        for(var i=0,ci;ci=tds[i++];){
+                            ci.style.padding = (tableobj.cellpadding||0) + "px";
+                        }
+                    }
+
+                    tmp = table.getAttribute("cellSpacing");
+                    if(tmp != tableobj.cellspacing){
+                        tableobj.cellspacing == 0 ? table.style.borderCollapse = "collapse": table.style.borderCollapse = "separate";
+                        table.setAttribute("cellSpacing", tableobj.cellspacing||0);
+                    }else{
+                        tableobj.cellspacing ==0 ? table.style.borderCollapse = "collapse":"";
+                    }
+                    table.setAttribute("width", tableobj.width||0);
+                    table.setAttribute("height", tableobj.height||0);
+                    table.setAttribute("border", tableobj.border||0);
+                    table.style.border = (tableobj.border||0)+"px solid #ffffff";
+                    table.setAttribute("borderColor", tableobj.bordercolor);
+                    table.style.borderColor = tableobj.bordercolor;
+                    var tdss = table.getElementsByTagName("td");
+                    for(var ii=0,tii;tii = tdss[ii++];){
+                        tii.style.border = (tableobj.border||0)+"px solid #ffffff";
+                        tii.style.borderColor = tableobj.bordercolor;
+                    }
+                    table.setAttribute("align", tableobj.tablealign);
+                    //fixed 1368
+                    table.setAttribute("bgColor", tableobj.backgroundcolor);
+                    
+                    if(me.currentSelectedArr.length > 0){
+                        for(var t=0,ti;ti=me.currentSelectedArr[t++];){
+                            domUtils.setStyle(ti,'text-align',tableobj.align);
+                        }
+                    }else{
+                        var td = domUtils.findParentByTagName(start,'td',true);
+                        if(td){
+                            domUtils.setStyle(td,'text-align',tableobj.align);
+                        }
+                    }
+
+                    if (tableobj.tablealign) {
+                        insertClearNode(table);
+                    }
+                }
+
+            }
+        };
+        /**
+         * 删除表格
+         */
+        me.commands['deletetable'] = {
+            queryCommandState:function() {
+               if(this.highlight || this.queryCommandState('highlightcode')){
+                       return -1;
+                   }
+                var range = this.selection.getRange();
+                return (domUtils.findParentByTagName(range.startContainer, 'table', true)
+                    && domUtils.findParentByTagName(range.endContainer, 'table', true)) || me.currentSelectedArr.length > 0 ? 0 : -1;
+            },
+            execCommand:function() {
+                var range = this.selection.getRange(),
+                    table = domUtils.findParentByTagName(me.currentSelectedArr.length > 0 ? me.currentSelectedArr[0] : range.startContainer, 'table', true);
+                var p = table.ownerDocument.createElement('p'),clearnode;
+                p.innerHTML = browser.ie ? '&nbsp;' : '<br/>';
+                table.parentNode.insertBefore(p, table);
+                clearnode = domUtils.getNextDomNode(table);
+                if (clearnode && domUtils.hasClass(clearnode, "tableclear")) {
+                    domUtils.remove(clearnode);
+                }
+                domUtils.remove(table);
+                range.setStart(p, 0).setCursor();
+
+                reset();
+            }
+        };
+
+        /**
+         * 添加表格标题
+         */
+        me.commands['addcaption'] = {
+            queryCommandState:function() {
+               if(this.highlight || this.queryCommandState('highlightcode')){
+                       return -1;
+                   }
+                var range = this.selection.getRange();
+                return (domUtils.findParentByTagName(range.startContainer, 'table', true)
+                    && domUtils.findParentByTagName(range.endContainer, 'table', true)) || me.currentSelectedArr.length > 0 ? 0 : -1;
+            },
+            execCommand:function(cmdName, opt) {
+
+                var range = this.selection.getRange(),
+                    table = domUtils.findParentByTagName(me.currentSelectedArr.length > 0 ? me.currentSelectedArr[0] : range.startContainer, 'table', true);
+
+                if (opt == "on") {
+                    var c = table.createCaption();
+                    c.innerHTML = "请在此输入表格标题";
+                } else {
+                    table.removeChild(table.caption);
+                }
+
+
+            }
+        };
+
+
+        /**
+         * 向右合并单元格
+         */
+        me.commands['mergeright'] = {
+            queryCommandState : function() {
+               if(this.highlight || this.queryCommandState('highlightcode')){
+                       return -1;
+                   }
+                var range = this.selection.getRange(),
+                    start = range.startContainer,
+                    td = domUtils.findParentByTagName(start, ['td','th'], true);
+
+
+                if (!td || this.currentSelectedArr.length > 1)return -1;
+
+                var tr = td.parentNode;
+
+                //最右边行不能向右合并
+                var rightCellIndex = getIndex(td) + td.colSpan;
+                if (rightCellIndex >= tr.cells.length) {
+                    return -1;
+                }
+                //单元格不在同一行不能向右合并
+                var rightCell = tr.cells[rightCellIndex];
+                if (_isHide(rightCell)) {
+                    return -1;
+                }
+                return td.rowSpan == rightCell.rowSpan ? 0 : -1;
+            },
+            execCommand : function() {
+
+                var range = this.selection.getRange(),
+                    start = range.startContainer,
+                    td = domUtils.findParentByTagName(start, ['td','th'], true) || me.currentSelectedArr[0],
+                    tr = td.parentNode,
+                    rows = tr.parentNode.parentNode.rows;
+
+                //找到当前单元格右边的未隐藏单元格
+                var rightCellRowIndex = tr.rowIndex,
+                    rightCellCellIndex = getIndex(td) + td.colSpan,
+                    rightCell = rows[rightCellRowIndex].cells[rightCellCellIndex];
+
+                //在隐藏的原生td对象上增加两个属性，分别表示当前td对应的真实td坐标
+                for (var i = rightCellRowIndex; i < rightCellRowIndex + rightCell.rowSpan; i++) {
+                    for (var j = rightCellCellIndex; j < rightCellCellIndex + rightCell.colSpan; j++) {
+                        var tmpCell = rows[i].cells[j];
+                        tmpCell.setAttribute('rootRowIndex', tr.rowIndex);
+                        tmpCell.setAttribute('rootCellIndex', getIndex(td));
+
+                    }
+                }
+                //合并单元格
+                td.colSpan += rightCell.colSpan || 1;
+                //合并内容
+                _moveContent(td, rightCell);
+                //删除被合并的单元格，此处用隐藏方式实现来提升性能
+                rightCell.style.display = "none";
+                //重新让单元格获取焦点
+                //trace:1565
+                if(domUtils.isEmptyBlock(td)){
+                    range.setStart(td,0).setCursor();
+                }else{
+                    range.selectNodeContents(td).setCursor(true,true);
+                }
+                
+                //处理有寛高，导致ie的文字不能输入占满
+                browser.ie  && domUtils.removeAttributes(td,['width','height']);
+            }
+        };
+
+        /**
+         * 向下合并单元格
+         */
+        me.commands['mergedown'] = {
+            queryCommandState : function() {
+              if(this.highlight || this.queryCommandState('highlightcode')){
+                       return -1;
+                   }
+                var range = this.selection.getRange(),
+                    start = range.startContainer,
+                    td = domUtils.findParentByTagName(start, 'td', true);
+
+                if (!td || getCount(me.currentSelectedArr) > 1)return -1;
+
+
+                var tr = td.parentNode,
+                    table = tr.parentNode.parentNode,
+                    rows = table.rows;
+
+                //已经是最底行,不能向下合并
+                var downCellRowIndex = tr.rowIndex + td.rowSpan;
+                if (downCellRowIndex >= rows.length) {
+                    return -1;
+                }
+
+                //如果下一个单元格是隐藏的，表明他是由左边span过来的，不能向下合并
+                var downCell = rows[downCellRowIndex].cells[getIndex(td)];
+                if (_isHide(downCell)) {
+                    return -1;
+                }
+
+                //只有列span都相等时才能合并
+                return td.colSpan == downCell.colSpan ? 0 : -1;
+            },
+            execCommand : function() {
+
+                var range = this.selection.getRange(),
+                    start = range.startContainer,
+                    td = domUtils.findParentByTagName(start, ['td','th'], true) || me.currentSelectedArr[0];
+
+
+                var tr = td.parentNode,
+                    rows = tr.parentNode.parentNode.rows;
+
+                var downCellRowIndex = tr.rowIndex + td.rowSpan,
+                    downCellCellIndex = getIndex(td),
+                    downCell = rows[downCellRowIndex].cells[downCellCellIndex];
+
+                //找到当前列的下一个未被隐藏的单元格
+                for (var i = downCellRowIndex; i < downCellRowIndex + downCell.rowSpan; i++) {
+                    for (var j = downCellCellIndex; j < downCellCellIndex + downCell.colSpan; j++) {
+                        var tmpCell = rows[i].cells[j];
+
+
+                        tmpCell.setAttribute('rootRowIndex', tr.rowIndex);
+                        tmpCell.setAttribute('rootCellIndex', getIndex(td));
+                    }
+                }
+                //合并单元格
+                td.rowSpan += downCell.rowSpan || 1;
+                //合并内容
+                _moveContent(td, downCell);
+                //删除被合并的单元格，此处用隐藏方式实现来提升性能
+                downCell.style.display = "none";
+                //重新让单元格获取焦点
+                if(domUtils.isEmptyBlock(td)){
+                    range.setStart(td,0).setCursor();
+                }else{
+                    range.selectNodeContents(td).setCursor(true,true);
+                }
+                  //处理有寛高，导致ie的文字不能输入占满
+                browser.ie  && domUtils.removeAttributes(td,['width','height']);
+            }
+        };
+
+        /**
+         * 删除行
+         */
+        me.commands['deleterow'] = {
+            queryCommandState : function() {
+              if(this.highlight || this.queryCommandState('highlightcode')){
+                       return -1;
+                   }
+                var range = this.selection.getRange(),
+                    start = range.startContainer,
+                    td = domUtils.findParentByTagName(start, ['td','th'], true);
+                if (!td && me.currentSelectedArr.length == 0)return -1;
+
+            },
+            execCommand : function() {
+                var range = this.selection.getRange(),
+                    start = range.startContainer,
+                    td = domUtils.findParentByTagName(start, ['td','th'], true),
+                    tr,
+                    table,
+                    cells,
+                    rows ,
+                    rowIndex ,
+                    cellIndex;
+
+                if (td && me.currentSelectedArr.length == 0) {
+                    var count = (td.rowSpan || 1) - 1;
+
+                    me.currentSelectedArr.push(td);
+                    tr = td.parentNode,
+                        table = tr.parentNode.parentNode;
+
+                    rows = table.rows,
+                        rowIndex = tr.rowIndex + 1,
+                        cellIndex = getIndex(td);
+
+                    while (count) {
+
+                        me.currentSelectedArr.push(rows[rowIndex].cells[cellIndex]);
+                        count--;
+                        rowIndex++
+                    }
+                }
+
+                while (td = me.currentSelectedArr.pop()) {
+
+                    if (!domUtils.findParentByTagName(td, 'table')) {//|| _isHide(td)
+
+                        continue;
+                    }
+                    tr = td.parentNode,
+                        table = tr.parentNode.parentNode;
+                    cells = tr.cells,
+                        rows = table.rows,
+                        rowIndex = tr.rowIndex,
+                        cellIndex = getIndex(td);
+                    /*
+                     * 从最左边开始扫描并隐藏当前行的所有单元格
+                     * 若当前单元格的display为none,往上找到它所在的真正单元格，获取colSpan和rowSpan，
+                     *  将rowspan减一，并跳转到cellIndex+colSpan列继续处理
+                     * 若当前单元格的display不为none,分两种情况：
+                     *  1、rowspan == 1 ，直接设置display为none，跳转到cellIndex+colSpan列继续处理
+                     *  2、rowspan > 1  , 修改当前单元格的下一个单元格的display为"",
+                     *    并将当前单元格的rowspan-1赋给下一个单元格的rowspan，当前单元格的colspan赋给下一个单元格的colspan，
+                     *    然后隐藏当前单元格，跳转到cellIndex+colSpan列继续处理
+                     */
+                    for (var currentCellIndex = 0; currentCellIndex < cells.length;) {
+                        var currentNode = cells[currentCellIndex];
+                        if (_isHide(currentNode)) {
+                            var topNode = rows[currentNode.getAttribute('rootRowIndex')].cells[currentNode.getAttribute('rootCellIndex')];
+                            topNode.rowSpan--;
+                            currentCellIndex += topNode.colSpan;
+                        } else {
+                            if (currentNode.rowSpan == 1) {
+                                currentCellIndex += currentNode.colSpan;
+                            } else {
+                                var downNode = rows[rowIndex + 1].cells[currentCellIndex];
+                                downNode.style.display = "";
+                                downNode.rowSpan = currentNode.rowSpan - 1;
+                                downNode.colSpan = currentNode.colSpan;
+                                currentCellIndex += currentNode.colSpan;
+                            }
+                        }
+                    }
+                    //完成更新后再删除外层包裹的tr
+                    domUtils.remove(tr);
+
+                    //重新定位焦点
+                    var topRowTd, focusTd, downRowTd;
+
+                    if (rowIndex == rows.length) { //如果被删除的行是最后一行,这里之所以没有-1是因为已经删除了一行
+                        //如果删除的行也是第一行，那么表格总共只有一行，删除整个表格
+                        if (rowIndex == 0) {
+                            var p = table.ownerDocument.createElement('p');
+                            p.innerHTML = browser.ie ? '&nbsp;' : '<br/>';
+                            table.parentNode.insertBefore(p, table);
+                            domUtils.remove(table);
+                            range.setStart(p, 0).setCursor();
+
+                            return;
+                        }
+                        //如果上一单元格未隐藏，则直接定位，否则定位到最近的上一个非隐藏单元格
+                        var preRowIndex = rowIndex - 1;
+                        topRowTd = rows[preRowIndex].cells[ cellIndex];
+                        focusTd = _isHide(topRowTd) ? rows[topRowTd.getAttribute('rootRowIndex')].cells[topRowTd.getAttribute('rootCellIndex')] : topRowTd;
+
+                    } else { //如果被删除的不是最后一行，则光标定位到下一行,此处未加1是因为已经删除了一行
+
+                        downRowTd = rows[rowIndex].cells[cellIndex];
+                        focusTd = _isHide(downRowTd) ? rows[downRowTd.getAttribute('rootRowIndex')].cells[downRowTd.getAttribute('rootCellIndex')] : downRowTd;
+                    }
+                }
+
+
+                range.setStart(focusTd, 0).setCursor();
+                update(table)
+            }
+        };
+
+        /**
+         * 删除列
+         */
+        me.commands['deletecol'] = {
+            queryCommandState:function() {
+               if(this.highlight || this.queryCommandState('highlightcode')){
+                       return -1;
+                   }
+                var range = this.selection.getRange(),
+                    start = range.startContainer,
+                    td = domUtils.findParentByTagName(start, ['td','th'], true);
+                if (!td && me.currentSelectedArr.length == 0)return -1;
+            },
+            execCommand:function() {
+
+                var range = this.selection.getRange(),
+                    start = range.startContainer,
+                    td = domUtils.findParentByTagName(start, ['td','th'], true);
+
+
+                if (td && me.currentSelectedArr.length == 0) {
+
+                    var count = (td.colSpan || 1) - 1;
+
+                    me.currentSelectedArr.push(td);
+                    while (count) {
+                        do{
+                            td = td.nextSibling
+                        } while (td.nodeType == 3);
+                        me.currentSelectedArr.push(td);
+                        count--;
+                    }
+                }
+
+                while (td = me.currentSelectedArr.pop()) {
+                    if (!domUtils.findParentByTagName(td, 'table')) { //|| _isHide(td)
+                        continue;
+                    }
+
+                    var tr = td.parentNode,
+                        table = tr.parentNode.parentNode,
+                        cellIndex = getIndex(td),
+                        rows = table.rows,
+                        cells = tr.cells,
+                        rowIndex = tr.rowIndex;
+                    /*
+                     * 从第一行开始扫描并隐藏当前列的所有单元格
+                     * 若当前单元格的display为none，表明它是由左边Span过来的，
+                     *  将左边第一个非none单元格的colSpan减去1并删去对应的单元格后跳转到rowIndex + rowspan行继续处理；
+                     * 若当前单元格的display不为none，分两种情况，
+                     *  1、当前单元格的colspan == 1 ， 则直接删除该节点，跳转到rowIndex + rowspan行继续处理
+                     *  2、当前单元格的colsapn >  1, 修改当前单元格右边单元格的display为"",
+                     *      并将当前单元格的colspan-1赋给它的colspan，当前单元格的rolspan赋给它的rolspan，
+                     *      然后删除当前单元格，跳转到rowIndex+rowSpan行继续处理
+                     */
+                    var rowSpan;
+                    for (var currentRowIndex = 0; currentRowIndex < rows.length;) {
+                        var currentNode = rows[currentRowIndex].cells[cellIndex];
+                        if (_isHide(currentNode)) {
+                            var leftNode = rows[currentNode.getAttribute('rootRowIndex')].cells[currentNode.getAttribute('rootCellIndex')];
+                            //依次删除对应的单元格
+                            rowSpan = leftNode.rowSpan;
+                            for (var i = 0; i < leftNode.rowSpan; i++) {
+                                var delNode = rows[currentRowIndex + i].cells[cellIndex];
+                                domUtils.remove(delNode);
+                            }
+                            //修正被删后的单元格信息
+                            leftNode.colSpan--;
+                            currentRowIndex += rowSpan;
+                        } else {
+                            if (currentNode.colSpan == 1) {
+                                rowSpan = currentNode.rowSpan;
+                                for (var i = currentRowIndex,l = currentRowIndex + currentNode.rowSpan; i < l; i++) {
+                                    domUtils.remove(rows[i].cells[cellIndex]);
+                                }
+                                currentRowIndex += rowSpan;
+
+                            } else {
+                                var rightNode = rows[currentRowIndex].cells[cellIndex + 1];
+                                rightNode.style.display = "";
+                                rightNode.rowSpan = currentNode.rowSpan;
+                                rightNode.colSpan = currentNode.colSpan - 1;
+                                currentRowIndex += currentNode.rowSpan;
+                                domUtils.remove(currentNode);
+                            }
+                        }
+                    }
+
+                    //重新定位焦点
+                    var preColTd, focusTd, nextColTd;
+                    if (cellIndex == cells.length) { //如果当前列是最后一列，光标定位到当前列的前一列,同样，这里没有减去1是因为已经被删除了一列
+                        //如果当前列也是第一列，则删除整个表格
+                        if (cellIndex == 0) {
+                            var p = table.ownerDocument.createElement('p');
+                            p.innerHTML = browser.ie ? '&nbsp;' : '<br/>';
+                            table.parentNode.insertBefore(p, table);
+                            domUtils.remove(table);
+                            range.setStart(p, 0).setCursor();
+                            return;
+                        }
+                        //找到当前单元格前一列中和本单元格最近的一个未隐藏单元格
+                        var preCellIndex = cellIndex - 1;
+                        preColTd = rows[rowIndex].cells[preCellIndex];
+                        focusTd = _isHide(preColTd) ? rows[preColTd.getAttribute('rootRowIndex')].cells[preColTd.getAttribute('rootCellIndex')] : preColTd;
+
+                    } else { //如果当前列不是最后一列，则光标定位到当前列的后一列
+
+                        nextColTd = rows[rowIndex].cells[cellIndex];
+                        focusTd = _isHide(nextColTd) ? rows[nextColTd.getAttribute('rootRowIndex')].cells[nextColTd.getAttribute('rootCellIndex')] : nextColTd;
+                    }
+                }
+
+                range.setStart(focusTd, 0).setCursor();
+                update(table)
+            }
+        };
+
+        /**
+         * 完全拆分单元格
+         */
+        me.commands['splittocells'] = {
+            queryCommandState:function() {
+               if(this.highlight || this.queryCommandState('highlightcode')){
+                       return -1;
+                   }
+                var range = this.selection.getRange(),
+                    start = range.startContainer,
+                    td = domUtils.findParentByTagName(start, ['td','th'], true);
+                return td && ( td.rowSpan > 1 || td.colSpan > 1 ) && (!me.currentSelectedArr.length || getCount(me.currentSelectedArr) == 1) ? 0 : -1;
+            },
+            execCommand:function() {
+
+                var range = this.selection.getRange(),
+                    start = range.startContainer,
+                    td = domUtils.findParentByTagName(start, ['td','th'], true),
+                    tr = td.parentNode,
+                    table = tr.parentNode.parentNode;
+                var rowIndex = tr.rowIndex,
+                    cellIndex = getIndex(td),
+                    rowSpan = td.rowSpan,
+                    colSpan = td.colSpan;
+
+
+                for (var i = 0; i < rowSpan; i++) {
+                    for (var j = 0; j < colSpan; j++) {
+                        var cell = table.rows[rowIndex + i].cells[cellIndex + j];
+                        cell.rowSpan = 1;
+                        cell.colSpan = 1;
+
+                        if (_isHide(cell)) {
+                            cell.style.display = "";
+                            cell.innerHTML = browser.ie ? '' : "<br/>";
+                        }
+                    }
+                }
+            }
+        };
+
+
+        /**
+         * 将单元格拆分成行
+         */
+        me.commands['splittorows'] = {
+            queryCommandState:function() {
+             if(this.highlight || this.queryCommandState('highlightcode')){
+                       return -1;
+                   }
+                var range = this.selection.getRange(),
+                    start = range.startContainer,
+                    td = domUtils.findParentByTagName(start, 'td', true) || me.currentSelectedArr[0];
+                return td && ( td.rowSpan > 1) && (!me.currentSelectedArr.length || getCount(me.currentSelectedArr) == 1) ? 0 : -1;
+            },
+            execCommand:function() {
+
+                var range = this.selection.getRange(),
+                    start = range.startContainer,
+                    td = domUtils.findParentByTagName(start, 'td', true) || me.currentSelectedArr[0],
+                    tr = td.parentNode,
+                    rows = tr.parentNode.parentNode.rows;
+
+                var rowIndex = tr.rowIndex,
+                    cellIndex = getIndex(td),
+                    rowSpan = td.rowSpan,
+                    colSpan = td.colSpan;
+
+                for (var i = 0; i < rowSpan; i++) {
+                    var cells = rows[rowIndex + i],
+                        cell = cells.cells[cellIndex];
+                    cell.rowSpan = 1;
+                    cell.colSpan = colSpan;
+                    if (_isHide(cell)) {
+                        cell.style.display = "";
+                        //原有的内容要清除掉
+                        cell.innerHTML = browser.ie ? '' : '<br/>'
+                    }
+                    //修正被隐藏单元格中存储的rootRowIndex和rootCellIndex信息
+                    for (var j = cellIndex + 1; j < cellIndex + colSpan; j++) {
+                        cell = cells.cells[j];
+
+                        cell.setAttribute('rootRowIndex', rowIndex + i)
+                    }
+
+                }
+                clearSelectedTd(me.currentSelectedArr);
+                this.selection.getRange().setStart(td, 0).setCursor();
+            }
+        };
+
+
+        /**
+         * 在表格前插入行
+         */
+        me.commands['insertparagraphbeforetable'] = {
+            queryCommandState:function() {
+              if(this.highlight || this.queryCommandState('highlightcode')){
+                       return -1;
+                   }
+                var range = this.selection.getRange(),
+                    start = range.startContainer,
+                    td = domUtils.findParentByTagName(start, 'td', true) || me.currentSelectedArr[0];
+                return  td && domUtils.findParentByTagName(td, 'table') ? 0 : -1;
+            },
+            execCommand:function() {
+
+                var range = this.selection.getRange(),
+                    start = range.startContainer,
+                    table = domUtils.findParentByTagName(start, 'table', true);
+
+                start = me.document.createElement(me.options.enterTag);
+                table.parentNode.insertBefore(start, table);
+                clearSelectedTd(me.currentSelectedArr);
+                if (start.tagName == 'P') {
+                    //trace:868
+                    start.innerHTML = browser.ie ? '' : '<br/>';
+                    range.setStart(start, 0)
+                } else {
+                    range.setStartBefore(start)
+                }
+                range.setCursor();
+
+            }
+        };
+
+        /**
+         * 将单元格拆分成列
+         */
+        me.commands['splittocols'] = {
+            queryCommandState:function() {
+             if(this.highlight || this.queryCommandState('highlightcode')){
+                       return -1;
+                   }
+                var range = this.selection.getRange(),
+                    start = range.startContainer,
+                    td = domUtils.findParentByTagName(start, ['td','th'], true) || me.currentSelectedArr[0];
+                return td && ( td.colSpan > 1) && (!me.currentSelectedArr.length || getCount(me.currentSelectedArr) == 1) ? 0 : -1;
+            },
+            execCommand:function() {
+
+                var range = this.selection.getRange(),
+                    start = range.startContainer,
+                    td = domUtils.findParentByTagName(start, ['td','th'], true) || me.currentSelectedArr[0],
+                    tr = td.parentNode,
+                    rows = tr.parentNode.parentNode.rows;
+
+                var rowIndex = tr.rowIndex,
+                    cellIndex = getIndex(td),
+                    rowSpan = td.rowSpan,
+                    colSpan = td.colSpan;
+
+                for (var i = 0; i < colSpan; i++) {
+                    var cell = rows[rowIndex].cells[cellIndex + i];
+                    cell.rowSpan = rowSpan;
+                    cell.colSpan = 1;
+                    if (_isHide(cell)) {
+                        cell.style.display = "";
+                        cell.innerHTML = browser.ie ? '' : '<br/>'
+                    }
+
+                    for (var j = rowIndex + 1; j < rowIndex + rowSpan; j++) {
+                        var tmpCell = rows[j].cells[cellIndex + i];
+                        tmpCell.setAttribute('rootCellIndex', cellIndex + i);
+                    }
+                }
+                clearSelectedTd(me.currentSelectedArr);
+                this.selection.getRange().setStart(td, 0).setCursor();
+            }
+        };
+
+
+        /**
+         * 插入行
+         */
+        me.commands['insertrow'] = {
+            queryCommandState:function() {
+              if(this.highlight || this.queryCommandState('highlightcode')){
+                       return -1;
+                   }
+                var range = this.selection.getRange();
+                return domUtils.findParentByTagName(range.startContainer, 'table', true)
+                    || domUtils.findParentByTagName(range.endContainer, 'table', true) || me.currentSelectedArr.length != 0 ? 0 : -1;
+            },
+            execCommand:function() {
+                var range = this.selection.getRange(),
+                    start = range.startContainer,
+                    tr = domUtils.findParentByTagName(start, 'tr', true) || me.currentSelectedArr[0].parentNode,
+                    table = tr.parentNode.parentNode,
+                    rows = table.rows;
+
+                //记录插入位置原来所有的单元格
+                var rowIndex = tr.rowIndex,
+                    cells = rows[rowIndex].cells;
+
+                //插入新的一行
+                var newRow = table.insertRow(rowIndex);
+
+                var newCell;
+                //遍历表格中待插入位置中的所有单元格，检查其状态，并据此修正新插入行的单元格状态
+                for (var cellIndex = 0; cellIndex < cells.length;) {
+
+                    var tmpCell = cells[cellIndex];
+
+                    if (_isHide(tmpCell)) { //如果当前单元格是隐藏的，表明当前单元格由其上部span过来，找到其上部单元格
+
+                        //找到被隐藏单元格真正所属的单元格
+                        var topCell = rows[tmpCell.getAttribute('rootRowIndex')].cells[tmpCell.getAttribute('rootCellIndex')];
+                        //增加一行，并将所有新插入的单元格隐藏起来
+                        topCell.rowSpan++;
+                        for (var i = 0; i < topCell.colSpan; i++) {
+                            newCell = tmpCell.cloneNode(false);
+                            newCell.rowSpan = newCell.colSpan = 1;
+                            newCell.innerHTML = browser.ie ? '' : "<br/>";
+                            newCell.className = '';
+
+                            if (newRow.children[cellIndex + i]) {
+                                newRow.insertBefore(newCell, newRow.children[cellIndex + i]);
+                            } else {
+                                newRow.appendChild(newCell)
+                            }
+
+                            newCell.style.display = "none";
+                        }
+                        cellIndex += topCell.colSpan;
+
+                    } else {//若当前单元格未隐藏，则在其上行插入colspan个单元格
+
+                        for (var j = 0; j < tmpCell.colSpan; j++) {
+
+                            newCell = tmpCell.cloneNode(false);
+                            newCell.rowSpan = newCell.colSpan = 1;
+                            newCell.innerHTML = browser.ie ? '' : "<br/>";
+                            newCell.className = '';
+                            if (newRow.children[cellIndex + j]) {
+                                newRow.insertBefore(newCell, newRow.children[cellIndex + j]);
+                            } else {
+                                newRow.appendChild(newCell)
+                            }
+                        }
+                        cellIndex += tmpCell.colSpan;
+                    }
+                }
+                update(table);
+                range.setStart(newRow.cells[0], 0).setCursor();
+
+                clearSelectedTd(me.currentSelectedArr);
+            }
+        };
+
+        /**
+         * 插入列
+         */
+        me.commands['insertcol'] = {
+            queryCommandState:function() {
+              if(this.highlight || this.queryCommandState('highlightcode')){
+                       return -1;
+                   }
+                var range = this.selection.getRange();
+                return domUtils.findParentByTagName(range.startContainer, 'table', true)
+                    || domUtils.findParentByTagName(range.endContainer, 'table', true) || me.currentSelectedArr.length != 0 ? 0 : -1;
+            },
+            execCommand:function() {
+
+                var range = this.selection.getRange(),
+                    start = range.startContainer,
+                    td = domUtils.findParentByTagName(start, ['td','th'], true) || me.currentSelectedArr[0],
+                    table = domUtils.findParentByTagName(td, 'table'),
+                    rows = table.rows;
+
+                var cellIndex = getIndex(td),
+                    newCell;
+
+                //遍历当前列中的所有单元格，检查其状态，并据此修正新插入列的单元格状态
+                for (var rowIndex = 0; rowIndex < rows.length;) {
+
+                    var tmpCell = rows[rowIndex].cells[cellIndex],tr;
+
+                    if (_isHide(tmpCell)) {//如果当前单元格是隐藏的，表明当前单元格由其左边span过来，找到其左边单元格
+
+                        var leftCell = rows[tmpCell.getAttribute('rootRowIndex')].cells[tmpCell.getAttribute('rootCellIndex')];
+                        leftCell.colSpan++;
+                        for (var i = 0; i < leftCell.rowSpan; i++) {
+                            newCell = td.cloneNode(false);
+                            newCell.rowSpan = newCell.colSpan = 1;
+                            newCell.innerHTML = browser.ie ? '' : "<br/>";
+                            newCell.className = '';
+                            tr = rows[rowIndex + i];
+                            if (tr.children[cellIndex]) {
+                                tr.insertBefore(newCell, tr.children[cellIndex]);
+                            } else {
+                                tr.appendChild(newCell)
+                            }
+
+                            newCell.style.display = "none";
+                        }
+                        rowIndex += leftCell.rowSpan;
+
+                    } else { //若当前单元格未隐藏，则在其左边插入rowspan个单元格
+
+                        for (var j = 0; j < tmpCell.rowSpan; j++) {
+                            newCell = td.cloneNode(false);
+                            newCell.rowSpan = newCell.colSpan = 1;
+                            newCell.innerHTML = browser.ie ? '' : "<br/>";
+                            newCell.className = '';
+                            tr = rows[rowIndex + j];
+                            if (tr.children[cellIndex]) {
+                                tr.insertBefore(newCell, tr.children[cellIndex]);
+                            } else {
+                                tr.appendChild(newCell)
+                            }
+
+                            newCell.innerHTML = browser.ie ? '' : "<br/>";
+
+                        }
+                        rowIndex += tmpCell.rowSpan;
+                    }
+                }
+                update(table);
+                range.setStart(rows[0].cells[cellIndex], 0).setCursor();
+                clearSelectedTd(me.currentSelectedArr);
+            }
+        };
+
+        /**
+         * 合并多个单元格，通过两个cell将当前包含的所有横纵单元格进行合并
+         */
+        me.commands['mergecells'] = {
+            queryCommandState:function() {
+               if(this.highlight || this.queryCommandState('highlightcode')){
+                       return -1;
+                   }
+                var count = 0;
+                for (var i = 0,ti; ti = this.currentSelectedArr[i++];) {
+                    if (!_isHide(ti))
+                        count++;
+                }
+                return count > 1 ? 0 : -1;
+            },
+            execCommand:function() {
+
+                var start = me.currentSelectedArr[0],
+                    end = me.currentSelectedArr[me.currentSelectedArr.length - 1],
+                    table = domUtils.findParentByTagName(start, 'table'),
+                    rows = table.rows,
+                    cellsRange = {
+                        beginRowIndex:start.parentNode.rowIndex,
+                        beginCellIndex:getIndex(start),
+                        endRowIndex:end.parentNode.rowIndex,
+                        endCellIndex:getIndex(end)
+                    },
+
+                    beginRowIndex = cellsRange.beginRowIndex,
+                    beginCellIndex = cellsRange.beginCellIndex,
+                    rowsLength = cellsRange.endRowIndex - cellsRange.beginRowIndex + 1,
+                    cellLength = cellsRange.endCellIndex - cellsRange.beginCellIndex + 1,
+
+                    tmp = rows[beginRowIndex].cells[beginCellIndex];
+
+                for (var i = 0, ri; (ri = rows[beginRowIndex + i++]) && i <= rowsLength;) {
+                    for (var j = 0, ci; (ci = ri.cells[beginCellIndex + j++]) && j <= cellLength;) {
+                        if (i == 1 && j == 1) {
+                            ci.style.display = "";
+                            ci.rowSpan = rowsLength;
+                            ci.colSpan = cellLength;
+                        } else {
+                            ci.style.display = "none";
+                            ci.rowSpan = 1;
+                            ci.colSpan = 1;
+                            ci.setAttribute('rootRowIndex', beginRowIndex);
+                            ci.setAttribute('rootCellIndex', beginCellIndex);
+
+                            //传递内容
+                            _moveContent(tmp, ci);
+                        }
+                    }
+                }
+                this.selection.getRange().setStart(tmp, 0).setCursor();
+                  //处理有寛高，导致ie的文字不能输入占满
+                browser.ie  && domUtils.removeAttributes(tmp,['width','height']);
+                clearSelectedTd(me.currentSelectedArr);
+            }
+        };
+
+        /**
+         * 将cellFrom单元格中的内容移动到cellTo中
+         * @param cellTo  目标单元格
+         * @param cellFrom  源单元格
+         */
+        function _moveContent(cellTo, cellFrom) {
+            if (_isEmpty(cellFrom)) return;
+
+            if (_isEmpty(cellTo)) {
+                cellTo.innerHTML = cellFrom.innerHTML;
+                return;
+            }
+            var child = cellTo.lastChild;
+            if (child.nodeType != 1 || child.tagName != 'BR') {
+                cellTo.appendChild(cellTo.ownerDocument.createElement('br'))
+            }
+
+            //依次移动内容
+            while (child = cellFrom.firstChild) {
+                cellTo.appendChild(child);
+            }
+        }
+
+
+        /**
+         * 根据两个单元格来获取中间包含的所有单元格集合选区
+         * @param cellA
+         * @param cellB
+         * @return {Object} 选区的左上和右下坐标
+         */
+        function _getCellsRange(cellA, cellB) {
+
+            var trA = cellA.parentNode,
+                trB = cellB.parentNode,
+                aRowIndex = trA.rowIndex,
+                bRowIndex = trB.rowIndex,
+                rows = trA.parentNode.parentNode.rows,
+                rowsNum = rows.length,
+                cellsNum = rows[0].cells.length,
+                cellAIndex = getIndex(cellA),
+                cellBIndex = getIndex(cellB);
+
+            if (cellA == cellB) {
+                return {
+                    beginRowIndex: aRowIndex,
+                    beginCellIndex: cellAIndex,
+                    endRowIndex: aRowIndex + cellA.rowSpan - 1,
+                    endCellIndex: cellBIndex + cellA.colSpan - 1
+                }
+            }
+
+            var
+                beginRowIndex = Math.min(aRowIndex, bRowIndex),
+                beginCellIndex = Math.min(cellAIndex, cellBIndex),
+                endRowIndex = Math.max(aRowIndex + cellA.rowSpan - 1, bRowIndex + cellB.rowSpan - 1),
+                endCellIndex = Math.max(cellAIndex + cellA.colSpan - 1, cellBIndex + cellB.colSpan - 1);
+
+            while (1) {
+
+                var tmpBeginRowIndex = beginRowIndex,
+                    tmpBeginCellIndex = beginCellIndex,
+                    tmpEndRowIndex = endRowIndex,
+                    tmpEndCellIndex = endCellIndex;
+                // 检查是否有超出TableRange上边界的情况
+                if (beginRowIndex > 0) {
+                    for (cellIndex = beginCellIndex; cellIndex <= endCellIndex;) {
+                        var currentTopTd = rows[beginRowIndex].cells[cellIndex];
+                        if (_isHide(currentTopTd)) {
+
+                            //overflowRowIndex = beginRowIndex == currentTopTd.rootRowIndex ? 1:0;
+                            beginRowIndex = currentTopTd.getAttribute('rootRowIndex');
+                            currentTopTd = rows[currentTopTd.getAttribute('rootRowIndex')].cells[currentTopTd.getAttribute('rootCellIndex')];
+                        }
+
+                        cellIndex = getIndex(currentTopTd) + (currentTopTd.colSpan || 1);
+                    }
+                }
+
+                //检查是否有超出左边界的情况
+                if (beginCellIndex > 0) {
+                    for (var rowIndex = beginRowIndex; rowIndex <= endRowIndex;) {
+                        var currentLeftTd = rows[rowIndex].cells[beginCellIndex];
+                        if (_isHide(currentLeftTd)) {
+                            // overflowCellIndex = beginCellIndex== currentLeftTd.rootCellIndex ? 1:0;
+                            beginCellIndex = currentLeftTd.getAttribute('rootCellIndex');
+                            currentLeftTd = rows[currentLeftTd.getAttribute('rootRowIndex')].cells[currentLeftTd.getAttribute('rootCellIndex')];
+                        }
+                        rowIndex = currentLeftTd.parentNode.rowIndex + (currentLeftTd.rowSpan || 1);
+                    }
+                }
+
+                // 检查是否有超出TableRange下边界的情况
+                if (endRowIndex < rowsNum) {
+                    for (var cellIndex = beginCellIndex; cellIndex <= endCellIndex;) {
+                        var currentDownTd = rows[endRowIndex].cells[cellIndex];
+                        if (_isHide(currentDownTd)) {
+                            currentDownTd = rows[currentDownTd.getAttribute('rootRowIndex')].cells[currentDownTd.getAttribute('rootCellIndex')];
+                        }
+                        endRowIndex = currentDownTd.parentNode.rowIndex + currentDownTd.rowSpan - 1;
+                        cellIndex = getIndex(currentDownTd) + (currentDownTd.colSpan || 1);
+                    }
+                }
+
+                //检查是否有超出右边界的情况
+                if (endCellIndex < cellsNum) {
+                    for (rowIndex = beginRowIndex; rowIndex <= endRowIndex;) {
+                        var currentRightTd = rows[rowIndex].cells[endCellIndex];
+                        if (_isHide(currentRightTd)) {
+                            currentRightTd = rows[currentRightTd.getAttribute('rootRowIndex')].cells[currentRightTd.getAttribute('rootCellIndex')];
+                        }
+                        endCellIndex = getIndex(currentRightTd) + currentRightTd.colSpan - 1;
+                        rowIndex = currentRightTd.parentNode.rowIndex + (currentRightTd.rowSpan || 1);
+                    }
+                }
+
+                if (tmpBeginCellIndex == beginCellIndex && tmpEndCellIndex == endCellIndex && tmpEndRowIndex == endRowIndex && tmpBeginRowIndex == beginRowIndex) {
+                    break;
+                }
+            }
+
+            //返回选区的起始和结束坐标
+            return {
+                beginRowIndex:  beginRowIndex,
+                beginCellIndex: beginCellIndex,
+                endRowIndex:    endRowIndex,
+                endCellIndex:   endCellIndex
+            }
+        }
+
+
+        /**
+         * 鼠标按下事件
+         * @param type
+         * @param evt
+         */
+        function _mouseDownEvent(type, evt) {
+            anchorTd = evt.target || evt.srcElement;
+
+            if(me.queryCommandState('highlightcode')||domUtils.findParent(anchorTd,function(node){
+                return node.tagName == "DIV"&&/highlighter/.test(node.id);
+            })){
+
+                return;
+            }
+
+            if (evt.button == 2)return;
+            me.document.body.style.webkitUserSelect = '';
+
+
+            clearSelectedTd(me.currentSelectedArr);
+            domUtils.clearSelectedArr(me.currentSelectedArr);
+            //在td里边点击，anchorTd不是td
+            if (anchorTd.tagName !== 'TD') {
+                anchorTd = domUtils.findParentByTagName(anchorTd, 'td') || anchorTd;
+            }
+
+            if (anchorTd.tagName == 'TD') {
+
+
+                me.addListener('mouseover', function(type, evt) {
+                    var tmpTd = evt.target || evt.srcElement;
+                    _mouseOverEvent.call(me, tmpTd);
+                    evt.preventDefault ? evt.preventDefault() : (evt.returnValue = false);
+                });
+
+            } else {
+
+
+                reset();
+            }
+
+        }
+
+        /**
+         * 鼠标移动事件
+         * @param tmpTd
+         */
+        function _mouseOverEvent(tmpTd) {
+
+            if (anchorTd && tmpTd.tagName == "TD") {
+
+                me.document.body.style.webkitUserSelect = 'none';
+                var table = tmpTd.parentNode.parentNode.parentNode;
+                me.selection.getNative()[browser.ie ? 'empty' : 'removeAllRanges']();
+                var range = _getCellsRange(anchorTd, tmpTd);
+                _toggleSelect(table, range);
+
+
+            }
+        }
+
+        /**
+         * 切换选区状态
+         * @param table
+         * @param cellsRange
+         */
+        function _toggleSelect(table, cellsRange) {
+            var rows = table.rows;
+            clearSelectedTd(me.currentSelectedArr);
+            for (var i = cellsRange.beginRowIndex; i <= cellsRange.endRowIndex; i++) {
+                for (var j = cellsRange.beginCellIndex; j <= cellsRange.endCellIndex; j++) {
+                    var td = rows[i].cells[j];
+                    td.className = me.options.selectedTdClass;
+                    me.currentSelectedArr.push(td);
+                }
+            }
+        }
+
+        //更新rootRowIndxe,rootCellIndex
+        function update(table) {
+            var tds = table.getElementsByTagName('td'),
+                rowIndex,cellIndex,rows = table.rows;
+            for (var j = 0,tj; tj = tds[j++];) {
+                if (!_isHide(tj)) {
+                    rowIndex = tj.parentNode.rowIndex;
+                    cellIndex = getIndex(tj);
+                    for (var r = 0; r < tj.rowSpan; r++) {
+                        var c = r == 0 ? 1 : 0;
+                        for (; c < tj.colSpan; c++) {
+                            var tmp = rows[rowIndex + r].children[cellIndex + c];
+
+
+                            tmp.setAttribute('rootRowIndex', rowIndex);
+                            tmp.setAttribute('rootCellIndex', cellIndex);
+
+                        }
+                    }
+                }
+            }
+        }
+
+        me.adjustTable = function(cont) {
+            var table = cont.getElementsByTagName('table');
+            for (var i = 0,ti; ti = table[i++];) {
+                if (ti.getAttribute('align')) {
+                    insertClearNode(ti)
+
+                }
+                if (!ti.getAttribute('border')) {
+                    ti.setAttribute('border', 1);
+                }
+
+                if (domUtils.getComputedStyle(ti, 'border-color') == '#ffffff') {
+                    ti.setAttribute('borderColor', '#000000');
+                }
+                var tds = domUtils.getElementsByTagName(ti, 'td'),
+                    td,tmpTd;
+
+                for (var j = 0,tj; tj = tds[j++];) {
+                    if (domUtils.isEmptyNode(tj)) {
+                        tj.innerHTML = browser.ie ? domUtils.fillChar : '<br/>';
+                    }
+                    var index = getIndex(tj),
+                        rowIndex = tj.parentNode.rowIndex,
+                        rows = domUtils.findParentByTagName(tj, 'table').rows;
+
+                    for (var r = 0; r < tj.rowSpan; r++) {
+                        var c = r == 0 ? 1 : 0;
+                        for (; c < tj.colSpan; c++) {
+
+                            if (!td) {
+                                td = tj.cloneNode(false);
+
+                                td.rowSpan = td.colSpan = 1;
+                                td.style.display = 'none';
+                                td.innerHTML = browser.ie ? '' : '<br/>';
+
+
+                            } else {
+                                td = td.cloneNode(true)
+                            }
+
+                            td.setAttribute('rootRowIndex', tj.parentNode.rowIndex);
+                            td.setAttribute('rootCellIndex', index);
+                            if (r == 0) {
+                                if (tj.nextSibling) {
+                                    tj.parentNode.insertBefore(td, tj.nextSibling);
+                                } else {
+                                    tj.parentNode.appendChild(td)
+                                }
+                            } else {
+                                tmpTd = rows[rowIndex + r].children[index];
+                                if (tmpTd) {
+                                    tmpTd.parentNode.insertBefore(td, tmpTd)
+                                } else {
+                                    //trace:1032
+                                    rows[rowIndex + r].appendChild(td)
+                                }
+                            }
+
+
+                        }
+                    }
+
+
+                }
+
+            }
+        }
+    };
+
+
+})();
 ///import core
 ///commands 定制过滤规则
 ///commandsName  Serialize
 ///commandsTitle  定制过滤规则
-UE.plugins['serialize'] = function () {
-    var ie = browser.ie,
+baidu.editor.plugins['serialize'] = function () {
+    var dtd = baidu.editor.dom.dtd,
+        utils = baidu.editor.utils,
+        domUtils = baidu.editor.dom.domUtils,
+        browser = baidu.editor.browser,
+        ie = browser.ie,
         version = browser.version;
 
-    function ptToPx(value){
-        return /pt/.test(value) ? value.replace( /([\d.]+)pt/g, function( str ) {
-            return  Math.round(parseFloat(str) * 96 / 72) + "px";
-        } ) : value;
-    }
+
     var me = this,
-            EMPTY_TAG = dtd.$empty,
+            EMPTY_TAG = baidu.editor.dom.dtd.$empty,
             parseHTML = function () {
-                 //干掉<a> 后便变得空格，保留</a>  这样的空格
-                var RE_PART = /<(?:(?:\/([^>]+)>)|(?:!--([\S|\s]*?)-->)|(?:([^\s\/>]+)\s*((?:(?:"[^"]*")|(?:'[^']*')|[^"'<>])*)\/?>))/g,
+                var RE_PART = /<(?:(?:\/([^>]+)>[ \t\r\n]*)|(?:!--([\S|\s]*?)-->)|(?:([^\s\/>]+)\s*((?:(?:"[^"]*")|(?:'[^']*')|[^"'<>])*)\/?>[ \t\r\n]*))/g,
                         RE_ATTR = /([\w\-:.]+)(?:(?:\s*=\s*(?:(?:"([^"]*)")|(?:'([^']*)')|([^\s>]+)))|(?=\s|$))/g,
-                                        EMPTY_ATTR = {checked:1,compact:1,declare:1,defer:1,disabled:1,ismap:1,multiple:1,nohref:1,noresize:1,noshade:1,nowrap:1,readonly:1,selected:1},
-                                        CDATA_TAG = {script:1,style: 1},
-                                        NEED_PARENT_TAG = {
-                                            "li": { "$": 'ul', "ul": 1, "ol": 1 },
-                                            "dd": { "$": "dl", "dl": 1 },
-                                            "dt": { "$": "dl", "dl": 1 },
-                                            "option": { "$": "select", "select": 1 },
-                                            "td": { "$": "tr", "tr": 1 },
-                                            "th": { "$": "tr", "tr": 1 },
-                                            "tr": { "$": "tbody", "tbody": 1, "thead": 1, "tfoot": 1, "table": 1 },
-                                            "tbody": { "$": "table", 'table':1,"colgroup": 1 },
-                                            "thead": { "$": "table", "table": 1 },
-                                            "tfoot": { "$": "table", "table": 1 },
-                                            "col": { "$": "colgroup","colgroup":1 }
-                                        };
-                                var NEED_CHILD_TAG = {
+                        EMPTY_ATTR = {checked:1,compact:1,declare:1,defer:1,disabled:1,ismap:1,multiple:1,nohref:1,noresize:1,noshade:1,nowrap:1,readonly:1,selected:1},
+                        CDATA_TAG = {script:1,style: 1},
+                        NEED_PARENT_TAG = {
+                            "li": { "$": 'ul', "ul": 1, "ol": 1 },
+                            "dd": { "$": "dl", "dl": 1 },
+                            "dt": { "$": "dl", "dl": 1 },
+                            "option": { "$": "select", "select": 1 },
+                            "td": { "$": "tr", "tr": 1 },
+                            "th": { "$": "tr", "tr": 1 },
+                            "tr": { "$": "tbody", "tbody": 1, "thead": 1, "tfoot": 1, "table": 1 },
+                            "tbody": { "$": "table", 'table':1,"colgroup": 1 },
+                            "thead": { "$": "table", "table": 1 },
+                            "tfoot": { "$": "table", "table": 1 },
+                            "col": { "$": "colgroup","colgroup":1 }
+                        };
+                var NEED_CHILD_TAG = {
                     "table": "td", "tbody": "td", "thead": "td", "tfoot": "td", "tr": "td",
                     "colgroup": "col",
                     "ul": "li", "ol": "li",
@@ -8869,7 +8527,6 @@ UE.plugins['serialize'] = function () {
                             cdata;
                     RE_PART.exec( "" );
                     while ( (match = RE_PART.exec( html )) ) {
-
                         var tagIndex = match.index;
                         if ( tagIndex > nextIndex ) {
                             var text = html.slice( nextIndex, tagIndex );
@@ -9019,21 +8676,18 @@ UE.plugins['serialize'] = function () {
 
                     parse( html, {
                         onText: function ( text ) {
-
                             while ( !(dtd[currentNode.tag] || dtd['div'])['#'] ) {
-                                //节点之间的空白不能当作节点处理
-//                                if(/^[ \t\r\n]+$/.test( text )){
-//                                    return;
-//                                }
                                 if ( tagEnd( currentNode ) ) continue;
                                 currentNode = currentNode.parent;
                             }
-                            //if(/^[ \t\n\r]*/.test(text))
+
+                            // TODO: 注意这里会去掉空白节点
+                            if ( /[^ \t\r\n]/.test( text ) ) {
                                 addChild( {
                                     type: 'text',
                                     data: text
                                 } );
-
+                            }
                         },
                         onComment: function ( text ) {
                             addChild( {
@@ -9052,7 +8706,7 @@ UE.plugins['serialize'] = function () {
                             } );
                         },
                         onTagOpen: function ( tag, attrs, closed ) {
-                            closed = closed || EMPTY_TAG[tag] ;
+                            closed = closed || EMPTY_TAG[tag];
                             addElement( {
                                 type: 'element',
                                 tag: tag,
@@ -9075,16 +8729,15 @@ UE.plugins['serialize'] = function () {
                                 //去掉空白的inline节点
                                 //分页，锚点保留
                                 //|| dtd.$removeEmptyBlock[node.tag])
-//                                if ( !node.children.length && dtd.$removeEmpty[node.tag] && !node.attributes.anchorname && node.attributes['class'] != 'pagebreak' && node.tag != 'a') {
-//
-//                                    node.parent.children.pop();
-//                                }
+                                if ( !node.children.length && dtd.$removeEmpty[node.tag] && !node.attributes.anchorname && node.attributes['class'] != 'pagebreak' ) {
+
+                                    node.parent.children.pop();
+                                }
                                 currentNode = node.parent;
                             } else {
                                 // 如果没有找到开始标签, 则创建新标签
                                 // eg. </div> => <div></div>
-                                //针对视屏网站embed会给结束符，这里特殊处理一下
-                                if ( !(dtd.$removeEmpty[tag] || dtd.$removeEmptyBlock[tag] || tag == 'embed') ) {
+                                if ( !(dtd.$removeEmpty[tag] || dtd.$removeEmptyBlock[tag]) ) {
                                     node = {
                                         type: 'element',
                                         tag: tag,
@@ -9106,6 +8759,7 @@ UE.plugins['serialize'] = function () {
                         tagEnd( currentNode );
                         currentNode = currentNode.parent;
                     }
+
                     return fragment;
                 };
             }();
@@ -9139,21 +8793,25 @@ UE.plugins['serialize'] = function () {
                 var value = attrs[k];
                 
                 if(k == 'style'){
-
                     //pt==>px
-                    value = ptToPx(value);
+                    if ( /pt/.test(value) ) {
+                       value = value.replace( /([\d.]+)pt/g, function( str ) {
+                            return  Math.round(parseInt(str, 10) * 96 / 72) + "px";
+                        } )
+                    }
                     //color rgb ==> hex
                     if(/rgba?\s*\([^)]*\)/.test(value)){
                         value = value.replace( /rgba?\s*\(([^)]*)\)/g, function( str ) {
                             return utils.fixColor('color',str);
                         } )
                     }
-                    attrs[k] = utils.optCss(value.replace(/windowtext/g,'#000'));
+                    
+                    attrs[k] = value.replace(/windowtext/g,'#000');
                 }
 
                 buff.push( k + '="' + unhtml1( attrs[k] ) + '"' );
             }
-            return buff.join( ' ' )
+            return buff.join( ' ' ).replace(/\;+/g,';')
         }
 
         function printData( node, notTrans ) {
@@ -9224,34 +8882,32 @@ UE.plugins['serialize'] = function () {
         }
 
         function filterPasteWord( str ) {
-            str = str.replace( /<!--\s*EndFragment\s*-->[\s\S]*$/, '' )
-                //remove link break
-                .replace( /^(\r\n|\n|\r)|(\r\n|\n|\r)$/ig, "" )
-                //remove &nbsp; entities at the start of contents
-                .replace( /^\s*(&nbsp;)+/ig, "" )
-                //remove &nbsp; entities at the end of contents
-                .replace( /(&nbsp;|<br[^>]*>)+\s*$/ig, "" )
-                // Word comments like conditional comments etc
-                .replace( /<!--[\s\S]*?-->/ig, "" )
-                //转换图片
-                .replace(/<v:shape [^>]*>[\s\S]*?.<\/v:shape>/gi,function(str){
-                    var width = str.match(/width:([ \d.]*p[tx])/i)[1],
-                        height = str.match(/height:([ \d.]*p[tx])/i)[1],
-                        src =  str.match(/src=\s*"([^"]*)"/i)[1];
-                    return '<img width="'+ptToPx(width)+'" height="'+ptToPx(height)+'" src="' + src + '" />'
-                })
-                //去掉多余的属性
-                .replace( /v:\w+=["']?[^'"]+["']?/g, '' )
-                // Remove comments, scripts (e.g., msoShowComment), XML tag, VML content, MS Office namespaced tags, and a few other tags
-                .replace( /<(!|script[^>]*>.*?<\/script(?=[>\s])|\/?(\?xml(:\w+)?|xml|meta|link|style|\w+:\w+)(?=[\s\/>]))[^>]*>/gi, "" )
-                //convert word headers to strong
-                .replace( /<p [^>]*class="?MsoHeading"?[^>]*>(.*?)<\/p>/gi, "<p><strong>$1</strong></p>" )
-                //remove lang attribute
-                .replace( /(lang)\s*=\s*([\'\"]?)[\w-]+\2/ig, "" )
-                //清除多余的font不能匹配&nbsp;有可能是空格
-                .replace( /<font[^>]*>\s*<\/font>/gi, '' )
-                //清除多余的class
-                .replace( /class\s*=\s*["']?(?:(?:MsoTableGrid)|(?:MsoNormal(Table)?))\s*["']?/gi, '' );
+            str = str.replace( /<!--\s*EndFragment\s*-->[\s\S]*$/, '' );
+            //remove link break
+            str = str.replace( /^(\r\n|\n|\r)|(\r\n|\n|\r)$/ig, "" );
+            //remove &nbsp; entities at the start of contents
+            str = str.replace( /^\s*(&nbsp;)+/ig, "" );
+            //remove &nbsp; entities at the end of contents
+            str = str.replace( /(&nbsp;|<br[^>]*>)+\s*$/ig, "" );
+            // Word comments like conditional comments etc
+            str = str.replace( /<!--[\s\S]*?-->/ig, "" );
+            //转换img
+            str = str.replace( /v:imagedata/g, 'img' ).replace( /<\/img>/g, '' );
+            //去掉多余的属性
+            str = str.replace( /v:\w+=["']?[^'"]+["']?/g, '' );
+
+            // Remove comments, scripts (e.g., msoShowComment), XML tag, VML content, MS Office namespaced tags, and a few other tags
+            str = str.replace( /<(!|script[^>]*>.*?<\/script(?=[>\s])|\/?(\?xml(:\w+)?|xml|meta|link|style|\w+:\w+)(?=[\s\/>]))[^>]*>/gi, "" );
+
+            //convert word headers to strong
+            str = str.replace( /<p [^>]*class="?MsoHeading"?[^>]*>(.*?)<\/p>/gi, "<p><strong>$1</strong></p>" );
+            //remove lang attribute
+            str = str.replace( /(lang)\s*=\s*([\'\"]?)[\w-]+\2/ig, "" );
+            //清除多余的font不能匹配&nbsp;有可能是空格
+            str = str.replace( /<font[^>]*>\s*<\/font>/gi, '' );
+            //清除多余的class
+            
+            str = str.replace( /class\s*=\s*["']?(?:(?:MsoTableGrid)|(?:MsoNormal(Table)?))\s*["']?/gi, '' );
 
             // Examine all styles: delete junk, transform some, and keep the rest
             //修复了原有的问题, 比如style='fontsize:"宋体"'原来的匹配失效了
@@ -9286,54 +8942,60 @@ UE.plugins['serialize'] = function () {
                             case "mso-height":
                             case "mso-width":
                             case "mso-vertical-align-alt":
-                                //trace:1819 ff下会解析出padding在table上
-                                if(!/<table/.test(tag))
-                                    n[i] = name.replace( /^mso-|-alt$/g, "" ) + ":" + ensureUnits( value );
+                                n[i++] = name.replace( /^mso-|-alt$/g, "" ) + ":" + ensureUnits( value );
                                 continue;
+
                             case "horiz-align":
-                                n[i] = "text-align:" + value;
+                                n[i++] = "text-align:" + value;
                                 continue;
 
                             case "vert-align":
-                                n[i] = "vertical-align:" + value;
+                                n[i++] = "vertical-align:" + value;
                                 continue;
 
                             case "font-color":
                             case "mso-foreground":
-                                n[i] = "color:" + value;
+                                n[i++] = "color:" + value;
                                 continue;
 
                             case "mso-background":
                             case "mso-highlight":
-                                n[i] = "background:" + value;
+                                n[i++] = "background:" + value;
                                 continue;
 
                             case "mso-default-height":
-                                n[i] = "min-height:" + ensureUnits( value );
+                                n[i++] = "min-height:" + ensureUnits( value );
                                 continue;
 
                             case "mso-default-width":
-                                n[i] = "min-width:" + ensureUnits( value );
+                                n[i++] = "min-width:" + ensureUnits( value );
                                 continue;
 
                             case "mso-padding-between-alt":
-                                n[i] = "border-collapse:separate;border-spacing:" + ensureUnits( value );
+                                n[i++] = "border-collapse:separate;border-spacing:" + ensureUnits( value );
                                 continue;
 
                             case "text-line-through":
                                 if ( (value == "single") || (value == "double") ) {
-                                    n[i] = "text-decoration:line-through";
+                                    n[i++] = "text-decoration:line-through";
                                 }
                                 continue;
 
 
-                            //trace:1870
-//                            //word里边的字体统一干掉
-//                            case 'font-family':
+
+                            //word里边的字体统一干掉
+                            case 'font-family':
+                            case 'border-width':
+                            case 'border-style':
+                                continue;
+                            //word进来的默认都是1px solid #000
+//                            case 'border-color':
+//                            case 'border':
+//                                n[i++] = 'border:1px solid #000';
 //                                continue;
                             case "mso-zero-height":
                                 if ( value == "yes" ) {
-                                    n[i] = "display:none";
+                                    n[i++] = "display:none";
                                 }
                                 continue;
                             case 'margin':
@@ -9346,6 +9008,14 @@ UE.plugins['serialize'] = function () {
                             if ( !/mso\-list/.test( name ) )
                                 continue;
                         }
+                        //pt 转换成为px
+
+//                        if ( /pt$/.test( parts[1] ) ) {
+//                            parts[1] = parts[1].replace( /([\d.]+)pt/g, function( str ) {
+//                                return  Math.round(parseInt(str, 10) * 96 / 72) + "px";
+//                            } )
+//
+//                        }
                         n[i] = name + ":" + parts[1];        // Lower-case name, but keep value case
                     }
                 }
@@ -9441,10 +9111,8 @@ UE.plugins['serialize'] = function () {
                         }
                     }
                     node.attributes.word_img = node.attributes.src;
-                    node.attributes.src = me.options.UEDITOR_HOME_URL + 'themes/default/images/spacer.gif';
-                    var flag = parseInt(node.attributes.width)<128||parseInt(node.attributes.height)<43;
-                    node.attributes.style="background:url(" + me.options.UEDITOR_HOME_URL +"themes/default/images/"+(flag?"word.gif":"localimage.png")+") no-repeat center center;border:1px solid #ddd";
-                    //node.attributes.style = 'width:395px;height:173px;';
+                    node.attributes.src = me.options.UEDITOR_HOME_URL + 'themes/default/images/localimage.jpg';
+                    node.attributes.style = 'width:395px;height:173px;';
                     word_img_flag && (word_img_flag.flag = 1);
                 }
                 if(browser.ie && browser.version < 7 && me.options.relativePath)
@@ -9455,30 +9123,24 @@ UE.plugins['serialize'] = function () {
                 var child = node.children[0];
 
                 if ( !child || child.type != 'element' || child.tag != 'p' && dtd.p[child.tag] ) {
-                    var tmpPNode = {
-                        type: 'element',
-                        tag: 'p',
-                        attributes: {},
 
-                        parent : node
-                    };
-                    tmpPNode.children = child ? node.children :[
-                            browser.ie ? {
-                                type:'text',
-                                data:domUtils.fillChar,
-                                parent : tmpPNode
-
-                            }:
-                            {
-                                type : 'element',
-                                tag : 'br',
-                                attributes:{},
-                                closed: true,
-                                children: [],
-                                parent : tmpPNode
-                            }
+                    node.children = [
+                        {
+                            type: 'element',
+                            tag: 'p',
+                            attributes: {},
+                            children: child ? node.children : [
+                                {
+                                    type : 'element',
+                                    tag : 'br',
+                                    attributes:{},
+                                    closed: true,
+                                    children: []
+                                }
+                            ],
+                            parent : node
+                        }
                     ];
-                    node.children =   [tmpPNode];
                 }
                 break;
             case 'table':
@@ -9695,11 +9357,28 @@ UE.plugins['serialize'] = function () {
         if ( ie && node.attributes.style ) {
             var style = node.attributes.style;
             node.attributes.style = style.replace(/;\s*/g,';');
+//            var border = node.attributes.style.match( /border[^:]*:([^;]*)/i );
+//            if ( border ) {
+//                border = border[1];
+//                if ( border ) {
+//                    node.attributes.style = node.attributes.style.replace( /border[^;]*?(;|$)/ig, '' ).replace( /^\s*|\s*$/, '' );
+//
+////                    if ( !/^\s*#\w+\s*$/.test( border ) ) {
+////                        node.attributes.style = (/;$/.test( node.attributes.style ) || node.attributes.style.length == 0 ? '' : ';') + 'border:' + border;
+////                    }
+//
+//                }
+//            }
+
             node.attributes.style = node.attributes.style.replace( /^\s*|\s*$/, '' )
         }
     }
 
     function transOutNode( node ) {
+        if ( node.type == 'text' ) {
+            //trace:1269 先注释了，引起ie预览会折行的问题
+            //node.data = node.data.replace(/ /g,'&nbsp;')
+        }
         switch ( node.tag ) {
             case 'table':
                 !node.attributes.style && delete node.attributes.style;
@@ -9859,13 +9538,11 @@ UE.plugins['serialize'] = function () {
                 if ( node.type == 'text' && node.data.replace( /\s/g, '' ) == me.options.pageBreakTag ) {
 
                     node.type = 'element';
-                    node.name = node.tag = 'hr';
+                    node.name = node.tag = 'div';
 
                     delete node.data;
                     node.attributes = {
                         'class' : 'pagebreak',
-                        noshade:"noshade",
-                        size:"5",
                         'unselectable' : 'on',
                         'style' : 'moz-user-select:none;-khtml-user-select: none;'
                     };
@@ -9875,7 +9552,7 @@ UE.plugins['serialize'] = function () {
                 }
                 //去掉多余的空格和换行
                 if(node.type == 'text' && !dtd.$notTransContent[node.parent.tag]){
-                    node.data = node.data.replace(/[\r\t\n]*/g,'')//.replace(/[ ]*$/g,'')
+                    node.data = node.data.replace(/[\r\t\n]*/g,'').replace(/[ ]*$/g,'')
                 }
                 return node;
             }
@@ -9885,7 +9562,7 @@ UE.plugins['serialize'] = function () {
         transformOutput: function ( node ) {
             function visitNode( node ) {
 
-                if ( node.tag == 'hr' && node.attributes['class'] == 'pagebreak' ) {
+                if ( node.tag == 'div' && node.attributes['class'] == 'pagebreak' ) {
                     delete node.tag;
                     node.type = 'text';
                     node.data = me.options.pageBreakTag;
@@ -9911,1591 +9588,8 @@ UE.plugins['serialize'] = function () {
         word: transformWordHtml
     };
     me.serialize = new Serialize( me.options.serialize );
-    UE.serialize = new Serialize( {} );
+    baidu.editor.serialize = new Serialize( {} );
 };
-
-///import core
-///import plugins/inserthtml.js
-///commands 视频
-///commandsName InsertVideo
-///commandsTitle  插入视频
-///commandsDialog  dialogs\video\video.html
-UE.plugins['video'] = function (){
-    var me =this,
-        div;
-
-    /**
-     * 创建插入视频字符窜
-     * @param url 视频地址
-     * @param width 视频宽度
-     * @param height 视频高度
-     * @param align 视频对齐
-     * @param toEmbed 是否以图片代替显示
-     * @param addParagraph  是否需要添加P 标签
-     */
-    function creatInsertStr(url,width,height,align,toEmbed,addParagraph){
-        return  !toEmbed ?
-                (addParagraph? ('<p '+ (align !="none" ? ( align == "center"? ' style="text-align:center;" ':' style="float:"'+ align ) : '') + '>'): '') +
-                '<img align="'+align+'" width="'+ width +'" height="' + height + '" _url="'+url+'" class="edui-faked-video"' +
-                ' src="'+me.options.UEDITOR_HOME_URL+'themes/default/images/spacer.gif" style="background:url('+me.options.UEDITOR_HOME_URL+'themes/default/images/videologo.gif) no-repeat center center; border:1px solid gray;" />' +
-                (addParagraph?'</p>':'')
-                :
-                '<embed type="application/x-shockwave-flash" class="edui-faked-video" pluginspage="http://www.macromedia.com/go/getflashplayer"' +
-                ' src="' + url + '" width="' + width  + '" height="' + height  + '" align="' + align + '"' +
-                ( align !="none" ? ' style= "'+ ( align == "center"? "display:block;":" float: "+ align )  + '"' :'' ) +
-                ' wmode="transparent" play="true" loop="false" menu="false" allowscriptaccess="never" allowfullscreen="true" >';
-    }
-
-    function switchImgAndEmbed(img2embed){
-        var tmpdiv,
-            nodes =domUtils.getElementsByTagName(me.document, !img2embed ? "embed" : "img");
-        for(var i=0,node;node = nodes[i++];){
-            if(node.className!="edui-faked-video")continue;
-            tmpdiv = me.document.createElement("div");
-            //先看float在看align,浮动有的是时候是在float上定义的
-            var align = node.style.cssFloat;
-            tmpdiv.innerHTML = creatInsertStr(img2embed ? node.getAttribute("_url"):node.getAttribute("src"),node.width,node.height,align || node.getAttribute("align"),img2embed);
-            node.parentNode.replaceChild(tmpdiv.firstChild,node);
-        }
-    }
-    me.addListener("beforegetcontent",function(){
-        switchImgAndEmbed(true);
-    });
-    me.addListener('aftersetcontent',function(){
-        switchImgAndEmbed(false);
-    });
-    me.addListener('aftergetcontent',function(cmdName){
-        if(cmdName == 'aftergetcontent' && me.queryCommandState('source'))
-            return;
-        switchImgAndEmbed(false);
-    });
-
-    me.commands["insertvideo"] = {
-        execCommand: function (cmd, videoObjs){
-            videoObjs = utils.isArray(videoObjs)?videoObjs:[videoObjs];
-            var html = [];
-            for(var i=0,vi,len = videoObjs.length;i<len;i++){
-                 vi = videoObjs[i];
-                 html.push(creatInsertStr( vi.url, vi.width || 420,  vi.height || 280, vi.align||"none",false,true));
-            }
-            me.execCommand("inserthtml",html.join(""));
-        },
-        queryCommandState : function(){
-            var img = me.selection.getRange().getClosedNode(),
-                flag = img && (img.className == "edui-faked-video");
-            return this.highlight ? -1 :(flag?1:0);
-        }
-    }
-};
-///import core
-///commands 表格
-///commandsName  InsertTable,DeleteTable,InsertParagraphBeforeTable,InsertRow,DeleteRow,InsertCol,DeleteCol,MergeCells,MergeRight,MergeDown,SplittoCells,SplittoRows,SplittoCols
-///commandsTitle  表格,删除表格,表格前插行,前插入行,删除行,前插入列,删除列,合并多个单元格,右合并单元格,下合并单元格,完全拆分单元格,拆分成行,拆分成列
-///commandsDialog  dialogs\table\table.html
-/**
- * Created by .
- * User: taoqili
- * Date: 11-5-5
- * Time: 下午2:06
- * To change this template use File | Settings | File Templates.
- */
-    /**
-     * table操作插件
-     */
-UE.plugins['table'] = function() {
-    var me = this,
-        keys = domUtils.keys,
-        clearSelectedTd = domUtils.clearSelectedArr;
-    //框选时用到的几个全局变量
-    var anchorTd,
-        tableOpt,
-        _isEmpty = domUtils.isEmptyNode;
-
-    function getIndex(cell) {
-        var cells = cell.parentNode.cells;
-        for (var i = 0,ci; ci = cells[i]; i++) {
-            if (ci === cell) {
-                return i;
-            }
-        }
-    }
-
-    function deleteTable(table,range){
-        var p = table.ownerDocument.createElement('p');
-        domUtils.fillNode(me.document,p);
-        var pN = table.parentNode;
-        if(pN && pN.getAttribute('dropdrag')){
-            table = pN;
-        }
-        table.parentNode.insertBefore(p, table);
-        domUtils.remove(table);
-        range.setStart(p, 0).setCursor();
-    }
-    /**
-     * 判断当前单元格是否处于隐藏状态
-     * @param cell 待判断的单元格
-     * @return {Boolean} 隐藏时返回true，否则返回false
-     */
-    function _isHide(cell) {
-        return cell.style.display == "none";
-    }
-
-    function getCount(arr) {
-        var count = 0;
-        for (var i = 0,ti; ti = arr[i++];) {
-            if (!_isHide(ti)) {
-                count++
-            }
-
-        }
-        return count;
-    }
-
-    me.currentSelectedArr = [];
-    me.addListener('mousedown', _mouseDownEvent);
-    me.addListener('keydown', function(type, evt) {
-        var keyCode = evt.keyCode || evt.which;
-        if (!keys[keyCode] && !evt.ctrlKey && !evt.metaKey && !evt.shiftKey && !evt.altKey) {
-            clearSelectedTd(me.currentSelectedArr)
-        }
-    });
-    me.addListener('mouseup', function() {
-
-        anchorTd = null;
-        me.removeListener('mouseover', _mouseDownEvent);
-        var td = me.currentSelectedArr[0];
-        if (td) {
-            me.document.body.style.webkitUserSelect = '';
-            var range = new dom.Range(me.document);
-            if (_isEmpty(td)) {
-                range.setStart(me.currentSelectedArr[0], 0).setCursor();
-            } else {
-                range.selectNodeContents(me.currentSelectedArr[0]).select();
-            }
-
-        } else {
-
-            //浏览器能从table外边选到里边导致currentSelectedArr为空，清掉当前选区回到选区的最开始
-
-            var range = me.selection.getRange().shrinkBoundary();
-
-            if (!range.collapsed) {
-                var start = domUtils.findParentByTagName(range.startContainer, 'td', true),
-                    end = domUtils.findParentByTagName(range.endContainer, 'td', true);
-                //在table里边的不能清除
-                if (start && !end || !start && end || start && end && start !== end) {
-                    range.collapse(true).select(true)
-                }
-            }
-
-
-        }
-
-    });
-
-    function reset() {
-        me.currentSelectedArr = [];
-        anchorTd = null;
-
-    }
-
-    /**
-     * 插入表格
-     * @param numRows 行数
-     * @param numCols 列数
-     * @param height 列数
-     * @param width 列数
-     * @param heightUnit 列数
-     * @param widthUnit 列数
-     * @param bgColor 表格背景
-     * @param border 边框大小
-     * @param borderColor 边框颜色
-     * @param cellSpacing 单元格间距
-     * @param cellPadding 单元格边距
-     */
-    me.commands['inserttable'] = {
-        queryCommandState: function () {
-           if(this.highlight ){
-                   return -1;
-               }
-            var range = this.selection.getRange();
-            return domUtils.findParentByTagName(range.startContainer, 'table', true)
-                || domUtils.findParentByTagName(range.endContainer, 'table', true)
-                || me.currentSelectedArr.length > 0 ? -1 : 0;
-        },
-        execCommand: function (cmdName, opt) {
-            opt = opt|| {numRows:5,numCols:5};
-            var html = ['<table _innerCreateTable = "true" '];
-            if(opt.cellSpacing && opt.cellSpacing != '0' || opt.cellPadding && opt.cellPadding != '0'){
-                html.push(' style="border-collapse:separate;" ')
-            }
-            opt.cellSpacing && opt.cellSpacing != '0' && html.push(' cellSpacing="' + opt.cellSpacing + '" ');
-            opt.cellPadding && opt.cellPadding != '0' && html.push(' cellPadding="' + opt.cellPadding + '" ');
-            html.push(' width="' + (opt.width||100) + (typeof opt.widthUnit  == "undefined" ? '%' : opt.widthUnit)+'" ');
-            opt.height && html.push(' height="' + opt.height + (typeof opt.heightUnit  == "undefined" ? '%' : opt.heightUnit) +'" ');
-            opt.align && (html.push(' align="' + opt.align + '" '));
-            html.push(' border="' + (opt.border||1) +'" borderColor="' + (opt.borderColor||'#000000') +'"');
-            opt.borderType == "1" &&  html.push(' borderType="1" ');
-            opt.bgColor && html.push(' bgColor="' + opt.bgColor + '"');
-            html.push(' ><tbody>');
-            opt.width = Math.floor((opt.width||'100')/opt.numCols);
-            for(var i=0;i<opt.numRows;i++){
-                html.push('<tr>')
-                for(var j=0;j<opt.numCols;j++){
-                    html.push('<td '+' style="width:' + opt.width + (typeof opt.widthUnit  == "undefined"?'%':opt.widthUnit) +';'
-                        +(opt.borderType == '1'? 'border:'+opt.border+'px solid '+(opt.borderColor||'#000000'):'')
-                        +'">'
-                        +(browser.ie ? domUtils.fillChar : '<br/>')+'</td>')
-                }
-                html.push('</tr>')
-            }
-            me.execCommand('insertHtml', html.join('') + '</tbody></table>');
-            reset();
-            //如果表格的align不是默认，将不占位,给后边的block元素设置clear:both
-            if(opt.align){
-                var range = me.selection.getRange(),
-                    bk = range.createBookmark(),
-                    start = range.startContainer;
-                while(start && !domUtils.isBody(start)){
-                    if(domUtils.isBlockElm(start)){
-                        start.style.clear = 'both';
-                        range.moveToBookmark(bk).select();
-                        break;
-                    }
-                    start = start.parentNode;
-                }
-            }
-
-        }
-    };
-    me.commands['edittable'] = {
-        queryCommandState: function () {
-            var range = this.selection.getRange();
-            if(this.highlight ){return -1;}
-
-            return domUtils.findParentByTagName(range.startContainer, 'table', true)
-                || me.currentSelectedArr.length > 0 ? 0 : -1;
-        },
-        execCommand: function (cmdName, opt) {
-            var start = me.selection.getStart(),
-                table = domUtils.findParentByTagName(start,'table',true);
-            if(table){
-                table.style.cssText = table.style.cssText.replace(/border[^;]+/gi,'');
-                table.style.borderCollapse = opt.cellSpacing && opt.cellSpacing != '0' || opt.cellPadding && opt.cellPadding != '0'  ? 'separate' : 'collapse';
-
-                opt.cellSpacing && opt.cellSpacing != '0' ? table.setAttribute('cellSpacing',opt.cellSpacing) : table.removeAttribute('cellSpacing');
-                opt.cellPadding && opt.cellPadding != '0' ? table.setAttribute('cellPadding',opt.cellPadding): table.removeAttribute('cellPadding');
-                opt.height && table.setAttribute('height',opt.height+opt.heightUnit);
-                opt.align && table.setAttribute('align',opt.align);
-                opt.width && table.setAttribute('width',opt.width + opt.widthUnit);
-                opt.bgColor &&  table.setAttribute('bgColor',opt.bgColor);
-                opt.borderColor &&  table.setAttribute('borderColor',opt.borderColor);
-                opt.border &&  table.setAttribute('border',opt.border);
-
-                if(opt.borderType == "1"){
-                    for(var i=0,ti,tds = table.getElementsByTagName('td');ti=tds[i++];){
-                        ti.style.border = opt.border+'px solid '+(opt.borderColor||'#000000')
-
-                    }
-                    table.setAttribute('borderType','1')
-                }else{
-                    for(var i=0,ti,tds = table.getElementsByTagName('td');ti=tds[i++];){
-                        if(browser.ie){
-                            ti.style.cssText = ti.style.cssText.replace(/border[^;]+/gi,'');
-
-                        }else{
-                            domUtils.removeStyle(ti,'border');
-                            domUtils.removeStyle(ti,'border-image')
-                        }
-
-                    }
-                    table.removeAttribute('borderType')
-                }
-
-            }
-        }
-    };
-
-    me.commands['edittd'] ={
-        queryCommandState:function(){
-            if(this.highlight ){return -1;}
-            var range = this.selection.getRange();
-            return (domUtils.findParentByTagName(range.startContainer, 'table', true)
-                   && domUtils.findParentByTagName(range.endContainer, 'table', true)) || me.currentSelectedArr.length > 0 ? 0 : -1;
-        },
-        /**
-         * 单元格属性编辑
-         * @param cmdName
-         * @param tdItems
-         */
-        execCommand:function(cmdName,tdItems){
-            var range = this.selection.getRange(),
-                tds =!me.currentSelectedArr.length?[domUtils.findParentByTagName(range.startContainer, ['td','th'], true)]:me.currentSelectedArr;
-            for(var i=0,td;td=tds[i++];){
-                domUtils.setAttributes(td,{
-                    "bgColor":tdItems.bgColor,
-                    "align":tdItems.align,
-                    "vAlign":tdItems.vAlign
-                });
-            }
-        }
-    };
-
-
-
-    /**
-     * 删除表格
-     */
-    me.commands['deletetable'] = {
-        queryCommandState:function() {
-           if(this.highlight ){
-                   return -1;
-               }
-            var range = this.selection.getRange();
-            return (domUtils.findParentByTagName(range.startContainer, 'table', true)
-                && domUtils.findParentByTagName(range.endContainer, 'table', true)) || me.currentSelectedArr.length > 0 ? 0 : -1;
-        },
-        execCommand:function() {
-            var range = this.selection.getRange(),
-                table = domUtils.findParentByTagName(me.currentSelectedArr.length > 0 ? me.currentSelectedArr[0] : range.startContainer, 'table', true);
-            deleteTable(table,range);
-            reset();
-        }
-    };
-
-    /**
-     * 添加表格标题
-     */
-    me.commands['addcaption'] = {
-        queryCommandState:function() {
-           if(this.highlight ){
-                   return -1;
-               }
-            var range = this.selection.getRange();
-            return (domUtils.findParentByTagName(range.startContainer, 'table', true)
-                && domUtils.findParentByTagName(range.endContainer, 'table', true)) || me.currentSelectedArr.length > 0 ? 0 : -1;
-        },
-        execCommand:function(cmdName, opt) {
-
-            var range = this.selection.getRange(),
-                table = domUtils.findParentByTagName(me.currentSelectedArr.length > 0 ? me.currentSelectedArr[0] : range.startContainer, 'table', true);
-
-            if (opt == "on") {
-                var c = table.createCaption();
-                c.innerHTML = "请在此输入表格标题";
-            } else {
-                table.removeChild(table.caption);
-            }
-        }
-    };
-
-
-    /**
-     * 向右合并单元格
-     */
-    me.commands['mergeright'] = {
-        queryCommandState : function() {
-           if(this.highlight  ){
-                   return -1;
-               }
-            var range = this.selection.getRange(),
-                start = range.startContainer,
-                td = domUtils.findParentByTagName(start, ['td','th'], true);
-
-
-            if (!td || this.currentSelectedArr.length > 1)return -1;
-
-            var tr = td.parentNode;
-
-            //最右边行不能向右合并
-            var rightCellIndex = getIndex(td) + td.colSpan;
-            if (rightCellIndex >= tr.cells.length) {
-                return -1;
-            }
-            //单元格不在同一行不能向右合并
-            var rightCell = tr.cells[rightCellIndex];
-            if (_isHide(rightCell)) {
-                return -1;
-            }
-            return td.rowSpan == rightCell.rowSpan ? 0 : -1;
-        },
-        execCommand : function() {
-
-            var range = this.selection.getRange(),
-                start = range.startContainer,
-                td = domUtils.findParentByTagName(start, ['td','th'], true) || me.currentSelectedArr[0],
-                tr = td.parentNode,
-                rows = tr.parentNode.parentNode.rows;
-
-            //找到当前单元格右边的未隐藏单元格
-            var rightCellRowIndex = tr.rowIndex,
-                rightCellCellIndex = getIndex(td) + td.colSpan,
-                rightCell = rows[rightCellRowIndex].cells[rightCellCellIndex];
-
-            //在隐藏的原生td对象上增加两个属性，分别表示当前td对应的真实td坐标
-            for (var i = rightCellRowIndex; i < rightCellRowIndex + rightCell.rowSpan; i++) {
-                for (var j = rightCellCellIndex; j < rightCellCellIndex + rightCell.colSpan; j++) {
-                    var tmpCell = rows[i].cells[j];
-                    tmpCell.setAttribute('rootRowIndex', tr.rowIndex);
-                    tmpCell.setAttribute('rootCellIndex', getIndex(td));
-
-                }
-            }
-            //合并单元格
-            td.colSpan += rightCell.colSpan || 1;
-            //合并内容
-            _moveContent(td, rightCell);
-            //删除被合并的单元格，此处用隐藏方式实现来提升性能
-            rightCell.style.display = "none";
-            //重新让单元格获取焦点
-            //trace:1565
-            if(domUtils.isEmptyBlock(td)){
-                range.setStart(td,0).setCursor();
-            }else{
-                range.selectNodeContents(td).setCursor(true,true);
-            }
-
-            //处理有寛高，导致ie的文字不能输入占满
-            browser.ie  && domUtils.removeAttributes(td,['width','height']);
-        }
-    };
-
-    /**
-     * 向下合并单元格
-     */
-    me.commands['mergedown'] = {
-        queryCommandState : function() {
-          if(this.highlight  ){
-                   return -1;
-               }
-            var range = this.selection.getRange(),
-                start = range.startContainer,
-                td = domUtils.findParentByTagName(start, 'td', true);
-
-            if (!td || getCount(me.currentSelectedArr) > 1)return -1;
-
-
-            var tr = td.parentNode,
-                table = tr.parentNode.parentNode,
-                rows = table.rows;
-
-            //已经是最底行,不能向下合并
-            var downCellRowIndex = tr.rowIndex + td.rowSpan;
-            if (downCellRowIndex >= rows.length) {
-                return -1;
-            }
-
-            //如果下一个单元格是隐藏的，表明他是由左边span过来的，不能向下合并
-            var downCell = rows[downCellRowIndex].cells[getIndex(td)];
-            if (_isHide(downCell)) {
-                return -1;
-            }
-
-            //只有列span都相等时才能合并
-            return td.colSpan == downCell.colSpan ? 0 : -1;
-        },
-        execCommand : function() {
-
-            var range = this.selection.getRange(),
-                start = range.startContainer,
-                td = domUtils.findParentByTagName(start, ['td','th'], true) || me.currentSelectedArr[0];
-
-
-            var tr = td.parentNode,
-                rows = tr.parentNode.parentNode.rows;
-
-            var downCellRowIndex = tr.rowIndex + td.rowSpan,
-                downCellCellIndex = getIndex(td),
-                downCell = rows[downCellRowIndex].cells[downCellCellIndex];
-
-            //找到当前列的下一个未被隐藏的单元格
-            for (var i = downCellRowIndex; i < downCellRowIndex + downCell.rowSpan; i++) {
-                for (var j = downCellCellIndex; j < downCellCellIndex + downCell.colSpan; j++) {
-                    var tmpCell = rows[i].cells[j];
-
-
-                    tmpCell.setAttribute('rootRowIndex', tr.rowIndex);
-                    tmpCell.setAttribute('rootCellIndex', getIndex(td));
-                }
-            }
-            //合并单元格
-            td.rowSpan += downCell.rowSpan || 1;
-            //合并内容
-            _moveContent(td, downCell);
-            //删除被合并的单元格，此处用隐藏方式实现来提升性能
-            downCell.style.display = "none";
-            //重新让单元格获取焦点
-            if(domUtils.isEmptyBlock(td)){
-                range.setStart(td,0).setCursor();
-            }else{
-                range.selectNodeContents(td).setCursor(true,true);
-            }
-              //处理有寛高，导致ie的文字不能输入占满
-            browser.ie  && domUtils.removeAttributes(td,['width','height']);
-        }
-    };
-
-    /**
-     * 删除行
-     */
-    me.commands['deleterow'] = {
-        queryCommandState : function() {
-          if(this.highlight  ){
-                   return -1;
-               }
-            var range = this.selection.getRange(),
-                start = range.startContainer,
-                td = domUtils.findParentByTagName(start, ['td','th'], true);
-            if (!td && me.currentSelectedArr.length == 0)return -1;
-
-        },
-        execCommand : function() {
-            var range = this.selection.getRange(),
-                start = range.startContainer,
-                td = domUtils.findParentByTagName(start, ['td','th'], true),
-                tr,
-                table,
-                cells,
-                rows ,
-                rowIndex ,
-                cellIndex;
-
-            if (td && me.currentSelectedArr.length == 0) {
-                var count = (td.rowSpan || 1) - 1;
-
-                me.currentSelectedArr.push(td);
-                tr = td.parentNode,
-                    table = tr.parentNode.parentNode;
-
-                rows = table.rows,
-                    rowIndex = tr.rowIndex + 1,
-                    cellIndex = getIndex(td);
-
-                while (count) {
-
-                    me.currentSelectedArr.push(rows[rowIndex].cells[cellIndex]);
-                    count--;
-                    rowIndex++
-                }
-            }
-
-            while (td = me.currentSelectedArr.pop()) {
-
-                if (!domUtils.findParentByTagName(td, 'table')) {//|| _isHide(td)
-
-                    continue;
-                }
-                tr = td.parentNode,
-                    table = tr.parentNode.parentNode;
-                cells = tr.cells,
-                    rows = table.rows,
-                    rowIndex = tr.rowIndex,
-                    cellIndex = getIndex(td);
-                /*
-                 * 从最左边开始扫描并隐藏当前行的所有单元格
-                 * 若当前单元格的display为none,往上找到它所在的真正单元格，获取colSpan和rowSpan，
-                 *  将rowspan减一，并跳转到cellIndex+colSpan列继续处理
-                 * 若当前单元格的display不为none,分两种情况：
-                 *  1、rowspan == 1 ，直接设置display为none，跳转到cellIndex+colSpan列继续处理
-                 *  2、rowspan > 1  , 修改当前单元格的下一个单元格的display为"",
-                 *    并将当前单元格的rowspan-1赋给下一个单元格的rowspan，当前单元格的colspan赋给下一个单元格的colspan，
-                 *    然后隐藏当前单元格，跳转到cellIndex+colSpan列继续处理
-                 */
-                for (var currentCellIndex = 0; currentCellIndex < cells.length;) {
-                    var currentNode = cells[currentCellIndex];
-                    if (_isHide(currentNode)) {
-                        var topNode = rows[currentNode.getAttribute('rootRowIndex')].cells[currentNode.getAttribute('rootCellIndex')];
-                        topNode.rowSpan--;
-                        currentCellIndex += topNode.colSpan;
-                    } else {
-                        if (currentNode.rowSpan == 1) {
-                            currentCellIndex += currentNode.colSpan;
-                        } else {
-                            var downNode = rows[rowIndex + 1].cells[currentCellIndex];
-                            downNode.style.display = "";
-                            downNode.rowSpan = currentNode.rowSpan - 1;
-                            downNode.colSpan = currentNode.colSpan;
-                            currentCellIndex += currentNode.colSpan;
-                        }
-                    }
-                }
-                //完成更新后再删除外层包裹的tr
-                domUtils.remove(tr);
-
-                //重新定位焦点
-                var topRowTd, focusTd, downRowTd;
-
-                if (rowIndex == rows.length) { //如果被删除的行是最后一行,这里之所以没有-1是因为已经删除了一行
-                    //如果删除的行也是第一行，那么表格总共只有一行，删除整个表格
-                    if (rowIndex == 0) {
-                        deleteTable(table,range);
-
-                        return;
-                    }
-                    //如果上一单元格未隐藏，则直接定位，否则定位到最近的上一个非隐藏单元格
-                    var preRowIndex = rowIndex - 1;
-                    topRowTd = rows[preRowIndex].cells[ cellIndex];
-                    focusTd = _isHide(topRowTd) ? rows[topRowTd.getAttribute('rootRowIndex')].cells[topRowTd.getAttribute('rootCellIndex')] : topRowTd;
-
-                } else { //如果被删除的不是最后一行，则光标定位到下一行,此处未加1是因为已经删除了一行
-
-                    downRowTd = rows[rowIndex].cells[cellIndex];
-                    focusTd = _isHide(downRowTd) ? rows[downRowTd.getAttribute('rootRowIndex')].cells[downRowTd.getAttribute('rootCellIndex')] : downRowTd;
-                }
-            }
-
-
-            range.setStart(focusTd, 0).setCursor();
-            update(table)
-        }
-    };
-
-    /**
-     * 删除列
-     */
-    me.commands['deletecol'] = {
-        queryCommandState:function() {
-           if(this.highlight  ){
-                   return -1;
-               }
-            var range = this.selection.getRange(),
-                start = range.startContainer,
-                td = domUtils.findParentByTagName(start, ['td','th'], true);
-            if (!td && me.currentSelectedArr.length == 0)return -1;
-        },
-        execCommand:function() {
-
-            var range = this.selection.getRange(),
-                start = range.startContainer,
-                td = domUtils.findParentByTagName(start, ['td','th'], true);
-
-
-            if (td && me.currentSelectedArr.length == 0) {
-
-                var count = (td.colSpan || 1) - 1;
-
-                me.currentSelectedArr.push(td);
-                while (count) {
-                    do{
-                        td = td.nextSibling
-                    } while (td.nodeType == 3);
-                    me.currentSelectedArr.push(td);
-                    count--;
-                }
-            }
-
-            while (td = me.currentSelectedArr.pop()) {
-                if (!domUtils.findParentByTagName(td, 'table')) { //|| _isHide(td)
-                    continue;
-                }
-
-                var tr = td.parentNode,
-                    table = tr.parentNode.parentNode,
-                    cellIndex = getIndex(td),
-                    rows = table.rows,
-                    cells = tr.cells,
-                    rowIndex = tr.rowIndex;
-                /*
-                 * 从第一行开始扫描并隐藏当前列的所有单元格
-                 * 若当前单元格的display为none，表明它是由左边Span过来的，
-                 *  将左边第一个非none单元格的colSpan减去1并删去对应的单元格后跳转到rowIndex + rowspan行继续处理；
-                 * 若当前单元格的display不为none，分两种情况，
-                 *  1、当前单元格的colspan == 1 ， 则直接删除该节点，跳转到rowIndex + rowspan行继续处理
-                 *  2、当前单元格的colsapn >  1, 修改当前单元格右边单元格的display为"",
-                 *      并将当前单元格的colspan-1赋给它的colspan，当前单元格的rolspan赋给它的rolspan，
-                 *      然后删除当前单元格，跳转到rowIndex+rowSpan行继续处理
-                 */
-                var rowSpan;
-                for (var currentRowIndex = 0; currentRowIndex < rows.length;) {
-                    var currentNode = rows[currentRowIndex].cells[cellIndex];
-                    if (_isHide(currentNode)) {
-                        var leftNode = rows[currentNode.getAttribute('rootRowIndex')].cells[currentNode.getAttribute('rootCellIndex')];
-                        //依次删除对应的单元格
-                        rowSpan = leftNode.rowSpan;
-                        for (var i = 0; i < leftNode.rowSpan; i++) {
-                            var delNode = rows[currentRowIndex + i].cells[cellIndex];
-                            domUtils.remove(delNode);
-                        }
-                        //修正被删后的单元格信息
-                        leftNode.colSpan--;
-                        currentRowIndex += rowSpan;
-                    } else {
-                        if (currentNode.colSpan == 1) {
-                            rowSpan = currentNode.rowSpan;
-                            for (var i = currentRowIndex,l = currentRowIndex + currentNode.rowSpan; i < l; i++) {
-                                domUtils.remove(rows[i].cells[cellIndex]);
-                            }
-                            currentRowIndex += rowSpan;
-
-                        } else {
-                            var rightNode = rows[currentRowIndex].cells[cellIndex + 1];
-                            rightNode.style.display = "";
-                            rightNode.rowSpan = currentNode.rowSpan;
-                            rightNode.colSpan = currentNode.colSpan - 1;
-                            currentRowIndex += currentNode.rowSpan;
-                            domUtils.remove(currentNode);
-                        }
-                    }
-                }
-
-                //重新定位焦点
-                var preColTd, focusTd, nextColTd;
-                if (cellIndex == cells.length) { //如果当前列是最后一列，光标定位到当前列的前一列,同样，这里没有减去1是因为已经被删除了一列
-                    //如果当前列也是第一列，则删除整个表格
-                    if (cellIndex == 0) {
-                        deleteTable(table,range);
-                        return;
-                    }
-                    //找到当前单元格前一列中和本单元格最近的一个未隐藏单元格
-                    var preCellIndex = cellIndex - 1;
-                    preColTd = rows[rowIndex].cells[preCellIndex];
-                    focusTd = _isHide(preColTd) ? rows[preColTd.getAttribute('rootRowIndex')].cells[preColTd.getAttribute('rootCellIndex')] : preColTd;
-
-                } else { //如果当前列不是最后一列，则光标定位到当前列的后一列
-
-                    nextColTd = rows[rowIndex].cells[cellIndex];
-                    focusTd = _isHide(nextColTd) ? rows[nextColTd.getAttribute('rootRowIndex')].cells[nextColTd.getAttribute('rootCellIndex')] : nextColTd;
-                }
-            }
-
-            range.setStart(focusTd, 0).setCursor();
-            update(table)
-        }
-    };
-
-    /**
-     * 完全拆分单元格
-     */
-    me.commands['splittocells'] = {
-        queryCommandState:function() {
-           if(this.highlight  ){
-                   return -1;
-               }
-            var range = this.selection.getRange(),
-                start = range.startContainer,
-                td = domUtils.findParentByTagName(start, ['td','th'], true);
-            return td && ( td.rowSpan > 1 || td.colSpan > 1 ) && (!me.currentSelectedArr.length || getCount(me.currentSelectedArr) == 1) ? 0 : -1;
-        },
-        execCommand:function() {
-
-            var range = this.selection.getRange(),
-                start = range.startContainer,
-                td = domUtils.findParentByTagName(start, ['td','th'], true),
-                tr = td.parentNode,
-                table = tr.parentNode.parentNode;
-            var rowIndex = tr.rowIndex,
-                cellIndex = getIndex(td),
-                rowSpan = td.rowSpan,
-                colSpan = td.colSpan;
-
-
-            for (var i = 0; i < rowSpan; i++) {
-                for (var j = 0; j < colSpan; j++) {
-                    var cell = table.rows[rowIndex + i].cells[cellIndex + j];
-                    cell.rowSpan = 1;
-                    cell.colSpan = 1;
-
-                    if (_isHide(cell)) {
-                        cell.style.display = "";
-                        cell.innerHTML = browser.ie ? '' : "<br/>";
-                    }
-                }
-            }
-        }
-    };
-
-
-    /**
-     * 将单元格拆分成行
-     */
-    me.commands['splittorows'] = {
-        queryCommandState:function() {
-         if(this.highlight  ){
-                   return -1;
-               }
-            var range = this.selection.getRange(),
-                start = range.startContainer,
-                td = domUtils.findParentByTagName(start, 'td', true) || me.currentSelectedArr[0];
-            return td && ( td.rowSpan > 1) && (!me.currentSelectedArr.length || getCount(me.currentSelectedArr) == 1) ? 0 : -1;
-        },
-        execCommand:function() {
-
-            var range = this.selection.getRange(),
-                start = range.startContainer,
-                td = domUtils.findParentByTagName(start, 'td', true) || me.currentSelectedArr[0],
-                tr = td.parentNode,
-                rows = tr.parentNode.parentNode.rows;
-
-            var rowIndex = tr.rowIndex,
-                cellIndex = getIndex(td),
-                rowSpan = td.rowSpan,
-                colSpan = td.colSpan;
-
-            for (var i = 0; i < rowSpan; i++) {
-                var cells = rows[rowIndex + i],
-                    cell = cells.cells[cellIndex];
-                cell.rowSpan = 1;
-                cell.colSpan = colSpan;
-                if (_isHide(cell)) {
-                    cell.style.display = "";
-                    //原有的内容要清除掉
-                    cell.innerHTML = browser.ie ? '' : '<br/>'
-                }
-                //修正被隐藏单元格中存储的rootRowIndex和rootCellIndex信息
-                for (var j = cellIndex + 1; j < cellIndex + colSpan; j++) {
-                    cell = cells.cells[j];
-
-                    cell.setAttribute('rootRowIndex', rowIndex + i)
-                }
-
-            }
-            clearSelectedTd(me.currentSelectedArr);
-            this.selection.getRange().setStart(td, 0).setCursor();
-        }
-    };
-
-
-    /**
-     * 在表格前插入行
-     */
-    me.commands['insertparagraphbeforetable'] = {
-        queryCommandState:function() {
-          if(this.highlight  ){
-                   return -1;
-               }
-            var range = this.selection.getRange(),
-                start = range.startContainer,
-                td = domUtils.findParentByTagName(start, 'td', true) || me.currentSelectedArr[0];
-            return  td && domUtils.findParentByTagName(td, 'table') ? 0 : -1;
-        },
-        execCommand:function() {
-
-            var range = this.selection.getRange(),
-                start = range.startContainer,
-                table = domUtils.findParentByTagName(start, 'table', true);
-
-            start = me.document.createElement(me.options.enterTag);
-            table.parentNode.insertBefore(start, table);
-            clearSelectedTd(me.currentSelectedArr);
-            if (start.tagName == 'P') {
-                //trace:868
-                start.innerHTML = browser.ie ? '' : '<br/>';
-                range.setStart(start, 0)
-            } else {
-                range.setStartBefore(start)
-            }
-            range.setCursor();
-
-        }
-    };
-
-    /**
-     * 将单元格拆分成列
-     */
-    me.commands['splittocols'] = {
-        queryCommandState:function() {
-         if(this.highlight  ){
-                   return -1;
-               }
-            var range = this.selection.getRange(),
-                start = range.startContainer,
-                td = domUtils.findParentByTagName(start, ['td','th'], true) || me.currentSelectedArr[0];
-            return td && ( td.colSpan > 1) && (!me.currentSelectedArr.length || getCount(me.currentSelectedArr) == 1) ? 0 : -1;
-        },
-        execCommand:function() {
-
-            var range = this.selection.getRange(),
-                start = range.startContainer,
-                td = domUtils.findParentByTagName(start, ['td','th'], true) || me.currentSelectedArr[0],
-                tr = td.parentNode,
-                rows = tr.parentNode.parentNode.rows;
-
-            var rowIndex = tr.rowIndex,
-                cellIndex = getIndex(td),
-                rowSpan = td.rowSpan,
-                colSpan = td.colSpan;
-
-            for (var i = 0; i < colSpan; i++) {
-                var cell = rows[rowIndex].cells[cellIndex + i];
-                cell.rowSpan = rowSpan;
-                cell.colSpan = 1;
-                if (_isHide(cell)) {
-                    cell.style.display = "";
-                    cell.innerHTML = browser.ie ? '' : '<br/>'
-                }
-
-                for (var j = rowIndex + 1; j < rowIndex + rowSpan; j++) {
-                    var tmpCell = rows[j].cells[cellIndex + i];
-                    tmpCell.setAttribute('rootCellIndex', cellIndex + i);
-                }
-            }
-            clearSelectedTd(me.currentSelectedArr);
-            this.selection.getRange().setStart(td, 0).setCursor();
-        }
-    };
-
-
-    /**
-     * 插入行
-     */
-    me.commands['insertrow'] = {
-        queryCommandState:function() {
-          if(this.highlight  ){
-                   return -1;
-               }
-            var range = this.selection.getRange();
-            return domUtils.findParentByTagName(range.startContainer, 'table', true)
-                || domUtils.findParentByTagName(range.endContainer, 'table', true) || me.currentSelectedArr.length != 0 ? 0 : -1;
-        },
-        execCommand:function() {
-            var range = this.selection.getRange(),
-                start = range.startContainer,
-                tr = domUtils.findParentByTagName(start, 'tr', true) || me.currentSelectedArr[0].parentNode,
-                table = tr.parentNode.parentNode,
-                rows = table.rows;
-
-            //记录插入位置原来所有的单元格
-            var rowIndex = tr.rowIndex,
-                cells = rows[rowIndex].cells;
-
-            //插入新的一行
-            var newRow = table.insertRow(rowIndex);
-
-            var newCell;
-            //遍历表格中待插入位置中的所有单元格，检查其状态，并据此修正新插入行的单元格状态
-            for (var cellIndex = 0; cellIndex < cells.length;) {
-
-                var tmpCell = cells[cellIndex];
-
-                if (_isHide(tmpCell)) { //如果当前单元格是隐藏的，表明当前单元格由其上部span过来，找到其上部单元格
-
-                    //找到被隐藏单元格真正所属的单元格
-                    var topCell = rows[tmpCell.getAttribute('rootRowIndex')].cells[tmpCell.getAttribute('rootCellIndex')];
-                    //增加一行，并将所有新插入的单元格隐藏起来
-                    topCell.rowSpan++;
-                    for (var i = 0; i < topCell.colSpan; i++) {
-                        newCell = tmpCell.cloneNode(false);
-                        domUtils.removeAttributes(newCell,["bgColor","valign","align"]);
-                        newCell.rowSpan = newCell.colSpan = 1;
-                        newCell.innerHTML = browser.ie ? '' : "<br/>";
-                        newCell.className = '';
-
-                        if (newRow.children[cellIndex + i]) {
-                            newRow.insertBefore(newCell, newRow.children[cellIndex + i]);
-                        } else {
-                            newRow.appendChild(newCell)
-                        }
-
-                        newCell.style.display = "none";
-                    }
-                    cellIndex += topCell.colSpan;
-
-                } else {//若当前单元格未隐藏，则在其上行插入colspan个单元格
-
-                    for (var j = 0; j < tmpCell.colSpan; j++) {
-                        newCell = tmpCell.cloneNode(false);
-                        domUtils.removeAttributes(newCell,["bgColor","valign","align"]);
-                        newCell.rowSpan = newCell.colSpan = 1;
-                        newCell.innerHTML = browser.ie ? '' : "<br/>";
-                        newCell.className = '';
-                        if (newRow.children[cellIndex + j]) {
-                            newRow.insertBefore(newCell, newRow.children[cellIndex + j]);
-                        } else {
-                            newRow.appendChild(newCell)
-                        }
-                    }
-                    cellIndex += tmpCell.colSpan;
-                }
-            }
-            update(table);
-            range.setStart(newRow.cells[0], 0).setCursor();
-
-            clearSelectedTd(me.currentSelectedArr);
-        }
-    };
-
-    /**
-     * 插入列
-     */
-    me.commands['insertcol'] = {
-        queryCommandState:function() {
-          if(this.highlight  ){
-                   return -1;
-               }
-            var range = this.selection.getRange();
-            return domUtils.findParentByTagName(range.startContainer, 'table', true)
-                || domUtils.findParentByTagName(range.endContainer, 'table', true) || me.currentSelectedArr.length != 0 ? 0 : -1;
-        },
-        execCommand:function() {
-
-            var range = this.selection.getRange(),
-                start = range.startContainer,
-                td = domUtils.findParentByTagName(start, ['td','th'], true) || me.currentSelectedArr[0],
-                table = domUtils.findParentByTagName(td, 'table'),
-                rows = table.rows;
-
-            var cellIndex = getIndex(td),
-                newCell;
-
-            //遍历当前列中的所有单元格，检查其状态，并据此修正新插入列的单元格状态
-            for (var rowIndex = 0; rowIndex < rows.length;) {
-
-                var tmpCell = rows[rowIndex].cells[cellIndex],tr;
-
-                if (_isHide(tmpCell)) {//如果当前单元格是隐藏的，表明当前单元格由其左边span过来，找到其左边单元格
-
-                    var leftCell = rows[tmpCell.getAttribute('rootRowIndex')].cells[tmpCell.getAttribute('rootCellIndex')];
-                    leftCell.colSpan++;
-                    for (var i = 0; i < leftCell.rowSpan; i++) {
-                        newCell = td.cloneNode(false);
-                        domUtils.removeAttributes(newCell,["bgColor","valign","align"]);
-                        newCell.rowSpan = newCell.colSpan = 1;
-                        newCell.innerHTML = browser.ie ? '' : "<br/>";
-                        newCell.className = '';
-                        tr = rows[rowIndex + i];
-                        if (tr.children[cellIndex]) {
-                            tr.insertBefore(newCell, tr.children[cellIndex]);
-                        } else {
-                            tr.appendChild(newCell)
-                        }
-
-                        newCell.style.display = "none";
-                    }
-                    rowIndex += leftCell.rowSpan;
-
-                } else { //若当前单元格未隐藏，则在其左边插入rowspan个单元格
-
-                    for (var j = 0; j < tmpCell.rowSpan; j++) {
-                        newCell = td.cloneNode(false);
-                        domUtils.removeAttributes(newCell,["bgColor","valign","align"]);
-                        newCell.rowSpan = newCell.colSpan = 1;
-                        newCell.innerHTML = browser.ie ? '' : "<br/>";
-                        newCell.className = '';
-                        tr = rows[rowIndex + j];
-                        if (tr.children[cellIndex]) {
-                            tr.insertBefore(newCell, tr.children[cellIndex]);
-                        } else {
-                            tr.appendChild(newCell)
-                        }
-
-                        newCell.innerHTML = browser.ie ? '' : "<br/>";
-
-                    }
-                    rowIndex += tmpCell.rowSpan;
-                }
-            }
-            update(table);
-            range.setStart(rows[0].cells[cellIndex], 0).setCursor();
-            clearSelectedTd(me.currentSelectedArr);
-
-        }
-    };
-
-    /**
-     * 合并多个单元格，通过两个cell将当前包含的所有横纵单元格进行合并
-     */
-    me.commands['mergecells'] = {
-        queryCommandState:function() {
-           if(this.highlight  ){
-                   return -1;
-               }
-            var count = 0;
-            for (var i = 0,ti; ti = this.currentSelectedArr[i++];) {
-                if (!_isHide(ti))
-                    count++;
-            }
-            return count > 1 ? 0 : -1;
-        },
-        execCommand:function() {
-
-            var start = me.currentSelectedArr[0],
-                end = me.currentSelectedArr[me.currentSelectedArr.length - 1],
-                table = domUtils.findParentByTagName(start, 'table'),
-                rows = table.rows,
-                cellsRange = {
-                    beginRowIndex:start.parentNode.rowIndex,
-                    beginCellIndex:getIndex(start),
-                    endRowIndex:end.parentNode.rowIndex,
-                    endCellIndex:getIndex(end)
-                },
-
-                beginRowIndex = cellsRange.beginRowIndex,
-                beginCellIndex = cellsRange.beginCellIndex,
-                rowsLength = cellsRange.endRowIndex - cellsRange.beginRowIndex + 1,
-                cellLength = cellsRange.endCellIndex - cellsRange.beginCellIndex + 1,
-
-                tmp = rows[beginRowIndex].cells[beginCellIndex];
-
-            for (var i = 0, ri; (ri = rows[beginRowIndex + i++]) && i <= rowsLength;) {
-                for (var j = 0, ci; (ci = ri.cells[beginCellIndex + j++]) && j <= cellLength;) {
-                    if (i == 1 && j == 1) {
-                        ci.style.display = "";
-                        ci.rowSpan = rowsLength;
-                        ci.colSpan = cellLength;
-                    } else {
-                        ci.style.display = "none";
-                        ci.rowSpan = 1;
-                        ci.colSpan = 1;
-                        ci.setAttribute('rootRowIndex', beginRowIndex);
-                        ci.setAttribute('rootCellIndex', beginCellIndex);
-
-                        //传递内容
-                        _moveContent(tmp, ci);
-                    }
-                }
-            }
-            this.selection.getRange().setStart(tmp, 0).setCursor();
-              //处理有寛高，导致ie的文字不能输入占满
-            browser.ie  && domUtils.removeAttributes(tmp,['width','height']);
-            clearSelectedTd(me.currentSelectedArr);
-        }
-    };
-
-    /**
-     * 将cellFrom单元格中的内容移动到cellTo中
-     * @param cellTo  目标单元格
-     * @param cellFrom  源单元格
-     */
-    function _moveContent(cellTo, cellFrom) {
-        if (_isEmpty(cellFrom)) return;
-
-        if (_isEmpty(cellTo)) {
-            cellTo.innerHTML = cellFrom.innerHTML;
-            return;
-        }
-        var child = cellTo.lastChild;
-        if (child.nodeType != 1 || child.tagName != 'BR') {
-            cellTo.appendChild(cellTo.ownerDocument.createElement('br'))
-        }
-
-        //依次移动内容
-        while (child = cellFrom.firstChild) {
-            cellTo.appendChild(child);
-        }
-    }
-
-
-    /**
-     * 根据两个单元格来获取中间包含的所有单元格集合选区
-     * @param cellA
-     * @param cellB
-     * @return {Object} 选区的左上和右下坐标
-     */
-    function _getCellsRange(cellA, cellB) {
-
-        var trA = cellA.parentNode,
-            trB = cellB.parentNode,
-            aRowIndex = trA.rowIndex,
-            bRowIndex = trB.rowIndex,
-            rows = trA.parentNode.parentNode.rows,
-            rowsNum = rows.length,
-            cellsNum = rows[0].cells.length,
-            cellAIndex = getIndex(cellA),
-            cellBIndex = getIndex(cellB);
-
-        if (cellA == cellB) {
-            return {
-                beginRowIndex: aRowIndex,
-                beginCellIndex: cellAIndex,
-                endRowIndex: aRowIndex + cellA.rowSpan - 1,
-                endCellIndex: cellBIndex + cellA.colSpan - 1
-            }
-        }
-
-        var
-            beginRowIndex = Math.min(aRowIndex, bRowIndex),
-            beginCellIndex = Math.min(cellAIndex, cellBIndex),
-            endRowIndex = Math.max(aRowIndex + cellA.rowSpan - 1, bRowIndex + cellB.rowSpan - 1),
-            endCellIndex = Math.max(cellAIndex + cellA.colSpan - 1, cellBIndex + cellB.colSpan - 1);
-
-        while (1) {
-
-            var tmpBeginRowIndex = beginRowIndex,
-                tmpBeginCellIndex = beginCellIndex,
-                tmpEndRowIndex = endRowIndex,
-                tmpEndCellIndex = endCellIndex;
-            // 检查是否有超出TableRange上边界的情况
-            if (beginRowIndex > 0) {
-                for (cellIndex = beginCellIndex; cellIndex <= endCellIndex;) {
-                    var currentTopTd = rows[beginRowIndex].cells[cellIndex];
-                    if (_isHide(currentTopTd)) {
-
-                        //overflowRowIndex = beginRowIndex == currentTopTd.rootRowIndex ? 1:0;
-                        beginRowIndex = currentTopTd.getAttribute('rootRowIndex');
-                        currentTopTd = rows[currentTopTd.getAttribute('rootRowIndex')].cells[currentTopTd.getAttribute('rootCellIndex')];
-                    }
-
-                    cellIndex = getIndex(currentTopTd) + (currentTopTd.colSpan || 1);
-                }
-            }
-
-            //检查是否有超出左边界的情况
-            if (beginCellIndex > 0) {
-                for (var rowIndex = beginRowIndex; rowIndex <= endRowIndex;) {
-                    var currentLeftTd = rows[rowIndex].cells[beginCellIndex];
-                    if (_isHide(currentLeftTd)) {
-                        // overflowCellIndex = beginCellIndex== currentLeftTd.rootCellIndex ? 1:0;
-                        beginCellIndex = currentLeftTd.getAttribute('rootCellIndex');
-                        currentLeftTd = rows[currentLeftTd.getAttribute('rootRowIndex')].cells[currentLeftTd.getAttribute('rootCellIndex')];
-                    }
-                    rowIndex = currentLeftTd.parentNode.rowIndex + (currentLeftTd.rowSpan || 1);
-                }
-            }
-
-            // 检查是否有超出TableRange下边界的情况
-            if (endRowIndex < rowsNum) {
-                for (var cellIndex = beginCellIndex; cellIndex <= endCellIndex;) {
-                    var currentDownTd = rows[endRowIndex].cells[cellIndex];
-                    if (_isHide(currentDownTd)) {
-                        currentDownTd = rows[currentDownTd.getAttribute('rootRowIndex')].cells[currentDownTd.getAttribute('rootCellIndex')];
-                    }
-                    endRowIndex = currentDownTd.parentNode.rowIndex + currentDownTd.rowSpan - 1;
-                    cellIndex = getIndex(currentDownTd) + (currentDownTd.colSpan || 1);
-                }
-            }
-
-            //检查是否有超出右边界的情况
-            if (endCellIndex < cellsNum) {
-                for (rowIndex = beginRowIndex; rowIndex <= endRowIndex;) {
-                    var currentRightTd = rows[rowIndex].cells[endCellIndex];
-                    if (_isHide(currentRightTd)) {
-                        currentRightTd = rows[currentRightTd.getAttribute('rootRowIndex')].cells[currentRightTd.getAttribute('rootCellIndex')];
-                    }
-                    endCellIndex = getIndex(currentRightTd) + currentRightTd.colSpan - 1;
-                    rowIndex = currentRightTd.parentNode.rowIndex + (currentRightTd.rowSpan || 1);
-                }
-            }
-
-            if (tmpBeginCellIndex == beginCellIndex && tmpEndCellIndex == endCellIndex && tmpEndRowIndex == endRowIndex && tmpBeginRowIndex == beginRowIndex) {
-                break;
-            }
-        }
-
-        //返回选区的起始和结束坐标
-        return {
-            beginRowIndex:  beginRowIndex,
-            beginCellIndex: beginCellIndex,
-            endRowIndex:    endRowIndex,
-            endCellIndex:   endCellIndex
-        }
-    }
-
-
-    /**
-     * 鼠标按下事件
-     * @param type
-     * @param evt
-     */
-    function _mouseDownEvent(type, evt) {
-        anchorTd = evt.target || evt.srcElement;
-
-        if(me.queryCommandState('highlightcode')||domUtils.findParent(anchorTd,function(node){
-            return node.tagName == "DIV"&&/highlighter/.test(node.id);
-        })){
-
-            return;
-        }
-
-        if (evt.button == 2)return;
-        me.document.body.style.webkitUserSelect = '';
-
-
-        clearSelectedTd(me.currentSelectedArr);
-        domUtils.clearSelectedArr(me.currentSelectedArr);
-        //在td里边点击，anchorTd不是td
-        if (anchorTd.tagName !== 'TD') {
-            anchorTd = domUtils.findParentByTagName(anchorTd, 'td') || anchorTd;
-        }
-
-        if (anchorTd.tagName == 'TD') {
-
-
-            me.addListener('mouseover', function(type, evt) {
-                var tmpTd = evt.target || evt.srcElement;
-                _mouseOverEvent.call(me, tmpTd);
-                evt.preventDefault ? evt.preventDefault() : (evt.returnValue = false);
-            });
-
-        } else {
-
-
-            reset();
-        }
-
-    }
-
-    /**
-     * 鼠标移动事件
-     * @param tmpTd
-     */
-    function _mouseOverEvent(tmpTd) {
-
-        if (anchorTd && tmpTd.tagName == "TD") {
-
-            me.document.body.style.webkitUserSelect = 'none';
-            var table = tmpTd.parentNode.parentNode.parentNode;
-            me.selection.getNative()[browser.ie ? 'empty' : 'removeAllRanges']();
-            var range = _getCellsRange(anchorTd, tmpTd);
-            _toggleSelect(table, range);
-
-
-        }
-    }
-
-    /**
-     * 切换选区状态
-     * @param table
-     * @param cellsRange
-     */
-    function _toggleSelect(table, cellsRange) {
-        var rows = table.rows;
-        clearSelectedTd(me.currentSelectedArr);
-        for (var i = cellsRange.beginRowIndex; i <= cellsRange.endRowIndex; i++) {
-            for (var j = cellsRange.beginCellIndex; j <= cellsRange.endCellIndex; j++) {
-                var td = rows[i].cells[j];
-                td.className = me.options.selectedTdClass;
-                me.currentSelectedArr.push(td);
-            }
-        }
-    }
-
-    //更新rootRowIndxe,rootCellIndex
-    function update(table) {
-        var tds = table.getElementsByTagName('td'),
-            rowIndex,cellIndex,rows = table.rows;
-        for (var j = 0,tj; tj = tds[j++];) {
-            if (!_isHide(tj)) {
-                rowIndex = tj.parentNode.rowIndex;
-                cellIndex = getIndex(tj);
-                for (var r = 0; r < tj.rowSpan; r++) {
-                    var c = r == 0 ? 1 : 0;
-                    for (; c < tj.colSpan; c++) {
-                        var tmp = rows[rowIndex + r].children[cellIndex + c];
-
-
-                        tmp.setAttribute('rootRowIndex', rowIndex);
-                        tmp.setAttribute('rootCellIndex', cellIndex);
-
-                    }
-                }
-            }
-            if(!_isHide(tj)){
-                domUtils.removeAttributes(tj,['rootRowIndex','rootCellIndex']);
-            }
-            if(tj.colSpan && tj.colSpan == 1){
-                tj.removeAttribute('colSpan')
-            }
-            if(tj.rowSpan && tj.rowSpan == 1){
-                tj.removeAttribute('rowSpan')
-            }
-            var width;
-            if(!_isHide(tj) && (width = tj.style.width) && /%/.test(width)){
-                tj.style.width = Math.floor(100/tj.parentNode.cells.length) + '%'
-            }
-        }
-    }
-
-    me.adjustTable = function(cont) {
-        var table = cont.getElementsByTagName('table');
-        for (var i = 0,ti; ti = table[i++];) {
-            //如果表格的align不是默认，将不占位,给后边的block元素设置clear:both
-            if (ti.getAttribute('align')) {
-                var next = ti.nextSibling;
-                while(next){
-                    if(domUtils.isBlockElm(next)){
-                        break;
-                    }
-                    next = next.nextSibling;
-                }
-                if(next){
-                next.style.clear = 'both';
-                }
-            }
-
-            ti.removeAttribute('_innerCreateTable')
-            var tds = domUtils.getElementsByTagName(ti, 'td'),
-                td,tmpTd;
-
-            for (var j = 0,tj; tj = tds[j++];) {
-                if (domUtils.isEmptyNode(tj)) {
-                    tj.innerHTML = browser.ie ? domUtils.fillChar : '<br/>';
-                }
-                var index = getIndex(tj),
-                    rowIndex = tj.parentNode.rowIndex,
-                    rows = domUtils.findParentByTagName(tj, 'table').rows;
-
-                for (var r = 0; r < tj.rowSpan; r++) {
-                    var c = r == 0 ? 1 : 0;
-                    for (; c < tj.colSpan; c++) {
-
-                        if (!td) {
-                            td = tj.cloneNode(false);
-
-                            td.rowSpan = td.colSpan = 1;
-                            td.style.display = 'none';
-                            td.innerHTML = browser.ie ? '' : '<br/>';
-
-
-                        } else {
-                            td = td.cloneNode(true)
-                        }
-
-                        td.setAttribute('rootRowIndex', tj.parentNode.rowIndex);
-                        td.setAttribute('rootCellIndex', index);
-                        if (r == 0) {
-                            if (tj.nextSibling) {
-                                tj.parentNode.insertBefore(td, tj.nextSibling);
-                            } else {
-                                tj.parentNode.appendChild(td)
-                            }
-                        } else {
-                            tmpTd = rows[rowIndex + r].children[index];
-                            if (tmpTd) {
-                                tmpTd.parentNode.insertBefore(td, tmpTd)
-                            } else {
-                                //trace:1032
-                                rows[rowIndex + r].appendChild(td)
-                            }
-                        }
-
-
-                    }
-                }
-
-
-            }
-
-        }
-        me.fireEvent("afteradjusttable",cont);
-    };
-
-//    me.addListener('beforegetcontent',function(){
-//        for(var i=0,ti,ts=me.document.getElementsByTagName('table');ti=ts[i++];){
-//            var pN = ti.parentNode;
-//            if(pN && pN.getAttribute('dropdrag')){
-//                domUtils.remove(pN,true)
-//            }
-//        }
-//    });
-//
-//    me.addListener('aftergetcontent',function(){
-//        if(!me.queryCommandState('source'))
-//            me.fireEvent('afteradjusttable',me.document)
-//    });
-//    //table拖拽
-//    me.addListener("afteradjusttable",function(type,cont){
-//        var table = cont.getElementsByTagName("table"),
-//            dragCont = me.document.createElement("div");
-//        domUtils.setAttributes(dragCont,{
-//            style:'margin:0;padding:5px;border:0;',
-//            dropdrag:true
-//        });
-//        for (var i = 0,ti; ti = table[i++];) {
-//            if(ti.parentNode && ti.parentNode.nodeType == 1){
-//
-//
-//                (function(ti){
-//                    var div = dragCont.cloneNode(false);
-//                    ti.parentNode.insertBefore(div,ti);
-//                    div.appendChild(ti);
-//                    var borderStyle;
-//                    domUtils.on(div,'mousemove',function(evt){
-//                        var tag = evt.srcElement || evt.target;
-//                        if(tag.tagName.toLowerCase()=="div"){
-//                            if(ie && me.body.getAttribute("contentEditable") == 'true')
-//                                me.body.setAttribute("contentEditable","false");
-//                            borderStyle = clickPosition(ti,this,evt)
-//
-//                        }
-//                    });
-//                    if(ie){
-//                        domUtils.on(div,'mouseleave',function(evt){
-//
-//                            if(evt.srcElement.tagName.toLowerCase()=="div" && ie && me.body.getAttribute("contentEditable") == 'false'){
-//
-//                                me.body.setAttribute("contentEditable","true");
-//                            }
-//
-//
-//                        });
-//                    }
-//
-//                    domUtils.on(div,"mousedown",function(evt){
-//                        var tag = evt.srcElement || evt.target;
-//
-//                        if(tag.tagName.toLowerCase()=="div"){
-//                            if(ie && me.body.getAttribute("contentEditable") == 'true')
-//                                        me.body.setAttribute("contentEditable","false");
-//                            var tWidth = ti.offsetWidth,
-//                                tHeight = ti.offsetHeight,
-//                                align = ti.getAttribute('align');
-//
-//
-//                              try{
-//                                  baidu.editor.ui.uiUtils.startDrag(evt, {
-//                                      ondragstart:function(){},
-//                                      ondragmove: function (x, y){
-//
-//                                          if(align && align!="left" && /\w?w-/.test(borderStyle)){
-//                                              x = -x;
-//                                          }
-//                                          if(/^s?[we]/.test(borderStyle)){
-//                                              ti.setAttribute("width",(tWidth+x)>0?tWidth+x: 0);
-//                                          }
-//                                          if(/^s/.test(borderStyle)){
-//                                              ti.setAttribute("height",(tHeight+y)>0?tHeight+y:0);
-//                                          }
-//                                      },
-//                                      ondragstop: function (){}
-//                                  },me.document);
-//                              }catch(e){
-//                                  alert("您没有引入uiUtils，无法拖动table");
-//                              }
-//
-//                        }
-//                    });
-//
-//                    domUtils.on(ti,"mouseover",function(){
-//                        var div = ti.parentNode;
-//                        if(div && div.parentNode && div.getAttribute('dropdrag')){
-//                            domUtils.setStyle(div,"cursor","text");
-//                            if(ie && me.body.getAttribute("contentEditable") == 'false')
-//                               me.body.setAttribute("contentEditable","true");
-//                        }
-//
-//
-//                    });
-//                })(ti);
-//
-//            }
-//        }
-//    });
-//    function clickPosition(table,div,evt){
-//        var pos = domUtils.getXY(table),
-//            tWidth = table.offsetWidth,
-//            tHeight = table.offsetHeight,
-//            evtPos = {
-//                top : evt.clientY,
-//                left : evt.clientX
-//            },
-//            borderStyle = "";
-//
-//        if(Math.abs(pos.x-evtPos.left)<15){
-//
-//            //左，左下
-//            borderStyle = Math.abs(evtPos.top-pos.y-tHeight)<15 ? "sw-resize" : "w-resize";
-//        }else if(Math.abs(evtPos.left-pos.x-tWidth)<15){
-//            //右，右下
-//            borderStyle = Math.abs(evtPos.top-pos.y-tHeight)<15 ? "se-resize" : "e-resize";
-//        }else if(Math.abs(evtPos.top-pos.y-tHeight)<15 && Math.abs(evtPos.left-pos.x)<tWidth){
-//            //下
-//            borderStyle = "s-resize";
-//        }
-//        domUtils.setStyle(div,"cursor",borderStyle||'text');
-//        return borderStyle;
-//    }
-};
-
 ///import core
 ///commands 加粗,斜体,上标,下标
 ///commandsName  Bold,Italic,Subscript,Superscript
@@ -11506,26 +9600,37 @@ UE.plugins['table'] = function() {
  * @name baidu.editor.execCommands
  * @param    {String}    cmdName    bold加粗。italic斜体。subscript上标。superscript下标。
 */
-UE.plugins['basestyle'] = function(){
+ baidu.editor.plugins['basestyle'] = function(){
+
     var basestyles = {
             'bold':['strong','b'],
             'italic':['em','i'],
+            //'underline':['u'],
+            //'strikethrough':['strike'],
             'subscript':['sub'],
             'superscript':['sup']
         },
+        domUtils = baidu.editor.dom.domUtils,
         getObj = function(editor,tagNames){
-           //var start = editor.selection.getStart();
-            var path = editor.selection.getStartElementPath();
-//            return  domUtils.findParentByTagName( start, tagNames, true )
-            return utils.findNode(path,tagNames);
+            var start = editor.selection.getStart();
+            return  domUtils.findParentByTagName( start, tagNames, true )
         },
+        flag = 0,
         me = this;
     for ( var style in basestyles ) {
         (function( cmd, tagNames ) {
             me.commands[cmd] = {
                 execCommand : function( cmdName ) {
 
-                    var range = new dom.Range(me.document),obj = '';
+                    var range = new baidu.editor.dom.Range(this.document),obj = '',me = this;
+
+                    //执行了上述代码可能产生冗余的html代码，所以要注册 beforecontent去掉这些冗余的代码
+                    if(!flag){
+                        this.addListener('beforegetcontent',function(){
+                            domUtils.clearReduent(me.document,['strong','u','em','sup','sub','strike'])
+                        });
+                        flag = 1;
+                    }
                     //table的处理
                     if(me.currentSelectedArr && me.currentSelectedArr.length > 0){
                         for(var i=0,ci;ci=me.currentSelectedArr[i++];){
@@ -11600,92 +9705,823 @@ UE.plugins['basestyle'] = function(){
     }
 };
 
-
 ///import core
-///commands 选区路径
-///commandsName  ElementPath,elementPathEnabled
-///commandsTitle  选区路径
-/**
- * 选区路径
- * @function
- * @name baidu.editor.execCommand
- * @param {String}     cmdName     elementpath选区路径
- */
-UE.plugins['elementpath'] = function(){
+///commands 自定义样式
+///commandsName  CustomStyle
+///commandsTitle  自定义样式
+(function() {
+    var domUtils = baidu.editor.dom.domUtils,
+            dtd = baidu.editor.dom.dtd;
 
-    var currentLevel,
-        tagNames,
-        me = this;
-    me.commands['elementpath'] = {
-        execCommand : function( cmdName, level ) {
-            var start = tagNames[level],
-                range = me.selection.getRange();
-            me.currentSelectedArr && domUtils.clearSelectedArr(me.currentSelectedArr);
-           
-            currentLevel = level*1;
-            if(dtd.$tableContent[start.tagName]){
-                switch (start.tagName){
-                    case 'TD':me.currentSelectedArr = [start];
-                            start.className = me.options.selectedTdClass;
-                            break;
-                    case 'TR':
-                        var cells = start.cells;
-                        for(var i=0,ti;ti=cells[i++];){
-                            me.currentSelectedArr.push(ti);
-                            ti.className = me.options.selectedTdClass;
-                        }
-                        break;
-                    case 'TABLE':
-                    case 'TBODY':
+    baidu.editor.plugins['customstyle'] = function() {
+        var me = this;
+        me.commands['customstyle'] = {
+            execCommand : function(cmdName, obj) {
+                var me = this,
+                        tagName = obj.tag,
+                        node = domUtils.findParent(me.selection.getStart(), function(node) {
+                            return node.getAttribute('label') == obj.label
+                        }, true),
+                        range,bk,tmpObj = {};
+                for (var p in obj) {
+                    tmpObj[p] = obj[p]
+                }
+                delete tmpObj.tag;
+                if (node && node.getAttribute('label') == obj.label) {
+                    range = this.selection.getRange();
+                    bk = range.createBookmark();
+                    if (range.collapsed) {
+                        domUtils.remove(node, true);
+                    } else {
 
-                        var rows = start.rows;
-                        for(var i=0,ri;ri=rows[i++];){
-                            cells = ri.cells;
-                            for(var j=0,tj;tj=cells[j++];){
-                                 me.currentSelectedArr.push(tj);
-                                tj.className = me.options.selectedTdClass;
+                        var common = domUtils.getCommonAncestor(bk.start, bk.end),
+                                nodes = domUtils.getElementsByTagName(common, tagName);
+                        for (var i = 0,ni; ni = nodes[i++];) {
+                            if (ni.getAttribute('label') == obj.label) {
+                                var ps = domUtils.getPosition(ni, bk.start),pe = domUtils.getPosition(ni, bk.end);
+                                if ((ps & domUtils.POSITION_FOLLOWING || ps & domUtils.POSITION_CONTAINS)
+                                        &&
+                                        (pe & domUtils.POSITION_PRECEDING || pe & domUtils.POSITION_CONTAINS)
+                                        )
+                                    if (dtd.$block[tagName]) {
+                                        var fillNode = me.document.createElement('p');
+                                        domUtils.moveChild(ni, fillNode);
+                                        ni.parentNode.insertBefore(fillNode, ni);
+                                    }
+                                domUtils.remove(ni, true)
                             }
                         }
+                        node = domUtils.findParent(common, function(node) {
+                            return node.getAttribute('label') == obj.label
+                        }, true);
+                        if (node) {
+                            domUtils.remove(node, true)
+                        }
 
-                }
-                start = me.currentSelectedArr[0];
-                if(domUtils.isEmptyNode(start)){
-                    range.setStart(start,0).setCursor()
-                }else{
-                   range.selectNodeContents(start).select()
-                }
-            }else{
-                range.selectNode(start).select()
+                    }
+                    range.moveToBookmark(bk).select();
+                } else {
+                    if (dtd.$block[tagName]) {
+                        this.execCommand('paragraph', tagName, tmpObj);
+                        range = me.selection.getRange();
+                        if (!range.collapsed) {
+                            range.collapse();
+                            node = domUtils.findParent(me.selection.getStart(), function(node) {
+                                return node.getAttribute('label') == obj.label
+                            }, true);
+                            var pNode = me.document.createElement('p');
+                            domUtils.insertAfter(node, pNode);
+                            domUtils.fillNode(me.document, pNode);
+                            range.setStart(pNode, 0).setCursor()
+                        }
+                    } else {
+                        range = me.selection.getRange();
+                        if (range.collapsed) {
+                            node = me.document.createElement(tagName);
+                            domUtils.setAttributes(node, tmpObj);
+                            range.insertNode(node).setStart(node, 0).setCursor();
 
-            }
-        },
-        queryCommandValue : function() {
-            //产生一个副本，不能修改原来的startElementPath;
-            var parents = [].concat(this.selection.getStartElementPath()).reverse(),
-                names = [];
-            tagNames = parents;
-            for(var i=0,ci;ci=parents[i];i++){
-                if(ci.nodeType == 3) continue;
-                var name = ci.tagName.toLowerCase();
-                if(name == 'img' && ci.getAttribute('anchorname')){
-                    name = 'anchor'
+                            return;
+                        }
+                        bk = range.createBookmark();
+                        range.applyInlineStyle(tagName, tmpObj).moveToBookmark(bk).select()
+                    }
                 }
-                names[i] = name;
-                if(currentLevel == i){
-                   currentLevel = -1;
-                    break;
+
+            },
+            queryCommandValue : function() {
+                var startNode = this.selection.getStart(),
+                        parent = domUtils.findParent(startNode, function(node) {
+                            return node.getAttribute('label')
+                        }, true);
+
+                return  parent ? parent.getAttribute('label') : '';
+            },
+            queryCommandState : function() {
+                return this.highlight ? -1 : 0;
+            }
+        };
+        me.addListener('keyup', function(type, evt) {
+            var keyCode = evt.keyCode || evt.which;
+
+            if (keyCode == 32 || keyCode == 13) {
+                var range = me.selection.getRange();
+                if (range.collapsed) {
+                    var node = domUtils.findParent(me.selection.getStart(), function(node) {
+                        return node.getAttribute('label') != ""
+                    }, true);
+                    if (node) {
+                        if (baidu.editor.dom.dtd.$block[node.tagName] && domUtils.isEmptyNode(node)) {
+                            var p = me.document.createElement('p');
+                            domUtils.insertAfter(node, p);
+                            domUtils.fillNode(me.document, p);
+                            domUtils.remove(node);
+                            range.setStart(p, 0).setCursor();
+
+                        }
+                    }
                 }
             }
-            return names;
-        }
+        })
+
     }
 
 
-};
+})();///import core
+///commands 悬浮工具栏
+///commandsName  AutoFloat
+///commandsTitle  悬浮工具栏
+/*
+ *  modified by chengchao01
+ *
+ *  注意： 引入此功能后，在IE6下会将body的背景图片覆盖掉！
+ */
+ (function(){
+ 
+    var browser = baidu.editor.browser,
+		domUtils = baidu.editor.dom.domUtils,
+        uiUtils,
+        utils = baidu.editor.utils,
+		LteIE6 = browser.ie && browser.version <= 6;
+	
+    baidu.editor.plugins['autofloat'] = function() {
+        
+		var optsAutoFloatEnabled = this.options.autoFloatEnabled;
+
+        //如果不固定toolbar的位置，则直接退出
+        if(!optsAutoFloatEnabled){
+			return;
+		}
+
+		var editor = this,
+			floating = false,
+			MIN_HEIGHT = 0,
+			bakCssText,
+			placeHolder = document.createElement('div');
+
+		function setFloating(delta){
+			var toolbarBox = editor.ui.getDom('toolbarbox'),
+				toobarBoxPos = domUtils.getXY(toolbarBox),
+				origalFloat = window.getComputedStyle? document.defaultView.getComputedStyle(toolbarBox, null).position : toolbarBox.currentStyle.position,
+                origalLeft = window.getComputedStyle? document.defaultView.getComputedStyle(toolbarBox, null).left : toolbarBox.currentStyle.left;
+			placeHolder.style.height = toolbarBox.offsetHeight + 'px';
+			bakCssText = toolbarBox.style.cssText;
+            if (browser.ie7Compat) {
+                var left = (toolbarBox.getBoundingClientRect().left -
+                    document.documentElement.getBoundingClientRect().left) + 'px';
+            }
+			toolbarBox.style.width = toolbarBox.offsetWidth + 'px';
+			toolbarBox.parentNode.insertBefore(placeHolder, toolbarBox);
+			if (LteIE6) {
+				toolbarBox.style.position = 'absolute';
+				toolbarBox.style.setExpression('top', 'eval("((document.documentElement||document.body).scrollTop-'+ delta +')+\'px\'")');
+				toolbarBox.style.zIndex = '1';
+			} else {
+				toolbarBox.style.position = 'fixed';
+				toolbarBox.style.zIndex = '1';
+				toolbarBox.style.top = '0';
+                if (browser.ie7Compat) {
+                    toolbarBox.style.left = left;
+                }
+				((origalFloat == 'absolute' || origalFloat == 'relative') && parseFloat(origalLeft)) && (toolbarBox.style.left = toobarBoxPos.x + 'px');
+			}
+			floating = true;
+		}
+		function unsetFloating(){
+			var toolbarBox = editor.ui.getDom('toolbarbox');
+			placeHolder.parentNode.removeChild(placeHolder);
+			if (LteIE6) {
+				toolbarBox.style.removeExpression('top');
+			}
+			toolbarBox.style.cssText = bakCssText;
+			floating = false;
+		}
+		var updateFloating = utils.defer(function(){
+
+            var rect = uiUtils.getClientRect(
+                    editor.ui.getDom('toolbarbox'));
+            var rect2 = uiUtils.getClientRect(
+                    editor.ui.getDom('iframeholder'));
+            if (!floating) {
+                if (rect.top < 0 && rect2.bottom > rect.height + MIN_HEIGHT) {
+                    var delta = (document.documentElement.scrollTop || document.body.scrollTop) + rect.top;
+                    setFloating(delta);
+                }
+            } else {
+                var rect1 = uiUtils.getClientRect(placeHolder);
+                if (rect.top < rect1.top || rect.bottom + MIN_HEIGHT > rect2.bottom) {
+                    unsetFloating();
+                }
+            }
+        },100,true);
+
+        editor.addListener('destroy',function(){
+            domUtils.un(window, ['scroll','resize'], updateFloating);
+            editor.removeListener('keydown', updateFloating);
+        });
+        editor.addListener('ready', function(){
+            if(checkHasUI()){
+                if(LteIE6){
+                    fixIE6FixedPos();
+                }
+                editor.addListener('autoheightchanged', function (t, enabled){
+                    if (enabled) {
+                        domUtils.on(window, ['scroll','resize'], updateFloating);
+                        editor.addListener('keydown', updateFloating);
+                    } else {
+                        domUtils.un(window, ['scroll','resize'], updateFloating);
+                        editor.removeListener('keydown', updateFloating);
+                    }
+                });
+
+                editor.addListener('beforefullscreenchange', function (t, enabled){
+                    if (enabled) {
+                        if (floating) {
+                            unsetFloating();
+                        }
+                    }
+                });
+                editor.addListener('fullscreenchanged', function (t, enabled){
+                    if (!enabled) {
+                        updateFloating();
+                    }
+                });
+                editor.addListener('sourcemodechanged', function (t, enabled){
+                    setTimeout(function (){
+                        updateFloating();
+                    });
+                });
+            }
+        })
+	};
+    function checkHasUI(){
+        try{
+            uiUtils = baidu.editor.ui.uiUtils;
+        }catch( ex ){
+
+            alert('autofloat插件功能依赖于UEditor UI\nautofloat定义位置: _src/plugins/autofloat/autofloat.js');
+
+            throw({
+                name: '未包含UI文件',
+                message: 'autofloat功能依赖于UEditor UI。autofloat定义位置: _src/plugins/autofloat/autofloat.js'
+            });
+        }
+        return 1;
+    }
+    function fixIE6FixedPos(){
+         var docStyle = document.body.style;
+        docStyle.backgroundImage = 'url("about:blank")';
+        docStyle.backgroundAttachment = 'fixed';
+    }
+ })();///import core
+///import plugins/serialize/serialize.js
+///import plugins/undo/undo.js
+///commands 查看源码
+///commandsName  Source
+///commandsTitle  查看源码
+(function (){
+    var browser = baidu.editor.browser,
+        domUtils = baidu.editor.dom.domUtils,
+        dtd = baidu.editor.dom.dtd;
+
+    function SourceFormater(config){
+        config = config || {};
+        this.indentChar = config.indentChar || '    ';
+        this.breakChar = config.breakChar || '\n';
+        this.selfClosingEnd = config.selfClosingEnd || ' />';
+    }
+    var unhtml1 = function (){
+        var map = { '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+        function rep( m ){ return map[m]; }
+        return function ( str ) {
+            str = str + '';
+            return str ? str.replace( /[<>"']/g, rep ) : '';
+        };
+    }();
+    
+    function printAttrs(attrs){
+        var buff = [];
+        for (var k in attrs) {
+            buff.push(k + '="' + unhtml1(attrs[k]) + '"');
+        }
+        return buff.join(' ');
+    }
+    SourceFormater.prototype = {
+        format: function (html){
+            var node = baidu.editor.serialize.parseHTML(html);
+            this.buff = [];
+            this.indents = '';
+            this.indenting = 1;
+            this.visitNode(node);
+            return this.buff.join('');
+        },
+        visitNode: function (node){
+            if (node.type == 'fragment') {
+                this.visitChildren(node.children);
+            } else if (node.type == 'element') {
+                var selfClosing = dtd.$empty[node.tag];
+                this.visitTag(node.tag, node.attributes, selfClosing);
+
+                this.visitChildren(node.children);
+
+                if (!selfClosing) {
+                    this.visitEndTag(node.tag);
+                }
+            } else if (node.type == 'comment') {
+                this.visitComment(node.data);
+            } else {
+                this.visitText(node.data,dtd.$notTransContent[node.parent.tag]);
+            }
+        },
+        visitChildren: function (children){
+            for (var i=0; i<children.length; i++) {
+                this.visitNode(children[i]);
+            }
+        },
+        visitTag: function (tag, attrs, selfClosing){
+            if (this.indenting) {
+                this.indent();
+            } else if (!dtd.$inline[tag] && tag != 'a') { // todo: 去掉a, 因为dtd的inline里面没有a
+                this.newline();
+                this.indent();
+            }
+            this.buff.push('<', tag);
+            var attrPart = printAttrs(attrs);
+            if (attrPart) {
+                this.buff.push(' ', attrPart);
+            }
+            if (selfClosing) {
+                this.buff.push(this.selfClosingEnd);
+                if (tag == 'br') {
+                    this.newline();
+                }
+            } else {
+                this.buff.push('>');
+                this.indents += this.indentChar;
+            }
+            if (!dtd.$inline[tag]) {
+                this.newline();
+            }
+        },
+        indent: function (){
+            this.buff.push(this.indents);
+            this.indenting = 0;
+        },
+        newline: function (){
+            this.buff.push(this.breakChar);
+            this.indenting = 1;
+        },
+        visitEndTag: function (tag){
+            
+            this.indents = this.indents.slice(0, -this.indentChar.length);
+            if (this.indenting) {
+                this.indent();
+            } else if (!dtd.$inline[tag]) {
+                this.newline();
+                this.indent();
+            }
+            this.buff.push('</', tag, '>');
+        },
+        visitText: function (text,notTrans){
+            if (this.indenting) {
+                this.indent();
+            }
+      
+            if(!notTrans){
+                 text = text.replace(/&nbsp;/g, ' ').replace(/[ ][ ]+/g, function (m){
+                    return new Array(m.length + 1).join('&nbsp;');
+                }).replace(/(?:^ )|(?: $)/g, '&nbsp;');
+            }
+            
+            this.buff.push(text);
+
+        },
+        visitComment: function (text){
+            if (this.indenting) {
+                this.indent();
+            }
+            this.buff.push('<!--', text, '-->');
+        }
+    };
+
+    var sourceEditors = {
+        textarea: function (editor, holder){
+            var textarea = holder.ownerDocument.createElement('textarea');
+            textarea.style.cssText = 'position:absolute;resize:none;width:100%;height:100%;border:0;padding:0;margin:0;overflow-y:auto;';
+            // todo: IE下只有onresize属性可用... 很纠结
+            if (baidu.editor.browser.ie && baidu.editor.browser.version < 8) {
+                textarea.style.width = holder.offsetWidth + 'px';
+                textarea.style.height = holder.offsetHeight + 'px';
+                holder.onresize = function (){
+                    textarea.style.width = holder.offsetWidth + 'px';
+                    textarea.style.height = holder.offsetHeight + 'px';
+                };
+            }
+            holder.appendChild(textarea);
+            return {
+                setContent: function (content){
+                    textarea.value = content;
+                },
+                getContent: function (){
+                    return textarea.value;
+                },
+                select: function (){
+                    var range;
+                    if (baidu.editor.browser.ie) {
+                        range = textarea.createTextRange();
+                        range.collapse(true);
+                        range.select();
+                    } else {
+                        //todo: chrome下无法设置焦点
+                        textarea.setSelectionRange(0, 0);
+                        textarea.focus();
+                    }
+                },
+                dispose: function (){
+                    holder.removeChild(textarea);
+                    // todo
+                    holder.onresize = null;
+                    textarea = null;
+                    holder = null;
+                }
+            };
+        },
+        codemirror: function (editor, holder){
+            var options = {
+                mode: "text/html",
+                tabMode: "indent",
+                lineNumbers: true,
+                lineWrapping:true
+            };
+            var codeEditor = window.CodeMirror(holder, options);
+            var dom = codeEditor.getWrapperElement();
+            dom.style.cssText = 'position:absolute;left:0;top:0;width:100%;height:100%;font-family:consolas,"Courier new",monospace;font-size:13px;';
+            codeEditor.getScrollerElement().style.cssText = 'position:absolute;left:0;top:0;width:100%;height:100%;';
+            codeEditor.refresh();
+            return {
+                setContent: function (content){
+                    codeEditor.setValue(content);
+                },
+                getContent: function (){
+                    return codeEditor.getValue();
+                },
+                select: function (){
+                    codeEditor.focus();
+                },
+                dispose: function (){
+                    holder.removeChild(dom);
+                    dom = null;
+                    codeEditor = null;
+                }
+            };
+        }
+    };
+
+    baidu.editor.plugins['source'] = function (){
+        var me = this,utils = baidu.editor.utils;
+        me.initPlugins(['serialize']);
+        var opt = this.options;
+        var formatter = new SourceFormater(opt.source);
+        var sourceMode = false;
+        var sourceEditor;
+
+        function createSourceEditor(holder){
+            var useCodeMirror = opt.sourceEditor == 'codemirror' && window.CodeMirror;
+            return sourceEditors[useCodeMirror ? 'codemirror' : 'textarea'](me, holder);
+        }
+
+        var bakCssText;
+        me.commands['source'] = {
+            execCommand: function (){
+
+                sourceMode = !sourceMode;
+                if (sourceMode) {
+                    me.undoManger && me.undoManger.save();
+                    this.currentSelectedArr && domUtils.clearSelectedArr(this.currentSelectedArr);
+                    if(browser.gecko)
+                        me.body.contentEditable = false;
+                    
+                    bakCssText = me.iframe.style.cssText;
+                    me.iframe.style.cssText += 'position:absolute;left:-32768px;top:-32768px;';
+
+                    var content = formatter.format(me.hasContents() ? me.getContent() : '');
+                    sourceEditor = createSourceEditor(me.iframe.parentNode);
+
+                    sourceEditor.setContent(content);
+                    setTimeout(function (){
+                        sourceEditor.select();
+                    });
+                } else {
+                    
+                    me.iframe.style.cssText = bakCssText;
+                    
+                    me.setContent(sourceEditor.getContent().replace(new RegExp(formatter.breakChar + '?(' + formatter.indentChar + '){0,}<','g'),'<') || '<p>' + (browser.ie ? '' : '<br/>')+'</p>');
+                    sourceEditor.dispose();
+                    sourceEditor = null;
+                    setTimeout(function(){
+                        
+                        var first = me.body.firstChild;
+                        //trace:1106 都删除空了，下边会报错，所以补充一个p占位
+                        if(!first){
+                            me.body.innerHTML = '<p>'+(browser.ie?'':'<br/>')+'</p>';
+                            first = me.body.firstChild;
+                        }
+                        //要在ifm为显示时ff才能取到selection,否则报错
+                        me.undoManger && me.undoManger.save();
+
+                        while(first && first.firstChild){
+
+                            first = first.firstChild;
+                        }
+                        var range = me.selection.getRange();
+                        if(first.nodeType == 3 || baidu.editor.dom.dtd.$empty[first.tagName]){
+                            range.setStartBefore(first)
+                        }else{
+                            range.setStart(first,0);
+                        }
+
+                        if(baidu.editor.browser.gecko){
+
+                            var input = document.createElement('input');
+                            input.style.cssText = 'position:absolute;left:0;top:-32768px';
+
+                            document.body.appendChild(input);
+
+                            me.body.contentEditable = false;
+                            setTimeout(function(){
+                                domUtils.setViewportOffset(input, { left: -32768, top: 0 });
+                                input.focus();
+                                setTimeout(function(){
+                                    me.body.contentEditable = true;
+                                    range.setCursor(false,true);
+                                    baidu.editor.dom.domUtils.remove(input)
+                                })
+
+                            })
+                        }else{
+                            range.setCursor(false,true);
+                        }
+
+                    })
+                }
+                this.fireEvent('sourcemodechanged', sourceMode);
+            },
+            queryCommandState: function (){
+                return sourceMode|0;
+            }
+        };
+        var oldQueryCommandState = me.queryCommandState;
+        me.queryCommandState = function (cmdName){
+            cmdName = cmdName.toLowerCase();
+            if (sourceMode) {
+                return cmdName == 'source' ? 1 : -1;
+            }
+            return oldQueryCommandState.apply(this, arguments);
+        };
+        //解决在源码模式下getContent不能得到最新的内容问题
+        var oldGetContent = me.getContent;
+        me.getContent = function (){
+
+            if(sourceMode && sourceEditor ){
+                var html = sourceEditor.getContent();
+                if (this.serialize) {
+                    var node = this.serialize.parseHTML(html);
+                    node = this.serialize.filter(node);
+                    html = this.serialize.toHTML(node);
+                }
+                return html;
+            }else{
+                return oldGetContent.apply(this, arguments)
+            }
+        };
+        me.addListener("ready",function(){
+            if(opt.sourceEditor == "codemirror"){
+                utils.loadFile(document,{
+                    src : opt.UEDITOR_HOME_URL+"third-party/codemirror2.15/codemirror.js",
+                    tag : "script",
+                    type : "text/javascript",
+                    defer : "defer"
+                });
+                utils.loadFile(document,{
+                    tag : "link",
+                    rel : "stylesheet",
+                    type : "text/css",
+                    href : opt.UEDITOR_HOME_URL+"third-party/codemirror2.15/codemirror.css"
+                });
+            }
+        });
+    };
+
+})();///import core
+///commands 查找替换
+///commandsName  SearchReplace
+///commandsTitle  查询替换
+///commandsDialog  dialogs\searchreplace\searchreplace.html
+/**
+ * @description 查找替换
+ * @author zhanyi
+ */
+ baidu.editor.plugins['searchreplace'] = function(){
+
+    var currentRange,
+        first,
+        me = this;
+   
+    this.addListener('reset',function(){
+        currentRange = null;
+        first = null;
+    });
+    me.commands['searchreplace'] = {
+
+            execCommand : function(cmdName,opt){
+               	var editor = this,
+                    sel = editor.selection,
+                    range,
+                    nativeRange,
+                    num = 0,
+                opt = baidu.editor.utils.extend(opt,{
+                    all : false,
+                    casesensitive : false,
+                    dir : 1
+                },true);
 
 
+                if(baidu.editor.browser.ie){
+                    while(1){
+                        var tmpRange;
+                        nativeRange = editor.document.selection.createRange();
+                        tmpRange = nativeRange.duplicate();
+                        tmpRange.moveToElementText(editor.document.body);
+                        if(opt.all){
+                            first = 0;
+                            opt.dir = 1;
+                            
+                            if(currentRange){
+                                tmpRange.setEndPoint(opt.dir == -1 ? 'EndToStart' : 'StartToEnd',currentRange)
+                            }
+                        }else{
+                            tmpRange.setEndPoint(opt.dir == -1 ? 'EndToStart' : 'StartToEnd',nativeRange);
+                            if(opt.hasOwnProperty("replaceStr")){
+                                tmpRange.setEndPoint(opt.dir == -1 ? 'StartToEnd' : 'EndToStart',nativeRange);
+                            }
+                        }
+                        nativeRange = tmpRange.duplicate();
+
+
+
+                        if(!tmpRange.findText(opt.searchStr,opt.dir,opt.casesensitive ? 4 : 0)){
+                            currentRange = null;
+                            tmpRange = editor.document.selection.createRange();
+                            tmpRange.scrollIntoView();
+                            return num;
+                        }
+                        tmpRange.select();
+                        //替换
+                        if(opt.hasOwnProperty("replaceStr")){
+                            range = sel.getRange();
+                            range.deleteContents().insertNode(range.document.createTextNode(opt.replaceStr)).select();
+                            currentRange = sel.getNative().createRange();
+
+                        }
+                        num++;
+                        if(!opt.all)break;
+                    }
+                }else{
+                    var w = editor.window,nativeSel = sel.getNative(),tmpRange;
+                    while(1){
+                        if(opt.all){
+                            if(currentRange){
+                                currentRange.collapse(false);
+                                nativeRange = currentRange;
+
+                            }else{
+                                nativeRange  = editor.document.createRange();
+                                nativeRange.setStart(editor.document.body,0);
+
+                            }
+                            nativeSel.removeAllRanges();
+                            nativeSel.addRange( nativeRange );
+                            first = 0;
+                            opt.dir = 1;
+                        }else{
+                            nativeRange = w.getSelection().getRangeAt(0);
+                           
+                            if(opt.hasOwnProperty("replaceStr")){
+                                nativeRange.collapse(opt.dir == 1 ? true : false);
+                            }
+                        }
+
+                        //如果是第一次并且海选中了内容那就要清除，为find做准备
+                       
+                        if(!first){
+                            nativeRange.collapse( opt.dir <0 ? true : false);
+                            nativeSel.removeAllRanges();
+                            nativeSel.addRange( nativeRange );
+                        }else{
+                            nativeSel.removeAllRanges();
+                        }
+
+                        if(!w.find(opt.searchStr,opt.casesensitive,opt.dir < 0 ? true : false) ) {
+                            currentRange = null;
+                            nativeSel.removeAllRanges();
+
+                            return num;
+                        }
+                        first = 0;
+                        range = w.getSelection().getRangeAt(0);
+                        if(!range.collapsed){
+
+                            if(opt.hasOwnProperty("replaceStr")){
+                                range.deleteContents();
+                                var text = w.document.createTextNode(opt.replaceStr);
+                                range.insertNode(text);
+                                range.selectNode(text);
+                                nativeSel.addRange(range);
+                                currentRange = range.cloneRange();
+                            }
+                        }
+                        num++;
+                        if(!opt.all)break;
+                    }
+
+                }
+                return true;
+            }
+    }
+
+};///import core
+///commands 当输入内容超过编辑器高度时，编辑器自动增高
+///commandsName  AutoHeight
+///commandsTitle  自动增高
+/**
+ * @description 自动伸展
+ * @author zhanyi
+ */
+(function() {
+
+    var domUtils = baidu.editor.dom.domUtils;
+
+    baidu.editor.plugins['autoheight'] = function() {
+        var me = this;
+        //提供开关，就算加载也可以关闭
+        me.autoHeightEnabled = me.options.autoHeightEnabled;
+        if(!me.autoHeightEnabled)return;
+        var timer;
+        var bakScroll;
+        var bakOverflow,
+            div,tmpNode;
+       
+        me.enableAutoHeight = function (){
+            var iframe = me.iframe,
+                doc = me.document;
+            me.autoHeightEnabled = true;
+            bakScroll = iframe.scrolling;
+            iframe.scrolling = 'no';
+            bakOverflow = doc.body.style.overflowY;
+            doc.body.style.overflowY = 'hidden';
+            var lastHeight = 0,currentHeight;
+            timer = setInterval(function(){
+                if (me.queryCommandState('source') != 1) {
+                        if(!div){
+                            div = me.document.createElement('div');
+                            div.style.cssText = 'height:0;overflow:hidden;margin:0;padding:0;border:0;clear:both;';
+                            div.innerHTML ='.';
+
+                        }
+                        tmpNode = div.cloneNode(true);
+                        me.body.appendChild(tmpNode);
+                        currentHeight = Math.max(domUtils.getXY(tmpNode).y + tmpNode.offsetHeight,me.options.minFrameHeight);
+                        if(!baidu.editor.browser.gecko || currentHeight - lastHeight != tmpNode.offsetHeight){
+                            me.setHeight(currentHeight);
+                            lastHeight = currentHeight;
+                        }
+
+
+                        domUtils.remove(tmpNode)
+                    }
+            },50);
+            me.addListener('destroy',function(){
+                clearInterval(timer)
+            });
+            me.fireEvent('autoheightchanged', me.autoHeightEnabled);
+        };
+        me.disableAutoHeight = function (){
+            var iframe = me.iframe,
+                doc = me.document;
+            iframe.scrolling = bakScroll;
+            doc.body.style.overflowY = bakOverflow;
+            clearInterval(timer);
+            me.autoHeightEnabled = false;
+            me.fireEvent('autoheightchanged', me.autoHeightEnabled);
+        };
+        me.addListener( 'ready', function() {
+                me.enableAutoHeight();
+        });
+    }
+
+})();
 ///import core
-///import plugins\removeformat.js
+///import commands\removeformat.js
 ///commands 格式刷
 ///commandsName  FormatMatch
 ///commandsTitle  格式刷
@@ -11695,13 +10531,15 @@ UE.plugins['elementpath'] = function(){
  * @name baidu.editor.execCommand
  * @param {String}     cmdName    formatmatch执行格式刷
  */
-UE.plugins['formatmatch'] = function(){
+ baidu.editor.plugins['formatmatch'] = function(){
 
     var me = this,
+        domUtils = baidu.editor.dom.domUtils,
         list = [],img,
-        flag = 0;
+        flag = 0,
+        browser = baidu.editor.browser;
 
-     me.addListener('reset',function(){
+     this.addListener('reset',function(){
          list = [];
          flag = 0;
      });
@@ -11837,355 +10675,1125 @@ UE.plugins['formatmatch'] = function(){
     }
 };
 
-
 ///import core
-///commands 查找替换
-///commandsName  SearchReplace
-///commandsTitle  查询替换
-///commandsDialog  dialogs\searchreplace\searchreplace.html
+///commands 选区路径
+///commandsName  ElementPath
+///commandsTitle  选区路径
 /**
- * @description 查找替换
- * @author zhanyi
+ * 选区路径
+ * @function
+ * @name baidu.editor.execCommand
+ * @param {String}     cmdName     elementpath选区路径
  */
-UE.plugins['searchreplace'] = function(){
+ baidu.editor.plugins['elementpath'] = function(){
 
-    var currentRange,
-        first,
+    var domUtils = baidu.editor.dom.domUtils,
+        currentLevel,
+        tagNames,
+        dtd = baidu.editor.dom.dtd,
         me = this;
-    me.addListener('reset',function(){
-        currentRange = null;
-        first = null;
-    });
-    me.commands['searchreplace'] = {
-
-            execCommand : function(cmdName,opt){
-               	var me = this,
-                    sel = me.selection,
-                    range,
-                    nativeRange,
-                    num = 0,
-                opt = utils.extend(opt,{
-                    all : false,
-                    casesensitive : false,
-                    dir : 1
-                },true);
 
 
-                if(browser.ie){
-                    while(1){
-                        var tmpRange;
-                        nativeRange = me.document.selection.createRange();
-                        tmpRange = nativeRange.duplicate();
-                        tmpRange.moveToElementText(me.document.body);
-                        if(opt.all){
-                            first = 0;
-                            opt.dir = 1;
-                            
-                            if(currentRange){
-                                tmpRange.setEndPoint(opt.dir == -1 ? 'EndToStart' : 'StartToEnd',currentRange)
-                            }
-                        }else{
-                            tmpRange.setEndPoint(opt.dir == -1 ? 'EndToStart' : 'StartToEnd',nativeRange);
-                            if(opt.hasOwnProperty("replaceStr")){
-                                tmpRange.setEndPoint(opt.dir == -1 ? 'StartToEnd' : 'EndToStart',nativeRange);
-                            }
-                        }
-                        nativeRange = tmpRange.duplicate();
-
-
-
-                        if(!tmpRange.findText(opt.searchStr,opt.dir,opt.casesensitive ? 4 : 0)){
-                            currentRange = null;
-                            tmpRange = me.document.selection.createRange();
-                            tmpRange.scrollIntoView();
-                            return num;
-                        }
-                        tmpRange.select();
-                        //替换
-                        if(opt.hasOwnProperty("replaceStr")){
-                            range = sel.getRange();
-                            range.deleteContents().insertNode(range.document.createTextNode(opt.replaceStr)).select();
-                            currentRange = sel.getNative().createRange();
-
-                        }
-                        num++;
-                        if(!opt.all)break;
-                    }
-                }else{
-                    var w = me.window,nativeSel = sel.getNative(),tmpRange;
-                    while(1){
-                        if(opt.all){
-                            if(currentRange){
-                                currentRange.collapse(false);
-                                nativeRange = currentRange;
-
-                            }else{
-                                nativeRange  = me.document.createRange();
-                                nativeRange.setStart(me.document.body,0);
-
-                            }
-                            nativeSel.removeAllRanges();
-                            nativeSel.addRange( nativeRange );
-                            first = 0;
-                            opt.dir = 1;
-                        }else{
-                            nativeRange = w.getSelection().getRangeAt(0);
-                           
-                            if(opt.hasOwnProperty("replaceStr")){
-                                nativeRange.collapse(opt.dir == 1 ? true : false);
-                            }
-                        }
-
-                        //如果是第一次并且海选中了内容那就要清除，为find做准备
-                       
-                        if(!first){
-                            nativeRange.collapse( opt.dir <0 ? true : false);
-                            nativeSel.removeAllRanges();
-                            nativeSel.addRange( nativeRange );
-                        }else{
-                            nativeSel.removeAllRanges();
-                        }
-
-                        if(!w.find(opt.searchStr,opt.casesensitive,opt.dir < 0 ? true : false) ) {
-                            currentRange = null;
-                            nativeSel.removeAllRanges();
-
-                            return num;
-                        }
-                        first = 0;
-                        range = w.getSelection().getRangeAt(0);
-                        if(!range.collapsed){
-
-                            if(opt.hasOwnProperty("replaceStr")){
-                                range.deleteContents();
-                                var text = w.document.createTextNode(opt.replaceStr);
-                                range.insertNode(text);
-                                range.selectNode(text);
-                                nativeSel.addRange(range);
-                                currentRange = range.cloneRange();
-                            }
-                        }
-                        num++;
-                        if(!opt.all)break;
-                    }
-
-                }
-                return true;
-            }
-    }
-
-};
-
-///import core
-///commands 自定义样式
-///commandsName  CustomStyle
-///commandsTitle  自定义样式
-UE.plugins['customstyle'] = function() {
-    var me = this;
-    me.commands['customstyle'] = {
-        execCommand : function(cmdName, obj) {
+    me.commands['elementpath'] = {
+        execCommand : function( cmdName, level ) {
             var me = this,
-                    tagName = obj.tag,
-                    node = domUtils.findParent(me.selection.getStart(), function(node) {
-                        return node.getAttribute('label')
-                    }, true),
-                    range,bk,tmpObj = {};
-            for (var p in obj) {
-                tmpObj[p] = obj[p]
-            }
-            delete tmpObj.tag;
-            if (node && node.getAttribute('label') == obj.label) {
-                range = this.selection.getRange();
-                bk = range.createBookmark();
-                if (range.collapsed) {
-                    //trace:1732 删掉自定义标签，要有p来回填站位
-                    if(dtd.$block[node.tagName]){
-                        var fillNode = me.document.createElement('p');
-                        domUtils.moveChild(node, fillNode);
-                        node.parentNode.insertBefore(fillNode, node);
-                        domUtils.remove(node)
-                    }else{
-                        domUtils.remove(node,true)
-                    }
-
-                } else {
-
-                    var common = domUtils.getCommonAncestor(bk.start, bk.end),
-                            nodes = domUtils.getElementsByTagName(common, tagName);
-                    if(new RegExp(tagName,'i').test(common.tagName)){
-                        nodes.push(common);
-                    }
-                    for (var i = 0,ni; ni = nodes[i++];) {
-                        if (ni.getAttribute('label') == obj.label) {
-                            var ps = domUtils.getPosition(ni, bk.start),pe = domUtils.getPosition(ni, bk.end);
-                            if ((ps & domUtils.POSITION_FOLLOWING || ps & domUtils.POSITION_CONTAINS)
-                                    &&
-                                    (pe & domUtils.POSITION_PRECEDING || pe & domUtils.POSITION_CONTAINS)
-                                    )
-                                if (dtd.$block[tagName]) {
-                                    var fillNode = me.document.createElement('p');
-                                    domUtils.moveChild(ni, fillNode);
-                                    ni.parentNode.insertBefore(fillNode, ni);
-                                }
-                            domUtils.remove(ni, true)
+                start = tagNames[level],
+                range = me.selection.getRange();
+            me.currentSelectedArr && domUtils.clearSelectedArr(me.currentSelectedArr);
+           
+            currentLevel = level*1;
+            if(dtd.$tableContent[start.tagName]){
+                switch (start.tagName){
+                    case 'TD':me.currentSelectedArr = [start];
+                            start.className = me.options.selectedTdClass;
+                            break;
+                    case 'TR':
+                        var cells = start.cells;
+                        for(var i=0,ti;ti=cells[i++];){
+                            me.currentSelectedArr.push(ti);
+                            ti.className = me.options.selectedTdClass;
                         }
-                    }
-                    node = domUtils.findParent(common, function(node) {
-                        return node.getAttribute('label') == obj.label
-                    }, true);
-                    if (node) {
+                        break;
+                    case 'TABLE':
+                    case 'TBODY':
 
-                        domUtils.remove(node, true)
-
-                    }
+                        var rows = start.rows;
+                        for(var i=0,ri;ri=rows[i++];){
+                            cells = ri.cells;
+                            for(var j=0,tj;tj=cells[j++];){
+                                 me.currentSelectedArr.push(tj);
+                                tj.className = me.options.selectedTdClass;
+                            }
+                        }
 
                 }
-                range.moveToBookmark(bk).select();
-            } else {
-                if (dtd.$block[tagName]) {
-                    this.execCommand('paragraph', tagName, tmpObj,'customstyle');
-                    range = me.selection.getRange();
-                    if (!range.collapsed) {
-                        range.collapse();
-                        node = domUtils.findParent(me.selection.getStart(), function(node) {
-                            return node.getAttribute('label') == obj.label
-                        }, true);
-                        var pNode = me.document.createElement('p');
-                        domUtils.insertAfter(node, pNode);
-                        domUtils.fillNode(me.document, pNode);
-                        range.setStart(pNode, 0).setCursor()
-                    }
-                } else {
-
-                    range = me.selection.getRange();
-                    if (range.collapsed) {
-                        node = me.document.createElement(tagName);
-                        domUtils.setAttributes(node, tmpObj);
-                        range.insertNode(node).setStart(node, 0).setCursor();
-
-                        return;
-                    }
-
-                    bk = range.createBookmark();
-                    range.applyInlineStyle(tagName, tmpObj).moveToBookmark(bk).select()
+                start = me.currentSelectedArr[0];
+                if(domUtils.isEmptyNode(start)){
+                    range.setStart(start,0).setCursor()
+                }else{
+                   range.selectNodeContents(start).select()
                 }
+            }else{
+                range.selectNode(start).select()
+
             }
-
         },
         queryCommandValue : function() {
-            var parent = utils.findNode(this.selection.getStartElementPath(),null,function(node){return node.getAttribute('label')});
-            return  parent ? parent.getAttribute('label') : '';
+            var start = this.selection.getStart(),
+                parents = domUtils.findParents(start, true),
+
+                names = [];
+            tagNames = parents;
+            for(var i=0,ci;ci=parents[i];i++){
+                if(ci.nodeType == 3) continue;
+                var name = ci.tagName.toLowerCase();
+                if(name == 'img' && ci.getAttribute('anchorname')){
+                    name = 'anchor'
+                }
+                names[i] = name;
+                if(currentLevel == i){
+                   currentLevel = -1;
+                    break;
+                }
+            }
+            return names;
+        }
+    }
+
+
+};
+
+///import core
+///import commands/inserthtml.js
+///commands 插入代码
+///commandsName  HighlightCode
+///commandsTitle  插入代码
+///commandsDialog  dialogs\code\code.html
+baidu.editor.plugins['highlight'] = function() {
+    var me = this,domUtils = baidu.editor.dom.domUtils,utils = baidu.editor.utils,browser = baidu.editor.browser;
+    me.commands['highlightcode'] = {
+        execCommand: function (cmdName, code, syntax) {
+            if(code && syntax){
+                var pre = document.createElement("pre");
+                pre.className = "brush: "+syntax+";toolbar:false;";
+                pre.style.display = "";
+                pre.appendChild(document.createTextNode(code));
+                document.body.appendChild(pre);
+                if(me.queryCommandState("highlightcode")){
+                    me.execCommand("highlightcode");
+                }
+                me.execCommand('inserthtml', SyntaxHighlighter.highlight(pre,null,true));
+                var div = me.document.getElementById(SyntaxHighlighter.getHighlighterDivId());
+                div.setAttribute('highlighter',pre.className);
+                domUtils.remove(pre);
+                adjustHeight()
+            }else{
+                var range = this.selection.getRange(),
+                   start = domUtils.findParentByTagName(range.startContainer, 'table', true),
+                   end = domUtils.findParentByTagName(range.endContainer, 'table', true),
+                   codediv;
+                if(start && end && start === end && start.parentNode.className.indexOf("syntaxhighlighter")>-1){
+                    codediv = start.parentNode;
+                    if(domUtils.isBody(codediv.parentNode)){
+                        var p = me.document.createElement('p');
+                        p.innerHTML = baidu.editor.browser.ie ? '' : '<br/>';
+                        me.body.insertBefore(p,codediv);
+                        range.setStart(p,0)
+                    }else{
+                        range.setStartBefore(codediv)
+                    }
+                    range.setCursor();
+                    domUtils.remove(codediv);
+                }
+            }
         },
-        queryCommandState : function() {
-            return this.highlight ? -1 : 0;
+        queryCommandState: function(){
+            var range = this.selection.getRange(),start,end;
+            range.adjustmentBoundary();
+                start = domUtils.findParent(range.startContainer,function(node){
+                    return node.nodeType == 1 && node.tagName == 'DIV' && domUtils.hasClass(node,'syntaxhighlighter')
+                },true);
+                end = domUtils.findParent(range.endContainer,function(node){
+                    return node.nodeType == 1 && node.tagName == 'DIV' && domUtils.hasClass(node,'syntaxhighlighter')
+                },true);
+            return start && end && start == end  ? 1 : 0;
         }
     };
-    //当去掉customstyle是，如果是块元素，用p代替
-    me.addListener('keyup', function(type, evt) {
-        var keyCode = evt.keyCode || evt.which;
 
-        if (keyCode == 32 || keyCode == 13) {
-            var range = me.selection.getRange();
-            if (range.collapsed) {
-                var node = domUtils.findParent(me.selection.getStart(), function(node) {
-                    return node.getAttribute('label')
-                }, true);
-                if (node && dtd.$block[node.tagName] && domUtils.isEmptyNode(node)) {
-                        var p = me.document.createElement('p');
-                        domUtils.insertAfter(node, p);
-                        domUtils.fillNode(me.document, p);
-                        domUtils.remove(node);
-                        range.setStart(p, 0).setCursor();
-
-
-                }
-            }
-        }
-    })
-};
-
-///import core
-///commandsName  catchRemoteImage
-/**
- * 远程图片抓取,当开启本插件时所有不符合本地域名的图片都将被抓取成为本地服务器上的图片
- *
- */
-UE.plugins['catchremoteimage'] = function (){
-    if(!this.options.catchRemoteImageEnable)return;
-    var ajax = UE.ajax,
-		me = this,
-		localDomain = me.options.localDomain,
-		catcherUrl = me.options.catcherUrl,
-	    separater="ue_separate_ue";
-
-    function catchremoteimage(imgs,callbacks) {
-        var submitStr = imgs.join(separater);
-        ajax.request( catcherUrl, {
-            content:submitStr,
-            timeout:60000,  //单位：毫秒，回调请求超时设置。目标用户如果网速不是很快的话此处建议设置一个较大的数值
-            onsuccess:callbacks["success"],
-            onerror:callbacks["error"]
-        } )
-
-    }
-    me.addListener("afterpaste",function(){
-        me.fireEvent("catchRemoteImage");
+    me.addListener('beforeselectionchange',function(){
+       
+        me.highlight = me.queryCommandState('highlightcode') == 1 ? 1 : 0;
     });
 
-    me.addListener( "catchRemoteImage", function () {
-        var remoteImages=[];
-        var imgs = domUtils.getElementsByTagName(me.document,"img");
-        for(var i = 0,ci;ci=imgs[i++];){
-	        if(ci.getAttribute("word_img"))continue;
-            var src = ci.getAttribute("data_ue_src") || ci.src||"";
-	        if(/^(https?|ftp):/i.test(src) && src.indexOf(localDomain)==-1 ) {
-                remoteImages.push(src);
+    me.addListener('afterselectionchange',function(){
+        me.highlight = 0;
+    });
+    me.addListener("ready",function(){
+        //避免重复加载高亮文件
+        if(typeof XRegExp == "undefined"){
+            var obj = {
+                id : "syntaxhighlighter_js",
+                src : me.options.highlightJsUrl,
+                tag : "script",
+                type : "text/javascript",
+                defer : "defer"
+            };
+            utils.loadFile(document,obj,function(){
+                changePre();
+            });
+        }
+        if(!me.document.getElementById("syntaxhighlighter_css")){
+            var obj = {
+                id : "syntaxhighlighter_css",
+                tag : "link",
+                rel : "stylesheet",
+                type : "text/css",
+                href : me.options.highlightCssUrl
+            };
+            utils.loadFile(me.document,obj);
+        }
+
+    });
+    me.addListener("beforegetcontent",function(type,cmd){
+        for(var i=0,di,divs=domUtils.getElementsByTagName(me.body,'div');di=divs[i++];){
+            if(di.className == 'container'){
+                var pN = di.parentNode;
+                while(pN){
+                    if(pN.tagName == 'DIV' && /highlighter/.test(pN.id)){
+                        break;
+                    }
+                    pN = pN.parentNode;
+                }
+                if(!pN)return;
+                var pre = me.document.createElement('pre');
+                for(var str=[],c=0,ci;ci=di.childNodes[c++];){
+                    str.push(ci[browser.ie?'innerText':'textContent']);
+                }
+                pre.appendChild(me.document.createTextNode(str.join('\n')));
+                pre.className = pN.getAttribute('highlighter');
+                pN.parentNode.insertBefore(pre,pN);
+                domUtils.remove(pN);
             }
         }
-        if(remoteImages.length){
-            catchremoteimage(remoteImages,{
-                //成功抓取
-                success:function (xhr){
-                    try{
-                        var info = eval("("+xhr.responseText+")");
-                    }catch(e){
-                        return;
-                    }
-                    var srcUrls = info.srcUrl.split(separater),
-                        urls = info.url.split(separater);
-                    for(var i=0,ci;ci=imgs[i++];){
-                        var src = ci.getAttribute("data_ue_src")||ci.src||"";
-                        for(var j=0,cj;cj=srcUrls[j++];){
-                            var url = urls[j-1];
-                            if(src == cj && url!="error"){  //抓取失败时不做替换处理
-	                            //地址修正
-                                var newSrc = me.options.UEDITOR_HOME_URL +"server/"+url;
-                                domUtils.setAttributes(ci,{
-                                    "src":newSrc,
-                                    "data_ue_src":newSrc
-                                });
-                                break;
-                            }
-                        }
-                    }
-                },
-                //回调失败，本次请求超时
-                error:function(){
-                    me.fireEvent("catchremoteerror");
+    });
+    me.addListener("aftergetcontent",function(type,cmd){
+        changePre();
+    });
+    function adjustHeight(){
+        var div = me.document.getElementById(SyntaxHighlighter.getHighlighterDivId());
+
+        if(div){
+            var tds = div.getElementsByTagName('td');
+            for(var i=0,li,ri;li=tds[0].childNodes[i];i++){
+                ri = tds[1].firstChild.childNodes[i];
+
+                ri.style.height = li.style.height = ri.offsetHeight + 'px';
+            }
+
+        }
+    }
+    function changePre(){
+        for(var i=0,pr,pres = domUtils.getElementsByTagName(me.document,"pre");pr=pres[i++];){
+            if(pr.className.indexOf("brush")>-1){
+                
+                var pre = document.createElement("pre"),txt,div;
+                pre.className = pr.className;
+                pre.style.display = "none";
+                pre.appendChild(document.createTextNode(pr[browser.ie?'innerText':'textContent']));
+                document.body.appendChild(pre);
+                try{
+                    txt = SyntaxHighlighter.highlight(pre,null,true);
+                }catch(e){
+                    domUtils.remove(pre);
+                    return ;
                 }
-            })
+
+                div = me.document.createElement("div");
+                div.innerHTML = txt;
+
+                div.firstChild.setAttribute('highlighter',pre.className);
+                pr.parentNode.insertBefore(div.firstChild,pr);
+
+                domUtils.remove(pre);
+                domUtils.remove(pr);
+                
+                adjustHeight()
+            }
+        }
+    }
+    me.addListener("aftersetcontent",function(){
+        
+        changePre();
+    })
+};
+///import core
+///commands 快捷键
+///commandsName  ShortCutKeys
+///commandsTitle  快捷键
+//配置快捷键
+baidu.editor.plugins['shortcutkeys'] = function(){
+    var editor = this,
+        shortcutkeys =  baidu.editor.utils.extend({
+    		 "ctrl+66" : "Bold" //^B
+        	,"ctrl+90" : "Undo" //undo
+        	,"ctrl+89" : "Redo" //redo
+       		,"ctrl+73" : "Italic" //^I
+       		,"ctrl+85" : "Underline:Underline" //^U
+        	,"ctrl+shift+67" : "removeformat" //清除格式
+        	,"ctrl+shift+76" : "justify:left" //居左
+        	,"ctrl+shift+82" : "justify:right" //居右
+        	,"ctrl+65" : "selectAll"
+//        	,"9"	   : "indent" //tab
+    	},editor.options.shortcutkeys);
+    editor.addListener('keydown',function(type,e){
+
+        var keyCode = e.keyCode || e.which,value;
+		for ( var i in shortcutkeys ) {
+		    if ( /^(ctrl)(\+shift)?\+(\d+)$/.test( i.toLowerCase() ) || /^(\d+)$/.test( i ) ) {
+		        if ( ( (RegExp.$1 == 'ctrl' ? (e.ctrlKey||e.metaKey) : 0)
+                        && (RegExp.$2 != "" ? e[RegExp.$2.slice(1) + "Key"] : 1)
+                        && keyCode == RegExp.$3
+                    ) ||
+                     keyCode == RegExp.$1
+                ){
+
+                    value = shortcutkeys[i].split(':');
+                    editor.execCommand( value[0],value[1]);
+                    e.preventDefault ? e.preventDefault() : (e.returnValue = false);
+
+		        }
+		    }
+		}
+    });
+
+};
+///import core
+///commands 有序列表,无序列表
+///commandsName  InsertOrderedList,InsertUnorderedList
+///commandsTitle  有序列表,无序列表
+/**
+ * 有序列表
+ * @function
+ * @name baidu.editor.execCommand
+ * @param   {String}   cmdName     insertorderlist插入有序列表
+ * @param   {String}   style               值为：decimal,lower-alpha,lower-roman,upper-alpha,upper-roman
+ * @author zhanyi
+ */
+/**
+ * 无序链接
+ * @function
+ * @name baidu.editor.execCommand
+ * @param   {String}   cmdName     insertunorderlist插入无序列表
+ * * @param   {String}   style            值为：circle,disc,square
+ * @author zhanyi
+ */
+(function() {
+    var domUtils = baidu.editor.dom.domUtils,
+      
+        dtd = baidu.editor.dom.dtd,
+       
+        notExchange = {
+            'TD':1,
+            'PRE':1,
+            'BLOCKQUOTE':1
+        };
+    function adjustList(list,tag,style){
+        var nextList = list.nextSibling;
+        if(nextList && nextList.nodeType == 1 && nextList.tagName.toLowerCase() == tag && (domUtils.getStyle(nextList,'list-style-type')||(tag == 'ol'?'decimal' : 'disc')) == style){
+            domUtils.moveChild(nextList,list);
+            if(nextList.childNodes.length == 0){
+                domUtils.remove(nextList);
+            }
+        }
+        var preList = list.previousSibling;
+        if(preList && preList.nodeType == 1 && preList.tagName.toLowerCase() == tag && (domUtils.getStyle(preList,'list-style-type')||(tag == 'ol'?'decimal' : 'disc')) == style){
+            domUtils.moveChild(list,preList)
         }
 
-    } )
-};
 
-///import core
-///commandsName  attachment
-///commandsTitle  附件上传
-UE.commands["attachment"] = {
-    queryCommandState:function(){
-        return this.highlight ? -1 :0;
+        if(list.childNodes.length == 0){
+            domUtils.remove(list);
+        }
     }
-};
+    baidu.editor.plugins['list'] = function(){
+        var me = this;
+        me.addListener('keydown', function(type, evt) {
+            function preventAndSave(){
+                evt.preventDefault ? evt.preventDefault() : (evt.returnValue = false)
+                me.undoManger && me.undoManger.save()
+            }
+            
+            var keyCode = evt.keyCode || evt.which;
+            if (keyCode == 13) {//回车
+                
+                var range = me.selection.getRange(),
+                    start = domUtils.findParentByTagName(range.startContainer, ['ol','ul'], true,function(node){return node.tagName == 'TABLE'}),
+                    end = domUtils.findParentByTagName(range.endContainer, ['ol','ul'], true,function(node){return node.tagName == 'TABLE'});
+                if (start && end && start === end) {
+                    
+                    if(!range.collapsed){
+                        start = domUtils.findParentByTagName(range.startContainer, 'li', true);
+                        end = domUtils.findParentByTagName(range.endContainer, 'li', true);
+                        if(start && end && start === end){
+                            range.deleteContents();
+                            li =  domUtils.findParentByTagName(range.startContainer, 'li', true);
+                            if(li && domUtils.isEmptyBlock(li)){
+                               
+                                pre = li.previousSibling;
+                                next = li.nextSibling;
+                                p = me.document.createElement('p');
+                              
+                                domUtils.fillNode(me.document,p);
+                                parentList = li.parentNode;
+                                if(pre && next){
+                                    range.setStart(next,0).collapse(true).select(true);
+                                    domUtils.remove(li);
+
+                                }else{
+                                    if(!pre && !next || !pre){
+
+                                        parentList.parentNode.insertBefore(p,parentList);
+
+
+
+                                    } else{
+                                        li.parentNode.parentNode.insertBefore(p,parentList.nextSibling);
+                                    }
+                                    domUtils.remove(li);
+                                    if(!parentList.firstChild){
+                                        domUtils.remove(parentList)
+                                    }
+                                    range.setStart(p,0).setCursor();
+
+
+                                }
+                                preventAndSave();
+                                return;
+
+                            }
+                        }else{
+                            var tmpRange = range.cloneRange(),
+                                bk = tmpRange.collapse(false).createBookmark();
+
+                            range.deleteContents();
+                            tmpRange.moveToBookmark(bk);
+                            var li = domUtils.findParentByTagName(tmpRange.startContainer, 'li', true),
+                                pre = li.previousSibling,
+                                next = li.nextSibling;
+
+                            if (pre ) {
+                                li = pre;
+                                if(pre.firstChild && domUtils.isBlockElm(pre.firstChild)){
+                                    pre = pre.firstChild;
+
+                                }
+                                if(domUtils.isEmptyNode(pre))
+                                    domUtils.remove(li);
+                            }
+                            if (next ) {
+                                li = next;
+                                if(next.firstChild && domUtils.isBlockElm(next.firstChild)){
+                                    next = next.firstChild;
+                                }
+                                if(domUtils.isEmptyNode(next))
+                                    domUtils.remove(li);
+                            }
+                            tmpRange.select();
+                            preventAndSave();
+                            return;
+                        }
+                    }
+
+
+                    li = domUtils.findParentByTagName(range.startContainer, 'li', true);
+
+                    if (li) {
+                        if(domUtils.isEmptyBlock(li)){
+                            bk = range.createBookmark();
+                            var parentList = li.parentNode;
+                            if(li!==parentList.lastChild){
+                                domUtils.breakParent(li,parentList);
+                            }else{
+
+                                parentList.parentNode.insertBefore(li,parentList.nextSibling);
+                                if(domUtils.isEmptyNode(parentList)){
+                                    domUtils.remove(parentList);
+                                }
+                            }
+                            //嵌套不处理
+                            if(!dtd.$list[li.parentNode.tagName]){
+                                if(!domUtils.isBlockElm(li.firstChild)){
+                                    p = me.document.createElement('p');
+                                    li.parentNode.insertBefore(p,li);
+                                    while(li.firstChild){
+                                        p.appendChild(li.firstChild);
+                                    }
+                                    domUtils.remove(li);
+                                }else{
+                                    domUtils.remove(li,true);
+                                }
+                            }
+                            range.moveToBookmark(bk).select();
+
+
+                        }else{
+//                             var first = domUtils.isBlockElm(li.firstChild) ? li.firstChild : li;
+                            var first = li.firstChild;
+                            if(!first || !domUtils.isBlockElm(first)){
+                                 var p = me.document.createElement('p');
+                                
+                                !li.firstChild && domUtils.fillNode(me.document,p);
+                                while(li.firstChild){
+
+                                    p.appendChild(li.firstChild);
+                                }
+                                li.appendChild(p);
+                                first = p;
+                            }
+
+//                            if (domUtils.isEmptyNode(first)) {
+//                                var list = li.parentNode;
+//                                if (li.nextSibling) {
+//                                    list = li.parentNode;
+//                                    domUtils.breakParent(li, list);
+//                                    list = li.previousSibling;
+//                                }
+//                                var p = me.document.createElement('p');
+//                                p.innerHTML = browser.ie ? '' : '<br/>';
+//                                domUtils.remove(li);
+//                                list.parentNode.insertBefore(p, list.nextSibling);
+//                                range.setStart(p, 0).setCursor();
+//
+//                            } else {
+
+
+                                var span = me.document.createElement('span');
+
+                                range.insertNode(span);
+                                domUtils.breakParent(span, li);
+
+                                var nextLi = span.nextSibling;
+                                first = nextLi.firstChild;
+
+                                if (!first) {
+                                    p = me.document.createElement('p');
+                                    
+                                    domUtils.fillNode(me.document,p);
+                                    nextLi.appendChild(p);
+                                    first = p;
+                                }
+                                if (domUtils.isEmptyNode(first)) {
+                                    
+                                    domUtils.fillNode(me.document,first);
+                                }
+
+                                range.setStart(first, 0).collapse(true).shrinkBoundary().select();
+                                domUtils.remove(span);
+                                pre = nextLi.previousSibling;
+                                if(pre && domUtils.isEmptyBlock(pre)){
+                                    pre.innerHTML = '<p></p>';
+                                    domUtils.fillNode(me.document,pre.firstChild);
+                                }
+
+                            }
+//                        }
+
+                        preventAndSave();
+                    }
+
+
+                }
+            }
+            if(keyCode == 8){
+                //修中ie中li下的问题
+                range = me.selection.getRange();
+                if (range.collapsed && domUtils.isStartInblock(range)) {
+                   tmpRange = range.cloneRange().trimBoundary();
+                   li = domUtils.findParentByTagName(range.startContainer, 'li', true);
+
+                    //要在li的最左边，才能处理
+                    if (li && domUtils.isStartInblock(tmpRange)) {
+
+                        if (li && (pre = li.previousSibling)) {
+                            if (keyCode == 46 && li.childNodes.length)
+                                return;
+                            //有可能上边的兄弟节点是个2级菜单，要追加到2级菜单的最后的li
+                            if(dtd.$list[pre.tagName]){
+                                pre = pre.lastChild;
+                            }
+                            me.undoManger && me.undoManger.save();
+                            var first = li.firstChild;
+                            if (domUtils.isBlockElm(first)) {
+                                if (domUtils.isEmptyNode(first)) {
+//                                    range.setEnd(pre, pre.childNodes.length).shrinkBoundary().collapse().select(true);
+                                    pre.appendChild(first);
+                                    range.setStart(first,0).setCursor(false,true);
+                                } else {
+                                    var start = domUtils.findParentByTagName(range.startContainer, 'p', true);
+                                    if(start && start !== first){
+                                        return;
+                                    }
+                                    span = me.document.createElement('span');
+                                    range.insertNode(span);
+
+//                                    if (domUtils.isBlockElm(pre.firstChild)) {
+//
+//                                        pre.firstChild.appendChild(span);
+//                                        while (first.firstChild) {
+//                                            pre.firstChild.appendChild(first.firstChild);
+//                                        }
+//
+//                                    } else {
+//                                        while (first.firstChild) {
+//                                            pre.appendChild(first.firstChild);
+//                                        }
+//                                    }
+                                    domUtils.moveChild(li,pre);
+                                    range.setStartBefore(span).collapse(true).select(true);
+
+                                    domUtils.remove(span)
+
+                                }
+                            } else {
+                                if (domUtils.isEmptyNode(li)) {
+                                    var p = me.document.createElement('p');
+                                    pre.appendChild(p);
+                                     range.setStart(p,0).setCursor();
+//                                    range.setEnd(pre, pre.childNodes.length).shrinkBoundary().collapse().select(true);
+                                } else {
+                                    range.setEnd(pre, pre.childNodes.length).collapse().select(true);
+                                    while (li.firstChild) {
+                                        pre.appendChild(li.firstChild)
+                                    }
+
+
+                                }
+                            }
+
+                            domUtils.remove(li);
+
+                            me.undoManger && me.undoManger.save();
+                            domUtils.preventDefault(evt);
+                            return;
+
+                        }
+                        //trace:980
+
+                        if (li && !li.previousSibling) {
+                            first = li.firstChild;
+                            if (!first || domUtils.isEmptyNode(domUtils.isBlockElm(first) ? first : li)) {
+                                var p = me.document.createElement('p');
+
+                                li.parentNode.parentNode.insertBefore(p, li.parentNode);
+                                domUtils.fillNode(me.document,p);
+                                range.setStart(p, 0).setCursor();
+                                domUtils.remove(!li.nextSibling ? li.parentNode : li);
+                                me.undoManger && me.undoManger.save();
+                                domUtils.preventDefault(evt);
+                                return;
+                            }
+
+
+                        }
+
+
+                    }
+
+
+                }
+
+            }
+        });
+        me.commands['insertorderedlist'] =
+        me.commands['insertunorderedlist'] = {
+            execCommand : function( command, style ) {
+                if(!style){
+                    style = command.toLowerCase() == 'insertorderedlist' ? 'decimal' : 'disc'
+                }
+                var me = this,
+                    range = this.selection.getRange(),
+                    filterFn = function( node ) {
+                        return   node.nodeType == 1 ? node.tagName.toLowerCase() != 'br' : !domUtils.isWhitespace( node )
+                    },
+                    tag =  command.toLowerCase() == 'insertorderedlist' ? 'ol' : 'ul',
+                    frag = me.document.createDocumentFragment();
+                //去掉是因为会出现选到末尾，导致adjustmentBoundary缩到ol/ul的位置
+                //range.shrinkBoundary();//.adjustmentBoundary();
+                range.adjustmentBoundary().shrinkBoundary();
+                var bko = range.createBookmark(true),
+                    start = domUtils.findParentByTagName(me.document.getElementById(bko.start),'li'),
+                    modifyStart = 0,
+                    end = domUtils.findParentByTagName(me.document.getElementById(bko.end),'li'),
+                    modifyEnd = 0,
+                    startParent,endParent,
+                    list,tmp;
+
+                if(start || end){
+                    start && (startParent = start.parentNode);
+                    if(!bko.end){
+                        end = start;
+                    }
+                    end && (endParent = end.parentNode);
+
+                    if(startParent === endParent){
+                        while(start !== end){
+                            tmp = start;
+                            start = start.nextSibling;
+                            if(!domUtils.isBlockElm(tmp.firstChild)){
+                                var p = me.document.createElement('p');
+                                while(tmp.firstChild){
+                                    p.appendChild(tmp.firstChild)
+                                }
+                                tmp.appendChild(p);
+                            }
+                            frag.appendChild(tmp);
+                        }
+                        tmp = me.document.createElement('span');
+                        startParent.insertBefore(tmp,end);
+                        if(!domUtils.isBlockElm(end.firstChild)){
+                            p = me.document.createElement('p');
+                            while(end.firstChild){
+                                p.appendChild(end.firstChild)
+                            }
+                            end.appendChild(p);
+                        }
+                        frag.appendChild(end);
+                        domUtils.breakParent(tmp,startParent);
+                        if(domUtils.isEmptyNode(tmp.previousSibling)){
+                            domUtils.remove(tmp.previousSibling)
+                        }
+                        if(domUtils.isEmptyNode(tmp.nextSibling)){
+                            domUtils.remove(tmp.nextSibling)
+                        }
+                        var nodeStyle = domUtils.getComputedStyle( startParent, 'list-style-type' ) || (command.toLowerCase() == 'insertorderedlist' ? 'decimal' : 'disc');
+                        if(startParent.tagName.toLowerCase() == tag && nodeStyle == style){
+                            for(var i=0,ci,tmpFrag = me.document.createDocumentFragment();ci=frag.childNodes[i++];){
+                                while(ci.firstChild){
+                                    tmpFrag.appendChild(ci.firstChild);
+                                }
+                               
+                            }
+                            tmp.parentNode.insertBefore(tmpFrag,tmp);
+                        }else{
+                            list = me.document.createElement(tag);
+                            domUtils.setStyle(list,'list-style-type',style);
+                            list.appendChild(frag);
+                            tmp.parentNode.insertBefore(list,tmp);
+                        }
+
+                        domUtils.remove(tmp);
+                         list && adjustList(list,tag,style);
+                        range.moveToBookmark(bko).select();
+                        return;
+                    }
+                    //开始
+                    if(start){
+                        while(start){
+                            tmp = start.nextSibling;
+                            var tmpfrag = me.document.createDocumentFragment(),
+                                hasBlock = 0;
+                            while(start.firstChild){
+                                if(domUtils.isBlockElm(start.firstChild))
+                                    hasBlock = 1;
+                                tmpfrag.appendChild(start.firstChild);
+                            }
+                            if(!hasBlock){
+                                var tmpP = me.document.createElement('p');
+                                tmpP.appendChild(tmpfrag);
+                                frag.appendChild(tmpP)
+                            }else{
+                                frag.appendChild(tmpfrag);
+                            }
+                            domUtils.remove(start);
+                            start = tmp;
+                        }
+                        startParent.parentNode.insertBefore(frag,startParent.nextSibling);
+                        if(domUtils.isEmptyNode(startParent)){
+                            range.setStartBefore(startParent);
+                            domUtils.remove(startParent)
+                        }else{
+                           range.setStartAfter(startParent);
+                        }
+
+
+                         modifyStart = 1;
+                    }
+
+                    if(end){
+                        //结束
+                        start = endParent.firstChild;
+                        while(start !== end){
+                           tmp = start.nextSibling;
+
+                           tmpfrag = me.document.createDocumentFragment(),
+                           hasBlock = 0;
+                            while(start.firstChild){
+                                if(domUtils.isBlockElm(start.firstChild))
+                                    hasBlock = 1;
+                                tmpfrag.appendChild(start.firstChild);
+                            }
+                            if(!hasBlock){
+                                tmpP = me.document.createElement('p');
+                                tmpP.appendChild(tmpfrag);
+                                frag.appendChild(tmpP)
+                            }else{
+                                frag.appendChild(tmpfrag);
+                            }
+                            domUtils.remove(start);
+                            start = tmp;
+                        }
+                        frag.appendChild(end.firstChild);
+                        domUtils.remove(end);
+                        endParent.parentNode.insertBefore(frag,endParent);
+                        range.setEndBefore(endParent);
+                        if(domUtils.isEmptyNode(endParent)){
+                            domUtils.remove(endParent)
+                        }
+
+                         modifyEnd = 1;
+                    }
+
+
+
+                }
+
+                if(!modifyStart){
+                    range.setStartBefore(me.document.getElementById(bko.start))
+                }
+                if(bko.end && !modifyEnd){
+                    range.setEndAfter(me.document.getElementById(bko.end))
+                }
+                range.enlarge(true,function(node){return notExchange[node.tagName] });
+
+                frag = me.document.createDocumentFragment();
+
+                var bk = range.createBookmark(),
+                    current = domUtils.getNextDomNode( bk.start, false, filterFn ),
+                    tmpRange = range.cloneRange(),
+                    tmpNode,
+                    block = domUtils.isBlockElm;
+
+                while ( current && current !== bk.end && (domUtils.getPosition( current, bk.end ) & domUtils.POSITION_PRECEDING)  ) {
+
+                    if ( current.nodeType == 3 || dtd.li[current.tagName] ) {
+                        if(current.nodeType == 1 && dtd.$list[current.tagName]){
+                            while(current.firstChild){
+                                frag.appendChild(current.firstChild)
+                            }
+                            tmpNode = domUtils.getNextDomNode( current, false, filterFn );
+                            domUtils.remove(current);
+                            current = tmpNode;
+                            continue;
+
+                        }
+                        tmpNode = current;
+                        tmpRange.setStartBefore( current );
+
+                        while ( current && current !== bk.end && (!block(current) || domUtils.isBookmarkNode(current) )) {
+                            tmpNode = current;
+                            current = domUtils.getNextDomNode( current, false, null, function( node ) {
+                                return !notExchange[node.tagName]
+                            } );
+                        }
+
+                        if(current && block(current)){
+                            tmp = domUtils.getNextDomNode( tmpNode, false, filterFn );
+                            if(tmp && domUtils.isBookmarkNode(tmp)){
+                                current = domUtils.getNextDomNode( tmp, false, filterFn );
+                                tmpNode = tmp;
+                            }
+                        }
+                        tmpRange.setEndAfter( tmpNode );
+
+                        current = domUtils.getNextDomNode( tmpNode, false, filterFn );
+
+                        var li = range.document.createElement( 'li' );
+
+                        li.appendChild(tmpRange.extractContents());
+                        frag.appendChild(li);
+
+
+
+                    } else {
+
+                        current = domUtils.getNextDomNode( current, true, filterFn );
+                    }
+                }
+                range.moveToBookmark(bk).collapse(true);
+                list = me.document.createElement(tag);
+                domUtils.setStyle(list,'list-style-type',style);
+                list.appendChild(frag);
+                range.insertNode(list);
+                //当前list上下看能否合并
+
+                adjustList(list,tag,style);
+
+
+                range.moveToBookmark(bko).select();
+
+            },
+            queryCommandState : function( command ) {
+                if(this.highlight){
+                       return -1;
+                   }
+                var startNode = this.selection.getStart();
+
+                return domUtils.findParentByTagName( startNode, command.toLowerCase() == 'insertorderedlist' ? 'ol' : 'ul', true ) ? 1 : 0;
+            },
+            queryCommandValue : function( command ) {
+    
+                var startNode = this.selection.getStart(),
+                    node = domUtils.findParentByTagName( startNode, command.toLowerCase() == 'insertorderedlist' ? 'ol' : 'ul', true );
+
+                return node ? domUtils.getComputedStyle( node, 'list-style-type' ) : null;
+            }
+        }
+    }
+
+
+
+})();
+///import core
+///import commands/inserthtml.js
+///import plugins/undo/undo.js
+///import plugins/serialize/serialize.js
+///commands 粘贴
+///commandsName  PastePlain
+///commandsTitle  纯文本粘贴模式
+/*
+ ** @description 粘贴
+ * @author zhanyi
+ */
+(function() {
+
+	var domUtils = baidu.editor.dom.domUtils,
+        browser = baidu.editor.browser;
+
+    function getClipboardData( callback ) {
+
+        var doc = this.document;
+
+        if ( doc.getElementById( 'baidu_pastebin' ) ) {
+            return;
+        }
+
+        var range = this.selection.getRange(),
+            bk = range.createBookmark(),
+            //创建剪贴的容器div
+            pastebin = doc.createElement( 'div' );
+
+        pastebin.id = 'baidu_pastebin';
+
+
+        // Safari 要求div必须有内容，才能粘贴内容进来
+        browser.webkit && pastebin.appendChild( doc.createTextNode( domUtils.fillChar + domUtils.fillChar ) );
+        doc.body.appendChild( pastebin );
+        //trace:717 隐藏的span不能得到top
+        //bk.start.innerHTML = '&nbsp;';
+        bk.start.style.display = '';
+        pastebin.style.cssText = "position:absolute;width:1px;height:1px;overflow:hidden;left:-1000px;white-space:nowrap;top:" +
+            //要在现在光标平行的位置加入，否则会出现跳动的问题
+            domUtils.getXY( bk.start ).y + 'px';
+
+        range.selectNodeContents( pastebin ).select( true );
+
+        setTimeout( function() {
+            
+            if (browser.webkit) {
+                
+                for(var i=0,pastebins = doc.querySelectorAll('#baidu_pastebin'),pi;pi=pastebins[i++];){
+                    if(domUtils.isEmptyNode(pi)){
+                        domUtils.remove(pi)
+                    }else{
+                        pastebin = pi;
+                        break;
+                    }
+                }
+
+
+            }
+
+			try{
+                pastebin.parentNode.removeChild(pastebin);
+            }catch(e){}
+
+            range.moveToBookmark( bk ).select(true);
+            callback( pastebin );
+        }, 0 );
+
+
+    }
+
+    baidu.editor.plugins['paste'] = function() {
+        var me = this;
+        var word_img_flag = {flag:""};
+
+        var pasteplain = me.options.pasteplain;
+        var modify_num = {flag:""};
+        me.commands['pasteplain'] = {
+            queryCommandState: function (){
+                return pasteplain;
+            },
+            execCommand: function (){
+                pasteplain = !pasteplain|0;
+            },
+            notNeedUndo : 1
+        };
+
+        function filter(div){
+            
+            var html;
+            if ( div.firstChild ) {
+                    //去掉cut中添加的边界值
+                    var nodes = domUtils.getElementsByTagName(div,'span');
+                    for(var i=0,ni;ni=nodes[i++];){
+                        if(ni.id == '_baidu_cut_start' || ni.id == '_baidu_cut_end'){
+                            domUtils.remove(ni)
+                        }
+                    }
+
+                    if(browser.webkit){
+
+                        var brs = div.querySelectorAll('div br');
+                        for(var i=0,bi;bi=brs[i++];){
+                            var pN = bi.parentNode;
+                            if(pN.tagName == 'DIV' && pN.childNodes.length ==1){
+                                pN.innerHMTL = '<p><br/></p>';
+                                
+                                domUtils.remove(pN)
+                            }
+                        }
+                        var divs = div.querySelectorAll('#baidu_pastebin');
+                        for(var i=0,di;di=divs[i++];){
+                            var tmpP = me.document.createElement('p');
+                            di.parentNode.insertBefore(tmpP,di);
+                            while(di.firstChild){
+                                tmpP.appendChild(di.firstChild)
+                            }
+                            domUtils.remove(di)
+                        }
+
+
+
+                        var metas = div.querySelectorAll('meta');
+                        for(var i=0,ci;ci=metas[i++];){
+                            domUtils.remove(ci);
+                        }
+
+
+                    }
+                    if(browser.gecko){
+                        var dirtyNodes = div.querySelectorAll('[_moz_dirty]')
+                        for(i=0;ci=dirtyNodes[i++];){
+                            ci.removeAttribute( '_moz_dirty' )
+                        }
+                    }
+                    if(!browser.ie ){
+                        var spans = div.querySelectorAll('span.apple-style-span');
+                        for(var i=0,ci;ci=spans[i++];){
+                            domUtils.remove(ci,true);
+                        }
+                    }
+
+
+                    html = div.innerHTML;
+
+                    var f = me.serialize;
+                    if(f){
+                        //如果过滤出现问题，捕获它，直接插入内容，避免出现错误导致粘贴整个失败
+                        try{
+                            var node =  f.transformInput(
+                                        f.parseHTML(
+                                            //todo: 暂时不走dtd的过滤
+                                            f.word(html)//, true
+                                        ),word_img_flag
+                                    );
+                            //trace:924
+                            //纯文本模式也要保留段落
+                            node = f.filter(node,pasteplain ? {
+                                whiteList: {
+                                    'p': {'br':1,'BR':1},
+                                    'br':{'$':{}},
+                                    'div':{'br':1,'BR':1,'$':{}},
+                                    'li':{'$':{}},
+                                    'tr':{'td':1,'$':{}},
+                                    'td':{'$':{}}
+
+                                },
+                                blackList: {
+                                    'style':1,
+                                    'script':1,
+                                    'object':1
+                                }
+                            } : null, !pasteplain ? modify_num : null);
+
+                            if(browser.webkit){
+                                var length = node.children.length,
+                                    child;
+                                while((child = node.children[length-1]) && child.tag == 'br'){
+                                    node.children.splice(length-1,1);
+                                    length = node.children.length;
+                                }
+                            }
+                            html = f.toHTML(node,pasteplain)
+
+                        }catch(e){}
+
+                    }
+
+
+                    //自定义的处理
+                   html = {'html':html};
+
+                   me.fireEvent('beforepaste',html);
+
+                   me.execCommand( 'insertHtml',html.html);
+
+                }
+        }
+
+        me.addListener('ready',function(){
+            domUtils.on(me.body,'cut',function(){
+
+                var range = me.selection.getRange();
+                if(!range.collapsed && me.undoManger){
+                    me.undoManger.save()
+                }
+       
+            });
+            //ie下beforepaste在点击右键时也会触发，所以用监控键盘才处理
+                domUtils.on(me.body, browser.ie ? 'keydown' : 'paste',function(e){
+                    if(browser.ie && (!e.ctrlKey || e.keyCode != '86'))
+                        return;
+                    getClipboardData.call( me, function( div ) {
+                        filter(div);
+                        function hideMsg(){
+                             me.ui.hideToolbarMsg();
+                             me.removeListener("selectionchange",hideMsg);
+                        }
+                        if ( modify_num.flag && me.ui){
+                            me.ui.showToolbarMsg( me.options.messages.pasteMsg, word_img_flag.flag );
+                            modify_num.flag = "";
+                            //trance:为了解决fireevent  (selectionchange)事件的延时
+                            setTimeout(function(){
+                                me.addListener("selectionchange",hideMsg);
+                            },100);
+                        }
+                         if ( word_img_flag.flag && !me.queryCommandState("pasteplain") && me.ui){
+                            me.ui.showToolbarMsg( me.options.messages.pasteWordImgMsg,true);
+                             word_img_flag.flag = '';
+                            //trance:为了解决fireevent  (selectionchange)事件的延时
+                            setTimeout(function(){
+                                me.addListener("selectionchange",hideMsg);
+                            },100);
+                        }
+                    } );
+
+
+                })
+
+        });
+
+    }
 
 })();
