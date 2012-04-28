@@ -299,11 +299,12 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 		}
 
 		if (items && lastChild) {
-			var leftRealWidth = lastChild.offsetWidth + lastChild.offsetLeft, leftVisibleWidth = dom.offsetWidth - doms.toolbarRight.offsetWidth;
+			var leftRealWidth = lastChild.offsetWidth + lastChild.offsetLeft,
+                leftVisibleWidth = dom.offsetWidth - doms.toolbarRight.offsetWidth;
 
 			overflow = leftRealWidth > leftVisibleWidth;
 		}
-		
+
 		if (overflow) {
 			$fly(dom).addClass("i-toolbar-overflow " + toolbar._className + "-overflow");
 			
@@ -560,6 +561,7 @@ dorado.widget.toolbar.Label = $extend(dorado.widget.Control, {
 
 dorado.Toolkits.registerPrototype("toolbar", {
 	Default: dorado.widget.toolbar.Button,
+    Label: dorado.widget.toolbar.Label,
 	ToolBarButton: dorado.widget.toolbar.Button,
 	"->": dorado.widget.toolbar.Fill,
 	Fill: dorado.widget.toolbar.Fill,
