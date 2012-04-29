@@ -353,7 +353,13 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 				if (dropdown.onDropDownBoxShow) dropdown.onDropDownBoxShow();
 			});
 			(this._view || $topView).registerInnerControl(box);
-			box.render(win.document.body);
+			
+			var view = editor._view, viewElement;
+			while (view) {
+				if (view._rendered) viewElement = view.getContentContainer();
+				view = view._view;
+			}
+			box.render(viewElement || win.document.body);
 			if (boxCache) boxCache[dorado.id + '$' + this._id] = box;
 		}
 		this._box = box;
@@ -366,12 +372,29 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 		});
 
 		box._focusParent = editor;
+		
+		var realMaxHeight, targetElement = editor.getDom(), boxContainer = box.getDom().parentNode;
+		var boxContainerHeight = boxContainer.clientHeight;
+		realMaxHeight = boxContainerHeight;
+		
+		var offsetTargetTop = $fly(targetElement == window ? document.body : targetElement).offset().top;
+		var offsetTargetBottom = boxContainerHeight - offsetTargetTop - targetElement.offsetHeight;
+		var vAlign = "bottom";
+		if (offsetTargetTop > offsetTargetBottom) {
+			vAlign = "top";
+			realMaxHeight = offsetTargetTop;
+		}
+		else {
+			realMaxHeight = offsetTargetBottom;
+		}
+		this._realMaxWidth = this._maxWidth;
+		this._realMaxHeight = (realMaxHeight < this._maxHeight) ? realMaxHeight : this._maxHeight;
 
 		var boxWidth = this._width || $fly(editorDom).outerWidth();
-		if (boxWidth > this._maxWidth) boxWidth = this._maxWidth;
+		if (boxWidth > this._realMaxWidth) boxWidth = this._realMaxWidth;
 		if (boxWidth < this._minWidth) boxWidth = this._minWidth;
 		var boxHeight = this._height || 0;
-		if (boxHeight > this._maxHeight) boxHeight = this._maxHeight;
+		if (boxHeight > this._realMaxHeight) boxHeight = this._realMaxHeight;
 		if (boxHeight < this._minHeight) boxHeight = this._minHeight;
 
 		var boxDom = box.getDom(), containerElement = box.getContainerElement();
@@ -390,24 +413,26 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 		if (!this._width) {
 			boxWidth = (dorado.Browser.mozilla) ? containerElement.firstChild.offsetWidth
 					: containerElement.scrollWidth;
-			if (boxWidth > this._maxWidth)
-				boxWidth = this._maxWidth;
-			if (boxWidth < this._minWidth)
-				boxWidth = this._minWidth;
+			if (boxWidth > this._realMaxWidth) boxWidth = this._realMaxWidth;
+			if (boxWidth < this._minWidth) boxWidth = this._minWidth;
 		}
 		if (!this._height) {
 			boxHeight = containerElement.scrollHeight;
-			if (boxHeight > this._maxHeight) boxHeight = this._maxHeight;
+			if (boxHeight > this._realMaxHeight) boxHeight = this._realMaxHeight;
 			if (boxHeight < this._minHeight) boxHeight = this._minHeight;
 		}
-
+		if (vAlign == "top" && boxHeight < offsetTargetBottom) {
+			vAlign = "bottom";
+		}
+		
 		boxDom.style.width = boxWidth + "px";
 		boxDom.style.height = boxHeight + "px";
 		box.show({
 			anchorTarget : editor,
 			editor : editor,
 			align : "innerright",
-			vAlign : "bottom"
+			vAlign : vAlign,
+			autoAdjustPosition: false
 		});
 	},
 
