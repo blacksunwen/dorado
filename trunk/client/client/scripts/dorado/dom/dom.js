@@ -513,8 +513,8 @@
 		 * @param {String} options.vAlign 在垂直方向上，停靠的DOM对象停靠在固定位置的DOM对象的位置。可选值为top、innertop、center、innerbottom、bottom。
 		 * @param {int} options.offsetLeft 使用align、vAlign计算出组件的位置的水平偏移量，可以为正，可以为负。
 		 * @param {int} options.offsetTop 使用align、vAlign计算出组件的位置的垂直偏移量，可以为正，可以为负。
-		 * @param {boolean} options.autoAdjustPosition 当使用默认的align、vAlign计算的位置超出屏幕可见范围以后，是否要对停靠DOM对象的位置进行调整，默认为true，即进行调整。
-		 * @param {boolean} options.handleOverflow 当自动调整以后也无法使得组件显示在屏幕范围以内以后，就认为停靠的DOM对象的超出触发了，该属性用来标示是否对这种情况进行处理，默认会对这种情况进行处理。
+		 * @param {boolean} options.autoAdjustPosition=true 当使用默认的align、vAlign计算的位置超出屏幕可见范围以后，是否要对停靠DOM对象的位置进行调整，默认为true，即进行调整。
+		 * @param {boolean} options.handleOverflow=true 当自动调整以后也无法使得组件显示在屏幕范围以内以后，就认为停靠的DOM对象的超出触发了，该属性用来标示是否对这种情况进行处理，默认会对这种情况进行处理。
 		 * @param {Function} options.overflowHandler 当停靠的DOM的超出触发以后，要调用的函数。
 		 *
 		 * @return {Object} 计算出来的位置。

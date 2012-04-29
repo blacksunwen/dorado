@@ -241,8 +241,8 @@
 			
 			if (!this._height) {
 				var useMaxHeight = true, refreshed = false;
-				if (this._maxHeight &&
-					(!itemCount || (this._maxHeight / (rowList._rowHeight + 2) > (itemCount + 1)))) {
+				if (this._realMaxHeight &&
+					(!itemCount || (this._realMaxHeight / (rowList._rowHeight + 2) > (itemCount + 1)))) {
 					rowList.set({
 						height: "none",
 						scrollMode: "simple"
@@ -254,12 +254,12 @@
 					
 					refreshed = true;
 					var height = $fly(rowList._dom).outerHeight();
-					if (height < this._maxHeight) useMaxHeight = false;
+					if (height < this._realMaxHeight) useMaxHeight = false;
 				}
 				
 				if (useMaxHeight) {
 					rowList.set({
-						height: this._maxHeight,
+						height: this._realMaxHeight,
 						scrollMode: ((cellCount > 300) ? "viewport" : "lazyRender")
 					});
 					
