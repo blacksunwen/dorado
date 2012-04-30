@@ -1094,12 +1094,25 @@
 		},
 		
 		doOnFocus: function() {
+			var maxLength = this._maxLength || 0;
 			if (!this._realReadOnly) {
 				var dataType = this.get("dataType");
-				if (dataType && this._validationState != "error") {
-					var text = dataType.toText(this.get("value"), this._typeFormat);
-					this.doSetText(text);
+				if (dataType) {
+					if (this._validationState != "error") {
+						var text = dataType.toText(this.get("value"), this._typeFormat);
+						this.doSetText(text);
+					}
+					var dCode = dataType._code;
+					if (dCode == dorado.DataType.PRIMITIVE_CHAR || dCode == dorado.DataType.CHARACTER) {
+						maxLength = 1;
+					}
 				}
+			}
+			if (maxLength) {
+				this._textDom.setAttribute("maxLength", maxLength);
+			}
+			else  {
+				this._textDom.removeAttribute("maxLength");
 			}
 			
 			$invokeSuper.call(this);

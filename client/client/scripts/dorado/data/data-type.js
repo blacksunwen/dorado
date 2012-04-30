@@ -137,7 +137,7 @@
 		 * @see dorado.DataType#toText
 		 */
 		doToText : function(data, argument) {
-			if(data === null || data === undefined || ( typeof data !== "object" && isNaN(data))) {
+			if(data === null || data === undefined || (typeof data !== "string" && typeof data !== "object" && isNaN(data))) {
 				return '';
 			} else {
 				return data + '';
