@@ -352,7 +352,6 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				return value;
 			}
 
-if (property == "productName") debugger;
 			var value = this._data[property];
 			//var loadingSkipForNewEntity = false;;
 			if (value === undefined) {
