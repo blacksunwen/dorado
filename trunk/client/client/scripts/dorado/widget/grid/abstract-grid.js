@@ -1250,7 +1250,7 @@
 			}
 			var ignoreItemTimestamp = (this._ignoreItemTimestamp === undefined) ? true : this._ignoreItemTimestamp;
 			
-			if (!this.getRealWidth() || !this.getRealHeight() || this._groupProperty) {
+			if (!this.getRealWidth() || /*!this.getRealHeight() || */this._groupProperty) {
 				this._realFixedColumnCount = 0;
 			} else {
 				this._realFixedColumnCount = this._fixedColumnCount;
@@ -1333,7 +1333,8 @@
 					case 2:{ // scroller, 2 innerGrids
 						with (dom.style) {
 							overflowX = "hidden";
-							overflowY = yScroll ? "hidden" : "visible";
+							// 即使overflow，只要height=100%，也会产生visible的效果，这样设计的目的是为了避免当height为空时，最右侧出现滚动条宽度的白边
+							overflowY = "hidden";	//yScroll ? "hidden" : "visible";
 							// position = "relative";
 						}
 						divScroll = getDivScroll.call(this);
@@ -1358,14 +1359,14 @@
 			if (this._currentScrollMode != this._scrollMode && this._scrollMode != "viewport") {
 				itemModel.setScrollPos(0);
 			}
-			if (!this._height) this._scrollMode = "simple";
+			if (!this.getRealHeight()) this._scrollMode = "simple";
 			this._currentScrollMode = this._scrollMode;
 
 			// 开始刷新内容
 			if (domMode == 2) {
 				with (fixedInnerGridWrapper.style) {
 					overflowX = width = '';
-					height = divScroll.clientHeight + "px";
+					if (yScroll) height = divScroll.clientHeight + "px";
 				}
 
 				fixedInnerGrid._scrollMode = this._scrollMode;
@@ -1388,7 +1389,7 @@
 				} else {
 					with (innerGridWrapper.style) {
 						width = (divScroll.clientWidth - scrollLeft) + "px";
-						height = divScroll.clientHeight + "px";
+						if (yScroll) height = divScroll.clientHeight + "px";
 					}
 					innerGridWrapper.style.left = scrollLeft + "px";
 				}
@@ -1509,22 +1510,23 @@
 					var innerGridWrapper = this._innerGridWrapper;
 
 					var useOffsetWidth = !this._hScrollBarFixed && dorado.Browser.webkit;
-					var ofx = (divScroll.scrollWidth >
-					(useOffsetWidth ? divScroll.offsetWidth : divScroll.clientWidth)) ? "scroll" : "hidden";
+					var ofx = (divScroll.scrollWidth > (useOffsetWidth ? divScroll.offsetWidth : divScroll.clientWidth)) ? "scroll" : "hidden";
 					this._hScrollBarFixed = true;
 					if (divScroll.style.overflowX != ofx) {
 						divScroll.style.overflowX = ofx;
-						if (ofx == "scroll") {
-							if (fixedInnerGridWrapper) {
-								fixedInnerGridWrapper.style.height = divScroll.clientHeight + "px";
-								fixedInnerGrid.updateContainerHeight(fixedInnerGrid._container);
+						if (this.yScroll) {
+							if (ofx == "scroll") {
+								if (fixedInnerGridWrapper) {
+									fixedInnerGridWrapper.style.height = divScroll.clientHeight + "px";
+									fixedInnerGrid.updateContainerHeight(fixedInnerGrid._container);
+								}
+								innerGridWrapper.style.height = divScroll.clientHeight + "px";
+								innerGrid.updateContainerHeight(innerGrid._container);
+							} else {
+								this._ignoreItemTimestamp = true;
+								this.refreshDom(dom);
+								return;
 							}
-							innerGridWrapper.style.height = divScroll.clientHeight + "px";
-							innerGrid.updateContainerHeight(innerGrid._container);
-						} else {
-							this._ignoreItemTimestamp = true;
-							this.refreshDom(dom);
-							return;
 						}
 					}
 				}
@@ -1540,7 +1542,12 @@
 			if (this._divScroll) {
 				var divScroll = this._divScroll, divViewPort = this._divViewPort;
 				var ratio = info.clientHeight ? divScroll.clientHeight / info.clientHeight : 0;
-				divViewPort.style.height = Math.round(info.scrollHeight * ratio) + "px";
+				if (this.yScroll) {
+					divViewPort.style.height = Math.round(info.scrollHeight * ratio) + "px";
+				}
+				else {
+					divViewPort.style.height = this._innerGridWrapper.offsetHeight + "px";
+				}
 				divScroll.scrollTop = this._scrollTop = Math.round(info.scrollTop * ratio);
 
 				//目前已知在动态行高的情况下不需要此行代码
@@ -1551,8 +1558,7 @@
 						var ratio = divScroll.clientWidth / (innerGridWrapper.clientWidth || 1);
 						var viewPortWidth = Math.round(innerGridWrapper.scrollWidth * ratio);
 						divViewPort.style.width = viewPortWidth + "px";
-						divScroll.scrollLeft = this._scrollLeft = Math.round(innerGridWrapper.scrollLeft *
-						ratio);
+						divScroll.scrollLeft = this._scrollLeft = Math.round(innerGridWrapper.scrollLeft * ratio);
 					} else {
 						divViewPort.style.width = divScroll.scrollLeft = 0;
 					}
