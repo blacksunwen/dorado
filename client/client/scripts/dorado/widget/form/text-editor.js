@@ -461,45 +461,64 @@
 		},
 		
 		doOnKeyDown: function(evt) {
-			var retValue = true;
-			var firstTrigger = this.get("trigger");
-			if (firstTrigger && firstTrigger instanceof Array) firstTrigger = firstTrigger[0];
 			
+			function forwardKeyDownEvent(trigger, editor) {
+				if (trigger) {
+					if (trigger instanceof Array) {
+						for (var i = 0; i < trigger.length; i++) {
+							var t = trigger[i];
+							if (t.onEditorKeyDown) {
+								var result = t.onEditorKeyDown(editor, evt);
+								if (result === false) {
+									return false;
+								}
+								else if (!result) {
+									break;
+								}
+							}
+						}
+					}
+					else if (trigger.onEditorKeyDown) {
+						if (trigger.onEditorKeyDown(editor, evt) === false) return false;
+					}
+				}
+				return true;
+			}
+			
+			var retValue = true, trigger = this.get("trigger"), firstTrigger;	
+			if (trigger) firstTrigger = (trigger instanceof Array) ? trigger[0] : trigger;		
+ 		
 			switch (evt.keyCode) {
 				case 36: // home
 				case 35: // end
 				case 38: // up
 				case 27:{ // esc
-					if (firstTrigger && firstTrigger.onEditorKeyDown) retValue = firstTrigger.onEditorKeyDown(this, evt);
+					retValue = forwardKeyDownEvent(trigger, this);
 					break;
 				}
 				case 40: // down
-					if (firstTrigger) {
-						if (firstTrigger.onEditorKeyDown) retValue = firstTrigger.onEditorKeyDown(this, evt);
-						if (evt.altKey) {
-							this.onTriggerClick(firstTrigger);
-							retValue = false;
-						}
-					}
-					break;
-				case 13: // enter
-					if (firstTrigger) {
-						if (firstTrigger.onEditorKeyDown) retValue = firstTrigger.onEditorKeyDown(this, evt);
-					} else {
-						var b = this.post();
-						retValue = (b === true || b == null);
-					}
-					break;
-				case 113: // F2
-					if (firstTrigger) {
+					retValue = forwardKeyDownEvent(trigger, this);
+					if (retValue && evt.altKey && firstTrigger) {
 						this.onTriggerClick(firstTrigger);
 						retValue = false;
 					}
 					break;
-				default:
-					if (firstTrigger && firstTrigger.onEditorKeyDown) {
-						retValue = firstTrigger.onEditorKeyDown(this, evt);
+				case 118: // F7
+					retValue = forwardKeyDownEvent(trigger, this);
+					if (retValue && firstTrigger) {
+						this.onTriggerClick(firstTrigger);
+						retValue = false;
 					}
+					break;
+				case 13: // enter
+					retValue = forwardKeyDownEvent(trigger, this);
+					if (retValue) {
+						var b = this.post();
+						retValue = (b === true || b == null);
+					}
+					break;
+				default:
+					retValue = forwardKeyDownEvent(trigger, this);
 			}
 			return retValue;
 		},

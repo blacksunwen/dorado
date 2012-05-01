@@ -253,8 +253,9 @@
 						if (dataType instanceof dorado.EntityDataType && data.dataType) {
 							mismatch = (data.dataType.getElementDataType() != dataType);
 						}
-						if (mismatch)
+						if (mismatch) {
 							throw new dorado.ResourceException("dorado.widget.DataTypeNotAccording", this._id);
+						}
 					}
 				}
 				this._data = data;

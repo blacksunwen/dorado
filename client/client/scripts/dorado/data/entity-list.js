@@ -558,9 +558,13 @@
 			if (entity == null) {
 				entity = this.createChild(null, true);
 			} else if (entity instanceof dorado.Entity) {
-				if (entity.page) {
-					var entityList = entity.page.entityList;
-					if (entityList) entityList.remove(entity, true);
+				if (entity.parent) {
+					if (entity.parent instanceof dorado.EntityList) {
+						entity.parent.remove(entity, true);
+					}
+					else {
+						throw new dorado.ResourceException("dorado.data.ValueNotFree", "Entity");
+					}
 				}
 			} else {
 				entity = new dorado.Entity(entity, this.dataTypeRepository, this.elementDataType);
@@ -636,7 +640,7 @@
 				detach = true;
 			} else {
 				detach = detach || entity.state == dorado.Entity.STATE_NEW;
-				entity.setState(dorado.Entity.STATE_DELETED);
+				if (!detach) entity.setState(dorado.Entity.STATE_DELETED);
 			}
 			if (detach) {
 				if (entity.state != dorado.Entity.STATE_DELETED) this.changeEntityCount(page, -1);
@@ -695,13 +699,23 @@
 				if (fireEvent && elementDataType != null) eventArg = {};
 				
 				for (var i = 0; i < jsonArray.length; i++) {
+					var json = jsonArray[i];
+					if (json instanceof dorado.Entity && json.parent) {
+						if (json.parent instanceof dorado.EntityList) {
+							json.parent.remove(json, true);
+						}
+						else {
+							throw new dorado.ResourceException("dorado.data.ValueNotFree", "Entity");
+						}
+					}
+					
 					if (elementDataType != null) {
-						entity = elementDataType.parse(jsonArray[i]);
+						entity = elementDataType.parse(json);
 					} else {
 						var oldProcessDefaultValue = SHOULD_PROCESS_DEFAULT_VALUE;
 						SHOULD_PROCESS_DEFAULT_VALUE = false;
 						try {
-							entity = new dorado.Entity(jsonArray[i], (this.dataType) ? this.dataType.get("dataTypeRepository") : null);
+							entity = new dorado.Entity(json, (this.dataType) ? this.dataType.get("dataTypeRepository") : null);
 						}
 						finally {
 							SHOULD_PROCESS_DEFAULT_VALUE = oldProcessDefaultValue;
