@@ -105,8 +105,8 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.RowListDropDown,/** @scope
 		if (this._useDataBinding && (this._filterOnOpen || this._lastFilterValue)) {
 			var filterValue = (this._lastFilterValue) ? this._lastFilterValue : editor.get("text");
 			this.onFilterItems(filterValue, doOpen);
-			this._lastFilterValue = filterValue;
 		} else {
+			delete this._lastFilterValue;
 			doOpen();
 		}
 	},
@@ -183,11 +183,15 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.RowListDropDown,/** @scope
 				sysParameter.put("filterValue", filterValue);
 				
 				dataSet.clear();
-				dataSet.loadAsync(callback);
-				this._lastFilterValue = filterValue;
+				var dropdown = this;
+				dataSet.loadAsync(function() {					
+					dropdown._lastFilterValue = filterValue;
+					$callback(callback);
+				});
 			}
 		} else {
 			$invokeSuper.call(this, arguments);
+			this._lastFilterValue = filterValue;
 		}
 	},
 	
@@ -200,6 +204,17 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.RowListDropDown,/** @scope
 		} else {
 			$invokeSuper.call(this, arguments);
 		}
-	}
+	},
 	
+	doOnEditorKeyDown: function(editor, evt) {
+		if (evt.keyCode == 13 && this.get("dynaFilter")) {
+			var filterValue = editor.get("text");
+			if (this._lastFilterValue != filterValue) {				
+				this.onFilterItems(filterValue);
+				return false;
+			}
+		}
+		return $invokeSuper.call(this, arguments);
+	}
+
 });

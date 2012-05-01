@@ -297,7 +297,12 @@
 					dropDown.onFilterItems(editor.get("text"));
 				}
 				editor.addListener("onTextEdit", function() {
-					if (dropDown._filterOnTyping) filterFn();
+					if (dropDown._filterOnTyping) {
+						dorado.Toolkits.setDelayedAction(dropDown, "$filterOnTypingId", function() {
+							filterFn();
+						}, dropDown._minFilterInterval);
+					}
+					
 				});
 			}
 		},
@@ -409,7 +414,7 @@
 			rowList.set("items", filteredItems);
 		},
 		
-		doOnEditorKeyPress: function(evt) {
+		doOnEditorKeyDown: function(editor, evt) {
 			var retValue = true;
 			if (this.get("opened")) {
 				var rowList = this.get("box.control");

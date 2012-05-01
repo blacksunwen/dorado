@@ -826,7 +826,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			if (this.state == dorado.Entity.STATE_NONE) this.storeOldData();
 
 			if (oldValue && oldValue.isDataPipeWrapper) oldValue = oldValue.value;
-			if ( oldValue instanceof dorado.Entity || oldValue instanceof dorado.EntityList) {
+			if (oldValue instanceof dorado.Entity || oldValue instanceof dorado.EntityList) {
 				oldValue.parent = null;
 				oldValue._setObserver(null);
 			}
@@ -834,7 +834,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			var propertyInfoMap = this._propertyInfoMap, propertyInfo = propertyInfoMap[property];
 			if (!propertyInfo) propertyInfoMap[property] = propertyInfo = {};
 
-			if ( value instanceof dorado.Entity || value instanceof dorado.EntityList) {
+			if (value instanceof dorado.Entity || value instanceof dorado.EntityList) {
 				if (value.parent != null) {
 					throw new dorado.ResourceException("dorado.data.ValueNotFree", (( value instanceof dorado.Entity) ? "Entity" : "EntityList"));
 				}

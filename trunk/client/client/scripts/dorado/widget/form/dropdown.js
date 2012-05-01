@@ -263,7 +263,7 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 	initDropDownBox : dorado._NULL_FUNCTION,
 	
 	onEditorMouseDown: function(editor) {
-		if (this._autoOpen) {
+		if (this._autoOpen && !this.get("opened")) {
 			this._skipEditorOnFocusProcedure= true;
 			this.execute(editor);
 		}
@@ -281,13 +281,13 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 	onEditorKeyDown: function(editor, evt) {
 		dorado.widget.disableKeyBubble = this._editor;
 		try {
-			return this.doOnEditorKeyPress ? this.doOnEditorKeyPress(evt) : true;
+			return this.doOnEditorKeyDown ? this.doOnEditorKeyDown(editor, evt) : true;
 		} finally {
 			dorado.widget.disableKeyBubble = null;
 		}
 	},
 
-	doOnEditorKeyPress : function(evt) {
+	doOnEditorKeyDown : function(editor, evt) {
 		var retValue = true;
 		if (this.get("opened")) {
 			switch (evt.keyCode) {
