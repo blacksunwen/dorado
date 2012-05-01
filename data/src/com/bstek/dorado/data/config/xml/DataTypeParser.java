@@ -16,6 +16,7 @@ import com.bstek.dorado.config.xml.XmlConstants;
 import com.bstek.dorado.config.xml.XmlParseException;
 import com.bstek.dorado.data.Constants;
 import com.bstek.dorado.data.config.DataTypeName;
+import com.bstek.dorado.data.config.definition.DataObjectDefinitionUtils;
 import com.bstek.dorado.data.config.definition.DataTypeDefinition;
 import com.bstek.dorado.data.config.definition.DataTypeDefinitionReference;
 import com.bstek.dorado.data.type.DataType;
@@ -181,7 +182,8 @@ public class DataTypeParser extends GenericObjectParser implements
 
 					dataType = new DataTypeDefinition();
 					dataType.setResource(elementDataType.getResource());
-					dataType.setGlobal(false);
+					DataObjectDefinitionUtils
+							.setDataTypeGlobal(dataType, false);
 					DefinitionReference<?> dataTypeRef = dataContext
 							.getDataTypeReference(dataTypeName.getDataType());
 					dataType.setParentReferences(new DefinitionReference[] { dataTypeRef });
@@ -193,7 +195,7 @@ public class DataTypeParser extends GenericObjectParser implements
 		}
 
 		dataType.setName(name);
-		dataType.setGlobal(isGlobal);
+		DataObjectDefinitionUtils.setDataTypeGlobal(dataType, isGlobal);
 
 		if (dataType.getParentReferences() == null
 				&& !DEFAULT_DATATYPE_PARENT.equals(name)) {

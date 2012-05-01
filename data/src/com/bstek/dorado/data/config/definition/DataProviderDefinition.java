@@ -34,12 +34,16 @@ public class DataProviderDefinition extends InterceptableDefinition implements
 	private DataProviderDefinitionManager dataProviderDefinitionManager;
 	private String name;
 	private String id;
-	private boolean global;
 
 	private boolean resultDataTypeParentAssigned;
 
 	public DataProviderDefinition() {
 		setCacheCreatedObject(true);
+	}
+
+	public DataProviderDefinition(String name) {
+		this();
+		setName(name);
 	}
 
 	public void setDefinitionManager(
@@ -65,25 +69,15 @@ public class DataProviderDefinition extends InterceptableDefinition implements
 		return id;
 	}
 
-	public void setId(String id) {
+	void setId(String id) {
 		this.id = id;
 		if (StringUtils.isNotEmpty(id)) {
 			setBeanId(Constants.SCOPE_DATA_PROVIDER_PREFIX + id);
 		}
 	}
 
-	/**
-	 * 返回该DataProvider是否是一个全局对象。
-	 */
-	public boolean isGlobal() {
-		return global;
-	}
-
-	/**
-	 * 设置该DataProvider是否是一个全局对象。
-	 */
+	@Deprecated
 	public void setGlobal(boolean global) {
-		this.global = global;
 	}
 
 	@Override

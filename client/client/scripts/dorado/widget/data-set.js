@@ -141,6 +141,14 @@
 
 		EVENTS: /** @scope dorado.widget.DataSet.prototype */
 		{
+			/**
+			 * 当DataSet将要尝试数据装载完成之前触发的事件。
+			 * @param {Object} self 事件的发起者，即控件本身。
+			 * @param {Object} arg 事件参数。
+			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+			 * @event
+			 */
+			beforeLoadData: {},
 
 			/**
 			 * 当数据装载完成时触发的事件。
@@ -333,6 +341,8 @@
 			}
 			
 			if (data instanceof dorado.DataPipe) {
+				this.fireEvent("beforeLoadData", this, arg);
+				
 				var pipe = data;
 				if (callback) {
 					var arg = {
@@ -352,7 +362,7 @@
 								if (this._cacheable) {
 									dataCache[hashCode] = this.getData();
 								}
-								this.fireEvent("onDataLoad", this);
+								this.fireEvent("onDataLoad", this, arg);
 							}
 							
 							delete this._dataPipe;

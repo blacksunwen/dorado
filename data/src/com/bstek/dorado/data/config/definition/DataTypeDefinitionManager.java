@@ -88,6 +88,10 @@ public class DataTypeDefinitionManager extends
 		}
 	}
 
+	public void registerDefinition(DataTypeDefinition definition) {
+		registerDefinition(definition.getName(), definition);
+	}
+
 	@Override
 	public DataTypeDefinition unregisterDefinition(String name) {
 		DataTypeDefinition definition = super.unregisterDefinition(name);

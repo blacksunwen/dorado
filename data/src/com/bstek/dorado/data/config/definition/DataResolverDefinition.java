@@ -25,10 +25,14 @@ public class DataResolverDefinition extends InterceptableDefinition implements
 	private DataResolverDefinitionManager dataResolverDefinitionManager;
 	private String name;
 	private String id;
-	private boolean global;
 
 	public DataResolverDefinition() {
 		setCacheCreatedObject(true);
+	}
+
+	public DataResolverDefinition(String name) {
+		this();
+		setName(name);
 	}
 
 	public void setDefinitionManager(
@@ -54,25 +58,11 @@ public class DataResolverDefinition extends InterceptableDefinition implements
 		return id;
 	}
 
-	public void setId(String id) {
+	void setId(String id) {
 		this.id = id;
 		if (StringUtils.isNotEmpty(id)) {
 			setBeanId(Constants.SCOPE_DATA_RESOLVER_PREFIX + id);
 		}
-	}
-
-	/**
-	 * 返回该DataResolver是否是一个全局对象。
-	 */
-	public boolean isGlobal() {
-		return global;
-	}
-
-	/**
-	 * 设置该DataResolver是否是一个全局对象。
-	 */
-	public void setGlobal(boolean global) {
-		this.global = global;
 	}
 
 	@Override

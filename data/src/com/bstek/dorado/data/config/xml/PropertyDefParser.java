@@ -8,8 +8,8 @@ import com.bstek.dorado.config.definition.CreationContext;
 import com.bstek.dorado.config.definition.DefinitionInitOperation;
 import com.bstek.dorado.config.definition.DefinitionReference;
 import com.bstek.dorado.config.definition.ObjectDefinition;
-import com.bstek.dorado.data.config.definition.GenericObjectDefinition;
 import com.bstek.dorado.data.config.definition.DataTypeDefinition;
+import com.bstek.dorado.data.config.definition.PropertyDefDefinition;
 
 /**
  * EntityDataType中属性声明对象的解析器。
@@ -21,17 +21,16 @@ public class PropertyDefParser extends GenericObjectParser {
 
 	private static class AddPropertyDefOperation implements
 			DefinitionInitOperation {
-		private GenericObjectDefinition propertyDef;
+		private PropertyDefDefinition propertyDef;
 
-		public AddPropertyDefOperation(GenericObjectDefinition propertyDef) {
+		public AddPropertyDefOperation(PropertyDefDefinition propertyDef) {
 			this.propertyDef = propertyDef;
 		}
 
 		public void execute(Object object, CreationContext context)
 				throws Exception {
 			DataTypeDefinition dataType = (DataTypeDefinition) object;
-			String name = (String) propertyDef.getProperties().get("name");
-			dataType.addPropertyDef(name, propertyDef);
+			dataType.addPropertyDef(propertyDef);
 		}
 	}
 
@@ -51,8 +50,8 @@ public class PropertyDefParser extends GenericObjectParser {
 
 	@Override
 	protected Object doParse(Node node, ParseContext context) throws Exception {
-		GenericObjectDefinition definition = (GenericObjectDefinition) super.doParse(
-				node, context);
+		PropertyDefDefinition definition = (PropertyDefDefinition) super
+				.doParse(node, context);
 		return new AddPropertyDefOperation(definition);
 	}
 

@@ -3,6 +3,7 @@ package com.bstek.dorado.view;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import com.bstek.dorado.core.Context;
 import com.bstek.dorado.data.config.definition.DataTypeDefinition;
@@ -26,6 +27,10 @@ public class InnerDataTypeManager extends DefaultDataTypeManager {
 		this.parent = parent;
 	}
 
+	public DataTypeManager getParent() {
+		return parent;
+	}
+
 	@Override
 	public DataType getDataType(String name) throws Exception {
 		DataType dataType = null;
@@ -45,6 +50,10 @@ public class InnerDataTypeManager extends DefaultDataTypeManager {
 	public DataType getDataType(Type type) throws Exception {
 		// 不对View中声明的DataType提供根据classType获取DataType的功能支持。
 		return (parent != null) ? parent.getDataType(type) : null;
+	}
+
+	public Set<String> getDataTypeNames() {
+		return privateDataTypeMap.keySet();
 	}
 
 	/**

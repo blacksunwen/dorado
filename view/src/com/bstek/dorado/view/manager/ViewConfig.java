@@ -5,6 +5,7 @@ package com.bstek.dorado.view.manager;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.IdeProperty;
@@ -18,10 +19,10 @@ import com.bstek.dorado.data.provider.DataProvider;
 import com.bstek.dorado.data.resolver.DataResolver;
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.util.proxy.BeanExtender;
-import com.bstek.dorado.view.View;
 import com.bstek.dorado.view.InnerDataProviderManager;
 import com.bstek.dorado.view.InnerDataResolverManager;
 import com.bstek.dorado.view.InnerDataTypeManager;
+import com.bstek.dorado.view.View;
 import com.bstek.dorado.view.ViewState;
 
 /**
@@ -105,6 +106,10 @@ public class ViewConfig implements Namable, MetaDataSupport {
 	public DataType getDataType(String name) throws Exception {
 		return (innerDataTypeManager == null) ? null : innerDataTypeManager
 				.getDataType(name);
+	}
+
+	public Set<String> getPrivateDataTypeNames() {
+		return innerDataTypeManager.getDataTypeNames();
 	}
 
 	public DataProvider getDataProvider(String name) throws Exception {
