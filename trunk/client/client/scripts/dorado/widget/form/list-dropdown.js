@@ -368,7 +368,7 @@
 				return;
 			}
 			
-			filterValue += '';
+			filterValue = (filterValue == null) ? '' : (filterValue + '');
 			var filteredItems;
 			if (filterValue && filterValue.length > 0) {
 				filteredItems = [];
