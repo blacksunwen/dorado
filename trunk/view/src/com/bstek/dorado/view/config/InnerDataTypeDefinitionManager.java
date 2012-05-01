@@ -3,6 +3,7 @@ package com.bstek.dorado.view.config;
 import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.config.definition.DefinitionManager;
+import com.bstek.dorado.data.config.definition.DataObjectDefinitionUtils;
 import com.bstek.dorado.data.config.definition.DataTypeDefinition;
 import com.bstek.dorado.data.config.definition.DataTypeDefinitionManager;
 import com.bstek.dorado.util.Assert;
@@ -37,7 +38,8 @@ public class InnerDataTypeDefinitionManager extends DataTypeDefinitionManager {
 		if (StringUtils.isEmpty(id)) {
 			id = name;
 		}
-		definition.setId(dataObjectIdPrefix + id);
+		DataObjectDefinitionUtils.setDataTypeId(definition, dataObjectIdPrefix
+				+ id);
 
 		super.registerDefinition(name, definition);
 	}

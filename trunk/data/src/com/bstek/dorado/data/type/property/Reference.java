@@ -15,7 +15,9 @@ import com.bstek.dorado.data.provider.DataProvider;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Apirl 21, 2007
  */
-@XmlNode(parser = "spring:dorado.referenceParser")
+@XmlNode(
+		parser = "spring:dorado.referenceParser",
+		definitionType = "com.bstek.dorado.data.config.definition.PropertyDefDefinition")
 @ClientObject(prototype = "dorado.Reference", shortTypeName = "Reference")
 @ClientEvents({
 		@com.bstek.dorado.annotation.ClientEvent(name = "beforeLoadData"),

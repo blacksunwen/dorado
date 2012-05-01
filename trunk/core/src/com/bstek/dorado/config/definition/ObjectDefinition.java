@@ -90,6 +90,14 @@ public class ObjectDefinition extends Definition {
 		this.impl = impl;
 	}
 
+	public void setImplType(Class<?> implType) {
+		if (implType != null) {
+			setImpl(implType.getName());
+		} else {
+			setImpl(null);
+		}
+	}
+
 	/**
 	 * 返回对象的作用范围。
 	 */
@@ -151,6 +159,16 @@ public class ObjectDefinition extends Definition {
 		this.parentReferences = parentReferences;
 	}
 
+	@SuppressWarnings("unchecked")
+	public void setParentReference(
+			DefinitionReference<? extends Definition> parentReference) {
+		if (parentReference != null) {
+			setParentReferences(new DefinitionReference[] { parentReference });
+		} else {
+			setParentReferences(null);
+		}
+	}
+
 	/**
 	 * 设置父配置声明对象的数组。
 	 */
@@ -162,6 +180,16 @@ public class ObjectDefinition extends Definition {
 					parents[i]);
 		}
 		this.parentReferences = parentReferences;
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public void setParent(Definition parent) {
+		if (parent != null) {
+			setParentReferences(new DefinitionReference[] { new DirectDefinitionReference(
+					parent) });
+		} else {
+			setParentReferences(null);
+		}
 	}
 
 	public boolean isCacheCreatedObject() {

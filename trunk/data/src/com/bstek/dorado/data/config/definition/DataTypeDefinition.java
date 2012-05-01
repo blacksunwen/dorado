@@ -35,11 +35,16 @@ public class DataTypeDefinition extends ListenableObjectDefinition implements
 	private Class<?> matchType;
 	private Class<?> creationType;
 	private boolean global = true;
-	private Map<String, ObjectDefinition> propertyDefs;
+	private Map<String, PropertyDefDefinition> propertyDefs;
 	private boolean isAggregationType;
 
 	public DataTypeDefinition() {
 		setCacheCreatedObject(true);
+	}
+
+	public DataTypeDefinition(String name) {
+		this();
+		setName(name);
 	}
 
 	/**
@@ -64,7 +69,7 @@ public class DataTypeDefinition extends ListenableObjectDefinition implements
 		return id;
 	}
 
-	public void setId(String id) {
+	void setId(String id) {
 		this.id = id;
 		if (StringUtils.isNotEmpty(id)) {
 			setBeanId(Constants.SCOPE_DATA_TYPE_PREFIX + id);
@@ -113,6 +118,7 @@ public class DataTypeDefinition extends ListenableObjectDefinition implements
 	/**
 	 * 设置该DataType是否是一个全局对象。
 	 */
+	@Deprecated
 	public void setGlobal(boolean global) {
 		this.global = global;
 	}
@@ -125,9 +131,17 @@ public class DataTypeDefinition extends ListenableObjectDefinition implements
 	 * @param propertyDef
 	 *            要添加的属性声明对象
 	 */
-	public void addPropertyDef(String name, ObjectDefinition propertyDef) {
+	public void addPropertyDef(PropertyDefDefinition propertyDef) {
 		if (propertyDefs == null) {
-			propertyDefs = new LinkedHashMap<String, ObjectDefinition>();
+			propertyDefs = new LinkedHashMap<String, PropertyDefDefinition>();
+		}
+		propertyDefs.put(propertyDef.getName(), propertyDef);
+	}
+
+	@Deprecated
+	public void addPropertyDef(String name, PropertyDefDefinition propertyDef) {
+		if (propertyDefs == null) {
+			propertyDefs = new LinkedHashMap<String, PropertyDefDefinition>();
 		}
 		propertyDefs.put(name, propertyDef);
 	}
@@ -139,7 +153,7 @@ public class DataTypeDefinition extends ListenableObjectDefinition implements
 	 *            属性声明的名称
 	 * @return 相应的属性声明对象
 	 */
-	public ObjectDefinition getPropertyDef(String name) {
+	public PropertyDefDefinition getPropertyDef(String name) {
 		if (propertyDefs != null) {
 			return propertyDefs.get(name);
 		} else {
@@ -151,7 +165,7 @@ public class DataTypeDefinition extends ListenableObjectDefinition implements
 	 * 返回DataType声明中所有的属性声明对象的Map集合。<br>
 	 * 其中Map集合的键为属性声明的名称，值为相应的属性声明对象。
 	 */
-	public Map<String, ObjectDefinition> getPropertyDefs() {
+	public Map<String, PropertyDefDefinition> getPropertyDefs() {
 		return propertyDefs;
 	}
 
@@ -253,17 +267,17 @@ public class DataTypeDefinition extends ListenableObjectDefinition implements
 			creationInfo.setUserData("propertyDefs", allPropertyDefs);
 		}
 
-		Map<String, ObjectDefinition> propertyDefs = dataTypeDefinition
+		Map<String, PropertyDefDefinition> propertyDefs = dataTypeDefinition
 				.getPropertyDefs();
 		if (propertyDefs != null) {
-			for (Map.Entry<String, ObjectDefinition> entry : propertyDefs
+			for (Map.Entry<String, PropertyDefDefinition> entry : propertyDefs
 					.entrySet()) {
 				String name = entry.getKey();
-				ObjectDefinition propertyDef = entry.getValue();
+				PropertyDefDefinition propertyDef = entry.getValue();
 
 				ObjectDefinition parentProperty = allPropertyDefs.get(name);
 				if (parentProperty != null) {
-					propertyDef = (ObjectDefinition) CloneUtils
+					propertyDef = (PropertyDefDefinition) CloneUtils
 							.clone(propertyDef);
 					Definition[] originParents = propertyDef.getParents();
 					Definition[] parents;

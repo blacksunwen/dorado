@@ -27,23 +27,23 @@ import com.bstek.dorado.jdbc.type.JdbcType;
  * 默认的JDBC模型与dorado模型转换器
  * 
  * @author mark.li@bstek.com
- *
+ * 
  */
 public class DefaultModelStrategy implements ModelStrategy {
 
 	private static Log logger = LogFactory.getLog(DefaultModelStrategy.class);
-	
+
 	private DataTypeManager dataTypeManager;
 	private DataProviderManager dataProviderManager;
-	
+
 	public void setDataTypeManager(DataTypeManager dataTypeManager) {
 		this.dataTypeManager = dataTypeManager;
 	}
-	
+
 	public DataTypeManager getDataTypeManager() {
 		return dataTypeManager;
 	}
-	
+
 	public DataProviderManager getDataProviderManager() {
 		return dataProviderManager;
 	}
@@ -52,9 +52,11 @@ public class DefaultModelStrategy implements ModelStrategy {
 		this.dataProviderManager = dataProviderManager;
 	}
 
-	public void createDataType(AbstractDbTableDefinition tableDef) throws Exception {
+	public void createDataType(AbstractDbTableDefinition tableDef)
+			throws Exception {
 		String name = tableDef.getName();
-		DataTypeDefinitionManager manager = dataTypeManager.getDataTypeDefinitionManager();
+		DataTypeDefinitionManager manager = dataTypeManager
+				.getDataTypeDefinitionManager();
 		DataTypeDefinition def = manager.getDefinition(name);
 		if (def == null) {
 			def = this.createDataTypeDefinition(tableDef);
@@ -62,17 +64,18 @@ public class DefaultModelStrategy implements ModelStrategy {
 			def.setName(name);
 			def.setGlobal(true);
 			manager.registerDefinition(name, def);
-			
+
 			if (logger.isInfoEnabled()) {
 				logger.info("** auto create dataType [" + name + "]");
 			}
-		} 
+		}
 	}
-	
+
 	public void createDataProvider(AbstractDbTableDefinition tableDef)
 			throws Exception {
 		String name = tableDef.getName();
-		DataProviderDefinitionManager manager = dataProviderManager.getDataProviderDefinitionManager();
+		DataProviderDefinitionManager manager = dataProviderManager
+				.getDataProviderDefinitionManager();
 		DataProviderDefinition def = manager.getDefinition(name);
 		if (def == null) {
 			def = createDataProviderDifinition(tableDef);
@@ -81,46 +84,45 @@ public class DefaultModelStrategy implements ModelStrategy {
 			def.setProperty(XmlConstants.TABLE_NAME, name);
 			def.setImpl(JdbcDataProvider.class.getName());
 			manager.registerDefinition(name, def);
-			
+
 			if (logger.isInfoEnabled()) {
 				logger.info("** auto create dataProvider [" + name + "]");
 			}
 		}
 	}
-	
+
 	protected DataTypeDefinition createDataTypeDefinition(
 			AbstractDbTableDefinition tableDef) {
 		CreationContext context = new CreationContext();
 		DbTable table = null;
 		try {
-			table = (DbTable)tableDef.create(context);
+			table = (DbTable) tableDef.create(context);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		
+
 		DataTypeDefinition dataType = new DataTypeDefinition();
 		List<AbstractDbColumn> columns = table.getAllColumns();
-		for (AbstractDbColumn column: columns) {
+		for (AbstractDbColumn column : columns) {
 			PropertyDefDefinition propertyDef = new PropertyDefDefinition();
 			propertyDef.setImpl(BasePropertyDef.class.getName());
-			
 			String propertyName = column.getPropertyName();
 			propertyDef.setProperty("name", propertyName);
-			
+
 			JdbcType jdbcType = column.getJdbcType();
 			if (jdbcType != null) {
 				propertyDef.setProperty("dataType", jdbcType.getDataType());
 			}
 			dataType.addPropertyDef(propertyName, propertyDef);
 		}
-		
+
 		return dataType;
 	}
-	
+
 	protected DataProviderDefinition createDataProviderDifinition(
 			AbstractDbTableDefinition tableDef) {
 		DataProviderDefinition def = new DataProviderDefinition();
 		return def;
 	}
-	
+
 }

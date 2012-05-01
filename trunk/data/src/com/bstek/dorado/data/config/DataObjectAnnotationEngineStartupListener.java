@@ -105,7 +105,6 @@ public class DataObjectAnnotationEngineStartupListener extends
 			if (definition == null) {
 				definition = new DataProviderDefinition();
 				definition.setName(dataObjectName);
-				definition.setGlobal(true);
 
 				String scope = dataProvider.scope();
 				definition
@@ -128,7 +127,6 @@ public class DataObjectAnnotationEngineStartupListener extends
 			if (definition == null) {
 				definition = new DataResolverDefinition();
 				definition.setName(dataObjectName);
-				definition.setGlobal(true);
 
 				String scope = dataResolver.scope();
 				definition

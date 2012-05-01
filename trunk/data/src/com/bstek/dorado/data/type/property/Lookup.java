@@ -20,7 +20,9 @@ import com.bstek.dorado.util.proxy.ChildrenListSupport;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Apirl 22, 2007
  */
-@XmlNode(parser = "spring:dorado.lookupParser")
+@XmlNode(
+		parser = "spring:dorado.lookupParser",
+		definitionType = "com.bstek.dorado.data.config.definition.PropertyDefDefinition")
 @ClientObject(prototype = "dorado.Lookup", shortTypeName = "Lookup")
 public class Lookup extends LazyPropertyDef {
 
