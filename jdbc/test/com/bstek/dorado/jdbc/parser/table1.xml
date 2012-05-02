@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Table name="dept1" tableName="DEPT" jdbcEnviroment="ora11">
-  <Columns>
-    <KeyColumn columnName="DEPT_ID"/>
-    <Column columnName="DEPT_NAME"/>
-    <Column columnName="PARENT_ID"/>
-  </Columns>
-  <Property name="dynamicClause"><![CDATA[#if ($ID) WHERE DEPT_ID=:ID #end]]></Property>
-</Table>
