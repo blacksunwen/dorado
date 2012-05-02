@@ -2,9 +2,6 @@ package com.bstek.dorado.jdbc.support;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.bstek.dorado.config.definition.CreationContext;
 import com.bstek.dorado.data.config.definition.DataProviderDefinition;
 import com.bstek.dorado.data.config.definition.DataProviderDefinitionManager;
@@ -31,8 +28,6 @@ import com.bstek.dorado.jdbc.type.JdbcType;
  */
 public class DefaultModelStrategy implements ModelStrategy {
 
-	private static Log logger = LogFactory.getLog(DefaultModelStrategy.class);
-
 	private DataTypeManager dataTypeManager;
 	private DataProviderManager dataProviderManager;
 
@@ -52,7 +47,7 @@ public class DefaultModelStrategy implements ModelStrategy {
 		this.dataProviderManager = dataProviderManager;
 	}
 
-	public void createDataType(AbstractDbTableDefinition tableDef)
+	public DataTypeDefinition createDataType(AbstractDbTableDefinition tableDef)
 			throws Exception {
 		String name = tableDef.getName();
 		DataTypeDefinitionManager manager = dataTypeManager
@@ -64,14 +59,14 @@ public class DefaultModelStrategy implements ModelStrategy {
 			def.setName(name);
 			def.setGlobal(true);
 			manager.registerDefinition(name, def);
-
-			if (logger.isInfoEnabled()) {
-				logger.info("** auto create dataType [" + name + "]");
-			}
+			
+			return def;
 		}
+		
+		return null;
 	}
 
-	public void createDataProvider(AbstractDbTableDefinition tableDef)
+	public DataProviderDefinition createDataProvider(AbstractDbTableDefinition tableDef)
 			throws Exception {
 		String name = tableDef.getName();
 		DataProviderDefinitionManager manager = dataProviderManager
@@ -85,10 +80,10 @@ public class DefaultModelStrategy implements ModelStrategy {
 			def.setImpl(JdbcDataProvider.class.getName());
 			manager.registerDefinition(name, def);
 
-			if (logger.isInfoEnabled()) {
-				logger.info("** auto create dataProvider [" + name + "]");
-			}
+			return def;
 		}
+		
+		return null;
 	}
 
 	protected DataTypeDefinition createDataTypeDefinition(
