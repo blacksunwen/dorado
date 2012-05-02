@@ -3,9 +3,9 @@ package com.bstek.dorado.jdbc.oracle.v11;
 import com.bstek.dorado.data.entity.EntityState;
 import com.bstek.dorado.data.entity.EntityUtils;
 import com.bstek.dorado.data.variant.Record;
-import com.bstek.dorado.jdbc.AbstractDbTableTrigger;
 import com.bstek.dorado.jdbc.JdbcDao;
 import com.bstek.dorado.jdbc.JdbcUtils;
+import com.bstek.dorado.jdbc.model.AbstractDbTableTrigger;
 import com.bstek.dorado.jdbc.model.Table;
 import com.bstek.dorado.jdbc.support.SaveRecordOperation;
 

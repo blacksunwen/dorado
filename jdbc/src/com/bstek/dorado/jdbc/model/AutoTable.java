@@ -281,7 +281,7 @@ public class AutoTable extends AbstractTable {
 		JunctionMatchRule where = t.getWhere();
 		if (where != null) {
 			String token = where.token(t, p);
-			if (StringUtils.isNotEmpty(token)) {
+			if (StringUtils.isNotBlank(token)) {
 				whereToken.append(token);
 			}
 		}

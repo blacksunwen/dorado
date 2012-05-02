@@ -2,7 +2,7 @@ package com.bstek.dorado.jdbc.oracle.v11;
 
 import java.util.Date;
 
-import com.bstek.dorado.jdbc.AbstractDbTableTrigger;
+import com.bstek.dorado.jdbc.model.AbstractDbTableTrigger;
 import com.bstek.dorado.jdbc.support.QueryOperation;
 import com.bstek.dorado.jdbc.support.SaveOperation;
 

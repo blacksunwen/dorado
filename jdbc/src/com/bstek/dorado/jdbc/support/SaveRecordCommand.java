@@ -4,7 +4,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import com.bstek.dorado.data.variant.Record;
-import com.bstek.dorado.jdbc.JdbcDao;
 import com.bstek.dorado.jdbc.model.DbTable;
 import com.bstek.dorado.jdbc.model.Table;
 

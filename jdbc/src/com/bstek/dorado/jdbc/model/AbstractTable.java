@@ -12,7 +12,6 @@ import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.data.entity.EntityState;
 import com.bstek.dorado.data.entity.EntityUtils;
 import com.bstek.dorado.data.variant.Record;
-import com.bstek.dorado.jdbc.DbTableTrigger;
 import com.bstek.dorado.jdbc.support.DataResolverContext;
 import com.bstek.dorado.jdbc.support.TableRecordOperation;
 import com.bstek.dorado.jdbc.support.RecordOperationProxy;

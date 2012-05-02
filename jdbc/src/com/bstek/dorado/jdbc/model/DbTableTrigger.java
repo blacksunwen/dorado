@@ -1,4 +1,4 @@
-package com.bstek.dorado.jdbc;
+package com.bstek.dorado.jdbc.model;
 
 import com.bstek.dorado.jdbc.support.QueryOperation;
 import com.bstek.dorado.jdbc.support.SaveOperation;

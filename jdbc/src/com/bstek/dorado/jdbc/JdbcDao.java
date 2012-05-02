@@ -8,6 +8,7 @@ import com.bstek.dorado.data.entity.EntityState;
 import com.bstek.dorado.data.provider.Page;
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.model.DbTable;
+import com.bstek.dorado.jdbc.model.DbTableTrigger;
 import com.bstek.dorado.jdbc.model.Table;
 import com.bstek.dorado.jdbc.model.table.KeyObject;
 import com.bstek.dorado.jdbc.support.DataProviderContext;

@@ -64,7 +64,7 @@ public class JunctionMatchRule extends AbstractMatchRule {
 			List<String> tokens = new ArrayList<String>(matchRules.size());
 			for (AbstractMatchRule rule: matchRules) {
 				String token = rule.token(autoTable, parameterSource);
-				if (StringUtils.isNotEmpty(token)) {
+				if (StringUtils.isNotBlank(token)) {
 					if (rule instanceof JunctionMatchRule) {
 						tokens.add("(" + token + ")");
 					} else {
