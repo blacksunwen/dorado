@@ -493,8 +493,8 @@
 
             dialog.set({ caption: title });
             dialog.show({
-                overflowHandler: function(overflowHeight) {
-                    dialog._height = overflowHeight;
+                overflowHandler: function(options) {
+                    dialog._height = options.maxHeight;
                     dialog.onResize();
                 }
             });

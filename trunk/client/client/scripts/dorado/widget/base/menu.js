@@ -767,8 +767,8 @@
 			var menu = this, anchorTarget = options.anchorTarget, dom = menu._dom, fixedElement, result;
 
 			options = options || {};
-			options.overflowHandler = function(overflowHeight) {
-				menu.handleOverflow(overflowHeight);
+			options.overflowHandler = function(options) {
+				menu.handleOverflow(options.maxHeight);
 			};
 
 			if (anchorTarget && anchorTarget instanceof dorado.widget.menu.MenuItem) {
