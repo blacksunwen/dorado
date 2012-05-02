@@ -266,12 +266,14 @@
 			eval(e.script);
 		} else {
 			var msg = dorado.Exception.getExceptionMessage(e);
-			if (e instanceof dorado.Exception) {
-				if (e.stack) msg += "\n\nDorado Stack:\n" + dorado.Exception.formatStack(e.stack);
-				if (e.remoteStack) msg += "\n\nRemote Stack:\n" + dorado.Exception.formatStack(e.remoteStack);
-				if (e.systemStack) msg += "\n\nSystem Stack:\n" + dorado.Exception.formatStack(e.systemStack);
-			} else if (e instanceof Error) {
-				if (e.stack) msg += "\n\nSystem Stack:\n" + dorado.Exception.formatStack(e.stack);
+			if ($setting["core.showExceptionStackTrace"]) {
+				if (e instanceof dorado.Exception) {
+					if (e.stack) msg += "\n\nDorado Stack:\n" + dorado.Exception.formatStack(e.stack);
+					if (e.remoteStack) msg += "\n\nRemote Stack:\n" + dorado.Exception.formatStack(e.remoteStack);
+					if (e.systemStack) msg += "\n\nSystem Stack:\n" + dorado.Exception.formatStack(e.systemStack);
+				} else if (e instanceof Error) {
+					if (e.stack) msg += "\n\nSystem Stack:\n" + dorado.Exception.formatStack(e.stack);
+				}
 			}
 			if (window.console) console.log(msg);
 			
@@ -338,6 +340,24 @@
 				}]
 			}, null, doms);
 			
+			var buttons = [{
+				caption: $resource("dorado.baseWidget.ExceptionDialogOK"),
+				width: 85,
+				onClick: function() {
+					exceptionDialog.hide();
+				}
+			}];
+			
+			if ($setting["core.showExceptionStackTrace"]) {
+				buttons.push({
+					caption: $resource("dorado.baseWidget.ExceptionDialogDetail"),
+					width: 70,
+					onClick: function() {
+						showExceptionDetailDialog(currentException);
+					}
+				});
+			}
+			
 			exceptionDialog = new dorado.widget.Dialog({
 				center: true,
 				modal: true,
@@ -347,19 +367,7 @@
 					$type: "Native"
 				},
 				buttonAlign: "right",
-				buttons: [{
-					caption: $resource("dorado.baseWidget.ExceptionDialogOK"),
-					width: 85,
-					onClick: function() {
-						exceptionDialog.hide();
-					}
-				}, {
-					caption: $resource("dorado.baseWidget.ExceptionDialogDetail"),
-					width: 70,
-					onClick: function() {
-						showExceptionDetailDialog(currentException);
-					}
-				}],
+				buttons: buttons,
 				beforeShow: function(dialog) {
 					exceptionDialogOpening = true;
 					
