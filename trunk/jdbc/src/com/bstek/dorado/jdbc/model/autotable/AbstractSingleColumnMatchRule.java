@@ -93,7 +93,18 @@ public abstract class AbstractSingleColumnMatchRule extends BaseMatchRule {
 			if (parameterSource.hasValue(parameterName)) {
 				Object parameterValue = parameterSource.getValue(parameterName);
 				if (parameterValue != null) {
-					return ":" + parameterName;
+					if (parameterValue instanceof String) {
+						String strValue = (String)parameterValue;
+						if (StringUtils.isEmpty(strValue)) {
+							parameterValue = null;
+						}
+					} 
+					
+					if (parameterValue != null) {
+						parameterValue = operator.parameterValue(parameterValue);
+						String varName = parameterSource.addValue(parameterValue);
+						return ":" + varName;
+					}
 				}
 			}
 			
@@ -117,10 +128,8 @@ public abstract class AbstractSingleColumnMatchRule extends BaseMatchRule {
 			if (jdbcType != null) {
 				parameterValue = jdbcType.toDB(value);
 			}
-			if (operator != null) {
-				parameterValue = operator.parameterValue(value);
-			}
 			
+			parameterValue = operator.parameterValue(value);
 			String parameterName = parameterSource.addValue(parameterValue);
 			return ":" + parameterName;
 		}

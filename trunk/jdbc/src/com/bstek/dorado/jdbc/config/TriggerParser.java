@@ -1,6 +1,6 @@
 package com.bstek.dorado.jdbc.config;
 
-import com.bstek.dorado.jdbc.DbTableTrigger;
+import com.bstek.dorado.jdbc.model.DbTableTrigger;
 
 /**
  * {@link DbTableTrigger}解析器
