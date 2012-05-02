@@ -13,6 +13,7 @@ import com.bstek.dorado.jdbc.config.ColumnDefinition;
 import com.bstek.dorado.jdbc.config.JdbcParseContext;
 import com.bstek.dorado.jdbc.config.XmlConstants;
 import com.bstek.dorado.jdbc.ide.IAgent;
+import com.bstek.dorado.jdbc.model.Table;
 
 /**
  * 
@@ -74,6 +75,7 @@ public class TableParser extends AbstractDbTableParser {
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put(IAgent.NAMESPACE, tableDef.getNamespace());
 		parameters.put(IAgent.TABLE_NAME, tableDef.getTableName());
+		parameters.put(IAgent.TABLE_TYPE, Table.TYPE);
 		
 		Document document = agent.createColumns(parameters, jdbcContext.getJdbcEnviroment().getDataSource());
 		TableDefinition tableDef2 = (TableDefinition)doParse(document.getDocumentElement(), jdbcContext);

@@ -97,10 +97,7 @@ public class JdbcDao {
 	 */
 	public void insert(String tableName, Record record) throws Exception {
 		record = JdbcUtils.getRecordWithState(record, EntityState.NEW);
-		DbTable dbTable = JdbcUtils.getDbTable(tableName);
-
-		SaveOperation operation = new SaveOperation(dbTable,record, null);
-		this.doSave(operation);
+		this.save(tableName, record);
 	}
 	
 	/**
@@ -111,10 +108,7 @@ public class JdbcDao {
 	 */
 	public void update(String tableName, Record record) throws Exception {
 		record = JdbcUtils.getRecordWithState(record, EntityState.MODIFIED);
-		DbTable dbTable = JdbcUtils.getDbTable(tableName);
-		
-		SaveOperation operation = new SaveOperation(dbTable,record, null);
-		this.doSave(operation);
+		this.save(tableName, record);
 	}
 	
 	/**
@@ -125,6 +119,16 @@ public class JdbcDao {
 	 */
 	public void delete(String tableName, Record record) throws Exception{
 		record = JdbcUtils.getRecordWithState(record, EntityState.DELETED);
+		this.save(tableName, record);
+	}
+	
+	/**
+	 * 保存记录，根据记录状态执行不同的操作
+	 * @param tableName
+	 * @param record
+	 * @throws Exception
+	 */
+	public void save(String tableName, Record record) throws Exception {
 		DbTable dbTable = JdbcUtils.getDbTable(tableName);
 		
 		SaveOperation operation = new SaveOperation(dbTable,record, null);

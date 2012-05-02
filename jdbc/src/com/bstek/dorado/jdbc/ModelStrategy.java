@@ -1,5 +1,7 @@
 package com.bstek.dorado.jdbc;
 
+import com.bstek.dorado.data.config.definition.DataProviderDefinition;
+import com.bstek.dorado.data.config.definition.DataTypeDefinition;
 import com.bstek.dorado.jdbc.config.AbstractDbTableDefinition;
 
 /**
@@ -10,7 +12,19 @@ import com.bstek.dorado.jdbc.config.AbstractDbTableDefinition;
  */
 public interface ModelStrategy {
 
-	void createDataType(AbstractDbTableDefinition tableDef) throws Exception;
+	/**
+	 * 创建DataType的定义对象
+	 * @param tableDef
+	 * @return
+	 * @throws Exception
+	 */
+	DataTypeDefinition createDataType(AbstractDbTableDefinition tableDef) throws Exception;
 	
-	void createDataProvider(AbstractDbTableDefinition tableDef) throws Exception;
+	/**
+	 * 创建DataProvider的定义对象
+	 * @param tableDef
+	 * @return
+	 * @throws Exception
+	 */
+	DataProviderDefinition createDataProvider(AbstractDbTableDefinition tableDef) throws Exception;
 }
