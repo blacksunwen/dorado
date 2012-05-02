@@ -5,10 +5,15 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import com.bstek.dorado.config.definition.DefaultDefinitionManager;
 
 public abstract class AbstractDbmDefinitionManager extends DefaultDefinitionManager<DbElementDefinition> implements DbmDefinitionManager {
+	
+	protected static final Log logger = LogFactory.getLog(DbmDefinitionManager.class);
+	
 	private List<JdbcConfigLoader> configs = new ArrayList<JdbcConfigLoader>();
 
 	private JdbcEnviromentManager enviromentManager;

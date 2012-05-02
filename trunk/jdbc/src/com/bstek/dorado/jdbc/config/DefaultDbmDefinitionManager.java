@@ -1,5 +1,6 @@
 package com.bstek.dorado.jdbc.config;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -16,6 +17,8 @@ import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.core.io.Resource;
 import com.bstek.dorado.core.io.ResourceUtils;
 import com.bstek.dorado.core.xml.XmlDocumentBuilder;
+import com.bstek.dorado.data.config.definition.DataProviderDefinition;
+import com.bstek.dorado.data.config.definition.DataTypeDefinition;
 import com.bstek.dorado.jdbc.JdbcIntercepter;
 import com.bstek.dorado.jdbc.ModelStrategy;
 
@@ -31,6 +34,8 @@ public class DefaultDbmDefinitionManager extends AbstractDbmDefinitionManager {
 	private ModelStrategy modelStrategy;
 	private boolean onRefresh = false;
 	private JdbcIntercepter interceper;
+	private long lastRefreshTime = -1;
+	private long refreshInterval = 5 * 1000;
 	
 	public XmlParserHelper getXmlParserHelper() {
 		return xmlParserHelper;
@@ -64,6 +69,10 @@ public class DefaultDbmDefinitionManager extends AbstractDbmDefinitionManager {
 		this.interceper = interceper;
 	}
 
+	public void setRefreshInterval(long refreshInterval) {
+		this.refreshInterval = refreshInterval;
+	}
+
 	@Override
 	protected void register(DbElementDefinition def) {
 		if (interceper != null) {
@@ -76,7 +85,7 @@ public class DefaultDbmDefinitionManager extends AbstractDbmDefinitionManager {
 
 	@Override
 	public DbElementDefinition getDefinition(String name) {
-		if (!onRefresh && isDebug()) {
+		if (this.shouldDoRefresh()) {
 			try {
 				this.doRefresh();
 			} catch (Exception e) {
@@ -94,6 +103,15 @@ public class DefaultDbmDefinitionManager extends AbstractDbmDefinitionManager {
 		return debug;
 	}
 
+	protected boolean shouldDoRefresh() {
+		if (!onRefresh && isDebug()) {
+			if ((System.currentTimeMillis()- lastRefreshTime) > refreshInterval) {
+				return true;
+			}
+		} 
+		return false;
+	}
+	
 	@Override
 	synchronized
 	protected void doRefresh() throws Exception {
@@ -103,6 +121,11 @@ public class DefaultDbmDefinitionManager extends AbstractDbmDefinitionManager {
 			
 			Resource[] resources = getResources();
 			this.loadResources(resources);
+			
+			lastRefreshTime = System.currentTimeMillis();
+			if (logger.isDebugEnabled()) {
+				logger.debug(this.toString());
+			}
 		} finally {
 			onRefresh = false;
 		}
@@ -165,16 +188,34 @@ public class DefaultDbmDefinitionManager extends AbstractDbmDefinitionManager {
 	
 	private void doAutoCreate() throws Exception {
 		Collection<DbElementDefinition> defs = this.getDefinitions().values();
+		
+		List<String> dataTypeNameList = new ArrayList<String>();
+		List<String> providerNameList = new ArrayList<String>();
 		for (DbElementDefinition def: defs) {
 			if (def instanceof AbstractDbTableDefinition) {
 				AbstractDbTableDefinition tableDef = (AbstractDbTableDefinition)def;
 				if (tableDef.isAutoCreateDataType()) {
-					modelStrategy.createDataType(tableDef);
+					DataTypeDefinition dataTypeDef = modelStrategy.createDataType(tableDef);
+					if (dataTypeDef != null) {
+						dataTypeNameList.add(dataTypeDef.getName());
+					}
 				}
+				
 				if (tableDef.isAutoCreateDataProvider()) {
-					modelStrategy.createDataProvider(tableDef);
+					DataProviderDefinition providerDef = modelStrategy.createDataProvider(tableDef);
+					if (providerDef != null) {
+						providerNameList.add(providerDef.getName());
+					}
 				}
 			}
+		}
+		
+		if (logger.isInfoEnabled()) {
+			logger.info("** auto create dataTypes [" + StringUtils.join(dataTypeNameList, ',') + "]");
+		}
+		
+		if (logger.isInfoEnabled()) {
+			logger.info("** auto create dataProviders [" + StringUtils.join(providerNameList, ',') + "]");
 		}
 	}
 }
