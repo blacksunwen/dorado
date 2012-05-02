@@ -140,6 +140,9 @@ public class BootPackagesResolver extends WebFileResolver {
 		writer.write("window.$setting={\n");
 		writeSetting(writer, "core.debugEnabled",
 				Configure.getBoolean("view.debugEnabled"), false, true);
+		writeSetting(writer, "core.showExceptionStackTrace",
+				Configure.getBoolean("view.showExceptionStackTrace"),
+				false, true);
 		String contextPath = DoradoContext.getAttachedRequest()
 				.getContextPath();
 		writeSetting(writer, "common.contextPath", contextPath, true, true);
