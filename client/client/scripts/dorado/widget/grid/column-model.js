@@ -653,7 +653,7 @@
 					}
 				}
 				
-				cell.align = col._align || align;
+				cell.align = col._align || align || "left";
 				this.renderCell(renderer, label, {
 					grid: grid,
 					innerGrid: arg.innerGrid,
