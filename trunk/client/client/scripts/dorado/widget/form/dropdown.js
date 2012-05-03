@@ -430,7 +430,7 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 		box.show({
 			anchorTarget : editor,
 			editor : editor,
-			align : "innerright",
+			align : "innerleft",
 			vAlign : vAlign,
 			autoAdjustPosition: false
 		});

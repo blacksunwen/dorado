@@ -1023,6 +1023,8 @@
 		},
 		
 		doOnResize: function() {
+			if (!this._ready) return;
+			
 			if (this._lineSize && this._fillLine) {
 				this.refresh();
 			} else {

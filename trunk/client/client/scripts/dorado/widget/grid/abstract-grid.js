@@ -1567,6 +1567,7 @@
 		},
 
 		doOnResize: function() {
+			if (!this._ready) return;
 			if (this._domMode != 0) this.refresh(true);
 		},
 
