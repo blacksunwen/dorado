@@ -2784,6 +2784,11 @@
 					}, grid.defaultDroppableOptions);
 					$fly(headerTable).droppable(options);
 				}
+				
+				if (headerTable.columnModelTimestamp && headerTable.columnModelTimestamp != grid._columnModelTimestamp) {
+					$fly(headerTBody).empty();
+				}
+				headerTable.columnModelTimestamp = grid._columnModelTimestamp;
 
 				var structure = this._columnsInfo.structure;
 				for (var i = 0; i < structure.length; i++) {
@@ -2970,6 +2975,11 @@
 					footerRow = this._footerRow = footerTable.tBodies[0].childNodes[0];
 				}
 				footerRow.style.height = grid._footerRowHeight + "px";
+				
+				if (footerTable.columnModelTimestamp && footerTable.columnModelTimestamp != grid._columnModelTimestamp) {
+					$fly(footerRow).empty();
+				}
+				footerTable.columnModelTimestamp = grid._columnModelTimestamp;
 
 				var dataColumns = this._columnsInfo.dataColumns;
 				for (var i = 0; i < dataColumns.length; i++) {
