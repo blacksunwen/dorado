@@ -625,7 +625,7 @@
 			return editor;
 		},
 		
-		getEditor: function() {			
+		getEditor: function() {
 			var control = this._editor;
 			if (this._controlRegistered) {
 				var config1 = {}, config2 = {}, attrs = control.ATTRIBUTES;
@@ -655,7 +655,7 @@
 						}
 					}
 					
-					if (propertyDef._mapping) {
+					if (!this._trigger && propertyDef._mapping) {
 						if ((!this._editorType || this._editorType == "TextEditor")) {
 							this._trigger = new dorado.widget.AutoMappingDropDown({
 								items: propertyDef._mapping
