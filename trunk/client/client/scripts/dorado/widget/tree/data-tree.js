@@ -790,7 +790,7 @@ dorado.widget.DataTree.bindingConfigToPreloadConfig = function(bindingConfig, le
 			recursiveLevel: bindingConfig.recursive ? (bindingConfig.expandLevel - level - 1) : 0
 		};
 		
-		var childConfigs = getChildPreloadConfigs(bindingConfig, level);
+		var childConfigs = getChildPreloadConfigs.call(this, bindingConfig, level);
 		if (childConfigs) preloadConfig.childPreloadConfigs = childConfigs;
 		return preloadConfig;
 	}
@@ -801,7 +801,7 @@ dorado.widget.DataTree.bindingConfigToPreloadConfig = function(bindingConfig, le
 		var preloadConfigs = [];
 		if (bindingConfig.childBindingConfigs) {
 			for (var i = 0; i < bindingConfig.childBindingConfigs.length; i++) {
-				var config = toPreloadConfig(bindingConfig.childBindingConfigs[i], level - 1);
+				var config = toPreloadConfig.call(this, bindingConfig.childBindingConfigs[i], level - 1);
 				preloadConfigs.push(config);
 			}
 		}
@@ -813,11 +813,11 @@ dorado.widget.DataTree.bindingConfigToPreloadConfig = function(bindingConfig, le
 	if (bindingConfig.recursive || bindingConfig.expandLevel > 0) {
 		if (bindingConfig.recursive) {
 			if (bindingConfig.expandLevel > level) {
-				var config = toPreloadConfig(bindingConfig, level);
+				var config = toPreloadConfig.call(this, bindingConfig, level);
 				preloadConfigs.push(config);
 			}
 		}
-		var childConfigs = getChildPreloadConfigs(bindingConfig, level);
+		var childConfigs = getChildPreloadConfigs.call(this, bindingConfig, level);
 		if (childConfigs) preloadConfigs = preloadConfigs.concat(childConfigs);
 	}
 	return preloadConfigs;
