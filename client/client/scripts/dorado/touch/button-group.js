@@ -307,6 +307,19 @@ dorado.touch.RadioButtonGroup = $extend(dorado.touch.AbstractButtonGroup, {
                     return currentButton._value;
                 }
                 return null;
+            },
+            setter: function(value) {
+                this._value = value;
+                if (this._rendered && this._dataModel) {
+                    var buttons = this._dataModel;
+                    for (var i = 0, j = buttons.getSize(); i < j; i++) {
+                        var button = buttons.getElementAt(i);
+                        if (button._value == value) {
+                            this.set("currentButton", button);
+                            break;
+                        }
+                    }
+                }
             }
         }
     },

@@ -87,8 +87,8 @@ dorado.touch.Picker = $extend(dorado.touch.FloatPanel, {
 		var picker = this;
 
 		options = options || {};
-		options.overflowHandler = function(overflowHeight) {
-			picker.handleOverflow(overflowHeight);
+		options.overflowHandler = function(options) {
+			picker.handleOverflow(options.maxHeight);
 		};
 
 		return $invokeSuper.call(this, arguments);
