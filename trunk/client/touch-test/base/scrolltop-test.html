@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
+<script src="http://192.168.18.22:8081/target/target-script-min.js"></script>
 <title>iScroll demo: simple</title>
 
 <script type="text/javascript" src="../include-all.js"></script>
@@ -13,8 +14,15 @@
 
 var myScroll;
 function loaded() {
-	myScroll = new iScroll('wrapper', {
-        momentum: false
+	var wrapper = document.getElementById("wrapper");
+    myScroll = new iScroll('wrapper', {
+        momentum: false,
+        useScrollAttribute: true,
+        useTransform: false
+    });
+    jQuery("#wrapper li").mousedown(function() {
+        this.style.color = "red";
+        console.log("scrollTop:" + wrapper.scrollTop);
     });
 }
 
@@ -83,7 +91,7 @@ body {
 	top:45px; bottom:48px; left:0;
 	width:100%;
 	background:#aaa;
-	overflow:auto;
+	overflow:hidden;
 }
 
 #scroller {

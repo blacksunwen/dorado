@@ -8,11 +8,11 @@
         <script type="text/javascript">
             var view = new dorado.widget.View({ layout: new dorado.widget.layout.NativeLayout() });
 
-            var group = new dorado.touch.ButtonGroup({
+            var group = new dorado.touch.RadioButtonGroup({
                 buttons: [
-                    new dorado.touch.Button({ caption: "Button" }),
-                    new dorado.touch.Button({ caption: "Button" }),
-                    new dorado.touch.Button({ caption: "Button" })
+                    new dorado.touch.RadioButton({ caption: "Button", value: 1 }),
+                    new dorado.touch.RadioButton({ caption: "Button", value: 2 }),
+                    new dorado.touch.RadioButton({ caption: "Button", value: 3 })
                 ]
             });
 
