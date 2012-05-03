@@ -4,7 +4,7 @@ dorado.MessageBox = {
     /**
      * 对话框的默认标题。
      */
-    defaultTitle: "",
+    defaultTitle: "MessageBox",
 
     /**
      * 对话框的最小宽度。
@@ -83,7 +83,6 @@ dorado.MessageBox = {
 
     getDialog: function() {
         if (!dorado.MessageBox._dialog) {
-            dorado.MessageBox.defaultTitle = "MessageBox";
 
             var dialog = dorado.MessageBox._dialog = new dorado.touch.Dialog({
                 floating: true,
@@ -93,7 +92,7 @@ dorado.MessageBox = {
                 modal: true,
                 width: dorado.MessageBox.maxWidth,
                 autoHeight: true,
-                extraClassName: "d-message-box",
+                exClassName: "d-message-box",
                 visible: false,
                 closeAction: "hide",
                 buttons: [new dorado.touch.Button({
@@ -409,11 +408,10 @@ dorado.MessageBox = {
             buttonCount = buttons.length, editor = options.editor || "none", dlgButtons = dialog._buttons;
 
         dorado.MessageBox.updateText(msg, icon, editor, defaultText);
-
         dialog.set({ caption: title });
         dialog.show({
-            overflowHandler: function(overflowHeight) {
-                dialog._height = overflowHeight;
+            overflowHandler: function(options) {
+                dialog._height = options.maxHeight;
                 dialog.onResize();
             }
         });

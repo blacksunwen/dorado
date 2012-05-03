@@ -23,7 +23,7 @@
              */
             caption: {
                 skipRefresh: true,
-                path: "_toolbar._caption"
+                path: "_toolbar.caption"
             },
 
             /**
@@ -43,7 +43,7 @@
             buttonAlign: {
                 defaultValue: "center",
                 skipRefresh: true,
-                setter: function(attr, value) {
+                setter: function(value) {
                     var panel = this, doms = panel._doms, oldValue = panel._buttonAlign;
                     if (doms) {
                         if (oldValue && oldValue != "center") {
@@ -63,9 +63,13 @@
         },
 
         createButtonPanel: function(dom) {
-            var panel = this, doms = panel._doms, buttonPanel = document.createElement("div");
-            buttonPanel.className = "button-panel";
+            var panel = this, doms = panel._doms;
+            if (doms.buttonPanel) {
+                return doms.buttonPanel;
+            }
 
+            var buttonPanel = document.createElement("div");
+            buttonPanel.className = "button-panel";
             doms.buttonPanel = buttonPanel;
             if (doms.body) {
                 doms.body.appendChild(buttonPanel);
@@ -160,7 +164,7 @@
              */
             icon: {
                 skipRefresh: true,
-                path: "_toolbar._icon"
+                path: "toolbar.icon"
             },
 
             /**
@@ -170,7 +174,7 @@
              */
             iconClass: {
                 skipRefresh: true,
-                path: "_toolbar._iconClass"
+                path: "toolbar.iconClass"
             },
 
             toolbarItems: {},
@@ -183,7 +187,7 @@
             closeable: {
                 //TODO fixit.
                 defaultValue: false,
-                setter: function(attr, value) {
+                setter: function(value) {
                     var panel = this, toolbar = panel._toolbar, button;
                     panel._closeable = value;
                     if (toolbar) {
