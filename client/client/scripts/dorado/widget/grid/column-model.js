@@ -2078,14 +2078,14 @@
 				defaultValue: false
 			},
 			headerRenderer: {
-				neverEvalDefaultValue: true,
+				dontEvalDefaultValue: true,
 				defaultValue: function(dom, arg) {
 					$fly(dom).empty();
 					$fly(dom.parentNode).addClass("indicator");
 				}
 			},
 			renderer: {
-				neverEvalDefaultValue: true,
+				dontEvalDefaultValue: true,
 				defaultValue: function(dom, arg) {
 					if (arg.data.rowType) return;
 					var className = "indicator-none";
@@ -2140,14 +2140,14 @@
 				defaultValue: false
 			},
 			headerRenderer: {
-				neverEvalDefaultValue: true,
+				dontEvalDefaultValue: true,
 				defaultValue: function(dom, arg) {
 					$fly(dom).empty();
 					$fly(dom.parentNode).addClass("row-num");
 				}
 			},
 			renderer: {
-				neverEvalDefaultValue: true,
+				dontEvalDefaultValue: true,
 				defaultValue: function(dom, arg) {
 					var row = dom.parentNode.parentNode;
 					dom.innerHTML = arg.grid._groupProperty ? '' : row.itemIndex + 1;
@@ -2268,7 +2268,7 @@
 				defaultValue: false
 			},
 			headerRenderer: {
-				neverEvalDefaultValue: true,
+				dontEvalDefaultValue: true,
 				defaultValue: function(dom, arg) {
 				
 					function getMenu(column) {

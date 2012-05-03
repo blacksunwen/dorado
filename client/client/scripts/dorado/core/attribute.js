@@ -123,7 +123,7 @@
 				var def =  defs[p];
 				if (def && def.defaultValue != undefined && this['_' + p] == undefined) {
 					var dv = def.defaultValue;
-					this['_' + p] = (dv instanceof Function && !def.neverEvalDefaultValue) ? dv() : dv;
+					this['_' + p] = (dv instanceof Function && !def.dontEvalDefaultValue) ? dv() : dv;
 				}
 			}
 		},
