@@ -9,7 +9,7 @@
         didScroll = false, clickBlockList = [], blockMouseTriggers = false,
         blockTouchTriggers = false, eventCaptureSupported = "addEventListener" in document, $document = $(document), nextTouchID = 1, lastTouchID = 0;
 
-    $.vmouse = {moveDistanceThreshold:10, clickDistanceThreshold:10, resetTimerDuration:1500};
+    $.vmouse = { moveDistanceThreshold:10, clickDistanceThreshold:10, resetTimerDuration:1500 };
 
     //取得Html的Event
     function getNativeEvent(event) {
@@ -19,7 +19,7 @@
         return event;
     }
 
-    //创建一个虚拟事件对象，返回结果被triggerVirtualEvent调用，类似event的用法
+    //创建一个jQuery event，返回结果被triggerVirtualEvent调用
     function createVirtualEvent(event, eventType) {
         var t = event.type, oe, props, ne, prop, ct, touch, i, j;
         event = $.Event(event);
@@ -53,6 +53,41 @@
         return event;
     }
 
+    function getMouseEvent(event, eventType) {
+        var t = event.type, props, ne, prop, ct, touch, i, j;
+        var oe = event, event = document.createEvent('MouseEvents');
+        event.type = eventType;
+        event.initEvent(eventType, true, true);
+
+        props = $.event.props;
+        if (t.search(/^(mouse|click)/) > -1) {
+            props = mouseEventProps;
+        }
+        if (oe) {
+            for (i = props.length, prop; i;) {
+                prop = props[--i];
+                event[prop] = oe[prop];
+            }
+        }
+        if (t.search(/mouse(down|up)|click/) > -1 && !event.which) {
+            event.which = 1;
+        }
+        if (t.search(/^touch/) !== -1) {
+            ne = getNativeEvent(oe);
+            t = ne.touches;
+            ct = ne.changedTouches;
+            touch = (t && t.length) ? t[0] : ((ct && ct.length) ? ct[0] : undefined);
+            if (touch) {
+                for (j = 0, len = touchEventProps.length; j < len; j++) {
+                    prop = touchEventProps[j];
+                    event[prop] = touch[prop];
+                }
+            }
+        }
+        return event;
+    }
+
+    //在Element上判断某个event是否已经注册过，用来优化性能的
     function getVirtualBindingFlags(element) {
         var flags = {}, b, k;
         while (element) {
@@ -117,14 +152,10 @@
     function triggerVirtualEvent(eventType, event, flags) {
         var ve;
         if ((flags && flags[eventType]) || (!flags && getClosestElementWithVirtualBinding(event.target, eventType))) {
+//            var mouseEvent = getMouseEvent(event, eventType);
+//            event.target.dispatchEvent(mouseEvent);
+
             ve = createVirtualEvent(event, eventType);
-
-            var mouseEvent = document.createEvent('MouseEvents');
-            mouseEvent.initEvent(eventType, true, true);
-            event.target.dispatchEvent(mouseEvent);
-
-            console.log("-----------dispatchEvent:" + eventType + "\tevent.target:" + event.target.className);
-
             $(event.target).trigger(ve);
         }
         return ve;
@@ -164,7 +195,7 @@
                 var t = getNativeEvent(event).touches[0];
                 startX = t.pageX;
                 startY = t.pageY;
-                triggerVirtualEvent("mouseover", event, flags);
+                //triggerVirtualEvent("mouseover", event, flags);
                 triggerVirtualEvent("mousedown", event, flags);
             }
         }
@@ -202,8 +233,6 @@
         var flags = getVirtualBindingFlags(event.target), t;
         triggerVirtualEvent("mouseup", event, flags);
         if (!didScroll) {
-            //TODO 排除掉本来就可以focus的元素，现在看不到a、input了
-            //document.activeElement.blur();
             var ve = triggerVirtualEvent("click", event, flags);
             if (ve && ve.isDefaultPrevented()) {
                 t = getNativeEvent(event).changedTouches[0];
@@ -211,7 +240,7 @@
                 blockMouseTriggers = true;
             }
         }
-        triggerVirtualEvent("mouseout", event, flags);
+        //triggerVirtualEvent("mouseout", event, flags);
         didScroll = false;
         startResetTimer();
     }
@@ -233,48 +262,51 @@
 
     //jQuery的自定义事件的配置
     function getSpecialEventObject(eventType) {
-        return {setup:function (data, namespace) {
-            if (!hasVirtualBindings(this)) {
-                $.data(this, dataPropertyName, {});
-            }
-            var bindings = $.data(this, dataPropertyName);
-            bindings[eventType] = true;
-            activeDocHandlers[eventType] = (activeDocHandlers[eventType] || 0) + 1;
-            if ( activeDocHandlers[ eventType ] === 1 ) {
-                //document.addEventListener(eventType, mouseEventCallback);
-            }
-            if (eventCaptureSupported) {
-                activeDocHandlers["touchstart"] = (activeDocHandlers["touchstart"] || 0) + 1;
-                if (activeDocHandlers["touchstart"] === 1) {
-                    $document.bind("touchstart", handleTouchStart).bind("touchend", handleTouchEnd).bind("touchmove", handleTouchMove).bind("scroll", handleScroll);
+        return {
+            setup:function (data, namespace) {
+                if (!hasVirtualBindings(this)) {
+                    $.data(this, dataPropertyName, {});
+                }
+                var bindings = $.data(this, dataPropertyName);
+                bindings[eventType] = true;
+                activeDocHandlers[eventType] = (activeDocHandlers[eventType] || 0) + 1;
+                if (activeDocHandlers[ eventType ] === 1) {
+                    //document.addEventListener(eventType, mouseEventCallback);
+                }
+                if (eventCaptureSupported) {
+                    activeDocHandlers["touchstart"] = (activeDocHandlers["touchstart"] || 0) + 1;
+                    if (activeDocHandlers["touchstart"] === 1) {
+                        $document.bind("touchstart", handleTouchStart).bind("touchend", handleTouchEnd).bind("touchmove", handleTouchMove).bind("scroll", handleScroll);
+                    }
+                }
+            },
+            teardown:function (data, namespace) {
+                --activeDocHandlers[eventType];
+                if (!activeDocHandlers[ eventType ]) {
+                    document.removeEventListener(eventType, mouseEventCallback);
+                }
+                if (eventCaptureSupported) {
+                    --activeDocHandlers["touchstart"];
+                    if (!activeDocHandlers["touchstart"]) {
+                        $document.unbind("touchstart", handleTouchStart).unbind("touchmove", handleTouchMove).unbind("touchend", handleTouchEnd).unbind("scroll", handleScroll);
+                    }
+                }
+                var $this = $(this), bindings = $.data(this, dataPropertyName);
+                if (bindings) {
+                    bindings[eventType] = false;
+                }
+                if (!hasVirtualBindings(this)) {
+                    $this.removeData(dataPropertyName);
                 }
             }
-        }, teardown:function (data, namespace) {
-            --activeDocHandlers[eventType];
-            if ( !activeDocHandlers[ eventType ] ) {
-                document.removeEventListener(eventType, mouseEventCallback);
-            }
-            if (eventCaptureSupported) {
-                --activeDocHandlers["touchstart"];
-                if (!activeDocHandlers["touchstart"]) {
-                    $document.unbind("touchstart", handleTouchStart).unbind("touchmove", handleTouchMove).unbind("touchend", handleTouchEnd).unbind("scroll", handleScroll);
-                }
-            }
-            var $this = $(this), bindings = $.data(this, dataPropertyName);
-            if (bindings) {
-                bindings[eventType] = false;
-            }
-            if (!hasVirtualBindings(this)) {
-                $this.removeData(dataPropertyName);
-            }
-        }};
+        };
     }
 
     for (var i = 0; i < virtualEventNames.length; i++) {
         $.event.special[virtualEventNames[i]] = getSpecialEventObject(virtualEventNames[i]);
     }
 
-    if (eventCaptureSupported) {//基本上手机浏览器都支持
+    if (false && eventCaptureSupported) {//基本上手机浏览器都支持
         document.addEventListener("click", function (e) {
             var cnt = clickBlockList.length, target = e.target, x, y, ele, i, o, touchID;
             if (cnt) {
@@ -297,4 +329,10 @@
             }
         }, true);
     }
+
+    jQuery.fn.hover = function() { return this; };
+
+    jQuery.fn.mouseover = function() { return this; };
+
+    jQuery.fn.mouseout = function() { return this; };
 })(jQuery, window, document);
