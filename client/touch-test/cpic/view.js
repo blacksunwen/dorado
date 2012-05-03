@@ -1,8 +1,8 @@
 (function() {
 	var controller = window.controller;
 	var view = new dorado.widget.View({
-		layout:"Dock",
-		height:650
+		layout: "Dock",
+		height: 650
 	});
 
 	// 登录页面
@@ -143,8 +143,6 @@
             popup: dorado.touch.defaultDatePicker, editable: false, value: new Date().tomorrow().nextyear().clearTime()
         });
 
-	//console.log("isBeijing:" + isBeijing + "\tisShandong:" + isShandong);
-
 	var startForm, startFormOther;
 
 	startForm = new dorado.widget.AutoForm({
@@ -246,91 +244,164 @@
             popup: dorado.touch.defaultDatePicker, editable: false, value: new Date().tomorrow().nextyear().clearTime()
         });
 
-	startFormOther = new dorado.widget.AutoForm({
-		labelWidth:150,
-		width:1000,
-		cols:"*,*",
-		layoutConstraint:{
-			width:700
-		},
-		style:{
-			margin:"0 auto"
-		},
-		elements:[
-			{
-				property:"palteno",
-				label:"车牌号码",
-				editor: platenoEditorOther
-				//,value: "京A81707"
-			},
-			{
-				property:"owner",
-				label:"车主名称",
-				editor: ownerEditorOther
-				//,value: "于华"
-			},
-			{
-				property: "engineNo",
-				label: "发动机号",
-				editor: engineNoEditor
-			},
-			{
-				property: "rackNo",
-				label: "车架号/VIN码",
-				editor: rackNoEditor
-			},
-			{
-				property: "vehicleUsage",
-				label: "使用性质",
-				editor: vehicleUsageEditorOther
-			},
-			{
-				property: "engineCapacity",
-				label: "排量(升)",
-				editor: engineCapacityEditor
-			},
-			{
-				property: "emptyWeight",
-				label: "整备质量(千克)",
-				editor: emptyWeightEditor
-			},
-			{
-				property: "registerDate",
-				label: "初次登记日期",
-				editor: registerDateEditor
-			},
-			{
-				property: "vehicleName",
-				label: "车辆型号",
-				editor: vehicleNameEditor
-			},
-			{
-				property: "licenseType",
-				label: "号牌类型",
-				editor: licenseTypeEditor
-			},
-            {
-                property: "startDate",
-                label: "交强险起保日期",
-                editor: startDateEditor1
-            },
-            {
-                property: "endDate",
-                label: "交强险终止日期",
-                editor: endDateEditor1
-            },
-            {
-                property: "startDateAuto",
-                label: "商业险起保日期",
-                editor: startDateAutoEditor1
-            },
-            {
-                property: "endDateAuto",
-                label: "商业险终止日期",
-                editor: endDateAutoEditor1
-            }
-		]
-	});
+    var avgMileEditor = new dorado.touch.RadioButtonGroup({
+        buttons: [
+            new dorado.touch.RadioButton({ caption: "<3万公里", value: 0.9 }),
+            new dorado.touch.RadioButton({ caption: "[3万公里,5万公里)", value: 1 })
+        ]
+    }), appointDriverEditor = new dorado.touch.RadioButtonGroup({
+        buttons: [
+            new dorado.touch.RadioButton({ caption: "指定驾驶人", value: 0.9 }),
+            new dorado.touch.RadioButton({ caption: "不指定", value: 1 })
+        ]
+    }), driverAreaEditor = new dorado.touch.RadioButtonGroup({
+        buttons: [
+            new dorado.touch.RadioButton({ caption: "境内", value: 1 }),
+            new dorado.touch.RadioButton({ caption: "省内", value: 0.9 })
+        ]
+    }), apointFactoryRateEditor = new dorado.touch.TextEditor(),
+        vehicleTypeList = new dorado.touch.ListPicker({ data: [] }),
+        vehicleTypeEditor = new dorado.touch.TextEditor({
+            editable: false,
+            popup: vehicleTypeList
+        }),
+        vehiclePurposeList = new dorado.touch.ListPicker({ data: [] }),
+        vehiclePurposeEditor = new dorado.touch.TextEditor({
+            editable: false,
+            popup: vehiclePurposeList
+        });
+
+    startFormOther = new dorado.widget.Container({
+        layout: new dorado.widget.layout.VBoxLayout(),
+        width:1000,
+        style:{
+            margin:"0 auto"
+        },
+        children: [
+            new dorado.touch.GroupBox({
+                caption: "车辆基本信息",
+                children: [
+                    new dorado.widget.AutoForm({
+                        labelWidth:150,
+                        cols:"*,*",
+                        elements:[
+                            {
+                                property:"palteno",
+                                label:"车牌号码",
+                                editor: platenoEditorOther
+                            },
+                            {
+                                property:"owner",
+                                label:"车主名称",
+                                editor: ownerEditorOther
+                            },
+                            {
+                                property: "engineNo",
+                                label: "发动机号",
+                                editor: engineNoEditor
+                            },
+                            {
+                                property: "rackNo",
+                                label: "车架号/VIN码",
+                                editor: rackNoEditor
+                            },
+                            {
+                                property: "vehicleUsage",
+                                label: "使用性质",
+                                editor: vehicleUsageEditorOther
+                            },
+                            {
+                                property: "engineCapacity",
+                                label: "排量(升)",
+                                editor: engineCapacityEditor
+                            },
+                            {
+                                property: "emptyWeight",
+                                label: "整备质量(千克)",
+                                editor: emptyWeightEditor
+                            },
+                            {
+                                property: "registerDate",
+                                label: "初次登记日期",
+                                editor: registerDateEditor
+                            },
+                            {
+                                property: "vehicleName",
+                                label: "车辆型号",
+                                editor: vehicleNameEditor
+                            },
+                            {
+                                property: "licenseType",
+                                label: "号牌类型",
+                                editor: licenseTypeEditor
+                            },
+                            {
+                                property: "vehicleType",
+                                label: "车辆种类",
+                                editor: vehicleTypeEditor
+                            },
+                            {
+                                property: "vehiclePurpose",
+                                label: "车辆用途",
+                                editor: vehiclePurposeEditor
+                            },
+                            {
+                                property: "startDate",
+                                label: "交强险起保日期",
+                                editor: startDateEditor1
+                            },
+                            {
+                                property: "endDate",
+                                label: "交强险终止日期",
+                                editor: endDateEditor1
+                            },
+                            {
+                                property: "startDateAuto",
+                                label: "商业险起保日期",
+                                editor: startDateAutoEditor1
+                            },
+                            {
+                                property: "endDateAuto",
+                                label: "商业险终止日期",
+                                editor: endDateAutoEditor1
+                            }
+                        ]
+                    }
+                )]
+            }),
+            new dorado.touch.GroupBox({
+                caption: "浮动项",
+                children: [
+                    new dorado.widget.AutoForm({
+                        labelWidth:220,
+                        cols:"*,*",
+                        elements:[
+                            {
+                                property:"avgMile",
+                                label:"平均行驶里程",
+                                editor: avgMileEditor
+                            },
+                            {
+                                property:"appointDriver",
+                                label:"指定驾驶人",
+                                editor: appointDriverEditor
+                            },
+                            {
+                                property:"driverArea",
+                                label:"行驶区域",
+                                editor: driverAreaEditor
+                            },
+                            {
+                                property:"apointFactoryRate",
+                                label:"指定专修厂特约条款费率",
+                                editor: apointFactoryRateEditor
+                            }
+                        ]
+                    })
+                ]
+            })
+        ]
+    });
 
 	var carGrid = new dorado.widget.Grid({
 		readOnly: true,
@@ -394,6 +465,191 @@
 		]
 	});
 
+    var renewPlatenoEditor = new dorado.touch.TextEditor(), renewPolicyNoEditor = new dorado.touch.TextEditor(),
+        renewCarVINEditor = new dorado.touch.TextEditor(), renewEngineNoEditor = new dorado.touch.TextEditor(),
+        renewTrafficEditor = new dorado.touch.CheckBox();
+
+    var renewAutoForm = new dorado.widget.AutoForm({
+        labelWidth:150,
+        cols:"*,*",
+        style:{
+            margin:"0 auto"
+        },
+        elements:[
+            {
+                property:"palteno",
+                label:"号牌号码",
+                editor: renewPlatenoEditor
+            },
+            {
+                property:"policyNo",
+                label:"上年保单号",
+                editor: renewPolicyNoEditor
+            },
+            {
+                property: "carVIN",
+                label: "车架号/VIN码",
+                editor: renewCarVINEditor
+            },
+            {
+                property: "engineNo",
+                label: "发动机号",
+                editor: renewEngineNoEditor
+            },
+            {
+                property: "renewTraffic",
+                label: "是否续保交强险",
+                editor: renewTrafficEditor
+            },
+            {
+                $type: "Container",
+                layout: new dorado.widget.layout.HBoxLayout({ pack: "end" }),
+                children: [
+                    new dorado.touch.Button({
+                        caption: "查询",
+                        onTap: controller.queryRenew
+                    }),
+                    new dorado.touch.Button({
+                        caption: "重置",
+                        onTap: controller.resetRenew
+                    })
+                ]
+            }
+        ]
+    });
+
+    var renewGrid = new dorado.widget.Grid({
+        readOnly: true,
+        showFooter: false,
+        rowHeight: 36,
+        headerRowHeight: 36,
+        height: 300,
+        columns: [
+            {
+                property: "actualId",
+                visible: false
+            },
+            {
+                property: "policyId",
+                visible: false
+            },
+            {
+                name: "保单号",
+                property: "policyNo",
+                supportsOptionMenu: false,
+                resizeable: false,
+                wrappable: true,
+                width: 200
+            },
+            {
+                name: "号牌号码",
+                property: "plateNo",
+                supportsOptionMenu: false,
+                resizeable: false,
+                wrappable: true,
+                width: 80
+            },
+            {
+                name: "车架号/VIN码",
+                property: "carVIN",
+                supportsOptionMenu: false,
+                resizeable: false,
+                wrappable: true,
+                width: 160
+            },
+            {
+                name: "车辆种类",
+                property: "vehicleKind",
+                supportsOptionMenu: false,
+                resizeable: false,
+                wrappable: true,
+                width: 80
+            },
+            {
+                name: "发动机号",
+                property: "engineNo",
+                supportsOptionMenu: false,
+                resizeable: false,
+                wrappable: true,
+                width: 170
+            },
+            {
+                name: "起保日期",
+                property: "inceptionDate",
+                supportsOptionMenu: false,
+                resizeable: false,
+                wrappable: true,
+                width: 90
+            },
+            {
+                name: "终保日期",
+                property: "terminationDate",
+                supportsOptionMenu: false,
+                resizeable: false,
+                wrappable: true,
+                width: 90
+            },
+            {
+                name: "赔案数",
+                property: "accident_num",
+                supportsOptionMenu: false,
+                resizeable: false,
+                wrappable: true,
+                width: 50,
+                onRenderCell: function(self, arg) {
+                    if (!arg.rowType) {
+                        var data = arg.data;
+                        arg.dom.innerHTML = data["accident_num"] || "0";
+                    }
+                }
+            },
+            {
+                name: "保单保费",
+                property: "policyPremium",
+                supportsOptionMenu: false,
+                resizeable: false,
+                wrappable: true,
+                width: 80,
+                onRenderCell: function(self, arg) {
+                    if (!arg.rowType) {
+                        var data = arg.data;
+                        arg.dom.innerHTML = data.policyPremium + "元";
+                    }
+                }
+            }
+        ],
+        scrollMode: "simple",
+        draggable: false,
+        droppable: false
+    });
+
+	var renewInfoDialog = new dorado.touch.Dialog({
+		caption: "续保信息",
+		center: true,
+		modal: true,
+		width: 800,
+		visible: false,
+		contentOverflow: "hidden",
+        buttonAlign: "right",
+		children: [renewAutoForm, renewGrid],
+		buttons: [
+			new dorado.touch.Button({
+				caption: "复制",
+                style: {
+                    marginRight: 3
+                },
+				onTap: controller.copyRenew
+			}),
+			new dorado.touch.Button({
+				caption: "返回",
+				onTap: function() {
+                    renewGrid.set("items", []);
+					renewInfoDialog.hide();
+				}
+			})
+		]
+	});
+	
 	var indexPanel = new dorado.touch.Panel({
 		caption: "车辆信息录入",
 		layout: new dorado.widget.layout.NativeLayout(),
@@ -413,6 +669,7 @@
 				caption:"开始报价",
 				onTap:controller.index
 			})
+			
 		]
 	});
 	
@@ -431,6 +688,13 @@
 		  	}
 		  	}),
 		  	new dorado.touch.Spacer(),
+		  	new dorado.touch.Button({
+		  		caption:"续保信息",
+                style: {
+                    marginRight: 10
+                },
+		  		onTap:controller.renewInfo
+		  	}),
 		  	new dorado.touch.Button({
 		  		caption:"开始报价",
 		  		onTap:controller.indexOther
@@ -606,14 +870,13 @@
 				children: [
 					new dorado.touch.GroupBox({
 						layout: new dorado.widget.layout.NativeLayout(),
-						caption:"车型查询",
+						caption: "车型查询",
 						layoutConstraint: "top",
 						children:[
 							modelForm
 						]
 					}),
 					new dorado.touch.GroupBox({
-						layout: new dorado.widget.layout.NativeLayout(),
 						caption: "新车购置价列表",
 						children: [
 							modelGrid
@@ -629,15 +892,18 @@
 		}),
 		toolbarItems: [
 			new dorado.touch.Button({
-				caption:"返回",
-				onTap:function () {
-					cardbook.set("currentControl", controller.beijing ? indexPanel : indexPanelOther);
+				caption: "返回",
+				onTap: function () {
+					//cardbook.set("currentControl", controller.beijing ? indexPanel : indexPanelOther);
+					controller.clearRenewInfo(function() {
+						cardbook.set("currentControl", controller.beijing ? indexPanel : indexPanelOther);
+					});
 				}
 			}),
 			new dorado.touch.Spacer(),
 			new dorado.touch.Button({
-				caption:"继续",
-				onTap:function () {
+				caption: "继续",
+				onTap: function () {
 					var current = modelGrid.getCurrentItem();
 					if (!current) {
 						dorado.MessageBox.alert("请选择一个车型！");
@@ -661,7 +927,7 @@
 					margin: "auto"
 				},
 				contentOverflow: "hidden",
-				children:[
+				children: [
 					new dorado.widget.AutoForm({
 						cols: "*",
 						dataSet: dataSetBasic,
@@ -787,19 +1053,30 @@
 					margin: "auto"
 				},
 				children:[basicAutoForm]
-			})
+			}),
+            new dorado.widget.Container({
+                layout: new dorado.widget.layout.NativeLayout(),
+                style: {
+                    padding: 10
+                },
+                children: [
+                    new dorado.touch.Button({
+                        caption:"生成报价单",
+                        style: {
+                            float: "right"
+                        },
+                        //exClassName: "login-button",
+                        width: 200,
+                        onTap: controller.createQuotation
+                    })
+                ]
+            })
 		],
 		toolbarItems:[
 			new dorado.touch.Button({
 				caption:"返回",
 				onTap:function () {				
 					cardbook.set("currentControl", premiumDetailPanel);
-//					var items = modelGrid.get("items");
-//					if (items.length == 1) {
-//						cardbook.set("currentControl", controller.beijing ? indexPanel : indexPanelOther);
-//					} else {
-//						cardbook.set("currentControl", selectModelPanel);
-//					}
 				}
 			}),
 			new dorado.touch.Spacer(),
@@ -822,6 +1099,7 @@
 
 	var selectPanel = new dorado.touch.Panel({
 		caption: "请选择承保险种",
+        exClassName: "select-panel",
 		children:[
 			new dorado.touch.Panel({
 				layout: new dorado.widget.layout.NativeLayout(),
@@ -926,19 +1204,15 @@
 													           caption:"进口"
 												           })
 											           ]
-										           }),
-                                                   new dorado.widget.HtmlContainer({
-                                                       className: "clear"
-                                                   })
+										           })
 									           ]
 								           }),
 								           new dorado.touch.CheckBox({
 									           id: paint,
 									           tags: ["vehicledamage"],
 									           caption:"车身油漆单独损伤险",
-									           exClassName:"block-el",
 									           style:{
-										           marginRight:"40px"
+                                                   float: "left"
 									           }
 								           }),
 								           new dorado.widget.Container({
@@ -982,7 +1256,8 @@
 									           caption:"自燃损失险",
 									           exClassName:"block-el",
 									           style:{
-										           marginRight:"40px"
+										           marginRight:"40px",
+                                                   float: "left"
 									           },
 									           onValueChange: function(self) {
 										           var readOnly = !self._checked;
@@ -1019,56 +1294,42 @@
 											           width:100
 										           })
 									           ]
-								           })
-							           ]
-						           }),
-						           new dorado.touch.CheckBox({
-							           tags: ["category"],
-							           id: theft,
-							           checked:true,
-							           caption:"机动车全车盗抢损失险",
-							           exClassName:"block-el region-top",
-							           onValueChange: function(self) {
-								           var readOnly = !self._checked;
-								           this.tag("stealing").set("readOnly", readOnly);
-								           var theftAmountEditor = view.id(theftAmount);
-								           if (theftAmountEditor) {
-									           if (!readOnly) {
-										           var data = dataSetBasic.get("data"), currentValue = data.get("currentValue");
-										           theftAmountEditor.set("value", currentValue);
-									           } else {
-										           theftAmountEditor.set("value", "");
-									           }
-								           }
-							           }
-						           }),
-						           new dorado.widget.Container({
-							           layout:new dorado.widget.layout.NativeLayout(),
-							           exClassName:"detail-region",
-							           children:[
-								           new dorado.widget.Label({
-									           style:{
-										           display:"inline-block",
-										           marginRight:20,
-										           marginTop: 3,
-										           marginBottom: 3
-									           },
-									           text:"保额(元)"
 								           }),
-								           new dorado.touch.TextEditor({
-									           id: theftAmount,
-									           tags: ["stealing"],
-									           style:{
-										           display:"inline-block"
-									           },
-									           width:100
-								           }),
-								           new dorado.touch.CheckBox({
-									           id: theftSpecial,
-									           tags: ["stealing"],
-									           caption:"不计免赔",
-									           exClassName:"block-el"
-								           })
+                                           new dorado.touch.CheckBox({
+                                               id: carDamageDeductible,
+                                               tags: ["vehicledamage"],
+                                               caption: "车损免赔额特约",
+                                               style: {
+                                                   "float": "left",
+                                                   marginRight: 30
+                                               }
+                                           }),
+                                           new dorado.touch.RadioButtonGroup({
+                                               id: carDamageDeductibleAmount,
+                                               tags: ["vehicledamage", "carDamageDeductible"],
+                                               style: {
+                                                   marginTop: 3,
+                                                   clear: "right"
+                                               },
+                                               buttons: [
+                                                   new dorado.touch.RadioButton({ caption: "300", value: 300 }),
+                                                   new dorado.touch.RadioButton({ caption: "500", value: 500 }),
+                                                   new dorado.touch.RadioButton({ caption: "1000", value: 1000 }),
+                                                   new dorado.touch.RadioButton({ caption: "2000", value: 2000 })
+                                               ]
+                                           }),
+                                           new dorado.touch.CheckBox({
+                                               id: specialCarDamage,
+                                               exClassName:"block-el",
+                                               tags: ["vehicledamage"],
+                                               caption: "特种车车辆损失扩展险"
+                                           }),
+                                           new dorado.touch.CheckBox({
+                                               id: appointedRepairFactory,
+                                               exClassName:"block-el",
+                                               tags: ["vehicledamage"],
+                                               caption: "指定专修厂特约"
+                                           })
 							           ]
 						           })
 					           ]
@@ -1077,30 +1338,79 @@
 					           $type:"Container",
 					           layout:new dorado.widget.layout.NativeLayout(),
 					           children:[
+                                   new dorado.touch.CheckBox({
+                                       tags: ["category"],
+                                       id: theft,
+                                       checked:true,
+                                       caption:"机动车全车盗抢损失险",
+                                       exClassName:"block-el",
+                                       onValueChange: function(self) {
+                                           var readOnly = !self._checked;
+                                           this.tag("stealing").set("readOnly", readOnly);
+                                           var theftAmountEditor = view.id(theftAmount);
+                                           if (theftAmountEditor) {
+                                               if (!readOnly) {
+                                                   var data = dataSetBasic.get("data"), currentValue = data.get("currentValue");
+                                                   theftAmountEditor.set("value", currentValue);
+                                               } else {
+                                                   theftAmountEditor.set("value", "");
+                                               }
+                                           }
+                                       }
+                                   }),
+                                   new dorado.widget.Container({
+                                       layout:new dorado.widget.layout.NativeLayout(),
+                                       exClassName:"detail-region",
+                                       children: [
+                                           new dorado.widget.Label({
+                                               style: {
+                                                   display:"inline-block",
+                                                   marginRight:20,
+                                                   marginTop: 3,
+                                                   marginBottom: 3
+                                               },
+                                               text:"保额(元)"
+                                           }),
+                                           new dorado.touch.TextEditor({
+                                               id: theftAmount,
+                                               tags: ["stealing"],
+                                               style: {
+                                                   display:"inline-block"
+                                               },
+                                               width:100
+                                           }),
+                                           new dorado.touch.CheckBox({
+                                               id: theftSpecial,
+                                               tags: ["stealing"],
+                                               caption: "不计免赔",
+                                               exClassName: "block-el"
+                                           })
+                                       ]
+                                   }),
 						           new dorado.touch.CheckBox({
 							           tags: ["category"],
 							           id: third,
-							           checked:true,
-							           caption:"机动车第三者责任险",
-							           exClassName:"block-el",
+							           checked: true,
+							           caption: "机动车第三者责任险",
+							           exClassName: "block-el region-top",
 							           onValueChange: function(self) {
 								           this.tag("thirdparty").set("readOnly", !self._checked);
 							           }
 						           }),
 						           new dorado.widget.Container({
-							           layout:new dorado.widget.layout.NativeLayout(),
+							           layout: new dorado.widget.layout.NativeLayout(),
                                        height: 45,
-							           exClassName:"detail-region",
+							           exClassName: "detail-region",
 							           children:[
 								           new dorado.widget.Label({
-									           style:{
+									           style: {
 										           "float": "left",
 										           display: "inline-block",
 										           marginRight: 20,
 										           marginTop: 3,
 										           marginBottom: 3
 									           },
-									           text:"保额"
+									           text: "保额"
 								           }),
 								           new dorado.touch.RadioButtonGroup({
 									           id: thirdAmount,
@@ -1119,10 +1429,7 @@
 										           new dorado.touch.RadioButton({ caption: "50万", value: 500000 }),
 										           new dorado.touch.RadioButton({ caption: "100万", value: 1000000 })
 									           ]
-								           }),
-                                           new dorado.widget.HtmlContainer({
-                                               className: "clear"
-                                           })
+								           })
 							           ]
 						           }),
 						           new dorado.touch.CheckBox({
@@ -1131,6 +1438,39 @@
 							           exClassName:"detail-region block-el",
 							           caption:"不计免赔"
 						           }),
+                                   new dorado.touch.CheckBox({
+                                       id: cargoIncar,
+                                       tags: ["thirdparty"],
+                                       exClassName:"detail-region block-el",
+                                       caption:"车上货物责任险",
+                                       style: {
+                                           float: "left",
+                                           marginRight: 20
+                                       }
+                                   }),
+                                   new dorado.widget.Container({
+                                       layout:new dorado.widget.layout.NativeLayout(),
+                                       exClassName:"detail-region",
+                                       children: [
+                                           new dorado.widget.Label({
+                                               style: {
+                                                   display:"inline-block",
+                                                   marginRight:20,
+                                                   marginTop: 3,
+                                                   marginBottom: 3
+                                               },
+                                               text:"保额(元)"
+                                           }),
+                                           new dorado.touch.TextEditor({
+                                               id: cargoIncarAmount,
+                                               tags: ["thirdparty"],
+                                               style: {
+                                                   display:"inline-block"
+                                               },
+                                               width:100
+                                           })
+                                       ]
+                                   }),
 						           new dorado.touch.CheckBox({
 							           tags: ["category"],
 							           id: incar,
@@ -1227,7 +1567,10 @@
 				onTap:function () {
 					var items = modelGrid.get("items");
 					if (items.length == 1) {
-						cardbook.set("currentControl", controller.beijing ? indexPanel : indexPanelOther);
+						//cardbook.set("currentControl", controller.beijing ? indexPanel : indexPanelOther);
+						controller.clearRenewInfo(function() {
+							cardbook.set("currentControl", controller.beijing ? indexPanel : indexPanelOther);
+						});
 					} else {
 						cardbook.set("currentControl", selectModelPanel);
 					}
@@ -1439,10 +1782,15 @@
 		resultDetailPanel: resultDetailPanel,
 		resultHtmlCt: resultHtmlCt,
 		selectPanel: selectPanel,
+		loginPanel:	loginPanel,
 		passengerCountLabel: passengerCountLabel,
 		personalPanel: personalPanel,
 		licenseTypeEditor: licenseTypeEditor,
 		licenseTypeList: licenseTypeList,
+        vehicleTypeList: vehicleTypeList,
+        vehicleTypeEditor: vehicleTypeEditor,
+        vehiclePurposeList: vehiclePurposeList,
+        vehiclePurposeEditor: vehiclePurposeEditor,
 		selectModelPanel: selectModelPanel,
 		modelGrid: modelGrid,
 		modelForm: modelForm,
@@ -1478,7 +1826,19 @@
         startDateAutoEditor1: startDateAutoEditor1,
         endDateAutoEditor1: endDateAutoEditor1,
         imageEditor: imageEditor,
-        image: image
+        image: image,
+        renewGrid: renewGrid,
+        renewInfoDialog: renewInfoDialog,
+        renewPlatenoEditor: renewPlatenoEditor,
+        renewPolicyNoEditor: renewPolicyNoEditor,
+        renewCarVINEditor: renewCarVINEditor,
+        renewEngineNoEditor: renewEngineNoEditor,
+        renewTrafficEditor: renewTrafficEditor,
+
+        avgMileEditor: avgMileEditor,
+        appointDriverEditor: appointDriverEditor,
+        driverAreaEditor: driverAreaEditor,
+        apointFactoryRateEditor: apointFactoryRateEditor
 	});
 
 	view.addChild(cardbook);
