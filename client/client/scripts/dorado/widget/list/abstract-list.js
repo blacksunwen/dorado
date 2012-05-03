@@ -461,6 +461,7 @@ dorado.widget.ViewPortList = $extend(dorado.widget.AbstractList, /** @scope dora
 	},
 	
 	doOnResize: function() {
+		if (!this._ready) return;
 		this.refresh(true);
 	}
 });

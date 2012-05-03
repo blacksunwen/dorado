@@ -283,6 +283,7 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
 		slider.set("value", (slider._maxValue - slider._minValue) * percent);
 	},
 	doOnResize: function() {
+		if (!this._ready) return;
 		this.refresh();
 	},
 	refreshDom: function(dom) {

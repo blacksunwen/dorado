@@ -77,26 +77,26 @@
 		},
 		
 		doOnResize: function() {
-			if (this._attached) {
-				if (!this._triggersArranged) {
-					this._triggersArranged = true;
-					var triggerButtons = this._triggerButtons;
-					if (triggerButtons) {
-						var bottom = 0;
-						for (var i = 0; i < triggerButtons.length; i++) {
-							var triggerButton = triggerButtons[i], buttonDom = triggerButton.getDom();
-							buttonDom.style.bottom = bottom + "px";
-							bottom += buttonDom.offsetWidth;
-						}
+			if (!this._ready) return;
+			
+			if (!this._triggersArranged) {
+				this._triggersArranged = true;
+				var triggerButtons = this._triggerButtons;
+				if (triggerButtons) {
+					var bottom = 0;
+					for (var i = 0; i < triggerButtons.length; i++) {
+						var triggerButton = triggerButtons[i], buttonDom = triggerButton.getDom();
+						buttonDom.style.bottom = bottom + "px";
+						bottom += buttonDom.offsetWidth;
 					}
 				}
-				var w = this._dom.clientWidth, h = this._dom.clientHeight;
-				if (this._triggerPanel) {
-					w -= this._triggerPanel.offsetWidth;
-				}
-				this._textDom.style.width = (w < 0 ? 0 : w) + "px";
-				this._textDom.style.height = h + "px";
 			}
+			var w = this._dom.clientWidth, h = this._dom.clientHeight;
+			if (this._triggerPanel) {
+				w -= this._triggerPanel.offsetWidth;
+			}
+			this._textDom.style.width = (w < 0 ? 0 : w) + "px";
+			this._textDom.style.height = h + "px";
 		},
 		
 		doOnKeyDown: function(evt) {

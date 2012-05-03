@@ -30,6 +30,7 @@ dorado.widget.SubViewHolder = $extend(dorado.widget.Control, /** @scope dorado.w
 	},
 	
 	doOnResize: function() {
+		if (!this._ready) return;
 		var subView = this._subView;
 		if (subView) {
 			subView._realWidth = this._dom.offsetWidth;

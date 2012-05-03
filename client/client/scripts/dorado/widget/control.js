@@ -22,17 +22,6 @@
 		/**
 		 * @protected
 		 * @type boolean
-		 * @default true
-		 * @description 用于指示该控件的DOM对象是否只能在非游离状态下才能被正确的刷新（渲染）。默认值为true。
-		 * <p>
-		 * 对于那些未通过appendChild操作添加中网页document.body中的DOM对象，我们称之为游离状态的对象。
-		 * </p>
-		 */
-		renderUtilAttached : true,
-
-		/**
-		 * @protected
-		 * @type boolean
 		 * @description 用于指示该种控件是否支持获得控制焦点。
 		 */
 		focusable : false,
@@ -606,7 +595,7 @@
 		},
 		
 		refresh : function(delay) {
-			if (this._duringRefreshDom || !this._rendered || (!this._attached && this.renderUtilAttached)) return;
+			if (this._duringRefreshDom || !this._rendered || !this._attached) return;
 
 			if (!this.isActualVisible() && !(!this._currentVisible && this._visible) && !this._forceRefresh) {
 				this._shouldRefreshOnVisible = !!this._rendered;
@@ -942,16 +931,21 @@
 				var dom = this.getDom();
 				this._attached = true;
 				this._ignoreRefresh--;
-				if(this.renderUtilAttached) this.refreshDom(dom);
-				if(this.doOnAttachToDocument) this.doOnAttachToDocument();
+				
+				this._skipResize = true;
+				this.refreshDom(dom);
+				this._skipResize = false;
+				
+				if (this.doOnAttachToDocument) this.doOnAttachToDocument();
 
-				if(this._innerControls) {
+				if (this._innerControls) {
 					jQuery.each(this._innerControls, function(i, control) {
 						control.onAttachToDocument();
 					});
 				}
 			
-				if(!this._ready) {
+				this.onResize();
+				if (!this._ready) {
 					this.onReady();
 				}
 			}
@@ -1040,9 +1034,9 @@
 		 * </p>
 		 */
 		onResize : function() {
-			if(this._skipResize) return;
+			if (this._skipResize) return;
 
-			if(!this.isActualVisible()) {
+			if (!this.isActualVisible()) {
 				this._shouldResizeOnVisible = true;
 				return;
 			}
