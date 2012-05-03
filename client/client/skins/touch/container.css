@@ -80,11 +80,11 @@
 }
 
 .d-panel .button-panel-left{
-	text-align: left;
+    -webkit-box-pack: start;
 }
 
 .d-panel .button-panel-right{
-	text-align: right;
+    -webkit-box-pack: end;
 }
 
 .d-panel .button-panel .d-button {
@@ -174,7 +174,7 @@
 
 .d-group-box .group-box-bar .bar-caption{
     color: #333;
-    margin: 1em 0.7em 0.3em;
+    padding: 1em 0.7em 0.3em;
     color: #333;
     font-weight: bold;
 }
@@ -239,11 +239,11 @@
 }
 
 .d-dialog .button-panel-left{
-    text-align: left;
+    -webkit-box-pack: start;
 }
 
 .d-dialog .button-panel-right{
-    text-align: right;
+    -webkit-box-pack: end;
 }
 
 .d-dialog .button-panel .d-button {
