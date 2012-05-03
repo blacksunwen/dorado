@@ -10,7 +10,9 @@
         view.addChild(new dorado.widget.Slider({
             id: "slider1",
             //step: 5,
-            width: 1014,
+            minValue: 2,
+            maxValue: 10,
+            width: 500,
             listener: {
                 beforeValueChange: function(self, value){
                     if(value > 50){
@@ -31,7 +33,11 @@
         view.addChild(new dorado.widget.Slider({
             id: "slider2",
             orientation: "vertical",
-            height: 414
+            height: 400,
+            minValue: 2,
+            maxValue: 12,
+            step: .1,
+            precision: 1
             //,step: 5
         }));
 
