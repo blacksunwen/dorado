@@ -283,7 +283,7 @@
 		</if>
 	</target>
 
-	<target name="buildI18N">
+	<target name="buildI18N" if="buildI18N">
 		<mkdir dir="${workDir}/bin/dorado/resources/i18n" />
 		<buildI18NResource inputDir="${workDir}/client/resources/i18n"
 		                   outputDir="${workDir}/bin/dorado/resources/i18n" />
