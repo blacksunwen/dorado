@@ -17,8 +17,13 @@ import com.bstek.dorado.view.resolver.VelocityHelper;
 
 public class HqlUtil {
 
+	public static Hql build(String vclause, Object parameter) throws Exception {
+		String clause = buildVelocityClause(vclause, parameter);
+		return build(clause);
+	}
+	
 	@SuppressWarnings("unchecked")
-	public static String build(String hql, Object parameter) throws Exception {
+	private static String buildVelocityClause(String hql, Object parameter) throws Exception {
 		VelocityContext context = new VelocityContext();
 
 		Map<Object, Object> map = null;
@@ -48,7 +53,8 @@ public class HqlUtil {
 		return result.toString();
 	}
 
-	public static Hql build(String clause) throws Exception {
+	
+	private static Hql build(String clause) throws Exception {
 		if (StringUtils.isEmpty(clause)) {
 			return null;
 		} else {
