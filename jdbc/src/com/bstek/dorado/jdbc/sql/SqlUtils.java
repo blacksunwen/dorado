@@ -63,7 +63,7 @@ public abstract class SqlUtils {
 				inParam = true;
 				continue;
 			}
-
+			
 			if (inParam) {
 				if (VarExpr.acceptByExpr(c)) {
 					expr += c;
@@ -82,9 +82,14 @@ public abstract class SqlUtils {
 					expr = "";
 					inParam = false;
 				}
+			} 
+
+			if (inQuot) {
+				translatedClause += c;
+			} else if (c!='\n' && c != '\r') {
+				translatedClause += c;
 			}
-			translatedClause += c;
-		}
+		} 
 		
 		VarSql sql = new VarSql(translatedClause, paramExprs, parameterSource);
 		return sql;
