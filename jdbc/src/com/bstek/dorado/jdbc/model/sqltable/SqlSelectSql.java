@@ -2,6 +2,7 @@ package com.bstek.dorado.jdbc.model.sqltable;
 
 import com.bstek.dorado.jdbc.Dialect;
 import com.bstek.dorado.jdbc.sql.SelectSql;
+import com.bstek.dorado.jdbc.sql.VarSql;
 import com.bstek.dorado.jdbc.sql.SqlUtils;
 import com.bstek.dorado.util.Assert;
 
@@ -32,9 +33,12 @@ public class SqlSelectSql  extends SelectSql {
 	@Override
 	protected String doBuild(Dialect dialect) throws Exception{
 		Assert.notEmpty(dynamicToken, "DynamicToken must not be empty.");
-		String sql = SqlUtils.build(dynamicToken, parameter);
-		this.setParameterSource(SqlUtils.createJdbcParameter(parameter));
+//		String sql = SqlUtils.build(dynamicToken, parameter);
+//		this.setParameterSource(SqlUtils.createJdbcParameter(parameter));
 		
-		return sql;
+		VarSql sql = SqlUtils.build(dynamicToken, parameter);
+		this.setParameterSource(sql.getParameterSource());
+		
+		return sql.getClause();
 	}
 }

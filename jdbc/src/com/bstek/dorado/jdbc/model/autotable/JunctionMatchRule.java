@@ -8,8 +8,8 @@ import org.apache.commons.lang.StringUtils;
 import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlSubNode;
-import com.bstek.dorado.jdbc.JdbcParameterSource;
 import com.bstek.dorado.jdbc.model.AutoTable;
+import com.bstek.dorado.jdbc.sql.JdbcParameterSource;
 import com.bstek.dorado.jdbc.sql.SqlConstants.JunctionOperator;
 import com.bstek.dorado.util.Assert;
 

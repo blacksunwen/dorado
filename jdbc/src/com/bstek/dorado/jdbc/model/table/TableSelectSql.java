@@ -6,6 +6,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.jdbc.Dialect;
 import com.bstek.dorado.jdbc.sql.SelectSql;
+import com.bstek.dorado.jdbc.sql.VarSql;
 import com.bstek.dorado.jdbc.sql.SqlBuilder;
 import com.bstek.dorado.jdbc.sql.SqlConstants.KeyWord;
 import com.bstek.dorado.jdbc.sql.SqlUtils;
@@ -56,7 +57,7 @@ public class TableSelectSql extends SelectSql {
 
 	public void setParameter(Object parameter) {
 		this.parameter = parameter;
-		this.setParameterSource(SqlUtils.createJdbcParameter(parameter));
+//		this.setParameterSource(SqlUtils.createJdbcParameter(parameter));
 	}
 
 	@Override
@@ -66,11 +67,17 @@ public class TableSelectSql extends SelectSql {
 		builder.rightSpace(KeyWord.SELECT, columnsToken, KeyWord.FROM).append(tableToken);
 		
 		if (StringUtils.isNotBlank(dynamicToken)) {
-			String token = SqlUtils.build(dynamicToken, getParameter()).trim();
-			this.setParameter(getParameter());
-			
-			builder.leftSpace(token);
+			VarSql sql = SqlUtils.build(dynamicToken, getParameter());
+			this.setParameterSource(sql.getParameterSource());
+			String clause = sql.getClause();
+			builder.leftSpace(clause);
 		}
+//		if (StringUtils.isNotBlank(dynamicToken)) {
+//			String token = SqlUtils.build(dynamicToken, getParameter()).trim();
+//			this.setParameter(getParameter());
+//			
+//			builder.leftSpace(token);
+//		}
 		
 		String sql = builder.build();
 		return sql;
