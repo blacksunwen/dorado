@@ -78,6 +78,10 @@ public class HqlVarExpr {
 		
 		if (!percentStart && !percentEnd) {
 			return value;
+		} 
+		
+		if (value == null) {
+			return "%";
 		}
 		
 		if (percentStart && percentEnd) {

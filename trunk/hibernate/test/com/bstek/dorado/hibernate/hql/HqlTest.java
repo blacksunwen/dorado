@@ -11,7 +11,7 @@ public class HqlTest extends HibernateContextTestCase {
 
 	public void test_novar() throws Exception {
 		String clause = "from Product";
-		Hql hql = HqlUtil.build(clause);
+		Hql hql = HqlUtil.build(clause, null);
 		List<HqlVarExpr> vars = hql.getVarExprs();
 		
 		Assert.assertEquals("from Product", hql.getClause());
@@ -20,7 +20,7 @@ public class HqlTest extends HibernateContextTestCase {
 	
 	public void test_varname() throws Exception {
 		String clause = "from Product where price > :price";
-		Hql hql = HqlUtil.build(clause);
+		Hql hql = HqlUtil.build(clause, null);
 		List<HqlVarExpr> vars = hql.getVarExprs();
 		
 		Assert.assertEquals("from Product where price > ?", hql.getClause());
@@ -35,7 +35,7 @@ public class HqlTest extends HibernateContextTestCase {
 	
 	public void test_dataType() throws Exception {
 		String clause = "from Product where price > :(Float)price";
-		Hql hql = HqlUtil.build(clause);
+		Hql hql = HqlUtil.build(clause, null);
 		List<HqlVarExpr> vars = hql.getVarExprs();
 		
 		Assert.assertEquals("from Product where price > ?", hql.getClause());
@@ -56,7 +56,7 @@ public class HqlTest extends HibernateContextTestCase {
 	
 	public void test_percent1() throws Exception {
 		String clause = "from Product where name like :%name%";
-		Hql hql = HqlUtil.build(clause);
+		Hql hql = HqlUtil.build(clause, null);
 		List<HqlVarExpr> vars = hql.getVarExprs();
 		
 		Assert.assertEquals("from Product where name like ?", hql.getClause());
@@ -75,7 +75,7 @@ public class HqlTest extends HibernateContextTestCase {
 	
 	public void test_percent2() throws Exception {
 		String clause = "from Product where name like :%name";
-		Hql hql = HqlUtil.build(clause);
+		Hql hql = HqlUtil.build(clause, null);
 		List<HqlVarExpr> vars = hql.getVarExprs();
 		
 		Assert.assertEquals("from Product where name like ?", hql.getClause());
@@ -94,7 +94,7 @@ public class HqlTest extends HibernateContextTestCase {
 	
 	public void test_percent3() throws Exception {
 		String clause = "from Product where name like :name%";
-		Hql hql = HqlUtil.build(clause);
+		Hql hql = HqlUtil.build(clause, null);
 		List<HqlVarExpr> vars = hql.getVarExprs();
 		
 		Assert.assertEquals("from Product where name like ?", hql.getClause());

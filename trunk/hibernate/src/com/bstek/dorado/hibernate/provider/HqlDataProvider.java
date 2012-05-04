@@ -108,8 +108,7 @@ public class HqlDataProvider extends AbstractDataProvider {
 
 	protected Hql createHql(String hqlClause, Object realParameter,
 			DataType resultDataType) throws Exception {
-		String clause = HqlUtil.build(hqlClause, realParameter);
-		Hql hql = HqlUtil.build(clause);
+		Hql hql = HqlUtil.build(hqlClause, realParameter);
 		return hql;
 	}
 
