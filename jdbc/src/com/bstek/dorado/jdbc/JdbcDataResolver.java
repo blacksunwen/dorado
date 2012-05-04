@@ -107,7 +107,10 @@ public class JdbcDataResolver extends AbstractDataResolver {
 			throws Exception {
 		DataResolverOperation operation = createOperation(dataItems, parameter);
 		
-		operation = jdbcIntercepter.getOperation(operation);
+		if (jdbcIntercepter != null) {
+			operation = jdbcIntercepter.getOperation(operation);
+		}
+		
 		operation.execute();
 		
 		return operation.getJdbcContext().getReturnValue();

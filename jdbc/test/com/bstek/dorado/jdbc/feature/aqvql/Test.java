@@ -1,8 +1,6 @@
 package com.bstek.dorado.jdbc.feature.aqvql;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.bstek.dorado.data.util.DataUtils;
@@ -20,13 +18,6 @@ import com.bstek.dorado.jdbc.sql.VarSql;
  *
  */
 public class Test extends AbstractJdbcTestCase {
-
-	@Override
-	protected List<String> getExtConfigLocations() {
-		List<String> locations = new ArrayList<String>();
-		locations.add(this.getDefaultContextFilePath());
-		return locations;
-	}
 
 	public void test01() throws Exception {
 		String vClause = "where 1=1";

@@ -1,20 +1,15 @@
 package com.bstek.dorado.jdbc;
 
-import java.util.Collection;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.Assert;
 
-import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.core.Context;
 import com.bstek.dorado.data.config.ConfigManagerTestSupport;
-import com.bstek.dorado.data.variant.Record;
-import com.bstek.dorado.jdbc.model.DbTable;
-import com.bstek.dorado.jdbc.support.DataProviderContext;
-import com.bstek.dorado.jdbc.support.QueryOperation;
+import com.bstek.dorado.jdbc.config.JdbcEnviromentManager;
 
 public abstract class AbstractJdbcTestCase extends ConfigManagerTestSupport {
 
@@ -28,12 +23,21 @@ public abstract class AbstractJdbcTestCase extends ConfigManagerTestSupport {
 		}
 	}
 	
-	protected String getDefaultContextFilePath() {
-		String className = this.getClass().getName();
-		String [] tokens = StringUtils.split(className, '.');
-		tokens[tokens.length-1] = "context.xml";
-		
-		return StringUtils.join(tokens, '/');
+	@Override
+	protected void setUp() throws Exception {
+		TestJdbcUtils.setCurrentTestClass(this.getClass());
+		super.setUp();
+	}
+
+	@Override
+	protected void tearDown() throws Exception {
+		TestJdbcUtils.setCurrentTestClass(null);
+		super.tearDown();
+	}
+
+	protected JdbcEnviroment getJdbcEnviroment() throws Exception {
+		JdbcEnviromentManager manager = (JdbcEnviromentManager)Context.getCurrent().getServiceBean("jdbc.enviromentManager");
+		return manager.getDefault();
 	}
 	
 	public JdbcDao getDao() {
@@ -51,6 +55,22 @@ public abstract class AbstractJdbcTestCase extends ConfigManagerTestSupport {
 		return provider;
 	}
 	
+	protected JdbcDataProvider newProvider(String tableName) throws Exception {
+		JdbcDataProvider provider = new JdbcDataProvider();
+		provider.setTableName(tableName);
+		return provider;
+	}
+	
+	protected JdbcDataResolver newResolver(JdbcDataResolverItem... items) throws Exception {
+		JdbcDataResolver resolver = new JdbcDataResolver();
+		List<JdbcDataResolverItem> newItems = new ArrayList<JdbcDataResolverItem>();
+		for (JdbcDataResolverItem item: items) {
+			newItems.add(item);
+		}
+		resolver.setResolverItems(newItems);
+		return resolver;
+	}
+	
 	protected JdbcDataResolver getResolver(String name) throws Exception {
 		JdbcDataResolver resolver = (JdbcDataResolver)this.getDataResolverManager().getDataResolver(name);
 		Assert.assertNotNull("no resolver named [" + name + "] defined.", resolver);
@@ -58,110 +78,17 @@ public abstract class AbstractJdbcTestCase extends ConfigManagerTestSupport {
 		return resolver;
 	}
 	
-	protected abstract List<String> getExtConfigLocations(); 
-	
-	static abstract class TestTable {
-		abstract String getTableName();
-		
-		Collection<Record> query(Object parameter)throws Exception{
-			DataProviderContext jCtx = new DataProviderContext(null, parameter);
-			DbTable table = JdbcUtils.getDbTable(getTableName());
-			QueryOperation operation = new QueryOperation(table, jCtx);
-			
-			return operation.getJdbcDao().query(operation);
-		}
+	protected List<String> getExtConfigLocations() {
+		List<String> locations = new ArrayList<String>();
+		locations.add(this.getDefaultContextFilePath());
+		return locations;
 	}
 	
-	protected static class Dept extends TestTable {
-		public static String TABLE = "DEPT";
+	private String getDefaultContextFilePath() {
+		String className = this.getClass().getName();
+		String [] tokens = StringUtils.split(className, '.');
+		tokens[tokens.length-1] = "context.xml";
 		
-		@Override
-		String getTableName() {
-			return TABLE;
-		}
-		
-		public static Record random(){
-			Record r = new Record();
-			r.put("DEPT_ID", RandomStringUtils.randomAlphabetic(6));
-			r.put("DEPT_NAME", RandomStringUtils.randomAlphabetic(6));
-			r.put("PARENT_ID", RandomStringUtils.randomAlphabetic(6));
-			return r;
-		}
-		
-		public static Record get(String id) throws Exception{
-			Dept t = new Dept();
-			Collection<Record> records = t.query(Collections.singletonMap("ID", id));
-			Assert.assertEquals("Dept id=" + id, 1, records.size());
-			
-			Record dept = (Record)records.iterator().next();
-			return dept;
-		}
-		
-		public static boolean has(String id) throws Exception{
-			Dept t = new Dept();
-			Collection<Record> records = t.query(Collections.singletonMap("ID", id));
-			Assert.assertTrue("Dept id=" + id, records.size() <= 1);
-			
-			if (records.size() == 0) {
-				return false;
-			} else {
-				return true;
-			} 
-		}
-
-	}
-	
-	protected static class Employee extends TestTable  {
-		public static String TABLE = "EMPLOYEE";
-		
-		@Override
-		String getTableName() {
-			return TABLE;
-		}
-		
-		public static Record random() {
-			Record r = new Record();
-			r.put("ID", Integer.valueOf(RandomStringUtils.randomNumeric(7)));
-			r.put("REPORT_TO", Integer.valueOf(RandomStringUtils.randomNumeric(7)));
-			r.put("HIRE_DATE", java.sql.Date.valueOf("2006-11-30"));
-			r.put("BIRTHDAY", java.sql.Date.valueOf("1977-05-22"));
-			r.put("SEX", System.currentTimeMillis() % 2 == 0 ? true: false);
-			r.put("NOTES", RandomStringUtils.randomAscii(100));
-			r.put("FIRST_NAME", RandomStringUtils.randomAlphabetic(6));
-			r.put("LAST_NAME", RandomStringUtils.randomAlphabetic(6));
-			r.put("DEPT_ID", null);
-			r.put("COUNTRY", RandomStringUtils.randomAlphabetic(6));
-			r.put("ADDRESS", RandomStringUtils.randomAlphabetic(6));
-			r.put("PHONE", Integer.valueOf(RandomStringUtils.randomNumeric(8)).toString());
-			r.put("PHOTO_PATH", RandomStringUtils.randomAlphabetic(6));
-			r.put("CITY", RandomStringUtils.randomAlphabetic(6));
-			r.put("POSTAL_CODE", RandomStringUtils.randomNumeric(6));
-			r.put("TITLE_OF_COURTESY", RandomStringUtils.randomAlphabetic(6));
-			r.put("REGION", RandomStringUtils.randomAlphabetic(6));
-			r.put("TITLE", RandomStringUtils.randomAlphabetic(6));
-			
-			return r;
-		}
-		
-		public static Record get(Integer id) throws Exception{
-			Employee t = new Employee();
-			Collection<Record> records = t.query(Collections.singletonMap("ID", id));
-			Assert.assertEquals("Employee id=" + id, 1, records.size());
-			
-			Record employee = (Record)records.iterator().next();
-			return employee;
-		}
-		
-		public static boolean has(Integer id) throws Exception{
-			Employee t = new Employee();
-			Collection<Record> records = t.query(Collections.singletonMap("ID", id));
-			Assert.assertTrue("Employee id=" + id, records.size() <= 1);
-			
-			if (records.size() == 0) {
-				return false;
-			} else {
-				return true;
-			} 
-		}
+		return StringUtils.join(tokens, '/');
 	}
 }
