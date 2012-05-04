@@ -144,20 +144,38 @@ public class XmlViewConfigDefinitionFactory implements
 
 	protected Resource getResource(String viewName, String pathSubfix)
 			throws Exception {
-		String path = getResoucePath(viewName, pathSubfix);
-		Resource[] resources = ResourceUtils.getResources(path);
-		if (resources.length == 0) {
-			throw new IllegalArgumentException("Resource[" + path
-					+ "] not exists.");
-		} else if (resources.length > 1) {
-			throw new IllegalArgumentException(
-					"More than one resources found by path [" + path + "].");
+		String runMode = Configure.getString("core.runMode");
+		if ("debug".equals(runMode) && StringUtils.isNotEmpty(pathPrefix)
+				&& pathPrefix.indexOf(';') > 0) {
+			StringBuffer paths = new StringBuffer();
+			for (String prefix : StringUtils.split(pathPrefix, ';')) {
+				String path = getResoucePath(viewName, prefix, pathSubfix);
+				Resource resource = ResourceUtils.getResource(path);
+				if (resource.exists()) {
+					return resource;
+				}
+				if (paths.length() > 0) {
+					paths.append(';');
+				}
+				paths.append(path);
+			}
+			return ResourceUtils.getResource(paths.toString());
+		} else {
+			String path = getResoucePath(viewName, pathPrefix, pathSubfix);
+			Resource[] resources = ResourceUtils.getResources(path);
+			if (resources.length == 0) {
+				throw new IllegalArgumentException("Invalid resource path ["
+						+ path + "].");
+			} else if (resources.length > 1) {
+				throw new IllegalArgumentException(
+						"More than one resources found by path [" + path + "].");
+			}
+			return resources[0];
 		}
-
-		return resources[0];
 	}
 
-	private String getResoucePath(String viewName, String pathSubfix) {
+	private String getResoucePath(String viewName, String pathPrefix,
+			String pathSubfix) {
 		String path = viewName;
 		byte delimMode = getViewNameDelimMode();
 
@@ -170,11 +188,9 @@ public class XmlViewConfigDefinitionFactory implements
 				path = path.replace(pathDelimChar, PathUtils.PATH_DELIM);
 			}
 		}
-
 		if (StringUtils.isNotEmpty(pathPrefix)) {
 			path = PathUtils.concatPath(pathPrefix, path);
 		}
-
 		if (StringUtils.isNotEmpty(pathSubfix)) {
 			path += pathSubfix;
 		}
@@ -196,7 +212,7 @@ public class XmlViewConfigDefinitionFactory implements
 			if (tempResource.exists()) {
 				viewElement.setAttribute(
 						ViewXmlConstants.ATTRIBUTE_PAGE_TEMPALTE,
-						getResoucePath(viewName, ".html"));
+						tempResource.getPath());
 			}
 		}
 
@@ -206,7 +222,7 @@ public class XmlViewConfigDefinitionFactory implements
 			if (tempResource.exists()) {
 				viewElement.setAttribute(
 						ViewXmlConstants.ATTRIBUTE_JAVASCRIPT_FILE,
-						getResoucePath(viewName, ".js"));
+						tempResource.getPath());
 			}
 		}
 
@@ -216,7 +232,7 @@ public class XmlViewConfigDefinitionFactory implements
 			if (tempResource.exists()) {
 				viewElement.setAttribute(
 						ViewXmlConstants.ATTRIBUTE_STYLESHEET_FILE,
-						getResoucePath(viewName, ".css"));
+						tempResource.getPath());
 			}
 		}
 
