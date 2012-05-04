@@ -1,4 +1,4 @@
-package com.bstek.dorado.jdbc;
+package com.bstek.dorado.jdbc.sql;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,16 +18,17 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
  */
 public class JdbcParameterSource implements SqlParameterSource {
 
-	protected SqlParameterSource source;
-	protected Map<String, SqlParameterSource> subSources;
-	protected MapSqlParameterSource handSource = new MapSqlParameterSource();
-	protected int inc = 0;
-
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private SqlParameterSource source;
+	private Map<String, SqlParameterSource> subSources;
+	private MapSqlParameterSource handSource = new MapSqlParameterSource();
+	private int inc = 0;
+	private Map<String, VarExpr> varExprMap = new HashMap<String, VarExpr>();
+	
 	/**
 	 * 根据“原始对象”构造
 	 * @param parameter 原始对象
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public JdbcParameterSource(Object parameter) {
 		if (parameter == null) {
 			source = new MapSqlParameterSource();
@@ -44,6 +45,10 @@ public class JdbcParameterSource implements SqlParameterSource {
 		}
 	}
 
+	public void setVarExpr(String paramName, VarExpr varExpr) {
+		varExprMap.put(paramName, varExpr);
+	}
+	
 	/**
 	 * 添加一个参数，返回这个参数的键值，添加的新参数不会反映在“原始对象”中
 	 * @param value
@@ -157,18 +162,25 @@ public class JdbcParameterSource implements SqlParameterSource {
 	 * @see org.springframework.jdbc.core.namedparam.SqlParameterSource#getValue(java.lang.String)
 	 */
 	public Object getValue(String paramName) throws IllegalArgumentException {
+		Object value;
 		if (handSource.hasValue(paramName)) {
-			return handSource.getValue(paramName);
+			value = handSource.getValue(paramName);
 		} else {
 			int subIndex = paramName.lastIndexOf('.');
 			if (subIndex > 0 && subIndex < paramName.length() - 1) {
 				String subParamName = paramName.substring(subIndex + 1);
 				String subSourceName = paramName.substring(0, subIndex);
-				return getSubSource(subSourceName).getValue(subParamName);
+				value = getSubSource(subSourceName).getValue(subParamName);
 			} else {
-				return source.getValue(paramName);
+				value = source.getValue(paramName);
 			}
 		}
+		
+		VarExpr varExpr = varExprMap.get(paramName);
+		if (varExpr != null) {
+			value = varExpr.translatValue(value);
+		}
+		return value;
 	}
 
 	/*

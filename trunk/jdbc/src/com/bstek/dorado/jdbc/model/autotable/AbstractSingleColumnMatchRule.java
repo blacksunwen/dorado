@@ -2,7 +2,7 @@ package com.bstek.dorado.jdbc.model.autotable;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.bstek.dorado.jdbc.JdbcParameterSource;
+import com.bstek.dorado.jdbc.sql.JdbcParameterSource;
 import com.bstek.dorado.jdbc.sql.SqlConstants.Operator;
 import com.bstek.dorado.jdbc.type.JdbcType;
 
