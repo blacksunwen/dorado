@@ -394,7 +394,9 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 		var lastFocusedControl;
 		
 		$fly(document).mousedown(function(evt) {
-			var control = getControlByElement(evt.target);
+			var element = evt.target;
+			if (element.style.tabIndex < 0) return;
+			var control = getControlByElement(element);
 			if (control == null) {
 				dorado.widget.setFocusedControl(null);
 			}
