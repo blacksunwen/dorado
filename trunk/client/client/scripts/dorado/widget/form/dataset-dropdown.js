@@ -91,22 +91,29 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.RowListDropDown,/** @scope
 	},
 	
 	open: function(editor) {
-		var self = this, superClass = $getSuperClass();
-		var doOpen = function() {
-			self._dataSet.getDataAsync(self._dataPath, function(data) {
+		var self = this, dataSet = this._dataSet, superClass = $getSuperClass();
+		var doOpen = function(flush) {
+			dataSet.getDataAsync(self._dataPath, function(data) {
 				if (!self._useDataBinding) self._items = data;
 				superClass.prototype.open.call(self, editor);
 			}, {
 				loadMode: "auto",
-				flush: self._reloadDataOnOpen
+				flush: flush
 			});
 		};
 		
 		if (this._useDataBinding && this._filterOnOpen) {
 			var filterValue = (this._lastFilterValue) ? this._lastFilterValue : editor.get("text");
-			this.onFilterItems(filterValue, doOpen);
+			this.onFilterItems(filterValue, function() {
+				doOpen(false);
+			});
 		} else {
-			doOpen();
+			var lastFilterValue = this._lastFilterValue;
+			if (this._reloadDataOnOpen) {
+				delete this._lastFilterValue;
+				dataSet._sysParameter && dataSet._sysParameter.remove("filterValue");
+			}
+			doOpen(this._reloadDataOnOpen && lastFilterValue != null);
 		}
 	},
 	
@@ -179,7 +186,12 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.RowListDropDown,/** @scope
 				
 				var sysParameter = dataSet._sysParameter;
 				if (!sysParameter) dataSet._sysParameter = sysParameter = new dorado.util.Map();
-				sysParameter.put("filterValue", filterValue);
+				if (filterValue) {
+					sysParameter.put("filterValue", filterValue);
+				}
+				else {
+					sysParameter.remove("filterValue");
+				}
 				
 				dataSet.clear();
 				var dropdown = this;
