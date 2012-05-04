@@ -44,4 +44,13 @@ public class TestJdbcUtils {
 		
 		return true;
 	}
+	
+	private static final ThreadLocal<Class<?>> LOCAL_CLASS = new ThreadLocal<Class<?>>();
+	public static Class<?> getCurrentTestClass() {
+		return LOCAL_CLASS.get();
+	}
+	
+	public static void setCurrentTestClass(Class<?> clazz) {
+		LOCAL_CLASS.set(clazz);
+	}
 }

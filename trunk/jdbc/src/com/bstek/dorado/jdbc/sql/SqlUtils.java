@@ -97,7 +97,7 @@ public abstract class SqlUtils {
 	
 	@SuppressWarnings("unchecked")
 	private static String buildVelocityClause(String sql, Object parameter) throws Exception {
-		VelocityContext context = new VelocityContext();
+		VelocityContext context = null;
 
 		Map<Object, Object> map = null;
 		if (parameter != null) {

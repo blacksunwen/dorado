@@ -2,6 +2,7 @@ package com.bstek.dorado.jdbc.model.autotable;
 
 import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.jdbc.JdbcUtils;
 import com.bstek.dorado.jdbc.model.Table;
 import com.bstek.dorado.util.Assert;
@@ -19,6 +20,7 @@ public class FromTable {
 	private String tableName;
 	private Table table;
 	
+	@XmlProperty(attributeOnly=true)
 	public String getName() {
 		return name;
 	}
