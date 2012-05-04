@@ -8,10 +8,10 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import com.bstek.dorado.jdbc.Dialect;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
-import com.bstek.dorado.jdbc.JdbcParameterSource;
 import com.bstek.dorado.jdbc.model.AbstractDbColumn;
 import com.bstek.dorado.jdbc.model.Table;
 import com.bstek.dorado.jdbc.sql.DeleteAllSql;
+import com.bstek.dorado.jdbc.sql.JdbcParameterSource;
 import com.bstek.dorado.jdbc.sql.SqlUtils;
 
 public class DeleteAllCommand {

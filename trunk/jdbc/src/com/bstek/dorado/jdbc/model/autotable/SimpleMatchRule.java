@@ -5,10 +5,10 @@ import org.apache.commons.lang.StringUtils;
 import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
-import com.bstek.dorado.jdbc.JdbcParameterSource;
 import com.bstek.dorado.jdbc.model.AbstractDbColumn;
 import com.bstek.dorado.jdbc.model.AutoTable;
 import com.bstek.dorado.jdbc.model.Table;
+import com.bstek.dorado.jdbc.sql.JdbcParameterSource;
 import com.bstek.dorado.jdbc.sql.SqlConstants;
 
 @XmlNode (
