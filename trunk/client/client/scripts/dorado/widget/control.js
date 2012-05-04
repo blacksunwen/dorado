@@ -18,6 +18,17 @@
 		_ignoreRefresh : 1,
 		_actualVisible : true,
 		_parentActualVisible : true,
+		
+		/**
+		 * @protected
+		 * @type boolean
+		 * @default true
+		 * @description 用于指示该控件的DOM对象是否只能在非游离状态下才能被正确的刷新（渲染）。默认值为true。
+		 * <p>
+		 * 对于那些未通过appendChild操作添加中网页document.body中的DOM对象，我们称之为游离状态的对象。
+		 * </p>
+		 */
+		renderUtilAttached : true,
 
 		/**
 		 * @protected
@@ -595,7 +606,7 @@
 		},
 		
 		refresh : function(delay) {
-			if (this._duringRefreshDom || !this._rendered || !this._attached) return;
+			if (this._duringRefreshDom || !this._rendered || (!this._attached && this.renderUtilAttached)) return;
 
 			if (!this.isActualVisible() && !(!this._currentVisible && this._visible) && !this._forceRefresh) {
 				this._shouldRefreshOnVisible = !!this._rendered;
@@ -932,9 +943,11 @@
 				this._attached = true;
 				this._ignoreRefresh--;
 				
-				this._skipResize = true;
-				this.refreshDom(dom);
-				this._skipResize = false;
+				if (this.renderUtilAttached) {
+					this._skipResize = true;
+					this.refreshDom(dom);
+					this._skipResize = false;
+				}
 				
 				if (this.doOnAttachToDocument) this.doOnAttachToDocument();
 
@@ -943,8 +956,11 @@
 						control.onAttachToDocument();
 					});
 				}
+				
+				if (this.renderUtilAttached) {
+					this.onResize();
+				}
 			
-				this.onResize();
 				if (!this._ready) {
 					this.onReady();
 				}

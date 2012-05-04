@@ -354,10 +354,13 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 			});
 			(this._view || $topView).registerInnerControl(box);
 			
-			var view = editor._view, viewElement;
-			while (view) {
-				if (view._rendered) viewElement = view.getContentContainer();
-				view = view._view;
+			var viewElement;
+			if (!(dorado.Browser.msie && dorado.Browser.version < 9)) {
+				var view = editor._view;
+				while (view) {
+					if (view._rendered) viewElement = view.getContentContainer();
+					view = view._view;
+				}
 			}
 			box.render(viewElement || win.document.body);
 			if (boxCache) boxCache[dorado.id + '$' + this._id] = box;

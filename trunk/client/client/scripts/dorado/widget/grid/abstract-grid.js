@@ -3397,7 +3397,8 @@
 				tagName: "DIV",
 				className: "d-grid-col-drag-helper",
 				style: {
-					position: "absolute"
+					position: "absolute",
+					tabIndex: -1
 				},
 				content: {
 					tagName: "TABLE",
@@ -3498,7 +3499,8 @@
 				className: "d-grid-col-resize-handler",
 				style: {
 					position: "absolute",
-					width: 6
+					width: 6,
+					tabIndex: -1
 				},
 				onmouseleave: function() {
 					$fly(handler).hide();
