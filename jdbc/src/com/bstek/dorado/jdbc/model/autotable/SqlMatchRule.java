@@ -1,8 +1,8 @@
 package com.bstek.dorado.jdbc.model.autotable;
 
 import com.bstek.dorado.annotation.XmlNode;
-import com.bstek.dorado.jdbc.JdbcParameterSource;
 import com.bstek.dorado.jdbc.model.AutoTable;
+import com.bstek.dorado.jdbc.sql.JdbcParameterSource;
 
 @XmlNode (
 	nodeName = "Sql"

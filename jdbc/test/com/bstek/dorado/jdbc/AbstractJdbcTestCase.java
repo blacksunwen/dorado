@@ -7,6 +7,7 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.core.Context;
 import com.bstek.dorado.data.config.ConfigManagerTestSupport;
@@ -27,14 +28,21 @@ public abstract class AbstractJdbcTestCase extends ConfigManagerTestSupport {
 		}
 	}
 	
-	public JdbcDao getDao() {
-	try {
-		return (JdbcDao)Context.getCurrent().getServiceBean("jdbcDao");
-	} catch (Exception e) {
-		throw new RuntimeException(e);
+	protected String getDefaultContextFilePath() {
+		String className = this.getClass().getName();
+		String [] tokens = StringUtils.split(className, '.');
+		tokens[tokens.length-1] = "context.xml";
+		
+		return StringUtils.join(tokens, '/');
 	}
-}
-
+	
+	public JdbcDao getDao() {
+		try {
+			return (JdbcDao)Context.getCurrent().getServiceBean("jdbcDao");
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 	
 	protected JdbcDataProvider getProvider(String name) throws Exception {
 		JdbcDataProvider provider = (JdbcDataProvider)this.getDataProviderManager().getDataProvider(name);
@@ -155,7 +163,5 @@ public abstract class AbstractJdbcTestCase extends ConfigManagerTestSupport {
 				return true;
 			} 
 		}
-
-		
 	}
 }

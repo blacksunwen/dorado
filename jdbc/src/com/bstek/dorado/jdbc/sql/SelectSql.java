@@ -8,7 +8,6 @@ import com.bstek.dorado.data.provider.Order;
 import com.bstek.dorado.data.provider.filter.FilterOperator;
 import com.bstek.dorado.data.provider.filter.SingleValueFilterCriterion;
 import com.bstek.dorado.jdbc.Dialect;
-import com.bstek.dorado.jdbc.JdbcParameterSource;
 import com.bstek.dorado.jdbc.sql.SqlConstants.KeyWord;
 import com.bstek.dorado.jdbc.sql.SqlConstants.OrderDirection;
 

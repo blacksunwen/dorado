@@ -1,7 +1,6 @@
 package com.bstek.dorado.jdbc.sql;
 
 import com.bstek.dorado.jdbc.Dialect;
-import com.bstek.dorado.jdbc.JdbcParameterSource;
 
 /**
  * 可执行SQL的抽象类
