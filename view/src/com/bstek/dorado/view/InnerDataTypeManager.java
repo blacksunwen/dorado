@@ -53,7 +53,8 @@ public class InnerDataTypeManager extends DefaultDataTypeManager {
 	}
 
 	public Set<String> getDataTypeNames() {
-		return privateDataTypeMap.keySet();
+		return (privateDataTypeMap != null) ? privateDataTypeMap.keySet()
+				: null;
 	}
 
 	/**
