@@ -12,7 +12,7 @@ public class DefaultAgentTest extends TestCase {
 
 	private String url = "jdbc:h2:zip:~/test.zip!/test";
 	private String user = "sa";
-	private String password = "dorado";
+//	private String password = "dorado";
 	
 	private DataSource dataSource = null;
 	private DataSource getDataSource() {

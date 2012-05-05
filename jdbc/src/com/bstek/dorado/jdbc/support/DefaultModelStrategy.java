@@ -108,7 +108,7 @@ public class DefaultModelStrategy implements ModelStrategy {
 			if (jdbcType != null) {
 				propertyDef.setProperty("dataType", jdbcType.getDataType());
 			}
-			dataType.addPropertyDef(propertyName, propertyDef);
+			dataType.addPropertyDef(propertyDef);
 		}
 
 		return dataType;
