@@ -1276,7 +1276,7 @@
 			while(c) {
 				nv.push(c);
 				var focusParent = c.get("focusParent");
-				if(!focusParent) break;
+				if (!focusParent) break;
 				c = focusParent;
 			}
 			nv = nv.reverse();
