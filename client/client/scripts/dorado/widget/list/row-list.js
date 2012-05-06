@@ -284,7 +284,7 @@
 			this._hoverRow = row;
 		},
 		
-		setCurrentRow: function(row) {			
+		setCurrentRow: function(row) {	
 			if (this._currentRow == row) return;
 			this.setHoverRow(null);
 			if (this._currentRow) $fly(this._currentRow).removeClass("current-row");
@@ -592,6 +592,7 @@
 			this._currentScrollMode = this._scrollMode;
 			
 			if (this._currentRow) this.scrollItemDomIntoView(this._currentRow);
+			
 			if (dorado.Browser.msie) {
 				$DomUtils.fixMsieYScrollBar(dom);
 				if (!this._itemModelFixed && this._scrollMode == "viewport") {
@@ -637,7 +638,7 @@
 					if (index < 0) index = 0;
 					itemModel.setStartIndex(index);
 					var oldReverse = itemModel.isReverse();
-					itemModel.setReverse(index >= this.startIndex);
+					itemModel.setReverse(index > this.startIndex);
 					this.refresh();
 					itemModel.setReverse(oldReverse);
 				}
