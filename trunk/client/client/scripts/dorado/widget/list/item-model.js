@@ -33,7 +33,7 @@
 		 * @see dorado.widget.list.ItemModel#setStartIndex
 		 */
 		getStartIndex: function() {
-			return this._startIndex;
+			return (this._startIndex > this.getItemCount()) ? 0 : this._startIndex;
 		},
 		
 		/**

@@ -407,11 +407,9 @@ dorado.widget.ViewPortList = $extend(dorado.widget.AbstractList, /** @scope dora
 		this._shouldSkipRender = false;
 		
 		var fillCount = 0;
-		if (!viewPortFilled && this._scrollMode == "viewport") {
+		if (!viewPortFilled && reverseFlag && this._scrollMode == "viewport") {
 			it.restoreBookmark(bookmark);
-			if (reverseFlag) {
-				reverse ? it.previous() : it.next();
-			}
+			reverse ? it.next() : it.previous();
 			while (reverse ? it.hasNext() : it.hasPrevious()) {
 				var item = reverse ? it.next() : it.previous();
 				var dom = this.refreshItemDom(itemDomContainer, item, --fillCount, !reverse);
@@ -441,7 +439,10 @@ dorado.widget.ViewPortList = $extend(dorado.widget.AbstractList, /** @scope dora
 	getScrollingIndicator: function() {
 		var indicator = dorado.widget.ViewPortList._indicator;
 		if (!indicator) {
-			indicator = document.createElement("DIV");
+			indicator = $DomUtils.xCreate({
+				tagName: "DIV",
+				style: "position:absolute"
+			});
 			dorado.widget.ViewPortList._indicator = indicator;
 			$fly(indicator).addClass("d-list-scrolling-indicator").hide();
 			document.body.appendChild(indicator);
