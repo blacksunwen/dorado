@@ -609,13 +609,24 @@ dorado.dequeue = function(namespace) {
 					return;
 				}
 				
+				var focused = control._focused;
+				if (focused) {
+					var focuseParent = control._focusParent || control._parent;
+					while (focuseParent) {
+						if (focuseParent.isFocusable()) {
+							focuseParent.setFocus();
+							break;
+						}
+						focuseParent = focuseParent._focusParent || focuseParent._parent;
+					}
+				}
+				
+				if (focused && dorado.Browser.msie) dorado.widget.Control.IGNORE_FOCUSIN_EVENT = true;
 				options = options || {};
 				if (control.doHide) {
 					control.doHide.apply(control, args);
 				}
-				if (control._focused) {
-					dorado.widget.setFocusedControl(control._focusParent);
-				}
+				if (focused && dorado.Browser.msie) dorado.widget.Control.IGNORE_FOCUSIN_EVENT = false;
 			});
 		},
 		
