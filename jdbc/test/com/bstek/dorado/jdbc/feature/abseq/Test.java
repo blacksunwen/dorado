@@ -1,59 +1,34 @@
 package com.bstek.dorado.jdbc.feature.abseq;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Collections;
-
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-
 import com.bstek.dorado.data.entity.EntityState;
 import com.bstek.dorado.data.resolver.DataItems;
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.AbstractJdbcTestCase;
 import com.bstek.dorado.jdbc.JdbcDataResolver;
 import com.bstek.dorado.jdbc.JdbcDataResolverItem;
-import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.JdbcUtils;
+import com.bstek.dorado.jdbc.TestSequence;
+import com.bstek.dorado.jdbc.TestTable;
 
 public class Test extends AbstractJdbcTestCase {
-	static class T1 {
-		static void create(JdbcEnviroment env) {
-			String createScript = "CREATE TABLE IF NOT EXISTS T1 (" +
-					"ID INT PRIMARY KEY, C1 VARCHAR(20)" +
-					")";
-			env.getSpringNamedDao().getJdbcTemplate().update(createScript);
-		}
-		
-		static Record get(JdbcEnviroment env, Integer id) {
-			NamedParameterJdbcTemplate tpl = env.getSpringNamedDao().getNamedParameterJdbcTemplate();
-			
-			String sql = "SELECT * FROM T1 WHERE ID = :id";
-			return tpl.queryForObject(sql, Collections.singletonMap("id", id), new RowMapper<Record>(){
-
-				public Record mapRow(ResultSet rs, int rowNum)
-						throws SQLException {
-					Record record = new Record();
-					record.set("ID", rs.getInt("ID"));
-					record.set("C1", rs.getString("C1"));
-					return record;
-				}
-			});
-		}
-	}
+	private TestTable t1 = new TestTable("T1");
+	private TestSequence seq1 = new TestSequence("SEQ_1");
 	
-	static class SEQ_1 {
-		static void create(JdbcEnviroment env) {
-			String script = "CREATE SEQUENCE IF NOT EXISTS SEQ_1 START WITH 10 INCREMENT BY 2";
-			env.getSpringNamedDao().getJdbcTemplate().update(script);
-		}
+	public Test() {
+		super();
+		
+		this.register(
+			t1.addColumn("ID", "INT", "PRIMARY KEY")
+			  .addColumn("C1", "VARCHAR(20)")
+		);
+		
+		this.register(
+			seq1.setStart(10)
+			    .setIncrement(2)
+		);
 	}
 	
 	public void test1() throws Exception {
-		JdbcEnviroment env = this.getJdbcEnviroment();
-		T1.create(env);
-		SEQ_1.create(env);
-		
 		{
 			DataItems dataItems = new DataItems();
 			Record record = JdbcUtils.getRecordWithState(new Record(), EntityState.NEW) ;
@@ -68,7 +43,7 @@ public class Test extends AbstractJdbcTestCase {
 			resolver.resolve(dataItems);
 			assertEquals(Integer.valueOf(10), record.get("ID"));
 			
-			Record record2 = T1.get(env, Integer.valueOf(10));
+			Record record2 = t1.get("ID", Integer.valueOf(10));
 			assertEquals(Integer.valueOf(10), record2.get("ID"));
 			assertEquals("Xx", record2.get("C1"));
 		}
@@ -86,7 +61,7 @@ public class Test extends AbstractJdbcTestCase {
 			resolver.resolve(dataItems);
 			assertEquals(Integer.valueOf(12), record.get("ID"));
 			
-			Record record2 = T1.get(env, Integer.valueOf(12));
+			Record record2 = t1.get("ID", Integer.valueOf(12));
 			assertEquals(Integer.valueOf(12), record2.get("ID"));
 			assertEquals("Xx", record2.get("C1"));
 		}
