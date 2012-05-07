@@ -638,7 +638,7 @@
 					if (index < 0) index = 0;
 					itemModel.setStartIndex(index);
 					var oldReverse = itemModel.isReverse();
-					itemModel.setReverse(index > this.startIndex);
+					itemModel.setReverse(index >= this.startIndex);
 					this.refresh();
 					itemModel.setReverse(oldReverse);
 				}
