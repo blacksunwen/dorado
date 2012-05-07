@@ -149,9 +149,13 @@ dorado.widget.ListBox = $extend(dorado.widget.AbstractListBox, /** @scope dorado
 				if (index >= this._itemModel.getItemCount()) index = -1;
 				if (this._currentIndex == index) return;
 				this._currentIndex = index;
-				this.scrollCurrentIntoView();
 				var row = this.getItemDomByItemIndex(index);
 				this.setCurrentRow(row);
+				this.scrollCurrentIntoView();
+				if (!row) {
+					row = this.getItemDomByItemIndex(index);
+					this.setCurrentRow(row);
+				}
 				this.fireEvent("onCurrentChange", this);
 			}
 		},
