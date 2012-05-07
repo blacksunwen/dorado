@@ -1,6 +1,7 @@
 package com.bstek.dorado.data.type.manager;
 
 import java.lang.reflect.Type;
+import java.util.Set;
 
 import com.bstek.dorado.data.config.definition.DataTypeDefinitionManager;
 import com.bstek.dorado.data.type.DataType;
@@ -27,6 +28,8 @@ public interface DataTypeManager {
 	 * 返回DataType配置声明管理器。
 	 */
 	DataTypeDefinitionManager getDataTypeDefinitionManager();
+
+	Set<String> getDataTypeNames();
 
 	/**
 	 * 根据DataType的名字返回相应的DataType。

@@ -109,7 +109,7 @@ public class ViewConfig implements Namable, MetaDataSupport {
 	}
 
 	public Set<String> getPrivateDataTypeNames() {
-		return innerDataTypeManager.getDataTypeNames();
+		return innerDataTypeManager.getPrivateDataTypeNames();
 	}
 
 	public DataProvider getDataProvider(String name) throws Exception {

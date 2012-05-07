@@ -38,6 +38,7 @@ public abstract class View extends Container implements Namable, Scopable {
 	private String title;
 	private String javaScriptFile;
 	private String styleSheetFile;
+	private String i18nFile;
 
 	@XmlProperty(ignored = true, attributeOnly = true)
 	@IdeProperty(visible = false)
@@ -159,6 +160,14 @@ public abstract class View extends Container implements Namable, Scopable {
 
 	public void setStyleSheetFile(String styleSheetFile) {
 		this.styleSheetFile = styleSheetFile;
+	}
+
+	public String getI18nFile() {
+		return i18nFile;
+	}
+
+	public void setI18nFile(String i18nFile) {
+		this.i18nFile = i18nFile;
 	}
 
 	@Override

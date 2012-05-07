@@ -182,16 +182,7 @@ public class ViewConfigDefinition extends ListenableObjectDefinition implements
 				}
 			}
 		}
-
-		BeanWrapper wrapper = super.createObject(creationInfo,
-				methodInterceptors, context);
-		if (wrapper.isNewInstance()) {
-			ViewConfig viewConfig = (ViewConfig) wrapper.getBean();
-			viewConfig.setDataTypeManager(dataTypeManager);
-			viewConfig.setDataProviderManager(dataProviderManager);
-			viewConfig.setDataResolverManager(dataResolverManager);
-		}
-		return wrapper;
+		return super.createObject(creationInfo, methodInterceptors, context);
 	}
 
 	@Override
@@ -203,7 +194,11 @@ public class ViewConfigDefinition extends ListenableObjectDefinition implements
 				ViewState.class.getName());
 		if (viewState == null || viewState == ViewState.rendering) {
 			View view = (View) viewDefinition.create(context);
-			((ViewConfig) object).setView(view);
+			ViewConfig viewConfig = (ViewConfig) object;
+			viewConfig.setView(view);
+			viewConfig.setDataTypeManager(dataTypeManager);
+			viewConfig.setDataProviderManager(dataProviderManager);
+			viewConfig.setDataResolverManager(dataResolverManager);
 		}
 	}
 
