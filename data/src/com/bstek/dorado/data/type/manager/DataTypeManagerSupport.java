@@ -4,6 +4,7 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -122,6 +123,10 @@ public abstract class DataTypeManagerSupport implements DataTypeManager {
 		return getDataTypeByDefinition(dataTypeDefinition);
 	}
 
+	public Set<String> getDataTypeNames() {
+		return dataTypeDefinitionManager.getDefinitions().keySet();
+	}
+
 	public DataType createDataType(String name) throws Exception {
 		return createDataType(name, "Entity");
 	}
@@ -151,7 +156,7 @@ public abstract class DataTypeManagerSupport implements DataTypeManager {
 		dataTypeDefinition.setName(name);
 		dataTypeDefinition.setParents(parentDefinitions);
 		dataTypeDefinitionManager.registerDefinition(name, dataTypeDefinition);
-		
+
 		return getDataType(name);
 	}
 

@@ -1,7 +1,9 @@
 package com.bstek.dorado.view;
 
 import java.lang.reflect.Type;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -53,8 +55,20 @@ public class InnerDataTypeManager extends DefaultDataTypeManager {
 	}
 
 	public Set<String> getDataTypeNames() {
-		return (privateDataTypeMap != null) ? privateDataTypeMap.keySet()
-				: null;
+		Set<String> names = new HashSet<String>();
+		if (parent != null) {
+			names.addAll(parent.getDataTypeNames());
+		}
+		names.addAll(getPrivateDataTypeNames());
+		return Collections.unmodifiableSet(names);
+	}
+
+	public Set<String> getPrivateDataTypeNames() {
+		Set<String> names = new HashSet<String>(super.getDataTypeNames());
+		if (privateDataTypeMap != null) {
+			names.addAll(privateDataTypeMap.keySet());
+		}
+		return Collections.unmodifiableSet(names);
 	}
 
 	/**
