@@ -3,6 +3,7 @@
  */
 package com.bstek.dorado.view.manager;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -108,8 +109,10 @@ public class ViewConfig implements Namable, MetaDataSupport {
 				.getDataType(name);
 	}
 
+	@SuppressWarnings("unchecked")
 	public Set<String> getPrivateDataTypeNames() {
-		return innerDataTypeManager.getPrivateDataTypeNames();
+		return (innerDataTypeManager != null) ? innerDataTypeManager
+				.getPrivateDataTypeNames() : Collections.EMPTY_SET;
 	}
 
 	public DataProvider getDataProvider(String name) throws Exception {
