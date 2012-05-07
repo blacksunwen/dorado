@@ -13,8 +13,13 @@ import com.bstek.dorado.jdbc.config.JdbcEnviromentManager;
 
 public abstract class AbstractJdbcTestCase extends ConfigManagerTestSupport {
 
+	private List<TestTable> testTables = new ArrayList<TestTable>();
+	private List<TestTrigger> testTriggers = new ArrayList<TestTrigger>();
+	private List<TestSequence> testSequences = new ArrayList<TestSequence>();
+	
 	protected AbstractJdbcTestCase () {
 		super();
+		
 		this.addExtensionContextConfigLocation("classpath:com/bstek/dorado/jdbc/context.xml");
 		this.addExtensionContextConfigLocation("classpath:com/bstek/dorado/idesupport/context.xml");
 		this.addExtensionContextConfigLocation("classpath:com/bstek/dorado/view/context.xml");
@@ -27,14 +32,61 @@ public abstract class AbstractJdbcTestCase extends ConfigManagerTestSupport {
 	protected void setUp() throws Exception {
 		TestJdbcUtils.setCurrentTestClass(this.getClass());
 		super.setUp();
+		
+		for (TestSequence seq: testSequences) {
+			seq.create();
+		}
+		for (TestTable t: testTables) {
+			t.create();
+		}
+		for (TestTrigger t: testTriggers) {
+			t.create();
+		}
 	}
 
 	@Override
 	protected void tearDown() throws Exception {
+		for (TestTrigger t: testTriggers) {
+			t.drop();
+		}
+		for (TestTable t: testTables) {
+			t.drop();
+		}
+		for (TestSequence seq: testSequences) {
+			seq.drop();
+		}
 		TestJdbcUtils.setCurrentTestClass(null);
+		
 		super.tearDown();
 	}
-
+	
+	protected void register(TestTable...tables) {
+		for(TestTable t: tables) {
+			testTables.add(t);
+		}
+	}
+	
+	protected void register(TestTrigger... triggers) {
+		for (TestTrigger t: triggers) {
+			testTriggers.add(t);
+		}
+	}
+	
+	protected void register(TestSequence... seqs) {
+		for (TestSequence seq: seqs) {
+			testSequences.add(seq);
+		}
+	}
+	
+	protected TestTable getTestTable(String name) {
+		for (TestTable t: testTables) {
+			if (name.equals(t.getName())) {
+				return t;
+			}
+		}
+		throw new IllegalArgumentException("no test table named [" + name + "]");
+	}
+	
 	protected JdbcEnviroment getJdbcEnviroment() throws Exception {
 		JdbcEnviromentManager manager = (JdbcEnviromentManager)Context.getCurrent().getServiceBean("jdbc.enviromentManager");
 		return manager.getDefault();
