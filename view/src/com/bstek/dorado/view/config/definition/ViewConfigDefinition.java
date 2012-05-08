@@ -190,16 +190,16 @@ public class ViewConfigDefinition extends ListenableObjectDefinition implements
 			CreationContext context) throws Exception {
 		super.doInitObject(object, creationInfo, context);
 
+		ViewConfig viewConfig = (ViewConfig) object;
 		ViewState viewState = (ViewState) Context.getCurrent().getAttribute(
 				ViewState.class.getName());
 		if (viewState == null || viewState == ViewState.rendering) {
 			View view = (View) viewDefinition.create(context);
-			ViewConfig viewConfig = (ViewConfig) object;
 			viewConfig.setView(view);
-			viewConfig.setDataTypeManager(dataTypeManager);
-			viewConfig.setDataProviderManager(dataProviderManager);
-			viewConfig.setDataResolverManager(dataResolverManager);
 		}
+		viewConfig.setDataTypeManager(dataTypeManager);
+		viewConfig.setDataProviderManager(dataProviderManager);
+		viewConfig.setDataResolverManager(dataResolverManager);
 	}
 
 }
