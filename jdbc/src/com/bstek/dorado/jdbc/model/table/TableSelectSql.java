@@ -57,7 +57,6 @@ public class TableSelectSql extends SelectSql {
 
 	public void setParameter(Object parameter) {
 		this.parameter = parameter;
-//		this.setParameterSource(SqlUtils.createJdbcParameter(parameter));
 	}
 
 	@Override
@@ -67,9 +66,9 @@ public class TableSelectSql extends SelectSql {
 		builder.rightSpace(KeyWord.SELECT, columnsToken, KeyWord.FROM).append(tableToken);
 		
 		if (StringUtils.isNotBlank(dynamicToken)) {
-			VarSql sql = SqlUtils.build(dynamicToken, getParameter());
-			this.setParameterSource(sql.getParameterSource());
-			String clause = sql.getClause();
+			VarSql varSql = SqlUtils.build(dynamicToken, getParameter());
+			this.setParameterSource(varSql.getParameterSource());
+			String clause = varSql.getClause();
 			builder.leftSpace(clause);
 		}
 		
