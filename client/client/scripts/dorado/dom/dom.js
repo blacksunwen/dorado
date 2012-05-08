@@ -526,7 +526,7 @@
                 autoAdjustPosition = options.autoAdjustPosition, handleOverflow = options.handleOverflow,
                 offsetParentEl = jQuery(element.offsetParent), offsetParentWidth = offsetParentEl.width(), offsetParentHeight = offsetParentEl.height(),
                 offsetParentBottom, offsetParentRight,
-                overflowTrigger = false, offsetParentOffset = $fly(element.ownerDocument.body).offset(), maxWidth, maxHeight, adjustLeft, adjustTop;
+                overflowTrigger = false, offsetParentOffset = $fly(element.offsetParent).offset(), maxWidth, maxHeight, adjustLeft, adjustTop;
 
             offsetParentRight = offsetParentWidth + offsetParentOffset.left;
             offsetParentBottom = offsetParentHeight + offsetParentOffset.top;
@@ -627,11 +627,14 @@
 			//console.log("overflowTrigger:" + overflowTrigger);
 			options.align = align;
 			options.vAlign = vAlign;
-			
+
 			var finalLeft = left + offsetLeft + $fly(element.offsetParent).scrollLeft(),
                 finalTop = top + offsetTop + $fly(element.offsetParent).scrollTop();
 			
-			$fly(element).left(finalLeft).top(finalTop);
+			$fly(element).offset({ left: finalLeft, top: finalTop });
+
+            finalLeft = parseInt($fly(element).css("left"), 10);
+            finalTop = parseInt($fly(element).css("top"), 10);
 
             if (!(handleOverflow === false) && overflowTrigger) {
                 if (typeof options.overflowHandler == "function") {
