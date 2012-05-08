@@ -322,7 +322,7 @@
 				if (!dataCache) {
 					this._dataCache = dataCache = {};
 				}
-				hashCode = dorado.Object.hashCode(this._parameter) + '';
+				hashCode = dorado.Object.hashCode(this._parameter) + '-' + dorado.Object.hashCode(this._sysParameter);
 				data = dataCache[hashCode];
 				this.setData(data);
 			}
