@@ -1,6 +1,8 @@
-package com.bstek.dorado.jdbc;
+package com.bstek.dorado.jdbc.test;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+
+import com.bstek.dorado.jdbc.JdbcEnviroment;
 
 public class TestSequence {
 

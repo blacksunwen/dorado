@@ -1,37 +1,59 @@
-package com.bstek.dorado.jdbc;
+package com.bstek.dorado.jdbc.test;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.Assert;
+import junit.framework.TestCase;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.core.Context;
-import com.bstek.dorado.data.config.ConfigManagerTestSupport;
+import com.bstek.dorado.data.provider.manager.DataProviderManager;
+import com.bstek.dorado.data.resolver.manager.DataResolverManager;
+import com.bstek.dorado.jdbc.JdbcDao;
+import com.bstek.dorado.jdbc.JdbcDataProvider;
+import com.bstek.dorado.jdbc.JdbcDataResolver;
+import com.bstek.dorado.jdbc.JdbcDataResolverItem;
+import com.bstek.dorado.jdbc.JdbcEnviroment;
 import com.bstek.dorado.jdbc.config.JdbcEnviromentManager;
 
-public abstract class AbstractJdbcTestCase extends ConfigManagerTestSupport {
+public abstract class AbstractJdbcTestCase extends TestCase {
 
+	private final String[] dependencyConfigLocation = new String[]{
+			"com/bstek/dorado/core/context.xml",
+			"com/bstek/dorado/core/test-context.xml",
+			"com/bstek/dorado/config/context.xml",
+			"com/bstek/dorado/common/context.xml",
+			"com/bstek/dorado/data/context.xml",
+			"com/bstek/dorado/idesupport/context.xml",
+			"com/bstek/dorado/view/context.xml",
+			"com/bstek/dorado/jdbc/context.xml",
+			"com/bstek/dorado/jdbc/test/context.xml"
+		};
+	
 	private List<TestTable> testTables = new ArrayList<TestTable>();
 	private List<TestTrigger> testTriggers = new ArrayList<TestTrigger>();
 	private List<TestSequence> testSequences = new ArrayList<TestSequence>();
 	
-	protected AbstractJdbcTestCase () {
-		super();
-		
-		this.addExtensionContextConfigLocation("classpath:com/bstek/dorado/jdbc/context.xml");
-		this.addExtensionContextConfigLocation("classpath:com/bstek/dorado/idesupport/context.xml");
-		this.addExtensionContextConfigLocation("classpath:com/bstek/dorado/view/context.xml");
-		for (String location: getExtConfigLocations()) {
-			this.addExtensionContextConfigLocation(location);
-		}
-	}
+	private JdbcTestContext currentContext = null;
 	
 	@Override
 	protected void setUp() throws Exception {
-		TestJdbcUtils.setCurrentTestClass(this.getClass());
+		System.out.println(">>--------------------------------------------------->");
 		super.setUp();
+		TestJdbcUtils.setCurrentTestClass(this.getClass());
+
+		String locationStr = StringUtils.join(dependencyConfigLocation, ';');
+		String exLocation = getExConfigLocation();
+		if (exLocation != null) {
+			locationStr += ";" + exLocation;
+		}
+		Configure.getStore().set("core.contextConfigLocation", locationStr);
+		currentContext = new JdbcTestContext();
 		
 		for (TestSequence seq: testSequences) {
 			seq.create();
@@ -42,6 +64,7 @@ public abstract class AbstractJdbcTestCase extends ConfigManagerTestSupport {
 		for (TestTrigger t: testTriggers) {
 			t.create();
 		}
+		TestJdbcUtils.setCurrentTestClass(null);
 	}
 
 	@Override
@@ -55,7 +78,10 @@ public abstract class AbstractJdbcTestCase extends ConfigManagerTestSupport {
 		for (TestSequence seq: testSequences) {
 			seq.drop();
 		}
-		TestJdbcUtils.setCurrentTestClass(null);
+
+		currentContext.close();
+		System.out.println("<---------------------------------------------------<<");
+		Thread.sleep(2*1000);
 		
 		super.tearDown();
 	}
@@ -130,17 +156,41 @@ public abstract class AbstractJdbcTestCase extends ConfigManagerTestSupport {
 		return resolver;
 	}
 	
-	protected List<String> getExtConfigLocations() {
-		List<String> locations = new ArrayList<String>();
-		locations.add(this.getDefaultContextFilePath());
-		return locations;
+	protected DataProviderManager getDataProviderManager() throws Exception {
+		Context conetxt = Context.getCurrent();
+		DataProviderManager dataProviderManager = (DataProviderManager) conetxt
+				.getServiceBean("dataProviderManager");
+		return dataProviderManager;
+	}
+
+	protected DataResolverManager getDataResolverManager() throws Exception {
+		Context conetxt = Context.getCurrent();
+		DataResolverManager dataResolverManager = (DataResolverManager) conetxt
+				.getServiceBean("dataResolverManager");
+		return dataResolverManager;
 	}
 	
-	private String getDefaultContextFilePath() {
+	String getExConfigLocation() {
 		String className = this.getClass().getName();
 		String [] tokens = StringUtils.split(className, '.');
 		tokens[tokens.length-1] = "context.xml";
+		String location = StringUtils.join(tokens, '/');
 		
-		return StringUtils.join(tokens, '/');
+		InputStream in = this.getClass().getResourceAsStream(location);
+		if (in != null) {
+			try {
+				return location;
+			} finally {
+				try {
+					in.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			
+		} else {
+			return null;
+		}
 	}
+
 }

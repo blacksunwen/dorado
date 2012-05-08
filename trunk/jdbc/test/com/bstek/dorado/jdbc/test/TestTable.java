@@ -1,4 +1,4 @@
-package com.bstek.dorado.jdbc;
+package com.bstek.dorado.jdbc.test;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -14,6 +14,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import com.bstek.dorado.data.variant.Record;
+import com.bstek.dorado.jdbc.JdbcEnviroment;
 
 public class TestTable {
 

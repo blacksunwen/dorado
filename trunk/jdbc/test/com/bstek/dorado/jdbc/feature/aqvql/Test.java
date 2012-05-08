@@ -4,11 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.bstek.dorado.data.util.DataUtils;
-import com.bstek.dorado.jdbc.AbstractJdbcTestCase;
 import com.bstek.dorado.jdbc.sql.JdbcParameterSource;
 import com.bstek.dorado.jdbc.sql.SqlUtils;
 import com.bstek.dorado.jdbc.sql.VarExpr;
 import com.bstek.dorado.jdbc.sql.VarSql;
+import com.bstek.dorado.jdbc.test.AbstractJdbcTestCase;
 
 /**
  * 

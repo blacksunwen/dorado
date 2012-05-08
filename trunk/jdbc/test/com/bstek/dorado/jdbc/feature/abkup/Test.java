@@ -4,11 +4,11 @@ import com.bstek.dorado.data.entity.EntityEnhancer;
 import com.bstek.dorado.data.entity.EntityState;
 import com.bstek.dorado.data.resolver.DataItems;
 import com.bstek.dorado.data.variant.Record;
-import com.bstek.dorado.jdbc.AbstractJdbcTestCase;
 import com.bstek.dorado.jdbc.JdbcDataResolver;
 import com.bstek.dorado.jdbc.JdbcDataResolverItem;
 import com.bstek.dorado.jdbc.JdbcUtils;
-import com.bstek.dorado.jdbc.TestTable;
+import com.bstek.dorado.jdbc.test.AbstractJdbcTestCase;
+import com.bstek.dorado.jdbc.test.TestTable;
 
 /**
  * Table对象update功能，支持主键值update

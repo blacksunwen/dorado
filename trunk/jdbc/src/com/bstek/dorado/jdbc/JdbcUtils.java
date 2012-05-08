@@ -32,7 +32,9 @@ public final class JdbcUtils {
 	 */
 	public static <T extends DbTable> T getDbTable(String tableName) {
 		Assert.notEmpty(tableName, "name of DbTable must not be null.");
-		DbElementDefinition definition = getDbmDefinitionManager().getDefinition(tableName);
+		DbElementDefinition definition = ((DbmDefinitionManager)getServiceBean("jdbc.dbmDefinitionManager")).getDefinition(tableName);
+		Assert.notNull(definition, "no definition named [" + tableName + "]");
+		
 		CreationContext context = new CreationContext();
 		
 		try {
@@ -104,14 +106,6 @@ public final class JdbcUtils {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-	}
-	
-	private static DbmDefinitionManager dbmDefinitionManager = null;
-	private static DbmDefinitionManager getDbmDefinitionManager() {
-		if (dbmDefinitionManager == null) {
-			dbmDefinitionManager = (DbmDefinitionManager)getServiceBean("jdbc.dbmDefinitionManager");
-		}
-		return dbmDefinitionManager;
 	}
 
 }

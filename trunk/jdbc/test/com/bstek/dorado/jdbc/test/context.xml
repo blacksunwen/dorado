@@ -15,6 +15,6 @@
         </property>
     </bean>
     
-    <bean class="com.bstek.dorado.jdbc.TestJdbcDbmBeanPostProcessor"/>
+    <bean class="com.bstek.dorado.jdbc.test.TestJdbcDbmBeanPostProcessor"/>
     <bean id="testJdbcConfigLoader" parent="dorado.jdbcConfigLoader"/> 
 </beans>

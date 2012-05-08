@@ -3,9 +3,9 @@ package com.bstek.dorado.jdbc.feature.rqcln;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.bstek.dorado.jdbc.AbstractJdbcTestCase;
 import com.bstek.dorado.jdbc.sql.SqlUtils;
 import com.bstek.dorado.jdbc.sql.VarSql;
+import com.bstek.dorado.jdbc.test.AbstractJdbcTestCase;
 
 /**
  * 因为使用Velocity命令时，例如#if、#end常常会编写换行，但是这些换行对于最终的SQL来说是多余的，所以自动去掉这些换行
