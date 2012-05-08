@@ -72,12 +72,6 @@ public class TableSelectSql extends SelectSql {
 			String clause = sql.getClause();
 			builder.leftSpace(clause);
 		}
-//		if (StringUtils.isNotBlank(dynamicToken)) {
-//			String token = SqlUtils.build(dynamicToken, getParameter()).trim();
-//			this.setParameter(getParameter());
-//			
-//			builder.leftSpace(token);
-//		}
 		
 		String sql = builder.build();
 		return sql;

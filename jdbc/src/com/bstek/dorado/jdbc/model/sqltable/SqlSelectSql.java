@@ -33,8 +33,6 @@ public class SqlSelectSql  extends SelectSql {
 	@Override
 	protected String doBuild(Dialect dialect) throws Exception{
 		Assert.notEmpty(dynamicToken, "DynamicToken must not be empty.");
-//		String sql = SqlUtils.build(dynamicToken, parameter);
-//		this.setParameterSource(SqlUtils.createJdbcParameter(parameter));
 		
 		VarSql sql = SqlUtils.build(dynamicToken, parameter);
 		this.setParameterSource(sql.getParameterSource());

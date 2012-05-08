@@ -124,12 +124,9 @@ public abstract class SqlUtils {
 		return result.toString();
 	}
 	
-	private static VelocityHelper velocityHelper = null;
 	private static VelocityEngine getVelocityEngine() throws Exception {
-		if (velocityHelper == null) {
-			Context doradoContext = Context.getCurrent();
-			velocityHelper = (VelocityHelper) doradoContext.getServiceBean("velocityHelper");
-		}
+		Context doradoContext = Context.getCurrent();
+		VelocityHelper velocityHelper = (VelocityHelper) doradoContext.getServiceBean("velocityHelper");
 		
 		return velocityHelper.getVelocityEngine();
 	}
