@@ -3,11 +3,11 @@ package com.bstek.dorado.jdbc.feature.aqlik;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.bstek.dorado.jdbc.AbstractJdbcTestCase;
 import com.bstek.dorado.jdbc.sql.JdbcParameterSource;
 import com.bstek.dorado.jdbc.sql.SqlUtils;
 import com.bstek.dorado.jdbc.sql.VarExpr;
 import com.bstek.dorado.jdbc.sql.VarSql;
+import com.bstek.dorado.jdbc.test.AbstractJdbcTestCase;
 
 /**
  * 在Velocity中定义的SQL在处理like时，需要使用#set为参数添加%；为了避免#set，而允许用户编写like :%var%的语句

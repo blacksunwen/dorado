@@ -1,6 +1,5 @@
-package com.bstek.dorado.jdbc;
+package com.bstek.dorado.jdbc.test;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,10 +22,10 @@ public class PackageTestSuite extends TestSuite {
 	private MetadataReaderFactory metadataReaderFactory = new CachingMetadataReaderFactory(this.resourcePatternResolver);
 	private String resourcePattern = DEFAULT_RESOURCE_PATTERN;
 	
-	private String basePackage;
+	private String[] basePackages;
 	
-	public PackageTestSuite(String basePackage) {
-		this.basePackage = basePackage;
+	public PackageTestSuite(String... basePackages) {
+		this.basePackages = basePackages;
 		
 		List<Class<? extends TestCase>> clazzList = scan();
 		for (Class<? extends TestCase> clazz: clazzList) {
@@ -36,24 +35,29 @@ public class PackageTestSuite extends TestSuite {
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected List<Class<? extends TestCase>> scan(){
-		String packageSearchPath = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX +
-				resolveBasePackage(basePackage) + "/" + this.resourcePattern;
 		List<Class<? extends TestCase>> clazzList = new ArrayList<Class<? extends TestCase>>();
-		try {
-			Resource[] resources = this.resourcePatternResolver.getResources(packageSearchPath);
-			for (Resource resource : resources) {
-				MetadataReader metadataReader = this.metadataReaderFactory.getMetadataReader(resource);
-				Class clazz = Class.forName(metadataReader.getClassMetadata().getClassName());
-				if (TestCase.class.isAssignableFrom(clazz)) {
-					clazzList.add(clazz);
-					System.out.println("add [" + clazz.getName() + "]");
-				} else {
-					System.out.println("skip [" + clazz.getName() + "]");
+		
+		for (String basePackage : basePackages) {
+			String packageSearchPath = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX +
+					resolveBasePackage(basePackage) + "/" + this.resourcePattern;
+			
+			try {
+				Resource[] resources = this.resourcePatternResolver.getResources(packageSearchPath);
+				for (Resource resource : resources) {
+					MetadataReader metadataReader = this.metadataReaderFactory.getMetadataReader(resource);
+					Class clazz = Class.forName(metadataReader.getClassMetadata().getClassName());
+					if (TestCase.class.isAssignableFrom(clazz)) {
+						clazzList.add(clazz);
+						System.out.println(" + [" + clazz.getName() + "]");
+					} else {
+						System.out.println(" - [" + clazz.getName() + "]");
+					}
 				}
+			} catch (Exception e) {
+				throw new RuntimeException(e);
 			}
-		} catch (Exception e) {
-			throw new RuntimeException(e);
 		}
+		
 		return clazzList; 
 	}
 	

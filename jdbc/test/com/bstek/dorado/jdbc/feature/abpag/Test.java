@@ -4,9 +4,9 @@ import java.util.List;
 
 import com.bstek.dorado.data.provider.Page;
 import com.bstek.dorado.data.variant.Record;
-import com.bstek.dorado.jdbc.AbstractJdbcTestCase;
 import com.bstek.dorado.jdbc.JdbcDataProvider;
-import com.bstek.dorado.jdbc.TestTable;
+import com.bstek.dorado.jdbc.test.AbstractJdbcTestCase;
+import com.bstek.dorado.jdbc.test.TestTable;
 
 /**
  * Table对象支持查询分页功能

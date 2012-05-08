@@ -1,4 +1,4 @@
-package com.bstek.dorado.jdbc;
+package com.bstek.dorado.jdbc.test;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeansException;

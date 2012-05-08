@@ -1,4 +1,4 @@
-package com.bstek.dorado.jdbc;
+package com.bstek.dorado.jdbc.test;
 
 import java.util.Iterator;
 import java.util.Set;

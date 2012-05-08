@@ -3,12 +3,12 @@ package com.bstek.dorado.jdbc.feature.abseq;
 import com.bstek.dorado.data.entity.EntityState;
 import com.bstek.dorado.data.resolver.DataItems;
 import com.bstek.dorado.data.variant.Record;
-import com.bstek.dorado.jdbc.AbstractJdbcTestCase;
 import com.bstek.dorado.jdbc.JdbcDataResolver;
 import com.bstek.dorado.jdbc.JdbcDataResolverItem;
 import com.bstek.dorado.jdbc.JdbcUtils;
-import com.bstek.dorado.jdbc.TestSequence;
-import com.bstek.dorado.jdbc.TestTable;
+import com.bstek.dorado.jdbc.test.AbstractJdbcTestCase;
+import com.bstek.dorado.jdbc.test.TestSequence;
+import com.bstek.dorado.jdbc.test.TestTable;
 
 public class Test extends AbstractJdbcTestCase {
 	private TestTable t1 = new TestTable("T1");
