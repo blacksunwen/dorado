@@ -33,11 +33,13 @@ dorado.widget.DataListBox = $extend([dorado.widget.AbstractListBox, dorado.widge
 	
 	setCurrentItemDom: function(row) {
 		var item = (row ? $fly(row).data("item") : null);
-		if (item && this.setCurrentEntity(item)) {
-			this._itemModel.getItems().setCurrent(item);
-			return true;
+		if (item) {
+			var entityList = this._itemModel.getItems();
+			entityList.setCurrent(item);
+			if (entityList.current == item) {
+				this.setCurrentEntity(item);
+			}
 		}
-		return false;
 	},
 	
 	/**
@@ -79,7 +81,6 @@ dorado.widget.DataListBox = $extend([dorado.widget.AbstractListBox, dorado.widge
 		this.setCurrentRow(row);
 		if (row) this.scrollCurrentIntoView();
 		this.fireEvent("onCurrentChange", this);
-		return true;
 	},
 	
 	doOnKeyDown: function(evt) {

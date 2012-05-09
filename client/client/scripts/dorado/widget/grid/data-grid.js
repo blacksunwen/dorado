@@ -658,8 +658,7 @@
 							});
 						}
 					}
-				}
-				else {
+				} else {
 					criterions = filterParams;
 				}
 				
@@ -670,13 +669,12 @@
 						throw new dorado.Exception("Can not perform server side filter on DataPath \"" + this._dataPath + "\"");
 					}
 					hostObject = parentEntityInfo.propertyDef;
-				}
-				else {
+				} else {
 					hostObject = dataSet;
 				}
 				
 				var sysParameter = hostObject._sysParameter;
-				if (!sysParameter) hostObject._sysParameter = sysParameter = new dorado.util.Map(); 
+				if (!sysParameter) hostObject._sysParameter = sysParameter = new dorado.util.Map();
 				var criteria = sysParameter.get("criteria") || {};
 				criteria.criterions = criterions;
 				if (!(criteria.criterions || criteria.criterions.length || criteria.orders || criteria.orders.length)) criteria = null;
@@ -705,13 +703,12 @@
 						throw new dorado.Exception("Can not perform server side sort on DataPath \"" + this._dataPath + "\"");
 					}
 					hostObject = parentEntityInfo.propertyDef;
-				}
-				else {
+				} else {
 					hostObject = dataSet;
 				}
 				
 				var sysParameter = hostObject._sysParameter;
-				if (sysParameter) hostObject._sysParameter = sysParameter = new dorado.util.Map(); 
+				if (sysParameter) hostObject._sysParameter = sysParameter = new dorado.util.Map();
 				var criteria = sysParameter.get("criteria") || {};
 				if (column) {
 					criteria.orders = orders = [{
@@ -769,7 +766,6 @@
 		getCurrentItem: DataListBoxProtoType.getCurrentItem,
 		getCurrentItemId: DataListBoxProtoType.getCurrentItemId,
 		getCurrentItemIdForRefresh: DataListBoxProtoType.getCurrentItemIdForRefresh,
-		setCurrentItemDom: DataListBoxProtoType.setCurrentItemDom,
 		refreshEntity: DataListBoxProtoType.refreshEntity,
 		refreshItemDom: DataListBoxProtoType.refreshItemDom,
 		onEntityDeleted: DataListBoxProtoType.onEntityDeleted,
@@ -778,24 +774,29 @@
 		_adjustBeginBlankRow: DataListBoxProtoType._adjustBeginBlankRow,
 		_adjustEndBlankRow: DataListBoxProtoType._adjustEndBlankRow,
 		
+		setCurrentItemDom: function(row) {
+			var entity = (row ? $fly(row).data("item") : null);
+			if (entity) {
+				if (entity.dummy) {
+					this.grid._requirePage(entity.page.pageNo);
+				}
+				if (entity.rowType) return;
+			}
+			DataListBoxProtoType.setCurrentItemDom.apply(this, arguments);
+		},
+		
 		setCurrentRowByItemId: function(itemId) {
 			if (!this._itemDomMap) return;
 			var row = (itemId == null) ? null : this._itemDomMap[itemId];
 			var item = row ? $fly(row).data("item") : null;
-			this.setCurrentEntity(item);
-			this._itemModel.getItems().setCurrent(item);
+			var entityList = this._itemModel.getItems();
+			entityList.setCurrent(item);
+			if (entityList.current == item) {
+				this.setCurrentEntity(item);
+			}
 		},
 		
 		setCurrentEntity: function(entity) {
-			if (entity) {
-				if (entity.dummy) {
-					this.grid._requirePage(entity.page.pageNo);
-					return false;
-				}
-				if (entity.rowType) {
-					return false;
-				}
-			}
 			DataListBoxProtoType.setCurrentEntity.apply(this, arguments);
 			this.grid.doInnerGridSetCurrentRow(this, entity ? entity.entityId : null);
 			return true;
