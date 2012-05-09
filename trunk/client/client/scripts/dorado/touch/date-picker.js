@@ -1001,7 +1001,11 @@
                     caption:"\u4eca\u5929",
                     listener:{
                         onClick:function () {
-                            picker.set("date", new Date());
+                            var now = new Date(), date = picker._date;
+                            date.setFullYear(now.getFullYear());
+                            date.setMonth(now.getMonth());
+                            date.setDate(now.getDate());
+                            picker.set("date", picker._date);
                         }
                     }
                 });
