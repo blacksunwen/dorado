@@ -97,7 +97,7 @@ dorado.TagManager = {
  * <p>用于将一批对象组合在一起，以便于方便的进行统一处理，例如统一的设置属性或调用方法。</p>
  * @param {Object[]} objects 要进行的组合的对象的数组。
  */
-dorado.ObjectGroup = $class({
+dorado.ObjectGroup = $class(/** @scope dorado.ObjectGrou.prototype */{
 	/**
 	 * @name dorado.AttributeSupport#objects
 	 * @property

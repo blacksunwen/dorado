@@ -479,7 +479,7 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 					var targetEntity = (editor._entity || editor._cellEditor && editor._cellEditor.data);
 					if (this._assignmentMap && entityForAssignment && entityForAssignment instanceof Object && targetEntity && targetEntity instanceof Object) {
 						var assignmentMap = this._assignmentMap, maps = [];
-						assignmentMap = assignmentMap.split(',');
+						assignmentMap = assignmentMap.replace(/,/g, ";").split(';');
 						for ( var i = 0; i < assignmentMap.length; i++) {
 							var map = assignmentMap[i], index = map.indexOf('=');
 							if (index >= 0) {
