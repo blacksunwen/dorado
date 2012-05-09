@@ -1,14 +1,14 @@
 package com.bstek.dorado.web.resolver;
 
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-7-13
  */
-public class ResolverRegister implements BeanFactoryPostProcessor {
+public class ResolverRegister implements ApplicationContextAware {
 	private ResolverRegisterProcessor resolverRegisterProcessor;
 
 	private String url;
@@ -44,8 +44,9 @@ public class ResolverRegister implements BeanFactoryPostProcessor {
 		this.order = order;
 	}
 
-	public void postProcessBeanFactory(
-			ConfigurableListableBeanFactory beanFactory) throws BeansException {
+	public void setApplicationContext(ApplicationContext applicationContext)
+			throws BeansException {
 		resolverRegisterProcessor.addResolverRegister(this);
+
 	}
 }
