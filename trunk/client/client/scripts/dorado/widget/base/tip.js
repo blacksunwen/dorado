@@ -298,7 +298,11 @@
 					$tipText.empty().xCreate(content);
 				}
 			} else {
-				$tipText.text(text);
+                if (/<[^<]+?>/g.test(text)) {
+                    $tipText.html(text);
+                } else {
+                    $tipText.text(text);
+                }
 			}
 
 			if (arrowDirection && arrowDirection != "none") {
