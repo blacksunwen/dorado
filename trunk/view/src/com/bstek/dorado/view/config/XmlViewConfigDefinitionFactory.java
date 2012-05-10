@@ -174,6 +174,24 @@ public class XmlViewConfigDefinitionFactory implements
 		}
 	}
 
+	protected String getResoucePath(String viewName, String pathSubfix)
+			throws Exception {
+		String runMode = Configure.getString("core.runMode");
+		if ("debug".equals(runMode) && StringUtils.isNotEmpty(pathPrefix)
+				&& pathPrefix.indexOf(';') > 0) {
+			for (String prefix : StringUtils.split(pathPrefix, ';')) {
+				String path = getResoucePath(viewName, prefix, pathSubfix);
+				Resource resource = ResourceUtils.getResource(path);
+				if (resource.exists()) {
+					return path;
+				}
+			}
+			return null;
+		} else {
+			return getResoucePath(viewName, pathPrefix, pathSubfix);
+		}
+	}
+
 	private String getResoucePath(String viewName, String pathPrefix,
 			String pathSubfix) {
 		String path = viewName;
@@ -212,7 +230,7 @@ public class XmlViewConfigDefinitionFactory implements
 			if (tempResource.exists()) {
 				viewElement.setAttribute(
 						ViewXmlConstants.ATTRIBUTE_PAGE_TEMPALTE,
-						tempResource.getPath());
+						getResoucePath(viewName, ".html"));
 			}
 		}
 
@@ -222,7 +240,7 @@ public class XmlViewConfigDefinitionFactory implements
 			if (tempResource.exists()) {
 				viewElement.setAttribute(
 						ViewXmlConstants.ATTRIBUTE_JAVASCRIPT_FILE,
-						tempResource.getPath());
+						getResoucePath(viewName, ".js"));
 			}
 		}
 
@@ -232,7 +250,7 @@ public class XmlViewConfigDefinitionFactory implements
 			if (tempResource.exists()) {
 				viewElement.setAttribute(
 						ViewXmlConstants.ATTRIBUTE_STYLESHEET_FILE,
-						tempResource.getPath());
+						getResoucePath(viewName, ".css"));
 			}
 		}
 
