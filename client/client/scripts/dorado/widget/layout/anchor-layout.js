@@ -238,7 +238,7 @@
 				}
 				return anchor;
 			}
-			
+
 			var constraint = region.constraint, realignArg;
 			var containerDom = this._dom.parentNode, controlDom = region.control.getDom();
 			
