@@ -480,7 +480,7 @@ dorado.widget.Accordion = $extend(dorado.widget.Control, /** @scope dorado.widge
 				
 				if (currentSection != section) {
 					$fly(section._dom).removeClass("current-section");
-					currentSection.setActualVisible(false);
+                    section.setActualVisible(false);
 				}
 				
 				if (typeof sectionMinHeight != "number") {
