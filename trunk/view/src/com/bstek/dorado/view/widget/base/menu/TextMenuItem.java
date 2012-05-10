@@ -8,8 +8,6 @@ import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.common.event.ClientEventSupported;
 import com.bstek.dorado.view.annotation.ComponentReference;
-import com.bstek.dorado.view.widget.IconPosition;
-import com.bstek.dorado.view.widget.IconSize;
 import com.bstek.dorado.view.widget.InnerElementList;
 import com.bstek.dorado.view.widget.action.ActionSupport;
 
@@ -26,29 +24,9 @@ public abstract class TextMenuItem extends BaseMenuItem implements
 	private String action;
 	private boolean disabled;
 	private boolean hideOnClick = true;
-	private IconPosition iconPosition = IconPosition.left;
-	private IconSize iconSize = IconSize.normal;
 
 	private List<BaseMenuItem> menuItems = new InnerElementList<BaseMenuItem>(
 			this);
-
-	@ClientProperty(escapeValue = "left")
-	public IconPosition getIconPosition() {
-		return iconPosition;
-	}
-
-	public void setIconPosition(IconPosition iconPosition) {
-		this.iconPosition = iconPosition;
-	}
-
-	@ClientProperty(escapeValue = "normal")
-	public IconSize getIconSize() {
-		return iconSize;
-	}
-
-	public void setIconSize(IconSize iconSize) {
-		this.iconSize = iconSize;
-	}
 
 	public void addItem(BaseMenuItem menuItem) {
 		menuItems.add(menuItem);
