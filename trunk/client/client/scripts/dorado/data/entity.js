@@ -718,7 +718,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			var messages = [], property = propertyDef._name, validating, propertyDataType = propertyDef.get("dataType");
 			if (propertyDef._required && !dataType._validatorsDisabled) {
 				var blank = false;
-				if (value == null) {
+				if (value == null || value == "") {
 					if (propertyDataType && propertyDataType._code == dorado.DataType.STRING) {
 						blank = !value;
 					}
