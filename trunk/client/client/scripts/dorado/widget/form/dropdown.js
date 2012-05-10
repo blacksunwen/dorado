@@ -602,7 +602,8 @@ dorado.widget.DropDownBox = $extend([ dorado.widget.Control, dorado.widget.Float
 			content : {
 				tagName : "DIV",
 				style : {
-					overflow : "visible"
+					overflow : "visible",
+					height: "100%"
 				}
 			}
 		};

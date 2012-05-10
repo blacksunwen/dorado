@@ -316,7 +316,9 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 	window.$topView = topView;
 	
 	/**
-	 * 返回某给定的id，返回当前页面的所有视图(View)中于此id匹配的控件所组成的对象组。
+	 * @name $id
+	 * @function
+	 * @description 返回某给定的id，返回当前页面的所有视图(View)中于此id匹配的控件所组成的对象组。
 	 * @param {String} id 要查找的id。
 	 * @return {dorado.ObjectGroup} 对象组。
 	 */
