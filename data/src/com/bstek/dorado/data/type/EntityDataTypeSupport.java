@@ -11,6 +11,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 
 import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.IdeProperty;
+import com.bstek.dorado.annotation.ResourceInjection;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.common.Namable;
 import com.bstek.dorado.common.ParentAware;
@@ -30,6 +31,7 @@ import com.bstek.dorado.util.proxy.ChildrenMapSupport;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Feb 13, 2007
  */
+@ResourceInjection(subObjectMethod = "getPropertyDef")
 public abstract class EntityDataTypeSupport extends NonAggregationDataType
 		implements EntityDataType {
 	private static class PropertyDefMap<K, V> extends ChildrenMapSupport<K, V> {

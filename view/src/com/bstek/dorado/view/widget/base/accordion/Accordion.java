@@ -6,6 +6,7 @@ import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.ResourceInjection;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Control;
@@ -21,12 +22,22 @@ import com.bstek.dorado.view.widget.InnerElementList;
 		shortTypeName = "Accordion")
 @ClientEvents({ @ClientEvent(name = "beforeCurrentSectionChange"),
 		@ClientEvent(name = "onCurrentSectionChange") })
+@ResourceInjection(subObjectMethod = "getSection")
 public class Accordion extends Control {
 	private List<Section> sections = new InnerElementList<Section>(this);
 	private boolean animate;
-	
+
 	public void addSection(Section section) {
 		sections.add(section);
+	}
+
+	public Section getSection(String name) {
+		for (Section section : sections) {
+			if (name.equals(section.getName())) {
+				return section;
+			}
+		}
+		return null;
 	}
 
 	@XmlSubNode

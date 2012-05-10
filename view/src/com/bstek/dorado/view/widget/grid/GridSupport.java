@@ -6,6 +6,7 @@ import java.util.List;
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
 import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.ResourceInjection;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.view.widget.list.RowList;
 
@@ -22,6 +23,7 @@ import com.bstek.dorado.view.widget.list.RowList;
 		@ClientEvent(name = "onHeaderClick"),
 		@ClientEvent(name = "beforeCellValueEdit"),
 		@ClientEvent(name = "onCellValueEdit") })
+@ResourceInjection(subObjectMethod = "getColumn")
 public abstract class GridSupport extends RowList implements ColumnHolder {
 	private int fixedColumnCount;
 	private boolean readOnly;
@@ -40,6 +42,15 @@ public abstract class GridSupport extends RowList implements ColumnHolder {
 
 	public void addColumn(Column column) {
 		columns.add(column);
+	}
+
+	public Column getColumn(String name) {
+		for (Column column : columns) {
+			if (name.equals(column.getName())) {
+				return column;
+			}
+		}
+		return null;
 	}
 
 	@XmlSubNode

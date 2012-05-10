@@ -105,10 +105,10 @@ public class DataTypeParser extends GenericObjectParser implements
 		if (!StringUtils.isEmpty(name)) {
 			nodeWrapper = dataContext.getConfiguredDataTypes().get(name);
 		}
-		boolean isGlobal = (nodeWrapper != null && nodeWrapper.getNode() == node);
+		boolean isInner = !(nodeWrapper != null && nodeWrapper.getNode() == node);
 
 		DataTypeDefinition dataType = null;
-		if (!StringUtils.isEmpty(name) && isGlobal) {
+		if (!StringUtils.isEmpty(name) && !isInner) {
 			// Comment 11/04/26 为了处理View中私有DataObject与Global DataObject重名的问题
 			// DefinitionManager<DataTypeDefinition> dataTypeDefinitionManager =
 			// dataContext
@@ -120,7 +120,7 @@ public class DataTypeParser extends GenericObjectParser implements
 			}
 		}
 
-		if (isGlobal) {
+		if (!isInner) {
 			parsingNodes.add(element);
 			dataContext
 					.setPrivateObjectName(Constants.PRIVATE_DATA_OBJECT_PREFIX
@@ -182,8 +182,7 @@ public class DataTypeParser extends GenericObjectParser implements
 
 					dataType = new DataTypeDefinition();
 					dataType.setResource(elementDataType.getResource());
-					DataObjectDefinitionUtils
-							.setDataTypeGlobal(dataType, false);
+					DataObjectDefinitionUtils.setDataTypeInner(dataType, true);
 					DefinitionReference<?> dataTypeRef = dataContext
 							.getDataTypeReference(dataTypeName.getDataType());
 					dataType.setParentReferences(new DefinitionReference[] { dataTypeRef });
@@ -195,7 +194,7 @@ public class DataTypeParser extends GenericObjectParser implements
 		}
 
 		dataType.setName(name);
-		DataObjectDefinitionUtils.setDataTypeGlobal(dataType, isGlobal);
+		DataObjectDefinitionUtils.setDataTypeInner(dataType, isInner);
 
 		if (dataType.getParentReferences() == null
 				&& !DEFAULT_DATATYPE_PARENT.equals(name)) {

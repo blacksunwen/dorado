@@ -4,14 +4,20 @@ public final class DataObjectDefinitionUtils {
 	private DataObjectDefinitionUtils() {
 	}
 
-	public static void setDataTypeId(DataTypeDefinition dataTypeDefinition,
-			String id) {
-		dataTypeDefinition.setId(id);
+	public static void setDataTypeInner(DataTypeDefinition dataTypeDefinition,
+			boolean inner) {
+		dataTypeDefinition.setInner(inner);
 	}
 
+	@SuppressWarnings("deprecation")
 	public static void setDataTypeGlobal(DataTypeDefinition dataTypeDefinition,
 			boolean global) {
 		dataTypeDefinition.setGlobal(global);
+	}
+
+	public static void setDataTypeId(DataTypeDefinition dataTypeDefinition,
+			String id) {
+		dataTypeDefinition.setId(id);
 	}
 
 	public static void setDataProviderId(

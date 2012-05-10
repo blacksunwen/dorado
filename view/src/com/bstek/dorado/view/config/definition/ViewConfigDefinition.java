@@ -1,16 +1,23 @@
 package com.bstek.dorado.view.config.definition;
 
+import java.util.Enumeration;
 import java.util.Map;
 
 import org.aopalliance.intercept.MethodInterceptor;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.jexl2.JexlContext;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.reflect.MethodUtils;
 
+import com.bstek.dorado.annotation.ResourceInjection;
 import com.bstek.dorado.common.Namable;
 import com.bstek.dorado.config.definition.CreationContext;
+import com.bstek.dorado.config.definition.Definition;
 import com.bstek.dorado.config.definition.DefinitionManager;
 import com.bstek.dorado.core.Context;
 import com.bstek.dorado.core.bean.BeanWrapper;
 import com.bstek.dorado.core.el.ExpressionHandler;
+import com.bstek.dorado.core.resource.ListableResourceBundle;
 import com.bstek.dorado.data.config.definition.DataProviderDefinition;
 import com.bstek.dorado.data.config.definition.DataProviderDefinitionManager;
 import com.bstek.dorado.data.config.definition.DataResolverDefinition;
@@ -27,6 +34,7 @@ import com.bstek.dorado.view.InnerDataTypeManager;
 import com.bstek.dorado.view.View;
 import com.bstek.dorado.view.ViewState;
 import com.bstek.dorado.view.manager.ViewConfig;
+import com.bstek.dorado.view.resource.ViewResourceManager;
 import com.bstek.dorado.web.DoradoContext;
 
 /**
@@ -35,6 +43,11 @@ import com.bstek.dorado.web.DoradoContext;
  */
 public class ViewConfigDefinition extends ListenableObjectDefinition implements
 		Namable {
+	private static final String[] DEFAULT_PROPERTIES = new String[] {
+			"caption", "label", "title" };
+	private static final String ARGUMENT = "argument";
+	public static final String RESOURCE_RELATIVE_DEFINITION = "resourceRelativeDefinition";
+
 	private String name;
 	private Map<String, Object> arguments;
 	private Map<String, Object> viewContext;
@@ -139,15 +152,101 @@ public class ViewConfigDefinition extends ListenableObjectDefinition implements
 		}
 	}
 
+	private void throwInvalidResourceKey(String key) {
+		throw new IllegalArgumentException("Invalid resource key \"" + key
+				+ "\".");
+	}
+
+	protected void injectResourceString(ViewConfig viewConfig, String key,
+			String resourceString) throws Exception {
+		Object object = viewConfig;
+		ResourceInjection resourceInjection = object.getClass().getAnnotation(
+				ResourceInjection.class);
+
+		String[] sections = StringUtils.split(key, ".");
+		int len = sections.length;
+		for (int i = 0; i < len; i++) {
+			String section = sections[i];
+			boolean isObject = section.charAt(0) == '#';
+			if (isObject) {
+				section = section.substring(1);
+			}
+
+			if (i == 0 && section.equals("view")) {
+				object = viewConfig.getView();
+			} else if (isObject) {
+				if (object == viewConfig) {
+					object = viewConfig.getDataType(section);
+					if (object == null && viewConfig.getView() != null) {
+						object = viewConfig.getView().getComponent(section);
+					}
+				} else {
+					if (resourceInjection == null) {
+						throwInvalidResourceKey(key);
+					}
+					String methodName = resourceInjection.subObjectMethod();
+					if (StringUtils.isEmpty(methodName)) {
+						throwInvalidResourceKey(key);
+					}
+					object = MethodUtils.invokeExactMethod(object, methodName,
+							new String[] { section });
+				}
+				if (object == null) {
+					break;
+				}
+				resourceInjection = object.getClass().getAnnotation(
+						ResourceInjection.class);
+
+				if (i == len - 1) {
+					String[] defaultProperties;
+					if (resourceInjection == null) {
+						defaultProperties = DEFAULT_PROPERTIES;
+					} else {
+						defaultProperties = resourceInjection.defaultProperty();
+					}
+
+					boolean found = false;
+					for (String property : defaultProperties) {
+						if (PropertyUtils.isWriteable(object, property)) {
+							if (PropertyUtils.getSimpleProperty(object,
+									property) == null) {
+								PropertyUtils.setSimpleProperty(object,
+										property, resourceString);
+							}
+							found = true;
+							break;
+						}
+					}
+					if (!found) {
+						throwInvalidResourceKey(key);
+					}
+				}
+			} else {
+				if (i == len - 1) {
+					if (PropertyUtils.getSimpleProperty(object, section) == null) {
+						PropertyUtils.setSimpleProperty(object, section,
+								resourceString);
+					}
+				} else {
+					object = PropertyUtils.getSimpleProperty(object, section);
+				}
+			}
+		}
+	}
+
 	@Override
 	protected Object doCreate(CreationContext context) throws Exception {
 		Context doradoContext = Context.getCurrent();
 		ExpressionHandler expressionHandler = (ExpressionHandler) doradoContext
 				.getServiceBean("expressionHandler");
 		JexlContext jexlContext = expressionHandler.getJexlContext();
-		final String ARGUMENT = "argument";
+
 		Object originArgumentsVar = jexlContext.get(ARGUMENT);
 		jexlContext.set(ARGUMENT, arguments);
+
+		Definition resourceRelativeDefinition = (Definition) jexlContext
+				.get(RESOURCE_RELATIVE_DEFINITION);
+		jexlContext.set(RESOURCE_RELATIVE_DEFINITION, this);
 
 		doradoContext.setAttribute("privateDataTypeDefinitionManager",
 				dataTypeDefinitionManager);
@@ -156,9 +255,29 @@ public class ViewConfigDefinition extends ListenableObjectDefinition implements
 		doradoContext.setAttribute("privateDataResolverDefinitionManager",
 				dataResolverDefinitionManager);
 		try {
-			return super.doCreate(context);
+			ViewConfig viewConfig = (ViewConfig) super.doCreate(context);
+
+			ViewResourceManager viewResourceManager = (ViewResourceManager) doradoContext
+					.getServiceBean("viewResourceManager");
+			ListableResourceBundle bundle = (ListableResourceBundle) viewResourceManager
+					.getBundle(this);
+			if (bundle != null) {
+				for (Enumeration<String> enumeration = bundle.getKeys(); enumeration
+						.hasMoreElements();) {
+					String key = enumeration.nextElement();
+					if (key.charAt(0) == '#') {
+						String resourceString = bundle.getString(key);
+						injectResourceString(viewConfig, key, resourceString);
+					}
+				}
+			}
+
+			return viewConfig;
 		} finally {
 			jexlContext.set(ARGUMENT, originArgumentsVar);
+			jexlContext.set(RESOURCE_RELATIVE_DEFINITION,
+					resourceRelativeDefinition);
+
 			doradoContext.removeAttribute("privateDataTypeDefinitionManager");
 			doradoContext
 					.removeAttribute("privateDataProviderDefinitionManager");

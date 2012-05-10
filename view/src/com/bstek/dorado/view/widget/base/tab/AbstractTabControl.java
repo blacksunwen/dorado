@@ -5,6 +5,7 @@ import java.util.List;
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
 import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.ResourceInjection;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.view.widget.Control;
 import com.bstek.dorado.view.widget.InnerElementList;
@@ -12,6 +13,7 @@ import com.bstek.dorado.view.widget.InnerElementList;
 @ClientEvents({ @ClientEvent(name = "beforeTabChange"),
 		@ClientEvent(name = "onTabChange"),
 		@ClientEvent(name = "onTabContextMenu") })
+@ResourceInjection(subObjectMethod = "getTab")
 public abstract class AbstractTabControl extends Control {
 	private boolean alwaysShowNavButtons;
 	private boolean showMenuButton;
@@ -92,6 +94,15 @@ public abstract class AbstractTabControl extends Control {
 	@ClientProperty
 	public List<Tab> getTabs() {
 		return tabs;
+	}
+
+	public Tab getTab(String name) {
+		for (Tab tab : tabs) {
+			if (name.equals(tab.getName())) {
+				return tab;
+			}
+		}
+		return null;
 	}
 
 }

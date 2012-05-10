@@ -9,6 +9,7 @@ import com.bstek.dorado.annotation.ClientEvents;
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.IdeProperty;
+import com.bstek.dorado.annotation.ResourceInjection;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.common.Ignorable;
@@ -39,6 +40,7 @@ import com.bstek.dorado.view.manager.ViewConfig;
 		@com.bstek.dorado.annotation.ClientEvent(name = "onCreate"),
 		@com.bstek.dorado.annotation.ClientEvent(name = "onDestroy"),
 		@com.bstek.dorado.annotation.ClientEvent(name = "onReady") })
+@ResourceInjection
 public abstract class Component implements Ignorable, TagSupport,
 		MetaDataSupport, ClientEventSupported, ViewElement {
 	private Collection<ViewElement> innerElements;

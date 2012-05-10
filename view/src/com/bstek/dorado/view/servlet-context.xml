@@ -6,6 +6,7 @@
 		<property name="url" value="/dorado/client/**/*.dpkg" />
 		<property name="resolver">
 			<bean class="com.bstek.dorado.view.resolver.LibraryFileResolver">
+				<property name="clientI18NFileRegistry" ref="dorado.clientI18NFileRegistry" />
 				<property name="localeResolver" ref="dorado.localeResolver" />
 				<property name="resourcePrefix" value="${view.libraryRoot}" />
 			</bean>

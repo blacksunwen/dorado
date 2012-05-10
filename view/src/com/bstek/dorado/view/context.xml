@@ -54,6 +54,7 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 		<property name="contextInitializers">
 			<list>
 				<bean class="com.bstek.dorado.core.el.CoreContextVarsInitializer" />
+				<bean class="com.bstek.dorado.view.el.ViewContextVarsInitializer" />
 			</list>
 		</property>
 	</bean>
@@ -127,5 +128,21 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 		</property>
 	</bean>
 
-	<bean id="dorado.localeResolver" class="org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver" />
+	<bean id="dorado.localeResolver" class="com.bstek.dorado.view.resource.SpringLocaleResolverAdapter">
+		<property name="springLocaleResolver">
+			<bean class="org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver" />
+		</property>
+	</bean>
+
+	<bean id="dorado.clientI18NFileRegistry" class="com.bstek.dorado.view.resolver.ClientI18NFileRegistry" />
+	<bean id="dorado.clientI18NFileRegister" class="com.bstek.dorado.view.resolver.ClientI18NFileRegister" abstract="true">
+		<property name="clientI18NFileRegistry" ref="dorado.clientI18NFileRegistry" />
+	</bean>
+
+	<bean id="dorado.viewResourceBundleManager" class="com.bstek.dorado.view.resource.DefaultViewResourceBundleManager">
+		<property name="cache" ref="dorado.privateResourceCache" />
+	</bean>
+	<bean id="dorado.viewResourceManager" parent="dorado.abstractResourceManager" class="com.bstek.dorado.view.resource.ViewResourceManager">
+		<property name="viewResourceBundleManager" ref="dorado.viewResourceBundleManager" />
+	</bean>
 </beans>

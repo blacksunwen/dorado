@@ -9,7 +9,7 @@ import com.bstek.dorado.core.el.EvaluateMode;
  * @since Jun 5, 2009
  */
 public class SingleExpression extends com.bstek.dorado.core.el.SingleExpression
-		implements ViewExpression {
+		implements PrevaluateExpression {
 
 	public SingleExpression(Expression expression) {
 		super(expression);
