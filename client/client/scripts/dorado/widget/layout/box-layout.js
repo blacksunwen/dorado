@@ -18,7 +18,7 @@
 		right: "right"
 	}, VBOX_PACKS = {
 		start: "top",
-		center: "center",
+		center: "middle",
 		end: "bottom"
 	};
 	
@@ -135,8 +135,7 @@
 			
 			if (!dorado.Browser.webkit) {
 				table.style.height = realContainerHeight + "px";
-			}
-			else {
+			} else {
 				row.style.height = realContainerHeight + "px";
 			}
 			
@@ -231,7 +230,7 @@
 							if (!isNaN(rate)) {
 								h = rate * realContainerHeight / 100;
 							}
-						} 
+						}
 					}
 					if (h) {
 						region.height = h;
@@ -345,7 +344,7 @@
 			if (realContainerWidth < 0) realContainerWidth = 0;
 			if (realContainerHeight < 0) realContainerHeight = 0;
 			
-			table.style.width = realContainerWidth + "px";			
+			table.style.width = realContainerWidth + "px";
 			for (var it = this._regions.iterator(); it.hasNext();) {
 				var region = it.next(), row = domCache[region.id];
 				if (row) {
@@ -373,11 +372,18 @@
 						tagName: "TR",
 						content: {
 							tagName: "TD",
-							content: {
-								tagName: "DIV",
-								// 用于防止TD.align=center的设置传染到内部子控件
-								style: "display:block;text-align:left;zoom:1"
-							}
+							content: (function() {
+								if (dorado.Browser.msie && dorado.Browser.version < 8) {
+									return undefined;
+								} else {
+									return {
+										tagName: "DIV",
+										className: "i-fix-text-align",
+										// 用于防止TD.align=center的设置传染到内部子控件
+										style: "display:inline-block;zoom:1"
+									};
+								}
+							})()
 						}
 					});
 					newDomCache[region.id] = row;
@@ -389,7 +395,7 @@
 				}
 				row.style.display = "";
 				cell = row.firstChild;
-				div = cell.firstChild;
+				div = (dorado.Browser.msie && dorado.Browser.version < 8) ? cell : cell.firstChild;
 				
 				if (!this._stretch || region.control.getAttributeWatcher().getWritingTimes("width")) {
 					w = region.control._width;
@@ -428,8 +434,14 @@
 				cell.align = constraint.align || VBOX_ALIGNS[this._align];
 				if (i > 0) cell.style.paddingTop = regionPadding + "px";
 				
-				if (isNewRow) this.renderControl(region, div, true, true);
-				else this.resetControlDimension(region, div, true, true);
+				if (isNewRow) {
+					this.renderControl(region, div, true, true);
+					if (dorado.Browser.msie && dorado.Browser.version < 8 && region.control && region.control._rendered) {
+						$fly(region.control.getDom()).addClass("i-fix-text-align");
+					}
+				} else {
+					this.resetControlDimension(region, div, true, true);
+				}
 				i++;
 			}
 			
@@ -448,7 +460,7 @@
 							if (!isNaN(rate)) {
 								w = rate * realContainerWidth / 100;
 							}
-						} 
+						}
 					}
 					if (w) {
 						region.width = w;
