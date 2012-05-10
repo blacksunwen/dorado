@@ -380,7 +380,7 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 		var boxContainerHeight = boxContainer.clientHeight;
 		realMaxHeight = boxContainerHeight;
 		
-		var offsetTargetTop = $fly(targetElement == window ? document.body : targetElement).offset().top;
+		var offsetTargetTop = $fly(targetElement).offset().top;
 		var offsetTargetBottom = boxContainerHeight - offsetTargetTop - targetElement.offsetHeight;
 		var vAlign = "bottom";
 		if (offsetTargetTop > offsetTargetBottom) {
@@ -428,12 +428,16 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 			vAlign = "bottom";
 		}
 		
+		var widthOverflow = boxDom.offsetParent.clientWidth - ($fly(targetElement).offset().left + boxWidth);
+		if (widthOverflow > 0) widthOverflow = 0;
+		
 		boxDom.style.width = boxWidth + "px";
 		boxDom.style.height = boxHeight + "px";
 		box.show({
 			anchorTarget : editor,
 			editor : editor,
 			align : "innerleft",
+			offsetLeft: widthOverflow,
 			vAlign : vAlign,
 			autoAdjustPosition: false
 		});
