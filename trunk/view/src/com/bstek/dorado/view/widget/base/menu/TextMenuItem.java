@@ -5,6 +5,7 @@ import java.util.List;
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
 import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.ResourceInjection;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.common.event.ClientEventSupported;
 import com.bstek.dorado.view.annotation.ComponentReference;
@@ -16,6 +17,7 @@ import com.bstek.dorado.view.widget.action.ActionSupport;
  * @since 2009-11-4
  */
 @ClientEvents({ @ClientEvent(name = "onClick") })
+@ResourceInjection(subObjectMethod = "getItem")
 public abstract class TextMenuItem extends BaseMenuItem implements
 		MenuItemGroup, ActionSupport, ClientEventSupported {
 	private String caption;
@@ -30,6 +32,15 @@ public abstract class TextMenuItem extends BaseMenuItem implements
 
 	public void addItem(BaseMenuItem menuItem) {
 		menuItems.add(menuItem);
+	}
+
+	public BaseMenuItem getItem(String name) {
+		for (BaseMenuItem item : menuItems) {
+			if (name.equals(item.getName())) {
+				return item;
+			}
+		}
+		return null;
 	}
 
 	@XmlSubNode

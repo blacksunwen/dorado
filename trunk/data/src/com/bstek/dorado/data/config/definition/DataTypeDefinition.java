@@ -2,17 +2,27 @@ package com.bstek.dorado.data.config.definition;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Properties;
 
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.jexl2.JexlContext;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.reflect.MethodUtils;
 
+import com.bstek.dorado.annotation.ResourceInjection;
 import com.bstek.dorado.common.Namable;
 import com.bstek.dorado.config.definition.CreationContext;
 import com.bstek.dorado.config.definition.Definition;
 import com.bstek.dorado.config.definition.DefinitionUtils;
 import com.bstek.dorado.config.definition.ObjectDefinition;
+import com.bstek.dorado.core.Context;
+import com.bstek.dorado.core.el.ExpressionHandler;
+import com.bstek.dorado.core.io.Resource;
 import com.bstek.dorado.data.Constants;
 import com.bstek.dorado.data.config.DataTypeName;
 import com.bstek.dorado.data.config.xml.DataXmlConstants;
+import com.bstek.dorado.data.resource.ModelResourceBundle;
+import com.bstek.dorado.data.resource.ModelResourceManager;
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.data.type.EntityDataType;
 import com.bstek.dorado.data.type.RudeDataType;
@@ -28,13 +38,17 @@ import com.bstek.dorado.util.CloneUtils;
  */
 public class DataTypeDefinition extends ListenableObjectDefinition implements
 		Namable {
+	private static final String[] DEFAULT_PROPERTIES = new String[] {
+			"caption", "label", "title" };
 	private static final String SELF_AGGREGATION_DATA_TYPE_SCTION = '[' + PropertyDef.SELF_DATA_TYPE_NAME + ']';
+	public static final String RESOURCE_RELATIVE_DEFINITION = "resourceRelativeDefinition";
 
 	private String name;
 	private String id;
 	private Class<?> matchType;
 	private Class<?> creationType;
-	private boolean global = true;
+	private boolean inner;
+	private boolean global;
 	private Map<String, PropertyDefDefinition> propertyDefs;
 	private boolean isAggregationType;
 
@@ -111,6 +125,14 @@ public class DataTypeDefinition extends ListenableObjectDefinition implements
 	/**
 	 * 返回该DataType是否是一个全局对象。
 	 */
+	public boolean isInner() {
+		return inner;
+	}
+
+	void setInner(boolean inner) {
+		this.inner = inner;
+	}
+
 	public boolean isGlobal() {
 		return global;
 	}
@@ -170,6 +192,132 @@ public class DataTypeDefinition extends ListenableObjectDefinition implements
 	}
 
 	@Override
+	protected Object doCreate(CreationContext context) throws Exception {
+		if (global) {
+			Context doradoContext = Context.getCurrent();
+			ExpressionHandler expressionHandler = (ExpressionHandler) doradoContext
+					.getServiceBean("expressionHandler");
+			JexlContext jexlContext = expressionHandler.getJexlContext();
+
+			Definition resourceRelativeDefinition = (Definition) jexlContext
+					.get(RESOURCE_RELATIVE_DEFINITION);
+			jexlContext.set(RESOURCE_RELATIVE_DEFINITION, this);
+			try {
+				DataType dataType = (DataType) super.doCreate(context);
+				if (dataType instanceof EntityDataType) {
+					injectResourceStrings((EntityDataType) dataType);
+				}
+				return dataType;
+			} finally {
+				jexlContext.set(RESOURCE_RELATIVE_DEFINITION,
+						resourceRelativeDefinition);
+			}
+		} else {
+			return super.doCreate(context);
+		}
+	}
+
+	private void injectResourceStrings(EntityDataType dataType)
+			throws Exception {
+		Resource modelResource = getResource();
+		if (modelResource == null) {
+			return;
+		}
+
+		Context doradoContext = Context.getCurrent();
+		ModelResourceManager modelResourceManager = (ModelResourceManager) doradoContext
+				.getServiceBean("modelResourceManager");
+		ModelResourceBundle bundle = (ModelResourceBundle) modelResourceManager
+				.getBundle(modelResource);
+		if (bundle == null) {
+			return;
+		}
+
+		Properties strings = bundle.getSubProperties(dataType.getName());
+		if (strings == null) {
+			return;
+		}
+
+		for (Map.Entry<Object, Object> entry : strings.entrySet()) {
+			injectResourceString(dataType, (String) entry.getKey(),
+					(String) entry.getValue());
+		}
+	}
+
+	protected void injectResourceString(EntityDataType dataType, String key,
+			String resourceString) throws Exception {
+		Object object = dataType;
+		ResourceInjection resourceInjection = object.getClass().getAnnotation(
+				ResourceInjection.class);
+
+		String[] sections = StringUtils.split(key, ".");
+		int len = sections.length;
+		for (int i = 0; i < len; i++) {
+			String section = sections[i];
+			boolean isObject = section.charAt(0) == '#';
+			if (isObject) {
+				section = section.substring(1);
+			}
+
+			if (isObject) {
+				if (resourceInjection == null) {
+					throwInvalidResourceKey(key);
+				}
+				String methodName = resourceInjection.subObjectMethod();
+				if (StringUtils.isEmpty(methodName)) {
+					throwInvalidResourceKey(key);
+				}
+				object = MethodUtils.invokeExactMethod(object, methodName,
+						new String[] { section });
+				if (object == null) {
+					break;
+				}
+				resourceInjection = object.getClass().getAnnotation(
+						ResourceInjection.class);
+
+				if (i == len - 1) {
+					String[] defaultProperties;
+					if (resourceInjection == null) {
+						defaultProperties = DEFAULT_PROPERTIES;
+					} else {
+						defaultProperties = resourceInjection.defaultProperty();
+					}
+
+					boolean found = false;
+					for (String property : defaultProperties) {
+						if (PropertyUtils.isWriteable(object, property)) {
+							if (PropertyUtils.getSimpleProperty(object,
+									property) == null) {
+								PropertyUtils.setSimpleProperty(object,
+										property, resourceString);
+							}
+							found = true;
+							break;
+						}
+					}
+					if (!found) {
+						throwInvalidResourceKey(key);
+					}
+				}
+			} else {
+				if (i == len - 1) {
+					if (PropertyUtils.getSimpleProperty(object, section) == null) {
+						PropertyUtils.setSimpleProperty(object, section,
+								resourceString);
+					}
+				} else {
+					object = PropertyUtils.getSimpleProperty(object, section);
+				}
+			}
+		}
+	}
+
+	private void throwInvalidResourceKey(String key) {
+		throw new IllegalArgumentException("Invalid resource key \"" + key
+				+ "\".");
+	}
+
+	@Override
 	@SuppressWarnings("unchecked")
 	protected void doInitObject(Object object, CreationInfo creationInfo,
 			CreationContext context) throws Exception {
@@ -187,8 +335,9 @@ public class DataTypeDefinition extends ListenableObjectDefinition implements
 
 		Class<?> creationType = (Class<?>) creationInfo
 				.getUserData("creationType");
-		if (creationType != null)
+		if (creationType != null) {
 			rudeDataType.setCreationType(creationType);
+		}
 
 		Map<String, ObjectDefinition> propertyDefs = (Map<String, ObjectDefinition>) creationInfo
 				.getUserData("propertyDefs");

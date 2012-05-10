@@ -14,7 +14,8 @@ import com.bstek.dorado.core.el.EvaluateMode;
  * @since Jun 5, 2009
  */
 public class CombinedExpression extends
-		com.bstek.dorado.core.el.CombinedExpression implements ViewExpression {
+		com.bstek.dorado.core.el.CombinedExpression implements
+		PrevaluateExpression {
 	private static final Log logger = LogFactory
 			.getLog(CombinedExpression.class);
 

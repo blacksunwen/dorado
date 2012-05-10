@@ -79,7 +79,7 @@ public class DataTypeDefinitionManager extends
 		super.registerDefinition(name, definition);
 
 		DataTypeDefinition dataType = definition;
-		if (dataType.isGlobal()) {
+		if (!dataType.isInner()) {
 			try {
 				registerMatchType(dataType);
 			} catch (Exception e) {

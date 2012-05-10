@@ -124,7 +124,7 @@ public class DataProviderDefinition extends InterceptableDefinition implements
 			DataTypeDefinition resultDataType = (DataTypeDefinition) DefinitionUtils
 					.getDefinition(getProperties().get(
 							DataXmlConstants.ATTRIBUTE_RESULT_DATA_TYPE));
-			if (resultDataType != null && !resultDataType.isGlobal()) {
+			if (resultDataType != null && resultDataType.isInner()) {
 				DefinitionReference<? extends Definition>[] parentReferences = getParentReferences();
 				if (parentReferences != null) {
 					for (DefinitionReference<?> parentReference : parentReferences) {

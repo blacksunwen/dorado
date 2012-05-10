@@ -24,7 +24,7 @@ public abstract class BaseMenuItem extends ClientEventSupportedObject implements
 		RenderableElement, Ignorable, TagSupport, ViewElement {
 	private ViewElement parent;
 	private Collection<ViewElement> innerElements;
-	
+
 	private String name;
 	private String width;
 	private String height;

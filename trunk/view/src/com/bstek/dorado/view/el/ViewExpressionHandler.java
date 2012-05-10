@@ -17,8 +17,9 @@ public class ViewExpressionHandler extends DefaultExpressionHandler {
 			EvaluateMode evaluateMode) {
 		boolean hasOutputableExpression = false;
 		for (Object section : sections) {
-			if (section == null)
+			if (section == null) {
 				continue;
+			}
 			if (section instanceof org.apache.commons.jexl2.Expression) {
 				String expression = ((org.apache.commons.jexl2.Expression) section)
 						.getExpression();

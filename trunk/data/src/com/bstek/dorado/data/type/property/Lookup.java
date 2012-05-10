@@ -119,8 +119,9 @@ public class Lookup extends LazyPropertyDef {
 			Assert.notNull(constraints);
 			String keyProperties = "";
 			for (LookupConstraint constraint : constraints) {
-				if (keyProperties.length() > 0)
+				if (keyProperties.length() > 0) {
 					keyProperties += '^';
+				}
 				keyProperties += constraint.getLookupKeyProperty();
 			}
 			cacheKey = new MultiKey(dataProvider.getName(), keyProperties);

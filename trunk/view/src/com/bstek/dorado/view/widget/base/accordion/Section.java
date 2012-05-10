@@ -34,6 +34,7 @@ import com.bstek.dorado.view.widget.InnerElementReference;
 public class Section implements ClientEventSupported, Ignorable, TagSupport,
 		ViewElement {
 	private ViewElement parent;
+	private String name;
 	private String caption;
 	private String icon;
 	private String iconClass;
@@ -77,6 +78,14 @@ public class Section implements ClientEventSupported, Ignorable, TagSupport,
 
 	public Collection<ViewElement> getInnerElements() {
 		return innerElements;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getCaption() {

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.ResourceInjection;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Control;
@@ -25,6 +26,7 @@ import com.bstek.dorado.view.widget.ModalType;
 @Widget(name = "Menu", category = "Floatable", dependsPackage = "base-widget",
 		autoGenerateId = true)
 @ClientObject(prototype = "dorado.widget.Menu", shortTypeName = "Menu")
+@ResourceInjection(subObjectMethod = "getItem")
 public class Menu extends Control implements MenuItemGroup, FloatControl {
 	private FloatControlAnimateType animateType = FloatControlAnimateType.zoom;
 	private FloatControlAnimateType showAnimateType = FloatControlAnimateType.slide;
@@ -172,25 +174,19 @@ public class Menu extends Control implements MenuItemGroup, FloatControl {
 		menuItems.add(menuItem);
 	}
 
+	public BaseMenuItem getItem(String name) {
+		for (BaseMenuItem item : menuItems) {
+			if (name.equals(item.getName())) {
+				return item;
+			}
+		}
+		return null;
+	}
+
 	@XmlSubNode
 	@ClientProperty
 	public List<BaseMenuItem> getItems() {
 		return menuItems;
-	}
-
-	/**
-	 * @return the menuItems
-	 */
-	public List<BaseMenuItem> getMenuItems() {
-		return menuItems;
-	}
-
-	/**
-	 * @param menuItems
-	 *            the menuItems to set
-	 */
-	public void setMenuItems(List<BaseMenuItem> menuItems) {
-		this.menuItems = menuItems;
 	}
 
 	/**
