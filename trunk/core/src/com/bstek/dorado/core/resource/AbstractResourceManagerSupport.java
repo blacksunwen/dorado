@@ -55,6 +55,6 @@ public abstract class AbstractResourceManagerSupport {
 
 		ResourceBundle bundle = globalResourceBundleManager.getBundle(
 				bundleName, locale);
-		return bundle.getString(key);
+		return (bundle != null) ? bundle.getString(key) : null;
 	}
 }

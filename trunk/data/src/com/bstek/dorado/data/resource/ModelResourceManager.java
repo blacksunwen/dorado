@@ -1,6 +1,5 @@
 package com.bstek.dorado.data.resource;
 
-import java.io.FileNotFoundException;
 import java.util.Locale;
 
 import com.bstek.dorado.config.definition.Definition;
@@ -35,13 +34,7 @@ public class ModelResourceManager extends AbstractResourceManagerSupport {
 			result = bundle.getString(path, args);
 		}
 		if (result == null) {
-			try {
-				result = getString(locale, path, args);
-			} catch (FileNotFoundException e) {
-				if (bundle == null) {
-					throw e;
-				}
-			}
+			result = getString(locale, path, args);
 		}
 		return result;
 	}

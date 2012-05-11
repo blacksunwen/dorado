@@ -54,20 +54,21 @@ public class ResourceExpressionHandler implements Map<String, String> {
 	}
 
 	protected String doGet(String path, Object... args) {
+		String result = null;
 		try {
 			Definition definition = (Definition) getExpressionHandler()
 					.getJexlContext().get(RESOURCE_RELATIVE_DEFINITION);
 			if (definition instanceof ViewConfigDefinition) {
-				return getViewResourceManager().getString(
+				result = getViewResourceManager().getString(
 						(ViewConfigDefinition) definition, path, args);
 			} else {
-				return getModelResourceManager().getString(definition, path,
+				result = getModelResourceManager().getString(definition, path,
 						args);
 			}
 		} catch (Exception e) {
 			logger.warn(e, e);
-			return "";
 		}
+		return (result != null) ? result : "";
 	}
 
 	public String get(String path, Object... args) {
