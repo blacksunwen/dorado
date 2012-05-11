@@ -7,6 +7,7 @@ import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
+import com.bstek.dorado.common.Ignorable;
 import com.bstek.dorado.common.TagSupport;
 
 /**
@@ -14,7 +15,7 @@ import com.bstek.dorado.common.TagSupport;
  * @since 2009-9-30
  */
 @XmlNode
-public class Node implements NodeHolder, TagSupport {
+public class Node implements NodeHolder, TagSupport, Ignorable {
 	private List<Node> nodes;
 
 	private String label;
@@ -31,6 +32,7 @@ public class Node implements NodeHolder, TagSupport {
 	private boolean hasChild;
 	private boolean expanded;
 	private String tags;
+	private boolean ignored;
 
 	@XmlSubNode
 	@ClientProperty
@@ -159,5 +161,14 @@ public class Node implements NodeHolder, TagSupport {
 
 	public void setTags(String tags) {
 		this.tags = tags;
+	}
+
+	@ClientProperty(ignored = true)
+	public boolean isIgnored() {
+		return ignored;
+	}
+
+	public void setIgnored(boolean ignored) {
+		this.ignored = ignored;
 	}
 }
