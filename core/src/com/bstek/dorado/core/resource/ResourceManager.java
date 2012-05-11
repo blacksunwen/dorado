@@ -86,13 +86,7 @@ public class ResourceManager extends AbstractResourceManagerSupport {
 			result = bundle.getString(path, args);
 		}
 		if (result == null) {
-			try {
-				result = getString(locale, path, args);
-			} catch (FileNotFoundException e) {
-				if (bundle == null) {
-					throw e;
-				}
-			}
+			result = getString(locale, path, args);
 		}
 		return result;
 	}

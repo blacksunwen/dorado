@@ -1,6 +1,5 @@
 package com.bstek.dorado.core.resource;
 
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -53,11 +52,12 @@ public class DefaultGlobalResourceBundleManager extends
 			} finally {
 				in.close();
 			}
-		} else {
-			throw new FileNotFoundException(
-					"Can not found resource file for \"" + bundleName
-							+ "\" in all search paths.");
 		}
+		// else {
+		// throw new FileNotFoundException(
+		// "Can not found resource file for \"" + bundleName
+		// + "\" in all search paths.");
+		// }
 		return bundle;
 	}
 

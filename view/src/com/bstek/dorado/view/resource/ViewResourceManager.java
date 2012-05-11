@@ -1,6 +1,5 @@
 package com.bstek.dorado.view.resource;
 
-import java.io.FileNotFoundException;
 import java.util.Locale;
 
 import com.bstek.dorado.core.resource.AbstractResourceManagerSupport;
@@ -41,13 +40,7 @@ public class ViewResourceManager extends AbstractResourceManagerSupport {
 			result = bundle.getString(path, args);
 		}
 		if (result == null) {
-			try {
-				result = getString(locale, path, args);
-			} catch (FileNotFoundException e) {
-				if (bundle == null) {
-					throw e;
-				}
-			}
+			result = getString(locale, path, args);
 		}
 		return result;
 	}
