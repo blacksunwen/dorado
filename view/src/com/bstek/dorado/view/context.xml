@@ -10,7 +10,14 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 		<property name="configLocation" value="classpath:com/bstek/dorado/view/base-types.xml" />
 	</bean>
 
-	<bean id="dorado.xmlViewConfigDefinitionFactory" class="com.bstek.dorado.view.config.XmlViewConfigDefinitionFactory">
+	<bean id="dorado.viewConfigDefinitionCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+		<property name="cacheName" value="com.bstek.dorado.view.config.definition.ViewConfigDefinition" />
+		<property name="maxElementsInMemory" value="${view.viewDefinitionCache.maxElementsInMemory}" />
+		<property name="overflowToDisk" value="false" />
+		<property name="timeToLive" value="${view.viewDefinitionCache.timeToLive}" />
+		<property name="timeToIdle" value="${view.viewDefinitionCache.timeToIdle}" />
+	</bean>
+	<bean id="dorado.xmlViewConfigDefinitionFactory" class="com.bstek.dorado.view.config.CacheableXmlViewConfigDefinitionFactory">
 		<property name="xmlDocumentBuilder" ref="dorado.xmlDocumentBuilder" />
 		<property name="xmlPreprocessor">
 			<bean class="com.bstek.dorado.view.config.XmlDocumentPreprocessor">
@@ -18,6 +25,7 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 				<property name="componentTypeRegistry" ref="dorado.componentTypeRegistry" />
 			</bean>
 		</property>
+		<property name="cache" ref="dorado.viewConfigDefinitionCache" />
 		<property name="xmlParser" ref="dorado.viewConfigParser" />
 		<property name="pathSubfix" value=".view.xml" />
 		<property name="dataTypeDefinitionManager" ref="dorado.dataTypeDefinitionManager" />

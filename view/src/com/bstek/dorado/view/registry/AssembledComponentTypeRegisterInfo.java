@@ -5,7 +5,6 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.view.config.ViewConfigDefinitionFactory;
-import com.bstek.dorado.view.config.ViewConfigInfo;
 import com.bstek.dorado.view.config.definition.ComponentDefinition;
 import com.bstek.dorado.view.config.definition.ViewConfigDefinition;
 import com.bstek.dorado.view.config.definition.ViewDefinition;
@@ -91,9 +90,7 @@ public class AssembledComponentTypeRegisterInfo extends
 			if (viewConfigFactory != null
 					&& viewConfigFactory instanceof ViewConfigDefinitionFactory) {
 				ViewConfigDefinitionFactory vcdf = (ViewConfigDefinitionFactory) viewConfigFactory;
-				ViewConfigInfo viewConfigInfo = vcdf
-						.getViewConfigInfo(viewName);
-				viewConfig = vcdf.create(viewConfigInfo);
+				viewConfig = vcdf.create(viewName);
 			}
 			if (viewConfig == null) {
 				throw new IllegalArgumentException("AssembleComponent view ["

@@ -258,10 +258,9 @@ public class XmlViewConfigDefinitionFactory implements
 		return new ViewConfigInfo(viewName, resource, document);
 	}
 
-	public ViewConfigDefinition create(ViewConfigInfo viewConfigInfo)
-			throws Exception {
+	public ViewConfigDefinition create(String viewName) throws Exception {
+		ViewConfigInfo viewConfigInfo = getViewConfigInfo(viewName);
 		Document document = (Document) viewConfigInfo.getConfigModel();
-		String viewName = viewConfigInfo.getViewName();
 
 		ViewParseContext parseContext = new ViewParseContext(viewName);
 		parseContext.setResource(viewConfigInfo.getResource());

@@ -6,7 +6,6 @@ import com.bstek.dorado.data.config.definition.DataProviderDefinition;
 import com.bstek.dorado.data.config.definition.DataTypeDefinition;
 import com.bstek.dorado.view.ViewContextTestCase;
 import com.bstek.dorado.view.config.ViewConfigDefinitionFactory;
-import com.bstek.dorado.view.config.ViewConfigInfo;
 import com.bstek.dorado.view.config.XmlViewConfigDefinitionFactory;
 import com.bstek.dorado.view.config.definition.ComponentDefinition;
 import com.bstek.dorado.view.config.definition.ViewConfigDefinition;
@@ -39,10 +38,8 @@ public class ConfigurableViewConfigManagerTest extends ViewContextTestCase {
 		String viewName = "com/bstek/dorado/view/config/xml/TestView1";
 		ViewConfigDefinitionFactory viewDefinitionFactory = (ViewConfigDefinitionFactory) viewConfigManager
 				.getViewConfigFactory(viewName);
-		ViewConfigInfo viewConfigInfo = viewDefinitionFactory
-				.getViewConfigInfo(viewName);
 		ViewConfigDefinition viewConfigDefinition = viewDefinitionFactory
-				.create(viewConfigInfo);
+				.create(viewName);
 		assertNotNull(viewConfigDefinition);
 
 		DefinitionManager<DataTypeDefinition> dataTypeDefinitionManager = viewConfigDefinition
@@ -53,7 +50,8 @@ public class ConfigurableViewConfigManagerTest extends ViewContextTestCase {
 				.getDataProviderDefinitionManager();
 		assertFalse(dataProviderDefinitionManager.getDefinitions().isEmpty());
 
-		ViewDefinition viewDefinition = viewConfigDefinition.getViewDefinition();
+		ViewDefinition viewDefinition = viewConfigDefinition
+				.getViewDefinition();
 		ComponentDefinition component;
 
 		component = viewDefinition.getComponent("ds1");
