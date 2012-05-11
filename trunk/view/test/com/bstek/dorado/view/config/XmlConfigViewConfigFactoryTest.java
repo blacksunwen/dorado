@@ -23,10 +23,8 @@ public class XmlConfigViewConfigFactoryTest extends ViewContextTestCase {
 	public void test1() throws Exception {
 		Context context = Context.getCurrent();
 		ViewConfigDefinitionFactory viewConfigFactory = getViewConfigDefinitionFactory(context);
-		ViewConfigInfo viewConfigInfo = viewConfigFactory
-				.getViewConfigInfo("com/bstek/dorado/view/config/xml/TestView1");
 		ViewConfigDefinition viewConfigDefinition = viewConfigFactory
-				.create(viewConfigInfo);
+				.create("com/bstek/dorado/view/config/xml/TestView1");
 		assertNotNull(viewConfigDefinition);
 
 		ViewDefinition viewDefinition = viewConfigDefinition
@@ -83,10 +81,8 @@ public class XmlConfigViewConfigFactoryTest extends ViewContextTestCase {
 	public void test2() throws Exception {
 		Context context = Context.getCurrent();
 		ViewConfigDefinitionFactory viewConfigFactory = getViewConfigDefinitionFactory(context);
-		ViewConfigInfo viewConfigInfo = viewConfigFactory
-				.getViewConfigInfo("com/bstek/dorado/view/config/xml/TestView2");
 		ViewConfigDefinition viewConfigDefinition = viewConfigFactory
-				.create(viewConfigInfo);
+				.create("com/bstek/dorado/view/config/xml/TestView2");
 		assertNotNull(viewConfigDefinition);
 	}
 }

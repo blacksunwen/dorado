@@ -27,5 +27,5 @@ public interface ViewConfigDefinitionFactory {
 	 * @return 视图的配置声明对象。
 	 * @throws Exception
 	 */
-	ViewConfigDefinition create(ViewConfigInfo viewConfigInfo) throws Exception;
+	ViewConfigDefinition create(String viewName) throws Exception;
 }

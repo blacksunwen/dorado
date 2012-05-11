@@ -7,7 +7,6 @@ import java.util.Map;
 import com.bstek.dorado.core.Context;
 import com.bstek.dorado.util.PathUtils;
 import com.bstek.dorado.view.config.ViewConfigDefinitionFactory;
-import com.bstek.dorado.view.config.ViewConfigInfo;
 import com.bstek.dorado.view.config.definition.ViewConfigDefinition;
 import com.bstek.dorado.web.DoradoContext;
 import com.bstek.dorado.web.DoradoContextUtils;
@@ -83,10 +82,8 @@ public abstract class ViewConfigManagerSupport implements ViewConfigManager {
 							.create(viewName);
 				} else if (viewConfigFactory instanceof ViewConfigDefinitionFactory) {
 					ViewConfigDefinitionFactory vcdf = (ViewConfigDefinitionFactory) viewConfigFactory;
-					ViewConfigInfo viewConfigInfo = vcdf
-							.getViewConfigInfo(viewName);
 					ViewConfigDefinition viewConfigDefinition = vcdf
-							.create(viewConfigInfo);
+							.create(viewName);
 					if (viewConfigDefinition != null) {
 						viewConfig = (ViewConfig) viewConfigDefinition
 								.create(new ViewCreationContext());
