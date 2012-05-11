@@ -15,7 +15,6 @@ public class GlobalDataTypeDefinitionManager extends DataTypeDefinitionManager {
 	@Override
 	public void registerDefinition(String name, DataTypeDefinition definition) {
 		DataObjectDefinitionUtils.setDataTypeGlobal(definition, true);
-		System.out.println("### " + name);
 		super.registerDefinition(name, definition);
 	}
 
