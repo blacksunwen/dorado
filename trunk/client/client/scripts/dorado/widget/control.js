@@ -1459,7 +1459,7 @@
 	 * // 查找某Element元素所属的Dialog控件。
 	 * var dialog = dorado.widget.findParentControl(div, dorado.widget.Dialog);
 	 */
-	dorado.widget.findParentControl = function(element, type) {
+	dorado.widget.Control.findParentControl = function(element, type) {
 
 		function find(win, dom, className) {
 			var control = null;
@@ -1511,5 +1511,10 @@
 		}
 		return find(window, element, className);
 	}
+	
+	/**
+	 * @Deprecated
+	 */
+	dorado.widget.findParentControl = dorado.widget.Control.findParentControl;
 
 })();
