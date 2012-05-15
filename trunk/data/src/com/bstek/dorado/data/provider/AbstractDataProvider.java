@@ -106,11 +106,17 @@ public abstract class AbstractDataProvider implements DataProvider, Namable,
 	}
 
 	public Object getResult(Object parameter) throws Exception {
+		if (parameter == null && this.parameter != null) {
+			parameter = this.parameter;
+		}
 		return internalGetResult(parameter, resultDataType);
 	}
 
 	public Object getResult(Object parameter, DataType resultDataType)
 			throws Exception {
+		if (parameter == null && this.parameter != null) {
+			parameter = this.parameter;
+		}
 		return internalGetResult(parameter, resultDataType);
 	}
 
@@ -119,11 +125,17 @@ public abstract class AbstractDataProvider implements DataProvider, Namable,
 	}
 
 	public void getResult(Object parameter, Page<?> page) throws Exception {
+		if (parameter == null && this.parameter != null) {
+			parameter = this.parameter;
+		}
 		internalGetResult(parameter, page, resultDataType);
 	}
 
 	public void getResult(Object parameter, Page<?> page,
 			DataType resultDataType) throws Exception {
+		if (parameter == null && this.parameter != null) {
+			parameter = this.parameter;
+		}
 		internalGetResult(parameter, page, resultDataType);
 	}
 
