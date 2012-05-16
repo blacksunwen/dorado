@@ -45,13 +45,13 @@ public class ListenableObjectDefinition extends GenericObjectDefinition {
 	@Override
 	protected final void initObject(Object object, CreationInfo creationInfo,
 			CreationContext context) throws Exception {
+		Map<String, Object> properties = creationInfo.getProperties();
 		if (object instanceof Namable) {
 			String name;
 			if (this instanceof Namable) {
 				name = ((Namable) this).getName();
 			} else {
-				name = (String) getProperties()
-						.get(XmlConstants.ATTRIBUTE_NAME);
+				name = (String) properties.remove(XmlConstants.ATTRIBUTE_NAME);
 			}
 			if (StringUtils.isNotEmpty(name)) {
 				((Namable) object).setName(name);
@@ -63,7 +63,7 @@ public class ListenableObjectDefinition extends GenericObjectDefinition {
 			if (this instanceof Identifiable) {
 				id = ((Identifiable) this).getId();
 			} else {
-				id = (String) getProperties().get(XmlConstants.ATTRIBUTE_ID);
+				id = (String) properties.remove(XmlConstants.ATTRIBUTE_ID);
 			}
 			if (StringUtils.isNotEmpty(id)) {
 				((Identifiable) object).setId(id);
@@ -71,18 +71,13 @@ public class ListenableObjectDefinition extends GenericObjectDefinition {
 		}
 
 		if (object instanceof MetaDataSupport) {
-			Object metaDataDef = getProperties().get("metaData");
+			Object metaDataDef = properties.remove("metaData");
 			metaDataDef = getFinalValueOrExpression(metaDataDef, context);
 			if (metaDataDef instanceof Map) {
 				Map<String, Object> metaData = (Map<String, Object>) metaDataDef;
 				((MetaDataSupport) object).setMetaData(metaData);
 			}
 		}
-
-		Map<String, Object> properties = creationInfo.getProperties();
-		properties.remove(XmlConstants.ATTRIBUTE_NAME);
-		properties.remove(XmlConstants.ATTRIBUTE_ID);
-		properties.remove("metaData");
 
 		String listener = getListener();
 		if (invokeBeforeInitListener(object, listener)) {
