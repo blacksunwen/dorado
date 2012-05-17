@@ -47,7 +47,8 @@ dorado.widget.DataControl = $extend(dorado.widget.DataSetObserver, /** @scope do
 		 * @param {Object} self 事件的发起者，即控件本身。
 		 * @param {Object} arg 事件参数。
 		 * @param {Object} arg.options 传递给getBindingData()方法的options参数。
-		 * @param {dorado.EntityList|dorado.Entity} arg.data 将该控件实际绑定的数据写入此属性中。
+		 * @param {dorado.EntityList|dorado.Entity} #arg.data 将该控件实际绑定的数据写入此属性中。
+		 * @param {boolean} #arg.processDefault=true 是否在事件结束后继续执行系统默认的获取数据的逻辑。
 		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 		 * @event
 		 */
@@ -65,7 +66,8 @@ dorado.widget.DataControl = $extend(dorado.widget.DataSetObserver, /** @scope do
 		 * </p>
 		 * @param {Object} self 事件的发起者，即控件本身。
 		 * @param {Object} arg 事件参数。
-		 * @param {dorado.DataType} arg.dataType 将该控件实际绑定的数据类型写入此属性中。
+		 * @param {dorado.DataType} #arg.dataType 将该控件实际绑定的数据类型写入此属性中。
+		 * @param {boolean} #arg.processDefault=true 是否在事件结束后继续执行系统默认的获取数据类型的逻辑。
 		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 		 * @event
 		 */
@@ -98,17 +100,20 @@ dorado.widget.DataControl = $extend(dorado.widget.DataSetObserver, /** @scope do
 		if (!options) options = {};
 		if (options.loadMode == null) options.loadMode = "auto";
 		
-		var data = null;
+		var eventArg = {
+			options: options,
+			processDefault: true
+		};
 		if (this.getListenerCount("onGetBindingData") > 0) {
-			var eventArg = {
-				options: options,
-				data: data
-			};
-			if (this.fireEvent("onGetBindingData", this, eventArg)) {
-				data = eventArg.data;
-			}
-		} else if (this._dataSet) {
+			this.fireEvent("onGetBindingData", this, eventArg);
+		}
+		
+		var data = null;
+		if (this._dataSet && eventArg.processDefault) {
 			data = this._dataSet.getData(this._dataPath, options);
+		}
+		else {
+			data = eventArg.data;
 		}
 		return data;
 	},
@@ -122,16 +127,20 @@ dorado.widget.DataControl = $extend(dorado.widget.DataSetObserver, /** @scope do
 		if (!options) options = {};
 		if (options.loadMode == null) options.loadMode = "auto";
 		
-		var dataType = null;
+		var eventArg = {
+			options: options,
+			processDefault: true
+		};
 		if (this.getListenerCount("onGetBindingDataType") > 0) {
-			var eventArg = {
-				options: options
-			};
-			if (this.fireEvent("onGetBindingDataType", this, eventArg)) {
-				dataType = eventArg.dataType;
-			}
-		} else if (this._dataSet) {
+			this.fireEvent("onGetBindingDataType", this, eventArg);
+		}
+		
+		var dataType = null;
+		if (this._dataSet && eventArg.processDefault) {
 			dataType = this._dataSet.getDataType(this._dataPath, options);
+		}
+		else {
+			dataType = eventArg.dataType;
 		}
 		return dataType;
 	},
