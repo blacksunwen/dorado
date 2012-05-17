@@ -204,8 +204,8 @@
 		addColumn: function() {
 			var column = $invokeSuper.call(this, arguments);
 			if (this._autoCreateColumns &&
-			(column instanceof dorado.widget.grid.DataColumn && column._property && column._property != "none" ||
-			column instanceof dorado.widget.grid.ColumnGroup)) {
+					(column instanceof dorado.widget.grid.DataColumn && column._property && column._property != "none" ||
+					column instanceof dorado.widget.grid.ColumnGroup)) {
 				var watcher = this.getAttributeWatcher();
 				if (watcher.getWritingTimes("autoCreateColumns") == 0) {
 					this._autoCreateColumns = false;
@@ -287,8 +287,14 @@
 					firstResultOnly: true,
 					acceptAggregation: true
 				});
-				if (entityList && !(entityList instanceof dorado.EntityList)) {
-					throw new dorado.ResourceException("dorado.grid.BindingTypeMismatch", this._id);
+				
+				if (entityList) {
+					if (entityList instanceof Array) {
+						entityList = new dorado.EntityList(entityList);
+					}
+					else if (!(entityList instanceof dorado.EntityList)) {
+						throw new dorado.ResourceException("dorado.grid.BindingTypeMismatch", this._id);
+					}
 				}
 				
 				var dataType;
