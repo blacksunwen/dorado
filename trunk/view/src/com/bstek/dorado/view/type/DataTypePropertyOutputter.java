@@ -30,12 +30,6 @@ public class DataTypePropertyOutputter extends ObjectOutputterDispatcher {
 	}
 
 	@Override
-	public boolean isEscapeValue(Object value) {
-		DataType dataType = (DataType) value;
-		return (dataType == null || "String".equals(dataType.getName()));
-	}
-
-	@Override
 	public void output(Object object, OutputContext context) throws Exception {
 		DataType dataType = (DataType) object;
 		JsonBuilder json = context.getJsonBuilder();
