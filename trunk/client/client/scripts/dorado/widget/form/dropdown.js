@@ -420,7 +420,8 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 			if (boxWidth < this._minWidth) boxWidth = this._minWidth;
 		}
 		if (!this._height) {
-			boxHeight = containerElement.scrollHeight;
+			boxHeight = (dorado.Browser.mozilla) ? containerElement.firstChild.offsetHeight
+					: containerElement.scrollHeight;
 			if (boxHeight > this._realMaxHeight) boxHeight = this._realMaxHeight;
 			if (boxHeight < this._minHeight) boxHeight = this._minHeight;
 		}
