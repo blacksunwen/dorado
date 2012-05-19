@@ -9,6 +9,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.core.Context;
@@ -80,10 +81,11 @@ public abstract class AbstractJdbcTestCase extends TestCase {
 		}
 
 		currentContext.close();
-		System.out.println("<---------------------------------------------------<<");
-		Thread.sleep(2*1000);
-		
 		super.tearDown();
+		
+		System.out.println("<---------------------------------------------------<<");
+		System.gc();
+		Thread.sleep(2*1000);
 	}
 	
 	protected void register(TestTable...tables) {
@@ -118,12 +120,16 @@ public abstract class AbstractJdbcTestCase extends TestCase {
 		return manager.getDefault();
 	}
 	
-	public JdbcDao getDao() {
+	protected JdbcDao getDao() {
 		try {
 			return (JdbcDao)Context.getCurrent().getServiceBean("jdbcDao");
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	protected NamedParameterJdbcTemplate getNamedParameterJdbcTemplate() throws Exception {
+		return this.getJdbcEnviroment().getSpringNamedDao().getNamedParameterJdbcTemplate();
 	}
 	
 	protected JdbcDataProvider getProvider(String name) throws Exception {
