@@ -3,9 +3,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="dataSource" class="org.h2.jdbcx.JdbcDataSource">
-		<property name="URL" value="jdbc:h2:mem:db1;DB_CLOSE_DELAY=-1" />
-	</bean>
+    <bean id="dataSource" class="com.bstek.dorado.jdbc.test.H2DataSource"/>
     
     <bean parent="dorado.jdbcEnvTemplate">
         <property name="name" value="h2" />
