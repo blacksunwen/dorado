@@ -1,5 +1,7 @@
 package com.bstek.dorado.data.type;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * 用于描述java.lang.Float的数据类型。
  * 
@@ -9,7 +11,7 @@ package com.bstek.dorado.data.type;
 public class FloatDataType extends DecimalDataType {
 
 	public Object fromText(String text) {
-		if (text == null) {
+		if (StringUtils.isEmpty(text)) {
 			return null;
 		} else {
 			return Float.valueOf(text);
