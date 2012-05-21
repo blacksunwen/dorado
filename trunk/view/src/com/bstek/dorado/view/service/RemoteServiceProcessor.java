@@ -12,6 +12,7 @@ import org.codehaus.jackson.type.TypeReference;
 
 import com.bstek.dorado.common.method.MethodAutoMatchingException;
 import com.bstek.dorado.common.method.MethodAutoMatchingUtils;
+import com.bstek.dorado.common.method.MoreThanOneMethodsMatchsException;
 import com.bstek.dorado.common.service.ExposedService;
 import com.bstek.dorado.common.service.ExposedServiceManager;
 import com.bstek.dorado.core.Configure;
@@ -79,6 +80,8 @@ public class RemoteServiceProcessor extends DataServiceProcessorSupport {
 		Object returnValue;
 		try {
 			returnValue = invokeByParameterName(serviceBean, methods, parameter);
+		} catch (MoreThanOneMethodsMatchsException e) {
+			throw e;
 		} catch (MethodAutoMatchingException e1) {
 			try {
 				returnValue = invokeByParameterType(serviceBean, methods,
@@ -115,20 +118,6 @@ public class RemoteServiceProcessor extends DataServiceProcessorSupport {
 			sysParameter = parameterWrapper.getSysParameter();
 		}
 
-		String[] requiredParameterNames = null;
-		Object[] requiredParameters = null;
-		if (sysParameter != null) {
-			requiredParameterNames = new String[sysParameter.size()];
-			requiredParameters = new Object[requiredParameterNames.length];
-
-			int i = 0;
-			for (Map.Entry<?, ?> entry : sysParameter.entrySet()) {
-				requiredParameterNames[i] = (String) entry.getKey();
-				requiredParameters[i] = entry.getValue();
-				i++;
-			}
-		}
-
 		String[] parameterParameterNames = null;
 		Object[] parameterParameters = null;
 		if (parameter != null && parameter instanceof Map) {
@@ -147,22 +136,32 @@ public class RemoteServiceProcessor extends DataServiceProcessorSupport {
 		} else if (parameter != null) {
 			parameterParameterNames = new String[] { "parameter" };
 			parameterParameters = new Object[] { parameter };
-		}
-		else {
+		} else {
 			parameterParameterNames = new String[0];
 			parameterParameters = new Object[0];
 		}
 
-		String[] optionalParameterNames = new String[parameterParameterNames.length];
+		int sysParameterCount = (sysParameter != null) ? sysParameter.size()
+				: 0;
+		String[] optionalParameterNames = new String[parameterParameterNames.length
+				+ sysParameterCount];
 		Object[] optionalParameters = new Object[optionalParameterNames.length];
 		System.arraycopy(parameterParameterNames, 0, optionalParameterNames, 0,
 				parameterParameterNames.length);
 		System.arraycopy(parameterParameters, 0, optionalParameters, 0,
 				parameterParameters.length);
 
-		return MethodAutoMatchingUtils.invokeMethod(methods, serviceBean,
-				requiredParameterNames, requiredParameters,
-				optionalParameterNames, optionalParameters);
+		if (sysParameterCount > 0) {
+			int i = optionalParameterNames.length - sysParameterCount;
+			for (Map.Entry<?, ?> entry : sysParameter.entrySet()) {
+				optionalParameterNames[i] = (String) entry.getKey();
+				optionalParameters[i] = entry.getValue();
+				i++;
+			}
+		}
+
+		return MethodAutoMatchingUtils.invokeMethod(methods, serviceBean, null,
+				null, optionalParameterNames, optionalParameters);
 	}
 
 	protected Object invokeByParameterType(Object serviceBean,

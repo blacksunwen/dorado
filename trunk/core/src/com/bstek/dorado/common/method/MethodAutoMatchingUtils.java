@@ -110,25 +110,6 @@ public abstract class MethodAutoMatchingUtils {
 		return methods;
 	}
 
-	/**
-	 * 在给定的一组方法中根据方法名、调用参数和返回值类型查找一个匹配的方法。
-	 * 
-	 * @param methods
-	 *            方法数组。
-	 * @param args
-	 *            调用参数。
-	 * @param returnType
-	 *            返回值类型，如果为null则表示忽略对返回值类型的判断。
-	 * @return 找到的方法。
-	 * @throws MethodAutoMatchingException
-	 *             如果找到了一个以上的匹配方法或没有找到任何匹配的方法将抛出此异常。
-	 */
-	public static Method findMatchingMethod(Method[] methods, Object[] args,
-			Class<?> returnType) throws MethodAutoMatchingException {
-		Class<?>[] argTypes = args2ArgTypes(args);
-		return findMatchingMethod(methods, argTypes, returnType);
-	}
-
 	private static void trimClassTypes(Class<?>[] cls) {
 		for (int i = 0; i < cls.length; i++) {
 			Class<?> type = cls[i];
@@ -159,8 +140,8 @@ public abstract class MethodAutoMatchingUtils {
 	 * @throws MethodAutoMatchingException
 	 *             如果找到了一个以上的匹配方法或没有找到任何匹配的方法将抛出此异常。
 	 */
-	private static MethodDescriptor findMatchingMethod(Method[] methods,
-			Class<?>[] requiredTypes, Class<?>[] exactTypes,
+	private static MethodDescriptor findMatchingMethodByParameterTypes(
+			Method[] methods, Class<?>[] requiredTypes, Class<?>[] exactTypes,
 			Class<?>[] optionalTypes, Class<?> returnType)
 			throws MethodAutoMatchingException {
 		if (requiredTypes == null) {
@@ -195,7 +176,7 @@ public abstract class MethodAutoMatchingUtils {
 								"More than one methods matching the following condition",
 								methods, requiredTypes, exactTypes,
 								optionalTypes, returnType);
-						throw new MethodAutoMatchingException(message);
+						throw new MoreThanOneMethodsMatchsException(message);
 					} else if (tmpMatchingRate < matchingRate) {
 						continue;
 					}
@@ -389,8 +370,9 @@ public abstract class MethodAutoMatchingUtils {
 			}
 		}
 
-		if (undetermine > 0)
+		if (undetermine > 0) {
 			return null;
+		}
 		return new MethodDescriptor(method, argIndexs, matchingRate);
 	}
 
@@ -420,6 +402,7 @@ public abstract class MethodAutoMatchingUtils {
 			return null;
 		}
 
+		int rate = 1000;
 		int[] argIndexs = new int[methodParameterNames.length];
 		for (int i = 0; i < argIndexs.length; i++) {
 			argIndexs[i] = -1;
@@ -442,9 +425,10 @@ public abstract class MethodAutoMatchingUtils {
 					return null;
 				}
 				argIndexs[i] = requiredParameterNames.length + index;
+				rate += 100;
 			}
 		}
-		return new MethodDescriptor(method, argIndexs, 0);
+		return new MethodDescriptor(method, argIndexs, rate);
 	}
 
 	/**
@@ -466,10 +450,12 @@ public abstract class MethodAutoMatchingUtils {
 			String[] optionalParameterNames)
 			throws MethodAutoMatchingException, SecurityException,
 			NoSuchMethodException {
-		if (requiredParameterNames == null)
+		if (requiredParameterNames == null) {
 			requiredParameterNames = EMPTY_NAMES;
-		if (optionalParameterNames == null)
+		}
+		if (optionalParameterNames == null) {
 			optionalParameterNames = EMPTY_NAMES;
+		}
 
 		MethodDescriptor methodDescriptor = null;
 		for (Method method : methods) {
@@ -477,14 +463,19 @@ public abstract class MethodAutoMatchingUtils {
 					method, requiredParameterNames, optionalParameterNames);
 			if (tmpMethodDescriptor != null) {
 				if (methodDescriptor != null) {
-					String message = getExceptionMessage(
-							"More than one methods matching the following condition",
-							methods, requiredParameterNames,
-							optionalParameterNames);
-					throw new MethodAutoMatchingException(message);
-				} else {
-					methodDescriptor = tmpMethodDescriptor;
+					int matchingRate = methodDescriptor.getMatchingRate();
+					int tmpMatchingRate = tmpMethodDescriptor.getMatchingRate();
+					if (matchingRate == tmpMatchingRate) {
+						String message = getExceptionMessage(
+								"More than one methods matching the following condition",
+								methods, requiredParameterNames,
+								optionalParameterNames);
+						throw new MoreThanOneMethodsMatchsException(message);
+					} else if (tmpMatchingRate < matchingRate) {
+						continue;
+					}
 				}
+				methodDescriptor = tmpMethodDescriptor;
 			}
 		}
 
@@ -606,8 +597,8 @@ public abstract class MethodAutoMatchingUtils {
 			}
 		}
 
-		MethodDescriptor methodDescriptor = findMatchingMethod(methods,
-				requiredParameterTypes, exactParameterTypes,
+		MethodDescriptor methodDescriptor = findMatchingMethodByParameterTypes(
+				methods, requiredParameterTypes, exactParameterTypes,
 				optionalParameterTypes, returnType);
 
 		if (requiredParameters == null) {
@@ -697,10 +688,12 @@ public abstract class MethodAutoMatchingUtils {
 		MethodDescriptor methodDescriptor = findMatchingMethodByParameterNames(
 				methods, requiredParameterNames, optionalParameterNames);
 
-		if (requiredParameters == null)
+		if (requiredParameters == null) {
 			requiredParameters = EMPTY_ARGS;
-		if (optionalParameters == null)
+		}
+		if (optionalParameters == null) {
 			optionalParameters = EMPTY_ARGS;
+		}
 
 		Object[] args = new Object[requiredParameters.length
 				+ optionalParameters.length];
@@ -725,8 +718,9 @@ public abstract class MethodAutoMatchingUtils {
 				b = Number.class.isAssignableFrom(targetType)
 						&& Number.class.isAssignableFrom(sourceType);
 			}
-			if (!b)
+			if (!b) {
 				rate = 0;
+			}
 		}
 		return rate;
 	}
@@ -748,20 +742,6 @@ public abstract class MethodAutoMatchingUtils {
 		return (b) ? 1 : 0;
 	}
 
-	private static Class<?>[] args2ArgTypes(Object[] args) {
-		Class<?>[] argTypes = new Class[args.length];
-		for (int i = 0; i < args.length; i++) {
-			Object arg = args[i];
-			if (arg != null) {
-				Class<?> cl = arg.getClass();
-				argTypes[i] = ProxyBeanUtils.getProxyTargetType(cl);
-			} else {
-				argTypes[i] = IgnoreType.class;
-			}
-		}
-		return argTypes;
-	}
-
 	private static String getClassName(Class<?> type) {
 		if (net.sf.cglib.proxy.Factory.class.isAssignableFrom(type)) {
 			return type.getSuperclass().getName();
@@ -777,8 +757,9 @@ public abstract class MethodAutoMatchingUtils {
 		message.append(getExceptionMessageHeader(methods, header));
 		message.append(" requiredTypes=[");
 		for (int i = 0; i < requiredTypes.length; i++) {
-			if (i > 0)
+			if (i > 0) {
 				message.append(",");
+			}
 			Class<?> argType = requiredTypes[i];
 			if (argType != null) {
 				message.append(getClassName(argType));
@@ -790,8 +771,9 @@ public abstract class MethodAutoMatchingUtils {
 
 		message.append(" exactTypes=[");
 		for (int i = 0; i < exactTypes.length; i++) {
-			if (i > 0)
+			if (i > 0) {
 				message.append(",");
+			}
 			Class<?> argType = exactTypes[i];
 			if (argType != null) {
 				message.append(getClassName(argType));
@@ -803,8 +785,9 @@ public abstract class MethodAutoMatchingUtils {
 
 		message.append(" optionalTypes=[");
 		for (int i = 0; i < optionalTypes.length; i++) {
-			if (i > 0)
+			if (i > 0) {
 				message.append(",");
+			}
 			Class<?> argType = optionalTypes[i];
 			if (argType != null) {
 				message.append(getClassName(argType));
@@ -823,15 +806,17 @@ public abstract class MethodAutoMatchingUtils {
 		message.append(getExceptionMessageHeader(methods, header));
 		message.append(" requiredParameters=[");
 		for (int i = 0; i < requiredParameterNames.length; i++) {
-			if (i > 0)
+			if (i > 0) {
 				message.append(",");
+			}
 			message.append(requiredParameterNames[i]);
 		}
 		message.append("],");
 		message.append(" optionalParameters=[");
 		for (int i = 0; i < optionalParameterNames.length; i++) {
-			if (i > 0)
+			if (i > 0) {
 				message.append(",");
+			}
 			message.append(optionalParameterNames[i]);
 		}
 		message.append("]");
