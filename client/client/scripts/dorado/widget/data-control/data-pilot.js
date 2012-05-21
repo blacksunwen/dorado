@@ -131,11 +131,13 @@
 					break;
 				}
 			}
+			if (b) {
+				this._entities = this.getBindingData();
+			}
 			return b;
 		},
 		
 		processDataSetMessage: function(messageCode, arg, data) {
-			this._entities = this.getBindingData();
 			switch (messageCode) {
 				case dorado.widget.DataSet.MESSAGE_REFRESH:
 				case dorado.widget.DataSet.MESSAGE_DATA_CHANGED:
@@ -220,7 +222,7 @@
 						caption: itemCode.showCaption ? $resource("dorado.baseWidget.DataPilotFirstPage") : null,
 						onClick: function(self) {
 							if (!fireOnActionEvent.call(pilot, itemCode.code, self)) return;
-							var list = pilot._entities;
+							var list = pilot.getBindingData();
 							if (list instanceof dorado.EntityList && list.pageNo > 1) {
 								pilot.set("disabled", true);
 								list.firstPage(callback);
@@ -234,7 +236,7 @@
 						caption: itemCode.showCaption ? $resource("dorado.baseWidget.DataPilotPrevousPage") : null,
 						onClick: function() {
 							if (!fireOnActionEvent.call(pilot, itemCode.code, self)) return;
-							var list = pilot._entities;
+							var list = pilot.getBindingData();
 							if (list instanceof dorado.EntityList && list.pageNo > 1) {
 								pilot.set("disabled", true);
 								list.previousPage(callback);
@@ -248,7 +250,7 @@
 						caption: itemCode.showCaption ? $resource("dorado.baseWidget.DataPilotNextPage") : null,
 						onClick: function() {
 							if (!fireOnActionEvent.call(pilot, itemCode.code, self)) return;
-							var list = pilot._entities;
+							var list = pilot.getBindingData();
 							if (list instanceof dorado.EntityList && list.pageNo < list.pageCount) {
 								pilot.set("disabled", true);
 								list.nextPage(callback);
@@ -262,7 +264,7 @@
 						caption: itemCode.showCaption ? $resource("dorado.baseWidget.DataPilotLastPage") : null,
 						onClick: function() {
 							if (!fireOnActionEvent.call(pilot, itemCode.code, self)) return;
-							var list = pilot._entities;
+							var list = pilot.getBindingData();
 							if (list instanceof dorado.EntityList && list.pageNo < list.pageCount) {
 								pilot.set("disabled", true);
 								list.lastPage(callback);
@@ -274,7 +276,7 @@
 					item = new GotoPageControl({
 						onAction: function(self, arg) {
 							if (!fireOnActionEvent.call(pilot, itemCode.code, self)) return;
-							var list = pilot._entities;
+							var list = pilot.getBindingData();
 							if (list instanceof dorado.EntityList && list.pageNo != arg.pageNo) {
 								pilot.set("disabled", true);
 								list.gotoPage(arg.pageNo, callback);
@@ -291,7 +293,7 @@
 						caption: itemCode.showCaption ? $resource("dorado.baseWidget.DataPilotInsert") : null,
 						onClick: function() {
 							if (!fireOnActionEvent.call(pilot, itemCode.code, self)) return;
-							var list = pilot._entities;
+							var list = pilot.getBindingData();
 							if (list instanceof dorado.EntityList) list.createChild();
 						}
 					});
@@ -303,7 +305,7 @@
 						onClick: function() {
 							if (!fireOnActionEvent.call(pilot, itemCode.code, self)) return;
 							dorado.MessageBox.confirm($resource("dorado.baseWidget.DataPilotDeleteConfirm"), function() {
-								var list = pilot._entities;
+								var list = pilot.getBindingData();
 								if (list instanceof dorado.EntityList && list.current) list.current.remove();
 							});
 						}
@@ -316,7 +318,7 @@
 						onClick: function() {
 							if (!fireOnActionEvent.call(pilot, itemCode.code, self)) return;
 							dorado.MessageBox.confirm($resource("dorado.baseWidget.DataPilotCancelConfirm"), function() {
-								var list = pilot._entities;
+								var list = pilot.getBindingData();
 								if (list instanceof dorado.EntityList && list.current) list.current.cancel();
 							});
 						}
