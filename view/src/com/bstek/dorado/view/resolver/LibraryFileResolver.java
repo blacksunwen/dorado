@@ -48,56 +48,60 @@ public class LibraryFileResolver extends
 
 		public I18NResource(Context context, String packageName,
 				Resource[] resources) throws IOException {
-			cachedResource = cacheFileMap.get(resources);
-			if (cachedResource == null) {
-				String path = null;
-				Properties properties = new Properties();
-				for (Resource resource : resources) {
-					if (path == null) {
-						path = resource.getPath();
+			synchronized (cacheFileMap) {
+				cachedResource = cacheFileMap.get(resources);
+				if (cachedResource == null) {
+					String path = null;
+					Properties properties = new Properties();
+					for (Resource resource : resources) {
+						if (path == null) {
+							path = resource.getPath();
+						} else {
+							path += ';' + resource.getPath();
+						}
+						properties.load(resource.getInputStream());
+					}
+
+					FileHandler fileHandler = TempFileUtils.createTempFile(
+							"client-i18n-" + packageName + '-',
+							JAVASCRIPT_SUFFIX);
+
+					Writer writer = fileHandler.getWriter();
+					String namespace = properties.getProperty("namespace");
+					properties.remove("namespace");
+					writer.append("dorado.util.Resource.append(");
+					if (StringUtils.isEmpty(namespace)) {
+						writer.append("\n");
 					} else {
-						path += ';' + resource.getPath();
-					}
-					properties.load(resource.getInputStream());
-				}
-
-				FileHandler fileHandler = TempFileUtils.createTempFile(path,
-						"client-i18n-" + packageName + '-', JAVASCRIPT_SUFFIX);
-
-				Writer writer = fileHandler.getWriter();
-				String namespace = properties.getProperty("namespace");
-				properties.remove("namespace");
-				writer.append("dorado.util.Resource.append(");
-				if (StringUtils.isEmpty(namespace)) {
-					writer.append("\n");
-				} else {
-					writer.append("\"")
-							.append(StringEscapeUtils
-									.escapeJavaScript(namespace))
-							.append("\",\n");
-				}
-
-				JsonBuilder jsonBuilder = new JsonBuilder(writer);
-				jsonBuilder.object();
-				for (Map.Entry<?, ?> entry : properties.entrySet()) {
-					String value = (String) entry.getValue();
-					if (value != null) {
-						jsonBuilder.key((String) entry.getKey());
-						jsonBuilder.beginValue();
-						writer.append('\"')
+						writer.append("\"")
 								.append(StringEscapeUtils
-										.escapeJavaScript(value)).append('\"');
-						jsonBuilder.endValue();
+										.escapeJavaScript(namespace))
+								.append("\",\n");
 					}
+
+					JsonBuilder jsonBuilder = new JsonBuilder(writer);
+					jsonBuilder.object();
+					for (Map.Entry<?, ?> entry : properties.entrySet()) {
+						String value = (String) entry.getValue();
+						if (value != null) {
+							jsonBuilder.key((String) entry.getKey());
+							jsonBuilder.beginValue();
+							writer.append('\"')
+									.append(StringEscapeUtils
+											.escapeJavaScript(value))
+									.append('\"');
+							jsonBuilder.endValue();
+						}
+					}
+					jsonBuilder.endObject();
+
+					writer.append("\n);");
+					writer.flush();
+
+					cachedResource = context.getResource("file:"
+							+ fileHandler.getPath());
+					cacheFileMap.put(resources, cachedResource);
 				}
-				jsonBuilder.endObject();
-
-				writer.append("\n);");
-				writer.flush();
-
-				cachedResource = context.getResource("file:"
-						+ fileHandler.getPath());
-				cacheFileMap.put(resources, cachedResource);
 			}
 		}
 
