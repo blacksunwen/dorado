@@ -36,7 +36,6 @@ public class BootPackagesResolver extends WebFileResolver {
 	private static final String JAVASCRIPT_SUFFIX = ".js";
 	private static final String MIN_JAVASCRIPT_SUFFIX = ".min.js";
 	private static final String CLIENT_PACKAGES_CONFIG = "$packagesConfig";
-	private static final String TEMP_FILE_ID = "packages-config";
 	private PackagesConfigManager packagesConfigManager;
 
 	private String bootFile;
@@ -73,7 +72,7 @@ public class BootPackagesResolver extends WebFileResolver {
 	@Override
 	protected ResourcesWrapper createResourcesWrapper(
 			HttpServletRequest request, DoradoContext context) throws Exception {
-		FileHandler fileHandler = TempFileUtils.createTempFile(TEMP_FILE_ID,
+		FileHandler fileHandler = TempFileUtils.createTempFile(
 				"packages-config-", JAVASCRIPT_SUFFIX);
 
 		PackagesConfig packagesConfig = getPackagesConfigManager()
@@ -141,8 +140,8 @@ public class BootPackagesResolver extends WebFileResolver {
 		writeSetting(writer, "core.debugEnabled",
 				Configure.getBoolean("view.debugEnabled"), false, true);
 		writeSetting(writer, "core.showExceptionStackTrace",
-				Configure.getBoolean("view.showExceptionStackTrace"),
-				false, true);
+				Configure.getBoolean("view.showExceptionStackTrace"), false,
+				true);
 		String contextPath = DoradoContext.getAttachedRequest()
 				.getContextPath();
 		writeSetting(writer, "common.contextPath", contextPath, true, true);
@@ -158,6 +157,8 @@ public class BootPackagesResolver extends WebFileResolver {
 				"defaultContentType", null);
 
 		JsonBuilder jsonBuilder = new JsonBuilder(writer);
+		jsonBuilder.setPrettyFormat(Configure
+				.getBoolean("view.outputPrettyJson"));
 		Map<String, Pattern> patterns = packagesConfig.getPatterns();
 		if (patterns != null) {
 			writer.write(CLIENT_PACKAGES_CONFIG);
@@ -172,6 +173,8 @@ public class BootPackagesResolver extends WebFileResolver {
 		}
 
 		jsonBuilder = new JsonBuilder(writer);
+		jsonBuilder.setPrettyFormat(Configure
+				.getBoolean("view.outputPrettyJson"));
 		Map<String, Package> packages = packagesConfig.getPackages();
 		if (packages != null) {
 			writer.write(CLIENT_PACKAGES_CONFIG);

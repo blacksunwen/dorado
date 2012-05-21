@@ -9,8 +9,6 @@ import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.nio.channels.OverlappingFileLockException;
-import java.util.Hashtable;
-import java.util.Map;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -20,7 +18,6 @@ public final class TempFileUtils {
 	private static final String TEMP_DIR_PREFIX = "instance-";
 	private static final String LOCK_FILE = "lock";
 
-	private static Map<String, FileHandler> fileHandleMap = new Hashtable<String, FileHandler>();
 	private static File rootDir;
 	private static File tempDir;
 
@@ -104,27 +101,12 @@ public final class TempFileUtils {
 		return tempDir;
 	}
 
-	public static FileHandler createTempFile(String id, String fileNamePrefix,
+	public static FileHandler createTempFile(String fileNamePrefix,
 			String fileNamesuffix) throws IOException {
-		Assert.notEmpty(id);
-
-		deleteTempFile(id);
-
 		File file = File.createTempFile(fileNamePrefix, fileNamesuffix,
 				getTempDir());
 		file.deleteOnExit();
-
-		FileHandler handler = new FileHandler(file);
-		fileHandleMap.put(id, handler);
-		return handler;
+		return new FileHandler(file);
 	}
 
-	public static void deleteTempFile(String id) throws IOException {
-		Assert.notEmpty(id);
-
-		FileHandler handler = fileHandleMap.remove(id);
-		if (handler != null) {
-			handler.delete();
-		}
-	}
 }
