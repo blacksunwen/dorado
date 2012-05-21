@@ -12,6 +12,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.bstek.dorado.common.method.MethodAutoMatchingException;
 import com.bstek.dorado.common.method.MethodAutoMatchingUtils;
+import com.bstek.dorado.common.method.MoreThanOneMethodsMatchsException;
 import com.bstek.dorado.core.bean.BeanFactoryUtils;
 import com.bstek.dorado.data.ParameterWrapper;
 import com.bstek.dorado.data.provider.DataProvider;
@@ -80,6 +81,8 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 		try {
 			return invokeInterceptorByParamName(dataProvider, methods,
 					methodInvocation);
+		} catch (MoreThanOneMethodsMatchsException e) {
+			throw e;
 		} catch (MethodAutoMatchingException e1) {
 			try {
 				return invokeInterceptorByParamType(dataProvider, methods,
@@ -126,21 +129,11 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 			page = (Page<?>) proxyArgs[pageParameterIndex];
 		}
 
-		requiredParameterNames = new String[((page != null) ? 1 : 0)
-				+ sysParameter.size()];
+		requiredParameterNames = new String[((page != null) ? 1 : 0)];
 		requiredParameters = new Object[requiredParameterNames.length];
 		if (page != null) {
 			requiredParameterNames[0] = "page";
 			requiredParameters[0] = page;
-		}
-
-		if (!sysParameter.isEmpty()) {
-			int i = (page != null) ? 1 : 0;
-			for (Map.Entry<?, ?> entry : sysParameter.entrySet()) {
-				requiredParameterNames[i] = (String) entry.getKey();
-				requiredParameters[i] = entry.getValue();
-				i++;
-			}
 		}
 
 		String[] parameterParameterNames = EMPTY_NAMES;
@@ -163,7 +156,8 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 			parameterParameters = new Object[] { parameter };
 		}
 
-		optionalParameterNames = new String[parameterParameterNames.length + 2];
+		optionalParameterNames = new String[parameterParameterNames.length
+				+ sysParameter.size() + 2];
 		optionalParameters = new Object[optionalParameterNames.length];
 
 		optionalParameterNames[0] = "dataProvider";
@@ -175,6 +169,14 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 				parameterParameterNames.length);
 		System.arraycopy(parameterParameters, 0, optionalParameters, 2,
 				parameterParameters.length);
+		if (!sysParameter.isEmpty()) {
+			int i = optionalParameterNames.length - sysParameter.size();
+			for (Map.Entry<?, ?> entry : sysParameter.entrySet()) {
+				optionalParameterNames[i] = (String) entry.getKey();
+				optionalParameters[i] = entry.getValue();
+				i++;
+			}
+		}
 
 		return MethodAutoMatchingUtils.invokeMethod(methods, interceptor,
 				requiredParameterNames, requiredParameters,

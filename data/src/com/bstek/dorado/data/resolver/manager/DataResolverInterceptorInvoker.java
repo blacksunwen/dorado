@@ -11,6 +11,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.bstek.dorado.common.method.MethodAutoMatchingException;
 import com.bstek.dorado.common.method.MethodAutoMatchingUtils;
+import com.bstek.dorado.common.method.MoreThanOneMethodsMatchsException;
 import com.bstek.dorado.core.bean.BeanFactoryUtils;
 import com.bstek.dorado.data.ParameterWrapper;
 import com.bstek.dorado.data.provider.DataProvider;
@@ -77,6 +78,8 @@ public class DataResolverInterceptorInvoker implements MethodInterceptor {
 		try {
 			return invokeInterceptorByParamName(dataResolver, methods,
 					methodInvocation);
+		} catch (MoreThanOneMethodsMatchsException e) {
+			throw e;
 		} catch (MethodAutoMatchingException e1) {
 			try {
 				return invokeInterceptorByParamType(dataResolver, methods,
@@ -100,20 +103,6 @@ public class DataResolverInterceptorInvoker implements MethodInterceptor {
 			ParameterWrapper parameterWrapper = (ParameterWrapper) parameter;
 			parameter = parameterWrapper.getParameter();
 			sysParameter = parameterWrapper.getSysParameter();
-		}
-
-		String[] requiredParameterNames = null;
-		Object[] requiredParameters = null;
-		if (sysParameter != null) {
-			requiredParameterNames = new String[sysParameter.size()];
-			requiredParameters = new Object[requiredParameterNames.length];
-
-			int i = 0;
-			for (Map.Entry<?, ?> entry : sysParameter.entrySet()) {
-				requiredParameterNames[i] = (String) entry.getKey();
-				requiredParameters[i] = entry.getValue();
-				i++;
-			}
 		}
 
 		String[] optionalParameterNames = null;
@@ -141,8 +130,10 @@ public class DataResolverInterceptorInvoker implements MethodInterceptor {
 
 		int dataItemsParameterCount = (dataItems != null) ? dataItems.size()
 				: 0;
+		int sysParameterCount = (sysParameter != null) ? sysParameter.size()
+				: 0;
 		optionalParameterNames = new String[dataItemsParameterCount
-				+ parameterParameterNames.length + 3];
+				+ sysParameterCount + parameterParameterNames.length + 3];
 		optionalParameters = new Object[optionalParameterNames.length];
 		optionalParameterNames[0] = "dataItems";
 		optionalParameterNames[1] = "dataResolver";
@@ -165,9 +156,17 @@ public class DataResolverInterceptorInvoker implements MethodInterceptor {
 		System.arraycopy(parameterParameters, 0, optionalParameters,
 				dataItemsParameterCount + 3, parameterParameters.length);
 
-		return MethodAutoMatchingUtils.invokeMethod(methods, interceptor,
-				requiredParameterNames, requiredParameters,
-				optionalParameterNames, optionalParameters);
+		if (sysParameterCount > 0) {
+			int i = optionalParameterNames.length - sysParameterCount;
+			for (Map.Entry<?, ?> entry : sysParameter.entrySet()) {
+				optionalParameterNames[i] = (String) entry.getKey();
+				optionalParameters[i] = entry.getValue();
+				i++;
+			}
+		}
+
+		return MethodAutoMatchingUtils.invokeMethod(methods, interceptor, null,
+				null, optionalParameterNames, optionalParameters);
 	}
 
 	private Object invokeInterceptorByParamType(DataResolver dataResolver,
