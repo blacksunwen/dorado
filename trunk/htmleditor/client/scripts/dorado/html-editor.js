@@ -115,6 +115,22 @@
         }
     };
 
+    var initialStyle =
+        //选中的td上的样式
+        '.selectTdClass{background-color:#3399FF !important}' +
+        //插入的表格的默认样式
+        'table{clear:both;margin-bottom:10px;border-collapse:collapse;word-break:break-all;}' +
+        //分页符的样式
+        '.pagebreak{display:block;clear:both !important;cursor:default !important;width: 100% !important;margin:0;}' +
+        //锚点的样式,注意这里背景图的路径
+        //'.anchorclass{background: url("' + URL + 'themes/default/images/anchor.gif") no-repeat scroll left center transparent;border: 1px dotted #0000FF;cursor: auto;display: inline-block;height: 16px;width: 15px;}' +
+        //设置四周的留边
+        '.view{padding:0;word-wrap:break-word;word-break:break-all;cursor:text;height:100%;}\n' +
+        //针对li的处理
+        'li{clear:both}' +
+        //设置段落间距
+        'p{margin:5px 0;}';
+
     dorado.htmleditor.ToolBar = $extend(dorado.widget.Control, {
         $className: "dorado.htmleditor.ToolBar",
         focusable: true,
@@ -383,12 +399,13 @@
             var htmleditor = this;
             $invokeSuper.call(this, arguments);
             //editor的属性
+            var fontString = 'body{background-color:white;margin:8px;font-family:"' + htmleditor._defaultFontFamily + '";font-size:' + htmleditor._defaultFontSize + ';}';
+
             var option = {
                 UEDITOR_HOME_URL: "",
                 initialContent: htmleditor._value,//初始化编辑器的内容
                 minFrameHeight: 100,
-                defaultFontFamily: htmleditor._defaultFontFamily,
-                defaultFontSize: htmleditor._defaultFontSize,
+                initialStyle: initialStyle + fontString,
                 iframeCssUrl: $url(">skin>/html-editor/iframe.css"),//给iframe样式的路径,
                 selectedTdClass : 'selectTdClass',
                 autoHeightEnabled: false,
