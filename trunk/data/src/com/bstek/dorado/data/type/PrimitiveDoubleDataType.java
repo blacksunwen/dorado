@@ -1,5 +1,7 @@
 package com.bstek.dorado.data.type;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * 用于描述double的数据类型。
  * 
@@ -10,7 +12,7 @@ public class PrimitiveDoubleDataType extends DoubleDataType {
 
 	@Override
 	public Object fromText(String text) {
-		if (text == null) {
+		if (StringUtils.isEmpty(text)) {
 			return new Double(0);
 		}
 		return super.fromText(text);

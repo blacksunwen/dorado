@@ -2,6 +2,8 @@ package com.bstek.dorado.data.type;
 
 import java.math.BigDecimal;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * 用于描述java.math.BigDecimal的数据类型。
  * 
@@ -11,7 +13,7 @@ import java.math.BigDecimal;
 public class BigDecimalDataType extends DecimalDataType {
 
 	public Object fromText(String text) {
-		if (text == null) {
+		if (StringUtils.isEmpty(text)) {
 			return null;
 		} else {
 			return new BigDecimal(text);
