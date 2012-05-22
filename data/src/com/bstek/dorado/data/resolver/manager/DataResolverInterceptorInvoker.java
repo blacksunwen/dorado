@@ -107,6 +107,8 @@ public class DataResolverInterceptorInvoker implements MethodInterceptor {
 
 		String[] optionalParameterNames = null;
 		Object[] optionalParameters = null;
+		String[] extraParameterNames = null;
+		Object[] extraParameters = null;
 
 		String[] parameterParameterNames = EMPTY_NAMES;
 		Object[] parameterParameters = EMPTY_ARGS;
@@ -130,10 +132,8 @@ public class DataResolverInterceptorInvoker implements MethodInterceptor {
 
 		int dataItemsParameterCount = (dataItems != null) ? dataItems.size()
 				: 0;
-		int sysParameterCount = (sysParameter != null) ? sysParameter.size()
-				: 0;
 		optionalParameterNames = new String[dataItemsParameterCount
-				+ sysParameterCount + parameterParameterNames.length + 3];
+				+ parameterParameterNames.length + 3];
 		optionalParameters = new Object[optionalParameterNames.length];
 		optionalParameterNames[0] = "dataItems";
 		optionalParameterNames[1] = "dataResolver";
@@ -156,17 +156,21 @@ public class DataResolverInterceptorInvoker implements MethodInterceptor {
 		System.arraycopy(parameterParameters, 0, optionalParameters,
 				dataItemsParameterCount + 3, parameterParameters.length);
 
-		if (sysParameterCount > 0) {
-			int i = optionalParameterNames.length - sysParameterCount;
+		if (sysParameter != null && !sysParameter.isEmpty()) {
+			extraParameterNames = new String[sysParameter.size()];
+			extraParameters = new Object[extraParameterNames.length];
+
+			int i = 0;
 			for (Map.Entry<?, ?> entry : sysParameter.entrySet()) {
-				optionalParameterNames[i] = (String) entry.getKey();
-				optionalParameters[i] = entry.getValue();
+				extraParameterNames[i] = (String) entry.getKey();
+				extraParameters[i] = entry.getValue();
 				i++;
 			}
 		}
 
 		return MethodAutoMatchingUtils.invokeMethod(methods, interceptor, null,
-				null, optionalParameterNames, optionalParameters);
+				null, optionalParameterNames, optionalParameters,
+				extraParameterNames, extraParameters);
 	}
 
 	private Object invokeInterceptorByParamType(DataResolver dataResolver,
