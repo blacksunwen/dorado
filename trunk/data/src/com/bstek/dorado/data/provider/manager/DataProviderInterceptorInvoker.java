@@ -33,8 +33,12 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 	public static final String INTERCEPTING_METHOD_NAME = "getResult";
 	public static final String DEFAULT_METHOD_NAME = INTERCEPTING_METHOD_NAME;
 
-	private static final Object[] EMPTY_ARGS = new Object[0];
 	private static final String[] EMPTY_NAMES = new String[0];
+	private static final Object[] EMPTY_ARGS = new Object[0];
+
+	private static final String[] EXTRA_NAMES = new String[] { "criteria",
+			"filterValue" };
+	private static final Object[] EXTRA_ARGS = new Object[] { null, null };
 
 	private String interceptorName;
 	private String methodName;
@@ -105,6 +109,8 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 		Object[] requiredParameters = null;
 		String[] optionalParameterNames = null;
 		Object[] optionalParameters = null;
+		String[] extraParameterNames = null;
+		Object[] extraParameters = null;
 
 		Object parameter = null;
 		Map<String, Object> sysParameter = null;
@@ -117,9 +123,6 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 			ParameterWrapper parameterWrapper = (ParameterWrapper) parameter;
 			parameter = parameterWrapper.getParameter();
 			sysParameter = parameterWrapper.getSysParameter();
-		}
-		if (sysParameter == null) {
-			sysParameter = Collections.emptyMap();
 		}
 
 		Page<?> page = null;
@@ -156,8 +159,7 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 			parameterParameters = new Object[] { parameter };
 		}
 
-		optionalParameterNames = new String[parameterParameterNames.length
-				+ sysParameter.size() + 2];
+		optionalParameterNames = new String[parameterParameterNames.length + 2];
 		optionalParameters = new Object[optionalParameterNames.length];
 
 		optionalParameterNames[0] = "dataProvider";
@@ -169,18 +171,32 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 				parameterParameterNames.length);
 		System.arraycopy(parameterParameters, 0, optionalParameters, 2,
 				parameterParameters.length);
-		if (!sysParameter.isEmpty()) {
-			int i = optionalParameterNames.length - sysParameter.size();
+
+		if (sysParameter != null && !sysParameter.isEmpty()) {
+			for (int i = 0; i < EXTRA_NAMES.length; i++) {
+				if (!sysParameter.containsKey(EXTRA_NAMES[i])) {
+					sysParameter.put(EXTRA_NAMES[i], EXTRA_ARGS[i]);
+				}
+			}
+
+			extraParameterNames = new String[sysParameter.size()];
+			extraParameters = new Object[extraParameterNames.length];
+
+			int i = 0;
 			for (Map.Entry<?, ?> entry : sysParameter.entrySet()) {
-				optionalParameterNames[i] = (String) entry.getKey();
-				optionalParameters[i] = entry.getValue();
+				extraParameterNames[i] = (String) entry.getKey();
+				extraParameters[i] = entry.getValue();
 				i++;
 			}
+		} else {
+			extraParameterNames = EXTRA_NAMES;
+			extraParameters = EXTRA_ARGS;
 		}
 
 		return MethodAutoMatchingUtils.invokeMethod(methods, interceptor,
 				requiredParameterNames, requiredParameters,
-				optionalParameterNames, optionalParameters);
+				optionalParameterNames, optionalParameters,
+				extraParameterNames, extraParameters);
 	}
 
 	private Object invokeInterceptorByParamType(DataProvider dataProvider,

@@ -120,6 +120,9 @@ public class RemoteServiceProcessor extends DataServiceProcessorSupport {
 
 		String[] parameterParameterNames = null;
 		Object[] parameterParameters = null;
+		String[] extraParameterNames = null;
+		Object[] extraParameters = null;
+
 		if (parameter != null && parameter instanceof Map) {
 			Map<?, ?> map = (Map<?, ?>) parameter;
 			parameterParameterNames = new String[map.size() + 1];
@@ -141,27 +144,28 @@ public class RemoteServiceProcessor extends DataServiceProcessorSupport {
 			parameterParameters = new Object[0];
 		}
 
-		int sysParameterCount = (sysParameter != null) ? sysParameter.size()
-				: 0;
-		String[] optionalParameterNames = new String[parameterParameterNames.length
-				+ sysParameterCount];
+		String[] optionalParameterNames = new String[parameterParameterNames.length];
 		Object[] optionalParameters = new Object[optionalParameterNames.length];
 		System.arraycopy(parameterParameterNames, 0, optionalParameterNames, 0,
 				parameterParameterNames.length);
 		System.arraycopy(parameterParameters, 0, optionalParameters, 0,
 				parameterParameters.length);
 
-		if (sysParameterCount > 0) {
-			int i = optionalParameterNames.length - sysParameterCount;
+		if (sysParameter != null && !sysParameter.isEmpty()) {
+			extraParameterNames = new String[sysParameter.size()];
+			extraParameters = new Object[extraParameterNames.length];
+
+			int i = 0;
 			for (Map.Entry<?, ?> entry : sysParameter.entrySet()) {
-				optionalParameterNames[i] = (String) entry.getKey();
-				optionalParameters[i] = entry.getValue();
+				extraParameterNames[i] = (String) entry.getKey();
+				extraParameters[i] = entry.getValue();
 				i++;
 			}
 		}
 
 		return MethodAutoMatchingUtils.invokeMethod(methods, serviceBean, null,
-				null, optionalParameterNames, optionalParameters);
+				null, optionalParameterNames, optionalParameters,
+				extraParameterNames, extraParameters);
 	}
 
 	protected Object invokeByParameterType(Object serviceBean,

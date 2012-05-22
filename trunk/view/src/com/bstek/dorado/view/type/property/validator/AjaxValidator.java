@@ -69,7 +69,7 @@ public class AjaxValidator extends AbstractAjaxValidator {
 		Object[] optionalParameters = new Object[] { value };
 		Object returnValue = MethodAutoMatchingUtils.invokeMethod(methods,
 				serviceBean, null, null, optionalParameterNames,
-				optionalParameters);
+				optionalParameters, null, null);
 		return returnValue;
 	}
 

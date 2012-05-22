@@ -11,6 +11,7 @@ import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.MethodUtils;
 import org.apache.commons.collections.keyvalue.MultiKey;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.util.NumberUtils;
 
 import com.bstek.dorado.core.Context;
@@ -387,8 +388,9 @@ public abstract class MethodAutoMatchingUtils {
 	}
 
 	private static MethodDescriptor describMethodIfMatching(Method method,
-			String[] requiredParameterNames, String[] optionalParameterNames)
-			throws SecurityException, NoSuchMethodException {
+			String[] requiredParameterNames, String[] optionalParameterNames,
+			String[] extraParameterNames) throws SecurityException,
+			NoSuchMethodException {
 		Method lookupMethod = method;
 		Class<?> cl = lookupMethod.getDeclaringClass();
 		if (ProxyBeanUtils.isProxy(cl)) {
@@ -419,9 +421,18 @@ public abstract class MethodAutoMatchingUtils {
 
 		for (int i = 0; i < argIndexs.length; i++) {
 			if (argIndexs[i] == -1) {
+				String parameterName = methodParameterNames[i];
 				int index = ArrayUtils.indexOf(optionalParameterNames,
-						methodParameterNames[i]);
+						parameterName);
 				if (index < 0) {
+					index = ArrayUtils.indexOf(extraParameterNames,
+							parameterName);
+					if (index >= 0) {
+						argIndexs[i] = requiredParameterNames.length
+								+ optionalParameterNames.length + index;
+						rate += 90;
+						continue;
+					}
 					return null;
 				}
 				argIndexs[i] = requiredParameterNames.length + index;
@@ -447,7 +458,7 @@ public abstract class MethodAutoMatchingUtils {
 	 */
 	private static MethodDescriptor findMatchingMethodByParameterNames(
 			Method[] methods, String[] requiredParameterNames,
-			String[] optionalParameterNames)
+			String[] optionalParameterNames, String[] extraParameterNames)
 			throws MethodAutoMatchingException, SecurityException,
 			NoSuchMethodException {
 		if (requiredParameterNames == null) {
@@ -456,11 +467,15 @@ public abstract class MethodAutoMatchingUtils {
 		if (optionalParameterNames == null) {
 			optionalParameterNames = EMPTY_NAMES;
 		}
+		if (extraParameterNames == null) {
+			extraParameterNames = EMPTY_NAMES;
+		}
 
 		MethodDescriptor methodDescriptor = null;
 		for (Method method : methods) {
 			MethodDescriptor tmpMethodDescriptor = describMethodIfMatching(
-					method, requiredParameterNames, optionalParameterNames);
+					method, requiredParameterNames, optionalParameterNames,
+					extraParameterNames);
 			if (tmpMethodDescriptor != null) {
 				if (methodDescriptor != null) {
 					int matchingRate = methodDescriptor.getMatchingRate();
@@ -469,7 +484,7 @@ public abstract class MethodAutoMatchingUtils {
 						String message = getExceptionMessage(
 								"More than one methods matching the following condition",
 								methods, requiredParameterNames,
-								optionalParameterNames);
+								optionalParameterNames, extraParameterNames);
 						throw new MoreThanOneMethodsMatchsException(message);
 					} else if (tmpMatchingRate < matchingRate) {
 						continue;
@@ -482,7 +497,8 @@ public abstract class MethodAutoMatchingUtils {
 		if (methodDescriptor == null) {
 			String message = getExceptionMessage(
 					"No method could be found which matching the following condition",
-					methods, requiredParameterNames, optionalParameterNames);
+					methods, requiredParameterNames, optionalParameterNames,
+					extraParameterNames);
 			throw new MethodAutoMatchingException(message);
 		}
 		return methodDescriptor;
@@ -644,7 +660,8 @@ public abstract class MethodAutoMatchingUtils {
 	 */
 	public static Object invokeMethod(Method[] methods, Object object,
 			String[] requiredParameterNames, Object[] requiredParameters,
-			String[] optionalParameterNames, Object[] optionalParameters)
+			String[] optionalParameterNames, Object[] optionalParameters,
+			String[] extraParameterNames, Object[] extraParameters)
 			throws MethodAutoMatchingException, Exception {
 		Collection<ParameterFactory> systemOptionalParameters = getSystemOptionalParameters();
 		if (!systemOptionalParameters.isEmpty()) {
@@ -686,7 +703,8 @@ public abstract class MethodAutoMatchingUtils {
 		}
 
 		MethodDescriptor methodDescriptor = findMatchingMethodByParameterNames(
-				methods, requiredParameterNames, optionalParameterNames);
+				methods, requiredParameterNames, optionalParameterNames,
+				extraParameterNames);
 
 		if (requiredParameters == null) {
 			requiredParameters = EMPTY_ARGS;
@@ -694,13 +712,18 @@ public abstract class MethodAutoMatchingUtils {
 		if (optionalParameters == null) {
 			optionalParameters = EMPTY_ARGS;
 		}
+		if (extraParameters == null) {
+			extraParameters = EMPTY_ARGS;
+		}
 
 		Object[] args = new Object[requiredParameters.length
-				+ optionalParameters.length];
+				+ optionalParameters.length + extraParameters.length];
 		System.arraycopy(requiredParameters, 0, args, 0,
 				requiredParameters.length);
 		System.arraycopy(optionalParameters, 0, args,
 				requiredParameters.length, optionalParameters.length);
+		System.arraycopy(extraParameters, 0, args, requiredParameters.length
+				+ optionalParameters.length, extraParameters.length);
 		return invokeMethod(methodDescriptor, object, args);
 	}
 
@@ -801,25 +824,18 @@ public abstract class MethodAutoMatchingUtils {
 	}
 
 	private static String getExceptionMessage(String header, Method[] methods,
-			String[] requiredParameterNames, String[] optionalParameterNames) {
+			String[] requiredParameterNames, String[] optionalParameterNames,
+			String[] extraParameterNames) {
 		StringBuffer message = new StringBuffer();
 		message.append(getExceptionMessageHeader(methods, header));
-		message.append(" requiredParameters=[");
-		for (int i = 0; i < requiredParameterNames.length; i++) {
-			if (i > 0) {
-				message.append(",");
-			}
-			message.append(requiredParameterNames[i]);
-		}
-		message.append("],");
-		message.append(" optionalParameters=[");
-		for (int i = 0; i < optionalParameterNames.length; i++) {
-			if (i > 0) {
-				message.append(",");
-			}
-			message.append(optionalParameterNames[i]);
-		}
-		message.append("]");
+		message.append(" requiredParameters=[")
+				.append(StringUtils.join(requiredParameterNames, ','))
+				.append("]");
+		message.append(" optionalParameters=[")
+				.append(StringUtils.join(optionalParameterNames, ','))
+				.append("]");
+		message.append(" extraParameters=[")
+				.append(StringUtils.join(extraParameterNames, ',')).append("]");
 		return message.toString();
 	}
 
