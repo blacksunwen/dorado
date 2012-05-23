@@ -48,7 +48,9 @@ public class PreloadDataElementParser extends GenericParser {
 		dataContext.setCurrentDataType(dataTypeRef);
 
 		Object value;
-		if (dataTypeRef == null || dataContext.isDuringParsingDataElement()) {
+		// if (dataTypeRef == null || dataContext.isDuringParsingDataElement())
+		// 此判断逻辑在Definition被缓存时可能导致内部EL表达式失效
+		if (dataContext.isDuringParsingDataElement()) {
 			value = dataParser.parse(node, dataContext);
 		} else {
 			XmlDataDefinition dataDefinition = new XmlDataDefinition(node,
