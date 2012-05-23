@@ -62,6 +62,9 @@
 					return this.getData();
 				},
 				setter: function(data) {
+					if (data && data instanceof Object && !(data instanceof Array)) {
+						data.$state = dorado.Entity.STATE_NONE;
+					}
 					if (this._ready) this.setData(data);
 					else this._data = data;
 				}
