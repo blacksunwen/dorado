@@ -289,10 +289,7 @@
 				});
 				
 				if (entityList) {
-					if (entityList instanceof Array) {
-						entityList = new dorado.EntityList(entityList);
-					}
-					else if (!(entityList instanceof dorado.EntityList)) {
+					if (!(entityList instanceof dorado.EntityList)) {
 						throw new dorado.ResourceException("dorado.grid.BindingTypeMismatch", this._id);
 					}
 				}

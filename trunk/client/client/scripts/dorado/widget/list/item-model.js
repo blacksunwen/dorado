@@ -97,7 +97,7 @@
 		 * @return {Object[]|dorado.EntityList} data 数据。
 		 */
 		getItems: function() {
-			return this._items;
+			return this._originItems || this._items;
 		},
 		
 		/**
@@ -224,24 +224,29 @@
 		/**
 		 * 对所有数据实体进行过滤。
 		 * @param {Object[]} filterParams 过滤条件的数组。
+		 * @param {Function} [customFilter] 自定义过滤方法。
 		 * @param {String} filterParams.property 要过滤的属性名。
 		 * @param {String} sortParams.operator 比较操作符。如"="、"link"、">"、"<="等。
 		 * @param {Object} sortParams.value 过滤条件值。
 		 */
-		filter: function(filterParams) {
+		filter: function(filterParams, customFilter) {
 		
 			function getValueComparator(op) {
 				var comparator = valueComparators[escape(op)];
 				if (!comparator) {
-					valueComparators[escape(op)] = comparator = new Function("v1,v2", "return v1" +
-					((op == '=') ? "==" : op) +
-					"v2");
+					valueComparators[escape(op)] = comparator = new Function("v1,v2", "return v1" + ((op == '=') ? "==" : op) + "v2");
 				}
 				return comparator;
 			}
 			
-			function filterEntity(entity, filterParam) {
-				var value = (entity instanceof dorado.Entity) ? entity.get(filterParam.property) : entity[filterParam.property];
+			function filterItem(item, filterParam) {
+				var value;
+				if (filterParam.property) {
+					value = (item instanceof dorado.Entity) ? item.get(filterParam.property) : item[filterParam.property];
+				}
+				else {
+					value = item;
+				}
 				var op = filterParam.operator;
 				if (!op) {
 					op = (typeof value == "string") ? "like" : '=';
@@ -258,14 +263,20 @@
 				else this._originItems = this._items;
 				var filtered = [];
 				for (var it = this.iterator(0); it.hasNext();) {
-					var entity = it.next(), passed = true;
-					for (var i = 0; i < filterParams.length; i++) {
-						if (!filterEntity(entity, filterParams[i])) {
-							passed = false;
-							break;
+					var item = it.next(), passed = undefined;
+					if (customFilter) {
+						 passed = customFilter(item, filterParams);
+					}				
+					if (passed == null) {
+						passed = true;
+						for (var i = 0; i < filterParams.length; i++) {
+							if (!filterItem(item, filterParams[i])) {
+								passed = false;
+								break;
+							}
 						}
 					}
-					if (passed) filtered.push(entity);
+					if (passed) filtered.push(item);
 				}
 				this._items = filtered;
 				this._filterParams = filterParams;
@@ -287,8 +298,9 @@
 				return this._items.toArray();
 			} else {
 				var v = [];
-				for (var it = this.iterator(0); it.hasNext();) 
+				for (var it = this.iterator(0); it.hasNext();) {
 					v.push(it.next());
+				}
 				return v;
 			}
 		}

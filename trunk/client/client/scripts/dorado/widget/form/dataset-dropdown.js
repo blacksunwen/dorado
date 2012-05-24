@@ -48,6 +48,23 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.RowListDropDown,/** @scope
 		useDataBinding: {
 			defaultValue: true
 		},
+			
+		/**
+		 * 数据过滤模式。
+		 * <p>
+		 * 目前支持以下几种取值：
+		 * <ul>
+		 * <li>clientSide - 在客户端执行过滤。</li>
+		 * <li>serverSide - 在服务端执行过滤。此模式仅在useDataBinding为true是有效。</li>
+		 * </ul>
+		 * </p>
+		 * @type String
+		 * @attribute
+		 * @default clientSide
+		 */
+		filterMode: {
+			defaultValue: "serverSide"
+		},
 		
 		/**
 		 * 是否要在每次下拉框打开时重新装载数据。
@@ -120,32 +137,30 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.RowListDropDown,/** @scope
 	createDropDownBox: function(editor) {
 		if (this._useDataBinding) {
 			var dropDown = this, box = dorado.widget.DropDown.prototype.createDropDownBox.call(this, editor), rowList;
+			var config = {
+				dataSet: this._dataSet,
+				dataPath: this._dataPath,
+				style: "border: none",
+				onDataRowClick: function(rowList) {
+					dropDown.close(dropDown.getSelectedValue());
+				},
+				onFilterItem: function(rowList, arg) {
+					dropDown.fireEvent("onFilterItem", dropDown, arg);
+				}
+			};
 			if (this._columns) {
-				rowList = new dorado.widget.DataGrid({
-					dataSet: this._dataSet,
-					dataPath: this._dataPath,
-					stretchColumnsMode: "stretchableColumns",
-					columns: this._columns,
-					readOnly: true,
-					style: "border: none",
-					onDataRowClick: function(rowList) {
-						dropDown.close(dropDown.getSelectedValue());
-					}
-				});
+				config.stretchColumnsMode = "stretchableColumns";
+				config.columns = this._columns;
+				config.readOnly = true;
+				rowList = new dorado.widget.DataGrid(config);
 			} else {
-				rowList = new dorado.widget.DataListBox({
-					dataSet: this._dataSet,
-					dataPath: this._dataPath,
-					width: "100%",
-					property: this._displayProperty || this._property,
-					style: "border: none",
-					onDataRowClick: function(rowList) {
-						dropDown.close(dropDown.getSelectedValue());
-					}
-				});
+				config.width = "100%";
+				property = this._displayProperty || this._property;
+				rowList = new dorado.widget.DataListBox(config);
 			}
 			box.set({
 				style: {
+					width: "100%",
 					overflow: "hidden"
 				},
 				control: rowList
@@ -175,33 +190,37 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.RowListDropDown,/** @scope
 			};
 			this.fireEvent("onFilterItems", this, arg);
 			if (arg.processDefault) {
-				arg = {
-					dataSet: dataSet,
-					filterValue: filterValue
-				};
-				if (this.getListenerCount("onSetFilterParameter") > 0) {
-					this.fireEvent("onSetFilterParameter", this, arg);
-					filterValue = arg.filterValue;
+				if (this._filterMode == "clientSide") {
+					$invokeSuper.call(this, [filterValue, callback]);
+					this._lastFilterValue = filterValue;
+				} else {
+					arg = {
+						dataSet: dataSet,
+						filterValue: filterValue
+					};
+					if (this.getListenerCount("onSetFilterParameter") > 0) {
+						this.fireEvent("onSetFilterParameter", this, arg);
+						filterValue = arg.filterValue;
+					}
+					
+					var sysParameter = dataSet._sysParameter;
+					if (!sysParameter) dataSet._sysParameter = sysParameter = new dorado.util.Map();
+					if (filterValue) {
+						sysParameter.put("filterValue", filterValue);
+					} else {
+						sysParameter.remove("filterValue");
+					}
+					
+					dataSet.clear();
+					var dropdown = this;
+					dataSet.loadAsync(function() {
+						dropdown._lastFilterValue = filterValue;
+						$callback(callback);
+					});
 				}
-				
-				var sysParameter = dataSet._sysParameter;
-				if (!sysParameter) dataSet._sysParameter = sysParameter = new dorado.util.Map();
-				if (filterValue) {
-					sysParameter.put("filterValue", filterValue);
-				}
-				else {
-					sysParameter.remove("filterValue");
-				}
-				
-				dataSet.clear();
-				var dropdown = this;
-				dataSet.loadAsync(function() {					
-					dropdown._lastFilterValue = filterValue;
-					$callback(callback);
-				});
 			}
 		} else {
-			$invokeSuper.call(this, arguments);
+			$invokeSuper.call(this, [filterValue, callback]);
 			this._lastFilterValue = filterValue;
 		}
 	},

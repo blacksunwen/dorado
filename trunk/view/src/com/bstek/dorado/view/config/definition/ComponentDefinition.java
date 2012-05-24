@@ -84,7 +84,7 @@ public class ComponentDefinition extends ListenableObjectDefinition implements
 			} else {
 				DirectDefinitionReference<ComponentDefinition> definitionReference = new DirectDefinitionReference<ComponentDefinition>(
 						assembledComponentDefinition);
-				DefinitionReference<? extends Definition>[] newParentReferences = new DefinitionReference[parentReferences.length];
+				DefinitionReference<? extends Definition>[] newParentReferences = new DefinitionReference[parentReferences.length + 1];
 				newParentReferences[0] = definitionReference;
 				System.arraycopy(parentReferences, 0, newParentReferences, 1,
 						parentReferences.length);

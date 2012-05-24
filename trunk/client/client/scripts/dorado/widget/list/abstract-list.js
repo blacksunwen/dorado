@@ -68,15 +68,14 @@ dorado.widget.AbstractList = $extend(dorado.widget.Control, /** @scope dorado.wi
 		 * @attribute skipRefresh
 		 */
 		selection: {
-			skipRefresh: true,			
+			skipRefresh: true,
 			getter: function() {
 				var selection = this._selection;
 				if (selection instanceof dorado.Entity) {
 					if (selection.state == dorado.Entity.STATE_DELETED) {
 						this._selection = selection = null;
 					}
-				}
-				else if (selection instanceof Array) {
+				} else if (selection instanceof Array) {
 					for (var i = selection.length; i >= 0; i--) {
 						var s = selection[i];
 						if (s instanceof dorado.Entity && s.state == dorado.Entity.STATE_DELETED) {
@@ -155,7 +154,32 @@ dorado.widget.AbstractList = $extend(dorado.widget.Control, /** @scope dorado.wi
 		 * @event
 		 * @see dorado.widget.AbstractList#selection
 		 */
-		onSelectionChange: {}
+		onSelectionChange: {},
+			
+		/**
+		 * 当系统对列表中的某两项数据项进行排序时触发的事件。
+		 * @param {Object} self 事件的发起者，即控件本身。
+		 * @param {Object} arg 事件参数。
+		 * @param {Object} arg.item1 比较的值1。
+		 * @param {Object} arg.item2 比较的值2。
+		 * @param {Object[]} arg.sortParams 排序条件。
+		 * @param {int} #arg.result 比较结果。
+		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+		 * @event
+		 */
+		onCompareItems: {},
+		
+		/**
+		 * 当系统对列表中的某一个数据项进行过滤时触发的事件。
+		 * @param {Object} self 事件的发起者，即控件本身。
+		 * @param {Object} arg 事件参数。
+		 * @param {Object} arg.item 将被过滤的数据项。
+		 * @param {Object[]} arg.filterParams 过滤条件。
+		 * @param {boolean} #arg.accept 该数据项是否通过过滤，即该数据项是否可被接受。
+		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+		 * @event
+		 */
+		onFilterItem: {}
 	},
 	
 	/**
@@ -308,6 +332,55 @@ dorado.widget.AbstractList = $extend(dorado.widget.Control, /** @scope dorado.wi
 				$fly(this._loadingTipDom).hide();
 			}, 200);
 		}
+	},
+
+	/**
+	 * 对指定的列中的数据进行排序。
+	 * @param {Object|Object[]} sortParams 排序条件。
+	 * @see dorado.widget.list.ItemModel#sort
+	 */
+	sort: function(sortParams) {
+		var customComparator, list = this;
+		if (list.getListenerCount("onCompareItems") > 0) {
+			customComparator = function(item1, item2, sortParams) {
+				var arg = {
+					item1: item1,
+					item2: item2,
+					sortParams: sortParams,
+					result: 0
+				};
+				list.fireEvent("onCompareItems", list, arg);
+				return arg.result;
+			}
+		}
+		this._itemModel.sort(sortParams, customComparator);
+		this.refresh(true);
+	},
+	
+	/**
+	 * 数据过滤。
+	 * @protected
+	 * @param {Object[]} filterParams 过滤条件的数组。
+	 * @param {String} filterParams.property 要过滤的属性名。
+	 * @param {String} sortParams.operator 比较操作符。如"="、"link"、">"、"<="等。
+	 * @param {Object} sortParams.value 过滤条件值。
+	 * @see dorado.widget.list.ItemModel#filter
+	 */
+	filter: function(filterParams) {
+		var customFilter, list = this;
+		if (list.getListenerCount("onFilterItem") > 0) {
+			customFilter = function(value, filterParams) {
+				var arg = {
+					value: value,
+					filterParams: filterParams
+				};
+				list.fireEvent("onFilterItem", list, arg);
+				return arg.accept;
+			}
+		}
+		
+		this._itemModel.filter(filterParams, customFilter);
+		this.refresh(true);
 	}
 });
 

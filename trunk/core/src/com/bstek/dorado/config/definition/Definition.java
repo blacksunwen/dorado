@@ -30,6 +30,8 @@ public abstract class Definition implements Cloneable {
 
 	private Resource resource;
 	private Resource[] dependentResources;
+	
+	// TODO: 此处可优化
 	private Map<String, Object> properties = new HashMap<String, Object>();
 	private List<Operation> initOperations = new ArrayList<Operation>();
 

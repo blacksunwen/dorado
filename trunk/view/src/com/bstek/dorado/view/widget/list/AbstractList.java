@@ -9,8 +9,10 @@ import com.bstek.dorado.view.widget.Control;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2011-2-26
  */
-@ClientEvents( { @ClientEvent(name = "onCurrentChange"),
-		@ClientEvent(name = "onSelectionChange") })
+@ClientEvents({ @ClientEvent(name = "onCurrentChange"),
+		@ClientEvent(name = "onSelectionChange"),
+		@ClientEvent(name = "onCompareItems"),
+		@ClientEvent(name = "onFilterItem") })
 public abstract class AbstractList extends Control {
 	private ScrollMode scrollMode = ScrollMode.lazyRender;
 	private SelectionMode selectionMode = SelectionMode.none;

@@ -15,7 +15,6 @@ import com.bstek.dorado.view.widget.list.RowList;
  * @since 2010-8-10
  */
 @ClientEvents({ @ClientEvent(name = "onGetCellEditor"),
-		@ClientEvent(name = "onGetEntityComparator"),
 		@ClientEvent(name = "onRenderRow"),
 		@ClientEvent(name = "onRenderCell"),
 		@ClientEvent(name = "onRenderHeaderCell"),
