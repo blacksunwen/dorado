@@ -13,15 +13,18 @@ import com.bstek.dorado.view.widget.datacontrol.PropertyDataControl;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-8-10
  */
-@Widget(name = "DataSetDropDown", category = "Trigger", dependsPackage = "base-widget,grid")
-@ClientObject(prototype = "dorado.widget.DataSetDropDown", shortTypeName = "DataSetDropDown")
-@ClientEvents( { @ClientEvent(name = "onSetFilterParameter") })
+@Widget(name = "DataSetDropDown", category = "Trigger",
+		dependsPackage = "base-widget,grid")
+@ClientObject(prototype = "dorado.widget.DataSetDropDown",
+		shortTypeName = "DataSetDropDown")
+@ClientEvents({ @ClientEvent(name = "onSetFilterParameter") })
 public class DataSetDropDown extends RowListDropDown implements
 		PropertyDataControl {
 	private String dataSet;
 	private String dataPath;
 	private String property;
 	private boolean useDataBinding = true;
+	private FilterMode filterMode = FilterMode.serverSide;
 	private boolean filterOnTyping;
 	private boolean reloadDataOnOpen;
 
@@ -62,6 +65,15 @@ public class DataSetDropDown extends RowListDropDown implements
 
 	public void setUseDataBinding(boolean useDataBinding) {
 		this.useDataBinding = useDataBinding;
+	}
+
+	@ClientProperty(escapeValue = "serverSide")
+	public FilterMode getFilterMode() {
+		return filterMode;
+	}
+
+	public void setFilterMode(FilterMode filterMode) {
+		this.filterMode = filterMode;
 	}
 
 	@Override

@@ -221,7 +221,7 @@
 			 * <p>
 			 * 否则见只在提示信息区显示图标形式的表单项状态。
 			 * </p>
-			 * @type int
+			 * @type boolean
 			 * @attribute writeBeforeReady
 			 */
 			showHintMessage: {
@@ -518,9 +518,11 @@
 			entity: {
 				setter: function(entity) {
 					this._entity = entity;
-					var hintControl = this.getHintControl();
-					if (hintControl) {
-						hintControl.set("messages", null);
+					if (this._rendered) {
+						var hintControl = this.getHintControl();
+						if (hintControl) {
+							hintControl.set("messages", null);
+						}
 					}
 				}
 			},

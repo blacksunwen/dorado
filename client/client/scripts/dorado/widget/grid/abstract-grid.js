@@ -373,7 +373,7 @@
 			this.clearSortFlags();
 		},
 
-		filter: function(filterParams) {
+		filter: function(filterParams, customFilter) {
 			var hasParam = (filterParams && filterParams.length > 0);
 			if (hasParam) this.ungroup();
 			$invokeSuper.call(this, arguments);
@@ -512,7 +512,6 @@
 				if (items instanceof Array) {
 					$invokeSuper.call(this, arguments);
 				} else {
-					var changed = false;
 					for (var i = 1; i <= items.pageCount; i++) {
 						if (!items.isPageLoaded(i)) continue;
 						var page = items.getPage(i);
@@ -525,11 +524,7 @@
 							entry = entry.next;
 							j++;
 						}
-						changed = true;
-					}
-					if (changed) {
 						items.timestamp = dorado.Core.getTimestamp();
-						items.sendMessage(0);
 					}
 				}
 			}
@@ -973,17 +968,6 @@
 			 * @event
 			 */
 			onDataRowDoubleClick: {},
-
-			/**
-			 * 当表格尝试获取用于排序的数据比较器时触发的事件。
-			 * @param {Object} self 事件的发起者，即控件本身。
-			 * @param {Object} arg 事件的参数。
-			 * @param {Object} arg.sortParams 排序参数。
-			 * @param {Function} arg.comparator 作为数据比较器的Function。
-			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
-			 * @event
-			 */
-			onGetEntityComparator: {},
 
 			/**
 			 * 当表格控件渲染其中的某个行时触发的事件。
@@ -1565,6 +1549,9 @@
 				}
 			}
 		},
+		
+		onClick: dorado._NULL_FUNCTION,
+		onDoubleClick: dorado._NULL_FUNCTION,
 
 		doOnResize: function() {
 			if (!this._ready) return;
@@ -1869,27 +1856,28 @@
 
 		/**
 		 * 对指定的列中的数据进行排序。
-		 * @protected
-		 * @param {String|dorado.widget.grid.DataColumn} column 要排序的表格列。
+		 * @param {String|dorado.widget.grid.DataColumn|Object|Object[]} column 要排序的表格列或列的名称。
+		 * <p>
+		 * 此参数还有另外一种定义方式，如果您传入的数据类型不是String或dorado.widget.grid.DataColumn，
+		 * 那么系统会将此参数认作是{@link dorado.widget.list.ItemModel#sort}方法中的sortParams形式的排序条件，并且忽略掉后面的desc参数。
+		 * </p>
 		 * @param {boolean} [desc] 是否倒序排序。
 		 */
 		sort: function(column, desc) {
-			if (!(column instanceof dorado.widget.grid.Column)) {
+			var sortParams;
+			if (typeof column == "string") {
 				column = this.getColumn(column);
 			}
-			
-			var sortParams = column ? [{
-				property: column.get("property"),
-				desc: desc
-			}] : [];
-			var eventArg = {
-				sortParams: sortParams,
-				comparator: null
-			};
-			if (this.fireEvent("onGetEntityComparator", column, eventArg)) {
-				comparator = eventArg.comparator;
+			if (column instanceof dorado.widget.grid.Column) {
+				sortParams = [{
+					property: column.get("property"),
+					desc: desc
+				}];
 			}
-			this._itemModel.sort(sortParams, eventArg.comparator);
+			else {
+				sortParams = column;
+			}
+			$invokeSuper.call(this, [sortParams]);
 		},
 
 		/**

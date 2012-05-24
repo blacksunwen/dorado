@@ -159,25 +159,24 @@
 		
 		createDropDownBox: function(editor) {
 			var dropDown = this, box = $invokeSuper.call(this, arguments), rowList;
+			var config = {
+				style: "border: none",
+				onDataRowClick: function(rowList) {
+					dropDown.close(dropDown.getSelectedValue());
+				},
+				onFilterItem: function(rowList, arg) {
+					dropDown.fireEvent("onFilterItem", dropDown, arg);
+				}
+			};
 			if (this._columns) {
-				rowList = new dorado.widget.Grid({
-					stretchColumnsMode: "stretchableColumns",
-					columns: this._columns,
-					readOnly: true,
-					style: "border: none",
-					onDataRowClick: function(rowList) {
-						dropDown.close(dropDown.getSelectedValue());
-					}
-				});
+				config.stretchColumnsMode = "stretchableColumns";
+				config.columns = this._columns;
+				config.readOnly = true;
+				rowList = new dorado.widget.Grid(config);
 			} else {
-				rowList = new dorado.widget.ListBox({
-					width: "100%",
-					property: this._displayProperty || this._property,
-					style: "border: none",
-					onDataRowClick: function(rowList) {
-						dropDown.close(dropDown.getSelectedValue());
-					}
-				});
+				config.width = "100%";
+				property = this._displayProperty || this._property;
+				rowList = new dorado.widget.ListBox(config);
 			}
 			box.set({
 				style: {
@@ -242,7 +241,7 @@
 			if (!this._height) {
 				var useMaxHeight = true, refreshed = false;
 				if (this._realMaxHeight &&
-					(!itemCount || (this._realMaxHeight / (rowList._rowHeight + 2) > (itemCount + 1)))) {
+				(!itemCount || (this._realMaxHeight / (rowList._rowHeight + 2) > (itemCount + 1)))) {
 					rowList.set({
 						height: "none",
 						scrollMode: "simple"
@@ -287,23 +286,18 @@
 			if (this._dynaFilter && editor instanceof dorado.widget.AbstractTextEditor) {
 				var dropDown = this;
 				var filterFn = this._box._onTextEditedListener = function() {
-					dorado.Toolkits.setDelayedAction(dropDown, "$filterTimeId", function() {
-						delete dropDown._filterTimeId;
-						dropDown.onFilterItems(editor.get("text"));
-					}, dropDown._minFilterInterval);
+					if (dropDown._filterOnTyping && dropDown.get("opened")) {
+						dorado.Toolkits.setDelayedAction(dropDown, "$filterTimeId", function() {
+							delete dropDown._filterTimeId;
+							dropDown.onFilterItems(editor.get("text"));
+						}, dropDown._minFilterInterval);
+					}
 				};
 				var text = editor.get("text");
 				if (text && text.length > 0 && this._filterOnOpen) {
 					dropDown.onFilterItems(editor.get("text"));
 				}
-				editor.addListener("onTextEdit", function() {
-					if (dropDown._filterOnTyping) {
-						dorado.Toolkits.setDelayedAction(dropDown, "$filterOnTypingId", function() {
-							filterFn();
-						}, dropDown._minFilterInterval);
-					}
-					
-				});
+				editor.addListener("onTextEdit", filterFn);
 			}
 		},
 		
@@ -352,9 +346,6 @@
 		 * @param {String} filterValue
 		 */
 		onFilterItems: function(filterValue) {
-			var items = this.getDropDownItems();
-			if (!items) return;
-			
 			var rowList = this.get("box.control");
 			if (!rowList) return;
 			
@@ -363,55 +354,18 @@
 				processDefault: true
 			};
 			this.fireEvent("onFilterItems", this, arg);
-			if (!arg.processDefault) {
-				rowList.set("items", items);
-				return;
-			}
+			if (!arg.processDefault) return;
 			
-			filterValue = (filterValue == null) ? '' : (filterValue + '');
-			var filteredItems;
+			var filterParams;
 			if (filterValue && filterValue.length > 0) {
-				filteredItems = [];
 				var realFilterValue = filterValue.toUpperCase();
-				var originItems = this._items, property = this._displayProperty || this._property, textLen = realFilterValue.length;
-				
-				var self = this;
-				function filterEntity(entity) {
-					var accept = false;
-					if (self.getListenerCount("onFilterItem")) {
-						var arg = {
-							item: entity,
-							filterValue: filterValue,
-							accept: accept
-						};
-						self.fireEvent("onFilterItem", self, arg);
-						accept = arg.accept;
-					} else {
-						var s;
-						if (property) {
-							s = (entity instanceof dorado.Entity) ? entity.get(property) : entity[property];
-						} else {
-							s = entity;
-						}
-						accept = (s && (s + '').toUpperCase().indexOf(realFilterValue) >= 0);
-					}
-					
-					if (accept) filteredItems.push(entity);
-				}
-				
-				if (originItems instanceof dorado.EntityList) {
-					originItems.each(function(entity) {
-						filterEntity(entity);
-					});
-				} else {
-					jQuery.each(originItems, function(i, entity) {
-						filterEntity(entity);
-					});
-				}
-			} else {
-				filteredItems = items;
+				var property = this._displayProperty || this._property;
+				filterParams = [{
+					property: property,
+					value: realFilterValue
+				}];
 			}
-			rowList.set("items", filteredItems);
+			rowList.filter(filterParams);
 		},
 		
 		doOnEditorKeyDown: function(editor, evt) {

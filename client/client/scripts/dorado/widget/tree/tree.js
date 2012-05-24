@@ -132,7 +132,7 @@
 		
 		_removeChildNodes: function(node, animated, callback) {
 		
-			function invokdCallback(node, callback, node) {
+			function invokdCallback(node, callback) {
 				if (this._forceRefreshRearRows !== false) {
 					var row = this._itemDomMap[node._id];
 					if (row) this._refreshRearRows(row);
@@ -171,13 +171,13 @@
 					}, 200, "swing", function() {
 						$fly(indicator).remove();
 						self.notifySizeChange();
-						invokdCallback.call(self, node, callback, node);
+						invokdCallback.call(self, node, callback);
 						self._duringAnimation = false;
 					});
 				}
 			} else {
 				this.notifySizeChange();
-				invokdCallback.call(this, node, callback, node);
+				invokdCallback.call(this, node, callback);
 			}
 		},
 		
