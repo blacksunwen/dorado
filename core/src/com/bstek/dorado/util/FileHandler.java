@@ -1,7 +1,5 @@
 package com.bstek.dorado.util;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -13,29 +11,6 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 
 public class FileHandler {
-
-	private static class OutputStreamWrapper extends BufferedOutputStream {
-		public OutputStreamWrapper(OutputStream out) {
-			super(out);
-		}
-
-		@Override
-		public void close() throws IOException {
-			// do nothing
-		}
-	};
-
-	private static class WriterWrapper extends BufferedWriter {
-		public WriterWrapper(Writer writer) {
-			super(writer);
-		}
-
-		@Override
-		public void close() throws IOException {
-			// do nothing
-		}
-	};
-
 	private File file;
 	private OutputStream outputStream;
 	private Writer writer;
@@ -47,11 +22,11 @@ public class FileHandler {
 	}
 
 	public OutputStream getOutputStream() {
-		return new OutputStreamWrapper(outputStream);
+		return outputStream;
 	}
 
 	public Writer getWriter() {
-		return new WriterWrapper(writer);
+		return writer;
 	}
 
 	public InputStream createInputStream() throws FileNotFoundException {
