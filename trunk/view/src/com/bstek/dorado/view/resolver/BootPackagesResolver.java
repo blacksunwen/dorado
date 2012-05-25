@@ -77,9 +77,8 @@ public class BootPackagesResolver extends WebFileResolver {
 
 		PackagesConfig packagesConfig = getPackagesConfigManager()
 				.getPackagesConfig();
-		Writer writer = fileHandler.getWriter();
-		outputPackagesConfig(writer, packagesConfig);
-		writer.flush();
+		outputPackagesConfig(fileHandler.getWriter(), packagesConfig);
+		fileHandler.close();
 
 		Resource resource = context
 				.getResource("file:" + fileHandler.getPath());

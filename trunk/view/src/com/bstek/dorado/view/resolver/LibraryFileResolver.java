@@ -96,7 +96,7 @@ public class LibraryFileResolver extends
 					jsonBuilder.endObject();
 
 					writer.append("\n);");
-					writer.flush();
+					fileHandler.close();
 
 					cachedResource = context.getResource("file:"
 							+ fileHandler.getPath());
