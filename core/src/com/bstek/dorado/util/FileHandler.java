@@ -61,6 +61,7 @@ public class FileHandler {
 	public void close() throws IOException {
 		if (writer != null) {
 			writer.flush();
+			writer.close();
 			writer = null;
 		}
 		if (outputStream != null) {
