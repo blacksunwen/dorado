@@ -17,7 +17,7 @@ dorado.util.Shadow = $class({
 				adjusts.w = 0;
 				adjusts.l = adjusts.t = offset;
 				adjusts.t -= 1;
-				if (dorado.Browser.msie) {
+				if (dorado.Browser.msie && dorado.Browser.version < 9) {
 					adjusts.l -= this.offset + rad;
 					adjusts.t -= this.offset + rad;
 					adjusts.w -= rad;
@@ -29,7 +29,7 @@ dorado.util.Shadow = $class({
 				adjusts.w = (offset * 2);
 				adjusts.l = -offset;
 				adjusts.t = offset - 1;
-				if (dorado.Browser.msie) {
+				if (dorado.Browser.msie && dorado.Browser.version < 9) {
 					adjusts.l -= (this.offset - rad);
 					adjusts.t -= this.offset + rad;
 					adjusts.l += 1;
@@ -43,7 +43,7 @@ dorado.util.Shadow = $class({
 				adjusts.l = adjusts.t = -offset;
 				adjusts.t += 1;
 				adjusts.h -= 2;
-				if (dorado.Browser.msie) {
+				if (dorado.Browser.msie && dorado.Browser.version < 9) {
 					adjusts.l -= (this.offset - rad);
 					adjusts.t -= (this.offset - rad);
 					adjusts.l += 1;
@@ -58,7 +58,7 @@ dorado.util.Shadow = $class({
 		this.target = config.target;
 	},
 
-	offset: (dorado.Browser.msie && dorado.Browser.version >= 9) ? 8 : 4,
+	offset: 4,
 	defaultMode: "drop",
 
 	show: function() {
@@ -139,10 +139,12 @@ dorado.util.Shadow = $class({
  * @see jQuery#unshadow
  */
 jQuery.fn.shadow = function(options) {
+	if (dorado.Browser.msie && dorado.Browser.version < 9) return this;
+	
 	var element;
 	if (this.length == 1) {
 		element = this[0];
-		if (dorado.Browser.msie) {
+		if (dorado.Browser.msie && dorado.Browser.version < 9) {
 			if (element.offsetWidth) {
 				var shadow = jQuery.data(element, "blockShadow");
 				if (!shadow) {
@@ -200,10 +202,12 @@ jQuery.fn.shadow = function(options) {
  * @see jQuery#shadow
  */
 jQuery.fn.unshadow = function() {
+	if (dorado.Browser.msie && dorado.Browser.version < 9) return this;
+	
 	var element;
 	if (this.length == 1) {
 		element = this[0];
-		if (dorado.Browser.msie) {
+		if (dorado.Browser.msie && dorado.Browser.version < 9) {
 			var shadow = jQuery.data(element, "blockShadow");
 			if (shadow != null) {
 				element.onresize = null;
@@ -224,6 +228,8 @@ jQuery.fn.unshadow = function() {
  * @see jQuery#shadow
  */
 jQuery.fn.disableShadow = function() {
+	if (dorado.Browser.msie && dorado.Browser.version < 9) return this;
+	
 	var element;
 	if (this.length == 1) {
 		element = this[0];
@@ -244,6 +250,8 @@ jQuery.fn.disableShadow = function() {
  * @see jQuery#shadow
  */
 jQuery.fn.enableShadow = function() {
+	if (dorado.Browser.msie && dorado.Browser.version < 9) return this;
+	
 	var element;
 	if (this.length == 1) {
 		element = this[0];
