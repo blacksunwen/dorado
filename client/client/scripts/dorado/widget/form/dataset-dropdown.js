@@ -239,7 +239,7 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.RowListDropDown,/** @scope
 	doOnEditorKeyDown: function(editor, evt) {
 		if (evt.keyCode == 13 && this.get("dynaFilter")) {
 			var filterValue = editor.get("text");
-			if (this._lastFilterValue != filterValue) {				
+			if ((this._lastFilterValue || "") != filterValue) {				
 				this.onFilterItems(filterValue);
 				return false;
 			}
