@@ -269,7 +269,7 @@ if (targetNode) {
         </DataTree>
       </SideControl>
     </SplitPanel>
-    <Dialog id="dialogSelectExample" buttonAlign="right" caption="请选择一个分类..." center="true" height="400" modal="true" width="400">
+    <Dialog id="dialogSelectExample" layout="padding:4" buttonAlign="right" caption="请选择一个分类..." center="true" height="400" modal="true" width="400">
       <Buttons>
         <Button caption="确定" width="80">
           <ClientEvent name="onClick">

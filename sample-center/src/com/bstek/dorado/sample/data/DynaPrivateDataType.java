@@ -17,7 +17,7 @@ import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.view.manager.ViewConfig;
 
 @Component
-public class DynaDataType {
+public class DynaPrivateDataType {
 
 	public void onInit(ViewConfig viewCofig) throws Exception {
 		PropertyDef propertyDef;

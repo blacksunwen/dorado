@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig listener="spring:dynaPrivateDataType#onInit">
+  <Arguments/>
+  <Context/>
+  <Model>
+    <DataType name="People"/>
+  </Model>
+  <View layout="vbox padding:20">
+    <DataSet id="dataSet">
+      <Property name="dataType">People</Property>
+      <Property name="dataProvider">dynaPrivateDataType#getPeople</Property>
+    </DataSet>
+    <AutoForm>
+      <Property name="dataSet">dataSet</Property>
+      <Property name="width">600</Property>
+      <AutoFormElement>
+        <Property name="property">id</Property>
+        <Editor/>
+      </AutoFormElement>
+      <AutoFormElement>
+        <Property name="property">name</Property>
+        <Editor/>
+      </AutoFormElement>
+      <AutoFormElement>
+        <Property name="property">age</Property>
+        <Editor/>
+      </AutoFormElement>
+      <AutoFormElement>
+        <Property name="property">sex</Property>
+        <Property name="editorType">RadioGroup</Property>
+        <Editor/>
+      </AutoFormElement>
+      <AutoFormElement>
+        <Property name="property">birthday</Property>
+        <Editor/>
+      </AutoFormElement>
+    </AutoForm>
+    <FieldSet layout="padding:8">
+      <Property name="caption">地址信息</Property>
+      <Property name="width">600</Property>
+      <Property name="height">300</Property>
+      <Buttons/>
+      <Children>
+        <DataGrid>
+          <Property name="dataSet">dataSet</Property>
+          <Property name="dataPath">#.addresses</Property>
+          <Property name="autoCreateColumns">true</Property>
+          <DataColumn>
+            <Property name="property">id</Property>
+            <Property name="width">50</Property>
+            <Editor/>
+          </DataColumn>
+          <DataColumn>
+            <Property name="width">50</Property>
+            <Property name="property">city</Property>
+            <Editor/>
+          </DataColumn>
+          <DataColumn>
+            <Property name="property">address</Property>
+            <Editor/>
+          </DataColumn>
+          <DataColumn>
+            <Property name="width">60</Property>
+            <Property name="property">postCode</Property>
+            <Editor/>
+          </DataColumn>
+        </DataGrid>
+      </Children>
+    </FieldSet>
+  </View>
+</ViewConfig>

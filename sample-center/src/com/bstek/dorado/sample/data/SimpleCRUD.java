@@ -25,7 +25,7 @@ public class SimpleCRUD {
 
 	@DataProvider
 	public void getAll(Page<Product> page) {
-		productDao.find(page, "from Product");
+		productDao.getAll(page);
 	}
 
 	@DataResolver
