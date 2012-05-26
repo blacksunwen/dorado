@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.bstek.dorado.util;
 
 import java.io.File;
@@ -49,13 +46,32 @@ public final class TempFileUtils {
 				} else if (file.getName().startsWith(TEMP_DIR_PREFIX)) {
 					File lockFile = new File(file, LOCK_FILE);
 					if (lockFile.exists()) {
+						try {
+							FileChannel channel = new RandomAccessFile(
+									lockFile, "rw").getChannel();
+							try {
+								FileLock lock = channel.tryLock();
+								if (lock == null) {
+									continue;
+								}
+
+								lock.release();
+							} catch (OverlappingFileLockException e) {
+								continue;
+							} finally {
+								channel.close();
+							}
+						} catch (IOException e) {
+							continue;
+						}
+
 						if (!lockFile.delete()) {
 							continue;
 						}
 					}
-					FileUtils.clearDirectory(rootDir);
+					FileUtils.removeDirectory(file);
 				} else {
-					FileUtils.clearDirectory(rootDir);
+					FileUtils.removeDirectory(file);
 				}
 			} catch (Exception e) {
 				// do nothing
@@ -63,7 +79,11 @@ public final class TempFileUtils {
 		}
 	}
 
-	private static File getTempDir() throws IOException {
+	public static void setTempDir(File tempDir) {
+		TempFileUtils.tempDir = tempDir;
+	}
+
+	public static File getTempDir() throws IOException {
 		if (tempDir == null) {
 			File rootDir = getRootDir();
 
@@ -101,12 +121,12 @@ public final class TempFileUtils {
 		return tempDir;
 	}
 
-	public static FileHandler createTempFile(String fileNamePrefix,
+	public static File createTempFile(String fileNamePrefix,
 			String fileNamesuffix) throws IOException {
 		File file = File.createTempFile(fileNamePrefix, fileNamesuffix,
 				getTempDir());
 		file.deleteOnExit();
-		return new FileHandler(file);
+		return file;
 	}
 
 }

@@ -1,6 +1,9 @@
 package com.bstek.dorado.view.resolver;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.List;
 import java.util.Map;
@@ -11,9 +14,9 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 
 import com.bstek.dorado.core.Configure;
+import com.bstek.dorado.core.io.FileResource;
 import com.bstek.dorado.core.io.Resource;
 import com.bstek.dorado.core.pkgs.PackageManager;
-import com.bstek.dorado.util.FileHandler;
 import com.bstek.dorado.util.PathUtils;
 import com.bstek.dorado.util.TempFileUtils;
 import com.bstek.dorado.view.output.JsonBuilder;
@@ -72,16 +75,24 @@ public class BootPackagesResolver extends WebFileResolver {
 	@Override
 	protected ResourcesWrapper createResourcesWrapper(
 			HttpServletRequest request, DoradoContext context) throws Exception {
-		FileHandler fileHandler = TempFileUtils.createTempFile(
-				"packages-config-", JAVASCRIPT_SUFFIX);
+		File file = TempFileUtils.createTempFile("packages-config-",
+				JAVASCRIPT_SUFFIX);
 
 		PackagesConfig packagesConfig = getPackagesConfigManager()
 				.getPackagesConfig();
-		outputPackagesConfig(fileHandler.getWriter(), packagesConfig);
-		fileHandler.close();
 
-		Resource resource = context
-				.getResource("file:" + fileHandler.getPath());
+		FileOutputStream fos = new FileOutputStream(file);
+		Writer writer = new OutputStreamWriter(fos);
+		try {
+			outputPackagesConfig(writer, packagesConfig);
+		} finally {
+			writer.flush();
+			writer.close();
+			fos.flush();
+			fos.close();
+		}
+
+		Resource resource = new FileResource(file);
 		String resourcePrefix = getResourcePrefix();
 		Resource[] bootResourceArray = getResourcesByFileName(context,
 				resourcePrefix, bootFile, JAVASCRIPT_SUFFIX);

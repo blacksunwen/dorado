@@ -2,8 +2,10 @@ package com.bstek.dorado.view.resolver;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.URL;
 import java.util.HashMap;
@@ -18,9 +20,9 @@ import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.core.Context;
+import com.bstek.dorado.core.io.FileResource;
 import com.bstek.dorado.core.io.Resource;
 import com.bstek.dorado.core.resource.LocaleResolver;
-import com.bstek.dorado.util.FileHandler;
 import com.bstek.dorado.util.PathUtils;
 import com.bstek.dorado.util.TempFileUtils;
 import com.bstek.dorado.view.output.JsonBuilder;
@@ -62,44 +64,49 @@ public class LibraryFileResolver extends
 						properties.load(resource.getInputStream());
 					}
 
-					FileHandler fileHandler = TempFileUtils.createTempFile(
-							"client-i18n-" + packageName + '-',
-							JAVASCRIPT_SUFFIX);
+					File file = TempFileUtils.createTempFile("client-i18n-"
+							+ packageName + '-', JAVASCRIPT_SUFFIX);
 
-					Writer writer = fileHandler.getWriter();
-					String namespace = properties.getProperty("namespace");
-					properties.remove("namespace");
-					writer.append("dorado.util.Resource.append(");
-					if (StringUtils.isEmpty(namespace)) {
-						writer.append("\n");
-					} else {
-						writer.append("\"")
-								.append(StringEscapeUtils
-										.escapeJavaScript(namespace))
-								.append("\",\n");
-					}
-
-					JsonBuilder jsonBuilder = new JsonBuilder(writer);
-					jsonBuilder.object();
-					for (Map.Entry<?, ?> entry : properties.entrySet()) {
-						String value = (String) entry.getValue();
-						if (value != null) {
-							jsonBuilder.key((String) entry.getKey());
-							jsonBuilder.beginValue();
-							writer.append('\"')
+					FileOutputStream fos = new FileOutputStream(file);
+					Writer writer = new OutputStreamWriter(fos);
+					try {
+						String namespace = properties.getProperty("namespace");
+						properties.remove("namespace");
+						writer.append("dorado.util.Resource.append(");
+						if (StringUtils.isEmpty(namespace)) {
+							writer.append("\n");
+						} else {
+							writer.append("\"")
 									.append(StringEscapeUtils
-											.escapeJavaScript(value))
-									.append('\"');
-							jsonBuilder.endValue();
+											.escapeJavaScript(namespace))
+									.append("\",\n");
 						}
+
+						JsonBuilder jsonBuilder = new JsonBuilder(writer);
+						jsonBuilder.object();
+						for (Map.Entry<?, ?> entry : properties.entrySet()) {
+							String value = (String) entry.getValue();
+							if (value != null) {
+								jsonBuilder.key((String) entry.getKey());
+								jsonBuilder.beginValue();
+								writer.append('\"')
+										.append(StringEscapeUtils
+												.escapeJavaScript(value))
+										.append('\"');
+								jsonBuilder.endValue();
+							}
+						}
+						jsonBuilder.endObject();
+
+						writer.append("\n);");
+					} finally {
+						writer.flush();
+						writer.close();
+						fos.flush();
+						fos.close();
 					}
-					jsonBuilder.endObject();
 
-					writer.append("\n);");
-					fileHandler.close();
-
-					cachedResource = context.getResource("file:"
-							+ fileHandler.getPath());
+					cachedResource = new FileResource(file);
 					cacheFileMap.put(resources, cachedResource);
 				}
 			}

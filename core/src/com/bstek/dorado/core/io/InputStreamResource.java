@@ -41,7 +41,7 @@ public class InputStreamResource implements Resource {
 	}
 
 	public Resource createRelative(String relativePath) throws IOException {
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	public boolean exists() {

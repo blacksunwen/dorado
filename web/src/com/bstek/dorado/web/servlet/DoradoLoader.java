@@ -1,5 +1,6 @@
 package com.bstek.dorado.web.servlet;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.web.util.WebUtils;
 
 import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.core.ConfigureStore;
@@ -30,6 +32,7 @@ import com.bstek.dorado.core.io.ResourceLoader;
 import com.bstek.dorado.core.io.ResourceUtils;
 import com.bstek.dorado.core.pkgs.PackageInfo;
 import com.bstek.dorado.core.pkgs.PackageManager;
+import com.bstek.dorado.util.TempFileUtils;
 import com.bstek.dorado.web.ConsoleUtils;
 import com.bstek.dorado.web.DoradoContext;
 
@@ -201,7 +204,7 @@ public class DoradoLoader {
 		// 输出版本信息
 		ConsoleUtils.outputLoadingInfo("Initializing "
 				+ DoradoAbout.getProductTitle() + " engine...");
-		ConsoleUtils.outputLoadingInfo("[vendor: " + DoradoAbout.getVendor()
+		ConsoleUtils.outputLoadingInfo("[Vendor: " + DoradoAbout.getVendor()
 				+ "]");
 
 		ConfigureStore configureStore = Configure.getStore();
@@ -219,9 +222,16 @@ public class DoradoLoader {
 
 		configureStore.set(HOME_PROPERTY, doradoHome);
 		ConsoleUtils
-				.outputLoadingInfo("[dorado home: "
+				.outputLoadingInfo("[Dorado Home: "
 						+ StringUtils.defaultString(doradoHome,
 								"<not assigned>") + "]");
+
+		File tempDir = new File(WebUtils.getTempDir(servletContext), ".dorado");
+		if (tempDir.mkdir()) {
+			TempFileUtils.setTempDir(tempDir);
+		}
+		ConsoleUtils.outputLoadingInfo("[Dorado TempDir: "
+				+ TempFileUtils.getTempDir().getPath() + "]");
 
 		// 创建一个临时的ResourceLoader
 		ResourceLoader resourceLoader = new ServletContextResourceLoader(
