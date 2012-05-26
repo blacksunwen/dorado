@@ -56,11 +56,21 @@ dorado.widget.Trigger = $extend(dorado.widget.Component, /** @scope dorado.widge
 		iconClass: {
 			writeBeforeReady: true,
 			defaultValue: "d-trigger-icon-custom"
+		},
+		
+		/**
+		 * 是否允许用在相应的编辑框中进行文本输入。
+		 * @type boolean
+		 * @attribute
+		 * @default true
+		 */
+		editable: {
+			defaultValue: true
 		}
 	},
 	
 	EVENTS: /** @scope dorado.widget.Trigger.prototype */ {
-		
+	
 		/**
 		 * 当触发器被触发之前激活的事件。
 		 * <p>
@@ -74,7 +84,7 @@ dorado.widget.Trigger = $extend(dorado.widget.Component, /** @scope dorado.widge
 		 * @event
 		 */
 		beforeExecute: {},
-	
+		
 		/**
 		 * 当触发器被触发时激活的事件。
 		 * <p>
@@ -132,7 +142,7 @@ dorado.widget.Trigger = $extend(dorado.widget.Component, /** @scope dorado.widge
 	createTriggerButton: function(editor) {
 		var trigger = this;
 		var control = new dorado.widget.SimpleIconButton({
-			exClassName:  (trigger._inherentClassName || '') + " " + (trigger._className || '') + " " + (trigger._exClassName || ''),
+			exClassName: (trigger._inherentClassName || '') + " " + (trigger._className || '') + " " + (trigger._exClassName || ''),
 			icon: trigger._icon,
 			iconClass: trigger._iconClass,
 			onMouseDown: function(self, arg) {

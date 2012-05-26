@@ -369,7 +369,7 @@
 			}
 		},
 		
-		onMouseDown: function() {			
+		onMouseDown: function() {
 			var triggers = this.get("trigger");
 			if (triggers) {
 				if (!(triggers instanceof Array)) triggers = [triggers];
@@ -386,7 +386,20 @@
 		
 		doOnFocus: function() {
 			this.resetReadOnly();
-			this._textDom.readOnly = this._realReadOnly || !this._editable;
+			
+			var triggers = this.get("trigger"), realEditable = true;
+			if (triggers && !(triggers instanceof Array)) triggers = [triggers];
+			if (triggers) {
+				for (var i = 0; i < triggers.length; i++) {
+					var trigger = triggers[i];
+					if (!trigger._editable) {
+						realEditable = false;
+						break;
+					}
+				}
+			}
+			
+			this._textDom.readOnly = this._realReadOnly || !this._editable || !realEditable;
 			if (this._realReadOnly) return;
 			
 			this._focusTime = new Date();
@@ -405,13 +418,11 @@
 				}
 			}, 50);
 			
-			var triggers = this.get("trigger");
 			if (triggers) {
-				if (!(triggers instanceof Array)) triggers = [triggers];
-				var self = this;
-				jQuery.each(triggers, function(i, trigger) {
-					if (trigger.onEditorFocus) trigger.onEditorFocus(self);
-				});
+				for (var i = 0; i < triggers.length; i++) {
+					var trigger = triggers[i];
+					if (trigger.onEditorFocus) trigger.onEditorFocus(this);
+				}
 			}
 		},
 		
@@ -461,7 +472,7 @@
 		},
 		
 		doOnKeyDown: function(evt) {
-			
+		
 			function forwardKeyDownEvent(trigger, editor) {
 				if (trigger) {
 					if (trigger instanceof Array) {
@@ -471,23 +482,21 @@
 								var result = t.onEditorKeyDown(editor, evt);
 								if (result === false) {
 									return false;
-								}
-								else if (!result) {
+								} else if (!result) {
 									break;
 								}
 							}
 						}
-					}
-					else if (trigger.onEditorKeyDown) {
+					} else if (trigger.onEditorKeyDown) {
 						if (trigger.onEditorKeyDown(editor, evt) === false) return false;
 					}
 				}
 				return true;
 			}
 			
-			var retValue = true, trigger = this.get("trigger"), firstTrigger;	
-			if (trigger) firstTrigger = (trigger instanceof Array) ? trigger[0] : trigger;		
- 		
+			var retValue = true, trigger = this.get("trigger"), firstTrigger;
+			if (trigger) firstTrigger = (trigger instanceof Array) ? trigger[0] : trigger;
+			
 			switch (evt.keyCode) {
 				case 36: // home
 				case 35: // end
@@ -756,8 +765,7 @@
 				if (this._useBlankText && this._textDom.type == "password") {
 					this._textDom.type = "";
 					this._isPassword = true;
-				}
-				else if (!this._useBlankText && this._isPassword) {
+				} else if (!this._useBlankText && this._isPassword) {
 					this._textDom.type = "password";
 					delete this._isPassword;
 				}
@@ -1045,8 +1053,7 @@
 			if (dorado.Browser.msie && dorado.Browser.version > 7) {
 				textDom.style.top = 0;
 				textDom.style.position = "absolute";
-			}
-			else {
+			} else {
 				textDom.style.padding = 0;
 			}
 			return textDom;
@@ -1129,8 +1136,7 @@
 			}
 			if (maxLength) {
 				this._textDom.setAttribute("maxLength", maxLength);
-			}
-			else  {
+			} else {
 				this._textDom.removeAttribute("maxLength");
 			}
 			
@@ -1211,8 +1217,7 @@
 			if (dorado.Browser.msie && dorado.Browser.version > 7) {
 				textDom.style.top = 0;
 				textDom.style.position = "absolute";
-			}
-			else {
+			} else {
 				textDom.style.padding = 0;
 			}
 			return textDom;

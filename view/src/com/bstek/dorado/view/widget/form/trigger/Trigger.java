@@ -3,6 +3,7 @@ package com.bstek.dorado.view.widget.form.trigger;
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
 import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Component;
@@ -19,6 +20,7 @@ import com.bstek.dorado.view.widget.Component;
 public class Trigger extends Component {
 	private String icon;
 	private String iconClass;
+	private boolean editable = true;
 
 	public String getIcon() {
 		return icon;
@@ -36,5 +38,14 @@ public class Trigger extends Component {
 
 	public void setIconClass(String iconClass) {
 		this.iconClass = iconClass;
+	}
+
+	@ClientProperty(escapeValue = "true")
+	public boolean isEditable() {
+		return editable;
+	}
+
+	public void setEditable(boolean editable) {
+		this.editable = editable;
 	}
 }
