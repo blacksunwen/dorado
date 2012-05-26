@@ -2,6 +2,8 @@
 <ViewConfig>
   <Model>
     <DataType name="ProductType" parent="Bean" meta="x:75;y:45" autoCreatePropertyDefs="true" matchType="com.bstek.dorado.sample.entity.Product">
+      <Property name="creationType">com.bstek.dorado.sample.entity.Product</Property>
+      <PropertyDef name="id" readOnly="true"/>
       <PropertyDef name="productName" required="true"/>
     </DataType>
   </Model>
@@ -9,7 +11,7 @@
     <DataSet id="dsProducts" dataProvider="simpleCRUD#getAll" dataType="[ProductType]" pageSize="10">
       <Property name="readOnly">false</Property>
     </DataSet>
-    <UpdateAction id="actionSave" caption="Save" confirmMessage="Sure to save all changes?" dataResolver="simpleCRUD#saveAll" icon="url(>skin>common/icons.gif) -140px -20px" successMessage="OK!">
+    <UpdateAction id="actionSave" caption="Save" successMessage="保存成功！" dataResolver="simpleCRUD#saveAll" icon="url(>skin>common/icons.gif) -140px -20px">
       <UpdateItem dataSet="dsProducts">
         <Property name="dataPath">!DIRTY_TREE</Property>
       </UpdateItem>

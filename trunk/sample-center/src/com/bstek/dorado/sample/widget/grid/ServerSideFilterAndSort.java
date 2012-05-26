@@ -22,15 +22,14 @@ public class ServerSideFilterAndSort {
 	}
 
 	@DataProvider
-	public void getAll(Page<Order> page) {
-		orderDao.find(page, "from Order");
-	}
-
-	@DataProvider
 	public void getAll(Page<Order> page, Criteria criteria) throws Exception {
 		DetachedCriteria detachedCriteria = DetachedCriteria
 				.forClass(Order.class);
-		orderDao.find(page,
-				HibernateUtils.createFilter(detachedCriteria, criteria));
+		if (criteria != null) {
+			orderDao.find(page,
+					HibernateUtils.createFilter(detachedCriteria, criteria));
+		} else {
+			orderDao.find(page);
+		}
 	}
 }

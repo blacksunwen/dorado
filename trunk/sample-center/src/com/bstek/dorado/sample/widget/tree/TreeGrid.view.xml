@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ViewConfig>
   <Model>
-    <DataType parent="global:Employee" name="Employee">
-      <Reference name="underlings" dataType="[SELF]" dataProvider="employeeInterceptor#getEmployeesBySuperior" parameter="$${this.id}"/>
+    <DataType name="Employee" parent="global:Employee">
+      <Reference name="underlings" dataProvider="employeeInterceptor#getEmployeesBySuperior" dataType="[SELF]" parameter="$${this.id}"/>
     </DataType>
   </Model>
   <View title="Employee Maintain">
-    <DataSet id="dsEmployees" dataType="[Employee]" dataProvider="employeeInterceptor#getEmployeesBySuperior"/>
-    <UpdateAction id="actionSave" caption="Save" icon="url(>skin>common/icons.gif) -140px -20px" dataResolver="employeeInterceptor#saveAll">
+    <DataSet id="dsEmployees" dataProvider="employeeInterceptor#getEmployeesBySuperior" dataType="[Employee]"/>
+    <UpdateAction id="actionSave" caption="Save" dataResolver="employeeInterceptor#saveAll" icon="url(>skin>common/icons.gif) -140px -20px">
       <ClientEvent name="onSuccess">dorado.MessageBox.alert(&quot;OK.&quot;);
 			</ClientEvent>
       <UpdateItem dataPath="underlings[#dirty](R)" dataSet="dsEmployees"/>
@@ -18,6 +18,7 @@
       <ToolBarButton action="actionSave"/>
     </ToolBar>
     <DataTreeGrid dataSet="dsEmployees" treeColumn="firstName">
+      <Property name="dynaRowHeight">true</Property>
       <BindingConfigs>
         <BindingConfig childrenProperty="underlings" expandLevel="3" labelProperty="firstName" recursive="true"/>
       </BindingConfigs>

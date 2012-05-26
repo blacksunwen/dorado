@@ -165,11 +165,12 @@ self.set(&quot;items&quot;, items);</ClientEvent>
       <Property name="dataType">[BaseProduct]</Property>
     </DataSet>
     <DataSetDropDown id="dropDownAjaxFilter">
-      <ClientEvent name="onSetFilterParameter">arg.dataSet.set(&quot;parameter&quot;, arg.filterValue);</ClientEvent>
-      <Property name="dynaFilter">true</Property>
       <Property name="dataSet">dataSetProducts</Property>
       <Property name="displayProperty">productName</Property>
       <Property name="width">260</Property>
+      <Property name="reloadDataOnOpen">true</Property>
+      <Property name="filterOnTyping">false</Property>
+      <Property name="dynaFilter">true</Property>
     </DataSetDropDown>
     <FormElement>
       <Property name="label">与DataSet绑定的下拉框</Property>

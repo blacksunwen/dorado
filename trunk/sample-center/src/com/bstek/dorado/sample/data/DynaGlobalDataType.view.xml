@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Model/>
+  <View>
+    <Property name="title">动态创建全局DataType</Property>
+    <DataSet id="dsCategories" dataProvider="categoryInterceptor#getAll">
+      <Property name="dataType">[AutoCategoryType]</Property>
+    </DataSet>
+    <UpdateAction id="actionSave" caption="保存" dataResolver="categoryInterceptor#saveAll" icon="url(>skin>common/icons.gif) -140px -20px" successMessage="数据保存成功。">
+      <UpdateItem dataSet="dsCategories">
+        <Property name="refreshMode">value</Property>
+      </UpdateItem>
+    </UpdateAction>
+    <SplitPanel direction="top" position="230">
+      <MainControl>
+        <Container>
+          <ToolBar layoutConstraint="top">
+            <DataPilot dataPath="#.products" dataSet="dsCategories" itemCodes="+,-,x"/>
+          </ToolBar>
+          <DataGrid dataPath="#.products" dataSet="dsCategories">
+            <IndicatorColumn/>
+          </DataGrid>
+        </Container>
+      </MainControl>
+      <SideControl>
+        <Container>
+          <ToolBar layoutConstraint="top">
+            <DataPilot dataSet="dsCategories" itemCodes="pages,|,+,-,x"/>
+            <Separator/>
+            <ToolBarButton action="actionSave"/>
+          </ToolBar>
+          <DataGrid dataSet="dsCategories">
+            <IndicatorColumn/>
+          </DataGrid>
+        </Container>
+      </SideControl>
+    </SplitPanel>
+  </View>
+</ViewConfig>

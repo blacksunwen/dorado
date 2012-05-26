@@ -93,10 +93,8 @@
 						price: price&#xD;
 					});&#xD;
 				}&#xD;
-				&#xD;
 				dorado.widget.NotifyTipManager.notify(entity.get(&quot;product&quot;) + &quot;的价格已由&quot; + originPrice + &quot;调整为&quot; + price + &quot;!&quot;);&#xD;
-			},&#xD;
-			style: &quot;margin: 2px 16px&quot;&#xD;
+			}&#xD;
 		});&#xD;
 	},&#xD;
 	&#xD;
@@ -155,13 +153,12 @@ var button = new dorado.widget.Button({&#xD;
 			}&#xD;
 		});&#xD;
 	}&#xD;
-});&#xD;
-</ClientEvent>
+});</ClientEvent>
         <Property name="width">70</Property>
         <Property name="name">operation</Property>
-        <Property name="align">left</Property>
         <Property name="supportsOptionMenu">false</Property>
         <Property name="readOnly">true</Property>
+        <Property name="align">center</Property>
         <Editor/>
       </DataColumn>
       <DataColumn>

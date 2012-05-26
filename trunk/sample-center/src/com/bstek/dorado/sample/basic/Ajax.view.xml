@@ -10,9 +10,9 @@
       <Button caption="Ajax Multiply">
         <ClientEvent name="onClick">var action = this.id(&quot;multiplyAction&quot;);
 dorado.MessageBox.prompt(&quot;Please input two numbers here&quot;, {
-	defaultText: &quot;3,5&quot;,
+	defaultText: &quot;3*5&quot;,
 	callback: function(text) {
-		var nums = text.split(&quot;,&quot;);
+		var nums = text.split(&quot;*&quot;);
 		var parameter = {
 			num1: nums[0],
 			num2: nums[1]
