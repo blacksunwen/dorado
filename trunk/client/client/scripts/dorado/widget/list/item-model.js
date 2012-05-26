@@ -106,9 +106,10 @@
 		 */
 		setItems: function(items) {
 			if (this._filterParams) this.filter();
-			if (items instanceof dorado.EntityList) this._items = items;
-			else if (items != null) this._items = (items instanceof Array) ? items : [items];
-			else this._items = [];
+			this._items = items;
+			// if (items instanceof dorado.EntityList) this._items = items;
+			// else if (items != null) this._items = (items instanceof Array) ? items : [items];
+			// else this._items = null;
 		},
 		
 		/**
