@@ -8,12 +8,18 @@ import com.bstek.dorado.view.annotation.Widget;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-8-10
  */
-@Widget(name = "AutoMappingDropDown", category = "Trigger", dependsPackage = "base-widget")
-@ClientObject(prototype = "dorado.widget.AutoMappingDropDown", shortTypeName = "AutoMappingDropDown")
+@Widget(name = "AutoMappingDropDown", category = "Trigger",
+		dependsPackage = "base-widget")
+@ClientObject(prototype = "dorado.widget.AutoMappingDropDown",
+		shortTypeName = "AutoMappingDropDown")
 public class AutoMappingDropDown extends RowListDropDown {
 	private boolean useEmptyItem;
 	private String property = "value";
 	private boolean autoOpen;
+
+	public AutoMappingDropDown() {
+		setEditable(false);
+	}
 
 	public boolean isUseEmptyItem() {
 		return useEmptyItem;
@@ -42,5 +48,10 @@ public class AutoMappingDropDown extends RowListDropDown {
 	@Override
 	public void setAutoOpen(boolean autoOpen) {
 		this.autoOpen = autoOpen;
+	}
+
+	@ClientProperty(escapeValue = "false")
+	public boolean isEditable() {
+		return super.isEditable();
 	}
 }

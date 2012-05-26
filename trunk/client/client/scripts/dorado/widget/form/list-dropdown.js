@@ -430,7 +430,17 @@
 			 * @type boolean
 			 * @attribute
 			 */
-			useEmptyItem: {}
+			useEmptyItem: {},
+			
+			/**
+			 * 是否允许用在相应的编辑框中进行文本输入。
+			 * @type boolean
+			 * @attribute
+			 * @default false
+			 */
+			editable: {
+				defaultValue: false
+			}
 		},
 		
 		getDropDownItems: function() {
