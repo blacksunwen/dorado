@@ -32,6 +32,8 @@ public abstract class AbstractJdbcTestCase extends TestCase {
 			"com/bstek/dorado/data/context.xml",
 			"com/bstek/dorado/idesupport/context.xml",
 			"com/bstek/dorado/view/context.xml",
+			"com/bstek/dorado/view/test-context.xml",
+			"com/bstek/dorado/web/context.xml",
 			"com/bstek/dorado/jdbc/context.xml",
 			"com/bstek/dorado/jdbc/test/context.xml"
 		};
