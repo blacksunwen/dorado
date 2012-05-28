@@ -438,7 +438,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 
 					if (dorado.Entity.ALWAYS_RETURN_VALID_ENTITY_LIST) {
 						var aggregationDataType = propertyDef.get("dataType");
-						if (value === undefined && aggregationDataType instanceof dorado.AggregationDataType) {
+						if (value == null && aggregationDataType instanceof dorado.AggregationDataType) {
 							value = transferAndReplaceIf(this, propertyDef, [], false);
 							
 							if (dataPipeWrapper) {
