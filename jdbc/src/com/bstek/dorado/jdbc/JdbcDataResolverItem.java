@@ -3,6 +3,7 @@ package com.bstek.dorado.jdbc;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlSubNode;
 
@@ -40,6 +41,7 @@ public class JdbcDataResolverItem {
 		return cloned;
 	}
 	
+	@IdeProperty(highlight=1, editor="jdbc:refrence:Table")
 	public String getTableName() {
 		return tableName;
 	}

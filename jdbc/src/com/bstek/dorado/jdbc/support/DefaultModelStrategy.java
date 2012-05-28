@@ -2,7 +2,7 @@ package com.bstek.dorado.jdbc.support;
 
 import java.util.List;
 
-import com.bstek.dorado.config.definition.CreationContext;
+import com.bstek.dorado.data.config.definition.DataCreationContext;
 import com.bstek.dorado.data.config.definition.DataProviderDefinition;
 import com.bstek.dorado.data.config.definition.DataProviderDefinitionManager;
 import com.bstek.dorado.data.config.definition.DataTypeDefinition;
@@ -88,7 +88,7 @@ public class DefaultModelStrategy implements ModelStrategy {
 
 	protected DataTypeDefinition createDataTypeDefinition(
 			AbstractDbTableDefinition tableDef) {
-		CreationContext context = new CreationContext();
+		DataCreationContext context = new DataCreationContext();
 		DbTable table = null;
 		try {
 			table = (DbTable) tableDef.create(context);

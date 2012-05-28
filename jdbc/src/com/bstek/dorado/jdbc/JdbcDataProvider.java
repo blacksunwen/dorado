@@ -1,6 +1,7 @@
 package com.bstek.dorado.jdbc;
 
 import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.data.provider.AbstractDataProvider;
@@ -27,6 +28,7 @@ public class JdbcDataProvider extends AbstractDataProvider {
 	private boolean autoFilter = false;
 	private JdbcEnviroment jdbcEnviroment;
 	
+	@IdeProperty(highlight=1, editor="jdbc:refrence:Table")
 	public String getTableName() {
 		return tableName;
 	}
