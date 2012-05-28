@@ -168,10 +168,10 @@ public class LoadDataServiceProcessor extends DataServiceProcessorSupport {
 		JsonNode rudeCriteria = null;
 
 		if (rudeSysParameter != null) {
-			if (rudeSysParameter.has("preloadConfigs")) {
+			if (rudeSysParameter.has("preloadConfig")) {
 				dataPreloadConfigs = (Collection<DataPreloadConfig>) JsonUtils
 						.toJavaObject(
-								rudeSysParameter.remove("preloadConfigs"),
+								rudeSysParameter.remove("preloadConfig"),
 								getDataType("[DataPreloadConfig]"));
 			}
 
