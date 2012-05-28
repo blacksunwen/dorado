@@ -110,7 +110,7 @@
 				}
 				return data;
 			} else {
-				throw result.error;
+				throw result.exception;
 			}
 		},
 		
