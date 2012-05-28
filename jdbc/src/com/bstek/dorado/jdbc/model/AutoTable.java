@@ -177,21 +177,19 @@ public class AutoTable extends AbstractTable {
 		
 		//columnsToken
 		StringBuilder columnsToken = new StringBuilder();
-		List<AbstractDbColumn> columns = autoTable.getAllColumns();
-		for (int i=0, j=columns.size(), ableColumnCount = 0; i<j; i++) {
+		List<AbstractDbColumn> columns = operation.getDbColumns();
+		for (int i=0, j=columns.size(); i<j; i++) {
 			AutoTableColumn column = (AutoTableColumn)columns.get(i);
-			if (column.isSelectable()) {
-				if (ableColumnCount++ > 0) {
+			String tableAlias = column.getFromTable();
+			String nativeName = column.getNativeColumn();
+			if (StringUtils.isNotEmpty(nativeName)) {
+				if (i > 0) {
 					columnsToken.append(',');
 				}
 				
-				String tableAlias = column.getFromTable();
-				String nativeName = column.getNativeColumn();
-				if (StringUtils.isNotEmpty(nativeName)) {
-					String propertyName = column.getPropertyName();
-					String token = tableAlias + "." + nativeName + " " + KeyWord.AS + " " + propertyName;
-					columnsToken.append(token);
-				}
+				String propertyName = column.getPropertyName();
+				String token = tableAlias + "." + nativeName + " " + KeyWord.AS + " " + propertyName;
+				columnsToken.append(token);
 			}
 		}
 		

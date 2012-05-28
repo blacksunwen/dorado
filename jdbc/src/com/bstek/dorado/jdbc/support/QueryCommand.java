@@ -38,7 +38,7 @@ public class QueryCommand {
 		
 		SelectSql selectSql = dbTable.selectSql(operation);
 		
-		RecordRowMapper rowMapper = new RecordRowMapper(dbTable.getAllColumns());
+		RecordRowMapper rowMapper = new RecordRowMapper(operation.getDbColumns());
 
 		NamedParameterJdbcTemplate jdbcTemplate = env.getSpringNamedDao().getNamedParameterJdbcTemplate();
 
@@ -62,7 +62,7 @@ public class QueryCommand {
 		DbTable dbTable = operation.getDbTable();
 		SelectSql selectSql = dbTable.selectSql(operation);
 
-		RecordRowMapper rowMapper = new RecordRowMapper(dbTable.getAllColumns());
+		RecordRowMapper rowMapper = new RecordRowMapper(operation.getDbColumns());
 
 		NamedParameterJdbcTemplate jdbcTemplate = env.getSpringNamedDao().getNamedParameterJdbcTemplate();
 

@@ -20,8 +20,8 @@ import com.bstek.dorado.jdbc.model.table.TableKeyColumn;
 import com.bstek.dorado.jdbc.model.table.TableSelectSql;
 import com.bstek.dorado.jdbc.sql.SelectSql;
 import com.bstek.dorado.jdbc.sql.SqlConstants.KeyWord;
-import com.bstek.dorado.jdbc.support.QueryOperation;
 import com.bstek.dorado.jdbc.support.DataResolverContext;
+import com.bstek.dorado.jdbc.support.QueryOperation;
 import com.bstek.dorado.jdbc.support.RecordOperationProxy;
 import com.bstek.dorado.jdbc.type.JdbcType;
 
@@ -145,7 +145,7 @@ public class Table extends AbstractTable {
 
 	public SelectSql selectSql(QueryOperation operation) {
 		//SelectSql
-		TableSelectSql selectSql = createSelectSql();
+		TableSelectSql selectSql = createSelectSql(operation);
 		
 		//tableToken
 		Dialect dialect = operation.getDialect();
@@ -196,17 +196,17 @@ public class Table extends AbstractTable {
 		return selectSql;
 	}
 	
-	private TableSelectSql createSelectSql() {
+	private TableSelectSql createSelectSql(QueryOperation operation) {
 		//SelectSql
 		TableSelectSql selectSql = new TableSelectSql();
 
 		//columnsToken
 		StringBuilder columnsToken = new StringBuilder();
-		List<AbstractDbColumn> columns = this.getAllColumns();
-		for (int i=0, j=columns.size(), ableColumnCount = 0; i<j; i++) {
+		List<AbstractDbColumn> columns = operation.getDbColumns();
+		for (int i=0, j=columns.size(); i<j; i++) {
 			AbstractDbColumn column = columns.get(i);
 			if (column.isSelectable()) {
-				if (ableColumnCount++ > 0) {
+				if (i > 0) {
 					columnsToken.append(',');
 				}
 				
@@ -220,6 +220,7 @@ public class Table extends AbstractTable {
 				}
 			}
 		}
+		
 		selectSql.setColumnsToken(columnsToken.toString());
 		
 		return selectSql;

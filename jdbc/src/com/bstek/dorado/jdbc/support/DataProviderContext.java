@@ -5,6 +5,7 @@ import java.util.Map;
 import com.bstek.dorado.data.ParameterWrapper;
 import com.bstek.dorado.data.provider.Criteria;
 import com.bstek.dorado.data.provider.Page;
+import com.bstek.dorado.data.type.EntityDataType;
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.JdbcDataProvider;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
@@ -19,6 +20,8 @@ public class DataProviderContext extends AbstractJdbcContext {
 	private Page<Record> page;
 	private boolean autoFilter = false;
 	private Criteria criteria;
+	
+	private EntityDataType dataType;
 	
 	public DataProviderContext() {
 		this(null, null, null);
@@ -52,6 +55,14 @@ public class DataProviderContext extends AbstractJdbcContext {
 			page = new Page<Record>(0,0);
 		}
 		this.page = page;
+	}
+
+	public EntityDataType getDataType() {
+		return dataType;
+	}
+
+	public void setDataType(EntityDataType dataType) {
+		this.dataType = dataType;
 	}
 
 	public Page<Record> getPage() {
