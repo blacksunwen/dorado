@@ -398,15 +398,18 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 														newValue: result
 													});
 												}
-											}
 
-											if (propertyDef.getListenerCount("onGet")) {
-												eventArg = {
-													entity : this,
-													value : result
-												};
-												propertyDef.fireEvent("onGet", propertyDef, eventArg);
-												result = eventArg.value;
+												if (propertyDef.getListenerCount("onGet")) {
+													eventArg = {
+														entity : this,
+														value : result
+													};
+													propertyDef.fireEvent("onGet", propertyDef, eventArg);
+													result = eventArg.value;
+												}
+											}
+											else {
+												delete this._data[property];
 											}
 											if (callback) $callback(callback, success, result);
 										}
@@ -996,7 +999,16 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 						}
 					}
 				}
-				if (this.state != dorado.Entity.STATE_MOVED)this.resetState();
+				var oldState = this.state;
+				if (oldState != dorado.Entity.STATE_MOVED) this.resetState();
+				if (oldState == dorado.Entity.STATE_DELETED && this.parent && this.parent instanceof dorado.EntityList) {
+					var entityList = this.parent;
+					if (entityList.current == null) {
+						entityList.disableObservers();
+						entityList.setCurrent(this);
+						entityList.enableObservers();
+					}
+				}
 				this.sendMessage(0);
 			}
 		},

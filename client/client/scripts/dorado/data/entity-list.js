@@ -755,14 +755,17 @@
 		 * 取消对当前数据实体集合的各种数据操作。
 		 */
 		cancel: function() {
-			var it = this.iterator(this), entity;
+			var it = this.iterator(true), changed = false;
 			while (it.hasNext()) {
-				entity = it.next();
-				entity.disableObservers();
-				entity.cancel();
-				entity.enableObservers();
+				var entity = it.next();
+				if (entity.state != dorado.Entity.STATE_NONE && entity.state != dorado.Entity.STATE_MOVED) {
+					entity.disableObservers();
+					entity.cancel();
+					entity.enableObservers();
+					changed = true;
+				}
 			}
-			if (entity) {
+			if (changed) {
 				this.timestamp = dorado.Core.getTimestamp();
 				this.sendMessage(0);
 			}
