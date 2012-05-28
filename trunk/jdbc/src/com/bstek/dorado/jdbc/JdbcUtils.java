@@ -2,9 +2,9 @@ package com.bstek.dorado.jdbc;
 
 import java.util.Map;
 
-import com.bstek.dorado.config.definition.CreationContext;
 import com.bstek.dorado.core.Context;
 import com.bstek.dorado.data.ParameterWrapper;
+import com.bstek.dorado.data.config.definition.DataCreationContext;
 import com.bstek.dorado.data.entity.EntityState;
 import com.bstek.dorado.data.entity.EntityUtils;
 import com.bstek.dorado.data.provider.Criteria;
@@ -35,7 +35,7 @@ public final class JdbcUtils {
 		DbElementDefinition definition = ((DbmDefinitionManager)getServiceBean("jdbc.dbmDefinitionManager")).getDefinition(tableName);
 		Assert.notNull(definition, "no definition named [" + tableName + "]");
 		
-		CreationContext context = new CreationContext();
+		DataCreationContext context = new DataCreationContext();
 		
 		try {
 			@SuppressWarnings("unchecked")
