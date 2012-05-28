@@ -139,8 +139,8 @@
 		 * @param {Function} [comparator] 比较器。
 		 * 比较器是一个具有三个输入参数的Function，三个参数依次为：
 		 * <ul>
-		 * <li>entity1	-	{Object} 要比较的对象1。</li>
-		 * <li>entity2	-	{Object} 要比较的对象2。</li>
+		 * <li>item1	-	{Object} 要比较的对象1。</li>
+		 * <li>item2	-	{Object} 要比较的对象2。</li>
 		 * <li>sortParams	-	{Object|Object[]} 排序参数或排序参数的数组。</li> 
 		 * </ul>
 		 * 比较器的返回值表示对象1和对象2的比较结果：
@@ -156,65 +156,36 @@
 		 * 
 		 * @example
 		 * // 根据comparator自定义排序的规则
-		 * dorado.DataUtil.sort(dataArray, null, function(entity1, entity2, sortParams) {
+		 * dorado.DataUtil.sort(dataArray, null, function(item1, item2, sortParams) {
 		 * 	... ...
 		 * });
 		 */
-		sort: function(array, sortParams, comparator) {
-		
-			function quickSort(low, high) {
-			
-				function compareEntity(entity, midEntity, comparator) {
-					if (comparator) {
-						return comparator(entity, midEntity, sortParams);
-					}
-					
-					var result1, result2;
-					if (!(sortParams instanceof Array)) sortParams = [sortParams];
-					for (var i = 0; i < sortParams.length; i++) {
-						var sortParam = sortParams[i], property = sortParam.property;
-						var value, midValue;
-						if (property) {
-							value = (entity instanceof dorado.Entity) ? entity.get(property) : entity[property];
-							midValue = (entity instanceof dorado.Entity) ? midEntity.get(property) : midEntity[property];
-						} else {
-							value = entity;
-							midValue = midEntity;
-						}
-						if (value > midValue) {
-							return (sortParam.desc) ? -1 : 1;
-						} else if (value < midValue) {
-							return (sortParam.desc) ? 1 : -1;
-						}
-					}
-					return 0;
+		sort: function(array, sortParams, comparator) {			
+			array.sort(function(item1, item2) {
+				if (comparator) {
+					return comparator(item1, item2, sortParams);
 				}
 				
-				var paramLow = low, paramHigh = high;
-				var mid = parseInt((low + high) / 2);
-				var midEntity = array[mid];
-				do {
-					while (compareEntity(array[low], midEntity, comparator) < 0) 
-						low++;
-					while (compareEntity(array[high], midEntity, comparator) > 0) 
-						high--;
-					
-					if (low <= high) {
-						var swap = array[low];
-						array[low] = array[high];
-						array[high] = swap;
-						low++;
-						high--;
+				var result1, result2;
+				if (!(sortParams instanceof Array)) sortParams = [sortParams];
+				for (var i = 0; i < sortParams.length; i++) {
+					var sortParam = sortParams[i], property = sortParam.property;
+					var value1, value2;
+					if (property) {
+						value1 = (item1 instanceof dorado.Entity) ? item1.get(property) : item1[property];
+						value2 = (item2 instanceof dorado.Entity) ? item2.get(property) : item2[property];
+					} else {
+						value1 = item1;
+						value2 = item2;
+					}
+					if (value1 > value2) {
+						return (sortParam.desc) ? -1 : 1;
+					} else if (value1 < value2) {
+						return (sortParam.desc) ? 1 : -1;
 					}
 				}
-				while (low <= high);
-				
-				if (high > paramLow) quickSort(paramLow, high);
-				if (paramHigh > low) quickSort(low, paramHigh);
-			}
-			
-			if (sortParams == null && !comparator) sortParams = this.DEFAULT_SORT_PARAMS;
-			quickSort(0, array.length - 1);
+				return 0;
+			});
 		}
 	};
 	
