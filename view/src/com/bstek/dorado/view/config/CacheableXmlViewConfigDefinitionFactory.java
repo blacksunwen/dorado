@@ -39,6 +39,10 @@ public class CacheableXmlViewConfigDefinitionFactory extends
 
 		@Override
 		public boolean isExpired() {
+			if (super.isExpired()) {
+				return true;
+			}
+
 			if (refreshableResource != null) {
 				return !refreshableResource.isValid();
 			} else {
