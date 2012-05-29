@@ -155,7 +155,7 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.RowListDropDown,/** @scope
 				rowList = new dorado.widget.DataGrid(config);
 			} else {
 				config.width = "100%";
-				property = this._displayProperty || this._property;
+				config.property = this._displayProperty || this._property;
 				rowList = new dorado.widget.DataListBox(config);
 			}
 			box.set({
