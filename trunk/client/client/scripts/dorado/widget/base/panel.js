@@ -774,7 +774,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 					}
 				});
 				
-				$fly(dom).draggable("enable");
+				jQuery(dom).draggable("enable");
 				
 				var captionBar = panel._captionBar;
 				if (captionBar) {
@@ -824,7 +824,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 				}
 			});
 			
-			$fly(dom).draggable("disable");
+			jQuery(dom).draggable("disable");
 			
 			panel.fireEvent("onMaximize", panel);
 		}
