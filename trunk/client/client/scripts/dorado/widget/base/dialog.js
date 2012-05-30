@@ -219,7 +219,7 @@
 						}
 					}
 
-					var $dom = $fly(dom);
+					var $dom = jQuery(dom);
 					if (dialog._resizeable) {
 						$dom.addClass("i-dialog-resizeable d-dialog-resizeable").find(".dialog-resize-handle").draggable("enable");
 					}
@@ -310,9 +310,9 @@
 			var dialog = this;
 			if (dialog._resizeable) {
 				if (collapsed) {
-					$fly(dialog._dom).removeClass("i-dialog-resizeable d-dialog-resizeable").find(".dialog-resize-handle").draggable("disable");
+					jQuery(dialog._dom).removeClass("i-dialog-resizeable d-dialog-resizeable").find(".dialog-resize-handle").draggable("disable");
 				} else {
-					$fly(dialog._dom).addClass("i-dialog-resizeable d-dialog-resizeable").find(".dialog-resize-handle").draggable("enable");
+					jQuery(dialog._dom).addClass("i-dialog-resizeable d-dialog-resizeable").find(".dialog-resize-handle").draggable("enable");
 				}
 			}
 		},
@@ -332,7 +332,7 @@
 				if (height.indexOf("%") == -1) {
 					height = parseInt(height, 10);
 				} else {
-					height = jQuery(window).height() * parseInt(height.replace("%", ""), 10) / 100;
+					height = $fly(window).height() * parseInt(height.replace("%", ""), 10) / 100;
 				}
 			}
 
@@ -508,7 +508,7 @@
 			}
 
 			if (dialog._draggable && showCaptionBar !== false) {
-				$fly(dom).addClass("d-dialog-draggable").css("position", "absolute").draggable({
+				jQuery(dom).addClass("d-dialog-draggable").css("position", "absolute").draggable({
 					iframeFix: true,
 					addClasses: false,
 					handle: ".d-dialog-caption-bar",
@@ -560,10 +560,10 @@
 
 			if (dialog._resizeable) {
 				var dialogXY, dialogSize;
-				$fly(dom).addClass("i-dialog-resizeable d-dialog-resizeable").find(".dialog-resize-handle").each(function(index, handle) {
+				jQuery(dom).addClass("i-dialog-resizeable d-dialog-resizeable").find(".dialog-resize-handle").each(function(index, handle) {
 					var className = handle.className.split(" ")[0], config = handleConfigMap[className];
 					if (!config) return;
-					$fly(handle).draggable({
+					jQuery(handle).draggable({
 						iframeFix: true,
 						cursor: config.cursor,
 						addClasses: false,
