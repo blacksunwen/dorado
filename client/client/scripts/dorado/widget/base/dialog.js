@@ -276,7 +276,7 @@
 				dialog._left = targetOffset.left;
 				dialog._top = targetOffset.top;
 
-				var domEl = $fly(dom);
+				var domEl = jQuery(dom);
 				domEl.css(targetOffset);
 
 				if (dialog._resizeable) {
