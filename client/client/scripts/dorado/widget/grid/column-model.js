@@ -308,7 +308,7 @@
 				});
 				dom.appendChild(label);
 			}
-			label.innerText = column.get("caption");
+			label.innerText = column.get("caption") || "";
 			
 			if (column instanceof dorado.widget.grid.DataColumn) {
 				$fly(label).toggleClass("caption-required", !!column.get("required"));
