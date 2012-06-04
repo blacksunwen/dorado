@@ -23,6 +23,13 @@ public interface DbTable extends DbElement {
 	List<AbstractDbColumn> getAllColumns();
 	
 	/**
+	 * 是否包含特定名称的“列”
+	 * @param name
+	 * @return
+	 */
+	boolean hasColumn(String name);
+	
+	/**
 	 * 根据名称获取特定的“列”
 	 * @param name
 	 * @return
@@ -35,6 +42,11 @@ public interface DbTable extends DbElement {
 	 */
 	DbTableTrigger getTrigger();
 
+	/**
+	 * 计算查询语句
+	 * @param operation
+	 * @return
+	 */
 	SelectSql selectSql(QueryOperation operation);
 	
 	/**

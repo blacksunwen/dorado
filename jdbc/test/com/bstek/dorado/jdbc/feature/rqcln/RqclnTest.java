@@ -23,19 +23,19 @@ public class RqclnTest extends AbstractJdbcTestCase {
 		
 		VarSql sql = SqlUtils.build(vClause, parameter);
 		
-		assertEquals("where 1=1", sql.getClause());
+		assertEquals("where 1=1 ", sql.getClause());
 	}
 	
 	public void test2() throws Exception {
 		String vClause = "where 1=1\n" +
 				"#if($id)\n" +
-				" and ID=:id\n" +
+				"and ID=:id\n" +
 				"#end";
 		Map<Object, Object> parameter = new HashMap<Object, Object>();
 		parameter.put("id", "123");
 		
 		VarSql sql = SqlUtils.build(vClause, parameter);
 		
-		assertEquals("where 1=1 and ID=:id", sql.getClause());
+		assertEquals("where 1=1 and ID=:id ", sql.getClause());
 	}
 }

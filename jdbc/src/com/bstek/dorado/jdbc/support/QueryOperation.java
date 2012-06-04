@@ -55,9 +55,11 @@ public class QueryOperation extends
 				Set<String> propertyDefKeySet = propertyDefMap.keySet();
 				columns = new ArrayList<AbstractDbColumn>(propertyDefKeySet.size());
 				for (String key: propertyDefKeySet) {
-					AbstractDbColumn column = dbTable.getColumn(key);
-					if (column != null && column.isSelectable()) {
-						columns.add(column);
+					if (dbTable.hasColumn(key)) {
+						AbstractDbColumn column = dbTable.getColumn(key);
+						if (column.isSelectable()) {
+							columns.add(column);
+						}
 					}
 				}
 			}
