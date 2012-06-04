@@ -8,6 +8,11 @@ import com.bstek.dorado.jdbc.JdbcDataProvider;
 import com.bstek.dorado.jdbc.test.AbstractJdbcTestCase;
 import com.bstek.dorado.jdbc.test.TestTable;
 
+/**
+ * JdbcDataProvider查询时候的DataType允许出现DbTable中没有的propertyDef
+ * @author mark.li@bstek.com
+ *
+ */
 public class ApudfTest extends AbstractJdbcTestCase {
 	private TestTable t1 = new TestTable("T1")
 				.addColumn("ID", "INT", "PRIMARY KEY")
