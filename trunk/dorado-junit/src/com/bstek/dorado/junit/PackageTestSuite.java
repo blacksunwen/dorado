@@ -15,6 +15,14 @@ import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.SystemPropertyUtils;
 
+/**
+ * 一起运行某个package下的所有TestCase，例如： <pre>
+ * <code>
+ * String[] packages = new String[]{"com.bstek.dorado.jdbc.feature"};
+ * PackageTestSuite suite = new PackageTestSuite(packages);
+ * </code>
+ * </pre>
+ */
 public class PackageTestSuite extends TestSuite {
 	private static final String DEFAULT_RESOURCE_PATTERN = "**/*.class";
 	private ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();

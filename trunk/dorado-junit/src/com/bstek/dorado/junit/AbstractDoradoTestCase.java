@@ -82,6 +82,10 @@ public abstract class AbstractDoradoTestCase extends TestCase {
 		}
 	}
 	
+	/**
+	 * 在每一个TestCase运行前触发的方法
+	 * @throws Exception
+	 */
 	protected void beforeCaseRun() throws Exception {
 		
 	}
@@ -96,6 +100,10 @@ public abstract class AbstractDoradoTestCase extends TestCase {
 		Thread.sleep(1 * 1000);
 	}
 	
+	/**
+	 * 在每一个TestCase运行后触发的方法
+	 * @throws Exception
+	 */
 	protected void afterCaseRun() throws Exception {
 		
 	}
