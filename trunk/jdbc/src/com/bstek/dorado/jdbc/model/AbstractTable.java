@@ -31,6 +31,10 @@ public abstract class AbstractTable extends AbstractDbElement implements DbTable
 		return new ArrayList<AbstractDbColumn>(columnMap.values());
 	}
 	
+	public boolean hasColumn(String name) {
+		return columnMap.get(name) != null;
+	}
+	
 	public AbstractDbColumn getColumn(String name) {
 		AbstractDbColumn c = columnMap.get(name);
 		Assert.notNull(c, "No column named [" + name + "] in table [" + this.getName() + "]");

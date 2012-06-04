@@ -35,7 +35,7 @@ public abstract class SqlUtils {
 	}
 	
 	private static VarSql build(String clause, JdbcParameterSource parameterSource) throws Exception {
-		String translatedClause = "";
+		StringBuffer buffer = new StringBuffer(clause.length());
 		List<VarExpr> paramExprs = new ArrayList<VarExpr>();
 
 		boolean inQuot = false;
@@ -58,26 +58,28 @@ public abstract class SqlUtils {
 					if ((i + 1) == clause.length()) {
 						VarExpr varExpr = VarExpr.create(expr, parameterSource);
 						paramExprs.add(varExpr);
-						translatedClause += ":" + varExpr.getVarName();
+						buffer.append(":").append(varExpr.getVarName());
 					}
 					continue;
 				} else {
 					Assert.isTrue(expr.length() > 0, "Error when HQL parsing [" + clause + "]");
 					VarExpr varExpr = VarExpr.create(expr, parameterSource);
 					paramExprs.add(varExpr);
-					translatedClause += ":" + varExpr.getVarName();
+					buffer.append(":").append(varExpr.getVarName());
 					expr = "";
 					inParam = false;
 				}
 			} 
 
 			if (inQuot) {
-				translatedClause += c;
+				buffer.append(c);
 			} else if (c!='\n' && c != '\r') {
-				translatedClause += c;
+				buffer.append(c);
+			} else {
+				buffer.append(' ');
 			}
 		} 
-		
+		String translatedClause = buffer.toString();
 		VarSql sql = new VarSql(translatedClause, paramExprs, parameterSource);
 		return sql;
 	}
