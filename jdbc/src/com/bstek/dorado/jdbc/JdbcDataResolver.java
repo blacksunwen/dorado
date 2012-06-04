@@ -1,7 +1,6 @@
 package com.bstek.dorado.jdbc;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -15,10 +14,8 @@ import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
-import com.bstek.dorado.data.entity.EntityUtils;
 import com.bstek.dorado.data.resolver.AbstractDataResolver;
 import com.bstek.dorado.data.resolver.DataItems;
-import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.data.type.EntityDataType;
 import com.bstek.dorado.jdbc.support.DataResolverContext;
 import com.bstek.dorado.jdbc.support.DataResolverOperation;
@@ -137,7 +134,7 @@ public class JdbcDataResolver extends AbstractDataResolver {
 			}
 		}
 		
-		List<JdbcDataResolverItem> resolverItems = getResolverItems(dataItems);
+		List<JdbcDataResolverItem> resolverItems = this.getResolverItems(dataItems);
 		
 		DataResolverContext jdbcContext = new DataResolverContext(jdbcEnviroment, parameter, dataItems, resolverItems);
 		DataResolverOperation operation = new DataResolverOperation(jdbcContext, transactionOperations);
@@ -154,7 +151,7 @@ public class JdbcDataResolver extends AbstractDataResolver {
 				return items;
 			}
 		} else {
-			return createResolverItems(dataItems);
+			return this.createResolverItems(dataItems);
 		}
 	}
 	
@@ -169,9 +166,9 @@ public class JdbcDataResolver extends AbstractDataResolver {
 			Set<String> nameSet = dataItems.keySet();
 			for (String name: nameSet) {
 				Object dataObject = dataItems.get(name);
-				DataType dataType = getDataType(dataObject);
-				JdbcDataResolverItem resolverItem = createResolverItem(name, dataType);
-				if (resolverItem != null) {
+				EntityDataType dataType = JdbcUtils.getEntityDataType(dataObject);
+				if (dataType != null) {
+					JdbcDataResolverItem resolverItem = this.createResolverItem(name, dataType);
 					resolverItems.add(resolverItem);
 				}
 			}
@@ -193,12 +190,9 @@ public class JdbcDataResolver extends AbstractDataResolver {
 				
 				if (resolverItem == null) {
 					Object dataObject = dataItems.get(itemName);
-					DataType dataType = getDataType(dataObject);
-					resolverItem = createResolverItem(itemName, dataType);
-					
-					if (resolverItem != null) {
-						resolverItems2.add(resolverItem);
-					}
+					EntityDataType dataType = JdbcUtils.getEntityDataType(dataObject);
+					resolverItem = this.createResolverItem(itemName, dataType);
+					resolverItems2.add(resolverItem);
 				}
 			}
 			
@@ -206,32 +200,12 @@ public class JdbcDataResolver extends AbstractDataResolver {
 		}
 	}
 	
-	protected JdbcDataResolverItem createResolverItem(String name, DataType dataType) {
-		if (dataType instanceof EntityDataType) {
-			JdbcDataResolverItem item = new JdbcDataResolverItem();
-			item.setName(name);
-			String tableName = dataType.getName();
-			item.setTableName(tableName);
-			return item;
-		}
-		
-		return null;
-	}
-	
-	protected DataType getDataType(Object dataObject) {
-		if (dataObject instanceof Collection) {
-			Collection<?> dataCollection = (Collection<?>)dataObject;
-			if (!dataCollection.isEmpty()) {
-				Object data = dataCollection.iterator().next();
-				return EntityUtils.getDataType(data);
-			} else {
-				return null;
-			}
-//			AggregationDataType collectionType = EntityUtils.getDataType((Collection<?>) dataObject);
-//			return collectionType.getElementDataType(); 
-		} else {
-			return EntityUtils.getDataType(dataObject);
-		}
+	protected JdbcDataResolverItem createResolverItem(String name, EntityDataType dataType) {
+		JdbcDataResolverItem item = new JdbcDataResolverItem();
+		item.setName(name);
+		String tableName = dataType.getName();
+		item.setTableName(tableName);
+		return item;
 	}
 
 }

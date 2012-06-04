@@ -20,6 +20,7 @@ public class SaveRecordCommand {
 				RecordOperationProxy proxy = dbTable.createOperationProxy(record, jdbcContext);
 				if (proxy != null) {
 					TableRecordOperation proxyOperation = proxy.getProxyOperation();
+					proxyOperation.setBatchSql(operation.getBatchSql());
 					if (proxyOperation.run()) {
 						Map<String, String> propertyMap = proxy.getProxyPropertyMap();
 						if (propertyMap != null) {
@@ -38,6 +39,7 @@ public class SaveRecordCommand {
 			}
 		} else {
 			TableRecordOperation to = new TableRecordOperation((Table)dbTable, record, jdbcContext);
+			to.setBatchSql(operation.getBatchSql());
 			to.run();
 		}
 	}

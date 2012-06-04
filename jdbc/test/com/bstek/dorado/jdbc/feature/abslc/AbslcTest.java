@@ -12,10 +12,10 @@ import com.bstek.dorado.jdbc.test.TestTable;
  * @author mark.li@bstek.com
  *
  */
-public class Test extends AbstractJdbcTestCase {
+public class AbslcTest extends AbstractJdbcTestCase {
 	private TestTable t1 = new TestTable("T1");
 	
-	public Test() {
+	public AbslcTest() {
 		super();
 		
 		this.register(

@@ -1,9 +1,9 @@
 package com.bstek.dorado.jdbc;
 
-import com.bstek.dorado.jdbc.test.PackageTestSuite;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
+
+import com.bstek.dorado.junit.PackageTestSuite;
 
 
 public class AllTests extends TestCase {

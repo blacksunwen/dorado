@@ -1,14 +1,17 @@
 package com.bstek.dorado.jdbc.support;
 
+import java.util.Set;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 
+import com.bstek.dorado.data.type.EntityDataType;
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.Dialect;
-import com.bstek.dorado.jdbc.JdbcEnviroment;
+import com.bstek.dorado.jdbc.model.AbstractDbColumn;
 import com.bstek.dorado.jdbc.model.Table;
 import com.bstek.dorado.jdbc.model.table.KeyGenerator;
 import com.bstek.dorado.jdbc.model.table.TableColumn;
@@ -33,23 +36,47 @@ public class InsertCommand {
 	}
 
 	public void execute(TableRecordOperation operation) throws Exception {
-		JdbcEnviroment env = operation.getJdbcEnviroment();
 		Record record = operation.getRecord();
 		
-		InsertSql insertSql = this.insertSql(operation);
-		Dialect dialect = operation.getDialect();
-		String sql = dialect.toSQL(insertSql);
-		if (logger.isDebugEnabled()) {
-			logger.debug("[INSERT-SQL]" + sql);
+		InsertSql insertSql = null;
+		String sql = null;
+		BatchSql batchSql = operation.getBatchSql();
+		
+		EntityDataType dataType = null;
+		if (batchSql != null) {
+			dataType = batchSql.getDataType();
 		}
 		
-		NamedParameterJdbcTemplate jdbcTemplate = env.getSpringNamedDao().getNamedParameterJdbcTemplate();
+		boolean batch = false;
+		if (batchSql == null) {
+			Set<String> propertyNameSet = (dataType != null)? dataType.getPropertyDefs().keySet() : record.keySet();
+			insertSql = this.createSql(operation, propertyNameSet);
+		} else {
+			insertSql = batchSql.getInsertSql();
+			if (insertSql == null) {
+				Set<String> propertyNameSet = (dataType != null)? dataType.getPropertyDefs().keySet() : record.keySet();
+				insertSql = this.createSql(operation, propertyNameSet);
+				batchSql.setInsertSql(insertSql);
+			} else {
+				batch = true;
+			}
+		}
+		sql = insertSql.getSQL(operation.getDialect());
+		
+		if (logger.isDebugEnabled()) {
+			if (batch) {
+				logger.debug("[INSERT-SQL][Batch]" + sql);
+			} else {
+				logger.debug("[INSERT-SQL]" + sql);
+			}
+		}
+		
+		JdbcParameterSource parameterSource = this.createParameterSource(operation, insertSql);
+		NamedParameterJdbcTemplate jdbcTemplate = operation.getJdbcEnviroment().getSpringNamedDao().getNamedParameterJdbcTemplate();
 		TableKeyColumn identityColumn = insertSql.getIdentityColumn();
 		if (identityColumn == null) {
-			JdbcParameterSource parameterSource = insertSql.getParameterSource();
 			jdbcTemplate.update(sql, parameterSource);
 		} else {
-			JdbcParameterSource parameterSource = insertSql.getParameterSource();
 			GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 			jdbcTemplate.update(sql, parameterSource, keyHolder);
 			String propertyName = identityColumn.getPropertyName();
@@ -69,84 +96,95 @@ public class InsertCommand {
 		}
 	}
 	
-	private InsertSql insertSql(TableRecordOperation operation) {
-		Dialect dialect = operation.getDialect();
-		
-		Table table = (Table)operation.getDbTable();
-		Record record = operation.getRecord();
-		
+	protected InsertSql createSql(TableRecordOperation operation, Set<String> propertyNameSet) {
 		InsertSql sql = new InsertSql();
-		JdbcParameterSource parameterSource = SqlUtils.createJdbcParameter(record);
-		sql.setParameterSource(parameterSource);
+		
+		Dialect dialect = operation.getDialect();
+		Table table = (Table)operation.getDbTable();
 		sql.setTableToken(dialect.token(table));
 		
 		for (TableKeyColumn keyColumn: table.getKeyColumns()) {
 			String propertyName = keyColumn.getPropertyName();
 			KeyGenerator<?> keyGenerator = keyColumn.getKeyGenerator();
-			if (keyGenerator != null) {
-				if (keyGenerator.isIdentity()) {
-					sql.setIdentityColumn(keyColumn);
-				} else {
-					Object value = keyGenerator.newKey(operation, keyColumn);
-					JdbcType jdbcType = keyColumn.getJdbcType();
-					if (jdbcType != null) {
-						record.put(propertyName, jdbcType.fromDB(value));
-						parameterSource.setValue(propertyName, jdbcType.toDB(value), jdbcType.getSqlType());
-					} else {
-						record.put(propertyName, value);
-					}
-					
-					sql.addColumnToken(keyColumn.getName(), ":"+propertyName);
-				}
+			if (keyGenerator != null && keyGenerator.isIdentity()) {
+				sql.setIdentityColumn(keyColumn);
 			} else {
-				sql.addColumnToken(keyColumn.getName(), ":"+propertyName);
+				sql.addColumnToken(keyColumn.getName(), propertyName);
 			}
 		}
 		
-		for (TableColumn column: table.getTableColumns()) {
-			if (column.isInsertable()) {
-				String propertyName = column.getPropertyName();
-				if (record.containsKey(propertyName)) {
-					Object value = record.get(propertyName);
-					if (value == null) {
-						value = column.getInsertDefaultValue();
-						if (value != null) {
-							JdbcType jdbcType = column.getJdbcType();
-							if (jdbcType != null) {
-								value = jdbcType.fromDB(value);
-								record.set(propertyName, value);
-							} else {
-								record.set(propertyName, value);
-							}
-						}
-					}
-					
-					addColumnToken(sql, parameterSource, column, propertyName,
-							value);
-				} else {
-					Object value = column.getInsertDefaultValue();
-					if (value != null) {
-						addColumnToken(sql, parameterSource, column,
-								propertyName, value);
-					}
-				}
+		for (String propertyName: propertyNameSet) {
+			TableColumn column = table.getTableColumn(propertyName);
+			if (column != null && column.isInsertable()) {
+				sql.addColumnToken(propertyName, propertyName);
 			}
 		}
 		
 		sql.setRetrieveAfterExecute(table.isRetrieveAfterInsert());
+		
 		return sql;
 	}
 	
-	private void addColumnToken(InsertSql sql,
-			JdbcParameterSource parameterSource, TableColumn column,
-			String propertyName, Object value) {
-		String columnName = column.getName();
-		JdbcType jdbcType = column.getJdbcType();
-		if (jdbcType != null) {
-			Object dbValue = jdbcType.toDB(value);
-			parameterSource.setValue(propertyName, dbValue, jdbcType.getSqlType());
+	protected JdbcParameterSource createParameterSource(TableRecordOperation operation, InsertSql sql) {
+		Table table = (Table)operation.getDbTable();
+		Record record = operation.getRecord();
+		
+		String[] columnNames = sql.getColumnNames();
+		String[] propertyNames = sql.getPropertyNames();
+		
+		JdbcParameterSource parameterSource = SqlUtils.createJdbcParameter(null);
+		for (int i=0; i<columnNames.length; i++) {
+			String columnName = columnNames[i];
+			String propertyName = propertyNames[i];
+			
+			AbstractDbColumn dbColumn = table.getColumn(columnName);
+			Object value = null;
+			if (dbColumn instanceof TableKeyColumn) {
+				TableKeyColumn keyColumn = (TableKeyColumn)dbColumn;
+				KeyGenerator<?> keyGenerator = keyColumn.getKeyGenerator();
+				if (keyGenerator != null) {
+					Object nValue = keyGenerator.newKey(operation, keyColumn);
+					
+					JdbcType jdbcType = keyColumn.getJdbcType();
+					if (jdbcType != null) {
+						value = jdbcType.fromDB(nValue);
+					} else {
+						value = nValue;
+					}
+					
+					record.put(propertyName, value);
+				} else {
+					value = record.get(propertyName);
+				}
+			} else {
+				value = record.get(propertyName);
+				if (value == null) {
+					TableColumn column = (TableColumn)dbColumn;
+					Object nValue = column.getInsertDefaultValue();
+					
+					JdbcType jdbcType = column.getJdbcType();
+					if (jdbcType != null) {
+						value = jdbcType.fromDB(nValue);
+					} else {
+						value = nValue;
+					}
+					
+					record.put(propertyName, value);
+				}
+			}
+			
+			Object toDbValue = null;
+			JdbcType jdbcType = dbColumn.getJdbcType();
+			if (jdbcType != null) {
+				toDbValue = jdbcType.toDB(value);
+			} else {
+				toDbValue = value;
+			}
+			
+			parameterSource.setValue(propertyName, toDbValue);
 		}
-		sql.addColumnToken(columnName, ":" + propertyName);
+		
+		return parameterSource;
 	}
 	
 }

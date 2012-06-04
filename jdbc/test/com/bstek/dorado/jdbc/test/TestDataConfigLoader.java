@@ -8,12 +8,13 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
 import com.bstek.dorado.data.config.DataConfigLoader;
+import com.bstek.dorado.junit.TestUtils;
 
 public class TestDataConfigLoader extends DataConfigLoader {
 	
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		Class<?> testClazz = TestJdbcUtils.getCurrentTestClass();
+		Class<?> testClazz = TestUtils.getCurrentClassClass();
 		String location = this.getDataLocation(testClazz);
 		if (location != null) {
 			this.setConfigLocation(location);

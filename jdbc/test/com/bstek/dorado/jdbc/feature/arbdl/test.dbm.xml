@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DbModel>
+	<Table name="T1" tableName="T1">
+		<Columns>
+			<KeyColumn name="ID">
+				<Property name="jdbcType">INTEGER-Integer</Property>
+			</KeyColumn>
+			<Column name="C1">
+				<Property name="jdbcType">VARCHAR-String</Property>
+			</Column>
+			<Column name="C2">
+				<Property name="jdbcType">VARCHAR-String</Property>
+			</Column>
+			<Column name="C3">
+				<Property name="jdbcType">VARCHAR-String</Property>
+			</Column>
+			<Column name="C4">
+				<Property name="jdbcType">VARCHAR-String</Property>
+			</Column>
+		</Columns>
+	</Table>
+	
+	<Table name="T2" tableName="T2">
+		<Columns>
+			<KeyColumn name="ID">
+				<Property name="jdbcType">INTEGER-Integer</Property>
+				<Property name="updatable">true</Property>
+			</KeyColumn>
+			<Column name="C1">
+				<Property name="jdbcType">VARCHAR-String</Property>
+			</Column>
+			<Column name="C2">
+				<Property name="jdbcType">VARCHAR-String</Property>
+			</Column>
+			<Column name="C3">
+				<Property name="jdbcType">VARCHAR-String</Property>
+			</Column>
+			<Column name="C4">
+				<Property name="jdbcType">VARCHAR-String</Property>
+			</Column>
+		</Columns>
+	</Table>
+</DbModel>

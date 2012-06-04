@@ -1,10 +1,7 @@
 package com.bstek.dorado.jdbc.test;
 
-import org.springframework.jdbc.core.JdbcTemplate;
 
-import com.bstek.dorado.jdbc.JdbcEnviroment;
-
-public class TestSequence {
+public class TestSequence extends AbstractDbElement{
 
 	private String name;
 	private int start = 1;
@@ -28,28 +25,14 @@ public class TestSequence {
 		return this;
 	}
 	
-	public void create() {
-		JdbcEnviroment env = TestJdbcUtils.getEnviromentManager().getDefault();
-		JdbcTemplate tpl = env.getSpringNamedDao().getJdbcTemplate();
-		
-		String sql = this.toCreateSQL();
-		tpl.update(sql);
-	}
-	
-	public void drop() {
-		JdbcEnviroment env = TestJdbcUtils.getEnviromentManager().getDefault();
-		JdbcTemplate tpl = env.getSpringNamedDao().getJdbcTemplate();
-		
-		String sql = this.toDropSQL();
-		tpl.update(sql);
-	}
-	
-	private String toCreateSQL() {
+	@Override
+	protected String toCreateSQL() {
 		String sql = "CREATE SEQUENCE " + name + " START WITH " + start + " INCREMENT BY " + increment;
 		return sql;
 	}
 	
-	private String toDropSQL() {
+	@Override
+	protected String toDropSQL() {
 		return "DROP SEQUENCE " + name;
 	}
 }

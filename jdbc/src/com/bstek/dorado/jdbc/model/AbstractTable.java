@@ -24,7 +24,7 @@ import com.bstek.dorado.util.Assert;
  */
 public abstract class AbstractTable extends AbstractDbElement implements DbTable {
 
-	private Map<String,AbstractDbColumn> columnMap = new LinkedHashMap<String,AbstractDbColumn>();
+	protected Map<String,AbstractDbColumn> columnMap = new LinkedHashMap<String,AbstractDbColumn>();
 	private DbTableTrigger trigger;
 	
 	public List<AbstractDbColumn> getAllColumns() {

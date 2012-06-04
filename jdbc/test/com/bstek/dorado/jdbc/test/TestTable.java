@@ -6,17 +6,17 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.JdbcEnviroment;
 
-public class TestTable {
+public class TestTable extends AbstractDbElement {
 
 	private String tableName;
 	private List<Column> columns = new ArrayList<Column>();
@@ -40,32 +40,11 @@ public class TestTable {
 	}
 	
 	public TestTable addColumn(String name, String dataType) {
-		Column c = new Column();
-		c.name = name;
-		c.dataType = dataType;
-		
-		columns.add(c);
-		return this;
-	}
-	
-	public void create() {
-		JdbcEnviroment env = TestJdbcUtils.getEnviromentManager().getDefault();
-		JdbcTemplate tpl = env.getSpringNamedDao().getJdbcTemplate();
-		
-		String sql = this.toCreateSQL();
-		tpl.update(sql);
-	}
-	
-	public void drop() {
-		JdbcEnviroment env = TestJdbcUtils.getEnviromentManager().getDefault();
-		JdbcTemplate tpl = env.getSpringNamedDao().getJdbcTemplate();
-		
-		String sql = this.toDropSQL();
-		tpl.update(sql);
+		return this.addColumn(name, dataType, null);
 	}
 	
 	public Record get(String idColumnName, Object id) {
-		JdbcEnviroment env = TestJdbcUtils.getEnviromentManager().getDefault();
+		JdbcEnviroment env = this.getEnviromentManager().getDefault();
 		NamedParameterJdbcTemplate tpl = env.getSpringNamedDao().getNamedParameterJdbcTemplate();
 		
 		String sql = "select * from " + this.getName() + " where " + idColumnName + "=:id";
@@ -87,6 +66,16 @@ public class TestTable {
 		});
 	}
 	
+	public boolean has(String idColumnName, Object id) {
+		JdbcEnviroment env = this.getEnviromentManager().getDefault();
+		NamedParameterJdbcTemplate tpl = env.getSpringNamedDao().getNamedParameterJdbcTemplate();
+		
+		String sql = "select * from " + this.getName() + " where " + idColumnName + "=:id";
+		
+		List<Map<String,Object>> list = tpl.queryForList(sql, Collections.singletonMap("id", id));
+		return list.size() == 1;
+	}
+	
 	public TestTable insert(Record record){
 		Set<String> keySet = record.keySet();
 		String sql = "insert into " + this.getName() + "(";
@@ -101,14 +90,15 @@ public class TestTable {
 		sql += StringUtils.join(keyNames, ',');
 		sql += ")";
 		
-		JdbcEnviroment env = TestJdbcUtils.getEnviromentManager().getDefault();
+		JdbcEnviroment env = this.getEnviromentManager().getDefault();
 		NamedParameterJdbcTemplate tpl = env.getSpringNamedDao().getNamedParameterJdbcTemplate();
 		
 		tpl.update(sql, record);
 		return this;
 	}
 	
-	String toCreateSQL() {
+	@Override
+	protected String toCreateSQL() {
 		String script = "CREATE TABLE " + tableName + " (";
 		
 		for (int i=0; i<columns.size(); i++) {
@@ -127,7 +117,8 @@ public class TestTable {
 		return script;
 	}
 	
-	String toDropSQL() {
+	@Override
+	protected String toDropSQL() {
 		String script = "DROP TABLE " + tableName;
 		return script;
 	}
@@ -141,6 +132,5 @@ public class TestTable {
 			return name + " " + dataType + (other == null ? "": " " + other );
 		}
 	}
-	
 	
 }

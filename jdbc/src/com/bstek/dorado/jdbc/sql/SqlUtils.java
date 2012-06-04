@@ -27,19 +27,6 @@ public abstract class SqlUtils {
 		return new JdbcParameterSource(parameter);
 	}
 	
-	public static String leftSpace(String token) {
-		return " " + token;
-	}
-	public static String rightSpace(String token) {
-		return token + " ";
-	}
-	public static String bothSpace(String token) {
-		return " " + token + " ";
-	}
-	public static String brackets(String token) {
-		return '(' + token + ')';
-	}
-	
 	public static VarSql build(String vClause, Object parameter) throws Exception {
 		String clause = buildVelocityClause(vClause, parameter);
 		JdbcParameterSource parameterSource = createJdbcParameter(parameter);

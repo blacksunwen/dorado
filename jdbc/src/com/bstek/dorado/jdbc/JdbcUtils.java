@@ -1,5 +1,6 @@
 package com.bstek.dorado.jdbc;
 
+import java.util.Collection;
 import java.util.Map;
 
 import com.bstek.dorado.core.Context;
@@ -8,6 +9,8 @@ import com.bstek.dorado.data.config.definition.DataCreationContext;
 import com.bstek.dorado.data.entity.EntityState;
 import com.bstek.dorado.data.entity.EntityUtils;
 import com.bstek.dorado.data.provider.Criteria;
+import com.bstek.dorado.data.type.AggregationDataType;
+import com.bstek.dorado.data.type.EntityDataType;
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.config.DbElementDefinition;
 import com.bstek.dorado.jdbc.config.DbmDefinitionManager;
@@ -96,6 +99,30 @@ public final class JdbcUtils {
 		}
 		
 		return parameter;
+	}
+	
+	/**
+	 * 
+	 * @param dataObject
+	 * @return
+	 */
+	public static EntityDataType getEntityDataType(Object dataObject) {
+		if (dataObject instanceof Collection) {
+			Collection<?> dataCollection = (Collection<?>)dataObject;
+			if (!dataCollection.isEmpty()) {
+				Object data = dataCollection.iterator().next();
+				return EntityUtils.getDataType(data);
+			} else {
+				AggregationDataType aggDataType = EntityUtils.getDataType(dataCollection);
+				if (aggDataType != null) {
+					return (EntityDataType)aggDataType.getElementDataType();
+				} else {
+					return null;
+				}
+			}
+		} else {
+			return EntityUtils.getDataType(dataObject);
+		}
 	}
 	
 	@SuppressWarnings("unchecked")

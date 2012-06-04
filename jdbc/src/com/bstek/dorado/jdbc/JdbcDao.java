@@ -131,7 +131,7 @@ public class JdbcDao {
 	public void save(String tableName, Record record) throws Exception {
 		DbTable dbTable = JdbcUtils.getDbTable(tableName);
 		
-		SaveOperation operation = new SaveOperation(dbTable,record, null);
+		SaveOperation operation = new SaveOperation(null, dbTable,record, null);
 		this.doSave(operation);
 	}
 	

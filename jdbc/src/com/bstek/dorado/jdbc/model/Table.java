@@ -1,7 +1,6 @@
 package com.bstek.dorado.jdbc.model;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -123,11 +122,20 @@ public class Table extends AbstractTable {
 	}
 
 	public List<TableColumn> getTableColumns() {
-		return Collections.unmodifiableList(tableColumns);
+		return tableColumns;
+	}
+	
+	public TableColumn getTableColumn(String name) {
+		AbstractDbColumn column = this.columnMap.get(name);
+		if (column instanceof TableColumn) {
+			return (TableColumn)column;
+		} else {
+			return null;
+		}
 	}
 	
 	public List<TableKeyColumn> getKeyColumns() {
-		return Collections.unmodifiableList(keyColumns);
+		return keyColumns;
 	}
 
 	public boolean supportResolverTable() {
@@ -164,6 +172,7 @@ public class Table extends AbstractTable {
 			for (int i = 0; i < keyColumnList.size(); i++) {
 				TableKeyColumn keyColumn = keyColumnList.get(i);
 				String columnName = keyColumn.getName();
+				String propertyName = keyColumn.getPropertyName();
 				Object keyValue = keyValues[i];
 				
 				JdbcType jdbcType = keyColumn.getJdbcType();
@@ -176,10 +185,9 @@ public class Table extends AbstractTable {
 				if (i > 0) {
 					dynamicToken.append(" AND ");
 				} 
-				dynamicToken.append(columnName + " = :" + columnName);
+				dynamicToken.append(columnName + " = :" + propertyName);
 			}
 			
-			selectSql.setDynamicToken(dynamicToken.toString());
 			selectSql.setParameter(keyParameter);
 		} else {
 			selectSql.setDynamicToken(this.getDynamicClause());

@@ -15,7 +15,7 @@ public class DeleteAllSql extends AbstractTableSql {
 	}
 	
 	@Override
-	public String toSQL(Dialect dialect) throws Exception {
+	protected String toSQL(Dialect dialect){
 		String tableToken = this.getTableToken();
 		Assert.notEmpty(tableToken, "tableToken must not be empty.");
 		Assert.notEmpty(columnTokenMap, "columnTokenMap must not be empty.");

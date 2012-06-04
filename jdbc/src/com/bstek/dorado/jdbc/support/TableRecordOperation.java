@@ -14,7 +14,8 @@ public class TableRecordOperation extends
 
 	private TableRecordOperation parent;
 	private Record record;
-
+	private BatchSql batchSql;
+	
 	public TableRecordOperation(Table dbTable, Record record,
 			DataResolverContext jdbcContext) {
 		super(dbTable, jdbcContext);
@@ -31,6 +32,14 @@ public class TableRecordOperation extends
 
 	public TableRecordOperation getParent() {
 		return this.parent;
+	}
+
+	public BatchSql getBatchSql() {
+		return batchSql;
+	}
+
+	public void setBatchSql(BatchSql batchSql) {
+		this.batchSql = batchSql;
 	}
 
 	@Override

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Model>
+	<DataResolver name="dataResolver1" type="jdbc">
+		<ResolverItem>
+			<Property name="name">t1</Property>
+			<Property name="tableName">T1</Property>
+		</ResolverItem>
+	</DataResolver>
+	<DataResolver name="dataResolver2" type="jdbc">
+		<ResolverItem>
+			<Property name="name">t2</Property>
+			<Property name="tableName">T2</Property>
+		</ResolverItem>
+	</DataResolver>
+	
+	<DataType name="dataType1">
+		<PropertyDef name="ID">
+			<Property name="dataType">Integer</Property>
+		</PropertyDef>
+		<PropertyDef name="C1">
+			<Property name="dataType">String</Property>
+		</PropertyDef>
+		<PropertyDef name="C2">
+			<Property name="dataType">String</Property>
+		</PropertyDef>
+	</DataType>
+	<DataType name="dataType2">
+		<PropertyDef name="ID">
+			<Property name="dataType">Integer</Property>
+		</PropertyDef>
+		<PropertyDef name="C1">
+			<Property name="dataType">String</Property>
+		</PropertyDef>
+		<PropertyDef name="C2">
+			<Property name="dataType">String</Property>
+		</PropertyDef>
+	</DataType>
+</Model>

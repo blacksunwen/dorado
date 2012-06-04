@@ -19,14 +19,14 @@ public class SaveCommand {
 		JdbcDao jdbcDao = operation.getJdbcDao();
 		
 		if (data instanceof Record) {
-			SaveRecordOperation sro = new SaveRecordOperation(dbTable, (Record)data, jdbcContext);
+			SaveRecordOperation sro = new SaveRecordOperation(operation.getBatchSql(), dbTable, (Record)data, jdbcContext);
 			jdbcDao.doSave(sro);
 		} else if (data instanceof Collection) {
 			Collection<Object> datas = (Collection<Object>) data;
 			for (Object d: datas) {
 				Assert.notNull(d, "data element must not be null.");
 				if (d instanceof Record) {
-					SaveRecordOperation sro = new SaveRecordOperation(dbTable, (Record)d, jdbcContext);
+					SaveRecordOperation sro = new SaveRecordOperation(operation.getBatchSql(), dbTable, (Record)d, jdbcContext);
 					jdbcDao.doSave(sro);
 				} else {
 					throw new IllegalArgumentException("Unknown data type [" + d.getClass() + "]");

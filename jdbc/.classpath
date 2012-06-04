@@ -3,11 +3,6 @@
 	<classpathentry excluding="META_INF/" kind="src" path="src"/>
 	<classpathentry kind="src" path="ksrc"/>
 	<classpathentry kind="src" path="test"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/core"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/data"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/web"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ide-support"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/view"/>
 	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=jdbc&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
 	<classpathentry kind="lib" path="jdbc-driver/mssql2008/sqljdbc4.jar"/>
 	<classpathentry kind="lib" path="jdbc-driver/mysql/mysql-connector-java-5.1.17-bin.jar"/>
@@ -32,5 +27,6 @@
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry combineaccessrules="false" kind="src" path="/dorado-junit"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

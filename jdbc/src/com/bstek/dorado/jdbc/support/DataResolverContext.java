@@ -29,7 +29,7 @@ public class DataResolverContext extends AbstractJdbcContext {
 			List<JdbcDataResolverItem> resolverItems) {
 		this(null, parameter, dataItems, resolverItems);
 	}
-
+	
 	public DataItems getDataItems() {
 		return dataItems;
 	}
