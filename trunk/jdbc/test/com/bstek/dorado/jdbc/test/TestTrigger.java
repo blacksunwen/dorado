@@ -1,10 +1,7 @@
 package com.bstek.dorado.jdbc.test;
 
-import org.springframework.jdbc.core.JdbcTemplate;
 
-import com.bstek.dorado.jdbc.JdbcEnviroment;
-
-public class TestTrigger {
+public class TestTrigger extends AbstractDbElement {
 
 	private String name;
 	private String position;
@@ -34,29 +31,15 @@ public class TestTrigger {
 		return this;
 	}
 	
-	public void create() {
-		JdbcEnviroment env = TestJdbcUtils.getEnviromentManager().getDefault();
-		JdbcTemplate tpl = env.getSpringNamedDao().getJdbcTemplate();
-		
-		String sql = this.toCreateSQL();
-		tpl.update(sql);
-	}
-	
-	public void drop() {
-		JdbcEnviroment env = TestJdbcUtils.getEnviromentManager().getDefault();
-		JdbcTemplate tpl = env.getSpringNamedDao().getJdbcTemplate();
-		
-		String sql = this.toDropSQL();
-		tpl.update(sql);
-	}
-	
-	private String toCreateSQL() {
+	@Override
+	protected String toCreateSQL() {
 		String sql = "CREATE TRIGGER " + name + " " + position + " ON " + tableName + 
 				" FOR EACH ROW" + " CALL \"" + triggerClazz.getName() + "\"";
 		return sql;
 	}
 	
-	private String toDropSQL() {
+	@Override
+	protected String toDropSQL() {
 		return "DROP TRIGGER " + name;
 	}
 }

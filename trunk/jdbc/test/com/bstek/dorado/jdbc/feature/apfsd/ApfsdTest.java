@@ -10,13 +10,24 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import com.bstek.dorado.data.entity.EntityList;
 import com.bstek.dorado.data.provider.Page;
 import com.bstek.dorado.data.type.DataType;
-import com.bstek.dorado.data.util.DataUtils;
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.jdbc.JdbcDataProvider;
 import com.bstek.dorado.jdbc.test.AbstractJdbcTestCase;
+import com.bstek.dorado.jdbc.test.TestTable;
 
-public class Test extends AbstractJdbcTestCase {
-
+public class ApfsdTest extends AbstractJdbcTestCase {
+	private TestTable t1 = new TestTable("T1")
+		.addColumn("ID", "INT", "PRIMARY KEY")
+		.addColumn("C1", "VARCHAR(20)")
+		.addColumn("C2", "VARCHAR(20)")
+		.addColumn("C3", "VARCHAR(20)")
+		.addColumn("C4", "VARCHAR(20)");
+	
+	public ApfsdTest() {
+		super();
+		this.register(t1);
+	}
+	
 	@SuppressWarnings("unchecked")
 	public void test1() throws Exception {
 		NamedParameterJdbcTemplate tpl = this.getNamedParameterJdbcTemplate();
@@ -32,7 +43,7 @@ public class Test extends AbstractJdbcTestCase {
 			tpl.update(sql, paramSource);
 		}
 		
-		DataType dataType = DataUtils.getDataType("[T1]");
+		DataType dataType = this.getDataType("[T1]");
 		JdbcDataProvider provider = this.getProvider("dataProvider1");
 		
 		EntityList<Record> list = (EntityList<Record>)provider.getResult(null, dataType);
@@ -62,7 +73,7 @@ public class Test extends AbstractJdbcTestCase {
 			tpl.update(sql, paramSource);
 		}
 		
-		DataType dataType = DataUtils.getDataType("[TC2]");
+		DataType dataType = this.getDataType("[TC2]");
 		JdbcDataProvider provider = this.getProvider("dataProvider1");
 		
 		EntityList<Record> list = (EntityList<Record>)provider.getResult(null, dataType);
@@ -92,7 +103,7 @@ public class Test extends AbstractJdbcTestCase {
 			tpl.update(sql, paramSource);
 		}
 		
-		DataType dataType = DataUtils.getDataType("[TC2]");
+		DataType dataType = this.getDataType("[TC2]");
 		JdbcDataProvider provider = this.getProvider("dataProvider1");
 		
 		int pageSize = 2;
@@ -125,7 +136,7 @@ public class Test extends AbstractJdbcTestCase {
 			tpl.update(sql, paramSource);
 		}
 		
-		DataType dataType = DataUtils.getDataType("[AC2]");
+		DataType dataType = this.getDataType("[AC2]");
 		JdbcDataProvider provider = this.getProvider("dataProvider_a1");
 		
 		EntityList<Record> list = (EntityList<Record>)provider.getResult(null, dataType);
@@ -155,7 +166,7 @@ public class Test extends AbstractJdbcTestCase {
 			tpl.update(sql, paramSource);
 		}
 		
-		DataType dataType = DataUtils.getDataType("[AC2]");
+		DataType dataType = this.getDataType("[AC2]");
 		JdbcDataProvider provider = this.getProvider("dataProvider_a1");
 		
 		int pageSize = 2;

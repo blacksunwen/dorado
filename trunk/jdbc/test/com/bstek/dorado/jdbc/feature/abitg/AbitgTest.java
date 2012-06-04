@@ -10,12 +10,12 @@ import com.bstek.dorado.jdbc.test.AbstractJdbcTestCase;
 import com.bstek.dorado.jdbc.test.TestTable;
 import com.bstek.dorado.jdbc.test.TestTrigger;
 
-public class Test extends AbstractJdbcTestCase {
+public class AbitgTest extends AbstractJdbcTestCase {
 
 	private TestTable t1 = new TestTable("T1");
 	private TestTrigger tg1 = new TestTrigger("TRIG_BEFORE_INS");
 	
-	public Test() {
+	public AbitgTest() {
 		super();
 		
 		this.register(
@@ -42,6 +42,7 @@ public class Test extends AbstractJdbcTestCase {
 		JdbcDataResolverItem item = new JdbcDataResolverItem();
 		item.setName("t1");
 		item.setTableName("T1");
+		item.setSupportBatchSql(false);
 		JdbcDataResolver resolver = newResolver(item);
 		
 		resolver.resolve(dataItems);
@@ -65,6 +66,7 @@ public class Test extends AbstractJdbcTestCase {
 		JdbcDataResolverItem item = new JdbcDataResolverItem();
 		item.setName("t1");
 		item.setTableName("T1");
+		item.setSupportBatchSql(false);
 		JdbcDataResolver resolver = newResolver(item);
 		
 		resolver.resolve(dataItems);

@@ -1,12 +1,14 @@
 package com.bstek.dorado.jdbc.sql;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.jdbc.Dialect;
+import com.bstek.dorado.jdbc.model.AbstractDbColumn;
+import com.bstek.dorado.jdbc.model.Table;
+import com.bstek.dorado.jdbc.model.table.TableKeyColumn;
 import com.bstek.dorado.jdbc.sql.SqlConstants.KeyWord;
 import com.bstek.dorado.util.Assert;
 
@@ -17,60 +19,55 @@ import com.bstek.dorado.util.Assert;
  */
 public class RetrieveSql extends AbstractTableSql {
 
-	private List<String> columnTokenList = new ArrayList<String>();
-	private List<String> aliasTokenList = new ArrayList<String>();
+	private Table table;
+	private List<AbstractDbColumn> columns = new ArrayList<AbstractDbColumn>();
+	private RecordRowMapper recordRowMapper;
 	
-	private LinkedHashMap<String, String> keyTokenMap = new LinkedHashMap<String, String>(2);
-	
-	public void addColumnToken(String columnName, String alias) {
-		columnTokenList.add(columnName);
-		aliasTokenList.add(alias);
+	public RetrieveSql(Table table) {
+		this.table = table;
 	}
 	
-	public void addColumnToken(String columnName) {
-		this.addColumnToken(columnName, null);
+	public void addColumnToken(AbstractDbColumn column) {
+		columns.add(column);
 	}
-	
-	public void addKeyToken(String columnName, String value) {
-		keyTokenMap.put(columnName, value);
+
+	public RecordRowMapper getRecordRowMapper() {
+		if (recordRowMapper == null) {
+			recordRowMapper = new RecordRowMapper(columns);
+		}
+		return recordRowMapper;
 	}
-	
+
 	@Override
-	public String toSQL(Dialect dialect) {
+	protected String toSQL(Dialect dialect) {
 		String tableToken = this.getTableToken();
 		Assert.notEmpty(tableToken, "tableToken must not be empty.");
-		Assert.notEmpty(columnTokenList, "columnTokenList must not be empty.");
-		Assert.notEmpty(aliasTokenList, "aliasTokenList must not be empty.");
-		Assert.notEmpty(keyTokenMap, "keyTokenMap must not be empty.");
+		Assert.notEmpty(columns, "columns must not be empty.");
 		
-		List<String> cList = new ArrayList<String>(columnTokenList.size());
-		for (int i=0; i<columnTokenList.size(); i++) {
-			String column = columnTokenList.get(i);
-			String alias = aliasTokenList.get(i);
+		List<String> cList = new ArrayList<String>(columns.size());
+		for (int i=0; i<columns.size(); i++) {
+			AbstractDbColumn column = columns.get(i);
+			String columnName = column.getName();
+			String propertyName = column.getPropertyName();
 			
-			if (StringUtils.isEmpty(alias)) {
-				cList.add(column);
+			if (StringUtils.isEmpty(propertyName) || propertyName.equals(columnName)) {
+				cList.add(columnName);
 			} else {
-				cList.add(column + " " + KeyWord.AS + " " + alias);
+				cList.add(columnName + " " + KeyWord.AS + " " + propertyName);
 			}
 		}
 		String columnsToken = StringUtils.join(cList, ',');
 		
-		String whereToken;
-		if (keyTokenMap.size() == 1) {
-			String key = keyTokenMap.keySet().iterator().next();
-			String value = keyTokenMap.get(key);
-			whereToken = key + "=" + value;
-		} else {
-			String[] keyArray = keyTokenMap.keySet().toArray(new String[0]);
-			for (int i = 0; i < keyArray.length; i++) {
-				String key = keyArray[i];
-				String value = keyTokenMap.get(key);
-				keyArray[i] = key + "=" + value;
-			}
+		String[] keyArray = new String[table.getKeyColumns().size()];
+		for (int i = 0; i < keyArray.length; i++) {
+			TableKeyColumn keyColumn = table.getKeyColumns().get(i);
+			String propertyName = keyColumn.getPropertyName();
+			String columnName = keyColumn.getName();
 			
-			whereToken = StringUtils.join(keyArray, " " + KeyWord.AND + " ");
+			keyArray[i] = columnName + "=:" + propertyName;
 		}
+		
+		String whereToken = StringUtils.join(keyArray, " " + KeyWord.AND + " ");
 		
 		SqlBuilder sql = new SqlBuilder();
 		sql.rightSpace(KeyWord.SELECT, columnsToken, KeyWord.FROM, tableToken, KeyWord.WHERE).append(whereToken);

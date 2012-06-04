@@ -41,9 +41,17 @@ public abstract class SelectSql extends AbstractSql {
 	}
 	
 	@Override
-	public String toSQL(Dialect dialect) throws Exception {
+	protected String toSQL(Dialect dialect) {
 		if (!built) {
-			this.build(dialect);
+			try {
+				this.build(dialect);
+			} catch (Exception e) {
+				if (e instanceof RuntimeException) {
+					throw (RuntimeException)e;
+				} else {
+					throw new RuntimeException(e);
+				}
+			}
 		}
 		
 		return querySql;

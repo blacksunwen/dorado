@@ -15,7 +15,7 @@ import com.bstek.dorado.jdbc.test.AbstractJdbcTestCase;
  * @author mark.li@bstek.com
  *
  */
-public class Test extends AbstractJdbcTestCase {
+public class AqlikTest extends AbstractJdbcTestCase {
 
 	public void test1() throws Exception {
 		String vClause = "where 1=1#if($name) and name like :%name%#end";

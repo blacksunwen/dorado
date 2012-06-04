@@ -40,7 +40,7 @@ public class VarSql extends AbstractSql{
 	}
 
 	@Override
-	public String toSQL(Dialect dialect) throws Exception {
+	protected String toSQL(Dialect dialect) {
 		return getClause();
 	}
 

@@ -158,27 +158,27 @@ public abstract class AbstractDialect implements Dialect {
 	}
 	
 	public String toSQL(SelectSql selectSql) throws Exception{
-		return selectSql.toSQL(this);
+		return selectSql.getSQL(this);
 	}
 	
 	public String toSQL(RetrieveSql retrieveSql) throws Exception {
-		return retrieveSql.toSQL(this);
+		return retrieveSql.getSQL(this);
 	}
 	
 	public String toSQL(DeleteSql deleteSql) throws Exception {
-		return deleteSql.toSQL(this);
+		return deleteSql.getSQL(this);
 	}
 	
 	public String toSQL(DeleteAllSql sql) throws Exception {
-		return sql.toSQL(this);
+		return sql.getSQL(this);
 	}
 	
 	public String toSQL(InsertSql insertSql) throws Exception {
-		return insertSql.toSQL(this);
+		return insertSql.getSQL(this);
 	}
 	
 	public String toSQL(UpdateSql updateSql) throws Exception {
-		return updateSql.toSQL(this);
+		return updateSql.getSQL(this);
 	}
 	
 	public String toCountSQL(SelectSql selectSql) throws Exception{

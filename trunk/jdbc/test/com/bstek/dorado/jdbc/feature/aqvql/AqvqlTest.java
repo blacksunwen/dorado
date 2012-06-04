@@ -17,7 +17,7 @@ import com.bstek.dorado.jdbc.test.AbstractJdbcTestCase;
  * @author mark.li@bstek.com
  *
  */
-public class Test extends AbstractJdbcTestCase {
+public class AqvqlTest extends AbstractJdbcTestCase {
 
 	public void test01() throws Exception {
 		String vClause = "where 1=1";

@@ -18,7 +18,7 @@ public class BeforeUpdateTrigger implements Trigger {
 		System.out.println(">> oldRaw: " + (oldRaw == null ? "<null>": "[" + StringUtils.join(oldRaw, ',') + "]"));
 		System.out.println(">> newRaw: " + (newRaw == null ? "<null>": "[" + StringUtils.join(newRaw, ',') + "]"));
 		
-		newRaw[2] = newRaw[1] + "_2";
+		newRaw[2] = newRaw[2] + "_2";
 	}
 
 	public void init(Connection conn, String schemaName, String triggerName, 

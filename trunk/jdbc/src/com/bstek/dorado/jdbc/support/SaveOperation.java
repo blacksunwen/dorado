@@ -6,9 +6,11 @@ import com.bstek.dorado.util.Assert;
 public class SaveOperation extends AbstractDbTableOperation<DataResolverContext, DbTable> {
 
 	private Object data;
-
-	public SaveOperation(DbTable dbTable, Object data, DataResolverContext jdbcContext) {
+	private BatchSql batchSql;
+	
+	public SaveOperation(BatchSql batchSql, DbTable dbTable, Object data, DataResolverContext jdbcContext) {
 		super(dbTable, jdbcContext);
+		this.batchSql = batchSql;
 		this.data = data;
 	}
 	
@@ -17,6 +19,10 @@ public class SaveOperation extends AbstractDbTableOperation<DataResolverContext,
 		return data;
 	}
 	
+	public BatchSql getBatchSql() {
+		return batchSql;
+	}
+
 	@Override
 	protected boolean doRun() throws Exception {
 		return getDialect().execute(this);
