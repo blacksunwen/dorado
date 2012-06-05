@@ -711,7 +711,7 @@
 				}
 				
 				var sysParameter = hostObject._sysParameter;
-				if (sysParameter) hostObject._sysParameter = sysParameter = new dorado.util.Map();
+				if (!sysParameter) hostObject._sysParameter = sysParameter = new dorado.util.Map();
 				var criteria = sysParameter.get("criteria") || {};
 				if (column) {
 					criteria.orders = orders = [{
@@ -721,7 +721,7 @@
 				} else if (parameter instanceof dorado.util.Map) {
 					delete criteria.orders;
 				}
-				if (!(criteria.criterions || criteria.criterions.length || criteria.orders || criteria.orders.length)) criteria = null;
+				if (!(criteria.criterions && criteria.criterions.length || criteria.orders && criteria.orders.length)) criteria = null;
 				sysParameter.put("criteria", criteria);
 				
 				if (parentEntityInfo) {
