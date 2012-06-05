@@ -855,7 +855,13 @@
 					}
 					
 					if (evt.srcElement != lastMouseDownTarget || (new Date() - lastMouseDownTimestamp) > 500) {
-						dorado.widget.setFocusedControl(self);
+						if (dorado.Browser.msie) {
+							if (!(evt.srcElement && evt.srcElement.nodeName.toLowerCase() == "input")) {
+								dorado.widget.setFocusedControl(self);
+							}
+						} else {
+							dorado.widget.setFocusedControl(self);
+						}
 						lastMouseDownTarget = evt.srcElement;
 						lastMouseDownTimestamp = new Date();
 					}
@@ -1453,11 +1459,11 @@
 	 *
 	 * @example
 	 * // 查找某Element所属的控件。
-	 * var control = dorado.widget.findParentControl(div);
+	 * var control = dorado.widget.Control.findParentControl(div);
 	 *
 	 * @example
 	 * // 查找某Element元素所属的Dialog控件。
-	 * var dialog = dorado.widget.findParentControl(div, dorado.widget.Dialog);
+	 * var dialog = dorado.widget.Control.findParentControl(div, dorado.widget.Dialog);
 	 */
 	dorado.widget.Control.findParentControl = function(element, type) {
 
@@ -1514,6 +1520,7 @@
 	
 	/**
 	 * @Deprecated
+	 * @Function
 	 */
 	dorado.widget.findParentControl = dorado.widget.Control.findParentControl;
 
