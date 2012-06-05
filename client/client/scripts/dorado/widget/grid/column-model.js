@@ -1578,7 +1578,7 @@
 						// if (editor.get("validationState") != "error") {
 						value = editor.get("value");
 						var pd = column._propertyDef, dataType= pd ? pd.get("dataType") : null;
-						if (dataType && dataType._code) {
+						if (dataType && dataType._code || pd && pd._mapping) {
 							entity.setText(property, editor.get("text"));
 						}
 						else {
