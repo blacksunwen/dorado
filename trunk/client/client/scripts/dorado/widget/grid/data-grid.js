@@ -204,8 +204,8 @@
 		addColumn: function() {
 			var column = $invokeSuper.call(this, arguments);
 			if (this._autoCreateColumns &&
-					(column instanceof dorado.widget.grid.DataColumn && column._property && column._property != "none" ||
-					column instanceof dorado.widget.grid.ColumnGroup)) {
+			(column instanceof dorado.widget.grid.DataColumn && column._property && column._property != "none" ||
+			column instanceof dorado.widget.grid.ColumnGroup)) {
 				var watcher = this.getAttributeWatcher();
 				if (watcher.getWritingTimes("autoCreateColumns") == 0) {
 					this._autoCreateColumns = false;
@@ -555,10 +555,16 @@
 					break;
 				}
 				case dorado.widget.DataSet.MESSAGE_DELETED:{
-					if (this._itemModel.groups) this.setDirtyMode(true);
-					else {
-						this.onEntityDeleted(arg);
-						this.refreshSummary();
+					if (this._itemModel.groups) {
+						this.setDirtyMode(true);
+					} else {
+						var items = this._itemModel.getItems();
+						if (items == arg.entityList) {
+							this.onEntityDeleted(arg);
+							this.refreshSummary();
+						} else {
+							this.refresh(true);
+						}
 					}
 					break;
 				}
