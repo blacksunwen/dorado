@@ -1,6 +1,7 @@
 package com.bstek.dorado.view.widget.form;
 
 import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.view.annotation.Widget;
 
@@ -16,6 +17,14 @@ public class CustomSpinner extends Spinner {
 	private String value;
 	private String pattern;
 
+	@Override
+	@IdeProperty(visible = false)
+	public String getText() {
+		return super.getText();
+	}
+
+	@ClientProperty(
+			outputter = "class:com.bstek.dorado.view.widget.form.CustomSpinnerValueOutputter")
 	public String getValue() {
 		return value;
 	}
