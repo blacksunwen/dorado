@@ -1105,6 +1105,14 @@
 			}
 		},
 		
+		constructor: function(configs) {
+			if (configs.pattern) {
+				this.parsePattern(configs.pattern);
+				delete configs.pattern;
+			}
+			$invokeSuper.call(this, [configs]);
+		},
+		
 		parsePattern: function(pattern) {
 		
 			function parseSlotConfig(slotConfig) {
@@ -1156,13 +1164,6 @@
 		},
 		
 		doSetText: function(text) {
-			var value = null;
-			if (text) {
-				var value = [], textArray = text.split(',');
-				for (var i = 0; i < textArray.length; i++) {
-					value.push(parseInt(textArray[i]) || 0);
-				}
-			}
 			this.set("value", value);
 		}
 	});
