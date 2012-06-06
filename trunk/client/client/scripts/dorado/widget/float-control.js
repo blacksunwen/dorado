@@ -607,7 +607,9 @@ dorado.dequeue = function(namespace) {
 				if (arg.processDefault === false) {
 					dorado.dequeue(control._id + SHOWHIDE_SUFFIX);
 					return;
-				}
+				} else {
+                    if (control.doBeforeHide) control.doBeforeHide();
+                }
 				
 				var focused = control._focused;
 				if (focused) {
