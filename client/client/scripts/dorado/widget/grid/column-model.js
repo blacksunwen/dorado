@@ -1448,7 +1448,7 @@
 			var editorControl = this.getEditorControl();
 			var containerElement = this.getContainerElement(dom);
 			if (containerElement.firstChild) {
-				var originControl = dorado.widget.findParentControl(containerElement.firstChild);
+				var originControl = dorado.widget.Control.findParentControl(containerElement.firstChild);
 				if (originControl && originControl != editorControl) {
 					originControl.unrender();
 				}
