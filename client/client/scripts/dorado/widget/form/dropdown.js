@@ -521,8 +521,8 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 						if (selectedValue instanceof dorado.Entity || selectedValue instanceof dorado.EntityList) {
 							selectedValue = dorado.Core.clone(selectedValue);
 						}
+						editor.set("value", selectedValue);
 					}
-					editor.set("value", selectedValue);
 				} finally {
 					editor._lastPost = lastPost;
 				}
