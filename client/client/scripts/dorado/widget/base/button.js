@@ -172,6 +172,11 @@
 					menu.addListener("onHide", function() {
 						button.doAfterMenuHide();
 					}, { once: true });
+                    if (!menu.doBeforeHide) {
+                        menu.doBeforeHide = function () {
+                            button.doBeforeMenuHide && button.doBeforeMenuHide();
+                        }
+                    }
 				}, { once: true});
 
 				menu._focusParent = button;

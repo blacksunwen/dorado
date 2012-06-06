@@ -67,7 +67,15 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 		 */
 		fixRight: {
 			defaultValue: false
-		}
+		},
+
+        /**
+         * 绑定了Menu的dorado.widget.toolbar.Button的元素，是否在鼠标移上去以后就显示菜单。
+         * @type boolean
+         * @default false
+         */
+        showMenuOnHover: {
+        }
 	},
 	
 	createDom: function() {
@@ -282,7 +290,7 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
             $fly(dom).removeClass("i-toolbar-fixright " + toolbar._className + "-fixright");
         }
 	},
-	
+
 	doOnResize: function() {
 		$invokeSuper.call(this, arguments);
 
@@ -473,20 +481,36 @@ dorado.widget.toolbar.Button = $extend(dorado.widget.Button, {
 					});
 				}
 			}
-		}
+		},
+
+        /**
+         * 绑定了Menu的dorado.widget.toolbar.Button的元素，是否在鼠标移上去以后就显示菜单。
+         * @type boolean
+         * @default false
+         */
+        showMenuOnHover: {
+        }
 	},
 	
 	createDom: function() {
 		var button = this, dom = $invokeSuper.call(button, arguments);
 		$fly(dom).mouseenter(function() {
 			var menu = button._menu, toolbar = button._parent;
-			if (menu && toolbar) {
-				var activeButton = toolbar._activeMenuButton;
-				if (activeButton && activeButton != button) {
-					toolbar._ignoreMenuHide = true;
-					activeButton._menu.hide(true);
-					button.doShowMenu();
-				}
+			if (menu && toolbar && !button._disabled) {
+                var activeButton = toolbar._activeMenuButton;
+                if (button.willShowMenuOnHover()) {
+                    if (activeButton && activeButton != button) {
+                        activeButton._menu.hide(true);
+                        button.doShowMenu();
+                    } else if (activeButton != button) {
+                        button.doShowMenu();
+                    }
+                } else {
+                    if (activeButton && activeButton != button) {
+                        activeButton._menu.hide(true);
+                        button.doShowMenu();
+                    }
+                }
 			}
 		});
 
@@ -495,7 +519,15 @@ dorado.widget.toolbar.Button = $extend(dorado.widget.Button, {
 
 		return dom;
 	},
-	
+
+    willShowMenuOnHover: function() {
+        var button = this, toolbar = button._parent, menu = button._menu;
+        if (menu && toolbar && !button._disabled) {
+            return button._showMenuOnHover !== undefined ? button._showMenuOnHover : (toolbar._showMenuOnHover !== undefined ? toolbar._showMenuOnHover : undefined);
+        }
+        return false;
+    },
+
 	doShowMenu: function() {
 		$invokeSuper.call(this, arguments);
 		var button = this, menu = button._menu;
@@ -504,14 +536,13 @@ dorado.widget.toolbar.Button = $extend(dorado.widget.Button, {
 			toolbar._activeMenuButton = button;
 		}
 	},
-	
-	doAfterMenuHide: function() {
-		var button = this, toolbar = button._parent;
-		if (toolbar && !toolbar._ignoreMenuHide) {
-			toolbar._activeMenuButton = null;
-		}
-		$invokeSuper.call(this, arguments);
-	}
+
+    doBeforeMenuHide: function() {
+        var button = this, toolbar = button._parent;
+        if (toolbar) {
+            toolbar._activeMenuButton = null;
+        }
+    }
 });
 
 /**
