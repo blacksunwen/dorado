@@ -160,6 +160,14 @@
 			centerCover(dom, this._doms);
 		},
 
+        onActualVisibleChange: function() {
+            var window = this.getIFrameWindow(), actualVisible = this.isActualVisible();
+            //FIX OpenFlashChart BUG: http://bsdn.org/projects/dorado7/issue/dorado7-240
+            if (dorado.Browser.mozilla && window && window.dorado && window.dorado.widget && window.dorado.widget.ofc) {
+                window.$topView.setActualVisible(actualVisible);
+            }
+        },
+
 		/**
 		 * 取得iframe中的window对象，如果iframe还没有创建，则返回null。
 		 * 
