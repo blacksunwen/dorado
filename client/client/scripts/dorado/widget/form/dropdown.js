@@ -354,6 +354,7 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 			});
 			(this._view || $topView).registerInnerControl(box);
 			
+			/*
 			var viewElement;
 			if (!(dorado.Browser.msie && dorado.Browser.version < 9)) {
 				var view = editor._view;
@@ -363,6 +364,9 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 				}
 			}
 			box.render(viewElement || win.document.body);
+			*/
+			box.render(win.document.body);
+			
 			if (boxCache) boxCache[dorado.id + '$' + this._id] = box;
 		}
 		this._box = box;
@@ -442,6 +446,20 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 			vAlign : vAlign,
 			autoAdjustPosition: false
 		});
+
+		if (win._doradoCurrentDropDown === undefined) {
+			$fly(win.document.body).mousewheel(function(evt) {
+				if (win._doradoCurrentDropDown) {
+					var box = win._doradoCurrentDropDown.get("box");
+					if (box) {
+						if (!$DomUtils.isOwnerOf(evt.srcElement, box.getDom())) {
+							win._doradoCurrentDropDown.close();
+						}
+					}
+				}
+			});
+		}
+		win._doradoCurrentDropDown = this;
 	},
 
 	/**
@@ -540,6 +558,10 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 				if (this._postValueOnSelect) editor.post();
 			}
 		}
+		
+		var editorDom = editor.getDom();
+		var win = $DomUtils.getOwnerWindow(editorDom) || window;
+		win._doradoCurrentDropDown = null;
 	}
 
 });
