@@ -20,7 +20,7 @@ import com.bstek.dorado.view.widget.InnerElementReference;
 public class DataColumn extends AbstractDataColumn {
 	private String property;
 	private DataType dataType;
-	private Align align = Align.left;
+	private Align align;
 	private boolean readOnly;
 	private boolean required;
 	private String displayFormat;
@@ -56,7 +56,7 @@ public class DataColumn extends AbstractDataColumn {
 	}
 
 	@Override
-	@ClientProperty(escapeValue = "left")
+	@ClientProperty
 	public Align getAlign() {
 		return align;
 	}
