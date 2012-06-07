@@ -517,6 +517,17 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 							else
 								targetEntity[map.writeProperty] = value;
 						}
+						
+						var shouldSetEditor = true;
+						if (editor._property) {
+							for (var i = 0; i < maps.length; i++) {
+								if (maps[i].writeProperty == editor._property) {
+									shouldSetEditor = false;
+									break;
+								}
+							}
+						}
+						if (shouldSetEditor) editor.set("value", selectedValue);
 					} else {
 						if (selectedValue instanceof dorado.Entity || selectedValue instanceof dorado.EntityList) {
 							selectedValue = dorado.Core.clone(selectedValue);
