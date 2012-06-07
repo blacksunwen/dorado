@@ -125,12 +125,15 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.RowListDropDown,/** @scope
 				doOpen(false);
 			});
 		} else {
-			var lastFilterValue = this._lastFilterValue;
-			if (this._reloadDataOnOpen) {
+			var lastFilterValue;
+			if (this._filterOnOpen) {
+				lastFilterValue = this._lastFilterValue;
+			}
+			else {
 				delete this._lastFilterValue;
 				dataSet._sysParameter && dataSet._sysParameter.remove("filterValue");
 			}
-			doOpen(this._reloadDataOnOpen && lastFilterValue != null);
+			doOpen(this._reloadDataOnOpen || lastFilterValue != null);
 		}
 	},
 	
