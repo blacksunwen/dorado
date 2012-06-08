@@ -856,7 +856,8 @@
 					
 					if (evt.srcElement != lastMouseDownTarget || (new Date() - lastMouseDownTimestamp) > 500) {
 						if (dorado.Browser.msie) {
-							if (!(evt.srcElement && evt.srcElement.nodeName.toLowerCase() == "input")) {
+							var nodeName = evt.srcElement && evt.srcElement.nodeName.toLowerCase();
+							if (nodeName != "input" && nodeName != "textarea") {
 								dorado.widget.setFocusedControl(self);
 							}
 						} else {
@@ -1311,13 +1312,16 @@
 		if(control) {
 			control.setFocus();
 		} else {
-			if (document.body) {
-				setTimeout(function() {
-					if (dorado._LAST_FOCUS_CONTROL === null) {
-						document.body.focus();
-						dorado.widget.onControlGainedFocus(null);
-					}
-				}, 0);
+			var nodeName = document.activeElement && document.activeElement.nodeName.toLowerCase();
+			if (nodeName != "input" && nodeName != "textarea") {
+				if (document.body) {
+					setTimeout(function() {
+						if (dorado._LAST_FOCUS_CONTROL === null) {
+							document.body.focus();
+							dorado.widget.onControlGainedFocus(null);
+						}
+					}, 0);
+				}
 			}
 		}
 	};
