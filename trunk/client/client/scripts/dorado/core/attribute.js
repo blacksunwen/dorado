@@ -161,18 +161,27 @@
 		 * // 如果address的属性值是一个JSON对象，那么此行命令的效果相当于oop.get("address").postCode
 		 */
 		get : function(attr) {
-			var attrs = attr.split('.'), result;
-			for ( var i = 0; i < attrs.length; i++) {
-				attr = attrs[i];
-				if (i == 0) {
-					result = this.doGet(attr);
-				} else {
-					if (!result) break;
-					result = (result.get instanceof Function) ? result
-							.get(attr) : result[attr];
+			var i = attr.indexOf('.');
+			if (i > 0) {
+				var result = this.doGet(attr.substring(0, i));
+				if (result) {
+					var subAttr = attr.substring(i + 1);
+					if (result.get instanceof Function) {
+						result = result.get(subAttr);
+					} else {
+						var as = subAttr.split('.');
+						for (var i = 0; i < as.length; i++) {
+							var a = as[i];
+							result = (result.get instanceof Function) ? result.get(a) : result[a];
+							if (!result) break;
+						}
+					}
 				}
+				return result;
 			}
-			return result;
+			else {
+				return this.doGet(attr);
+			}
 		},
 		
 		doGet: function(attr) {
@@ -190,9 +199,7 @@
 					var sections = def.path.split('.'), owner = this;
 					for ( var i = 0; i < sections.length; i++) {
 						var section = sections[i];
-						if (section.charAt(0) != '_'
-								&& (dorado.Object.isInstanceOf(owner,
-										dorado.AttributeSupport) || owner.get instanceof Function)) {
+						if (section.charAt(0) != '_' && owner.get instanceof Function) {
 							owner = owner.get(section);
 						} else {
 							owner = owner[section];
