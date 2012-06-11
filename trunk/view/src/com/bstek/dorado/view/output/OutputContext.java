@@ -11,7 +11,8 @@ import java.util.Set;
 import java.util.Stack;
 
 import com.bstek.dorado.data.type.DataType;
-import com.bstek.dorado.view.widget.layout.Layout;
+import com.bstek.dorado.util.Assert;
+import com.bstek.dorado.view.widget.Control;
 
 /**
  * 输出器上下文。
@@ -26,16 +27,15 @@ public class OutputContext {
 	private boolean shouldOutputDataTypes = true;
 	private String outputtableDataTypeIdPrefix;
 	private boolean shouldOutputEntityState;
-	private boolean escapeable = false;
+	private boolean escapeable;
 	private Set<String> loadedDataTypes;
 	private Map<String, DataType> includeDataTypes;
-	private Set<String> dependsPackages = new LinkedHashSet<String>();
-	private Set<String> javaScriptFiles = new LinkedHashSet<String>();
-	private Set<String> styleSheetFiles = new LinkedHashSet<String>();
-	private Stack<Object> dataObjectStack = new Stack<Object>();
-	private Stack<Layout> layoutStack = new Stack<Layout>();
-	private Map<Object, String> calloutHtmlMap = new HashMap<Object, String>();
-	private long calloutSN;
+	private Set<String> dependsPackages;
+	private Set<Object> javaScriptContents;
+	private Set<Object> styleSheetContents;
+	private Stack<Object> dataObjectStack;
+	private Map<Control, String> calloutHtmlMap;
+	private int calloutSN;
 
 	public OutputContext(Writer writer) {
 		this.writer = writer;
@@ -165,27 +165,56 @@ public class OutputContext {
 		return dependsPackages;
 	}
 
-	public Set<String> getJavaScriptFiles() {
-		return javaScriptFiles;
+	public void addDependsPackage(String packageName) {
+		if (dependsPackages == null) {
+			dependsPackages = new LinkedHashSet<String>();
+		}
+		dependsPackages.add(packageName);
 	}
 
-	public Set<String> getStyleSheetFiles() {
-		return styleSheetFiles;
+	public Set<Object> getJavaScriptContents() {
+		return javaScriptContents;
+	}
+
+	public void addJavaScriptContent(Object content) {
+		Assert.notNull(content);
+		if (javaScriptContents == null) {
+			javaScriptContents = new LinkedHashSet<Object>();
+		}
+		javaScriptContents.add(content);
+	}
+
+	public Set<Object> getStyleSheetContents() {
+		return styleSheetContents;
+	}
+
+	public void addStyleSheetContent(Object content) {
+		Assert.notNull(content);
+		if (styleSheetContents == null) {
+			styleSheetContents = new LinkedHashSet<Object>();
+		}
+		styleSheetContents.add(content);
 	}
 
 	/**
 	 * 用于放置对象递归引用导致输出过程死锁的堆栈。
 	 */
 	public Stack<Object> getDataObjectStack() {
+		if (dataObjectStack == null) {
+			dataObjectStack = new Stack<Object>();
+		}
 		return dataObjectStack;
 	}
 
-	public Stack<Layout> getLayoutStack() {
-		return layoutStack;
+	public Map<Control, String> getCalloutHtmlMap() {
+		return calloutHtmlMap;
 	}
 
-	public Map<Object, String> getCalloutHtmlMap() {
-		return calloutHtmlMap;
+	public void addCalloutHtml(Control control, String htmlId) {
+		if (calloutHtmlMap == null) {
+			calloutHtmlMap = new HashMap<Control, String>();
+		}
+		calloutHtmlMap.put(control, htmlId);
 	}
 
 	public String getCalloutId() {

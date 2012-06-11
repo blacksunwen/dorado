@@ -85,7 +85,7 @@ public class RuleTemplateBuilder implements RuleTemplateManagerListener {
 	}
 
 	@SuppressWarnings("unchecked")
-	public synchronized RuleTemplateManager getRuleTemplateManager()
+	public  RuleTemplateManager getRuleTemplateManager()
 			throws Exception {
 		RuleTemplateManager ruleTemplateManager = new RuleTemplateManager();
 		ruleTemplateManager.addListener(this);

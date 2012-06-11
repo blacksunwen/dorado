@@ -72,7 +72,7 @@ public class DefaultExpressionHandler implements ExpressionHandler {
 		boolean hasExpression = false;
 
 		try {
-			StringBuffer section = new StringBuffer();
+			StringBuffer section = new StringBuffer(text.length());
 			for (char c : text.toCharArray()) {
 				if (specialCharFound > 0) {
 					if (c == BRACKET_BEGIN) {
@@ -82,7 +82,7 @@ public class DefaultExpressionHandler implements ExpressionHandler {
 						specialCharFound = 0;
 						if (section.length() > 0) {
 							sections.add(section.toString());
-							section = new StringBuffer();
+							section.setLength(0);
 						}
 						continue;
 					} else if (specialCharFound == 1 && c == SPECIAL_CHAR) {
@@ -115,7 +115,7 @@ public class DefaultExpressionHandler implements ExpressionHandler {
 							hasExpression = true;
 							sections.add(getJexlEngine().createExpression(
 									section.toString()));
-							section = new StringBuffer();
+							section.setLength(0);
 							continue;
 						}
 					}

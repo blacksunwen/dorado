@@ -52,6 +52,9 @@ public class DataResolverDefinition extends InterceptableDefinition implements
 	 */
 	public void setName(String name) {
 		this.name = name;
+		if (StringUtils.isNotEmpty(name) && StringUtils.isEmpty(getBeanId())) {
+			setBeanId(Constants.SCOPE_DATA_RESOLVER_PREFIX + name);
+		}
 	}
 
 	public String getId() {
@@ -60,9 +63,6 @@ public class DataResolverDefinition extends InterceptableDefinition implements
 
 	void setId(String id) {
 		this.id = id;
-		if (StringUtils.isNotEmpty(id)) {
-			setBeanId(Constants.SCOPE_DATA_RESOLVER_PREFIX + id);
-		}
 	}
 
 	@Override

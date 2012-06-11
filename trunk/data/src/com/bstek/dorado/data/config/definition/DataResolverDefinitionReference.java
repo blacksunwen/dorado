@@ -58,10 +58,14 @@ public class DataResolverDefinitionReference implements
 			dtfm = getDataResolverDefinitionManager();
 		}
 
+		DataResolverDefinition definition = null;
 		if (dtfm != null) {
-			return dtfm.getDefinition(name);
-		} else {
-			return null;
+			definition = dtfm.getDefinition(name);
 		}
+		if (definition == null) {
+			throw new IllegalArgumentException("Unrecognized DataResolver \""
+					+ name + "\".");
+		}
+		return definition;
 	}
 }

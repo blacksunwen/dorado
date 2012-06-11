@@ -47,20 +47,6 @@
 			</filelist>
 		</concat>
 
-		<concat destfile="${dist}/skins/${skinName}/all.css" fixlastline="true" encoding="utf-8">
-			<filelist dir="${dist}/skins/${skinName}">
-				<file name="common.css" />
-				<file name="widget.css" />
-				<file name="base-widget.css" />
-				<file name="list.css" />
-				<file name="grid.css" />
-				<file name="tree.css" />
-				<file name="block-view.css" />
-				<file name="debugger.css" />
-				<file name="portal.css" />
-			</filelist>
-		</concat>
-
 		<echo message="copy ${src}/skins/${skinName} --> ${dist}/skins/${skinName}" />
 		<copy todir="${dist}/skins/${skinName}">
 			<fileset dir="${src}/skins/${skinName}">
@@ -144,6 +130,7 @@
 				<file name="float-control.js" />
 				<file name="container.js" />
 				<file name="view.js" />
+				<file name="controller.js" />
 				<file name="sub-view-holder.js" />
 				<file name="html-container.js" />
 				<file name="data-control/data-control.js" />

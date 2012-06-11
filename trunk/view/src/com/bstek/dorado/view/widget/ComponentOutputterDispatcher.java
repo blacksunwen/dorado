@@ -29,8 +29,7 @@ public class ComponentOutputterDispatcher extends ObjectOutputterDispatcher {
 					.getRegisterInfo(object.getClass());
 			if (registerInfo != null
 					&& StringUtils.isNotEmpty(registerInfo.getDependsPackage())) {
-				context.getDependsPackages().add(
-						registerInfo.getDependsPackage());
+				context.addDependsPackage(registerInfo.getDependsPackage());
 			}
 		}
 	}

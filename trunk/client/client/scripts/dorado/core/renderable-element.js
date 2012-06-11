@@ -204,8 +204,16 @@ dorado.RenderableElement = $extend(dorado.AttributeSupport, /** @scope dorado.Re
 				// 此段处理不能用jQuery.attr("style", style)替代，原因是该方法会覆盖DOM原有的inliine style设置。
 				var map = {};
 				jQuery.each(style.split(';'), function(i, section) {
-					var v = section.split(':');
-					map[jQuery.trim(v[0])] = jQuery.trim(v[1]);
+					var i = section.indexOf(':');
+					if (i > 0) {
+						var attr = jQuery.trim(section.substring(0, i));
+						var value = jQuery.trim(section.substring(i + 1));
+						if (dorado.Browser.msie && attr.toLowerCase() == "filter") {
+							dom.style.filter = value;
+						} else {
+							map[attr] = value;
+						}
+					}
 				});
 				style = map;
 			}

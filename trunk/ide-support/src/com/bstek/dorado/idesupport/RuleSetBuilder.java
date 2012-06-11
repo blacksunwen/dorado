@@ -118,7 +118,6 @@ public class RuleSetBuilder {
 		}
 		ruleTemplate.processInheritance();
 
-		System.out.println(rule.getName());
 		applyTemplateToRule(ruleTemplate, rule, ruleSet);
 		return rule;
 	}

@@ -14,7 +14,7 @@ dorado.TagManager = {
 	_map: {},
 	
 	_register: function(tag, object) {
-		if (!object._id) object._id = dorado.Core.newId();		
+		if (!object._id) object._id = dorado.Core.newId();
 		var info = this._map[tag];
 		if (info) {
 			if (!info.idMap[object._id]) {
@@ -130,6 +130,72 @@ dorado.ObjectGroup = $class(/** @scope dorado.ObjectGrou.prototype */{
 			if (object) object.set(attr, value, true);
 		}
 		return this;
+	},
+	
+	/**
+	 * 读取组中每一个对象的属性，并将所有结果集合成一个新组返回。
+	 * @param {String} attr 属性名。
+	 * @return {dorado.ObjectGroup} 由读取到的结果组成的对象组。
+	 */
+	get: function(attr) {
+		var attrs = attr.split('.'), objects = this.objects;
+		for (var i = 0; i < attrs.length; i++) {
+			var a = attrs[i], results = [];
+			for (var j = 0; j < objects.length; j++) {
+				var object = objects[j], result;
+				if (!object) continue;
+				if (object.get instanceof Function) {
+					result = object.get(a);
+				}
+				else {
+					result = object[a];
+				}
+				if (result != null) results.push(result);
+			}
+			objects = results;
+		}
+		return new dorado.ObjectGroup(objects);
+	},
+	
+	/**
+	 * 为组中的所有对象绑定事件。
+	 * <p>如果对象组中的某个对象不支持事件，该方法会跳过该对象这一个操作并继续后续处理。
+	 * 此方法的使用方法与(@link dorado.EventSupport#addListener)方法非常类似，具体使用说明请参考(@link dorado.EventSupport#addListener)方法的说明。</p>
+	 * @param {String} name 事件名称。
+	 * @param {Function} listener 事件监听方法。
+	 * @param {Object} [options] 监听选项。
+	 * @return {dorado.AttributeSupport} 返回对象组自身。
+	 *
+	 * @see dorado.EventSupport#addListener
+	 */
+	addListener: function(name, listener, options) {
+		if (!this.objects) return;
+		for (var i = 0; i < this.objects.length; i++) {
+			var object = this.objects[i];
+			if (object && object.addListener instanceof Function) {
+				object.addListener(name, listener, options);
+			}
+		}
+	},
+	
+	/**
+	 * 从组中的所有对象中移除一个事件。
+	 * <p>如果对象组中的某个对象不支持事件，该方法会跳过该对象这一个操作并继续后续处理。
+	 * 此方法的使用方法与(@link dorado.EventSupport#removeListener)方法非常类似，具体使用说明请参考(@link dorado.EventSupport#removeListener)方法的说明。</p>
+	 * @param {String} name 事件名称。
+	 * @param {Function} [listener] 事件监听器。如果不指定此参数则表示移除该事件中的所有监听器
+	 * @return {dorado.AttributeSupport} 返回对象组自身。
+	 *
+	 * @see dorado.EventSupport#removeListener
+	 */
+	removeListener: function(name, listener) {
+		if (!this.objects) return;
+		for (var i = 0; i < this.objects.length; i++) {
+			var object = this.objects[i];
+			if (object && object.removeListener) {
+				object.removeListener(name, listener);
+			}
+		}
 	},
 	
 	/**

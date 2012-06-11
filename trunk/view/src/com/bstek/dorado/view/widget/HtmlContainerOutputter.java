@@ -19,7 +19,7 @@ public class HtmlContainerOutputter extends ContainerOutputter {
 		HtmlContainer htmlContainer = (HtmlContainer) object;
 		if (StringUtils.isNotEmpty(htmlContainer.getContentFile())) {
 			String calloutId = "html_" + context.getCalloutId();
-			context.getCalloutHtmlMap().put(htmlContainer, calloutId);
+			context.addCalloutHtml(htmlContainer, calloutId);
 
 			StringBuffer script = new StringBuffer();
 			script.append("self.assignDom(document.getElementById(\"")

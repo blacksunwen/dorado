@@ -58,10 +58,14 @@ public class DataTypeDefinitionReference implements
 			dtfm = getDataTypeDefinitionManager();
 		}
 
+		DataTypeDefinition definition = null;
 		if (dtfm != null) {
-			return dtfm.getDefinition(name);
-		} else {
-			return null;
+			definition = dtfm.getDefinition(name);
 		}
+		if (definition == null) {
+			throw new IllegalArgumentException("Unrecognized DataType \""
+					+ name + "\".");
+		}
+		return definition;
 	}
 }

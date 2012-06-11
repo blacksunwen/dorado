@@ -4,7 +4,9 @@ import com.bstek.dorado.core.Context;
 import com.bstek.dorado.data.provider.DataProvider;
 import com.bstek.dorado.data.provider.manager.DataProviderManager;
 import com.bstek.dorado.data.provider.manager.DefaultDataProviderManager;
-import com.bstek.dorado.view.config.definition.ViewConfigDefinition;
+import com.bstek.dorado.view.config.InnerDataProviderDefinitionManager;
+import com.bstek.dorado.view.config.InnerDataResolverDefinitionManager;
+import com.bstek.dorado.view.config.InnerDataTypeDefinitionManager;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -12,11 +14,18 @@ import com.bstek.dorado.view.config.definition.ViewConfigDefinition;
  */
 public class InnerDataProviderManager extends DefaultDataProviderManager {
 	private DataProviderManager parent;
-	private ViewConfigDefinition viewConfigDefinition;
+	private InnerDataTypeDefinitionManager innerDataTypeDefinitionManager;
+	private InnerDataProviderDefinitionManager innerDataProviderDefinitionManager;
+	private InnerDataResolverDefinitionManager innerDataResolverDefinitionManager;
 
-	public InnerDataProviderManager(ViewConfigDefinition viewConfigDefinition,
-			DataProviderManager parent) {
-		this.viewConfigDefinition = viewConfigDefinition;
+	public InnerDataProviderManager(
+			DataProviderManager parent,
+			InnerDataTypeDefinitionManager innerDataTypeDefinitionManager,
+			InnerDataProviderDefinitionManager innerDataProviderDefinitionManager,
+			InnerDataResolverDefinitionManager innerDataResolverDefinitionManager) {
+		this.innerDataTypeDefinitionManager = innerDataTypeDefinitionManager;
+		this.innerDataProviderDefinitionManager = innerDataProviderDefinitionManager;
+		this.innerDataResolverDefinitionManager = innerDataResolverDefinitionManager;
 		this.parent = parent;
 	}
 
@@ -24,11 +33,11 @@ public class InnerDataProviderManager extends DefaultDataProviderManager {
 	public DataProvider getDataProvider(String name) throws Exception {
 		Context context = Context.getCurrent();
 		context.setAttribute("privateDataTypeDefinitionManager",
-				viewConfigDefinition.getDataTypeDefinitionManager());
+				innerDataTypeDefinitionManager);
 		context.setAttribute("privateDataProviderDefinitionManager",
-				viewConfigDefinition.getDataProviderDefinitionManager());
+				innerDataProviderDefinitionManager);
 		context.setAttribute("privateDataResolverDefinitionManager",
-				viewConfigDefinition.getDataResolverDefinitionManager());
+				innerDataResolverDefinitionManager);
 		try {
 			DataProvider dataProvider = super.getDataProvider(name);
 			if (dataProvider == null && parent != null) {

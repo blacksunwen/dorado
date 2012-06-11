@@ -26,13 +26,9 @@ public class TopViewOutputter extends ViewOutputter {
 	public void output(Object object, OutputContext context) throws Exception {
 		View view = (View) object;
 		view.setId("viewMain");
-		Set<String> dependsPackages = context.getDependsPackages();
 
-		dependsPackages.add("widget");
-		if (WebConfigure.getBoolean("view.debugEnabled")) {
-			dependsPackages.add("debugger");
-		}
-		dependsPackages.add("common");
+		context.addDependsPackage("widget");
+		context.addDependsPackage("common");
 
 		Writer writer = context.getWriter();
 		writer.append("jQuery(document).ready(function(){\n");
@@ -45,13 +41,20 @@ public class TopViewOutputter extends ViewOutputter {
 
 		writer.append("AUTO_APPEND_TO_TOPVIEW=true;\n");
 		writer.append("var doradoView = document.getElementById(\"doradoView\");\n"
-				+ "if (doradoView) v.replace(doradoView);\n");
+				+ "if (doradoView) view.replace(doradoView);\n");
 		// writer.append("}\n").append("catch(e){")
 		// .append("dorado.Exception.processException(e);}\n");
 		writer.append("});\n");
 
-		writer.append("$import(\"")
-				.append(StringUtils.join(dependsPackages.iterator(), ','))
-				.append("\");\n");
+		if (WebConfigure.getBoolean("view.debugEnabled")) {
+			context.addDependsPackage("debugger");
+		}
+
+		Set<String> dependsPackages = context.getDependsPackages();
+		if (dependsPackages != null && !dependsPackages.isEmpty()) {
+			writer.append("$import(\"")
+					.append(StringUtils.join(dependsPackages, ','))
+					.append("\");\n");
+		}
 	}
 }

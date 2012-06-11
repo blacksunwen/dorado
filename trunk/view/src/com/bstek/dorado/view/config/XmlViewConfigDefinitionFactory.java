@@ -9,6 +9,7 @@ import org.w3c.dom.Element;
 import com.bstek.dorado.config.definition.DefinitionManager;
 import com.bstek.dorado.config.xml.XmlParser;
 import com.bstek.dorado.core.Configure;
+import com.bstek.dorado.core.io.EmptyResource;
 import com.bstek.dorado.core.io.Resource;
 import com.bstek.dorado.core.io.ResourceUtils;
 import com.bstek.dorado.core.xml.XmlDocumentBuilder;
@@ -142,45 +143,13 @@ public class XmlViewConfigDefinitionFactory implements
 		this.dataResolverDefinitionManager = dataResolverDefinitionManager;
 	}
 
-	protected Resource getResource(String viewName, String pathSubfix)
-			throws Exception {
-		String runMode = Configure.getString("core.runMode");
-		if ("debug".equals(runMode) && StringUtils.isNotEmpty(pathPrefix)
-				&& pathPrefix.indexOf(';') > 0) {
-			StringBuffer paths = new StringBuffer();
-			for (String prefix : StringUtils.split(pathPrefix, ';')) {
-				String path = getResoucePath(viewName, prefix, pathSubfix);
-				Resource resource = ResourceUtils.getResource(path);
-				if (resource.exists()) {
-					return resource;
-				}
-				if (paths.length() > 0) {
-					paths.append(';');
-				}
-				paths.append(path);
-			}
-			return ResourceUtils.getResource(paths.toString());
-		} else {
-			String path = getResoucePath(viewName, pathPrefix, pathSubfix);
-			Resource[] resources = ResourceUtils.getResources(path);
-			if (resources.length == 0) {
-				throw new IllegalArgumentException("Invalid resource path ["
-						+ path + "].");
-			} else if (resources.length > 1) {
-				throw new IllegalArgumentException(
-						"More than one resources found by path [" + path + "].");
-			}
-			return resources[0];
-		}
-	}
-
-	protected String getResoucePath(String viewName, String pathSubfix)
+	protected String getResourcePath(String viewName, String pathSubfix)
 			throws Exception {
 		String runMode = Configure.getString("core.runMode");
 		if ("debug".equals(runMode) && StringUtils.isNotEmpty(pathPrefix)
 				&& pathPrefix.indexOf(';') > 0) {
 			for (String prefix : StringUtils.split(pathPrefix, ';')) {
-				String path = getResoucePath(viewName, prefix, pathSubfix);
+				String path = getResourcePath(viewName, prefix, pathSubfix);
 				Resource resource = ResourceUtils.getResource(path);
 				if (resource.exists()) {
 					return path;
@@ -188,11 +157,29 @@ public class XmlViewConfigDefinitionFactory implements
 			}
 			return null;
 		} else {
-			return getResoucePath(viewName, pathPrefix, pathSubfix);
+			return getResourcePath(viewName, pathPrefix, pathSubfix);
 		}
 	}
 
-	private String getResoucePath(String viewName, String pathPrefix,
+	protected Resource getResource(String viewName, String pathSubfix)
+			throws Exception {
+		String path = getResourcePath(viewName, pathSubfix);
+		if (path == null) {
+			return EmptyResource.INSTANCE;
+		}
+
+		Resource[] resources = ResourceUtils.getResources(path);
+		if (resources.length == 0) {
+			throw new IllegalArgumentException("Invalid resource path [" + path
+					+ "].");
+		} else if (resources.length > 1) {
+			throw new IllegalArgumentException(
+					"More than one resources found by path [" + path + "].");
+		}
+		return resources[0];
+	}
+
+	private String getResourcePath(String viewName, String pathPrefix,
 			String pathSubfix) {
 		String path = viewName;
 		byte delimMode = getViewNameDelimMode();
@@ -230,28 +217,30 @@ public class XmlViewConfigDefinitionFactory implements
 			if (tempResource.exists()) {
 				viewElement.setAttribute(
 						ViewXmlConstants.ATTRIBUTE_PAGE_TEMPALTE,
-						getResoucePath(viewName, ".html"));
+						getResourcePath(viewName, ".html"));
 			}
 		}
 
-		if (xmlPreprocessor.getPropertyValue(viewElement,
-				ViewXmlConstants.ATTRIBUTE_JAVASCRIPT_FILE) == null) {
-			tempResource = getResource(viewName, ".js");
-			if (tempResource.exists()) {
-				viewElement.setAttribute(
-						ViewXmlConstants.ATTRIBUTE_JAVASCRIPT_FILE,
-						getResoucePath(viewName, ".js"));
-			}
+		tempResource = getResource(viewName, ".js");
+		if (tempResource.exists()) {
+			String originJavaScriptFile = viewElement
+					.getAttribute(ViewXmlConstants.ATTRIBUTE_JAVASCRIPT_FILE);
+			String javaScriptFile = getResourcePath(viewName, ".js");
+			viewElement.setAttribute(
+					ViewXmlConstants.ATTRIBUTE_JAVASCRIPT_FILE, (StringUtils
+							.isEmpty(originJavaScriptFile) ? javaScriptFile
+							: originJavaScriptFile + ',' + javaScriptFile));
 		}
 
-		if (xmlPreprocessor.getPropertyValue(viewElement,
-				ViewXmlConstants.ATTRIBUTE_STYLESHEET_FILE) == null) {
-			tempResource = getResource(viewName, ".css");
-			if (tempResource.exists()) {
-				viewElement.setAttribute(
-						ViewXmlConstants.ATTRIBUTE_STYLESHEET_FILE,
-						getResoucePath(viewName, ".css"));
-			}
+		tempResource = getResource(viewName, ".css");
+		if (tempResource.exists()) {
+			String originStyleSheetFile = viewElement
+					.getAttribute(ViewXmlConstants.ATTRIBUTE_STYLESHEET_FILE);
+			String styleSheetFile = getResourcePath(viewName, ".css");
+			viewElement.setAttribute(
+					ViewXmlConstants.ATTRIBUTE_STYLESHEET_FILE, (StringUtils
+							.isEmpty(originStyleSheetFile) ? styleSheetFile
+							: originStyleSheetFile + ',' + styleSheetFile));
 		}
 
 		document = xmlPreprocessor.process(viewName, document);
@@ -280,11 +269,15 @@ public class XmlViewConfigDefinitionFactory implements
 
 		InnerDataProviderDefinitionManager innerDataProviderDefinitionManager = new InnerDataProviderDefinitionManager(
 				dataProviderDefinitionManager);
+		innerDataProviderDefinitionManager
+				.setDataObjectIdPrefix(viewObjectNamePrefix);
 		parseContext
 				.setDataProviderDefinitionManager(innerDataProviderDefinitionManager);
 
 		InnerDataResolverDefinitionManager innerDataResolverDefinitionManager = new InnerDataResolverDefinitionManager(
 				dataResolverDefinitionManager);
+		innerDataResolverDefinitionManager
+				.setDataObjectIdPrefix(viewObjectNamePrefix);
 		parseContext
 				.setDataResolverDefinitionManager(innerDataResolverDefinitionManager);
 

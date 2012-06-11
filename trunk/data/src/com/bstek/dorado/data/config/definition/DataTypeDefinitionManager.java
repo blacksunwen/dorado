@@ -13,6 +13,7 @@ import com.bstek.dorado.config.definition.DefaultDefinitionManager;
 import com.bstek.dorado.config.definition.Definition;
 import com.bstek.dorado.config.definition.DefinitionManager;
 import com.bstek.dorado.config.definition.DefinitionReference;
+import com.bstek.dorado.data.Constants;
 import com.bstek.dorado.data.config.DataTypeName;
 import com.bstek.dorado.data.config.xml.DataXmlConstants;
 import com.bstek.dorado.util.Assert;
@@ -157,7 +158,8 @@ public class DataTypeDefinitionManager extends
 	protected DataTypeDefinition createAggregationDataType(
 			DataTypeName dataTypeName) {
 		DataTypeDefinition definition = new DataTypeDefinition();
-		definition.setName(dataTypeName.getFullName());
+		String name = dataTypeName.getFullName();
+		definition.setName(name);
 
 		DefinitionReference<?> dataTypeRef = new DataTypeDefinitionReference(
 				dataTypeName.getDataType());
@@ -182,16 +184,17 @@ public class DataTypeDefinitionManager extends
 			properties.put(DataXmlConstants.ATTRIBUTE_VALUE_DATA_TYPE,
 					valueDataType);
 		} else {
-			throw new IllegalArgumentException("Illegal DataType name ["
-					+ dataTypeName.getFullName() + "].");
+			throw new IllegalArgumentException("Illegal DataType name [" + name
+					+ "].");
 		}
 
-		StringBuffer id = new StringBuffer();
+		StringBuffer id = new StringBuffer(name.length());
 		id.append(dataTypeName.getOriginDataType());
 		id.append(DataTypeName.BRACKET_LEFT);
 		id.append("%AUTO%");
 		id.append(DataTypeName.BRACKET_RIGHT);
 		definition.setId(id.toString());
+		definition.setBeanId(Constants.SCOPE_DATA_TYPE_PREFIX + name);
 
 		return definition;
 	}

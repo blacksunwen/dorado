@@ -331,19 +331,24 @@ dorado.EventSupport = $class(/** @scope dorado.EventSupport.prototype */{
 	/**
 	 * 移除一个事件监听器。
 	 * @param {String} name 事件名称。
-	 * @param {Function} listener 事件监听器。
+	 * @param {Function} [listener] 事件监听器。如果不指定此参数则表示移除该事件中的所有监听器
 	 */
 	removeListener: function(name, listener) {
 		var def = this.EVENTS[name];
 		if (!def) throw new dorado.ResourceException("dorado.core.UnknownEvent", name);
 		
 		if (!this._events) return;
-		var handlers = this._events[name];
-		if (handlers) {
-			var len = handlers.length;
-			for (var i = len - 1; i >= 0; i--) {
-				if (handlers[i].listener == listener) handlers.removeAt(i);
+		if (listener) {
+			var handlers = this._events[name];
+			if (handlers) {
+				var len = handlers.length;
+				for (var i = len - 1; i >= 0; i--) {
+					if (handlers[i].listener == listener) handlers.removeAt(i);
+				}
 			}
+		}
+		else {
+			delete this._events[name];
 		}
 	},
 	
@@ -437,6 +442,43 @@ dorado.EventSupport = $class(/** @scope dorado.EventSupport.prototype */{
 			scope = this.getListenerScope();
 		}
 		scope = scope || this;
+		
+		// 自动参数注入
+		if (handler.autowire && dorado.widget && dorado.widget.View && scope instanceof dorado.widget.View) {
+			if (handler.signature === undefined) {
+				var info = dorado.getFunctionInfo(handler.listener);
+				if (!info.signature || info.signature == "self,arg") {
+					handler.signature = null;
+				}
+				else {
+					handler.signature = info.signature.split(',');
+				}
+			}
+			if (handler.signature) {
+				var customArgs = [];
+				for (var i = 0; i < handler.signature.length; i++) {
+					var param = handler.signature[i];
+					if (param == "self") {
+						customArgs.push(args[0]);
+					}
+					else if (param == "arg") {
+						customArgs.push(args[1]);
+					}
+					else if (param == "view") {
+						customArgs.push(scope);
+					}
+					else {
+						var object = scope.id(param);
+						if (object == null) {
+							object = scope.getDataType(param);
+						}
+						customArgs.push(object);
+					}
+				}
+				args = customArgs;
+			}
+		}
+		
 		var delay = handler.delay;
 		if (delay >= 0) {
 			/* ignore delayed listener's result */

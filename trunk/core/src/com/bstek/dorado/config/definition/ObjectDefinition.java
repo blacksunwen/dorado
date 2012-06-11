@@ -198,8 +198,9 @@ public class ObjectDefinition extends Definition {
 
 	public void setCacheCreatedObject(boolean cacheCreatedObject) {
 		this.cacheCreatedObject = cacheCreatedObject;
-		if (!cacheCreatedObject)
+		if (!cacheCreatedObject) {
 			objectCache = null;
+		}
 	}
 
 	@Override
@@ -211,7 +212,7 @@ public class ObjectDefinition extends Definition {
 		CreationInfo creationInfo = new CreationInfo();
 		initCreationInfo(creationInfo, this, true);
 
-		if (creationInfo.getScope() == null && cacheCreatedObject
+		if (creationInfo.getScope() == null && isCacheCreatedObject()
 				&& objectCache != null) {
 			return objectCache;
 		}
@@ -248,7 +249,7 @@ public class ObjectDefinition extends Definition {
 		BeanWrapper wrapper = createObject(creationInfo, methodInterceptors,
 				context);
 		object = wrapper.getBean();
-		if (creationInfo.getScope() == null && cacheCreatedObject) {
+		if (creationInfo.getScope() == null && isCacheCreatedObject()) {
 			objectCache = object;
 		}
 
