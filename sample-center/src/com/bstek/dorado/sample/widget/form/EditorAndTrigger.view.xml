@@ -168,7 +168,6 @@ self.set(&quot;items&quot;, items);</ClientEvent>
       <Property name="dataSet">dataSetProducts</Property>
       <Property name="displayProperty">productName</Property>
       <Property name="width">260</Property>
-      <Property name="reloadDataOnOpen">true</Property>
       <Property name="filterOnTyping">false</Property>
       <Property name="dynaFilter">true</Property>
     </DataSetDropDown>
@@ -296,7 +295,7 @@ arg.selectedValue = value.year + &quot;年&quot; + (value.month + 1) + &quot;月
       <Editor>
         <CustomSpinner>
           <Property name="pattern">IP: [0,255].[0,255].[0,255].[0,255]</Property>
-          <Property name="text">192,168,0,101</Property>
+          <Property name="value">192,168,18,223</Property>
         </CustomSpinner>
       </Editor>
     </FormElement>

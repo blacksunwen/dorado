@@ -107,8 +107,9 @@ public class DynaPrivateDataType {
 		address.set("city", "上海");
 		address.set("address", "浦东新区峨山路91弄5号楼");
 		address.set("postCode", "201101");
-		addresses.add(address);address = new Record();
-		
+		addresses.add(address);
+		address = new Record();
+
 		address.set("id", 2);
 		address.set("city", "北京");
 		address.set("address", "海淀区西四环北路51号");
