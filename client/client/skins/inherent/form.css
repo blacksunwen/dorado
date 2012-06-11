@@ -5,3 +5,7 @@
 .i-data-label {
 	height: 18px;
 }
+
+.d-ie6 .i-auto-form {
+	width: 100%;
+}
