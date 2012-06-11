@@ -14,13 +14,9 @@ public class UnByteCodeProxyInterceptor extends EmptyInterceptor {
 	@Override
 	public String getEntityName(Object object) {
 		if (object != null) {
-			Class<?> cl = object.getClass();
-			if (ProxyBeanUtils.isProxy(cl)) {
-				cl = cl.getSuperclass();
-			}
+			Class<?> cl = ProxyBeanUtils.getProxyTargetType(object);
 			return cl.getName();
-		}
-		else {
+		} else {
 			return null;
 		}
 	}
