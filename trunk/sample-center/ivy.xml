@@ -7,10 +7,10 @@
 
 	<dependencies>
 		<!-- COMPILE,RUNTIME -->
-		<dependency org="com.bstek.dorado" name="dorado-core" rev="7.0.23-SNAPSHOT" conf="compile,runtime">
+		<dependency org="com.bstek.dorado" name="dorado-core" rev="7.0.27-SNAPSHOT" conf="compile,runtime">
 			<exclude org="com.bstek.dorado" />
 		</dependency>
-		<dependency org="com.bstek.dorado" name="dorado-hibernate" rev="latest.intergation" conf="compile,runtime">
+		<dependency org="com.bstek.dorado" name="dorado-hibernate" rev="0.2.0-BETA" conf="compile,runtime">
 			<exclude org="com.bstek.dorado" />
 		</dependency>
 		<dependency org="com.bstek.dorado" name="dorado-chart" rev="0.3.0-BETA" conf="compile,runtime">
