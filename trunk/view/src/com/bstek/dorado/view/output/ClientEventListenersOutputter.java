@@ -11,6 +11,7 @@ import com.bstek.dorado.common.event.ClientEvent;
 import com.bstek.dorado.common.event.ClientEventRegisterInfo;
 import com.bstek.dorado.common.event.ClientEventRegistry;
 import com.bstek.dorado.common.event.ClientEventSupported;
+import com.bstek.dorado.common.event.DynaSignatureClientEvent;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -57,8 +58,15 @@ public class ClientEventListenersOutputter implements VirtualPropertyOutputter {
 			ClientEvent listener, OutputContext context) throws IOException {
 		JsonBuilder json = context.getJsonBuilder();
 		Writer writer = context.getWriter();
-		String signature = StringUtils.defaultIfEmpty(listener.getSignature(),
-				DEFAULT_SIGNATURE);
+		String signature;
+		if (listener instanceof DynaSignatureClientEvent) {
+			signature = StringUtils.defaultIfEmpty(
+					((DynaSignatureClientEvent) listener).getSignature(),
+					DEFAULT_SIGNATURE);
+		} else {
+			signature = DEFAULT_SIGNATURE;
+		}
+
 		if (DEFAULT_SIGNATURE.equals(signature)) {
 			json.beginValue();
 			writer.append("function(").append(signature).append("){\n")
