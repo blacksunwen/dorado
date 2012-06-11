@@ -280,6 +280,52 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			this._rendering = true;
 			$invokeSuper.call(this, [replace, element, nextChildElement]);
 			this._rendering = false;
+		},
+		
+		/**
+		 * 根据绑定表达式，为View中的控件或子对象绑定事件监听器。
+		 * @param {String} expression 表达式。
+		 * @param {Function} listener 事件监听器。
+		 * @param {Object} [options] 监听选项。
+		 */
+		bind: function(expression, listener, options) {
+			var i = expression.lastIndexOf('.'), objectsExpression, eventName;
+			if (i > 0) {
+				objectsExpression = expression.substring(0, i);
+				eventName = expression.substring(i + 1);
+			}
+			
+			if (i <= 0 || !eventName) {
+				throw new dorado.Exception("Invalid binding expression \"" + expression + "\".");
+			}
+			
+			var objects;
+			if (objectsExpression == "view") {
+				objects = this;
+			} else {
+				objects = this.get(objectsExpression);
+			}
+			
+			if (objects) {
+				if (dorado.Object.isInstanceOf(objects, dorado.EventSupport)) {
+					if (eventName == "onCreate") {
+						objects.notifyListener(dorado.Object.apply({
+							listener: listener
+						}, options), [objects]);
+					}
+					objects.addListener(eventName, listener, options);
+				}
+				else if (objects instanceof dorado.ObjectGroup) {
+					if (eventName == "onCreate") {
+						objects.each(function(object) {
+							object.notifyListener(dorado.Object.apply({
+								listener: listener
+							}, options), [object]);
+						});
+					}
+					objects.addListener(eventName, listener, options);
+				}
+			}
 		}
 		
 	});
@@ -462,7 +508,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			}
 		});
 		
-		setTimeout(function() {
+		setTimeout(function() {			
 			topView.onReady();
 			
 			$fly(window).unload(function() {

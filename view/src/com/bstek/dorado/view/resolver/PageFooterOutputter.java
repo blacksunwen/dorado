@@ -11,6 +11,7 @@ import org.apache.velocity.Template;
 import com.bstek.dorado.view.View;
 import com.bstek.dorado.view.output.OutputContext;
 import com.bstek.dorado.view.output.Outputter;
+import com.bstek.dorado.view.widget.Control;
 import com.bstek.dorado.view.widget.HtmlContainer;
 import com.bstek.dorado.web.DoradoContext;
 
@@ -57,17 +58,17 @@ public class PageFooterOutputter implements Outputter {
 			throws Exception {
 		Writer writer = outputContext.getWriter();
 
-		Map<Object, String> calloutHtmlMap = outputContext.getCalloutHtmlMap();
+		Map<Control, String> calloutHtmlMap = outputContext.getCalloutHtmlMap();
 		if (calloutHtmlMap != null && !calloutHtmlMap.isEmpty()) {
-			for (Map.Entry<Object, String> entry : calloutHtmlMap.entrySet()) {
-				Object object = entry.getKey();
+			for (Map.Entry<Control, String> entry : calloutHtmlMap.entrySet()) {
+				Control control = entry.getKey();
 				String id = entry.getValue();
-				if (object instanceof HtmlContainer) {
+				if (control instanceof HtmlContainer) {
 					outputHtmlContainerContent(request, response, writer,
-							(HtmlContainer) object, id);
-				} else if (object instanceof View) {
+							(HtmlContainer) control, id);
+				} else if (control instanceof View) {
 					outputSubViewHolderContent(request, response, writer,
-							(View) object, id);
+							(View) control, id);
 				}
 			}
 		}

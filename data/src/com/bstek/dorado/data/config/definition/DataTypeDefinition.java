@@ -53,7 +53,16 @@ public class DataTypeDefinition extends ListenableObjectDefinition implements
 	private boolean isAggregationType;
 
 	public DataTypeDefinition() {
-		setCacheCreatedObject(true);
+	}
+
+	@Override
+	public boolean isCacheCreatedObject() {
+		return global;
+	}
+
+	@Override
+	public void setCacheCreatedObject(boolean cacheCreatedObject) {
+		throw new UnsupportedOperationException();
 	}
 
 	public DataTypeDefinition(String name) {
@@ -74,6 +83,10 @@ public class DataTypeDefinition extends ListenableObjectDefinition implements
 	public void setName(String name) {
 		this.name = name;
 		if (StringUtils.isNotEmpty(name)) {
+			if (StringUtils.isEmpty(getBeanId())) {
+				setBeanId(Constants.SCOPE_DATA_TYPE_PREFIX + name);
+			}
+
 			DataTypeName dataTypeName = new DataTypeName(name);
 			isAggregationType = (dataTypeName.getSubDataTypes().length == 1);
 		}
@@ -85,9 +98,6 @@ public class DataTypeDefinition extends ListenableObjectDefinition implements
 
 	void setId(String id) {
 		this.id = id;
-		if (StringUtils.isNotEmpty(id)) {
-			setBeanId(Constants.SCOPE_DATA_TYPE_PREFIX + id);
-		}
 	}
 
 	public boolean isAggregationType() {

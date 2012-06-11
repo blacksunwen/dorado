@@ -120,9 +120,7 @@ public class ClientOutputHelper {
 	private Map<Class<?>, Map<String, PropertyConfig>> propertyConfigsCache = new HashMap<Class<?>, Map<String, PropertyConfig>>();
 
 	private static Outputter getCachedOutputter(Class<?> beanType) {
-		synchronized (OUTPUTTER_MAP) {
-			return OUTPUTTER_MAP.get(beanType);
-		}
+		return OUTPUTTER_MAP.get(beanType);
 	}
 
 	public Outputter getOutputter(Class<?> beanType) throws Exception {
@@ -187,9 +185,7 @@ public class ClientOutputHelper {
 			}
 		}
 
-		synchronized (OUTPUTTER_MAP) {
-			OUTPUTTER_MAP.put(beanType, outputter);
-		}
+		OUTPUTTER_MAP.put(beanType, outputter);
 		return outputter;
 	}
 

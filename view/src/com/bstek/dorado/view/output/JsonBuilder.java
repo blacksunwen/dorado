@@ -3,8 +3,9 @@ package com.bstek.dorado.view.output;
 import java.io.IOException;
 import java.io.Writer;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 import com.bstek.dorado.data.IllegalJsonFormatException;
-import com.bstek.dorado.data.JsonUtils;
 
 /**
  * 用于辅助JSON对象输出的工具类。
@@ -74,7 +75,7 @@ public class JsonBuilder {
 		writer.write(s);
 	}
 
-	private JsonBuilder append(String s, boolean skipNull) {
+	private JsonBuilder append(String s, boolean skipNull, boolean quote) {
 		if (state == 'o' && s == null) {
 			throw new IllegalJsonFormatException("Null pointer");
 		}
@@ -88,7 +89,13 @@ public class JsonBuilder {
 					outputLeadingTab();
 				}
 				if (s != null) {
-					write(s);
+					if (quote) {
+						write('\"');
+						write(s);
+						write('\"');
+					} else {
+						write(s);
+					}
 				} else if (!skipNull) {
 					write("null");
 				}
@@ -99,10 +106,6 @@ public class JsonBuilder {
 			return this;
 		}
 		throw new IllegalJsonFormatException("Value out of sequence.");
-	}
-
-	private JsonBuilder append(String s) {
-		return append(s, true);
 	}
 
 	private JsonBuilder end(char m, char c) {
@@ -186,8 +189,9 @@ public class JsonBuilder {
 				throw new IllegalJsonFormatException(msg);
 			} else {
 				escapeTop--;
-				if (escapeTop > 0)
+				if (escapeTop > 0) {
 					escapeKeyStack[escapeTop] = null;
+				}
 				escaped = true;
 
 			}
@@ -225,11 +229,12 @@ public class JsonBuilder {
 	public JsonBuilder array() {
 		writeEscapeableParts();
 		if (state == 'i' || state == 'k' || state == 'a' || state == 'v') {
-			append("[");
+			append("[", true, false);
 			push('a');
 			comma = false;
-			if (prettyFormat)
+			if (prettyFormat) {
 				leadingTab++;
+			}
 			return this;
 		}
 		throw new IllegalJsonFormatException("Misplaced array.");
@@ -245,8 +250,9 @@ public class JsonBuilder {
 	 */
 	public JsonBuilder endArray() {
 		if (!popEscapeablePart('a')) {
-			if (prettyFormat)
+			if (prettyFormat) {
 				leadingTab--;
+			}
 			end('a', ']');
 		}
 		return this;
@@ -258,10 +264,11 @@ public class JsonBuilder {
 	public JsonBuilder object() {
 		writeEscapeableParts();
 		if (state == 'i' || state == 'k' || state == 'a' || state == 'v') {
-			append("{");
+			append("{", true, false);
 			push('o');
-			if (prettyFormat)
+			if (prettyFormat) {
 				leadingTab++;
+			}
 			comma = false;
 			return this;
 		}
@@ -278,8 +285,9 @@ public class JsonBuilder {
 	 */
 	public JsonBuilder endObject() {
 		if (!popEscapeablePart('o')) {
-			if (prettyFormat)
+			if (prettyFormat) {
 				leadingTab--;
+			}
 			end('o', '}');
 		}
 		return this;
@@ -295,11 +303,18 @@ public class JsonBuilder {
 		writeEscapeableParts();
 		if (state == 'o') {
 			try {
-				if (comma)
+				if (comma) {
 					write(',');
+				}
 				outputLeadingTab();
-				write(JsonUtils.quote(s));
+
+				// write(JsonUtils.quote(s));
+				write('"');
+				write(s); // for Performance 2012/05/15
+				write('"');
+
 				write(':');
+
 				comma = false;
 				state = 'k';
 				return this;
@@ -324,36 +339,56 @@ public class JsonBuilder {
 	 * 输出一个逻辑值。
 	 */
 	public JsonBuilder value(boolean b) {
-		return outputValue(b ? "true" : "false");
+		return outputValue(b ? "true" : "false", false);
 	}
 
 	/**
 	 * 输出一个双精度数值。
 	 */
 	public JsonBuilder value(double d) {
-		return outputValue(Double.toString(d));
+		return outputValue(Double.toString(d), false);
 	}
 
 	/**
 	 * 输出一个长整值。
 	 */
 	public JsonBuilder value(long l) {
-		return outputValue(Long.toString(l));
+		return outputValue(Long.toString(l), false);
 	}
 
 	/**
 	 * 输出一个对象型的数值。
 	 */
 	public JsonBuilder value(Object o) {
-		return outputValue((o == null) ? "null" : JsonUtils.valueToString(o));
+		if (o == null) {
+			outputValue("null", false);
+		} else if (o instanceof Number || o instanceof Boolean) {
+			if (o instanceof Float && (Float.isNaN((Float) o))) {
+				outputValue("undefined", false);
+			}
+			if (o instanceof Double && (Double.isNaN((Double) o))) {
+				outputValue("undefined", false);
+			} else {
+				outputValue(o.toString(), false);
+			}
+		} else {
+			String s = o.toString();
+			if (s.length() == 0) {
+				outputValue("\"\"", false);
+			} else {
+				outputValue(StringEscapeUtils.escapeJavaScript(s), true);
+			}
+		}
+		return this;
 	}
 
-	private JsonBuilder outputValue(String s) {
+	private JsonBuilder outputValue(String s, boolean quote) {
 		writeEscapeableParts();
 		if (state == 'k' || state == 'a' || state == 'i') {
-			append(s);
-			if (state == 'k')
+			append(s, true, quote);
+			if (state == 'k') {
 				state = 'o';
+			}
 			return this;
 		}
 		throw new IllegalJsonFormatException("Misplaced value.");
@@ -365,7 +400,7 @@ public class JsonBuilder {
 	public JsonBuilder beginValue() {
 		writeEscapeableParts();
 		if (state == 'k' || state == 'a') {
-			append(null);
+			append(null, true, false);
 			push('v');
 			return this;
 		}

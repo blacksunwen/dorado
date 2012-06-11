@@ -20,7 +20,7 @@ var dorado = {
 	
 	_UNSUPPORTED_FUNCTION: function() {
 		return function() {
-			throw new dorado.ResourceException("dorado.core.OperationNotSupported", dorado.getFunctionName(arguments.callee));
+			throw new dorado.ResourceException("dorado.core.OperationNotSupported", dorado.getFunctionDescription(arguments.callee));
 		};
 	},
 	
@@ -93,7 +93,7 @@ var dorado = {
 	 * @param {Function} fn 要描述的方法。
 	 * @return {String} 方法的描述信息。
 	 */
-	getFunctionName: function(fn) {
+	getFunctionDescription: function(fn) {
 		var defintion = fn.toString().split('\n')[0], name;
 		if (fn.methodName) {
 			var className;
@@ -101,13 +101,40 @@ var dorado = {
 			name = (className ? (className + '.') : "function ") +
 			fn.methodName;
 		} else {
-			var regexpResult = defintion.match(/function (\w*)/);
-			name = "function " +
-			(regexpResult && regexpResult[1] || "anonymous");
+			var regexpResult = defintion.match(/^function (\w*)/);
+			name = "function " + (regexpResult && regexpResult[1] || "anonymous");
 		}
 		
 		var regexpResult = defintion.match(/\((.*)\)/);
 		return name + (regexpResult && regexpResult[0]);
+	},
+	
+	/**
+	 * 返回一个方法名称\参数信息。
+	 * @param {Function} fn 要描述的方法。
+	 * @return {Object} 方法的名称\参数信息。
+	 */
+	getFunctionInfo: function(fn) {
+		var defintion = fn.toString().substring(8), len = defintion.length, name = "", signature = "";
+		var inSignatrue = false;
+		for (var i = 0; i < len; i++) {
+			var c = defintion.charAt(i);
+			if (c === ' ' || c === '\t' || c === '\n' || c === '\r') {
+				continue;
+			} else if (c === '(') {
+				inSignatrue = true;
+			} else if (c === ')') {
+				break;
+			} else if (inSignatrue) {
+				signature += c;
+			} else {
+				name += c;
+			}
+		}
+		return {
+			name: name,
+			signature: signature
+		};
 	}
 };
 

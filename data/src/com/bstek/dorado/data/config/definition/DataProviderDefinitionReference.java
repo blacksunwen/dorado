@@ -58,10 +58,14 @@ public class DataProviderDefinitionReference implements
 			dtfm = getDataProviderDefinitionManager();
 		}
 
+		DataProviderDefinition definition = null;
 		if (dtfm != null) {
-			return dtfm.getDefinition(name);
-		} else {
-			return null;
+			definition = dtfm.getDefinition(name);
 		}
+		if (definition == null) {
+			throw new IllegalArgumentException("Unrecognized DataProvider \""
+					+ name + "\".");
+		}
+		return definition;
 	}
 }

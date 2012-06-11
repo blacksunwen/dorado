@@ -20,6 +20,7 @@ import com.bstek.dorado.util.Assert;
 
 /**
  * 客户端事件节点的解析器。
+ * 
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Apr 11, 2008
  */
@@ -44,18 +45,22 @@ public class ClientEventParser extends ConfigurableDispatchableXmlParser {
 	}
 
 	protected String getTextValue(Element element) {
-		StringBuffer value = new StringBuffer();
+		StringBuffer value = new StringBuffer(32);
 		NodeList nl = element.getChildNodes();
 		int len = nl.getLength();
 		for (int i = 0; i < len; ++i) {
 			Node item = nl.item(i);
 			if ((((!(item instanceof CharacterData)) || (item instanceof Comment)))
-					&& (!(item instanceof EntityReference))) continue;
+					&& (!(item instanceof EntityReference))) {
+				continue;
+			}
+
 			if (item instanceof CDATASection && len <= 3) {
 				value.setLength(0);
 				value.append(item.getNodeValue());
 				break;
 			}
+
 			value.append(item.getNodeValue());
 		}
 		return value.toString();
@@ -69,13 +74,15 @@ public class ClientEventParser extends ConfigurableDispatchableXmlParser {
 		Assert.notEmpty(name);
 		event.setName(name);
 
+		String signature = element.getAttribute("signature");
+		event.setSignature(signature);
+
 		String script = getTextValue(element);
 		if (StringUtils.isNotEmpty(script)) {
 			Expression expression = getExpressionHandler().compile(script);
 			if (expression != null) {
 				event.setScript(expression);
-			}
-			else {
+			} else {
 				event.setScript(script);
 			}
 		}

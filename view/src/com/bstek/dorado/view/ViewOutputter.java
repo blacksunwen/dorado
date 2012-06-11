@@ -2,11 +2,14 @@ package com.bstek.dorado.view;
 
 import java.io.Writer;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.bstek.dorado.core.Context;
+import com.bstek.dorado.core.io.Resource;
 import com.bstek.dorado.data.type.DataType;
+import com.bstek.dorado.view.config.attachment.AttachedResourceManager;
+import com.bstek.dorado.view.config.attachment.JavaScriptContent;
 import com.bstek.dorado.view.output.OutputContext;
 import com.bstek.dorado.view.output.Outputter;
 import com.bstek.dorado.view.widget.ContainerOutputter;
@@ -20,6 +23,8 @@ import com.bstek.dorado.view.widget.ContainerOutputter;
 public class ViewOutputter extends ContainerOutputter {
 	protected Outputter childrenComponentOutputter;
 	protected Outputter includeDataTypesOutputter;
+	private AttachedResourceManager javaScriptResourceManager;
+	private AttachedResourceManager styleSheetResourceManager;
 
 	public void setChildrenComponentOutputter(
 			Outputter childrenComponentOutputter) {
@@ -30,38 +35,26 @@ public class ViewOutputter extends ContainerOutputter {
 		this.includeDataTypesOutputter = includeDataTypesOutputter;
 	}
 
+	public void setJavaScriptResourceManager(
+			AttachedResourceManager javaScriptResourceManager) {
+		this.javaScriptResourceManager = javaScriptResourceManager;
+	}
+
+	public void setStyleSheetResourceManager(
+			AttachedResourceManager styleSheetResourceManager) {
+		this.styleSheetResourceManager = styleSheetResourceManager;
+	}
+
 	public ViewOutputter() {
 		setUsePrototype(true);
 	}
 
 	public void outputView(View view, OutputContext context) throws Exception {
-		Set<String> dependsPackages = context.getDependsPackages();
 		String exPackages = view.getPackages();
 		if (StringUtils.isNotEmpty(exPackages)) {
 			for (String pkg : StringUtils.split(exPackages, ",;")) {
 				if (StringUtils.isNotEmpty(pkg)) {
-					dependsPackages.add(pkg);
-				}
-			}
-		}
-
-		String files;
-		Set<String> javaScriptFiles = context.getJavaScriptFiles();
-		files = view.getJavaScriptFile();
-		if (StringUtils.isNotEmpty(files)) {
-			for (String file : StringUtils.split(files, ",;")) {
-				if (StringUtils.isNotEmpty(file)) {
-					javaScriptFiles.add(file);
-				}
-			}
-		}
-
-		Set<String> styleSheetFiles = context.getStyleSheetFiles();
-		files = view.getStyleSheetFile();
-		if (StringUtils.isNotEmpty(files)) {
-			for (String file : StringUtils.split(files, ",;")) {
-				if (StringUtils.isNotEmpty(file)) {
-					styleSheetFiles.add(file);
+					context.addDependsPackage(pkg);
 				}
 			}
 		}
@@ -69,14 +62,14 @@ public class ViewOutputter extends ContainerOutputter {
 		Writer writer = context.getWriter();
 		context.createJsonBuilder();
 		try {
-			writer.append("var v=");
+			writer.append("var view=");
 			super.output(view, context);
 			writer.append(";\n");
 
 			// 输出顶层的子组件
 			boolean hasChild = !view.getChildren().isEmpty();
 			if (hasChild) {
-				writer.append("function f(v){").append("v.set(\"children\",");
+				writer.append("function f(view){").append("view.set(\"children\",");
 				childrenComponentOutputter.output(view.getChildren(), context); // 事实上此array不可能为空，前面已判断过了。
 				writer.append(");").append("}\n");
 			}
@@ -84,8 +77,40 @@ public class ViewOutputter extends ContainerOutputter {
 			// 输出DataType
 			outputIncludeDataTypes(context);
 
-			if (hasChild)
-				writer.append("f(v);\n");
+			if (hasChild) {
+				writer.append("f(view);\n");
+			}
+
+			Context doradoContext = Context.getCurrent();
+
+			String javaScriptFiles = view.getJavaScriptFile();
+			if (StringUtils.isNotEmpty(javaScriptFiles)) {
+				for (String file : StringUtils.split(javaScriptFiles, ";,")) {
+					if (StringUtils.isNotEmpty(file)) {
+						Resource resource = doradoContext.getResource(file);
+						JavaScriptContent content = (JavaScriptContent) javaScriptResourceManager
+								.getContent(resource);
+						if (content.getIsController()) {
+							javaScriptResourceManager.outputContent(context,
+									content);
+						} else {
+							context.addJavaScriptContent(content);
+						}
+					}
+				}
+			}
+
+			String styleSheetFiles = view.getStyleSheetFile();
+			if (StringUtils.isNotEmpty(styleSheetFiles)) {
+				for (String file : StringUtils.split(styleSheetFiles, ",;")) {
+					if (StringUtils.isNotEmpty(file)) {
+						Resource resource = doradoContext.getResource(file);
+						Object content = styleSheetResourceManager
+								.getContent(resource);
+						context.addStyleSheetContent(content);
+					}
+				}
+			}
 		} finally {
 			context.restoreJsonBuilder();
 		}
@@ -96,7 +121,7 @@ public class ViewOutputter extends ContainerOutputter {
 		Writer writer = context.getWriter();
 		writer.append("(function(){\n");
 		outputView((View) object, context);
-		writer.append("return v;\n").append("})()");
+		writer.append("return view;\n").append("})()");
 	}
 
 	/**
@@ -110,7 +135,7 @@ public class ViewOutputter extends ContainerOutputter {
 			return;
 
 		Writer writer = context.getWriter();
-		writer.write("v.get(\"dataTypeRepository\").parseJsonData(");
+		writer.write("view.get(\"dataTypeRepository\").parseJsonData(");
 		includeDataTypesOutputter.output(includeDataTypes, context);
 		writer.write(");\n");
 	}

@@ -40,7 +40,7 @@ dorado.ModalManager = {
                     if (stackEl)
                         dom = stackEl.dom;
                     if (dom) {
-                        var control = dorado.widget.findParentControl(dom);
+                        var control = dorado.widget.Control.findParentControl(dom);
                         if (control) {
                             var count = 1, fn = repeat(function() {
                                 dorado.widget.setFocusedControl(count++ % 2 == 1 ? control : null);

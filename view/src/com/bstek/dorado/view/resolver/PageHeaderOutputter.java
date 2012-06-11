@@ -1,9 +1,6 @@
 package com.bstek.dorado.view.resolver;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Writer;
 import java.util.Set;
 
@@ -13,10 +10,10 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.core.Configure;
-import com.bstek.dorado.core.io.Resource;
-import com.bstek.dorado.core.io.ResourceUtils;
 import com.bstek.dorado.core.pkgs.PackageManager;
 import com.bstek.dorado.view.View;
+import com.bstek.dorado.view.config.attachment.AttachedResourceManager;
+import com.bstek.dorado.view.config.attachment.JavaScriptContent;
 import com.bstek.dorado.view.output.OutputContext;
 import com.bstek.dorado.view.output.Outputter;
 import com.bstek.dorado.web.DoradoContext;
@@ -28,9 +25,21 @@ import com.bstek.dorado.web.WebConfigure;
  */
 public class PageHeaderOutputter implements Outputter {
 	private Outputter topViewOutputter;
+	private AttachedResourceManager javaScriptResourceManager;
+	private AttachedResourceManager styleSheetResourceManager;
 
 	public void setTopViewOutputter(Outputter topViewOutputter) {
 		this.topViewOutputter = topViewOutputter;
+	}
+
+	public void setJavaScriptResourceManager(
+			AttachedResourceManager javaScriptResourceManager) {
+		this.javaScriptResourceManager = javaScriptResourceManager;
+	}
+
+	public void setStyleSheetResourceManager(
+			AttachedResourceManager styleSheetResourceManager) {
+		this.styleSheetResourceManager = styleSheetResourceManager;
 	}
 
 	protected void writeSetting(Writer writer, String key, Object value,
@@ -84,44 +93,25 @@ public class PageHeaderOutputter implements Outputter {
 		topViewOutputter.output(view, context);
 		writer.append("</script>\n");
 
-		Set<String> javaScriptFiles = context.getJavaScriptFiles();
-		if (!javaScriptFiles.isEmpty()) {
+		Set<Object> javaScriptContents = context.getJavaScriptContents();
+		if (javaScriptContents != null && !javaScriptContents.isEmpty()) {
 			writer.append("<script language=\"javascript\" type=\"text/javascript\">\n");
-			for (String file : javaScriptFiles) {
-				Resource resource = ResourceUtils.getResource(file);
-				InputStream in = resource.getInputStream();
-				try {
-					BufferedReader reader = new BufferedReader(
-							new InputStreamReader(in));
-					String l;
-					while ((l = reader.readLine()) != null) {
-						writer.append(l).append('\n');
-					}
-					reader.close();
-				} finally {
-					in.close();
+			for (Object content : javaScriptContents) {
+				if (content instanceof JavaScriptContent
+						&& !((JavaScriptContent) content).getIsController()) {
+					javaScriptResourceManager.outputContent(context, content);
 				}
+				writer.append('\n');
 			}
 			writer.append("</script>\n");
 		}
 
-		Set<String> styleSheetFiles = context.getStyleSheetFiles();
-		if (!styleSheetFiles.isEmpty()) {
+		Set<Object> styleSheetContents = context.getStyleSheetContents();
+		if (styleSheetContents != null && !styleSheetContents.isEmpty()) {
 			writer.append("<style type=\"text/css\">\n");
-			for (String file : styleSheetFiles) {
-				Resource resource = ResourceUtils.getResource(file);
-				InputStream in = resource.getInputStream();
-				try {
-					BufferedReader reader = new BufferedReader(
-							new InputStreamReader(in));
-					String l;
-					while ((l = reader.readLine()) != null) {
-						writer.append(l).append('\n');
-					}
-					reader.close();
-				} finally {
-					in.close();
-				}
+			for (Object content : styleSheetContents) {
+				styleSheetResourceManager.outputContent(context, content);
+				writer.append('\n');
 			}
 			writer.append("</style>\n");
 		}

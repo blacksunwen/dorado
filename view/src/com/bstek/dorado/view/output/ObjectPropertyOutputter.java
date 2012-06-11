@@ -11,6 +11,6 @@ public abstract class ObjectPropertyOutputter extends ClientObjectOutputter
 	}
 
 	public void output(Object object, OutputContext context) throws Exception {
-		output(object, context);
+		outputObject(object, context);
 	}
 }

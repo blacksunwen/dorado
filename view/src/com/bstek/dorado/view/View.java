@@ -14,8 +14,6 @@ import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.common.Namable;
-import com.bstek.dorado.core.bean.Scopable;
-import com.bstek.dorado.core.bean.Scope;
 import com.bstek.dorado.view.manager.ViewConfig;
 import com.bstek.dorado.view.widget.Component;
 import com.bstek.dorado.view.widget.Container;
@@ -27,10 +25,9 @@ import com.bstek.dorado.view.widget.Container;
 @ClientEvents({ @ClientEvent(name = "onDataLoaded"),
 		@ClientEvent(name = "onComponentRegistered"),
 		@ClientEvent(name = "onComponentUnregistered") })
-public abstract class View extends Container implements Namable, Scopable {
+public abstract class View extends Container implements Namable {
 	private String name;
 	private ViewConfig viewConfig;
-	private Scope scope = Scope.request;
 	private Map<String, Component> componentMap = new HashMap<String, Component>();
 	private String packages;
 	private String pageTemplate;
@@ -61,18 +58,6 @@ public abstract class View extends Container implements Namable, Scopable {
 
 	public void setViewConfig(ViewConfig viewConfig) {
 		this.viewConfig = viewConfig;
-	}
-
-	public void setScope(Scope scope) {
-		this.scope = scope;
-	}
-
-	/**
-	 * 返回作用范围。
-	 */
-	@ClientProperty(ignored = true)
-	public Scope getScope() {
-		return scope;
 	}
 
 	public void registerComponent(Component component) {

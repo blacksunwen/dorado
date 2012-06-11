@@ -302,104 +302,21 @@ public class LibraryFileResolver extends
 				.toString();
 	}
 
-	protected synchronized Resource[] getJavaScriptResources(
-			DoradoContext context, String resourcePrefix, String fileName,
-			String resourceSuffix) throws Exception {
+	protected Resource[] getJavaScriptResources(DoradoContext context,
+			String resourcePrefix, String fileName, String resourceSuffix)
+			throws Exception {
 		String skin = getSkin();
 		String cacheKey = getCacheKey(resourcePrefix, fileName, resourceSuffix,
 				skin);
-		Resource[] resources = resourcesCache.get(cacheKey);
-		if (resources == null) {
-			if (fileName.startsWith(CURRENT_SKIN_PREFIX)) {
-				fileName = fileName.replace(CURRENT_SKIN, getSkin());
-			}
-			if (Configure.getBoolean("view.useMinifiedJavaScript")) {
-				resources = doGetResourcesByFileName(context, resourcePrefix,
-						fileName, MIN_JAVASCRIPT_SUFFIX);
-				if (!resources[0].exists()) {
-					resources = null;
-				}
-			}
+		synchronized (resourcesCache) {
+			Resource[] resources = resourcesCache.get(cacheKey);
 			if (resources == null) {
-				resources = doGetResourcesByFileName(context, resourcePrefix,
-						fileName, resourceSuffix);
-			}
-			resourcesCache.put(cacheKey, resources);
-		}
-		return resources;
-	}
-
-	protected synchronized Resource[] getStyleSheetResources(
-			DoradoContext context, String resourcePrefix, String fileName,
-			String resourceSuffix) throws Exception {
-		String skin = getSkin();
-		String cacheKey = getCacheKey(resourcePrefix, fileName, resourceSuffix,
-				skin);
-		boolean useMinifiedStyleSheet = Configure
-				.getBoolean("view.useMinifiedStyleSheet");
-		Resource[] resources = resourcesCache.get(cacheKey);
-		if (resources == null) {
-			String template = fileName;
-			if (template.indexOf(CURRENT_SKIN) >= 0) {
-				fileName = template.replace(CURRENT_SKIN, INHERENT_SKIN);
-				Resource inherentResource = null;
-				if (useMinifiedStyleSheet) {
-					inherentResource = doGetResourcesByFileName(context,
-							resourcePrefix, fileName, MIN_STYLESHEET_SUFFIX)[0];
-					if (!inherentResource.exists()) {
-						inherentResource = null;
-					}
+				if (fileName.startsWith(CURRENT_SKIN_PREFIX)) {
+					fileName = fileName.replace(CURRENT_SKIN, getSkin());
 				}
-				if (inherentResource == null) {
-					inherentResource = doGetResourcesByFileName(context,
-							resourcePrefix, fileName, resourceSuffix)[0];
-				}
-
-				fileName = template.replace(CURRENT_SKIN, skin);
-				Resource concreteResource = null;
-				if (useMinifiedStyleSheet) {
-					concreteResource = doGetResourcesByFileName(context,
-							resourcePrefix, fileName, MIN_STYLESHEET_SUFFIX)[0];
-					if (!concreteResource.exists()) {
-						concreteResource = null;
-					}
-				}
-				if (concreteResource == null) {
-					concreteResource = doGetResourcesByFileName(context,
-							resourcePrefix, fileName, resourceSuffix)[0];
-				}
-
-				if (!concreteResource.exists()) {
-					fileName = template.replace(CURRENT_SKIN, DEFAULT_SKIN);
-					Resource defaultResource = null;
-					if (useMinifiedStyleSheet) {
-						defaultResource = super
-								.getResourcesByFileName(context,
-										resourcePrefix, fileName,
-										MIN_STYLESHEET_SUFFIX)[0];
-						if (!defaultResource.exists()) {
-							defaultResource = null;
-						}
-					}
-					if (defaultResource == null) {
-						defaultResource = doGetResourcesByFileName(context,
-								resourcePrefix, fileName, resourceSuffix)[0];
-					}
-					if (defaultResource.exists()) {
-						concreteResource = defaultResource;
-					}
-				}
-
-				if (inherentResource.exists()) {
-					resources = new Resource[] { inherentResource,
-							concreteResource };
-				} else {
-					resources = new Resource[] { concreteResource };
-				}
-			} else {
-				if (useMinifiedStyleSheet) {
+				if (Configure.getBoolean("view.useMinifiedJavaScript")) {
 					resources = doGetResourcesByFileName(context,
-							resourcePrefix, fileName, MIN_STYLESHEET_SUFFIX);
+							resourcePrefix, fileName, MIN_JAVASCRIPT_SUFFIX);
 					if (!resources[0].exists()) {
 						resources = null;
 					}
@@ -408,9 +325,95 @@ public class LibraryFileResolver extends
 					resources = doGetResourcesByFileName(context,
 							resourcePrefix, fileName, resourceSuffix);
 				}
+				resourcesCache.put(cacheKey, resources);
 			}
-			resourcesCache.put(cacheKey, resources);
+			return resources;
 		}
-		return resources;
+	}
+
+	protected Resource[] getStyleSheetResources(DoradoContext context,
+			String resourcePrefix, String fileName, String resourceSuffix)
+			throws Exception {
+		String skin = getSkin();
+		String cacheKey = getCacheKey(resourcePrefix, fileName, resourceSuffix,
+				skin);
+		boolean useMinifiedStyleSheet = Configure
+				.getBoolean("view.useMinifiedStyleSheet");
+		synchronized (resourcesCache) {
+			Resource[] resources = resourcesCache.get(cacheKey);
+			if (resources == null) {
+				String template = fileName;
+				if (template.indexOf(CURRENT_SKIN) >= 0) {
+					fileName = template.replace(CURRENT_SKIN, INHERENT_SKIN);
+					Resource inherentResource = null;
+					if (useMinifiedStyleSheet) {
+						inherentResource = doGetResourcesByFileName(context,
+								resourcePrefix, fileName, MIN_STYLESHEET_SUFFIX)[0];
+						if (!inherentResource.exists()) {
+							inherentResource = null;
+						}
+					}
+					if (inherentResource == null) {
+						inherentResource = doGetResourcesByFileName(context,
+								resourcePrefix, fileName, resourceSuffix)[0];
+					}
+
+					fileName = template.replace(CURRENT_SKIN, skin);
+					Resource concreteResource = null;
+					if (useMinifiedStyleSheet) {
+						concreteResource = doGetResourcesByFileName(context,
+								resourcePrefix, fileName, MIN_STYLESHEET_SUFFIX)[0];
+						if (!concreteResource.exists()) {
+							concreteResource = null;
+						}
+					}
+					if (concreteResource == null) {
+						concreteResource = doGetResourcesByFileName(context,
+								resourcePrefix, fileName, resourceSuffix)[0];
+					}
+
+					if (!concreteResource.exists()) {
+						fileName = template.replace(CURRENT_SKIN, DEFAULT_SKIN);
+						Resource defaultResource = null;
+						if (useMinifiedStyleSheet) {
+							defaultResource = super.getResourcesByFileName(
+									context, resourcePrefix, fileName,
+									MIN_STYLESHEET_SUFFIX)[0];
+							if (!defaultResource.exists()) {
+								defaultResource = null;
+							}
+						}
+						if (defaultResource == null) {
+							defaultResource = doGetResourcesByFileName(context,
+									resourcePrefix, fileName, resourceSuffix)[0];
+						}
+						if (defaultResource.exists()) {
+							concreteResource = defaultResource;
+						}
+					}
+
+					if (inherentResource.exists()) {
+						resources = new Resource[] { inherentResource,
+								concreteResource };
+					} else {
+						resources = new Resource[] { concreteResource };
+					}
+				} else {
+					if (useMinifiedStyleSheet) {
+						resources = doGetResourcesByFileName(context,
+								resourcePrefix, fileName, MIN_STYLESHEET_SUFFIX);
+						if (!resources[0].exists()) {
+							resources = null;
+						}
+					}
+					if (resources == null) {
+						resources = doGetResourcesByFileName(context,
+								resourcePrefix, fileName, resourceSuffix);
+					}
+				}
+				resourcesCache.put(cacheKey, resources);
+			}
+			return resources;
+		}
 	}
 }

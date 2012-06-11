@@ -153,4 +153,26 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 	<bean id="dorado.viewResourceManager" parent="dorado.abstractResourceManager" class="com.bstek.dorado.view.resource.ViewResourceManager">
 		<property name="viewResourceBundleManager" ref="dorado.viewResourceBundleManager" />
 	</bean>
+
+	<bean id="dorado.viewAttachmentCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+		<property name="cacheName" value="com.bstek.dorado.view.config.attachment.AttachedResourceManager" />
+		<property name="maxElementsInMemory" value="${view.viewDefinitionCache.maxElementsInMemory}" />
+		<property name="overflowToDisk" value="false" />
+		<property name="timeToLive" value="${view.viewAttachmentCache.timeToLive}" />
+		<property name="timeToIdle" value="${view.viewAttachmentCache.timeToIdle}" />
+	</bean>
+	<bean id="dorado.viewAttachmentResourceManager" abstract="true" class="com.bstek.dorado.view.config.attachment.AttachedResourceManager">
+		<property name="expressionHandler" ref="dorado.expressionHandler" />
+		<property name="cache" ref="dorado.viewAttachmentCache" />
+	</bean>
+	<bean id="dorado.viewStyleSheetResourceManager" parent="dorado.viewAttachmentResourceManager">
+		<property name="charset" value="${view.styleSheet.charset}" />
+	</bean>
+	<bean id="dorado.viewJavaScriptResourceManager" parent="dorado.viewAttachmentResourceManager" class="com.bstek.dorado.view.config.attachment.AttachedJavaScriptResourceManager">
+		<property name="charset" value="${view.javaScript.charset}" />
+		<property name="asControllerInDefault" value="${view.javaScript.asControllerInDefault}" />
+		<property name="javaScriptParser">
+			<bean class="com.bstek.dorado.view.config.attachment.JavaScriptParser" />
+		</property>
+	</bean>
 </beans>

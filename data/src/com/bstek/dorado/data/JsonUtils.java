@@ -2,7 +2,6 @@ package com.bstek.dorado.data;
 
 import java.io.IOException;
 import java.lang.reflect.Modifier;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -41,6 +40,7 @@ import com.bstek.dorado.data.type.manager.DataTypeManager;
 import com.bstek.dorado.data.type.property.PropertyDef;
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.data.variant.VariantUtils;
+import com.bstek.dorado.util.DateUtils;
 import com.bstek.dorado.util.proxy.ProxyBeanUtils;
 
 /**
@@ -62,8 +62,6 @@ public final class JsonUtils {
 	private static final int DEFAULT_DATE_PATTERN_LEN = 20;
 	private static final Pattern DEFAULT_DATE_PATTERN = Pattern
 			.compile("^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$");
-	private static final SimpleDateFormat DEFAULT_DATE_FORMAT = new SimpleDateFormat(
-			com.bstek.dorado.core.Constants.ISO_DATETIME_FORMAT1);
 
 	private static EntityProxyMethodInterceptorFactory methodInterceptorFactory;
 	private static DataTypeManager dataTypeManager;
@@ -188,139 +186,6 @@ public final class JsonUtils {
 				propertyNode, valueTypeRef) : null);
 	}
 
-	/**
-	 * Produce a string in double quotes with backslash sequences in all the
-	 * right places. A backslash will be inserted within </, allowing JSON text
-	 * to be delivered in HTML. In JSON text, a string cannot contain a control
-	 * character or an unescaped quote or backslash.<br>
-	 * <strong>CAUTION:</strong> if <code>string</code> represents a javascript
-	 * function, translation of characters will not take place. This will
-	 * produce a non-conformant JSON text.
-	 * 
-	 * @param string
-	 *            A String
-	 * @return A String correctly formatted for insertion in a JSON text.
-	 */
-	public static String quote(String string) {
-		if (string == null || string.length() == 0) {
-			return "\"\"";
-		}
-
-		char b;
-		char c = 0;
-		int i;
-		int len = string.length();
-		StringBuffer sb = new StringBuffer(len * 2);
-		String t;
-		char[] chars = string.toCharArray();
-		char[] buffer = new char[1030];
-		int bufferIndex = 0;
-		sb.append('"');
-		for (i = 0; i < len; i += 1) {
-			if (bufferIndex > 1024) {
-				sb.append(buffer, 0, bufferIndex);
-				bufferIndex = 0;
-			}
-			b = c;
-			c = chars[i];
-			switch (c) {
-			case '\\':
-			case '"':
-				buffer[bufferIndex++] = '\\';
-				buffer[bufferIndex++] = c;
-				break;
-			case '/':
-				if (b == '<') {
-					buffer[bufferIndex++] = '\\';
-				}
-				buffer[bufferIndex++] = c;
-				break;
-			case '%':
-				buffer[bufferIndex++] = '\\';
-				buffer[bufferIndex++] = 'u';
-				buffer[bufferIndex++] = '0';
-				buffer[bufferIndex++] = '0';
-				buffer[bufferIndex++] = '2';
-				buffer[bufferIndex++] = '5';
-				break;
-			default:
-				if (c < ' ') {
-					switch (c) {
-					case '\b':
-						buffer[bufferIndex++] = '\\';
-						buffer[bufferIndex++] = 'b';
-						break;
-					case '\t':
-						buffer[bufferIndex++] = '\\';
-						buffer[bufferIndex++] = 't';
-						break;
-					case '\n':
-						buffer[bufferIndex++] = '\\';
-						buffer[bufferIndex++] = 'n';
-						break;
-					case '\f':
-						buffer[bufferIndex++] = '\\';
-						buffer[bufferIndex++] = 'f';
-						break;
-					case '\r':
-						buffer[bufferIndex++] = '\\';
-						buffer[bufferIndex++] = 'r';
-						break;
-					default:
-						t = "000" + Integer.toHexString(c);
-						int tLength = t.length();
-						buffer[bufferIndex++] = '\\';
-						buffer[bufferIndex++] = 'u';
-						buffer[bufferIndex++] = t.charAt(tLength - 4);
-						buffer[bufferIndex++] = t.charAt(tLength - 3);
-						buffer[bufferIndex++] = t.charAt(tLength - 2);
-						buffer[bufferIndex++] = t.charAt(tLength - 1);
-					}
-				} else {
-					buffer[bufferIndex++] = c;
-				}
-			}
-		}
-		sb.append(buffer, 0, bufferIndex);
-		sb.append('"');
-		return sb.toString();
-	}
-
-	/**
-	 * Make a JSON text of an Object value. If the object has an
-	 * value.toJSONString() method, then that method will be used to produce the
-	 * JSON text. The method is required to produce a strictly conforming text.
-	 * If the object does not contain a toJSONString method (which is the most
-	 * common case), then a text will be produced by the rules.
-	 * <p>
-	 * Warning: This method assumes that the data structure is acyclical.
-	 * 
-	 * @param value
-	 *            The value to be serialized.
-	 * @return a printable, displayable, transmittable representation of the
-	 *         object, beginning with <code>{</code>&nbsp;<small>(left
-	 *         brace)</small> and ending with <code>}</code>&nbsp;<small>(right
-	 *         brace)</small>.
-	 * @throws JSONException
-	 *             If the value is or contains an invalid number.
-	 */
-	public static String valueToString(Object value) {
-		if (value == null) {
-			return "null";
-		}
-
-		if (value instanceof Number || value instanceof Boolean) {
-			if (value instanceof Float && (Float.isNaN((Float) value))) {
-				return "undefined";
-			}
-			if (value instanceof Double && (Double.isNaN((Double) value))) {
-				return "undefined";
-			}
-			return value.toString();
-		}
-		return quote(value.toString());
-	}
-
 	private static DataType getDataType(String dataTypeName,
 			JsonConvertContext context) throws Exception {
 		DataTypeResolver dataTypeResolver = (context != null) ? dataTypeResolver = context
@@ -438,7 +303,9 @@ public final class JsonUtils {
 						String str = (String) value;
 						if (str.length() == DEFAULT_DATE_PATTERN_LEN
 								&& DEFAULT_DATE_PATTERN.matcher(str).matches()) {
-							value = DEFAULT_DATE_FORMAT.parse(str);
+							value = DateUtils
+									.parse(com.bstek.dorado.core.Constants.ISO_DATETIME_FORMAT1,
+											str);
 						}
 					}
 				}

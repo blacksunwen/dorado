@@ -17,6 +17,7 @@ import com.bstek.dorado.common.event.ClientEventSupported;
  * @since 2009-12-11
  */
 public class ClientEventListenersOutputter implements VirtualPropertyOutputter {
+	private static final String DEFAULT_SIGNATURE = "self,arg";
 
 	public void output(Object object, String property, OutputContext context)
 			throws Exception {
@@ -28,17 +29,18 @@ public class ClientEventListenersOutputter implements VirtualPropertyOutputter {
 					.getAllClientEventListeners().entrySet()) {
 				String eventName = entry.getKey();
 				List<ClientEvent> listeners = entry.getValue();
-				if (listeners.isEmpty()) continue;
+				if (listeners.isEmpty())
+					continue;
 
 				ClientEventRegisterInfo eventInfo = ClientEventRegistry
 						.getClientEventRegisterInfo(ces.getClass(), eventName);
-				if (!eventInfo.isOutput()) continue;
+				if (!eventInfo.isOutput())
+					continue;
 
 				json.escapeableKey(eventName);
 				if (listeners.size() == 1) {
 					outputListener(eventInfo, listeners.get(0), context);
-				}
-				else {
+				} else {
 					json.escapeableArray();
 					for (ClientEvent listener : listeners) {
 						outputListener(eventInfo, listener, context);
@@ -54,15 +56,23 @@ public class ClientEventListenersOutputter implements VirtualPropertyOutputter {
 	protected void outputListener(ClientEventRegisterInfo eventInfo,
 			ClientEvent listener, OutputContext context) throws IOException {
 		JsonBuilder json = context.getJsonBuilder();
-		json.beginValue();
 		Writer writer = context.getWriter();
-		writer.append("(function(");
-		String signature = StringUtils.join(eventInfo.getSignature(), ',');
-		if (signature != null) {
-			writer.append(signature);
+		String signature = StringUtils.defaultIfEmpty(listener.getSignature(),
+				DEFAULT_SIGNATURE);
+		if (DEFAULT_SIGNATURE.equals(signature)) {
+			json.beginValue();
+			writer.append("function(").append(signature).append("){\n")
+					.append(listener.getScript()).append("\n}");
+			json.endValue();
+		} else {
+			json.object().key("fn").beginValue();
+			writer.append("function(").append(signature).append("){\n")
+					.append(listener.getScript()).append("\n}");
+			json.endValue();
+			json.key("options").object().key("autowire").value(true)
+					.endObject();
+			json.endObject();
 		}
-		writer.append("){\n").append(listener.getScript()).append("\n})");
-		json.endValue();
 	}
 
 }

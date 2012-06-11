@@ -83,7 +83,7 @@
 			var funcCaller = dorado.Exception.caller, callers = [];
 			while (funcCaller && callers.indexOf(funcCaller) < 0) {
 				callers.push(funcCaller);
-				stack.push(dorado.getFunctionName(funcCaller));
+				stack.push(dorado.getFunctionDescription(funcCaller));
 				funcCaller = funcCaller.caller;
 			}
 			this.stack = stack;

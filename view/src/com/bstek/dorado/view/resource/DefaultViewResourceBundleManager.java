@@ -9,6 +9,7 @@ import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 
 import org.apache.commons.collections.keyvalue.MultiKey;
+import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.core.io.Resource;
 import com.bstek.dorado.core.resource.DefaultResourceBundle;
@@ -37,6 +38,10 @@ public class DefaultViewResourceBundleManager implements
 		if (viewResource != null) {
 			Resource resource;
 			String path = viewResource.getPath();
+			if (StringUtils.isEmpty(path)) {
+				return null;
+			}
+
 			path = path.substring(0, path.length() - VIEW_FILE_SUFFIX_LENTH);
 
 			int i = path.lastIndexOf('/');
@@ -90,7 +95,10 @@ public class DefaultViewResourceBundleManager implements
 			return null;
 		}
 		String path = resource.getPath();
-		path.substring(0, path.length() - VIEW_FILE_SUFFIX_LENTH);
+		if (StringUtils.isEmpty(path)) {
+			return null;
+		}
+		path = path.substring(0, path.length() - VIEW_FILE_SUFFIX_LENTH);
 
 		Object cacheKey = new MultiKey(path, locale);
 		synchronized (cache) {

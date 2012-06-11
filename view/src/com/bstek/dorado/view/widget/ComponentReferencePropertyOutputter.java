@@ -28,7 +28,7 @@ public class ComponentReferencePropertyOutputter implements PropertyOutputter {
 			jsonBuilder.array();
 			for (int i = 0; i < ids.length; i++) {
 				jsonBuilder.beginValue();
-				writer.append("v.getComponentReference(\"");
+				writer.append("view.getComponentReference(\"");
 				writer.append(ids[i]);
 				writer.append("\")");
 				jsonBuilder.endValue();
@@ -36,7 +36,7 @@ public class ComponentReferencePropertyOutputter implements PropertyOutputter {
 			jsonBuilder.endArray();
 		} else {
 			jsonBuilder.beginValue();
-			writer.append("v.getComponentReference(\"");
+			writer.append("view.getComponentReference(\"");
 			writer.append(id);
 			writer.append("\")");
 			jsonBuilder.endValue();

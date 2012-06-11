@@ -3,8 +3,6 @@ package com.bstek.dorado.view.output;
 import java.io.Writer;
 import java.sql.Time;
 import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
@@ -25,6 +23,7 @@ import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.data.type.EntityDataType;
 import com.bstek.dorado.data.type.property.LazyPropertyDef;
 import com.bstek.dorado.data.type.property.PropertyDef;
+import com.bstek.dorado.util.DateUtils;
 import com.bstek.dorado.util.clazz.BeanPropertyUtils;
 import com.bstek.dorado.view.el.CombinedExpression;
 import com.bstek.dorado.view.el.OutputableExpressionUtils;
@@ -37,10 +36,6 @@ import com.bstek.dorado.view.el.SingleExpression;
  * @since Oct 6, 2008
  */
 public class DataOutputter implements Outputter, PropertyOutputter {
-	private static final DateFormat DATE_FORMATTER = new SimpleDateFormat(
-			com.bstek.dorado.core.Constants.ISO_DATE_FORMAT);
-	private static final DateFormat TIME_FORMATTER = new SimpleDateFormat(
-			com.bstek.dorado.core.Constants.ISO_DATETIME_FORMAT1);
 	private static final Long ONE_HOUR = 1000L * 60 * 60;
 
 	private boolean evaluateExpression = true;
@@ -104,7 +99,7 @@ public class DataOutputter implements Outputter, PropertyOutputter {
 			throws Exception {
 		JsonBuilder json = context.getJsonBuilder();
 		json.beginValue();
-		
+
 		Writer writer = context.getWriter();
 		writer.write("(function(){\n");
 		writer.write("var a=");
@@ -166,9 +161,12 @@ public class DataOutputter implements Outputter, PropertyOutputter {
 				Date d = (Date) object;
 				if (d instanceof Time || d instanceof Timestamp
 						|| d.getTime() % ONE_HOUR != 0) {
-					json.value(TIME_FORMATTER.format(d));
+					json.value(DateUtils
+							.format(com.bstek.dorado.core.Constants.ISO_DATETIME_FORMAT1,
+									d));
 				} else {
-					json.value(DATE_FORMATTER.format(d));
+					json.value(DateUtils.format(
+							com.bstek.dorado.core.Constants.ISO_DATE_FORMAT, d));
 				}
 			} else {
 				json.value(object);

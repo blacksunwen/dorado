@@ -35,6 +35,7 @@ public abstract class AbstractBeanEntityEnhancer extends EntityEnhancer {
 
 	protected void buildReflectionCahce() throws Exception {
 		if (!cachedTypes.contains(beanType)) {
+			cachedTypes.add(beanType);
 			synchronized (cachedTypes) {
 				Map<String, Boolean> properties = new Hashtable<String, Boolean>();
 				Map<Method, String> readMethods = new Hashtable<Method, String>();
@@ -129,8 +130,7 @@ public abstract class AbstractBeanEntityEnhancer extends EntityEnhancer {
 				value = new java.sql.Date(time);
 			} else if (java.sql.Time.class.isAssignableFrom(propertyType)) {
 				value = new java.sql.Time(time);
-			} else if (java.sql.Timestamp.class
-					.isAssignableFrom(propertyType)) {
+			} else if (java.sql.Timestamp.class.isAssignableFrom(propertyType)) {
 				value = new java.sql.Timestamp(time);
 			}
 		}

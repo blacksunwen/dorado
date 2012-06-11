@@ -25,7 +25,6 @@ import com.bstek.dorado.data.type.validator.MessageState;
 		nodeName = "DataType",
 		parser = "spring:dorado.dataTypeParser",
 		definitionType = "com.bstek.dorado.data.config.definition.DataTypeDefinition",
-		scopable = true,
 		inheritable = true,
 		properties = @XmlProperty(propertyName = "overwrite",
 				propertyType = "boolean", attributeOnly = true, ignored = true),

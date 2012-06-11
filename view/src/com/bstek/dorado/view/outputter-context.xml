@@ -52,6 +52,8 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 			</bean>
 		</property>
 		<property name="includeDataTypesOutputter" ref="dorado.includeDataTypesOutputter" />
+		<property name="javaScriptResourceManager" ref="dorado.viewJavaScriptResourceManager" />
+		<property name="styleSheetResourceManager" ref="dorado.viewStyleSheetResourceManager" />
 	</bean>
 	<bean id="dorado.topViewOutputter" class="com.bstek.dorado.view.TopViewOutputter">
 		<property name="clientOutputHelper" ref="dorado.clientOutputHelper" />
@@ -67,6 +69,8 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 
 	<bean id="dorado.pageHeaderOutputter" class="com.bstek.dorado.view.resolver.PageHeaderOutputter">
 		<property name="topViewOutputter" ref="dorado.topViewOutputter" />
+		<property name="javaScriptResourceManager" ref="dorado.viewJavaScriptResourceManager" />
+		<property name="styleSheetResourceManager" ref="dorado.viewStyleSheetResourceManager" />
 	</bean>
 	<bean id="dorado.pageFooterOutputter" class="com.bstek.dorado.view.resolver.PageFooterOutputter" />
 </beans>

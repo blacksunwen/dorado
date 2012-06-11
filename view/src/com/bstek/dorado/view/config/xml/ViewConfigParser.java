@@ -12,6 +12,9 @@ import com.bstek.dorado.config.ParseContext;
 import com.bstek.dorado.config.definition.ObjectDefinition;
 import com.bstek.dorado.core.io.Resource;
 import com.bstek.dorado.data.config.xml.GenericObjectParser;
+import com.bstek.dorado.view.config.InnerDataProviderDefinitionManager;
+import com.bstek.dorado.view.config.InnerDataResolverDefinitionManager;
+import com.bstek.dorado.view.config.InnerDataTypeDefinitionManager;
 import com.bstek.dorado.view.config.definition.ViewConfigDefinition;
 import com.bstek.dorado.view.config.definition.ViewDefinition;
 
@@ -28,9 +31,12 @@ public class ViewConfigParser extends GenericObjectParser {
 			ParseContext context) throws Exception {
 		ViewParseContext viewContext = (ViewParseContext) context;
 		ViewConfigDefinition viewConfigDefinition = new ViewConfigDefinition(
-				viewContext.getDataTypeDefinitionManager(),
-				viewContext.getDataProviderDefinitionManager(),
-				viewContext.getDataResolverDefinitionManager());
+				(InnerDataTypeDefinitionManager) viewContext
+						.getDataTypeDefinitionManager(),
+				(InnerDataProviderDefinitionManager) viewContext
+						.getDataProviderDefinitionManager(),
+				(InnerDataResolverDefinitionManager) viewContext
+						.getDataResolverDefinitionManager());
 		viewContext.setViewConfigDefinition(viewConfigDefinition);
 		return viewConfigDefinition;
 	}

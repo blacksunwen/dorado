@@ -6,6 +6,8 @@ package com.bstek.dorado.common.event;
  * @since Apr 11, 2008
  */
 public interface ClientEvent {
+	String getSignature();
+	
 	/**
 	 * 返回监听器的JavaScript脚本。
 	 */

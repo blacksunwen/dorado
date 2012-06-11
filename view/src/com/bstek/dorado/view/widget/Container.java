@@ -199,7 +199,7 @@ public class Container extends Control {
 	 * 
 	 * @param l
 	 */
-	public synchronized void addContainerListener(ContainerListener l) {
+	public void addContainerListener(ContainerListener l) {
 		if (containerListeners == null) {
 			containerListeners = new ArrayList<ContainerListener>();
 		}
@@ -211,7 +211,7 @@ public class Container extends Control {
 	 * 
 	 * @param l
 	 */
-	public synchronized void removeContainerListener(ContainerListener l) {
+	public void removeContainerListener(ContainerListener l) {
 		if (containerListeners != null) {
 			containerListeners.remove(l);
 		}

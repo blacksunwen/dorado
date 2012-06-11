@@ -16,6 +16,8 @@ import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.common.MetaDataSupport;
 import com.bstek.dorado.common.Namable;
 import com.bstek.dorado.core.Context;
+import com.bstek.dorado.core.bean.Scopable;
+import com.bstek.dorado.core.bean.Scope;
 import com.bstek.dorado.data.provider.DataProvider;
 import com.bstek.dorado.data.resolver.DataResolver;
 import com.bstek.dorado.data.type.DataType;
@@ -43,11 +45,12 @@ import com.bstek.dorado.view.ViewState;
 				@XmlSubNode(nodeName = "Context",
 						parser = "spring:dorado.viewContextParser",
 						resultProcessed = true) })
-public class ViewConfig implements Namable, MetaDataSupport {
+public class ViewConfig implements Namable, Scopable, MetaDataSupport {
 	protected static final String VIEW_STATE_ATTRIBUTE_KEY = ViewState.class
 			.getName();
 
 	private String name;
+	private Scope scope = Scope.request;
 	private Map<String, Object> metaData;
 	private Map<String, Object> arguments = new HashMap<String, Object>();
 	private InnerDataTypeManager innerDataTypeManager;
@@ -67,6 +70,15 @@ public class ViewConfig implements Namable, MetaDataSupport {
 		if (view != null) {
 			view.setName(name);
 		}
+	}
+
+	@ClientProperty(escapeValue = "request", ignored = true)
+	public Scope getScope() {
+		return scope;
+	}
+
+	public void setScope(Scope scope) {
+		this.scope = scope;
 	}
 
 	@XmlProperty(unsupported = true)
@@ -133,6 +145,7 @@ public class ViewConfig implements Namable, MetaDataSupport {
 		if (innerDataTypeManager == null) {
 			throw new NullPointerException("[innerDataTypeManager] undefined.");
 		}
+
 		if (innerDataTypeManager.getDataType(name) != null) {
 			throw new IllegalArgumentException("DataType [" + name
 					+ "] already exists.");

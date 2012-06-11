@@ -141,8 +141,9 @@ public abstract class EntityEnhancer {
 	}
 
 	public static synchronized int newEntityId() {
-		if (maxEntityId >= (Integer.MAX_VALUE - 1))
+		if (maxEntityId >= (Integer.MAX_VALUE - 1)) {
 			maxEntityId = 0;
+		}
 		return ++maxEntityId;
 	}
 
@@ -151,8 +152,9 @@ public abstract class EntityEnhancer {
 	}
 
 	public static synchronized long newTimeStamp() {
-		if (maxTimeStamp >= (Long.MAX_VALUE - 1))
+		if (maxTimeStamp >= (Long.MAX_VALUE - 1)) {
 			maxTimeStamp = 0;
+		}
 		return ++maxTimeStamp;
 	}
 
@@ -570,7 +572,7 @@ class GetterInterceptionInjectorCounter {
 class GetterInterceptionInjector extends
 		ThreadLocal<GetterInterceptionInjectorCounter> {
 
-	public GetterInterceptionInjectorCounter get(boolean autoCreate) {
+	private GetterInterceptionInjectorCounter getCounter() {
 		GetterInterceptionInjectorCounter counter = get();
 		if (counter == null) {
 			counter = new GetterInterceptionInjectorCounter();
@@ -580,11 +582,11 @@ class GetterInterceptionInjector extends
 	}
 
 	public void disableGetterInterception() {
-		get(true).disabled = true;
+		getCounter().disabled = true;
 	}
 
 	public void enableGetterInterception() {
-		get(true).disabled = false;
+		getCounter().disabled = false;
 	}
 
 	public boolean isGetterInterceptionDisabled() {
@@ -593,14 +595,14 @@ class GetterInterceptionInjector extends
 	}
 
 	public boolean hasPropertyResultSkiped() {
-		return get(true).hasPropertyResultSkiped;
+		return getCounter().hasPropertyResultSkiped;
 	}
 
 	public void setHasPropertyResultSkiped() {
-		get(true).hasPropertyResultSkiped = true;
+		getCounter().hasPropertyResultSkiped = true;
 	}
 
 	public void resetHasPropertyResultSkiped() {
-		get(true).hasPropertyResultSkiped = false;
+		getCounter().hasPropertyResultSkiped = false;
 	}
 }

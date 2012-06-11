@@ -128,10 +128,15 @@ public abstract class DataTypeManagerSupport implements DataTypeManager {
 	}
 
 	public DataType createDataType(String name) throws Exception {
-		return createDataType(name, "Entity");
+		return doCreateDataType(name, "Entity");
 	}
 
 	public DataType createDataType(String name, String parents)
+			throws Exception {
+		return doCreateDataType(name, parents);
+	}
+
+	protected DataType doCreateDataType(String name, String parents)
 			throws Exception {
 		if (getDataType(name) != null) {
 			throw new IllegalArgumentException("DataType [" + name

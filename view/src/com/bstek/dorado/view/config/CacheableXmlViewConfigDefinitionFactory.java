@@ -17,12 +17,12 @@ import com.bstek.dorado.view.config.definition.ViewConfigDefinition;
 public class CacheableXmlViewConfigDefinitionFactory extends
 		XmlViewConfigDefinitionFactory {
 
-	private static class ViewConfigCacheElement extends Element {
+	private static class DefinitionCacheElement extends Element {
 		private static final long serialVersionUID = 2242361888668510593L;
 
 		private RefreshableResource refreshableResource;
 
-		public ViewConfigCacheElement(String viewName,
+		public DefinitionCacheElement(String viewName,
 				ViewConfigDefinition defintion) throws IOException {
 			super(viewName, defintion);
 
@@ -65,7 +65,7 @@ public class CacheableXmlViewConfigDefinitionFactory extends
 			definition = (ViewConfigDefinition) element.getObjectValue();
 		} else {
 			definition = super.create(viewName);
-			element = new ViewConfigCacheElement(viewName, definition);
+			element = new DefinitionCacheElement(viewName, definition);
 			cache.put(element);
 		}
 		return definition;

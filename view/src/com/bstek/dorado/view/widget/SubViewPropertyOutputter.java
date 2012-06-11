@@ -53,7 +53,7 @@ public class SubViewPropertyOutputter extends ObjectOutputterDispatcher {
 
 			if (view != null && StringUtils.isNotEmpty(view.getPageTemplate())) {
 				String calloutId = "subview_" + context.getCalloutId();
-				context.getCalloutHtmlMap().put(view, calloutId);
+				context.addCalloutHtml(view, calloutId);
 
 				StringBuffer script = new StringBuffer();
 				script.append("self.assignDom(document.getElementById(\"")

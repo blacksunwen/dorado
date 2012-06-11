@@ -1,12 +1,12 @@
 package com.bstek.dorado.data.type;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.apache.commons.lang.math.NumberUtils;
 
 import com.bstek.dorado.util.Assert;
+import com.bstek.dorado.util.DateUtils;
 
 /**
  * 用于描述java.util.Date的数据类型。
@@ -15,25 +15,17 @@ import com.bstek.dorado.util.Assert;
  * @since Feb 13, 2007
  */
 public class DateDataType extends SimpleDataType {
+	private static String DATE_FORMAT_4 = "HH:mm:ss";
+	private static String DATE_FORMAT_5 = "yyyy-MM-dd HH:mm:ss";
 
-	private static SimpleDateFormat DATE_FORMAT_DEFAULT = new SimpleDateFormat();
-
-	private static SimpleDateFormat DATE_FORMAT_1 = new SimpleDateFormat(
-			com.bstek.dorado.core.Constants.ISO_DATE_FORMAT);
-	private static SimpleDateFormat DATE_FORMAT_2 = new SimpleDateFormat(
-			com.bstek.dorado.core.Constants.ISO_DATETIME_FORMAT1);
-	private static SimpleDateFormat DATE_FORMAT_3 = new SimpleDateFormat(
-			com.bstek.dorado.core.Constants.ISO_DATETIME_FORMAT2);
-	private static SimpleDateFormat DATE_FORMAT_4 = new SimpleDateFormat(
-			"HH:mm:ss");
-	private static SimpleDateFormat DATE_FORMAT_5 = new SimpleDateFormat(
-			"yyyy-MM-dd HH:mm:ss");
-
-	private static int DATE_FORMAT_1_LEN = DATE_FORMAT_1.toPattern().length();
-	private static int DATE_FORMAT_2_LEN = DATE_FORMAT_2.toPattern().length() - 4;
-	private static int DATE_FORMAT_3_LEN = DATE_FORMAT_3.toPattern().length() - 4;
-	private static int DATE_FORMAT_4_LEN = DATE_FORMAT_4.toPattern().length();
-	private static int DATE_FORMAT_5_LEN = DATE_FORMAT_5.toPattern().length();
+	private static int DATE_FORMAT_1_LEN = com.bstek.dorado.core.Constants.ISO_DATE_FORMAT
+			.length();
+	private static int DATE_FORMAT_2_LEN = com.bstek.dorado.core.Constants.ISO_DATETIME_FORMAT1
+			.length() - 4;
+	private static int DATE_FORMAT_3_LEN = com.bstek.dorado.core.Constants.ISO_DATETIME_FORMAT2
+			.length() - 4;
+	private static int DATE_FORMAT_4_LEN = DATE_FORMAT_4.length();
+	private static int DATE_FORMAT_5_LEN = DATE_FORMAT_5.length();
 
 	public String toText(Object value) {
 		if (value == null) {
@@ -73,22 +65,28 @@ public class DateDataType extends SimpleDataType {
 				int len = text.length();
 				try {
 					if (len == DATE_FORMAT_1_LEN) {
-						date = DATE_FORMAT_1.parse(text);
+						date = DateUtils
+								.parse(com.bstek.dorado.core.Constants.ISO_DATE_FORMAT,
+										text);
 					} else if (len == DATE_FORMAT_2_LEN) {
-						date = DATE_FORMAT_2.parse(text);
+						date = DateUtils
+								.parse(com.bstek.dorado.core.Constants.ISO_DATETIME_FORMAT1,
+										text);
 					} else if (len == DATE_FORMAT_3_LEN) {
-						date = DATE_FORMAT_3.parse(text);
+						date = DateUtils
+								.parse(com.bstek.dorado.core.Constants.ISO_DATETIME_FORMAT2,
+										text);
 					} else if (len == DATE_FORMAT_4_LEN) {
-						date = DATE_FORMAT_4.parse(text);
+						date = DateUtils.parse(DATE_FORMAT_4, text);
 					} else if (len == DATE_FORMAT_5_LEN) {
-						date = DATE_FORMAT_5.parse(text);
+						date = DateUtils.parse(DATE_FORMAT_5, text);
 					}
 				} catch (ParseException ex) {
 					// do nothing
 				}
 
 				if (date == null) {
-					date = DATE_FORMAT_DEFAULT.parse(text);
+					date = DateUtils.parse(text);
 				}
 				return date;
 			} catch (ParseException ex) {

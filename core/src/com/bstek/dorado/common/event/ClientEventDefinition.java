@@ -14,6 +14,7 @@ import com.bstek.dorado.core.el.Expression;
  */
 public class ClientEventDefinition extends Definition {
 	private String name;
+	private String signature;
 	private Object script;
 
 	/**
@@ -28,6 +29,14 @@ public class ClientEventDefinition extends Definition {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getSignature() {
+		return signature;
+	}
+
+	public void setSignature(String signature) {
+		this.signature = signature;
 	}
 
 	/**
@@ -52,6 +61,7 @@ public class ClientEventDefinition extends Definition {
 				&& ((Expression) script).getEvaluateMode() == EvaluateMode.onInstantiate) {
 			script = ((Expression) script).evaluate();
 		}
+		event.setSignature(signature);
 		event.setScript((String) script);
 		return event;
 	}
