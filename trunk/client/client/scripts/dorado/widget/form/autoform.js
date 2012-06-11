@@ -52,6 +52,7 @@ dorado.widget.autoform.AutoFormElement = $extend(dorado.widget.FormElement, /** 
  */
 dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfile], /** @scope dorado.widget.AutoForm.prototype */ {
 	$className: "dorado.widget.AutoForm",
+	_inherentClassName: "i-auto-form",
 	
 	ATTRIBUTES: /** @scope dorado.widget.AutoForm.prototype */ {
 	
