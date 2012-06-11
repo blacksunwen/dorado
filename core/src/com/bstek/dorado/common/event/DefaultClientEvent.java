@@ -6,7 +6,7 @@ package com.bstek.dorado.common.event;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Apr 11, 2008
  */
-public class DefaultClientEvent implements ClientEvent {
+public class DefaultClientEvent implements DynaSignatureClientEvent {
 	private String signature;
 	private String script;
 
