@@ -6,6 +6,6 @@
 	height: 18px;
 }
 
-.d-ie6 .i-auto-form {
+.d-ie6 .i-auto-form, .d-ie7 .i-auto-form {
 	width: 100%;
 }
