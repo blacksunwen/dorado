@@ -317,7 +317,7 @@
 		},
 
 		doLoad: function(callback) {
-			var data = this._data, shouldFireOnDataLoad;
+			var data = this._data, shouldFireOnDataLoad = false;
 			
 			var dataCache, hashCode;
 			if (this._cacheable) {
@@ -360,6 +360,7 @@
 								this._loadingData = false;
 							}
 							
+							delete this._dataPipe;
 							if (success && shouldFireOnDataLoad) {
 								this.setData(result);
 								if (this._cacheable) {
@@ -368,7 +369,7 @@
 								this.fireEvent("onDataLoad", this, arg);
 							}
 							
-							delete this._dataPipe;
+							
 							$callback(callback, success);
 						}
 					});
@@ -383,6 +384,7 @@
 						throw new dorado.ResourceException("dorado.widget.GetDataDuringLoading", this._id);
 					}
 					this.setData(pipe.get());
+					delete this._dataPipe;
 					if (this._cacheable) {
 						dataCache[hashCode] = this.getData();
 					}
