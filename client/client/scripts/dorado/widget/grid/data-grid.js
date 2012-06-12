@@ -318,6 +318,9 @@
 				
 				var oldItems = this._itemModel.getItems();
 				if (oldItems != entityList) {
+					if (this._itemModel._filterParams && this._filterMode == "clientSide") {
+						this.get("filterEntity").clearData();
+					}
 					this._itemModel.setItems(entityList);
 					this.set("selection", null);
 				}
@@ -771,7 +774,6 @@
 	dorado.widget.grid.InnerDataGrid = $extend(dorado.widget.grid.AbstractInnerGrid, {
 		$className: "dorado.widget.grid.InnerDataGrid",
 		
-		getItemId: DataListBoxProtoType.getItemId,
 		getCurrentItem: DataListBoxProtoType.getCurrentItem,
 		getCurrentItemId: DataListBoxProtoType.getCurrentItemId,
 		getCurrentItemIdForRefresh: DataListBoxProtoType.getCurrentItemIdForRefresh,
@@ -807,7 +809,7 @@
 		
 		setCurrentEntity: function(entity) {
 			DataListBoxProtoType.setCurrentEntity.apply(this, arguments);
-			this.grid.doInnerGridSetCurrentRow(this, entity ? entity.entityId : null);
+			this.grid.doInnerGridSetCurrentRow(this, entity ? this._itemModel.getItemId(entity) : null);
 			return true;
 		},
 		

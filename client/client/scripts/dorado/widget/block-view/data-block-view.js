@@ -22,13 +22,13 @@ dorado.widget.DataBlockView = $extend([dorado.widget.AbstractBlockView, dorado.w
 	},
 	
 	getCurrentItemId: function(item, index) {
-		var currentItem = this.getCurrentItem();
-		return currentItem ? currentItem.entityId : null;
+		var current = this.getCurrentItem();
+		return current ? this._itemModel.getItemId(current) : null;
 	},
 	
 	getCurrentItemIdForRefresh: function() {
 		var current = this._itemModel.getItems().current;
-		return current ? current.entityId : null;
+		return current ? this._itemModel.getItemId(current) : null;
 	},
 	
 	setCurrentItemDom: function(blockDom) {
@@ -44,7 +44,7 @@ dorado.widget.DataBlockView = $extend([dorado.widget.AbstractBlockView, dorado.w
 	 * @param {dorado.Entity} entity 数据实体
 	 */
 	refreshEntity: function(entity) {
-		var blockDom = this._itemDomMap[entity.entityId];
+		var blockDom = this._itemDomMap[this._itemModel.getItemId(entity)];
 		if (blockDom) this.refreshItemDomData(blockDom, entity);
 	},
 	
@@ -65,7 +65,7 @@ dorado.widget.DataBlockView = $extend([dorado.widget.AbstractBlockView, dorado.w
 	 * @param {dorado.Entity} entity 数据实体。
 	 */
 	setCurrentEntity: function(entity) {
-		var itemId = entity ? entity.entityId : null;
+		var itemId = entity ? this._itemModel.getItemId(entity) : null;
 		var blockDom = this._itemDomMap[itemId];
 		this.setCurrentBlock(blockDom);
 		if (blockDom) this.scrollCurrentIntoView();
@@ -90,7 +90,7 @@ dorado.widget.DataBlockView = $extend([dorado.widget.AbstractBlockView, dorado.w
 			}
 		}
 		
-		var blockDom = this._itemDomMap[entity.entityId];
+		var blockDom = this._itemDomMap[this._itemModel.getItemId(entity)];
 		if (blockDom) {
 			var from = blockDom.itemIndex;
 			this.removeItemDom(blockDom);
@@ -124,12 +124,12 @@ dorado.widget.DataBlockView = $extend([dorado.widget.AbstractBlockView, dorado.w
 				this._arrangeBlockDoms(1, 1);
 				break;
 			case "before":
-				var refBlockDom = this._itemDomMap[refEntity.entityId], index = refBlockDom.itemIndex;
+				var refBlockDom = this._itemDomMap[this._itemModel.getItemId(refEntity)], index = refBlockDom.itemIndex;
 				this._arrangeBlockDoms(index, 1);
 				this.refreshItemDom(container, entity, index);
 				break;
 			case "after":
-				var refBlockDom = this._itemDomMap[refEntity.entityId], index = refBlockDom.itemIndex;
+				var refBlockDom = this._itemDomMap[this._itemModel.getItemId(refEntity)], index = refBlockDom.itemIndex;
 				this._arrangeBlockDoms(index + 1, 1);
 				this.refreshItemDom(container, entity, index + 1);
 				break;
@@ -305,7 +305,7 @@ dorado.widget.DataBlockView = $extend([dorado.widget.AbstractBlockView, dorado.w
 	 */
 	highlightItem: function(entity, options, speed) {
 		entity = entity || this.getCurrentItem();
-		var block = this._itemDomMap[entity.entityId];
+		var block = this._itemDomMap[this._itemModel.getItemId(entity)];
 		if (block) {
 			$fly(block).effect("pulsate", {
 				times: 3

@@ -23,12 +23,12 @@ dorado.widget.DataListBox = $extend([dorado.widget.AbstractListBox, dorado.widge
 	
 	getCurrentItemId: function(item, index) {
 		var current = this.getCurrentItem();
-		return current ? current.entityId : null;
+		return current ? this._itemModel.getItemId(current) : null;
 	},
 	
 	getCurrentItemIdForRefresh: function() {
 		var current = this._itemModel.getItems().current;
-		return current ? current.entityId : null;
+		return current ? this._itemModel.getItemId(current) : null;
 	},
 	
 	setCurrentItemDom: function(row) {
@@ -47,7 +47,7 @@ dorado.widget.DataListBox = $extend([dorado.widget.AbstractListBox, dorado.widge
 	 * @param {dorado.Entity} entity 数据实体
 	 */
 	refreshEntity: function(entity) {
-		var row = this._itemDomMap[entity.entityId];
+		var row = this._itemDomMap[this._itemModel.getItemId(entity)];
 		if (row) this.refreshItemDomData(row, entity);
 	},
 	
@@ -76,7 +76,7 @@ dorado.widget.DataListBox = $extend([dorado.widget.AbstractListBox, dorado.widge
 		var currentItem = this._currentRow ? $fly(this._currentRow).data("item") : null;
 		if (currentItem == entity) return;
 		
-		var itemId = entity ? entity.entityId : null;
+		var itemId = entity ? this._itemModel.getItemId(entity) : null;
 		var row = this._itemDomMap[itemId];
 		this.setCurrentRow(row);
 		if (row) this.scrollCurrentIntoView();
@@ -139,7 +139,7 @@ dorado.widget.DataListBox = $extend([dorado.widget.AbstractListBox, dorado.widge
 		var entity = arg.entity;
 		this.replaceSelection(entity, null);
 		
-		var row = this._itemDomMap[entity.entityId], tbody = this._dataTBody;
+		var row = this._itemDomMap[this._itemModel.getItemId(entity)], tbody = this._dataTBody;
 		if (this._scrollMode != "viewport") {
 			if (row) {
 				var nextRow = row.nextSibling;
@@ -197,12 +197,12 @@ dorado.widget.DataListBox = $extend([dorado.widget.AbstractListBox, dorado.widge
 					break;
 				}
 				case "before":{
-					var refRow = this._itemDomMap[refEntity.entityId];
+					var refRow = this._itemDomMap[this._itemModel.getItemId(refEntity)];
 					tbody.insertBefore(row, refRow);
 					break;
 				}
 				case "after":{
-					var refRow = this._itemDomMap[refEntity.entityId];
+					var refRow = this._itemDomMap[this._itemModel.getItemId(refEntity)];
 					if (refRow.nextSibling) {
 						tbody.insertBefore(row, refRow.nextSibling);
 						break;
@@ -352,7 +352,7 @@ dorado.widget.DataListBox = $extend([dorado.widget.AbstractListBox, dorado.widge
 	 */
 	highlightItem: function(entity, options, speed) {
 		entity = entity || this.getCurrentItem();
-		var row = this._itemDomMap[entity.entityId];
+		var row = this._itemDomMap[this._itemModel.getItemId(entity)];
 		if (row) {
 			$fly(row).addClass("highlighting-row").effect("highlight", options ||
 			{
