@@ -620,6 +620,16 @@
 			return dom;
 		},
 		
+		setFocus: function() {
+			var editor = this.getEditor();
+			if (editor) {
+				editor.setFocus();
+			}
+			else {
+				$invokeSuper.call(this);
+			}
+		},
+		
 		createEditor: function(editorType) {
 			var editor = dorado.Toolkits.createInstance("widget", editorType, function() {
 				return dorado.Toolkits.getPrototype("widget", editorType) || dorado.widget.TextEditor;
