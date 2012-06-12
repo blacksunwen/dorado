@@ -198,8 +198,13 @@
 			if (width) {
 				$fly(dom).outerWidth(width);
 				var leftEl = $fly(doms.tabLeft);
-				leftEl.width(jQuery(dom).width() - (parseInt(leftEl.css("margin-left"), 10) || 0) - (parseInt(leftEl.css("margin-right"), 10) || 0)
-					- (parseInt(leftEl.css("padding-left"), 10) || 0) - (parseInt(leftEl.css("padding-right"), 10) || 0));
+                var leftWidth = jQuery(dom).width() - (parseInt(leftEl.css("margin-left"), 10) || 0) - (parseInt(leftEl.css("margin-right"), 10) || 0)
+                    - (parseInt(leftEl.css("padding-left"), 10) || 0) - (parseInt(leftEl.css("padding-right"), 10) || 0);
+				leftEl.width(leftWidth);
+
+                var captionEl = $fly(doms.caption);
+                captionEl.width(leftWidth - jQuery(doms.icon).outerWidth()
+                    - (parseInt(captionEl.css("padding-left"), 10) || 0) - (parseInt(captionEl.css("padding-right"), 10) || 0));
 			}
 
 			var icon = tab._icon, iconCls = tab._iconClass;
