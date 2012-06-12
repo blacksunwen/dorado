@@ -750,13 +750,16 @@
 
 			/**
 			 * 当前列。
-			 * @type dorado.widget.grid.Column
+			 * @type dorado.widget.grid.Column|String|int
 			 * @attribute skipRefresh
 			 */
 			currentColumn: {
 				skipRefresh: true,
-				setter: function(v) {
-					this.setCurrentColumn(v);
+				setter: function(column) {
+					if (!(column instanceof dorado.widget.grid.Column)) {
+						column = this.getColumn(column);
+					}
+					this.setCurrentColumn(column);
 				}
 			},
 
