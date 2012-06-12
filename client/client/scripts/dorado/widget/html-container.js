@@ -71,6 +71,7 @@ dorado.widget.HtmlContainer = $extend(dorado.widget.Container, /** @scope dorado
 		if (content) {
 			if (content.constructor == String) {
 				var div = document.createElement("SPAN");
+				if (this._height) div.style.display = "inline-block";
 				div.innerHTML = this._content;
 				dom = div; //(div.childNodes.length > 1) ? div : div.firstChild;
 			} else {
