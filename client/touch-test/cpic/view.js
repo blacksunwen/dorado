@@ -1,10 +1,12 @@
 (function() {
 	var controller = window.controller;
 	var view = new dorado.widget.View({
-		layout: "Dock",
+		layout: { $type: "VBox", align: "center", padding: 0 },
 		height: 650
 	});
-
+	
+	dorado.MessageBox.defaultTitle = "信息提示";
+	
 	// 登录页面
 	var branchCodeEditor = new dorado.touch.TextEditor();
 	var userCodeEditor = new dorado.touch.TextEditor();
@@ -257,7 +259,7 @@
     }), driverAreaEditor = new dorado.touch.RadioButtonGroup({
         buttons: [
             new dorado.touch.RadioButton({ caption: "境内", value: 1 }),
-            new dorado.touch.RadioButton({ caption: "省内", value: 0.9 })
+            new dorado.touch.RadioButton({ caption: "省内", value: 0.95 })
         ]
     }), apointFactoryRateEditor = new dorado.touch.TextEditor(),
         vehicleTypeList = new dorado.touch.ListPicker({ data: [] }),
@@ -878,6 +880,7 @@
 					}),
 					new dorado.touch.GroupBox({
 						caption: "新车购置价列表",
+                        layout: "Dock",
 						children: [
 							modelGrid
 						]
@@ -1054,7 +1057,7 @@
 				},
 				children:[basicAutoForm]
 			}),
-            new dorado.widget.Container({
+			new dorado.widget.Container({
                 layout: new dorado.widget.layout.NativeLayout(),
                 style: {
                     padding: 10
@@ -1771,8 +1774,10 @@
 			})
 		]
 	});
+
 	var cardbook = new dorado.widget.CardBook({
-		controls:[loginPanel, indexPanel, indexPanelOther, personalPanel, selectPanel, resultPanel, premiumDetailPanel]
+		controls:[loginPanel, indexPanel, indexPanelOther, selectModelPanel, personalPanel, selectPanel, resultPanel, premiumDetailPanel],
+        height: 650
 	});
 
 	jQuery.extend(controller, {
@@ -1842,8 +1847,14 @@
 	});
 
 	view.addChild(cardbook);
+    if ((/android/gi).test(navigator.appVersion) && PhoneGap) {
+        document.addEventListener("deviceready", function(){
+            view.render(document.body);
+        },true);
+    } else {
+        $(document).ready(function () {
+            view.render(document.body);
+        });
+    }
 
-	$(document).ready(function () {
-		view.render(document.body);
-	});
 })();

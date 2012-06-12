@@ -635,7 +635,7 @@ var traffic = "TRAFFICCOMPULSORYPRODUCT",//交强险
                     }
                     if(coverage=="GLASSBROKENCOVERAGE"){
                     	var type=controller.view.id(coverage+"KIND");
-                    	type.set("value","1");
+                    	type.set("value",data.GLASSBROKENCOVERAGEKIND);
                     }
                 } else {
                     //console.log("skip coverage:" + coverage);
@@ -811,11 +811,18 @@ var traffic = "TRAFFICCOMPULSORYPRODUCT",//交强险
 				licenseType = controller.licenseTypeEditor.get("value"), vehicleType = controller.vehicleTypeEditor.get("value"),
                 vehiclePurpose = controller.vehiclePurposeEditor.get("value");
 
-			if (!plateno || !owner || !rackNo || !engineNo || !registerDate || !vehicleName || !licenseType || !engineCapacity || !emptyWeight || !vehiclePurpose || !vehicleType) {
-				dorado.MessageBox.alert("所有的信息都为必须录入，请确认！");
+			if (!plateno || !owner || !rackNo || !engineNo || !registerDate || !vehicleName || !licenseType || !engineCapacity  || !vehiclePurpose || !vehicleType) {
+				dorado.MessageBox.alert("请录入必要信息！");
 				return;
 			}
 
+			if(vehicleUsage=="601"){
+				if(!emptyWeight){
+					dorado.MessageBox.alert("请录入整备质量！");
+					return;
+				}
+			}
+			
             var apointFactoryRate = controller.apointFactoryRateEditor.get("value");
             if (apointFactoryRate) {
                 var value = parseFloat(apointFactoryRate);
@@ -980,69 +987,15 @@ var traffic = "TRAFFICCOMPULSORYPRODUCT",//交强险
                             controller.vehiclePurposeEditor.set("mapping", config.mapping);
                         }
                     }
+                    // 设定浮动系数默认值
+                    controller.avgMileEditor.set("value","1");
+                    controller.appointDriverEditor.set("value","1");
+                    controller.driverAreaEditor.set("value","1");
                 }
             }, "json").error(function() {
                 dorado.touch.hideLoadingPanel();
             });
         },
-
-		//加载使用性质
-		loadVehicleUsage: function() {
-			if (controller.vehicleUsageLoaded) return;
-			controller.vehicleUsageLoaded = true;
-			dorado.touch.showLoadingPanel("加载数据中...");
-			jQuery.get("/CPIC09Auto/mobilecontroller/queryVehicleUsage.do", {}, function(data) {
-				dorado.touch.hideLoadingPanel();
-				if (hasError(data)) return;
-				var names = [];
-				if (data) {
-					var mapping = [], defaultValue;
-					for (var i = 0, j = data.length; i < j; i++) {
-						var record = data[i];
-						if (i == 0) {
-							defaultValue = record.code;
-						}
-						names.push(record["name"]);
-						mapping.push({ value: record.code, text: record.name});
-					}
-					controller.vehicleUsageList.set("data", names);
-					controller.vehicleUsageEditor.set("mapping", mapping);
-					controller.vehicleUsageEditorOther.set("mapping", mapping);
-
-					controller.vehicleUsageEditor.set("value", defaultValue);
-					controller.vehicleUsageEditorOther.set("value", defaultValue);
-				}
-			}, "json").error(function() {
-				dorado.touch.hideLoadingPanel();
-			});
-		},
-		//加载号牌类型
-		loadLicenseType: function() {
-			if (controller.licenseTypeLoaded) return;
-			controller.licenseTypeLoaded = true;
-			dorado.touch.showLoadingPanel("加载数据中...");
-			jQuery.get("/CPIC09Auto/mobilecontroller/queryLicenseType.do", {}, function(data) {
-				dorado.touch.hideLoadingPanel();
-				if (hasError(data)) return;
-				var names = [];
-				if (data) {
-					var mapping = [], defaultValue;
-					for (var i = 0, j = data.length; i < j; i++) {
-						var record = data[i];
-						if (i == 0) {
-							defaultValue = record.code;
-						}
-						names.push(record["name"]);
-						mapping.push({ value: record.code, text: record.name});
-					}
-					controller.licenseTypeList.set("data", names);
-					controller.licenseTypeEditor.set("mapping", mapping);
-					//controller.licenseTypeEditor.set("value", defaultValue);
-				}
-			}, "json").error(function() {
-				dorado.touch.hideLoadingPanel();
-			});
-		},
 
 		//确定选择这辆车
 		confirmCar: function() {
@@ -1116,21 +1069,6 @@ var traffic = "TRAFFICCOMPULSORYPRODUCT",//交强险
 				if (typeof callback == "function") {
 					callback.apply(null, []);
 				}
-				controller.platenoEditorOther.set("value", "");
-                controller.ownerEditorOther.set("value", "");
-                controller.vehicleUsageEditorOther.set("value", "101");
-                controller.rackNoEditor.set("value", "");
-                controller.engineNoEditor.set("value", "");
-                controller.registerDateEditor.set("value", "");
-                controller.vehicleNameEditor.set("value", "");
-                controller.engineCapacityEditor.set("value", "");
-                controller.emptyWeightEditor.set("value", "");
-                controller.licenseTypeEditor.set("value", "");
-                controller.apointFactoryRateEditor.set("value", "");
-                controller.vehicleTypeEditor.set("value", "");
-                controller.vehiclePurposeEditor.set("value", "");
-
-                controller.renewGrid.set("items", []);
 			}, "json").error(function() {
 				dorado.touch.hideLoadingPanel();
 			});
@@ -1229,7 +1167,8 @@ var traffic = "TRAFFICCOMPULSORYPRODUCT",//交强险
             dorado.touch.showLoadingPanel("加载数据中...");
             jQuery.post("/CPIC09Auto/mobilecontroller/renewInfoCopy.do", {
                 actualId: current.actualId,
-                trafficFlag: controller.renewTrafficEditor.get("value")
+                trafficFlag: controller.renewTrafficEditor.get("value"),
+                terminationDate: current.terminationDate               
             }, function(data) {
                 dorado.touch.hideLoadingPanel();
                 if (hasError(data)) return;
@@ -1246,6 +1185,12 @@ var traffic = "TRAFFICCOMPULSORYPRODUCT",//交强险
                 controller.vehiclePurposeEditor.set("value", data.vehiclePurpose);
                 controller.vehicleTypeEditor.set("value", data.vehicleType);
 
+                controller.startDateAutoEditor1.set("value", Date.parseDate(data.renewInceptionDate, "Y-m-d"));
+                controller.endDateAutoEditor1.set("value", Date.parseDate(data.renewTerminationDate, "Y-m-d"));
+                controller.startDateEditor1.set("value", Date.parseDate(data.renewInceptionDate, "Y-m-d"));
+                controller.endDateEditor1.set("value", Date.parseDate(data.renewTerminationDate, "Y-m-d"));
+                
+                
                 controller.renewGrid.set("items", []);
 
                 controller.renewInfoDialog.hide();
