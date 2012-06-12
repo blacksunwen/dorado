@@ -47,6 +47,8 @@
                 for (j = 0, len = touchEventProps.length; j < len; j++) {
                     prop = touchEventProps[j];
                     event[prop] = touch[prop];
+                    //fix draggable not work problem
+                    event.which = 1;
                 }
             }
         }

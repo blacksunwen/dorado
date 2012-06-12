@@ -51,7 +51,7 @@ dorado.touch.GroupBox = $extend(dorado.widget.Container, {
             if (collapsed == undefined) {
                 collapsed = groupbox._collapsed;
             }
-            if (collapsed) {
+            if (groupbox._collapseable && collapsed) {
                 $fly(dom).height("auto");
             } else {
                 var buttonPanelHeight = 0, captionCtHeight = 0;
@@ -61,10 +61,12 @@ dorado.touch.GroupBox = $extend(dorado.widget.Container, {
                 if (doms.captionContainer) {
                     captionCtHeight = $fly(doms.captionContainer).outerHeight(true);
                 }
-                var hheight = $fly(dom).height();
                 $fly(doms.contentPanel).outerHeight(height - captionCtHeight - buttonPanelHeight);
+                $fly(dom).height("auto");
             }
         }
+
+        $invokeSuper.call(this, arguments);
     },
     getContentContainer: function() {
         return this._doms.contentPanel;
