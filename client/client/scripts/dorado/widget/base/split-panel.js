@@ -347,7 +347,7 @@
 				start: function(event, ui){
 					var helper = ui.helper;
 					if(helper){
-						helper.addClass("splitter-dragging").find("> .button").css("display", "none");
+						helper.addClass("splitter-dragging").bringToFront().find("> .button").css("display", "none");
 					}
 				},
 				stop: function(event, ui) {
