@@ -7,6 +7,7 @@
 		<property name="resolver">
 			<bean class="com.bstek.dorado.view.resolver.LibraryFileResolver">
 				<property name="clientI18NFileRegistry" ref="dorado.clientI18NFileRegistry" />
+				<property name="defaultLocale" ref="dorado.defaultLocale" />
 				<property name="localeResolver" ref="dorado.localeResolver" />
 				<property name="resourcePrefix" value="${view.libraryRoot}" />
 			</bean>

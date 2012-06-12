@@ -53,6 +53,10 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 		<property name="timeToIdle" value="${core.privateResource.cache.timeToLive}" />
 	</bean>
 
+	<bean id="dorado.defaultLocale" class="java.util.Locale">
+		<constructor-arg index="0" value="${core.defaultLanguage}" />
+		<constructor-arg index="1" value="${core.defaultCountry}" />
+	</bean>
 	<bean id="dorado.localeResolver" class="com.bstek.dorado.core.resource.EmptyLocaleResolver" />
 	<bean id="dorado.globalResourceBundleManager" class="com.bstek.dorado.core.resource.DefaultGlobalResourceBundleManager">
 		<property name="cache" ref="dorado.globalResourceCache" />
@@ -60,6 +64,7 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 	<bean id="dorado.globalResourceSearchPathRegister" abstract="true" class="com.bstek.dorado.core.resource.GlobalResourceSearchPathRegister" />
 	<bean id="dorado.abstractResourceManager" abstract="true">
 		<property name="globalResourceBundleManager" ref="dorado.globalResourceBundleManager" />
+		<property name="defaultLocale" ref="dorado.defaultLocale" />
 		<property name="localeResolver" ref="dorado.localeResolver" />
 	</bean>
 	<bean id="dorado.resourceManager" scope="prototype" parent="dorado.abstractResourceManager" class="com.bstek.dorado.core.resource.ResourceManager" />
