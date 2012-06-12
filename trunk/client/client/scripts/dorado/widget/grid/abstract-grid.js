@@ -1778,7 +1778,7 @@
 		doOnFocus: function() {
 			if (this._currentColumn) {
 				dorado.Toolkits.setDelayedAction(this, "$showEditorTimerId", function() {
-					this.showColumnEditor(this._currentColumn);
+					if (this._currentColumn) this.showColumnEditor(this._currentColumn);
 				}, 300);
 			}
 		},
