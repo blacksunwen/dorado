@@ -25,6 +25,7 @@ public class UriResolverMapping extends AbstractUrlHandlerMapping {
 					.hasNext();) {
 				String registeredPath = it.next();
 				if (getPathMatcher().match(registeredPath, urlPath)) {
+					request.setAttribute("originalUrlPath", urlPath);
 					handler = handlerMap.get(registeredPath);
 					break;
 				}

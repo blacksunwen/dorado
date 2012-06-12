@@ -28,8 +28,11 @@ public abstract class WebContextSupportedController extends AbstractController {
 	 */
 	protected String getRelativeRequestURI(HttpServletRequest request)
 			throws UnsupportedEncodingException {
-		String uri = request.getRequestURI().substring(
-				request.getContextPath().length());
+		String uri = (String) request.getAttribute("originalUrlPath");
+		if (uri == null) {
+			uri = request.getRequestURI().substring(
+					request.getContextPath().length());
+		}
 		uri = StringUtils
 				.replaceChars(
 						URLDecoder.decode(uri,
