@@ -81,6 +81,7 @@
         });
 
         var toolbar = new dorado.widget.ToolBar({
+            showMenuOnHover: true,
             fixRight: true,
             items: [{
                 caption: "Button1",
@@ -98,6 +99,7 @@
                 icon: "del.gif",
                 disabled: true,
                 menu: testMenu3
+                ,showMenuOnHover: true
             }, "-", {
                 caption: "菜单栏3"
             }, {
@@ -108,6 +110,7 @@
                 caption: "菜单栏6"
             }, {
                 caption: "菜单栏0",
+                showMenuOnHover: false,
                 menu: new dorado.widget.Menu({
                     items: [
                         {

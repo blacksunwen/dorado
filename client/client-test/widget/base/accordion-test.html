@@ -3,7 +3,14 @@
 	<head>
         <title>Accordion Test Page</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0;"/>
+        <meta name="apple-mobile-web-app-capable" content="yes" />
 		<script type="text/javascript" src="../../include-all.js"></script>
+        <style>
+            .d-accordion .test .d-section-caption-bar{
+                background: white;
+            }
+        </style>
 		<script type="text/javascript">
 		var view = new dorado.widget.View({ layout: "Anchor" });
  
@@ -80,13 +87,33 @@
         });
  
         view.addChild(toolbar);
- 
+
+        var items1 = [];
+        for (var i = 0; i < 50; i++) {
+            items1.push("Block " + i);
+        }
+
+        var blockview1 = new dorado.widget.BlockView({
+            scrollMode: "lazyRender",
+            width: 400,
+            height: 300,
+            lineSize: 4,
+            fillLine: true,
+            items: items1,
+            draggable: true,
+            dragTags: "block",
+            droppable: true,
+            droppableTags: "block",
+            dropMode: "onOrInsertItems"
+        });
+
         var accordion = new dorado.widget.Accordion({
-            animate: false,
+            animate: true,
             sections: [{
                 caption: "文件",
                 icon: "del.gif",
                 //disabled: true,
+                exClassName: "test",
                 control: {
                     $type: "Menu",
                     id: "test2",
@@ -118,6 +145,7 @@
                 caption: "打开",
 				icon: "del.gif",
                 //expandable: false,
+                control: blockview1,
                 listener: {
                     onClick: function(){
                         //alert(123);
