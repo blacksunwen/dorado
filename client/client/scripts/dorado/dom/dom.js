@@ -520,7 +520,6 @@
 		 * @return {Object} 计算出来的位置。
 		 */
 		dockAround: function(element, fixedElement, options) {
-            debugger;
 			options = options || {};
 			var align = options.align || "innerleft", vAlign = options.vAlign || "innertop",
                 offsetLeft = options.offsetLeft || 0, offsetTop = options.offsetTop || 0,
