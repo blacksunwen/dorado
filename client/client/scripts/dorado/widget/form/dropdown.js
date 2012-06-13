@@ -537,7 +537,7 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 						}
 						
 						var shouldSetEditor = true;
-						if (editor._property) {
+						if (editor._property && editor._dataSet) {
 							for (var i = 0; i < maps.length; i++) {
 								if (maps[i].writeProperty == editor._property) {
 									shouldSetEditor = false;
