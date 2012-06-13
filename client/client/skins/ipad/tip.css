@@ -1,0 +1,179 @@
+.i-tip {
+  position: absolute;
+  margin: 0;
+  overflow: visible;
+  -moz-border-radius: 15px;
+  -webkit-border-radius: 15px;
+  border-radius: 15px;
+  padding: 20px;
+}
+.d-ie .i-tip {
+  padding: 0;
+  border: 0;
+  background-color: transparent;
+}
+.i-tip-arrow-top .arrow,
+.i-tip-arrow-bottom .arrow,
+.i-tip-arrow-left .arrow,
+.i-tip-arrow-right .arrow {
+  position: absolute;
+  display: block;
+  width: 8px;
+  height: 8px;
+  font-size: 0;
+  background: #fff8ef;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Matrix(M11=0.7071067811865475, M12=-0.7071067811865477, M21=0.7071067811865477, M22=0.7071067811865475, SizingMethod='auto expand')";
+  filter: progid:dximagetransform.microsoft.matrix(M11=0.7071067811865475, M12=-0.7071067811865477, M21=0.7071067811865477, M22=0.7071067811865475, SizingMethod='auto expand');
+  -moz-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+  background-color: #fdfcc2;
+}
+.i-tip .tip-tl {
+  font-size: 0;
+  line-height: 0;
+  margin-right: 15px;
+}
+.i-tip .tip-tr {
+  font-size: 0;
+  line-height: 0;
+  padding: 15px 0 0 0;
+  margin-right: -15px;
+}
+.i-tip .tip-cl {
+  padding-left: 15px;
+}
+.i-tip .tip-cr {
+  padding-right: 15px;
+}
+.i-tip .tip-cm {
+  margin: 0;
+  padding: 0;
+}
+.i-tip .tip-cm .caption {
+  padding-bottom: 3px;
+}
+.i-tip .tip-bl {
+  margin-right: 15px;
+}
+.i-tip .tip-br {
+  font-size: 0;
+  padding: 15px 0 0 0;
+  line-height: 0;
+  margin-right: -15px;
+}
+.i-tip .close {
+  position: absolute;
+  cursor: pointer;
+  right: -10px;
+  top: -10px;
+  width: 20px;
+  height: 20px;
+}
+.i-tip .tip-content {
+  position: relative;
+  word-break: break-all;
+}
+.i-tip .tip-content-hasicon {
+  min-height: 48px;
+  padding-left: 62px;
+}
+.d-ie6 .i-tip .tip-content-hasicon {
+  height: 48px;
+  overflow: visible;
+}
+.i-tip .tip-content .tip-icon {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 48px;
+  width: 48px;
+}
+.i-tip .tip-content .error-icon,
+.i-tip .tip-content .info-icon,
+.i-tip .tip-content .warning-icon,
+.i-tip .tip-content .question-icon {
+  height: 48px;
+  width: 48px;
+  margin: 0 12px 0 2px;
+}
+.d-tip {
+  border: 1px solid #d3a608;
+  background-color: #fdfcc2;
+}
+.d-tip .tip-tl {
+  background: transparent url(tip-corners.png) no-repeat scroll 0 top;
+}
+.d-tip .tip-tr {
+  background: transparent url(tip-corners.png) no-repeat scroll right -30px;
+}
+.d-tip .tip-cl {
+  background: transparent url(tip-lr.png) repeat-y scroll 0 0;
+}
+.d-tip .tip-cr {
+  background: transparent url(tip-lr.png) repeat-y scroll right 0;
+}
+.d-ie .d-tip .tip-cm {
+  background-color: #fdfcc2;
+  padding: 5px;
+}
+.d-tip .tip-cm .caption {
+  font-weight: bold;
+}
+.d-tip .tip-bl {
+  background: transparent url(tip-corners.png) no-repeat scroll 0 -15px;
+}
+.d-tip .tip-br {
+  background: transparent url(tip-corners.png) no-repeat scroll right bottom;
+}
+.d-tip-arrow-top .arrow {
+  border-left: 1px solid #d3a608;
+  border-top: 1px solid #d3a608;
+  top: -5px;
+  left: 5px;
+}
+.d-tip-arrow-bottom .arrow {
+  border-bottom: 1px solid #d3a608;
+  border-right: 1px solid #d3a608;
+  bottom: -5px;
+  left: 5px;
+}
+.d-tip-arrow-left .arrow {
+  border-bottom: 1px solid #d3a608;
+  border-left: 1px solid #d3a608;
+  top: 5px;
+  left: -5px;
+}
+.d-tip-arrow-right .arrow {
+  border-top: 1px solid #d3a608;
+  border-right: 1px solid #d3a608;
+  top: 5px;
+  right: -5px;
+}
+.d-tip .close {
+  background: url(tip-close.png) 0 0;
+  zoom: 1;
+}
+.d-tip .close-hover {
+  background-position: 0 -20px;
+}
+.d-tip .close-click {
+  background-position: 0 -40px;
+}
+.d-tip .tip-content .tip-icon {
+  background: transparent none no-repeat center center;
+}
+.d-tip .tip-content .error-icon {
+  background-image: url(common/icon-error-small.png);
+}
+.d-tip .tip-content .info-icon {
+  background-image: url(common/icon-info-small.png);
+}
+.d-tip .tip-content .warning-icon {
+  background-image: url(common/icon-warning-small.png);
+}
+.d-tip .tip-content .question-icon {
+  background-image: url(common/icon-question-small.png);
+}

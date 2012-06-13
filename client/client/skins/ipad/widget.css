@@ -1,0 +1,130 @@
+.d-view {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.d-container {
+    margin: 0;
+    overflow: hidden;
+}
+
+.d-ie-scrollbar-fix {
+    position: relative;
+}
+
+.d-html-container {
+    margin: 0;
+}
+
+.d-floating {
+    position: absolute;
+    left: -99999px;
+    top: -99999px;
+}
+
+.d-anchor-layout {
+    position: relative;
+    overflow: visible;
+}
+
+.d-dock-layout {
+    position: relative;
+    overflow: visible;
+}
+
+.d-form-layout {
+    table-layout: fixed;
+}
+
+.d-form-layout-region {
+    height: 100%;
+}
+
+.d-hbox-layout {
+    display: inline-block;
+}
+
+.d-hbox-layout-region {
+}
+
+.d-vbox-layout {
+}
+
+.d-vbox-layout-region {
+}
+
+.i-fix-text-align {
+    text-align: left;
+}
+
+.d-exception-content {
+    height: 48px;
+    padding: 16px 16px 16px 80px;
+    position: relative;
+}
+
+.d-exception-icon {
+    position: absolute;
+    left: 16px;
+    top: 16px;
+    width: 48px;
+    height: 48px;
+    background-image: url(common/icon-error.png);
+}
+
+.d-exception-text {
+    position: relative;
+}
+
+.d-message-box .msg-icon{
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: transparent none no-repeat center center;
+    width: 48px;
+    height: 48px;
+}
+
+.d-message-box .error-icon{
+    background-image: url(common/icon-error.png);
+}
+
+.d-message-box .info-icon{
+    background-image: url(common/icon-info.png);
+}
+
+.d-message-box .warning-icon{
+    background-image: url(common/icon-warning.png);
+}
+
+.d-message-box .question-icon{
+    background-image: url(common/icon-question.png);
+}
+
+.d-message-box .msg-content{
+    position: relative;
+    word-break: break-all;
+}
+
+.d-message-box .msg-content-hasicon{
+    min-height: 48px;
+    padding-left: 70px;
+}
+
+.d-ie6 .d-message-box .msg-content-hasicon{
+    height: 48px;
+    overflow: visible;
+}
+
+.d-message-box .editor-wrap{
+    margin-top: 8px;
+}
+
+.d-message-box .dialog-body-wrap .dialog-body .content-panel{
+    padding: 16px 16px 0 16px;
+}
+
+.d-goto-page .text, .d-data-pilot .i-label {
+    margin: 2px 4px 0 4px;
+}

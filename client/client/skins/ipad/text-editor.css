@@ -1,0 +1,157 @@
+.i-text-box {
+  text-align: left;
+}
+.i-text-box .editor {
+  white-space: nowrap;
+  border: 0;
+  margin: 0;
+}
+.i-text-box .blank-text {
+  font-style: italic;
+  color: #B2B2B2;
+}
+.i-text-box .i-trigger {
+  width: 24px;
+  height: 28px;
+  cursor: pointer;
+  overflow: hidden;
+}
+.i-text-box .dirty-flag {
+  right: -1px;
+  top: 0;
+  width: 5px;
+  height: 5px;
+  position: absolute;
+  z-index: 1;
+}
+.i-text-area .textarea {
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+.i-text-area .i-trigger-panel {
+  top: 0;
+  right: 0;
+  height: 100%;
+}
+.i-text-area .dirty-flag {
+  position: absolute;
+  right: -1px;
+  top: 0;
+  width: 5px;
+  height: 5px;
+  z-index: 1;
+}
+.d-text-box {
+  height: 28px;
+  border: 1px #B0B0B0 solid;
+  background: white;
+}
+.d-text-box .editor {
+  line-height: 28px;
+  background: url(text-field-bg.png) repeat-x;
+}
+.d-text-box .d-trigger {
+  background: url(dropdown-trigger-bg.png) no-repeat;
+}
+.d-text-box .dirty-flag {
+  background: url(dirty-flag.png);
+}
+.d-text-box-hover {
+  border: 1px #707070 solid;
+}
+.d-text-box-hover .d-trigger {
+  background-position: -24px 0;
+}
+.d-text-box-focused {
+  border: 1px #6ECC81 solid;
+}
+.d-text-box-focused .editor {
+  background: url(text-field-bg-focus.png) repeat-x;
+}
+.d-text-box-focused .d-trigger {
+  background-position: -48px 0;
+}
+.d-text-box-focused .d-trigger-down {
+  background-position: -72px 0;
+}
+.d-text-box-warn {
+  border: 1px #DDB147 solid;
+}
+.d-text-box-warn .editor {
+  background: url(text-field-bg-warn.png) repeat-x bottom;
+}
+.d-text-box-warn .d-trigger {
+  background-position: -96px 0;
+}
+.d-text-box-warn .d-trigger-down {
+  background-position: -120px 0;
+}
+.d-text-box-error {
+  border: 1px #FC3737 solid;
+}
+.d-text-box-error .editor {
+  background: url(text-field-bg-error.png) repeat-x bottom;
+}
+.d-text-box-error .d-trigger {
+  background-position: -144px 0;
+}
+.d-text-box-error .d-trigger-down {
+  background-position: -168px 0;
+}
+.d-text-box-readonly {
+  border: 1px #A1A1A1 solid;
+}
+.d-text-box-readonly .editor {
+  background: #F8F8F8;
+}
+.d-text-box-readonly .d-trigger {
+  background-position: -192px 0;
+}
+.d-text-area {
+  height: 28px;
+  border: 1px #B0B0B0 solid;
+  background: white;
+}
+.d-text-area .textarea {
+  background: url(text-field-bg.png) repeat-x;
+}
+.d-text-area .d-trigger-panel {
+  background: url(text-area-trigger-panel.png) repeat-y;
+  width: 23px;
+}
+.d-text-area .d-trigger {
+  left: 2px;
+  margin-bottom: 1px;
+}
+.d-text-area .blank-text {
+  font-style: italic;
+  color: #B2B2B2;
+}
+.d-text-area .dirty-flag {
+  background: url(dirty-flag.png);
+}
+.d-text-area-focused {
+  border: 1px #6ECC81 solid;
+}
+.d-text-area-focused .textarea {
+  background: url(text-field-bg-focus.png) repeat-x;
+}
+.d-text-area-warn {
+  border: 1px #FFCC66 solid;
+}
+.d-text-area-warn .editor {
+  background: url(text-field-bg-warn.png) repeat-x bottom;
+}
+.d-text-area-error {
+  border: 1px #FC3737 solid;
+}
+.d-text-area-error .textarea {
+  background: url(text-field-bg-error.png) repeat-x bottom;
+}
+.d-text-area-readonly {
+  border: 1px #A1A1A1 solid;
+}
+.d-text-area-readonly .textarea {
+  background: #F8F8F8;
+}

@@ -1,0 +1,30 @@
+.i-progress-bar {
+  position: relative;
+  overflow: hidden;
+  font-size: 9pt;
+  height: 28px;
+  background-repeat: repeat-x;
+}
+.i-progress-bar .bar {
+  position: absolute;
+  left: 1px;
+  top: 1px;
+  height: 26px;
+  background-repeat: repeat-x;
+}
+.i-progress-bar .msg {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  vertical-align: middle;
+  text-align: center;
+  line-height: 28px;
+}
+.d-progress-bar {
+  border: 1px #A1A1A1 solid;
+  background: url(progressbar-bg.png) 0 bottom;
+}
+.d-progress-bar .bar {
+  background: url(progressbar-bg.png) 0 0;
+}

@@ -1,0 +1,53 @@
+.i-label {
+  height: 18px;
+}
+.i-data-label {
+  height: 18px;
+}
+.d-data-message .d-message {
+  height: 24px;
+  line-height: 24px;
+  padding-left: 24px;
+}
+.d-data-message .d-message-info {
+  background: url(common/message-info.png) no-repeat;
+}
+.d-data-message .d-message-ok {
+  background: url(common/message-ok.png) no-repeat;
+}
+.d-data-message .d-message-warn {
+  background: url(common/message-warning.png) no-repeat;
+}
+.d-data-message .d-message-error {
+  color: #FF0000;
+  background: url(common/message-error.png) no-repeat;
+}
+.d-data-message .d-message-validating {
+  background: url(validating.gif) no-repeat;
+}
+.d-form-element {
+  position: relative;
+}
+.d-form-element .form-label {
+  height: 20px;
+  line-height: 20px;
+}
+.d-form-element .form-label-top {
+  margin-left: -12px;
+  padding-left: 12px;
+  padding-right: 12px;
+}
+.d-form-element .form-label-align-right {
+  margin-left: -12px;
+  padding-right: 12px;
+}
+.d-form-element .form-label-required {
+  background: url(field-required.png) right 2px no-repeat;
+}
+.d-form-element .form-hint {
+  height: 24px;
+  line-height: 24px;
+}
+.d-ie6 .d-form-element .form-hint {
+  margin-top: 2px;
+}
