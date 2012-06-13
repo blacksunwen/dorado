@@ -227,7 +227,7 @@ public class DoradoLoader {
 								"<not assigned>") + "]");
 
 		File tempDir = new File(WebUtils.getTempDir(servletContext), ".dorado");
-		if (tempDir.mkdir()) {
+		if ((tempDir.exists() && tempDir.isDirectory()) || tempDir.mkdir()) {
 			TempFileUtils.setTempDir(tempDir);
 		}
 		ConsoleUtils.outputLoadingInfo("[Dorado TempDir: "

@@ -3,6 +3,8 @@ package com.bstek.dorado.view.widget.treegrid;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.bstek.dorado.annotation.ClientEvent;
+import com.bstek.dorado.annotation.ClientEvents;
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.IdeProperty;
@@ -23,6 +25,8 @@ import com.bstek.dorado.view.widget.tree.BindingConfig;
 		dependsPackage = "tree-grid")
 @ClientObject(prototype = "dorado.widget.DataTreeGrid",
 		shortTypeName = "DataTreeGrid")
+@ClientEvents({ @ClientEvent(name = "beforeDataNodeCreate"),
+		@ClientEvent(name = "onDataNodeCreate") })
 public class DataTreeGrid extends AbstractTreeGrid implements DataControl {
 	private String dataSet;
 	private String dataPath;

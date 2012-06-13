@@ -70,6 +70,7 @@ public class JavaScriptParser {
 						}
 						comments.add(contentLine.toString());
 						inContent = false;
+						contentBuf.setLength(0);
 						contentLine.setLength(0);
 					}
 				}

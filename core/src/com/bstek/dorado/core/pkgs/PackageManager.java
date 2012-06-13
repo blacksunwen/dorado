@@ -158,6 +158,26 @@ public final class PackageManager {
 				packageInfo.setServletContextLocations(properties
 						.getProperty("servletContextConfigLocations"));
 
+				if (packageMap.containsKey(packageName)) {
+					PackageInfo conflictPackageInfo = packageMap
+							.get(packageName);
+					StringBuffer conflictInfo = new StringBuffer(20);
+					conflictInfo.append('[')
+							.append(conflictPackageInfo.getName())
+							.append(" - ")
+							.append(conflictPackageInfo.getVersion())
+							.append(']');
+					conflictInfo.append(" and ");
+					conflictInfo.append('[').append(packageInfo.getName())
+							.append(" - ").append(packageInfo.getVersion())
+							.append(']');
+
+					throw new IllegalArgumentException(
+							"More than one package [" + packageName
+									+ "] found. They are "
+									+ conflictInfo.toString());
+				}
+
 				packageMap.put(packageName, packageInfo);
 			} catch (Exception e) {
 				throw new IllegalArgumentException(
