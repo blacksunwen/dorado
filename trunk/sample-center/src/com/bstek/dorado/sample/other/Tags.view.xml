@@ -4,33 +4,33 @@
     <Property name="tags">控件标签</Property>
     <ToolBar>
       <ToolBarButton>
-        <ClientEvent name="onClick">this.set(&quot;^button.toggled&quot;, false);&#xD;
-this.set(&quot;^odd.toggled&quot;, true);</ClientEvent>
+        <ClientEvent name="onClick">view.set(&quot;^button.toggled&quot;, false);&#xD;
+view.set(&quot;^odd.toggled&quot;, true);</ClientEvent>
         <Property name="caption">奇数按钮</Property>
       </ToolBarButton>
       <ToolBarButton>
-        <ClientEvent name="onClick">this.set(&quot;^button.toggled&quot;, false);&#xD;
-this.set(&quot;^even.toggled&quot;, true);</ClientEvent>
+        <ClientEvent name="onClick">view.set(&quot;^button.toggled&quot;, false);&#xD;
+view.set(&quot;^even.toggled&quot;, true);</ClientEvent>
         <Property name="caption">偶数按钮</Property>
       </ToolBarButton>
       <Separator/>
       <ToolBarButton>
-        <ClientEvent name="onClick">this.set(&quot;^button.toggled&quot;, false);&#xD;
-this.set(&quot;^red.toggled&quot;, true);</ClientEvent>
+        <ClientEvent name="onClick">view.set(&quot;^button.toggled&quot;, false);&#xD;
+view.set(&quot;^red.toggled&quot;, true);</ClientEvent>
         <Property name="caption">红色按钮</Property>
       </ToolBarButton>
       <ToolBarButton>
-        <ClientEvent name="onClick">this.set(&quot;^button.toggled&quot;, false);&#xD;
-this.set(&quot;^green.toggled&quot;, true);</ClientEvent>
+        <ClientEvent name="onClick">view.set(&quot;^button.toggled&quot;, false);&#xD;
+view.set(&quot;^green.toggled&quot;, true);</ClientEvent>
         <Property name="caption">绿色按钮</Property>
       </ToolBarButton>
       <Separator/>
       <ToolBarButton>
-        <ClientEvent name="onClick">this.set(&quot;^button.toggled&quot;, true);</ClientEvent>
+        <ClientEvent name="onClick">view.set(&quot;^button.toggled&quot;, true);</ClientEvent>
         <Property name="caption">按下所有按钮</Property>
       </ToolBarButton>
       <ToolBarButton>
-        <ClientEvent name="onClick">this.set(&quot;^button.toggled&quot;, false);</ClientEvent>
+        <ClientEvent name="onClick">view.set(&quot;^button.toggled&quot;, false);</ClientEvent>
         <Property name="caption">还原所有按钮</Property>
       </ToolBarButton>
     </ToolBar>

@@ -8,8 +8,7 @@
       <Button action="toUpperCaseAction"/>
       <AjaxAction id="multiplyAction" executingMessage="Computing..." service="ajax#multiply"/>
       <Button caption="Ajax Multiply">
-        <ClientEvent name="onClick">var action = this.id(&quot;multiplyAction&quot;);
-dorado.MessageBox.prompt(&quot;Please input two numbers here&quot;, {
+        <ClientEvent name="onClick" signature="multiplyAction">dorado.MessageBox.prompt(&quot;Please input two numbers here&quot;, {
 	defaultText: &quot;3*5&quot;,
 	callback: function(text) {
 		var nums = text.split(&quot;*&quot;);
@@ -17,7 +16,7 @@ dorado.MessageBox.prompt(&quot;Please input two numbers here&quot;, {
 			num1: nums[0],
 			num2: nums[1]
 		};
-		action.set(&quot;parameter&quot;, parameter).execute(function(result) {
+		multiplyAction.set(&quot;parameter&quot;, parameter).execute(function(result) {
 			dorado.MessageBox.alert(nums[0] + &quot; * &quot; + nums[1] + &quot; = &quot; + result);
 		});
 	}
@@ -25,8 +24,7 @@ dorado.MessageBox.prompt(&quot;Please input two numbers here&quot;, {
 </ClientEvent>
       </Button>
       <AjaxAction id="getSystemInfoAction" caption="Retrieve Dorado7 System Information" service="ajax#getSystemInfo">
-        <ClientEvent name="onSuccess">
-var info = self.get(&quot;returnValue&quot;);
+        <ClientEvent name="onSuccess">var info = self.get(&quot;returnValue&quot;);
 dorado.MessageBox.alert(&quot;product : &quot; + info.product + &quot;\n&quot; + 
 	&quot;vendor : &quot; + info.vendor + &quot;\n&quot; + 
 	&quot;version : &quot; + info.version);
@@ -36,22 +34,20 @@ dorado.MessageBox.alert(&quot;product : &quot; + info.product + &quot;\n&quot; +
     </Container>
     <Container layout="vbox align:left">
       <AjaxAction id="getMemInfo">
-        <ClientEvent name="onSuccess">this.set(&quot;#labelMemInfo.text&quot;, &quot;空闲内存: &quot; + arg.result.freeMemory + &quot; 总内存: &quot; + arg.result.totalMemory);&#xD;
-&#xD;
-var prograssBar = this.get(&quot;#progressBarMemInfo&quot;);&#xD;
-prograssBar.set({&#xD;
+        <ClientEvent name="onSuccess" signature="self, arg, labelMemInfo, progressBarMemInfo, buttonGetMemInfo">labelMemInfo.set(&quot;text&quot;, &quot;空闲内存: &quot; + arg.result.freeMemory + &quot; 总内存: &quot; + arg.result.totalMemory);&#xD;
+progressBarMemInfo.set({&#xD;
 	maxValue: arg.result.totalMemory,&#xD;
 	value: arg.result.totalMemory - arg.result.freeMemory&#xD;
 });&#xD;
 &#xD;
-if (this.get(&quot;#buttonGetMemInfo.toggled&quot;)) {&#xD;
+if (buttonGetMemInfo.get(&quot;toggled&quot;)) {&#xD;
 	setTimeout(function(){&#xD;
 		self.execute();&#xD;
 	}, 800);&#xD;
 }&#xD;
 </ClientEvent>
-        <ClientEvent name="beforeExecute">this.set(&quot;#labelRetrievingMemInfo.visible&quot;, true);</ClientEvent>
-        <ClientEvent name="onExecute">this.set(&quot;#labelRetrievingMemInfo.visible&quot;, false);</ClientEvent>
+        <ClientEvent name="beforeExecute" signature="labelRetrievingMemInfo">labelRetrievingMemInfo.set(&quot;visible&quot;, true);</ClientEvent>
+        <ClientEvent name="onExecute" signature="labelRetrievingMemInfo">labelRetrievingMemInfo.set(&quot;visible&quot;, false);</ClientEvent>
         <Property name="caption">提取Server端内存使用情况</Property>
         <Property name="service">ajax#getMemInfo</Property>
       </AjaxAction>

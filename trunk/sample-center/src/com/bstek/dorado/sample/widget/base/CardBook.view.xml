@@ -7,8 +7,7 @@
     <Property name="width">700</Property>
     <Container layout="hbox pack:center;regionPadding:12">
       <Button>
-        <ClientEvent name="onClick">var cardbook = this.get(&quot;#cardbook&quot;);&#xD;
-var index = cardbook.get(&quot;currentIndex&quot;), count = cardbook.get(&quot;controls&quot;).size;&#xD;
+        <ClientEvent name="onClick" signature="cardbook">var index = cardbook.get(&quot;currentIndex&quot;), count = cardbook.get(&quot;controls&quot;).size;&#xD;
 index++;&#xD;
 if (index >= count) index = 0;&#xD;
 cardbook.set(&quot;currentIndex&quot;, index);&#xD;
@@ -37,8 +36,7 @@ cardbook.set(&quot;currentIndex&quot;, index);&#xD;
         </Label>
       </Container>
       <BlockView blockHeight="100" dragTags="block" draggable="true" droppable="true" droppableTags="block" fillLine="true" height="430" layoutConstraint="left:10; top:10" lineSize="4" width="400">
-        <ClientEvent name="onCreate">
-self.set(&quot;renderer&quot;, new dorado.widget.blockview.ImageBlockRenderer({ captionProperty: &quot;name&quot; }));
+        <ClientEvent name="onCreate">self.set(&quot;renderer&quot;, new dorado.widget.blockview.ImageBlockRenderer({ captionProperty: &quot;name&quot; }));
 			</ClientEvent>
         <Property name="items">
           <Collection>

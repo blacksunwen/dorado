@@ -4,41 +4,23 @@
   <Context/>
   <Model/>
   <View layout="vbox padding:20">
-    <ClientEvent name="onCreate">var view = this, i = 0;&#xD;
-view.$initNewTabOption = function() {&#xD;
-	view.set(&quot;#defaultFormProfile.entity&quot;, {&#xD;
-		caption: &quot;NewTab&quot; + (++i),&#xD;
-		type: &quot;control&quot;,&#xD;
-		closeable: true,&#xD;
-		path: &quot;http://www.bsdn.org&quot;&#xD;
-	});&#xD;
-	view.set(&quot;^iFrameProperty.readOnly&quot;, true);&#xD;
-}&#xD;
-</ClientEvent>
+    <ClientEvent name="onCreate"/>
     <Container layout="hbox">
-      <Button>
-        <ClientEvent name="onClick">var tabPlacement = this.get(&quot;#tabControl.tabPlacement&quot;);&#xD;
-this.set(&quot;#tabControl.tabPlacement&quot;, (tabPlacement == &quot;top&quot;) ? &quot;bottom&quot; : &quot;top&quot;);</ClientEvent>
+      <Button id="buttonTabPosition">
+        <ClientEvent name="onClick"/>
         <Property name="caption">切换标签位置</Property>
         <Property name="toggleable">true</Property>
       </Button>
-      <Button>
-        <ClientEvent name="onClick">var tabControl = this.get(&quot;#tabControl&quot;);&#xD;
-var index = tabControl.get(&quot;currentIndex&quot;), count = tabControl.get(&quot;tabs&quot;).size;&#xD;
-index++;&#xD;
-if (index >= count) index = 0;&#xD;
-tabControl.set(&quot;currentIndex&quot;, index);</ClientEvent>
+      <Button id="buttonChangeCurrent">
+        <ClientEvent name="onClick"/>
         <Property name="caption">切换当前标签</Property>
       </Button>
-      <Button>
-        <ClientEvent name="onClick">var tab = this.get(&quot;#tabControl.currentTab&quot;);&#xD;
-if (tab) tab.close();&#xD;
-</ClientEvent>
+      <Button id="buttonRemoveTab">
+        <ClientEvent name="onClick"/>
         <Property name="caption">删除当前标签</Property>
       </Button>
-      <Button>
-        <ClientEvent name="onClick">this.$initNewTabOption();&#xD;
-this.get(&quot;#floatPanel&quot;).show();</ClientEvent>
+      <Button id="buttonAddTab">
+        <ClientEvent name="onClick"/>
         <Property name="caption">添加标签</Property>
       </Button>
     </Container>
@@ -68,9 +50,7 @@ this.get(&quot;#floatPanel&quot;).show();</ClientEvent>
         <Property name="closeable">true</Property>
         <Property name="icon">url(skin>common/icons.gif) -40px -40px</Property>
         <BlockView blockHeight="100" dragTags="block" draggable="true" droppable="true" droppableTags="block" fillLine="true" height="430" layoutConstraint="left:10; top:10" lineSize="4" width="400">
-          <ClientEvent name="onCreate">
-self.set(&quot;renderer&quot;, new dorado.widget.blockview.ImageBlockRenderer({ captionProperty: &quot;name&quot; }));
-			</ClientEvent>
+          <ClientEvent name="onCreate">self.set(&quot;renderer&quot;, new dorado.widget.blockview.ImageBlockRenderer({ captionProperty: &quot;name&quot; }));		</ClientEvent>
           <Property name="items">
             <Collection>
               <Entity>
@@ -187,8 +167,8 @@ self.set(&quot;renderer&quot;, new dorado.widget.blockview.ImageBlockRenderer({ 
           <Property name="label">标签类型</Property>
           <Property name="property">type</Property>
           <Editor>
-            <RadioGroup>
-              <ClientEvent name="onValueChange">this.set(&quot;^iFrameProperty.readOnly&quot;, self.get(&quot;value&quot;) != &quot;IFrame&quot;);</ClientEvent>
+            <RadioGroup id="radioGroupType">
+              <ClientEvent name="onValueChange"/>
               <Property name="layout">flow</Property>
               <Property name="value">control</Property>
               <RadioButton>
@@ -218,38 +198,13 @@ self.set(&quot;renderer&quot;, new dorado.widget.blockview.ImageBlockRenderer({ 
         </FormElement>
         <Container layout="hbox align:bottom;pack:center">
           <Property name="height">40</Property>
-          <Button>
-            <ClientEvent name="onClick">var tabControl = this.get(&quot;#tabControl&quot;), options = this.get(&quot;#defaultFormProfile.entity&quot;);&#xD;
-var newTab;&#xD;
-if (options.type == &quot;IFrame&quot;) {&#xD;
-	newTab = tabControl.addTab({&#xD;
-		$type: &quot;IFrame&quot;,&#xD;
-		caption: options.caption,&#xD;
-		closeable: options.closeable,&#xD;
-		path: options.path&#xD;
-	});&#xD;
-}&#xD;
-else {&#xD;
-	var color = Math.round(Math.random() * Math.pow(16, 6)).toString(16);&#xD;
-	newTab = tabControl.addTab({&#xD;
-		$type: &quot;Control&quot;,&#xD;
-		caption: options.caption,&#xD;
-		closeable: options.closeable,&#xD;
-		control: {&#xD;
-			$type: &quot;Control&quot;,&#xD;
-			style: {&#xD;
-				background: (&quot;#&quot; + color)&#xD;
-			}&#xD;
-		}&#xD;
-	});&#xD;
-}&#xD;
-tabControl.set(&quot;currentTab&quot;, newTab);&#xD;
-this.$initNewTabOption();</ClientEvent>
-            <Property name="caption">添加</Property>
+          <Button id="buttonOK">
+            <ClientEvent name="onClick"/>
+            <Property name="caption">确定</Property>
             <Property name="width">60</Property>
           </Button>
-          <Button>
-            <ClientEvent name="onClick">self.findParent(dorado.widget.FloatPanel).hide();</ClientEvent>
+          <Button id="buttonCancel">
+            <ClientEvent name="onClick"/>
             <Property name="caption">取消</Property>
           </Button>
         </Container>
@@ -258,15 +213,9 @@ this.$initNewTabOption();</ClientEvent>
     </FloatPanel>
     <Menu id="menuTab">
       <MenuItem>
-        <ClientEvent name="onClick">var tabs = [];&#xD;
-this.get(&quot;#tabControl.tabs&quot;).each(function(tab) {&#xD;
-	if (tab.get(&quot;closeable&quot;)) tabs.push(tab);&#xD;
-});&#xD;
-tabs.each(function(tab) {&#xD;
-	tab.close();&#xD;
-});</ClientEvent>
         <Property name="caption">关闭所有可关闭的标签</Property>
         <Property name="icon">url(skin>common/icons.gif) -40px 0</Property>
+        <Property name="name">closeAll</Property>
       </MenuItem>
     </Menu>
   </View>

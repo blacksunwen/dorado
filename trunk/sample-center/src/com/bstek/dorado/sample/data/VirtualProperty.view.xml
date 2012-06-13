@@ -5,6 +5,7 @@
   <Model>
     <DataType name="Category">
       <Property name="matchType">com.bstek.dorado.sample.data.MockCategory</Property>
+      <Property name="creationType">com.bstek.dorado.sample.data.MockCategory</Property>
       <PropertyDef name="id"/>
       <PropertyDef name="categoryName"/>
       <Reference name="products">

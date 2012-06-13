@@ -18,21 +18,11 @@
                 <Property name="text">请输入您的昵称：</Property>
               </Label>
               <TextEditor id="inputUser">
-                <ClientEvent name="onReady">self.set(&quot;text&quot;, this.get(&quot;userData&quot;));</ClientEvent>
+                <ClientEvent name="onReady"/>
                 <Property name="width">200</Property>
               </TextEditor>
-              <Button layoutConstraint="align:right">
-                <ClientEvent name="onClick">var user = this.get(&quot;#inputUser.text&quot;);&#xD;
-if (!user) {&#xD;
-	throw new dorado.Exception(&quot;请输入一个有效的昵称！&quot;); &#xD;
-}&#xD;
-&#xD;
-this.set({&#xD;
-	userData: user,&#xD;
-	&quot;#cardbookChatRoom.currentIndex&quot;: 1,&#xD;
-	&quot;#panelChatRoom.caption&quot;: &quot;Chat Room - &quot; + user&#xD;
-});&#xD;
-this.get(&quot;#retrieveMessageAction&quot;).execute();</ClientEvent>
+              <Button id="buttonEnter" layoutConstraint="align:right">
+                <ClientEvent name="onClick"/>
                 <Property name="caption">进入聊天室</Property>
               </Button>
             </Container>
@@ -46,8 +36,7 @@ this.get(&quot;#retrieveMessageAction&quot;).execute();</ClientEvent>
             <Container layout="anchor" layoutConstraint="bottom">
               <Property name="contentOverflow">visible</Property>
               <TextEditor id="inputMessage" layoutConstraint="left:0;right:54;top:1">
-                <ClientEvent name="onTextEdit">this.set(&quot;#sendMessageAction.disabled&quot;, self.get(&quot;text&quot;) == &quot;&quot;);&#xD;
-</ClientEvent>
+                <ClientEvent name="onTextEdit"/>
                 <Property name="blankText">输入要发送的信息</Property>
                 <Property name="maxLength">144</Property>
               </TextEditor>
@@ -62,12 +51,7 @@ this.get(&quot;#retrieveMessageAction&quot;).execute();</ClientEvent>
       <Tools/>
     </Panel>
     <AjaxAction id="sendMessageAction">
-      <ClientEvent name="beforeExecute">self.set(&quot;parameter&quot;, {&#xD;
-	user: this.get(&quot;userData&quot;),&#xD;
-	message: this.get(&quot;#inputMessage.text&quot;)&#xD;
-});&#xD;
-this.set(&quot;#inputMessage.text&quot;, &quot;&quot;);&#xD;
-self.set(&quot;disabled&quot;, true);</ClientEvent>
+      <ClientEvent name="beforeExecute"/>
       <Property name="service">chatRoom#sendMessage</Property>
       <Property name="caption">发送</Property>
       <Property name="executingMessage">正在发送消息</Property>
@@ -75,34 +59,9 @@ self.set(&quot;disabled&quot;, true);</ClientEvent>
       <Property name="disabled">true</Property>
     </AjaxAction>
     <AjaxAction id="retrieveMessageAction">
-      <ClientEvent name="onReady">self.$lastMessageId = 0;</ClientEvent>
-      <ClientEvent name="onSuccess">function formatDate(time) {&#xD;
-	var date = Date.parseDate(time, &quot;Y-m-d\\TH:i:s\\Z&quot;);&#xD;
-	return date.formatDate(&quot;n-d H:i:s&quot;);&#xD;
-}&#xD;
-&#xD;
-var view = this, messagesDiv = view.get(&quot;#messageList&quot;).getDom();&#xD;
-if (arg.result) {&#xD;
-	arg.result.each(function(message){&#xD;
-		$(messagesDiv).xCreate([{&#xD;
-			tagName: &quot;DIV&quot;,&#xD;
-			className: &quot;message-author&quot;,&#xD;
-			contentText: message.user + &quot; - &quot; + formatDate(message.time)&#xD;
-		}, {&#xD;
-			tagName: &quot;DIV&quot;,&#xD;
-			className: &quot;message-text&quot;,&#xD;
-			contentText: message.text&#xD;
-		}]);&#xD;
-		messagesDiv.scrollTop = messagesDiv.scrollHeight - messagesDiv.clientHeight;&#xD;
-		&#xD;
-		if (message.id > self.$lastMessageId) {&#xD;
-			self.$lastMessageId = message.id;&#xD;
-		}&#xD;
-	});&#xD;
-}&#xD;
-self.execute();</ClientEvent>
-      <ClientEvent name="beforeExecute">self.set(&quot;parameter&quot;, self.$lastMessageId);&#xD;
-</ClientEvent>
+      <ClientEvent name="onReady"/>
+      <ClientEvent name="beforeExecute"/>
+      <ClientEvent name="onSuccess"/>
       <Property name="service">chatRoom#getMessages</Property>
       <Property name="modal">false</Property>
     </AjaxAction>

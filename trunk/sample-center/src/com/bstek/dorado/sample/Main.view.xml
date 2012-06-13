@@ -21,32 +21,9 @@
       </MainControl>
       <SideControl>
         <DataTree id="treeExamples" dataSet="dsCategories">
-          <ClientEvent name="onDataRowClick">
-var frameExample = this.id(&quot;frameExample&quot;);
-var nodeType = self.get(&quot;currentNode.bindingConfig.name&quot;);
-var url;
-if (nodeType == &quot;Category&quot;) url = &quot;com.bstek.dorado.sample.CategorySummary.d?categoryId=&quot;;
-else url = &quot;com.bstek.dorado.sample.ExampleSummary.d?exampleId=&quot;;
-url += self.get(&quot;currentNode.data.id&quot;);
-frameExample.set(&quot;path&quot;, url);
-</ClientEvent>
-          <ClientEvent name="onNodeAttached">var node = arg.node, data = node.get(&quot;data&quot;);&#xD;
-node.set(&quot;icon&quot;, data.get(&quot;icon&quot;));</ClientEvent>
-          <ClientEvent name="onRenderNode">var node = arg.node, data = node.get(&quot;data&quot;);&#xD;
-arg.dom.style.fontWeight = (data.get(&quot;hot&quot;) ? &quot;bold&quot; : &quot;&quot;);&#xD;
-if (data.get(&quot;new&quot;)) {&#xD;
-	$(arg.dom).empty().xCreate([{&#xD;
-		tagName: &quot;SPAN&quot;,&#xD;
-		contentText: node.get(&quot;label&quot;)&#xD;
-	}, {&#xD;
-		tagName: &quot;IMG&quot;,&#xD;
-		src: $url(&quot;>images/new.gif&quot;),&#xD;
-		style: &quot;position: relative; left: 4px; top: 4px&quot;&#xD;
-	}]);&#xD;
-}&#xD;
-else {&#xD;
-	arg.processDefault = true;&#xD;
-}</ClientEvent>
+          <ClientEvent name="onDataRowClick"/>
+          <ClientEvent name="onRenderNode"/>
+          <ClientEvent name="onNodeAttached"/>
           <Property name="expandingAnimated">true</Property>
           <BindingConfigs>
             <BindingConfig childrenProperty="categories" icon=">images/folder.gif" labelProperty="label" name="Category" recursive="true">
@@ -56,10 +33,6 @@ else {&#xD;
         </DataTree>
       </SideControl>
     </SplitPanel>
-    <Button caption="管理" icon="url(>skin>common/icons.gif) -100px -20px" layoutConstraint="top:10; right:12" tip="管理">
-      <ClientEvent name="onClick">
-open($url(&quot;>com.bstek.dorado.sample.admin.ExampleMaintain.d&quot;));
-</ClientEvent>
-    </Button>
+    <Button id="buttonAdmin" caption="管理" icon="url(>skin>common/icons.gif) -100px -20px" layoutConstraint="top:10; right:12" tip="管理"/>
   </View>
 </ViewConfig>

@@ -20,24 +20,21 @@ and employee.id = :employee.id&#xD;
     </DataProvider>
   </Model>
   <View title="动态HQL查询 ">
-    <DataSet id="dsOrders" dataType="[Order]" dataProvider="providerOrders" loadMode="manual" pageSize="10"/>
-    <DataSet id="dsCustomers" dataType="[BaseCustomer]" dataProvider="customerInterceptor#findCustomersByCompanyName"/>
-    <DataSet id="dsEmployees" dataType="[BaseEmployee]" dataProvider="employeeInterceptor#getAll"/>
+    <DataSet id="dsOrders" dataProvider="providerOrders" dataType="[Order]" loadMode="manual" pageSize="10"/>
+    <DataSet id="dsCustomers" dataProvider="customerInterceptor#findCustomersByCompanyName" dataType="[BaseCustomer]"/>
+    <DataSet id="dsEmployees" dataProvider="employeeInterceptor#getAll" dataType="[BaseEmployee]"/>
     <ToolBar layoutConstraint="top">
       <DataPilot dataSet="dsOrders"/>
       <Separator/>
       <ToolBarButton caption="查询" icon="url(>skin>common/icons.gif) -40px -100px">
-        <ClientEvent name="onClick">
-var formCondition = this.id(&quot;formCondition&quot;);
-var dsOrders = this.id(&quot;dsOrders&quot;);
-dsOrders.set(&quot;parameter&quot;, formCondition.get(&quot;entity&quot;));
+        <ClientEvent name="onClick" signature="formCondition, dsOrders">dsOrders.set(&quot;parameter&quot;, formCondition.get(&quot;entity&quot;));
 dsOrders.flushAsync();
 </ClientEvent>
       </ToolBarButton>
     </ToolBar>
     <DataSetDropDown id="ddCustomers" dataSet="dsCustomers" dynaFilter="true"/>
     <DataSetDropDown id="ddEmployees" dataSet="dsEmployees"/>
-    <AutoForm id="formCondition" layoutConstraint="top" cols="300,300" padding="8" showHint="true">
+    <AutoForm id="formCondition" cols="300,300" layoutConstraint="top" padding="8">
       <AutoFormElement label="日期（起）" property="orderDate1">
         <Editor>
           <TextEditor dataType="Date"/>
@@ -51,6 +48,6 @@ dsOrders.flushAsync();
       <AutoFormElement label="客户" property="customer" trigger="ddCustomers"/>
       <AutoFormElement label="业务员" property="employee" trigger="ddEmployees"/>
     </AutoForm>
-    <DataGrid dataSet="dsOrders" stretchColumnsMode="stretchableColumns"/>
+    <DataGrid dataSet="dsOrders"/>
   </View>
 </ViewConfig>

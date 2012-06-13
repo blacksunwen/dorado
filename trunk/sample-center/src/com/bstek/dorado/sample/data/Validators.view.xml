@@ -63,7 +63,7 @@ if (password != arg.data) {&#xD;
     <DataSet id="dataSetAccount">
       <ClientEvent name="onReady">self.disableObservers();&#xD;
 try {&#xD;
-    var accounts = self.get(&quot;data&quot;), account;&#xD;
+    var accounts = self.getData(), account;&#xD;
     &#xD;
     account = accounts.insert({&#xD;
 		accountName: &quot;John&quot;,&#xD;
@@ -100,20 +100,18 @@ finally {&#xD;
     </DataSet>
     <Container layout="regionPadding:2">
       <Button id="buttonAdd" layoutConstraint="left">
-        <ClientEvent name="onClick">this.id(&quot;dataSetAccount&quot;).get(&quot;data&quot;).insert();&#xD;
+        <ClientEvent name="onClick" signature="dataSetAccount">dataSetAccount.getData().insert();&#xD;
 </ClientEvent>
         <Property name="caption">添加</Property>
         <Property name="icon">url(>skin>common/icons.gif) -121px 0</Property>
       </Button>
       <Button id="buttonDelete" layoutConstraint="left">
-        <ClientEvent name="onClick">this.id(&quot;dataSetAccount&quot;).get(&quot;data&quot;).remove();</ClientEvent>
+        <ClientEvent name="onClick" signature="dataSetAccount">dataSetAccount.getData().remove();</ClientEvent>
         <Property name="caption">删除</Property>
         <Property name="icon">url(>skin>common/icons.gif) -141px 0</Property>
       </Button>
     </Container>
     <AutoForm id="autoFormAccount">
-      <ClientEvent name="onCreate">&#xD;
-</ClientEvent>
       <Property name="dataSet">dataSetAccount</Property>
       <Property name="autoCreateElements">false</Property>
       <Property name="cols">*</Property>

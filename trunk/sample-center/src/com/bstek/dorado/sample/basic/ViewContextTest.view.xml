@@ -8,18 +8,10 @@
   </Context>
   <Model/>
   <View layout="vbox padding:20">
-    <ClientEvent name="onCreate">this.$refreshFormViewContext = function() {&#xD;
-	this.set(&quot;#formViewContext.entity&quot;, {&#xD;
-		attr1: this.get(&quot;context.attr1&quot;),&#xD;
-		attr2: this.get(&quot;context.attr2&quot;),&#xD;
-		attr3: this.get(&quot;context.attr3&quot;)&#xD;
-	});&#xD;
-}</ClientEvent>
-    <ClientEvent name="onReady">this.set(&quot;context.attr2&quot;, &quot;some text&quot;);&#xD;
-this.$refreshFormViewContext();</ClientEvent>
+    <ClientEvent name="onCreate"/>
     <Container layout="hbox">
       <AjaxAction id="actionAjax">
-        <ClientEvent name="onSuccess">this.$refreshFormViewContext();</ClientEvent>
+        <ClientEvent name="onSuccess"/>
         <Property name="caption">Test Ajax</Property>
         <Property name="service">viewContextTest#testAjax</Property>
       </AjaxAction>
