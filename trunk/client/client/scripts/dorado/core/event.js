@@ -317,6 +317,7 @@ dorado.EventSupport = $class(/** @scope dorado.EventSupport.prototype */{
 		
 		var handler = dorado.Object.apply({}, options);
 		handler.listener = listener;
+		handler.options = options;
 		if (!this._events) this._events = {};
 		var handlers = this._events[name];
 		if (handlers) {

@@ -278,8 +278,12 @@ public class ViewConfigDefinition extends ListenableObjectDefinition implements
 			if (viewContext != null && !viewContext.isEmpty()) {
 				DoradoContext doradoContext = DoradoContext.getCurrent();
 				for (Map.Entry<String, Object> entry : viewContext.entrySet()) {
-					doradoContext.setAttribute(DoradoContext.VIEW,
-							entry.getKey(), entry.getValue());
+					doradoContext
+							.setAttribute(
+									DoradoContext.VIEW,
+									entry.getKey(),
+									getFinalValueOrExpression(entry.getValue(),
+											context));
 				}
 			}
 		}

@@ -114,6 +114,16 @@
              */
 			onHideTopMenu: {}
 		},
+		
+		doGet: function(attr) {
+			var c = attr.charAt(0);
+			if (c == '&') {
+				var itemName = attr.substring(1);
+				return this.getItem(itemName);
+			} else {
+				return $invokeSuper.call(this, [attr]);
+			}
+		},
 
 		/**
 		 * 创建MenuItem。
@@ -387,7 +397,7 @@
 
 		/**
 		 * 取得Menu中的MenuItem。
-		 * @param {String|int|dorado.widget.menu.AbstractMenuItem} name 可以是Item的name，也可以是item的索引，也可以是MenuItem。
+		 * @param {String|int} name 可以是Item的name，也可以是item的索引。
 		 * @return {dorado.widget.menu.AbstractMenuItem} 找到的MenuItem。
 		 */
 		getItem: function(name) {

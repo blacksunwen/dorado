@@ -486,11 +486,22 @@ public abstract class EntityUtils {
 		EntityEnhancer entityEnhancer = getEntityEnhancer(entity);
 		if (entityEnhancer != null) {
 			try {
-				for (Map.Entry entry : (Set<Map.Entry>) properties.entrySet()) {
-					Object key = entry.getKey();
-					if (key instanceof String) {
-						entityEnhancer.writeProperty(entity, (String) key,
-								entry.getValue());
+				if (properties instanceof BeanMap) {
+					for (Object property : properties.keySet()) {
+						if (property instanceof String) {
+							entityEnhancer
+									.writeProperty(entity, (String) property,
+											properties.get(property));
+						}
+					}
+				} else {
+					for (Map.Entry entry : (Set<Map.Entry>) properties
+							.entrySet()) {
+						Object property = entry.getKey();
+						if (property instanceof String) {
+							entityEnhancer.writeProperty(entity,
+									(String) property, entry.getValue());
+						}
 					}
 				}
 			} catch (Throwable e) {

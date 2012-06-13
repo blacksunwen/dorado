@@ -381,6 +381,16 @@
 				}
 			}
 		},
+		
+		doGet: function(attr) {
+			var c = attr.charAt(0);
+			if (c == '&') {
+				var itemName = attr.substring(1);
+				return this.getItem(itemName);
+			} else {
+				return $invokeSuper.call(this, [attr]);
+			}
+		},
 
 		/**
 		 * MenuItem是否包含子菜单项。
@@ -388,6 +398,19 @@
 		 */
 		hasSubmenu: function() {
 			return !!this._submenu;
+		},
+
+		/**
+		 * 取得MenuItem中的子MenuItem。
+		 * @param {String|int} name 可以是Item的name，也可以是item的索引。
+		 * @return {dorado.widget.menu.AbstractMenuItem} 找到的MenuItem。
+		 */
+		getItem: function(name) {
+			var menuItem = this, submenu = menuItem._submenu;
+			if (submenu) {
+				return submenu.getItem(name);
+			}
+			return null;
 		},
 
         /**
@@ -455,8 +478,8 @@
                     if (owner && owner.getListenerCount("onContextMenu") > 0 && submenu.getListenerCount("onContextMenu") == 0) {
                         var handles = item._parent._events["onContextMenu"];
                         for (var i = 0, j = handles.length; i < j; i++) {
-                            var handle = handles[i];
-                            submenu.addListener("onContextMenu", handle.listener);
+                            var handler = handles[i];
+                            submenu.addListener("onContextMenu", handler.listener, handler.options);
                         }
                         submenu._inheritContextMenu = true;
                     }
