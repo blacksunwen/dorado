@@ -1,0 +1,36 @@
+.i-drop-down-box {
+  position: absolute;
+}
+.d-drop-down-box {
+  border: 1px #6ECC81 solid;
+  background-color: #FFFFFF;
+}
+.d-trigger .icon {
+  margin-left: 1px;
+  margin-top: 0;
+}
+.d-trigger-icon-drop {
+  background: url(dropdown-trigger.png) no-repeat;
+}
+.d-trigger-icon-search {
+  background: url(dropdown-trigger.png) no-repeat -24px 0;
+}
+.d-trigger-icon-date {
+  background: url(dropdown-trigger.png) no-repeat -48px 0;
+}
+.d-trigger-icon-custom {
+  background: url(dropdown-trigger.png) no-repeat -72px 0;
+}
+.d-trigger-icon-clear {
+  background: url(dropdown-trigger.png) no-repeat -96px 0;
+}
+.d-trigger-icon-filter {
+  background: url(dropdown-trigger.png) no-repeat -120px 0;
+}
+.d-trigger-icon-reset {
+  background: url(dropdown-trigger.png) no-repeat -144px 0;
+}
+.d-text-box .d-trigger-clear {
+  /** width: 15px; */
+
+}

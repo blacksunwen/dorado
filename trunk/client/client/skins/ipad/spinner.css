@@ -1,0 +1,61 @@
+.i-text-box .slots-container .text {
+  display: inline-block;
+  vertical-align: top;
+}
+.i-text-box .slots-container .slot {
+  display: inline-block;
+}
+.d-text-box .d-spinner-trigger {
+  width: 24px;
+  height: 28px;
+  background: url(spinner-button.png);
+}
+.d-text-box .d-spinner-trigger .up-button,
+.d-text-box .d-spinner-trigger .down-button {
+  width: 24px;
+  height: 14px;
+  font-size: 1%;
+  cursor: pointer;
+}
+.d-text-box-hover .d-spinner-trigger {
+  background-position: -24px 0;
+}
+.d-text-box-focused .d-spinner-trigger {
+  background-position: -48px 0;
+}
+.d-text-box-focused .d-spinner-trigger-down {
+  background-position: -72px 0;
+}
+.d-text-box-focused .d-spinner-trigger .up-button-click {
+  background: url(spinner-button.png) transparent -72px top;
+}
+.d-text-box-focused .d-spinner-trigger .down-button-click {
+  background: url(spinner-button.png) transparent -72px bottom;
+}
+.d-text-box-invalid .d-spinner-trigger {
+  background-position: -96px 0;
+}
+.d-text-box-invalid .d-spinner-trigger-down {
+  background-position: -120px 0;
+}
+.d-text-box-readonly .d-spinner-trigger {
+  background-position: -144px 0;
+}
+.d-text-box .slots-container .text {
+  line-height: 26px;
+  height: 28px;
+}
+.d-ie .d-text-box .slots-container .text {
+  padding-top: 1px;
+}
+.d-text-box .slots-container .slot {
+  line-height: 26px;
+  height: 28px;
+  cursor: pointer;
+  background: url(spinner-slot-bg.png);
+  padding: 0 1px 0 1px;
+}
+.d-text-box .slots-container .slot-selected {
+  background: url(spinner-selected-slot-bg.gif);
+  color: white;
+}

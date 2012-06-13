@@ -1,0 +1,302 @@
+.i-grid {
+  position: relative;
+}
+.i-grid .header-table .header {
+  white-space: nowrap;
+}
+.i-grid .header-table .sorted-header .sort-state {
+  display: inline-block;
+}
+.i-grid .footer-table .footer {
+  white-space: nowrap;
+}
+.i-grid .data-table {
+  width: 100%;
+}
+.i-grid .cell {
+  padding-left: 2px;
+  /* do not modify, may cause problums in safari/chrome */
+
+  padding-right: 2px;
+  /* do not modify, may cause problums in safari/chrome */
+
+}
+.i-grid .data-table td {
+  white-space: nowrap;
+}
+.i-grid .data-table .wrappable {
+  white-space: normal;
+  word-wrap: break-word;
+  word-break: normal;
+}
+.i-grid .float-refresh-panel {
+  position: absolute;
+}
+.i-grid .float-refresh-panel .button {
+  position: absolute;
+}
+.i-grid .float-filter-panel {
+  position: absolute;
+}
+.i-grid .float-filter-panel .d-icon-button {
+  position: absolute;
+}
+.d-grid {
+  border: 1px #A1A1A1 solid;
+  background: #FFFFFF;
+}
+.d-grid-focused {
+  border: 1px #303030 solid;
+}
+.d-grid .header-table .header {
+  background: #f0f0f0 url(header-bg.png) repeat-x top;
+  border-top: 1px #FFFFFF solid;
+  border-left: 1px #FFFFFF solid;
+  border-right: 1px #C8CBCE solid;
+  border-bottom: 1px #C8CBCE solid;
+}
+.d-grid .header-table .caption {
+  margin-left: 4px;
+}
+.d-grid .header-table .caption-required {
+  padding-left: 8px;
+  background: url(field-required.png) -6px 1px no-repeat;
+}
+.d-grid .header-table .sorted-header .sort-state {
+  width: 10px;
+  height: 8px;
+  margin-top: -2px;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+.d-grid .header-table .sorted-header .sort-state-desc {
+  background: url(sort-states.png) -10px;
+}
+.d-grid .header-table .sorted-header .sort-state-asc {
+  background: url(sort-states.png);
+}
+.d-grid .header-table .hover-header {
+  background: #daebff url(header-hover-bg.png) repeat-x top;
+}
+.d-grid .header-table .menu-open-header {
+  background: #daebff url(header-hover-bg.png) repeat-x top;
+}
+.d-grid .filter-bar .filter-bar-cell {
+  height: 24px;
+  background: url(filter-bg.png) repeat-x;
+  border-bottom: 1px #C8CBCE solid;
+}
+.d-grid .footer-table .footer {
+  background: #f0f4f8 url(header-bg.png) repeat-x top;
+  border-top: 1px #C8CBCE solid;
+  border-left: 1px #FFFFFF solid;
+  border-right: 1px #C8CBCE solid;
+  border-bottom: 1px #E3E8EC solid;
+}
+.d-grid .data-table .row td {
+  border-left: 1px #FFFFFF solid;
+  border-right: 1px #E3E3E3 dotted;
+  border-top: 1px #FFFFFF solid;
+  border-bottom: 1px #E8E8E8 solid;
+}
+.d-grid .data-table .odd-row {
+  background: #FAFAFA;
+}
+.d-grid .data-table .dummy-row {
+  background: #F1F1F1;
+}
+.d-grid .data-table .hover-row {
+  background: #EFEFEF;
+}
+.d-grid .data-table .hover-row td {
+  border-top-color: #EFEFEF;
+}
+.d-grid .data-table .selected-row {
+  background: #A3F1B2;
+}
+.d-grid .data-table .selected-row td {
+  border-left: 1px #A3F1B2 solid;
+  border-top-color: #CFF8D7;
+  border-bottom-color: #8DD89D;
+}
+.d-grid .data-table .current-row {
+  background: #a3f1b2 url(current-row.png) repeat-x top;
+}
+.d-grid .data-table .current-row td {
+  border-top-color: #E0F8E4;
+  border-bottom-color: #6ECC81;
+}
+.d-grid .data-table .row .current-cell {
+  background: #cbf7d4 url(current-cell.png) repeat-x top;
+}
+.d-grid .data-table .drag-over-row {
+  background: #EFEFEF;
+}
+.d-grid .data-table .drag-over-row td {
+  border-top-color: #EFEFEF;
+  border-bottom-color: #EFEFEF;
+}
+.d-grid .data-table .group-header-row td {
+  background: #FFFFFF;
+  border-bottom: 1px #FFFFFF solid;
+}
+.d-grid .data-table .group-header-row .cell {
+  color: #FB8B0D;
+  font-size: 10pt;
+  font-weight: bold;
+  line-height: 32px;
+  padding-left: 6px;
+  border-bottom: 2px #D36800 solid;
+}
+.d-grid .data-table .group-footer-row td {
+  background: #F5F5F5;
+  border-bottom: 1px #7B9CC2 solid;
+}
+.d-grid .cell-flag-dirty {
+  background: url(dirty-flag.png) no-repeat right top;
+}
+.d-grid .cell-flag-warn {
+  background: url(cell-flag-warn.png) no-repeat right top;
+}
+.d-grid .cell-flag-error {
+  background: url(cell-flag-error.png) no-repeat right top;
+}
+.d-grid .indicator-new {
+  background: url(indicator-new.png) no-repeat center center;
+}
+.d-grid .indicator-modified {
+  background: url(dirty-flag.png) no-repeat center center;
+}
+.d-grid .indicator-warn {
+  background: url(cell-flag-warn.png) no-repeat center center;
+}
+.d-grid .indicator-error {
+  background: url(cell-flag-error.png) no-repeat center center;
+}
+.d-grid .preparing-area {
+  background: url(preparing-area-bg.png);
+}
+.d-grid-header-option-button {
+  cursor: pointer;
+  width: 14px;
+  border-left: 1px #9EC9FB solid;
+  background: #ffffff url(header-option-button.png) no-repeat center center;
+  filter: alpha( opacity = 50);
+  opacity: 0.5;
+}
+.d-grid-col-drag-top {
+  width: 15px;
+  height: 15px;
+  background: url(col-drag-indicator.png) -15px no-repeat;
+}
+.d-grid-col-drag-bottom {
+  width: 15px;
+  height: 15px;
+  background: url(col-drag-indicator.png) no-repeat;
+}
+.d-grid-col-resize-helper {
+  border-left: 1px #000000 solid;
+  border-right: 1px #000000 solid;
+  background-color: #FFFFFF;
+  filter: alpha( opacity = 50);
+  opacity: 0.5;
+}
+.d-grid-col-drag-helper {
+  cursor: pointer;
+  background: #daebff url(header-hover-bg.png) repeat-x top;
+  border: 1px #9EC9FB solid;
+  filter: alpha( opacity = 80);
+  opacity: 0.8;
+}
+.d-grid-col-drop-indicator {
+  background-color: #FF8040;
+}
+.d-grid-col-resize-handler {
+  background-color: #9EC9FB;
+  cursor: e-resize;
+  filter: alpha( opacity = 50);
+  opacity: 0.5;
+}
+.d-grid .indicator .cell {
+  height: 16px;
+  background: url(column-headers.png) center 0px no-repeat;
+}
+.d-grid .header-table .row-num .cell {
+  height: 16px;
+  background: url(column-headers.png) center -16px no-repeat;
+}
+.d-grid .row-selector .cell {
+  height: 16px;
+  background: url(column-headers.png) center -32px no-repeat;
+}
+.d-grid .float-refresh-panel {
+  background: url(refresh-panel.png);
+  top: -54px;
+  right: 20px;
+  width: 54px;
+  height: 60px;
+  filter: alpha( opacity = 80);
+  opacity: 0.8;
+}
+.d-grid .float-refresh-panel .button {
+  cursor: pointer;
+  background: url(refresh-button.png);
+  top: 3px;
+  left: 3px;
+  width: 48px;
+  height: 48px;
+}
+.d-grid .float-refresh-panel .button-hover {
+  background-position: -48px 0;
+}
+.d-grid .float-refresh-panel .button-click {
+  background-position: -96px 0;
+}
+.d-grid .float-filter-panel {
+  background: url(float-filter-panel.png);
+  left: 20px;
+  width: 120px;
+  height: 40px;
+  filter: alpha( opacity = 90);
+  opacity: 0.9;
+}
+.d-grid .float-filter-panel .d-icon-button {
+  bottom: 5px;
+  background: url(tool-button-bg.png);
+}
+.d-grid .float-filter-panel .filter-button {
+  left: 13px;
+}
+.d-grid .float-filter-panel .filter-button .icon {
+  background: url(common/icons.png) 0 -40px;
+}
+.d-grid .float-filter-panel .filter-button-hover {
+  background-position: -20px 0;
+}
+.d-grid .float-filter-panel .filter-button-click {
+  background-position: -40px 0;
+}
+.d-grid .float-filter-panel .reset-button {
+  left: 35px;
+}
+.d-grid .float-filter-panel .reset-button .icon {
+  background: url(common/icons.png) -280px -220px;
+}
+.d-grid .float-filter-panel .reset-button-hover {
+  background-position: -20px 0;
+}
+.d-grid .float-filter-panel .reset-button-click {
+  background-position: -40px 0;
+}
+.d-grid .float-filter-panel .hide-button {
+  left: 57px;
+}
+.d-grid .float-filter-panel .hide-button .icon {
+  background: url(common/icons.png) -40px 0;
+}
+.d-grid .float-filter-panel .hide-button-hover {
+  background-position: -20px 0;
+}
+.d-grid .float-filter-panel .hide-button-click {
+  background-position: -40px 0;
+}

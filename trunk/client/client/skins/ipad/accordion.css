@@ -1,0 +1,63 @@
+.i-section {
+  overflow: hidden;
+  cursor: default;
+  width: 100%;
+}
+.i-accordion {
+  padding: 0 1px 1px 1px;
+  overflow: hidden;
+}
+.i-accordion .i-section {
+  margin-top: 1px;
+}
+.i-accordion .i-section .container {
+  display: none;
+}
+.i-accordion .current-section .container {
+  display: block;
+}
+.i-accordion .i-menu {
+  position: relative;
+  padding: 0;
+}
+.d-section .container {
+  background: #F0F0F0;
+}
+.d-section-caption-bar {
+  background: url(section-caption-bar-bg.png) top repeat-x;
+  border: 1px solid #CCCCCC;
+  padding: 0;
+  padding-left: 6px;
+}
+.d-section-caption-bar .caption {
+  height: 35px;
+}
+.d-section-caption-bar .caption-bar-icon {
+  margin-top: 7.5px;
+  width: 20px;
+  background: transparent 0 center no-repeat;
+}
+.d-accordion .current-section .d-section-caption-bar {
+  background: url(section-caption-bar-bg.png) bottom;
+  border: 1px solid #378EBB;
+}
+.d-accordion {
+  border: 1px #A1A1A1 solid;
+  background: white;
+}
+.d-accordion .d-menu {
+  border: 0;
+  background: #FAFAFA;
+}
+.d-accordion .d-section-caption-bar {
+  height: 35px;
+}
+.d-accordion .d-section-caption-bar .caption {
+  line-height: 35px;
+  height: 35px;
+}
+.d-accordion .d-section-caption-bar .caption-bar-icon {
+  margin-top: 7.5px;
+  width: 20px;
+  height: 20px;
+}

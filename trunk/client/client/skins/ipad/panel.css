@@ -1,0 +1,174 @@
+.i-panel {
+  overflow: hidden;
+}
+.i-panel .content-panel {
+  overflow: auto;
+}
+.i-panel .button-panel {
+  padding: 2px 5px 5px 2px;
+  text-align: center;
+  height: 48px;
+}
+.i-panel .button-panel-left {
+  text-align: left;
+}
+.i-panel .button-panel-right {
+  text-align: right;
+}
+.i-panel .button-panel .i-button {
+  margin-right: 3px;
+}
+.i-panel-curveborder .caption-bar {
+  -moz-border-radius-topright: 3px;
+  -webkit-border-top-right-radius: 3px;
+  border-top-right-radius: 3px;
+  -moz-border-radius-topleft: 3px;
+  -webkit-border-top-left-radius: 3px;
+  border-top-left-radius: 3px;
+}
+.i-panel-curveborder .panel-body {
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+}
+.i-panel-showcaptionbar .panel-body {
+  -moz-border-radius-topright: 0;
+  -webkit-border-top-right-radius: 0;
+  border-top-right-radius: 0;
+  -moz-border-radius-topleft: 0;
+  -webkit-border-top-left-radius: 0;
+  border-top-left-radius: 0;
+}
+.i-panel-curveborder .caption-bar .button-group {
+  float: right;
+  margin-top: 3px;
+}
+.i-panel-curveborder .panel-header-left {
+  font-size: 0;
+  line-height: 0;
+  margin-right: 3px;
+}
+.i-panel-curveborder .panel-header-right {
+  position: relative;
+  font-size: 0;
+  line-height: 0;
+  padding: 3px 0 0 0;
+  margin-right: -3px;
+}
+.i-panel-curveborder .panel-body-left {
+  padding-left: 3px;
+}
+.i-panel-curveborder .panel-body-right {
+  padding-right: 3px;
+}
+.i-panel-curveborder .panel-body {
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+}
+.i-panel-curveborder .panel-footer-left {
+  margin-right: 3px;
+}
+.i-panel-curveborder .panel-footer-right {
+  position: relative;
+  font-size: 0;
+  margin-right: -3px;
+  padding: 3px 0 0 0;
+  line-height: 0;
+}
+.i-panel-curveborder .content-panel {
+  padding: 0 3px;
+}
+.i-panel-curveborder .caption-bar .button-group {
+  margin-top: 0;
+}
+.i-panel-collapsed .panel-footer-left {
+  display: none;
+}
+.i-panel-normalborder {
+  -moz-box-shadow: 0;
+  -webkit-box-shadow: 0;
+  border-radius: 0;
+}
+.d-panel .panel-body {
+  background-color: #FFFFFF;
+}
+.d-panel-curveborder .caption-bar {
+  border: 1px solid #B4B4B4;
+  border-bottom: 0;
+}
+.d-panel-curveborder .panel-body {
+  border: 1px solid #B4B4B4;
+  border-top: 0;
+}
+.d-panel-curveborder {
+  border: 0;
+}
+.d-panel-curveborder .panel-header-left {
+  background: url(panel-corners.png) no-repeat scroll 0 top;
+}
+.d-panel-curveborder .panel-header-right {
+  background: url(panel-corners.png) no-repeat scroll right -6px;
+}
+.d-panel-curveborder .panel-body-left {
+  background: url(panel-lr.png) repeat-y 0 0;
+}
+.d-panel-curveborder .panel-body-right {
+  background: url(panel-lr.png) repeat-y right 0;
+}
+.d-panel-curveborder .panel-body {
+  background: #FFFFFF;
+  border: 0;
+}
+.d-panel-curveborder .panel-footer-left {
+  background: url(panel-corners.png) no-repeat scroll 0 -3px;
+}
+.d-panel-curveborder .panel-footer-right {
+  background: url(panel-corners.png) no-repeat scroll right bottom;
+}
+.d-panel .d-caption-bar {
+  margin: 0 -2px;
+}
+.d-panel-curveborder .caption-bar {
+  border: 0;
+}
+.d-panel .collapse-icon {
+  background: url(panel_buttons.png) -68px 0;
+}
+.d-panel .collapse-icon-left {
+  background: url(panel_buttons.png) 0 0;
+}
+.d-panel .collapse-icon-right {
+  background: url(panel_buttons.png) -34px 0;
+}
+.d-panel .collapse-icon-top {
+  background: url(panel_buttons.png) -68px 0;
+}
+.d-panel .collapse-icon-bottom {
+  background: url(panel_buttons.png) -102px 0;
+}
+.d-panel .expand-icon {
+  background: url(panel_buttons.png) -102px 0;
+}
+.d-panel .expand-icon-left {
+  background: url(panel_buttons.png) -34px 0;
+}
+.d-panel .expand-icon-right {
+  background: url(panel_buttons.png) 0 0;
+}
+.d-panel .expand-icon-top {
+  background: url(panel_buttons.png) -102px 0;
+}
+.d-panel .expand-icon-bottom {
+  background: url(panel_buttons.png) -68px 0;
+}
+.d-panel-normalborder {
+  border: 1px solid #B6B6B6;
+}
+.d-panel-collapsed {
+  border-bottom: 0;
+}
+.d-panel .d-caption-bar .button-group {
+  /**margin-top: -1 * @cornerWidth - (@captionbarHeight - @simpleButtonHeight) / 2;*/
+
+}
