@@ -2,8 +2,7 @@
 <ViewConfig>
   <View layout="Anchor" title="拖拽  1">
     <BlockView blockHeight="100" dragTags="block" draggable="true" droppable="true" droppableTags="block" fillLine="true" height="430" layoutConstraint="left:10; top:10" lineSize="4" width="400">
-      <ClientEvent name="onCreate">
-self.set(&quot;renderer&quot;, new dorado.widget.blockview.ImageBlockRenderer({ captionProperty: &quot;name&quot; }));
+      <ClientEvent name="onCreate">self.set(&quot;renderer&quot;, new dorado.widget.blockview.ImageBlockRenderer({ captionProperty: &quot;name&quot; }));
 			</ClientEvent>
       <Property name="items">
         <Collection>
@@ -79,10 +78,9 @@ self.set(&quot;renderer&quot;, new dorado.widget.blockview.ImageBlockRenderer({ 
       </Property>
     </BlockView>
     <BlockView blockHeight="75" dragTags="block" draggable="true" droppable="true" droppableTags="block" fillLine="true" height="220" layoutConstraint="left:430; top:10" lineSize="4" width="300">
-      <ClientEvent name="onCreate">
-self.set(&quot;renderer&quot;, new dorado.widget.blockview.ImageBlockRenderer({ captionProperty: &quot;name&quot; }));
+      <ClientEvent name="onCreate">self.set(&quot;renderer&quot;, new dorado.widget.blockview.ImageBlockRenderer({ captionProperty: &quot;name&quot; }));
 			</ClientEvent>
     </BlockView>
-    <ListBox dragTags="block" draggable="true" droppable="true" droppableTags="block" height="200" property="name" width="300" layoutConstraint="left:430; anchorTop:previous; top:10" />
+    <ListBox dragTags="block" draggable="true" droppable="true" droppableTags="block" height="200" layoutConstraint="left:430; anchorTop:previous; top:10" property="name" width="300"/>
   </View>
 </ViewConfig>

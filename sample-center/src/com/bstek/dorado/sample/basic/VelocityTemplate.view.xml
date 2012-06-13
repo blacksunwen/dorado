@@ -9,9 +9,6 @@
     <Panel layout="padding:20" caption="一个面板控件" height="300" renderOn="#place3" width="800">
       <Property name="collapseable">true</Property>
     </Panel>
-    <DataSet id="dataSet1">
-      <ClientEvent name="onReady">&#xD;
-</ClientEvent>
-    </DataSet>
+    <DataSet id="dataSet1"/>
   </View>
 </ViewConfig>

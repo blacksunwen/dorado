@@ -11,9 +11,9 @@
       <Property name="readOnly">false</Property>
     </DataSet>
     <UpdateAction id="actionSave" icon="url(>skin>common/icons.gif) -140px -20px" successMessage="OK!">
-      <ClientEvent name="onGetUpdateData">// 请注意：如果您的UpdateAction中定义了多个UpdateItem，那么本事件会针对每一个UpdateItem触发一次，&#xD;
+      <ClientEvent name="onGetUpdateData" signature="arg, dataGrid">// 请注意：如果您的UpdateAction中定义了多个UpdateItem，那么本事件会针对每一个UpdateItem触发一次，&#xD;
 // 您可能需要在此事件中判断当前触发事件的UpdateItem是哪一个。&#xD;
-arg.data = this.get(&quot;#dataGrid.selection&quot;);</ClientEvent>
+arg.data = dataGrid.get(&quot;selection&quot;);</ClientEvent>
       <Property name="dataResolver">customUpdateItem#save</Property>
       <Property name="caption">提交DataGrid中所有被勾选的数据</Property>
       <Property name="confirmMessage"></Property>

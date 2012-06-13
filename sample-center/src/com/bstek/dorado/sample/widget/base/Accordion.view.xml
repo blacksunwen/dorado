@@ -276,8 +276,7 @@
         <Property name="caption">控件</Property>
         <Property name="icon">url(skin>common/icons.gif) -40px -40px</Property>
         <BlockView blockHeight="100" dragTags="block" draggable="true" droppable="true" droppableTags="block" fillLine="true" height="430" layoutConstraint="left:10; top:10" lineSize="4" width="400">
-          <ClientEvent name="onCreate">
-self.set(&quot;renderer&quot;, new dorado.widget.blockview.ImageBlockRenderer({ captionProperty: &quot;name&quot; }));
+          <ClientEvent name="onCreate">self.set(&quot;renderer&quot;, new dorado.widget.blockview.ImageBlockRenderer({ captionProperty: &quot;name&quot; }));
 			</ClientEvent>
           <Property name="items">
             <Collection>

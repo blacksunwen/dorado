@@ -8,10 +8,7 @@
       <DataPilot dataSet="dsOrders"/>
       <Separator/>
       <ToolBarButton caption="查询" icon="url(>skin>common/icons.gif) -40px -100px">
-        <ClientEvent name="onClick">
-var formCondition = this.id(&quot;formCondition&quot;);
-var dsOrders = this.id(&quot;dsOrders&quot;);
-dsOrders.set(&quot;parameter&quot;, formCondition.get(&quot;entity&quot;));
+        <ClientEvent name="onClick" signature="formCondition, dsOrders">dsOrders.set(&quot;parameter&quot;, formCondition.get(&quot;entity&quot;));
 dsOrders.flushAsync();
 </ClientEvent>
       </ToolBarButton>

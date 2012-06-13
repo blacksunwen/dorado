@@ -5,18 +5,15 @@
   </Arguments>
   <View layout="Anchor" title="AnchorLayout">
     <Button caption="锚定式布局-场景1" layoutConstraint="left:20; top:20">
-      <ClientEvent name="onClick">
-this.id(&quot;dialog1&quot;).show();
+      <ClientEvent name="onClick" signature="dialog1">dialog1.show();
 </ClientEvent>
     </Button>
     <Button caption="锚定式布局-场景2" layoutConstraint="left:20; top:4; anchorTop:previous">
-      <ClientEvent name="onClick">
-this.id(&quot;dialog2&quot;).show();
+      <ClientEvent name="onClick" signature="dialog2">dialog2.show();
 </ClientEvent>
     </Button>
     <Button caption="锚定式布局-场景3" layoutConstraint="left:20; top:4; anchorTop:previous">
-      <ClientEvent name="onClick">
-this.id(&quot;dialog3&quot;).show();
+      <ClientEvent name="onClick" signature="dialog3">dialog3.show();
 </ClientEvent>
     </Button>
     <Dialog id="dialog1" layout="Anchor" caption="场景1" center="true" contentOverflow="hidden" height="300" maximizeable="true" modal="true" width="600">

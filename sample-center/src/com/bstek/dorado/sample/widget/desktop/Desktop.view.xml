@@ -6,53 +6,6 @@
   <View>
     <Shell id="shell">
       <Property name="wallpaper">>dorado/res/com/bstek/dorado/sample/widget/desktop/wallpapers/dorado1.jpg</Property>
-      <DesktopCarousel>
-        <ClientEvent name="onShortcutContextMenu">var menus = this.id(&quot;menus&quot;);
-					menus.show({
-					event: arg.event
-					});
-				</ClientEvent>
-        <Desktop>
-          <Property name="iconSize">small</Property>
-          <Shortcut>
-            <Property name="appId">iframe1</Property>
-          </Shortcut>
-          <Shortcut>
-            <Property name="appId">iframe2</Property>
-          </Shortcut>
-          <Shortcut>
-            <Property name="appId">iframe3</Property>
-          </Shortcut>
-          <Shortcut>
-            <Property name="appId">iframe4</Property>
-          </Shortcut>
-        </Desktop>
-        <Desktop>
-          <Shortcut>
-            <Property name="appId">chart1</Property>
-          </Shortcut>
-          <Shortcut>
-            <Property name="appId">chart2</Property>
-          </Shortcut>
-          <Shortcut>
-            <Property name="appId">chart3</Property>
-          </Shortcut>
-          <Shortcut>
-            <Property name="appId">chart4</Property>
-          </Shortcut>
-          <Shortcut>
-            <Property name="appId">chart5</Property>
-          </Shortcut>
-          <Shortcut>
-            <Property name="appId">chart6</Property>
-          </Shortcut>
-        </Desktop>
-        <Desktop>
-          <Shortcut>
-            <Property name="appId">widget1</Property>
-          </Shortcut>
-        </Desktop>
-      </DesktopCarousel>
       <Apps>
         <WidgetApp>
           <Property name="id">widget1</Property>
@@ -89,7 +42,7 @@
         <IFrameApp>
           <Property name="id">iframe4</Property>
           <Property name="caption">Tree Grid</Property>
-          <Property name="path">>com.bstek.dorado.sample.widget.customize.TreeGrid.d</Property>
+          <Property name="path">>com.bstek.dorado.sample.widget.tree.TreeGrid.d</Property>
           <Property name="icon32">>dorado/res/com/bstek/dorado/sample/widget/desktop/treegrid.png</Property>
         </IFrameApp>
         <IFrameApp>
@@ -138,8 +91,7 @@
         </IFrameApp>
       </Apps>
       <Taskbar>
-        <ClientEvent name="onTaskButtonContextMenu">var menu = this.id(&quot;menut&quot;);
-					menu.show({event: arg.event, direction: &quot;b2t&quot;});</ClientEvent>
+        <ClientEvent name="onTaskButtonContextMenu" signature="arg, menut">menut.show({event: arg.event, direction: &quot;b2t&quot;});</ClientEvent>
         <QuickButtons>
           <QuickButton>
             <Property name="appId">chart1</Property>
@@ -150,24 +102,67 @@
         </QuickButtons>
         <StartButton>
           <SimpleButton>
-            <ClientEvent name="onClick">var startMenuPanel = this.id(&quot;startMenuPanel&quot;);
-							startMenuPanel.addListener(&quot;onShow&quot;, function() {
-							self.set(&quot;toggled&quot;, true);
-							startMenuPanel.addListener(&quot;onHide&quot;, function() {
-							self.set(&quot;toggled&quot;, false);
-							}, {once: true});
-							}, {once: true});
-							startMenuPanel.show({
-							anchorTarget: self,
-							vAlign: &quot;top&quot;,
-							align: &quot;innerleft&quot;,
-							positionOffset: [0, 8]
-							});
+            <ClientEvent name="onClick" signature="self, startMenuPanel">startMenuPanel.addListener(&quot;onShow&quot;, function() {
+	self.set(&quot;toggled&quot;, true);
+}, {once: true});
+startMenuPanel.addListener(&quot;onHide&quot;, function() {
+	self.set(&quot;toggled&quot;, false);
+}, {once: true});
+
+startMenuPanel.show({
+	anchorTarget: self,
+	vAlign: &quot;top&quot;,
+	align: &quot;innerleft&quot;,
+	positionOffset: [0, 8]
+});
 						</ClientEvent>
             <Property name="className">start-button</Property>
           </SimpleButton>
         </StartButton>
       </Taskbar>
+      <DesktopCarousel>
+        <ClientEvent name="onShortcutContextMenu" signature="arg, menus">menus.show({ event: arg.event });		</ClientEvent>
+        <Desktop>
+          <Property name="iconSize">small</Property>
+          <Shortcut>
+            <Property name="appId">iframe1</Property>
+          </Shortcut>
+          <Shortcut>
+            <Property name="appId">iframe2</Property>
+          </Shortcut>
+          <Shortcut>
+            <Property name="appId">iframe3</Property>
+          </Shortcut>
+          <Shortcut>
+            <Property name="appId">iframe4</Property>
+          </Shortcut>
+        </Desktop>
+        <Desktop>
+          <Shortcut>
+            <Property name="appId">chart1</Property>
+          </Shortcut>
+          <Shortcut>
+            <Property name="appId">chart2</Property>
+          </Shortcut>
+          <Shortcut>
+            <Property name="appId">chart3</Property>
+          </Shortcut>
+          <Shortcut>
+            <Property name="appId">chart4</Property>
+          </Shortcut>
+          <Shortcut>
+            <Property name="appId">chart5</Property>
+          </Shortcut>
+          <Shortcut>
+            <Property name="appId">chart6</Property>
+          </Shortcut>
+        </Desktop>
+        <Desktop>
+          <Shortcut>
+            <Property name="appId">widget1</Property>
+          </Shortcut>
+        </Desktop>
+      </DesktopCarousel>
     </Shell>
     <FloatContainer id="startMenuPanel">
       <ClientEvent name="onBlur">self.hide();
@@ -197,22 +192,19 @@
             </MenuItem>
           </Menu>
           <Menu>
-            <ClientEvent name="onContextMenu">if (!self.get(&quot;focusItem&quot;) || (self.get(&quot;focusItem&quot;) &amp;&amp;
-							self.get(&quot;focusItem&quot;).hasSubmenu())) {
-							return;
-							}
-							var menu = this.id(&quot;menu&quot;);
-							self.freeze();
-							menu._focusParent = self;
-							menu.show({
-							event: arg.event
-							});
-							menu.addListener(&quot;onHide&quot;, function() {
-							self.unfreeze();
-							}, { once: true });
+            <ClientEvent name="onContextMenu" signature="self, arg, menu">if (!self.get(&quot;focusItem&quot;) || (self.get(&quot;focusItem&quot;) &amp;&amp; self.get(&quot;focusItem&quot;).hasSubmenu())) {
+	return;
+}
+
+self.freeze();
+menu.set(&quot;focusParent&quot;, self);
+menu.show({ event: arg.event });
+menu.addListener(&quot;onHide&quot;, function() {
+	self.unfreeze();
+}, { once: true });
 						</ClientEvent>
             <Property name="exClassName">right-menu</Property>
-      		<Property name="visible">true</Property>
+            <Property name="visible">true</Property>
             <Property name="floating">false</Property>
             <MenuItem>
               <Property name="caption">Demo</Property>
@@ -256,37 +248,36 @@
     </FloatContainer>
     <Menu id="menu">
       <MenuItem>
-        <ClientEvent name="onClick">var shell = this.id(&quot;shell&quot;);
-					var menu = self.get(&quot;parent&quot;).get(&quot;focusParent&quot;);
-					var focusItem = menu.get(&quot;focusItem&quot;);
-					shell.getCurrentDesktop().addItem({ caption: focusItem.get(&quot;caption&quot;) });
-				</ClientEvent>
+        <ClientEvent name="onClick" signature="self, shell">var shell = this.id(&quot;shell&quot;);
+var menu = self.get(&quot;parent&quot;).get(&quot;focusParent&quot;);
+var focusItem = menu.get(&quot;focusItem&quot;);
+shell.getCurrentDesktop().addItem({ caption: focusItem.get(&quot;caption&quot;) });</ClientEvent>
         <Property name="caption">Send To Desktop</Property>
       </MenuItem>
     </Menu>
     <Menu id="menut">
       <MenuItem>
-        <ClientEvent name="onClick">var shell = this.id(&quot;shell&quot;), taskbar = shell.get(&quot;taskbar&quot;);
-					var contextMenuTaskButton = taskbar.get(&quot;contextMenuTaskButton&quot;);
-					if (contextMenuTaskButton &amp;&amp; contextMenuTaskButton.get(&quot;app&quot;)) {
-					contextMenuTaskButton.get(&quot;app&quot;).close();
-					}
+        <ClientEvent name="onClick" signature="shell">var taskbar = shell.get(&quot;taskbar&quot;);
+var contextMenuTaskButton = taskbar.get(&quot;contextMenuTaskButton&quot;);
+if (contextMenuTaskButton &amp;&amp; contextMenuTaskButton.get(&quot;app&quot;)) {
+	contextMenuTaskButton.get(&quot;app&quot;).close();
+}
 				</ClientEvent>
         <Property name="caption">Close</Property>
       </MenuItem>
     </Menu>
     <Menu id="menus">
       <MenuItem>
-        <ClientEvent name="onClick">var shell = this.id(&quot;shell&quot;), desktop = shell.getCurrentDesktop(),
-					shortcut = desktop.get(&quot;contextMenuShortcut&quot;);
-					desktop.removeItem(shortcut);
+        <ClientEvent name="onClick" signature="shell">var desktop = shell.getCurrentDesktop(),
+shortcut = desktop.get(&quot;contextMenuShortcut&quot;);
+desktop.removeItem(shortcut);
 				</ClientEvent>
         <Property name="caption">Remove</Property>
       </MenuItem>
       <MenuItem>
-        <ClientEvent name="onClick">var shell = this.id(&quot;shell&quot;), desktop = shell.getCurrentDesktop(),
-					shortcut = desktop.get(&quot;contextMenuShortcut&quot;);
-					shell.launchApp(shortcut.get(&quot;appId&quot;));</ClientEvent>
+        <ClientEvent name="onClick" signature="shell">var desktop = shell.getCurrentDesktop(),
+shortcut = desktop.get(&quot;contextMenuShortcut&quot;);
+shell.launchApp(shortcut.get(&quot;appId&quot;));</ClientEvent>
         <Property name="caption">Launch</Property>
       </MenuItem>
     </Menu>
