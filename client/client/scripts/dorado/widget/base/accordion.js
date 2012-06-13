@@ -262,6 +262,16 @@ dorado.widget.Accordion = $extend(dorado.widget.Control, /** @scope dorado.widge
 		 */
 		onCurrentSectionChange: {}
 	},
+		
+	doGet: function(attr) {
+		var c = attr.charAt(0);
+		if (c == '&') {
+			var name = attr.substring(1);
+			return this.getTab(name);
+		} else {
+			return $invokeSuper.call(this, [attr]);
+		}
+	},
 	
 	doSetCurrentSection: function(section, animate) {
 		var accordion = this, lastCurrent = accordion._currentSection, newCurrent = section;

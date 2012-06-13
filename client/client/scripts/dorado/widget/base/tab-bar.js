@@ -1,23 +1,22 @@
 (function() {
-	var TABBAR_CLASS = "d-tabbar", TABS_CLASS = "tabs", TABS_WRAP_CLASS = "tabs-wrap", LEFT_BUTTON_CLASS = "left-button",
-		RIGHT_BUTTON_CLASS = "right-button", MENU_BUTTON_CLASS = "menu-button";
-
+	var TABBAR_CLASS = "d-tabbar", TABS_CLASS = "tabs", TABS_WRAP_CLASS = "tabs-wrap", LEFT_BUTTON_CLASS = "left-button", RIGHT_BUTTON_CLASS = "right-button", MENU_BUTTON_CLASS = "menu-button";
+	
 	/**
-     * @author Frank Zhang (mailto:frank.zhang@bstek.com)
-     * @component Base
+	 * @author Frank Zhang (mailto:frank.zhang@bstek.com)
+	 * @component Base
 	 * @class 标签条。
 	 * @extends dorado.widget.Control
 	 */
 	dorado.widget.TabBar = $extend(dorado.widget.Control, /** @scope dorado.widget.TabBar.prototype */ {
 		$className: "dorado.widget.TabBar",
-        _inherentClassName: "i-tabbar",
+		_inherentClassName: "i-tabbar",
 		focusable: true,
-
+		
 		ATTRIBUTES: /** @scope dorado.widget.TabBar.prototype */ {
 			className: {
 				defaultValue: TABBAR_CLASS
 			},
-
+			
 			/**
 			 * TabBar的当前Tab
 			 * @type dorado.widget.tab.Tab
@@ -64,29 +63,29 @@
 					tabbar.set("currentTab", tabbar._tabs.get(index));
 				}
 			},
-
+			
 			/**
-             * 可以使用Tab对象或者Tab的配置信息来设置，当设置该属性的时候，原来的tabs会被清空。
+			 * 可以使用Tab对象或者Tab的配置信息来设置，当设置该属性的时候，原来的tabs会被清空。
 			 * 在设置的时候，数据类型为Array，在取得的时候，数据类型为dorado.util.KeyedArray。
-             *
+			 *
 			 * @type dorado.util.KeyedArray
 			 * @attribute
 			 */
 			tabs: {
 				setter: function(value) {
 					var tabbar = this, tabs = tabbar._tabs;
-                    if (tabs) {
-                        tabbar.clearTabs();
-                    }
+					if (tabs) {
+						tabbar.clearTabs();
+					}
 					if (value && value instanceof Array) {
 						for (var i = 0, j = value.length; i < j; i++) {
 							var tab = value[i];
 							tabbar.addTab(tab, null, false);
 						}
 					}
-
+					
 					var currentTab = tabbar._currentTab;
-
+					
 					if (typeof currentTab == "number" || typeof currentTab == "string") {
 						var result = tabbar._tabs.get(currentTab);
 						if (result) {
@@ -95,7 +94,7 @@
 					}
 				}
 			},
-
+			
 			/**
 			 * 是否一直显示左右导航按钮，默认值为false，也就是说只有在需要的时候才显示。
 			 * @type boolean
@@ -115,7 +114,7 @@
 					}
 				}
 			},
-
+			
 			/**
 			 * 是否显示Tab的菜单按钮，默认值为false，即不显示。
 			 * @type boolean
@@ -142,7 +141,7 @@
 					tabbar._showMenuButton = value;
 				}
 			},
-
+			
 			/**
 			 * TabBar中每个Tab的最小宽度，该属性只允许设置一次。
 			 * @type int
@@ -151,7 +150,7 @@
 			tabMinWidth: {
 				writeOnce: true
 			},
-
+			
 			/**
 			 * Tab的显示位置，可选值为top、bottom，默认值为top
 			 * @type String
@@ -169,7 +168,7 @@
 					}
 				}
 			},
-
+			
 			/**
 			 * 激活右键菜单的Tab，可能会被激活的右键菜单使用。
 			 * @type dorado.widget.tab.Tab
@@ -178,13 +177,13 @@
 			contextMenuTab: {
 				readOnly: true
 			},
-
+			
 			height: {
 				independent: true,
 				readOnly: true
 			}
 		},
-
+		
 		EVENTS: /** @scope dorado.widget.TabBar.prototype */ {
 			/**
 			 * 在Tab进行切换之前触发的事件，在这个事件里面currentTab属性还是切换之前的Tab。
@@ -197,7 +196,7 @@
 			 * @event
 			 */
 			beforeTabChange: {},
-
+			
 			/**
 			 * 在Tab成功切换之后触发的事件，在这个事件里面currentTab属性已经为要切换到的Tab。
 			 * 注意：此事件只有当TabBar渲染以后才会触发。
@@ -209,7 +208,7 @@
 			 * @event
 			 */
 			onTabChange: {},
-
+			
 			/**
 			 * 在Tab上点击右键触发的事件。
 			 * @param {Object} self 事件的发起者，即组件本身。
@@ -222,15 +221,25 @@
 			 */
 			onTabContextMenu: {}
 		},
-
+		
 		constructor: function() {
 			this._tabs = new dorado.util.KeyedArray(function(value) {
 				return value._name;
 			});
-
+			
 			$invokeSuper.call(this, arguments);
 		},
-
+		
+		doGet: function(attr) {
+			var c = attr.charAt(0);
+			if (c == '&') {
+				var name = attr.substring(1);
+				return this.getTab(name);
+			} else {
+				return $invokeSuper.call(this, [attr]);
+			}
+		},
+		
 		/**
 		 * 禁用Tab。
 		 * 不建议直接使用该方法，如果要禁用某个tab，使用tabbar的getTab拿到该tab后，调用tab.set("disabled", true)即可。
@@ -254,7 +263,7 @@
 				navmenu.getItem(index).set("disabled", true);
 			}
 		},
-
+		
 		/**
 		 * 启用Tab。
 		 * 不建议直接使用该方法，如果要启用某个tab，使用tabbar的getTab拿到该tab后，调用tab.set("disabled", false)即可。
@@ -274,7 +283,7 @@
 				navmenu.getItem(index).set("disabled", false);
 			}
 		},
-
+		
 		/**
 		 * 设置某个tab的显示或者隐藏
 		 * @param {int|String|dorado.widget.tab.Tab} tab 要设置的tab(可以为索引、name、Tab)。
@@ -286,11 +295,11 @@
 			tab = tabbar.getTab(tab);
 			index = tabs.indexOf(tab);
 			tabDom = tab._dom;
-
+			
 			if (tab._visible == visible) {
 				return;
 			}
-
+			
 			if (tabDom) {
 				if (visible) {
 					tabDom.style.display = "";
@@ -303,12 +312,12 @@
 				}
 				tabbar.refreshNavButtons();
 			}
-
+			
 			if (navmenu) {
 				navmenu.getItem(index).set("visible", visible);
 			}
 		},
-
+		
 		/**
 		 * 取得TabBar中的Tab。
 		 * @param {int|String|dorado.widget.tab.Tab} tab 可以是Tab的索引，可以是为Tab定义的Name，否则直接返回传入的参数。
@@ -321,7 +330,7 @@
 				return tab;
 			}
 		},
-
+		
 		/**
 		 * 插入标签页
 		 * @param {Object|dorado.widget.tab.Tab} tab 要插入的tab或者tab的配置信息。
@@ -339,16 +348,16 @@
 					tab = dorado.Toolkits.createInstance("tab", tab);
 				}
 				tab._parent = tabbar;
-
+				
 				tabbar.doAddTab(tab, index, current);
-
+				
 				return tab;
 			}
 			return null;
 		},
-
+		
 		doAddTab: function(tab, index, current) {
-			var tabbar = this, tabs = tabbar._tabs, doms = tabbar._doms,navmenu = tabbar._navmenu;
+			var tabbar = this, tabs = tabbar._tabs, doms = tabbar._doms, navmenu = tabbar._navmenu;
 			if (index != null) {
 				tabs.insert(tab, index);
 			} else {
@@ -367,7 +376,7 @@
 				tabbar.doChangeCurrentTab(tab);
 			}
 		},
-
+		
 		/**
 		 * 移除指定的tab。
 		 * @param {int|String|dorado.widget.tab.Tab} tab 要移除的tab，可以为index、tab的name或者tab本身。
@@ -383,11 +392,11 @@
 				tabbar.doRemoveTab(tab);
 			}
 		},
-
+		
 		/**
-         * 移除指定的tab。
-         * @param {int|String|dorado.widget.tab.Tab} tab 要移除的tab，可以为index、tab的name或者tab本身。
-         * @protected
+		 * 移除指定的tab。
+		 * @param {int|String|dorado.widget.tab.Tab} tab 要移除的tab，可以为index、tab的name或者tab本身。
+		 * @protected
 		 */
 		doRemoveTab: function(tab) {
 			var tabbar = this, tabs = tabbar._tabs;
@@ -397,14 +406,14 @@
 			} else {
 				var avialableTab = tabbar.getAvialableTab(tab);
 				tabs.removeAt(tabs.indexOf(tab));
-                tab.destroy();
-
+				tab.destroy();
+				
 				tabbar.doChangeCurrentTab(avialableTab);
 			}
 			tabbar.doRefreshGap();
 			tabbar.refreshNavButtons();
 		},
-
+		
 		/**
 		 * @private
 		 */
@@ -422,7 +431,7 @@
 						return result;
 					}
 				}
-				for (i = index + 1,j = tabs.size; i < j; i++) {
+				for (i = index + 1, j = tabs.size; i < j; i++) {
 					result = tabs.get(i);
 					if (!result._disabled && result._visible) {
 						return result;
@@ -431,7 +440,7 @@
 			}
 			return null;
 		},
-
+		
 		/**
 		 * 移除所有的Tab。
 		 */
@@ -440,80 +449,78 @@
 			for (var i = 0, j = tabs.size; i < j; i++) {
 				tabbar.removeTab(tabs.get(0));
 			}
-            if (tabbar._rendered) {
-                tabbar._currentTab = null;
-            }
+			if (tabbar._rendered) {
+				tabbar._currentTab = null;
+			}
 		},
-
-        /**
-         * 关闭指定的Tab，也可以直接拿到要关闭的tab，调用close方法。
-         * @param {dorado.widget.tab.Tab} tab 要关闭的tab。
-         */
-        closeTab: function(tab) {
-            if (tab) {
-                tab.close();
-            }
-        },
-
-        /**
-         * 关闭除了某个标签以外的其他标签。
-         * @param {dorado.widget.tab.Tab} tab 除了该标签外，其他都要关闭。
-         * @param {boolean} [force=false] 是否忽视Tab的closeable和disable属性强制关闭。
-         */
-        closeOtherTabs: function(tab, force) {
-            if (!tab) return;
-            var tabbar = this, tabs = tabbar.get("tabs").toArray();
-            jQuery.each(tabs, function(index, target){
-                if (target != tab && (force || (!target._disabled && target._closeable))) {
-                    target.close();
-                }
-            });
-        },
-
-        /**
-         * 关闭所有的标签页。
-         * @param {boolean} [force=false] 是否忽视Tab的closeable和disable属性强制关闭。
-         */
-        closeAllTabs: function(force) {
-            var tabbar = this, tabs = tabbar.get("tabs").toArray();
-            jQuery.each(tabs, function(index, tab){
-                if (force || (!tab._disabled && tab._closeable)) {
-                    tab.close();
-                }
-            });
-        },
-
+		
+		/**
+		 * 关闭指定的Tab，也可以直接拿到要关闭的tab，调用close方法。
+		 * @param {dorado.widget.tab.Tab} tab 要关闭的tab。
+		 */
+		closeTab: function(tab) {
+			if (tab) {
+				tab.close();
+			}
+		},
+		
+		/**
+		 * 关闭除了某个标签以外的其他标签。
+		 * @param {dorado.widget.tab.Tab} tab 除了该标签外，其他都要关闭。
+		 * @param {boolean} [force=false] 是否忽视Tab的closeable和disable属性强制关闭。
+		 */
+		closeOtherTabs: function(tab, force) {
+			if (!tab) return;
+			var tabbar = this, tabs = tabbar.get("tabs").toArray();
+			jQuery.each(tabs, function(index, target) {
+				if (target != tab && (force || (!target._disabled && target._closeable))) {
+					target.close();
+				}
+			});
+		},
+		
+		/**
+		 * 关闭所有的标签页。
+		 * @param {boolean} [force=false] 是否忽视Tab的closeable和disable属性强制关闭。
+		 */
+		closeAllTabs: function(force) {
+			var tabbar = this, tabs = tabbar.get("tabs").toArray();
+			jQuery.each(tabs, function(index, tab) {
+				if (force || (!tab._disabled && tab._closeable)) {
+					tab.close();
+				}
+			});
+		},
+		
 		createDom: function() {
 			var tabbar = this, tabs = tabbar._tabs, doms = {}, dom = $DomUtils.xCreate({
 				tagName: "div",
 				className: "i-tabbar " + tabbar._className,
 				contextKey: "tabbar",
-				content: [
-					{
-						tagName: "div",
-						className: TABS_WRAP_CLASS,
-						contextKey: "tabsWrap",
-						content: {
-							tagName: "ul",
-							className: TABS_CLASS,
-							contextKey: "tabs"
-						}
+				content: [{
+					tagName: "div",
+					className: TABS_WRAP_CLASS,
+					contextKey: "tabsWrap",
+					content: {
+						tagName: "ul",
+						className: TABS_CLASS,
+						contextKey: "tabs"
 					}
-				]
+				}]
 			}, null, doms), jDom = jQuery(dom);
-
+			
 			tabbar._doms = doms;
-
-			jDom.addClass(tabbar._tabPlacement == "top" ? "i-tabbar-top " + tabbar._className +  "-top" : "i-tabbar-bottom " + tabbar._className + "-bottom");
-
+			
+			jDom.addClass(tabbar._tabPlacement == "top" ? "i-tabbar-top " + tabbar._className + "-top" : "i-tabbar-bottom " + tabbar._className + "-bottom");
+			
 			if (tabbar._alwaysShowNavButtons) {
 				tabbar.createNavButtons(dom);
 			}
-
+			
 			if (tabbar._showMenuButton) {
 				tabbar.createMenuButton(dom);
 			}
-
+			
 			var tabsEl = doms.tabs, currentTab = tabbar._currentTab;
 			if (tabs) {
 				for (var i = 0, j = tabs.size; i < j; i++) {
@@ -530,7 +537,7 @@
 					tabbar.doChangeCurrentTab(currentTab, true);
 				}
 			}
-
+			
 			$fly(doms.tabsWrap).mousewheel(function(event, delta) {
 				if (tabbar._overflowing) {
 					if (delta < 0) {//right
@@ -542,25 +549,25 @@
 					}
 				}
 			});
-
-            var rightToolButtons = tabbar._rightToolButtons;
-            if (rightToolButtons) {
-                for (var i = 0, j = rightToolButtons.length; i < j; i++) {
-                    var toolButton = rightToolButtons[i];
-                    tabbar.registerInnerControl(toolButton);
-                    toolButton.render(dom);
-                }
-            }
-
+			
+			var rightToolButtons = tabbar._rightToolButtons;
+			if (rightToolButtons) {
+				for (var i = 0, j = rightToolButtons.length; i < j; i++) {
+					var toolButton = rightToolButtons[i];
+					tabbar.registerInnerControl(toolButton);
+					toolButton.render(dom);
+				}
+			}
+			
 			return dom;
 		},
-
+		
 		refreshDom: function(dom) {
 			$invokeSuper.call(this, arguments);
 			var tabbar = this, tabs = tabbar._tabs;
-
+			
 			tabbar.doRefreshGap();
-
+			
 			if (tabs) {
 				var currentTab = tabbar._currentTab, curIndex = -1;
 				if (currentTab) {
@@ -571,26 +578,26 @@
 					tab.refreshDom(tab._dom);
 				}
 			}
-
+			
 			tabbar.onToolButtonVisibleChange();
 			tabbar.refreshNavButtons();
 		},
-
+		
 		doFilterTabs: function(tabs) {
 			var result = new dorado.util.KeyedArray(function(value) {
 				return value._name;
 			});
-
+			
 			for (var i = 0, j = tabs.size; i < j; i++) {
 				var tab = tabs.get(i);
 				if (tab._visible) {
 					result.append(tab);
 				}
 			}
-
+			
 			return result;
 		},
-
+		
 		doRefreshGap: function() {
 			var tabbar = this, tabs = tabbar.doFilterTabs(tabbar._tabs);
 			if (tabs && tabbar._rendered) {
@@ -627,65 +634,64 @@
 				}
 			}
 		},
-
-        /**
-         * 为tabbar创建左右按钮。
-         * @param {HtmlElement} dom tabbar的dom。
-         * @private
-         */
-        createNavButtons: function (dom) {
-            var tabbar = this;
-            if (!dom) {
-                return;
-            }
-
-            var doms = tabbar._doms, tabbarDom = doms.tabbar, leftBtn, rightBtn;
-
-            leftBtn = tabbar._leftButton = new dorado.widget.SimpleButton({
-                className: LEFT_BUTTON_CLASS,
-                listener: {
-                    onClick: function() {
-                        tabbar.doScrollLeft(true);
-                    }
-                }
-            });
-
-            rightBtn = tabbar._rightButton = new dorado.widget.SimpleButton({
-                className: RIGHT_BUTTON_CLASS,
-                listener: {
-                    onClick: function() {
-                        tabbar.doScrollRight(true);
-                    }
-                }
-            });
-
-            tabbar.registerInnerControl(leftBtn);
-            tabbar.registerInnerControl(rightBtn);
-
-            leftBtn.render(tabbarDom);
-            tabbarDom.insertBefore(leftBtn._dom, tabbarDom.firstChild);
-
-            rightBtn.render(tabbarDom);
-            tabbarDom.insertBefore(rightBtn._dom, doms.tabsWrap);
-
-            doms.leftButton = leftBtn._dom;
-            doms.rightButton = rightBtn._dom;
-
-            $fly(doms.leftButton).repeatOnClick(function(){
-                tabbar.doScrollLeft(false, 12);
-            }, 30);
-
-            $fly(doms.rightButton).repeatOnClick(function(){
-                tabbar.doScrollRight(false, 12);
-            }, 30);
-        },
-
+		
+		/**
+		 * 为tabbar创建左右按钮。
+		 * @param {HtmlElement} dom tabbar的dom。
+		 * @private
+		 */
+		createNavButtons: function(dom) {
+			var tabbar = this;
+			if (!dom) {
+				return;
+			}
+			
+			var doms = tabbar._doms, tabbarDom = doms.tabbar, leftBtn, rightBtn;
+			
+			leftBtn = tabbar._leftButton = new dorado.widget.SimpleButton({
+				className: LEFT_BUTTON_CLASS,
+				listener: {
+					onClick: function() {
+						tabbar.doScrollLeft(true);
+					}
+				}
+			});
+			
+			rightBtn = tabbar._rightButton = new dorado.widget.SimpleButton({
+				className: RIGHT_BUTTON_CLASS,
+				listener: {
+					onClick: function() {
+						tabbar.doScrollRight(true);
+					}
+				}
+			});
+			
+			tabbar.registerInnerControl(leftBtn);
+			tabbar.registerInnerControl(rightBtn);
+			
+			leftBtn.render(tabbarDom);
+			tabbarDom.insertBefore(leftBtn._dom, tabbarDom.firstChild);
+			
+			rightBtn.render(tabbarDom);
+			tabbarDom.insertBefore(rightBtn._dom, doms.tabsWrap);
+			
+			doms.leftButton = leftBtn._dom;
+			doms.rightButton = rightBtn._dom;
+			
+			$fly(doms.leftButton).repeatOnClick(function() {
+				tabbar.doScrollLeft(false, 12);
+			}, 30);
+			
+			$fly(doms.rightButton).repeatOnClick(function() {
+				tabbar.doScrollRight(false, 12);
+			}, 30);
+		},
+		
 		/**
 		 * @private
 		 */
 		doScrollLeft: function(anim, length) {
-			var tabbar = this, doms = tabbar._doms, tabsEl = doms.tabs,
-				to = parseInt(tabsEl.style.left, 10) + (length > 0 ? length : 100);
+			var tabbar = this, doms = tabbar._doms, tabsEl = doms.tabs, to = parseInt(tabsEl.style.left, 10) + (length > 0 ? length : 100);
 			if (anim) {
 				$fly(tabsEl).animate({
 					left: to > 0 ? 0 : to
@@ -697,17 +703,15 @@
 				tabbar.refreshNavButtons();
 			}
 		},
-
+		
 		/**
 		 * @private
 		 */
 		doScrollRight: function(anim, length) {
-			var tabbar = this, doms = tabbar._doms, tabs = tabbar._tabs, tabsEl = doms.tabs,
-				currentLeft = parseInt(tabsEl.style.left || 0, 10);
+			var tabbar = this, doms = tabbar._doms, tabs = tabbar._tabs, tabsEl = doms.tabs, currentLeft = parseInt(tabsEl.style.left || 0, 10);
 			length = length > 0 ? length : 100;
 			if (tabs) {
-				var tabsWidth = tabbar.getTabsWidth(), visibleWidth = $fly(doms.tabsWrap).innerWidth(),
-					to = currentLeft - length, rightWidth = tabsWidth + currentLeft - visibleWidth;
+				var tabsWidth = tabbar.getTabsWidth(), visibleWidth = $fly(doms.tabsWrap).innerWidth(), to = currentLeft - length, rightWidth = tabsWidth + currentLeft - visibleWidth;
 				if (rightWidth <= 0) {
 					return false;
 				} else {
@@ -727,103 +731,105 @@
 				tabbar.refreshNavButtons();
 			}
 		},
-
-        /**
-         * 为TabBar创建MenuButton
-         * @param {HtmlElement} dom tabbar的dom。
-         * @private
-         */
-        createMenuButton: function(dom) {
-            var tabbar = this;
-            if (!dom) {
-                return;
-            }
-
-            var wrapEl = dom.lastChild, doms = tabbar._doms, rightButtonEl = doms.rightButton, refEl = wrapEl;
-            if (rightButtonEl) {
-                refEl = rightButtonEl;
-            }
-
-            var navmenu = tabbar._navmenu = new dorado.widget.Menu({
-                listener: {
-                    beforeShow: function(self, configs) {
-                        if (tabbar._tabPlacement == "top") {
-                            dorado.Object.apply(configs, {
-                                anchorTarget: menuBtn,
-                                align: "innerright",
-                                vAlign: "bottom"
-                            });
-                        } else {
-                            dorado.Object.apply(configs, {
-                                anchorTarget: menuBtn,
-                                align: "innerright",
-                                vAlign: "top"
-                            });
-                        }
-                    }
-                }
-            }), tabs = tabbar._tabs, tab;
-
-            for (var i = 0, j = tabs.size; i < j; i++) {
-                tab = tabs.get(i);
-                tabbar.insertNavMenuItem(tab);
-            }
-
-            var menuBtn = tabbar._menuButton = new dorado.widget.SimpleButton({ className: MENU_BUTTON_CLASS, menu: navmenu });
-
-            menuBtn.render(dom);
-            dom.insertBefore(menuBtn._dom, refEl);
-
-            doms.menuButton = menuBtn._dom;
-        },
-
-        insertNavMenuItem: function(tab, index) {
-            var tabbar = this, navmenu = tabbar._navmenu;
-            if (navmenu && tab) {
-                navmenu.addItem({
-                    caption: tab._caption,
-                    icon: tab._icon,
-                    iconClass: tab._iconClass,
-                    disabled: tab._disabled,
-                    visible: tab._visible,
-                    listener: {
-                        onClick: function() {
-                            tabbar.set("currentTab", tab);
-                        }
-                    }
-                }, index);
-            }
-        },
-
+		
+		/**
+		 * 为TabBar创建MenuButton
+		 * @param {HtmlElement} dom tabbar的dom。
+		 * @private
+		 */
+		createMenuButton: function(dom) {
+			var tabbar = this;
+			if (!dom) {
+				return;
+			}
+			
+			var wrapEl = dom.lastChild, doms = tabbar._doms, rightButtonEl = doms.rightButton, refEl = wrapEl;
+			if (rightButtonEl) {
+				refEl = rightButtonEl;
+			}
+			
+			var navmenu = tabbar._navmenu = new dorado.widget.Menu({
+				listener: {
+					beforeShow: function(self, configs) {
+						if (tabbar._tabPlacement == "top") {
+							dorado.Object.apply(configs, {
+								anchorTarget: menuBtn,
+								align: "innerright",
+								vAlign: "bottom"
+							});
+						} else {
+							dorado.Object.apply(configs, {
+								anchorTarget: menuBtn,
+								align: "innerright",
+								vAlign: "top"
+							});
+						}
+					}
+				}
+			}), tabs = tabbar._tabs, tab;
+			
+			for (var i = 0, j = tabs.size; i < j; i++) {
+				tab = tabs.get(i);
+				tabbar.insertNavMenuItem(tab);
+			}
+			
+			var menuBtn = tabbar._menuButton = new dorado.widget.SimpleButton({
+				className: MENU_BUTTON_CLASS,
+				menu: navmenu
+			});
+			
+			menuBtn.render(dom);
+			dom.insertBefore(menuBtn._dom, refEl);
+			
+			doms.menuButton = menuBtn._dom;
+		},
+		
+		insertNavMenuItem: function(tab, index) {
+			var tabbar = this, navmenu = tabbar._navmenu;
+			if (navmenu && tab) {
+				navmenu.addItem({
+					caption: tab._caption,
+					icon: tab._icon,
+					iconClass: tab._iconClass,
+					disabled: tab._disabled,
+					visible: tab._visible,
+					listener: {
+						onClick: function() {
+							tabbar.set("currentTab", tab);
+						}
+					}
+				}, index);
+			}
+		},
+		
 		/**
 		 * @private
 		 */
 		doChangeCurrentTab: function(tab, force) {
 			var tabbar = this, doms = tabbar._doms || {}, currentTab = tabbar._currentTab;
-
-            if(force !== true && tab == currentTab) {
+			
+			if (force !== true && tab == currentTab) {
 				return false;
 			}
-
+			
 			var eventArg = {
 				newTab: tab,
 				oldTab: currentTab
 			};
 			tabbar.fireEvent("beforeTabChange", tabbar, eventArg);
 			if (eventArg.processDefault === false) return;
-
+			
 			if (currentTab && currentTab._dom) {
 				$fly(currentTab._dom).removeClass("tab-selected");
 			}
-
+			
 			if (tab && tab._dom) {
-				 var tabDom = tab._dom, tabsEl = doms.tabs, offsetLeft = tabDom.offsetLeft, offsetWidth = tabDom.offsetWidth,
-					left = (parseInt(tabsEl.style.left, 10) || 0) * -1, viewWidth = $fly(doms.tabsWrap).width();
-
+				var tabDom = tab._dom, tabsEl = doms.tabs, offsetLeft = tabDom.offsetLeft, offsetWidth = tabDom.offsetWidth, left = (parseInt(tabsEl.style.left, 10) || 0) * -1, viewWidth = $fly(doms.tabsWrap).width();
+				
 				$fly(tabDom).addClass("tab-selected");
-
+				
 				tabbar.doRefreshGap();
-
+				
 				if (left > offsetLeft) {
 					$fly(tabsEl).animate({
 						left: -1 * offsetLeft
@@ -842,18 +848,18 @@
 					}
 				}
 			}
-
+			
 			tabbar._currentTab = tab;
 			tabbar.doOnTabChange(eventArg);
-
+			
 			return true;
 		},
-
-        doOnTabChange: function(eventArg) {
-            var tabbar = this;
-            tabbar.fireEvent("onTabChange", tabbar, eventArg);
-        },
-
+		
+		doOnTabChange: function(eventArg) {
+			var tabbar = this;
+			tabbar.fireEvent("onTabChange", tabbar, eventArg);
+		},
+		
 		/**
 		 * @private
 		 */
@@ -867,10 +873,10 @@
 				}
 			}
 			tabbar._tabPlacement = value;
-
+			
 			return true;
 		},
-
+		
 		/**
 		 * 取得所有Tab的width。
 		 * @return tabs的宽度。
@@ -889,7 +895,7 @@
 			}
 			return 0;
 		},
-
+		
 		/**
 		 * 刷新左右方向按钮的状态。
 		 * @private
@@ -917,18 +923,18 @@
 					}
 				} else { // 需要显示NavButtons
 					tabbar._overflowing = true;
-
+					
 					if (!tabbar._alwaysShowNavButtons) { //show buttons
 						tabbar.showNavButtons();
 						visibleWidth = $fly(doms.tabsWrap).innerWidth();
 						currentLeft = parseInt(tabsEl.style.left, 10);
 					}
-
+					
 					if (!rightButton) {
 						rightButton = tabbar._rightButton;
 						leftButton = tabbar._leftButton;
 					}
-
+					
 					//由于时序问题把这段逻辑放到最开始
 					if (tabsWidth + currentLeft > visibleWidth) {//if already scroll to max right
 						rightButton.set("disabled", false);
@@ -938,20 +944,20 @@
 					} else if (tabsWidth + currentLeft == visibleWidth) {
 						rightButton.set("disabled", true);
 					}
-
+					
 					if (parseInt(tabsEl.style.left, 10) < 0) {
 						leftButton.set("disabled", false);
 					} else {
 						leftButton.set("disabled", true);
 					}
-
+					
 					if (leftButton._disabled && rightButton._disabled) {//fix alwaysShowNavButtons bug
 						$fly(tabsEl).left(0);
 					}
 				}
 			}
 		},
-
+		
 		/**
 		 * 显示左右导航按钮。
 		 * @private
@@ -966,17 +972,16 @@
 				} else { // 已经显示了的情况下不会去修复left的差值
 					modifyLeft = false;
 				}
-
+				
 				if (modifyLeft) {
-					var tabsEl = doms.tabs, left = parseInt(tabsEl.style.left, 10) || 0,
-						leftButtonWidth = $fly(doms.leftButton).outerWidth(true), rightButtonWidth = $fly(doms.rightButton).outerWidth(true);
+					var tabsEl = doms.tabs, left = parseInt(tabsEl.style.left, 10) || 0, leftButtonWidth = $fly(doms.leftButton).outerWidth(true), rightButtonWidth = $fly(doms.rightButton).outerWidth(true);
 					$fly(tabsEl).left(left - leftButtonWidth - rightButtonWidth);
 				}
-
+				
 				tabbar.onToolButtonVisibleChange();
 			}
 		},
-
+		
 		/**
 		 * 隐藏左右隐藏按钮。
 		 * @param {boolean} force 是否强制隐藏NavButtons。
@@ -991,31 +996,31 @@
 				if ((tabsWidth < visibleWidth) || force) {
 					$fly(leftButton).css("display", "none");
 					$fly(rightButton).css("display", "none");
-
+					
 					tabbar.onToolButtonVisibleChange();
 				}
 			}
 		},
-
-        /**
-         * 为TabBar添加右侧Button，主要用于用户自定义。
-         * @param {dorado.widget.SimpleButton|dorado.widget.SimpleIconButton} button 要添加的Button。
-         */
-        addRightToolButton: function(button) {
-            if (!button) return;
-            var tabbar = this, rightToolButtons = tabbar._rightToolButtons;
-            if (!rightToolButtons) {
-                rightToolButtons = tabbar._rightToolButtons = [];
-            }
-            rightToolButtons.push(button);
-            if (tabbar._rendered) {
-                tabbar.registerInnerControl(button);
-                button.render(tabbar._dom);
-
-                tabbar.onToolButtonVisibleChange();
-            }
-        },
-
+		
+		/**
+		 * 为TabBar添加右侧Button，主要用于用户自定义。
+		 * @param {dorado.widget.SimpleButton|dorado.widget.SimpleIconButton} button 要添加的Button。
+		 */
+		addRightToolButton: function(button) {
+			if (!button) return;
+			var tabbar = this, rightToolButtons = tabbar._rightToolButtons;
+			if (!rightToolButtons) {
+				rightToolButtons = tabbar._rightToolButtons = [];
+			}
+			rightToolButtons.push(button);
+			if (tabbar._rendered) {
+				tabbar.registerInnerControl(button);
+				button.render(tabbar._dom);
+				
+				tabbar.onToolButtonVisibleChange();
+			}
+		},
+		
 		onToolButtonVisibleChange: function() {
 			var tabbar = this, dom = tabbar._dom, doms = tabbar._doms;
 			if (!dom) return;
@@ -1030,32 +1035,32 @@
 			}
 			if (menuButton) {
 				var menuButtonVisible = menuButton.style.display != "none";
-                menuButtonWidth = menuButtonVisible ? $fly(menuButton).outerWidth(true) : 0;
-
+				menuButtonWidth = menuButtonVisible ? $fly(menuButton).outerWidth(true) : 0;
+				
 				rightWidth += menuButtonWidth;
 			}
-            var rightToolButtons = tabbar._rightToolButtons, buttonsWidth = menuButtonWidth;
-            if (rightToolButtons) {
-                for (var i = rightToolButtons.length - 1; i >= 0; i--) {
-                    var toolButton = rightToolButtons[i], toolButtonWidth = $fly(toolButton._dom).outerWidth(true);
-                    $fly(toolButton._dom).css({
-                        position: "absolute",
-                        right: buttonsWidth
-                    });
-                    buttonsWidth += toolButtonWidth;
-                    rightWidth += toolButtonWidth;
-                }
-            }
-            if (rightButton) {
-                $fly(rightButton).css("right", buttonsWidth);
-            }
+			var rightToolButtons = tabbar._rightToolButtons, buttonsWidth = menuButtonWidth;
+			if (rightToolButtons) {
+				for (var i = rightToolButtons.length - 1; i >= 0; i--) {
+					var toolButton = rightToolButtons[i], toolButtonWidth = $fly(toolButton._dom).outerWidth(true);
+					$fly(toolButton._dom).css({
+						position: "absolute",
+						right: buttonsWidth
+					});
+					buttonsWidth += toolButtonWidth;
+					rightWidth += toolButtonWidth;
+				}
+			}
+			if (rightButton) {
+				$fly(rightButton).css("right", buttonsWidth);
+			}
 			$fly(doms.tabsWrap).css({
 				"margin-left": leftWidth,
 				"margin-right": rightWidth
 			});
 		}
 	});
-
+	
 	dorado.Toolkits.registerPrototype("tab", {
 		Default: dorado.widget.tab.Tab,
 		Tab: dorado.widget.tab.Tab,

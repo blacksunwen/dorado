@@ -234,11 +234,10 @@
 			 * 然后TextEditor与Grid又确实具有上下级的关系，尤其是在处理控制焦点时，此时系统会将TextEditor的focusParent属性设置为Grid。
 			 * </p>
 			 * @type dorado.widget.Control
-			 * @attribute readOnly skipRefresh
+			 * @attribute skipRefresh
 			 */
 			focusParent : {
 				skipRefresh : true,
-				readOnly : true,
 				getter : function() {
 					return this._focusParent || this._parent;
 				}
