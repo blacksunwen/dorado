@@ -1106,7 +1106,7 @@
 		},
 		
 		constructor: function(configs) {
-			if (configs.pattern) {
+			if (configs && configs.pattern) {
 				this.parsePattern(configs.pattern);
 				delete configs.pattern;
 			}
