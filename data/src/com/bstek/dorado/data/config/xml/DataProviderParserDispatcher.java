@@ -13,7 +13,6 @@ import com.bstek.dorado.config.xml.XmlParseException;
 import com.bstek.dorado.config.xml.XmlParser;
 import com.bstek.dorado.config.xml.XmlParserHelper;
 import com.bstek.dorado.data.Constants;
-import com.bstek.dorado.data.config.definition.DataObjectDefinitionUtils;
 import com.bstek.dorado.data.config.definition.DataProviderDefinition;
 import com.bstek.dorado.data.provider.DataProvider;
 import com.bstek.dorado.data.provider.manager.DataProviderTypeRegisterInfo;
@@ -127,7 +126,6 @@ public class DataProviderParserDispatcher extends GenericParser {
 
 		if (dataProvider != null) {
 			dataProvider.setName(name);
-			DataObjectDefinitionUtils.setDataProviderId(dataProvider, dataContext.getDataObjectIdPrefix() + name);
 			parsedDataProviders.put(name, dataProvider);
 		}
 		return dataProvider;

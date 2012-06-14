@@ -25,6 +25,7 @@ public abstract class RowListDropDown extends DropDown implements ColumnHolder {
 	private boolean filterOnTyping = true;
 	private boolean filterOnOpen;
 	private int minFilterInterval = 300;
+	private boolean useEmptyItem;
 
 	@IdeProperty(highlight = 1)
 	public String getProperty() {
@@ -89,5 +90,13 @@ public abstract class RowListDropDown extends DropDown implements ColumnHolder {
 
 	public void setColumns(List<Column> columns) {
 		this.columns = columns;
+	}
+
+	public boolean isUseEmptyItem() {
+		return useEmptyItem;
+	}
+
+	public void setUseEmptyItem(boolean useEmptyItem) {
+		this.useEmptyItem = useEmptyItem;
 	}
 }

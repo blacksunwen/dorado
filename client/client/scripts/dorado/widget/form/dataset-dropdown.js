@@ -109,6 +109,15 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.RowListDropDown,/** @scope
 	
 	open: function(editor) {
 		var self = this, dataSet = this._dataSet, superClass = $getSuperClass();
+		
+		if (this._useEmptyItem && dataSet && !dataSet._emptyItemListenerBinded) {
+			dataSet.addListener("onDataLoad", function(self) {
+				var items = self.getData(self._dataPath);
+				if (items instanceof dorado.EntityList) items.insert(null, "begin");
+			});
+			dataSet._emptyItemListenerBinded= true;
+		}
+		
 		var doOpen = function(flush) {
 			dataSet.getDataAsync(self._dataPath, function(data) {
 				if (!self._useDataBinding) self._items = data;
