@@ -42,8 +42,7 @@
       <Property name="assignmentMap">categoryName,categoryId=id</Property>
     </DataSetDropDown>
     <DataSetDropDown id="ddProducts">
-      <ClientEvent name="beforeExecute">var dsProducts = this.get(&quot;#dsProducts&quot;);&#xD;
-var categoryId = this.get(&quot;#dsForm.data.categoryId&quot;);&#xD;
+      <ClientEvent name="beforeExecute" signature="dsProducts, dsForm">var categoryId = dsForm.get(&quot;data.categoryId&quot;);&#xD;
 if (categoryId) {&#xD;
 	dsProducts.set(&quot;parameter&quot;, categoryId);&#xD;
 	dsProducts.flushAsync();&#xD;

@@ -21,9 +21,6 @@
       </MainControl>
       <SideControl>
         <DataTree id="treeExamples" dataSet="dsCategories">
-          <ClientEvent name="onDataRowClick"/>
-          <ClientEvent name="onRenderNode"/>
-          <ClientEvent name="onNodeAttached"/>
           <Property name="expandingAnimated">true</Property>
           <BindingConfigs>
             <BindingConfig childrenProperty="categories" icon=">images/folder.gif" labelProperty="label" name="Category" recursive="true">

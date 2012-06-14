@@ -9,38 +9,38 @@
     <DataSet id="dsEmployees" dataProvider="employeeInterceptor#getEmployeesBySuperior" dataType="[Employee]"/>
     <Container layout="hbox">
       <Button>
-        <ClientEvent name="onClick">function collapse(nodes) {&#xD;
+        <ClientEvent name="onClick" signature="treeGrid">function collapse(nodes) {&#xD;
 	nodes.each(function(node) {&#xD;
 		collapse(node.get(&quot;nodes&quot;));&#xD;
 		if (node.get(&quot;expanded&quot;)) node.collapse();&#xD;
 	});&#xD;
 }&#xD;
 &#xD;
-collapse(this.get(&quot;#treeGrid.nodes&quot;));&#xD;
+collapse(treeGrid.get(&quot;nodes&quot;));&#xD;
 </ClientEvent>
         <Property name="caption">收缩全部</Property>
       </Button>
       <Button>
-        <ClientEvent name="onClick">function expand(nodes) {&#xD;
+        <ClientEvent name="onClick" signature="treeGrid">function expand(nodes) {&#xD;
 	nodes.each(function(node) {&#xD;
 		if (!node.get(&quot;expanded&quot;)) node.expand();&#xD;
 		expand(node.get(&quot;nodes&quot;));&#xD;
 	});&#xD;
 }&#xD;
 &#xD;
-expand(this.get(&quot;#treeGrid.nodes&quot;));&#xD;
+expand(treeGrid.get(&quot;nodes&quot;));&#xD;
 </ClientEvent>
         <Property name="caption">展开全部</Property>
       </Button>
       <Button>
-        <ClientEvent name="onClick">function select(nodes) {&#xD;
+        <ClientEvent name="onClick" signature="treeGrid">function select(nodes) {&#xD;
 	nodes.each(function(node) {&#xD;
 		select(node.get(&quot;nodes&quot;));&#xD;
 		node.set(&quot;checked&quot;, true);&#xD;
 	});&#xD;
 }&#xD;
 &#xD;
-select(this.get(&quot;#treeGrid.nodes&quot;));</ClientEvent>
+select(treeGrid.get(&quot;nodes&quot;));</ClientEvent>
         <Property name="caption">全部选中</Property>
       </Button>
       <Button>
@@ -51,11 +51,11 @@ select(this.get(&quot;#treeGrid.nodes&quot;));</ClientEvent>
 	});&#xD;
 }&#xD;
 &#xD;
-unselect(this.get(&quot;#treeGrid.nodes&quot;));</ClientEvent>
+unselect(treeGrid.get(&quot;nodes&quot;));</ClientEvent>
         <Property name="caption">全部不选</Property>
       </Button>
       <Button>
-        <ClientEvent name="onClick">var nodes = this.get(&quot;#treeGrid&quot;).getCheckedNodes(), message;&#xD;
+        <ClientEvent name="onClick" signature="treeGrid">var nodes = treeGrid.getCheckedNodes(), message;&#xD;
 if (nodes &amp;&amp; nodes.length) {&#xD;
 	var names = [];&#xD;
 	nodes.each(function(data){&#xD;
@@ -71,18 +71,18 @@ dorado.MessageBox.alert(message);&#xD;
         <Property name="caption">列出选中节点</Property>
       </Button>
       <Button>
-        <ClientEvent name="onClick">var currentNode = this.get(&quot;#treeGrid.currentNode&quot;);&#xD;
+        <ClientEvent name="onClick" signature="treeGrid">var currentNode = treeGrid.get(&quot;currentNode&quot;);&#xD;
 if (!currentNode) {&#xD;
 	throw new dorado.Exception(&quot;请先点中一个树节点！&quot;);&#xD;
 }&#xD;
 &#xD;
-this.get(&quot;#treeGrid&quot;).highlightItem();</ClientEvent>
+treeGrid.highlightItem();</ClientEvent>
         <Property name="caption">高亮当前节点</Property>
       </Button>
     </Container>
     <Container layout="hbox">
       <Button>
-        <ClientEvent name="onClick">var currentNode = this.get(&quot;#treeGrid.currentNode&quot;);&#xD;
+        <ClientEvent name="onClick" signature="treeGrid">var currentNode = treeGrid.get(&quot;currentNode&quot;);&#xD;
 if (!currentNode) {&#xD;
 	throw new dorado.Exception(&quot;请先点中一个树节点！&quot;);&#xD;
 }&#xD;
@@ -97,7 +97,7 @@ currentNode.expandAsync(function() {&#xD;
         <Property name="caption">追加子节点</Property>
       </Button>
       <Button>
-        <ClientEvent name="onClick">var currentNode = this.get(&quot;#treeGrid.currentNode&quot;);&#xD;
+        <ClientEvent name="onClick" signature="treeGrid">var currentNode = treeGrid.get(&quot;currentNode&quot;);&#xD;
 if (!currentNode) {&#xD;
 	throw new dorado.Exception(&quot;请先点中一个树节点！&quot;);&#xD;
 }&#xD;
@@ -112,7 +112,7 @@ currentNode.expandAsync(function() {&#xD;
         <Property name="caption">插入子节点</Property>
       </Button>
       <Button>
-        <ClientEvent name="onClick">var currentNode = this.get(&quot;#treeGrid.currentNode&quot;);&#xD;
+        <ClientEvent name="onClick" signature="treeGrid">var currentNode = treeGrid.get(&quot;currentNode&quot;);&#xD;
 if (!currentNode) {&#xD;
 	throw new dorado.Exception(&quot;请先点中一个树节点！&quot;);&#xD;
 }&#xD;
@@ -126,7 +126,7 @@ currentEntity.createBrother({&#xD;
         <Property name="caption">追加同级节点</Property>
       </Button>
       <Button>
-        <ClientEvent name="onClick">var currentNode = this.get(&quot;#treeGrid.currentNode&quot;);&#xD;
+        <ClientEvent name="onClick" signature="treeGrid">var currentNode = treeGrid.get(&quot;currentNode&quot;);&#xD;
 if (!currentNode) {&#xD;
 	throw new dorado.Exception(&quot;请先点中一个树节点！&quot;);&#xD;
 }&#xD;
@@ -140,7 +140,7 @@ currentEntity.parent.insert({&#xD;
         <Property name="caption">插入同级节点</Property>
       </Button>
       <Button>
-        <ClientEvent name="onClick">var currentEntity = this.get(&quot;#treeGrid.currentEntity&quot;);&#xD;
+        <ClientEvent name="onClick" signature="treeGrid">var currentEntity = treeGrid.get(&quot;currentEntity&quot;);&#xD;
 if (!currentEntity) {&#xD;
 	throw new dorado.Exception(&quot;请先点中一个树节点！&quot;);&#xD;
 }&#xD;
@@ -151,7 +151,7 @@ currentEntity.remove();</ClientEvent>
     </Container>
     <Container layout="hbox">
       <Button>
-        <ClientEvent name="onClick">var currentEntity = this.get(&quot;#treeGrid.currentNode.data&quot;);&#xD;
+        <ClientEvent name="onClick" signature="treeGrid">var currentEntity = treeGrid.get(&quot;currentNode.data&quot;);&#xD;
 if (!currentEntity) {&#xD;
 	throw new dorado.Exception(&quot;请先点中一个树节点！&quot;);&#xD;
 }&#xD;
@@ -161,11 +161,11 @@ if (!previous) {&#xD;
 	throw new dorado.Exception(&quot;当前节点已是父节点下的第一个树节点！&quot;);&#xD;
 }&#xD;
 currentEntity.parent.insert(currentEntity, &quot;before&quot;, previous);&#xD;
-this.set(&quot;#treeGrid.currentEntity&quot;, currentEntity);</ClientEvent>
+treeGrid.set(&quot;currentEntity&quot;, currentEntity);</ClientEvent>
         <Property name="caption">上移</Property>
       </Button>
       <Button>
-        <ClientEvent name="onClick">var currentEntity = this.get(&quot;#treeGrid.currentNode.data&quot;);&#xD;
+        <ClientEvent name="onClick" signature="treeGrid">var currentEntity = treeGrid.get(&quot;currentNode.data&quot;);&#xD;
 if (!currentEntity) {&#xD;
 	throw new dorado.Exception(&quot;请先点中一个树节点！&quot;);&#xD;
 }&#xD;
@@ -175,11 +175,11 @@ if (!next) {&#xD;
 	throw new dorado.Exception(&quot;当前节点已是父节点下的最后一个树节点！&quot;);&#xD;
 }&#xD;
 currentEntity.parent.insert(currentEntity, &quot;after&quot;, next);&#xD;
-this.set(&quot;#treeGrid.currentEntity&quot;, currentEntity);</ClientEvent>
+treeGrid.set(&quot;currentEntity&quot;, currentEntity);</ClientEvent>
         <Property name="caption">下移</Property>
       </Button>
       <Button>
-        <ClientEvent name="onClick">var currentNode = this.get(&quot;#treeGrid.currentNode&quot;);&#xD;
+        <ClientEvent name="onClick" signature="treeGrid">var currentNode = treeGrid.get(&quot;currentNode&quot;);&#xD;
 if (!currentNode) {&#xD;
 	throw new dorado.Exception(&quot;请先点中一个树节点！&quot;);&#xD;
 }&#xD;
@@ -190,7 +190,7 @@ if (currentNode.get(&quot;level&quot;) == 1) {&#xD;
 var currentEntity = currentNode.get(&quot;data&quot;);&#xD;
 var parentEntity = currentNode.get(&quot;parent.data&quot;);&#xD;
 parentEntity.parent.insert(currentEntity, &quot;after&quot;, parentEntity);&#xD;
-this.set(&quot;#treeGrid.currentEntity&quot;, currentEntity);</ClientEvent>
+treeGrid.set(&quot;currentEntity&quot;, currentEntity);</ClientEvent>
         <Property name="caption">升级</Property>
       </Button>
     </Container>

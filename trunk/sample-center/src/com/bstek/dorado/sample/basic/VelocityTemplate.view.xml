@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ViewConfig>
   <View title="Velocity Template">
-    <ClientEvent name="onReady">&#xD;
-</ClientEvent>
     <Button caption="按钮1" renderTo="#place1"/>
     <Button caption="按钮2" renderTo="#place1"/>
     <ListBox items="One,Two,Three" renderOn="#place2"/>

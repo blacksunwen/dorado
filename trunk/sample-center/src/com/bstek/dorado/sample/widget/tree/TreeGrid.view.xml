@@ -8,8 +8,7 @@
   <View title="Employee Maintain">
     <DataSet id="dsEmployees" dataProvider="employeeInterceptor#getEmployeesBySuperior" dataType="[Employee]"/>
     <UpdateAction id="actionSave" caption="Save" dataResolver="employeeInterceptor#saveAll" icon="url(>skin>common/icons.gif) -140px -20px">
-      <ClientEvent name="onSuccess">dorado.MessageBox.alert(&quot;OK.&quot;);
-			</ClientEvent>
+      <Property name="successMessage">OK.</Property>
       <UpdateItem dataPath="underlings[#dirty](R)" dataSet="dsEmployees"/>
     </UpdateAction>
     <ToolBar layoutConstraint="top">

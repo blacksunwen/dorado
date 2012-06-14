@@ -61,55 +61,9 @@
   </Model>
   <View layout="vbox padding:20">
     <DataSet id="dsPhones">
-      <ClientEvent name="onCreate">$ajax.request(&quot;>dorado/res/com/bstek/dorado/sample/data/Phones.js&quot;, function(result) {&#xD;
-	self.setData(result.getJsonData());&#xD;
-});</ClientEvent>
       <Property name="dataType">[Phone]</Property>
     </DataSet>
     <DataGrid id="gridPhones">
-      <ClientEvent name="onRenderRow">arg.dom.style.background = (arg.data.get(&quot;discount&quot;)) ? &quot;#d5e4fc&quot; : &quot;&quot;;</ClientEvent>
-      <ClientEvent name="onCreate">var OperationCellRenderer = $extend(dorado.widget.grid.SubControlCellRenderer, {&#xD;
-	createSubControl: function(arg) {&#xD;
-		if (arg.data.rowType) return null;&#xD;
-		&#xD;
-		return new dorado.widget.Button({&#xD;
-			toggleable: true,&#xD;
-			onClick: function(self) {&#xD;
-				var entity = arg.data, originPrice, price;&#xD;
-				if (self.get(&quot;toggled&quot;)) {&#xD;
-					originPrice = entity.get(&quot;price&quot;);&#xD;
-					price = parseInt(originPrice * 0.8);&#xD;
-					entity.set({&#xD;
-						discount: true,&#xD;
-						price: price,&#xD;
-						originPrice: originPrice&#xD;
-					});&#xD;
-				}&#xD;
-				else {&#xD;
-					originPrice = entity.get(&quot;price&quot;);&#xD;
-					price = entity.get(&quot;originPrice&quot;);&#xD;
-					entity.set({&#xD;
-						discount: false,&#xD;
-						price: price&#xD;
-					});&#xD;
-				}&#xD;
-				dorado.widget.NotifyTipManager.notify(entity.get(&quot;product&quot;) + &quot;的价格已由&quot; + originPrice + &quot;调整为&quot; + price + &quot;!&quot;);&#xD;
-			}&#xD;
-		});&#xD;
-	},&#xD;
-	&#xD;
-	refreshSubControl: function(button, arg) {&#xD;
-		var storage = arg.data.get(&quot;storage&quot;);&#xD;
-		button.set({&#xD;
-			caption: (storage > 0) ? &quot;折扣&quot; : &quot;无货&quot;,&#xD;
-			disabled: !(storage > 0),&#xD;
-			toggled: arg.data.get(&quot;discount&quot;)&#xD;
-		});&#xD;
-	}&#xD;
-});&#xD;
-&#xD;
-self.set(&quot;&amp;operation.renderer&quot;, new OperationCellRenderer());&#xD;
-</ClientEvent>
       <Property name="height">380</Property>
       <Property name="width">900</Property>
       <Property name="showFooter">true</Property>
@@ -122,38 +76,6 @@ self.set(&quot;&amp;operation.renderer&quot;, new OperationCellRenderer());&#xD;
       <Property name="headerRowHeight">30</Property>
       <Property name="fixedColumnCount">3</Property>
       <DataColumn>
-        <ClientEvent name="onRenderHeaderCell">var view = this;&#xD;
-$(arg.dom).empty();&#xD;
-var button = new dorado.widget.Button({&#xD;
-	caption: &quot;切换折扣&quot;,&#xD;
-	renderTo: arg.dom,&#xD;
-	style: &quot;margin: 0 2px&quot;,&#xD;
-	onClick: function() {&#xD;
-		view.get(&quot;#dsPhones.data&quot;).each(function(entity) {&#xD;
-			if (entity.get(&quot;storage&quot;) > 0) {&#xD;
-				var discount = entity.get(&quot;discount&quot;);&#xD;
-				if (discount) {&#xD;
-					originPrice = entity.get(&quot;price&quot;);&#xD;
-					price = entity.get(&quot;originPrice&quot;);&#xD;
-					entity.set({&#xD;
-						discount: false,&#xD;
-						price: price,&#xD;
-						originPrice: originPrice&#xD;
-					});&#xD;
-				}&#xD;
-				else {&#xD;
-					originPrice = entity.get(&quot;price&quot;);&#xD;
-					price = parseInt(originPrice * 0.8);&#xD;
-					entity.set({&#xD;
-						discount: true,&#xD;
-						price: price,&#xD;
-						originPrice: originPrice&#xD;
-					});&#xD;
-				}&#xD;
-			}&#xD;
-		});&#xD;
-	}&#xD;
-});</ClientEvent>
         <Property name="width">70</Property>
         <Property name="name">operation</Property>
         <Property name="supportsOptionMenu">false</Property>
@@ -162,24 +84,10 @@ var button = new dorado.widget.Button({&#xD;
         <Editor/>
       </DataColumn>
       <DataColumn>
-        <ClientEvent name="onRenderCell">$(arg.dom).empty().xCreate({&#xD;
-	tagName: &quot;IMG&quot;,&#xD;
-	src: $url(&quot;>dorado/res/com/bstek/dorado/sample/data/images/&quot; + arg.data.get(&quot;product&quot;) + &quot;-24.png&quot;),&#xD;
-	style: &quot;margin: 2px&quot;&#xD;
-});&#xD;
-&#xD;
-dorado.TipManager.initTip(arg.dom.parentNode, {&#xD;
-	content: {&#xD;
-		tagName: &quot;IMG&quot;,&#xD;
-		src: $url(&quot;>dorado/res/com/bstek/dorado/sample/data/images/&quot; + arg.data.get(&quot;product&quot;) + &quot;-128.png&quot;),&#xD;
-		style: &quot;width: 128px; height: 128px; margin: 8px&quot;&#xD;
-	},&#xD;
-	arrowDirection: &quot;top&quot;,&#xD;
-	arrowAlign: &quot;left&quot;&#xD;
-});</ClientEvent>
         <Property name="caption">图片</Property>
         <Property name="width">28</Property>
         <Property name="supportsOptionMenu">false</Property>
+        <Property name="name">image</Property>
         <Editor/>
       </DataColumn>
       <DataColumn>
@@ -191,19 +99,12 @@ dorado.TipManager.initTip(arg.dom.parentNode, {&#xD;
         <Property name="width">120</Property>
       </DataColumn>
       <DataColumn>
-        <ClientEvent name="onRenderCell">arg.dom.style.background = (arg.data.get(&quot;price&quot;) > 3000) ? &quot;#fcc5c5&quot; : &quot;&quot;;&#xD;
-arg.processDefault = true;</ClientEvent>
-        <ClientEvent name="onRenderFooterCell">arg.dom.innerText = &quot;平均：&quot; + dorado.util.Common.formatFloat(arg.data.get(&quot;price&quot;), &quot;#,##0&quot;);</ClientEvent>
         <Property name="property">price</Property>
         <Property name="summaryType">average</Property>
         <Property name="displayFormat">#,##0.00</Property>
         <Property name="dataType">float</Property>
       </DataColumn>
       <DataColumn>
-        <ClientEvent name="onRenderCell">arg.dom.style.background = (arg.data.get(&quot;storage&quot;) &lt;= 50) ? &quot;#d3d3d3&quot; : &quot;&quot;;&#xD;
-arg.dom.style.color = (arg.data.get(&quot;storage&quot;) &lt;= 50) ? &quot;red&quot; : &quot;&quot;;&#xD;
-arg.processDefault = true;</ClientEvent>
-        <ClientEvent name="onRenderFooterCell">arg.dom.innerText = &quot;总计：&quot; + arg.data.get(&quot;storage&quot;);</ClientEvent>
         <Property name="property">storage</Property>
         <Property name="summaryType">sum</Property>
         <Property name="dataType">int</Property>
@@ -218,12 +119,10 @@ arg.processDefault = true;</ClientEvent>
         <Editor/>
       </DataColumn>
       <DataColumn>
-        <ClientEvent name="onRenderCell">var entity = arg.data;&#xD;
-arg.dom.innerText = entity.get(&quot;length&quot;) + &quot; x &quot; + entity.get(&quot;width&quot;) + &quot; x &quot; + entity.get(&quot;height&quot;);&#xD;
-</ClientEvent>
         <Property name="caption">体积(mm)</Property>
         <Property name="width">150</Property>
         <Property name="supportsOptionMenu">false</Property>
+        <Property name="property">volumn</Property>
         <Editor/>
       </DataColumn>
       <DataColumn>

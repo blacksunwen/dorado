@@ -4,113 +4,13 @@
   <Context/>
   <Model/>
   <View layout="vbox padding:20">
-    <ClientEvent name="onCreate">this.$parseParam = function(param) {&#xD;
-	if (!param) return null;&#xD;
-	&#xD;
-	var pairs = [];&#xD;
-	param.split(';').each(function(pair) {&#xD;
-		var i = pair.indexOf('='), key, value;&#xD;
-		if (i >= 0 &amp;&amp; i &lt; (pair.length - 1)) {&#xD;
-			pairs.push({&#xD;
-				key: pair.substring(0, i),&#xD;
-				value: pair.substring(i + 1)&#xD;
-			});&#xD;
-		}&#xD;
-		else {&#xD;
-			pairs.push({&#xD;
-				value: pair&#xD;
-			});&#xD;
-		}&#xD;
-	});&#xD;
-	return pairs;&#xD;
-}&#xD;
-&#xD;
-this.$getEditor = function(entity) {&#xD;
-	var editorType = entity.get(&quot;editorType&quot;), param = entity.get(&quot;param&quot;);&#xD;
-	if (!editorType) return null;&#xD;
-	&#xD;
-	var editor = eval(&quot;new dorado.widget.&quot; + editorType + &quot;()&quot;);&#xD;
-	if (editor instanceof dorado.widget.TextEditor) {&#xD;
-		if (param) {&#xD;
-			var trigger;&#xD;
-			if (param == &quot;date&quot;) {&#xD;
-				trigger = &quot;defaultDateDropDown&quot;;&#xD;
-			}&#xD;
-			else if (param == &quot;dateTime&quot;) {&#xD;
-				trigger = &quot;defaultDateTimeDropDown&quot;;&#xD;
-			}&#xD;
-			else {&#xD;
-				trigger = new dorado.widget.ListDropDown({&#xD;
-					items: this.$parseParam(param),&#xD;
-					property: &quot;value&quot;&#xD;
-				});&#xD;
-			}&#xD;
-			editor.set(&quot;trigger&quot;, trigger);&#xD;
-		}&#xD;
-	}&#xD;
-	else if (editor instanceof dorado.widget.CheckBox) {&#xD;
-		editor.set(&quot;exClassName&quot;, &quot;d-checkbox-center&quot;)&#xD;
-	}&#xD;
-	else if (editor instanceof dorado.widget.RadioGroup) {&#xD;
-		editor.set(&quot;layout&quot;, &quot;flow&quot;);&#xD;
-		if (param) {&#xD;
-			var radioButtons = [];&#xD;
-			this.$parseParam(param).each(function(pair){&#xD;
-				radioButtons.push({&#xD;
-					value: pair.key,&#xD;
-					text: pair.value&#xD;
-				});&#xD;
-			});&#xD;
-			editor.set(&quot;radioButtons&quot;, radioButtons);&#xD;
-		}&#xD;
-	}&#xD;
-	else if (editor instanceof dorado.widget.DateTimeSpinner) {&#xD;
-		editor.set({&#xD;
-			dataType: &quot;DateTime&quot;,&#xD;
-			type: param&#xD;
-		});&#xD;
-	}&#xD;
-	else if (editor instanceof dorado.widget.CustomSpinner) {&#xD;
-		editor.set(&quot;pattern&quot;, param);&#xD;
-	}&#xD;
-	return editor;&#xD;
-}&#xD;
-</ClientEvent>
     <GroupBox layout="vbox">
       <Property name="caption">自定义单元格编辑器</Property>
       <Buttons/>
       <Children>
         <DataSet id="dsRows1">
-          <ClientEvent name="onCreate">self.setData([{&#xD;
-	editorType: &quot;TextEditor&quot;&#xD;
-},{&#xD;
-	editorType: &quot;TextEditor&quot;,&#xD;
-	param: &quot;new=新增;modified=修改;deleted=删除;none=未改变&quot;&#xD;
-},{&#xD;
-	editorType: &quot;TextEditor&quot;,&#xD;
-	param: &quot;date&quot;&#xD;
-},{&#xD;
-	editorType: &quot;TextEditor&quot;,&#xD;
-	param: &quot;dateTime&quot;&#xD;
-},{&#xD;
-	editorType: &quot;CheckBox&quot;&#xD;
-},{&#xD;
-	editorType: &quot;RadioGroup&quot;,&#xD;
-	param: &quot;male=男;female=女&quot;&#xD;
-},{&#xD;
-	editorType: &quot;NumberSpinner&quot;,&#xD;
-	value: 10&#xD;
-},{&#xD;
-	editorType: &quot;DateTimeSpinner&quot;,&#xD;
-	param: &quot;dateTime&quot;,&#xD;
-	value: new Date()&#xD;
-},{&#xD;
-	editorType: &quot;CustomSpinner&quot;,&#xD;
-	param: &quot;IP: [0,255].[0,255].[0,255].[0,255]&quot;,&#xD;
-	value: [192, 168, 1, 100]&#xD;
-}]);</ClientEvent>
         </DataSet>
-        <DataGrid>
+        <DataGrid id="grid1">
           <Property name="dataSet">dsRows1</Property>
           <Property name="width">800</Property>
           <DataColumn>
@@ -125,26 +25,18 @@ this.$getEditor = function(entity) {&#xD;
             <Editor/>
           </DataColumn>
           <DataColumn>
-            <ClientEvent name="onGetCellEditor">var entity = arg.data, editor = this.$getEditor(entity);&#xD;
-arg.cellEditor.setEditorControl(editor);&#xD;
-</ClientEvent>
-            <ClientEvent name="onRenderCell">arg.dom.style.background = &quot;#d5e4fc&quot;;&#xD;
-arg.processDefault = true;</ClientEvent>
             <Property name="caption">可变编辑器</Property>
             <Property name="property">value</Property>
             <Property name="width">220</Property>
+            <Property name="name">value</Property>
             <Editor/>
           </DataColumn>
         </DataGrid>
         <Container layout="hbox">
-          <Button>
-            <ClientEvent name="onClick">this.get(&quot;#dsRows1.data&quot;).insert();&#xD;
-</ClientEvent>
+          <Button id="buttonAdd1">
             <Property name="caption">添加行</Property>
           </Button>
-          <Button>
-            <ClientEvent name="onClick">this.get(&quot;#dsRows1.data&quot;).remove();&#xD;
-</ClientEvent>
+          <Button id="buttonDel1">
             <Property name="caption">删除行</Property>
           </Button>
         </Container>
@@ -154,53 +46,8 @@ arg.processDefault = true;</ClientEvent>
       <Property name="caption">自定义单元格渲染器</Property>
       <Buttons/>
       <Children>
-        <DataSet id="dsRows2">
-          <ClientEvent name="onCreate">self.setData([{&#xD;
-	editorType: &quot;TextEditor&quot;&#xD;
-},{&#xD;
-	editorType: &quot;TextEditor&quot;,&#xD;
-	param: &quot;new=新增;modified=修改;deleted=删除;none=未改变&quot;&#xD;
-},{&#xD;
-	editorType: &quot;TextEditor&quot;,&#xD;
-	param: &quot;date&quot;&#xD;
-},{&#xD;
-	editorType: &quot;TextEditor&quot;,&#xD;
-	param: &quot;dateTime&quot;&#xD;
-},{&#xD;
-	editorType: &quot;CheckBox&quot;&#xD;
-},{&#xD;
-	editorType: &quot;RadioGroup&quot;,&#xD;
-	param: &quot;male=男;female=女&quot;&#xD;
-},{&#xD;
-	editorType: &quot;NumberSpinner&quot;,&#xD;
-	value: 10&#xD;
-},{&#xD;
-	editorType: &quot;DateTimeSpinner&quot;,&#xD;
-	param: &quot;dateTime&quot;,&#xD;
-	value: new Date()&#xD;
-},{&#xD;
-	editorType: &quot;CustomSpinner&quot;,&#xD;
-	param: &quot;IP: [0,255].[0,255].[0,255].[0,255]&quot;,&#xD;
-	value: [192, 168, 1, 100]&#xD;
-}]);</ClientEvent>
-        </DataSet>
-        <DataGrid>
-          <ClientEvent name="onReady">var view = this&#xD;
-var CellRenderer = $extend(dorado.widget.grid.SubControlCellRenderer, {&#xD;
-	createSubControl: function(arg) {&#xD;
-		var entity = arg.data;&#xD;
-		var editor = view.$getEditor(entity);&#xD;
-		if (editor) {&#xD;
-			editor.set(&quot;width&quot;, &quot;100%&quot;);&#xD;
-		}&#xD;
-		return editor;&#xD;
-	},&#xD;
-	refreshSubControl: function(editor, arg) {&#xD;
-		if (editor) editor.set(&quot;value&quot;, arg.data.get(&quot;value&quot;));&#xD;
-	}&#xD;
-});&#xD;
-&#xD;
-self.set(&quot;&amp;value.renderer&quot;, new CellRenderer());</ClientEvent>
+        <DataSet id="dsRows2" />
+        <DataGrid id="grid2">
           <Property name="dataSet">dsRows2</Property>
           <Property name="width">800</Property>
           <Property name="highlightCurrentRow">false</Property>
