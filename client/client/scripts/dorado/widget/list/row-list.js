@@ -252,7 +252,7 @@
 		
 		toggleItemSelection: function(item, selected) {
 			if (!this._itemDomMap) return;
-			var row = this._itemDomMap[this.getItemId(item)];
+			var row = this._itemDomMap[this._itemModel.getItemId(item)];
 			if (row) $fly(row).toggleClass("selected-row", selected);
 		},
 		
