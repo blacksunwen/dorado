@@ -111,6 +111,15 @@
 			 */
 			minFilterInterval: {
 				defaultValue: 300
+			},
+			
+			/**
+			 * 是否要自动添加一个空的下拉选项。
+			 * @type boolean
+			 * @attribute writeBeforeReady
+			 */
+			useEmptyItem: {
+				writeBeforeReady: true
 			}
 		},
 		
@@ -402,7 +411,29 @@
 			 * @type Object[]|dorado.EntityList
 			 * @attribute
 			 */
-			items: {}
+			items: {
+				setter: function(items) {
+					if (this._useEmptyItem) {
+						if (items instanceof Array) {
+							items.insert(null, 0);
+						}
+						else if (items instanceof dorado.EntityList) {
+							items.insert({}, "begin");
+						}
+						else if (items == null) {
+							items = [null];
+						}
+					}
+					this._items = items;
+				}
+			}
+		},
+		
+		constructor: function(configs) {
+			var items = configs.items;
+			delete configs.items;
+			$invokeSuper.call(this, [configs]);
+			if (items) this.set("items", items);
 		},
 		
 		getDropDownItems: function() {
@@ -424,14 +455,7 @@
 	dorado.widget.AutoMappingDropDown = $extend(dorado.widget.RowListDropDown,/** @scope dorado.widget.AutoMappingDropDown.prototype */ {
 		$className: "dorado.widget.AutoMappingDropDown",
 		
-		ATTRIBUTES: /** @scope dorado.widget.AutoMappingDropDown.prototype */ {
-			/**
-			 * 是否要自动添加一个空的下拉选项。
-			 * @type boolean
-			 * @attribute
-			 */
-			useEmptyItem: {},
-			
+		ATTRIBUTES: /** @scope dorado.widget.AutoMappingDropDown.prototype */ {			
 			/**
 			 * 是否允许用在相应的编辑框中进行文本输入。
 			 * @type boolean

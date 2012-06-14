@@ -113,17 +113,17 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			onComponentUnregistered: {}
 		},
 		
-		constructor: function(id) {
+		constructor: function(configs) {
 			ALL_VIEWS.push(this);
 			
 			this._identifiedComponents = {};
 			this._loadingDataSet = [];
 			
-			if (id == "$TOP_VIEW") this._dataTypeRepository = dorado.DataTypeRepository.ROOT;
+			if (configs == "$TOP_VIEW") this._dataTypeRepository = dorado.DataTypeRepository.ROOT;
 			else this._dataTypeRepository = new dorado.DataTypeRepository(dorado.DataTypeRepository.ROOT);
 			this._dataTypeRepository._view = this;
 			
-			$invokeSuper.call(this, [id]);
+			$invokeSuper.call(this, [configs]);
 			if (topView) topView.addChild(this);
 		},
 		

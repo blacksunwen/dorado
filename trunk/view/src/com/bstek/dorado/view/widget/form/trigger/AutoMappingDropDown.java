@@ -13,20 +13,11 @@ import com.bstek.dorado.view.annotation.Widget;
 @ClientObject(prototype = "dorado.widget.AutoMappingDropDown",
 		shortTypeName = "AutoMappingDropDown")
 public class AutoMappingDropDown extends RowListDropDown {
-	private boolean useEmptyItem;
 	private String property = "value";
 	private boolean autoOpen;
 
 	public AutoMappingDropDown() {
 		setEditable(false);
-	}
-
-	public boolean isUseEmptyItem() {
-		return useEmptyItem;
-	}
-
-	public void setUseEmptyItem(boolean useEmptyItem) {
-		this.useEmptyItem = useEmptyItem;
 	}
 
 	@Override

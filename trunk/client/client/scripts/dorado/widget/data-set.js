@@ -168,7 +168,7 @@
 
 		_disableObserversCounter: 0,
 
-		constructor: function(id) {
+		constructor: function(configs) {
 			this._dataPathCache = {};
 			this._observers = [];
 			$invokeSuper.call(this, arguments);

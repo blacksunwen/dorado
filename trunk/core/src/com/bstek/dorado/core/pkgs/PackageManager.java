@@ -15,6 +15,8 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.util.ClassUtils;
 
 /**
@@ -22,6 +24,8 @@ import org.springframework.util.ClassUtils;
  * @since 2011-7-22
  */
 public final class PackageManager {
+	private static final Log logger = LogFactory.getLog(PackageManager.class);
+
 	private static final String PACKAGE_PROPERTIES_LOCATION = "META-INF/dorado-package.properties";
 	private static final String UNKNOWN_VERSION = "<Unknown Version>";
 	private static final char HEX_DIGITALS[] = { // 用来将字节转换成 16 进制表示的字符
@@ -172,10 +176,11 @@ public final class PackageManager {
 							.append(" - ").append(packageInfo.getVersion())
 							.append(']');
 
-					throw new IllegalArgumentException(
+					Exception e = new IllegalArgumentException(
 							"More than one package [" + packageName
 									+ "] found. They are "
 									+ conflictInfo.toString());
+					logger.warn(e, e);
 				}
 
 				packageMap.put(packageName, packageInfo);
