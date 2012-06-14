@@ -23,6 +23,7 @@ public class InnerDataResolverManager extends DefaultDataResolverManager {
 			InnerDataTypeDefinitionManager innerDataTypeDefinitionManager,
 			InnerDataProviderDefinitionManager innerDataProviderDefinitionManager,
 			InnerDataResolverDefinitionManager innerDataResolverDefinitionManager) {
+		this.setDataResolverDefinitionManager(innerDataResolverDefinitionManager);
 		this.innerDataTypeDefinitionManager = innerDataTypeDefinitionManager;
 		this.innerDataResolverDefinitionManager = innerDataResolverDefinitionManager;
 		this.innerDataResolverDefinitionManager = innerDataResolverDefinitionManager;
@@ -32,6 +33,13 @@ public class InnerDataResolverManager extends DefaultDataResolverManager {
 	@Override
 	public DataResolver getDataResolver(String name) throws Exception {
 		Context context = Context.getCurrent();
+		Object oldDtdm = context
+				.getAttribute("privateDataTypeDefinitionManager");
+		Object oldDpdm = context
+				.getAttribute("privateDataProviderDefinitionManager");
+		Object oldDrdm = context
+				.getAttribute("privateDataResolverDefinitionManager");
+
 		context.setAttribute("privateDataTypeDefinitionManager",
 				innerDataTypeDefinitionManager);
 		context.setAttribute("privateDataProviderDefinitionManager",
@@ -45,9 +53,11 @@ public class InnerDataResolverManager extends DefaultDataResolverManager {
 			}
 			return dataResolver;
 		} finally {
-			context.removeAttribute("privateDataTypeDefinitionManager");
-			context.removeAttribute("privateDataProviderDefinitionManager");
-			context.removeAttribute("privateDataResolverDefinitionManager");
+			context.setAttribute("privateDataTypeDefinitionManager", oldDtdm);
+			context.setAttribute("privateDataProviderDefinitionManager",
+					oldDpdm);
+			context.setAttribute("privateDataResolverDefinitionManager",
+					oldDrdm);
 		}
 	}
 }

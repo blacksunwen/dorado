@@ -19,11 +19,8 @@ import com.bstek.dorado.core.bean.BeanWrapper;
 import com.bstek.dorado.core.el.ExpressionHandler;
 import com.bstek.dorado.core.resource.ListableResourceBundle;
 import com.bstek.dorado.data.config.definition.DataProviderDefinition;
-import com.bstek.dorado.data.config.definition.DataProviderDefinitionManager;
 import com.bstek.dorado.data.config.definition.DataResolverDefinition;
-import com.bstek.dorado.data.config.definition.DataResolverDefinitionManager;
 import com.bstek.dorado.data.config.definition.DataTypeDefinition;
-import com.bstek.dorado.data.config.definition.DataTypeDefinitionManager;
 import com.bstek.dorado.data.config.definition.ListenableObjectDefinition;
 import com.bstek.dorado.data.provider.manager.DataProviderManager;
 import com.bstek.dorado.data.resolver.manager.DataResolverManager;
@@ -230,6 +227,13 @@ public class ViewConfigDefinition extends ListenableObjectDefinition implements
 				.get(RESOURCE_RELATIVE_DEFINITION);
 		jexlContext.set(RESOURCE_RELATIVE_DEFINITION, this);
 
+		Object oldDtdm = doradoContext
+				.getAttribute("privateDataTypeDefinitionManager");
+		Object oldDpdm = doradoContext
+				.getAttribute("privateDataProviderDefinitionManager");
+		Object oldDrdm = doradoContext
+				.getAttribute("privateDataResolverDefinitionManager");
+
 		doradoContext.setAttribute("privateDataTypeDefinitionManager",
 				dataTypeDefinitionManager.duplicate());
 		doradoContext.setAttribute("privateDataProviderDefinitionManager",
@@ -260,11 +264,12 @@ public class ViewConfigDefinition extends ListenableObjectDefinition implements
 			jexlContext.set(RESOURCE_RELATIVE_DEFINITION,
 					resourceRelativeDefinition);
 
-			doradoContext.removeAttribute("privateDataTypeDefinitionManager");
-			doradoContext
-					.removeAttribute("privateDataProviderDefinitionManager");
-			doradoContext
-					.removeAttribute("privateDataResolverDefinitionManager");
+			doradoContext.setAttribute("privateDataTypeDefinitionManager",
+					oldDtdm);
+			doradoContext.setAttribute("privateDataProviderDefinitionManager",
+					oldDpdm);
+			doradoContext.setAttribute("privateDataResolverDefinitionManager",
+					oldDrdm);
 		}
 	}
 
@@ -317,9 +322,6 @@ public class ViewConfigDefinition extends ListenableObjectDefinition implements
 				innerDataTypeDefinitionManager,
 				innerDataProviderDefinitionManager,
 				innerDataResolverDefinitionManager);
-		dataTypeManager
-				.setDataTypeDefinitionManager((DataTypeDefinitionManager) doradoContext
-						.getAttribute("privateDataTypeDefinitionManager"));
 
 		InnerDataProviderManager dataProviderManager = new InnerDataProviderManager(
 				(DataProviderManager) doradoContext
@@ -327,9 +329,6 @@ public class ViewConfigDefinition extends ListenableObjectDefinition implements
 				innerDataTypeDefinitionManager,
 				innerDataProviderDefinitionManager,
 				innerDataResolverDefinitionManager);
-		dataProviderManager
-				.setDataProviderDefinitionManager((DataProviderDefinitionManager) doradoContext
-						.getAttribute("privateDataProviderDefinitionManager"));
 
 		InnerDataResolverManager dataResolverManager = new InnerDataResolverManager(
 				(DataResolverManager) doradoContext
@@ -337,9 +336,6 @@ public class ViewConfigDefinition extends ListenableObjectDefinition implements
 				innerDataTypeDefinitionManager,
 				innerDataProviderDefinitionManager,
 				innerDataResolverDefinitionManager);
-		dataResolverManager
-				.setDataResolverDefinitionManager((DataResolverDefinitionManager) doradoContext
-						.getAttribute("privateDataResolverDefinitionManager"));
 
 		viewConfig.setDataTypeManager(dataTypeManager);
 		viewConfig.setDataProviderManager(dataProviderManager);

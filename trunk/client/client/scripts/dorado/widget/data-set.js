@@ -289,7 +289,7 @@
 		 * <li>如果数据集的数据类型是集合，那么此方法表示向顶层集合中添加一条记录。</li>
 		 * <li>如果数据集的数据类型是实体类型，那么此方法表示直接新建一条记录并将其设置为数据集的顶层数据。
 		 * 如果在执行此方法之前数据集的顶层数据不是空，那么此方法将会报错。</li>
-		 * @param {Object} [data] 可以通过此参数传入一个JSON来初始化新增的记录。
+		 * @param {dorado.Entity|Object} [data] 可以通过此参数传入一个JSON来初始化新增的记录，也可以直接传入要新增的Entity。
 		 * @return {dorado.Entity} 新创建的数据实体。
 		 */
 		insert: function(data) {
@@ -299,11 +299,15 @@
 					this.setData([]);
 				}
 				var entityList = this.getData();
-				entity = entityList.createChild(data);
+				entity = entityList.insert(data);
 			}
 			else if (dataType instanceof dorado.EntityDataType) {
 				if (this._data == null) {
-					entity = new dorado.Entity(data, this.getDataTypeRepository(), dataType);
+					if (data instanceof dorado.Entity) {
+						entity = data;
+					} else {
+						entity = new dorado.Entity(data, this.getDataTypeRepository(), dataType);
+					}
 					this.setData(entity);
 				}
 				else {
