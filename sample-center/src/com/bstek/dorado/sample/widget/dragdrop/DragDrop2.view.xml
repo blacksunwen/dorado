@@ -5,7 +5,6 @@
     <Argument name="sumStyle" value="color: gray; fontSize:16pt; fontWeight:bold"/>
   </Arguments>
   <View layout="Anchor padding:20" title="拖拽  2">
-    <ClientEvent name="onCreate"/>
     <Label text="请尝试将这些数字拖动到下面的某个面板中..."/>
     <Container layout="Anchor" height="60" layoutConstraint="top:30" width="100%">
       <Label dragTags="number,1" draggable="true" layoutConstraint="anchorLeft:previous; left:4" style="${argument.numberStyle}" text="1">
@@ -49,7 +48,6 @@
       </Children>
     </Panel>
     <Panel id="panel3" layout="padding:8" caption="我的合计不能大于10" droppable="true" droppableTags="number" height="200" layoutConstraint="top:100; left:420" userData="0" width="200">
-      <ClientEvent name="onDraggingSourceDrop"/>
       <Property name="tags">dropTarget</Property>
       <Children>
         <Label style="${argument.sumStyle}" text="合计: 0"/>

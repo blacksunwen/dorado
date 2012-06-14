@@ -9,7 +9,7 @@
     </DataType>
   </Model>
   <View layout="Form cols:400,*;padding:20" title="Editors and Triggers">
-    <ClientEvent name="onCreate">self.$onMathTriggerExecute = function(self, arg) {&#xD;
+    <ClientEvent name="onCreate">view.$onMathTriggerExecute = function(self, arg) {&#xD;
 	var n = arg.editor.get(&quot;value&quot;);&#xD;
 	n = eval(n + self.get(&quot;userData&quot;));&#xD;
 	arg.editor.set(&quot;value&quot;, n);&#xD;
@@ -40,7 +40,7 @@
       <Property name="center">true</Property>
       <Children>
         <Button layoutConstraint="top:50%;left:50%">
-          <ClientEvent name="onClick">var dialog = this.id(&quot;dialog2&quot;);&#xD;
+          <ClientEvent name="onClick">var dialog = self.findParent(dorado.widget.Dialog);&#xD;
 var editor = dialog.get(&quot;userData&quot;); // 取得对应的编辑框 &#xD;
 editor.set(&quot;text&quot;, &quot;Trigger设置的值&quot;);&#xD;
 dialog.hide();</ClientEvent>
@@ -50,9 +50,8 @@ dialog.hide();</ClientEvent>
       </Children>
     </Dialog>
     <Trigger id="trigger2">
-      <ClientEvent name="onExecute">var dialog = this.id(&quot;dialog2&quot;);&#xD;
-dialog.set(&quot;userData&quot;, arg.editor);&#xD;
-dialog.show();</ClientEvent>
+      <ClientEvent name="onExecute" signature="arg, dialog2">dialog2.set(&quot;userData&quot;, arg.editor);&#xD;
+dialog2.show();</ClientEvent>
       <Property name="iconClass">d-trigger-icon-search</Property>
     </Trigger>
     <FormElement>
@@ -64,23 +63,23 @@ dialog.show();</ClientEvent>
       <Property name="text">Trigger可以看作是跟编辑框显示在一起的一个按钮，可以在其中放置任何逻辑。</Property>
     </Label>
     <Trigger id="trigger3">
-      <ClientEvent name="onExecute">this.$onMathTriggerExecute(self, arg);&#xD;
+      <ClientEvent name="onExecute">view.$onMathTriggerExecute(self, arg);&#xD;
 </ClientEvent>
       <Property name="userData">*2</Property>
       <Property name="icon">>dorado/res/com/bstek/dorado/sample/widget/form/images/m2.gif</Property>
     </Trigger>
     <Trigger id="trigger4">
-      <ClientEvent name="onExecute">this.$onMathTriggerExecute(self, arg);</ClientEvent>
+      <ClientEvent name="onExecute">view.$onMathTriggerExecute(self, arg);</ClientEvent>
       <Property name="userData">*3</Property>
       <Property name="icon">>dorado/res/com/bstek/dorado/sample/widget/form/images/m3.gif</Property>
     </Trigger>
     <Trigger id="trigger5">
-      <ClientEvent name="onExecute">this.$onMathTriggerExecute(self, arg);</ClientEvent>
+      <ClientEvent name="onExecute">view.$onMathTriggerExecute(self, arg);</ClientEvent>
       <Property name="userData">/2</Property>
       <Property name="icon">>dorado/res/com/bstek/dorado/sample/widget/form/images/d2.gif</Property>
     </Trigger>
     <Trigger id="trigger6">
-      <ClientEvent name="onExecute">this.$onMathTriggerExecute(self, arg);</ClientEvent>
+      <ClientEvent name="onExecute">view.$onMathTriggerExecute(self, arg);</ClientEvent>
       <Property name="userData">/3</Property>
       <Property name="icon">>dorado/res/com/bstek/dorado/sample/widget/form/images/d3.gif</Property>
     </Trigger>

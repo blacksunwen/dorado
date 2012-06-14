@@ -20,7 +20,6 @@
   <View layout="anchor padding:20">
     <DataSet id="dsExamples" dataProvider="main#getCategories" dataType="[ExampleCategory]"/>
     <Action id="actionExecute">
-      <ClientEvent name="onExecute"/>
       <Property name="hotkey">ctrl+return</Property>
       <Property name="caption">测试 (Ctrl+Return)</Property>
       <Property name="icon">url(skin>common/icons.gif) -180px -220px</Property>
@@ -36,15 +35,12 @@
             <Property name="contentOverflow">visible</Property>
             <Buttons/>
             <Children>
-              <ListDropDown id="dropDownDataPaths">
-                <ClientEvent name="onCreate"/>
-              </ListDropDown>
+              <ListDropDown id="dropDownDataPaths"/>
               <TextEditor id="inputDataPath" layoutConstraint="colSpan:4">
                 <Property name="trigger">dropDownDataPaths</Property>
                 <Property name="blankText">请输入要测试的DataPath...</Property>
               </TextEditor>
               <RadioGroup id="radioGroupMode" layoutConstraint="colSpan:4">
-                <ClientEvent name="onValueChange"/>
                 <Property name="layout">flow</Property>
                 <Property name="value">free</Property>
                 <RadioButton>
@@ -92,7 +88,6 @@
           <Buttons/>
           <Children>
             <DataTree id="treeExamples">
-              <ClientEvent name="onCurrentChange"/>
               <Property name="expandingAnimated">true</Property>
               <Property name="dataSet">dsExamples</Property>
               <BindingConfigs>

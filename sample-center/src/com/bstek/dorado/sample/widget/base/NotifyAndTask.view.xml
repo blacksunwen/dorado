@@ -9,11 +9,9 @@
       <Buttons/>
       <Children>
         <Button id="buttonModelessIndicator">
-          <ClientEvent name="onClick"/>
           <Property name="caption">非阻塞式任务指示器</Property>
         </Button>
         <Button id="buttonModelIndicator">
-          <ClientEvent name="onClick"/>
           <Property name="caption">阻塞式任务指示器</Property>
         </Button>
       </Children>
@@ -23,11 +21,9 @@
       <Buttons/>
       <Children>
         <Button id="buttonNotify">
-          <ClientEvent name="onClick"/>
           <Property name="caption">通知信息</Property>
         </Button>
         <Button id="buttonCustomNotify">
-          <ClientEvent name="onClick"/>
           <Property name="caption">带有更多自定义特性的通知信息</Property>
         </Button>
       </Children>

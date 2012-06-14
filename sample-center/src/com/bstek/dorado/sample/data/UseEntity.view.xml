@@ -15,7 +15,6 @@
   <View layout="anchor padding:20">
     <DataSet id="dsExamples" dataProvider="main#getCategories" dataType="[ExampleCategory]"/>
     <Action id="actionExecute">
-      <ClientEvent name="onExecute"/>
       <Property name="icon">url(skin>common/icons.gif) -180px -220px</Property>
       <Property name="caption">运行 (Ctrl+Return)</Property>
       <Property name="hotkey">ctrl+return</Property>
@@ -34,9 +33,6 @@
               <Buttons/>
               <Children>
                 <ListBox id="listboxScripts">
-                  <ClientEvent name="onReady"/>
-                  <ClientEvent name="onDataRowClick"/>
-                  <ClientEvent name="onRenderRow"/>
                   <Property name="property">description</Property>
                   <Property name="highlightCurrentRow">false</Property>
                   <Property name="rowHeight">45</Property>
@@ -57,13 +53,11 @@
                     </ToolBarButton>
                     <Separator/>
                     <ToolBarButton id="buttonReset">
-                      <ClientEvent name="onClick"/>
                       <Property name="caption">还原数据</Property>
                       <Property name="icon">url(skin>common/icons.gif) -280px -220px</Property>
                     </ToolBarButton>
                   </ToolBar>
                   <TextArea id="inputScript">
-                    <ClientEvent name="onReady"/>
                     <Property name="blankText">此处可使用3个预设变量：list的值为包含所有根节点数据的EntityList；currentEntity的值为当前选择的树节点所代表的Entityt；dsExamples是数据所在的DataSet。</Property>
                     <Property name="tip">此处可使用两个预设变量：list的值为包含所有根节点数据的EntityList；currentEntity的值为当前选择的树节点所代表的Entity。</Property>
                   </TextArea>
@@ -80,8 +74,6 @@
           <Buttons/>
           <Children>
             <DataTree id="treeExamples">
-              <ClientEvent name="onRenderNode"/>
-              <ClientEvent name="onNodeAttached"/>
               <Property name="expandingAnimated">true</Property>
               <Property name="dataSet">dsExamples</Property>
               <BindingConfigs>

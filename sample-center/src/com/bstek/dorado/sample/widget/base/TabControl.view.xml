@@ -4,23 +4,18 @@
   <Context/>
   <Model/>
   <View layout="vbox padding:20">
-    <ClientEvent name="onCreate"/>
     <Container layout="hbox">
       <Button id="buttonTabPosition">
-        <ClientEvent name="onClick"/>
         <Property name="caption">切换标签位置</Property>
         <Property name="toggleable">true</Property>
       </Button>
       <Button id="buttonChangeCurrent">
-        <ClientEvent name="onClick"/>
         <Property name="caption">切换当前标签</Property>
       </Button>
       <Button id="buttonRemoveTab">
-        <ClientEvent name="onClick"/>
         <Property name="caption">删除当前标签</Property>
       </Button>
       <Button id="buttonAddTab">
-        <ClientEvent name="onClick"/>
         <Property name="caption">添加标签</Property>
       </Button>
     </Container>
@@ -168,7 +163,6 @@
           <Property name="property">type</Property>
           <Editor>
             <RadioGroup id="radioGroupType">
-              <ClientEvent name="onValueChange"/>
               <Property name="layout">flow</Property>
               <Property name="value">control</Property>
               <RadioButton>
@@ -199,12 +193,10 @@
         <Container layout="hbox align:bottom;pack:center">
           <Property name="height">40</Property>
           <Button id="buttonOK">
-            <ClientEvent name="onClick"/>
             <Property name="caption">确定</Property>
             <Property name="width">60</Property>
           </Button>
           <Button id="buttonCancel">
-            <ClientEvent name="onClick"/>
             <Property name="caption">取消</Property>
           </Button>
         </Container>

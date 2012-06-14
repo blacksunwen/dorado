@@ -65,7 +65,6 @@
       <Button>
         <ClientEvent name="onClick">self.set(&quot;disabled&quot;, true);&#xD;
 &#xD;
-var view = this;&#xD;
 $ajax.request(&quot;>dorado/res/com/bstek/dorado/sample/data/Phones.js&quot;, function(result) {&#xD;
 	view.set(&quot;#dsPhones.data&quot;, result.getJsonData());&#xD;
 	view.set(&quot;^gridTest.disabled&quot;, false);&#xD;
@@ -73,7 +72,7 @@ $ajax.request(&quot;>dorado/res/com/bstek/dorado/sample/data/Phones.js&quot;, fu
         <Property name="caption">通过Ajax装载数据</Property>
       </Button>
       <Button>
-        <ClientEvent name="onClick">this.set(&quot;#gridPhones.fixedColumnCount&quot;, self.get(&quot;toggled&quot;) ? 4 : 0);&#xD;
+        <ClientEvent name="onClick" signature="self, gridPhones">gridPhones.set(&quot;fixedColumnCount&quot;, self.get(&quot;toggled&quot;) ? 4 : 0);&#xD;
 </ClientEvent>
         <Property name="caption">锁定左边4列</Property>
         <Property name="toggleable">true</Property>
@@ -81,7 +80,7 @@ $ajax.request(&quot;>dorado/res/com/bstek/dorado/sample/data/Phones.js&quot;, fu
         <Property name="tags">gridTest</Property>
       </Button>
       <Button>
-        <ClientEvent name="onClick">this.set(&quot;#gridPhones.groupProperty&quot;, self.get(&quot;toggled&quot;) ? &quot;manufacturer&quot; : null);&#xD;
+        <ClientEvent name="onClick" signature="self, gridPhones">gridPhones.set(&quot;groupProperty&quot;, self.get(&quot;toggled&quot;) ? &quot;manufacturer&quot; : null);&#xD;
 </ClientEvent>
         <Property name="caption">数据分组</Property>
         <Property name="toggleable">true</Property>
@@ -89,8 +88,8 @@ $ajax.request(&quot;>dorado/res/com/bstek/dorado/sample/data/Phones.js&quot;, fu
         <Property name="tags">gridTest</Property>
       </Button>
       <Button>
-        <ClientEvent name="onClick">this.set(&quot;#gridPhones.showFilterBar&quot;, self.get(&quot;toggled&quot;));&#xD;
-this.set(&quot;^gridFilterTest.disabled&quot;, !self.get(&quot;toggled&quot;));&#xD;
+        <ClientEvent name="onClick" signature="self, gridPhones">gridPhones.set(&quot;#showFilterBar&quot;, self.get(&quot;toggled&quot;));&#xD;
+view.set(&quot;^gridFilterTest.disabled&quot;, !self.get(&quot;toggled&quot;));&#xD;
 </ClientEvent>
         <Property name="caption">数据过滤栏</Property>
         <Property name="toggleable">true</Property>
@@ -98,8 +97,7 @@ this.set(&quot;^gridFilterTest.disabled&quot;, !self.get(&quot;toggled&quot;));&
         <Property name="tags">gridTest</Property>
       </Button>
       <Button>
-        <ClientEvent name="onClick">var grid = this.id(&quot;gridPhones&quot;);&#xD;
-grid.set(&quot;filterEntity.price&quot;, self.get(&quot;toggled&quot;) ? &quot;>3500&quot; : null).filter();&#xD;
+        <ClientEvent name="onClick" signature="self, gridPhones">gridPhones.set(&quot;filterEntity.price&quot;, self.get(&quot;toggled&quot;) ? &quot;>3500&quot; : null).filter();&#xD;
 </ClientEvent>
         <Property name="caption">价格过滤</Property>
         <Property name="disabled">true</Property>
@@ -107,8 +105,7 @@ grid.set(&quot;filterEntity.price&quot;, self.get(&quot;toggled&quot;) ? &quot;>
         <Property name="toggleable">true</Property>
       </Button>
       <Button>
-        <ClientEvent name="onClick">var grid = this.id(&quot;gridPhones&quot;);&#xD;
-grid.sort(&quot;price&quot;, !self.get(&quot;toggled&quot;));&#xD;
+        <ClientEvent name="onClick" signature="self, gridPhones">gridPhones.sort(&quot;price&quot;, !self.get(&quot;toggled&quot;));&#xD;
 </ClientEvent>
         <Property name="caption">价格排序</Property>
         <Property name="disabled">true</Property>
@@ -116,8 +113,7 @@ grid.sort(&quot;price&quot;, !self.get(&quot;toggled&quot;));&#xD;
         <Property name="toggleable">true</Property>
       </Button>
       <Button>
-        <ClientEvent name="onClick">var grid = this.id(&quot;gridPhones&quot;);&#xD;
-grid.getColumn(&quot;comment&quot;).set(&quot;visible&quot;, !self.get(&quot;toggled&quot;));&#xD;
+        <ClientEvent name="onClick" signature="self, gridPhones">gridPhones.set(&quot;&amp;comment.visible&quot;, !self.get(&quot;toggled&quot;));&#xD;
 </ClientEvent>
         <Property name="caption">隐藏备注列</Property>
         <Property name="disabled">true</Property>
@@ -125,7 +121,7 @@ grid.getColumn(&quot;comment&quot;).set(&quot;visible&quot;, !self.get(&quot;tog
         <Property name="toggleable">true</Property>
       </Button>
       <Button>
-        <ClientEvent name="onClick">var selection = this.get(&quot;#gridPhones.selection&quot;), message;&#xD;
+        <ClientEvent name="onClick" signature="self, gridPhones">var selection = gridPhones.get(&quot;selection&quot;), message;&#xD;
 if (selection &amp;&amp; selection.length) {&#xD;
 	var products = [];&#xD;
 	selection.each(function(data){&#xD;
@@ -143,7 +139,7 @@ dorado.MessageBox.alert(message);&#xD;
         <Property name="tags">gridTest</Property>
       </Button>
       <Button>
-        <ClientEvent name="onClick">this.get(&quot;#gridPhones&quot;).highlightItem();&#xD;
+        <ClientEvent name="onClick" signature="gridPhones">gridPhones.highlightItem();&#xD;
 </ClientEvent>
         <Property name="tags">gridTest</Property>
         <Property name="caption">高亮当前行</Property>

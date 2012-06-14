@@ -8,10 +8,8 @@
   </Context>
   <Model/>
   <View layout="vbox padding:20">
-    <ClientEvent name="onCreate"/>
     <Container layout="hbox">
       <AjaxAction id="actionAjax">
-        <ClientEvent name="onSuccess"/>
         <Property name="caption">Test Ajax</Property>
         <Property name="service">viewContextTest#testAjax</Property>
       </AjaxAction>
