@@ -3,14 +3,10 @@ package com.bstek.dorado.web.resolver;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.w3c.dom.Document;
 
 import com.bstek.dorado.config.xml.XmlParser;
+import com.bstek.dorado.core.EngineStartupListener;
 import com.bstek.dorado.core.io.Resource;
 import com.bstek.dorado.core.io.ResourceUtils;
 import com.bstek.dorado.core.xml.XmlDocumentBuilder;
@@ -19,9 +15,7 @@ import com.bstek.dorado.core.xml.XmlDocumentBuilder;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2011-1-23
  */
-public class ResourceTypeLoader implements ApplicationContextAware {
-	private static Log logger = LogFactory.getLog(ResourceTypeLoader.class);
-
+public class ResourceTypeLoader extends EngineStartupListener {
 	private ResourceTypeManager resourceTypeManager;
 	private String configLocation;
 	private List<String> configLocations;
@@ -63,22 +57,18 @@ public class ResourceTypeLoader implements ApplicationContextAware {
 		}
 	}
 
-	public void setApplicationContext(ApplicationContext applicationContext)
-			throws BeansException {
-		try {
-			if (StringUtils.isNotEmpty(configLocation)) {
-				loadConfigs(resourceTypeManager,
-						ResourceUtils.getResources(configLocation));
-			}
+	@Override
+	public void onStartup() throws Exception {
+		if (StringUtils.isNotEmpty(configLocation)) {
+			loadConfigs(resourceTypeManager,
+					ResourceUtils.getResources(configLocation));
+		}
 
-			if (configLocations != null) {
-				String[] locations = new String[configLocations.size()];
-				configLocations.toArray(locations);
-				loadConfigs(resourceTypeManager,
-						ResourceUtils.getResources(locations));
-			}
-		} catch (Exception e) {
-			logger.error(e, e);
+		if (configLocations != null) {
+			String[] locations = new String[configLocations.size()];
+			configLocations.toArray(locations);
+			loadConfigs(resourceTypeManager,
+					ResourceUtils.getResources(locations));
 		}
 	}
 }
