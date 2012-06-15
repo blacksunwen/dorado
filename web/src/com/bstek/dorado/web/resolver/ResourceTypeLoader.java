@@ -2,9 +2,12 @@ package com.bstek.dorado.web.resolver;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.FactoryBean;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.w3c.dom.Document;
 
 import com.bstek.dorado.config.xml.XmlParser;
@@ -16,14 +19,22 @@ import com.bstek.dorado.core.xml.XmlDocumentBuilder;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2011-1-23
  */
-public class ResourceTypeManagerFactory implements
-		FactoryBean<ResourceTypeManager> {
-	private static Log logger = LogFactory
-			.getLog(ResourceTypeManagerFactory.class);
+public class ResourceTypeLoader implements ApplicationContextAware {
+	private static Log logger = LogFactory.getLog(ResourceTypeLoader.class);
 
+	private ResourceTypeManager resourceTypeManager;
+	private String configLocation;
 	private List<String> configLocations;
 	private XmlDocumentBuilder xmlDocumentBuilder;
 	private XmlParser resourceTypeParser;
+
+	public void setResourceTypeManager(ResourceTypeManager resourceTypeManager) {
+		this.resourceTypeManager = resourceTypeManager;
+	}
+
+	public void setConfigLocation(String configLocation) {
+		this.configLocation = configLocation;
+	}
 
 	public void setConfigLocations(List<String> configLocations) {
 		this.configLocations = configLocations;
@@ -52,9 +63,14 @@ public class ResourceTypeManagerFactory implements
 		}
 	}
 
-	public ResourceTypeManager getObject() throws Exception {
-		ResourceTypeManager resourceTypeManager = new ResourceTypeManager();
+	public void setApplicationContext(ApplicationContext applicationContext)
+			throws BeansException {
 		try {
+			if (StringUtils.isNotEmpty(configLocation)) {
+				loadConfigs(resourceTypeManager,
+						ResourceUtils.getResources(configLocation));
+			}
+
 			if (configLocations != null) {
 				String[] locations = new String[configLocations.size()];
 				configLocations.toArray(locations);
@@ -64,15 +80,5 @@ public class ResourceTypeManagerFactory implements
 		} catch (Exception e) {
 			logger.error(e, e);
 		}
-		return resourceTypeManager;
 	}
-
-	public Class<ResourceTypeManager> getObjectType() {
-		return ResourceTypeManager.class;
-	}
-
-	public boolean isSingleton() {
-		return true;
-	}
-
 }
