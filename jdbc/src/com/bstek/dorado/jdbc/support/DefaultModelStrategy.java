@@ -57,7 +57,6 @@ public class DefaultModelStrategy implements ModelStrategy {
 			def = this.createDataTypeDefinition(tableDef);
 			def.setImpl(DefaultEntityDataType.class.getName());
 			def.setName(name);
-			def.setGlobal(true);
 			manager.registerDefinition(name, def);
 			
 			return def;
@@ -75,7 +74,6 @@ public class DefaultModelStrategy implements ModelStrategy {
 		if (def == null) {
 			def = createDataProviderDifinition(tableDef);
 			def.setName(name);
-			def.setGlobal(true);
 			def.setProperty(XmlConstants.TABLE_NAME, name);
 			def.setImpl(JdbcDataProvider.class.getName());
 			manager.registerDefinition(name, def);
