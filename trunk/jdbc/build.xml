@@ -7,9 +7,9 @@
 
 	<property name="addonName" value="dorado-jdbc" />
 	<property name="vendor" value="www.BSTEK.com" />
-	<property name="version" value="0.0.2" />
-	<property name="qualifier" value="SNAPSHOT" />
-	<property name="buildJavaDoc" value="false" />
+	<property name="version" value="0.1.0" />
+	<property name="qualifier" value="BETA" />
+	<property name="buildJavaDoc" value="true" />
 	<property name="buildJsDoc" value="false" />
 
 	<property name="buildDir"
