@@ -14,16 +14,20 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 		</property>
 	</bean>
 
-	<bean id="dorado.resourceTypeManager" class="com.bstek.dorado.web.resolver.ResourceTypeManagerFactory">
+	<bean id="dorado.resourceTypeManager" class="com.bstek.dorado.web.resolver.ResourceTypeManager" />
+	<bean id="dorado.resourceTypeLoader" abstract="true" class="com.bstek.dorado.web.resolver.ResourceTypeLoader">
+		<property name="resourceTypeManager" ref="dorado.resourceTypeManager" />
+		<property name="xmlDocumentBuilder" ref="dorado.xmlDocumentBuilder" />
+		<property name="resourceTypeParser">
+			<bean class="com.bstek.dorado.web.resolver.ResourceTypeParser" />
+		</property>
+	</bean>
+	<bean parent="dorado.resourceTypeLoader">
 		<property name="configLocations">
 			<list merge="true">
 				<value>com/bstek/dorado/web/resolver/resource-types.xml</value>
 				<value>home:resource-types.xml</value>
 			</list>
-		</property>
-		<property name="xmlDocumentBuilder" ref="dorado.xmlDocumentBuilder" />
-		<property name="resourceTypeParser">
-			<bean class="com.bstek.dorado.web.resolver.ResourceTypeParser" />
 		</property>
 	</bean>
 
