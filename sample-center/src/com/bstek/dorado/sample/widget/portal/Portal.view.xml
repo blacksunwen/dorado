@@ -6,8 +6,7 @@
   <View>
     <ToolBar layoutConstraint="top">
       <ToolBarButton>
-        <ClientEvent name="onClick">var portal = this.id(&quot;portal&quot;);
-portal.addPortlet({
+        <ClientEvent name="onClick" signature="portal">portal.addPortlet({
     caption: &quot;PortletX&quot;,
     column: 1,
     closeable: true
@@ -15,8 +14,7 @@ portal.addPortlet({
         <Property name="caption">addPortlet</Property>
       </ToolBarButton>
       <ToolBarButton>
-        <ClientEvent name="onClick">var resetColumnDialog = this.id(&quot;resetColumnDialog&quot;);
-resetColumnDialog.show();</ClientEvent>
+        <ClientEvent name="onClick" signature="resetColumnDialog">resetColumnDialog.show();</ClientEvent>
         <Property name="caption">Reset Column</Property>
       </ToolBarButton>
     </ToolBar>
@@ -68,8 +66,7 @@ resetColumnDialog.show();</ClientEvent>
       <Property name="modalType">transparent</Property>
       <Buttons>
         <Button>
-          <ClientEvent name="onClick">var view = this, frameSelectView = view.id(&quot;frameSelectView&quot;), portal = view.id(&quot;portal&quot;), resetColumnDialog = view.id(&quot;resetColumnDialog&quot;);
-var data = frameSelectView.getCurrentItem();
+          <ClientEvent name="onClick" signature="portal, frameSelectView, resetColumnDialog">var data = frameSelectView.getCurrentItem();
 if (data &amp;&amp; data.label) {
 	var index = parseInt(data.label.replace(&quot;版式&quot;, &quot;&quot;), 10), setting;
 	switch (index) {
@@ -94,29 +91,30 @@ if (data &amp;&amp; data.label) {
           <Property name="caption">OK</Property>
         </Button>
         <Button>
-          <ClientEvent name="onClick">var resetColumnDialog = this.id(&quot;resetColumnDialog&quot;);
-resetColumnDialog.hide();</ClientEvent>
+          <ClientEvent name="onClick" signature="resetColumnDialog">resetColumnDialog.hide();</ClientEvent>
           <Property name="caption">Cancel</Property>
         </Button>
       </Buttons>
       <Children>
         <BlockView id="frameSelectView">
-          <ClientEvent name="onCreate">self.set(&quot;renderer&quot;, new dorado.widget.blockview.ImageBlockRenderer({
-	captionProperty: &quot;label&quot;
-}));
-self.set(&quot;items&quot;, [{
-	label: &quot;版式1&quot;,
-	image: &quot;>dorado/res/com/bstek/dorado/sample/widget/portal/frame-1.gif&quot;
-}, {
-	label: &quot;版式2&quot;,
-	image: &quot;>dorado/res/com/bstek/dorado/sample/widget/portal/frame-2.gif&quot;
-}, {
-	label: &quot;版式3&quot;,
-	image: &quot;>dorado/res/com/bstek/dorado/sample/widget/portal/frame-3.gif&quot;
-}, {
-	label: &quot;版式4&quot;,
-	image: &quot;>dorado/res/com/bstek/dorado/sample/widget/portal/frame-4.gif&quot;
-}]);</ClientEvent>
+          <ClientEvent name="onCreate">self.set({
+	&quot;renderer&quot;: new dorado.widget.blockview.ImageBlockRenderer({
+			captionProperty: &quot;label&quot;
+		}),
+	&quot;items&quot;: [{
+			label: &quot;版式1&quot;,
+			image: &quot;>dorado/res/com/bstek/dorado/sample/widget/portal/frame-1.gif&quot;
+		}, {
+			label: &quot;版式2&quot;,
+			image: &quot;>dorado/res/com/bstek/dorado/sample/widget/portal/frame-2.gif&quot;
+		}, {
+			label: &quot;版式3&quot;,
+			image: &quot;>dorado/res/com/bstek/dorado/sample/widget/portal/frame-3.gif&quot;
+		}, {
+			label: &quot;版式4&quot;,
+			image: &quot;>dorado/res/com/bstek/dorado/sample/widget/portal/frame-4.gif&quot;
+		}]
+});</ClientEvent>
           <Property name="fillLine">true</Property>
           <Property name="lineSize">4</Property>
           <Property name="blockHeight">72</Property>

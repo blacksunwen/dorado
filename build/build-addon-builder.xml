@@ -6,7 +6,7 @@
 	<property file="build.properties" />
 
 	<property name="vendor" value="www.BSTEK.com" />
-	<property name="version" value="1.0.2" />
+	<property name="version" value="1.0.3" />
 	<property name="qualifier" value="RELEASE" />
 
 	<taskdef resource="net/sf/antcontrib/antlib.xml"

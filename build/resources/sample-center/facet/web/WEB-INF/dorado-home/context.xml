@@ -4,6 +4,7 @@
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dorado-7.0.xsd">
 	<import resource="app-context.xml" />
+	<import resource="components-context.xml" />
 
 	<bean parent="dorado.dataConfigLoader">
 		<property name="configLocation" value="${model.root}/*.model.xml" />
@@ -21,25 +22,5 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 
 	<bean parent="dorado.packagesConfigLoader">
 		<property name="configLocation" value="home:packages-config.xml" />
-	</bean>
-
-	<!-- User Component -->
-	<bean parent="dorado.assembledComponentTypeRegister">
-		<property name="name" value="PageBanner" />
-		<property name="src" value="com.bstek.dorado.sample.admin.AssembledComponents#PageBanner" />
-		<d:virtual-property name="caption" />
-	</bean>
-	<bean parent="dorado.assembledComponentTypeRegister">
-		<property name="name" value="ToggleButton" />
-		<property name="src" value="com.bstek.dorado.sample.component.AssembledComponents#ToggleButton" />
-	</bean>
-	<bean parent="dorado.assembledComponentTypeRegister">
-		<property name="name" value="ButtonPanel" />
-		<property name="src" value="com.bstek.dorado.sample.component.AssembledComponents#ButtonPanel" />
-		<d:virtual-property name="buttonCaption" />
-	</bean>
-	<bean parent="dorado.assembledComponentTypeRegister">
-		<property name="name" value="QuickForm" />
-		<property name="classType" value="com.bstek.dorado.sample.component.QuickForm" />
 	</bean>
 </beans>

@@ -29,7 +29,7 @@
 		                  buildJsDoc="true"
 		                  buildJavaDoc="true"
 		                  makePom="false"
-		                  clientSrc="${workspaceDir}/client/client,${workspaceDir}/chart/client,${workspaceDir}/desktop/client,${workspaceDir}/htmleditor/client"
+		                  clientSrc="${workspaceDir}/client/client,${workspaceDir}/chart/client,${workspaceDir}/desktop/client"
 		                  javaSrc="${workspaceDir}/core/src,${workspaceDir}/data/src,${workspaceDir}/web/src,${workspaceDir}/view/src,${workspaceDir}/hibernate/src" />
 	</target>
 </project>

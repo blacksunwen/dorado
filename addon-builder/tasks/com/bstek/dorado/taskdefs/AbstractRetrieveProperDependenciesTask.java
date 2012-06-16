@@ -166,6 +166,12 @@ public abstract class AbstractRetrieveProperDependenciesTask extends Task {
 					if (StringUtils.isNotEmpty(groupId)
 							&& StringUtils.isNotEmpty(artifactId)
 							&& StringUtils.isNotEmpty(revision)) {
+						if (groupId.equals("com.bstek.dorado")
+								&& revision.endsWith("-RELEASE")) {
+							revision = StringUtils.substringBeforeLast(
+									revision, "-RELEASE");
+						}
+
 						ArtifactDescriptor descriptor = new ArtifactDescriptor();
 						descriptor.setGroupId(groupId);
 						descriptor.setArtifactId(artifactId);
@@ -187,6 +193,9 @@ public abstract class AbstractRetrieveProperDependenciesTask extends Task {
 		log("Dorado Addon Found \"" + jarFile.getName() + "\".");
 		log("Retrieve 2nd dependencies to \"" + workDirFile.getCanonicalPath()
 				+ "\"...");
+		log("ArtifactDescriptor: " + artifactDescriptor.getGroupId() + ", "
+				+ artifactDescriptor.getArtifactId() + ", "
+				+ artifactDescriptor.getRevision());
 		resolve(artifactDescriptor, CONFS, workDirFile);
 	}
 

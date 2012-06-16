@@ -9,7 +9,7 @@
     </DataType>
   </Model>
   <View layout="Form cols:400,*;padding:20" title="Editors and Triggers">
-    <ClientEvent name="onCreate">view.$onMathTriggerExecute = function(self, arg) {&#xD;
+    <ClientEvent name="onCreate">this.$onMathTriggerExecute = function(self, arg) {&#xD;
 	var n = arg.editor.get(&quot;value&quot;);&#xD;
 	n = eval(n + self.get(&quot;userData&quot;));&#xD;
 	arg.editor.set(&quot;value&quot;, n);&#xD;
@@ -63,8 +63,7 @@ dialog2.show();</ClientEvent>
       <Property name="text">Trigger可以看作是跟编辑框显示在一起的一个按钮，可以在其中放置任何逻辑。</Property>
     </Label>
     <Trigger id="trigger3">
-      <ClientEvent name="onExecute">view.$onMathTriggerExecute(self, arg);&#xD;
-</ClientEvent>
+      <ClientEvent name="onExecute">view.$onMathTriggerExecute(self, arg);</ClientEvent>
       <Property name="userData">*2</Property>
       <Property name="icon">>dorado/res/com/bstek/dorado/sample/widget/form/images/m2.gif</Property>
     </Trigger>
@@ -169,6 +168,7 @@ self.set(&quot;items&quot;, items);</ClientEvent>
       <Property name="width">260</Property>
       <Property name="filterOnTyping">false</Property>
       <Property name="dynaFilter">true</Property>
+      <Property name="property">productName</Property>
     </DataSetDropDown>
     <FormElement>
       <Property name="label">与DataSet绑定的下拉框</Property>

@@ -436,7 +436,7 @@
 					       value="${incrementalVersion}" />
 					<entry key="publication" value="${publication}" />
 					<entry key="qualifier" value="${qualifier}" />
-					<entry key="revision" value="${version}-${qualifier}" />
+					<entry key="revision" value="${revision}" />
 					<entry key="properDependencies"
 					       value="${properDependencies}" />
 				</propertyfile>

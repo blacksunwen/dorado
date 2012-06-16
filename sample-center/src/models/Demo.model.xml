@@ -8,6 +8,7 @@
   </DataType>
   <DataType name="Category" parent="BaseCategory" meta="x:12;y:284" autoCreatePropertyDefs="true" matchType="com.bstek.dorado.sample.entity.Category"/>
   <DataType name="BaseProduct" parent="CommonEntity" meta="x:151;y:147;child:Product" creationType="com.bstek.dorado.sample.entity.Product">
+    <Property name="defaultDisplayProperty">productName</Property>
     <PropertyDef name="productName" label="产品名称">
       <Property name="required">true</Property>
     </PropertyDef>

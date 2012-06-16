@@ -88,7 +88,7 @@ $ajax.request(&quot;>dorado/res/com/bstek/dorado/sample/data/Phones.js&quot;, fu
         <Property name="tags">gridTest</Property>
       </Button>
       <Button>
-        <ClientEvent name="onClick" signature="self, gridPhones">gridPhones.set(&quot;#showFilterBar&quot;, self.get(&quot;toggled&quot;));&#xD;
+        <ClientEvent name="onClick" signature="self, gridPhones">gridPhones.set(&quot;showFilterBar&quot;, self.get(&quot;toggled&quot;));&#xD;
 view.set(&quot;^gridFilterTest.disabled&quot;, !self.get(&quot;toggled&quot;));&#xD;
 </ClientEvent>
         <Property name="caption">数据过滤栏</Property>
