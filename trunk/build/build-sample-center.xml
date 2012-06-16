@@ -86,7 +86,6 @@
 			</classpath>
 		</javac>
 
-
 		<war destfile="${workDir}/sample-center.war" compress="true" level="9">
 			<fileset dir="${workDir}/web">
 				<include name="**/*.*" />

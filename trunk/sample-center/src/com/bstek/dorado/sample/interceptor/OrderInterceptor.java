@@ -44,13 +44,13 @@ public class OrderInterceptor {
 				criteria.add(Restrictions.le("orderDate",
 						parameter.get("orderDate2")));
 			}
-			if (parameter.get("customer") != null) {
-				criteria.add(Restrictions.eq("customer",
-						parameter.get("customer")));
+			if (parameter.get("customerId") != null) {
+				criteria.add(Restrictions.eq("customer.id",
+						parameter.get("customerId")));
 			}
-			if (parameter.get("employee") != null) {
-				criteria.add(Restrictions.eq("employee",
-						parameter.get("employee")));
+			if (parameter.get("employeeId") != null) {
+				criteria.add(Restrictions.eq("employee.id",
+						parameter.get("employeeId")));
 			}
 		}
 		orderDao.find(page, criteria);

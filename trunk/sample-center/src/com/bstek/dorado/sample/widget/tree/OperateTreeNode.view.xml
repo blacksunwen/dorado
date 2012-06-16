@@ -44,7 +44,7 @@ select(treeGrid.get(&quot;nodes&quot;));</ClientEvent>
         <Property name="caption">全部选中</Property>
       </Button>
       <Button>
-        <ClientEvent name="onClick">function unselect(nodes) {&#xD;
+        <ClientEvent name="onClick" signature="treeGrid">function unselect(nodes) {&#xD;
 	nodes.each(function(node) {&#xD;
 		unselect(node.get(&quot;nodes&quot;));&#xD;
 		node.set(&quot;checked&quot;, false);&#xD;

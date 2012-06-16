@@ -25,7 +25,7 @@ public class Portlet extends Panel {
 
 	@Override
 	@ClientProperty(escapeValue = "true")
-	public boolean isShowCaptionBar() {
+	public Boolean isShowCaptionBar() {
 		return super.isShowCaptionBar();
 	}
 

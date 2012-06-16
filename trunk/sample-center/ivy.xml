@@ -7,19 +7,18 @@
 
 	<dependencies>
 		<!-- COMPILE,RUNTIME -->
-		<dependency org="com.bstek.dorado" name="dorado-core" rev="7.0.27-SNAPSHOT" conf="compile,runtime">
+		<dependency org="com.bstek.dorado" name="dorado-core" rev="7.1.0" conf="compile,runtime">
+		</dependency>
+		<dependency org="com.bstek.dorado" name="dorado-hibernate" rev="0.2.1-SNAPSHOT" conf="compile,runtime">
 			<exclude org="com.bstek.dorado" />
 		</dependency>
-		<dependency org="com.bstek.dorado" name="dorado-hibernate" rev="0.2.0-BETA" conf="compile,runtime">
-			<exclude org="com.bstek.dorado" />
-		</dependency>
-		<dependency org="com.bstek.dorado" name="dorado-chart" rev="0.3.0-BETA" conf="compile,runtime">
+		<dependency org="com.bstek.dorado" name="dorado-chart" rev="0.3.1-BETA" conf="compile,runtime">
 			<exclude org="com.bstek.dorado" />
 		</dependency>
 		<dependency org="com.bstek.dorado" name="dorado-desktop" rev="0.1.1-BETA" conf="compile,runtime">
 			<exclude org="com.bstek.dorado" />
 		</dependency>
-		<dependency org="com.bstek.dorado" name="dorado-htmleditor" rev="0.2.0-BETA" conf="compile,runtime">
+		<dependency org="com.bstek.dorado" name="dorado-htmleditor" rev="0.3.3-SNAPSHOT" conf="compile,runtime">
 			<exclude org="com.bstek.dorado" />
 		</dependency>
 

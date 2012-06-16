@@ -1,6 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ViewConfig>
+  <Model>
+    <DataType name="Condition">
+      <PropertyDef name="orderDate1">
+        <Property name="dataType">Date</Property>
+        <Property name="label">日期（起）</Property>
+      </PropertyDef>
+      <PropertyDef name="orderDate2">
+        <Property name="dataType">Date</Property>
+        <Property name="label">日期（至）</Property>
+      </PropertyDef>
+      <PropertyDef name="customerId">
+        <Property name="dataType">String</Property>
+      </PropertyDef>
+      <PropertyDef name="customerName">
+        <Property name="label">客户</Property>
+      </PropertyDef>
+      <PropertyDef name="employeeId">
+        <Property name="dataType">Long</Property>
+      </PropertyDef>
+      <PropertyDef name="employeeName">
+        <Property name="label">业务员</Property>
+      </PropertyDef>
+    </DataType>
+  </Model>
   <View title="简单查询  1">
+    <DataSet id="dsCondition">
+      <ClientEvent name="onCreate">self.insert();</ClientEvent>
+      <Property name="dataType">Condition</Property>
+    </DataSet>
     <DataSet id="dsOrders" dataProvider="orderInterceptor#query" dataType="[Order]" loadMode="manual" pageSize="10"/>
     <DataSet id="dsCustomers" dataProvider="customerInterceptor#findCustomersByCompanyName" dataType="[BaseCustomer]"/>
     <DataSet id="dsEmployees" dataProvider="employeeInterceptor#getAll" dataType="[BaseEmployee]"/>
@@ -8,26 +36,46 @@
       <DataPilot dataSet="dsOrders"/>
       <Separator/>
       <ToolBarButton caption="查询" icon="url(>skin>common/icons.gif) -40px -100px">
-        <ClientEvent name="onClick" signature="formCondition, dsOrders">dsOrders.set(&quot;parameter&quot;, formCondition.get(&quot;entity&quot;));
+        <ClientEvent name="onClick" signature="dsOrders, dsCondition">dsOrders.set(&quot;parameter&quot;, dsCondition.getData());
 dsOrders.flushAsync();
 </ClientEvent>
       </ToolBarButton>
     </ToolBar>
-    <DataSetDropDown id="ddCustomers" dataSet="dsCustomers" dynaFilter="true"/>
-    <DataSetDropDown id="ddEmployees" dataSet="dsEmployees"/>
-    <AutoForm id="formCondition" cols="300,300" layoutConstraint="top" padding="8" showHint="false">
-      <AutoFormElement label="日期（起）" property="orderDate1">
-        <Editor>
-          <TextEditor dataType="Date"/>
-        </Editor>
+    <DataSetDropDown id="ddCustomers" dataSet="dsCustomers" dynaFilter="true">
+      <Property name="assignmentMap">customerId=id,customerName=companyName</Property>
+      <Property name="editable">false</Property>
+      <Property name="useEmptyItem">true</Property>
+    </DataSetDropDown>
+    <DataSetDropDown id="ddEmployees" dataSet="dsEmployees">
+      <Property name="assignmentMap">employeeId=id,employeeName=firstName</Property>
+      <Property name="editable">false</Property>
+      <Property name="useEmptyItem">true</Property>
+    </DataSetDropDown>
+    <AutoForm id="formCondition" cols="300,300" layoutConstraint="top" showHint="false">
+      <Property name="dataSet">dsCondition</Property>
+      <Property name="dataType">Condition</Property>
+      <AutoFormElement>
+        <Property name="name">orderDate1</Property>
+        <Property name="property">orderDate1</Property>
+        <Editor/>
       </AutoFormElement>
-      <AutoFormElement label="日期（至）" property="orderDate2">
-        <Editor>
-          <TextEditor dataType="Date"/>
-        </Editor>
+      <AutoFormElement>
+        <Property name="name">orderDate2</Property>
+        <Property name="property">orderDate2</Property>
+        <Editor/>
       </AutoFormElement>
-      <AutoFormElement label="客户" property="customer" trigger="ddCustomers"/>
-      <AutoFormElement label="业务员" property="employee" trigger="ddEmployees"/>
+      <AutoFormElement>
+        <Property name="name">customerName</Property>
+        <Property name="property">customerName</Property>
+        <Property name="trigger">ddCustomers</Property>
+        <Editor/>
+      </AutoFormElement>
+      <AutoFormElement>
+        <Property name="name">employeeName</Property>
+        <Property name="property">employeeName</Property>
+        <Property name="trigger">ddEmployees</Property>
+        <Editor/>
+      </AutoFormElement>
     </AutoForm>
     <DataGrid dataSet="dsOrders"/>
   </View>

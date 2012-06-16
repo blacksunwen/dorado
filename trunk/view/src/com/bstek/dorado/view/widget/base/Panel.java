@@ -23,7 +23,7 @@ import com.bstek.dorado.view.widget.InnerElementList;
 		@ClientEvent(name = "onMaximize") })
 public class Panel extends AbstractPanel {
 	private PanelBorder border = PanelBorder.normal;
-	private boolean showCaptionBar = true;
+	private Boolean showCaptionBar;
 	private boolean maximizeable;
 	private boolean maximized;
 
@@ -48,12 +48,11 @@ public class Panel extends AbstractPanel {
 		this.border = border;
 	}
 
-	@ClientProperty(escapeValue = "true")
-	public boolean isShowCaptionBar() {
+	public Boolean isShowCaptionBar() {
 		return showCaptionBar;
 	}
 
-	public void setShowCaptionBar(boolean showCaptionBar) {
+	public void setShowCaptionBar(Boolean showCaptionBar) {
 		this.showCaptionBar = showCaptionBar;
 	}
 

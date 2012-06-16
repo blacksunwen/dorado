@@ -13,7 +13,6 @@
         </Button>
         <Button id="button2">
           <Property name="caption">按钮2</Property>
-          <Property name="toggleable">true</Property>
         </Button>
       </Children>
     </FieldSet>
