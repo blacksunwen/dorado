@@ -48,7 +48,7 @@ public class Panel extends AbstractPanel {
 		this.border = border;
 	}
 
-	public Boolean isShowCaptionBar() {
+	public Boolean getShowCaptionBar() {
 		return showCaptionBar;
 	}
 
