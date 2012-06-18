@@ -3,7 +3,7 @@ var tabSeed = 0;
 function initNewTabOption() {
 	view.set("#defaultFormProfile.entity", {
 		caption : "NewTab" + (++tabSeed),
-		type : "control",
+		type : "IFrame",
 		closeable : true,
 		path : "http://www.bsdn.org"
 	});
