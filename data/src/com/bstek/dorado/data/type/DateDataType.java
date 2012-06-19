@@ -3,6 +3,7 @@ package com.bstek.dorado.data.type;
 import java.text.ParseException;
 import java.util.Date;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 
 import com.bstek.dorado.util.Assert;
@@ -38,7 +39,7 @@ public class DateDataType extends SimpleDataType {
 	}
 
 	public Object fromText(String text) {
-		if (text == null) {
+		if (StringUtils.isEmpty(text)) {
 			return null;
 		} else {
 			return convertText2Date(text);
@@ -114,7 +115,8 @@ public class DateDataType extends SimpleDataType {
 	 */
 	protected Date convertObject2Date(Object value) throws DataConvertException {
 		Class<?> targetType = this.getMatchType();
-		if (targetType != null && targetType.isAssignableFrom(value.getClass())) {
+		if (targetType != null && targetType.isAssignableFrom(value.getClass())
+				|| targetType == null && value instanceof Date) {
 			return (Date) value;
 		} else if (value instanceof String) {
 			return convertText2Date((String) value);
