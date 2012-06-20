@@ -1079,8 +1079,9 @@
 		findParent : function(type) {
 			var parent = this._parent;
 			while(parent) {
-				if( parent instanceof type)
+				if (parent instanceof type) {
 					return parent;
+				}
 				parent = parent._parent;
 			}
 			return null;

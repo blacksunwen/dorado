@@ -60,6 +60,7 @@
     padding: 2px 4px;
     border: 1px #A3A3A3 solid;
     background: #FAFAFA;
+	white-space: nowrap
 }
 
 .d-list-dragging-insert-indicator {

@@ -792,13 +792,14 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 			var itemDom = draggingInfo.get("element");
 			if (itemDom) {
 				var cell = itemDom.firstChild;
+				var nodeDom = cell.firstChild;
 				var contentDom = $DomUtils.xCreate({
 					tagName: "div",
 					className: "d-list-dragging-item " + cell.className
 				});
 				var children = [];
-				for (var i = 1; i < cell.childNodes.length; i++) {
-					var child = cell.childNodes[i];
+				for (var i = 1; i < nodeDom.childNodes.length; i++) {
+					var child = nodeDom.childNodes[i];
 					children.push(child);
 				}
 				$fly(children).clone().appendTo(contentDom);

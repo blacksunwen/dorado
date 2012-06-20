@@ -12,6 +12,7 @@
      * @author Frank Zhang (mailto:frank.zhang@bstek.com)
 	 * @class 基础的菜单项。
 	 * @extends dorado.RenderableElement
+	 * @extends dorado.EventSupport
 	 */
 	dorado.widget.menu.AbstractMenuItem = $extend([dorado.RenderableElement, dorado.EventSupport], /** @scope dorado.widget.menu.AbstractMenuItem.prototype */ {
 		$className: "dorado.widget.menu.AbstractMenuItem",
@@ -123,6 +124,7 @@
 	 * @class 可以显示文本的菜单项。
 	 * @abstract
 	 * @extends dorado.widget.menu.AbstractMenuItem
+	 * @extends dorado.widget.ActionSupport
 	 */
 	dorado.widget.menu.TextMenuItem = $extend([dorado.widget.menu.AbstractMenuItem, dorado.widget.ActionSupport], /** @scope dorado.widget.menu.TextMenuItem.prototype */ {
 		$className: "dorado.widget.menu.TextMenuItem",
