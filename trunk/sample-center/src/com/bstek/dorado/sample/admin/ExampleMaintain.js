@@ -25,7 +25,6 @@ function refreshActions() {
 // @Bind @ExampleNode.onInsert
 // @Bind @ExampleSource.onInsert
 !function(arg) {
-	debugger;
 	var entityList = arg.entityList;
 	var maxSortFlag = 0;
 	entityList.each(function(entity) {
