@@ -12,6 +12,7 @@ import java.util.Stack;
 
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.util.Assert;
+import com.bstek.dorado.view.View;
 import com.bstek.dorado.view.widget.Control;
 
 /**
@@ -22,6 +23,7 @@ import com.bstek.dorado.view.widget.Control;
  */
 public class OutputContext {
 	private Writer writer;
+	private View currentView;
 	private Stack<JsonBuilder> jsonBuilders = new Stack<JsonBuilder>();
 	private boolean usePrettyJson;
 	private boolean shouldOutputDataTypes = true;
@@ -46,6 +48,14 @@ public class OutputContext {
 	 */
 	public Writer getWriter() {
 		return writer;
+	}
+
+	public View getCurrentView() {
+		return currentView;
+	}
+
+	public void setCurrentView(View currentView) {
+		this.currentView = currentView;
 	}
 
 	/**

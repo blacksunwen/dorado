@@ -50,6 +50,9 @@ public class ViewOutputter extends ContainerOutputter {
 	}
 
 	public void outputView(View view, OutputContext context) throws Exception {
+		View originalView = context.getCurrentView();
+		context.setCurrentView(view);
+
 		String exPackages = view.getPackages();
 		if (StringUtils.isNotEmpty(exPackages)) {
 			for (String pkg : StringUtils.split(exPackages, ",;")) {
@@ -66,20 +69,9 @@ public class ViewOutputter extends ContainerOutputter {
 			super.output(view, context);
 			writer.append(";\n");
 
-			// 输出顶层的子组件
-			boolean hasChild = !view.getChildren().isEmpty();
-			if (hasChild) {
-				writer.append("function f(view){").append("view.set(\"children\",");
-				childrenComponentOutputter.output(view.getChildren(), context); // 事实上此array不可能为空，前面已判断过了。
-				writer.append(");").append("}\n");
-			}
-
-			// 输出DataType
-			outputIncludeDataTypes(context);
-
-			if (hasChild) {
-				writer.append("f(view);\n");
-			}
+			writer.append("function f(view){").append("view.set(\"children\",");
+			childrenComponentOutputter.output(view.getChildren(), context);
+			writer.append(");");
 
 			Context doradoContext = Context.getCurrent();
 
@@ -111,8 +103,16 @@ public class ViewOutputter extends ContainerOutputter {
 					}
 				}
 			}
+
+			writer.append("}\n");
+
+			// 输出DataType
+			outputIncludeDataTypes(context);
+
+			writer.append("f(view);\n");
 		} finally {
 			context.restoreJsonBuilder();
+			context.setCurrentView(originalView);
 		}
 	}
 
