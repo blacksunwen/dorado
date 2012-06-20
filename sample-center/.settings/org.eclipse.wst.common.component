@@ -21,9 +21,6 @@
         <dependent-module archiveName="util.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/util/util">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="jdbc.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jdbc/jdbc">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
         <dependent-module archiveName="console.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/console/console">
             <dependency-type>uses</dependency-type>
         </dependent-module>

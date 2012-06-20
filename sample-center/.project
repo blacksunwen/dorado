@@ -9,7 +9,6 @@
 		<project>view</project>
 		<project>data</project>
 		<project>util</project>
-		<project>jdbc</project>
 		<project>console</project>
 		<project>chart</project>
 		<project>htmleditor</project>
