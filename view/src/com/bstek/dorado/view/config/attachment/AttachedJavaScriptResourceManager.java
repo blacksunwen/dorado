@@ -1,9 +1,14 @@
 package com.bstek.dorado.view.config.attachment;
 
 import java.io.Writer;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.core.el.Expression;
 import com.bstek.dorado.core.io.Resource;
+import com.bstek.dorado.data.type.DataType;
+import com.bstek.dorado.view.manager.ViewConfig;
 import com.bstek.dorado.view.output.JsonBuilder;
 import com.bstek.dorado.view.output.OutputContext;
 
@@ -50,8 +55,7 @@ public class AttachedJavaScriptResourceManager extends AttachedResourceManager {
 		if (javaScriptContent.getIsController()) {
 			Writer writer = context.getWriter();
 			JsonBuilder jsonBuilder = context.getJsonBuilder();
-
-			writer.append("(function(view){\n");
+			writer.append("\n\n");
 
 			super.outputContent(context, javaScriptContent.getContent());
 
@@ -79,6 +83,9 @@ public class AttachedJavaScriptResourceManager extends AttachedResourceManager {
 					if (bindingInfo != null) {
 						jsonBuilder.key("bindingInfos").array();
 						for (String expression : bindingInfo.getExpressions()) {
+							if (expression.charAt(0) == '@') {
+								registerIncludeDataType(context, expression);
+							}
 							jsonBuilder.value(expression);
 						}
 						jsonBuilder.endArray();
@@ -88,10 +95,33 @@ public class AttachedJavaScriptResourceManager extends AttachedResourceManager {
 				jsonBuilder.endArray();
 				writer.append(");");
 			}
-
-			writer.append("\n})(view);\n");
 		} else {
 			super.outputContent(context, javaScriptContent.getContent());
+		}
+	}
+
+	protected void registerIncludeDataType(OutputContext context,
+			String expression) throws Exception {
+		String dataTypeName = StringUtils
+				.substringBetween(expression, "@", ".");
+		if (StringUtils.isEmpty(dataTypeName)) {
+			return;
+		}
+
+		ViewConfig viewConfig = context.getCurrentView().getViewConfig();
+		if (viewConfig == null) {
+			return;
+		}
+
+		DataType dataType = viewConfig.getDataType(dataTypeName);
+		if (dataType == null) {
+			return;
+		}
+
+		Map<String, DataType> includeDataTypes = context
+				.getIncludeDataTypes(true);
+		if (!includeDataTypes.containsKey(dataTypeName)) {
+			includeDataTypes.put(dataTypeName, dataType);
 		}
 	}
 }
