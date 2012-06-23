@@ -265,7 +265,7 @@ dorado.widget.Accordion = $extend(dorado.widget.Control, /** @scope dorado.widge
 		
 	doGet: function(attr) {
 		var c = attr.charAt(0);
-		if (c == '&') {
+		if (c == '#' || c == '&') {
 			var name = attr.substring(1);
 			return this.getTab(name);
 		} else {

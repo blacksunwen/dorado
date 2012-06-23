@@ -17,6 +17,11 @@ public class SkinFileResolver extends WebFileResolver {
 	private static final String CURRENT_SKIN_PREFIX = "skins/" + CURRENT_SKIN
 			+ '/';
 
+	public SkinFileResolver() {
+		setUseResourcesCache(true);
+		setCheckResourceType(true);
+	}
+
 	/**
 	 * 返回客户端使用的皮肤的名称。
 	 */

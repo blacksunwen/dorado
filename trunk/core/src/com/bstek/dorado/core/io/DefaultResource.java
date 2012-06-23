@@ -1,9 +1,13 @@
 package com.bstek.dorado.core.io;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+
+import com.bstek.dorado.core.Configure;
 
 /**
  * 默认的资源描述对象的实现类。
@@ -14,12 +18,18 @@ import java.net.URL;
 public class DefaultResource implements Resource {
 	private org.springframework.core.io.Resource adaptee;
 	private String path;
+	private boolean isClassPathResource = false;
+	private boolean classPathResourceReloadable = false;
 
 	public DefaultResource(org.springframework.core.io.Resource adaptee) {
 		this.adaptee = adaptee;
+
+		classPathResourceReloadable = Configure
+				.getBoolean("core.classPathResourceReloadable");
 		if (adaptee instanceof org.springframework.core.io.ClassPathResource) {
 			path = ((org.springframework.core.io.ClassPathResource) adaptee)
 					.getPath();
+			isClassPathResource = true;
 		} else if (adaptee instanceof org.springframework.core.io.FileSystemResource) {
 			path = ((org.springframework.core.io.FileSystemResource) adaptee)
 					.getPath();
@@ -64,15 +74,32 @@ public class DefaultResource implements Resource {
 	}
 
 	public long getTimestamp() throws IOException {
-		File file = adaptee.getFile();
-		if (file != null && file.exists()) {
-			return file.lastModified();
-		} else {
-			return 0L;
+		if (!isClassPathResource || classPathResourceReloadable) {
+			File file = null;
+			try {
+				file = adaptee.getFile();
+			} catch (FileNotFoundException e) {
+				// do nothing
+			}
+			if (file != null && file.exists()) {
+				return file.lastModified();
+			}
 		}
+		return 0L;
 	}
 
 	public InputStream getInputStream() throws IOException {
+		if (isClassPathResource && classPathResourceReloadable) {
+			File file = null;
+			try {
+				file = adaptee.getFile();
+			} catch (FileNotFoundException e) {
+				// do nothing
+			}
+			if (file != null && file.exists()) {
+				return new FileInputStream(file);
+			}
+		}
 		return adaptee.getInputStream();
 	}
 

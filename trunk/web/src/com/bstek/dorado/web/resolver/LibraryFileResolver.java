@@ -30,6 +30,10 @@ public class LibraryFileResolver extends WebFileResolver {
 
 	private PackagesConfigManager packagesConfigManager;
 
+	public LibraryFileResolver() {
+		setUseResourcesCache(true);
+	}
+
 	/**
 	 * 返回资源包配置的管理器。
 	 * 

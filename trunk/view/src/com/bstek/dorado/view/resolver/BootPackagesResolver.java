@@ -42,6 +42,10 @@ public class BootPackagesResolver extends WebFileResolver {
 	private PackagesConfigManager packagesConfigManager;
 
 	private String bootFile;
+	
+	public BootPackagesResolver() {
+		setUseResourcesCache(true);
+	}
 
 	public void setBootFile(String bootFile) {
 		this.bootFile = bootFile;

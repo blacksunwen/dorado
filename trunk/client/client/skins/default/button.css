@@ -1,14 +1,16 @@
 .d-button {
-	background: url(base/button-bg.gif);
+	background-image: url(base/button-bg.gif);
 }
 
 .d-button .button-left {
-	background: url(base/button-bg.gif) 0 -22px;
+	background: url(base/button-bg.gif);
+	background-position: 0 -22px;
 	border: 0;
 }
 
 .d-button .button-right {
-	background: url(base/button-bg.gif) right -44px;
+	background-image: url(base/button-bg.gif);
+	background-position: right -44px;
 }
 
 .d-button-focused {

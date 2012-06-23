@@ -34,6 +34,8 @@ public abstract class AbstractWebFileResolver extends AbstractResolver {
 
 	private ResourceTypeManager resourceTypeManager;
 	private Map<String, ResourcesWrapper> resourcesCache = new Hashtable<String, ResourcesWrapper>();
+	private boolean useResourcesCache;
+	private boolean checkResourceType;
 
 	protected ResourceTypeManager getResourceTypeManager() {
 		if (resourceTypeManager == null) {
@@ -62,6 +64,22 @@ public abstract class AbstractWebFileResolver extends AbstractResolver {
 	protected boolean shouldCompress(ResourcesWrapper resourcesWrapper) {
 		ResourceType resourceType = resourcesWrapper.getResourceType();
 		return (resourceType != null) ? resourceType.isCompressible() : false;
+	}
+
+	public boolean isUseResourcesCache() {
+		return useResourcesCache;
+	}
+
+	public void setUseResourcesCache(boolean useResourcesCache) {
+		this.useResourcesCache = useResourcesCache;
+	}
+
+	public boolean isCheckResourceType() {
+		return checkResourceType;
+	}
+
+	public void setCheckResourceType(boolean checkResourceType) {
+		this.checkResourceType = checkResourceType;
 	}
 
 	protected String getContentType(ResourcesWrapper resourcesWrapper) {
@@ -113,7 +131,10 @@ public abstract class AbstractWebFileResolver extends AbstractResolver {
 	protected ResourcesWrapper getResourcesWrapper(HttpServletRequest request,
 			DoradoContext context) throws Exception {
 		String path = getRelativeRequestURI(request);
-		ResourcesWrapper resourcesWrapper = resourcesCache.get(path);
+		ResourcesWrapper resourcesWrapper = null;
+		if (useResourcesCache) {
+			resourcesWrapper = resourcesCache.get(path);
+		}
 		if (resourcesWrapper != null) {
 			if (resourcesWrapper.isReloadable()
 					&& System.currentTimeMillis()
@@ -124,7 +145,8 @@ public abstract class AbstractWebFileResolver extends AbstractResolver {
 		} else {
 			try {
 				resourcesWrapper = createResourcesWrapper(request, context);
-				if (resourcesWrapper.getResourceType() == null) {
+				if (checkResourceType
+						&& resourcesWrapper.getResourceType() == null) {
 					resourcesWrapper = FORBIDDEN_RESOURCES_WRAPPER;
 				} else {
 					Resource[] resources = resourcesWrapper.getResources();
@@ -138,6 +160,10 @@ public abstract class AbstractWebFileResolver extends AbstractResolver {
 						}
 					}
 				}
+
+				if (useResourcesCache) {
+					resourcesCache.put(path, resourcesWrapper);
+				}
 			} catch (FileNotFoundException e) {
 				logger.error(e, e);
 				resourcesWrapper = FILE_NOT_FOUND_RESOURCES_WRAPPER;
@@ -145,7 +171,6 @@ public abstract class AbstractWebFileResolver extends AbstractResolver {
 				logger.error(e, e);
 				resourcesWrapper = FORBIDDEN_RESOURCES_WRAPPER;
 			}
-			resourcesCache.put(path, resourcesWrapper);
 		}
 		return resourcesWrapper;
 	}

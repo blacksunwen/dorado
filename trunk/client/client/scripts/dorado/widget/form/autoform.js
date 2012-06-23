@@ -276,7 +276,7 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 	
 	doGet: function(attr) {
 		var c = attr.charAt(0);
-		if (c == '&') {
+		if (c == '#' || c == '&') {
 			var elementName = attr.substring(1);
 			return this.getElement(elementName);
 		} else {

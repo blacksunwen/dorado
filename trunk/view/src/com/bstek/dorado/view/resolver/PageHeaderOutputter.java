@@ -50,11 +50,13 @@ public class PageHeaderOutputter implements Outputter {
 		}
 
 		writer.append("$setting[\"").append(key).append("\"]=");
-		if (quote)
+		if (quote) {
 			writer.append('"');
+		}
 		writer.append(StringEscapeUtils.escapeJavaScript(String.valueOf(value)));
-		if (quote)
+		if (quote) {
 			writer.append('"');
+		}
 		writer.append(";\n");
 	}
 
