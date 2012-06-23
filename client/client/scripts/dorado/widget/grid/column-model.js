@@ -90,7 +90,7 @@
 		
 		doGet: function(attr) {
 			var c = attr.charAt(0);
-			if (c == '&') {
+			if (c == '#' || c == '&') {
 				var col = attr.substring(1);
 				return this.getColumn(col);
 			} else {

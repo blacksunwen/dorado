@@ -494,7 +494,7 @@
 		
 		doGet: function(attr) {
 			var c = attr.charAt(0);
-			if (c == '&') {
+			if (c == '#' || c == '&') {
 				var propertyName = attr.substring(1);
 				return this.getPropertyDef(propertyName);
 			} else {

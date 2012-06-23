@@ -117,7 +117,7 @@
 		
 		doGet: function(attr) {
 			var c = attr.charAt(0);
-			if (c == '&') {
+			if (c == '#' || c == '&') {
 				var itemName = attr.substring(1);
 				return this.getItem(itemName);
 			} else {
