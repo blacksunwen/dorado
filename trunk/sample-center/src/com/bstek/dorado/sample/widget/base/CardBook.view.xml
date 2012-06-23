@@ -23,7 +23,7 @@ cardbook.set(&quot;currentIndex&quot;, index);&#xD;
       <ClientEvent name="onCurrentChange">this.set(&quot;#labelIndex.text&quot;, &quot;当前卡片序号：&quot; + self.get(&quot;currentIndex&quot;));&#xD;
 </ClientEvent>
       <Property name="width">640</Property>
-      <Property name="height">480</Property>
+      <Property name="height">300</Property>
       <Container layout="anchor">
         <Property name="style">
           <Property name="background">#f8f8f8</Property>

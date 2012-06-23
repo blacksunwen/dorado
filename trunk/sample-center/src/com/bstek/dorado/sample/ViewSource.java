@@ -61,9 +61,11 @@ public class ViewSource {
 			return "xml";
 		} else if ("java".equalsIgnoreCase(extFileName)) {
 			return "java";
-		} else if ("javascript".equalsIgnoreCase(extFileName)) {
+		} else if ("js".equalsIgnoreCase(extFileName)) {
 			return "javascript";
-		} else {
+		}else if ("css".equalsIgnoreCase(extFileName)) {
+			return "css";
+		}  else {
 			return "xml";
 		}
 	}

@@ -16,18 +16,17 @@ function showMessage(text) {
  * @Bind #button2.onClick
  */
 !function(self) {
-	self.set("toggled", false);
 	showMessage("您单击了\"" + self.get("caption") + "\"");
 }
 
 /** @Bind #button1.onClick */
-!function(button2) {
-	button2.set("toggled", !button2.get("toggled"));
+!function(editor1) {
+	editor1.set("text", "您单击了button1");
 }
 
 /** @Bind #button2.onClick */
-!function(button1) {
-	button1.set("toggled", !button1.get("toggled"));
+!function(editor1) {
+	editor1.set("text", "您单击了button2");
 }
 
 /** @Bind ^numberButton.onClick */

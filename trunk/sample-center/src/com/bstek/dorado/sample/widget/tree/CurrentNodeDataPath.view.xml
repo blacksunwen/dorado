@@ -15,13 +15,11 @@
       </Reference>
     </DataType>
   </Model>
-  <View layout="anchor padding:20">
+  <View layout="padding:20">
     <DataSet id="dsEmployees" dataProvider="employeeInterceptor#getEmployeesBySuperior" dataType="[Employee]">
       <Property name="readOnly">true</Property>
     </DataSet>
     <SplitPanel>
-      <Property name="width">800</Property>
-      <Property name="height">600</Property>
       <Property name="position">200</Property>
       <MainControl>
         <Panel layout="padding:1">

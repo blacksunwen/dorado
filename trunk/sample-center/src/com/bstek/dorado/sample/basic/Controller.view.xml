@@ -4,16 +4,21 @@
   <Context/>
   <Model/>
   <View layout="vbox regionPadding:8;padding:8">
-    <FieldSet layout="hbox regionPadding:4;padding:8">
+    <FieldSet layout="vbox padding:8;regionPadding:4">
       <Property name="caption">@Bind和参数注入</Property>
       <Property name="contentOverflowY">visible</Property>
       <Children>
-        <Button id="button1">
-          <Property name="caption">按钮1</Property>
-        </Button>
-        <Button id="button2">
-          <Property name="caption">按钮2</Property>
-        </Button>
+        <Container layout="hbox">
+          <Button id="button1">
+            <Property name="caption">按钮1</Property>
+          </Button>
+          <Button id="button2">
+            <Property name="caption">按钮2</Property>
+          </Button>
+        </Container>
+        <TextEditor id="editor1">
+          <Property name="width">300</Property>
+        </TextEditor>
       </Children>
     </FieldSet>
     <FieldSet layout="hbox regionPadding:4;padding:8">

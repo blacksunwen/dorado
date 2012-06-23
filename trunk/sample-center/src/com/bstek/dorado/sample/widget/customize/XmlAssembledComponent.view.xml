@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ViewConfig>
-  <View layout="Anchor padding:40" title="配置型组装控件">
+  <View layout="Anchor padding:20" title="配置型组装控件">
     <ToggleButton caption="这是一个名为ToggleButton的组装控件"/>
     <ButtonPanel buttonCaption="确定" caption="这是一个名为ButtonPanel的组装控件" collapseable="true" height="200" layoutConstraint="anchorTop:previous; top:30" width="500">
       <Children>

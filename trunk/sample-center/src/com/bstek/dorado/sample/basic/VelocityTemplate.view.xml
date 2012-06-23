@@ -4,8 +4,10 @@
     <Button caption="按钮1" renderTo="#place1"/>
     <Button caption="按钮2" renderTo="#place1"/>
     <ListBox items="One,Two,Three" renderOn="#place2"/>
-    <Panel layout="padding:20" caption="一个面板控件" height="300" renderOn="#place3" width="800">
+    <Panel layout="padding:20" caption="一个面板控件" renderOn="#place3">
       <Property name="collapseable">true</Property>
+      <Property name="height">260</Property>
+      <Property name="width">640</Property>
     </Panel>
     <DataSet id="dataSet1"/>
   </View>

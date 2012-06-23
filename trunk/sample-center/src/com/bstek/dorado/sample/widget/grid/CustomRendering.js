@@ -59,7 +59,7 @@ var OperationCellRenderer = $extend(dorado.widget.grid.SubControlCellRenderer,
 	arg.dom.style.background = (arg.data.get("discount")) ? "#d5e4fc" : "";
 }
 
-// @Bind #gridPhones.&operator.onRenderHeaderCell
+// @Bind #gridPhones.#operator.onRenderHeaderCell
 !function(arg) {
 	$(arg.dom).empty();
 	var button = new dorado.widget.Button({
@@ -93,7 +93,7 @@ var OperationCellRenderer = $extend(dorado.widget.grid.SubControlCellRenderer,
 	});
 }
 
-// @Bind #gridPhones.&image.onRenderCell
+// @Bind #gridPhones.#image.onRenderCell
 !function(arg) {
 	$(arg.dom).empty().xCreate(
 			{
@@ -115,31 +115,31 @@ var OperationCellRenderer = $extend(dorado.widget.grid.SubControlCellRenderer,
 	});
 }
 
-// @Bind #gridPhones.&price.onRenderCell
+// @Bind #gridPhones.#price.onRenderCell
 !function(arg) {
 	arg.dom.style.background = (arg.data.get("price") > 3000) ? "#fcc5c5" : "";
 	arg.processDefault = true;
 }
 
-// @Bind #gridPhones.&price.onRenderFooterCell
+// @Bind #gridPhones.#price.onRenderFooterCell
 !function(arg) {
 	arg.dom.innerText = "平均："
 			+ dorado.util.Common.formatFloat(arg.data.get("price"), "#,##0");
 }
 
-// @Bind #gridPhones.&storage.onRenderCell
+// @Bind #gridPhones.#storage.onRenderCell
 !function(arg) {
 	arg.dom.style.background = (arg.data.get("storage") <= 50) ? "#d3d3d3" : "";
 	arg.dom.style.color = (arg.data.get("storage") <= 50) ? "red" : "";
 	arg.processDefault = true;
 }
 
-// @Bind #gridPhones.&storage.onRenderFooterCell
+// @Bind #gridPhones.#storage.onRenderFooterCell
 !function(arg) {
 	arg.dom.innerText = "总计：" + arg.data.get("storage");
 }
 
-//@Bind #gridPhones.&volumn.onRenderCell
+//@Bind #gridPhones.#volumn.onRenderCell
 !function(arg) {
 	var entity = arg.data;
 	arg.dom.innerText = entity.get("length") + " x " + entity.get("width") + " x " + entity.get("height");

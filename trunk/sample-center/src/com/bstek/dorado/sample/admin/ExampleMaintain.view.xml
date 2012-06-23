@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ViewConfig template="com.bstek.dorado.sample.admin.AdminViewTemplate">
   <Arguments>
-    <Argument name="caption" value="示例结构维护"/>
+    <Argument name="caption">
+      <Property name="value">示例结构维护</Property>
+    </Argument>
   </Arguments>
   <Context/>
   <Model>
@@ -77,7 +79,8 @@
           </Panel>
           <Panel layout="regionPadding:16" contentOverflow="hidden">
             <Children>
-              <AutoForm cols="*" dataPath="!CURRENT_EXAMPLE" dataSet="dsCategories" layoutConstraint="top">
+              <AutoForm dataPath="!CURRENT_EXAMPLE" dataSet="dsCategories" layoutConstraint="top">
+                <Property name="cols">*,*</Property>
                 <AutoFormElement property="label" width="350"/>
                 <AutoFormElement property="author" width="350"/>
                 <AutoFormElement property="createDate" width="350"/>
@@ -85,9 +88,18 @@
                 <AutoFormElement property="new" type="checkBox" width="350"/>
                 <AutoFormElement property="hot" type="checkBox" width="350"/>
                 <AutoFormElement property="icon" width="350"/>
-                <AutoFormElement property="url"/>
-                <AutoFormElement property="tags"/>
-                <AutoFormElement property="summary" type="textArea"/>
+                <AutoFormElement type="checkBox" width="350">
+                  <Property name="property">embedded</Property>
+                </AutoFormElement>
+                <AutoFormElement width="350">
+                  <Property name="property">embedWidth</Property>
+                </AutoFormElement>
+                <AutoFormElement width="350">
+                  <Property name="property">embedHeight</Property>
+                </AutoFormElement>
+                <AutoFormElement layoutConstraint="colSpan:2" property="url"/>
+                <AutoFormElement layoutConstraint="colSpan:2" property="tags"/>
+                <AutoFormElement layoutConstraint="colSpan:2" property="summary" type="textArea"/>
               </AutoForm>
               <Panel caption="源文件" collapseable="true">
                 <Children>

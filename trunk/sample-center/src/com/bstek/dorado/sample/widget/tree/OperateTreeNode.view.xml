@@ -197,7 +197,7 @@ treeGrid.set(&quot;currentEntity&quot;, currentEntity);</ClientEvent>
     <DataTreeGrid id="treeGrid" dataSet="dsEmployees" treeColumn="firstName">
       <Property name="width">800</Property>
       <Property name="selectionMode">multiRows</Property>
-      <Property name="height">350</Property>
+      <Property name="height">300</Property>
       <BindingConfigs>
         <BindingConfig childrenProperty="underlings" expandLevel="3" labelProperty="firstName" recursive="true">
           <Property name="checkable">true</Property>

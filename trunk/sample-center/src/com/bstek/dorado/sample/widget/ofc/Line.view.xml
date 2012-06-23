@@ -33,7 +33,7 @@
       <Property name="dataType">[Lines]</Property>
     </DataSet>
     <SplitPanel>
-      <Property name="position">200</Property>
+      <Property name="position">150</Property>
       <Property name="direction">bottom</Property>
       <MainControl>
         <OpenFlashChart>

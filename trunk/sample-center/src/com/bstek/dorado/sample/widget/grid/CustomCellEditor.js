@@ -105,7 +105,7 @@ function getEditor(entity) {
 	arg.cellEditor.setEditorControl(editor);
 }
 
-// @Bind #grid1.&value.onRenderCell
+// @Bind #grid1.#value.onRenderCell
 !function(arg) {
 	arg.dom.style.background = "#d5e4fc";
 	arg.processDefault = true;

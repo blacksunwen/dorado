@@ -24,7 +24,7 @@
       <Property name="dataProvider">chartDataProvider#getDualYAxisData</Property>
     </DataSet>
     <Container>
-      <Property name="width">800</Property>
+      <Property name="width">760</Property>
       <Property name="height">400</Property>
       <OpenFlashChart>
         <Property name="backgroundColor">#ffffff</Property>

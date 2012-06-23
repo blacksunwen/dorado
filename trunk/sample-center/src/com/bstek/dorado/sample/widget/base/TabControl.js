@@ -78,7 +78,7 @@ function initNewTabOption() {
 	self.findParent(dorado.widget.FloatPanel).hide();
 }
 
-// @Bind #menuTab.&closeAll.onClick
+// @Bind #menuTab.#closeAll.onClick
 !function(tabControl) {
 	var tabs = [];
 	tabControl.get("tabs").each(function(tab) {
