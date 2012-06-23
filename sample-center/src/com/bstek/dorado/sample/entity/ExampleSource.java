@@ -12,6 +12,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.apache.commons.lang.StringUtils;
 
 @Entity
 @Table(name = "EXAMPLE_SOURCES")
@@ -20,6 +23,7 @@ public class ExampleSource implements Serializable {
 
 	private long id;
 	private String path;
+	private String fileType;
 	private String label;
 	private int sortFlag;
 	private String summary;
@@ -43,6 +47,21 @@ public class ExampleSource implements Serializable {
 
 	public void setPath(String path) {
 		this.path = path;
+		if (StringUtils.isNotEmpty(path)) {
+			fileType = StringUtils.substringAfterLast(path, ".");
+			if ("xml".equals(fileType)) {
+				if (path.endsWith(".view.xml")) {
+					fileType = "view";
+				} else if (path.endsWith(".model.xml")) {
+					fileType = "model";
+				}
+			}
+		}
+	}
+
+	@Transient
+	public String getFileType() {
+		return fileType;
 	}
 
 	public String getSummary() {

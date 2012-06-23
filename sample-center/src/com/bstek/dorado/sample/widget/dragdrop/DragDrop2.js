@@ -1,4 +1,4 @@
-// @Bind ^dropTarget.onGetDraggingIndicator
+// @Bind ^draggingSource.onGetDraggingIndicator
 !function(self, arg) {
 	arg.indicator.set("content", $(self.getDom()).clone().css("background", "gray"));
 }

@@ -24,7 +24,7 @@
 	event: arg.event&#xD;
 });</ClientEvent>
       <Property name="width">600</Property>
-      <Property name="height">400</Property>
+      <Property name="height">300</Property>
       <Property name="showMenuButton">true</Property>
       <ControlTab>
         <Property name="caption">说明</Property>

@@ -56,6 +56,7 @@ if (buttonGetMemInfo.get(&quot;toggled&quot;)) {&#xD;
         <Property name="toggleable">true</Property>
       </Button>
       <Container layout="hbox regionPadding:20">
+        <Property name="height">20</Property>
         <Label id="labelMemInfo">
           <Property name="text">------</Property>
         </Label>

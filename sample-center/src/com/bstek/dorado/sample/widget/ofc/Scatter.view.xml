@@ -18,8 +18,8 @@
       <Property name="dataType">[scatterData]</Property>
     </DataSet>
     <Container layout="regionPadding:8">
-      <Property name="width">800</Property>
-      <Property name="height">500</Property>
+      <Property name="width">760</Property>
+      <Property name="height">400</Property>
       <OpenFlashChart>
         <Property name="title">
           <Property name="text">Investment Overview</Property>

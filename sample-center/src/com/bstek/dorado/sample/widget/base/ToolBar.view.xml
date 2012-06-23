@@ -153,37 +153,6 @@
         </MenuItem>
       </MenuButton>
       <MenuButton>
-        <Property name="icon">url(skin>common/icons.gif) -100px -100px</Property>
-        <Property name="caption">语言</Property>
-        <MenuItem>
-          <Property name="caption">Java</Property>
-        </MenuItem>
-        <MenuItem>
-          <Property name="caption">JavaScript</Property>
-        </MenuItem>
-        <MenuItem>
-          <Property name="caption">C</Property>
-        </MenuItem>
-        <MenuItem>
-          <Property name="caption">C++</Property>
-        </MenuItem>
-        <MenuItem>
-          <Property name="caption">C#</Property>
-        </MenuItem>
-        <MenuItem>
-          <Property name="caption">XML</Property>
-        </MenuItem>
-        <MenuItem>
-          <Property name="caption">HTML</Property>
-        </MenuItem>
-        <MenuItem>
-          <Property name="caption">CSS</Property>
-        </MenuItem>
-        <MenuItem>
-          <Property name="caption">SQL</Property>
-        </MenuItem>
-      </MenuButton>
-      <MenuButton>
         <Property name="icon">url(skin>common/icons.gif) -60px -20px</Property>
         <Property name="caption">设置</Property>
         <MenuItem>
@@ -200,92 +169,6 @@
         </MenuItem>
         <MenuItem>
           <Property name="caption">编辑弹出菜单</Property>
-        </MenuItem>
-      </MenuButton>
-      <MenuButton>
-        <Property name="icon">url(skin>common/icons.gif) -20px -100px</Property>
-        <Property name="caption">宏</Property>
-        <MenuItem>
-          <Property name="caption">开始录制宏</Property>
-        </MenuItem>
-        <MenuItem>
-          <Property name="caption">停止录制宏</Property>
-        </MenuItem>
-        <Separator/>
-        <MenuItem>
-          <Property name="caption">回放</Property>
-        </MenuItem>
-        <MenuItem>
-          <Property name="caption">保存录制的宏</Property>
-        </MenuItem>
-        <MenuItem>
-          <Property name="caption">重复运行宏</Property>
-        </MenuItem>
-      </MenuButton>
-      <MenuButton>
-        <Property name="icon">url(skin>common/icons.gif) -60px -220px</Property>
-        <Property name="caption">运行</Property>
-        <MenuItem>
-          <Property name="caption">运行</Property>
-          <Property name="icon">url(skin>common/icons.gif) -60px -220px</Property>
-        </MenuItem>
-        <Separator/>
-        <MenuItem>
-          <Property name="caption">Launch in IE</Property>
-          <Property name="icon">url(skin>common/icons.gif) -60px -220px</Property>
-        </MenuItem>
-        <MenuItem>
-          <Property name="caption">Launch in Firefox</Property>
-          <Property name="icon">url(skin>common/icons.gif) -60px -220px</Property>
-        </MenuItem>
-        <MenuItem>
-          <Property name="caption">Launch in Chrome</Property>
-          <Property name="icon">url(skin>common/icons.gif) -60px -220px</Property>
-        </MenuItem>
-        <MenuItem>
-          <Property name="caption">Launch in Safari</Property>
-          <Property name="icon">url(skin>common/icons.gif) -60px -220px</Property>
-        </MenuItem>
-        <MenuItem>
-          <Property name="caption">Launch in Opera</Property>
-          <Property name="icon">url(skin>common/icons.gif) -60px -220px</Property>
-        </MenuItem>
-      </MenuButton>
-      <MenuButton>
-        <Property name="icon">url(skin>common/icons.gif) -60px -40px</Property>
-        <Property name="caption">插件</Property>
-        <MenuItem>
-          <Property name="caption">Converter</Property>
-          <Property name="icon">url(skin>common/icons.gif) -60px -40px</Property>
-        </MenuItem>
-        <MenuItem>
-          <Property name="caption">Spell Checker</Property>
-          <Property name="icon">url(skin>common/icons.gif) -60px -40px</Property>
-        </MenuItem>
-        <Separator/>
-        <MenuItem>
-          <Property name="caption">管理插件</Property>
-          <Property name="icon">url(skin>common/icons.gif) -60px -40px</Property>
-        </MenuItem>
-      </MenuButton>
-      <MenuButton>
-        <Property name="icon">url(skin>common/icons.gif) -260px -100px</Property>
-        <Property name="caption">窗口</Property>
-        <MenuItem>
-          <Property name="caption">全部最大化</Property>
-          <Property name="icon">url(skin>common/icons.gif) -260px -100px</Property>
-        </MenuItem>
-        <MenuItem>
-          <Property name="caption">全部最小化</Property>
-          <Property name="icon">url(skin>common/icons.gif) -260px -100px</Property>
-        </MenuItem>
-        <MenuItem>
-          <Property name="caption">平铺所有窗口</Property>
-          <Property name="icon">url(skin>common/icons.gif) -260px -100px</Property>
-        </MenuItem>
-        <MenuItem>
-          <Property name="caption">全部还原</Property>
-          <Property name="icon">url(skin>common/icons.gif) -260px -100px</Property>
         </MenuItem>
       </MenuButton>
       <MenuButton>

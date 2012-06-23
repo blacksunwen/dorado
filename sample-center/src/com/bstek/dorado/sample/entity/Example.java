@@ -31,6 +31,9 @@ public class Example implements Serializable {
 	private Date lastModify;
 	private String icon;
 	private String url;
+	private boolean isEmbedded;
+	private int embedWidth;
+	private int embedHeight;
 	private String tags;
 	private String summary;
 	private Set<ExampleSource> sources;
@@ -112,6 +115,33 @@ public class Example implements Serializable {
 
 	public void setUrl(String url) {
 		this.url = url;
+	}
+
+	@Column(name = "IS_EMBEDDED")
+	public boolean isEmbedded() {
+		return isEmbedded;
+	}
+
+	public void setEmbedded(boolean isEmbedded) {
+		this.isEmbedded = isEmbedded;
+	}
+
+	@Column(name = "EMBED_WIDTH")
+	public int getEmbedWidth() {
+		return embedWidth;
+	}
+
+	public void setEmbedWidth(int embedWidth) {
+		this.embedWidth = embedWidth;
+	}
+
+	@Column(name = "EMBED_HEIGHT")
+	public int getEmbedHeight() {
+		return embedHeight;
+	}
+
+	public void setEmbedHeight(int embedHeight) {
+		this.embedHeight = embedHeight;
 	}
 
 	public String getTags() {

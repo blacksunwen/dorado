@@ -7,7 +7,7 @@ h1 {
 	font-size: 18pt;
 	font-style: italic;
 	color: #02559F;
-	margin: 46px 0 4px 0;
+	margin: 0 0 4px 0;
 }
 h3 {
 	font-size: 11pt;
@@ -30,7 +30,7 @@ a:link,a:visited,a:active,a:hover {
 }
 </style>
 </head>
-<body style="margin:24px; background:white url(images/summary-bg.png) no-repeat">
+<body style="margin:24px">
 #set( $category = $view.getComponent("dsCategory").getData() )
 
 <h1>
@@ -38,8 +38,6 @@ ${category.label}
 </h1>
 
 <hr>
-
-<img src="images/dorado7-corner.png" style="position:absolute; top:30px; right:25px" />
 
 <div class="summary">
 #interceptor("spring:categorySummary#outputContent")
