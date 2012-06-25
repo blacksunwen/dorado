@@ -30,7 +30,7 @@ public class BindingConfig implements Ignorable, TagSupport {
 	private String checkedProperty;
 	private boolean autoCheckChildren = true;
 	private String tipProperty;
-	private boolean hasChild;
+	private Boolean hasChild;
 	private String hasChildProperty;
 	private boolean ignored;
 	private String tags;
@@ -168,11 +168,11 @@ public class BindingConfig implements Ignorable, TagSupport {
 		this.tipProperty = tipProperty;
 	}
 
-	public boolean isHasChild() {
+	public Boolean getHasChild() {
 		return hasChild;
 	}
 
-	public void setHasChild(boolean hasChild) {
+	public void setHasChild(Boolean hasChild) {
 		this.hasChild = hasChild;
 	}
 
