@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Arguments/>
+  <Context/>
+  <Model>
+    <DataType name="Person">
+      <PropertyDef name="id"/>
+      <PropertyDef name="name"/>
+      <PropertyDef name="sex">
+        <Property name="mapping">
+          <Property name="mapValues">
+            <Collection>
+              <Entity>
+                <Property name="key">false</Property>
+                <Property name="value">${res[&quot;common/female&quot;]}</Property>
+              </Entity>
+              <Entity>
+                <Property name="key">true</Property>
+                <Property name="value">${res[&quot;common/male&quot;]}</Property>
+              </Entity>
+            </Collection>
+          </Property>
+        </Property>
+        <Property name="dataType">Boolean</Property>
+      </PropertyDef>
+      <PropertyDef name="birthday">
+        <Property name="dataType">Date</Property>
+      </PropertyDef>
+      <PropertyDef name="telephone"/>
+      <PropertyDef name="address"/>
+    </DataType>
+  </Model>
+  <View listener="spring:testI18n#onViewInit" layout="vbox padding:8;regionPadding:8">
+    <Panel layout="padding:8">
+      <Property name="border">curve</Property>
+      <Buttons/>
+      <Children>
+        <RadioGroup id="radioGroupLocale">
+          <ClientEvent name="onValueChange">open(&quot;com.bstek.dorado.sample.basic.TestI18n.d?locale=&quot; + self.get(&quot;value&quot;), &quot;_self&quot;);</ClientEvent>
+          <RadioButton>
+            <Property name="value">zh_CN</Property>
+            <Property name="text">中文</Property>
+          </RadioButton>
+          <RadioButton>
+            <Property name="value">en_US</Property>
+            <Property name="text">English</Property>
+          </RadioButton>
+        </RadioGroup>
+      </Children>
+      <Tools/>
+    </Panel>
+    <FieldSet layout="hbox regionPadding:4;padding:8">
+      <Property name="contentOverflowY">visible</Property>
+      <Property name="caption">${res.viaExpression}</Property>
+      <Children>
+        <Button>
+          <Property name="caption">${res.buttonAdd}</Property>
+        </Button>
+        <Button>
+          <Property name="caption">${res.buttonDel}</Property>
+        </Button>
+        <Button>
+          <ClientEvent name="onClick">dorado.MessageBox.alert(&quot;${res.get('paramString', util.getDate())}&quot;);</ClientEvent>
+          <Property name="caption">${res.buttonTestParam}</Property>
+        </Button>
+      </Children>
+    </FieldSet>
+    <FieldSet layout="vbox padding:8">
+      <Property name="caption">${res.viaInjection}</Property>
+      <Property name="contentOverflowY">visible</Property>
+      <Children>
+        <Container layout="hbox regionPadding:4">
+          <Button id="buttonSave"/>
+          <Button id="buttonReset"/>
+        </Container>
+        <DataSet id="dsPerson">
+          <Property name="dataType">Person</Property>
+        </DataSet>
+        <AutoForm id="formPerson">
+          <Property name="autoCreateElements">true</Property>
+          <Property name="cols">300,300</Property>
+          <Property name="dataSet">dsPerson</Property>
+          <AutoFormElement>
+            <Property name="name">id</Property>
+            <Property name="property">id</Property>
+            <Editor/>
+          </AutoFormElement>
+          <AutoFormElement>
+            <Property name="name">name</Property>
+            <Property name="property">name</Property>
+            <Editor/>
+          </AutoFormElement>
+          <AutoFormElement>
+            <Property name="name">sex</Property>
+            <Property name="property">sex</Property>
+            <Property name="editorType">RadioGroup</Property>
+            <Editor/>
+          </AutoFormElement>
+          <AutoFormElement>
+            <Property name="name">birthday</Property>
+            <Property name="property">birthday</Property>
+            <Editor/>
+          </AutoFormElement>
+          <AutoFormElement>
+            <Property name="name">telephone</Property>
+            <Property name="property">telephone</Property>
+            <Editor/>
+          </AutoFormElement>
+          <AutoFormElement>
+            <Property name="name">address</Property>
+            <Property name="property">address</Property>
+            <Editor/>
+          </AutoFormElement>
+        </AutoForm>
+      </Children>
+    </FieldSet>
+  </View>
+</ViewConfig>

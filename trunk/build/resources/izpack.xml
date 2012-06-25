@@ -5,7 +5,7 @@
 		<appversion>7.0</appversion>
 		<appsubpath>Dorado7</appsubpath>
 		<javaversion>1.5</javaversion>
-		<url>http://www.bstek.com</url>
+		<url>http://www.BSTEK.com</url>
 		<authors>
 			<author name="BSTEK" email="dorado7@bstek.com" />
 		</authors>
@@ -52,6 +52,7 @@
 
 	<resources>
 		<res id="infoBannerPng" src=".installer/images/info-banner.png" />
+		<res id="dashboardPng" src=".installer/images/dashboard.png" />
 		<res id="createSampleCenter1Png" src=".installer/images/create-sample-center1.png" />
 		<res id="configServerRuntime1Png" src=".installer/images/config-server-runtime1.png" />
 		<res id="configServerRuntime2Png" src=".installer/images/config-server-runtime2.png" />

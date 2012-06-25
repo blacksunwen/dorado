@@ -18,6 +18,7 @@
 		<property name="url" value="/dorado/client/boot.dpkg" />
 		<property name="resolver">
 			<bean class="com.bstek.dorado.view.resolver.BootPackagesResolver">
+				<property name="localeResolver" ref="dorado.localeResolver" />
 				<property name="bootFile" value="scripts/dorado/boot" />
 				<property name="resourcePrefix" value="${view.libraryRoot}" />
 			</bean>
