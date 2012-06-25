@@ -416,11 +416,9 @@
 					if (this._useEmptyItem) {
 						if (items instanceof Array) {
 							items.insert(null, 0);
-						}
-						else if (items instanceof dorado.EntityList) {
+						} else if (items instanceof dorado.EntityList) {
 							items.insert({}, "begin");
-						}
-						else if (items == null) {
+						} else if (items == null) {
 							items = [null];
 						}
 					}
@@ -454,18 +452,6 @@
 	 */
 	dorado.widget.AutoMappingDropDown = $extend(dorado.widget.RowListDropDown,/** @scope dorado.widget.AutoMappingDropDown.prototype */ {
 		$className: "dorado.widget.AutoMappingDropDown",
-		
-		ATTRIBUTES: /** @scope dorado.widget.AutoMappingDropDown.prototype */ {			
-			/**
-			 * 是否允许用在相应的编辑框中进行文本输入。
-			 * @type boolean
-			 * @attribute
-			 * @default false
-			 */
-			editable: {
-				defaultValue: false
-			}
-		},
 		
 		getDropDownItems: function() {
 			var editor = this._editor, pd = editor._propertyDef;

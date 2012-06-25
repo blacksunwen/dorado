@@ -16,10 +16,6 @@ public class AutoMappingDropDown extends RowListDropDown {
 	private String property = "value";
 	private boolean autoOpen;
 
-	public AutoMappingDropDown() {
-		setEditable(false);
-	}
-
 	@Override
 	@ClientProperty(escapeValue = "value")
 	public String getProperty() {
@@ -39,10 +35,5 @@ public class AutoMappingDropDown extends RowListDropDown {
 	@Override
 	public void setAutoOpen(boolean autoOpen) {
 		this.autoOpen = autoOpen;
-	}
-
-	@ClientProperty(escapeValue = "false")
-	public boolean isEditable() {
-		return super.isEditable();
 	}
 }
