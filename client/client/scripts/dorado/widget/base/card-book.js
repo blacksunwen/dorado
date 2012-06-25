@@ -61,7 +61,6 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 				if (dom && control) {					
 					if (!control._rendered) {
 						this._resetInnerControlDemension(control);
-						cardbook.registerInnerControl(control);
 						control.render(dom);
 					} else {
 						$fly(control._dom).css("display", "block");
@@ -102,7 +101,7 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 		/**
 		 * Card中所有的Control。
 		 * 该属性设置时使用Array类型的数据进行设置，取得时取得的数据类型为dorado.util.KeyedArray。
-		 * @type dorado.util.KeyedArray
+		 * @type [Object]|[dorado.widget.Control]|dorado.util.KeyedArray
 		 * @attribute
 		 */
 		controls: {
@@ -114,8 +113,10 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 					if (value instanceof Array) {
 						for (var i = 0; i < value.length; i++) {
 							controls.insert(value[i]);
+							this.registerInnerControl(value[i]);
 						}
 					} else {
+						this.registerInnerControl(value);
 						controls.insert(value);
 					}
 				}
