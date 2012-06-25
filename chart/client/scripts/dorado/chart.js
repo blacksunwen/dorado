@@ -575,7 +575,7 @@ function open_flash_chart_data() {
 						}
 
 						chart._reloadTimer = setTimeout(function() {
-							console.log(JSON.stringify(chart));
+                            //console.log(JSON.stringify(chart));
 							//console.log("swf reload invoked.");
 							try{
 								swf.load(str || JSON.stringify(chart));
