@@ -69,6 +69,7 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 
 	<bean id="dorado.pageHeaderOutputter" class="com.bstek.dorado.view.resolver.PageHeaderOutputter">
 		<property name="topViewOutputter" ref="dorado.topViewOutputter" />
+		<property name="localeResolver" ref="dorado.localeResolver" />
 		<property name="javaScriptResourceManager" ref="dorado.viewJavaScriptResourceManager" />
 		<property name="styleSheetResourceManager" ref="dorado.viewStyleSheetResourceManager" />
 	</bean>

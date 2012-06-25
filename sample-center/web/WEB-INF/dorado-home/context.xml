@@ -23,4 +23,10 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 	<bean parent="dorado.packagesConfigLoader">
 		<property name="configLocation" value="home:packages-config.xml" />
 	</bean>
+
+	<bean id="dorado.localeResolver" class="com.bstek.dorado.sample.basic.LocaleResolver" />
+
+	<bean parent="dorado.globalResourceSearchPathRegister">
+		<property name="searchPath" value="home:resources" />
+	</bean>
 </beans>

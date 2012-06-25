@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,7 +17,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.core.io.FileResource;
 import com.bstek.dorado.core.io.Resource;
-import com.bstek.dorado.core.pkgs.PackageManager;
+import com.bstek.dorado.core.resource.LocaleResolver;
 import com.bstek.dorado.util.PathUtils;
 import com.bstek.dorado.util.TempFileUtils;
 import com.bstek.dorado.view.output.JsonBuilder;
@@ -40,15 +41,31 @@ public class BootPackagesResolver extends WebFileResolver {
 	private static final String MIN_JAVASCRIPT_SUFFIX = ".min.js";
 	private static final String CLIENT_PACKAGES_CONFIG = "$packagesConfig";
 	private PackagesConfigManager packagesConfigManager;
-
+	private LocaleResolver localeResolver;
 	private String bootFile;
-	
+
 	public BootPackagesResolver() {
 		setUseResourcesCache(true);
 	}
 
+	/**
+	 * 设置用于确定国际化区域、语种信息的处理器。
+	 */
+	public void setLocaleResolver(LocaleResolver localeResolver) {
+		this.localeResolver = localeResolver;
+	}
+
 	public void setBootFile(String bootFile) {
 		this.bootFile = bootFile;
+	}
+
+	protected String getResourceCacheKey(HttpServletRequest request)
+			throws Exception {
+		Locale locale = localeResolver.resolveLocale();
+		return (new StringBuffer(getRelativeRequestURI(request))).append('+')
+				.append(Configure.getString("view.useMinifiedJavaScript"))
+				.append('+')
+				.append((locale != null) ? locale.toString() : null).toString();
 	}
 
 	/**
@@ -212,11 +229,15 @@ public class BootPackagesResolver extends WebFileResolver {
 		if (!OutputUtils.isEscapeValue(pattern.getCharset())) {
 			jsonBuilder.key("charset").value(pattern.getCharset());
 		}
-		jsonBuilder.key("url").value(
-				PathUtils.concatPath(
+		Locale locale = localeResolver.resolveLocale();
+		jsonBuilder
+				.key("url")
+				.value(PathUtils.concatPath(
 						pattern.getBaseUri(),
 						"${fileName}.dpkg?cacheBuster="
-								+ PackageManager.getPackageInfoMD5()));
+								+ CacheBusterUtils
+										.getCacheBuster((locale != null) ? locale
+												.toString() : null)));
 		if (pattern.isMergeRequests()) {
 			jsonBuilder.escapeableKey("mergeRequests").value(
 					pattern.isMergeRequests());

@@ -2,6 +2,7 @@ package com.bstek.dorado.view.resolver;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,7 +11,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.core.Configure;
-import com.bstek.dorado.core.pkgs.PackageManager;
+import com.bstek.dorado.core.resource.LocaleResolver;
 import com.bstek.dorado.view.View;
 import com.bstek.dorado.view.config.attachment.AttachedResourceManager;
 import com.bstek.dorado.view.config.attachment.JavaScriptContent;
@@ -25,11 +26,19 @@ import com.bstek.dorado.web.WebConfigure;
  */
 public class PageHeaderOutputter implements Outputter {
 	private Outputter topViewOutputter;
+	private LocaleResolver localeResolver;
 	private AttachedResourceManager javaScriptResourceManager;
 	private AttachedResourceManager styleSheetResourceManager;
 
 	public void setTopViewOutputter(Outputter topViewOutputter) {
 		this.topViewOutputter = topViewOutputter;
+	}
+
+	/**
+	 * 设置用于确定国际化区域、语种信息的处理器。
+	 */
+	public void setLocaleResolver(LocaleResolver localeResolver) {
+		this.localeResolver = localeResolver;
 	}
 
 	public void setJavaScriptResourceManager(
@@ -79,11 +88,14 @@ public class PageHeaderOutputter implements Outputter {
 					.append("</title>\n");
 		}
 
+		Locale locale = localeResolver.resolveLocale();
 		writer.append(
 				"<script language=\"javascript\" type=\"text/javascript\" charset=\"UTF-8\" src=\"")
 				.append(request.getContextPath())
 				.append("/dorado/client/boot.dpkg?cacheBuster="
-						+ PackageManager.getPackageInfoMD5() + "\"></script>\n")
+						+ CacheBusterUtils
+								.getCacheBuster((locale != null) ? locale
+										.toString() : null) + "\"></script>\n")
 				.append("<script language=\"javascript\" type=\"text/javascript\">\n");
 
 		writeSetting(writer, "code.debugEnabled",

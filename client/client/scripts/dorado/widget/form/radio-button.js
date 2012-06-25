@@ -320,7 +320,7 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 		}
 		
 		this._setValue(radioButton);
-		radioGroup.fireEvent("onValueChange", radioGroup);
+		radioGroup.fireEvent("onValueChange", radioGroup, {});
 	},
 	
 	createDom: function() {
@@ -435,7 +435,7 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 		this.doPost();
 		this._lastPost = this._value;
 		this._dirty = false;
-		this.fireEvent("onPost", this); // 此事件已被声明为不能抛出异常
+		this.fireEvent("onPost", this, eventArg); // 此事件已被声明为不能抛出异常
 		return true;
 	}
 });

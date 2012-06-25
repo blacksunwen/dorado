@@ -10,6 +10,7 @@ import org.w3c.dom.Node;
 
 import com.bstek.dorado.config.definition.DefinitionReference;
 import com.bstek.dorado.core.bean.BeanFactoryUtils;
+import com.bstek.dorado.core.el.EvaluateMode;
 import com.bstek.dorado.core.el.Expression;
 import com.bstek.dorado.data.config.EntityExpressionMethodInterceptor;
 import com.bstek.dorado.data.config.definition.DataTypeDefinition;
@@ -51,21 +52,29 @@ public class EntityParser extends DataElementParserSupport {
 			cl = DEFAULT_MAP_TYPE;
 		}
 
-		Map<String, Expression> expressionProperties = new HashMap<String, Expression>();
+		Map<String, Expression> expressionProperties = null;
 		Map<String, Object> valueProperties = new HashMap<String, Object>();
 		Map<String, Object> properties = parseProperties(element, context);
 		for (Map.Entry<String, Object> entry : properties.entrySet()) {
 			String property = entry.getKey();
 			Object value = entry.getValue();
 			if (value instanceof Expression) {
-				expressionProperties.put(property, (Expression) value);
+				Expression expression = (Expression) value;
+				if (expression.getEvaluateMode() == EvaluateMode.onInstantiate) {
+					valueProperties.put(property, expression.evaluate());
+				} else {
+					if (expressionProperties == null) {
+						expressionProperties = new HashMap<String, Expression>();
+					}
+					expressionProperties.put(property, expression);
+				}
 			} else {
 				valueProperties.put(property, value);
 			}
 		}
 
 		Object entity;
-		if (expressionProperties.isEmpty()) {
+		if (expressionProperties == null || expressionProperties.isEmpty()) {
 			entity = cl.newInstance();
 		} else {
 			EntityExpressionMethodInterceptor entityExpressionMethodInterceptor = new EntityExpressionMethodInterceptor(
@@ -91,5 +100,4 @@ public class EntityParser extends DataElementParserSupport {
 		context.restoreCurrentDataType();
 		return entity;
 	}
-
 }

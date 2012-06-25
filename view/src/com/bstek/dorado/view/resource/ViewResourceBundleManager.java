@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.bstek.dorado.view.resource;
 
 import java.util.Locale;

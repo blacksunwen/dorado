@@ -130,10 +130,10 @@ public abstract class AbstractWebFileResolver extends AbstractResolver {
 
 	protected ResourcesWrapper getResourcesWrapper(HttpServletRequest request,
 			DoradoContext context) throws Exception {
-		String path = getRelativeRequestURI(request);
+		String cacheKey = getResourceCacheKey(request);
 		ResourcesWrapper resourcesWrapper = null;
 		if (useResourcesCache) {
-			resourcesWrapper = resourcesCache.get(path);
+			resourcesWrapper = resourcesCache.get(cacheKey);
 		}
 		if (resourcesWrapper != null) {
 			if (resourcesWrapper.isReloadable()
@@ -162,7 +162,7 @@ public abstract class AbstractWebFileResolver extends AbstractResolver {
 				}
 
 				if (useResourcesCache) {
-					resourcesCache.put(path, resourcesWrapper);
+					resourcesCache.put(cacheKey, resourcesWrapper);
 				}
 			} catch (FileNotFoundException e) {
 				logger.error(e, e);
@@ -175,9 +175,14 @@ public abstract class AbstractWebFileResolver extends AbstractResolver {
 		return resourcesWrapper;
 	}
 
+	protected String getResourceCacheKey(HttpServletRequest request)
+			throws Exception {
+		return getRelativeRequestURI(request);
+	}
+
 	protected ResourcesWrapper createResourcesWrapper(
 			HttpServletRequest request, DoradoContext context) throws Exception {
-		String path = getRelativeRequestURI(request);
+		String path = getResourceCacheKey(request);
 		String resourceSuffix = getUriSuffix(request);
 		Resource[] resources = context.getResources(path);
 		return new ResourcesWrapper(resources, getResourceTypeManager()
