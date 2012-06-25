@@ -7,7 +7,7 @@
 
 	<property name="addonName" value="dorado-chart" />
 	<property name="vendor" value="www.BSTEK.com" />
-	<property name="version" value="0.3.0" />
+	<property name="version" value="0.3.2" />
 	<property name="qualifier" value="BETA" />
 	<property name="buildJavaDoc" value="true" />
 	<property name="buildJsDoc" value="true" />
