@@ -13,117 +13,114 @@
  * </p>
  * @extends dorado.widget.AbstractDataEditor
  */
-dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope dorado.widget.CheckBox.prototype */
-{
-	$className : "dorado.widget.CheckBox",
-	_inherentClassName : "i-checkbox",
-	ATTRIBUTES : /** @scope dorado.widget.CheckBox.prototype */
-	{
-		className : {
-			defaultValue : "d-checkbox"
+dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope dorado.widget.CheckBox.prototype */ {
+	$className: "dorado.widget.CheckBox",
+	_inherentClassName: "i-checkbox",
+	ATTRIBUTES: /** @scope dorado.widget.CheckBox.prototype */ {
+		className: {
+			defaultValue: "d-checkbox"
 		},
 		
-		height:  {
-			independent : true
+		height: {
+			independent: true
 		},
-
+		
 		/**
 		 * 是否只显示图标、不显示文字。主要在Grid和Tree中作为编辑器的时候被使用。
 		 * @attribute writeBeforeReady
 		 * @default false
 		 * @type boolean
 		 */
-		iconOnly : {
-			writeBeforeReady : true,
+		iconOnly: {
+			writeBeforeReady: true,
 			setter: function(value) {
 				this.iconOnly = value;
 				this._inherentClassName = (value ? "i-checkbox i-checkbox-icononly" : "i-checkbox");
 			}
 		},
-
+		
 		/**
 		 * 当复选框被选中的时候的value值。
 		 * @type int|boolean|Object
 		 * @default true
 		 * @attribute
 		 */
-		onValue : {
-			defaultValue : true
+		onValue: {
+			defaultValue: true
 		},
-
+		
 		/**
 		 * 当复选框未被选中的时候的value值。
 		 * @type int|boolean|Object
 		 * @default false
 		 * @attribute
 		 */
-		offValue : {
-			defaultValue : false
+		offValue: {
+			defaultValue: false
 		},
-
+		
 		/**
 		 * 当复选框处于第三态时的value值。
 		 * @type int|boolean|Object
 		 * @attribute
 		 */
-		mixedValue : {},
-
+		mixedValue: {},
+		
 		/**
 		 * 复选框右侧显示的文本。
 		 * @type String
 		 * @attribute
 		 */
-		caption : {},
-
+		caption: {},
+		
 		/**
 		 * 复选框的值。
 		 * @type int|boolean|Object
 		 * @attribute
 		 */
-		value : {
-			defaultValue : false,
-			getter : function() {
+		value: {
+			defaultValue: false,
+			getter: function() {
 				return this._checked ? this._onValue : (this._checked == null ? this._mixedValue : this._offValue);
 			},
-			setter : function(v) {
-				if(this._mixedValue == v) {
+			setter: function(v) {
+				if (this._mixedValue == v) {
 					this._checked = null;
 				} else {
 					this._checked = (this._onValue == v);
 				}
 			}
 		},
-
+		
 		/**
 		 * 复选框是否被选中。
 		 * @type Boolean
 		 * @default false
 		 * @attribute
 		 */
-		checked : {
-			defaultValue : false,
-			setter : function(value) {
-				if(this._triState) {
+		checked: {
+			defaultValue: false,
+			setter: function(value) {
+				if (this._triState) {
 					this._checked = value;
 				} else {
 					this._checked = !!value;
 				}
 			}
 		},
-
+		
 		/**
 		 * 是否3态复选框，即是否启用复选框的mixed状态。
 		 * @type boolean
 		 * @default false
 		 * @attribute
 		 */
-		triState : {
-			defaultValue : false
+		triState: {
+			defaultValue: false
 		}
 	},
-
-	EVENTS : /** @scope dorado.widget.CheckBox.prototype */
-	{
+	
+	EVENTS: /** @scope dorado.widget.CheckBox.prototype */ {
 		/**
 		 * 当复选框的value发生变化的时候触发的事件。
 		 * @param {Object} self 事件的发起者，即组件本身。
@@ -131,21 +128,21 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 		 * @event
 		 */
-		onValueChange : {}
+		onValueChange: {}
 	},
-
-	onClick : function() {
+	
+	onClick: function() {
 		var checkBox = this;
-
-		if(checkBox._readOnly || this._readOnly2) {
+		
+		if (checkBox._readOnly || this._readOnly2) {
 			return;
 		}
-
+		
 		checkBox._lastPostChecked = checkBox._checked;
-		if(checkBox._triState) {
-			if(checkBox._checked == null) {
+		if (checkBox._triState) {
+			if (checkBox._checked == null) {
 				checkBox._checked = true;
-			} else if(checkBox._checked === true) {
+			} else if (checkBox._checked === true) {
 				checkBox._checked = false;
 			} else {
 				checkBox._checked = null;
@@ -157,7 +154,8 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 		checkBox._dirty = true;
 		try {
 			checkBox.post();
-		} catch (e) {
+		} 
+		catch (e) {
 			checkBox._checked = checkBox._lastPostChecked;
 			checkBox._dirty = false;
 			throw e;
@@ -166,15 +164,15 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 		checkBox.fireEvent("onValueChange", checkBox);
 	},
 	
-	refreshDom : function(dom) {
+	refreshDom: function(dom) {
 		$invokeSuper.call(this, arguments);
-
+		
 		var checkBox = this, checked = checkBox._checked, caption = checkBox._caption || '';
-        $fly(dom)[checkBox._readOnly || checkBox._readOnly2 ? "addClass" : "removeClass"](checkBox._className + "-readonly");
-		if(checkBox._dataSet) {
+		$fly(dom)[checkBox._readOnly || checkBox._readOnly2 ? "addClass" : "removeClass"](checkBox._className + "-readonly");
+		if (checkBox._dataSet) {
 			checked = undefined;
 			var value, dirty, readOnly = this._dataSet._readOnly;
-			if(checkBox._property) {
+			if (checkBox._property) {
 				var bindingInfo = checkBox._bindingInfo;
 				var dt = bindingInfo.dataType;
 				if (dt) {
@@ -204,12 +202,14 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 							break;
 						}
 					}
-					checkbox.set(config, {
-						preventOverwriting: true
-					});
+					if (config) {
+						checkbox.set(config, {
+							preventOverwriting: true
+						});
+					}
 				}
 				
-				if(bindingInfo.entity instanceof dorado.Entity) {
+				if (bindingInfo.entity instanceof dorado.Entity) {
 					value = bindingInfo.entity.get(checkBox._property);
 					dirty = bindingInfo.entity.isDirty(checkBox._property);
 				}
@@ -219,21 +219,21 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 			}
 			
 			value += '';
-			if(value == (checkBox._onValue + '')) {
+			if (value == (checkBox._onValue + '')) {
 				checked = true;
-			} else if(value == (checkBox._offValue + '')) {
+			} else if (value == (checkBox._offValue + '')) {
 				checked = false;
 			}
 			checkBox._checked = checked;
 			checkBox._readOnly2 = readOnly;
 			checkBox.setDirty(dirty);
 		}
-
-		if(!checkBox._iconOnly) {
+		
+		if (!checkBox._iconOnly) {
 			var iconEl = dom.firstChild, captionEl = iconEl.nextSibling;
-			if(checked) {
+			if (checked) {
 				$fly(iconEl).removeClass("unchecked halfchecked").addClass("checked");
-			} else if(checked == null && checkBox._triState) {
+			} else if (checked == null && checkBox._triState) {
 				$fly(iconEl).removeClass("checked unchecked").addClass("halfchecked");
 			} else {
 				$fly(iconEl).removeClass("checked halfchecked").addClass("unchecked");
@@ -242,14 +242,14 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 		} else {
 			var hovering = false, cls, $dom = $fly(dom);
 			$dom.removeClass("d-checkbox-checked d-checkbox-unchecked d-checkbox-halfchecked");
-			if($dom.hasClass("d-checkbox-unchecked-hover") || $dom.hasClass("d-checkbox-checked-hover") || $dom.hasClass("d-checkbox-halfchecked-hover")) {
+			if ($dom.hasClass("d-checkbox-unchecked-hover") || $dom.hasClass("d-checkbox-checked-hover") || $dom.hasClass("d-checkbox-halfchecked-hover")) {
 				$dom.removeClass("d-checkbox-checked-hover d-checkbox-unchecked-hover d-checkbox-halfchecked-hover");
 				hovering = true;
 			}
-			if(checked) {
+			if (checked) {
 				cls = hovering ? "d-checkbox-checked-hover" : "d-checkbox-checked";
 				$dom.addClass(cls);
-			} else if(checked == null) {
+			} else if (checked == null) {
 				cls = hovering ? "d-checkbox-halfchecked-hover" : "d-checkbox-halfchecked";
 				$dom.addClass(cls);
 			} else {
@@ -259,19 +259,19 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 		}
 	},
 	
-	createDom : function() {
+	createDom: function() {
 		var checkBox = this, dom;
-		if(checkBox._iconOnly) {
+		if (checkBox._iconOnly) {
 			checkBox._className = checkBox._className + "-icononly";
 			dom = $DomUtils.xCreate({
-				tagName : "SPAN",
-				className : checkBox._className
+				tagName: "SPAN",
+				className: checkBox._className
 			});
 			$fly(dom).hover(function() {
-				if(!checkBox._readOnly) {
-					if(checkBox._checked) {
+				if (!checkBox._readOnly) {
+					if (checkBox._checked) {
 						$fly(dom).removeClass("d-checkbox-checked").addClass("d-checkbox-checked-hover");
-					} else if(checkBox._checked == null) {
+					} else if (checkBox._checked == null) {
 						$fly(dom).removeClass("d-checkbox-halfchecked").addClass("d-checkbox-halfchecked-hover");
 					} else {
 						$fly(dom).removeClass("d-checkbox-unchecked").addClass("d-checkbox-unchecked-hover");
@@ -279,9 +279,9 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 				}
 			}, function() {
 				$fly(dom).removeClass("d-checkbox-checked-hover d-checkbox-unchecked-hover d-checkbox-halfchecked-hover");
-				if(checkBox._checked) {
+				if (checkBox._checked) {
 					$fly(dom).addClass("d-checkbox-checked");
-				} else if(checkBox._checked == null) {
+				} else if (checkBox._checked == null) {
 					$fly(dom).addClass("d-checkbox-halfchecked");
 				} else {
 					$fly(dom).addClass("d-checkbox-unchecked");
@@ -289,49 +289,50 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 			});
 		} else {
 			dom = $DomUtils.xCreate({
-				tagName : "SPAN",
-				className : checkBox._className,
-				content : [{
-					tagName : "SPAN",
-					className : "icon"
+				tagName: "SPAN",
+				className: checkBox._className,
+				content: [{
+					tagName: "SPAN",
+					className: "icon"
 				}, {
-					tagName : "SPAN",
-					className : "caption",
-					content : checkBox._caption || ''
+					tagName: "SPAN",
+					className: "caption",
+					content: checkBox._caption || ''
 				}]
 			});
-
+			
 			jQuery(dom).addClassOnHover(checkBox._className + "-hover", null, function() {
 				return !checkBox._readOnly;
 			}).addClassOnClick(checkBox._className + "-click", null, function() {
 				return !checkBox._readOnly;
 			});
 		}
-
+		
 		return dom;
 	},
 	
-	post : function() {
+	post: function() {
 		try {
-			if(!this._dirty) {
+			if (!this._dirty) {
 				return false;
 			}
 			var eventArg = {
-				processDefault : true
+				processDefault: true
 			};
 			this.fireEvent("beforePost", this, eventArg);
-			if(eventArg.processDefault === false) return false;
+			if (eventArg.processDefault === false) return false;
 			this.doPost();
 			this._lastPostChecked = this._checked;
 			this._dirty = false;
 			this.fireEvent("onPost", this);
 			return true;
-		} catch (e) {
+		} 
+		catch (e) {
 			dorado.Exception.processException(e);
 		}
 	},
 	
-	doOnKeyDown : function(evt) {
+	doOnKeyDown: function(evt) {
 		var retValue = true;
 		switch (evt.keyCode) {
 			case 32:
