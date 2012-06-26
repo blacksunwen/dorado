@@ -762,11 +762,11 @@
 			if (this._textDom) {
 				if (this._useBlankText) text = this._blankText;
 				$fly(this._textDom).toggleClass("blank-text", !!this._useBlankText);
-				if (this._useBlankText && this._textDom.type == "password") {
-					this._textDom.type = "";
+				if (this._useBlankText && this._textDom.getAttribute("type") == "password") {
+					this._textDom.setAttribute("type", "");
 					this._isPassword = true;
 				} else if (!this._useBlankText && this._isPassword) {
-					this._textDom.type = "password";
+					this._textDom.setAttribute("type", "password");
 					delete this._isPassword;
 				}
 				this._textDom.value = text || '';
