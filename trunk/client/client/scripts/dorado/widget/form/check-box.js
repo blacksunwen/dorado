@@ -176,6 +176,39 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 			var value, dirty, readOnly = this._dataSet._readOnly;
 			if(checkBox._property) {
 				var bindingInfo = checkBox._bindingInfo;
+				var dt = bindingInfo.dataType;
+				if (dt) {
+					var config;
+					switch (dt._code) {
+						case dorado.DataType.BOOLEAN:{
+							config = {
+								triState: true
+							};
+							break;
+						}
+						case dorado.DataType.PRIMITIVE_INT:
+						case dorado.DataType.PRIMITIVE_FLOAT:{
+							config = {
+								offValue: 0,
+								onValue: 1
+							};
+							break;
+						}
+						case dorado.DataType.INTEGER:
+						case dorado.DataType.FLOAT:{
+							config = {
+								offValue: 0,
+								onValue: 1,
+								triState: true
+							};
+							break;
+						}
+					}
+					checkbox.set(config, {
+						preventOverwriting: true
+					});
+				}
+				
 				if(bindingInfo.entity instanceof dorado.Entity) {
 					value = bindingInfo.entity.get(checkBox._property);
 					dirty = bindingInfo.entity.isDirty(checkBox._property);

@@ -935,7 +935,7 @@
 	dorado.widget.grid.CheckBoxCellRenderer = $extend(dorado.widget.grid.SubControlCellRenderer, /** @scope dorado.widget.grid.CheckBoxCellRenderer.prototype */{
 		createSubControl: function(arg) {
 			var self = this;
-			return new dorado.widget.CheckBox({
+			var checkbox = new dorado.widget.CheckBox({
 				readOnly: arg.grid.get("readOnly"),
 				iconOnly: true,
 				
@@ -958,6 +958,37 @@
 					self.onCellValueEdit(entity, column);
 				}
 			});
+			
+			var pd = arg.column._propertyDef;
+			if (pd) {
+				var dt = pd.get("dataType");
+				if (dt) {
+					switch (dt._code) {
+						case dorado.DataType.BOOLEAN: {
+							checkbox.set("triState", true);
+							break;
+						}
+						case dorado.DataType.PRIMITIVE_INT:
+						case dorado.DataType.PRIMITIVE_FLOAT: {
+							checkbox.set({
+								offValue: 0,
+								onValue: 1
+							});
+							break;
+						}
+						case dorado.DataType.INTEGER:
+						case dorado.DataType.FLOAT: {
+							checkbox.set({
+								offValue: 0,
+								onValue: 1,
+								triState: true
+							});
+							break;
+						}
+					}
+				}
+			}
+			return checkbox; 
 		},
 		
 		refreshSubControl: function(checkbox, arg) {
@@ -1619,7 +1650,8 @@
 				} else if (dtCode == dorado.DataType.PRIMITIVE_BOOLEAN || dtCode == dorado.DataType.BOOLEAN) {
 					editor = new dorado.widget.CheckBox({
 						onValue: true,
-						offValue: false
+						offValue: false,
+						triState: (dtCode == dorado.DataType.BOOLEAN)
 					});
 					$fly(editor.getDom()).addClass("d-checkbox-center");
 				}
