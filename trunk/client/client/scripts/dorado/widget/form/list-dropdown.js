@@ -212,6 +212,7 @@
 					} else {
 						for (var i = 0; i < items.length; i++) {
 							var item = items[i];
+							if (item === null || item === undefined) continue;
 							if (item instanceof dorado.Entity) {
 								if (item.get(this._property) == value) {
 									currentIndex = i;
