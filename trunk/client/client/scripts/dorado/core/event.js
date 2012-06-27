@@ -114,19 +114,19 @@ window.$callback = dorado.Callback.invokeCallback = function(callback, success, 
 		delay = options.delay;
 	}
 	
-	if (callback instanceof Function) {
+	if (typeof callback == "function") {
 		if (!success) return;
 		invoke(callback, [arg]);
 	} else {
 		scope = callback.scope || scope || window;
 		delay = callback.delay || delay;
 		
-		if (callback.callback instanceof Function) {
+		if (typeof callback.callback  == "function") {
 			invoke(callback.callback, [success, arg]);
 		}
 		
 		var name = (success) ? "success" : "failure";
-		if (callback[name] instanceof Function) {
+		if (typeof callback[name] == "function") {
 			invoke(callback.callback, [arg]);
 		}
 	}
@@ -267,16 +267,16 @@ dorado.EventSupport = $class(/** @scope dorado.EventSupport.prototype */{
 							if (listener instanceof Array) {
 								for (var i = 0; i < listener.length; i++) {
 									var l = listener[i];
-									if (l instanceof Function) {
+									if (typeof l == "function") {
 										this.addListener(p, l);
 									}
-									else if (l.fn instanceof Function) {
+									else if (typeof l.fn == "function") {
 										this.addListener(p, l.fn, l.options);
 									}
 								}
-							} else if (listener instanceof Function) {
+							} else if (typeof listener == "function") {
 								this.addListener(p, listener);
-							} else if (listener.fn instanceof Function) {
+							} else if (typeof listener.fn == "function") {
 								this.addListener(p, listener.fn, listener.options);
 							}
 						}
@@ -403,7 +403,7 @@ dorado.EventSupport = $class(/** @scope dorado.EventSupport.prototype */{
 		};
 		
 		try {
-			var interceptor = (def.interceptor instanceof Function) ? def.interceptor : null;
+			var interceptor = (typeof def.interceptor == "function") ? def.interceptor : null;
 			if (interceptor) {
 				arguments[0] = superFire;
 				return interceptor.apply(this, arguments);
