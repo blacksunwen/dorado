@@ -119,6 +119,12 @@
 			<param name="addon.artifactId" value="dorado-htmleditor" />
 			<param name="addon.revision" value="latest.intergation" />
 		</antcall>
+
+		<antcall target="doRetrieveProperLibs">
+			<param name="addon.groupId" value="com.bstek.dorado" />
+			<param name="addon.artifactId" value="dorado-jdbc" />
+			<param name="addon.revision" value="latest.intergation" />
+		</antcall>
 	</target>
 
 	<target name="buildProjectTemplate">
@@ -257,9 +263,8 @@
 	</target>
 
 	<target name="buildZip" depends="init">
-		<zip destfile="${installerTargetDir}/dorado-${revision}.zip">
-			<fileset dir="${templateDir}">
-				<include name="apache-tomcat-*/**" />
+		<zip destfile="${installerTargetDir}/dorado-${revision}-without-eclipse.zip">
+			<fileset dir="${templateDir}" defaultExcludes="true">
 				<include name="docs/**" />
 				<include name="dorado7-updater/**" />
 				<include name="eclipse/dropins/**" />
@@ -271,5 +276,8 @@
 	<target name="build"
 	        depends="init,retrieveProperDependencies,buildProjectTemplate,buildAddons,buildHelloWorld,buildSampleCenter,buildDocs" />
 	<target name="izpack" depends="build,buildIzpack,buildZip" />
+
+	<target name="buildPlugins"
+		        depends="init,retrieveProperDependencies,buildProjectTemplate,buildAddons,buildHelloWorld,buildSampleCenter" />
 </project>
 
