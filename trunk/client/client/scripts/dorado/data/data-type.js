@@ -220,7 +220,7 @@
 	 * EntityDataType的get方法在{@link dorado.AttributeSupport#get}的基础上做了增强。
 	 * 除了原有的读取属性值的功能之外，此方法还另外提供了下面的用法。
 	 * <ul>
-	 * 	<li>当传入一个以&开头的字符串时，@后面的内容将被识别成属性声明的名称，表示根据名称获取属性声明。参考{@link dorado.EntityDataType#getPropertyDef}。</li>
+	 * 	<li>当传入一个以#开头的字符串时，#后面的内容将被识别成属性声明的名称，表示根据名称获取属性声明。参考{@link dorado.EntityDataType#getPropertyDef}。</li>
 	 * </ul>
 	 * </p>
 	 * @extends dorado.DataType

@@ -203,7 +203,7 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 						}
 					}
 					if (config) {
-						checkbox.set(config, {
+						this.set(config, {
 							preventOverwriting: true
 						});
 					}

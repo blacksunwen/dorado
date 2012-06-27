@@ -44,7 +44,7 @@ dorado.widget.autoform.AutoFormElement = $extend(dorado.widget.FormElement, /** 
  * AutoForm的get方法在{@link dorado.AttributeSupport#get}的基础上做了增强。
  * 除了原有的读取属性值的功能之外，此方法还另外提供了下面的用法。
  * <ul>
- * 	<li>当传入一个以&开头的字符串时，@后面的内容将被识别成AutoFormElement的名称，表示根据名称获取AutoFormElement。参考{@link dorado.widget.AutoForm#getElement}。</li>
+ * 	<li>当传入一个以#开头的字符串时，#后面的内容将被识别成AutoFormElement的名称，表示根据名称获取AutoFormElement。参考{@link dorado.widget.AutoForm#getElement}。</li>
  * </ul>
  * </p>
  * @extends dorado.widget.Control
