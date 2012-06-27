@@ -10,5 +10,6 @@
       <Property name="width">640</Property>
     </Panel>
     <DataSet id="dataSet1"/>
+    <Container/>
   </View>
 </ViewConfig>

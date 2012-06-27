@@ -2,13 +2,16 @@
 <ViewConfig>
   <View layout="form cols:*" style="margin:16px" title="Ajax">
     <Container layout="hbox">
-      <AjaxAction id="toUpperCaseAction" caption="To UpperCase" parameter="Hello World!" service="ajax#toUpperCase">
+      <AjaxAction id="toUpperCaseAction" parameter="Hello World!" service="ajax#toUpperCase">
         <ClientEvent name="onSuccess">dorado.MessageBox.alert(self.get(&quot;returnValue&quot;));</ClientEvent>
+        <Property name="caption">转成大写</Property>
       </AjaxAction>
       <Button action="toUpperCaseAction"/>
-      <AjaxAction id="multiplyAction" executingMessage="Computing..." service="ajax#multiply"/>
-      <Button caption="Ajax Multiply">
-        <ClientEvent name="onClick" signature="multiplyAction">dorado.MessageBox.prompt(&quot;Please input two numbers here&quot;, {
+      <AjaxAction id="multiplyAction" service="ajax#multiply">
+        <Property name="executingMessage">正在计算...</Property>
+      </AjaxAction>
+      <Button>
+        <ClientEvent name="onClick" signature="multiplyAction">dorado.MessageBox.prompt(&quot;请在这里输入任意两个乘数&quot;, {
 	defaultText: &quot;3*5&quot;,
 	callback: function(text) {
 		var nums = text.split(&quot;*&quot;);
@@ -22,13 +25,36 @@
 	}
 });
 </ClientEvent>
+        <Property name="caption">Ajax乘法</Property>
       </Button>
-      <AjaxAction id="getSystemInfoAction" caption="Retrieve Dorado7 System Information" service="ajax#getSystemInfo">
+      <AjaxAction id="multiplyAction2">
+        <Property name="executingMessage">正在计算...</Property>
+        <Property name="service">ajax#multiply2</Property>
+      </AjaxAction>
+      <Button>
+        <ClientEvent name="onClick" signature="multiplyAction2">dorado.MessageBox.prompt(&quot;请在这里输入任意多个乘数&quot;, {&#xD;
+	defaultText: &quot;3,5,23,68&quot;,&#xD;
+	callback: function(text) {&#xD;
+		var nums = [];&#xD;
+		text.split(&quot;,&quot;).each(function(s){&#xD;
+			var i = parseInt(s);&#xD;
+			if (!isNaN(i)) nums.push(i);&#xD;
+		});&#xD;
+		multiplyAction2.set(&quot;parameter&quot;, nums).execute(function(result) {&#xD;
+			dorado.MessageBox.alert(nums + &quot;的乘积为：&quot; + result);&#xD;
+		});&#xD;
+	}&#xD;
+});&#xD;
+</ClientEvent>
+        <Property name="caption">多参数乘法</Property>
+      </Button>
+      <AjaxAction id="getSystemInfoAction" service="ajax#getSystemInfo">
         <ClientEvent name="onSuccess">var info = self.get(&quot;returnValue&quot;);
 dorado.MessageBox.alert(&quot;product : &quot; + info.product + &quot;\n&quot; + 
 	&quot;vendor : &quot; + info.vendor + &quot;\n&quot; + 
 	&quot;version : &quot; + info.version);
 </ClientEvent>
+        <Property name="caption">获取Dorado系统信息</Property>
       </AjaxAction>
       <Button action="getSystemInfoAction"/>
     </Container>

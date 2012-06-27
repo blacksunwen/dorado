@@ -26,6 +26,11 @@ public class ProductInterceptor {
 	}
 
 	@DataProvider
+	public Product getProductById(Long id) {
+		return productDao.get(id);
+	}
+
+	@DataProvider
 	public Collection<Product> getProductsByCategoryId(Long categoryId) {
 		return productDao.find("from Product where category.id=" + categoryId);
 	}

@@ -8,9 +8,7 @@
   <View title="Lazy Loading Master-Detail">
     <DataSet id="dsCategories" dataProvider="categoryInterceptor#getAll" dataType="[Category]"/>
     <UpdateAction id="actionSave" caption="保存" dataResolver="categoryInterceptor#saveAll" icon="url(>skin>common/icons.gif) -140px -20px" successMessage="数据保存成功。">
-      <UpdateItem dataSet="dsCategories">
-        <Property name="refreshMode">value</Property>
-      </UpdateItem>
+      <UpdateItem dataSet="dsCategories"/>
     </UpdateAction>
     <SplitPanel direction="top" position="230">
       <MainControl>

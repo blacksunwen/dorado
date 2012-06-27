@@ -1,6 +1,7 @@
 package com.bstek.dorado.sample.basic;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -20,6 +21,15 @@ public class Ajax {
 	@Expose
 	public int multiply(int num1, int num2) {
 		return num1 * num2;
+	}
+
+	@Expose
+	public int multiply2(List<Integer> nums) {
+		int result = 1;
+		for (int num : nums) {
+			result *= num;
+		}
+		return result;
 	}
 
 	@Expose
