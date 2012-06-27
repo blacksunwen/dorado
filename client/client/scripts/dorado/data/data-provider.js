@@ -273,14 +273,25 @@
 		},
 		
 		doGetAsync: function(callback) {
-			var dataProviderArg = this.getDataProviderArg(), dataProvider = this.getDataProvider();
-			dataProvider.dataTypeRepository = this.dataTypeRepository;
-			dataProvider.dataType = this.dataType;
-			dataProvider.shouldFireEvent = this.shouldFireEvent;
-			if (callback) {
-				dataProvider.getResultAsync(dataProviderArg, callback);
-			} else {
-				return dataProvider.getResult(dataProviderArg);
+			var dataProvider = this.getDataProvider();
+			if (dataProvider) {
+				var dataProviderArg = this.getDataProviderArg()
+				dataProvider.dataTypeRepository = this.dataTypeRepository;
+				dataProvider.dataType = this.dataType;
+				dataProvider.shouldFireEvent = this.shouldFireEvent;
+				if (callback) {
+					dataProvider.getResultAsync(dataProviderArg, callback);
+				} else {
+					return dataProvider.getResult(dataProviderArg);
+				}
+			}
+			else {
+				if (callback) {
+					$callback(callback, true, null);
+				}
+				else {
+					return null;
+				}
 			}
 		}
 	});

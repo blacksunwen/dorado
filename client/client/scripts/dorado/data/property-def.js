@@ -494,7 +494,12 @@
 		 * @return {dorado.DataPipe} 数据管道。
 		 */
 		getDataPipe: function(entity) {
-			return new dorado.ReferenceDataPipe(this, entity);
+			if (this._dataProvider) {
+				return new dorado.ReferenceDataPipe(this, entity);
+			}
+			else {
+				return null;
+			}
 		}
 	});
 	
