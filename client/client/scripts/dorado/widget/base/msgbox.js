@@ -247,7 +247,7 @@
                         }
                     });
 
-                    dialog.addListener("onShow", function(dialog) {
+                    dialog.addListener("afterShow", function(dialog) {
                         var buttons = dialog._buttons, button;
                         if(buttons){
                             button = buttons[0];

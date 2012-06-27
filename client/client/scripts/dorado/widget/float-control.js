@@ -518,7 +518,7 @@ dorado.dequeue = function(namespace) {
 					display: ""
 				}).bringToFront();
 
-                control.fireEvent("afterShow", control);
+				control.fireEvent("afterShow", control);
 
 				if (control._shadowMode != "none" && (!dorado.Browser.msie || dorado.Browser.version >= 9)) {
 					$fly(dom).shadow({
@@ -526,7 +526,7 @@ dorado.dequeue = function(namespace) {
 					});
 				}
 				if (control._focusAfterShow) {
-					dorado.widget.setFocusedControl(control);
+					control.setFocus();
 				}
 			}
 			dorado.dequeue(control._id + SHOWHIDE_SUFFIX);
