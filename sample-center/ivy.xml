@@ -7,7 +7,7 @@
 
 	<dependencies>
 		<!-- COMPILE,RUNTIME -->
-		<dependency org="com.bstek.dorado" name="dorado-core" rev="7.1.2-SNAPSHOT" conf="compile,runtime">
+		<dependency org="com.bstek.dorado" name="dorado-core" rev="7.1.4-SNAPSHOT" conf="compile,runtime">
 			<exclude org="com.bstek.dorado" />
 		</dependency>
 		<dependency org="com.bstek.dorado" name="dorado-hibernate" rev="0.2.1-SNAPSHOT" conf="compile,runtime">
@@ -41,7 +41,7 @@
 			<exclude org="commons-validator" />
 			<exclude org="dom4j" />
 		</dependency>
-		<dependency org="org.bsdn" name="bsdn-wiki" rev="0.1.0-SNAPSHOT" conf="compile,runtime" />
+		<dependency org="org.bsdn" name="biki-core" rev="0.0.1-SNAPSHOT" conf="compile,runtime" />
 
 		<!-- RUNTIME -->
 		<dependency org="commons-dbcp" name="commons-dbcp" rev="1.4" conf="runtime" />

@@ -5,12 +5,12 @@ package com.bstek.dorado.sample;
 
 import java.util.Properties;
 
-import org.bsdn.wiki.AbstractConfiguration;
-import org.bsdn.wiki.Configurable;
-import org.bsdn.wiki.LinkBuilder;
-import org.bsdn.wiki.WikiParser;
-import org.bsdn.wiki.exception.ParserException;
-import org.bsdn.wiki.parser.ParserContext;
+import org.bsdn.biki.AbstractConfiguration;
+import org.bsdn.biki.BikiParser;
+import org.bsdn.biki.Configurable;
+import org.bsdn.biki.LinkBuilder;
+import org.bsdn.biki.exception.ParserException;
+import org.bsdn.biki.parser.ParserContext;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -37,20 +37,20 @@ public class BikiUtils {
 	};
 
 	private static LinkBuilder linkBuilder = new LinkBuilder() {
-		public String buildTopicUrl(String space, String topic, String anchor) {
+		public String buildTopicLink(String space, String topic, String anchor) {
 			return topic;
 		}
 
-		public String buildAttachmentUrl(String space, String topic,
+		public String buildAttachmentLink(String space, String topic,
 				String attachment) {
 			return attachment;
 		}
 
-		public String buildImageUrl(String space, String topic, String image) {
+		public String buildImageLink(String space, String topic, String image) {
 			return image;
 		}
 
-		public String buildUserUrl(String user) {
+		public String buildUserLink(String user) {
 			return user;
 		}
 	};
@@ -64,6 +64,6 @@ public class BikiUtils {
 	}
 
 	public static String render(String markup) throws ParserException {
-		return WikiParser.parse(createParserContext(), markup);
+		return BikiParser.parse(createParserContext(), markup);
 	}
 }
