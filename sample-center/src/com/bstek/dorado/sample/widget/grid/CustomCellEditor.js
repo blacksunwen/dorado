@@ -99,7 +99,7 @@ function getEditor(entity) {
 	} ]);
 }
 
-// @Bind #grid1.onGetCellEditor
+// @Bind #grid1.#value.onGetCellEditor
 !function(arg) {
 	var entity = arg.data, editor = getEditor(entity);
 	arg.cellEditor.setEditorControl(editor);

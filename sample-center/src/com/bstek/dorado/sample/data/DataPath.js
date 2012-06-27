@@ -24,7 +24,7 @@ function resultToString(result) {
 // @Bind #actionExecute.onExecute
 !function(dsExamples, inputDataPath, checkboxFirstResultOnly,
 		checkboxAcceptAggregation, dataPathResult) {
-	if (selectedEntities) {
+	   if (selectedEntities) {
 		selectedEntities.each(function(entity) {
 			entity.set("selected", false);
 		});

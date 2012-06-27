@@ -177,17 +177,6 @@ finally {&#xD;
           </TextEditor>
         </Editor>
       </AutoFormElement>
-      <AutoFormElement>
-        <Property name="showLabel">false</Property>
-        <Property name="showHint">false</Property>
-        <Property name="height">40</Property>
-        <Editor>
-          <Tip>
-            <Property name="text">使用RegExpValidator，其正则表达式为\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*</Property>
-            <Property name="floating">false</Property>
-          </Tip>
-        </Editor>
-      </AutoFormElement>
     </AutoForm>
     <DataGrid id="dataGridAccount">
       <Property name="dataSet">dataSetAccount</Property>
