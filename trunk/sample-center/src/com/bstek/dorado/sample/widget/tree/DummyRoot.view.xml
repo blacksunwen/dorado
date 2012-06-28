@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Model>
+    <DataType name="Root">
+      <PropertyDef name="label"/>
+      <Reference name="categories">
+        <Property name="dataProvider">main#getCategories</Property>
+        <Property name="dataType">[ExampleCategory]</Property>
+        <Property name="activeOnNewEntity">true</Property>
+      </Reference>
+    </DataType>
+    <DataType name="ExampleCategory" parent="BaseExampleCategory">
+      <Reference name="categories">
+        <Property name="dataProvider">main#getCategories</Property>
+        <Property name="dataType">[SELF]</Property>
+        <Property name="parameter">$${this.id}</Property>
+      </Reference>
+      <Reference name="examples">
+        <Property name="dataProvider">main#getExamplesByCategoryId</Property>
+        <Property name="dataType">[BaseExample]</Property>
+        <Property name="parameter">$${this.id}</Property>
+      </Reference>
+    </DataType>
+  </Model>
+  <View layout="Anchor padding:20" title="Recursive Tree">
+    <DataSet id="dsExamples">
+      <ClientEvent name="onReady">self.insert({&#xD;
+	label: &quot;&lt;Root>&quot;&#xD;
+});</ClientEvent>
+      <Property name="dataType">[Root]</Property>
+    </DataSet>
+    <DataTree id="treeExamples" height="400" width="300">
+      <Property name="dataSet">dsExamples</Property>
+      <BindingConfigs>
+        <BindingConfig>
+          <Property name="labelProperty">label</Property>
+          <Property name="expandLevel">1</Property>
+          <Property name="icon">>images/favorite.gif</Property>
+          <BindingConfig childrenProperty="categories" icon=">images/folder.gif" labelProperty="label" recursive="true">
+            <BindingConfig childrenProperty="examples" icon=">images/file.gif" labelProperty="label"/>
+          </BindingConfig>
+        </BindingConfig>
+      </BindingConfigs>
+    </DataTree>
+  </View>
+</ViewConfig>
