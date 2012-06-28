@@ -123,7 +123,7 @@
 				var def =  defs[p];
 				if (def && def.defaultValue != undefined && this['_' + p] == undefined) {
 					var dv = def.defaultValue;
-					this['_' + p] = (dv instanceof Function && !def.dontEvalDefaultValue) ? dv() : dv;
+					this['_' + p] = (typeof dv == "function" && !def.dontEvalDefaultValue) ? dv() : dv;
 				}
 			}
 		},
@@ -166,13 +166,13 @@
 				var result = this.doGet(attr.substring(0, i));
 				if (result) {
 					var subAttr = attr.substring(i + 1);
-					if (result.get instanceof Function) {
+					if (typeof result.get == "function") {
 						result = result.get(subAttr);
 					} else {
 						var as = subAttr.split('.');
 						for (var i = 0; i < as.length; i++) {
 							var a = as[i];
-							result = (result.get instanceof Function) ? result.get(a) : result[a];
+							result = (typeof result.get == "function") ? result.get(a) : result[a];
 							if (!result) break;
 						}
 					}
@@ -199,7 +199,7 @@
 					var sections = def.path.split('.'), owner = this;
 					for ( var i = 0; i < sections.length; i++) {
 						var section = sections[i];
-						if (section.charAt(0) != '_' && owner.get instanceof Function) {
+						if (section.charAt(0) != '_' && typeof owner.get == "function") {
 							owner = owner.get(section);
 						} else {
 							owner = owner[section];
@@ -305,7 +305,7 @@
 							attr : p,
 							value : v
 						};
-						if (p == "listener" || v instanceof Function) {
+						if (p == "listener" || typeof v == "function") {
 							attrInfos.insert(attrInfo);
 						} else {
 							attrInfos.push(attrInfo);
@@ -362,7 +362,7 @@
 					var section = sections[i];
 					if (section.charAt(0) != '_'
 							&& (dorado.Object.isInstanceOf(owner,
-									dorado.AttributeSupport) || owner.get instanceof Function)) {
+									dorado.AttributeSupport) || typeof owner.get == "function")) {
 						owner = owner.get(section);
 					} else {
 						owner = owner[section];
@@ -404,7 +404,7 @@
 					}
 				} else {
 					if (value instanceof Object && dorado.Object.isInstanceOf(this, dorado.EventSupport) && this.EVENTS[attr]) {
-						if (value instanceof Function) this.addListener(attr, value);
+						if (typeof value == "function") this.addListener(attr, value);
 						else if (value.listener) this.addListener(attr, value.listener, value.options);
 					} else if (!skipUnknownAttribute) {
 						throw new dorado.AttributeException("dorado.core.UnknownAttribute", attr);

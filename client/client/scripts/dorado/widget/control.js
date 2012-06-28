@@ -544,7 +544,7 @@
 							}
 						}
 					}
-					else if (component.each || component.each instanceof Function) {
+					else if (component.each || typeof component.each == "function") {
 						var self = this;
 						component.each(function(c) {
 							if (c instanceof dorado.widget.Control) {
@@ -1514,7 +1514,7 @@
 		}
 
 		var className;
-		if( type instanceof Function) {
+		if (typeof type == "function") {
 			className = type.className;
 		} else if(type) {
 			className = type + '';

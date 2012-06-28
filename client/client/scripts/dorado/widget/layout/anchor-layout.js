@@ -232,7 +232,7 @@
 					if (anchor.constructor == String) {
 						if (anchor == "previous") anchor = this.getPreviousRegion(region);
 						else anchor = null;
-					} else if (anchor instanceof Function) {
+					} else if (typeof anchor == "function") {
 						anchor = anchor.call(this, region);
 					}
 				}

@@ -43,7 +43,7 @@
 					for (var m in odef) {
 						if (odef.hasOwnProperty(m) && (overwrite || cdef[m] === undefined)) {
 							var odefv = odef[m];
-							if (odefv instanceof Function) {
+							if (typeof odefv == "function") {
 								// if (odefv.declaringClass) odefv = adapterFunction(odefv);
 								if (!odefv.declaringClass) {
 									odefv.declaringClass = subClass;
@@ -79,7 +79,7 @@
 			 }
 			 */
 			if (subp[p] === undefined || overwrite) {
-				if (override instanceof Function) {
+				if (typeof override == "function") {
 					// if (override.declaringClass) override = adapterFunction(override);
 					if (!override.declaringClass) {
 						override.declaringClass = subClass;
@@ -159,7 +159,7 @@
 			for (var m in p) {
 				if (p.hasOwnProperty(m)) {
 					var v = p[m];
-					if (v instanceof Function) {
+					if (typeof v == "function") {
 						// if (v.declaringClass) p[m] = v = adapterFunction(v);
 						if (!v.declaringClass) {
 							v.declaringClass = constr;
@@ -345,7 +345,7 @@
 		apply: function(target, source, options) {
 			if (source) {
 				for (var p in source) {
-					if (options instanceof Function && options.call(target, p, source[p]) === false) continue;
+					if (typeof options == "function" && options.call(target, p, source[p]) === false) continue;
 					if (options === false && target[p] !== undefined) continue;
 					target[p] = source[p];
 				}

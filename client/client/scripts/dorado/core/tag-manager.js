@@ -144,7 +144,7 @@ dorado.ObjectGroup = $class(/** @scope dorado.ObjectGroup.prototype */{
 			for (var j = 0; j < objects.length; j++) {
 				var object = objects[j], result;
 				if (!object) continue;
-				if (object.get instanceof Function) {
+				if (typeof object.get == "function") {
 					result = object.get(a);
 				}
 				else {
@@ -172,7 +172,7 @@ dorado.ObjectGroup = $class(/** @scope dorado.ObjectGroup.prototype */{
 		if (!this.objects) return;
 		for (var i = 0; i < this.objects.length; i++) {
 			var object = this.objects[i];
-			if (object && object.addListener instanceof Function) {
+			if (object && typeof object.addListener == "function") {
 				object.addListener(name, listener, options);
 			}
 		}
@@ -214,7 +214,7 @@ dorado.ObjectGroup = $class(/** @scope dorado.ObjectGroup.prototype */{
 			var object = this.objects[i];
 			if (object) {
 				var method = object[methodName];
-				if (method instanceof Function) method.apply(object, Array.prototype.slice.call(arguments, 1));
+				if (typeof method == "function") method.apply(object, Array.prototype.slice.call(arguments, 1));
 			}
 		}
 	},

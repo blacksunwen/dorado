@@ -503,10 +503,10 @@ var _NULL_FUNCTION = function(){};
 			return ((!options || typeof options[p] == "undefined") ? options : $packagesConfig)[p];
 		}
 		var callback;
-		if (options instanceof Function) {
+		if (typeof options == "function") {
 			callback = options;
 			options = null;
-		} else if (options instanceof Object) {
+		} else if (typeof options == "object") {
 			callback = options.callback;
 		}
 
@@ -590,7 +590,7 @@ var _NULL_FUNCTION = function(){};
 			type = options;
 			options = null;
 		}
-		else if (options instanceof Function) {
+		else if (typeof options == "function") {
 			callback = options;
 			options = null;
 		} else if (options instanceof Object) {

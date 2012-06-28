@@ -138,7 +138,7 @@
 		var clsOwner = clsOwner || this;
 		this.hover(function() {
 			if ($DomUtils.isDragging()) return;
-			if (fn instanceof Function && !fn.call(this)) return;
+			if (typeof fn == "function" && !fn.call(this)) return;
 			clsOwner.addClass(cls);
 		}, function() {
 			clsOwner.removeClass(cls);
@@ -161,7 +161,7 @@
 	$.fn.addClassOnFocus = function(cls, clsOwner, fn) {
 		var clsOwner = clsOwner || this;
 		this.focus(function() {
-			if (fn instanceof Function && !fn.call(this)) return;
+			if (typeof fn == "function" && !fn.call(this)) return;
 			clsOwner.addClass(cls);
 		});
 		this.blur(function() {
@@ -185,7 +185,7 @@
 	$.fn.addClassOnClick = function(cls, clsOwner, fn) {
 		var clsOwner = clsOwner || this;
 		this.mousedown(function() {
-			if (fn instanceof Function && !fn.call(this)) return;
+			if (typeof fn == "function" && !fn.call(this)) return;
 			clsOwner.addClass(cls);
 			$(document).one("mouseup", function() {
 				clsOwner.removeClass(cls);
@@ -205,7 +205,7 @@
 	$.fn.repeatOnClick = function(fn, interval) {
 		this.mousedown(function() {
 			var timer;
-			if (fn instanceof Function) {
+			if (typeof fn == "function") {
                 fn.apply(null, []);
 				timer = setInterval(fn, interval || 100);
 			}

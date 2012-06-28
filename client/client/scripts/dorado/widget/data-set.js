@@ -663,7 +663,7 @@
 		 * @see dorado.widget.DataSet#getDataAsync
 		 */
 		flushAsync: function(options) {
-			if (options && options instanceof Function) {
+			if (options && typeof options == "function") {
 				options = {
 					callback: options
 				};

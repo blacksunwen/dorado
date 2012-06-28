@@ -168,6 +168,7 @@ public class DefaultExpressionHandler implements ExpressionHandler {
 		if (engine == null) {
 			engine = new JexlEngine();
 			engine.setCache(50);
+			engine.setSilent(true);
 			threadLocal.set(engine);
 		}
 		return engine;

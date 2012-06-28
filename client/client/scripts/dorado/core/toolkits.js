@@ -89,7 +89,7 @@ dorado.Toolkits = {
 			var n = ns[i], constr = this.typesRegistry[n + '.' + (name || "Default")];
 			if (!constr) {
 				var typeTranslator = this.typeTranslators[n];
-				if (typeTranslator && typeTranslator instanceof Function) {
+				if (typeTranslator && typeof typeTranslator == "function") {
 					constr = typeTranslator(name);
 				}
 			}
@@ -172,7 +172,7 @@ dorado.Toolkits = {
 				type = typeTranslator + type;
 			}
 			if (!constr) {
-				if (typeTranslator && typeTranslator instanceof Function) {
+				if (typeTranslator && typeof typeTranslator == "function") {
 					constr = typeTranslator(type);
 				} 
 				if (!constr) {

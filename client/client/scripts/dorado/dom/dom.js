@@ -262,7 +262,7 @@
 						default:
 							if (attrName.substr(0, 2) == "on") { // event?
 								var event = attrName.substr(2);
-								if (!(attrValue instanceof Function)) attrValue = new Function(attrValue);
+								if (typeof attrValue != "function") attrValue = new Function(attrValue);
 								jqEl.bind(event, attrValue);
 							} else {
 								el[attrName] = attrValue;
@@ -297,7 +297,7 @@
 				parentEl.appendChild(el);
 			}
 			
-			if (template instanceof Function) {
+			if (typeof template == "function") {
 				template = template(arg || window);
 			}
 			
@@ -401,7 +401,7 @@
 				if (fn && fn(child) === false) child = null;
 			}
 			if (!child) {
-				child = (tagName instanceof Function) ? tagName(index) : ((tagName.constructor == String) ? document.createElement(tagName) : this.xCreate(tagName));
+				child = (typeof tagName == "function") ? tagName(index) : ((tagName.constructor == String) ? document.createElement(tagName) : this.xCreate(tagName));
 				(refChild) ? parentNode.insertBefore(child, refChild) : parentNode.appendChild(child);
 			}
 			return child;

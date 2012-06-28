@@ -25,7 +25,7 @@
 			
 			options.createDraggingInfo = function(evt) {
 				var draggingInfo = originOptions.draggingInfo;
-				if (draggingInfo instanceof Function) draggingInfo = draggingInfo.call(this, this, options);
+				if (typeof draggingInfo == "function") draggingInfo = draggingInfo.call(this, this, options);
 				if (!draggingInfo) {
 					if (doradoDraggable) draggingInfo = doradoDraggable.createDraggingInfo(this, options);
 					if (!draggingInfo) draggingInfo = new dorado.DraggingInfo();
@@ -39,7 +39,7 @@
 					var revert = originOptions.revert;
 					if (revert == null) {
 						revert = !dropped;
-					} else if (revert instanceof Function) {
+					} else if (typeof revert == "function") {
 						revert = revert.call(this, dropped);
 					}
 					return revert;
@@ -49,7 +49,7 @@
 			if (typeof originOptions.helper != "string") {
 				options.helper = function(evt) {
 					var helper;
-					if (originOptions.helper instanceof Function) {
+					if (typeof originOptions.helper == "function") {
 						helper = originOptions.helper.apply(this, arguments);
 					}
 					if (doradoDraggable) helper = doradoDraggable.onGetDraggingIndicator(helper, evt, this);
@@ -196,7 +196,7 @@
 			options.accept = function(draggable) {
 				var accept = originOptions.accept;
 				if (accept) {
-					if (accept instanceof Function) {
+					if (typeof accept == "function") {
 						accept = accept.apply(this, arguments);
 					} else {
 						accept = draggable.is(accept);

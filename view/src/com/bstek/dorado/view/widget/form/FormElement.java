@@ -32,6 +32,7 @@ public class FormElement extends Control implements FormConfig,
 	private String hint;
 	private String property;
 	private String trigger;
+	private boolean editable = true;
 	private String labelSeparator = ":";
 	private boolean showLabel = true;
 	private int labelWidth = 80;
@@ -132,6 +133,15 @@ public class FormElement extends Control implements FormConfig,
 
 	public void setTrigger(String trigger) {
 		this.trigger = trigger;
+	}
+
+	@ClientProperty(escapeValue = "true")
+	public boolean isEditable() {
+		return editable;
+	}
+
+	public void setEditable(boolean editable) {
+		this.editable = editable;
 	}
 
 	@ClientProperty(escapeValue = ":")

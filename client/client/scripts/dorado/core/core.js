@@ -197,7 +197,7 @@ dorado.Core = {
 	 * })(); // should say "hello"
 	 */
 	scopify: function(scope, fn) {
-		if (fn instanceof Function) {
+		if (typeof fn == "function") {
 			return function() {
 				return fn.apply(scope, arguments);
 			};
@@ -271,7 +271,7 @@ dorado.Core = {
 	
 		function doClone(obj, deep) {
 			if (obj == null || typeof(obj) != "object") return obj;
-			if (obj.clone instanceof Function) {
+			if (typeof obj.clone == "function") {
 				return obj.clone(deep);
 			} else {
 				var constr = obj.constructor;
