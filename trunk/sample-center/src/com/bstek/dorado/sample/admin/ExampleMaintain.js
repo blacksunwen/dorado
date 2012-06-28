@@ -177,7 +177,7 @@ function refreshActions() {
 }
 
 // @Bind #treeExamples.onContextMenu
-!function(menuTree) {
+!function(arg, menuTree) {
 	menuTree.show({
 		position : {
 			left : arg.event.pageX,

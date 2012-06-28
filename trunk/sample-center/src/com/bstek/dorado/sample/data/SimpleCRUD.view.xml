@@ -8,22 +8,34 @@
     </DataType>
   </Model>
   <View title="Product Maintain">
-    <DataSet id="dsProducts" dataProvider="simpleCRUD#getAll" dataType="[ProductType]" pageSize="10">
+    <DataSet id="dsProducts" pageSize="10">
       <Property name="readOnly">false</Property>
+      <Property name="dataProvider">simpleCRUD#getAll</Property>
+      <Property name="dataType">[ProductType]</Property>
     </DataSet>
-    <UpdateAction id="actionSave" caption="Save" successMessage="保存成功！" dataResolver="simpleCRUD#saveAll" icon="url(>skin>common/icons.gif) -140px -20px">
-      <UpdateItem dataSet="dsProducts">
+    <UpdateAction id="actionSave">
+      <Property name="icon">url(>skin>common/icons.gif) -140px -20px</Property>
+      <Property name="successMessage">保存成功！</Property>
+      <Property name="dataResolver">simpleCRUD#saveAll</Property>
+      <Property name="caption">Save</Property>
+      <UpdateItem>
         <Property name="dataPath">!DIRTY_TREE</Property>
+        <Property name="dataSet">dsProducts</Property>
       </UpdateItem>
     </UpdateAction>
     <ToolBar layoutConstraint="top">
-      <DataPilot dataSet="dsProducts" itemCodes="pages,|,+,-,x">
+      <DataPilot>
         <Property name="ignored">false</Property>
+        <Property name="dataSet">dsProducts</Property>
+        <Property name="itemCodes">pages,|,+,-,x</Property>
       </DataPilot>
       <Separator/>
-      <ToolBarButton action="actionSave"/>
+      <ToolBarButton>
+        <Property name="action">actionSave</Property>
+      </ToolBarButton>
     </ToolBar>
-    <DataGrid dataSet="dsProducts">
+    <DataGrid>
+      <Property name="dataSet">dsProducts</Property>
       <IndicatorColumn/>
     </DataGrid>
   </View>

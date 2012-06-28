@@ -6,17 +6,32 @@
     </DataType>
   </Model>
   <View title="Master-Detail">
-    <DataSet id="dsCategories" dataProvider="categoryInterceptor#getAll" dataType="[Category]"/>
-    <UpdateAction id="actionSave" caption="保存" dataResolver="categoryInterceptor#saveAll" icon="url(>skin>common/icons.gif) -140px -20px" successMessage="数据保存成功。">
-      <UpdateItem dataSet="dsCategories"/>
+    <DataSet id="dsCategories">
+      <Property name="dataProvider">categoryInterceptor#getAll</Property>
+      <Property name="dataType">[Category]</Property>
+    </DataSet>
+    <UpdateAction id="actionSave">
+      <Property name="caption">保存</Property>
+      <Property name="dataResolver">categoryInterceptor#saveAll</Property>
+      <Property name="icon">url(>skin>common/icons.gif) -140px -20px</Property>
+      <Property name="successMessage">数据保存成功。</Property>
+      <UpdateItem>
+        <Property name="dataSet">dsCategories</Property>
+      </UpdateItem>
     </UpdateAction>
     <SplitPanel direction="top" position="230">
       <MainControl>
         <Container>
           <ToolBar layoutConstraint="top">
-            <DataPilot dataPath="#.products" dataSet="dsCategories" itemCodes="+,-,x"/>
+            <DataPilot>
+              <Property name="dataPath">#.products</Property>
+              <Property name="dataSet">dsCategories</Property>
+              <Property name="itemCodes">+,-,x</Property>
+            </DataPilot>
           </ToolBar>
-          <DataGrid dataPath="#.products" dataSet="dsCategories">
+          <DataGrid>
+            <Property name="dataPath">#.products</Property>
+            <Property name="dataSet">dsCategories</Property>
             <IndicatorColumn/>
           </DataGrid>
         </Container>
@@ -24,9 +39,14 @@
       <SideControl>
         <Container>
           <ToolBar layoutConstraint="top">
-            <DataPilot dataSet="dsCategories" itemCodes="pages,|,+,-,x"/>
+            <DataPilot>
+              <Property name="itemCodes">pages,|,+,-,x</Property>
+              <Property name="dataSet">dsCategories</Property>
+            </DataPilot>
             <Separator/>
-            <ToolBarButton action="actionSave"/>
+            <ToolBarButton>
+              <Property name="action">actionSave</Property>
+            </ToolBarButton>
           </ToolBar>
           <DataGrid dataSet="dsCategories">
             <Property name="selectionMode">none</Property>

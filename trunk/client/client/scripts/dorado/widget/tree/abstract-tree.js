@@ -835,7 +835,11 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 				}
 			}
 		}
-		return $invokeSuper.call(this, [draggingInfo, evt, targetObject, oldInsertMode, refObject, itemDom]);
+		if (itemDom) {
+			return $invokeSuper.call(this, [draggingInfo, evt, targetObject, oldInsertMode, refObject, itemDom]);
+		} else {
+			return false;
+		}
 	},
 
 	showDraggingInsertIndicator: function(draggingInfo, insertMode, itemDom) {

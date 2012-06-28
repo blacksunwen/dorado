@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ViewConfig>
   <Arguments>
-    <Argument name="numberStyle" value="padding:8px 18px 8px 18px; color:white; background:#004080; fontSize:16pt; fontWeight:bold"/>
+    <Argument name="numberStyle" value="padding:4px 18px 12px 18px; color:white; background:#004080; fontSize:16pt; fontWeight:bold"/>
     <Argument name="sumStyle" value="color: gray; fontSize:16pt; fontWeight:bold"/>
   </Arguments>
   <View layout="Anchor padding:20" title="拖拽  2">

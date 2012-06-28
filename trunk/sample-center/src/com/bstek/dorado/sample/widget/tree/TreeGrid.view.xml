@@ -18,10 +18,16 @@
     </ToolBar>
     <DataTreeGrid dataSet="dsEmployees" treeColumn="firstName">
       <Property name="dynaRowHeight">true</Property>
+      <Property name="draggable">true</Property>
+      <Property name="droppable">true</Property>
+      <Property name="dropMode">onOrInsertItems</Property>
+      <Property name="dragTags">employee</Property>
+      <Property name="droppableTags">employee</Property>
       <BindingConfigs>
         <BindingConfig childrenProperty="underlings" expandLevel="3" labelProperty="firstName" recursive="true"/>
       </BindingConfigs>
       <Columns>
+        <IndicatorColumn/>
         <DataColumn property="firstName" width="160"/>
         <DataColumn property="lastName"/>
         <DataColumn property="sex"/>

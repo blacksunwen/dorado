@@ -352,9 +352,8 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				}
 				return value;
 			}
-
+			
 			var value = this._data[property];
-			//var loadingSkipForNewEntity = false;;
 			if (value === undefined) {
 				if (propertyDef) {
 					var dataPipeWrapper = null;
@@ -364,9 +363,6 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 							if (this.state != dorado.Entity.STATE_NEW || propertyDef._activeOnNewEntity) {
 								pipe = propertyDef.getDataPipe(this);
 							}
-							// else {
-							//	loadingSkipForNewEntity = true;
-							// }
 						} else {
 							pipe = propertyDef.getDataPipe(this);
 						}
@@ -437,15 +433,15 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 						}
 					}
 
-					if (dorado.Entity.ALWAYS_RETURN_VALID_ENTITY_LIST) {
+					if ((value == undefined || value == null) && dorado.Entity.ALWAYS_RETURN_VALID_ENTITY_LIST) {
 						var aggregationDataType = propertyDef.get("dataType");
-						if (value == null && aggregationDataType instanceof dorado.AggregationDataType) {
+						if (aggregationDataType instanceof dorado.AggregationDataType) {
 							value = transferAndReplaceIf(this, propertyDef, [], false);
+							value.isNull = true;;
 							
 							if (dataPipeWrapper) {
 								dataPipeWrapper.value = value;
 							} else if (loadMode != "never") {
-								// if (!loadingSkipForNewEntity) value.mock = true;
 								this._data[property] = value;
 							}
 						}
@@ -461,21 +457,18 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 						value = pipe.get();
 					}
 				}
-			} else if (propertyDef && value) {
-				value = transferAndReplaceIf(this, propertyDef, value, true);
-				
-				if (value === null && dorado.Entity.ALWAYS_RETURN_VALID_ENTITY_LIST_FOR_INSERT) {
-					var aggregationDataType = propertyDef.get("dataType");
-					if (value == null && aggregationDataType instanceof dorado.AggregationDataType) {
-						value = transferAndReplaceIf(this, propertyDef, [], false);
-						
-						if (dataPipeWrapper) {
-							dataPipeWrapper.value = value;
-						} else if (loadMode != "never") {
-							// if (!loadingSkipForNewEntity) value.mock = true;
+			} else if (propertyDef) {
+				if (value === null) {
+					if (dorado.Entity.ALWAYS_RETURN_VALID_ENTITY_LIST) {
+						var aggregationDataType = propertyDef.get("dataType");
+						if (aggregationDataType instanceof dorado.AggregationDataType) {
+							value = transferAndReplaceIf(this, propertyDef, [], false);
+							value.isNull = true;
 							this._data[property] = value;
 						}
 					}
+				} else {
+					value = transferAndReplaceIf(this, propertyDef, value, true);
 				}
 			}
 
@@ -1829,7 +1822,6 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 	});
 
 	dorado.Entity.ALWAYS_RETURN_VALID_ENTITY_LIST = true;
-	dorado.Entity.ALWAYS_RETURN_VALID_ENTITY_LIST_FOR_INSERT = false;
 
 	var dummyEntityMap = {};
 

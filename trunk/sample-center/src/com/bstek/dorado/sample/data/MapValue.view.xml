@@ -10,13 +10,24 @@
     </DataType>
   </Model>
   <View title="Employee Maintain">
-    <DataSet id="dsEmployees" dataProvider="employeeInterceptor#getAll" dataType="[Employee]"/>
-    <DataGrid dataSet="dsEmployees">
-      <DataColumn property="firstName"/>
-      <DataColumn property="lastName"/>
-      <DataColumn property="sex"/>
-      <DataColumn property="titleOfCourtesy">
+    <DataSet id="dsEmployees">
+      <Property name="dataProvider">employeeInterceptor#getAll</Property>
+      <Property name="dataType">[Employee]</Property>
+    </DataSet>
+    <DataGrid>
+      <Property name="dataSet">dsEmployees</Property>
+      <DataColumn>
+        <Property name="property">firstName</Property>
+      </DataColumn>
+      <DataColumn>
+        <Property name="property">lastName</Property>
+      </DataColumn>
+      <DataColumn>
+        <Property name="property">sex</Property>
+      </DataColumn>
+      <DataColumn>
         <Property name="width"></Property>
+        <Property name="property">titleOfCourtesy</Property>
       </DataColumn>
     </DataGrid>
   </View>

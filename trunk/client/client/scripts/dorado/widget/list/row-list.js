@@ -751,7 +751,12 @@
 					targetObject = refObject;
 				}
 			}
-			return this.doOnDraggingSourceMove(draggingInfo, evt, targetObject, insertMode, refObject, itemDom);
+			if (itemDom) {
+				return this.doOnDraggingSourceMove(draggingInfo, evt, targetObject, insertMode, refObject, itemDom);
+			}
+			else {
+				return false;
+			}
 		},
 		
 		onDraggingSourceOut: function(draggingInfo, evt) {
