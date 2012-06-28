@@ -79,6 +79,6 @@ public class EmployeeInterceptor {
 	@DataResolver
 	@Transactional
 	public void saveAll(Collection<Employee> employees) {
-		employeeDao.persistEntities(employees);
+//		employeeDao.persistEntities(employees);
 	}
 }

@@ -462,7 +462,13 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 				if (b === true) {
 					switch (evt.keyCode || evt.which) {
 						case 8: {	// Backspace
-							return false;
+							if (evt.srcElement) {
+								var nodeName = evt.srcElement.nodeName.toLowerCase();
+								if (nodeName != 'input' && nodeName != "textarea") {
+									return false;
+								}
+							}
+							break;
 						}
 						case 9: {	// Tab
 							var c = (evt.shiftKey) ? dorado.widget.findPreviousFocusableControl() : dorado.widget.findNextFocusableControl();

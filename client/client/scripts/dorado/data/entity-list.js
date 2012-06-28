@@ -592,6 +592,7 @@
 			if (entity.state != dorado.Entity.STATE_DELETED) this.changeEntityCount(page, 1);
 			if (entity.state != dorado.Entity.STATE_MOVED) entity.setState(dorado.Entity.STATE_NEW);
 			this.timestamp = dorado.Core.getTimestamp();
+			if (this.isNull) delete this.isNull;
 			
 			if (dataType) dataType.fireEvent("onInsert", dataType, eventArg);
 			this.sendMessage(dorado.EntityList._MESSAGE_INSERTED, eventArg);
@@ -884,6 +885,8 @@
 		 * @return {Object[]} 得到的JSON数组。
 		 */
 		toJSON: function(options, context) {
+			if (this.isNull) return null;
+			
 			var result = [];
 			var generateDataType = (options) ? options.generateDataType : false;
 			var entityFilter = (options) ? options.entityFilter : null;
@@ -966,6 +969,8 @@
 		},
 		
 		clone: function(deep) {
+			if (this.isNull) return null;
+			
 			var cloned = new dorado.EntityList(null, this.dataTypeRepository, this.dataType);
 			for (var it = this.iterator(); it.hasNext();) {
 				var entity = it.next();
@@ -990,9 +995,6 @@
 		},
 		
 		insert: function(data, insertMode, refData) {
-			// if (this.entityList.mock) {
-			//	throw new dorado.ResourceException("dorado.data.CannotModifyMockEntityList");
-			// }
 			$invokeSuper.call(this, arguments);
 			data.page = this;
 			data.parent = this.entityList;
