@@ -751,9 +751,15 @@ function open_flash_chart_data() {
 			}
 		},
 		EVENTS: /** @scope dorado.widget.ofc.Element.prototype */{
-			/**
-			 * @event
-			 */
+            /**
+             * 当图表中的元素被点击时触发的事件。
+             * @param {Object} self 事件的发起者，即组件本身。
+             * @param {Object} arg 事件参数。
+             * @param {int} arg.index 点击的元素的索引。
+             * @param {dorado.Entity} arg.entity 点击的元素绑定的Entity。
+             * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+             * @event
+             */
 			onClick: {}
 		},
 		getValue: function(index) {
@@ -787,8 +793,19 @@ function open_flash_chart_data() {
 		},
 		doExportEvents: function() {
 			var element = this;
-			window["dorado_ofc_onclick_" + element._eventIndex] = function() {
-				element.fireEvent("onClick", element);
+			window["dorado_ofc_onclick_" + element._eventIndex] = function(index) {
+                var arg = {
+                    index: index
+                };
+                if (index !== undefined) {
+                    var data = element.getBindingData();
+                    if (data instanceof dorado.Entity) {
+                        if (index == 0) arg.entity = data;
+                    } else if (data instanceof dorado.EntityList) {
+                        arg.entity = data.toArray()[index];
+                    }
+                }
+				element.fireEvent("onClick", element, arg);
 			};
 		},
 		eventsToJSON: function(object) {
