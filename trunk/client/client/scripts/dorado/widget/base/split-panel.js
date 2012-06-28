@@ -90,7 +90,10 @@
 			 * @type int
 			 */
 			position: {
-				defaultValue: 100
+				defaultValue: 100,
+                setter: function(value) {
+                    this._position = value;
+                }
 			},
 
 			/**
@@ -169,31 +172,33 @@
 
 			panel._previewOpened = true;
 
+            var position = panel.getPixelPosition();
+
 			switch (direction) {
 				case "left":
 					animConfig = {
 						left: collapseBarWidth
 					};
-					sidePanelCss.left = panel._position * -1;
+					sidePanelCss.left = position * -1;
 					break;
 
 				case "top":
 					animConfig = {
 						top: collapseBarHeight
 					};
-					sidePanelCss.top = panel._position * -1;
+					sidePanelCss.top = position * -1;
 					break;
 
 				case "right":
 					animConfig = {
-						left: width - panel._position - collapseBarWidth
+						left: width - position - collapseBarWidth
 					};
 					sidePanelCss.left = width;
 					break;
 
 				case "bottom":
 					animConfig = {
-						top: height - panel._position - collapseBarHeight
+						top: height - position - collapseBarHeight
 					};
 					sidePanelCss.top = height;
 					break;
@@ -223,16 +228,18 @@
 
 			panel._previewOpened = false;
 
+            var position = panel.getPixelPosition();
+
 			switch (direction) {
 				case "left":
 					animConfig = {
-						left: panel._position * -1 + collapseBarWidth
+						left: position * -1 + collapseBarWidth
 					};
 					break;
 
 				case "top":
 					animConfig = {
-						top: panel._position * -1 + collapseBarHeight
+						top: position * -1 + collapseBarHeight
 					};
 					break;
 
@@ -397,18 +404,19 @@
                     }
                 };
 
-				var animConfig;
+				var animConfig, position = panel.getPixelPosition();
+
 				if (collapsed) {
 					switch (direction) {
 						case "left":
 							animConfig = {
-								left: panel._position * -1
+								left: position * -1
 							};
 							break;
 
 						case "top":
 							animConfig = {
-								top: panel._position * -1
+								top: position * -1
 							};
 							break;
 
@@ -443,26 +451,26 @@
 								animConfig = {
 									left: 0
 								};
-								sidePanelCss.left = panel._position * -1;
+								sidePanelCss.left = position * -1;
 								break;
 
 							case "top":
 								animConfig = {
 									top: 0
 								};
-								sidePanelCss.top = panel._position * -1;
+								sidePanelCss.top = position * -1;
 								break;
 
 							case "right":
 								animConfig = {
-									left: width - panel._position
+									left: width - position
 								};
 								sidePanelCss.left = width;
 								break;
 
 							case "bottom":
 								animConfig = {
-									top: height - panel._position
+									top: height - position
 								};
 								sidePanelCss.top = height;
 								break;
@@ -484,6 +492,18 @@
 				}
 			}
 		},
+
+        getPixelPosition: function() {
+            var panel = this, position = panel._position, dir = panel._direction;
+            if (typeof position == "string") {
+                if (position.indexOf("%") == -1) {
+                    position = parseInt(position, 10);
+                } else {
+                    position = (dir == "left" || dir == "right" ? panel.getRealWidth() : panel.getRealHeight()) * parseInt(position.replace("%", ""), 10) / 100;
+                }
+            }
+            return position;
+        },
 
 		doOnAttachToDocument: function() {
 			var panel = this, sideControl = panel._sideControl, mainControl = panel._mainControl, doms = panel._doms;
@@ -528,6 +548,8 @@
 
 			var sidePanelStyle, splitterStyle, mainPanelStyle, mainControlStyle, sideControlStyle, collapseBarStyle,
 				collapseBarWidth = 0, collapseBarHeight = 0;
+
+            var position = panel.getPixelPosition();
 
 			if (panel._collpaseable && panel._collapsed) {
 				if (previewable) {
@@ -612,10 +634,12 @@
 				}
 				$fly(doms.splitter).css(splitterStyle);
 
+
+
 				switch (direction) {
 					case "left":
 						sidePanelStyle = {
-							left: panel._position * -1,
+							left: position * -1,
 							top: 0,
 							height: height
 						};
@@ -630,7 +654,7 @@
 							height: height
 						};
 						sideControlStyle = {
-							width: panel._position,
+							width: position,
 							height: height
 						};
 						break;
@@ -651,13 +675,13 @@
 							height: height
 						};
 						sideControlStyle = {
-							width: panel._position,
+							width: position,
 							height: height
 						};
 						break;
 					case "top":
 						sidePanelStyle = {
-							top: panel._position * -1,
+							top: position * -1,
 							left: 0,
 							width: width
 						};
@@ -673,7 +697,7 @@
 						};
 						sideControlStyle = {
 							width: width,
-							height: panel._position
+							height: position
 						};
 						break;
 					case "bottom":
@@ -694,7 +718,7 @@
 						};
 						sideControlStyle = {
 							width: width,
-							height: panel._position
+							height: position
 						};
 						break;
 				}
@@ -717,25 +741,25 @@
 				switch(panel._direction) {
 					case "left":
 						splitterStyle = {
-							left: panel._position,
+							left: position,
 							top: 0
 						};
 						break;
 					case "right":
 						splitterStyle = {
-							left: width - panel._position - splitterWidth,
+							left: width - position - splitterWidth,
 							top: 0
 						};
 						break;
 					case "top":
 						splitterStyle = {
-							top: panel._position,
+							top: position,
 							left: 0
 						};
 						break;
 					case "bottom":
 						splitterStyle = {
-							top: height - panel._position - splitterHeight,
+							top: height - position - splitterHeight,
 							left: 0
 						};
 						break;
@@ -747,44 +771,44 @@
 						sidePanelStyle = {
 							left: 0,
 							top: 0,
-							width: panel._position,
+							width: position,
 							height: height
 						};
 						sideControlStyle = {
-							width: panel._position,
+							width: position,
 							height: height
 						};
 						mainPanelStyle = {
-							left: panel._position + splitterWidth,
+							left: position + splitterWidth,
 							top: 0,
-							width: width - panel._position - splitterWidth,
+							width: width - position - splitterWidth,
 							height: height
 						};
 						mainControlStyle = {
-							width: width - panel._position - splitterWidth,
+							width: width - position - splitterWidth,
 							height: height
 						};
 						break;
 
 					case "right":
 						sidePanelStyle = {
-							left: width - panel._position,
+							left: width - position,
 							top: 0,
-							width: panel._position,
+							width: position,
 							height: height
 						};
 						sideControlStyle = {
-							width: panel._position,
+							width: position,
 							height: height
 						};
 						mainPanelStyle = {
 							left: 0,
 							top: 0,
-							width: width - panel._position - splitterWidth,
+							width: width - position - splitterWidth,
 							height: height
 						};
 						mainControlStyle = {
-							width: width - panel._position - splitterWidth,
+							width: width - position - splitterWidth,
 							height: height
 						};
 						break;
@@ -794,44 +818,44 @@
 							top: 0,
 							left: 0,
 							width: width,
-							height: panel._position
+							height: position
 						};
 						sideControlStyle = {
 							width: width,
-							height: panel._position
+							height: position
 						};
 						mainPanelStyle = {
-							top: panel._position + splitterHeight,
+							top: position + splitterHeight,
 							left: 0,
 							width: width,
-							height: height - panel._position - splitterHeight
+							height: height - position - splitterHeight
 						};
 						mainControlStyle = {
 							width: width,
-							height: height - panel._position - splitterHeight
+							height: height - position - splitterHeight
 						};
 						break;
 
 					case "bottom":
 						sidePanelStyle = {
-							top: height - panel._position,
+							top: height - position,
 							left: 0,
 							width: width,
-							height: panel._position
+							height: position
 						};
 						sideControlStyle = {
 							width: width,
-							height: panel._position
+							height: position
 						};
 						mainPanelStyle = {
 							top: 0,
 							left: 0,
 							width: width,
-							height: height - panel._position - splitterHeight
+							height: height - position - splitterHeight
 						};
 						mainControlStyle = {
 							width: width,
-							height: height - panel._position - splitterHeight
+							height: height - position - splitterHeight
 						};
 						break;
 				}
