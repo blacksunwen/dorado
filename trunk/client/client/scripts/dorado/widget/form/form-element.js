@@ -66,13 +66,6 @@
 			},
 			
 			/**
-			 * 关联的编辑框触发器。下拉框也是一种特殊的编辑框触发器。
-			 * @type dorado.widget.EditorTrigger
-			 * @attribute
-			 */
-			trigger: {},
-			
-			/**
 			 * 绑定的数据实体。
 			 * @type Object|dorado.Entity
 			 * @attribute
@@ -271,7 +264,7 @@
 					}
 					
 					var def = attrs[attr];
-					if (def.writeOnly || (!attrWatcher.getWritingTimes(attr) &&!(def.defaultValue instanceof Function))) {
+					if (def.writeOnly || (!attrWatcher.getWritingTimes(attr) && typeof def.defaultValue != "function")) {
 						continue;
 					}
 					
@@ -507,6 +500,24 @@
 			},
 			
 			/**
+			 * 关联的编辑框触发器。下拉框也是一种特殊的编辑框触发器。
+			 * @type dorado.widget.EditorTrigger
+			 * @attribute
+			 */
+			trigger: {},
+			
+			/**
+			 * 关联的文本编辑器是否可以编辑。
+			 * 此属性仅在关联的编辑器为TextEditor或TextArea是有效，用于定义文本编辑器是否可以编辑。因为有时我们希望仅允许用户通过下拉框进行选择。
+			 * @type boolean
+			 * @default true
+			 * @attribute
+			 */
+			editable: {
+				defaultValue: true
+			},
+			
+			/**
 			 * 内部使用的编辑器的值。 此属性相当于一个访问内部使用的编辑器中值的快捷方式。
 			 * @type Object
 			 * @attribute
@@ -730,6 +741,7 @@
 		
 		initEditorConfig: function(config) {
 			if (this._trigger) config.trigger = this._trigger;
+			if (!this._editable) config.editable = false;
 			if (this._readOnly) config.readOnly = this._readOnly || this._realReadOnly;
 			if (this._dataSet && this._property) {
 				config.dataSet = this._dataSet;

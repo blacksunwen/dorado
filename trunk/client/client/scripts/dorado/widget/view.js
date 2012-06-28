@@ -339,7 +339,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 		var comps = this.DEFAULT_COMPONENTS;
 		if (!comps || !comps[id]) return;
 		var comp = comps[id];
-		if (comp instanceof Function) comp = comp(view);
+		if (typeof comp == "function") comp = comp(view);
 		return comp;
 	};
 	
@@ -416,7 +416,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 						task.loadAsync(callback);
 					}
 				});
-			} else if (task instanceof Function) {
+			} else if (typeof task == "function") {
 				simTasks.push({
 					callback: dorado._NULL_FUNCTION,
 					run: task
@@ -461,6 +461,9 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			} else {
 				if (b === true) {
 					switch (evt.keyCode || evt.which) {
+						case 8: {	// Backspace
+							return false;
+						}
 						case 9: {	// Tab
 							var c = (evt.shiftKey) ? dorado.widget.findPreviousFocusableControl() : dorado.widget.findNextFocusableControl();
 							if (c) c.setFocus();

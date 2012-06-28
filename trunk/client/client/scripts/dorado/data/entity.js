@@ -126,7 +126,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			this._propertyDefs = dataType._propertyDefs;
 			this._propertyDefs.each(function(pd) {
 				if (SHOULD_PROCESS_DEFAULT_VALUE && pd._defaultValue != undefined && data[pd._name] == undefined) {
-					data[pd._name] = (pd._defaultValue instanceof Function) ? pd._defaultValue.call(this) : pd._defaultValue;
+					data[pd._name] = (typeof pd._defaultValue == "function") ? pd._defaultValue.call(this) : pd._defaultValue;
 				}
 
 				if (data[pd._name] == null) {
@@ -147,8 +147,9 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		} else {
 			this._propertyDefs = null;
 		}
-		if (this.acceptUnknownProperty == null)
+		if (this.acceptUnknownProperty == null) {
 			this.acceptUnknownProperty = (dataType) ? dataType._acceptUnknownProperty : true;
+		}
 	};
 	/**
 	 * 实体对象的状态常量 - 无状态。
@@ -462,6 +463,20 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				}
 			} else if (propertyDef && value) {
 				value = transferAndReplaceIf(this, propertyDef, value, true);
+				
+				if (value === null && dorado.Entity.ALWAYS_RETURN_VALID_ENTITY_LIST_FOR_INSERT) {
+					var aggregationDataType = propertyDef.get("dataType");
+					if (value == null && aggregationDataType instanceof dorado.AggregationDataType) {
+						value = transferAndReplaceIf(this, propertyDef, [], false);
+						
+						if (dataPipeWrapper) {
+							dataPipeWrapper.value = value;
+						} else if (loadMode != "never") {
+							// if (!loadingSkipForNewEntity) value.mock = true;
+							this._data[property] = value;
+						}
+					}
+				}
 			}
 
 			if (propertyDef && propertyDef.getListenerCount("onGet")) {
@@ -1814,6 +1829,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 	});
 
 	dorado.Entity.ALWAYS_RETURN_VALID_ENTITY_LIST = true;
+	dorado.Entity.ALWAYS_RETURN_VALID_ENTITY_LIST_FOR_INSERT = false;
 
 	var dummyEntityMap = {};
 

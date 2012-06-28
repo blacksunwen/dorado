@@ -121,7 +121,7 @@
 			if( typeof argument == "string" && argument.indexOf("call:") == 0) {
 				var func = argument.substring(5);
 				func = window[func];
-				if( func instanceof Function) {
+				if (typeof func == "function") {
 					return func(data);
 				}
 			}

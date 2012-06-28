@@ -25,7 +25,7 @@ dorado.Renderer.NONE_RENDERER = new dorado.Renderer();
 dorado.Renderer.render = function(renderer, dom, arg) {
 	if (renderer instanceof dorado.Renderer) {
 		renderer.render(dom, arg);
-	} else if (renderer instanceof Function) {
+	} else if (typeof renderer == "function") {
 		renderer(dom, arg);
 	}
 };

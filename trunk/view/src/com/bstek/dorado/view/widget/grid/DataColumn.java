@@ -28,6 +28,7 @@ public class DataColumn extends AbstractDataColumn {
 	private String summaryType;
 	private String summaryRenderer;
 	private String trigger;
+	private boolean editable = true;
 	private SortState sortState = SortState.none;
 	private boolean wrappable;
 	private boolean filterable = true;
@@ -124,6 +125,15 @@ public class DataColumn extends AbstractDataColumn {
 
 	public void setTrigger(String trigger) {
 		this.trigger = trigger;
+	}
+
+	@ClientProperty(escapeValue = "true")
+	public boolean isEditable() {
+		return editable;
+	}
+
+	public void setEditable(boolean editable) {
+		this.editable = editable;
 	}
 
 	@ClientProperty(escapeValue = "none")

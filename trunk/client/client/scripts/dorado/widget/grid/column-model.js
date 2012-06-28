@@ -1441,12 +1441,25 @@
 				var dataType = column.get("dataType"), dtCode = dataType ? dataType._code : -1;
 				var trigger = column.get("trigger"), displayFormat = column.get("displayFormat"), typeFormat = column.get("typeFormat");
 				if (!dtCode || (pd && pd._mapping)) dataType = undefined;
+				
+				if (!trigger) {
+					if (pd && pd._mapping) {
+						trigger = new dorado.widget.AutoMappingDropDown({
+							items: pd._mapping
+						});
+					} else if (dtCode == dorado.DataType.DATE) {
+						trigger = "defaultDateDropDown";
+					} else if (dtCode == dorado.DataType.DATETIME) {
+						trigger = "defaultDateTimeDropDown";
+					}
+				}
 			
 				editorControl.set({
 					dataType: dataType,
 					displayFormat: displayFormat,
 					typeFormat: typeFormat,
-					trigger: trigger
+					trigger: trigger,
+					editable: column._editable
 				}, {
 					skipUnknownAttribute: true,
 					tryNextOnError: true,
@@ -1887,6 +1900,17 @@
 			 */
 			trigger: {
 				skipRefresh: true
+			},
+			
+			/**
+			 * 单元格的文本编辑器是否可以编辑。
+			 * 此属性仅在单元格编辑器为TextEditor或TextArea是有效，用于定义文本编辑器是否可以编辑。因为有时我们希望仅允许用户通过下拉框进行选择。
+			 * @type boolean
+			 * @default true
+			 * @attribute
+			 */
+			editable: {
+				defaultValue: true
 			},
 			
 			/**

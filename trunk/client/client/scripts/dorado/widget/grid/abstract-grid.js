@@ -246,7 +246,7 @@
 			var columns = this._summaryColumns;
 			for (var i = 0; i < columns.length; i++) {
 				var col = columns[i], cal = col.calculator;
-				summary[col.property] = (cal instanceof Function) ? 0 : cal.getInitialValue();
+				summary[col.property] = (typeof cal == "function") ? 0 : cal.getInitialValue();
 			}
 		},
 
@@ -254,7 +254,7 @@
 			var columns = this._summaryColumns;
 			for (var i = 0; i < columns.length; i++) {
 				var col = columns[i], cal = col.calculator;
-				summary[col.property] = ((cal instanceof Function) ? cal : cal.accumulate)(summary[col.property], entity, col.property);
+				summary[col.property] = ((typeof cal == "function") ? cal : cal.accumulate)(summary[col.property], entity, col.property);
 			}
 		},
 
@@ -262,7 +262,7 @@
 			var columns = this._summaryColumns;
 			for (var i = 0; i < columns.length; i++) {
 				var col = columns[i], cal = col.calculator;
-				if (!(cal instanceof Function)) summary[col.property] = cal.getFinalValue(summary[col.property]);
+				if (typeof cal != "function") summary[col.property] = cal.getFinalValue(summary[col.property]);
 			}
 			delete summary.$expired;
 		},
@@ -548,7 +548,7 @@
 	};
 	var dp = ["setStartIndex", "setItemDomSize", "setScrollPos", "setItems"];
 	dorado.Object.eachProperty(dorado.widget.list.ItemModel.prototype, function(p, v) {
-		if (v instanceof Function && p != "constructor") {
+		if (typeof v == "function" && p != "constructor") {
 			if (dp.indexOf(p) >= 0) {
 				overrides[p] = dorado._NULL_FUNCTION;
 			} else {

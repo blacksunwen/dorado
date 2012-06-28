@@ -593,7 +593,7 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 		} else if(options.jsonData) {
 			data = dorado.JSON.stringify(options.jsonData, {
 				replacer : function(key, value) {
-					return ( value instanceof Function) ? value.call(this) : value;
+					return (typeof value == "function") ? value.call(this) : value;
 				}
 			});
 		} else if(options.parameter) {

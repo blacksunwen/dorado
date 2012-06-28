@@ -79,7 +79,7 @@
 		evaluate: function(template) {
 		
 			function toJSON(obj) {
-				if (obj instanceof Function) {
+				if (typeof obj == "function") {
 					obj = obj.call(dorado.$this || this);
 				}
 				else if (obj instanceof dorado.util.Map) {
@@ -98,7 +98,7 @@
 						json[i] = obj;
 					}
 				} else if (obj instanceof Object && !(obj instanceof Date)) {
-					if (obj.toJSON instanceof Function) {
+					if (typeof obj.toJSON == "function") {
 						json = obj.toJSON();
 					} else {
 						json = {};
