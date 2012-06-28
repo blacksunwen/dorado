@@ -7,6 +7,10 @@
         <meta name="apple-mobile-web-app-capable" content="yes" />
 		<script type="text/javascript" src="../../include-all.js"></script>
         <style>
+            .d-section-caption-bar{
+                font-size: 25px;
+                height: 50px;
+            }
             .d-accordion .test .d-section-caption-bar{
                 background: white;
             }
@@ -71,7 +75,7 @@
                 caption: "set section visible",
                 listener: {
                     onClick: function(){
-                        var section = accordion._sections[1];
+                        var section = accordion.getSection(1);
                         section.set("visible", !section._visible);
                     }
                 }
@@ -79,7 +83,7 @@
                 caption: "set section disabled",
                 listener: {
                     onClick: function(){
-                        var section = accordion._sections[2];
+                        var section = accordion.getSection(2);
                         section.set("disabled", !section._disabled);
                     }
                 }
@@ -110,6 +114,7 @@
         var accordion = new dorado.widget.Accordion({
             animate: true,
             sections: [{
+                name: "file",
                 caption: "文件",
                 icon: "del.gif",
                 //disabled: true,
