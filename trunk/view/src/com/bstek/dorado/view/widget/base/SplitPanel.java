@@ -24,7 +24,7 @@ public class SplitPanel extends Control {
 			this);
 	private InnerElementReference<Control> mainControlRef = new InnerElementReference<Control>(
 			this);
-	private int position = 100;
+	private String position = "100";
 	private int minPosition;
 	private int maxPosition;
 	private boolean resizeable = true;
@@ -64,11 +64,11 @@ public class SplitPanel extends Control {
 
 	@ClientProperty(escapeValue = "100")
 	@IdeProperty(highlight = 1)
-	public int getPosition() {
+	public String getPosition() {
 		return position;
 	}
 
-	public void setPosition(int position) {
+	public void setPosition(String position) {
 		this.position = position;
 	}
 
