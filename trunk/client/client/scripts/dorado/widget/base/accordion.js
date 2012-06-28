@@ -17,7 +17,14 @@ dorado.widget.Section = $extend(dorado.widget.Control, /** @scope dorado.widget.
 		className: {
 			defaultValue: "d-section"
 		},
-		
+
+        /**
+         * Section的name，可以不指定。但如果需要通过代码获得该菜单项，则必须指定。
+         * @type String
+         * @attribute
+         */
+        name: {},
+
 		/**
 		 * Section的标题栏使用的标题。
 		 * @attribute
@@ -267,12 +274,22 @@ dorado.widget.Accordion = $extend(dorado.widget.Control, /** @scope dorado.widge
 		var c = attr.charAt(0);
 		if (c == '#' || c == '&') {
 			var name = attr.substring(1);
-			return this.getTab(name);
+			return this.getSection(name);
 		} else {
 			return $invokeSuper.call(this, [attr]);
 		}
 	},
-	
+
+    /**
+     * 根据索引、name属性来取得某个Section。
+     * @param {int|String} name 要取得的Seciton的索引或者name。
+     * @return {dorado.widget.Section} 取得的Section
+     */
+    getSection: function(name) {
+        if (this._sections) return this._sections.get(name);
+        return null;
+    },
+
 	doSetCurrentSection: function(section, animate) {
 		var accordion = this, lastCurrent = accordion._currentSection, newCurrent = section;
 		
@@ -332,15 +349,15 @@ dorado.widget.Accordion = $extend(dorado.widget.Control, /** @scope dorado.widge
 			if (currentSection) {
 				startIndex = sections.indexOf(currentSection);
 			}
-			for (i = startIndex + 1, j = sections.length; i < j; i++) {
-				section = sections[i];
+			for (i = startIndex + 1, j = sections.size; i < j; i++) {
+				section = sections.get(i);
 				if (section && section._visible && section._expandable && !section._disabled) {
 					accordion.doSetCurrentSection(section);
 					return section;
 				}
 			}
 			for (i = startIndex - 1; i >= 0; i--) {
-				section = sections[i];
+				section = sections.get(i);
 				if (section && section._visible && section._expandable && !section._disabled) {
 					accordion.doSetCurrentSection(section);
 					return section;
@@ -354,8 +371,8 @@ dorado.widget.Accordion = $extend(dorado.widget.Control, /** @scope dorado.widge
 		var accordion = this, sections = accordion._sections, result = 0;
 		if (sections) {
 			var section;
-			for (var i = 0, j = sections.length; i < j; i++) {
-				section = sections[i];
+			for (var i = 0, j = sections.size; i < j; i++) {
+				section = sections.get(i);
 				if (section && section._visible) {
 					result++;
 				}
@@ -372,16 +389,18 @@ dorado.widget.Accordion = $extend(dorado.widget.Control, /** @scope dorado.widge
 	addSection: function(section, index) {
 		var accordion = this, sections = accordion._sections, refDom;
 		if (!sections) {
-			accordion._sections = sections = [];
+			accordion._sections = sections = new dorado.util.KeyedArray(function(value) {
+                return value._name;
+            });
 		}
 		if (typeof section == "object" && section.constructor == Object.prototype.constructor) {
 			section = new dorado.widget.Section(section);
 		}
 		if (typeof index == "number") {
-			refDom = sections[index]._dom;
+			refDom = sections.get(index)._dom;
 			sections.insert(section, index);
 		} else {
-			sections.push(section);
+			sections.insert(section);
 		}
 		if (accordion._rendered) {
 			section.render(accordion._dom, refDom);
@@ -400,7 +419,7 @@ dorado.widget.Accordion = $extend(dorado.widget.Control, /** @scope dorado.widge
 		var accordion = this, sections = accordion._sections;
 		if (sections) {
 			if (typeof section == "number") {
-				section = sections[section];
+				section = sections.get(section);
 			}
 			if (section instanceof dorado.widget.Section) {
 				if (accordion._rendered) {
@@ -426,8 +445,8 @@ dorado.widget.Accordion = $extend(dorado.widget.Control, /** @scope dorado.widge
 	clearSections: function() {
 		var accordion = this, sections = accordion._sections, section;
 		if (sections) {
-			for (var i = 0, j = sections.length; i < j; i++) {
-				section = sections[i];
+			for (var i = 0, j = sections.size; i < j; i++) {
+				section = sections.get(i);
 				accordion.unregisterInnerControl(section);
 				section.destroy();
 			}
@@ -455,8 +474,8 @@ dorado.widget.Accordion = $extend(dorado.widget.Control, /** @scope dorado.widge
 		dom.className = "i-accordion " + accordion._className;
 		
 		if (sections) {
-			for (var i = 0, j = sections.length; i < j; i++) {
-				section = sections[i];
+			for (var i = 0, j = sections.size; i < j; i++) {
+				section = sections.get(i);
 				section.render(dom);
 				accordion.registerInnerControl(section);
 				accordion.bindAction(section);
@@ -484,8 +503,8 @@ dorado.widget.Accordion = $extend(dorado.widget.Control, /** @scope dorado.widge
 		
 		if (sections) {
 			var section, control, sectionCt;
-			for (var i = 0, j = sections.length; i < j; i++) {
-				section = sections[i];
+			for (var i = 0, j = sections.size; i < j; i++) {
+				section = sections.get(i);
 				sectionCt = section._doms.container;
 				
 				if (currentSection != section) {
