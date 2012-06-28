@@ -10,7 +10,7 @@
             
             var splitPanel = new dorado.widget.SplitPanel({
             	collapsed: true,
-            	position: 200,
+            	position: "20%",
             	previewable: true,
             	sideControl: {
                     $type: "Panel",
@@ -79,6 +79,7 @@
             		}
             	}),
             	mainControl: new dorado.widget.SplitPanel({
+                    position: "50%",
             		sideControl: new dorado.widget.Panel({
             			style: {
             				border: "1px #000000 solid"
@@ -98,7 +99,8 @@
             			previewable: true,
             			maxPosition: 200,
             			minPosition: 50,
-            			direction: "right"
+            			direction: "right",
+                        position: "50%"
             		}),
             		previewable: true,
             		direction: "bottom",
