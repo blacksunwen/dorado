@@ -211,6 +211,7 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 				caption: item._caption,
 				visible: item._visible,
 				submenu: item._menu,
+                action: item._action,
 				listener: {
 					onClick: function() {
 						item.fireEvent("onClick", item);
