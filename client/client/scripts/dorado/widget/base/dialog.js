@@ -661,7 +661,7 @@
 			$invokeSuper.call(dialog, arguments);
 
 			if (!dialog._maximized) {
-                if (dialog._left !== undefined || dialog._top !== undefined) {
+                if (dialog._left !== undefined && dialog._top !== undefined) {
                     $fly(dom).css({ left: dialog._left, top: dialog._top });
                 }
 			}
