@@ -364,13 +364,13 @@
 							panel.set("position", position.left);
 							break;
 						case "right":
-							panel.set("position", $fly(dom).width() - position.left);
+							panel.set("position", $fly(dom).width() - position.left - $fly(doms.splitter).outerWidth(true));
 							break;
 						case "top":
 							panel.set("position", position.top);
 							break;
 						case "bottom":
-							panel.set("position", $fly(dom).height() - position.top);
+							panel.set("position", $fly(dom).height() - position.top - $fly(doms.splitter).outerHeight(true));
 							break;
 					}
 				}
