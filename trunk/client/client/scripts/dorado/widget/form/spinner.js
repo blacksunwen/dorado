@@ -227,7 +227,9 @@
 			var spinner = this;
 			var value = parseInt(spinner.get("value"), 10);
 			if (!isNaN(value)) {
-				spinner.set("value", value + spinner._step);
+				value += spinner._step;
+				if (this._max !== undefined && value > this._max) return;
+				spinner.set("value", value);
 				if (spinner._postValueOnSpin) spinner.post();
 			}
 		},
@@ -236,7 +238,9 @@
 			var spinner = this;
 			var value = parseInt(spinner.get("value"), 10);
 			if (!isNaN(value)) {
-				spinner.set("value", value - spinner._step);
+				value -= spinner._step;
+				if (this._min !== undefined && value < this._min) return;
+				spinner.set("value", value);
 				if (spinner._postValueOnSpin) spinner.post();
 			}
 		},
@@ -526,7 +530,7 @@
 			var value = spinner.doGetSlotValue(currentSlotIndex) + spinner._step;
 			var config = spinner.slotConfigs[currentSlotIndex], range = config.range || [], minValue = range[0], maxValue = range[1];
 			if (value == null) value = minValue;
-			else if (maxValue != null && value > maxValue) value = minValue;
+			else if (maxValue != null && value > maxValue) return;
 			spinner.doSetSlotValue(currentSlotIndex, value || 0);
 			if (spinner._postValueOnSpin) spinner.post();
 		},
@@ -544,7 +548,7 @@
 			var value = spinner.doGetSlotValue(currentSlotIndex) - spinner._step;
 			var config = spinner.slotConfigs[currentSlotIndex], range = config.range || [], minValue = range[0], maxValue = range[1];
 			if (value == null) value = maxValue;
-			if (minValue != null && value < minValue) value = maxValue;
+			if (minValue != null && value < minValue) return;
 			spinner.doSetSlotValue(currentSlotIndex, value || 0);
 			if (spinner._postValueOnSpin) spinner.post();
 		},

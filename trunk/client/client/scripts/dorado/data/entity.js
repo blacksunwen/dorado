@@ -320,6 +320,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 
 				if ((value instanceof dorado.Entity || value instanceof dorado.EntityList) && value.parent != this) {
 					value.parent = entity;
+					value.parentProperty = property;
 					value._setObserver(entity._observer);
 				}
 
@@ -850,6 +851,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					throw new dorado.ResourceException("dorado.data.ValueNotFree", (( value instanceof dorado.Entity) ? "Entity" : "EntityList"));
 				}
 				value.parent = this;
+				value.parentProperty = property;
 				value._setObserver(this._observer);
 
 				propertyInfo.isDirty = true;
