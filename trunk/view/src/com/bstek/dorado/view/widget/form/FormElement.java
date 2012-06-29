@@ -48,7 +48,7 @@ public class FormElement extends Control implements FormConfig,
 	private boolean readOnly;
 	private String formProfile;
 
-	private String editorType = "TextEditor";
+	private String editorType;
 	private InnerElementReference<Control> editorRef = new InnerElementReference<Control>(
 			this);
 
@@ -267,7 +267,6 @@ public class FormElement extends Control implements FormConfig,
 		this.formProfile = formProfile;
 	}
 
-	@ClientProperty(escapeValue = "TextEditor")
 	@IdeProperty(
 			highlight = 1,
 			enumValues = "TextEditor,PasswordEditor,TextArea,CheckBox,RadioGroup,DataLabel,NumberSpinner")
