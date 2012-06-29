@@ -786,7 +786,7 @@
 
 	function parseBoolean(data, argument) {
 		if(argument == null) {
-			if(data == null) return false;
+			if (data == null) return false;
 			if(data.constructor == String) {
 				return (data.toLowerCase() == "true");
 			} else {
@@ -840,7 +840,7 @@
 		 * @return {boolean} 转换后得到的逻辑对象。
 		 */
 		parse : function(data, argument) {
-			if(data == null) return null;
+			if (data === undefined || data === null) return null;
 			return parseBoolean(data, argument);
 		}
 	});
