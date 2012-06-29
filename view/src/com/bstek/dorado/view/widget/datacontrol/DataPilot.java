@@ -19,7 +19,7 @@ import com.bstek.dorado.view.annotation.Widget;
 public class DataPilot extends AbstractDataControl {
 	private String itemCodes;
 
-	@IdeProperty(enumValues = "pages,|<,<,>,>|,goto,info,+,-,x,|", highlight = 1)
+	@IdeProperty(enumValues = "pages,|<,<,>,>|,goto,pageSize,info,+,-,x,|", highlight = 1)
 	public String getItemCodes() {
 		return itemCodes;
 	}
