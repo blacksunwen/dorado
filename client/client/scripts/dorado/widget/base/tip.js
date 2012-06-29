@@ -282,7 +282,7 @@
 
 			$fly(dom).prop("className", "i-tip " + cls + " d-shadow-drop");
 			
-			$tipText = $fly(doms.tipText);
+			var $tipText = $fly(doms.tipText);
 			if (content) {
 				if (typeof content == "string") {
 					$tipText.html(content);
