@@ -6,12 +6,7 @@
 	
 	Date.prototype.toJSON = function(key) {
 		return this.getFullYear() + '-' + f(this.getMonth() + 1) + '-' + f(this.getDate()) + 'T' +
-		f(this.getHours()) +
-		':' +
-		f(this.getMinutes()) +
-		':' +
-		f(this.getSeconds()) +
-		'Z';
+			f(this.getHours()) + ':' + f(this.getMinutes()) + ':' + f(this.getSeconds()) + 'Z';
 	};
 	
 	/**
@@ -81,8 +76,7 @@
 			function toJSON(obj) {
 				if (typeof obj == "function") {
 					obj = obj.call(dorado.$this || this);
-				}
-				else if (obj instanceof dorado.util.Map) {
+				} else if (obj instanceof dorado.util.Map) {
 					obj = obj.toJSON();
 				}
 				
@@ -92,10 +86,9 @@
 						generateDataType: true
 					});
 				} else if (obj instanceof Array) {
-					json = obj;
-					for (var i = 0; i < json.length; i++) {
-						obj = toJSON(json[i]);
-						json[i] = obj;
+					json = [];
+					for (var i = 0; i < obj.length; i++) {
+						json.push(toJSON(obj[i]));
 					}
 				} else if (obj instanceof Object && !(obj instanceof Date)) {
 					if (typeof obj.toJSON == "function") {
