@@ -794,7 +794,15 @@
 			catch (e) {
 				if (e instanceof dorado.widget.UpdateAction.ValidateException) {
 					dorado.Exception.removeException(e);
-					showExceptionDialog(e);
+					var eventArg = {
+						success: false,
+						error: e,
+						processDefault: true
+					};
+					this.fireEvent("onFailure", this, eventArg);
+					if (eventArg.processDefault) {
+						showExceptionDialog(e);
+					}
 					throw new dorado.AbortException();
 				}
 				else {
