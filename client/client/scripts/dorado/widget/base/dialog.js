@@ -537,7 +537,9 @@
 							minimizeable: dialog._minimizeable,
 							maximizeable: dialog._maximizeable,
 							closeable: dialog._closeable,
-							collapseable: dialog._collapseable
+							collapseable: dialog._collapseable,
+                            left: dialog._left,
+                            top: dialog._top
 						});
 
 						fakeDialog.refresh();
