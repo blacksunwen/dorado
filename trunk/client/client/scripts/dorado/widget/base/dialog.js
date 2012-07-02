@@ -662,7 +662,8 @@
 			
 			$invokeSuper.call(dialog, arguments);
 
-			if (!dialog._maximized) {
+            //TODO delete this http://www.bsdn.org/projects/dorado7/issue/dorado7-495
+            if (false && !dialog._maximized) {
                 if (dialog._left !== undefined && dialog._top !== undefined) {
                     $fly(dom).css({ left: dialog._left, top: dialog._top });
                 }
