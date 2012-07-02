@@ -16,6 +16,7 @@
 dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope dorado.widget.CheckBox.prototype */ {
 	$className: "dorado.widget.CheckBox",
 	_inherentClassName: "i-checkbox",
+	
 	ATTRIBUTES: /** @scope dorado.widget.CheckBox.prototype */ {
 		className: {
 			defaultValue: "d-checkbox"
@@ -81,13 +82,16 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 		value: {
 			defaultValue: false,
 			getter: function() {
-				return this._checked ? this._onValue : (this._checked == null ? this._mixedValue : this._offValue);
+				return this._checked ? this._onValue : ((this._checked === null || this._checked === undefined) ? this._mixedValue : this._offValue);
 			},
 			setter: function(v) {
-				if (this._mixedValue == v) {
-					this._checked = null;
+				if (this._onValue === v) {
+					this._checked = true;
+				} 
+				else if (this._offValue === v) {
+					this._checked = false;
 				} else {
-					this._checked = (this._onValue == v);
+					this._checked = null;
 				}
 			}
 		},
@@ -140,7 +144,7 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 		
 		checkBox._lastPostChecked = checkBox._checked;
 		if (checkBox._triState) {
-			if (checkBox._checked == null) {
+			if (checkBox._checked === null || checkBox._checked === undefined) {
 				checkBox._checked = true;
 			} else if (checkBox._checked === true) {
 				checkBox._checked = false;
@@ -281,7 +285,7 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 				$fly(dom).removeClass("d-checkbox-checked-hover d-checkbox-unchecked-hover d-checkbox-halfchecked-hover");
 				if (checkBox._checked) {
 					$fly(dom).addClass("d-checkbox-checked");
-				} else if (checkBox._checked == null) {
+				} else if (checkBox._checked === null || checkBox._checked === undefined) {
 					$fly(dom).addClass("d-checkbox-halfchecked");
 				} else {
 					$fly(dom).addClass("d-checkbox-unchecked");

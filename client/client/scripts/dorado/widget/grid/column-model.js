@@ -1006,7 +1006,7 @@
 			checkbox._cellEntity = entity;
 			checkbox._cellColumn = column;
 			checkbox.disableListeners();
-			checkbox.set("value", !!value);
+			checkbox.set("value", value);
 			checkbox.refresh();
 			checkbox.enableListeners();
 		}
