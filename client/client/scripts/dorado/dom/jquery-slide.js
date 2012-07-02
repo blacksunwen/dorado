@@ -273,6 +273,12 @@
 			start = options.start, animConfig, animElement = element, animEl, delayFunc, inited = false;
 
 		delayFunc = function(direction) {
+
+            if (start) {
+                if (type == "in") $fly(element).css("display", "");
+                start.call(element);
+            }
+
 			$fly(element).disableShadow().dockable(type == "in" ? slideInDockDirMap[direction] : slideOutDockDirMap[direction], safe);
 
 			animConfig = getAnimateConfig(type, direction, element, safe);
@@ -282,9 +288,6 @@
 				animEl.css(prop, value[0]);
 			}
 
-			if (start) {
-				start.call(element);
-			}
 			inited = true;
 		};
 
