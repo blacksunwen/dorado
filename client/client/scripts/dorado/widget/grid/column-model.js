@@ -1279,6 +1279,8 @@
 		 */
 		resize: function() {
 			var dom = this.getDom(), cell = this.cell;
+			if (!dom ||!cell) return;
+			
 			var offset = $fly(cell).offset();
 			var l = offset.left, t = offset.top, w = cell.offsetWidth, h = cell.offsetHeight;
 			if (this.minWidth && this.minWidth > w) w = this.minWidth;

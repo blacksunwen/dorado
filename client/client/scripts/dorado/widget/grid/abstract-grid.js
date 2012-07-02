@@ -1112,7 +1112,7 @@
 				if (this._divScroll) {
 					this._divScroll.scrollTop -= delta * this._rowHeight * 2;
 				}
-				if (this._currentCellEditor) this._currentCellEditor.hide();
+				this.hideCellEditor();
 				return false;
 			}));
 			return dom;
@@ -1671,7 +1671,7 @@
 				case 27: // esc
 					if (this._currentCellEditor) {
 						this._editing = false;
-						this._currentCellEditor.hide(false);
+						this.hideCellEditor(false);
 						dorado.widget.onControlGainedFocus(this);
 					}
 					break;
@@ -1680,14 +1680,14 @@
 					break;
 			}
 			if (this._editing && !this._currentCellEditor && this._currentColumn) {
-				this.showColumnEditor(this._currentColumn);
+				this.showCellEditor(this._currentColumn);
 			}
 			return retValue;
 		},
 
 		doInnerGridSetCurrentRow: function(innerGrid, itemId) {
 			if (this._processingCurrentRow) return;
-			if (this._currentCellEditor) this._currentCellEditor.hide();
+			this.hideCellEditor();
 
 			this._processingCurrentRow = true, ig = this._innerGrid;
 			if (this._domMode == 2) (innerGrid == ig ? this._fixedInnerGrid : ig).setCurrentRowByItemId(itemId);
@@ -1731,7 +1731,7 @@
 					column = this._columnsInfo.idMap[cell.colId];
 
 					if (this._currentColumn == column && column) {
-						this.showColumnEditor(column);
+						this.showCellEditor(column);
 					} else {
 						this.setCurrentColumn(column);
 					}
@@ -1781,17 +1781,14 @@
 		doOnFocus: function() {
 			if (this._currentColumn) {
 				dorado.Toolkits.setDelayedAction(this, "$showEditorTimerId", function() {
-					if (this._currentColumn) this.showColumnEditor(this._currentColumn);
+					if (this._currentColumn) this.showCellEditor(this._currentColumn);
 				}, 300);
 			}
 		},
 
 		doOnBlur: function() {
 			if (this._currentCell) $fly(this._currentCell).removeClass("current-cell");
-			if (this._currentCellEditor) {
-				this._currentCellEditor.hide();
-				delete this._currentCellEditor;
-			}
+			this.hideCellEditor();
 		},
 
 		shouldEditing: function(column) {
@@ -1802,16 +1799,23 @@
 		setCurrentColumn: function(column) {
 			if (this._currentColumn != column) {
 				if (this._currentCell) $fly(this._currentCell).removeClass("current-cell");
-				if (this._currentCellEditor) this._currentCellEditor.hide();
+				this.hideCellEditor();
 				this._currentColumn = column;
-				if (column) this.showColumnEditor(column);
+				if (column) this.showCellEditor(column);
 			}
 		},
 
-		showColumnEditor: function(column) {
+		showCellEditor: function(column) {
 			if (this._disableCellEditor) return;
-			if (this._domMode == 2) this._fixedInnerGrid.showColumnEditor(column);
-			this._innerGrid.showColumnEditor(column);
+			if (this._domMode == 2) this._fixedInnerGrid.showCellEditor(column);
+			this._innerGrid.showCellEditor(column);
+		},
+		
+		hideCellEditor: function(post) {
+			if (this._currentCellEditor) {
+				this._currentCellEditor.hide(post);
+				delete this._currentCellEditor;
+			}
 		},
 
 		getCellEditor: function(column, entity) {
@@ -2465,7 +2469,7 @@
 		
 		onDragStart: function() {
 			$invokeSuper.call(this, arguments);
-			if (this._currentCellEditor) this._currentCellEditor.hide();	
+			this.hideCellEditor();
 		},
 		
 		findItemDomByPosition: function(pos) {
@@ -3252,7 +3256,7 @@
 			grid._processingSetHoverRow = false;
 		},
 
-		showColumnEditor: function(column) {
+		showCellEditor: function(column) {
 			var grid = this.grid;
 			var row = this._currentRow;
 			if (!row) return;
@@ -3507,7 +3511,7 @@
 					var column = $fly(handler).data("column");
 					var grid = column.get("grid");
 					if (grid._currentCellEditor) {
-						grid._currentCellEditor.hide();
+						grid.hideCellEditor();
 						dorado.widget.onControlGainedFocus(grid);
 					}
 					
