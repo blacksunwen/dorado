@@ -507,13 +507,13 @@
 		processDataSetMessage: function(messageCode, arg, data) {
 			switch (messageCode) {
 				case dorado.widget.DataSet.MESSAGE_REFRESH:{
-					if (this._currentCellEditor) this._currentCellEditor.hide();
+					this.hideCellEditor();
 					if (this._itemModel.groups) this.setDirtyMode(true);
 					else this.refresh(true);
 					break;
 				}
 				case dorado.widget.DataSet.MESSAGE_CURRENT_CHANGED:{
-					if (this._currentCellEditor) this._currentCellEditor.hide();
+					this.hideCellEditor();
 					if (arg.entityList == this._itemModel.getItems()) {
 						var oldCurrentEntity = this.getCurrentEntity();
 						if (!this._supportsPaging && (!oldCurrentEntity || oldCurrentEntity.page.pageNo != arg.entityList.pageNo)) {
