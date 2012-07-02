@@ -420,10 +420,5 @@ dorado.touch.Dialog = $extend(dorado.touch.FloatPanel, /** @scope dorado.widget.
         var dialog = this;
 
         $invokeSuper.call(dialog, arguments);
-
-        //TODO delete this http://www.bsdn.org/projects/dorado7/issue/dorado7-495
-        if (false && !dialog._maximized) {
-            $fly(dom).css({ left: dialog._left || 0, top: dialog._top || 0 });
-        }
     }
 });
