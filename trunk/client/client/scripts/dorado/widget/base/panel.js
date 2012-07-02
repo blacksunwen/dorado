@@ -169,11 +169,20 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 	 * @private
 	 */
 	doSetCollapsed: function(collapsed, animate) {
-	
+        function beforeCollapsedChange(panel, collapsed) {
+            panel._doOnResize(collapsed);
+            var buttons = panel._buttons;
+            if (buttons) {
+                for (var i = 0, j = buttons.length; i < j; i++) {
+                    var button = buttons[i];
+                    button.doOnResize();
+                }
+            }
+        }
 		function onCollapsedChange(panel, collapsed) {
-			panel._doOnResize(collapsed);
-			panel.setContentContainerVisible(!collapsed);
-			panel.notifySizeChange();
+            panel._doOnResize(collapsed);
+            panel.setContentContainerVisible(!collapsed);
+            panel.notifySizeChange();
 			panel.fireEvent("onCollapsedChange", panel);
 		}
 		
@@ -186,6 +195,7 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 				collapseButton.set("iconClass", collapsed ? ("expand-icon-" + direction) : ("collapse-icon-" + direction));
 			}
 			panel._parent.doSetCollapsed(collapsed, function() {
+                beforeCollapsedChange(panel, collapsed);
 				onCollapsedChange(panel, collapsed);
 			}, true);
 		} else {
@@ -199,6 +209,7 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
                         if (collapseButton) {
                             collapseButton.set("iconClass", "expand-icon");
                         }
+                        beforeCollapsedChange(panel, collapsed);
                         onCollapsedChange(panel, collapsed);
                         $fly(doms.body).css("display", "none");
                     } else {
@@ -207,6 +218,7 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
                             start: function() {
                                 orginalZIndex = dom.style.zIndex;
                                 $fly(dom).bringToFront();
+                                beforeCollapsedChange(panel, collapsed);
                             },
                             step: function() {
                             },
@@ -227,6 +239,7 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
                         if (collapseButton) {
                             collapseButton.set("iconClass", "collapse-icon");
                         }
+                        beforeCollapsedChange(panel, collapsed);
                         onCollapsedChange(panel, collapsed);
                         $fly(doms.body).css("display", "");
                     } else {
@@ -235,6 +248,7 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
                             start: function() {
                                 orginalZIndex = dom.style.zIndex;
                                 $fly(dom).bringToFront().removeClass("i-panel-collapsed " + panel._className + "-collapsed");
+                                beforeCollapsedChange(panel, collapsed);
                             },
                             step: function() {
                             },

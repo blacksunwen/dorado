@@ -168,14 +168,14 @@ dorado.widget.GroupBox = $extend(dorado.widget.AbstractPanel, /** @scope dorado.
 					content: [
 						{
 							tagName: "div",
-							className: "bar-right"
-						},
-						{
-							tagName: "div",
 							className: "caption",
 							content: groupBox._caption,
 							contextKey: "caption"
-						}
+						},
+                        {
+                            tagName: "div",
+                            className: "bar-right"
+                        }
 					]
 				},
 				{
