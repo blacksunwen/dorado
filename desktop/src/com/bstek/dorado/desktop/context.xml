@@ -7,6 +7,5 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 		<property name="configLocation" value="com/bstek/dorado/desktop/packages-config.xml" />
 	</bean>
 	<bean id="com.bstek.dorado.desktop.Flash" parent="dorado.defaultComponentTypeRegister" />
-	<bean id="com.bstek.dorado.desktop.Taskbar" parent="dorado.defaultComponentTypeRegister" />
 	<bean id="com.bstek.dorado.desktop.Shell" parent="dorado.defaultComponentTypeRegister" />
 </beans>
