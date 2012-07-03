@@ -85,7 +85,7 @@
 				logs = logger._logs = [];
 			}
 
-			msg = dorado.Debugger.format2HTML(msg);
+			msg = dorado.Debugger.format2HTML("" + msg);
 
 			logs.push(level + ":" + msg);
 
