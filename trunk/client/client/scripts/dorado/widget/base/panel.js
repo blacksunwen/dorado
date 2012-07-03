@@ -171,6 +171,15 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 	doSetCollapsed: function(collapsed, animate) {
         function beforeCollapsedChange(panel, collapsed) {
             panel._doOnResize(collapsed);
+
+
+            if (panel._parent && collapsed == false) {
+                var layout = panel._parent._layout;
+                if(layout && layout instanceof dorado.widget.layout.AnchorLayout && layout._attached && layout.onControlSizeChange) {
+                    layout.onControlSizeChange(panel);
+                }
+            }
+
             var buttons = panel._buttons;
             if (buttons) {
                 for (var i = 0, j = buttons.length; i < j; i++) {

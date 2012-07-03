@@ -358,7 +358,11 @@
         doOnAttachToDocument: function() {
             $invokeSuper.call(this, arguments);
             if (this._scrollbar) {
-                this._iscroll = new iScroll(this.getContentContainer());
+                this._iscroll = new iScroll(this.getContentContainer(), {
+                    momentum: false,
+                    useScrollAttribute: true,
+                    useTransform: false
+                });
             }
         },
 
