@@ -286,8 +286,7 @@
 			var targetStyle = {
 				position: "absolute",
 				left: left,
-				top: top,
-				zIndex: 100
+				top: top
 			};
 			if (options.modifySize !== false) {
 				backupStyle.width = dom.style.width;
@@ -302,7 +301,7 @@
 				width: self.outerWidth(),
 				height: self.outerHeight()
 			});
-			self.css(targetStyle);
+			self.css(targetStyle).bringToFront();
 
 			var callback = options.callback;
 			if (callback) {
