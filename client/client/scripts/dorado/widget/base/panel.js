@@ -172,7 +172,6 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
         function beforeCollapsedChange(panel, collapsed) {
             panel._doOnResize(collapsed);
 
-
             if (panel._parent && collapsed == false) {
                 var layout = panel._parent._layout;
                 if(layout && layout instanceof dorado.widget.layout.AnchorLayout && layout._attached && layout.onControlSizeChange) {
