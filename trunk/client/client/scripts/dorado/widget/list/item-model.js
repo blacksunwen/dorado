@@ -253,7 +253,7 @@
 					op = (typeof value == "string") ? "like" : '=';
 				}
 				if (op == "like") {
-					return (value + '').indexOf(filterParam.value) >= 0;
+					return (value + '').toLowerCase().indexOf(filterParam.value) >= 0;
 				} else {
 					return getValueComparator(op)(value, filterParam.value);
 				}
