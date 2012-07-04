@@ -6,7 +6,7 @@
              'BlockQuote','|',
              'PastePlain','|',
              'ForeColor','BackColor','InsertOrderedList','InsertUnorderedList','|',
-             'Paragraph','RowSpacing','FontFamily','FontSize','|',
+             'Paragraph','LineHeight','FontFamily','FontSize','|',
              'DirectionalityLtr','DirectionalityRtl','|','Indent','Outdent','|',
              'JustifyLeft','JustifyCenter','JustifyRight','JustifyJustify','|',
              'Link','Unlink','Anchor','Image','Emoticon', 'Flash', '|',
@@ -17,7 +17,7 @@
             ['FullScreen','Source','|','Undo','Redo','|',
              'Bold','Italic','Underline','StrikeThrough','Superscript','Subscript','RemoveFormat','|',
              'ForeColor','BackColor','InsertOrderedList','InsertUnorderedList','|',
-             'Paragraph','RowSpacing','FontFamily','FontSize','|',
+             'Paragraph','LineHeight','FontFamily','FontSize','|',
              'Indent','Outdent','|',
              'JustifyLeft','JustifyCenter','JustifyRight','JustifyJustify','|',
              'Link','Unlink','Horizontal','Image','|',
@@ -91,7 +91,7 @@
             'fullscreen' : '全屏',
             'directionalityltr' : '从左向右输入',
             'directionalityrtl' : '从右向左输入',
-            'rowspacing' : '行距',
+            'lineheight' : '行距',
             'code' : '插入代码'
         },
         defaultListMap: {
@@ -99,7 +99,8 @@
             'fontsize': [10, 11, 12, 14, 16, 18, 20, 24, 36],
             'underline':['none','overline','line-through','underline'],
             'paragraph': ['p:Paragraph', 'h1:Heading 1', 'h2:Heading 2', 'h3:Heading 3', 'h4:Heading 4', 'h5:Heading 5', 'h6:Heading 6'],
-            'rowspacing' : ['1.0:0','1.5:15','2.0:20','2.5:25','3.0:30']
+            'rowspacing' : ['1.0:0','1.5:15','2.0:20','2.5:25','3.0:30'],
+            'lineheight':['1', '1.5','1.75','2', '3', '4', '5']
         },
         FONT_MAP: {
             '宋体': ['宋体', 'SimSun'],

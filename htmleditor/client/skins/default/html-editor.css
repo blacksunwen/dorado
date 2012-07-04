@@ -209,6 +209,7 @@
 
 .d-html-editor .editor-wrap {
     clear: both;
+    position: relative;
 }
 
 .browse-button-wrap {
