@@ -81,9 +81,9 @@
                                 cols: "*",
                                 entity: urlObject,
                                 elements: [
-                                    { property: "url", label: "超链接", type: "text" },
-                                    { property: "title", label: "标题", type: "text" },
-                                    { property: "target", label: "是否在新窗口打开", type: "checkBox" }
+                                    { property: "url", label: "超链接", editorType: "text" },
+                                    { property: "title", label: "标题", editorType: "text" },
+                                    { property: "target", label: "是否在新窗口打开", editorType: "CheckBox" }
                                 ]
                             }
                         }, {
@@ -173,15 +173,15 @@
                         $type: "AutoForm",
                         entity: tableConfig,
                         elements: [
-                            { property: "row", label: "行数", type: "text"},
-                            { property: "column", label: "列数", type: "text"},
-                            { property: "width", label: "宽度", type: "text"},
-                            { property: "height", label: "高度", type: "text"},
-                            { property: "border", label: "边框", type: "text"},
-                            { property: "cellborder", label: "单元格边框", type: "text" },
-                            { property: "cellpadding", label: "单元格边距", type: "text"},
-                            { property: "cellspacing", label: "单元格间距", type: "text"},
-                            { property: "alignment", label: "对齐方式", type: "text",
+                            { property: "row", label: "行数" },
+                            { property: "column", label: "列数" },
+                            { property: "width", label: "宽度" },
+                            { property: "height", label: "高度" },
+                            { property: "border", label: "边框" },
+                            { property: "cellborder", label: "单元格边框"  },
+                            { property: "cellpadding", label: "单元格边距" },
+                            { property: "cellspacing", label: "单元格间距" },
+                            { property: "alignment", label: "对齐方式" ,
                                 editor: {
                                     $type: "TextEditor",
                                     trigger: "autoMappingDropDown1",
@@ -378,7 +378,7 @@
                                         })
                                     },
                                     {
-                                        property: "width", label: "宽度", type: "text", labelPosition: "top",
+                                        property: "width", label: "宽度" , labelPosition: "top",
                                         editor: new dorado.widget.TextEditor({
                                             id: imgWidthEditorId,
                                             entity: imageObject,
@@ -411,7 +411,7 @@
                                         height: "100%"
                                     },
                                     {
-                                        property: "height", label: "高度", type: "text", labelPosition: "top",
+                                        property: "height", label: "高度" , labelPosition: "top",
                                         editor: new dorado.widget.TextEditor({
                                             id: imgHeightEditorId,
                                             entity: imageObject,
@@ -435,14 +435,14 @@
                                         })
                                     },
                                     {
-                                        property: "lockRadio", type: "checkBox", labelPosition: "top", showLabel: false,
+                                        property: "lockRadio", editorType: "CheckBox", labelPosition: "top", showLabel: false,
                                         editor: new dorado.widget.CheckBox({
                                             entity: imageObject,
                                             property: "lockRatio",
                                             caption: "锁定比例"
                                         })
                                     },
-                                    { property: "title", label: "标题", type: "text", labelPosition: "top" },
+                                    { property: "title", label: "标题" , labelPosition: "top" },
                                     {
                                         property: "align", label: "对齐方式", labelPosition: "top",
                                         editor: new dorado.widget.TextEditor({
@@ -656,8 +656,8 @@
                                     entity: searchEntity,
                                     cols: "*",
                                     elements: [
-                                        { property: "text", label: "查找", type: "text"},
-                                        { property: "matchCase", label: "区分大小写", type: "checkBox" }
+                                        { property: "text", label: "查找" },
+                                        { property: "matchCase", label: "区分大小写", editorType: "CheckBox" }
                                     ]
                                 }],
                                 buttons: [{
@@ -690,9 +690,9 @@
                                     entity: replaceEntity,
                                     cols: "*",
                                     elements: [
-                                        { property: "text", label: "查找", type: "text"},
-                                        { property: "replaceText", label: "替换", type: "text"},
-                                        { property: "matchCase", label: "区分大小写", type: "checkBox"}
+                                        { property: "text", label: "查找" },
+                                        { property: "replaceText", label: "替换" },
+                                        { property: "matchCase", label: "区分大小写", editorType: "CheckBox"}
                                     ]
                                 }],
                                 buttons: [{
@@ -922,8 +922,8 @@
         }
     };
 
-    plugins.RowSpacing = {
-        command: "rowspacing",
+    plugins.LineHeight = {
+        command: "lineheight",
         initToolBar: function(toolbar) {
             var plugin = this;
 
@@ -936,46 +936,46 @@
                 }
             });
 
-            var rowspacing = htmleditor.defaultListMap.rowspacing, mappingArray = [];
+            var lineheight = htmleditor.defaultListMap.lineheight, mappingArray = [];
 
-            for (var i = 0, j = rowspacing.length; i < j; i++) {
-                var temp = rowspacing[i].split(":");
-                mappingArray.push({ key: temp[1], value: temp[0] });
+            for (var i = 0, j = lineheight.length; i < j; i++) {
+                var temp = lineheight[i];
+                mappingArray.push({ key: temp, value: temp });
             }
 
             var entity = new dorado.Entity();
 
-            var rowSpacingEditor = new dorado.widget.TextEditor({
+            var lineHeightEditor = new dorado.widget.TextEditor({
                 width: 50,
                 editable: false,
                 trigger: "autoMappingDropDown1",
                 mapping: mappingArray,
                 entity: entity,
-                property: "rowspacing",
+                property: "lineheight",
                 supportsDirtyFlag: false,
                 listener: {
                     onPost: function(self) {
-                        plugin.execCommand("rowspacing", self.get("value"));
+                        plugin.execCommand("lineheight", self.get("value"));
                     }
                 }
             });
-            plugin.rowSpacingEditor = rowSpacingEditor;
+            plugin.lineHeightEditor = lineHeightEditor;
 
-            toolbar.addItem(rowSpacingEditor);
+            toolbar.addItem(lineHeightEditor);
         },
         onStatusChange: function(status) {
-            this.rowSpacingEditor.set("readOnly", status == "disable");
+            this.lineHeightEditor.set("readOnly", status == "disable");
         },
         statusToggleable: true,
         checkStatus: function() {
-            var plugin = this, value = plugin.queryCommandValue("rowspacing");
+            var plugin = this, value = plugin.queryCommandValue("lineheight");
             var heditor = plugin._htmlEditor;
             if (heditor._readOnly || heditor._readOnly2) {
                 plugin.set("status", "disable");
                 return;
             }
-            plugin.rowSpacingEditor.set("value", value);
-            var status = plugin.queryCommandState("rowspacing");
+            plugin.lineHeightEditor.set("value", value);
+            var status = plugin.queryCommandState("lineheight");
             if (status == -1) {
                 plugin.set("status", "disable");
             } else {
@@ -1219,10 +1219,10 @@
                                 cols: "*",
                                 entity: flashObject,
                                 elements: [
-                                    { property: "url", label: "地址", type: "text" },
-                                    { property: "width", label: "宽度", type: "text" },
-                                    { property: "height", label: "高度", type: "text" },
-                                    { property: "align", label: "对齐方式", type: "text",
+                                    { property: "url", label: "地址"  },
+                                    { property: "width", label: "宽度"  },
+                                    { property: "height", label: "高度"  },
+                                    { property: "align", label: "对齐方式" ,
                                         editor: new dorado.widget.TextEditor({
                                             id: flashAlignEditorId,
                                             entity: flashObject,
@@ -1362,7 +1362,7 @@
                             cols: "*",
                             entity: anchorObject,
                             elements: [
-                                { property: "name", label: "锚点名字", type: "text" }
+                                { property: "name", label: "锚点名字"  }
                             ]
                         }
                     ],
