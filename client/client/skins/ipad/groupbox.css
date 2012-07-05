@@ -52,7 +52,7 @@
 .i-group-box .caption-bar .caption {
   float: left;
   overflow: hidden;
-  height: 20px;
+  height: 30px;
   line-height: 30px;
   padding: 0 6px 0 2px;
 }
@@ -68,7 +68,7 @@
 .i-group-box .button-panel {
   padding: 2px 5px 5px 2px;
   text-align: center;
-  height: 24px;
+  height: 46px;
 }
 .i-group-box .button-panel-left {
   text-align: left;

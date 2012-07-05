@@ -92,7 +92,10 @@ var dataTypeResult = new dorado.EntityDataType({
 		{ name: "currentEndDateAuto" },
 		{ name: "totalFeeAuto" },
 		{ name: "totalFeeTraffic" },
-		{ name: "taxAmt" }
+		{ name: "taxAmt" },
+		{ name: "totalFeeAutoStandard" },
+		{ name: "floatingRate" },
+		{ name: "allFeeSum" }
 	]
 });
 $dataTypeRepository.register(dataTypeResult);
