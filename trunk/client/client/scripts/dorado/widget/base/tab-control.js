@@ -150,3 +150,174 @@ dorado.widget.TabControl = $extend(dorado.widget.TabBar, /** @scope dorado.widge
 		}, 0);
 	}
 });
+
+/**
+ * @author Frank Zhang (mailto:frank.zhang@bstek.com)
+ * @component Base
+ * @class 标签栏。
+ * @extends dorado.widget.TabColumn
+ */
+dorado.widget.TabColumnControl = $extend(dorado.widget.TabColumn, /** @scope dorado.widget.TabColumnControl.prototype **/ {
+    $className: "dorado.widget.TabColumnControl",
+
+    ATTRIBUTES: /** @scope dorado.widget.TabColumnControl.prototype **/ {
+        height: {
+            defaultValue: 200,
+            independent: false,
+            readOnly: false
+        },
+
+        /**
+         * TabColumn的宽度，默认为200。
+         * @type int
+         * @default 200
+         * @attribute
+         */
+        tabColumnWidth: {
+            defaultValue: 200
+        }
+    },
+
+    constructor: function() {
+        $invokeSuper.call(this, arguments);
+
+        this._cardBook = new dorado.widget.CardBook();
+        this.registerInnerControl(this._cardBook);
+    },
+
+    doOnTabChange: function(eventArg) {
+        var tabcolumnControl = this, tabs = tabcolumnControl._tabs, tab = eventArg.newTab,
+            index = typeof tab == "number" ? tab : tabs.indexOf(tab), card = tabcolumnControl._cardBook;
+
+        if (card) {
+            card.set("currentControl", index);
+        }
+
+        $invokeSuper.call(this, arguments);
+    },
+
+    doChangeTabPlacement: function(value) {
+        var result = $invokeSuper.call(this, arguments);
+
+        if (!result) {
+            return false;
+        }
+
+        var tabcolumnControl = this, dom = tabcolumnControl._dom;
+        if (dom) {
+            var tabcolumnDom = tabcolumnControl._tabcolumnDom, cardDom = tabcolumnControl._cardBook._dom;
+            if (dorado.Browser.msie && dorado.Browser.version == 6){
+                if (value == "left") {
+                    dom.appendChild(cardDom);
+                } else {
+                    dom.insertBefore(cardDom, tabcolumnDom);
+                }
+            } else {
+                if (value == "left") {
+                    dom.insertBefore(tabcolumnDom, cardDom);
+                } else {
+                    dom.appendChild(tabcolumnDom);
+                }
+            }
+        }
+
+        return true;
+    },
+
+    doRemoveTab: function(tab) {
+        var tabcolumnControl = this, tabs = tabcolumnControl._tabs, index = typeof tab == "number" ? tab : tabs.indexOf(tab), card = tabcolumnControl._cardBook;
+
+        if (card) {
+            card.removeControl(index);
+        }
+
+        $invokeSuper.call(this, arguments);
+    },
+
+    doAddTab: function(tab, index, current) {
+        $invokeSuper.call(this, arguments);
+
+        var tabcolumnControl = this, card = tabcolumnControl._cardBook, tabs = tabcolumnControl._tabs;
+
+        if (index == null) {
+            index = tabs.indexOf(tab);
+        }
+
+        if (card) {
+            card.addControl(tab.getControl(), index, current);
+        }
+    },
+
+    createDom: function() {
+        var tabcolumnControl = this, card = tabcolumnControl._cardBook, dom = document.createElement("div"),
+            tabcolumnDom = $invokeSuper.call(this, arguments), tabPlacement = tabcolumnControl._tabPlacement;
+
+        if (tabPlacement == "left") {
+            dom.appendChild(tabcolumnDom);
+        }
+
+        tabcolumnControl._tabcolumnDom = tabcolumnDom;
+
+        var controls = [], tabs = tabcolumnControl._tabs;
+        for (var i = 0, j = tabs.size; i < j; i++) {
+            var tab = tabs.get(i);
+            controls.push(tab.getControl());
+        }
+        var currentTab = tabcolumnControl._currentTab;
+        if (currentTab) {
+            card._currentControl = currentTab.getControl();
+        }
+        card.set("controls", controls);
+        card.render(dom);
+
+        if (tabPlacement == "bottom") {
+            dom.appendChild(tabcolumnDom);
+        }
+
+        return dom;
+    },
+
+    refreshDom: function(dom) {
+        var tabcolumnControl = this, card = tabcolumnControl._cardBook, tabcolumnDom = tabcolumnControl._tabcolumnDom, cardDom = tabcolumnControl._cardBook._dom;
+
+        $invokeSuper.call(this, [tabcolumnDom]);
+
+        var tabColumnWidth = tabcolumnControl._tabColumnWidth || 200;
+
+        $fly(tabcolumnDom).css({
+            "height": "auto",
+            width: tabColumnWidth,
+            float: "left"
+        });
+
+        $fly(cardDom).css("float", "left");
+
+        if (tabcolumnControl._height != null) {
+            card._realHeight = tabcolumnControl.getRealHeight() ;
+            card._realWidth = tabcolumnControl.getRealWidth() - $fly(tabcolumnDom).outerWidth(true);
+        }
+
+        var tabs = tabcolumnControl._tabs, currentTab = tabcolumnControl._currentTab, currentTabIndex = tabs.indexOf(currentTab);
+
+        if (currentTabIndex != -1) {
+            card._currentControl = card._controls.get(currentTabIndex);
+        }
+        card.refreshDom(cardDom);
+    },
+
+    getFocusableSubControls: function() {
+        return [this._cardBook];
+    },
+
+    setFocus: function() {
+        // 放置在IE容器滚动条的意外滚动
+        var dom = this._tabcolumnDom;
+        if (dom) setTimeout(function() {
+            try {
+                dom.focus();
+            }
+            catch (e) {
+            }
+        }, 0);
+    }
+});
