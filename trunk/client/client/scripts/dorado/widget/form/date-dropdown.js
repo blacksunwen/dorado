@@ -873,7 +873,7 @@
 		
 		ATTRIBUTES: /** @scope dorado.widget.DateDropDown.prototype */ {
 			width: {
-				defaultValue: 260
+				defaultValue: dorado.Browser.isTouch ? 360 : 260
 			},
 			
 			iconClass: {

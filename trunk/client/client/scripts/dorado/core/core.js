@@ -34,6 +34,9 @@ var dorado = {
 		for (var p in jQuery.browser) {
 			if (jQuery.browser.hasOwnProperty(p)) browser[p] = jQuery.browser[p];
 		}
+        browser.android = (/android/gi).test(navigator.appVersion);
+        browser.iOS = (/iphone|ipad/gi).test(navigator.appVersion);
+        browser.isTouch = "ontouchstart" in window;
 		browser.version = parseInt(browser.version);
 		return browser;
 	})(),

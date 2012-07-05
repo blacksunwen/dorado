@@ -26,7 +26,7 @@
 			},
 			
 			rowHeight: {
-				defaultValue: 24
+				defaultValue: dorado.Browser.isTouch ? 30 : 24
 			}
 		},
 		

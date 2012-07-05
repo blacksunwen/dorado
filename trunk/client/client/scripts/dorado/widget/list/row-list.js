@@ -18,7 +18,7 @@
 			 * @attribute
 			 */
 			rowHeight: {
-				defaultValue: 18
+				defaultValue: dorado.Browser.isTouch ? 30 : 18
 			},
 			
 			/**
