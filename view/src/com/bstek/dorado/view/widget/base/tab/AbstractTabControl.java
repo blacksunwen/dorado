@@ -15,10 +15,7 @@ import com.bstek.dorado.view.widget.InnerElementList;
 		@ClientEvent(name = "onTabContextMenu") })
 @ResourceInjection(subObjectMethod = "getTab")
 public abstract class AbstractTabControl extends Control {
-	private boolean alwaysShowNavButtons;
-	private boolean showMenuButton;
-	private int tabMinWidth;
-	private TabPlacement tabPlacement = TabPlacement.top;
+	private boolean alwaysShowNavButtons;	
 	private List<Tab> tabs = new InnerElementList<Tab>(this);
 	private int currentTab;
 
@@ -29,32 +26,7 @@ public abstract class AbstractTabControl extends Control {
 	public void setAlwaysShowNavButtons(boolean alwaysShowNavButtons) {
 		this.alwaysShowNavButtons = alwaysShowNavButtons;
 	}
-
-	public boolean isShowMenuButton() {
-		return showMenuButton;
-	}
-
-	public void setShowMenuButton(boolean showMenuButton) {
-		this.showMenuButton = showMenuButton;
-	}
-
-	public int getTabMinWidth() {
-		return tabMinWidth;
-	}
-
-	public void setTabMinWidth(int tabMinWidth) {
-		this.tabMinWidth = tabMinWidth;
-	}
-
-	@ClientProperty(escapeValue = "top")
-	public TabPlacement getTabPlacement() {
-		return tabPlacement;
-	}
-
-	public void setTabPlacement(TabPlacement tabPlacement) {
-		this.tabPlacement = tabPlacement;
-	}
-
+	
 	public int getCurrentTab() {
 		return currentTab;
 	}
