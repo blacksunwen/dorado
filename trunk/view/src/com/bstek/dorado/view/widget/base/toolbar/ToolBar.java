@@ -18,7 +18,8 @@ import com.bstek.dorado.view.widget.InnerElementList;
 public class ToolBar extends Control {
 	private List<Control> items = new InnerElementList<Control>(this);
 	private boolean fixRight;
-
+	private boolean showMenuOnHover;
+	
 	public void addItem(Control item) {
 		items.add(item);
 	}
@@ -28,12 +29,22 @@ public class ToolBar extends Control {
 	public List<Control> getItems() {
 		return items;
 	}
-
+	
+	@ClientProperty(escapeValue = "false")
+	public boolean isShowMenuOnHover() {
+		return showMenuOnHover;
+	}
+	
 	public boolean isFixRight() {
 		return fixRight;
 	}
 
 	public void setFixRight(boolean fixRight) {
 		this.fixRight = fixRight;
+	}				
+
+	public void setShowMenuOnHover(boolean showMenuOnHover) {
+		this.showMenuOnHover = showMenuOnHover;
 	}
+	
 }

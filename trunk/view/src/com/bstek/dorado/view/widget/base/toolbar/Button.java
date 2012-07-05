@@ -1,6 +1,7 @@
 package com.bstek.dorado.view.widget.base.toolbar;
 
 import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.view.annotation.Widget;
 
@@ -14,4 +15,15 @@ import com.bstek.dorado.view.annotation.Widget;
 		shortTypeName = "ToolBarButton")
 @XmlNode(nodeName = "ToolBarButton")
 public class Button extends com.bstek.dorado.view.widget.base.Button {
+	private boolean showMenuOnHover;
+		
+	@ClientProperty(escapeValue = "false")
+	public boolean isShowMenuOnHover() {
+		return showMenuOnHover;
+	}
+
+	public void setShowMenuOnHover(boolean showMenuOnHover) {
+		this.showMenuOnHover = showMenuOnHover;
+	}
+	
 }
