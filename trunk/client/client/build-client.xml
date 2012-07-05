@@ -22,6 +22,7 @@
 			<filelist dir="${src}/skins/${skinName}">
 				<file name="button.css" />
 				<file name="tab-bar.css" />
+				<file name="tabcolumn.css" />
 				<file name="panel.css" />
 				<file name="iframe.css" />
 				<file name="caption-bar.css" />
