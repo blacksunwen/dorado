@@ -12,5 +12,5 @@ import com.bstek.dorado.view.annotation.Widget;
 		dependsPackage = "base-widget")
 @ClientObject(prototype = "dorado.widget.TabControl",
 		shortTypeName = "TabControl")
-public class TabControl extends AbstractTabControl {
+public class TabControl extends TabBar {
 }
