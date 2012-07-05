@@ -1,0 +1,191 @@
+.i-tabcolumn {
+  position: relative;
+}
+.i-tabcolumn .tabs-wrap {
+  position: relative;
+  overflow: hidden;
+}
+.i-tabcolumn .tabs-wrap .tabs {
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding: 0;
+  margin: 0;
+  height: 5000px;
+  width: 100%;
+}
+.i-tabcolumn .tabs-wrap .tabs li {
+  list-style-type: none;
+}
+.i-tabcolumn .tab {
+  position: relative;
+  cursor: default;
+  padding-left: 7px;
+  margin-bottom: 2px;
+}
+.i-tabcolumn .tab .tab-left {
+  display: block;
+  position: relative;
+  margin-right: 7px;
+  line-height: 26px;
+  height: 26px;
+  overflow: hidden;
+}
+.i-tabcolumn .tab-closeable .tab-left {
+  padding-right: 17px;
+}
+.i-tabcolumn .tab .icon {
+  float: left;
+  display: inline-block;
+  padding: 0px 10px;
+  height: 20px;
+  margin: 3px 0;
+}
+.i-tabcolumn .tab .caption {
+  float: left;
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  height: 26px;
+  line-height: 26px;
+  padding: 0px 4px 0 4px;
+}
+.i-tabcolumn .tab .tab-right {
+  position: absolute;
+  right: 0;
+  top: 0;
+  display: inline-block;
+  padding-left: 7px;
+  height: 26px;
+}
+.i-tabcolumn .tab .close {
+  position: absolute;
+  right: 7px;
+  top: 3px;
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+}
+.i-tabcolumn-left .tab .close {
+  top: 3px;
+}
+.i-tabcolumn-right .tab .close {
+  top: 3px;
+}
+.i-tabcolumn .top-button {
+  background: url("tabcolumn-overflowbuttons.png") center top no-repeat;
+  cursor: pointer;
+  margin: 0;
+  width: 100%;
+  height: 26px;
+}
+.i-tabcolumn .bottom-button {
+  background: url("tabcolumn-overflowbuttons.png") center bottom no-repeat;
+  cursor: pointer;
+  margin: 0;
+  width: 100%;
+  height: 26px;
+}
+.i-tabcolumn .i-icon-button,
+.i-tabcolumn .i-icon-button-trigger {
+  top: 1px;
+}
+.i-tabcolumn-right .i-icon-button {
+  top: 5px;
+}
+.i-cardbook {
+  position: relative;
+}
+.i-cardbook .card-item {
+  position: absolute;
+  left: 0;
+  top: 0;
+  visibility: hidden;
+}
+.i-cardbook .card-item-active {
+  visibility: visible;
+  z-index: 9999;
+}
+.d-tabcolumn-left .tabs-wrap {
+  background: transparent url(tabcolumn-bg.png) repeat-y right 0;
+}
+.d-tabcolumn-right .tabs-wrap {
+  background: transparent url(tabcolumn-bg.png) repeat-y left 0;
+}
+.d-tabcolumn .tab-disabled {
+  color: gray;
+}
+.d-tabcolumn .tab .icon {
+  background: transparent no-repeat 0px center;
+}
+.d-tabcolumn .tab .close,
+.d-tabcolumn .tab-selected .close {
+  background: url(tab-buttons.png) no-repeat 0 -90px;
+}
+.d-tabcolumn .tab .close-hover,
+.d-tabcolumn .tab-selected .close-hover {
+  background-position: -20px -90px;
+}
+.d-tabcolumn .tab .close-click,
+.d-tabcolumn .tab-selected .close-click {
+  background-position: -40px -90px;
+}
+.d-tabcolumn .top-button-disabled,
+.d-tabcolumn .bottom-button-disabled {
+  opacity: 0.5;
+  filter: alpha(opacity = 50);
+}
+.d-tabcolumn-left .tab {
+  background: transparent url(tabcolumn.png) no-repeat 0 -26px;
+}
+.d-tabcolumn-left .tab-hover {
+  background-position: 0 -52px;
+}
+.d-tabcolumn-left .tab-selected {
+  background-position: 0 0;
+}
+.d-tabcolumn-left .tab .tab-left {
+  background: url(tabcolumn.png) repeat-x 0 -104px;
+}
+.d-tabcolumn-left .tab .tab-right {
+  background: url(tabcolumn.png) no-repeat right -26px;
+}
+.d-tabcolumn-left .tab-hover .tab-left {
+  background-position: 0 -130px;
+}
+.d-tabcolumn-left .tab-hover .tab-right {
+  background-position: right -52px;
+}
+.d-tabcolumn-left .tab-selected .tab-left {
+  background-position: 0 -78px;
+}
+.d-tabcolumn-left .tab-selected .tab-right {
+  background-position: right 0;
+}
+.d-tabcolumn-right .tab {
+  background: transparent url(tabcolumn-right.png) no-repeat 0 -26px;
+}
+.d-tabcolumn-right .tab-hover {
+  background-position: 0 -52px;
+}
+.d-tabcolumn-right .tab-selected {
+  background-position: 0 0;
+}
+.d-tabcolumn-right .tab .tab-left {
+  background: url(tabcolumn-right.png) repeat-x 0 -104px;
+}
+.d-tabcolumn-right .tab .tab-right {
+  background: url(tabcolumn-right.png) no-repeat right -26px;
+}
+.d-tabcolumn-right .tab-hover .tab-left {
+  background-position: 0 -130px;
+}
+.d-tabcolumn-right .tab-hover .tab-right {
+  background-position: right -52px;
+}
+.d-tabcolumn-right .tab-selected .tab-left {
+  background-position: 0 -78px;
+}
+.d-tabcolumn-right .tab-selected .tab-right {
+  background-position: right 0;
+}
