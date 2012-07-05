@@ -116,7 +116,6 @@
 
 .i-date-picker{
     position: relative;
-    border-collapse: collapse;
     width: 100%;
     height: 345px;
 }
@@ -176,7 +175,6 @@
     left: 0;
     top: 0;
     table-layout: fixed;
-    border-collapse: collapse;
     text-align: center;
     cursor: pointer;
     width: 200%;
@@ -281,6 +279,12 @@
     padding: 0;
     border: 1px solid #56c56e;
     background: -webkit-gradient(linear, left top, left bottom, from(#e6faea), to(#a1e4ae)) no-repeat center center;
+}
+
+.d-date-picker .date-block .date-table td:active{
+    padding: 0;
+    border: 1px solid #60cf78;
+    background: -webkit-gradient(linear, left top, left bottom, from(#f0fff4), to(#abeeb8)) no-repeat center center;
 }
 
 .d-date-picker .date-block .date-table td.pre-month{

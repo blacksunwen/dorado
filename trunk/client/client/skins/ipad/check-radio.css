@@ -17,13 +17,15 @@
 .i-checkbox .caption {
   vertical-align: middle;
   white-space: nowrap;
+    word-wrap: break-word;
   line-height: 32px;
 }
 .d-ie6 .i-checkbox .caption,
 .d-ie7 .i-checkbox .caption {
   left: 22px;
   top: 0;
-  position: absolute;
+  /**position: absolute;*/
+  white-space: normal;
 }
 .i-checkbox-icononly {
   width: 22px;

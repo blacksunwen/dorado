@@ -1,5 +1,14 @@
-var traffic = "TRAFFICCOMPULSORYPRODUCT",//交强险
-	damage = "DAMAGELOSSCOVERAGE", //机动车损失险
+var macAddr;
+
+document.addEventListener('deviceready', function() {
+	window.plugins.macAddress.get(function(r) {
+		macAddr=r;
+	}, function(e) {
+		console.log(e)
+	});
+}, true);
+var traffic = "TRAFFICCOMPULSORYPRODUCT",// 交强险
+	damage = "DAMAGELOSSCOVERAGE", // 机动车损失险
 	damageAmount = damage + "AMOUNT",//机动车损失险 保额
 	damageSepcial = "DAMAGELOSSEXEMPTDEDUCTIBLESPECIALCLAUSE",//机动车损失险不计免赔
 	glass = "GLASSBROKENCOVERAGE",//玻璃破碎险
@@ -209,7 +218,7 @@ var traffic = "TRAFFICCOMPULSORYPRODUCT",//交强险
 	};
 
 	var thirdMap = { "5": true, "10": true, "15": true, "20": true, "30“: true, ”50": true, "100": true };
-	var triColTpl = "<table class='fee-table' cellpadding='5' cellspacing='0'>{{#table}}<tr><td>{{name}}</td><td width=80>应交保费</td><td width=100 align='right' class='amount'>{{fee}}元</td></tr>{{/table}}</table>";
+	var triColTpl = "<table class='fee-table' cellpadding='5' cellspacing='0'>{{#table}}<tr><td height=10></td><td></td><td></td></tr><tr><td>{{name}}</td><td width=70>保单保费</td><td width=100 align='right' class='amount'>{{fee}}元</td></tr><tr><td>&nbsp;</td></td><td width=70>标准保费</td><td width=100 align='right' class='amount'>{{feeStandard}}元</td></tr>{{/table}}</table>";
 	var twoColTpl = "<table class='fee-table' cellpadding='5' cellspacing='0'>{{#table}}<tr><td>{{name}}</td><td width=100 align='right' class='amount'>{{fee}}</td></tr>{{/table}}</table>";
 
 	var verifyCoverage = function() {
@@ -223,7 +232,7 @@ var traffic = "TRAFFICCOMPULSORYPRODUCT",//交强险
 		if (damageEditor.get("checked")) {
 			var damageAmountValue = parseInt(damageAmountEditor.get("text"), 10);
 			if (!isNaN(damageAmountValue)) {
-				if (damageAmountValue > purchasePrice || damageAmountValue < purchasePrice * 0.8) {
+				if (damageAmountValue > purchasePrice || damageAmountValue < purchasePrice * 0.2) {
 					dorado.MessageBox.alert(damageMsg);
 					return false;
 				}
@@ -373,7 +382,7 @@ var traffic = "TRAFFICCOMPULSORYPRODUCT",//交强险
 			}
 
 			//自燃损失险
-			var selfigniteEditor = view.id(selfignite), selfigniteAmountEditor = view.id(damageAmount);
+			var selfigniteEditor = view.id(selfignite), selfigniteAmountEditor = view.id(selfigniteAmount);
 			if (selfigniteEditor.get("checked")) {
 				record = {};
 				record[submitMap["coverageName"]] = selfignite;
@@ -510,7 +519,8 @@ var traffic = "TRAFFICCOMPULSORYPRODUCT",//交强险
 						if (coverageMap[childName]) {
 							table.push({
 								name: typeof child.label == "function" ? child.label(controller.view) : child.label,
-								fee: coverageMap[childName]["POLICYPREMIUM"]
+								fee: coverageMap[childName]["POLICYPREMIUM"],
+								feeStandard: coverageMap[childName]["POLICYPREMIUMSTANDARD"]
 							});
 						}
 					}
@@ -574,7 +584,8 @@ var traffic = "TRAFFICCOMPULSORYPRODUCT",//交强险
 						if (coverageMap[childName]) {
 							table.push({
 								name: typeof child.label == "function" ? child.label(controller.view) : child.label,
-								fee: coverageMap[childName]["POLICYPREMIUM"]
+								fee: coverageMap[childName]["POLICYPREMIUM"],
+								feeStandard: coverageMap[childName]["POLICYPREMIUMSTANDARD"]
 							});
 						}
 					}
@@ -656,17 +667,34 @@ var traffic = "TRAFFICCOMPULSORYPRODUCT",//交强险
 			var branchCode=controller.branchCodeEditor.get("value"),userCode=controller.userCodeEditor.get("value"),
 			password=controller.passwordEditor.get("value"),rand=controller.imageEditor.get("value");
 			
-			if (!branchCode || !userCode||!password||!rand) {
-				dorado.MessageBox.alert("请录入必要信息！");
-				return;
+			var callbakURL=request("CallbakURL");
+			var caseID=request("CaseID");
+			var callSource=request("CallSource");
+			var isAndroid = (/android/gi).test(navigator.appVersion)
+			
+			if (callSource == "") {
+				if (!branchCode || !userCode || !password || !rand) {
+					dorado.MessageBox.alert("请录入必要信息！");
+					return;
+				}
+			}else{
+				branchCode=request("branchCode");
+				userCode=request("userCode");
+				password=request("password");
+				rand=request("rand");
 			}
-						
+			
 			dorado.touch.showLoadingPanel("加载数据中...");
 			jQuery.post("/CPIC09Auto/mobilecontroller/userLogin.do", {
 				branchCode: branchCode,
 				userCode: userCode,
 				password: password,
-				rand:rand
+				rand:rand,
+				callbakURL:callbakURL,
+				caseID:caseID,
+				callSource:callSource,
+				isAndroid:isAndroid,
+				macAddr:macAddr
 			}, function(data) {
 				dorado.touch.hideLoadingPanel();
 				dataSetLogin.set("data",data);
@@ -809,7 +837,8 @@ var traffic = "TRAFFICCOMPULSORYPRODUCT",//交强险
 				registerDate = controller.registerDateEditor.get("value"), vehicleName = controller.vehicleNameEditor.get("value"),
 				engineCapacity = controller.engineCapacityEditor.get("value"),emptyWeight = controller.emptyWeightEditor.get("value"),
 				licenseType = controller.licenseTypeEditor.get("value"), vehicleType = controller.vehicleTypeEditor.get("value"),
-                vehiclePurpose = controller.vehiclePurposeEditor.get("value");
+                vehiclePurpose = controller.vehiclePurposeEditor.get("value"),seatCount=controller.seatCountEditor.get("value"),
+                carryingCapacity=controller.carryingCapacityEditor.get("value");
 
 			if (!plateno || !owner || !rackNo || !engineNo || !registerDate || !vehicleName || !licenseType || !engineCapacity  || !vehiclePurpose || !vehicleType) {
 				dorado.MessageBox.alert("请录入必要信息！");
@@ -860,7 +889,9 @@ var traffic = "TRAFFICCOMPULSORYPRODUCT",//交强险
                     apointFactoryRate: apointFactoryRate,
                     avgMile: avgMile,
                     appointDriver: appointDriver,
-                    driverArea: driverArea
+                    driverArea: driverArea,
+                    seatCount:seatCount,
+                    carryingCapacity:carryingCapacity
                 }, function(priceList) {
                     if (priceList.length == 1) {
                         controller.loadVehicleInfo(priceList[0].vehicleCode, function() {
@@ -982,9 +1013,12 @@ var traffic = "TRAFFICCOMPULSORYPRODUCT",//交强险
                         } else if (prop == "vehicleType") {
                             controller.vehicleTypeList.set("data", config.names);
                             controller.vehicleTypeEditor.set("mapping", config.mapping);
+                            controller.vehicleTypeEditor.set("value", config.defaultValue);
+                            
                         } else if (prop == "vehiclePurpose") {
                             controller.vehiclePurposeList.set("data", config.names);
                             controller.vehiclePurposeEditor.set("mapping", config.mapping);
+                            controller.vehiclePurposeEditor.set("value", config.defaultValue);
                         }
                     }
                     // 设定浮动系数默认值
@@ -1037,8 +1071,26 @@ var traffic = "TRAFFICCOMPULSORYPRODUCT",//交强险
 				if (typeof callback == "function") {
 					callback.apply(null, []);
 				}
-				controller.selectCarDialog.hide();
 				controller.cardbook.set("currentControl", controller.personalPanel);
+			}, "json").error(function() {
+				dorado.touch.hideLoadingPanel();
+			});
+		},
+		
+		//结束报价
+		endQuotation: function() {
+			dorado.touch.showLoadingPanel("加载数据中...");
+			jQuery.post("/CPIC09Auto/mobilecontroller/endQuotation.do", function(data) {
+				dorado.touch.hideLoadingPanel();
+				if (hasError(data)) return;
+				if (typeof callback == "function") {
+					callback.apply(null, []);
+				}
+				if(data.callSource!=undefined&&data.callSource=="sd01"){
+					window.location.href=data.callbakURL;
+				}else{
+					window.location.reload();
+				}
 			}, "json").error(function() {
 				dorado.touch.hideLoadingPanel();
 			});
@@ -1101,11 +1153,20 @@ var traffic = "TRAFFICCOMPULSORYPRODUCT",//交强险
 						if (coverage["ALLPOLICYPREMIUMTRAFFIC"]) {
 							returnMap.totalFeeTraffic = coverage["ALLPOLICYPREMIUMTRAFFIC"];
 						}
+						if(coverage["ALLPOLICYPREMIUMAUTOSTANDARD"]){
+							returnMap.totalFeeAutoStandard=coverage["ALLPOLICYPREMIUMAUTOSTANDARD"];
+						}
+						if(coverage["FLOATINGRATE"]){
+							returnMap.floatingRate=coverage["FLOATINGRATE"];
+						}
+						if(coverage["ALLFEESUM"]){
+							returnMap.allFeeSum=coverage["ALLFEESUM"];
+						}
 					} else {
 						coverageMap[coverageName] = coverage;
 					}
 				}
-
+				
 				dataSetResult.set("data", returnMap);
 
 				var resultHtml = "<table class='result-table' cellpadding='5' cellspacing='0'><tr><td width='45%' valign='top'>" + getLeftHtml(coverageMap) +
@@ -1184,6 +1245,8 @@ var traffic = "TRAFFICCOMPULSORYPRODUCT",//交强险
                 controller.licenseTypeEditor.set("value", data.licenseType);
                 controller.vehiclePurposeEditor.set("value", data.vehiclePurpose);
                 controller.vehicleTypeEditor.set("value", data.vehicleType);
+                controller.seatCountEditor.set("value", data.seatCount);
+                controller.carryingCapacityEditor.set("value", data.carryingCapacity);
 
                 controller.startDateAutoEditor1.set("value", Date.parseDate(data.renewInceptionDate, "Y-m-d"));
                 controller.endDateAutoEditor1.set("value", Date.parseDate(data.renewTerminationDate, "Y-m-d"));
@@ -1199,6 +1262,26 @@ var traffic = "TRAFFICCOMPULSORYPRODUCT",//交强险
             });
         }
 	};
+	
+	
+	
+
+	function request(paras) {
+		var url = location.href;
+		var paraString = url.substring(url.indexOf("?") + 1, url.length).split(
+				"&");
+		var paraObj = {}
+		for (i = 0; j = paraString[i]; i++) {
+			paraObj[j.substring(0, j.indexOf("=")).toLowerCase()] = j
+					.substring(j.indexOf("=") + 1, j.length);
+		}
+		var returnValue = paraObj[paras.toLowerCase()];
+		if (typeof (returnValue) == "undefined") {
+			return "";
+		} else {
+			return returnValue;
+		}
+	}
 
 	window.controller = controller;
 })();

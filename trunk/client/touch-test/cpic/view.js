@@ -59,16 +59,8 @@
                 property: "image",
                 label: "验证码",
                 editor: imageContainer
-            },
-			new dorado.touch.Button({
-				caption:"登录",
-				exClassName: "login-button",
-				width: 120,
-				style: {
-					margin: "0 auto"
-				},
-				onTap: controller.login
-			})
+            }
+
 		]
 	});
 
@@ -85,7 +77,28 @@
 					textAlign : "center"
 				}
 			}),
-			loginForm
+			loginForm,
+            new dorado.widget.Container({
+                layout: { $type: "HBox", pack: "center" },
+                height: 40,
+                children: [new dorado.touch.Button({
+                    caption:"登录",
+                    exClassName: "login-button",
+                    width: 120,
+                    style: {
+                        "margin-right": "3px"
+                    },
+                    onTap: controller.login
+                }), new dorado.touch.Button({
+                    caption:"登录",
+                    exClassName: "login-button",
+                    width: 120,
+                    style: {
+                        margin: "0 auto"
+                    },
+                    onTap: controller.login
+                })]
+            })
 		]
 	});
 
@@ -199,13 +212,15 @@
 		]
 	});
 
-	var rackNoEditor, engineNoEditor, vehicleNameEditor, registerDateEditor,engineCapacityEditor,emptyWeightEditor;
+	var rackNoEditor, engineNoEditor, vehicleNameEditor, registerDateEditor,engineCapacityEditor,emptyWeightEditor,seatCountEditor,carryingCapacityEditor;
 
 	rackNoEditor = new dorado.touch.TextEditor();
 	engineNoEditor = new dorado.touch.TextEditor();
 	vehicleNameEditor = new dorado.touch.TextEditor();
 	engineCapacityEditor = new dorado.touch.TextEditor();
 	emptyWeightEditor = new dorado.touch.TextEditor();
+	seatCountEditor= new dorado.touch.TextEditor();
+	carryingCapacityEditor= new dorado.touch.TextEditor();
 	registerDateEditor = new dorado.touch.TextEditor({
         format: "Y-m-d",
 		popup: dorado.touch.defaultDatePicker,
@@ -321,6 +336,16 @@
                                 property: "emptyWeight",
                                 label: "整备质量(千克)",
                                 editor: emptyWeightEditor
+                            },
+                            {
+                                property: "seatCount",
+                                label: "核定载客量",
+                                editor: seatCountEditor
+                            },
+                            {
+                                property: "carryingCapacity",
+                                label: "核定载质量(吨)",
+                                editor: carryingCapacityEditor
                             },
                             {
                                 property: "registerDate",
@@ -541,7 +566,7 @@
                 supportsOptionMenu: false,
                 resizeable: false,
                 wrappable: true,
-                width: 200
+                width: 240
             },
             {
                 name: "号牌号码",
@@ -1057,23 +1082,6 @@
 				},
 				children:[basicAutoForm]
 			}),
-			new dorado.widget.Container({
-                layout: new dorado.widget.layout.NativeLayout(),
-                style: {
-                    padding: 10
-                },
-                children: [
-                    new dorado.touch.Button({
-                        caption:"生成报价单",
-                        style: {
-                            float: "right"
-                        },
-                        //exClassName: "login-button",
-                        width: 200,
-                        onTap: controller.createQuotation
-                    })
-                ]
-            })
 		],
 		toolbarItems:[
 			new dorado.touch.Button({
@@ -1084,10 +1092,18 @@
 			}),
 			new dorado.touch.Spacer(),
 			new dorado.touch.Button({
+				caption:"生成报价单",
+				style: {
+                    marginRight: 10
+                },
+				onTap: controller.createQuotation
+			}),
+			new dorado.touch.Button({
 				caption:"结束",
-				onTap:function () {
-					window.location.reload();
-				}
+//				onTap:function () {
+//					window.location.reload();
+//				}
+				onTap: controller.endQuotation
 			})
 		]
 	});
@@ -1597,7 +1613,7 @@
 		width: 1000,
 		contentOverflow: "hidden",
 		style: {
-			margin: "30px auto"
+			margin: "auto"
 		},
 		children: [
 			resultHtmlCt
@@ -1610,18 +1626,66 @@
 		//scrollbar: true,
 		exClassName: "result-panel",
 		children:[
-			new dorado.touch.GroupBox({
+		   new dorado.touch.GroupBox({
+			   caption : "",
+			   width : 1000,
+			   style : {
+				   margin : "5px auto"
+			   },
+			   layout : new dorado.widget.layout.NativeLayout(),
+			   contentOverflow : "hidden",
+			   children : [ 
+			       new dorado.widget.AutoForm({
+				   dataSet : dataSetResult,
+				   labelWidth : 220,
+				   cols : "*,*",
+				   elements : [ 
+				      {
+					      property : "allFeeSum",
+						  label : "总保费(含车船税)",
+						  editor: new dorado.widget.DataLabel({
+								dataSet: dataSetResult,
+								property:"allFeeSum",
+								renderer: {
+									render: function(dom, arg) {
+										var text = (arg.property && arg.entity != null) ? arg.entity.getText(arg.property) : '';
+										dom.innerText = (text || "0") + "元";
+									}
+								}
+							})
+					   },
+					   {
+						    property : "floatingRate",
+							label : "商业险折扣系数",
+							editor: new dorado.widget.DataLabel({
+								dataSet: dataSetResult,
+								property:"floatingRate",
+								renderer: {
+									render: function(dom, arg) {
+										var text = (arg.property && arg.entity != null) ? arg.entity.getText(arg.property) : '';
+										dom.innerText = (text || "");
+									}
+								}
+							})
+						},
+				    ]})
+
+				]}),     
+		    
+			new dorado.widget.Container({
 				caption: "",
+				exClassName: "box-container",
 				width: 1000,
 				style: {
-					margin: "40px auto"
+					margin: "10px auto 25px auto"
 				},
 				layout: new dorado.widget.layout.NativeLayout(),
 				contentOverflow: "hidden",
-				children: [
+				children: [				           
+				          				    
 					new dorado.widget.AutoForm({
 						dataSet: dataSetResult,
-						labelWidth:120,
+						labelWidth:150,
 						cols:"*,*",
 						elements:[
 							{
@@ -1681,7 +1745,7 @@
 							},
 							{
 								property:"totalFee",
-								label:"商业险保费",
+								label:"商业险保单保费",
 								editor: new dorado.widget.DataLabel({
 									dataSet: dataSetResult,
 									property:"totalFeeAuto",
@@ -1689,6 +1753,20 @@
 										render: function(dom, arg) {
 											var text = (arg.property && arg.entity != null) ? arg.entity.getText(arg.property) : '';
 											dom.innerText = (text || "0") + "元";
+										}
+									}
+								})
+							},
+							{
+								property:"totalFeeAutoStandard",
+								label:"商业险标准保费",
+								editor: new dorado.widget.DataLabel({
+									dataSet: dataSetResult,
+									property:"totalFeeAutoStandard",
+									renderer: {
+										render: function(dom, arg) {
+											var text = (arg.property && arg.entity != null) ? arg.entity.getText(arg.property) : '';
+											dom.innerText = text;
 										}
 									}
 								})
@@ -1755,7 +1833,7 @@
 	var premiumDetailPanel = new dorado.touch.Panel({
 		caption: "保费明细",
 		layout: new dorado.widget.layout.NativeLayout(),
-		//scrollbar: true,
+		scrollbar: true,
 		exClassName: "result-panel",
 		children:[
 			resultDetailPanel
@@ -1774,7 +1852,6 @@
 			})
 		]
 	});
-
 	var cardbook = new dorado.widget.CardBook({
 		controls:[loginPanel, indexPanel, indexPanelOther, selectModelPanel, personalPanel, selectPanel, resultPanel, premiumDetailPanel],
         height: 650
@@ -1843,18 +1920,25 @@
         avgMileEditor: avgMileEditor,
         appointDriverEditor: appointDriverEditor,
         driverAreaEditor: driverAreaEditor,
-        apointFactoryRateEditor: apointFactoryRateEditor
+        apointFactoryRateEditor: apointFactoryRateEditor,
+        seatCountEditor: seatCountEditor,
+        carryingCapacityEditor: carryingCapacityEditor
+        
 	});
 
 	view.addChild(cardbook);
-    if ((/android/gi).test(navigator.appVersion) && PhoneGap) {
+	var url = location.href;
+	
+	if ((/target=phonegap/gi).test(url) && PhoneGap) {
         document.addEventListener("deviceready", function(){
-            view.render(document.body);
+        	setTimeout(function() {
+        		view.render(document.body);
+        	}, 0);
         },true);
     } else {
-        $(document).ready(function () {
-            view.render(document.body);
-        });
+	$(document).ready(function () {
+		view.render(document.body);
+	});
     }
-
+    
 })();
