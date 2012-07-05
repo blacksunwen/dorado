@@ -30,7 +30,7 @@
 				triState: true
 			});
 			
-			view.addChild(cb0);
+			//view.addChild(cb0);
 			
 			var count = 1;
 			
@@ -82,7 +82,7 @@
 				checked: true
 			});
 			
-			view.addChild(cb2);
+            view.addChild(cb2);
 			
 			var cb3 = new dorado.widget.CheckBox({
 				iconOnly: true,
@@ -93,9 +93,12 @@
 			view.addChild(cb3);
 			
 			$(document).ready(function() {
+                cb0.render(jQuery("#cbCt")[0]);
 				view.render(document.body);
 			});
 		</script>
 	</head>
-	<body></body>
+	<body>
+        <div id="cbCt" style="width: 100px;"></div>
+	</body>
 </html>

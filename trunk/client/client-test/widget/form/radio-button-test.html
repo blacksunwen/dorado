@@ -4,6 +4,17 @@
 		<title>Radio Button Test</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 		<script type="text/javascript" src="../../include-all.js"></script>
+        <style type="text/css">
+            .test {
+                height: 100px;
+            }
+            .test .icon {
+                height: 100px;
+            }
+            .test .text {
+                line-height: 100px;
+            }
+        </style>
 		<script type="text/javascript">
 			
 			var view = new dorado.widget.View({});
@@ -82,8 +93,8 @@
 				caption: "Get Value",
 				listener: {
 					onClick: function() {
-						var rg1 = this.id("rg1");
-						alert(rg1.get("value"));
+						var rg2 = this.id("rg2");
+						alert(rg2.get("value"));
 					}
 				},
 				layoutConstraint: "left"
@@ -109,14 +120,15 @@
 			var rg2 = new dorado.widget.RadioGroup({
 				id: "rg2",
 				width: "100%",
+                layout: "vertical",
 				radioButtons: [{
-					value: false,
+					value: 0,
 					text: "Female"
 				}, {
-					value: true,
+					value: 1,
 					text: "Male"
 				}],
-				value: true,
+				value: 0,
 				listener: {
 					onValueChange: function(radioGroup) {
 						//alert(radioGroup.get("value"));
