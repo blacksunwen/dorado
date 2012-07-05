@@ -1,4 +1,5 @@
 (function() {
+    window.UEDITOR_CONFIG.sourceEditor = "textarea";
     dorado.htmleditor = {
         //'Code'
         fullMode: ['FullScreen','Source','|','Undo','Redo','|',
