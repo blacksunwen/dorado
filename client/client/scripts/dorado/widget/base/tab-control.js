@@ -287,7 +287,7 @@ dorado.widget.TabColumnControl = $extend(dorado.widget.TabColumn, /** @scope dor
         $fly(tabcolumnDom).css({
             "height": "auto",
             width: tabColumnWidth,
-            float: "left"
+            "float": "left"
         });
 
         $fly(cardDom).css("float", "left");
