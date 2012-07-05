@@ -146,7 +146,7 @@
 			 */
 			contentOverflow: {
 				writeBeforeReady: true,
-				defaultValue: "auto"
+				defaultValue: dorado.Browser.isTouch ? "hidden" : "auto"
 			},
 			
 			/**
@@ -157,7 +157,7 @@
 			 */
 			contentOverflowX: {
 				writeBeforeReady: true,
-				defaultValue: "auto"
+				defaultValue: dorado.Browser.isTouch ? "hidden" : "auto"
 			},
 
 			/**
@@ -168,7 +168,7 @@
 			 */
 			contentOverflowY: {
 				writeBeforeReady: true,
-				defaultValue: "auto"
+				defaultValue: dorado.Browser.isTouch ? "hidden" : "auto"
 			},
 			
 			view: {

@@ -615,7 +615,7 @@
 			 * @default 18
 			 */
 			rowHeight: {
-				defaultValue: 18
+				defaultValue: dorado.Browser.isTouch ? 30 : 18
 			},
 
 			/**
@@ -625,7 +625,7 @@
 			 * @default 22
 			 */
 			headerRowHeight: {
-				defaultValue: 22
+				defaultValue: dorado.Browser.isTouch ? 30 : 22
 			},
 
 			/**
@@ -635,7 +635,7 @@
 			 * @default 22
 			 */
 			footerRowHeight: {
-				defaultValue: 22
+				defaultValue: dorado.Browser.isTouch ? 30 : 22
 			},
 
 			/**
@@ -1119,22 +1119,74 @@
 		},
 
 		refreshDom: function(dom) {
-			
 			function getDivScroll() {
 				if (this._divScroll) return this._divScroll;
+                var style;
+                if (dorado.Browser.isTouch) {
+                    style = {
+                        width: "100%",
+                        height: "100%",
+                        overflow: "hidden",
+                        position: "absolute",
+                        left: -99999,
+                        top: -99999
+                    };
+                } else {
+                    style = {
+                        width: "100%",
+                        height: "100%",
+                        overflow: "hidden",
+                        overflowX: (xScroll && domMode == 0) ? "scroll" : "hidden",
+                        overflowY: yScroll ? "scroll" : "hidden",
+                    };
+                }
 				var div = this._divScroll = $DomUtils.xCreate({
 					tagName: "DIV",
-					style: {
-						width: "100%",
-						height: "100%",
-						overflowX: (xScroll && domMode == 0) ? "scroll" : "hidden",
-						overflowY: yScroll ? "scroll" : "hidden"
-					},
+					style: style,
 					content: "^DIV"
 				});
 				$fly(div).bind("scroll", $scopify(this, this.onScroll));
 				this._divViewPort = div.firstChild;
-				dom.appendChild(div);
+			    dom.appendChild(div);
+                if (dorado.Browser.isTouch && iScroll) {
+                    var grid = this;
+                    setTimeout(function() {
+                        var scroller = new iScroll(grid._dom, {
+                            scrollSize: function(dir) {
+                                var result = dir == "h" ? grid._divScroll.scrollWidth : grid._divScroll.scrollHeight;
+                                return result;
+                            },
+                            viewportSize: function(dir) {
+                                return dir == "h" ? grid._divScroll.clientWidth : grid._divScroll.clientHeight;
+                            },
+                            fadeScrollbar: false,
+                            bounce: false,
+                            momentum: true,
+                            useTransform: false,
+                            stillScroller: true,
+                            //useScrollAttribute: true,
+                            hScroll: true,
+                            vScroll: true,
+                            hScrollBar: true,
+                            vScrollBar: true,
+                            fixedScrollbar: true,
+                            desktopCompatibility: true,
+                            onScrollMove: function() {
+                                grid._divScroll.scrollLeft = this.x * -1;
+                                grid._divScroll.scrollTop = this.y * -1;
+                            },
+                            resumeHelper: function() {
+                                return {
+                                    x: (grid._divScroll.scrollLeft || grid._scrollLeft) * -1,
+                                    y: (grid._divScroll.scrollTop || grid._scrollTop) * -1
+                                }
+                            },
+                            lockDirection: true
+                        });
+                        grid._scroller = scroller;
+                    }, 0);
+                }
+
 				return div;
 			}
 
@@ -1551,6 +1603,9 @@
 					}
 				}
 			}
+            if (this._scroller) {
+                this._scroller.refresh();
+            }
 		},
 		
 		onClick: dorado._NULL_FUNCTION,
@@ -3146,7 +3201,7 @@
 			return true;
 		},
 
-		syncroRowHeights: function(scrollInfo) {		
+		syncroRowHeights: function(scrollInfo) {
 			with (this.grid._rowHeightInfos) {
 				if (this.grid._dynaRowHeight) {
 					for (var i = 0; i < unmatched.length; i++) {
