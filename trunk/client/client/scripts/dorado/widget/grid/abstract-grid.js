@@ -1137,7 +1137,7 @@
                         height: "100%",
                         overflow: "hidden",
                         overflowX: (xScroll && domMode == 0) ? "scroll" : "hidden",
-                        overflowY: yScroll ? "scroll" : "hidden",
+                        overflowY: yScroll ? "scroll" : "hidden"
                     };
                 }
 				var div = this._divScroll = $DomUtils.xCreate({
