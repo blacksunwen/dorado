@@ -203,6 +203,7 @@
 		createTextDom: function() {
 			var textDom = document.createElement("INPUT");
 			textDom.className = "editor";
+            textDom.imeMode = "disabled";
 			if (!(dorado.Browser.msie && dorado.Browser.version < 7)) textDom.style.padding = 0;
 			if (dorado.Browser.msie && dorado.Browser.version > 7) {
 				textDom.style.top = 0;
@@ -246,7 +247,9 @@
 		},
 		
 		getValidValue: function(value) {
-			if (value != null) {
+            if (isNaN(value)) {
+                value = "";
+            } else if (value != null) {
 				if (value > this._max) value = this._max;
 				else if (value < this._min) value = this._min;
 			}
@@ -254,7 +257,8 @@
 		},
 		
 		post: function(force) {
-			var text = this.get("text"), value = text ? parseInt(text) : null;
+			var text = this.get("text"), value = text ? parseInt(text, 10) : null;
+            if (text != value) this._textDom.value = value;
 			var value2 = this.getValidValue(value);
 			if (value2 != value) {
 				this.set("value", value2);
@@ -270,7 +274,67 @@
 					this._textDom.select();
 				}, 0);
 			}
-		}
+		},
+
+        doOnKeyDown: function(event) {
+            var spinner = this, retval = true;
+            switch (event.keyCode) {
+                case 38:
+                    // up arrow
+                    if (!spinner._realReadOnly) {
+                        spinner.doStepUp();
+                        retval = false;
+                    }
+                    break;
+
+                case 40:
+                    // down arrow
+                    if (!spinner._realReadOnly) {
+                        spinner.doStepDown();
+                        retval = false;
+                    }
+                    break;
+
+                case 37: //left
+                case 39: //right
+                case 8: //tab
+                case 9: // backspace
+                case 13: //enter
+                case 35: //home
+                case 36: //end
+                case 46: //delete
+                    break;
+
+                case 187:
+                    // +
+                    var text = this.get("text"), value = text ? parseInt(text) : null;
+                    if (value) {
+                        value = Math.abs(value);
+                        spinner._textDom.value = value;
+                    }
+                    retval = false;
+                    break;
+
+                case 189:
+                    // -
+                    var text = this.get("text"), value = text ? parseInt(text) : null;
+                    if (value) {
+                        value = 0 - Math.abs(value);
+                        spinner._textDom.value = value;
+                    }
+                    retval = false;
+                    break;
+
+                default:
+                    // 48-57
+                    if (event.keyCode >= 48 && event.keyCode <= 57) {
+                    } else {
+                        retval = false;
+                    }
+                    break;
+            }
+            return retval;
+        }
 	});
 	
 	/**
