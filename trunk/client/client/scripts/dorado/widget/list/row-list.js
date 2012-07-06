@@ -24,11 +24,18 @@
 			/**
 			 * 高亮显示当前行。
 			 * @type boolean
-			 * @attribute
+			 * @attribute skipRefresh
 			 * @default true
 			 */
 			highlightCurrentRow: {
-				defaultValue: true
+				defaultValue: true,
+				skipRefresh: true,
+				setter: function(v) {
+					this._highlightCurrentRow = v;
+					if (this._currentRow) {
+						$fly(this._currentRow).toggleClass("current-row", !!v);
+					}
+				}
 			},
 			
 			/**
@@ -371,7 +378,7 @@
 				var table = this.createDataTable();
 				container.appendChild(table);
 			}
-			if (this._scrollMode == "viewport") {
+			if (this._currentScrollMode == "viewport") {
 				var beginBlankRow = this._beginBlankRow;
 				var endBlankRow = this._endBlankRow;
 				if (beginBlankRow) beginBlankRow.parentNode.style.display = "none";

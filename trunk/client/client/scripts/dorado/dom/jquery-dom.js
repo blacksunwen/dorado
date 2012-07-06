@@ -3,7 +3,7 @@
 	function num(el, prop) {
 		return parseInt($.curCSS(el.jquery ? el[0] : el, prop, true)) || 0;
 	};
-
+	
 	/**
 	 * @name jQuery#left
 	 * @function
@@ -69,7 +69,7 @@
 	 * </p>
 	 */
 	// =====
-		
+	
 	/**
 	 * @name jQuery#bringToFront
 	 * @function
@@ -79,49 +79,52 @@
 	$.fn.bringToFront = function() {
 		return this.css("zIndex", $DomUtils.bringToFront());
 	};
-
+	
 	// Extend left, top, right, bottom methods
-	$.each( [ "left", "top", "right", "bottom" ], function(i, name) {
+	$.each(["left", "top", "right", "bottom"], function(i, name) {
 		$.fn[name] = function(val) {
 			return this.css(name, val);
 		};
 	});
-
+	
 	// Extend position method
 	var oldPosition = $.fn.position;
 	$.fn.position = function(left, top) {
 		if (arguments.length) {
 			this.css("left", left).css("top", top);
 			return this;
-		}
-		else {
+		} else {
 			return oldPosition.call(this);
 		}
 	};
-
+	
 	// Extend outerHeight and outerWidth methods
-	$.each( [ "Height", "Width" ], function(i, name) {
+	$.each(["Height", "Width"], function(i, name) {
 		var tl = i ? "Left" : "Top"; // top or left
-			var br = i ? "Right" : "Bottom"; // bottom or right
-			var fn = $.fn["outer" + name];
-
-			$.fn["outer" + name] = function(arg) {
-				if (arg != null && arg.constructor != Boolean) {
-					if (/*$.browser.msie || */arg.constructor == String && arg.match('%')) {
-						this[name.toLowerCase()](arg);
+		var br = i ? "Right" : "Bottom"; // bottom or right
+		var fn = $.fn["outer" + name];
+		
+		$.fn["outer" + name] = function(arg) {
+			if (arg != null && arg.constructor != Boolean) {
+				if (arg.constructor == String) {
+					if (arg == "auto" || arg.match('%')) {
+						return this[name.toLowerCase()](arg);
+					} else if (arg == "none") {
+						return this.css(name.toLowerCase(), "");
 					}
-					else {
-						var n = parseInt(arg);
-						n = n - num(this, "padding" + tl) - num(this, "padding" + br)
-								- num(this, "border" + tl + "Width") - num(this, "border" + br + "Width");
-						this[name.toLowerCase()](n);
-					}
-					return this;
+				} else {
+					var n = parseInt(arg);
+					n = n - num(this, "padding" + tl) - num(this, "padding" + br) -
+					num(this, "border" + tl + "Width") -
+					num(this, "border" + br + "Width");
+					return this[name.toLowerCase()](n);
 				}
-				return fn.call(this, arg);
-			};
-		});
-
+				return this;
+			}
+			return fn.call(this, arg);
+		};
+	});
+	
 	/**
 	 * @name jQuery#addClassOnHover
 	 * @function
@@ -145,7 +148,7 @@
 		});
 		return this;
 	};
-
+	
 	/**
 	 * @name jQuery#addClassOnFocus
 	 * @function
@@ -169,7 +172,7 @@
 		});
 		return this;
 	};
-
+	
 	/**
 	 * @name jQuery#addClassOnClick
 	 * @function
@@ -193,7 +196,7 @@
 		});
 		return this;
 	};
-
+	
 	/**
 	 * @name jQuery#repeatOnClick
 	 * @function
@@ -206,11 +209,11 @@
 		this.mousedown(function() {
 			var timer;
 			if (typeof fn == "function") {
-                fn.apply(null, []);
+				fn.apply(null, []);
 				timer = setInterval(fn, interval || 100);
 			}
 			$(document).one("mouseup", function() {
-				if(timer){
+				if (timer) {
 					clearInterval(timer);
 					timer = null;
 				}
@@ -218,13 +221,13 @@
 		});
 		return this;
 	};
-
+	
 	var disableMouseWheel = function(event) {
 		event.preventDefault();
 	};
-
-
-
+	
+	
+	
 	/**
 	 * @name jQuery#fullWindow
 	 * @function
@@ -235,54 +238,62 @@
 		var self = this;
 		if (self.length == 1) {
 			var dom = self[0], containBlock = dom.parentNode, parentsOverflow = [];
-
-            function doFilter() {
-                if (this == document.body || (/(auto|scroll|hidden)/).test($.curCSS(this, 'overflow', 1) + $.curCSS(this, 'overflow-y', 1))) {
-                    parentsOverflow.push({
-                        parent: this,
-                        overflow: jQuery.curCSS(this, "overflow"),
-                        overflowY: jQuery.curCSS(this, "overflow-y"),
-                        scrollTop: this.scrollTop
-                    });
-                    var overflowValue = this == document.body ? "hidden" : "visible";
-                    jQuery(this).prop("scrollTop", 0).css({
-                        overflow: overflowValue,
-                        overflowY: overflowValue
-                    }).mousewheel(disableMouseWheel);
-                }
-            }
-
-            self.parents().filter(doFilter);
-
-			while(containBlock != document.body) {
+			
+			function doFilter() {
+				if (this == document.body || (/(auto|scroll|hidden)/).test($.curCSS(this, 'overflow', 1) + $.curCSS(this, 'overflow-y', 1))) {
+					parentsOverflow.push({
+						parent: this,
+						overflow: jQuery.curCSS(this, "overflow"),
+						overflowY: jQuery.curCSS(this, "overflow-y"),
+						scrollTop: this.scrollTop
+					});
+					var overflowValue = this == document.body ? "hidden" : "visible";
+					jQuery(this).prop("scrollTop", 0).css({
+						overflow: overflowValue,
+						overflowY: overflowValue
+					}).mousewheel(disableMouseWheel);
+				}
+			}
+			
+			self.parents().filter(doFilter);
+			
+			while (containBlock != document.body) {
 				if (jQuery(containBlock).css("position") != "static") {
 					break;
 				}
 				containBlock = containBlock.parentNode;
 			}
-
+			
 			options = options || {};
-
+			
 			var docWidth = jQuery(window).width(), docHeight = jQuery(window).height();
-
+			
 			var isAbs = (self.css("position") == "absolute");
-
+			
 			var backupStyle = {
 				position: dom.style.position,
 				left: dom.style.left,
 				top: dom.style.top,
 				zIndex: dom.style.zIndex
 			};
-
-			var poffset = jQuery(containBlock).offset() || {left: 0, top: 0}, position, left, top;
-
-			self.css({ position: "absolute", left: 0, top: 0 });
-
+			
+			var poffset = jQuery(containBlock).offset() ||
+			{
+				left: 0,
+				top: 0
+			}, position, left, top;
+			
+			self.css({
+				position: "absolute",
+				left: 0,
+				top: 0
+			});
+			
 			position = self.position();
-
+			
 			left = -1 * (poffset.left + position.left);
 			top = -1 * (poffset.top + position.top);
-
+			
 			var targetStyle = {
 				position: "absolute",
 				left: left,
@@ -294,7 +305,7 @@
 				targetStyle.width = docWidth;
 				targetStyle.height = docHeight;
 			}
-
+			
 			jQuery.data(dom, "fullWindow.backupStyle", backupStyle);
 			jQuery.data(dom, "fullWindow.parentsOverflow", parentsOverflow);
 			jQuery.data(dom, "fullWindow.backupSize", {
@@ -302,15 +313,18 @@
 				height: self.outerHeight()
 			});
 			self.css(targetStyle).bringToFront();
-
+			
 			var callback = options.callback;
 			if (callback) {
-				callback({width: docWidth, height: docHeight});
+				callback({
+					width: docWidth,
+					height: docHeight
+				});
 			}
 		}
 		return this;
 	};
-
+	
 	/**
 	 * @name jQuery#unfullWindow
 	 * @function
@@ -322,18 +336,16 @@
 		if (self.length == 1) {
 			options = options || {};
 			var dom = self[0], callback = options.callback;
-			var backupStyle = jQuery.data(dom, "fullWindow.backupStyle"),
-				backupSize = jQuery.data(dom, "fullWindow.backupSize"),
-				parentsOverflow = jQuery.data(dom, "fullWindow.parentsOverflow");
-
+			var backupStyle = jQuery.data(dom, "fullWindow.backupStyle"), backupSize = jQuery.data(dom, "fullWindow.backupSize"), parentsOverflow = jQuery.data(dom, "fullWindow.parentsOverflow");
+			
 			if (backupStyle) {
 				self.css(backupStyle);
 			}
-
+			
 			if (callback) {
 				callback(backupSize);
 			}
-
+			
 			if (parentsOverflow) {
 				for (var i = 0, j = parentsOverflow.length; i < j; i++) {
 					var parentOverflow = parentsOverflow[i];
@@ -343,12 +355,12 @@
 					}).prop("scrollTop", parentOverflow.scrollTop).unmousewheel(disableMouseWheel);
 				}
 			}
-
+			
 			jQuery.data(dom, "fullWindow.backupStyle", null);
 			jQuery.data(dom, "fullWindow.backupSize", null);
 			jQuery.data(dom, "fullWindow.parentsOverflow", null);
 		}
 		return this;
 	};
-
+	
 })(jQuery);

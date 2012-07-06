@@ -21,6 +21,7 @@ public class Trigger extends Component {
 	private String icon;
 	private String iconClass;
 	private boolean editable = true;
+	private boolean buttonVisible = true;
 
 	public String getIcon() {
 		return icon;
@@ -48,4 +49,14 @@ public class Trigger extends Component {
 	public void setEditable(boolean editable) {
 		this.editable = editable;
 	}
+
+	@ClientProperty(escapeValue = "true")
+	public boolean isButtonVisible() {
+		return buttonVisible;
+	}
+
+	public void setButtonVisible(boolean buttonVisible) {
+		this.buttonVisible = buttonVisible;
+	}
+
 }

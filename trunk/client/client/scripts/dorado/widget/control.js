@@ -1312,16 +1312,21 @@
 		if(control) {
 			control.setFocus();
 		} else {
-			var nodeName = document.activeElement && document.activeElement.nodeName.toLowerCase();
-			if (nodeName != "input" && nodeName != "textarea") {
-				if (document.body) {
-					setTimeout(function() {
-						if (dorado._LAST_FOCUS_CONTROL === null) {
-							document.body.focus();
-							dorado.widget.onControlGainedFocus(null);
-						}
-					}, 0);
+			if (dorado.Browser.msie && document.activeElement) {
+				var activeControl = dorado.widget.Control.findParentControl(document.activeElement);
+				if (activeControl && !(activeControl instanceof dorado.widget.View)) {
+					var nodeName = document.activeElement.nodeName.toLowerCase();
+					if (nodeName == "input" || nodeName == "textarea") return;
 				}
+			}
+			
+			if (document.body) {
+				setTimeout(function() {
+					if (dorado._LAST_FOCUS_CONTROL === null) {
+						document.body.focus();
+						dorado.widget.onControlGainedFocus(null);
+					}
+				}, 0);
 			}
 		}
 	};

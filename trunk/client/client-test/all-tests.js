@@ -110,6 +110,7 @@ var ALL_JS_PAGES = [
 	"client/client-test/widget/form/autoform-test.html",
 	"client/client-test/widget/form/spinner-test.html",
 	"client/client-test/widget/form/data-message-test.html",
+	"client/client-test/widget/form/tag-editor-test.html",
 	
 	"client/client-test/widget/data-control/data-pilot-test.html",
 

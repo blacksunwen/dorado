@@ -109,7 +109,7 @@
 			
 			modified: {
 				getter: function() {
-					return (this._focused) ? (this._lastPost == this.doGetText()) : false;
+					return (this._focused) ? (this._lastPost != this.get("text")) : false;
 				}
 			},
 			
@@ -254,15 +254,17 @@
 				for (var i = triggers.length - 1; i >= 0; i--) {
 					trigger = triggers[i];
 					triggerButton = trigger.createTriggerButton(this);
-					triggerButton.set("style", {
-						position: "absolute",
-						top: 0,
-						right: this._triggersWidth + "px"
-					});
-					triggerButtons.push(triggerButton);
-					this.registerInnerControl(triggerButton);
-					triggerButton.render(this._dom);
-					this._triggersWidth += triggerButton.getDom().offsetWidth;
+					if (triggerButton) {
+						triggerButton.set("style", {
+							position: "absolute",
+							top: 0,
+							right: this._triggersWidth + "px"
+						});
+						triggerButtons.push(triggerButton);
+						this.registerInnerControl(triggerButton);
+						triggerButton.render(this._dom);
+						this._triggersWidth += triggerButton.getDom().offsetWidth;
+					}
 				}
 				this.doOnResize = this.resizeTextDom;
 				this.resizeTextDom();
@@ -302,7 +304,7 @@
 						messages = e.getMessages(this._property);
 					}
 					
-					if (timestamp != this.timestamp) {
+					if (timestamp != this.timestamp && (!this._focused || !this.get("modified"))) {
 						this.set("value", value);
 						this.timestamp = timestamp;
 					}
@@ -403,19 +405,18 @@
 			if (this._realReadOnly) return;
 			
 			this._focusTime = new Date();
-			this._lastPost = this._lastObserve = this.doGetText();
-			
+			this._lastPost = this._lastObserve = this.get("text");
 			
 			this._editorFocused = true;
 			if (this._useBlankText) this.doSetText('');
 			
-			if (this._editObserverId) clearInterval(this._editObserverId);
-			this._editObserverId = $setInterval(this, function() {
+			dorado.Toolkits.setDelayedAction(this, "$editObserverTimerId", function() {
 				var text = this.get("text");
 				if (this._lastObserve != text) {
 					this._lastObserve = text;
 					this.textEdited();
 				}
+				dorado.Toolkits.setDelayedAction(this, "$editObserverTimerId", arguments.callee, 50);
 			}, 50);
 			
 			if (triggers) {
@@ -431,8 +432,7 @@
 			if (dorado.Browser.msie && dorado.Browser.version < 9) this._textDom.readOnly = false;
 			if (this._realReadOnly) return;
 			
-			if (this._editObserverId) clearInterval(this._editObserverId);
-			delete this._editObserverId;
+			dorado.Toolkits.cancelDelayedAction(this, "$editObserverTimerId");
 			this.post();
 			
 			this._editorFocused = false;
