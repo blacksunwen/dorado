@@ -121,11 +121,6 @@
 			}
 		},
 		
-		constructor: function() {
-			$invokeSuper.call(this, arguments);
-			this._triggerChanged = true;
-		},
-		
 		getSpinnerTriggers: function() {
 			if (!this._showSpinTrigger) return [];
 			if (!this._spinTrigger) {
@@ -204,10 +199,11 @@
 			var textDom = document.createElement("INPUT");
 			textDom.className = "editor";
             textDom.imeMode = "disabled";
-			if (!(dorado.Browser.msie && dorado.Browser.version < 7)) textDom.style.padding = 0;
 			if (dorado.Browser.msie && dorado.Browser.version > 7) {
 				textDom.style.top = 0;
 				textDom.style.position = "absolute";
+			} else {
+				textDom.style.padding = 0;
 			}
 			return textDom;
 		},

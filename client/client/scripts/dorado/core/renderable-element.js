@@ -17,16 +17,7 @@ dorado.RenderableElement = $extend(dorado.AttributeSupport, /** @scope dorado.Re
 		 * @attribute writeBeforeReady
 		 */
 		className: {
-			writeBeforeReady: true,
-			setter: function(v) {
-				if (this._className && this._dom) {
-					$fly(this._dom).removeClass(this._className);
-				}
-				this._className = v;
-				if (v && this._dom) {
-					$fly(this._dom).addClass(v);
-				}
-			}
+			writeBeforeReady: true
 		},
 		
 		/**

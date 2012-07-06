@@ -245,7 +245,7 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 			}
 
 			var tree = this._tree, nodes = this._nodes, expandedNodes = {}, currentNode = tree.get("currentNode");
-			if (currentNode && currentNode._parent == this) tree.set("currentNode", this);
+			if (currentNode && currentNode._parent == this) tree.set("currentNode", (this == tree._root) ? null : this);
 			
 			for (var it = nodes.iterator(); it.hasNext();) {
 				var node = it.next();

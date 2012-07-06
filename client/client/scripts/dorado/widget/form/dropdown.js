@@ -346,13 +346,13 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 		var dropdown = this, editorDom = editor.getDom();
 		var win = $DomUtils.getOwnerWindow(editorDom) || window;
 		var boxCache = getBoxCache(win);
-		var box = boxCache ? boxCache[dorado.id + '$' + this._id] : null;
+		var box = boxCache ? boxCache[dorado.id + '$' + dropdown._id] : null;
 		if (!box) {
-			box = this.createDropDownBox(editor);
+			box = dropdown.createDropDownBox(editor);
 			box.addListener("onDropDownBoxShow", function() {
 				if (dropdown.onDropDownBoxShow) dropdown.onDropDownBoxShow();
 			});
-			(this._view || $topView).registerInnerControl(box);
+			(dropdown._view || $topView).registerInnerControl(box);
 			
 			/*
 			var viewElement;
@@ -367,9 +367,9 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 			*/
 			box.render(win.document.body);
 			
-			if (boxCache) boxCache[dorado.id + '$' + this._id] = box;
+			if (boxCache) boxCache[dorado.id + '$' + dropdown._id] = box;
 		}
-		this._box = box;
+		dropdown._box = box;
 
 		box._onBlurListener = function() {
 			dropdown.close();
@@ -380,12 +380,42 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 
 		box._focusParent = editor;
 		
-		var realMaxHeight, targetElement = editor.getDom(), boxContainer = box.getDom().parentNode;
-		var boxContainerHeight = boxContainer.clientHeight;
+		box.addListener("afterShow", function() {
+			dropdown._relocateTimeId = setInterval(function() {
+				var offset = $fly(editorDom).offset();
+				if (offset.left != dropdown._currentEditorOffsetLeft || 
+					offset.top != dropdown._currentEditorOffsetTop ||
+					editorDom.offsetWidth != dropdown._currentEditorOffsetWidth ||
+					editorDom.offsetHeight != dropdown._currentEditorOffsetHeight) {
+					dropdown.locate();
+				}
+			}, 300);
+			
+			dropdown._relocateListener = function() {
+				dropdown.locate();
+			};
+			$fly(window).bind("resize", dropdown._relocateListener);
+		});
+		
+		dropdown.locate();
+	},
+	
+	locate: function() {
+		var dropdown = this, box = dropdown._box, editor = dropdown._editor;
+		if (!box || !editor) return;
+		
+		var editorDom = editor.getDom(), boxDom = box.getDom(), boxContainer = boxDom.parentNode;
+		var realMaxHeight, boxContainerHeight = boxContainer.clientHeight, boxVisible = box.get("visible");
 		realMaxHeight = boxContainerHeight;
 		
-		var offsetTargetTop = $fly(targetElement).offset().top;
-		var offsetTargetBottom = boxContainerHeight - offsetTargetTop - targetElement.offsetHeight;
+		var currentEditorOffset = $fly(editorDom).offset();
+		dropdown._currentEditorOffsetLeft = currentEditorOffset.left; 
+		dropdown._currentEditorOffsetTop = currentEditorOffset.top;   
+		dropdown._currentEditorOffsetWidth = editorDom.offsetWidth; 
+		dropdown._currentEditorOffsetHeight = editorDom.offsetHeight; 
+		
+		var offsetTargetTop = dropdown._currentEditorOffsetTop;
+		var offsetTargetBottom = boxContainerHeight - offsetTargetTop - dropdown._currentEditorOffsetHeight;
 		var vAlign = "bottom";
 		if (offsetTargetTop > offsetTargetBottom) {
 			vAlign = "top";
@@ -394,72 +424,74 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 		else {
 			realMaxHeight = offsetTargetBottom;
 		}
-		this._realMaxWidth = this._maxWidth;
-		this._realMaxHeight = (realMaxHeight < this._maxHeight) ? realMaxHeight : this._maxHeight;
+		dropdown._realMaxWidth = dropdown._maxWidth;
+		dropdown._realMaxHeight = (realMaxHeight < dropdown._maxHeight) ? realMaxHeight : dropdown._maxHeight;
 
-		var boxWidth = this._width || $fly(editorDom).outerWidth();
-		if (boxWidth > this._realMaxWidth) boxWidth = this._realMaxWidth;
-		if (boxWidth < this._minWidth) boxWidth = this._minWidth;
-		var boxHeight = this._height || 0;
-		if (boxHeight > this._realMaxHeight) boxHeight = this._realMaxHeight;
-		if (boxHeight < this._minHeight) boxHeight = this._minHeight;
+		var boxWidth = dropdown._width || $fly(editorDom).outerWidth();
+		if (boxWidth > dropdown._realMaxWidth) boxWidth = dropdown._realMaxWidth;
+		if (boxWidth < dropdown._minWidth) boxWidth = dropdown._minWidth;
+		var boxHeight = dropdown._height || 0;
+		if (boxHeight > dropdown._realMaxHeight) boxHeight = dropdown._realMaxHeight;
+		if (boxHeight < dropdown._minHeight) boxHeight = dropdown._minHeight;
 
-		var boxDom = box.getDom(), containerElement = box.getContainerElement();
-		with (boxDom.style) {
-			left = -screen.availWidth + "px";
-			top = 0;
-			width = boxWidth + "px";
-			height = boxHeight + "px";
-			visibility = "hidden";
-			display = '';
+		var containerElement = box.getContainerElement();
+		if (!boxVisible) {
+			with (boxDom.style) {
+				left = -screen.availWidth + "px";
+				top = 0;
+				width = boxWidth + "px";
+				height = boxHeight + "px";
+				visibility = "hidden";
+				display = '';
+			}
+		}
+		else {
+			with (boxDom.style) {
+				width = boxWidth + "px";
+				height = boxHeight + "px";
+			}
 		}
 
-		this.initDropDownBox(box, editor);
+		dropdown.initDropDownBox(box, editor);
 		box.init(editor);
-
-		if (!this._width) {
+		
+		if (!dropdown._width) {
 			boxWidth = (dorado.Browser.mozilla) ? containerElement.firstChild.offsetWidth
 					: containerElement.scrollWidth;
-			if (boxWidth > this._realMaxWidth) boxWidth = this._realMaxWidth;
-			if (boxWidth < this._minWidth) boxWidth = this._minWidth;
+			if (boxWidth > dropdown._realMaxWidth) boxWidth = dropdown._realMaxWidth;
+			if (boxWidth < dropdown._minWidth) boxWidth = dropdown._minWidth;
 		}
-		if (!this._height) {
+		if (!dropdown._height) {
 			boxHeight = (dorado.Browser.mozilla) ? containerElement.firstChild.offsetHeight
 					: containerElement.scrollHeight;
-			if (boxHeight > this._realMaxHeight) boxHeight = this._realMaxHeight;
-			if (boxHeight < this._minHeight) boxHeight = this._minHeight;
+			if (boxHeight > dropdown._realMaxHeight) boxHeight = dropdown._realMaxHeight;
+			if (boxHeight < dropdown._minHeight) boxHeight = dropdown._minHeight;
 		}
 		if (vAlign == "top" && boxHeight < offsetTargetBottom) {
 			vAlign = "bottom";
 		}
 		
-		var widthOverflow = boxDom.offsetParent.clientWidth - ($fly(targetElement).offset().left + boxWidth);
+		var widthOverflow = boxDom.offsetParent.clientWidth - ($fly(editorDom).offset().left + boxWidth);
 		if (widthOverflow > 0) widthOverflow = 0;
 		
 		boxDom.style.width = boxWidth + "px";
 		boxDom.style.height = boxHeight + "px";
-		box.show({
-			anchorTarget : editor,
-			editor : editor,
-			align : "innerleft",
-			offsetLeft: widthOverflow,
-			vAlign : vAlign,
-			autoAdjustPosition: false
-		});
-
-		if (win._doradoCurrentDropDown === undefined) {
-			$fly(win.document.body).mousewheel(function(evt) {
-				if (win._doradoCurrentDropDown) {
-					var box = win._doradoCurrentDropDown.get("box");
-					if (box) {
-						if (!$DomUtils.isOwnerOf(evt.srcElement, box.getDom())) {
-							win._doradoCurrentDropDown.close();
-						}
-					}
-				}
+		if (boxVisible) {
+			$DomUtils.dockAround(boxDom, editorDom, {
+				align: "innerleft",
+				vAlign: vAlign,
+				autoAdjustPosition: false
+			});
+		} else {
+			box.show({
+				anchorTarget: editor,
+				editor: editor,
+				align: "innerleft",
+				offsetLeft: widthOverflow,
+				vAlign: vAlign,
+				autoAdjustPosition: false
 			});
 		}
-		win._doradoCurrentDropDown = this;
 	},
 
 	/**
@@ -468,100 +500,107 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 	 * 如果设置此参数的值为undefined，那么相当于只是简单的关闭下拉框而不会向编辑框传递任何数值。
 	 */
 	close : function(selectedValue) {
-		var editor = this._editor;
+		var dropdown = this;
+		
+		clearInterval(dropdown._relocateTimeId);
+		$fly(window).unbind("resize", dropdown._relocateListener);
+		
+		var editor = dropdown._editor;
 		var eventArg = {
 			editor : editor,
 			selectedValue : selectedValue,
 			processDefault : true
 		};
-		this.fireEvent("onClose", this, eventArg);
+		dropdown.fireEvent("onClose", dropdown, eventArg);
 
-		var box = this._box;
+		var box = dropdown._box;
 		if (!box) return;
 					
 		var entityForAssignment;
-		if (this.getEntityForAssignment) {
-			entityForAssignment = this.getEntityForAssignment();
+		if (dropdown.getEntityForAssignment) {
+			entityForAssignment = dropdown.getEntityForAssignment();
 		}
 		
-		this._box = null;
-		this._editor = null;
+		dropdown._box = null;
+		dropdown._editor = null;
 
-		var self = this;
 		editor.removeListener("onBlur", box._onBlurListener);
 		box.hide();
 
 		if (eventArg.selectedValue !== undefined) {
-			this.fireEvent("onValueSelect", this, eventArg);
+			dropdown.fireEvent("onValueSelect", dropdown, eventArg);
 			if (eventArg.processDefault && eventArg.selectedValue !== undefined) {
-				var lastPost = editor._lastPost;
-				try {
-					selectedValue = eventArg.selectedValue;
-					entityForAssignment = entityForAssignment || selectedValue;
-
-					var targetEntity = (editor._entity || editor._cellEditor && editor._cellEditor.data);
-					if (this._assignmentMap && entityForAssignment && entityForAssignment instanceof Object && targetEntity && targetEntity instanceof Object) {
-						var assignmentMap = this._assignmentMap, maps = [];
-						assignmentMap = assignmentMap.replace(/,/g, ";").split(';');
-						for ( var i = 0; i < assignmentMap.length; i++) {
-							var map = assignmentMap[i], index = map.indexOf('=');
-							if (index >= 0) {
-								maps.push({
-									writeProperty : map.substring(0, index),
-									readProperty : map.substring(index + 1)
-								});
-							} else {
-								maps.push({
-									writeProperty : map,
-									readProperty : map
-								});
-							}
-						}
-
-						for ( var i = 0; i < maps.length; i++) {
-							var map = maps[i], value;
-							if (map.readProperty == "$this") {
-								value = entityForAssignment;
-							} else {
-								value = (entityForAssignment instanceof dorado.Entity) ? entityForAssignment.get(map.readProperty) : entityForAssignment[map.readProperty];
-							}
-
-							if (value instanceof dorado.Entity || value instanceof dorado.EntityList) {
-								value = dorado.Core.clone(value);
-							}
-
-							if (targetEntity instanceof dorado.Entity)
-								targetEntity.set(map.writeProperty, value);
-							else
-								targetEntity[map.writeProperty] = value;
-						}
-						
-						var shouldSetEditor = true;
-						if (editor._property && editor._dataSet) {
-							for (var i = 0; i < maps.length; i++) {
-								if (maps[i].writeProperty == editor._property) {
-									shouldSetEditor = false;
-									break;
-								}
-							}
-						}
-						if (shouldSetEditor) editor.set("value", selectedValue);
-					} else {
-						if (selectedValue instanceof dorado.Entity || selectedValue instanceof dorado.EntityList) {
-							selectedValue = dorado.Core.clone(selectedValue);
-						}
-						editor.set("value", selectedValue);
-					}
-				} finally {
-					editor._lastPost = lastPost;
-				}
-				if (this._postValueOnSelect) editor.post();
+				dropdown.assignValue(editor, entityForAssignment, eventArg);
 			}
 		}
 		
 		var editorDom = editor.getDom();
 		var win = $DomUtils.getOwnerWindow(editorDom) || window;
 		win._doradoCurrentDropDown = null;
+	},
+	
+	assignValue: function(editor, entityForAssignment, eventArg) {
+		var lastPost = editor._lastPost;
+		try {
+			selectedValue = eventArg.selectedValue;
+			entityForAssignment = entityForAssignment || selectedValue;
+			
+			var targetEntity = (editor._entity || editor._cellEditor && editor._cellEditor.data);
+			if (this._assignmentMap && entityForAssignment && entityForAssignment instanceof Object && targetEntity && targetEntity instanceof Object) {
+				var assignmentMap = this._assignmentMap, maps = [];
+				assignmentMap = assignmentMap.replace(/,/g, ";").split(';');
+				for (var i = 0; i < assignmentMap.length; i++) {
+					var map = assignmentMap[i], index = map.indexOf('=');
+					if (index >= 0) {
+						maps.push({
+							writeProperty: map.substring(0, index),
+							readProperty: map.substring(index + 1)
+						});
+					} else {
+						maps.push({
+							writeProperty: map,
+							readProperty: map
+						});
+					}
+				}
+				
+				for (var i = 0; i < maps.length; i++) {
+					var map = maps[i], value;
+					if (map.readProperty == "$this") {
+						value = entityForAssignment;
+					} else {
+						value = (entityForAssignment instanceof dorado.Entity) ? entityForAssignment.get(map.readProperty) : entityForAssignment[map.readProperty];
+					}
+					
+					if (value instanceof dorado.Entity || value instanceof dorado.EntityList) {
+						value = dorado.Core.clone(value);
+					}
+					
+					if (targetEntity instanceof dorado.Entity) targetEntity.set(map.writeProperty, value);
+					else targetEntity[map.writeProperty] = value;
+				}
+				
+				var shouldSetEditor = true;
+				if (editor._property && editor._dataSet) {
+					for (var i = 0; i < maps.length; i++) {
+						if (maps[i].writeProperty == editor._property) {
+							shouldSetEditor = false;
+							break;
+						}
+					}
+				}
+				if (shouldSetEditor) editor.set("value", selectedValue);
+			} else {
+				if (selectedValue instanceof dorado.Entity || selectedValue instanceof dorado.EntityList) {
+					selectedValue = dorado.Core.clone(selectedValue);
+				}
+				editor.set("value", selectedValue);
+			}
+		}
+		finally {
+			editor._lastPost = lastPost;
+		}
+		if (this._postValueOnSelect) editor.post();
 	}
 
 });
@@ -653,8 +692,9 @@ dorado.widget.DropDownBox = $extend([ dorado.widget.Control, dorado.widget.Float
 	},
 
 	init : function(editor) {
-		if (this._control)
+		if (this._control) {
 			this._control.render(this.getContainerElement());
+		}
 	},
 
 	getContainerElement : function() {

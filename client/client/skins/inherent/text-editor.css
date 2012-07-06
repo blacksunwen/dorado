@@ -3,6 +3,7 @@
 }
 
 .i-text-box .editor {
+    background: none;
 	white-space: nowrap;
     border: 0;
     margin: 0;
@@ -30,6 +31,7 @@
 }
 
 .i-text-area .textarea {
+    background: none;
 	border: 0;
 	margin: 0;
 	padding: 0;

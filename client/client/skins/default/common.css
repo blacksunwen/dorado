@@ -31,7 +31,7 @@ body, input, textarea, button {
     background: url(common/model-cover-bg.gif);
 }
 
-.d-ie .d-modal-mask {
+.d-ie6 .d-modal-mask {
     filter: alpha(opacity = 30);
     opacity: 0.3;
     background: gray;

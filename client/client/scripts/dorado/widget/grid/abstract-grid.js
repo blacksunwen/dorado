@@ -591,11 +591,17 @@
 			/**
 			 * 高亮显示当前行。
 			 * @type boolean
-			 * @attribute
+			 * @attribute skipRefresh
 			 * @default true
 			 */
 			highlightCurrentRow: {
-				defaultValue: true
+				defaultValue: true,
+				skipRefresh: true,
+				setter: function(v) {
+					this._highlightCurrentRow = v;
+					if (this._innerGrid) this._innerGrid.set("highlightCurrentRow", v);
+					if (this._fixedInnerGrid) this._fixedInnerGrid.set("highlightCurrentRow", v);
+				}
 			},
 			
 			/**
@@ -1080,6 +1086,16 @@
 			$invokeSuper.call(this, arguments);
 		},
 		
+		hasRealWidth: function() {
+			var width = this.getRealWidth();
+			return width != null && width != "none" && width != "auto";
+		},
+		
+		hasRealHeight: function() {
+			var height = this.getRealHeight();
+			return height != null && height != "none" && height != "auto";
+		},
+		
 		doGet: function(attr) {
 			var c = attr.charAt(0);
 			if (c == '#' || c == '&') {
@@ -1255,7 +1271,7 @@
 					var wrapper = this._fixedInnerGridWrapper = document.createElement("DIV");
 					with (wrapper.style) {
 						overflowX = "visible";
-						overflowY = this.getRealHeight() ? "hidden" : "visible";
+						overflowY = (!this.hasRealHeight()) ? "hidden" : "visible";
 						position = "absolute";
 						left = top = 0;
 					}
@@ -1269,8 +1285,8 @@
 				if (!wrapper) {
 					var wrapper = this._innerGridWrapper = document.createElement("DIV");
 					with (wrapper.style) {
-						overflowX = this.getRealWidth() ? "hidden" : "visible";
-						overflowY = this.getRealHeight() ? "hidden" : "visible";
+						overflowX = (!this.hasRealWidth()) ? "hidden" : "visible";
+						overflowY = (!this.hasRealHeight()) ? "hidden" : "visible";
 						position = "absolute";
 						left = top = 0;
 					}
@@ -1289,7 +1305,7 @@
 			}
 			var ignoreItemTimestamp = (this._ignoreItemTimestamp === undefined) ? true : this._ignoreItemTimestamp;
 			
-			if (!this.getRealWidth() || /*!this.getRealHeight() || */this._groupProperty) {
+			if (!this.hasRealWidth() || /*!this.hasRealHeight() || */this._groupProperty) {
 				this._realFixedColumnCount = 0;
 			} else {
 				this._realFixedColumnCount = this._fixedColumnCount;
@@ -1322,8 +1338,8 @@
 			var divScroll = this._divScroll, fixedInnerGrid = this._fixedInnerGrid, fixedInnerGridWrapper = this._fixedInnerGridWrapper;
 			var innerGrid = getInnerGrid.call(this), innerGridWrapper = this._innerGridWrapper;
 
-			var xScroll = this.xScroll = !!this.getRealWidth();
-			var yScroll = this.yScroll = !!this.getRealHeight();
+			var xScroll = this.xScroll = this.hasRealWidth();
+			var yScroll = this.yScroll = this.hasRealHeight();
 			var domMode;
 			if (this._realFixedColumnCount > 0) {
 				domMode = xScroll ? 2 : 0;
@@ -1398,7 +1414,7 @@
 			if (this._currentScrollMode != this._scrollMode && this._scrollMode != "viewport") {
 				itemModel.setScrollPos(0);
 			}
-			if (!this.getRealHeight()) this._scrollMode = "simple";
+			if (!this.hasRealHeight()) this._scrollMode = "simple";
 			this._currentScrollMode = this._scrollMode;
 
 			// 开始刷新内容
@@ -1533,8 +1549,8 @@
 
 		fixSizeBugs: function() {
 			var dom = this.getDom(), domMode = this._domMode;
-			var xScroll = this.xScroll = !!this.getRealWidth();
-			var yScroll = this.yScroll = !!this.getRealHeight();
+			var xScroll = this.xScroll = this.hasRealWidth();
+			var yScroll = this.yScroll = this.hasRealHeight();
 
 			if (!xScroll) {
 				// 修正最外层DIV的宽度被内容撑破的BUG
@@ -3097,7 +3113,7 @@
 		},
 
 		updateContainerHeight: function(container) {
-			if (this.grid.getRealHeight()) {
+			if (this.grid.hasRealHeight()) {
 				var tableFrame = this.getDom();
 				var h = (tableFrame.parentNode.offsetHeight -
 				(this._headerTable ? this._headerTable.offsetHeight : 0) -

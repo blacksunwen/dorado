@@ -140,6 +140,7 @@
         "widget/form/form-element.js",
         "widget/form/autoform.js",
 		"widget/form/spinner.js",
+		"widget/form/tag-editor.js",
 
 		"widget/data-control/data-pilot.js",
 

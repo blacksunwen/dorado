@@ -36,7 +36,7 @@ dorado.widget.tree.NodeList = $extend(dorado.util.KeyedArray, {
 			var newCurrent;
 			var size = parentNode._nodes.size;
 			if (size == 1) {
-				newCurrent = parentNode;
+				newCurrent = (parentNode == tree._root) ? null : parentNode;
 			} else {
 				var i = 0;
 				if (index < size - 1) i = index + 1;
@@ -44,7 +44,6 @@ dorado.widget.tree.NodeList = $extend(dorado.util.KeyedArray, {
 				newCurrent = parentNode._nodes.get(i);
 			}
 			tree.set("currentNode", newCurrent);
-			
 		}
 		
 		node._setTree(null);

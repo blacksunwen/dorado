@@ -66,6 +66,16 @@ dorado.widget.Trigger = $extend(dorado.widget.Component, /** @scope dorado.widge
 		 */
 		editable: {
 			defaultValue: true
+		},
+		
+		/**
+		 * 其在对应编辑框上的触发按钮是否可见。
+		 * @type boolean
+		 * @attribute
+		 * @default true
+		 */
+		buttonVisible: {
+			defaultValue: true
 		}
 	},
 	
@@ -141,6 +151,8 @@ dorado.widget.Trigger = $extend(dorado.widget.Component, /** @scope dorado.widge
 	 */
 	createTriggerButton: function(editor) {
 		var trigger = this;
+		if (!trigger._buttonVisible) return;
+		
 		var control = new dorado.widget.SimpleIconButton({
 			exClassName: (trigger._inherentClassName || '') + " " + (trigger._className || '') + " " + (trigger._exClassName || ''),
 			icon: trigger._icon,

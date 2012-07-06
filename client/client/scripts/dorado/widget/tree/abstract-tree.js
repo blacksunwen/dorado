@@ -689,6 +689,10 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 
 	onNodeDetached: function(node) {
 		if (this._itemModel) {
+			if (this.get("currentNode") == node) {
+				this.set("currentNode", null);
+			}
+			
 			this._itemModel.onNodeDetached(node);
 			if (this._root != node) {
 				this.fireEvent("onNodeDetached", this, {

@@ -9,7 +9,7 @@
 		},
 		execute: function(editor) {
 			var dropDown = this._dropDown;
-			if (dropDown) dropDown.onFilterItems(editor.get("text"));
+			if (dropDown) dropDown.onFilterItems(editor.doGetText());
 		}
 	});
 	
@@ -107,10 +107,10 @@
 			 * 执行数据筛选的最短时间间隔。
 			 * @type int
 			 * @attribute
-			 * @default 300
+			 * @default 240
 			 */
 			minFilterInterval: {
-				defaultValue: 300
+				defaultValue: 240
 			},
 			
 			/**
@@ -150,7 +150,10 @@
 		},
 		
 		getSelectedValue: function() {
-			var rowList = this.get("box.control"), value = rowList.getCurrentItem();
+			var rowList = this.get("box.control");
+			if (!this._rowSelected) return;
+			
+			var value = rowList.getCurrentItem();
 			if (value && this._property) {
 				if (value instanceof dorado.Entity) {
 					value = value.get(this._property);
@@ -171,6 +174,7 @@
 			var config = {
 				style: "border: none",
 				onDataRowClick: function(rowList) {
+					rowList.set("highlightCurrentRow", dropDown._rowSelected = true);
 					dropDown.close(dropDown.getSelectedValue());
 				},
 				onFilterItem: function(rowList, arg) {
@@ -236,8 +240,9 @@
 		initDropDownBox: function(box, editor) {
 			$invokeSuper.call(this, arguments);
 			
-			var rowList = box.get("control")
-			if (this.initDropDownData) {
+			var rowList = box.get("control");
+			rowList.set("highlightCurrentRow", this._rowSelected = false);
+			if (!box.get("visible") && this.initDropDownData) {
 				rowList._ignoreRefresh++;
 				this.initDropDownData(box, editor);
 				rowList._ignoreRefresh--;
@@ -251,9 +256,9 @@
 			if (!this._height) {
 				var useMaxHeight = true, refreshed = false;
 				if (this._realMaxHeight &&
-				(!itemCount || (this._realMaxHeight / (rowList._rowHeight + 2) > (itemCount + 1)))) {
+					(!itemCount || (this._realMaxHeight / (rowList._rowHeight + 2) > (itemCount + 1)))) {
 					rowList.set({
-						height: "none",
+						height: "auto",
 						scrollMode: "simple"
 					});
 					
@@ -293,19 +298,18 @@
 			var rowList = this.get("box.control");
 			
 			var editor = this._editor;
-			if (this._dynaFilter && editor instanceof dorado.widget.AbstractTextEditor) {
+			if (this._dynaFilter && editor instanceof dorado.widget.AbstractTextBox) {
 				var dropDown = this;
 				var filterFn = this._box._onTextEditedListener = function() {
 					if (dropDown._filterOnTyping && dropDown.get("opened")) {
 						dorado.Toolkits.setDelayedAction(dropDown, "$filterTimeId", function() {
-							delete dropDown._filterTimeId;
-							dropDown.onFilterItems(editor.get("text"));
+							if (!dropDown._rowSelected) dropDown.onFilterItems(editor.doGetText());
 						}, dropDown._minFilterInterval);
 					}
 				};
-				var text = editor.get("text");
+				var text = editor.doGetText();
 				if (text && text.length > 0 && this._filterOnOpen) {
-					dropDown.onFilterItems(editor.get("text"));
+					dropDown.onFilterItems(text);
 				}
 				editor.addListener("onTextEdit", filterFn);
 			}
@@ -344,7 +348,7 @@
 				editor.set("trigger", triggers);
 			}
 			
-			if (editor instanceof dorado.widget.AbstractTextEditor) {
+			if (editor instanceof dorado.widget.AbstractTextBox) {
 				editor.removeListener("onTextEdit", this._box._onTextEditedListener);
 			}
 			$invokeSuper.call(this, arguments);
@@ -368,26 +372,57 @@
 			
 			var filterParams;
 			if (filterValue && filterValue.length > 0) {
-				var realFilterValue = filterValue.toUpperCase();
+				var realFilterValue = filterValue.toLowerCase();
 				var property = this._displayProperty || this._property;
 				filterParams = [{
 					property: property,
 					value: realFilterValue
 				}];
 			}
+			rowList.set("highlightCurrentRow", this._rowSelected = false);
 			rowList.filter(filterParams);
+			
+			this.locate();
 		},
 		
 		doOnEditorKeyDown: function(editor, evt) {
-			var retValue = true;
+			var dropdown = this, retValue = true;
 			if (this.get("opened")) {
 				var rowList = this.get("box.control");
 				switch (evt.keyCode) {
+					case 38: // up
+					case 40:{ // down 
+						if (!rowList._highlightCurrentRow) {
+							rowList.set("highlightCurrentRow", dropdown._rowSelected = true);
+							retValue = false;
+						} else {
+							rowList.addListener("onCurrentChange", function() {
+								var property = dropdown._displayProperty || dropdown._property;
+								var value = rowList.getCurrentItem();
+								if (value && property) {
+									if (value instanceof dorado.Entity) {
+										value = value.get(property);
+									} else {
+										value = value[property];
+									}
+								}
+								editor.doSetText(value);
+							}, {
+								once: true
+							});
+							retValue = rowList.onKeyDown(evt);
+						}
+						break;
+					}
 					case 13: // enter
-						this.close(this.getSelectedValue(rowList));
+						this.close(this.getSelectedValue());
 						retValue = false;
 						break;
 					default:
+						if (dropdown._rowSelected) {
+							rowList = dropdown.get("box.control");
+							rowList.set("highlightCurrentRow", dropdown._rowSelected = false);
+						}
 						retValue = rowList.onKeyDown(evt);
 				}
 			}
