@@ -326,7 +326,7 @@
 
         doOnResize: function() {
             var tab = this, dom = tab._dom, doms = tab._doms, width = tab._width;
-            if (tab instanceof dorado.widget.TabColumn) return;
+            if (tab._parent instanceof dorado.widget.TabColumn) return;
             $fly(dom).outerWidth(width);
             var leftEl = $fly(doms.tabLeft);
             var leftWidth = jQuery(dom).width() - (parseInt(leftEl.css("margin-left"), 10) || 0) - (parseInt(leftEl.css("margin-right"), 10) || 0)

@@ -270,7 +270,7 @@ dorado.widget.TabColumnControl = $extend(dorado.widget.TabColumn, /** @scope dor
         card.set("controls", controls);
         card.render(dom);
 
-        if (tabPlacement == "bottom") {
+        if (tabPlacement == "right") {
             dom.appendChild(tabcolumnDom);
         }
 
