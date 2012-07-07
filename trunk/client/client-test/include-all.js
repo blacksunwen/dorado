@@ -140,7 +140,6 @@
         "widget/form/form-element.js",
         "widget/form/autoform.js",
 		"widget/form/spinner.js",
-		"widget/form/tag-editor.js",
 
 		"widget/data-control/data-pilot.js",
 
@@ -194,7 +193,9 @@
 		"desktop/client/scripts/dorado/app.js",
 		"desktop/client/scripts/dorado/desktop.js",
 		"desktop/client/scripts/dorado/taskbar.js",
-		"desktop/client/scripts/dorado/shell.js"
+		"desktop/client/scripts/dorado/shell.js",
+		
+		"tag-editor/client/scripts/dorado/tag-editor.js"
 	];
 
 	var locale = "zh_CN"
@@ -224,7 +225,9 @@
     ];
 	
 	var addOnStyleSheets = [
- 		"desktop/client/skins/" + skin + "/desktop.css"
+ 		"desktop/client/skins/" + skin + "/desktop.css",
+ 		"tag-editor/client/skins/inherent/tag-editor.css",
+ 		"tag-editor/client/skins/" + skin + "/tag-editor.css"
  	];
 
 	var cacheBuster = "";
