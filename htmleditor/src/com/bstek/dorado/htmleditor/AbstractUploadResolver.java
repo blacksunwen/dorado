@@ -61,7 +61,7 @@ public abstract class AbstractUploadResolver extends AbstractResolver{
 				multipartResolver.setMaxUploadSize(getMaxUploadSize());
 				multipartRequest = multipartResolver.resolveMultipart(request);
 			} catch(MaxUploadSizeExceededException e) {
-				writeScript("<script>parent.uploadCallbackForHtmlEditor('Exception:MaxUploadSizeExceeded');</script>", request, response);
+				writeScript("<script>parent.uploadCallbackForHtmlEditor('Exception:超出了文件容量限制。');</script>", request, response);
 				return null;
 			}
 		} else if (request instanceof MultipartHttpServletRequest){
@@ -74,11 +74,16 @@ public abstract class AbstractUploadResolver extends AbstractResolver{
 		
 		String fileName = new String(uploadFile.getOriginalFilename().getBytes("ISO-8859-1"),"UTF-8"), fileSuffix = fileName.substring(fileName.lastIndexOf(".") + 1);
 		if (!isExtensionAllowed(fileSuffix)) {
-			writeScript("<script>parent.uploadCallbackForHtmlEditor('Exception:FileExtensionNotAllowed');</script>", request, response);
+			writeScript("<script>parent.uploadCallbackForHtmlEditor('Exception:该后缀名的文件不允许上传。');</script>", request, response);
 			return null;
 		}
 		
-		String url = doUploadFile(multipartRequest, uploadFile);
+		String url = null;
+		try {
+			url = doUploadFile(multipartRequest, uploadFile);
+		} catch(Exception e) {			
+			writeScript("<script>parent.uploadCallbackForHtmlEditor('Exception:" + e.getMessage() + "');</script>", request, response);
+		}
 
 		if (url == null) {
 			url = "";
