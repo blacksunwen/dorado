@@ -247,6 +247,8 @@
             index = tabs.indexOf(tab);
             tabDom = tab._dom;
 
+            debugger;
+
             if (tab._visible == visible) {
                 return;
             }

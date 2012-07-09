@@ -154,13 +154,13 @@ dorado.widget.TabControl = $extend(dorado.widget.TabBar, /** @scope dorado.widge
 /**
  * @author Frank Zhang (mailto:frank.zhang@bstek.com)
  * @component Base
- * @class 标签栏。
+ * @class 纵向标签页。
  * @extends dorado.widget.TabColumn
  */
-dorado.widget.TabColumnControl = $extend(dorado.widget.TabColumn, /** @scope dorado.widget.TabColumnControl.prototype **/ {
-    $className: "dorado.widget.TabColumnControl",
+dorado.widget.VerticalTabControl = $extend(dorado.widget.TabColumn, /** @scope dorado.widget.VerticalTabControl.prototype **/ {
+    $className: "dorado.widget.VerticalTabControl",
 
-    ATTRIBUTES: /** @scope dorado.widget.TabColumnControl.prototype **/ {
+    ATTRIBUTES: /** @scope dorado.widget.VerticalTabControl.prototype **/ {
         height: {
             defaultValue: 200,
             independent: false,

@@ -47,6 +47,17 @@
                         tabpage1.set("tabPlacement", tabpage1._tabPlacement == "top" ? "bottom" : "top");
                     }
                 }
+            }, {
+                caption: "SetTabVisible",
+                listener: {
+                    onClick: function(){
+                        var tabcontrol = this.id("tabcontrol"), tab = tabcontrol.getTab(1);
+                        if(tab){
+                            console.log("set visible:" + !tab._visible);
+                            tab.set("visible", !tab._visible);
+                        }
+                    }
+                }
             }]
         });
 
@@ -113,15 +124,14 @@
             tabs: [
                 {
                     $type: "Control",
-                    caption: "测试2",
+                    caption: "测试1",
                     control: new dorado.widget.Panel({
                         width: 400,
                         height: 200,
                         style: {
                             border: "5px black dotted"
                         }
-                    }),
-                    visible: false
+                    })
                 },
                 {
                     $type: "Control",
@@ -130,14 +140,14 @@
                 },
                 {
                     $type: "IFrame",
-                    caption: "测试1",
+                    caption: "测试3",
                     icon: "del.gif",
                     closeable: true,
                     path: "http://www.g.cn"
                 },
                 {
                     $type: "Control",
-                    caption: "测试3",
+                    caption: "测试4",
                     closeable: true,
                     disabled: true,
                     control: new dorado.widget.Panel({
@@ -149,7 +159,7 @@
                 },
                 {
                     $type: "IFrame",
-                    caption: "测试4",
+                    caption: "测试5",
                     closeable: true,
                     path: "http://www.bsdn.org"
                 }
@@ -163,7 +173,7 @@
                 },
                 onTabChange: function(self, arg) {
                     var tab = arg.newTab;
-                    console.log(tab.get("control"));
+                    //console.log(tab.get("control"));
                 }
             }
         });
