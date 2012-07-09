@@ -12,6 +12,14 @@
         return json;
     };
 
+    var yAxisToJSON = function() {
+        var json = $invokeSuper.call(this, arguments), labelsShortcut = this._labelsShortcut;
+        if (labelsShortcut) {
+            json.labels = labelsShortcut.split(",") ;
+        }
+        return json;
+    };
+
     /**
      * @name dorado.widget.ofc.axis
      * @namespace Axis NameSpace
@@ -391,7 +399,7 @@
                 }
             }
         },
-        toJSON: axisToJSON
+        toJSON: yAxisToJSON
     });
 
     /**
