@@ -88,7 +88,7 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 	<bean id="com.bstek.dorado.view.widget.base.tab.TabBar" parent="dorado.defaultComponentTypeRegister" />
 	<bean id="com.bstek.dorado.view.widget.base.tab.TabControl" parent="dorado.defaultComponentTypeRegister" />
 	<bean id="com.bstek.dorado.view.widget.base.tab.TabColumn" parent="dorado.defaultComponentTypeRegister" />
-	<bean id="com.bstek.dorado.view.widget.base.tab.TabColumnControl" parent="dorado.defaultComponentTypeRegister" />
+	<bean id="com.bstek.dorado.view.widget.base.tab.VerticalTabControl" parent="dorado.defaultComponentTypeRegister" />
 
 	<bean id="com.bstek.dorado.view.widget.base.SplitPanel" parent="dorado.defaultComponentTypeRegister" />
 	<bean id="com.bstek.dorado.view.widget.base.Slider" parent="dorado.defaultComponentTypeRegister" />
