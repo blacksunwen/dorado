@@ -81,7 +81,8 @@ public abstract class AbstractUploadResolver extends AbstractResolver{
 		String url = null;
 		try {
 			url = doUploadFile(multipartRequest, uploadFile);
-		} catch(Exception e) {			
+		} catch(Exception e) {
+			e.printStackTrace();
 			writeScript("<script>parent.uploadCallbackForHtmlEditor('Exception:" + e.getMessage() + "');</script>", request, response);
 		}
 
