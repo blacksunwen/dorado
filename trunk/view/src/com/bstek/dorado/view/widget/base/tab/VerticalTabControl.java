@@ -9,11 +9,11 @@ import com.bstek.dorado.view.annotation.Widget;
  * @since 2009-11-4
  */
 
-@Widget(name = "TabColumnControl", category = "General",
+@Widget(name = "VerticalTabControl", category = "General",
 		dependsPackage = "base-widget")
-@ClientObject(prototype = "dorado.widget.TabColumnControl",
-		shortTypeName = "TabColumnControl")
-public class TabColumnControl extends TabColumn {
+@ClientObject(prototype = "dorado.widget.VerticalTabControl",
+		shortTypeName = "VerticalTabControl")
+public class VerticalTabControl extends TabColumn {
 	private int tabColumnWidth = 200;
 	
 	@ClientProperty(escapeValue = "200")
