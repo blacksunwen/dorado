@@ -35,7 +35,7 @@
           </YAxis>
           <Elements>
             <Column>
-              <Property name="text">1996</Property>
+              <Property name="text">2006</Property>
               <Property name="dataSet">dsBars</Property>
               <Property name="color">#F6BD0F</Property>
               <Property name="bindingConfig">
@@ -43,7 +43,7 @@
               </Property>
             </Column>
             <Column>
-              <Property name="text">1997</Property>
+              <Property name="text">2007</Property>
               <Property name="dataSet">dsBars</Property>
               <Property name="color">#8BBA00</Property>
               <Property name="bindingConfig">
@@ -51,7 +51,7 @@
               </Property>
             </Column>
             <Column>
-              <Property name="text">1998</Property>
+              <Property name="text">2008</Property>
               <Property name="dataSet">dsBars</Property>
               <Property name="color">#AFD8F8</Property>
               <Property name="bindingConfig">
