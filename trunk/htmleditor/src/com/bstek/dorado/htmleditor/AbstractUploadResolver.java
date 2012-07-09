@@ -105,6 +105,7 @@ public abstract class AbstractUploadResolver extends AbstractResolver{
 	}
 	
 	protected void writeScript(String script, HttpServletRequest request, HttpServletResponse response) throws IOException{
+		response.setContentType("text/html");
 		OutputStream out = response.getOutputStream();
 		PrintWriter writer = new PrintWriter(new OutputStreamWriter(out, characterEncoding));
 		try {
