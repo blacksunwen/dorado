@@ -170,9 +170,12 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 	 */
 	doSetCollapsed: function(collapsed, animate) {
         function beforeCollapsedChange(panel, collapsed) {
+            if (collapsed) {
+                panel._heightBeforeCollapse = panel.getRealHeight();
+            }
             panel._doOnResize(collapsed);
 
-            if (panel._parent && collapsed == false) {
+            if (panel._parent && collapsed === false) {
                 var layout = panel._parent._layout;
                 if(layout && layout instanceof dorado.widget.layout.AnchorLayout && layout._attached && layout.onControlSizeChange) {
                     layout.onControlSizeChange(panel);
@@ -738,6 +741,10 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 				}
 				$fly(dom).height("auto");
 			} else {
+                if (collapsed === false && panel._heightBeforeCollapse) {
+                    height = panel._heightBeforeCollapse;
+                    panel._heightBeforeCollapse = null;
+                }
 				height -= ((parseInt(jQuery.curCSS(dom, "borderTopWidth")) || 0) +
 					(parseInt(jQuery.curCSS(dom, "borderBottomWidth")) || 0));
 				var buttonPanelHeight = 0, captionBarHeight = 0;
