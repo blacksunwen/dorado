@@ -111,6 +111,10 @@ dorado.widget.FieldSet = $extend(dorado.widget.AbstractPanel, /** @scope dorado.
 			if (fieldset._collapseable &&collapsed) {
 				$fly(dom).height("auto");
 			} else {
+                if (collapsed === false && fieldset._heightBeforeCollapse) {
+                    height = fieldset._heightBeforeCollapse;
+                    fieldset._heightBeforeCollapse = null;
+                }
 				var buttonPanelHeight = 0, captionCtHeight = 0;
 				if (doms.buttonPanel) {
 					buttonPanelHeight = $fly(doms.buttonPanel).outerHeight(true);
@@ -247,6 +251,10 @@ dorado.widget.GroupBox = $extend(dorado.widget.AbstractPanel, /** @scope dorado.
 			if (groupbox._collapseable && collapsed) {
 				$fly(dom).height("auto");
 			} else {
+                if (collapsed === false && groupbox._heightBeforeCollapse) {
+                    height = groupbox._heightBeforeCollapse;
+                    groupbox._heightBeforeCollapse = null;
+                }
 				var buttonPanelHeight = 0, captionCtHeight = 0;
 				if (doms.buttonPanel) {
 					buttonPanelHeight = $fly(doms.buttonPanel).outerHeight(true);
