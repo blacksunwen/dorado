@@ -220,7 +220,8 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			for (var i = 0; i < allObjects.length; i++) {
 				var object = allObjects[i];
 				if (object._view == this || object.view == this ||
-				(object.ATTRIBUTES.view && object.get("view") == this)) {
+				(object.ATTRIBUTES.view && object.get("view") == this) ||
+				(object.getListenerScope && object.getListenerScope() == this)) {
 					objects.push(object);
 				}
 			}
@@ -528,18 +529,18 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 				dorado.windowClosed = true;
 				if (!topView._destroyed) topView.destroy();
 			}).bind(dorado.Browser.isTouch ? "orientationchange" : "resize", function() {
-                    if (topView.onResizeTimerId) {
-                        clearTimeout(topView.onResizeTimerId);
-                        delete topView.onResizeTimerId;
-                    }
-
-                    topView.onResizeTimerId = setTimeout(function() {
-                        delete topView.onResizeTimerId;
-                        topView._children.each(function(child) {
-                            if (child.resetDimension && child._rendered && child._visible) child.resetDimension();
-                        });
-                    }, 200);
-                });
+				if (topView.onResizeTimerId) {
+					clearTimeout(topView.onResizeTimerId);
+					delete topView.onResizeTimerId;
+				}
+				
+				topView.onResizeTimerId = setTimeout(function() {
+					delete topView.onResizeTimerId;
+					topView._children.each(function(child) {
+						if (child.resetDimension && child._rendered && child._visible) child.resetDimension();
+					});
+				}, 200);
+			});
 		}, 30);
 	});
 	
