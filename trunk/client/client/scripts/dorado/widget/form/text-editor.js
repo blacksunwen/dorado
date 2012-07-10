@@ -286,9 +286,10 @@
 					if (propertyDef) {
 						readOnly = (bindingInfo.entity == null) || readOnly || propertyDef._readOnly;
 						
-						if (!this._displayFormat) this._displayFormat = propertyDef._displayFormat;
-						if (!this._inputFormat) this._inputFormat = propertyDef._inputFormat;
-						if (!propertyDef._mapping && !this._dataType) this._dataType = propertyDef._dataType;
+						var watcher = this.getAttributeWatcher();
+						if (!watcher.getWritingTimes("displayFormat")) this._displayFormat = propertyDef._displayFormat;
+						if (!watcher.getWritingTimes("inputFormat")) this._inputFormat = propertyDef._inputFormat;
+						if (!propertyDef._mapping && !watcher.getWritingTimes("dataType")) this._dataType = propertyDef._dataType;
 					}
 					
 					timestamp = bindingInfo.timestamp;
@@ -823,10 +824,22 @@
 			if (!p || !e) return false;
 			
 			if (this._dataSet) {
+				var bindingInfo = this.getBindingInfo();
+				if (bindingInfo.dataType) {
+					if (this._dataType == bindingInfo.dataType) {
+						e.set(p, this.get("value"));
+					} else {
+						e.setText(p, this.get("text"));
+					}
+				}
+				else {
+					e.set(p, this.get("value"));
+				}
+				
 				if (this._dataType) {
 					e.set(p, this.get("value"));
 				} else {
-					e.setText(p, this.get("value"));
+					e.setText(p, this.get("text"));
 				}
 				this.timestamp = this._entity.timestamp;
 			} else {
