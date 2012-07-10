@@ -2113,7 +2113,9 @@
 		constructor: function(config) {
 			this._columns = new dorado.widget.grid.ColumnList(this);
 			$invokeSuper.call(this, [config]);
-		}
+		},
+		
+		doGet: dorado.widget.grid.ColumnModel.prototype.doGet
 	});
 	
 	/**
