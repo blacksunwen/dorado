@@ -85,18 +85,17 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 	<bean id="com.bstek.dorado.view.widget.base.FieldSet" parent="dorado.defaultComponentTypeRegister" />
 	<bean id="com.bstek.dorado.view.widget.base.IFrame" parent="dorado.defaultComponentTypeRegister" />
 	<bean id="com.bstek.dorado.view.widget.base.CardBook" parent="dorado.defaultComponentTypeRegister" />
-	<bean id="com.bstek.dorado.view.widget.base.tab.TabBar" parent="dorado.defaultComponentTypeRegister" />
 	<bean id="com.bstek.dorado.view.widget.base.tab.TabControl" parent="dorado.defaultComponentTypeRegister" />
-	<bean id="com.bstek.dorado.view.widget.base.tab.TabColumn" parent="dorado.defaultComponentTypeRegister" />
 	<bean id="com.bstek.dorado.view.widget.base.tab.VerticalTabControl" parent="dorado.defaultComponentTypeRegister" />
+	<bean id="com.bstek.dorado.view.widget.base.tab.TabBar" parent="dorado.defaultComponentTypeRegister" />
+	<bean id="com.bstek.dorado.view.widget.base.tab.TabColumn" parent="dorado.defaultComponentTypeRegister" />
 
+	<bean id="com.bstek.dorado.view.widget.base.toolbar.ToolBar" parent="dorado.defaultComponentTypeRegister" />
 	<bean id="com.bstek.dorado.view.widget.base.SplitPanel" parent="dorado.defaultComponentTypeRegister" />
+	<bean id="com.bstek.dorado.view.widget.base.accordion.Accordion" parent="dorado.defaultComponentTypeRegister" />
 	<bean id="com.bstek.dorado.view.widget.base.Slider" parent="dorado.defaultComponentTypeRegister" />
 	<bean id="com.bstek.dorado.view.widget.base.ProgressBar" parent="dorado.defaultComponentTypeRegister" />
 	<bean id="com.bstek.dorado.view.widget.base.Tip" parent="dorado.defaultComponentTypeRegister" />
-	<bean id="com.bstek.dorado.view.widget.base.toolbar.ToolBar" parent="dorado.defaultComponentTypeRegister" />
-
-	<bean id="com.bstek.dorado.view.widget.base.accordion.Accordion" parent="dorado.defaultComponentTypeRegister" />
 
 	<bean id="com.bstek.dorado.view.widget.base.FloatContainer" parent="dorado.defaultComponentTypeRegister" />
 	<bean id="com.bstek.dorado.view.widget.base.FloatPanel" parent="dorado.defaultComponentTypeRegister" />
