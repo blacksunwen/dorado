@@ -1427,10 +1427,12 @@
             }
             var rightToolButtons = tabbar._rightToolButtons, buttonsWidth = menuButtonWidth;
             if (rightToolButtons) {
+                var tabsWrapHeight = $fly(doms.tabsWrap).height();
                 for (var i = rightToolButtons.length - 1; i >= 0; i--) {
-                    var toolButton = rightToolButtons[i], toolButtonWidth = $fly(toolButton._dom).outerWidth(true);
+                    var toolButton = rightToolButtons[i], toolButtonWidth = $fly(toolButton._dom).outerWidth(true), toolButtonHeight = $fly(toolButton._dom).outerHeight(true);
                     $fly(toolButton._dom).css({
                         position: "absolute",
+                        top: tabbar._tabPlacement == "top" ? Math.floor((tabsWrapHeight - toolButtonHeight) / 2) - 2 : Math.floor((tabsWrapHeight - toolButtonHeight) / 2) + 2,
                         right: buttonsWidth
                     });
                     buttonsWidth += toolButtonWidth;
