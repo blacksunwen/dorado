@@ -305,7 +305,7 @@
 						messages = e.getMessages(this._property);
 					}
 					
-					if (timestamp != this.timestamp && (!this._focused || !this.get("modified"))) {
+					if (timestamp != this.timestamp) {
 						this.set("value", value);
 						this.timestamp = timestamp;
 					}
