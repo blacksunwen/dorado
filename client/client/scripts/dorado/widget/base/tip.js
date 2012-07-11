@@ -276,7 +276,7 @@
 		refreshDom: function(dom) {
 			$invokeSuper.call(this, arguments);
 
-			var tip = this, text = (tip._text == undefined) ? "&nbsp;&nbsp;" : tip._text,
+			var tip = this, text = (tip._text == undefined) ? "" : tip._text,
 				doms = tip._doms, arrowDirection = tip._arrowDirection, cls = tip._className,
 				content = this._content;
 
