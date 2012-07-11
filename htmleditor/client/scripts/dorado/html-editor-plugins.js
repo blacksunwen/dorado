@@ -294,7 +294,7 @@
                 var imgInfo = view.id(imgInfoId).getDom(), imgPreview = view.id(imgPreviewId), preImg = imgPreview.getContentContainer();
                 plugin.imageRatio = null;
 
-                if (!/\.(png|gif|jpg|jpeg|bmp)$/ig.test(url) && url.indexOf("api.map.baidu.com") == -1) {
+                if (!url /**!/\.(png|gif|jpg|jpeg|bmp)$/ig.test(url) && url.indexOf("api.map.baidu.com") == -1**/) {
                     preImg.innerHTML = "";
                     imgInfo.innerHTML = "";
                     return false;
