@@ -917,7 +917,7 @@
 				}
 				
 				jQuery(controlEl).bind("remove", function() {
-					var sc = dorado.widget.Component.ALL[this.doradoUniqueId];
+					var sc = dorado.widget.Component.ALL[dom.subControlId];
 					if (sc) sc.destroy();
 				});
 				arg.innerGrid.registerInnerControl(subControl);
@@ -2229,7 +2229,7 @@
 			if (arg.grid._selectionMode == "multiRows") return false;
 		},
 		
-		gridOnSelectionChangedListener: function(grid, arg) {
+		gridOnSelectionChangedListener: function(grid, arg) {	
 			var itemModel = grid._itemModel;
 			var selection = grid.get("selection"), selectionMode = grid._selectionMode, removed = arg.removed, added = arg.added, checkbox;
 			this.selection = selection;
@@ -2272,6 +2272,10 @@
 					var data = grid.get("itemModel").getItemById(checkbox._selectDataId), checked = checkbox.get("checked");
 					var selection = (selectionMode == "multiRows") ? [data] : data;
 					innerGrid.replaceSelection.apply(innerGrid, checked ? [null, selection] : [selection, null]);
+				},
+				onDestroy: function() {
+					var id = checkbox._selectDataId;
+					if (id != null) delete self.checkboxMap[id];
 				}
 			});
 			$fly(checkbox.getDom()).mousedown(function() {
@@ -2285,7 +2289,7 @@
 				checkbox.destroy();
 				return;
 			}
-			var grid = arg.grid, data = arg.dataForSelection || arg.data, selection = this.selection, selectionMode = grid._selectionMode, config = {};			
+			var grid = arg.grid, data = arg.dataForSelection || arg.data, selection = this.selection, selectionMode = grid._selectionMode, config = {};		
 			if (selectionMode == "multiRows") {
 				config.checked = (selection && selection.indexOf(data) >= 0);
 				config.readOnly = false;
@@ -2296,8 +2300,6 @@
 				config.checked = false;
 				config.readOnly = true;
 			}
-			var oldId = checkbox._selectDataId;
-			if (oldId != null) delete this.checkboxMap[oldId];
 			checkbox.set(config);
 			checkbox.refresh();
 			checkbox._selectDataId = grid._itemModel.getItemId(data);

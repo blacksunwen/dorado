@@ -12,7 +12,6 @@
 		<project>console</project>
 		<project>chart</project>
 		<project>htmleditor</project>
-		<project>hibernate</project>
 		<project>desktop</project>
 	</projects>
 	<buildSpec>

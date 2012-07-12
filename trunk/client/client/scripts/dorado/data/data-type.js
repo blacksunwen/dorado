@@ -205,7 +205,17 @@
 		 */
 		parse : function(data) {
 			if(data != null) {
-				return (data instanceof dorado.EntityList) ? data : new dorado.EntityList(data, this._dataTypeRepository, this);
+				var elementDataType = this.getElementDataType("always");
+				if (elementDataType && elementDataType._code) {
+					var array = [];
+					if (!(data instanceof Array)) data = [data];
+					for (var i = 0; i < data.length; i++) {
+						array.push(elementDataType.parse(data[i]));
+					}
+					return array;
+				} else {
+					return (data instanceof dorado.EntityList) ? data : new dorado.EntityList(data, this._dataTypeRepository, this);
+				}
 			} else {
 				return null;
 			}

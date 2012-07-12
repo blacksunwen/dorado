@@ -31,7 +31,7 @@ public class TopViewOutputter extends ViewOutputter {
 		context.addDependsPackage("common");
 
 		Writer writer = context.getWriter();
-		writer.append("jQuery(document).ready(function(){\n");
+		writer.append("dorado.onInit(function(){\n");
 		// writer.append("try{\n");
 		writer.append("AUTO_APPEND_TO_TOPVIEW=false;\n");
 

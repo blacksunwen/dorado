@@ -242,7 +242,7 @@
 				case "|<":
 					item = new PageButton({
 						icon: itemCode.showIcon ? "url(>skin>common/icons.gif) 0px -220px" : null,
-						caption: itemCode.showCaption ? $resource("dorado.baseWidget.DataPilotFirstPage") : null,
+						tip: itemCode.showCaption ? $resource("dorado.baseWidget.DataPilotFirstPage") : null,
 						onClick: function(self) {
 							if (!fireOnActionEvent.call(pilot, itemCode.code, self)) return;
 							var list = pilot.getBindingData();
@@ -257,7 +257,7 @@
 				case "<":
 					item = new PageButton({
 						icon: itemCode.showIcon ? "url(>skin>common/icons.gif) -40px -220px" : null,
-						caption: itemCode.showCaption ? $resource("dorado.baseWidget.DataPilotPrevousPage") : null,
+						tip: itemCode.showCaption ? $resource("dorado.baseWidget.DataPilotPrevousPage") : null,
 						onClick: function() {
 							if (!fireOnActionEvent.call(pilot, itemCode.code, self)) return;
 							var list = pilot.getBindingData();
@@ -272,7 +272,7 @@
 				case ">":
 					item = new PageButton({
 						icon: itemCode.showIcon ? "url(>skin>common/icons.gif) -60px -220px" : null,
-						caption: itemCode.showCaption ? $resource("dorado.baseWidget.DataPilotNextPage") : null,
+						tip: itemCode.showCaption ? $resource("dorado.baseWidget.DataPilotNextPage") : null,
 						onClick: function() {
 							if (!fireOnActionEvent.call(pilot, itemCode.code, self)) return;
 							var list = pilot.getBindingData();
@@ -287,7 +287,7 @@
 				case ">|":
 					item = new PageButton({
 						icon: itemCode.showIcon ? "url(>skin>common/icons.gif) -100px -220px" : null,
-						caption: itemCode.showCaption ? $resource("dorado.baseWidget.DataPilotLastPage") : null,
+						tip: itemCode.showCaption ? $resource("dorado.baseWidget.DataPilotLastPage") : null,
 						onClick: function() {
 							if (!fireOnActionEvent.call(pilot, itemCode.code, self)) return;
 							var list = pilot.getBindingData();

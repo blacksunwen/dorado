@@ -44,7 +44,6 @@ public class DataGrid extends AbstractGrid implements DataControl {
 	}
 
 	@XmlProperty(parser = "spring:dorado.dataTypePropertyParser")
-	@ClientProperty
 	public EntityDataType getDataType() {
 		return dataType;
 	}

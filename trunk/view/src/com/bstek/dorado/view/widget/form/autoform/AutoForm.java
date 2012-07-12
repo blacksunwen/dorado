@@ -57,6 +57,7 @@ public class AutoForm extends Control implements FormConfig {
 	private FormElementHintPosition hintPosition;
 	private boolean readOnly;
 	private boolean createOwnEntity = true;
+	private boolean createPrivateDataSet;
 
 	@ComponentReference("FormProfile")
 	public String getFormProfile() {
@@ -330,6 +331,14 @@ public class AutoForm extends Control implements FormConfig {
 
 	public void setCreateOwnEntity(boolean createOwnEntity) {
 		this.createOwnEntity = createOwnEntity;
+	}
+
+	public boolean isCreatePrivateDataSet() {
+		return createPrivateDataSet;
+	}
+
+	public void setCreatePrivateDataSet(boolean createPrivateDataSet) {
+		this.createPrivateDataSet = createPrivateDataSet;
 	}
 
 }

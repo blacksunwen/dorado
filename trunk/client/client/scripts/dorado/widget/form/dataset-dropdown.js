@@ -8,10 +8,6 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.RowListDropDown,/** @scope
 	$className: "dorado.widget.DataSetDropDown",
 	
 	ATTRIBUTES: /** @scope dorado.widget.DataSetDropDown.prototype */ {
-		height: {
-			defaultValue: 230
-		},
-		
 		/**
 		 * 绑定的数据集。
 		 * @type dorado.widget.DataSet
@@ -48,7 +44,7 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.RowListDropDown,/** @scope
 		useDataBinding: {
 			defaultValue: true
 		},
-			
+		
 		/**
 		 * 数据过滤模式。
 		 * <p>
@@ -108,20 +104,37 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.RowListDropDown,/** @scope
 	},
 	
 	open: function(editor) {
-		var self = this, dataSet = this._dataSet, superClass = $getSuperClass();
+		var dropdown = this, dataSet = this._dataSet, superClass = $getSuperClass();
 		
 		if (this._useEmptyItem && dataSet && !dataSet._emptyItemListenerBinded) {
 			dataSet.addListener("onDataLoad", function(self) {
 				var items = self.getData(self._dataPath);
 				if (items instanceof dorado.EntityList) items.insert(null, "begin");
 			});
-			dataSet._emptyItemListenerBinded= true;
+			dataSet._emptyItemListenerBinded = true;
+		}
+		
+		var relocate = function() {
+			if (dropdown._duringShowAnimation) {
+				dropdown._shouldRelocate = true;
+			} else {
+				dropdown.locate();
+			}
 		}
 		
 		var doOpen = function(flush) {
-			dataSet.getDataAsync(self._dataPath, function(data) {
-				if (!self._useDataBinding) self._items = data;
-				superClass.prototype.open.call(self, editor);
+			dataSet.getDataAsync(dropdown._dataPath, function(data) {
+				if (!dropdown._useDataBinding) dropdown._items = data;
+				superClass.prototype.open.call(dropdown, editor);
+				
+				if (dropdown._useDataBinding) {
+					dataSet.addListener("onDataLoad", relocate);
+					dropdown.addListener("onClose", function() {
+						dataSet.removeListener("onDataLoad", relocate);
+					}, {
+						once: true
+					});
+				}
 			}, {
 				loadMode: "auto",
 				flush: flush
@@ -137,8 +150,7 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.RowListDropDown,/** @scope
 			var lastFilterValue;
 			if (this._filterOnOpen) {
 				lastFilterValue = this._lastFilterValue;
-			}
-			else {
+			} else {
 				delete this._lastFilterValue;
 				dataSet._sysParameter && dataSet._sysParameter.remove("filterValue");
 			}
@@ -173,7 +185,6 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.RowListDropDown,/** @scope
 			}
 			box.set({
 				style: {
-					width: "100%",
 					overflow: "hidden"
 				},
 				control: rowList
@@ -252,12 +263,12 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.RowListDropDown,/** @scope
 	doOnEditorKeyDown: function(editor, evt) {
 		if (evt.keyCode == 13 && this.get("dynaFilter")) {
 			var filterValue = editor.get("text");
-			if (!this._rowSelected && (this._lastFilterValue || "") != filterValue) {				
+			if (!this._rowSelected && (this._lastFilterValue || "") != filterValue) {
 				this.onFilterItems(filterValue);
 				return false;
 			}
 		}
 		return $invokeSuper.call(this, arguments);
 	}
-
+	
 });

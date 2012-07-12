@@ -57,7 +57,6 @@ function getEditor(entity) {
 		}
 	} else if (editor instanceof dorado.widget.DateTimeSpinner) {
 		editor.set({
-			dataType : "DateTime",
 			type : param
 		});
 	} else if (editor instanceof dorado.widget.CustomSpinner) {

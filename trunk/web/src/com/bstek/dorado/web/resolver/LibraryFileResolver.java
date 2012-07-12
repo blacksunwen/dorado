@@ -22,6 +22,35 @@ import com.bstek.dorado.web.loader.Pattern;
  * @since 2011-1-23
  */
 public class LibraryFileResolver extends WebFileResolver {
+
+	public static class FileInfo {
+		private String fileName;
+		private String packageName;
+		private String fileType;
+
+		public FileInfo(String packageName, String fileName) {
+			this.packageName = packageName;
+			this.fileName = fileName;
+		}
+
+		public FileInfo(String packageName, String fileName, String fileType) {
+			this(packageName, fileName);
+			this.fileType = fileType;
+		}
+
+		public String getFileName() {
+			return fileName;
+		}
+
+		public String getPackageName() {
+			return packageName;
+		}
+
+		public String getFileType() {
+			return fileType;
+		}
+	}
+
 	private static final String NONE_FILE = "(none)";
 
 	protected static final String LIBRARY_PACKAGE_SUFFIX = ".dpkg";
@@ -66,7 +95,7 @@ public class LibraryFileResolver extends WebFileResolver {
 		Map<String, Package> packages = packagesConfig.getPackages();
 
 		String[] pkgNames = packageName.split(",");
-		List<String> fileNames = new ArrayList<String>();
+		List<FileInfo> fileInfos = new ArrayList<FileInfo>();
 		for (int i = 0; i < pkgNames.length; i++) {
 			String pkgName = pkgNames[i];
 			Package pkg = packages.get(pkgName);
@@ -95,21 +124,14 @@ public class LibraryFileResolver extends WebFileResolver {
 				}
 			}
 
-			String[] fileNameArray = pkg.getFileNames();
-			if (fileNameArray != null) {
-				for (int j = 0; j < fileNameArray.length; j++) {
-					String fileName = StringUtils.trim(fileNameArray[j]);
-					if (fileName.indexOf(NONE_FILE) < 0) {
-						fileNames.add(fileName);
-					}
-				}
-			}
+			fileInfos.addAll(getFileInfos(context, pkg, resourcePrefix,
+					resourceSuffix));
 		}
 
 		List<Resource> resourceList = new ArrayList<Resource>();
-		for (String fileName : fileNames) {
-			Resource[] resourceArray = getResourcesByFileName(context,
-					resourcePrefix, fileName, resourceSuffix);
+		for (FileInfo fileInfo : fileInfos) {
+			Resource[] resourceArray = getResourcesByFileInfo(context,
+					fileInfo, resourcePrefix, resourceSuffix);
 			if (resourceArray != null) {
 				for (int j = 0; j < resourceArray.length; j++) {
 					resourceList.add(resourceArray[j]);
@@ -122,5 +144,27 @@ public class LibraryFileResolver extends WebFileResolver {
 
 		return new ResourcesWrapper(resources, getResourceTypeManager()
 				.getResourceType(resourceSuffix));
+	}
+
+	protected List<FileInfo> getFileInfos(DoradoContext context, Package pkg,
+			String resourcePrefix, String resourceSuffix) throws Exception {
+		List<FileInfo> fileInfos = new ArrayList<FileInfo>();
+		String[] fileNameArray = pkg.getFileNames();
+		if (fileNameArray != null) {
+			for (int j = 0; j < fileNameArray.length; j++) {
+				String fileName = StringUtils.trim(fileNameArray[j]);
+				if (fileName.indexOf(NONE_FILE) < 0) {
+					fileInfos.add(new FileInfo(pkg.getName(), fileName));
+				}
+			}
+		}
+		return fileInfos;
+	}
+
+	protected Resource[] getResourcesByFileInfo(DoradoContext context,
+			FileInfo fileInfo, String resourcePrefix, String resourceSuffix)
+			throws Exception {
+		return super.getResourcesByFileName(context, resourcePrefix,
+				fileInfo.getFileName(), resourceSuffix);
 	}
 }

@@ -308,7 +308,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		
 		_get : function(property, propertyDef, callback, loadMode) {
 
-			function transferAndReplaceIf(entity, propertyDef, value, replaceValue) {				
+			function transferAndReplaceIf(entity, propertyDef, value, replaceValue) {
 				if (value && typeof value == "object" && value.parent == entity) return value;
 				
 				var dataType = propertyDef.get("dataType");
@@ -485,7 +485,12 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			return value;
 		},
 		
-		_getPropertyDef : function(property) {
+		/**
+		 * 根据名称返回某属性对应的PropertyDef。
+		 * @param {String} property
+		 * @return {dorado.PropertyDef} 得到的属性值。
+		 */
+		getPropertyDef : function(property) {
 			var propertyDef = null;
 			if (this._propertyDefs) {
 				propertyDef = this._propertyDefs.get(property);
@@ -495,6 +500,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			}
 			return propertyDef;
 		},
+		
 		/**
 		 * 获取属性值。
 		 * <p>
@@ -515,14 +521,14 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			loadMode = loadMode || "always";
 			var result;
 			if (this.ignorePropertyPath) {
-				var propertyDef = this._getPropertyDef(property);
+				var propertyDef = this.getPropertyDef(property);
 				result = this._get(property, propertyDef, null, loadMode);
 			} else {
 				var properties = property.split('.');
 				for (var i = 0; i < properties.length; i++) {
 					property = properties[i];
 					if (i == 0) {
-						var propertyDef = this._getPropertyDef(property);
+						var propertyDef = this.getPropertyDef(property);
 						result = this._get(property, propertyDef, null, loadMode);
 					} else {
 						if (!result) break;
@@ -574,7 +580,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					}
 				} else {
 					if ( entity instanceof dorado.Entity) {
-						entity._get(property, entity._getPropertyDef(property), callback, loadMode);
+						entity._get(property, entity.getPropertyDef(property), callback, loadMode);
 					} else {
 						var result = entity[property];
 						$callback(callback, true, result);
@@ -600,7 +606,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				return text;
 			}
 
-			var propertyDef = this._getPropertyDef(property);
+			var propertyDef = this.getPropertyDef(property);
 			if (callback) {
 				var entity = this;
 				this._get(property, propertyDef, function(value) {
@@ -921,7 +927,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				if (i > 0) {
 					entity._dispatchOperationToSubEntity(property, true, "set", [value]);
 				} else {
-					var propertyDef = entity._getPropertyDef(property);
+					var propertyDef = entity.getPropertyDef(property);
 					if (propertyDef) {
 						var dataType = propertyDef.get("dataType");
 						if (dataType) {
@@ -967,7 +973,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			if (i > 0) {
 				this._dispatchOperationToSubEntity(property, true, "setText", [text]);
 			} else {
-				var propertyDef = this._getPropertyDef(property), value = text;
+				var propertyDef = this.getPropertyDef(property), value = text;
 				if (propertyDef) {
 					if (propertyDef._mapping && text != null) {
 						value = propertyDef.getMappedKey(text);
@@ -1099,7 +1105,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			
 			var child = null;
 			if (this.dataType) {
-				var propertyDef = this._getPropertyDef(property);
+				var propertyDef = this.getPropertyDef(property);
 				if (!propertyDef) {
 					throw new dorado.ResourceException("dorado.data.UnknownProperty", property);
 				}
@@ -1124,9 +1130,9 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				child = new dorado.Entity(data);
 				if (!detached) {
 					var oldChild = this.get(property);
-					if ( oldChild instanceof dorado.EntityList) {
+					if (oldChild instanceof dorado.EntityList) {
 						oldChild.insert(child);
-					} else if ( oldChild instanceof Array) {
+					} else if (oldChild instanceof Array) {
 						oldChild.push(child);
 					} else {
 						this.set(property, child);
@@ -1195,10 +1201,10 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		clearData : function() {
 			var data = this._data;
 			for(var property in data) {
-				if (!data.hasOwnProperty(property))
-					continue;
+				if (!data.hasOwnProperty(property)) continue;
 				delete data[property];
 			}
+			this.timestamp = dorado.Core.getTimestamp();
 			this.sendMessage(0);
 		},
 		
@@ -1642,7 +1648,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				};
 				
 				if (property) {
-					var pd = this._getPropertyDef(property);
+					var pd = this.getPropertyDef(property);
 					if (pd) doValidate(pd);
 				} else {
 					dataType._propertyDefs.each(doValidate);

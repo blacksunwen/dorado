@@ -381,11 +381,11 @@
 			 * @attribute
 			 */
 			control: {
-				setter: function(value) {
-					if (value && value.constructor == Object.prototype.constructor) {
-						value = dorado.Toolkits.createInstance("widget", value);
+				setter: function(control) {
+					if (control && control.constructor == Object.prototype.constructor) {
+						control = dorado.Toolkits.createInstance("widget", control);
 					}
-					this._control = value;
+					this._control = control;
 				}
 			}
 		},

@@ -34,9 +34,9 @@ var dorado = {
 		for (var p in jQuery.browser) {
 			if (jQuery.browser.hasOwnProperty(p)) browser[p] = jQuery.browser[p];
 		}
-        browser.android = (/android/gi).test(navigator.appVersion);
-        browser.iOS = (/iphone|ipad/gi).test(navigator.appVersion);
-        browser.isTouch = "ontouchstart" in window;
+		browser.android = (/android/gi).test(navigator.appVersion);
+		browser.iOS = (/iphone|ipad/gi).test(navigator.appVersion);
+		browser.isTouch = "ontouchstart" in window;
 		browser.version = parseInt(browser.version);
 		return browser;
 	})(),
@@ -84,6 +84,53 @@ var dorado = {
 	 * @description 返回是否Webkit浏览器。
 	 */
 	// =====
+	
+	/**
+	 * 注册一个
+	 * @param {Function} listener
+	 */
+	beforeInit: function(listener) {
+		if (this.beforeInitFired) {
+			throw new dorado.Exception("'beforeInit' already fired.");
+		}
+		
+		if (!this.beforeInitListeners) {
+			this.beforeInitListeners = [];
+		}
+		this.beforeInitListeners.push(listener);
+	},
+	
+	fireBeforeInit: function() {
+		if (this.beforeInitListeners) {
+			this.beforeInitListeners.each(function(listener) {
+				return listener.call(dorado);
+			});
+			delete this.beforeInitListeners;
+		}
+		this.beforeInitFired = true;
+	},
+	
+	onInit: function(listener) {
+		if (this.onInitFired) {
+			throw new dorado.Exception("'onInit' already fired.");
+		}
+		
+		if (!this.onInitListeners) {
+			this.onInitListeners = [];
+		}
+		this.onInitListeners.push(listener);
+		delete this.beforeInitListeners;
+	},
+	
+	fireOnInit: function() {
+		if (this.onInitListeners) {
+			this.onInitListeners.each(function(listener) {
+				return listener.call(dorado);
+			});
+			delete this.onInitListeners;
+		}
+		this.onInitFired = true;
+	},
 	
 	defaultToString: function(obj) {
 		var s = obj.constructor.className || "[Object]";

@@ -33,6 +33,11 @@ public class Ajax {
 	}
 
 	@Expose
+	public void errorAction() {
+		System.out.println(100 / 0);
+	}
+
+	@Expose
 	public Properties getSystemInfo() {
 		Properties info = new Properties();
 		info.setProperty("product", DoradoAbout.getProductTitle());

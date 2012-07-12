@@ -872,7 +872,7 @@
 	var exceptionDialogMaxWidth = 800;
 	var exceptionDialogMaxHeight = 500;
 	
-	function showExceptionDialog(e) {	
+	function showExceptionDialog(e) {
 		currentException = e;
 			
 		var dialog = getExceptionDialog();
@@ -966,7 +966,7 @@
 			messages.each(function(message) {
 				var item = dorado.Object.clone(message);
 				if (item.entity && item.property) {
-					var pd = item.entity ._getPropertyDef(item.property);
+					var pd = item.entity.getPropertyDef(item.property);
 					if (pd) item.propertyCaption = pd.get("label");
 				}
 				items.push(item);

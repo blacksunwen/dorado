@@ -57,6 +57,15 @@ dorado.MessageBox.alert(&quot;product : &quot; + info.product + &quot;\n&quot; +
         <Property name="caption">获取Dorado系统信息</Property>
       </AjaxAction>
       <Button action="getSystemInfoAction"/>
+      <AjaxAction id="errorAction">
+        <ClientEvent name="onFailure">dorado.MessageBox.alert(&quot;我就知道一定会出错！\n错误原因：&quot; + arg.error.message);&#xD;
+arg.processDefault = false;</ClientEvent>
+        <Property name="caption">捕获异常</Property>
+        <Property name="service">ajax#errorAction</Property>
+      </AjaxAction>
+      <Button>
+        <Property name="action">errorAction</Property>
+      </Button>
     </Container>
     <Container layout="vbox align:left">
       <AjaxAction id="getMemInfo">

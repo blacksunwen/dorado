@@ -74,21 +74,29 @@ public abstract class EntityUtils {
 	 * 判断传入的数据是否是简单的数值。
 	 */
 	public static boolean isSimpleValue(Object data) {
-		return (data == null || data instanceof String
+		boolean b = (data == null || data instanceof String
 				|| data.getClass().isPrimitive() || data instanceof Boolean
 				|| data instanceof Number || data.getClass().isEnum()
 				|| data instanceof Date || data instanceof Character);
+		if (!b && data.getClass().isArray()) {
+			b = isSimpleType(data.getClass().getComponentType());
+		}
+		return b;
 	}
 
 	/**
 	 * 判断传入的数据是否是简单的数值类型。
 	 */
 	public static boolean isSimpleType(Class<?> cl) {
-		return (String.class.equals(cl) || cl.isPrimitive()
+		boolean b = (String.class.equals(cl) || cl.isPrimitive()
 				|| Boolean.class.equals(cl)
 				|| Number.class.isAssignableFrom(cl) || cl.isEnum()
 				|| Date.class.isAssignableFrom(cl) || Character.class
-					.isAssignableFrom(cl));
+				.isAssignableFrom(cl));
+		if (!b && cl.isArray()) {
+			b = isSimpleType(cl.getComponentType());
+		}
+		return b;
 	}
 
 	public static EntityEnhancer getEntityEnhancer(Object entity) {
@@ -246,12 +254,17 @@ public abstract class EntityUtils {
 						+ cl.getName() + "].");
 			}
 		} else if (object.getClass().isArray()) {
-			// 对于数组自动转换成java.util.List
-			logger.warn("Dorado convert a " + object.getClass() + " to "
-					+ List.class + " automatically.");
+			Class type = object.getClass();
+			if (isSimpleType(type.getComponentType())) {
+				return (T) object;
+			} else {
+				// 对于数组自动转换成java.util.List
+				logger.warn("Dorado converted a " + object.getClass() + " to "
+						+ List.class + " automatically.");
 
-			List list = CollectionUtils.arrayToList(object);
-			object = new EntityList(list, (AggregationDataType) dataType);
+				List list = CollectionUtils.arrayToList(object);
+				object = new EntityList(list, (AggregationDataType) dataType);
+			}
 		} else {
 			// TODO 对Entity的是否需要动态代理的判断
 			// 如果是Entity则认为需要动态代理

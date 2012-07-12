@@ -69,15 +69,15 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 			componentReference: true,
 			setter: function(formProfile) {
 				if (dorado.Object.isInstanceOf(this._formProfile, dorado.widget.FormProfile)) {
-					this._formProfile._bindingElements.objects.remove(this);
+					this._formProfile.removeBindingElement(this);
 				}
-				if (formProfile && !dorado.Object.isInstanceOf(formProfile, dorado.widget.FormProfile)) {
+				if (!dorado.Object.isInstanceOf(formProfile, dorado.widget.FormProfile)) {
 					var ref = formProfile;
 					formProfile = ref.view.id(ref.component);
 				}
 				this._formProfile = formProfile;
-				if (formProfile) {
-					formProfile._bindingElements.objects.push(this);
+				if (dorado.Object.isInstanceOf(formProfile, dorado.widget.FormProfile)) {
+					formProfile.addBindingElement(this);
 					this.onProfileChange();
 				}
 			}
@@ -215,12 +215,47 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 		
 		/**
 		 * 是否要自动创建一个私有的Entity，否则AutoForm将尝试使用关联的FormProfile中的Entity。
+		 * <p>
+		 * 此属性在createPrivateDataSet为true时将失去意义。
+		 * </p>
 		 * @boolean
 		 * @attribute
-		 * @default value
+		 * @default true
 		 */
 		createOwnEntity: {
 			defaultValue: true
+		},
+		
+		/**
+		 * 是否要在AutoForm没有实际绑定DataSet时自动创建一个私有的DataSet用于管理表单数据。
+		 * <p>
+		 * 由于Dorado中有很多类似于数据校验、键值映射这样的功能都依赖于DataSet，所以如果仅仅使用简单的Entity绑定，AutoForm必然是失去一些功能特性。
+		 * 启用本属性可以让AutoForm自动创建一个私有的DataSet，以便于使用上述各项功能。
+		 * </p>
+		 * @boolean
+		 * @attribute writeBeforeReady
+		 */
+		createPrivateDataSet: {
+			writeBeforeReady: true
+		},
+		
+		entity: {
+			getter: function() {
+				if (this._dataSet && this._dataSet._ready) {
+					return this._dataSet.getData(this._dataPath);
+				}
+				else {
+					return this._entity;
+				}
+			},
+			setter: function(entity) {
+				if (this._dataSet && this._dataSet._ready && this._dataSet.get("userData") == "autoFormPrivateDataSet") {
+					this._dataSet.set("data", entity);
+				}
+				else {
+					this._entity = entity;
+				}
+			}
 		}
 	},
 	
@@ -282,6 +317,31 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 		} else {
 			return $invokeSuper.call(this, [attr]);
 		}
+	},
+	
+	addBindingElement: function(element) {
+		if (!this._privateDataSetInited) {
+			this._privateDataSetInited = true;
+			
+			if (!this._dataSet && this._createPrivateDataSet) {
+				var dataType = this.get("dataType");
+				var dataSet = new dorado.widget.DataSet({
+					dataType: dataType,
+					data: {},
+					userData: "autoFormPrivateDataSet"
+				});
+				var parentControl = this.get("parent") || $topView;
+				if (parentControl && parentControl instanceof dorado.widget.Container) {
+					parentControl.addChild(dataSet);
+				}
+				this.set({
+					dataSet: dataSet,
+					dataPath: null
+				});
+			}
+		}
+		
+		$invokeSuper.call(this, [element]);
 	},
 	
 	/**
@@ -354,8 +414,9 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 	
 	refreshDom: function(dom) {
 		$invokeSuper.call(this, arguments);
+		
 		var container = this._container;
-		if (!container._rendered) {
+		if (!container._rendered) {			
 			if (this._autoCreateElements && !this._defaultElementsGenerated) {
 				this.generateDefaultElements();
 			}

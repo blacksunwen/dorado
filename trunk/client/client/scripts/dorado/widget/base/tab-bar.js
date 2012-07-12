@@ -298,8 +298,7 @@
                 if (!(tab instanceof dorado.widget.tab.Tab)) {
                     tab = dorado.Toolkits.createInstance(tabgroup.tabShortTypeName, tab);
                 }
-                tab._parent = tabgroup;
-
+                tab.set("parent", tabgroup);
                 tabgroup.doAddTab(tab, index, current);
 
                 return tab;
@@ -340,6 +339,7 @@
                     index = tabs.indexOf(tab);
                     navmenu.removeItem(index);
                 }
+                tab.set("parent", null);
                 tabgroup.doRemoveTab(tab);
             }
         },

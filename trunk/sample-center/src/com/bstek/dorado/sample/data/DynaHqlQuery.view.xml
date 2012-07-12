@@ -42,10 +42,6 @@ and employee.id = :employeeId&#xD;
     </DataProvider>
   </Model>
   <View title="动态HQL查询 ">
-    <DataSet id="dsCondition">
-      <ClientEvent name="onCreate">self.insert();</ClientEvent>
-      <Property name="dataType">Condition</Property>
-    </DataSet>
     <DataSet id="dsOrders" dataProvider="orderInterceptor#query" dataType="[Order]" loadMode="manual" pageSize="10"/>
     <DataSet id="dsCustomers" dataProvider="customerInterceptor#findCustomersByCompanyName" dataType="[BaseCustomer]"/>
     <DataSet id="dsEmployees" dataProvider="employeeInterceptor#getAll" dataType="[BaseEmployee]"/>
@@ -53,12 +49,11 @@ and employee.id = :employeeId&#xD;
       <DataPilot dataSet="dsOrders"/>
       <Separator/>
       <ToolBarButton caption="查询" icon="url(>skin>common/icons.gif) -40px -100px">
-        <ClientEvent name="onClick" signature="dsOrders, dsCondition">dsOrders.set(&quot;parameter&quot;, dsCondition.getData());
-dsOrders.flushAsync();
+        <ClientEvent name="onClick" signature="dsOrders, formCondition">dsOrders.set(&quot;parameter&quot;, formCondition.get(&quot;entity&quot;)).flushAsync();
 </ClientEvent>
       </ToolBarButton>
     </ToolBar>
-    <DataSetDropDown id="ddCustomers" dataSet="dsCustomers" dynaFilter="true">
+    <DataSetDropDown id="ddCustomers" dataSet="dsCustomers">
       <Property name="assignmentMap">customerId=id,customerName=companyName</Property>
       <Property name="editable">false</Property>
       <Property name="useEmptyItem">true</Property>
@@ -71,6 +66,7 @@ dsOrders.flushAsync();
     <AutoForm id="formCondition" cols="300,300" layoutConstraint="top" showHint="false">
       <Property name="dataSet">dsCondition</Property>
       <Property name="dataType">Condition</Property>
+      <Property name="createPrivateDataSet">true</Property>
       <AutoFormElement>
         <Property name="name">orderDate1</Property>
         <Property name="property">orderDate1</Property>

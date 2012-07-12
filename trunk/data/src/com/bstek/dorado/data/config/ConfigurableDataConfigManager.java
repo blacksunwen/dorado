@@ -268,6 +268,18 @@ public class ConfigurableDataConfigManager extends
 					needComma = true;
 					message.append(name);
 				}
+
+				for (DataTypeDefinition dataTypeDefinition : parsedDataTypes
+						.values()) {
+					if (!dataTypeDefinition.isInner()) {
+						try {
+							dataTypeDefinitionManager
+									.registerMatchType(dataTypeDefinition);
+						} catch (Exception e) {
+							logger.warn(e, e);
+						}
+					}
+				}
 			}
 			message.append("]");
 			logger.info(message.toString());

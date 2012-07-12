@@ -2,6 +2,7 @@ package com.bstek.dorado.view.output;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.lang.reflect.Array;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
@@ -371,6 +372,13 @@ public class JsonBuilder {
 			} else {
 				outputValue(o.toString(), false);
 			}
+		} else if (o.getClass().isArray()) {
+			array();
+			int len = Array.getLength(o);
+			for (int i = 0; i < len; i++) {
+				value(Array.get(o, i));
+			}
+			endArray();
 		} else {
 			String s = o.toString();
 			if (s.length() == 0) {

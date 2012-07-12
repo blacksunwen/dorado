@@ -6,8 +6,6 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import com.bstek.dorado.config.definition.DefaultDefinitionManager;
 import com.bstek.dorado.config.definition.Definition;
@@ -26,8 +24,6 @@ import com.bstek.dorado.util.Assert;
  */
 public class DataTypeDefinitionManager extends
 		DefaultDefinitionManager<DataTypeDefinition> {
-	private static Log logger = LogFactory
-			.getLog(DataTypeDefinitionManager.class);
 	/**
 	 * 以DataType的相关Java类型作为键值的DataType集合，
 	 * 即以DataType的getMatchType()的返回值作为键值的DataType集合。
@@ -78,15 +74,6 @@ public class DataTypeDefinitionManager extends
 		}
 
 		super.registerDefinition(name, definition);
-
-		DataTypeDefinition dataType = definition;
-		if (!dataType.isInner()) {
-			try {
-				registerMatchType(dataType);
-			} catch (Exception e) {
-				logger.warn(e, e);
-			}
-		}
 	}
 
 	public void registerDefinition(DataTypeDefinition definition) {
@@ -199,7 +186,7 @@ public class DataTypeDefinitionManager extends
 		return definition;
 	}
 
-	private void registerMatchType(DataTypeDefinition dataTypeDefinition)
+	public void registerMatchType(DataTypeDefinition dataTypeDefinition)
 			throws Exception {
 		Type matchType = dataTypeDefinition.getMatchType();
 		if (matchType != null) {
