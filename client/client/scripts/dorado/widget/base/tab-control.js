@@ -115,23 +115,25 @@ dorado.widget.TabControl = $extend(dorado.widget.TabBar, /** @scope dorado.widge
 	},
 	
 	refreshDom: function(dom) {
+        $invokeSuper.call(this, arguments);
+
 		var tabcontrol = this, card = tabcontrol._cardBook, tabbarDom = tabcontrol._tabbarDom, cardDom = tabcontrol._cardBook._dom;
-		
-		$invokeSuper.call(this, [tabbarDom]);
-		
+        tabcontrol.refreshTabBar();
 		$fly(tabbarDom).css("height", "auto");
-		
+
 		if (tabcontrol._height != null) {
 			card._realHeight = tabcontrol.getRealHeight() - $fly(tabbarDom).height();
 			card._realWidth = tabcontrol.getRealWidth();
 		}
-		
+
 		var tabs = tabcontrol._tabs, currentTab = tabcontrol._currentTab, currentTabIndex = tabs.indexOf(currentTab);
 
 		if (currentTabIndex != -1) {
 			card._currentControl = card._controls.get(currentTabIndex);
 		}
 		card.refreshDom(cardDom);
+
+
 	},
 	
 	getFocusableSubControls: function() {
@@ -278,9 +280,10 @@ dorado.widget.VerticalTabControl = $extend(dorado.widget.TabColumn, /** @scope d
     },
 
     refreshDom: function(dom) {
+        $invokeSuper.call(this, arguments);
         var tabcolumnControl = this, card = tabcolumnControl._cardBook, tabcolumnDom = tabcolumnControl._tabcolumnDom, cardDom = tabcolumnControl._cardBook._dom;
 
-        $invokeSuper.call(this, [tabcolumnDom]);
+        tabcolumnControl.refreshTabColumn();
 
         var tabColumnWidth = tabcolumnControl._tabColumnWidth || 200;
 

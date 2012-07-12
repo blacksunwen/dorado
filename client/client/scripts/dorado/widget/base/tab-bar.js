@@ -599,8 +599,7 @@
             return dom;
         },
 
-        refreshDom: function(dom) {
-            $invokeSuper.call(this, arguments);
+        refreshTabColumn: function() {
             var tabbar = this, tabs = tabbar._tabs;
 
             if (tabs) {
@@ -612,6 +611,11 @@
 
             tabbar.onToolButtonVisibleChange();
             tabbar.refreshNavButtons();
+        },
+
+        refreshDom: function(dom) {
+            $invokeSuper.call(this, arguments);
+            this.refreshTabColumn();
         },
 
         scrollTabIntoView: function(tab) {
@@ -1116,26 +1120,26 @@
 			
 			return dom;
 		},
-		
+
+        refreshTabBar: function() {
+            var tabbar = this, tabs = tabbar._tabs;
+
+            tabbar.doRefreshGap();
+
+            if (tabs) {
+                for (var i = 0, j = tabs.size; i < j; i++) {
+                    var tab = tabs.get(i);
+                    tab.refreshDom(tab._dom);
+                }
+            }
+
+            tabbar.onToolButtonVisibleChange();
+            tabbar.refreshNavButtons();
+        },
+
 		refreshDom: function(dom) {
 			$invokeSuper.call(this, arguments);
-			var tabbar = this, tabs = tabbar._tabs;
-			
-			tabbar.doRefreshGap();
-			
-			if (tabs) {
-				var currentTab = tabbar._currentTab, curIndex = -1;
-				if (currentTab) {
-					curIndex = tabs.indexOf(currentTab);
-				}
-				for (var i = 0, j = tabs.size; i < j; i++) {
-					var tab = tabs.get(i);
-					tab.refreshDom(tab._dom);
-				}
-			}
-			
-			tabbar.onToolButtonVisibleChange();
-			tabbar.refreshNavButtons();
+            this.refreshTabBar();
 		},
 
 		doRefreshGap: function() {
