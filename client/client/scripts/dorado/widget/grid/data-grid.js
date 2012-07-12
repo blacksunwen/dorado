@@ -458,7 +458,7 @@
 					if (!b && this._columnsInfo.propertyPaths) {
 						b = dorado.DataUtil.isOwnerOf(arg.entity, items);
 						if (b && arg.property) {
-							b = this._columnsInfo.propertyPaths.contains('.' + arg.property) > 0;
+							b = this._columnsInfo.propertyPaths.indexOf('.' + arg.property) > 0;
 						}
 					}
 					return b;

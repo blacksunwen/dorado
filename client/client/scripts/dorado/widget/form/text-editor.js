@@ -395,7 +395,7 @@
 			if (triggers) {
 				for (var i = 0; i < triggers.length; i++) {
 					var trigger = triggers[i];
-					if (!trigger._editable) {
+					if (!trigger.get("editable")) {
 						realEditable = false;
 						break;
 					}

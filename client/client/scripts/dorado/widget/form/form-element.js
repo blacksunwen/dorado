@@ -279,6 +279,9 @@
 					
 					if (value !== undefined) config[attr] = value;
 				}
+				
+				if (config.dataSet) delete config.entity;
+				
 				this.set(config, {
 					skipUnknownAttribute: true,
 					tryNextOnError: true,
@@ -336,6 +339,14 @@
 					}, 20);
 				}
 			});
+		},
+		
+		addBindingElement: function(element) {
+			this._bindingElements.objects.push(element);
+		},
+		
+		removeBindingElement: function(element) {
+			this._bindingElements.objects.push(element);
 		}
 	});
 	
@@ -393,15 +404,15 @@
 				componentReference: true,
 				setter: function(formProfile) {
 					if (dorado.Object.isInstanceOf(this._formProfile, dorado.widget.FormProfile)) {
-						this._formProfile._bindingElements.objects.remove(this);
+						this._formProfile.removeBindingElement(this);
 					}
-					if (formProfile && !dorado.Object.isInstanceOf(formProfile, dorado.widget.FormProfile)) {
+					if (!dorado.Object.isInstanceOf(formProfile, dorado.widget.FormProfile)) {
 						var ref = formProfile;
 						formProfile = ref.view.id(ref.component);
 					}
 					this._formProfile = formProfile;
-					if (formProfile) {
-						formProfile._bindingElements.objects.push(this);
+					if (dorado.Object.isInstanceOf(formProfile, dorado.widget.FormProfile)) {
+						formProfile.addBindingElement(this);
 						this.onProfileChange();
 					}
 				}

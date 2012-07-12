@@ -403,7 +403,7 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 	locate: function() {
 		var dropdown = this, box = dropdown._box, editor = dropdown._editor;
 		if (!box || !editor) return;
-		
+
 		var editorDom = editor.getDom(), boxDom = box.getDom(), boxContainer = boxDom.parentNode;
 		var realMaxHeight, boxContainerHeight = boxContainer.clientHeight, boxVisible = box.get("visible");
 		realMaxHeight = boxContainerHeight;
@@ -452,8 +452,8 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 			}
 		}
 
-		dropdown.initDropDownBox(box, editor);
 		box.init(editor);
+		dropdown.initDropDownBox(box, editor);
 		
 		if (!dropdown._width) {
 			boxWidth = (dorado.Browser.mozilla) ? containerElement.firstChild.offsetWidth
@@ -473,7 +473,7 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 		
 		var widthOverflow = boxDom.offsetParent.clientWidth - ($fly(editorDom).offset().left + boxWidth);
 		if (widthOverflow > 0) widthOverflow = 0;
-		
+
 		boxDom.style.width = boxWidth + "px";
 		boxDom.style.height = boxHeight + "px";
 		if (boxVisible) {
@@ -483,7 +483,15 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 				autoAdjustPosition: false
 			});
 		} else {
+			dropdown._duringShowAnimation = true;
+			box.addListener("afterShow", function() {
+				dropdown._duringShowAnimation = false;
+				if (dropdown._shouldRelocate) dropdown.locate();
+			}, {
+				once: true
+			});
 			box.show({
+				animateType: (boxHeight > 10) ? undefined : "none",
 				anchorTarget: editor,
 				editor: editor,
 				align: "innerleft",

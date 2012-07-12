@@ -11,23 +11,13 @@ dorado.Toolkits = {
 	getAjax: function(options) {
 		var defaultOptions = {};
 		if (this.ajaxDefaultOptions) dorado.Object.apply(defaultOptions, this.ajaxDefaultOptions);
-		dorado.Object.apply(defaultOptions, options);
+		var options = dorado.Object.apply(defaultOptions, options);
 		
-		var key = (defaultOptions.url || "#EMPTY");
+		var key = (options.url || "#EMPTY") + '|' + (options.autoBatchEnabled || false);
 		var ajax = this.ajaxs[key];
 		if (ajax === undefined) {
 			ajax = new dorado.util.AjaxEngine();
-			ajax.set("defaultOptions", defaultOptions);
-			
-			autoBatchSupportedUris = $setting["ajax.autoBatchSupportedUris"];
-			if (autoBatchSupportedUris) {
-				for (var i = 0; i < autoBatchSupportedUris.length; i++) {
-					if (key.match(new RegExp(autoBatchSupportedUris[i]))) {
-						ajax.set("autoBatchEnabled", true);
-						break;
-					}
-				}
-			}
+			ajax.set("defaultOptions", options);
 			this.ajaxs[key] = ajax;
 		}
 		return ajax;

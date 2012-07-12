@@ -45,11 +45,11 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 				cardbook.fireEvent("beforeCurrentChange", this, eventArg);
 				if (eventArg.processDefault === false) return;
 				if (oldControl) {
-                    if (oldControl instanceof dorado.widget.IFrame) {
-                        if (!oldControl._loaded) {
-                            oldControl.cancelLoad();
-                        }
-                    }
+					if (oldControl instanceof dorado.widget.IFrame) {
+						if (!oldControl._loaded) {
+							oldControl.cancelLoad();
+						}
+					}
 					var oldDom = oldControl._dom;
 					if (oldDom) {
 						oldDom.style.display = "none";
@@ -58,7 +58,7 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 				}
 				cardbook._currentControl = control;
 				var dom = cardbook._dom;
-				if (dom && control) {					
+				if (dom && control) {
 					if (!control._rendered) {
 						this._resetInnerControlDemension(control);
 						control.render(dom);
@@ -66,12 +66,12 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 						$fly(control._dom).css("display", "block");
 						control.setActualVisible(true);
 						this._resetInnerControlDemension(control);
-
-                        control.resetDimension();
-
-                        if (control instanceof dorado.widget.IFrame && !control._loaded) {
-                            control.reloadIfNotLoaded();
-                        }
+						
+						control.resetDimension();
+						
+						if (control instanceof dorado.widget.IFrame && !control._loaded) {
+							control.reloadIfNotLoaded();
+						}
 					}
 				}
 				cardbook.fireEvent("onCurrentChange", this, eventArg);
@@ -251,13 +251,17 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 		if (this.getRealWidth()) {
 			width = $fly(dom).innerWidth();
 			if (width) {
-				control.set("width", width);
+				control.set("width", width, {
+					tryNextOnError: true
+				});
 			}
 		}
 		if (this.getRealHeight()) {
 			height = $fly(dom).innerHeight();
 			if (height) {
-				control.set("height", height);
+				control.set("height", height, {
+					tryNextOnError: true
+				});
 			}
 		}
 	},

@@ -1135,6 +1135,7 @@
 		},
 
 		refreshDom: function(dom) {
+			
 			function getDivScroll() {
 				if (this._divScroll) return this._divScroll;
                 var style;
@@ -1799,12 +1800,14 @@
 					var cell = $DomUtils.findParent(evt.target, function(parentNode) {
 						return parentNode.parentNode == row;
 					}, true);
-					column = this._columnsInfo.idMap[cell.colId];
-
-					if (this._currentColumn == column && column) {
-						this.showCellEditor(column);
-					} else {
-						this.setCurrentColumn(column);
+					if (cell) {
+						column = this._columnsInfo.idMap[cell.colId];
+						
+						if (this._currentColumn == column && column) {
+							this.showCellEditor(column);
+						} else {
+							this.setCurrentColumn(column);
+						}
 					}
 				}
 			} else {

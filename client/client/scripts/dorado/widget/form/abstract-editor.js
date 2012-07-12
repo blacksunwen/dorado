@@ -157,8 +157,8 @@ dorado.widget.AbstractEditor = $extend(dorado.widget.Control, /** @scope dorado.
 		if (this._property && this._entity) {
 			if (this.doRefreshData) {
 				if (!this._refreshDataPerformed && this._entity &&
-				this._entity instanceof dorado.widget.FormProfile.DefaultEntity &&
-				this._entity[this._property] === undefined) {
+					this._entity instanceof dorado.widget.FormProfile.DefaultEntity &&
+					this._entity[this._property] === undefined) {
 					return;
 				}
 				this._refreshDataPerformed = true;

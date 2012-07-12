@@ -203,7 +203,7 @@
 							scope: this
 						});
 					} else {
-						$callback(callback, false, result.error, {
+						$callback(callback, false, result.exception, {
 							scope: this
 						});
 					}

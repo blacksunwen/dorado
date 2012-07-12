@@ -16,6 +16,16 @@ public class AutoMappingDropDown extends RowListDropDown {
 	private String property = "value";
 	private boolean autoOpen;
 
+	public AutoMappingDropDown() {
+		setDynaFilter(true);
+	}
+
+	@Override
+	@ClientProperty(escapeValue = "true")
+	public boolean isDynaFilter() {
+		return super.isDynaFilter();
+	}
+
 	@Override
 	@ClientProperty(escapeValue = "value")
 	public String getProperty() {

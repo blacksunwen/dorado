@@ -860,7 +860,7 @@ dorado.util.AjaxResult = $class(/** @scope dorado.util.AjaxResult.prototype */
 		this.exception = exception;
 	},
 	_parseException : function(text) {
-		var json = dorado.JSON.parse(text, true);
+		var json = dorado.JSON.parse(text);
 		return new dorado.RemoteException(json.message, json.exceptionType, json.stackTrace);
 	},
 	_parseRunnableException : function(text) {

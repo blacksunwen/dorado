@@ -10,6 +10,7 @@ import java.io.Writer;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
@@ -28,15 +29,16 @@ import com.bstek.dorado.core.resource.LocaleResolver;
 import com.bstek.dorado.util.PathUtils;
 import com.bstek.dorado.util.TempFileUtils;
 import com.bstek.dorado.view.output.JsonBuilder;
-import com.bstek.dorado.view.resolver.ClientI18NFileRegistry.FileInfo;
 import com.bstek.dorado.web.DoradoContext;
 import com.bstek.dorado.web.WebConfigure;
+import com.bstek.dorado.web.loader.Package;
 
 public class LibraryFileResolver extends
 		com.bstek.dorado.web.resolver.LibraryFileResolver {
 	private static final String MIN_JAVASCRIPT_SUFFIX = ".min.js";
 	private static final String MIN_STYLESHEET_SUFFIX = ".min.css";
-	private static final String I18N = "resources/i18n/";
+	private static final String I18N = "i18n";
+	private static final String I18N_PREFIX = "resources/i18n/";
 	private static final String I18N_FILE_SUFFIX = ".properties";
 	private static final String DEFAULT_SKIN = "default";
 	private static final String INHERENT_SKIN = "inherent";
@@ -48,23 +50,15 @@ public class LibraryFileResolver extends
 
 	private static class I18NResource implements Resource {
 		protected Resource cachedResource;
-		private static Map<Resource[], Resource> cacheFileMap = new HashMap<Resource[], Resource>();
+		private static Map<Resource, Resource> cacheFileMap = new HashMap<Resource, Resource>();
 
 		public I18NResource(Context context, String packageName,
-				Resource[] resources) throws IOException {
+				Resource resource) throws IOException {
 			synchronized (cacheFileMap) {
-				cachedResource = cacheFileMap.get(resources);
+				cachedResource = cacheFileMap.get(resource);
 				if (cachedResource == null) {
-					String path = null;
 					Properties properties = new Properties();
-					for (Resource resource : resources) {
-						if (path == null) {
-							path = resource.getPath();
-						} else {
-							path += ';' + resource.getPath();
-						}
-						properties.load(resource.getInputStream());
-					}
+					properties.load(resource.getInputStream());
 
 					File file = TempFileUtils.createTempFile("client-i18n-"
 							+ packageName + '-', JAVASCRIPT_SUFFIX);
@@ -109,7 +103,7 @@ public class LibraryFileResolver extends
 					}
 
 					cachedResource = new FileResource(file);
-					cacheFileMap.put(resources, cachedResource);
+					cacheFileMap.put(resource, cachedResource);
 				}
 			}
 		}
@@ -201,8 +195,8 @@ public class LibraryFileResolver extends
 	}
 
 	protected Resource[] doGetResourcesByFileName(DoradoContext context,
-			String resourcePrefix, String fileName, String resourceSuffix)
-			throws Exception {
+			String packageName, String resourcePrefix, String fileName,
+			String resourceSuffix) throws Exception {
 		if (StringUtils.isNotEmpty(resourcePrefix)) {
 			Resource[] resources = null;
 			if (absolutePaths.contains(fileName)) {
@@ -231,24 +225,27 @@ public class LibraryFileResolver extends
 	}
 
 	@Override
-	protected final Resource[] getResourcesByFileName(DoradoContext context,
-			String resourcePrefix, String fileName, String resourceSuffix)
+	protected Resource[] getResourcesByFileInfo(DoradoContext context,
+			FileInfo fileInfo, String resourcePrefix, String resourceSuffix)
 			throws Exception {
+		String packageName = fileInfo.getPackageName();
+		String fileName = fileInfo.getFileName();
 		if (JAVASCRIPT_SUFFIX.equals(resourceSuffix)) {
-			if (fileName.indexOf(I18N) >= 0) { // 国际化资源
-				return getI18NResources(context, resourcePrefix, fileName,
-						resourceSuffix);
-			} else {
-				return getJavaScriptResources(context, resourcePrefix,
+			if (fileName.indexOf(I18N_PREFIX) >= 0
+					|| I18N.equals(fileInfo.getFileType())) { // 国际化资源
+				return getI18NResources(context, packageName, resourcePrefix,
 						fileName, resourceSuffix);
+			} else {
+				return getJavaScriptResources(context, packageName,
+						resourcePrefix, fileName, resourceSuffix);
 			}
 		} else if (STYLESHEET_SUFFIX.equals(resourceSuffix)) {
-			return getStyleSheetResources(context, resourcePrefix, fileName,
-					resourceSuffix);
+			return getStyleSheetResources(context, packageName, resourcePrefix,
+					fileName, resourceSuffix);
 
 		} else {
-			return doGetResourcesByFileName(context, resourcePrefix, fileName,
-					resourceSuffix);
+			return doGetResourcesByFileName(context, packageName,
+					resourcePrefix, fileName, resourceSuffix);
 		}
 	}
 
@@ -263,38 +260,42 @@ public class LibraryFileResolver extends
 		return key.toString();
 	}
 
+	protected List<FileInfo> getFileInfos(DoradoContext context, Package pkg,
+			String resourcePrefix, String resourceSuffix) throws Exception {
+		List<FileInfo> fileInfos = super.getFileInfos(context, pkg,
+				resourcePrefix, resourceSuffix);
+		if (JAVASCRIPT_SUFFIX.equals(resourceSuffix)) {
+			ClientI18NFileRegistry.FileInfo fileInfo = clientI18NFileRegistry
+					.getFileInfo(pkg.getName());
+			if (fileInfo != null) {
+				if (fileInfo.isReplace()) {
+					for (int i = fileInfos.size() - 1; i >= 0; i--) {
+						FileInfo fi = fileInfos.get(i);
+						if (I18N.equals(fi.getFileType())) {
+							fileInfos.remove(i);
+						}
+					}
+				}
+				fileInfos.add(new FileInfo(pkg.getName(), fileInfo.getPath(),
+						I18N));
+			}
+		}
+		return fileInfos;
+	}
+
 	protected Resource[] getI18NResources(DoradoContext context,
-			String resourcePrefix, String fileName, String resourceSuffix)
-			throws Exception {
+			String packageName, String resourcePrefix, String fileName,
+			String resourceSuffix) throws Exception {
 		Locale locale = localeResolver.resolveLocale();
 		String cacheKey = getCacheKey(resourcePrefix, fileName, resourceSuffix,
 				locale);
 		synchronized (resourcesCache) {
 			Resource[] resources = resourcesCache.get(cacheKey);
 			if (resources == null) {
-				String packageName = fileName.substring(I18N.length());
-				FileInfo fileInfo = clientI18NFileRegistry
-						.getFileInfo(packageName);
-
-				if (fileInfo == null) {
-					Resource resource = getI18NResource(context,
-							PathUtils.concatPath(resourcePrefix, fileName),
-							locale);
-					resources = new Resource[] { resource };
-				} else if (fileInfo.isReplace()) {
-					Resource resource = getI18NResource(context,
-							fileInfo.getPath(), locale);
-					resources = new Resource[] { resource };
-				} else {
-					resources = new Resource[2];
-					resources[0] = getI18NResource(context,
-							PathUtils.concatPath(resourcePrefix, fileName),
-							locale);
-					resources[1] = getI18NResource(context, fileInfo.getPath(),
-							locale);
-				}
+				Resource resource = getI18NResource(context,
+						PathUtils.concatPath(resourcePrefix, fileName), locale);
 				resources = new Resource[] { new I18NResource(context,
-						packageName, resources) };
+						packageName, resource) };
 				resourcesCache.put(cacheKey, resources);
 			}
 			return resources;
@@ -334,8 +335,8 @@ public class LibraryFileResolver extends
 	}
 
 	protected Resource[] getJavaScriptResources(DoradoContext context,
-			String resourcePrefix, String fileName, String resourceSuffix)
-			throws Exception {
+			String packageName, String resourcePrefix, String fileName,
+			String resourceSuffix) throws Exception {
 		String skin = getSkin();
 		boolean useMinJs = Configure.getBoolean("view.useMinifiedJavaScript");
 		String cacheKey = getCacheKey(resourcePrefix, fileName, resourceSuffix,
@@ -347,14 +348,14 @@ public class LibraryFileResolver extends
 					fileName = fileName.replace(CURRENT_SKIN, getSkin());
 				}
 				if (useMinJs) {
-					resources = doGetResourcesByFileName(context,
+					resources = doGetResourcesByFileName(context, packageName,
 							resourcePrefix, fileName, MIN_JAVASCRIPT_SUFFIX);
 					if (!resources[0].exists()) {
 						throw new FileNotFoundException(resources[0].getPath());
 					}
 				}
 				if (resources == null) {
-					resources = doGetResourcesByFileName(context,
+					resources = doGetResourcesByFileName(context, packageName,
 							resourcePrefix, fileName, resourceSuffix);
 				}
 				resourcesCache.put(cacheKey, resources);
@@ -364,8 +365,8 @@ public class LibraryFileResolver extends
 	}
 
 	protected Resource[] getStyleSheetResources(DoradoContext context,
-			String resourcePrefix, String fileName, String resourceSuffix)
-			throws Exception {
+			String packageName, String resourcePrefix, String fileName,
+			String resourceSuffix) throws Exception {
 		String skin = getSkin();
 		boolean useMinCss = Configure.getBoolean("view.useMinifiedStyleSheet");
 		String cacheKey = getCacheKey(resourcePrefix, fileName, resourceSuffix,
@@ -379,21 +380,24 @@ public class LibraryFileResolver extends
 					Resource inherentResource = null;
 					if (useMinCss) {
 						inherentResource = doGetResourcesByFileName(context,
-								resourcePrefix, fileName, MIN_STYLESHEET_SUFFIX)[0];
+								packageName, resourcePrefix, fileName,
+								MIN_STYLESHEET_SUFFIX)[0];
 						if (!inherentResource.exists()) {
 							inherentResource = null;
 						}
 					}
 					if (inherentResource == null) {
 						inherentResource = doGetResourcesByFileName(context,
-								resourcePrefix, fileName, resourceSuffix)[0];
+								packageName, resourcePrefix, fileName,
+								resourceSuffix)[0];
 					}
 
 					fileName = template.replace(CURRENT_SKIN, skin);
 					Resource concreteResource = null;
 					if (useMinCss) {
 						concreteResource = doGetResourcesByFileName(context,
-								resourcePrefix, fileName, MIN_STYLESHEET_SUFFIX)[0];
+								packageName, resourcePrefix, fileName,
+								MIN_STYLESHEET_SUFFIX)[0];
 						if (!concreteResource.exists()) {
 							throw new FileNotFoundException(
 									concreteResource.getPath());
@@ -401,7 +405,8 @@ public class LibraryFileResolver extends
 					}
 					if (concreteResource == null) {
 						concreteResource = doGetResourcesByFileName(context,
-								resourcePrefix, fileName, resourceSuffix)[0];
+								packageName, resourcePrefix, fileName,
+								resourceSuffix)[0];
 					}
 
 					if (!concreteResource.exists()) {
@@ -417,7 +422,8 @@ public class LibraryFileResolver extends
 						}
 						if (defaultResource == null) {
 							defaultResource = doGetResourcesByFileName(context,
-									resourcePrefix, fileName, resourceSuffix)[0];
+									packageName, resourcePrefix, fileName,
+									resourceSuffix)[0];
 						}
 						if (defaultResource.exists()) {
 							concreteResource = defaultResource;
@@ -433,7 +439,8 @@ public class LibraryFileResolver extends
 				} else {
 					if (useMinCss) {
 						resources = doGetResourcesByFileName(context,
-								resourcePrefix, fileName, MIN_STYLESHEET_SUFFIX);
+								packageName, resourcePrefix, fileName,
+								MIN_STYLESHEET_SUFFIX);
 						if (!resources[0].exists()) {
 							throw new FileNotFoundException(
 									resources[0].getPath());
@@ -441,7 +448,8 @@ public class LibraryFileResolver extends
 					}
 					if (resources == null) {
 						resources = doGetResourcesByFileName(context,
-								resourcePrefix, fileName, resourceSuffix);
+								packageName, resourcePrefix, fileName,
+								resourceSuffix);
 					}
 				}
 				resourcesCache.put(cacheKey, resources);

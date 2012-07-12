@@ -28,7 +28,7 @@
 
 	<!-- AggreagationDataTypes -->
 	<DataType name="Aggregation" impl="com.bstek.dorado.data.type.AggregationDataType" />
-	<DataType name="Array" parent="Aggregation" />
+	<DataType name="Array" matchType="[Ljava.lang.String;" parent="Aggregation" />
 	<DataType name="Collection" matchType="java.util.Collection" parent="Aggregation" />
 	<DataType name="List" matchType="java.util.List" creationType="java.util.ArrayList" parent="Collection" />
 	<DataType name="Set" matchType="java.util.Set" creationType="java.util.HashSet" parent="Collection" />

@@ -85,6 +85,12 @@
 			 */
 			dynaFilter: {},
 			
+			editable: {
+				getter: function() {
+					return this._editable || this._dynaFilter;
+				}
+			},
+			
 			/**
 			 * 是否要在下拉框打开时自动根据编辑框中的内容执行一次数据过滤。
 			 * @type boolean
@@ -232,21 +238,19 @@
 					}
 				}
 			}
-			if (currentIndex >= 0) {
-				rowList.set("currentIndex", currentIndex);
-			}
+			rowList.set("currentIndex", currentIndex);
 		},
 		
 		initDropDownBox: function(box, editor) {
 			$invokeSuper.call(this, arguments);
 			
 			var rowList = box.get("control");
-			rowList.set("highlightCurrentRow", this._rowSelected = false);
 			if (!box.get("visible") && this.initDropDownData) {
 				rowList._ignoreRefresh++;
 				this.initDropDownData(box, editor);
 				rowList._ignoreRefresh--;
 			}
+			rowList.set("highlightCurrentRow", this._rowSelected = !!rowList.getCurrentItem());
 			var itemCount = rowList._itemModel.getItemCount();
 			var cellCount = itemCount;
 			if (dorado.widget.AbstractGrid && rowList instanceof dorado.widget.AbstractGrid) {
@@ -386,6 +390,20 @@
 		},
 		
 		doOnEditorKeyDown: function(editor, evt) {
+			
+			function setEditorText(dropdown, rowList) {
+				var property = dropdown._displayProperty || dropdown._property;
+				var value = rowList.getCurrentItem();
+				if (value && property) {
+					if (value instanceof dorado.Entity) {
+						value = value.get(property);
+					} else {
+						value = value[property];
+					}
+				}
+				editor.doSetText(value);
+			}
+			
 			var dropdown = this, retValue = true;
 			if (this.get("opened")) {
 				var rowList = this.get("box.control");
@@ -394,19 +412,11 @@
 					case 40:{ // down 
 						if (!rowList._highlightCurrentRow) {
 							rowList.set("highlightCurrentRow", dropdown._rowSelected = true);
+							setEditorText(dropdown, rowList);
 							retValue = false;
 						} else {
 							rowList.addListener("onCurrentChange", function() {
-								var property = dropdown._displayProperty || dropdown._property;
-								var value = rowList.getCurrentItem();
-								if (value && property) {
-									if (value instanceof dorado.Entity) {
-										value = value.get(property);
-									} else {
-										value = value[property];
-									}
-								}
-								editor.doSetText(value);
+								setEditorText(dropdown, rowList);
 							}, {
 								once: true
 							});
@@ -488,6 +498,12 @@
 	 */
 	dorado.widget.AutoMappingDropDown = $extend(dorado.widget.RowListDropDown,/** @scope dorado.widget.AutoMappingDropDown.prototype */ {
 		$className: "dorado.widget.AutoMappingDropDown",
+		
+		ATTRIBUTES: /** @scope dorado.widget.AutoMappingDropDown.prototype */ {
+			dynaFilter: {
+				defaultValue: true
+			}
+		},
 		
 		getDropDownItems: function() {
 			var editor = this._editor, pd = editor._propertyDef;

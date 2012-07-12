@@ -603,7 +603,7 @@ dorado.widget.DataTree = $extend([dorado.widget.Tree, dorado.widget.DataControl]
 		if (node._data) delete this._entityMap[node._data.entityId];
 	},
 
-	refresh: function() {
+	refreshDom: function(dom) {
 		var bindingConfigs = this.get("bindingConfigs");
 		if (!bindingConfigs || !bindingConfigs.length) {
 			throw new dorado.Exception("DataTree " + this._id + ".bindingConfigs is undefined.");
@@ -623,7 +623,7 @@ dorado.widget.DataTree = $extend([dorado.widget.Tree, dorado.widget.DataControl]
 			}
 		}
 
-		$invokeSuper.call(this, arguments);
+		$invokeSuper.call(this, [dom]);
 	},
 
 	filterDataSetMessage: function(messageCode, arg) {

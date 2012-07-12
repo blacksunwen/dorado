@@ -146,8 +146,9 @@ function refreshActions() {
 !function(self, cardbook) {
 	refreshActions();
 	var nodeType = self.get("currentNode.bindingConfig.name"), index = 0;
-	if (nodeType)
+	if (nodeType) {
 		index = (nodeType == "Category") ? 1 : 2;
+	}
 	cardbook.set("currentControl", index);
 }
 

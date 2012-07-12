@@ -13,6 +13,7 @@ import com.bstek.dorado.data.config.definition.DataTypeDefinitionReference;
 import com.bstek.dorado.data.config.definition.PropertyDefDefinition;
 import com.bstek.dorado.data.type.DefaultEntityDataType;
 import com.bstek.dorado.data.type.property.Reference;
+import com.bstek.dorado.sample.entity.Category;
 
 @Component
 public class DynaGlobalDataTypeStartupListener extends EngineStartupListener {
@@ -31,6 +32,7 @@ public class DynaGlobalDataTypeStartupListener extends EngineStartupListener {
 		// AutoCategoryType
 		dataType = new DataTypeDefinition("AutoCategoryType");
 		dataType.setImplType(DefaultEntityDataType.class);
+		dataType.setMatchType(Category.class);
 		dataType.setParentReference(new DataTypeDefinitionReference(
 				"CommonEntity"));
 
@@ -48,7 +50,7 @@ public class DynaGlobalDataTypeStartupListener extends EngineStartupListener {
 				new DataProviderDefinitionReference(
 						"productInterceptor#getProductsByCategoryId"));
 		propertyDef.setProperty("parameter",
-				expressionHandler.compile("$${this}"));
+				expressionHandler.compile("$${this.id}"));
 		propertyDef.setProperty("pageSize", 20);
 		dataType.addPropertyDef(propertyDef);
 

@@ -8,8 +8,7 @@
       <Property name="caption">自定义单元格编辑器</Property>
       <Buttons/>
       <Children>
-        <DataSet id="dsRows1">
-        </DataSet>
+        <DataSet id="dsRows1"/>
         <DataGrid id="grid1">
           <Property name="dataSet">dsRows1</Property>
           <Property name="width">800</Property>
@@ -46,7 +45,7 @@
       <Property name="caption">自定义单元格渲染器</Property>
       <Buttons/>
       <Children>
-        <DataSet id="dsRows2" />
+        <DataSet id="dsRows2"/>
         <DataGrid id="grid2">
           <Property name="dataSet">dsRows2</Property>
           <Property name="width">800</Property>

@@ -374,7 +374,7 @@ public final class JsonUtils {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private static Collection<?> internalToJavaCollection(ArrayNode arrayNode,
+	private static Object internalToJavaCollection(ArrayNode arrayNode,
 			AggregationDataType dataType, Class<Collection<?>> targetType,
 			boolean proxy, JsonConvertContext context) throws Exception {
 		Class<Collection> creationType = null;
@@ -382,22 +382,31 @@ public final class JsonUtils {
 			creationType = (Class<Collection>) dataType.getCreationType();
 		}
 
+		boolean shouldConvertToArray = false;
 		Collection collection = null;
 		if (creationType != null) {
-			if (!Collection.class.isAssignableFrom(creationType)) {
-				throw new IllegalArgumentException(
-						"Java type mismatch. expect [java.util.Collection].");
-			}
 			if (targetType != null
 					&& !targetType.isAssignableFrom(creationType)) {
 				throw new IllegalArgumentException(
 						"Java type mismatch. expect [" + targetType + "].");
 			}
-			if (!Modifier.isAbstract(creationType.getModifiers())) {
-				collection = creationType.newInstance();
+
+			if (!Collection.class.isAssignableFrom(creationType)) {
+				if (creationType.isArray()) {
+					shouldConvertToArray = true;
+				} else {
+					throw new IllegalArgumentException(
+							"Java type mismatch. expect [java.util.Collection] or [Array].");
+				}
+			} else {
+				if (!Modifier.isAbstract(creationType.getModifiers())) {
+					collection = creationType.newInstance();
+				}
 			}
 		} else if (targetType != null) {
-			if (!Modifier.isAbstract(targetType.getModifiers())) {
+			if (targetType.isArray()) {
+				shouldConvertToArray = true;
+			} else if (!Modifier.isAbstract(targetType.getModifiers())) {
 				collection = targetType.newInstance();
 			} else if (Set.class.isAssignableFrom(targetType)) {
 				collection = new HashSet<Object>();
@@ -408,7 +417,7 @@ public final class JsonUtils {
 		}
 
 		boolean isFirstElement = true;
-		EntityDataType elementDataType = (EntityDataType) ((dataType != null) ? dataType
+		DataType elementDataType = ((dataType != null) ? dataType
 				.getElementDataType() : null);
 		Iterator<JsonNode> it = arrayNode.iterator();
 		while (it.hasNext()) {
@@ -424,8 +433,10 @@ public final class JsonUtils {
 								dataTypeName, context);
 					}
 				}
-				collection.add(internalToJavaEntity(objectNode,
-						elementDataType, null, proxy, context));
+				collection
+						.add(internalToJavaEntity(objectNode,
+								(EntityDataType) elementDataType, null, proxy,
+								context));
 			} else if (jsonNode instanceof ValueNode) {
 				collection.add(toJavaValue(((ValueNode) jsonNode),
 						elementDataType, context));
@@ -439,7 +450,12 @@ public final class JsonUtils {
 		if (context != null && context.getEntityListCollection() != null) {
 			context.getEntityListCollection().add(collection);
 		}
-		return collection;
+
+		if (shouldConvertToArray) {
+			return collection.toArray();
+		} else {
+			return collection;
+		}
 	}
 
 	/**

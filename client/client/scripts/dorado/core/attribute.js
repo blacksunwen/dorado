@@ -320,16 +320,24 @@
 					try {
 						this.doSet(attrInfo.attr, attrInfo.value, skipUnknownAttribute, lockWritingTimes);
 					} catch (e) {
-						if (e instanceof dorado.AttributeException) {
+						if (e instanceof dorado.Exception) {
 							dorado.Exception.removeException(e);
-						} else if (!tryNextOnError) throw e;
+						}
+						if (!tryNextOnError && !(e instanceof dorado.AttributeException)) throw e;
 					}
 				}
 			} else {
 				if (preventOverwriting) {
 					if (this.getAttributeWatcher().getWritingTimes(attr)) return this;
 				}
-				this.doSet(attr, value, skipUnknownAttribute, lockWritingTimes);
+				try {
+					this.doSet(attr, value, skipUnknownAttribute, lockWritingTimes);
+				} catch (e) {
+					if (e instanceof dorado.Exception) {
+						dorado.Exception.removeException(e);
+					}
+					if (!tryNextOnError) throw e;
+				}
 			}
 			return this;
 		},

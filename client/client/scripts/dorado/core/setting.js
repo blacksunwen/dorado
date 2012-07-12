@@ -8,7 +8,7 @@
 	 * @see $setting
 	 *
 	 * @example
-	 * var debugEnabled = dorado.Setting["core.debugEnabled"]; // 取得一个参数值
+	 * var debugEnabled = dorado.Setting["debugEnabled"]; // 取得一个参数值
 	 */
 	// =====
 	
@@ -23,7 +23,7 @@
 	 * @see dorado.Setting
 	 *
 	 * @example
-	 * var debugEnabled = $setting["core.debugEnabled"]; // 相当于dorado.Setting["core.debugEnabled"]
+	 * var debugEnabled = $setting["debugEnabled"]; // 相当于dorado.Setting["debugEnabled"]
 	 */
 	dorado.Setting = {
 		"common.defaultDateFormat": "Y-m-d",
@@ -35,22 +35,25 @@
 		"common.defaultDisplayDateTimeFormat": "Y-m-d H:i:s",
 		
 		"ajax.defaultOptions": null,
-		"ajax.autoBatchSupportedUris": [doradoServierURI],
 		"ajax.dataTypeRepositoryOptions": {
 			url: doradoServierURI,
-			method: "POST"
+			method: "POST",
+			autoBatchEnabled: true
 		},
 		"ajax.dataProviderOptions": {
 			url: doradoServierURI,
-			method: "POST"
+			method: "POST",
+			autoBatchEnabled: true
 		},
 		"ajax.dataResolverOptions": {
 			url: doradoServierURI,
-			method: "POST"
+			method: "POST",
+			autoBatchEnabled: false
 		},
 		"ajax.remoteServiceOptions": {
 			url: doradoServierURI,
-			method: "POST"
+			method: "POST",
+			autoBatchEnabled: false
 		},
 		"dom.useCssShadow": true,
 		"widget.skin": "~current",

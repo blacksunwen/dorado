@@ -27,7 +27,7 @@
       <DataPilot>
         <Property name="ignored">false</Property>
         <Property name="dataSet">dsProducts</Property>
-        <Property name="itemCodes">pages,|,+,-,x</Property>
+        <Property name="itemCodes">pages,|,pageSize,|,+,-,x</Property>
       </DataPilot>
       <Separator/>
       <ToolBarButton>
