@@ -339,8 +339,8 @@
 		 * @param {dorado.Entity} entity 数据实体
 		 */
 		refreshEntity: function(entity) {
-			this._innerGrid.refreshEntity(entity);
 			if (this._domMode == 2) this._fixedInnerGrid.refreshEntity(entity);
+			this._innerGrid.refreshEntity(entity);
 		},
 		
 		onEntityInserted: function(arg) {
@@ -351,8 +351,8 @@
 		},
 		
 		onEntityDeleted: function(arg) {
-			this._innerGrid.onEntityDeleted(arg);
 			if (this._domMode == 2) this._fixedInnerGrid.onEntityDeleted(arg);
+			this._innerGrid.onEntityDeleted(arg);
 			this.updateScroller(this._innerGrid._container);
 			this.fixSizeBugs();
 		},

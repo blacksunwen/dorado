@@ -605,7 +605,7 @@
 					}
 				}
 				else if (rowHeightInfos) {
-					oldHeight = rowHeightInfos[itemId];
+					oldHeight = rowHeightInfos.rows[itemId];
 				}
 				
 				if (dorado.Browser.msie && dorado.Browser.version == 8) {

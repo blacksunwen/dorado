@@ -1,11 +1,12 @@
 package com.bstek.dorado.core.resource;
 
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Locale;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import com.bstek.dorado.core.io.Resource;
 import com.bstek.dorado.core.io.ResourceUtils;
@@ -15,6 +16,7 @@ import com.bstek.dorado.core.io.ResourceUtils;
  * @since 2012-5-8
  */
 public class ResourceManager extends AbstractResourceManagerSupport {
+	private static final Log logger = LogFactory.getLog(ResourceManager.class);
 	private static final String RESOURCE_FILE_SUFFIX = ".properties";
 
 	private String bundleName;
@@ -42,10 +44,11 @@ public class ResourceManager extends AbstractResourceManagerSupport {
 			} finally {
 				in.close();
 			}
-		} else {
-			throw new FileNotFoundException(
-					"Can not found resource file for \"" + bundleName + "\".");
 		}
+		// else {
+		// throw new FileNotFoundException(
+		// "Can not found resource file for \"" + bundleName + "\".");
+		// }
 		return bundle;
 	}
 
@@ -76,18 +79,23 @@ public class ResourceManager extends AbstractResourceManagerSupport {
 		return getBundle(locale);
 	}
 
-	public String getString(String path, Object... args) throws Exception {
-		checkBundleName();
+	public String getString(String path, Object... args) {
+		try {
+			checkBundleName();
 
-		Locale locale = getLocale();
-		String result = null;
-		ResourceBundle bundle = getBundle(locale);
-		if (bundle != null) {
-			result = bundle.getString(path, args);
+			Locale locale = getLocale();
+			String result = null;
+			ResourceBundle bundle = getBundle(locale);
+			if (bundle != null) {
+				result = bundle.getString(path, args);
+			}
+			if (result == null) {
+				result = getString(locale, path, args);
+			}
+			return result;
+		} catch (Exception e) {
+			logger.error(e, e);
+			return null;
 		}
-		if (result == null) {
-			result = getString(locale, path, args);
-		}
-		return result;
 	}
 }

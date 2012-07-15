@@ -28,11 +28,4 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
 			<bean class="com.bstek.dorado.web.resolver.ErrorPageResolver" />
 		</property>
 	</bean>
-
-	<bean parent="dorado.resolverRegister">
-		<property name="url" value="**/*.dpkg" />
-		<property name="resolver">
-			<bean class="com.bstek.dorado.web.resolver.LibraryFileResolver" />
-		</property>
-	</bean>
 </beans>

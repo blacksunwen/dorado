@@ -11,14 +11,14 @@ import java.util.Properties;
 public class DefaultResourceBundle implements ListableResourceBundle,
 		Serializable {
 	private static final long serialVersionUID = 7678593697684435624L;
-	
+
 	private Properties properties;
 
 	public DefaultResourceBundle(Properties properties) {
 		this.properties = properties;
 	}
 
-	public String getString(String key, Object... args) throws Exception {
+	public String getString(String key, Object... args) {
 		String result = properties.getProperty(key);
 		if (result != null && args != null) {
 			result = String.format(result, args);

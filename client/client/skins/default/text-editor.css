@@ -1,7 +1,7 @@
 .d-text-box {
     height: 18px;
     border: 1px #B0B0B0 solid;
-    background: url(form/text-field-bg.gif) repeat-x;
+    background: white url(form/text-field-bg.gif) repeat-x;
 }
 
 .d-text-box .editor {
@@ -29,7 +29,7 @@
 
 .d-text-box-focused {
 	border: 1px #6ECC81 solid;
-	background: url(form/text-field-bg-focus.gif) repeat-x;
+	background: white url(form/text-field-bg-focus.gif) repeat-x;
 }
 
 .d-text-box-focused .d-trigger {
@@ -78,7 +78,7 @@
 .d-text-area {
 	height: 18px;
 	border: 1px #B0B0B0 solid;
-	background: url(form/text-field-bg.gif) repeat-x;
+	background: white url(form/text-field-bg.gif) repeat-x;
 }
 
 .d-text-area .d-trigger-panel {
@@ -102,15 +102,12 @@
 
 .d-text-area-focused {
 	border: 1px #6ECC81 solid;
-}
-
-.d-text-area-focused .textarea{
-	background: url(form/text-field-bg-focus.gif) repeat-x;
+	background: white url(form/text-field-bg-focus.gif) repeat-x;
 }
 
 .d-text-area-warn {
 	border: 1px #FFCC66 solid;
-	background: url(form/text-field-bg-warn.gif) repeat-x bottom;
+	background: white url(form/text-field-bg-warn.gif) repeat-x bottom;
 }
 
 .d-text-area-error {

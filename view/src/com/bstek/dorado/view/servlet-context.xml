@@ -15,6 +15,17 @@
 	</bean>
 	<bean parent="dorado.resolverRegister">
 		<property name="order" value="20" />
+		<property name="url" value="**/*.dpkg" />
+		<property name="resolver">
+			<bean class="com.bstek.dorado.view.resolver.PackageFileResolver">
+				<property name="clientI18NFileRegistry" ref="dorado.clientI18NFileRegistry" />
+				<property name="defaultLocale" ref="dorado.defaultLocale" />
+				<property name="localeResolver" ref="dorado.localeResolver" />
+			</bean>
+		</property>
+	</bean>
+	<bean parent="dorado.resolverRegister">
+		<property name="order" value="30" />
 		<property name="url" value="/dorado/client/boot.dpkg" />
 		<property name="resolver">
 			<bean class="com.bstek.dorado.view.resolver.BootPackagesResolver">
@@ -25,7 +36,7 @@
 		</property>
 	</bean>
 	<bean parent="dorado.resolverRegister">
-		<property name="order" value="30" />
+		<property name="order" value="40" />
 		<property name="url" value="/dorado/client/skins/**" />
 		<property name="resolver">
 			<bean class="com.bstek.dorado.view.resolver.SkinFileResolver">
@@ -35,7 +46,7 @@
 		</property>
 	</bean>
 	<bean parent="dorado.resolverRegister">
-		<property name="order" value="40" />
+		<property name="order" value="50" />
 		<property name="url" value="/dorado/client/resources/**" />
 		<property name="resolver">
 			<bean class="com.bstek.dorado.web.resolver.WebFileResolver">
@@ -45,7 +56,7 @@
 		</property>
 	</bean>
 	<bean id="dorado.resourcesResolverRegister" parent="dorado.resolverRegister">
-		<property name="order" value="50" />
+		<property name="order" value="60" />
 		<property name="url" value="/dorado/res/**" />
 		<property name="resolver">
 			<bean class="com.bstek.dorado.web.resolver.WebFileResolver">
@@ -55,7 +66,7 @@
 		</property>
 	</bean>
 	<bean id="dorado.viewServiceResolverRegister" parent="dorado.resolverRegister">
-		<property name="order" value="60" />
+		<property name="order" value="70" />
 		<property name="url" value="/dorado/view-service" />
 		<property name="resolver" ref="dorado.viewServiceResolver" />
 	</bean>
