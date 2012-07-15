@@ -5,5 +5,5 @@ package com.bstek.dorado.core.resource;
  * @since 2012-5-10
  */
 public interface ResourceBundle {
-	String getString(String key, Object... args) throws Exception;
+	String getString(String key, Object... args);
 }

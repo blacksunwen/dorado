@@ -10,7 +10,7 @@ public class ResourceManagerUtils {
 	public static ResourceManager get(String bundleName) {
 		try {
 			ResourceManager resourceManager = (ResourceManager) Context
-					.getCurrent().getServiceBean("ResourceManager");
+					.getCurrent().getServiceBean("resourceManager");
 			resourceManager.init(bundleName);
 			return resourceManager;
 		} catch (Exception e) {

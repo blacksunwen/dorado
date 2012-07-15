@@ -1,5 +1,8 @@
 package com.bstek.dorado.config.definition;
 
+import com.bstek.dorado.core.resource.ResourceManager;
+import com.bstek.dorado.core.resource.ResourceManagerUtils;
+
 /**
  * 利用名称指向某配置声明对象的引用。
  * 
@@ -38,8 +41,9 @@ public class DefaultDefinitionReference<T extends Definition> implements
 	public T getDefinition() {
 		T definition = definitionManager.getDefinition(name);
 		if (definition == null) {
-			throw new IllegalArgumentException(
-					"Can not found such Definition \"" + name + "\".");
+			ResourceManager resource = ResourceManagerUtils.get(getClass());
+			throw new IllegalArgumentException(resource.getString(
+					"common/unknownDefinition", name));
 		}
 		return definition;
 	}

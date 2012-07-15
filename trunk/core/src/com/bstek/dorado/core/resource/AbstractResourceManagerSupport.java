@@ -2,11 +2,16 @@ package com.bstek.dorado.core.resource;
 
 import java.util.Locale;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2012-5-5
  */
 public abstract class AbstractResourceManagerSupport {
+	private static final Log logger = LogFactory
+			.getLog(AbstractResourceManagerSupport.class);
 	private static final String DEFUALT_BUNDLE_NAME = "Default";
 
 	private GlobalResourceBundleManager globalResourceBundleManager;
@@ -41,20 +46,24 @@ public abstract class AbstractResourceManagerSupport {
 		return (locale != null) ? locale : defaultLocale;
 	}
 
-	protected String getString(Locale locale, String path, Object... args)
-			throws Exception {
-		String bundleName, key;
-		int i = path.indexOf('/');
-		if (i > 0) {
-			bundleName = path.substring(0, i);
-			key = path.substring(i + 1);
-		} else {
-			bundleName = DEFUALT_BUNDLE_NAME;
-			key = path;
-		}
+	protected String getString(Locale locale, String path, Object... args) {
+		try {
+			String bundleName, key;
+			int i = path.indexOf('/');
+			if (i > 0) {
+				bundleName = path.substring(0, i);
+				key = path.substring(i + 1);
+			} else {
+				bundleName = DEFUALT_BUNDLE_NAME;
+				key = path;
+			}
 
-		ResourceBundle bundle = globalResourceBundleManager.getBundle(
-				bundleName, locale);
-		return (bundle != null) ? bundle.getString(key) : null;
+			ResourceBundle bundle = globalResourceBundleManager.getBundle(
+					bundleName, locale);
+			return (bundle != null) ? bundle.getString(key, args) : null;
+		} catch (Exception e) {
+			logger.error(e, e);
+			return null;
+		}
 	}
 }

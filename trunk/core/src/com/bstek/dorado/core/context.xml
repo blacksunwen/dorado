@@ -70,4 +70,8 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 		<property name="localeResolver" ref="dorado.localeResolver" />
 	</bean>
 	<bean id="dorado.resourceManager" scope="prototype" parent="dorado.abstractResourceManager" class="com.bstek.dorado.core.resource.ResourceManager" />
+
+	<bean parent="dorado.globalResourceSearchPathRegister">
+		<property name="searchPath" value="com/bstek/dorado/core/resource/" />
+	</bean>
 </beans>

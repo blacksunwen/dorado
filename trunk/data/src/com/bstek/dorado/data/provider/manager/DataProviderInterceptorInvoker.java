@@ -13,6 +13,8 @@ import com.bstek.dorado.common.method.MethodAutoMatchingException;
 import com.bstek.dorado.common.method.MethodAutoMatchingUtils;
 import com.bstek.dorado.common.method.MoreThanOneMethodsMatchsException;
 import com.bstek.dorado.core.bean.BeanFactoryUtils;
+import com.bstek.dorado.core.resource.ResourceManager;
+import com.bstek.dorado.core.resource.ResourceManagerUtils;
 import com.bstek.dorado.data.ParameterWrapper;
 import com.bstek.dorado.data.provider.DataProvider;
 import com.bstek.dorado.data.provider.Page;
@@ -76,8 +78,10 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 		Method[] methods = MethodAutoMatchingUtils.getMethodsByName(
 				interceptor.getClass(), methodName);
 		if (methods.length == 0) {
-			throw new NoSuchMethodException("Method [" + methodName
-					+ "] not found in [" + interceptorName + "].");
+			ResourceManager resource = ResourceManagerUtils.get(getClass());
+			throw new NoSuchMethodException(resource.getString(
+					"common/methodNotFoundInInterceptor", interceptorName,
+					methodName));
 		}
 
 		DataProvider dataProvider = (DataProvider) methodInvocation.getThis();

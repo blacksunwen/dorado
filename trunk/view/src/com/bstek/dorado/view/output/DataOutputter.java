@@ -9,8 +9,12 @@ import java.util.Map;
 import java.util.Stack;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import com.bstek.dorado.core.el.Expression;
+import com.bstek.dorado.core.resource.ResourceManager;
+import com.bstek.dorado.core.resource.ResourceManagerUtils;
 import com.bstek.dorado.data.JsonUtils;
 import com.bstek.dorado.data.entity.EntityEnhancer;
 import com.bstek.dorado.data.entity.EntityState;
@@ -36,6 +40,7 @@ import com.bstek.dorado.view.el.SingleExpression;
  * @since Oct 6, 2008
  */
 public class DataOutputter implements Outputter, PropertyOutputter {
+	private static final Log logger = LogFactory.getLog(DataOutputter.class);
 	private static final Long ONE_HOUR = 1000L * 60 * 60;
 
 	private boolean evaluateExpression = true;
@@ -219,8 +224,12 @@ public class DataOutputter implements Outputter, PropertyOutputter {
 		JsonBuilder json = context.getJsonBuilder();
 		Stack<Object> dataObjectStack = context.getDataObjectStack();
 		if (dataObjectStack.contains(object)) {
-			throw new IllegalArgumentException(
-					"Reference circuit found on entity [" + object + "].");
+			ResourceManager resource = ResourceManagerUtils.get(getClass());
+			Exception e = new IllegalArgumentException(resource.getString(
+					"common/circuitReferenceError", object.toString()));
+			logger.error(e, e);
+			json.value(null);
+			return;
 		}
 
 		dataObjectStack.push(object);

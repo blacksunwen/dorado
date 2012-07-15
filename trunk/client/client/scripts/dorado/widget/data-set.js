@@ -467,7 +467,7 @@
 			}
 			else options = options || {};
 
-			if (options.flush) this.clear();
+			if (options.flush) this.discard();
 
 			var optionsCode, loadMode = options.loadMode || "always";
 			optionsCode = loadMode;
@@ -736,11 +736,19 @@
 		},
 
 		/**
+		 * @private
 		 * 清除数据集中当前的所有数据。
 		 * 这样当我们下次调用数据集的getData()等方法时，数据集会尝试重新从相应的DataProvider中提取数据。
 		 */
-		clear: function() {
+		discard: function() {
 			delete this._data;
+		},
+		
+		/**
+		 * 清除数据集中当前的所有数据。
+		 */
+		clear: function() {
+			this.setData(null);
 		},
 		
 		retrievePreloadConfig: function(observer) {
