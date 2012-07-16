@@ -361,11 +361,17 @@ public class PackageFileResolver extends WebFileResolver {
 
 	protected String getCacheKey(String resourcePrefix, String fileName,
 			String resourceSuffix, Object... params) {
-		StringBuffer key = (new StringBuffer(resourcePrefix)).append('+')
-				.append(fileName).append('+').append(resourceSuffix)
-				.append('+');
+		StringBuffer key = new StringBuffer();
+		if (resourcePrefix != null) {
+			key.append(resourcePrefix);
+		}
+		key.append('+').append(fileName).append('+');
+		if (resourceSuffix != null) {
+			key.append(resourceSuffix).append('+');
+		}
+		key.append('|');
 		if (params != null && params.length > 0) {
-			key.append(StringUtils.join(params, '+'));
+			key.append(StringUtils.join(params, '|'));
 		}
 		return key.toString();
 	}
