@@ -56,7 +56,7 @@
 			direction: {
 				defaultValue: "left",
 				setter: function(value) {
-					if (this._collpaseable && this._sideControl instanceof dorado.widget.AbstractPanel) {
+					if (this._collapseable && this._sideControl instanceof dorado.widget.AbstractPanel) {
 						var collapseButton = this._sideControl._collapseButton;
 						if (collapseButton) {
 							collapseButton.set("iconClass", this._collapsed ? ("expand-icon-" + value) : ("collapse-icon-" + value));
@@ -142,7 +142,7 @@
              * @default true
              * @type boolean
              */
-            collpaseable: {
+            collapseable: {
                 defaultValue: true
             },
 
@@ -522,10 +522,10 @@
 
 			var panel = this, doms = panel._doms, width = $fly(dom).width(), height = $fly(dom).height(),
 				splitterWidth = $fly(doms.splitter).width(), splitterHeight = $fly(doms.splitter).height(),
-				direction = panel._direction, previewable = panel._previewable && panel._collpaseable,
+				direction = panel._direction, previewable = panel._previewable && panel._collapseable,
 				vertical = direction == "top" || direction == "bottom";
 
-            if(panel._collpaseable){
+            if(panel._collapseable){
                 if (panel._collapsed) {
                     $fly(dom).addClass(panel._className + "-collapsed");
                     $fly(doms.splitter).draggable("disable");
@@ -535,7 +535,7 @@
                 }
             }
 
-            if(panel._collpaseable){
+            if(panel._collapseable){
                 $fly(doms.button).css("display", "");
             } else {
                 $fly(doms.button).css("display", "none");
@@ -551,7 +551,7 @@
 
             var position = panel.getPixelPosition();
 
-			if (panel._collpaseable && panel._collapsed) {
+			if (panel._collapseable && panel._collapsed) {
 				if (previewable) {
 					if (!doms.collapseBar) {
 						panel._createCollapseBar();
