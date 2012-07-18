@@ -72,7 +72,7 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 		 * 最终在请求发出时所包含的头信息是此处的头信息和方法的options参数中的头信息的合集，如二者之间的属性定义有冲突，则以方法的options参数中头信息的为准。</li>
 		 * <li>xmlData - {String} 请求时以POST方法发往服务器的XML信息。</li>
 		 * <li>jsonData - {Object|Object[]} 请求时以POST方法发往服务器的JSON信息。</li>
-		 * <li>message - {String} 当请求尚未结束时希望系统显示给用户的提示信息。此属性目前仅以异步模式执行时有效。</li>
+		 * <li>message - {String} 当请求尚未结束时希望系统显示给用户的提示信息。此属性目前仅在以异步模式执行时有效，如果设置此属性为none或null则表示不显示提示信息。</li>
 		 * </ul>
 		 * 上述属性中xmlData和jsonData在定义时只可选择其一。如果同时定义了这两个属性将只有xmlData会生效。
 		 * @type Object
@@ -315,7 +315,7 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 			});
 
 			var message = options.message, taskId;
-			if (message) {
+			if (message && message != "none") {
 				taskId = dorado.util.TaskIndicator.showTaskIndicator(message, options.modal ? "main" : "daemon");
 			}
 
@@ -460,7 +460,7 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 		var conn = connObj.conn;
 
 		var message = options.message, taskId;
-		if (message) {
+		if (message && message != "none") {
 			taskId = dorado.util.TaskIndicator.showTaskIndicator(message, options.modal ? "main" : "daemon");
 		}
 

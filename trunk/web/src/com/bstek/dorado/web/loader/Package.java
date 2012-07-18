@@ -1,7 +1,7 @@
 package com.bstek.dorado.web.loader;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -17,7 +17,8 @@ public class Package {
 	private String pattern;
 	private String contentType;
 	private String charset;
-	private List<String> depends = new ArrayList<String>();
+	private Set<String> depends = new LinkedHashSet<String>();
+	private Set<String> dependedBy = new LinkedHashSet<String>();
 	private String baseUri;
 	private boolean mergeRequests = true;
 
@@ -85,8 +86,12 @@ public class Package {
 	/**
 	 * 返回此资源包依赖的其他资源包的集合。集合中的项为依赖的资源包的名称。
 	 */
-	public List<String> getDepends() {
+	public Set<String> getDepends() {
 		return depends;
+	}
+
+	public Set<String> getDependedBy() {
+		return dependedBy;
 	}
 
 	/**

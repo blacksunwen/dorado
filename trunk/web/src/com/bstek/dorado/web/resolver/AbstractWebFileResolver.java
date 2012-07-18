@@ -100,14 +100,18 @@ public abstract class AbstractWebFileResolver extends AbstractResolver {
 
 		OutputStream out = response.getOutputStream();
 		if (encodingType > 0 && shouldCompress(resourcesWrapper)) {
-			if (encodingType == 1) {
-				response.setHeader(HttpConstants.CONTENT_ENCODING,
-						HttpConstants.GZIP);
-				out = new GZIPOutputStream(out);
-			} else if (encodingType == 2) {
-				response.setHeader(HttpConstants.CONTENT_ENCODING,
-						HttpConstants.COMPRESS);
-				out = new ZipOutputStream(out);
+			try {
+				if (encodingType == 1) {
+					response.setHeader(HttpConstants.CONTENT_ENCODING,
+							HttpConstants.GZIP);
+					out = new GZIPOutputStream(out);
+				} else if (encodingType == 2) {
+					response.setHeader(HttpConstants.CONTENT_ENCODING,
+							HttpConstants.COMPRESS);
+					out = new ZipOutputStream(out);
+				}
+			} catch (IOException e) {
+				// do nothing
 			}
 		}
 		return out;

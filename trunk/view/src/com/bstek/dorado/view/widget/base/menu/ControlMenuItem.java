@@ -8,6 +8,7 @@ import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.view.ViewElement;
 import com.bstek.dorado.view.widget.Control;
+import com.bstek.dorado.view.widget.FloatControl;
 import com.bstek.dorado.view.widget.InnerElementReference;
 
 /**
@@ -23,12 +24,12 @@ public class ControlMenuItem extends BaseMenuItem implements ViewElement {
 
 	@XmlSubNode
 	@ClientProperty
-	public Control getControl() {
-		return controlRef.get();
+	public FloatControl getControl() {
+		return (FloatControl) controlRef.get();
 	}
 
-	public void setControl(Control control) {
-		controlRef.set(control);
+	public void setControl(FloatControl control) {
+		controlRef.set((Control) control);
 	}
 
 	public void registerInnerElement(ViewElement element) {

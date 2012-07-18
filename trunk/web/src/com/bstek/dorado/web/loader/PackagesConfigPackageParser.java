@@ -51,6 +51,14 @@ public class PackagesConfigPackageParser extends
 			}
 		}
 
+		String dependedByText = (String) properties.remove("dependedBy");
+		if (StringUtils.isNotEmpty(dependedByText)) {
+			String[] dependedByArray = dependedByText.split(",");
+			for (String dependedBy : dependedByArray) {
+				pkg.getDependedBy().add(dependedBy);
+			}
+		}
+
 		((Map<String, Object>) new BeanMap(pkg)).putAll(properties);
 		return pkg;
 	}

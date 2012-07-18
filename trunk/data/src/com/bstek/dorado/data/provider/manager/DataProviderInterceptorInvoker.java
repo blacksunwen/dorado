@@ -1,6 +1,7 @@
 package com.bstek.dorado.data.provider.manager;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.aopalliance.intercept.MethodInterceptor;
@@ -16,9 +17,10 @@ import com.bstek.dorado.core.bean.BeanFactoryUtils;
 import com.bstek.dorado.core.resource.ResourceManager;
 import com.bstek.dorado.core.resource.ResourceManagerUtils;
 import com.bstek.dorado.data.ParameterWrapper;
+import com.bstek.dorado.data.provider.Criteria;
 import com.bstek.dorado.data.provider.DataProvider;
 import com.bstek.dorado.data.provider.Page;
-import com.bstek.dorado.data.resolver.DataResolver;
+import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.util.Assert;
 
 /**
@@ -39,6 +41,8 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 
 	private static final String[] EXTRA_NAMES = new String[] { "criteria",
 			"filterValue" };
+	private static final Class<?>[] EXTRA_TYPES = new Class<?>[] {
+			Criteria.class, null };
 	private static final Object[] EXTRA_ARGS = new Object[] { null, null };
 
 	private String interceptorName;
@@ -135,6 +139,16 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 			page = (Page<?>) proxyArgs[pageParameterIndex];
 		}
 
+		DataType dataType = null;
+		int dataTypeArgIndex = MethodAutoMatchingUtils.indexOfTypes(
+				parameterTypes, DataType.class);
+		if (dataTypeArgIndex >= 0) {
+			dataType = (DataType) proxyArgs[dataTypeArgIndex];
+		}
+		if (dataType == null) {
+			dataType = dataProvider.getResultDataType();
+		}
+
 		requiredParameterNames = new String[((page != null) ? 1 : 0)];
 		requiredParameters = new Object[requiredParameterNames.length];
 		if (page != null) {
@@ -162,23 +176,25 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 			parameterParameters = new Object[] { parameter };
 		}
 
-		optionalParameterNames = new String[parameterParameterNames.length + 2];
+		optionalParameterNames = new String[parameterParameterNames.length + 3];
 		optionalParameters = new Object[optionalParameterNames.length];
 
 		optionalParameterNames[0] = "dataProvider";
-		optionalParameterNames[1] = "methodInvocation";
+		optionalParameterNames[1] = "dataType";
+		optionalParameterNames[2] = "methodInvocation";
 		optionalParameters[0] = dataProvider;
-		optionalParameters[1] = methodInvocation;
+		optionalParameters[1] = dataType;
+		optionalParameters[2] = methodInvocation;
 
-		System.arraycopy(parameterParameterNames, 0, optionalParameterNames, 2,
+		System.arraycopy(parameterParameterNames, 0, optionalParameterNames, 3,
 				parameterParameterNames.length);
-		System.arraycopy(parameterParameters, 0, optionalParameters, 2,
+		System.arraycopy(parameterParameters, 0, optionalParameters, 3,
 				parameterParameters.length);
 
 		if (sysParameter != null && !sysParameter.isEmpty()) {
 			for (int i = 0; i < EXTRA_NAMES.length; i++) {
 				if (!sysParameter.containsKey(EXTRA_NAMES[i])) {
-					sysParameter.put(EXTRA_NAMES[i], EXTRA_ARGS[i]);
+					sysParameter.put(EXTRA_NAMES[i], null);
 				}
 			}
 
@@ -219,19 +235,67 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 			requiredArgs = new Object[] { proxyArgs[pageArgIndex] };
 		}
 
-		Class<?>[] exactArgTypes = new Class[] { DataResolver.class,
-				MethodInvocation.class };
-		Object[] exactArgs = new Object[] { dataProvider, methodInvocation };
-
-		Class<?>[] optionalArgTypes = null;
-		Object[] optionalArgs = null;
+		DataType dataType = null;
+		int dataTypeArgIndex = MethodAutoMatchingUtils.indexOfTypes(
+				proxyArgTypes, DataType.class);
+		if (dataTypeArgIndex >= 0) {
+			dataType = (DataType) proxyArgs[dataTypeArgIndex];
+		}
+		if (dataType == null) {
+			dataType = dataProvider.getResultDataType();
+		}
 
 		Object parameter = null;
+		Map<String, Object> sysParameter = null;
+		Map<Class<?>, Object> extraArgMap = new HashMap<Class<?>, Object>();
+
 		int parameterArgIndex = MethodAutoMatchingUtils.indexOfTypes(
 				proxyArgTypes, Object.class);
 		if (parameterArgIndex >= 0) {
 			parameter = proxyArgs[parameterArgIndex];
 		}
+
+		if (parameter != null && parameter instanceof ParameterWrapper) {
+			ParameterWrapper parameterWrapper = (ParameterWrapper) parameter;
+			parameter = parameterWrapper.getParameter();
+			sysParameter = parameterWrapper.getSysParameter();
+
+			if (sysParameter != null && !sysParameter.isEmpty()) {
+				for (int i = 0; i < EXTRA_NAMES.length; i++) {
+					if (EXTRA_TYPES[i] != null
+							&& !sysParameter.containsKey(EXTRA_NAMES[i])) {
+						extraArgMap.put(EXTRA_TYPES[i], null);
+					}
+				}
+
+				for (Map.Entry<?, ?> entry : sysParameter.entrySet()) {
+					Object value = entry.getValue();
+					if (value != null) {
+						extraArgMap.put(value.getClass(), value);
+					}
+				}
+			}
+		}
+
+		Class<?>[] exactArgTypes = new Class[3 + extraArgMap.size()];
+		Object[] exactArgs = new Object[exactArgTypes.length];
+		exactArgTypes[0] = DataProvider.class;
+		exactArgs[0] = dataProvider;
+		exactArgTypes[1] = DataType.class;
+		exactArgs[1] = dataType;
+		exactArgTypes[2] = MethodInvocation.class;
+		exactArgs[2] = methodInvocation;
+
+		int i = 3;
+		for (Map.Entry<?, ?> entry : extraArgMap.entrySet()) {
+			exactArgTypes[i] = (Class<?>) entry.getKey();
+			exactArgs[i] = entry.getValue();
+			i++;
+		}
+
+		Class<?>[] optionalArgTypes = null;
+		Object[] optionalArgs = null;
+
 		if (parameter != null && parameter instanceof Map<?, ?>) {
 			Map<?, ?> map = (Map<?, ?>) parameter;
 			optionalArgTypes = new Class[map.size() + 1];
@@ -239,7 +303,7 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 			optionalArgTypes[0] = parameter.getClass();
 			optionalArgs[0] = parameter;
 
-			int i = 1;
+			i = 1;
 			for (Object value : map.values()) {
 				if (value != null) {
 					optionalArgTypes[i] = value.getClass();

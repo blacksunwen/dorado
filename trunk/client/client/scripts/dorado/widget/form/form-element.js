@@ -406,7 +406,7 @@
 					if (dorado.Object.isInstanceOf(this._formProfile, dorado.widget.FormProfile)) {
 						this._formProfile.removeBindingElement(this);
 					}
-					if (!dorado.Object.isInstanceOf(formProfile, dorado.widget.FormProfile)) {
+					if (formProfile && !dorado.Object.isInstanceOf(formProfile, dorado.widget.FormProfile)) {
 						var ref = formProfile;
 						formProfile = ref.view.id(ref.component);
 					}

@@ -26,6 +26,9 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 						<property name="componentTypeRegistry" ref="dorado.componentTypeRegistry" />
 					</bean>
 				</entry>
+				<entry key="classType:com.bstek.dorado.view.widget.FloatControl">
+					<bean class="com.bstek.dorado.idesupport.initializer.FloatControlRuleTemplateInitializer" />
+				</entry>
 			</map>
 		</property>
 		<property name="xmlDocumentBuilder" ref="dorado.xmlDocumentBuilder" />

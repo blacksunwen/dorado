@@ -2,12 +2,15 @@ package com.bstek.dorado.web.loader;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.w3c.dom.Document;
 
 import com.bstek.dorado.config.xml.XmlParser;
 import com.bstek.dorado.core.io.Resource;
 import com.bstek.dorado.core.io.ResourceUtils;
+import com.bstek.dorado.core.resource.ResourceManager;
+import com.bstek.dorado.core.resource.ResourceManagerUtils;
 import com.bstek.dorado.core.xml.XmlDocumentBuilder;
 
 /**
@@ -21,6 +24,7 @@ public class PackagesConfigManager {
 	private XmlParser xmlParser;
 	private List<String> configLocations = new ArrayList<String>();
 	private PackagesConfig packagesConfig;
+	private ResourceManager resourceManager;
 
 	/**
 	 * 设置XML配置文件读取实现类。
@@ -51,6 +55,13 @@ public class PackagesConfigManager {
 		this.configLocations.add(configLocation);
 	}
 
+	private ResourceManager getResourceManager() {
+		if (resourceManager == null) {
+			resourceManager = ResourceManagerUtils.get(getClass());
+		}
+		return resourceManager;
+	}
+
 	/**
 	 * 返回资源包配置信息对象。
 	 * 
@@ -63,6 +74,30 @@ public class PackagesConfigManager {
 				configLocations.toArray(locations);
 				packagesConfig = loadConfigs(ResourceUtils
 						.getResources(locations));
+
+				Map<String, Package> packages = packagesConfig.getPackages();
+				for (Package pkg : packages.values()) {
+					String name = pkg.getName();
+					for (String depends : pkg.getDepends()) {
+						if (packages.get(depends) == null) {
+							throw new IllegalArgumentException(
+									getResourceManager().getString(
+											"common/unknownDependsPackage",
+											name, depends));
+						}
+					}
+
+					for (String dependedBy : pkg.getDependedBy()) {
+						Package dependedPackage = packages.get(dependedBy);
+						if (dependedPackage == null) {
+							throw new IllegalArgumentException(
+									getResourceManager().getString(
+											"common/unknownDependedByPackage",
+											name, dependedBy));
+						}
+						dependedPackage.getDepends().add(name);
+					}
+				}
 			} else {
 				packagesConfig = new PackagesConfig();
 			}
@@ -76,13 +111,13 @@ public class PackagesConfigManager {
 	 * @throws Exception
 	 */
 	protected PackagesConfig loadConfigs(Resource[] resources) throws Exception {
-		PackagesConfig importConfig = new PackagesConfig();
+		PackagesConfig packagesConfig = new PackagesConfig();
 		PackagesConfigParseContext context = new PackagesConfigParseContext(
-				importConfig);
+				packagesConfig);
 		for (Resource resource : resources) {
 			loadConfig(resource, context);
 		}
-		return importConfig;
+		return packagesConfig;
 	}
 
 	/**
