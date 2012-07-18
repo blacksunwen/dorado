@@ -210,6 +210,10 @@
 					dialog.resetDimension();
 					dialog.refresh();
 
+                    if (dialog._left !== undefined && dialog._top !== undefined) {
+                        $fly(dom).css({ left: dialog._left, top: dialog._top });
+                    }
+
 					var captionBar = dialog._captionBar;
 					if (captionBar) {
 						var button = captionBar.getButton(dialog._id + "_maximize");
@@ -654,19 +658,6 @@
 				return result;
 			} else {
 				return $invokeSuper.call(panel, arguments);
-			}
-		},
-
-		refreshDom: function(dom) {
-			var dialog = this;
-			
-			$invokeSuper.call(dialog, arguments);
-
-            //TODO delete this http://www.bsdn.org/projects/dorado7/issue/dorado7-495
-            if (false && !dialog._maximized) {
-                if (dialog._left !== undefined && dialog._top !== undefined) {
-                    $fly(dom).css({ left: dialog._left, top: dialog._top });
-                }
 			}
 		}
 	});
