@@ -800,6 +800,9 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 						panel._left = panel._originalLeft;
 						panel._top = panel._originalTop;
 						panel.refresh();
+                        if (panel._left !== undefined && panel._top !== undefined) {
+                            $fly(dom).css({ left: panel._left, top: panel._top });
+                        }
 					}
 				});
 				
