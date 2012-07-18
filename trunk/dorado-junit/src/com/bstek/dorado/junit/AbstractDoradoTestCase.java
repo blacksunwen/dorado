@@ -12,10 +12,15 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 
+import com.bstek.dorado.config.xml.XmlParserHelper;
 import com.bstek.dorado.core.CommonContext;
 import com.bstek.dorado.core.Configure;
+import com.bstek.dorado.core.ConfigureStore;
 import com.bstek.dorado.core.Context;
 import com.bstek.dorado.core.EngineStartupListenerManager;
+import com.bstek.dorado.core.io.Resource;
+import com.bstek.dorado.core.io.ResourceUtils;
+import com.bstek.dorado.core.xml.XmlDocumentBuilder;
 import com.bstek.dorado.data.provider.DataProvider;
 import com.bstek.dorado.data.provider.manager.DataProviderManager;
 import com.bstek.dorado.data.resolver.DataResolver;
@@ -44,8 +49,11 @@ public abstract class AbstractDoradoTestCase extends TestCase {
 			super();
 			
 			try {
-				this.initApplicationContext();
 				Context.attachToThreadLocal(this);
+				
+				this.initApplicationContext();
+				ConfigureStore store = Configure.getStore();
+				store.set("core.runMode", "debug");
 				EngineStartupListenerManager.notifyStartup();
 			} catch (Exception e) {
 				throw new RuntimeException(e);
@@ -61,9 +69,12 @@ public abstract class AbstractDoradoTestCase extends TestCase {
 		}
 		
 		public void close() throws Exception{
-			Context.dettachFromThreadLocal();
-			ConfigurableApplicationContext configContext = (ConfigurableApplicationContext)applicationContext;
-			configContext.close();
+			try {
+				ConfigurableApplicationContext configContext = (ConfigurableApplicationContext)applicationContext;
+				configContext.close();
+			} finally {
+				Context.dettachFromThreadLocal();
+			}
 		}
 	}
 	
@@ -167,6 +178,19 @@ public abstract class AbstractDoradoTestCase extends TestCase {
 		}
 	}
 	
+	protected Resource getCaseResource(String resourceName)  {
+		String className = this.getClass().getName();
+		String [] tokens = StringUtils.split(className, '.');
+		tokens[tokens.length-1] = resourceName;
+		
+		String location = "classpath:" + StringUtils.join(tokens, '/');
+		try {
+			return ResourceUtils.getResource(location);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 	/*
 	 * ------------------- Object Getter -------------------
 	 */
@@ -178,6 +202,16 @@ public abstract class AbstractDoradoTestCase extends TestCase {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	protected XmlParserHelper getXmlParserHelper() {
+		XmlParserHelper helper = this.getServiceBean("xmlParserHelper");
+		return helper;
+	}
+	
+	protected XmlDocumentBuilder getXmlDocumentBuilder() {
+		XmlDocumentBuilder builder = this.getServiceBean("xmlDocumentBuilder");
+		return builder;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -214,7 +248,7 @@ public abstract class AbstractDoradoTestCase extends TestCase {
 		
 		return (T)resolver;
 	}
-
+	
 	/*
 	 * ------------------- Managers -------------------
 	 */
