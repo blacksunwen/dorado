@@ -7,7 +7,6 @@ import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
-import com.bstek.dorado.data.entity.EntityUtils;
 import com.bstek.dorado.data.provider.DataProvider;
 import com.bstek.dorado.data.provider.PagingList;
 import com.bstek.dorado.data.type.DataType;
@@ -142,13 +141,11 @@ public class DataSet extends Component {
 	public Object getData() throws Exception {
 		if (data == null && dataProvider != null) {
 			if (pageSize > 0) {
-				data = new PagingList(dataProvider, parameter, pageSize);
+				data = new PagingList(dataProvider, dataType, parameter,
+						pageSize);
 			} else {
-				data = dataProvider.getResult(parameter);
+				data = dataProvider.getResult(parameter, dataType);
 			}
-		}
-		if (dataType != null) {
-			EntityUtils.toEntity(data, dataType);
 		}
 		return data;
 	}

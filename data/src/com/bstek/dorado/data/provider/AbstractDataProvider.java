@@ -117,6 +117,9 @@ public abstract class AbstractDataProvider implements DataProvider, Namable,
 		if (parameter == null && this.parameter != null) {
 			parameter = this.parameter;
 		}
+		if (resultDataType == null) {
+			resultDataType = this.resultDataType;
+		}
 		return internalGetResult(parameter, resultDataType);
 	}
 
@@ -135,6 +138,9 @@ public abstract class AbstractDataProvider implements DataProvider, Namable,
 			DataType resultDataType) throws Exception {
 		if (parameter == null && this.parameter != null) {
 			parameter = this.parameter;
+		}
+		if (resultDataType == null) {
+			resultDataType = this.resultDataType;
 		}
 		internalGetResult(parameter, page, resultDataType);
 	}

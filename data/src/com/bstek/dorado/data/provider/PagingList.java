@@ -11,6 +11,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.util.proxy.ListProxySupport;
 
 /**
@@ -24,6 +25,7 @@ public class PagingList<E> extends ListProxySupport<E> {
 	private static final Log logger = LogFactory.getLog(PagingList.class);
 
 	private DataProvider dataProvider;
+	private DataType dataType;
 	private Object parameter;
 	private int pageSize;
 	private int pageNo;
@@ -32,39 +34,20 @@ public class PagingList<E> extends ListProxySupport<E> {
 
 	private Map<Integer, Page<E>> pageMap = new HashMap<Integer, Page<E>>();
 
-	/**
-	 * @param dataProvider
-	 *            用于提取分页数据的DataProvider
-	 * @param parameter
-	 *            调用DataProvider时使用的参数
-	 * @param pageSize
-	 *            每页记录数
-	 * @param pageNo
-	 *            初始装载的页号
-	 * @throws Exception
-	 */
 	@SuppressWarnings("unchecked")
-	public PagingList(DataProvider dataProvider, Object parameter,
-			int pageSize, int pageNo) throws Exception {
+	public PagingList(DataProvider dataProvider, DataType dataType,
+			Object parameter, int pageSize, int pageNo) throws Exception {
 		super((List<E>) Collections.emptyList());
 		this.dataProvider = dataProvider;
+		this.dataType = dataType;
 		this.parameter = parameter;
 		this.pageSize = pageSize;
 		this.gotoPage(pageNo);
 	}
 
-	/**
-	 * @param dataProvider
-	 *            用于提取分页数据的DataProvider
-	 * @param parameter
-	 *            调用DataProvider时使用的参数
-	 * @param pageSize
-	 *            每页记录数
-	 * @throws Exception
-	 */
-	public PagingList(DataProvider dataProvider, Object parameter, int pageSize)
-			throws Exception {
-		this(dataProvider, parameter, pageSize, 1);
+	public PagingList(DataProvider dataProvider, DataType dataType,
+			Object parameter, int pageSize) throws Exception {
+		this(dataProvider, dataType, parameter, pageSize, 1);
 	}
 
 	/**
@@ -159,7 +142,7 @@ public class PagingList<E> extends ListProxySupport<E> {
 		Page<E> page = pageMap.get(pageNo);
 		if (page == null) {
 			page = new Page<E>(pageSize, pageNo);
-			dataProvider.getResult(parameter, page);
+			dataProvider.getResult(parameter, page, dataType);
 			pageMap.put(pageNo, page);
 		}
 		return page;

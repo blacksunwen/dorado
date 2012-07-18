@@ -20,6 +20,7 @@ import org.apache.commons.logging.LogFactory;
 import com.bstek.dorado.core.Context;
 import com.bstek.dorado.core.el.ExpressionHandler;
 import com.bstek.dorado.data.provider.DataProvider;
+import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.data.type.EntityDataType;
 import com.bstek.dorado.data.type.property.BasePropertyDef;
 import com.bstek.dorado.data.type.property.CacheMode;
@@ -449,7 +450,9 @@ public abstract class EntityEnhancer {
 			Object originThis = jexlContext.get(THIS);
 			jexlContext.set(THIS, entity);
 			try {
-				return dataProvider.getResult(referenceProperty.getParameter());
+				DataType dataType = referenceProperty.getDataType();
+				return dataProvider.getResult(referenceProperty.getParameter(),
+						dataType);
 			} finally {
 				jexlContext.set(THIS, originThis);
 			}
@@ -477,7 +480,9 @@ public abstract class EntityEnhancer {
 						.getConstraints());
 
 				DataProvider dataProvider = lookupProperty.getDataProvider();
-				result = dataProvider.getResult();
+
+				DataType dataType = lookupProperty.getDataType();
+				result = dataProvider.getResult(null, dataType);
 				if (result != null) {
 					if (result instanceof Collection) {
 						Collection entitys = (Collection) result;

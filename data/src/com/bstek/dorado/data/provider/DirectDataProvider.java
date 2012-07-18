@@ -33,6 +33,7 @@ public class DirectDataProvider extends AbstractDataProvider {
 	@Override
 	protected Object internalGetResult(Object parameter, DataType resultDataType)
 			throws Exception {
+		// 此处未处理resultDataType，因为运行时的动态代理会去处理
 		return result;
 	}
 
@@ -40,6 +41,7 @@ public class DirectDataProvider extends AbstractDataProvider {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected void internalGetResult(Object parameter, Page page,
 			DataType resultDataType) throws Exception {
+		// 此处未处理resultDataType，因为运行时的动态代理会去处理
 		if (result == null) {
 			page.setEntities(null);
 			page.setEntityCount(0);

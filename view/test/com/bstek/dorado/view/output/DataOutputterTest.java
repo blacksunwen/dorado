@@ -71,7 +71,8 @@ public class DataOutputterTest extends ConfigManagerTestSupport {
 		DirectDataProvider directDataProvider = new DirectDataProvider();
 		directDataProvider.setResult(list);
 
-		PagingList pagingList = new PagingList(directDataProvider, null, 5);
+		PagingList pagingList = new PagingList(directDataProvider, null, null,
+				5);
 		String output = getOutput(pagingList);
 		assertEquals("(function(){\n" + "var a=[0,1,2,3,4];\n"
 				+ "a.pageSize=5;\n" + "a.pageNo=1;\n" + "a.pageCount=200;\n"

@@ -15,6 +15,8 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.util.NumberUtils;
 
 import com.bstek.dorado.core.Context;
+import com.bstek.dorado.core.resource.ResourceManager;
+import com.bstek.dorado.core.resource.ResourceManagerUtils;
 import com.bstek.dorado.util.proxy.ProxyBeanUtils;
 import com.thoughtworks.paranamer.BytecodeReadingParanamer;
 import com.thoughtworks.paranamer.CachingParanamer;
@@ -30,6 +32,24 @@ public abstract class MethodAutoMatchingUtils {
 	private static final Class<?>[] EMPTY_TYPES = new Class<?>[0];
 	private static final Object[] EMPTY_ARGS = new Object[0];
 	private static final String[] EMPTY_NAMES = new String[0];
+
+	private static class MethodInfo {
+		private String className;
+		private String methodName;
+
+		public MethodInfo(String className, String methodName) {
+			this.className = className;
+			this.methodName = methodName;
+		}
+
+		public String getClassName() {
+			return className;
+		}
+
+		public String getMethodName() {
+			return methodName;
+		}
+	}
 
 	private static Map<Object, Method[]> methodCache = new Hashtable<Object, Method[]>();
 	private static Paranamer paranamer = new CachingParanamer(
@@ -174,7 +194,7 @@ public abstract class MethodAutoMatchingUtils {
 					int tmpMatchingRate = tmpMethodDescriptor.getMatchingRate();
 					if (matchingRate == tmpMatchingRate) {
 						String message = getExceptionMessage(
-								"More than one methods matching the following condition",
+								"common/tooMoreMatchingMethodsByTypes",
 								methods, requiredTypes, exactTypes,
 								optionalTypes, returnType);
 						throw new MoreThanOneMethodsMatchsException(message);
@@ -188,9 +208,8 @@ public abstract class MethodAutoMatchingUtils {
 
 		if (methodDescriptor == null) {
 			String message = getExceptionMessage(
-					"No method could be found which matching the following condition",
-					methods, requiredTypes, exactTypes, optionalTypes,
-					returnType);
+					"common/noMatchingMethodByTypes", methods, requiredTypes,
+					exactTypes, optionalTypes, returnType);
 			throw new MethodAutoMatchingException(message);
 		}
 		return methodDescriptor;
@@ -482,7 +501,7 @@ public abstract class MethodAutoMatchingUtils {
 					int tmpMatchingRate = tmpMethodDescriptor.getMatchingRate();
 					if (matchingRate == tmpMatchingRate) {
 						String message = getExceptionMessage(
-								"More than one methods matching the following condition",
+								"common/tooMoreMatchingMethodsByNames",
 								methods, requiredParameterNames,
 								optionalParameterNames, extraParameterNames);
 						throw new MoreThanOneMethodsMatchsException(message);
@@ -496,8 +515,8 @@ public abstract class MethodAutoMatchingUtils {
 
 		if (methodDescriptor == null) {
 			String message = getExceptionMessage(
-					"No method could be found which matching the following condition",
-					methods, requiredParameterNames, optionalParameterNames,
+					"common/noMatchingMethodByNames", methods,
+					requiredParameterNames, optionalParameterNames,
 					extraParameterNames);
 			throw new MethodAutoMatchingException(message);
 		}
@@ -773,77 +792,74 @@ public abstract class MethodAutoMatchingUtils {
 		}
 	}
 
-	private static String getExceptionMessage(String header, Method[] methods,
-			Class<?>[] requiredTypes, Class<?>[] exactTypes,
+	private static String getExceptionMessage(String resourceKey,
+			Method[] methods, Class<?>[] requiredTypes, Class<?>[] exactTypes,
 			Class<?>[] optionalTypes, Class<?> returnType) {
-		StringBuffer message = new StringBuffer();
-		message.append(getExceptionMessageHeader(methods, header));
-		message.append(" requiredTypes=[");
+		MethodInfo methodInfo = getMethodInfo(methods);
+
+		StringBuffer sb = new StringBuffer();
 		for (int i = 0; i < requiredTypes.length; i++) {
 			if (i > 0) {
-				message.append(",");
+				sb.append(",");
 			}
 			Class<?> argType = requiredTypes[i];
 			if (argType != null) {
-				message.append(getClassName(argType));
+				sb.append(getClassName(argType));
 			} else {
-				message.append("*");
+				sb.append("*");
 			}
 		}
-		message.append("],");
+		String required = sb.toString();
 
-		message.append(" exactTypes=[");
+		sb.setLength(0);
 		for (int i = 0; i < exactTypes.length; i++) {
 			if (i > 0) {
-				message.append(",");
+				sb.append(",");
 			}
 			Class<?> argType = exactTypes[i];
 			if (argType != null) {
-				message.append(getClassName(argType));
+				sb.append(getClassName(argType));
 			} else {
-				message.append("*");
+				sb.append("*");
 			}
 		}
-		message.append("],");
+		String exact = sb.toString();
 
-		message.append(" optionalTypes=[");
+		sb.setLength(0);
 		for (int i = 0; i < optionalTypes.length; i++) {
 			if (i > 0) {
-				message.append(",");
+				sb.append(",");
 			}
 			Class<?> argType = optionalTypes[i];
 			if (argType != null) {
-				message.append(getClassName(argType));
+				sb.append(getClassName(argType));
 			} else {
-				message.append("*");
+				sb.append("*");
 			}
 		}
-		message.append("],");
-		message.append(getExceptionMesasgeFooter(returnType));
-		return message.toString();
+		String optional = sb.toString();
+
+		ResourceManager resource = ResourceManagerUtils
+				.get(MethodAutoMatchingUtils.class);
+		return resource.getString(resourceKey, methodInfo.getClassName(),
+				methodInfo.getMethodName(), required, exact, optional,
+				((returnType != null) ? returnType.getName() : "*"));
 	}
 
-	private static String getExceptionMessage(String header, Method[] methods,
-			String[] requiredParameterNames, String[] optionalParameterNames,
-			String[] extraParameterNames) {
-		StringBuffer message = new StringBuffer();
-		message.append(getExceptionMessageHeader(methods, header));
-		message.append(" requiredParameters=[")
-				.append(StringUtils.join(requiredParameterNames, ','))
-				.append("]");
-		message.append(" optionalParameters=[")
-				.append(StringUtils.join(optionalParameterNames, ','))
-				.append("]");
-		message.append(" extraParameters=[")
-				.append(StringUtils.join(extraParameterNames, ',')).append("]");
-		return message.toString();
+	private static String getExceptionMessage(String resourceKey,
+			Method[] methods, String[] requiredParameterNames,
+			String[] optionalParameterNames, String[] extraParameterNames) {
+		MethodInfo methodInfo = getMethodInfo(methods);
+		ResourceManager resource = ResourceManagerUtils
+				.get(MethodAutoMatchingUtils.class);
+		return resource.getString(resourceKey, methodInfo.getClassName(),
+				methodInfo.getMethodName(),
+				StringUtils.join(requiredParameterNames, ','),
+				StringUtils.join(optionalParameterNames, ','),
+				StringUtils.join(extraParameterNames, ','));
 	}
 
-	private static String getExceptionMessageHeader(Method[] methods,
-			String header) {
-		StringBuffer message = new StringBuffer();
-		message.append(header).append(": ");
-
+	private static MethodInfo getMethodInfo(Method[] methods) {
 		boolean classIsSame = true;
 		boolean methodNameIsSame = true;
 		Class<?> cl = null;
@@ -873,24 +889,14 @@ public abstract class MethodAutoMatchingUtils {
 			}
 		}
 
-		if (classIsSame) {
-			message.append(" class=").append(cl.getName()).append(",");
+		String className = cl.getName();
+		if (!classIsSame) {
+			className += "*";
 		}
 
-		if (methodNameIsSame) {
-			message.append(" methodName=").append(methodName).append(",");
+		if (!methodNameIsSame) {
+			methodName += "*";
 		}
-		return message.toString();
-	}
-
-	private static String getExceptionMesasgeFooter(Class<?> returnType) {
-		StringBuffer message = new StringBuffer();
-		message.append(" returnType=");
-		if (returnType != null) {
-			message.append(getClassName(returnType));
-		} else {
-			message.append("*");
-		}
-		return message.toString();
+		return new MethodInfo(className, methodName);
 	}
 }

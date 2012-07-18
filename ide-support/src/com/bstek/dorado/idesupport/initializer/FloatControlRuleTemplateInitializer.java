@@ -1,0 +1,61 @@
+package com.bstek.dorado.idesupport.initializer;
+
+import javassist.Modifier;
+
+import org.apache.commons.lang.StringUtils;
+
+import com.bstek.dorado.idesupport.RuleTemplateManager;
+import com.bstek.dorado.idesupport.template.AutoRuleTemplate;
+import com.bstek.dorado.idesupport.template.RuleTemplate;
+import com.bstek.dorado.util.clazz.ClassUtils;
+import com.bstek.dorado.view.widget.FloatControl;
+
+public class FloatControlRuleTemplateInitializer implements
+		RuleTemplateInitializer {
+
+	public void initRuleTemplate(RuleTemplate ruleTemplate,
+			InitializerContext initializerContext) throws Exception {
+		String typeName = ruleTemplate.getType();
+		if (StringUtils.isNotEmpty(typeName)) {
+			Class<?> type = ClassUtils.forName(typeName);
+			if (type.equals(FloatControl.class)
+					|| Modifier.isAbstract(type.getModifiers())) {
+				return;
+			}
+
+			boolean found = false;
+			for (Class<?> _interface : type.getInterfaces()) {
+				if (_interface.equals(FloatControl.class)) {
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				return;
+			}
+		}
+
+		RuleTemplateManager ruleTemplateManager = initializerContext
+				.getRuleTemplateManager();
+		RuleTemplate floatControlRule = ruleTemplateManager
+				.getRuleTemplate("FloatControl");
+		if (floatControlRule == null) {
+			floatControlRule = new AutoRuleTemplate("FloatControl",
+					FloatControl.class.getName());
+			floatControlRule.setAbstract(true);
+			ruleTemplateManager.addRuleTemplate(floatControlRule);
+		}
+
+		RuleTemplate[] parents = ruleTemplate.getParents();
+		if (parents != null) {
+			RuleTemplate[] oldParents = parents;
+			parents = new RuleTemplate[oldParents.length + 1];
+			System.arraycopy(oldParents, 0, parents, 0, oldParents.length);
+			parents[oldParents.length] = floatControlRule;
+		} else {
+			parents = new RuleTemplate[] { floatControlRule };
+		}
+		ruleTemplate.setParents(parents);
+	}
+
+}

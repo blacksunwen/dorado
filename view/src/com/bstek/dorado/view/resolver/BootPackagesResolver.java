@@ -5,9 +5,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -257,7 +257,7 @@ public class BootPackagesResolver extends WebFileResolver {
 		if (!OutputUtils.isEscapeValue(pkg.getPattern())) {
 			jsonBuilder.key("pattern").value(pkg.getPattern());
 		}
-		List<String> depends = pkg.getDepends();
+		Set<String> depends = pkg.getDepends();
 		if (depends != null && depends.size() > 0) {
 			jsonBuilder.key("depends").array();
 			for (String depend : depends) {
