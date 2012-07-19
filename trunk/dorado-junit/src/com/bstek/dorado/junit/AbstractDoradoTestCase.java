@@ -2,8 +2,15 @@ package com.bstek.dorado.junit;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -11,6 +18,7 @@ import junit.framework.TestCase;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.w3c.dom.Document;
 
 import com.bstek.dorado.config.xml.XmlParserHelper;
 import com.bstek.dorado.core.CommonContext;
@@ -262,5 +270,21 @@ public abstract class AbstractDoradoTestCase extends TestCase {
 	protected DataResolverManager getDataResolverManager() throws Exception {
 		DataResolverManager dataResolverManager = getServiceBean("dataResolverManager");
 		return dataResolverManager;
+	}
+	
+	/*
+	 * ------------------- Utils -------------------
+	 */
+	protected String toString(Document document) throws Exception {
+		StringWriter writer = new StringWriter();
+		TransformerFactory tFactory = TransformerFactory.newInstance();
+		Transformer transformer = tFactory.newTransformer();
+		transformer.setOutputProperty(OutputKeys.INDENT, "yes");  
+        transformer.setOutputProperty(OutputKeys.CDATA_SECTION_ELEMENTS, "yes");  
+		transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+		DOMSource source = new DOMSource(document);
+		StreamResult result = new StreamResult(writer);
+		transformer.transform(source, result);
+		return writer.toString();
 	}
 }
