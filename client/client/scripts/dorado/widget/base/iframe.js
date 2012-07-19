@@ -81,16 +81,35 @@
 			 */
 			onLoad: {}
 		},
-		
+
+        getDomainInfo: function(domain) {
+            var regex = /^(http[s]?):\/\/([\w.]+)(:([\d]+))?/ig, result = regex.exec(domain);
+            if (result) {
+                return {
+                    protocol: result[1],
+                    domain: result[2],
+                    port: result[4]
+                };
+            }
+        },
+
+        isSameDomain: function() {
+            var localDomain = this.getDomainInfo(location.href), frameDomain = this.getDomainInfo(this._doms.iframe.src);
+            return localDomain.protocol == frameDomain.protocol && localDomain.domain == frameDomain.domain && localDomain.port == frameDomain.port;
+        },
+
 		destroy: function() {
 			var frame = this, doms = frame._doms;
 			if (doms) {
                 try {
-					doms.iframe.contentWindow.dorado.Exception.IGNORE_ALL_EXCEPTIONS = true;
-                    doms.iframe.contentWindow.document.write('');
-                    doms.iframe.contentWindow.close();
-                    if(dorado.Browser.msie){
-                        CollectGarbage();
+                    if (frame.isSameDomain()) {
+                        if (doms.iframe.contentWindow.dorado)
+                            doms.iframe.contentWindow.dorado.Exception.IGNORE_ALL_EXCEPTIONS = true;
+                        doms.iframe.contentWindow.document.write('');
+                        doms.iframe.contentWindow.close();
+                        if(dorado.Browser.msie){
+                            CollectGarbage();
+                        }
                     }
                 } catch(e) {}
                 $fly(doms.iframe).prop("src", BLANK_PATH);
