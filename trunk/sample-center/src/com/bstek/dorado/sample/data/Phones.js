@@ -3,9 +3,11 @@
 	"product" : "I9000",
 	"manufacturer" : "Samsung",
 	"type" : "A",
-	"width" : 61.4,
-	"height" : 12.6,
-	"length" : 120.2,
+	size : {
+		"width" : 61.4,
+		"height" : 12.6,
+		"length" : 120.2
+	},
 	"os" : "Android 2.1",
 	"cpu" : "Samsung 1GHz",
 	"screen" : "4.0",
@@ -17,9 +19,11 @@
 	"product" : "iPhone4",
 	"manufacturer" : "Apple",
 	"type" : "A",
-	"width" : 58.6,
-	"height" : 9.3,
-	"length" : 115.2,
+	size : {
+		"width" : 58.6,
+		"height" : 9.3,
+		"length" : 115.2
+	},
 	"os" : "iPhone iOS 4",
 	"cpu" : "A4 1GHz",
 	"screen" : "3.5",
@@ -31,9 +35,11 @@
 	"product" : "Milestone",
 	"manufacturer" : "Motorola",
 	"type" : "A",
-	"width" : 60,
-	"height" : 13.7,
-	"length" : 115,
+	size : {
+		"width" : 60,
+		"height" : 13.7,
+		"length" : 115
+	},
 	"os" : "Android 2.0",
 	"cpu" : "MSM 600Mhz",
 	"screen" : "3.7",
@@ -45,9 +51,11 @@
 	"product" : "N86",
 	"manufacturer" : "Nokia",
 	"type" : "C",
-	"width" : 51.4,
-	"height" : 16.6,
-	"length" : 103.4,
+	size : {
+		"width" : 51.4,
+		"height" : 16.6,
+		"length" : 103.4
+	},
 	"os" : "Symbian S60",
 	"cpu" : "A4 434MHz",
 	"screen" : "2.6",
@@ -59,9 +67,11 @@
 	"product" : "N8",
 	"manufacturer" : "Nokia",
 	"type" : "C",
-	"width" : 59.12,
-	"height" : 12.9,
-	"length" : 113.5,
+	size : {
+		"width" : 59.12,
+		"height" : 12.9,
+		"length" : 113.5
+	},
 	"os" : "Symbian 3",
 	"cpu" : "A8 600MHz",
 	"screen" : "3.5",
@@ -73,9 +83,11 @@
 	"product" : "S8500",
 	"manufacturer" : "Samsung",
 	"type" : "B",
-	"width" : 56,
-	"height" : 10.9,
-	"length" : 118,
+	size : {
+		"width" : 56,
+		"height" : 10.9,
+		"length" : 118
+	},
 	"os" : "Android 2.0",
 	"cpu" : "Samsung 1GHz",
 	"screen" : "3.3",
@@ -87,9 +99,11 @@
 	"product" : "iPhone3G",
 	"manufacturer" : "Apple",
 	"type" : "A",
-	"width" : 62.1,
-	"height" : 12.3,
-	"length" : 115.5,
+	size : {
+		"width" : 62.1,
+		"height" : 12.3,
+		"length" : 115.5
+	},
 	"os" : "iPhone iOS X",
 	"cpu" : "A4 667MHz",
 	"screen" : "3.5",
@@ -101,9 +115,11 @@
 	"product" : "ME600",
 	"manufacturer" : "Motorola",
 	"type" : "B",
-	"width" : 53,
-	"height" : 15.3,
-	"length" : 108,
+	size : {
+		"width" : 53,
+		"height" : 15.3,
+		"length" : 108
+	},
 	"os" : "Android 1.5",
 	"cpu" : "MSM 528MHz",
 	"screen" : "3.1",
@@ -115,9 +131,11 @@
 	"product" : "X6",
 	"manufacturer" : "Nokia",
 	"type" : "C",
-	"width" : 51,
-	"height" : 13.8,
-	"length" : 111,
+	size : {
+		"width" : 51,
+		"height" : 13.8,
+		"length" : 111
+	},
 	"os" : "Symbian S60 v5",
 	"cpu" : "A4 667MHz",
 	"screen" : "3.2",

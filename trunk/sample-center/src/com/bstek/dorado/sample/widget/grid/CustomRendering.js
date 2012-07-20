@@ -139,9 +139,9 @@ var OperationCellRenderer = $extend(dorado.widget.grid.SubControlCellRenderer,
 	arg.dom.innerText = "总计：" + arg.data.get("storage");
 }
 
-//@Bind #gridPhones.#volumn.onRenderCell
+//@Bind #gridPhones.#size.onRenderCell
 !function(arg) {
 	var entity = arg.data;
-	arg.dom.innerText = entity.get("length") + " x " + entity.get("width") + " x " + entity.get("height");
+	arg.dom.innerText = entity.get("size.length") + " x " + entity.get("size.width") + " x " + entity.get("size.height");
 }
 

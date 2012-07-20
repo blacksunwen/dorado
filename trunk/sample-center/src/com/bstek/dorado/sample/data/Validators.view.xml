@@ -37,6 +37,7 @@ if (password != arg.data) {&#xD;
       <PropertyDef name="age">
         <Property name="dataType">Integer</Property>
         <Property name="label">年龄</Property>
+        <Property name="displayFormat">#.00</Property>
         <Validator type="range">
           <Property name="minValue">3</Property>
           <Property name="maxValue">100</Property>
