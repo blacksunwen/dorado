@@ -5,14 +5,14 @@
   <Model/>
   <View>
     <Shell id="shell">
-      <Property name="wallpaper">>dorado/res/com/bstek/dorado/sample/widget/desktop/wallpapers/dorado1.jpg</Property>
+      <Property name="wallpaper">>dorado/res/com/bstek/dorado/sample/addon/desktop/wallpapers/dorado1.jpg</Property>
       <Apps>
         <WidgetApp>
           <Property name="id">widget1</Property>
-          <Property name="icon32">>dorado/res/com/bstek/dorado/sample/widget/desktop/clock.png</Property>
+          <Property name="icon32">>dorado/res/com/bstek/dorado/sample/addon/desktop/clock.png</Property>
           <Property name="caption">Clock Widget</Property>
           <Flash>
-            <Property name="path">>dorado/res/com/bstek/dorado/sample/widget/desktop/black_clock.swf</Property>
+            <Property name="path">>dorado/res/com/bstek/dorado/sample/addon/desktop/black_clock.swf</Property>
             <Property name="width">150</Property>
             <Property name="height">150</Property>
           </Flash>
@@ -21,13 +21,13 @@
           <Property name="id">iframe1</Property>
           <Property name="caption">Grid</Property>
           <Property name="path">>com.bstek.dorado.sample.data.SimpleCRUD.d</Property>
-          <Property name="icon32">>dorado/res/com/bstek/dorado/sample/widget/desktop/grid.png</Property>
+          <Property name="icon32">>dorado/res/com/bstek/dorado/sample/addon/desktop/grid.png</Property>
         </IFrameApp>
         <IFrameApp>
           <Property name="id">iframe2</Property>
           <Property name="caption">Form</Property>
           <Property name="path">>com.bstek.dorado.sample.data.Validators.d</Property>
-          <Property name="icon32">>dorado/res/com/bstek/dorado/sample/widget/desktop/form.png</Property>
+          <Property name="icon32">>dorado/res/com/bstek/dorado/sample/addon/desktop/form.png</Property>
           <Property name="width">700</Property>
           <Property name="height">420</Property>
         </IFrameApp>
@@ -35,7 +35,7 @@
           <Property name="id">iframe3</Property>
           <Property name="caption">Tree</Property>
           <Property name="path">>com.bstek.dorado.sample.data.RecursiveTree.d</Property>
-          <Property name="icon32">>dorado/res/com/bstek/dorado/sample/widget/desktop/tree.png</Property>
+          <Property name="icon32">>dorado/res/com/bstek/dorado/sample/addon/desktop/tree.png</Property>
           <Property name="width">360</Property>
           <Property name="height">500</Property>
         </IFrameApp>
@@ -43,51 +43,51 @@
           <Property name="id">iframe4</Property>
           <Property name="caption">Tree Grid</Property>
           <Property name="path">>com.bstek.dorado.sample.widget.tree.TreeGrid.d</Property>
-          <Property name="icon32">>dorado/res/com/bstek/dorado/sample/widget/desktop/treegrid.png</Property>
+          <Property name="icon32">>dorado/res/com/bstek/dorado/sample/addon/desktop/treegrid.png</Property>
         </IFrameApp>
         <IFrameApp>
           <Property name="id">iframe5</Property>
           <Property name="caption">Google</Property>
           <Property name="path">http://www.baidu.com</Property>
-          <Property name="icon32">>dorado/res/com/bstek/dorado/sample/widget/desktop/phone.png</Property>
+          <Property name="icon32">>dorado/res/com/bstek/dorado/sample/addon/desktop/phone.png</Property>
         </IFrameApp>
         <IFrameApp>
           <Property name="id">chart1</Property>
           <Property name="caption">Area</Property>
-          <Property name="path">>com.bstek.dorado.sample.widget.ofc.Area.d</Property>
-          <Property name="icon32">>dorado/res/com/bstek/dorado/sample/widget/desktop/area.png</Property>
-          <Property name="icon16">>dorado/res/com/bstek/dorado/sample/widget/desktop/area-small.png</Property>
+          <Property name="path">>com.bstek.dorado.sample.addon.chart.Area.d</Property>
+          <Property name="icon32">>dorado/res/com/bstek/dorado/sample/addon/desktop/area.png</Property>
+          <Property name="icon16">>dorado/res/com/bstek/dorado/sample/addon/desktop/area-small.png</Property>
         </IFrameApp>
         <IFrameApp>
           <Property name="id">chart2</Property>
           <Property name="caption">Bar</Property>
-          <Property name="path">>com.bstek.dorado.sample.widget.ofc.Bar.d</Property>
-          <Property name="icon32">>dorado/res/com/bstek/dorado/sample/widget/desktop/bar.png</Property>
-          <Property name="icon16">>dorado/res/com/bstek/dorado/sample/widget/desktop/bar-small.png</Property>
+          <Property name="path">>com.bstek.dorado.sample.addon.chart.Bar.d</Property>
+          <Property name="icon32">>dorado/res/com/bstek/dorado/sample/addon/desktop/bar.png</Property>
+          <Property name="icon16">>dorado/res/com/bstek/dorado/sample/addon/desktop/bar-small.png</Property>
         </IFrameApp>
         <IFrameApp>
           <Property name="id">chart3</Property>
           <Property name="caption">Column</Property>
-          <Property name="path">>com.bstek.dorado.sample.widget.ofc.Column.d</Property>
-          <Property name="icon32">>dorado/res/com/bstek/dorado/sample/widget/desktop/column.png</Property>
+          <Property name="path">>com.bstek.dorado.sample.addon.chart.Column.d</Property>
+          <Property name="icon32">>dorado/res/com/bstek/dorado/sample/addon/desktop/column.png</Property>
         </IFrameApp>
         <IFrameApp>
           <Property name="id">chart4</Property>
           <Property name="caption">Line</Property>
-          <Property name="path">>com.bstek.dorado.sample.widget.ofc.Line.d</Property>
-          <Property name="icon32">>dorado/res/com/bstek/dorado/sample/widget/desktop/line.png</Property>
+          <Property name="path">>com.bstek.dorado.sample.addon.chart.Line.d</Property>
+          <Property name="icon32">>dorado/res/com/bstek/dorado/sample/addon/desktop/line.png</Property>
         </IFrameApp>
         <IFrameApp>
           <Property name="id">chart5</Property>
           <Property name="caption">Pie</Property>
-          <Property name="path">>com.bstek.dorado.sample.widget.ofc.Pie.d</Property>
-          <Property name="icon32">>dorado/res/com/bstek/dorado/sample/widget/desktop/pie.png</Property>
+          <Property name="path">>com.bstek.dorado.sample.addon.chart.Pie.d</Property>
+          <Property name="icon32">>dorado/res/com/bstek/dorado/sample/addon/desktop/pie.png</Property>
         </IFrameApp>
         <IFrameApp>
           <Property name="id">chart6</Property>
           <Property name="caption">Pie</Property>
-          <Property name="path">>com.bstek.dorado.sample.widget.ofc.Radar.d</Property>
-          <Property name="icon32">>dorado/res/com/bstek/dorado/sample/widget/desktop/radar.png</Property>
+          <Property name="path">>com.bstek.dorado.sample.addon.chart.Radar.d</Property>
+          <Property name="icon32">>dorado/res/com/bstek/dorado/sample/addon/desktop/radar.png</Property>
         </IFrameApp>
       </Apps>
       <Taskbar>
@@ -184,11 +184,11 @@ startMenuPanel.show({
             <Property name="floating">false</Property>
             <MenuItem>
               <Property name="caption">Settings</Property>
-              <Property name="icon">>dorado/res/com/bstek/dorado/sample/widget/desktop/left-default-menu-icon.png</Property>
+              <Property name="icon">>dorado/res/com/bstek/dorado/sample/addon/desktop/left-default-menu-icon.png</Property>
             </MenuItem>
             <MenuItem>
               <Property name="caption">Logout</Property>
-              <Property name="icon">>dorado/res/com/bstek/dorado/sample/widget/desktop/left-default-menu-icon.png</Property>
+              <Property name="icon">>dorado/res/com/bstek/dorado/sample/addon/desktop/left-default-menu-icon.png</Property>
             </MenuItem>
           </Menu>
           <Menu>

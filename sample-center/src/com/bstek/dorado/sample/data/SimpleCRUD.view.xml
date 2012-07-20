@@ -12,6 +12,7 @@
       <Property name="readOnly">false</Property>
       <Property name="dataProvider">simpleCRUD#getAll</Property>
       <Property name="dataType">[ProductType]</Property>
+      <Property name="loadMode">manual</Property>
     </DataSet>
     <UpdateAction id="actionSave">
       <Property name="icon">url(>skin>common/icons.gif) -140px -20px</Property>

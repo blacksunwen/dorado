@@ -1,4 +1,4 @@
-package com.bstek.dorado.sample.widget.ofc;
+package com.bstek.dorado.sample.addon.chart;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -19,6 +19,9 @@
         <Property name="label">库存</Property>
         <Property name="dataType">int</Property>
       </PropertyDef>
+      <PropertyDef name="size">
+        <Property name="dataType">Size</Property>
+      </PropertyDef>
       <PropertyDef name="type">
         <Property name="mapping">
           <Property name="mapValues">
@@ -42,6 +45,11 @@
         </Property>
         <Property name="label">类型</Property>
       </PropertyDef>
+      <PropertyDef name="commnet">
+        <Property name="label">备注</Property>
+      </PropertyDef>
+    </DataType>
+    <DataType name="Size">
       <PropertyDef name="length">
         <Property name="label">长</Property>
         <Property name="dataType">float</Property>
@@ -53,9 +61,6 @@
       <PropertyDef name="height">
         <Property name="label">高</Property>
         <Property name="dataType">float</Property>
-      </PropertyDef>
-      <PropertyDef name="commnet">
-        <Property name="label">备注</Property>
       </PropertyDef>
     </DataType>
   </Model>
@@ -172,7 +177,7 @@ dorado.MessageBox.alert(message);&#xD;
       <ColumnGroup>
         <Property name="caption">Volumn</Property>
         <DataColumn>
-          <Property name="property">length</Property>
+          <Property name="property">size.length</Property>
           <Property name="caption">Length</Property>
           <Property name="width">80</Property>
           <Property name="summaryType">average</Property>
@@ -180,7 +185,7 @@ dorado.MessageBox.alert(message);&#xD;
           <Property name="displayFormat">#.##</Property>
         </DataColumn>
         <DataColumn>
-          <Property name="property">width</Property>
+          <Property name="property">size.width</Property>
           <Property name="caption">Width</Property>
           <Property name="width">80</Property>
           <Property name="summaryType">average</Property>
@@ -188,7 +193,7 @@ dorado.MessageBox.alert(message);&#xD;
           <Property name="displayFormat">#.##</Property>
         </DataColumn>
         <DataColumn>
-          <Property name="property">height</Property>
+          <Property name="property">size.height</Property>
           <Property name="caption">Height</Property>
           <Property name="width">80</Property>
           <Property name="summaryType">average</Property>

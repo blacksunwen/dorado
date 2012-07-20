@@ -19,6 +19,10 @@
         <Property name="label">库存</Property>
         <Property name="dataType">int</Property>
       </PropertyDef>
+      <PropertyDef name="size">
+        <Property name="dataType">Size</Property>
+        <Property name="readOnly">true</Property>
+      </PropertyDef>
       <PropertyDef name="type">
         <Property name="mapping">
           <Property name="mapValues">
@@ -42,6 +46,11 @@
         </Property>
         <Property name="label">类型</Property>
       </PropertyDef>
+      <PropertyDef name="commnet">
+        <Property name="label">备注</Property>
+      </PropertyDef>
+    </DataType>
+    <DataType name="Size">
       <PropertyDef name="length">
         <Property name="label">长</Property>
         <Property name="dataType">float</Property>
@@ -53,9 +62,6 @@
       <PropertyDef name="height">
         <Property name="label">高</Property>
         <Property name="dataType">float</Property>
-      </PropertyDef>
-      <PropertyDef name="commnet">
-        <Property name="label">备注</Property>
       </PropertyDef>
     </DataType>
   </Model>
@@ -122,7 +128,7 @@
         <Property name="caption">体积(mm)</Property>
         <Property name="width">150</Property>
         <Property name="supportsOptionMenu">false</Property>
-        <Property name="property">volumn</Property>
+        <Property name="property">size</Property>
         <Editor/>
       </DataColumn>
       <DataColumn>
