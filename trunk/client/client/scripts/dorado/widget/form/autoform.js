@@ -327,8 +327,15 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 				var dataType = this.get("dataType");
 				var dataSet = new dorado.widget.DataSet({
 					dataType: dataType,
-					data: {},
-					userData: "autoFormPrivateDataSet"
+					userData: "autoFormPrivateDataSet",
+					onReady: {
+						listener: function(self) {
+							self.insert();
+						},
+						options: {
+							once: true
+						}
+					}
 				});
 				var parentControl = this.get("parent") || $topView;
 				if (parentControl && parentControl instanceof dorado.widget.Container) {

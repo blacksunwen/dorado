@@ -61,7 +61,7 @@
 			},
 			
 			/**
-			 * 返回组件所属的视图。
+			 * 组件所属的视图。
 			 * @type dorado.widget.View
 			 * @attribute readOnly
 			 */

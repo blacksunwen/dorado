@@ -2,6 +2,7 @@ package com.bstek.dorado.data.entity;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Map;
@@ -14,7 +15,8 @@ import org.apache.commons.beanutils.PropertyUtils;
 import com.bstek.dorado.data.type.EntityDataType;
 
 public abstract class AbstractBeanEntityEnhancer extends EntityEnhancer {
-	private static Set<Class<?>> cachedTypes = new HashSet<Class<?>>();
+	private static Set<Class<?>> cachedTypes = Collections
+			.synchronizedSet(new HashSet<Class<?>>());
 	private static Map<Class<?>, Map<String, Boolean>> propertiesCache = new Hashtable<Class<?>, Map<String, Boolean>>();
 	private static Map<Class<?>, Map<Method, String>> readMethodsCache = new Hashtable<Class<?>, Map<Method, String>>();
 	private static Map<Class<?>, Map<Method, String>> writeMethodsCache = new Hashtable<Class<?>, Map<Method, String>>();
@@ -33,7 +35,7 @@ public abstract class AbstractBeanEntityEnhancer extends EntityEnhancer {
 		buildReflectionCahce();
 	}
 
-	protected void buildReflectionCahce() throws Exception {
+	protected synchronized void buildReflectionCahce() throws Exception {
 		if (!cachedTypes.contains(beanType)) {
 			cachedTypes.add(beanType);
 			synchronized (cachedTypes) {

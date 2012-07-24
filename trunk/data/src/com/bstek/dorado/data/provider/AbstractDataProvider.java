@@ -3,6 +3,7 @@ package com.bstek.dorado.data.provider;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.common.Namable;
 import com.bstek.dorado.core.bean.Scopable;
@@ -65,6 +66,7 @@ public abstract class AbstractDataProvider implements DataProvider, Namable,
 	}
 
 	@XmlProperty
+	@IdeProperty(editor = "pojo")
 	public Object getParameter() {
 		return parameter;
 	}

@@ -382,12 +382,15 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 		
 		box.addListener("afterShow", function() {
 			dropdown._relocateTimeId = setInterval(function() {
-				var offset = $fly(editorDom).offset();
-				if (offset.left != dropdown._currentEditorOffsetLeft || 
+				var editorDom = dropdown._editor && dropdown._editor.getDom();
+				if (editorDom) {
+					var offset = $fly(editorDom).offset();
+					if (offset.left != dropdown._currentEditorOffsetLeft ||
 					offset.top != dropdown._currentEditorOffsetTop ||
 					editorDom.offsetWidth != dropdown._currentEditorOffsetWidth ||
 					editorDom.offsetHeight != dropdown._currentEditorOffsetHeight) {
-					dropdown.locate();
+						dropdown.locate();
+					}
 				}
 			}, 300);
 			
@@ -456,13 +459,13 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 		dropdown.initDropDownBox(box, editor);
 		
 		if (!dropdown._width) {
-			boxWidth = (dorado.Browser.mozilla) ? containerElement.firstChild.offsetWidth
+			boxWidth = (dorado.Browser.webkit || dorado.Browser.mozilla) ? containerElement.firstChild.offsetWidth
 					: containerElement.scrollWidth;
 			if (boxWidth > dropdown._realMaxWidth) boxWidth = dropdown._realMaxWidth;
 			if (boxWidth < dropdown._minWidth) boxWidth = dropdown._minWidth;
 		}
 		if (!dropdown._height) {
-			boxHeight = (dorado.Browser.mozilla) ? containerElement.firstChild.offsetHeight
+			boxHeight = (dorado.Browser.webkit || dorado.Browser.mozilla) ? containerElement.firstChild.offsetHeight
 					: containerElement.scrollHeight;
 			if (boxHeight > dropdown._realMaxHeight) boxHeight = dropdown._realMaxHeight;
 			if (boxHeight < dropdown._minHeight) boxHeight = dropdown._minHeight;

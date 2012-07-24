@@ -86,8 +86,8 @@ var dorado = {
 	// =====
 	
 	/**
-	 * 注册一个
-	 * @param {Function} listener
+	 * 注册一个在Dorado将要初始化之前触发的监听器。
+	 * @param {Function} listener 监听器。
 	 */
 	beforeInit: function(listener) {
 		if (this.beforeInitFired) {
@@ -110,6 +110,10 @@ var dorado = {
 		this.beforeInitFired = true;
 	},
 	
+	/**
+	 * 注册一个在Dorado初始化之后触发的监听器。
+	 * @param {Function} listener 监听器。
+	 */
 	onInit: function(listener) {
 		if (this.onInitFired) {
 			throw new dorado.Exception("'onInit' already fired.");

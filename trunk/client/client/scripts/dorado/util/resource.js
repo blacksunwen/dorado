@@ -4,6 +4,8 @@
  * @see $resource
  */
 dorado.util.Resource = {
+	
+	strings: {},
 
 	/**
 	 * 向dorado资源集合中添加一组资源。
@@ -33,29 +35,17 @@ dorado.util.Resource = {
 		if (arguments.length == 1 && namespace && namespace.constructor != String) {
 			items = namespace;
 			namespace = null;
-		}
-
-		var nItems = this, done;
-		if (namespace) {
-			var ns = namespace.split('.');
-			for ( var i = 0; i < ns.length; i++) {
-				var n = ns[i];
-				var t = nItems[n];
-				if (t == null) {
-					if (i == ns.length - 1) {
-						t = items;
-						done = true;
-					}
-					else {
-						t = {};
-					}
-					nItems[n] = t;
+		}		
+		for (var p in items) {
+			if (items.hasOwnProperty(p)) {
+				if (namespace) {
+					this.strings[namespace + '.' + p] = items[p];
 				}
-				nItems = t;
-			};
+				else {
+					this.strings[p] = items[p];
+				}
+			}
 		}
-
-		if (!done && items) dorado.Object.apply(nItems, items);
 	},
 
 	sprintf: function() {
@@ -77,24 +67,13 @@ dorado.util.Resource = {
 	 * @see $resource
 	 */
 	get: function(path) {
-		var ns = path.split('.');
-		var nItems = this;
-		for ( var i = 0; nItems != null && i < ns.length; i++) {
-			nItems = nItems[ns[i]];
-		}
-
-		if (nItems == null) {
-			return '';
+		var str = this.strings[path];
+		if (arguments.length > 1 && str) {
+			arguments[0] = str;
+			return this.sprintf.apply(this, arguments);
 		}
 		else {
-			nItems += '';
-			if (arguments.length > 1) {
-				arguments[0] = nItems;
-				return this.sprintf.apply(this, arguments);
-			}
-			else {
-				return nItems;
-			}
+			return str;
 		}
 	}
 };

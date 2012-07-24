@@ -214,6 +214,11 @@
 			}
 			rowList.set("items", items);
 			
+			var text = editor.doGetText();
+			if (text && text.length > 0 && this._filterOnOpen) {
+				this.onFilterItems(text);
+			}
+			
 			var value = editor.get("value"), currentIndex = -1;
 			if (items && value) {
 				if (items instanceof Array) {
@@ -256,7 +261,7 @@
 			if (dorado.widget.AbstractGrid && rowList instanceof dorado.widget.AbstractGrid) {
 				cellCount = rowList.get("dataColumns").length * itemCount;
 			}
-			
+
 			if (!this._height) {
 				var useMaxHeight = true, refreshed = false;
 				if (this._realMaxHeight &&
@@ -272,7 +277,7 @@
 					
 					refreshed = true;
 					var height = $fly(rowList._dom).outerHeight();
-					if (height < this._realMaxHeight) useMaxHeight = false;
+					if (height <= this._realMaxHeight) useMaxHeight = false;
 				}
 				
 				if (useMaxHeight) {
@@ -311,10 +316,6 @@
 						}, dropDown._minFilterInterval);
 					}
 				};
-				var text = editor.doGetText();
-				if (text && text.length > 0 && this._filterOnOpen) {
-					dropDown.onFilterItems(text);
-				}
 				editor.addListener("onTextEdit", filterFn);
 			}
 		},
@@ -386,7 +387,10 @@
 			rowList.set("highlightCurrentRow", this._rowSelected = false);
 			rowList.filter(filterParams);
 			
-			this.locate();
+			var box = this.get("box");
+			if (box && box.get("visible")) {
+				this.locate();
+			}
 		},
 		
 		doOnEditorKeyDown: function(editor, evt) {
@@ -513,6 +517,12 @@
 					if (dorado.Object.isInstanceOf(editor, dorado.widget.PropertyDataControl)) {
 						var dataType = editor.getBindingDataType();
 						if (dataType) pd = dataType.getPropertyDef(editor.get("property"));
+					}
+				}
+				if (!pd) {
+					var entity = editor.get("entity");
+					if (entity instanceof dorado.Entity) {
+						pd = entity.getPropertyDef(editor.get("property"));
 					}
 				}
 				if (pd) {

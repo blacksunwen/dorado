@@ -208,17 +208,21 @@
 		},
 		
 		replaceSelection: function(removed, added, silence) {
-			if (removed == added && removed != null) return;
-			var selection = this.get("selection"), selectionMode = this._selectionMode;
-			switch (selectionMode) {
+			if (removed == added) return;
+			switch (this._selectionMode) {
 				case "singleRow":{
-					removed = selection;
+					removed = this.get("selection");
 					if (removed) this.toggleItemSelection(removed, false);
 					if (added) this.toggleItemSelection(added, true);
 					this.setSelection(added);
 					break;
 				}
 				case "multiRows":{
+					if (removed instanceof Array && removed.length == 0) removed = null;
+					if (added instanceof Array && added.length == 0) added = null;
+					if (removed == added) return;
+			
+					var selection = this.get("selection");
 					if (removed && selection) {
 						if (removed == selection) {
 							removed = selection.slice(0);

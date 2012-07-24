@@ -321,9 +321,17 @@
 		 * 从容器中移除所有子组件。
 		 */
 		removeAllChildren: function() {
+			var layout = this._layout;
+			if (layout) layout._disableRendering = true;
+			
 			this._children.each(function(child) {
 				this.removeChild(child);
 			}, this);
+			
+			if (layout) {
+				layout._disableRendering = false;
+				layout.refresh();
+			}
 		},
 		
 		/**

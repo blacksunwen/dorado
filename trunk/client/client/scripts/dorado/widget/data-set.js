@@ -405,6 +405,7 @@
 		 * <p>
 		 * 如果数据集并不支持数据装载操作，则此方法不会产生任何效果。
 		 * </p>
+		 * @private
 		 */
 		load: function() {
 			return this.doLoad();
@@ -415,6 +416,7 @@
 		 * <p>
 		 * 如果数据集并不支持数据装载操作，则此方法不会产生任何效果。
 		 * </p>
+		 * @private
 		 * @param {dorado.Callback|Function} callback 回调对象。
 		 */
 		loadAsync: function(callback) {

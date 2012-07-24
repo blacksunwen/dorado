@@ -1272,7 +1272,6 @@
 					var wrapper = this._fixedInnerGridWrapper = document.createElement("DIV");
 					with (wrapper.style) {
 						overflowX = "visible";
-						overflowY = (this.hasRealHeight()) ? "hidden" : "visible";
 						position = "absolute";
 						left = top = 0;
 					}
@@ -1286,8 +1285,6 @@
 				if (!wrapper) {
 					var wrapper = this._innerGridWrapper = document.createElement("DIV");
 					with (wrapper.style) {
-						overflowX = (this.hasRealWidth()) ? "hidden" : "visible";
-						overflowY = (this.hasRealHeight()) ? "hidden" : "visible";
 						position = "absolute";
 						left = top = 0;
 					}
@@ -1380,6 +1377,8 @@
 						if (fixedInnerGridWrapper) $fly(fixedInnerGridWrapper).hide();
 
 						var innerGridWrapper = getInnerGridWrapper.call(this);
+						innerGridWrapper.style.overflowX = (this.hasRealWidth()) ? "hidden" : "visible";
+						innerGridWrapper.style.overflowY = (this.hasRealHeight()) ? "hidden" : "visible";
 						with (this._innerGridDom.style) {
 							position = top = left = width = '';
 						}
@@ -1397,12 +1396,15 @@
 						$fly(divScroll).show();
 
 						fixedInnerGridWrapper = getFixedInnerGridWrapper.call(this);
+						fixedInnerGridWrapper.style.overflowY = (this.hasRealHeight()) ? "hidden" : "visible";
 						$fly(fixedInnerGridWrapper).show();
 
 						fixedInnerGrid = getFixedInnerGrid.call(this);
 						fixedInnerGrid.render(fixedInnerGridWrapper);
 
 						innerGridWrapper = getInnerGridWrapper.call(this);
+						innerGridWrapper.style.overflowX = (this.hasRealWidth()) ? "hidden" : "visible";
+						innerGridWrapper.style.overflowY = (this.hasRealHeight()) ? "hidden" : "visible";
 						with (this._innerGridDom.style) {
 							position = top = left = width = '';
 						}
@@ -1555,7 +1557,7 @@
 
 			if (!xScroll) {
 				// 修正最外层DIV的宽度被内容撑破的BUG
-				$fly(dom).width(dom.firstChild.offsetWidth);
+				if (dom.firstChild.offsetWidth) $fly(dom).width(dom.firstChild.offsetWidth);
 			} else {
 				// 根据内容自动隐藏HoriScrollBar
 				if (domMode != 0) {
@@ -3122,6 +3124,9 @@
 				(this._headerTable ? this._headerTable.offsetHeight : 0) -
 				(this._footerTable ? this._footerTable.offsetHeight : 0));
 				if (h >= 0) container.style.height = h + "px";
+			}
+			else {
+				container.style.height = '';
 			}
 		},
 		

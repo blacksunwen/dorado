@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.data.type.DataType;
@@ -18,10 +19,15 @@ import com.bstek.dorado.data.type.DataType;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Mar 3, 2007
  */
-@XmlNode(fixedProperties = "type=direct", properties = @XmlProperty(
-		propertyName = "result", parser = "spring:dorado.preloadDataParser"))
+@XmlNode(fixedProperties = "type=direct")
 public class DirectDataProvider extends AbstractDataProvider {
 	private Object result;
+
+	@XmlProperty(parser = "spring:dorado.preloadDataParser")
+	@IdeProperty(editor = "pojo")
+	public Object getResult() throws Exception {
+		return super.getResult();
+	}
 
 	/**
 	 * 设置要返回给外界的数据。

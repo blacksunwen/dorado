@@ -35,6 +35,7 @@
 	border: 0;
 	margin: 0;
 	padding: 0;
+	resize: none; 
 }
 
 .i-text-area .i-trigger-panel {

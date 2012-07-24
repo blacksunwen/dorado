@@ -1581,8 +1581,15 @@
 			if (entity) {
 				if (entity instanceof dorado.Entity) {
 					if (editor instanceof dorado.widget.AbstractTextEditor) {
-						value = entity.getText(property);
-						editor.set("text", value);
+						var propertyDef = entity.getPropertyDef(property);
+						if (propertyDef && propertyDef.get("dataType")) {
+							value = entity.get(property);
+							editor.set("value", value);
+						}
+						else {
+							value = entity.getText(property);
+							editor.set("text", value);
+						}
 						editor.setValidationState(entity.getMessageState(property), entity.getMessages(property));
 					}
 					else {
@@ -2069,6 +2076,8 @@
 			 * @param {Object} self 事件的发起者，即列本身。
 			 * @param {Object} arg 事件参数。
 			 * @param {HTMLElement} arg.dom 对应的DOM对象。
+			 * @param {dorado.Entity} arg.data Grid内部用于保存Footer值的Entity对象。
+			 * @param {dorado.widget.grid.DataColumn} arg.column 表格列。
 			 * @param {boolean} #arg.processDefault 是否在事件结束后继续使用系统默认的渲染逻辑。
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
@@ -2231,8 +2240,7 @@
 		
 		gridOnSelectionChangedListener: function(grid, arg) {	
 			var itemModel = grid._itemModel;
-			var selection = grid.get("selection"), selectionMode = grid._selectionMode, removed = arg.removed, added = arg.added, checkbox;
-			this.selection = selection;
+			var selectionMode = grid._selectionMode, removed = arg.removed, added = arg.added, checkbox;
 			
 			if (selectionMode == "multiRows") {
 				if (removed) {
@@ -2289,7 +2297,7 @@
 				checkbox.destroy();
 				return;
 			}
-			var grid = arg.grid, data = arg.dataForSelection || arg.data, selection = this.selection, selectionMode = grid._selectionMode, config = {};		
+			var grid = arg.grid, data = arg.dataForSelection || arg.data, selection = grid._innerGrid._selection, selectionMode = grid._selectionMode, config = {};		
 			if (selectionMode == "multiRows") {
 				config.checked = (selection && selection.indexOf(data) >= 0);
 				config.readOnly = false;

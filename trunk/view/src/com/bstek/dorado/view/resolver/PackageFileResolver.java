@@ -385,10 +385,8 @@ public class PackageFileResolver extends WebFileResolver {
 		synchronized (resourcesCache) {
 			Resource[] resources = resourcesCache.get(cacheKey);
 			if (resources == null) {
-				Resource resource = getI18NResource(
-						context,
-						PathUtils.concatPath(resourcePrefix,
-								fileInfo.getFileName()), locale);
+				Resource resource = getI18NResource(context, resourcePrefix,
+						fileInfo.getFileName(), resourceSuffix, locale);
 				resources = new Resource[] { new I18NResource(context,
 						fileInfo.getPackageName(), resource) };
 				resourcesCache.put(cacheKey, resources);
@@ -397,7 +395,8 @@ public class PackageFileResolver extends WebFileResolver {
 		}
 	}
 
-	protected Resource getI18NResource(DoradoContext context, String path,
+	protected Resource getI18NResource(DoradoContext context,
+			String resourcePrefix, String fileName, String resourceSuffix,
 			Locale locale) throws Exception {
 		if (locale == null) {
 			locale = defaultLocale;
@@ -411,18 +410,22 @@ public class PackageFileResolver extends WebFileResolver {
 			}
 		}
 
-		Resource resource = context.getResource(path + localeSuffix
-				+ I18N_FILE_SUFFIX);
+		Resource resource = doGetResourcesByFileName(context, resourcePrefix,
+				fileName, localeSuffix + I18N_FILE_SUFFIX)[0];
 		if (resource == null || !resource.exists()) {
 			if (StringUtils.isNotEmpty(localeSuffix)) {
-				resource = context.getResource(path + I18N_FILE_SUFFIX);
+				resource = doGetResourcesByFileName(context, resourcePrefix,
+						fileName, I18N_FILE_SUFFIX)[0];
 				if (resource == null || !resource.exists()) {
-					throw new FileNotFoundException("File [" + path
-							+ localeSuffix + I18N_FILE_SUFFIX + "] or [" + path
+					throw new FileNotFoundException("File ["
+							+ PathUtils.concatPath(resourcePrefix, fileName)
+							+ localeSuffix + I18N_FILE_SUFFIX + "] or ["
+							+ PathUtils.concatPath(resourcePrefix, fileName)
 							+ I18N_FILE_SUFFIX + "] not found.");
 				}
 			} else {
-				throw new FileNotFoundException("File [" + path + localeSuffix
+				throw new FileNotFoundException("File ["
+						+ PathUtils.concatPath(resourcePrefix, fileName)
 						+ I18N_FILE_SUFFIX + "] not found.");
 			}
 		}

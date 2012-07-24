@@ -841,7 +841,7 @@ dorado.util.AjaxResult = $class(/** @scope dorado.util.AjaxResult.prototype */
 			if(contentType && contentType.indexOf("text/runnable") >= 0) {
 				exception = this._parseRunnableException(conn.responseText, connObj);
 			} else if(conn.status < 200 || conn.status >= 400) {
-				if(conn.status == 12021) {
+				if(conn.status == 487) {
 					exception = this._parseException(conn.responseText, connObj);
 				} else {
 					exception = new dorado.util.AjaxException("HTTP " + conn.status + " " + conn.statusText, null, connObj);

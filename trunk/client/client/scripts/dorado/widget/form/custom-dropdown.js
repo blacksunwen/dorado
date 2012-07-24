@@ -16,8 +16,17 @@ dorado.widget.CustomDropDown = $extend(dorado.widget.DropDown,/** @scope dorado.
 		 */
 		control: {
 			writeBeforeReady: true,
-			innerComponent: "",
-			autoRegisterInnerControl: false
+			innerComponent: ""
+		},
+			
+		view: {
+			setter: function(view) {
+				if (this._view == view) return;
+				$invokeSuper.call(this, [view]);
+				if (view && this._control) {
+					this._control.set("view", view);
+				}
+			}
 		}
 	},
 	
