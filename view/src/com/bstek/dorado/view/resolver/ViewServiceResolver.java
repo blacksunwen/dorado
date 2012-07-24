@@ -48,7 +48,7 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 
 	private static final String JAVASCRIPT_TOKEN = "javascript";
 	private static final String XML_TOKEN = "xml";
-	private static final int EXCEPTION_STATUS_CODE = 12021;
+	private static final int EXCEPTION_STATUS_CODE = 487;
 	private static final int BUFFER_SIZE = 4096;
 	private static final String ACTION_ATTRIBUTE = ViewServiceResolver.class
 			.getName() + ".action";

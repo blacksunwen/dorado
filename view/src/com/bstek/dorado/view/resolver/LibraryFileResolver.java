@@ -44,10 +44,10 @@ public class LibraryFileResolver extends
 				resources = super.getResourcesByFileName(context, null,
 						fileName, resourceSuffix);
 			} else {
-				try {
-					resources = super.getResourcesByFileName(context,
-							resourcePrefix, fileName, resourceSuffix);
-				} catch (FileNotFoundException ex) {
+				resources = super.getResourcesByFileName(context,
+						resourcePrefix, fileName, resourceSuffix);
+				Resource resource = resources[0];
+				if (!resource.exists()) {
 					absolutePaths.add(fileName);
 					resources = super.getResourcesByFileName(context, null,
 							fileName, resourceSuffix);

@@ -172,11 +172,23 @@
 				defaultValue: "clientSide"
 			},
 			
-			selection: {
-				setter: function(selection) {
-					this.refresh();
-					$invokeSuper.call(this, arguments);
-				}
+			/**
+			 * 将表格中的行选择状态与记录中的哪一个属性关联起来。
+			 * <p>
+			 * 一旦设置了此属性，Dorado会自动的根据行的选择状态来维护数据实体中的这个属性的值，
+			 * 并且当这个属性的值发生变化时也会自动影响到表格的行选择状态。
+			 * </p>
+			 * <p>
+			 * 此属性的数据类型应该为boolean。
+			 * 另外，根据{@link dorado.Entity}的定义，如果该属性的名称是以'$'开头的，
+			 * 那么该属性值的改变是不会引起数据实体的状态发生变化的。
+			 * </p>
+			 * @type String
+			 * @attribute skipRefresh wirteBeforeReady
+			 */
+			rowSelectionProperty: {
+				skipRefresh: true,
+				wirteBeforeReady: true
 			}
 		},
 		
@@ -322,7 +334,18 @@
 						this.get("filterEntity").clearData();
 					}
 					this._itemModel.setItems(entityList);
-					this.set("selection", null);
+					if (!this._rowSelectionProperty) {
+						this.set("selection", null);
+					}
+					else {
+						var selection = [];
+						var it = entityList.iterator(true);
+						while (it.hasNext()) {
+							var entity = it.next();
+							if (entity.get(this._rowSelectionProperty)) selection.push(entity);
+						}
+						this.set("selection", selection);
+					}
 				}
 			}
 			
@@ -537,6 +560,33 @@
 						this.refresh(true);
 					} else {
 						var entity = arg.entity;
+						if (entity.parent == items) {
+							if (this._rowSelectionProperty && !this._processingSelectionChange && this._rowSelectionProperty == arg.property) {
+								if (!!arg.newValue != !!arg.oldValue) {
+									this._processingSelectionChange = true;
+									var removed, added;
+									switch (this._selectionMode) {
+										case "singleRow":{
+											if (arg.newValue) added = arg.entity;
+											else removed = arg.entity;
+											break;
+										}
+										case "multiRows":{
+											if (arg.newValue) added = [arg.entity];
+											else removed = [arg.entity];
+											break;
+										}
+									}
+									this._innerGrid.replaceSelection(removed, added);
+									this._processingSelectionChange = false;
+								}
+							}
+						}
+						if (dorado.DataUtil.isOwnerOf(entity, items)) {
+							while (entity.parent != items) {
+								entity = entity.parent;
+							}
+						}
 						this.refreshEntity(entity);
 						if (!entity.rowType) this.onEntityChanged(entity, arg.property);
 						this.refreshSummary();
@@ -773,6 +823,49 @@
 	
 	dorado.widget.grid.InnerDataGrid = $extend(dorado.widget.grid.AbstractInnerGrid, {
 		$className: "dorado.widget.grid.InnerDataGrid",
+		
+		EVENTS: {
+			onSelectionChange: {
+				interceptor: function(superFire, self, arg) {
+					var retval = superFire(self, arg), grid = self.grid;
+					if (!self.fixed && grid._rowSelectionProperty && !grid._processingSelectionChange) {
+						grid._processingSelectionChange = true;
+						var property = grid._rowSelectionProperty, removed = arg.removed, added = arg.added;
+						var selectionMode = grid._selectionMode;
+						switch (selectionMode) {
+							case "singleRow":{
+								removed = self.get("selection");
+								if (removed) removed.set(property, false);
+								if (added) added.set(property, true);
+								break;
+							}
+							case "multiRows":{
+								if (removed instanceof Array && removed.length == 0) removed = null;
+								if (added instanceof Array && added.length == 0) added = null;
+								if (removed == added) return;
+
+								if (removed) {
+									if (!(removed instanceof Array)) {
+										removed = [removed];
+									}
+									for (var i = 0; i < removed.length; i++) {
+										removed[i].set(property, false);
+									}
+								}
+								if (added) {
+									for (var i = 0; i < added.length; i++) {
+										added[i].set(property, true);
+									}
+								}
+								break;
+							}
+						}
+						grid._processingSelectionChange = false;
+					}
+					return retval;
+				}
+			}
+		},
 		
 		getCurrentItem: DataListBoxProtoType.getCurrentItem,
 		getCurrentItemId: DataListBoxProtoType.getCurrentItemId,

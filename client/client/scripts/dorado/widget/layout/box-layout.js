@@ -60,10 +60,15 @@
 	});
 	
 	var p = dorado.widget.layout.AbstractBoxLayout.prototype;
-	p.onAddControl = p.onRemoveControl = p.doRefreshRegion = function() {
+	p.onAddControl = p.doRefreshRegion = function() {
 		if (!this._attached || this._disableRendering) return;
 		this.refreshDom(this.getDom());
 	};
+	p.removeControl = function(control) {
+		this._regions.removeKey(control._id);
+		if (!this._attached || this._disableRendering) return;
+		this.refreshDom(this.getDom());
+	},
 	
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -150,7 +155,7 @@
 			
 			for (var id in domCache) {
 				var cell = domCache[id];
-				if (cell) row.removeNode(cell);
+				if (cell) row.removeChild(cell);
 			}
 			domCache = newDomCache;
 			
@@ -356,7 +361,7 @@
 			
 			for (var id in domCache) {
 				var row = domCache[id];
-				if (row) tbody.removeNode(row);
+				if (row) tbody.removeChild(row);
 			}
 			domCache = newDomCache;
 			

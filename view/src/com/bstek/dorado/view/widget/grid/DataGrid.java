@@ -23,6 +23,7 @@ public class DataGrid extends AbstractGrid implements DataControl {
 	private Boolean autoCreateColumns;
 	private FilterMode filterMode = FilterMode.clientSide;
 	private SortMode sortMode = SortMode.clientSide;
+	private String rowSelectionProperty;
 
 	@ComponentReference("DataSet")
 	@IdeProperty(highlight = 1)
@@ -84,5 +85,13 @@ public class DataGrid extends AbstractGrid implements DataControl {
 
 	public void setSortMode(SortMode sortMode) {
 		this.sortMode = sortMode;
+	}
+
+	public String getRowSelectionProperty() {
+		return rowSelectionProperty;
+	}
+
+	public void setRowSelectionProperty(String rowSelectionProperty) {
+		this.rowSelectionProperty = rowSelectionProperty;
 	}
 }

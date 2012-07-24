@@ -83,7 +83,14 @@ dorado.widget.AbstractList = $extend(dorado.widget.Control, /** @scope dorado.wi
 						}
 					}
 				}
-				if (this._selectionMode == "multiRows" && !selection) selection = [];
+				if (this._selectionMode == "multiRows") {
+					if (!selection) {
+						selection = [];
+					}
+					else {
+						selection = selection.slice(0);
+					}
+				}
 				return selection;
 			},
 			setter: function(v) {
@@ -155,7 +162,7 @@ dorado.widget.AbstractList = $extend(dorado.widget.Control, /** @scope dorado.wi
 		 * @see dorado.widget.AbstractList#selection
 		 */
 		onSelectionChange: {},
-			
+		
 		/**
 		 * 当系统对列表中的某两项数据项进行排序时触发的事件。
 		 * @param {Object} self 事件的发起者，即控件本身。
@@ -333,7 +340,7 @@ dorado.widget.AbstractList = $extend(dorado.widget.Control, /** @scope dorado.wi
 			}, 200);
 		}
 	},
-
+	
 	/**
 	 * 对指定的列中的数据进行排序。
 	 * @param {Object|Object[]} sortParams 排序条件。

@@ -101,7 +101,19 @@
              * @attribute readOnly
              * @type dorado.widget.menu.AbstractMenuItem
              */
-            focusItem: {}
+            focusItem: {},
+			
+			view: {
+				setter: function(view) {
+					$invokeSuper.call(this, [view]);
+					
+					var items = this._items;
+					if (!items) return;
+					for (var i = 0; i < items.size; i++) {
+						items.get(i).set("view", view);
+					}
+				}
+			}
 		},
 
 		EVENTS: /** @scope dorado.widget.Menu.prototype */ {
@@ -137,12 +149,11 @@
 			}
 			var menu = this, item;
 			if (config instanceof dorado.widget.menu.AbstractMenuItem) {
-                config._parent = menu;
 				item = config;
 			} else {
 				item = dorado.Toolkits.createInstance("menu", config);
-                item._parent = menu;
 			}
+            item.set("parent", menu);
 			return item;
 		},
 
@@ -371,7 +382,7 @@
 			if (item.constructor == Object.prototype.constructor || typeof item == "string") {
 				item = menu.createMenuItem(item);
 			} else {
-				item._parent = menu;
+				item.set("parent", menu);
 			}
 
 			if (typeof index == "number") {

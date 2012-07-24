@@ -162,20 +162,22 @@
 		},
 		
 		onAddControl: function(control) {
-			if (!this._attached || this._disableRendering) return;
+			if (!this._attached) return;
 			var region = this._regions.get(control._id);
 			if (region) {
 				var realignArg = this.adjustRegion(region, true);
+				if (this._disableRendering) return;
 				if (realignArg) this.realignRegion(region, realignArg);
 				if (this.processOverflow(this.getDom())) this.calculateRegions();
 			}
 		},
 		
 		onRemoveControl: function(control) {
-			if (!this._attached || this._disableRendering) return;
+			if (!this._attached) return;
 			var region = this._regions.get(control._id);
 			if (region) {
 				this.getDom().removeChild(control.getDom());
+				if (this._disableRendering) return;
 				var nextRegion = this.getNextRegion(region);
 				if (nextRegion) this.calculateRegions(nextRegion);
 			}

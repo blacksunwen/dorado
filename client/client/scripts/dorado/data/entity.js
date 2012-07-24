@@ -309,14 +309,16 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		_get : function(property, propertyDef, callback, loadMode) {
 
 			function transferAndReplaceIf(entity, propertyDef, value, replaceValue) {
-				if (value && typeof value == "object" && value.parent == entity) return value;
+				if (value && typeof (value instanceof dorado.Entity || value instanceof dorado.EntityList) && value.parent == entity) return value;
 				
 				var dataType = propertyDef.get("dataType");
 				if (dataType == null) return value;
 
 				var originValue = value; 
 				value = dataType.parse(originValue, propertyDef.get("typeFormat"));
-				replaceValue = replaceValue && (originValue !== value || (value && value.parent !== entity));
+				replaceValue = replaceValue &&
+					(originValue !== value ||
+						((value instanceof dorado.Entity || value instanceof dorado.EntityList) && value.parent !== entity));
 
 				if ((value instanceof dorado.Entity || value instanceof dorado.EntityList) && value.parent != this) {
 					value.parent = entity;

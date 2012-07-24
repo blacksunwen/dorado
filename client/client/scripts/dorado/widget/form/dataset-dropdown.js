@@ -237,7 +237,7 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.RowListDropDown,/** @scope
 					
 					dataSet.clear();
 					var dropdown = this;
-					dataSet.loadAsync(function() {
+					dataSet.flushAsync(function() {
 						dropdown._lastFilterValue = filterValue;
 						$callback(callback);
 					});
