@@ -542,8 +542,8 @@ dorado.widget.desktop.Taskbar = $extend(dorado.widget.Control, /** @scope dorado
 	onResize: function() {
 		$invokeSuper.call(this, arguments);
 		
-		var taskbar = this, dom = taskbar._dom, doms = taskbar._doms, domWidth = $fly(dom).width(), rightWidth = $fly(doms.rightWrap).outerWidth(true), startButtonWidth = $fly(doms.startButton).outerWidth(true);
-		
+		var taskbar = this, dom = taskbar._dom, doms = taskbar._doms, domWidth = $fly(dom).width(), rightWidth = $fly(doms.rightWrap).outerWidth(true) + 2, startButtonWidth = $fly(doms.startButton).outerWidth(true);
+
 		var quickButtonsWidth = $fly(doms.quickButtons).outerWidth(true);
 
         if (dorado.Browser.msie && dorado.Browser.version == 6) {
