@@ -1,15 +1,15 @@
 .i-field-set {
-    padding: 0;
+    padding: 0 0 0 10px;
     margin: 0;
 }
 
 .i-field-set-collapsed {
-    padding: 0 1px 0 1px;
+    padding: 0 1px 0 11px;
 }
 
 .i-field-set .field-set-legend {
-    line-height: 17px;
-    margin-left: 11px;
+    line-height: 19px;
+    font-size: 160%;
     padding: 0 3px 0 0;
     vertical-align: middle;
 }
@@ -17,9 +17,14 @@
 .i-field-set .field-set-legend .collapse-button {
     display: inline-block;
     cursor: pointer;
-    height: 17px;
+    height: 20px;
     width: 17px;
     margin-right: 2px;
+}
+
+.i-field-set .field-set-legend .caption {
+    font-size: 62.5%;
+    vertical-align: middle;
 }
 
 .i-field-set .content-panel {
