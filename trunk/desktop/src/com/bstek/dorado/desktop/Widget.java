@@ -40,7 +40,6 @@ public class Widget extends Control implements FloatControl {
 		setVisible(null);
 	}
 
-	@Override
 	public Boolean getVisible() {
 		return super.getVisible();
 	}
