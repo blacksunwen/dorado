@@ -193,6 +193,9 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 		function onCollapsedChange(panel, collapsed) {
             panel._doOnResize(collapsed);
             panel.setContentContainerVisible(!collapsed);
+            if (dorado.Browser.msie && !collapsed) {
+                $fly(panel.getContentContainer()).css("zoom", 1);
+            }
             panel.notifySizeChange();
 			panel.fireEvent("onCollapsedChange", panel);
 		}
@@ -216,7 +219,7 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 			if (panel._rendered) {
 				if (collapsed) {
                     if (animate === false) {
-                        $fly(dom).addClass("i-panel-collapsed " + panel._className + "-collapsed");
+                        $fly(dom).addClass(panel._inherentClassName + "-collapsed " + panel._className + "-collapsed");
                         if (collapseButton) {
                             collapseButton.set("iconClass", "expand-icon");
                         }
@@ -234,7 +237,7 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
                             step: function() {
                             },
                             complete: function() {
-                                $fly(dom).addClass("i-panel-collapsed " + panel._className + "-collapsed");
+                                $fly(dom).addClass(panel._inherentClassName + "-collapsed " + panel._className + "-collapsed");
                                 if (collapseButton) {
                                     collapseButton.set("iconClass", "expand-icon");
                                 }
@@ -246,7 +249,7 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
                     }
 				} else {
                     if (animate === false) {
-                        $fly(dom).removeClass("i-panel-collapsed " + panel._className + "-collapsed");
+                        $fly(dom).removeClass(panel._inherentClassName + "-collapsed " + panel._className + "-collapsed");
                         if (collapseButton) {
                             collapseButton.set("iconClass", "collapse-icon");
                         }
@@ -258,7 +261,7 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
                             direction: "t2b",
                             start: function() {
                                 orginalZIndex = dom.style.zIndex;
-                                $fly(dom).bringToFront().removeClass("i-panel-collapsed " + panel._className + "-collapsed");
+                                $fly(dom).bringToFront().removeClass(panel._inherentClassName + "-collapsed " + panel._className + "-collapsed");
                                 beforeCollapsedChange(panel, collapsed);
                             },
                             step: function() {
@@ -662,7 +665,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		$fly(dom).toggleClass("i-panel-normalborder " + panel._className + "-normalborder", border == "normal").toggleClass("i-panel-curveborder " + panel._className + "-curveborder", border == "curve");
 		
 		if (panel._collapsed) {
-			$fly(dom).addClass("i-panel-collapsed " + panel._className + "-collapsed");
+			$fly(dom).addClass(panel._inherentClassName + "-collapsed " + panel._className + "-collapsed");
 		}
 		
 		if (panel._closeable) {

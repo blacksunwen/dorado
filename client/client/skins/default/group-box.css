@@ -15,19 +15,19 @@
 }
 
 .d-field-set .field-set-legend .collapse-button{
-	background: transparent url("base/groupbox-button.gif") no-repeat scroll 0 0;
+	background: transparent url("base/groupbox-button.gif") no-repeat scroll 0 center;
 }
 
 .d-field-set .field-set-legend .collapse-button-hover{
-	background-position: -17px 0;
+	background-position: -17px center;
 }
 
 .d-field-set-collapsed .field-set-legend .collapse-button{
-	background-position: -34px 0;
+	background-position: -34px center;
 }
 
 .d-field-set-collapsed .field-set-legend .collapse-button-hover{
-	background-position: -51px 0;
+	background-position: -51px center;
 }
 
 .d-group-box .caption-bar{
