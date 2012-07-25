@@ -1582,7 +1582,7 @@
 				if (entity instanceof dorado.Entity) {
 					if (editor instanceof dorado.widget.AbstractTextEditor) {
 						var propertyDef = entity.getPropertyDef(property);
-						if (propertyDef && propertyDef.get("dataType")) {
+						if (propertyDef && propertyDef.get("dataType") && !propertyDef.get("mapping")) {
 							value = entity.get(property);
 							editor.set("value", value);
 						}
