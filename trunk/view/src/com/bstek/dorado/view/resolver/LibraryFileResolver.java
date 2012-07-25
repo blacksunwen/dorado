@@ -8,6 +8,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.core.io.Resource;
+import com.bstek.dorado.util.PathUtils;
 import com.bstek.dorado.web.DoradoContext;
 import com.bstek.dorado.web.WebConfigure;
 
@@ -38,6 +39,13 @@ public class LibraryFileResolver extends
 	protected Resource[] doGetResourcesByFileName(DoradoContext context,
 			String resourcePrefix, String fileName, String resourceSuffix)
 			throws Exception {
+		return doGetResourcesByFileName(context, resourcePrefix, fileName,
+				resourceSuffix, false);
+	}
+
+	protected Resource[] doGetResourcesByFileName(DoradoContext context,
+			String resourcePrefix, String fileName, String resourceSuffix,
+			boolean dontRecordAbsolutePath) throws Exception {
 		if (StringUtils.isNotEmpty(resourcePrefix)) {
 			Resource[] resources = null;
 			if (absolutePaths.contains(fileName)) {
@@ -48,7 +56,9 @@ public class LibraryFileResolver extends
 						resourcePrefix, fileName, resourceSuffix);
 				Resource resource = resources[0];
 				if (!resource.exists()) {
-					absolutePaths.add(fileName);
+					if (!dontRecordAbsolutePath) {
+						absolutePaths.add(fileName);
+					}
 					resources = super.getResourcesByFileName(context, null,
 							fileName, resourceSuffix);
 				}
@@ -82,6 +92,31 @@ public class LibraryFileResolver extends
 			return doGetResourcesByFileName(context, resourcePrefix, fileName,
 					resourceSuffix);
 		}
+	}
+
+	protected Resource doGetI18NResource(DoradoContext context,
+			String resourcePrefix, String fileName, String localeSuffix)
+			throws Exception, FileNotFoundException {
+		Resource resource = doGetResourcesByFileName(context, resourcePrefix,
+				fileName, localeSuffix + I18N_FILE_SUFFIX, true)[0];
+		if (resource == null || !resource.exists()) {
+			if (StringUtils.isNotEmpty(localeSuffix)) {
+				resource = doGetResourcesByFileName(context, resourcePrefix,
+						fileName, I18N_FILE_SUFFIX)[0];
+				if (resource == null || !resource.exists()) {
+					throw new FileNotFoundException("File ["
+							+ PathUtils.concatPath(resourcePrefix, fileName)
+							+ localeSuffix + I18N_FILE_SUFFIX + "] or ["
+							+ PathUtils.concatPath(resourcePrefix, fileName)
+							+ I18N_FILE_SUFFIX + "] not found.");
+				}
+			} else {
+				throw new FileNotFoundException("File ["
+						+ PathUtils.concatPath(resourcePrefix, fileName)
+						+ I18N_FILE_SUFFIX + "] not found.");
+			}
+		}
+		return resource;
 	}
 
 	@Override
