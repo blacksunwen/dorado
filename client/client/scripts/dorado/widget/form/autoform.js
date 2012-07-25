@@ -71,10 +71,6 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 				if (dorado.Object.isInstanceOf(this._formProfile, dorado.widget.FormProfile)) {
 					this._formProfile.removeBindingElement(this);
 				}
-				if (!dorado.Object.isInstanceOf(formProfile, dorado.widget.FormProfile)) {
-					var ref = formProfile;
-					formProfile = ref.view.id(ref.component);
-				}
 				this._formProfile = formProfile;
 				if (dorado.Object.isInstanceOf(formProfile, dorado.widget.FormProfile)) {
 					formProfile.addBindingElement(this);
