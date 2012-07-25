@@ -395,7 +395,7 @@ public class PackageFileResolver extends WebFileResolver {
 		}
 	}
 
-	protected Resource getI18NResource(DoradoContext context,
+	protected final Resource getI18NResource(DoradoContext context,
 			String resourcePrefix, String fileName, String resourceSuffix,
 			Locale locale) throws Exception {
 		if (locale == null) {
@@ -410,6 +410,13 @@ public class PackageFileResolver extends WebFileResolver {
 			}
 		}
 
+		return doGetI18NResource(context, resourcePrefix, fileName,
+				localeSuffix);
+	}
+
+	protected Resource doGetI18NResource(DoradoContext context,
+			String resourcePrefix, String fileName, String localeSuffix)
+			throws Exception, FileNotFoundException {
 		Resource resource = doGetResourcesByFileName(context, resourcePrefix,
 				fileName, localeSuffix + I18N_FILE_SUFFIX)[0];
 		if (resource == null || !resource.exists()) {
