@@ -1257,6 +1257,9 @@
 					onCurrentChange: function(innerGrid, arg) {
 						self.fireEvent("onCurrentChange", self, arg);
 					},
+					beforeSelectionChange: function(innerGrid, arg) {
+						self.fireEvent("beforeSelectionChange", self, arg);
+					},
 					onSelectionChange: function(innerGrid, arg) {
 						self.fireEvent("onSelectionChange", self, arg);
 					}

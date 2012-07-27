@@ -152,6 +152,18 @@ dorado.widget.AbstractList = $extend(dorado.widget.Control, /** @scope dorado.wi
 		onCurrentChange: {},
 		
 		/**
+		 * 当列表中的选择将要发生改变之前触发的事件。
+		 * @param {Object} self 事件的发起者，即控件本身。
+		 * @param {Object} arg 事件参数。
+		 * @param {Object[]} #arg.added 在本次改变中新增的被选中项。
+		 * @param {Object[]} #arg.removed 在本次改变中被移除的选中项。
+		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+		 * @event
+		 * @see dorado.widget.AbstractList#selection
+		 */
+		beforeSelectionChange: {},
+		
+		/**
 		 * 当列表中的选择发生改变时触发的事件。
 		 * @param {Object} self 事件的发起者，即控件本身。
 		 * @param {Object} arg 事件参数。

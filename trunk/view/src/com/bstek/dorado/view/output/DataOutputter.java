@@ -41,6 +41,8 @@ import com.bstek.dorado.view.el.SingleExpression;
  */
 public class DataOutputter implements Outputter, PropertyOutputter {
 	private static final Log logger = LogFactory.getLog(DataOutputter.class);
+	private static final ResourceManager resourceManager = ResourceManagerUtils
+			.get(DataOutputter.class);
 	private static final Long ONE_HOUR = 1000L * 60 * 60;
 
 	private boolean evaluateExpression = true;
@@ -224,9 +226,9 @@ public class DataOutputter implements Outputter, PropertyOutputter {
 		JsonBuilder json = context.getJsonBuilder();
 		Stack<Object> dataObjectStack = context.getDataObjectStack();
 		if (dataObjectStack.contains(object)) {
-			ResourceManager resource = ResourceManagerUtils.get(getClass());
-			Exception e = new IllegalArgumentException(resource.getString(
-					"common/circuitReferenceError", object.toString()));
+			Exception e = new IllegalArgumentException(
+					resourceManager.getString("common/circuitReferenceError",
+							object.toString()));
 			logger.error(e, e);
 			json.value(null);
 			return;

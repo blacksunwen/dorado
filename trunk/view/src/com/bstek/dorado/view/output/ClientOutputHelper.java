@@ -29,6 +29,8 @@ import com.bstek.dorado.util.proxy.ProxyBeanUtils;
 import com.bstek.dorado.view.annotation.ComponentReference;
 import com.bstek.dorado.view.widget.AssembledComponent;
 import com.bstek.dorado.view.widget.Component;
+import com.bstek.dorado.view.widget.FloatControl;
+import com.bstek.dorado.view.widget.datacontrol.DataControl;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -368,6 +370,12 @@ public class ClientOutputHelper {
 								clientProperty.outputter(), Scope.instant);
 						propertyConfig.setOutputter(beanWrapper.getBean());
 					} else if (Component.class.isAssignableFrom(propertyType)) {
+						BeanWrapper beanWrapper = BeanFactoryUtils.getBean(
+								COMPONENT_OUTPUTTER, Scope.instant);
+						propertyConfig.setOutputter(beanWrapper.getBean());
+					} else if (DataControl.class.isAssignableFrom(propertyType)
+							|| FloatControl.class
+									.isAssignableFrom(propertyType)) {
 						BeanWrapper beanWrapper = BeanFactoryUtils.getBean(
 								COMPONENT_OUTPUTTER, Scope.instant);
 						propertyConfig.setOutputter(beanWrapper.getBean());

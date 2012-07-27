@@ -11,6 +11,9 @@ import com.bstek.dorado.core.resource.ResourceManagerUtils;
  */
 public class DefaultDefinitionReference<T extends Definition> implements
 		DefinitionReference<T> {
+	private static final ResourceManager resourceManager = ResourceManagerUtils
+			.get(DefaultDefinitionReference.class);
+
 	private DefinitionManager<T> definitionManager;
 	private String name;
 
@@ -41,8 +44,7 @@ public class DefaultDefinitionReference<T extends Definition> implements
 	public T getDefinition() {
 		T definition = definitionManager.getDefinition(name);
 		if (definition == null) {
-			ResourceManager resource = ResourceManagerUtils.get(getClass());
-			throw new IllegalArgumentException(resource.getString(
+			throw new IllegalArgumentException(resourceManager.getString(
 					"common/unknownDefinition", name));
 		}
 		return definition;

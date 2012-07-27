@@ -7,6 +7,7 @@ import org.w3c.dom.Node;
 
 import com.bstek.dorado.config.ParseContext;
 import com.bstek.dorado.config.definition.ObjectDefinition;
+import com.bstek.dorado.core.el.Expression;
 import com.bstek.dorado.data.config.xml.GenericObjectParser;
 import com.bstek.dorado.view.config.definition.ComponentDefinition;
 import com.bstek.dorado.view.config.definition.ViewDefinition;
@@ -47,8 +48,15 @@ public class ComponentParser extends GenericObjectParser implements Cloneable {
 	protected void initDefinition(ObjectDefinition definition, Element element,
 			ParseContext context) throws Exception {
 		ComponentDefinition component = (ComponentDefinition) definition;
+
 		String id = element.getAttribute(ViewXmlConstants.ATTRIBUTE_ID);
-		component.setId(id);
+		Expression expression = getExpressionHandler().compile(id);
+		if (expression != null) {
+			component.setProperty("id", expression);
+		} else {
+			component.setId(id);
+		}
+
 		component.setComponentType(componentType);
 		component.setAssembleComponentDefinition(assembledComponentDefinition);
 

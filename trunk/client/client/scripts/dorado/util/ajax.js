@@ -61,6 +61,7 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 		this._requests = [];
 		this._connectionPool = dorado.util.AjaxConnectionPool;
 	},
+	
 	ATTRIBUTES : /** @scope dorado.util.AjaxEngine.prototype */
 	{
 		/**
@@ -202,7 +203,7 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 	 * <b>对于POST方法的请求而言，如果在定义了parameter的同时又定义了xmlData或jsonData，那么parameter将被添加到url中以类似GET请求的方式发送。、
 	 * 真正通过POST方法发送的数据将是xmlData或jsonData。</b>
 	 * @param {int} [options.timeout] 以毫秒为单位的超时时长。此特性在同步模式下不生效。
-	 * @param {boolean} [options.batchable=true] 是否支持自动批量请求模式。此特性在同步模式下不生效。
+	 * @param {boolean} [options.batchable] 是否支持自动批量请求模式。此特性在同步模式下不生效。
 	 * @param {String} [options.header] 请求时包含在HttpRequest中的头信息。
 	 * 这些头信息以子属性值的方式保存在此JSON对象中。
 	 * 最终在请求发出时所包含的头信息是defaultOptions.header和此处header属性的合集，如二者之间的属性定义有冲突，则以此处header属性中的为准。
@@ -284,7 +285,7 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 			};
 		}
 
-		var useBatch = this._autoBatchEnabled && (options.batchable !== false);
+		var useBatch = this._autoBatchEnabled && (options.batchable === true);
 		if(this._autoBatchEnabled) {
 			if(options) {
 				if(options.url && options.url != this._defaultOptions.url || options.method && options.method != "POST" || options.timeout) {
