@@ -29,6 +29,9 @@ import com.thoughtworks.paranamer.Paranamer;
  * @since Jan 3, 2008
  */
 public abstract class MethodAutoMatchingUtils {
+	private static final ResourceManager resourceManager = ResourceManagerUtils
+			.get(MethodAutoMatchingUtils.class);
+
 	private static final Class<?>[] EMPTY_TYPES = new Class<?>[0];
 	private static final Object[] EMPTY_ARGS = new Object[0];
 	private static final String[] EMPTY_NAMES = new String[0];
@@ -839,10 +842,9 @@ public abstract class MethodAutoMatchingUtils {
 		}
 		String optional = sb.toString();
 
-		ResourceManager resource = ResourceManagerUtils
-				.get(MethodAutoMatchingUtils.class);
-		return resource.getString(resourceKey, methodInfo.getClassName(),
-				methodInfo.getMethodName(), required, exact, optional,
+		return resourceManager.getString(resourceKey,
+				methodInfo.getClassName(), methodInfo.getMethodName(),
+				required, exact, optional,
 				((returnType != null) ? returnType.getName() : "*"));
 	}
 
@@ -850,10 +852,8 @@ public abstract class MethodAutoMatchingUtils {
 			Method[] methods, String[] requiredParameterNames,
 			String[] optionalParameterNames, String[] extraParameterNames) {
 		MethodInfo methodInfo = getMethodInfo(methods);
-		ResourceManager resource = ResourceManagerUtils
-				.get(MethodAutoMatchingUtils.class);
-		return resource.getString(resourceKey, methodInfo.getClassName(),
-				methodInfo.getMethodName(),
+		return resourceManager.getString(resourceKey,
+				methodInfo.getClassName(), methodInfo.getMethodName(),
 				StringUtils.join(requiredParameterNames, ','),
 				StringUtils.join(optionalParameterNames, ','),
 				StringUtils.join(extraParameterNames, ','));

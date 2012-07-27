@@ -2278,8 +2278,16 @@
 				onValueChange: function(checkbox) {
 					var grid = arg.grid, innerGrid = grid._innerGrid, selectionMode = grid._selectionMode;
 					var data = grid.get("itemModel").getItemById(checkbox._selectDataId), checked = checkbox.get("checked");
-					var selection = (selectionMode == "multiRows") ? [data] : data;
-					innerGrid.replaceSelection.apply(innerGrid, checked ? [null, selection] : [selection, null]);
+					var newSelection = (selectionMode == "multiRows") ? [data] : data;
+					innerGrid.replaceSelection.apply(innerGrid, checked ? [null, newSelection] : [newSelection, null]);
+					
+					var selection = innerGrid._selection;
+					var checked = (selection && selection.indexOf(data) >= 0);
+					if (checkbox.get("checked") !== checked) {
+						checkbox.disableListeners();
+						checkbox.set("checked", checked);
+						checkbox.enableListeners();
+					}
 				},
 				onDestroy: function() {
 					var id = checkbox._selectDataId;

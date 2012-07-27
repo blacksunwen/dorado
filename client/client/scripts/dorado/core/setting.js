@@ -34,26 +34,28 @@
 		"common.defaultDisplayTimeFormat": "H:i:s",
 		"common.defaultDisplayDateTimeFormat": "Y-m-d H:i:s",
 		
-		"ajax.defaultOptions": null,
+		"ajax.defaultOptions": {
+			autoBatchEnabled: true
+		},
 		"ajax.dataTypeRepositoryOptions": {
 			url: doradoServierURI,
 			method: "POST",
-			autoBatchEnabled: true
+			batchable: true
 		},
 		"ajax.dataProviderOptions": {
 			url: doradoServierURI,
 			method: "POST",
-			autoBatchEnabled: true
+			batchable: true
 		},
 		"ajax.dataResolverOptions": {
 			url: doradoServierURI,
 			method: "POST",
-			autoBatchEnabled: false
+			batchable: false
 		},
 		"ajax.remoteServiceOptions": {
 			url: doradoServierURI,
 			method: "POST",
-			autoBatchEnabled: false
+			batchable: false
 		},
 		"dom.useCssShadow": true,
 		"widget.skin": "~current",

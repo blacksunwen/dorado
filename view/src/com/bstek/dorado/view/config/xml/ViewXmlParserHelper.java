@@ -12,6 +12,8 @@ import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Component;
 import com.bstek.dorado.view.widget.ComponentParser;
 import com.bstek.dorado.view.widget.Control;
+import com.bstek.dorado.view.widget.FloatControl;
+import com.bstek.dorado.view.widget.datacontrol.DataControl;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -58,7 +60,9 @@ public class ViewXmlParserHelper extends XmlParserHelper {
 	protected List<XmlParserInfo> getSubNodeXmlParserInfosByPropertyType(
 			Context context, Class<?> propertyType) throws Exception {
 		if (Component.class.equals(propertyType)
-				|| Control.class.equals(propertyType)) {
+				|| Control.class.equals(propertyType)
+				|| DataControl.class.equals(propertyType)
+				|| FloatControl.class.equals(propertyType)) {
 			List<XmlParserInfo> xmlParserInfos = new ArrayList<XmlParserInfo>();
 			xmlParserInfos.add(new XmlParserInfo(WILCARD, beanFactory.getBean(
 					COMPONENT_PARSER_DISPATCHER, XmlParser.class)));

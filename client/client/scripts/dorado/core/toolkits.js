@@ -18,6 +18,7 @@ dorado.Toolkits = {
 		if (ajax === undefined) {
 			ajax = new dorado.util.AjaxEngine();
 			ajax.set("defaultOptions", options);
+			ajax.set("autoBatchEnabled", options.autoBatchEnabled);
 			this.ajaxs[key] = ajax;
 		}
 		return ajax;

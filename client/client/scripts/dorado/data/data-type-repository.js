@@ -108,9 +108,13 @@
 		
 		loadMode = loadMode || "always";
 		if (loadMode == "always") {
-			if (dataType instanceof dorado.LazyLoadDataType) dataType = dataType.get();
+			if (dataType instanceof dorado.AggregationDataType) {
+				dataType.getElementDataType();
+			} else if (dataType instanceof dorado.LazyLoadDataType) dataType = dataType.get();
 		} else if (loadMode == "auto") {
-			if (dataType instanceof dorado.LazyLoadDataType) dataType.getAsync();
+			if (dataType instanceof dorado.AggregationDataType) {
+				dataType.getElementDataType();
+			} else if (dataType instanceof dorado.LazyLoadDataType) dataType.getAsync();
 		}
 		if (!(dataType instanceof dorado.DataType)) dataType = null;
 		return dataType;

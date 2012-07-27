@@ -209,19 +209,45 @@
 		
 		replaceSelection: function(removed, added, silence) {
 			if (removed == added) return;
+			
 			switch (this._selectionMode) {
 				case "singleRow":{
 					removed = this.get("selection");
-					if (removed) this.toggleItemSelection(removed, false);
-					if (added) this.toggleItemSelection(added, true);
-					this.setSelection(added);
 					break;
 				}
 				case "multiRows":{
 					if (removed instanceof Array && removed.length == 0) removed = null;
 					if (added instanceof Array && added.length == 0) added = null;
 					if (removed == added) return;
+					
+					if (removed && !(removed instanceof Array)) {
+						removed = [removed];
+					}
+					if (added && !(added instanceof Array)) {
+						added = [added];
+					}
+					break;
+				}
+			}
 			
+			var eventArg = {
+				removed: removed,
+				added: added
+			};
+			if (!silence) {
+				this.fireEvent("beforeSelectionChange", this, eventArg);
+				removed = eventArg.removed;
+				added = eventArg.added;
+			}
+			
+			switch (this._selectionMode) {
+				case "singleRow":{
+					if (removed) this.toggleItemSelection(removed, false);
+					if (added) this.toggleItemSelection(added, true);
+					this.setSelection(added);
+					break;
+				}
+				case "multiRows":{
 					var selection = this.get("selection");
 					if (removed && selection) {
 						if (removed == selection) {
@@ -231,29 +257,26 @@
 							}
 							selection = null;
 						} else {
-							if (!(removed instanceof Array)) {
-								removed = [removed];
-							}
 							for (var i = 0; i < removed.length; i++) {
 								selection.remove(removed[i]);
 								this.toggleItemSelection(removed[i], false);
 							}
 						}
 					}
-					if (selection == null) this.setSelection(selection = []);
+					if (selection == null) this.setSelection([]);
 					if (added) {
 						for (var i = 0; i < added.length; i++) {
-							selection.push(added[i]);
 							this.toggleItemSelection(added[i], true);
 						}
 					}
 					break;
 				}
 			}
-			if (!silence) this.fireEvent("onSelectionChange", this, {
-				removed: removed,
-				added: added
-			});
+			if (!silence) {
+				eventArg.removed = removed;
+				eventArg.added = added;
+				this.fireEvent("onSelectionChange", this, eventArg);
+			}
 		},
 		
 		addOrRemoveSelection: function(selection, clickedObj, removed, added) {
@@ -295,7 +318,7 @@
 			this._hoverRow = row;
 		},
 		
-		setCurrentRow: function(row) {	
+		setCurrentRow: function(row) {
 			if (this._currentRow == row) return;
 			this.setHoverRow(null);
 			if (this._currentRow) $fly(this._currentRow).removeClass("current-row");
@@ -764,8 +787,7 @@
 			}
 			if (itemDom) {
 				return this.doOnDraggingSourceMove(draggingInfo, evt, targetObject, insertMode, refObject, itemDom);
-			}
-			else {
+			} else {
 				return false;
 			}
 		},

@@ -1318,10 +1318,6 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			return result;
 		},
 		
-		/**
-		 * 返回数据实体内部用于保存属性值的JSON对象。
-		 * @return {Object} JSON对象。
-		 */
 		getData : function() {
 			return this._data;
 		},

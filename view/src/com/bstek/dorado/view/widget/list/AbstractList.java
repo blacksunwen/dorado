@@ -10,6 +10,7 @@ import com.bstek.dorado.view.widget.Control;
  * @since 2011-2-26
  */
 @ClientEvents({ @ClientEvent(name = "onCurrentChange"),
+		@ClientEvent(name = "beforeSelectionChange"),
 		@ClientEvent(name = "onSelectionChange"),
 		@ClientEvent(name = "onCompareItems"),
 		@ClientEvent(name = "onFilterItem") })

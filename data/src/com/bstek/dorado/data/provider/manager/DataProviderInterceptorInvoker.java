@@ -32,6 +32,8 @@ import com.bstek.dorado.util.Assert;
 public class DataProviderInterceptorInvoker implements MethodInterceptor {
 	private static final Log logger = LogFactory
 			.getLog(DataProviderInterceptorInvoker.class);
+	private static final ResourceManager resourceManager = ResourceManagerUtils
+			.get(DataProviderInterceptorInvoker.class);
 
 	public static final String INTERCEPTING_METHOD_NAME = "getResult";
 	public static final String DEFAULT_METHOD_NAME = INTERCEPTING_METHOD_NAME;
@@ -82,8 +84,7 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 		Method[] methods = MethodAutoMatchingUtils.getMethodsByName(
 				interceptor.getClass(), methodName);
 		if (methods.length == 0) {
-			ResourceManager resource = ResourceManagerUtils.get(getClass());
-			throw new NoSuchMethodException(resource.getString(
+			throw new NoSuchMethodException(resourceManager.getString(
 					"common/methodNotFoundInInterceptor", interceptorName,
 					methodName));
 		}
