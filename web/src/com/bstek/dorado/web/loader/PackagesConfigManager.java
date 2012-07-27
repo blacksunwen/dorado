@@ -20,13 +20,19 @@ import com.bstek.dorado.core.xml.XmlDocumentBuilder;
  * @since Sep 23, 2008
  */
 public class PackagesConfigManager {
-	private static final ResourceManager resourceManager = ResourceManagerUtils
-			.get(PackagesConfigManager.class);
-
 	private XmlDocumentBuilder xmlDocumentBuilder;
 	private XmlParser xmlParser;
 	private List<String> configLocations = new ArrayList<String>();
 	private PackagesConfig packagesConfig;
+	private ResourceManager resourceManager;
+
+	private ResourceManager getResourceManager() {
+		if (resourceManager == null) {
+			resourceManager = ResourceManagerUtils
+					.get(PackagesConfigManager.class);
+		}
+		return resourceManager;
+	}
 
 	/**
 	 * 设置XML配置文件读取实现类。
@@ -76,7 +82,7 @@ public class PackagesConfigManager {
 					for (String depends : pkg.getDepends()) {
 						if (packages.get(depends) == null) {
 							throw new IllegalArgumentException(
-									resourceManager.getString(
+									getResourceManager().getString(
 											"common/unknownDependsPackage",
 											name, depends));
 						}
@@ -86,7 +92,7 @@ public class PackagesConfigManager {
 						Package dependedPackage = packages.get(dependedBy);
 						if (dependedPackage == null) {
 							throw new IllegalArgumentException(
-									resourceManager.getString(
+									getResourceManager().getString(
 											"common/unknownDependedByPackage",
 											name, dependedBy));
 						}
