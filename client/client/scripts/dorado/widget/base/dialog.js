@@ -524,7 +524,7 @@
 							fakeDialog = new dorado.widget.Dialog({ exClassName: "i-dialog-helper d-dialog-helper", visible: true, animateType: "none", shadowMode: "none" });
 							fakeDialog.render(document.body);
 						}
-
+                        $fly(fakeDialog._dom).css("display", "");
 						return fakeDialog._dom;
 					},
 					start: function(event, ui) {
@@ -560,6 +560,11 @@
 						}).enableShadow();
 						dialog._left = left;
 						dialog._top = top;
+
+                        /* this is the big hack that breaks encapsulation */
+                        $.ui.ddmanager.current.cancelHelperRemoval = true;
+
+                        ui.helper.css("display", "none");
 					}
 				});
 			}
