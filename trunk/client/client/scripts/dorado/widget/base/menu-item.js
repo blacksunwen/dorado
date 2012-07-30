@@ -371,7 +371,7 @@
 					} else if (value instanceof dorado.widget.Menu) {
 						this._submenu = value;
 					}
-					this._submenu.set("view", view);
+					if (this._submenu) this._submenu.set("view", this._view);
 					
 					var dom = this._dom;
 					if (dom) {
