@@ -2,7 +2,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:d="http://www.bstek.com/dorado/schema"
 	xsi:schemaLocation="
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
-http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dorado-7.0.xsd">
+http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dorado-7.1.xsd">
 	<bean parent="dorado.assembledComponentTypeRegister">
 		<property name="name" value="PageBanner" />
 		<property name="src" value="com.bstek.dorado.sample.admin.AssembledComponents#PageBanner" />
@@ -13,9 +13,15 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 		<property name="src" value="com.bstek.dorado.sample.widget.customize.AssembledComponents#ToggleButton" />
 	</bean>
 	<bean parent="dorado.assembledComponentTypeRegister">
-		<property name="name" value="ButtonPanel" />
-		<property name="src" value="com.bstek.dorado.sample.widget.customize.AssembledComponents#ButtonPanel" />
-		<d:virtual-property name="buttonCaption" />
+		<property name="name" value="Calculator" />
+		<property name="src" value="com.bstek.dorado.sample.widget.customize.AssembledComponents#Calculator" />
+		<d:virtual-property name="number" avialableAt="both" /> <!-- both表示此属性在Server端和Client端均可使用 -->
+		<d:virtual-event name="onCalculate" />
+	</bean>
+	<bean parent="dorado.assembledComponentTypeRegister">
+		<property name="name" value="SimpleCRUD" />
+		<property name="src" value="com.bstek.dorado.sample.widget.customize.AssembledComponents#SimpleCRUD" />
+		<d:virtual-property name="dataSet" referenceComponentType="DataSet" />
 	</bean>
 	<bean parent="dorado.assembledComponentTypeRegister">
 		<property name="name" value="QuickForm" />

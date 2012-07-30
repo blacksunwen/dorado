@@ -26,8 +26,9 @@ public class QuickForm extends AutoForm implements AssembledComponent,
 	public void onInit() throws Exception {
 		if (items != null) {
 			for (String item : StringUtils.split(items, ',')) {
-				if (StringUtils.isEmpty(item))
+				if (StringUtils.isEmpty(item)) {
 					continue;
+				}
 				AutoFormElement element = new AutoFormElement();
 				element.setProperty(item);
 				addElement(element);
