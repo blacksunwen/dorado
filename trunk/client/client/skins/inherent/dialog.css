@@ -55,20 +55,20 @@
 	position: absolute;
 	left: 0;
 	top: 0;
+    bottom: 0;
 	width: 8px;
-	height: 100%;
-	padding-bottom: 3000px;
-	margin-bottom: -3000px;
 }
 
 .i-dialog .dialog-body-wrap .dialog-body-right{
 	position: absolute;
 	right: 0;
 	top: 0;
+    bottom: 0;
 	width: 8px;
-	height: 100%;
-	padding-bottom: 3000px;
-	margin-bottom: -3000px;
+}
+
+.d-ie6 .i-dialog .dialog-body-wrap .dialog-body-left, .d-ie6 .i-dialog .dialog-body-wrap .dialog-body-right {
+    height: expression(this.parentNode.clientHeight + "px");
 }
 
 .i-dialog .dialog-body-wrap .dialog-body{
