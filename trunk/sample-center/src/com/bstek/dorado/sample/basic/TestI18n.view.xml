@@ -59,8 +59,7 @@
         <Button>
           <Property name="caption">${res.buttonDel}</Property>
         </Button>
-        <Button>
-          <ClientEvent name="onClick">dorado.MessageBox.alert(&quot;${res.get('paramString', util.getDate())}&quot;);</ClientEvent>
+        <Button id="buttonTestParam">
           <Property name="caption">${res.buttonTestParam}</Property>
         </Button>
       </Children>

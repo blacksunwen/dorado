@@ -2,15 +2,214 @@
 <ViewConfig>
   <View>
     <Button id="ToggleButton" toggleable="true"/>
-    <Panel id="ButtonPanel" layout="regionPadding:8">
+    <Panel id="Calculator" layout="form cols:*,*,*,*;colPadding:4">
+      <ClientEvent name="onReady">self.ATTRIBUTES.number.getter = function() {&#xD;
+	return view.get(&quot;#${acomp.id('input')}.value&quot;);&#xD;
+};&#xD;
+&#xD;
+self.ATTRIBUTES.number.setter = function(number) {&#xD;
+	view.set(&quot;#${acomp.id('input')}.value&quot;, number);&#xD;
+};&#xD;
+&#xD;
+self.reset = function() {&#xD;
+	self.model = {&#xD;
+		num1: 0,&#xD;
+		num2: null,&#xD;
+		operator: null,&#xD;
+		shouldClear: false&#xD;
+	};&#xD;
+	view.set(&quot;#${acomp.id('input')}.value&quot;, 0);&#xD;
+}&#xD;
+&#xD;
+self.operstorAssigned = function(operator) {&#xD;
+	self.model.num1 = view.get(&quot;#${acomp.id('input')}.value&quot;) || 0;&#xD;
+	self.model.operator = operator;&#xD;
+	self.model.shouldClear = true;&#xD;
+}&#xD;
+&#xD;
+self.input = function(content) {&#xD;
+	var currentText, text; &#xD;
+	var input = view.get(&quot;#${acomp.id('input')}&quot;);&#xD;
+	&#xD;
+	if (self.model.shouldClear) {&#xD;
+		self.model.shouldClear = false;&#xD;
+		currentText = '0';&#xD;
+	}&#xD;
+	else {&#xD;
+		currentText = input.get(&quot;text&quot;);&#xD;
+	}&#xD;
+	&#xD;
+	if (currentText == '0') {&#xD;
+		text = (content == '.') ? &quot;0.&quot; : content;&#xD;
+	}&#xD;
+	else if (content == '.' &amp;&amp; currentText.indexOf('.') >= 0) {&#xD;
+		return;&#xD;
+	}&#xD;
+	else {&#xD;
+		text = currentText + content;&#xD;
+	}&#xD;
+	input.set(&quot;text&quot;, text);&#xD;
+	self.model.num2 = null;&#xD;
+}&#xD;
+&#xD;
+self.model = {&#xD;
+	num2: null,&#xD;
+	operator: null,&#xD;
+	shouldClear: false&#xD;
+};&#xD;
+self.get(&quot;children&quot;).each(function(child) {&#xD;
+	var tags = child.get(&quot;tags&quot;);&#xD;
+	if (tags == &quot;num&quot;) {&#xD;
+		child.addListener(&quot;onClick&quot;, function(button) {&#xD;
+			self.input(button.get(&quot;userData&quot;) || button.get(&quot;caption&quot;));&#xD;
+		});&#xD;
+	}&#xD;
+	else if (tags == &quot;operator&quot;) {&#xD;
+		child.addListener(&quot;onClick&quot;, function(button) {&#xD;
+			self.operstorAssigned(button.get(&quot;userData&quot;) || button.get(&quot;caption&quot;));&#xD;
+		});&#xD;
+	}&#xD;
+});</ClientEvent>
+      <Property name="width">200</Property>
+      <Buttons/>
       <Children>
-        <Container layout="Anchor" layoutConstraint="bottom height:28">
-          <Button caption="${virtualProperty.buttonCaption}" layoutConstraint="left:50%">
-            <ClientEvent name="onClick">dorado.MessageBox.alert(&quot;您点击了&quot; + self.get(&quot;caption&quot;) + &quot;按钮.&quot;);
-					</ClientEvent>
-          </Button>
-        </Container>
+        <TextEditor id="${acomp.id('input')}" layoutConstraint="colSpan:4">
+          <Property name="dataType">float</Property>
+          <Property name="text">${acomp.prop('number')}</Property>
+        </TextEditor>
+        <Button>
+          <ClientEvent name="onClick">view.get(&quot;#${acomp.id('Calculator')}&quot;).reset();</ClientEvent>
+          <Property name="caption">CE</Property>
+          <Property name="width">auto</Property>
+        </Button>
+        <Button>
+          <ClientEvent name="onClick">view.set(&quot;#${acomp.id('input')}.text&quot;, &quot;&quot;);</ClientEvent>
+          <Property name="caption">C</Property>
+          <Property name="width">auto</Property>
+        </Button>
+        <Button>
+          <ClientEvent name="onClick">view.set(&quot;#${acomp.id('input')}.text&quot;, self.get(&quot;userData&quot;))</ClientEvent>
+          <Property name="caption">π</Property>
+          <Property name="userData">3.1415926536</Property>
+          <Property name="width">auto</Property>
+        </Button>
+        <Button>
+          <Property name="caption">*</Property>
+          <Property name="tags">operator</Property>
+          <Property name="width">auto</Property>
+        </Button>
+        <Button>
+          <Property name="caption">1</Property>
+          <Property name="tags">num</Property>
+          <Property name="width">auto</Property>
+        </Button>
+        <Button>
+          <Property name="caption">2</Property>
+          <Property name="tags">num</Property>
+          <Property name="width">auto</Property>
+        </Button>
+        <Button>
+          <Property name="caption">3</Property>
+          <Property name="tags">num</Property>
+          <Property name="width">auto</Property>
+        </Button>
+        <Button>
+          <Property name="caption">/</Property>
+          <Property name="tags">operator</Property>
+          <Property name="width">auto</Property>
+        </Button>
+        <Button>
+          <Property name="caption">4</Property>
+          <Property name="tags">num</Property>
+          <Property name="width">auto</Property>
+        </Button>
+        <Button>
+          <Property name="caption">5</Property>
+          <Property name="tags">num</Property>
+          <Property name="width">auto</Property>
+        </Button>
+        <Button>
+          <Property name="caption">6</Property>
+          <Property name="tags">num</Property>
+          <Property name="width">auto</Property>
+        </Button>
+        <Button>
+          <Property name="caption">-</Property>
+          <Property name="tags">operator</Property>
+          <Property name="width">auto</Property>
+        </Button>
+        <Button>
+          <Property name="caption">7</Property>
+          <Property name="tags">num</Property>
+          <Property name="width">auto</Property>
+        </Button>
+        <Button>
+          <Property name="caption">8</Property>
+          <Property name="tags">num</Property>
+          <Property name="width">auto</Property>
+        </Button>
+        <Button>
+          <Property name="caption">9</Property>
+          <Property name="tags">num</Property>
+          <Property name="width">auto</Property>
+        </Button>
+        <Button>
+          <Property name="caption">+</Property>
+          <Property name="tags">operator</Property>
+          <Property name="width">auto</Property>
+        </Button>
+        <Button>
+          <Property name="caption">0</Property>
+          <Property name="tags">num</Property>
+          <Property name="width">auto</Property>
+        </Button>
+        <Button>
+          <Property name="caption">.</Property>
+          <Property name="tags">num</Property>
+          <Property name="width">auto</Property>
+        </Button>
+        <Button layoutConstraint="colSpan:2">
+          <ClientEvent name="onClick">var calculator = view.get(&quot;#${acomp.id('Calculator')}&quot;);&#xD;
+var input = view.get(&quot;#${acomp.id('input')}&quot;);&#xD;
+var num1 = calculator.model.num1, num2 = calculator.model.num2;&#xD;
+if (num2 === null) num2 = input.get(&quot;value&quot;);&#xD;
+var result = eval(num1 + calculator.model.operator + num2);&#xD;
+calculator.model.num1 = result;&#xD;
+calculator.model.num2 = num2;&#xD;
+input.set(&quot;value&quot;, result);&#xD;
+calculator.fireEvent(&quot;onCalculate&quot;, calculator);</ClientEvent>
+          <Property name="caption">=</Property>
+          <Property name="width">auto</Property>
+        </Button>
       </Children>
+      <Tools/>
     </Panel>
+    <Container id="SimpleCRUD">
+      <UpdateAction id="${acomp.id('actionSave')}">
+        <Property name="icon">url(>skin>common/icons.gif) -140px -20px</Property>
+        <Property name="successMessage">保存成功！</Property>
+        <Property name="dataResolver">simpleCRUD#saveAll</Property>
+        <Property name="caption">Save</Property>
+        <UpdateItem>
+          <Property name="dataPath">!DIRTY_TREE</Property>
+          <Property name="dataSet">${acomp.prop('dataSet')}</Property>
+        </UpdateItem>
+      </UpdateAction>
+      <ToolBar layoutConstraint="top">
+        <DataPilot>
+          <Property name="ignored">false</Property>
+          <Property name="dataSet">${acomp.prop('dataSet')}</Property>
+          <Property name="itemCodes">pages,|,pageSize,|,+,-,x</Property>
+        </DataPilot>
+        <Separator/>
+        <ToolBarButton>
+          <Property name="action">${acomp.id('actionSave')}</Property>
+        </ToolBarButton>
+      </ToolBar>
+      <DataGrid>
+        <Property name="dataSet">${acomp.prop('dataSet')}</Property>
+        <IndicatorColumn/>
+      </DataGrid>
+    </Container>
   </View>
 </ViewConfig>

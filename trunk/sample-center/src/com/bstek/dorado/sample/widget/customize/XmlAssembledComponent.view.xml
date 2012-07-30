@@ -1,11 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ViewConfig>
-  <View layout="Anchor padding:20" title="配置型组装控件">
-    <ToggleButton caption="这是一个名为ToggleButton的组装控件"/>
-    <ButtonPanel buttonCaption="确定" caption="这是一个名为ButtonPanel的组装控件" collapseable="true" height="200" layoutConstraint="anchorTop:previous; top:30" width="500">
+  <View layout="vbox padding:20;regionPadding:8" title="配置型组装控件">
+    <ToggleButton>
+      <Property name="caption">开关按钮</Property>
+    </ToggleButton>
+    <Container layout="hbox">
+      <Calculator id="calculator">
+        <ClientEvent name="onCalculate">dorado.widget.NotifyTipManager.notify(&quot;onCalculate事件被触发了，新的计算结果是: &quot; + self.get(&quot;number&quot;));</ClientEvent>
+        <Property name="caption">计算器</Property>
+        <Property name="border">curve</Property>
+        <Property name="number">100</Property>
+        <Buttons/>
+        <Children/>
+        <Tools/>
+      </Calculator>
+      <Container layout="vbox align:left;padding:10">
+        <Button>
+          <ClientEvent name="onClick" signature="calculator">dorado.MessageBox.prompt(&quot;请输入一个数值：&quot;, {&#xD;
+	defaultText: &quot;10&quot;,&#xD;
+	callback: function(text) {&#xD;
+		calculator.set(&quot;number&quot;, parseFloat(text) || 0);&#xD;
+	}&#xD;
+});</ClientEvent>
+          <Property name="caption">设置计算器中的值</Property>
+        </Button>
+        <Button>
+          <ClientEvent name="onClick" signature="calculator">dorado.MessageBox.alert(calculator.get(&quot;number&quot;));</ClientEvent>
+          <Property name="caption">读取计算器中的值</Property>
+        </Button>
+      </Container>
+    </Container>
+    <Panel>
+      <Property name="caption">把完整的CURD界面封装成控件</Property>
+      <Property name="width">800</Property>
+      <Property name="height">300</Property>
+      <Buttons/>
       <Children>
-        <TextArea/>
+        <DataSet id="dsProducts" pageSize="10">
+          <Property name="readOnly">false</Property>
+          <Property name="dataProvider">simpleCRUD#getAll</Property>
+          <Property name="dataType">[Product]</Property>
+          <Property name="loadMode">lazy</Property>
+        </DataSet>
+        <SimpleCRUD>
+          <Property name="dataSet">dsProducts</Property>
+        </SimpleCRUD>
       </Children>
-    </ButtonPanel>
+      <Tools/>
+    </Panel>
   </View>
 </ViewConfig>
