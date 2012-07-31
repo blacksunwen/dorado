@@ -24,6 +24,20 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 		<d:virtual-property name="dataSet" referenceComponentType="DataSet" />
 	</bean>
 	<bean parent="dorado.assembledComponentTypeRegister">
+		<property name="name" value="DualListSelection" />
+		<property name="src" value="com.bstek.dorado.sample.widget.customize.DualListSelectionComponent#DualListSelection" />
+		<d:virtual-property name="dataSetLeft" referenceComponentType="DataSet" />
+		<d:virtual-property name="dataPathLeft" />
+		<d:virtual-property name="dataSetRight" referenceComponentType="DataSet" />
+		<d:virtual-property name="dataPathRight" />
+		<d:virtual-property name="captionLeft" />
+		<d:virtual-property name="captionRight" />
+		<d:virtual-property name="added" avialableAt="client" />
+		<d:virtual-property name="removed" avialableAt="client" />
+		<d:virtual-property name="selection" avialableAt="client" />
+		<d:virtual-event name="onSelectionChange" />
+	</bean>
+	<bean parent="dorado.assembledComponentTypeRegister">
 		<property name="name" value="QuickForm" />
 		<property name="classType" value="com.bstek.dorado.sample.widget.customize.QuickForm" />
 	</bean>

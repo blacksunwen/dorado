@@ -10,6 +10,7 @@
         <Property name="caption">计算器</Property>
         <Property name="border">curve</Property>
         <Property name="number">100</Property>
+        <Property name="width">240</Property>
         <Buttons/>
         <Children/>
         <Tools/>
@@ -31,7 +32,7 @@
       </Container>
     </Container>
     <Panel>
-      <Property name="caption">把完整的CURD界面封装成控件</Property>
+      <Property name="caption">把完整的CURD界面封装成一个控件</Property>
       <Property name="width">800</Property>
       <Property name="height">300</Property>
       <Buttons/>

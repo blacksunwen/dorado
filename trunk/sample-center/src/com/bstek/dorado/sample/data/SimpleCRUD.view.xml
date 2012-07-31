@@ -15,7 +15,7 @@
       <Property name="loadMode">lazy</Property>
     </DataSet>
     <UpdateAction id="actionSave">
-      <Property name="icon">url(>skin>common/icons.gif) -140px -20px</Property>
+      <Property name="icon">url(skin>common/icons.gif) -140px -20px</Property>
       <Property name="successMessage">保存成功！</Property>
       <Property name="dataResolver">simpleCRUD#saveAll</Property>
       <Property name="caption">Save</Property>
