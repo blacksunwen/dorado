@@ -234,7 +234,11 @@ public abstract class AbstractWebFileResolver extends AbstractResolver {
 						outputFile(out, resources[i]);
 					}
 				} finally {
-					out.close();
+					try {
+						out.close();
+					} catch (IOException e) {
+						// do nothing
+					}
 				}
 			}
 		}
