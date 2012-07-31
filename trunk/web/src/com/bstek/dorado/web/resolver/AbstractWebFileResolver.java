@@ -23,7 +23,7 @@ import com.bstek.dorado.web.DoradoContext;
 public abstract class AbstractWebFileResolver extends AbstractResolver {
 	private static Log logger = LogFactory.getLog(WebFileResolver.class);
 
-	private static final int BUFFER_SIZE = 1024;
+	private static final int BUFFER_SIZE = 1024 * 2;
 	private static final int ONE_SECOND = 1000;
 	private static final int MIN_RETRIEVE_LAST_MODIFIED_INTERVAL = ONE_SECOND * 10;
 
@@ -127,6 +127,8 @@ public abstract class AbstractWebFileResolver extends AbstractResolver {
 				out.write(buffer, 0, len);
 				len = in.read(buffer);
 			}
+		} catch (IOException e) {
+			// do nothing
 		} finally {
 			in.close();
 		}
