@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Arguments/>
+  <Context/>
+  <Model/>
+  <View>
+    <Container id="DualListSelection" layout="anchor">
+      <ClientEvent name="onReady">self.ATTRIBUTES.added.getter = function() {&#xD;
+	return self.added;&#xD;
+};&#xD;
+self.ATTRIBUTES.removed.getter = function() {&#xD;
+	return self.removed;&#xD;
+};&#xD;
+self.ATTRIBUTES.selection.getter = function() {&#xD;
+	var selection = [];&#xD;
+	var dsRight = view.get(&quot;#${acomp.prop('dataSetRight')}&quot;);&#xD;
+	dsRight.getData(&quot;${acomp.prop('dataPathRight')}&quot;).each(function(entity) {&#xD;
+		selection.push(entity);&#xD;
+	});&#xD;
+	return selection;&#xD;
+};&#xD;
+&#xD;
+self.add = function(entities) {&#xD;
+	var dsLeft = view.get(&quot;#${acomp.prop('dataSetLeft')}&quot;); &#xD;
+	var dsRight = view.get(&quot;#${acomp.prop('dataSetRight')}&quot;); &#xD;
+	var listRight = dsRight.getData(&quot;${acomp.prop('dataPathRight')}&quot;);&#xD;
+	if (entities.length > 10) {&#xD;
+		dsLeft.disableObservers();&#xD;
+		dsRight.disableObservers();&#xD;
+	}&#xD;
+	entities.each(function(entity) {&#xD;
+		entity.remove();&#xD;
+		listRight.insert(entity);&#xD;
+		if (self.removed.remove(entity) &lt; 0) {&#xD;
+			if (self.added.indexOf(entity) &lt; 0) {&#xD;
+				self.added.push(entity);&#xD;
+			}&#xD;
+		}&#xD;
+	});&#xD;
+	if (entities.length > 10) {&#xD;
+		dsLeft.enableObservers();&#xD;
+		dsRight.enableObservers();&#xD;
+		dsLeft.notifyObservers();&#xD;
+		dsRight.notifyObservers();&#xD;
+	}&#xD;
+	self.fireEvent(&quot;onSelectionChange&quot;, self);&#xD;
+}&#xD;
+ &#xD;
+self.remove = function(entities) {&#xD;
+	var dsLeft = view.get(&quot;#${acomp.prop('dataSetLeft')}&quot;); &#xD;
+	var dsRight = view.get(&quot;#${acomp.prop('dataSetRight')}&quot;); &#xD;
+	var listLeft = dsLeft.getData(&quot;${acomp.prop('dataPathLeft')}&quot;);&#xD;
+	if (entities.length > 10) {&#xD;
+		dsLeft.disableObservers();&#xD;
+		dsRight.disableObservers();&#xD;
+	}&#xD;
+	entities.each(function(entity) {&#xD;
+		listLeft.insert(entity);&#xD;
+		&#xD;
+		if (self.added.remove(entity) &lt; 0) {&#xD;
+			if (self.removed.indexOf(entity) &lt; 0) {&#xD;
+				self.removed.push(entity);&#xD;
+			}&#xD;
+		}&#xD;
+	});&#xD;
+	if (entities.length > 10) {&#xD;
+		dsLeft.enableObservers();&#xD;
+		dsRight.enableObservers();&#xD;
+		dsLeft.notifyObservers();&#xD;
+		dsRight.notifyObservers();&#xD;
+	}&#xD;
+	self.fireEvent(&quot;onSelectionChange&quot;, self);&#xD;
+}&#xD;
+&#xD;
+self.reset = function() {&#xD;
+	self.added = [];&#xD;
+	self.removed = [];&#xD;
+}&#xD;
+&#xD;
+self.reset();</ClientEvent>
+      <Property name="width">600</Property>
+      <Property name="height">400</Property>
+      <Container layout="vbox pack:center;align:center" layoutConstraint="left:50%">
+        <Property name="width">80</Property>
+        <Property name="height">100%</Property>
+        <Button>
+          <ClientEvent name="onClick">var selection = [];&#xD;
+view.get(&quot;#${acomp.prop('dataSetLeft')}&quot;).getData(&quot;${acomp.prop('dataPathLeft')}&quot;).each(function(entity) {&#xD;
+	selection.push(entity);&#xD;
+});&#xD;
+view.get(&quot;#${acomp.id('DualListSelection')}&quot;).add(selection);</ClientEvent>
+          <Property name="width">70</Property>
+          <Property name="caption">全部添加</Property>
+        </Button>
+        <Button>
+          <ClientEvent name="onClick">var gridLeft = view.get(&quot;#${acomp.id('gridLeft')}&quot;);&#xD;
+var selection = gridLeft.get(&quot;selection&quot;);&#xD;
+if (!selection || !selection.length) selection = [gridLeft.get(&quot;currentEntity&quot;)];&#xD;
+view.get(&quot;#${acomp.id('DualListSelection')}&quot;).add(selection);&#xD;
+gridLeft.set(&quot;selection&quot;, []);</ClientEvent>
+          <Property name="width">70</Property>
+          <Property name="caption">添加</Property>
+        </Button>
+        <Button>
+          <ClientEvent name="onClick">var gridRight = view.get(&quot;#${acomp.id('gridRight')}&quot;);&#xD;
+var selection = gridRight.get(&quot;selection&quot;);&#xD;
+if (!selection || !selection.length) selection = [gridRight.get(&quot;currentEntity&quot;)];&#xD;
+view.get(&quot;#${acomp.id('DualListSelection')}&quot;).remove(selection);&#xD;
+gridRight.set(&quot;selection&quot;, []);</ClientEvent>
+          <Property name="width">70</Property>
+          <Property name="caption">删除</Property>
+        </Button>
+        <Button>
+          <ClientEvent name="onClick">var selection = [];&#xD;
+view.get(&quot;#${acomp.prop('dataSetRight')}&quot;).getData(&quot;${acomp.prop('dataPathRight')}&quot;).each(function(entity) {&#xD;
+	selection.push(entity);&#xD;
+});&#xD;
+view.get(&quot;#${acomp.id('DualListSelection')}&quot;).remove(selection);</ClientEvent>
+          <Property name="width">70</Property>
+          <Property name="caption">全部删除</Property>
+        </Button>
+      </Container>
+      <Panel layout="padding:1" layoutConstraint="widthOffset:-40;top:0;left:0;bottom:0">
+        <Property name="width">50%</Property>
+        <Property name="caption">${util.defaultValue(acomp.prop('captionLeft'), '可选择的项目')}</Property>
+        <Buttons/>
+        <Children>
+          <DataGrid id="${acomp.id(&quot;gridLeft&quot;)}">
+            <ClientEvent name="onDataRowDoubleClick">var selection = [self.get(&quot;currentEntity&quot;)];&#xD;
+view.get(&quot;#${acomp.id('DualListSelection')}&quot;).add(selection);</ClientEvent>
+            <Property name="dataSet">dsLeft</Property>
+            <Property name="readOnly">true</Property>
+            <Property name="selectionMode">multiRows</Property>
+            <RowSelectorColumn/>
+          </DataGrid>
+        </Children>
+        <Tools/>
+      </Panel>
+      <Panel layout="padding:1" layoutConstraint="widthOffset:-40;top:0;bottom:0;right:0">
+        <Property name="width">50%</Property>
+        <Property name="caption">${util.defaultValue(acomp.prop('captionRight'), '已选择的项目')}</Property>
+        <Buttons/>
+        <Children>
+          <DataGrid id="${acomp.id(&quot;gridRight&quot;)}" layoutConstraint="right:0">
+            <ClientEvent name="onDataRowDoubleClick">var selection = [self.get(&quot;currentEntity&quot;)];&#xD;
+view.get(&quot;#${acomp.id('DualListSelection')}&quot;).remove(selection);</ClientEvent>
+            <Property name="dataSet">dsRight</Property>
+            <Property name="readOnly">true</Property>
+            <Property name="selectionMode">multiRows</Property>
+            <RowSelectorColumn/>
+          </DataGrid>
+        </Children>
+        <Tools/>
+      </Panel>
+    </Container>
+  </View>
+</ViewConfig>
