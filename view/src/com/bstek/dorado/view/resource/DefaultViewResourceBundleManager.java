@@ -95,7 +95,7 @@ public class DefaultViewResourceBundleManager implements
 			return null;
 		}
 		String path = resource.getPath();
-		if (StringUtils.isEmpty(path)) {
+		if (StringUtils.isEmpty(path) || !path.endsWith(VIEW_FILE_SUFFIX)) {
 			return null;
 		}
 		path = path.substring(0, path.length() - VIEW_FILE_SUFFIX_LENTH);

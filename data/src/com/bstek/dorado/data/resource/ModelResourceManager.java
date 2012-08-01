@@ -3,7 +3,6 @@ package com.bstek.dorado.data.resource;
 import java.util.Locale;
 
 import com.bstek.dorado.config.definition.Definition;
-import com.bstek.dorado.core.io.Resource;
 import com.bstek.dorado.core.resource.AbstractResourceManagerSupport;
 import com.bstek.dorado.core.resource.ResourceBundle;
 
@@ -19,9 +18,9 @@ public class ModelResourceManager extends AbstractResourceManagerSupport {
 		this.modelResourceBundleManager = modelResourceBundleManager;
 	}
 
-	public ResourceBundle getBundle(Resource modelResource) throws Exception {
+	public ResourceBundle getBundle(Definition definition) throws Exception {
 		Locale locale = getLocale();
-		return modelResourceBundleManager.getBundle(modelResource, locale);
+		return modelResourceBundleManager.getBundle(definition, locale);
 	}
 
 	public String getString(Definition definition, String path, Object... args)

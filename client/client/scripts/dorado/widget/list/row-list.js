@@ -134,7 +134,7 @@
 			var row = this.findItemDomByEvent(evt);
 			if (row || this._allowNoCurrent) {
 				if (this.setCurrentItemDom(row)) {
-					var clickedItem = (row ? $fly(row).data("item") : null), selection = this.get("selection");
+					var clickedItem = (row ? $fly(row).data("item") : null), selection = this.getSelection();
 					if (this._selectionMode == "singleRow") {
 						if (evt.ctrlKey || evt.shiftKey) this.replaceSelection(null, clickedItem);
 					} else if (this._selectionMode == "multiRows") {
@@ -201,6 +201,10 @@
 					}
 				}
 			}
+		},
+		
+		getSelection: function() {
+			return this._selection;
 		},
 		
 		setSelection: function(selection) {
@@ -270,6 +274,7 @@
 							this.toggleItemSelection(added[i], true);
 						}
 					}
+					this.setSelection(selection);
 					break;
 				}
 			}

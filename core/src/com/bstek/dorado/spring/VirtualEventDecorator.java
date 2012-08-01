@@ -15,9 +15,9 @@ import org.w3c.dom.Node;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-7-6
  */
-public class VirtualPropertyDecorator implements BeanDefinitionDecorator {
+public class VirtualEventDecorator implements BeanDefinitionDecorator {
 
-	private static final String VIRTUAL_PROPERTIES = "virtualProperties";
+	private static final String VIRTUAL_EVENTS = "virtualEvents";
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public BeanDefinitionHolder decorate(Node node,
@@ -29,30 +29,24 @@ public class VirtualPropertyDecorator implements BeanDefinitionDecorator {
 
 		ManagedMap map = null;
 		boolean firstPropertyValue = propertyValues
-				.getPropertyValue(VIRTUAL_PROPERTIES) == null;
+				.getPropertyValue(VIRTUAL_EVENTS) == null;
 
 		if (!firstPropertyValue) {
-			map = (ManagedMap) (propertyValues
-					.getPropertyValue(VIRTUAL_PROPERTIES).getValue());
+			map = (ManagedMap) (propertyValues.getPropertyValue(VIRTUAL_EVENTS)
+					.getValue());
 		} else {
 			map = new ManagedMap();
 			map.setSource(node);
 			map.setMergeEnabled(true);
-			propertyValues.addPropertyValue(VIRTUAL_PROPERTIES, map);
+			propertyValues.addPropertyValue(VIRTUAL_EVENTS, map);
 			beanDef.setPropertyValues(propertyValues);
 		}
 
 		Element el = (Element) node;
 		String name = el.getAttribute("name");
-		Properties propertyDescriptor = new Properties();
-		propertyDescriptor.setProperty("type", el.getAttribute("type"));
-		propertyDescriptor.setProperty("avialableAt",
-				el.getAttribute("avialableAt"));
-		propertyDescriptor.setProperty("defaultValue",
-				el.getAttribute("defaultValue"));
-		propertyDescriptor.setProperty("referenceComponentType",
-				el.getAttribute("referenceComponentType"));
-		map.put(name, propertyDescriptor);
+		Properties eventDescriptor = new Properties();
+		eventDescriptor.setProperty("signature", el.getAttribute("signature"));
+		map.put(name, eventDescriptor);
 		return definition;
 	}
 

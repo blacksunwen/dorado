@@ -18,10 +18,14 @@ import com.bstek.dorado.common.TagSupport;
 import com.bstek.dorado.common.event.ClientEvent;
 import com.bstek.dorado.common.event.ClientEventHolder;
 import com.bstek.dorado.common.event.ClientEventSupported;
+import com.bstek.dorado.util.proxy.BeanExtender;
+import com.bstek.dorado.util.proxy.ProxyBeanUtils;
 import com.bstek.dorado.view.View;
 import com.bstek.dorado.view.ViewElement;
 import com.bstek.dorado.view.ViewElementUtils;
 import com.bstek.dorado.view.manager.ViewConfig;
+import com.bstek.dorado.view.registry.AssembledComponentTypeRegisterInfo;
+import com.bstek.dorado.view.registry.VirtualEventDescriptor;
 
 /**
  * 组件的抽象类
@@ -34,7 +38,9 @@ import com.bstek.dorado.view.manager.ViewConfig;
 		parser = "spring:dorado.componentParser")
 @ClientObject(prototype = "dorado.widget.Component",
 		shortTypeName = "Component",
-		outputter = "spring:dorado.componentOutputter")
+		outputter = "spring:dorado.componentOutputter",
+		properties = { @ClientProperty(propertyName = "DEFINITION",
+				outputter = "spring:dorado.assembledComponentDefOutputter") })
 @ClientEvents({
 		@com.bstek.dorado.annotation.ClientEvent(name = "onAttributeChange"),
 		@com.bstek.dorado.annotation.ClientEvent(name = "onCreate"),
@@ -52,7 +58,8 @@ public abstract class Component implements Ignorable, TagSupport,
 	private String tags;
 	private Object userData;
 	private Map<String, Object> metaData;
-	private ClientEventHolder clientEventHolder = new ClientEventHolder(this);
+	private ClientEventHolder clientEventHolder = new ComponentClientEventHolder(
+			this);
 
 	public void addClientEventListener(String eventName, ClientEvent clientEvent) {
 		clientEventHolder.addClientEventListener(eventName, clientEvent);
@@ -181,5 +188,42 @@ public abstract class Component implements Ignorable, TagSupport,
 
 	public void setMetaData(Map<String, Object> metaData) {
 		this.metaData = metaData;
+	}
+}
+
+class ComponentClientEventHolder extends ClientEventHolder {
+	private Component component;
+
+	@SuppressWarnings("unchecked")
+	public ComponentClientEventHolder(Component component) {
+		super((Class<? extends ClientEventSupported>) ProxyBeanUtils
+				.getProxyTargetType(component));
+		this.component = component;
+	}
+
+	@Override
+	protected void checkEventAvailable(String eventName) {
+		try {
+			super.checkEventAvailable(eventName);
+		} catch (IllegalArgumentException e) {
+			AssembledComponentTypeRegisterInfo componentTypeRegisterInfo = (AssembledComponentTypeRegisterInfo) BeanExtender
+					.getExProperty(component, "$assembledComponentInfo");
+			if (componentTypeRegisterInfo == null) {
+				throw e;
+			} else {
+				boolean valid = false;
+				Map<String, VirtualEventDescriptor> virtualEvents = componentTypeRegisterInfo
+						.getVirtualEvents();
+				if (virtualEvents != null) {
+					valid = virtualEvents.containsKey(eventName);
+				}
+				if (!valid) {
+					throw new IllegalArgumentException(
+							"Unrecognized client event ["
+									+ componentTypeRegisterInfo.getName() + ","
+									+ eventName + "].");
+				}
+			}
+		}
 	}
 }

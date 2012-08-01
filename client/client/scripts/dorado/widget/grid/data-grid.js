@@ -189,6 +189,18 @@
 			rowSelectionProperty: {
 				skipRefresh: true,
 				wirteBeforeReady: true
+			},
+			
+			/**
+			 * 当前数据实体。
+			 * @type dorado.Entity
+			 * @attribute readOnly
+			 */
+			currentEntity: {
+				readOnly: true,
+				getter: function() {
+					return this.getCurrentEntity();
+				}
 			}
 		},
 		

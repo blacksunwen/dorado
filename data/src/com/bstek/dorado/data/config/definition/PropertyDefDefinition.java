@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.bstek.dorado.data.config.definition;
 
 import com.bstek.dorado.data.type.property.BasePropertyDef;
@@ -11,7 +8,7 @@ import com.bstek.dorado.data.type.property.BasePropertyDef;
  */
 public class PropertyDefDefinition extends GenericObjectDefinition {
 	public PropertyDefDefinition() {
-		setImpl(BasePropertyDef.class.getName());
+		setImplType(BasePropertyDef.class);
 	}
 
 	public PropertyDefDefinition(String name) {

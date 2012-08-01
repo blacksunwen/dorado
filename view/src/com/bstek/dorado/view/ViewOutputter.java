@@ -3,13 +3,19 @@ package com.bstek.dorado.view;
 import java.io.Writer;
 import java.util.Map;
 
+import org.apache.commons.jexl2.JexlContext;
 import org.apache.commons.lang.StringUtils;
 
+import com.bstek.dorado.config.definition.Definition;
 import com.bstek.dorado.core.Context;
+import com.bstek.dorado.core.el.ExpressionHandler;
 import com.bstek.dorado.core.io.Resource;
 import com.bstek.dorado.data.type.DataType;
+import com.bstek.dorado.util.proxy.BeanExtender;
 import com.bstek.dorado.view.config.attachment.AttachedResourceManager;
 import com.bstek.dorado.view.config.attachment.JavaScriptContent;
+import com.bstek.dorado.view.config.definition.ViewConfigDefinition;
+import com.bstek.dorado.view.manager.ViewConfig;
 import com.bstek.dorado.view.output.OutputContext;
 import com.bstek.dorado.view.output.Outputter;
 import com.bstek.dorado.view.widget.ContainerOutputter;
@@ -62,6 +68,26 @@ public class ViewOutputter extends ContainerOutputter {
 			}
 		}
 
+		Context doradoContext = Context.getCurrent();
+
+		JexlContext jexlContext = null;
+		Definition resourceRelativeDefinition = null;
+		ViewConfig viewConfig = view.getViewConfig();
+		if (viewConfig != null) {
+			ViewConfigDefinition viewConfigDefinition = (ViewConfigDefinition) BeanExtender
+					.getExProperty(viewConfig, "viewConfigDefinition");
+			if (viewConfigDefinition != null) {
+				ExpressionHandler expressionHandler = (ExpressionHandler) doradoContext
+						.getServiceBean("expressionHandler");
+				jexlContext = expressionHandler.getJexlContext();
+				resourceRelativeDefinition = (Definition) jexlContext
+						.get(ViewConfigDefinition.RESOURCE_RELATIVE_DEFINITION);
+				jexlContext.set(
+						ViewConfigDefinition.RESOURCE_RELATIVE_DEFINITION,
+						viewConfigDefinition);
+			}
+		}
+
 		Writer writer = context.getWriter();
 		context.createJsonBuilder();
 		try {
@@ -72,8 +98,6 @@ public class ViewOutputter extends ContainerOutputter {
 			writer.append("function f(view){").append("view.set(\"children\",");
 			childrenComponentOutputter.output(view.getChildren(), context);
 			writer.append(");");
-
-			Context doradoContext = Context.getCurrent();
 
 			String javaScriptFiles = view.getJavaScriptFile();
 			if (StringUtils.isNotEmpty(javaScriptFiles)) {
@@ -113,6 +137,12 @@ public class ViewOutputter extends ContainerOutputter {
 		} finally {
 			context.restoreJsonBuilder();
 			context.setCurrentView(originalView);
+
+			if (jexlContext != null) {
+				jexlContext.set(
+						ViewConfigDefinition.RESOURCE_RELATIVE_DEFINITION,
+						resourceRelativeDefinition);
+			}
 		}
 	}
 

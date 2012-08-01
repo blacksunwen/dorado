@@ -43,7 +43,7 @@ public class DataOutputter implements Outputter, PropertyOutputter {
 	private static final Log logger = LogFactory.getLog(DataOutputter.class);
 	private static final ResourceManager resourceManager = ResourceManagerUtils
 			.get(DataOutputter.class);
-	private static final Long ONE_HOUR = 1000L * 60 * 60;
+	private static final Long ONE_DAY = 1000L * 60 * 60 * 24;
 
 	private boolean evaluateExpression = true;
 	private boolean ignoreEmptyProperty;
@@ -167,7 +167,7 @@ public class DataOutputter implements Outputter, PropertyOutputter {
 			if (object instanceof Date) {
 				Date d = (Date) object;
 				if (d instanceof Time || d instanceof Timestamp
-						|| d.getTime() % ONE_HOUR != 0) {
+						|| d.getTime() % ONE_DAY != 0) {
 					json.value(DateUtils
 							.format(com.bstek.dorado.core.Constants.ISO_DATETIME_FORMAT1,
 									d));

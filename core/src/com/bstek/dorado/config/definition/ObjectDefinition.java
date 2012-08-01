@@ -2,11 +2,12 @@ package com.bstek.dorado.config.definition;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.aopalliance.intercept.MethodInterceptor;
-import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.config.ExpressionMethodInterceptor;
 import com.bstek.dorado.core.bean.BeanFactoryUtils;
@@ -16,6 +17,7 @@ import com.bstek.dorado.core.bean.Scope;
 import com.bstek.dorado.core.el.EvaluateMode;
 import com.bstek.dorado.core.el.Expression;
 import com.bstek.dorado.core.io.ResourceCorrelative;
+import com.bstek.dorado.util.clazz.ClassUtils;
 import com.bstek.dorado.util.proxy.ProxyBeanUtils;
 
 /**
@@ -25,17 +27,18 @@ import com.bstek.dorado.util.proxy.ProxyBeanUtils;
 public class ObjectDefinition extends Definition {
 
 	public static class CreationInfo {
-		private String impl;
+		private Class<?> impl;
 		private Scope scope;
+		private Set<Definition> parents = new LinkedHashSet<Definition>();
 		private Map<String, Object> properties = new HashMap<String, Object>();
 		private List<Operation> initOperations = new ArrayList<Operation>();
 		private Map<String, Object> userDataMap;
 
-		public String getImpl() {
+		public Class<?> getImpl() {
 			return impl;
 		}
 
-		public void setImpl(String impl) {
+		public void setImpl(Class<?> impl) {
 			this.impl = impl;
 		}
 
@@ -45,6 +48,10 @@ public class ObjectDefinition extends Definition {
 
 		public void setScope(Scope scope) {
 			this.scope = scope;
+		}
+
+		public Set<Definition> getParents() {
+			return parents;
 		}
 
 		public Map<String, Object> getProperties() {
@@ -67,7 +74,7 @@ public class ObjectDefinition extends Definition {
 		}
 	}
 
-	private String impl;
+	private Class<?> impl;
 	private Scope scope;
 	private String beanId;
 	private DefinitionReference<? extends Definition>[] parentReferences;
@@ -78,24 +85,26 @@ public class ObjectDefinition extends Definition {
 	 * 返回对象的实现方式。
 	 */
 	public String getImpl() {
-		return impl;
+		return (impl != null) ? impl.getName() : null;
 	}
 
 	/**
 	 * 设置对象的实现方式。<br>
 	 * 此处的实现方式事实是指Bean的描述信息，用于描述Bean的实例化方式。<br>
 	 * 请参考{@link com.bstek.dorado.core.bean.BeanFactoryUtils}关于Bean的描述信息的叙述。
+	 * 
+	 * @throws ClassNotFoundException
 	 */
-	public void setImpl(String impl) {
-		this.impl = impl;
+	public void setImpl(String impl) throws ClassNotFoundException {
+		this.impl = (impl != null) ? ClassUtils.forName(impl) : null;
+	}
+
+	public Class<?> getImplType() {
+		return impl;
 	}
 
 	public void setImplType(Class<?> implType) {
-		if (implType != null) {
-			setImpl(implType.getName());
-		} else {
-			setImpl(null);
-		}
+		impl = implType;
 	}
 
 	/**
@@ -206,8 +215,9 @@ public class ObjectDefinition extends Definition {
 	@Override
 	protected Object doCreate(CreationContext context) throws Exception {
 		Object object = context.findInstance(this);
-		if (object != null)
+		if (object != null) {
 			return object;
+		}
 
 		CreationInfo creationInfo = new CreationInfo();
 		initCreationInfo(creationInfo, this, true);
@@ -217,7 +227,7 @@ public class ObjectDefinition extends Definition {
 			return objectCache;
 		}
 
-		if (StringUtils.isEmpty(creationInfo.getImpl())) {
+		if (creationInfo.getImpl() == null) {
 			creationInfo.setImpl(impl);
 		}
 
@@ -303,7 +313,7 @@ public class ObjectDefinition extends Definition {
 			throws Exception {
 		if (processConstrInfos) {
 			if (creationInfo.getImpl() == null) {
-				String impl = definition.getImpl();
+				Class<?> impl = definition.getImplType();
 				if (impl != null) {
 					creationInfo.setImpl(impl);
 				}
@@ -321,10 +331,12 @@ public class ObjectDefinition extends Definition {
 		if (parents != null) {
 			if (parents.length == 1) {
 				ObjectDefinition parent = (ObjectDefinition) parents[0];
+				creationInfo.getParents().add(parent);
 				initCreationInfo(creationInfo, parent, processConstrInfos);
 			} else {
 				for (int i = 0; i < parents.length; i++) {
 					ObjectDefinition parent = (ObjectDefinition) parents[i];
+					creationInfo.getParents().add(parent);
 					initCreationInfo(creationInfo, parent, (i == 0)
 							&& processConstrInfos);
 				}
@@ -414,14 +426,14 @@ public class ObjectDefinition extends Definition {
 	protected BeanWrapper createObject(CreationInfo creationInfo,
 			MethodInterceptor[] methodInterceptors, CreationContext context)
 			throws Exception {
-		if (StringUtils.isBlank(creationInfo.impl)) {
+		if (creationInfo.impl == null) {
 			throw new IllegalArgumentException("[impl] could not be empty ["
 					+ getClass() + "].");
 		}
-		if (creationInfo.impl.equals(Map.class.getName())) {
-			creationInfo.impl = HashMap.class.getName();
+		if (creationInfo.impl.equals(Map.class)) {
+			creationInfo.impl = HashMap.class;
 		}
-		return BeanFactoryUtils.getBean(creationInfo.impl, methodInterceptors,
-				creationInfo.scope, getBeanId());
+		return BeanFactoryUtils.getBean(creationInfo.impl.getName(),
+				methodInterceptors, creationInfo.scope, getBeanId());
 	}
 }

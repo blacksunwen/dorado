@@ -93,7 +93,7 @@ public class DefaultModelResourceBundleManager implements
 			return null;
 		}
 		String path = resource.getPath();
-		if (StringUtils.isEmpty(path)) {
+		if (StringUtils.isEmpty(path) || !path.endsWith(MODEL_FILE_SUFFIX)) {
 			return null;
 		}
 		path = path.substring(0, path.length() - MODEL_FILE_SUFFIX_LENTH);

@@ -1,5 +1,6 @@
 package com.bstek.dorado.view.config.definition;
 
+import org.aopalliance.intercept.MethodInterceptor;
 import org.apache.commons.jexl2.JexlContext;
 import org.apache.commons.lang.StringUtils;
 
@@ -9,8 +10,11 @@ import com.bstek.dorado.config.definition.Definition;
 import com.bstek.dorado.config.definition.DefinitionReference;
 import com.bstek.dorado.config.definition.DirectDefinitionReference;
 import com.bstek.dorado.core.Context;
+import com.bstek.dorado.core.bean.BeanWrapper;
 import com.bstek.dorado.core.el.ExpressionHandler;
 import com.bstek.dorado.data.config.definition.ListenableObjectDefinition;
+import com.bstek.dorado.util.proxy.BeanExtender;
+import com.bstek.dorado.util.proxy.BeanExtenderMethodInterceptor;
 import com.bstek.dorado.view.registry.AssembledComponentTypeRegisterInfo;
 import com.bstek.dorado.view.registry.ComponentTypeRegisterInfo;
 import com.bstek.dorado.view.widget.Component;
@@ -66,6 +70,32 @@ public class ComponentDefinition extends ListenableObjectDefinition implements
 	public void setAssembleComponentDefinition(
 			ComponentDefinition assembleComponentDefinition) {
 		this.assembledComponentDefinition = assembleComponentDefinition;
+	}
+
+	@Override
+	protected BeanWrapper createObject(CreationInfo creationInfo,
+			MethodInterceptor[] methodInterceptors, CreationContext context)
+			throws Exception {
+		if (assembledComponentDefinition != null) {
+			BeanExtenderMethodInterceptor bemi = new BeanExtenderMethodInterceptor();
+			if (methodInterceptors == null) {
+				methodInterceptors = new MethodInterceptor[] { bemi };
+			} else {
+				MethodInterceptor[] newMis = new MethodInterceptor[methodInterceptors.length + 1];
+				System.arraycopy(methodInterceptors, 0, newMis, 0,
+						methodInterceptors.length);
+				newMis[methodInterceptors.length] = bemi;
+				methodInterceptors = newMis;
+			}
+		}
+
+		BeanWrapper wrapper = super.createObject(creationInfo,
+				methodInterceptors, context);
+		if (assembledComponentDefinition != null) {
+			BeanExtender.setExProperty(wrapper.getBean(),
+					"$assembledComponentInfo", registerInfo);
+		}
+		return wrapper;
 	}
 
 	@Override
@@ -129,12 +159,12 @@ public class ComponentDefinition extends ListenableObjectDefinition implements
 		if (assembledComponentDefinition != null) {
 			for (String property : ((AssembledComponentTypeRegisterInfo) registerInfo)
 					.getVirtualProperties().keySet()) {
-				creationInfo.getProperties().remove(property);
+				Object value = creationInfo.getProperties().remove(property);
+				BeanExtender.setExProperty(object, property, value);
 			}
 		}
 		Component component = (Component) object;
 		component.setId(id);
 		super.doInitObject(object, creationInfo, context);
 	}
-
 }

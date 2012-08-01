@@ -33,6 +33,17 @@ public class ExpressionUtilsObject {
 		return StringUtils.trim(s);
 	}
 
+	public Object defaultValue(Object value, Object defaultValue) {
+		if (value == null
+				|| (value instanceof String && value.equals(""))
+				|| (value instanceof Number && ((Number) value).doubleValue() == 0)
+				|| (value instanceof Boolean && !((Boolean) value)
+						.booleanValue())) {
+			return defaultValue;
+		}
+		return value;
+	}
+
 }
 
 class Date extends java.util.Date {

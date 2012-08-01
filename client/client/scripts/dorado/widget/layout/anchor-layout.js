@@ -47,6 +47,10 @@
 	 *        <li>right - {String|int} 参考left。</li>
 	 *        <li>anchorBottom - {String} 参考anchorLeft。</li>
 	 *        <li>bottom - {String|int} 参考left。</li>
+	 *        <li>leftOffset - {int} 左边界偏移量，即根据其他所条件计算出布局区间的位置之后，再加上这个值作为最终的布局位置。</li>
+	 *        <li>topOffset - {int} 上边界偏移量。参考leftOffset。</li>
+	 *        <li>widthOffset - {int} 宽度偏移量。参考leftOffset。</li>
+	 *        <li>heightOffset - {int} 高度偏移量。参考leftOffset。</li>
 	 *        </ul>
 	 *        </p>
 	 *        <img class="clip-image" src="images/anchor-layout-3.gif">
@@ -454,12 +458,12 @@
 			} else if (padding > 0) {
 				left = top = padding + regionPadding;
 			}
-			region.left = (left >= 0) ? left : undefined;
-			region.right = (right >= 0) ? right : undefined;
-			region.top = (top >= 0) ? top : undefined;
-			region.bottom = (bottom >= 0) ? bottom : undefined;
-			region.width = (width >= 0) ? width : undefined;
-			region.height = (height >= 0) ? height : undefined;
+			region.left = (left >= 0) ? left + (parseInt(constraint.leftOffset) || 0) : undefined;
+			region.right = (right >= 0) ? right - (parseInt(constraint.leftOffset) || 0) : undefined;
+			region.top = (top >= 0) ? top + (parseInt(constraint.topOffset) || 0) : undefined;
+			region.bottom = (bottom >= 0) ? bottom - (parseInt(constraint.topOffset) || 0) : undefined;
+			region.width = (width >= 0) ? width + (parseInt(constraint.widthOffset) || 0) : undefined;
+			region.height = (height >= 0) ? height + (parseInt(constraint.heightOffset) || 0) : undefined;
 			
 			var dom = this._dom;
 			if (region.right >= 0 && !dom.style.width) {

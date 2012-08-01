@@ -1092,6 +1092,22 @@
 	});
 	
 	/**
+	 * @author Benny Bao (mailto:benny.bao@bstek.com)
+	 * @class 用于将一个进度条填充到表格单元格中单元格渲染器。
+	 * @extends dorado.widget.grid.SubControlCellRenderer
+	 */
+	dorado.widget.grid.ProgressBarCellRenderer = $extend(dorado.widget.grid.SubControlCellRenderer, /** @scope dorado.widget.grid.ProgressBarCellRenderer.prototype */{
+		createSubControl: function(arg) {
+			return new dorado.widget.ProgressBarCellRenderer(); 
+		},
+		
+		refreshSubControl: function(progressBar, arg) {
+			var value = (entity instanceof dorado.Entity) ? entity.get(property) : entity[property];
+			progressBar.set("value", parseFloat(value) || 0);
+		}
+	});
+	
+	/**
  	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @class 分组标题行的渲染器。
 	 * @extends dorado.widget.grid.RowRenderer
@@ -2280,7 +2296,7 @@
 					var data = grid.get("itemModel").getItemById(checkbox._selectDataId), checked = checkbox.get("checked");
 					var newSelection = (selectionMode == "multiRows") ? [data] : data;
 					innerGrid.replaceSelection.apply(innerGrid, checked ? [null, newSelection] : [newSelection, null]);
-					
+
 					var selection = innerGrid._selection;
 					var checked = (selection && selection.indexOf(data) >= 0);
 					if (checkbox.get("checked") !== checked) {

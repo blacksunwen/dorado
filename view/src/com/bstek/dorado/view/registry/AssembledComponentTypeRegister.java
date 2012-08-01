@@ -22,6 +22,7 @@ public class AssembledComponentTypeRegister extends ComponentTypeRegister {
 
 	private String src;
 	private Map<String, Properties> virtualProperties;
+	private Map<String, Properties> virtualEvents;
 
 	public void setViewConfigManager(ViewConfigManager viewConfigManager) {
 		this.viewConfigManager = viewConfigManager;
@@ -41,6 +42,14 @@ public class AssembledComponentTypeRegister extends ComponentTypeRegister {
 
 	public void setVirtualProperties(Map<String, Properties> virtualProperties) {
 		this.virtualProperties = virtualProperties;
+	}
+
+	public Map<String, Properties> getVirtualEvents() {
+		return virtualEvents;
+	}
+
+	public void setVirtualEvents(Map<String, Properties> virtualEvents) {
+		this.virtualEvents = virtualEvents;
 	}
 
 	@Override
@@ -85,10 +94,19 @@ public class AssembledComponentTypeRegister extends ComponentTypeRegister {
 				Properties properties = entry.getValue();
 				VirtualPropertyDescriptor propertyDescriptor = new VirtualPropertyDescriptor();
 				propertyDescriptor.setName(propertyName);
+
 				String type = properties.getProperty("type");
 				if (StringUtils.isNotEmpty(type)) {
 					propertyDescriptor.setType(ClassUtils.forName(type));
 				}
+
+				String avialableAt = properties.getProperty("avialableAt");
+				if (StringUtils.isNotEmpty(avialableAt)) {
+					propertyDescriptor
+							.setAvialableAt(VirtualPropertyAvialableAt
+									.valueOf(avialableAt));
+				}
+
 				propertyDescriptor.setDefaultValue(properties
 						.getProperty("defaultValue"));
 				propertyDescriptor.setReferenceComponentType(properties
@@ -97,6 +115,17 @@ public class AssembledComponentTypeRegister extends ComponentTypeRegister {
 			}
 		}
 		registerInfo.setVirtualProperties(propertieDescriptors);
+
+		Map<String, VirtualEventDescriptor> eventDescriptors = new HashMap<String, VirtualEventDescriptor>();
+		if (virtualEvents != null) {
+			for (Map.Entry<String, Properties> entry : virtualEvents.entrySet()) {
+				String eventName = entry.getKey();
+				VirtualEventDescriptor eventDescriptor = new VirtualEventDescriptor();
+				eventDescriptor.setName(eventName);
+				eventDescriptors.put(eventName, eventDescriptor);
+			}
+		}
+		registerInfo.setVirtualEvents(eventDescriptors);
 		return registerInfo;
 	}
 }

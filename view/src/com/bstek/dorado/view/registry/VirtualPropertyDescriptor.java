@@ -1,6 +1,5 @@
 package com.bstek.dorado.view.registry;
 
-
 import com.bstek.dorado.config.Parser;
 import com.bstek.dorado.view.output.Outputter;
 
@@ -11,6 +10,7 @@ import com.bstek.dorado.view.output.Outputter;
 public class VirtualPropertyDescriptor {
 	private String name;
 	private Class<?> type;
+	private VirtualPropertyAvialableAt avialableAt = VirtualPropertyAvialableAt.server;
 	private String referenceComponentType;
 	private Object defaultValue;
 	private Parser parser;
@@ -30,6 +30,14 @@ public class VirtualPropertyDescriptor {
 
 	public void setType(Class<?> type) {
 		this.type = type;
+	}
+
+	public VirtualPropertyAvialableAt getAvialableAt() {
+		return avialableAt;
+	}
+
+	public void setAvialableAt(VirtualPropertyAvialableAt avialableAt) {
+		this.avialableAt = avialableAt;
 	}
 
 	public String getReferenceComponentType() {

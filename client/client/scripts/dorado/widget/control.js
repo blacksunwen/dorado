@@ -85,7 +85,7 @@
 				setter : function(v) {
 					this._width = isFinite(v) ? parseInt(v) : v;
 					delete this._realWidth;
-					this._fixedWidth = !( typeof v == "string" && v.match('%'));
+					this._fixedWidth = !(typeof v == "string" && v.match('%')) || v == "auto";
 				}
 			},
 
@@ -98,7 +98,7 @@
 				setter : function(v) {
 					this._height = isFinite(v) ? parseInt(v) : v;
 					delete this._realHeight;
-					this._fixedHeight = !( typeof v == "string" && v.match('%'));
+					this._fixedHeight = !( typeof v == "string" && v.match('%')) || v == "auto";
 				}
 			},
 

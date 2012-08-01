@@ -1625,9 +1625,9 @@
 					}
 				}
 			}
-            if (this._scroller) {
-                this._scroller.refresh();
-            }
+			if (this._scroller) {
+				this._scroller.refresh();
+			}
 		},
 		
 		onClick: dorado._NULL_FUNCTION,
@@ -2733,7 +2733,14 @@
 			selection: {
 				getter: function(p, v) {
 					if (this.fixed) return this.grid.get(p);
-					else return this._selection;
+					else {
+						if (this._selectionMode == "multiRows") {
+							return this._selection ? this._selection.slice(0) : [];
+						}
+						else {
+							return this._selection;
+						}
+					}
 				}
 			}
 		},
@@ -2812,7 +2819,11 @@
 					}
 				}
 				if (grid._rowHeightInfos) grid.syncroRowHeights(this._container);
+				var oldScrollTop = grid._scrollTop || 0;
 				grid.updateScroller(this._container);
+				if (grid._ready && oldScrollTop != grid._scrollTop) {
+					grid.onYScroll();
+				}
 			}
 		},
 
@@ -3221,8 +3232,14 @@
 		},
 
 		setFocus: dorado._NULL_FUNCTION,
-		onScroll: dorado._NULL_FUNCTION,
 		doOnResize: dorado._NULL_FUNCTION,
+		
+		onScroll: function() {
+			var grid = this.grid;
+			if (grid._innerGrid == this) {
+				grid.onScroll();
+			}
+		},
 		
 		doOnKeyDown: function() {
 			return true;
@@ -3446,6 +3463,11 @@
 			var grid = this.grid;
 			grid.setHoverHeaderColumn(null);
 			return true;
+		},
+		
+		getSelection: function(selection) {
+			if (this.fixed) return this.grid._innerGrid._selection;
+			else return this._selection;
 		},
 
 		setSelection: function(selection) {

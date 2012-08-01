@@ -25,6 +25,8 @@ import com.bstek.dorado.data.config.definition.ListenableObjectDefinition;
 import com.bstek.dorado.data.provider.manager.DataProviderManager;
 import com.bstek.dorado.data.resolver.manager.DataResolverManager;
 import com.bstek.dorado.data.type.manager.DataTypeManager;
+import com.bstek.dorado.util.proxy.BeanExtender;
+import com.bstek.dorado.util.proxy.BeanExtenderMethodInterceptor;
 import com.bstek.dorado.view.InnerDataProviderManager;
 import com.bstek.dorado.view.InnerDataResolverManager;
 import com.bstek.dorado.view.InnerDataTypeManager;
@@ -292,7 +294,23 @@ public class ViewConfigDefinition extends ListenableObjectDefinition implements
 				}
 			}
 		}
-		return super.createObject(creationInfo, methodInterceptors, context);
+
+		BeanExtenderMethodInterceptor bemi = new BeanExtenderMethodInterceptor();
+		if (methodInterceptors == null) {
+			methodInterceptors = new MethodInterceptor[] { bemi };
+		} else {
+			MethodInterceptor[] newMis = new MethodInterceptor[methodInterceptors.length + 1];
+			System.arraycopy(methodInterceptors, 0, newMis, 0,
+					methodInterceptors.length);
+			newMis[methodInterceptors.length] = bemi;
+			methodInterceptors = newMis;
+		}
+
+		BeanWrapper wrapper = super.createObject(creationInfo,
+				methodInterceptors, context);
+		BeanExtender.setExProperty(wrapper.getBean(), "viewConfigDefinition",
+				this);
+		return wrapper;
 	}
 
 	@Override

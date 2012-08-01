@@ -288,6 +288,18 @@
 		 * });
 		 */
 		set : function(attr, value, options) {
+			
+			function overrideDefinition(targetDefs, def, name) {
+				if (!def) return;
+				var targetDef = targetDefs[name];
+				if (targetDef) {
+					dorado.Object.apply(targetDef, def);
+				}
+				else {
+					targetDefs[name] = dorado.Object.apply({}, def);
+				}
+			}
+			
 			var skipUnknownAttribute, tryNextOnError, preventOverwriting, lockWritingTimes;
 			if (attr && typeof attr == "object") options = value;
 			if (options && typeof options == "object") {
@@ -299,7 +311,7 @@
 
 			if (attr.constructor != String) {
 				var attrInfos = [];
-				for ( var p in attr) {
+				for (var p in attr) {
 					if (attr.hasOwnProperty(p)) {
 						var v = attr[p], attrInfo = {
 							attr : p,
@@ -307,7 +319,26 @@
 						};
 						if (p == "listener" || typeof v == "function") {
 							attrInfos.insert(attrInfo);
-						} else {
+						}
+						else if (p == "DEFINITION") {
+							if (v) {
+								if (v.ATTRIBUTES) {
+									for (var defName in v.ATTRIBUTES) {
+										if (v.ATTRIBUTES.hasOwnProperty(defName)) {
+											overrideDefinition(this.ATTRIBUTES, v.ATTRIBUTES[defName], defName);
+										}
+									}
+								}
+								if (v.EVENTS) {
+									for (var defName in v.EVENTS) {
+										if (v.EVENTS.hasOwnProperty(defName)) {
+											overrideDefinition(this.EVENTS, v.EVENTS[defName], defName);
+										}
+									}
+								}
+							}
+						}
+						else {
 							attrInfos.push(attrInfo);
 						}
 					}

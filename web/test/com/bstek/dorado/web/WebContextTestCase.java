@@ -1,7 +1,7 @@
 package com.bstek.dorado.web;
 
-import com.bstek.dorado.data.DataContextTestCase;
+import com.bstek.dorado.common.CommonContextTestCase;
 
-public class WebContextTestCase extends DataContextTestCase {
+public class WebContextTestCase extends CommonContextTestCase {
 
 }

@@ -163,7 +163,7 @@ public class DefaultExpressionHandler implements ExpressionHandler {
 		return expression;
 	}
 
-	protected JexlEngine getJexlEngine() throws Exception {
+	public JexlEngine getJexlEngine() throws Exception {
 		JexlEngine engine = threadLocal.get();
 		if (engine == null) {
 			engine = new JexlEngine();
