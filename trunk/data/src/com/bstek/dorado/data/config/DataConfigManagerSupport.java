@@ -165,8 +165,9 @@ public abstract class DataConfigManagerSupport implements DataConfigManager {
 
 		String message = "Configures unloaded [";
 		for (int i = 0; i < resources.length; i++) {
-			if (i > 0)
+			if (i > 0) {
 				message += ',';
+			}
 			message += resources[i];
 		}
 		message += "].";

@@ -8,8 +8,6 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.common.event.ClientEvent;
-import com.bstek.dorado.common.event.ClientEventRegisterInfo;
-import com.bstek.dorado.common.event.ClientEventRegistry;
 import com.bstek.dorado.common.event.ClientEventSupported;
 import com.bstek.dorado.common.event.DynaSignatureClientEvent;
 
@@ -30,21 +28,19 @@ public class ClientEventListenersOutputter implements VirtualPropertyOutputter {
 					.getAllClientEventListeners().entrySet()) {
 				String eventName = entry.getKey();
 				List<ClientEvent> listeners = entry.getValue();
-				if (listeners.isEmpty())
+				if (listeners.isEmpty()) {
 					continue;
-
-				ClientEventRegisterInfo eventInfo = ClientEventRegistry
-						.getClientEventRegisterInfo(ces.getClass(), eventName);
-				if (!eventInfo.isOutput())
-					continue;
+				}
 
 				json.escapeableKey(eventName);
 				if (listeners.size() == 1) {
-					outputListener(eventInfo, listeners.get(0), context);
+					outputListener(listeners.get(0), context);
 				} else {
 					json.escapeableArray();
 					for (ClientEvent listener : listeners) {
-						outputListener(eventInfo, listener, context);
+						if (StringUtils.isNotEmpty(listener.getScript())) {
+							outputListener(listener, context);
+						}
 					}
 					json.endArray();
 				}
@@ -54,8 +50,8 @@ public class ClientEventListenersOutputter implements VirtualPropertyOutputter {
 		}
 	}
 
-	protected void outputListener(ClientEventRegisterInfo eventInfo,
-			ClientEvent listener, OutputContext context) throws IOException {
+	protected void outputListener(ClientEvent listener, OutputContext context)
+			throws IOException {
 		JsonBuilder json = context.getJsonBuilder();
 		Writer writer = context.getWriter();
 		String signature;

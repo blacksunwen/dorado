@@ -15,6 +15,10 @@ public class AnchorLayoutConstraint extends LayoutConstraintSupport {
 	private AnchorMode anchorTop = AnchorMode.auto;
 	private AnchorMode anchorRight = AnchorMode.auto;
 	private AnchorMode anchorBottom = AnchorMode.auto;
+	private int leftOffset;
+	private int topOffset;
+	private int widthOffset;
+	private int heightOffset;
 
 	/**
 	 * 返回左边距。
@@ -104,5 +108,37 @@ public class AnchorLayoutConstraint extends LayoutConstraintSupport {
 
 	public void setAnchorBottom(AnchorMode anchorBottom) {
 		this.anchorBottom = anchorBottom;
+	}
+
+	public int getLeftOffset() {
+		return leftOffset;
+	}
+
+	public void setLeftOffset(int leftOffset) {
+		this.leftOffset = leftOffset;
+	}
+
+	public int getTopOffset() {
+		return topOffset;
+	}
+
+	public void setTopOffset(int topOffset) {
+		this.topOffset = topOffset;
+	}
+
+	public int getWidthOffset() {
+		return widthOffset;
+	}
+
+	public void setWidthOffset(int widthOffset) {
+		this.widthOffset = widthOffset;
+	}
+
+	public int getHeightOffset() {
+		return heightOffset;
+	}
+
+	public void setHeightOffset(int heightOffset) {
+		this.heightOffset = heightOffset;
 	}
 }

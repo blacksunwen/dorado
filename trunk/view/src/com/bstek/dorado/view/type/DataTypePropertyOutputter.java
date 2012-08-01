@@ -35,7 +35,7 @@ public class DataTypePropertyOutputter extends ObjectOutputterDispatcher {
 		JsonBuilder json = context.getJsonBuilder();
 		json.beginValue();
 		Writer writer = context.getWriter();
-		if (BeanExtender.getUserData(dataType, "dorado.dynamicDataType") != null) {
+		if (BeanExtender.getExProperty(dataType, "dorado.dynamicDataType") != null) {
 			writer.append("dorado.DataTypeRepository.parseSingleDataType(");
 			outputObject(dataType, context);
 			writer.append(")");

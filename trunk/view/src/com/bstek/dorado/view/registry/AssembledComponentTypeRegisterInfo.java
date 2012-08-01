@@ -25,6 +25,7 @@ public class AssembledComponentTypeRegisterInfo extends
 	private String src;
 	private ComponentDefinition superComponentDefinition;
 	private Map<String, VirtualPropertyDescriptor> virtualProperties;
+	private Map<String, VirtualEventDescriptor> virtualEvents;
 
 	public AssembledComponentTypeRegisterInfo(String name) {
 		super(name);
@@ -58,6 +59,15 @@ public class AssembledComponentTypeRegisterInfo extends
 	public void setVirtualProperties(
 			Map<String, VirtualPropertyDescriptor> virtualProperties) {
 		this.virtualProperties = virtualProperties;
+	}
+
+	public Map<String, VirtualEventDescriptor> getVirtualEvents() {
+		return virtualEvents;
+	}
+
+	public void setVirtualEvents(
+			Map<String, VirtualEventDescriptor> virtualEvents) {
+		this.virtualEvents = virtualEvents;
 	}
 
 	public boolean isInitialized() {

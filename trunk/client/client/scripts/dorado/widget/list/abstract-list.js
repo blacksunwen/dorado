@@ -84,12 +84,8 @@ dorado.widget.AbstractList = $extend(dorado.widget.Control, /** @scope dorado.wi
 					}
 				}
 				if (this._selectionMode == "multiRows") {
-					if (!selection) {
-						selection = [];
-					}
-					else {
-						selection = selection.slice(0);
-					}
+					if (!selection) selection = [];
+					else selection = selection.slice(0);
 				}
 				return selection;
 			},

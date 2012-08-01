@@ -18,7 +18,6 @@ public class Button extends AbstractButton {
 	private String icon;
 	private String iconClass;
 	private boolean triggerToggled;
-	private double num;
 	private boolean showTrigger;
 	private boolean splitButton;
 
@@ -53,14 +52,6 @@ public class Button extends AbstractButton {
 
 	public void setTriggerToggled(boolean triggerToggled) {
 		this.triggerToggled = triggerToggled;
-	}
-
-	public double getNum() {
-		return num;
-	}
-
-	public void setNum(double num) {
-		this.num = num;
 	}
 
 	public boolean getShowTrigger() {

@@ -20,6 +20,8 @@ public class DoradoNamespaceHandler extends NamespaceHandlerSupport {
 				new MapEntryShortCutDecorator("propertieConfigs"));
 		registerBeanDefinitionDecorator("virtual-property",
 				new VirtualPropertyDecorator());
+		registerBeanDefinitionDecorator("virtual-event",
+				new VirtualEventDecorator());
 
 		registerBeanDefinitionParser("import-dorado",
 				new ImportDoradoElementParser());

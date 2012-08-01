@@ -2,12 +2,14 @@ package com.bstek.dorado.idesupport.initializer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.idesupport.RuleTemplateBuilder;
 import com.bstek.dorado.idesupport.RuleTemplateBuilderAware;
 import com.bstek.dorado.idesupport.RuleTemplateManager;
+import com.bstek.dorado.idesupport.model.ClientEvent;
 import com.bstek.dorado.idesupport.template.AutoChildTemplate;
 import com.bstek.dorado.idesupport.template.AutoPropertyTemplate;
 import com.bstek.dorado.idesupport.template.AutoRuleTemplate;
@@ -20,6 +22,8 @@ import com.bstek.dorado.view.registry.ComponentTypeRegisterInfo;
 import com.bstek.dorado.view.registry.ComponentTypeRegistry;
 import com.bstek.dorado.view.registry.LayoutTypeRegisterInfo;
 import com.bstek.dorado.view.registry.LayoutTypeRegistry;
+import com.bstek.dorado.view.registry.VirtualEventDescriptor;
+import com.bstek.dorado.view.registry.VirtualPropertyAvialableAt;
 import com.bstek.dorado.view.registry.VirtualPropertyDescriptor;
 import com.bstek.dorado.view.widget.Component;
 
@@ -115,26 +119,49 @@ public class ViewConfigRuleTemplateInitializer implements
 							.setParents(new RuleTemplate[] { ruleTemplateManager
 									.getRuleTemplate(superRuleName) });
 
-					for (VirtualPropertyDescriptor propertyDescriptor : assembledComponentTypeRegisterInfo
-							.getVirtualProperties().values()) {
-						PropertyTemplate propertyTemplate = new AutoPropertyTemplate(
-								propertyDescriptor.getName());
-						if (propertyDescriptor.getType() != null) {
-							propertyTemplate.setType(propertyDescriptor
-									.getType().getName());
+					Map<String, VirtualPropertyDescriptor> virtualProperties = assembledComponentTypeRegisterInfo
+							.getVirtualProperties();
+					if (virtualProperties != null) {
+						for (VirtualPropertyDescriptor propertyDescriptor : virtualProperties
+								.values()) {
+							VirtualPropertyAvialableAt avialableAt = propertyDescriptor
+									.getAvialableAt();
+							if (!VirtualPropertyAvialableAt.client
+									.equals(avialableAt)) {
+								PropertyTemplate propertyTemplate = new AutoPropertyTemplate(
+										propertyDescriptor.getName());
+								if (propertyDescriptor.getType() != null) {
+									propertyTemplate.setType(propertyDescriptor
+											.getType().getName());
+								}
+								propertyTemplate
+										.setDefaultValue(propertyDescriptor
+												.getDefaultValue());
+								if (StringUtils.isNotEmpty(propertyDescriptor
+										.getReferenceComponentType())) {
+									propertyTemplate
+											.setReference(new LazyReferenceTemplate(
+													ruleTemplateManager,
+													propertyDescriptor
+															.getReferenceComponentType(),
+													"id"));
+								}
+								propertyTemplate.setHighlight(1);
+								componentRuleTemplate
+										.addProperty(propertyTemplate);
+							}
 						}
-						propertyTemplate.setDefaultValue(propertyDescriptor
-								.getDefaultValue());
-						if (StringUtils.isNotEmpty(propertyDescriptor
-								.getReferenceComponentType())) {
-							propertyTemplate
-									.setReference(new LazyReferenceTemplate(
-											ruleTemplateManager,
-											propertyDescriptor
-													.getReferenceComponentType(),
-											"id"));
+					}
+
+					Map<String, VirtualEventDescriptor> virtualEvents = assembledComponentTypeRegisterInfo
+							.getVirtualEvents();
+					if (virtualEvents != null) {
+						for (VirtualEventDescriptor eventDescriptor : virtualEvents
+								.values()) {
+							ClientEvent event = new ClientEvent();
+							event.setName(eventDescriptor.getName());
+							componentRuleTemplate.addClientEvent(event);
 						}
-						componentRuleTemplate.addProperty(propertyTemplate);
 					}
 				}
 			} else if (classType != null) {

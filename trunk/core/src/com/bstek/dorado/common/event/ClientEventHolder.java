@@ -48,12 +48,7 @@ public class ClientEventHolder {
 	 */
 	public void addClientEventListener(String eventName,
 			ClientEvent eventListener) {
-		ClientEventRegisterInfo clientEventRegisterInfo = ClientEventRegistry
-				.getClientEventRegisterInfo(ownerType, eventName);
-		if (clientEventRegisterInfo == null) {
-			throw new IllegalArgumentException("Unrecognized client event ["
-					+ ownerType.getName() + "," + eventName + "].");
-		}
+		checkEventAvailable(eventName);
 
 		List<ClientEvent> events = getClientEventListenersInternal(eventName);
 		if (events == null) {
@@ -61,6 +56,15 @@ public class ClientEventHolder {
 			eventMap.put(eventName, events);
 		}
 		events.add(eventListener);
+	}
+
+	protected void checkEventAvailable(String eventName) {
+		ClientEventRegisterInfo clientEventRegisterInfo = ClientEventRegistry
+				.getClientEventRegisterInfo(ownerType, eventName);
+		if (clientEventRegisterInfo == null) {
+			throw new IllegalArgumentException("Unrecognized client event ["
+					+ ownerType.getName() + "," + eventName + "].");
+		}
 	}
 
 	/**

@@ -45,7 +45,7 @@
 		                  buildJsDoc="${buildJsDoc}"
 		                  buildJavaDoc="${buildJavaDoc}"
 		                  clientSrc="${workspaceDir}/client/client"
-		                  javaSrc="${workspaceDir}/core/src,${workspaceDir}/data/src,${workspaceDir}/web/src,${workspaceDir}/view/src,${workspaceDir}/ide-support/src" />
+		                  javaSrc="${workspaceDir}/core/src,${workspaceDir}/web/src,${workspaceDir}/data/src,${workspaceDir}/view/src,${workspaceDir}/ide-support/src" />
 		<echo message="Build Dorado Addon Succeed: ${baseFileName}" />
 		<property name="coreBaseFileName" value="${baseFileName}" />
 	</target>
@@ -82,9 +82,9 @@
 	</target>
 
 	<target name="buildLibraries">
-		<property name="buildSourceJar" value="true" />
-		<property name="buildJsDoc" value="true" />
-		<property name="buildJavaDoc" value="true" />
+		<property name="buildSourceJar" value="false" />
+		<property name="buildJsDoc" value="false" />
+		<property name="buildJavaDoc" value="false" />
 
 		<antcall target="build" />
 	</target>

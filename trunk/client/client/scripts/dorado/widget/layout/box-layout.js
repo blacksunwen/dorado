@@ -314,6 +314,8 @@
 				container.appendChild(this._packTable);
 			}
 			this._packCell.style.verticalAlign = VBOX_PACKS[pack];
+			this._packCell.style.align = "center";
+			this._packCell.align = "center";
 			return this._packTable;
 		},
 		

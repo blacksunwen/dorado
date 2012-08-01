@@ -16,7 +16,7 @@ public abstract class BeanExtender {
 	 */
 	public static Object wrapBean(Object bean) throws Exception {
 		Assert.notNull(bean);
-		return setUserData(bean, null, null);
+		return setExProperty(bean, null, null);
 	}
 
 	public static boolean hasExtended(Object bean) {
@@ -40,7 +40,7 @@ public abstract class BeanExtender {
 		return bemi;
 	}
 
-	private static Object doSetUserData(Object bean, String key, Object data)
+	private static Object doSetExProperty(Object bean, String key, Object data)
 			throws Exception {
 		BeanExtenderMethodInterceptor bemi = null;
 		MethodInterceptorDispatcher dispatcher = ProxyBeanUtils
@@ -78,10 +78,10 @@ public abstract class BeanExtender {
 	 * @return
 	 * @throws Exception
 	 */
-	public static Object setUserData(Object bean, String key, Object data)
+	public static Object setExProperty(Object bean, String key, Object data)
 			throws Exception {
 		Assert.notNull(key);
-		return doSetUserData(bean, key, data);
+		return doSetExProperty(bean, key, data);
 	}
 
 	/**
@@ -89,7 +89,7 @@ public abstract class BeanExtender {
 	 * @param key
 	 * @return
 	 */
-	public static Object getUserData(Object bean, String key) {
+	public static Object getExProperty(Object bean, String key) {
 		Assert.notNull(bean);
 		Assert.notNull(key);
 

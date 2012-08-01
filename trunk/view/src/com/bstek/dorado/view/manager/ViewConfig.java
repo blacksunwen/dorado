@@ -152,7 +152,7 @@ public class ViewConfig implements Namable, Scopable, MetaDataSupport {
 		}
 
 		DataType dataType = innerDataTypeManager.createDataType(name, parent);
-		dataType = (DataType) BeanExtender.setUserData(dataType,
+		dataType = (DataType) BeanExtender.setExProperty(dataType,
 				"dorado.dynamicDataType", Boolean.TRUE);
 		return dataType;
 	}

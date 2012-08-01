@@ -288,8 +288,11 @@ public final class JsonUtils {
 				if (type != null) {
 					if (!type.isInstance(value)) {
 						if (value instanceof String && type.isEnum()) {
-							value = Enum.valueOf((Class<? extends Enum>) type,
-									(String) value);
+							if (StringUtils.isNotBlank((String) value)) {
+								value = Enum.valueOf(
+										(Class<? extends Enum>) type,
+										(String) value);
+							}
 						} else {
 							DataType propertyDataType = getDataTypeManager()
 									.getDataType(type);

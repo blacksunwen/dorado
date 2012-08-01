@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Model>
-	<DataProvider name="providerTestReference1" interceptor="com.bstek.dorado.web.provider.ProviderInterceptor#getReferenceData1" />
-	<DataProvider name="providerTestReference2" interceptor="com.bstek.dorado.web.provider.ProviderInterceptor#getReferenceData2" />
-	<DataProvider name="providerTestLookup1" interceptor="com.bstek.dorado.web.provider.ProviderInterceptor#getLookupData1" />
-</Model>

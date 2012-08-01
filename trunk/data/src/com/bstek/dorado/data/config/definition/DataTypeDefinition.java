@@ -16,13 +16,14 @@ import com.bstek.dorado.config.definition.Definition;
 import com.bstek.dorado.config.definition.DefinitionUtils;
 import com.bstek.dorado.config.definition.ObjectDefinition;
 import com.bstek.dorado.core.Context;
+import com.bstek.dorado.core.bean.Scope;
 import com.bstek.dorado.core.el.ExpressionHandler;
-import com.bstek.dorado.core.io.Resource;
 import com.bstek.dorado.data.Constants;
 import com.bstek.dorado.data.config.DataTypeName;
 import com.bstek.dorado.data.config.xml.DataXmlConstants;
 import com.bstek.dorado.data.resource.ModelResourceBundle;
 import com.bstek.dorado.data.resource.ModelResourceManager;
+import com.bstek.dorado.data.type.AggregationDataType;
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.data.type.EntityDataType;
 import com.bstek.dorado.data.type.RudeDataType;
@@ -52,12 +53,10 @@ public class DataTypeDefinition extends ListenableObjectDefinition implements
 	private Map<String, PropertyDefDefinition> propertyDefs;
 	private boolean isAggregationType;
 
-	public DataTypeDefinition() {
-	}
+	private DataType cachedInstance;
 
-	@Override
-	public boolean isCacheCreatedObject() {
-		return global;
+	public DataTypeDefinition() {
+		setScope(Scope.request);
 	}
 
 	@Override
@@ -66,7 +65,6 @@ public class DataTypeDefinition extends ListenableObjectDefinition implements
 	}
 
 	public DataTypeDefinition(String name) {
-		this();
 		setName(name);
 	}
 
@@ -204,46 +202,40 @@ public class DataTypeDefinition extends ListenableObjectDefinition implements
 	@Override
 	protected Object doCreate(CreationContext context) throws Exception {
 		if (global) {
-			Context doradoContext = Context.getCurrent();
-			ExpressionHandler expressionHandler = (ExpressionHandler) doradoContext
-					.getServiceBean("expressionHandler");
-			JexlContext jexlContext = expressionHandler.getJexlContext();
-
-			Definition resourceRelativeDefinition = (Definition) jexlContext
-					.get(RESOURCE_RELATIVE_DEFINITION);
-			jexlContext.set(RESOURCE_RELATIVE_DEFINITION, this);
-			try {
-				DataType dataType = (DataType) super.doCreate(context);
-				if (dataType instanceof EntityDataType) {
-					injectResourceStrings((EntityDataType) dataType);
-				}
+			DataType dataType = cachedInstance;
+			if (dataType != null) {
 				return dataType;
-			} finally {
-				jexlContext.set(RESOURCE_RELATIVE_DEFINITION,
-						resourceRelativeDefinition);
 			}
+
+			dataType = (DataType) super.doCreate(context);
+			if (!(dataType instanceof EntityDataType || dataType instanceof AggregationDataType)) {
+				cachedInstance = dataType;
+			}
+			return dataType;
 		} else {
 			return super.doCreate(context);
 		}
 	}
 
-	private void injectResourceStrings(EntityDataType dataType)
+	protected ExpressionHandler getExpressionHandler(Context doradoContext)
 			throws Exception {
-		Resource modelResource = getResource();
-		if (modelResource == null) {
-			return;
-		}
+		return (ExpressionHandler) doradoContext
+				.getServiceBean("expressionHandler");
+	}
 
+	private void injectResourceStrings(DataTypeDefinition dataTypeDefinition,
+			EntityDataType dataType) throws Exception {
 		Context doradoContext = Context.getCurrent();
 		ModelResourceManager modelResourceManager = (ModelResourceManager) doradoContext
 				.getServiceBean("modelResourceManager");
 		ModelResourceBundle bundle = (ModelResourceBundle) modelResourceManager
-				.getBundle(modelResource);
+				.getBundle(dataTypeDefinition);
 		if (bundle == null) {
 			return;
 		}
 
-		Properties strings = bundle.getSubProperties(dataType.getName());
+		Properties strings = bundle.getSubProperties(dataTypeDefinition
+				.getName());
 		if (strings == null) {
 			return;
 		}
@@ -265,11 +257,10 @@ public class DataTypeDefinition extends ListenableObjectDefinition implements
 		for (int i = 0; i < len; i++) {
 			String section = sections[i];
 			boolean isObject = section.charAt(0) == '#';
-			if (isObject) {
-				section = section.substring(1);
-			}
 
 			if (isObject) {
+				section = section.substring(1);
+
 				if (resourceInjection == null) {
 					throwInvalidResourceKey(key);
 				}
@@ -296,11 +287,11 @@ public class DataTypeDefinition extends ListenableObjectDefinition implements
 					boolean found = false;
 					for (String property : defaultProperties) {
 						if (PropertyUtils.isWriteable(object, property)) {
-							if (PropertyUtils.getSimpleProperty(object,
-									property) == null) {
-								PropertyUtils.setSimpleProperty(object,
-										property, resourceString);
-							}
+							// if (PropertyUtils.getSimpleProperty(object,
+							// property) == null) {
+							PropertyUtils.setSimpleProperty(object, property,
+									resourceString);
+							// }
 							found = true;
 							break;
 						}
@@ -331,66 +322,108 @@ public class DataTypeDefinition extends ListenableObjectDefinition implements
 	@SuppressWarnings("unchecked")
 	protected void doInitObject(Object object, CreationInfo creationInfo,
 			CreationContext context) throws Exception {
-		DataType dataType = (DataType) object;
+		Context doradoContext = Context.getCurrent();
+		ExpressionHandler expressionHandler = getExpressionHandler(doradoContext);
+		JexlContext jexlContext = expressionHandler.getJexlContext();
 
-		RudeDataType rudeDataType = (RudeDataType) dataType;
-		rudeDataType.setName(name);
-		if (StringUtils.isNotEmpty(id)) {
-			rudeDataType.setId(id);
-		}
+		Definition resourceRelativeDefinition = (Definition) jexlContext
+				.get(RESOURCE_RELATIVE_DEFINITION);
+		jexlContext.set(RESOURCE_RELATIVE_DEFINITION, this);
+		try {
+			DataType dataType = (DataType) object;
 
-		Class<?> matchType = (Class<?>) creationInfo.getUserData("matchType");
-		if (matchType != null)
-			rudeDataType.setMatchType(matchType);
+			RudeDataType rudeDataType = (RudeDataType) dataType;
+			rudeDataType.setName(name);
+			if (StringUtils.isNotEmpty(id)) {
+				rudeDataType.setId(id);
+			}
 
-		Class<?> creationType = (Class<?>) creationInfo
-				.getUserData("creationType");
-		if (creationType != null) {
-			rudeDataType.setCreationType(creationType);
-		}
+			Class<?> matchType = (Class<?>) creationInfo
+					.getUserData("matchType");
+			if (matchType != null)
+				rudeDataType.setMatchType(matchType);
 
-		Map<String, ObjectDefinition> propertyDefs = (Map<String, ObjectDefinition>) creationInfo
-				.getUserData("propertyDefs");
-		if (propertyDefs != null && !propertyDefs.isEmpty()) {
+			Class<?> creationType = (Class<?>) creationInfo
+					.getUserData("creationType");
+			if (creationType != null) {
+				rudeDataType.setCreationType(creationType);
+			}
+
+			Map<String, PropertyDefDefinition> propertyDefs = (Map<String, PropertyDefDefinition>) creationInfo
+					.getUserData("propertyDefs");
+			if (propertyDefs != null && !propertyDefs.isEmpty()) {
+				if (dataType instanceof EntityDataType) {
+					EntityDataType entityDataType = (EntityDataType) dataType;
+					for (PropertyDefDefinition definition : propertyDefs
+							.values()) {
+						Map<String, Object> properties = definition
+								.getProperties();
+
+						Object tempDataType = properties
+								.get(DataXmlConstants.ATTRIBUTE_DATA_TYPE);
+						if (tempDataType != null
+								&& tempDataType instanceof DataTypeDefinitionReference) {
+							DataTypeDefinitionReference dataTypeRef = (DataTypeDefinitionReference) tempDataType;
+							String nameRef = dataTypeRef.getName();
+							if (nameRef.equals(PropertyDef.SELF_DATA_TYPE_NAME)) {
+								dataTypeRef.setName(name);
+							} else if (nameRef
+									.indexOf(SELF_AGGREGATION_DATA_TYPE_SCTION) >= 0) {
+								nameRef = nameRef.replace(
+										SELF_AGGREGATION_DATA_TYPE_SCTION,
+										'[' + name + ']');
+								dataTypeRef.setName(nameRef);
+							}
+						}
+
+						jexlContext.set(RESOURCE_RELATIVE_DEFINITION,
+								definition);
+						PropertyDef propertyDef = (PropertyDef) DefinitionUtils
+								.getRealValue(definition, context);
+						entityDataType.addPropertyDef(propertyDef);
+						jexlContext.set(RESOURCE_RELATIVE_DEFINITION, this);
+					}
+				} else {
+					throw new IllegalArgumentException(
+							"Can not add PropertyDef for DataType [" + name
+									+ "].");
+				}
+			}
+
+			super.doInitObject(dataType, creationInfo, context);
+
 			if (dataType instanceof EntityDataType) {
-				EntityDataType entityDataType = (EntityDataType) dataType;
-				for (ObjectDefinition definition : propertyDefs.values()) {
-					Map<String, Object> properties = definition.getProperties();
+				EntityDataType entityDataType = ((EntityDataType) dataType);
+				if (entityDataType.isAutoCreatePropertyDefs()) {
+					entityDataType.createPropertyDefs();
+				}
 
-					Object tempDataType = properties
-							.get(DataXmlConstants.ATTRIBUTE_DATA_TYPE);
-					if (tempDataType != null
-							&& tempDataType instanceof DataTypeDefinitionReference) {
-						DataTypeDefinitionReference dataTypeRef = (DataTypeDefinitionReference) tempDataType;
-						String nameRef = dataTypeRef.getName();
-						if (nameRef.equals(PropertyDef.SELF_DATA_TYPE_NAME)) {
-							dataTypeRef.setName(name);
-						} else if (nameRef
-								.indexOf(SELF_AGGREGATION_DATA_TYPE_SCTION) >= 0) {
-							nameRef = nameRef.replace(
-									SELF_AGGREGATION_DATA_TYPE_SCTION,
-									'[' + name + ']');
-							dataTypeRef.setName(nameRef);
+				Definition[] parents = creationInfo.getParents().toArray(
+						new Definition[0]);
+				for (int i = parents.length - 1; i >= 0; i--) {
+					Definition parent = parents[i];
+					if (parent instanceof DataTypeDefinition) {
+						DataTypeDefinition parentDataType = (DataTypeDefinition) parent;
+						if (!parentDataType.isGlobal()
+								|| parentDataType.isInner()
+								|| parentDataType.isAggregationType()) {
+							continue;
+						}
+
+						if (dataType instanceof EntityDataType) {
+							injectResourceStrings(parentDataType,
+									entityDataType);
 						}
 					}
-
-					PropertyDef propertyDef = (PropertyDef) DefinitionUtils
-							.getRealValue(definition, context);
-					entityDataType.addPropertyDef(propertyDef);
 				}
-			} else {
-				throw new IllegalArgumentException(
-						"Can not add PropertyDef for DataType [" + name + "].");
-			}
-		}
 
-		super.doInitObject(dataType, creationInfo, context);
-
-		if (dataType instanceof EntityDataType) {
-			EntityDataType entityDataType = ((EntityDataType) dataType);
-			if (entityDataType.isAutoCreatePropertyDefs()) {
-				entityDataType.createPropertyDefs();
+				if (isGlobal() && !isInner() && !isAggregationType()) {
+					injectResourceStrings(this, entityDataType);
+				}
 			}
+		} finally {
+			jexlContext.set(RESOURCE_RELATIVE_DEFINITION,
+					resourceRelativeDefinition);
 		}
 	}
 
