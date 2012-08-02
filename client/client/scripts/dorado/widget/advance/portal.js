@@ -35,10 +35,6 @@
 
             closeAction: {
                 defaultValue: "close"
-            },
-            
-            closeable: {
-            	defaultValue: true
             }
 		},
 
@@ -199,7 +195,7 @@
 			 */
 			portlets: {
 				setter: function(value) {
-					var oldValue = this._portlets;
+					var portal = this, oldValue = this._portlets;
 					if (oldValue) {
 						this.clearPortlets();
 					}
@@ -210,6 +206,9 @@
 							if (!(portlet instanceof dorado.widget.Portlet)) {
 								portlet = new dorado.widget.Portlet(portlet);
 							}
+                            portlet.addListener("onCollapsedChange", function() {
+                                portal.positionPortlets();
+                            });
 							var column = portlet._column || 0;
 							var columnPortlets = this._columnPortlets[column];
 							if (!columnPortlets) {
@@ -356,6 +355,9 @@
             if (!portlet.render) {
                 portlet = new dorado.widget.Portlet(portlet);
             }
+            portlet.addListener("onCollapsedChange", function() {
+                portal.positionPortlets();
+            });
 			var column = portlet._column || 0, dom = portal._dom;
 			if (columns) {
 				var columnPortlets = portal._columnPortlets[column];

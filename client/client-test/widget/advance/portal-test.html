@@ -17,7 +17,7 @@
 				collapseable: true,
 				maximizeable: true,
 				children: [new dorado.widget.IFrame({
-					path: "http://www.doit.im"
+					path: "http://www.bsdn.org"
 				})]
 			});
 			
@@ -28,7 +28,7 @@
 				caption: "Portlet2",
 				collapseable: true,
 				children: [new dorado.widget.IFrame({
-					path: "http://www.doit.im"
+					path: "http://www.bsdn.org"
 				})]
 			});
 			
@@ -40,7 +40,7 @@
 				caption: "Portlet3",
 				collapseable: true,
 				children: [new dorado.widget.IFrame({
-					path: "http://www.doit.im"
+					path: "http://www.bsdn.org"
 				})]
 			});
 
@@ -51,7 +51,7 @@
 				caption: "Portlet4",
 				collapseable: true,
 				children: [new dorado.widget.IFrame({
-					path: "http://www.doit.im"
+					path: "http://www.bsdn.org"
 				})]
 			});
 
@@ -62,7 +62,7 @@
 				caption: "Portlet5",
 				collapseable: true,
 				children: [new dorado.widget.IFrame({
-					path: "http://www.doit.im"
+					path: "http://www.bsdn.org"
 				})]
 			});
 
@@ -74,7 +74,7 @@
 				caption: "Portlet6",
 				collapseable: true,
 				children: [new dorado.widget.IFrame({
-					path: "http://www.doit.im"
+					path: "http://www.bsdn.org"
 				})]
 			});
 
@@ -193,19 +193,27 @@
 				items: [{
 					caption: "添加模块",
 					onClick: function() {
-                        portal.addPortlet({
-                            "caption": "300",
-                            "height": 300,
-                            "id": "id",
-                            "maximizeable":true,
-                            "closeable":false,
-                            "children":[
-                                {
-                                    "$type":"IFrame",
-                                    "path": "http://www.baidu.com"
-                                }
-                            ]
-                        });
+                    portal.addPortlet({
+                        "caption": "Test",
+                        "height": 300,
+                        "id": "id",
+                        "collapseable":true,
+                        "maximizeable":true,
+                        "closeable":true,
+                        tools: [{
+                            onClick: function(self, arg) {
+                                var portal = self.get("parent.parent");
+                                //portal.get("children").getFirst().getIFrameWindow().location.reload();
+                                portal.get("children").getFirst().reload();
+                            }
+                        }],
+                        "children":[
+                            {
+                                "$type":"IFrame",
+                                "path": "http://www.baidu.com"
+                            }
+                        ]
+                    });
 					}
 				}, {
 					caption: "更改版式",
