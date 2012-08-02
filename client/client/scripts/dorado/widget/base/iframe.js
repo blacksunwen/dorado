@@ -90,12 +90,25 @@
                     domain: result[2],
                     port: result[4]
                 };
+            } else {
+                return {};
             }
         },
 
         isSameDomain: function() {
-            var localDomain = this.getDomainInfo(location.href), frameDomain = this.getDomainInfo(this._doms.iframe.src);
-            return localDomain.protocol == frameDomain.protocol && localDomain.domain == frameDomain.domain && localDomain.port == frameDomain.port;
+            var iframeSrc;
+            if (dorado.Browser.msie) {
+                try {
+                    iframeSrc = this._doms.iframe.contentWindow.location.href;
+                    return true;
+                } catch(e) {
+                    return false;
+                }
+            } else {
+                iframeSrc = this._doms.iframe.src;
+                var localDomain = this.getDomainInfo(location.href), frameDomain = this.getDomainInfo(iframeSrc);
+                return localDomain.protocol == frameDomain.protocol && localDomain.domain == frameDomain.domain && localDomain.port == frameDomain.port;
+            }
         },
 
 		destroy: function() {
@@ -110,9 +123,12 @@
                         if(dorado.Browser.msie){
                             CollectGarbage();
                         }
+                    } else {
+                        $fly(doms.iframe).prop("src", BLANK_PATH);
                     }
-                } catch(e) {}
-                $fly(doms.iframe).prop("src", BLANK_PATH);
+                } catch(e) {
+                    //console.log(e);
+                }
             }
 			$invokeSuper.call(this);
 		},
@@ -172,6 +188,14 @@
         cancelLoad: function() {
             var frame = this, doms = frame._doms, iframe = doms.iframe;
             $fly(iframe).prop("src", BLANK_PATH);
+        },
+
+        /**
+         * 重新载入页面。
+         */
+        reload: function() {
+            var frame = this, doms = frame._doms, iframe = doms.iframe;
+            $fly(iframe).prop("src", BLANK_PATH).prop("src", frame._path);
         },
 
 		refreshDom: function(dom) {
