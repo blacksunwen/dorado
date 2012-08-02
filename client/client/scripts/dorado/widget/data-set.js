@@ -273,6 +273,14 @@
 				this._dataLoaded = true;
 			}
 			else {
+				if (data && !(data instanceof dorado.Entity || data instanceof dorado.EntityList)) {
+					 if (data instanceof Object && !(data instanceof Date)) {
+					 	data = new dorado.Entity();
+					 }
+					 else if (data instanceof Array) {
+					 	data = new dorado.EntityList();
+					 }
+				}
 				this._data = data;
 			}
 
@@ -314,8 +322,17 @@
 					throw new dorado.ResourceException("dorado.widget.DataSetNotEmptyException", this._id);
 				}
 			}
-			else {
+			else if (dataType) {
 				throw new dorado.ResourceException("dorado.widget.DataSetNotSupportInsert", this._id);
+			}
+			else {
+				var data = this.getData();
+				if (data instanceof dorado.EntityList) {
+					data.insert();
+				}
+				else {
+					this.setData({});
+				}
 			}
 			return entity;
 		},
