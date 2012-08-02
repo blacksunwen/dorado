@@ -407,8 +407,9 @@
 				dorado.Toolkits.setDelayedAction(this, "$editObserverTimerId", arguments.callee, 50);
 			}, 50);
 			
-			var triggers = this.get("trigger")
+			var triggers = this.get("trigger");
 			if (triggers) {
+				if (!(triggers instanceof Array)) triggers = [triggers];
 				for (var i = 0; i < triggers.length; i++) {
 					var trigger = triggers[i];
 					if (trigger.onEditorFocus) trigger.onEditorFocus(this);
