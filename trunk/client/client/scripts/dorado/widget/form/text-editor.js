@@ -373,6 +373,7 @@
 		},
 		
 		onMouseDown: function() {
+			if (this._realReadOnly) return;
 			var triggers = this.get("trigger");
 			if (triggers) {
 				if (!(triggers instanceof Array)) triggers = [triggers];
@@ -389,20 +390,6 @@
 		
 		doOnFocus: function() {
 			this.resetReadOnly();
-			
-			var triggers = this.get("trigger"), realEditable = true;
-			if (triggers && !(triggers instanceof Array)) triggers = [triggers];
-			if (triggers) {
-				for (var i = 0; i < triggers.length; i++) {
-					var trigger = triggers[i];
-					if (!trigger.get("editable")) {
-						realEditable = false;
-						break;
-					}
-				}
-			}
-			
-			this._textDom.readOnly = this._realReadOnly || !this._editable || !realEditable;
 			if (this._realReadOnly) return;
 			
 			this._focusTime = new Date();
@@ -420,6 +407,7 @@
 				dorado.Toolkits.setDelayedAction(this, "$editObserverTimerId", arguments.callee, 50);
 			}, 50);
 			
+			var triggers = this.get("trigger")
 			if (triggers) {
 				for (var i = 0; i < triggers.length; i++) {
 					var trigger = triggers[i];
@@ -444,10 +432,25 @@
 		
 		resetReadOnly: function() {
 			if (!this._rendered) return;
+			
 			var readOnly = !!(this._readOnly || this._readOnly2);
 			if (this._realReadOnly != readOnly) {
 				this._realReadOnly = readOnly;
-				if (isInputOrTextArea(this._textDom)) this._textDom.readOnly = readOnly;
+				if (isInputOrTextArea(this._textDom)) {
+					var triggers = this.get("trigger"), realEditable = true;
+					if (triggers && !(triggers instanceof Array)) triggers = [triggers];
+					if (triggers) {
+						for (var i = 0; i < triggers.length; i++) {
+							var trigger = triggers[i];
+							if (!trigger.get("editable")) {
+								realEditable = false;
+								break;
+							}
+						}
+					}
+			
+					this._textDom.readOnly = (readOnly || !this._editable || !realEditable);
+				}
 				$fly(this.getDom()).toggleClass(this._className + "-readonly", readOnly);
 			}
 		},
