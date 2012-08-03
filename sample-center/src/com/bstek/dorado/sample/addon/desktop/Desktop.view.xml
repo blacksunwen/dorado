@@ -4,6 +4,7 @@
   <Context/>
   <Model/>
   <View>
+    <Property name="title">桌面</Property>
     <Shell id="shell">
       <Property name="wallpaper">>dorado/res/com/bstek/dorado/sample/addon/desktop/wallpapers/dorado1.jpg</Property>
       <Apps>

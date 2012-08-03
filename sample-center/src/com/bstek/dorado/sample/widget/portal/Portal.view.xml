@@ -4,6 +4,7 @@
   <Context/>
   <Model/>
   <View>
+    <Property name="title">门户</Property>
     <ToolBar layoutConstraint="top">
       <ToolBarButton>
         <ClientEvent name="onClick" signature="portal">portal.addPortlet({
