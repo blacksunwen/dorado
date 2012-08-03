@@ -4,6 +4,7 @@
   <Context/>
   <Model/>
   <View layout="padding:8">
+    <Property name="title">富文本编辑器</Property>
     <HtmlEditor/>
   </View>
 </ViewConfig>
