@@ -4,6 +4,8 @@
     <list default="true" readonly="true" id="606e5f98-0032-4f4f-8ed4-2f32923d7912" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build.xml" afterPath="$PROJECT_DIR$/build.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/scripts/dorado/html-editor.js" afterPath="$PROJECT_DIR$/client/scripts/dorado/html-editor.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/skins/default/html-editor.css" afterPath="$PROJECT_DIR$/client/skins/default/html-editor.css" />
     </list>
     <list id="f12e5b1c-4db3-4252-879f-41113edc2e8d" name="Does not upload" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.classpath" afterPath="$PROJECT_DIR$/.classpath" />
@@ -63,7 +65,44 @@
     <favorites_list name="htmleditor" />
   </component>
   <component name="FileEditorManager">
-    <leaf />
+    <leaf>
+      <file leaf-file-name="html-editor-plugins.js" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/client/scripts/dorado/html-editor-plugins.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="37" column="84" selection-start="1735" selection-end="1735" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ueditor_all.js" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/client/scripts/dorado/ueditor_all.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="3861" column="43" selection-start="127659" selection-end="127665" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="html-editor.js" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/client/scripts/dorado/html-editor.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="714" column="39" selection-start="29086" selection-end="29086" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="html-editor.css" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/client/skins/default/html-editor.css">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="176" column="99" selection-start="3143" selection-end="3143" vertical-scroll-proportion="0.39350182">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FindManager">
     <FindUsagesManager>
@@ -76,18 +115,18 @@
         <option value="$PROJECT_DIR$/client/build-client.xml" />
         <option value="$PROJECT_DIR$/client/scripts/dorado/editor_all.js" />
         <option value="$PROJECT_DIR$/client/scripts/dorado/ueditor_all_1.2.2.js" />
-        <option value="$PROJECT_DIR$/client/skins/default/html-editor.css" />
         <option value="$PROJECT_DIR$/client/scripts/dorado/ueditor_all.js" />
-        <option value="$PROJECT_DIR$/client/scripts/dorado/html-editor.js" />
         <option value="$PROJECT_DIR$/client/scripts/dorado/html-editor-plugins.js" />
+        <option value="$PROJECT_DIR$/client/scripts/dorado/html-editor.js" />
+        <option value="$PROJECT_DIR$/client/skins/default/html-editor.css" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="188" />
+    <option name="x" value="288" />
     <option name="y" value="22" />
-    <option name="width" value="1277" />
-    <option name="height" value="961" />
+    <option name="width" value="1513" />
+    <option name="height" value="955" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -117,6 +156,30 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="PackagesPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="htmleditor" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="htmleditor" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewModuleNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+      <pane id="Scope">
+        <subPane subId="Project Files">
+          <PATH>
+            <PATH_ELEMENT USER_OBJECT="Root">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -202,24 +265,9 @@
               <option name="myItemId" value="scripts" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="dorado" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope">
-        <subPane subId="Project Files">
-          <PATH>
-            <PATH_ELEMENT USER_OBJECT="Root">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
-      </pane>
-      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -227,14 +275,14 @@
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="options.lastSelected" value="reference.settingsdialog.IDE.editor.colors" />
     <property name="MemberChooser.sorted" value="false" />
-    <property name="MemberChooser.showClasses" value="true" />
+    <property name="options.lastSelected" value="reference.settingsdialog.IDE.editor.colors" />
     <property name="FullScreen" value="false" />
+    <property name="MemberChooser.showClasses" value="true" />
     <property name="GoToClass.includeLibraries" value="false" />
-    <property name="options.searchVisible" value="true" />
-    <property name="options.splitter.details.proportions" value="0.2" />
     <property name="MemberChooser.copyJavadoc" value="false" />
+    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -348,7 +396,8 @@
     <option name="IGNORE_SPACES_IN_ANNOTATE" value="true" />
     <option name="SHOW_MERGE_SOURCES_IN_ANNOTATE" value="true" />
     <option name="FORCE_UPDATE" value="false" />
-    <configuration useDefault="true">$USER_HOME$/.subversion_IDEA</configuration>
+    <option name="IGNORE_EXTERNALS" value="false" />
+    <configuration useDefault="true">$USER_HOME$/.subversion</configuration>
     <myIsUseDefaultProxy>false</myIsUseDefaultProxy>
     <supportedVersion>125</supportedVersion>
   </component>
@@ -401,30 +450,42 @@
       <created>1341418176101</created>
       <updated>1341418176101</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="升级UEditor版本到1.2.2，修正了以下Bug:&#10;1. 源代码编辑状态不出现滚动条的Bug。&#10;2. 所有编辑窗口的CheckBox失效的Bug。&#10;3. 行距执行效果不正常的Bug。&#10;4. 如果用户不选择任何文字就插入一个链接，会优先使用标题作为链接内的文字，而不是使用链接。">
+      <created>1341418188101</created>
+      <updated>1341418188101</updated>
+    </task>
+    <task id="LOCAL-00008" summary="修复默认获取codemirror.css，但是服务器报404的bug。">
+      <created>1341479634117</created>
+      <updated>1341479634117</updated>
+    </task>
+    <task id="LOCAL-00009" summary="移除限制上传图片后返回的url中的后缀限制。">
+      <created>1341984027156</created>
+      <updated>1341984027156</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="188" y="22" width="1277" height="961" extended-state="0" />
+    <frame x="288" y="22" width="1513" height="955" extended-state="0" />
     <editor active="false" />
     <layout>
       <window_info id="Data Sources" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Changes" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3275463" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3275463" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24857838" sideWeight="0.6724537" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20245399" sideWeight="0.6701389" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3298611" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -467,7 +528,7 @@
     <option name="SHOW_VCS_ERROR_NOTIFICATIONS" value="true" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="升级UEditor版本到1.2.2，修正了以下Bug:&#10;1. 源代码编辑状态不出现滚动条的Bug。&#10;2. 所有编辑窗口的CheckBox失效的Bug。&#10;3. 行距执行效果不正常的Bug。&#10;4. 如果用户不选择任何文字就插入一个链接，会优先使用标题作为链接内的文字，而不是使用链接。" />
+    <option name="LAST_COMMIT_MESSAGE" value="移除限制上传图片后返回的url中的后缀限制。" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -486,6 +547,8 @@
     <MESSAGE value="恢复核心到1.1.9，1.2.0的图片粘贴存在bug。" />
     <MESSAGE value="1. 修复defaultFontSize、defaultFontFamily不起作用的bug。&#10;2. 修复最大化后背景透明的bug。" />
     <MESSAGE value="升级UEditor版本到1.2.2，修正了以下Bug:&#10;1. 源代码编辑状态不出现滚动条的Bug。&#10;2. 所有编辑窗口的CheckBox失效的Bug。&#10;3. 行距执行效果不正常的Bug。&#10;4. 如果用户不选择任何文字就插入一个链接，会优先使用标题作为链接内的文字，而不是使用链接。" />
+    <MESSAGE value="修复默认获取codemirror.css，但是服务器报404的bug。" />
+    <MESSAGE value="移除限制上传图片后返回的url中的后缀限制。" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -500,11 +563,6 @@
         <state line="10" column="33" selection-start="250" selection-end="250" vertical-scroll-proportion="0.27845037" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/client/scripts/dorado/face-picker.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="-5.070218" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/htmleditor.iml">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" />
@@ -517,58 +575,51 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/client/scripts/dorado/ueditor_all_1.9.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="5778" column="71" selection-start="202298" selection-end="202310" vertical-scroll-proportion="0.029126214">
-          <folding />
-        </state>
+        <state line="5778" column="71" selection-start="202298" selection-end="202310" vertical-scroll-proportion="0.029126214" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/client/build-client.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="14" column="38" selection-start="566" selection-end="571" vertical-scroll-proportion="0.4014337">
-          <folding />
-        </state>
+        <state line="14" column="38" selection-start="566" selection-end="571" vertical-scroll-proportion="0.4014337" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/client/scripts/dorado/ueditor_all_1.2.0.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="5574" column="71" selection-start="190572" selection-end="190584" vertical-scroll-proportion="0.0">
+        <state line="5574" column="71" selection-start="190572" selection-end="190584" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../Source Code/ueditor1_2_2_0-utf8-jsp/editor_config.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="333" column="35" selection-start="12493" selection-end="12503" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/client/scripts/dorado/face-picker.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="7" column="113" selection-start="209" selection-end="209" vertical-scroll-proportion="-0.68817204" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/client/scripts/dorado/html-editor-plugins.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="37" column="84" selection-start="1735" selection-end="1735" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/client/scripts/dorado/ueditor_all.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="3861" column="43" selection-start="127659" selection-end="127665" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/client/scripts/dorado/html-editor.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="714" column="39" selection-start="29086" selection-end="29086" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/client/skins/default/html-editor.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="211" column="23" selection-start="3963" selection-end="3963" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/Desktop/ueditor1_2_2_0-utf8-jsp/editor_config.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="234" column="11" selection-start="9546" selection-end="9546" vertical-scroll-proportion="0.70388347">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/client/scripts/dorado/ueditor_all.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="6497" column="22" selection-start="224788" selection-end="224798" vertical-scroll-proportion="0.5291262">
-          <folding>
-            <element signature="e#183511#184745#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/client/scripts/dorado/html-editor.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="331" column="14" selection-start="11860" selection-end="11860" vertical-scroll-proportion="0.35436893">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/client/scripts/dorado/html-editor-plugins.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="1248" column="42" selection-start="56574" selection-end="56574" vertical-scroll-proportion="0.35436893">
+        <state line="176" column="99" selection-start="3143" selection-end="3143" vertical-scroll-proportion="0.39350182">
           <folding />
         </state>
       </provider>

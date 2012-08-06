@@ -712,7 +712,7 @@
             if (dom) {
                 var toolBarHeight = doms.toolbar.offsetHeight, height = dom.clientHeight;
                 if (htmleditor._editor) {
-                    htmleditor._editor.setHeight(height - toolBarHeight > 0 ? height - toolBarHeight : 0);
+                    htmleditor._editor.setHeight(height - toolBarHeight > 20 ? height - toolBarHeight : 20);
                 }
             }
         },
