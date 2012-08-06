@@ -81,6 +81,8 @@
 
 .i-icon-button{
 	display: inline-block;
+    *display: inline;
+    zoom: 1;
 	cursor: pointer;
 	width: 20px;
 	height: 20px;
@@ -88,18 +90,13 @@
 
 .i-icon-button .icon{
 	display: inline-block;
+    *display: inline;
+    zoom: 1;
+
 	float: left;
 	width: 20px;
 	height: 20px;
 	background-repeat: no-repeat;
-}
-
-.d-ie6 .i-icon-button, .d-ie7 .i-icon-button{
-	display: inline;
-}
-
-.d-ie6 .i-icon-button .icon, .d-ie7 .i-icon-button .icon{
-	display: inline;
 }
 
 .i-icon-button-disabled{

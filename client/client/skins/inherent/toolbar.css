@@ -62,14 +62,13 @@
 }
 
 .i-toolbar-label{
+    display: inline-block;
+    *display: inline;
+    zoom: 1;
 	cursor: default;
 	vertical-align: baseline;
 	height: 22px;
 	line-height: 20px;
-}
-
-.d-ie6 .i-toolbar-label, .d-ie7 .i-toolbar-label{
-	display: inline;
 }
 
 .i-toolbar .i-text-editor{
