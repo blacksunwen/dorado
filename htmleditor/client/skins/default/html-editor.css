@@ -181,12 +181,10 @@
 
 .d-htmleditor-toolbar .i-text-box {
     display: inline-block;
+    *display: inline;
+    zoom: 1;
     vertical-align: top;
     margin-top: 1px;
-}
-
-.d-ie6 .d-htmleditor-toolbar .i-text-box, .d-ie7 .d-htmleditor-toolbar .i-text-box {
-    display: inline;
 }
 
 .d-htmleditor-toolbar .d-toolbar-label{
