@@ -14,14 +14,18 @@
     <PageBanner layoutConstraint="left:0; right:0; top:0">
       <Property name="caption">Dorado 7 Sample Center</Property>
     </PageBanner>
+    <AjaxAction id="actionGetPath">
+      <Property name="service">main#getPath</Property>
+    </AjaxAction>
     <DataSet id="dsCategories" dataProvider="main#getCategories" dataType="[ExampleCategory]"/>
     <SplitPanel layoutConstraint="left:0;right:0;top:0;anchorTop:previous;bottom:0;padding:1" position="260">
       <MainControl>
-        <IFrame id="frameExample" path="com.bstek.dorado.sample.Welcome.d"/>
+        <IFrame id="frameExample"/>
       </MainControl>
       <SideControl>
         <DataTree id="treeExamples" dataSet="dsCategories">
           <Property name="expandingAnimated">true</Property>
+          <Property name="allowNoCurrent">true</Property>
           <BindingConfigs>
             <BindingConfig childrenProperty="categories" icon=">images/folder.gif" labelProperty="label" name="Category" recursive="true">
               <BindingConfig childrenProperty="examples" icon=">images/file.gif" labelProperty="label" name="Example"/>

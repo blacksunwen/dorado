@@ -33,8 +33,7 @@ a:hover {
 	font-style: normal;
 }
 .header-anchor img {
-	position: relative;
-	top: 4px;
+	margin-bottom: -4px;
 }
 .iframe-holder {
 	display: none;
@@ -85,8 +84,7 @@ a:hover {
 	white-space: nowrap;
 }
 .source-operator img{
-	position: relative;
-	top: 4px;
+	margin-bottom: -4px;
 }
 .props {
 	font-style: italic;
@@ -103,6 +101,22 @@ a:hover {
 ${example.label}
 </h1>
 
+<div style="position: absolute; top: 36px; right: 24px; white-space: nowrap">
+#if ($example.url)
+	#if ($example.embedded)
+		<a class="header-anchor" href="$!{example.url}" target="_blank">
+			<img src="images/new-window.gif">
+			在弹出窗口中运行
+		</a>
+		&nbsp;
+	#end
+#end
+<a class="header-anchor" href="javascript:void(showURL($example.id))">
+	<img src="images/anchor.gif">
+	显示本页连接
+</a>
+</div>
+
 <hr>
 
 #if ($example.url)
@@ -116,22 +130,6 @@ ${example.label}
 </p>
 	#end
 #end
-
-<div style="position: absolute; top: 36px; right: 24px; white-space: nowrap">
-#if ($example.url)
-	#if ($example.embedded)
-		<a class="header-anchor" href="$!{example.url}" target="_blank">
-			<img src="images/new-window.gif">
-			在弹出窗口中运行
-		</a>
-		&nbsp;
-	#end
-#end
-<a class="header-anchor" href="javascript:showURL()">
-	<img src="images/anchor.gif">
-	显示本页连接
-</a>
-</div>
 
 <div class="summary">
 #interceptor("spring:exampleSummary#outputContent")

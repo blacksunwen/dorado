@@ -1,8 +1,9 @@
 // @Controller
 
 // @Global
-function showURL() {
-	dorado.MessageBox.alert(location.href);
+function showURL(id) {
+	dorado.MessageBox.alert("http://bsdn.org/projects/dorado7/deploy/sample-center/com.bstek.dorado.sample.Main.d" +
+		"#" + id);
 }
 
 // @Bind view.onReady
@@ -27,8 +28,6 @@ function showURL() {
 
 // @Bind #dsExample.onReady
 !function(self) {
-	var id = self.getData("id");
-	$("a").attr("target", "doc_" + id);
 	var sources = self.getData().get("sources");
 	if (sources.entityCount == 0) {
 		sources.createChild({
