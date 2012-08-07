@@ -41,8 +41,8 @@
         form.appendChild(hiddenFile);
         wrapNode.appendChild(form);
         wrapNode.appendChild(iframe);
-        wrapNode.appendChild(dom);
-        parentNode.appendChild(wrapNode);
+        //wrapNode.appendChild(dom);
+        dom.appendChild(wrapNode);
     }
 
     plugins.Link = {
