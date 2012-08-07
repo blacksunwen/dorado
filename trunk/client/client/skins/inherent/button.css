@@ -105,6 +105,9 @@
 
 .i-icon-button-trigger{
 	display: inline-block;
+    *display: inline;
+    zoom: 1;
+
 	cursor: pointer;
 	width: 28px;
 	height: 20px;
@@ -112,15 +115,10 @@
 
 .i-icon-button-trigger .icon{
 	display: inline-block;
+    *display: inline;
+    zoom: 1;
+
 	float: left;
 	width: 20px;
 	height: 20px;
-}
-
-.d-ie6 .i-icon-button-trigger, .d-ie7 .i-icon-button-trigger{
-	display: inline;
-}
-
-.d-ie6 .i-icon-button-trigger .icon, .d-ie7 .i-icon-button-trigger .icon{
-	display: inline;
 }
