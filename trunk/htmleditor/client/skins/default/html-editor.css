@@ -211,7 +211,9 @@
 }
 
 .browse-button-wrap {
-    position: relative;
+    position: absolute;
+    left: 0;
+    top: 0;
 }
 
 .browse-button-wrap form {
@@ -224,14 +226,10 @@
 .browse-button-wrap  .hidden-file {
     opacity: 0;
     filter: alpha(opacity=0);
+    text-align: left;
     width: 60px;
     height: 20px;
-    text-align: left;
     direction: rtl;
-}
-
-.d-ie6 .browse-button-wrap  .hidden-file {
-    left: -20px;
 }
 
 .popup {
