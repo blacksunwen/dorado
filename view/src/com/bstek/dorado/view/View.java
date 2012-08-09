@@ -1,5 +1,6 @@
 package com.bstek.dorado.view;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -83,6 +84,10 @@ public abstract class View extends Container implements Namable {
 	 */
 	public Component getComponent(String componentId) {
 		return componentMap.get(componentId);
+	}
+
+	public Collection<Component> getAllComponents() {
+		return componentMap.values();
 	}
 
 	@ClientProperty(ignored = true)
