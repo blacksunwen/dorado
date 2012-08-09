@@ -328,10 +328,11 @@
 			else {
 				var data = this.getData();
 				if (data instanceof dorado.EntityList) {
-					data.insert();
+					entity = data.insert();
 				}
 				else {
-					this.setData({});
+					entity = new dorado.Entity();
+					this.setData(entity);
 				}
 			}
 			return entity;
