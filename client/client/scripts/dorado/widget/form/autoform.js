@@ -446,8 +446,8 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 		configs = {};
 		if (this._cols) configs.cols = this._cols;
 		if (this._rowHeight) configs.rowHeight = this._rowHeight;
-		if (this._cellSpacing) configs.cellSpacing = this._cellSpacing;
-		if (this._cellPadding) configs.cellPadding = this._cellPadding;
+		if (this._colPadding) configs.colPadding = this._colPadding;
+		if (this._rowPadding) configs.rowPadding = this._rowPadding;
 		if (this._stretchWidth) configs.stretchWidth = this._stretchWidth;
 		if (this._padding) configs.padding = this._padding;
 		layout.set(configs);

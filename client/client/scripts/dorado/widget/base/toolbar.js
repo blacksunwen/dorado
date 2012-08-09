@@ -483,6 +483,7 @@ dorado.widget.toolbar.Button = $extend(dorado.widget.Button, {
 					this._menu = new dorado.widget.Menu({
 						items: value
 					});
+					this.registerInnerControl(this._menu);
 				}
 			}
 		},
@@ -516,9 +517,6 @@ dorado.widget.toolbar.Button = $extend(dorado.widget.Button, {
 				}
 			}
 		});
-		
-		if (button._menu) this.registerInnerControl(this._menu);
-		
 		return dom;
 	},
 	

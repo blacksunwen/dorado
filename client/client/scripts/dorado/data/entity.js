@@ -601,7 +601,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					var dataType = propertyDef.get("dataType");
 					text = (dataType || dorado.$String).toText(value, propertyDef._displayFormat);
 					if (text && propertyDef._mapping)
-						text = propertyDef.getMappedValue(text);
+						text = propertyDef.getMappedValue(text) || "";
 				} else {
 					text = dorado.$String.toText(value);
 				}
@@ -745,6 +745,9 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					else {
 						blank = true;
 					}
+				}
+				else if (value instanceof dorado.EntityList && propertyDataType instanceof dorado.AggregationDataType) {
+					blank = !value.entityCount;
 				}
 				
 				if (blank) {

@@ -274,12 +274,12 @@
 			}
 			else {
 				if (data && !(data instanceof dorado.Entity || data instanceof dorado.EntityList)) {
-					 if (data instanceof Object && !(data instanceof Date)) {
-					 	data = new dorado.Entity();
-					 }
-					 else if (data instanceof Array) {
-					 	data = new dorado.EntityList();
-					 }
+					if (data instanceof Array) {
+						data = new dorado.EntityList(data);
+					}
+					else if (data instanceof Object && !(data instanceof Date)) {
+						data = new dorado.Entity(data);
+					}
 				}
 				this._data = data;
 			}

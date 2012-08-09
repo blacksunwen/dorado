@@ -55,7 +55,7 @@ public class AttachedJavaScriptResourceManager extends AttachedResourceManager {
 		if (javaScriptContent.getIsController()) {
 			Writer writer = context.getWriter();
 			JsonBuilder jsonBuilder = context.getJsonBuilder();
-			writer.append("\n\n");
+			writer.append("\n\n(function(view){\n");
 
 			super.outputContent(context, javaScriptContent.getContent());
 
@@ -93,7 +93,8 @@ public class AttachedJavaScriptResourceManager extends AttachedResourceManager {
 					jsonBuilder.endObject();
 				}
 				jsonBuilder.endArray();
-				writer.append(");");
+				writer.append(");\n");
+				writer.append("})(view);\n");
 			}
 		} else {
 			super.outputContent(context, javaScriptContent.getContent());

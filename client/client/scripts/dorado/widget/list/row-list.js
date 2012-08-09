@@ -46,6 +46,16 @@
 			 */
 			highlightHoverRow: {
 				defaultValue: true
+			},
+			
+			/**
+			 * 高亮显示多选选中的行。
+			 * @type boolean
+			 * @attribute
+			 * @default true
+			 */
+			highlightSelectedRow: {
+				defaultValue: true
 			}
 		},
 		
@@ -132,24 +142,25 @@
 		
 		onMouseDown: function(evt) {
 			var row = this.findItemDomByEvent(evt);
-			if (row || this._allowNoCurrent) {
+			if (row || this._allowNoCurrent) {				
+				if (row && evt.shiftKey) $DomUtils.disableUserSelection(row);
+				
+				var oldCurrentItem = this.getCurrentItem();
 				if (this.setCurrentItemDom(row)) {
 					var clickedItem = (row ? $fly(row).data("item") : null), selection = this.getSelection();
 					if (this._selectionMode == "singleRow") {
 						if (evt.ctrlKey || evt.shiftKey) this.replaceSelection(null, clickedItem);
 					} else if (this._selectionMode == "multiRows") {
-						var removed = [], added = [], oldCurrentItem;
-						if (evt.ctrlKey) {
+						var removed = [], added = [];
+						if (evt.altKey || evt.ctrlKey && evt.shiftKey) {
+							removed = selection;
+						}
+						else if (evt.ctrlKey) {
 							this.addOrRemoveSelection(selection, clickedItem, removed, added);
-							this._oldCurrentItem = this.getCurrentItem();
 						} else if (evt.shiftKey) {
 							var si = -1, ei, itemModel = this._itemModel;
-							oldCurrentItem = this._oldCurrentItem;
 							if (oldCurrentItem) {
 								si = itemModel.getItemIndex(oldCurrentItem);
-								if (si < 0) {
-									oldCurrentItem = this.getCurrentItem();
-								}
 							}
 							
 							if (oldCurrentItem) {
@@ -174,7 +185,6 @@
 								}
 							} else {
 								this.addOrRemoveSelection(selection, clickedItem, removed, added);
-								this._oldCurrentItem = this.getCurrentItem();
 							}
 						}
 						/*
@@ -204,7 +214,11 @@
 		},
 		
 		getSelection: function() {
-			return this._selection;
+			var selection = this._selection;
+			if (this._selectionMode == "multiRows") {
+				if (!selection) selection = [];
+			}
+			return selection;
 		},
 		
 		setSelection: function(selection) {
@@ -286,12 +300,12 @@
 		},
 		
 		addOrRemoveSelection: function(selection, clickedObj, removed, added) {
-			if (selection.indexOf(clickedObj) < 0) added.push(clickedObj);
+			if (!selection || selection.indexOf(clickedObj) < 0) added.push(clickedObj);
 			else removed.push(clickedObj);
 		},
 		
 		toggleItemSelection: function(item, selected) {
-			if (!this._itemDomMap) return;
+			if (!this._highlightSelectedRow || !this._itemDomMap) return;
 			var row = this._itemDomMap[this._itemModel.getItemId(item)];
 			if (row) $fly(row).toggleClass("selected-row", selected);
 		},

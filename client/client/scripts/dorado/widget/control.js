@@ -951,7 +951,18 @@
 				
 				if (this.renderUtilAttached) {
 					this._skipResize = true;
-					this.refreshDom(dom);
+					var arg =  {
+						dom: dom,
+						processDefault: true
+					};
+					if (this.getListenerCount("beforeRefreshDom")) {
+						arg.processDefault = false;
+						this.fireEvent("beforeRefreshDom", this, arg);
+					}
+					if (arg.processDefault) {
+						this.refreshDom(dom);
+						this.fireEvent("onRefreshDom", this, arg);
+					}
 					this._skipResize = false;
 				}
 				

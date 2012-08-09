@@ -68,6 +68,7 @@ function getEditor(entity) {
 // @Bind #dsRows1.onCreate
 // @Bind #dsRows2.onCreate
 !function(self) {
+	debugger;
 	self.setData([ {
 		editorType : "TextEditor"
 	}, {

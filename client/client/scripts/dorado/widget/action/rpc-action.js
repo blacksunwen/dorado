@@ -663,9 +663,9 @@
 					if(refreshMode != "cascade") {
 						var data = entity.getData();
 						for(var p in data) {
-							if(!data.hasOwnProperty(p)) continue;
+							if (!data.hasOwnProperty(p)) continue;
 							var v = data[p];
-							if( v instanceof Object && v.entityId) {
+							if (v instanceof Object && v.entityId) {
 								b = processEntity(v, entityStates) || b;
 							}
 						}
@@ -683,6 +683,12 @@
 							var s = state.$state || 0;
 							delete state.$state;
 							if (refreshMode == "cascade") {
+								for (var p in state) {
+									if (state.hasOwnProperty(p)) {
+										var pd = entity.getPropertyDef(p);
+										if (!pd._submittable) delete state[p];
+									}
+								}
 								entity.fromJSON(state);
 							} else {
 								var dataType = entity.dataType;
@@ -691,7 +697,12 @@
 								}
 								for (var p in state) {
 									if (state.hasOwnProperty(p)) {
-										entity.set(p, state[p]);
+										var pd = entity.getPropertyDef(p);
+										if (pd._submittable) {
+											var dt = pd.get("dataType");
+											if (dt instanceof dorado.AggregationDataType || dt instanceof dorado.EntityDataType) continue;
+											entity.set(p, state[p]);
+										}
 									}
 								}
 								if (dataType) {

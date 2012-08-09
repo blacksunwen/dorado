@@ -221,18 +221,24 @@ public class LibraryFileResolver extends
 						resources = new Resource[] { concreteResource };
 					}
 				} else {
+					Resource minResource = null, resource = null;
 					if (useMinCss) {
-						resources = doGetResourcesByFileName(context,
-								resourcePrefix, fileName, MIN_STYLESHEET_SUFFIX);
-						if (!resources[0].exists()) {
-							throw new FileNotFoundException(
-									resources[0].getPath());
+						minResource = doGetResourcesByFileName(context,
+								resourcePrefix, fileName, MIN_STYLESHEET_SUFFIX)[0];
+						if (!minResource.exists()) {
+							resource = doGetResourcesByFileName(context,
+									resourcePrefix, fileName, resourceSuffix)[0];
+							if (!resource.exists()) {
+								throw new FileNotFoundException("Neither ["
+										+ minResource.getPath() + "] nor ["
+										+ resource.getPath()
+										+ "] could be found.");
+							}
+						} else {
+							resource = minResource;
 						}
 					}
-					if (resources == null) {
-						resources = doGetResourcesByFileName(context,
-								resourcePrefix, fileName, resourceSuffix);
-					}
+					resources = new Resource[] { resource };
 				}
 				resourcesCache.put(cacheKey, resources);
 			}

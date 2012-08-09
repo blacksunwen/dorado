@@ -123,7 +123,7 @@ public abstract class PropertyDef implements Ignorable, TagSupport,
 	}
 
 	@XmlProperty
-	@ClientProperty
+	@ClientProperty(outputter = "spring:dorado.defaultValueOutputter")
 	public Object getDefaultValue() {
 		return defaultValue;
 	}

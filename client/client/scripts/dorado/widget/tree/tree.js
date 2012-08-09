@@ -42,6 +42,7 @@
 		
 		setCurrentItemDom: function(row) {
 			this.set("currentNode", row ? $fly(row).data("item") : null);
+			return true;
 		},
 		
 		doRefreshItemDomData: function(row, node) {

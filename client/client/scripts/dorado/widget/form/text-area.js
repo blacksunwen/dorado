@@ -67,17 +67,17 @@
 					triggerButton.render(triggerPanel);
 				}
 				this._triggersArranged = false;
-				this.doOnAttachToDocument = this.doOnResize;
+				this.doOnResize = this.resizeTextDom;
+				this.resizeTextDom();
 			} else {
 				if (this._triggerPanel) this._triggerPanel.style.display = "none";
 				this._textDom.style.width = "100%";
-				delete this.doOnAttachToDocument;
-				delete this.onResize;
+				delete this.doOnResize;
 			}
 		},
 		
-		doOnResize: function() {
-			if (!this._ready) return;
+		resizeTextDom: function() {
+			if (!this._attached) return;
 			
 			if (!this._triggersArranged) {
 				this._triggersArranged = true;

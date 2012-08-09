@@ -659,7 +659,8 @@
 				skipRefresh: true,
 				setter: function(text) {
 					this.validate(text);
-					this._text = this._lastPost = text;
+					this._text = text;
+					if (!this._editorFocused) this._lastPost = text;
 					this.doSetText(text);
 					this.setValidationState(null);
 				}
@@ -765,7 +766,15 @@
 		doSetText: function(text) {
 			this._useBlankText = (!this._focused && text == '' && this._blankText);
 			if (this._textDom) {
-				if (this._useBlankText) text = this._blankText;
+				if (this._useBlankText) {
+					if (dorado.Browser.msie && dorado.Browser.version < 9 && this._textDom.getAttribute("type") == "password") {
+						this._useBlankText = false;
+					}
+					else {
+						text = this._blankText;
+					}
+				}
+				
 				$fly(this._textDom).toggleClass("blank-text", !!this._useBlankText);
 				if (this._useBlankText && this._textDom.getAttribute("type") == "password") {
 					this._textDom.setAttribute("type", "");
@@ -829,7 +838,10 @@
 			
 			if (this._dataSet) {
 				var bindingInfo = this.getBindingInfo();
-				if (bindingInfo.dataType) {
+				if (this._mapping) {
+					e.set(p, this.get("value"));
+				}
+				else if (bindingInfo.dataType) {
 					if (this._dataType == bindingInfo.dataType) {
 						e.set(p, this.get("value"));
 					} else {
@@ -995,7 +1007,8 @@
 						}
 					}
 					this.validate(t);
-					this._text = this._lastPost = text;
+					this._text = text;
+					if (!this._editorFocused) this._lastPost = text;
 					this.doSetText(t);
 					this.setValidationState(null);
 				}

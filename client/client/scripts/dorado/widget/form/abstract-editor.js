@@ -226,6 +226,7 @@ dorado.widget.AbstractDataEditor = $extend([dorado.widget.AbstractEditor, dorado
 			case dorado.widget.DataSet.MESSAGE_REFRESH:
 			case dorado.widget.DataSet.MESSAGE_DATA_CHANGED:
 			case dorado.widget.DataSet.MESSAGE_CURRENT_CHANGED:
+			case dorado.widget.DataSet.MESSAGE_REFRESH_ENTITY:
 			case dorado.widget.DataSet.MESSAGE_ENTITY_STATE_CHANGED:
 				this.refresh(true);
 				break;

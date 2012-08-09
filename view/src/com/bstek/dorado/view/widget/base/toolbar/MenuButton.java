@@ -25,9 +25,7 @@ import com.bstek.dorado.view.widget.base.menu.Menu;
 @Widget(name = "MenuButton", category = "ToolBar",
 		dependsPackage = "base-widget")
 @ClientObject(prototype = "dorado.widget.toolbar.ToolBarButton",
-		shortTypeName = "ToolBarButton", properties = @ClientProperty(
-				propertyName = "menu",
-				outputter = "spring:dorado.menuButtonMenuPropertyOutputter"))
+		shortTypeName = "ToolBarButton")
 @XmlNode(nodeName = "MenuButton")
 public class MenuButton extends com.bstek.dorado.view.widget.base.Button {
 	private InnerElementReference<Menu> embededMenuRef = new InnerElementReference<Menu>(
@@ -68,7 +66,7 @@ public class MenuButton extends com.bstek.dorado.view.widget.base.Button {
 
 	@Override
 	@XmlProperty(unsupported = true)
-	@ClientProperty(outputter = "spring:dorado.menuButtonMenuPropertyOutputter")
+	@ClientProperty(ignored = true)
 	@IdeProperty(visible = false)
 	public String getMenu() {
 		throw new UnsupportedOperationException();

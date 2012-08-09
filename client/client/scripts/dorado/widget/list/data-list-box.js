@@ -38,9 +38,13 @@ dorado.widget.DataListBox = $extend([dorado.widget.AbstractListBox, dorado.widge
 			entityList.setCurrent(item);
 			if (entityList.current == item) {
 				this.setCurrentEntity(item);
+				return true;
 			}
 		}
+		return false;
 	},
+	
+	
 	
 	/**
 	 * 刷新某数据实体对应的行中的数据。

@@ -23,7 +23,14 @@
 			 * @type dorado.widget.Menu
 			 * @attribute
 			 */
-			parent: {},
+			parent: {
+				setter: function(parent) {
+					this._parent = parent;
+					if (parent) {
+						this.set("view", parent._view);
+					}
+				}
+			},
 			
 			/**
 			 * 菜单项所属的视图。
