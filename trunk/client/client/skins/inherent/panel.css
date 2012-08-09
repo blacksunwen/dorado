@@ -4,6 +4,7 @@
 
 .i-panel .content-panel{
 	overflow: auto;
+    *zoom: 1;
 }
 
 .i-panel .button-panel{
