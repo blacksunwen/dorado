@@ -254,15 +254,12 @@
 			lp = rp = tp = bp = wp = hp = 0;
 			
 			var padding = (parseInt(this._padding) || 0);
-			var regionPadding = (parseInt(this._regionPadding) || 0) +
-			(parseInt(constraint.padding) || 0);
+			var regionPadding = (parseInt(this._regionPadding) || 0) + (parseInt(constraint.padding) || 0);
 			var clientWidth = containerDom.clientWidth, realContainerWidth = clientWidth - 	padding * 2;
 			var clientHeight = containerDom.clientHeight, realContainerHeight = clientHeight - padding * 2;
 			
-			if (constraint.anchorLeft == "previous" &&
-			constraint.left == null) constraint.left = 0;
-			if (constraint.left != null &&
-			constraint.anchorLeft != "none") {
+			if (constraint.anchorLeft == "previous" && constraint.left == null) constraint.left = 0;
+			if (constraint.left != null && constraint.anchorLeft != "none") {
 				var l = constraint.left;
 				if (l.constructor == String && l.match('%')) {
 					var rate = lp = parseInt(l);

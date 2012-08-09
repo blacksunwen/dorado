@@ -734,6 +734,7 @@ dorado.widget.View.registerDefaultComponent("triggerClear", function() {
 		iconClass : "d-trigger-icon-clear",
 		onExecute : function(self, arg) {
 			arg.editor.set("text", "");
+			arg.editor.post();
 		}
 	});
 });

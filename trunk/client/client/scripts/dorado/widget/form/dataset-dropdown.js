@@ -123,22 +123,22 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.RowListDropDown,/** @scope
 		}
 		
 		var doOpen = function(flush) {
-			dataSet.getDataAsync(dropdown._dataPath, function(data) {
-				if (!dropdown._useDataBinding) dropdown._items = data;
-				superClass.prototype.open.call(dropdown, editor);
-				
-				if (dropdown._useDataBinding) {
-					dataSet.addListener("onDataLoad", relocate);
-					dropdown.addListener("onClose", function() {
-						dataSet.removeListener("onDataLoad", relocate);
-					}, {
-						once: true
-					});
-				}
-			}, {
-				loadMode: "auto",
+			var data = dataSet.getData(dropdown._dataPath, {
+				loadMode: "always",
 				flush: flush
 			});
+			
+			if (!dropdown._useDataBinding) dropdown._items = data;
+			superClass.prototype.open.call(dropdown, editor);
+			
+			if (dropdown._useDataBinding) {
+				dataSet.addListener("onDataLoad", relocate);
+				dropdown.addListener("onClose", function() {
+					dataSet.removeListener("onDataLoad", relocate);
+				}, {
+					once: true
+				});
+			}
 		};
 		
 		if (this._useDataBinding && this._filterOnOpen) {
@@ -195,7 +195,7 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.RowListDropDown,/** @scope
 		}
 	},
 	
-	initDropDownData: function(filterValue) {
+	initDropDownData: function(box, editor) {
 		if (!this._useDataBinding) {
 			$invokeSuper.call(this, arguments);
 		}

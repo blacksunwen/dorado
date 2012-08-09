@@ -19,7 +19,7 @@ public class AssembledComponentExpressionObject {
 	}
 
 	public Object prop(String property) {
-		return properties.get(property);
+		return (properties != null) ? properties.get(property) : null;
 	}
 
 	void setRealId(String id, String realId) {

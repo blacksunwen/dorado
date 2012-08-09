@@ -222,6 +222,7 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 				tree.fireEvent("onDataNodeCreate", tree, eventArg);
 
 				var expanded = expandedNodes[entity.entityId];
+				
 				if (expanded === true || node._expanded) {
 					node._expanded = false;
 					node.expandAsync();
@@ -408,7 +409,7 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 			var self = this, superClass = $getSuperClass();
 			this._prepareChildren({
 				callback: function(success, result) {
-					if (!self._expanded) superClass.prototype.doExpandAsync.call(self, callback);
+					/*if (!self._expanded)*/superClass.prototype.doExpandAsync.call(self, callback);
 				}
 			});
 		} else {
@@ -505,7 +506,7 @@ dorado.widget.DataTree = $extend([dorado.widget.Tree, dorado.widget.DataControl]
 		 */
 		currentEntity: {
 			setter: function(currentEntity) {
-				var node = currentEntity ? this._entityMap[currentEntity.entityId] : null;
+				var node = this.findNode(currentEntity);
 				this.set("currentNode", node);
 			},
 			getter: function() {
@@ -547,6 +548,10 @@ dorado.widget.DataTree = $extend([dorado.widget.Tree, dorado.widget.DataControl]
 	constructor: function() {
 		this._entityMap = {};
 		$invokeSuper.call(this, arguments);
+	},
+	
+	getCurrentItem: function() {
+		return this._currentNode;
 	},
 
 	onReady: function() {
@@ -686,7 +691,7 @@ dorado.widget.DataTree = $extend([dorado.widget.Tree, dorado.widget.DataControl]
 			}
 
 			case dorado.widget.DataSet.MESSAGE_DELETED:{
-				var node = this._entityMap[arg.entity.entityId];
+				var node = this.findNode(arg.entity);
 				if (node) node.remove();
 				break;
 			}
@@ -701,7 +706,7 @@ dorado.widget.DataTree = $extend([dorado.widget.Tree, dorado.widget.DataControl]
 				}
 
 				var parentNode;
-				if (parentEntity instanceof dorado.Entity) parentNode = this._entityMap[parentEntity.entityId];
+				if (parentEntity instanceof dorado.Entity) parentNode = this.findNode(parentEntity);
 				if (!parentNode && parentEntityList == this._root._data) {
 					parentNode = this._root;
 				}
@@ -726,7 +731,7 @@ dorado.widget.DataTree = $extend([dorado.widget.Tree, dorado.widget.DataControl]
 	},
 
 	refreshNodeByEntity: function(entity) {
-		var node = this._entityMap[entity.entityId];
+		var node = this.findNode(entity);
 		if (!node) return;
 		this.refreshNode(node);
 	},
@@ -779,6 +784,11 @@ dorado.widget.DataTree = $extend([dorado.widget.Tree, dorado.widget.DataControl]
 			}
 		}
 		return false;
+	},
+	
+	findNode: function(entity) {
+		if (entity) return this._entityMap[entity.entityId];
+		return null;
 	}
 });
 

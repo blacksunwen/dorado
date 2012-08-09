@@ -17,6 +17,12 @@
 	background: #EFEFEF;
 }
 
+.d-tree .data-table .selected-row td {
+    border-top-color: #CFF8D7;
+    border-bottom-color: #8DD89D;
+    background: #CFF8D7;
+}
+
 .d-tree .data-table .drag-over-row td {
     border-top-color: #EFEFEF;
     border-bottom-color: #EFEFEF;

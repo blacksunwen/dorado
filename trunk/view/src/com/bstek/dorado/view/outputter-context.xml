@@ -34,6 +34,7 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 	<bean id="dorado.dataTypePropertyOutputter" parent="dorado.objectOutputterDispatcher" class="com.bstek.dorado.view.type.DataTypePropertyOutputter" />
 	<bean id="dorado.mappingPropertyOutputter" parent="dorado.dataOutputter" class="com.bstek.dorado.view.type.property.MappingPropertyOutputter" />
 	<bean id="dorado.propertyDefsOutputter" parent="dorado.objectOutputterDispatcher" class="com.bstek.dorado.view.type.PropertyDefsOutputter" />
+	<bean id="dorado.defaultValueOutputter" class="com.bstek.dorado.view.type.DefaultValueOutputter" />
 	<bean id="dorado.cacheModePropertyOutputter" class="com.bstek.dorado.view.type.property.CacheModePropertyOutputter" />
 
 	<bean id="dorado.dataProviderPropertyOutputter" class="com.bstek.dorado.view.output.DataProviderPropertyOutputter" />
@@ -66,7 +67,6 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 	<bean id="dorado.subViewPropertyOutputter" parent="dorado.objectOutputterDispatcher" class="com.bstek.dorado.view.widget.SubViewPropertyOutputter">
 		<property name="viewConfigManager" ref="dorado.viewConfigManager" />
 	</bean>
-	<bean id="dorado.menuButtonMenuPropertyOutputter" parent="dorado.objectOutputterDispatcher" class="com.bstek.dorado.view.widget.base.toolbar.MenuButtonMenuPropertyOutputter" />
 
 	<bean id="dorado.pageHeaderOutputter" class="com.bstek.dorado.view.resolver.PageHeaderOutputter">
 		<property name="topViewOutputter" ref="dorado.topViewOutputter" />

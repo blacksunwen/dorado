@@ -1,41 +1,42 @@
 (function() {
 	var GROUP_CONTENT_CLASS = "group-content", GROUP_OVERFLOW_CLASS = "i-menu-overflow d-menu-overflow";
-
+	
 	/**
-     * @author Frank Zhang (mailto:frank.zhang@bstek.com)
+	 * @author Frank Zhang (mailto:frank.zhang@bstek.com)
 	 * @class 菜单项组。
 	 * @extends dorado.widget.Control
+	 * @extends dorado.widget.FloatControl
 	 */
 	dorado.widget.Menu = $extend([dorado.widget.Control, dorado.widget.FloatControl], /** @scope dorado.widget.Menu.prototype */ {
 		$className: "dorado.widget.Menu",
-        _inherentClassName: "i-menu",
-
+		_inherentClassName: "i-menu",
+		
 		focusable: true,
 		selectable: false,
-
+		
 		ATTRIBUTES: /** @scope dorado.widget.Menu.prototype */ {
 			className: {
 				defaultValue: "d-menu"
 			},
-
+			
 			floatingClassName: {
 				defaultValue: "i-menu-floating"
 			},
-
+			
 			visible: {
 				defaultValue: false
 			},
-
+			
 			animateType: {
 				defaultValue: "slide",
 				skipRefresh: true
 			},
-
+			
 			hideAnimateType: {
 				defaultValue: "fade",
 				skipRefresh: true
 			},
-
+			
 			/**
 			 * 图标的显示位置，可选值：left、top。
 			 * @attribute
@@ -45,7 +46,7 @@
 			iconPosition: {
 				defaultValue: "left"
 			},
-
+			
 			/**
 			 * 图标的显示大小，可选值：normal、big。
 			 * @attribute
@@ -55,7 +56,7 @@
 			iconSize: {
 				defaultValue: "normal"
 			},
-
+			
 			/**
 			 * 设置的时候以数组形式进行设置，读取的时候得到的属性为dorado.util.KeyedArray。
 			 * @type dorado.util.KeyedArray
@@ -85,23 +86,23 @@
 							for (i = 0, l = value.size; i < l; i++) {
 								item = menu.createMenuItem(value.get(i));
 								items.append(item);
-
+								
 								if (rendered) {
 									item.render(doms.groupContent);
 								}
 							}
 						}
-					} 
+					}
 				}
 			},
-
-            /**
-             * 只读属性，Menu的当前高亮的MenuItem。<br />
-             * 当遇到Menu的contextMenu的时候，可能需要使用到该属性。
-             * @attribute readOnly
-             * @type dorado.widget.menu.AbstractMenuItem
-             */
-            focusItem: {},
+			
+			/**
+			 * 只读属性，Menu的当前高亮的MenuItem。<br />
+			 * 当遇到Menu的contextMenu的时候，可能需要使用到该属性。
+			 * @attribute readOnly
+			 * @type dorado.widget.menu.AbstractMenuItem
+			 */
+			focusItem: {},
 			
 			view: {
 				setter: function(view) {
@@ -109,21 +110,22 @@
 					
 					var items = this._items;
 					if (!items) return;
-					for (var i = 0; i < items.size; i++) {
-						items.get(i).set("view", view);
-					}
+					
+					items.each(function(item) {
+						item.set("view", view);
+					});
 				}
 			}
 		},
-
+		
 		EVENTS: /** @scope dorado.widget.Menu.prototype */ {
-            /**
-             * 在Menu的最顶层菜单隐藏的时候触发的事件，一般情况下，当菜单失去焦点，菜单项被click的时候，会触发此事件。
-             * @param {Object} self 事件的发起者，即组件本身。
-             * @param {Object} arg 事件参数。
-             * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
-             * @event
-             */
+			/**
+			 * 在Menu的最顶层菜单隐藏的时候触发的事件，一般情况下，当菜单失去焦点，菜单项被click的时候，会触发此事件。
+			 * @param {Object} self 事件的发起者，即组件本身。
+			 * @param {Object} arg 事件参数。
+			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+			 * @event
+			 */
 			onHideTopMenu: {}
 		},
 		
@@ -136,7 +138,7 @@
 				return $invokeSuper.call(this, [attr]);
 			}
 		},
-
+		
 		/**
 		 * 创建MenuItem。
 		 * @param {Object|dorado.widget.menu.AbstractMenuItem} config MenuItem的配置信息、或者MenuItem
@@ -153,10 +155,10 @@
 			} else {
 				item = dorado.Toolkits.createInstance("menu", config);
 			}
-            item.set("parent", menu);
+			item.set("parent", menu);
 			return item;
 		},
-
+		
 		/**
 		 * 创建overflow的上下箭头。
 		 * @protected
@@ -168,7 +170,7 @@
 					tagName: "div",
 					className: "overflow-top-arrow"
 				});
-
+				
 				var bottomArrow = $DomUtils.xCreate({
 					tagName: "div",
 					className: "overflow-bottom-arrow"
@@ -176,20 +178,20 @@
 				
 				$fly(dom).prepend(topArrow);
 				dom.appendChild(bottomArrow);
-
-				jQuery(topArrow).repeatOnClick(function(){
+				
+				jQuery(topArrow).repeatOnClick(function() {
 					menu.doScrollUp();
 				}, 120).addClassOnHover("overflow-top-arrow-hover");
-
-				jQuery(bottomArrow).repeatOnClick(function(){
+				
+				jQuery(bottomArrow).repeatOnClick(function() {
 					menu.doScrollDown();
 				}, 120).addClassOnHover("overflow-bottom-arrow-hover");
-
+				
 				doms.overflowTopArrow = topArrow;
 				doms.overflowBottomArrow = bottomArrow;
 			}
 		},
-
+		
 		/**
 		 * 清除Overflow设置的height与scrollTop。
 		 * @protected
@@ -205,7 +207,7 @@
 				$fly(doms.groupContent).scrollTop(0).css("height", "");
 			}
 		},
-
+		
 		/**
 		 * 处理Group的Overflow。
 		 * @param overflowHeight Menu对应的高度
@@ -214,40 +216,40 @@
 		handleOverflow: function(overflowHeight) {
 			var menu = this, dom = menu._dom, doms = menu._doms;
 			if (dom) {
-                $fly(dom).addClass(GROUP_OVERFLOW_CLASS).outerHeight(overflowHeight);
+				$fly(dom).addClass(GROUP_OVERFLOW_CLASS).outerHeight(overflowHeight);
 				if (!doms.overflowTopArrow) {
 					menu.createOverflowarrow();
 				}
 				menu._overflowing = true;
 				
 				var contentHeight = $fly(dom).innerHeight() - $fly(doms.overflowTopArrow).outerHeight() -
-					$fly(doms.overflowBottomArrow).outerHeight(), contentWidth = $fly(dom).width();
-
+				$fly(doms.overflowBottomArrow).outerHeight(), contentWidth = $fly(dom).width();
+				
 				if (dorado.Browser.msie && dorado.Browser.version == 6) {
 					$fly(dom).width(contentWidth);
 					$fly(doms.groupContent).outerHeight(contentHeight);
 				} else {
 					$fly(doms.groupContent).outerHeight(contentHeight);
 				}
-
-                $fly([doms.overflowTopArrow, doms.overflowBottomArrow]).outerWidth(contentWidth);
+				
+				$fly([doms.overflowTopArrow, doms.overflowBottomArrow]).outerWidth(contentWidth);
 			}
 		},
-
+		
 		/**
 		 * 清除获得焦点的MenuItem。
 		 * @private
 		 */
 		clearFocusItem: function() {
 			var menu = this, focusItem = menu._focusItem;
-
+			
 			if (focusItem && focusItem.focusable) {
 				focusItem.onBlur();
 			}
-
+			
 			menu._focusItem = null;
 		},
-
+		
 		/**
 		 * 取得可获得焦点的菜单项。
 		 * 可获得焦点的MenuItem的条件是disabled属性为false。
@@ -260,19 +262,19 @@
 		 */
 		getFocusableItem: function(mode) {
 			var menu = this, items = menu._items, focusItem = menu._focusItem, focusIndex = -1, result = null, i, j, item;
-
+			
 			if (!items) {
 				return null;
 			}
-
+			
 			mode = mode || "next";
-
+			
 			if (focusItem) {
 				focusIndex = items.indexOf(focusItem);
 			}
-
+			
 			if (mode == "next") {
-				for (i = focusIndex + 1,j = items.size; i < j; i++) {
+				for (i = focusIndex + 1, j = items.size; i < j; i++) {
 					item = items.get(i);
 					if (!item._disabled && item._visible && !(item instanceof dorado.widget.menu.Separator)) {
 						result = item;
@@ -300,9 +302,9 @@
 					}
 				}
 			}
-
+			
 			if (mode == "first") {
-				for (i = 0,j = items.size; i < j; i++) {
+				for (i = 0, j = items.size; i < j; i++) {
 					item = items.get(i);
 					if (!item._disabled && item._visible && !(item instanceof dorado.widget.menu.Separator)) {
 						result = item;
@@ -321,7 +323,7 @@
 				return result;
 			}
 		},
-
+		
 		/**
 		 * 使得MenuItem获得焦点。(当鼠标移动到相应的MenuItem上以后，会自动显示子菜单。如果使用键盘，向上向下移动不会自动显示子菜单。)
 		 * @param {dorado.widget.menu.AbstractMenuItem} item 要获得焦点的MenuItem
@@ -330,44 +332,40 @@
 		 */
 		focusItem: function(item, showSubmenu) {
 			var menu = this, focusItem = menu._focusItem;
-
-            if (menu._freeze) return;
-
+			
+			if (menu._freeze) return;
+			
 			if (item && focusItem !== item) {
 				menu._focusItem = item;
-
+				
 				if (menu._overflowing) {
-					var itemDom = item._dom, doms = menu._doms, viewTop = $fly(doms.groupContent).prop("scrollTop"),
-						contentTop = $fly(doms.groupContent).prop("offsetTop"), itemTop = itemDom.offsetTop, itemHeight = itemDom.offsetHeight,
-						itemBottom = itemTop + itemHeight, contentHeight = $fly(doms.groupContent).innerHeight(),
-						viewBottom = contentHeight + viewTop;
-
+					var itemDom = item._dom, doms = menu._doms, viewTop = $fly(doms.groupContent).prop("scrollTop"), contentTop = $fly(doms.groupContent).prop("offsetTop"), itemTop = itemDom.offsetTop, itemHeight = itemDom.offsetHeight, itemBottom = itemTop + itemHeight, contentHeight = $fly(doms.groupContent).innerHeight(), viewBottom = contentHeight + viewTop;
+					
 					if (!dorado.Browser.msie) {
 						itemTop = itemTop - contentTop;
 						itemBottom = itemTop + itemHeight;
 					}
-
+					
 					//log.debug("contentHeight:" + contentHeight + "\titemTop:" + itemTop + "\tviewTop:" + viewTop + "\titemBottom:" + itemBottom + "\tviewBottom:" + viewBottom);
 					//log.debug("contentTop:" + contentTop + "\titemTop:" + itemTop + "\titem-offsetTop:" + itemDom.offsetTop + "\tcontent-Top:" + contentTop);
-
+					
 					if (itemTop < viewTop) {//top is not visible
 						$fly(doms.groupContent).prop("scrollTop", itemTop);
-					}
-					else if (itemBottom > viewBottom) {//bottom is not visible
+					} else if (itemBottom > viewBottom) {//bottom is not visible
 						$fly(doms.groupContent).prop("scrollTop", itemBottom - contentHeight);
 					}
 				}
-
+				
 				if (focusItem && focusItem.focusable) {
 					focusItem.onBlur();
 				}
-
+				
 				if (!item._disabled && item.onFocus) {
 					item.onFocus(showSubmenu);
 				}
 			}
 		},
-
+		
 		/**
 		 * 为Menu插入MenuItem。
 		 * @param {Object|dorado.widget.menu.AbstractMenuItem} item 可以是MenuItem或者MenuItem的Json配置信息。
@@ -384,7 +382,7 @@
 			} else {
 				item.set("parent", menu);
 			}
-
+			
 			if (typeof index == "number") {
 				items.insert(item, index);
 				refItem = items.get(index + 1);
@@ -398,14 +396,14 @@
 			} else {
 				items.insert(item);
 			}
-
+			
 			if (menu._rendered) {
 				item.render(doms.groupContent, refItem ? refItem._dom : null);
 			}
-
+			
 			menu.refresh();
 		},
-
+		
 		/**
 		 * 取得Menu中的MenuItem。
 		 * @param {String|int} name 可以是Item的name，也可以是item的索引。
@@ -422,7 +420,7 @@
 			}
 			return null;
 		},
-
+		
 		/**
 		 * 根据路径描述取得MenuItem，可以是任意级别的item。
 		 * 路径使用"/"来分割，如果需要找到name为File的MenuItem下的子菜单中的Name为Open的MenuItem，路径描述符为File/Open
@@ -443,7 +441,7 @@
 					mainpath = path;
 				}
 				if (subpath) {
-					for (i = 0,j = items.size; i < j; i++) {
+					for (i = 0, j = items.size; i < j; i++) {
 						item = items.get(i);
 						if (item._name == mainpath) {
 							itemgroup = item._submenu;
@@ -453,7 +451,7 @@
 						}
 					}
 				} else {
-					for (i = 0,j = items.size; i < j; i++) {
+					for (i = 0, j = items.size; i < j; i++) {
 						item = items.get(i);
 						if (item._name == mainpath) {
 							return item;
@@ -464,7 +462,7 @@
 			}
 			return null;
 		},
-
+		
 		/**
 		 * 移除菜单项。
 		 * @param {String|int|dorado.widget.menu.AbstractMenuItem} item 要移除的菜单项，可以是菜单项、菜单项的索引以及菜单项的name。
@@ -489,7 +487,7 @@
 			
 			return null;
 		},
-
+		
 		/**
 		 * 删除所有的MenuItem
 		 * @param deep 是否删除MenuItem的子Group。如果不传入该值，默认为false。
@@ -516,7 +514,7 @@
 				menu.refresh();
 			}
 		},
-
+		
 		/**
 		 * @protected
 		 */
@@ -531,34 +529,32 @@
 				}
 			}
 		},
-
+		
 		/**
 		 * @protected
 		 */
 		doScrollUp: function() {
-			var menu = this, doms = menu._doms, groupContent = doms.groupContent, st = $fly(groupContent).scrollTop(),
-				target = st - 22;
-
+			var menu = this, doms = menu._doms, groupContent = doms.groupContent, st = $fly(groupContent).scrollTop(), target = st - 22;
+			
 			if (target >= 0) {
 				$fly(groupContent).scrollTop(target);
 			} else {
 				$fly(groupContent).scrollTop(0);
 			}
 		},
-
+		
 		/**
 		 * @protected
 		 */
 		doScrollDown: function() {
-			var menu = this, doms = menu._doms, groupContent = doms.groupContent, st = $fly(groupContent).scrollTop(),
-				target = st + 22, scrollHeight = $fly(groupContent).prop("scrollHeight");
+			var menu = this, doms = menu._doms, groupContent = doms.groupContent, st = $fly(groupContent).scrollTop(), target = st + 22, scrollHeight = $fly(groupContent).prop("scrollHeight");
 			if (target <= scrollHeight) {
 				$fly(groupContent).scrollTop(target);
 			} else {
 				$fly(groupContent).scrollTop(scrollHeight - $fly(groupContent).innerHeight());
 			}
 		},
-
+		
 		doOnBlur: function() {
 			if (this._floating) {
 				this.hide();
@@ -566,7 +562,7 @@
 				this.clearFocusItem();
 			}
 		},
-
+		
 		/**
 		 * 键盘事件主要是针对当前获得焦点的MenuItem，当鼠标移动到可用的菜单项(disable属性为false)上，则此菜单项为获得焦点的MenuItem。
 		 *
@@ -626,70 +622,70 @@
 					break;
 			}
 		},
-
-        /**
-         * 冰冻当前Menu，使得focusItem不能再切换。<br />
-         * 一般情况下，只有菜单的右键菜单才需要使用此方法。
-         * @param {boolean} [deep=true] 是否深度锁定，使得当前Menu的opener都被锁定，默认为true。
-         */
-        freeze: function(deep) {
-            this._freeze = true;
-            if (deep !== false) {
-                var opener = this.opener;
-                while (opener) {
-                    var parent = opener._parent;
-                    if (opener instanceof dorado.widget.menu.AbstractMenuItem && parent instanceof dorado.widget.Menu) {
-                        parent._freeze = true;
-                    }
-
-                    opener = parent ? parent.opener : null;
-                }
-            }
-        },
-
-        /**
-         * 解冻当前Menu，使得focusItem可以根据用户操作切换。
-         * 一般情况下，只有菜单的右键菜单才需要使用此方法。
-         * @param {boolean} [deep=true] 是否深度解除锁定，使得当前Menu的opener都被解除锁定，默认为true。
-         */
-        unfreeze: function(deep) {
-            this._freeze = false;
-            if (deep !== false) {
-                var opener = this.opener;
-                while (opener) {
-                    var parent = opener._parent;
-                    if (opener instanceof dorado.widget.menu.AbstractMenuItem && parent instanceof dorado.widget.Menu) {
-                        parent._freeze = false;
-                    }
-
-                    opener = parent ? parent.opener : null;
-                }
-            }
-        },
-
-        getTopMenu: function() {
-            var menu = this, opener = menu.opener, result = menu;
-            while (opener) {
-                var parent = opener._parent;
-                if (opener instanceof dorado.widget.menu.AbstractMenuItem && parent instanceof dorado.widget.Menu) {
-                    result = parent;
-                }
-                opener = parent ? parent.opener : null;
-            }
-            return result;
-        },
-
+		
+		/**
+		 * 冰冻当前Menu，使得focusItem不能再切换。<br />
+		 * 一般情况下，只有菜单的右键菜单才需要使用此方法。
+		 * @param {boolean} [deep=true] 是否深度锁定，使得当前Menu的opener都被锁定，默认为true。
+		 */
+		freeze: function(deep) {
+			this._freeze = true;
+			if (deep !== false) {
+				var opener = this.opener;
+				while (opener) {
+					var parent = opener._parent;
+					if (opener instanceof dorado.widget.menu.AbstractMenuItem && parent instanceof dorado.widget.Menu) {
+						parent._freeze = true;
+					}
+					
+					opener = parent ? parent.opener : null;
+				}
+			}
+		},
+		
+		/**
+		 * 解冻当前Menu，使得focusItem可以根据用户操作切换。
+		 * 一般情况下，只有菜单的右键菜单才需要使用此方法。
+		 * @param {boolean} [deep=true] 是否深度解除锁定，使得当前Menu的opener都被解除锁定，默认为true。
+		 */
+		unfreeze: function(deep) {
+			this._freeze = false;
+			if (deep !== false) {
+				var opener = this.opener;
+				while (opener) {
+					var parent = opener._parent;
+					if (opener instanceof dorado.widget.menu.AbstractMenuItem && parent instanceof dorado.widget.Menu) {
+						parent._freeze = false;
+					}
+					
+					opener = parent ? parent.opener : null;
+				}
+			}
+		},
+		
+		getTopMenu: function() {
+			var menu = this, opener = menu.opener, result = menu;
+			while (opener) {
+				var parent = opener._parent;
+				if (opener instanceof dorado.widget.menu.AbstractMenuItem && parent instanceof dorado.widget.Menu) {
+					result = parent;
+				}
+				opener = parent ? parent.opener : null;
+			}
+			return result;
+		},
+		
 		getListenerScope: function() {
 			if (this._parent && this._parent._view) {
-                var topMenu = this.getTopMenu();
-                if (!topMenu) {
-                    topMenu = this;
-                }
+				var topMenu = this.getTopMenu();
+				if (!topMenu) {
+					topMenu = this;
+				}
 				return topMenu._view;
 			}
 			return this;
 		},
-
+		
 		createDom: function() {
 			var menu = this, doms = {}, dom = $DomUtils.xCreate({
 				tagName: "div",
@@ -700,28 +696,28 @@
 					contextKey: "groupContent"
 				}
 			}, null, doms), items = menu._items;
-
+			
 			menu._doms = doms;
-
+			
 			var groupContent = doms.groupContent;
-
+			
 			if (items) {
 				items.each(function(item) {
 					item.render(groupContent);
 				});
 			}
-
+			
 			$fly(dom).hover(dorado._NULL_FUNCTION, function() {
 				var focusItem = menu._focusItem;
-
-                if (menu._freeze) return;
-
+				
+				if (menu._freeze) return;
+				
 				if (focusItem) {
 					if (focusItem instanceof dorado.widget.menu.MenuItem) {
 						if (!focusItem._submenu) {
 							menu.clearFocusItem();
 						}
-					} else if(focusItem instanceof dorado.widget.menu.ControlMenuItem){
+					} else if (focusItem instanceof dorado.widget.menu.ControlMenuItem) {
 						if (!focusItem._control) {
 							menu.clearFocusItem();
 						}
@@ -733,7 +729,7 @@
 			}).click(function(event) {
 				event.stopImmediatePropagation();
 			});
-
+			
 			$fly(groupContent).mousewheel(function(event, delta) {
 				if (menu._overflowing) {
 					if (delta < 0) {//down
@@ -743,71 +739,70 @@
 					}
 				}
 			});
-
+			
 			if (menu._iconPosition == "top") {
 				$fly(dom).addClass("i-menu-icon-top " + menu._className + "-icon-top");
 			}
-
+			
 			return dom;
 		},
-
+		
 		refreshDom: function(dom) {
 			$invokeSuper.call(this, arguments);
-
+			
 			var menu = this, doms = menu._doms, menuContentHeight = $fly(doms.groupContent).outerHeight();
 			if (menuContentHeight > dom.offsetHeight) {
 				menu.handleOverflow();
 			} else {
 				//group.clearOverflow();
 			}
-
+			
 			//empty panel
 			var items = menu._items || {}, visibleItemCount = 0;
-			for(var i = 0, j = items.size;i < j;i++){
+			for (var i = 0, j = items.size; i < j; i++) {
 				var item = items.get(i);
-				if(item._visible === false) continue;
+				if (item._visible === false) continue;
 				visibleItemCount++;
 			}
-
-			if(visibleItemCount == 0){
-				if(!menu._noContentEl){
+			
+			if (visibleItemCount == 0) {
+				if (!menu._noContentEl) {
 					menu._noContentEl = document.createElement("div");
 					menu._noContentEl.className = "no-content-group";
 					menu._noContentEl.innerHTML = "&lt;empty panel&gt;";
 					dom.appendChild(menu._noContentEl);
 				}
 				$fly(dom).addClass("i-menu-no-content " + menu._className + "-no-content");
-			} else {                            
-				if(menu._noContentEl){
+			} else {
+				if (menu._noContentEl) {
 					$fly(dom).removeClass("i-menu-no-content " + menu._className + "-no-content");
 				}
 			}
 		},
-
-		getShowPosition: function(options){
+		
+		getShowPosition: function(options) {
 			var menu = this, anchorTarget = options.anchorTarget, dom = menu._dom, fixedElement, result;
-
+			
 			options = options || {};
 			options.overflowHandler = function(options) {
 				menu.handleOverflow(options.maxHeight);
 			};
-
+			
 			if (anchorTarget && anchorTarget instanceof dorado.widget.menu.MenuItem) {
 				fixedElement = anchorTarget._dom;
-
+				
 				menu.opener = anchorTarget;
 				menu._focusParent = anchorTarget._parent;
-
+				
 				result = $DomUtils.dockAround(dom, fixedElement, options);
-
+				
 				return result;
-			}
-			else {
+			} else {
 				return $invokeSuper.call(this, arguments);
 			}
 		},
-
-		doAfterShow: function(options){
+		
+		doAfterShow: function(options) {
 			var menu = this, focusfirst = (options || {}).focusFirst;
 			if (focusfirst) {
 				var item = menu.getFocusableItem("first");
@@ -817,7 +812,7 @@
 			}
 			$invokeSuper.call(this, arguments);
 		},
-
+		
 		/**
 		 * @protected
 		 */
@@ -826,16 +821,16 @@
 			if (!dom) {
 				return;
 			}
-
+			
 			menu.clearFocusItem();
-
+			
 			if (dom) {
 				if (menu._overflowing) {
 					menu.clearOverflow();
 				}
 			}
 			menu.opener = null;
-
+			
 			$invokeSuper.call(this, arguments);
 		}
 	});

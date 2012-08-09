@@ -19,11 +19,9 @@ public class CheckBox extends AbstractDataEditor {
 	private Object offValue = false;
 	private Object mixedValue;
 	private String caption;
-	private boolean showCaption = true;
 	private Object value = false;
 	private Boolean checked;
 	private boolean triState;
-	private boolean iconOnly;
 
 	@XmlProperty
 	@ClientProperty(escapeValue = "true")
@@ -45,6 +43,8 @@ public class CheckBox extends AbstractDataEditor {
 		this.offValue = offValue;
 	}
 
+	@XmlProperty
+	@ClientProperty
 	public Object getMixedValue() {
 		return mixedValue;
 	}
@@ -59,15 +59,6 @@ public class CheckBox extends AbstractDataEditor {
 
 	public void setCaption(String caption) {
 		this.caption = caption;
-	}
-
-	@ClientProperty(escapeValue = "true")
-	public boolean isShowCaption() {
-		return showCaption;
-	}
-
-	public void setShowCaption(boolean showCaption) {
-		this.showCaption = showCaption;
 	}
 
 	@XmlProperty
@@ -94,14 +85,6 @@ public class CheckBox extends AbstractDataEditor {
 
 	public void setTriState(boolean triState) {
 		this.triState = triState;
-	}
-
-	public boolean isIconOnly() {
-		return iconOnly;
-	}
-
-	public void setIconOnly(boolean iconOnly) {
-		this.iconOnly = iconOnly;
 	}
 
 }

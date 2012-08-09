@@ -43,7 +43,8 @@
                                 CollectGarbage();
                             }
                         } catch(e) {}
-                        $fly(doms.iframe).prop("src", value || BLANK_PATH).addClass("hidden");
+						this.replaceUrl(value);
+                        $fly(doms.iframe).addClass("hidden");
                         if (oldPath != value) {
                             frame._loaded = false;
                         }
@@ -124,7 +125,7 @@
                             CollectGarbage();
                         }
                     } else {
-                        $fly(doms.iframe).prop("src", BLANK_PATH);
+						this.replaceUrl(null);
                     }
                 } catch(e) {
                     //console.log(e);
@@ -162,11 +163,16 @@
         doOnAttachToDocument: function() {
             this.doLoad();
         },
+		
+		replaceUrl: function(url) {
+			this.getIFrameWindow().location.replace($url(url || BLANK_PATH));
+		},
 
         doLoad: function() {
             var frame = this, doms = frame._doms, iframe = doms.iframe;
             $fly(doms.loadingCover).css("display", "");
-			$fly(iframe).prop("src", $url(frame._path || BLANK_PATH)).load( function() {
+			this.replaceUrl(frame._path);
+			$fly(iframe).load( function() {
 				$fly(doms.loadingCover).css("display", "none");
 				// fix ie 6 bug....
 				if (!(dorado.Browser.msie && dorado.Browser.version == 6)) {
@@ -186,16 +192,16 @@
         },
 
         cancelLoad: function() {
-            var frame = this, doms = frame._doms, iframe = doms.iframe;
-            $fly(iframe).prop("src", BLANK_PATH);
+			this.replaceUrl(null);
         },
 
         /**
          * 重新载入页面。
          */
         reload: function() {
-            var frame = this, doms = frame._doms, iframe = doms.iframe;
-            $fly(iframe).prop("src", BLANK_PATH).prop("src", frame._path);
+            var frame = this;
+			this.replaceUrl(null);
+			this.replaceUrl(frame._path);
         },
 
 		refreshDom: function(dom) {

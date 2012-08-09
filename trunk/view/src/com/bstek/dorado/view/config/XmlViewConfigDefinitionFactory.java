@@ -223,8 +223,8 @@ public class XmlViewConfigDefinitionFactory implements
 
 		tempResource = getResource(viewName, ".js");
 		if (tempResource.exists()) {
-			String originJavaScriptFile = viewElement
-					.getAttribute(ViewXmlConstants.ATTRIBUTE_JAVASCRIPT_FILE);
+			String originJavaScriptFile = xmlPreprocessor.getPropertyValue(
+					viewElement, ViewXmlConstants.ATTRIBUTE_JAVASCRIPT_FILE);
 			String javaScriptFile = getResourcePath(viewName, ".js");
 			viewElement.setAttribute(
 					ViewXmlConstants.ATTRIBUTE_JAVASCRIPT_FILE, (StringUtils
@@ -234,8 +234,8 @@ public class XmlViewConfigDefinitionFactory implements
 
 		tempResource = getResource(viewName, ".css");
 		if (tempResource.exists()) {
-			String originStyleSheetFile = viewElement
-					.getAttribute(ViewXmlConstants.ATTRIBUTE_STYLESHEET_FILE);
+			String originStyleSheetFile = xmlPreprocessor.getPropertyValue(
+					viewElement, ViewXmlConstants.ATTRIBUTE_STYLESHEET_FILE);
 			String styleSheetFile = getResourcePath(viewName, ".css");
 			viewElement.setAttribute(
 					ViewXmlConstants.ATTRIBUTE_STYLESHEET_FILE, (StringUtils

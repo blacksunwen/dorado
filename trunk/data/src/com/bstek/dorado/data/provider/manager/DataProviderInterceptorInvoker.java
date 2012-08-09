@@ -43,8 +43,7 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 
 	private static final String[] EXTRA_NAMES = new String[] { "criteria",
 			"filterValue" };
-	private static final Class<?>[] EXTRA_TYPES = new Class<?>[] {
-			Criteria.class, null };
+	private static final Class<?>[] EXTRA_TYPES = new Class<?>[] { Criteria.class };
 	private static final Object[] EXTRA_ARGS = new Object[] { null, null };
 
 	private String interceptorName;
@@ -256,19 +255,16 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 			parameter = proxyArgs[parameterArgIndex];
 		}
 
+		for (int i = 0; i < EXTRA_TYPES.length; i++) {
+			extraArgMap.put(EXTRA_TYPES[i], EXTRA_ARGS[i]);
+		}
+
 		if (parameter != null && parameter instanceof ParameterWrapper) {
 			ParameterWrapper parameterWrapper = (ParameterWrapper) parameter;
 			parameter = parameterWrapper.getParameter();
 			sysParameter = parameterWrapper.getSysParameter();
 
 			if (sysParameter != null && !sysParameter.isEmpty()) {
-				for (int i = 0; i < EXTRA_NAMES.length; i++) {
-					if (EXTRA_TYPES[i] != null
-							&& !sysParameter.containsKey(EXTRA_NAMES[i])) {
-						extraArgMap.put(EXTRA_TYPES[i], null);
-					}
-				}
-
 				for (Map.Entry<?, ?> entry : sysParameter.entrySet()) {
 					Object value = entry.getValue();
 					if (value != null) {

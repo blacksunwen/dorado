@@ -898,7 +898,7 @@
 				}
 				if (entity.rowType) return;
 			}
-			DataListBoxProtoType.setCurrentItemDom.apply(this, arguments);
+			return DataListBoxProtoType.setCurrentItemDom.apply(this, arguments);
 		},
 		
 		setCurrentRowByItemId: function(itemId) {

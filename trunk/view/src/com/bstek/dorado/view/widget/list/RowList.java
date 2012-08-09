@@ -14,6 +14,7 @@ public abstract class RowList extends AbstractList {
 	private int rowHeight;
 	private boolean highlightCurrentRow = true;
 	private boolean highlightHoverRow = true;
+	private boolean highlightSelectedRow = true;
 
 	public int getRowHeight() {
 		return rowHeight;
@@ -39,6 +40,15 @@ public abstract class RowList extends AbstractList {
 
 	public void setHighlightHoverRow(boolean highlightHoverRow) {
 		this.highlightHoverRow = highlightHoverRow;
+	}
+
+	@ClientProperty(escapeValue = "true")
+	public boolean isHighlightSelectedRow() {
+		return highlightSelectedRow;
+	}
+
+	public void setHighlightSelectedRow(boolean highlightSelectedRow) {
+		this.highlightSelectedRow = highlightSelectedRow;
 	}
 
 }

@@ -363,4 +363,29 @@
 		return this;
 	};
 	
+	var hashTimerInited = false, storedHash;
+	
+	/**
+	 * @name jQuery#hashchange
+	 * @description 监听window的onHashChange事件。
+	 * @param {Function} 事件方法。
+	 * @function
+	 * @return {jQuery} 调用此方法的jQuery对象自身。
+	 */
+	$.fn.hashchange = function(fn) {
+		this.bind("hashchange", fn);
+		
+		if (!hashTimerInited && jQuery.browser.msie && jQuery.browser.version < 8) {
+			hashTimerInited = true;
+			
+			var storedHash = window.location.hash;
+			window.setInterval(function() {
+				if (window.location.hash != storedHash) {
+					storedHash = window.location.hash;
+					$(window).trigger("hashchange");
+				}
+			}, 100);
+		}
+	}
+	
 })(jQuery);

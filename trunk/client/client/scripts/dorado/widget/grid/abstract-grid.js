@@ -615,6 +615,16 @@
 			},
 			
 			/**
+			 * 高亮显示多选选中的行。
+			 * @type boolean
+			 * @attribute
+			 * @default true
+			 */
+			highlightSelectedRow: {
+				defaultValue: true
+			},
+			
+			/**
 			 * 默认的行高。
 			 * @type int
 			 * @attribute
@@ -1137,73 +1147,77 @@
 		refreshDom: function(dom) {
 			
 			function getDivScroll() {
-				if (this._divScroll) return this._divScroll;
-                var style;
-                if (dorado.Browser.isTouch) {
-                    style = {
-                        width: "100%",
-                        height: "100%",
-                        overflow: "hidden",
-                        position: "absolute",
-                        left: -99999,
-                        top: -99999
-                    };
-                } else {
-                    style = {
-                        width: "100%",
-                        height: "100%",
-                        overflow: "hidden",
-                        overflowX: (xScroll && domMode == 0) ? "scroll" : "hidden",
-                        overflowY: yScroll ? "scroll" : "hidden"
-                    };
-                }
+				
+				if (this._divScroll) {
+					return this._divScroll;
+				}
+				
+				var style;
+				if (dorado.Browser.isTouch) {
+					style = {
+						width: "100%",
+						height: "100%",
+						overflow: "hidden",
+						position: "absolute",
+						left: -99999,
+						top: -99999
+					};
+				} else {
+					style = {
+						width: "100%",
+						height: "100%"
+					};
+				}
+				
 				var div = this._divScroll = $DomUtils.xCreate({
 					tagName: "DIV",
 					style: style,
 					content: "^DIV"
 				});
+				
 				$fly(div).bind("scroll", $scopify(this, this.onScroll));
 				this._divViewPort = div.firstChild;
-			    dom.appendChild(div);
-                if (dorado.Browser.isTouch && iScroll) {
-                    var grid = this;
-                    setTimeout(function() {
-                        var scroller = new iScroll(grid._dom, {
-                            scrollSize: function(dir) {
-                                var result = dir == "h" ? grid._divScroll.scrollWidth : grid._divScroll.scrollHeight;
-                                return result;
-                            },
-                            viewportSize: function(dir) {
-                                return dir == "h" ? grid._divScroll.clientWidth : grid._divScroll.clientHeight;
-                            },
-                            fadeScrollbar: false,
-                            bounce: false,
-                            momentum: true,
-                            useTransform: false,
-                            stillScroller: true,
-                            //useScrollAttribute: true,
-                            hScroll: true,
-                            vScroll: true,
-                            hScrollBar: true,
-                            vScrollBar: true,
-                            fixedScrollbar: true,
-                            desktopCompatibility: true,
-                            onScrollMove: function() {
-                                grid._divScroll.scrollLeft = this.x * -1;
-                                grid._divScroll.scrollTop = this.y * -1;
-                            },
-                            resumeHelper: function() {
-                                return {
-                                    x: (grid._divScroll.scrollLeft || grid._scrollLeft) * -1,
-                                    y: (grid._divScroll.scrollTop || grid._scrollTop) * -1
-                                }
-                            },
-                            lockDirection: true
-                        });
-                        grid._scroller = scroller;
-                    }, 0);
-                }
-
+				dom.appendChild(div);
+				
+				if (dorado.Browser.isTouch && iScroll) {
+					var grid = this;
+					setTimeout(function() {
+						var scroller = new iScroll(grid._dom, {
+							scrollSize: function(dir) {
+								var result = dir == "h" ? grid._divScroll.scrollWidth : grid._divScroll.scrollHeight;
+								return result;
+							},
+							viewportSize: function(dir) {
+								return dir == "h" ? grid._divScroll.clientWidth : grid._divScroll.clientHeight;
+							},
+							fadeScrollbar: false,
+							bounce: false,
+							momentum: true,
+							useTransform: false,
+							stillScroller: true,
+							//useScrollAttribute: true,
+							hScroll: true,
+							vScroll: true,
+							hScrollBar: true,
+							vScrollBar: true,
+							fixedScrollbar: true,
+							desktopCompatibility: true,
+							onScrollMove: function() {
+								grid._divScroll.scrollLeft = this.x * -1;
+								grid._divScroll.scrollTop = this.y * -1;
+							},
+							resumeHelper: function() {
+								return {
+									x: (grid._divScroll.scrollLeft || grid._scrollLeft) * -1,
+									y: (grid._divScroll.scrollTop || grid._scrollTop) * -1
+								}
+							},
+							lockDirection: true
+						});
+						grid._scroller = scroller;
+					}, 0);
+				}
+				
 				return div;
 			}
 
@@ -1416,6 +1430,16 @@
 					}
 				}
 			}
+			else {
+				if (domMode != 0 && this._divScroll) {
+					if (!dorado.Browser.isTouch) {
+						$fly(this._divScroll).css({
+							overflowX: (xScroll && domMode == 0) ? "scroll" : "hidden",
+							overflowY: yScroll ? "scroll" : "hidden"
+						});
+					}
+				}
+			}
 
 			if (this._currentScrollMode != this._scrollMode && this._scrollMode != "viewport") {
 				itemModel.setScrollPos(0);
@@ -1434,6 +1458,7 @@
 				fixedInnerGrid._rowHeight = this._rowHeight;
 				fixedInnerGrid._highlightCurrentRow = this._highlightCurrentRow;
 				fixedInnerGrid._highlightHoverRow = this._highlightHoverRow;
+				fixedInnerGrid._highlightSelectedRow = this._highlightSelectedRow;
 				fixedInnerGrid._selectionMode = this._selectionMode;
 				fixedInnerGrid._columnsInfo = columnsInfo.fixed;
 				fixedInnerGrid._forceRefreshRearRows = this._forceRefreshRearRows;
@@ -1474,6 +1499,7 @@
 			innerGrid._rowHeight = this._rowHeight;
 			innerGrid._highlightCurrentRow = this._highlightCurrentRow;
 			innerGrid._highlightHoverRow = this._highlightHoverRow;
+			innerGrid._highlightSelectedRow = this._highlightSelectedRow;
 			innerGrid._columnsInfo = columnsInfo.main;
 			innerGrid._forceRefreshRearRows = this._forceRefreshRearRows;
 			innerGrid._ignoreItemTimestamp = ignoreItemTimestamp;
@@ -1706,6 +1732,8 @@
 		},
 
 		onYScroll: function() {
+			if (!this._divScroll) return;
+			
 			var ratio = this._divScroll.scrollTop / this._divScroll.scrollHeight, innerContainer = this._innerGrid._container;
 			if (this._scrollMode == "lazyRender") {
 				innerContainer.scrollTop = Math.round(innerContainer.scrollHeight * ratio);
@@ -3465,9 +3493,9 @@
 			return true;
 		},
 		
-		getSelection: function(selection) {
-			if (this.fixed) return this.grid._innerGrid._selection;
-			else return this._selection;
+		getSelection: function() {
+			if (this.fixed) return this.grid._innerGrid.getSelection();
+			else return $invokeSuper.call(this);
 		},
 
 		setSelection: function(selection) {
@@ -3476,9 +3504,11 @@
 		},
 
 		toggleItemSelection: function(item, selected) {
+			var grid = this.grid;
+			if (!grid._highlightSelectedRow) return;
+			
 			$invokeSuper.call(this, arguments);
 
-			var grid = this.grid;
 			if (grid._domMode != 2 || grid._processingToggleItemSelection) return;
 			grid._processingToggleItemSelection = true;
 			((this == grid._fixedInnerGrid) ? grid._innerGrid : grid._fixedInnerGrid).toggleItemSelection(item, selected);

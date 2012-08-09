@@ -622,6 +622,20 @@ dorado.widget.tree.Node = $extend([dorado.AttributeSupport, dorado.EventSupport]
 	 */
 	highlight: function(options, speed) {
 		if (this._tree) this._tree.highlightItem(this, options, speed);
+	},
+	
+	/**
+	 * 展开此节点的每一级父节点，以便于该节点可以处于可见状态。
+	 * <p>
+	 * 此方法不负责将该节点设置为当前节点。
+	 * </p>
+	 */
+	expandParents: function() {
+		var parent = this._parent;
+		while (parent) {
+			if (!parent.get("expanded")) parent.expand();
+			parent = parent._parent;
+		}
 	}
 });
 

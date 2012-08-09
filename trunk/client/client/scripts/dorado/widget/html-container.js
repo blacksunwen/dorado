@@ -71,7 +71,6 @@ dorado.widget.HtmlContainer = $extend(dorado.widget.Container, /** @scope dorado
 		if (content) {
 			if (content.constructor == String) {
 				var div = document.createElement("SPAN");
-				if (this._height) div.style.display = "inline-block";
 				div.innerHTML = this._content;
 				dom = div; //(div.childNodes.length > 1) ? div : div.firstChild;
 			} else {
@@ -102,6 +101,11 @@ dorado.widget.HtmlContainer = $extend(dorado.widget.Container, /** @scope dorado
 			if (jq && jq.length > 0) this._container = container = jq[0];
 		}
 		return dom;
+	},
+	
+	refreshDom: function(dom) {
+		if (this.getRealHeight() || this._children.size) dom.style.display = "inline-block";
+		$invokeSuper.call(this, [dom]);
 	},
 	
 	pushHtmlElement: function(doms, content) {

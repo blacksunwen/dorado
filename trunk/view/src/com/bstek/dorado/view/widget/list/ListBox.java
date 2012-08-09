@@ -19,7 +19,7 @@ public class ListBox extends AbstractListBox {
 
 	@XmlProperty
 	@ClientProperty
-	@IdeProperty(editor = "collection[pojo]", highlight = 1)
+	@IdeProperty(editor = "collection[any]", highlight = 1)
 	public List<?> getItems() {
 		return items;
 	}
