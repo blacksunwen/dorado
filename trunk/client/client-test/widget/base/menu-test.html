@@ -74,6 +74,38 @@
                 }
             };
 
+            var rows1 = [];
+            for (var i = 0; i < 5; i++) {
+                var row = {};
+                for (var j = 0; j < 10; j++) {
+                    row["prop" + j] = [i, j];
+                }
+                rows1.push(row);
+            }
+
+            var grid1 = new dorado.widget.Grid({
+                width: 300,
+                columns: [{
+                    name: "id",
+                    property: "prop1"
+                }, {
+                    name: "name",
+                    property: "prop2"
+                }, {
+                    property: "prop3"
+                }, {
+                    property: "prop4"
+                }],
+                items: rows1,
+                onGetCellEditor: function(self, arg) {
+                    return false;
+                },
+                draggable: true,
+                dragTags: "record",
+                droppable: true,
+                droppableTags: "record"
+            });
+
             var testMenu = new dorado.widget.Menu({
                 floating: false,
                 width: 200,
@@ -111,7 +143,7 @@
             	}, "-", {
             		$type: "Control",
             		caption: "Control Menu Item",
-            		control: panel
+            		control: new dorado.widget.FloatContainer({ children: [grid1] })
             	}, {
             		items: [{
             			caption: "菜单项31",

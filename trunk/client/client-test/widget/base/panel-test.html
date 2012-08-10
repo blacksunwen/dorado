@@ -35,6 +35,13 @@
                 caption: "show panel1",
                 onClick: function() {
                     panel1.set("visible", true);
+                    var label = new dorado.widget.Label();
+                    label.set("text","123");
+                    var _label = new dorado.widget.Label();
+                    _label.set("text","456");
+
+                    panel2.addChild(label);
+                    panel2.addChild(_label);
                 }
             });
 

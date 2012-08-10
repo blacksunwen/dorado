@@ -16,10 +16,11 @@
                     onClick: function(self) {
                         this.id("tabcontrol").addTab({
                             caption: "我觉得我会超过100px" + ++count,
+                            name: "tab" + count,
                             closeable: true,
                             $type: "IFrame",
                             icon: "del.gif",
-                            path: "http://www.g.cn"
+                            path: "http://www.bstek.com"
                         }, 1, true);
                     }
                 }
@@ -29,6 +30,7 @@
                     onClick: function(self) {
                         this.id("tabcontrol").addTab({
                             caption: "我觉得我会超过100px" + ++count,
+                            name: "tab" + count,
                             closeable: true,
                             $type: "Control",
                             control: new dorado.widget.Panel({
@@ -124,8 +126,9 @@
             tabs: [
                 {
                     $type: "Control",
+                    name: "tab1",
                     caption: "测试1",
-                    control: new dorado.widget.Panel({
+                    control: new dorado.widget.Control({
                         width: 400,
                         height: 200,
                         style: {
@@ -143,7 +146,7 @@
                     caption: "测试3",
                     icon: "del.gif",
                     closeable: true,
-                    path: "http://www.g.cn"
+                    path: "dialog-test.html"
                 },
                 {
                     $type: "Control",
