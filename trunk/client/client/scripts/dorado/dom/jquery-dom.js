@@ -103,7 +103,7 @@
 		var tl = i ? "Left" : "Top"; // top or left
 		var br = i ? "Right" : "Bottom"; // bottom or right
 		var fn = $.fn["outer" + name];
-		
+
 		$.fn["outer" + name] = function(arg) {
 			if (arg != null && arg.constructor != Boolean) {
 				if (arg.constructor == String) {
@@ -121,7 +121,7 @@
 				}
 				return this;
 			}
-			return fn.call(this, arg);
+			return fn.apply(this, arguments);
 		};
 	});
 	
@@ -362,7 +362,7 @@
 		}
 		return this;
 	};
-	
+
 	var hashTimerInited = false, storedHash;
 	
 	/**

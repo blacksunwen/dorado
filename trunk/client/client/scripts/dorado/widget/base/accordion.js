@@ -329,10 +329,8 @@ dorado.widget.Accordion = $extend(dorado.widget.Control, /** @scope dorado.widge
 					
 					accordion._sliding = false;
 				},
-				step: function(now, animate) {
-					//var height = $fly(animate.elem.parentNode).height();
-					//$fly(lastCurrentCtWrap).height(oldHeight - Math.floor(height));
-					$fly(lastCurrentCt).height(dorado.Browser.chrome ? Math.ceil(oldHeight - now.height) : (oldHeight - now.height));
+				step: function(now) {
+					$fly(lastCurrentCt).height(oldHeight - now.height);
 				}
 			});
 		} else {
