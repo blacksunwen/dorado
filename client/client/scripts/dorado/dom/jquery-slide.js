@@ -32,6 +32,15 @@
 	});
 	*/
 
+    if (jQuery.Tween) {
+        var oldFn = jQuery.Tween.prototype.run;
+        jQuery.Tween.prototype.run = function(percent) {
+            this.state = percent;
+
+            return oldFn.apply(this, arguments)
+        };
+    }
+
 	jQuery.fn.region = function(){
 		var self = this, element = self[0];
 		if(self.length == 1){
@@ -273,7 +282,6 @@
 			start = options.start, animConfig, animElement = element, animEl, delayFunc, inited = false;
 
 		delayFunc = function(direction) {
-
             if (start) {
                 if (type == "in") $fly(element).css("display", "");
                 start.call(element);
@@ -296,15 +304,14 @@
 				delayFunc(direction);
 			}
 
-			var timestamp = new Date().getTime(), time = timestamp - animate.startTime,
-				defaultEasing = animate.options.easing || (jQuery.easing.swing ? "swing" : "linear"),
-				pos = jQuery.easing[defaultEasing](animate.state, time, 0, 1, animate.options.duration);
+			var defaultEasing = animate.options.easing || (jQuery.easing.swing ? "swing" : "linear"),
+				pos = jQuery.easing[defaultEasing](animate.state, animate.options.duration * animate.state, 0, 1, animate.options.duration);
 
 			var nowStyle = {};
 
 			for(var prop in animConfig){
 				var range = animConfig[prop];
-				nowStyle[prop] = range[0] + (range[1] - range[0]) * pos;
+				nowStyle[prop] = Math.round(range[0] + (range[1] - range[0]) * pos);
 			}
 
 			animEl.css(nowStyle);
@@ -313,6 +320,7 @@
 				step.call(animate.elem, nowStyle, animate);
 			}
 		};
+
 		options.complete = function() {
 			$fly(element).undockable(safe);
 			$fly(element).enableShadow().css("display", type == "out" ? "none" : "");
