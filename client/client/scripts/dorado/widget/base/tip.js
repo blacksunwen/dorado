@@ -280,7 +280,15 @@
 				doms = tip._doms, arrowDirection = tip._arrowDirection, cls = tip._className,
 				content = this._content;
 
-			$fly(dom).prop("className", "i-tip " + cls + " d-shadow-drop");
+            var classNames = [];
+            if (tip._inherentClassName) classNames.push(tip._inherentClassName);
+            if (tip._className) classNames.push(tip._className);
+            if (tip._floating) {
+                classNames.push("d-floating");
+                if (tip._className) classNames.push(tip._className + "-floating");
+                if (tip._floatingClassName) classNames.push(tip._floatingClassName);
+            }
+            if (classNames.length) $fly(dom).prop("className", classNames.join(' ') + " d-shadow-drop");
 			
 			var $tipText = $fly(doms.tipText);
 			if (content) {
