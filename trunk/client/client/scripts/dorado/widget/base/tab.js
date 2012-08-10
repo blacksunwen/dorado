@@ -334,7 +334,7 @@
             leftEl.width(leftWidth);
 
             var captionEl = $fly(doms.caption);
-            captionEl.width(leftWidth - jQuery(doms.icon).outerWidth()
+            captionEl.width(leftWidth - jQuery(doms.icon).outerWidth(true)
                 - (parseInt(captionEl.css("padding-left"), 10) || 0) - (parseInt(captionEl.css("padding-right"), 10) || 0));
         },
 
