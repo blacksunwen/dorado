@@ -7,7 +7,7 @@
 
 	<dependencies>
 		<!-- COMPILE,RUNTIME -->
-		<dependency org="com.bstek.dorado" name="dorado-core" rev="7.1.11-SNAPSHOT" conf="compile,runtime">
+		<dependency org="com.bstek.dorado" name="dorado-core" rev="7.1.13-SNAPSHOT" conf="compile,runtime">
 			<exclude org="com.bstek.dorado" />
 		</dependency>
 		<dependency org="com.bstek.dorado" name="dorado-hibernate" rev="0.2.1-SNAPSHOT" conf="compile,runtime">
