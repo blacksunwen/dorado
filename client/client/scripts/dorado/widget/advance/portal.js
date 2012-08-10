@@ -33,6 +33,10 @@
 			    defaultValue: true
             },
 
+            exClassName: {
+                defaultValue: "d-portlet"
+            },
+
             closeAction: {
                 defaultValue: "close"
             }
