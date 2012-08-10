@@ -165,7 +165,12 @@
         },
 		
 		replaceUrl: function(url) {
-			this.getIFrameWindow().location.replace($url(url || BLANK_PATH));
+            var frame = this, doms = frame._doms;
+            if (frame.isSameDomain()) {
+                frame.getIFrameWindow().location.replace($url(url || BLANK_PATH));
+            } else {
+                $fly(doms.iframe).prop("src", url || BLANK_PATH);
+            }
 		},
 
         doLoad: function() {
@@ -212,8 +217,10 @@
         onActualVisibleChange: function() {
             var window = this.getIFrameWindow(), actualVisible = this.isActualVisible();
             //FIX OpenFlashChart BUG: http://bsdn.org/projects/dorado7/issue/dorado7-240
-            if (dorado.Browser.mozilla && window && window.dorado && window.dorado.widget && window.dorado.widget.ofc) {
-                window.$topView.setActualVisible(actualVisible);
+            if (this.isSameDomain()) {
+                if (dorado.Browser.mozilla && window && window.dorado && window.dorado.widget && window.dorado.widget.ofc) {
+                    window.$topView.setActualVisible(actualVisible);
+                }
             }
         },
 
