@@ -1,4 +1,4 @@
 /**
  * @namespace dorado.touch
  */
-dorado.touch = {};
+dorado.widget.touch = dorado.touch = {};

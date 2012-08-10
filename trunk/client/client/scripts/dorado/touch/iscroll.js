@@ -362,6 +362,7 @@
                 y = mround(y);
                 this.dom.scrollTop = y * -1;
                 this.dom.scrollLeft = x * -1;
+
             } else if (this.options.stillScroller) {
                 x = mround(x);
                 y = mround(y);
@@ -380,6 +381,13 @@
 
             this._scrollbarPos('h');
             this._scrollbarPos('v');
+
+            var scroll = this;
+            if (scroll.options.stillScroller) {
+                scroll['vScrollbarWrapper'].style["height"] = this.dom.clientHeight + "px";
+                scroll['vScrollbarWrapper'].style["top"] = this.dom.scrollTop + "px";
+                scroll['vScrollbarWrapper'].style["bottom"] = "";
+            }
 
             if (this.options.onScrollMove) this.options.onScrollMove.call(this);
         },
@@ -479,7 +487,7 @@
                 } else if (scroll.options.stillScroller) {
                     if (scroll.resumeHelper) {
                         var pos = scroll.resumeHelper();
-                        console.log("x:" + pos.x + "\ty:" + pos.y);
+                        //console.log("x:" + pos.x + "\ty:" + pos.y);
                         x = pos.x;
                         y = pos.y;
                     }
