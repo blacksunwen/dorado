@@ -59,20 +59,6 @@ dorado.dequeue = function(namespace) {
 						this._visible = !floating;
 					}
 					this._floating = floating;
-					
-					if (this._dom) {
-						var classNames = [];
-						classNames.push("d-floating");
-						if (this._inherentClassName) classNames.push(this._inherentClassName + "-floating");
-						if (this._className) classNames.push(this._className + "-floating");
-						if (this._floatingClassName) classNames.push(this._floatingClassName);
-						
-						if (floating) {
-							$fly(this._dom).addClass(classNames.join(' '));
-						} else {
-							$fly(this._dom).removeClass(classNames.join(' '));
-						}
-					}
 				}
 			},
 			
@@ -768,6 +754,52 @@ dorado.dequeue = function(namespace) {
 				}));
 			}
 		},
+
+        flip: {
+            show: function(options) {
+                var control = this, dom = control._dom;
+                jQuery(dom).css("visibility", "").flipIn(jQuery.extend(options, {
+                    duration: options.animateDuration || 200,
+                    easing: options.animateEasing,
+                    complete: function() {
+                        control.doAfterShow.apply(control, [options]);
+                    }
+                }));
+            },
+            hide: function(options) {
+                var control = this, dom = control._dom;
+                jQuery(dom).flipOut(jQuery.extend(options, {
+                    duration: options.animateDuration || 200,
+                    easing: options.animateEasing,
+                    complete: function() {
+                        control.doAfterHide.apply(control, arguments);
+                    }
+                }));
+            }
+        },
+
+        mordernZoom: {
+            show: function(options) {
+                var control = this, dom = control._dom;
+                jQuery(dom).css("visibility", "").mordernZoomIn(jQuery.extend(options, {
+                    duration: options.animateDuration || 200,
+                    easing: options.animateEasing,
+                    complete: function() {
+                        control.doAfterShow.apply(control, [options]);
+                    }
+                }));
+            },
+            hide: function(options) {
+                var control = this, dom = control._dom;
+                jQuery(dom).mordernZoomOut(jQuery.extend(options, {
+                    duration: options.animateDuration || 200,
+                    easing: options.animateEasing,
+                    complete: function() {
+                        control.doAfterHide.apply(control, arguments);
+                    }
+                }));
+            }
+        },
 		
 		slide: {
 			show: function(options) {
