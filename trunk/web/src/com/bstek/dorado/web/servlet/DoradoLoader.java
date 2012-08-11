@@ -252,6 +252,25 @@ public class DoradoLoader {
 							+ ".properties", true);
 		}
 
+		// 选择一个存储目录
+		File storeDir;
+		String storeDirSettring = configureStore.getString("core.storeDir");
+		if (StringUtils.isNotEmpty(storeDirSettring)) {
+			storeDir = new File(storeDirSettring);
+			File testFile = new File(storeDir, ".test");
+			if (!testFile.mkdirs()) {
+				throw new IllegalStateException("Store directory ["
+						+ storeDir.getAbsolutePath()
+						+ "] is not writable in actually.");
+			}
+			testFile.delete();
+		} else {
+			storeDir = tempDir;
+			configureStore.set("core.storeDir", storeDir.getAbsolutePath());
+		}
+		ConsoleUtils.outputLoadingInfo("[Dorado StoreDir: "
+				+ storeDir.getAbsolutePath() + "]");
+
 		// findPackages
 		for (PackageInfo packageInfo : PackageManager.getPackageInfoMap()
 				.values()) {

@@ -16,6 +16,16 @@ public class FormLayout extends Layout {
 	private int colPadding = 6;
 	private int rowPadding = 6;
 
+	public FormLayout() {
+		setPadding(8);
+	}
+
+	@Override
+	@ClientProperty(escapeValue = "8")
+	public int getPadding() {
+		return super.getPadding();
+	}
+
 	@IdeProperty(highlight = 1)
 	public String getCols() {
 		return cols;
@@ -58,4 +68,5 @@ public class FormLayout extends Layout {
 	public void setRowPadding(int rowPadding) {
 		this.rowPadding = rowPadding;
 	}
+
 }

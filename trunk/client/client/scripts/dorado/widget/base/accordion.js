@@ -241,7 +241,26 @@ dorado.widget.Accordion = $extend(dorado.widget.Control, /** @scope dorado.widge
 			setter: function(value) {
 				this.doSetCurrentSection(value);
 			}
-		}
+		},
+		
+		/**
+         * 当前Section的序号（自0开始计算）。
+         * @type int
+         * @attribute
+         */
+        currentIndex: {
+            skipRefresh: true,
+            getter: function() {
+                if (this._currentSection) {
+                    return this._sections.indexOf(this._currentSection);
+                }
+                return -1;
+            },
+            setter: function(index) {
+                this.set("currentSection", this._sections.get(index));
+            }
+        }
+
 	},
 	
 	EVENTS: /** @scope dorado.widget.Accordion.prototype */ {
