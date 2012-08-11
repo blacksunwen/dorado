@@ -17,8 +17,14 @@ import javax.persistence.OrderBy;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.hibernate.search.annotations.Boost;
+import org.hibernate.search.annotations.DocumentId;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
+
 @Entity
 @Table(name = "EXAMPLES")
+@Indexed(index = "EXAMPLES")
 public class Example implements Serializable {
 	private static final long serialVersionUID = 111301216730379521L;
 
@@ -41,6 +47,7 @@ public class Example implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_ID")
 	@SequenceGenerator(name = "SEQ_ID", sequenceName = "SEQ_ID")
+	@DocumentId
 	public long getId() {
 		return id;
 	}
@@ -49,6 +56,7 @@ public class Example implements Serializable {
 		this.id = id;
 	}
 
+	@Field(boost = @Boost(value = 2.0F))
 	public String getLabel() {
 		return label;
 	}
@@ -144,6 +152,7 @@ public class Example implements Serializable {
 		this.embedHeight = embedHeight;
 	}
 
+	@Field
 	public String getTags() {
 		return tags;
 	}
@@ -163,6 +172,7 @@ public class Example implements Serializable {
 		this.sources = sources;
 	}
 
+	@Field(boost = @Boost(value = 0.5F))
 	public String getSummary() {
 		return summary;
 	}

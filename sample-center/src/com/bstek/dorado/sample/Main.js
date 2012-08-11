@@ -1,15 +1,28 @@
 var rootNodesLoaded = false;
 
 // @Bind view.onReady
-!function(treeExamples) {
+!function(treeExamples, tipSearch) {
 	jQuery(window).hashchange(function() {
 		if (rootNodesLoaded) {
 			processHash();
 		}
 	});
+	
+
+	setTimeout(function() {
+		var viewHeight = view.getDom().offsetHeight;
+		tipSearch.show({
+			position : {
+				left : 128,
+				top : viewHeight - 28
+			}
+		});
+	}, 2500);
 }
 
 function processHash() {
+	if (view.get("#accordion.currentIndex") != 0) return;
+	
 	var hash = window.location.hash;
 	if (hash) {
 		hash = hash.substring(1);
@@ -22,14 +35,13 @@ function processHash() {
 	if (hash.indexOf("category") == 0) {
 		type = "category";
 		id = parseInt(hash.substring(8));
-	}
-	else {
+	} else {
 		id = parseInt(hash);
 	}
 	if (!(id > 0)) {
 		return false;
 	}
-	
+
 	if (view.get("#treeExamples.currentEntity.id") == id) {
 		return;
 	}
@@ -53,7 +65,7 @@ function processHash() {
 			var child = findChild(node, id);
 			if (child) {
 				view.set("#treeExamples.currentNode", child);
-				openPageInFrame(child);
+				openPageInFrame(id, type);
 			}
 		}
 	});
@@ -61,7 +73,7 @@ function processHash() {
 
 function onRootNodesLoaded() {
 	if (processHash() === false) {
-		openPageInFrame(null);
+		openPageInFrame(0);
 	}
 }
 
@@ -76,25 +88,29 @@ function findChild(node, id) {
 	return result;
 }
 
-function openPageInFrame(node) {
+var lastFrameUrl;
+
+function openPageInFrame(id, type) {
 	var url;
-	if (node) {
-		var nodeType = node.get("bindingConfig.name"), hash = "#";
-		if (nodeType == "Category") {
+	if (id != 0) {
+		var hash = "#";
+		if (type == "category") {
 			url = "com.bstek.dorado.sample.CategorySummary.d?categoryId=";
 			hash += "category";
 		} else {
 			url = "com.bstek.dorado.sample.ExampleSummary.d?exampleId=";
 		}
-		var id = node.get("data.id");
 		url += id;
 		window.location.hash = (hash + id);
-	}
-	else {
+	} else {
 		url = "com.bstek.dorado.sample.Welcome.d";
 		window.location.hash = "";
 	}
-	view.set("#frameExample.path", url);
+	
+	if (lastFrameUrl != url) {
+		view.set("#frameExample.path", url);
+		lastFrameUrl = url;
+	}
 }
 
 // @Bind #treeExamples.onDataNodeCreate
@@ -109,7 +125,8 @@ function openPageInFrame(node) {
 
 // @Bind #treeExamples.onDataRowClick
 !function(self) {
-	openPageInFrame(self.get("currentNode"));
+	var currentNode = self.get("currentNode"), type = currentNode.get("bindingConfig.name");
+	openPageInFrame(currentNode.get("data.id") || 0, type);
 }
 
 // @Bind #treeExamples.onRenderNode
@@ -136,7 +153,78 @@ function openPageInFrame(node) {
 	node.set("icon", data.get("icon"));
 }
 
+function search() {
+	var searchText = view.get("#inputSearch.text");
+	if (!searchText) {
+		dorado.MessageBox.alert("请输入一个有效的搜索条件。");
+		return;
+	}
+	var dsSearchResult = view.get("#dsSearchResult");
+	dsSearchResult.set("parameter", searchText).flushAsync();
+}
+
+// @Bind #buttonSearch.onClick
+!function() {
+	search();
+}
+
+// @Bind #inputSearch.onKeyDown
+!function(arg) {
+	if (arg.keyCode == 13) {
+		search();
+	}
+}
+
 // @Bind #buttonAdmin.onClick
 !function() {
 	open($url(">com.bstek.dorado.sample.admin.ExampleMaintain.d"));
+}
+
+// @Bind #listSearchResult.onDataRowClick
+!function(dsSearchResult) {
+	openPageInFrame(dsSearchResult.getData("#.id") || 0, "example");
+}
+
+// @Bind #listSearchResult.onRenderRow
+!function(arg) {
+	var data = arg.data;
+	arg.dom.style.fontWeight = (data.get("hot") ? "bold" : "");
+	var config = [ {
+		tagName : "SPAN",
+		style: {
+			width: "16px",
+			height: "16px",
+			margin: "0 3px -3px 2px",
+			display: "inline-block",
+			background: "url(" + $url(data.get("icon") || ">images/file.gif") + ")"
+		}
+	}, {
+		tagName : "SPAN",
+		contentText : data.get("label")
+	} ];
+	if (data.get("new")) {
+		config.push({
+			tagName : "IMG",
+			src : $url(">images/new.gif"),
+			style : "position: relative; left: 4px; top: 4px"
+		});
+	}
+
+	$(arg.dom).empty().css("whiteSpace", "nowrap").xCreate(config);
+	arg.processDefault = false;
+}
+
+var hasSectionChangeFired = false;
+
+// @Bind #accordion.onCurrentSectionChange
+!function(self, tipSearch) {
+	if (hasSectionChangeFired) {
+		if (self.get("currentIndex") == 0) {
+			processHash();
+		}
+		else {
+			tipSearch.hide();
+		}
+	}
+	hasSectionChangeFired = true;
 }

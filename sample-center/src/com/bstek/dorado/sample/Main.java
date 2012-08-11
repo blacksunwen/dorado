@@ -6,7 +6,14 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.queryParser.MultiFieldQueryParser;
+import org.apache.lucene.util.Version;
+import org.hibernate.search.FullTextQuery;
+import org.hibernate.search.FullTextSession;
+import org.hibernate.search.Search;
 import org.springframework.stereotype.Component;
 
 import com.bstek.dorado.annotation.DataProvider;
@@ -27,6 +34,8 @@ public class Main {
 
 	@Resource
 	private ExampleDao exampleDao;
+
+	private static boolean indexRebuilded = false;
 
 	@DataProvider
 	public Collection<ExampleCategory> getCategories(Long parentCategoryId) {
@@ -87,5 +96,34 @@ public class Main {
 		Long[] pathArray = path.toArray(new Long[0]);
 		ArrayUtils.reverse(pathArray);
 		return pathArray;
+	}
+
+	@SuppressWarnings("unchecked")
+	@DataProvider
+	public List<SearchResult> search(String searchText) throws Exception {
+		FullTextSession fullTextSession = Search.getFullTextSession(exampleDao
+				.getSession());
+
+		if (!indexRebuilded) {
+			indexRebuilded = true;
+			fullTextSession.createIndexer().startAndWait();
+		}
+
+		MultiFieldQueryParser parser = new MultiFieldQueryParser(
+				Version.LUCENE_31, new String[] { "label", "tags", "summary" },
+				new StandardAnalyzer(Version.LUCENE_31));
+		org.apache.lucene.search.Query luceneQuery = parser.parse(searchText);
+		FullTextQuery query = fullTextSession.createFullTextQuery(luceneQuery,
+				Example.class);
+		query.setFirstResult(0);
+		query.setMaxResults(100);
+
+		List<SearchResult> searchResults = new ArrayList<SearchResult>();
+		for (Example example : (List<Example>) query.list()) {
+			SearchResult searchResult = new SearchResult();
+			PropertyUtils.copyProperties(searchResult, example);
+			searchResults.add(searchResult);
+		}
+		return searchResults;
 	}
 }
