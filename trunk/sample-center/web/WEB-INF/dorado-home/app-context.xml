@@ -16,6 +16,8 @@
 				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
 				<prop key="hibernate.show_sql">${hibernate.showSql}</prop>
 				<prop key="hibernate.format_sql">${hibernate.formatSql}</prop>
+				<prop key="hibernate.search.default.directory_provider">org.hibernate.search.store.FSDirectoryProvider</prop>
+				<prop key="hibernate.search.default.indexBase">${core.storeDir}</prop>
 			</props>
 		</property>
 		<property name="packagesToScan">
