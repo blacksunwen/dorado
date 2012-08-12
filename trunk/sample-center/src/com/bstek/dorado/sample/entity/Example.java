@@ -17,14 +17,29 @@ import javax.persistence.OrderBy;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.apache.solr.analysis.MappingCharFilterFactory;
+import org.apache.solr.analysis.StandardTokenizerFactory;
+import org.hibernate.search.annotations.Analyzer;
+import org.hibernate.search.annotations.AnalyzerDef;
 import org.hibernate.search.annotations.Boost;
+import org.hibernate.search.annotations.CharFilterDef;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.Parameter;
+import org.hibernate.search.annotations.TokenizerDef;
 
 @Entity
 @Table(name = "EXAMPLES")
 @Indexed(index = "EXAMPLES")
+@AnalyzerDef(
+		name = "UrlAnalyzer",
+		charFilters = { @CharFilterDef(
+				factory = MappingCharFilterFactory.class,
+				params = { @Parameter(
+						name = "mapping",
+						value = "com/bstek/dorado/sample/UrlTokenMappingChars.properties") }) },
+		tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class))
 public class Example implements Serializable {
 	private static final long serialVersionUID = 111301216730379521L;
 
@@ -117,6 +132,8 @@ public class Example implements Serializable {
 		this.icon = icon;
 	}
 
+	@Field
+	@Analyzer(definition = "UrlAnalyzer")
 	public String getUrl() {
 		return url;
 	}
@@ -152,7 +169,7 @@ public class Example implements Serializable {
 		this.embedHeight = embedHeight;
 	}
 
-	@Field
+	@Field(boost = @Boost(value = 3.0F))
 	public String getTags() {
 		return tags;
 	}
