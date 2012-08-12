@@ -110,7 +110,7 @@ public class Main {
 		}
 
 		MultiFieldQueryParser parser = new MultiFieldQueryParser(
-				Version.LUCENE_31, new String[] { "label", "tags", "summary" },
+				Version.LUCENE_31, new String[] { "label", "tags", "url", "summary" },
 				new StandardAnalyzer(Version.LUCENE_31));
 		org.apache.lucene.search.Query luceneQuery = parser.parse(searchText);
 		FullTextQuery query = fullTextSession.createFullTextQuery(luceneQuery,
