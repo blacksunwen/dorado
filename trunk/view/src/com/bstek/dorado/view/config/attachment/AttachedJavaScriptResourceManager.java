@@ -94,8 +94,8 @@ public class AttachedJavaScriptResourceManager extends AttachedResourceManager {
 				}
 				jsonBuilder.endArray();
 				writer.append(");\n");
-				writer.append("})(view);\n");
 			}
+			writer.append("})(view);\n");
 		} else {
 			super.outputContent(context, javaScriptContent.getContent());
 		}
