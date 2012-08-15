@@ -215,6 +215,29 @@
 		},
 		
 		getPage: function(pageNo, loadPage, callback) {
+			
+			function pageLoaded() {
+				var entity = this.parent;
+				if (entity && entity instanceof dorado.EntityList) {
+					var propertyDef = entity.getPropertyDef(this.parentProperty);
+					if (propertyDef && propertyDef instanceof dorado.Reference) {
+						propertyDef.fireEvent("onLoadData", propertyDef, {
+							entity: entity,
+							property: this.parentProperty,
+							pageNo: pageNo
+						});
+					}
+				}
+				else if (!entity) {
+					var dataSet = this._observer;
+					if (dataSet && dorado.widget && dorado.widget.DataSet && dataSet instanceof dorado.widget.DataSet) {
+						dataSet.fireEvent("onLoadData", dataSet, {
+							pageNo: pageNo
+						});
+					}
+				}
+			}
+			
 			if (pageNo > 0 && pageNo <= this.pageCount) {
 				var page = this._pages[pageNo];
 				if (!page) {
@@ -249,6 +272,7 @@
 										if (success && !page.loaded) {
 											this._fillPage(page, result, false, true);
 											page.loaded = true;
+											pageLoaded.call(this);
 										}
 										$callback(callback, success, ((success) ? page : result));
 									}
@@ -258,6 +282,7 @@
 								var result = pipe.get();
 								this._fillPage(page, result, false, true);
 								page.loaded = true;
+								pageLoaded.call(this);
 							}
 						} else {
 							page.loaded = true;
@@ -1267,18 +1292,30 @@
 		},
 		
 		doGet: function() {
-			return this.doGetAsync();
+			return this.invokeDataProvider(false);
 		},
 		
 		doGetAsync: function(callback) {
+			this.invokeDataProvider(true, callback);
+		},
+		
+		invokeDataProvider: function(async, callback) {
 			var dataProvider = this.entityList.dataProvider, dataProviderArg = this.dataProviderArg, oldSupportsEntity = dataProvider.supportsEntity;
 			dataProvider.supportsEntity = false;
 			dataProvider.shouldFireEvent = this.shouldFireEvent;
 			try {
-				if (callback) {
-					dataProvider.getResultAsync(dataProviderArg, callback);
+				var callbackWrapper = {
+					callback: function(success, result) {
+						if (callback) $callback(callback, success, result);
+					}
+				}
+				
+				if (async) {
+					dataProvider.getResultAsync(dataProviderArg, callbackWrapper);
 				} else {
-					return dataProvider.getResult(dataProviderArg);
+					var result = dataProvider.getResult(dataProviderArg);
+					$callback(callbackWrapper, true, result);
+					return result;
 				}
 			}
 			finally {

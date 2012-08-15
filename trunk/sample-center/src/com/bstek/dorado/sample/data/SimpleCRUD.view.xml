@@ -9,6 +9,8 @@
   </Model>
   <View title="Product Maintain">
     <DataSet id="dsProducts" pageSize="10">
+      <ClientEvent name="onLoadData">&#xD;
+</ClientEvent>
       <Property name="readOnly">false</Property>
       <Property name="dataProvider">simpleCRUD#getAll</Property>
       <Property name="dataType">[ProductType]</Property>

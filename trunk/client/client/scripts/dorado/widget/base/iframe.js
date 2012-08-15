@@ -213,7 +213,7 @@
 			$invokeSuper.call(this, [dom]);
 			centerCover(dom, this._doms);
 		},
-
+		
 		onActualVisibleChange: function() {
 			var window = this.getIFrameWindow(), actualVisible = this.isActualVisible();
 			//FIX OpenFlashChart BUG: http://bsdn.org/projects/dorado7/issue/dorado7-240
