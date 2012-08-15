@@ -51,14 +51,17 @@
 
 		<ivy:configure file="${workspaceDir}/ivy/ivysettings.xml" />
 
+		<echo message="Retireving ${workspaceDir}/ivy/ivy.xml" />
 		<ivy:resolve file="${workspaceDir}/ivy/ivy.xml" />
 		<ivy:retrieve pattern="${workDir}/common-lib/${ivy.fileNamePattern}"
 		              conf="compile" />
 
+		<echo message="Retireving ${workspaceDir}/sample-center/ivy.xml" />
 		<ivy:resolve file="${workspaceDir}/sample-center/ivy.xml" />
 		<ivy:retrieve pattern="${workDir}/web/WEB-INF/lib/${ivy.fileNamePattern}"
 		              conf="runtime" />
 
+		<echo message="Retireving resources/dorado-ivy.xml" />
 		<ivy:resolve file="resources/dorado-ivy.xml" />
 		<ivy:retrieve pattern="${workDir}/web/WEB-INF/lib/${ivy.fileNamePattern}"
 		              conf="runtime" />

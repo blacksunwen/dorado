@@ -496,8 +496,7 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 		conn.onreadystatechange = $scopify(this, function() {
 			if(conn.readyState == 4) {
 				try {
-					if(taskId)
-						dorado.util.TaskIndicator.hideTaskIndicator(taskId);
+					if(taskId) dorado.util.TaskIndicator.hideTaskIndicator(taskId);
 					if(callback && options && options.timeout) {
 						clearTimeout(connObj.timeoutTimerId);
 					}
@@ -523,11 +522,11 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 		});
 		conn.send(this._getSendData(options));
 	},
+	
 	_setHeader : function(connObj, options) {
 
 		function setHeaders(conn, headers) {
-			if(!headers)
-				return;
+			if(!headers) return;
 			for(var prop in headers) {
 				if(headers.hasOwnProperty(prop)) {
 					var value = headers[prop];
@@ -542,6 +541,7 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 		if(options)
 			setHeaders(connObj.conn, options.headers);
 	},
+	
 	_init : function(connObj, options, async) {
 
 		function urlAppend(url, s) {
@@ -752,7 +752,13 @@ dorado.util.AjaxException = $extend(dorado.Exception, /** @scope dorado.util.Aja
 		 * @type String
 		 */
 		this.statusText = connObj.conn.statusText;
+		
+		// IE - #1450: sometimes returns 1223 when it should be 204
+		if (this.status === 1223) {
+			this.status = 204;
+		}
 	},
+	
 	toString : function() {
 		var text = this.message;
 		if(this.url)
@@ -847,12 +853,17 @@ dorado.util.AjaxResult = $class(/** @scope dorado.util.AjaxResult.prototype */
 				if(conn.status == 487) {
 					exception = this._parseException(conn.responseText, connObj);
 				} else {
-					exception = new dorado.util.AjaxException("HTTP " + conn.status + " " + conn.statusText, null, connObj);
+					if (dorado.windowClosed && conn.status == 0) {
+						exception = new dorado.AbortException();
+					} else {
+						exception = new dorado.util.AjaxException("HTTP " + conn.status + " " + conn.statusText, null, connObj);
+					}
 				}
 			}
 			if(exception) this._setException(exception);
 		}
 	},
+	
 	_setException : function(exception) {
 		this.success = false;
 
@@ -862,13 +873,16 @@ dorado.util.AjaxResult = $class(/** @scope dorado.util.AjaxResult.prototype */
 		 */
 		this.exception = exception;
 	},
+	
 	_parseException : function(text) {
 		var json = dorado.JSON.parse(text);
 		return new dorado.RemoteException(json.message, json.exceptionType, json.stackTrace);
 	},
+	
 	_parseRunnableException : function(text) {
 		return new dorado.RunnableException(text);
 	},
+	
 	/**
 	 * 返回一个包含所有的Response头信息的对象。<br>
 	 * 所有的Response头信息以属性的形式存放在该对象中，其形式如下：<br>
@@ -905,6 +919,7 @@ dorado.util.AjaxResult = $class(/** @scope dorado.util.AjaxResult.prototype */
 		}
 		return responseHeaders;
 	},
+	
 	/**
 	 * 以XmlDocument的形式获得服务器返回的Response信息。
 	 * @return {XMLDocument} XmlDocument。
@@ -917,6 +932,7 @@ dorado.util.AjaxResult = $class(/** @scope dorado.util.AjaxResult.prototype */
 		}
 		return responseXML;
 	},
+	
 	/**
 	 * 以JSON数据的形式获得服务器返回的Response信息。
 	 * @param {boolean} [untrusty] 服务器返回的Response信息是否是不可信的。默认为false，即Response信息是可信的。<br>

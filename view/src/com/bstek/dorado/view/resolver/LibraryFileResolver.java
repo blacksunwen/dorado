@@ -32,7 +32,7 @@ public class LibraryFileResolver extends
 			throw new IllegalArgumentException("\"" + INHERENT_SKIN
 					+ "\" is not a valid dorado skin.");
 		}
-		return skin;
+		return StringUtils.defaultIfEmpty(skin, DEFAULT_SKIN);
 	}
 
 	@Override
@@ -131,24 +131,41 @@ public class LibraryFileResolver extends
 		synchronized (resourcesCache) {
 			Resource[] resources = resourcesCache.get(cacheKey);
 			if (resources == null) {
-				if (fileName.startsWith(CURRENT_SKIN_PREFIX)) {
-					fileName = fileName.replace(CURRENT_SKIN, getSkin());
+				boolean isSkinFile = fileName.startsWith(CURRENT_SKIN_PREFIX);
+				if (isSkinFile) {
+					fileName = fileName.replace(CURRENT_SKIN, skin);
 				}
-				if (useMinJs) {
-					resources = doGetResourcesByFileName(context,
-							resourcePrefix, fileName, MIN_JAVASCRIPT_SUFFIX);
-					if (!resources[0].exists()) {
-						resources = null;
-					}
-				}
-				if (resources == null) {
-					resources = doGetResourcesByFileName(context,
-							resourcePrefix, fileName, resourceSuffix);
+				resources = doGetJavaScriptResources(context, resourcePrefix,
+						resourceSuffix, fileName, useMinJs, resources);
+				if (isSkinFile && !skin.equals(DEFAULT_SKIN)
+						&& !resources[0].exists()) {
+					fileName = fileInfo.getFileName().replace(CURRENT_SKIN,
+							DEFAULT_SKIN);
+					resources = doGetJavaScriptResources(context,
+							resourcePrefix, resourceSuffix, fileName, useMinJs,
+							resources);
 				}
 				resourcesCache.put(cacheKey, resources);
 			}
 			return resources;
 		}
+	}
+
+	private Resource[] doGetJavaScriptResources(DoradoContext context,
+			String resourcePrefix, String resourceSuffix, String fileName,
+			boolean useMinJs, Resource[] resources) throws Exception {
+		if (useMinJs) {
+			resources = doGetResourcesByFileName(context, resourcePrefix,
+					fileName, MIN_JAVASCRIPT_SUFFIX);
+			if (!resources[0].exists()) {
+				resources = null;
+			}
+		}
+		if (resources == null) {
+			resources = doGetResourcesByFileName(context, resourcePrefix,
+					fileName, resourceSuffix);
+		}
+		return resources;
 	}
 
 	@Override
@@ -194,7 +211,8 @@ public class LibraryFileResolver extends
 								resourcePrefix, fileName, resourceSuffix)[0];
 					}
 
-					if (!concreteResource.exists()) {
+					if (!skin.equals(DEFAULT_SKIN)
+							&& !concreteResource.exists()) {
 						fileName = template.replace(CURRENT_SKIN, DEFAULT_SKIN);
 						Resource defaultResource = null;
 						if (useMinCss) {

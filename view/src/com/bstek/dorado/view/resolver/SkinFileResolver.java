@@ -16,6 +16,7 @@ public class SkinFileResolver extends WebFileResolver {
 	private static final String CURRENT_SKIN = "~current";
 	private static final String CURRENT_SKIN_PREFIX = "skins/" + CURRENT_SKIN
 			+ '/';
+	private static final String DEFAULT_SKIN = "default";
 
 	public SkinFileResolver() {
 		setUseResourcesCache(true);
@@ -38,10 +39,19 @@ public class SkinFileResolver extends WebFileResolver {
 					+ context.getRequest().getRequestURI() + "] forbidden.");
 		}
 
-		if (fileName.startsWith(CURRENT_SKIN_PREFIX)) {
-			fileName = fileName.replace(CURRENT_SKIN, getSkin());
+		String realFileName = fileName;
+		String skin = getSkin();
+		boolean isSkinFile = fileName.startsWith(CURRENT_SKIN_PREFIX);
+		if (isSkinFile) {
+			realFileName = fileName.replace(CURRENT_SKIN, skin);
 		}
-		return super.getResourcesByFileName(context, resourcePrefix, fileName,
-				resourceSuffix);
+		Resource[] resources = super.getResourcesByFileName(context,
+				resourcePrefix, realFileName, resourceSuffix);
+		if (isSkinFile && !skin.equals(DEFAULT_SKIN) && !resources[0].exists()) {
+			realFileName = fileName.replace(CURRENT_SKIN, DEFAULT_SKIN);
+			resources = super.getResourcesByFileName(context, resourcePrefix,
+					realFileName, resourceSuffix);
+		}
+		return resources;
 	}
 }

@@ -372,7 +372,8 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 						if (pipe) {
 							var eventArg = {
 								entity : this,
-								property: property
+								property: property,
+								pageNo: 1
 							};
 							propertyDef.fireEvent("beforeLoadData", propertyDef, eventArg);
 							if (eventArg.value !== undefined) {
@@ -388,7 +389,6 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 											if (success) {
 												eventArg.data = result;
 												propertyDef.fireEvent("onLoadData", propertyDef, eventArg);
-												result = eventArg.data;
 												
 												if (propertyDef.get("cacheable")) {
 													result = transferAndReplaceIf(this, propertyDef, result, true);
@@ -426,7 +426,6 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 
 									eventArg.data = value;
 									propertyDef.fireEvent("onLoadData", propertyDef, eventArg);
-									value = eventArg.data;
 
 									if (propertyDef._cacheable) {
 										value = transferAndReplaceIf(this, propertyDef, value, true);

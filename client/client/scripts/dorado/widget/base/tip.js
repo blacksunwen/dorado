@@ -18,7 +18,7 @@
 	 * @extends dorado.widget.Control
 	 * @extends dorado.widget.FloatControl
 	 */
-	dorado.widget.Tip = $extend([dorado.widget.Control, dorado.widget.FloatControl], /** @scope  dorado.widget.Tip.prototype */ {
+	dorado.widget.Tip = $extend([dorado.widget.Control, dorado.widget.FloatControl], /** @scope dorado.widget.Tip.prototype */ {
 		$className: "dorado.widget.Tip",
 		
 		_inherentClassName: "i-tip",

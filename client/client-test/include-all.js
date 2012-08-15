@@ -5,14 +5,14 @@
 	var testLibsBefore = [
 		"client/scripts/json/json2.js",
 
-		"client/scripts/jquery/jquery-1.7.1.js",
+		"client/scripts/jquery/jquery-1.8.0.js",
 		"client/scripts/jquery/jquery-template-1.0.0.js",
 		"client/scripts/jquery/jquery.easing.1.3.js",
 		"client/scripts/jquery/jquery.mousewheel.js",
 		"client/scripts/jquery/aop.js",
 		"client/scripts/jquery/jquery.hotkeys.js",
 		"client/scripts/jquery/jquery.swfobject.1-1-1.js",
-		"client/scripts/jquery/jquery-ui-1.8.17.custom.js",
+		"client/scripts/jquery/jquery-ui-1.8.22.custom.js",
 
 		"client-test/lib/jsunit/app/jsUnitCore.js",
 

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ViewConfig>
   <View layout="padding:20" title="HelloWorld">
-    <Button caption="Greeting from Dorado7 ...">
+    <Button>
       <ClientEvent name="onClick">dorado.MessageBox.alert(&quot;Hello World!&quot;);</ClientEvent>
+      <Property name="caption">Greeting from Dorado7 ...</Property>
     </Button>
   </View>
 </ViewConfig>

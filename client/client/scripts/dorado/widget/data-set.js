@@ -148,6 +148,7 @@
 			 * 当DataSet将要尝试数据装载之前触发的事件。
 			 * @param {Object} self 事件的发起者，即控件本身。
 			 * @param {Object} arg 事件参数。
+			 * @param {int} arg.pageNo 当前装载的页号。
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
 			 */
@@ -160,7 +161,14 @@
 			 * </p>
 			 * @param {Object} self 事件的发起者，即控件本身。
 			 * @param {Object} arg 事件参数。
+			 * @param {int} arg.pageNo 当前装载的页号。
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+			 * @event
+			 */
+			onLoadData: {},
+			
+			/**
+			 * @deprecated
 			 * @event
 			 */
 			onDataLoad: {}
@@ -339,7 +347,7 @@
 		},
 
 		doLoad: function(callback) {
-			var data = this._data, shouldFireOnDataLoad = false;
+			var data = this._data, shouldFireOnLoadData = false;
 			
 			var dataCache, hashCode;
 			if (this._cacheable) {
@@ -357,7 +365,7 @@
 					data = this._dataPipe;
 					if (!data) {
 						data = this._dataPipe = new dorado.DataSetDataPipe(this);
-						shouldFireOnDataLoad = true;
+						shouldFireOnLoadData = true;
 					}
 				}
 				else {
@@ -366,13 +374,15 @@
 			}
 			
 			if (data instanceof dorado.DataPipe) {
+				var arg = {
+					dataSet: this,
+					pageNo: 1
+				};
+				
 				this.fireEvent("beforeLoadData", this, arg);
 				
 				var pipe = data;
 				if (callback) {
-					var arg = {
-						dataSet: this
-					};
 					var isNewPipe = (pipe.runningProcNum == 0);
 					pipe.getAsync( {
 						scope: this,
@@ -383,12 +393,16 @@
 							}
 							
 							delete this._dataPipe;
-							if (success && shouldFireOnDataLoad) {
+							if (success && shouldFireOnLoadData) {
 								this.setData(result);
 								if (this._cacheable) {
 									dataCache[hashCode] = this.getData();
 								}
+								
+								/* @deprecated */
 								this.fireEvent("onDataLoad", this, arg);
+								
+								this.fireEvent("onLoadData", this, arg);
 							}
 							
 							
@@ -410,7 +424,11 @@
 					if (this._cacheable) {
 						dataCache[hashCode] = this.getData();
 					}
+					
+					/* @deprecated */
 					this.fireEvent("onDataLoad", this);
+					
+					this.fireEvent("onLoadData", this);
 				}
 			}
 			else {
@@ -471,7 +489,7 @@
 					this._dataPathCache[key] = {
 						data: data,
 						asyncExecutionTimes: dorado.DataPipe.MONITOR.asyncExecutionTimes - asyncExecutionTimes
-					} || null;
+					};
 				} else if (!path) {
 					var dataType = this.getDataType(null, true);
 					if (dataType instanceof dorado.AggregationDataType) {
