@@ -53,6 +53,8 @@ public class RemoveInheritedDependenciesTask extends
 				if (jarFile.exists()) {
 					fileUtils.copyFile(jarFile, new File(dependenciesDir,
 							jarFile.getName()));
+				} else if (jarFile.isDirectory()) {
+					continue;
 				} else {
 					log("Library File \"" + path + "\" not exists.",
 							Project.MSG_WARN);

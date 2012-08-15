@@ -106,6 +106,7 @@
 		<mkdir dir="${workDir}/client" />
 		<mkdir dir="${workDir}/bin" />
 		<mkdir dir="${workDir}/lib" />
+		<mkdir dir="${workDir}/common-lib" />
 		<mkdir dir="${workDir}/javadoc" />
 		<mkdir dir="${workDir}/jsdoc" />
 		<mkdir dir="${workDir}/temp" />
