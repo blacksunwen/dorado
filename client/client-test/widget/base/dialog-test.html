@@ -20,7 +20,6 @@
             //showAnimateType: "zoom",
             //hideAnimateType: "zoom",
             width: 400,
-            height: 300,
             minWidth: 150
             //,left: 200
             //,top: 50
@@ -61,13 +60,8 @@
             })]
         });
 
-        dialog.addChild(new dorado.widget.Button({
-            caption: "测试子组件",
-            listener: {
-                onClick: function() {
-                    alert(123);
-                }
-            }
+        dialog.addChild(new dorado.widget.Container({
+            height: 1000
         }));
 
         var dialog2 = new dorado.widget.Dialog({
@@ -150,13 +144,9 @@
 
         $(document).ready(function() {
             view.render(document.body);
-//            dialog.show({
-//                callback: function(self) {
-//                }
-//            });
         });
     </script>
 </head>
-<body style="margin:0;padding:0;">
+<body style="margin:0;padding:0;height: 800px;">
 </body>
 </html>

@@ -196,6 +196,12 @@
             $invokeSuper.call(this, arguments);
         },
 
+        doHandleOverflow: function(options) {
+            var dialog = this;
+            dialog._height = options.maxHeight;
+            dialog.onResize();
+        },
+
 		maximizeRestore: function() {
 			var dialog = this, dom = dialog._dom, doms = dialog._doms;
 			if (dom) {
