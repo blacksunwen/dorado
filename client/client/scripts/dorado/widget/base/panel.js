@@ -785,7 +785,11 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		var panel = this, doms = panel._doms;
 		return doms.contentPanel;
 	},
-	
+
+    /**
+     * 使Panel从最大化状态恢复到普通状态。
+     * @protected
+     */
 	maximizeRestore: function() {
 		var panel = this, dom = panel._dom, doms = panel._doms;
 		if (dom) {
@@ -822,7 +826,11 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 			}
 		}
 	},
-	
+
+    /**
+     * 使Panel从普通状态到最大化状态。
+     * @protected
+     */
 	maximize: function() {
 		var panel = this, dom = panel._dom;
 		if (dom) {
