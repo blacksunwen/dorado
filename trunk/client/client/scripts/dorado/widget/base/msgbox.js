@@ -492,12 +492,7 @@
             dorado.MessageBox.updateText(msg, icon, iconClass, editor, defaultText);
 
             dialog.set({ caption: title });
-            dialog.show({
-                overflowHandler: function(options) {
-                    dialog._height = options.maxHeight;
-                    dialog.onResize();
-                }
-            });
+            dialog.show();
         }
     };
 })();

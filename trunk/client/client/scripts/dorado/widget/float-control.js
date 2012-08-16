@@ -406,7 +406,11 @@ dorado.dequeue = function(namespace) {
 					options[attr] = control["_" + attr];
 				}
 			}
-			
+
+            if (!options.overflowHandler && control.doHandleOverflow) {
+                options.overflowHandler = $scopify(control, control.doHandleOverflow);
+            }
+
 			dorado.queue(control._id + SHOWHIDE_SUFFIX, function() {
 				options = options || {};
 				if (!control._rendered) {
@@ -567,7 +571,10 @@ dorado.dequeue = function(namespace) {
 				
 				result = $DomUtils.locateIn(dom, options);
 			}
-			
+
+            control._left = result.left;
+            control._top = result.top;
+
 			return result;
 		},
 		
