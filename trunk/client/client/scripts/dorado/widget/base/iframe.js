@@ -34,6 +34,8 @@
 				setter: function(value) {
 					var frame = this, oldPath = frame._path, dom = frame._dom, doms = frame._doms;
 
+                    frame._path = value;
+
 					if (dom) {
 						$fly(doms.loadingCover).css("display", "block");
                         try {
@@ -50,7 +52,6 @@
                         }
 						centerCover(dom, doms);
 					}
-					frame._path = value;
 				}
 			},
 
@@ -106,9 +107,12 @@
                     return false;
                 }
             } else {
-                iframeSrc = this._doms.iframe.src;
-                var localDomain = this.getDomainInfo(location.href), frameDomain = this.getDomainInfo(iframeSrc);
-                return localDomain.protocol == frameDomain.protocol && localDomain.domain == frameDomain.domain && localDomain.port == frameDomain.port;
+                iframeSrc = $url(this._path);
+                if (/^(http[s]?):/ig.test(iframeSrc)) {
+                    var localDomain = this.getDomainInfo(location.href), frameDomain = this.getDomainInfo(iframeSrc);
+                    return localDomain.protocol == frameDomain.protocol && localDomain.domain == frameDomain.domain && localDomain.port == frameDomain.port;
+                }
+                return true;
             }
         },
 
@@ -169,7 +173,7 @@
             if (frame.isSameDomain()) {
                 frame.getIFrameWindow().location.replace($url(url || BLANK_PATH));
             } else {
-                $fly(doms.iframe).prop("src", url || BLANK_PATH);
+                $fly(doms.iframe).prop("src", $url(url || BLANK_PATH));
             }
 		},
 
