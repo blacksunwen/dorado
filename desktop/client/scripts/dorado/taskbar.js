@@ -222,7 +222,7 @@ dorado.widget.desktop.TimeLabel = $extend(dorado.widget.Control, /** @scope dora
 		/**
 		 * 时间显示的格式
 		 * @type String
-		 * @attribute
+		 * @attribute writeBeforeReady
 		 */
 		format: {
 			defaultValue: "H:i"
@@ -368,6 +368,7 @@ dorado.widget.desktop.Taskbar = $extend(dorado.widget.Control, /** @scope dorado
 		
 		/**
 		 * 是否显示时间标签。
+         * @type boolean
 		 * @attribute writeBeforeReady
 		 * @default true
 		 */
@@ -375,6 +376,17 @@ dorado.widget.desktop.Taskbar = $extend(dorado.widget.Control, /** @scope dorado
 			writeBeforeReady: true,
 			defaultValue: true
 		},
+
+        /**
+         * 显示的时间的格式。
+         * @type String
+         * @attribute writeBeforeReady
+         * @default "H:i"
+         */
+        timeLabelFormat: {
+            writeBeforeReady: true,
+            defaultValue: "H:i"
+        },
 
         /**
          * 激活右键菜单的TaskButton，可能会被激活的右键菜单使用。
@@ -483,7 +495,9 @@ dorado.widget.desktop.Taskbar = $extend(dorado.widget.Control, /** @scope dorado
 		}
 		
 		if (taskbar._showTimeLabel) {
-			var timeLabel = new dorado.widget.desktop.TimeLabel();
+			var timeLabel = new dorado.widget.desktop.TimeLabel({
+                format: taskbar._timeLabelFormat
+            });
 			timeLabel.render(doms.rightWrap);
 			taskbar.registerInnerControl(timeLabel);
 			doms.timeLabel = timeLabel._dom;
