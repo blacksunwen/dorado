@@ -576,16 +576,15 @@
 					listener: {
 						onClick: function() {
                             var now = new Date(), date = picker._date;
+                            date.setFullYear(now.getFullYear());
+                            date.setMonth(now.getMonth());
+                            date.setDate(now.getDate());
+                            picker.set("date", picker._date);
                             if (now.getFullYear() === date.getFullYear() && now.getMonth() === date.getMonth()) {
                                 picker.fireEvent("onPick", picker, {
                                     date: new Date(picker._date.getTime())
                                 });
-                            } else {
-                                date.setFullYear(now.getFullYear());
-                                date.setMonth(now.getMonth());
-                                date.setDate(now.getDate());
                             }
-                            picker.set("date", picker._date);
 						}
 					}
 				});
