@@ -378,12 +378,10 @@
 
             this.x = x;
             this.y = y;
-
             this._scrollbarPos('h');
             this._scrollbarPos('v');
-
             var scroll = this;
-            if (scroll.options.stillScroller) {
+            if (scroll.options.stillScroller && scroll['vScrollbarWrapper']) {
                 scroll['vScrollbarWrapper'].style["height"] = this.dom.clientHeight + "px";
                 scroll['vScrollbarWrapper'].style["top"] = this.dom.scrollTop + "px";
                 scroll['vScrollbarWrapper'].style["bottom"] = "";
@@ -592,7 +590,6 @@
                     deltaX = 0;
                 }
             }
-
             scroll.moved = true;
             scroll._pos(newX, newY);
             scroll.dirX = deltaX > 0 ? -1 : deltaX < 0 ? 1 : 0;
