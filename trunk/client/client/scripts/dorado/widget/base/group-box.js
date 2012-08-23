@@ -85,7 +85,6 @@ dorado.widget.FieldSet = $extend(dorado.widget.AbstractPanel, /** @scope dorado.
         var fieldset = this, doms = fieldset._doms;
         var button = document.createElement("span");
         button.className = "collapse-button";
-        button.innerHTML = "&nbsp;";
         doms.icon = button;
 
         jQuery(doms.icon).click(function() {
