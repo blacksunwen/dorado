@@ -407,16 +407,16 @@ dorado.widget.desktop.Desktop = $extend(dorado.widget.desktop.AbstractDesktop, /
     addItem: function(item) {
         var desktop = this, items = desktop._items, rendered = desktop._rendered;
         if (!items) {
-            items = desktop._items || [];
+            desktop._items = items = [];
         }
         if (!(item instanceof dorado.widget.desktop.Shortcut)) {
             item = new dorado.widget.desktop.Shortcut(item);
         }
+        items.push(item);
         if (rendered) {
             desktop.initShortcut(item, desktop._dom);
             desktop.placeNewShortcut(item);
         }
-        items.push(item);
     },
 
     /**
@@ -449,7 +449,24 @@ dorado.widget.desktop.Desktop = $extend(dorado.widget.desktop.AbstractDesktop, /
      * @private
      */
     placeNewShortcut: function(shortcut) {
-        var desktop = this, rowCount = desktop._rowCount, columnCount = desktop._columnCount;
+        var desktop = this, scCache = desktop._scCache;
+
+        if (!scCache) {
+            var dom = desktop._dom, items = desktop._items, item = items[0], width = $fly(dom).width(), height = $fly(dom).height();
+
+            desktop._leftStart = parseInt($fly(dom).css("padding-left"), 10);
+            desktop._topStart = parseInt($fly(dom).css("padding-top"), 10);
+
+            if (item) {
+                var itemWidth = $fly(item._dom).outerWidth(true);
+                var itemHeight = $fly(item._dom).outerHeight(true);
+
+                desktop._rowCount = Math.floor(height / itemHeight);
+                desktop._columnCount = Math.floor(width / itemWidth);
+            }
+        }
+
+        var rowCount = desktop._rowCount, columnCount = desktop._columnCount;
         for (var i = 0; i < columnCount; i++) {
             for (var j = 0; j < rowCount; j++) {
                 if (desktop.getShortcut(i, j) == null) {

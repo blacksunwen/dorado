@@ -26,7 +26,7 @@ public class Taskbar extends Control {
 	private InnerElementReference<SimpleButton> startButtonRef = new InnerElementReference<SimpleButton>(
 			this);
 	private boolean showTimeLabel = true;
-	private String timeLabelFormat;
+	private String timeLabelFormat = "H:i";
 	
 	@ClientProperty(escapeValue = "H:i")
 	public String getTimeLabelFormat() {
