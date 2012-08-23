@@ -124,9 +124,10 @@
                         if (doms.iframe.contentWindow.dorado)
                             doms.iframe.contentWindow.dorado.Exception.IGNORE_ALL_EXCEPTIONS = true;
                         doms.iframe.contentWindow.document.write('');
-                        doms.iframe.contentWindow.close();
                         if(dorado.Browser.msie){
                             CollectGarbage();
+                        } else {
+                            doms.iframe.contentWindow.close();
                         }
                     } else {
 						this.replaceUrl(null);
