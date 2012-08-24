@@ -487,10 +487,22 @@
 			var showCaptionBar = dialog._showCaptionBar;
 
 			if (showCaptionBar !== false) {
+                var tools = dialog._tools, toolButtons = [];
+
+                if (tools instanceof Array) {
+                    for (var i = 0, j = tools.length; i < j; i++) {
+                        var tool = tools[i];
+                        if (tool) {
+                            toolButtons.push(tool);
+                        }
+                    }
+                }
+
 				var captionBar = dialog._captionBar = new dorado.widget.CaptionBar({
 					className: "d-dialog-caption-bar",
 					caption: dialog.get("caption") || dialog._caption,
-					icon: dialog._icon
+					icon: dialog._icon,
+                    buttons: toolButtons
 				});
 				dialog.registerInnerControl(captionBar);
 				captionBar.render(doms.body.parentNode, doms.body);
