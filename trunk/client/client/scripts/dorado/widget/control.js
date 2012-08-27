@@ -764,8 +764,8 @@
 		 * 返回控件对应的DOM对象。
 		 * @return {HTMLElement} 控件对应的DOM对象。
 		 */
-		getDom : function() {
-			if(!this._dom) {
+		getDom : function() {			
+			if (!this._dom) {
 				var dom = this._dom = this.createDom(), $dom = $fly(this._dom);
 				
 				if (!dom.id) {

@@ -890,9 +890,9 @@
 			}
 			
 			if (typeof data == "string") {
-				var format = argument || $setting["common.defaultDateFormat"];
 				var date = Date.parseDate(data, "Y-m-d\\TH:i:s\\Z");
 				if (date == null) {
+					var format = argument || $setting["common.defaultDateFormat"];
 					var date = Date.parseDate(data, format);
 					if (date == null) {
 						format = $setting["common.defaultTimeFormat"];

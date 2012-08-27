@@ -707,33 +707,49 @@
 				var dataSet = this._dataSet;
 				if (!dataSet) return;
 				
-				var criterions;
 				if (filterParams === undefined) {
-					var filterEntity = this._itemModel.filterEntity, criterions = [];
+					filterParams = [];
+					var filterEntity = this._itemModel.filterEntity;
 					var dataColumns = this._columnsInfo.dataColumns;
 					for (var i = 0; i < dataColumns.length; i++) {
-						var column = dataColumns[i];
-						if (!column._property) continue;
-						var expression = filterEntity.get(column._property);
-						if (expression !== undefined && expression !== null && expression !== "") {
-							var dataType = column.get("dataType"), typeFormat = column.get("typeFormat");
-							var filerValue = dorado.Toolkits.parseFilterValue(expression + ''), operator = filerValue.operator, value = filerValue.value;
-							if (dataType && !filerValue.multiValue) {
-								value = dataType.parse(value, typeFormat);
-								expression = (operator || "") + dataType.toText(value);
-							} else {
-								expression = (operator || "") + value;
+						var column = dataColumns[i], dataType = column.get("dataType");
+						if (!column._property || column._property == "none") continue;
+						var criterions = filterEntity.get(column._property);
+						var pd = column._propertyDef, dataType = column.get("dataType");
+						if (criterions && criterions.length) {
+							for (var j = 0; j < criterions.length; j++) {
+								var criterion = criterions[j], expression = "";
+								
+								if (criterion.operator) {
+									expression += criterion.operator;
+									if (criterion.operator.indexOf("like") >= 0) expression += ' ';
+								}
+								
+								var valueText;
+								if (pd && pd._mapping) {
+									valueText = pd.getMappedValue(criterion.value);
+								} else {
+									if (dataType) {
+										valueText = dataType.toText(criterion.value, column.get("displayFormat"));
+									} else {
+										valueText = criterion.value + '';
+									}
+								}
+								
+								if (valueText.indexOf(' ') > 0) {
+									expression += ('"' + valueText + '"');
+								} else {
+									expression += valueText;
+								}
+								
+								filterParams.push({
+									property: column._property,
+									dataType: ((!dataType || dataType instanceof dorado.EntityDataType || dataType instanceof dorado.AggregationDataType) ? undefined : dataType._name),
+									expression: expression
+								});
 							}
-							
-							criterions.push({
-								property: column._property,
-								dataType: ((!dataType || dataType instanceof dorado.EntityDataType || dataType instanceof dorado.AggregationDataType) ? undefined : dataType._name),
-								expression: expression
-							});
 						}
 					}
-				} else {
-					criterions = filterParams;
 				}
 				
 				var parentEntityInfo, hostObject;
@@ -750,7 +766,7 @@
 				var sysParameter = hostObject._sysParameter;
 				if (!sysParameter) hostObject._sysParameter = sysParameter = new dorado.util.Map();
 				var criteria = sysParameter.get("criteria") || {};
-				criteria.criterions = criterions;
+				criteria.criterions = filterParams;
 				if (!(criteria.criterions || criteria.criterions.length || criteria.orders || criteria.orders.length)) criteria = null;
 				sysParameter.put("criteria", criteria);
 				

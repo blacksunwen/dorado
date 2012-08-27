@@ -246,7 +246,7 @@
 		 * @param {Object|dorado.Entity|dorado.EntityList} data 数据。
 		 */
 		setData: function(data) {
-			var dataType = this.getDataType(null, true);
+			var dataType = this.getDataType(null, true), oldData = this._data;
 			if (dataType || this._getDataCalled) {
 				if (data != null) {
 					if (!(data instanceof dorado.EntityList || data instanceof dorado.Entity)) {
@@ -259,8 +259,8 @@
 					data = dorado.DataUtil.convert([], this.getDataTypeRepository(), dataType);
 				}
 
-				if (this._data && (this._data instanceof dorado.EntityList || this._data instanceof dorado.Entity)) {
-					this._data._setObserver(null);
+				if (oldData && (oldData instanceof dorado.EntityList || oldData instanceof dorado.Entity)) {
+					oldData._setObserver(null);
 				}
 
 				if (data) {
@@ -295,9 +295,8 @@
 			if (data && (data instanceof dorado.EntityList || data instanceof dorado.Entity)) {
 				data._setObserver(this);
 				this._dataPathCache = {};
-
-				this.sendMessage(0);
 			}
+			if (oldData != data) this.sendMessage(0);
 		},
 		
 		/**
@@ -460,6 +459,19 @@
 		},
 
 		doGetData: function(path, options, callback) {
+			
+			function pollEvaluate(data, dataPath, option, callback) {
+				var totalAsyncExecutionTimes = dorado.DataPipe.MONITOR.asyncExecutionTimes;
+				var data = dataPath.evaluate(data, options);
+				if (dorado.DataPipe.MONITOR.asyncExecutionTimes - totalAsyncExecutionTimes > 0) {
+					setTimeout(function() {
+						pollEvaluate(data, dataPath, option, callback);
+					}, 60);
+				}
+				else {
+					$callback(callback, true, data);
+				}
+			}
 
 			function evaluatePath(path, options, callback) {
 				var data = this._data;
@@ -482,22 +494,45 @@
 						}
 					}
 					
-					var asyncExecutionTimes = dorado.DataPipe.MONITOR.asyncExecutionTimes;
+					var totalAsyncExecutionTimes = dorado.DataPipe.MONITOR.asyncExecutionTimes;
 					var dataPath = dorado.DataPath.create(path);
 					if (data) data = dataPath.evaluate(data, options);
 					
+					var asyncExecutionTimes = dorado.DataPipe.MONITOR.asyncExecutionTimes - totalAsyncExecutionTimes;
 					this._dataPathCache[key] = {
 						data: data,
-						asyncExecutionTimes: dorado.DataPipe.MONITOR.asyncExecutionTimes - asyncExecutionTimes
+						asyncExecutionTimes: asyncExecutionTimes
 					};
+					
+					if (callback) {
+						if (asyncExecutionTimes < 1) {
+							$callback(callback, true, data);
+						}
+						else {
+							var pollOption = dorado.Core.clone(option);
+							pollOption.loadMode = "always";
+							setTimeout(function() {
+								pollEvaluate(data, dataPath, pollOption, callback);
+							}, 100);
+						}
+					}
+					else {
+						return data;
+					}
 				} else if (!path) {
 					var dataType = this.getDataType(null, true);
 					if (dataType instanceof dorado.AggregationDataType) {
 						this.setData([]);
 						data = this._data;
 					}
+					
+					if (callback) {
+						$callback(callback, true, data);
+					}
+					else {
+						return data;
+					}
 				}
-				return data;
 			}
 
 			if (typeof options == "string") {
@@ -530,8 +565,7 @@
 					this.doLoad( {
 						scope: this,
 						callback: function(success, result) {
-							if (success) result = evaluatePath.call(this, path, options);
-							$callback(callback, success, result);
+							if (success) result = evaluatePath.call(this, path, options, callback);
 						}
 					});
 					if (sysParameter) sysParameter.remove("preloadConfigs");
@@ -550,12 +584,11 @@
 				}
 			}
 
-			var data = evaluatePath.call(this, path, options);
 			if (callback) {
-				$callback(callback, true, data);
+				evaluatePath.call(this, path, options, callback);
 			}
 			else {
-				return data;
+				return evaluatePath.call(this, path, options, null);
 			}
 		},
 

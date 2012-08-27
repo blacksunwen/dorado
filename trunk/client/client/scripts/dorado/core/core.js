@@ -34,6 +34,7 @@ var dorado = {
 		for (var p in jQuery.browser) {
 			if (jQuery.browser.hasOwnProperty(p)) browser[p] = jQuery.browser[p];
 		}
+		if (browser.chrome) browser.webkit = true; // jQuery 1.8.0不再认为chrome属于webkit
 		browser.android = (/android/gi).test(navigator.appVersion);
 		browser.iOS = (/iphone|ipad/gi).test(navigator.appVersion);
 		browser.isTouch = "ontouchstart" in window;
@@ -327,6 +328,8 @@ dorado.Core = {
 			if (obj == null || typeof(obj) != "object") return obj;
 			if (typeof obj.clone == "function") {
 				return obj.clone(deep);
+			} if (obj instanceof Date) {
+				return new Date(obj.getTime());
 			} else {
 				var constr = obj.constructor;
 				var cloned = new constr();

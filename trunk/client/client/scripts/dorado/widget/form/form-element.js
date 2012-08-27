@@ -422,6 +422,7 @@
 				setter: function(v) {
 					this._dataSet = v;
 					delete this._propertyDef;
+					this.resetBinding();
 				}
 			},
 			
@@ -429,6 +430,7 @@
 				setter: function(v) {
 					this._dataPath = v;
 					delete this._propertyDef;
+					this.resetBinding();
 				}
 			},
 			
@@ -439,7 +441,12 @@
 			 * @see dorado.widget.AbstractEditor#attribute:property
 			 */
 			property: {
-				writeBeforeReady: true
+				writeBeforeReady: true,
+				setter: function(v) {
+					this._property = v;
+					delete this._propertyDef;
+					this.resetBinding();
+				}
 			},
 			
 			/**
@@ -541,7 +548,7 @@
 				setter: function(entity) {
 					this._entity = entity;
 					if (this._rendered) {
-						var hintControl = this.getHintControl();
+						var hintControl = this.getHintControl(false);
 						if (hintControl) {
 							hintControl.set("messages", null);
 						}
@@ -643,7 +650,7 @@
 		},
 		
 		setFocus: function() {
-			var editor = this.getEditor();
+			var editor = this.getEditor(false);
 			if (editor) {
 				editor.setFocus();
 			}
@@ -659,7 +666,7 @@
 			return editor;
 		},
 		
-		getEditor: function() {
+		getEditor: function(create) {
 			var control = this._editor;
 			if (this._controlRegistered) {
 				var config1 = {}, config2 = {}, attrs = control.ATTRIBUTES;
@@ -677,7 +684,7 @@
 				return control;
 			}
 			
-			if (!control) {
+			if (!control && create) {
 				var propertyDef = this.getBindingPropertyDef();
 				if (propertyDef) {
 					if (!this._editorType) {
@@ -689,7 +696,7 @@
 						}
 					}
 					
-					if (!this._trigger && propertyDef._mapping) {
+					if (this._trigger === undefined && propertyDef._mapping) {
 						if ((!this._editorType || this._editorType == "TextEditor")) {
 							this._trigger = new dorado.widget.AutoMappingDropDown({
 								items: propertyDef._mapping
@@ -728,9 +735,9 @@
 			return control;
 		},
 		
-		getHintControl: function() {
+		getHintControl: function(create) {
 			var control = this._hintControl;
-			if (!control) {
+			if (!control && create) {
 				var config = {
 					showIconOnly: !this._showHintMessage
 				};
@@ -751,7 +758,7 @@
 		},
 		
 		initEditorConfig: function(config) {
-			if (this._trigger) config.trigger = this._trigger;
+			if (this._trigger !== undefined) config.trigger = this._trigger;
 			if (!this._editable) config.editable = false;
 			if (this._readOnly) config.readOnly = this._readOnly || this._realReadOnly;
 			if (this._dataSet && this._property) {
@@ -770,12 +777,12 @@
 		},
 		
 		onEditorStateChange: function(editor, arg) {
-			var hintControl = this.getHintControl();
+			var hintControl = this.getHintControl(false);
 			if (hintControl) hintControl.set("messages", editor.get("validationMessages"));
 		},
 		
 		onEditorPost: function(editor, arg) {
-			var hintControl = this.getHintControl();
+			var hintControl = this.getHintControl(false);
 			if (hintControl) {
 				messages = editor.get("validationMessages");
 				hintControl.set("messages", messages || DEFAULT_OK_MESSAGES);
@@ -786,7 +793,7 @@
 			if (!this._dataSet && !this._property) {
 				var exception = arg.exception;
 				if (exception instanceof dorado.widget.editor.PostException) {
-					var hintControl = this.getHintControl();
+					var hintControl = this.getHintControl(false);
 					if (hintControl) hintControl.set("messages", exception.messages);
 				}
 			}
@@ -826,11 +833,24 @@
 			return required;
 		},
 		
+		resetBinding: function() {
+			if (!this._ready) return;
+			
+			var config = {
+				dataSet: this._dataSet,
+				dataPath: this._dataPath,
+				property: this._property
+			};
+			var editor = this.getEditor(false), hintControl = this.getHintControl(false);
+			if (editor) editor.set(config);
+			if (hintControl) hintControl.set(config);
+		},
+		
 		refreshDom: function(dom) {
 			var height = this._height || this._realHeight;
 			$invokeSuper.call(this, arguments);
 			
-			var dom = this._dom, editorEl = this._editorEl, labelEl = this._labelEl, hintEl = this._hintEl, editor = this.getEditor();
+			var dom = this._dom, editorEl = this._editorEl, labelEl = this._labelEl, hintEl = this._hintEl, editor = this.getEditor(true);
 			var domWidth = dom.offsetWidth || this._realWidth || 0, domHeight = dom.offsetHeight || this._realHeight || 0;
 			if (this._showLabel) {
 				labelEl.style.display = '';
@@ -885,7 +905,7 @@
 			}
 			
 			if (hintEl) {
-				var hintControl = this.getHintControl();
+				var hintControl = this.getHintControl(true);
 				if (this._hintPosition != "bottom") {
 					if (this._labelPosition == "top") hintEl.style.top = labelHeight + "px";
 					if (this._editorWidth > 0) {
@@ -909,7 +929,7 @@
 		 * </p>
 		 */
 		refreshData: function() {
-			var editor = this.getEditor();
+			var editor = this.getEditor(false);
 			if (editor != null && dorado.Object.isInstanceOf(editor, dorado.widget.AbstractEditor)) {
 				editor.refreshData();
 			}

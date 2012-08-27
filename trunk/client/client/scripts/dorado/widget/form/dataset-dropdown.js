@@ -104,41 +104,56 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.RowListDropDown,/** @scope
 	},
 	
 	open: function(editor) {
-		var dropdown = this, dataSet = this._dataSet, superClass = $getSuperClass();
+		var dropdown = this, dataSet = dropdown._dataSet, superClass = $getSuperClass();
 		
-		if (this._useEmptyItem && dataSet && !dataSet._emptyItemListenerBinded) {
-			dataSet.addListener("onDataLoad", function(self) {
+		var insertEmptyItem = function(self, arg) {
+			if (arg.pageNo == 1) {
 				var items = self.getData(self._dataPath);
-				if (items instanceof dorado.EntityList) items.insert(null, "begin");
-			});
-			dataSet._emptyItemListenerBinded = true;
-		}
-		
+				if (items instanceof dorado.EntityList) {
+					var emptyItem = items.insert(null, "begin");
+					emptyItem.isEmptyItem = true;
+				}
+			}
+		};
 		var relocate = function() {
 			if (dropdown._duringShowAnimation) {
 				dropdown._shouldRelocate = true;
 			} else {
 				dropdown.locate();
 			}
-		}
+		};
 		
 		var doOpen = function(flush) {
-			var data = dataSet.getData(dropdown._dataPath, {
-				loadMode: "always",
-				flush: flush
-			});
-			
-			if (!dropdown._useDataBinding) dropdown._items = data;
-			superClass.prototype.open.call(dropdown, editor);
-			
 			if (dropdown._useDataBinding) {
-				dataSet.addListener("onDataLoad", relocate);
+				if (dropdown._useDataBinding && dropdown._useEmptyItem) {
+					dataSet.addListener("onLoadData", insertEmptyItem);
+				}
+				dataSet.addListener("onLoadData", relocate);
 				dropdown.addListener("onClose", function() {
-					dataSet.removeListener("onDataLoad", relocate);
+					if (dropdown._useDataBinding && dropdown._useEmptyItem) {
+						dataSet.removeListener("onLoadData", insertEmptyItem);
+					}
+					dataSet.removeListener("onLoadData", relocate);
 				}, {
 					once: true
 				});
 			}
+			
+			dataSet.getDataAsync(dropdown._dataPath, function(data) {
+				if (!dropdown._useDataBinding) {
+					dropdown.set("items", data);
+				} else if (!flush && dropdown._useEmptyItem && data && data instanceof dorado.EntityList) {
+					var emptyItem = data.getFirst();
+					if (!emptyItem || !emptyItem.isEmptyItem) {
+						emptyItem = data.insert(null, "begin");
+						emptyItem.isEmptyItem = true;
+					}
+				}
+				superClass.prototype.open.call(dropdown, editor);
+			}, {
+				loadMode: "always",
+				flush: flush
+			});
 		};
 		
 		if (this._useDataBinding && this._filterOnOpen) {

@@ -933,10 +933,12 @@
 	 * @extends dorado.widget.grid.SubControlCellRenderer
 	 */
 	dorado.widget.grid.CheckBoxCellRenderer = $extend(dorado.widget.grid.SubControlCellRenderer, /** @scope dorado.widget.grid.CheckBoxCellRenderer.prototype */{
+		
+		preventCellEditing: true,
+		
 		createSubControl: function(arg) {
 			var self = this;
 			var checkbox = new dorado.widget.CheckBox({
-				readOnly: arg.grid.get("readOnly"),
 				iconOnly: true,
 				
 				beforePost: function(control, arg) {
@@ -1006,7 +1008,10 @@
 			checkbox._cellEntity = entity;
 			checkbox._cellColumn = column;
 			checkbox.disableListeners();
-			checkbox.set("value", value);
+			checkbox.set({
+				readOnly: !arg.grid.shouldEditing(column),
+				value: value
+			});
 			checkbox.refresh();
 			checkbox.enableListeners();
 		}
@@ -1018,6 +1023,8 @@
 	 * @extends dorado.widget.grid.SubControlCellRenderer
 	 */
 	dorado.widget.grid.RadioGroupCellRenderer = $extend(dorado.widget.grid.SubControlCellRenderer, /** @scope dorado.widget.grid.RadioGroupCellRenderer.prototype */{
+		
+		preventCellEditing: true,
 		
 		/**
 		 * 返回单选框的数组。
@@ -1045,7 +1052,6 @@
 		createSubControl: function(arg) {
 			var self = this;
 			return new dorado.widget.RadioGroup({
-				readOnly: arg.grid.get("readOnly"),
 				width: "100%",
 				radioButtons: this.getRadioButtons(arg),
 				
@@ -1085,7 +1091,10 @@
 			radioGroup._cellEntity = entity;
 			radioGroup._cellColumn = column;
 			radioGroup.disableListeners();
-			radioGroup.set("value", value);
+			radioGroup.set({
+				readOnly: !arg.grid.shouldEditing(column),
+				value: value
+			});
 			radioGroup.refresh();
 			radioGroup.enableListeners();
 		}
@@ -1460,7 +1469,7 @@
 				var trigger = column.get("trigger"), displayFormat = column.get("displayFormat"), typeFormat = column.get("typeFormat");
 				if (!dtCode || (pd && pd._mapping)) dataType = undefined;
 				
-				if (!trigger) {
+				if (trigger === undefined) {
 					if (pd && pd._mapping) {
 						trigger = new dorado.widget.AutoMappingDropDown({
 							items: pd._mapping
@@ -1680,7 +1689,7 @@
 			var trigger = column.get("trigger"), displayFormat = column.get("displayFormat"), typeFormat = column.get("typeFormat");
 			var pd = column._propertyDef;
 			
-			if (!trigger) {
+			if (trigger === undefined) {
 				if (pd && pd._mapping) {
 					trigger = new dorado.widget.AutoMappingDropDown({
 						items: pd._mapping
@@ -1711,7 +1720,7 @@
 				}
 			}
 			
-			if (trigger) editor.set("trigger", trigger);
+			if (trigger !== undefined) editor.set("trigger", trigger);
 			return editor;
 		},
 		
@@ -2440,24 +2449,10 @@
 				var textEditor = new dorado.widget.TextEditor({
 					width: "100%",
 					onPost: function(textEditor) {
-						var value = "";
-						if (textEditor.get("mapping")) {
-							value = textEditor.get("value");
-						} else {
-							var text = textEditor.get("text"), operator;
-							if (text) {
-								var filterValue = dorado.Toolkits.parseFilterValue(text), operator = filterValue.operator, value = filterValue.value;
-								var pd = column._propertyDef;
-								if (pd && pd._mapping) {
-									value = pd.getMappedKey(value);
-								}
-								value = operator + value;
-							}
-						}
-						
+						var criterions = dorado.widget.grid.DataColumn.parseCriterions(textEditor.get("text"), column);
 						var filterEntity = grid.get("filterEntity");
 						filterEntity.disableObservers();
-						filterEntity.set(column._property, value);
+						filterEntity.set(column._property, criterions);
 						filterEntity.enableObservers();
 					},
 					onKeyDown: function(textEditor, arg) {
@@ -2467,57 +2462,8 @@
 						}
 					}
 				});
-				
-				jQuery.aop.around({
-					target: textEditor,
-					method: "doSet"
-				}, function(invocation) {
-					var attr = invocation.arguments[0];
-					var value = invocation.arguments[1];
-					if (attr == "value" && value != null) {
-						var dataType = column.get("dataType");
-						if (dataType) {
-							value = dataType.parse(value);
-							value = dataType.toText(value, column.get("typeFormat"));
-						}
-						invocation.arguments[1] = value;
-					}
-					return invocation.proceed();
-				});
 
-				var trigger = column.get("trigger"), pd = column._propertyDef;
-				if (!trigger) {
-					if (pd && pd._mapping) {
-						textEditor.set({
-							mapping: pd._mapping,
-							trigger: "autoMappingDropDown2"
-						});
-					}
-				} 
-				
-				if (!textEditor.get("trigger")) {
-					var dataType = column.get("dataType");
-					if (dataType) {
-						if (dataType._code == dorado.DataType.PRIMITIVE_BOOLEAN || dataType._code == dorado.DataType.BOOLEAN) {
-							textEditor.set({
-								mapping: [{
-									key: false,
-									value: $resource("dorado.core.BooleanFalse")
-								}, {
-									key: true,
-									value: $resource("dorado.core.BooleanTrue")
-								}],
-								trigger: "autoMappingDropDown2"
-							});
-						}
-						else if (dataType._code == dorado.DataType.DATE) {
-							textEditor.set("trigger", "defaultDateDropDown");
-						}
-						else if (dataType._code == dorado.DataType.DATETIME) {
-							textEditor.set("trigger", "defaultDateTimeDropDown");
-						}
-					}
-				}
+				textEditor.set("trigger", "defaultCriterionDropDown");
 				return textEditor;
 			} else {
 				return null;
@@ -2525,28 +2471,19 @@
 		},
 		
 		refreshSubControl: function(textEditor, arg) {
-			var value, text, entity = arg.data, column = arg.column, property = column._property, pd = column._propertyDef;
-			if (entity) {
-				if (textEditor.get("mapping")) {
-					value = entity.get(property);
-				} else {
-					text = entity.getText(property);
-					if (text) {
-						var filterValue = dorado.Toolkits.parseFilterValue(text), operator = filterValue.operator, value = filterValue.value;
-						if (pd && pd._mapping) {
-							value = pd.getMappedValue(value);
-						}
-						text = operator + value;
-					}
-				}
-			}	
+			var text, entity = arg.data, column = arg.column, property = column._property, criterions = entity.get(property);
+			
+			if (criterions) {
+				text = dorado.widget.grid.DataColumn.criterionsToText(criterions, column);
+			}
+			
 			textEditor._cellColumn = arg.column;
 			textEditor.disableListeners();
-			if (text !== undefined) {
+			if (text) {
 				textEditor.set("text", text);
 			}
 			else {
-				textEditor.set("value", value);
+				textEditor.set("value", null);
 			}
 			textEditor.refresh();
 			textEditor.enableListeners();

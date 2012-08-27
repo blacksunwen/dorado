@@ -219,12 +219,15 @@
 			this.set("layout", new dorado.widget.layout.DockLayout());
 		},
 		
-		onReady: function() {
-			$invokeSuper.call(this);			
+		onReady: function() {	
 			this._children.each(function(child) {
 				if (!(child instanceof dorado.widget.Control) && !child._ready) child.onReady();
-
-				if (dorado.Object.isInstanceOf(child, dorado.widget.FloatControl) && !child._ready && child._floating && child._visible) {
+			});
+			
+			$invokeSuper.call(this);	
+					
+			this._children.each(function(child) {
+				if (child._floating && dorado.Object.isInstanceOf(child, dorado.widget.FloatControl) && !child._ready && child._visible) {
 					child.show();
 				}
 			});
@@ -265,6 +268,13 @@
 				});
 				this.addChild(htmlContrainer);
 			}
+				
+			if (!this._ready) {
+				this._children.each(function(child) {
+					if (!(child instanceof dorado.widget.Control) && !child._ready) child.onReady();
+				});
+			}
+			
 			$invokeSuper.call(this, [replace, element, nextChildElement]);
 		},
 		

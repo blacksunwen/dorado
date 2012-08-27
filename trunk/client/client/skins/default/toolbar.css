@@ -92,8 +92,8 @@
 }
 
 .d-toolbar-button-disabled .button-left .icon {
-	filter: alpha(opacity =   50);
-	opacity: 0.5;
+	filter: alpha(opacity = 40);
+	opacity: 0.4;
 }
 
 .d-toolbar-button-disabled .caption {

@@ -465,9 +465,15 @@
 				setter: function(items) {
 					if (this._useEmptyItem) {
 						if (items instanceof Array) {
-							items.insert(null, 0);
+							if (items.length && items[0] != null) {
+								items.insert(null, 0);
+							}
 						} else if (items instanceof dorado.EntityList) {
-							items.insert({}, "begin");
+							var emptyItem = items.getFirst();
+							if (!emptyItem || !emptyItem.isEmptyItem) {
+								emptyItem = items.insert(null, "begin");
+								emptyItem.isEmptyItem = true;
+							}
 						} else if (items == null) {
 							items = [null];
 						}

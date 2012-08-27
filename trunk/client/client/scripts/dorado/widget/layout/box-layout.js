@@ -135,7 +135,7 @@
 				realContainerHeight -= padding * 2; // 搞不懂为什么Webkit中一定要重复的减去一次padding后才刚好 2012/3/14
 			}
 			
-			$(parentDom).css("text-align", HBOX_PACKS[this._pack]);
+			$fly(parentDom).css("text-align", HBOX_PACKS[this._pack]);
 			row.style.verticalAlign = HBOX_ALIGNS[this._align];
 			
 			if (!dorado.Browser.webkit) {
@@ -214,8 +214,8 @@
 				region.height = h;
 				
 				if (i > 0) cell.style.paddingLeft = regionPadding + "px";
-				if (isNewCell) this.renderControl(region, cell, true, true);
-				else this.resetControlDimension(region, cell, true, true);
+				if (isNewCell) this.renderControl(region, cell, true, this._stretch);
+				else this.resetControlDimension(region, cell, true, this._stretch);
 				i++;
 			}
 			

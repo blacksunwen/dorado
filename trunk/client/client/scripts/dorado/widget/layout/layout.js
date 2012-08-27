@@ -454,7 +454,7 @@ dorado.widget.layout.NativeLayout = $extend(dorado.widget.layout.Layout, /** @sc
 	},
 	
 	onRemoveControl: function(control) {
-		if (!this._attached || this._disableRendering) return;
+		if (!this._attached/* || this._disableRendering 此判断导致removeAllChildren()不能生效 */) return;
 		var region = this._regions.get(control._id);
 		control.unrender();
 	},

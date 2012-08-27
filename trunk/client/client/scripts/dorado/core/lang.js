@@ -2,7 +2,7 @@
 	// provide innerText supports to Element for Mozilla
 	try {
 		if (HTMLElement && !HTMLElement.prototype.innerText) {
-			
+		
 			HTMLElement.prototype.__defineGetter__("innerText", function() {
 				var text = this.textContent;
 				if (text) {
@@ -29,6 +29,18 @@
 	} 
 	catch (ex) {
 	}
+	
+	if (!String.prototype.startsWith) {
+		String.prototype.startsWith = function(str) {
+			return this.slice(0, str.length) == str;
+		};
+	}
+	if (!String.prototype.endsWith) {
+		String.prototype.endsWith = function(str) {
+			return this.slice(-str.length) == str;
+		};
+	}
+	
 	
 	/**
 	 * @name Array
@@ -139,7 +151,7 @@
 		 * 另外，此函数的返回值可用于通知系统是否要终止整个遍历操作。
 		 * 返回true或不返回任何数值表示继续执行遍历操作，返回false表示终止整个遍历操作。<br>
 		 * 此回调函数中的this指向正在被遍历的数组。
-		 * 
+		 *
 		 * @example
 		 * var s = '';
 		 * ['A', 'B', 'C'].each(function(item) {

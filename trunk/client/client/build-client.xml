@@ -209,6 +209,7 @@
 			<filelist dir="${src}/scripts/dorado/widget/grid">
 				<file name="column-model.js" />
 				<file name="abstract-grid.js" />
+				<file name="filter-criterion.js" />
 				<file name="grid.js" />
 				<file name="data-grid.js" />
 			</filelist>
