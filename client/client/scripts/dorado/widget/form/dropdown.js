@@ -459,13 +459,13 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 		dropdown.initDropDownBox(box, editor);
 		
 		if (!dropdown._width) {
-			boxWidth = (dorado.Browser.webkit || dorado.Browser.mozilla) ? containerElement.firstChild.offsetWidth
+			boxWidth = (dorado.Browser.mozilla) ? containerElement.firstChild.offsetWidth
 					: containerElement.scrollWidth;
 			if (boxWidth > dropdown._realMaxWidth) boxWidth = dropdown._realMaxWidth;
 			if (boxWidth < dropdown._minWidth) boxWidth = dropdown._minWidth;
 		}
 		if (!dropdown._height) {
-			boxHeight = (dorado.Browser.webkit || dorado.Browser.mozilla) ? containerElement.firstChild.offsetHeight
+			boxHeight = (dorado.Browser.mozilla) ? containerElement.firstChild.offsetHeight
 					: containerElement.scrollHeight;
 			if (boxHeight > dropdown._realMaxHeight) boxHeight = dropdown._realMaxHeight;
 			if (boxHeight < dropdown._minHeight) boxHeight = dropdown._minHeight;

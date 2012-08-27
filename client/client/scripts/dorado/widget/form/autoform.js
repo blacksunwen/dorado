@@ -483,6 +483,8 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 				if (!element) {
 					config = {
 						name: name,
+						dataSet: self._dataSet,
+						dataPath: self._dataPath,
 						property: name
 					};
 				} else {

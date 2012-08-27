@@ -180,6 +180,21 @@
 					}
 				}
 			});
+			
+			var oldSet = filterEntity._set;
+			filterEntity._set = function(property, value) {
+				if (typeof value == "string") {
+					var dataColumns = grid.get("dataColumns"), column;
+					for (var i = 0; i < dataColumns.length; i++) {
+						if (dataColumns[i]._name == property) {
+							column = dataColumns[i];
+							break;
+						}
+					}
+					value = dorado.widget.grid.DataColumn.parseCriterions(value, column);
+				}
+				oldSet.call(this, property, value);
+			};
 
 			$invokeSuper.call(this, arguments);
 		},
@@ -1899,7 +1914,7 @@
 		},
 
 		shouldEditing: function(column) {
-			return this._editing && this._focused && column && !column.get("readOnly") && !this.get("readOnly") &&
+			return this._editing && column && !column.get("readOnly") && !this.get("readOnly") &&
 			column._property && column._property != "none" && column._property != this._groupProperty;
 		},
 
@@ -1999,36 +2014,30 @@
 		 * @protected
 		 * @param {Object[]} filterParams 过滤条件的数组。
 		 * @param {String} filterParams.property 要过滤的属性名。
-		 * @param {String} sortParams.operator 比较操作符。如"="、"link"、">"、"<="等。
-		 * @param {Object} sortParams.value 过滤条件值。
+		 * @param {String} filterParams.operator 比较操作符。如"="、"like"、">"、"<="等。
+		 * @param {Object} filterParams.value 过滤条件值。
 		 * @see dorado.widget.list.ItemModel#filter
 		 */
 		filter: function(filterParams) {
 			if (filterParams === undefined) {
-				var filterEntity = this._itemModel.filterEntity, filterParams = [];
+				filterParams = [];
+				var filterEntity = this._itemModel.filterEntity;
 				var dataColumns = this._columnsInfo.dataColumns;
 				for (var i = 0; i < dataColumns.length; i++) {
 					var column = dataColumns[i];
 					if (!column._property || column._property == "none") continue;
-					var text = filterEntity.get(column._property);
-					if (text == null || text == "") continue;
-
-					var filerValue = dorado.Toolkits.parseFilterValue(text + ''), operator = filerValue.operator, value = filerValue.value;
-					var dataType = column.get("dataType");
-					if (!operator && (!dataType || dataType._code == dorado.DataType.STRING)) {
-						operator = "like";
+					var criterions = filterEntity.get(column._property);
+					if (criterions && criterions.length) {
+						for (var j = 0; j < criterions.length; j++) {
+							var criterion = criterions[j];
+							filterParams.push({
+								property: column._property,
+								operator: criterion.operator,
+								value: criterion.value
+							});
+						}
 					}
-					if (dataType) value = dataType.parse(value, column.get("typeFormat"));
-
-					filterParams.push({
-						property: column._property,
-						operator: operator,
-						value: value
-					});
 				}
-			}
-			else if (filterParams && !(filterParams instanceof Array)) {
-				filterParams = [filterParams];
 			}
 			this._itemModel.filter(filterParams);
 			this.refresh(true);
@@ -2506,18 +2515,6 @@
 					onClick: function() {
 						self.get("filterEntity").clearData();
 						self.filter();
-					}
-				});
-				this.registerInnerControl(button);
-				button.render(floatFilterPanel);
-
-				button = new dorado.widget.SimpleIconButton({
-					className: "hide-button",
-					exClassName: "d-icon-button",
-					onClick: function() {
-						dorado.Toolkits.cancelDelayedAction(self, "$filterPanelTimerId");
-						self.getFloatFilterPanel().style.display = "none";
-						self.set("showFilterBar", false);
 					}
 				});
 				this.registerInnerControl(button);
@@ -3434,7 +3431,7 @@
 
 					grid._currentCell = cell;
 					$fly(cell).addClass("current-cell");
-					if (grid.shouldEditing(column)) {
+					if (grid._focused && !(column._renderer && column._renderer.preventCellEditing) && grid.shouldEditing(column)) {
 						var currentItem = this.getCurrentItem(), cellEditor;
 						if (currentItem) cellEditor = grid._currentCellEditor = grid.getCellEditor(column, currentItem);
 						if (cellEditor) {

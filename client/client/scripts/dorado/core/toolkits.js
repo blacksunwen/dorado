@@ -269,30 +269,6 @@ dorado.Toolkits = {
 		return false;
 	},
 	
-	parseFilterValue: function(text) {
-		var operator, c = text.charAt(0), multiValue = false;
-		if ('=' == c) {
-			operator = c;
-			text = text.substring(1);
-		} else if ("><".indexOf(c) >= 0) {
-			operator = c;
-			c = text.charAt(1);
-			if ('=' == c) {
-				operator += c;
-				text = text.substring(2);
-			} else {
-				text = text.substring(1);
-			}
-		} else if ("{[(".indexOf(c) >= 0) {
-			multiValue = true;
-		}
-		return {
-			operator: operator || '',
-			value: text,
-			multiValue: multiValue
-		};
-	},
-	
 	STATE_CODE: {
 		info: 0,
 		ok: 1,

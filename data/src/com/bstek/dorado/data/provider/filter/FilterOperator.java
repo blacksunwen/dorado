@@ -35,7 +35,15 @@ public enum FilterOperator {
 			return ">=";
 		}
 	},
-	like,
-	between,
-	in
+	like, likeStart {
+		public String toString() {
+			return "like*";
+		}
+	},
+	likeEnd {
+		public String toString() {
+			return "*like";
+		}
+	},
+	between, in
 }

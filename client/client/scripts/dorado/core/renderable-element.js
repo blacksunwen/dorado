@@ -273,7 +273,7 @@ dorado.RenderableElement = $extend(dorado.AttributeSupport, /** @scope dorado.Re
 	 */
 	unrender: function() {
 		var dom = this.getDom();
-		if (dom) jQuery(dom).remove();
+		if (dom && dom.parentNode) dom.parentNode.removeChild(dom);
 	},
 	
 	/**

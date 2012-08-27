@@ -62,8 +62,8 @@
 }
 
 .d-button-disabled .button-left .icon {
-	filter: alpha(opacity =   50);
-	opacity: 0.5;
+	filter: alpha(opacity =   40);
+	opacity: 0.4;
 }
 
 .d-button-disabled .caption {
@@ -87,8 +87,8 @@
 }
 
 .d-icon-button-disabled .icon {
-	filter: alpha(opacity =   50);
-	opacity: 0.5;
+	filter: alpha(opacity =   40);
+	opacity: 0.4;
 }
 
 .d-icon-button-trigger {
@@ -108,6 +108,6 @@
 }
 
 .d-icon-button-trigger-disabled .icon {
-	filter: alpha(opacity =   50);
-	opacity: 0.5;
+	filter: alpha(opacity =   40);
+	opacity: 0.4;
 }

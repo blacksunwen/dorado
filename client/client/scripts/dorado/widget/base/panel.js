@@ -415,7 +415,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		 * 显示在标题栏右侧的工具按钮。
 		 * 
 		 * @attribute
-		 * @type dorado.util.KeyedArray
+		 * @type dorado.widget.SimpleIconButton[]|dorado.util.KeyedArray
 		 */
 		tools: {
 			innerComponent: "SimpleIconButton"

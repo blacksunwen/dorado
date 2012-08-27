@@ -121,7 +121,7 @@
 		},
 		
 		refreshDom: function(dom) {
-					
+		
 			function isSameGrid(oldGrid, newGrid) {
 				if (!oldGrid) {
 					return false;
@@ -143,10 +143,10 @@
 						if (oldRegion == null && newRegion == null) {
 							continue;
 						}
-						if (oldRegion == null ||
-							oldRegion.colSpan != newRegion.colSpan ||
-							oldRegion.rowSpan != newRegion.rowSpan ||
-							oldRegion.regionIndex != newRegion.regionIndex) {
+						if (oldRegion == null || newRegion == null ||
+						oldRegion.colSpan != newRegion.colSpan ||
+						oldRegion.rowSpan != newRegion.rowSpan ||
+						oldRegion.regionIndex != newRegion.regionIndex) {
 							same = false;
 							break;
 						}
@@ -206,7 +206,8 @@
 					tr.style.height = this._rowHeight + "px";
 				}
 				
-				var cols = grid[row], cellForRenders = [], colIndex = 0;;
+				var cols = grid[row], cellForRenders = [], colIndex = 0;
+				;
 				for (var col = 0; col < cols.length; col++) {
 					var region = grid[row][col];
 					if (region && region.regionIndex <= index) {
@@ -286,7 +287,8 @@
 				var controlDom = region.control.getDom();
 				region.height = td.clientHeight;
 				controlDom.style.display = region.display;
-				var useControlWidth = region.control.getAttributeWatcher().getWritingTimes("width") && region.control._width != "auto";;
+				var useControlWidth = region.control.getAttributeWatcher().getWritingTimes("width") && region.control._width != "auto";
+				;
 				this.renderControl(region, td, !useControlWidth, true);
 			}
 		},

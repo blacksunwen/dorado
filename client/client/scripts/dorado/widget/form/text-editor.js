@@ -4,6 +4,8 @@
 		return ["input", "textarea"].indexOf(dom.tagName.toLowerCase()) >= 0;
 	}
 	
+	var attributesRelativeWithTrigger = ["dataSet", "dataType", "trigger", "dataPath", "property"];
+	
 	/**
 	 * @name dorado.widget.editor
 	 * @namespace 编辑器所使用的一些相关类的命名空间。
@@ -152,7 +154,6 @@
 				setter: function(v) {
 					if (v instanceof Array && v.length == 0) v = null;
 					this._trigger = v;
-					this._triggerChanged = true;
 				}
 			}
 		},
@@ -210,6 +211,11 @@
 		 * @parem text {String} 编辑框中的文本。
 		 */
 		// =====
+		
+		doSet: function(attr, value, skipUnknownAttribute, lockWritingTimes) {
+			if (attributesRelativeWithTrigger.indexOf(attr) >= 0) this._triggerChanged = true;
+			return $invokeSuper.call(this, [attr, value, skipUnknownAttribute, lockWritingTimes]);
+		},
 		
 		createDom: function() {
 			var textDom = this._textDom = this.createTextDom();
@@ -321,7 +327,6 @@
 				$fly(dom).toggleClass(this._className + "-readonly", !!readOnly);
 			}
 			this.resetReadOnly();
-			
 			if (this._triggerChanged) {
 				this._triggerChanged = false;
 				this.refreshTriggerDoms();

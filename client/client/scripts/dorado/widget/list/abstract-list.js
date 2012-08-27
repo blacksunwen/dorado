@@ -377,8 +377,8 @@ dorado.widget.AbstractList = $extend(dorado.widget.Control, /** @scope dorado.wi
 	 * @protected
 	 * @param {Object[]} filterParams 过滤条件的数组。
 	 * @param {String} filterParams.property 要过滤的属性名。
-	 * @param {String} sortParams.operator 比较操作符。如"="、"link"、">"、"<="等。
-	 * @param {Object} sortParams.value 过滤条件值。
+	 * @param {String} filterParams.operator 比较操作符。如"="、"like"、">"、"<="等。
+	 * @param {Object} filterParams.value 过滤条件值。
 	 * @see dorado.widget.list.ItemModel#filter
 	 */
 	filter: function(filterParams) {

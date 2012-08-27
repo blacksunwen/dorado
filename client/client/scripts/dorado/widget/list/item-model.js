@@ -4,7 +4,7 @@
 	
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
-	 * @class 列表数据模型。 
+	 * @class 列表数据模型。
 	 * <p>列表数据模型是用于辅助列表控件管理列表数据的对象。</p>
 	 */
 	dorado.widget.list.ItemModel = $class(/** @scope dorado.widget.list.ItemModel.prototype */{
@@ -167,7 +167,7 @@
 		 * @return {Object|dorado.Entity} 数据实体。
 		 */
 		getItemById: function(itemId) {
-			var items = this._items; 
+			var items = this._items;
 			if (items instanceof Array) {
 				return items[itemId];
 			} else {
@@ -227,15 +227,17 @@
 		 * @param {Object[]} filterParams 过滤条件的数组。
 		 * @param {Function} [customFilter] 自定义过滤方法。
 		 * @param {String} filterParams.property 要过滤的属性名。
-		 * @param {String} sortParams.operator 比较操作符。如"="、"link"、">"、"<="等。
-		 * @param {Object} sortParams.value 过滤条件值。
+		 * @param {String} filterParams.operator 比较操作符。如"="、"like"、">"、"<="等。
+		 * @param {Object} filterParams.value 过滤条件值。
 		 */
 		filter: function(filterParams, customFilter) {
 		
 			function getValueComparator(op) {
 				var comparator = valueComparators[escape(op)];
 				if (!comparator) {
-					valueComparators[escape(op)] = comparator = new Function("v1,v2", "return v1" + ((op == '=') ? "==" : op) + "v2");
+					if (!op || op == '=') op = "==";
+					else if (op == '<>') op = "!=";
+					valueComparators[escape(op)] = comparator = new Function("v1,v2", "return v1" + op + "v2");
 				}
 				return comparator;
 			}
@@ -244,16 +246,17 @@
 				var value;
 				if (filterParam.property) {
 					value = (item instanceof dorado.Entity) ? item.get(filterParam.property) : item[filterParam.property];
-				}
-				else {
+				} else {
 					value = item;
 				}
+				
 				var op = filterParam.operator;
-				if (!op) {
-					op = (typeof value == "string") ? "like" : '=';
-				}
 				if (op == "like") {
 					return (value + '').toLowerCase().indexOf(filterParam.value) >= 0;
+				} else if (op == "like*") {
+					return (value + '').toLowerCase().startsWith(filterParam.value);
+				} else if (op == "*like") {
+					return (value + '').toLowerCase().endsWith(filterParam.value);
 				} else {
 					return getValueComparator(op)(value, filterParam.value);
 				}
@@ -266,8 +269,8 @@
 				for (var it = this.iterator(0); it.hasNext();) {
 					var item = it.next(), passed = undefined;
 					if (customFilter) {
-						 passed = customFilter(item, filterParams);
-					}				
+						passed = customFilter(item, filterParams);
+					}
 					if (passed == null) {
 						passed = true;
 						for (var i = 0; i < filterParams.length; i++) {

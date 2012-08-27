@@ -165,6 +165,7 @@
 	dorado.widget.SimpleIconButton = $extend(dorado.widget.SimpleButton, {
 		$className: "dorado.widget.SimpleIconButton",
 		_inherentClassName: "i-icon-button",
+		
 		ATTRIBUTES: /** @scope dorado.widget.SimpleIconButton.prototype */ {
 			className: {
 				defaultValue: "d-icon-button"

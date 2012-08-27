@@ -560,7 +560,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 
 			function _getAsync(entity, property, callback, loadMode) {
 				var i = property.indexOf('.');
-				if (i > 0 && entity.ignorePropertyPath) {
+				if (i > 0 && !entity.ignorePropertyPath) {
 					var p1 = property.substring(0, i);
 					var p2 = property.substring(i + 1);
 					if ( entity instanceof dorado.Entity) {
@@ -688,7 +688,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 
 			function _getTextAsync(entity, property, callback, loadMode) {
 				var i = property.indexOf('.');
-				if (i > 0) {
+				if (i > 0 && !entity.ignorePropertyPath) {
 					var p1 = property.substring(0, i);
 					var p2 = property.substring(i + 1);
 					if ( entity instanceof dorado.Entity) {
@@ -927,8 +927,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		set : function(property, value) {
 			
 			function doSet(entity, property, value) {
-				var i = property.indexOf('.');
-				if (i > 0) {
+				if (!entity.ignorePropertyPath && property.indexOf('.') > 0) {
 					entity._dispatchOperationToSubEntity(property, true, "set", [value]);
 				} else {
 					var propertyDef = entity.getPropertyDef(property);
@@ -973,8 +972,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		 * @param {String} text 要设置的属性值。
 		 */
 		setText: function(property, text) {
-			var i = property.indexOf('.');
-			if (i > 0) {
+			if (!this.ignorePropertyPath && property.indexOf('.') > 0) {
 				this._dispatchOperationToSubEntity(property, true, "setText", [text]);
 			} else {
 				var propertyDef = this.getPropertyDef(property), value = text;

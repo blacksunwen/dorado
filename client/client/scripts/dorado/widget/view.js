@@ -467,7 +467,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
                             case 8: {	// Backspace
                                 if (evt.srcElement) {
                                     var nodeName = evt.srcElement.nodeName.toLowerCase();
-                                    if (nodeName != 'input' && nodeName != "textarea") {
+                                    if (!((nodeName == 'input' || nodeName == "textarea") && !evt.srcElement.readOnly && !evt.srcElement.disabled)) {
                                         return false;
                                     }
                                 }

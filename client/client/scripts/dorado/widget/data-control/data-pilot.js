@@ -257,7 +257,7 @@
 				case "<":
 					item = new PageButton({
 						icon: itemCode.showIcon ? "url(>skin>common/icons.gif) -40px -220px" : null,
-						tip: itemCode.showCaption ? $resource("dorado.baseWidget.DataPilotPrevousPage") : null,
+						tip: itemCode.showCaption ? $resource("dorado.baseWidget.DataPilotPreviousPage") : null,
 						onClick: function() {
 							if (!fireOnActionEvent.call(pilot, itemCode.code, self)) return;
 							var list = pilot.getBindingData();
