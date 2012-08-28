@@ -287,8 +287,7 @@
 		 *  }
 		 * });
 		 */
-		set : function(attr, value, options) {
-			
+		set : function(attr, value, options) {			
 			function overrideDefinition(targetDefs, def, name) {
 				if (!def) return;
 				var targetDef = targetDefs[name];

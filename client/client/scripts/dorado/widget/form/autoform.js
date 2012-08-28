@@ -507,10 +507,6 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 					preventOverwriting: true,
 					lockWritingTimes: true
 				});
-				
-				if (element instanceof dorado.widget.FormElement && !this._dataSet && propertyDef._readOnly) {
-					element._realReadOnly = true;
-				}
 			});
 			if (container) {
 				layout.enableRendering();
