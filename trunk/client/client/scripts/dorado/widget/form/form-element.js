@@ -1,6 +1,6 @@
 (function() {
 
-	var specialFormConfigProps = ["formProfile", "width", "height", "className", "exClassName", "visible", "hideMode", "layoutConstriant"];
+	var specialFormConfigProps = ["formProfile", "width", "height", "className", "exClassName", "visible", "hideMode", "layoutConstriant", "readOnly"];
 	
 	var DEFAULT_OK_MESSAGES = [{
 		state: "ok"
@@ -282,6 +282,11 @@
 				
 				if (config.dataSet) delete config.entity;
 				
+				var readOnly = formProfile.get("readOnly");
+				if (this._realReadOnly != readOnly) {
+					this._realReadOnly = readOnly;
+				}
+				
 				this.set(config, {
 					skipUnknownAttribute: true,
 					tryNextOnError: true,
@@ -557,6 +562,7 @@
 			},
 			
 			readOnly: {
+				skipRefresh: true,
 				setter: function(v) {
 					this._readOnly = v;
 					this.resetEditorReadOnly();
@@ -760,7 +766,7 @@
 		initEditorConfig: function(config) {
 			if (this._trigger !== undefined) config.trigger = this._trigger;
 			if (!this._editable) config.editable = false;
-			if (this._readOnly) config.readOnly = this._readOnly || this._realReadOnly;
+			config.readOnly = this._readOnly || this._realReadOnly;
 			if (this._dataSet && this._property) {
 				config.dataSet = this._dataSet;
 			} else if (this._entity) {
