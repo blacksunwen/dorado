@@ -440,8 +440,15 @@
 			if (!this._rendered) return;
 			
 			var readOnly = !!(this._readOnly || this._readOnly2);
-			if (this._realReadOnly != readOnly) {
-				this._realReadOnly = readOnly;
+			if (readOnly && this._realReadOnly == readOnly) {
+				return;
+			}
+			this._realReadOnly = readOnly;
+			$fly(this.getDom()).toggleClass(this._className + "-readonly", readOnly);
+			
+			var textDomReadOnly = true;
+			if (!readOnly && this._editable) {
+				var realEditable = true;
 				if (isInputOrTextArea(this._textDom)) {
 					var triggers = this.get("trigger"), realEditable = true;
 					if (triggers && !(triggers instanceof Array)) triggers = [triggers];
@@ -454,11 +461,10 @@
 							}
 						}
 					}
-			
-					this._textDom.readOnly = (readOnly || !this._editable || !realEditable);
 				}
-				$fly(this.getDom()).toggleClass(this._className + "-readonly", readOnly);
+				textDomReadOnly = !realEditable;
 			}
+			this._textDom.readOnly = textDomReadOnly;
 		},
 		
 		/**
