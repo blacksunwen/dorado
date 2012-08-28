@@ -155,7 +155,7 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.RowListDropDown,/** @scope
 				flush: flush
 			});
 		};
-		
+
 		if (this._useDataBinding && this._filterOnOpen) {
 			var filterValue = (this._lastFilterValue) ? this._lastFilterValue : editor.get("text");
 			this.onFilterItems(filterValue, function() {

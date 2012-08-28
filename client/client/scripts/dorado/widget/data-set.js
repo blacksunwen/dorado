@@ -490,7 +490,12 @@
 							// 下面两行是为了确保MESSAGE_LOADING_START消息总是能被正确的处理
 							dorado.DataPipe.MONITOR.asyncExecutionTimes += (cachedData.asyncExecutionTimes || 0);
 							dorado.DataPipe.MONITOR.executionTimes += (cachedData.asyncExecutionTimes || 0);
-							return cachedData.data;
+							if (callback) {
+								$callback(callback, true, cachedData.data);
+								return;
+							} else {
+								return cachedData.data;
+							}
 						}
 					}
 					
