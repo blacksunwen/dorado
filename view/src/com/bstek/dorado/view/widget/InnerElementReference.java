@@ -20,8 +20,10 @@ public class InnerElementReference<E extends ViewElement> {
 			parent.unregisterInnerElement(this.element);
 		}
 		this.element = element;
-		parent.registerInnerElement(element);
-		element.setParent(parent);
+		if (element != null) {
+			parent.registerInnerElement(element);
+			element.setParent(parent);
+		}
 	}
 
 	public E get() {
