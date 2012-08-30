@@ -17,7 +17,7 @@ import com.bstek.dorado.view.widget.InnerElementReference;
  */
 @ClientObject(prototype = "dorado.widget.menu.ControlMenuItem",
 		shortTypeName = "Control")
-public class ControlMenuItem extends BaseMenuItem implements ViewElement {
+public class ControlMenuItem extends TextMenuItem implements ViewElement {
 	private InnerElementReference<Control> controlRef = new InnerElementReference<Control>(
 			this);
 	private Collection<ViewElement> innerElements = new HashSet<ViewElement>();
