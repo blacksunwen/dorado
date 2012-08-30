@@ -342,7 +342,6 @@
 					} else {
 						text = dorado.widget.grid.DataColumn.criterionsToText(criterions, column);
 					}
-					debugger;
 					dropdown.close(text);
 					grid.filter();
 				}
