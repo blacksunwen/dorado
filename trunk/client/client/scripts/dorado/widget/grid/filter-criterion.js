@@ -338,7 +338,7 @@
 				onClick: function() {
 					var column = editor._cellColumn, criterions = dropdown._criterions, grid = column._grid, text;
 					if (criterions.length == 1 && criterions[0].value === undefined && criterions[0].operator === dorado.widget.grid.DataColumn.getDefaultOperator(column)) {
-						text == undefined;
+						text == "";
 					} else {
 						text = dorado.widget.grid.DataColumn.criterionsToText(criterions, column);
 					}
