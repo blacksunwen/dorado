@@ -1460,38 +1460,39 @@
 					if (this.cachable) this._editorControl = editorControl;
 				}
 			}
+				
+			var column = this.column, cellEditor = this, pd = column._propertyDef;
+			var dataType = column.get("dataType"), dtCode = dataType ? dataType._code : -1;
+			var trigger = column.get("trigger"), displayFormat = column.get("displayFormat"), typeFormat = column.get("typeFormat");
+			if (!dtCode || (pd && pd._mapping)) dataType = undefined;
+			
+			if (trigger === undefined) {
+				if (pd && pd._mapping) {
+					trigger = new dorado.widget.AutoMappingDropDown({
+						items: pd._mapping
+					});
+				} else if (dtCode == dorado.DataType.DATE) {
+					trigger = "defaultDateDropDown";
+				} else if (dtCode == dorado.DataType.DATETIME) {
+					trigger = "defaultDateTimeDropDown";
+				}
+			}
+		
+			editorControl.set({
+				dataType: dataType,
+				displayFormat: displayFormat,
+				typeFormat: typeFormat,
+				trigger: trigger,
+				editable: column._editable
+			}, {
+				skipUnknownAttribute: true,
+				tryNextOnError: true,
+				preventOverwriting: true,
+				lockWritingTimes: true
+			});
 			
 			if (editorControl && !editorControl._initedForCellEditor) {
 				editorControl._initedForCellEditor = true;
-				
-				var column = this.column, cellEditor = this, pd = column._propertyDef;
-				var dataType = column.get("dataType"), dtCode = dataType ? dataType._code : -1;
-				var trigger = column.get("trigger"), displayFormat = column.get("displayFormat"), typeFormat = column.get("typeFormat");
-				if (!dtCode || (pd && pd._mapping)) dataType = undefined;
-				
-				if (trigger === undefined) {
-					if (pd && pd._mapping) {
-						trigger = new dorado.widget.AutoMappingDropDown({
-							items: pd._mapping
-						});
-					} else if (dtCode == dorado.DataType.DATE) {
-						trigger = "defaultDateDropDown";
-					} else if (dtCode == dorado.DataType.DATETIME) {
-						trigger = "defaultDateTimeDropDown";
-					}
-				}
-			
-				editorControl.set({
-					dataType: dataType,
-					displayFormat: displayFormat,
-					typeFormat: typeFormat,
-					trigger: trigger,
-					editable: column._editable
-				}, {
-					skipUnknownAttribute: true,
-					tryNextOnError: true,
-					preventOverwriting: true
-				});
 				
 				editorControl.addListener("onBlur", function(self) {
 					if ((new Date() - cellEditor._showTimestamp) > 300) cellEditor.hide();
@@ -1530,7 +1531,7 @@
 		},
 		
 		resize: function() {
-			var dom = this.getDom(), control = this.getEditorControl();
+			var dom = this.getDom(), control = this._editorControl;
 			var ie6 = (dorado.Browser.msie && dorado.Browser.version < 7);
 			if (control) {
 				if (ie6) control.getDom().style.display = "none";
@@ -1554,7 +1555,7 @@
 		show: function(parent, cell) {
 			$invokeSuper.call(this, [parent, cell]);
 			
-			var control = this.getEditorControl();
+			var control = this._editorControl;
 			if (!control) return;
 			control._focusParent = parent;
 			setTimeout(function() {
@@ -1578,7 +1579,7 @@
 		},
 		
 		hide: function(post) {
-			var control = this.getEditorControl();
+			var control = this._editorControl;
 			if (control) delete control._focusParent;
 			$invokeSuper.call(this, [post]);
 		}
@@ -1719,8 +1720,6 @@
 					editor = new dorado.widget.TextEditor();
 				}
 			}
-			
-			if (trigger !== undefined) editor.set("trigger", trigger);
 			return editor;
 		},
 		
