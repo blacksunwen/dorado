@@ -336,8 +336,12 @@
 			var okButton = new dorado.widget.Button({
 				caption: $resource("dorado.baseWidget.MessageBoxButtonOK"),
 				onClick: function() {
-					var column = editor._cellColumn, criterions = dropdown._criterions, grid = column._grid;
-					var text = dorado.widget.grid.DataColumn.criterionsToText(criterions, column);
+					var column = editor._cellColumn, criterions = dropdown._criterions, grid = column._grid, text;
+					if (criterions.length == 1 && criterions[0].value === undefined && criterions[0].operator === dorado.widget.grid.DataColumn.getDefaultOperator(column)) {
+						text == undefined;
+					} else {
+						text = dorado.widget.grid.DataColumn.criterionsToText(criterions, column);
+					}
 					dropdown.close(text);
 					grid.filter();
 				}
