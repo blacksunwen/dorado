@@ -5,7 +5,9 @@ import java.util.List;
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
+import com.bstek.dorado.view.annotation.Widget;
 
+@Widget(name = "Desktop")
 @ClientObject(prototype = "dorado.widget.desktop.Desktop",
 		shortTypeName = "desktop.Desktop")
 public class Desktop extends AbstractDesktop {
