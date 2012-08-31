@@ -120,7 +120,6 @@
         <Property name="property">type</Property>
         <Property name="renderer">dorado.widget.grid.RadioGroupCellRenderer</Property>
         <Property name="width">150</Property>
-        <Property name="readOnly">true</Property>
         <Property name="align">left</Property>
         <Editor/>
       </DataColumn>

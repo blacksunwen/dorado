@@ -121,7 +121,7 @@ finally {&#xD;
       <Property name="showHintMessage">true</Property>
       <Property name="hideMode">visibility</Property>
       <Property name="visible">true</Property>
-      <AutoFormElement>
+      <AutoFormElement id="autoFormAccountElement">
         <Property name="property">accountName</Property>
         <Editor/>
       </AutoFormElement>
