@@ -11,6 +11,7 @@ import com.bstek.dorado.data.config.definition.DataObjectDefinitionUtils;
 import com.bstek.dorado.data.config.definition.DataResolverDefinition;
 import com.bstek.dorado.data.config.definition.DataResolverDefinitionManager;
 import com.bstek.dorado.util.Assert;
+import com.bstek.dorado.view.config.definition.ViewConfigDefinition;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -19,6 +20,7 @@ import com.bstek.dorado.util.Assert;
 public class InnerDataResolverDefinitionManager extends
 		DataResolverDefinitionManager {
 	private String dataObjectIdPrefix;
+	private ViewConfigDefinition viewConfigDefinition;
 
 	public InnerDataResolverDefinitionManager(
 			DefinitionManager<DataResolverDefinition> parent) {
@@ -31,6 +33,15 @@ public class InnerDataResolverDefinitionManager extends
 
 	public void setDataObjectIdPrefix(String dataObjectIdPrefix) {
 		this.dataObjectIdPrefix = dataObjectIdPrefix;
+	}
+
+	public void setViewConfigDefinition(
+			ViewConfigDefinition viewConfigDefinition) {
+		this.viewConfigDefinition = viewConfigDefinition;
+	}
+
+	public ViewConfigDefinition getViewConfigDefinition() {
+		return viewConfigDefinition;
 	}
 
 	@Override
@@ -53,6 +64,7 @@ public class InnerDataResolverDefinitionManager extends
 		InnerDataResolverDefinitionManager duplication = new InnerDataResolverDefinitionManager(
 				getParent());
 		duplication.setDataObjectIdPrefix(dataObjectIdPrefix);
+		duplication.setViewConfigDefinition(viewConfigDefinition);
 		duplication.getDefinitions().putAll(getDefinitions());
 		return duplication;
 	}

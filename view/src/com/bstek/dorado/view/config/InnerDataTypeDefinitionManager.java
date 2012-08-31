@@ -8,6 +8,7 @@ import com.bstek.dorado.data.config.definition.DataObjectDefinitionUtils;
 import com.bstek.dorado.data.config.definition.DataTypeDefinition;
 import com.bstek.dorado.data.config.definition.DataTypeDefinitionManager;
 import com.bstek.dorado.util.Assert;
+import com.bstek.dorado.view.config.definition.ViewConfigDefinition;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -17,6 +18,7 @@ public class InnerDataTypeDefinitionManager extends DataTypeDefinitionManager {
 	private static final String GLOBAL_PREFIX = "global:";
 
 	private String dataObjectIdPrefix;
+	private ViewConfigDefinition viewConfigDefinition;
 
 	public InnerDataTypeDefinitionManager(
 			DefinitionManager<DataTypeDefinition> parent) {
@@ -29,6 +31,15 @@ public class InnerDataTypeDefinitionManager extends DataTypeDefinitionManager {
 
 	public void setDataObjectIdPrefix(String dataObjectIdPrefix) {
 		this.dataObjectIdPrefix = dataObjectIdPrefix;
+	}
+
+	public void setViewConfigDefinition(
+			ViewConfigDefinition viewConfigDefinition) {
+		this.viewConfigDefinition = viewConfigDefinition;
+	}
+
+	public ViewConfigDefinition getViewConfigDefinition() {
+		return viewConfigDefinition;
 	}
 
 	@Override
@@ -65,6 +76,7 @@ public class InnerDataTypeDefinitionManager extends DataTypeDefinitionManager {
 		InnerDataTypeDefinitionManager duplication = new InnerDataTypeDefinitionManager(
 				getParent());
 		duplication.setDataObjectIdPrefix(dataObjectIdPrefix);
+		duplication.setViewConfigDefinition(viewConfigDefinition);
 		duplication.getDefinitions().putAll(getDefinitions());
 		return duplication;
 	}

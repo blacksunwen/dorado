@@ -48,7 +48,7 @@ public class LibraryFileResolver extends
 			boolean dontRecordAbsolutePath) throws Exception {
 		if (StringUtils.isNotEmpty(resourcePrefix)) {
 			Resource[] resources = null;
-			if (absolutePaths.contains(fileName)) {
+			if (absolutePaths.contains(fileName + resourceSuffix)) {
 				resources = super.getResourcesByFileName(context, null,
 						fileName, resourceSuffix);
 			} else {
@@ -57,7 +57,7 @@ public class LibraryFileResolver extends
 				Resource resource = resources[0];
 				if (!resource.exists()) {
 					if (!dontRecordAbsolutePath) {
-						absolutePaths.add(fileName);
+						absolutePaths.add(fileName + resourceSuffix);
 					}
 					resources = super.getResourcesByFileName(context, null,
 							fileName, resourceSuffix);

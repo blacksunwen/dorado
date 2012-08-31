@@ -66,14 +66,14 @@
 		dorado.Object.apply(dorado.Setting, $setting);
 	}
 	
-	var contextPath = dorado.Setting["common.contextPath"];
+	var contextPath = dorado.Setting["contextPath"];
 	if (contextPath) {
 		if (contextPath.charAt(contextPath.length - 1) != '/') contextPath += '/';
 	}
 	else {
 		contextPath = '/';
 	}
-	dorado.Setting["common.contextPath"] = contextPath;
+	dorado.Setting["contextPath"] = contextPath;
 	
 	window.$setting = dorado.Setting;
 })();

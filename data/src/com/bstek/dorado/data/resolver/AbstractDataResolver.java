@@ -1,8 +1,11 @@
 package com.bstek.dorado.data.resolver;
 
+import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.common.Namable;
 import com.bstek.dorado.core.bean.Scopable;
@@ -18,6 +21,7 @@ public abstract class AbstractDataResolver implements DataResolver, Namable,
 	private String id;
 	private Scope scope;
 	private Object parameter;
+	private Map<String, Object> metaData;
 
 	@XmlProperty(ignored = true, attributeOnly = true)
 	public String getName() {
@@ -71,6 +75,16 @@ public abstract class AbstractDataResolver implements DataResolver, Namable,
 	public Object resolve(DataItems dataItems, Object parameter)
 			throws Exception {
 		return internalResolve(dataItems, parameter);
+	}
+
+	@XmlProperty(composite = true)
+	@ClientProperty(ignored = true)
+	public Map<String, Object> getMetaData() {
+		return metaData;
+	}
+
+	public void setMetaData(Map<String, Object> metaData) {
+		this.metaData = metaData;
 	}
 
 	@Override

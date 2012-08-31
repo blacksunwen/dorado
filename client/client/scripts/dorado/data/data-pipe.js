@@ -107,23 +107,43 @@ dorado.DataPipe = $class(/** @scope dorado.DataPipe.prototype */{
 						result = this.convertIfNecessary(result, this.dataTypeRepository, this.dataType);
 					}
 					
-					var errors;
-					for (var i = 0; i < callbacks.length; i++) {
-						try {
-							$callback(callbacks[i], success, result);
-						} 
-						catch (e) {
-							if (errors === undefined) errors = [];
-							errors.push(e);
-						}
-					}
-					
+					var errors, callbacks = this._waitingCallbacks;
 					delete this._waitingCallbacks;
 					this.runningProcNum = 0;
+					
+					if (callbacks) {
+						for (var i = 0; i < callbacks.length; i++) {
+							try {
+								$callback(callbacks[i], success, result);
+							} 
+							catch (e) {
+								if (errors === undefined) errors = [];
+								errors.push(e);
+							}
+						}
+					}
 					if (errors) throw ((errors.length > 1) ? errors : errors[0]);
 				}
 			});
 		}
+	},
+	
+	abort: function(success, result) {
+		var callbacks = this._waitingCallbacks;
+		delete this._waitingCallbacks;
+		this.runningProcNum = 0;
+		
+		var errors;
+		for (var i = 0; i < callbacks.length; i++) {
+			try {
+				$callback(callbacks[i], success, result);
+			} 
+			catch (e) {
+				if (errors === undefined) errors = [];
+				errors.push(e);
+			}
+		}
+		if (errors) throw ((errors.length > 1) ? errors : errors[0]);
 	}
 });
 

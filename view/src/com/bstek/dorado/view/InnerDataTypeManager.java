@@ -7,7 +7,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.jexl2.JexlContext;
+
+import com.bstek.dorado.config.definition.Definition;
 import com.bstek.dorado.core.Context;
+import com.bstek.dorado.core.el.ExpressionHandler;
 import com.bstek.dorado.data.config.definition.DataTypeDefinition;
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.data.type.manager.DataTypeManager;
@@ -15,6 +19,7 @@ import com.bstek.dorado.data.type.manager.DefaultDataTypeManager;
 import com.bstek.dorado.view.config.InnerDataProviderDefinitionManager;
 import com.bstek.dorado.view.config.InnerDataResolverDefinitionManager;
 import com.bstek.dorado.view.config.InnerDataTypeDefinitionManager;
+import com.bstek.dorado.view.config.definition.ViewConfigDefinition;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -95,7 +100,24 @@ public class InnerDataTypeManager extends DefaultDataTypeManager {
 	@Override
 	protected DataType getDataTypeByDefinition(
 			DataTypeDefinition dataTypeDefinition) throws Exception {
+		ViewConfigDefinition viewConfigDefinition = innerDataTypeDefinitionManager
+				.getViewConfigDefinition();
+
 		Context context = Context.getCurrent();
+		ExpressionHandler expressionHandler = (ExpressionHandler) context
+				.getServiceBean("expressionHandler");
+		JexlContext jexlContext = expressionHandler.getJexlContext();
+
+		Object originArgumentsVar = jexlContext
+				.get(ViewConfigDefinition.ARGUMENT);
+		jexlContext.set(ViewConfigDefinition.ARGUMENT,
+				viewConfigDefinition.getArguments());
+
+		Definition resourceRelativeDefinition = (Definition) jexlContext
+				.get(ViewConfigDefinition.RESOURCE_RELATIVE_DEFINITION);
+		jexlContext.set(ViewConfigDefinition.RESOURCE_RELATIVE_DEFINITION,
+				viewConfigDefinition);
+
 		Object oldDtdm = context
 				.getAttribute("privateDataTypeDefinitionManager");
 		Object oldDpdm = context
@@ -112,6 +134,10 @@ public class InnerDataTypeManager extends DefaultDataTypeManager {
 		try {
 			return super.getDataTypeByDefinition(dataTypeDefinition);
 		} finally {
+			jexlContext.set(ViewConfigDefinition.ARGUMENT, originArgumentsVar);
+			jexlContext.set(ViewConfigDefinition.RESOURCE_RELATIVE_DEFINITION,
+					resourceRelativeDefinition);
+
 			context.setAttribute("privateDataTypeDefinitionManager", oldDtdm);
 			context.setAttribute("privateDataProviderDefinitionManager",
 					oldDpdm);

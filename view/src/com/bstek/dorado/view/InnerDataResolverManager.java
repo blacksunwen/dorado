@@ -1,12 +1,17 @@
 package com.bstek.dorado.view;
 
+import org.apache.commons.jexl2.JexlContext;
+
+import com.bstek.dorado.config.definition.Definition;
 import com.bstek.dorado.core.Context;
+import com.bstek.dorado.core.el.ExpressionHandler;
 import com.bstek.dorado.data.resolver.DataResolver;
 import com.bstek.dorado.data.resolver.manager.DataResolverManager;
 import com.bstek.dorado.data.resolver.manager.DefaultDataResolverManager;
 import com.bstek.dorado.view.config.InnerDataProviderDefinitionManager;
 import com.bstek.dorado.view.config.InnerDataResolverDefinitionManager;
 import com.bstek.dorado.view.config.InnerDataTypeDefinitionManager;
+import com.bstek.dorado.view.config.definition.ViewConfigDefinition;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -32,7 +37,24 @@ public class InnerDataResolverManager extends DefaultDataResolverManager {
 
 	@Override
 	public DataResolver getDataResolver(String name) throws Exception {
+		ViewConfigDefinition viewConfigDefinition = innerDataResolverDefinitionManager
+				.getViewConfigDefinition();
+
 		Context context = Context.getCurrent();
+		ExpressionHandler expressionHandler = (ExpressionHandler) context
+				.getServiceBean("expressionHandler");
+		JexlContext jexlContext = expressionHandler.getJexlContext();
+
+		Object originArgumentsVar = jexlContext
+				.get(ViewConfigDefinition.ARGUMENT);
+		jexlContext.set(ViewConfigDefinition.ARGUMENT,
+				viewConfigDefinition.getArguments());
+
+		Definition resourceRelativeDefinition = (Definition) jexlContext
+				.get(ViewConfigDefinition.RESOURCE_RELATIVE_DEFINITION);
+		jexlContext.set(ViewConfigDefinition.RESOURCE_RELATIVE_DEFINITION,
+				viewConfigDefinition);
+
 		Object oldDtdm = context
 				.getAttribute("privateDataTypeDefinitionManager");
 		Object oldDpdm = context
@@ -53,6 +75,10 @@ public class InnerDataResolverManager extends DefaultDataResolverManager {
 			}
 			return dataResolver;
 		} finally {
+			jexlContext.set(ViewConfigDefinition.ARGUMENT, originArgumentsVar);
+			jexlContext.set(ViewConfigDefinition.RESOURCE_RELATIVE_DEFINITION,
+					resourceRelativeDefinition);
+
 			context.setAttribute("privateDataTypeDefinitionManager", oldDtdm);
 			context.setAttribute("privateDataProviderDefinitionManager",
 					oldDpdm);
