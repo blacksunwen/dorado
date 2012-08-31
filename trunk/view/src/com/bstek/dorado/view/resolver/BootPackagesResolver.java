@@ -176,13 +176,17 @@ public class BootPackagesResolver extends WebFileResolver {
 				true);
 		String contextPath = DoradoContext.getAttachedRequest()
 				.getContextPath();
-		writeSetting(writer, "common.contextPath", contextPath, true, true);
+		writeSetting(writer, "contextPath", contextPath, true, true);
+		writeSetting(writer, "abortAsyncLoadingOnSyncLoading",
+				Configure.getBoolean("view.abortAsyncLoadingOnSyncLoading"),
+				false, true);
+
 		writeSetting(writer, "widget.skinRoot", ">dorado/client/skins/", true,
 				false);
 		writer.write("};\n");
 
 		writer.write(CLIENT_PACKAGES_CONFIG
-				+ ".contextPath=$setting[\"common.contextPath\"];\n");
+				+ ".contextPath=$setting[\"contextPath\"];\n");
 		outputProperty(writer, CLIENT_PACKAGES_CONFIG, packagesConfig,
 				"defaultCharset", null);
 		outputProperty(writer, CLIENT_PACKAGES_CONFIG, packagesConfig,

@@ -415,10 +415,21 @@
 					return;
 				}
 				else {
-					if (pipe.runningProcNum > 0) {
+					var shouldAbortAsyncProcedures = dorado.Setting["abortAsyncLoadingOnSyncLoading"];
+					if (pipe.runningProcNum > 0 && !shouldAbortAsyncProcedures) {
 						throw new dorado.ResourceException("dorado.widget.GetDataDuringLoading", this._id);
 					}
-					this.setData(pipe.get());
+					
+					try {
+						var data = pipe.get();
+						this.setData(data);
+						pipe.abort(true, data);
+					}
+					catch (e) {
+						pipe.abort(false, e);
+						throw e;
+					}
+					
 					delete this._dataPipe;
 					if (this._cacheable) {
 						dataCache[hashCode] = this.getData();

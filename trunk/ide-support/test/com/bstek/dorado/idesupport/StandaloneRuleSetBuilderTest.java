@@ -78,7 +78,7 @@ public class StandaloneRuleSetBuilderTest extends IdeSupportContextTestCase {
 		Rule directDataProviderRule = ruleSet.getRule("DirectDataProvider");
 		assertNotNull(directDataProviderRule);
 		assertEquals("DataProvider", directDataProviderRule.getNodeName());
-		assertEquals(null, directDataProviderRule.getLabel());
+		assertEquals("DirectDataProvider", directDataProviderRule.getLabel());
 		assertFalse(directDataProviderRule.isAbstract());
 
 		primitiveProperty = directDataProviderRule.getPrimitiveProperty("impl");
@@ -162,11 +162,15 @@ public class StandaloneRuleSetBuilderTest extends IdeSupportContextTestCase {
 		Rule dataColumnRule = ruleSet.getRule("DataColumn");
 		assertNotNull(dataColumnRule);
 		assertEquals("DataColumn", dataColumnRule.getNodeName());
-		
-		Rule Separator1Rule = ruleSet.getRule("Separator_1");
-		assertEquals("Separator", Separator1Rule.getNodeName());
+
+		Rule separator1Rule = ruleSet.getRule("Separator_1");
+		assertEquals("Separator", separator1Rule.getNodeName());
+
+		Rule shellRule = ruleSet.getRule("Shell");
+		assertNotNull(shellRule);
+		assertEquals(2, shellRule.getChild("Desktop").getConcreteRules().size());
 	}
-	
+
 	public void testLoadRuleFile() throws Exception {
 		InputStream in = new FileInputStream("e:/temp/.rules.xml");
 		StandaloneRuleSetBuilder.getRuleSet(in);

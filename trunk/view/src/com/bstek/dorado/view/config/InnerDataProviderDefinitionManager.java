@@ -11,6 +11,7 @@ import com.bstek.dorado.data.config.definition.DataObjectDefinitionUtils;
 import com.bstek.dorado.data.config.definition.DataProviderDefinition;
 import com.bstek.dorado.data.config.definition.DataProviderDefinitionManager;
 import com.bstek.dorado.util.Assert;
+import com.bstek.dorado.view.config.definition.ViewConfigDefinition;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -20,6 +21,7 @@ public class InnerDataProviderDefinitionManager extends
 		DataProviderDefinitionManager {
 
 	private String dataObjectIdPrefix;
+	private ViewConfigDefinition viewConfigDefinition;
 
 	public InnerDataProviderDefinitionManager(
 			DefinitionManager<DataProviderDefinition> parent) {
@@ -32,6 +34,15 @@ public class InnerDataProviderDefinitionManager extends
 
 	public void setDataObjectIdPrefix(String dataObjectIdPrefix) {
 		this.dataObjectIdPrefix = dataObjectIdPrefix;
+	}
+
+	public void setViewConfigDefinition(
+			ViewConfigDefinition viewConfigDefinition) {
+		this.viewConfigDefinition = viewConfigDefinition;
+	}
+
+	public ViewConfigDefinition getViewConfigDefinition() {
+		return viewConfigDefinition;
 	}
 
 	@Override
@@ -54,6 +65,7 @@ public class InnerDataProviderDefinitionManager extends
 		InnerDataProviderDefinitionManager duplication = new InnerDataProviderDefinitionManager(
 				getParent());
 		duplication.setDataObjectIdPrefix(dataObjectIdPrefix);
+		duplication.setViewConfigDefinition(viewConfigDefinition);
 		duplication.getDefinitions().putAll(getDefinitions());
 		return duplication;
 	}

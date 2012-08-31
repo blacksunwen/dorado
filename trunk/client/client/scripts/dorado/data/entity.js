@@ -456,7 +456,19 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					if (loadMode == "auto") {
 						value = undefined;
 					} else {
-						value = pipe.get();
+						var shouldAbortAsyncProcedures = dorado.Setting["abortAsyncLoadingOnSyncLoading"];
+						if (pipe.runningProcNum > 0 && !shouldAbortAsyncProcedures) {
+							throw new dorado.ResourceException("dorado.data.GetDataDuringLoading", "Entity");
+						}
+						
+						try {
+							value = pipe.get();
+							pipe.abort(true, value);
+						} 
+						catch (e) {
+							pipe.abort(false, e);
+							throw e;
+						}
 					}
 				}
 			} else if (propertyDef) {
@@ -671,6 +683,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			}
 			return result;
 		},
+		
 		/**
 		 * 以异步方式获取属性的文本值。
 		 * @param {String} property 要获取的属性名。

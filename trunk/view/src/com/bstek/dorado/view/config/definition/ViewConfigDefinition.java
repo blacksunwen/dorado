@@ -47,7 +47,7 @@ public class ViewConfigDefinition extends ListenableObjectDefinition implements
 		Namable {
 	private static final String[] DEFAULT_PROPERTIES = new String[] {
 			"caption", "label", "title" };
-	private static final String ARGUMENT = "argument";
+	public static final String ARGUMENT = "argument";
 	public static final String RESOURCE_RELATIVE_DEFINITION = "resourceRelativeDefinition";
 
 	private String name;
@@ -67,6 +67,10 @@ public class ViewConfigDefinition extends ListenableObjectDefinition implements
 		this.dataTypeDefinitionManager = dataTypeDefinitionManager;
 		this.dataProviderDefinitionManager = dataProviderDefinitionManager;
 		this.dataResolverDefinitionManager = dataResolverDefinitionManager;
+
+		dataTypeDefinitionManager.setViewConfigDefinition(this);
+		dataProviderDefinitionManager.setViewConfigDefinition(this);
+		dataResolverDefinitionManager.setViewConfigDefinition(this);
 	}
 
 	public String getName() {

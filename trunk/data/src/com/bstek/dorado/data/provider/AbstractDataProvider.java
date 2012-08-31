@@ -1,8 +1,11 @@
 package com.bstek.dorado.data.provider;
 
+import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.common.Namable;
@@ -23,6 +26,7 @@ public abstract class AbstractDataProvider implements DataProvider, Namable,
 	private Scope scope;
 	private DataType resultDataType;
 	private Object parameter;
+	private Map<String, Object> metaData;
 
 	@XmlProperty(ignored = true, attributeOnly = true)
 	public String getName() {
@@ -145,6 +149,16 @@ public abstract class AbstractDataProvider implements DataProvider, Namable,
 			resultDataType = this.resultDataType;
 		}
 		internalGetResult(parameter, page, resultDataType);
+	}
+
+	@XmlProperty(composite = true)
+	@ClientProperty(ignored = true)
+	public Map<String, Object> getMetaData() {
+		return metaData;
+	}
+
+	public void setMetaData(Map<String, Object> metaData) {
+		this.metaData = metaData;
 	}
 
 	@Override

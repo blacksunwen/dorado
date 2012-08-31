@@ -62,6 +62,7 @@ public class ModelRuleTemplateInitializer implements RuleTemplateInitializer {
 				newRuleTemplate.setGlobal(true);
 				isNew = true;
 			}
+			newRuleTemplate.setLabel(providerName);
 			newRuleTemplate.setSortFactor(++sortFactor);
 			newRuleTemplate.setScope("public");
 			newRuleTemplate.setType(dataProviderTypeInfo.getClassType()
@@ -74,17 +75,18 @@ public class ModelRuleTemplateInitializer implements RuleTemplateInitializer {
 
 		for (DataResolverTypeRegisterInfo dataResolverTypeInfo : dataResolverTypeRegistry
 				.getTypes()) {
-			String ResolverName = dataResolverTypeInfo.getClassType()
+			String resolverName = dataResolverTypeInfo.getClassType()
 					.getSimpleName();
 
 			boolean isNew = false;
 			RuleTemplate newRuleTemplate = ruleTemplateManager
-					.getRuleTemplate(ResolverName);
+					.getRuleTemplate(resolverName);
 			if (newRuleTemplate == null) {
-				newRuleTemplate = new RuleTemplate(ResolverName);
+				newRuleTemplate = new RuleTemplate(resolverName);
 				newRuleTemplate.setGlobal(true);
 				isNew = true;
 			}
+			newRuleTemplate.setLabel(resolverName);
 			newRuleTemplate.setSortFactor(++sortFactor);
 			newRuleTemplate.setScope("public");
 			newRuleTemplate.setType(dataResolverTypeInfo.getClassType()
