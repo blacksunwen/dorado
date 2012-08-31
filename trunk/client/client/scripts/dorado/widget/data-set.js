@@ -392,18 +392,22 @@
 							}
 							
 							delete this._dataPipe;
-							if (success && shouldFireOnLoadData) {
-								this.setData(result);
-								if (this._cacheable) {
-									dataCache[hashCode] = this.getData();
+							if (success) {
+								if (shouldFireOnLoadData) {
+									this.setData(result);
+									if (this._cacheable) {
+										dataCache[hashCode] = this.getData();
+									}
+									
+									/* @deprecated */
+									this.fireEvent("onDataLoad", this, arg);
+									
+									this.fireEvent("onLoadData", this, arg);
 								}
-								
-								/* @deprecated */
-								this.fireEvent("onDataLoad", this, arg);
-								
-								this.fireEvent("onLoadData", this, arg);
 							}
-							
+							else {
+								if (shouldFireOnLoadData) this.setData(null);
+							}
 							
 							$callback(callback, success);
 						}
@@ -427,6 +431,7 @@
 					}
 					catch (e) {
 						pipe.abort(false, e);
+						this.setData(null);
 						throw e;
 					}
 					

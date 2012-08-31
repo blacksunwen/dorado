@@ -409,7 +409,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 												}
 											}
 											else {
-												delete this._data[property];
+												this._data[property] = null;
 											}
 											if (callback) $callback(callback, success, result);
 										}
@@ -452,24 +452,28 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			} else if (value != null && value.isDataPipeWrapper) {
 				var pipe = value.pipe;
 				if (loadMode != "never") {
-					pipe.getAsync(callback);
-					if (loadMode == "auto") {
-						value = undefined;
+					if (callback) {
+						pipe.getAsync(callback);
 					} else {
-						var shouldAbortAsyncProcedures = dorado.Setting["abortAsyncLoadingOnSyncLoading"];
-						if (pipe.runningProcNum > 0 && !shouldAbortAsyncProcedures) {
-							throw new dorado.ResourceException("dorado.data.GetDataDuringLoading", "Entity");
+						if (loadMode == "auto") {
+							value = undefined;
+						} else {
+							var shouldAbortAsyncProcedures = dorado.Setting["abortAsyncLoadingOnSyncLoading"];
+							if (pipe.runningProcNum > 0 && !shouldAbortAsyncProcedures) {
+								throw new dorado.ResourceException("dorado.data.GetDataDuringLoading", "Entity");
+							}
+							
+							try {
+								value = pipe.get();
+								pipe.abort(true, value);
+							} 
+							catch (e) {
+								pipe.abort(false, e);
+								this._data[property] = null;
+								throw e;
+							}
 						}
-						
-						try {
-							value = pipe.get();
-							pipe.abort(true, value);
-						} 
-						catch (e) {
-							pipe.abort(false, e);
-							throw e;
-						}
-					}
+					} 
 				}
 			} else if (propertyDef) {
 				if (value === null) {
