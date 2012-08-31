@@ -21,6 +21,10 @@
 		<filter-name>OpenSessionInViewFilter</filter-name>
 		<url-pattern>/dorado/*</url-pattern>
 	</filter-mapping>
+	<filter-mapping>
+		<filter-name>OpenSessionInViewFilter</filter-name>
+		<url-pattern>*.do</url-pattern>
+	</filter-mapping>
 
 	<servlet>
 		<servlet-name>doradoServlet</servlet-name>
@@ -38,5 +42,9 @@
 	<servlet-mapping>
 		<servlet-name>doradoServlet</servlet-name>
 		<url-pattern>/dorado/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>doradoServlet</servlet-name>
+		<url-pattern>*.do</url-pattern>
 	</servlet-mapping>
 </web-app>

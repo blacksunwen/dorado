@@ -21,7 +21,7 @@ self.reset = function() {&#xD;
 	view.set(&quot;#${acomp.id('input')}.value&quot;, 0);&#xD;
 }&#xD;
 &#xD;
-self.operstorAssigned = function(operator) {&#xD;
+self.operatorAssigned = function(operator) {&#xD;
 	self.model.num1 = view.get(&quot;#${acomp.id('input')}.value&quot;) || 0;&#xD;
 	self.model.operator = operator;&#xD;
 	self.model.shouldClear = true;&#xD;
@@ -66,11 +66,12 @@ self.get(&quot;children&quot;).each(function(child) {&#xD;
 	}&#xD;
 	else if (tags == &quot;operator&quot;) {&#xD;
 		child.addListener(&quot;onClick&quot;, function(button) {&#xD;
-			self.operstorAssigned(button.get(&quot;userData&quot;) || button.get(&quot;caption&quot;));&#xD;
+			self.operatorAssigned(button.get(&quot;userData&quot;) || button.get(&quot;caption&quot;));&#xD;
 		});&#xD;
 	}&#xD;
 });</ClientEvent>
       <Property name="width">200</Property>
+      <Property name="height">auto</Property>
       <Buttons/>
       <Children>
         <TextEditor id="${acomp.id('input')}" layoutConstraint="colSpan:4">

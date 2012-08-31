@@ -40,10 +40,10 @@ dataGrid.filter();</ClientEvent>
     </ToolBar>
     <DataGrid id="dataGrid">
       <Property name="dataSet">dsOrders</Property>
-      <Property name="filterMode">serverSide</Property>
       <Property name="showFilterBar">true</Property>
       <Property name="autoCreateColumns">true</Property>
       <Property name="sortMode">serverSide</Property>
+      <Property name="filterMode">serverSide</Property>
       <RowNumColumn/>
     </DataGrid>
   </View>

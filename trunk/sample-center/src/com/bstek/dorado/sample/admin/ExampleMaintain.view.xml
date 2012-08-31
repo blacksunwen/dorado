@@ -59,6 +59,7 @@
     <SplitPanel position="260">
       <MainControl>
         <CardBook id="cardbook">
+          <Property name="currentIndex">2</Property>
           <Panel layout="anchor">
             <Children>
               <Label layoutConstraint="left:50%; top:50%" style="whiteSpace:noWrap" text="请在左侧树中选择一个节点..."/>
