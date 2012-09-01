@@ -133,6 +133,8 @@ dorado.DataPipe = $class(/** @scope dorado.DataPipe.prototype */{
 		delete this._waitingCallbacks;
 		this.runningProcNum = 0;
 		
+		if (!callbacks) return;
+		
 		var errors;
 		for (var i = 0; i < callbacks.length; i++) {
 			try {
