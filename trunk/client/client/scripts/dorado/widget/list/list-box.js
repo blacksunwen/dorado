@@ -54,7 +54,12 @@ dorado.widget.AbstractListBox = $extend(dorado.widget.RowList, /** @scope dorado
 		 * @type String
 		 * @attribute
 		 */
-		property: {},
+		property: {
+			setter: function(property) {
+				this._property = property;
+				this._ignoreItemTimestamp = true;
+			}
+		},
 		
 		/**
 		 * 行渲染器。
