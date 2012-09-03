@@ -194,7 +194,6 @@
 				rowList = new dorado.widget.Grid(config);
 			} else {
 				config.width = "100%";
-				config.property = this._displayProperty || this._property;
 				rowList = new dorado.widget.ListBox(config);
 			}
 			box.set({
