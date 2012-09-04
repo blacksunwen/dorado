@@ -208,7 +208,7 @@
 		initDropDownData: function(box, editor) {
 			var rowList = box.get("control");
 			var items = this.getDropDownItems() || [];
-			if (rowList instanceof dorado.widget.ListBox) {
+			if (rowList instanceof dorado.widget.AbstractListBox) {
 				rowList.set("property", this._displayProperty || this._property);
 			}
 			rowList.set("items", items);
