@@ -1,7 +1,7 @@
 (function($) {
 
 	function num(el, prop) {
-		return parseInt($.curCSS(el.jquery ? el[0] : el, prop, true)) || 0;
+		return parseInt(jQuery.css(el.jquery ? el[0] : el, prop, true)) || 0;
 	};
 	
 	/**
@@ -240,11 +240,11 @@
 			var dom = self[0], containBlock = dom.parentNode, parentsOverflow = [];
 			
 			function doFilter() {
-				if (this == document.body || (/(auto|scroll|hidden)/).test($.curCSS(this, 'overflow', 1) + $.curCSS(this, 'overflow-y', 1))) {
+				if (this == document.body || (/(auto|scroll|hidden)/).test(jQuery.css(this, 'overflow') + jQuery.css(this, 'overflow-y'))) {
 					parentsOverflow.push({
 						parent: this,
-						overflow: jQuery.curCSS(this, "overflow"),
-						overflowY: jQuery.curCSS(this, "overflow-y"),
+						overflow: jQuery.css(this, "overflow"),
+						overflowY: jQuery.css(this, "overflow-y"),
 						scrollTop: this.scrollTop
 					});
 					var overflowValue = this == document.body ? "hidden" : "visible";
