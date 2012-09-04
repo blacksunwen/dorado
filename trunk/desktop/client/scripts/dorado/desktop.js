@@ -837,8 +837,13 @@ dorado.widget.desktop.DesktopCarousel = $extend(dorado.widget.desktop.AbstractDe
 		if (!control) {
 			throw new dorado.ResourceException("dorado.base.CardControlUndefined");
 		}
-		var card = this, controls = card._controls;
+		var card = this, doms = card._doms, controls = card._controls;
 		controls.insert(control, index);
+        if (card._rendered) {
+            control.render(doms.itemsWrap, index);
+            $fly(control._dom).addClass("carousel-item");
+            card.doCreateSwitchButton(index);
+        }
 		card.registerInnerControl(control);
 		if (current !== false) {
 			card.set("currentControl", control);
@@ -925,16 +930,29 @@ dorado.widget.desktop.DesktopCarousel = $extend(dorado.widget.desktop.AbstractDe
 			$fly(control._dom).addClass("carousel-item");
 			card.registerInnerControl(control);
 
-            var button = document.createElement("span");
-			button.className = "switch-button";
-			jQuery(button).addClassOnHover("switch-button-hover").click(function() {
-				card.setCurrentButton(this);
-			});
-			$fly(doms.switcherCenter).append(button);
+            card.doCreateSwitchButton();
 		}
 
 		return dom;
 	},
+
+    doCreateSwitchButton: function(index) {
+        var card = this, doms = card._doms, button = document.createElement("span");
+        button.className = "switch-button";
+        jQuery(button).addClassOnHover("switch-button-hover").click(function() {
+            card.setCurrentButton(this);
+        });
+        if (index == undefined) {
+            $fly(doms.switcherCenter).append(button);
+        } else {
+            var refNode = $fly(doms.switcherCenter).find(".switch-button")[index];
+            if (refNode) {
+                $fly(button).insertBefore(refNode);
+            } else {
+                $fly(button).appendTo(doms.switcherCenter);
+            }
+        }
+    },
 
 	onResize: function() {
 		$invokeSuper.call(this, arguments);
@@ -949,8 +967,8 @@ dorado.widget.desktop.DesktopCarousel = $extend(dorado.widget.desktop.AbstractDe
 
 		for (var i = 0, j = controls.size; i < j; i++) {
 			var control = controls.get(i);
-			control.set("width", $fly(dom).innerWidth());
-			control.set("height", $fly(dom).innerHeight());
+			control.set("width", $fly(dom).width());
+			control.set("height", $fly(dom).height());
 			$fly(control._dom).css("left", i * width);
 		}
 
