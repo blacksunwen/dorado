@@ -195,7 +195,6 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.RowListDropDown,/** @scope
 				rowList = new dorado.widget.DataGrid(config);
 			} else {
 				config.width = "100%";
-				config.property = this._displayProperty || this._property;
 				rowList = new dorado.widget.DataListBox(config);
 			}
 			box.set({
@@ -213,6 +212,12 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.RowListDropDown,/** @scope
 	initDropDownData: function(box, editor) {
 		if (!this._useDataBinding) {
 			$invokeSuper.call(this, arguments);
+		}
+		else {
+			var rowList = box.get("control");
+			if (rowList instanceof dorado.widget.AbstractListBox) {
+				rowList.set("property", this._displayProperty || this._property);
+			}
 		}
 	},
 	
