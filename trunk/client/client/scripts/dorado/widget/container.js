@@ -141,34 +141,31 @@
 			 * 该值的含义与CSS中overflow的属性的意义相同，在实现上也仅仅是把这个值添加到内容容器上。
 			 * </p>
 			 * @attribute writeBeforeReady
-			 * @default "auto"
 			 * @type String
 			 */
 			contentOverflow: {
 				writeBeforeReady: true,
-				defaultValue: dorado.Browser.isTouch ? "hidden" : "auto"
+				defaultValue: dorado.Browser.isTouch ? "hidden" : undefined
 			},
 			
 			/**
 			 * 容器控件中的内容在水平方向上超出了以后的处理方法。
 			 * @attribute writeBeforeReady
-			 * @default "auto"
 			 * @type String
 			 */
 			contentOverflowX: {
 				writeBeforeReady: true,
-				defaultValue: dorado.Browser.isTouch ? "hidden" : "auto"
+				defaultValue: dorado.Browser.isTouch ? "hidden" : undefined
 			},
 
 			/**
 			 * 容器控件中的内容在垂直方向上超出了以后的处理方法。
 			 * @attribute writeBeforeReady
-			 * @default "auto"
 			 * @type String
 			 */
 			contentOverflowY: {
 				writeBeforeReady: true,
-				defaultValue: dorado.Browser.isTouch ? "hidden" : "auto"
+				defaultValue: dorado.Browser.isTouch ? "hidden" : undefined
 			},
 			
 			view: {
@@ -367,8 +364,8 @@
 		},
 		
 		doOnAttachToDocument: function() {
-			var overflowX = (this._contentOverflowX == "auto") ? this._contentOverflow : this._contentOverflowX;
-			var overflowY = (this._contentOverflowY == "auto") ? this._contentOverflow : this._contentOverflowY;
+			var overflowX = (!this._contentOverflowX) ? this._contentOverflow : this._contentOverflowX;
+			var overflowY = (!this._contentOverflowY) ? this._contentOverflow : this._contentOverflowY;
 			
 			var contentCt = this.getContentContainer();
 			if (contentCt.nodeType && contentCt.nodeType == 1 && !contentCt.style.overflow) {
@@ -409,8 +406,8 @@
 		doOnResize: function() {
 			var layout = this._layout;
 			if (this._contentContainerVisible && layout && layout._attached) {
-				var overflowX = (this._contentOverflowX == "auto") ? this._contentOverflow : this._contentOverflowX;
-				var overflowY = (this._contentOverflowY == "auto") ? this._contentOverflow : this._contentOverflowY;
+				var overflowX = (!this._contentOverflowX) ? this._contentOverflow : this._contentOverflowX;
+				var overflowY = (!this._contentOverflowY) ? this._contentOverflow : this._contentOverflowY;
 				var contentCt = this.getContentContainer();
 			
 				var overflowedX = false, overflowedY = false;

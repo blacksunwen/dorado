@@ -222,7 +222,7 @@ dorado.Toolkits = {
 	 * <p>
 	 * 此方法允许用户在定义一个URL时利用">"在URL中植入特定的内容。<br>
 	 * 例如：">images/loading.gif"表示应用的根路径下的"images/loading.gif"。
-	 * 如果此时应用的根路径是"/sampleApp"，那么此方法最终返回的URL将是"/sampleApp/images/loading.gif"。（应用的根路径通过{@link $setting}中的"contextPath"项设定）
+	 * 如果此时应用的根路径是"/sampleApp"，那么此方法最终返回的URL将是"/sampleApp/images/loading.gif"。（应用的根路径通过{@link $setting}中的"common.contextPath"项设定）
 	 * </p>
 	 * <p>
 	 * 另外，此方法还支持在URL中植入预设变量。<br>
@@ -249,7 +249,7 @@ dorado.Toolkits = {
 			url = this.concatURL(s1, s2);
 		}
 		else if (url.charAt(0) == '>') {
-			url = this.concatURL($setting["contextPath"], url.substring(1));
+			url = this.concatURL($setting["common.contextPath"], url.substring(1));
 		}
 		return url;
 	},
