@@ -176,7 +176,7 @@ public class BootPackagesResolver extends WebFileResolver {
 				true);
 		String contextPath = DoradoContext.getAttachedRequest()
 				.getContextPath();
-		writeSetting(writer, "contextPath", contextPath, true, true);
+		writeSetting(writer, "common.contextPath", contextPath, true, true);
 		writeSetting(writer, "abortAsyncLoadingOnSyncLoading",
 				Configure.getBoolean("view.abortAsyncLoadingOnSyncLoading"),
 				false, true);
@@ -186,7 +186,7 @@ public class BootPackagesResolver extends WebFileResolver {
 		writer.write("};\n");
 
 		writer.write(CLIENT_PACKAGES_CONFIG
-				+ ".contextPath=$setting[\"contextPath\"];\n");
+				+ ".contextPath=$setting[\"common.contextPath\"];\n");
 		outputProperty(writer, CLIENT_PACKAGES_CONFIG, packagesConfig,
 				"defaultCharset", null);
 		outputProperty(writer, CLIENT_PACKAGES_CONFIG, packagesConfig,

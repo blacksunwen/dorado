@@ -360,7 +360,7 @@
 			return el;
 		},
 		
-		BLANK_IMG: dorado.Setting["contextPath"] + "dorado/client/resources/blank.gif",
+		BLANK_IMG: dorado.Setting["common.contextPath"] + "dorado/client/resources/blank.gif",
 		
 		setImgSrc: function(img, src) {
 			src = $url(src) || BLANK_IMG;

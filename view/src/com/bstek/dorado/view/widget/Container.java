@@ -48,9 +48,9 @@ public class Container extends Control {
 	private List<Component> childrenProxy;
 	private transient List<ContainerListener> containerListeners;
 	private Layout layout;
-	private Overflow contentOverflow = Overflow.auto;
-	private Overflow contentOverflowX = Overflow.auto;
-	private Overflow contentOverflowY = Overflow.auto;
+	private Overflow contentOverflow;
+	private Overflow contentOverflowX;
+	private Overflow contentOverflowY;
 
 	/**
 	 * 返回布局管理对象。
@@ -69,7 +69,6 @@ public class Container extends Control {
 		this.layout = layout;
 	}
 
-	@ClientProperty(escapeValue = "auto")
 	public Overflow getContentOverflow() {
 		return contentOverflow;
 	}
@@ -78,7 +77,6 @@ public class Container extends Control {
 		this.contentOverflow = contentOverflow;
 	}
 
-	@ClientProperty(escapeValue = "auto")
 	public Overflow getContentOverflowX() {
 		return contentOverflowX;
 	}
@@ -87,7 +85,6 @@ public class Container extends Control {
 		this.contentOverflowX = contentOverflowX;
 	}
 
-	@ClientProperty(escapeValue = "auto")
 	public Overflow getContentOverflowY() {
 		return contentOverflowY;
 	}
