@@ -368,9 +368,9 @@
 			var overflowY = (!this._contentOverflowY) ? this._contentOverflow : this._contentOverflowY;
 			
 			var contentCt = this.getContentContainer();
-			if (contentCt.nodeType && contentCt.nodeType == 1 && !contentCt.style.overflow) {
-				contentCt.style.overflowX = overflowX;
-				contentCt.style.overflowY = overflowY;
+			if (contentCt.nodeType && contentCt.nodeType == 1) {
+				if (overflowX) contentCt.style.overflowX = overflowX;
+				if (overflowY) contentCt.style.overflowY = overflowY;
 			}
 			
 			var layout = this._layout;
