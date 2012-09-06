@@ -148,7 +148,10 @@
 					break;
 				}
 				case dorado.widget.DataSet.MESSAGE_DELETED:
-				case dorado.widget.DataSet.MESSAGE_INSERTED:{
+				case dorado.widget.DataSet.MESSAGE_INSERTED:
+				case dorado.widget.DataSet.MESSAGE_LOADING_START:
+				case dorado.widget.DataSet.MESSAGE_LOADING_END: 
+				{
 					b = false;
 					break;
 				}

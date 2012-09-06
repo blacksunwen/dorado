@@ -386,12 +386,14 @@
 					pipe.getAsync( {
 						scope: this,
 						callback: function(success, result) {
+							delete this._dataPipe;
 							if (isNewPipe) {
+								this._data = null;
 								this.sendMessage(DataSet.MESSAGE_LOADING_END, arg);
 								this._loadingData = false;
+								delete this._data;
 							}
 							
-							delete this._dataPipe;
 							if (success) {
 								if (shouldFireOnLoadData) {
 									this.setData(result);
