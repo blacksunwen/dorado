@@ -366,11 +366,13 @@
 		doOnAttachToDocument: function() {
 			var overflowX = (!this._contentOverflowX) ? this._contentOverflow : this._contentOverflowX;
 			var overflowY = (!this._contentOverflowY) ? this._contentOverflow : this._contentOverflowY;
+			overflowX = overflowX || "auto";
+			overflowY = overflowY || "auto";
 			
 			var contentCt = this.getContentContainer();
-			if (contentCt.nodeType && contentCt.nodeType == 1) {
-				if (overflowX) contentCt.style.overflowX = overflowX;
-				if (overflowY) contentCt.style.overflowY = overflowY;
+			if (contentCt.nodeType && contentCt.nodeType == 1 && !contentCt.style.overflow) {
+				contentCt.style.overflowX = overflowX;
+				contentCt.style.overflowY = overflowY;
 			}
 			
 			var layout = this._layout;
@@ -408,6 +410,8 @@
 			if (this._contentContainerVisible && layout && layout._attached) {
 				var overflowX = (!this._contentOverflowX) ? this._contentOverflow : this._contentOverflowX;
 				var overflowY = (!this._contentOverflowY) ? this._contentOverflow : this._contentOverflowY;
+				overflowX = overflowX || "auto";
+				overflowY = overflowY || "auto";
 				var contentCt = this.getContentContainer();
 			
 				var overflowedX = false, overflowedY = false;
