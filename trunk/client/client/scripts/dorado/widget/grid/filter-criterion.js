@@ -1,7 +1,8 @@
 (function() {
 
 	var operatorItemsInited = false;
-	var operators = ["like", "like*", "*like", "=", "<>", ">", ">=", "<", "<="], operatorItems = [];
+	var operators = ["like", "like*", "*like", "=", "<>", ">", ">=", "<", "<="], operatorsForParse = ["like", "like*", "*like", "=", ">", ">=", "<", "<=", "<>"];
+	var operatorItems = [];
 	
 	function getOperatorItems() {
 		if (!operatorItemsInited) {
@@ -19,42 +20,57 @@
 	}
 	
 	var numberTypeCodes = [dorado.DataType.INTEGER, dorado.DataType.PRIMITIVE_INT, dorado.DataType.FLOAT, dorado.DataType.PRIMITIVE_FLOAT, dorado.DataType.DATE, dorado.DataType.TIME, dorado.DataType.DATETIME];
-	var numberOperatorDropDown, stringOperatorDropDown, booleanOperatorDropDow;
+	var mappingOperatorDropDown, numberOperatorDropDown, stringOperatorDropDown, booleanOperatorDropDow;
 	
 	function getOperatorDropDown(column) {
-		var dataType = column.get("dataType"), dropDown, operatorItems = getOperatorItems();
-		if (dataType && dataType._code) {
-			if (numberTypeCodes.indexOf(dataType._code) >= 0) {
-				if (!numberOperatorDropDown) {
-					numberOperatorDropDown = new dorado.widget.ListDropDown({
-						items: operatorItems.slice(3),
-						property: "key",
-						displayProperty: "value",
-						autoOpen: true
-					});
-				}
-				dropDown = numberOperatorDropDown;
-			} else if ([dorado.DataType.PRIMITIVE_BOOLEAN, dorado.DataType.BOOLEAN].indexOf(dataType._code) >= 0) {
-				if (!booleanOperatorDropDow) {
-					booleanOperatorDropDow = new dorado.widget.ListDropDown({
-						items: operatorItems.slice(3, 2),
-						property: "key",
-						displayProperty: "value",
-						autoOpen: true
-					});
-				}
-				dropDown = booleanOperatorDropDow;
+		var dropDown, operatorItems = getOperatorItems();
+		var pd = column._propertyDef;
+		if (pd && pd._mapping) {
+			if (!mappingOperatorDropDown) {
+				mappingOperatorDropDown = new dorado.widget.ListDropDown({
+					items: operatorItems.slice(3, 5),
+					property: "key",
+					displayProperty: "value",
+					autoOpen: true
+				});
 			}
-		}
-		
-		if (!dropDown) {
-			stringOperatorDropDown = new dorado.widget.ListDropDown({
-				items: operatorItems.slice(0, 5),
-				property: "key",
-				displayProperty: "value",
-				autoOpen: true
-			});
-			dropDown = stringOperatorDropDown;
+			dropDown = mappingOperatorDropDown;
+		} else {
+			var dataType = column.get("dataType");
+			
+			if (dataType && dataType._code) {
+				if (numberTypeCodes.indexOf(dataType._code) >= 0) {
+					if (!numberOperatorDropDown) {
+						numberOperatorDropDown = new dorado.widget.ListDropDown({
+							items: operatorItems.slice(3),
+							property: "key",
+							displayProperty: "value",
+							autoOpen: true
+						});
+					}
+					dropDown = numberOperatorDropDown;
+				} else if ([dorado.DataType.PRIMITIVE_BOOLEAN, dorado.DataType.BOOLEAN].indexOf(dataType._code) >= 0) {
+					if (!booleanOperatorDropDow) {
+						booleanOperatorDropDow = new dorado.widget.ListDropDown({
+							items: operatorItems.slice(3, 5),
+							property: "key",
+							displayProperty: "value",
+							autoOpen: true
+						});
+					}
+					dropDown = booleanOperatorDropDow;
+				}
+			}
+			
+			if (!dropDown) {
+				stringOperatorDropDown = new dorado.widget.ListDropDown({
+					items: operatorItems.slice(0, 5),
+					property: "key",
+					displayProperty: "value",
+					autoOpen: true
+				});
+				dropDown = stringOperatorDropDown;
+			}
 		}
 		return dropDown;
 	}
@@ -107,7 +123,7 @@
 		var c;
 		for (var i = 0, len = text.length; i < len; i++, escape = false) {
 			c = text.charAt(i);
-			if (c === ' ') {
+			if (c === ',' || c === ' ' || c === ';') {
 				if (contentBegin) {
 					if (!inQuote) {
 						if (operators.indexOf(criterion) < 0) {
@@ -145,10 +161,10 @@
 		return criterions;
 	}
 	
-	function parseCriterion(criterionText, column) {
+	function parseSingleCriterion(criterionText, column) {
 		var criterion = {};
-		for (var i = operators.length - 1; i >= 0; i--) {
-			var operator = operators[i];
+		for (var i = operatorsForParse.length - 1; i >= 0; i--) {
+			var operator = operatorsForParse[i];
 			if (criterionText.startsWith(operator)) {
 				criterion.operator = operator;
 				criterion.value = criterionText.substring(operator.length);
@@ -205,70 +221,99 @@
 		var pd = column._propertyDef;
 		if (pd && pd._mapping) {
 			criterion.value = pd.getMappedKey(criterion.value);
-		} else {
-			var dataType = column.get("dataType");
-			if (dataType) {
-				criterion.value = dataType.parse(criterion.value, column.get("displayFormat"));
-			}
+		}
+		
+		var dataType = column.get("dataType");
+		if (dataType) {
+			criterion.value = dataType.parse(criterion.value, column.get("displayFormat"));
 		}
 		return criterion;
 	}
 	
 	dorado.widget.grid.DataColumn.getDefaultOperator = function(column) {
-		var dataType = column.get("dataType");
-		if (dataType && dataType._code && numberTypeCodes.indexOf(dataType._code) >= 0) {
+		var dataType = column.get("dataType"), pd = column._propertyDef;
+		if (pd && pd._mapping ||
+		dataType &&
+		(dataType._code && numberTypeCodes.indexOf(dataType._code) >= 0 || [dorado.DataType.PRIMITIVE_BOOLEAN, dorado.DataType.BOOLEAN].indexOf(dataType._code) >= 0)) {
 			return "=";
 		} else {
 			return "like";
 		}
-	};
+	};	
 	
-	dorado.widget.grid.DataColumn.parseCriterions = function(text, column) {
+	dorado.widget.grid.DataColumn.parseCriterion = function(text, column) {
+		
+		function parseCriterions(text, column) {
+			var criterions = [], criterionTexts = splitCriterions(text, column);
+			for (var i = 0; i < criterionTexts.length; i++) {
+				criterions.push(parseSingleCriterion(criterionTexts[i], column));
+			}
+			return criterions;
+		};
+		
+		text = jQuery.trim(text);
 		if (!text) return null;
-		var criterions = [], criterionTexts = splitCriterions(text, column);
-		for (var i = 0; i < criterionTexts.length; i++) {
-			criterions.push(parseCriterion(criterionTexts[i], column));
+		var criterion = {};
+		if (text.charAt(0) == '[' && text.charAt(text.length - 1) == ']') {
+			criterion.junction = "or";
+			text = text.substring(1, text.length - 1);
 		}
-		return criterions;
+		else {
+			criterion.junction = "and";
+		}
+		criterion.criterions = parseCriterions(text, column);
+		return criterion;
 	};
 	
-	dorado.widget.grid.DataColumn.criterionsToText = function(criterions, column) {
-		var text = "", pd = column._propertyDef, dataType = column.get("dataType");
-		for (var i = 0; i < criterions.length; i++) {
-			if (text != "") text += " ";
-			
-			var criterion = criterions[i], operator = criterion.operator;
-			if (operator && operator.indexOf("like") < 0) {
-				text += operator;
-			}
-			
-			var valueText;
-			if (pd && pd._mapping) {
-				valueText = pd.getMappedValue(criterion.value);
-			} else {
-				var dataType = column.get("dataType");
-				if (dataType) {
-					valueText = dataType.toText(criterion.value, column.get("displayFormat"));
+	dorado.widget.grid.DataColumn.criterionToText = function(criterion, column) {
+		
+		function criterionsToText(criterions, column) {
+			var text = "", pd = column._propertyDef, dataType = column.get("dataType");		
+			var defaultOperator = dorado.widget.grid.DataColumn.getDefaultOperator(column);	
+			for (var i = 0; i < criterions.length; i++) {
+				if (text != "") text += ", ";
+				
+				var criterion = criterions[i], operator = criterion.operator;
+				if (operator && operator != defaultOperator && operator.indexOf("like") < 0) {
+					text += operator;
+				}
+				
+				var valueText;
+				if (pd && pd._mapping) {
+					valueText = pd.getMappedValue(criterion.value);
 				} else {
-					valueText = criterion.value + '';
+					var dataType = column.get("dataType");
+					if (dataType) {
+						valueText = dataType.toText(criterion.value, column.get("displayFormat"));
+					} else {
+						valueText = criterion.value + '';
+					}
+				}
+				
+				if (operator && operator != defaultOperator) {
+					if (operator.startsWith("like")) {
+						valueText = valueText + '*';
+					}
+					if (operator.endsWith("like")) {
+						valueText = '*' + valueText;
+					}
+				}
+				
+				if (typeof valueText == "string" &&
+					(valueText.indexOf(',') >= 0 || valueText.indexOf(' ') >= 0 || valueText.indexOf(';') >= 0)) {
+					text += ('"' + valueText + '"');
+				} else {
+					text += valueText;
 				}
 			}
-			
-			if (operator) {
-				if (operator.startsWith("like")) {
-					valueText = valueText + '*';
-				}
-				if (operator.endsWith("like")) {
-					valueText = '*' + valueText;
-				}
-			}
-			
-			if (valueText.indexOf(' ') > 0) {
-				text += ('"' + valueText + '"');
-			} else {
-				text += valueText;
-			}
+			return text;
 		}
+		
+		if (!criterion) return null;
+		var text = "";
+		if (criterion.junction == "or") text += "[ ";
+		text += criterionsToText(criterion.criterions, column);
+		if (criterion.junction == "or") text += " ]";
 		return text;
 	};
 	
@@ -282,14 +327,20 @@
 		$className: "dorado.widget.grid.CriterionDropDown",
 		
 		ATTRIBUTES: /** @scope dorado.widget.grid.CriterionDropDown.prototype */ {
-			criterions: {
+			maxWidth: {
+				defaultValue: 328
+			},
+			
+			criterion: {
 				defaultValue: [],
-				setter: function(criterions) {
-					criterions = criterions || [];
-					var criterions = this._criterions = dorado.Core.clone(criterions, true);
+				setter: function(criterion) {
+					criterion = criterion || {};
+					var criterion = this._criterion = dorado.Core.clone(criterion, true);
+					if (!criterion.criterions) criterion.criterions = [];
+					var criterions = criterion.criterions;
 					for (var i = 0; i < criterions.length; i++) {
-						var criterion = criterions[i];
-						if (!criterion.id) criterion.id = dorado.Core.newId();
+						var c = criterions[i];
+						if (!c.id) c.id = dorado.Core.newId();
 					}
 				}
 			}
@@ -302,7 +353,7 @@
 			this._criterionControlCache = [];
 		},
 		
-		createDropDownBox: function(editor) {
+		createDropDownBox: function() {
 			var dropdown = this, box = $invokeSuper.call(dropdown, arguments);
 			
 			var containerElement = box.getContainerElement(), doms = {};
@@ -313,15 +364,49 @@
 					tagName: "DIV",
 					contextKey: "criterionsContainer"
 				}, {
-					tagName: "DIV",
-					className: "i-buttons-container d-buttons-container",
-					contextKey: "buttonsContainer"
+					tagName: "TABLE",
+					style: {
+						width: "100%"
+					},
+					content: {
+						tagName: "TR",
+						content: [{
+							tagName: "TD",
+							contextKey: "junctionContainer"
+						}, {
+							tagName: "TD",
+							className: "i-buttons-container d-buttons-container",
+							contextKey: "buttonsContainer",
+							style: {
+								width: 150
+							}
+						}]
+					}
 				}]
 			}, null, {
 				context: doms
 			});
 			dropdown._criterionsContainer = doms.criterionsContainer;
-			dropdown._buttonsContainer = doms.buttonsContainer;
+			
+			var junctionRadio = new dorado.widget.RadioGroup({
+				value: "and",
+				radioButtons: [
+					{
+						value: "and",
+						text: $resource("dorado.grid.FilterExpressionAnd")
+					},
+					{
+						value: "or",
+						text: $resource("dorado.grid.FilterExpressionOr")
+					}
+				],
+				onPost: function(self) {
+					dropdown._criterion.junction = self.get("value");
+				}
+			});
+			box.registerInnerControl(junctionRadio);
+			junctionRadio.render(doms.junctionContainer);
+			dropdown._junctionRadio = junctionRadio;
 			
 			var addButton = new dorado.widget.Button({
 				icon: "url(skin>common/icons.gif) -120px 0",
@@ -331,23 +416,19 @@
 				}
 			});
 			box.registerInnerControl(addButton);
-			addButton.render(dropdown._buttonsContainer);
+			addButton.render(doms.buttonsContainer);
 			
 			var okButton = new dorado.widget.Button({
 				caption: $resource("dorado.baseWidget.MessageBoxButtonOK"),
 				onClick: function() {
-					var column = editor._cellColumn, criterions = dropdown._criterions, grid = column._grid, text;
-					if (criterions.length == 1 && criterions[0].value === undefined && criterions[0].operator === dorado.widget.grid.DataColumn.getDefaultOperator(column)) {
-						text = "";
-					} else {
-						text = dorado.widget.grid.DataColumn.criterionsToText(criterions, column);
-					}
+					var column = dropdown._editor._cellColumn, criterion = dropdown._criterion, grid = column._grid;
+					var text = dorado.widget.grid.DataColumn.criterionToText(criterion, column);
 					dropdown.close(text);
 					grid.filter();
 				}
 			});
 			box.registerInnerControl(okButton);
-			okButton.render(dropdown._buttonsContainer);
+			okButton.render(doms.buttonsContainer);
 			
 			return box;
 		},
@@ -356,7 +437,14 @@
 			editor.post();
 			var column = editor._cellColumn, grid = column._grid;
 			var filterEntity = grid.get("filterEntity");
-			this.set("criterions", filterEntity.get(column._property));
+			var criterion = filterEntity.get(column._property);
+			if (criterion && criterion instanceof Array) {
+				criterion = {
+					junction: "and",
+					criterions: criterion
+				};
+			}
+			this.set("criterion", criterion);
 			
 			return $invokeSuper.call(this, arguments);
 		},
@@ -364,7 +452,7 @@
 		initDropDownBox: function(box, editor) {
 			$invokeSuper.call(this, arguments);
 			
-			var dropdown = this, criterions = dropdown._criterions, criterionsContainer = dropdown._criterionsContainer, i = 0;
+			var dropdown = this, criterion = dropdown._criterion, criterions = criterion.criterions, criterionsContainer = dropdown._criterionsContainer, i = 0;
 			var column = editor._cellColumn;
 			
 			if (criterions.length == 0) {
@@ -400,6 +488,8 @@
 				criterionControl.unrender();
 				dropdown._criterionControlCache.push(criterionControl);
 			}
+			
+			dropdown._junctionRadio.set("value", criterion.junction || "and");
 		},
 		
 		getCriterionControl: function(box, criterion) {
@@ -424,7 +514,7 @@
 			var criterionControl = dropdown.getCriterionControl(box, criterion);
 			criterionControl.render(dropdown._criterionsContainer);
 			dropdown._criterionMap[criterion.id] = criterionControl;
-			dropdown._criterions.push(criterion);
+			dropdown._criterion.criterions.push(criterion);
 			
 			dropdown.locate();
 		},
@@ -434,12 +524,12 @@
 			criterionControl.unrender();
 			dropdown._criterionControlCache.push(criterionControl);
 			delete dropdown._criterionMap[criterion.id];
-			dropdown._criterions.remove(criterion);
+			dropdown._criterion.criterions.remove(criterion);
 			
 			dropdown.locate();
 			
 			setTimeout(function() {
-				if (dropdown._criterions.length == 0) {
+				if (dropdown._criterion.criterions.length == 0) {
 					dropdown.addCriterion(box);
 				}
 			}, 100);
@@ -524,7 +614,7 @@
 			
 			var column = this._column, pd = column._propertyDef;
 			var dataType = column.get("dataType"), dtCode = dataType ? dataType._code : -1;
-			var trigger = column.get("trigger"), displayFormat = column.get("displayFormat"), typeFormat = column.get("typeFormat");
+			var trigger = column.get("trigger"), mapping = null, displayFormat = column.get("displayFormat"), typeFormat = column.get("typeFormat");
 			if (!dtCode || (pd && pd._mapping)) dataType = undefined;
 			
 			var operatorEditor = this._operatorEditor, valueEditor = this._valueEditor, doms = this._doms;
@@ -535,9 +625,8 @@
 			
 			if (!trigger) {
 				if (pd && pd._mapping) {
-					trigger = new dorado.widget.AutoMappingDropDown({
-						items: pd._mapping
-					});
+					trigger = "autoMappingDropDown2";
+					mapping = pd._mapping;
 				} else if (dtCode == dorado.DataType.PRIMITIVE_BOOLEAN) {
 					trigger = getPrimitiveBooleanDropDown();
 				} else if (dtCode == dorado.DataType.BOOLEAN) {
@@ -554,6 +643,7 @@
 				displayFormat: displayFormat,
 				typeFormat: typeFormat,
 				trigger: trigger,
+				mapping: mapping,
 				editable: column._editable
 			}, {
 				skipUnknownAttribute: true,

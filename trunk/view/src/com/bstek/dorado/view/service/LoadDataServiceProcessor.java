@@ -15,11 +15,14 @@ import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.data.JsonUtils;
 import com.bstek.dorado.data.ParameterWrapper;
 import com.bstek.dorado.data.entity.EntityUtils;
+import com.bstek.dorado.data.provider.And;
 import com.bstek.dorado.data.provider.Criteria;
+import com.bstek.dorado.data.provider.Criterion;
 import com.bstek.dorado.data.provider.DataProvider;
+import com.bstek.dorado.data.provider.Junction;
+import com.bstek.dorado.data.provider.Or;
 import com.bstek.dorado.data.provider.Order;
 import com.bstek.dorado.data.provider.Page;
-import com.bstek.dorado.data.provider.filter.FilterCriterion;
 import com.bstek.dorado.data.provider.filter.FilterCriterionParser;
 import com.bstek.dorado.data.provider.manager.DataProviderManager;
 import com.bstek.dorado.data.type.DataType;
@@ -112,23 +115,7 @@ public class LoadDataServiceProcessor extends DataServiceProcessorSupport {
 			if (criterions != null) {
 				for (Iterator<JsonNode> it = criterions.iterator(); it
 						.hasNext();) {
-					ObjectNode rudeCriterion = (ObjectNode) it.next();
-
-					String property = JsonUtils.getString(rudeCriterion,
-							"property");
-					String expression = JsonUtils.getString(rudeCriterion,
-							"expression");
-					String dataTypeName = JsonUtils.getString(rudeCriterion,
-							"dataType");
-					DataType dataType = null;
-					if (StringUtils.isNotEmpty(dataTypeName)) {
-						dataType = getDataType(dataTypeName);
-					}
-
-					FilterCriterion criterion = filterCriterionParser
-							.createFilterCriterion(property, dataType,
-									expression);
-					criteria.addCriterion(criterion);
+					criteria.addCriterion(parseCriterion((ObjectNode) it.next()));
 				}
 			}
 		}
@@ -146,6 +133,42 @@ public class LoadDataServiceProcessor extends DataServiceProcessorSupport {
 			}
 		}
 		return criteria;
+	}
+
+	protected Criterion parseCriterion(ObjectNode rudeCriterion)
+			throws Exception {
+		String junction = JsonUtils.getString(rudeCriterion, "junction");
+		if (StringUtils.isNotEmpty(junction)) {
+			Junction junctionCrition;
+			if ("or".equals(junction)) {
+				junctionCrition = new Or();
+			} else {
+				junctionCrition = new And();
+			}
+
+			ArrayNode criterions = (ArrayNode) rudeCriterion.get("criterions");
+			if (criterions != null) {
+				for (Iterator<JsonNode> it = criterions.iterator(); it
+						.hasNext();) {
+					junctionCrition.addCriterion(parseCriterion((ObjectNode) it
+							.next()));
+				}
+			}
+			return junctionCrition;
+		} else {
+			String property = JsonUtils.getString(rudeCriterion, "property");
+			String expression = JsonUtils
+					.getString(rudeCriterion, "expression");
+			String dataTypeName = JsonUtils
+					.getString(rudeCriterion, "dataType");
+			DataType dataType = null;
+			if (StringUtils.isNotEmpty(dataTypeName)) {
+				dataType = getDataType(dataTypeName);
+			}
+
+			return filterCriterionParser.createFilterCriterion(property,
+					dataType, expression);
+		}
 	}
 
 	@Override
@@ -170,8 +193,7 @@ public class LoadDataServiceProcessor extends DataServiceProcessorSupport {
 		if (rudeSysParameter != null) {
 			if (rudeSysParameter.has("preloadConfig")) {
 				dataPreloadConfigs = (Collection<DataPreloadConfig>) JsonUtils
-						.toJavaObject(
-								rudeSysParameter.remove("preloadConfig"),
+						.toJavaObject(rudeSysParameter.remove("preloadConfig"),
 								getDataType("[DataPreloadConfig]"));
 			}
 

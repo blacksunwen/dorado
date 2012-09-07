@@ -286,6 +286,7 @@
 				var controlDom = region.control.getDom();
 				region.height = td.clientHeight;
 				controlDom.style.display = region.display;
+
 				var useControlWidth = region.control.getAttributeWatcher().getWritingTimes("width") && region.control._width != "auto";
 				this.renderControl(region, td, !useControlWidth, true);
 			}

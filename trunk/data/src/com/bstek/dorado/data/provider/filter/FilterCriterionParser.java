@@ -1,5 +1,6 @@
 package com.bstek.dorado.data.provider.filter;
 
+import com.bstek.dorado.data.provider.Criterion;
 import com.bstek.dorado.data.type.DataType;
 
 /**
@@ -7,6 +8,6 @@ import com.bstek.dorado.data.type.DataType;
  * @since 2012-3-1
  */
 public interface FilterCriterionParser {
-	FilterCriterion createFilterCriterion(String property, DataType dataType,
+	Criterion createFilterCriterion(String property, DataType dataType,
 			String expression) throws Exception;
 }

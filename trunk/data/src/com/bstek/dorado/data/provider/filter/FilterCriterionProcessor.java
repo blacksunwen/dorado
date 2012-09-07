@@ -1,6 +1,6 @@
 package com.bstek.dorado.data.provider.filter;
 
-public interface CriterionProcessor {
+public interface FilterCriterionProcessor {
 
 	void doProcess(SingleValueFilterCriterion criterion);
 }

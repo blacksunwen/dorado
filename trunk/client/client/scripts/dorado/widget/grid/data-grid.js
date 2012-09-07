@@ -342,14 +342,13 @@
 				
 				var oldItems = this._itemModel.getItems();
 				if (oldItems != entityList) {
-					if (this._itemModel._filterParams && this._filterMode == "clientSide") {
+					if (this._itemModel.criterions && this._filterMode == "clientSide") {
 						this.get("filterEntity").clearData();
 					}
 					this._itemModel.setItems(entityList);
 					if (!this._rowSelectionProperty) {
 						this.set("selection", null);
-					}
-					else {
+					} else {
 						var selection = [];
 						var it = entityList.iterator(true);
 						while (it.hasNext()) {
@@ -552,7 +551,7 @@
 					if (arg.entityList == this._itemModel.getItems()) {
 						var oldCurrentEntity = this.getCurrentEntity();
 						if (!this._supportsPaging && (!oldCurrentEntity || oldCurrentEntity.page.pageNo != arg.entityList.pageNo)) {
-							if (this._itemModel._filterParams && this._filterMode == "clientSide") {
+							if (this._itemModel.criterions && this._filterMode == "clientSide") {
 								this.get("filterEntity").clearData();
 								this.filter();
 							}
@@ -702,52 +701,113 @@
 			}
 		},
 		
-		filter: function(filterParams) {
+		filter: function(criterions) {
+		
+			function criterionToServerCriterion(criterion, column, dataColumns) {
+				var serverCriterion = null;
+				if (criterion.junction) {
+					var criterions = criterion.criterions;
+					if (criterions && criterions.length) {
+						serverCriterion = {
+							junction: criterion.junction,
+							criterions: []
+						};
+						
+						for (var i = 0; i < criterions.length; i++) {
+							var c = criterions[i];
+							if (c != null) serverCriterion.criterions.push(criterionToServerCriterion(c, column, dataColumns));
+						}
+					}
+				} else {
+					var property;
+					if (!column) {
+						if (!criterion.property) {
+							throw new dorado.ResourceException("dorado.list.CriterionPropertyUndefined");
+						}
+						
+						property = criterion.property;
+						column = getColumn(dataColumns, property);
+					}
+					else {
+						property = column._property;
+					}
+					
+					var dataType = (column ? column.get("dataType") : null), expression = "";
+					
+					if (criterion.operator && criterion.operator.indexOf("like") < 0) {
+						expression += criterion.operator;
+					}
+					expression += dataType.toText(criterion.value);
+					if (criterion.operator) {
+						if (criterion.operator.startsWith("like")) {
+							expression = expression + '*';
+						}
+						if (criterion.operator.endsWith("like")) {
+							expression = '*' + expression;
+						}
+					}
+					
+					serverCriterion = {
+						property: property,
+						dataType: ((!dataType || dataType instanceof dorado.EntityDataType || dataType instanceof dorado.AggregationDataType) ? undefined : dataType._name),
+						expression: expression
+					};
+				}
+				return serverCriterion;
+			}
+			
+			function getColumn(dataColumns, property) {
+				for (var i = 0; i < dataColumns.length; i++) {
+					var column = dataColumns[i]
+					if (column._property == property) {
+						return column;
+					}
+				}
+				return null;
+			}
+			
+			function verifyCriterion(criterion, column) {
+				if (criterion.junction) {
+					var criterions = criterion.criterions;
+					if (criterions && criterions.length) {
+						for (var i = 0; i < criterions.length; i++) {
+							var c = criterions[i];
+							if (c != null) verifyCriterion(c, column);
+						}
+					}
+				} else {
+					verifyCriterion.property = column._property;
+				}
+			}
+			
 			if (this._filterMode == "serverSide") {
 				var dataSet = this._dataSet;
 				if (!dataSet) return;
 				
-				if (filterParams === undefined) {
-					filterParams = [];
+				var serverCriterions = [], dataColumns = this._columnsInfo.dataColumns;
+				if (criterions === undefined) {
 					var filterEntity = this._itemModel.filterEntity;
-					var dataColumns = this._columnsInfo.dataColumns;
 					for (var i = 0; i < dataColumns.length; i++) {
-						var column = dataColumns[i], dataType = column.get("dataType");
+						var column = dataColumns[i];
 						if (!column._property || column._property == "none") continue;
-						var criterions = filterEntity.get(column._property);
-						var pd = column._propertyDef, dataType = column.get("dataType");
-						if (criterions && criterions.length) {
-							for (var j = 0; j < criterions.length; j++) {
-								var criterion = criterions[j], expression = "";
-								
-								if (criterion.operator) {
-									expression += criterion.operator;
-									if (criterion.operator.indexOf("like") >= 0) expression += ' ';
-								}
-								
-								var valueText;
-								if (pd && pd._mapping) {
-									valueText = pd.getMappedValue(criterion.value);
-								} else {
-									if (dataType) {
-										valueText = dataType.toText(criterion.value, column.get("displayFormat"));
-									} else {
-										valueText = criterion.value + '';
-									}
-								}
-								
-								if (valueText.indexOf(' ') > 0) {
-									expression += ('"' + valueText + '"');
-								} else {
-									expression += valueText;
-								}
-								
-								filterParams.push({
-									property: column._property,
-									dataType: ((!dataType || dataType instanceof dorado.EntityDataType || dataType instanceof dorado.AggregationDataType) ? undefined : dataType._name),
-									expression: expression
-								});
+						
+						var criterion = filterEntity.get(column._property);
+						if (criterion) {
+							var serverCriterion = criterionToServerCriterion(criterion, column, null);
+							if (serverCriterion.junction && serverCriterion.junction != "or") {
+								serverCriterions = serverCriterions.concat(serverCriterion.criterions);
+							} else {
+								serverCriterions.push(serverCriterion);
 							}
+						}
+					}
+				} else {
+					for (var i = 0; i < criterions.length; i++) {
+						var serverCriterion = criterionToServerCriterion(criterion, null, dataColumns);
+						if (serverCriterion.junction && serverCriterion.junction != "or") {
+							serverCriterions = serverCriterions.concat(serverCriterion.criterions);
+						} else {
+							serverCriterions.push(serverCriterion);
 						}
 					}
 				}
@@ -766,7 +826,7 @@
 				var sysParameter = hostObject._sysParameter;
 				if (!sysParameter) hostObject._sysParameter = sysParameter = new dorado.util.Map();
 				var criteria = sysParameter.get("criteria") || {};
-				criteria.criterions = filterParams;
+				criteria.criterions = serverCriterions;
 				if (!(criteria.criterions || criteria.criterions.length || criteria.orders || criteria.orders.length)) criteria = null;
 				sysParameter.put("criteria", criteria);
 				
@@ -802,7 +862,7 @@
 				var criteria = sysParameter.get("criteria") || {};
 				if (column) {
 					criteria.orders = orders = [{
-						property: column.get("property"),
+						property: column._property,
 						desc: desc
 					}];
 				} else if (parameter instanceof dorado.util.Map) {
@@ -871,7 +931,7 @@
 								if (removed instanceof Array && removed.length == 0) removed = null;
 								if (added instanceof Array && added.length == 0) added = null;
 								if (removed == added) return;
-
+								
 								if (removed) {
 									if (!(removed instanceof Array)) {
 										removed = [removed];

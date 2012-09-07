@@ -248,9 +248,8 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 		onValueSelect : {}
 	},
 
-	createDropDownBox : function(editor) {
+	createDropDownBox : function() {
 		var config = {
-			editor : editor,
 			dropDown : this,
 			hideAnimateType : "none"
 		};
@@ -348,7 +347,7 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 		var boxCache = getBoxCache(win);
 		var box = boxCache ? boxCache[dorado.id + '$' + dropdown._id] : null;
 		if (!box) {
-			box = dropdown.createDropDownBox(editor);
+			box = dropdown.createDropDownBox();
 			box.addListener("onDropDownBoxShow", function() {
 				if (dropdown.onDropDownBoxShow) dropdown.onDropDownBoxShow();
 			});
@@ -369,6 +368,7 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 			
 			if (boxCache) boxCache[dorado.id + '$' + dropdown._id] = box;
 		}
+		box._editor = editor;
 		dropdown._box = box;
 
 		box._onBlurListener = function() {
@@ -419,7 +419,7 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 		
 		var offsetTargetTop = dropdown._currentEditorOffsetTop;
 		var offsetTargetBottom = boxContainerHeight - offsetTargetTop - dropdown._currentEditorOffsetHeight;
-		var vAlign = "bottom";
+		var align = "innerLeft", vAlign = "bottom";
 		if (offsetTargetTop > offsetTargetBottom) {
 			vAlign = "top";
 			realMaxHeight = offsetTargetTop;
@@ -470,6 +470,11 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 			if (boxHeight > dropdown._realMaxHeight) boxHeight = dropdown._realMaxHeight;
 			if (boxHeight < dropdown._minHeight) boxHeight = dropdown._minHeight;
 		}
+		
+		if (dropdown._currentEditorOffsetWidth > boxWidth) {
+			align = "innerRight";
+		}
+		
 		if (vAlign == "top" && boxHeight < offsetTargetBottom) {
 			vAlign = "bottom";
 		}
@@ -481,7 +486,7 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 		boxDom.style.height = boxHeight + "px";
 		if (boxVisible) {
 			$DomUtils.dockAround(boxDom, editorDom, {
-				align: "innerleft",
+				align: align,
 				vAlign: vAlign,
 				autoAdjustPosition: false
 			});
@@ -497,7 +502,7 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 				animateType: (boxHeight > 10) ? undefined : "none",
 				anchorTarget: editor,
 				editor: editor,
-				align: "innerleft",
+				align: align,
 				offsetLeft: widthOverflow,
 				vAlign: vAlign,
 				autoAdjustPosition: false

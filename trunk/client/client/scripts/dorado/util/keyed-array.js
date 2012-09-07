@@ -175,7 +175,7 @@ dorado.util.KeyedArray = $class(/** @scope dorado.util.KeyedArray.prototype */{
 	 * @return {Object} 匹配的对象。
 	 */
 	get: function(k) {
-		return (k >= 0) ? this.items[k] : this._keyMap[k];
+		return (typeof k == "number") ? this.items[k] : this._keyMap[k];
 	},
 	
 	/**

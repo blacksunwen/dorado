@@ -393,7 +393,7 @@
 								this._loadingData = false;
 								delete this._data;
 							}
-							
+
 							if (success) {
 								if (shouldFireOnLoadData) {
 									this.setData(result);

@@ -173,9 +173,9 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.RowListDropDown,/** @scope
 		}
 	},
 	
-	createDropDownBox: function(editor) {
+	createDropDownBox: function() {
 		if (this._useDataBinding) {
-			var dropDown = this, box = dorado.widget.DropDown.prototype.createDropDownBox.call(this, editor), rowList;
+			var dropDown = this, box = dorado.widget.DropDown.prototype.createDropDownBox.call(this), rowList;
 			var config = {
 				dataSet: this._dataSet,
 				dataPath: this._dataPath,
