@@ -375,6 +375,10 @@
 				contentCt.style.overflowY = overflowY;
 			}
 			
+			if (dorado.Browser.msie && dorado.Browser.version < 8) {
+				$fly(contentCt).addClass("d-relative");
+			}
+			
 			var layout = this._layout;
 			if (layout) {
 				layout._overflowX = (overflowX == "scroll") ? "visible" : overflowX;
