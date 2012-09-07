@@ -149,7 +149,7 @@
 			}
 		},
 		
-		processOverflow: function(dom) {
+		processOverflow: function(dom) {			
 			var overflowed = false, padding = parseInt(this._padding) || 0;
 			var width = this._maxRagionRight;
 			if (width > 0 && width > dom.offsetWidth) {
@@ -492,42 +492,27 @@
 			
 			var constraint = region.constraint, containerDom = this._dom.parentNode;
 			var padding = (parseInt(this._padding) || 0);
-			var regionPadding = (parseInt(this._regionPadding) || 0) +
-			(parseInt(constraint.padding) || 0);
-			var clientWidth = containerDom.clientWidth, realContainerWidth = clientWidth -
-			padding * 2;
-			var clientHeight = containerDom.clientHeight, realContainerHeight = clientHeight -
-			padding * 2;
+			var regionPadding = (parseInt(this._regionPadding) || 0) + (parseInt(constraint.padding) || 0);
+			var clientWidth = containerDom.clientWidth, realContainerWidth = clientWidth - padding * 2;
+			var clientHeight = containerDom.clientHeight, realContainerHeight = clientHeight - padding * 2;
 			
 			if (realignArg.left) {
 				left = Math.round((realContainerWidth - region.realWidth -
-				(region.right > 0 ? region.right : 0)) *
-				realignArg.left /
-				100) +
-				padding +
-				regionPadding;
+					(region.right > 0 ? region.right : 0)) *
+					realignArg.left / 100) + padding + regionPadding;
 			} else if (realignArg.right) {
 				right = Math.round((realContainerWidth - region.realWidth -
-				(region.left > 0 ? region.left : 0)) *
-				realignArg.right /
-				100) +
-				padding +
-				regionPadding;
+					(region.left > 0 ? region.left : 0)) *
+					realignArg.right / 100) + padding + regionPadding;
 			}
 			if (realignArg.top) {
 				top = Math.round((realContainerHeight - region.realHeight -
-				(region.bottom > 0 ? region.bottom : 0)) *
-				realignArg.top /
-				100) +
-				padding +
-				regionPadding;
+					(region.bottom > 0 ? region.bottom : 0)) *
+					realignArg.top / 100) + padding + regionPadding;
 			} else if (realignArg.bottom) {
 				bottom = Math.round((realContainerHeight - region.realHeight -
-				(region.top > 0 ? region.top : 0)) *
-				realignArg.bottom /
-				100) +
-				padding +
-				regionPadding;
+					(region.top > 0 ? region.top : 0)) *
+					realignArg.bottom / 100) + padding + regionPadding;
 			}
 			
 			var style = controlDom.style;
