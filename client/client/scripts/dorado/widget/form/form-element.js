@@ -614,9 +614,8 @@
 					}
 				};
 				editorConfig.style = {
-					paddingLeft: this._labelWidth + this._labelSpacing +
-					"px",
-					height: "100%",
+					paddingLeft: this._labelWidth + this._labelSpacing + "px",
+					//height: "100%",
 					overflow: "hidden"
 				};
 			}
@@ -904,7 +903,10 @@
 				
 				if (config.width > 0) editor._realWidth = config.width;
 				else editor._realWidth = 2;
-				if (config.height > 0) editor._realHeight = config.height;
+				
+				// 导致IE9下自定义Editor的高度异常
+				// if (config.height > 0) editor._realHeight = config.height;
+				if (config.height > 0 && this._height) editor._realHeight = config.height;
 				
 				if (!editor.get("rendered")) editor.render(editorEl, editorEl.firstChild);
 				else editor.refresh();
