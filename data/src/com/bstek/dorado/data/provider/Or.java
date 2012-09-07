@@ -2,8 +2,7 @@ package com.bstek.dorado.data.provider;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
- * @since 2011-6-18
+ * @since 2012-9-5
  */
-public interface Criterion {
-
+public class Or extends Junction {
 }

@@ -229,6 +229,11 @@
 		 * @param {String} filterParams.property 要过滤的属性名。
 		 * @param {String} filterParams.operator 比较操作符。如"="、"like"、">"、"<="等。
 		 * @param {Object} filterParams.value 过滤条件值。
+		 * @param {String} filterParams.junction 子过滤条件的连接方式，有"and"和"or"两种取值。
+		 * <p>
+		 * 当此属性的值不为空时filterParams.property、filterParams.operator、filterParams.value这些子属性都将被忽略，系统会进一步处理filterParams.filterParams属性。
+		 * </p>
+		 * @param {[Object]} filterParams.filterParams 子过滤条件数组。此参数仅在filterParams.junction不为空时有效。
 		 */
 		filter: function(filterParams, customFilter) {
 		
@@ -262,6 +267,29 @@
 				}
 			}
 			
+			function processFilterParams(filterParams, junction) {
+				var passed = (junction == "or") ? false : true;
+				for (var i = 0; i < filterParams.length; i++) {
+					var filterParam = filterParams[i], b;
+					if (filterParam.junction) {
+						b = processFilterParams(filterParam.filterParams, filterParam.junction);
+					}
+					else {
+						b = filterItem(item, filterParams[i]);
+					}
+					
+					if (junction == "or" && b) {
+						passed = true;
+						break;
+					}
+					else if (junction == "and" && !b) {
+						passed = false;
+						break;
+					}
+				}
+				return passed;
+			}
+			
 			if (filterParams && filterParams.length > 0) {
 				if (this._originItems) this._items = this._originItems;
 				else this._originItems = this._items;
@@ -272,13 +300,7 @@
 						passed = customFilter(item, filterParams);
 					}
 					if (passed == null) {
-						passed = true;
-						for (var i = 0; i < filterParams.length; i++) {
-							if (!filterItem(item, filterParams[i])) {
-								passed = false;
-								break;
-							}
-						}
+						passed = processFilterParams(filterParams, "and");
 					}
 					if (passed) filtered.push(item);
 				}

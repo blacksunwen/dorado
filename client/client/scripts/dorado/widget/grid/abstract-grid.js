@@ -388,8 +388,8 @@
 			this.clearSortFlags();
 		},
 
-		filter: function(filterParams, customFilter) {
-			var hasParam = (filterParams && filterParams.length > 0);
+		filter: function(criterions, customFilter) {
+			var hasParam = (criterions && criterions.length > 0);
 			if (hasParam) this.ungroup();
 			$invokeSuper.call(this, arguments);
 			if (hasParam) this.refreshSummary();
@@ -2008,38 +2008,56 @@
 			}
 			$invokeSuper.call(this, [sortParams]);
 		},
-
+		
 		/**
 		 * 数据过滤。
 		 * @protected
-		 * @param {Object[]} filterParams 过滤条件的数组。
-		 * @param {String} filterParams.property 要过滤的属性名。
-		 * @param {String} filterParams.operator 比较操作符。如"="、"like"、">"、"<="等。
-		 * @param {Object} filterParams.value 过滤条件值。
+		 * @param {Object[]} criterions 过滤条件的数组。
+		 * @param {String} criterions.property 要过滤的属性名。
+		 * @param {String} criterions.operator 比较操作符。如"="、"like"、">"、"<="等。
+		 * @param {Object} criterions.value 过滤条件值。
+		 * @param {String} criterions.junction 子过滤条件的连接方式，有"and"和"or"两种取值。
+		 * <p>
+		 * 当此属性的值不为空时criterions.property、criterions.operator、criterions.value这些子属性都将被忽略，系统会进一步处理criterions.criterions属性。
+		 * </p>
+		 * @param {[Object]} criterions.criterions 子过滤条件数组。此参数仅在criterions.junction不为空时有效。
 		 * @see dorado.widget.list.ItemModel#filter
 		 */
-		filter: function(filterParams) {
-			if (filterParams === undefined) {
-				filterParams = [];
+		filter: function(criterions) {
+		
+			function verifyCriterion(criterion, column) {
+				if (criterion.junction) {
+					var criterions = criterion.criterions;
+					if (criterions && criterions.length) {
+						for (var i = 0; i < criterions.length; i++) {
+							var c = criterions[i];
+							if (c != null) verifyCriterion(c, column);
+						}
+					}
+				} else {
+					verifyCriterion.property = column._property;
+				}
+			}
+			
+			if (criterions === undefined) {
+				criterions = [];
 				var filterEntity = this._itemModel.filterEntity;
 				var dataColumns = this._columnsInfo.dataColumns;
 				for (var i = 0; i < dataColumns.length; i++) {
 					var column = dataColumns[i];
 					if (!column._property || column._property == "none") continue;
-					var criterions = filterEntity.get(column._property);
-					if (criterions && criterions.length) {
-						for (var j = 0; j < criterions.length; j++) {
-							var criterion = criterions[j];
-							filterParams.push({
-								property: column._property,
-								operator: criterion.operator,
-								value: criterion.value
-							});
+					var criterion = filterEntity.get(column._property);
+					if (criterion) {
+						verifyCriterion(criterion, column);
+						if (criterion.junction && criterion.junction != "or") {
+							criterions = criterions.concat(criterion.criterions);
+						} else {
+							criterions.push(criterion);
 						}
 					}
 				}
 			}
-			this._itemModel.filter(filterParams);
+			this._itemModel.filter(criterions);
 			this.refresh(true);
 		},
 

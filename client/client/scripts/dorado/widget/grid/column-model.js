@@ -2448,16 +2448,23 @@
 				var textEditor = new dorado.widget.TextEditor({
 					width: "100%",
 					onPost: function(textEditor) {
-						var criterions = dorado.widget.grid.DataColumn.parseCriterions(textEditor.get("text"), column);
+						var criterion = dorado.widget.grid.DataColumn.parseCriterion(textEditor.get("text"), column);
 						var filterEntity = grid.get("filterEntity");
 						filterEntity.disableObservers();
-						filterEntity.set(column._property, criterions);
+						filterEntity.set(column._property, criterion);
 						filterEntity.enableObservers();
 					},
 					onKeyDown: function(textEditor, arg) {
 						if (arg.keyCode == 13) {
 							textEditor.post();
 							grid.filter();
+						}
+					},
+					onTextEdit: function(textEditor) {
+						// if (textEditor == dorado.widget.getFocusedControl())
+						var criterionDropDown = textEditor.get("trigger");
+						if (criterionDropDown && criterionDropDown instanceof dorado.widget.Component && criterionDropDown.get("opened")) {
+							criterionDropDown.close();
 						}
 					}
 				});
@@ -2470,10 +2477,10 @@
 		},
 		
 		refreshSubControl: function(textEditor, arg) {
-			var text, entity = arg.data, column = arg.column, property = column._property, criterions = entity.get(property);
+			var text, entity = arg.data, column = arg.column, property = column._property, criterion = entity.get(property);
 			
-			if (criterions) {
-				text = dorado.widget.grid.DataColumn.criterionsToText(criterions, column);
+			if (criterion) {
+				text = dorado.widget.grid.DataColumn.criterionToText(criterion, column);
 			}
 			
 			textEditor._cellColumn = arg.column;

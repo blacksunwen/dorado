@@ -189,7 +189,7 @@ dorado.widget.AbstractList = $extend(dorado.widget.Control, /** @scope dorado.wi
 		 * @param {Object} self 事件的发起者，即控件本身。
 		 * @param {Object} arg 事件参数。
 		 * @param {Object} arg.item 将被过滤的数据项。
-		 * @param {Object[]} arg.filterParams 过滤条件。
+		 * @param {Object[]} arg.criterions 过滤条件。
 		 * @param {boolean} #arg.accept 该数据项是否通过过滤，即该数据项是否可被接受。
 		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 		 * @event
@@ -375,26 +375,26 @@ dorado.widget.AbstractList = $extend(dorado.widget.Control, /** @scope dorado.wi
 	/**
 	 * 数据过滤。
 	 * @protected
-	 * @param {Object[]} filterParams 过滤条件的数组。
-	 * @param {String} filterParams.property 要过滤的属性名。
-	 * @param {String} filterParams.operator 比较操作符。如"="、"like"、">"、"<="等。
-	 * @param {Object} filterParams.value 过滤条件值。
+	 * @param {Object[]} criterions 过滤条件的数组。
+	 * @param {String} criterions.property 要过滤的属性名。
+	 * @param {String} criterions.operator 比较操作符。如"="、"like"、">"、"<="等。
+	 * @param {Object} criterions.value 过滤条件值。
 	 * @see dorado.widget.list.ItemModel#filter
 	 */
-	filter: function(filterParams) {
+	filter: function(criterions) {
 		var customFilter, list = this;
 		if (list.getListenerCount("onFilterItem") > 0) {
-			customFilter = function(value, filterParams) {
+			customFilter = function(value, criterions) {
 				var arg = {
 					value: value,
-					filterParams: filterParams
+					criterions: criterions
 				};
 				list.fireEvent("onFilterItem", list, arg);
 				return arg.accept;
 			}
 		}
 		
-		this._itemModel.filter(filterParams, customFilter);
+		this._itemModel.filter(criterions, customFilter);
 		this.refresh(true);
 	}
 });

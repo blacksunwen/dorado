@@ -899,7 +899,7 @@
 			}
 		},
 		
-		createDropDownBox: function(editor) {
+		createDropDownBox: function() {
 			var dropDown = this, box = $invokeSuper.call(this, arguments), picker = new dorado.widget.DatePicker({
 				showTimeSpinner: this._showTimeSpinner,
 				listener: {

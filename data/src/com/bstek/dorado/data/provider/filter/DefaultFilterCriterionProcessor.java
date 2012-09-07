@@ -7,13 +7,14 @@ import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.data.type.DateDataType;
 import com.bstek.dorado.data.type.NumberDataType;
 
-public class DefaultCriterionProcessor implements CriterionProcessor {
+public class DefaultFilterCriterionProcessor implements
+		FilterCriterionProcessor {
 
 	private static final FilterOperator[] OPERATORS = new FilterOperator[] {
 			FilterOperator.like, FilterOperator.likeStart,
-			FilterOperator.likeEnd, FilterOperator.eq, FilterOperator.ne,
-			FilterOperator.gt, FilterOperator.ge, FilterOperator.lt,
-			FilterOperator.le };
+			FilterOperator.likeEnd, FilterOperator.eq, FilterOperator.gt,
+			FilterOperator.ge, FilterOperator.lt, FilterOperator.le,
+			FilterOperator.ne };
 
 	public void doProcess(SingleValueFilterCriterion criterion) {
 		String expression = criterion.getExpression();

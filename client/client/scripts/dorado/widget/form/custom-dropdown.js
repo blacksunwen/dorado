@@ -30,7 +30,7 @@ dorado.widget.CustomDropDown = $extend(dorado.widget.DropDown,/** @scope dorado.
 		}
 	},
 	
-	createDropDownBox: function(editor, dropDown) {
+	createDropDownBox: function() {
 		var box = $invokeSuper.call(this, arguments);
 		var control = this._control;
 		box.set("control", control);

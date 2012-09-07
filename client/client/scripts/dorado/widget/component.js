@@ -144,6 +144,12 @@
 			}
 			this._uniqueId = dorado.Core.newId();
 			dorado.widget.Component.ALL[this._uniqueId] = this;
+			if (id) {
+				id = id + '';
+				if (!(/^[a-zA-Z_$][a-z0-9A-Z_$]*$/.exec(id))) {
+					throw new dorado.ResourceException("dorado.widget.InvaliedComponentId", id);
+				}
+			}
 			this._id = id ? id : this._uniqueId;
 			
 			$invokeSuper.call(this);

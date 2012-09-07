@@ -175,7 +175,7 @@
 			return rowList.getCurrentItem();
 		},
 		
-		createDropDownBox: function(editor) {
+		createDropDownBox: function() {
 			var dropDown = this, box = $invokeSuper.call(this, arguments), rowList;
 			var config = {
 				style: "border: none",
