@@ -25,7 +25,7 @@ public class Shell extends Control {
 	/**
 	 * @return the desktopRef
 	 */
-	@XmlSubNode
+	@XmlSubNode(implTypes = "com.bstek.dorado.desktop.*")
 	@ClientProperty
 	public AbstractDesktop getDesktop() {
 		return desktopRef.get();
