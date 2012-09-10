@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Arguments/>
+  <Context/>
+  <Model/>
+  <View layout="vbox padding:20">
+    <Canvas id="canvas">
+      <Property name="width">500</Property>
+      <Property name="height">300</Property>
+    </Canvas>
+    <Container layout="hbox">
+      <Button id="buttonStart">
+        <Property name="caption">开始</Property>
+        <Property name="disabled">true</Property>
+      </Button>
+      <Button id="buttonStop">
+        <Property name="caption">停止</Property>
+      </Button>
+    </Container>
+  </View>
+</ViewConfig>

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Arguments/>
+  <Context/>
+  <Model/>
+  <View layout="anchor">
+    <HtmlContainer layoutConstraint="top:12">
+      <Property name="content">&lt;div id=&quot;time&quot;>&#xD;
+	&lt;span id=&quot;h&quot;>&lt;/span>:&lt;span id=&quot;m&quot;>&lt;/span>:&lt;span id=&quot;s&quot;>&lt;/span> &lt;span id=&quot;ampm&quot;>&lt;/span> · &lt;span id=&quot;d&quot;>&lt;/span>/&lt;span id=&quot;mnth&quot;>&lt;/span>&#xD;
+&lt;/div></Property>
+      <Property name="style">
+        <Property name="font-size">12pt</Property>
+        <Property name="text-align">center</Property>
+      </Property>
+      <Property name="width">300</Property>
+    </HtmlContainer>
+    <Raphael>
+      <ClientEvent name="onReady">var r = self.getPaper(), R = 100, init = true, param = {&#xD;
+	&quot;stroke&quot;: &quot;#fff&quot;,&#xD;
+	&quot;stroke-width&quot;: 15&#xD;
+}, hash = document.location.hash, marksAttr = {&#xD;
+	fill: hash || &quot;#444&quot;,&#xD;
+	stroke: &quot;none&quot;&#xD;
+}, html = [document.getElementById(&quot;h&quot;), document.getElementById(&quot;m&quot;), document.getElementById(&quot;s&quot;), document.getElementById(&quot;d&quot;), document.getElementById(&quot;mnth&quot;), document.getElementById(&quot;ampm&quot;)];&#xD;
+&#xD;
+// Custom Attribute&#xD;
+r.customAttributes.arc = function(value, total, R) {&#xD;
+	var alpha = 360 / total * value, a = (90 - alpha) * Math.PI / 180;&#xD;
+	var x = 150 + R * Math.cos(a), y = 150 - R * Math.sin(a);&#xD;
+	var color = &quot;hsb(&quot;.concat(Math.round(R) / 100, &quot;,&quot;, value / total, &quot;, .75)&quot;), path;&#xD;
+	if (total == value) {&#xD;
+		path = [[&quot;M&quot;, 150, 150 - R], [&quot;A&quot;, R, R, 0, 1, 1, 149, 150 - R]];&#xD;
+	} else {&#xD;
+		path = [[&quot;M&quot;, 150, 150 - R], [&quot;A&quot;, R, R, 0, +(alpha > 180), 1, x, y]];&#xD;
+	}&#xD;
+	return {&#xD;
+		path: path,&#xD;
+		stroke: color&#xD;
+	};&#xD;
+};&#xD;
+&#xD;
+drawMarks(R, 60);&#xD;
+var sec = r.path().attr(param).attr({&#xD;
+	arc: [0, 60, R]&#xD;
+});&#xD;
+&#xD;
+R -= 20;&#xD;
+drawMarks(R, 60);&#xD;
+var min = r.path().attr(param).attr({&#xD;
+	arc: [0, 60, R]&#xD;
+});&#xD;
+&#xD;
+R -= 20;&#xD;
+drawMarks(R, 12);&#xD;
+var hor = r.path().attr(param).attr({&#xD;
+	arc: [0, 12, R]&#xD;
+});&#xD;
+R -= 20;&#xD;
+drawMarks(R, 31);&#xD;
+var day = r.path().attr(param).attr({&#xD;
+	arc: [0, 31, R]&#xD;
+});&#xD;
+&#xD;
+R -= 20;&#xD;
+drawMarks(R, 12);&#xD;
+var mon = r.path().attr(param).attr({&#xD;
+	arc: [0, 12, R]&#xD;
+});&#xD;
+var pm = r.circle(150, 150, 8).attr({&#xD;
+	stroke: &quot;none&quot;,&#xD;
+	fill: Raphael.hsb2rgb(15 / 200, 1, .75).hex&#xD;
+});&#xD;
+html[5].style.color = Raphael.hsb2rgb(15 / 200, 1, .75).hex;&#xD;
+&#xD;
+function updateVal(value, total, R, hand, id) {&#xD;
+	if (total == 31) { // month&#xD;
+		var d = new Date;&#xD;
+		d.setDate(1);&#xD;
+		d.setMonth(d.getMonth() + 1);&#xD;
+		d.setDate(-1);&#xD;
+		total = d.getDate();&#xD;
+	}&#xD;
+	var color = &quot;hsb(&quot;.concat(Math.round(R) / 100, &quot;,&quot;, value / total, &quot;, .75)&quot;);&#xD;
+	if (init) {&#xD;
+		hand.animate({&#xD;
+			arc: [value, total, R]&#xD;
+		}, 900, &quot;>&quot;);&#xD;
+	} else {&#xD;
+		hand.animate({&#xD;
+			arc: [value, total, R]&#xD;
+		}, 750, &quot;elastic&quot;);&#xD;
+	}&#xD;
+	html[id].innerHTML = (value &lt; 10 ? &quot;0&quot; : &quot;&quot;) + value;&#xD;
+	html[id].style.color = Raphael.getRGB(color).hex;&#xD;
+}&#xD;
+&#xD;
+function drawMarks(R, total) {&#xD;
+	if (total == 31) { // month&#xD;
+		var d = new Date;&#xD;
+		d.setDate(1);&#xD;
+		d.setMonth(d.getMonth() + 1);&#xD;
+		d.setDate(-1);&#xD;
+		total = d.getDate();&#xD;
+	}&#xD;
+	var color = &quot;hsb(&quot;.concat(Math.round(R) / 100, &quot;, 1, .75)&quot;), out = r.set();&#xD;
+	for (var value = 0; value &lt; total; value++) {&#xD;
+		var alpha = 360 / total * value, a = (90 - alpha) * Math.PI / 180, x = 150 + R * Math.cos(a), y = 150 - R * Math.sin(a);&#xD;
+		out.push(r.circle(x, y, 1.2).attr(marksAttr));&#xD;
+	}&#xD;
+	return out;&#xD;
+}&#xD;
+&#xD;
+(function() {&#xD;
+	var d = new Date, am = (d.getHours() &lt; 12), h = d.getHours() % 12 || 12;&#xD;
+	updateVal(d.getSeconds(), 60, 100, sec, 2);&#xD;
+	updateVal(d.getMinutes(), 60, 80, min, 1);&#xD;
+	updateVal(h, 12, 60, hor, 0);&#xD;
+	updateVal(d.getDate(), 31, 40, day, 3);&#xD;
+	updateVal(d.getMonth() + 1, 12, 20, mon, 4);&#xD;
+	pm[(am ? &quot;hide&quot; : &quot;show&quot;)]();&#xD;
+	html[5].innerHTML = am ? &quot;AM&quot; : &quot;PM&quot;;&#xD;
+	setTimeout(arguments.callee, 1000);&#xD;
+	init = false;&#xD;
+})();&#xD;
+</ClientEvent>
+      <Property name="width">300</Property>
+      <Property name="height">300</Property>
+    </Raphael>
+  </View>
+</ViewConfig>
