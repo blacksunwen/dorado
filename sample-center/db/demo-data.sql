@@ -1,5 +1,5 @@
-CREATE USER IF NOT EXISTS SA SALT '5f8ef7d759b71b78' HASH '88ca7b62404e9304650138fad1bb437caad175c1fbcc7a7bbd54007f3378d735' ADMIN;
-CREATE SEQUENCE PUBLIC.SEQ_ID START WITH 3245;
+CREATE USER IF NOT EXISTS SA SALT '88a3944d0a46f874' HASH '8376ee138b5e97f81001576d31ee8b5d79df27624c2d96aee5737d7fc9be6954' ADMIN;
+CREATE SEQUENCE PUBLIC.SEQ_ID START WITH 3309;
 CREATE CACHED TABLE PUBLIC.CATEGORIES(
     ID INT NOT NULL,
     CATEGORY_NAME VARCHAR(15) NOT NULL,
@@ -3419,7 +3419,7 @@ CREATE CACHED TABLE PUBLIC.EXAMPLE_CATEGORIES(
     SUMMARY VARCHAR(1000)
 );
 ALTER TABLE PUBLIC.EXAMPLE_CATEGORIES ADD CONSTRAINT PUBLIC.CONSTRAINT_2 PRIMARY KEY(ID);
--- 15 +/- SELECT COUNT(*) FROM PUBLIC.EXAMPLE_CATEGORIES;
+-- 16 +/- SELECT COUNT(*) FROM PUBLIC.EXAMPLE_CATEGORIES;
 INSERT INTO PUBLIC.EXAMPLE_CATEGORIES(ID, CATEGORY_ID, LABEL, IS_NEW, IS_HOT, SORT_FLAG, ICON, URL, TAGS, SUMMARY) VALUES
 (86852, 40452, STRINGDECODE('\u8868\u5355'), 0, 0, 3, NULL, NULL, NULL, NULL),
 (86850, 40452, STRINGDECODE('\u6811'), 0, 0, 5, NULL, NULL, NULL, NULL),
@@ -3435,7 +3435,8 @@ INSERT INTO PUBLIC.EXAMPLE_CATEGORIES(ID, CATEGORY_ID, LABEL, IS_NEW, IS_HOT, SO
 (88451, 40452, STRINGDECODE('\u8868\u683c'), 0, 0, 4, NULL, NULL, NULL, NULL),
 (37000, NULL, STRINGDECODE('\u5feb\u901f\u5165\u95e8'), 0, 0, 1, '>images/tutorial.gif', NULL, 'Tutorial QuickStart', STRINGDECODE('\u8fd9\u662f\u4e00\u7ec4\u6700\u57fa\u672c\u7684\u793a\u4f8b\uff0c\u8fd9\u5957\u793a\u4f8b\u5c06\u5e26\u60a8\u7531\u6d45\u5165\u6df1\u7684\u4e86\u89e3Dorado7\u7684\u57fa\u672c\u5f00\u53d1\u6280\u80fd\u3002')),
 (88454, 155850, STRINGDECODE('\u56fe\u8868'), 0, 0, 1, NULL, NULL, NULL, NULL),
-(155850, NULL, 'Addon', 0, 0, 10, NULL, NULL, NULL, STRINGDECODE('Addon\u662f\u6307Dorado7\u7684\u63d2\u4ef6\u9879\u76ee\uff0c\u8fd9\u9879\u76ee\u65e2\u53ef\u4ee5\u4e3aDorado7\u63d0\u4f9b\u65b0\u7684\u63a7\u4ef6\uff0c\u4e5f\u53ef\u4ee5\u63d0\u4f9b\u5176\u4ed6\u7684\u529f\u80fd\u6269\u5c55\uff0c\u4f8b\u5982\u65b0\u7684\u76ae\u80a4\u3001js\u5e93\u3001\u7ba1\u7406\u529f\u80fd\u7b49\u3002'));
+(155850, NULL, 'Addon', 0, 0, 10, NULL, NULL, NULL, STRINGDECODE('Addon\u662f\u6307Dorado7\u7684\u63d2\u4ef6\u9879\u76ee\uff0c\u8fd9\u9879\u76ee\u65e2\u53ef\u4ee5\u4e3aDorado7\u63d0\u4f9b\u65b0\u7684\u63a7\u4ef6\uff0c\u4e5f\u53ef\u4ee5\u63d0\u4f9b\u5176\u4ed6\u7684\u529f\u80fd\u6269\u5c55\uff0c\u4f8b\u5982\u65b0\u7684\u76ae\u80a4\u3001js\u5e93\u3001\u7ba1\u7406\u529f\u80fd\u7b49\u3002')),
+(163900, 155850, STRINGDECODE('\u7ed8\u56fe'), 1, 0, 2, NULL, NULL, NULL, NULL);
 CREATE INDEX PUBLIC.I_CATEGORIES_SORT_FLAG ON PUBLIC.EXAMPLE_CATEGORIES(CATEGORY_ID, SORT_FLAG);
 CREATE CACHED TABLE PUBLIC.CATEGORY_EXAMPLE_RELATIONS(
     CATEGORY_ID NUMERIC(6) NOT NULL,
@@ -3443,7 +3444,7 @@ CREATE CACHED TABLE PUBLIC.CATEGORY_EXAMPLE_RELATIONS(
     SORT_FLAG INTEGER DEFAULT 0
 );
 ALTER TABLE PUBLIC.CATEGORY_EXAMPLE_RELATIONS ADD CONSTRAINT PUBLIC.CONSTRAINT_D PRIMARY KEY(CATEGORY_ID, EXAMPLE_ID);
--- 91 +/- SELECT COUNT(*) FROM PUBLIC.CATEGORY_EXAMPLE_RELATIONS;
+-- 95 +/- SELECT COUNT(*) FROM PUBLIC.CATEGORY_EXAMPLE_RELATIONS;
 INSERT INTO PUBLIC.CATEGORY_EXAMPLE_RELATIONS(CATEGORY_ID, EXAMPLE_ID, SORT_FLAG) VALUES
 (37000, 35400, 2),
 (40450, 35400, 1),
@@ -3535,7 +3536,11 @@ INSERT INTO PUBLIC.CATEGORY_EXAMPLE_RELATIONS(CATEGORY_ID, EXAMPLE_ID, SORT_FLAG
 (155850, 157452, 5),
 (88450, 159050, 2),
 (88450, 67600, 3),
-(86850, 160650, 7);
+(86850, 160650, 7),
+(155850, 162250, 6),
+(163900, 163851, 1),
+(163900, 163852, 2),
+(163900, 163850, 3);
 CREATE INDEX PUBLIC.I_EXAMPLES_SORT_FLAG ON PUBLIC.CATEGORY_EXAMPLE_RELATIONS(CATEGORY_ID, EXAMPLE_ID, SORT_FLAG);
 CREATE CACHED TABLE PUBLIC.EXAMPLE_SOURCES(
     ID NUMERIC(6) NOT NULL,
@@ -3546,7 +3551,7 @@ CREATE CACHED TABLE PUBLIC.EXAMPLE_SOURCES(
     SUMMARY VARCHAR(1000)
 );
 ALTER TABLE PUBLIC.EXAMPLE_SOURCES ADD CONSTRAINT PUBLIC.CONSTRAINT_FE PRIMARY KEY(ID);
--- 145 +/- SELECT COUNT(*) FROM PUBLIC.EXAMPLE_SOURCES;
+-- 150 +/- SELECT COUNT(*) FROM PUBLIC.EXAMPLE_SOURCES;
 INSERT INTO PUBLIC.EXAMPLE_SOURCES(ID, EXAMPLE_ID, SORT_FLAG, LABEL, PATH, SUMMARY) VALUES
 (54752, 40355, 2, STRINGDECODE('\u9875\u9762\u6a21\u677f\u6587\u4ef6'), '/WEB-INF/jsp/JspTemplate.jsp', NULL),
 (149451, 144650, 6, STRINGDECODE('\u5168\u5c40\u56fd\u9645\u5316\u8d44\u6e90\u6587\u4ef6'), '/WEB-INF/dorado-home/resources/common.zh_CN.properties', NULL),
@@ -3696,7 +3701,13 @@ INSERT INTO PUBLIC.EXAMPLE_SOURCES(ID, EXAMPLE_ID, SORT_FLAG, LABEL, PATH, SUMMA
 (159103, 159050, 3, STRINGDECODE('\u7ec4\u88c5\u63a7\u4ef6\u6ce8\u518c\u6587\u4ef6'), 'home:/components-context.xml', NULL),
 (159104, 67600, 4, STRINGDECODE('\u7ec4\u88c5\u63a7\u4ef6\u6ce8\u518c\u6587\u4ef6'), 'home:/components-context.xml', NULL),
 (160700, 160650, 1, STRINGDECODE('\u89c6\u56fe\u914d\u7f6e\u6587\u4ef6'), 'com/bstek/dorado/sample/widget/tree/SearchTree.view.xml', NULL),
-(160701, 160650, 2, STRINGDECODE('\u89c6\u56fe\u62e6\u622a\u5668Bean'), 'com/bstek/dorado/sample/widget/tree/SearchTree.java', NULL);
+(160701, 160650, 2, STRINGDECODE('\u89c6\u56fe\u62e6\u622a\u5668Bean'), 'com/bstek/dorado/sample/widget/tree/SearchTree.java', NULL),
+(163950, 163851, 2, STRINGDECODE('JavaScript\u63a7\u5236\u5668'), 'com/bstek/dorado/sample/addon/canvas/Canvas.js', NULL),
+(163951, 163851, 1, STRINGDECODE('\u89c6\u56fe\u914d\u7f6e\u6587\u4ef6'), 'com/bstek/dorado/sample/addon/canvas/Canvas.view.xml', NULL);
+INSERT INTO PUBLIC.EXAMPLE_SOURCES(ID, EXAMPLE_ID, SORT_FLAG, LABEL, PATH, SUMMARY) VALUES
+(163952, 163852, 2, STRINGDECODE('JavaScript\u63a7\u5236\u5668'), 'com/bstek/dorado/sample/addon/canvas/Kinetic.js', NULL),
+(163953, 163852, 1, STRINGDECODE('\u89c6\u56fe\u914d\u7f6e\u6587\u4ef6'), 'com/bstek/dorado/sample/addon/canvas/Kinetic.view.xml', NULL),
+(163954, 163850, 1, STRINGDECODE('\u89c6\u56fe\u914d\u7f6e\u6587\u4ef6'), 'com/bstek/dorado/sample/addon/raphael/Raphael.view.xml', NULL);
 CREATE CACHED TABLE PUBLIC.EXAMPLES(
     ID NUMERIC(6) NOT NULL,
     LABEL VARCHAR(100),
@@ -3715,7 +3726,7 @@ CREATE CACHED TABLE PUBLIC.EXAMPLES(
     SUMMARY VARCHAR(1000)
 );
 ALTER TABLE PUBLIC.EXAMPLES ADD CONSTRAINT PUBLIC.CONSTRAINT_A2 PRIMARY KEY(ID);
--- 77 +/- SELECT COUNT(*) FROM PUBLIC.EXAMPLES;
+-- 81 +/- SELECT COUNT(*) FROM PUBLIC.EXAMPLES;
 INSERT INTO PUBLIC.EXAMPLES(ID, LABEL, SORT_FLAG, IS_NEW, IS_HOT, AUTHOR, CREATE_DATE, LAST_MODIFY, ICON, URL, IS_EMBEDDED, EMBED_WIDTH, EMBED_HEIGHT, TAGS, SUMMARY) VALUES
 (40355, STRINGDECODE('JSP\u9875\u9762\u6a21\u677f'), 0, 0, 0, 'benny.bao@bstek.com', DATE '2011-02-13', DATE '2011-02-13', '', 'com.bstek.dorado.sample.basic.JspTemplate.d', 0, 0, 0, 'PageTemplate JSP renderTo renderOn', STRINGDECODE('\u672c\u4f8b\u5c55\u793a\u4e86\u5982\u4f55\u901a\u8fc7JSP\u6765\u5b9a\u5236\u9875\u9762\u5e03\u5c40\u3002\n\n=== \u5b66\u4e60\u91cd\u70b9 ===\n* \u4e86\u89e3\u89c6\u56fe\u914d\u7f6e\u6587\u4ef6\u4e0e\u6a21\u677fJSP\u4e4b\u95f4\u7684\u5173\u7cfb\uff0c\u5982\u4f55\u901a\u8fc7\u89c6\u56fe\u914d\u7f6e\u6587\u4ef6\u4e2d\u7684pageUri\u5c5e\u6027\u6307\u5b9a\u6a21\u677fJSP\u3002\n* \u4e86\u89e3HTML\u5360\u4f4d\u5bf9\u8c61\u7684\u4e0e\u89c6\u56fe\u63a7\u4ef6\u4e2d\u7684\u6620\u5c04\u5173\u7cfb\uff08\u540cVelocity\u9875\u9762\u6a21\u677f\u793a\u4f8b\uff09\u3002\n* \u7406\u89e3\u793a\u4f8b\u4e2d\u5c55\u793a3\u79cd\u5360\u4f4d\u5bf9\u8c61\u7684\u66ff\u6362\u6a21\u5f0f\uff0c\u5373renderTo\u6a21\u5f0f\u3001renderOn\u6a21\u5f0f\u3001renderOn\u5bb9\u5668\u6a21\u5f0f\uff08\u540cVelocity\u9875\u9762\u6a21\u677f\u793a\u4f8b\uff09\u3002\n\n[[\u8be6\u7ec6\u793a\u4f8b\u8bf4\u660e|http://wiki.bsdn.org/x/PAkX]]')),
 (93253, STRINGDECODE('\u865a\u62df\u5c5e\u6027'), 0, 0, 0, 'benny.bao@bstek.com', DATE '2012-03-30', DATE '2012-03-30', NULL, 'com.bstek.dorado.sample.data.VirtualProperty.d', 0, 0, 0, NULL, STRINGDECODE('\u865a\u62df\u5c5e\u6027\u662f\u6307\u5229\u7528Dorado7\u63d0\u4f9b\u7684\u52a8\u6001\u4ee3\u7406\u6280\u672f\u4e3aJava Bean\u6dfb\u52a0\u539f\u672c\u5e76\u4e0d\u652f\u6301\u7684\u5c5e\u6027\uff0c\u4ee5\u4fbf\u4e8e\u6ee1\u8db3\u5ba2\u6237\u7aef\u754c\u9762\u903b\u8f91\u7684\u9700\u8981\u3002\n\n=== \u5b66\u4e60\u8981\u70b9 ===\n* \u5982\u4f55\u58f0\u660e\u4e00\u4e2a\u865a\u62df\u5c5e\u6027\u3002\n* \u5982\u4f55\u5c06\u666e\u901a\u7684JavaBean\u8f6c\u6362\u6210Dorado\u7684\u6570\u636e\u5b9e\u4f53\u3002\n* \u5982\u4f55\u5728Java\u4ee3\u7801\u4e2d\u8bfb\u5199\u865a\u62df\u5c5e\u6027\u3002\n\n=== \u7b80\u8981\u8bf4\u660e ===\n\u58f0\u660e\u4e00\u4e2a\u865a\u62df\u5c5e\u6027\u7684\u65b9\u6cd5\u662f\u76f4\u63a5\u5728DataType\u4e2d\u6dfb\u52a0\u5c5e\u6027\u58f0\u660e\uff0c\u5373\u53ef\u4ee5\u662f\u7b80\u5355\u7684PropertyDef\uff0c\u4e5f\u53ef\u4ee5\u662fReference\u3002\u5982\u679c\u8be5DataType\u5bf9\u5e94\u7684JavaBean\u4e2d\u4e0d\u5b58\u5728\u8fd9\u6837\u4e00\u4e2a\u771f\u5b9e\u7684\u5c5e\u6027\uff0c\u90a3\u4e48\u5c31\u76f8\u5f53\u4e8e\u6211\u4eec\u5df2\u7ecf\u4e3a\u8be5JavaBean\u6dfb\u52a0\u4e86\u4e00\u4e2a\u865a\u62df\u5c5e\u6027\u3002\n\n\u865a\u62df\u5c5e\u6027\u9ed8\u8ba4\u662f\u6ca1\u6709\u503c\u7684\uff0c\u6240\u4ee5\u5728\u5b9e\u9645\u7684\u5e94\u7528\u573a\u666f\u4e2d\u6211\u4eec\u5e38\u5e38\u9700\u8981\u5728DataProvider\u4e2d\u521d\u59cb\u5316\u865a\u62df\u5c5e\u6027\u7684\u503c\u3002\u53ef\u662fJavaBean\u4e2d\u5e76\u4e0d\u5b58\u5728\u53ef\u7528\u4e8e\u8bfb\u5199\u865a\u62df\u5c5e\u6027\u7684Getter\u548cSetter\u65b9\u6cd5\uff0c\u5982\u4f55\u624d\u80fd\u8bfb\u5199\u865a\u62df\u5c5e\u6027\u5462\uff1f\u7b54\u6848\u662f\u901a\u8fc7Dorado\u63d0\u4f9b\u7684EntityUtils\u5de5\u5177\u7c7b\u3002\n\n\u666e\u901a\u7684JavaBean\u662f\u65e0\u6cd5\u652f\u6301\u865a\u62df\u5c5e\u6027\u7684\uff0c\u53ea\u6709\u90a3\u4e9b\u88abDorado\u52a8\u6001\u4ee3\u7406\u8fc7\u7684JavaBean\uff08\u4ea6\u5373Dorado\u6570\u636e\u5b9e\u4f53\uff09\u624d\u53ef\u4ee5\u3002\u8981\u5c06\u666e\u901a\u7684JavaBean\u8f6c\u6362\u6210\u6570\u636e\u5b9e\u4f53\uff0c\u53ef\u4ee5\u901a\u8fc7EntityUtils\u7684toEntity()\u65b9\u6cd5\u3002toEntity()\u65e2\u652f\u6301\u8f6c\u6362\u5355\u4e2a\u7684JavaBean\u4e5f\u652f\u6301\u6279\u91cf\u7684\u8f6c\u6362JavaBean\u7684\u96c6\u5408\u3002\n\n\u8f6c\u6362\u5b8c\u6210\u4e4b\u540e\u5c31\u53ef\u4ee5\u901a\u8fc7EntityUtils.getValue()\u548cEntityUtils.setValue()\u6765\u8bfb\u5199\u6570\u636e\u5b9e\u4f53\u4e2d\u7684\u865a\u62df\u5c5e\u6027\u4e86\u3002')),
@@ -3807,9 +3818,14 @@ INSERT INTO PUBLIC.EXAMPLES(ID, LABEL, SORT_FLAG, IS_NEW, IS_HOT, AUTHOR, CREATE
 (104455, STRINGDECODE('\u6563\u5217\u56fe'), 0, 0, 0, 'frank.zhang@bstek.com,benny.bao@bstek.com', DATE '2012-04-08', DATE '2012-04-08', NULL, 'com.bstek.dorado.sample.addon.chart.Scatter.d', 1, 800, 440, 'Scatter Chart', STRINGDECODE('\u672c\u4f8b\u6f14\u793a\u4e86\u6563\u5217\u56fe\u7684\u57fa\u672c\u4f7f\u7528\u65b9\u6cd5\u3002\n\n[[\u8be6\u7ec6\u793a\u4f8b\u8bf4\u660e|http://wiki.bsdn.org/x/kQKe]]')),
 (104456, STRINGDECODE('\u591a\u8fb9\u5f62\u56fe'), 0, 0, 0, 'frank.zhang@bstek.com,benny.bao@bstek.com', DATE '2012-04-08', DATE '2012-04-08', NULL, 'com.bstek.dorado.sample.addon.chart.Shape.d', 1, 540, 340, 'Shape Chart', STRINGDECODE('\u672c\u4f8b\u6f14\u793a\u4e86\u591a\u8fb9\u5f62\u56fe\u7684\u57fa\u672c\u4f7f\u7528\u65b9\u6cd5\u3002\n\n[[\u8be6\u7ec6\u793a\u4f8b\u8bf4\u660e|http://wiki.bsdn.org/x/kwKe]]')),
 (104457, STRINGDECODE('\u5c42\u53e0\u5f0f\u67f1\u72b6\u56fe'), 0, 0, 0, 'frank.zhang@bstek.com,benny.bao@bstek.com', DATE '2012-04-08', DATE '2012-04-08', NULL, 'com.bstek.dorado.sample.addon.chart.StackedColumn.d', 1, 540, 340, 'StackedColumn Chart', STRINGDECODE('\u672c\u4f8b\u6f14\u793a\u4e86\u5c42\u53e0\u5f0f\u67f1\u72b6\u56fe\u7684\u57fa\u672c\u4f7f\u7528\u65b9\u6cd5\u3002\n\n[[\u8be6\u7ec6\u793a\u4f8b\u8bf4\u660e|http://wiki.bsdn.org/x/lQKe]]')),
-(157450, STRINGDECODE('\u65e5\u5386'), 0, 1, 0, 'frank.zhang@bstek.com', DATE '2012-07-19', DATE '2012-07-19', NULL, 'http://www.bsdn.org/projects/calendar/deploy/calendar/sample.Calendar.d', 0, 0, 0, 'Calendar', STRINGDECODE('\u4ee5Dorado Addon\u65b9\u5f0f\u63d0\u4f9b\u7684\u529f\u80fd\u5f3a\u5927\u7684\u65e5\u5386\u63a7\u4ef6\uff0c\u89c1 [[\u9879\u76ee\u4e3b\u9875|http://bsdn.org/projects/calendar]]')),
-(157451, STRINGDECODE('\u6587\u4ef6\u4e0a\u4f20'), 0, 1, 0, 'vangie.du@bstek.com', DATE '2012-07-19', DATE '2012-07-23', NULL, 'http://www.bsdn.org/projects/dorado-uploader-addon/deploy/uploader/com.bstek.dorado.uploader.samples.uploader.d', 1, 600, 400, 'File Upload', STRINGDECODE('\u4ee5Dorado Addon\u65b9\u5f0f\u63d0\u4f9b\u7684\u6587\u4ef6\u4e0a\u4f20\u63a7\u4ef6\uff0c\u89c1 [[\u9879\u76ee\u4e3b\u9875|http://bsdn.org/projects/dorado-uploader-addon]]')),
-(157452, STRINGDECODE('\u6807\u7b7e\u7f16\u8f91\u5668'), 0, 1, 0, 'benny.bao@bstek.com', DATE '2012-07-19', DATE '2012-07-19', NULL, 'com.bstek.dorado.sample.addon.TagEditor.d', 1, 400, 0, 'TagEditor', STRINGDECODE('\u4ee5Dorado Addon\u65b9\u5f0f\u63d0\u4f9b\u7684\u6807\u7b7e\u7f16\u8f91\u5668\u63a7\u4ef6\uff0c\u89c1 [[\u9879\u76ee\u4e3b\u9875|http://bsdn.org/projects/dorado-tag-editor-addon]]'));
+(162250, STRINGDECODE('\u6e90\u4ee3\u7801\u7f16\u8f91\u5668'), 0, 1, 0, 'vangie.du@bstek.com', DATE '2012-09-06', DATE '2012-09-06', NULL, 'http://www.bsdn.org/projects/dorado-source-editor-addon/deploy/editor/', 1, 800, 400, 'SourceEditor', STRINGDECODE('\u4ee5Dorado Addon\u65b9\u5f0f\u63d0\u4f9b\u7684\u6e90\u4ee3\u7801\u7f16\u8f91\u63a7\u4ef6\uff0c\u652f\u6301\u5404\u79cd\u5e38\u89c1\u7684\u6e90\u4ee3\u7801\u683c\u5f0f\u5982Java\u3001JavaScript\u3001C\u3001SQL\u3001XML\u7b49\u3002\u89c1 [[\u9879\u76ee\u4e3b\u9875|http://www.bsdn.org/projects/dorado-source-editor-addon]]')),
+(157450, STRINGDECODE('\u65e5\u5386'), 0, 0, 0, 'frank.zhang@bstek.com', DATE '2012-07-19', DATE '2012-07-19', NULL, 'http://www.bsdn.org/projects/calendar/deploy/calendar/sample.Calendar.d', 0, 0, 0, 'Calendar', STRINGDECODE('\u4ee5Dorado Addon\u65b9\u5f0f\u63d0\u4f9b\u7684\u529f\u80fd\u5f3a\u5927\u7684\u65e5\u5386\u63a7\u4ef6\uff0c\u89c1 [[\u9879\u76ee\u4e3b\u9875|http://bsdn.org/projects/calendar]]')),
+(157451, STRINGDECODE('\u6587\u4ef6\u4e0a\u4f20'), 0, 0, 0, 'vangie.du@bstek.com', DATE '2012-07-19', DATE '2012-07-23', NULL, 'http://www.bsdn.org/projects/dorado-uploader-addon/deploy/uploader/com.bstek.dorado.uploader.samples.uploader.d', 1, 600, 400, 'File Upload', STRINGDECODE('\u4ee5Dorado Addon\u65b9\u5f0f\u63d0\u4f9b\u7684\u6587\u4ef6\u4e0a\u4f20\u63a7\u4ef6\uff0c\u89c1 [[\u9879\u76ee\u4e3b\u9875|http://bsdn.org/projects/dorado-uploader-addon]]')),
+(157452, STRINGDECODE('\u6807\u7b7e\u7f16\u8f91\u5668'), 0, 0, 0, 'benny.bao@bstek.com', DATE '2012-07-19', DATE '2012-07-19', NULL, 'com.bstek.dorado.sample.addon.TagEditor.d', 1, 400, 0, 'TagEditor', STRINGDECODE('\u4ee5Dorado Addon\u65b9\u5f0f\u63d0\u4f9b\u7684\u6807\u7b7e\u7f16\u8f91\u5668\u63a7\u4ef6\uff0c\u89c1 [[\u9879\u76ee\u4e3b\u9875|http://bsdn.org/projects/dorado-tag-editor-addon]]')),
+(163852, STRINGDECODE('Kinetic\u753b\u5e03'), 0, 1, 0, 'benny.bao@bstek.com', DATE '2012-09-10', DATE '2012-09-10', NULL, 'com.bstek.dorado.sample.addon.canvas.Kinetic.d', 1, 600, 430, NULL, STRINGDECODE('Kinetic\u662f\u4e00\u6b3e\u57fa\u4e8e [[Kineticjs|http://www.kineticjs.com/]] \u642d\u5efa\u7684\u7ed8\u56fe\u63a7\u4ef6\u3002Kineticjs\u662f\u4e3aHTML5 <canvas>\u63d0\u4f9b\u7684\u8fdb\u4e00\u6b65\u5c01\u88c5\u3002\u5176\u4e2d\u5305\u542b\u56fe\u5c42\u3001\u52a8\u753b\u3001\u9f20\u6807\u4e8b\u4ef6\u3001\u62d6\u62fd\u7b49\u5404\u79cd\u529f\u80fd\u3002\u4f7f\u5f97HTML5 <canvas>\u7684\u5f00\u53d1\u53d8\u5f97\u66f4\u52a0\u65b9\u4fbf\u3002\nKinetic\u63a7\u4ef6\u53ea\u80fd\u5728\u652f\u6301HTML5\u7684\u6d4f\u89c8\u5668\u4e2d\u8fd0\u884c\u3002'));
+INSERT INTO PUBLIC.EXAMPLES(ID, LABEL, SORT_FLAG, IS_NEW, IS_HOT, AUTHOR, CREATE_DATE, LAST_MODIFY, ICON, URL, IS_EMBEDDED, EMBED_WIDTH, EMBED_HEIGHT, TAGS, SUMMARY) VALUES
+(163850, STRINGDECODE('Raphael\u77e2\u91cf\u56fe'), 0, 1, 0, 'benny.bao@bstek.com', DATE '2012-09-10', DATE '2012-09-10', NULL, 'com.bstek.dorado.sample.addon.raphael.Raphael.d', 1, 320, 320, NULL, STRINGDECODE('\u6b64Addon\u662f\u5229\u7528 [[Raphael|http://raphaeljs.com/]] \u6784\u5efa\u7684\u77e2\u91cf\u7ed8\u56fe\u63a7\u4ef6\u3002Raphael\u4e3aSVG\u548cVML\u63d0\u4f9b\u4e00\u5957\u7edf\u4e00\u7684API\uff0c\u56e0\u6b64\u6b64\u63a7\u4ef6\u53ef\u4ee5\u652f\u6301IE6.0+\u4ee5\u53caChrome\u3001Firefox\u3001Safari\u3001Opera\u7b49\u652f\u6301HTML5\u7684\u6d4f\u89c8\u5668\u3002\u9664\u4e86\u7edf\u4e00API\u4e4b\u5916\uff0cRaphael\u4e5f\u63d0\u4f9b\u4e86\u5f3a\u5927\u7684\u52a8\u753b\u3001\u9f20\u6807\u4e8b\u4ef6\u3001\u62d6\u62fd\u7b49\u5404\u79cd\u529f\u80fd\u3002\n\n\u8be6\u89c1 [[\u9879\u76ee\u4e3b\u9875|http://bsdn.org/projects/dorado-raphael-addon]] \u3002')),
+(163851, STRINGDECODE('\u753b\u5e03'), 0, 1, 0, 'benny.bao@bstek.com', DATE '2012-09-10', DATE '2012-09-10', NULL, 'com.bstek.dorado.sample.addon.canvas.Canvas.d', 1, 540, 380, NULL, STRINGDECODE('Canvas\u662f\u4e00\u6b3e\u753b\u5e03\u63a7\u4ef6\uff0c\u901a\u8fc7\u6b64\u63a7\u4ef6\u60a8\u53ef\u4ee5\u5b9e\u73b0\u5728\u7f51\u9875\u4e2d\u81ea\u7531\u7ed8\u56fe\u7684\u529f\u80fd\u3002\u6b64\u63a7\u4ef6\u652f\u6301IE6.0+\u4ee5\u53caChrome\u3001Firefox\u3001Safari\u3001Opera\u7b49\u6d4f\u89c8\u5668\u3002\n\u5176\u4e2d\uff0c\u5728IE9.0+\u3001Chrome\u3001Firefox\u3001Safari\u3001Opera\u7b49\u652f\u6301HTML5\u7684\u6d4f\u89c8\u5668\u4e2d\uff0c\u6b64\u529f\u80fd\u76f4\u63a5\u4f7f\u7528\u4e86HTML5\u4e2d\u7684<canvas>\uff1b\u800c\u5728IE6\u30017\u30018\u4e2d\uff0c\u5219\u662f\u5229\u7528 [[excanvas|http://excanvas.sourceforge.net/]]\uff0c \u4ee5VML\u6a21\u62df\u4e86<canvas>\u4e2d\u7684\u5927\u90e8\u5206\u529f\u80fd\u3002\n\n\u5173\u4e8eHTML5 <canvas>\u7684\u5177\u4f53\u7528\u6cd5\u8bf7\u53c2\u8003 [[Canvas\u57fa\u7840\u6559\u7a0b|https://developer.mozilla.org/en-US/docs/Canvas_tutorial]] \u3002\n\u8be6\u89c1 [[\u9879\u76ee\u4e3b\u9875|http://bsdn.org/projects/dorado-canvas-addon]] \u3002'));
 CREATE INDEX PUBLIC.I_EXAMPLES_LABEL ON PUBLIC.EXAMPLES(LABEL);
 ALTER TABLE PUBLIC.ORDER_DETAILS ADD CONSTRAINT PUBLIC.CONSTRAINT_800A6 CHECK((DISCOUNT >= 0)
     AND (DISCOUNT <= 1)) NOCHECK;
@@ -3824,5 +3840,5 @@ ALTER TABLE PUBLIC.PRODUCTS ADD CONSTRAINT PUBLIC.CONSTRAINT_F2D1 FOREIGN KEY(SU
 ALTER TABLE PUBLIC.ORDERS ADD CONSTRAINT PUBLIC.CONSTRAINT_8B7 FOREIGN KEY(EMPLOYEE_ID) REFERENCES PUBLIC.EMPLOYEES(ID) NOCHECK;
 ALTER TABLE PUBLIC.CATEGORY_EXAMPLE_RELATIONS ADD CONSTRAINT PUBLIC.CONSTRAINT_DB FOREIGN KEY(CATEGORY_ID) REFERENCES PUBLIC.EXAMPLE_CATEGORIES(ID) NOCHECK;
 ALTER TABLE PUBLIC.ORDER_DETAILS ADD CONSTRAINT PUBLIC.CONSTRAINT_800A FOREIGN KEY(PRODUCT_ID) REFERENCES PUBLIC.PRODUCTS(ID) NOCHECK;
-ALTER TABLE PUBLIC.PRODUCTS ADD CONSTRAINT PUBLIC.CONSTRAINT_F2D FOREIGN KEY(CATEGORY_ID) REFERENCES PUBLIC.CATEGORIES(ID) NOCHECK;
 ALTER TABLE PUBLIC.ORDER_DETAILS ADD CONSTRAINT PUBLIC.CONSTRAINT_800 FOREIGN KEY(ORDER_ID) REFERENCES PUBLIC.ORDERS(ID) NOCHECK;
+ALTER TABLE PUBLIC.PRODUCTS ADD CONSTRAINT PUBLIC.CONSTRAINT_F2D FOREIGN KEY(CATEGORY_ID) REFERENCES PUBLIC.CATEGORIES(ID) NOCHECK;
