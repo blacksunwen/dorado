@@ -98,7 +98,7 @@
 				setter : function(v) {
 					this._height = isFinite(v) ? parseInt(v) : v;
 					delete this._realHeight;
-					this._fixedHeight = !( typeof v == "string" && v.match('%')) || v == "auto";
+					this._fixedHeight = !(typeof v == "string" && v.match('%')) || v == "auto";
 				}
 			},
 
@@ -730,14 +730,9 @@
 			return (this._realHeight == null) ? this._height : this._realHeight;
 		},
 		
-		/**
-		 * 重新设置控件DOM元素的尺寸。
-		 * @protected
-		 * @return {boolean} 返回在此次方法的调用过程中是否确实改变了控件的宽高设置。
-		 */
-		resetDimension : function() {
+		resetDimension : function(forced) {
 			if (this._skipResetDimension) return;
-			var changed = $invokeSuper.call(this) || !this._fixedWidth || !this._fixedHeight;
+			var changed = $invokeSuper.call(this, [forced]) || !this._fixedWidth || !this._fixedHeight;
 			if ((changed || !this._currentVisible) && this._visible) {
 				this._skipResetDimension = true;
 				this.onResize();
