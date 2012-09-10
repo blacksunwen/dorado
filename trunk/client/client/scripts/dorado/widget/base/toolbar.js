@@ -379,7 +379,9 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 				for (i = 0, j = items.size; i < j; i++) {
 					item = items.get(i);
 					toolbar.showUnoverflowItem(item);
-					
+
+					if (item instanceof dorado.widget.toolbar.Fill) continue;
+
 					leftWidthSum += $fly(item._dom).outerWidth(true);
 					if (leftWidthSum >= leftVisibleWidth) {
 						startHideIndex = i;
@@ -390,9 +392,7 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 				if (startHideIndex > -1) {
 					for (i = startHideIndex, j = items.size; i < j; i++) {
 						item = items.get(i);
-						if (item instanceof dorado.widget.toolbar.Fill) {
-							continue;
-						}
+						if (item instanceof dorado.widget.toolbar.Fill) continue;
 						toolbar.hideOverflowItem(item, overflowMenu);
 					}
 				}
