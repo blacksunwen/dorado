@@ -5,13 +5,11 @@ import java.util.HashSet;
 
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
-import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.view.View;
 import com.bstek.dorado.view.ViewElement;
 import com.bstek.dorado.view.ViewElementUtils;
 import com.bstek.dorado.view.widget.Control;
 
-@XmlNode(implTypes = "com.bstek.dorado.desktop.*")
 @ClientEvents({ @ClientEvent(name = "onShortcutContextMenu") })
 public abstract class AbstractDesktop extends Control implements ViewElement {
 	private ViewElement parent;
