@@ -7,7 +7,64 @@ function open_flash_chart_data() {
 	 * @name dorado.widget.ofc
 	 * @namespace OpenFlashChart的命名空间。
 	 */
-	dorado.widget.ofc = {};
+	dorado.widget.ofc = {
+
+		getForm: function(options) {
+			options = options || {};
+			if (!dorado.widget.ofc.downloadform) {
+				var form, iframe, iframeName = "ofcDownloadIframe", formName = "ofcDownloadForm", action = $url(">dorado/ofc/imagedownload");
+				var fileName, fileData;
+				if (dorado.Browser.msie && dorado.Browser.version < 9) {
+					fileName = document.createElement("<input type='hidden' name='fileName' />");
+					fileData = document.createElement("<input type='hidden' name='fileName' />");
+				} else {
+					fileName = document.createElement("input");
+					fileName.type = "hidden";
+					fileName.name = "fileName";
+
+					fileData = document.createElement("input");
+					fileData.type = "hidden";
+					fileData.name = "fileData";
+				}
+
+				if (dorado.Browser.msie && dorado.Browser.version < 9) {
+					iframe = document.createElement("<iframe name='" + iframeName + "'></iframe>")
+				} else {
+					iframe = document.createElement("iframe");
+					iframe.name = iframeName;
+				}
+				iframe.style.display = "none";
+
+				if (dorado.Browser.msie && dorado.Browser.version < 9) {
+					form = document.createElement("<form name ='" + formName + "' action='" + action + "' method='post' target='" + iframeName + "'></form>");
+				} else {
+					form = document.createElement("form");
+					form.action = action;
+					form.method = "post";
+					form.target = iframeName;
+				}
+				form.appendChild(fileName);
+				form.appendChild(fileData);
+				document.body.appendChild(form);
+				document.body.appendChild(iframe);
+
+				dorado.widget.ofc.fileName = fileName;
+				dorado.widget.ofc.fileData = fileData;
+				dorado.widget.ofc.downloadform = form;
+			}
+			dorado.widget.ofc.fileName.value = options.fileName || "chart.png";
+			dorado.widget.ofc.fileData.value = options.fileData;
+			return dorado.widget.ofc.downloadform;
+		},
+
+		downloadImage: function(chart, fileName) {
+			var form = dorado.widget.ofc.getForm({
+				fileName: fileName,
+				fileData: chart.imageBinary()
+			});
+			form.submit();
+		}
+	};
 
 	var ofc_id_seed = 1;
 
@@ -561,6 +618,42 @@ function open_flash_chart_data() {
             }
         },
 
+		rasterize: function (dst) {
+			var _dst = document.getElementById(dst);
+			var e = document.createElement("div");
+			e.innerHTML = this.image();
+			_dst.parentNode.replaceChild(e, _dst);
+		},
+
+		image: function() {
+			var chart = this;
+			if (chart._dom && chart._dom.id) {
+				return "<img src='data:image/png;base64," + chart._dom.firstChild.get_img_binary() + "' />"
+			}
+		},
+
+		imageBinary: function() {
+			var chart = this;
+			if (chart._dom && chart._dom.id) {
+				return chart._dom.firstChild.get_img_binary();
+			}
+			return "";
+		},
+
+		popup: function() {
+			var img_win = window.open('', 'Image');
+			img_win.document.write("<html><head><title>Charts: Export as Image</title></head><body>" + this.image() + "</body></html>")
+		},
+
+		/**
+		 * 下载当前chart为png图片，实现方式是把flash中的图片内容post给服务器，服务器转存成png。
+		 * @param options{Object} 参数，目前仅支持fileName。
+		 * @param options.fileName{String} 下载文件名，不传递的话为chart.png。
+		 */
+		download: function(options) {
+			dorado.widget.ofc.downloadImage(this, options);
+		},
+
 		reload: function(str) {
 			var chart = this;
 			if (chart._dom && chart._dom.id) {
@@ -575,7 +668,7 @@ function open_flash_chart_data() {
 						}
 
 						chart._reloadTimer = setTimeout(function() {
-                            //console.log(JSON.stringify(chart));
+							//console.log(JSON.stringify(chart));
 							//console.log("swf reload invoked.");
 							try{
 								swf.load(str || JSON.stringify(chart));
