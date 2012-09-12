@@ -355,6 +355,7 @@
             if (readOnly === undefined) {
                 readOnly = htmleditor._readOnly || htmleditor._readOnly2;
             }
+	        editor._readOnly = readOnly;
             if (!editor || !editor.document) return;
             if (readOnly) {
                 if (dorado.Browser.msie) {
@@ -1324,6 +1325,7 @@
 
         me.addListener('contextmenu', function(type, evt) {
             var element = evt.target || evt.srcElement, iframe = getWindow(element).frameElement;
+	        if (me._readOnly) return false;
             var frameOffset = $fly(iframe).offset(), iframeBody = iframe.contentWindow.document.body;
             var offset = {
                 left: evt.pageX + frameOffset.left - iframeBody.scrollLeft,
