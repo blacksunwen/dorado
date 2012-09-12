@@ -18,5 +18,8 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 	<bean id="dorado.localeResolver" class="com.bstek.dorado.core.resource.EmptyLocaleResolver" />
 	
 	<!-- Data -->
-	 <bean parent="dorado.dataConfigLoader" class="com.bstek.dorado.mock.MockDataConfigLoader"/>
+	<bean parent="dorado.dataConfigLoader" class="com.bstek.dorado.mock.MockDataConfigLoader"/>
+	
+	<!-- Scope -->
+	<bean id="dorado.scopeManager" class="com.bstek.dorado.mock.MockScopeManager" scope=""/>
 </beans>

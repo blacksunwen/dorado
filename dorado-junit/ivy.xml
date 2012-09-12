@@ -32,7 +32,7 @@
 	<dependencies>
 	
 		<!-- COMPILE -->
-		<dependency org="com.bstek.dorado" name="dorado-core" rev="7.0.27-SNAPSHOT" conf="compile" transitive="true">
+		<dependency org="com.bstek.dorado" name="dorado-core" rev="7.1.16-SNAPSHOT" conf="compile" transitive="true">
 			<exclude org="xml-apis" />
 		</dependency>
 
