@@ -968,8 +968,10 @@
             execute: function() {
                 var editor = this._htmlEditor;
                 if (!editor._maximized) {
-                    editor._originalWidth = editor.getRealWidth();
-                    editor._originalHeight = editor._height;
+	                editor._originalWidth = editor._width;
+	                editor._originalHeight = editor._height;
+	                editor._originalRealWidth = editor._realWidth;
+	                editor._originalRealHeight = editor._realHeight;
                     $fly(editor._dom).fullWindow({
                         modifySize: false,
                         callback: function(docSize) {
@@ -987,8 +989,10 @@
                     $fly(editor._dom).unfullWindow({
                         callback: function() {
                             editor._maximized = false;
-                            editor._width = editor._originalWidth;
-                            editor._height = editor._originalHeight;
+	                        editor._width = editor._originalWidth;
+	                        editor._height = editor._originalHeight;
+	                        editor._realWidth = editor._originalRealWidth;
+	                        editor._realHeight = editor._originalRealHeight;
                             editor._dirty = true;
                             editor._value = editor._editor.getContent();
                             editor.post();

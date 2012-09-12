@@ -3,9 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" readonly="true" id="606e5f98-0032-4f4f-8ed4-2f32923d7912" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build.xml" afterPath="$PROJECT_DIR$/build.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/scripts/dorado/html-editor-plugins.js" afterPath="$PROJECT_DIR$/client/scripts/dorado/html-editor-plugins.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/skins/default/html-editor.css" afterPath="$PROJECT_DIR$/client/skins/default/html-editor.css" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/scripts/dorado/html-editor.js" afterPath="$PROJECT_DIR$/client/scripts/dorado/html-editor.js" />
     </list>
     <list id="f12e5b1c-4db3-4252-879f-41113edc2e8d" name="Does not upload" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.classpath" afterPath="$PROJECT_DIR$/.classpath" />
@@ -75,10 +73,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="html-editor-plugins.js" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/client/scripts/dorado/html-editor-plugins.js">
+      <file leaf-file-name="html-editor.js" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/client/scripts/dorado/html-editor.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="143" column="23" selection-start="6557" selection-end="6557" vertical-scroll-proportion="0.6161369">
+            <state line="991" column="9" selection-start="39295" selection-end="39295" vertical-scroll-proportion="0.5599022">
               <folding />
             </state>
           </provider>
@@ -98,14 +96,14 @@
         <option value="$PROJECT_DIR$/client/scripts/dorado/editor_all.js" />
         <option value="$PROJECT_DIR$/client/scripts/dorado/ueditor_all_1.2.2.js" />
         <option value="$PROJECT_DIR$/client/scripts/dorado/ueditor_all.js" />
-        <option value="$PROJECT_DIR$/client/scripts/dorado/html-editor.js" />
         <option value="$PROJECT_DIR$/client/scripts/dorado/html-editor-plugins.js" />
         <option value="$PROJECT_DIR$/client/skins/default/html-editor.css" />
+        <option value="$PROJECT_DIR$/client/scripts/dorado/html-editor.js" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="574" />
+    <option name="x" value="152" />
     <option name="y" value="22" />
     <option name="width" value="1328" />
     <option name="height" value="955" />
@@ -190,7 +188,29 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
+              <option name="myItemId" value="client" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="htmleditor" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="htmleditor" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="client" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="scripts" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="dorado" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -395,12 +415,16 @@
       <created>1344243673101</created>
       <updated>1344243673101</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="修复IE7下无法上传文件的问题。">
+      <created>1344331824103</created>
+      <updated>1344331824103</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="574" y="22" width="1328" height="955" extended-state="0" />
-    <editor active="false" />
+    <frame x="152" y="22" width="1328" height="955" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info id="Data Sources" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3275463" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -413,7 +437,7 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23088923" sideWeight="0.6701389" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.22932917" sideWeight="0.6701389" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -461,7 +485,7 @@
     <option name="SHOW_VCS_ERROR_NOTIFICATIONS" value="true" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="修复IE8兼容模式下的显示问题。" />
+    <option name="LAST_COMMIT_MESSAGE" value="修复IE7下无法上传文件的问题。" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -483,6 +507,7 @@
     <MESSAGE value="修复默认获取codemirror.css，但是服务器报404的bug。" />
     <MESSAGE value="移除限制上传图片后返回的url中的后缀限制。" />
     <MESSAGE value="修复IE8兼容模式下的显示问题。" />
+    <MESSAGE value="修复IE7下无法上传文件的问题。" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -532,26 +557,26 @@
         <state line="7" column="113" selection-start="209" selection-end="209" vertical-scroll-proportion="-0.68817204" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/client/scripts/dorado/html-editor.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="714" column="39" selection-start="29086" selection-end="29086" vertical-scroll-proportion="0.41320294" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/client/scripts/dorado/ueditor_all.js">
       <provider selected="true" editor-type-id="text-editor">
         <state line="3861" column="43" selection-start="127659" selection-end="127665" vertical-scroll-proportion="0.33251834" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/client/skins/default/html-editor.css">
+    <entry file="file://$PROJECT_DIR$/client/scripts/dorado/html-editor-plugins.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="232" column="1" selection-start="4224" selection-end="4224" vertical-scroll-proportion="0.0">
+        <state line="22" column="97" selection-start="1070" selection-end="1070" vertical-scroll-proportion="0.029339854">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/client/scripts/dorado/html-editor-plugins.js">
+    <entry file="file://$PROJECT_DIR$/client/skins/default/html-editor.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="143" column="23" selection-start="6557" selection-end="6557" vertical-scroll-proportion="0.6161369">
+        <state line="232" column="1" selection-start="4224" selection-end="4224" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/client/scripts/dorado/html-editor.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="991" column="9" selection-start="39295" selection-end="39295" vertical-scroll-proportion="0.5599022">
           <folding />
         </state>
       </provider>
