@@ -7,7 +7,7 @@
 
 	<property name="addonName" value="dorado-htmleditor" />
 	<property name="vendor" value="www.BSTEK.com" />
-	<property name="version" value="0.4.8" />
+	<property name="version" value="0.5.0" />
 	<property name="qualifier" value="SNAPSHOT" />
 	<property name="buildJavaDoc" value="true" />
 	<property name="buildJsDoc" value="true" />

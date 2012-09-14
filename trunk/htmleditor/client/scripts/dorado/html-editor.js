@@ -355,8 +355,8 @@
             if (readOnly === undefined) {
                 readOnly = htmleditor._readOnly || htmleditor._readOnly2;
             }
-	        editor._readOnly = readOnly;
             if (!editor || !editor.document) return;
+	        editor._readOnly = readOnly;
             if (readOnly) {
                 if (dorado.Browser.msie) {
                     editor.body.disabled = true;
