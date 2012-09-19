@@ -99,8 +99,8 @@ public final class JsonUtils {
 	public static String getString(ObjectNode objectNode, String property,
 			String defaultValue) {
 		JsonNode propertyNode = objectNode.get(property);
-		return (propertyNode != null) ? propertyNode.getTextValue()
-				: defaultValue;
+		return (propertyNode != null && !propertyNode.isNull()) ? propertyNode
+				.getTextValue() : defaultValue;
 	}
 
 	public static String getString(ObjectNode objectNode, String property) {
@@ -110,7 +110,8 @@ public final class JsonUtils {
 	public static boolean getBoolean(ObjectNode objectNode, String property,
 			boolean defaultValue) {
 		JsonNode propertyNode = objectNode.get(property);
-		return (propertyNode != null) ? propertyNode.asBoolean() : defaultValue;
+		return (propertyNode != null && !propertyNode.isNull()) ? propertyNode
+				.asBoolean() : defaultValue;
 	}
 
 	public static boolean getBoolean(ObjectNode objectNode, String property) {
@@ -120,7 +121,8 @@ public final class JsonUtils {
 	public static int getInt(ObjectNode objectNode, String property,
 			int defaultValue) {
 		JsonNode propertyNode = objectNode.get(property);
-		return (propertyNode != null) ? propertyNode.asInt() : defaultValue;
+		return (propertyNode != null && !propertyNode.isNull()) ? propertyNode
+				.asInt() : defaultValue;
 	}
 
 	public static int getInt(ObjectNode objectNode, String property) {
@@ -130,7 +132,8 @@ public final class JsonUtils {
 	public static long getLong(ObjectNode objectNode, String property,
 			long defaultValue) {
 		JsonNode propertyNode = objectNode.get(property);
-		return (propertyNode != null) ? propertyNode.asLong() : defaultValue;
+		return (propertyNode != null && !propertyNode.isNull()) ? propertyNode
+				.asLong() : defaultValue;
 	}
 
 	public static long getLong(ObjectNode objectNode, String property) {
@@ -140,8 +143,8 @@ public final class JsonUtils {
 	public static float getFloat(ObjectNode objectNode, String property,
 			float defaultValue) {
 		JsonNode propertyNode = objectNode.get(property);
-		return (propertyNode != null) ? ((float) propertyNode.asDouble())
-				: defaultValue;
+		return (propertyNode != null && !propertyNode.isNull()) ? ((float) propertyNode
+				.asDouble()) : defaultValue;
 	}
 
 	public static float getFloat(ObjectNode objectNode, String property) {
@@ -151,7 +154,8 @@ public final class JsonUtils {
 	public static double getDouble(ObjectNode objectNode, String property,
 			double defaultValue) {
 		JsonNode propertyNode = objectNode.get(property);
-		return (propertyNode != null) ? propertyNode.asDouble() : defaultValue;
+		return (propertyNode != null && !propertyNode.isNull()) ? propertyNode
+				.asDouble() : defaultValue;
 	}
 
 	public static double getDouble(ObjectNode objectNode, String property) {
@@ -161,8 +165,8 @@ public final class JsonUtils {
 	public static Date getDate(ObjectNode objectNode, String property,
 			Date defaultValue) {
 		JsonNode propertyNode = objectNode.get(property);
-		return (propertyNode != null) ? VariantUtils.toDate(propertyNode
-				.getTextValue()) : defaultValue;
+		return (propertyNode != null && !propertyNode.isNull()) ? VariantUtils
+				.toDate(propertyNode.getTextValue()) : defaultValue;
 	}
 
 	public static Date getDate(ObjectNode objectNode, String property) {
@@ -173,8 +177,8 @@ public final class JsonUtils {
 			Class<T> classType) throws JsonParseException,
 			JsonMappingException, IOException {
 		JsonNode propertyNode = objectNode.get(property);
-		return (propertyNode != null) ? getObjectMapper().readValue(
-				propertyNode, classType) : null;
+		return (propertyNode != null && !propertyNode.isNull()) ? getObjectMapper()
+				.readValue(propertyNode, classType) : null;
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -182,11 +186,11 @@ public final class JsonUtils {
 			TypeReference valueTypeRef) throws JsonParseException,
 			JsonMappingException, IOException {
 		JsonNode propertyNode = objectNode.get(property);
-		return (T) ((propertyNode != null) ? getObjectMapper().readValue(
-				propertyNode, valueTypeRef) : null);
+		return (T) ((propertyNode != null && !propertyNode.isNull()) ? getObjectMapper()
+				.readValue(propertyNode, valueTypeRef) : null);
 	}
 
-	private static DataType getDataType(String dataTypeName,
+	public static DataType getDataType(String dataTypeName,
 			JsonConvertContext context) throws Exception {
 		DataTypeResolver dataTypeResolver = (context != null) ? dataTypeResolver = context
 				.getDataTypeResolver() : null;
@@ -224,13 +228,6 @@ public final class JsonUtils {
 			JsonConvertContext context) throws Exception {
 		if (objectNode == null || objectNode.isNull()) {
 			return null;
-		}
-
-		if (dataType == null && objectNode.has(DATATYPE_PROPERTY)) {
-			String dataTypeName = getString(objectNode, DATATYPE_PROPERTY);
-			if (StringUtils.isNotEmpty(dataTypeName)) {
-				dataType = (EntityDataType) getDataType(dataTypeName, context);
-			}
 		}
 
 		Class<?> creationType = null;
@@ -318,50 +315,45 @@ public final class JsonUtils {
 
 		if (proxy) {
 			entity.setStateLocked(false);
-			if (objectNode.has(STATE_PROPERTY)) {
-				int state = JsonUtils.getInt(objectNode, STATE_PROPERTY);
-				if (state > 0) {
-					entity.setState(EntityState.fromInt(state));
-				}
+			int state = JsonUtils.getInt(objectNode, STATE_PROPERTY);
+			if (state > 0) {
+				entity.setState(EntityState.fromInt(state));
 			}
-			if (objectNode.has(ENTITY_ID_PROPERTY)) {
-				int entityId = JsonUtils.getInt(objectNode, ENTITY_ID_PROPERTY);
-				if (entityId > 0) {
-					entity.setEntityId(entityId);
-				}
+
+			int entityId = JsonUtils.getInt(objectNode, ENTITY_ID_PROPERTY);
+			if (entityId > 0) {
+				entity.setEntityId(entityId);
 			}
-			if (objectNode.has(OLD_DATA_PROPERTY)) {
-				ObjectNode jsonOldValues = (ObjectNode) objectNode
-						.get(OLD_DATA_PROPERTY);
-				if (jsonOldValues != null) {
-					Map<String, Object> oldValues = entity.getOldValues(true);
-					Iterator<Entry<String, JsonNode>> oldFields = jsonOldValues
-							.getFields();
-					while (oldFields.hasNext()) {
-						Entry<String, JsonNode> entry = oldFields.next();
-						String property = entry.getKey();
-						Object value;
 
-						JsonNode jsonNode = entry.getValue();
-						if (jsonNode instanceof ContainerNode) {
-							PropertyDef propertyDef = (dataType != null) ? dataType
-									.getPropertyDef(property) : null;
-							Class<?> type = entity.getPropertyType(property);
-							value = toJavaObject(
-									(ContainerNode) jsonNode,
-									(propertyDef != null) ? propertyDef
-											.getDataType() : null, type, proxy,
-									context);
-						} else if (jsonNode instanceof ValueNode) {
-							value = toJavaValue((ValueNode) jsonNode, null,
-									null);
-						} else {
-							throw new IllegalArgumentException(
-									"Value type mismatch. expect [JSON Value].");
-						}
+			ObjectNode jsonOldValues = (ObjectNode) objectNode
+					.get(OLD_DATA_PROPERTY);
+			if (jsonOldValues != null) {
+				Map<String, Object> oldValues = entity.getOldValues(true);
+				Iterator<Entry<String, JsonNode>> oldFields = jsonOldValues
+						.getFields();
+				while (oldFields.hasNext()) {
+					Entry<String, JsonNode> entry = oldFields.next();
+					String property = entry.getKey();
+					Object value;
 
-						oldValues.put(property, value);
+					JsonNode jsonNode = entry.getValue();
+					if (jsonNode instanceof ContainerNode) {
+						PropertyDef propertyDef = (dataType != null) ? dataType
+								.getPropertyDef(property) : null;
+						Class<?> type = entity.getPropertyType(property);
+						value = toJavaObject(
+								(ContainerNode) jsonNode,
+								(propertyDef != null) ? propertyDef
+										.getDataType() : null, type, proxy,
+								context);
+					} else if (jsonNode instanceof ValueNode) {
+						value = toJavaValue((ValueNode) jsonNode, null, null);
+					} else {
+						throw new IllegalArgumentException(
+								"Value type mismatch. expect [JSON Value].");
 					}
+
+					oldValues.put(property, value);
 				}
 			}
 		}
@@ -427,8 +419,7 @@ public final class JsonUtils {
 			JsonNode jsonNode = it.next();
 			if (jsonNode instanceof ObjectNode) {
 				ObjectNode objectNode = (ObjectNode) jsonNode;
-				if (isFirstElement && elementDataType == null
-						&& objectNode.has(DATATYPE_PROPERTY)) {
+				if (isFirstElement && elementDataType == null) {
 					String dataTypeName = JsonUtils.getString(objectNode,
 							DATATYPE_PROPERTY);
 					if (StringUtils.isNotEmpty(dataTypeName)) {
@@ -539,14 +530,36 @@ public final class JsonUtils {
 				}
 			} else if (jsonNode instanceof ValueNode) {
 				return toJavaValue((ValueNode) jsonNode, dataType, context);
+			} else if (dataType instanceof JsonConvertor) {
+				return ((JsonConvertor) dataType).fromJSON(jsonNode, context);
 			} else {
 				throw new IllegalArgumentException(
 						"Value type mismatch. expect [JSON Value].");
 			}
 		} else {
 			if (jsonNode instanceof ObjectNode) {
-				return internalToJavaEntity((ObjectNode) jsonNode, null, null,
-						proxy, context);
+				ObjectNode objectNode = (ObjectNode) jsonNode;
+				if (dataType == null) {
+					String dataTypeName = getString(objectNode,
+							DATATYPE_PROPERTY);
+					if (StringUtils.isNotEmpty(dataTypeName)) {
+						dataType = getDataType(dataTypeName, context);
+					}
+				}
+
+				if (dataType == null) {
+					return internalToJavaEntity((ObjectNode) jsonNode, null,
+							null, proxy, context);
+				} else if (dataType instanceof JsonConvertor) {
+					return ((JsonConvertor) dataType).fromJSON(jsonNode,
+							context);
+				} else if (dataType instanceof EntityDataType) {
+					return internalToJavaEntity((ObjectNode) jsonNode,
+							(EntityDataType) dataType, null, proxy, context);
+				} else {
+					throw new IllegalArgumentException(
+							"DataType type mismatch. expect [EntityDataType].");
+				}
 			} else if (jsonNode instanceof ArrayNode) {
 				return internalToJavaCollection((ArrayNode) jsonNode, null,
 						null, proxy, context);

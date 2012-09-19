@@ -1,6 +1,5 @@
 package com.bstek.dorado.data.config;
 
-import java.util.Collection;
 import java.util.Map;
 
 import com.bstek.dorado.config.definition.Definition;
@@ -199,42 +198,5 @@ public class DataTypeDefinitionManagerTest extends ConfigManagerTestSupport {
 		Map<?, ?> parameter = (Map<?, ?>) propertyDef.getProperties().get(
 				"parameter");
 		assertNotNull(parameter);
-	}
-
-	public void testLookup() throws Exception {
-		DataTypeDefinitionManager definitionManager = getDataTypeDefinitionManager();
-
-		DataTypeDefinition lookupType = definitionManager
-				.getDefinition("test.Lookup");
-		assertEquals(3, lookupType.getPropertyDefs().size());
-
-		Definition propertyDef = lookupType.getPropertyDef("lookup1");
-		assertNotNull(propertyDef);
-
-		DefinitionReference<?> providerDefinitionRef = (DefinitionReference<?>) propertyDef
-				.getProperties().get("dataProvider");
-		assertNotNull(providerDefinitionRef);
-		DataProviderDefinition providerDefinition = (DataProviderDefinition) providerDefinitionRef
-				.getDefinition();
-		assertNotNull(providerDefinition);
-		assertEquals("providerLookupData", providerDefinition.getName());
-
-		Collection<?> constraints = (Collection<?>) propertyDef
-				.getProperty("constraints");
-		assertEquals(1, constraints.size());
-
-		propertyDef = lookupType.getPropertyDef("lookup2");
-		assertNotNull(propertyDef);
-		assertEquals("value", propertyDef.getProperties().get("lookupProperty"));
-
-		providerDefinitionRef = (DefinitionReference<?>) propertyDef
-				.getProperties().get("dataProvider");
-		assertNotNull(providerDefinitionRef);
-		providerDefinition = (DataProviderDefinition) providerDefinitionRef
-				.getDefinition();
-		assertNotNull(providerDefinition);
-
-		constraints = (Collection<?>) propertyDef.getProperty("constraints");
-		assertEquals(1, constraints.size());
 	}
 }

@@ -83,6 +83,9 @@
 			 * @type boolean
 			 */
 			accept: {
+				getter: function() {
+					return jQuery.ui.ddmanager.accept;
+				},
 				setter: function(accept) {
 					if (this._indicator) this._indicator.set("accept", accept);
 					jQuery.ui.ddmanager.accept = accept;

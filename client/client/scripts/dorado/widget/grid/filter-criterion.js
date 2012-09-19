@@ -232,9 +232,8 @@
 	
 	dorado.widget.grid.DataColumn.getDefaultOperator = function(column) {
 		var dataType = column.get("dataType"), pd = column._propertyDef;
-		if (pd && pd._mapping ||
-		dataType &&
-		(dataType._code && numberTypeCodes.indexOf(dataType._code) >= 0 || [dorado.DataType.PRIMITIVE_BOOLEAN, dorado.DataType.BOOLEAN].indexOf(dataType._code) >= 0)) {
+		if (pd && pd._mapping || dataType &&
+			(dataType._code && numberTypeCodes.indexOf(dataType._code) >= 0 || [dorado.DataType.PRIMITIVE_BOOLEAN, dorado.DataType.BOOLEAN].indexOf(dataType._code) >= 0)) {
 			return "=";
 		} else {
 			return "like";
@@ -347,10 +346,17 @@
 		},
 		
 		constructor: function() {
-			$invokeSuper.call(this, arguments);
-			
 			this._criterionMap = {};
 			this._criterionControlCache = [];
+			$invokeSuper.call(this, arguments);
+		},
+		
+		destroy: function() {
+			for (var i = 0; i < this._criterionControlCache.length; i++) {
+				var criterionControl = this._criterionControlCache[i];
+				if (!criterionControl._destroyed) criterionControl.destroy();
+			}
+			$invokeSuper.call(this);
 		},
 		
 		createDropDownBox: function() {
@@ -393,11 +399,11 @@
 				radioButtons: [
 					{
 						value: "and",
-						text: $resource("dorado.grid.FilterExpressionAnd")
+						text: $resource("dorado.core.And")
 					},
 					{
 						value: "or",
-						text: $resource("dorado.grid.FilterExpressionOr")
+						text: $resource("dorado.core.Or")
 					}
 				],
 				onPost: function(self) {

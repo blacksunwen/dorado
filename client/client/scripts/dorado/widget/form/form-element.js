@@ -803,7 +803,6 @@
 				}
 			}
 			arg.processDefault = false;
-			
 		},
 		
 		getBindingPropertyDef: function() {

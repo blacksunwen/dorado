@@ -75,7 +75,7 @@ public class RuleSetBuilderTest extends IdeSupportContextTestCase {
 			Child dataTypeChild = children.get("DataType");
 			Rule dataTypeRule = dataTypeChild.getRule();
 			assertNotNull(dataTypeRule);
-			assertEquals("DataType", dataTypeRule.getName());
+			assertEquals("DataType", dataTypeRule.getNodeName());
 
 			Child dataProviderChild = children.get("DataProvider");
 			Rule dataProviderRule = dataProviderChild.getRule();

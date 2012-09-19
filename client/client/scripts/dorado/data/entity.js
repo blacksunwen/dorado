@@ -409,7 +409,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 												}
 											}
 											else {
-												this._data[property] = null;
+												delete this._data[property];
 											}
 											if (callback) $callback(callback, success, result);
 										}
@@ -452,28 +452,24 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			} else if (value != null && value.isDataPipeWrapper) {
 				var pipe = value.pipe;
 				if (loadMode != "never") {
-					if (callback) {
-						pipe.getAsync(callback);
+					pipe.getAsync(callback);
+					if (loadMode == "auto") {
+						value = undefined;
 					} else {
-						if (loadMode == "auto") {
-							value = undefined;
-						} else {
-							var shouldAbortAsyncProcedures = dorado.Setting["abortAsyncLoadingOnSyncLoading"];
-							if (pipe.runningProcNum > 0 && !shouldAbortAsyncProcedures) {
-								throw new dorado.ResourceException("dorado.data.GetDataDuringLoading", "Entity");
-							}
-							
-							try {
-								value = pipe.get();
-								pipe.abort(true, value);
-							} 
-							catch (e) {
-								pipe.abort(false, e);
-								this._data[property] = null;
-								throw e;
-							}
+						var shouldAbortAsyncProcedures = dorado.Setting["abortAsyncLoadingOnSyncLoading"];
+						if (pipe.runningProcNum > 0 && !shouldAbortAsyncProcedures) {
+							throw new dorado.ResourceException("dorado.data.GetDataDuringLoading", "Entity");
 						}
-					} 
+						
+						try {
+							value = pipe.get();
+							pipe.abort(true, value);
+						} 
+						catch (e) {
+							pipe.abort(false, e);
+							throw e;
+						}
+					}
 				}
 			} else if (propertyDef) {
 				if (value === null) {
@@ -1246,7 +1242,6 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		 * @param {String[]} [options.properties] 属性名数组，表示只转换该数组中列举过的属性。如果不指定此属性表示转换实体对象中的所有属性。
 		 * @param {boolean} [options.includeUnsubmittableProperties=true] 是否转换实体对象中那么submittable=false的属性（见{@link dorado.PropertyDef#attribute:submittable}）。默认按true进行处理。
 		 * @param {boolean} [options.includeReferenceProperties=true] 是否转换实体对象中{@link dorado.Reference}类型的属性。默认按true进行处理。
-		 * @param {boolean} [options.includeLookupProperties=true] 是否转换实体对象中{@link dorado.Lookup}类型的属性。默认按true进行处理。
 		 * @param {boolean} [options.includeUnloadPage=true] 是否转换{@link dorado.EntityList}中尚未装载的页中的数据。
 		 * 此属性对于{@link dorado.Entity}的toJSON而言是没有意义的，但是由于options参数会自动被传递到实体对象内部{@link dorado.EntityList}的toJSON方法中，
 		 * 因此它会影响内部{@link dorado.EntityList}的处理过程。 默认按false进行处理。
@@ -1300,8 +1295,6 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				if (!includeUnsubmittableProperties && propertyDef && !propertyDef._submittable) continue;
 				if (propertyDef instanceof dorado.Reference) {
 					if (!includeReferenceProperties) continue;
-				} else if (propertyDef instanceof dorado.Lookup) {
-					if (!includeLookupProperties) continue;
 				}
 				
 				var value = this._get(property, propertyDef);

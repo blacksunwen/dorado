@@ -916,6 +916,15 @@
 			}
 		},
 		
+		unrender: function() {
+			if (this._focused) {
+				var focusParent = this.get("focusParent");
+				if (focusParent) focusParent.setFocus();
+				else dorado.widget.setFocusedControl(null);
+			}
+			$invokeSuper.call(this, []);
+		},
+		
 		/**
 		 * 当控件所对应的HTML元素被真正的添加(相当于appendChild)到HTML的dom树中时激活的方法。
 		 * <p>

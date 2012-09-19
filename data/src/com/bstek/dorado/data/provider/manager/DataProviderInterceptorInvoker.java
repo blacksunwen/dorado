@@ -105,6 +105,18 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 		}
 	}
 
+	private Criteria mergeCriteria(Criteria criteria, Criteria sysCriteria) {
+		if (sysCriteria == null) {
+			return criteria;
+		}
+
+		Criteria newCriteria = new Criteria();
+		newCriteria.getCriterions().addAll(criteria.getCriterions());
+		newCriteria.getCriterions().addAll(sysCriteria.getCriterions());
+		newCriteria.getOrders().addAll(sysCriteria.getOrders());
+		return newCriteria;
+	}
+
 	private Object invokeInterceptorByParamName(DataProvider dataProvider,
 			Method[] methods, MethodInvocation methodInvocation)
 			throws Exception {
@@ -158,22 +170,50 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 
 		String[] parameterParameterNames = EMPTY_NAMES;
 		Object[] parameterParameters = EMPTY_ARGS;
-		if (parameter != null && parameter instanceof Map<?, ?>) {
-			Map<?, ?> map = (Map<?, ?>) parameter;
-			parameterParameterNames = new String[map.size() + 1];
-			parameterParameters = new Object[parameterParameterNames.length];
-			parameterParameterNames[0] = "parameter";
-			parameterParameters[0] = parameter;
 
-			int i = 1;
-			for (Map.Entry<?, ?> entry : map.entrySet()) {
-				parameterParameterNames[i] = (String) entry.getKey();
-				parameterParameters[i] = entry.getValue();
-				i++;
+		if (parameter != null) {
+			if (parameter instanceof Criteria) {
+				parameterParameterNames = new String[0];
+				parameterParameters = new Object[0];
+
+				if (sysParameter == null) {
+					sysParameter = new HashMap<String, Object>();
+				}
+				Criteria sysCriteria = (Criteria) sysParameter.get("criteria");
+				sysParameter.put("criteria",
+						mergeCriteria((Criteria) parameter, sysCriteria));
+			} else if (parameter instanceof Map<?, ?>) {
+				Map<?, ?> map = (Map<?, ?>) parameter;
+				parameterParameterNames = new String[map.size() + 1];
+				parameterParameters = new Object[parameterParameterNames.length];
+				parameterParameterNames[0] = "parameter";
+				parameterParameters[0] = parameter;
+
+				int i = 1;
+				for (Map.Entry<?, ?> entry : map.entrySet()) {
+					Object value = entry.getValue();
+					if (value instanceof Criteria) {
+						if (sysParameter == null) {
+							sysParameter = new HashMap<String, Object>();
+						}
+
+						Criteria sysCriteria = (Criteria) sysParameter
+								.get("criteria");
+						sysParameter.put("criteria",
+								mergeCriteria((Criteria) value, sysCriteria));
+					} else {
+						parameterParameterNames[i] = (String) entry.getKey();
+						parameterParameters[i] = value;
+						i++;
+					}
+				}
+			} else {
+				parameterParameterNames = new String[] { "parameter" };
+				parameterParameters = new Object[] { parameter };
 			}
 		} else {
 			parameterParameterNames = new String[] { "parameter" };
-			parameterParameters = new Object[] { parameter };
+			parameterParameters = new Object[] { null };
 		}
 
 		optionalParameterNames = new String[parameterParameterNames.length + 3];
@@ -192,9 +232,9 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 				parameterParameters.length);
 
 		if (sysParameter != null && !sysParameter.isEmpty()) {
-			for (int i = 0; i < EXTRA_NAMES.length; i++) {
-				if (!sysParameter.containsKey(EXTRA_NAMES[i])) {
-					sysParameter.put(EXTRA_NAMES[i], null);
+			for (String extraName : EXTRA_NAMES) {
+				if (!sysParameter.containsKey(extraName)) {
+					sysParameter.put(extraName, null);
 				}
 			}
 
@@ -274,6 +314,51 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 			}
 		}
 
+		Class<?>[] optionalArgTypes = null;
+		Object[] optionalArgs = null;
+
+		if (parameter != null) {
+			if (parameter instanceof Criteria) {
+				optionalArgTypes = new Class[0];
+				optionalArgs = new Object[0];
+
+				Criteria sysCriteria = (Criteria) extraArgMap
+						.get(Criteria.class);
+				extraArgMap.put(Criteria.class,
+						mergeCriteria((Criteria) parameter, sysCriteria));
+			} else if (parameter instanceof Map<?, ?>) {
+				Map<?, ?> map = (Map<?, ?>) parameter;
+				optionalArgTypes = new Class[map.size() + 1];
+				optionalArgs = new Object[optionalArgTypes.length];
+				optionalArgTypes[0] = parameter.getClass();
+				optionalArgs[0] = parameter;
+
+				int i = 1;
+				for (Object value : map.values()) {
+					if (value != null) {
+						if (value instanceof Criteria) {
+							Criteria sysCriteria = (Criteria) extraArgMap
+									.get(Criteria.class);
+							extraArgMap
+									.put(Criteria.class,
+											mergeCriteria((Criteria) value,
+													sysCriteria));
+						} else {
+							optionalArgTypes[i] = value.getClass();
+							optionalArgs[i] = value;
+							i++;
+						}
+					}
+				}
+			} else {
+				optionalArgTypes = new Class[] { parameter.getClass() };
+				optionalArgs = new Object[] { parameter };
+			}
+		} else {
+			optionalArgTypes = new Class[] { Object.class };
+			optionalArgs = new Object[] { null };
+		}
+
 		Class<?>[] exactArgTypes = new Class[3 + extraArgMap.size()];
 		Object[] exactArgs = new Object[exactArgTypes.length];
 		exactArgTypes[0] = DataProvider.class;
@@ -288,32 +373,6 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 			exactArgTypes[i] = (Class<?>) entry.getKey();
 			exactArgs[i] = entry.getValue();
 			i++;
-		}
-
-		Class<?>[] optionalArgTypes = null;
-		Object[] optionalArgs = null;
-
-		if (parameter != null && parameter instanceof Map<?, ?>) {
-			Map<?, ?> map = (Map<?, ?>) parameter;
-			optionalArgTypes = new Class[map.size() + 1];
-			optionalArgs = new Object[optionalArgTypes.length];
-			optionalArgTypes[0] = parameter.getClass();
-			optionalArgs[0] = parameter;
-
-			i = 1;
-			for (Object value : map.values()) {
-				if (value != null) {
-					optionalArgTypes[i] = value.getClass();
-					optionalArgs[i] = value;
-					i++;
-				}
-			}
-		} else if (parameter != null) {
-			optionalArgTypes = new Class[] { parameter.getClass() };
-			optionalArgs = new Object[] { parameter };
-		} else {
-			optionalArgTypes = new Class[] { Object.class };
-			optionalArgs = new Object[] { null };
 		}
 
 		return MethodAutoMatchingUtils.invokeMethod(methods, interceptor,

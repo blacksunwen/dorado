@@ -78,7 +78,6 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 	</bean>
 	<bean id="dorado.propertyDefParser" class="com.bstek.dorado.data.config.xml.PropertyDefParser" parent="dorado.genericObjectParser" />
 	<bean id="dorado.referenceParser" class="com.bstek.dorado.data.config.xml.ReferenceParser" parent="dorado.genericObjectParser" />
-	<bean id="dorado.lookupParser" class="com.bstek.dorado.data.config.xml.LookupParser" parent="dorado.genericObjectParser" />
 
 	<bean id="dorado.dataTypePropertyParser" class="com.bstek.dorado.data.config.xml.DataTypePropertyParser" parent="dorado.propertyParser">
 		<property name="dataObjectParseHelper" ref="dorado.dataObjectParseHelper" />
