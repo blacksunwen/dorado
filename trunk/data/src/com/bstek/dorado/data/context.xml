@@ -31,15 +31,6 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 		<property name="dataTypeDefinitionManager" ref="dorado.dataTypeDefinitionManager" />
 	</bean>
 
-	<!-- DataType Cache -->
-	<bean id="dorado.lookupPropertyIndexedDataCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
-		<property name="cacheName" value="com.bstek.dorado.data.type.LookupPropertyIndexedDataCache" />
-		<property name="maxElementsInMemory" value="${data.lookup.indexCache.maxElementsInMemory}" />
-		<property name="overflowToDisk" value="false" />
-		<property name="timeToLive" value="${data.lookup.indexCache.timeToLive}" />
-		<property name="timeToIdle" value="${data.lookup.indexCache.timeToIdle}" />
-	</bean>
-
 	<!-- DataProvider -->
 	<bean name="dorado.dataProviderDefinitionManager" class="com.bstek.dorado.data.config.definition.DataProviderDefinitionManager" />
 	<bean name="dorado.dataProviderInterceptorRegister" class="com.bstek.dorado.data.provider.manager.DataProviderInterceptorRegister" abstract="true">

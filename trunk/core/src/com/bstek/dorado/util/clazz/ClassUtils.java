@@ -21,7 +21,7 @@ public class ClassUtils {
 		}
 	}
 
-	public static Set<Class<?>> foundClassTypes(String expression,
+	public static Set<Class<?>> findClassTypes(String expression,
 			Class<?> targetType) throws IOException, ClassNotFoundException {
 		Set<Class<?>> classTypes = new HashSet<Class<?>>();
 		String pathExpression = "classpath*:" + expression.replace('.', '/')
@@ -49,11 +49,11 @@ public class ClassUtils {
 		return classTypes;
 	}
 
-	public static Set<Class<?>> foundClassTypes(String[] expressions,
+	public static Set<Class<?>> findClassTypes(String[] expressions,
 			Class<?> targetType) throws IOException, ClassNotFoundException {
 		Set<Class<?>> classTypes = new HashSet<Class<?>>();
 		for (String expression : expressions) {
-			classTypes.addAll(foundClassTypes(expression, targetType));
+			classTypes.addAll(findClassTypes(expression, targetType));
 		}
 		return classTypes;
 	}

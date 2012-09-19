@@ -9,6 +9,9 @@ public class Order {
 	private String propertyPath;
 	private boolean desc;
 
+	public Order() {
+	}
+
 	public Order(String property, boolean desc) {
 		this.property = property;
 		this.desc = desc;
@@ -22,19 +25,21 @@ public class Order {
 		this.property = property;
 	}
 
+	public void setDesc(boolean desc) {
+		this.desc = desc;
+	}
+
+	@Deprecated
 	public String getPropertyPath() {
 		return propertyPath;
 	}
 
+	@Deprecated
 	public void setPropertyPath(String propertyPath) {
 		this.propertyPath = propertyPath;
 	}
 
 	public boolean isDesc() {
 		return desc;
-	}
-
-	public void setDesc(boolean desc) {
-		this.desc = desc;
 	}
 }

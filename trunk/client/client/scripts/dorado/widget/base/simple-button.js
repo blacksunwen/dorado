@@ -76,7 +76,9 @@
 						if (button._toggleOnShowMenu) {
 							$fly(dom).removeClass(toggledClass ? toggledClass : (cls + BUTTON_TOGGLED_CLASS));
 						}
-						button.setFocus();
+						// by Benny 12/09/15
+						// 当点击页面空白处关闭menu时，导致焦点异常跳动
+						// button.setFocus();
 					}, {
 						once: true
 					});

@@ -1,15 +1,11 @@
 package com.bstek.dorado.data.entity;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import net.sf.cglib.beans.BeanMap;
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.jexl2.JexlContext;
@@ -24,10 +20,7 @@ import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.data.type.EntityDataType;
 import com.bstek.dorado.data.type.property.BasePropertyDef;
 import com.bstek.dorado.data.type.property.CacheMode;
-import com.bstek.dorado.data.type.property.IndexedLookupData;
 import com.bstek.dorado.data.type.property.LazyPropertyDef;
-import com.bstek.dorado.data.type.property.Lookup;
-import com.bstek.dorado.data.type.property.LookupConstraint;
 import com.bstek.dorado.data.type.property.PropertyDef;
 import com.bstek.dorado.data.type.property.Reference;
 import com.bstek.dorado.data.type.validator.Validator;
@@ -50,7 +43,6 @@ public abstract class EntityEnhancer {
 	protected static final Object UNDISPOSED_VALUE = new Object();
 
 	private static ExpressionHandler expressionHandler;
-	private static Ehcache lookupIndexedDataCache;
 
 	private static int maxEntityId = 0;
 	private static long maxTimeStamp = 0;
@@ -129,16 +121,6 @@ public abstract class EntityEnhancer {
 	 */
 	public static void resetHasPropertyResultSkiped() {
 		injector.resetHasPropertyResultSkiped();
-	}
-
-	private Ehcache getLookupIndexedDataCache() throws Exception {
-		// 未避免同一系统下部署多个Dorado7应用时，缓存文件名产生冲突。暂时在context.xml中关闭了overflowToDiskoverflowToDisk选项。
-		if (lookupIndexedDataCache == null) {
-			Context context = Context.getCurrent();
-			lookupIndexedDataCache = (Ehcache) context
-					.getServiceBean("lookupPropertyIndexedDataCache");
-		}
-		return lookupIndexedDataCache;
 	}
 
 	public static synchronized int newEntityId() {
@@ -425,9 +407,7 @@ public abstract class EntityEnhancer {
 	private Object readPropertyDef(Object entity, PropertyDef propertyDef,
 			Object originResult) throws Throwable {
 		Object result;
-		if (propertyDef instanceof Lookup) {
-			result = readLookup(entity, (Lookup) propertyDef, originResult);
-		} else if (propertyDef instanceof Reference) {
+		if (propertyDef instanceof Reference) {
 			result = readReference(entity, (Reference) propertyDef,
 					originResult);
 		} else {
@@ -456,95 +436,6 @@ public abstract class EntityEnhancer {
 			} finally {
 				jexlContext.set(THIS, originThis);
 			}
-		}
-	}
-
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private Object readLookup(Object entity, Lookup lookupProperty,
-			Object originResult) throws Throwable {
-		if (!lookupProperty.shouldIntercept() || isGetterInterceptionDisabled()) {
-			setHasGetterResultSkiped();
-			return originResult;
-		} else {
-			Object result;
-			IndexedLookupData indexedLookupData;
-
-			Ehcache cache = getLookupIndexedDataCache();
-			Element element = cache.get(lookupProperty.getCacheKey());
-			if (element != null) {
-				indexedLookupData = (IndexedLookupData) element
-						.getObjectValue();
-			} else {
-				indexedLookupData = new IndexedLookupData();
-				indexedLookupData.setConstraints(lookupProperty
-						.getConstraints());
-
-				DataProvider dataProvider = lookupProperty.getDataProvider();
-
-				DataType dataType = lookupProperty.getDataType();
-				result = dataProvider.getResult(null, dataType);
-				if (result != null) {
-					if (result instanceof Collection) {
-						Collection entitys = (Collection) result;
-						indexedLookupData.addAll(entitys);
-					}
-				}
-
-				element = new Element(lookupProperty.getCacheKey(),
-						indexedLookupData);
-				if (lookupProperty.getCacheTimeToLiveSeconds() > 0) {
-					element.setTimeToLive(lookupProperty
-							.getCacheTimeToLiveSeconds());
-				}
-				if (lookupProperty.getCacheTimeToIdleSeconds() > 0) {
-					element.setTimeToIdle(lookupProperty
-							.getCacheTimeToIdleSeconds());
-				}
-				cache.put(element);
-			}
-
-			JexlContext jexlContext = getExpressionHandler().getJexlContext();
-			Object originThis = jexlContext.get(THIS);
-			jexlContext.set(THIS, entity);
-			try {
-				List<LookupConstraint> constraints = lookupProperty
-						.getConstraints();
-				int constraintSize = constraints.size();
-				if (constraintSize == 1) {
-					LookupConstraint constraint = constraints.get(0);
-					Object keyValue;
-					if (StringUtils.isNotEmpty(constraint.getKeyProperty())) {
-						keyValue = readProperty(entity,
-								constraint.getKeyProperty(), false);
-					} else {
-						keyValue = constraint.getKeyValue();
-					}
-					result = indexedLookupData.find(keyValue);
-				} else {
-					Object[] keyValues = new Object[constraintSize];
-					for (int i = 0; i < constraintSize; i++) {
-						LookupConstraint constraint = constraints.get(i);
-						if (StringUtils.isNotEmpty(constraint.getKeyProperty())) {
-							keyValues[i] = readProperty(entity,
-									constraint.getKeyProperty(), false);
-						} else {
-							keyValues[i] = constraint.getKeyValue();
-						}
-					}
-					result = indexedLookupData.find(keyValues);
-				}
-
-				if (result != null) {
-					String resultProperty = lookupProperty.getLookupProperty();
-					if (StringUtils.isNotEmpty(resultProperty)) {
-						result = EntityWrapper.create(result).get(
-								resultProperty);
-					}
-				}
-			} finally {
-				jexlContext.set(THIS, originThis);
-			}
-			return result;
 		}
 	}
 

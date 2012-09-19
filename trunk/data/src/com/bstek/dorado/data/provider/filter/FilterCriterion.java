@@ -1,7 +1,6 @@
 package com.bstek.dorado.data.provider.filter;
 
 import com.bstek.dorado.data.provider.Criterion;
-import com.bstek.dorado.data.type.DataType;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -10,8 +9,7 @@ import com.bstek.dorado.data.type.DataType;
 public abstract class FilterCriterion implements Criterion {
 	private String property;
 	private String propertyPath;
-	private DataType dataType;
-	private String expression;
+	private FilterOperator filterOperator;
 
 	public String getProperty() {
 		return property;
@@ -21,27 +19,21 @@ public abstract class FilterCriterion implements Criterion {
 		this.property = property;
 	}
 
+	@Deprecated
 	public String getPropertyPath() {
 		return propertyPath;
 	}
 
+	@Deprecated
 	public void setPropertyPath(String propertyPath) {
 		this.propertyPath = propertyPath;
 	}
 
-	public DataType getDataType() {
-		return dataType;
+	public FilterOperator getFilterOperator() {
+		return filterOperator;
 	}
 
-	public void setDataType(DataType dataType) {
-		this.dataType = dataType;
-	}
-
-	public String getExpression() {
-		return expression;
-	}
-
-	public void setExpression(String expression) {
-		this.expression = expression;
+	public void setFilterOperator(FilterOperator filterOperator) {
+		this.filterOperator = filterOperator;
 	}
 }

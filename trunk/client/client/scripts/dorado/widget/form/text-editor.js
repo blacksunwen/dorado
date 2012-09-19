@@ -609,7 +609,6 @@
 						result = true;
 					}
 				}
-				
 				if (result) this.setValidationState(state, validationResults);
 				return result;
 			} 
@@ -981,18 +980,19 @@
 				},
 				setter: function(value) {
 					this._value = value;
-					var t, text;
+					var valueText, text;
 					var dataType = this.get("dataType");
 					if (dataType) {
 						text = dataType.toText(value, this._editorFocused ? this._typeFormat : this._displayFormat);
-						t = (this._editorFocused) ? text : dataType.toText(value, this._typeFormat);
+						valueText = (this._editorFocused) ? text : dataType.toText(value, this._typeFormat);
 					} else {
-						t = text = dorado.$String.toText(value);
+						valueText = text = dorado.$String.toText(value);
 					}
 					if (text && this._mapping) text = this.getMappedValue(text);
 					this._skipValidateEmpty = true;
-					this.validate(t);
-					this._text = this._lastPost = this._valueText = t;
+					this.validate(valueText);
+					this._valueText = valueText;
+					this._text = this._lastPost = text;
 					this.doSetText(text);
 					this.setValidationState(null);
 				}

@@ -21,8 +21,6 @@ public abstract class DataXmlConstants {
 	public static final String DATA_RESOLVER = "DataResolver";
 	public static final String PARAMETER = "Parameter";
 	public static final String RESULT = "Result";
-	public static final String LOOKUP = "Lookup";
-	public static final String LOOKUP_CONSTRAINT = "Constraint";
 	public static final String REFERENCE = "Reference";
 	public static final String VALUE_DATA_TYPE = "ValueDataType";
 	public static final String KEY_DATA_TYPE = "KeyDataType";
@@ -34,8 +32,6 @@ public abstract class DataXmlConstants {
 	public static final String ATTRIBUTE_OVERWRITE = "overwrite";
 	public static final String ATTRIBUTE_PROPERTY = "property";
 	public static final String ATTRIBUTE_METHOD = "method";
-	public static final String ATTRIBUTE_LOOKUP_PROPERTY = "lookupProperty";
-	public static final String ATTRIBUTE_LOOKUP_KEY_PROPERTY = "lookupKeyProperty";
 	public static final String ATTRIBUTE_MATCH_TYPE = "matchType";
 	public static final String ATTRIBUTE_CREATION_TYPE = "creationType";
 	public static final String ATTRIBUTE_RESULT_DATA_TYPE = "resultDataType";

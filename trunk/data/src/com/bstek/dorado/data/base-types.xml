@@ -38,4 +38,7 @@
 	<DataType name="Bean" parent="Entity" />
 	<DataType name="Map" parent="Entity" matchType="java.util.Map" impl="com.bstek.dorado.data.type.DefaultMapDataType" />
 	<DataType name="Record" matchType="com.bstek.dorado.data.variant.Record" parent="Map" />
+	
+	<!-- Others -->
+	<DataType name="Criteria" impl="com.bstek.dorado.data.provider.CriteriaDataType" />
 </Model>

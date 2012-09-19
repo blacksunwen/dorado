@@ -4,12 +4,11 @@ import com.bstek.dorado.data.type.DataType;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
- * @since 2012-3-1
+ * @since 2012-9-18
  */
-public class SingleValueFilterCriterion extends FilterCriterion {
+public class ExpressionFilterCriterion extends FilterCriterion {
 	private DataType dataType;
 	private String expression;
-	private Object value;
 
 	public DataType getDataType() {
 		return dataType;
@@ -27,11 +26,4 @@ public class SingleValueFilterCriterion extends FilterCriterion {
 		this.expression = expression;
 	}
 
-	public Object getValue() {
-		return value;
-	}
-
-	public void setValue(Object value) {
-		this.value = value;
-	}
 }

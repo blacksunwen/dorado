@@ -929,7 +929,7 @@ public class XmlParserHelper implements BeanFactoryAware {
 			List<XmlParserInfo> xmlParserInfos, Set<Class<?>> blackTypes)
 			throws Exception {
 		if (implExpression.indexOf(WILCARD) >= 0) {
-			Set<Class<?>> implTypes = ClassUtils.foundClassTypes(
+			Set<Class<?>> implTypes = ClassUtils.findClassTypes(
 					implExpression, targetType);
 			for (Class<?> implType : implTypes) {
 				if (blackTypes == null || !blackTypes.contains(implType)) {

@@ -114,11 +114,14 @@
 				}
 			};
 		}
+		
+		/*
 		if (!options) {
-			//options = { iframeFix: true };
+			options = { iframeFix: true };
 		} else {
-			//options.iframeFix = true;
+			options.iframeFix = true;
 		}
+		*/
 		return oldDraggable.call(this, options);
 	};
 

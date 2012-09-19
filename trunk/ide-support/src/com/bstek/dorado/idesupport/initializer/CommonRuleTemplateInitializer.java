@@ -164,7 +164,7 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 		initClientEvent(ruleTemplate, typeInfo, initializerContext);
 
 		if (xmlNodeInfo != null && !xmlNodeInfo.getImplTypes().isEmpty()) {
-			Set<Class<?>> implTypes = ClassUtils.foundClassTypes(xmlNodeInfo
+			Set<Class<?>> implTypes = ClassUtils.findClassTypes(xmlNodeInfo
 					.getImplTypes().toArray(new String[0]), type);
 			for (Class<?> implType : implTypes) {
 				if (implType.equals(type)) {
@@ -663,7 +663,7 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 			aggregated = propertyTypeInfo.isAggregated();
 		}
 
-		Set<Class<?>> implTypes = ClassUtils.foundClassTypes(
+		Set<Class<?>> implTypes = ClassUtils.findClassTypes(
 				xmlSubNode.implTypes(), propertyType);
 		for (Class<?> implType : implTypes) {
 			if (implType.equals(typeInfo.getType())) {

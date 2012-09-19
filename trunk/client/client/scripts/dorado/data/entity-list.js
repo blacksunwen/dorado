@@ -885,7 +885,6 @@
 		 * 此属性对于{@link dorado.EntityList}的toJSON而言是没有意义的，但是由于options参数会自动被传递到集合中{@link dorado.Entity}的toJSON方法中，
 		 * 因此它会影响内部{@link dorado.Entity}的处理过程。
 		 * @param {boolean} [options.includeReferenceProperties=true] 是否转换实体对象中{@link dorado.Reference}类型的属性。默认按true进行处理。
-		 * @param {boolean} [options.includeLookupProperties=true] 是否转换实体对象中{@link dorado.Lookup}类型的属性。默认按true进行处理。
 		 * @param {boolean} [options.includeUnloadPage=true] 是否转换{@link dorado.EntityList}中尚未装载的页中的数据。默认按false进行处理。
 		 * @param {boolean} [options.includeDeletedEntity] 是否转换那些被标记为"已删除"的数据实体。
 		 * @param {boolean} [options.simplePropertyOnly] 是否只生成简单类型的属性到JSON中。
