@@ -5,13 +5,22 @@ package com.bstek.dorado.data.provider.filter;
  * @since 2012-9-18
  */
 public class PropertyFilterCriterion extends FilterCriterion {
-	private String targetProperty;
+	private String otherProperty;
+	private String otherPropertyPath;
 
-	public String getTargetProperty() {
-		return targetProperty;
+	public String getOtherProperty() {
+		return otherProperty;
 	}
 
-	public void setTargetProperty(String targetProperty) {
-		this.targetProperty = targetProperty;
+	public void setOtherProperty(String otherProperty) {
+		this.otherProperty = otherProperty;
+	}
+
+	public String getOtherPropertyPath() {
+		return otherPropertyPath;
+	}
+
+	public void setOtherPropertyPath(String otherPropertyPath) {
+		this.otherPropertyPath = otherPropertyPath;
 	}
 }

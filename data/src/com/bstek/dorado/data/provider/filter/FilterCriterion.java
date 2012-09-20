@@ -19,12 +19,10 @@ public abstract class FilterCriterion implements Criterion {
 		this.property = property;
 	}
 
-	@Deprecated
 	public String getPropertyPath() {
 		return propertyPath;
 	}
 
-	@Deprecated
 	public void setPropertyPath(String propertyPath) {
 		this.propertyPath = propertyPath;
 	}
