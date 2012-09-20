@@ -13,13 +13,20 @@ import org.apache.commons.logging.LogFactory;
 import com.bstek.dorado.common.method.MethodAutoMatchingException;
 import com.bstek.dorado.common.method.MethodAutoMatchingUtils;
 import com.bstek.dorado.common.method.MoreThanOneMethodsMatchsException;
+import com.bstek.dorado.core.Context;
 import com.bstek.dorado.core.bean.BeanFactoryUtils;
+import com.bstek.dorado.core.el.Expression;
+import com.bstek.dorado.core.el.ExpressionHandler;
 import com.bstek.dorado.core.resource.ResourceManager;
 import com.bstek.dorado.core.resource.ResourceManagerUtils;
 import com.bstek.dorado.data.ParameterWrapper;
 import com.bstek.dorado.data.provider.Criteria;
+import com.bstek.dorado.data.provider.Criterion;
 import com.bstek.dorado.data.provider.DataProvider;
+import com.bstek.dorado.data.provider.Junction;
 import com.bstek.dorado.data.provider.Page;
+import com.bstek.dorado.data.provider.filter.ExpressionFilterCriterion;
+import com.bstek.dorado.data.provider.filter.SingleValueFilterCriterion;
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.util.Assert;
 
@@ -46,6 +53,8 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 	private static final Class<?>[] EXTRA_TYPES = new Class<?>[] { Criteria.class };
 	private static final Object[] EXTRA_ARGS = new Object[] { null, null };
 
+	private static ExpressionHandler expressionHandler;
+
 	private String interceptorName;
 	private String methodName;
 	private Object interceptor;
@@ -68,6 +77,14 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 		if (StringUtils.isEmpty(methodName)) {
 			methodName = DEFAULT_METHOD_NAME;
 		}
+	}
+
+	public ExpressionHandler getExpressionHandler() throws Exception {
+		if (expressionHandler == null) {
+			expressionHandler = (ExpressionHandler) Context.getCurrent()
+					.getServiceBean("expressionHandler");
+		}
+		return expressionHandler;
 	}
 
 	public Object invoke(MethodInvocation methodInvocation) throws Throwable {
@@ -114,6 +131,52 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 		newCriteria.getCriterions().addAll(criteria.getCriterions());
 		newCriteria.getCriterions().addAll(sysCriteria.getCriterions());
 		newCriteria.getOrders().addAll(sysCriteria.getOrders());
+		return newCriteria;
+	}
+
+	private Criterion evaluateCriterion(Criterion criterion) throws Exception {
+		Criterion newCriterion;
+		if (criterion instanceof Junction) {
+			Junction junction = (Junction) criterion;
+			Junction newJunction = junction.getClass().newInstance();
+			for (Criterion subCriterion : junction.getCriterions()) {
+				newJunction.addCriterion(evaluateCriterion(subCriterion));
+			}
+			newCriterion = newJunction;
+		} else if (criterion instanceof ExpressionFilterCriterion) {
+			ExpressionFilterCriterion expressionFilterCriterion = (ExpressionFilterCriterion) criterion;
+			SingleValueFilterCriterion svfc = new SingleValueFilterCriterion();
+			svfc.setProperty(expressionFilterCriterion.getProperty());
+			svfc.setPropertyPath(expressionFilterCriterion.getPropertyPath());
+			svfc.setFilterOperator(expressionFilterCriterion
+					.getFilterOperator());
+			svfc.setDataType(expressionFilterCriterion.getDataType());
+
+			Object value = null;
+			String expression = expressionFilterCriterion.getExpression();
+			if (StringUtils.isNotEmpty(expression)) {
+				value = getExpressionHandler().compile(expression);
+				if (value instanceof Expression) {
+					value = ((Expression) value).evaluate();
+				}
+				svfc.setValue(value);
+			}
+
+			newCriterion = svfc;
+		} else {
+			newCriterion = criterion;
+		}
+		return newCriterion;
+	}
+
+	private Criteria evaluateCriteria(Criteria criteria) throws Exception {
+		Criteria newCriteria = new Criteria();
+
+		for (Criterion criterion : criteria.getCriterions()) {
+			newCriteria.addCriterion(evaluateCriterion(criterion));
+		}
+
+		newCriteria.getOrders().addAll(criteria.getOrders());
 		return newCriteria;
 	}
 
@@ -232,6 +295,11 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 				parameterParameters.length);
 
 		if (sysParameter != null && !sysParameter.isEmpty()) {
+			Criteria criteria = (Criteria) sysParameter.get("criteria");
+			if (criteria != null) {
+				sysParameter.put("criteria", evaluateCriteria(criteria));
+			}
+
 			for (String extraName : EXTRA_NAMES) {
 				if (!sysParameter.containsKey(extraName)) {
 					sysParameter.put(extraName, null);
@@ -367,6 +435,11 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 		exactArgs[1] = dataType;
 		exactArgTypes[2] = MethodInvocation.class;
 		exactArgs[2] = methodInvocation;
+
+		Criteria criteria = (Criteria) extraArgMap.get(Criteria.class);
+		if (criteria != null) {
+			extraArgMap.put(Criteria.class, evaluateCriteria(criteria));
+		}
 
 		int i = 3;
 		for (Map.Entry<?, ?> entry : extraArgMap.entrySet()) {

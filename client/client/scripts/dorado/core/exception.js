@@ -27,6 +27,7 @@
 			}
 			
 			$setTimeout(this, function() {
+				debugger;
 				if (dorado.Exception.EXCEPTION_STACK.indexOf(this) >= 0) {
 					dorado.Exception.processException(this);
 				}

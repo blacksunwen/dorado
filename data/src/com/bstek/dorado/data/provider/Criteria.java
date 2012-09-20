@@ -7,7 +7,7 @@ import java.util.List;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2011-6-18
  */
-public class Criteria {
+public class Criteria implements Cloneable {
 	List<Criterion> criterions = new ArrayList<Criterion>();
 	List<Order> orders = new ArrayList<Order>();
 

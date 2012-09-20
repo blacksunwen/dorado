@@ -385,24 +385,26 @@ public abstract class EntityUtils {
 	 * @return 迭代器。
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static Iterator getIterator(Collection entities,
+	public static <E> Iterator<E> getIterator(Collection entities,
 			FilterType filterType) {
-		return new EntityIterator(entities, filterType);
+		return new EntityIterator<E>(entities, filterType);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Deprecated
 	public static <E> Iterator<E> getIterator(Collection entities,
 			FilterType filterType, Class<E> cl) {
 		return new EntityIterator<E>(entities, filterType);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static Iterable getIterable(Collection entities,
+	public static <E> Iterable<E> getIterable(Collection entities,
 			FilterType filterType) {
-		return new EntityIterator(entities, filterType);
+		return new EntityIterator<E>(entities, filterType);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Deprecated
 	public static <E> Iterable<E> getIterable(Collection entities,
 			FilterType filterType, Class<E> cl) {
 		return new EntityIterator<E>(entities, filterType);
