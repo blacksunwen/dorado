@@ -13,10 +13,12 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
 	ATTRIBUTES: /** @scope dorado.widget.Slider.prototype */{
 		className: {
 			defaultValue: "d-slider"
-		},		
+		},
+
 		height: {
 			defaultValue: 20
-		},		
+		},
+
 		/**
 		 * 滑动条的方向，可选值为horizental和vertical，默认值为horizental
 		 * @attribute
@@ -26,6 +28,7 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
 		orientation: {
 			defaultValue: "horizental"
 		},
+
 		/**
 		 * 滑动条的最小值，默认为0
 		 * @attribute
@@ -33,8 +36,16 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
 		 * @type int|float|double
 		 */
 		minValue: {
-			defaultValue: 0
+			defaultValue: 0,
+			setter: function(value) {
+				var parseValue = parseFloat(value);
+				if (isNaN(parseValue)) {
+					throw new dorado.ResourceException("dorado.baseWidget.NumberFormatInvalid", value);
+				}
+				this._minValue = parseValue;
+			}
 		},
+
 		/**
 		 * 滑动条的最大值，默认为100
 		 * @attribute
@@ -42,8 +53,16 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
 		 * @type int|float|double
 		 */
 		maxValue: {
-			defaultValue: 100
+			defaultValue: 100,
+			setter: function(value) {
+				var parseValue = parseFloat(value);
+				if (isNaN(parseValue)) {
+					throw new dorado.ResourceException("dorado.baseWidget.NumberFormatInvalid", value);
+				}
+				this._maxValue = parseValue;
+			}
 		},
+
 		/**
 		 * 滑动条的当前值
 		 * @attribute
@@ -51,11 +70,21 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
 		 */
 		value: {
             setter: function(value){
-                var slider = this;
-                value = slider.getValidValue(value);
+                var slider = this, minValue = slider._minValue, maxValue = slider._maxValue;
+	            var parseValue = parseFloat(value);
+	            if (isNaN(parseValue)) {
+		            throw new dorado.ResourceException("dorado.baseWidget.NumberFormatInvalid", value);
+	            }
+
+	            if (parseValue < minValue || parseValue > maxValue) {
+		            throw new dorado.ResourceException("dorado.baseWidget.NumberRangeInvalid", minValue, maxValue, value);
+	            }
+
+                value = slider.getValidValue(parseValue);
 				var eventArg = {
 					value: slider._value
 				};
+
                 slider.fireEvent("beforeValueChange", slider, eventArg);
                 if(eventArg.processDefault === false){
                     slider.refresh();
@@ -64,6 +93,7 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
                 slider.fireEvent("onValueChange", slider);
             }
         },
+
 		/**
 		 * 滑动条的精度，默认为0。<br />
 		 * 该参数的含义是value的取值会取小数点后几位，设置值完毕以后，会根据该设置会进行四舍五入。
@@ -74,6 +104,7 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
 		precision: {
 			defaultValue: 0
 		},
+
 		/**
 		 * 滑动条值的每次的增加值，默认为null，默认允许一次可以增加任意值，但仍然会受到precision的约束。<br />
 		 * 需要注意的是，当设置该值以后，要保证(maxValue - minValue) / step为整数。

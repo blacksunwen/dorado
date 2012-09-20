@@ -7,7 +7,7 @@
 		<script type="text/javascript">
 		var view = new dorado.widget.View({ layout: "Anchor" });
 
-        view.addChild(new dorado.widget.Slider({
+        var slider1 = new dorado.widget.Slider({
             id: "slider1",
             //step: 5,
             minValue: 2,
@@ -28,9 +28,11 @@
                 "margin-top": 50,
                 "margin-bottom": 50
             }
-        }));
+        });
 
-        view.addChild(new dorado.widget.Slider({
+        view.addChild(slider1);
+
+        var slider2 = new dorado.widget.Slider({
             id: "slider2",
             orientation: "vertical",
             height: 400,
@@ -39,7 +41,9 @@
             step: .1,
             precision: 1
             //,step: 5
-        }));
+        });
+
+        view.addChild(slider2);
 
 		$(document).ready(function(){
             var doradoView = document.getElementById("doradoView");
