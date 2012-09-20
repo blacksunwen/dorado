@@ -2057,6 +2057,7 @@
 					}
 				}
 			}
+			
 			this._itemModel.filter(criterions);
 			this.refresh(true);
 		},

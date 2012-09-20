@@ -213,14 +213,18 @@
 			}
 		}
 		
+		criterion.property = column._property;
 		criterion.operator = operator;
 		if (criterion.value && criterion.value.indexOf('\\') >= 0) {
 			criterion.value = eval('"' + criterion.value + '"');
 		}
 		
 		var pd = column._propertyDef;
-		if (pd && pd._mapping) {
-			criterion.value = pd.getMappedKey(criterion.value);
+		if (pd) {
+			criterion.propertyPath = pd._propertyPath;
+			if (pd._mapping) {
+				criterion.value = pd.getMappedKey(criterion.value);
+			}
 		}
 		
 		var dataType = column.get("dataType");
