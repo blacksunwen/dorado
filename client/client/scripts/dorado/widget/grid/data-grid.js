@@ -747,8 +747,12 @@
 						}
 					}
 					
+					var pd = column._propertyDef;
+					var propertyPath = (pd) ? pd._propertyPath : undefined;
+					
 					serverCriterion = {
 						property: property,
+						propertyPath: propertyPath,
 						dataType: ((!dataType || dataType instanceof dorado.EntityDataType || dataType instanceof dorado.AggregationDataType) ? undefined : dataType._name),
 						expression: expression
 					};

@@ -257,11 +257,14 @@
 				
 				var op = filterParam.operator;
 				if (op == "like") {
-					return (value + '').toLowerCase().indexOf(filterParam.value) >= 0;
+					var s = (filterParam.value + '').toLowerCase();
+					return (value + '').toLowerCase().indexOf(s) >= 0;
 				} else if (op == "like*") {
-					return (value + '').toLowerCase().startsWith(filterParam.value);
+					var s = (filterParam.value + '').toLowerCase();
+					return (value + '').toLowerCase().startsWith(s);
 				} else if (op == "*like") {
-					return (value + '').toLowerCase().endsWith(filterParam.value);
+					var s = (filterParam.value + '').toLowerCase();
+					return (value + '').toLowerCase().endsWith(s);
 				} else {
 					return getValueComparator(op)(value, filterParam.value);
 				}
@@ -289,7 +292,7 @@
 				}
 				return passed;
 			}
-			
+
 			if (filterParams && filterParams.length > 0) {
 				if (this._originItems) this._items = this._originItems;
 				else this._originItems = this._items;
