@@ -29,12 +29,10 @@ public class Order {
 		this.desc = desc;
 	}
 
-	@Deprecated
 	public String getPropertyPath() {
 		return propertyPath;
 	}
 
-	@Deprecated
 	public void setPropertyPath(String propertyPath) {
 		this.propertyPath = propertyPath;
 	}
