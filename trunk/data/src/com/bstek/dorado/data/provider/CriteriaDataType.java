@@ -64,12 +64,12 @@ public class CriteriaDataType extends AbstractDataType implements JsonConvertor 
 				ExpressionFilterCriterion efc = new ExpressionFilterCriterion();
 				criterion = efc;
 				efc.setDataType(dataType);
-				efc.setProperty(JsonUtils
-						.getString(criterionNode, "expression"));
+				efc.setExpression(JsonUtils.getString(criterionNode, "value"));
 			} else if ("property".equals(type)) {
 				PropertyFilterCriterion pfc = new PropertyFilterCriterion();
 				criterion = pfc;
-				pfc.setProperty(JsonUtils.getString(criterionNode, "property"));
+				pfc.setOtherProperty(JsonUtils
+						.getString(criterionNode, "value"));
 			} else {
 				SingleValueFilterCriterion vfc = new SingleValueFilterCriterion();
 				criterion = vfc;

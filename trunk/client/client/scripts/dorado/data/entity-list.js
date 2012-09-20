@@ -215,7 +215,7 @@
 		},
 		
 		getPage: function(pageNo, loadPage, callback) {
-			
+		
 			function pageLoaded() {
 				var entity = this.parent;
 				if (entity && entity instanceof dorado.EntityList) {
@@ -227,8 +227,7 @@
 							pageNo: pageNo
 						});
 					}
-				}
-				else if (!entity) {
+				} else if (!entity) {
 					var dataSet = this._observer;
 					if (dataSet && dorado.widget && dorado.widget.DataSet && dataSet instanceof dorado.widget.DataSet) {
 						dataSet.fireEvent("onLoadData", dataSet, {
@@ -326,7 +325,15 @@
 			
 			var dataType = this.dataType, elementDataType;
 			if (dataType) elementDataType = dataType.getElementDataType();
-			if (elementDataType) elementDataType.fireEvent("beforeCurrentChange", elementDataType, eventArg);
+			if (elementDataType) {
+				if (dorado.EntityList.duringFillPage) {
+					setTimeout(function() {
+						elementDataType.fireEvent("beforeCurrentChange", elementDataType, eventArg);
+					}, 0);
+				} else {
+					elementDataType.fireEvent("beforeCurrentChange", elementDataType, eventArg);
+				}
+			}
 			if (!eventArg.processDefault) return;
 			
 			this.current = current;
@@ -334,7 +341,15 @@
 			this.timestamp = dorado.Core.getTimestamp();
 			
 			this.sendMessage(dorado.EntityList._MESSAGE_CURRENT_CHANGED, eventArg);
-			if (elementDataType) elementDataType.fireEvent("onCurrentChange", elementDataType, eventArg);
+			if (elementDataType) {
+				if (dorado.EntityList.duringFillPage) {
+					setTimeout(function() {
+						elementDataType.fireEvent("onCurrentChange", elementDataType, eventArg);
+					}, 0);
+				} else {
+					elementDataType.fireEvent("onCurrentChange", elementDataType, eventArg);
+				}
+			}
 		},
 		
 		/**
@@ -586,8 +601,7 @@
 				if (entity.parent) {
 					if (entity.parent instanceof dorado.EntityList) {
 						entity.parent.remove(entity, true);
-					}
-					else {
+					} else {
 						throw new dorado.ResourceException("dorado.data.ValueNotFree", "Entity");
 					}
 				}
@@ -720,6 +734,7 @@
 			var dataType = this.dataType;
 			if (dataType) dataType._disableObserversCounter++;
 			this._disableObserversCounter++;
+			dorado.EntityList.duringFillPage = (dorado.EntityList.duringFillPage || 0) + 1;
 			try {
 				var elementDataType = this.elementDataType, eventArg;
 				if (fireEvent && elementDataType != null) eventArg = {};
@@ -729,8 +744,7 @@
 					if (json instanceof dorado.Entity && json.parent) {
 						if (json.parent instanceof dorado.EntityList) {
 							json.parent.remove(json, true);
-						}
-						else {
+						} else {
 							throw new dorado.ResourceException("dorado.data.ValueNotFree", "Entity");
 						}
 					}
@@ -764,9 +778,12 @@
 				if (jsonArray.entityCount) this.entityCount = jsonArray.entityCount;
 				if (jsonArray.pageCount) this.pageCount = jsonArray.pageCount;
 				
-				if (changeCurrent && firstEntity) this.setCurrent(firstEntity);
+				if (changeCurrent && firstEntity) {
+					this.setCurrent(firstEntity);
+				}
 			}
 			finally {
+				dorado.EntityList.duringFillPage--;
 				this._disableObserversCounter--;
 				if (dataType) dataType._disableObserversCounter--;
 			}
