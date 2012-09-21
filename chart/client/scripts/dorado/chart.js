@@ -691,6 +691,8 @@ function open_flash_chart_data() {
 			$invokeSuper.call(this, arguments);
 
 			jQuery(this._dom).flash({
+				id: "dorado_ofc_flash_" + ofc_id_seed,
+				name: "dorado_ofc_flash_" + ofc_id_seed,
 				swf: $url(">dorado/client/resources/open-flash-chart.swf?" + (new Date()).getTime()),
                 wmode: 'transparent',
 				width: "100%",
@@ -700,22 +702,45 @@ function open_flash_chart_data() {
 			this.reload();
 		},
 
+		/**
+		 * 插入Element。
+		 * @param {Object|dorado.widget.ofc.Element} element 要插入的Element的配置或者Element。
+		 * @param {int} index 要插入的Element的索引。
+		 */
 		insertElement: function(element, index) {
 			var elements = this._elements;
 			if (!elements) {
 				elements = this._elements = [];
+			}
+			if (!(element instanceof dorado.widget.ofc.Element)) {
+				element = dorado.Toolkits.createInstance("widget", element);
+				element.parent = this;
 			}
 			if (typeof index == "number") {
 				elements.insert(element, index);
 			} else {
 				elements.push(element);
 			}
+			this.refresh();
 		},
 
+		refreshDom: function() {
+			$invokeSuper.call(this, arguments);
+			this.reload();
+		},
+
+		/**
+		 * 添加Element。
+		 * @param {Object|dorado.widget.ofc.Element} element 要插入的Element的配置或者Element。
+		 */
 		addElement: function(element) {
 			this.insertElement(element);
 		},
 
+		/**
+		 * 一次添加多个Element。
+		 * @param {Object[]|dorado.widget.ofc.Element[]} elements 要添加的Element的配置或者Element。
+		 */
 		addElements: function(elements) {
 			if (elements) {
 				for (var i = 0, j = elements.length; i < j; i++) {
@@ -724,6 +749,10 @@ function open_flash_chart_data() {
 			}
 		},
 
+		/**
+		 * 删除指定的Element。
+		 * @param {int|dorado.widget.ofc.Element} index Element的索引或者Element本身。
+		 */
 		removeElement: function(index) {
 			var elements = this._elements;
 			if (elements) {
@@ -733,6 +762,7 @@ function open_flash_chart_data() {
 				    elements.remove(index);
 				}
 			}
+			this.refresh();
 		},
 
 		toJSON: toJSON
@@ -923,10 +953,20 @@ function open_flash_chart_data() {
 			var chart = this, result = [];
 			if (bindingConfig && data) {
 				if (data instanceof dorado.Entity) {
-					result.push(chart.diggEntity(data));
+					result.push(chart.diggEntity(bindingConfig, data));
 				} else if (data instanceof dorado.EntityList) {
 					data.each(function(entity) {
 						result.push(chart.diggEntity(bindingConfig, entity));
+					});
+				} else if (data instanceof Array) {
+					data.each(function(record) {
+						if (record instanceof dorado.Entity) {
+							result.push(chart.diggEntity(bindingConfig, record));
+						} else if (record instanceof dorado.EntityList) {
+							record.each(function(entity) {
+								result.push(chart.diggEntity(bindingConfig, entity));
+							});
+						}
 					});
 				}
 			}
@@ -941,7 +981,7 @@ function open_flash_chart_data() {
 			return this.createValue(result);
 		},
 		getValues: function() {
-			var chart = this, data = chart.getBindingData(), bindingConfig = chart._bindingConfig;
+			var chart = this, data = chart.getBindingData({ firstResultOnly: false }), bindingConfig = chart._bindingConfig;
 			if (bindingConfig && data) {
 				chart._values = chart.diggData(bindingConfig, data);
 			}
