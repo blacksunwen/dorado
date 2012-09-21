@@ -275,7 +275,7 @@
 				for (var i = 0; i < filterParams.length; i++) {
 					var filterParam = filterParams[i], b;
 					if (filterParam.junction) {
-						b = processFilterParams(filterParam.filterParams, filterParam.junction);
+						b = processFilterParams(filterParam.criterions, filterParam.junction);
 					}
 					else {
 						b = filterItem(item, filterParams[i]);
