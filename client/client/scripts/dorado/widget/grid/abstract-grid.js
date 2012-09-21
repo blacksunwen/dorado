@@ -2058,8 +2058,7 @@
 				}
 			}
 			
-			this._itemModel.filter(criterions);
-			this.refresh(true);
+			$invokeSuper.call(this, [criterions]);
 		},
 
 		/**
