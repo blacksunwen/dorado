@@ -10,7 +10,7 @@
 		<dependency org="com.bstek.dorado" name="dorado-core" rev="7.1.17-SNAPSHOT" conf="compile,runtime">
 			<exclude org="com.bstek.dorado" />
 		</dependency>
-		<dependency org="com.bstek.dorado" name="dorado-hibernate" rev="0.2.2" conf="compile,runtime">
+		<dependency org="com.bstek.dorado" name="dorado-hibernate" rev="0.3.0" conf="compile,runtime">
 			<exclude name="dorado-core" />
 		</dependency>
 		<dependency org="com.bstek.dorado" name="dorado-chart" rev="0.3.4-BETA" conf="compile,runtime">
@@ -29,6 +29,9 @@
 			<exclude name="dorado-core" />
 		</dependency>
 		<dependency org="com.bstek.dorado" name="dorado-raphael" rev="0.1.0" conf="compile,runtime">
+			<exclude name="dorado-core" />
+		</dependency>
+		<dependency org="com.bstek.dorado" name="dorado-criteria-builder" rev="0.1.0-BETA" conf="compile,runtime">
 			<exclude name="dorado-core" />
 		</dependency>
 

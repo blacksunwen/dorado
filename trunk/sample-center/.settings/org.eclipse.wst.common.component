@@ -6,9 +6,6 @@
         <dependent-module archiveName="ide-support.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/ide-support/ide-support">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="core.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/core/core">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
         <dependent-module archiveName="web.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/web/web">
             <dependency-type>uses</dependency-type>
         </dependent-module>
@@ -31,6 +28,15 @@
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="desktop.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/desktop/desktop">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="criteria-builder.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/criteria-builder/criteria-builder">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="core.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/core/core">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="hibernate.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/hibernate/hibernate">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <property name="context-root" value="sample-center"/>

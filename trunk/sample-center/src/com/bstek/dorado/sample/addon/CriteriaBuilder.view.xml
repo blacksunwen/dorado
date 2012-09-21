@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Arguments/>
+  <Context/>
+  <Model>
+    <DataType name="Schema">
+      <Property name="acceptUnknownProperty">true</Property>
+    </DataType>
+  </Model>
+  <View>
+    <DataSet id="dsExamples">
+      <Property name="dataProvider">criteriaBuilder#queryExamples</Property>
+      <Property name="dataType">[Example]</Property>
+      <Property name="pageSize">20</Property>
+      <Property name="readOnly">true</Property>
+    </DataSet>
+    <DataSet id="dsSchemas">
+      <Property name="dataProvider">criteriaBuilder#getQuerySchemas</Property>
+      <Property name="dataType">[Schema]</Property>
+      <Property name="loadMode">onReady</Property>
+    </DataSet>
+    <UpdateAction id="activeSave">
+      <Property name="dataResolver">criteriaBuilder#saveQuerySchemas</Property>
+      <UpdateItem>
+        <Property name="dataSet">dsSchemas</Property>
+      </UpdateItem>
+    </UpdateAction>
+    <DataSetDropDown id="dropDownSchema">
+      <Property name="dataSet">dsSchemas</Property>
+      <Property name="property">name</Property>
+      <Property name="autoOpen">true</Property>
+    </DataSetDropDown>
+    <ToolBar>
+      <ToolBarLabel>
+        <Property name="text">查询方案：</Property>
+        <Property name="style">
+          <Property name="margin-left">8px</Property>
+        </Property>
+      </ToolBarLabel>
+      <TextEditor id="editorSchema">
+        <Property name="editable">false</Property>
+        <Property name="trigger">dropDownSchema</Property>
+        <Property name="blankText">选择一个查询方案...</Property>
+      </TextEditor>
+      <Separator/>
+      <ToolBarButton id="buttonQuery">
+        <Property name="caption">查询</Property>
+        <Property name="icon">url(skin>common/icons.gif) -40px -100px</Property>
+      </ToolBarButton>
+      <Separator/>
+      <ToolBarButton id="buttonSave">
+        <Property name="caption">保存查询方案</Property>
+        <Property name="icon">url(skin>common/icons.gif) -140px -20px</Property>
+        <Property name="tags">needSchema</Property>
+      </ToolBarButton>
+      <ToolBarButton id="buttonSaveAs">
+        <Property name="caption">查询方案另存为</Property>
+        <Property name="icon">url(skin>common/icons.gif) -160px -20px</Property>
+      </ToolBarButton>
+      <ToolBarButton id="buttonDelete">
+        <Property name="caption">删除查询方案</Property>
+        <Property name="icon">url(skin>common/icons.gif) -140px 0px</Property>
+        <Property name="tags">needSchema</Property>
+      </ToolBarButton>
+      <Separator/>
+      <ToolBarButton id="buttonClear">
+        <Property name="caption">清空查询条件</Property>
+        <Property name="icon">url(skin>common/icons.gif) -280px -220px</Property>
+      </ToolBarButton>
+    </ToolBar>
+    <SplitPanel>
+      <Property name="direction">top</Property>
+      <Property name="position">200</Property>
+      <MainControl>
+        <Container>
+          <ToolBar>
+            <DataPilot>
+              <Property name="dataSet">dsExamples</Property>
+            </DataPilot>
+          </ToolBar>
+          <DataGrid>
+            <Property name="dataSet">dsExamples</Property>
+          </DataGrid>
+        </Container>
+      </MainControl>
+      <SideControl>
+        <CriteriaBuilder id="criteriaBuilder">
+          <Property name="dataType">Example</Property>
+        </CriteriaBuilder>
+      </SideControl>
+    </SplitPanel>
+    <Tip id="tipSearch">
+      <Property name="content">试试从这里选择一个已保存的查询方案。</Property>
+      <Property name="caption">小提示</Property>
+      <Property name="closeable">true</Property>
+      <Property name="arrowAlign">left</Property>
+      <Property name="arrowDirection">top</Property>
+      <Property name="icon">INFO</Property>
+      <Property name="hideAnimateType">fade</Property>
+    </Tip>
+  </View>
+</ViewConfig>
