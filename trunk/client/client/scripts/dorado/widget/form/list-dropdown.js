@@ -558,5 +558,16 @@
 			useEmptyItem: true
 		});
 	});
+	dorado.widget.View.registerDefaultComponent("autoOpenMappingDropDown1", function() {
+		return new dorado.widget.AutoMappingDropDown({
+			autoOpen: true
+		});
+	});
+	dorado.widget.View.registerDefaultComponent("autoOpenMappingDropDown2", function() {
+		return new dorado.widget.AutoMappingDropDown({
+			autoOpen: true,
+			useEmptyItem: true
+		});
+	});
 	
 })();
