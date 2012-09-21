@@ -4,7 +4,6 @@
 	<comment></comment>
 	<projects>
 		<project>ide-support</project>
-		<project>core</project>
 		<project>web</project>
 		<project>view</project>
 		<project>data</project>
@@ -13,6 +12,9 @@
 		<project>chart</project>
 		<project>htmleditor</project>
 		<project>desktop</project>
+		<project>criteria-builder</project>
+		<project>core</project>
+		<project>hibernate</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

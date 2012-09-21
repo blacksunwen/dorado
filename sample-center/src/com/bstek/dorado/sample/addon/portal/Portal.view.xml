@@ -104,16 +104,16 @@ if (data &amp;&amp; data.label) {
 		}),
 	&quot;items&quot;: [{
 			label: &quot;版式1&quot;,
-			image: &quot;>dorado/res/com/bstek/dorado/sample/widget/portal/frame-1.gif&quot;
+			image: &quot;>dorado/res/com/bstek/dorado/sample/addon/portal/frame-1.gif&quot;
 		}, {
 			label: &quot;版式2&quot;,
-			image: &quot;>dorado/res/com/bstek/dorado/sample/widget/portal/frame-2.gif&quot;
+			image: &quot;>dorado/res/com/bstek/dorado/sample/addon/portal/frame-2.gif&quot;
 		}, {
 			label: &quot;版式3&quot;,
-			image: &quot;>dorado/res/com/bstek/dorado/sample/widget/portal/frame-3.gif&quot;
+			image: &quot;>dorado/res/com/bstek/dorado/sample/addon/portal/frame-3.gif&quot;
 		}, {
 			label: &quot;版式4&quot;,
-			image: &quot;>dorado/res/com/bstek/dorado/sample/widget/portal/frame-4.gif&quot;
+			image: &quot;>dorado/res/com/bstek/dorado/sample/addon/portal/frame-4.gif&quot;
 		}]
 });</ClientEvent>
           <Property name="fillLine">true</Property>

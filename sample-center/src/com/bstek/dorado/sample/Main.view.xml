@@ -89,6 +89,7 @@
       <Property name="arrowAlign">left</Property>
       <Property name="arrowDirection">bottom</Property>
       <Property name="icon">INFO</Property>
+      <Property name="hideAnimateType">fade</Property>
     </Tip>
     <Button id="buttonAdmin" caption="管理" layoutConstraint="top:10; right:12" tip="管理">
       <Property name="icon">url(skin>common/icons.gif) -100px -20px</Property>
