@@ -110,7 +110,7 @@ dorado.widget.desktop.TaskButton = $extend(dorado.widget.AbstractButton, /** @sc
 			$fly(doms.icon).css("display", "none");
 		} else {
 			if (doms.icon) {
-				$fly(doms.icon).attr("className", "icon").css("display", "");
+				$fly(doms.icon).prop("className", "icon").css("display", "");
 			}
 			if ((icon || iconCls) && !doms.icon) {
 				button._createIconSpan();
@@ -475,13 +475,13 @@ dorado.widget.desktop.Taskbar = $extend(dorado.widget.Control, /** @scope dorado
 		taskbar._doms = doms;
 		
 		jQuery(doms.upButton).click(function() {
-			var $taskButtons = $fly(doms.taskButtons), scrollTop = $taskButtons.attr("scrollTop");
-			$taskButtons.attr("scrollTop", scrollTop - $taskButtons.outerHeight(true));
+			var $taskButtons = $fly(doms.taskButtons), scrollTop = $taskButtons.prop("scrollTop");
+			$taskButtons.prop("scrollTop", scrollTop - $taskButtons.outerHeight(true));
 		}).addClassOnHover("up-button-hover").addClassOnClick("up-button-click");
 		
 		jQuery(doms.downButton).click(function() {
-			var $taskButtons = $fly(doms.taskButtons), scrollTop = $taskButtons.attr("scrollTop");
-			$taskButtons.attr("scrollTop", scrollTop + $taskButtons.outerHeight(true));
+			var $taskButtons = $fly(doms.taskButtons), scrollTop = $taskButtons.prop("scrollTop");
+			$taskButtons.prop("scrollTop", scrollTop + $taskButtons.outerHeight(true));
 		}).addClassOnHover("down-button-hover").addClassOnClick("down-button-click");
 		
 		$DomUtils.disableUserSelection(doms.spinner);

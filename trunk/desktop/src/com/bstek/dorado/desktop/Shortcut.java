@@ -6,7 +6,6 @@ import com.bstek.dorado.annotation.XmlNode;
 public class Shortcut {
 	private String icon;
 	private String iconClass;
-	private ShortcutIconSize iconSize;
 	private String caption;
 	private String appId;
 
@@ -38,21 +37,6 @@ public class Shortcut {
 	 */
 	public void setIconClass(String iconClass) {
 		this.iconClass = iconClass;
-	}
-
-	/**
-	 * @return the iconSize
-	 */
-	public ShortcutIconSize getIconSize() {
-		return iconSize;
-	}
-
-	/**
-	 * @param iconSize
-	 *            the iconSize to set
-	 */
-	public void setIconSize(ShortcutIconSize iconSize) {
-		this.iconSize = iconSize;
 	}
 
 	/**
