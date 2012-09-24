@@ -166,32 +166,39 @@
 		},
 
         doOnAttachToDocument: function() {
-            this.doLoad();
+	        var frame = this, doms = frame._doms, iframe = doms.iframe;
+	        $fly(iframe).load(function() {
+		        $fly(doms.loadingCover).css("display", "none");
+		        // fix ie 6 bug....
+		        if (!(dorado.Browser.msie && dorado.Browser.version == 6)) {
+			        $fly(iframe).removeClass("hidden");
+		        }
+		        frame.fireEvent("onLoad", frame);
+		        if (frame.isSameDomain()) {
+			        if (frame._replacedUrl && frame._replacedUrl != BLANK_PATH) {
+				        frame._loaded = true;
+			        }
+		        } else if (iframe.src && iframe.src != BLANK_PATH) {
+			        frame._loaded = true;
+		        }
+	        });
+	        frame.doLoad();
         },
 		
 		replaceUrl: function(url) {
-            var frame = this, doms = frame._doms;
+            var frame = this, doms = frame._doms, replacedUrl = $url(url || BLANK_PATH);
             if (frame.isSameDomain()) {
-                frame.getIFrameWindow().location.replace($url(url || BLANK_PATH));
+	            frame._replacedUrl = replacedUrl;
+                frame.getIFrameWindow().location.replace(replacedUrl);
             } else {
-                $fly(doms.iframe).prop("src", $url(url || BLANK_PATH));
+                $fly(doms.iframe).prop("src", replacedUrl);
             }
 		},
 
         doLoad: function() {
-            var frame = this, doms = frame._doms, iframe = doms.iframe;
+            var frame = this, doms = frame._doms;
             $fly(doms.loadingCover).css("display", "");
 			this.replaceUrl(frame._path);
-			$fly(iframe).load( function() {
-				$fly(doms.loadingCover).css("display", "none");
-				// fix ie 6 bug....
-				if (!(dorado.Browser.msie && dorado.Browser.version == 6)) {
-					$fly(iframe).removeClass("hidden");
-				}
-				frame.fireEvent("onLoad", frame);
-                if (iframe.src != BLANK_PATH)
-                    frame._loaded = true;
-			});
         },
 
         reloadIfNotLoaded: function() {
@@ -202,7 +209,7 @@
         },
 
         cancelLoad: function() {
-			this.replaceUrl(null);
+			this.replaceUrl(BLANK_PATH);
         },
 
         /**
@@ -217,16 +224,6 @@
 		refreshDom: function(dom) {
 			$invokeSuper.call(this, [dom]);
 			centerCover(dom, this._doms);
-		},
-		
-		onActualVisibleChange: function() {
-			var window = this.getIFrameWindow(), actualVisible = this.isActualVisible();
-			//FIX OpenFlashChart BUG: http://bsdn.org/projects/dorado7/issue/dorado7-240
-			if (this._ready && this.isSameDomain()) {
-				if (dorado.Browser.mozilla && window && window.dorado && window.dorado.widget && window.dorado.widget.ofc) {
-					window.$topView.setActualVisible(actualVisible);
-				}
-			}
 		},
 		
 		onActualVisibleChange: function() {
