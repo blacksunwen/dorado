@@ -919,8 +919,9 @@
 		unrender: function() {
 			if (this._focused) {
 				var focusParent = this.get("focusParent");
-				if (focusParent) focusParent.setFocus();
-				else dorado.widget.setFocusedControl(null);
+				// if (focusParent) focusParent.setFocus();
+				// else dorado.widget.setFocusedControl(null);
+				dorado.widget.setFocusedControl(focusParent);
 			}
 			$invokeSuper.call(this, []);
 		},

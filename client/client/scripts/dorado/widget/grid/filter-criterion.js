@@ -75,47 +75,18 @@
 		return dropDown;
 	}
 	
-	var primitiveBooleanDropDown;
-	function getPrimitiveBooleanDropDown() {
-		if (!primitiveBooleanDropDown) {
-			primitiveBooleanDropDown = new dorado.widget.ListDropDown({
-				items: [{
-					key: true,
-					value: $resource("dorado.core.BooleanTrue")
-				}, {
-					key: false,
-					value: $resource("dorado.core.BooleanFalse")
-				}],
-				editable: false,
-				property: "key",
-				displayProperty: "value",
-				autoOpen: true
-			});
+	var booleanMapping;
+	function getBooleanMapping() {
+		if (!booleanMapping) {
+			booleanMapping = [{
+				key: true,
+				value: $resource("dorado.core.BooleanTrue")
+			}, {
+				key: false,
+				value: $resource("dorado.core.BooleanFalse")
+			}];
 		}
-		return primitiveBooleanDropDown;
-	}
-	
-	var booleanDropDown;
-	function getBooleanDropDown() {
-		if (!booleanDropDown) {
-			booleanDropDown = new dorado.widget.ListDropDown({
-				items: [{
-					key: null,
-					value: ""
-				}, {
-					key: true,
-					value: $resource("dorado.core.BooleanTrue")
-				}, {
-					key: false,
-					value: $resource("dorado.core.BooleanFalse")
-				}],
-				editable: false,
-				property: "key",
-				displayProperty: "value",
-				autoOpen: true
-			});
-		}
-		return booleanDropDown;
+		return booleanMapping;
 	}
 	
 	function splitCriterions(text, column) {
@@ -638,9 +609,11 @@
 					trigger = "autoMappingDropDown2";
 					mapping = pd._mapping;
 				} else if (dtCode == dorado.DataType.PRIMITIVE_BOOLEAN) {
-					trigger = getPrimitiveBooleanDropDown();
+					trigger = "autoOpenMappingDropDown1";
+					mapping = getBooleanMapping();
 				} else if (dtCode == dorado.DataType.BOOLEAN) {
-					trigger = getBooleanDropDown();
+					trigger = "autoOpenMappingDropDown2";
+					mapping = getBooleanMapping();
 				} else if (dtCode == dorado.DataType.DATE) {
 					trigger = "defaultDateDropDown";
 				} else if (dtCode == dorado.DataType.DATETIME) {
