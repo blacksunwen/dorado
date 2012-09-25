@@ -14,7 +14,7 @@ public class ViewTest extends TestCase {
 	}
 
 	public void testGetSubComponent() {
-		View view = new MockView();
+		View view = new MockView(null);
 
 		TestComponent com1 = new TestComponent("com1");
 		TestComponent com2 = new TestComponent("com2");

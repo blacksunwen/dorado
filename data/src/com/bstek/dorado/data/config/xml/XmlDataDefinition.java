@@ -40,7 +40,8 @@ public class XmlDataDefinition extends Definition {
 	}
 
 	@Override
-	protected synchronized Object doCreate(CreationContext context)
+	protected synchronized Object doCreate(CreationContext context,
+			Object[] constructorArgs)
 			throws Exception {
 		Object data = null;
 		if (node != null) {

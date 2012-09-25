@@ -37,6 +37,13 @@ public abstract class View extends Container implements Namable {
 	private String javaScriptFile;
 	private String styleSheetFile;
 
+	public View(ViewConfig viewConfig) {
+		this.viewConfig = viewConfig;
+		if (viewConfig != null) {
+			viewConfig.setView(this);
+		}
+	}
+
 	@XmlProperty(ignored = true, attributeOnly = true)
 	@IdeProperty(visible = false)
 	public String getId() {
@@ -55,10 +62,6 @@ public abstract class View extends Container implements Namable {
 
 	public ViewConfig getViewConfig() {
 		return viewConfig;
-	}
-
-	public void setViewConfig(ViewConfig viewConfig) {
-		this.viewConfig = viewConfig;
 	}
 
 	public void registerComponent(Component component) {

@@ -118,7 +118,8 @@ public class DataProviderDefinition extends InterceptableDefinition implements
 	}
 
 	@Override
-	protected Object doCreate(CreationContext context) throws Exception {
+	protected Object doCreate(CreationContext context, Object[] constructorArgs)
+			throws Exception {
 		// 当DataProvider继承自另一个DataProvider时，指定其中的ResultDataType也从父DataProvider的ResultDataType继承。
 		if (!resultDataTypeParentAssigned) {
 			DataTypeDefinition resultDataType = (DataTypeDefinition) DefinitionUtils
@@ -158,7 +159,7 @@ public class DataProviderDefinition extends InterceptableDefinition implements
 			resultDataTypeParentAssigned = true;
 		}
 
-		return super.doCreate(context);
+		return super.doCreate(context, constructorArgs);
 	}
 
 	@Override
