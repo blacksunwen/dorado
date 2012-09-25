@@ -5,7 +5,7 @@
 	<property name="dist" value="${workspaceDir}/client/bin" />
 	<property name="workDir" value="${rootWorkDir}/client" />
 	<property name="clientSrc"
-	          value="${workspaceDir}/client/client,${workspaceDir}/chart/client,${workspaceDir}/desktop/client,${workspaceDir}/htmleditor/client,${workspaceDir}/tag-editor/client" />
+	          value="${workspaceDir}/client/client,${workspaceDir}/chart/client,${workspaceDir}/desktop/client,${workspaceDir}/htmleditor/client" />
 
 	<taskdef resource="net/sf/antcontrib/antlib.xml"
 	         classpath="lib/ant-contrib-1.0b3.jar" />
