@@ -4,6 +4,7 @@ import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.view.annotation.Widget;
+import com.bstek.dorado.view.manager.ViewConfig;
 
 /**
  * 视图对象。
@@ -25,4 +26,7 @@ import com.bstek.dorado.view.annotation.Widget;
 				propertyName = "context",
 				outputter = "com.bstek.dorado.view.ViewContextPropertyOutputter"))
 public class DefaultView extends View {
+	public DefaultView(ViewConfig viewConfig) {
+		super(viewConfig);
+	}
 }

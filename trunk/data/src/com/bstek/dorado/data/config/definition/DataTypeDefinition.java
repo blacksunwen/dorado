@@ -200,20 +200,21 @@ public class DataTypeDefinition extends ListenableObjectDefinition implements
 	}
 
 	@Override
-	protected Object doCreate(CreationContext context) throws Exception {
+	protected Object doCreate(CreationContext context, Object[] constructorArgs)
+			throws Exception {
 		if (global) {
 			DataType dataType = cachedInstance;
 			if (dataType != null) {
 				return dataType;
 			}
 
-			dataType = (DataType) super.doCreate(context);
+			dataType = (DataType) super.doCreate(context, constructorArgs);
 			if (!(dataType instanceof EntityDataType || dataType instanceof AggregationDataType)) {
 				cachedInstance = dataType;
 			}
 			return dataType;
 		} else {
-			return super.doCreate(context);
+			return super.doCreate(context, constructorArgs);
 		}
 	}
 

@@ -75,6 +75,7 @@ public class ObjectDefinition extends Definition {
 	}
 
 	private Class<?> impl;
+	private Class<?>[] constructorArgTypes;
 	private Scope scope;
 	private String beanId;
 	private DefinitionReference<? extends Definition>[] parentReferences;
@@ -105,6 +106,14 @@ public class ObjectDefinition extends Definition {
 
 	public void setImplType(Class<?> implType) {
 		impl = implType;
+	}
+
+	public Class<?>[] getConstructorArgTypes() {
+		return constructorArgTypes;
+	}
+
+	public void setConstructorArgTypes(Class<?>[] constructorArgTypes) {
+		this.constructorArgTypes = constructorArgTypes;
 	}
 
 	/**
@@ -213,7 +222,8 @@ public class ObjectDefinition extends Definition {
 	}
 
 	@Override
-	protected Object doCreate(CreationContext context) throws Exception {
+	protected Object doCreate(CreationContext context, Object[] constuctorArgs)
+			throws Exception {
 		Object object = context.findInstance(this);
 		if (object != null) {
 			return object;
@@ -223,7 +233,7 @@ public class ObjectDefinition extends Definition {
 		initCreationInfo(creationInfo, this, true);
 
 		if (creationInfo.getScope() == null && isCacheCreatedObject()
-				&& objectCache != null) {
+				&& objectCache != null && constuctorArgs != null) {
 			return objectCache;
 		}
 
@@ -256,8 +266,8 @@ public class ObjectDefinition extends Definition {
 					methodInterceptors, expressionInterceptor);
 		}
 
-		BeanWrapper wrapper = createObject(creationInfo, methodInterceptors,
-				context);
+		BeanWrapper wrapper = createObject(creationInfo, constuctorArgs,
+				methodInterceptors, context);
 		object = wrapper.getBean();
 		if (creationInfo.getScope() == null && isCacheCreatedObject()) {
 			objectCache = object;
@@ -424,8 +434,8 @@ public class ObjectDefinition extends Definition {
 	 * @throws Exception
 	 */
 	protected BeanWrapper createObject(CreationInfo creationInfo,
-			MethodInterceptor[] methodInterceptors, CreationContext context)
-			throws Exception {
+			Object[] constuctorArgs, MethodInterceptor[] methodInterceptors,
+			CreationContext context) throws Exception {
 		if (creationInfo.impl == null) {
 			throw new IllegalArgumentException("[impl] could not be empty ["
 					+ getClass() + "].");
@@ -433,7 +443,14 @@ public class ObjectDefinition extends Definition {
 		if (creationInfo.impl.equals(Map.class)) {
 			creationInfo.impl = HashMap.class;
 		}
-		return BeanFactoryUtils.getBean(creationInfo.impl.getName(),
-				methodInterceptors, creationInfo.scope, getBeanId());
+
+		if (constructorArgTypes != null) {
+			Object bean = ProxyBeanUtils.createBean(creationInfo.impl,
+					methodInterceptors, constructorArgTypes, constuctorArgs);
+			return new BeanWrapper(bean, true);
+		} else {
+			return BeanFactoryUtils.getBean(creationInfo.impl.getName(),
+					methodInterceptors, creationInfo.scope, getBeanId());
+		}
 	}
 }

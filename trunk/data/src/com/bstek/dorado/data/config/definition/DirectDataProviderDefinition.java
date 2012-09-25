@@ -27,8 +27,8 @@ public class DirectDataProviderDefinition extends DataProviderDefinition {
 	@Override
 	@SuppressWarnings("unchecked")
 	protected BeanWrapper createObject(CreationInfo creationInfo,
-			MethodInterceptor[] methodInterceptors, CreationContext context)
-			throws Exception {
+			Object[] constructorArgs, MethodInterceptor[] methodInterceptors,
+			CreationContext context) throws Exception {
 		DataCreationContext createContext = (DataCreationContext) context;
 		Object dataType = creationInfo.getProperties().get(
 				DataXmlConstants.ATTRIBUTE_DATA_TYPE);
@@ -39,8 +39,8 @@ public class DirectDataProviderDefinition extends DataProviderDefinition {
 		createContext
 				.setCurrentDataTypeDefinition((DefinitionReference<DataTypeDefinition>) dataType);
 		try {
-			return super
-					.createObject(creationInfo, methodInterceptors, context);
+			return super.createObject(creationInfo, constructorArgs,
+					methodInterceptors, context);
 		} finally {
 			createContext.setCurrentDataTypeDefinition(null);
 		}

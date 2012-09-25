@@ -165,9 +165,6 @@ public class ViewConfig implements Namable, Scopable, MetaDataSupport {
 
 	public void setView(View view) {
 		this.view = view;
-		if (view != null) {
-			view.setViewConfig(this);
-		}
 	}
 
 }

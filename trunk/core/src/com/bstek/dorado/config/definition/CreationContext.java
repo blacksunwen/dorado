@@ -5,6 +5,7 @@ import java.util.Map;
 
 /**
  * 创建最终对象的上下文。
+ * 
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Mar 12, 2008
  */
@@ -22,7 +23,8 @@ public class CreationContext {
 	}
 
 	/**
-	 * @param defaultImpl the defaultImpl to set
+	 * @param defaultImpl
+	 *            the defaultImpl to set
 	 */
 	public void setDefaultImpl(Class<?> defaultImpl) {
 		this.defaultImpl = defaultImpl;

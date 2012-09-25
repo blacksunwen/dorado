@@ -74,8 +74,8 @@ public class ComponentDefinition extends ListenableObjectDefinition implements
 
 	@Override
 	protected BeanWrapper createObject(CreationInfo creationInfo,
-			MethodInterceptor[] methodInterceptors, CreationContext context)
-			throws Exception {
+			Object[] constructorArgs, MethodInterceptor[] methodInterceptors,
+			CreationContext context) throws Exception {
 		if (assembledComponentDefinition != null) {
 			BeanExtenderMethodInterceptor bemi = new BeanExtenderMethodInterceptor();
 			if (methodInterceptors == null) {
@@ -89,7 +89,7 @@ public class ComponentDefinition extends ListenableObjectDefinition implements
 			}
 		}
 
-		BeanWrapper wrapper = super.createObject(creationInfo,
+		BeanWrapper wrapper = super.createObject(creationInfo, constructorArgs,
 				methodInterceptors, context);
 		if (assembledComponentDefinition != null) {
 			BeanExtender.setExProperty(wrapper.getBean(),
@@ -100,7 +100,8 @@ public class ComponentDefinition extends ListenableObjectDefinition implements
 
 	@Override
 	@SuppressWarnings({ "unchecked" })
-	protected Object doCreate(CreationContext context) throws Exception {
+	protected Object doCreate(CreationContext context, Object[] constructorArgs)
+			throws Exception {
 		JexlContext jexlContext = null;
 		AssembledComponentExpressionObject originAcomp = null;
 		Object originAssembledComponentVar = null;
@@ -145,7 +146,7 @@ public class ComponentDefinition extends ListenableObjectDefinition implements
 			}
 		}
 		try {
-			return super.doCreate(context);
+			return super.doCreate(context, constructorArgs);
 		} finally {
 			if (assembledComponentDefinition != null) {
 				jexlContext.set("acomp", originAcomp);

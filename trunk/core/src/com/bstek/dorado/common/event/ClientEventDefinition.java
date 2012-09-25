@@ -54,7 +54,8 @@ public class ClientEventDefinition extends Definition {
 	}
 
 	@Override
-	protected Object doCreate(CreationContext context) throws Exception {
+	protected Object doCreate(CreationContext context, Object[] constructorArgs)
+			throws Exception {
 		DefaultClientEvent event = new DefaultClientEvent();
 		Object script = DefinitionUtils.getRealValue(this.script, context);
 		if (script instanceof Expression

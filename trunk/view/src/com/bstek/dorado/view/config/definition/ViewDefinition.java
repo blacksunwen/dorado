@@ -8,6 +8,7 @@ import com.bstek.dorado.common.Namable;
 import com.bstek.dorado.common.method.MethodAutoMatchingException;
 import com.bstek.dorado.common.method.MethodAutoMatchingUtils;
 import com.bstek.dorado.core.bean.BeanFactoryUtils;
+import com.bstek.dorado.core.bean.Scope;
 import com.bstek.dorado.data.provider.DataProvider;
 import com.bstek.dorado.data.resolver.DataResolver;
 import com.bstek.dorado.data.type.DataType;
@@ -23,12 +24,15 @@ import com.bstek.dorado.view.widget.Component;
  * @since Mar 28, 2008
  */
 public class ViewDefinition extends ContainerDefinition implements Namable {
+	private static final Class<?>[] CONSTRUCTOR_ARG_TYPES = new Class<?>[] { ViewConfig.class };
+
 	private String name;
 	private Map<String, ComponentDefinition> componentMap = new HashMap<String, ComponentDefinition>();
 
 	public ViewDefinition(ComponentTypeRegisterInfo registerInfo)
 			throws Exception {
 		super(registerInfo);
+		setConstructorArgTypes(CONSTRUCTOR_ARG_TYPES);
 	}
 
 	/**
@@ -43,6 +47,11 @@ public class ViewDefinition extends ContainerDefinition implements Namable {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	@Override
+	public void setScope(Scope scope) {
+		throw new UnsupportedOperationException();
 	}
 
 	/**

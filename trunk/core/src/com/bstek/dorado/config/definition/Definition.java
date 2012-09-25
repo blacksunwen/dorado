@@ -30,7 +30,7 @@ public abstract class Definition implements Cloneable {
 
 	private Resource resource;
 	private Resource[] dependentResources;
-	
+
 	// TODO: 此处可优化
 	private Map<String, Object> properties = new HashMap<String, Object>();
 	private List<Operation> initOperations = new ArrayList<Operation>();
@@ -273,8 +273,8 @@ public abstract class Definition implements Cloneable {
 		}
 	}
 
-	protected abstract Object doCreate(CreationContext context)
-			throws Exception;
+	protected abstract Object doCreate(CreationContext context,
+			Object[] constuctorArgs) throws Exception;
 
 	/**
 	 * 根据配置声明对象自身的定义创建最终对象。
@@ -285,7 +285,26 @@ public abstract class Definition implements Cloneable {
 	 * @throws Exception
 	 */
 	public final Object create(CreationContext context) throws Exception {
-		Object object = doCreate(context);
+		Object object = doCreate(context, null);
+		if (object != null && object instanceof DefinitionPostProcessor) {
+			((DefinitionPostProcessor) object).onInit();
+		}
+		return object;
+	}
+
+	/**
+	 * 根据配置声明对象自身的定义创建最终对象。
+	 * 
+	 * @param context
+	 *            创建最终对象的上下文
+	 * @param constructorArgs
+	 *            构造参数
+	 * @return 最终对象
+	 * @throws Exception
+	 */
+	public final Object create(CreationContext context, Object[] constructorArgs)
+			throws Exception {
+		Object object = doCreate(context, constructorArgs);
 		if (object != null && object instanceof DefinitionPostProcessor) {
 			((DefinitionPostProcessor) object).onInit();
 		}

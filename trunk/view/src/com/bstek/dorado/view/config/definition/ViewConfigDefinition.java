@@ -30,7 +30,6 @@ import com.bstek.dorado.util.proxy.BeanExtenderMethodInterceptor;
 import com.bstek.dorado.view.InnerDataProviderManager;
 import com.bstek.dorado.view.InnerDataResolverManager;
 import com.bstek.dorado.view.InnerDataTypeManager;
-import com.bstek.dorado.view.View;
 import com.bstek.dorado.view.ViewState;
 import com.bstek.dorado.view.config.InnerDataProviderDefinitionManager;
 import com.bstek.dorado.view.config.InnerDataResolverDefinitionManager;
@@ -220,7 +219,8 @@ public class ViewConfigDefinition extends ListenableObjectDefinition implements
 	}
 
 	@Override
-	protected Object doCreate(CreationContext context) throws Exception {
+	protected Object doCreate(CreationContext context, Object[] constuctorArgs)
+			throws Exception {
 		Context doradoContext = Context.getCurrent();
 		ExpressionHandler expressionHandler = (ExpressionHandler) doradoContext
 				.getServiceBean("expressionHandler");
@@ -247,7 +247,8 @@ public class ViewConfigDefinition extends ListenableObjectDefinition implements
 		doradoContext.setAttribute("privateDataResolverDefinitionManager",
 				dataResolverDefinitionManager.duplicate());
 		try {
-			ViewConfig viewConfig = (ViewConfig) super.doCreate(context);
+			ViewConfig viewConfig = (ViewConfig) super.doCreate(context,
+					constuctorArgs);
 
 			ViewResourceManager viewResourceManager = (ViewResourceManager) doradoContext
 					.getServiceBean("viewResourceManager");
@@ -281,8 +282,8 @@ public class ViewConfigDefinition extends ListenableObjectDefinition implements
 
 	@Override
 	protected BeanWrapper createObject(CreationInfo creationInfo,
-			MethodInterceptor[] methodInterceptors, CreationContext context)
-			throws Exception {
+			Object[] constuctorArgs, MethodInterceptor[] methodInterceptors,
+			CreationContext context) throws Exception {
 		ViewState viewState = (ViewState) Context.getCurrent().getAttribute(
 				ViewState.class.getName());
 		if (viewState == null || viewState == ViewState.rendering) {
@@ -310,7 +311,7 @@ public class ViewConfigDefinition extends ListenableObjectDefinition implements
 			methodInterceptors = newMis;
 		}
 
-		BeanWrapper wrapper = super.createObject(creationInfo,
+		BeanWrapper wrapper = super.createObject(creationInfo, constuctorArgs,
 				methodInterceptors, context);
 		BeanExtender.setExProperty(wrapper.getBean(), "viewConfigDefinition",
 				this);
@@ -326,8 +327,7 @@ public class ViewConfigDefinition extends ListenableObjectDefinition implements
 		ViewState viewState = (ViewState) Context.getCurrent().getAttribute(
 				ViewState.class.getName());
 		if (viewState == null || viewState == ViewState.rendering) {
-			View view = (View) viewDefinition.create(context);
-			viewConfig.setView(view);
+			viewDefinition.create(context, new Object[] { viewConfig });
 		}
 
 		Context doradoContext = Context.getCurrent();
