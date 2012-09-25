@@ -255,6 +255,13 @@ public class LibraryFileResolver extends
 						} else {
 							resource = minResource;
 						}
+					} else {
+						resource = doGetResourcesByFileName(context,
+								resourcePrefix, fileName, resourceSuffix)[0];
+						if (!resource.exists()) {
+							throw new FileNotFoundException("File ["
+									+ resource.getPath() + "] not found.");
+						}
 					}
 					resources = new Resource[] { resource };
 				}

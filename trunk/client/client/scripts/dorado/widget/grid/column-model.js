@@ -2306,7 +2306,13 @@
 					innerGrid.replaceSelection.apply(innerGrid, checked ? [null, newSelection] : [newSelection, null]);
 
 					var selection = innerGrid._selection;
-					var checked = (selection && selection.indexOf(data) >= 0);
+					var checked;
+					if (selection && selection instanceof Array) {
+						checked = (election.indexOf(data) >= 0);
+					}
+					else {
+						checked = (selection == data);
+					}
 					if (checkbox.get("checked") !== checked) {
 						checkbox.disableListeners();
 						checkbox.set("checked", checked);
