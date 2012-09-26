@@ -416,8 +416,13 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 									pipe.getAsync({
 										scope : this,
 										callback : function(success, result) {
-											if (isNewPipe) this.sendMessage(dorado.Entity._MESSAGE_LOADING_END, eventArg);
-											
+											var dummyData = this._data[property];
+											this._data[property] = null;
+											if (isNewPipe) {
+												this.sendMessage(dorado.Entity._MESSAGE_LOADING_END, eventArg);
+												this._data[property] = dummyData;
+											}
+													
 											if (success) {
 												eventArg.data = result;
 												propertyDef.fireEvent("onLoadData", propertyDef, eventArg);
@@ -441,7 +446,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 												}
 											}
 											else {
-												delete this._data[property];
+												this._data[property] = null;
 											}
 											if (callback) $callback(callback, success, result);
 										}
