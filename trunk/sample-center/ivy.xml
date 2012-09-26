@@ -31,7 +31,7 @@
 		<dependency org="com.bstek.dorado" name="dorado-raphael" rev="0.1.0" conf="compile,runtime">
 			<exclude name="dorado-core" />
 		</dependency>
-		<dependency org="com.bstek.dorado" name="dorado-criteria-builder" rev="0.1.0-BETA" conf="compile,runtime">
+		<dependency org="com.bstek.dorado" name="dorado-criteria-builder" rev="0.2.1" conf="compile,runtime">
 			<exclude name="dorado-core" />
 		</dependency>
 

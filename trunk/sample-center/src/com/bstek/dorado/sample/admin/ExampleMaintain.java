@@ -138,6 +138,13 @@ public class ExampleMaintain {
 		} else {
 			if (EntityState.MODIFIED.equals(state)) {
 				exampleDao.save(example);
+			} else if (EntityState.MOVED.equals(state)) {
+				CategoryExampleRelation relation = new CategoryExampleRelation();
+				relation.setCategoryId(categoryId);
+				relation.setExampleId(exampleId);
+				categoryExampleRelationDao.delete(relation);
+				
+				exampleDao.save(example);
 			} else if (EntityState.NEW.equals(state)) {
 				exampleDao.save(example);
 				exampleId = example.getId();

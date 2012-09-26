@@ -12,9 +12,7 @@
 		<project>chart</project>
 		<project>htmleditor</project>
 		<project>desktop</project>
-		<project>criteria-builder</project>
 		<project>core</project>
-		<project>hibernate</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

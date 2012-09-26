@@ -7,7 +7,6 @@ var rootNodesLoaded = false;
 			processHash();
 		}
 	});
-	
 
 	setTimeout(function() {
 		var viewHeight = view.getDom().offsetHeight;
@@ -22,7 +21,7 @@ var rootNodesLoaded = false;
 
 function processHash() {
 	if (view.get("#accordion.currentIndex") != 0) return;
-	
+
 	var hash = window.location.hash;
 	if (hash) {
 		hash = hash.substring(1);
@@ -106,7 +105,7 @@ function openPageInFrame(id, type) {
 		url = "com.bstek.dorado.sample.Welcome.d";
 		window.location.hash = "";
 	}
-	
+
 	if (lastFrameUrl != url) {
 		view.set("#frameExample.path", url);
 		lastFrameUrl = url;
@@ -125,23 +124,49 @@ function openPageInFrame(id, type) {
 
 // @Bind #treeExamples.onDataRowClick
 !function(self) {
-	var currentNode = self.get("currentNode"), type = currentNode.get("bindingConfig.name");
+	var currentNode = self.get("currentNode"), type = currentNode
+			.get("bindingConfig.name");
 	openPageInFrame(currentNode.get("data.id") || 0, type);
 }
 
 // @Bind #treeExamples.onRenderNode
 !function(arg) {
-	var node = arg.node, data = node.get("data");
+	var node = arg.node, data = node.get("data"), xCreateConfig = [];
 	arg.dom.style.fontWeight = (data.get("hot") ? "bold" : "");
-	if (data.get("new")) {
-		$(arg.dom).empty().xCreate([ {
+
+	if (node.get("bindingConfig.name") == "category") {
+		xCreateConfig.push({
 			tagName : "SPAN",
 			contentText : node.get("label")
-		}, {
-			tagName : "IMG",
-			src : $url(">images/new.gif"),
-			style : "position: relative; left: 4px; top: 4px"
-		} ]);
+		});
+		xCreateConfig.push({
+			tagName : "SPAN",
+			contentText : "(" + data.get("childCount") + ")",
+			style : "margin-left: 2px; color: gray"
+		});
+		if (data.get("new")) {
+			xCreateConfig.push({
+				tagName : "IMG",
+				src : $url(">images/new.gif"),
+				style : "position: relative; left: 4px; top: 4px"
+			});
+		}
+	} else {
+		if (data.get("new")) {
+			xCreateConfig.push({
+				tagName : "SPAN",
+				contentText : node.get("label")
+			});
+			xCreateConfig.push({
+				tagName : "IMG",
+				src : $url(">images/new.gif"),
+				style : "position: relative; left: 4px; top: 4px"
+			});
+		}
+	}
+
+	if (xCreateConfig.length) {
+		$(arg.dom).empty().xCreate(xCreateConfig);
 	} else {
 		arg.processDefault = true;
 	}
@@ -189,19 +214,22 @@ function search() {
 !function(arg) {
 	var data = arg.data;
 	arg.dom.style.fontWeight = (data.get("hot") ? "bold" : "");
-	var config = [ {
-		tagName : "SPAN",
-		style: {
-			width: "16px",
-			height: "16px",
-			margin: "0 3px -3px 2px",
-			display: "inline-block",
-			background: "url(" + $url(data.get("icon") || ">images/file.gif") + ")"
-		}
-	}, {
-		tagName : "SPAN",
-		contentText : data.get("label")
-	} ];
+	var config = [
+		{
+			tagName : "SPAN",
+			style : {
+				width : "16px",
+				height : "16px",
+				margin : "0 3px -3px 2px",
+				display : "inline-block",
+				background : "url("
+						+ $url(data.get("icon") || ">images/file.gif")
+						+ ")"
+			}
+		}, {
+			tagName : "SPAN",
+			contentText : data.get("label")
+		}];
 	if (data.get("new")) {
 		config.push({
 			tagName : "IMG",
@@ -221,8 +249,7 @@ var hasSectionChangeFired = false;
 	if (hasSectionChangeFired) {
 		if (self.get("currentIndex") == 0) {
 			processHash();
-		}
-		else {
+		} else {
 			tipSearch.hide();
 		}
 	}

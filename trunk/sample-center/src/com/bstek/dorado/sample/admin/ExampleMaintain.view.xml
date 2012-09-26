@@ -22,7 +22,7 @@
     <DataSet id="dsCategories" dataProvider="exampleMaintain#getCategories" dataType="[CategoryNode]">
       <Property name="loadMode">onReady</Property>
     </DataSet>
-    <Action id="actionAddCategory" caption="添加新分类" disabled="true" icon=">images/folder.gif" tags="onCurrentCategory"/>
+    <Action id="actionAddCategory" caption="添加新分类" icon=">images/folder.gif"/>
     <Action id="actionAddExample" caption="添加新示例" disabled="true" icon=">images/file.gif" tags="onCurrentNode"/>
     <Action id="actionLinkExample" caption="关联到其它分类" disabled="true" icon="url(>skin>common/icons.gif) -220px -180px" tags="onCurrentExample"/>
     <Action id="actionRemove" caption="删除" disabled="true" icon="url(>skin>common/icons.gif) -141px 0" tags="onCurrentNode">
