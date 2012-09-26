@@ -394,7 +394,7 @@
 		},
 		
 		doOnFocus: function() {
-			this.resetReadOnly();
+			if (dorado.Browser.msie && dorado.Browser.version < 9) this._textDom.readOnly = !!this._realEditable;
 			if (this._realReadOnly) return;
 			
 			this._focusTime = new Date();
@@ -423,7 +423,6 @@
 		},
 		
 		doOnBlur: function() {
-			this.resetReadOnly();
 			if (dorado.Browser.msie && dorado.Browser.version < 9) this._textDom.readOnly = false;
 			if (this._realReadOnly) return;
 			
@@ -440,7 +439,7 @@
 			if (!this._rendered) return;
 			
 			var readOnly = !!(this._readOnly || this._readOnly2);
-			if (readOnly && this._realReadOnly == readOnly) {
+			if (readOnly && this._realEditable == readOnly) {
 				return;
 			}
 			this._realReadOnly = readOnly;
@@ -464,7 +463,10 @@
 				}
 				textDomReadOnly = !realEditable;
 			}
-			this._textDom.readOnly = textDomReadOnly;
+			this._realEditable = textDomReadOnly
+			if (!(dorado.Browser.msie && dorado.Browser.version < 9)) {
+				this._textDom.readOnly = textDomReadOnly;
+			}
 		},
 		
 		/**
