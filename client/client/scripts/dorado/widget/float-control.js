@@ -572,9 +572,6 @@ dorado.dequeue = function(namespace) {
 				result = $DomUtils.locateIn(dom, options);
 			}
 
-            control._left = result.left;
-            control._top = result.top;
-
 			return result;
 		},
 		
