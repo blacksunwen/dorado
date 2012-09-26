@@ -169,7 +169,6 @@
 				case dorado.widget.DataSet.MESSAGE_CURRENT_CHANGED:
 				case dorado.widget.DataSet.MESSAGE_REFRESH_ENTITY:
 				case dorado.widget.DataSet.MESSAGE_ENTITY_STATE_CHANGED:{
-					debugger;
 					this.refresh(true);
 					break;
 				}
