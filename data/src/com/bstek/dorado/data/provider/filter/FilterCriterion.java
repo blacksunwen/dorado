@@ -11,6 +11,9 @@ public abstract class FilterCriterion implements Criterion {
 	private String propertyPath;
 	private FilterOperator filterOperator;
 
+	@Deprecated
+	private String expression;
+
 	public String getProperty() {
 		return property;
 	}
@@ -33,5 +36,15 @@ public abstract class FilterCriterion implements Criterion {
 
 	public void setFilterOperator(FilterOperator filterOperator) {
 		this.filterOperator = filterOperator;
+	}
+
+	@Deprecated
+	public String getExpression() {
+		return expression;
+	}
+
+	@Deprecated
+	public void setExpression(String expression) {
+		this.expression = expression;
 	}
 }
