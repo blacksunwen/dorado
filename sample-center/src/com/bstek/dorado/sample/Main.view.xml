@@ -2,6 +2,12 @@
 <ViewConfig>
   <Model>
     <DataType name="ExampleCategory" parent="global:ExampleCategory">
+      <PropertyDef name="hasChild">
+        <Property name="dataType">boolean</Property>
+      </PropertyDef>
+      <PropertyDef name="childCount">
+        <Property name="dataType">int</Property>
+      </PropertyDef>
       <Reference name="categories" dataProvider="main#getCategories" dataType="[SELF]" parameter="$${this.id}"/>
       <Reference name="examples" dataProvider="main#getExamplesByCategoryId" dataType="[Example]" parameter="$${this.id}"/>
     </DataType>
@@ -41,6 +47,7 @@
                 <BindingConfigs>
                   <BindingConfig childrenProperty="categories" icon=">images/folder.gif" labelProperty="label" recursive="true">
                     <Property name="name">category</Property>
+                    <Property name="hasChildProperty">hasChild</Property>
                     <BindingConfig childrenProperty="examples" icon=">images/file.gif" labelProperty="label">
                       <Property name="name">example</Property>
                     </BindingConfig>

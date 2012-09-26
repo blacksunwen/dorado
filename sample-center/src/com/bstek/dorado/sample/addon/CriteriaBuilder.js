@@ -3,7 +3,7 @@
 	setTimeout(function() {
 		tipSearch.show({
 			position : {
-				left : 168,
+				left : 110,
 				top : 14
 			}
 		});
