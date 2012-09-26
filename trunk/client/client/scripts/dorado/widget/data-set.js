@@ -864,6 +864,12 @@
 				}
 			}
 		},
+		
+		/*
+		onReady: function() {
+			this.sendMessage(0);
+		},
+		*/
 
 		/**
 		 * 向数据集中添加一个消息的监听器。
