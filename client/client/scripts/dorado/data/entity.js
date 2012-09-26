@@ -9,6 +9,38 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		invalid : 1,
 		executing : 2
 	};
+	
+	function addMessage2Context(context, entity, property, message) {
+		var state = message.state || "error";
+		context[state].push({
+			entity : entity,
+			property : property,
+			state : message.state,
+			text : message.text
+		});
+	}
+	
+	function addMessages2Context(context, entity, property, messages) {
+		for (var i = 0; i < messages.length; i++) {
+			addMessage2Context(context, entity, property, messages[i]);
+		}
+	}
+	
+	function mergeValidationContext(context, state, subContext) {
+		var subContextMessages = subContext[state];
+		if (!subContextMessages) return;
+		for (var i = 0; i < subContextMessages.length; i++) {
+			context[state].push(subContextMessages[i]);
+		}
+	}
+	
+	function mergeValidationContexts(context, subContext) {
+		mergeValidationContext(context, "info", subContext);
+		mergeValidationContext(context, "ok", subContext);
+		mergeValidationContext(context, "warn", subContext);
+		mergeValidationContext(context, "error", subContext);
+		mergeValidationContext(context, "executing", subContext);
+	}
 
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -807,7 +839,13 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 								
 								if (success) {
 									if (entity._data[property] != currentValue) return;
-									entity.doSetMessages(property, result);
+									
+									var originMessages = propertyInfo.messages;
+									var messages = dorado.Toolkits.trimMessages(result, DEFAULT_VALIDATION_RESULT_STATE);
+									if (originMessages) {
+										messages = originMessages.concat(messages);
+									}
+									entity.doSetMessages(property, messages);
 								}
 								
 								if (entity._data[property] == currentValue) {
@@ -1407,7 +1445,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				propertyInfo.state = state;
 				propertyInfo.messages = messages;
 
-				if (state != this._messageState || state != ( propertyInfo ? propertyInfo.state : null)) {
+				if (state != this._messageState || state != (propertyInfo ? propertyInfo.state : null)) {
 					this._messageState = getMessageState(this);
 					retval = true;
 				}
@@ -1550,39 +1588,6 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		 * </ul>
 		 */
 		validate : function(options) {
-
-			function addMessage2Context(context, entity, property, message) {
-				var state = message.state || "error";
-				context[state].push({
-					entity : entity,
-					property : property,
-					state : message.state,
-					text : message.text
-				});
-			}
-			
-			function addMessages2Context(context, entity, property, messages) {
-				for (var i = 0; i < messages.length; i++) {
-					addMessage2Context(context, entity, property, messages[i]);
-				}
-			}
-			
-			function mergeValidationContext(context, state, subContext) {
-				var subContextMessages = subContext[state];
-				if (!subContextMessages) return;
-				for (var i = 0; i < subContextMessages.length; i++) {
-					context[state].push(subContextMessages[i]);
-				}
-			}
-			
-			function mergeValidationContexts(context, subContext) {
-				mergeValidationContext(context, "info", subContext);
-				mergeValidationContext(context, "ok", subContext);
-				mergeValidationContext(context, "warn", subContext);
-				mergeValidationContext(context, "error", subContext);
-				mergeValidationContext(context, "executing", subContext);
-			}
-
 			if (typeof options == "string") {
 				options = {
 					property: options

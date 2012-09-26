@@ -226,7 +226,7 @@ dorado.Toolkits = {
 	 * </p>
 	 * <p>
 	 * 另外，此方法还支持在URL中植入预设变量。<br>
-	 * 例如：">skin>button.css"表示系统当前皮肤根路径中的button.css。其中的">skin>"就代表一个名为skin的预设变量。此方法会将预设变量的值替换的URL中。<br>
+	 * 例如："skin>button.css"表示系统当前皮肤根路径中的button.css。其中的"skin>"就代表一个名为skin的预设变量。此方法会将预设变量的值替换的URL中。<br>
 	 * 假设skin变量的值为"/sampleApp/skins/nature/"，那么上述URL的最终转换结果为"/sampleApp/skins/nature/button.css"。
 	 * </p>
 	 * <p>
