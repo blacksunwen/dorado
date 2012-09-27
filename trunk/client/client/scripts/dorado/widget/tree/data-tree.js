@@ -38,6 +38,16 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 				return this._bindingConfig.childBindingConfigs;
 			}
 		},
+		
+		/**
+		 * 子节点是否已创建。
+		 * <p>
+		 * 通常，对于DataTree而言，子节点都是在父节点第一次展开时懒创建的。因此此属性大致也表示该节点是否曾经展开过。
+		 * </p>
+		 * @type boolean
+		 * @attribute readOnly
+		 */
+		childrenPrepared: {},
 
 		hasChild: {
 			getter: function() {
