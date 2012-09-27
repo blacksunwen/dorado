@@ -863,12 +863,6 @@
 				else {
 					e.set(p, this.get("value"));
 				}
-				
-				if (this._dataType) {
-					e.set(p, this.get("value"));
-				} else {
-					e.setText(p, this.get("text"));
-				}
 				this.timestamp = this._entity.timestamp;
 			} else {
 				if (e instanceof dorado.Entity) {
