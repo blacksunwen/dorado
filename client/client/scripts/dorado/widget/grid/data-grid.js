@@ -350,10 +350,12 @@
 						this.set("selection", null);
 					} else {
 						var selection = [];
-						var it = entityList.iterator(true);
-						while (it.hasNext()) {
-							var entity = it.next();
-							if (entity.get(this._rowSelectionProperty)) selection.push(entity);
+						if (entityList) {
+							var it = entityList.iterator(true);
+							while (it.hasNext()) {
+								var entity = it.next();
+								if (entity.get(this._rowSelectionProperty)) selection.push(entity);
+							}
 						}
 						this.set("selection", selection);
 					}
