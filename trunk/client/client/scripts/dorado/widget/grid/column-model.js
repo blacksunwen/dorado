@@ -1107,7 +1107,7 @@
 	 */
 	dorado.widget.grid.ProgressBarCellRenderer = $extend(dorado.widget.grid.SubControlCellRenderer, /** @scope dorado.widget.grid.ProgressBarCellRenderer.prototype */{
 		createSubControl: function(arg) {
-			return new dorado.widget.ProgressBarCellRenderer(); 
+			return new dorado.widget.ProgressBar(); 
 		},
 		
 		refreshSubControl: function(progressBar, arg) {
