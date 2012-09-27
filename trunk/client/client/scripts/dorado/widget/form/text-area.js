@@ -71,8 +71,13 @@
 				this.resizeTextDom();
 			} else {
 				if (this._triggerPanel) this._triggerPanel.style.display = "none";
-				this._textDom.style.width = "100%";
-				delete this.doOnResize;
+				if (dorado.Browser.msie && dorado.Browser.version < 9) {
+					this.doOnResize = this.resizeTextDom;
+					this.resizeTextDom();
+				} else {
+					this._textDom.style.width = "100%";
+					delete this.doOnResize;
+				}
 			}
 		},
 		
