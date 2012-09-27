@@ -15,6 +15,8 @@ import org.apache.commons.logging.LogFactory;
 
 import com.bstek.dorado.core.Context;
 import com.bstek.dorado.core.el.ExpressionHandler;
+import com.bstek.dorado.core.resource.ResourceManager;
+import com.bstek.dorado.core.resource.ResourceManagerUtils;
 import com.bstek.dorado.data.provider.DataProvider;
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.data.type.EntityDataType;
@@ -37,6 +39,9 @@ import com.bstek.dorado.data.type.validator.Validator;
  * @since 2010-12-19
  */
 public abstract class EntityEnhancer {
+	private static final ResourceManager resourceManager = ResourceManagerUtils
+			.get(EntityEnhancer.class);
+
 	private static final Log logger = LogFactory.getLog(EntityEnhancer.class);
 	private static final String THIS = "this";
 
@@ -315,6 +320,7 @@ public abstract class EntityEnhancer {
 					BasePropertyDef basePropertyDef = (BasePropertyDef) propertyDef;
 					propertyPath = basePropertyDef.getPropertyPath();
 					if (StringUtils.isNotEmpty(propertyPath)) {
+						validatePropertyPath(basePropertyDef);
 						result = PropertyPathUtils.getValueByPath(dataType,
 								entity, propertyPath);
 					}
@@ -345,6 +351,16 @@ public abstract class EntityEnhancer {
 			}
 		}
 		return result;
+	}
+
+	private void validatePropertyPath(BasePropertyDef propertyDef)
+			throws Exception {
+		String propertyPath = propertyDef.getPropertyPath();
+		String name = propertyDef.getName();
+		if (propertyPath.equals(name) || propertyPath.startsWith(name + '.')) {
+			throw new IllegalArgumentException(
+					resourceManager.getString("common/invalidatePropertyPath", name, propertyPath));
+		}
 	}
 
 	protected boolean interceptWriteMethod(Object entity, String property,
@@ -396,6 +412,7 @@ public abstract class EntityEnhancer {
 			BasePropertyDef basePropertyDef = (BasePropertyDef) propertyDef;
 			String propertyPath = basePropertyDef.getPropertyPath();
 			if (StringUtils.isNotEmpty(propertyPath)) {
+				validatePropertyPath(basePropertyDef);
 				PropertyPathUtils.setValueByPath(dataType, entity,
 						propertyPath, newValue);
 				return false;
