@@ -684,8 +684,8 @@
 				default:
 					// 48-57
 					if (spinner._currentSlotIndex >= 0 && !spinner._realReadOnly) {
-						if (event.keyCode >= 48 && event.keyCode <= 57) {
-							var number = event.keyCode - 48, currentSlotIndex = spinner._currentSlotIndex, range = spinner.doGetSlotRange(currentSlotIndex), maxValue = range[1];
+						if ((event.keyCode >= 48 && event.keyCode <= 57) || (event.keyCode >= 96 && event.keyCode <= 105)) {
+							var number = event.keyCode >= 96 ? event.keyCode - 96 : event.keyCode - 48, currentSlotIndex = spinner._currentSlotIndex, range = spinner.doGetSlotRange(currentSlotIndex), maxValue = range[1];
 							var value = spinner._neverEdit ? 0 : (spinner.doGetSlotValue(currentSlotIndex) || 0), ignore = false;
 							var config = spinner.slotConfigs[currentSlotIndex], digit = config.digit;
 							if (!digit && maxValue != null) {
