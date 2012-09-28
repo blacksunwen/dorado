@@ -322,8 +322,8 @@
                     break;
 
                 default:
-                    // 48-57
-                    if (event.keyCode >= 48 && event.keyCode <= 57) {
+                    // 48-57 96-105
+                    if ((event.keyCode >= 48 && event.keyCode <= 57) || (event.keyCode >= 96 && event.keyCode <= 105)) {
                     } else {
                         retval = false;
                     }
