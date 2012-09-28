@@ -2308,7 +2308,7 @@
 					var selection = innerGrid._selection;
 					var checked;
 					if (selection && selection instanceof Array) {
-						checked = (election.indexOf(data) >= 0);
+						checked = (selection.indexOf(data) >= 0);
 					}
 					else {
 						checked = (selection == data);
