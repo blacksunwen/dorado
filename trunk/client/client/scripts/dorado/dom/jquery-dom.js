@@ -238,7 +238,7 @@
 		var self = this;
 		if (self.length == 1) {
 			var dom = self[0], containBlock = dom.parentNode, parentsOverflow = [];
-			
+
 			function doFilter() {
 				if (this == document.body || (/(auto|scroll|hidden)/).test(jQuery.css(this, 'overflow') + jQuery.css(this, 'overflow-y'))) {
 					parentsOverflow.push({
@@ -255,15 +255,13 @@
 				}
 			}
 			
-			self.parents().filter(doFilter);
-			
 			while (containBlock != document.body) {
 				if (jQuery(containBlock).css("position") != "static") {
 					break;
 				}
 				containBlock = containBlock.parentNode;
 			}
-			
+
 			options = options || {};
 			
 			var docWidth = jQuery(window).width(), docHeight = jQuery(window).height();
@@ -277,8 +275,7 @@
 				zIndex: dom.style.zIndex
 			};
 			
-			var poffset = jQuery(containBlock).offset() ||
-			{
+			var poffset = jQuery(containBlock).offset() || {
 				left: 0,
 				top: 0
 			}, position, left, top;
@@ -293,7 +290,9 @@
 			
 			left = -1 * (poffset.left + position.left);
 			top = -1 * (poffset.top + position.top);
-			
+
+			self.parents().filter(doFilter);
+
 			var targetStyle = {
 				position: "absolute",
 				left: left,
@@ -313,7 +312,12 @@
 				height: self.outerHeight()
 			});
 			self.css(targetStyle).bringToFront();
-			
+
+			if (dorado.Browser.msie && dorado.Browser.msie <= 7) {
+				jQuery(".d-dialog .button-panel").css("visibility", "hidden");
+				jQuery(".d-dialog .dialog-footer").css("visibility", "hidden");
+			}
+
 			var callback = options.callback;
 			if (callback) {
 				callback({
@@ -355,7 +359,12 @@
 					}).prop("scrollTop", parentOverflow.scrollTop).unmousewheel(disableMouseWheel);
 				}
 			}
-			
+
+			if (dorado.Browser.msie && dorado.Browser.msie <= 7) {
+				jQuery(".d-dialog .button-panel").css("visibility", "");
+				jQuery(".d-dialog .dialog-footer").css("visibility", "");
+			}
+
 			jQuery.data(dom, "fullWindow.backupStyle", null);
 			jQuery.data(dom, "fullWindow.backupSize", null);
 			jQuery.data(dom, "fullWindow.parentsOverflow", null);
