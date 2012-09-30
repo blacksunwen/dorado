@@ -344,7 +344,7 @@ dorado.widget.Accordion = $extend(dorado.widget.Control, /** @scope dorado.widge
 					
 					accordion._currentSection = newCurrent;
 					accordion.refresh();
-					accordion.fireEvent("onCurrentSectionChange", accordion, newCurrent);
+					accordion.fireEvent("onCurrentSectionChange", accordion, eventArg);
 					
 					accordion._sliding = false;
 				},
