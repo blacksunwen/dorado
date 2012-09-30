@@ -277,7 +277,7 @@ dorado.widget.Accordion = $extend(dorado.widget.Control, /** @scope dorado.widge
 		beforeCurrentSectionChange: {},
 		
 		/**
-		 * 在currentSection进行切换之前触发的事件，在这个事件里面currentSection属性还是切换之前的Section。
+		 * 在currentSection进行切换之后触发的事件，在这个事件里面currentSection属性已经是切换之后的Section了。
 		 *
 		 * @param {Object} self 事件的发起者，即组件本身。
 		 * @param {Object} arg 事件参数。
