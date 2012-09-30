@@ -271,7 +271,7 @@ dorado.widget.Accordion = $extend(dorado.widget.Control, /** @scope dorado.widge
 		 * @param {Object} arg 事件参数。
 		 * @param {dorado.widget.Section} arg.newSection 要切换到的Section。
 		 * @param {dorado.widget.Section} arg.oldSection 当前Section。
-		 * @param {boolean} arg.processDefault 是否在事件结束后继续使用系统默认的渲染逻辑。
+		 * @param {boolean} arg.processDefault 是否在事件结束后继续使用系统默认的切换逻辑。
 		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 		 * @event
 		 */
