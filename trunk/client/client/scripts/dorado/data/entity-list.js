@@ -728,7 +728,10 @@
 			page.entityCount = 0;
 			
 			if (jsonArray == null) return;
-			if (!(jsonArray instanceof Array)) jsonArray = [jsonArray];
+			if (!(jsonArray instanceof Array)) {
+				if (jsonArray.$isWrapper) jsonArray = jsonArray.data;
+				if (!(jsonArray instanceof Array)) jsonArray = [jsonArray];
+			}
 			var entity, firstEntity;
 			
 			var dataType = this.dataType;
@@ -879,14 +882,15 @@
 		
 		/**
 		 * 将给定的JSON对象中的数据转换成为数据实体并添加到集合中。
-		 * @param {Object[]|Object} jsonArray 要转换的JSON对象。<br>
+		 * @param {Object[]|Object} json 要转换的JSON对象。<br>
 		 * 如果此处传入的是一个数组，那么数组中的对象会被逐一意添加到集合中; 如果传入的单个的对象，那么该对象会被作为一个元素添加到集合中。
 		 */
-		fromJSON: function(jsonArray) {
-			if (jsonArray.pageNo) this.pageNo = jsonArray.pageNo;
+		fromJSON: function(json) {
+			var jsonArray = (json.$isWrapper) ? json.data : json;
+			if (json.pageNo) this.pageNo = json.pageNo;
 			if (this.pageCount == 0) {
-				if (jsonArray.pageCount) {
-					this.pageCount = jsonArray.pageCount;
+				if (json.pageCount) {
+					this.pageCount = json.pageCount;
 				} else if (this.pageNo == 1) {
 					this.pageCount = 1;
 				}
@@ -923,7 +927,10 @@
 		 * @param {Function} [options.entityFilter] 用户自定义的数据实体过滤函数，返回true/false表示是否需要将此当前数据实体转换到JSON中。
 		 * 此函数的传入参数如下：
 		 * @param {dorado.Entity} [options.entityFilter.entity] 当前正被过滤的数据实体。
-		 * @return {Object[]} 得到的JSON数组。
+		 * @return {Object[]|Object} 得到的JSON数组。
+		 * <p>
+		 * 如果generateDataType选项为true，那么此方法有可能返回一个JSON对象而不是数组，以便于附加DataType这样的信息。
+		 * </p>
 		 */
 		toJSON: function(options, context) {
 			if (this.isNull) return null;
@@ -943,6 +950,13 @@
 				}
 			}
 			if (result.length == 0 && entityFilter) result = null;
+			if (generateDataType && result && this.dataType) {
+				result = {
+					$isWrapper: true,
+					$dataType: this.dataType._id,
+					data: result
+				};
+			}
 			return result;
 		},
 		

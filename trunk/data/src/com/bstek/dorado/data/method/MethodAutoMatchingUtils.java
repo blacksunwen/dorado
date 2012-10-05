@@ -1,6 +1,8 @@
-package com.bstek.dorado.common.method;
+package com.bstek.dorado.data.method;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Hashtable;
@@ -17,6 +19,9 @@ import org.springframework.util.NumberUtils;
 import com.bstek.dorado.core.Context;
 import com.bstek.dorado.core.resource.ResourceManager;
 import com.bstek.dorado.core.resource.ResourceManagerUtils;
+import com.bstek.dorado.data.entity.EntityCollection;
+import com.bstek.dorado.data.type.AggregationDataType;
+import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.util.proxy.ProxyBeanUtils;
 import com.thoughtworks.paranamer.BytecodeReadingParanamer;
 import com.thoughtworks.paranamer.CachingParanamer;
@@ -93,10 +98,10 @@ public abstract class MethodAutoMatchingUtils {
 	 *            要查找的Class类型。
 	 * @return 下标位置。
 	 */
-	public static int indexOfTypes(Class<?>[] types, Class<?> type) {
+	public static int indexOfTypes(Type[] types, Type type) {
 		int index = -1;
 		for (int i = 0; i < types.length; i++) {
-			Class<?> t = types[i];
+			Type t = types[i];
 			if (isTypeAssignableFrom(type, t) > 0) {
 				index = i;
 				break;
@@ -134,15 +139,15 @@ public abstract class MethodAutoMatchingUtils {
 		return methods;
 	}
 
-	private static void trimClassTypes(Class<?>[] cls) {
-		for (int i = 0; i < cls.length; i++) {
-			Class<?> type = cls[i];
+	private static void trimClassTypes(Type[] types) {
+		for (int i = 0; i < types.length; i++) {
+			Type type = types[i];
 			if (type == null) {
 				type = Object.class;
-			} else {
+			} else if (type instanceof Class<?>) {
 				type = ProxyBeanUtils.getProxyTargetType(type);
 			}
-			cls[i] = type;
+			types[i] = type;
 		}
 	}
 
@@ -165,8 +170,8 @@ public abstract class MethodAutoMatchingUtils {
 	 *             如果找到了一个以上的匹配方法或没有找到任何匹配的方法将抛出此异常。
 	 */
 	private static MethodDescriptor findMatchingMethodByParameterTypes(
-			Method[] methods, Class<?>[] requiredTypes, Class<?>[] exactTypes,
-			Class<?>[] optionalTypes, Class<?> returnType)
+			Method[] methods, Type[] requiredTypes, Type[] exactTypes,
+			Type[] optionalTypes, Type returnType)
 			throws MethodAutoMatchingException {
 		if (requiredTypes == null) {
 			requiredTypes = EMPTY_TYPES;
@@ -218,10 +223,17 @@ public abstract class MethodAutoMatchingUtils {
 		return methodDescriptor;
 	}
 
+	private static Type toNonPrimitiveClass(Type type) {
+		if (type instanceof Class<?>) {
+			return MethodUtils.toNonPrimitiveClass((Class<?>) type);
+		}
+		return type;
+	}
+
 	private static MethodDescriptor describMethodIfMatching(Method method,
-			Class<?>[] requiredTypes, Class<?>[] exactTypes,
-			Class<?>[] optionalTypes, Class<?> returnType) {
-		Class<?>[] argTypes = method.getParameterTypes();
+			Type[] requiredTypes, Type[] exactTypes, Type[] optionalTypes,
+			Type returnType) {
+		Type[] argTypes = method.getGenericParameterTypes();
 		if (argTypes.length > (requiredTypes.length + exactTypes.length + optionalTypes.length)) {
 			return null;
 		}
@@ -233,9 +245,9 @@ public abstract class MethodAutoMatchingUtils {
 			argMatchingRates[i] = 0;
 		}
 
-		Class<?>[] requiredTypeArray = new Class<?>[requiredTypes.length];
-		Class<?>[] exactTypeArray = new Class<?>[exactTypes.length];
-		Class<?>[] optionalTypeArray = new Class<?>[optionalTypes.length];
+		Type[] requiredTypeArray = new Type[requiredTypes.length];
+		Type[] exactTypeArray = new Type[exactTypes.length];
+		Type[] optionalTypeArray = new Type[optionalTypes.length];
 		System.arraycopy(requiredTypes, 0, requiredTypeArray, 0,
 				requiredTypes.length);
 		System.arraycopy(exactTypes, 0, exactTypeArray, 0, exactTypes.length);
@@ -244,10 +256,9 @@ public abstract class MethodAutoMatchingUtils {
 
 		// 判断返回类型
 		if (returnType != null && !returnType.equals(IgnoreType.class)) {
-			Class<?> methodReturnType = method.getReturnType();
+			Type methodReturnType = method.getGenericReturnType();
 			if (isTypeAssignableFrom(returnType, methodReturnType) == 0) {
-				methodReturnType = MethodUtils
-						.toNonPrimitiveClass(methodReturnType);
+				methodReturnType = toNonPrimitiveClass(methodReturnType);
 				if (isTypeAssignableFrom(returnType, methodReturnType) == 0) {
 					return null;
 				}
@@ -256,15 +267,15 @@ public abstract class MethodAutoMatchingUtils {
 
 		// 映射所有必须的参数
 		for (int i = 0; i < requiredTypeArray.length; i++) {
-			Class<?> requiredType = requiredTypeArray[i];
+			Type requiredType = requiredTypeArray[i];
 			int matchingArg = -1;
 			for (int j = 0; j < argTypes.length; j++) {
-				Class<?> argType = argTypes[j];
+				Type argType = argTypes[j];
 				if (isTypeAssignableFrom(argType, requiredType) > 0) {
 					if (matchingArg == -1) {
 						matchingArg = j;
 					} else {
-						Class<?> conflictType = argTypes[matchingArg];
+						Type conflictType = argTypes[matchingArg];
 						if (argType.equals(conflictType)) {
 							// 一个以上的参数可匹配该必须的参数
 							return null;
@@ -286,10 +297,10 @@ public abstract class MethodAutoMatchingUtils {
 
 		// 映射必须严格匹配的参数
 		for (int i = 0; i < exactTypeArray.length; i++) {
-			Class<?> exactType = exactTypeArray[i];
+			Type exactType = exactTypeArray[i];
 			int matchingArg = -1;
 			for (int j = 0; j < argTypes.length; j++) {
-				Class<?> argType = argTypes[j];
+				Type argType = argTypes[j];
 				if (isTypeAssignableFrom(exactType, argType) > 0) {
 					if (matchingArg == -1) {
 						matchingArg = j;
@@ -316,9 +327,9 @@ public abstract class MethodAutoMatchingUtils {
 		int conflictArg = -1, matchingRate = 1000;
 		for (int i = 0; i < argTypes.length; i++) {
 			if (argMatchingRates[i] == 0) {
-				Class<?> argType = argTypes[i];
+				Type argType = argTypes[i];
 				for (int j = 0; j < optionalTypeArray.length; j++) {
-					Class<?> optionalType = optionalTypeArray[j];
+					Type optionalType = optionalTypeArray[j];
 					if (optionalType != null) {
 						int rate = isTypeAssignableFrom(argType, optionalType);
 						if (rate == 0) {
@@ -360,9 +371,9 @@ public abstract class MethodAutoMatchingUtils {
 
 		// 处理冲突的可选参数
 		if (conflictArg != -1) {
-			Class<?> argType = argTypes[conflictArg];
+			Type argType = argTypes[conflictArg];
 			for (int i = 0; i < optionalTypeArray.length; i++) {
-				Class<?> optionalType = optionalTypeArray[i];
+				Type optionalType = optionalTypeArray[i];
 				if (optionalType != null
 						&& isTypeAssignableFrom(argType, optionalType) > 0) {
 					if (argIndexs[conflictArg] == -1) {
@@ -384,7 +395,7 @@ public abstract class MethodAutoMatchingUtils {
 
 		// 如果只有一个可选参数，那么尽可能转换类型并匹配。
 		if (undetermine == 1 && optionalTypes.length == 1) {
-			Class<?> argType = argTypes[undetermineIndex];
+			Type argType = argTypes[undetermineIndex];
 			if (isSimpleType(argType) && isSimpleType(optionalTypes[0])) {
 				argIndexs[undetermineIndex] = requiredTypeArray.length
 						+ exactTypeArray.length;
@@ -399,7 +410,8 @@ public abstract class MethodAutoMatchingUtils {
 		return new MethodDescriptor(method, argIndexs, matchingRate);
 	}
 
-	public static boolean isSimpleType(Class<?> cl) {
+	public static boolean isSimpleType(Type type) {
+		Class<?> cl = toClass(type);
 		return (String.class.equals(cl) || cl.isPrimitive()
 				|| Boolean.class.equals(cl)
 				|| Number.class.isAssignableFrom(cl) || cl.isEnum());
@@ -593,10 +605,10 @@ public abstract class MethodAutoMatchingUtils {
 	 * @throws Exception
 	 */
 	public static Object invokeMethod(Method[] methods, Object object,
-			Class<?>[] requiredParameterTypes, Object[] requiredParameters,
-			Class<?>[] exactParameterTypes, Object[] exactParameters,
-			Class<?>[] optionalParameterTypes, Object[] optionalParameters,
-			Class<?> returnType) throws MethodAutoMatchingException, Exception {
+			Type[] requiredParameterTypes, Object[] requiredParameters,
+			Type[] exactParameterTypes, Object[] exactParameters,
+			Type[] optionalParameterTypes, Object[] optionalParameters,
+			Type returnType) throws MethodAutoMatchingException, Exception {
 		Collection<ParameterFactory> systemOptionalParameters = getSystemOptionalParameters();
 		if (!systemOptionalParameters.isEmpty()) {
 			if (exactParameterTypes != null) {
@@ -749,19 +761,116 @@ public abstract class MethodAutoMatchingUtils {
 		return invokeMethod(methodDescriptor, object, args);
 	}
 
-	private static int isTypeAssignableFrom(Class<?> targetType,
-			Class<?> sourceType) {
+	@SuppressWarnings("unchecked")
+	public static Type getTypeForMatching(Object object) {
+		if (object == null) {
+			return null;
+		} else if (object instanceof Collection<?>
+				&& object instanceof EntityCollection) {
+			AggregationDataType dataType = ((EntityCollection<?>) object)
+					.getDataType();
+			if (dataType != null) {
+				DataType elementDataType = dataType.getElementDataType();
+				if (elementDataType != null) {
+					Class<?> elementType = elementDataType.getMatchType();
+					if (elementType == null) {
+						elementType = elementDataType.getCreationType();
+					}
+					if (elementType != null) {
+						return new ParameterizedCollectionType(
+								(Class<Collection<?>>) object.getClass(),
+								elementType);
+					}
+				}
+			}
+		}
+		return object.getClass();
+	}
+
+	@SuppressWarnings("unchecked")
+	public static Type getTypeForMatching(DataType dataType) {
+		if (dataType instanceof AggregationDataType) {
+			AggregationDataType aggDataType = (AggregationDataType) dataType;
+			Class<?> aggType = aggDataType.getCreationType();
+			if (aggType == null) {
+				aggType = List.class;
+			}
+
+			DataType elementDataType = aggDataType.getElementDataType();
+			if (elementDataType != null) {
+				Class<?> elementType = elementDataType.getCreationType();
+				if (elementType == null) {
+					elementType = elementDataType.getMatchType();
+				}
+				if (elementType != null) {
+					return new ParameterizedCollectionType(
+							(Class<Collection<?>>) aggType, elementType);
+				}
+			}
+			return aggType;
+		} else {
+			return dataType.getMatchType();
+		}
+	}
+
+	private static Class<?> toClass(Type type) {
+		if (type instanceof Class<?>) {
+			return (Class<?>) type;
+		} else {
+			try {
+				if (type instanceof ParameterizedType) {
+					return (Class<?>) ((ParameterizedType) type).getRawType();
+				} else if (type instanceof ParameterizedCollectionType) {
+					return ((ParameterizedCollectionType) type)
+							.getCollectionType();
+				}
+			} catch (ClassCastException e) {
+				// do nothing
+			}
+			String message = resourceManager.getString(
+					"common/unsupportedArgType", type.toString());
+			throw new IllegalArgumentException(message);
+		}
+	}
+
+	private static Class<?> getElementType(Type type) {
+		if (type instanceof ParameterizedType) {
+			ParameterizedType paramedType = (ParameterizedType) type;
+			if (Collection.class.isAssignableFrom(toClass(paramedType
+					.getRawType()))) {
+				return toClass(paramedType.getActualTypeArguments()[0]);
+			}
+		} else if (type instanceof ParameterizedCollectionType) {
+			return ((ParameterizedCollectionType) type).getElementType();
+		}
+		return null;
+	}
+
+	private static int isTypeAssignableFrom(Type targetType, Type sourceType) {
+		Class<?> targetClass = toClass(targetType);
+		Class<?> sourceClass = toClass(sourceType);
+
 		int rate = 5;
 		if (!targetType.equals(sourceType)) {
 			rate = 4;
-			boolean b = targetType.isAssignableFrom(sourceType);
-			if (!b && targetType.isPrimitive()) {
-				targetType = MethodUtils.toNonPrimitiveClass(targetType);
-				b = targetType.isAssignableFrom(sourceType);
+			boolean b = targetClass.isAssignableFrom(sourceClass);
+			if (b) {
+				Class<?> targetElementClass = getElementType(targetType);
+				if (targetElementClass != null) {
+					Class<?> sourceElementClass = getElementType(sourceType);
+					if (sourceElementClass != null) {
+						return isTypeAssignableFrom(targetElementClass,
+								sourceElementClass);
+					}
+				}
+			} else if (targetClass.isPrimitive()) {
+				targetClass = MethodUtils.toNonPrimitiveClass(targetClass);
+				b = targetClass.isAssignableFrom(sourceClass);
 			}
+
 			if (!b) {
-				b = Number.class.isAssignableFrom(targetType)
-						&& Number.class.isAssignableFrom(sourceType);
+				b = Number.class.isAssignableFrom(targetClass)
+						&& Number.class.isAssignableFrom(sourceClass);
 			}
 			if (!b) {
 				rate = 0;
@@ -770,34 +879,36 @@ public abstract class MethodAutoMatchingUtils {
 		return rate;
 	}
 
-	private static int isTypesCompatible(Class<?> targetType,
-			Class<?> sourceType) {
-		boolean b = targetType.isAssignableFrom(sourceType)
-				|| sourceType.isAssignableFrom(targetType);
-		if (!b && (targetType.isPrimitive() || sourceType.isPrimitive())) {
-			targetType = MethodUtils.toNonPrimitiveClass(targetType);
-			sourceType = MethodUtils.toNonPrimitiveClass(sourceType);
-			b = targetType.isAssignableFrom(sourceType)
-					|| sourceType.isAssignableFrom(targetType);
+	private static int isTypesCompatible(Type targetType, Type sourceType) {
+		if (!(targetType instanceof Class<?> && sourceType instanceof Class<?>)) {
+			return 0;
+		}
+
+		Class<?> targetClass = (Class<?>) targetType;
+		Class<?> sourceClass = (Class<?>) sourceType;
+
+		boolean b = targetClass.isAssignableFrom(sourceClass)
+				|| sourceClass.isAssignableFrom(targetClass);
+		if (!b && (targetClass.isPrimitive() || sourceClass.isPrimitive())) {
+			targetClass = MethodUtils.toNonPrimitiveClass(targetClass);
+			sourceClass = MethodUtils.toNonPrimitiveClass(sourceClass);
+			b = targetClass.isAssignableFrom(sourceClass)
+					|| sourceClass.isAssignableFrom(targetClass);
 		}
 		if (!b) {
-			b = Number.class.isAssignableFrom(targetType)
-					&& Number.class.isAssignableFrom(sourceType);
+			b = Number.class.isAssignableFrom(targetClass)
+					&& Number.class.isAssignableFrom(sourceClass);
 		}
 		return (b) ? 1 : 0;
 	}
 
-	private static String getClassName(Class<?> type) {
-		if (net.sf.cglib.proxy.Factory.class.isAssignableFrom(type)) {
-			return type.getSuperclass().getName();
-		} else {
-			return type.getName();
-		}
+	private static String getClassName(Type type) {
+		return type.toString();
 	}
 
 	private static String getExceptionMessage(String resourceKey,
-			Method[] methods, Class<?>[] requiredTypes, Class<?>[] exactTypes,
-			Class<?>[] optionalTypes, Class<?> returnType) {
+			Method[] methods, Type[] requiredTypes, Type[] exactTypes,
+			Type[] optionalTypes, Type returnType) {
 		MethodInfo methodInfo = getMethodInfo(methods);
 
 		StringBuffer sb = new StringBuffer();
@@ -805,7 +916,7 @@ public abstract class MethodAutoMatchingUtils {
 			if (i > 0) {
 				sb.append(",");
 			}
-			Class<?> argType = requiredTypes[i];
+			Type argType = requiredTypes[i];
 			if (argType != null) {
 				sb.append(getClassName(argType));
 			} else {
@@ -819,7 +930,7 @@ public abstract class MethodAutoMatchingUtils {
 			if (i > 0) {
 				sb.append(",");
 			}
-			Class<?> argType = exactTypes[i];
+			Type argType = exactTypes[i];
 			if (argType != null) {
 				sb.append(getClassName(argType));
 			} else {
@@ -833,7 +944,7 @@ public abstract class MethodAutoMatchingUtils {
 			if (i > 0) {
 				sb.append(",");
 			}
-			Class<?> argType = optionalTypes[i];
+			Type argType = optionalTypes[i];
 			if (argType != null) {
 				sb.append(getClassName(argType));
 			} else {
@@ -845,7 +956,7 @@ public abstract class MethodAutoMatchingUtils {
 		return resourceManager.getString(resourceKey,
 				methodInfo.getClassName(), methodInfo.getMethodName(),
 				required, exact, optional,
-				((returnType != null) ? returnType.getName() : "*"));
+				((returnType != null) ? returnType.toString() : "*"));
 	}
 
 	private static String getExceptionMessage(String resourceKey,

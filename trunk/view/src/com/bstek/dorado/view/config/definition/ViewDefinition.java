@@ -5,10 +5,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.bstek.dorado.common.Namable;
-import com.bstek.dorado.common.method.MethodAutoMatchingException;
-import com.bstek.dorado.common.method.MethodAutoMatchingUtils;
 import com.bstek.dorado.core.bean.BeanFactoryUtils;
 import com.bstek.dorado.core.bean.Scope;
+import com.bstek.dorado.data.method.MethodAutoMatchingException;
+import com.bstek.dorado.data.method.MethodAutoMatchingUtils;
 import com.bstek.dorado.data.provider.DataProvider;
 import com.bstek.dorado.data.resolver.DataResolver;
 import com.bstek.dorado.data.type.DataType;

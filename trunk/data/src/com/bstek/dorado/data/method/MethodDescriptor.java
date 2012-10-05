@@ -1,7 +1,7 @@
 /**
  *
  */
-package com.bstek.dorado.common.method;
+package com.bstek.dorado.data.method;
 
 import java.lang.reflect.Method;
 

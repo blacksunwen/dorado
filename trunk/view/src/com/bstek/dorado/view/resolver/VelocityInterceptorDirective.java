@@ -13,8 +13,8 @@ import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.runtime.parser.node.Node;
 
-import com.bstek.dorado.common.method.MethodAutoMatchingUtils;
 import com.bstek.dorado.core.bean.BeanFactoryUtils;
+import com.bstek.dorado.data.method.MethodAutoMatchingUtils;
 import com.bstek.dorado.view.View;
 import com.bstek.dorado.view.widget.Component;
 

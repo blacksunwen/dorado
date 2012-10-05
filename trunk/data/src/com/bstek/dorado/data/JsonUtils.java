@@ -32,7 +32,9 @@ import com.bstek.dorado.data.entity.EnhanceableEntity;
 import com.bstek.dorado.data.entity.EnhanceableMapEntityEnhancer;
 import com.bstek.dorado.data.entity.EntityProxyMethodInterceptorFactory;
 import com.bstek.dorado.data.entity.EntityState;
+import com.bstek.dorado.data.entity.EntityUtils;
 import com.bstek.dorado.data.entity.EntityWrapper;
+import com.bstek.dorado.data.entity.NullWrapper;
 import com.bstek.dorado.data.type.AggregationDataType;
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.data.type.EntityDataType;
@@ -50,12 +52,11 @@ import com.bstek.dorado.util.proxy.ProxyBeanUtils;
  * @since Nov 11, 2008
  */
 public final class JsonUtils {
+	public static final String WRAPPER_PROPERTY = "$isWrapper";
+	public static final String DATA_PROPERTY = "data";
 	public static final String DATATYPE_PROPERTY = "$dataType";
-
 	public static final String STATE_PROPERTY = "$state";
-
 	public static final String ENTITY_ID_PROPERTY = "$entityId";
-
 	public static final String OLD_DATA_PROPERTY = "$oldData";
 
 	private static final char SYSTEM_PROPERTY_PREFIX = '$';
@@ -407,6 +408,7 @@ public final class JsonUtils {
 				collection = new HashSet<Object>();
 			}
 		}
+
 		if (collection == null) {
 			collection = new ArrayList<Object>();
 		}
@@ -448,6 +450,9 @@ public final class JsonUtils {
 		if (shouldConvertToArray) {
 			return collection.toArray();
 		} else {
+			if (dataType != null) {
+				collection = EntityUtils.toEntity(collection, dataType);
+			}
 			return collection;
 		}
 	}
@@ -510,6 +515,25 @@ public final class JsonUtils {
 			return null;
 		}
 
+		if (jsonNode instanceof ObjectNode) {
+			ObjectNode objectNode = (ObjectNode) jsonNode;
+
+			if (dataType == null) {
+				String dataTypeName = getString(objectNode, DATATYPE_PROPERTY);
+				if (StringUtils.isNotEmpty(dataTypeName)) {
+					dataType = getDataType(dataTypeName, context);
+				}
+			}
+
+			if (getBoolean(objectNode, WRAPPER_PROPERTY)) {
+				jsonNode = objectNode.get(DATA_PROPERTY);
+
+				if (dataType != null && (jsonNode == null || jsonNode.isNull())) {
+					return new NullWrapper(dataType);
+				}
+			}
+		}
+
 		if (dataType != null) {
 			if (dataType instanceof EntityDataType) {
 				if (jsonNode instanceof ObjectNode) {
@@ -538,28 +562,8 @@ public final class JsonUtils {
 			}
 		} else {
 			if (jsonNode instanceof ObjectNode) {
-				ObjectNode objectNode = (ObjectNode) jsonNode;
-				if (dataType == null) {
-					String dataTypeName = getString(objectNode,
-							DATATYPE_PROPERTY);
-					if (StringUtils.isNotEmpty(dataTypeName)) {
-						dataType = getDataType(dataTypeName, context);
-					}
-				}
-
-				if (dataType == null) {
-					return internalToJavaEntity((ObjectNode) jsonNode, null,
-							null, proxy, context);
-				} else if (dataType instanceof JsonConvertor) {
-					return ((JsonConvertor) dataType).fromJSON(jsonNode,
-							context);
-				} else if (dataType instanceof EntityDataType) {
-					return internalToJavaEntity((ObjectNode) jsonNode,
-							(EntityDataType) dataType, null, proxy, context);
-				} else {
-					throw new IllegalArgumentException(
-							"DataType type mismatch. expect [EntityDataType].");
-				}
+				return internalToJavaEntity((ObjectNode) jsonNode, null, null,
+						proxy, context);
 			} else if (jsonNode instanceof ArrayNode) {
 				return internalToJavaCollection((ArrayNode) jsonNode, null,
 						null, proxy, context);

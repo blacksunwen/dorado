@@ -149,9 +149,9 @@
 				var data = entity._data;
 				for(var p in data) {
 					var v = data[p];
-					if( v instanceof dorado.Entity) {
+					if (v instanceof dorado.Entity) {
 						dirty = isDirty(v);
-					} else if( v instanceof dorado.EntityList) {
+					} else if (v instanceof dorado.EntityList) {
 						var it = v.iterator(true);
 						while(it.hasNext()) {
 							dirty = isDirty(it.next());
@@ -164,9 +164,9 @@
 			return dirty;
 		}
 
-		if( data instanceof dorado.Entity) {
+		if (data instanceof dorado.Entity) {
 			if(!isDirty(data)) data = null;
-		} else if( data instanceof dorado.EntityList) {
+		} else if (data instanceof dorado.EntityList) {
 			var it = data.iterator(true);
 			var data = [];
 			while(it.hasNext()) {
@@ -210,9 +210,9 @@
 		}
 
 		CASCADE_NOT_DRITY_ENTITYS = {};
-		if( data instanceof dorado.Entity) {
+		if (data instanceof dorado.Entity) {
 			if(!gothrough(data)) data = null;
-		} else if( data instanceof dorado.EntityList) {
+		} else if (data instanceof dorado.EntityList) {
 			var it = data.iterator(true);
 			data = [];
 			while(it.hasNext()) {
@@ -319,7 +319,7 @@
 							if(updateItem.autoResetEntityState == null) updateItem.autoResetEntityState = true;
 
 							if(updateItem.dataSet == null) return;
-							if( typeof updateItem.dataSet == "string") {
+							if (typeof updateItem.dataSet == "string") {
 								updateItem.dataSet = self.get("view").id(updateItem.dataSet);
 							} else if(!(updateItem.dataSet instanceof dorado.widget.DataSet)) {
 								var ref = updateItem.dataSet;
@@ -525,7 +525,9 @@
 				var entityFilter = options.entityFilter;
 
 				var data;
-				if(dataSet) data = dataSet.queryData(dataPath, options);
+				if (dataSet) {
+					data = dataSet.queryData(dataPath, options);
+				}
 				var eventArg = {
 					updateItem : updateItem,
 					data : data
@@ -541,19 +543,19 @@
 					};
 					var validateSubEntities = !updateItem.submitSimplePropertyOnly;
 					
-					if( data instanceof Array) {
+					if (data instanceof Array) {
 						for(var j = 0; j < data.length; j++) {
 							var entity = data[j];
-							if( entity instanceof dorado.Entity) {
+							if (entity instanceof dorado.Entity) {
 								validateContext = validateEntity(validateContext, entity, validateOptions, validateSubEntities);
 							}
 						}
-					} else if( data instanceof dorado.EntityList) {
+					} else if (data instanceof dorado.EntityList) {
 						for(var it = data.iterator(); it.hasNext(); ) {
 							var entity = it.next();
 							validateContext = validateEntity(validateContext, entity, validateOptions, validateSubEntities);
 						}
-					} else if( data instanceof dorado.Entity && data.isDirty()) {
+					} else if (data instanceof dorado.Entity) {
 						validateContext = validateEntity(validateContext, data, validateOptions, validateSubEntities);
 					}
 				}
@@ -585,15 +587,16 @@
 				}
 			}
 
-			for(var i = 0; i < dataItems.length; i++) {
+			for (var i = 0; i < dataItems.length; i++) {
 				var dataItem = dataItems[i], updateItem = dataItem.updateItem, data = dataItem.data, options = updateItem.options;
 				delete dataItem.updateItem;
 
 				var entities = [], context = {
 					entities : []
 				};
-				if(data) {
-					if( data instanceof Array) {
+				
+				if (data) {
+					if (data instanceof Array) {
 						var v = data, data = [];
 						hasUpdateData = hasUpdateData || (v.length > 0);
 						for(var j = 0; j < v.length; j++) {
@@ -603,10 +606,10 @@
 								data.push(entity.toJSON(options, context));
 							}
 						}
-					} else if( data instanceof dorado.EntityList || data instanceof dorado.Entity) {
+					} else if (data instanceof dorado.EntityList || data instanceof dorado.Entity) {
 						hasUpdateData = true;
 						if(updateItem.refreshMode == "cascade") {
-							if( data instanceof dorado.Entity) {
+							if (data instanceof dorado.Entity) {
 								if(updateItem.refreshMode == "cascade") entities.push(data);
 							} else {
 								for(var it = data.iterator(); it.hasNext(); ) {
@@ -617,8 +620,25 @@
 						}
 						data = data.toJSON(options, context);
 					}
-					dataItem.data = data;
 				}
+					
+				if ((data === null || data === undefined || !data.$isWrapper) &&
+					updateItem.dataSet && updateItem.dataPath) {
+					options.acceptAggregationDataType = true;
+					var dataType = updateItem.dataSet.getDataType(updateItem.dataPath, options);
+					if (dataType) {
+						if (dataType instanceof dorado.AggregationDataType && data && !(data instanceof Array)) {
+							dataType = dataType.get("elementDataType");
+						}
+						data = {
+							$isWrapper: true,
+							$dataType: dataType._id,
+							data: data
+						}
+					}
+				}
+				dataItem.data = data;
+				
 				updateInfos.push({
 					alias : dataItem.alias,
 					refreshMode : updateItem.refreshMode,

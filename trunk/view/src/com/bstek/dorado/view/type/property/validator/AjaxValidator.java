@@ -10,11 +10,11 @@ import com.bstek.dorado.annotation.ClientEvents;
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
-import com.bstek.dorado.common.method.MethodAutoMatchingUtils;
 import com.bstek.dorado.common.service.ExposedService;
 import com.bstek.dorado.common.service.ExposedServiceManager;
 import com.bstek.dorado.core.Context;
 import com.bstek.dorado.core.bean.BeanFactoryUtils;
+import com.bstek.dorado.data.method.MethodAutoMatchingUtils;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
