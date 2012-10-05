@@ -1,6 +1,7 @@
 package com.bstek.dorado.data.provider.manager;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,9 +11,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.bstek.dorado.common.method.MethodAutoMatchingException;
-import com.bstek.dorado.common.method.MethodAutoMatchingUtils;
-import com.bstek.dorado.common.method.MoreThanOneMethodsMatchsException;
 import com.bstek.dorado.core.Context;
 import com.bstek.dorado.core.bean.BeanFactoryUtils;
 import com.bstek.dorado.core.el.Expression;
@@ -20,6 +18,9 @@ import com.bstek.dorado.core.el.ExpressionHandler;
 import com.bstek.dorado.core.resource.ResourceManager;
 import com.bstek.dorado.core.resource.ResourceManagerUtils;
 import com.bstek.dorado.data.ParameterWrapper;
+import com.bstek.dorado.data.method.MethodAutoMatchingException;
+import com.bstek.dorado.data.method.MethodAutoMatchingUtils;
+import com.bstek.dorado.data.method.MoreThanOneMethodsMatchsException;
 import com.bstek.dorado.data.provider.Criteria;
 import com.bstek.dorado.data.provider.Criterion;
 import com.bstek.dorado.data.provider.DataProvider;
@@ -355,7 +356,7 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 
 		Object parameter = null;
 		Map<String, Object> sysParameter = null;
-		Map<Class<?>, Object> extraArgMap = new HashMap<Class<?>, Object>();
+		Map<Type, Object> extraArgMap = new HashMap<Type, Object>();
 
 		int parameterArgIndex = MethodAutoMatchingUtils.indexOfTypes(
 				proxyArgTypes, Object.class);
@@ -376,13 +377,14 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 				for (Map.Entry<?, ?> entry : sysParameter.entrySet()) {
 					Object value = entry.getValue();
 					if (value != null) {
-						extraArgMap.put(value.getClass(), value);
+						extraArgMap.put(MethodAutoMatchingUtils
+								.getTypeForMatching(value), value);
 					}
 				}
 			}
 		}
 
-		Class<?>[] optionalArgTypes = null;
+		Type[] optionalArgTypes = null;
 		Object[] optionalArgs = null;
 
 		if (parameter != null) {
@@ -398,7 +400,8 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 				Map<?, ?> map = (Map<?, ?>) parameter;
 				optionalArgTypes = new Class[map.size() + 1];
 				optionalArgs = new Object[optionalArgTypes.length];
-				optionalArgTypes[0] = parameter.getClass();
+				optionalArgTypes[0] = MethodAutoMatchingUtils
+						.getTypeForMatching(parameter);
 				optionalArgs[0] = parameter;
 
 				int i = 1;
@@ -412,18 +415,20 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 											mergeCriteria((Criteria) value,
 													sysCriteria));
 						} else {
-							optionalArgTypes[i] = value.getClass();
+							optionalArgTypes[i] = MethodAutoMatchingUtils
+									.getTypeForMatching(value);
 							optionalArgs[i] = value;
 							i++;
 						}
 					}
 				}
 			} else {
-				optionalArgTypes = new Class[] { parameter.getClass() };
+				optionalArgTypes = new Type[] { MethodAutoMatchingUtils
+						.getTypeForMatching(parameter) };
 				optionalArgs = new Object[] { parameter };
 			}
 		} else {
-			optionalArgTypes = new Class[] { Object.class };
+			optionalArgTypes = new Type[] { Object.class };
 			optionalArgs = new Object[] { null };
 		}
 

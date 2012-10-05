@@ -1,6 +1,7 @@
 package com.bstek.dorado.data.resolver.manager;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.Map;
 
 import org.aopalliance.intercept.MethodInterceptor;
@@ -9,16 +10,18 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.bstek.dorado.common.method.MethodAutoMatchingException;
-import com.bstek.dorado.common.method.MethodAutoMatchingUtils;
-import com.bstek.dorado.common.method.MoreThanOneMethodsMatchsException;
 import com.bstek.dorado.core.bean.BeanFactoryUtils;
 import com.bstek.dorado.core.resource.ResourceManager;
 import com.bstek.dorado.core.resource.ResourceManagerUtils;
 import com.bstek.dorado.data.ParameterWrapper;
+import com.bstek.dorado.data.entity.NullWrapper;
+import com.bstek.dorado.data.method.MethodAutoMatchingException;
+import com.bstek.dorado.data.method.MethodAutoMatchingUtils;
+import com.bstek.dorado.data.method.MoreThanOneMethodsMatchsException;
 import com.bstek.dorado.data.provider.DataProvider;
 import com.bstek.dorado.data.resolver.DataItems;
 import com.bstek.dorado.data.resolver.DataResolver;
+import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.util.Assert;
 
 /**
@@ -185,42 +188,45 @@ public class DataResolverInterceptorInvoker implements MethodInterceptor {
 		DataItems dataItems = (DataItems) proxyArgs[0];
 		Object parameter = (proxyArgs.length > 1) ? proxyArgs[1] : null;
 
-		Class<?>[] exactArgTypes = new Class[] { DataItems.class,
+		Type[] exactArgTypes = new Class[] { DataItems.class,
 				DataProvider.class, MethodInvocation.class };
 		Object[] exactArgs = new Object[] { dataItems, dataResolver,
 				methodInvocation };
 
-		Class<?>[] optionalArgTypes = null;
+		Type[] optionalArgTypes = null;
 		Object[] optionalArgs = null;
 
-		Class<?>[] parameterArgTypes = EMPTY_TYPES;
+		Type[] parameterArgTypes = EMPTY_TYPES;
 		Object[] parameterArgs = EMPTY_ARGS;
 
 		if (parameter != null && parameter instanceof Map<?, ?>) {
 			Map<?, ?> map = (Map<?, ?>) parameter;
 			parameterArgTypes = new Class[map.size() + 1];
 			parameterArgs = new Object[parameterArgTypes.length];
-			parameterArgTypes[0] = parameter.getClass();
+			parameterArgTypes[0] = MethodAutoMatchingUtils
+					.getTypeForMatching(parameter);
 			parameterArgs[0] = parameter;
 
 			int i = 1;
 			for (Object value : map.values()) {
 				if (value != null) {
-					parameterArgTypes[i] = value.getClass();
+					parameterArgTypes[i] = MethodAutoMatchingUtils
+							.getTypeForMatching(value);
 					parameterArgs[i] = value;
 					i++;
 				}
 			}
 		} else if (parameter != null) {
-			parameterArgTypes = new Class[] { parameter.getClass() };
+			parameterArgTypes = new Type[] { MethodAutoMatchingUtils
+					.getTypeForMatching(parameter) };
 			parameterArgs = new Object[] { parameter };
 		} else {
-			parameterArgTypes = new Class[] { Object.class };
+			parameterArgTypes = new Type[] { Object.class };
 			parameterArgs = new Object[] { null };
 		}
 
 		int dataItemsArgCount = (dataItems != null) ? dataItems.size() : 0;
-		optionalArgTypes = new Class[dataItemsArgCount
+		optionalArgTypes = new Type[dataItemsArgCount
 				+ parameterArgTypes.length];
 		optionalArgs = new Object[optionalArgTypes.length];
 
@@ -228,9 +234,25 @@ public class DataResolverInterceptorInvoker implements MethodInterceptor {
 			int i = 0;
 			for (Object dataItem : dataItems.values()) {
 				if (dataItem != null) {
-					optionalArgTypes[i] = dataItem.getClass();
-					optionalArgs[i] = dataItem;
-					i++;
+					if (dataItem instanceof NullWrapper) {
+						DataType dataType = ((NullWrapper) dataItem)
+								.getDataType();
+						if (dataType != null) {
+							Type typeForMatching = MethodAutoMatchingUtils
+									.getTypeForMatching(dataType);
+							if (typeForMatching != null) {
+								optionalArgTypes[i] = typeForMatching;
+								optionalArgs[i] = null;
+								i++;
+							}
+						}
+					} else {
+						Type typeForMatching = MethodAutoMatchingUtils
+								.getTypeForMatching(dataItem);
+						optionalArgTypes[i] = typeForMatching;
+						optionalArgs[i] = dataItem;
+						i++;
+					}
 				}
 			}
 		}

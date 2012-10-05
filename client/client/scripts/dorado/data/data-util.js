@@ -56,13 +56,14 @@
 				if (!dataType || data.dataType == dataType) return data;
 				if (data.dataType instanceof dorado.AggregationDataType && data.dataType.get("elementDataType") == dataType) return data;
 				data = data.toJSON();
-			}
+			}			
 			if (data.$dataType && !dataType && dataTypeRepository) {
 				dataType = dataTypeRepository.get(data.$dataType);
 			}
 			
 			if (dataType) {
-				if (dataType instanceof dorado.EntityDataType && data instanceof Array) {
+				var realData = (data.$isWrapper) ? data.data : data;
+				if (dataType instanceof dorado.EntityDataType && realData instanceof Array) {
 					dataType = new dorado.AggregationDataType({
 						elementDataType: dataType
 					});

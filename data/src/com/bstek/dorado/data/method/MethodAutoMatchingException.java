@@ -1,7 +1,7 @@
-package com.bstek.dorado.common.method;
+package com.bstek.dorado.data.method;
 
 /**
- * 当{@link com.bstek.dorado.common.method.MethodAutoMatchingUtils}
+ * 当{@link com.bstek.dorado.data.method.MethodAutoMatchingUtils}
  * 找到了一个以上的匹配方法或没有找到任何匹配的方法将抛出的异常
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Jan 3, 2008

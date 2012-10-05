@@ -1,4 +1,4 @@
-package com.bstek.dorado.common.method;
+package com.bstek.dorado.data.method;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)

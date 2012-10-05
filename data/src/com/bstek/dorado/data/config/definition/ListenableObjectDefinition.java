@@ -8,12 +8,12 @@ import org.apache.commons.lang.StringUtils;
 import com.bstek.dorado.common.Identifiable;
 import com.bstek.dorado.common.MetaDataSupport;
 import com.bstek.dorado.common.Namable;
-import com.bstek.dorado.common.method.MethodAutoMatchingUtils;
 import com.bstek.dorado.config.definition.CreationContext;
 import com.bstek.dorado.config.definition.ObjectDefinition;
 import com.bstek.dorado.config.xml.XmlConstants;
 import com.bstek.dorado.core.bean.BeanFactoryUtils;
 import com.bstek.dorado.data.listener.GenericObjectListener;
+import com.bstek.dorado.data.method.MethodAutoMatchingUtils;
 import com.bstek.dorado.util.PathUtils;
 
 /**

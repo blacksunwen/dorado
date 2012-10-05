@@ -2,6 +2,7 @@ package com.bstek.dorado.view.service;
 
 import java.io.Writer;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 
@@ -10,15 +11,15 @@ import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.node.ObjectNode;
 import org.codehaus.jackson.type.TypeReference;
 
-import com.bstek.dorado.common.method.MethodAutoMatchingException;
-import com.bstek.dorado.common.method.MethodAutoMatchingUtils;
-import com.bstek.dorado.common.method.MoreThanOneMethodsMatchsException;
 import com.bstek.dorado.common.service.ExposedService;
 import com.bstek.dorado.common.service.ExposedServiceManager;
 import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.core.bean.BeanFactoryUtils;
 import com.bstek.dorado.data.JsonUtils;
 import com.bstek.dorado.data.ParameterWrapper;
+import com.bstek.dorado.data.method.MethodAutoMatchingException;
+import com.bstek.dorado.data.method.MethodAutoMatchingUtils;
+import com.bstek.dorado.data.method.MoreThanOneMethodsMatchsException;
 import com.bstek.dorado.data.variant.MetaData;
 import com.bstek.dorado.util.Assert;
 import com.bstek.dorado.view.output.OutputContext;
@@ -171,7 +172,7 @@ public class RemoteServiceProcessor extends DataServiceProcessorSupport {
 	protected Object invokeByParameterType(Object serviceBean,
 			Method[] methods, Object parameter)
 			throws MethodAutoMatchingException, Exception {
-		Class<?>[] optionalParameterTypes = null;
+		Type[] optionalParameterTypes = null;
 		Object[] optionalParameters = null;
 		if (parameter != null && parameter instanceof Map) {
 			Map<?, ?> map = (Map<?, ?>) parameter;
@@ -183,16 +184,18 @@ public class RemoteServiceProcessor extends DataServiceProcessorSupport {
 			int i = 1;
 			for (Object value : map.values()) {
 				if (value != null) {
-					optionalParameterTypes[i] = value.getClass();
+					optionalParameterTypes[i] = MethodAutoMatchingUtils
+							.getTypeForMatching(value);
 					optionalParameters[i] = value;
 					i++;
 				}
 			}
 		} else if (parameter != null) {
-			optionalParameterTypes = new Class[] { parameter.getClass() };
+			optionalParameterTypes = new Type[] { MethodAutoMatchingUtils
+					.getTypeForMatching(parameter) };
 			optionalParameters = new Object[] { parameter };
 		} else {
-			optionalParameterTypes = new Class[] { Object.class };
+			optionalParameterTypes = new Type[] { Object.class };
 			optionalParameters = new Object[] { null };
 		}
 

@@ -52,6 +52,4 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 	<bean id="dorado.packagesConfigLoader" abstract="true" class="com.bstek.dorado.web.loader.PackagesConfigLoader">
 		<property name="packagesConfigManager" ref="dorado.packagesConfigManager" />
 	</bean>
-
-	<bean id="dorado.systemOptionalParametersFactory" class="com.bstek.dorado.web.DefaultSystemOptionalParametersFactory" />
 </beans>

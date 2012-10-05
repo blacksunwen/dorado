@@ -1,20 +1,18 @@
-/**
- * 
- */
-package com.bstek.dorado.web;
+package com.bstek.dorado.view;
 
 import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.bstek.dorado.common.method.ParameterFactory;
+import com.bstek.dorado.data.method.ParameterFactory;
+import com.bstek.dorado.web.DoradoContext;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2011-9-16
  */
 public class DefaultSystemOptionalParametersFactory extends
-		com.bstek.dorado.common.method.DefaultSystemOptionalParametersFactory {
+		com.bstek.dorado.data.method.DefaultSystemOptionalParametersFactory {
 
 	public DefaultSystemOptionalParametersFactory() {
 		Collection<ParameterFactory> parametersFactory = getOptionalParameters();

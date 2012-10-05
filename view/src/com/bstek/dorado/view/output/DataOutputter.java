@@ -105,53 +105,44 @@ public class DataOutputter implements Outputter, PropertyOutputter {
 	private void outputPagingList(PagingList pagingList, OutputContext context)
 			throws Exception {
 		JsonBuilder json = context.getJsonBuilder();
-		json.beginValue();
+		json.object();
+		json.key("$isWrapper").value(true);
 
-		Writer writer = context.getWriter();
-		writer.write("(function(){\n");
-		writer.write("var a=");
+		json.key("data");
 		json.array();
 		for (Object e : pagingList) {
 			outputData(e, context);
 		}
 		json.endArray();
-		writer.write(";\n");
 
-		OutputUtils.outputProperty(writer, "a", pagingList, "pageSize");
-		OutputUtils.outputProperty(writer, "a", pagingList, "pageNo");
-		OutputUtils.outputProperty(writer, "a", pagingList, "pageCount");
-		OutputUtils.outputProperty(writer, "a", pagingList, "entityCount");
-
-		writer.write("return a;\n");
-		writer.write("})()");
-
-		json.endValue();
+		json.key("pageSize").value(pagingList.getPageSize());
+		json.key("pageNo").value(pagingList.getPageNo());
+		json.key("pageCount").value(pagingList.getPageCount());
+		json.key("entityCount").value(pagingList.getEntityCount());
+		json.endObject();
 	}
 
 	private void outputPage(Page<?> page, OutputContext context)
 			throws Exception {
 		JsonBuilder json = context.getJsonBuilder();
-		Writer writer = context.getWriter();
-		writer.write("(function(){\n");
-		writer.write("var a=");
-		json.array();
+		json.object();
+		json.key("$isWrapper").value(true);
+
 		Collection<?> entities = page.getEntities();
 		if (entities != null) {
-			outputDataTypeIfNecessary(context, entities);
+			json.key("data");
+			json.array();
 			for (Object e : entities) {
 				outputData(e, context);
 			}
+			json.endArray();
 		}
-		json.endArray();
-		writer.write(";\n");
 
-		OutputUtils.outputProperty(writer, "a", page, "pageSize");
-		OutputUtils.outputProperty(writer, "a", page, "pageNo");
-		OutputUtils.outputProperty(writer, "a", page, "pageCount");
-		OutputUtils.outputProperty(writer, "a", page, "entityCount");
-
-		writer.write("return a;\n");
-		writer.write("})()");
+		json.key("pageSize").value(page.getPageSize());
+		json.key("pageNo").value(page.getPageNo());
+		json.key("pageCount").value(page.getPageCount());
+		json.key("entityCount").value(page.getEntityCount());
+		json.endObject();
 	}
 
 	/**
