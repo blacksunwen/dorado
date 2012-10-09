@@ -145,7 +145,7 @@ public abstract class MethodAutoMatchingUtils {
 			if (type == null) {
 				type = Object.class;
 			} else if (type instanceof Class<?>) {
-				type = ProxyBeanUtils.getProxyTargetType(type);
+				type = ProxyBeanUtils.getProxyTargetType((Class<?>)type);
 			}
 			types[i] = type;
 		}
@@ -903,7 +903,8 @@ public abstract class MethodAutoMatchingUtils {
 	}
 
 	private static String getClassName(Type type) {
-		return type.toString();
+		return (type instanceof Class) ? ((Class<?>) type).getName() : type
+				.toString();
 	}
 
 	private static String getExceptionMessage(String resourceKey,
