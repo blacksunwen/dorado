@@ -131,6 +131,19 @@
             $DomUtils.setBackgroundImage(iconEl, tab._icon);
         },
 
+	    doSet : function(attr, value, skipUnknownAttribute, lockWritingTimes) {
+		    var def = this.ATTRIBUTES[attr];
+
+		    $invokeSuper.call(this, [attr, value, skipUnknownAttribute, lockWritingTimes]);
+
+		    if (def) {
+			    if (!this._rendered) return;
+			    if (!this._duringRefreshDom && (this._visible || attr =http://www.bsdn.org/projects/dorado7/issue/dorado7-1190= "visible") && this._ignoreRefresh < 1 && def && !def.skipRefresh) {
+				    this.refresh(true);
+			    }
+		    }
+	    },
+
         refreshDom: function(dom) {
             var tab = this, closeable = tab._closeable, disabled = tab._disabled, visible = tab._visible, doms = tab._doms,
                 captionDom = doms.caption, closeEl = doms.close, width = tab._width, tabbar = tab._parent, tabMinWidth;
