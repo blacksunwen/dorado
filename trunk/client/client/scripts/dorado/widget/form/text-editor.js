@@ -394,7 +394,7 @@
 		},
 		
 		doOnFocus: function() {
-			if (dorado.Browser.msie && dorado.Browser.version < 9) this._textDom.readOnly = !!this._realEditable;
+			// if (dorado.Browser.msie && dorado.Browser.version < 9) this._textDom.readOnly = !!this._realEditable;
 			if (this._realReadOnly) return;
 			
 			this._focusTime = new Date();
@@ -423,7 +423,7 @@
 		},
 		
 		doOnBlur: function() {
-			if (dorado.Browser.msie && dorado.Browser.version < 9) this._textDom.readOnly = false;
+			// if (dorado.Browser.msie && dorado.Browser.version < 9) this._textDom.readOnly = false;
 			if (this._realReadOnly) return;
 			
 			dorado.Toolkits.cancelDelayedAction(this, "$editObserverTimerId");
@@ -463,10 +463,10 @@
 				}
 				textDomReadOnly = !realEditable;
 			}
-			this._realEditable = textDomReadOnly
-			if (!(dorado.Browser.msie && dorado.Browser.version < 9)) {
-				this._textDom.readOnly = textDomReadOnly;
-			}
+			this._realEditable = !textDomReadOnly;
+			//if (!(dorado.Browser.msie && dorado.Browser.version < 9)) {
+			this._textDom.readOnly = textDomReadOnly;
+			//}
 		},
 		
 		/**

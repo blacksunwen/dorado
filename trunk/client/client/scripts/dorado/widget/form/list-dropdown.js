@@ -380,6 +380,7 @@
 				var property = this._displayProperty || this._property;
 				filterParams = [{
 					property: property,
+					operator: "like*",
 					value: realFilterValue
 				}];
 			}

@@ -524,27 +524,27 @@ var AUTO_APPEND_TO_TOPVIEW = true;
             });
         }
 		
-		dorado.fireOnInit()
-
 		//setTimeout(function() {
-		topView.onReady();
-		
-		$fly(window).unload(function() {
-			dorado.windowClosed = true;
-			if (!topView._destroyed) topView.destroy();
-		}).bind(dorado.Browser.isTouch ? "orientationchange" : "resize", function() {
-			if (topView.onResizeTimerId) {
-				clearTimeout(topView.onResizeTimerId);
-				delete topView.onResizeTimerId;
-			}
+			dorado.fireOnInit();
 			
-			topView.onResizeTimerId = setTimeout(function() {
-				delete topView.onResizeTimerId;
-				topView._children.each(function(child) {
-					if (child.resetDimension && child._rendered && child._visible) child.resetDimension();
-				});
-			}, 200);
-		});
+			topView.onReady();
+			
+			$fly(window).unload(function() {
+				dorado.windowClosed = true;
+				if (!topView._destroyed) topView.destroy();
+			}).bind(dorado.Browser.isTouch ? "orientationchange" : "resize", function() {
+				if (topView.onResizeTimerId) {
+					clearTimeout(topView.onResizeTimerId);
+					delete topView.onResizeTimerId;
+				}
+				
+				topView.onResizeTimerId = setTimeout(function() {
+					delete topView.onResizeTimerId;
+					topView._children.each(function(child) {
+						if (child.resetDimension && child._rendered && child._visible) child.resetDimension();
+					});
+				}, 200);
+			});
 		//}, 0);
 	});
 	
