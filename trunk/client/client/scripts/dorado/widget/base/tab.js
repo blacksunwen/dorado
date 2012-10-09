@@ -138,7 +138,7 @@
 
 		    if (def) {
 			    if (!this._rendered) return;
-			    if (!this._duringRefreshDom && (this._visible || attr =http://www.bsdn.org/projects/dorado7/issue/dorado7-1190= "visible") && this._ignoreRefresh < 1 && def && !def.skipRefresh) {
+			    if (!this._duringRefreshDom && (this._visible || attr == "visible") && this._ignoreRefresh < 1 && def && !def.skipRefresh) {
 				    this.refresh(true);
 			    }
 		    }
