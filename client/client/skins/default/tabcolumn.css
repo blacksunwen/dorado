@@ -63,8 +63,8 @@
   right: 7px;
   top: 3px;
   cursor: pointer;
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
 }
 .i-tabcolumn-left .tab .close {
   top: 3px;
@@ -120,15 +120,15 @@
 }
 .d-tabcolumn .tab .close,
 .d-tabcolumn .tab-selected .close {
-  background: url(base/tab-buttons.gif) no-repeat 0 -90px;
+  background: url(base/tab-buttons.gif) no-repeat 0 -63px;
 }
 .d-tabcolumn .tab .close-hover,
 .d-tabcolumn .tab-selected .close-hover {
-  background-position: -20px -90px;
+  background-position: -18px -63px;
 }
 .d-tabcolumn .tab .close-click,
 .d-tabcolumn .tab-selected .close-click {
-  background-position: -40px -90px;
+  background-position: -36px -63px;
 }
 .d-tabcolumn .top-button-disabled,
 .d-tabcolumn .bottom-button-disabled {
