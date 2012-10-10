@@ -49,7 +49,6 @@
 			
 			/**
 			 * 图标的显示大小，可选值：normal、big。
-			 * @attribute
 			 * @default "normal"
 			 * @type String
 			 */
