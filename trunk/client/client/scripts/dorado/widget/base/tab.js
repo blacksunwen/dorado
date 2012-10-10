@@ -108,7 +108,16 @@
              * @type Object
              * @attribute
              */
-            userData: {}
+            userData: {},
+
+	        /**
+	         * 提示信息。
+	         * @type String
+	         * @attribute skipRefresh
+	         */
+	        tip : {
+		        skipRefresh : true
+	        }
         },
 
         constructor: function(config) {
@@ -203,6 +212,15 @@
                     $fly(doms.icon).addClass(iconCls);
                 }
             }
+
+	        if(this._tip) {
+		        this._currentTip = this._tip;
+		        dorado.TipManager.initTip(dom, {
+			        text : this._tip
+		        });
+	        } else if(this._currentTip) {
+		        dorado.TipManager.deleteTip(dom);
+	        }
 
             if (width) {
                 tab.doOnResize();
