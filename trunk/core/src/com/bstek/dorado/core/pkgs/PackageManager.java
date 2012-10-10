@@ -31,12 +31,140 @@ public final class PackageManager {
 	private static final Map<String, PackageInfo> packageInfosMap = new LinkedHashMap<String, PackageInfo>();
 	private static boolean packageInfoBuilded = false;
 
+	private static class DependsVersion {
+		private boolean includeMinVersion = true;
+		private String minVersion;
+		private boolean includeMaxVersion = true;
+		private String maxVersion;
+
+		public boolean isIncludeMinVersion() {
+			return includeMinVersion;
+		}
+
+		public void setIncludeMinVersion(boolean includeMinVersion) {
+			this.includeMinVersion = includeMinVersion;
+		}
+
+		public String getMinVersion() {
+			return minVersion;
+		}
+
+		public void setMinVersion(String minVersion) {
+			this.minVersion = minVersion;
+		}
+
+		public boolean isIncludeMaxVersion() {
+			return includeMaxVersion;
+		}
+
+		public void setIncludeMaxVersion(boolean includeMaxVersion) {
+			this.includeMaxVersion = includeMaxVersion;
+		}
+
+		public String getMaxVersion() {
+			return maxVersion;
+		}
+
+		public void setMaxVersion(String maxVersion) {
+			this.maxVersion = maxVersion;
+		}
+	}
+
 	private PackageManager() {
+	}
+
+	private static String trimDependsVersion(String version) {
+		if ("*".equals(version)) {
+			return null;
+		} else if (version.indexOf('*') >= 0) {
+			throw new IllegalArgumentException();
+		}
+		return version;
+	}
+
+	private static DependsVersion parseDependsVersion(String text) {
+		DependsVersion dependsVersion = new DependsVersion();
+
+		boolean beforeContent = true, afterContent = false, inVersion = false, commaFound = false;
+		StringBuffer version = new StringBuffer(16);
+		char c;
+		for (int i = 0, len = text.length(); i < len; i++) {
+			c = text.charAt(i);
+			if (c == ' ') {
+				if (inVersion) {
+					throw new IllegalArgumentException();
+				}
+				continue;
+			} else if (afterContent) {
+				throw new IllegalArgumentException();
+			} else if (c == '[' || c == '(') {
+				if (!beforeContent) {
+					throw new IllegalArgumentException();
+				}
+				beforeContent = false;
+				dependsVersion.setIncludeMinVersion(c == '[');
+			} else if (c == ']' || c == ')') {
+				if (beforeContent) {
+					throw new IllegalArgumentException();
+				}
+				afterContent = true;
+				dependsVersion.setIncludeMaxVersion(c == ']');
+			} else if (c == ',') {
+				if (beforeContent || commaFound) {
+					throw new IllegalArgumentException();
+				}
+				if (version.length() > 0) {
+					String v = trimDependsVersion(version.toString());
+					dependsVersion.setMinVersion(v);
+					version.setLength(0);
+				}
+			} else if (c >= '0' && c <= '9' || c >= 'a' && c <= 'z' || c >= 'A'
+					&& c <= 'A' || c == '.' || c == '-' || c == '*') {
+				version.append(c);
+			} else {
+				throw new IllegalArgumentException();
+			}
+		}
+
+		if (version.length() > 0) {
+			String v = trimDependsVersion(version.toString());
+			if (commaFound) {
+				dependsVersion.setMaxVersion(v);
+			} else {
+				dependsVersion.setMinVersion(v);
+				dependsVersion.setMaxVersion(v);
+			}
+		}
+		return dependsVersion;
+	}
+
+	private static int compareVersionSection(String section1, String section2) {
+		if (StringUtils.isNumeric(section1) && StringUtils.isNumeric(section2)) {
+			return Integer.valueOf(section1) - Integer.valueOf(section2);
+		} else {
+			return section1.compareTo(section2);
+		}
+	}
+
+	private static int compareVersion(String version1, String version2) {
+		String[] sections1 = StringUtils.split(version1, ".-");
+		String[] sections2 = StringUtils.split(version2, ".-");
+		for (int i = 0; i < sections1.length; i++) {
+			if (i >= sections2.length) {
+				break;
+			}
+			String section1 = sections1[i], section2 = sections2[i];
+			int result = compareVersionSection(section1, section2);
+			if (result != 0) {
+				return result;
+			}
+		}
+		return 0;
 	}
 
 	private static void calculateDepends(PackageInfo packageInfo,
 			Set<PackageInfo> calculatedPackages,
-			Map<String, PackageInfo> packageMap) {
+			Map<String, PackageInfo> packageMap) throws Exception {
 		Dependence[] dependences = packageInfo.getDepends();
 		if (dependences == null || dependences.length == 0) {
 			calculatedPackages.add(packageInfo);
@@ -47,26 +175,54 @@ public final class PackageManager {
 			PackageInfo dependedPackageInfo = packageMap.get(dependence
 					.getPackageName());
 			if (dependedPackageInfo == null) {
-				throw new IllegalArgumentException("Package  ["
+				throw new IllegalArgumentException("Package  \""
 						+ dependence.getPackageName()
-						+ "] not found, Which is depended by ["
-						+ packageInfo.getName() + "].");
+						+ "\" not found, Which is depended by \""
+						+ packageInfo.getName() + "\".");
 			}
 
-			/*
-			 * boolean versionMatch = true; String minVersion =
-			 * dependence.getMinVersion(); String maxVersion =
-			 * dependence.getMaxVersion(); String dependedPackageVersion =
-			 * dependedPackageInfo.getVersion(); if (minVersion != null) {
-			 * versionMatch = (minVersion.compareTo(dependedPackageVersion) <=
-			 * 0); } if (versionMatch && maxVersion != null) { versionMatch =
-			 * (maxVersion.compareTo(dependedPackageVersion) >= 0); }
-			 * 
-			 * if (!versionMatch) { throw new IllegalArgumentException(
-			 * "Depended version mismatch. Expect [" + ((minVersion != null) ?
-			 * minVersion : "*") + " ~ " + ((maxVersion != null) ? maxVersion :
-			 * "*") + "] but [" + dependedPackageVersion + "] found."); }
-			 */
+			if (StringUtils.isNotEmpty(dependence.getVersion())) {
+				String dependedPackageVersion = dependedPackageInfo
+						.getVersion();
+
+				DependsVersion dependsVersion;
+				try {
+					dependsVersion = parseDependsVersion(dependence
+							.getVersion());
+				} catch (IllegalArgumentException e) {
+					throw new IllegalArgumentException(
+							"Invalid depends version \""
+									+ dependence.getVersion()
+									+ "\" found in Package \""
+									+ packageInfo.getName() + "\".");
+				}
+
+				boolean versionMatch = true;
+				if (StringUtils.isNotEmpty(dependsVersion.getMinVersion())) {
+					int i = compareVersion(dependsVersion.getMinVersion(),
+							dependedPackageVersion);
+					if (i > 0 || i == 0
+							&& !dependsVersion.isIncludeMinVersion()) {
+						versionMatch = false;
+					}
+				}
+
+				if (StringUtils.isNotEmpty(dependsVersion.getMaxVersion())) {
+					int i = compareVersion(dependsVersion.getMaxVersion(),
+							dependedPackageVersion);
+					if (i < 0 || i == 0
+							&& !dependsVersion.isIncludeMaxVersion()) {
+						versionMatch = false;
+					}
+				}
+
+				if (!versionMatch) {
+					throw new IllegalArgumentException(
+							"Depended version mismatch. Expect \""
+									+ dependence.getVersion() + "\" but \""
+									+ dependedPackageVersion + "\" found.");
+				}
+			}
 
 			calculateDepends(dependedPackageInfo, calculatedPackages,
 					packageMap);
@@ -78,18 +234,17 @@ public final class PackageManager {
 	}
 
 	private static Dependence parseDependence(String text) {
-		final String ANY_VERSION = "*";
-
 		Dependence dependence = new Dependence();
 
 		String packageName = "", version = "";
-		boolean colonFound = false;
+		boolean versionFound = false;
 		char c;
-		for (int i = 0; i < text.length(); i++) {
+		for (int i = 0, len = text.length(); i < len; i++) {
 			c = text.charAt(i);
-			if (!colonFound) {
-				if (c == ':') {
-					colonFound = true;
+			if (!versionFound) {
+				if (c == '[' || c == '(') {
+					versionFound = true;
+					version += c;
 				} else {
 					packageName += c;
 				}
@@ -104,7 +259,7 @@ public final class PackageManager {
 		}
 		dependence.setPackageName(packageName);
 
-		if (version != null && !version.equals(ANY_VERSION)) {
+		if (version != null) {
 			dependence.setVersion(version);
 		}
 		return dependence;
@@ -140,7 +295,7 @@ public final class PackageManager {
 				String dependsText = properties.getProperty("depends");
 				if (StringUtils.isNotBlank(dependsText)) {
 					List<Dependence> dependences = new ArrayList<Dependence>();
-					for (String depends : StringUtils.split(dependsText, ",; ")) {
+					for (String depends : StringUtils.split(dependsText, "; ")) {
 						if (StringUtils.isNotEmpty(depends)) {
 							Dependence dependence = parseDependence(depends);
 							dependences.add(dependence);
@@ -172,8 +327,8 @@ public final class PackageManager {
 							.append(']');
 
 					Exception e = new IllegalArgumentException(
-							"More than one package [" + packageName
-									+ "] found. They are "
+							"More than one package \"" + packageName
+									+ "\" found. They are "
 									+ conflictInfo.toString());
 					logger.warn(e, e);
 				}
@@ -181,8 +336,8 @@ public final class PackageManager {
 				packageMap.put(packageName, packageInfo);
 			} catch (Exception e) {
 				throw new IllegalArgumentException(
-						"Error occured during parsing [" + url.getPath() + "].",
-						e);
+						"Error occured during parsing \"" + url.getPath()
+								+ "\".", e);
 			} finally {
 				if (in != null) {
 					in.close();
