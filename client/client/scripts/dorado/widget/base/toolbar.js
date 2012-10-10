@@ -93,7 +93,10 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 			}, {
 				tagName: "div",
 				className: "toolbar-right",
-				contextKey: "toolbarRight"
+				contextKey: "toolbarRight",
+				style: {
+					position: "absolute"
+				}
 			}]
 		}, null, doms);
 		
@@ -310,7 +313,7 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 				}
 			});
 		}
-		
+
 		if (items && lastChild) {
 			var leftRealWidth = lastChild.offsetWidth + lastChild.offsetLeft, leftVisibleWidth = dom.offsetWidth - doms.toolbarRight.offsetWidth;
 			
