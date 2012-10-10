@@ -45,11 +45,11 @@
                                 CollectGarbage();
                             }
                         } catch(e) {}
-						this.replaceUrl(value);
                         $fly(doms.iframe).addClass("hidden");
                         if (oldPath != value) {
                             frame._loaded = false;
                         }
+						this.replaceUrl(value);
 						centerCover(dom, doms);
 					}
 				}
@@ -98,22 +98,12 @@
         },
 
         isSameDomain: function() {
-            var iframeSrc;
-            if (dorado.Browser.msie) {
-                try {
-                    iframeSrc = this._doms.iframe.contentWindow.location.href;
-                    return true;
-                } catch(e) {
-                    return false;
-                }
-            } else {
-                iframeSrc = $url(this._path);
-                if (/^(http[s]?):/ig.test(iframeSrc)) {
-                    var localDomain = this.getDomainInfo(location.href), frameDomain = this.getDomainInfo(iframeSrc);
-                    return localDomain.protocol == frameDomain.protocol && localDomain.domain == frameDomain.domain && localDomain.port == frameDomain.port;
-                }
-                return true;
+	        var iframeSrc = $url(this._path);
+            if (/^(http[s]?):/ig.test(iframeSrc)) {
+                var localDomain = this.getDomainInfo(location.href), frameDomain = this.getDomainInfo(iframeSrc);
+                return localDomain.protocol == frameDomain.protocol && localDomain.domain == frameDomain.domain && localDomain.port == frameDomain.port;
             }
+            return true;
         },
 
 		destroy: function() {
