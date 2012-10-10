@@ -1,15 +1,11 @@
 package com.bstek.dorado.view.widget.base.menu;
 
-import java.util.List;
-
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
 import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.ResourceInjection;
-import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.common.event.ClientEventSupported;
 import com.bstek.dorado.view.annotation.ComponentReference;
-import com.bstek.dorado.view.widget.InnerElementList;
 import com.bstek.dorado.view.widget.action.ActionSupport;
 
 /**
@@ -19,35 +15,13 @@ import com.bstek.dorado.view.widget.action.ActionSupport;
 @ClientEvents({ @ClientEvent(name = "onClick") })
 @ResourceInjection(subObjectMethod = "getItem")
 public abstract class TextMenuItem extends BaseMenuItem implements
-		MenuItemGroup, ActionSupport, ClientEventSupported {
+		ActionSupport, ClientEventSupported {
 	private String caption;
 	private String icon;
 	private String iconClass;
 	private String action;
 	private boolean disabled;
 	private boolean hideOnClick = true;
-
-	private List<BaseMenuItem> menuItems = new InnerElementList<BaseMenuItem>(
-			this);
-
-	public void addItem(BaseMenuItem menuItem) {
-		menuItems.add(menuItem);
-	}
-
-	public BaseMenuItem getItem(String name) {
-		for (BaseMenuItem item : menuItems) {
-			if (name.equals(item.getName())) {
-				return item;
-			}
-		}
-		return null;
-	}
-
-	@XmlSubNode
-	@ClientProperty
-	public List<BaseMenuItem> getItems() {
-		return menuItems;
-	}
 
 	public String getCaption() {
 		return caption;
