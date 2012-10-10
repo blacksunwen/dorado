@@ -2,6 +2,8 @@ package com.bstek.dorado.view.widget.base.menu;
 
 import java.util.List;
 
+import com.bstek.dorado.annotation.ClientEvent;
+import com.bstek.dorado.annotation.ClientEvents;
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.ResourceInjection;
@@ -27,6 +29,7 @@ import com.bstek.dorado.view.widget.ModalType;
 		autoGenerateId = true)
 @ClientObject(prototype = "dorado.widget.Menu", shortTypeName = "Menu")
 @ResourceInjection(subObjectMethod = "getItem")
+@ClientEvents({ @ClientEvent(name = "onHideTopMenu") })
 public class Menu extends Control implements MenuItemGroup, FloatControl {
 	private FloatControlAnimateType animateType = FloatControlAnimateType.zoom;
 	private FloatControlAnimateType showAnimateType = FloatControlAnimateType.slide;
