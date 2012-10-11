@@ -10,13 +10,13 @@ public class PropertyTemplate {
 	private String name;
 	private String type;
 	private Object defaultValue;
-	private boolean fixed;
+	private Boolean fixed;
 	private String[] enumValues;
 	private String editor;
-	private int highlight;
+	private Integer highlight;
 	private ReferenceTemplate reference;
-	private boolean ignored;
-	private boolean visible = true;
+	private Boolean ignored;
+	private Boolean visible;
 	private CompositeType compositeType = CompositeType.Unsupport;
 	private Map<String, PropertyTemplate> properties;
 	private String reserve;
@@ -60,11 +60,11 @@ public class PropertyTemplate {
 		this.editor = editor;
 	}
 
-	public int getHighlight() {
+	public Integer getHighlight() {
 		return highlight;
 	}
 
-	public void setHighlight(int highlight) {
+	public void setHighlight(Integer highlight) {
 		this.highlight = highlight;
 	}
 
@@ -76,11 +76,11 @@ public class PropertyTemplate {
 		this.defaultValue = defaultValue;
 	}
 
-	public boolean isFixed() {
+	public Boolean getFixed() {
 		return fixed;
 	}
 
-	public void setFixed(boolean fixed) {
+	public void setFixed(Boolean fixed) {
 		this.fixed = fixed;
 	}
 
@@ -92,19 +92,19 @@ public class PropertyTemplate {
 		this.reference = reference;
 	}
 
-	public boolean isIgnored() {
+	public Boolean getIgnored() {
 		return ignored;
 	}
 
-	public void setIgnored(boolean ignored) {
+	public void setIgnored(Boolean ignored) {
 		this.ignored = ignored;
 	}
 
-	public boolean isVisible() {
+	public Boolean getVisible() {
 		return visible;
 	}
 
-	public void setVisible(boolean visible) {
+	public void setVisible(Boolean visible) {
 		this.visible = visible;
 	}
 

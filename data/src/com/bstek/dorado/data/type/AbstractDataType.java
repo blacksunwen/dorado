@@ -8,6 +8,7 @@ import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
 
 /**
@@ -16,6 +17,7 @@ import com.bstek.dorado.annotation.XmlProperty;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Mar 9, 2007
  */
+@XmlNode(nodeName = "DataType")
 public abstract class AbstractDataType implements RudeDataType {
 	private String name;
 	private String id;

@@ -2,6 +2,7 @@ package com.bstek.dorado.view.widget.base;
 
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Container;
 import com.bstek.dorado.view.widget.FloatControl;
@@ -24,7 +25,6 @@ public class FloatContainer extends Container implements FloatControl {
 	private FloatControlAnimateType showAnimateType;
 	private FloatControlAnimateType hideAnimateType;
 	private String animateTarget;
-	private String renderTo;
 	private boolean center;
 	private boolean modal;
 	private ModalType modalType = ModalType.dark;
@@ -77,22 +77,15 @@ public class FloatContainer extends Container implements FloatControl {
 		this.hideAnimateType = hideAnimateType;
 	}
 
+	@IdeProperty(visible = false)
+	@Deprecated
 	public String getAnimateTarget() {
 		return animateTarget;
 	}
 
+	@Deprecated
 	public void setAnimateTarget(String animateTarget) {
 		this.animateTarget = animateTarget;
-	}
-
-	@Override
-	public String getRenderTo() {
-		return renderTo;
-	}
-
-	@Override
-	public void setRenderTo(String renderTo) {
-		this.renderTo = renderTo;
 	}
 
 	public boolean isCenter() {
@@ -231,6 +224,8 @@ public class FloatContainer extends Container implements FloatControl {
 	/**
 	 * @return the anchorTarget
 	 */
+	@IdeProperty(visible = false)
+	@Deprecated
 	public String getAnchorTarget() {
 		return anchorTarget;
 	}
@@ -239,6 +234,7 @@ public class FloatContainer extends Container implements FloatControl {
 	 * @param anchorTarget
 	 *            the anchorTarget to set
 	 */
+	@Deprecated
 	public void setAnchorTarget(String anchorTarget) {
 		this.anchorTarget = anchorTarget;
 	}
@@ -246,6 +242,8 @@ public class FloatContainer extends Container implements FloatControl {
 	/**
 	 * @return the align
 	 */
+	@IdeProperty(visible = false)
+	@Deprecated
 	public FloatControlAlign getAlign() {
 		return align;
 	}
@@ -254,6 +252,7 @@ public class FloatContainer extends Container implements FloatControl {
 	 * @param align
 	 *            the align to set
 	 */
+	@Deprecated
 	public void setAlign(FloatControlAlign align) {
 		this.align = align;
 	}
@@ -261,6 +260,8 @@ public class FloatContainer extends Container implements FloatControl {
 	/**
 	 * @return the vAlign
 	 */
+	@IdeProperty(visible = false)
+	@Deprecated
 	public FloatControlVAlign getvAlign() {
 		return vAlign;
 	}
@@ -269,6 +270,7 @@ public class FloatContainer extends Container implements FloatControl {
 	 * @param vAlign
 	 *            the vAlign to set
 	 */
+	@Deprecated
 	public void setvAlign(FloatControlVAlign vAlign) {
 		this.vAlign = vAlign;
 	}
@@ -293,6 +295,8 @@ public class FloatContainer extends Container implements FloatControl {
 	 * @return the handleOverflow
 	 */
 	@ClientProperty(escapeValue = "true")
+	@IdeProperty(visible = false)
+	@Deprecated
 	public boolean isHandleOverflow() {
 		return handleOverflow;
 	}
@@ -301,6 +305,7 @@ public class FloatContainer extends Container implements FloatControl {
 	 * @param handleOverflow
 	 *            the handleOverflow to set
 	 */
+	@Deprecated
 	public void setHandleOverflow(boolean handleOverflow) {
 		this.handleOverflow = handleOverflow;
 	}

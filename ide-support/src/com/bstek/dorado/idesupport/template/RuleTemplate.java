@@ -1,5 +1,6 @@
 package com.bstek.dorado.idesupport.template;
 
+import java.beans.PropertyDescriptor;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -234,27 +235,69 @@ public class RuleTemplate {
 		children.put(childTemplate.getName(), childTemplate);
 	}
 
-	public Map<String, PropertyTemplate> getFinalPrimitiveProperties() {
+	public Map<String, PropertyTemplate> getFinalPrimitiveProperties()
+			throws Exception {
 		if (parents != null && parents.length > 0) {
 			Map<String, PropertyTemplate> finalPrimitiveProperties = new LinkedHashMap<String, PropertyTemplate>();
 			for (RuleTemplate parent : parents) {
-				finalPrimitiveProperties.putAll(parent
-						.getFinalPrimitiveProperties());
+				for (Map.Entry<String, PropertyTemplate> entry : parent
+						.getFinalPrimitiveProperties().entrySet()) {
+					String propertyName = entry.getKey();
+					PropertyTemplate targetProperty = entry.getValue();
+					PropertyTemplate originProperty = finalPrimitiveProperties
+							.get(propertyName);
+					if (originProperty != null) {
+						applyProperties(originProperty, targetProperty);
+					}
+					finalPrimitiveProperties.put(propertyName, targetProperty);
+				}
 			}
-			finalPrimitiveProperties.putAll(primitiveProperties);
+
+			for (Map.Entry<String, PropertyTemplate> entry : primitiveProperties
+					.entrySet()) {
+				String propertyName = entry.getKey();
+				PropertyTemplate targetProperty = entry.getValue();
+				PropertyTemplate originProperty = finalPrimitiveProperties
+						.get(propertyName);
+				if (originProperty != null) {
+					applyProperties(originProperty, targetProperty);
+				}
+				finalPrimitiveProperties.put(propertyName, targetProperty);
+			}
 			return finalPrimitiveProperties;
 		} else {
 			return primitiveProperties;
 		}
 	}
 
-	public Map<String, PropertyTemplate> getFinalProperties() {
+	public Map<String, PropertyTemplate> getFinalProperties() throws Exception {
 		if (parents != null && parents.length > 0) {
 			Map<String, PropertyTemplate> finalProperties = new LinkedHashMap<String, PropertyTemplate>();
 			for (RuleTemplate parent : parents) {
-				finalProperties.putAll(parent.getFinalProperties());
+				for (Map.Entry<String, PropertyTemplate> entry : parent
+						.getFinalProperties().entrySet()) {
+					String propertyName = entry.getKey();
+					PropertyTemplate targetProperty = entry.getValue();
+					PropertyTemplate originProperty = finalProperties
+							.get(propertyName);
+					if (originProperty != null) {
+						applyProperties(originProperty, targetProperty);
+					}
+					finalProperties.put(propertyName, targetProperty);
+				}
 			}
-			finalProperties.putAll(properties);
+
+			for (Map.Entry<String, PropertyTemplate> entry : properties
+					.entrySet()) {
+				String propertyName = entry.getKey();
+				PropertyTemplate targetProperty = entry.getValue();
+				PropertyTemplate originProperty = finalProperties
+						.get(propertyName);
+				if (originProperty != null) {
+					applyProperties(originProperty, targetProperty);
+				}
+				finalProperties.put(propertyName, targetProperty);
+			}
 			return finalProperties;
 		} else {
 			return properties;
@@ -305,7 +348,7 @@ public class RuleTemplate {
 		}
 	}
 
-	private void applyProperties(Object source, Object target,
+	private static void applyProperties(Object source, Object target,
 			String propertyNames) throws Exception {
 		if (StringUtils.isNotEmpty(propertyNames)) {
 			for (String propertyName : StringUtils.split(propertyNames, ',')) {
@@ -314,8 +357,19 @@ public class RuleTemplate {
 		}
 	}
 
-	private void applyProperty(Object source, Object target, String propertyName)
+	private static void applyProperties(Object source, Object target)
 			throws Exception {
+		for (PropertyDescriptor propertyDescriptor : PropertyUtils
+				.getPropertyDescriptors(target)) {
+			if (propertyDescriptor.getReadMethod() != null
+					&& propertyDescriptor.getWriteMethod() != null) {
+				applyProperty(source, target, propertyDescriptor.getName());
+			}
+		}
+	}
+
+	private static void applyProperty(Object source, Object target,
+			String propertyName) throws Exception {
 		Object value = PropertyUtils.getProperty(source, propertyName);
 		if (value != null)
 			PropertyUtils.setProperty(target, propertyName, value);

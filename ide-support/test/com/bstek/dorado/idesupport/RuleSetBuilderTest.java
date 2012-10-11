@@ -119,7 +119,7 @@ public class RuleSetBuilderTest extends IdeSupportContextTestCase {
 			}
 			assertTrue(hasButtonRule);
 
-			Rule controlRule = ruleSet.getRule("Control");
+			Rule controlRule = ruleSet.getRule("Control_1");
 			assertNotNull(controlRule);
 			assertTrue(ArrayUtils.indexOf(abstractButtonRule.getParents(),
 					controlRule) >= 0);
@@ -139,6 +139,11 @@ public class RuleSetBuilderTest extends IdeSupportContextTestCase {
 			assertNotNull(floatPanelRule.getChild("Children"));
 			assertNotNull(floatPanelRule.getChild("Tools"));
 			assertNotNull(floatPanelRule.getChild("Buttons"));
+
+			Property animateTargetProperty = floatPanelRule
+					.getProperty("animateTarget");
+			assertNotNull(animateTargetProperty);
+			assertFalse(animateTargetProperty.isVisible());
 
 			Rule viewRule = ruleSet.getRule("View");
 			for (Child child : viewRule.getChildren().values()) {
