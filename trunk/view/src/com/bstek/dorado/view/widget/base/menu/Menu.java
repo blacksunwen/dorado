@@ -6,6 +6,7 @@ import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.ResourceInjection;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.view.annotation.Widget;
@@ -16,7 +17,6 @@ import com.bstek.dorado.view.widget.FloatControlAnimateType;
 import com.bstek.dorado.view.widget.FloatControlShadowMode;
 import com.bstek.dorado.view.widget.FloatControlVAlign;
 import com.bstek.dorado.view.widget.IconPosition;
-import com.bstek.dorado.view.widget.IconSize;
 import com.bstek.dorado.view.widget.InnerElementList;
 import com.bstek.dorado.view.widget.ModalType;
 
@@ -35,7 +35,6 @@ public class Menu extends Control implements MenuItemGroup, FloatControl {
 	private FloatControlAnimateType showAnimateType = FloatControlAnimateType.slide;
 	private FloatControlAnimateType hideAnimateType = FloatControlAnimateType.fade;
 	private String animateTarget;
-	private String renderTo;
 	private boolean center;
 	private boolean modal;
 	private ModalType modalType = ModalType.dark;
@@ -94,22 +93,15 @@ public class Menu extends Control implements MenuItemGroup, FloatControl {
 		this.hideAnimateType = hideAnimateType;
 	}
 
+	@IdeProperty(visible = false)
+	@Deprecated
 	public String getAnimateTarget() {
 		return animateTarget;
 	}
 
+	@Deprecated
 	public void setAnimateTarget(String animateTarget) {
 		this.animateTarget = animateTarget;
-	}
-
-	@Override
-	public String getRenderTo() {
-		return renderTo;
-	}
-
-	@Override
-	public void setRenderTo(String renderTo) {
-		this.renderTo = renderTo;
 	}
 
 	public boolean isCenter() {
@@ -161,7 +153,7 @@ public class Menu extends Control implements MenuItemGroup, FloatControl {
 
 	public void setIconPosition(IconPosition iconPosition) {
 		this.iconPosition = iconPosition;
-	}	
+	}
 
 	public void addItem(BaseMenuItem menuItem) {
 		menuItems.add(menuItem);
@@ -276,6 +268,8 @@ public class Menu extends Control implements MenuItemGroup, FloatControl {
 	/**
 	 * @return the anchorTarget
 	 */
+	@IdeProperty(visible = false)
+	@Deprecated
 	public String getAnchorTarget() {
 		return anchorTarget;
 	}
@@ -284,6 +278,7 @@ public class Menu extends Control implements MenuItemGroup, FloatControl {
 	 * @param anchorTarget
 	 *            the anchorTarget to set
 	 */
+	@Deprecated
 	public void setAnchorTarget(String anchorTarget) {
 		this.anchorTarget = anchorTarget;
 	}
@@ -291,6 +286,8 @@ public class Menu extends Control implements MenuItemGroup, FloatControl {
 	/**
 	 * @return the align
 	 */
+	@IdeProperty(visible = false)
+	@Deprecated
 	public FloatControlAlign getAlign() {
 		return align;
 	}
@@ -299,6 +296,7 @@ public class Menu extends Control implements MenuItemGroup, FloatControl {
 	 * @param align
 	 *            the align to set
 	 */
+	@Deprecated
 	public void setAlign(FloatControlAlign align) {
 		this.align = align;
 	}
@@ -306,6 +304,8 @@ public class Menu extends Control implements MenuItemGroup, FloatControl {
 	/**
 	 * @return the vAlign
 	 */
+	@IdeProperty(visible = false)
+	@Deprecated
 	public FloatControlVAlign getvAlign() {
 		return vAlign;
 	}
@@ -314,6 +314,7 @@ public class Menu extends Control implements MenuItemGroup, FloatControl {
 	 * @param vAlign
 	 *            the vAlign to set
 	 */
+	@Deprecated
 	public void setvAlign(FloatControlVAlign vAlign) {
 		this.vAlign = vAlign;
 	}
@@ -338,6 +339,8 @@ public class Menu extends Control implements MenuItemGroup, FloatControl {
 	 * @return the handleOverflow
 	 */
 	@ClientProperty(escapeValue = "true")
+	@IdeProperty(visible = false)
+	@Deprecated
 	public boolean isHandleOverflow() {
 		return handleOverflow;
 	}
@@ -346,6 +349,7 @@ public class Menu extends Control implements MenuItemGroup, FloatControl {
 	 * @param handleOverflow
 	 *            the handleOverflow to set
 	 */
+	@Deprecated
 	public void setHandleOverflow(boolean handleOverflow) {
 		this.handleOverflow = handleOverflow;
 	}

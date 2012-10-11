@@ -24,7 +24,6 @@ public class FloatPanel extends Panel implements FloatControl {
 	private FloatControlAnimateType showAnimateType;
 	private FloatControlAnimateType hideAnimateType;
 	private String animateTarget;
-	private String renderTo;
 	private boolean center;
 	private boolean modal;
 	private ModalType modalType = ModalType.dark;
@@ -77,22 +76,15 @@ public class FloatPanel extends Panel implements FloatControl {
 		this.hideAnimateType = hideAnimateType;
 	}
 
+	@IdeProperty(visible = false)
+	@Deprecated
 	public String getAnimateTarget() {
 		return animateTarget;
 	}
 
+	@Deprecated
 	public void setAnimateTarget(String animateTarget) {
 		this.animateTarget = animateTarget;
-	}
-
-	@Override
-	public String getRenderTo() {
-		return renderTo;
-	}
-
-	@Override
-	public void setRenderTo(String renderTo) {
-		this.renderTo = renderTo;
 	}
 
 	@IdeProperty(highlight = 1)
@@ -233,6 +225,8 @@ public class FloatPanel extends Panel implements FloatControl {
 	/**
 	 * @return the anchorTarget
 	 */
+	@IdeProperty(visible = false)
+	@Deprecated
 	public String getAnchorTarget() {
 		return anchorTarget;
 	}
@@ -241,6 +235,7 @@ public class FloatPanel extends Panel implements FloatControl {
 	 * @param anchorTarget
 	 *            the anchorTarget to set
 	 */
+	@Deprecated
 	public void setAnchorTarget(String anchorTarget) {
 		this.anchorTarget = anchorTarget;
 	}
@@ -248,6 +243,8 @@ public class FloatPanel extends Panel implements FloatControl {
 	/**
 	 * @return the align
 	 */
+	@IdeProperty(visible = false)
+	@Deprecated
 	public FloatControlAlign getAlign() {
 		return align;
 	}
@@ -256,6 +253,7 @@ public class FloatPanel extends Panel implements FloatControl {
 	 * @param align
 	 *            the align to set
 	 */
+	@Deprecated
 	public void setAlign(FloatControlAlign align) {
 		this.align = align;
 	}
@@ -263,6 +261,8 @@ public class FloatPanel extends Panel implements FloatControl {
 	/**
 	 * @return the vAlign
 	 */
+	@IdeProperty(visible = false)
+	@Deprecated
 	public FloatControlVAlign getvAlign() {
 		return vAlign;
 	}
@@ -271,6 +271,7 @@ public class FloatPanel extends Panel implements FloatControl {
 	 * @param vAlign
 	 *            the vAlign to set
 	 */
+	@Deprecated
 	public void setvAlign(FloatControlVAlign vAlign) {
 		this.vAlign = vAlign;
 	}
@@ -295,6 +296,8 @@ public class FloatPanel extends Panel implements FloatControl {
 	 * @return the handleOverflow
 	 */
 	@ClientProperty(escapeValue = "true")
+	@IdeProperty(visible = false)
+	@Deprecated
 	public boolean isHandleOverflow() {
 		return handleOverflow;
 	}
@@ -303,6 +306,7 @@ public class FloatPanel extends Panel implements FloatControl {
 	 * @param handleOverflow
 	 *            the handleOverflow to set
 	 */
+	@Deprecated
 	public void setHandleOverflow(boolean handleOverflow) {
 		this.handleOverflow = handleOverflow;
 	}

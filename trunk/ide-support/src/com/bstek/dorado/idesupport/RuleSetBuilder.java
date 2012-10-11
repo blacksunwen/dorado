@@ -151,7 +151,7 @@ public class RuleSetBuilder {
 		if (!primitiveProperties.isEmpty()) {
 			for (PropertyTemplate propertyTemplate : primitiveProperties
 					.values()) {
-				if (propertyTemplate.isIgnored()) {
+				if (Boolean.TRUE.equals(propertyTemplate.getIgnored())) {
 					continue;
 				}
 				Property property = new Property();
@@ -164,7 +164,7 @@ public class RuleSetBuilder {
 				.getFinalProperties();
 		if (!properties.isEmpty()) {
 			for (PropertyTemplate propertyTemplate : properties.values()) {
-				if (propertyTemplate.isIgnored()) {
+				if (Boolean.TRUE.equals(propertyTemplate.getIgnored())) {
 					continue;
 				}
 				Property property = new Property();
@@ -212,7 +212,7 @@ public class RuleSetBuilder {
 			for (Map.Entry<String, PropertyTemplate> entry : properties
 					.entrySet()) {
 				PropertyTemplate subPopertyTemplate = entry.getValue();
-				if (subPopertyTemplate.isIgnored()) {
+				if (Boolean.TRUE.equals(subPopertyTemplate.getIgnored())) {
 					continue;
 				}
 

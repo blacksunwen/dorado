@@ -158,9 +158,9 @@ public class RuleSetOutputter {
 			PropertyTemplate property, OutputContext context) throws Exception {
 		Element element = DocumentHelper.createElement("Prop");
 		setElementAttributes(element, property,
-				"name,defaultValue,ignored,highlight,fixed,enumValues,editor,reserve");
-		if (!property.isVisible()) {
-			element.addAttribute("visible", "false");
+				"name,defaultValue,ignored,visible,highlight,fixed,enumValues,editor,reserve");
+		if (property.getVisible() != null) {
+			element.addAttribute("visible", property.getVisible().toString());
 		}
 
 		if (StringUtils.isNotEmpty(property.getType())) {
