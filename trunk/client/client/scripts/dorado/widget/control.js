@@ -1322,20 +1322,20 @@
 	dorado.widget.setFocusedControl = function(control) {
 		if(dorado.widget.focusedControl.peek() === control) return;
 		
+		if (dorado.Browser.msie && document.activeElement) {
+			var activeControl = dorado.widget.Control.findParentControl(document.activeElement);
+			if (activeControl && !(activeControl instanceof dorado.widget.View)) {
+				var nodeName = document.activeElement.nodeName.toLowerCase();
+				if (nodeName == "input" || nodeName == "textarea") return;
+			}
+		}
+			
 		while(control && !control.isFocusable()) {
 			control = control.get("focusParent");
 		}
-		if(control) {
+		if (control) {
 			control.setFocus();
 		} else {
-			if (dorado.Browser.msie && document.activeElement) {
-				var activeControl = dorado.widget.Control.findParentControl(document.activeElement);
-				if (activeControl && !(activeControl instanceof dorado.widget.View)) {
-					var nodeName = document.activeElement.nodeName.toLowerCase();
-					if (nodeName == "input" || nodeName == "textarea") return;
-				}
-			}
-			
 			if (document.body) {
 				setTimeout(function() {
 					if (dorado._LAST_FOCUS_CONTROL === null) {
