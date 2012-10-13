@@ -1969,6 +1969,18 @@
 					this._footerRenderer = value;
 				}
 			},
+
+			/**
+			 * 过滤栏渲染器。
+			 * @type dorado.Renderer
+			 * @attribute
+			 */
+			filterBarRenderer: {
+				setter: function(value) {
+					if (typeof value == "string") value = eval("new " + value + "()");
+					this._footerRenderer = value;
+				}
+			},
 			
 			/**
 			 * 汇总值计算器的类型。
@@ -2061,6 +2073,17 @@
 			 * @default true
 			 */
 			filterable: {
+				defaultValue: true
+			},
+			
+			/**
+			 * 默认的过滤条件比较符。
+			 * <p>
+			 * 可选的比较符包括：like, like*, *like, =, <>, >, >=, <, <=
+			 * </p>
+			 * @attribute
+			 */
+			defaultFilterOperator: {
 				defaultValue: true
 			},
 			
@@ -2447,36 +2470,38 @@
 	 * @extends dorado.widget.grid.SubControlCellRenderer
 	 */
 	dorado.widget.grid.FilterBarCellRenderer = $extend(dorado.widget.grid.SubControlCellRenderer, /** @scope dorado.widget.grid.FilterBarCellRenderer.prototype */ {
+		createFilterExpressionEditor: function(arg) {
+			var self = this, column = arg.column, grid = arg.grid;
+			var textEditor = new dorado.widget.TextEditor({
+				width: "100%",
+				onPost: function(textEditor) {
+					var criterion = dorado.widget.grid.DataColumn.parseCriterion(textEditor.get("text"), column);
+					var filterEntity = grid.get("filterEntity");
+					filterEntity.disableObservers();
+					filterEntity.set(column._property, criterion);
+					filterEntity.enableObservers();
+				},
+				onKeyDown: function(textEditor, arg) {
+					if (arg.keyCode == 13) {
+						textEditor.post();
+						grid.filter();
+					}
+				},
+				onTextEdit: function(textEditor) {
+					var criterionDropDown = textEditor.get("trigger");
+					if (criterionDropDown && criterionDropDown instanceof dorado.widget.Component && criterionDropDown.get("opened")) {
+						criterionDropDown.close();
+					}
+				}
+			});
+			textEditor.set("trigger", "defaultCriterionDropDown");
+			return textEditor;
+		},
+		
 		createSubControl: function(arg) {
 			var column = arg.column;
 			if (column._property && column._filterable) {
-				var self = this, grid = arg.grid;
-				var textEditor = new dorado.widget.TextEditor({
-					width: "100%",
-					onPost: function(textEditor) {
-						var criterion = dorado.widget.grid.DataColumn.parseCriterion(textEditor.get("text"), column);
-						var filterEntity = grid.get("filterEntity");
-						filterEntity.disableObservers();
-						filterEntity.set(column._property, criterion);
-						filterEntity.enableObservers();
-					},
-					onKeyDown: function(textEditor, arg) {
-						if (arg.keyCode == 13) {
-							textEditor.post();
-							grid.filter();
-						}
-					},
-					onTextEdit: function(textEditor) {
-						// if (textEditor == dorado.widget.getFocusedControl())
-						var criterionDropDown = textEditor.get("trigger");
-						if (criterionDropDown && criterionDropDown instanceof dorado.widget.Component && criterionDropDown.get("opened")) {
-							criterionDropDown.close();
-						}
-					}
-				});
-
-				textEditor.set("trigger", "defaultCriterionDropDown");
-				return textEditor;
+				return this.createFilterExpressionEditor(arg);
 			} else {
 				return null;
 			}

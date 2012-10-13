@@ -191,7 +191,7 @@
 							break;
 						}
 					}
-					value = dorado.widget.grid.DataColumn.parseCriterions(value, column);
+					value = dorado.widget.grid.DataColumn.parseCriterion(value, column);
 				}
 				oldSet.call(this, property, value);
 			};
@@ -742,21 +742,48 @@
 			 * @type dorado.Renderer
 			 * @attribute
 			 */
-			cellRenderer: {},
+			cellRenderer: {
+				setter: function(value) {
+					if (typeof value == "string") value = eval("new " + value + "()");
+					this._footerRenderer = value;
+				}
+			},
 
 			/**
 			 * 默认的列头渲染器。
 			 * @type dorado.Renderer
 			 * @attribute
 			 */
-			headerRenderer: {},
+			headerRenderer: {
+				setter: function(value) {
+					if (typeof value == "string") value = eval("new " + value + "()");
+					this._footerRenderer = value;
+				}
+			},
 
 			/**
 			 * 默认的汇总栏渲染器。
 			 * @type dorado.Renderer
 			 * @attribute
 			 */
-			footerRenderer: {},
+			footerRenderer: {
+				setter: function(value) {
+					if (typeof value == "string") value = eval("new " + value + "()");
+					this._footerRenderer = value;
+				}
+			},
+
+			/**
+			 * 默认的过滤栏渲染器。
+			 * @type dorado.Renderer
+			 * @attribute
+			 */
+			filterBarRenderer: {
+				setter: function(value) {
+					if (typeof value == "string") value = eval("new " + value + "()");
+					this._footerRenderer = value;
+				}
+			},
 
 			/**
 			 * 默认的行渲染器。
@@ -3055,13 +3082,14 @@
 
 		refreshFilterBar: function() {
 			var grid = this.grid, filterBarRow = this._filterBarRow, filterEntity = grid._itemModel.filterEntity;
-			var renderer = $singleton(dorado.widget.grid.FilterBarCellRenderer);
 			var dataColumns = this._columnsInfo.dataColumns;
 			for (var i = 0; i < dataColumns.length; i++) {
 				var column = dataColumns[i];
 				var cell = $DomUtils.getOrCreateChild(filterBarRow, i, this.createCell), label = cell.firstChild;
 				cell.className = "filter-bar-cell";
 				label.style.width = column._realWidth + "px";
+				
+				var renderer = this._filterBarRenderer || column._filterBarRenderer || $singleton(dorado.widget.grid.FilterBarCellRenderer);
 				dorado.Renderer.render(renderer, label, {
 					grid: grid,
 					innerGrid: this,

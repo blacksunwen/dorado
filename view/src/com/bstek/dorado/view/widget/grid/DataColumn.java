@@ -32,6 +32,7 @@ public class DataColumn extends AbstractDataColumn {
 	private SortState sortState = SortState.none;
 	private boolean wrappable;
 	private boolean filterable = true;
+	private String defaultFilterOperator;
 
 	private String editorType = "TextEditor";
 	private InnerElementReference<Control> editorRef = new InnerElementReference<Control>(
@@ -182,5 +183,14 @@ public class DataColumn extends AbstractDataColumn {
 
 	public void setEditor(Control editor) {
 		editorRef.set(editor);
+	}
+
+	public String getDefaultFilterOperator() {
+		return defaultFilterOperator;
+	}
+
+	@IdeProperty(enumValues = "like,like*,*like,=,<>,>,>=,<,<=")
+	public void setDefaultFilterOperator(String defaultFilterOperator) {
+		this.defaultFilterOperator = defaultFilterOperator;
 	}
 }
