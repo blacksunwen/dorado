@@ -9,6 +9,7 @@ import com.bstek.dorado.annotation.ClientProperty;
 public abstract class AbstractGrid extends GridSupport {
 	private String groupHeaderRenderer;
 	private String groupFooterRenderer;
+	private String filterBarRenderer;
 	private String groupProperty;
 	private boolean groupOnSort = true;
 	private boolean showGroupFooter;
@@ -28,6 +29,14 @@ public abstract class AbstractGrid extends GridSupport {
 
 	public void setGroupFooterRenderer(String groupFooterRenderer) {
 		this.groupFooterRenderer = groupFooterRenderer;
+	}
+
+	public String getFilterBarRenderer() {
+		return filterBarRenderer;
+	}
+
+	public void setFilterBarRenderer(String filterBarRenderer) {
+		this.filterBarRenderer = filterBarRenderer;
 	}
 
 	public String getGroupProperty() {

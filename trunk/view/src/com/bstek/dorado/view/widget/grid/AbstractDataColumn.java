@@ -10,6 +10,7 @@ public abstract class AbstractDataColumn extends Column {
 	private String width;
 	private String renderer;
 	private String footerRenderer;
+	private String filterBarRenderer;
 	private boolean resizeable = true;
 
 	public String getRenderer() {
@@ -26,6 +27,14 @@ public abstract class AbstractDataColumn extends Column {
 
 	public void setFooterRenderer(String footerRenderer) {
 		this.footerRenderer = footerRenderer;
+	}
+
+	public String getFilterBarRenderer() {
+		return filterBarRenderer;
+	}
+
+	public void setFilterBarRenderer(String filterBarRenderer) {
+		this.filterBarRenderer = filterBarRenderer;
 	}
 
 	public String getWidth() {

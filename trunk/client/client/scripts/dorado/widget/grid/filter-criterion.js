@@ -206,6 +206,8 @@
 	}
 	
 	dorado.widget.grid.DataColumn.getDefaultOperator = function(column) {
+		if (column._defaultFilterOperator) return column._defaultFilterOperator;
+		
 		var dataType = column.get("dataType"), pd = column._propertyDef;
 		if (pd && pd._mapping || dataType &&
 			(dataType._code && numberTypeCodes.indexOf(dataType._code) >= 0 || [dorado.DataType.PRIMITIVE_BOOLEAN, dorado.DataType.BOOLEAN].indexOf(dataType._code) >= 0)) {
@@ -258,7 +260,7 @@
 				} else {
 					var dataType = column.get("dataType");
 					if (dataType) {
-						valueText = dataType.toText(criterion.value, column.get("displayFormat"));
+						valueText = dataType.toText(criterion.value, column.get("typeFormat"));
 					} else {
 						valueText = criterion.value + '';
 					}
@@ -303,6 +305,17 @@
 		ATTRIBUTES: /** @scope dorado.widget.grid.CriterionDropDown.prototype */ {
 			maxWidth: {
 				defaultValue: 328
+			},
+			
+			supportsJunction: {
+				defaultValue: true
+			},
+			
+			supportsMultiCriterions: {
+				defaultValue: true
+			},
+			
+			avialableOperators: {				
 			},
 			
 			criterion: {
@@ -369,35 +382,36 @@
 			});
 			dropdown._criterionsContainer = doms.criterionsContainer;
 			
-			var junctionRadio = new dorado.widget.RadioGroup({
-				value: "and",
-				radioButtons: [
-					{
+			if (dropdown._supportsJunction) {
+				var junctionRadio = new dorado.widget.RadioGroup({
+					value: "and",
+					radioButtons: [{
 						value: "and",
 						text: $resource("dorado.core.And")
-					},
-					{
+					}, {
 						value: "or",
 						text: $resource("dorado.core.Or")
+					}],
+					onPost: function(self) {
+						dropdown._criterion.junction = self.get("value");
 					}
-				],
-				onPost: function(self) {
-					dropdown._criterion.junction = self.get("value");
-				}
-			});
-			box.registerInnerControl(junctionRadio);
-			junctionRadio.render(doms.junctionContainer);
-			dropdown._junctionRadio = junctionRadio;
+				});
+				box.registerInnerControl(junctionRadio);
+				junctionRadio.render(doms.junctionContainer);
+				dropdown._junctionRadio = junctionRadio;
+			}
 			
-			var addButton = new dorado.widget.Button({
-				icon: "url(skin>common/icons.gif) -120px 0",
-				style: "margin-right:2px",
-				onClick: function() {
-					dropdown.addCriterion(box);
-				}
-			});
-			box.registerInnerControl(addButton);
-			addButton.render(doms.buttonsContainer);
+			if (this._supportsMultiCriterions) {
+				var addButton = new dorado.widget.Button({
+					icon: "url(skin>common/icons.gif) -120px 0",
+					style: "margin-right:2px",
+					onClick: function() {
+						dropdown.addCriterion(box);
+					}
+				});
+				box.registerInnerControl(addButton);
+				addButton.render(doms.buttonsContainer);
+			}
 			
 			var okButton = new dorado.widget.Button({
 				caption: $resource("dorado.baseWidget.MessageBoxButtonOK"),
@@ -470,7 +484,9 @@
 				dropdown._criterionControlCache.push(criterionControl);
 			}
 			
-			dropdown._junctionRadio.set("value", criterion.junction || "and");
+			if (dropdown._junctionRadio) {
+				dropdown._junctionRadio.set("value", criterion.junction || "and");
+			}
 		},
 		
 		getCriterionControl: function(box, criterion) {
@@ -599,8 +615,30 @@
 			if (!dtCode || (pd && pd._mapping)) dataType = undefined;
 			
 			var operatorEditor = this._operatorEditor, valueEditor = this._valueEditor, doms = this._doms;
+			
+			var operatorDropDown = getOperatorDropDown(column);
+			if (this._avialableOperators) {
+				var operatorItems = operatorDropDown.get("items"), newItems = [];
+				for (var i = 0; i < operatorItems.length; i++) {
+					var operatorItem = operatorItems[i];
+					if (this._avialableOperators.indexOf(operatorItem.key) >= 0) {
+						newItems.push(operatorItem);
+					}					
+				}
+				
+				operatorDropDown = this._operatorDropDown;
+				if (!operatorDropDown) {
+					this._operatorDropDown = operatorDropDown = new dorado.widget.ListDropDown({
+						items: newItems,
+						property: "key",
+						displayProperty: "value",
+						autoOpen: true
+					});
+				}
+			}
+			
 			operatorEditor.set({
-				trigger: getOperatorDropDown(column),
+				trigger: operatorDropDown,
 				value: this._criterion && this._criterion.operator
 			});
 			
