@@ -623,7 +623,6 @@
                 offsetHeight = tabDom.offsetHeight, top = (parseInt(tabsEl.style.top, 10) || 0) * -1, viewHeight = $fly(doms.tabsWrap).height();
 
             $fly(tabDom).addClass("tab-selected");
-
             tabbar.doRefreshGap();
 
             if (top > offsetTop) {
@@ -723,9 +722,8 @@
                 }
 
                 if (modifyTop) {
-                    var tabsEl = doms.tabs, top = parseInt(tabsEl.style.top, 10) || 0,
-                        topButtonHeight = $fly(doms.topButton).outerWidth(true), bottomButtonHeight = $fly(doms.bottomButton).outerWidth(true);
-                    $fly(tabsEl).top(top - topButtonHeight - bottomButtonHeight);
+                    var tabsEl = doms.tabs, top = parseInt(tabsEl.style.top, 10) || 0;
+                    $fly(tabsEl).top(top);
                 }
 
                 tabcolumn.onToolButtonVisibleChange();
