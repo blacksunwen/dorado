@@ -307,14 +307,34 @@
 				defaultValue: 328
 			},
 			
-			supportsJunction: {
-				defaultValue: true
-			},
-			
+			/**
+			 * 是否支持多个匹配条件。
+			 * @type boolean
+			 * @default true
+			 * @attribute
+			 */
 			supportsMultiCriterions: {
 				defaultValue: true
 			},
 			
+			/**
+			 * 是否支持连接条件。
+			 * @type boolean
+			 * @default true
+			 * @attribute
+			 */
+			supportsJunction: {
+				defaultValue: true
+			},
+			
+			/**
+			 * 是否可支持的比较操作符的数组。
+			 * <p>
+			 * 可选的比较操作符包括：like, like*, *like, =, <>, >, >=, <, <=
+			 * </p>
+			 * @type String[]
+			 * @attribute
+			 */
 			avialableOperators: {				
 			},
 			
@@ -382,7 +402,7 @@
 			});
 			dropdown._criterionsContainer = doms.criterionsContainer;
 			
-			if (dropdown._supportsJunction) {
+			if (dropdown._supportsJunction && dropdown._supportsMultiCriterions) {
 				var junctionRadio = new dorado.widget.RadioGroup({
 					value: "and",
 					radioButtons: [{

@@ -1978,7 +1978,7 @@
 			filterBarRenderer: {
 				setter: function(value) {
 					if (typeof value == "string") value = eval("new " + value + "()");
-					this._footerRenderer = value;
+					this._filterBarRenderer = value;
 				}
 			},
 			
