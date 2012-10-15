@@ -145,7 +145,7 @@ public abstract class MethodAutoMatchingUtils {
 			if (type == null) {
 				type = Object.class;
 			} else if (type instanceof Class<?>) {
-				type = ProxyBeanUtils.getProxyTargetType((Class<?>)type);
+				type = ProxyBeanUtils.getProxyTargetType((Class<?>) type);
 			}
 			types[i] = type;
 		}
@@ -809,7 +809,11 @@ public abstract class MethodAutoMatchingUtils {
 			}
 			return aggType;
 		} else {
-			return dataType.getMatchType();
+			Type type = dataType.getMatchType();
+			if (type == null) {
+				type = Map.class;
+			}
+			return type;
 		}
 	}
 
