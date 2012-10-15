@@ -256,7 +256,14 @@ dorado.widget.desktop.Desktop = $extend(dorado.widget.desktop.AbstractDesktop, /
 		 */
 		rowCount: {
 			readOnly: true
-		}
+		},
+
+		/**
+		 * 当与DesktopCarousel配合使用的时候，导航栏上对应的按钮的的提示信息。
+		 * @attribute
+		 * @type String
+		 */
+		navtip: {}
 	},
 
 	/**
@@ -942,6 +949,7 @@ dorado.widget.desktop.DesktopCarousel = $extend(dorado.widget.desktop.AbstractDe
         jQuery(button).addClassOnHover("switch-button-hover").click(function() {
             card.setCurrentButton(this);
         });
+
         if (index == undefined) {
             $fly(doms.switcherCenter).append(button);
         } else {
@@ -970,6 +978,14 @@ dorado.widget.desktop.DesktopCarousel = $extend(dorado.widget.desktop.AbstractDe
 			control.set("width", $fly(dom).width());
 			control.set("height", $fly(dom).height());
 			$fly(control._dom).css("left", i * width);
+			if(control._navtip) {
+				control._currentTip = control._navtip;
+				dorado.TipManager.initTip($fly(dom).find(".switch-button")[i], {
+					text : control._navtip
+				});
+			} else if(control._currentTip) {
+				dorado.TipManager.deleteTip($fly(dom).find(".switch-button")[i]);
+			}
 		}
 
 		if (currentControl) {
