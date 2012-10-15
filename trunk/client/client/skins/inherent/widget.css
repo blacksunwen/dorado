@@ -23,6 +23,10 @@
     top: -99999px;
 }
 
+.d-relative {
+	position: relative;
+}
+
 .d-anchor-layout {
     position: relative;
 	overflow: visible;
