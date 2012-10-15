@@ -348,7 +348,7 @@
 		 * @return {HTMLElement} DOM对象。
 		 */
 		getContentContainer: function() {
-			return this.getDom();
+			return this._container || this.getDom();
 		},
 		
 		setContentContainerVisible: function(visible) {
