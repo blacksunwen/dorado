@@ -13,6 +13,15 @@ import com.bstek.dorado.view.annotation.Widget;
 public class Desktop extends AbstractDesktop {
 	private ShortcutIconSize iconSize;
 	private List<Shortcut> items;
+	private String navtip;
+	
+	public String getNavtip() {
+		return navtip;
+	}
+
+	public void setNavtip(String navtip) {
+		this.navtip = navtip;
+	}
 
 	/**
 	 * @return the iconSize
