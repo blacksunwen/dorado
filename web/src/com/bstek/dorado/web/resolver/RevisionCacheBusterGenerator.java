@@ -6,7 +6,11 @@ import com.bstek.dorado.core.pkgs.PackageInfo;
 import com.bstek.dorado.core.pkgs.PackageManager;
 import com.bstek.dorado.util.StringAliasUtils;
 
-public class DefaultCacheBusterGenerator implements CacheBusterGenerator {
+/**
+ * @author Benny Bao (mailto:benny.bao@bstek.com)
+ * @since 2012-10-17
+ */
+public class RevisionCacheBusterGenerator implements CacheBusterGenerator {
 	private static final String UNKNOWN_VERSION = "<Unknown Version>";
 	private static String packageInfoMD5;
 

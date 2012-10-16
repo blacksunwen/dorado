@@ -14,7 +14,7 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 		</property>
 	</bean>
 
-	<bean id="dorado.cacheBusterGenerator" class="com.bstek.dorado.web.resolver.DefaultCacheBusterGenerator" />
+	<bean id="dorado.cacheBusterGenerator" class="com.bstek.dorado.web.resolver.JVMCacheBusterGenerator" />
 
 	<bean id="dorado.resourceTypeManager" class="com.bstek.dorado.web.resolver.ResourceTypeManager" />
 	<bean id="dorado.resourceTypeLoader" abstract="true" class="com.bstek.dorado.web.resolver.ResourceTypeLoader">
