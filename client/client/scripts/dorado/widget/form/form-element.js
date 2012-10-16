@@ -615,7 +615,7 @@
 				};
 				editorConfig.style = {
 					paddingLeft: this._labelWidth + this._labelSpacing + "px",
-					//height: "100%",
+					height: "100%",
 					overflow: "hidden"
 				};
 			}
