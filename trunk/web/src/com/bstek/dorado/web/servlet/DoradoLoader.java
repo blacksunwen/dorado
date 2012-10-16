@@ -30,8 +30,11 @@ import com.bstek.dorado.core.io.LocationTransformerHolder;
 import com.bstek.dorado.core.io.Resource;
 import com.bstek.dorado.core.io.ResourceLoader;
 import com.bstek.dorado.core.io.ResourceUtils;
+import com.bstek.dorado.core.pkgs.PackageConfigurer;
 import com.bstek.dorado.core.pkgs.PackageInfo;
+import com.bstek.dorado.core.pkgs.PackageListener;
 import com.bstek.dorado.core.pkgs.PackageManager;
+import com.bstek.dorado.util.SingletonBeanFactory;
 import com.bstek.dorado.util.TempFileUtils;
 import com.bstek.dorado.web.ConsoleUtils;
 import com.bstek.dorado.web.DoradoContext;
@@ -277,10 +280,62 @@ public class DoradoLoader {
 			ConsoleUtils.outputLoadingInfo("Package [" + packageInfo.getName()
 					+ " - " + packageInfo.getVersion() + "] found.");
 
+			PackageListener packageListener = null;
+			String listenerClass = packageInfo.getListener();
+			if (StringUtils.isNotBlank(listenerClass)) {
+				packageListener = (PackageListener) SingletonBeanFactory
+						.getInstance(listenerClass);
+			}
+
+			if (packageListener != null) {
+				packageListener.beforeLoadPackage(packageInfo);
+			}
+
+			PackageConfigurer packageConfigurer = null;
+			String configurerClass = packageInfo.getConfigurer();
+			if (StringUtils.isNotBlank(configurerClass)) {
+				packageConfigurer = (PackageConfigurer) SingletonBeanFactory
+						.getInstance(configurerClass);
+			}
+
+			for (String location : org.springframework.util.StringUtils
+					.tokenizeToStringArray(
+							packageInfo.getPropertiesLocations(),
+							ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS)) {
+				loadConfigureProperties(configureStore, resourceLoader,
+						location, false);
+			}
+
+			String[] locations = packageConfigurer
+					.getPropertiesConfigLocations();
+			if (locations != null) {
+				for (String location : locations) {
+					loadConfigureProperties(configureStore, resourceLoader,
+							location, false);
+				}
+			}
+
 			// 处理Spring的配置文件
 			pushLocations(contextLocations, packageInfo.getContextLocations());
+			locations = packageConfigurer.getContextConfigLocations();
+			if (locations != null) {
+				for (String location : locations) {
+					pushLocation(contextLocations, location);
+				}
+			}
+
 			pushLocations(servletContextLocations,
 					packageInfo.getServletContextLocations());
+			locations = packageConfigurer.getServletContextConfigLocations();
+			if (locations != null) {
+				for (String location : locations) {
+					pushLocation(servletContextLocations, location);
+				}
+			}
+
+			if (packageListener != null) {
+				packageListener.afterLoadPackage(packageInfo);
+			}
 		}
 
 		Resource resource;

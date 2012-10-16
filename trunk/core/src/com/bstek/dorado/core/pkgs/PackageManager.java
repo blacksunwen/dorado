@@ -307,10 +307,14 @@ public final class PackageManager {
 					}
 				}
 
+				packageInfo.setPropertiesLocations(properties
+						.getProperty("propertiesConfigLocations"));
 				packageInfo.setContextLocations(properties
 						.getProperty("contextConfigLocations"));
 				packageInfo.setServletContextLocations(properties
 						.getProperty("servletContextConfigLocations"));
+				packageInfo.setConfigurer(properties.getProperty("configurer"));
+				packageInfo.setListener(properties.getProperty("listener"));
 
 				if (packageMap.containsKey(packageName)) {
 					PackageInfo conflictPackageInfo = packageMap
