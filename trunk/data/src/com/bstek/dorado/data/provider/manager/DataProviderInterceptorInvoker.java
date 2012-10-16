@@ -428,7 +428,7 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 				optionalArgs = new Object[] { parameter };
 			}
 		} else {
-			optionalArgTypes = new Type[] { Object.class };
+			optionalArgTypes = new Type[] { null };
 			optionalArgs = new Object[] { null };
 		}
 

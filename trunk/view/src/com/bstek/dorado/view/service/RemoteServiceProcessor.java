@@ -195,7 +195,7 @@ public class RemoteServiceProcessor extends DataServiceProcessorSupport {
 					.getTypeForMatching(parameter) };
 			optionalParameters = new Object[] { parameter };
 		} else {
-			optionalParameterTypes = new Type[] { Object.class };
+			optionalParameterTypes = new Type[] { null };
 			optionalParameters = new Object[] { null };
 		}
 

@@ -142,9 +142,7 @@ public abstract class MethodAutoMatchingUtils {
 	private static void trimClassTypes(Type[] types) {
 		for (int i = 0; i < types.length; i++) {
 			Type type = types[i];
-			if (type == null) {
-				type = Object.class;
-			} else if (type instanceof Class<?>) {
+			if (type instanceof Class<?>) {
 				type = ProxyBeanUtils.getProxyTargetType((Class<?>)type);
 			}
 			types[i] = type;
