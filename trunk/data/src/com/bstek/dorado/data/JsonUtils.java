@@ -539,6 +539,12 @@ public final class JsonUtils {
 				if (jsonNode instanceof ObjectNode) {
 					return internalToJavaEntity((ObjectNode) jsonNode,
 							(EntityDataType) dataType, null, proxy, context);
+				} else if (jsonNode instanceof ArrayNode) {
+					dataType = dataTypeManager.getDataType('[' + dataType
+							.getName() + ']');
+					return internalToJavaCollection((ArrayNode) jsonNode,
+							(AggregationDataType) dataType, null, proxy,
+							context);
 				} else {
 					throw new IllegalArgumentException(
 							"Value type mismatch. expect [JSON Object].");
@@ -547,6 +553,12 @@ public final class JsonUtils {
 				if (jsonNode instanceof ArrayNode) {
 					return internalToJavaCollection((ArrayNode) jsonNode,
 							(AggregationDataType) dataType, null, proxy,
+							context);
+				} else if (jsonNode instanceof ObjectNode) {
+					DataType elementDataType = ((AggregationDataType) dataType)
+							.getElementDataType();
+					return internalToJavaEntity((ObjectNode) jsonNode,
+							(EntityDataType) elementDataType, null, proxy,
 							context);
 				} else {
 					throw new IllegalArgumentException(

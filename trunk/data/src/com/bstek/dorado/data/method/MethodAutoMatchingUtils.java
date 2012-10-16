@@ -145,7 +145,7 @@ public abstract class MethodAutoMatchingUtils {
 			if (type == null) {
 				type = Object.class;
 			} else if (type instanceof Class<?>) {
-				type = ProxyBeanUtils.getProxyTargetType((Class<?>) type);
+				type = ProxyBeanUtils.getProxyTargetType((Class<?>)type);
 			}
 			types[i] = type;
 		}
