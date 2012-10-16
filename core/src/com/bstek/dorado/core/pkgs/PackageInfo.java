@@ -8,8 +8,8 @@ public class PackageInfo {
 	private String name;
 	private String version;
 	private Dependence[] depends;
-	private String configurer;
-	private String listener;
+	private PackageConfigurer configurer;
+	private PackageListener listener;
 	private String propertiesLocations;
 	private String contextLocations;
 	private String servletContextLocations;
@@ -39,19 +39,19 @@ public class PackageInfo {
 		this.depends = depends;
 	}
 
-	public String getConfigurer() {
+	public PackageConfigurer getConfigurer() {
 		return configurer;
 	}
 
-	public void setConfigurer(String configurer) {
+	public void setConfigurer(PackageConfigurer configurer) {
 		this.configurer = configurer;
 	}
 
-	public String getListener() {
+	public PackageListener getListener() {
 		return listener;
 	}
 
-	public void setListener(String listener) {
+	public void setListener(PackageListener listener) {
 		this.listener = listener;
 	}
 
