@@ -1,5 +1,8 @@
 package com.bstek.dorado.view.widget.base.menu;
 
+import java.util.Collections;
+import java.util.List;
+
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
 import com.bstek.dorado.annotation.ClientProperty;
@@ -71,6 +74,12 @@ public abstract class TextMenuItem extends BaseMenuItem implements
 
 	public void setHideOnClick(boolean hideOnClick) {
 		this.hideOnClick = hideOnClick;
+	}
+
+	@Deprecated
+	@SuppressWarnings("unchecked")
+	public List<BaseMenuItem> getItems() {
+		return Collections.EMPTY_LIST;
 	}
 
 }
