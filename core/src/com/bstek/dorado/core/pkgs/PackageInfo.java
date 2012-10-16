@@ -13,7 +13,6 @@ public class PackageInfo {
 	private String propertiesLocations;
 	private String contextLocations;
 	private String servletContextLocations;
-	private Object userData;
 
 	public PackageInfo(String name) {
 		this.name = name;
@@ -77,13 +76,5 @@ public class PackageInfo {
 
 	public void setServletContextLocations(String servletContextLocations) {
 		this.servletContextLocations = servletContextLocations;
-	}
-
-	public Object getUserData() {
-		return userData;
-	}
-
-	public void setUserData(Object userData) {
-		this.userData = userData;
 	}
 }
