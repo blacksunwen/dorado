@@ -298,38 +298,49 @@ public class DoradoLoader {
 						.getInstance(configurerClass);
 			}
 
-			for (String location : org.springframework.util.StringUtils
-					.tokenizeToStringArray(
-							packageInfo.getPropertiesLocations(),
-							ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS)) {
-				loadConfigureProperties(configureStore, resourceLoader,
-						location, false);
-			}
-
-			String[] locations = packageConfigurer
-					.getPropertiesConfigLocations();
-			if (locations != null) {
-				for (String location : locations) {
+			if (StringUtils.isNotEmpty(packageInfo.getPropertiesLocations())) {
+				for (String location : org.springframework.util.StringUtils
+						.tokenizeToStringArray(
+								packageInfo.getPropertiesLocations(),
+								ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS)) {
 					loadConfigureProperties(configureStore, resourceLoader,
 							location, false);
 				}
 			}
 
+			String[] locations;
+			if (packageConfigurer != null) {
+				locations = packageConfigurer.getPropertiesConfigLocations();
+				if (locations != null) {
+					for (String location : locations) {
+						loadConfigureProperties(configureStore, resourceLoader,
+								location, false);
+					}
+				}
+			}
+
 			// 处理Spring的配置文件
 			pushLocations(contextLocations, packageInfo.getContextLocations());
-			locations = packageConfigurer.getContextConfigLocations();
-			if (locations != null) {
-				for (String location : locations) {
-					pushLocation(contextLocations, location);
+
+			if (packageConfigurer != null) {
+				locations = packageConfigurer.getContextConfigLocations();
+				if (locations != null) {
+					for (String location : locations) {
+						pushLocation(contextLocations, location);
+					}
 				}
 			}
 
 			pushLocations(servletContextLocations,
 					packageInfo.getServletContextLocations());
-			locations = packageConfigurer.getServletContextConfigLocations();
-			if (locations != null) {
-				for (String location : locations) {
-					pushLocation(servletContextLocations, location);
+
+			if (packageConfigurer != null) {
+				locations = packageConfigurer
+						.getServletContextConfigLocations();
+				if (locations != null) {
+					for (String location : locations) {
+						pushLocation(servletContextLocations, location);
+					}
 				}
 			}
 
