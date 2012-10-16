@@ -346,20 +346,18 @@
 		<if>
 			<istrue value="${shouldMakePom}" />
 			<then>
+				<echo message="Make Pom" />
+				
 				<copy file="${resourcesDir}/dorado-addon-template.pom"
 				      todir="${workDir}/temp" />
-				<replace dir="${workDir}/temp"
+				<replace file="${workDir}/temp/dorado-addon-template.pom"
 				         token="%revision%"
 				         value="${revision}"
-				         encoding="${srcCharset}">
-					<include name="dorado-addon-template.pom" />
-				</replace>
-				<replace dir="${workDir}/temp"
+				         encoding="${srcCharset}" />
+				<replace file="${workDir}/temp/dorado-addon-template.pom"
 				         token="%vendor%"
 				         value="${vendor}"
-				         encoding="${srcCharset}">
-					<include name="dorado-addon-template.pom" />
-				</replace>
+				         encoding="${srcCharset}" />
 
 				<ivy:makepom ivyfile="${ivyFile}"
 				             pomfile="${targetDir}/${baseFileName}.pom"
@@ -372,6 +370,35 @@
 				                     dist="${workDir}/bin"
 				                     doradoPackageFile="${workDir}/bin/META-INF/dorado-package.properties" />
 			</then>
+			<else>
+				<echo message="Find publish.pom in ${basedir}/publish.pom" />
+
+				<if>
+					<available file="${basedir}/publish.pom" />
+					<then>
+						<echo message="publish.pom Found" />
+	
+						<copy file="${basedir}/publish.pom"
+						      tofile="${targetDir}/${baseFileName}.pom" />
+						<replace file="${targetDir}/${baseFileName}.pom"
+						         token="%artifactId%"
+						         value="${addonName}"
+						         encoding="${srcCharset}" />
+						<replace file="${targetDir}/${baseFileName}.pom"
+						         token="%revision%"
+						         value="${revision}"
+						         encoding="${srcCharset}" />
+						<replace file="${targetDir}/${baseFileName}.pom"
+						         token="%vendor%"
+						         value="${vendor}"
+						         encoding="${srcCharset}" />
+
+						<makeMavenDescriptor pom="${targetDir}/${baseFileName}.pom"
+						                     dist="${workDir}/bin"
+						                     doradoPackageFile="${workDir}/bin/META-INF/dorado-package.properties" />
+					</then>
+				</if>
+			</else>
 		</if>
 	</target>
 
