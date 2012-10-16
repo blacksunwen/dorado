@@ -16,7 +16,8 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.util.ClassUtils;
+
+import com.bstek.dorado.util.clazz.ClassUtils;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -268,7 +269,7 @@ public final class PackageManager {
 	private static void doBuildPackageInfos() throws Exception {
 		Map<String, PackageInfo> packageMap = new HashMap<String, PackageInfo>();
 
-		Enumeration<URL> defaultContextFileResources = ClassUtils
+		Enumeration<URL> defaultContextFileResources = org.springframework.util.ClassUtils
 				.getDefaultClassLoader().getResources(
 						PACKAGE_PROPERTIES_LOCATION);
 		while (defaultContextFileResources.hasMoreElements()) {
@@ -313,8 +314,20 @@ public final class PackageManager {
 						.getProperty("contextConfigLocations"));
 				packageInfo.setServletContextLocations(properties
 						.getProperty("servletContextConfigLocations"));
-				packageInfo.setConfigurer(properties.getProperty("configurer"));
-				packageInfo.setListener(properties.getProperty("listener"));
+
+				String configurerClass = properties.getProperty("configurer");
+				if (StringUtils.isNotBlank(configurerClass)) {
+					Class<?> type = ClassUtils.forName(configurerClass);
+					packageInfo.setConfigurer((PackageConfigurer) type
+							.newInstance());
+				}
+
+				String listenerClass = properties.getProperty("listener");
+				if (StringUtils.isNotBlank(listenerClass)) {
+					Class<?> type = ClassUtils.forName(listenerClass);
+					packageInfo.setListener((PackageListener) type
+							.newInstance());
+				}
 
 				if (packageMap.containsKey(packageName)) {
 					PackageInfo conflictPackageInfo = packageMap

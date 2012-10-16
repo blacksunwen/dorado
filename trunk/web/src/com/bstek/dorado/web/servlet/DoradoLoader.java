@@ -34,7 +34,6 @@ import com.bstek.dorado.core.pkgs.PackageConfigurer;
 import com.bstek.dorado.core.pkgs.PackageInfo;
 import com.bstek.dorado.core.pkgs.PackageListener;
 import com.bstek.dorado.core.pkgs.PackageManager;
-import com.bstek.dorado.util.SingletonBeanFactory;
 import com.bstek.dorado.util.TempFileUtils;
 import com.bstek.dorado.web.ConsoleUtils;
 import com.bstek.dorado.web.DoradoContext;
@@ -280,23 +279,12 @@ public class DoradoLoader {
 			ConsoleUtils.outputLoadingInfo("Package [" + packageInfo.getName()
 					+ " - " + packageInfo.getVersion() + "] found.");
 
-			PackageListener packageListener = null;
-			String listenerClass = packageInfo.getListener();
-			if (StringUtils.isNotBlank(listenerClass)) {
-				packageListener = (PackageListener) SingletonBeanFactory
-						.getInstance(listenerClass);
-			}
-
+			PackageListener packageListener = packageInfo.getListener();
 			if (packageListener != null) {
 				packageListener.beforeLoadPackage(packageInfo);
 			}
 
-			PackageConfigurer packageConfigurer = null;
-			String configurerClass = packageInfo.getConfigurer();
-			if (StringUtils.isNotBlank(configurerClass)) {
-				packageConfigurer = (PackageConfigurer) SingletonBeanFactory
-						.getInstance(configurerClass);
-			}
+			PackageConfigurer packageConfigurer = packageInfo.getConfigurer();
 
 			if (StringUtils.isNotEmpty(packageInfo.getPropertiesLocations())) {
 				for (String location : org.springframework.util.StringUtils
