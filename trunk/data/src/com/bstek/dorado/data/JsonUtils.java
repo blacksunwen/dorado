@@ -540,8 +540,8 @@ public final class JsonUtils {
 					return internalToJavaEntity((ObjectNode) jsonNode,
 							(EntityDataType) dataType, null, proxy, context);
 				} else if (jsonNode instanceof ArrayNode) {
-					dataType = dataTypeManager.getDataType('[' + dataType
-							.getName() + ']');
+					dataType = getDataTypeManager().getDataType(
+							'[' + dataType.getName() + ']');
 					return internalToJavaCollection((ArrayNode) jsonNode,
 							(AggregationDataType) dataType, null, proxy,
 							context);
