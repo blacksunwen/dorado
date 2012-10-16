@@ -143,7 +143,7 @@ public abstract class MethodAutoMatchingUtils {
 		for (int i = 0; i < types.length; i++) {
 			Type type = types[i];
 			if (type instanceof Class<?>) {
-				type = ProxyBeanUtils.getProxyTargetType((Class<?>)type);
+				type = ProxyBeanUtils.getProxyTargetType((Class<?>) type);
 			}
 			types[i] = type;
 		}
@@ -882,12 +882,8 @@ public abstract class MethodAutoMatchingUtils {
 	}
 
 	private static int isTypesCompatible(Type targetType, Type sourceType) {
-		if (!(targetType instanceof Class<?> && sourceType instanceof Class<?>)) {
-			return 0;
-		}
-
-		Class<?> targetClass = (Class<?>) targetType;
-		Class<?> sourceClass = (Class<?>) sourceType;
+		Class<?> targetClass = toClass(targetType);
+		Class<?> sourceClass = toClass(sourceType);
 
 		boolean b = targetClass.isAssignableFrom(sourceClass)
 				|| sourceClass.isAssignableFrom(targetClass);
