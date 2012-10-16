@@ -221,7 +221,7 @@ public class DataResolverInterceptorInvoker implements MethodInterceptor {
 					.getTypeForMatching(parameter) };
 			parameterArgs = new Object[] { parameter };
 		} else {
-			parameterArgTypes = new Type[] { Object.class };
+			parameterArgTypes = new Type[] { null };
 			parameterArgs = new Object[] { null };
 		}
 
