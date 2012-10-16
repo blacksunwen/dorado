@@ -468,12 +468,18 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 		if(callback && options && options.timeout) {
 			connObj.timeoutTimerId = $setTimeout(this, function() {
 				try {
-					if(taskId)
+					if (taskId) {
 						dorado.util.TaskIndicator.hideTaskIndicator(taskId);
+					}
 
-					var result = dorado.util.AjaxResult(options);
-					result._init(connObj);
-					result._setException(new dorado.util.AjaxException("Async Request Timeout.", null, connObj));
+					var result = new dorado.util.AjaxResult(options);
+					try {
+						result._init(connObj);
+					}
+					catch (e) {
+						// do nothing
+					}
+					result._setException(new dorado.util.AjaxTimeoutException($resource("dorado.core.AsyncRequestTimeout", options.timeout), null, connObj));
 					$callback(callback, false, result, {
 						scope : this
 					});
@@ -698,6 +704,7 @@ dorado.util.AjaxEngine._parseXml = function(xml) {
 		return xmlDoc;
 	}
 };
+
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @class 用于描述Ajax操作(包含同步请求)过程中发生的异常信息的对象。
@@ -706,8 +713,7 @@ dorado.util.AjaxEngine._parseXml = function(xml) {
  * @param {String} [description] 异常的描述信息。
  * @param {XMLHttpRequest} [connObj] 用于实现远程访问的XMLHttpRequest对象。
  */
-dorado.util.AjaxException = $extend(dorado.Exception, /** @scope dorado.util.AjaxException.prototype */
-{
+dorado.util.AjaxException = $extend(dorado.Exception, /** @scope dorado.util.AjaxException.prototype */ {
 	$className : "dorado.util.AjaxException",
 
 	constuctor : function(message, description, connObj) {
@@ -769,6 +775,18 @@ dorado.util.AjaxException = $extend(dorado.Exception, /** @scope dorado.util.Aja
 			text += '\n' + this.description;
 		return text;
 	}
+});
+
+/**
+ * @author Benny Bao (mailto:benny.bao@bstek.com)
+ * @class Ajax操作的超时异常。
+ * @extends dorado.util.AjaxException
+ * @param {String} [message] 异常消息。
+ * @param {String} [description] 异常的描述信息。
+ * @param {XMLHttpRequest} [connObj] 用于实现远程访问的XMLHttpRequest对象。
+ */
+dorado.util.AjaxTimeoutException = $extend(dorado.util.AjaxException, /** @scope dorado.util.AjaxTimeoutException.prototype */ {
+	$className : "dorado.util.AjaxTimeoutException"
 });
 
 /**
