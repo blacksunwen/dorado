@@ -78,7 +78,7 @@
 					$type: "Dock",
 					padding: 1
 				},
-				caption: "Dorado Debugger",
+				caption: "Dorado Debugger(" +  dorado.Core.VERSION + ")",
 				width: 800,
 				height: 500,
 				dragOutside: true,
