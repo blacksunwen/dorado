@@ -80,7 +80,9 @@
 			 * @attribute
 			 * @type int
 			 */
-			minPosition: {},
+			minPosition: {
+				defaultValue: 50
+			},
 
 			/**
 			 * 边组件的当前位置。
@@ -633,8 +635,6 @@
 						break;
 				}
 				$fly(doms.splitter).css(splitterStyle);
-
-
 
 				switch (direction) {
 					case "left":

@@ -16,17 +16,25 @@
 			id: "tip1",
 			text: "测试测试测试测试<br />测试测试测试测试<br />测试测试测试测试<br />",
             content: "",
+            /**
 			anchorTarget: "#tip-target6",
 			arrowDirection: "left",
 			align: "right",
 			vAlign: "center",
+            */
 			closeable: true,
-			visible: true
+            offsetTop: 10,
+            offsetLeft: 50,
+            onCreate: function(self) {
+                $setInterval(this, function(){
+                    self.show();
+                },1000);
+            }
 		});
 
 		$(document).ready(function() {
 			view.render(document.body);
-			tip.show();
+			//tip.show();
 
 			dorado.TipManager.initTip(document.getElementById("tip-target1"), {
 				text: "外部的Tooltip"

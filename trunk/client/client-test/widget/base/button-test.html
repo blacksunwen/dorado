@@ -94,6 +94,7 @@
             var buttonWidth = new dorado.widget.Button("buttonWidth");
             buttonWidth.set("icon", "del.gif");
             buttonWidth.set("menu", testMenu);
+            buttonWidth.set("caption", "teststs");
             buttonWidth.addListener("onClick", function(self) {
             	self.set("disabled", true);
 				var options = {
@@ -127,7 +128,7 @@
             var buttonHaveNoClick = new dorado.widget.Button("buttonHaveNoClick");
             buttonHaveNoClick.set("caption", "Button(No onClick)");
             buttonHaveNoClick.set("menu", testMenu);
-            buttonHaveNoClick.set("icon", "del.gif");
+            buttonHaveNoClick.set("icon", "url(>skin>common/icons.gif) -40px -0px");
 			buttonHaveNoClick.set("width", 300);
 			buttonHaveNoClick.set("exClassName", "text-align-left");
             //buttonHaveNoClick.set("toggleOnShowMenu", false);

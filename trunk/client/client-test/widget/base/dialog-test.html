@@ -20,7 +20,8 @@
             //showAnimateType: "zoom",
             //hideAnimateType: "zoom",
             width: 400,
-            minWidth: 150
+            minWidth: 150,
+            height: "60%"
             //,left: 200
             //,top: 50
             //,modal: true
@@ -35,6 +36,14 @@
             ,onShow: function(self) {
                 self.set("caption", "modified caption.");
             },
+            tools: [{
+                $type: "SimpleIconButton",
+                icon: "url(>skin>common/icons.gif) -20px -60px",
+                listener: {
+                    onClick: function() {
+                    }
+                }
+            }],
             children: [
             ]
             ,buttons: [new dorado.widget.Button({
@@ -61,7 +70,10 @@
         });
 
         dialog.addChild(new dorado.widget.Container({
-            height: 1000
+            height: 1000,
+            style: {
+                "background-color": "#ddd"
+            }
         }));
 
         var dialog2 = new dorado.widget.Dialog({
@@ -140,13 +152,12 @@
         });
 
         view.addChild(toolbar);
-        view.addChild(dialog);
 
         $(document).ready(function() {
             view.render(document.body);
         });
     </script>
 </head>
-<body style="margin:0;padding:0;height: 800px;">
+<body style="margin:0;padding:0;">
 </body>
 </html>

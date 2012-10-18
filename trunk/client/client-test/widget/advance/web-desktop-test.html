@@ -210,6 +210,7 @@
         var taskbar = new dorado.widget.desktop.Taskbar({
 			startButton: startButton,
 			showTimeLabel: true,
+            //timeLabelFormat: "Y-m-d H时i分",
 			quickButtons: [{
 				//icon: "images/writer-small.png",
                 appId: "app2",
@@ -250,13 +251,12 @@
         });
 
         var desktop = new dorado.widget.desktop.Desktop({
-			iconSize: "small",
+            navtip: "test",
+			iconSize: "medium",
             items: [{
                 icon: "images/writer.png",
                 caption: "Writer",
                 appId: "writer"
-            }, {
-                appId: "app2"
             }, {
 				icon: "images/desktop-wallpaper.png",
 				caption: "Wallpaper",
@@ -269,35 +269,13 @@
         });
 
 		var desktop2 = new dorado.widget.desktop.Desktop({
+            navtip: "test3",
 			iconSize: "small",
-            items: [{
-                icon: "images/column.png",
-                caption: "Column Chart",
-                appId: "chart1"
-            }, {
-                icon: "images/bar.png",
-                caption: "Bar Chart",
-                appId: "chart2"
-            }, {
-				icon: "images/line.png",
-				caption: "Line Chart",
-                appId: "chart3"
-			}, {
-                icon: "images/area.png",
-                caption: "Area Chart",
-				appId: "chart4"
-            }, {
-                icon: "images/radar.png",
-                caption: "Radar Chart",
-				appId: "chart5"
-            }, {
-				icon: "images/pie.png",
-                caption: "Pie Chart",
-				appId: "chart6"
-			}]
+            items: []
         });
 
 		var desktop3 = new dorado.widget.desktop.Desktop({
+            navtip: "test5",
 			iconSize: "small",
             items: [{
                 icon: "images/clock.png",
@@ -320,7 +298,110 @@
 		var shell = new dorado.widget.desktop.Shell({
 			wallpaper: "wallpapers/Sea Mist.jpg",
 			taskbar: taskbar,
-			desktop: card
+			desktop: card,
+            onReady: function() {
+                var app2 = factory.registerApp({
+                    id: "app2",
+                    $type: "IFrame",
+                    icon48: "images/phone.png",
+                    icon32: "images/phone.png",
+                    icon16: "images/phone.png",
+                    path: "phone-manage.html",
+                    caption: "Phone Manage"
+                });
+
+                var item = new dorado.widget.desktop.Shortcut({
+                    appId: "app2"
+                });
+
+                desktop.addItem(item);
+
+                var chart1 = factory.registerApp({
+                    id: "chart1",
+                    $type: "IFrame",
+                    attrs: {
+                        icon16: "images/column-small.png",
+                        icon32: "images/column.png",
+                        icon48: "images/column-small.png",
+                        caption: "Column Chart",
+                        path: "../chart/column-chart-test.html"
+                    }
+                });
+
+                var chart2 = factory.registerApp({
+                    id: "chart2",
+                    $type: "IFrame",
+                    attrs: {
+                        caption: "Bar Chart",
+                        path: "../chart/bar-chart-test.html"
+                    }
+                });
+
+                var chart3 = factory.registerApp({
+                    id: "chart3",
+                    $type: "IFrame",
+                    attrs: {
+                        caption: "Line Chart",
+                        path: "../chart/line-chart-test.html"
+                    }
+                });
+
+                var chart4 = factory.registerApp({
+                    id: "chart4",
+                    $type: "IFrame",
+                    attrs: {
+                        caption: "Area Chart",
+                        path: "../chart/area-chart-test.html"
+                    }
+                });
+
+                var chart5 = factory.registerApp({
+                    id: "chart5",
+                    $type: "IFrame",
+                    attrs: {
+                        caption: "Radar Chart",
+                        path: "../chart/radar-chart-test.html"
+                    }
+                });
+
+                var chart6 = factory.registerApp({
+                    id: "chart6",
+                    $type: "IFrame",
+                    attrs: {
+                        caption: "Pie Chart",
+                        path: "../chart/pie-chart-test.html"
+                    }
+                });
+
+                var items = [{
+                    caption: "Column Chart",
+                    appId: "chart1"
+                }, {
+                    icon: "images/bar.png",
+                            caption: "Bar Chart",
+                            appId: "chart2"
+                }, {
+                    icon: "images/line.png",
+                            caption: "Line Chart",
+                            appId: "chart3"
+                }, {
+                    icon: "images/area.png",
+                            caption: "Area Chart",
+                            appId: "chart4"
+                }, {
+                    icon: "images/radar.png",
+                    caption: "Radar Chart",
+                    appId: "chart5"
+                }, {
+                    icon: "images/pie.png",
+                        caption: "Pie Chart",
+                        appId: "chart6"
+                }];
+
+                items.forEach(function(item) {
+                    desktop.addItem(item);
+                });
+            }
 		});
 
 		view.addChild(shell);
@@ -340,16 +421,7 @@
 					maximizeable: true
 				});
 			}
-		}, false), app2 = factory.registerApp({
-			id: "app2",
-			$type: "IFrame",
-            icon32: "images/phone.png",
-            icon16: "images/phone.png",
-			attrs: {
-				path: "phone-manage.html",
-				caption: "Phone Manage"
-			}
-		}), app3 = factory.registerApp({
+		}, false), app3 = factory.registerApp({
 			id: "app4",
 			doCreateControl: function() {
 				var canvas = new dorado.widget.ImageCanvas({
@@ -636,62 +708,6 @@
 				});
 
 				return sketchChart
-			}
-		});
-
-		var chart1 = factory.registerApp({
-			id: "chart1",
-			$type: "IFrame",
-			attrs: {
-                icon16: "images/column-small.png",
-                icon32: "images/column.png",
-				caption: "Column Chart",
-				path: "../chart/column-chart-test.html"
-			}
-		});
-
-		var chart2 = factory.registerApp({
-			id: "chart2",
-			$type: "IFrame",
-			attrs: {
-				caption: "Bar Chart",
-				path: "../chart/bar-chart-test.html"
-			}
-		});
-
-		var chart3 = factory.registerApp({
-			id: "chart3",
-			$type: "IFrame",
-			attrs: {
-				caption: "Line Chart",
-				path: "../chart/line-chart-test.html"
-			}
-		});
-
-		var chart4 = factory.registerApp({
-			id: "chart4",
-			$type: "IFrame",
-			attrs: {
-				caption: "Area Chart",
-				path: "../chart/area-chart-test.html"
-			}
-		});
-
-		var chart5 = factory.registerApp({
-			id: "chart5",
-			$type: "IFrame",
-			attrs: {
-				caption: "Radar Chart",
-				path: "../chart/radar-chart-test.html"
-			}
-		});
-
-		var chart6 = factory.registerApp({
-			id: "chart6",
-			$type: "IFrame",
-			attrs: {
-				caption: "Pie Chart",
-				path: "../chart/pie-chart-test.html"
 			}
 		});
 

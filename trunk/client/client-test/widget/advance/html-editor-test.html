@@ -52,17 +52,20 @@
                     $type: "Control",
                     caption: "test",
                     control: {
-                        $type: "AutoForm",
-                        cols: "*",
-                        elements: [
-                            {
-                                property: "alignment",
-                                label: "对齐方式",
-                                type: "text",
-                                editor: richEditor
-                            },
-                            editor
-                        ]
+                        $type: "FieldSet",
+                        children: [{
+                            $type: "AutoForm",
+                            cols: "*",
+                            elements: [
+                                {
+                                    property: "alignment",
+                                    label: "对齐方式",
+                                    type: "text",
+                                    editor: richEditor
+                                },
+                                editor
+                            ]
+                        }]
                     }
                 }]
             }],
@@ -92,7 +95,6 @@
         }));
 
 		$(document).ready(function() {
-            editor.render(document.body);
             view.render(document.body);
 		});
 	</script>
