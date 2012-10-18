@@ -69,6 +69,7 @@
 					});
 				}
 				if (dataType instanceof dorado.DataType) {
+					var rudeData = data;
 					data = dataType.parse(data);
 					
 					if (this.FIRE_ON_ENTITY_LOAD) {
@@ -77,6 +78,11 @@
 							eventArg.entity = data;
 							dataType.fireEvent("onEntityLoad", dataType, eventArg);
 						} else if (data instanceof dorado.EntityList) {
+							if (rudeData.$isWrapper) {
+								data.pageSize = rudeData.pageSize;
+								data.pageNo = rudeData.pageNo;
+							}
+							
 							var elementDataType = dataType.get("elementDataType");
 							if (elementDataType) {
 								for (var it = data.iterator(); it.hasNext();) {

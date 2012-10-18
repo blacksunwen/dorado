@@ -238,7 +238,7 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 		entity: {
 			getter: function() {
 				if (this._dataSet && this._dataSet._ready) {
-					var entity = this._dataSet.getData(this._dataPath);
+					var entity = this._dataSet.getData(this._dataPath, "auto");
 					if (entity && entity instanceof dorado.EntityList) {
 						entity = entity.current;
 					}
