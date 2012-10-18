@@ -122,7 +122,24 @@ dorado.widget.Section = $extend(dorado.widget.Control, /** @scope dorado.widget.
 				this._control = value;
 			}
 		},
-		
+
+		/**
+		 * 隐藏模式，表示当用户将该控件的visible属性设置为false时，系统应通过怎样的方式隐藏它。取值范围如下：
+		 * <ul>
+		 * <li>visibility	-	仅将此控件的设置为不可见，它仍将占用布局控件。</li>
+		 * <li>display	-	将此控件从布局中抹去，且其他控件可以占用它空出的位置。</li>
+		 * </ul>
+		 * @type boolean
+		 * @default "display"
+		 * @attribute skipRefresh writeBeforeReady
+		 */
+		hideMode: {
+			skipRefresh: true,
+			writeBeforeReady: true,
+			readOnly: true,
+			defaultValue : "display"
+		},
+
 		/**
 		 * 用户自定义数据。
 		 * @type Object
@@ -169,6 +186,11 @@ dorado.widget.Section = $extend(dorado.widget.Control, /** @scope dorado.widget.
 		doms.captionBar = captionBar._dom;
 		
 		return dom;
+	},
+
+	refreshDom: function(dom) {
+		$invokeSuper.call(this, arguments);
+		$fly(dom).toggleClass(this._className + "-disabled", !!(this._disabled));
 	},
 	
 	doRenderControl: function() {
@@ -514,7 +536,9 @@ dorado.widget.Accordion = $extend(dorado.widget.Control, /** @scope dorado.widge
 		
 		if (currentSection) {
 			$fly(currentSection._dom).addClass("current-section");
-			currentSection.setActualVisible(true);
+			if (currentSection._control) {
+				currentSection._control.setActualVisible(true);
+			}
 		}
 		
 		var sectionMinHeight, ctHeight, accordionHeight = $fly(dom).height(), visibleCount = accordion.getVisibleSectionCount();
@@ -527,7 +551,9 @@ dorado.widget.Accordion = $extend(dorado.widget.Control, /** @scope dorado.widge
 				
 				if (currentSection != section) {
 					$fly(section._dom).removeClass("current-section");
-                    section.setActualVisible(false);
+					if (section._control) {
+						section._control.setActualVisible(false);
+					}
 				}
 				
 				if (typeof sectionMinHeight != "number") {
