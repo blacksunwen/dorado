@@ -50,7 +50,7 @@ public abstract class AbstractDoradoTestCase extends TestCase {
 			"com/bstek/dorado/junit/test-context.xml"
 		};
 
-	private static class TestContext extends CommonContext {
+	private class TestContext extends CommonContext {
 		private ApplicationContext applicationContext;
 		
 		TestContext()  {
@@ -60,8 +60,7 @@ public abstract class AbstractDoradoTestCase extends TestCase {
 				Context.attachToThreadLocal(this);
 				
 				this.initApplicationContext();
-				ConfigureStore store = Configure.getStore();
-				store.set("core.runMode", "debug");
+				beforeStartupListener();
 				EngineStartupListenerManager.notifyStartup();
 			} catch (Exception e) {
 				throw new RuntimeException(e);
@@ -84,6 +83,11 @@ public abstract class AbstractDoradoTestCase extends TestCase {
 				Context.dettachFromThreadLocal();
 			}
 		}
+	}
+	
+	protected void beforeStartupListener() {
+		ConfigureStore store = Configure.getStore();
+		store.set("core.runMode", "debug");
 	}
 	
 	private TestContext testContext;
