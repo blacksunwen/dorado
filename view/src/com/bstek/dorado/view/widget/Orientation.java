@@ -5,5 +5,5 @@ package com.bstek.dorado.view.widget;
  * @since 2010-8-7
  */
 public enum Orientation {
-	horizental, vertival
+	horizental, vertical
 }
