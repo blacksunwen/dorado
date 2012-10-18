@@ -70,8 +70,7 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
 		 */
 		value: {
             setter: function(value){
-                var slider = this, minValue = slider._minValue, maxValue = slider._maxValue;
-	            var parseValue = parseFloat(value);
+                var slider = this, minValue = slider._minValue, maxValue = slider._maxValue, parseValue = parseFloat(value);
 	            if (isNaN(parseValue)) {
 		            throw new dorado.ResourceException("dorado.baseWidget.NumberFormatInvalid", value);
 	            }
@@ -80,7 +79,8 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
 		            throw new dorado.ResourceException("dorado.baseWidget.NumberRangeInvalid", minValue, maxValue, value);
 	            }
 
-                value = slider.getValidValue(parseValue);
+	            value = slider.getValidValue(parseValue);
+
 				var eventArg = {
 					value: slider._value
 				};
@@ -128,10 +128,14 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
          */
         onValueChange: {}
     },
-	constructor: function() {
-		$invokeSuper.call(this, arguments);
+	constructor: function(config) {
+		var value = config.value;
+		delete config.value;
 
-		this._value = this.getValidValue(this._value);
+		$invokeSuper.call(this, arguments);
+		if (value) this.set({ value: value });
+
+		//this._value = this.getValidValue(this._value);
 	},
 	createDom: function() {
 		var slider = this, dom, doms = {}, orientation = slider._orientation;
@@ -266,8 +270,7 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
 
 				if (right > total) {
 					result = formatDecimal(maxValue, slider._precision);
-				}
-				else {
+				} else {
 					if (Math.abs(minValue + step * right - result) > Math.abs(minValue + step * left - result)) {
 						result = formatDecimal(minValue + step * left, slider._precision);
 					} else {
@@ -294,8 +297,7 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
 			size = $fly(dom).innerWidth();
 			thumbSize = $fly(doms.thumb).outerWidth();
 			offset = pageX - position.left;
-		}
-		else {
+		} else {
 			size = $fly(dom).innerHeight();
 			thumbSize = $fly(doms.thumb).outerHeight();
 			offset = pageY - position.top;
@@ -304,8 +306,7 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
 		var percent = (offset - thumbSize / 2) / (size - thumbSize);
 		if (percent < 0) {
 			percent = 0;
-		}
-		else {
+		} else {
 			if (percent > 1) {
 				percent = 1;
 			}
