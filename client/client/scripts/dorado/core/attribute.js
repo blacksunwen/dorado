@@ -345,7 +345,7 @@
 
 				if (preventOverwriting) watcher = this.getAttributeWatcher();
 				for ( var i = 0; i < attrInfos.length; i++) {
-					attrInfo = attrInfos[i];
+					var attrInfo = attrInfos[i];
 					if (preventOverwriting && watcher.getWritingTimes(attrInfo.attr)) continue;
 					try {
 						this.doSet(attrInfo.attr, attrInfo.value, skipUnknownAttribute, lockWritingTimes);

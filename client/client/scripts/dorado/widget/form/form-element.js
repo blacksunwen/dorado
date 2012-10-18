@@ -369,10 +369,11 @@
 	 * 为了使用户能够更加方便的对表单元素的属性进行批量的设置，dorado特别提供了FormProfile组件来对表单元素进行增强。 其具体用法请参考{@link dorado.widget.FormProfile}的说明。
 	 * </p>
 	 * @extends dorado.widget.Control
+	 * @extends dorado.widget.PropertyDataControl
 	 * @extends dorado.widget.FormConfig
 	 * @see dorado.widget.FormProfile
 	 */
-	dorado.widget.FormElement = $extend([dorado.widget.Control, dorado.widget.FormConfig], /** @scope dorado.widget.FormElement.prototype */ {
+	dorado.widget.FormElement = $extend([dorado.widget.Control, dorado.widget.PropertyDataControl, dorado.widget.FormConfig], /** @scope dorado.widget.FormElement.prototype */ {
 		$className: "dorado.widget.FormElement",
 		
 		ATTRIBUTES: /** @scope dorado.widget.FormElement.prototype */ {
@@ -424,8 +425,8 @@
 			},
 			
 			dataSet: {
-				setter: function(v) {
-					this._dataSet = v;
+				setter: function(dataSet, attr) {
+					dorado.widget.DataControl.prototype.ATTRIBUTES.dataSet.setter.call(this, dataSet, attr);
 					delete this._propertyDef;
 					this.resetBinding();
 				}
