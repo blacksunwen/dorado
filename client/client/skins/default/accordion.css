@@ -19,6 +19,15 @@
 	background: transparent 0 center no-repeat;
 }
 
+.d-section-disabled .d-section-caption-bar .caption-bar-icon {
+    filter: alpha(opacity =   50);
+    opacity: 0.5;
+}
+
+.d-section-disabled .d-section-caption-bar .caption {
+    color: #aaa;
+}
+
 .d-accordion .current-section .d-section-caption-bar{
 	background: url(base/section-caption-bar-bg.gif) bottom;
 	border: 1px solid #7CA7D9;
