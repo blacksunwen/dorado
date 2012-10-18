@@ -122,7 +122,7 @@
 			options.iframeFix = true;
 		}
 		*/
-		return oldDraggable.call(this, options);
+		return oldDraggable.apply(this, arguments);
 	};
 
 	/**

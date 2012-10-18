@@ -10,9 +10,11 @@
         var slider1 = new dorado.widget.Slider({
             id: "slider1",
             //step: 5,
-            minValue: 2,
+            minValue: 0,
             maxValue: 10,
             width: 500,
+            value: 1.19,
+            precision: 1,
             listener: {
                 beforeValueChange: function(self, value){
                     if(value > 50){

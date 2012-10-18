@@ -100,7 +100,14 @@
 			view.addChild(editor4);
 			
 			var dropdown5 = new dorado.widget.DateDropDown({
-				id: "dropdown5"
+				id: "dropdown5",
+                onValueSelect: function(self, arg) {
+                    var value = arg.selectedValue;
+
+                    if (value) {
+                        arg.selectedValue = value.formatDate("Y-m-d");
+                    }
+                }
 			});
 			view.addChild(dropdown5);
 			
