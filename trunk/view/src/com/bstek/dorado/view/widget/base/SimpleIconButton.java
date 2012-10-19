@@ -15,6 +15,7 @@ import com.bstek.dorado.view.annotation.Widget;
 public class SimpleIconButton extends SimpleButton {
 	private String icon;
 	private String iconClass;
+	private boolean showTrigger;
 
 	@IdeProperty(highlight = 1)
 	public String getIcon() {
@@ -31,5 +32,13 @@ public class SimpleIconButton extends SimpleButton {
 
 	public void setIconClass(String iconClass) {
 		this.iconClass = iconClass;
+	}
+	
+	public boolean getShowTrigger() {
+		return showTrigger;
+	}
+
+	public void setShowTrigger(boolean showTrigger) {
+		this.showTrigger = showTrigger;
 	}
 }
