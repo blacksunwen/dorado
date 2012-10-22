@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<config>
-	<Packages>
-		<Package name="chart" pattern="dorado-js" depends="widget">
-			scripts/dorado/chart
-		</Package>
-	</Packages>
-</config>
