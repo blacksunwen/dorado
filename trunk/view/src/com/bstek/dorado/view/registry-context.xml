@@ -142,6 +142,4 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 	<bean id="com.bstek.dorado.view.widget.blockview.DataBlockView" parent="dorado.defaultComponentTypeRegister" />
 	<bean id="com.bstek.dorado.view.widget.treegrid.TreeGrid" parent="dorado.defaultComponentTypeRegister" />
 	<bean id="com.bstek.dorado.view.widget.treegrid.DataTreeGrid" parent="dorado.defaultComponentTypeRegister" />
-
-	<bean id="com.bstek.dorado.view.widget.portal.Portal" parent="dorado.defaultComponentTypeRegister" />
 </beans>
