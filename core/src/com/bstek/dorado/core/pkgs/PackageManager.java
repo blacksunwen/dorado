@@ -377,7 +377,7 @@ public final class PackageManager {
 		}
 	}
 
-	protected static void buildPackageInfos() throws Exception {
+	private static void buildPackageInfos() throws Exception {
 		if (!packageInfoBuilded) {
 			packageInfoBuilded = true;
 			doBuildPackageInfos();

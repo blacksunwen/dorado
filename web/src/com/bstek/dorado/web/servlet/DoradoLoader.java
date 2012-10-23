@@ -281,7 +281,7 @@ public class DoradoLoader {
 
 			PackageListener packageListener = packageInfo.getListener();
 			if (packageListener != null) {
-				packageListener.beforeLoadPackage(packageInfo);
+				packageListener.beforeLoadPackage(packageInfo, resourceLoader);
 			}
 
 			PackageConfigurer packageConfigurer = packageInfo.getConfigurer();
@@ -298,7 +298,8 @@ public class DoradoLoader {
 
 			String[] locations;
 			if (packageConfigurer != null) {
-				locations = packageConfigurer.getPropertiesConfigLocations();
+				locations = packageConfigurer
+						.getPropertiesConfigLocations(resourceLoader);
 				if (locations != null) {
 					for (String location : locations) {
 						loadConfigureProperties(configureStore, resourceLoader,
@@ -311,7 +312,8 @@ public class DoradoLoader {
 			pushLocations(contextLocations, packageInfo.getContextLocations());
 
 			if (packageConfigurer != null) {
-				locations = packageConfigurer.getContextConfigLocations();
+				locations = packageConfigurer
+						.getContextConfigLocations(resourceLoader);
 				if (locations != null) {
 					for (String location : locations) {
 						pushLocation(contextLocations, location);
@@ -324,7 +326,7 @@ public class DoradoLoader {
 
 			if (packageConfigurer != null) {
 				locations = packageConfigurer
-						.getServletContextConfigLocations();
+						.getServletContextConfigLocations(resourceLoader);
 				if (locations != null) {
 					for (String location : locations) {
 						pushLocation(servletContextLocations, location);
@@ -333,7 +335,7 @@ public class DoradoLoader {
 			}
 
 			if (packageListener != null) {
-				packageListener.afterLoadPackage(packageInfo);
+				packageListener.afterLoadPackage(packageInfo, resourceLoader);
 			}
 		}
 
