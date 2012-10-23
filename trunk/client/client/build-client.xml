@@ -14,7 +14,6 @@
 				<include name="tree.css" />
 				<include name="block-view.css" />
 				<include name="debugger.css" />
-				<include name="portal.css" />
 			</fileset>
 		</copy>
 
@@ -249,8 +248,6 @@
 				<file name="ajax.js" />
 			</filelist>
 		</concat>
-
-		<copy file="${src}/scripts/dorado/widget/advance/portal.js" todir="${dist}/scripts/dorado" />
 	</target>
 
 	<target name="copyLibs">

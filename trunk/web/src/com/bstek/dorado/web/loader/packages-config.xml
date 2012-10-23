@@ -91,13 +91,6 @@
 			scripts/dorado/tree-grid
 		</Package>
 
-		<Package name="portal-skin" pattern="dorado-css">
-			skins/~current/portal
-		</Package>
-		<Package name="portal" pattern="dorado-js" depends="base-widget,portal-skin">
-			scripts/dorado/portal
-		</Package>
-
 		<Package name="debugger-skin" pattern="dorado-css">
 			skins/~current/debugger
 		</Package>
