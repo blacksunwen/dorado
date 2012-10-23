@@ -84,14 +84,6 @@ public class DoradoLoader {
 		return SingletonHolder.instance;
 	}
 
-	private String getRealResourcePath(String location) {
-		if (location != null && location.startsWith(HOME_LOCATION_PREFIX)) {
-			location = ResourceUtils.concatPath(doradoHome,
-					location.substring(HOME_LOCATION_PREFIX_LEN));
-		}
-		return location;
-	}
-
 	public String[] getRealResourcesPath(List<String> locations)
 			throws IOException {
 		if (locations == null || locations.isEmpty()) {
@@ -99,7 +91,6 @@ public class DoradoLoader {
 		}
 		List<String> result = new ArrayList<String>();
 		for (String location : locations) {
-			location = getRealResourcePath(location);
 			if (StringUtils.isNotEmpty(location)) {
 				result.add(location);
 			}
@@ -132,8 +123,7 @@ public class DoradoLoader {
 		ConsoleUtils.outputLoadingInfo("Loading configure from ["
 				+ configureLocation + "]...");
 		if (StringUtils.isNotEmpty(configureLocation)) {
-			Resource resource = resourceLoader
-					.getResource(getRealResourcePath(configureLocation));
+			Resource resource = resourceLoader.getResource(configureLocation);
 			if (!resource.exists()) {
 				if (silence) {
 					logger.warn("Can not found resource [" + configureLocation
@@ -237,7 +227,18 @@ public class DoradoLoader {
 
 		// 创建一个临时的ResourceLoader
 		ResourceLoader resourceLoader = new ServletContextResourceLoader(
-				servletContext);
+				servletContext) {
+			@Override
+			public Resource getResource(String resourceLocation) {
+				if (resourceLocation != null
+						&& resourceLocation.startsWith(HOME_LOCATION_PREFIX)) {
+					resourceLocation = ResourceUtils.concatPath(doradoHome,
+							resourceLocation
+									.substring(HOME_LOCATION_PREFIX_LEN));
+				}
+				return super.getResource(resourceLocation);
+			}
+		};
 
 		// 读取configure.properties
 		loadConfigureProperties(configureStore, resourceLoader,
@@ -349,8 +350,7 @@ public class DoradoLoader {
 			}
 		}
 
-		resource = resourceLoader
-				.getResource(getRealResourcePath(HOME_CONTEXT_XML));
+		resource = resourceLoader.getResource(HOME_CONTEXT_XML);
 		if (resource.exists()) {
 			pushLocations(contextLocations, HOME_CONTEXT_XML);
 		}
@@ -358,8 +358,7 @@ public class DoradoLoader {
 		if (StringUtils.isNotEmpty(runMode)) {
 			String extHomeContext = HOME_CONTEXT_PREFIX + '-' + runMode
 					+ CONTEXT_FILE_EXT;
-			resource = resourceLoader
-					.getResource(getRealResourcePath(extHomeContext));
+			resource = resourceLoader.getResource(extHomeContext);
 			if (resource.exists()) {
 				pushLocations(contextLocations, extHomeContext);
 			}
@@ -371,8 +370,7 @@ public class DoradoLoader {
 		if (intParam != null) {
 			pushLocations(servletContextLocations, intParam);
 		}
-		resource = resourceLoader
-				.getResource(getRealResourcePath(HOME_SERVLET_CONTEXT_XML));
+		resource = resourceLoader.getResource(HOME_SERVLET_CONTEXT_XML);
 		if (resource.exists()) {
 			pushLocations(servletContextLocations, HOME_SERVLET_CONTEXT_XML);
 		}
@@ -380,8 +378,7 @@ public class DoradoLoader {
 		if (StringUtils.isNotEmpty(runMode)) {
 			String extHomeContext = HOME_SERVLET_CONTEXT_PREFIX + '-' + runMode
 					+ CONTEXT_FILE_EXT;
-			resource = resourceLoader
-					.getResource(getRealResourcePath(extHomeContext));
+			resource = resourceLoader.getResource(extHomeContext);
 			if (resource.exists()) {
 				pushLocations(servletContextLocations, extHomeContext);
 			}
