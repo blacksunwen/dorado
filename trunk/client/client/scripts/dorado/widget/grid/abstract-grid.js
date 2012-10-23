@@ -2839,7 +2839,8 @@
 				tagName: "DIV",
 				style: {
 					overflow: "hidden",
-					height: "100%"
+					height: "100%",
+					position: "relative"
 				}
 			});
 			var tableFrame = $DomUtils.xCreate({
