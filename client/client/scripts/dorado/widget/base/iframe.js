@@ -13,8 +13,7 @@
 	 * @class IFrame组件。
 	 * @extends dorado.widget.Control
 	 */
-	dorado.widget.IFrame = $extend(dorado.widget.Control, /** @scope dorado.widget.IFrame.prototype */
-	{
+	dorado.widget.IFrame = $extend(dorado.widget.Control, /** @scope dorado.widget.IFrame.prototype */ {
 		$className: "dorado.widget.IFrame",
         _inherentClassName: "i-iframe",
 		ATTRIBUTES: /** @scope dorado.widget.IFrame.prototype */
@@ -220,9 +219,10 @@
 			var window = this.getIFrameWindow(), actualVisible = this.isActualVisible();
 			//FIX OpenFlashChart BUG: http://bsdn.org/projects/dorado7/issue/dorado7-240
 			if (this._ready && this.isSameDomain()) {
-				if (dorado.Browser.mozilla && window && window.dorado && window.dorado.widget && window.dorado.widget.ofc) {
+				//if (dorado.Browser.mozilla && window && window.dorado && window.dorado.widget && window.dorado.widget.ofc) {
+				if (window && window.dorado && window.dorado.widget)
 					window.$topView.setActualVisible(actualVisible);
-				}
+				//}
 			}
 		},
 		
