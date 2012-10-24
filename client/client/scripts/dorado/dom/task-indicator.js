@@ -285,6 +285,7 @@ dorado.util.TaskGroupPanel = $extend(dorado.RenderableElement, { /** @scope dora
 				}
 				else {
 					panel._doms.more.style.display = "none";
+					console.log("panel.tasks.size:" + panel.tasks.size);
 					if (panel.tasks.size == 0) {
 						clearInterval(panel._intervalId);
 						panel._intervalId = null;
@@ -331,7 +332,7 @@ dorado.util.TaskGroupPanel = $extend(dorado.RenderableElement, { /** @scope dora
 		if (!panel._rendered) {
 			panel.render(document.body);
 		} else {
-			$fly(panel._dom).css("display", "");
+			$fly(panel._dom).css("display", "").css("visibility", "");
 		}
 		if (taskGroupConfig.modal) {
 			dorado.ModalManager.show(panel._dom);
@@ -347,7 +348,7 @@ dorado.util.TaskGroupPanel = $extend(dorado.RenderableElement, { /** @scope dora
 		var panel = this;
 		if (panel._rendered) {
 			var taskGroupConfig = panel.taskGroupConfig;
-			$fly(panel._dom).css("display", "none");
+			jQuery(panel._dom).css("display", "none").css("visibility", "hidden");
 			if (taskGroupConfig.modal) {
 				dorado.ModalManager.hide(panel._dom);
 			}
