@@ -2084,7 +2084,6 @@
 			 * @attribute
 			 */
 			defaultFilterOperator: {
-				defaultValue: true
 			},
 			
 			/**
