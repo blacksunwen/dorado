@@ -6,6 +6,9 @@
         <dependent-module archiveName="ide-support.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/ide-support/ide-support">
             <dependency-type>uses</dependency-type>
         </dependent-module>
+        <dependent-module archiveName="core.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/core/core">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <dependent-module archiveName="web.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/web/web">
             <dependency-type>uses</dependency-type>
         </dependent-module>
@@ -13,24 +16,6 @@
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="data.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/data/data">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="util.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/util/util">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="console.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/console/console">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="chart.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/chart/chart">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="htmleditor.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/htmleditor/htmleditor">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="desktop.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/desktop/desktop">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="core.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/core/core">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <property name="context-root" value="sample-center"/>

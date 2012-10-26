@@ -102,8 +102,7 @@ view.set(&quot;^gridFilterTest.disabled&quot;, !self.get(&quot;toggled&quot;));&
         <Property name="tags">gridTest</Property>
       </Button>
       <Button>
-        <ClientEvent name="onClick" signature="self, gridPhones">gridPhones.set(&quot;filterEntity.price&quot;, self.get(&quot;toggled&quot;) ? &quot;>3500&quot; : null).filter();&#xD;
-</ClientEvent>
+        <ClientEvent name="onClick" signature="self, gridPhones">gridPhones.set(&quot;filterEntity.price&quot;, self.get(&quot;toggled&quot;) ? &quot;>3500&quot; : null).filter();</ClientEvent>
         <Property name="caption">价格过滤</Property>
         <Property name="disabled">true</Property>
         <Property name="tags">gridFilterTest</Property>

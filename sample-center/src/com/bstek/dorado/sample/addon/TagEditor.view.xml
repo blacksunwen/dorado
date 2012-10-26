@@ -19,6 +19,7 @@
       <Property name="width">300</Property>
       <Property name="availableTagsDataSet">dataSetTags</Property>
       <Property name="availableTagsDataPath">.name</Property>
+      <Property name="text">Java,Javascript</Property>
     </TagEditor>
   </View>
 </ViewConfig>
