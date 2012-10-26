@@ -4,15 +4,10 @@
 	<comment></comment>
 	<projects>
 		<project>ide-support</project>
+		<project>core</project>
 		<project>web</project>
 		<project>view</project>
 		<project>data</project>
-		<project>util</project>
-		<project>console</project>
-		<project>chart</project>
-		<project>htmleditor</project>
-		<project>desktop</project>
-		<project>core</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

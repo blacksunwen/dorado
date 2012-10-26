@@ -5,7 +5,7 @@
   <Model/>
   <View layout="vbox padding:20">
     <Accordion>
-      <Property name="width">500</Property>
+      <Property name="width">600</Property>
       <Property name="height">400</Property>
       <Section>
         <Property name="caption">说明</Property>
