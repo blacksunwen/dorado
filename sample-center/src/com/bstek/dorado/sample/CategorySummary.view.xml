@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ViewConfig>
-  <View layout="Anchor" pageTemplate="com/bstek/dorado/sample/CategorySummary.html" title="分类简述">
-    <DataSet id="dsCategory" dataProvider="categorySummary#getCategory" dataType="ExampleCategory" loadMode="preload" parameter="${request.getParameter(&quot;categoryId&quot;)}"/>
-    <DataGrid>
-      <DataColumn/>
-    </DataGrid>
-  </View>
-</ViewConfig>

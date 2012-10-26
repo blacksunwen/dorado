@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ViewConfig>
-  <View>
-    <HtmlContainer id="PageBanner" layout="Anchor" height="42" style="background:url(${web.url('>images/page-banner-bg.gif')})">
-      <Property name="contentOverflow">hidden</Property>
-      <Label layoutConstraint="left:15; top:8" style="color:#345666; font-size:13pt; font-style:italic; font-weight:bold; white-space:noWrap" text="${virtualProperty.caption}"/>
-    </HtmlContainer>
-  </View>
-</ViewConfig>
