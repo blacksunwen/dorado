@@ -199,11 +199,14 @@ public abstract class MethodAutoMatchingUtils {
 					int matchingRate = methodDescriptor.getMatchingRate();
 					int tmpMatchingRate = tmpMethodDescriptor.getMatchingRate();
 					if (matchingRate == tmpMatchingRate) {
-						String message = getExceptionMessage(
-								"common/tooMoreMatchingMethodsByTypes",
-								methods, requiredTypes, exactTypes,
-								optionalTypes, returnType);
-						throw new MoreThanOneMethodsMatchsException(message);
+						String detail = getExceptionMessage(
+								"common/matchingMethodByTypesDetail", methods,
+								requiredTypes, exactTypes, optionalTypes,
+								returnType);
+						throw new MoreThanOneMethodsMatchsException(
+								resourceManager
+										.getString("common/tooMoreMatchingMethodsErrorHeader"),
+								detail);
 					} else if (tmpMatchingRate < matchingRate) {
 						continue;
 					}
@@ -213,10 +216,13 @@ public abstract class MethodAutoMatchingUtils {
 		}
 
 		if (methodDescriptor == null) {
-			String message = getExceptionMessage(
-					"common/noMatchingMethodByTypes", methods, requiredTypes,
-					exactTypes, optionalTypes, returnType);
-			throw new MethodAutoMatchingException(message);
+			String detail = getExceptionMessage(
+					"common/matchingMethodByTypesDetail", methods,
+					requiredTypes, exactTypes, optionalTypes, returnType);
+			throw new MethodAutoMatchingException(
+					resourceManager
+							.getString("common/noMatchingMethodErrorHeader"),
+					detail);
 		}
 		return methodDescriptor;
 	}
@@ -513,11 +519,14 @@ public abstract class MethodAutoMatchingUtils {
 					int matchingRate = methodDescriptor.getMatchingRate();
 					int tmpMatchingRate = tmpMethodDescriptor.getMatchingRate();
 					if (matchingRate == tmpMatchingRate) {
-						String message = getExceptionMessage(
-								"common/tooMoreMatchingMethodsByNames",
-								methods, requiredParameterNames,
-								optionalParameterNames, extraParameterNames);
-						throw new MoreThanOneMethodsMatchsException(message);
+						String detail = getExceptionMessage(
+								"common/matchingMethodByNamesDetail", methods,
+								requiredParameterNames, optionalParameterNames,
+								extraParameterNames);
+						throw new MethodAutoMatchingException(
+								resourceManager
+										.getString("common/tooMoreMatchingMethodsErrorHeader"),
+								detail);
 					} else if (tmpMatchingRate < matchingRate) {
 						continue;
 					}
@@ -527,11 +536,14 @@ public abstract class MethodAutoMatchingUtils {
 		}
 
 		if (methodDescriptor == null) {
-			String message = getExceptionMessage(
-					"common/noMatchingMethodByNames", methods,
+			String detail = getExceptionMessage(
+					"common/matchingMethodByNamesDetail", methods,
 					requiredParameterNames, optionalParameterNames,
 					extraParameterNames);
-			throw new MethodAutoMatchingException(message);
+			throw new MethodAutoMatchingException(
+					resourceManager
+							.getString("common/noMatchingMethodErrorHeader"),
+					detail);
 		}
 		return methodDescriptor;
 	}
@@ -770,11 +782,12 @@ public abstract class MethodAutoMatchingUtils {
 			if (dataType != null) {
 				DataType elementDataType = dataType.getElementDataType();
 				if (elementDataType != null) {
-					Class<?> elementType = elementDataType.getMatchType();
-					if (elementType == null) {
-						elementType = elementDataType.getCreationType();
+					Class<?> elementType = elementDataType.getCreationType();
+					if (elementType == null || Object.class.equals(elementType)) {
+						elementType = elementDataType.getMatchType();
 					}
-					if (elementType != null) {
+					if (elementType != null
+							&& !Object.class.equals(elementType)) {
 						return new ParameterizedCollectionType(
 								(Class<Collection<?>>) object.getClass(),
 								elementType);
@@ -796,11 +809,12 @@ public abstract class MethodAutoMatchingUtils {
 
 			DataType elementDataType = aggDataType.getElementDataType();
 			if (elementDataType != null) {
+
 				Class<?> elementType = elementDataType.getCreationType();
-				if (elementType == null) {
+				if (elementType == null || Object.class.equals(elementType)) {
 					elementType = elementDataType.getMatchType();
 				}
-				if (elementType != null) {
+				if (elementType != null && !Object.class.equals(elementType)) {
 					return new ParameterizedCollectionType(
 							(Class<Collection<?>>) aggType, elementType);
 				}

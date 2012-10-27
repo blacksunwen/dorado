@@ -54,6 +54,10 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 	private static final Class<?>[] EXTRA_TYPES = new Class<?>[] { Criteria.class };
 	private static final Object[] EXTRA_ARGS = new Object[] { null, null };
 
+	private static final class AbortException extends RuntimeException {
+		private static final long serialVersionUID = -3143779968350839581L;
+	};
+
 	private static ExpressionHandler expressionHandler;
 
 	private String interceptorName;
@@ -107,20 +111,67 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 		}
 
 		DataProvider dataProvider = (DataProvider) methodInvocation.getThis();
+
+		MethodAutoMatchingException[] exceptions = new MethodAutoMatchingException[4];
+		int i = 0;
+
 		try {
-			return invokeInterceptorByParamName(dataProvider, methods,
-					methodInvocation);
-		} catch (MoreThanOneMethodsMatchsException e) {
-			throw e;
-		} catch (MethodAutoMatchingException e1) {
+			try {
+				return invokeInterceptorByParamName(dataProvider, methods,
+						methodInvocation, false);
+			} catch (MoreThanOneMethodsMatchsException e) {
+				throw e;
+			} catch (MethodAutoMatchingException e) {
+				exceptions[i++] = e;
+			} catch (AbortException e) {
+				// do nothing
+			}
+
+			try {
+				return invokeInterceptorByParamName(dataProvider, methods,
+						methodInvocation, true);
+			} catch (MoreThanOneMethodsMatchsException e) {
+				throw e;
+			} catch (MethodAutoMatchingException e) {
+				exceptions[i++] = e;
+			} catch (AbortException e) {
+				// do nothing
+			}
+
 			try {
 				return invokeInterceptorByParamType(dataProvider, methods,
-						methodInvocation);
-			} catch (MethodAutoMatchingException e2) {
-				logger.error(e2, e2);
-				throw e1;
+						methodInvocation, false);
+			} catch (MoreThanOneMethodsMatchsException e) {
+				throw e;
+			} catch (MethodAutoMatchingException e) {
+				exceptions[i++] = e;
+			} catch (AbortException e) {
+				// do nothing
 			}
+
+			try {
+				return invokeInterceptorByParamType(dataProvider, methods,
+						methodInvocation, true);
+			} catch (MoreThanOneMethodsMatchsException e) {
+				throw e;
+			} catch (MethodAutoMatchingException e) {
+				exceptions[i++] = e;
+			} catch (AbortException e) {
+				// do nothing
+			}
+		} catch (MethodAutoMatchingException e) {
+			exceptions[i++] = e;
 		}
+
+		for (MethodAutoMatchingException e : exceptions) {
+			if (e == null) {
+				break;
+			}
+			logger.error(e.getMessage());
+		}
+		throw new IllegalArgumentException(resourceManager.getString(
+				"common/noMatchingMethodError", interceptor.getClass()
+						.getName(), methodName));
 	}
 
 	private Criteria mergeCriteria(Criteria criteria, Criteria sysCriteria) {
@@ -182,8 +233,8 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 	}
 
 	private Object invokeInterceptorByParamName(DataProvider dataProvider,
-			Method[] methods, MethodInvocation methodInvocation)
-			throws Exception {
+			Method[] methods, MethodInvocation methodInvocation,
+			boolean disassembleParameter) throws Exception {
 		Method proxyMethod = methodInvocation.getMethod();
 		Object[] proxyArgs = methodInvocation.getArguments();
 		Class<?>[] parameterTypes = proxyMethod.getParameterTypes();
@@ -208,6 +259,65 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 			sysParameter = parameterWrapper.getSysParameter();
 		}
 
+		if (disassembleParameter
+				&& (parameter == null && !(parameter instanceof Map<?, ?>))) {
+			throw new AbortException();
+		}
+
+		String[] parameterParameterNames = EMPTY_NAMES;
+		Object[] parameterParameters = EMPTY_ARGS;
+
+		if (parameter != null) {
+			if (parameter instanceof Map<?, ?>) {
+				if (disassembleParameter) {
+					Map<?, ?> map = (Map<?, ?>) parameter;
+					parameterParameterNames = new String[map.size()];
+					parameterParameters = new Object[parameterParameterNames.length];
+
+					int i = 0;
+					for (Map.Entry<?, ?> entry : map.entrySet()) {
+						Object value = entry.getValue();
+						if (value instanceof Criteria) {
+							if (sysParameter == null) {
+								sysParameter = new HashMap<String, Object>();
+							}
+
+							Criteria sysCriteria = (Criteria) sysParameter
+									.get("criteria");
+							sysParameter
+									.put("criteria",
+											mergeCriteria((Criteria) value,
+													sysCriteria));
+						} else {
+							parameterParameterNames[i] = (String) entry
+									.getKey();
+							parameterParameters[i] = value;
+							i++;
+						}
+					}
+				} else {
+					parameterParameterNames = new String[] { "parameter" };
+					parameterParameters = new Object[] { parameter };
+				}
+			} else if (parameter instanceof Criteria) {
+				parameterParameterNames = new String[0];
+				parameterParameters = new Object[0];
+
+				if (sysParameter == null) {
+					sysParameter = new HashMap<String, Object>();
+				}
+				Criteria sysCriteria = (Criteria) sysParameter.get("criteria");
+				sysParameter.put("criteria",
+						mergeCriteria((Criteria) parameter, sysCriteria));
+			} else {
+				parameterParameterNames = new String[] { "parameter" };
+				parameterParameters = new Object[] { parameter };
+			}
+		} else {
+			parameterParameterNames = new String[] { "parameter" };
+			parameterParameters = new Object[] { null };
+		}
+
 		Page<?> page = null;
 		int pageParameterIndex = MethodAutoMatchingUtils.indexOfTypes(
 				parameterTypes, Page.class);
@@ -230,54 +340,6 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 		if (page != null) {
 			requiredParameterNames[0] = "page";
 			requiredParameters[0] = page;
-		}
-
-		String[] parameterParameterNames = EMPTY_NAMES;
-		Object[] parameterParameters = EMPTY_ARGS;
-
-		if (parameter != null) {
-			if (parameter instanceof Criteria) {
-				parameterParameterNames = new String[0];
-				parameterParameters = new Object[0];
-
-				if (sysParameter == null) {
-					sysParameter = new HashMap<String, Object>();
-				}
-				Criteria sysCriteria = (Criteria) sysParameter.get("criteria");
-				sysParameter.put("criteria",
-						mergeCriteria((Criteria) parameter, sysCriteria));
-			} else if (parameter instanceof Map<?, ?>) {
-				Map<?, ?> map = (Map<?, ?>) parameter;
-				parameterParameterNames = new String[map.size() + 1];
-				parameterParameters = new Object[parameterParameterNames.length];
-				parameterParameterNames[0] = "parameter";
-				parameterParameters[0] = parameter;
-
-				int i = 1;
-				for (Map.Entry<?, ?> entry : map.entrySet()) {
-					Object value = entry.getValue();
-					if (value instanceof Criteria) {
-						if (sysParameter == null) {
-							sysParameter = new HashMap<String, Object>();
-						}
-
-						Criteria sysCriteria = (Criteria) sysParameter
-								.get("criteria");
-						sysParameter.put("criteria",
-								mergeCriteria((Criteria) value, sysCriteria));
-					} else {
-						parameterParameterNames[i] = (String) entry.getKey();
-						parameterParameters[i] = value;
-						i++;
-					}
-				}
-			} else {
-				parameterParameterNames = new String[] { "parameter" };
-				parameterParameters = new Object[] { parameter };
-			}
-		} else {
-			parameterParameterNames = new String[] { "parameter" };
-			parameterParameters = new Object[] { null };
 		}
 
 		optionalParameterNames = new String[parameterParameterNames.length + 3];
@@ -328,11 +390,98 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 	}
 
 	private Object invokeInterceptorByParamType(DataProvider dataProvider,
-			Method[] methods, MethodInvocation methodInvocation)
-			throws MethodAutoMatchingException, Exception {
+			Method[] methods, MethodInvocation methodInvocation,
+			boolean disassembleParameter) throws MethodAutoMatchingException,
+			Exception {
 		Method proxyMethod = methodInvocation.getMethod();
 		Object[] proxyArgs = methodInvocation.getArguments();
 		Class<?>[] proxyArgTypes = proxyMethod.getParameterTypes();
+
+		Object parameter = null;
+		Map<String, Object> sysParameter = null;
+
+		int parameterArgIndex = MethodAutoMatchingUtils.indexOfTypes(
+				proxyArgTypes, Object.class);
+		if (parameterArgIndex >= 0) {
+			parameter = proxyArgs[parameterArgIndex];
+		}
+
+		if (parameter != null && parameter instanceof ParameterWrapper) {
+			ParameterWrapper parameterWrapper = (ParameterWrapper) parameter;
+			parameter = parameterWrapper.getParameter();
+			sysParameter = parameterWrapper.getSysParameter();
+		}
+
+		if (disassembleParameter
+				&& (parameter == null && !(parameter instanceof Map<?, ?>))) {
+			throw new AbortException();
+		}
+
+		Map<Type, Object> extraArgMap = new HashMap<Type, Object>();
+		for (int i = 0; i < EXTRA_TYPES.length; i++) {
+			extraArgMap.put(EXTRA_TYPES[i], EXTRA_ARGS[i]);
+		}
+		if (sysParameter != null && !sysParameter.isEmpty()) {
+			for (Map.Entry<?, ?> entry : sysParameter.entrySet()) {
+				Object value = entry.getValue();
+				if (value != null) {
+					extraArgMap.put(
+							MethodAutoMatchingUtils.getTypeForMatching(value),
+							value);
+				}
+			}
+		}
+
+		Type[] optionalArgTypes = null;
+		Object[] optionalArgs = null;
+
+		if (parameter != null) {
+			if (parameter instanceof Map<?, ?>) {
+				if (disassembleParameter) {
+					Map<?, ?> map = (Map<?, ?>) parameter;
+					optionalArgTypes = new Class[map.size()];
+					optionalArgs = new Object[optionalArgTypes.length];
+
+					int i = 0;
+					for (Object value : map.values()) {
+						if (value != null) {
+							if (value instanceof Criteria) {
+								Criteria sysCriteria = (Criteria) extraArgMap
+										.get(Criteria.class);
+								extraArgMap.put(
+										Criteria.class,
+										mergeCriteria((Criteria) value,
+												sysCriteria));
+							} else {
+								optionalArgTypes[i] = MethodAutoMatchingUtils
+										.getTypeForMatching(value);
+								optionalArgs[i] = value;
+								i++;
+							}
+						}
+					}
+				} else {
+					optionalArgTypes = new Type[] { MethodAutoMatchingUtils
+							.getTypeForMatching(parameter) };
+					optionalArgs = new Object[] { parameter };
+				}
+			} else if (parameter instanceof Criteria) {
+				optionalArgTypes = new Class[0];
+				optionalArgs = new Object[0];
+
+				Criteria sysCriteria = (Criteria) extraArgMap
+						.get(Criteria.class);
+				extraArgMap.put(Criteria.class,
+						mergeCriteria((Criteria) parameter, sysCriteria));
+			} else {
+				optionalArgTypes = new Type[] { MethodAutoMatchingUtils
+						.getTypeForMatching(parameter) };
+				optionalArgs = new Object[] { parameter };
+			}
+		} else {
+			optionalArgTypes = new Type[] { Object.class };
+			optionalArgs = new Object[] { null };
+		}
 
 		Class<?>[] requiredArgTypes = null;
 		Object[] requiredArgs = null;
@@ -352,84 +501,6 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 		}
 		if (dataType == null) {
 			dataType = dataProvider.getResultDataType();
-		}
-
-		Object parameter = null;
-		Map<String, Object> sysParameter = null;
-		Map<Type, Object> extraArgMap = new HashMap<Type, Object>();
-
-		int parameterArgIndex = MethodAutoMatchingUtils.indexOfTypes(
-				proxyArgTypes, Object.class);
-		if (parameterArgIndex >= 0) {
-			parameter = proxyArgs[parameterArgIndex];
-		}
-
-		for (int i = 0; i < EXTRA_TYPES.length; i++) {
-			extraArgMap.put(EXTRA_TYPES[i], EXTRA_ARGS[i]);
-		}
-
-		if (parameter != null && parameter instanceof ParameterWrapper) {
-			ParameterWrapper parameterWrapper = (ParameterWrapper) parameter;
-			parameter = parameterWrapper.getParameter();
-			sysParameter = parameterWrapper.getSysParameter();
-
-			if (sysParameter != null && !sysParameter.isEmpty()) {
-				for (Map.Entry<?, ?> entry : sysParameter.entrySet()) {
-					Object value = entry.getValue();
-					if (value != null) {
-						extraArgMap.put(MethodAutoMatchingUtils
-								.getTypeForMatching(value), value);
-					}
-				}
-			}
-		}
-
-		Type[] optionalArgTypes = null;
-		Object[] optionalArgs = null;
-
-		if (parameter != null) {
-			if (parameter instanceof Criteria) {
-				optionalArgTypes = new Class[0];
-				optionalArgs = new Object[0];
-
-				Criteria sysCriteria = (Criteria) extraArgMap
-						.get(Criteria.class);
-				extraArgMap.put(Criteria.class,
-						mergeCriteria((Criteria) parameter, sysCriteria));
-			} else if (parameter instanceof Map<?, ?>) {
-				Map<?, ?> map = (Map<?, ?>) parameter;
-				optionalArgTypes = new Class[map.size() + 1];
-				optionalArgs = new Object[optionalArgTypes.length];
-				optionalArgTypes[0] = MethodAutoMatchingUtils
-						.getTypeForMatching(parameter);
-				optionalArgs[0] = parameter;
-
-				int i = 1;
-				for (Object value : map.values()) {
-					if (value != null) {
-						if (value instanceof Criteria) {
-							Criteria sysCriteria = (Criteria) extraArgMap
-									.get(Criteria.class);
-							extraArgMap
-									.put(Criteria.class,
-											mergeCriteria((Criteria) value,
-													sysCriteria));
-						} else {
-							optionalArgTypes[i] = MethodAutoMatchingUtils
-									.getTypeForMatching(value);
-							optionalArgs[i] = value;
-							i++;
-						}
-					}
-				}
-			} else {
-				optionalArgTypes = new Type[] { MethodAutoMatchingUtils
-						.getTypeForMatching(parameter) };
-				optionalArgs = new Object[] { parameter };
-			}
-		} else {
-			optionalArgTypes = new Type[] { Object.class };
-			optionalArgs = new Object[] { null };
 		}
 
 		Class<?>[] exactArgTypes = new Class[3 + extraArgMap.size()];

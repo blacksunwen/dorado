@@ -249,7 +249,7 @@ public class XmlParserHelper implements BeanFactoryAware {
 		this.textParserHelper = textParserHelper;
 	}
 
-	public List<XmlParserInfo> getXmlParserInfos(Class<?> beanType)
+	public synchronized List<XmlParserInfo> getXmlParserInfos(Class<?> beanType)
 			throws Exception {
 		if (xmlParserInfoCache.containsKey(beanType)) {
 			return xmlParserInfoCache.get(beanType);

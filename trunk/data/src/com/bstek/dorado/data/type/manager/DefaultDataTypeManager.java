@@ -156,11 +156,14 @@ public class DefaultDataTypeManager extends DataTypeManagerSupport {
 			// 查找父类接口的匹配类型
 			dtws.addAll(findMatchingDataTypeForInterface(tempType));
 
+			if (type.isEnum() && tempType.equals(Object.class)) {
+				tempType = String.class;
+			}
+
 			dataType = getDefinedDataTypeDefinition(tempType);
 			if (dataType != null) {
 				dtws.add(new DataTypeWrapper(dataType, tempType));
 				break;
-
 			}
 		}
 		return dtws;
