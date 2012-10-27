@@ -41,8 +41,7 @@ public class XmlDataDefinition extends Definition {
 
 	@Override
 	protected synchronized Object doCreate(CreationContext context,
-			Object[] constructorArgs)
-			throws Exception {
+			Object[] constructorArgs) throws Exception {
 		Object data = null;
 		if (node != null) {
 			DataCreationContext createContext = (DataCreationContext) context;
@@ -53,7 +52,13 @@ public class XmlDataDefinition extends Definition {
 				dataTypeDefinition = this.dataTypeDefinition;
 			}
 			parseContext.setCurrentDataType(dataTypeDefinition);
-			data = parser.parse(node, parseContext);
+			
+			// http://bsdn.org/projects/dorado7/issue/dorado7-1258
+			// 此处的同步机制未来可优化
+			synchronized (node) {
+				data = parser.parse(node, parseContext);
+			}
+			
 			parseContext.restoreCurrentDataType();
 		}
 		return data;

@@ -67,7 +67,9 @@
 					tagName: "DIV",
 					className: "i-tree-node d-tree-node",
 					style: {
-						position: "relative"
+						position: "relative",
+						overflowX: "hidden",
+						overflowY: "visible"
 					},
 					content: [{
 						tagName: "LABEL",

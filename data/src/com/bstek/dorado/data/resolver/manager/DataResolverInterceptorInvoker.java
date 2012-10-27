@@ -2,6 +2,7 @@ package com.bstek.dorado.data.resolver.manager;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.aopalliance.intercept.MethodInterceptor;
@@ -40,6 +41,10 @@ public class DataResolverInterceptorInvoker implements MethodInterceptor {
 	private static final Object[] EMPTY_ARGS = new Object[0];
 	private static final String[] EMPTY_NAMES = new String[0];
 	private static final Class<?>[] EMPTY_TYPES = new Class[0];
+
+	private static final class AbortException extends RuntimeException {
+		private static final long serialVersionUID = -3143779968350839581L;
+	};
 
 	private String interceptorName;
 	private String methodName;
@@ -83,25 +88,71 @@ public class DataResolverInterceptorInvoker implements MethodInterceptor {
 		}
 
 		DataResolver dataResolver = (DataResolver) methodInvocation.getThis();
+		MethodAutoMatchingException[] exceptions = new MethodAutoMatchingException[4];
+		int i = 0;
+
 		try {
-			return invokeInterceptorByParamName(dataResolver, methods,
-					methodInvocation);
-		} catch (MoreThanOneMethodsMatchsException e) {
-			throw e;
-		} catch (MethodAutoMatchingException e1) {
+			try {
+				return invokeInterceptorByParamName(dataResolver, methods,
+						methodInvocation, false);
+			} catch (MoreThanOneMethodsMatchsException e) {
+				throw e;
+			} catch (MethodAutoMatchingException e) {
+				exceptions[i++] = e;
+			} catch (AbortException e) {
+				// do nothing
+			}
+
+			try {
+				return invokeInterceptorByParamName(dataResolver, methods,
+						methodInvocation, true);
+			} catch (MoreThanOneMethodsMatchsException e) {
+				throw e;
+			} catch (MethodAutoMatchingException e) {
+				exceptions[i++] = e;
+			} catch (AbortException e) {
+				// do nothing
+			}
+
 			try {
 				return invokeInterceptorByParamType(dataResolver, methods,
-						methodInvocation);
-			} catch (MethodAutoMatchingException e2) {
-				logger.error(e2, e2);
-				throw e1;
+						methodInvocation, false);
+			} catch (MoreThanOneMethodsMatchsException e) {
+				throw e;
+			} catch (MethodAutoMatchingException e) {
+				exceptions[i++] = e;
+			} catch (AbortException e) {
+				// do nothing
 			}
+
+			try {
+				return invokeInterceptorByParamType(dataResolver, methods,
+						methodInvocation, true);
+			} catch (MoreThanOneMethodsMatchsException e) {
+				throw e;
+			} catch (MethodAutoMatchingException e) {
+				exceptions[i++] = e;
+			} catch (AbortException e) {
+				// do nothing
+			}
+		} catch (MethodAutoMatchingException e) {
+			exceptions[i++] = e;
 		}
+
+		for (MethodAutoMatchingException e : exceptions) {
+			if (e == null) {
+				break;
+			}
+			logger.error(e.getMessage());
+		}
+		throw new IllegalArgumentException(resourceManager.getString(
+				"common/noMatchingMethodError", interceptor.getClass()
+						.getName(), methodName));
 	}
 
 	private Object invokeInterceptorByParamName(DataResolver dataResolver,
-			Method[] methods, MethodInvocation methodInvocation)
-			throws Exception {
+			Method[] methods, MethodInvocation methodInvocation,
+			boolean disassembleParameter) throws Exception {
 		Object[] proxyArgs = methodInvocation.getArguments();
 		DataItems dataItems = (DataItems) proxyArgs[0];
 		Object parameter = (proxyArgs.length > 1) ? proxyArgs[1] : null;
@@ -113,6 +164,11 @@ public class DataResolverInterceptorInvoker implements MethodInterceptor {
 			sysParameter = parameterWrapper.getSysParameter();
 		}
 
+		if (disassembleParameter
+				&& (parameter == null && !(parameter instanceof Map<?, ?>))) {
+			throw new AbortException();
+		}
+
 		String[] optionalParameterNames = null;
 		Object[] optionalParameters = null;
 		String[] extraParameterNames = null;
@@ -121,17 +177,20 @@ public class DataResolverInterceptorInvoker implements MethodInterceptor {
 		String[] parameterParameterNames = EMPTY_NAMES;
 		Object[] parameterParameters = EMPTY_ARGS;
 		if (parameter != null && parameter instanceof Map<?, ?>) {
-			Map<?, ?> map = (Map<?, ?>) parameter;
-			parameterParameterNames = new String[map.size() + 1];
-			parameterParameters = new Object[parameterParameterNames.length];
-			parameterParameterNames[0] = "parameter";
-			parameterParameters[0] = parameter;
+			if (disassembleParameter) {
+				Map<?, ?> map = (Map<?, ?>) parameter;
+				parameterParameterNames = new String[map.size()];
+				parameterParameters = new Object[parameterParameterNames.length];
 
-			int i = 1;
-			for (Map.Entry<?, ?> entry : map.entrySet()) {
-				parameterParameterNames[i] = (String) entry.getKey();
-				parameterParameters[i] = entry.getValue();
-				i++;
+				int i = 0;
+				for (Map.Entry<?, ?> entry : map.entrySet()) {
+					parameterParameterNames[i] = (String) entry.getKey();
+					parameterParameters[i] = entry.getValue();
+					i++;
+				}
+			} else {
+				parameterParameterNames = new String[] { "parameter" };
+				parameterParameters = new Object[] { parameter };
 			}
 		} else {
 			parameterParameterNames = new String[] { "parameter" };
@@ -182,16 +241,36 @@ public class DataResolverInterceptorInvoker implements MethodInterceptor {
 	}
 
 	private Object invokeInterceptorByParamType(DataResolver dataResolver,
-			Method[] methods, MethodInvocation methodInvocation)
-			throws MethodAutoMatchingException, Exception {
+			Method[] methods, MethodInvocation methodInvocation,
+			boolean disassembleParameter) throws MethodAutoMatchingException,
+			Exception {
 		Object[] proxyArgs = methodInvocation.getArguments();
 		DataItems dataItems = (DataItems) proxyArgs[0];
 		Object parameter = (proxyArgs.length > 1) ? proxyArgs[1] : null;
+		Map<String, Object> sysParameter = null;
 
-		Type[] exactArgTypes = new Class[] { DataItems.class,
-				DataProvider.class, MethodInvocation.class };
-		Object[] exactArgs = new Object[] { dataItems, dataResolver,
-				methodInvocation };
+		if (parameter instanceof ParameterWrapper) {
+			ParameterWrapper parameterWrapper = (ParameterWrapper) parameter;
+			parameter = parameterWrapper.getParameter();
+			sysParameter = parameterWrapper.getSysParameter();
+		}
+
+		if (disassembleParameter
+				&& (parameter == null && !(parameter instanceof Map<?, ?>))) {
+			throw new AbortException();
+		}
+
+		Map<Type, Object> extraArgMap = new HashMap<Type, Object>();
+		if (sysParameter != null && !sysParameter.isEmpty()) {
+			for (Map.Entry<?, ?> entry : sysParameter.entrySet()) {
+				Object value = entry.getValue();
+				if (value != null) {
+					extraArgMap.put(
+							MethodAutoMatchingUtils.getTypeForMatching(value),
+							value);
+				}
+			}
+		}
 
 		Type[] optionalArgTypes = null;
 		Object[] optionalArgs = null;
@@ -260,6 +339,22 @@ public class DataResolverInterceptorInvoker implements MethodInterceptor {
 				dataItemsArgCount, parameterArgTypes.length);
 		System.arraycopy(parameterArgs, 0, optionalArgs, dataItemsArgCount,
 				parameterArgs.length);
+
+		Type[] exactArgTypes = new Class[3 + extraArgMap.size()];
+		Object[] exactArgs = new Object[exactArgTypes.length];
+		exactArgTypes[0] = DataItems.class;
+		exactArgs[0] = dataItems;
+		exactArgTypes[1] = DataProvider.class;
+		exactArgs[1] = dataResolver;
+		exactArgTypes[2] = MethodInvocation.class;
+		exactArgs[2] = methodInvocation;
+
+		int i = 3;
+		for (Map.Entry<?, ?> entry : extraArgMap.entrySet()) {
+			exactArgTypes[i] = (Class<?>) entry.getKey();
+			exactArgs[i] = entry.getValue();
+			i++;
+		}
 
 		return MethodAutoMatchingUtils.invokeMethod(methods, interceptor, null,
 				null, exactArgTypes, exactArgs, optionalArgTypes, optionalArgs,

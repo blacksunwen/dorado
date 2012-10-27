@@ -180,6 +180,7 @@ public abstract class EntityDataTypeSupport extends NonAggregationDataType
 					dataType = DataUtils.getDataType(parameterizedType);
 				}
 			}
+
 			if (dataType == null) {
 				dataType = DataUtils.getDataType(propertyType);
 			}
