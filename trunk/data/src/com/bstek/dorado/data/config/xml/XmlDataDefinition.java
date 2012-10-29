@@ -1,6 +1,8 @@
 package com.bstek.dorado.data.config.xml;
 
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import com.bstek.dorado.config.definition.CreationContext;
 import com.bstek.dorado.config.definition.Definition;
@@ -34,9 +36,15 @@ public class XmlDataDefinition extends Definition {
 			DefinitionReference<DataTypeDefinition> dataTypeDefinition,
 			XmlParser parser) {
 		// 此处保留DOM对象的引用可能导致内存的额外占用。
-		this.node = node.cloneNode(true);
+		Node clonedNode = node.cloneNode(true);
+		this.node = clonedNode;
 		this.dataTypeDefinition = dataTypeDefinition;
 		this.parser = parser;
+
+		if (clonedNode != null && clonedNode instanceof Element) {
+			// http://bsdn.org/projects/dorado7/issue/dorado7-1258
+			gothroughElement((Element) clonedNode);
+		}
 	}
 
 	@Override
@@ -52,16 +60,22 @@ public class XmlDataDefinition extends Definition {
 				dataTypeDefinition = this.dataTypeDefinition;
 			}
 			parseContext.setCurrentDataType(dataTypeDefinition);
-			
-			// http://bsdn.org/projects/dorado7/issue/dorado7-1258
-			// 此处的同步机制未来可优化
-			synchronized (node) {
-				data = parser.parse(node, parseContext);
-			}
-			
+			data = parser.parse(node, parseContext);
 			parseContext.restoreCurrentDataType();
 		}
 		return data;
+	}
+
+	private void gothroughElement(Element element) {
+		NodeList childNodes = element.getChildNodes();
+		for (int i = 0; i < childNodes.getLength(); i++) {
+			Node child = childNodes.item(i);
+			if (child != null && child instanceof Element) {
+				gothroughElement((Element) child);
+			} else {
+				// do nothing;
+			}
+		}
 	}
 
 }
