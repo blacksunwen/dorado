@@ -36,9 +36,10 @@ public abstract class AbstractBeanEntityEnhancer extends EntityEnhancer {
 	}
 
 	protected synchronized void buildReflectionCahce() throws Exception {
-		if (!cachedTypes.contains(beanType)) {
-			cachedTypes.add(beanType);
-			synchronized (cachedTypes) {
+		synchronized (cachedTypes) {
+			if (!cachedTypes.contains(beanType)) {
+				cachedTypes.add(beanType);
+
 				Map<String, Boolean> properties = new Hashtable<String, Boolean>();
 				Map<Method, String> readMethods = new Hashtable<Method, String>();
 				Map<Method, String> writeMethods = new Hashtable<Method, String>();
@@ -78,11 +79,11 @@ public abstract class AbstractBeanEntityEnhancer extends EntityEnhancer {
 				this.properties = properties;
 				this.readMethods = readMethods;
 				this.writeMethods = writeMethods;
+			} else {
+				this.properties = propertiesCache.get(beanType);
+				this.readMethods = readMethodsCache.get(beanType);
+				this.writeMethods = writeMethodsCache.get(beanType);
 			}
-		} else {
-			this.properties = propertiesCache.get(beanType);
-			this.readMethods = readMethodsCache.get(beanType);
-			this.writeMethods = writeMethodsCache.get(beanType);
 		}
 	}
 
