@@ -98,18 +98,24 @@ dorado.util.Common = {
 			if (nfs === null) {
 				return [format, (n && n.charAt(0) > '4')];
 			} else if (n && n.length > nfs.length && n.charAt(nfs.length) > '4') {
-				var n = n.substring(0, nfs.length), leadingZero = '';
+				var n = n.substring(0, nfs.length);
+				n = (parseInt(n, 10) + 1) + '';
+				var overflow = n.length > nfs.length;
+				if (overflow) {
+					n = n.substring(n.length > nfs.length);
+				}
+				
+				var leadingZero = '';
 				for (var i = 0; i < n.length; i++) {
 					if (n.charAt(i) == '0') {
 						leadingZero += '0';
 						break;
 					}
 				}
-				n = leadingZero + (parseInt(n, 10) + 1) + '';
+				n = leadingZero + n;
 			}
 			
 			var f, r = '', j = 0;
-			
 			for (var i = 0; i < format.length; i++) {
 				f = format.charAt(i);
 				if (f == '#' || f == '0') {
@@ -122,7 +128,7 @@ dorado.util.Common = {
 					r += f;
 				}
 			}
-			return [r, false];
+			return [r, overflow];
 		}
 		
 		if (n == null || isNaN(n)) return "";
