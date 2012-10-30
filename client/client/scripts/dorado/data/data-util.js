@@ -79,8 +79,10 @@
 							dataType.fireEvent("onEntityLoad", dataType, eventArg);
 						} else if (data instanceof dorado.EntityList) {
 							if (rudeData.$isWrapper) {
+								data.entityCount = rudeData.entityCount;
 								data.pageSize = rudeData.pageSize;
 								data.pageNo = rudeData.pageNo;
+								data.pageCount = rudeData.pageCount;
 							}
 							
 							var elementDataType = dataType.get("elementDataType");
