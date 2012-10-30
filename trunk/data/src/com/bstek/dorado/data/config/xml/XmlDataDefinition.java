@@ -1,5 +1,6 @@
 package com.bstek.dorado.data.config.xml;
 
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -8,6 +9,8 @@ import com.bstek.dorado.config.definition.CreationContext;
 import com.bstek.dorado.config.definition.Definition;
 import com.bstek.dorado.config.definition.DefinitionReference;
 import com.bstek.dorado.config.xml.XmlParser;
+import com.bstek.dorado.core.Context;
+import com.bstek.dorado.core.xml.XmlDocumentBuilder;
 import com.bstek.dorado.data.config.definition.DataCreationContext;
 import com.bstek.dorado.data.config.definition.DataTypeDefinition;
 
@@ -31,12 +34,14 @@ public class XmlDataDefinition extends Definition {
 	 *            目标DataType的配置声明引用，最终生成的数据将被转换为与该DataType相匹配的类型。
 	 * @param parser
 	 *            真正的XML数据解析器
+	 * @throws Exception
 	 */
 	public XmlDataDefinition(Node node,
 			DefinitionReference<DataTypeDefinition> dataTypeDefinition,
-			XmlParser parser) {
-		// TODO: 此处保留DOM对象的引用可能导致内存的额外占用。
-		Node clonedNode = node.cloneNode(true);
+			XmlParser parser) throws Exception {
+		Document newDocument = getXmlDocumentBuilder().newDocument();
+		Node clonedNode = newDocument.importNode(node, true);
+
 		this.node = clonedNode;
 		this.dataTypeDefinition = dataTypeDefinition;
 		this.parser = parser;
@@ -45,6 +50,11 @@ public class XmlDataDefinition extends Definition {
 			// http://bsdn.org/projects/dorado7/issue/dorado7-1258
 			gothroughElement((Element) clonedNode);
 		}
+	}
+
+	private static XmlDocumentBuilder getXmlDocumentBuilder() throws Exception {
+		return (XmlDocumentBuilder) Context.getCurrent().getServiceBean(
+				"xmlDocumentBuilder");
 	}
 
 	@Override
