@@ -35,7 +35,7 @@ public class XmlDataDefinition extends Definition {
 	public XmlDataDefinition(Node node,
 			DefinitionReference<DataTypeDefinition> dataTypeDefinition,
 			XmlParser parser) {
-		// 此处保留DOM对象的引用可能导致内存的额外占用。
+		// TODO: 此处保留DOM对象的引用可能导致内存的额外占用。
 		Node clonedNode = node.cloneNode(true);
 		this.node = clonedNode;
 		this.dataTypeDefinition = dataTypeDefinition;
