@@ -285,7 +285,6 @@ dorado.util.TaskGroupPanel = $extend(dorado.RenderableElement, { /** @scope dora
 				}
 				else {
 					panel._doms.more.style.display = "none";
-					console.log("panel.tasks.size:" + panel.tasks.size);
 					if (panel.tasks.size == 0) {
 						clearInterval(panel._intervalId);
 						panel._intervalId = null;
