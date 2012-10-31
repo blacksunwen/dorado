@@ -12,7 +12,7 @@ public class PackageInfo {
 	/*
 	 * Inherited, AGPL, BSDN-Member, BSDN-Commercial
 	 */
-	private String license;
+	private String[] license;
 	private boolean loadUnlicensed;
 
 	private String homePage;
@@ -50,11 +50,11 @@ public class PackageInfo {
 		this.depends = depends;
 	}
 
-	public String getLicense() {
+	public String[] getLicense() {
 		return license;
 	}
 
-	public void setLicense(String license) {
+	public void setLicense(String[] license) {
 		this.license = license;
 	}
 
