@@ -70,19 +70,18 @@ dorado.widget.RadioButton = $extend(dorado.widget.Control, /** @scope dorado.wid
 		
 		var radioButton = this, checked = radioButton._checked, text = radioButton._text, jDom;
 		if (dom) {
-			jDom = jQuery(dom);
 			var iconEl = dom.firstChild, textEl = iconEl.nextSibling;
 			if (checked) {
 				$fly(iconEl).removeClass("unchecked").addClass("checked");
 			} else {
 				$fly(iconEl).removeClass("checked").addClass("unchecked");
 			}
-			$fly(textEl).text(text);
+			$fly(textEl).html(text);
 		}
 	},
 	
 	createDom: function() {
-		var radioButton = this, dom, checked = radioButton._checked;
+		var radioButton = this, dom;
 		
 		dom = $DomUtils.xCreate({
 			tagName: "div",
