@@ -8,11 +8,23 @@ public class PackageInfo {
 	private String name;
 	private String version;
 	private Dependence[] depends;
+
+	/*
+	 * Inherited, AGPL, BSDN-Member, BSDN-Commercial
+	 */
+	private String license;
+	private boolean loadUnlicensed;
+
+	private String homePage;
+	private String description;
+
 	private PackageConfigurer configurer;
 	private PackageListener listener;
 	private String propertiesLocations;
 	private String contextLocations;
 	private String servletContextLocations;
+
+	private boolean loaded;
 
 	public PackageInfo(String name) {
 		this.name = name;
@@ -36,6 +48,38 @@ public class PackageInfo {
 
 	public void setDepends(Dependence[] depends) {
 		this.depends = depends;
+	}
+
+	public String getLicense() {
+		return license;
+	}
+
+	public void setLicense(String license) {
+		this.license = license;
+	}
+
+	public boolean isLoadUnlicensed() {
+		return loadUnlicensed;
+	}
+
+	public void setLoadUnlicensed(boolean loadUnlicensed) {
+		this.loadUnlicensed = loadUnlicensed;
+	}
+
+	public String getHomePage() {
+		return homePage;
+	}
+
+	public void setHomePage(String homePage) {
+		this.homePage = homePage;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public PackageConfigurer getConfigurer() {
@@ -76,5 +120,13 @@ public class PackageInfo {
 
 	public void setServletContextLocations(String servletContextLocations) {
 		this.servletContextLocations = servletContextLocations;
+	}
+
+	public boolean isLoaded() {
+		return loaded;
+	}
+
+	public void setLoaded(boolean loaded) {
+		this.loaded = loaded;
 	}
 }
