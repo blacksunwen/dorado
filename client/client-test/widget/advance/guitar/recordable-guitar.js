@@ -1,3 +1,15 @@
+﻿/*
+ * This file is part of Dorado 7.x
+ * 
+ * Copyright (c) 2011-2012 BSTEK Information Technology Limited. All rights reserved.
+ * http://dorado.bstek.com
+ * 
+ * This file is dual-licensed under the AGPLv3 (http://www.gnu.org/licenses/agpl-3.0.html) 
+ * and BSDN commercial(http://www.bsdn.org/licenses) licenses.
+ * 
+ * If you are unsure which license is appropriate for your use, please contact the sales department
+ * at http://www.bstek.com/contact.
+ */
 (function(){!google.nocsixjs&&google.timers&&google.timers.load.t&&(google.timers.load.t.xjses=(new Date).getTime());})();
 (function(){var e={},f=!1,g=function(b,c,a){try{var d=e[c[a][0]];if(d&&d[b])d[b](c[a][1])}catch(m){google.ml(m,!1,{cause:"m"+b,index:a,mid:c[a]&&c[a][0]})}};if(google.mc&&google.j)for(var h=0,i;i=google.mc[h++];)if(i[0]==29){google.j.cfg=i[1];break}var j=null,k,l;function n(){var b=j.value;l=b?eval("("+b+")"):{}}google.med=function(b){if(google.mc){for(var c=google.mc.concat(google.smc||[]),a=0,d=c.length;a<d;a++)g(b,c,b=="dispose"?d-a-1:a);if(b=="dispose")google.mc=null,google.smc=null;f=b!="dispose"}};
 google.register=function(b,c){e[b]=c;if(google.smc&&f)for(var a=0,d=google.smc.length;a<d;a++)google.smc[a][0]==b&&g("init",google.smc,a)};google.save=function(b,c){if(j){var a;a:{if(google.mc){a=0;for(var d;d=google.mc[a++];)if(d[0]==b){a-=1;break a}}a=-1}if(a>=0)google.mc[a][1]=c,n(),l[k]=google.mc,j.value=google.stringify(l)}};google.initHistory=function(){k=google.kEI;if(j=document.getElementById("hcache"))if(n(),l[k])google.mc=l[k]};})();

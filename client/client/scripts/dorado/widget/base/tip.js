@@ -1,3 +1,15 @@
+﻿/*
+ * This file is part of Dorado 7.x
+ * 
+ * Copyright (c) 2011-2012 BSTEK Information Technology Limited. All rights reserved.
+ * http://dorado.bstek.com
+ * 
+ * This file is dual-licensed under the AGPLv3 (http://www.gnu.org/licenses/agpl-3.0.html) 
+ * and BSDN commercial(http://www.bsdn.org/licenses) licenses.
+ * 
+ * If you are unsure which license is appropriate for your use, please contact the sales department
+ * at http://www.bstek.com/contact.
+ */
 (function() {
 	var CONST_MOUSE_POS_ADJ_X = 5, CONST_MOUSE_POS_ADJ_Y = 15, ANCHOR_OFFSET_ADJ_HORIZENTAL = 5, ANCHOR_OFFSET_ADJ_VERTICAL = 5, CONST_ELEMENT_POS_ADJ = 3, TOOLTIP_KEY = "dorado.tooltip", DOMS_KEY = "dorado.tip.doms";
 	
