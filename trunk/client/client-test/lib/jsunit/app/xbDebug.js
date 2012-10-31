@@ -1,4 +1,4 @@
-﻿// xbDebug.js revision: 0.003 2002-02-26
+// xbDebug.js revision: 0.003 2002-02-26
 
 /* ***** BEGIN LICENSE BLOCK *****
  * Licensed under Version: MPL 1.1/GPL 2.0/LGPL 2.1

@@ -1,4 +1,4 @@
-﻿var MacAddress = function() {
+var MacAddress = function() {
 };
 
 MacAddress.prototype.get = function(successCallback, failureCallback) {

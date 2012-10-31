@@ -1,4 +1,4 @@
-﻿function jsUnitTestSuite() {
+function jsUnitTestSuite() {
     this.isjsUnitTestSuite = true;
     this.testPages = Array();
     this.pageIndex = 0;
