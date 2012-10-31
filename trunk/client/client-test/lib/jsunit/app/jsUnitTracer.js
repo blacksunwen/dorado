@@ -1,16 +1,4 @@
-﻿/*
- * This file is part of Dorado 7.x
- * 
- * Copyright (c) 2011-2012 BSTEK Information Technology Limited. All rights reserved.
- * http://dorado.bstek.com
- * 
- * This file is dual-licensed under the AGPLv3 (http://www.gnu.org/licenses/agpl-3.0.html) 
- * and BSDN commercial(http://www.bsdn.org/licenses) licenses.
- * 
- * If you are unsure which license is appropriate for your use, please contact the sales department
- * at http://www.bstek.com/contact.
- */
-var TRACE_LEVEL_NONE = new JsUnitTraceLevel(0, null);
+﻿var TRACE_LEVEL_NONE = new JsUnitTraceLevel(0, null);
 var TRACE_LEVEL_WARNING = new JsUnitTraceLevel(1, "#FF0000");
 var TRACE_LEVEL_INFO = new JsUnitTraceLevel(2, "#009966");
 var TRACE_LEVEL_DEBUG = new JsUnitTraceLevel(3, "#0000FF");
