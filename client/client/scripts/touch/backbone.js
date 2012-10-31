@@ -1,15 +1,3 @@
-﻿/*
- * This file is part of Dorado 7.x
- * 
- * Copyright (c) 2011-2012 BSTEK Information Technology Limited. All rights reserved.
- * http://dorado.bstek.com
- * 
- * This file is dual-licensed under the AGPLv3 (http://www.gnu.org/licenses/agpl-3.0.html) 
- * and BSDN commercial(http://www.bsdn.org/licenses) licenses.
- * 
- * If you are unsure which license is appropriate for your use, please contact the sales department
- * at http://www.bstek.com/contact.
- */
 //     Backbone.js 0.5.3
 //     (c) 2010-2011 Jeremy Ashkenas, DocumentCloud Inc.
 //     Backbone may be freely distributed under the MIT license.
