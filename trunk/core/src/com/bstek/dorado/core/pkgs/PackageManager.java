@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -307,6 +308,14 @@ public final class PackageManager {
 								.toArray(new Dependence[0]));
 					}
 				}
+
+				packageInfo.setLicense(properties.getProperty("license"));
+				packageInfo.setLoadUnlicensed(BooleanUtils.toBoolean(properties
+						.getProperty("loadUnlicensed")));
+
+				packageInfo.setHomePage(properties.getProperty("homePage"));
+				packageInfo.setDescription(properties
+						.getProperty("description"));
 
 				packageInfo.setPropertiesLocations(properties
 						.getProperty("propertiesConfigLocations"));
