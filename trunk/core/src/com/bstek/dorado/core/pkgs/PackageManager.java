@@ -30,6 +30,13 @@ public final class PackageManager {
 	private static final String PACKAGE_PROPERTIES_LOCATION = "META-INF/dorado-package.properties";
 	private static final String UNKNOWN_VERSION = "<Unknown Version>";
 
+	private static final String AGPL = "AGPL";
+	private static final String BSDN_MEMBER = "BSDN-Member";
+	private static final String BSDN_COMMERCIAL = "BSDN-Commercial";
+	private static final String INHERITED = "Inherited";
+	private static final String[] LICENSE_INHERITED = new String[] { AGPL,
+			BSDN_MEMBER, BSDN_COMMERCIAL };
+
 	private static final Map<String, PackageInfo> packageInfosMap = new LinkedHashMap<String, PackageInfo>();
 	private static boolean packageInfoBuilded = false;
 
@@ -309,7 +316,18 @@ public final class PackageManager {
 					}
 				}
 
-				packageInfo.setLicense(properties.getProperty("license"));
+				String license = StringUtils.trim((String) properties
+						.getProperty("license"));
+				if (StringUtils.isNotEmpty(license)) {
+					if (INHERITED.equals(license)) {
+						packageInfo.setLicense(LICENSE_INHERITED);
+					} else {
+						String[] licenses = StringUtils.split(license);
+						licenses = StringUtils.stripAll(licenses);
+						packageInfo.setLicense(licenses);
+					}
+				}
+
 				packageInfo.setLoadUnlicensed(BooleanUtils.toBoolean(properties
 						.getProperty("loadUnlicensed")));
 
