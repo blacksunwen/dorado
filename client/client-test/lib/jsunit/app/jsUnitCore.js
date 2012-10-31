@@ -1,4 +1,4 @@
-﻿var JSUNIT_UNDEFINED_VALUE;
+var JSUNIT_UNDEFINED_VALUE;
 var JSUNIT_VERSION = 2.2;
 var isTestPageLoaded = false;
 

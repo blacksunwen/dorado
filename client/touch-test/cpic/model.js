@@ -1,4 +1,4 @@
-﻿var dataTypePriceList = new dorado.EntityDataType({
+var dataTypePriceList = new dorado.EntityDataType({
 	name: "PriceList",
 	propertyDefs: [
 		{ name: "vehicleCode" },

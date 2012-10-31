@@ -1,4 +1,4 @@
-﻿var versionRequest;
+var versionRequest;
 
 function isOutOfDate(newVersionNumber) {
     return JSUNIT_VERSION < newVersionNumber;

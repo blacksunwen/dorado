@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of Dorado 7.x
  * 
  * Copyright (c) 2011-2012 BSTEK Information Technology Limited. All rights reserved.
