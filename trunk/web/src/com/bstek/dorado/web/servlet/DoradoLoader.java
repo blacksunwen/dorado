@@ -335,6 +335,8 @@ public class DoradoLoader {
 				}
 			}
 
+			packageInfo.setLoaded(true);
+
 			if (packageListener != null) {
 				packageListener.afterLoadPackage(packageInfo, resourceLoader);
 			}
