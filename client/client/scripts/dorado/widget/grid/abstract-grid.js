@@ -745,7 +745,7 @@
 			cellRenderer: {
 				setter: function(value) {
 					if (typeof value == "string") value = eval("new " + value + "()");
-					this._footerRenderer = value;
+					this._cellRenderer = value;
 				}
 			},
 
@@ -757,7 +757,7 @@
 			headerRenderer: {
 				setter: function(value) {
 					if (typeof value == "string") value = eval("new " + value + "()");
-					this._footerRenderer = value;
+					this._headerRenderer = value;
 				}
 			},
 
@@ -781,7 +781,7 @@
 			filterBarRenderer: {
 				setter: function(value) {
 					if (typeof value == "string") value = eval("new " + value + "()");
-					this._footerRenderer = value;
+					this._filterBarRenderer = value;
 				}
 			},
 
