@@ -220,7 +220,7 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 		/**
 		 * 根节点。此节点时树状列表内部的顶层节点，其不可显示。
 		 * @type dorado.widget.tree.Node
-		 * @attribuate readOnly
+		 * @attribute readOnly
 		 */
 		root: {
 			readOnly: true

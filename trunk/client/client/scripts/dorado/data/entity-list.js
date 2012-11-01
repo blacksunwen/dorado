@@ -741,7 +741,12 @@
 			
 			if (jsonArray == null) return;
 			if (!(jsonArray instanceof Array)) {
-				if (jsonArray.$isWrapper) jsonArray = jsonArray.data;
+				if (jsonArray.$isWrapper) {
+					var v = jsonArray.data;
+					v.entityCount = jsonArray.entityCount;
+					v.pageCount = jsonArray.pageCount;
+					jsonArray = v;
+				}
 				if (!(jsonArray instanceof Array)) jsonArray = [jsonArray];
 			}
 			var entity, firstEntity;
