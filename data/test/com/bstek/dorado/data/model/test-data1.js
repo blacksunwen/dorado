@@ -1,5 +1,5 @@
 ﻿@@@/*
-@@@ * This file is part of Dorado 7.x
+@@@ * This file is part of Dorado 7.x (http://dorado7.bsdn.org).
 @@@ * 
 @@@ * Copyright (c) 2011-2012 BSTEK Information Technology Limited. All rights reserved.
 @@@ * http://dorado.bstek.com
