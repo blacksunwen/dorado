@@ -10,9 +10,6 @@
  * at http://www.bstek.com/contact.
  */
 
-/**
- * 
- */
 package com.bstek.dorado.view.manager;
 
 import java.util.Collections;
