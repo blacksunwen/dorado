@@ -383,7 +383,8 @@ public class RuleTemplate {
 	private static void applyProperty(Object source, Object target,
 			String propertyName) throws Exception {
 		Object value = PropertyUtils.getProperty(source, propertyName);
-		if (value != null)
+		if (value != null
+				&& PropertyUtils.getProperty(target, propertyName) == null)
 			PropertyUtils.setProperty(target, propertyName, value);
 	}
 

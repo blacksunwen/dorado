@@ -24,8 +24,6 @@ import java.util.TreeMap;
 import org.apache.commons.collections.map.UnmodifiableMap;
 import org.apache.commons.lang.ArrayUtils;
 
-import com.bstek.dorado.util.Assert;
-
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2009-11-18
@@ -85,7 +83,6 @@ public class Rule {
 	private Map<String, Child> childMap = new HashMap<String, Child>();
 
 	public Rule(String name) {
-		Assert.notEmpty(name);
 		this.name = name;
 	}
 

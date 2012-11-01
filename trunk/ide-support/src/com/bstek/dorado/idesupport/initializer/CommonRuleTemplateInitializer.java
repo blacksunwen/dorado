@@ -703,7 +703,10 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 		String wrapperName = wrapper.nodeName();
 		if (StringUtils.isNotEmpty(wrapperName)) {
 			List<AutoChildTemplate> wrapperTemplates = new ArrayList<AutoChildTemplate>();
-			AutoRuleTemplate wrapperRuleTemplate = new AutoRuleTemplate(null);
+			AutoRuleTemplate wrapperRuleTemplate = new AutoRuleTemplate(
+					"Wrapper." + wrapper.nodeName());
+			wrapperRuleTemplate.setLabel(StringUtils.defaultIfEmpty(
+					wrapper.label(), wrapper.nodeName()));
 			wrapperRuleTemplate.setNodeName(wrapper.nodeName());
 			for (ChildTemplate childTemplate : childTemplates) {
 				wrapperRuleTemplate.addChild(childTemplate);
