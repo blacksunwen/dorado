@@ -30,6 +30,7 @@ public class ExpressionFilterCriterion extends FilterCriterion {
 		this.dataType = dataType;
 	}
 
+	@Override
 	public String getExpression() {
 		return expression;
 	}

@@ -28,6 +28,7 @@ public class CharacterDataType extends SimpleDataType {
 		}
 	}
 
+	@Override
 	public Object fromObject(Object value) {
 		if (value == null) {
 			return null;

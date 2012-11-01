@@ -285,7 +285,7 @@ public final class JsonUtils {
 				if (jsonNode instanceof ContainerNode) {
 					PropertyDef propertyDef = (dataType != null) ? dataType
 							.getPropertyDef(property) : null;
-					value = toJavaObject((ContainerNode) jsonNode,
+					value = toJavaObject(jsonNode,
 							(propertyDef != null) ? propertyDef.getDataType()
 									: null, type, proxy, context);
 				} else if (jsonNode instanceof ValueNode) {
@@ -355,7 +355,7 @@ public final class JsonUtils {
 								.getPropertyDef(property) : null;
 						Class<?> type = entity.getPropertyType(property);
 						value = toJavaObject(
-								(ContainerNode) jsonNode,
+								jsonNode,
 								(propertyDef != null) ? propertyDef
 										.getDataType() : null, type, proxy,
 								context);
@@ -437,7 +437,7 @@ public final class JsonUtils {
 					String dataTypeName = JsonUtils.getString(objectNode,
 							DATATYPE_PROPERTY);
 					if (StringUtils.isNotEmpty(dataTypeName)) {
-						elementDataType = (EntityDataType) getDataType(
+						elementDataType = getDataType(
 								dataTypeName, context);
 					}
 				}

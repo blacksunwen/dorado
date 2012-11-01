@@ -70,7 +70,7 @@ public class ClassTypeRegistry<T> {
 	 * @return 最匹配的Class类型
 	 */
 	public Class<?> getMatchingType(Class<?> type) {
-		Class<?> matchingType = (Class<?>) typeMatchingCache.get(type);
+		Class<?> matchingType = typeMatchingCache.get(type);
 		if (matchingType == null) {
 			for (Class<?> tmpType : typeMap.keySet()) {
 				if (tmpType.isAssignableFrom(type)) {

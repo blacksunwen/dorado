@@ -70,6 +70,7 @@ public class MetaData extends HashMap<String, Object> implements VariantSet,
 		super.put(property, value);
 	}
 
+	@Override
 	public Object get(Object key) {
 		if (entityEnhancer != null) {
 			Object result = null;
@@ -84,6 +85,7 @@ public class MetaData extends HashMap<String, Object> implements VariantSet,
 		}
 	}
 
+	@Override
 	public Object put(String key, Object value) {
 		if (entityEnhancer != null) {
 			Object result = super.get(key);

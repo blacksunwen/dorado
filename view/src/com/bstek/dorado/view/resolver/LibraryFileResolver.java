@@ -106,6 +106,7 @@ public class LibraryFileResolver extends
 		}
 	}
 
+	@Override
 	protected Resource doGetI18NResource(DoradoContext context,
 			String resourcePrefix, String fileName, String localeSuffix)
 			throws Exception, FileNotFoundException {

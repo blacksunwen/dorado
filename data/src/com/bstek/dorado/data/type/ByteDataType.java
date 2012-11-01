@@ -28,6 +28,7 @@ public class ByteDataType extends IntegralDataType {
 		}
 	}
 
+	@Override
 	public Object fromObject(Object value) {
 		if (value == null) {
 			return null;

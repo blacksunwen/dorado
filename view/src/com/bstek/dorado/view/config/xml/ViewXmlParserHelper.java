@@ -59,7 +59,7 @@ public class ViewXmlParserHelper extends XmlParserHelper {
 		if (xmlProperty != null && typeInfo != null
 				&& Object.class.equals(typeInfo.getType())
 				&& typeInfo.isAggregated()) {
-			XmlParser propertyParser = (XmlParser) beanFactory.getBean(
+			XmlParser propertyParser = beanFactory.getBean(
 					ITEMS_PARSER, XmlParser.class);
 			return new XmlParserInfo(propertyName, propertyParser);
 		} else {

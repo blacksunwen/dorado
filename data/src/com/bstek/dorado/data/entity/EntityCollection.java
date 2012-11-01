@@ -140,10 +140,12 @@ public abstract class EntityCollection<E> implements Collection<E> {
 		return target.containsAll(c);
 	}
 
+	@Override
 	public boolean equals(Object o) {
 		return target.equals(o);
 	}
 
+	@Override
 	public int hashCode() {
 		return target.hashCode();
 	}

@@ -28,6 +28,7 @@ public class ShortDataType extends IntegralDataType {
 		}
 	}
 
+	@Override
 	public Object fromObject(Object value) {
 		if (value == null) {
 			return null;

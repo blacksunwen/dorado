@@ -43,6 +43,7 @@ public class MenuItem extends TextMenuItem implements MenuItemGroup {
 		return null;
 	}
 
+	@Override
 	@XmlSubNode
 	@ClientProperty
 	public List<BaseMenuItem> getItems() {

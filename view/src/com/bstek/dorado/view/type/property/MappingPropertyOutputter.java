@@ -33,6 +33,7 @@ import com.bstek.dorado.view.output.OutputContext;
  * @since 2011-4-13
  */
 public class MappingPropertyOutputter extends DataOutputter {
+	@Override
 	@SuppressWarnings("rawtypes")
 	public boolean isEscapeValue(Object value) {
 		boolean shouldEscape = (value == null);

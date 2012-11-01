@@ -40,6 +40,7 @@ public class DateDataType extends SimpleDataType {
 	private static int DATE_FORMAT_4_LEN = DATE_FORMAT_4.length();
 	private static int DATE_FORMAT_5_LEN = DATE_FORMAT_5.length();
 
+	@Override
 	public String toText(Object value) {
 		if (value == null) {
 			return null;

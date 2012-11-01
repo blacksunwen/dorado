@@ -44,14 +44,17 @@ public class ControlMenuItem extends TextMenuItem implements ViewElement {
 		controlRef.set((Control) control);
 	}
 
+	@Override
 	public void registerInnerElement(ViewElement element) {
 		innerElements.add(element);
 	}
 
+	@Override
 	public void unregisterInnerElement(ViewElement element) {
 		innerElements.remove(element);
 	}
 
+	@Override
 	public Collection<ViewElement> getInnerElements() {
 		return innerElements;
 	}

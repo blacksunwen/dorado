@@ -72,6 +72,7 @@ public class BootPackagesResolver extends WebFileResolver {
 		this.bootFile = bootFile;
 	}
 
+	@Override
 	protected String getResourceCacheKey(HttpServletRequest request)
 			throws Exception {
 		Locale locale = localeResolver.resolveLocale();

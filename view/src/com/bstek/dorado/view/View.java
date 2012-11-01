@@ -56,6 +56,7 @@ public abstract class View extends Container implements Namable {
 		}
 	}
 
+	@Override
 	@XmlProperty(ignored = true, attributeOnly = true)
 	@IdeProperty(visible = false)
 	public String getId() {
@@ -72,6 +73,7 @@ public abstract class View extends Container implements Namable {
 		this.name = name;
 	}
 
+	@Override
 	public ViewConfig getViewConfig() {
 		return viewConfig;
 	}

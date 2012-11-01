@@ -22,6 +22,7 @@ public abstract class ObjectPropertyOutputter extends ClientObjectOutputter
 		return OutputUtils.isEscapeValue(value);
 	}
 
+	@Override
 	public void output(Object object, OutputContext context) throws Exception {
 		outputObject(object, context);
 	}

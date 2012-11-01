@@ -324,11 +324,10 @@ public abstract class Definition implements Cloneable {
 	}
 
 	@Override
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected Object clone() throws CloneNotSupportedException {
 		Definition definition = (Definition) super.clone();
-		definition.properties = (Map) CloneUtils.clone(properties);
-		definition.initOperations = (List) CloneUtils.clone(initOperations);
+		definition.properties = CloneUtils.clone(properties);
+		definition.initOperations = CloneUtils.clone(initOperations);
 		return definition;
 	}
 

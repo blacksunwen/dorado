@@ -53,7 +53,7 @@ public class RequestWrapperMap implements Map<String, Object> {
 	}
 
 	public Object put(String key, Object value) {
-		request.setAttribute((String) key, value);
+		request.setAttribute(key, value);
 		return value;
 	}
 
