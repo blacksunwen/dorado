@@ -3102,7 +3102,7 @@
 				cell.className = "filter-bar-cell";
 				label.style.width = column._realWidth + "px";
 				
-				var renderer = this._filterBarRenderer || column._filterBarRenderer || $singleton(dorado.widget.grid.FilterBarCellRenderer);
+				var renderer = grid._filterBarRenderer || column._filterBarRenderer || $singleton(dorado.widget.grid.FilterBarCellRenderer);
 				dorado.Renderer.render(renderer, label, {
 					grid: grid,
 					innerGrid: this,
