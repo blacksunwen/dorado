@@ -10,9 +10,6 @@
  * at http://www.bstek.com/contact.
  */
 
-/**
- * 
- */
 package com.bstek.dorado.view.type.property.validator;
 
 import com.bstek.dorado.annotation.ClientProperty;

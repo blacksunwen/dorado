@@ -10,9 +10,6 @@
  * at http://www.bstek.com/contact.
  */
 
-/**
- * 
- */
 package com.bstek.dorado.core.io;
 
 import org.springframework.beans.factory.InitializingBean;

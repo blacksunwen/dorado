@@ -10,9 +10,6 @@
  * at http://www.bstek.com/contact.
  */
 
-/**
- * 
- */
 package com.bstek.dorado.data.resolver.manager;
 
 import org.aopalliance.intercept.MethodInterceptor;

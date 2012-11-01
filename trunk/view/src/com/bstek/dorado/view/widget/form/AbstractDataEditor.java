@@ -10,9 +10,6 @@
  * at http://www.bstek.com/contact.
  */
 
-/**
- * 
- */
 package com.bstek.dorado.view.widget.form;
 
 import com.bstek.dorado.annotation.IdeProperty;
