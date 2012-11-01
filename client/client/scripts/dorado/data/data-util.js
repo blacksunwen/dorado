@@ -75,6 +75,15 @@
 			
 			if (dataType) {
 				var realData = (data.$isWrapper) ? data.data : data;
+				if (data.$isWrapper) {
+					realData = data.data;
+					realData.entityCount = data.entityCount;
+					realData.pageCount = data.pageCount;
+				}
+				else {
+					realData = data;
+				}
+				
 				if (dataType instanceof dorado.EntityDataType && realData instanceof Array) {
 					dataType = new dorado.AggregationDataType({
 						elementDataType: dataType
@@ -91,10 +100,8 @@
 							dataType.fireEvent("onEntityLoad", dataType, eventArg);
 						} else if (data instanceof dorado.EntityList) {
 							if (rudeData.$isWrapper) {
-								data.entityCount = rudeData.entityCount;
 								data.pageSize = rudeData.pageSize;
 								data.pageNo = rudeData.pageNo;
-								data.pageCount = rudeData.pageCount;
 							}
 							
 							var elementDataType = dataType.get("elementDataType");
