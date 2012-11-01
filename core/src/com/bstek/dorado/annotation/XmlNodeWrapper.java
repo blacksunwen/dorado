@@ -22,9 +22,11 @@ import java.lang.annotation.RetentionPolicy;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2011-11-11
  */
-@Retention(RetentionPolicy.RUNTIME) 
+@Retention(RetentionPolicy.RUNTIME)
 public @interface XmlNodeWrapper {
 	String nodeName();
+
+	String label() default "";
 
 	boolean fixed() default true;
 }

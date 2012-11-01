@@ -178,9 +178,11 @@ public class StandaloneRuleSetBuilderTest extends IdeSupportContextTestCase {
 		Rule separator1Rule = ruleSet.getRule("Separator_1");
 		assertEquals("Separator", separator1Rule.getNodeName());
 
-		Rule shellRule = ruleSet.getRule("Shell");
-		assertNotNull(shellRule);
-		assertEquals(2, shellRule.getChild("Desktop").getConcreteRules().size());
+		Rule treeGridRule = ruleSet.getRule("TreeGrid");
+		assertNotNull(treeGridRule);
+		Set<Rule> concreteRules2 = treeGridRule.getChild("Column").getRule()
+				.getChild("Column").getConcreteRules();
+		assertTrue(concreteRules2.size() > 4);
 	}
 
 	public void testLoadRuleFile() throws Exception {

@@ -59,14 +59,14 @@ public class RuleTemplateParser extends ConfigurableDispatchableXmlParser {
 		String name = element.getAttribute("name");
 		if (StringUtils.isNotEmpty(name)) {
 			ruleTemplate = parserContext.getRuleTemplateMap().get(name);
-			if (ruleTemplate != null)
+			if (ruleTemplate != null) {
 				return ruleTemplate;
-		} else {
-			name = element.getAttribute("nodeName");
+			}
 		}
 
 		ruleTemplate = new RuleTemplate(name);
-		if (parserContext.getRuleElementMap().containsKey(name)) {
+		if (StringUtils.isNotBlank(name)
+				&& parserContext.getRuleElementMap().containsKey(name)) {
 			parserContext.getRuleTemplateMap().put(name, ruleTemplate);
 			ruleTemplate.setGlobal(true);
 		}
