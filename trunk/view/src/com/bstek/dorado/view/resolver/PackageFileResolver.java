@@ -220,6 +220,7 @@ public class PackageFileResolver extends WebFileResolver {
 		this.clientI18NFileRegistry = clientI18NFileRegistry;
 	}
 
+	@Override
 	protected String getResourceCacheKey(HttpServletRequest request)
 			throws Exception {
 		Locale locale = localeResolver.resolveLocale();

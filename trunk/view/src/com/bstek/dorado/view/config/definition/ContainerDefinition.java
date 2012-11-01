@@ -116,7 +116,7 @@ public class ContainerDefinition extends ControlDefinition {
 		ContainerDefinition definition = (ContainerDefinition) super.clone();
 		List<ComponentDefinition> children = new ArrayList<ComponentDefinition>();
 		for (ComponentDefinition componentDefinition : definition.children) {
-			children.add((ComponentDefinition) ((componentDefinition != null) ? CloneUtils
+			children.add(((componentDefinition != null) ? CloneUtils
 					.clone(componentDefinition) : null));
 		}
 		definition.children = children;

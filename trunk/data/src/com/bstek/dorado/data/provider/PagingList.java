@@ -185,6 +185,7 @@ public class PagingList<E> extends ListProxySupport<E> {
 		}
 	}
 
+	@Override
 	public Object writeReplace() throws ObjectStreamException {
 		try {
 			List<E> list = new ArrayList<E>();

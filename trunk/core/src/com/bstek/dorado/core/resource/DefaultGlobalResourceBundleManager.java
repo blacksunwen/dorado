@@ -51,6 +51,7 @@ public class DefaultGlobalResourceBundleManager extends
 		this.searchPaths.add(searchPath);
 	}
 
+	@Override
 	protected ResourceBundle doGetBundle(String bundleName, Locale locale)
 			throws Exception {
 		ResourceBundle bundle = null;

@@ -24,6 +24,7 @@ public class StringDataType extends SimpleDataType {
 		return text;
 	}
 
+	@Override
 	public Object fromObject(Object value) {
 		return (value == null) ? null : value.toString();
 	}

@@ -55,6 +55,7 @@ public abstract class EntityDataTypeSupport extends NonAggregationDataType
 			this.entityDataType = entityDataType;
 		}
 
+		@Override
 		@SuppressWarnings("unchecked")
 		protected void childAdded(Object key, Object child) {
 			if (!entityDataType.acceptUnknownPropertyChanged) {
@@ -65,6 +66,7 @@ public abstract class EntityDataTypeSupport extends NonAggregationDataType
 			}
 		}
 
+		@Override
 		@SuppressWarnings("unchecked")
 		protected void childRemoved(Object key, Object child) {
 			if (child instanceof ParentAware<?>) {
@@ -85,6 +87,7 @@ public abstract class EntityDataTypeSupport extends NonAggregationDataType
 			new LinkedHashMap<String, PropertyDef>(), this);
 	private ClientEventHolder clientEventHolder = new ClientEventHolder(this);
 
+	@Override
 	public Class<?> getCreationType() {
 		Class<?> creationType = super.getCreationType();
 		if (creationType == null || creationType.equals(Object.class)) {

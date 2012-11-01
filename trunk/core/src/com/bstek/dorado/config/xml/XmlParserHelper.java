@@ -73,7 +73,7 @@ public class XmlParserHelper implements BeanFactoryAware {
 	private static final String COLLECTION_TO_PROPERTY_PARSER = "dorado.prototype.collectionToPropertyParser";
 
 	@SuppressWarnings("unchecked")
-	private static List<XmlParserInfo> EMPTY_XML_PARSER_INFOS = (List<XmlParserInfo>) Collections.EMPTY_LIST;
+	private static List<XmlParserInfo> EMPTY_XML_PARSER_INFOS = Collections.EMPTY_LIST;
 
 	public static class XmlParserInfo {
 		private String path;

@@ -71,7 +71,7 @@ public class DefaultComponentTypeRegistry implements ComponentTypeRegistry {
 	}
 
 	public ComponentTypeRegisterInfo getRegisterInfo(Class<?> componentType) {
-		ComponentTypeRegisterInfo registerInfo = (ComponentTypeRegisterInfo) classTypeRegistry
+		ComponentTypeRegisterInfo registerInfo = classTypeRegistry
 				.getMatchingValue(componentType);
 		return initializeRefisterInfo(registerInfo);
 	}

@@ -48,6 +48,7 @@ public abstract class AbstractBoxLayout extends Layout {
 		return padding;
 	}
 
+	@Override
 	public void setPadding(int padding) {
 		this.padding = padding;
 	}

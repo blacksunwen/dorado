@@ -37,9 +37,9 @@ public final class GenericObjectListenerRegistry {
 
 				public int compare(GenericObjectListener o1,
 						GenericObjectListener o2) {
-					int order1 = (o1 instanceof GenericObjectListener) ? ((GenericObjectListener) o1)
+					int order1 = (o1 instanceof GenericObjectListener) ? o1
 							.getOrder() : DEFAULT_ORDER;
-					int order2 = (o2 instanceof GenericObjectListener) ? ((GenericObjectListener) o2)
+					int order2 = (o2 instanceof GenericObjectListener) ? o2
 							.getOrder() : DEFAULT_ORDER;
 					int result = order1 - order2;
 					if (result == 0) {

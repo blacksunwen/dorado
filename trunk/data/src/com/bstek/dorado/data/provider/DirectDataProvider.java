@@ -35,6 +35,7 @@ import com.bstek.dorado.data.type.DataType;
 public class DirectDataProvider extends AbstractDataProvider {
 	private Object result;
 
+	@Override
 	@XmlProperty(parser = "spring:dorado.preloadDataParser")
 	@IdeProperty(editor = "pojo")
 	public Object getResult() throws Exception {

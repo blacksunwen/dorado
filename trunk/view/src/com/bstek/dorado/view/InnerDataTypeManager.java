@@ -81,6 +81,7 @@ public class InnerDataTypeManager extends DefaultDataTypeManager {
 		return (parent != null) ? parent.getDataType(type) : null;
 	}
 
+	@Override
 	public Set<String> getDataTypeNames() {
 		Set<String> names = new HashSet<String>();
 		if (parent != null) {

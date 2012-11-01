@@ -63,6 +63,7 @@ public class ClientObjectOutputter extends ObjectOutputter {
 	/**
 	 * 将一个Java的POJO对象输出成为JSON对象。
 	 */
+	@Override
 	protected void outputObject(Object object, OutputContext context)
 			throws IOException, Exception {
 		Writer writer = context.getWriter();

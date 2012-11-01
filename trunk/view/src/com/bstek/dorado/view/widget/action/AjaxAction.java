@@ -52,11 +52,13 @@ public class AjaxAction extends Action {
 		this.timeout = timeout;
 	}
 
+	@Override
 	@ClientProperty(escapeValue = "true")
 	public boolean isModal() {
 		return modal;
 	}
 
+	@Override
 	public void setModal(boolean modal) {
 		this.modal = modal;
 	}

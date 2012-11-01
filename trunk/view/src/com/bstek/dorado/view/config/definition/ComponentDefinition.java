@@ -167,6 +167,7 @@ public class ComponentDefinition extends ListenableObjectDefinition implements
 		}
 	}
 
+	@Override
 	protected void doInitObject(Object object, CreationInfo creationInfo,
 			CreationContext context) throws Exception {
 		if (assembledComponentDefinition != null) {

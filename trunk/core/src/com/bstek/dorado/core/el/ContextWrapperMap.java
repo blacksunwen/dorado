@@ -46,7 +46,7 @@ public class ContextWrapperMap implements Map<String, Object> {
 	}
 
 	public Object put(String key, Object value) {
-		context.setAttribute((String) key, value);
+		context.setAttribute(key, value);
 		return value;
 	}
 

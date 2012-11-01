@@ -153,6 +153,7 @@ public class DataObjectAnnotationEngineStartupListener extends
 		return dataObjectName;
 	}
 
+	@Override
 	public void onStartup() throws Exception {
 		StringBuffer dataObjectsText = new StringBuffer();
 		for (PendingDataObject pendingDataObject : pendingDataObjects) {

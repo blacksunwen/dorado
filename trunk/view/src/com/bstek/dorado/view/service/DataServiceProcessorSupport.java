@@ -108,7 +108,7 @@ public abstract class DataServiceProcessorSupport implements ServiceProcessor,
 		context.setAttribute(VIEW_STATE_ATTRIBUTE_KEY, ViewState.servcing);
 
 		Map<String, Object> viewContext = new HashMap<String, Object>();
-		JsonNode rudeContext = (JsonNode) objectNode.get("context");
+		JsonNode rudeContext = objectNode.get("context");
 		if (rudeContext != null && !rudeContext.isNull()) {
 			Iterator<Entry<String, JsonNode>> fields = rudeContext.getFields();
 			while (fields.hasNext()) {

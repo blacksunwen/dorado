@@ -26,26 +26,32 @@ public class TextArea extends AbstractTextEditor {
 	private int minLength;
 	private int maxLength;
 
+	@Override
 	public boolean isRequired() {
 		return required;
 	}
 
+	@Override
 	public void setRequired(boolean required) {
 		this.required = required;
 	}
 
+	@Override
 	public int getMinLength() {
 		return minLength;
 	}
 
+	@Override
 	public void setMinLength(int minLength) {
 		this.minLength = minLength;
 	}
 
+	@Override
 	public int getMaxLength() {
 		return maxLength;
 	}
 
+	@Override
 	public void setMaxLength(int maxLength) {
 		this.maxLength = maxLength;
 	}

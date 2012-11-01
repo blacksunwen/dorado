@@ -482,7 +482,7 @@ public class DataTypeDefinition extends ListenableObjectDefinition implements
 
 				ObjectDefinition parentProperty = allPropertyDefs.get(name);
 				if (parentProperty != null) {
-					propertyDef = (PropertyDefDefinition) CloneUtils
+					propertyDef = CloneUtils
 							.clone(propertyDef);
 					Definition[] originParents = propertyDef.getParents();
 					Definition[] parents;

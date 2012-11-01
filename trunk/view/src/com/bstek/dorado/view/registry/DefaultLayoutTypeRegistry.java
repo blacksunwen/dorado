@@ -50,7 +50,7 @@ public class DefaultLayoutTypeRegistry implements LayoutTypeRegistry {
 
 	public LayoutTypeRegisterInfo getRegisterInfo(
 			Class<? extends Layout> classType) {
-		return (LayoutTypeRegisterInfo) classTypeRegistry
+		return classTypeRegistry
 				.getMatchingValue(classType);
 	}
 

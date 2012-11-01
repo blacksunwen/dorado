@@ -328,7 +328,7 @@ public final class PackageManager {
 					}
 				}
 
-				String license = StringUtils.trim((String) properties
+				String license = StringUtils.trim(properties
 						.getProperty("license"));
 				if (StringUtils.isNotEmpty(license)) {
 					if (INHERITED.equals(license)) {

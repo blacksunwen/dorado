@@ -36,7 +36,7 @@ public class CloneUtilsTest extends TestCase {
 		MockObject obj, clonedObj;
 		obj = new MockObject();
 		obj.setText(text);
-		clonedObj = (MockObject) CloneUtils.clone(obj);
+		clonedObj = CloneUtils.clone(obj);
 
 		assertEquals(text, clonedObj.getText());
 	}
