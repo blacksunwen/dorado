@@ -973,7 +973,7 @@
 				}
 			});
 			
-			var pd = arg.column.get("dataType");
+			var dt = arg.column.get("dataType");
 			if (dt) {
 				switch (dt._code) {
 					case dorado.DataType.BOOLEAN: {
