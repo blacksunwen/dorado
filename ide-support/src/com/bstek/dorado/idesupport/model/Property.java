@@ -35,6 +35,7 @@ public class Property {
 	private Property parentProperty;
 	private String reserve;
 	private Object userData;
+	private boolean deprecated;
 
 	public Property() {
 	}
@@ -167,5 +168,13 @@ public class Property {
 
 	public void setUserData(Object userData) {
 		this.userData = userData;
+	}
+
+	public boolean isDeprecated() {
+		return deprecated;
+	}
+
+	public void setDeprecated(boolean deprecated) {
+		this.deprecated = deprecated;
 	}
 }

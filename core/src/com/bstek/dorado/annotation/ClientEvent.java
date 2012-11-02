@@ -27,4 +27,6 @@ public @interface ClientEvent {
 	public String name();
 
 	public String[] signature() default "";
+
+	boolean deprecated() default false;
 }

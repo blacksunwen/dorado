@@ -54,6 +54,7 @@ public class Rule {
 	private boolean autoGenerateId;
 	private String reserve;
 	private Object userData;
+	private boolean deprecated;
 
 	private Map<String, Property> primitiveProperties = new TreeMap<String, Property>(
 			propertyComparator);
@@ -295,5 +296,13 @@ public class Rule {
 
 	public void setUserData(Object userData) {
 		this.userData = userData;
+	}
+
+	public boolean isDeprecated() {
+		return deprecated;
+	}
+
+	public void setDeprecated(boolean deprecated) {
+		this.deprecated = deprecated;
 	}
 }

@@ -125,12 +125,16 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 
 		XmlNodeInfo xmlNodeInfo = getXmlNodeInfo(type);
 		String nodeName = xmlNodeInfo.getNodeName();
-		if (xmlNodeInfo != null && StringUtils.isNotEmpty(nodeName)) {
+		if (StringUtils.isNotEmpty(nodeName)) {
 			ruleTemplate.setNodeName(nodeName);
 			if (!ruleTemplate.isAbstract()
 					&& StringUtils.isEmpty(ruleTemplate.getLabel())) {
 				ruleTemplate.setLabel(nodeName);
 			}
+		}
+
+		if (!ruleTemplate.isDeprecated() && xmlNodeInfo.isDeprecated()) {
+			ruleTemplate.setDeprecated(true);
 		}
 
 		IdeObject ideObject = type.getAnnotation(IdeObject.class);
@@ -276,6 +280,9 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 		}
 		if (!xmlNodeInfo.isInheritable() && xmlNode.inheritable()) {
 			xmlNodeInfo.setInheritable(true);
+		}
+		if (!xmlNodeInfo.isDeprecated() && xmlNode.deprecated()) {
+			xmlNodeInfo.setDeprecated(true);
 		}
 		if (StringUtils.isNotEmpty(xmlNode.fixedProperties())) {
 			Map<String, String> fixedProperties = xmlNodeInfo
@@ -448,6 +455,7 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 					initCompositeProperty(propertyTemplate, propertyType,
 							initializerContext);
 				}
+				propertyTemplate.setDeprecated(xmlProperty.deprecated());
 
 				properties.put(propertyName, propertyTemplate);
 			}
@@ -812,6 +820,8 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 				clientEvent.setName(name);
 				String[] signature = clientEventRegisterInfo.getSignature();
 				clientEvent.setParameters(signature);
+				clientEvent.setDeprecated(clientEventRegisterInfo
+						.isDeprecated());
 				ruleTemplate.addClientEvent(clientEvent);
 			}
 		}

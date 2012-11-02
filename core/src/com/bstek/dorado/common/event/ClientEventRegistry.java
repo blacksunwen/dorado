@@ -112,9 +112,12 @@ public class ClientEventRegistry {
 							&& StringUtils.isEmpty(signature[0])) {
 						signature = null;
 					}
+					ClientEventRegisterInfo clientEventRegisterInfo = new ClientEventRegisterInfo(
+							type, clientEvent.name(), signature);
+					clientEventRegisterInfo.setDeprecated(clientEvent
+							.deprecated());
 					ClientEventRegistry
-							.registerClientEvent(new ClientEventRegisterInfo(
-									type, clientEvent.name(), signature));
+							.registerClientEvent(clientEventRegisterInfo);
 				}
 			}
 		}

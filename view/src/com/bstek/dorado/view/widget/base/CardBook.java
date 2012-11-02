@@ -19,6 +19,7 @@ import com.bstek.dorado.annotation.ClientEvents;
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.IdeProperty;
+import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Control;
@@ -48,6 +49,7 @@ public class CardBook extends Control {
 	private int currentControl;
 
 	@Deprecated
+	@XmlProperty(deprecated = true)
 	@IdeProperty(visible = false)
 	public int getCurrentControl() {
 		return currentControl;

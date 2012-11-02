@@ -26,6 +26,7 @@ public class ClientEventRegisterInfo {
 	private Class<?> type;
 	private String name;
 	private String[] signature;
+	private boolean deprecated;
 
 	/**
 	 * @param type
@@ -71,5 +72,13 @@ public class ClientEventRegisterInfo {
 	 */
 	public String[] getSignature() {
 		return signature;
+	}
+
+	public boolean isDeprecated() {
+		return deprecated;
+	}
+
+	public void setDeprecated(boolean deprecated) {
+		this.deprecated = deprecated;
 	}
 }
