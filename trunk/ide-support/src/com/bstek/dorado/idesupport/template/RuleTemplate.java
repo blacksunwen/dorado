@@ -48,6 +48,7 @@ public class RuleTemplate {
 	private String labelProperty;
 	private boolean autoGenerateId;
 	private String reserve;
+	private boolean deprecated;
 
 	private boolean global;
 	private boolean autoInitialize = true;
@@ -434,5 +435,13 @@ public class RuleTemplate {
 
 	public void setReserve(String reserve) {
 		this.reserve = reserve;
+	}
+
+	public boolean isDeprecated() {
+		return deprecated;
+	}
+
+	public void setDeprecated(boolean deprecated) {
+		this.deprecated = deprecated;
 	}
 }

@@ -39,6 +39,8 @@ public @interface XmlNode {
 
 	boolean inheritable() default false;
 
+	boolean deprecated() default false;
+
 	String parser() default "";
 
 	String fixedProperties() default "";

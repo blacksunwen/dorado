@@ -139,7 +139,7 @@ public class RuleSetBuilder {
 		applyProperties(
 				ruleTemplate,
 				rule,
-				"label,abstract,nodeName,type,category,robots,icon,labelProperty,autoGenerateId,reserve");
+				"label,abstract,nodeName,type,category,robots,icon,labelProperty,autoGenerateId,reserve,deprecated");
 
 		if (StringUtils.isEmpty(rule.getNodeName())) {
 			if (StringUtils.isNotEmpty(rule.getType())) {
@@ -208,7 +208,7 @@ public class RuleSetBuilder {
 		applyProperties(
 				propertyTemplate,
 				property,
-				"name,type,defaultValue,fixed,enumValues,editor,highlight,visible,compositeType,reserve");
+				"name,type,defaultValue,fixed,enumValues,editor,highlight,visible,compositeType,reserve,deprecated");
 
 		ReferenceTemplate referenceTemplate = propertyTemplate.getReference();
 		if (referenceTemplate != null) {

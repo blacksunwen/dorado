@@ -34,6 +34,7 @@ public class XmlNodeInfo {
 	private Set<String> implTypes = new HashSet<String>();
 	private boolean scopable;
 	private boolean inheritable;
+	private boolean deprecated;
 	private Map<String, String> fixedProperties = new HashMap<String, String>();
 	private Map<String, XmlProperty> properties = new HashMap<String, XmlProperty>();
 	private Set<XmlSubNode> subNodes = new HashSet<XmlSubNode>();
@@ -85,6 +86,14 @@ public class XmlNodeInfo {
 		this.inheritable = inheritable;
 	}
 
+	public boolean isDeprecated() {
+		return deprecated;
+	}
+
+	public void setDeprecated(boolean deprecated) {
+		this.deprecated = deprecated;
+	}
+
 	public Map<String, String> getFixedProperties() {
 		return fixedProperties;
 	}
@@ -96,4 +105,5 @@ public class XmlNodeInfo {
 	public Set<XmlSubNode> getSubNodes() {
 		return subNodes;
 	}
+
 }

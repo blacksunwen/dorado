@@ -32,6 +32,7 @@ public class PropertyTemplate {
 	private CompositeType compositeType = CompositeType.Unsupport;
 	private Map<String, PropertyTemplate> properties;
 	private String reserve;
+	private boolean deprecated;
 
 	public PropertyTemplate() {
 	}
@@ -155,6 +156,14 @@ public class PropertyTemplate {
 
 	public void setReserve(String reserve) {
 		this.reserve = reserve;
+	}
+
+	public boolean isDeprecated() {
+		return deprecated;
+	}
+
+	public void setDeprecated(boolean deprecated) {
+		this.deprecated = deprecated;
 	}
 
 }

@@ -28,6 +28,7 @@ public class ClientEvent {
 	private String[] parameters;
 	private String reserve;
 	private Object userData;
+	private boolean deprecated;
 
 	public String getName() {
 		return name;
@@ -59,5 +60,13 @@ public class ClientEvent {
 
 	public void setUserData(Object userData) {
 		this.userData = userData;
+	}
+
+	public boolean isDeprecated() {
+		return deprecated;
+	}
+
+	public void setDeprecated(boolean deprecated) {
+		this.deprecated = deprecated;
 	}
 }

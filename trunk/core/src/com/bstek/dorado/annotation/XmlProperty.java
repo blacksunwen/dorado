@@ -32,6 +32,8 @@ public @interface XmlProperty {
 
 	boolean ignored() default false;
 
+	boolean deprecated() default false;
+
 	boolean unsupported() default false;
 
 	boolean attributeOnly() default false;

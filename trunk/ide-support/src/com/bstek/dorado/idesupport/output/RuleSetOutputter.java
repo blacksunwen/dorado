@@ -116,7 +116,7 @@ public class RuleSetOutputter {
 		setElementAttributes(
 				element,
 				ruleTemplate,
-				"label,abstract,nodeName,type,scope,sortFactor,category,robots,icon,labelProperty,autoGenerateId,reserve");
+				"label,abstract,nodeName,type,scope,sortFactor,category,robots,icon,labelProperty,autoGenerateId,reserve,deprecated");
 
 		xmlWriter.writeOpen(element);
 
@@ -169,8 +169,10 @@ public class RuleSetOutputter {
 	protected void outputProperty(XMLWriter xmlWriter,
 			PropertyTemplate property, OutputContext context) throws Exception {
 		Element element = DocumentHelper.createElement("Prop");
-		setElementAttributes(element, property,
-				"name,defaultValue,ignored,visible,highlight,fixed,enumValues,editor,reserve");
+		setElementAttributes(
+				element,
+				property,
+				"name,defaultValue,ignored,visible,highlight,fixed,enumValues,editor,reserve,deprecated");
 		if (property.getVisible() != null) {
 			element.addAttribute("visible", property.getVisible().toString());
 		}
@@ -216,7 +218,8 @@ public class RuleSetOutputter {
 	protected void outputClientEvent(XMLWriter xmlWriter,
 			ClientEvent clientEvent, OutputContext context) throws Exception {
 		Element element = DocumentHelper.createElement("ClientEvent");
-		setElementAttributes(element, clientEvent, "name,parameters,reserve");
+		setElementAttributes(element, clientEvent,
+				"name,parameters,reserve,deprecated");
 		xmlWriter.write(element);
 	}
 
