@@ -973,32 +973,29 @@
 				}
 			});
 			
-			var pd = arg.column._propertyDef;
-			if (pd) {
-				var dt = pd.get("dataType");
-				if (dt) {
-					switch (dt._code) {
-						case dorado.DataType.BOOLEAN: {
-							checkbox.set("triState", true);
-							break;
-						}
-						case dorado.DataType.PRIMITIVE_INT:
-						case dorado.DataType.PRIMITIVE_FLOAT: {
-							checkbox.set({
-								offValue: 0,
-								onValue: 1
-							});
-							break;
-						}
-						case dorado.DataType.INTEGER:
-						case dorado.DataType.FLOAT: {
-							checkbox.set({
-								offValue: 0,
-								onValue: 1,
-								triState: true
-							});
-							break;
-						}
+			var pd = arg.column.get("dataType");
+			if (dt) {
+				switch (dt._code) {
+					case dorado.DataType.BOOLEAN: {
+						checkbox.set("triState", true);
+						break;
+					}
+					case dorado.DataType.PRIMITIVE_INT:
+					case dorado.DataType.PRIMITIVE_FLOAT: {
+						checkbox.set({
+							offValue: 0,
+							onValue: 1
+						});
+						break;
+					}
+					case dorado.DataType.INTEGER:
+					case dorado.DataType.FLOAT: {
+						checkbox.set({
+							offValue: 0,
+							onValue: 1,
+							triState: true
+						});
+						break;
 					}
 				}
 			}
@@ -1629,7 +1626,7 @@
 				if (entity instanceof dorado.Entity) {
 					if (editor instanceof dorado.widget.AbstractTextEditor) {
 						var propertyDef = entity.getPropertyDef(property);
-						if (propertyDef && propertyDef.get("dataType") && !propertyDef.get("mapping")) {
+						if (propertyDef && column.get("dataType") && !propertyDef.get("mapping")) {
 							value = entity.get(property);
 							editor.set("value", value);
 						}
@@ -1677,7 +1674,7 @@
 						// 此处的判断导致一旦Grid中的校验出错后，就再也无法通过Grid来录入内容。因为validationState是在post完成之后才设置的。
 						// if (editor.get("validationState") != "error") {
 						value = editor.get("value");
-						var pd = column._propertyDef, dataType= pd ? pd.get("dataType") : null;
+						var pd = column._propertyDef, dataType= column.get("dataType");
 						if (dataType && dataType._code || pd && pd._mapping) {
 							entity.setText(property, editor.get("text"));
 						}
