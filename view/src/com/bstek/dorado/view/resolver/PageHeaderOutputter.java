@@ -12,7 +12,6 @@
 
 package com.bstek.dorado.view.resolver;
 
-import java.io.IOException;
 import java.io.Writer;
 import java.util.Locale;
 import java.util.Set;
@@ -22,7 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 
-import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.core.resource.LocaleResolver;
 import com.bstek.dorado.view.View;
 import com.bstek.dorado.view.config.attachment.AttachedResourceManager;
@@ -30,7 +28,6 @@ import com.bstek.dorado.view.config.attachment.JavaScriptContent;
 import com.bstek.dorado.view.output.OutputContext;
 import com.bstek.dorado.view.output.Outputter;
 import com.bstek.dorado.web.DoradoContext;
-import com.bstek.dorado.web.WebConfigure;
 import com.bstek.dorado.web.resolver.CacheBusterUtils;
 
 /**
@@ -64,24 +61,6 @@ public class PageHeaderOutputter implements Outputter {
 		this.styleSheetResourceManager = styleSheetResourceManager;
 	}
 
-	protected void writeSetting(Writer writer, String key, Object value,
-			Object escapeValue, boolean quote) throws IOException {
-		if (value == escapeValue
-				|| (escapeValue != null && escapeValue.equals(value))) {
-			return;
-		}
-
-		writer.append("$setting[\"").append(key).append("\"]=");
-		if (quote) {
-			writer.append('"');
-		}
-		writer.append(StringEscapeUtils.escapeJavaScript(String.valueOf(value)));
-		if (quote) {
-			writer.append('"');
-		}
-		writer.append(";\n");
-	}
-
 	public void output(Object object, OutputContext context) throws Exception {
 		View view = (View) object;
 		Writer writer = context.getWriter();
@@ -110,10 +89,6 @@ public class PageHeaderOutputter implements Outputter {
 								.getCacheBuster((locale != null) ? locale
 										.toString() : null) + "\"></script>\n")
 				.append("<script language=\"javascript\" type=\"text/javascript\">\n");
-
-		writeSetting(writer, "code.debugEnabled",
-				WebConfigure.getBoolean("view.debugEnabled"),
-				Configure.getBoolean("view.debugEnabled"), true);
 
 		writer.append("$import(\"widget\");\n</script>\n").append(
 				"<script language=\"javascript\" type=\"text/javascript\">\n");

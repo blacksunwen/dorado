@@ -485,6 +485,15 @@ var AUTO_APPEND_TO_TOPVIEW = true;
                                 }
                                 break;
                             }
+                            case 13:{ // Enter
+                            	if ($setting["enterAsTab"]) {
+									var c = (evt.shiftKey) ? dorado.widget.findPreviousFocusableControl() : dorado.widget.findNextFocusableControl();
+									if (c) c.setFocus();
+									evt.preventDefault();
+									evt.cancelBubble = true;
+									return false;
+								}
+							}
                             case 9: {	// Tab
                                 var c = (evt.shiftKey) ? dorado.widget.findPreviousFocusableControl() : dorado.widget.findNextFocusableControl();
                                 if (c) c.setFocus();

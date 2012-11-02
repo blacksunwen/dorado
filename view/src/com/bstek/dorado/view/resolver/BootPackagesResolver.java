@@ -187,6 +187,8 @@ public class BootPackagesResolver extends WebFileResolver {
 		writeSetting(writer, "showExceptionStackTrace",
 				Configure.getBoolean("view.showExceptionStackTrace"), false,
 				true);
+		writeSetting(writer, "enterAsTab",
+				Configure.getBoolean("view.enterAsTab"), false, true);
 		String contextPath = DoradoContext.getAttachedRequest()
 				.getContextPath();
 		writeSetting(writer, "common.contextPath", contextPath, true, true);
