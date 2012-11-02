@@ -1123,6 +1123,15 @@
 		},
 		
 		refreshSubControl: function(progressBar, arg) {
+			var column = arg.column, entity = arg.data, property;
+			if (column._propertyPath) {
+				entity = column._propertyPath.evaluate(entity, true);
+				if (!entity) return;				
+				property = column._subProperty;
+			}
+			else {
+				property = column._property;
+			}
 			var value = (entity instanceof dorado.Entity) ? entity.get(property) : entity[property];
 			progressBar.set("value", parseFloat(value) || 0);
 		}
