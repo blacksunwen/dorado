@@ -974,7 +974,7 @@
 						var dataType = this.get("dataType");
 						if (dataType) {
 							try {
-								var value = this._value = dataType.parse(text);
+								var value = this._value = dataType.parse(text, this._editorFocused ? this._typeFormat : this._displayFormat);
 								this._valueText = text;
 								return value;
 							} 
