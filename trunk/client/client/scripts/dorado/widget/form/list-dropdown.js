@@ -4,7 +4,7 @@
  * Copyright (c) 2011-2012 BSTEK Information Technology Limited. All rights reserved.
  * 
  * This file is dual-licensed under the AGPLv3 (http://www.gnu.org/licenses/agpl-3.0.html) 
- * and BSDN commercial(http://www.bsdn.org/licenses) licenses.
+ * and BSDN commercial (http://www.bsdn.org/licenses) licenses.
  * 
  * If you are unsure which license is appropriate for your use, please contact the sales department
  * at http://www.bstek.com/contact.
@@ -178,6 +178,7 @@
 				} else {
 					value = value[this._property];
 				}
+				if (value === undefined) value = null;
 			}
 			return value;
 		},
@@ -477,17 +478,22 @@
 				setter: function(items) {
 					if (this._useEmptyItem) {
 						if (items instanceof Array) {
-							if (items.length && items[0] != null) {
-								items.insert(null, 0);
+							var emptyItem = items[0];
+							if (!emptyItem || !emptyItem.isEmptyItem) {
+								items.insert({
+									isEmptyItem: true
+								}, 0);
 							}
 						} else if (items instanceof dorado.EntityList) {
 							var emptyItem = items.getFirst();
 							if (!emptyItem || !emptyItem.isEmptyItem) {
-								emptyItem = items.insert(null, "begin");
+								emptyItem = items.insert({}, "begin");
 								emptyItem.isEmptyItem = true;
 							}
 						} else if (items == null) {
-							items = [null];
+							items = [{
+								isEmptyItem: true
+							}];
 						}
 					}
 					this._items = items;
