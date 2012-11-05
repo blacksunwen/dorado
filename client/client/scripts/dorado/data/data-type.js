@@ -898,7 +898,12 @@
 			if (data instanceof Date) return data;
 			if (isFinite(data)) {
 				var date = new Date(data);
-				return (isNaN(date.getTime())) ? null : date;
+				if (!isNaN(date.getTime())) {
+					return date;
+				}
+				else {
+					date = null;
+				}
 			}
 			
 			if (typeof data == "string") {
