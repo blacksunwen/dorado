@@ -289,28 +289,32 @@ public class DataResolverInterceptorInvoker implements MethodInterceptor {
 
 		Type[] parameterArgTypes = EMPTY_TYPES;
 		Object[] parameterArgs = EMPTY_ARGS;
+		if (parameter != null) {
+			if (parameter instanceof Map<?, ?>) {
+				if (disassembleParameter) {
+					Map<?, ?> map = (Map<?, ?>) parameter;
+					parameterArgTypes = new Class[map.size()];
+					parameterArgs = new Object[parameterArgTypes.length];
 
-		if (parameter != null && parameter instanceof Map<?, ?>) {
-			Map<?, ?> map = (Map<?, ?>) parameter;
-			parameterArgTypes = new Class[map.size() + 1];
-			parameterArgs = new Object[parameterArgTypes.length];
-			parameterArgTypes[0] = MethodAutoMatchingUtils
-					.getTypeForMatching(parameter);
-			parameterArgs[0] = parameter;
-
-			int i = 1;
-			for (Object value : map.values()) {
-				if (value != null) {
-					parameterArgTypes[i] = MethodAutoMatchingUtils
-							.getTypeForMatching(value);
-					parameterArgs[i] = value;
-					i++;
+					int i = 0;
+					for (Object value : map.values()) {
+						if (value != null) {
+							parameterArgTypes[i] = MethodAutoMatchingUtils
+									.getTypeForMatching(value);
+							parameterArgs[i] = value;
+							i++;
+						}
+					}
+				} else {
+					parameterArgTypes = new Type[] { MethodAutoMatchingUtils
+							.getTypeForMatching(parameter) };
+					parameterArgs = new Object[] { parameter };
 				}
+			} else {
+				parameterArgTypes = new Type[] { MethodAutoMatchingUtils
+						.getTypeForMatching(parameter) };
+				parameterArgs = new Object[] { parameter };
 			}
-		} else if (parameter != null) {
-			parameterArgTypes = new Type[] { MethodAutoMatchingUtils
-					.getTypeForMatching(parameter) };
-			parameterArgs = new Object[] { parameter };
 		} else {
 			parameterArgTypes = new Type[] { Object.class };
 			parameterArgs = new Object[] { null };
