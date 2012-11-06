@@ -61,6 +61,7 @@
 		$className: "dorado.widget.AbstractTextBox",
 		_inherentClassName: "i-text-box",
 		_triggerChanged: true,
+		_realEditable: true,
 		
 		ATTRIBUTES: /** @scope dorado.widget.AbstractTextBox.prototype */ {
 			className: {
@@ -448,7 +449,7 @@
 		
 		resetReadOnly: function() {
 			if (!this._rendered) return;
-			
+
 			var readOnly = !!(this._readOnly || this._readOnly2);
 			
 			this._realReadOnly = readOnly;
