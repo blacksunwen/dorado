@@ -1549,7 +1549,7 @@
 		},
 		
 		resize: function() {
-			var dom = this.getDom(), control = this._editorControl;
+			var dom = this.getDom(), control = this.getEditorControl();
 			var ie6 = (dorado.Browser.msie && dorado.Browser.version < 7);
 			if (control) {
 				if (ie6) control.getDom().style.display = "none";
@@ -1573,7 +1573,7 @@
 		show: function(parent, cell) {
 			$invokeSuper.call(this, [parent, cell]);
 			
-			var control = this._editorControl;
+			var control = this.getEditorControl();
 			if (!control) return;
 			control._focusParent = parent;
 			setTimeout(function() {
@@ -1597,7 +1597,7 @@
 		},
 		
 		hide: function(post) {
-			var control = this._editorControl;
+			var control = this.getEditorControl();
 			if (control) delete control._focusParent;
 			$invokeSuper.call(this, [post]);
 		}
@@ -1674,8 +1674,8 @@
 						// 此处的判断导致一旦Grid中的校验出错后，就再也无法通过Grid来录入内容。因为validationState是在post完成之后才设置的。
 						// if (editor.get("validationState") != "error") {
 						value = editor.get("value");
-						var pd = column._propertyDef, dataType= column.get("dataType");
-						if (dataType && dataType._code || pd && pd._mapping) {
+						var pd = column._propertyDef;
+						if (pd && pd._mapping) {
 							entity.setText(property, editor.get("text"));
 						}
 						else {
