@@ -945,6 +945,16 @@
 				var observer = observers[i];
 				observer.dataSetMessageReceived.call(observer, messageCode, args);
 			}
+		},
+		
+		post: function() {
+			var observers = this._observers;
+			for (var i = 0; i < observers.length; i++) {
+				var observer = observers[i];
+				if (observer.post instanceof Function) {
+					observer.post();
+				}
+			}
 		}
 	});
 

@@ -538,6 +538,7 @@
 
 				var data;
 				if (dataSet) {
+					dataSet.post();
 					data = dataSet.queryData(dataPath, options);
 				}
 				var eventArg = {
