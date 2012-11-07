@@ -458,7 +458,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 		if (!dorado.Browser.isTouch) {
             $fly(document).mousedown(function(evt) {
                 var element = evt.target;
-                if (element.style.tabIndex < 0) return;
+                if (!element || !element.style || element.style.tabIndex < 0) return;
                 var control = getControlByElement(element);
                 if (control == null) {
                     dorado.widget.setFocusedControl(null);
