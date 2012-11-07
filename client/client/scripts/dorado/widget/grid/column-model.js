@@ -2011,18 +2011,6 @@
 			},
 			
 			/**
-			 * 分组汇总栏的渲染器。
-			 * @type dorado.Renderer
-			 * @attribute
-			 */
-			summaryRenderer: {
-				setter: function(value) {
-					if (typeof value == "string") value = eval("new " + value + "()");
-					this._summaryRenderer = value;
-				}
-			},
-			
-			/**
 			 * 表单项类型。
 			 * <p>
 			 * 此属性的值实质为编辑器控件的$type。<br>

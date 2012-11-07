@@ -38,7 +38,6 @@ public class DataColumn extends AbstractDataColumn {
 	private String displayFormat;
 	private String typeFormat;
 	private String summaryType;
-	private String summaryRenderer;
 	private String trigger;
 	private boolean editable = true;
 	private SortState sortState = SortState.none;
@@ -119,14 +118,6 @@ public class DataColumn extends AbstractDataColumn {
 
 	public void setSummaryType(String summaryType) {
 		this.summaryType = summaryType;
-	}
-
-	public String getSummaryRenderer() {
-		return summaryRenderer;
-	}
-
-	public void setSummaryRenderer(String summaryRenderer) {
-		this.summaryRenderer = summaryRenderer;
 	}
 
 	@ComponentReference("Trigger")
