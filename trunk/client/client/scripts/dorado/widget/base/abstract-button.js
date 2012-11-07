@@ -83,6 +83,12 @@ dorado.widget.AbstractButton = $extend([dorado.widget.Control, dorado.widget.Act
 					button.doSetToggle(value);
 				}
 			}
+		},
+		
+		tip: {
+			getter: function() {
+				return this._tip || (this._action && this._action._tip);
+			}
 		}
 	},
 

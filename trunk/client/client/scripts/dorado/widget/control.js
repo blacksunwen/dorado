@@ -713,10 +713,11 @@
 					}
 				}
 
-				if(this._tip) {
-					this._currentTip = this._tip;
+				var tip = this.get("tip");
+				if(tip) {
+					this._currentTip = tip;
 					dorado.TipManager.initTip(dom, {
-						text : this._tip
+						text : tip
 					});
 				} else if(this._currentTip) {
 					dorado.TipManager.deleteTip(dom);
