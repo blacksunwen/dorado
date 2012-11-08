@@ -1662,6 +1662,7 @@
 									fixedInnerGrid.updateContainerHeight(fixedInnerGrid._container);
 								}
 								innerGridWrapper.style.height = divScroll.clientHeight + "px";
+								this.updateScroller(innerGrid._container);
 								innerGrid.updateContainerHeight(innerGrid._container);
 							} else {
 								this._ignoreItemTimestamp = true;
