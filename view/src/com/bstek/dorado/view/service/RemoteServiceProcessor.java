@@ -122,40 +122,46 @@ public class RemoteServiceProcessor extends DataServiceProcessorSupport {
 				// do nothing
 			}
 
-			try {
-				returnValue = invokeByParameterName(serviceBean, methods,
-						parameter, true);
-				methodInvoked = true;
-			} catch (MoreThanOneMethodsMatchsException e) {
-				throw e;
-			} catch (MethodAutoMatchingException e) {
-				exceptions[i++] = e;
-			} catch (AbortException e) {
-				// do nothing
+			if (!methodInvoked) {
+				try {
+					returnValue = invokeByParameterName(serviceBean, methods,
+							parameter, true);
+					methodInvoked = true;
+				} catch (MoreThanOneMethodsMatchsException e) {
+					throw e;
+				} catch (MethodAutoMatchingException e) {
+					exceptions[i++] = e;
+				} catch (AbortException e) {
+					// do nothing
+				}
 			}
 
-			try {
-				returnValue = invokeByParameterType(serviceBean, methods,
-						parameter, false);
-				methodInvoked = true;
-			} catch (MoreThanOneMethodsMatchsException e) {
-				throw e;
-			} catch (MethodAutoMatchingException e) {
-				exceptions[i++] = e;
-			} catch (AbortException e) {
-				// do nothing
+			if (!methodInvoked) {
+				try {
+					returnValue = invokeByParameterType(serviceBean, methods,
+							parameter, false);
+					methodInvoked = true;
+				} catch (MoreThanOneMethodsMatchsException e) {
+					throw e;
+				} catch (MethodAutoMatchingException e) {
+					exceptions[i++] = e;
+				} catch (AbortException e) {
+					// do nothing
+				}
 			}
 
-			try {
-				returnValue = invokeByParameterType(serviceBean, methods,
-						parameter, true);
-				methodInvoked = true;
-			} catch (MoreThanOneMethodsMatchsException e) {
-				throw e;
-			} catch (MethodAutoMatchingException e) {
-				exceptions[i++] = e;
-			} catch (AbortException e) {
-				// do nothing
+			if (!methodInvoked) {
+				try {
+					returnValue = invokeByParameterType(serviceBean, methods,
+							parameter, true);
+					methodInvoked = true;
+				} catch (MoreThanOneMethodsMatchsException e) {
+					throw e;
+				} catch (MethodAutoMatchingException e) {
+					exceptions[i++] = e;
+				} catch (AbortException e) {
+					// do nothing
+				}
 			}
 		} catch (MethodAutoMatchingException e) {
 			exceptions[i++] = e;
