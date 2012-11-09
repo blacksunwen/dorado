@@ -126,6 +126,7 @@
 					});
 					var node = $fly(row).data("item");
 					if (node.get("hasChild")) {
+						tree.hideCellEditor(false);
 						if (node._expanded) node.collapse();
 						else if (node._tree._expandingMode == "sync") node.expand();
 						else node.expandAsync();
