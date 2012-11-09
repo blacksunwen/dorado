@@ -137,7 +137,8 @@ public class ClientOutputHelper {
 		return OUTPUTTER_MAP.get(beanType);
 	}
 
-	public Outputter getOutputter(Class<?> beanType) throws Exception {
+	public synchronized Outputter getOutputter(Class<?> beanType)
+			throws Exception {
 		beanType = ProxyBeanUtils.getProxyTargetType(beanType);
 
 		Outputter outputter = getCachedOutputter(beanType);
