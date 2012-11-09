@@ -198,7 +198,7 @@ public class RuleTemplateBuilder implements RuleTemplateManagerListener {
 						ruleTemplate.setNodeName(parentName);
 					} else {
 						throw new IllegalArgumentException(
-								"Neither [name] or [nodeName] is defined for Rule.");
+								"Neither [name] nor [nodeName] is defined for the Rule.");
 					}
 				}
 			}
