@@ -24,6 +24,7 @@ import org.w3c.dom.Node;
 
 import com.bstek.dorado.config.ParseContext;
 import com.bstek.dorado.config.xml.ConfigurableDispatchableXmlParser;
+import com.bstek.dorado.config.xml.XmlParseException;
 import com.bstek.dorado.idesupport.model.ClientEvent;
 import com.bstek.dorado.idesupport.template.ChildTemplate;
 import com.bstek.dorado.idesupport.template.PropertyTemplate;
@@ -35,6 +36,16 @@ import com.bstek.dorado.util.xml.DomUtils;
  * @since 2009-11-18
  */
 public class RuleTemplateParser extends ConfigurableDispatchableXmlParser {
+
+	private boolean global;
+
+	public boolean isGlobal() {
+		return global;
+	}
+
+	public void setGlobal(boolean global) {
+		this.global = global;
+	}
 
 	public RuleTemplate getRuleTemplate(String name,
 			ConfigRuleParseContext parserContext) throws Exception {
@@ -55,18 +66,31 @@ public class RuleTemplateParser extends ConfigurableDispatchableXmlParser {
 		Element element = (Element) node;
 		ConfigRuleParseContext parserContext = (ConfigRuleParseContext) context;
 		RuleTemplate ruleTemplate;
-
 		String name = element.getAttribute("name");
-		if (StringUtils.isNotEmpty(name)) {
+
+		if (StringUtils.isNotBlank(name)) {
 			ruleTemplate = parserContext.getRuleTemplateMap().get(name);
 			if (ruleTemplate != null) {
 				return ruleTemplate;
 			}
 		}
+		if (StringUtils.isBlank(name)) {
+			if (global) {
+				throw new XmlParseException(
+						"The global rule's 'name' attribute can not be blank.",
+						node, context);
+			} else {
+				name = element.getAttribute("nodeName");
+				if (StringUtils.isBlank(name)) {
+					throw new XmlParseException(
+							"The 'name' attribute and the 'nodeName' attributecan not be blank at the same time.",
+							node, context);
+				}
+			}
+		}
 
 		ruleTemplate = new RuleTemplate(name);
-		if (StringUtils.isNotBlank(name)
-				&& parserContext.getRuleElementMap().containsKey(name)) {
+		if (global) {
 			parserContext.getRuleTemplateMap().put(name, ruleTemplate);
 			ruleTemplate.setGlobal(true);
 		}

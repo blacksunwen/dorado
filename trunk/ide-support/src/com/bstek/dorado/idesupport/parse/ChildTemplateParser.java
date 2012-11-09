@@ -34,9 +34,15 @@ import com.bstek.dorado.util.xml.DomUtils;
 public class ChildTemplateParser extends ConfigurableDispatchableXmlParser {
 
 	private RuleTemplateParser ruleTemplateParser;
+	private RuleTemplateParser globalRuleTemplateParser;
 
 	public void setRuleTemplateParser(RuleTemplateParser ruleTemplateParser) {
 		this.ruleTemplateParser = ruleTemplateParser;
+	}
+
+	public void setGlobalRuleTemplateParser(
+			RuleTemplateParser globalRuleTemplateParser) {
+		this.globalRuleTemplateParser = globalRuleTemplateParser;
 	}
 
 	@Override
@@ -50,14 +56,13 @@ public class ChildTemplateParser extends ConfigurableDispatchableXmlParser {
 		RuleTemplate ruleTemplate;
 		String ruleName = (String) properties.remove("rule");
 		if (StringUtils.isNotEmpty(ruleName)) {
-			ruleTemplate = ruleTemplateParser.getRuleTemplate(ruleName,
+			ruleTemplate = globalRuleTemplateParser.getRuleTemplate(ruleName,
 					parserContext);
 			if (ruleTemplate == null) {
 				throw new XmlParseException("Unknown Rule [" + ruleName + "].",
 						node, context);
 			}
-		}
-		else {
+		} else {
 			List<Element> childElements = DomUtils.getChildElements(element);
 			if (childElements.size() == 1) {
 				ruleTemplate = (RuleTemplate) ruleTemplateParser.parse(
@@ -66,8 +71,7 @@ public class ChildTemplateParser extends ConfigurableDispatchableXmlParser {
 				if (StringUtils.isEmpty(ruleName)) {
 					ruleName = ruleTemplate.getName();
 				}
-			}
-			else {
+			} else {
 				throw new XmlParseException("Rule undefined.", element, context);
 			}
 		}
