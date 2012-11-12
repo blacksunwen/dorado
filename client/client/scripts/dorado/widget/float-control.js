@@ -514,6 +514,10 @@ dorado.dequeue = function(namespace) {
 		 */
 		doAfterShow: function() {
 			var control = this, dom = control.getDom();
+			if (dorado.widget.FloatControl.VISIBLE_FLOAT_CONTROLS.indexOf(control) < 0) {
+				dorado.widget.FloatControl.VISIBLE_FLOAT_CONTROLS.push(control);
+			}
+			
 			if (dom) {
 				$fly(dom).css({
 					visibility: "",
@@ -527,7 +531,7 @@ dorado.dequeue = function(namespace) {
 						mode: control._shadowMode || "sides"
 					});
 				}
-				if (control._focusAfterShow) {
+				if (control._focusAfterShow || control._modal) {
 					control.setFocus();
 				}
 			}
@@ -652,6 +656,7 @@ dorado.dequeue = function(namespace) {
 				control._visible = false;
 				
 				control.setActualVisible(false);
+				dorado.widget.FloatControl.VISIBLE_FLOAT_CONTROLS.remove(control);
 				
 				var animateType = options.animateType || control._hideAnimateType || control._animateType;
 				options.animateTarget = control._animateTarget;
@@ -684,6 +689,8 @@ dorado.dequeue = function(namespace) {
 			//log.debug("dorado.dequeue after hide：" + control._id);
 		}
 	});
+	
+	dorado.widget.FloatControl.VISIBLE_FLOAT_CONTROLS = [];
 	
 	var slideShow = function(options, safe) {
 		var control = this, align = options.align, vAlign = options.vAlign, direction = options.direction, dom = control._dom;

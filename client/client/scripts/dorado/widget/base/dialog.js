@@ -188,7 +188,7 @@
 			onMinimize: {}
 		},
 
-		setFocus: function() {
+		doSetFocus: function() {
 			var dialog = this;
 			if (dialog._rendered) {
 				//下面这句话有可能会导致IE8下无法bringToFront

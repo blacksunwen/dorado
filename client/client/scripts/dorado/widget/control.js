@@ -1108,7 +1108,7 @@
 		findParent : function(type) {
 			var parent = this._parent;
 			while(parent) {
-				if (parent instanceof type) {
+				if (dorado.Object.isInstanceOf(parent, type)) {
 					return parent;
 				}
 				parent = parent._parent;
@@ -1137,6 +1137,17 @@
 				return false;
 			}
 			
+			if (dorado.ModalManager._controlStack.length > 0) {
+				if (isFloating = dorado.Object.isInstanceOf(this, dorado.widget.FloatControl) && this._floating) {
+					if (dom.style.zIndex < dorado.ModalManager.getMask().style.zIndex) {
+						return false;
+					}
+				}
+				else if (!this.findParent(dorado.widget.FloatControl)) {
+					return false;
+				}
+			}
+			
 			if(deep) {
 				var child = this, parent = child._parent;
 				while (parent && parent != $topView) {
@@ -1146,6 +1157,9 @@
 					if (!parent.isFocusable()) {
 						var focusableSubControls = parent.getFocusableSubControls();
 						return (focusableSubControls) ? (focusableSubControls.indexOf(child) >= 0) : false;
+					}
+					if (dorado.Object.isInstanceOf(parent, dorado.widget.FloatControl) && parent._floating) {
+						break;
 					}
 					child = parent;
 					parent = child._parent;
@@ -1402,7 +1416,7 @@
 		}
 		if (subControls && subControls.length){
 			if (focusableControls) {
-				focusableControls = focusableControls.concat(subControls);
+				focusableControls = subControls.concat(focusableControls);
 			}
 			else {
 				focusableControls = subControls;
@@ -1424,6 +1438,10 @@
 			for (var i = start; i < focusableControls.length; i++) {
 				var c = focusableControls[i];
 				if (c && c instanceof dorado.widget.Control) {
+					if (c != control && dorado.Object.isInstanceOf(c, dorado.widget.FloatControl) && c._floating) {
+						continue;
+					}
+					
 					if (c == control) {
 						focusableControl = c;
 					} else {
@@ -1467,19 +1485,42 @@
 			if (control) return control;
 			from = from._parent;
 		}
+		
+		var floatControls = dorado.widget.FloatControl.VISIBLE_FLOAT_CONTROLS;
+		for (var i = 0; i < floatControls.length; i++) {
+			from = floatControls[i];
+			var control = findFocusableControl(from);
+			if (control) return control;
+		}
+		
 		return findFocusableControl($topView);
 	};
 
 	dorado.widget.findPreviousFocusableControl = function(control) {
-		var from = from || dorado.widget.getFocusedControl();
+		var from = from || dorado.widget.getFocusedControl(), control;
+		
+		control = findFocusableControl(from, {
+			from: from,
+			reverse: true
+		});
+		if (control) return control;
+		
 		while (from) {
-			var control = findPrevious(from);
-			if (control) control = findFocusableControl(control, {
+			control = findPrevious(from);
+			if (control) return control;
+			
+			from = from._parent;
+		}
+		
+		var floatControls = dorado.widget.FloatControl.VISIBLE_FLOAT_CONTROLS;
+		for (var i = floatControls.length - 1; i >= 0; i--) {
+			from = floatControls[i];
+			control = findFocusableControl(from, {
 				reverse: true
 			});
 			if (control) return control;
-			from = from._parent;
 		}
+		
 		return findFocusableControl($topView, {
 			reverse: true
 		});
