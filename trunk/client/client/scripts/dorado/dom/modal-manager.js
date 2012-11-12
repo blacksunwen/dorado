@@ -148,7 +148,6 @@ dorado.ModalManager = {
                     for (var i = 0, j = stack.length; i < j; i++) {
                         if (dom == (stack[i] || {}).dom) {
                             stack.removeAt(i);
-
                             break;
                         }
                     }
