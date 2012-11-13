@@ -24,6 +24,7 @@ import com.bstek.dorado.common.service.ExposedServiceManager;
 import com.bstek.dorado.core.Context;
 import com.bstek.dorado.core.bean.BeanFactoryUtils;
 import com.bstek.dorado.data.method.MethodAutoMatchingUtils;
+import com.bstek.dorado.view.annotation.ComponentReference;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -37,6 +38,7 @@ public class AjaxValidator extends AbstractAjaxValidator {
 	private static ExposedServiceManager exposedServiceManager;
 
 	private String service;
+	private String ajaxAction;
 
 	private ExposedServiceManager getExposedServiceManager() throws Exception {
 		if (exposedServiceManager == null) {
@@ -53,6 +55,15 @@ public class AjaxValidator extends AbstractAjaxValidator {
 
 	public void setService(String service) {
 		this.service = service;
+	}
+
+	@ComponentReference("AjaxAction")
+	public String getAjaxAction() {
+		return ajaxAction;
+	}
+
+	public void setAjaxAction(String ajaxAction) {
+		this.ajaxAction = ajaxAction;
 	}
 
 	@Override
