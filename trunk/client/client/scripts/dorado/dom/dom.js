@@ -392,7 +392,7 @@
 				url = $url(url);
 				url = "url(" + url + ")";
 			} else {
-				url = "none";
+				url = "";
 			}
 			if (el.style.backgroundImage != url) {
 				el.style.backgroundImage = url;

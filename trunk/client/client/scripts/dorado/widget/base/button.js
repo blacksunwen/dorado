@@ -426,10 +426,8 @@
 					button._createIconSpan();
 				}
 
-				if (icon) {
+				if (doms.icon) {
 					$DomUtils.setBackgroundImage(doms.icon, icon);
-				} else if (doms.icon) {
-					$fly(doms.icon).css("background", "");
 				}
 
 				if (iconCls) {
