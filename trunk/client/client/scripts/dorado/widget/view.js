@@ -545,8 +545,10 @@ var AUTO_APPEND_TO_TOPVIEW = true;
             });
         }
 		
+		dorado.fireOnInit();
+		
 		var doInitDorado = function() {
-			dorado.fireOnInit();
+			dorado.fireAfterInit();
 			
 			topView.onReady();
 			

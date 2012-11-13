@@ -499,7 +499,16 @@ dorado.validator.AjaxValidator = $extend(dorado.validator.RemoteValidator, /** @
 		 * @type String
 		 * @attribute
 		 */
-		service : {}
+		service : {},
+		
+		/**
+		 * 直接绑定一个已有的AjaxAction。
+		 * @type dorado.widget.AjaxAction
+		 * @attribute
+		 */
+		ajaxAction: {
+			componentReference: true
+		}
 	},
 	
 	EVENTS : /** @scope dorado.validator.AjaxValidator.prototype */
@@ -545,11 +554,10 @@ dorado.validator.AjaxValidator = $extend(dorado.validator.RemoteValidator, /** @
 		
 		var ajaxAction = this._ajaxAction;
 		if(!ajaxAction) {
-			this._ajaxAction = ajaxAction = new dorado.widget.AjaxAction({
-				modal: false
-			});
+			this._ajaxAction = ajaxAction = new dorado.widget.AjaxAction();
 		}
 		ajaxAction.set({
+			modal: false,
 			async: this._async,
 			executingMessage: this._executingMessage,
 			service: this._service,

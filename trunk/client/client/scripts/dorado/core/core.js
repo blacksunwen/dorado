@@ -136,7 +136,6 @@ var dorado = {
 			this.onInitListeners = [];
 		}
 		this.onInitListeners.push(listener);
-		delete this.beforeInitListeners;
 	},
 	
 	fireOnInit: function() {
@@ -147,6 +146,27 @@ var dorado = {
 			delete this.onInitListeners;
 		}
 		this.onInitFired = true;
+	},
+	
+	afterInit: function(listener) {
+		if (this.afterInitFired) {
+			throw new dorado.Exception("'afterInit' already fired.");
+		}
+		
+		if (!this.afterInitListeners) {
+			this.afterInitListeners = [];
+		}
+		this.afterInitListeners.push(listener);
+	},
+	
+	fireAfterInit: function() {
+		if (this.afterInitListeners) {
+			this.afterInitListeners.each(function(listener) {
+				return listener.call(dorado);
+			});
+			delete this.afterInitListeners;
+		}
+		this.afterInitFired = true;
 	},
 	
 	defaultToString: function(obj) {
