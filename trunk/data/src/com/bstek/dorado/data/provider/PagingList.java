@@ -154,7 +154,7 @@ public class PagingList<E> extends ListProxySupport<E> {
 		Page<E> page = pageMap.get(pageNo);
 		if (page == null) {
 			page = new Page<E>(pageSize, pageNo);
-			dataProvider.getResult(parameter, page, dataType);
+			dataProvider.getPagingResult(parameter, page, dataType);
 			pageMap.put(pageNo, page);
 		}
 		return page;

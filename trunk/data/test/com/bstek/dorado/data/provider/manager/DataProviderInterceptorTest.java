@@ -83,14 +83,14 @@ public class DataProviderInterceptorTest extends ConfigManagerTestSupport {
 		List<Properties> entities;
 
 		page = new Page(10, 1);
-		dataProvider.getResult(PREFIX, page);
+		dataProvider.getPagingResult(PREFIX, page);
 		entities = (List<Properties>) page.getEntities();
 		assertNotNull(entities);
 		assertEquals(10, entities.size());
 		assertEquals(PREFIX + "-6", entities.get(5).get("key"));
 
 		page = new Page(10, 8);
-		dataProvider.getResult(PREFIX, page);
+		dataProvider.getPagingResult(PREFIX, page);
 		entities = (List<Properties>) page.getEntities();
 		assertNotNull(entities);
 		assertEquals(10, entities.size());

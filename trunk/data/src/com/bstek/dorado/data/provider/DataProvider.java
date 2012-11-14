@@ -116,7 +116,7 @@ public interface DataProvider extends DataModelObject {
 	 * @throws Exception
 	 * @see com.bstek.dorado.data.provider.Page
 	 */
-	void getResult(Page<?> page) throws Exception;
+	void getPagingResult(Page<?> page) throws Exception;
 
 	/**
 	 * 获得返回给外界的数据。
@@ -128,7 +128,7 @@ public interface DataProvider extends DataModelObject {
 	 * @throws Exception
 	 * @see com.bstek.dorado.data.provider.Page
 	 */
-	void getResult(Object parameter, Page<?> page) throws Exception;
+	void getPagingResult(Object parameter, Page<?> page) throws Exception;
 
 	/**
 	 * 获得返回给外界的数据。
@@ -142,7 +142,7 @@ public interface DataProvider extends DataModelObject {
 	 * @throws Exception
 	 * @see com.bstek.dorado.data.provider.Page
 	 */
-	void getResult(Object parameter, Page<?> page, DataType resultDataType)
+	void getPagingResult(Object parameter, Page<?> page, DataType resultDataType)
 			throws Exception;
 
 }

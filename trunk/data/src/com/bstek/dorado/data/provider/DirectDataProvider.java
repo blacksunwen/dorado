@@ -58,7 +58,7 @@ public class DirectDataProvider extends AbstractDataProvider {
 
 	@Override
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	protected void internalGetResult(Object parameter, Page page,
+	protected void internalGetPagingResult(Object parameter, Page page,
 			DataType resultDataType) throws Exception {
 		// 此处未处理resultDataType，因为运行时的动态代理会去处理
 		if (result == null) {
