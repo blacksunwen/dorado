@@ -31,7 +31,7 @@ public class MockDirectDataProvider extends DirectDataProvider {
 
 	@Override
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	protected void internalGetResult(Object parameter, Page page,
+	protected void internalGetPagingResult(Object parameter, Page page,
 			DataType resultDataType) throws Exception {
 		int pageSize = page.getPageSize();
 		int resultIndex = page.getFirstEntityIndex();

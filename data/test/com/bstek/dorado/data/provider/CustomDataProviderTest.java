@@ -32,7 +32,7 @@ public class CustomDataProviderTest extends ConfigManagerTestSupport {
 		final int pageSize = 10;
 
 		Page page = new Page(pageSize, 3);
-		dataProvider.getResult(page);
+		dataProvider.getPagingResult(page);
 		assertNotNull(page);
 		assertEquals(pageSize * 10, page.getEntityCount());
 

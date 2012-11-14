@@ -244,7 +244,7 @@ public class LoadDataServiceProcessor extends DataServiceProcessorSupport {
 		Object result;
 		if (pageSize > 0) {
 			Page page = new Page(pageSize, pageNo);
-			dataProvider.getResult(parameter, page, resultDataType);
+			dataProvider.getPagingResult(parameter, page, resultDataType);
 			result = page;
 		} else {
 			result = dataProvider.getResult(parameter, resultDataType);

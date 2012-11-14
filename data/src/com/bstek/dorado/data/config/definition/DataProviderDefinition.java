@@ -187,6 +187,7 @@ public class DataProviderDefinition extends InterceptableDefinition implements
 
 class RootCustomDataProviderInterceptor extends BaseMethodInterceptorDispatcher {
 	private static final String METHOD_NAME = "getResult";
+	private static final String PAGING_METHOD_NAME = "getPagingResult";
 
 	public RootCustomDataProviderInterceptor(
 			MethodInterceptor[] subMethodInterceptors) {
@@ -195,7 +196,9 @@ class RootCustomDataProviderInterceptor extends BaseMethodInterceptorDispatcher 
 
 	@Override
 	protected boolean filterMethod(Method method) {
-		return method.getName().equals(METHOD_NAME);
+		String methodName = method.getName();
+		return methodName.equals(METHOD_NAME)
+				|| methodName.equals(PAGING_METHOD_NAME);
 	}
 
 	@Override

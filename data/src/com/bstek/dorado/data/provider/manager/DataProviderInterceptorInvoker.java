@@ -55,8 +55,9 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 	private static final ResourceManager resourceManager = ResourceManagerUtils
 			.get(DataProviderInterceptorInvoker.class);
 
-	public static final String INTERCEPTING_METHOD_NAME = "getResult";
-	public static final String DEFAULT_METHOD_NAME = INTERCEPTING_METHOD_NAME;
+	public static final String DEFAULT_METHOD_NAME = "getResult";
+	public static final String INTERCEPTING_METHOD_NAME = DEFAULT_METHOD_NAME;
+	public static final String INTERCEPTING_PAGING_METHOD_NAME = "getPagingResult";
 
 	private static final String[] EMPTY_NAMES = new String[0];
 	private static final Object[] EMPTY_ARGS = new Object[0];
@@ -106,7 +107,9 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 
 	public Object invoke(MethodInvocation methodInvocation) throws Throwable {
 		Method proxyMethod = methodInvocation.getMethod();
-		if (!proxyMethod.getName().equals(INTERCEPTING_METHOD_NAME)) {
+		String currentMethodName = proxyMethod.getName();
+		if (!currentMethodName.equals(INTERCEPTING_METHOD_NAME)
+				&& !currentMethodName.equals(INTERCEPTING_PAGING_METHOD_NAME)) {
 			return methodInvocation.proceed();
 		}
 

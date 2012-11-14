@@ -116,7 +116,7 @@ public abstract class AbstractDataProvider implements DataProvider, Namable,
 	 * @throws Exception
 	 * @see com.bstek.dorado.data.provider.Page
 	 */
-	protected abstract void internalGetResult(Object parameter, Page<?> page,
+	protected abstract void internalGetPagingResult(Object parameter, Page<?> page,
 			DataType resultDataType) throws Exception;
 
 	public Object getResult() throws Exception {
@@ -141,18 +141,18 @@ public abstract class AbstractDataProvider implements DataProvider, Namable,
 		return internalGetResult(parameter, resultDataType);
 	}
 
-	public void getResult(Page<?> page) throws Exception {
-		internalGetResult(parameter, page, resultDataType);
+	public void getPagingResult(Page<?> page) throws Exception {
+		internalGetPagingResult(parameter, page, resultDataType);
 	}
 
-	public void getResult(Object parameter, Page<?> page) throws Exception {
+	public void getPagingResult(Object parameter, Page<?> page) throws Exception {
 		if (parameter == null && this.parameter != null) {
 			parameter = this.parameter;
 		}
-		internalGetResult(parameter, page, resultDataType);
+		internalGetPagingResult(parameter, page, resultDataType);
 	}
 
-	public void getResult(Object parameter, Page<?> page,
+	public void getPagingResult(Object parameter, Page<?> page,
 			DataType resultDataType) throws Exception {
 		if (parameter == null && this.parameter != null) {
 			parameter = this.parameter;
@@ -160,7 +160,7 @@ public abstract class AbstractDataProvider implements DataProvider, Namable,
 		if (resultDataType == null) {
 			resultDataType = this.resultDataType;
 		}
-		internalGetResult(parameter, page, resultDataType);
+		internalGetPagingResult(parameter, page, resultDataType);
 	}
 
 	@XmlProperty(composite = true)

@@ -92,7 +92,7 @@ public class DirectDataProviderTest extends ConfigManagerTestSupport {
 
 		int pageSize = 10, pageNo = 5;
 		Page page = new Page(pageSize, pageNo);
-		directDataProvider.getResult(page);
+		directDataProvider.getPagingResult(page);
 
 		assertEquals(pageSize, page.getPageSize());
 		assertEquals(100, page.getPageCount());
