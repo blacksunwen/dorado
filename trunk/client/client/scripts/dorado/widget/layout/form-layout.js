@@ -337,6 +337,9 @@
 				if (ind > 0) {
 					w = col.substring(0, ind);
 					cls = col.substring(ind + 1);
+					if (cls.charAt(cls.length - 1) == ']') {
+						cls = cls.substring(0, cls.length - 1);
+					}
 				} else {
 					w = col;
 				}
