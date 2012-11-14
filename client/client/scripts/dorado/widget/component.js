@@ -265,19 +265,25 @@
 		if (value instanceof dorado.widget.Component) {
 			return value;
 		} else {
-			var component;
+			var component, view;
 			if (typeof value == "string") {
-				component = $topView.id(value);
+				if (object.getListenerScope) {
+					view = object.getListenerScope();
+				}
+				else {
+					view = $topView;
+				}
+				component = view.id(value);
 				if (component) return component;
 				value = {
-					view: $topView,
+					view: view,
 					component: value
 				};
 			} else if (typeof value == "object" && value.$type) {
 				return dorado.Toolkits.createInstance("widget", value);
 			}
 			
-			var view = value.view, componentId = value.component;
+			view = value.view, componentId = value.component;
 			component = view.id(componentId);
 			if (component) return component;
 			

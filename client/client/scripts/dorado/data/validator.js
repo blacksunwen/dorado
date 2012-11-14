@@ -507,7 +507,9 @@ dorado.validator.AjaxValidator = $extend(dorado.validator.RemoteValidator, /** @
 		 * @attribute
 		 */
 		ajaxAction: {
-			componentReference: true
+			setter: function(ajaxAction) {
+				this._ajaxAction = dorado.widget.Component.getComponentReference(this, "ajaxAction", ajaxAction);
+			}
 		}
 	},
 	
@@ -553,7 +555,7 @@ dorado.validator.AjaxValidator = $extend(dorado.validator.RemoteValidator, /** @
 		this.fireEvent("beforeExecute", this, eventArg);
 		
 		var ajaxAction = this._ajaxAction;
-		if(!ajaxAction) {
+		if (!ajaxAction) {
 			this._ajaxAction = ajaxAction = new dorado.widget.AjaxAction();
 		}
 		ajaxAction.set({
