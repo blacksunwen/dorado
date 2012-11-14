@@ -45,7 +45,6 @@ public class FormProfile extends Component implements FormConfig {
 	private int editorWidth;
 	private Properties editorConfig;
 	private boolean showHint = true;
-	private boolean showValidHint = true;
 	private int hintWidth;
 	private int hintSpacing;
 	private boolean showHintMessage;
@@ -181,15 +180,6 @@ public class FormProfile extends Component implements FormConfig {
 
 	public void setShowHint(boolean showHint) {
 		this.showHint = showHint;
-	}
-
-	@ClientProperty(escapeValue = "true")
-	public boolean isShowValidHint() {
-		return showValidHint;
-	}
-
-	public void setShowValidHint(boolean showValidHint) {
-		this.showValidHint = showValidHint;
 	}
 
 	public int getHintWidth() {
