@@ -558,15 +558,21 @@ dorado.validator.AjaxValidator = $extend(dorado.validator.RemoteValidator, /** @
 		if (!ajaxAction) {
 			this._ajaxAction = ajaxAction = new dorado.widget.AjaxAction();
 		}
-		ajaxAction.set({
+		
+		var config = {
 			modal: false,
 			async: this._async,
 			executingMessage: this._executingMessage,
 			service: this._service,
 			parameter: eventArg.parameter
-		});
+		};
+		if (this._executingMessage) config.executingMessage = this._executingMessage;
+		if (this._service) config.service = this._service;
+		if (eventArg.parameter) config.parameter = eventArg.parameter;
+		
+		ajaxAction.set(config);
 		var retval = ajaxAction.execute(this._async ? callback : null);
-		if(retval && !this._async) {
+		if (retval && !this._async) {
 			return ajaxAction.get("returnValue");
 		}
 	}
