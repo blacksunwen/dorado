@@ -49,44 +49,7 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 					return;
 				}
 				
-				var oldControl = cardbook._currentControl;
-				var eventArg = {
-					oldControl: oldControl,
-					newControl: control
-				};
-				cardbook.fireEvent("beforeCurrentChange", this, eventArg);
-				if (eventArg.processDefault === false) return;
-				if (oldControl) {
-					if (oldControl instanceof dorado.widget.IFrame) {
-						if (!oldControl._loaded) {
-							oldControl.cancelLoad();
-						}
-					}
-					var oldDom = oldControl._dom;
-					if (oldDom) {
-						oldDom.style.display = "none";
-					}
-					oldControl.setActualVisible(false);
-				}
-				cardbook._currentControl = control;
-				var dom = cardbook._dom;
-				if (dom && control) {
-					if (!control._rendered) {
-						this._resetInnerControlDemension(control);
-						control.render(dom);
-					} else {
-						$fly(control._dom).css("display", "block");
-						control.setActualVisible(true);
-						this._resetInnerControlDemension(control);
-						
-						control.resetDimension();
-						
-						if (control instanceof dorado.widget.IFrame && !control._loaded) {
-							control.reloadIfNotLoaded();
-						}
-					}
-				}
-				cardbook.fireEvent("onCurrentChange", this, eventArg);
+				cardbook.doSetCurrentControl(control);
 			}
 		},
 		
@@ -180,7 +143,48 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 			this.set("currentControl", currentControl);
 		}
 	},
-	
+
+	doSetCurrentControl: function(control) {
+		var cardbook = this, oldControl = cardbook._currentControl;
+		var eventArg = {
+			oldControl: oldControl,
+			newControl: control
+		};
+		cardbook.fireEvent("beforeCurrentChange", this, eventArg);
+		if (eventArg.processDefault === false) return;
+		if (oldControl) {
+			if (oldControl instanceof dorado.widget.IFrame) {
+				if (!oldControl._loaded) {
+					oldControl.cancelLoad();
+				}
+			}
+			var oldDom = oldControl._dom;
+			if (oldDom) {
+				oldDom.style.display = "none";
+			}
+			oldControl.setActualVisible(false);
+		}
+		cardbook._currentControl = control;
+		var dom = cardbook._dom;
+		if (dom && control) {
+			if (!control._rendered) {
+				this._resetInnerControlDemension(control);
+				control.render(dom);
+			} else {
+				$fly(control._dom).css("display", "block");
+				control.setActualVisible(true);
+				this._resetInnerControlDemension(control);
+
+				control.resetDimension();
+
+				if (control instanceof dorado.widget.IFrame && !control._loaded) {
+					control.reloadIfNotLoaded();
+				}
+			}
+		}
+		cardbook.fireEvent("onCurrentChange", this, eventArg);
+	},
+
 	/**
 	 * 插入子组件。
 	 * @param {dorado.widget.Control} control 要插入的子组件
