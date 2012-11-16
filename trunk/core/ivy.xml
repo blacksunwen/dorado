@@ -25,14 +25,14 @@
 		<dependency org="org.apache.commons" name="commons-jexl" rev="2.0.1" conf="compile" />
 		<dependency org="log4j" name="log4j" rev="1.2.16" conf="compile" />
 
-		<dependency org="org.springframework" name="spring-core" rev="3.1.2.RELEASE" conf="compile" />
-		<dependency org="org.springframework" name="spring-beans" rev="3.1.2.RELEASE" conf="compile" />
-		<dependency org="org.springframework" name="spring-context" rev="3.1.2.RELEASE" conf="compile" />
-		<dependency org="org.springframework" name="spring-context-support" rev="3.1.2.RELEASE" conf="compile" />
-		<dependency org="org.springframework" name="spring-asm" rev="3.1.2.RELEASE" conf="compile" />
-		<dependency org="org.springframework" name="spring-expression" rev="3.1.2.RELEASE" conf="compile" />
-		<dependency org="org.springframework" name="spring-web" rev="3.1.2.RELEASE" conf="compile" />
-		<dependency org="org.springframework" name="spring-webmvc" rev="3.1.2.RELEASE" conf="compile" />
+		<dependency org="org.springframework" name="spring-core" rev="3.0.5.RELEASE" conf="compile" />
+		<dependency org="org.springframework" name="spring-beans" rev="3.0.5.RELEASE" conf="compile" />
+		<dependency org="org.springframework" name="spring-context" rev="3.0.5.RELEASE" conf="compile" />
+		<dependency org="org.springframework" name="spring-context-support" rev="3.0.5.RELEASE" conf="compile" />
+		<dependency org="org.springframework" name="spring-asm" rev="3.0.5.RELEASE" conf="compile" />
+		<dependency org="org.springframework" name="spring-expression" rev="3.0.5.RELEASE" conf="compile" />
+		<dependency org="org.springframework" name="spring-web" rev="3.0.5.RELEASE" conf="compile" />
+		<dependency org="org.springframework" name="spring-webmvc" rev="3.0.5.RELEASE" conf="compile" />
 
 		<dependency org="dom4j" name="dom4j" rev="1.6.1" conf="compile">
 			<exclude org="xml-apis" />
