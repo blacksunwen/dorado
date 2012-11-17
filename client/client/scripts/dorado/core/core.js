@@ -47,6 +47,34 @@ var dorado = {
 			if (jQuery.browser.hasOwnProperty(p)) browser[p] = jQuery.browser[p];
 		}
 		if (browser.chrome) browser.webkit = true; // jQuery 1.8.0不再认为chrome属于webkit
+
+		function detect(ua){
+			var os = {}, android = ua.match(/(Android)\s+([\d.]+)/),
+				ipad = ua.match(/(iPad).*OS\s([\d_]+)/), iphone = !ipad && ua.match(/(iPhone\sOS)\s([\d_]+)/);
+
+			if (android) {
+				os.android = true;
+				os.version = android[2];
+			}
+			if (iphone) {
+				os.ios = true;
+				os.version = iphone[2].replace(/_/g, '.');
+				os.iphone = true;
+			} else if (ipad) {
+				os.ios = true;
+				os.version = ipad[2].replace(/_/g, '.');
+				os.ipad = true;
+			}
+			return os;
+		}
+
+		var os = detect(navigator.userAgent);
+		if (os.iphone) {
+			browser.isPhone = os.iphone;
+		} else if (os.android) {
+			browser.isPhone = window.screen.width < 600;
+		}
+
 		browser.android = (/android/gi).test(navigator.appVersion);
 		browser.iOS = (/iphone|ipad/gi).test(navigator.appVersion);
 		browser.isTouch = "ontouchstart" in window;
