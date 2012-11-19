@@ -99,8 +99,8 @@ public class AutoForm extends Control implements FormConfig {
 		this.dataPath = dataPath;
 	}
 
-	@XmlProperty(parser = "spring:dorado.dataTypePropertyParser")
-	@ClientProperty
+	@XmlProperty(parser = "spring:dorado.dataTypePropertyParser",
+			deprecated = true)
 	public EntityDataType getDataType() {
 		return dataType;
 	}
