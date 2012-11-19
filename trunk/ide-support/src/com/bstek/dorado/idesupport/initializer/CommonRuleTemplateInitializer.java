@@ -523,6 +523,7 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 						initCompositeProperty(propertyTemplate, propertyType,
 								initializerContext);
 					}
+					propertyTemplate.setDeprecated(xmlProperty.deprecated());
 				} else if (EntityUtils.isSimpleType(propertyType)
 						|| propertyType.equals(Class.class)
 						|| propertyType.isArray()

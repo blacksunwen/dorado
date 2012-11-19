@@ -56,7 +56,8 @@ public class DataGrid extends AbstractGrid implements DataControl {
 		this.dataPath = dataPath;
 	}
 
-	@XmlProperty(parser = "spring:dorado.dataTypePropertyParser")
+	@XmlProperty(parser = "spring:dorado.dataTypePropertyParser",
+			deprecated = true)
 	public EntityDataType getDataType() {
 		return dataType;
 	}
