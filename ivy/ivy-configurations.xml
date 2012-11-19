@@ -5,4 +5,6 @@
 	<conf name="provided" visibility="public" />
 	<conf name="runtime" visibility="public" />
 	<conf name="test" visibility="private" extends="runtime" />
+	
+	<conf name="sources" visibility="public" />
 </configurations>
