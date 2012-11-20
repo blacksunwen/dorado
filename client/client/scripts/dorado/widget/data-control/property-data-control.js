@@ -32,7 +32,11 @@ dorado.widget.PropertyDataControl = $extend(dorado.widget.DataControl, /** @scop
 		 * @see dorado.DataPath
 		 */
 		dataPath: {
-			defaultValue: '#'
+			defaultValue: '#',
+			setter: function(dataPath) {
+				this._dataPath = this._realDataPath = dataPath;
+				this.processComplexProperty();
+			}
 		},
 		
 		/**
@@ -41,7 +45,31 @@ dorado.widget.PropertyDataControl = $extend(dorado.widget.DataControl, /** @scop
 		 * @attribute
 		 * @see dorado.DataPath
 		 */
-		property: {}
+		property: {
+			setter: function(property) {
+				this._property = this._realProperty = property;
+				this.processComplexProperty();
+			}
+		}
+	},
+	
+	processComplexProperty: function() {
+		var dataPath = this._realDataPath;
+		var property = this._realProperty;
+		if (property) {
+			var i = property.lastIndexOf('.');
+			if (i > 0 && i < property.length - 1) {
+				var property1 = property.substring(0, i);
+				var property2 = property.substring(i + 1);
+				if (dataPath) {
+					dataPath += ('.' + property1);
+				} else {
+					dataPath = "#." + property1;
+				}
+				this._dataPath = dataPath;
+				this._property = property2;
+			}
+		}
 	},
 	
 	filterDataSetMessage: function(messageCode, arg, data) {
