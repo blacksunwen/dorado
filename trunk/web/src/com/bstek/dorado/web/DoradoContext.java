@@ -217,16 +217,14 @@ public class DoradoContext extends SpringContextSupport {
 	 *            请求对象。
 	 * @return 当前线程中的上下文对象。
 	 */
-	public static DoradoContext dispose(HttpServletRequest request) {
+	public static void dispose(HttpServletRequest request) {
 		if (request != null) {
 			request.removeAttribute(ATTRIBUTE_KEY);
 		}
-		DoradoContext context = (DoradoContext) dettachFromThreadLocal();
-		if (context != null) {
-			Assert.isInstanceOf(DoradoContext.class, context);
-			context.request = null;
+		Context context = (Context) dettachFromThreadLocal();
+		if (context != null && context instanceof DoradoContext) {
+			((DoradoContext) context).request = null;
 		}
-		return context;
 	}
 
 	/**
@@ -234,8 +232,8 @@ public class DoradoContext extends SpringContextSupport {
 	 * 
 	 * @return 当前线程中的上下文对象。
 	 */
-	public static DoradoContext dispose() {
-		return dispose((HttpServletRequest) null);
+	public static void dispose() {
+		dispose((HttpServletRequest) null);
 	}
 
 	@SuppressWarnings("rawtypes")
