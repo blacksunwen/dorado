@@ -16,8 +16,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Hashtable;
+import java.util.Locale;
 import java.util.Map;
+import java.util.SimpleTimeZone;
 import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipOutputStream;
 
@@ -33,11 +37,14 @@ import com.bstek.dorado.core.io.Resource;
 import com.bstek.dorado.web.DoradoContext;
 
 public abstract class AbstractWebFileResolver extends AbstractResolver {
+
 	private static Log logger = LogFactory.getLog(WebFileResolver.class);
 
 	private static final int BUFFER_SIZE = 1024 * 2;
 	private static final int ONE_SECOND = 1000;
 	private static final int MIN_RETRIEVE_LAST_MODIFIED_INTERVAL = ONE_SECOND * 10;
+	private static final SimpleTimeZone GMT_TIME_ZONE = new SimpleTimeZone(0,
+			"GMT");
 
 	private static final ResourcesWrapper FILE_NOT_FOUND_RESOURCES_WRAPPER = new ResourcesWrapper(
 			HttpServletResponse.SC_NOT_FOUND);
@@ -233,8 +240,12 @@ public abstract class AbstractWebFileResolver extends AbstractResolver {
 				response.setContentType(contentType);
 
 				// 告知Client端此资源的最后修改时间
-				response.addDateHeader(HttpConstants.LAST_MODIFIED,
-						lastModified);
+				SimpleDateFormat dateFormat = new SimpleDateFormat(
+						"EEE, dd MMM yyyy HH:mm:ss z", Locale.ENGLISH);
+				dateFormat.setTimeZone(GMT_TIME_ZONE);
+
+				response.addHeader(HttpConstants.LAST_MODIFIED,
+						dateFormat.format(new Date(lastModified)));
 
 				Resource[] resources = resourcesWrapper.getResources();
 				OutputStream out = getOutputStream(request, response,
@@ -258,5 +269,4 @@ public abstract class AbstractWebFileResolver extends AbstractResolver {
 		}
 		return null;
 	}
-
 }
