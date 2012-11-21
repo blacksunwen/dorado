@@ -57,6 +57,9 @@ public class ResourcesWrapper {
 				long timestamp;
 				try {
 					timestamp = resource.getTimestamp();
+					if (timestamp < 946656000000L) {
+						timestamp = DoradoAbout.getInstantiationTime();
+					}
 				} catch (IOException ex) {
 					timestamp = DoradoAbout.getInstantiationTime();
 				}
