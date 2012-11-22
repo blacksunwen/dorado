@@ -475,7 +475,16 @@ dorado.widget.toolbar.Separator = $extend(dorado.widget.Control, {
  */
 dorado.widget.toolbar.Button = $extend(dorado.widget.Button, {
 	$className: "dorado.widget.toolbar.Button",
-	
+
+	constructor: function(config) {
+		var items = config.items;
+		if (items) {
+			delete config.items;
+		}
+		$invokeSuper.call(this, arguments);
+		if (items) this.set("items", items);
+	},
+
 	ATTRIBUTES: {
 		className: {
 			defaultValue: "d-toolbar-button"
