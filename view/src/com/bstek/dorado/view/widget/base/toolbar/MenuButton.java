@@ -18,6 +18,7 @@ import org.apache.commons.lang.RandomStringUtils;
 
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.view.annotation.Widget;
@@ -75,8 +76,14 @@ public class MenuButton extends com.bstek.dorado.view.widget.base.Button {
 	}
 
 	@Override
+	@IdeProperty(visible = false)
+	@ClientProperty(ignored = true)
+	public String getMenu() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public void setMenu(String menu) {
-		embededMenuRef.set(null);
-		super.setMenu(menu);
+		throw new UnsupportedOperationException();
 	}
 }
