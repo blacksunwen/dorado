@@ -232,9 +232,15 @@
 			//FIX OpenFlashChart BUG: http://bsdn.org/projects/dorado7/issue/dorado7-240
 			if (this._ready && this.isSameDomain()) {
 				//if (dorado.Browser.mozilla && window && window.dorado && window.dorado.widget && window.dorado.widget.ofc) {
-				if (window && window.dorado && window.dorado.widget)
-					window.$topView.setActualVisible(actualVisible);
-				//}
+				if (window && window.dorado && window.dorado.widget) {
+					// 在Chrome中，一旦通过UpdateAction的回调方法关闭一个含有iFrame的Dialog，
+					// 会在下载触发主窗体事件时引发jQuery报compareDocumentPosition找不到的错误。
+					// 通过下面的setTimeout可以避免，但原因不详。
+					// 2012/11/26
+					setTimeout(function() {
+						window.$topView.setActualVisible(actualVisible);
+					}, 0);
+				}
 			}
 		},
 		
