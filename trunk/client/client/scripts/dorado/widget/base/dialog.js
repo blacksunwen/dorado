@@ -190,7 +190,7 @@
 
 		doSetFocus: function() {
 			var dialog = this;
-			if (dialog._rendered) {
+			if (dialog._dom) {
 				//下面这句话有可能会导致IE8下无法bringToFront
 				dialog._dom.focus();
 			}
