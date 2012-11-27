@@ -33,7 +33,7 @@
 
 .d-grid .header-table .caption-required {
 	padding-left: 8px;
-	background: url(form/field-required.gif) -6px 1px no-repeat;
+	background: url(grid/field-required.gif) 0px 4px no-repeat;
 }
 
 .d-grid .header-table .sorted-header .sort-state {
