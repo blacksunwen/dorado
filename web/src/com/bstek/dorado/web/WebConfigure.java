@@ -16,7 +16,6 @@ import java.util.Set;
 
 import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.core.ConfigureStore;
-import com.bstek.dorado.core.Context;
 
 /**
  * 支持以Web特有的方式来读取Dorado基础配置的工具类。
@@ -43,7 +42,7 @@ public abstract class WebConfigure {
 	 */
 	public static final Object NULL = new Object();
 
-	private static ConfigureStore store = new ConfigureWrapper(
+	private static ConfigureWrapper store = new ConfigureWrapper(
 			Configure.getStore());
 
 	/**
@@ -51,6 +50,14 @@ public abstract class WebConfigure {
 	 */
 	public static ConfigureStore getStore() {
 		return store;
+	}
+
+	public static void set(String scope, String key, Object value) {
+		store.set(scope, key, value);
+	}
+
+	public static void setNull(String scope, String key) {
+		set(scope, key, NULL);
 	}
 
 	/**
@@ -121,6 +128,8 @@ public abstract class WebConfigure {
 }
 
 class ConfigureWrapper extends ConfigureStore {
+	private final static String KEY_PREFIX = "dorado.";
+
 	private ConfigureStore store;
 
 	public ConfigureWrapper(ConfigureStore store) {
@@ -132,10 +141,19 @@ class ConfigureWrapper extends ConfigureStore {
 		return store.contains(key);
 	}
 
+	public void set(String scope, String key, Object value) {
+		if (DoradoContext.APPLICATION.equals(scope)) {
+			doSet(key, value);
+		} else {
+			DoradoContext context = DoradoContext.getCurrent();
+			context.setAttribute(scope, KEY_PREFIX + key, value);
+		}
+	}
+
 	@Override
 	public Object get(String key) {
-		Context context = Context.getCurrent();
-		Object value = context.getAttribute(key);
+		DoradoContext context = DoradoContext.getCurrent();
+		Object value = context.getAttribute(KEY_PREFIX + key);
 		return (value == null) ? store.get(key)
 				: ((value == WebConfigure.NULL) ? null : value);
 	}
