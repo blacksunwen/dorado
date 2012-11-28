@@ -29,7 +29,7 @@ import com.bstek.dorado.view.widget.Orientation;
 @ClientEvents({ @ClientEvent(name = "beforeValueChange"),
 		@ClientEvent(name = "onValueChange") })
 public class Slider extends Control {
-	private Orientation orientation = Orientation.horizental;
+	private Orientation orientation = Orientation.horizontal;
 	private float minValue;
 	private float maxValue = 100;
 	private float value;

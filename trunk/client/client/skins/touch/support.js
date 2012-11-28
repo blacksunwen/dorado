@@ -10,18 +10,4 @@
  * at http://www.bstek.com/contact.
  */
 
-package com.bstek.dorado.view.widget;
-
-/**
- * @author Benny Bao (mailto:benny.bao@bstek.com)
- * @since 2010-8-7
- */
-public enum Orientation {
-	@Deprecated
-	horizental {
-		public String toString() {
-			return "horizontal";
-		}
-	},
-	horizontal, vertical
-}
+$setting["widget.messageBox.defaultModalType"] = "dark";

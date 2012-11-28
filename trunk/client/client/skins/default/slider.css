@@ -42,26 +42,26 @@
 	background: url(base/slider-v-bg.gif) transparent repeat-y -40px 0;
 }
 
-.d-slider-horizental .slider-thumb{
+.d-slider-horizontal .slider-thumb{
 	background-image: url(base/slider-thumb.gif);
 }
 
-.d-slider-horizental .slider-thumb-hover{
+.d-slider-horizontal .slider-thumb-hover{
 	background-position: 0 -20px;
 }
 
-.d-slider-horizental .slider-thumb-click{
+.d-slider-horizontal .slider-thumb-click{
 	background-position: 0 -40px;
 }
 
-.d-slider-horizental .slider-start{
+.d-slider-horizontal .slider-start{
 	background: url(base/slider-bg.gif) transparent no-repeat 0 -20px;
 }
 
-.d-slider-horizental .slider-end{
+.d-slider-horizontal .slider-end{
 	background: url(base/slider-bg.gif) transparent no-repeat right -40px;
 }
 
-.d-slider-horizental .slider-body{
+.d-slider-horizontal .slider-body{
 	background: url(base/slider-bg.gif) transparent repeat-x 0 0;
 }

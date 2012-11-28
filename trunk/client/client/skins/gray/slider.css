@@ -59,7 +59,7 @@
 	background: url(base/slider-current-v.png) transparent repeat-y 0 0;
 }
 
-.d-slider-horizental .slider-thumb{
+.d-slider-horizontal .slider-thumb{
     left: 0;
     top: 2px;
     width: 16px;
@@ -67,38 +67,38 @@
 	background-image: url(base/slider-thumb.png);
 }
 
-.d-slider-horizental .slider-thumb-hover{
+.d-slider-horizontal .slider-thumb-hover{
 	background-position: 0 -16px;
 }
 
-.d-slider-horizental .slider-thumb-click{
+.d-slider-horizontal .slider-thumb-click{
 	background-position: 0 -32px;
 }
 
-.d-slider-horizental .slider-start, .d-slider-horizental .slider-end {
+.d-slider-horizontal .slider-start, .d-slider-horizontal .slider-end {
     height: 10px;
     width: 5px;
 }
 
-.d-slider-horizental .slider-start{
+.d-slider-horizontal .slider-start{
     left: 0;
     top: 7px;
 	background: url(base/slider-h.png) transparent no-repeat 0 0;
 }
 
-.d-slider-horizental .slider-end{
+.d-slider-horizontal .slider-end{
     right: 0;
     top: 7px;
 	background: url(base/slider-h.png) transparent no-repeat right 0;
 }
 
-.d-slider-horizental .slider-body{
+.d-slider-horizontal .slider-body{
     margin: 0 5px;
     height: 13px;
 	background: url(base/slider-h.png) transparent repeat-x 0 -13px;
 }
 
-.d-slider-horizental .slider-current{
+.d-slider-horizontal .slider-current{
     top: 7px;
     left: 5px;
     height: 15px;
