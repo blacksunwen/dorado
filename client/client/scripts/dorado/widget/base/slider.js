@@ -32,13 +32,13 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
 		},
 
 		/**
-		 * 滑动条的方向，可选值为horizental和vertical，默认值为horizental
+		 * 滑动条的方向，可选值为horizontal和vertical，默认值为horizontal
 		 * @attribute
-		 * @default "horizental"
+		 * @default "horizontal"
 		 * @type String
 		 */
 		orientation: {
-			defaultValue: "horizental"
+			defaultValue: "horizontal"
 		},
 
 		/**
@@ -199,7 +199,7 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
 			axis: axis,
 			stop: function(event, ui) {
 				var helper = ui.helper[0], minValue = slider._minValue, maxValue = slider._maxValue, offset, size, thumbSize;
-				if (orientation == "horizental") {
+				if (orientation == "horizontal") {
 					thumbSize = $fly(doms.thumb).width();
 					size = $fly(dom).width() - thumbSize;
 					offset = parseInt($fly(helper).css("left"), 10);
@@ -216,7 +216,7 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
 			},
 			drag: function(event, ui) {
 				var helper = ui.helper[0], minValue = slider._minValue, maxValue = slider._maxValue, offset, size, thumbSize;
-				if (orientation == "horizental") {
+				if (orientation == "horizontal") {
 					thumbSize = $fly(doms.thumb).width();
 					size = $fly(dom).width() - thumbSize;
 					offset = parseInt($fly(helper).css("left"), 10);
@@ -231,7 +231,7 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
 				tip.set("text", slider.getValidValue((maxValue - minValue) * offset / size) + minValue);
 				tip.refresh();
 				if (!tip._dom) return;
-				if (orientation == "horizental") {
+				if (orientation == "horizontal") {
 					$DomUtils.dockAround(tip._dom, slider._doms.thumb, {
 						align: "center",
 						vAlign: "top",
@@ -305,7 +305,7 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
 		var slider = this, dom = slider._dom, doms = slider._doms, pageX = event.pageX, pageY = event.pageY,
 			position = $fly(dom).offset(), offset, size, thumbSize;
 
-		if (slider._orientation == "horizental") {
+		if (slider._orientation == "horizontal") {
 			size = $fly(dom).innerWidth();
 			thumbSize = $fly(doms.thumb).outerWidth();
 			offset = pageX - position.left;

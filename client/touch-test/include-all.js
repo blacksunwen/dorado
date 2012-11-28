@@ -179,9 +179,6 @@
 	var WORKSPACE_ROOT = "/client-test/workspace/";
 	var CLIENT_ROOT = WORKSPACE_ROOT + "client/";
 
-    WORKSPACE_ROOT = "/dorado7/";
-    CLIENT_ROOT = "/dorado7/client/";
-
     writeIncludeStyleSheet(CLIENT_ROOT + "client/skins/inherent/common.css");
     writeIncludeStyleSheet(CLIENT_ROOT + "client/skins/inherent/widget.css");
 
