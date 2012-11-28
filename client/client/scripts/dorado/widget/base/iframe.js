@@ -237,9 +237,14 @@
 					// 会在下载触发主窗体事件时引发jQuery报compareDocumentPosition找不到的错误。
 					// 通过下面的setTimeout可以避免，但原因不详。
 					// 2012/11/26
-					setTimeout(function() {
+					if (dorado.Browser.chrome) {
+						setTimeout(function() {
+							window.$topView.setActualVisible(actualVisible);
+						}, 0);
+					}
+					else {
 						window.$topView.setActualVisible(actualVisible);
-					}, 0);
+					}
 				}
 			}
 		},
