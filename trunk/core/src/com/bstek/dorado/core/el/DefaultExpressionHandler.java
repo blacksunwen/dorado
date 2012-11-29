@@ -13,7 +13,6 @@
 package com.bstek.dorado.core.el;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +26,6 @@ import org.apache.commons.jexl2.JexlContext;
 import org.apache.commons.jexl2.JexlEngine;
 import org.apache.commons.jexl2.MapContext;
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -43,10 +41,6 @@ public class DefaultExpressionHandler implements ExpressionHandler {
 	private static final Log logger = LogFactory
 			.getLog(ExpressionHandler.class);
 
-	private final static char ESCAPE_CHAR = '\\';
-	private final static char SPECIAL_CHAR = '$';
-	private final static char BRACKET_BEGIN = '{';
-	private final static char BRACKET_END = '}';
 	private final static String DORADO_VAR = "dorado";
 	private final static String CONTEXT_ATTRIBUTE_KEY = DefaultExpressionHandler.class
 			.getName();
@@ -70,88 +64,23 @@ public class DefaultExpressionHandler implements ExpressionHandler {
 	public List<ContextVarsInitializer> getContextInitializers() {
 		return contextInitializers;
 	}
-
+	
 	public Expression compile(String text) {
-		if (StringUtils.isEmpty(text) || text.indexOf(SPECIAL_CHAR) < 0) {
-			return null;
-		}
-
-		List<Object> sections = new ArrayList<Object>();
-		boolean escaped = false;
-		short specialCharFound = 0;
-		boolean inBracket = false;
-		EvaluateMode evaluateMode = EvaluateMode.onInstantiate;
-		boolean hasExpression = false;
-
-		try {
-			StringBuffer section = new StringBuffer(text.length());
-			for (char c : text.toCharArray()) {
-				if (specialCharFound > 0) {
-					if (c == BRACKET_BEGIN) {
-						inBracket = true;
-						evaluateMode = (specialCharFound == 1) ? EvaluateMode.onInstantiate
-								: EvaluateMode.onRead;
-						specialCharFound = 0;
-						if (section.length() > 0) {
-							sections.add(section.toString());
-							section.setLength(0);
-						}
-						continue;
-					} else if (specialCharFound == 1 && c == SPECIAL_CHAR) {
-						specialCharFound++;
-						continue;
-					} else {
-						section.append(SPECIAL_CHAR);
-						if (specialCharFound == 2) {
-							section.append(SPECIAL_CHAR);
-						}
-						specialCharFound = 0;
+		List<Object> sections = new ExpressionCompiler(this).compileSections(text);
+		if (sections.size() > 0) {
+			for (Object section: sections) {
+				if (section instanceof org.apache.commons.jexl2.Expression) {
+					EvaluateMode evaluateMode = text.startsWith("$${") ? EvaluateMode.onRead : EvaluateMode.onInstantiate;
+					Expression expression = this.createExpression(sections, evaluateMode);
+					if (expression instanceof ExpressionHandlerAware) {
+						((ExpressionHandlerAware) expression)
+								.setExpressionHandler(this);
 					}
+					return expression;
 				}
-
-				if (escaped) {
-					escaped = false;
-					if (c != SPECIAL_CHAR) {
-						section.append(ESCAPE_CHAR);
-					}
-				} else {
-					if (c == ESCAPE_CHAR) {
-						escaped = true;
-						continue;
-					} else if (c == SPECIAL_CHAR) {
-						specialCharFound = 1;
-						continue;
-					} else if (c == BRACKET_END) {
-						if (inBracket) {
-							inBracket = false;
-							hasExpression = true;
-							sections.add(getJexlEngine().createExpression(
-									section.toString()));
-							section.setLength(0);
-							continue;
-						}
-					}
-				}
-				section.append(c);
 			}
-
-			if (hasExpression && section.length() > 0) {
-				sections.add(section.toString());
-			}
-		} catch (Exception e) {
-			logger.error(e, e);
 		}
-
-		if (hasExpression) {
-			Expression expression = createExpression(sections, evaluateMode);
-			if (expression instanceof ExpressionHandlerAware) {
-				((ExpressionHandlerAware) expression)
-						.setExpressionHandler(this);
-			}
-			return expression;
-		} else {
-			return null;
-		}
+		return null;
 	}
 
 	/**

@@ -13,15 +13,11 @@
 package com.bstek.dorado.core.el;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 import com.bstek.dorado.core.ContextTestCase;
-import com.bstek.dorado.core.el.CombinedExpression;
-import com.bstek.dorado.core.el.ContextVarsInitializer;
-import com.bstek.dorado.core.el.DefaultExpressionHandler;
-import com.bstek.dorado.core.el.SingleExpression;
 
 public class DefaultExpressionHandlerTest extends ContextTestCase {
 	private static class MockVarsInitializer implements ContextVarsInitializer {
@@ -65,6 +61,20 @@ public class DefaultExpressionHandlerTest extends ContextTestCase {
 				CombinedExpression.class);
 	}
 
+	public void testCompile2() {
+		String text = "'${2*3}'";
+		assertNull(defaultExpressionHandler.compile(text));
+		
+		text = "\"${2*3}\"";
+		assertNull(defaultExpressionHandler.compile(text));
+		
+		text = "\"${2*3}";
+		assertNull(defaultExpressionHandler.compile(text));
+		
+		text = "ABC${2*3";
+		assertNull(defaultExpressionHandler.compile(text));
+	}
+	
 	public void testGetJexlContext() throws Exception {
 		String text;
 		Object value;
@@ -93,6 +103,15 @@ public class DefaultExpressionHandlerTest extends ContextTestCase {
 		value = defaultExpressionHandler.compile(text).evaluate();
 		assertEquals(value, "${2*3}ABC6");
 	}
+	
+	public void testGetJexlContext2() throws Exception {
+		String text;
+		Object value;
+
+		text = "$$${2*3}";
+		value = defaultExpressionHandler.compile(text).evaluate();
+		assertEquals("$$6", value);
+	}
 
 	public void testSetContextInitializers() throws Exception {
 		String text;
@@ -107,4 +126,30 @@ public class DefaultExpressionHandlerTest extends ContextTestCase {
 		assertTrue(value != new Long(0));
 	}
 
+	public void testMapExpression() throws Exception {
+		{
+			String text = "${{\"ID\":1}}";
+			Expression expr = defaultExpressionHandler.compile(text);
+			Object value = expr.evaluate();
+			
+			Map<Object, Object> expected = new HashMap<Object, Object>();
+			expected.put("ID", Integer.valueOf(1));
+			
+			assertEquals(expected, value);
+		}
+		
+		{
+			String text = "${{\"ID\":1, 'NAME': 'AAA'}}";
+			Expression expr = defaultExpressionHandler.compile(text);
+			Object value = expr.evaluate();
+			
+			Map<Object, Object> expected = new HashMap<Object, Object>();
+			expected.put("ID", Integer.valueOf(1));
+			expected.put("NAME", "AAA");
+			
+			assertEquals(expected, value);
+		}
+		
+	}
+	
 }
