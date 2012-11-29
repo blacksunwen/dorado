@@ -67,7 +67,7 @@ public class DefaultExpressionHandler implements ExpressionHandler {
 	
 	public Expression compile(String text) {
 		List<Object> sections = new ExpressionCompiler(this).compileSections(text);
-		if (sections.size() > 0) {
+		if (sections != null && sections.size() > 0) {
 			for (Object section: sections) {
 				if (section instanceof org.apache.commons.jexl2.Expression) {
 					EvaluateMode evaluateMode = text.startsWith("$${") ? EvaluateMode.onRead : EvaluateMode.onInstantiate;
