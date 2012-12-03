@@ -158,18 +158,8 @@
 			
 			for (var it = this._regions.iterator(); it.hasNext();) {
 				var region = it.next(), cell = domCache[region.id];
-				if (cell) {
-					cell.style.display = "none";
-					delete domCache[region.id];
-					newDomCache[region.id] = cell;
-				}
+				if (cell) cell.style.display = "none";
 			}
-			
-			for (var id in domCache) {
-				var cell = domCache[id];
-				if (cell) row.removeChild(cell);
-			}
-			domCache = newDomCache;
 			
 			var i = 0;
 			for (var it = this._regions.iterator(); it.hasNext();) {
@@ -180,12 +170,23 @@
 				var w, cell = domCache[region.id], cell, div, isNewCell = false;
 				if (!cell) {
 					cell = document.createElement("TD");
-					newDomCache[region.id] = cell;
 					isNewCell = true;
 				}
-				var refCell = row[i];
+				else {
+					delete domCache[region.id];
+				}
+				newDomCache[region.id] = cell;
+				
+				var refCell = row.childNodes[i];
 				if (refCell != cell) {
-					(refCell) ? tbody.insertBefore(cell, refCell) : row.appendChild(cell);
+					if (cell.parentNode == row) {
+						while (refCell && refCell != cell) {
+							row.removeChild(refCell);
+							refCell = refCell.nextSibling;
+						}
+					} else {
+						(refCell) ? row.insertBefore(cell, refCell) : row.appendChild(cell);
+					}
 				}
 				cell.style.display = "";
 				if (constraint.align) cell.style.verticalAlign = constraint.align;
@@ -229,6 +230,12 @@
 				if (isNewCell) this.renderControl(region, cell, true, this._stretch);
 				else this.resetControlDimension(region, cell, true, this._stretch);
 				i++;
+			}
+			
+			for (var regionId in domCache) {
+				var cell = domCache[regionId];
+				if (cell && cell.parentNode == row) row.removeChild(cell);
+				delete domCache[regionId];
 			}
 			
 			var rowHeight = row.offsetHeight;
@@ -366,18 +373,8 @@
 			table.style.width = realContainerWidth + "px";
 			for (var it = this._regions.iterator(); it.hasNext();) {
 				var region = it.next(), row = domCache[region.id];
-				if (row) {
-					row.style.display = "none";
-					delete domCache[region.id];
-					newDomCache[region.id] = row;
-				}
+				if (row) row.style.display = "none";
 			}
-			
-			for (var id in domCache) {
-				var row = domCache[id];
-				if (row) tbody.removeChild(row);
-			}
-			domCache = newDomCache;
 			
 			var i = 0;
 			for (var it = this._regions.iterator(); it.hasNext();) {
@@ -405,12 +402,23 @@
 							})()
 						}
 					});
-					newDomCache[region.id] = row;
 					isNewRow = true;
 				}
-				var refRow = tbody[i];
+				else {
+					delete domCache[region.id];
+				}
+				newDomCache[region.id] = row;
+				
+				var refRow = tbody.childNodes[i];
 				if (refRow != row) {
-					(refRow) ? tbody.insertBefore(row, refRow) : tbody.appendChild(row);
+					if (row.parentNode == tbody) {
+						while (refRow && refRow != row) {
+							tbody.removeChild(refRow);
+							refRow = refRow.nextSibling;
+						}
+					} else {
+						(refRow) ? tbody.insertBefore(row, refRow) : tbody.appendChild(row);
+					}
 				}
 				row.style.display = "";
 				cell = row.firstChild;
@@ -462,6 +470,12 @@
 					this.resetControlDimension(region, div, true, true);
 				}
 				i++;
+			}
+			
+			for (var regionId in domCache) {
+				var row = domCache[regionId];
+				if (row && row.parentNode == tbody) tbody.removeChild(row);
+				delete domCache[regionId];
 			}
 			
 			var tableWidth = table.offsetWidth;
