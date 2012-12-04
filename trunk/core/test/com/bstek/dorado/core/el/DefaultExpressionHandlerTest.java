@@ -152,10 +152,66 @@ public class DefaultExpressionHandlerTest extends ContextTestCase {
 	}
 	
 	public void testScript() {
-		String text = "\"${1+3}\"";
-		Expression expr = defaultExpressionHandler.compile(text);
-		Object value = expr.evaluate();
-		String expected = "\"4\"";
-		assertEquals(expected, value);
+		{
+			String text = "\"${1+3}\"";
+			Expression expr = defaultExpressionHandler.compile(text);
+			Object value = expr.evaluate();
+			String expected = "\"4\"";
+			assertEquals(expected, value);
+		}
+		{
+			String text = "'${1+3}'";
+			Expression expr = defaultExpressionHandler.compile(text);
+			Object value = expr.evaluate();
+			String expected = "'4'";
+			assertEquals(expected, value);
+		}
+		{
+			String text = "'ABC'${1+3}'";
+			Expression expr = defaultExpressionHandler.compile(text);
+			Object value = expr.evaluate();
+			String expected = "'ABC'4'";
+			assertEquals(expected, value);
+		} 
+		{
+			String text = "ABC${'44' + 'DD'}";
+			Expression expr = defaultExpressionHandler.compile(text);
+			Object value = expr.evaluate();
+			String expected = "ABC44DD";
+			assertEquals(expected, value);
+		}
+		{
+			String text = "ABC${'44' + '55'}";
+			Expression expr = defaultExpressionHandler.compile(text);
+			Object value = expr.evaluate();
+			String expected = "ABC99";
+			assertEquals(expected, value);
+		}
+		{
+			String text = "ABC${'$'}";
+			Expression expr = defaultExpressionHandler.compile(text);
+			Object value = expr.evaluate();
+			String expected = "ABC$";
+			assertEquals(expected, value);
+		}
+		{
+			String text = "ABC${'\\$\\{'}";
+			Expression expr = defaultExpressionHandler.compile(text);
+			Object value = expr.evaluate();
+			String expected = "ABC${";
+			assertEquals(expected, value);
+		}
+		{
+			String text = "ABC${'${5+4}'}";
+			Expression expr = defaultExpressionHandler.compile(text);
+			Object value = expr.evaluate();
+			String expected = "ABC${5+4}";
+			assertEquals(expected, value);
+		}
+		{//有异常抛出
+			String text = "ABC${${5+5}}";
+			Expression expr = defaultExpressionHandler.compile(text);
+			assertNull(expr);
+		}
 	}
 }
