@@ -62,14 +62,13 @@ public class DefaultExpressionHandlerTest extends ContextTestCase {
 	}
 
 	public void testCompile2() {
-		String text = "'${2*3}'";
-		assertNull(defaultExpressionHandler.compile(text));
+		String text;
 		
 		text = "\"${2*3}\"";
-		assertNull(defaultExpressionHandler.compile(text));
+		assertNotNull(defaultExpressionHandler.compile(text));
 		
 		text = "\"${2*3}";
-		assertNull(defaultExpressionHandler.compile(text));
+		assertNotNull(defaultExpressionHandler.compile(text));
 		
 		text = "ABC${2*3";
 		assertNull(defaultExpressionHandler.compile(text));
@@ -152,4 +151,11 @@ public class DefaultExpressionHandlerTest extends ContextTestCase {
 		
 	}
 	
+	public void testScript() {
+		String text = "\"${1+3}\"";
+		Expression expr = defaultExpressionHandler.compile(text);
+		Object value = expr.evaluate();
+		String expected = "\"4\"";
+		assertEquals(expected, value);
+	}
 }
