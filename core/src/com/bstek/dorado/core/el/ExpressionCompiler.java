@@ -67,7 +67,7 @@ public class ExpressionCompiler {
 				char c = chars[i];
 				if (!escaped) {
 					if ('\'' == c || '\"' == c) {
-//						stringed = !stringed;
+						stringed = !stringed;
 						section.append(c);
 						continue;
 					} else
@@ -79,6 +79,7 @@ public class ExpressionCompiler {
 				
 				if (stringed) {
 					section.append(c);
+					escaped = false;
 				} else
 				if (escaped) {
 					if (SPECIAL_CHAR == c || BRACKET_BEGIN == c || BRACKET_END == c) {
@@ -119,7 +120,6 @@ public class ExpressionCompiler {
 	}
 	
 	private MiddleExpression nextString(String text) {
-		boolean stringed = false;
 		boolean escaped = false;
 		boolean specialCharFound = false;
 		
@@ -129,7 +129,6 @@ public class ExpressionCompiler {
 			char c = chars[i];
 			if (!escaped) {
 				if ('\'' == c || '\"' == c) {
-//					stringed = !stringed;
 					section.append(c);
 					continue;
 				} else
@@ -139,9 +138,6 @@ public class ExpressionCompiler {
 				}
 			}
 			
-			if (stringed) {
-				section.append(c);
-			} else
 			if (escaped) {
 				if (SPECIAL_CHAR == c || BRACKET_BEGIN == c || BRACKET_END == c) {
 					section.append(c);
