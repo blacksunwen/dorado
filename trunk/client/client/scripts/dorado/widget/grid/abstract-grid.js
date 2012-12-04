@@ -1954,7 +1954,7 @@
 		},
 
 		shouldEditing: function(column) {
-			return this._editing && column && !column.get("readOnly") && !this.get("readOnly") &&
+			return column && !column.get("readOnly") && !this.get("readOnly") &&
 			column._property && column._property != "none" && column._property != this._groupProperty;
 		},
 
@@ -3491,7 +3491,7 @@
 
 					grid._currentCell = cell;
 					$fly(cell).addClass("current-cell");
-					if (grid._focused && !(column._renderer && column._renderer.preventCellEditing) && grid.shouldEditing(column)) {
+					if (grid._focused && !(column._renderer && column._renderer.preventCellEditing) && grid._editing && grid.shouldEditing(column)) {
 						var currentItem = this.getCurrentItem(), cellEditor;
 						if (currentItem) cellEditor = grid._currentCellEditor = grid.getCellEditor(column, currentItem);
 						if (cellEditor) {
