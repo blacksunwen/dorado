@@ -67,7 +67,7 @@ public class ExpressionCompiler {
 				char c = chars[i];
 				if (!escaped) {
 					if ('\'' == c || '\"' == c) {
-						stringed = !stringed;
+//						stringed = !stringed;
 						section.append(c);
 						continue;
 					} else
@@ -129,7 +129,7 @@ public class ExpressionCompiler {
 			char c = chars[i];
 			if (!escaped) {
 				if ('\'' == c || '\"' == c) {
-					stringed = !stringed;
+//					stringed = !stringed;
 					section.append(c);
 					continue;
 				} else
