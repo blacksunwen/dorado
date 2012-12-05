@@ -23,7 +23,10 @@
 		<dependency org="commons-codec" name="commons-codec" rev="1.5" conf="compile" />
 		<dependency org="commons-digester" name="commons-digester" rev="2.1" conf="compile" />
 		<dependency org="org.apache.commons" name="commons-jexl" rev="2.0.1" conf="compile" />
+
 		<dependency org="log4j" name="log4j" rev="1.2.16" conf="compile" />
+		<dependency org="org.slf4j" name="slf4j-api" rev="1.6.6" conf="compile" />
+		<dependency org="org.slf4j" name="slf4j-log4j12" rev="1.6.6" conf="compile" />
 
 		<dependency org="org.springframework" name="spring-core" rev="3.0.5.RELEASE" conf="compile" />
 		<dependency org="org.springframework" name="spring-beans" rev="3.0.5.RELEASE" conf="compile" />
