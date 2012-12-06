@@ -24,6 +24,7 @@ import org.dom4j.Element;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
 
+import com.bstek.dorado.common.ClientType;
 import com.bstek.dorado.core.Constants;
 import com.bstek.dorado.core.pkgs.PackageInfo;
 import com.bstek.dorado.core.pkgs.PackageManager;
@@ -116,7 +117,7 @@ public class RuleSetOutputter {
 		setElementAttributes(
 				element,
 				ruleTemplate,
-				"label,abstract,nodeName,type,scope,sortFactor,category,robots,icon,labelProperty,autoGenerateId,reserve,deprecated");
+				"label,abstract,nodeName,type,scope,sortFactor,category,robots,icon,labelProperty,autoGenerateId,clientTypes,reserve,deprecated");
 
 		xmlWriter.writeOpen(element);
 
@@ -172,7 +173,7 @@ public class RuleSetOutputter {
 		setElementAttributes(
 				element,
 				property,
-				"name,defaultValue,ignored,visible,highlight,fixed,enumValues,editor,reserve,deprecated");
+				"name,defaultValue,ignored,visible,highlight,fixed,enumValues,editor,clientTypes,reserve,deprecated");
 		if (property.getVisible() != null) {
 			element.addAttribute("visible", property.getVisible().toString());
 		}
@@ -219,7 +220,7 @@ public class RuleSetOutputter {
 			ClientEvent clientEvent, OutputContext context) throws Exception {
 		Element element = DocumentHelper.createElement("ClientEvent");
 		setElementAttributes(element, clientEvent,
-				"name,parameters,reserve,deprecated");
+				"name,parameters,clientTypes,reserve,deprecated");
 		xmlWriter.write(element);
 	}
 
@@ -234,7 +235,7 @@ public class RuleSetOutputter {
 			element.addAttribute("rule", ruleName);
 
 		setElementAttributes(element, childTemplate,
-				"name,fixed,aggregated,ignored,reserve");
+				"name,fixed,aggregated,ignored,clientTypes,reserve");
 		xmlWriter.writeOpen(element);
 
 		if (!ruleTemplate.isGlobal()) {
@@ -260,7 +261,9 @@ public class RuleSetOutputter {
 		}
 
 		String text = null;
-		if (value instanceof String[]) {
+		if (propertyName.equals("clientTypes")) {
+			text = ClientType.toString(((Integer) value).intValue());
+		} else if (value instanceof String[]) {
 			text = StringUtils.join((String[]) value, ',');
 		} else if (value instanceof Class<?>) {
 			if (value != String.class)

@@ -26,6 +26,7 @@ public class ClientEventRegisterInfo {
 	private Class<?> type;
 	private String name;
 	private String[] signature;
+	private int clientTypes;
 	private boolean deprecated;
 
 	/**
@@ -80,5 +81,13 @@ public class ClientEventRegisterInfo {
 
 	public void setDeprecated(boolean deprecated) {
 		this.deprecated = deprecated;
+	}
+
+	public int getClientTypes() {
+		return clientTypes;
+	}
+
+	public void setClientTypes(int clientTypes) {
+		this.clientTypes = clientTypes;
 	}
 }

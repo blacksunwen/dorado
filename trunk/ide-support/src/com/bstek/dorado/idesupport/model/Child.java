@@ -16,6 +16,8 @@ import java.util.Comparator;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.bstek.dorado.common.ClientType;
+
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2009-11-18
@@ -35,6 +37,7 @@ public class Child {
 	});
 	private boolean fixed;
 	private boolean aggregated;
+	private int clientTypes = ClientType.DESKTOP;
 	private String reserve;
 	private Object userData;
 
@@ -72,6 +75,14 @@ public class Child {
 
 	public void setAggregated(boolean aggregated) {
 		this.aggregated = aggregated;
+	}
+
+	public int getClientTypes() {
+		return clientTypes;
+	}
+
+	public void setClientTypes(int clientTypes) {
+		this.clientTypes = clientTypes;
 	}
 
 	public String getReserve() {

@@ -24,7 +24,7 @@ import com.bstek.dorado.view.widget.InnerElementReference;
  * @since 2010-8-10
  */
 @Widget(name = "CustomDropDown", category = "Trigger",
-		dependsPackage = "base-widget")
+		dependsPackage = "base-widget", autoGenerateId = true)
 @ClientObject(prototype = "dorado.widget.CustomDropDown",
 		shortTypeName = "CustomDropDown")
 public class CustomDropDown extends DropDown {

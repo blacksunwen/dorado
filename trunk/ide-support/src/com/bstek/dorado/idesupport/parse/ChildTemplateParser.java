@@ -20,6 +20,7 @@ import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import com.bstek.dorado.common.ClientType;
 import com.bstek.dorado.config.ParseContext;
 import com.bstek.dorado.config.xml.ConfigurableDispatchableXmlParser;
 import com.bstek.dorado.config.xml.XmlParseException;
@@ -80,7 +81,12 @@ public class ChildTemplateParser extends ConfigurableDispatchableXmlParser {
 		if (StringUtils.isEmpty(name)) {
 			name = ruleName;
 		}
+
 		ChildTemplate child = new ChildTemplate(name);
+
+		String clientTypes = (String) properties.remove("clientTypes");
+		child.setClientTypes(ClientType.parseClientTypes(clientTypes));
+
 		BeanUtils.copyProperties(child, properties);
 		return child;
 	}

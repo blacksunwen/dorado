@@ -22,6 +22,7 @@ import org.apache.commons.collections.map.UnmodifiableMap;
 import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.annotation.ClientEvents;
+import com.bstek.dorado.common.ClientType;
 
 /**
  * 客户端事件的注册管理器。
@@ -116,6 +117,8 @@ public class ClientEventRegistry {
 							type, clientEvent.name(), signature);
 					clientEventRegisterInfo.setDeprecated(clientEvent
 							.deprecated());
+					clientEventRegisterInfo.setClientTypes(ClientType
+							.parseClientTypes(clientEvent.clientTypes()));
 					ClientEventRegistry
 							.registerClientEvent(clientEventRegisterInfo);
 				}

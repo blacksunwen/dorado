@@ -20,6 +20,7 @@ import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import com.bstek.dorado.common.ClientType;
 import com.bstek.dorado.config.ParseContext;
 import com.bstek.dorado.config.xml.ConfigurableDispatchableXmlParser;
 import com.bstek.dorado.idesupport.model.CompositeType;
@@ -55,6 +56,10 @@ public class PropertyParser extends ConfigurableDispatchableXmlParser {
 			propertyTemplate.setReference(new LazyReferenceTemplate(
 					parserContext.getRuleTemplateManager(), ruleName, prop));
 		}
+
+		String clientTypes = (String) properties.remove("clientTypes");
+		propertyTemplate.setClientTypes(ClientType
+				.parseClientTypes(clientTypes));
 
 		String compositeTypeConfig = (String) properties
 				.remove("compositeType");

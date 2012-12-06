@@ -17,6 +17,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.bstek.dorado.common.ClientType;
+
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2011-2-26
@@ -29,4 +31,6 @@ public @interface ClientEvent {
 	public String[] signature() default "";
 
 	boolean deprecated() default false;
+
+	int[] clientTypes() default { ClientType.DESKTOP };
 }

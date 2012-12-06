@@ -21,7 +21,7 @@ import com.bstek.dorado.view.annotation.Widget;
  * @since 2010-8-10
  */
 @Widget(name = "AutoMappingDropDown", category = "Trigger",
-		dependsPackage = "base-widget")
+		dependsPackage = "base-widget", autoGenerateId = true)
 @ClientObject(prototype = "dorado.widget.AutoMappingDropDown",
 		shortTypeName = "AutoMappingDropDown")
 public class AutoMappingDropDown extends RowListDropDown {

@@ -22,7 +22,7 @@ import com.bstek.dorado.view.annotation.Widget;
  */
 
 @Widget(name = "FormSubmitAction", category = "Action",
-		dependsPackage = "base-widget")
+		dependsPackage = "base-widget", autoGenerateId = true)
 @ClientObject(prototype = "dorado.widget.FormSubmitAction",
 		shortTypeName = "FormSubmitAction")
 public class FormSubmitAction extends Action {
