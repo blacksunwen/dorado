@@ -7,7 +7,7 @@
 
 	<property name="addonName" value="dorado-junit" />
 	<property name="vendor" value="www.BSTEK.com" />
-	<property name="version" value="0.1.0" />
+	<property name="version" value="0.1.1" />
 	<!-- SNAPSHOT,RELEASE -->
 	<property name="qualifier" value="RELEASE" />
 	<property name="buildJavaDoc" value="false" />
@@ -78,7 +78,7 @@
 
 	<target name="publish" depends="package">
 		<if>
-			<equals arg1=" ${qualifier}" arg2="SNAPSHOT" />
+			<equals arg1="${qualifier}" arg2="SNAPSHOT" />
 			<then>
 				<property name="maven.repository"
 				          value="${bsdn.nexusSnapshots}" />

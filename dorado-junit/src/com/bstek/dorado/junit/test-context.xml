@@ -21,5 +21,7 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 	<bean parent="dorado.dataConfigLoader" class="com.bstek.dorado.mock.MockDataConfigLoader"/>
 	
 	<!-- Scope -->
-	<bean id="dorado.scopeManager" class="com.bstek.dorado.mock.MockScopeManager" scope=""/>
+	<bean id="dorado.scopeManager" class="com.bstek.dorado.mock.MockScopeManager"/>
+	
+	<bean id="dorado.systemOptionalParametersFactory" class="com.bstek.dorado.data.method.DefaultSystemOptionalParametersFactory" />
 </beans>
