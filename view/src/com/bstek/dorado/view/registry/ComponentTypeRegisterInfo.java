@@ -15,6 +15,7 @@ package com.bstek.dorado.view.registry;
 import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.lang.StringUtils;
 
+import com.bstek.dorado.common.ClientType;
 import com.bstek.dorado.view.widget.Component;
 
 /**
@@ -26,6 +27,7 @@ import com.bstek.dorado.view.widget.Component;
 public class ComponentTypeRegisterInfo {
 	private String name;
 	private Class<? extends Component> classType;
+	private int clientTypes = ClientType.DESKTOP;
 	private String category;
 	private String dependsPackage;
 
@@ -55,6 +57,14 @@ public class ComponentTypeRegisterInfo {
 	 */
 	public Class<? extends Component> getClassType() {
 		return classType;
+	}
+
+	public int getClientTypes() {
+		return clientTypes;
+	}
+
+	public void setClientTypes(int clientTypes) {
+		this.clientTypes = clientTypes;
 	}
 
 	public String getCategory() {

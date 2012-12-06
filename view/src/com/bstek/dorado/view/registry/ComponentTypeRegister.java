@@ -21,6 +21,7 @@ import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
 
+import com.bstek.dorado.common.ClientType;
 import com.bstek.dorado.util.clazz.ClassUtils;
 import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Component;
@@ -37,11 +38,12 @@ public abstract class ComponentTypeRegister implements InitializingBean,
 			.getLog(ComponentTypeRegister.class);
 
 	private BeanFactory beanFactory;
+	private ComponentTypeRegistry componentTypeRegistry;
 	private String beanName;
 	private String name;
 	private String classType;
 	private String category;
-	private ComponentTypeRegistry componentTypeRegistry;
+	private String clientTypes;
 
 	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
 		this.beanFactory = beanFactory;
@@ -49,14 +51,6 @@ public abstract class ComponentTypeRegister implements InitializingBean,
 
 	public BeanFactory getBeanFactory() {
 		return beanFactory;
-	}
-
-	public void setBeanName(String beanName) {
-		this.beanName = beanName;
-	}
-
-	public String getBeanName() {
-		return beanName;
 	}
 
 	/**
@@ -69,6 +63,14 @@ public abstract class ComponentTypeRegister implements InitializingBean,
 
 	public ComponentTypeRegistry getComponentTypeRegistry() {
 		return componentTypeRegistry;
+	}
+
+	public void setBeanName(String beanName) {
+		this.beanName = beanName;
+	}
+
+	public String getBeanName() {
+		return beanName;
 	}
 
 	/**
@@ -101,6 +103,14 @@ public abstract class ComponentTypeRegister implements InitializingBean,
 		this.category = category;
 	}
 
+	public String getClientTypes() {
+		return clientTypes;
+	}
+
+	public void setClientTypes(String clientTypes) {
+		this.clientTypes = clientTypes;
+	}
+
 	protected abstract ComponentTypeRegisterInfo createRegisterInfo(String name);
 
 	@SuppressWarnings("unchecked")
@@ -118,11 +128,12 @@ public abstract class ComponentTypeRegister implements InitializingBean,
 				name = widget.name();
 			}
 		}
-		
+
 		if (StringUtils.isEmpty(name)) {
 			int i = beanName.lastIndexOf(".");
-			if (i >= 0)
+			if (i >= 0) {
 				name = beanName.substring(i + 1);
+			}
 		}
 
 		ComponentTypeRegisterInfo registerInfo = createRegisterInfo(name);
@@ -130,6 +141,7 @@ public abstract class ComponentTypeRegister implements InitializingBean,
 		if (widget != null) {
 			registerInfo.setCategory(widget.category());
 		}
+		registerInfo.setClientTypes(ClientType.parseClientTypes(clientTypes));
 		return registerInfo;
 	}
 

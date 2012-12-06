@@ -12,6 +12,7 @@
 
 package com.bstek.dorado.idesupport.template;
 
+import com.bstek.dorado.common.ClientType;
 import com.bstek.dorado.util.Assert;
 
 /**
@@ -24,6 +25,7 @@ public class ChildTemplate {
 	private boolean fixed;
 	private boolean aggregated;
 	private boolean ignored;
+	private int clientTypes = ClientType.DESKTOP;
 	private String reserve;
 
 	public ChildTemplate(String name) {
@@ -74,6 +76,14 @@ public class ChildTemplate {
 
 	public void setIgnored(boolean ignored) {
 		this.ignored = ignored;
+	}
+
+	public int getClientTypes() {
+		return clientTypes;
+	}
+
+	public void setClientTypes(int clientTypes) {
+		this.clientTypes = clientTypes;
 	}
 
 	public String getReserve() {

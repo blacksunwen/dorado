@@ -20,7 +20,7 @@ import com.bstek.dorado.view.annotation.Widget;
  * @since 2010-8-10
  */
 @Widget(name = "DateDropDown", category = "Trigger",
-		dependsPackage = "base-widget")
+		dependsPackage = "base-widget", autoGenerateId = true)
 @ClientObject(prototype = "dorado.widget.DateDropDown",
 		shortTypeName = "DateDropDown")
 public class DateDropDown extends DropDown {

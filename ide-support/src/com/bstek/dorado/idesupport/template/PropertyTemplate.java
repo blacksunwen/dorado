@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.bstek.dorado.common.ClientType;
 import com.bstek.dorado.idesupport.model.CompositeType;
 
 public class PropertyTemplate {
@@ -31,6 +32,7 @@ public class PropertyTemplate {
 	private Boolean visible;
 	private CompositeType compositeType = CompositeType.Unsupport;
 	private Map<String, PropertyTemplate> properties;
+	private int clientTypes = ClientType.DESKTOP;
 	private String reserve;
 	private boolean deprecated;
 
@@ -148,6 +150,14 @@ public class PropertyTemplate {
 
 	public void addProperty(PropertyTemplate property) {
 		getProperties().put(property.getName(), property);
+	}
+
+	public int getClientTypes() {
+		return clientTypes;
+	}
+
+	public void setClientTypes(int clientTypes) {
+		this.clientTypes = clientTypes;
 	}
 
 	public String getReserve() {

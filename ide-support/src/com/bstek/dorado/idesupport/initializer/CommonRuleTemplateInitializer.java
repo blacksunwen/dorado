@@ -36,6 +36,7 @@ import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlNodeWrapper;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
+import com.bstek.dorado.common.ClientType;
 import com.bstek.dorado.common.event.ClientEventRegisterInfo;
 import com.bstek.dorado.common.event.ClientEventRegistry;
 import com.bstek.dorado.common.event.ClientEventSupported;
@@ -132,6 +133,9 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 				ruleTemplate.setLabel(nodeName);
 			}
 		}
+
+		ruleTemplate.setClientTypes(ClientType.parseClientTypes(xmlNodeInfo
+				.getClientTypes()));
 
 		if (!ruleTemplate.isDeprecated() && xmlNodeInfo.isDeprecated()) {
 			ruleTemplate.setDeprecated(true);
@@ -235,6 +239,7 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 		if (scope != null) {
 			newRuleTemplate.setScope(scope);
 		}
+
 		ruleTemplateManager.addRuleTemplate(newRuleTemplate);
 		return newRuleTemplate;
 	}
@@ -523,6 +528,9 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 						initCompositeProperty(propertyTemplate, propertyType,
 								initializerContext);
 					}
+
+					propertyTemplate.setClientTypes(ClientType
+							.parseClientTypes(xmlProperty.clientTypes()));
 					propertyTemplate.setDeprecated(xmlProperty.deprecated());
 				} else if (EntityUtils.isSimpleType(propertyType)
 						|| propertyType.equals(Class.class)
@@ -823,6 +831,8 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 				clientEvent.setParameters(signature);
 				clientEvent.setDeprecated(clientEventRegisterInfo
 						.isDeprecated());
+				clientEvent.setClientTypes(clientEventRegisterInfo
+						.getClientTypes());
 				ruleTemplate.addClientEvent(clientEvent);
 			}
 		}

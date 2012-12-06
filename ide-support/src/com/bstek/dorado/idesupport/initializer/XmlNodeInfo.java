@@ -34,6 +34,7 @@ public class XmlNodeInfo {
 	private Set<String> implTypes = new HashSet<String>();
 	private boolean scopable;
 	private boolean inheritable;
+	private int[] clientTypes;
 	private boolean deprecated;
 	private Map<String, String> fixedProperties = new HashMap<String, String>();
 	private Map<String, XmlProperty> properties = new HashMap<String, XmlProperty>();
@@ -84,6 +85,14 @@ public class XmlNodeInfo {
 
 	public void setInheritable(boolean inheritable) {
 		this.inheritable = inheritable;
+	}
+
+	public int[] getClientTypes() {
+		return clientTypes;
+	}
+
+	public void setClientTypes(int[] clientTypes) {
+		this.clientTypes = clientTypes;
 	}
 
 	public boolean isDeprecated() {

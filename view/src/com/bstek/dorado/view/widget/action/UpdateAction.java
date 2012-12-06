@@ -31,7 +31,7 @@ import com.bstek.dorado.view.annotation.Widget;
  * @since May 13, 2009
  */
 @Widget(name = "UpdateAction", category = "Action",
-		dependsPackage = "base-widget")
+		dependsPackage = "base-widget", autoGenerateId = true)
 @ClientObject(prototype = "dorado.widget.UpdateAction",
 		shortTypeName = "UpdateAction")
 @XmlNode(parser = "spring:dorado.updateActionParser")

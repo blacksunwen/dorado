@@ -26,7 +26,7 @@ import com.bstek.dorado.view.widget.datacontrol.PropertyDataControl;
  * @since 2010-8-10
  */
 @Widget(name = "DataSetDropDown", category = "Trigger",
-		dependsPackage = "base-widget,grid")
+		dependsPackage = "base-widget,grid", autoGenerateId = true)
 @ClientObject(prototype = "dorado.widget.DataSetDropDown",
 		shortTypeName = "DataSetDropDown")
 @ClientEvents({ @ClientEvent(name = "onSetFilterParameter") })

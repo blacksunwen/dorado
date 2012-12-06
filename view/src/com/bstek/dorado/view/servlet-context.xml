@@ -70,17 +70,18 @@
 		<property name="url" value="/dorado/view-service" />
 		<property name="resolver" ref="dorado.viewServiceResolver" />
 	</bean>
+
 	<bean id="dorado.viewResolverRegister" parent="dorado.resolverRegister">
 		<property name="order" value="100" />
 		<property name="url" value="**/*.d" />
-		<property name="resolver">
-			<bean class="com.bstek.dorado.view.resolver.HtmlViewResolver">
-				<property name="templateFile" value="home:w3c-html4-template.html" />
-				<property name="dataConfigManager" ref="dorado.dataConfigManager" />
-				<property name="viewConfigManager" ref="dorado.viewConfigManager" />
-				<property name="velocityHelper" ref="dorado.velocityHelper" />
-				<property name="uriSuffix" value=".d" />
-			</bean>
-		</property>
+		<property name="resolver" ref="dorado.htmlViewResolver" />
+	</bean>
+
+	<bean id="dorado.htmlViewResolver" class="com.bstek.dorado.view.resolver.HtmlViewResolver">
+		<property name="templateFile" value="home:w3c-html4-template.html" />
+		<property name="dataConfigManager" ref="dorado.dataConfigManager" />
+		<property name="viewConfigManager" ref="dorado.viewConfigManager" />
+		<property name="velocityHelper" ref="dorado.velocityHelper" />
+		<property name="uriSuffix" value=".d" />
 	</bean>
 </beans>
