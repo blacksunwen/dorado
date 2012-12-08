@@ -81,4 +81,13 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 	<bean parent="dorado.globalResourceSearchPathRegister">
 		<property name="searchPath" value="com/bstek/dorado/core/resource/" />
 	</bean>
+
+	<bean id="dorado.sqlBaseStore" abstract="true" class="com.bstek.dorado.core.store.H2BaseStore">
+		<property name="driverClassName" value="org.h2.Driver" />
+		<property name="username" value="dorado" />
+		<property name="password" value="www.bstek.com" />
+	</bean>
+	<bean id="dorado.sqlBaseStore.default" parent="dorado.sqlBaseStore">
+		<property name="version" value="1" />
+	</bean>
 </beans>
