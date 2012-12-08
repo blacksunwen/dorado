@@ -280,7 +280,7 @@ public class DoradoLoader {
 			}
 			testFile.delete();
 		} else {
-			storeDir = tempDir;
+			storeDir = new File(tempDir, "dorado-store");
 			configureStore.set("core.storeDir", storeDir.getAbsolutePath());
 		}
 		ConsoleUtils.outputLoadingInfo("[Dorado StoreDir: "
