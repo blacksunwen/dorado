@@ -38,6 +38,9 @@ import com.bstek.dorado.view.widget.base.menu.Menu;
 public class MenuButton extends com.bstek.dorado.view.widget.base.Button {
 	private InnerElementReference<Menu> embededMenuRef = new InnerElementReference<Menu>(
 			this);
+	private boolean showMenuOnHover;
+	private boolean hideMenuOnMouseLeave = false;
+	private int hideMenuOnMouseLeaveDelay = 300;
 
 	protected Menu getEmbededMenu(boolean create) {
 		Menu menu = embededMenuRef.get();
@@ -85,5 +88,31 @@ public class MenuButton extends com.bstek.dorado.view.widget.base.Button {
 	@Override
 	public void setMenu(String menu) {
 		throw new UnsupportedOperationException();
+	}	
+		
+	@ClientProperty(escapeValue = "false")
+	public boolean isShowMenuOnHover() {
+		return showMenuOnHover;
+	}
+
+	public void setShowMenuOnHover(boolean showMenuOnHover) {
+		this.showMenuOnHover = showMenuOnHover;
+	}
+	
+	public boolean isHideMenuOnMouseLeave() {
+		return hideMenuOnMouseLeave;
+	}
+
+	public void setHideMenuOnMouseLeave(boolean hideMenuOnMouseLeave) {
+		this.hideMenuOnMouseLeave = hideMenuOnMouseLeave;
+	}
+	
+	@ClientProperty(escapeValue = "300")
+	public int getHideMenuOnMouseLeaveDelay() {
+		return hideMenuOnMouseLeaveDelay;
+	}
+
+	public void setHideMenuOnMouseLeaveDelay(int hideMenuOnMouseLeaveDelay) {
+		this.hideMenuOnMouseLeaveDelay = hideMenuOnMouseLeaveDelay;
 	}
 }
