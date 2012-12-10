@@ -12,6 +12,10 @@
 
 package com.bstek.dorado.core.store;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.util.List;
 import java.util.Properties;
@@ -21,6 +25,10 @@ import javax.sql.DataSource;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.BeanNameAware;
+
+import com.bstek.dorado.core.Constants;
+import com.bstek.dorado.core.Context;
+import com.bstek.dorado.core.io.Resource;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -268,6 +276,49 @@ public abstract class SqlBaseStoreSupport implements SqlBaseStore,
 					.longValue());
 		}
 		return dataSource;
+	}
+
+	protected void initNamespace(Connection conn) throws Exception {
+		if (initScriptFiles != null && !initScriptFiles.isEmpty()) {
+			Context context = Context.getCurrent();
+			for (String initScriptFile : initScriptFiles) {
+				Resource resource = context.getResource(initScriptFile);
+				runInitScriptFile(conn, resource);
+			}
+		}
+	}
+
+	protected void runInitScriptFile(Connection conn, Resource initScriptFile)
+			throws Exception {
+		InputStream is = initScriptFile.getInputStream();
+		try {
+			InputStreamReader isr = new InputStreamReader(is,
+					StringUtils.defaultIfEmpty(scriptFileCharset,
+							Constants.DEFAULT_CHARSET));
+			BufferedReader br = new BufferedReader(isr);
+
+			StringBuffer scripts = new StringBuffer();
+			String line = br.readLine();
+			while (line != null) {
+				scripts.append(line).append('\n');
+				line = br.readLine();
+			}
+
+			if (scripts.length() > 0) {
+				CallableStatement prepareCall = conn.prepareCall(scripts
+						.toString());
+				try {
+					prepareCall.execute();
+				} finally {
+					prepareCall.close();
+				}
+			}
+
+			br.close();
+			isr.close();
+		} finally {
+			is.close();
+		}
 	}
 
 	protected abstract String getConnectionUrl() throws Exception;

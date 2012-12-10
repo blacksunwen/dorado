@@ -12,9 +12,6 @@
 
 package com.bstek.dorado.core.store;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -25,8 +22,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.bstek.dorado.core.Configure;
-import com.bstek.dorado.core.Context;
-import com.bstek.dorado.core.io.Resource;
 import com.bstek.dorado.util.PathUtils;
 
 /**
@@ -64,7 +59,7 @@ public class H2BaseStore extends SqlBaseStoreSupport {
 				prepareCall.close();
 			}
 
-			if (storeVersion != version) {
+			if (storeVersion < version) {
 				logger.info("Initializing store \"" + namespace + "\".");
 
 				prepareCall = conn
@@ -75,47 +70,10 @@ public class H2BaseStore extends SqlBaseStoreSupport {
 					prepareCall.close();
 				}
 
-				if (initScriptFiles != null && !initScriptFiles.isEmpty()) {
-					Context context = Context.getCurrent();
-					for (String initScriptFile : initScriptFiles) {
-						Resource resource = context.getResource(initScriptFile);
-						initNamespace(conn, resource);
-					}
-				}
+				initNamespace(conn);
 			}
 		} finally {
 			conn.close();
-		}
-	}
-
-	protected void initNamespace(Connection conn, Resource initScriptFile)
-			throws Exception {
-		InputStream is = initScriptFile.getInputStream();
-		try {
-			InputStreamReader isr = new InputStreamReader(is, scriptFileCharset);
-			BufferedReader br = new BufferedReader(isr);
-
-			StringBuffer scripts = new StringBuffer();
-			String line = br.readLine();
-			while (line != null) {
-				scripts.append(line).append('\n');
-				line = br.readLine();
-			}
-
-			if (scripts.length() > 0) {
-				CallableStatement prepareCall = conn.prepareCall(scripts
-						.toString());
-				try {
-					prepareCall.execute();
-				} finally {
-					prepareCall.close();
-				}
-			}
-
-			br.close();
-			isr.close();
-		} finally {
-			is.close();
 		}
 	}
 
