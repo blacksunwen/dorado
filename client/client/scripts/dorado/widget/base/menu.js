@@ -718,9 +718,13 @@
 				});
 			}
 			
-			$fly(dom).hover(dorado._NULL_FUNCTION, function() {
+			$fly(dom).hover(function() {
+				menu.notifyOpenerOnMouseEnter();
+			}, function() {
 				var focusItem = menu._focusItem;
-				
+
+				menu.notifyOpenerOnMouseLeave();
+
 				if (menu._freeze) return;
 				
 				if (focusItem) {
@@ -843,6 +847,24 @@
 			menu.opener = null;
 			
 			$invokeSuper.call(this, arguments);
+		},
+
+		notifyOpenerOnMouseEnter: function() {
+			var menu = this, focusParent = menu._focusParent;
+			if (focusParent instanceof dorado.widget.Menu) {
+				focusParent.notifyOpenerOnMouseEnter();
+			} else if (focusParent instanceof dorado.widget.AbstractButton) {
+				focusParent.doCancelHideMenuOnMouseEnter();
+			}
+		},
+
+		notifyOpenerOnMouseLeave: function() {
+			var menu = this, focusParent = menu._focusParent;
+			if (focusParent instanceof dorado.widget.Menu) {
+				focusParent.notifyOpenerOnMouseLeave();
+			} else if (focusParent instanceof dorado.widget.AbstractButton) {
+				focusParent.doHideMenuOnMouseLeave();
+			}
 		}
 	});
 })();

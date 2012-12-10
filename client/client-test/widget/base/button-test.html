@@ -12,7 +12,18 @@
 		</style>
         <script type="text/javascript">
             var view = new dorado.widget.View({ layout: "Anchor" });
-            
+
+            var testPanel = new dorado.widget.FloatPanel({
+                caption: "test",
+                children: [
+                    new dorado.widget.TextEditor()
+                ],
+                height: 300,
+                onBlur: function(self) {
+                    self.hide()
+                }
+            });
+
             var testMenu = new dorado.widget.Menu({
             	style: {
             		left: 500
@@ -93,7 +104,7 @@
             
             var buttonWidth = new dorado.widget.Button("buttonWidth");
             buttonWidth.set("icon", "del.gif");
-            buttonWidth.set("menu", testMenu);
+            buttonWidth.set("menu", testPanel);
             buttonWidth.set("caption", "teststs");
             buttonWidth.addListener("onClick", function(self) {
             	self.set("disabled", true);
@@ -297,6 +308,7 @@
             var iconButton2 = new dorado.widget.SimpleIconButton({
                 icon: "url(>skin>common/icons.gif) -20px -60px",
                 menu: testMenu
+
             });
             view.addChild(iconButton2);
 

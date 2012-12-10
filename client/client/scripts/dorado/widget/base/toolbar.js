@@ -517,13 +517,53 @@ dorado.widget.toolbar.Button = $extend(dorado.widget.Button, {
 		 * @type boolean
 		 * @default false
 		 */
-		showMenuOnHover: {}
+		showMenuOnHover: {},
+
+		/**
+		 * 绑定了Menu的dorado.widget.toolbar.Button的元素，是否在鼠标移出Button和Menu后就隐藏菜单。
+		 * @type boolean
+		 * @default false
+		 */
+		hideMenuOnMouseLeave: {},
+
+		/**
+		 * 在鼠标移出Button和Menu后隐藏菜单的延时，此属性只有在hideMenuOnMouseLeave为true时才起作用，默认为300。
+		 * @type int
+		 * @default 300
+		 */
+		hideMenuOnMouseLeaveDelay: {
+			defaultValue: 300
+		}
 	},
-	
+
+	doCancelHideMenuOnMouseEnter: function() {
+		if (this._hideMenuOnMouseLeaveTimer) {
+			clearTimeout(this._hideMenuOnMouseLeaveTimer);
+			this._hideMenuOnMouseLeaveTimer = null;
+		}
+	},
+
+	doHideMenuOnMouseLeave: function() {
+		var button = this;
+
+		if (this._hideMenuOnMouseLeaveTimer) {
+			clearTimeout(this._hideMenuOnMouseLeaveTimer);
+			this._hideMenuOnMouseLeaveTimer = null;
+		}
+
+		button._hideMenuOnMouseLeaveTimer = setTimeout(function() {
+			if (button._hideMenuOnMouseLeave && button._menu) {
+				button._menu.hide(true);
+			}
+			button._hideMenuOnMouseLeaveTimer = null;
+		}, button._hideMenuOnMouseLeaveDelay || 300);
+	},
+
 	createDom: function() {
 		var button = this, dom = $invokeSuper.call(button, arguments);
 		$fly(dom).mouseenter(function() {
 			var menu = button._menu, toolbar = button._parent;
+			if (button._hideMenuOnMouseLeave) button.doCancelHideMenuOnMouseEnter();
 			if (menu && toolbar && !button._disabled) {
 				var activeButton = toolbar._activeMenuButton;
 				if (button.willShowMenuOnHover()) {
@@ -540,10 +580,12 @@ dorado.widget.toolbar.Button = $extend(dorado.widget.Button, {
 					}
 				}
 			}
+		}).mouseleave(function() {
+			if (button._hideMenuOnMouseLeave) button.doHideMenuOnMouseLeave();
 		});
 		return dom;
 	},
-	
+
 	willShowMenuOnHover: function() {
 		var button = this, toolbar = button._parent, menu = button._menu;
 		if (menu && toolbar && !button._disabled) {
