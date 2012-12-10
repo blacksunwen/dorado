@@ -380,7 +380,7 @@ dorado.dequeue = function(namespace) {
 		 *  <li>指定position</li>
 		 * 	<li>指定left、top</li>
 		 * </ol>
-		 * 指定anchorTarget以后，anchorTarget会作为fixedElement传入dockAround方法，除了dockArounc方法用到的参数，其他参数会被忽略。<br />
+		 * 指定anchorTarget以后，anchorTarget会作为fixedElement传入dockAround方法，除了dockAround方法用到的参数，其他参数会被忽略。<br />
 		 * 指定position以后，position会作为参数传入locateIn方法，除了locateIn方法用到的参数，其他参数会被忽略。<br />
 		 * 若不指定anchorTarget，也不指定position，则会判断用户是不是设置了center、left、top属性，根据这几个属性计算出组件显示的位置。
 		 * </p>
