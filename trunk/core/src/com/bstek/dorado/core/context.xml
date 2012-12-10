@@ -87,7 +87,4 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 		<property name="username" value="dorado" />
 		<property name="password" value="www.bstek.com" />
 	</bean>
-	<bean id="dorado.sqlBaseStore.default" parent="dorado.sqlBaseStore">
-		<property name="version" value="1" />
-	</bean>
 </beans>
