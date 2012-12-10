@@ -821,7 +821,7 @@
 					}
 				} else {
 					for (var i = 0; i < criterions.length; i++) {
-						var serverCriterion = criterionToServerCriterion(criterion, null, dataColumns);
+						var serverCriterion = criterionToServerCriterion(criterions[i], null, dataColumns);
 						if (serverCriterion.junction && serverCriterion.junction != "or") {
 							serverCriterions = serverCriterions.concat(serverCriterion.criterions);
 						} else {
