@@ -24,8 +24,8 @@ public final class DataProviderGetResultMethodInterceptor extends
 
 	@Override
 	protected Object invokeGetResult(MethodInvocation methodInvocation,
-			Object parameter, DataType resultDataType) throws Throwable,
-			Exception {
+			DataProvider dataProvider, Object parameter, DataType resultDataType)
+			throws Throwable, Exception {
 		Object result = methodInvocation.proceed();
 		if (result != null) {
 			result = EntityUtils.toEntity(result, resultDataType);
@@ -36,8 +36,8 @@ public final class DataProviderGetResultMethodInterceptor extends
 	@Override
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	protected Object invokeGetPagingResult(MethodInvocation methodInvocation,
-			Object parameter, Page page, DataType resultDataType)
-			throws Throwable, Exception {
+			DataProvider dataProvider, Object parameter, Page page,
+			DataType resultDataType) throws Throwable, Exception {
 		Object returnValue = methodInvocation.proceed();
 		if (page != null) {
 			Collection entities = page.getEntities();

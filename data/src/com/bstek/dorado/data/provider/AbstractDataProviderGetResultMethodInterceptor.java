@@ -31,6 +31,7 @@ public abstract class AbstractDataProviderGetResultMethodInterceptor implements
 	@SuppressWarnings("rawtypes")
 	public final Object invoke(MethodInvocation methodInvocation)
 			throws Throwable {
+		DataProvider dataProvider = (DataProvider) methodInvocation.getThis();
 		Method method = methodInvocation.getMethod();
 		String methodName = method.getName();
 
@@ -48,12 +49,11 @@ public abstract class AbstractDataProviderGetResultMethodInterceptor implements
 				}
 
 				if (resultDataType == null) {
-					resultDataType = ((DataProvider) methodInvocation.getThis())
-							.getResultDataType();
+					resultDataType = dataProvider.getResultDataType();
 				}
 
-				return invokeGetResult(methodInvocation, parameter,
-						resultDataType);
+				return invokeGetResult(methodInvocation, dataProvider,
+						parameter, resultDataType);
 			}
 		} else if (method.getReturnType().equals(void.class)) {
 			if (methodName.equals(PAGING_METHOD_NAME)) {
@@ -74,12 +74,11 @@ public abstract class AbstractDataProviderGetResultMethodInterceptor implements
 				}
 
 				if (resultDataType == null) {
-					resultDataType = ((DataProvider) methodInvocation.getThis())
-							.getResultDataType();
+					resultDataType = dataProvider.getResultDataType();
 				}
 
-				return invokeGetPagingResult(methodInvocation, parameter, page,
-						resultDataType);
+				return invokeGetPagingResult(methodInvocation, dataProvider,
+						parameter, page, resultDataType);
 			}
 		}
 
@@ -87,12 +86,13 @@ public abstract class AbstractDataProviderGetResultMethodInterceptor implements
 	}
 
 	protected abstract Object invokeGetResult(
-			MethodInvocation methodInvocation, Object parameter,
-			DataType resultDataType) throws Throwable;
+			MethodInvocation methodInvocation, DataProvider dataProvider,
+			Object parameter, DataType resultDataType) throws Throwable;
 
 	@SuppressWarnings("rawtypes")
 	protected abstract Object invokeGetPagingResult(
-			MethodInvocation methodInvocation, Object parameter, Page page,
-			DataType resultDataType) throws Throwable;
+			MethodInvocation methodInvocation, DataProvider dataProvider,
+			Object parameter, Page page, DataType resultDataType)
+			throws Throwable;
 
 }

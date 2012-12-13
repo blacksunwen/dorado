@@ -27,6 +27,7 @@ public abstract class AbstractDataResolveMethodInterceptor implements
 
 	public final Object invoke(MethodInvocation methodInvocation)
 			throws Throwable {
+		DataResolver dataResolver = (DataResolver) methodInvocation.getThis();
 		Method method = methodInvocation.getMethod();
 		String methodName = method.getName();
 
@@ -43,12 +44,14 @@ public abstract class AbstractDataResolveMethodInterceptor implements
 				parameter = arguments[1];
 			}
 
-			return invokeResolve(methodInvocation, dataItems, parameter);
+			return invokeResolve(methodInvocation, dataResolver, dataItems,
+					parameter);
 		}
 
 		return methodInvocation.proceed();
 	}
 
 	protected abstract Object invokeResolve(MethodInvocation methodInvocation,
-			DataItems dataItems, Object parameter) throws Throwable;
+			DataResolver dataResolver, DataItems dataItems, Object parameter)
+			throws Throwable;
 }
