@@ -493,6 +493,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 									evt.cancelBubble = true;
 									return false;
 								}
+								break;
 							}
                             case 9: {	// Tab
 								var c = (evt.shiftKey) ? dorado.widget.findPreviousFocusableControl() : dorado.widget.findNextFocusableControl();
