@@ -86,7 +86,6 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 					ACTION_ATTRIBUTE);
 			return new PatternMethodInterceptorFilter(action);
 		}
-
 	};
 
 	private XmlDocumentBuilder xmlDocumentBuilder;
