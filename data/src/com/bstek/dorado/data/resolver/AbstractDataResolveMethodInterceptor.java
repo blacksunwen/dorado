@@ -14,15 +14,16 @@ package com.bstek.dorado.data.resolver;
 
 import java.lang.reflect.Method;
 
-import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
+
+import com.bstek.dorado.common.proxy.PatternMethodInterceptor;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2012-12-12
  */
-public abstract class AbstractDataResolveMethodInterceptor implements
-		MethodInterceptor {
+public abstract class AbstractDataResolveMethodInterceptor extends
+		PatternMethodInterceptor {
 	public static final String METHOD_NAME = "resolve";
 
 	public final Object invoke(MethodInvocation methodInvocation)
