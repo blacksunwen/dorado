@@ -26,7 +26,10 @@ public class PackageInfo {
 	 */
 	private String[] license;
 	private boolean loadUnlicensed;
-
+	
+	/*
+	 * component,enhancement,skin,resource,app
+	 */
 	private String classifier;
 	private String homePage;
 	private String description;
