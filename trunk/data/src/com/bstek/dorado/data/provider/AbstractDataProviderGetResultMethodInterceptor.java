@@ -14,17 +14,17 @@ package com.bstek.dorado.data.provider;
 
 import java.lang.reflect.Method;
 
-import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 
+import com.bstek.dorado.common.proxy.PatternMethodInterceptor;
 import com.bstek.dorado.data.type.DataType;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2012-11-14
  */
-public abstract class AbstractDataProviderGetResultMethodInterceptor implements
-		MethodInterceptor {
+public abstract class AbstractDataProviderGetResultMethodInterceptor extends
+		PatternMethodInterceptor {
 	public static final String METHOD_NAME = "getResult";
 	public static final String PAGING_METHOD_NAME = "getPagingResult";
 
