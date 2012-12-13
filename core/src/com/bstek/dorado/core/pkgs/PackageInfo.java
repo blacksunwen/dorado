@@ -27,6 +27,7 @@ public class PackageInfo {
 	private String[] license;
 	private boolean loadUnlicensed;
 
+	private String classifier;
 	private String homePage;
 	private String description;
 
@@ -76,6 +77,14 @@ public class PackageInfo {
 
 	public void setLoadUnlicensed(boolean loadUnlicensed) {
 		this.loadUnlicensed = loadUnlicensed;
+	}
+
+	public String getClassifier() {
+		return classifier;
+	}
+
+	public void setClassifier(String classifier) {
+		this.classifier = classifier;
 	}
 
 	public String getHomePage() {

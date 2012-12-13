@@ -343,6 +343,7 @@ public final class PackageManager {
 				packageInfo.setLoadUnlicensed(BooleanUtils.toBoolean(properties
 						.getProperty("loadUnlicensed")));
 
+				packageInfo.setClassifier(properties.getProperty("classifier"));
 				packageInfo.setHomePage(properties.getProperty("homePage"));
 				packageInfo.setDescription(properties
 						.getProperty("description"));
