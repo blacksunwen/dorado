@@ -12,17 +12,17 @@
 
 package com.bstek.dorado.view.service;
 
-import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 
+import com.bstek.dorado.common.proxy.PatternMethodInterceptor;
 import com.bstek.dorado.web.DoradoContext;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2012-12-13
  */
-public abstract class AbstractRemoteServiceMethodInterceptor implements
-		MethodInterceptor {
+public abstract class AbstractRemoteServiceMethodInterceptor extends
+		PatternMethodInterceptor {
 
 	public final Object invoke(MethodInvocation invocation) throws Throwable {
 		String serviceName = (String) DoradoContext.getCurrent().getAttribute(
