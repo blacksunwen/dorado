@@ -38,6 +38,7 @@ import com.bstek.dorado.data.method.MoreThanOneMethodsMatchsException;
 import com.bstek.dorado.data.variant.MetaData;
 import com.bstek.dorado.util.Assert;
 import com.bstek.dorado.view.output.OutputContext;
+import com.bstek.dorado.view.resolver.ViewServiceResolver;
 import com.bstek.dorado.web.DoradoContext;
 
 /**
@@ -45,6 +46,9 @@ import com.bstek.dorado.web.DoradoContext;
  * @since 2010-11-30
  */
 public class RemoteServiceProcessor extends DataServiceProcessorSupport {
+	public static final String SERVICE_NAME_ATTRIBUTE = ViewServiceResolver.class
+			.getName() + ".serviceName";
+
 	private static final Log logger = LogFactory
 			.getLog(RemoteServiceProcessor.class);
 	private static final ResourceManager resourceManager = ResourceManagerUtils
@@ -105,6 +109,8 @@ public class RemoteServiceProcessor extends DataServiceProcessorSupport {
 		}
 
 		Object returnValue = null;
+
+		context.setAttribute(SERVICE_NAME_ATTRIBUTE, exposedService.getName());
 
 		boolean methodInvoked = false;
 		MethodAutoMatchingException[] exceptions = new MethodAutoMatchingException[4];
