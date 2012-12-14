@@ -39,7 +39,7 @@ dorado.widget.DataBlockView = $extend([dorado.widget.AbstractBlockView, dorado.w
 	},
 	
 	getCurrentItemIdForRefresh: function() {
-		var current = this._itemModel.getItems().current;
+		var items = this._itemModel.getItems(), current = items ? items.current : null;
 		return current ? this._itemModel.getItemId(current) : null;
 	},
 	
@@ -77,6 +77,7 @@ dorado.widget.DataBlockView = $extend([dorado.widget.AbstractBlockView, dorado.w
 	 * @param {dorado.Entity} entity 数据实体。
 	 */
 	setCurrentEntity: function(entity) {
+		if (this.getCurrentItem() == entity) return;
 		var itemId = entity ? this._itemModel.getItemId(entity) : null;
 		var blockDom = this._itemDomMap[itemId];
 		this.setCurrentBlock(blockDom);
