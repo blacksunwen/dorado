@@ -80,7 +80,8 @@ public class Panel extends AbstractPanel {
 		tools.add(tool);
 	}
 
-	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "Tools"))
+	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "Tools",
+			icon = "/com/bstek/dorado/view/widget/base/Tools.png"))
 	@ClientProperty
 	public List<SimpleIconButton> getTools() {
 		return tools;

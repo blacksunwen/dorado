@@ -68,7 +68,8 @@ public class DataTree extends AbstractTree implements DataControl {
 		this.currentNodeDataPath = currentNodeDataPath;
 	}
 
-	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "BindingConfigs"))
+	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "BindingConfigs",
+			icon = "/com/bstek/dorado/view/widget/tree/BindingConfigs.png"))
 	@ClientProperty
 	public List<BindingConfig> getBindingConfigs() {
 		return bindingConfigs;

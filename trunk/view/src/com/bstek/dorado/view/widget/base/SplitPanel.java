@@ -54,7 +54,8 @@ public class SplitPanel extends Control {
 		this.direction = direction;
 	}
 
-	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "SideControl"))
+	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "SideControl",
+			icon = "/com/bstek/dorado/view/widget/base/SideControl.png"))
 	@ClientProperty
 	public Control getSideControl() {
 		return sideControlRef.get();
@@ -64,7 +65,8 @@ public class SplitPanel extends Control {
 		sideControlRef.set(sideControl);
 	}
 
-	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "MainControl"))
+	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "MainControl",
+			icon = "/com/bstek/dorado/view/widget/base/MainControl.png"))
 	@ClientProperty
 	public Control getMainControl() {
 		return mainControlRef.get();
