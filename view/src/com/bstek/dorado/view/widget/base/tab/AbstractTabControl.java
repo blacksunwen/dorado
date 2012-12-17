@@ -18,7 +18,6 @@ import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
 import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.ResourceInjection;
-import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.view.widget.Control;
 import com.bstek.dorado.view.widget.InnerElementList;
 
@@ -27,7 +26,7 @@ import com.bstek.dorado.view.widget.InnerElementList;
 		@ClientEvent(name = "onTabContextMenu") })
 @ResourceInjection(subObjectMethod = "getTab")
 public abstract class AbstractTabControl extends Control {
-	private boolean alwaysShowNavButtons;	
+	private boolean alwaysShowNavButtons;
 	private List<Tab> tabs = new InnerElementList<Tab>(this);
 	private int currentTab;
 
@@ -38,7 +37,7 @@ public abstract class AbstractTabControl extends Control {
 	public void setAlwaysShowNavButtons(boolean alwaysShowNavButtons) {
 		this.alwaysShowNavButtons = alwaysShowNavButtons;
 	}
-	
+
 	public int getCurrentTab() {
 		return currentTab;
 	}
@@ -74,7 +73,6 @@ public abstract class AbstractTabControl extends Control {
 		tabs.add(tab);
 	}
 
-	@XmlSubNode
 	@ClientProperty
 	public List<Tab> getTabs() {
 		return tabs;

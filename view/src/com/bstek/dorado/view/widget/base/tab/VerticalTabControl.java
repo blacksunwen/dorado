@@ -12,8 +12,11 @@
 
 package com.bstek.dorado.view.widget.base.tab;
 
+import java.util.List;
+
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.view.annotation.Widget;
 
 /**
@@ -27,7 +30,12 @@ import com.bstek.dorado.view.annotation.Widget;
 		shortTypeName = "VerticalTabControl")
 public class VerticalTabControl extends TabColumn {
 	private int tabColumnWidth = 200;
-	
+
+	@XmlSubNode(implTypes = "com.bstek.dorado.view.widget.base.tab.*")
+	public List<Tab> getTabs() {
+		return super.getTabs();
+	}
+
 	@ClientProperty(escapeValue = "200")
 	public int getTabColumnWidth() {
 		return tabColumnWidth;
@@ -36,5 +44,5 @@ public class VerticalTabControl extends TabColumn {
 	public void setTabColumnWidth(int tabColumnWidth) {
 		this.tabColumnWidth = tabColumnWidth;
 	}
-	
+
 }

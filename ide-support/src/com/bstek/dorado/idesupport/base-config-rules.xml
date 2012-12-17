@@ -11,25 +11,26 @@
 		</Children>
 	</Rule>
 
-	<Rule name="Import" scope="public" sortFactor="9001" category="Auxiliary">
+	<Rule name="Import" icon="/com/bstek/dorado/idesupport/icons/Import.png" scope="public" sortFactor="9001" category="Auxiliary">
 		<PrimitiveProps>
 			<Prop name="id" />
 			<Prop name="src" />
 		</PrimitiveProps>
 	</Rule>
 
-	<Rule name="GroupStart" scope="public" sortFactor="9002" category="Auxiliary">
+	<Rule name="GroupStart" icon="/com/bstek/dorado/idesupport/icons/GroupStart.png" scope="public" sortFactor="9002" category="Auxiliary">
 		<PrimitiveProps>
 			<Prop name="id" />
 		</PrimitiveProps>
 	</Rule>
-	<Rule name="GroupEnd" scope="public" sortFactor="9003" category="Auxiliary" />
+	<Rule name="GroupEnd" icon="/com/bstek/dorado/idesupport/icons/GroupEnd.png" scope="public" sortFactor="9003" category="Auxiliary" />
 
-	<Rule name="PlaceHolder" scope="public" sortFactor="9004" category="Auxiliary">
+	<Rule name="PlaceHolder" icon="/com/bstek/dorado/idesupport/icons/PlaceHolder.png" scope="public" sortFactor="9004" category="Auxiliary">
 		<PrimitiveProps>
 			<Prop name="id" />
 		</PrimitiveProps>
 	</Rule>
-	<Rule name="PlaceHolderStart" scope="public" parents="PlaceHolder" sortFactor="9005" category="Auxiliary" />
-	<Rule name="PlaceHolderEnd" scope="public" sortFactor="9006" category="Auxiliary" />
+	<Rule name="PlaceHolderStart" icon="/com/bstek/dorado/idesupport/icons/PlaceHolderStart.png" scope="public" parents="PlaceHolder" sortFactor="9005"
+		category="Auxiliary" />
+	<Rule name="PlaceHolderEnd" icon="/com/bstek/dorado/idesupport/icons/PlaceHolderEnd.png" scope="public" sortFactor="9006" category="Auxiliary" />
 </RuleSet>

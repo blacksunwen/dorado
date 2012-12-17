@@ -33,7 +33,7 @@ import com.bstek.dorado.view.widget.RenderableElement;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2009-11-4
  */
-@XmlNode(implTypes = "com.bstek.dorado.view.widget.base.tab.*")
+@XmlNode(isPublic = false)
 @ClientObject(prototype = "dorado.widget.tab.Tab", shortTypeName = "Tab")
 public class Tab implements RenderableElement, Ignorable, TagSupport,
 		MetaDataSupport, ViewElement {

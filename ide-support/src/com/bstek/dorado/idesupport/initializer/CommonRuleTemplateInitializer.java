@@ -144,7 +144,28 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 		IdeObject ideObject = type.getAnnotation(IdeObject.class);
 		if (ideObject != null
 				&& ArrayUtils.indexOf(type.getDeclaredAnnotations(), ideObject) >= 0) {
-			ruleTemplate.setLabelProperty(ideObject.labelProperty());
+			if (StringUtils.isNotEmpty(ideObject.icon())) {
+				ruleTemplate.setIcon(ideObject.icon());
+			}
+			if (StringUtils.isNotEmpty(ideObject.labelProperty())) {
+				ruleTemplate.setLabelProperty(ideObject.labelProperty());
+			}
+		}
+
+		// search icon
+		if (ruleTemplate.getIcon() == null) {
+			String basePath = '/' + StringUtils.replaceChars(type.getName(),
+					'.', '/'), iconPath;
+
+			iconPath = basePath + ".png";
+			if (getClass().getResource(iconPath) != null) {
+				ruleTemplate.setIcon(iconPath);
+			} else {
+				iconPath = basePath + ".gif";
+				if (getClass().getResource(iconPath) != null) {
+					ruleTemplate.setIcon(iconPath);
+				}
+			}
 		}
 
 		if (Component.class.isAssignableFrom(type)) {
@@ -699,20 +720,37 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 				continue;
 			}
 
+			boolean isPublic = true;
+			XmlNode implXmlNode = implType.getAnnotation(XmlNode.class);
+			if (implXmlNode != null
+					&& ArrayUtils.indexOf(implType.getDeclaredAnnotations(),
+							implXmlNode) >= 0 && !implXmlNode.isPublic()) {
+				if (ArrayUtils.indexOf(xmlSubNode.implTypes(),
+						implType.getName()) < 0) {
+					continue;
+				} else {
+					isPublic = false;
+				}
+			}
+
 			AutoChildTemplate childTemplate = getChildNodeByBeanType(null,
 					xmlSubNode, aggregated, implType, "protected",
 					initializerContext);
 			if (childTemplate != null) {
+				childTemplate.setPublic(isPublic);
 				childTemplates.add(childTemplate);
 			}
 		}
 
 		if (propertyType != null) {
-			AutoChildTemplate childTemplate = getChildNodeByBeanType(
-					StringUtils.capitalize(propertyName), xmlSubNode,
-					aggregated, propertyType, null, initializerContext);
-			if (childTemplate != null) {
-				childTemplates.add(childTemplate);
+			XmlNode implXmlNode = propertyType.getAnnotation(XmlNode.class);
+			if (implXmlNode == null || implXmlNode.isPublic()) {
+				AutoChildTemplate childTemplate = getChildNodeByBeanType(
+						StringUtils.capitalize(propertyName), xmlSubNode,
+						aggregated, propertyType, null, initializerContext);
+				if (childTemplate != null) {
+					childTemplates.add(childTemplate);
+				}
 			}
 		}
 
@@ -724,6 +762,9 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 					"Wrapper." + wrapper.nodeName());
 			wrapperRuleTemplate.setLabel(StringUtils.defaultIfEmpty(
 					wrapper.label(), wrapper.nodeName()));
+			if (StringUtils.isNotEmpty(wrapper.icon())) {
+				wrapperRuleTemplate.setIcon(wrapper.icon());
+			}
 			wrapperRuleTemplate.setNodeName(wrapper.nodeName());
 			for (ChildTemplate childTemplate : childTemplates) {
 				wrapperRuleTemplate.addChild(childTemplate);
@@ -788,6 +829,9 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 			privateRuleTemplate.setParents(new RuleTemplate[] { ruleTemplate });
 			privateRuleTemplate.setLabel(name);
 			privateRuleTemplate.setNodeName(nodeName);
+			if (StringUtils.isNotEmpty(xmlSubNode.icon())) {
+				privateRuleTemplate.setIcon(xmlSubNode.icon());
+			}
 			ruleTemplate = privateRuleTemplate;
 		}
 

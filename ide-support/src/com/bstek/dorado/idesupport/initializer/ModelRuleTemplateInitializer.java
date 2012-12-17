@@ -57,6 +57,7 @@ public class ModelRuleTemplateInitializer implements RuleTemplateInitializer {
 
 		RuleTemplate dataTypeRuleTemplate = new RuleTemplate("DataType");
 		dataTypeRuleTemplate.setLabel("DataType");
+		dataTypeRuleTemplate.setIcon("/com/bstek/dorado/data/type/DataType.png");
 		dataTypeRuleTemplate.setScope("public");
 		dataTypeRuleTemplate.setType(DefaultEntityDataType.class.getName());
 		ruleTemplateManager.addRuleTemplate(dataTypeRuleTemplate);
