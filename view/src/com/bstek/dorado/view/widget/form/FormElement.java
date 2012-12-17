@@ -290,7 +290,8 @@ public class FormElement extends Control implements FormConfig,
 		this.editorType = editorType;
 	}
 
-	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "Editor"))
+	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "Editor",
+			icon = "/com/bstek/dorado/view/widget/form/Editor.png"))
 	@ClientProperty
 	public Control getEditor() {
 		return editorRef.get();

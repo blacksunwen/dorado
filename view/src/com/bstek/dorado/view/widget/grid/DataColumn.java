@@ -178,7 +178,8 @@ public class DataColumn extends AbstractDataColumn {
 		this.editorType = editorType;
 	}
 
-	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "Editor"))
+	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "Editor",
+			icon = "/com/bstek/dorado/view/widget/grid/Editor.png"))
 	@ClientProperty
 	public Control getEditor() {
 		return editorRef.get();

@@ -45,7 +45,8 @@ public abstract class AbstractPanel extends Container {
 		buttons.add(button);
 	}
 
-	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "Buttons"))
+	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "Buttons",
+			icon = "/com/bstek/dorado/view/widget/base/Buttons.png"))
 	@ClientProperty
 	public List<Button> getButtons() {
 		return buttons;
@@ -80,7 +81,8 @@ public abstract class AbstractPanel extends Container {
 
 	@Override
 	@XmlSubNode(nodeName = "*", parser = "spring:dorado.childComponentParser",
-			wrapper = @XmlNodeWrapper(nodeName = "Children"))
+			wrapper = @XmlNodeWrapper(nodeName = "Children",
+					icon = "/com/bstek/dorado/view/widget/base/Children.png"))
 	@ClientProperty
 	public List<Component> getChildren() {
 		return super.getChildren();
