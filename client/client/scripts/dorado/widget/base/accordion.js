@@ -503,7 +503,7 @@ dorado.widget.Accordion = $extend(dorado.widget.Control, /** @scope dorado.widge
 				section.destroy();
 			}
 			accordion._currentSection = null;
-			accordion._sections = [];
+			accordion._sections.clear();
 		}
 	},
 	
