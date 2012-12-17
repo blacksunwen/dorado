@@ -12,7 +12,10 @@
 
 package com.bstek.dorado.view.widget.base.tab;
 
+import java.util.List;
+
 import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.view.annotation.Widget;
 
 /**
@@ -25,4 +28,8 @@ import com.bstek.dorado.view.annotation.Widget;
 @ClientObject(prototype = "dorado.widget.TabControl",
 		shortTypeName = "TabControl")
 public class TabControl extends TabBar {
+	@XmlSubNode(implTypes = "com.bstek.dorado.view.widget.base.tab.*")
+	public List<Tab> getTabs() {
+		return super.getTabs();
+	}
 }

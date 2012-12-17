@@ -12,8 +12,11 @@
 
 package com.bstek.dorado.view.widget.base.tab;
 
+import java.util.List;
+
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.view.annotation.Widget;
 
 /**
@@ -26,7 +29,12 @@ public class TabBar extends AbstractTabControl {
 	private TabPlacement tabPlacement = TabPlacement.top;
 	private boolean showMenuButton;
 	private int tabMinWidth;
-	
+
+	@XmlSubNode(implTypes = "com.bstek.dorado.view.widget.base.tab.Tab")
+	public List<Tab> getTabs() {
+		return super.getTabs();
+	}
+
 	@ClientProperty(escapeValue = "top")
 	public TabPlacement getTabPlacement() {
 		return tabPlacement;
@@ -35,7 +43,7 @@ public class TabBar extends AbstractTabControl {
 	public void setTabPlacement(TabPlacement tabPlacement) {
 		this.tabPlacement = tabPlacement;
 	}
-	
+
 	public boolean isShowMenuButton() {
 		return showMenuButton;
 	}

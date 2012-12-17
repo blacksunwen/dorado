@@ -231,11 +231,15 @@ public class RuleSetOutputter {
 
 		RuleTemplate ruleTemplate = childTemplate.getRuleTemplate();
 		String ruleName = ruleTemplate.getName();
-		if (ruleTemplate.isGlobal())
+		if (ruleTemplate.isGlobal()) {
 			element.addAttribute("rule", ruleName);
+		}
 
 		setElementAttributes(element, childTemplate,
 				"name,fixed,aggregated,ignored,clientTypes,reserve");
+		if (!childTemplate.isPublic()) {
+			element.addAttribute("public", Boolean.FALSE.toString());
+		}
 		xmlWriter.writeOpen(element);
 
 		if (!ruleTemplate.isGlobal()) {

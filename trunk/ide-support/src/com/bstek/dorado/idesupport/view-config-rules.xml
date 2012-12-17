@@ -6,7 +6,7 @@
 				<Rule nodeName="Arguments">
 					<Children>
 						<Child aggregated="true">
-							<Rule nodeName="Argument">
+							<Rule nodeName="Argument" icon="/com/bstek/dorado/view/manager/Argument.png">
 								<PrimitiveProps>
 									<Prop name="name" />
 								</PrimitiveProps>
@@ -22,7 +22,7 @@
 				<Rule nodeName="Context">
 					<Children>
 						<Child aggregated="true">
-							<Rule nodeName="Attribute">
+							<Rule nodeName="Attribute" icon="/com/bstek/dorado/view/manager/Attribute.png">
 								<PrimitiveProps>
 									<Prop name="name" />
 								</PrimitiveProps>

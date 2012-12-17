@@ -336,7 +336,13 @@ public class RuleTemplate {
 		if (parents != null && parents.length > 0) {
 			Map<String, ChildTemplate> finalChildren = new LinkedHashMap<String, ChildTemplate>();
 			for (RuleTemplate parent : parents) {
-				finalChildren.putAll(parent.getFinalChildren());
+				for (Map.Entry<String, ChildTemplate> entry : parent
+						.getFinalChildren().entrySet()) {
+					ChildTemplate childTemplate = entry.getValue();
+					if (childTemplate.isPublic()) {
+						finalChildren.put(entry.getKey(), childTemplate);
+					}
+				}
 			}
 			finalChildren.putAll(children);
 			return finalChildren;

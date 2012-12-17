@@ -46,7 +46,7 @@ public class StandaloneRuleSetBuilderTest extends IdeSupportContextTestCase {
 	private String outputTemplateToFile() throws Exception {
 		RuleTemplateManager ruleTemplateManager = getRuleTemplateBuilder()
 				.getRuleTemplateManager();
-		//File file = File.createTempFile("rules", "xml");
+		// File file = File.createTempFile("rules", "xml");
 		File file = new File("e:/temp/rule.xml");
 		getRuleSetOutputter().output(new FileWriter(file), ruleTemplateManager);
 		return file.getAbsolutePath();
@@ -183,6 +183,12 @@ public class StandaloneRuleSetBuilderTest extends IdeSupportContextTestCase {
 		Set<Rule> concreteRules2 = treeGridRule.getChild("Column").getRule()
 				.getChild("Column").getConcreteRules();
 		assertTrue(concreteRules2.size() > 4);
+
+		Rule tabBarRule = ruleSet.getRule("TabBar");
+		assertEquals(1, tabBarRule.getChildren().size());
+		
+		Rule tabControlRule = ruleSet.getRule("TabControl");
+		assertEquals(2, tabControlRule.getChildren().size());
 	}
 
 	public void testLoadRuleFile() throws Exception {

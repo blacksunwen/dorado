@@ -41,6 +41,8 @@ public @interface XmlNode {
 
 	boolean inheritable() default false;
 
+	boolean isPublic() default true;
+	
 	int[] clientTypes() default { ClientType.DESKTOP };
 
 	boolean deprecated() default false;

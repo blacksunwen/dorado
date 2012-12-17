@@ -25,5 +25,7 @@ public @interface XmlNodeWrapper {
 
 	String label() default "";
 
+	String icon() default "";
+
 	boolean fixed() default true;
 }

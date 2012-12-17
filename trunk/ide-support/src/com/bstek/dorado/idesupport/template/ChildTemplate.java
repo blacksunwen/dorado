@@ -25,6 +25,7 @@ public class ChildTemplate {
 	private boolean fixed;
 	private boolean aggregated;
 	private boolean ignored;
+	private boolean isPublic = true;
 	private int clientTypes = ClientType.DESKTOP;
 	private String reserve;
 
@@ -76,6 +77,14 @@ public class ChildTemplate {
 
 	public void setIgnored(boolean ignored) {
 		this.ignored = ignored;
+	}
+
+	public boolean isPublic() {
+		return isPublic;
+	}
+
+	public void setPublic(boolean isPublic) {
+		this.isPublic = isPublic;
 	}
 
 	public int getClientTypes() {
