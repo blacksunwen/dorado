@@ -227,6 +227,9 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 				visible: item._visible,
 				submenu: item._menu,
                 action: item._action,
+				disabled: item._disabled,
+				icon: item._icon,
+				iconClass: item._iconClass,
 				listener: {
 					onClick: function() {
 						item.fireEvent("onClick", item);
@@ -260,7 +263,9 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 							caption: map[itemCode.code],
 							visible: innerControl._visible,
 							icon: innerControl._icon,
+							action: innerControl._action,
 							disabled: innerControl._disabled,
+							iconClass: innerControl._iconClass,
 							listener: {
 								onClick: function() {
 									innerControl.fireEvent("onClick", item);
