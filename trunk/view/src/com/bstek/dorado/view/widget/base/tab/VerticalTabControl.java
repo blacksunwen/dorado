@@ -32,6 +32,7 @@ public class VerticalTabControl extends TabColumn {
 	private int tabColumnWidth = 200;
 
 	@XmlSubNode(implTypes = "com.bstek.dorado.view.widget.base.tab.*")
+	@ClientProperty
 	public List<Tab> getTabs() {
 		return super.getTabs();
 	}

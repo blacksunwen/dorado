@@ -16,7 +16,6 @@ import java.util.List;
 
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
-import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.ResourceInjection;
 import com.bstek.dorado.view.widget.Control;
 import com.bstek.dorado.view.widget.InnerElementList;
@@ -73,7 +72,6 @@ public abstract class AbstractTabControl extends Control {
 		tabs.add(tab);
 	}
 
-	@ClientProperty
 	public List<Tab> getTabs() {
 		return tabs;
 	}

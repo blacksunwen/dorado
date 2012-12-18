@@ -27,6 +27,7 @@ public class TabColumn extends AbstractTabControl {
 	private VerticalTabPlacement tabPlacement = VerticalTabPlacement.left;
 
 	@XmlSubNode(implTypes = "com.bstek.dorado.view.widget.base.tab.Tab")
+	@ClientProperty
 	public List<Tab> getTabs() {
 		return super.getTabs();
 	}
