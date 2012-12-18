@@ -31,6 +31,7 @@ public class TabBar extends AbstractTabControl {
 	private int tabMinWidth;
 
 	@XmlSubNode(implTypes = "com.bstek.dorado.view.widget.base.tab.Tab")
+	@ClientProperty
 	public List<Tab> getTabs() {
 		return super.getTabs();
 	}
