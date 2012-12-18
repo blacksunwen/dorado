@@ -26,7 +26,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Inherited
 public @interface IdeObject {
-	String icon() default "";
-
 	String labelProperty() default "";
 }
