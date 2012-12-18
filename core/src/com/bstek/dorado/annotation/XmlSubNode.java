@@ -27,7 +27,7 @@ import java.lang.annotation.Target;
 @Inherited
 public @interface XmlSubNode {
 	String nodeName() default "";
-	
+
 	String icon() default "";
 
 	String propertyName() default "";

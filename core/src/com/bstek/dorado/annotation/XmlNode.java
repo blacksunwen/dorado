@@ -30,6 +30,8 @@ import com.bstek.dorado.common.ClientType;
 public @interface XmlNode {
 	String nodeName() default "";
 
+	String icon() default "";
+
 	/**
 	 * 使用类的完全限定名，其中可以包含*
 	 */
@@ -42,7 +44,7 @@ public @interface XmlNode {
 	boolean inheritable() default false;
 
 	boolean isPublic() default true;
-	
+
 	int[] clientTypes() default { ClientType.DESKTOP };
 
 	boolean deprecated() default false;

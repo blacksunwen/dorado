@@ -30,6 +30,7 @@ public class XmlNodeInfo {
 	private List<Class<?>> sourceTypes;
 
 	private String nodeName;
+	private String icon;
 	private String definitionType;
 	private Set<String> implTypes = new HashSet<String>();
 	private boolean scopable;
@@ -57,6 +58,14 @@ public class XmlNodeInfo {
 
 	public void setNodeName(String nodeName) {
 		this.nodeName = nodeName;
+	}
+
+	public String getIcon() {
+		return icon;
+	}
+
+	public void setIcon(String icon) {
+		this.icon = icon;
 	}
 
 	public String getDefinitionType() {

@@ -44,19 +44,14 @@ import com.bstek.dorado.view.ViewState;
 @XmlNode(
 		definitionType = "com.bstek.dorado.view.config.definition.ViewConfigDefinition",
 		properties = { @XmlProperty(propertyName = "template",
-				attributeOnly = true, ignored = true) },
-		subNodes = {
+				attributeOnly = true, ignored = true) }, subNodes = {
 				@XmlSubNode(nodeName = "Model",
-						icon = "/com/bstek/dorado/view/manager/Model.png",
 						parser = "spring:dorado.viewModelParser",
 						resultProcessed = true),
 				@XmlSubNode(nodeName = "Arguments",
-						icon = "/com/bstek/dorado/view/manager/Arguments.png",
 						parser = "spring:dorado.viewArgumentsParser",
 						resultProcessed = true),
-				@XmlSubNode(
-						nodeName = "Context",
-						icon = "/com/bstek/dorado/view/manager/ViewContext.png",
+				@XmlSubNode(nodeName = "Context",
 						parser = "spring:dorado.viewContextParser",
 						resultProcessed = true) })
 public class ViewConfig implements Namable, Scopable, MetaDataSupport {

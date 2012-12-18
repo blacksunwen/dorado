@@ -134,6 +134,10 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 			}
 		}
 
+		if (StringUtils.isNotEmpty(xmlNodeInfo.getIcon())) {
+			ruleTemplate.setIcon(xmlNodeInfo.getIcon());
+		}
+
 		ruleTemplate.setClientTypes(ClientType.parseClientTypes(xmlNodeInfo
 				.getClientTypes()));
 
@@ -144,9 +148,6 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 		IdeObject ideObject = type.getAnnotation(IdeObject.class);
 		if (ideObject != null
 				&& ArrayUtils.indexOf(type.getDeclaredAnnotations(), ideObject) >= 0) {
-			if (StringUtils.isNotEmpty(ideObject.icon())) {
-				ruleTemplate.setIcon(ideObject.icon());
-			}
 			if (StringUtils.isNotEmpty(ideObject.labelProperty())) {
 				ruleTemplate.setLabelProperty(ideObject.labelProperty());
 			}
@@ -292,6 +293,9 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 
 		if (StringUtils.isNotEmpty(xmlNode.nodeName())) {
 			xmlNodeInfo.setNodeName(xmlNode.nodeName());
+		}
+		if (StringUtils.isNotEmpty(xmlNode.icon())) {
+			xmlNodeInfo.setIcon(xmlNode.icon());
 		}
 		if (StringUtils.isNotEmpty(xmlNode.definitionType())) {
 			xmlNodeInfo.setDefinitionType(xmlNode.definitionType());
@@ -630,8 +634,8 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 	protected void initChildTemplates(RuleTemplate ruleTemplate,
 			TypeInfo typeInfo, XmlNodeInfo xmlNodeInfo,
 			InitializerContext initializerContext) throws Exception {
-		List<AutoChildTemplate> childTemplates = getChildTemplates(typeInfo,
-				xmlNodeInfo, initializerContext);
+		List<AutoChildTemplate> childTemplates = getChildTemplates(
+				ruleTemplate, typeInfo, xmlNodeInfo, initializerContext);
 		if (childTemplates.isEmpty()) {
 			return;
 		}
@@ -641,7 +645,8 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 		}
 	}
 
-	protected List<AutoChildTemplate> getChildTemplates(TypeInfo typeInfo,
+	protected List<AutoChildTemplate> getChildTemplates(
+			RuleTemplate ruleTemplate, TypeInfo typeInfo,
 			XmlNodeInfo xmlNodeInfo, InitializerContext initializerContext)
 			throws Exception {
 		List<AutoChildTemplate> childTemplates = new ArrayList<AutoChildTemplate>();
@@ -650,8 +655,8 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 				TypeInfo propertyTypeInfo = TypeInfo.parse(xmlSubNode
 						.propertyType());
 				List<AutoChildTemplate> childRulesBySubNode = getChildTemplatesBySubNode(
-						typeInfo, xmlSubNode.propertyName(), xmlSubNode,
-						propertyTypeInfo, initializerContext);
+						ruleTemplate, typeInfo, xmlSubNode.propertyName(),
+						xmlSubNode, propertyTypeInfo, initializerContext);
 				if (childRulesBySubNode != null) {
 					childTemplates.addAll(childRulesBySubNode);
 				}
@@ -689,7 +694,8 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 						propertyTypeInfo = new TypeInfo(propertyType, false);
 					}
 					List<AutoChildTemplate> childTemplatesBySubNode = getChildTemplatesBySubNode(
-							typeInfo, propertyDescriptor.getName(), xmlSubNode,
+							ruleTemplate, typeInfo,
+							propertyDescriptor.getName(), xmlSubNode,
 							propertyTypeInfo, initializerContext);
 					if (childTemplatesBySubNode != null) {
 						childTemplates.addAll(childTemplatesBySubNode);
@@ -701,9 +707,9 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 	}
 
 	protected List<AutoChildTemplate> getChildTemplatesBySubNode(
-			TypeInfo typeInfo, String propertyName, XmlSubNode xmlSubNode,
-			TypeInfo propertyTypeInfo, InitializerContext initializerContext)
-			throws Exception {
+			RuleTemplate ruleTemplate, TypeInfo typeInfo, String propertyName,
+			XmlSubNode xmlSubNode, TypeInfo propertyTypeInfo,
+			InitializerContext initializerContext) throws Exception {
 		List<AutoChildTemplate> childTemplates = new ArrayList<AutoChildTemplate>();
 
 		boolean aggregated = xmlSubNode.aggregated();
