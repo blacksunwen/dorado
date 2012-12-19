@@ -94,7 +94,7 @@
 		},
 		
 		resizeTextDom: function() {
-			if (!this._attached) return;
+			if (!this._attached || !this.isActualVisible()) return;
 			
 			if (!this._triggersArranged) {
 				this._triggersArranged = true;

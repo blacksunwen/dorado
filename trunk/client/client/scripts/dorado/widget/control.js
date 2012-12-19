@@ -596,7 +596,7 @@
 			function notifyChildren(control, actualVisible) {
 				if(control._innerControls) {
 					jQuery.each(control._innerControls, function(i, child) {
-						if(child._parentActualVisible == actualVisible) return;
+						if(child._parentActualVisible == actualVisible || !(child instanceof dorado.widget.Control)) return;
 						child._parentActualVisible = actualVisible;
 						child.onActualVisibleChange();
 					});
@@ -1044,6 +1044,10 @@
 			this._innerControls.push(control);
 			if(this._attached) 	control.onAttachToDocument();
 			control._isInnerControl = true;
+			
+			if (control._parent == window.$topView) {
+				window.$topView.removeChild(control);
+			}
 			control._parent = control._focusParent = this;
 			control.set("view", (this instanceof dorado.widget.View) ? this : this.get("view"));
 
