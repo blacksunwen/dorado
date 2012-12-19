@@ -1350,7 +1350,7 @@
 		}
 	};
 
-	dorado.widget.setFocusedControl = function(control) {
+	dorado.widget.setFocusedControl = function(control, ignorePhyscialFocus) {
 		if(dorado.widget.focusedControl.peek() === control) return;
 		
 		if (dorado.Browser.msie && document.activeElement) {
@@ -1365,12 +1365,12 @@
 			control = control.get("focusParent");
 		}
 		if (control) {
-			control.setFocus();
+			if (!ignorePhyscialFocus) control.setFocus();
 		} else {
 			if (document.body) {
 				setTimeout(function() {
 					if (dorado._LAST_FOCUS_CONTROL === null) {
-						document.body.focus();
+						if (!ignorePhyscialFocus) document.body.focus();
 						dorado.widget.onControlGainedFocus(null);
 					}
 				}, 0);

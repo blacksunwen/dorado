@@ -459,12 +459,16 @@ var AUTO_APPEND_TO_TOPVIEW = true;
             $fly(document).mousedown(function(evt) {
                 var element = evt.target;
                 if (!element || !element.style || element.style.tabIndex < 0) return;
+				
+				var nodeName = element.nodeName.toLowerCase();
+				var ignorePhyscialFocus = (nodeName == "input" || nodeName == "textarea")
+					
                 var control = getControlByElement(element);
                 if (control == null) {
-                    dorado.widget.setFocusedControl(null);
+                    dorado.widget.setFocusedControl(null, ignorePhyscialFocus);
                 }
                 else {
-                    dorado.widget.setFocusedControl(control);
+                    dorado.widget.setFocusedControl(control, ignorePhyscialFocus);
                 }
             }).keydown(function(evt) {
                 var b, c = dorado.widget.getFocusedControl();
