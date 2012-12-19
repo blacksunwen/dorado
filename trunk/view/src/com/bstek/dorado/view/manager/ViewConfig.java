@@ -14,6 +14,7 @@ package com.bstek.dorado.view.manager;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -132,8 +133,17 @@ public class ViewConfig implements Namable, Scopable, MetaDataSupport {
 
 	@SuppressWarnings("unchecked")
 	public Set<String> getPrivateDataTypeNames() {
-		return (innerDataTypeManager != null) ? innerDataTypeManager
-				.getPrivateDataTypeNames() : Collections.EMPTY_SET;
+		if (innerDataTypeManager != null) {
+			Set<String> names = new HashSet<String>();
+			for (String name : innerDataTypeManager.getPrivateDataTypeNames()) {
+				if (name.indexOf("[") < 0) {
+					names.add(name);
+				}
+			}
+			return names;
+		} else {
+			return Collections.EMPTY_SET;
+		}
 	}
 
 	public DataProvider getDataProvider(String name) throws Exception {
