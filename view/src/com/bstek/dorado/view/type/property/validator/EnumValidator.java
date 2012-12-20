@@ -19,6 +19,8 @@ import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
+import com.bstek.dorado.core.resource.ResourceManager;
+import com.bstek.dorado.core.resource.ResourceManagerUtils;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -28,6 +30,8 @@ import com.bstek.dorado.annotation.XmlProperty;
 @ClientObject(prototype = "dorado.validator.EnumValidator",
 		shortTypeName = "Enum")
 public class EnumValidator extends BaseValidator {
+	private static final ResourceManager resourceManager = ResourceManagerUtils
+			.get(EnumValidator.class);
 
 	private List<?> enumValues;
 
@@ -48,7 +52,7 @@ public class EnumValidator extends BaseValidator {
 			return null;
 		}
 		if (enumValues.indexOf(value) < 0) {
-			return "Value out of enum range.";
+			return resourceManager.getString("data/errorValueOutOfEnumRange");
 		}
 		return null;
 	}

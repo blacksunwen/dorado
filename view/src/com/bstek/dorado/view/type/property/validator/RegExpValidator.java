@@ -12,13 +12,14 @@
 
 package com.bstek.dorado.view.type.property.validator;
 
-import java.text.MessageFormat;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.core.resource.ResourceManager;
+import com.bstek.dorado.core.resource.ResourceManagerUtils;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -28,6 +29,9 @@ import com.bstek.dorado.annotation.XmlNode;
 @ClientObject(prototype = "dorado.validator.RegExpValidator",
 		shortTypeName = "RegExp")
 public class RegExpValidator extends BaseValidator {
+	private static final ResourceManager resourceManager = ResourceManagerUtils
+			.get(RegExpValidator.class);
+
 	private String whiteRegExp;
 	private String blackRegExp;
 	private RegExpValidatorMode validateMode = RegExpValidatorMode.whiteBlack;
@@ -84,7 +88,7 @@ public class RegExpValidator extends BaseValidator {
 					&& match(whiteRegExp, s);
 		}
 		if (valid) {
-			return MessageFormat.format("Bad format string \"{0}\".", s);
+			return resourceManager.getString("data/errorBadFormat", s);
 		}
 		return null;
 	}

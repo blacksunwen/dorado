@@ -12,10 +12,10 @@
 
 package com.bstek.dorado.view.type.property.validator;
 
-import java.text.MessageFormat;
-
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.core.resource.ResourceManager;
+import com.bstek.dorado.core.resource.ResourceManagerUtils;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -25,6 +25,11 @@ import com.bstek.dorado.annotation.XmlNode;
 @ClientObject(prototype = "dorado.validator.LengthValidator",
 		shortTypeName = "Length")
 public class LengthValidator extends BaseValidator {
+	private static final ResourceManager resourceManager = ResourceManagerUtils
+			.get(LengthValidator.class);
+
+	private int minLength = -1;
+	private int maxLength = -1;
 
 	public int getMinLength() {
 		return minLength;
@@ -42,21 +47,16 @@ public class LengthValidator extends BaseValidator {
 		this.maxLength = maxLength;
 	}
 
-	private int minLength = -1;
-	private int maxLength = -1;
-
 	@Override
 	protected Object doValidate(Object value) throws Exception {
 		if (value instanceof String) {
 			int len = ((String) value).length();
 			if (minLength > 0 && len < minLength) {
-				return MessageFormat.format(
-						"Text too short, it should be longer than {0}.",
+				return resourceManager.getString("data/errorContentTooShort",
 						minLength);
 			}
 			if (maxLength > 0 && len > maxLength) {
-				return MessageFormat.format(
-						"Text too long, it should be shorter than {0}.",
+				return resourceManager.getString("data/errorContentTooLong",
 						maxLength);
 			}
 		}

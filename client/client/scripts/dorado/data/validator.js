@@ -236,6 +236,53 @@ dorado.validator.BaseValidator = $extend(dorado.validator.Validator, /** @scope 
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
+ * @class 非空校验器。
+ * @shortTypeName Required
+ * @extends dorado.validator.BaseValidator
+ */
+dorado.validator.RequiredValidator = $extend(dorado.validator.BaseValidator, /** @scope dorado.validator.RequiredValidator.prototype */
+{
+	className : "dorado.validator.RequiredValidator",
+
+	ATTRIBUTES : /** @scope dorado.validator.RequiredValidator.prototype */
+	{
+
+		/**
+		 * 是否针对trim之后的文本进行非空校验。此属性只对String类型的数值有效。
+		 * @type boolean
+		 * @attribute
+		 * @default true
+		 */
+		trimBeforeValid : {
+			defaultValue : true
+		},
+
+		/**
+		 * 是否认为0或false是有效的数值。此属性只对数字或逻辑类型的数值有效。
+		 * @type boolean
+		 * @attribute
+		 */
+		acceptZeroOrFalse : {}
+	},
+
+	doValidate: function(data, arg) {
+		var valid = (data !== null && data !== undefined && data !== ""), message = '';
+		if (valid) {
+			if (this._trimBeforeValid && typeof data == "string") {
+				valid = jQuery.trim(data) != "";
+			} else if (this._acceptZeroOrFalse && (typeof data == "number" || typeof data == "boolean")) {
+				valid = (!data || this._acceptZeroOrFalse);
+			}
+		}
+		if (!valid) {
+			message = $resource("dorado.data.ErrorContentRequired");
+		}
+		return message;
+	}
+});
+
+/**
+ * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @class 文本长度校验器。
  * @shortTypeName Length
  * @extends dorado.validator.BaseValidator
