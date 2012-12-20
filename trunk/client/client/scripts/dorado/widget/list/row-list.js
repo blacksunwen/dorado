@@ -402,24 +402,31 @@
 			var $row = $fly(row);
 			$row.data("item", item);
 			
-			$row.toggleClass("odd-row", (!this._itemModel.groups && (index % 2) == 1));
-			if (itemId == this.getCurrentItemIdForRefresh()) {
-				this.setCurrentRow(row);
+			if (!this._shouldSkipRender && row._lazyRender) {
+				this.createItemDomDetail(row, item);
+				delete row._lazyRender;
 			}
-			if (this._selectionMode != "none") {
-				var selection = this._selectionCache || this.get("selection");
-				switch (this._selectionMode) {
-					case "singleRow":{
-						$row.toggleClass("selected-row", selection == item);
-						break;
-					}
-					case "multiRows":{
-						$row.toggleClass("selected-row", !!(selection && selection.indexOf(item) >= 0));
-						break;
+			
+			if (!row._lazyRender) {
+				$row.toggleClass("odd-row", (!this._itemModel.groups && (index % 2) == 1));
+				if (itemId == this.getCurrentItemIdForRefresh()) {
+					this.setCurrentRow(row);
+				}
+				if (this._selectionMode != "none") {
+					var selection = this._selectionCache || this.get("selection");
+					switch (this._selectionMode) {
+						case "singleRow":{
+							$row.toggleClass("selected-row", selection == item);
+							break;
+						}
+						case "multiRows":{
+							$row.toggleClass("selected-row", !!(selection && selection.indexOf(item) >= 0));
+							break;
+						}
 					}
 				}
+				this.refreshItemDomData(row, item);
 			}
-			this.refreshItemDomData(row, item);
 			return row;
 		},
 		
@@ -622,7 +629,7 @@
 					if (row._lazyRender) {
 						var item = $fly(row).data("item");
 						this.createItemDomDetail(row, item);
-						row._lazyRender = undefined;
+						delete row._lazyRender;
 						this.refreshItemDomData(row, item);
 					}
 					i++;

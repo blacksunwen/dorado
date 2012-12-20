@@ -600,7 +600,7 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 						value = (entityForAssignment instanceof dorado.Entity) ? entityForAssignment.get(map.readProperty) : entityForAssignment[map.readProperty];
 					}
 					
-					if (value instanceof dorado.Entity || value instanceof dorado.EntityList) {
+					if (value instanceof dorado.Entity) {
 						value = dorado.Core.clone(value);
 					}
 					
