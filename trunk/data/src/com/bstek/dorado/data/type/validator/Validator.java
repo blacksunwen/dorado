@@ -20,7 +20,8 @@ import com.bstek.dorado.annotation.XmlNode;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-7-12
  */
-@XmlNode(nodeName = "Validator")
+@XmlNode(nodeName = "Validator",
+		icon = "/com/bstek/dorado/view/type/property/validator/Validator.png")
 public interface Validator {
 	List<ValidationMessage> validate(Object value) throws Exception;
 }

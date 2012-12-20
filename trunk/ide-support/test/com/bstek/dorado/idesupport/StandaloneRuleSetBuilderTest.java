@@ -18,6 +18,8 @@ import java.io.FileWriter;
 import java.io.InputStream;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.bstek.dorado.core.Context;
 import com.bstek.dorado.idesupport.model.Child;
 import com.bstek.dorado.idesupport.model.Property;
@@ -186,9 +188,12 @@ public class StandaloneRuleSetBuilderTest extends IdeSupportContextTestCase {
 
 		Rule tabBarRule = ruleSet.getRule("TabBar");
 		assertEquals(1, tabBarRule.getChildren().size());
-		
+
 		Rule tabControlRule = ruleSet.getRule("TabControl");
 		assertEquals(2, tabControlRule.getChildren().size());
+
+		Rule lengthValidatorRule = ruleSet.getRule("LengthValidator");
+		assertTrue(StringUtils.isNotBlank(lengthValidatorRule.getIcon()));
 	}
 
 	public void testLoadRuleFile() throws Exception {

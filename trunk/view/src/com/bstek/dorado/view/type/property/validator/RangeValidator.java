@@ -12,10 +12,10 @@
 
 package com.bstek.dorado.view.type.property.validator;
 
-import java.text.MessageFormat;
-
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.core.resource.ResourceManager;
+import com.bstek.dorado.core.resource.ResourceManagerUtils;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -25,6 +25,9 @@ import com.bstek.dorado.annotation.XmlNode;
 @ClientObject(prototype = "dorado.validator.RangeValidator",
 		shortTypeName = "Range")
 public class RangeValidator extends BaseValidator {
+	private static final ResourceManager resourceManager = ResourceManagerUtils
+			.get(RangeValidator.class);
+
 	private float minValue;
 	private RangeValidateMode minValueValidateMode = RangeValidateMode.ignore;
 	private float maxValue;
@@ -75,14 +78,13 @@ public class RangeValidator extends BaseValidator {
 			if (f == minValue
 					&& minValueValidateMode != RangeValidateMode.allowEquals) {
 				invalid = true;
-				subMessage = " or equals to";
+				subMessage = resourceManager.getString("data/errorOrEqualTo");
 			}
 			if (f < minValue) {
 				invalid = true;
 			}
 			if (invalid) {
-				return MessageFormat.format(
-						"Number too less, it should be greater than{0} {1}.",
+				return resourceManager.getString("data/errorNumberTooLess",
 						subMessage, minValue);
 			}
 		}
@@ -91,14 +93,13 @@ public class RangeValidator extends BaseValidator {
 			if (f == maxValue
 					&& maxValueValidateMode != RangeValidateMode.allowEquals) {
 				invalid = true;
-				subMessage = " or equals to";
+				subMessage = resourceManager.getString("data/errorOrEqualTo");
 			}
 			if (f > maxValue) {
 				invalid = true;
 			}
 			if (invalid) {
-				return MessageFormat.format(
-						"Number too great, it should be less than{0} {1}.",
+				return resourceManager.getString("data/errorNumberTooGreat",
 						subMessage, maxValue);
 			}
 		}

@@ -357,7 +357,7 @@ public class RuleTemplate {
 		}
 		inheritanceProcessed = true;
 
-		final String InheritablePropertyNames = "label,nodeName,type";
+		final String InheritablePropertyNames = "label,icon,nodeName,type";
 		if (parents != null && parents.length > 0) {
 			Map<String, Object> props = new HashMap<String, Object>();
 			applyProperties(this, props, InheritablePropertyNames);
