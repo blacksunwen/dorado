@@ -606,7 +606,7 @@
 			var actualVisible = this.isActualVisible();
 			if (actualVisible) {
 				if (!this._currentVisible || this._shouldRefreshOnVisible) {
-					this._skipResize = this._shouldResizeOnVisible;
+					this._skipResize = !this._currentVisible || this._shouldResizeOnVisible;
 					this.refresh();
 					this._skipResize = false;
 				}

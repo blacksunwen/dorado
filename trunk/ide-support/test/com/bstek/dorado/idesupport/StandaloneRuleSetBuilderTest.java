@@ -114,6 +114,7 @@ public class StandaloneRuleSetBuilderTest extends IdeSupportContextTestCase {
 
 		Rule componentRule = ruleSet.getRule("Component");
 		Rule controlRule = ruleSet.getRule("Control_1");
+		Rule defaultControlRule = ruleSet.getRule("Control");
 		Rule containerRule = ruleSet.getRule("Container");
 		Rule datasetRule = ruleSet.getRule("DataSet");
 		Rule panelRule = ruleSet.getRule("Panel");
@@ -130,6 +131,7 @@ public class StandaloneRuleSetBuilderTest extends IdeSupportContextTestCase {
 
 		assertFalse(datasetRule.isSubRuleOf(controlRule));
 		assertFalse(componentRule.isSubRuleOf(controlRule));
+		assertTrue(StringUtils.isNotBlank(defaultControlRule.getIcon()));
 
 		Property layoutProperty = containerRule.getProperty("layout");
 		assertNotNull(layoutProperty);
