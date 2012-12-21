@@ -580,7 +580,15 @@
 
 			if (options.flush) this.discard();
 
-			var optionsCode, loadMode = options.loadMode || "always";
+			var optionsCode, loadMode = options.loadMode;
+			if (!loadMode) {
+				if (this._loadMode == "manual") {
+					loadMode = "never";
+				}
+				else {
+					loadMode = "always";
+				}
+			}
 			optionsCode = loadMode;
 			if (options.firstResultOnly) optionsCode += 'F';
 			if (options.acceptAggregation) optionsCode += 'A';
@@ -752,7 +760,8 @@
 		 */
 		flush: function() {
 			this.getData(null, {
-				flush: true
+				flush: true,
+				loadMode: "always"
 			});
 		},
 		
@@ -794,7 +803,8 @@
 						});
 					}
 				}, {
-					flush: true
+					flush: true,
+					loadMode: "always"
 				});
 			}
 			finally {
