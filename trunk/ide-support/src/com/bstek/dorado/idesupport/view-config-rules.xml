@@ -34,7 +34,9 @@
 					</Children>
 				</Rule>
 			</Child>
-			<Child rule="Model" icon="/com/bstek/dorado/view/manager/Model.png" />
+			<Child>
+				<Rule nodeName="Model" parents="Model" icon="/com/bstek/dorado/view/manager/Model.png" />
+			</Child>
 		</Children>
 	</Rule>
 	<Rule name="LayoutHolder" />
