@@ -34,7 +34,9 @@ import com.bstek.dorado.view.widget.tree.ExpandingMode;
 		@ClientEvent(name = "onCollapse"),
 		@ClientEvent(name = "onNodeAttached"),
 		@ClientEvent(name = "onNodeDetached"),
-		@ClientEvent(name = "onRenderNode") })
+		@ClientEvent(name = "onRenderNode"),
+		@ClientEvent(name = "beforeNodeCheckedChange"),
+		@ClientEvent(name = "onNodeCheckedChange") })
 public abstract class AbstractTreeGrid extends GridSupport {
 	private String treeColumn;
 	private int indent;
