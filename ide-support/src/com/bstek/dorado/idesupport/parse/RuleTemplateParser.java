@@ -84,7 +84,7 @@ public class RuleTemplateParser extends ConfigurableDispatchableXmlParser {
 				name = element.getAttribute("nodeName");
 				if (StringUtils.isBlank(name)) {
 					throw new XmlParseException(
-							"The 'name' attribute and the 'nodeName' attributecan not be blank at the same time.",
+							"The 'name' attribute and the 'nodeName' attribute can not be blank at the same time.",
 							node, context);
 				}
 			}
