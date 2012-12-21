@@ -174,6 +174,10 @@
 		        if (!(dorado.Browser.msie && dorado.Browser.version == 6)) {
 			        $fly(iframe).removeClass("hidden");
 		        }
+				if (!frame.isActualVisible()) {
+					frame._notifyResizeOnVisible = true;
+					frame.onActualVisibleChange();
+				}
 		        frame.fireEvent("onLoad", frame);
 		        if (frame.isSameDomain()) {
 			        if (frame._replacedUrl && frame._replacedUrl != BLANK_PATH) {
@@ -188,6 +192,7 @@
 		
 		replaceUrl: function(url) {
             var frame = this, doms = frame._doms, replacedUrl = $url(url || BLANK_PATH);
+			delete frame._notifyResizeOnVisible;
             if (frame.isSameDomain()) {
 	            frame._replacedUrl = replacedUrl;
                 frame.getIFrameWindow().location.replace(replacedUrl);
@@ -228,9 +233,16 @@
 		},
 		
 		onActualVisibleChange: function() {
-			var window = this.getIFrameWindow(), actualVisible = this.isActualVisible();
+			
+			function resizeSubView(subView) {
+				subView._children.each(function(child) {
+					if (child.resetDimension && child._rendered && child._visible) child.resetDimension();
+				});
+			}
+			
+			var frame = this, window = frame.getIFrameWindow(), actualVisible = frame.isActualVisible();
 			//FIX OpenFlashChart BUG: http://bsdn.org/projects/dorado7/issue/dorado7-240
-			if (this._ready && this.isSameDomain()) {
+			if (frame._ready && frame.isSameDomain()) {
 				//if (dorado.Browser.mozilla && window && window.dorado && window.dorado.widget && window.dorado.widget.ofc) {
 				if (window && window.dorado && window.dorado.widget) {
 					// 在Chrome中，一旦通过UpdateAction的回调方法关闭一个含有iFrame的Dialog，
@@ -240,10 +252,16 @@
 					if (dorado.Browser.chrome) {
 						setTimeout(function() {
 							window.$topView.setActualVisible(actualVisible);
+							if (frame._notifyResizeOnVisible && actualVisible) {
+								resizeSubView(window.$topView);
+							}
 						}, 0);
 					}
 					else {
 						window.$topView.setActualVisible(actualVisible);
+						if (frame._notifyResizeOnVisible && actualVisible) {
+								resizeSubView(window.$topView);
+						}
 					}
 				}
 			}
