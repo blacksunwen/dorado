@@ -820,10 +820,8 @@
 		
 		getBindingPropertyDef: function() {
 			var p = this._propertyDef;
-			if (!p) {
-				var dataSet = this._dataSet, dataPath = dorado.DataPath.create(this._dataPath), dataType;
-				if (dataSet) dataType = dataPath.getDataType(dataSet.get("dataType"));
-				if (dataType) this._propertyDef = p = dataType.getPropertyDef(this._property);
+			if (p === undefined) {
+				this._propertyDef = p = ($invokeSuper.call(this) || null);
 			}
 			return p;
 		},
