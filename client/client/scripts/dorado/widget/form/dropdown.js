@@ -601,7 +601,11 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 					}
 					
 					if (value instanceof dorado.Entity) {
-						value = dorado.Core.clone(value);
+						if (value.isEmptyItem) {
+							value = null;
+						} else {
+							value = dorado.Core.clone(value);
+						}
 					}
 					
 					if (targetEntity instanceof dorado.Entity) targetEntity.set(map.writeProperty, value);
