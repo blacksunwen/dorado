@@ -2327,6 +2327,7 @@
 			}
 			
 			var checkbox = new dorado.widget.CheckBox({
+				iconOnly: true,
 				onValueChange: function(checkbox) {
 					var grid = arg.grid, innerGrid = grid._innerGrid, selectionMode = grid._selectionMode;
 					var data = grid.get("itemModel").getItemById(checkbox._selectDataId), checked = checkbox.get("checked");

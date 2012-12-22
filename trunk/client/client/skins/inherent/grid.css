@@ -35,6 +35,10 @@
     padding-right: 2px; /* do not modify, may cause problums in safari/chrome */
 }
 
+.i-grid .cell .i-checkbox-icononly {
+	height: 16px;
+}
+
 .i-grid .data-table td {
     white-space: nowrap;
 }
