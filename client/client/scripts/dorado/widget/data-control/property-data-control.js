@@ -104,9 +104,29 @@ dorado.widget.PropertyDataControl = $extend(dorado.widget.DataControl, /** @scop
 	},
 	
 	getBindingPropertyDef: function() {
-		var entityDataType = this.getBindingDataType(), p;
-		if (entityDataType) p = entityDataType.getPropertyDef(this._property);
-		return p;
+		var entityDataType = this.getBindingDataType(), pd;
+		if (entityDataType) {
+			var properties = this._property.split('.'), i = 0;
+			while (entityDataType) {
+				pd = entityDataType.getPropertyDef(properties[i]);
+				if (pd) {
+					if (i == properties.length - 1) {
+						break;
+					} else {
+						entityDataType = pd.getDataType();
+						if (!entityDataType || !(entityDataType instanceof dorado.EntityDataType)) {
+							pd = null;
+							break;
+						}
+					}
+				}
+				else {
+					break;
+				}
+				i++;
+			}
+		}
+		return pd;
 	},
 	
 	getBindingPropertyValue: function() {
