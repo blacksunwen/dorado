@@ -196,6 +196,9 @@ public class StandaloneRuleSetBuilderTest extends IdeSupportContextTestCase {
 
 		Rule lengthValidatorRule = ruleSet.getRule("LengthValidator");
 		assertTrue(StringUtils.isNotBlank(lengthValidatorRule.getIcon()));
+
+		Rule menuButtonRule = ruleSet.getRule("MenuButton");
+		assertFalse(menuButtonRule.getProperty("menu").isVisible());
 	}
 
 	public void testLoadRuleFile() throws Exception {
