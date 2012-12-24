@@ -129,6 +129,7 @@
 					continue;
 				} else if (c === inQuote) {
 					contentEnd = true;
+					inQuote = null;
 					continue;
 				}
 			} else if (contentEnd) {
