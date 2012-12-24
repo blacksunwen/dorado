@@ -20,6 +20,7 @@ import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.InnerElementReference;
@@ -79,8 +80,8 @@ public class MenuButton extends com.bstek.dorado.view.widget.base.Button {
 	}
 
 	@Override
+	@XmlProperty(deprecated = true, ignored = true)
 	@IdeProperty(visible = false)
-	@ClientProperty(ignored = true)
 	public String getMenu() {
 		throw new UnsupportedOperationException();
 	}
@@ -88,8 +89,8 @@ public class MenuButton extends com.bstek.dorado.view.widget.base.Button {
 	@Override
 	public void setMenu(String menu) {
 		throw new UnsupportedOperationException();
-	}	
-		
+	}
+
 	@ClientProperty(escapeValue = "false")
 	public boolean isShowMenuOnHover() {
 		return showMenuOnHover;
@@ -98,7 +99,7 @@ public class MenuButton extends com.bstek.dorado.view.widget.base.Button {
 	public void setShowMenuOnHover(boolean showMenuOnHover) {
 		this.showMenuOnHover = showMenuOnHover;
 	}
-	
+
 	public boolean isHideMenuOnMouseLeave() {
 		return hideMenuOnMouseLeave;
 	}
@@ -106,7 +107,7 @@ public class MenuButton extends com.bstek.dorado.view.widget.base.Button {
 	public void setHideMenuOnMouseLeave(boolean hideMenuOnMouseLeave) {
 		this.hideMenuOnMouseLeave = hideMenuOnMouseLeave;
 	}
-	
+
 	@ClientProperty(escapeValue = "300")
 	public int getHideMenuOnMouseLeaveDelay() {
 		return hideMenuOnMouseLeaveDelay;

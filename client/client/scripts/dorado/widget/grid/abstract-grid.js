@@ -1683,7 +1683,7 @@
 		updateScroller: function(info) {
 			if (this._divScroll) {
 				var divScroll = this._divScroll, divViewPort = this._divViewPort;
-				var ratio = info.clientHeight ? divScroll.clientHeight / info.clientHeight : 0;
+				var ratio = info.clientHeight ? (divScroll.clientHeight / info.clientHeight) : 0;
 				if (this.yScroll) {
 					divViewPort.style.height = Math.round(info.scrollHeight * ratio) + "px";
 				}
@@ -1697,7 +1697,7 @@
 				if (this._innerGridWrapper) {
 					var innerGridWrapper = this._innerGridWrapper;
 					if (innerGridWrapper.offsetLeft <= divScroll.clientWidth) {
-						var ratio = divScroll.clientWidth / (innerGridWrapper.clientWidth || 1);
+						var ratio = (divScroll.clientWidth / innerGridWrapper.clientWidth) || 1;
 						var viewPortWidth = Math.round(innerGridWrapper.scrollWidth * ratio);
 						divViewPort.style.width = viewPortWidth + "px";
 						divScroll.scrollLeft = this._scrollLeft = Math.round(innerGridWrapper.scrollLeft * ratio);
@@ -1781,7 +1781,7 @@
 			if (this._innerGridWrapper) {
 				var divScroll = this._divScroll;
 				var innerGridWrapper = this._innerGridWrapper;
-				var ratio = divScroll.clientWidth / (innerGridWrapper.clientWidth || 1);
+				var ratio = ((divScroll.scrollWidth - divScroll.clientWidth) / (innerGridWrapper.scrollWidth - innerGridWrapper.clientWidth)) || 1;
 				innerGridWrapper.scrollLeft = Math.round(divScroll.scrollLeft / ratio);
 			}
 		},
@@ -1789,9 +1789,9 @@
 		onYScroll: function() {
 			if (!this._divScroll) return;
 			
-			var ratio = this._divScroll.scrollTop / this._divScroll.scrollHeight, innerContainer = this._innerGrid._container;
+			var ratio = this._divScroll.scrollTop / (this._divScroll.scrollHeight - this._divScroll.clientHeight), innerContainer = this._innerGrid._container;
 			if (this._scrollMode == "lazyRender") {
-				innerContainer.scrollTop = Math.round(innerContainer.scrollHeight * ratio);
+				innerContainer.scrollTop = Math.round((innerContainer.scrollHeight - innerContainer.clientHeight) * ratio);
 			} else {
 				this._innerGrid.setYScrollPos(ratio);
 			}
@@ -3407,7 +3407,7 @@
 		},
 
 		setYScrollPos: function(ratio) {
-			var container = this._container, scrollTop = Math.round(container.scrollHeight * ratio);
+			var container = this._container, scrollTop = Math.round((container.scrollHeight - container.clientHeight) * ratio);
 			if (scrollTop != container.scrollTop) {
 				container.scrollTop = scrollTop;
 				this.onYScroll();
@@ -3480,11 +3480,11 @@
 								} else if (cell.offsetLeft < scrollLeft) {
 									scrollPos = cell.offsetLeft;
 								}
-								ratio = scrollPos / scrollWidth;
+								ratio = scrollPos / (scrollWidth - clientWidth);
 							}
 							if (scrollPos >= 0) {
 								var divScroll = grid._divScroll;
-								divScroll.scrollLeft = ratio * divScroll.scrollWidth;
+								divScroll.scrollLeft = ratio * (divScroll.scrollWidth - divScroll.clientWidth);
 							}
 						}
 					}
