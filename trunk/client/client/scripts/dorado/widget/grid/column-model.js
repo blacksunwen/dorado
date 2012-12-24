@@ -1477,6 +1477,11 @@
 					editorControl = this.createEditorControl();
 					if (this.cachable) this._editorControl = editorControl;
 				}
+				
+				if (editorControl instanceof dorado.widget.TextArea) {
+					this.minWidth = 120;
+					this.minHeight = 40;
+				}
 			}
 				
 			var column = this.column, cellEditor = this, pd = column._propertyDef;
@@ -1732,8 +1737,6 @@
 			if (editor === undefined) {
 				if (column._wrappable) {
 					editor = new dorado.widget.TextArea();
-					this.minWidth = 120;
-					this.minHeight = 40;
 				} else {
 					editor = new dorado.widget.TextEditor();
 				}
@@ -2041,6 +2044,15 @@
 					}
 					this._editor = editor;
 				}
+			},
+			
+			/**
+			 * 内部使用的单元格编辑器。
+			 * @type dorado.widget.grid.CellEditor
+			 * @attribute
+			 */
+			cellEditor:  {
+				readOnly: true
 			},
 			
 			/**
