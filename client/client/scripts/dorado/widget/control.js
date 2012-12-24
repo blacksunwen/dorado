@@ -437,7 +437,7 @@
 			 * @param {boolean} arg.ctrlKey Ctrl键是否按下。
 			 * @param {boolean} arg.altKey Alt键是否按下。
 			 * @param {Event} arg.event DHTML中的事件event参数。
-			 * @patam {Boolean} #arg.returnValue=undefined 用于通知系统如何进行下一步处理的返回值。<br>
+			 * @param {Boolean} #arg.returnValue=undefined 用于通知系统如何进行下一步处理的返回值。<br>
 			 * 有下列三种可能结果:
 			 * <ul>
 			 * <li>true - 表示允许将此键盘消息进一步通知给上层控件（指此控件的focusParent属性指向的控件）。</li>
@@ -458,7 +458,7 @@
 			 * @param {boolean} arg.ctrlKey Ctrl键是否按下。
 			 * @param {boolean} arg.altKey Alt键是否按下。
 			 * @param {Event} arg.event DHTML中的事件event参数。
-			 * @patam {Boolean} #arg.returnValue=undefined 用于通知系统如何进行下一步处理的返回值。<br>
+			 * @param {Boolean} #arg.returnValue=undefined 用于通知系统如何进行下一步处理的返回值。<br>
 			 * 有下列三种可能结果:
 			 * <ul>
 			 * <li>true - 表示允许将此键盘消息进一步通知给上层控件（指此控件的focusParent属性指向的控件）。</li>
