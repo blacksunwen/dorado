@@ -157,8 +157,8 @@
 		}
 		
 		if (!criterion.operator) {
-			var defaultOperator = dorado.widget.grid.DataColumn.getDefaultOperator(column), operator, len = criterionText.length;
-			if (defaultOperator == "like" && len > 1) {
+			var defaultOperator = dorado.widget.grid.DataColumn.getDefaultOperator(column), len = criterionText.length;
+			if (len > 1) {
 				var firstChar = criterionText.charAt(0), lastChar = criterionText.charAt(len - 1);
 				if (len > 2 && criterionText.charAt(len - 2) == '\\') {
 					lastChar = 0;
@@ -174,31 +174,29 @@
 				if (firstChar) {
 					if (lastChar) {
 						if (len > 2) {
-							operator = "like";
+							criterion.operator = "like";
 							criterion.value = criterionText.substring(1, len - 1);
 						} else {
-							operator = "=";
+							criterion.operator = "=";
 							criterion.value = criterionText;
 						}
 					} else {
-						operator = "*like";
+						criterion.operator = "*like";
 						criterion.value = criterionText.substring(1);
 					}
 				} else if (lastChar) {
-					operator = "like*";
+					criterion.operator = "like*";
 					criterion.value = criterionText.substring(0, len - 1);
-				} else {
-					operator = defaultOperator;
-					criterion.value = criterionText;
 				}
-			} else {
-				operator = defaultOperator;
+			}
+			
+			if (!criterion.operator) {
+				criterion.operator = defaultOperator;
 				criterion.value = criterionText;
 			}
 		}
 		
 		criterion.property = column._property;
-		criterion.operator = operator;
 		if (criterion.value && criterion.value.indexOf('\\') >= 0) {
 			criterion.value = eval('"' + criterion.value + '"');
 		}
