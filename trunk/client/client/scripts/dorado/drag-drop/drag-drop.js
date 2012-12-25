@@ -369,6 +369,7 @@
 		
 		defaultDroppableOptions: {
 			accept: "*",
+			greedy: true,
 			tolerance: "pointer"
 		},
 		
