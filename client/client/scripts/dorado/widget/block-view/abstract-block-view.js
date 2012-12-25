@@ -116,9 +116,9 @@
 		 * 当数据实体中没有具体的图片可显示时使用的默认图片的URL。
 		 *
 		 * @type String
-		 * @default ">skin>block/blank-image.png"
+		 * @default ">dorado/client/resources/blank.gif"
 		 */
-		blankImage: ">skin>block/blank-image.png",
+		blankImage: ">dorado/client/resources/blank.gif",
 		
 		/**
 		 * 块内部的留白的大小，像素值。
