@@ -318,7 +318,7 @@ dorado.widget.DataListBox = $extend([dorado.widget.AbstractListBox, dorado.widge
 			case dorado.widget.DataSet.MESSAGE_CURRENT_CHANGED:
 				if (arg.entityList == this._itemModel.getItems()) {
 					var oldCurrentEntity = this.getCurrentItem();
-					if (!oldCurrentEntity || oldCurrentEntity.page.pageNo != arg.entityList.pageNo) {
+					if (!oldCurrentEntity || (oldCurrentEntity.page && oldCurrentEntity.page.pageNo != arg.entityList.pageNo)) {
 						this.refresh(true);
 					} else {
 						this.setCurrentEntity(arg.entityList.current);

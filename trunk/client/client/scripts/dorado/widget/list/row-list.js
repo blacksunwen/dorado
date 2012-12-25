@@ -1,15 +1,14 @@
 /*
  * This file is part of Dorado 7.x (http://dorado7.bsdn.org).
- * 
+ *
  * Copyright (c) 2002-2012 BSTEK Corp. All rights reserved.
- * 
- * This file is dual-licensed under the AGPLv3 (http://www.gnu.org/licenses/agpl-3.0.html) 
+ *
+ * This file is dual-licensed under the AGPLv3 (http://www.gnu.org/licenses/agpl-3.0.html)
  * and BSDN commercial (http://www.bsdn.org/licenses) licenses.
- * 
+ *
  * If you are unsure which license is appropriate for your use, please contact the sales department
  * at http://www.bstek.com/contact.
  */
-
 (function() {
 
 	var TABLE_HEIGHT_ADJUST = (dorado.Browser.msie) ? -1 : 0;
@@ -154,7 +153,7 @@
 		
 		onMouseDown: function(evt) {
 			var row = this.findItemDomByEvent(evt);
-			if (row || this._allowNoCurrent) {				
+			if (row || this._allowNoCurrent) {
 				if (row && evt.shiftKey) $DomUtils.disableUserSelection(row);
 				
 				var oldCurrentItem = this.getCurrentItem();
@@ -166,8 +165,7 @@
 						var removed = [], added = [];
 						if (evt.altKey || evt.ctrlKey && evt.shiftKey) {
 							removed = selection;
-						}
-						else if (evt.ctrlKey) {
+						} else if (evt.ctrlKey) {
 							this.addOrRemoveSelection(selection, clickedItem, removed, added);
 						} else if (evt.shiftKey) {
 							var si = -1, ei, itemModel = this._itemModel;
@@ -868,9 +866,16 @@
 				}
 				
 				var targetList = this.get("itemModel").getItems(), highlight;
-				if (!targetList && !dorado.Object.isInstanceOf(this, dorado.widget.DataControl) && this.ATTRIBUTES.items) {
-					targetList = [];
-					this.set("items", targetList);
+				if (!targetList) {
+					if (!dorado.Object.isInstanceOf(this, dorado.widget.DataControl)) {
+						if (this.ATTRIBUTES.items) {
+							targetList = [];
+							this.set("items", targetList);
+						}
+					}
+					else {
+						targetList = this.getBindingData();
+					}
 				}
 				
 				if (targetList) {
@@ -891,7 +896,9 @@
 					if (!dorado.Object.isInstanceOf(this, dorado.widget.DataControl)) {
 						this.refresh();
 					}
-					if (highlight != null) this.highlightItem(highlight);
+					if (highlight != null) {
+						this.highlightItem(highlight);
+					}
 					return true;
 				}
 			}

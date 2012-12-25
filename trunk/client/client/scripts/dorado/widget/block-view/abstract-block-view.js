@@ -631,6 +631,9 @@
 				var itemDom = this._itemDomMap[currentItemId];
 				if (itemDom) this.setCurrentBlock(itemDom);
 			}
+			else {
+				this.setCurrentBlock(null);
+			}
 		},
 		
 		_getBlockPos: function(index) {
@@ -638,19 +641,12 @@
 			var subIndex = index % this._realLineSize;
 			var left, top;
 			if (this._blockLayout == "vertical") {
-				left = this._horiPadding +
-				(this._realBlockWidth + this._horiSpacing) *
-				subIndex;
-				top = this._vertPadding +
-				(this._realBlockHeight + this._vertSpacing) *
-				lineIndex;
+				left = this._horiPadding + (this._realBlockWidth + this._horiSpacing) * subIndex;
+				top = this._vertPadding + (this._realBlockHeight + this._vertSpacing) * lineIndex;
 			} else {
 				left = this._horiPadding +
-				(this._realBlockWidth + this._horiSpacing) *
-				lineIndex;
-				top = this._vertPadding +
-				(this._realBlockHeight + this._vertSpacing) *
-				subIndex;
+				(this._realBlockWidth + this._horiSpacing) * lineIndex;
+				top = this._vertPadding + (this._realBlockHeight + this._vertSpacing) * subIndex;
 			}
 			return [left, top, lineIndex, subIndex];
 		},
@@ -658,16 +654,13 @@
 		removeItemDom: function(blockDom) {
 			$invokeSuper.call(this, arguments);
 			this._itemDomCount--;
-			this._lineCount = parseInt(this._itemDomCount /
-			this._realLineSize);
+			this._lineCount = parseInt((this._itemDomCount - 1) / this._realLineSize + 1);
 		},
 		
 		refreshItemDom: function(itemDomContainer, item, index, prepend) {
 			var flag = prepend ? -1 : 1;
 			if (index < 0) flag = -flag;
-			index = (this._itemModel.getStartIndex() || 0) +
-			index *
-			flag;
+			index = (this._itemModel.getStartIndex() || 0) + index * flag;
 			var itemId = this._itemModel.getItemId(item, index);
 			
 			var itemDom = this._itemDomMap[itemId];
@@ -686,9 +679,7 @@
 				left: pos[0],
 				top: pos[1]
 			}).outerWidth(this._realBlockWidth).outerHeight(this._realBlockHeight);
-			this._itemDomCount++;
-			this._lineCount = parseInt(this._itemDomCount /
-			this._realLineSize);
+			this._lineCount = parseInt((this._itemDomCount - 1) / this._realLineSize + 1);
 			
 			this.refreshItemDomData(itemDom, item);
 			return itemDom;
