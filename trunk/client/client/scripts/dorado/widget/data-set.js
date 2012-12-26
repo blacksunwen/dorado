@@ -962,6 +962,9 @@
 			for (var i = 0; i < observers.length; i++) {
 				var observer = observers[i];
 				if (observer.post instanceof Function) {
+					if (dorado.Object.isInstanceOf(observer, dorado.RenderableElement) && !observer.get("rendered")) {
+						continue;
+					}
 					observer.post();
 				}
 			}
