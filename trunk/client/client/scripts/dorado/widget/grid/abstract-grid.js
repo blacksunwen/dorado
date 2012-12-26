@@ -1421,7 +1421,7 @@
 			} else {
 				domMode = yScroll ? 1 : 0;
 			}
-			
+
 			var oldHeight;
 			if (!this.xScroll || !this.yScroll) {
 				oldHeight = dom.offsetHeight;
@@ -1490,14 +1490,13 @@
 					}
 				}
 			}
-			else {
-				if (domMode != 0 && this._divScroll) {
-					if (!dorado.Browser.isTouch) {
-						$fly(this._divScroll).css({
-							overflowX: (xScroll && domMode == 0) ? "scroll" : "hidden",
-							overflowY: yScroll ? "scroll" : "hidden"
-						});
-					}
+			
+			if (domMode != 0 && this._divScroll) {
+				if (!dorado.Browser.isTouch) {
+					$fly(this._divScroll).css({
+						overflowX: (xScroll && domMode == 0) ? "scroll" : "hidden",
+						overflowY: yScroll ? "scroll" : "hidden"
+					});
 				}
 			}
 
