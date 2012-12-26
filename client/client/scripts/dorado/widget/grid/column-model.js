@@ -2302,7 +2302,7 @@
 			if (arg.grid._selectionMode == "multiRows") return false;
 		},
 		
-		gridOnSelectionChangedListener: function(grid, arg) {	
+		gridOnSelectionChangedListener: function(grid, arg) {
 			var itemModel = grid._itemModel;
 			var selectionMode = grid._selectionMode, removed = arg.removed, added = arg.added, checkbox;
 			

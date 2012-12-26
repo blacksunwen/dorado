@@ -1308,9 +1308,15 @@
 
 			function getFixedInnerGrid() {
 				if (this._fixedInnerGrid) return this._fixedInnerGrid;
-				var innerGrid = this._fixedInnerGrid = this.createInnerGrid(true);
+				var innerGrid = this._fixedInnerGrid = this.createInnerGrid(true), self = this;
 				innerGrid.set({
-					allowNoCurrent: this._allowNoCurrent
+					allowNoCurrent: this._allowNoCurrent,
+					beforeSelectionChange: function(innerGrid, arg) {
+						self.fireEvent("beforeSelectionChange", self, arg);
+					},
+					onSelectionChange: function(innerGrid, arg) {
+						self.fireEvent("onSelectionChange", self, arg);
+					}
 				});
 				registerInnerControl.call(this, innerGrid);
 				return innerGrid;
