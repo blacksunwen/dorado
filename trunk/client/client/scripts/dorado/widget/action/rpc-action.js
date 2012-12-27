@@ -635,8 +635,7 @@
 					}
 				}
 					
-				if ((data === null || data === undefined || !data.$isWrapper) &&
-					updateItem.dataSet && updateItem.dataPath) {
+				if ((data === null || data === undefined || !data.$isWrapper) && updateItem.dataSet && updateItem.dataPath) {
 					options.acceptAggregationDataType = true;
 					var dataType = updateItem.dataSet.getDataType(updateItem.dataPath, options);
 					if (dataType) {

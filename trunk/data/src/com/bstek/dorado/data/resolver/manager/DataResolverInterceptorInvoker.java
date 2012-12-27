@@ -223,8 +223,12 @@ public class DataResolverInterceptorInvoker implements MethodInterceptor {
 		if (dataItems != null) {
 			int i = 3;
 			for (Map.Entry<String, Object> entry : dataItems.entrySet()) {
+				Object dataItem = entry.getValue();
+				if (dataItem != null && dataItem instanceof NullWrapper) {
+					dataItem = null;
+				}
 				optionalParameterNames[i] = entry.getKey();
-				optionalParameters[i] = entry.getValue();
+				optionalParameters[i] = dataItem;
 				i++;
 			}
 		}

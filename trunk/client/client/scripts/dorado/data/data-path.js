@@ -746,7 +746,7 @@
 			}
 
 			cache[this.path] = dataType;
-			if(!acceptAggregationDataType && dataType instanceof dorado.AggregationDataType) {
+			if(dataType instanceof dorado.AggregationDataType && (this._compiledPath.singleResult || !acceptAggregationDataType)) {
 				dataType = dataType.getElementDataType(loadMode);
 			}
 			return dataType;
