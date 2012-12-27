@@ -1,15 +1,14 @@
 /*
  * This file is part of Dorado 7.x (http://dorado7.bsdn.org).
- * 
+ *
  * Copyright (c) 2002-2012 BSTEK Corp. All rights reserved.
- * 
- * This file is dual-licensed under the AGPLv3 (http://www.gnu.org/licenses/agpl-3.0.html) 
+ *
+ * This file is dual-licensed under the AGPLv3 (http://www.gnu.org/licenses/agpl-3.0.html)
  * and BSDN commercial (http://www.bsdn.org/licenses) licenses.
- * 
+ *
  * If you are unsure which license is appropriate for your use, please contact the sales department
  * at http://www.bstek.com/contact.
  */
-
 (function() {
 
 	DropDownFilterTrigger = $extend(dorado.widget.Trigger, {
@@ -147,7 +146,8 @@
 			 * 当下拉框尝试对下拉数据项进行过滤时触发的事件。
 			 * @param {Object} self 事件的发起者，即控件本身。
 			 * @param {Object} arg 事件参数。
-			 * @param {String} arg.filterValue 过滤条件。
+			 * @param {String} #arg.filterOperator=like* 过滤比较符。
+			 * @param {String} #arg.filterValue 过滤条件。
 			 * @param {boolean} #arg.processDefault=true 是否继续使用系统默认的过滤处理逻辑。
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
@@ -158,7 +158,7 @@
 			 * 当下拉框尝试对下拉中的某一个数据项进行过滤时触发的事件。
 			 * @param {Object} self 事件的发起者，即控件本身。
 			 * @param {Object} arg 事件参数。
-			 * @param {Object|dorado.Entity} arg.entity 将被过滤的数据项。
+			 * @param {Object|dorado.Entity} arg.value 将被过滤的数据项。
 			 * @param {String} arg.filterValue 过滤条件。
 			 * @param {boolean} #arg.accept 该数据项是否通过过滤，即该数据项是否可被接受。
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
@@ -273,11 +273,11 @@
 			if (dorado.widget.AbstractGrid && rowList instanceof dorado.widget.AbstractGrid) {
 				cellCount = rowList.get("dataColumns").length * itemCount;
 			}
-
+			
 			if (!this._height) {
 				var useMaxHeight = true, refreshed = false;
 				if (this._realMaxHeight &&
-					(!itemCount || (this._realMaxHeight / (rowList._rowHeight + 2) > (itemCount + 1)))) {
+				(!itemCount || (this._realMaxHeight / (rowList._rowHeight + 2) > (itemCount + 1)))) {
 					rowList.set({
 						height: "auto",
 						scrollMode: "simple"
@@ -381,19 +381,27 @@
 			if (!rowList) return;
 			
 			var arg = {
+				filterOperator: "like*",
 				filterValue: filterValue,
 				processDefault: true
 			};
 			this.fireEvent("onFilterItems", this, arg);
 			if (!arg.processDefault) return;
 			
+			var realFilterValue;
+			if (filterValue != arg.filterValue) {
+				realFilterValue != arg.filterValue
+			}
+			else if (filterValue) {
+				realFilterValue = filterValue.toLowerCase();
+			}
+			
 			var filterParams;
-			if (filterValue && filterValue.length > 0) {
-				var realFilterValue = filterValue.toLowerCase();
+			if (realFilterValue && filterValue.length > 0) {
 				var property = this._displayProperty || this._property;
 				filterParams = [{
 					property: property,
-					operator: "like*",
+					operator: arg.filterOperator,
 					value: realFilterValue
 				}];
 			}
@@ -407,7 +415,7 @@
 		},
 		
 		doOnEditorKeyDown: function(editor, evt) {
-			
+		
 			function setEditorText(dropdown, rowList) {
 				var property = dropdown._displayProperty || dropdown._property;
 				var value = rowList.getCurrentItem();
