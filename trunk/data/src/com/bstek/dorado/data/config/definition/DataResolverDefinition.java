@@ -87,7 +87,7 @@ public class DataResolverDefinition extends InterceptableDefinition implements
 		MethodInterceptor[] superInterceptors = super.getMethodInterceptors(
 				creationInfo, context);
 		if (customMethodInterceptors != null) {
-			MethodInterceptor rootCustomMethodInterceptor = new RootCustomDataProviderInterceptor(
+			MethodInterceptor rootCustomMethodInterceptor = new RootCustomDataResolverInterceptor(
 					customMethodInterceptors);
 			if (superInterceptors != null) {
 				interceptors = new MethodInterceptor[superInterceptors.length + 1];

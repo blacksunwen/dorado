@@ -31,7 +31,6 @@ import com.bstek.dorado.data.entity.NullWrapper;
 import com.bstek.dorado.data.method.MethodAutoMatchingException;
 import com.bstek.dorado.data.method.MethodAutoMatchingUtils;
 import com.bstek.dorado.data.method.MoreThanOneMethodsMatchsException;
-import com.bstek.dorado.data.provider.DataProvider;
 import com.bstek.dorado.data.resolver.DataItems;
 import com.bstek.dorado.data.resolver.DataResolver;
 import com.bstek.dorado.data.type.DataType;
@@ -360,7 +359,7 @@ public class DataResolverInterceptorInvoker implements MethodInterceptor {
 		Object[] exactArgs = new Object[exactArgTypes.length];
 		exactArgTypes[0] = DataItems.class;
 		exactArgs[0] = dataItems;
-		exactArgTypes[1] = DataProvider.class;
+		exactArgTypes[1] = DataResolver.class;
 		exactArgs[1] = dataResolver;
 		exactArgTypes[2] = MethodInvocation.class;
 		exactArgs[2] = methodInvocation;
