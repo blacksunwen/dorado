@@ -180,6 +180,7 @@
 						this._visible = visible;
 						this.onActualVisibleChange();
 					}
+					
 					if (this._hideMode == "display") {
 						if (this._parent && this._parent._layout) {
 							this._parent._layout.refreshControl(this);
