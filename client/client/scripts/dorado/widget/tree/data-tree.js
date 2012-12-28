@@ -797,10 +797,25 @@ dorado.widget.DataTree = $extend([dorado.widget.Tree, dorado.widget.DataControl]
 					entityList = targetEntity.get(childBindingConfig.childrenProperty, "always");
 				}
 				if (entityList instanceof dorado.EntityList) {
+					this._skipProcessCurrentNode = (object._tree == this);
 					var originState = sourceEntity.state;
 					sourceEntity.remove(true);
+					delete this._skipProcessCurrentNode;
+					
 					if (originState != dorado.Entity.STATE_NEW) sourceEntity.setState(dorado.Entity.STATE_MOVED);
 					entityList.insert(sourceEntity, insertMode, refEntity);
+					
+					if (targetObject.get("expanded")) {
+						var newNode = this.findNode(sourceEntity);
+						if (newNode) {
+							this.set("currentNode", newNode);
+							this.highlightItem(newNode);
+						}
+					}
+					else {
+						this.set("currentNode", targetObject);
+					}
+					
 					return true;
 				}
 			}

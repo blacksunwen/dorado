@@ -461,8 +461,9 @@ dorado.widget.tree.Node = $extend([dorado.AttributeSupport, dorado.EventSupport]
 	 * @param {dorado.widget.tree.Node[]|Object[]} nodeConfigs 子节点数组或包含子节点信息的JSON对象数组。
 	 */
 	addNodes: function(nodeConfigs) {
-		for (var i = 0; i < nodeConfigs.length; i++) 
+		for (var i = 0; i < nodeConfigs.length; i++) {
 			this.addNode(nodeConfigs[i]);
+		}
 	},
 	
 	/**
