@@ -842,7 +842,9 @@
 	 */
 	dorado.widget.grid.DefaultCellRenderer = $extend(dorado.widget.grid.CellRenderer, /** @scope dorado.widget.grid.DefaultCellRenderer.prototype */{
 		doRender: function(dom, arg) {
-			dom.innerText = this.getText(arg.data, arg.column);
+			var text = this.getText(arg.data, arg.column);
+			dom.innerText = text;
+			if (text.length > 5) dom.title = text;
 			$fly(dom.parentNode).toggleClass("wrappable", !!arg.column._wrappable);
 			this.renderFlag(dom, arg);
 		}
