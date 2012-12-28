@@ -2494,16 +2494,19 @@
 			var self = this, column = arg.column, grid = arg.grid;
 			var textEditor = new dorado.widget.TextEditor({
 				width: "100%",
-				onPost: function(textEditor) {
-					var criterion = dorado.widget.grid.DataColumn.parseCriterion(textEditor.get("text"), column);
+				onBlur: function(textEditor) {
 					var filterEntity = grid.get("filterEntity");
-					filterEntity.disableObservers();
-					filterEntity.set(column._property, criterion);
-					filterEntity.enableObservers();
+					var criterion = filterEntity.get(column._property);
+					textEditor.set("text", criterion ? dorado.widget.grid.DataColumn.criterionToText(criterion) : "");
 				},
 				onKeyDown: function(textEditor, arg) {
 					if (arg.keyCode == 13) {
-						textEditor.post();
+						var criterion = dorado.widget.grid.DataColumn.parseCriterion(textEditor.get("text"), column);
+						var filterEntity = grid.get("filterEntity");
+						filterEntity.disableObservers();
+						filterEntity.set(column._property, criterion);
+						filterEntity.enableObservers();
+					
 						grid.filter();
 					}
 				},
