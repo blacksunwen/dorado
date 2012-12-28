@@ -319,11 +319,6 @@
 			
 			var grid = this.grid, groupProperty = grid._groupProperty;
 			var isArray = items instanceof Array;
-			if (!isArray) {
-				for (var i = 1; i <= items.pageCount; i++) {
-					if (!items.isPageLoaded(i)) throw new dorado.ResourceException("dorado.grid.GroupOnUnloadPage");
-				}
-			}
 			var entities = isArray ? items.slice(0) : items.toArray();
 			if (grid._groupOnSort) dorado.DataUtil.sort(entities, {
 				property: groupProperty
