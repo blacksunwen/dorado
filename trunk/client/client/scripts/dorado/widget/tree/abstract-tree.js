@@ -685,7 +685,7 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 	},
 
 	onNodeAttached: function(node) {
-		if (this._itemModel) {
+		if (!this._skipProcessCurrentNode && this._itemModel) {
 			this._itemModel.onNodeAttached(node);
 			if (this._root != node) {
 				this.fireEvent("onNodeAttached", this, {
@@ -700,7 +700,7 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 	},
 
 	onNodeDetached: function(node) {
-		if (this._itemModel) {
+		if (!this._skipProcessCurrentNode && this._itemModel) {
 			if (this.get("currentNode") == node) {
 				this.set("currentNode", null);
 			}
@@ -890,9 +890,18 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 		var insertMode = draggingInfo.get("insertMode");
 		var refObject = draggingInfo.get("refObject");
 		if (object instanceof dorado.widget.tree.Node && targetObject instanceof dorado.widget.tree.Node) {
+			this._skipProcessCurrentNode = (object._tree == this);
 			object.remove();
+			delete this._skipProcessCurrentNode;
 			targetObject.addNode(object, insertMode, refObject);
-			this.highlightItem(object);
+			
+			if (targetObject.get("expanded")) {
+				this.set("currentNode", object);
+				this.highlightItem(object);
+			}
+			else {
+				this.set("currentNode", targetObject);
+			}
 			return true;
 		}
 		return false;
