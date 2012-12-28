@@ -816,14 +816,15 @@
 		
 		/**
 		 * 取消对当前数据实体集合的各种数据操作。
+		 * @param {boolean} deep 是否执行深度撤销。即一并撤销所有子实体（包括子实体中的子实体）的修改。
 		 */
-		cancel: function() {
+		cancel: function(deep) {
 			var it = this.iterator(true), changed = false;
 			while (it.hasNext()) {
 				var entity = it.next();
 				if (entity.state != dorado.Entity.STATE_NONE && entity.state != dorado.Entity.STATE_MOVED) {
 					entity.disableObservers();
-					entity.cancel();
+					entity.cancel(deep);
 					entity.enableObservers();
 					changed = true;
 				}
