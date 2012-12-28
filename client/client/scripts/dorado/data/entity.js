@@ -1065,27 +1065,45 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		 * <li>如果此数据实体的状态是dorado.Entity.STATE_NONE，那么什么都不会发生。</li>
 		 * <li>如果此数据实体的状态是dorado.Entity.STATE_MOVED，那么此操作将会还原数据实体，但不会重置状态。</li>
 		 * </ul>
+		 * @param {boolean} deep 是否执行深度撤销。即一并撤销所有子实体（包括子实体中的子实体）的修改。
 		 */
-		cancel : function() {
+		cancel : function(deep) {
+			
+			function deepCancel(entity) {
+				var data = entity._data;
+				for(var p in data) {
+					if (data.hasOwnProperty(p)) {
+						var value = data[p];
+						if (value && (value instanceof dorado.Entity || value instanceof dorado.EntityList)) {
+							value.cancel(true);
+						}
+					}
+				}
+			}
+			
 			if (this.state == dorado.Entity.STATE_NEW) {
 				this.remove();
 			} else if (this.state != dorado.Entity.STATE_NONE) {
 				var data = this._data, oldData = this._oldData;
 				if (oldData) {
-					for(var p in data) {
+					for (var p in data) {
 						if (data.hasOwnProperty(p)) {
 							var value = data[p];
 							if (value != null && value.isDataPipeWrapper) continue;
 							delete data[p];
 						}
 					}
-					for(var p in oldData) {
+					for (var p in oldData) {
 						if (oldData.hasOwnProperty(p)) {
 							data[p] = oldData[p];
 						}
 					}
 				}
+				
 				var oldState = this.state;
+				
+				if (deep) deepCancel(this);
+				
 				if (oldState != dorado.Entity.STATE_MOVED) this.resetState();
 				if (oldState == dorado.Entity.STATE_DELETED && this.parent && this.parent instanceof dorado.EntityList) {
 					var entityList = this.parent;
@@ -1096,6 +1114,8 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					}
 				}
 				this.sendMessage(0);
+			} else if (deep) {
+				deepCancel(this);
 			}
 		},
 		
