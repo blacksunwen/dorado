@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RuleSet>
-	<Rule name="Model">
+	<Rule name="Model" icon="/com/bstek/dorado/view/manager/Model.png">
 		<Children>
 			<Child name="DataType" rule="AbstractDataType" aggregated="true" />
 			<Child name="DataProvider" rule="AbstractDataProvider" aggregated="true" />
