@@ -997,6 +997,7 @@
 			 * <li>stretchableColumns	-	只调整那些可伸缩的列，即那些width属性设置为*的列。</li>
 			 * <li>lastColumn	-	只调整最后一列。</li>
 			 * <li>allColumns	-	按照各列宽度的权重，对所有列进行调整。</li>
+			 * <li>allResizeableColumns	-	按照各列宽度的权重，对所有可调整宽度的列（即resizeable=true的列）进行调整。</li>
 			 * </ul>
 			 * </p>
 			 * @type String
@@ -1620,6 +1621,29 @@
 					var assignedWidth = 0;
 					for (var i = 0; i < columns.length; i++) {
 						var column = columns[i], weight = (parseInt(column._realWidth) || 80) + WIDTH_ADJUST;
+						if (i == columns.length - 1) {
+							column._realWidth = clientWidth - assignedWidth - WIDTH_ADJUST;
+						} else {
+							var w = Math.round(clientWidth * weight / totalWeight) - WIDTH_ADJUST;
+							if (w < MIN_COL_WIDTH) w = MIN_COL_WIDTH;
+							column._realWidth = w;
+							assignedWidth += (w + WIDTH_ADJUST);
+						}
+					}
+					break;
+				}
+				case "allResizeableColumns": {
+					var totalWeight = 0;
+					for (var i = 0; i < columns.length; i++) {
+						var column = columns[i];
+						if (!column._resizeable) continue;
+						totalWeight += (column._realWidth || 80) + WIDTH_ADJUST;
+					}
+					var assignedWidth = 0;
+					for (var i = 0; i < columns.length; i++) {
+						var column = columns[i];
+						if (!column._resizeable) continue;
+						var weight = (parseInt(column._realWidth) || 80) + WIDTH_ADJUST;
 						if (i == columns.length - 1) {
 							column._realWidth = clientWidth - assignedWidth - WIDTH_ADJUST;
 						} else {
