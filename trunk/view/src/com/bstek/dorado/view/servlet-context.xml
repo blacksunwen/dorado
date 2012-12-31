@@ -84,4 +84,10 @@
 		<property name="velocityHelper" ref="dorado.velocityHelper" />
 		<property name="uriSuffix" value=".d" />
 	</bean>
+
+	<bean id="dorado.viewResolverListenerRegister" abstract="true" class="com.bstek.dorado.view.resolver.ViewResolverListenerRegister">
+		<property name="viewResolver" ref="dorado.htmlViewResolver" />
+	</bean>
+
+
 </beans>
