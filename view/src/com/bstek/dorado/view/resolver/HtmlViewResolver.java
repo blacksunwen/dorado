@@ -14,6 +14,8 @@ package com.bstek.dorado.view.resolver;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.util.List;
+import java.util.Vector;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -57,6 +59,7 @@ public class HtmlViewResolver extends AbstractTextualResolver {
 
 	private boolean shouldAutoLoadDataConfigResources;
 	private long lastValidateTimestamp;
+	private List<ViewResolverListener> listeners;
 
 	public HtmlViewResolver() {
 		setContentType(HttpConstants.CONTENT_TYPE_HTML);
@@ -103,6 +106,21 @@ public class HtmlViewResolver extends AbstractTextualResolver {
 		uriSuffixLen = (uriSuffix != null) ? uriSuffix.length() : 0;
 	}
 
+	public synchronized void addViewResolverListener(
+			ViewResolverListener listener) {
+		if (listeners == null) {
+			listeners = new Vector<ViewResolverListener>();
+		}
+		listeners.add(listener);
+	}
+
+	public synchronized void removeViewResolverListener(
+			ViewResolverListener listener) {
+		if (listeners != null) {
+			listeners.remove(listener);
+		}
+	}
+
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
@@ -128,6 +146,13 @@ public class HtmlViewResolver extends AbstractTextualResolver {
 		}
 
 		String viewName = extractViewName(uri);
+
+		if (listeners != null) {
+			for (ViewResolverListener listener : listeners) {
+				listener.beforeResolveView(viewName);
+			}
+		}
+
 		DoradoContext context = DoradoContext.getCurrent();
 		ViewConfig viewConfig = null;
 		try {
@@ -166,6 +191,12 @@ public class HtmlViewResolver extends AbstractTextualResolver {
 			} finally {
 				writer.flush();
 				writer.close();
+			}
+		}
+
+		if (listeners != null) {
+			for (ViewResolverListener listener : listeners) {
+				listener.afterResolveView(viewName, view);
 			}
 		}
 	}
