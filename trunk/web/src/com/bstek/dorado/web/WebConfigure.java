@@ -12,10 +12,15 @@
 
 package com.bstek.dorado.web;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.core.ConfigureStore;
+import com.bstek.dorado.core.MapConfigureStore;
 
 /**
  * 支持以Web特有的方式来读取Dorado基础配置的工具类。
@@ -42,6 +47,30 @@ public abstract class WebConfigure {
 	 */
 	public static final Object NULL = new Object();
 
+	final static String STORE_KEY = "localConfigure";
+
+	public static final ConfigureStore EMPTY_STORE = new ConfigureStore() {
+		@Override
+		public boolean contains(String key) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public Object get(String key) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		protected void doSet(String key, Object value) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public Set<String> keySet() {
+			throw new UnsupportedOperationException();
+		}
+	};
+
 	private static ConfigureWrapper store = new ConfigureWrapper(
 			Configure.getStore());
 
@@ -50,6 +79,20 @@ public abstract class WebConfigure {
 	 */
 	public static ConfigureStore getStore() {
 		return store;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static ConfigureStore getStore(String scope) {
+		if (DoradoContext.APPLICATION.equals(scope)
+				|| StringUtils.isEmpty(scope)) {
+			return store;
+		} else {
+			DoradoContext context = DoradoContext.getCurrent();
+			Map<String, Object> localConfigureMap = (Map<String, Object>) context
+					.getAttribute(WebConfigure.STORE_KEY);
+			return (localConfigureMap != null) ? new MapConfigureStore(
+					localConfigureMap) : EMPTY_STORE;
+		}
 	}
 
 	public static void set(String scope, String key, Object value) {
@@ -128,8 +171,6 @@ public abstract class WebConfigure {
 }
 
 class ConfigureWrapper extends ConfigureStore {
-	private final static String KEY_PREFIX = "dorado.";
-
 	private ConfigureStore store;
 
 	public ConfigureWrapper(ConfigureStore store) {
@@ -141,19 +182,34 @@ class ConfigureWrapper extends ConfigureStore {
 		return store.contains(key);
 	}
 
+	@SuppressWarnings("unchecked")
 	public void set(String scope, String key, Object value) {
-		if (DoradoContext.APPLICATION.equals(scope)) {
+		if (DoradoContext.APPLICATION.equals(scope)
+				|| StringUtils.isEmpty(scope)) {
 			doSet(key, value);
 		} else {
 			DoradoContext context = DoradoContext.getCurrent();
-			context.setAttribute(scope, KEY_PREFIX + key, value);
+			Map<String, Object> localConfigureMap = (Map<String, Object>) context
+					.getAttribute(scope, WebConfigure.STORE_KEY);
+			if (localConfigureMap == null) {
+				localConfigureMap = new HashMap<String, Object>();
+				context.setAttribute(scope, WebConfigure.STORE_KEY,
+						localConfigureMap);
+			}
+			localConfigureMap.put(key, value);
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Object get(String key) {
 		DoradoContext context = DoradoContext.getCurrent();
-		Object value = context.getAttribute(KEY_PREFIX + key);
+		Object value = null;
+		Map<String, Object> localConfigureMap = (Map<String, Object>) context
+				.getAttribute(WebConfigure.STORE_KEY);
+		if (localConfigureMap != null) {
+			value = localConfigureMap.get(key);
+		}
 		return (value == null) ? store.get(key)
 				: ((value == WebConfigure.NULL) ? null : value);
 	}
