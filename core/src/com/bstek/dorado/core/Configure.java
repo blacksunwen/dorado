@@ -14,10 +14,7 @@ package com.bstek.dorado.core;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashSet;
-import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -41,7 +38,7 @@ public abstract class Configure {
 		System.setProperty("net.sf.ehcache.skipUpdateCheck", "true");
 
 		Properties properties = new Properties();
-		store = new PropertiesConfigureStore(properties);
+		store = new MapConfigureStore(properties);
 
 		InputStream in = Configure.class.getClassLoader().getResourceAsStream(
 				PROPERTIES_PATH);
@@ -136,39 +133,3 @@ public abstract class Configure {
 		return store.getLong(key, defaultValue);
 	}
 }
-
-class PropertiesConfigureStore extends ConfigureStore {
-	private Map<Object, Object> map;
-
-	public PropertiesConfigureStore(Properties properties) {
-		this.map = properties;
-	}
-
-	@Override
-	public boolean contains(String key) {
-		return map.containsKey(key);
-	}
-
-	@Override
-	public Object get(String key) {
-		return map.get(key);
-	}
-
-	@Override
-	protected void doSet(String key, Object value) {
-		if (value != null) {
-			map.put(key, value);
-		} else {
-			map.remove(key);
-		}
-	}
-
-	@Override
-	public Set<String> keySet() {
-		Set<String> keys = new HashSet<String>();
-		for (Object key : map.keySet()) {
-			keys.add(String.valueOf(key));
-		}
-		return keys;
-	}
-};
