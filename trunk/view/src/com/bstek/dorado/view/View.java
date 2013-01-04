@@ -26,7 +26,6 @@ import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
-import com.bstek.dorado.common.Namable;
 import com.bstek.dorado.view.manager.ViewConfig;
 import com.bstek.dorado.view.widget.Component;
 import com.bstek.dorado.view.widget.Container;
@@ -38,8 +37,7 @@ import com.bstek.dorado.view.widget.Container;
 @ClientEvents({ @ClientEvent(name = "onDataLoaded"),
 		@ClientEvent(name = "onComponentRegistered"),
 		@ClientEvent(name = "onComponentUnregistered") })
-public abstract class View extends Container implements Namable {
-	private String name;
+public abstract class View extends Container {
 	private ViewConfig viewConfig;
 	private Map<String, Component> componentMap = new HashMap<String, Component>();
 	private String packages;
@@ -66,11 +64,7 @@ public abstract class View extends Container implements Namable {
 	@XmlProperty(ignored = true)
 	@IdeProperty(visible = false)
 	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
+		return (viewConfig != null) ? viewConfig.getName() : null;
 	}
 
 	@Override

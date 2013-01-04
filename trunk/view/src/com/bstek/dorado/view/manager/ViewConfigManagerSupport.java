@@ -97,17 +97,16 @@ public abstract class ViewConfigManagerSupport implements ViewConfigManager {
 					ViewConfigDefinition viewConfigDefinition = vcdf
 							.create(viewName);
 					if (viewConfigDefinition != null) {
-						viewConfig = (ViewConfig) viewConfigDefinition
-								.create(new ViewCreationContext());
+						viewConfig = (ViewConfig) viewConfigDefinition.create(
+								new ViewCreationContext(),
+								new String[] { viewName });
 					}
 				} else if (viewConfigFactory instanceof ViewConfigDefinition) {
 					viewConfig = (ViewConfig) ((ViewConfigDefinition) viewConfigFactory)
-							.create(new ViewCreationContext());
+							.create(new ViewCreationContext(),
+									new String[] { viewName });
 				} else {
 					viewConfig = (ViewConfig) viewConfigFactory;
-					if (viewConfig != null) {
-						viewConfig.setName(viewName);
-					}
 				}
 			}
 

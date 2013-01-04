@@ -16,7 +16,6 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.bstek.dorado.common.Namable;
 import com.bstek.dorado.core.bean.BeanFactoryUtils;
 import com.bstek.dorado.core.bean.Scope;
 import com.bstek.dorado.data.method.MethodAutoMatchingException;
@@ -35,30 +34,15 @@ import com.bstek.dorado.view.widget.Component;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Mar 28, 2008
  */
-public class ViewDefinition extends ContainerDefinition implements Namable {
+public class ViewDefinition extends ContainerDefinition {
 	private static final Class<?>[] CONSTRUCTOR_ARG_TYPES = new Class<?>[] { ViewConfig.class };
 
-	private String name;
 	private Map<String, ComponentDefinition> componentMap = new HashMap<String, ComponentDefinition>();
 
 	public ViewDefinition(ComponentTypeRegisterInfo registerInfo)
 			throws Exception {
 		super(registerInfo);
 		setConstructorArgTypes(CONSTRUCTOR_ARG_TYPES);
-	}
-
-	/**
-	 * 返回视图的名称。
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * 设置视图的名称。
-	 */
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	@Override

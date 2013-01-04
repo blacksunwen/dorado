@@ -296,7 +296,6 @@ public class XmlViewConfigDefinitionFactory implements
 		Element documentElement = document.getDocumentElement();
 		ViewConfigDefinition viewConfigDefinition = (ViewConfigDefinition) xmlParser
 				.parse(documentElement, parseContext);
-		viewConfigDefinition.setName(viewName);
 
 		DefinitionManager<DataTypeDefinition> dataTypeDefinitionManager = viewConfigDefinition
 				.getDataTypeDefinitionManager();

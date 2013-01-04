@@ -22,7 +22,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.reflect.MethodUtils;
 
 import com.bstek.dorado.annotation.ResourceInjection;
-import com.bstek.dorado.common.Namable;
 import com.bstek.dorado.config.definition.CreationContext;
 import com.bstek.dorado.config.definition.Definition;
 import com.bstek.dorado.config.definition.DefinitionManager;
@@ -54,14 +53,14 @@ import com.bstek.dorado.web.DoradoContext;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2011-7-11
  */
-public class ViewConfigDefinition extends ListenableObjectDefinition implements
-		Namable {
+public class ViewConfigDefinition extends ListenableObjectDefinition {
 	private static final String[] DEFAULT_PROPERTIES = new String[] {
 			"caption", "label", "title" };
+	private static final Class<?>[] CONSTRUCTOR_ARG_TYPES = new Class<?>[] { String.class };
+
 	public static final String ARGUMENT = "argument";
 	public static final String RESOURCE_RELATIVE_DEFINITION = "resourceRelativeDefinition";
 
-	private String name;
 	private Map<String, Object> arguments;
 	private Map<String, Object> viewContext;
 	private ViewDefinition viewDefinition;
@@ -75,6 +74,8 @@ public class ViewConfigDefinition extends ListenableObjectDefinition implements
 			InnerDataProviderDefinitionManager dataProviderDefinitionManager,
 			InnerDataResolverDefinitionManager dataResolverDefinitionManager)
 			throws Exception {
+		setConstructorArgTypes(CONSTRUCTOR_ARG_TYPES);
+
 		this.dataTypeDefinitionManager = dataTypeDefinitionManager;
 		this.dataProviderDefinitionManager = dataProviderDefinitionManager;
 		this.dataResolverDefinitionManager = dataResolverDefinitionManager;
@@ -82,17 +83,6 @@ public class ViewConfigDefinition extends ListenableObjectDefinition implements
 		dataTypeDefinitionManager.setViewConfigDefinition(this);
 		dataProviderDefinitionManager.setViewConfigDefinition(this);
 		dataResolverDefinitionManager.setViewConfigDefinition(this);
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-		if (viewDefinition != null) {
-			viewDefinition.setName(name);
-		}
 	}
 
 	/**
@@ -143,9 +133,6 @@ public class ViewConfigDefinition extends ListenableObjectDefinition implements
 
 	public void setViewDefinition(ViewDefinition viewDefinition) {
 		this.viewDefinition = viewDefinition;
-		if (viewDefinition != null) {
-			viewDefinition.setName(name);
-		}
 	}
 
 	private void throwInvalidResourceKey(String key) {
