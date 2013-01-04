@@ -24,7 +24,6 @@ import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.common.MetaDataSupport;
-import com.bstek.dorado.common.Namable;
 import com.bstek.dorado.core.Context;
 import com.bstek.dorado.core.bean.Scopable;
 import com.bstek.dorado.core.bean.Scope;
@@ -55,7 +54,7 @@ import com.bstek.dorado.view.ViewState;
 				@XmlSubNode(nodeName = "Context",
 						parser = "spring:dorado.viewContextParser",
 						resultProcessed = true) })
-public class ViewConfig implements Namable, Scopable, MetaDataSupport {
+public class ViewConfig implements Scopable, MetaDataSupport {
 	protected static final String VIEW_STATE_ATTRIBUTE_KEY = ViewState.class
 			.getName();
 
@@ -68,18 +67,15 @@ public class ViewConfig implements Namable, Scopable, MetaDataSupport {
 	private InnerDataResolverManager innerDataResolverManager;
 	private View view;
 
+	public ViewConfig(String name) {
+		this.name = name;
+	}
+
 	@XmlProperty(unsupported = true)
 	@ClientProperty(ignored = true)
 	@IdeProperty(visible = false)
 	public String getName() {
 		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-		if (view != null) {
-			view.setName(name);
-		}
 	}
 
 	@ClientProperty(escapeValue = "request", ignored = true)
