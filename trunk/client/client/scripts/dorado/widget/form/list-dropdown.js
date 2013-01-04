@@ -453,6 +453,10 @@
 						this.close(this.getSelectedValue());
 						retValue = false;
 						break;
+					case 27: // esc
+						this.close();
+						retValue = false;
+						break;
 					default:
 						if (dropdown._rowSelected) {
 							rowList = dropdown.get("box.control");

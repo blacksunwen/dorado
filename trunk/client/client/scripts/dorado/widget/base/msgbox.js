@@ -130,7 +130,7 @@
             if (!dorado.MessageBox._dialog) {
                 dorado.MessageBox.defaultTitle = $resource("dorado.baseWidget.MessageBoxDefaultTitle");
                 dorado.MessageBox._dialog = new dorado.widget.Dialog({
-                    //focusAfterShow: false,
+                    focusAfterShow: false,
                     anchorTarget: window,
                     align: "center",
                     vAlign: "center",
@@ -215,7 +215,6 @@
                     }
 
                     dialog.addListener("beforeShow", function(dialog) {
-                        dorado.MessageBox._lastFocusControl = dorado.widget.getFocusedControl();
                         var dom = dialog._dom;
                         $fly(dom).width(dorado.MessageBox.maxWidth);
 
@@ -263,7 +262,7 @@
                         var buttons = dialog._buttons, button;
                         if(buttons){
                             button = buttons[0];
-                            if(button && button._dom.display != "none"){
+                            if(button && button._dom.style.display != "none") {
                                 button.setFocus();
                             }
                         }
@@ -279,10 +278,6 @@
 
                     dialog.addListener("afterHide", function() {
                         dorado.MessageBox.executeCallback();
-                        if (dorado.MessageBox._lastFocusControl) {
-                            dorado.widget.setFocusedControl(dorado.MessageBox._lastFocusControl);
-                        }
-                        dorado.MessageBox._lastFocusControl = null;
                     });
 
                     dialog.addListener("beforeClose", function(self, arg) {

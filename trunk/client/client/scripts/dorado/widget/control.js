@@ -1177,12 +1177,12 @@
 		 * 使控件获得控制焦点。
 		 */
 		setFocus: function() {
-			dorado._LAST_FOCUS_CONTROL = this;
-			var self = this;
-			setTimeout(function() {
-				if (dorado._LAST_FOCUS_CONTROL === self && dorado.widget.focusedControl.peek() !== self) {
-					self.doSetFocus();
-					dorado.widget.onControlGainedFocus(self);
+			var control = this;
+			dorado._LAST_FOCUS_CONTROL = control;
+			dorado.Toolkits.setDelayedAction(window, "$setFocusTimerId", function() {
+				if (dorado._LAST_FOCUS_CONTROL === control && dorado.widget.focusedControl.peek() !== self) {
+					control.doSetFocus();
+					dorado.widget.onControlGainedFocus(control);
 				}
 				dorado._LAST_FOCUS_CONTROL = null;
 			}, 0);
@@ -1252,8 +1252,8 @@
 			var b = this.doOnKeyDown ? this.doOnKeyDown(evt) : true;
 			if(!b) return b;
 
-			var fp = this.get("focusParent");
-			if(fp && dorado.widget.disableKeyBubble != fp) b = fp.onKeyDown(evt);
+			var p = this.get("parent");
+			if(p && dorado.widget.disableKeyBubble != p) b = p.onKeyDown(evt);
 			return b;
 		},
 		
@@ -1287,8 +1287,8 @@
 			var b = this.doOnKeyPress ? this.doOnKeyPress(evt) : true;
 			if(!b) return b;
 
-			var fp = this.get("focusParent");
-			if(fp && dorado.widget.disableKeyBubble != fp) b = fp.onKeyPress(evt);
+			var p = this.get("parent");
+			if(p && dorado.widget.disableKeyBubble != p) b = p.onKeyPress(evt);
 			return b;
 		},
 		
@@ -1462,7 +1462,7 @@
 	};
 	
 	function findNext(from) {
-		var control = null, parent = from._parent;
+		var control = null, parent = from._focusParent || from._parent;
 		if (parent) {
 			control = findFocusableControl(parent, {
 				from: from
@@ -1472,7 +1472,7 @@
 	};
 
 	function findPrevious(from) {
-		var control = null, parent = from._parent;
+		var control = null, parent = from._focusParent || from._parent;
 		if (parent) {
 			control = findFocusableControl(parent, {
 				from: from,
@@ -1488,7 +1488,7 @@
 			var control = findNext(from);
 			if (control) control = findFocusableControl(control);
 			if (control) return control;
-			from = from._parent;
+			from = from._focusParent || from._parent;
 		}
 		
 		var floatControls = dorado.widget.FloatControl.VISIBLE_FLOAT_CONTROLS;
@@ -1513,8 +1513,7 @@
 		while (from) {
 			control = findPrevious(from);
 			if (control) return control;
-			
-			from = from._parent;
+			from = from._focusParent || from._parent;
 		}
 		
 		var floatControls = dorado.widget.FloatControl.VISIBLE_FLOAT_CONTROLS;

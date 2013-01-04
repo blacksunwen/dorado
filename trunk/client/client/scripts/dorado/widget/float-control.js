@@ -294,6 +294,27 @@ dorado.dequeue = function(namespace) {
 			 */
 			focusAfterShow: {
 				defaultValue: true
+			},
+			
+			/**
+			 * 是否在显示之后延续之前的焦点管理状态，默认值为true。
+			 * <p>
+			 * 此属性仅在focusAfterShow为true是有实际意义。
+			 * <ul>
+			 * 	<li>
+			 * 	如果此属性为true，那么当此控件显示之后，Dorado并不会令之前拥有焦点的控件失去焦点，即使此控件在显示之后获得了控制焦点。
+			 * 	</li>
+			 * 	<li>
+			 * 	如果此属性为false，那么当此控件显示之后之前拥有焦点的控件将失去焦点。
+			 * 	</li>
+			 * </ul>
+			 * </p>
+			 * @attribute
+			 * @default true
+			 * @type boolean
+			 */
+			continuedFocus: {
+				defaultValue: true
 			}
 		},
 		
@@ -439,7 +460,11 @@ dorado.dequeue = function(namespace) {
 					control.render(renderTo);
 					control._visible = oldVisible;
 				}
-				if (control.doShow) control.doShow.apply(control, [options]);
+				
+				if (control._continuedFocus) {
+					control._focusParent = dorado.widget.getFocusedControl();
+				}
+				control.doShow.apply(control, [options]);
 			});
 		},
 		
@@ -524,15 +549,16 @@ dorado.dequeue = function(namespace) {
 					display: ""
 				}).bringToFront();
 
+				if (control._focusAfterShow || control._modal) {
+					control.setFocus();
+				}
+				
 				control.fireEvent("afterShow", control);
 
 				if (control._shadowMode != "none" && (!dorado.Browser.msie || dorado.Browser.version >= 9)) {
 					$fly(dom).shadow({
 						mode: control._shadowMode || "sides"
 					});
-				}
-				if (control._focusAfterShow || control._modal) {
-					control.setFocus();
 				}
 			}
 			dorado.dequeue(control._id + SHOWHIDE_SUFFIX);
@@ -549,8 +575,6 @@ dorado.dequeue = function(namespace) {
 			if (anchorTarget) {
 				if (anchorTarget instanceof dorado.widget.Control) {
 					fixedElement = anchorTarget._dom;
-					
-					control._focusParent = anchorTarget;
 				} else if (dorado.Object.isInstanceOf(anchorTarget, dorado.RenderableElement)) {
 					fixedElement = anchorTarget._dom;
 				} else if (typeof anchorTarget == "string") {
@@ -687,6 +711,10 @@ dorado.dequeue = function(namespace) {
             control.fireEvent("afterHide", control);
 			dorado.dequeue(control._id + SHOWHIDE_SUFFIX);
 			//log.debug("dorado.dequeue after hide：" + control._id);
+			
+			if (control._continuedFocus) {
+				control._focusParent = dorado.widget.getFocusedControl();
+			}
 		}
 	});
 	

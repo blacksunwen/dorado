@@ -41,6 +41,7 @@ public class FloatPanel extends Panel implements FloatControl {
 	private ModalType modalType = ModalType.dark;
 	private FloatControlShadowMode shadowMode = FloatControlShadowMode.sides;
 	private boolean focusAfterShow = true;
+	private boolean continuedFocus = true;
 
 	private boolean floating = true;
 	private String floatingClassName;
@@ -141,6 +142,15 @@ public class FloatPanel extends Panel implements FloatControl {
 
 	public void setFocusAfterShow(boolean focusAfterShow) {
 		this.focusAfterShow = focusAfterShow;
+	}
+
+	@ClientProperty(escapeValue = "true")
+	public boolean isContinuedFocus() {
+		return continuedFocus;
+	}
+
+	public void setContinuedFocus(boolean continuedFocus) {
+		this.continuedFocus = continuedFocus;
 	}
 
 	/**
