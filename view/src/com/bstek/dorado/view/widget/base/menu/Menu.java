@@ -52,6 +52,7 @@ public class Menu extends Control implements MenuItemGroup, FloatControl {
 	private ModalType modalType = ModalType.dark;
 	private FloatControlShadowMode shadowMode = FloatControlShadowMode.sides;
 	private boolean focusAfterShow = true;
+	private boolean continuedFocus = true;
 	private IconPosition iconPosition = IconPosition.left;
 
 	private List<BaseMenuItem> menuItems = new InnerElementList<BaseMenuItem>(
@@ -156,6 +157,15 @@ public class Menu extends Control implements MenuItemGroup, FloatControl {
 
 	public void setFocusAfterShow(boolean focusAfterShow) {
 		this.focusAfterShow = focusAfterShow;
+	}
+
+	@ClientProperty(escapeValue = "true")
+	public boolean isContinuedFocus() {
+		return continuedFocus;
+	}
+
+	public void setContinuedFocus(boolean continuedFocus) {
+		this.continuedFocus = continuedFocus;
 	}
 
 	@ClientProperty(escapeValue = "left")

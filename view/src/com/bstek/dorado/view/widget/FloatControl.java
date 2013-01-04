@@ -65,6 +65,10 @@ public interface FloatControl {
 
 	void setFocusAfterShow(boolean focusAfterShow);
 
+	boolean isContinuedFocus();
+
+	void setContinuedFocus(boolean continuedFocus);
+
 	boolean isFloating();
 
 	void setFloating(boolean floating);

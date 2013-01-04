@@ -368,8 +368,6 @@
 				case 13://enter
 					picker.fireEvent("onPick", picker);
 					return false;
-				case 27://esc
-					break;
 			}
 		}
 	});

@@ -138,7 +138,6 @@
 			if (event.keyCode == 32 || event.keyCode == 13) {
 				button.fireEvent("onClick", button);
 			}
-			return true;
 		},
 
 		/**

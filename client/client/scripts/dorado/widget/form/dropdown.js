@@ -389,8 +389,6 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 		editor.addListener("onBlur", box._onBlurListener, {
 			once : true
 		});
-
-		box._focusParent = editor;
 		
 		box.addListener("afterShow", function() {
 			dropdown._relocateTimeId = setInterval(function() {
@@ -674,6 +672,10 @@ dorado.widget.DropDownBox = $extend([ dorado.widget.Control, dorado.widget.Float
 
 		hideAnimateType : {
 			defaultValue : "safeSlide"
+		},
+		
+		focusAfterShow: {
+			defaultValue : false
 		},
 
 		visible : {
