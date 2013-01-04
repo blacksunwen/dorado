@@ -1466,26 +1466,26 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				messages = dorado.Toolkits.trimMessages(messages, DEFAULT_VALIDATION_RESULT_STATE);
 				if (this._messages == messages) return false;
 				this._messages = messages;
-
-				if (dorado.Toolkits.getTopMessageState(messages) != this._messageState) {
-					this._messageState = getMessageState(this);
-					retval = true;
-				}
+				
+				// if (dorado.Toolkits.getTopMessageState(messages) != this._messageState) {
+				this._messageState = getMessageState(this);
+				retval = true;
+				// }
 			} else {
 				var map = this._propertyInfoMap;
 				messages = dorado.Toolkits.trimMessages(messages, DEFAULT_VALIDATION_RESULT_STATE);
 				var propertyInfo = map[property];
 				if (propertyInfo && !propertyInfo.validating && propertyInfo.messages == messages) return false;
-
+				
 				var state = dorado.Toolkits.getTopMessageState(messages);
 				if (!propertyInfo) map[property] = propertyInfo = {};
 				propertyInfo.state = state;
 				propertyInfo.messages = messages;
-
-				if (state != this._messageState || state != (propertyInfo ? propertyInfo.state : null)) {
-					this._messageState = getMessageState(this);
-					retval = true;
-				}
+				
+				// if (state != this._messageState || state != (propertyInfo ? propertyInfo.state : null)) {
+				this._messageState = getMessageState(this);
+				retval = true;
+				// }
 			}
 
 			var dataType = this.dataType;
@@ -1533,7 +1533,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		},
 		
 		/**
-		 * 返回当前数据实体中最高的信息级别。即系统认为error高于warn高于okinfo高于。
+		 * 返回当前数据实体中最高的信息级别。即系统认为error高于warn高于ok高于info。
 		 * @param {String} [property] 属性名。
 		 * <p>
 		 * 如果在调用时指定了这个参数，这表示要返回跟某个属性的最高信息级别。否则表示读取跟整个数据实体关联的最高信息级别。
