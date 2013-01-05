@@ -2442,7 +2442,14 @@
 		 */
 		selectAll: function() {
 			if (this._selectionMode != "multiRows") return;
-			this._innerGrid.replaceSelection(this.get("selection"), this._itemModel.getAllDataEntities());
+			var added = this._itemModel.getAllDataEntities();
+			var selection = this.get("selection");
+			if (selection.length && added.length) {
+				for (var i = 0; i < selection.length; i++) {
+					added.remove(selection[i]);
+				}
+			}
+			this._innerGrid.replaceSelection(null, added);
 		},
 
 		/**
