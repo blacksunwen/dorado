@@ -34,7 +34,8 @@ public class TreeGrid extends AbstractTreeGrid {
 
 	private List<Node> nodes;
 
-	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "Nodes"))
+	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "Nodes",
+			icon = "/com/bstek/dorado/view/widget/treegrid/Nodes.png"))
 	@ClientProperty
 	@IdeProperty(highlight = 1)
 	public List<Node> getNodes() {
