@@ -16,6 +16,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.bstek.dorado.config.definition.CreationContext;
 import com.bstek.dorado.core.bean.BeanFactoryUtils;
 import com.bstek.dorado.core.bean.Scope;
 import com.bstek.dorado.data.method.MethodAutoMatchingException;
@@ -82,7 +83,7 @@ public class ViewDefinition extends ContainerDefinition {
 
 	@Override
 	protected boolean invokePrivateListener(Object object, String listenerName,
-			String methodName) throws Exception {
+			String methodName, CreationContext context) throws Exception {
 		View view = (View) object;
 		Object interceptor = BeanFactoryUtils.getBean(listenerName);
 		Method[] methods = MethodAutoMatchingUtils.getMethodsByName(
@@ -130,6 +131,9 @@ public class ViewDefinition extends ContainerDefinition {
 						} else if (DataResolver.class
 								.isAssignableFrom(parameterType)) {
 							arg = viewConfig.getDataResolver(parameterName);
+						} else if (ViewConfig.class
+								.isAssignableFrom(parameterType)) {
+							arg = viewConfig;
 						}
 					}
 					args[i] = arg;

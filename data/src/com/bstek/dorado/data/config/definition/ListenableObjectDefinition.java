@@ -53,9 +53,20 @@ public class ListenableObjectDefinition extends GenericObjectDefinition {
 				.setUserData("listener", dataObjectDefinition.getListener());
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	protected final void initObject(Object object, CreationInfo creationInfo,
+			CreationContext context) throws Exception {
+		preinitObject(object, creationInfo, context);
+
+		String listener = getListener();
+		if (invokeBeforeInitListener(object, listener, context)) {
+			doInitObject(object, creationInfo, context);
+			invokeOnInitListener(object, listener, context);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	protected void preinitObject(Object object, CreationInfo creationInfo,
 			CreationContext context) throws Exception {
 		Map<String, Object> properties = creationInfo.getProperties();
 		if (object instanceof Namable) {
@@ -89,12 +100,6 @@ public class ListenableObjectDefinition extends GenericObjectDefinition {
 				Map<String, Object> metaData = (Map<String, Object>) metaDataDef;
 				((MetaDataSupport) object).setMetaData(metaData);
 			}
-		}
-
-		String listener = getListener();
-		if (invokeBeforeInitListener(object, listener)) {
-			doInitObject(object, creationInfo, context);
-			invokeOnInitListener(object, listener);
 		}
 	}
 
@@ -134,8 +139,8 @@ public class ListenableObjectDefinition extends GenericObjectDefinition {
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private boolean invokeBeforeInitListener(Object object, String listeners)
-			throws Exception {
+	private boolean invokeBeforeInitListener(Object object, String listeners,
+			CreationContext context) throws Exception {
 		boolean retval = true;
 		// notify global listeners
 		for (GenericObjectListener listener : GenericObjectListenerRegistry
@@ -150,14 +155,14 @@ public class ListenableObjectDefinition extends GenericObjectDefinition {
 
 		if (retval) {
 			// notify private listeners
-			retval = invokePrivateListeners(object, listeners, true);
+			retval = invokePrivateListeners(object, listeners, context, true);
 		}
 		return retval;
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private void invokeOnInitListener(Object object, String listeners)
-			throws Exception {
+	private void invokeOnInitListener(Object object, String listeners,
+			CreationContext context) throws Exception {
 		// notify global listeners
 		for (GenericObjectListener listener : GenericObjectListenerRegistry
 				.getListeners()) {
@@ -167,11 +172,11 @@ public class ListenableObjectDefinition extends GenericObjectDefinition {
 		}
 
 		// notify private listeners
-		invokePrivateListeners(object, listeners, false);
+		invokePrivateListeners(object, listeners, context, false);
 	}
 
 	protected boolean invokePrivateListeners(Object object, String listeners,
-			boolean isBeforeListener) throws Exception {
+			CreationContext context, boolean isBeforeListener) throws Exception {
 		boolean retval = true;
 		if (StringUtils.isNotEmpty(listeners)) {
 			for (String listenerExpression : StringUtils.split(listeners, ",")) {
@@ -193,7 +198,7 @@ public class ListenableObjectDefinition extends GenericObjectDefinition {
 				boolean isNameStartsWithBefore = methodName
 						.startsWith("before");
 				if (isBeforeListener == isNameStartsWithBefore) {
-					if (!invokePrivateListener(object, listenerName, methodName)) {
+					if (!invokePrivateListener(object, listenerName, methodName, context)) {
 						retval = false;
 						break;
 					}
@@ -204,7 +209,7 @@ public class ListenableObjectDefinition extends GenericObjectDefinition {
 	}
 
 	protected boolean invokePrivateListener(Object object, String listenerName,
-			String methodName) throws Exception {
+			String methodName, CreationContext context) throws Exception {
 		Object interceptor = BeanFactoryUtils.getBean(listenerName);
 		Method[] methods = MethodAutoMatchingUtils.getMethodsByName(
 				interceptor.getClass(), methodName);

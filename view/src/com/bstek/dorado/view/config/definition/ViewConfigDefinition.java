@@ -46,6 +46,7 @@ import com.bstek.dorado.view.config.InnerDataProviderDefinitionManager;
 import com.bstek.dorado.view.config.InnerDataResolverDefinitionManager;
 import com.bstek.dorado.view.config.InnerDataTypeDefinitionManager;
 import com.bstek.dorado.view.manager.ViewConfig;
+import com.bstek.dorado.view.manager.ViewCreationContext;
 import com.bstek.dorado.view.resource.ViewResourceManager;
 import com.bstek.dorado.web.DoradoContext;
 
@@ -320,46 +321,52 @@ public class ViewConfigDefinition extends ListenableObjectDefinition {
 	@Override
 	protected void doInitObject(Object object, CreationInfo creationInfo,
 			CreationContext context) throws Exception {
-		super.doInitObject(object, creationInfo, context);
-
+		ViewCreationContext viewCreationContext = (ViewCreationContext) context;
 		ViewConfig viewConfig = (ViewConfig) object;
-		ViewState viewState = (ViewState) Context.getCurrent().getAttribute(
-				ViewState.class.getName());
-		if (viewState == null || viewState == ViewState.rendering) {
-			viewDefinition.create(context, new Object[] { viewConfig });
+		viewCreationContext.setViewConfig(viewConfig);
+		try {
+			super.doInitObject(object, creationInfo, context);
+
+			ViewState viewState = (ViewState) Context.getCurrent()
+					.getAttribute(ViewState.class.getName());
+			if (viewState == null || viewState == ViewState.rendering) {
+				viewDefinition.create(context, new Object[] { viewConfig });
+			}
+
+			Context doradoContext = Context.getCurrent();
+			InnerDataTypeDefinitionManager innerDataTypeDefinitionManager = (InnerDataTypeDefinitionManager) doradoContext
+					.getAttribute("privateDataTypeDefinitionManager");
+			InnerDataProviderDefinitionManager innerDataProviderDefinitionManager = (InnerDataProviderDefinitionManager) doradoContext
+					.getAttribute("privateDataProviderDefinitionManager");
+			InnerDataResolverDefinitionManager innerDataResolverDefinitionManager = (InnerDataResolverDefinitionManager) doradoContext
+					.getAttribute("privateDataResolverDefinitionManager");
+
+			InnerDataTypeManager dataTypeManager = new InnerDataTypeManager(
+					(DataTypeManager) doradoContext
+							.getServiceBean("dataTypeManager"),
+					innerDataTypeDefinitionManager,
+					innerDataProviderDefinitionManager,
+					innerDataResolverDefinitionManager);
+
+			InnerDataProviderManager dataProviderManager = new InnerDataProviderManager(
+					(DataProviderManager) doradoContext
+							.getServiceBean("dataProviderManager"),
+					innerDataTypeDefinitionManager,
+					innerDataProviderDefinitionManager,
+					innerDataResolverDefinitionManager);
+
+			InnerDataResolverManager dataResolverManager = new InnerDataResolverManager(
+					(DataResolverManager) doradoContext
+							.getServiceBean("dataResolverManager"),
+					innerDataTypeDefinitionManager,
+					innerDataProviderDefinitionManager,
+					innerDataResolverDefinitionManager);
+
+			viewConfig.setDataTypeManager(dataTypeManager);
+			viewConfig.setDataProviderManager(dataProviderManager);
+			viewConfig.setDataResolverManager(dataResolverManager);
+		} finally {
+			viewCreationContext.setViewConfig(null);
 		}
-
-		Context doradoContext = Context.getCurrent();
-		InnerDataTypeDefinitionManager innerDataTypeDefinitionManager = (InnerDataTypeDefinitionManager) doradoContext
-				.getAttribute("privateDataTypeDefinitionManager");
-		InnerDataProviderDefinitionManager innerDataProviderDefinitionManager = (InnerDataProviderDefinitionManager) doradoContext
-				.getAttribute("privateDataProviderDefinitionManager");
-		InnerDataResolverDefinitionManager innerDataResolverDefinitionManager = (InnerDataResolverDefinitionManager) doradoContext
-				.getAttribute("privateDataResolverDefinitionManager");
-
-		InnerDataTypeManager dataTypeManager = new InnerDataTypeManager(
-				(DataTypeManager) doradoContext
-						.getServiceBean("dataTypeManager"),
-				innerDataTypeDefinitionManager,
-				innerDataProviderDefinitionManager,
-				innerDataResolverDefinitionManager);
-
-		InnerDataProviderManager dataProviderManager = new InnerDataProviderManager(
-				(DataProviderManager) doradoContext
-						.getServiceBean("dataProviderManager"),
-				innerDataTypeDefinitionManager,
-				innerDataProviderDefinitionManager,
-				innerDataResolverDefinitionManager);
-
-		InnerDataResolverManager dataResolverManager = new InnerDataResolverManager(
-				(DataResolverManager) doradoContext
-						.getServiceBean("dataResolverManager"),
-				innerDataTypeDefinitionManager,
-				innerDataProviderDefinitionManager,
-				innerDataResolverDefinitionManager);
-
-		viewConfig.setDataTypeManager(dataTypeManager);
-		viewConfig.setDataProviderManager(dataProviderManager);
-		viewConfig.setDataResolverManager(dataResolverManager);
 	}
 }

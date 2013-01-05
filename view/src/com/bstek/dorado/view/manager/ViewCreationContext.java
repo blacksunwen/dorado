@@ -19,5 +19,13 @@ import com.bstek.dorado.data.config.definition.DataCreationContext;
  * @since 2010-12-2
  */
 public class ViewCreationContext extends DataCreationContext {
+	private ViewConfig viewConfig;
 
+	public ViewConfig getViewConfig() {
+		return viewConfig;
+	}
+
+	public void setViewConfig(ViewConfig viewConfig) {
+		this.viewConfig = viewConfig;
+	}
 }
