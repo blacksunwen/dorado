@@ -12,6 +12,8 @@
 
 package com.bstek.dorado.view.config.definition;
 
+import java.lang.reflect.Method;
+
 import org.aopalliance.intercept.MethodInterceptor;
 import org.apache.commons.jexl2.JexlContext;
 import org.apache.commons.lang.StringUtils;
@@ -22,11 +24,17 @@ import com.bstek.dorado.config.definition.Definition;
 import com.bstek.dorado.config.definition.DefinitionReference;
 import com.bstek.dorado.config.definition.DirectDefinitionReference;
 import com.bstek.dorado.core.Context;
+import com.bstek.dorado.core.bean.BeanFactoryUtils;
 import com.bstek.dorado.core.bean.BeanWrapper;
 import com.bstek.dorado.core.el.ExpressionHandler;
 import com.bstek.dorado.data.config.definition.ListenableObjectDefinition;
+import com.bstek.dorado.data.method.MethodAutoMatchingException;
+import com.bstek.dorado.data.method.MethodAutoMatchingUtils;
 import com.bstek.dorado.util.proxy.BeanExtender;
 import com.bstek.dorado.util.proxy.BeanExtenderMethodInterceptor;
+import com.bstek.dorado.view.View;
+import com.bstek.dorado.view.manager.ViewConfig;
+import com.bstek.dorado.view.manager.ViewCreationContext;
 import com.bstek.dorado.view.registry.AssembledComponentTypeRegisterInfo;
 import com.bstek.dorado.view.registry.ComponentTypeRegisterInfo;
 import com.bstek.dorado.view.widget.Component;
@@ -177,8 +185,72 @@ public class ComponentDefinition extends ListenableObjectDefinition implements
 				BeanExtender.setExProperty(object, property, value);
 			}
 		}
+
 		Component component = (Component) object;
 		component.setId(id);
 		super.doInitObject(object, creationInfo, context);
+	}
+
+	@Override
+	protected boolean invokePrivateListener(Object object, String listenerName,
+			String methodName, CreationContext context) throws Exception {
+		Object interceptor = BeanFactoryUtils.getBean(listenerName);
+		Method[] methods = MethodAutoMatchingUtils.getMethodsByName(
+				interceptor.getClass(), methodName);
+		if (methods.length == 0) {
+			return true;
+		}
+
+		Object retval;
+		try {
+			Class<?>[] requiredTypes = null;
+			Object[] requiredArgs = null;
+			Class<?>[] exactTypes = null;
+			Object[] exactArgs = null;
+			Class<?>[] optionalTypes = new Class<?>[] { object.getClass() };
+			Object[] optionalArgs = new Object[] { object };
+			Class<?> returnType = void.class;
+			retval = MethodAutoMatchingUtils.invokeMethod(methods, interceptor,
+					requiredTypes, requiredArgs, exactTypes, exactArgs,
+					optionalTypes, optionalArgs, returnType);
+		} catch (MethodAutoMatchingException e1) {
+			ViewCreationContext viewCreationContext = (ViewCreationContext) context;
+			Component component = (Component) object;
+			ViewConfig viewConfig = viewCreationContext.getViewConfig();
+			View view = viewConfig.getView();
+
+			if (methods.length == 1) {
+				Method method = methods[0];
+				String[] parameterNames = MethodAutoMatchingUtils
+						.getParameterNames(method);
+				Class<?>[] parameterTypes = method.getParameterTypes();
+				Object[] args = new Object[parameterNames.length];
+				for (int i = 0; i < parameterNames.length; i++) {
+					String parameterName = parameterNames[i];
+					Class<?> parameterType = parameterTypes[i];
+					Object arg = null;
+					if (Component.class.isAssignableFrom(parameterType)) {
+						if ("view".equals(parameterName)) {
+							arg = view;
+						} else {
+							arg = component;
+						}
+					}
+					if (ViewConfig.class.isAssignableFrom(parameterType)) {
+						arg = viewConfig;
+					}
+					args[i] = arg;
+				}
+				retval = method.invoke(interceptor, args);
+			} else {
+				throw e1;
+			}
+		}
+
+		if (retval instanceof Boolean) {
+			return ((Boolean) retval).booleanValue();
+		} else {
+			return true;
+		}
 	}
 }
