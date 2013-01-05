@@ -59,7 +59,8 @@ public abstract class AbstractTreeGrid extends GridSupport {
 	}
 
 	@Override
-	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "Columns"))
+	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "Columns",
+			icon = "/com/bstek/dorado/view/widget/treegrid/Columns.png"))
 	@ClientProperty
 	public List<Column> getColumns() {
 		return super.getColumns();

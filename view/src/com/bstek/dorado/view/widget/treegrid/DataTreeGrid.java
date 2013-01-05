@@ -93,7 +93,8 @@ public class DataTreeGrid extends AbstractTreeGrid implements DataControl {
 		this.autoCreateColumns = autoCreateColumns;
 	}
 
-	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "BindingConfigs"))
+	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "BindingConfigs",
+			icon = "/com/bstek/dorado/view/widget/tree/BindingConfigs.png"))
 	@ClientProperty
 	public List<BindingConfig> getBindingConfigs() {
 		return bindingConfigs;
