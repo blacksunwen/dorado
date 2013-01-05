@@ -394,9 +394,11 @@ dorado.Core = {
 				var constr = obj.constructor;
 				var cloned = new constr();
 				for (var attr in obj) {
-					var v = obj[attr];
-					if (deep) v = doClone(v, deep);
-					cloned[attr] = v;
+					if (cloned[attr] === undefined) {
+						var v = obj[attr];
+						if (deep) v = doClone(v, deep);
+						cloned[attr] = v;
+					}
 				}
 				return cloned;
 			}
