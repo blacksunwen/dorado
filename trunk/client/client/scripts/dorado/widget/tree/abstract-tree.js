@@ -29,7 +29,7 @@ dorado.widget.tree.TreeNodeRenderer = $extend(dorado.Renderer, {
 	 * @param {dorado.widget.tree.Node} node 树节点。
 	 * @return {String} 文本标签值。
 	 */
-	getLabel: function(node) {
+	getLabel: function(node, arg) {
 		return node.get("label");
 	},
 
@@ -75,7 +75,7 @@ dorado.widget.tree.TreeNodeRenderer = $extend(dorado.Renderer, {
 	 * @param {dorado.widget.tree.Node} node 树节点。
 	 * 内部的渲染方法，供复写。
 	 */
-	doRender: function(cell, node) {
+	doRender: function(cell, node, arg) {
 		var tree = node._tree, level = node.get("level"), hasChild = node.get("hasChild");	
 		var container = (cell.tagName.toLowerCase() == "div") ? cell : cell.firstChild;	
 		container.style.paddingLeft = ((level - 1) * tree._indent) + "px";
@@ -189,7 +189,7 @@ dorado.widget.tree.TreeNodeRenderer = $extend(dorado.Renderer, {
 			checkbox.refresh();
 		}
 		
-		this.renderLabel(container.lastChild, this.getLabel(node), node);
+		this.renderLabel(container.lastChild, this.getLabel(node, arg), node);
 	},
 
 	/**
@@ -200,8 +200,8 @@ dorado.widget.tree.TreeNodeRenderer = $extend(dorado.Renderer, {
 	 * @param {dorado.widget.tree.Node} node 树节点。
 	 * @see dorado.widget.tree.TreeNodeRenderer#doRender
 	 */
-	render: function(row, node) {
-		this.doRender(row.firstChild, node);
+	render: function(row, node, arg) {
+		this.doRender(row.firstChild, node, arg);
 	}
 });
 

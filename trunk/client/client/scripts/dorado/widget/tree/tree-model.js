@@ -72,6 +72,12 @@ dorado.widget.tree.NodeList = $extend(dorado.util.KeyedArray, {
 		if (tree && parentNode._expanded && tree._rendered && tree._attached && tree._autoRefreshLock < 1) {
 			tree._nodeRemoved(node, parentNode, index);
 		}
+	},
+	
+	clone: function() {
+		var cloned = $invokeSuper.call(this);
+		delete cloned.parent;
+		return cloned;
 	}
 });
 
@@ -649,6 +655,16 @@ dorado.widget.tree.Node = $extend([dorado.AttributeSupport, dorado.EventSupport]
 			if (!parent.get("expanded")) parent.expand();
 			parent = parent._parent;
 		}
+	},
+	
+	clone: function() {
+		var cloned = $invokeSuper.call(this);
+		delete cloned._tree;
+		delete cloned._parent;
+		this._nodes.each(function(node) {
+			cloned.addNode(node.clone());
+		});
+		return cloned;
 	}
 });
 

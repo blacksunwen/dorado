@@ -140,7 +140,7 @@
 					$buttonDom.removeClass("expand-button-hover collapse-button-hover");
 				});
 			}
-			dorado.widget.tree.TreeNodeRenderer.prototype.doRender(dom.firstChild, arg.node);
+			dorado.widget.tree.TreeNodeRenderer.prototype.doRender.call(this, dom.firstChild, arg.node, arg);
 			this.renderFlag(dom, arg);
 		}
 	});
