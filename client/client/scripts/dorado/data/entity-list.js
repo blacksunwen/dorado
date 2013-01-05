@@ -722,7 +722,8 @@
 			if (elementDataType && !(elementDataType instanceof dorado.EntityDataType)) {
 				throw new ResourceException("dorado.data.EntityPropertyExpected", property);
 			}
-			var child = new dorado.Entity(data, this.dataTypeRepository, elementDataType);
+			var child = new dorado.Entity(null, this.dataTypeRepository, elementDataType);
+			child.set(data);
 			if (!detached) this.insert(child);
 			return child;
 		},
