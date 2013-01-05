@@ -1450,8 +1450,8 @@
 						if (fixedInnerGridWrapper) $fly(fixedInnerGridWrapper).hide();
 
 						var innerGridWrapper = getInnerGridWrapper.call(this);
-						innerGridWrapper.style.overflowX = (this.hasRealWidth()) ? "hidden" : "visible";
-						innerGridWrapper.style.overflowY = (this.hasRealHeight()) ? "hidden" : "visible";
+						innerGridWrapper.style.overflowX = (this.hasRealWidth()) ? "hidden" : (this.hasRealHeight() ? "scroll" : "visible");
+						innerGridWrapper.style.overflowY = (this.hasRealHeight()) ? "hidden" : (this.hasRealWidth() ? "scroll" : "visible");
 						with (this._innerGridDom.style) {
 							position = top = left = width = '';
 						}
