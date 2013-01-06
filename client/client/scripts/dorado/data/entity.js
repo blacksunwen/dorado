@@ -1212,7 +1212,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			if (data instanceof dorado.Entity) data = data.getData();
 			
 			var brother = new dorado.Entity(null, this.dataTypeRepository, this.dataType);
-			brother.set(data);
+			if (data) brother.set(data);
 			if (!detached && this.parent instanceof dorado.EntityList) {
 				this.parent.insert(brother);
 			}
@@ -1248,7 +1248,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					throw new ResourceException("dorado.data.EntityPropertyExpected", property);
 				}
 				child = new dorado.Entity(null, this.dataTypeRepository, elementDataType);
-				child.set(data);
+				if (data) child.set(data);
 				if (!detached) {
 					if (aggregationDataType) {
 						var list = this._get(property, propertyDef);
@@ -1259,7 +1259,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				}
 			} else {
 				child = new dorado.Entity();
-				child.set(data);
+				if (data) child.set(data);
 				if (!detached) {
 					var oldChild = this.get(property);
 					if (oldChild instanceof dorado.EntityList) {
