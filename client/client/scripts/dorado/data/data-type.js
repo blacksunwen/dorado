@@ -158,7 +158,7 @@
 	});
 	
 	dorado.DataType.getSubName = function(name) {
-		var complexDataTypeNameRegex = /^[\w\/.$:@#|]*\[[\w\/\[\]\..$:@#|]*\]$/;
+		var complexDataTypeNameRegex = /^[\w\/.$:@#\-|]*\[[\w\/\[\]\..$:@#\-|]*\]$/;
 		return (name.match(complexDataTypeNameRegex)) ? name.substring(name.indexOf('[') + 1, name.length - 1) : null;
 	};
 	
