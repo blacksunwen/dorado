@@ -98,7 +98,7 @@
 					 * _value将在doPost之后被自动清空，并且当modified==true时，系统也不会将_value的值作为value属性的只返回给外界。
 					 */
 					this._value = value;
-					var text = this._lastPost = this._valueText = this._lastObserve = dorado.$String.toText(value);
+					var text = this._valueText = this._lastObserve = dorado.$String.toText(value);
 					this.doSetText(text);
 				}
 			},
@@ -325,6 +325,7 @@
 					
 					if (timestamp != this.timestamp) {
 						this.set("value", value);
+						if (this._editorFocused) this._lastPost = this.get("text");
 						this.timestamp = timestamp;
 					}
 					this.setValidationState(state, messages);
@@ -409,9 +410,9 @@
 			if (this._realReadOnly) return;
 			
 			this._focusTime = new Date();
-			this._lastPost = this._lastObserve = this.get("text");
 			
 			this._editorFocused = true;
+			this._lastPost = this._lastObserve = this.get("text");
 			if (this._useBlankText) this.doSetText('');
 			
 			dorado.Toolkits.setDelayedAction(this, "$editObserverTimerId", function() {
@@ -674,7 +675,7 @@
 					var text = dorado.$String.toText(value);
 					this._skipValidateEmpty = true;
 					this.validate(text);
-					this._text = this._lastPost = this._valueText = this._lastObserve = text;
+					this._text = this._valueText = this._lastObserve = text;
 					this.doSetText(text);
 					this.setValidationState(null);
 				}
@@ -685,7 +686,6 @@
 				setter: function(text) {
 					this.validate(text);
 					this._text = text;
-					if (!this._editorFocused) this._lastPost = text;
 					this.doSetText(text);
 					this.setValidationState(null);
 				}
@@ -1000,7 +1000,7 @@
 					this._skipValidateEmpty = true;
 					this.validate(valueText);
 					this._valueText = valueText;
-					this._text = this._lastPost = this._lastObserve = text;
+					this._text = this._lastObserve = text;
 					this.doSetText(text);
 					this.setValidationState(null);
 				}
@@ -1027,7 +1027,7 @@
 					}
 					this.validate(t);
 					this._text = text;
-					if (!this._editorFocused) this._lastPost = this._lastObserve = text;
+					if (!this._editorFocused) this._lastObserve = text;
 					this.doSetText(t);
 					this.setValidationState(null);
 				}
