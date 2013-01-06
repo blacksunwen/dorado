@@ -438,7 +438,6 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 													
 											if (success) {
 												eventArg.data = result;
-												propertyDef.fireEvent("onLoadData", propertyDef, eventArg);
 												
 												if (propertyDef.get("cacheable")) {
 													result = transferAndReplaceIf(this, propertyDef, result, true);
@@ -448,6 +447,8 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 														newValue: result
 													});
 												}
+												
+												propertyDef.fireEvent("onLoadData", propertyDef, eventArg);
 
 												if (propertyDef.getListenerCount("onGet")) {
 													eventArg = {
