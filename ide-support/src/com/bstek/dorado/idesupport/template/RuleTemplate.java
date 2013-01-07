@@ -23,7 +23,6 @@ import java.util.Set;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
 
-import com.bstek.dorado.common.ClientType;
 import com.bstek.dorado.idesupport.model.ClientEvent;
 
 /**
@@ -48,7 +47,7 @@ public class RuleTemplate {
 	private String icon;
 	private String labelProperty;
 	private boolean autoGenerateId;
-	private int clientTypes = ClientType.DESKTOP;
+	private int clientTypes;
 	private String reserve;
 	private boolean deprecated;
 

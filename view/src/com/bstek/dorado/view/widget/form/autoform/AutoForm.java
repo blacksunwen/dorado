@@ -18,8 +18,10 @@ import java.util.Properties;
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.IdeProperty;
+import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
+import com.bstek.dorado.common.ClientType;
 import com.bstek.dorado.data.type.EntityDataType;
 import com.bstek.dorado.view.annotation.ComponentReference;
 import com.bstek.dorado.view.annotation.Widget;
@@ -36,6 +38,7 @@ import com.bstek.dorado.view.widget.form.FormElementLabelPosition;
  */
 @Widget(name = "AutoForm", category = "Form", dependsPackage = "base-widget")
 @ClientObject(prototype = "dorado.widget.AutoForm", shortTypeName = "AutoForm")
+@XmlNode(clientTypes = { ClientType.DESKTOP, ClientType.TOUCH })
 public class AutoForm extends Control implements FormConfig {
 	private String formProfile;
 	private String dataSet;

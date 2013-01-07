@@ -24,8 +24,6 @@ import java.util.TreeMap;
 import org.apache.commons.collections.map.UnmodifiableMap;
 import org.apache.commons.lang.ArrayUtils;
 
-import com.bstek.dorado.common.ClientType;
-
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2009-11-18
@@ -54,7 +52,7 @@ public class Rule {
 	private String icon;
 	private String labelProperty = "name,id";
 	private boolean autoGenerateId;
-	private int clientTypes = ClientType.DESKTOP;
+	private int clientTypes;
 	private String reserve;
 	private Object userData;
 	private boolean deprecated;

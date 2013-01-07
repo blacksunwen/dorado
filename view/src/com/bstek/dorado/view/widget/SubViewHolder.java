@@ -14,6 +14,8 @@ package com.bstek.dorado.view.widget;
 
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.common.ClientType;
 import com.bstek.dorado.view.annotation.Widget;
 
 /**
@@ -23,6 +25,7 @@ import com.bstek.dorado.view.annotation.Widget;
 @Widget(name = "SubViewHolder", category = "General", dependsPackage = "widget")
 @ClientObject(prototype = "dorado.widget.SubViewHolder",
 		shortTypeName = "SubViewHolder")
+@XmlNode(clientTypes = { ClientType.DESKTOP, ClientType.TOUCH })
 public class SubViewHolder extends Control implements HtmlElement {
 	private String subView;
 

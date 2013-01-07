@@ -12,7 +12,6 @@
 
 package com.bstek.dorado.idesupport.template;
 
-import com.bstek.dorado.common.ClientType;
 import com.bstek.dorado.util.Assert;
 
 /**
@@ -26,7 +25,7 @@ public class ChildTemplate {
 	private boolean aggregated;
 	private boolean ignored;
 	private boolean isPublic = true;
-	private int clientTypes = ClientType.DESKTOP;
+	private int clientTypes;
 	private String reserve;
 
 	public ChildTemplate(String name) {

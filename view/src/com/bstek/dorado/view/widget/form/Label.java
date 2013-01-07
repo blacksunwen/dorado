@@ -13,6 +13,8 @@
 package com.bstek.dorado.view.widget.form;
 
 import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.common.ClientType;
 import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Control;
 
@@ -22,6 +24,7 @@ import com.bstek.dorado.view.widget.Control;
  */
 @Widget(name = "Label", category = "Form", dependsPackage = "base-widget")
 @ClientObject(prototype = "dorado.widget.Label", shortTypeName = "Label")
+@XmlNode(clientTypes = { ClientType.DESKTOP, ClientType.TOUCH })
 public class Label extends Control {
 	private String text;
 

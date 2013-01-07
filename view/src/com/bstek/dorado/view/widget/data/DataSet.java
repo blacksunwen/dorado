@@ -19,6 +19,7 @@ import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
+import com.bstek.dorado.common.ClientType;
 import com.bstek.dorado.data.provider.DataProvider;
 import com.bstek.dorado.data.provider.PagingList;
 import com.bstek.dorado.data.type.DataType;
@@ -36,7 +37,8 @@ import com.bstek.dorado.view.widget.Component;
 @XmlNode(
 		nodeName = "DataSet",
 		definitionType = "com.bstek.dorado.view.config.definition.DataSetDefinition",
-		parser = "spring:dorado.dataSetParser")
+		parser = "spring:dorado.dataSetParser", clientTypes = {
+				ClientType.DESKTOP, ClientType.TOUCH })
 @ClientObject(prototype = "dorado.widget.DataSet", shortTypeName = "DataSet",
 		properties = @ClientProperty(propertyName = "data",
 				outputter = "spring:dorado.dataSetDataPropertyOutputter"))

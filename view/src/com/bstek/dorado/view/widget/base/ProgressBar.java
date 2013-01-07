@@ -14,6 +14,8 @@ package com.bstek.dorado.view.widget.base;
 
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.common.ClientType;
 import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Control;
 
@@ -25,6 +27,7 @@ import com.bstek.dorado.view.widget.Control;
 		dependsPackage = "base-widget")
 @ClientObject(prototype = "dorado.widget.ProgressBar",
 		shortTypeName = "ProgressBar")
+@XmlNode(clientTypes = { ClientType.DESKTOP, ClientType.TOUCH })
 public class ProgressBar extends Control {
 	private float minValue;
 	private float maxValue = 100;

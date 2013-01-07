@@ -14,6 +14,8 @@ package com.bstek.dorado.view.widget;
 
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.IdeProperty;
+import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.common.ClientType;
 import com.bstek.dorado.view.annotation.Widget;
 
 /**
@@ -26,6 +28,7 @@ import com.bstek.dorado.view.annotation.Widget;
 @ClientObject(prototype = "dorado.widget.HtmlContainer",
 		shortTypeName = "HtmlContainer",
 		outputter = "spring:dorado.htmlContainerOutputter")
+@XmlNode(clientTypes = { ClientType.DESKTOP, ClientType.TOUCH })
 public class HtmlContainer extends Container {
 	private String content;
 	private String contentFile;

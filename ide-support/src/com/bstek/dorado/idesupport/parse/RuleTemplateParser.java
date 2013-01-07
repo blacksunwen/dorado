@@ -109,8 +109,11 @@ public class RuleTemplateParser extends ConfigurableDispatchableXmlParser {
 			properties.put("parents", parentList.toArray(new RuleTemplate[0]));
 		}
 
-		String clientTypes = (String) properties.remove("clientTypes");
-		ruleTemplate.setClientTypes(ClientType.parseClientTypes(clientTypes));
+		String clientTypesText = (String) properties.remove("clientTypes");
+		int clientTypes = ClientType.parseClientTypes(clientTypesText);
+		if (clientTypes > 0) {
+			ruleTemplate.setClientTypes(clientTypes);
+		}
 
 		BeanUtils.copyProperties(ruleTemplate, properties);
 

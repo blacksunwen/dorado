@@ -35,8 +35,11 @@ public class ClientEventParser extends ConfigurableDispatchableXmlParser {
 		ClientEvent event = new ClientEvent();
 		Map<String, Object> properties = this.parseProperties(element, context);
 
-		String clientTypes = (String) properties.remove("clientTypes");
-		event.setClientTypes(ClientType.parseClientTypes(clientTypes));
+		String clientTypesText = (String) properties.remove("clientTypes");
+		int clientTypes = ClientType.parseClientTypes(clientTypesText);
+		if (clientTypes > 0) {
+			event.setClientTypes(clientTypes);
+		}
 
 		BeanUtils.copyProperties(event, properties);
 		return event;

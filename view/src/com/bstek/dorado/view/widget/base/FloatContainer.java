@@ -15,6 +15,8 @@ package com.bstek.dorado.view.widget.base;
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.IdeProperty;
+import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.common.ClientType;
 import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Container;
 import com.bstek.dorado.view.widget.FloatControl;
@@ -32,6 +34,7 @@ import com.bstek.dorado.view.widget.ModalType;
 		dependsPackage = "base-widget")
 @ClientObject(prototype = "dorado.widget.FloatContainer",
 		shortTypeName = "FloatContainer")
+@XmlNode(clientTypes = { ClientType.DESKTOP, ClientType.TOUCH })
 public class FloatContainer extends Container implements FloatControl {
 	private FloatControlAnimateType animateType = FloatControlAnimateType.zoom;
 	private FloatControlAnimateType showAnimateType;

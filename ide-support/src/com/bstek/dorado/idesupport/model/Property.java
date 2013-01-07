@@ -16,8 +16,6 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.bstek.dorado.common.ClientType;
-
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2009-11-18
@@ -35,7 +33,7 @@ public class Property {
 	private CompositeType compositeType = CompositeType.Unsupport;
 	private Map<String, Property> properties;
 	private Property parentProperty;
-	private int clientTypes = ClientType.DESKTOP;
+	private int clientTypes;
 	private String reserve;
 	private Object userData;
 	private boolean deprecated;

@@ -84,8 +84,11 @@ public class ChildTemplateParser extends ConfigurableDispatchableXmlParser {
 
 		ChildTemplate child = new ChildTemplate(name);
 
-		String clientTypes = (String) properties.remove("clientTypes");
-		child.setClientTypes(ClientType.parseClientTypes(clientTypes));
+		String clientTypesText = (String) properties.remove("clientTypes");
+		int clientTypes = ClientType.parseClientTypes(clientTypesText);
+		if (clientTypes > 0) {
+			child.setClientTypes(clientTypes);
+		}
 
 		BeanUtils.copyProperties(child, properties);
 		return child;

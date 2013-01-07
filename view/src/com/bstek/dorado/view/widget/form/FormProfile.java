@@ -17,6 +17,8 @@ import java.util.Properties;
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.IdeProperty;
+import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.common.ClientType;
 import com.bstek.dorado.view.annotation.ComponentReference;
 import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Align;
@@ -29,6 +31,7 @@ import com.bstek.dorado.view.widget.Component;
 @Widget(name = "FormProfile", category = "Form", dependsPackage = "base-widget")
 @ClientObject(prototype = "dorado.widget.FormProfile",
 		shortTypeName = "FormProfile")
+@XmlNode(clientTypes = { ClientType.DESKTOP, ClientType.TOUCH })
 public class FormProfile extends Component implements FormConfig {
 	private String width;
 	private String height;

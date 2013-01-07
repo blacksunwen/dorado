@@ -117,8 +117,13 @@ public class ClientEventRegistry {
 							type, clientEvent.name(), signature);
 					clientEventRegisterInfo.setDeprecated(clientEvent
 							.deprecated());
-					clientEventRegisterInfo.setClientTypes(ClientType
-							.parseClientTypes(clientEvent.clientTypes()));
+
+					int clientTypes = ClientType.parseClientTypes(clientEvent
+							.clientTypes());
+					if (clientTypes > 0) {
+						clientEventRegisterInfo.setClientTypes(clientTypes);
+					}
+
 					ClientEventRegistry
 							.registerClientEvent(clientEventRegisterInfo);
 				}

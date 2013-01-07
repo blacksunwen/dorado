@@ -15,7 +15,9 @@ package com.bstek.dorado.view.widget.form;
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.IdeProperty;
+import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
+import com.bstek.dorado.common.ClientType;
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.data.type.property.Mapping;
 import com.bstek.dorado.view.annotation.Widget;
@@ -27,6 +29,7 @@ import com.bstek.dorado.view.annotation.Widget;
 @Widget(name = "TextEditor", category = "Form", dependsPackage = "base-widget")
 @ClientObject(prototype = "dorado.widget.TextEditor",
 		shortTypeName = "TextEditor")
+@XmlNode(clientTypes = { ClientType.DESKTOP, ClientType.TOUCH })
 public class TextEditor extends AbstractTextEditor {
 	@Deprecated
 	private boolean password;

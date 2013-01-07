@@ -138,8 +138,11 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 			ruleTemplate.setIcon(xmlNodeInfo.getIcon());
 		}
 
-		ruleTemplate.setClientTypes(ClientType.parseClientTypes(xmlNodeInfo
-				.getClientTypes()));
+		int clientTypes = ClientType.parseClientTypes(xmlNodeInfo
+				.getClientTypes());
+		if (clientTypes > 0) {
+			ruleTemplate.setClientTypes(clientTypes);
+		}
 
 		if (!ruleTemplate.isDeprecated() && xmlNodeInfo.isDeprecated()) {
 			ruleTemplate.setDeprecated(true);
@@ -311,6 +314,14 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 		if (!xmlNodeInfo.isInheritable() && xmlNode.inheritable()) {
 			xmlNodeInfo.setInheritable(true);
 		}
+
+		int[] clientTypes = xmlNode.clientTypes();
+		if (clientTypes != null) {
+			if (!(clientTypes.length == 0 || (clientTypes.length == 1 && clientTypes[0] == ClientType.DESKTOP))) {
+				xmlNodeInfo.setClientTypes(clientTypes);
+			}
+		}
+
 		if (!xmlNodeInfo.isDeprecated() && xmlNode.deprecated()) {
 			xmlNodeInfo.setDeprecated(true);
 		}
@@ -554,8 +565,11 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 								initializerContext);
 					}
 
-					propertyTemplate.setClientTypes(ClientType
-							.parseClientTypes(xmlProperty.clientTypes()));
+					int clientTypes = ClientType.parseClientTypes(xmlProperty
+							.clientTypes());
+					if (clientTypes > 0) {
+						propertyTemplate.setClientTypes(clientTypes);
+					}
 					propertyTemplate.setDeprecated(xmlProperty.deprecated());
 				} else if (EntityUtils.isSimpleType(propertyType)
 						|| propertyType.equals(Class.class)

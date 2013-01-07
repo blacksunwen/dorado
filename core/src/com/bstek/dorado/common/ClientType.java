@@ -34,7 +34,7 @@ public final class ClientType {
 	}
 
 	public static boolean supportsDesktop(int types) {
-		return (types & DESKTOP) != 0;
+		return types == 0 || (types & DESKTOP) != 0;
 	}
 
 	public static boolean supportsTouch(int types) {

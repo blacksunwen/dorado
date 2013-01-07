@@ -19,8 +19,10 @@ import com.bstek.dorado.annotation.ClientEvents;
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.IdeProperty;
+import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
+import com.bstek.dorado.common.ClientType;
 import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Control;
 import com.bstek.dorado.view.widget.InnerElementList;
@@ -31,6 +33,7 @@ import com.bstek.dorado.view.widget.InnerElementList;
  */
 @Widget(name = "CardBook", category = "General", dependsPackage = "base-widget")
 @ClientObject(prototype = "dorado.widget.CardBook", shortTypeName = "CardBook")
+@XmlNode(clientTypes = { ClientType.DESKTOP, ClientType.TOUCH })
 @ClientEvents({ @ClientEvent(name = "beforeCurrentChange"),
 		@ClientEvent(name = "onCurrentChange") })
 public class CardBook extends Control {

@@ -15,8 +15,10 @@ package com.bstek.dorado.view.widget.form;
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.IdeProperty;
+import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlNodeWrapper;
 import com.bstek.dorado.annotation.XmlSubNode;
+import com.bstek.dorado.common.ClientType;
 import com.bstek.dorado.view.annotation.ComponentReference;
 import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Align;
@@ -31,6 +33,7 @@ import com.bstek.dorado.view.widget.datacontrol.PropertyDataControl;
 @Widget(name = "FormElement", category = "Form", dependsPackage = "base-widget")
 @ClientObject(prototype = "dorado.widget.FormElement",
 		shortTypeName = "FormElement")
+@XmlNode(clientTypes = { ClientType.DESKTOP, ClientType.TOUCH })
 public class FormElement extends Control implements FormConfig,
 		PropertyDataControl {
 	@Deprecated
