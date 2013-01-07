@@ -141,7 +141,11 @@ public abstract class ComponentTypeRegister implements InitializingBean,
 		if (widget != null) {
 			registerInfo.setCategory(widget.category());
 		}
-		registerInfo.setClientTypes(ClientType.parseClientTypes(clientTypes));
+
+		int clientTypesValue = ClientType.parseClientTypes(clientTypes);
+		if (clientTypesValue > 0) {
+			registerInfo.setClientTypes(clientTypesValue);
+		}
 		return registerInfo;
 	}
 

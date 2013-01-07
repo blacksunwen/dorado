@@ -14,7 +14,6 @@ package com.bstek.dorado.idesupport.model;
 
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
-import com.bstek.dorado.common.ClientType;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -27,7 +26,7 @@ import com.bstek.dorado.common.ClientType;
 public class ClientEvent {
 	private String name;
 	private String[] parameters;
-	private int clientTypes = ClientType.DESKTOP;
+	private int clientTypes;
 	private String reserve;
 	private Object userData;
 	private boolean deprecated;

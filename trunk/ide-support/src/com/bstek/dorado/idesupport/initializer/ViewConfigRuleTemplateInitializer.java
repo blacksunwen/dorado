@@ -18,6 +18,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.bstek.dorado.common.ClientType;
 import com.bstek.dorado.idesupport.RuleTemplateBuilder;
 import com.bstek.dorado.idesupport.RuleTemplateBuilderAware;
 import com.bstek.dorado.idesupport.RuleTemplateManager;
@@ -38,6 +39,7 @@ import com.bstek.dorado.view.registry.VirtualEventDescriptor;
 import com.bstek.dorado.view.registry.VirtualPropertyAvialableAt;
 import com.bstek.dorado.view.registry.VirtualPropertyDescriptor;
 import com.bstek.dorado.view.widget.Component;
+import com.bstek.dorado.view.widget.Control;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -45,6 +47,9 @@ import com.bstek.dorado.view.widget.Component;
  */
 public class ViewConfigRuleTemplateInitializer implements
 		RuleTemplateInitializer, RuleTemplateBuilderAware {
+	private static final int DEFAULT_INVISIBLE_COMPONENT_CLIENT_TYPE = ClientType
+			.parseClientTypes(new int[] { ClientType.DESKTOP, ClientType.TOUCH });
+
 	private LayoutTypeRegistry layoutTypeRegistry;
 	private ComponentTypeRegistry componentTypeRegistry;
 	private RuleTemplateBuilder ruleTemplateBuilder;
@@ -113,6 +118,12 @@ public class ViewConfigRuleTemplateInitializer implements
 				componentRuleTemplate.setAutoInitialize(false);
 				componentRuleTemplates.add(componentRuleTemplate);
 				isNew = true;
+			}
+
+			if (!Control.class.isAssignableFrom(classType)
+					&& componentRuleTemplate.getClientTypes() == 0) {
+				componentRuleTemplate
+						.setClientTypes(DEFAULT_INVISIBLE_COMPONENT_CLIENT_TYPE);
 			}
 
 			componentRuleTemplate.setSortFactor(++sortFactor);

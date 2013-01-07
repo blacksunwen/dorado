@@ -57,9 +57,11 @@ public class PropertyParser extends ConfigurableDispatchableXmlParser {
 					parserContext.getRuleTemplateManager(), ruleName, prop));
 		}
 
-		String clientTypes = (String) properties.remove("clientTypes");
-		propertyTemplate.setClientTypes(ClientType
-				.parseClientTypes(clientTypes));
+		String clientTypesText = (String) properties.remove("clientTypes");
+		int clientTypes = ClientType.parseClientTypes(clientTypesText);
+		if (clientTypes > 0) {
+			propertyTemplate.setClientTypes(clientTypes);
+		}
 
 		String compositeTypeConfig = (String) properties
 				.remove("compositeType");

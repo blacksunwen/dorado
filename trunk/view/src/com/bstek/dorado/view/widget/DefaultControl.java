@@ -13,6 +13,7 @@
 package com.bstek.dorado.view.widget;
 
 import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.common.ClientType;
 import com.bstek.dorado.view.annotation.Widget;
 
 /**
@@ -20,6 +21,7 @@ import com.bstek.dorado.view.annotation.Widget;
  * @since 2011-12-27
  */
 @Widget(name = "Control", category = "General", dependsPackage = "widget")
-@XmlNode(nodeName = "Control")
+@XmlNode(nodeName = "Control", clientTypes = { ClientType.DESKTOP,
+		ClientType.TOUCH })
 public class DefaultControl extends Control {
 }

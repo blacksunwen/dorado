@@ -122,8 +122,9 @@
 			if (doms) {
                 try {
                     if (frame.isSameDomain()) {
-                        if (doms.iframe.contentWindow.dorado)
-                            doms.iframe.contentWindow.dorado.Exception.IGNORE_ALL_EXCEPTIONS = true;
+                        if (doms.iframe.contentWindow.dorado) {
+							doms.iframe.contentWindow.dorado.Exception.IGNORE_ALL_EXCEPTIONS = true;
+						}
                         doms.iframe.contentWindow.document.write('');
                         if(dorado.Browser.msie){
                             CollectGarbage();

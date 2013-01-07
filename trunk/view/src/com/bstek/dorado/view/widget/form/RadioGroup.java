@@ -19,8 +19,10 @@ import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
+import com.bstek.dorado.common.ClientType;
 import com.bstek.dorado.view.annotation.Widget;
 
 /**
@@ -31,6 +33,7 @@ import com.bstek.dorado.view.annotation.Widget;
 @ClientObject(prototype = "dorado.widget.RadioGroup",
 		shortTypeName = "RadioGroup")
 @ClientEvents({ @ClientEvent(name = "onValueChange") })
+@XmlNode(clientTypes = { ClientType.DESKTOP, ClientType.TOUCH })
 public class RadioGroup extends AbstractDataEditor {
 	private Object value;
 	private RadioGroupLayout layout = RadioGroupLayout.flow;

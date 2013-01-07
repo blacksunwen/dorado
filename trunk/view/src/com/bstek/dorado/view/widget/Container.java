@@ -21,6 +21,7 @@ import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
+import com.bstek.dorado.common.ClientType;
 import com.bstek.dorado.util.proxy.ChildrenListSupport;
 import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.layout.Layout;
@@ -34,7 +35,8 @@ import com.bstek.dorado.view.widget.layout.Layout;
 @Widget(name = "Container", category = "General", dependsPackage = "widget")
 @XmlNode(
 		definitionType = "com.bstek.dorado.view.config.definition.ContainerDefinition",
-		parser = "spring:dorado.containerParser")
+		parser = "spring:dorado.containerParser", clientTypes = {
+				ClientType.DESKTOP, ClientType.TOUCH })
 @ClientObject(prototype = "dorado.widget.Container",
 		shortTypeName = "Container",
 		outputter = "spring:dorado.containerOutputter")
