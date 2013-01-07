@@ -175,6 +175,9 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 		if (Component.class.isAssignableFrom(type)) {
 			Widget widget = type.getAnnotation(Widget.class);
 			if (widget != null) {
+				if (!ruleTemplate.getName().equals(widget.name())) {
+					ruleTemplate.setLabel(widget.name());
+				}
 				if (ArrayUtils.indexOf(type.getDeclaredAnnotations(), widget) >= 0) {
 					if (StringUtils.isEmpty(ruleTemplate.getCategory())) {
 						ruleTemplate.setCategory(widget.category());
