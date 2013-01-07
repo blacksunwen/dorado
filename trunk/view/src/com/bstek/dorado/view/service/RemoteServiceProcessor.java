@@ -196,7 +196,7 @@ public class RemoteServiceProcessor extends DataServiceProcessorSupport {
 				logger.error(e.getMessage());
 			}
 			throw new IllegalArgumentException(resourceManager.getString(
-					"common/noMatchingMethodError", serviceBean.getClass()
+					"dorado.common/noMatchingMethodError", serviceBean.getClass()
 							.getName(), methodName));
 		}
 	}

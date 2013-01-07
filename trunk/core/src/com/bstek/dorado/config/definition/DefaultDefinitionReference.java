@@ -57,7 +57,7 @@ public class DefaultDefinitionReference<T extends Definition> implements
 		T definition = definitionManager.getDefinition(name);
 		if (definition == null) {
 			throw new IllegalArgumentException(resourceManager.getString(
-					"common/unknownDefinition", name));
+					"dorado.common/unknownDefinition", name));
 		}
 		return definition;
 	}

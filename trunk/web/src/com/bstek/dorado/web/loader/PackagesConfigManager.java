@@ -95,7 +95,7 @@ public class PackagesConfigManager {
 						if (packages.get(depends) == null) {
 							throw new IllegalArgumentException(
 									getResourceManager().getString(
-											"common/unknownDependsPackage",
+											"dorado.common/unknownDependsPackage",
 											name, depends));
 						}
 					}
@@ -105,7 +105,7 @@ public class PackagesConfigManager {
 						if (dependedPackage == null) {
 							throw new IllegalArgumentException(
 									getResourceManager().getString(
-											"common/unknownDependedByPackage",
+											"dorado.common/unknownDependedByPackage",
 											name, dependedBy));
 						}
 						dependedPackage.getDepends().add(name);

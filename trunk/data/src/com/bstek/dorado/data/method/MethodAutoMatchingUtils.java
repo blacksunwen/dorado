@@ -212,12 +212,12 @@ public abstract class MethodAutoMatchingUtils {
 					int tmpMatchingRate = tmpMethodDescriptor.getMatchingRate();
 					if (matchingRate == tmpMatchingRate) {
 						String detail = getExceptionMessage(
-								"common/matchingMethodByTypesDetail", methods,
-								requiredTypes, exactTypes, optionalTypes,
-								returnType);
+								"dorado.common/matchingMethodByTypesDetail",
+								methods, requiredTypes, exactTypes,
+								optionalTypes, returnType);
 						throw new MoreThanOneMethodsMatchsException(
 								resourceManager
-										.getString("common/tooMoreMatchingMethodsErrorHeader"),
+										.getString("dorado.common/tooMoreMatchingMethodsErrorHeader"),
 								detail);
 					} else if (tmpMatchingRate < matchingRate) {
 						continue;
@@ -229,11 +229,11 @@ public abstract class MethodAutoMatchingUtils {
 
 		if (methodDescriptor == null) {
 			String detail = getExceptionMessage(
-					"common/matchingMethodByTypesDetail", methods,
+					"dorado.common/matchingMethodByTypesDetail", methods,
 					requiredTypes, exactTypes, optionalTypes, returnType);
 			throw new MethodAutoMatchingException(
 					resourceManager
-							.getString("common/noMatchingMethodErrorHeader"),
+							.getString("dorado.common/noMatchingMethodErrorHeader"),
 					detail);
 		}
 		return methodDescriptor;
@@ -532,12 +532,12 @@ public abstract class MethodAutoMatchingUtils {
 					int tmpMatchingRate = tmpMethodDescriptor.getMatchingRate();
 					if (matchingRate == tmpMatchingRate) {
 						String detail = getExceptionMessage(
-								"common/matchingMethodByNamesDetail", methods,
-								requiredParameterNames, optionalParameterNames,
-								extraParameterNames);
+								"dorado.common/matchingMethodByNamesDetail",
+								methods, requiredParameterNames,
+								optionalParameterNames, extraParameterNames);
 						throw new MethodAutoMatchingException(
 								resourceManager
-										.getString("common/tooMoreMatchingMethodsErrorHeader"),
+										.getString("dorado.common/tooMoreMatchingMethodsErrorHeader"),
 								detail);
 					} else if (tmpMatchingRate < matchingRate) {
 						continue;
@@ -549,12 +549,12 @@ public abstract class MethodAutoMatchingUtils {
 
 		if (methodDescriptor == null) {
 			String detail = getExceptionMessage(
-					"common/matchingMethodByNamesDetail", methods,
+					"dorado.common/matchingMethodByNamesDetail", methods,
 					requiredParameterNames, optionalParameterNames,
 					extraParameterNames);
 			throw new MethodAutoMatchingException(
 					resourceManager
-							.getString("common/noMatchingMethodErrorHeader"),
+							.getString("dorado.common/noMatchingMethodErrorHeader"),
 					detail);
 		}
 		return methodDescriptor;
@@ -856,7 +856,7 @@ public abstract class MethodAutoMatchingUtils {
 				// do nothing
 			}
 			String message = resourceManager.getString(
-					"common/unsupportedArgType", type.toString());
+					"dorado.common/unsupportedArgType", type.toString());
 			throw new IllegalArgumentException(message);
 		}
 	}

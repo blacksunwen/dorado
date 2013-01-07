@@ -121,7 +121,7 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 				interceptor.getClass(), methodName);
 		if (methods.length == 0) {
 			throw new NoSuchMethodException(resourceManager.getString(
-					"common/methodNotFoundInInterceptor", interceptorName,
+					"dorado.common/methodNotFoundInInterceptor", interceptorName,
 					methodName));
 		}
 
@@ -185,7 +185,7 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 			logger.error(e.getMessage());
 		}
 		throw new IllegalArgumentException(resourceManager.getString(
-				"common/noMatchingMethodError", interceptor.getClass()
+				"dorado.common/noMatchingMethodError", interceptor.getClass()
 						.getName(), methodName));
 	}
 

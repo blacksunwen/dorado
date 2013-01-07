@@ -52,11 +52,11 @@ public class LengthValidator extends BaseValidator {
 		if (value instanceof String) {
 			int len = ((String) value).length();
 			if (minLength > 0 && len < minLength) {
-				return resourceManager.getString("data/errorContentTooShort",
+				return resourceManager.getString("dorado.data/errorContentTooShort",
 						minLength);
 			}
 			if (maxLength > 0 && len > maxLength) {
-				return resourceManager.getString("data/errorContentTooLong",
+				return resourceManager.getString("dorado.data/errorContentTooLong",
 						maxLength);
 			}
 		}

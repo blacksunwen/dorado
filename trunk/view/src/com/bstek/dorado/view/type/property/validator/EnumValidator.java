@@ -52,7 +52,7 @@ public class EnumValidator extends BaseValidator {
 			return null;
 		}
 		if (enumValues.indexOf(value) < 0) {
-			return resourceManager.getString("data/errorValueOutOfEnumRange");
+			return resourceManager.getString("dorado.data/errorValueOutOfEnumRange");
 		}
 		return null;
 	}
