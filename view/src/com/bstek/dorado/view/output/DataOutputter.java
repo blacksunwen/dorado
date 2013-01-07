@@ -230,7 +230,7 @@ public class DataOutputter implements Outputter, PropertyOutputter {
 		Stack<Object> dataObjectStack = context.getDataObjectStack();
 		if (dataObjectStack.contains(object)) {
 			Exception e = new IllegalArgumentException(
-					resourceManager.getString("common/circuitReferenceError",
+					resourceManager.getString("dorado.common/circuitReferenceError",
 							object.toString()));
 			logger.error(e, e);
 			json.value(null);

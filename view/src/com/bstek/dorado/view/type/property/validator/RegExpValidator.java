@@ -88,7 +88,7 @@ public class RegExpValidator extends BaseValidator {
 					&& match(whiteRegExp, s);
 		}
 		if (valid) {
-			return resourceManager.getString("data/errorBadFormat", s);
+			return resourceManager.getString("dorado.data/errorBadFormat", s);
 		}
 		return null;
 	}

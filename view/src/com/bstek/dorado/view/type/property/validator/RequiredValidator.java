@@ -69,7 +69,7 @@ public class RequiredValidator extends BaseValidator {
 		}
 
 		if (!valid) {
-			return resourceManager.getString("data/errorContentRequired");
+			return resourceManager.getString("dorado.data/errorContentRequired");
 		}
 		return null;
 	}

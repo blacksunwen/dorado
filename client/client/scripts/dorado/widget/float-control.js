@@ -1,15 +1,14 @@
 /*
  * This file is part of Dorado 7.x (http://dorado7.bsdn.org).
- * 
+ *
  * Copyright (c) 2002-2012 BSTEK Corp. All rights reserved.
- * 
- * This file is dual-licensed under the AGPLv3 (http://www.gnu.org/licenses/agpl-3.0.html) 
+ *
+ * This file is dual-licensed under the AGPLv3 (http://www.gnu.org/licenses/agpl-3.0.html)
  * and BSDN commercial (http://www.bsdn.org/licenses) licenses.
- * 
+ *
  * If you are unsure which license is appropriate for your use, please contact the sales department
  * at http://www.bstek.com/contact.
  */
-
 dorado._queueObject = {};
 
 dorado.queue = function(namespace, fn) {
@@ -93,7 +92,7 @@ dorado.dequeue = function(namespace) {
 			
 			visible: {
 				defaultValue: false,
-				setter : function(visible) {
+				setter: function(visible) {
 					if (visible == null) visible = !this._floating;
 					$invokeSuper.call(this, [visible]);
 				}
@@ -335,14 +334,14 @@ dorado.dequeue = function(namespace) {
 			 * @event
 			 */
 			onShow: {},
-
-            /**
-             * 在onShow的动画完成之后触发。
-             * @param {Object} self 事件的发起者，即控件本身。
-             * @param {Object} arg 事件参数。
-             * @event
-             */
-            afterShow: {},
+			
+			/**
+			 * 在onShow的动画完成之后触发。
+			 * @param {Object} self 事件的发起者，即控件本身。
+			 * @param {Object} arg 事件参数。
+			 * @event
+			 */
+			afterShow: {},
 			
 			/**
 			 * 在隐藏之前触发。
@@ -361,15 +360,15 @@ dorado.dequeue = function(namespace) {
 			 * @event
 			 */
 			onHide: {},
-
-            /**
-             * 在onHide的动画完成之后触发。
-             * @param {Object} self 事件的发起者，即控件本身。
-             * @param {Object} arg 事件参数。
-             * @event
-             */
-            afterHide: {},
-
+			
+			/**
+			 * 在onHide的动画完成之后触发。
+			 * @param {Object} self 事件的发起者，即控件本身。
+			 * @param {Object} arg 事件参数。
+			 * @event
+			 */
+			afterHide: {},
+			
 			/**
 			 * 在组件关闭之前触发。
 			 * @param {Object} self 事件的发起者，即组件本身。
@@ -439,11 +438,11 @@ dorado.dequeue = function(namespace) {
 					options[attr] = control["_" + attr];
 				}
 			}
-
-            if (!options.overflowHandler && control.doHandleOverflow) {
-                options.overflowHandler = $scopify(control, control.doHandleOverflow);
-            }
-
+			
+			if (!options.overflowHandler && control.doHandleOverflow) {
+				options.overflowHandler = $scopify(control, control.doHandleOverflow);
+			}
+			
 			dorado.queue(control._id + SHOWHIDE_SUFFIX, function() {
 				options = options || {};
 				if (!control._rendered) {
@@ -462,7 +461,16 @@ dorado.dequeue = function(namespace) {
 				}
 				
 				if (control._continuedFocus) {
-					control._focusParent = dorado.widget.getFocusedControl();
+					var focusParent = dorado.widget.getFocusedControl();
+					var parent = focusParent;
+					while (parent) {
+						if (parent == control) {
+							focusParent = parent.get("focusParent");
+							break;
+						}
+						parent = parent.get("focusParent");
+					}
+					control._focusParent = focusParent;
 				}
 				control.doShow.apply(control, [options]);
 			});
@@ -479,11 +487,11 @@ dorado.dequeue = function(namespace) {
 			var control = this, dom = control.getDom(), anim = true, handleModal = true;
 			
 			//移动到屏幕之外，避免对Document的宽高产生影响
-            $fly(dom).css({
-                display: "",
-                visibility: "hidden",
-                left: -99999,
-                top: -99999
+			$fly(dom).css({
+				display: "",
+				visibility: "hidden",
+				left: -99999,
+				top: -99999
 			});
 			
 			var arg = {};
@@ -499,9 +507,12 @@ dorado.dequeue = function(namespace) {
 			}
 			
 			control._visible = true;
-            control.setActualVisible(true);
-            $fly(dom).css({ display: "", visibility: "hidden" });
-
+			control.setActualVisible(true);
+			$fly(dom).css({
+				display: "",
+				visibility: "hidden"
+			});
+			
 			var position = control.getShowPosition(options);
 			
 			options.position = position;
@@ -548,13 +559,13 @@ dorado.dequeue = function(namespace) {
 					visibility: "",
 					display: ""
 				}).bringToFront();
-
+				
 				if (control._focusAfterShow || control._modal) {
 					control.setFocus();
 				}
 				
 				control.fireEvent("afterShow", control);
-
+				
 				if (control._shadowMode != "none" && (!dorado.Browser.msie || dorado.Browser.version >= 9)) {
 					$fly(dom).shadow({
 						mode: control._shadowMode || "sides"
@@ -611,7 +622,7 @@ dorado.dequeue = function(namespace) {
 				
 				result = $DomUtils.locateIn(dom, options);
 			}
-
+			
 			return result;
 		},
 		
@@ -638,8 +649,8 @@ dorado.dequeue = function(namespace) {
 					dorado.dequeue(control._id + SHOWHIDE_SUFFIX);
 					return;
 				} else {
-                    if (control.doBeforeHide) control.doBeforeHide();
-                }
+					if (control.doBeforeHide) control.doBeforeHide();
+				}
 				
 				var focused = control._focused;
 				if (focused) {
@@ -707,13 +718,13 @@ dorado.dequeue = function(namespace) {
 				visibility: "hidden",
 				display: "none"
 			});
-            control._currentVisible = false;
-            control.fireEvent("afterHide", control);
+			control._currentVisible = false;
+			control.fireEvent("afterHide", control);
 			dorado.dequeue(control._id + SHOWHIDE_SUFFIX);
 			//log.debug("dorado.dequeue after hide：" + control._id);
 			
 			if (control._continuedFocus) {
-				control._focusParent = dorado.widget.getFocusedControl();
+				control._focusParent = null;
 			}
 		}
 	});
@@ -805,52 +816,52 @@ dorado.dequeue = function(namespace) {
 				}));
 			}
 		},
-
-        flip: {
-            show: function(options) {
-                var control = this, dom = control._dom;
-                jQuery(dom).css("visibility", "").flipIn(jQuery.extend(options, {
-                    duration: options.animateDuration || 200,
-                    easing: options.animateEasing,
-                    complete: function() {
-                        control.doAfterShow.apply(control, [options]);
-                    }
-                }));
-            },
-            hide: function(options) {
-                var control = this, dom = control._dom;
-                jQuery(dom).flipOut(jQuery.extend(options, {
-                    duration: options.animateDuration || 200,
-                    easing: options.animateEasing,
-                    complete: function() {
-                        control.doAfterHide.apply(control, arguments);
-                    }
-                }));
-            }
-        },
-
-        mordernZoom: {
-            show: function(options) {
-                var control = this, dom = control._dom;
-                jQuery(dom).css("visibility", "").mordernZoomIn(jQuery.extend(options, {
-                    duration: options.animateDuration || 200,
-                    easing: options.animateEasing,
-                    complete: function() {
-                        control.doAfterShow.apply(control, [options]);
-                    }
-                }));
-            },
-            hide: function(options) {
-                var control = this, dom = control._dom;
-                jQuery(dom).mordernZoomOut(jQuery.extend(options, {
-                    duration: options.animateDuration || 200,
-                    easing: options.animateEasing,
-                    complete: function() {
-                        control.doAfterHide.apply(control, arguments);
-                    }
-                }));
-            }
-        },
+		
+		flip: {
+			show: function(options) {
+				var control = this, dom = control._dom;
+				jQuery(dom).css("visibility", "").flipIn(jQuery.extend(options, {
+					duration: options.animateDuration || 200,
+					easing: options.animateEasing,
+					complete: function() {
+						control.doAfterShow.apply(control, [options]);
+					}
+				}));
+			},
+			hide: function(options) {
+				var control = this, dom = control._dom;
+				jQuery(dom).flipOut(jQuery.extend(options, {
+					duration: options.animateDuration || 200,
+					easing: options.animateEasing,
+					complete: function() {
+						control.doAfterHide.apply(control, arguments);
+					}
+				}));
+			}
+		},
+		
+		mordernZoom: {
+			show: function(options) {
+				var control = this, dom = control._dom;
+				jQuery(dom).css("visibility", "").mordernZoomIn(jQuery.extend(options, {
+					duration: options.animateDuration || 200,
+					easing: options.animateEasing,
+					complete: function() {
+						control.doAfterShow.apply(control, [options]);
+					}
+				}));
+			},
+			hide: function(options) {
+				var control = this, dom = control._dom;
+				jQuery(dom).mordernZoomOut(jQuery.extend(options, {
+					duration: options.animateDuration || 200,
+					easing: options.animateEasing,
+					complete: function() {
+						control.doAfterHide.apply(control, arguments);
+					}
+				}));
+			}
+		},
 		
 		slide: {
 			show: function(options) {

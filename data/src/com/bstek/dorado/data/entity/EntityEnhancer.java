@@ -371,7 +371,7 @@ public abstract class EntityEnhancer {
 		String name = propertyDef.getName();
 		if (propertyPath.equals(name) || propertyPath.startsWith(name + '.')) {
 			throw new IllegalArgumentException(
-					resourceManager.getString("common/invalidatePropertyPath", name, propertyPath));
+					resourceManager.getString("dorado.common/invalidatePropertyPath", name, propertyPath));
 		}
 	}
 

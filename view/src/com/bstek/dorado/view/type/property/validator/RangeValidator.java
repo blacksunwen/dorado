@@ -78,13 +78,13 @@ public class RangeValidator extends BaseValidator {
 			if (f == minValue
 					&& minValueValidateMode != RangeValidateMode.allowEquals) {
 				invalid = true;
-				subMessage = resourceManager.getString("data/errorOrEqualTo");
+				subMessage = resourceManager.getString("dorado.data/errorOrEqualTo");
 			}
 			if (f < minValue) {
 				invalid = true;
 			}
 			if (invalid) {
-				return resourceManager.getString("data/errorNumberTooLess",
+				return resourceManager.getString("dorado.data/errorNumberTooLess",
 						subMessage, minValue);
 			}
 		}
@@ -93,13 +93,13 @@ public class RangeValidator extends BaseValidator {
 			if (f == maxValue
 					&& maxValueValidateMode != RangeValidateMode.allowEquals) {
 				invalid = true;
-				subMessage = resourceManager.getString("data/errorOrEqualTo");
+				subMessage = resourceManager.getString("dorado.data/errorOrEqualTo");
 			}
 			if (f > maxValue) {
 				invalid = true;
 			}
 			if (invalid) {
-				return resourceManager.getString("data/errorNumberTooGreat",
+				return resourceManager.getString("dorado.data/errorNumberTooGreat",
 						subMessage, maxValue);
 			}
 		}
