@@ -83,7 +83,7 @@ public class MenuButton extends com.bstek.dorado.view.widget.base.Button {
 	@XmlProperty(deprecated = true, ignored = true)
 	@IdeProperty(visible = false)
 	public String getMenu() {
-		throw new UnsupportedOperationException();
+		return null;
 	}
 
 	@Override
