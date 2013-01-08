@@ -39,7 +39,8 @@ public class DatePicker extends Control {
 	private boolean showConfirmButton = true;
 	private boolean showTodayButton = true;
 	private boolean showClearButton = true;
-
+	private String yearMonthFormat;
+	
 	public Date getDate() {
 		return date;
 	}
@@ -83,4 +84,13 @@ public class DatePicker extends Control {
 	public void setShowClearButton(boolean showClearButton) {
 		this.showClearButton = showClearButton;
 	}
+
+	public String getYearMonthFormat() {
+		return yearMonthFormat;
+	}
+
+	public void setYearMonthFormat(String yearMonthFormat) {
+		this.yearMonthFormat = yearMonthFormat;
+	}
+		
 }
