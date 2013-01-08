@@ -48,7 +48,7 @@ public abstract class EngineStartupListenerManager {
 
 	public static synchronized void notifyStartup() throws Exception {
 		for (EngineStartupListener listener : listeners) {
-			logger.info("Fire StartupListener [" + listener.getClass() + "].");
+			logger.info("Fire StartupListener [" + listener + "].");
 			listener.onStartup();
 		}
 		listeners.clear();

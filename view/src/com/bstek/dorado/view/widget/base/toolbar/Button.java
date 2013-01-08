@@ -21,8 +21,7 @@ import com.bstek.dorado.view.annotation.Widget;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-8-9
  */
-@Widget(name = "ToolBarButton", category = "ToolBar",
-		dependsPackage = "base-widget")
+@Widget(category = "ToolBar", dependsPackage = "base-widget")
 @ClientObject(prototype = "dorado.widget.toolbar.ToolBarButton",
 		shortTypeName = "ToolBarButton")
 @XmlNode(nodeName = "ToolBarButton")
@@ -30,7 +29,7 @@ public class Button extends com.bstek.dorado.view.widget.base.Button {
 	private boolean showMenuOnHover;
 	private boolean hideMenuOnMouseLeave = false;
 	private int hideMenuOnMouseLeaveDelay = 300;
-		
+
 	@ClientProperty(escapeValue = "false")
 	public boolean isShowMenuOnHover() {
 		return showMenuOnHover;
@@ -39,7 +38,7 @@ public class Button extends com.bstek.dorado.view.widget.base.Button {
 	public void setShowMenuOnHover(boolean showMenuOnHover) {
 		this.showMenuOnHover = showMenuOnHover;
 	}
-	
+
 	public boolean isHideMenuOnMouseLeave() {
 		return hideMenuOnMouseLeave;
 	}
@@ -47,7 +46,7 @@ public class Button extends com.bstek.dorado.view.widget.base.Button {
 	public void setHideMenuOnMouseLeave(boolean hideMenuOnMouseLeave) {
 		this.hideMenuOnMouseLeave = hideMenuOnMouseLeave;
 	}
-	
+
 	@ClientProperty(escapeValue = "300")
 	public int getHideMenuOnMouseLeaveDelay() {
 		return hideMenuOnMouseLeaveDelay;

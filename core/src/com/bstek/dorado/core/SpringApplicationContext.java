@@ -80,36 +80,6 @@ public abstract class SpringApplicationContext extends SpringContextSupport {
 		}
 	}
 
-	/**
-	 * 创建Dorado Engine内部使用的ApplicationContext。
-	 * 
-	 * @throws Exception
-	 */
-	protected ApplicationContext createApplicationContext() throws Exception {
-		GenericApplicationContext ctx = internalCreateApplicationContext();
-		XmlBeanDefinitionReader xmlReader = new XmlBeanDefinitionReader(ctx);
-
-		String configLocation = Configure.getString(CONFIG_PROPERTY);
-		if (StringUtils.isBlank(configLocation)) {
-			throw new IllegalArgumentException("[" + CONFIG_PROPERTY
-					+ "] undefined.");
-		}
-
-		for (Resource resource : getConfigLocations(configLocation)) {
-			loadBeanDefintiionsFromResource(xmlReader, resource);
-		}
-
-		String extConfigLocation = Configure.getString(EXT_CONFIG_PROPERTY);
-		if (!StringUtils.isBlank(extConfigLocation)) {
-			for (Resource resource : getConfigLocations(extConfigLocation)) {
-				loadBeanDefintiionsFromResource(xmlReader, resource);
-			}
-		}
-
-		ctx.refresh();
-		return ctx;
-	}
-
 	protected GenericApplicationContext internalCreateApplicationContext() {
 		return new GenericXmlApplicationContext();
 	}
@@ -131,7 +101,29 @@ public abstract class SpringApplicationContext extends SpringContextSupport {
 	@Override
 	public ApplicationContext getApplicationContext() throws Exception {
 		if (applicationContext == null) {
-			applicationContext = createApplicationContext();
+			GenericApplicationContext ctx = internalCreateApplicationContext();
+			applicationContext = ctx;
+
+			XmlBeanDefinitionReader xmlReader = new XmlBeanDefinitionReader(ctx);
+
+			String configLocation = Configure.getString(CONFIG_PROPERTY);
+			if (StringUtils.isBlank(configLocation)) {
+				throw new IllegalArgumentException("[" + CONFIG_PROPERTY
+						+ "] undefined.");
+			}
+
+			for (Resource resource : getConfigLocations(configLocation)) {
+				loadBeanDefintiionsFromResource(xmlReader, resource);
+			}
+
+			String extConfigLocation = Configure.getString(EXT_CONFIG_PROPERTY);
+			if (!StringUtils.isBlank(extConfigLocation)) {
+				for (Resource resource : getConfigLocations(extConfigLocation)) {
+					loadBeanDefintiionsFromResource(xmlReader, resource);
+				}
+			}
+
+			ctx.refresh();
 		}
 		return applicationContext;
 	}

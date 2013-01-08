@@ -20,8 +20,7 @@ import com.bstek.dorado.view.annotation.Widget;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-8-9
  */
-@Widget(name = "ToolBarLabel", category = "ToolBar",
-		dependsPackage = "base-widget")
+@Widget(category = "ToolBar", dependsPackage = "base-widget")
 @XmlNode(nodeName = "ToolBarLabel")
 @ClientObject(prototype = "dorado.widget.toolbar.ToolBarLabel",
 		shortTypeName = "ToolBarLabel")

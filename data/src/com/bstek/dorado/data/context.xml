@@ -10,9 +10,9 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 	<!-- Startup Listeners -->
 	<bean class="com.bstek.dorado.data.config.DataConfigEngineStartupListener">
 		<property name="order" value="1001" />
-		<property name="DataConfigManager" ref="dorado.dataConfigManager" />
+		<property name="dataConfigManager" ref="dorado.dataConfigManager" />
 	</bean>
-	<bean class="com.bstek.dorado.data.config.DataObjectAnnotationEngineStartupListener">
+	<bean scope="singleton" class="com.bstek.dorado.data.config.DataObjectAnnotationEngineStartupListener">
 		<property name="order" value="1002" />
 		<property name="dataProviderDefinitionManager" ref="dorado.dataProviderDefinitionManager" />
 		<property name="dataResolverDefinitionManager" ref="dorado.dataResolverDefinitionManager" />
@@ -125,6 +125,6 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 	<bean id="dorado.modelResourceManager" parent="dorado.abstractResourceManager" class="com.bstek.dorado.data.resource.ModelResourceManager">
 		<property name="modelResourceBundleManager" ref="dorado.modelResourceBundleManager" />
 	</bean>
-	
+
 	<bean id="dorado.systemOptionalParametersFactory" class="com.bstek.dorado.data.method.DefaultSystemOptionalParametersFactory" />
 </beans>
