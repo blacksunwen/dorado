@@ -23,6 +23,7 @@ import com.bstek.dorado.annotation.XmlNode;
  */
 @XmlNode(
 		nodeName = "PropertyDef",
+		label = "PropertyDef",
 		parser = "spring:dorado.propertyDefParser",
 		definitionType = "com.bstek.dorado.data.config.definition.PropertyDefDefinition")
 @ClientObject(prototype = "dorado.BasePropertyDef", shortTypeName = "Default")

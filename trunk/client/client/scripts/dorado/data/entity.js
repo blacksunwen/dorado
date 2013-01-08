@@ -944,7 +944,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				var ov = this._oldData ? this._oldData[property] : oldValue;
 				propertyInfo.isDirty = (ov != value);
 				
-				if (value && typeof value == "object" && value.$state === undefined && propertyDef.get("dataType") instanceof dorado.EntityDataType) {
+				if (value && typeof value == "object" && value.$state === undefined && propertyDef && propertyDef.get("dataType") instanceof dorado.EntityDataType) {
 					value = dorado.Object.apply({
 						$state: dorado.Entity.STATE_NEW
 					}, value);

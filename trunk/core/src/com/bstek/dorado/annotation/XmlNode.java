@@ -30,6 +30,8 @@ import com.bstek.dorado.common.ClientType;
 public @interface XmlNode {
 	String nodeName() default "";
 
+	String label() default "";
+
 	String icon() default "";
 
 	/**

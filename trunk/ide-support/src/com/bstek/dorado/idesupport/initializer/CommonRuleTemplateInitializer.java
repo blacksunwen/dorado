@@ -128,9 +128,14 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 		String nodeName = xmlNodeInfo.getNodeName();
 		if (StringUtils.isNotEmpty(nodeName)) {
 			ruleTemplate.setNodeName(nodeName);
-			if (!ruleTemplate.isAbstract()
-					&& StringUtils.isEmpty(ruleTemplate.getLabel())) {
-				ruleTemplate.setLabel(nodeName);
+		}
+
+		if (StringUtils.isEmpty(ruleTemplate.getLabel())) {
+			String label = xmlNodeInfo.getLabel();
+			if (StringUtils.isNotEmpty(label)) {
+				ruleTemplate.setLabel(label);
+			} else if (!ruleTemplate.isAbstract()) {
+				ruleTemplate.setLabel(type.getSimpleName());
 			}
 		}
 
@@ -175,9 +180,6 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 		if (Component.class.isAssignableFrom(type)) {
 			Widget widget = type.getAnnotation(Widget.class);
 			if (widget != null) {
-				if (!ruleTemplate.getName().equals(widget.name())) {
-					ruleTemplate.setLabel(widget.name());
-				}
 				if (ArrayUtils.indexOf(type.getDeclaredAnnotations(), widget) >= 0) {
 					if (StringUtils.isEmpty(ruleTemplate.getCategory())) {
 						ruleTemplate.setCategory(widget.category());
@@ -237,19 +239,13 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 			name = tempName + '_' + (++tryCount);
 		}
 
-		if (tryCount > 0 && !Modifier.isAbstract(type.getModifiers())) {
-			label = tempName;
-		}
-
 		String scope = null;
 		if (Component.class.isAssignableFrom(type)) {
 			Widget widget = type.getAnnotation(Widget.class);
-			if (widget != null
+			if (!(widget != null
 					&& ArrayUtils
-							.indexOf(type.getDeclaredAnnotations(), widget) >= 0
-					&& !Modifier.isAbstract(type.getModifiers())) {
-				label = widget.name();
-			} else {
+							.indexOf(type.getDeclaredAnnotations(), widget) >= 0 && !Modifier
+						.isAbstract(type.getModifiers()))) {
 				scope = "protected";
 			}
 		}
@@ -259,9 +255,6 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 		if (parentRuleTemplate != null) {
 			newRuleTemplate
 					.setParents(new RuleTemplate[] { parentRuleTemplate });
-		}
-		if (label == null) {
-			label = type.getSimpleName();
 		}
 		newRuleTemplate.setLabel(label);
 		if (scope != null) {
@@ -299,6 +292,9 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 
 		if (StringUtils.isNotEmpty(xmlNode.nodeName())) {
 			xmlNodeInfo.setNodeName(xmlNode.nodeName());
+		}
+		if (StringUtils.isNotEmpty(xmlNode.label())) {
+			xmlNodeInfo.setLabel(xmlNode.label());
 		}
 		if (StringUtils.isNotEmpty(xmlNode.icon())) {
 			xmlNodeInfo.setIcon(xmlNode.icon());

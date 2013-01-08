@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Inherited
 public @interface Widget {
-	String name();
+	String name() default "";
 
 	String category() default "";
 

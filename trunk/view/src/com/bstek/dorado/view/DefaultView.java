@@ -28,7 +28,7 @@ import com.bstek.dorado.view.manager.ViewConfig;
  * @since Jan 18, 2008
  */
 @Widget(name = "View", category = "General", dependsPackage = "base-widget")
-@XmlNode(nodeName = "View")
+@XmlNode(nodeName = "View", label = "View")
 @ClientObject(
 		usePrototype = true,
 		prototype = "dorado.widget.View",
