@@ -566,33 +566,31 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 	},
 	
 	assignValue: function(editor, entityForAssignment, eventArg) {
-		var lastPost = editor._lastPost;
-		try {
-			selectedValue = eventArg.selectedValue;
-			entityForAssignment = entityForAssignment || selectedValue;
-			
-			var targetEntity = (editor._entity || editor._cellEditor && editor._cellEditor.data);
-			if (this._assignmentMap && entityForAssignment && entityForAssignment instanceof Object && targetEntity && targetEntity instanceof Object) {
-				var assignmentMap = this._assignmentMap, maps = [];
-				assignmentMap = assignmentMap.replace(/,/g, ";").split(';');
-				for (var i = 0; i < assignmentMap.length; i++) {
-					var map = assignmentMap[i], index = map.indexOf('=');
-					if (index >= 0) {
-						maps.push({
-							writeProperty: map.substring(0, index),
-							readProperty: map.substring(index + 1)
-						});
-					} else {
-						maps.push({
-							writeProperty: map,
-							readProperty: map
-						});
-					}
+		selectedValue = eventArg.selectedValue;
+		entityForAssignment = entityForAssignment || selectedValue;
+		
+		var targetEntity = (editor._entity || editor._cellEditor && editor._cellEditor.data);
+		if (this._assignmentMap && entityForAssignment && entityForAssignment instanceof Object && targetEntity && targetEntity instanceof Object) {
+			var assignmentMap = this._assignmentMap, maps = [];
+			assignmentMap = assignmentMap.replace(/,/g, ";").split(';');
+			for (var i = 0; i < assignmentMap.length; i++) {
+				var map = assignmentMap[i], index = map.indexOf('=');
+				if (index >= 0) {
+					maps.push({
+						writeProperty: map.substring(0, index),
+						readProperty: map.substring(index + 1)
+					});
+				} else {
+					maps.push({
+						writeProperty: map,
+						readProperty: map
+					});
 				}
-				
-				for (var i = 0; i < maps.length; i++) {
-					var map = maps[i], value;
-					if (map.readProperty == "$this") {
+			}
+			
+			for (var i = 0; i < maps.length; i++) {
+				var map = maps[i], value;
+				if (map.readProperty == "$this") {
 						value = entityForAssignment;
 					} else {
 						value = (entityForAssignment instanceof dorado.Entity) ? entityForAssignment.get(map.readProperty) : entityForAssignment[map.readProperty];
@@ -626,10 +624,6 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 				}
 				editor.set("value", selectedValue);
 			}
-		}
-		finally {
-			editor._lastPost = lastPost;
-		}
 		if (this._postValueOnSelect) editor.post();
 	}
 

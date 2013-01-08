@@ -2499,15 +2499,18 @@
 					var criterion = filterEntity.get(column._property);
 					textEditor.set("text", criterion ? dorado.widget.grid.DataColumn.criterionToText(criterion) : "");
 				},
+				onPost: function(textEditor) {
+					var criterion = dorado.widget.grid.DataColumn.parseCriterion(textEditor.get("text"), column);
+					var filterEntity = grid.get("filterEntity");
+					filterEntity.disableObservers();
+					filterEntity.set(column._property, criterion);
+					filterEntity.enableObservers();
+				
+					grid.filter();
+				},
 				onKeyDown: function(textEditor, arg) {
 					if (arg.keyCode == 13) {
-						var criterion = dorado.widget.grid.DataColumn.parseCriterion(textEditor.get("text"), column);
-						var filterEntity = grid.get("filterEntity");
-						filterEntity.disableObservers();
-						filterEntity.set(column._property, criterion);
-						filterEntity.enableObservers();
-					
-						grid.filter();
+						textEditor.post();
 					}
 				},
 				onTextEdit: function(textEditor) {
