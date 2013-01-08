@@ -105,6 +105,15 @@
 			 */
 			showConfirmButton: {
 				defaultValue: true
+			},
+
+			/**
+			 * DatePicker上方中间显示的年月的格式，只支持两个变量：Y代表年，m代表月。
+			 * 默认为m &nbsp;&nbsp; Y，可以通过修改$setting["widget.datepicker.defaultYearMonthFormat"]来全局修改。
+			 * @attribute
+			 * @type String
+			 */
+			yearMonthFormat: {
 			}
 		},
 		
@@ -435,7 +444,8 @@
 		 */
 		refreshYearMonth: function() {
 			var picker = this, doms = picker._doms, date = picker._date;
-			doms.yearMonthLabel.innerHTML = (date.getMonth() + 1) + "&nbsp;&nbsp;" + date.getFullYear();
+			var format = this._yearMonthFormat || $setting["widget.datepicker.defaultYearMonthFormat"];
+			doms.yearMonthLabel.innerHTML = format.replace("Y", date.getFullYear()).replace("m", date.getMonth() + 1);
 		},
 		
 		refreshSpinner: function() {

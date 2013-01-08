@@ -71,7 +71,8 @@
 		},
 		"dom.useCssShadow": true,
 		"widget.skin": "~current",
-		"widget.panel.useCssCurveBorder": true
+		"widget.panel.useCssCurveBorder": true,
+		"widget.datepicker.defaultYearMonthFormat": "m &nbsp;&nbsp; Y"
 	};
 	
 	if (window.$setting instanceof Object) {
