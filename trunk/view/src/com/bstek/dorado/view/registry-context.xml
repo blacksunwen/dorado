@@ -11,6 +11,10 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 		<property name="classType" value="com.bstek.dorado.view.type.property.validator.LengthValidator" />
 	</bean>
 	<bean parent="dorado.validatorTypeRegister">
+		<property name="type" value="charLength" />
+		<property name="classType" value="com.bstek.dorado.view.type.property.validator.CharLengthValidator" />
+	</bean>
+	<bean parent="dorado.validatorTypeRegister">
 		<property name="type" value="range" />
 		<property name="classType" value="com.bstek.dorado.view.type.property.validator.RangeValidator" />
 	</bean>
