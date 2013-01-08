@@ -447,7 +447,7 @@
 			var okButton = new dorado.widget.Button({
 				caption: $resource("dorado.baseWidget.MessageBoxButtonOK"),
 				onClick: function() {
-					var column = dropdown._editor._cellColumn, criterion = dropdown._criterion, grid = column._grid;
+					var editor = dropdown._editor, column = editor._cellColumn, criterion = dropdown._criterion, grid = column._grid;
 					var text = dorado.widget.grid.DataColumn.criterionToText(criterion, column);
 					dropdown.close(text);
 					grid.filter();
