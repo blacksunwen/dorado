@@ -335,6 +335,73 @@ dorado.validator.LengthValidator = $extend(dorado.validator.BaseValidator, /** @
 });
 
 /**
+ * @author William (mailto:william.jiang@bstek.com)
+ * @class 字节长度校验器。
+ * @shortTypeName CharLength
+ * @extends dorado.validator.BaseValidator
+ */
+dorado.validator.CharLengthValidator = $extend(dorado.validator.BaseValidator, /** @scope dorado.validator.CharLengthValidator.prototype */
+{
+	className : "dorado.validator.CharLengthValidator",
+
+	ATTRIBUTES : /** @scope dorado.validator.CharLengthValidator.prototype */
+	{
+
+		/**
+		 * 最小合法长度。如果设置为-1则表示忽略对于最小合法长度的校验。
+		 * @type int
+		 * @attribute
+		 * @default -1
+		 */
+		minLength : {
+			defaultValue : -1
+		},
+
+		/**
+		 * 最大合法长度。如果设置为-1则表示忽略对于最大合法长度的校验。
+		 * @type int
+		 * @attribute
+		 * @default -1
+		 */
+		maxLength : {
+			defaultValue : -1
+		}
+	},
+	
+	doValidate: function(data, arg) {
+		function getBytesLength(data) {    
+			var str = escape(data);    
+			for(var i = 0, length = 0;i < str.length; i++, length++) {    
+				if(str.charAt(i) == "%") {    
+					if(str.charAt(++i) == "u") {    
+						i += 3;    
+						length++;    
+					}    
+					i++;    
+				}    
+			}    
+			return length;    
+		}
+		
+		if (typeof data == "number") {
+			data += '';
+		}
+		if (typeof data != "string") return;
+		var invalid, message = '', len = getBytesLength(data);
+		if (this._minLength > 0 && len < this._minLength) {
+			invalid = true;
+			message += $resource("dorado.data.ErrorContentTooShort", this._minLength);
+		}
+		if (this._maxLength > 0 && len > this._maxLength) {
+			invalid = true;
+			if (message) message += '\n';
+			message += $resource("dorado.data.ErrorContentTooLong", this._maxLength);
+		}
+		return message;
+	}
+});
+
+/**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @class 数值区间校验器。
  * @shortTypeName Range
