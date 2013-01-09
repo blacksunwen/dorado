@@ -131,7 +131,7 @@ public class Node implements NodeHolder, TagSupport, Ignorable {
 		this.tip = tip;
 	}
 
-	@XmlSubNode
+	@XmlProperty
 	@ClientProperty
 	public Object getData() {
 		return data;
