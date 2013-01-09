@@ -752,7 +752,7 @@
 					if (criterion.operator && criterion.operator.indexOf("like") < 0) {
 						expression += criterion.operator;
 					}
-					expression += dataType.toText(criterion.value);
+					expression += (dataType ? dataType : dorado.$String).toText(criterion.value);
 					if (criterion.operator) {
 						if (criterion.operator.startsWith("like")) {
 							expression = expression + '*';
