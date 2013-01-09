@@ -2497,7 +2497,7 @@
 				onBlur: function(textEditor) {
 					var filterEntity = grid.get("filterEntity");
 					var criterion = filterEntity.get(column._property);
-					textEditor.set("text", criterion ? dorado.widget.grid.DataColumn.criterionToText(criterion) : "");
+					textEditor.set("text", criterion ? dorado.widget.grid.DataColumn.criterionToText(criterion, column) : "");
 				},
 				onPost: function(textEditor) {
 					var criterion = dorado.widget.grid.DataColumn.parseCriterion(textEditor.get("text"), column);
