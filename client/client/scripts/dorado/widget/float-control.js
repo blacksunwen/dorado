@@ -459,19 +459,6 @@ dorado.dequeue = function(namespace) {
 					control.render(renderTo);
 					control._visible = oldVisible;
 				}
-				
-				if (control._continuedFocus) {
-					var focusParent = dorado.widget.getFocusedControl();
-					var parent = focusParent;
-					while (parent) {
-						if (parent == control) {
-							focusParent = parent.get("focusParent");
-							break;
-						}
-						parent = parent.get("focusParent");
-					}
-					control._focusParent = focusParent;
-				}
 				control.doShow.apply(control, [options]);
 			});
 		},
@@ -559,6 +546,19 @@ dorado.dequeue = function(namespace) {
 					visibility: "",
 					display: ""
 				}).bringToFront();
+				
+				if (control._continuedFocus) {
+					var focusParent = dorado.widget.getFocusedControl();
+					var parent = focusParent;
+					while (parent) {
+						if (parent == control) {
+							focusParent = parent.get("focusParent");
+							break;
+						}
+						parent = parent.get("focusParent");
+					}
+					control._focusParent = focusParent;
+				}
 				
 				if (control._focusAfterShow || control._modal) {
 					control.setFocus();
