@@ -116,7 +116,10 @@
 				if (returnValue && this.supportsEntity) {
 					returnValue = dorado.DataUtil.convertIfNecessary(returnValue, this.dataTypeRepository);
 				}
-				return returnValue;
+				return {
+					returnValue: returnValue,
+					entityStates: result.entityStates
+				};
 			} else {
 				throw result.error;
 			}
