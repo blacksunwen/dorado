@@ -214,8 +214,16 @@ public class XmlViewConfigDefinitionFactory implements
 		return path;
 	}
 
+	protected Resource getResource(String viewName) throws Exception {
+		return getResource(viewName, pathSubfix);
+	}
+
 	public ViewConfigInfo getViewConfigInfo(String viewName) throws Exception {
-		Resource resource = getResource(viewName, pathSubfix);
+		Resource resource = getResource(viewName);
+		if (!resource.exists()) {
+			throw new ViewNotFoundException(viewName, resource);
+		}
+
 		Document document = xmlDocumentBuilder.loadDocument(resource);
 		PreparseContext preparseContext = new PreparseContext(viewName);
 
