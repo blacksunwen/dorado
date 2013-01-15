@@ -124,6 +124,12 @@ var dorado = {
 	 * @type boolean
 	 * @description 返回是否Webkit浏览器。
 	 */
+	/**
+	 * @name dorado.Browser.isTouch
+	 * @property
+	 * @type boolean
+	 * @description 返回是否手持设备中的浏览器。
+	 */
 	// =====
 	
 	/**

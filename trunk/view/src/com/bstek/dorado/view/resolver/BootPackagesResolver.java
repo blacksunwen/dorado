@@ -17,6 +17,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -24,7 +26,6 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.lang.StringEscapeUtils;
 
 import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.core.io.FileResource;
@@ -56,9 +57,11 @@ public class BootPackagesResolver extends WebFileResolver {
 	private PackagesConfigManager packagesConfigManager;
 	private LocaleResolver localeResolver;
 	private String bootFile;
+	private List<ClientSettingsOutputter> clientSettingsOutputters = new ArrayList<ClientSettingsOutputter>();
 
 	public BootPackagesResolver() {
 		setUseResourcesCache(true);
+		addClientSettingsOutputter(new DefaultClientSettingsOutputter());
 	}
 
 	/**
@@ -70,6 +73,11 @@ public class BootPackagesResolver extends WebFileResolver {
 
 	public void setBootFile(String bootFile) {
 		this.bootFile = bootFile;
+	}
+
+	public void addClientSettingsOutputter(
+			ClientSettingsOutputter clientSettingsOutputter) {
+		clientSettingsOutputters.add(clientSettingsOutputter);
 	}
 
 	@Override
@@ -160,20 +168,6 @@ public class BootPackagesResolver extends WebFileResolver {
 		writer.append(";\n");
 	}
 
-	protected void writeSetting(Writer writer, String key, Object value,
-			boolean quote, boolean comma) throws IOException {
-		writer.append('"').append(key).append('"').append(':');
-		if (quote)
-			writer.append('"');
-		writer.append(StringEscapeUtils.escapeJavaScript(String.valueOf(value)));
-		if (quote)
-			writer.append('"');
-		if (comma)
-			writer.append(",\n");
-		else
-			writer.append('\n');
-	}
-
 	/**
 	 * 向客户端输出资源包的配置信息。
 	 * 
@@ -181,26 +175,18 @@ public class BootPackagesResolver extends WebFileResolver {
 	 */
 	protected void outputPackagesConfig(Writer writer,
 			PackagesConfig packagesConfig) throws Exception {
-		writer.write("window.$setting={\n");
-		writeSetting(writer, "debugEnabled",
-				Configure.getBoolean("view.debugEnabled"), false, true);
-		writeSetting(writer, "showExceptionStackTrace",
-				Configure.getBoolean("view.showExceptionStackTrace"), false,
-				true);
-		writeSetting(writer, "enterAsTab",
-				Configure.getBoolean("view.enterAsTab"), false, true);
-		String contextPath = DoradoContext.getAttachedRequest()
-				.getContextPath();
-		writeSetting(writer, "common.contextPath", contextPath, true, true);
-		writeSetting(writer, "abortAsyncLoadingOnSyncLoading",
-				Configure.getBoolean("view.abortAsyncLoadingOnSyncLoading"),
-				false, true);
+		writer.append("window.$setting={\n");
 
-		writeSetting(writer, "widget.skinRoot", ">dorado/client/skins/", true,
-				false);
-		writer.write("};\n");
+		for (ClientSettingsOutputter clientSettingsOutputter : clientSettingsOutputters) {
+			clientSettingsOutputter.output(writer);
+		}
 
-		writer.write(CLIENT_PACKAGES_CONFIG
+		writer.append("\"timestamp\":")
+				.append(String.valueOf(System.currentTimeMillis()))
+				.append('\n');
+		writer.append("};\n");
+
+		writer.append(CLIENT_PACKAGES_CONFIG
 				+ ".contextPath=$setting[\"common.contextPath\"];\n");
 		outputProperty(writer, CLIENT_PACKAGES_CONFIG, packagesConfig,
 				"defaultCharset", null);
@@ -212,15 +198,14 @@ public class BootPackagesResolver extends WebFileResolver {
 				.getBoolean("view.outputPrettyJson"));
 		Map<String, Pattern> patterns = packagesConfig.getPatterns();
 		if (patterns != null) {
-			writer.write(CLIENT_PACKAGES_CONFIG);
-			writer.write(".patterns=");
+			writer.append(CLIENT_PACKAGES_CONFIG).append(".patterns=");
 			jsonBuilder.object();
 			for (Map.Entry<String, Pattern> entry : patterns.entrySet()) {
 				jsonBuilder.key(entry.getKey());
 				outputPattern(jsonBuilder, entry.getValue());
 			}
 			jsonBuilder.endObject();
-			writer.write(";\n");
+			writer.append(";\n");
 		}
 
 		jsonBuilder = new JsonBuilder(writer);
@@ -228,15 +213,14 @@ public class BootPackagesResolver extends WebFileResolver {
 				.getBoolean("view.outputPrettyJson"));
 		Map<String, Package> packages = packagesConfig.getPackages();
 		if (packages != null) {
-			writer.write(CLIENT_PACKAGES_CONFIG);
-			writer.write(".packages=");
+			writer.append(CLIENT_PACKAGES_CONFIG).append(".packages=");
 			jsonBuilder.object();
 			for (Map.Entry<String, Package> entry : packages.entrySet()) {
 				jsonBuilder.key(entry.getKey());
 				outputPackage(jsonBuilder, entry.getValue());
 			}
 			jsonBuilder.endObject();
-			writer.write(";\n");
+			writer.append(";\n");
 		}
 	}
 

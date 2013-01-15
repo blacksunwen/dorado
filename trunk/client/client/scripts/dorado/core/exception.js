@@ -278,7 +278,7 @@
 			eval(e.script);
 		} else {
 			var msg = dorado.Exception.getExceptionMessage(e);
-			if ($setting["showExceptionStackTrace"]) {
+			if ($setting["common.showExceptionStackTrace"]) {
 				if (e instanceof dorado.Exception) {
 					if (e.stack) msg += "\n\nDorado Stack:\n" + dorado.Exception.formatStack(e.stack);
 					if (e.remoteStack) msg += "\n\nRemote Stack:\n" + dorado.Exception.formatStack(e.remoteStack);
@@ -360,7 +360,7 @@
 				}
 			}];
 			
-			if ($setting["showExceptionStackTrace"]) {
+			if ($setting["common.showExceptionStackTrace"]) {
 				buttons.push({
 					caption: $resource("dorado.baseWidget.ExceptionDialogDetail"),
 					width: 70,

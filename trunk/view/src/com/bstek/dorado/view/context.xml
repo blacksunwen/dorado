@@ -66,7 +66,7 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 			</list>
 		</property>
 	</bean>
-	
+
 	<bean id="dorado.systemOptionalParametersFactory" class="com.bstek.dorado.view.DefaultSystemOptionalParametersFactory" />
 
 	<!-- Services -->
@@ -176,5 +176,15 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 		<property name="javaScriptParser">
 			<bean class="com.bstek.dorado.view.config.attachment.JavaScriptParser" />
 		</property>
+	</bean>
+
+	<!-- Web -->
+	<bean id="dorado.bootPackagesResolver" class="com.bstek.dorado.view.resolver.BootPackagesResolver">
+		<property name="localeResolver" ref="dorado.localeResolver" />
+		<property name="bootFile" value="scripts/dorado/boot" />
+		<property name="resourcePrefix" value="${view.libraryRoot}" />
+	</bean>
+	<bean id="dorado.clientSettingsOutputterRegister" abstract="true" class="com.bstek.dorado.view.resolver.ClientSettingsOutputterRegister">
+		<property name="bootPackagesResolver" ref="dorado.bootPackagesResolver" />
 	</bean>
 </beans>

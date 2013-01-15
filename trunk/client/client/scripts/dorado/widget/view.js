@@ -490,7 +490,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
                                 break;
                             }
                             case 13:{ // Enter
-                            	if ($setting["enterAsTab"]) {
+                            	if ($setting["common.enterAsTab"]) {
 									var c = (evt.shiftKey) ? dorado.widget.findPreviousFocusableControl() : dorado.widget.findNextFocusableControl();
 									if (c) c.setFocus();
 									evt.preventDefault();
@@ -538,6 +538,10 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 		if (v) {
 			cls += " " + cls + v;
 		}
+		
+		if (dorado.Browser.isTouch || $setting["simulateTouch"]) {
+			cls += " d-touch";
+		} 
 		
 		$fly(document.body).addClass(cls);
         if (!dorado.Browser.isTouch) {
