@@ -20,7 +20,7 @@
 	 * @see $setting
 	 *
 	 * @example
-	 * var debugEnabled = dorado.Setting["debugEnabled"]; // 取得一个参数值
+	 * var debugEnabled = dorado.Setting["common.debugEnabled"]; // 取得一个参数值
 	 */
 	// =====
 	
@@ -35,7 +35,7 @@
 	 * @see dorado.Setting
 	 *
 	 * @example
-	 * var debugEnabled = $setting["debugEnabled"]; // 相当于dorado.Setting["debugEnabled"]
+	 * var debugEnabled = $setting["common.debugEnabled"]; // 相当于dorado.Setting["common.debugEnabled"]
 	 */
 	dorado.Setting = {
 		"common.defaultDateFormat": "Y-m-d",

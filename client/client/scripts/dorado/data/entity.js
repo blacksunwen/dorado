@@ -507,7 +507,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					if (loadMode == "auto") {
 						value = undefined;
 					} else {
-						var shouldAbortAsyncProcedures = dorado.Setting["abortAsyncLoadingOnSyncLoading"];
+						var shouldAbortAsyncProcedures = dorado.Setting["common.abortAsyncLoadingOnSyncLoading"];
 						if (pipe.runningProcNum > 0 && !shouldAbortAsyncProcedures) {
 							throw new dorado.ResourceException("dorado.data.GetDataDuringLoading", "Entity");
 						}
