@@ -539,7 +539,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			cls += " " + cls + v;
 		}
 		
-		if (dorado.Browser.isTouch || $setting["simulateTouch"]) {
+		if (dorado.Browser.isTouch || $setting["common.simulateTouch"]) {
 			cls += " d-touch";
 		} 
 		
