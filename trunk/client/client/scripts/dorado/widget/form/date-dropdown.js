@@ -119,7 +119,8 @@
 		
 		EVENTS: /** @scope dorado.widget.DatePicker.prototype */ {
 			/**
-			 * 当用户点击日期表格上的日期，或者点击确定按钮时触发此事件。
+			 * 当用户点击日期表格上的日期时触发此事件。
+			 * 注意：也就是说onPick无法捕获点击确定按钮时的操作。
 			 * @param {Object} self 事件的发起者，即组件本身。
 			 * @param {Object} arg 事件参数。
 			 * @param {Object} arg.date 用户选择的日期。
@@ -127,7 +128,17 @@
 			 * @event
 			 */
 			onPick: {},
-			
+
+			/**
+			 * 当用户点击确定按钮时触发此事件。
+			 * @param {Object} self 事件的发起者，即组件本身。
+			 * @param {Object} arg 事件参数。
+			 * @param {Object} arg.date 用户选择的日期。
+			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+			 * @event
+			 */
+			onConfirm: {},
+
 			/**
 			 * 当用户不选择日期，点击关闭按钮后触发此事件
 			 * @param {Object} self 事件的发起者，即组件本身。
@@ -634,7 +645,7 @@
 					caption: $resource("dorado.baseWidget.DatePickerConfirm"),
 					listener: {
 						onClick: function() {
-							picker.fireEvent("onPick", picker, {
+							picker.fireEvent("onConfirm", picker, {
 								date: new Date(picker._date.getTime())
 							});
 						}
@@ -926,6 +937,10 @@
 				showTimeSpinner: this._showTimeSpinner,
 				listener: {
 					onPick: function(picker, value) {
+						if (!dropDown._showTimeSpinner)
+							dropDown.close(value.date);
+					},
+					onConfirm: function(picker, value) {
 						dropDown.close(value.date);
 					},
 					onCancel: function() {
