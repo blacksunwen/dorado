@@ -19,12 +19,11 @@ import org.springframework.beans.factory.InitializingBean;
  * @since 2013-1-15
  */
 public class ClientSettingsOutputterRegister implements InitializingBean {
-	private BootPackagesResolver bootPackagesResolver;
+	private PageHeaderOutputter pageHeaderOutputter;
 	private ClientSettingsOutputter clientSettingsOutputter;
 
-	public void setBootPackagesResolver(
-			BootPackagesResolver bootPackagesResolver) {
-		this.bootPackagesResolver = bootPackagesResolver;
+	public void setPageHeaderOutputter(PageHeaderOutputter pageHeaderOutputter) {
+		this.pageHeaderOutputter = pageHeaderOutputter;
 	}
 
 	public void setClientSettingsOutputter(
@@ -33,7 +32,6 @@ public class ClientSettingsOutputterRegister implements InitializingBean {
 	}
 
 	public void afterPropertiesSet() throws Exception {
-		bootPackagesResolver
-				.addClientSettingsOutputter(clientSettingsOutputter);
+		pageHeaderOutputter.addClientSettingsOutputter(clientSettingsOutputter);
 	}
 }

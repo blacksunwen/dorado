@@ -185,6 +185,6 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 		<property name="resourcePrefix" value="${view.libraryRoot}" />
 	</bean>
 	<bean id="dorado.clientSettingsOutputterRegister" abstract="true" class="com.bstek.dorado.view.resolver.ClientSettingsOutputterRegister">
-		<property name="bootPackagesResolver" ref="dorado.bootPackagesResolver" />
+		<property name="pageHeaderOutputter" ref="dorado.pageHeaderOutputter" />
 	</bean>
 </beans>
