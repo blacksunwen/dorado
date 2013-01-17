@@ -26,8 +26,9 @@ public class DefaultClientSettingsOutputter extends ClientSettingsOutputter {
 
 	@Override
 	public void output(Writer writer) throws IOException {
-		writeSetting(writer, "common.debugEnabled",
-				Configure.getBoolean("view.debugEnabled"), false);
+		writer.append("\"common.debugEnabled\":").append(
+				String.valueOf(Configure.getBoolean("view.debugEnabled")));
+
 		writeSetting(writer, "common.showExceptionStackTrace",
 				Configure.getBoolean("view.showExceptionStackTrace"), false);
 		writeSetting(writer, "common.enterAsTab",

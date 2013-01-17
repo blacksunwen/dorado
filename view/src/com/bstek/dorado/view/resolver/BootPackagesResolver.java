@@ -17,8 +17,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -57,11 +55,9 @@ public class BootPackagesResolver extends WebFileResolver {
 	private PackagesConfigManager packagesConfigManager;
 	private LocaleResolver localeResolver;
 	private String bootFile;
-	private List<ClientSettingsOutputter> clientSettingsOutputters = new ArrayList<ClientSettingsOutputter>();
 
 	public BootPackagesResolver() {
 		setUseResourcesCache(true);
-		addClientSettingsOutputter(new DefaultClientSettingsOutputter());
 	}
 
 	/**
@@ -73,11 +69,6 @@ public class BootPackagesResolver extends WebFileResolver {
 
 	public void setBootFile(String bootFile) {
 		this.bootFile = bootFile;
-	}
-
-	public void addClientSettingsOutputter(
-			ClientSettingsOutputter clientSettingsOutputter) {
-		clientSettingsOutputters.add(clientSettingsOutputter);
 	}
 
 	@Override
@@ -175,19 +166,11 @@ public class BootPackagesResolver extends WebFileResolver {
 	 */
 	protected void outputPackagesConfig(Writer writer,
 			PackagesConfig packagesConfig) throws Exception {
-		writer.append("window.$setting={\n");
+		String contextPath = DoradoContext.getAttachedRequest()
+				.getContextPath();
+		writer.append(CLIENT_PACKAGES_CONFIG + ".contextPath=\"" + contextPath
+				+ "\";\n");
 
-		for (ClientSettingsOutputter clientSettingsOutputter : clientSettingsOutputters) {
-			clientSettingsOutputter.output(writer);
-		}
-
-		writer.append("\"timestamp\":")
-				.append(String.valueOf(System.currentTimeMillis()))
-				.append('\n');
-		writer.append("};\n");
-
-		writer.append(CLIENT_PACKAGES_CONFIG
-				+ ".contextPath=$setting[\"common.contextPath\"];\n");
 		outputProperty(writer, CLIENT_PACKAGES_CONFIG, packagesConfig,
 				"defaultCharset", null);
 		outputProperty(writer, CLIENT_PACKAGES_CONFIG, packagesConfig,

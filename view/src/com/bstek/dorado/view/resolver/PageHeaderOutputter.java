@@ -13,6 +13,8 @@
 package com.bstek.dorado.view.resolver;
 
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -21,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 
+import com.bstek.dorado.core.Constants;
 import com.bstek.dorado.core.resource.LocaleResolver;
 import com.bstek.dorado.view.View;
 import com.bstek.dorado.view.config.attachment.AttachedResourceManager;
@@ -39,6 +42,11 @@ public class PageHeaderOutputter implements Outputter {
 	private LocaleResolver localeResolver;
 	private AttachedResourceManager javaScriptResourceManager;
 	private AttachedResourceManager styleSheetResourceManager;
+	private List<ClientSettingsOutputter> clientSettingsOutputters = new ArrayList<ClientSettingsOutputter>();
+
+	public PageHeaderOutputter() {
+		addClientSettingsOutputter(new DefaultClientSettingsOutputter());
+	}
 
 	public void setTopViewOutputter(Outputter topViewOutputter) {
 		this.topViewOutputter = topViewOutputter;
@@ -61,18 +69,23 @@ public class PageHeaderOutputter implements Outputter {
 		this.styleSheetResourceManager = styleSheetResourceManager;
 	}
 
+	public void addClientSettingsOutputter(
+			ClientSettingsOutputter clientSettingsOutputter) {
+		clientSettingsOutputters.add(clientSettingsOutputter);
+	}
+
 	public void output(Object object, OutputContext context) throws Exception {
 		View view = (View) object;
 		Writer writer = context.getWriter();
 		HttpServletRequest request = DoradoContext.getAttachedRequest();
 
-		// writer.append(
-		// "<meta http-equiv=\"content-type\" content=\"text/html; charset=")
-		// .append(Constants.DEFAULT_CHARSET)
-		// .append("\" />\n")
-		// .append("<meta http-equiv=\"Pragma\" content=\"no-cache\" />\n")
-		// .append("<meta http-equiv=\"Cache-Control\" content=\"no-cache, no-store\" />\n")
-		// .append("<meta http-equiv=\"Expires\" content=\"0\" />\n");
+		writer.append(
+				"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=")
+				.append(Constants.DEFAULT_CHARSET)
+				.append("\" />\n")
+				.append("<meta http-equiv=\"Pragma\" content=\"no-cache\" />\n")
+				.append("<meta http-equiv=\"Cache-Control\" content=\"no-cache, no-store\" />\n")
+				.append("<meta http-equiv=\"Expires\" content=\"0\" />\n");
 
 		if (StringUtils.isNotEmpty(view.getTitle())) {
 			writer.append("<title>")
@@ -89,6 +102,12 @@ public class PageHeaderOutputter implements Outputter {
 								.getCacheBuster((locale != null) ? locale
 										.toString() : null) + "\"></script>\n")
 				.append("<script language=\"javascript\" type=\"text/javascript\">\n");
+
+		writer.append("window.$setting={\n");
+		for (ClientSettingsOutputter clientSettingsOutputter : clientSettingsOutputters) {
+			clientSettingsOutputter.output(writer);
+		}
+		writer.append("\n};\n");
 
 		writer.append("$import(\"widget\");\n</script>\n").append(
 				"<script language=\"javascript\" type=\"text/javascript\">\n");

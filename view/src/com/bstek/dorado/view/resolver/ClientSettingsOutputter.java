@@ -25,7 +25,7 @@ public abstract class ClientSettingsOutputter {
 
 	protected void writeSetting(Writer writer, String key, Object value,
 			boolean quote) throws IOException {
-		writer.append('"').append(key).append('"').append(':');
+		writer.append(",\n\"").append(key).append('"').append(':');
 		if (quote) {
 			writer.append('"');
 		}
@@ -33,7 +33,6 @@ public abstract class ClientSettingsOutputter {
 		if (quote) {
 			writer.append('"');
 		}
-		writer.append(",\n");
 	}
 
 	public abstract void output(Writer writer) throws IOException;
