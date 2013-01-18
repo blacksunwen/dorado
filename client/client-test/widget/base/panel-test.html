@@ -69,7 +69,15 @@
             			onClick: function() {
             			}
             		}
-            	}],
+            	}, {
+                    $type: "SimpleIconButton",
+                    icon: "url(>skin>common/icons.gif) -20px -80px",
+                    listener: {
+                        onClick: function() {
+                            alert(123);
+                        }
+                    }
+                }],
             	children: [new dorado.widget.Button({
             		width: 150,
             		caption: "测试子组件",
