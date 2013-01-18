@@ -20,13 +20,14 @@ public class PackageInfo {
 	private String name;
 	private String version;
 	private Dependence[] depends;
+	private boolean enabled = true;
 
 	/*
 	 * Inherited, AGPL, BSDN-Member, BSDN-Commercial
 	 */
 	private String[] license;
 	private boolean loadUnlicensed;
-	
+
 	/*
 	 * component,enhancement,skin,resource,app
 	 */
@@ -64,6 +65,14 @@ public class PackageInfo {
 
 	public void setDepends(Dependence[] depends) {
 		this.depends = depends;
+	}
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 
 	public String[] getLicense() {

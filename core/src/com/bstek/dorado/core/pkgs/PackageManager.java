@@ -188,7 +188,7 @@ public final class PackageManager {
 			Map<String, PackageInfo> packageMap) throws Exception {
 		Dependence[] dependences = packageInfo.getDepends();
 		if (dependences == null || dependences.length == 0) {
-			calculatedPackages.add(packageInfo);
+			pushPackageInfo(calculatedPackages, packageInfo);
 			return;
 		}
 
@@ -248,9 +248,16 @@ public final class PackageManager {
 			calculateDepends(dependedPackageInfo, calculatedPackages,
 					packageMap);
 		}
+		pushPackageInfo(calculatedPackages, packageInfo);
+	}
 
+	private static void pushPackageInfo(Set<PackageInfo> calculatedPackages,
+			PackageInfo packageInfo) {
 		if (!calculatedPackages.contains(packageInfo)) {
 			calculatedPackages.add(packageInfo);
+			if (calculatedPackages.size() > 9999) {
+				packageInfo.setEnabled(false);
+			}
 		}
 	}
 
