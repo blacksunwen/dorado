@@ -89,7 +89,7 @@ dorado.widget.CaptionBar = $extend(dorado.widget.Control, /** @scope dorado.widg
 	/**
 	 * 为标题栏添加按钮。
 	 * @param {dorado.widget.SimpleButton} button 标题栏上要添加的按钮。
-	 * @param [index] 要添加的按钮的索引，不指定的话添加到最后一个。
+	 * @param [index] 要添加的按钮的索引，不指定的话添加到最后一个。当index属性大于100的时候，index属性会被当作priority使用，可以保证index属性大的一直显示在最后(Panel、Dialog内置的tools依赖此功能)。
 	 */
 	addButton: function(button, index) {
 		var bar = this, buttons = bar._buttons, doms = bar._doms, refBtn, dom = bar._dom;
