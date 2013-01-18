@@ -103,8 +103,23 @@ dorado.widget.CaptionBar = $extend(dorado.widget.Control, /** @scope dorado.widg
 		if (index == null) {
 			buttons.insert(button);
 		} else if (typeof index == "number") {
-			refBtn = buttons.get(index);
-			buttons.insert(button, index);
+			if (index > 100) {
+				var prevPriority = 0, target = index, insertIndex;
+				button._cbPriority = index;
+				for (var i = 0, j = buttons.size; i < j; i++) {
+					var btn = buttons.get(i), priority = btn._cbPriority || 0;
+					if (prevPriority <= target && priority > target) {
+						refBtn = btn;
+						insertIndex = i;
+						break;
+					}
+					prevPriority = priority;
+				}
+				buttons.insert(button, insertIndex);
+			} else {
+				refBtn = buttons.get(index);
+				buttons.insert(button, index);
+			}
 		} else if (typeof index == "string") {
 			refBtn = buttons.get(index);
 			if (!refBtn) {

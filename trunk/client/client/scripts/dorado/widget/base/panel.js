@@ -709,8 +709,8 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 			var direction = panel._parent._direction;
 			collapseButton.set("iconClass", panel._collapsed ? "expand-icon-" + direction : "collapse-icon-" + direction);
 		}
-		
-		panel._captionBar.addButton(collapseButton, 0);
+
+		panel._captionBar.addButton(collapseButton, 101);
 	},
 	
 	_createCloseButton: function() {
@@ -724,7 +724,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 					}
 				},
 				className: "d-close-button"
-			}));
+			}), 104);
 		}
 	},
 	
@@ -900,7 +900,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 						}
 					}
 				}
-			}), panel._id + "_close");
+			}), 103);
 		}
 	}
 });
