@@ -14,10 +14,27 @@
 	height: 18px;
 }
 
+.d-touch .i-label {
+    font-size: 1.1em;
+    height: 30px;
+    line-height: 30px;
+}
+
 .i-data-label {
 	height: 18px;
 }
 
+.d-touch .i-data-label {
+    height: 30px;
+    line-height: 30px;
+}
+
 .d-ie6 .i-auto-form, .d-ie7 .i-auto-form {
 	width: 100%;
+}
+
+.d-touch .i-auto-form .form-label {
+    font-size: 1.1em;
+    height: 30px;
+    line-height: 30px;
 }

@@ -9,35 +9,42 @@
  * If you are unsure which license is appropriate for your use, please contact the sales department
  * at http://www.bstek.com/contact.
  */
-
-.i-panel{
+.i-panel {
 	overflow: hidden;
 }
 
-.i-panel .content-panel{
+.i-panel .content-panel {
 	overflow: auto;
-    *zoom: 1;
+	*zoom: 1;
 }
 
-.i-panel .button-panel{
+.i-panel .button-panel {
 	padding: 2px 5px 5px 2px;
 	text-align: center;
 	height: 24px;
 }
 
-.i-panel .button-panel-left{
+.d-touch .i-panel .button-panel {
+	height: 50px;
+}
+
+.d-touch .i-panel .button-panel .button {
+	margin-right: 8px;
+}
+
+.i-panel .button-panel-left {
 	text-align: left;
 }
 
-.i-panel .button-panel-right{
+.i-panel .button-panel-right {
 	text-align: right;
 }
 
-.i-panel .button-panel .i-button{
+.i-panel .button-panel .i-button {
 	margin-right: 3px;
 }
 
-.i-panel-curveborder .caption-bar{
+.i-panel-curveborder .caption-bar {
 	-moz-border-radius-topright: 3px;
 	-webkit-border-top-right-radius: 3px;
 	border-top-right-radius: 3px;
@@ -46,13 +53,13 @@
 	border-top-left-radius: 3px;
 }
 
-.i-panel-curveborder .panel-body{
+.i-panel-curveborder .panel-body {
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
 }
 
-.i-panel-showcaptionbar .panel-body{
+.i-panel-showcaptionbar .panel-body {
 	-moz-border-radius-topright: 0;
 	-webkit-border-top-right-radius: 0;
 	border-top-right-radius: 0;
@@ -61,17 +68,17 @@
 	border-top-left-radius: 0;
 }
 
-.i-panel-curveborder .caption-bar .button-group{
+.i-panel-curveborder .caption-bar .button-group {
 	margin-top: 2px;
 }
 
-.i-panel-curveborder .panel-header-left{
+.i-panel-curveborder .panel-header-left {
 	font-size: 0;
 	line-height: 0;
 	margin-right: 2px;
 }
 
-.i-panel-curveborder .panel-header-right{
+.i-panel-curveborder .panel-header-right {
 	position: relative;
 	font-size: 0;
 	line-height: 0;
@@ -79,25 +86,25 @@
 	margin-right: -2px;
 }
 
-.i-panel-curveborder .panel-body-left{
+.i-panel-curveborder .panel-body-left {
 	padding-left: 2px;
 }
 
-.i-panel-curveborder .panel-body-right{
+.i-panel-curveborder .panel-body-right {
 	padding-right: 2px;
 }
 
-.i-panel-curveborder .panel-body{
+.i-panel-curveborder .panel-body {
 	overflow: hidden;
 	margin: 0;
 	padding: 0;
 }
 
-.i-panel-curveborder .panel-footer-left{
+.i-panel-curveborder .panel-footer-left {
 	margin-right: 2px;
 }
 
-.i-panel-curveborder .panel-footer-right{
+.i-panel-curveborder .panel-footer-right {
 	position: relative;
 	font-size: 0;
 	margin-right: -2px;
@@ -105,19 +112,19 @@
 	line-height: 0;
 }
 
-.i-panel-curveborder .content-panel{
+.i-panel-curveborder .content-panel {
 	padding: 0 3px;
 }
 
-.i-panel-curveborder .caption-bar .button-group{
+.i-panel-curveborder .caption-bar .button-group {
 	margin-top: 0;
 }
 
-.i-panel-collapsed .panel-footer-left{
+.i-panel-collapsed .panel-footer-left {
 	display: none;
 }
 
-.i-panel-normalborder{
+.i-panel-normalborder {
 	-moz-box-shadow: 0;
 	-webkit-box-shadow: 0;
 	border-radius: 0;

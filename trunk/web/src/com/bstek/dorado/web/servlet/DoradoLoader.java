@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -287,10 +288,24 @@ public class DoradoLoader {
 				+ storeDir.getAbsolutePath() + "]");
 
 		// findPackages
-		for (PackageInfo packageInfo : PackageManager.getPackageInfoMap()
-				.values()) {
-			ConsoleUtils.outputLoadingInfo("Package [" + packageInfo.getName()
-					+ " - " + packageInfo.getVersion() + "] found.");
+		Collection<PackageInfo> packageInfos = PackageManager
+				.getPackageInfoMap().values();
+		int i = 0;
+		for (PackageInfo packageInfo : packageInfos) {
+			ConsoleUtils.outputLoadingInfo(StringUtils.rightPad(
+					String.valueOf(++i) + '.', 4)
+					+ "Package ["
+					+ packageInfo.getName()
+					+ " - "
+					+ packageInfo.getVersion()
+					+ "] found."
+					+ ((packageInfo.isEnabled() ? "" : " #DISABLED# ")));
+		}
+
+		for (PackageInfo packageInfo : packageInfos) {
+			if (!packageInfo.isEnabled()) {
+				continue;
+			}
 
 			PackageListener packageListener = packageInfo.getListener();
 			if (packageListener != null) {
