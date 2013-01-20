@@ -718,7 +718,7 @@
 								for (var p in state) {
 									if (state.hasOwnProperty(p)) {
 										var pd = entity.getPropertyDef(p);
-										if (!pd._submittable) delete state[p];
+										if (pd && !pd._submittable) delete state[p];
 									}
 								}
 								entity.fromJSON(state);
@@ -730,7 +730,7 @@
 								for (var p in state) {
 									if (state.hasOwnProperty(p)) {
 										var pd = entity.getPropertyDef(p);
-										if (pd._submittable) {
+										if (pd && pd._submittable) {
 											var dt = pd.get("dataType");
 											if (dt instanceof dorado.AggregationDataType || dt instanceof dorado.EntityDataType) continue;
 											entity.set(p, state[p]);

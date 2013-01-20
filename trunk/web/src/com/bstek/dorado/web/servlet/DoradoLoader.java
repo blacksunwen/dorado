@@ -287,7 +287,7 @@ public class DoradoLoader {
 		ConsoleUtils.outputLoadingInfo("[Dorado StoreDir: "
 				+ storeDir.getAbsolutePath() + "]");
 
-		// findPackages
+		// print packages
 		Collection<PackageInfo> packageInfos = PackageManager
 				.getPackageInfoMap().values();
 		int i = 0;
@@ -301,7 +301,8 @@ public class DoradoLoader {
 					+ "] found."
 					+ ((packageInfo.isEnabled() ? "" : " #DISABLED# ")));
 		}
-
+		
+		// load packages
 		for (PackageInfo packageInfo : packageInfos) {
 			if (!packageInfo.isEnabled()) {
 				continue;
