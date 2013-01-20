@@ -19,11 +19,9 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
@@ -184,7 +182,7 @@ public final class PackageManager {
 	}
 
 	private static void calculateDepends(PackageInfo packageInfo,
-			Set<PackageInfo> calculatedPackages,
+			List<PackageInfo> calculatedPackages,
 			Map<String, PackageInfo> packageMap) throws Exception {
 		Dependence[] dependences = packageInfo.getDepends();
 		if (dependences == null || dependences.length == 0) {
@@ -251,12 +249,15 @@ public final class PackageManager {
 		pushPackageInfo(calculatedPackages, packageInfo);
 	}
 
-	private static void pushPackageInfo(Set<PackageInfo> calculatedPackages,
+	private static void pushPackageInfo(List<PackageInfo> calculatedPackages,
 			PackageInfo packageInfo) {
 		if (!calculatedPackages.contains(packageInfo)) {
-			calculatedPackages.add(packageInfo);
-			if (calculatedPackages.size() > 9999) {
-				packageInfo.setEnabled(false);
+			String packageName = packageInfo.getName();
+			if (packageName.equals("dorado-hibernate")
+					|| packageName.equals("dorado-jdbc")) {
+				calculatedPackages.add(1, packageInfo);
+			} else {
+				calculatedPackages.add(packageInfo);
 			}
 		}
 	}
@@ -409,18 +410,25 @@ public final class PackageManager {
 			}
 		}
 
-		Set<PackageInfo> calculatedPackages = new LinkedHashSet<PackageInfo>();
+		List<PackageInfo> calculatedPackages = new ArrayList<PackageInfo>();
 		for (PackageInfo packageInfo : packageMap.values()) {
 			calculateDepends(packageInfo, calculatedPackages, packageMap);
 		}
 
+		int addonNumber = 0;
 		packageInfosMap.clear();
 		for (PackageInfo packageInfo : calculatedPackages) {
-			String addonVersion = packageInfo.getVersion();
-			if (UNKNOWN_VERSION.equals(addonVersion)) {
-				addonVersion = String.valueOf(System.currentTimeMillis());
-			}
 			packageInfosMap.put(packageInfo.getName(), packageInfo);
+
+			String packageName = packageInfo.getName();
+			if (!packageName.equals("dorado-core")
+					&& !packageName.equals("dorado-hibernate")
+					&& !packageName.equals("dorado-jdbc")) {
+				addonNumber++;
+				if (addonNumber > 9999) {
+					packageInfo.setEnabled(false);
+				}
+			}
 		}
 	}
 
