@@ -613,7 +613,8 @@
 			}
 
 			if (dialog._resizeable) {
-				var dialogXY, dialogSize;
+				var dialogXY, dialogSize, dialogHelperOffset;
+
 				jQuery(dom).addClass("i-dialog-resizeable d-dialog-resizeable").find(".dialog-resize-handle").each(function(index, handle) {
 					var className = handle.className.split(" ")[0], config = handleConfigMap[className];
 					if (!config) return;
@@ -621,22 +622,34 @@
 						iframeFix: true,
 						cursor: config.cursor,
 						addClasses: false,
-						containment: "window",
+						containment: "parent",
 						helper: function() {
 							var proxy = document.createElement("div");
 							proxy.className = "i-dialog-drag-proxy d-dialog-drag-proxy";
 							proxy.style.position = "absolute";
-							$fly(proxy).bringToFront();
-							document.body.appendChild(proxy);
+
+							var $dom = $fly(dom);
+							dialogXY = $dom.offset();
+
+							dialogSize = [$dom.width(), $dom.height()];
+
+							proxy.style.left = (dialog._left || 0) + "px";
+							proxy.style.top = (dialog._top || 0) + "px";
+
+							dom.parentNode.appendChild(proxy);
+
+							var helper = proxy, helperOffset = $fly(helper).offset();
+							dialogHelperOffset = {
+								left: (dialog._left || 0) - helperOffset.left,
+								top: (dialog._top || 0) - helperOffset.top
+							};
+
+							$fly(proxy).bringToFront().outerWidth(dialogSize[0]).outerHeight(dialogSize[1]).css("cursor", config.cursor);
 
 							return proxy;
 						},
 
 						start: function(event, ui) {
-							var $dom = $fly(dom);
-							dialogXY = $dom.offset();
-							dialogSize = [$dom.width(), $dom.height()];
-							jQuery(ui.helper).outerWidth(dialogSize[0]).outerHeight(dialogSize[1]).css("cursor", config.cursor);
 						},
 
 						drag: function(event, ui) {
@@ -680,10 +693,14 @@
 									ui.position.top = jQuery(ui.helper).offset().top;
 								}
 							}
+							ui.position.left += dialogHelperOffset.left;
+							ui.position.top += dialogHelperOffset.top;
 						},
 
 						stop: function(event, ui) {
-							var wrap = ui.helper, wrapEl = jQuery(wrap), offset = wrapEl.offset();
+							var wrapEl = ui.helper, offset = wrapEl.offset();
+							offset.left += dialogHelperOffset.left;
+							offset.top += dialogHelperOffset.top;
 							dialog._left = offset.left;
 							dialog._top = offset.top;
 							dialog._width = wrapEl.outerWidth();
