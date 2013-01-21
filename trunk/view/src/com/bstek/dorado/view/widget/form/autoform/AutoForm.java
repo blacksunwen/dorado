@@ -103,6 +103,7 @@ public class AutoForm extends Control implements FormConfig {
 	}
 
 	@XmlProperty(parser = "spring:dorado.dataTypePropertyParser")
+	@ClientProperty
 	public EntityDataType getDataType() {
 		return dataType;
 	}

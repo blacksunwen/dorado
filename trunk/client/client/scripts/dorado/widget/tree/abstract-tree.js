@@ -18,7 +18,7 @@
 dorado.widget.tree.TreeNodeRenderer = $extend(dorado.Renderer, {
 	createIconDom: function(tree) {
 		var icon = document.createElement("LABEL");
-		icon.className = "icon";
+		icon.className = "node-icon";
 		icon.style.display = "inline-block";
 		return icon;
 	},
@@ -624,14 +624,14 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 					tagName: "LABEL",
 					contextKey: "buttonDom",
 					doradoType: "tree-button",
-					className: "button",
+					className: "node-button",
 					style: {
 						display: "inline-block",
 						position: "relative"
 					}
 				}, {
 					tagName: "LABEL",
-					className: "label",
+					className: "node-label",
 					style: {
 						display: "inline-block"
 					}

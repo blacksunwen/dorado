@@ -23,10 +23,10 @@
 	white-space: nowrap;
 }
 
-.i-tree-node .button {
+.i-tree-node .node-button {
 }
 
-.i-tree-node .icon {
+.i-tree-node .node-icon {
 	width: 16px;
 	height: 16px;
 	margin-right: 4px;
