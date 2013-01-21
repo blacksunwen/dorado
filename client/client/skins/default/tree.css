@@ -50,7 +50,7 @@
 	background: url(list/preparing-area-bg.gif);
 }
 
-.d-tree-node .button {
+.d-tree-node .node-button {
 	position: relative;
 	top: 1px;
 	width: 16px;
