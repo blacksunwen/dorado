@@ -269,7 +269,7 @@
 				if (this._draggable) {
 					options = options || this.getDraggableOptions(dom);
 					$fly(dom).draggable(options);
-				} else {
+				} else if ($fly(dom).data("ui-draggable")) {
 					$fly(dom).draggable("destroy");
 				}
 				dom._currentDraggable = this._draggable;
@@ -478,7 +478,7 @@
 				if (this._droppable) {
 					options = options || this.getDroppableOptions(dom);
 					$fly(dom).droppable(options);
-				} else {
+				} else if ($fly(dom).data("ui-droppable")) {
 					$fly(dom).droppable("destroy");
 				}
 				dom._currentDroppable = this._droppable;

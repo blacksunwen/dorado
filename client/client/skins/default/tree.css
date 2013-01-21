@@ -79,12 +79,12 @@
 	background: url(tree/expanding.gif) no-repeat;
 }
 
-.d-tree-node .icon {
+.d-tree-node .node-icon {
 	position: relative;
 	top: 2px;
 }
 
-.d-tree-node .label {
+.d-tree-node .node-label {
 }
 
 .d-tree-expanding-placeholder {

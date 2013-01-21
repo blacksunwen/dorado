@@ -599,6 +599,8 @@
 		 * @return boolean 编辑器中的内容是否得到了确认。
 		 */
 		post: function(force, silent) {
+			if (!this._editorFocused) return false;
+			
 			try {
 				var text = this.get("text"), state, result, modified = (this._lastPost != text), validationResults;
 				if ((force || modified || (this._validationState == "none" && text == '') && (new Date() - (this._focusTime || 0)) > 300)) {

@@ -87,14 +87,14 @@
 						tagName: "LABEL",
 						contextKey: "buttonDom",
 						doradoType: "tree-button",
-						className: "button",
+						className: "node-button",
 						style: {
 							display: "inline-block",
 							position: "relative"
 						}
 					}, {
 						tagName: "LABEL",
-						className: "label",
+						className: "node-label",
 						style: {
 							display: "inline-block"
 						}
