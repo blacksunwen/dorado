@@ -161,9 +161,9 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 	/**
 	 * @private
 	 */
-	toggleCollapsed: function() {
+	toggleCollapsed: function(animate) {
 		var panel = this, collapsed = panel.get("collapsed");
-		panel.doSetCollapsed(!collapsed);
+		panel.doSetCollapsed(!collapsed, animate);
 	},
 	
 	setContentContainerVisible: function(collapsed) {
@@ -230,7 +230,7 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 			var orginalZIndex;
 			if (panel._rendered) {
 				if (collapsed) {
-                    if (animate === false) {
+                    if (animate === false || animate === undefined) {
                         $fly(dom).addClass(panel._inherentClassName + "-collapsed " + panel._className + "-collapsed");
                         if (collapseButton) {
                             collapseButton.set("iconClass", "expand-icon");
@@ -260,7 +260,7 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
                         });
                     }
 				} else {
-                    if (animate === false) {
+                    if (animate === false || animate === undefined) {
                         $fly(dom).removeClass(panel._inherentClassName + "-collapsed " + panel._className + "-collapsed");
                         if (collapseButton) {
                             collapseButton.set("iconClass", "collapse-icon");
@@ -701,7 +701,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 			id: panel._id + "_collapse",
 			iconClass: panel._collapsed ? "expand-icon" : "collapse-icon",
 			onClick: function() {
-				panel.toggleCollapsed();
+				panel.toggleCollapsed(true);
 			}
 		});
 		
@@ -783,7 +783,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 	
 	refreshDom: function(dom) {
 		var panel = this, doms = panel._doms, border = panel._border;
-		
+
 		$invokeSuper.call(this, arguments);
 		
 		if (this._background) {

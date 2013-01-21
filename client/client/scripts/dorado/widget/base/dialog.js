@@ -270,8 +270,10 @@
 				dialog._originalLeft = dialog._left;
 				dialog._originalTop = dialog._top;
 
-				var maximizeTarget = dialog._maximizeTarget;
-				if (typeof maximizeTarget == "String") {
+				var maximizeTarget = dialog._maximizeTarget, originalMaimizeTarget = maximizeTarget;
+				if (maximizeTarget == "parent") {//为floating为false的Dialog提供最大化的功能。
+					maximizeTarget = dialog._dom.parentNode;
+				} else if (typeof maximizeTarget == "String") {
 					maximizeTarget = jQuery(maximizeTarget)[0];
 				} else if (maximizeTarget && dorado.Object.isInstanceOf(maximizeTarget, dorado.RenderableElement)) {
 					maximizeTarget = maximizeTarget._dom;
@@ -295,7 +297,13 @@
 
 				dialog.resetDimension();
 
-				var targetOffset = $fly(maximizeTarget).offset() || {left: 0, top: 0};
+				//TODO 这个算法有问题，待优化。
+				var targetOffset;
+				if (originalMaimizeTarget == "parent") {
+					targetOffset = {left: 0, top: 0};
+				} else {
+					targetOffset = $fly(maximizeTarget).offset() || {left: 0, top: 0};
+				}
 
 				dialog._left = targetOffset.left;
 				dialog._top = targetOffset.top;
@@ -554,16 +562,15 @@
 					helper: function() {
 						if (!fakeDialog) {
 							fakeDialog = new dorado.widget.Dialog({ exClassName: "i-dialog-helper d-dialog-helper", visible: true, animateType: "none", shadowMode: "none" });
-							fakeDialog.render(document.body);
+							fakeDialog.render(dialog._dom.parentNode);
 						}
+						fakeDialog.render(dialog._dom.parentNode);
                         $fly(fakeDialog._dom).css("display", "");
-						return fakeDialog._dom;
-					},
-					start: function(event, ui) {
-                        var height = dialog.getRealHeight();
-                        if (height == null) {
-                            height = $fly(dom).height();
-                        }
+
+						var height = dialog.getRealHeight();
+						if (height == null) {
+							height = $fly(dom).height();
+						}
 						fakeDialog.set({
 							width: dom.offsetWidth,
 							height: height,
@@ -574,11 +581,15 @@
 							maximizeable: dialog._maximizeable,
 							closeable: dialog._closeable,
 							collapseable: dialog._collapseable,
-                            left: dialog._left,
-                            top: dialog._top
+							left: dialog._left,
+							top: dialog._top,
+			                collapsed: dialog._collapsed
 						});
-
 						fakeDialog.refresh();
+
+						return fakeDialog._dom;
+					},
+					start: function(event, ui) {
 						var helper = ui.helper;
 						helper.css({ display: "", visibility: "" }).bringToFront();
 						$fly(dom).addClass("d-dialog-dragging").css("visibility", "hidden").disableShadow();
