@@ -278,6 +278,7 @@
 				} else if (maximizeTarget && dorado.Object.isInstanceOf(maximizeTarget, dorado.RenderableElement)) {
 					maximizeTarget = maximizeTarget._dom;
 				}
+
 				if (maximizeTarget) {
 					dialog._width = $fly(maximizeTarget).outerWidth(true);
 					dialog._height = $fly(maximizeTarget).outerHeight(true);
@@ -295,8 +296,6 @@
 					}
 				}
 
-				dialog.resetDimension();
-
 				//TODO 这个算法有问题，待优化。
 				var targetOffset;
 				if (originalMaimizeTarget == "parent") {
@@ -310,6 +309,8 @@
 
 				var domEl = jQuery(dom);
 				domEl.css(targetOffset);
+
+				dialog.resetDimension();
 
 				if (dialog._resizeable) {
 					domEl.removeClass("i-dialog-resizeable d-dialog-resizeable").find(".dialog-resize-handle").draggable("disable");
