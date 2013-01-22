@@ -417,7 +417,7 @@
 			 * @param {dorado.Entity} arg.entity 触发事件的实体对象。
 			 * @param {String} arg.property 将要被改变的属性名。
 			 * @param {Object} arg.oldValue 原先的属性值。
-			 * @param {Object} arg.newValue 将要写入的值。
+			 * @param {Object} #arg.newValue 将要写入的值。
 			 * @param {boolean} #arg.processDefault=true 用于通知系统是否要继续完成后续动作。
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
