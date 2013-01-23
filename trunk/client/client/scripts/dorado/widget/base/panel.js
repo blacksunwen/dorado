@@ -115,7 +115,7 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 		collapsed: {
 			getter: function(attr, value) {
 				var panel = this;
-				if (panel._parent instanceof dorado.widget.SplitPanel && panel._parent._sideControl == panel && panel._parent._collpaseable) {
+				if (panel._parent instanceof dorado.widget.SplitPanel && panel._parent._sideControl == panel && panel._parent._collapseable) {
 					return panel._parent._collapsed;
 				} else {
 					return panel._collapsed;
@@ -211,11 +211,11 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
             panel.notifySizeChange();
 			panel.fireEvent("onCollapsedChange", panel);
 		}
-		
+
 		var panel = this, dom = panel._dom, doms = panel._doms, collapseButton = panel._collapseButton, eventArg = {};
 		panel.fireEvent("beforeCollapsedChange", panel, eventArg);
 		if (eventArg.processDefault === false) return;
-		if (panel._parent instanceof dorado.widget.SplitPanel && panel._parent._sideControl == panel && panel._parent._collpaseable) {
+		if (panel._parent instanceof dorado.widget.SplitPanel && panel._parent._sideControl == panel && panel._parent._collapseable) {
 			var direction = panel._parent._direction;
 			if (collapseButton) {
 				collapseButton.set("iconClass", collapsed ? ("expand-icon-" + direction) : ("collapse-icon-" + direction));
@@ -705,7 +705,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 			}
 		});
 		
-		if (panel._parent instanceof dorado.widget.SplitPanel && panel._parent._sideControl == panel && panel._parent._collpaseable) {
+		if (panel._parent instanceof dorado.widget.SplitPanel && panel._parent._sideControl == panel && panel._parent._collapseable) {
 			var direction = panel._parent._direction;
 			collapseButton.set("iconClass", panel._collapsed ? "expand-icon-" + direction : "collapse-icon-" + direction);
 		}
@@ -750,7 +750,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 			}
 			if (collapsed) {
 				if (border == "curve") {
-					if (panel._parent instanceof dorado.widget.SplitPanel && panel._parent._sideControl == panel && panel._parent._collpaseable) {
+					if (panel._parent instanceof dorado.widget.SplitPanel && panel._parent._sideControl == panel && panel._parent._collapseable) {
 						$fly(doms.body).height("auto");
 					}
 				}
