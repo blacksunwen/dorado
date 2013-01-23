@@ -639,7 +639,7 @@
 
 							dom.parentNode.appendChild(proxy);
 
-							var helper = proxy, helperOffset = $fly(helper).offset();
+							var helperOffset = $fly(proxy).offset();
 							dialogHelperOffset = {
 								left: (dialog._left || 0) - helperOffset.left,
 								top: (dialog._top || 0) - helperOffset.top
@@ -663,19 +663,25 @@
 							};
 
 							var inst = jQuery.data(this, "draggable"), horiChange = event.pageX - inst.originalPageX,
-								vertChange = event.pageY - inst.originalPageY, width, height;
+								vertChange = event.pageY - inst.originalPageY, width, height, horiOverflow, vertOverflow;
 
 							if (horiStyle.indexOf("width") != -1) {
 								width = dialogSize[0] + widthRatio * horiChange;
 								if (width >= minWidth) {
-									jQuery(ui.helper).width(width);
+									ui.helper.outerWidth(width);
+								} else {
+									horiOverflow = width - minWidth;
+									ui.helper.outerWidth(minWidth);
 								}
 							}
 
 							if (vertStyle.indexOf("height") != -1) {
 								height = dialogSize[1] + heightRatio * vertChange;
 								if (height >= minHeight) {
-									jQuery(ui.helper).height(height);
+									ui.helper.outerHeight(height);
+								} else {
+									vertOverflow = height - minHeight;
+									ui.helper.outerHeight(minHeight);
 								}
 							}
 
@@ -683,7 +689,7 @@
 								if (width >= minWidth) {
 									ui.position.left = dialogXY.left + horiChange;
 								} else {
-									ui.position.left = jQuery(ui.helper).offset().left;
+									ui.position.left = dialogXY.left + horiChange + horiOverflow;
 								}
 							}
 
@@ -691,9 +697,10 @@
 								if (height >= minHeight) {
 									ui.position.top = dialogXY.top + vertChange;
 								} else {
-									ui.position.top = jQuery(ui.helper).offset().top;
+									ui.position.top = dialogXY.top + vertChange + vertOverflow;
 								}
 							}
+
 							ui.position.left += dialogHelperOffset.left;
 							ui.position.top += dialogHelperOffset.top;
 						},
