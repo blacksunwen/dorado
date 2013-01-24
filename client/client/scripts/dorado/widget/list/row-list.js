@@ -402,7 +402,7 @@
 			
 			if (!this._shouldSkipRender && row._lazyRender) {
 				this.createItemDomDetail(row, item);
-				delete row._lazyRender;
+				row._lazyRender = undefined;
 			}
 			
 			if (!row._lazyRender) {
@@ -627,7 +627,7 @@
 					if (row._lazyRender) {
 						var item = $fly(row).data("item");
 						this.createItemDomDetail(row, item);
-						delete row._lazyRender;
+						row._lazyRender = undefined;
 						this.refreshItemDomData(row, item);
 					}
 					i++;
