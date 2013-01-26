@@ -31,8 +31,6 @@ public abstract class ConsoleUtils {
 	}
 
 	public static void outputLoadingInfo(String s) {
-		System.out.print(" * ");
-		System.out.print(s);
-		System.out.println();
+		System.out.println(" * " + s);
 	}
 }
