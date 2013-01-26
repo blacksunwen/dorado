@@ -13,6 +13,7 @@
 package com.bstek.dorado.view.widget.form;
 
 import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.common.ClientType;
 import com.bstek.dorado.view.annotation.Widget;
@@ -28,6 +29,7 @@ import com.bstek.dorado.view.widget.Control;
 public class Label extends Control {
 	private String text;
 
+	@IdeProperty(highlight = 1)
 	public String getText() {
 		return text;
 	}

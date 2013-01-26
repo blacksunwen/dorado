@@ -13,12 +13,18 @@
 package com.bstek.dorado.web.servlet;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 
 import javax.servlet.ServletContext;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.core.io.ResourceLoader;
 
 import com.bstek.dorado.core.io.BaseResourceLoader;
 import com.bstek.dorado.core.io.InputStreamResource;
 import com.bstek.dorado.core.io.Resource;
+import com.bstek.dorado.util.clazz.ClassUtils;
+import com.bstek.dorado.web.ConsoleUtils;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -26,14 +32,39 @@ import com.bstek.dorado.core.io.Resource;
  */
 public class ServletContextResourceLoader extends BaseResourceLoader {
 	private ServletContext servletContext;
+	private ResourceLoader resourceLoader;
 
-	public ServletContextResourceLoader(ServletContext servletContext) {
+	public ServletContextResourceLoader(ServletContext servletContext)
+			throws Exception {
 		this.servletContext = servletContext;
+		String resourceLoaderClass = servletContext
+				.getInitParameter("resourceLoaderClass");
+		if (StringUtils.isNotEmpty(StringUtils.trim(resourceLoaderClass))) {
+			ConsoleUtils.outputLoadingInfo("[resourceLoaderClass="
+					+ resourceLoaderClass + "]");
+
+			@SuppressWarnings("unchecked")
+			Class<ResourceLoader> type = ClassUtils
+					.forName(resourceLoaderClass);
+			Constructor<ResourceLoader> constr = type
+					.getConstructor(new Class[] { ClassLoader.class });
+			resourceLoader = constr.newInstance(new Object[] { getClass()
+					.getClassLoader() });
+		}
+	}
+
+	@Override
+	protected ResourceLoader getAdaptee() {
+		if (resourceLoader != null) {
+			return resourceLoader;
+		} else {
+			return super.getAdaptee();
+		}
 	}
 
 	@Override
 	public Resource getResource(String resourceLocation) {
-		if (resourceLocation.startsWith("/WEB-INF/")) {
+		if (resourceLocation.startsWith("/")) {
 			return new InputStreamResource(
 					servletContext.getResourceAsStream(resourceLocation));
 		} else {
