@@ -51,7 +51,7 @@ public abstract class AbstractTabControl extends Control {
 			setCurrentTab(i);
 		} else {
 			throw new IllegalArgumentException(
-					"The current tab must belongs to this TabControl.");
+					"The current Tab must belongs to this TabControl.");
 		}
 	}
 
@@ -64,7 +64,7 @@ public abstract class AbstractTabControl extends Control {
 			}
 			i++;
 		}
-		throw new IllegalArgumentException("No such tab [" + currentTabName
+		throw new IllegalArgumentException("No such Tab [" + currentTabName
 				+ "] in TabControl.");
 	}
 

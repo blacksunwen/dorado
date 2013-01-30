@@ -15,14 +15,15 @@ package com.bstek.dorado.util.proxy;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyFactory;
 import javassist.util.proxy.ProxyObject;
-import net.sf.cglib.proxy.Callback;
-import net.sf.cglib.proxy.Enhancer;
 
 import org.aopalliance.intercept.MethodInterceptor;
+
+import com.bstek.dorado.util.clazz.ClassUtils;
 
 /**
  * 用于辅助创建动态代理的工具类。
@@ -36,6 +37,9 @@ public abstract class ProxyBeanUtils {
 
 	private static int defaultByteCodeProvider = JAVASSIST;
 	private static final Class<?>[] SERIALIZABLE_INTERFACES = new Class[] { SerializationReplaceable.class };
+
+	private static boolean extraEnhancersInited;
+	private static Method springCglibIsEnhancerMethod;
 
 	// private static Map<Class<?>, Class<?>> javassistProxyClassCache = new
 	// Hashtable<Class<?>, Class<?>>();
@@ -156,7 +160,7 @@ public abstract class ProxyBeanUtils {
 				}
 				((ProxyObject) proxyBean).setHandler(mipd);
 			} else {
-				Enhancer enhancer = new Enhancer();
+				net.sf.cglib.proxy.Enhancer enhancer = new net.sf.cglib.proxy.Enhancer();
 				enhancer.setSuperclass(cl);
 				if (Serializable.class.isAssignableFrom(cl)) {
 					enhancer.setInterfaces(SERIALIZABLE_INTERFACES);
@@ -184,13 +188,45 @@ public abstract class ProxyBeanUtils {
 		return proxyBean;
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static boolean isProxy(Class<?> cl) {
-		return Enhancer.isEnhanced(cl) || ProxyFactory.isProxyClass(cl);
+		boolean b = net.sf.cglib.proxy.Enhancer.isEnhanced(cl)
+				|| ProxyFactory.isProxyClass(cl);
+		if (!b) {
+			if (!extraEnhancersInited) {
+				extraEnhancersInited = true;
+				try {
+					Class enhancerType = ClassUtils
+							.forName("org.springframework.cglib.proxy.Enhancer");
+					springCglibIsEnhancerMethod = enhancerType.getMethod(
+							"isEnhanced", new Class[] { Class.class });
+				} catch (Exception e) {
+					// do nothing
+				}
+			}
+
+			if (springCglibIsEnhancerMethod != null) {
+				try {
+					b = (Boolean) springCglibIsEnhancerMethod.invoke(null,
+							new Object[] { cl });
+				} catch (Exception e) {
+					// do nothing
+				}
+			}
+		}
+		return b;
 	}
 
 	public static boolean isProxy(Object bean) {
-		return bean != null
-				&& (bean instanceof ProxyObject || bean instanceof net.sf.cglib.proxy.Factory);
+		if (bean == null) {
+			return false;
+		}
+
+		boolean b = (bean instanceof ProxyObject || bean instanceof net.sf.cglib.proxy.Factory);
+		if (!b) {
+			b = isProxy(bean.getClass());
+		}
+		return b;
 	}
 
 	public static Class<?> getProxyTargetType(Object bean) {
@@ -208,7 +244,7 @@ public abstract class ProxyBeanUtils {
 		return cl;
 	}
 
-	public static Object getProxyTarget(Object bean) {
+	public static Object getProxyTarget(Object bean) throws Exception {
 		Object target = bean;
 		MethodInterceptorDispatcher methodInterceptorDispatcher = ProxyBeanUtils
 				.getMethodInterceptorDispatcher(bean);
@@ -306,9 +342,9 @@ public abstract class ProxyBeanUtils {
 	private static Object proxyBeanWithCglib(Object target, Class<?> cl,
 			Class<?>[] argTypes, Object[] args,
 			MethodInterceptorProxyDispatcher mipd) {
-		// Enhancer enhancer = cglibEnhancerCache.get(cl);
+		// net.sf.cglib.proxy.Enhancer enhancer = cglibEnhancerCache.get(cl);
 		// if (enhancer == null) {
-		Enhancer enhancer = new Enhancer();
+		net.sf.cglib.proxy.Enhancer enhancer = new net.sf.cglib.proxy.Enhancer();
 		enhancer.setUseCache(true);
 		enhancer.setSuperclass(cl);
 		if (target instanceof Serializable) {
@@ -327,6 +363,7 @@ public abstract class ProxyBeanUtils {
 	/**
 	 * @param object
 	 * @return
+	 * @throws Exception
 	 */
 	public static MethodInterceptorDispatcher getMethodInterceptorDispatcher(
 			Object object) {
@@ -338,10 +375,10 @@ public abstract class ProxyBeanUtils {
 					dispatcher = (MethodInterceptorDispatcher) handler;
 				}
 			} else if (object instanceof net.sf.cglib.proxy.Factory) {
-				Callback[] callbacks = ((net.sf.cglib.proxy.Factory) object)
+				net.sf.cglib.proxy.Callback[] callbacks = ((net.sf.cglib.proxy.Factory) object)
 						.getCallbacks();
 
-				Callback callback = callbacks[0];
+				net.sf.cglib.proxy.Callback callback = callbacks[0];
 				if (callback instanceof MethodInterceptorDispatcher) {
 					dispatcher = (MethodInterceptorDispatcher) callback;
 				} else {

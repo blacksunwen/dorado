@@ -44,8 +44,7 @@ public abstract class GlobalResourceBundleManagerSupport implements
 				element = new Element(cacheKey, bundle);
 				cache.put(element);
 			}
-			return (ResourceBundle) element.getValue();
+			return (ResourceBundle) element.getObjectValue();
 		}
 	}
-
 }

@@ -140,6 +140,11 @@ public class DefaultResource implements Resource {
 
 	@Override
 	public int hashCode() {
-		return adaptee.hashCode();
+		Object desc = adaptee.getDescription();
+		if (desc == null && path != null) {
+			desc = path;
+		}
+
+		return (desc != null) ? desc.hashCode() : super.hashCode();
 	}
 }

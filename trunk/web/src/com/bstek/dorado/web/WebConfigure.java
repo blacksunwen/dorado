@@ -204,14 +204,26 @@ class ConfigureWrapper extends ConfigureStore {
 	@Override
 	public Object get(String key) {
 		DoradoContext context = DoradoContext.getCurrent();
-		Object value = null;
+
 		Map<String, Object> localConfigureMap = (Map<String, Object>) context
-				.getAttribute(WebConfigure.STORE_KEY);
+				.getAttribute(DoradoContext.REQUEST, WebConfigure.STORE_KEY);
 		if (localConfigureMap != null) {
-			value = localConfigureMap.get(key);
+			Object value = localConfigureMap.get(key);
+			if (value != null || value == WebConfigure.NULL) {
+				return null;
+			}
 		}
-		return (value == null) ? store.get(key)
-				: ((value == WebConfigure.NULL) ? null : value);
+
+		localConfigureMap = (Map<String, Object>) context.getAttribute(
+				DoradoContext.SESSION, WebConfigure.STORE_KEY);
+		if (localConfigureMap != null) {
+			Object value = localConfigureMap.get(key);
+			if (value != null || value == WebConfigure.NULL) {
+				return null;
+			}
+		}
+
+		return store.get(key);
 	}
 
 	@Override

@@ -433,22 +433,23 @@ public abstract class MethodAutoMatchingUtils {
 				|| Number.class.isAssignableFrom(cl) || cl.isEnum());
 	}
 
-	public static String[] getParameterNames(Method method) {
+	public static String[] getParameterNames(Method method)
+			throws SecurityException, NoSuchMethodException {
+		Class<?> declaringClass = method.getDeclaringClass();
+		if (ProxyBeanUtils.isProxy(declaringClass)) {
+			Class<?> targetType = ProxyBeanUtils
+					.getProxyTargetType(declaringClass);
+			method = targetType.getMethod(method.getName(),
+					method.getParameterTypes());
+		}
 		return paranamer.lookupParameterNames(method);
 	}
 
 	private static MethodDescriptor describMethodIfMatching(Method method,
 			String[] requiredParameterNames, String[] optionalParameterNames,
 			String[] extraParameterNames) throws SecurityException,
-			NoSuchMethodException {
-		Method lookupMethod = method;
-		Class<?> cl = lookupMethod.getDeclaringClass();
-		if (ProxyBeanUtils.isProxy(cl)) {
-			lookupMethod = ProxyBeanUtils.getProxyTargetType(cl).getMethod(
-					method.getName(), method.getParameterTypes());
-		}
-
-		String[] methodParameterNames = getParameterNames(lookupMethod);
+			NoSuchMethodException { 
+		String[] methodParameterNames = getParameterNames(method);
 		if (methodParameterNames.length > requiredParameterNames.length
 				+ optionalParameterNames.length) {
 			return null;

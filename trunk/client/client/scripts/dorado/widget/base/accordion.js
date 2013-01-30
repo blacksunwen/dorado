@@ -268,11 +268,17 @@ dorado.widget.Accordion = $extend(dorado.widget.Control, /** @scope dorado.widge
 		
 		/**
 		 * 当前的Section。
+		 * <p>
+		 * 此属性传入时也可以使用Section的name或序号（自0开始计算）。
+		 * </p>
 		 * @attribute
-		 * @type dorado.widget.Section
+		 * @type dorado.widget.Section||String||int
 		 */
 		currentSection: {
 			setter: function(value) {
+				if (typeof value == "number" || typeof value == "string") {
+					value = this._sections ? this._sections.get(value) : null;
+				}
 				this.doSetCurrentSection(value);
 			}
 		},
