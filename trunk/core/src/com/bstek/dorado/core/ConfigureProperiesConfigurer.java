@@ -23,6 +23,11 @@ import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
  * @since 2010-6-29
  */
 public class ConfigureProperiesConfigurer extends PropertyPlaceholderConfigurer {
+
+	public ConfigureProperiesConfigurer() {
+		this.setIgnoreUnresolvablePlaceholders(true);
+	}
+
 	@Override
 	public void postProcessBeanFactory(
 			ConfigurableListableBeanFactory beanFactory) throws BeansException {
