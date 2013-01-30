@@ -208,27 +208,7 @@ dorado.widget.AbstractList = $extend(dorado.widget.Control, /** @scope dorado.wi
 		 */
 		onFilterItem: {}
 	},
-	
-	/**
-	 * @name dorado.widget.AbstractList#getCurrentItem
-	 * @function
-	 * @return {Object|dorado.Entity} 当前列表项。
-	 * @description 返回当前列表项。
-	 */
-	/**
-	 * @name dorado.widget.AbstractList#setCurrentItemDom
-	 * @function
-	 * @protected
-	 * @param dom {HTMLElement} 当前列表项DOM元素。
-	 * @description 将列表控件中的某列表项DOM元素设置为当前元素。
-	 */
-	/**
-	 * @name dorado.widget.AbstractList#getCurrentItemDom
-	 * @function
-	 * @protected
-	 * @return {HTMLElement} 当前列表项DOM元素。
-	 * @description 将列表控件中的某列表项DOM元素设置为当前元素。
-	 */
+
 	/**
 	 * @name dorado.widget.AbstractList#findItemDomByEvent
 	 * @function
@@ -284,80 +264,6 @@ dorado.widget.AbstractList = $extend(dorado.widget.Control, /** @scope dorado.wi
 				$fly(itemDom).find(">*").clone().appendTo(contentDom);
 				indicator.set("content", contentDom);
 			}
-		}
-	},
-	
-	showLoadingTip: function() {
-	
-		function getLoadingTipDom() {
-			var tipDom = this._loadingTipDom;
-			if (!tipDom) {
-				this._loadingTipDom = tipDom = $DomUtils.xCreate({
-					tagName: "TABLE",
-					className: "i-list-loading d-list-loading",
-					cellPadding: 0,
-					cellSpacing: 0,
-					style: {
-						position: "absolute",
-						left: 0,
-						top: 0,
-						width: "100%",
-						height: "100%",
-						zIndex: 9999
-					},
-					content: {
-						tagName: "TR",
-						content: {
-							tagName: "TD",
-							align: "center",
-							content: [{
-								tagName: "DIV",
-								className: "mask",
-								style: {
-									zIndex: 1,
-									position: "absolute",
-									left: 0,
-									top: 0,
-									width: "100%",
-									height: "100%"
-								}
-							}, {
-								tagName: "DIV",
-								className: "tip",
-								content: [{
-									tagName: "DIV",
-									className: "icon"
-								}, {
-									tagName: "DIV",
-									className: "label",
-									content: $resource("dorado.list.LoadingData")
-								}],
-								style: {
-									zIndex: 2,
-									position: "relative"
-								}
-							}]
-						}
-					}
-				});
-				this._dom.appendChild(tipDom);
-			}
-			return tipDom;
-		}
-		
-		dorado.Toolkits.cancelDelayedAction(this, "$hideLoadingTip");
-		dorado.Toolkits.setDelayedAction(this, "$showLoadingTip", function() {
-			var tipDom = getLoadingTipDom.call(this);
-			$fly(tipDom).show();
-		}, 100);
-	},
-	
-	hideLoadingTip: function() {
-		dorado.Toolkits.cancelDelayedAction(this, "$showLoadingTip");
-		if (this._loadingTipDom) {
-			dorado.Toolkits.setDelayedAction(this, "$hideLoadingTip", function() {
-				$fly(this._loadingTipDom).hide();
-			}, 200);
 		}
 	},
 	
@@ -451,6 +357,26 @@ dorado.widget.ViewPortList = $extend(dorado.widget.AbstractList, /** @scope dora
 	},
 	
 	/**
+	 * @name dorado.widget.ViewPortList#getCurrentItem
+	 * @function
+	 * @return {Object|dorado.Entity} 当前列表项。
+	 * @description 返回当前列表项。
+	 */
+	/**
+	 * @name dorado.widget.ViewPortList#setCurrentItemDom
+	 * @function
+	 * @protected
+	 * @param dom {HTMLElement} 当前列表项DOM元素。
+	 * @description 将列表控件中的某列表项DOM元素设置为当前元素。
+	 */
+	/**
+	 * @name dorado.widget.ViewPortList#getCurrentItemDom
+	 * @function
+	 * @protected
+	 * @return {HTMLElement} 当前列表项DOM元素。
+	 * @description 将列表控件中的某列表项DOM元素设置为当前元素。
+	 */
+	/**
 	 * @name dorado.widget.ViewPortList#scrollItemDomIntoView
 	 * @function
 	 * @protected
@@ -534,6 +460,80 @@ dorado.widget.ViewPortList = $extend(dorado.widget.AbstractList, /** @scope dora
 	removeItemDom: function(dom) {
 		if (this._itemDomMap[dom.itemId] == dom) delete this._itemDomMap[dom.itemId];
 		$fly(dom).remove();
+	},
+	
+	showLoadingTip: function() {
+	
+		function getLoadingTipDom() {
+			var tipDom = this._loadingTipDom;
+			if (!tipDom) {
+				this._loadingTipDom = tipDom = $DomUtils.xCreate({
+					tagName: "TABLE",
+					className: "i-list-loading d-list-loading",
+					cellPadding: 0,
+					cellSpacing: 0,
+					style: {
+						position: "absolute",
+						left: 0,
+						top: 0,
+						width: "100%",
+						height: "100%",
+						zIndex: 9999
+					},
+					content: {
+						tagName: "TR",
+						content: {
+							tagName: "TD",
+							align: "center",
+							content: [{
+								tagName: "DIV",
+								className: "mask",
+								style: {
+									zIndex: 1,
+									position: "absolute",
+									left: 0,
+									top: 0,
+									width: "100%",
+									height: "100%"
+								}
+							}, {
+								tagName: "DIV",
+								className: "tip",
+								content: [{
+									tagName: "DIV",
+									className: "icon"
+								}, {
+									tagName: "DIV",
+									className: "label",
+									content: $resource("dorado.list.LoadingData")
+								}],
+								style: {
+									zIndex: 2,
+									position: "relative"
+								}
+							}]
+						}
+					}
+				});
+				this._dom.appendChild(tipDom);
+			}
+			return tipDom;
+		}
+		
+		dorado.Toolkits.cancelDelayedAction(this, "$hideLoadingTip");
+		dorado.Toolkits.setDelayedAction(this, "$showLoadingTip", function() {
+			var tipDom = getLoadingTipDom.call(this);
+			$fly(tipDom).show();
+		}, 100);
+	},
+	
+	hideLoadingTip: function() {
+		dorado.Toolkits.cancelDelayedAction(this, "$showLoadingTip");
+		if (this._loadingTipDom) {
+			dorado.Toolkits.setDelayedAction(this, "$hideLoadingTip", function() {
+				$fly(this._loadingTipDom).hide();
+			}, 200);
+		}
 	},
 	
 	getScrollingIndicator: function() {

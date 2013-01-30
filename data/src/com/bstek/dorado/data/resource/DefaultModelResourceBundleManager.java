@@ -67,17 +67,25 @@ public class DefaultModelResourceBundleManager implements
 
 			if (locale != null) {
 				String localeSuffix = '.' + locale.toString();
-				resource = modelResource.createRelative(path + localeSuffix
+				try {
+					resource = modelResource.createRelative(path + localeSuffix
+							+ RESOURCE_FILE_SUFFIX);
+					if (resource != null && resource.exists()) {
+						return resource;
+					}
+				} catch (Exception e) {
+					// JBOSS 5.1下安装snowdrop后的VFS在找不到子资源时会抛出异常
+				}
+			}
+
+			try {
+				resource = modelResource.createRelative(path
 						+ RESOURCE_FILE_SUFFIX);
 				if (resource != null && resource.exists()) {
 					return resource;
 				}
-			}
-
-			resource = modelResource
-					.createRelative(path + RESOURCE_FILE_SUFFIX);
-			if (resource != null && resource.exists()) {
-				return resource;
+			} catch (Exception e) {
+				// JBOSS 5.1下安装snowdrop后的VFS在找不到子资源时会抛出异常
 			}
 		}
 		return null;

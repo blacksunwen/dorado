@@ -37,6 +37,7 @@ import com.bstek.dorado.view.widget.InnerElementList;
 @ResourceInjection(subObjectMethod = "getSection")
 public class Accordion extends Control {
 	private List<Section> sections = new InnerElementList<Section>(this);
+	private int currentSection;
 	private boolean animate;
 
 	public void addSection(Section section) {
@@ -56,6 +57,37 @@ public class Accordion extends Control {
 	@ClientProperty
 	public List<Section> getSections() {
 		return sections;
+	}
+
+	public int getCurrentSection() {
+		return currentSection;
+	}
+
+	public void setCurrentSection(int currentSection) {
+		this.currentSection = currentSection;
+	}
+
+	public void setCurrentSection(Section currentSection) {
+		int i = sections.indexOf(currentSection);
+		if (i >= 0) {
+			setCurrentSection(i);
+		} else {
+			throw new IllegalArgumentException(
+					"The current Section must belongs to this SectionControl.");
+		}
+	}
+
+	public void setCurrentSection(String currentSectionName) {
+		int i = 0;
+		for (Section section : sections) {
+			if (currentSectionName.equals(section.getName())) {
+				setCurrentSection(i);
+				return;
+			}
+			i++;
+		}
+		throw new IllegalArgumentException("No such Section ["
+				+ currentSectionName + "] in SectionControl.");
 	}
 
 	public boolean isAnimate() {
