@@ -126,7 +126,7 @@ public class DefaultModelResourceBundleManager implements
 				element = new Element(cacheKey, bundle);
 				cache.put(element);
 			}
-			return (ResourceBundle) element.getValue();
+			return (ResourceBundle) element.getObjectValue();
 		}
 	}
 

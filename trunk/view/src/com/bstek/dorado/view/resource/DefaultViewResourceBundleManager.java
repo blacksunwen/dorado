@@ -130,7 +130,7 @@ public class DefaultViewResourceBundleManager implements
 				element = new Element(cacheKey, bundle);
 				cache.put(element);
 			}
-			return (ResourceBundle) element.getValue();
+			return (ResourceBundle) element.getObjectValue();
 		}
 	}
 
