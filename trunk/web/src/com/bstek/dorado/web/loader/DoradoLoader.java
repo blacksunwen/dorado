@@ -298,7 +298,8 @@ public class DoradoLoader {
 					+ "Package ["
 					+ packageInfo.getName()
 					+ " - "
-					+ packageInfo.getVersion()
+					+ StringUtils.defaultIfBlank(packageInfo.getVersion(),
+							"<Unknown Version>")
 					+ "] found."
 					+ ((packageInfo.isEnabled() ? "" : " #DISABLED# ")));
 		}
