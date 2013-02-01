@@ -700,9 +700,14 @@
 									ui.position.top = dialogXY.top + vertChange + vertOverflow;
 								}
 							}
+<<<<<<< .working
 
 							ui.position.left += dialogHelperOffset.left;
 							ui.position.top += dialogHelperOffset.top;
+=======
+							ui.position.left += dialogHelperOffset.left;
+							ui.position.top += dialogHelperOffset.top;
+>>>>>>> .merge-right.r2283
 						},
 
 						stop: function(event, ui) {
