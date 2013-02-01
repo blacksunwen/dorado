@@ -23,6 +23,7 @@ import org.springframework.web.servlet.DispatcherServlet;
 
 import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.web.ConsoleUtils;
+import com.bstek.dorado.web.loader.DoradoLoader;
 
 /**
  * 用于提供dorado引擎服务的Servlet，同时可用于在Web服务器启动时完成dorado引擎的初始化。
