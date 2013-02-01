@@ -15,12 +15,14 @@ package com.bstek.dorado.web.servlet;
 import java.util.List;
 
 import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
 import org.springframework.web.context.ContextLoaderListener;
 
+import com.bstek.dorado.web.listener.DelegatingServletContextListenersManager;
 import com.bstek.dorado.web.loader.DoradoLoader;
 
 /**
@@ -51,4 +53,29 @@ public class SpringContextLoaderListener extends ContextLoaderListener {
 			logger.error(e, e);
 		}
 	}
+
+	@Override
+	public void contextInitialized(ServletContextEvent event) {
+		try {
+			DelegatingServletContextListenersManager
+					.fireContextInitialized(event);
+		} catch (Exception e) {
+			logger.error(e, e);
+		}
+
+		super.contextInitialized(event);
+	}
+
+	@Override
+	public void contextDestroyed(ServletContextEvent event) {
+		super.contextDestroyed(event);
+
+		try {
+			DelegatingServletContextListenersManager
+					.fireContextDestroyed(event);
+		} catch (Exception e) {
+			logger.error(e, e);
+		}
+	}
+
 }

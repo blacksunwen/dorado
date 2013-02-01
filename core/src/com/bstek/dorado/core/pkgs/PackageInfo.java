@@ -12,12 +12,15 @@
 
 package com.bstek.dorado.core.pkgs;
 
+import javax.servlet.ServletContextListener;
+
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2011-7-22
  */
 public class PackageInfo {
 	private String name;
+	private String addonVersion;
 	private String version;
 	private Dependence[] depends;
 	private boolean enabled = true;
@@ -37,6 +40,7 @@ public class PackageInfo {
 
 	private PackageConfigurer configurer;
 	private PackageListener listener;
+	private ServletContextListener servletContextListener;
 	private String propertiesLocations;
 	private String contextLocations;
 	private String servletContextLocations;
@@ -49,6 +53,14 @@ public class PackageInfo {
 
 	public String getName() {
 		return name;
+	}
+
+	public String getAddonVersion() {
+		return addonVersion;
+	}
+
+	public void setAddonVersion(String addonVersion) {
+		this.addonVersion = addonVersion;
 	}
 
 	public String getVersion() {
@@ -129,6 +141,15 @@ public class PackageInfo {
 
 	public void setListener(PackageListener listener) {
 		this.listener = listener;
+	}
+
+	public ServletContextListener getServletContextListener() {
+		return servletContextListener;
+	}
+
+	public void setServletContextListener(
+			ServletContextListener servletContextListener) {
+		this.servletContextListener = servletContextListener;
 	}
 
 	public String getPropertiesLocations() {

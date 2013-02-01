@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.servlet.ServletContextListener;
+
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -38,7 +40,6 @@ public final class PackageManager {
 	private static final Log logger = LogFactory.getLog(PackageManager.class);
 
 	private static final String PACKAGE_PROPERTIES_LOCATION = "META-INF/dorado-package.properties";
-	private static final String UNKNOWN_VERSION = "<Unknown Version>";
 
 	private static final String AGPL = "AGPL";
 	private static final String BSDN_MEMBER = "BSDN-Member";
@@ -318,8 +319,9 @@ public final class PackageManager {
 
 				PackageInfo packageInfo = new PackageInfo(packageName);
 
-				packageInfo.setVersion(StringUtils.defaultIfEmpty(
-						properties.getProperty("version"), UNKNOWN_VERSION));
+				packageInfo.setAddonVersion(properties
+						.getProperty("addonVersion"));
+				packageInfo.setVersion(properties.getProperty("version"));
 
 				String dependsText = properties.getProperty("depends");
 				if (StringUtils.isNotBlank(dependsText)) {
@@ -375,6 +377,16 @@ public final class PackageManager {
 					Class<?> type = ClassUtils.forName(listenerClass);
 					packageInfo.setListener((PackageListener) type
 							.newInstance());
+				}
+
+				String servletContextListenerClass = properties
+						.getProperty("servletContextListener");
+				if (StringUtils.isNotBlank(servletContextListenerClass)) {
+					Class<?> type = ClassUtils
+							.forName(servletContextListenerClass);
+					packageInfo
+							.setServletContextListener((ServletContextListener) type
+									.newInstance());
 				}
 
 				if (packageMap.containsKey(packageName)) {
