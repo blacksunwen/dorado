@@ -94,8 +94,8 @@ public class DataResolverInterceptorInvoker implements MethodInterceptor {
 				interceptor.getClass(), methodName);
 		if (methods.length == 0) {
 			throw new NoSuchMethodException(resourceManager.getString(
-					"dorado.common/methodNotFoundInInterceptor", interceptorName,
-					methodName));
+					"dorado.common/methodNotFoundInInterceptor",
+					interceptorName, methodName));
 		}
 
 		DataResolver dataResolver = (DataResolver) methodInvocation.getThis();

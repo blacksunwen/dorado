@@ -21,6 +21,8 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
 import org.springframework.web.context.ContextLoaderListener;
 
+import com.bstek.dorado.web.loader.DoradoLoader;
+
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-12-7

@@ -59,6 +59,5 @@ public class ResolverRegister implements ApplicationContextAware {
 	public void setApplicationContext(ApplicationContext applicationContext)
 			throws BeansException {
 		resolverRegisterProcessor.addResolverRegister(this);
-
 	}
 }

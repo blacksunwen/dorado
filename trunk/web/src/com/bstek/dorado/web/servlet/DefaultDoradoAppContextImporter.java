@@ -25,6 +25,7 @@ import org.w3c.dom.Element;
 
 import com.bstek.dorado.spring.DoradoAppContextImporter;
 import com.bstek.dorado.web.ConsoleUtils;
+import com.bstek.dorado.web.loader.DoradoLoader;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)

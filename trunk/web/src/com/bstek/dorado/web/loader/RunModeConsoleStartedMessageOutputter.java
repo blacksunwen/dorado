@@ -10,7 +10,9 @@
  * at http://www.bstek.com/contact.
  */
 
-package com.bstek.dorado.web;
+package com.bstek.dorado.web.loader;
+
+import java.io.Writer;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -18,23 +20,21 @@ import com.bstek.dorado.core.Configure;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
- * @since 2010-12-7
+ * @since 2013-1-22
  */
-public abstract class ConsoleUtils {
+public class RunModeConsoleStartedMessageOutputter extends
+		ConsoleStartedMessageOutputter {
 
-	public static void outputConfigureItem(String item) {
-		String value = Configure.getString(item);
-		if (StringUtils.isEmpty(value)) {
-			value = "<empty>";
+	@Override
+	public void output(Writer writer) throws Exception {
+		String runMode = Configure.getString("core.runMode");
+		if (StringUtils.isNotEmpty(runMode)
+				&& !"production".equalsIgnoreCase(runMode)) {
+			writer.append("WARN:\n")
+					.append("Dorado is currently running in "
+							+ runMode
+							+ " mode, you may need to change the setting for \"core.runMode\".");
 		}
-		outputLoadingInfo("[" + item + "=" + value + "]");
 	}
 
-	public static void outputLoadingInfo(String s) {
-		System.out.println(" * " + s);
-	}
-
-	public static void outputLoadingInfo() {
-		outputLoadingInfo("");
-	}
 }

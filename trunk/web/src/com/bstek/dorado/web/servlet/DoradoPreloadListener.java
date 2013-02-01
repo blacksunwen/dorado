@@ -19,6 +19,8 @@ import javax.servlet.ServletContextListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.bstek.dorado.web.loader.DoradoLoader;
+
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2011-1-21
