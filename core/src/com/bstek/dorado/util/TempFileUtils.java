@@ -59,8 +59,9 @@ public final class TempFileUtils {
 					File lockFile = new File(file, LOCK_FILE);
 					if (lockFile.exists()) {
 						try {
-							FileChannel channel = new RandomAccessFile(
-									lockFile, "rw").getChannel();
+							RandomAccessFile raf = new RandomAccessFile(
+									lockFile, "rw");
+							FileChannel channel = raf.getChannel();
 							try {
 								FileLock lock = channel.tryLock();
 								if (lock == null) {
@@ -71,6 +72,7 @@ public final class TempFileUtils {
 							} catch (OverlappingFileLockException e) {
 								continue;
 							} finally {
+								raf.close();
 								channel.close();
 							}
 						} catch (IOException e) {
@@ -115,8 +117,8 @@ public final class TempFileUtils {
 						+ tempDir.getAbsolutePath() + "\" failed.");
 			} else {
 				File lockFile = new File(tempDir, LOCK_FILE);
-				FileChannel channel = new RandomAccessFile(lockFile, "rw")
-						.getChannel();
+				RandomAccessFile raf = new RandomAccessFile(lockFile, "rw");
+				FileChannel channel = raf.getChannel();
 				FileLock lock = null;
 				try {
 					lock = channel.tryLock();
@@ -127,6 +129,8 @@ public final class TempFileUtils {
 				} catch (OverlappingFileLockException e) {
 					throw new IllegalStateException("\"" + tempDir
 							+ "\" is already locked.", e);
+				} finally {
+					raf.close();
 				}
 			}
 		}
