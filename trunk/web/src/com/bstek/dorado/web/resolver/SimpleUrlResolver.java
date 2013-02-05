@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
-import org.springframework.web.servlet.view.RedirectView;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -26,13 +25,17 @@ import org.springframework.web.servlet.view.RedirectView;
 public class SimpleUrlResolver implements Controller {
 	private String url;
 
-	public SimpleUrlResolver(String url) {
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
 		this.url = url;
 	}
 
 	public ModelAndView handleRequest(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		return new ModelAndView(new RedirectView(url));
+		return new ModelAndView(url);
 	}
 
 }

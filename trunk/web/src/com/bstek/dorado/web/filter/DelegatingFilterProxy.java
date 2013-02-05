@@ -15,8 +15,10 @@ package com.bstek.dorado.web.filter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeSet;
 
 import javax.servlet.Filter;
@@ -61,8 +63,18 @@ public class DelegatingFilterProxy implements Filter {
 			if (targetFilterMap.isEmpty()) {
 				targetFilters = Collections.EMPTY_LIST;
 			} else {
-				TreeSet<DelegatingFilter> treeSet = new TreeSet<DelegatingFilter>(
-						targetFilterMap.values());
+				Set<DelegatingFilter> treeSet = new TreeSet<DelegatingFilter>(
+						new Comparator<DelegatingFilter>() {
+							public int compare(DelegatingFilter o1,
+									DelegatingFilter o2) {
+								int gap = o1.getOrder() - o2.getOrder();
+								if (gap != 0) {
+									return gap;
+								}
+								return (o1 == o2) ? 0 : 1;
+							}
+						});
+				treeSet.addAll(targetFilterMap.values());
 				targetFilters = new ArrayList<DelegatingFilter>(treeSet);
 			}
 		}

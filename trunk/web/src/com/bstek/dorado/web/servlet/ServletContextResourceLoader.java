@@ -18,6 +18,8 @@ import java.lang.reflect.Constructor;
 import javax.servlet.ServletContext;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.core.io.ResourceLoader;
 
 import com.bstek.dorado.core.io.BaseResourceLoader;
@@ -31,11 +33,13 @@ import com.bstek.dorado.web.ConsoleUtils;
  * @since 2011-1-12
  */
 public class ServletContextResourceLoader extends BaseResourceLoader {
+	private static final Log logger = LogFactory
+			.getLog(ServletContextResourceLoader.class);
+
 	private ServletContext servletContext;
 	private ResourceLoader resourceLoader;
 
-	public ServletContextResourceLoader(ServletContext servletContext)
-			throws Exception {
+	public ServletContextResourceLoader(ServletContext servletContext) {
 		this.servletContext = servletContext;
 		String resourceLoaderClass = servletContext
 				.getInitParameter("resourceLoaderClass");
@@ -43,13 +47,17 @@ public class ServletContextResourceLoader extends BaseResourceLoader {
 			ConsoleUtils.outputLoadingInfo("[resourceLoaderClass="
 					+ resourceLoaderClass + "]");
 
-			@SuppressWarnings("unchecked")
-			Class<ResourceLoader> type = ClassUtils
-					.forName(resourceLoaderClass);
-			Constructor<ResourceLoader> constr = type
-					.getConstructor(new Class[] { ClassLoader.class });
-			resourceLoader = constr.newInstance(new Object[] { getClass()
-					.getClassLoader() });
+			try {
+				@SuppressWarnings("unchecked")
+				Class<ResourceLoader> type = ClassUtils
+						.forName(resourceLoaderClass);
+				Constructor<ResourceLoader> constr = type
+						.getConstructor(new Class[] { ClassLoader.class });
+				resourceLoader = constr.newInstance(new Object[] { getClass()
+						.getClassLoader() });
+			} catch (Exception e) {
+				logger.error(e, e);
+			}
 		}
 	}
 

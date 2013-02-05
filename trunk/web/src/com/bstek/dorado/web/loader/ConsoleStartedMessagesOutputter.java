@@ -15,6 +15,9 @@ package com.bstek.dorado.web.loader;
 import java.io.BufferedReader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -32,9 +35,23 @@ import com.bstek.dorado.web.ConsoleUtils;
  */
 public class ConsoleStartedMessagesOutputter implements BeanFactoryAware {
 	private BeanFactory beanFactory;
+	private List<ConsoleStartedMessageOutputter> messageOutputters;
 
 	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
 		this.beanFactory = beanFactory;
+	}
+
+	public void setMessageOutputters(
+			List<ConsoleStartedMessageOutputter> messageOutputters) {
+		this.messageOutputters = messageOutputters;
+	}
+
+	public void addMessageOutputter(
+			ConsoleStartedMessageOutputter messageOutputter) {
+		if (messageOutputters == null) {
+			messageOutputters = new ArrayList<ConsoleStartedMessageOutputter>();
+		}
+		messageOutputters.add(messageOutputter);
 	}
 
 	public void output() throws Exception {
@@ -43,7 +60,22 @@ public class ConsoleStartedMessagesOutputter implements BeanFactoryAware {
 
 		boolean headerOutputted = false;
 		Set<ConsoleStartedMessageOutputter> outputters = new TreeSet<ConsoleStartedMessageOutputter>(
-				outputterMap.values());
+				new Comparator<ConsoleStartedMessageOutputter>() {
+					public int compare(ConsoleStartedMessageOutputter o1,
+							ConsoleStartedMessageOutputter o2) {
+						int gap = o1.getOrder() - o2.getOrder();
+						if (gap != 0) {
+							return gap;
+						}
+						return (o1 == o2) ? 0 : 1;
+					}
+				});
+
+		outputters.addAll(outputterMap.values());
+		if (messageOutputters != null) {
+			outputters.addAll(messageOutputters);
+		}
+
 		for (ConsoleStartedMessageOutputter outputter : outputters) {
 			StringWriter writer = new StringWriter();
 			try {
@@ -56,6 +88,11 @@ public class ConsoleStartedMessagesOutputter implements BeanFactoryAware {
 						ConsoleUtils
 								.outputLoadingInfo("========================");
 						ConsoleUtils.outputLoadingInfo();
+					} else {
+						ConsoleUtils.outputLoadingInfo();
+						ConsoleUtils
+								.outputLoadingInfo("------------------------");
+						ConsoleUtils.outputLoadingInfo();
 					}
 
 					StringReader sr = new StringReader(content);
@@ -65,7 +102,6 @@ public class ConsoleStartedMessagesOutputter implements BeanFactoryAware {
 						ConsoleUtils.outputLoadingInfo(line);
 						line = reader.readLine();
 					}
-					ConsoleUtils.outputLoadingInfo();
 				}
 			} finally {
 				writer.close();
@@ -73,6 +109,7 @@ public class ConsoleStartedMessagesOutputter implements BeanFactoryAware {
 		}
 
 		if (headerOutputted) {
+			ConsoleUtils.outputLoadingInfo();
 			ConsoleUtils.outputLoadingInfo("========================");
 			ConsoleUtils.outputLoadingInfo();
 		}

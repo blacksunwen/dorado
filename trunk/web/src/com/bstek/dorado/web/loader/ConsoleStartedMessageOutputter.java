@@ -18,9 +18,8 @@ import java.io.Writer;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2013-1-22
  */
-public abstract class ConsoleStartedMessageOutputter implements
-		Comparable<ConsoleStartedMessageOutputter> {
-	private int order;
+public abstract class ConsoleStartedMessageOutputter {
+	private int order = 999;
 
 	public int getOrder() {
 		return order;
@@ -31,8 +30,4 @@ public abstract class ConsoleStartedMessageOutputter implements
 	}
 
 	public abstract void output(Writer writer) throws Exception;
-
-	public int compareTo(ConsoleStartedMessageOutputter o) {
-		return o.getOrder() - order;
-	}
 }

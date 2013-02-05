@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2013-1-24
  */
-public abstract class DelegatingFilter implements Comparable<DelegatingFilter> {
+public abstract class DelegatingFilter {
 	private int order = 999;
 	private String urlPattern;
 
@@ -46,8 +46,4 @@ public abstract class DelegatingFilter implements Comparable<DelegatingFilter> {
 	public abstract void doFilter(HttpServletRequest request,
 			HttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException;
-
-	public int compareTo(DelegatingFilter o) {
-		return o.getOrder() - order;
-	}
 }
