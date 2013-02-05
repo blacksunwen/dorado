@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:d="http://www.bstek.com/dorado/schema" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
+		http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dorado-7.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+	<!--引入资源配置文件 -->
+	<bean parent="dorado.packagesConfigLoader">
+		<property name="configLocation"
+			value="classpath:com/bstek/dorado/console/packages-config.xml" />
+	</bean>
+	<!-- 指定view加载路径 -->
+	<bean parent="dorado.viewConfigFactoryRegister">
+		<property name="viewNamePattern" value="com.bstek.dorado.console.*" />
+		<property name="order" value="1"></property>
+		<property name="viewConfigFactory">
+			<bean parent="dorado.xmlViewConfigDefinitionFactory">
+				<property name="pathPrefix" value="classpath:" />
+				<property name="pathSubfix" value=".view.xml" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="dorado.console.Starter" class="com.bstek.dorado.console.Starter">
+		<property name="order" value="10" />
+	</bean>
+	<bean id="dorado.console.main" class="com.bstek.dorado.console.main.Main">
+		<property name="addonService" ref="dorado.console.addonService" />
+	</bean>
+	<bean id="dorado.console.login" class="com.bstek.dorado.console.login.Login" />
+	<bean id="dorado.consoleLogin" class="com.bstek.dorado.console.login.DefaultConsoleLogin">
+		<property name="consoleStartedMessagesOutputter" ref="dorado.consoleStartedMessagesOutputter" />
+	</bean>
+	<!-- 运行时环境 -->
+	<bean id="dorado.console.systemPropertyController"
+		class="com.bstek.dorado.console.runtime.SystemPropertyController">
+	</bean>
+	<bean id="dorado.console.doradoConfigController" class="com.bstek.dorado.console.runtime.DoradoConfigController" />
+	<!--Paser -->
+	<bean id="dorado.console.parserTree" class="com.bstek.dorado.console.parser.ParserTree" />
+	<!-- 控制台日志 -->
+	<bean id="dorado.console.systemOutMonitor"
+		class="com.bstek.dorado.console.system.log.console.SystemOutMonitor" />
+	<!-- 文件读取 -->
+	<bean id="dorado.console.fileReaderManager"
+		class="com.bstek.dorado.console.system.log.file.FileReaderManager" />
+	<bean id="dorado.console.fileReaderService"
+		class="com.bstek.dorado.console.system.log.file.FileReaderService">
+		<property name="fileReaderManager" ref="dorado.console.fileReaderManager"></property>
+	</bean>
+	<!--Dorado Object -->
+	<bean id="dorado.console.doradoObjectService" class="com.bstek.dorado.console.web.DoradoObjectService" />
+	<!--Dorado Addon -->
+	<bean id="dorado.console.addonService" class="com.bstek.dorado.console.addon.AddonService" />
+	<bean id="dorado.console.performanceController"
+		class="com.bstek.dorado.console.performance.PerformanceController">
+		<property name="performanceDao" ref="dorado.console.performanceDao"></property>
+	</bean>
+
+	<bean id="dorado.console.outputterService" class="com.bstek.dorado.console.web.OutputterService">
+		<property name="clientOutputHelper" ref="dorado.clientOutputHelper"></property>
+	</bean>
+	<bean id="dorado.console.packagesConfigService" class="com.bstek.dorado.console.web.PackagesConfigService" />
+
+	<!-- Base Dao -->
+	<bean id="dorado.console.baseDao" class="com.bstek.dorado.console.jdbc.BaseDao">
+		<property name="baseStoreSupport" ref="dorado.sqlBaseStore.doradoConsole"></property>
+	</bean>
+	<!-- Performance Dao -->
+	<bean id="dorado.console.performanceDao" class="com.bstek.dorado.console.performance.dao.PerformanceDao">
+		<property name="baseStoreSupport" ref="dorado.sqlBaseStore.doradoConsole"></property>
+	</bean>
+
+	<!-- 数据库注册 -->
+	<bean id="dorado.sqlBaseStore.doradoConsole" parent="dorado.sqlBaseStore">
+		<property name="version" value="1" />
+		<property name="initScriptFiles">
+			<list>
+				<value>classpath:com/bstek/dorado/console/dorado-console-store.sql
+				</value>
+			</list>
+		</property>
+	</bean>
+
+</beans>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Arguments/>
+  <Context/>
+  <Model/>
+  <View layout="anchor" listener="spring:dorado.console.main#onViewInit">
+    <HtmlContainer layoutConstraint="left:150;top:50">
+      <Property name="style">
+        <Property name="background-image">url(./dorado/console/images/dorado7.png)</Property>
+        <Property name="background-repeat">no-repeat</Property>
+      </Property>
+      <Property name="width">550</Property>
+      <Property name="height">130</Property>
+      <Property name="contentOverflow">hidden</Property>
+    </HtmlContainer>
+    <Label layoutConstraint="left:40;top:90;anchorTop:previous">
+      <Property name="className">label</Property>
+      <Property name="text">Dorado Core </Property>
+      <Property name="width">800</Property>
+      <Property name="height">30</Property>
+    </Label>
+    <Container layout="hbox" layoutConstraint="left:40;anchorTop:previous">
+      <Property name="height">30</Property>
+      <Label>
+        <Property name="width">100</Property>
+        <Property name="text">${res.version}</Property>
+        <Property name="height">100%</Property>
+        <Property name="className">content</Property>
+      </Label>
+      <Label id="core_version">
+        <Property name="height">100%</Property>
+        <Property name="className">content</Property>
+      </Label>
+    </Container>
+    <Label layoutConstraint="left:40;top:20;anchorTop:previous">
+      <Property name="className">label</Property>
+      <Property name="text">Dorado Console</Property>
+      <Property name="width">800</Property>
+      <Property name="height">30</Property>
+    </Label>
+    <Container layout="hbox" layoutConstraint="left:40;anchorTop:previous">
+      <Property name="height">30</Property>
+      <Label>
+        <Property name="width">100</Property>
+        <Property name="text">${res.version}</Property>
+        <Property name="height">100%</Property>
+        <Property name="className">content</Property>
+      </Label>
+      <Label id="console_version">
+        <Property name="height">100%</Property>
+        <Property name="className">content</Property>
+      </Label>
+    </Container>
+  </View>
+</ViewConfig>
