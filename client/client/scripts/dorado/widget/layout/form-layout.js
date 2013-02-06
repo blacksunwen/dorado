@@ -444,11 +444,8 @@
 			if (this._stretchWidth || this.dynaColCount > 0) {
 				table.style.width = (containerWidth + adjust) + "px";
 			}
-			if (dorado.Browser.msie && dorado.Browser.version < 8) {
-				table.style.margin = padding + "px";
-			} else {
-				table.style.padding = padding + "px";
-			}
+			table.style.margin = padding + "px";
+
 			containerWidth -= colPadding * (this._colWidths.length - 1);
 			var self = this, changedCols = [];
 			for (var i = 0; i < this._colWidths.length; i++) {
