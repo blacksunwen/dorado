@@ -10,7 +10,7 @@
  * at http://www.bstek.com/contact.
  */
 
-(function() {
+dorado.debug.initProcedures.push(function() {
 	var ENTITY_STATE_MAP = {
 		0: "none",
 		1: "new",
@@ -686,4 +686,4 @@
 			}
 		}
 	});
-})();
+});

@@ -10,7 +10,7 @@
  * at http://www.bstek.com/contact.
  */
 
-(function() {
+dorado.debug.initProcedures.push(function() {
 	var oldAjaxResult = dorado.util.AjaxResult;
 
 	var ajaxResultPool = [];
@@ -86,4 +86,4 @@
 		caption: "Ajax",
 		control: ajaxGrid
 	});
-})();
+});

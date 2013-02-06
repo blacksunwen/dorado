@@ -10,7 +10,7 @@
  * at http://www.bstek.com/contact.
  */
 
-(function(){
+dorado.debug.initProcedures.push(function(){
 	function HotKey(config) {
 		for (var prop in config) {
 			this[prop] = config[prop];
@@ -118,4 +118,4 @@
 			}
 		}
 	});
-})();
+});

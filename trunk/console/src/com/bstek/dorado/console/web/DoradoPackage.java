@@ -3,7 +3,7 @@ package com.bstek.dorado.console.web;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import com.bstek.dorado.web.loader.Package;
+import com.bstek.dorado.view.loader.Package;
 
 /**
  * Dorado Package

@@ -94,7 +94,7 @@
 		<Package name="debugger-skin" pattern="dorado-css">
 			skins/~current/debugger
 		</Package>
-		<Package name="debugger" pattern="dorado-js" depends="tree-grid,debugger-skin">
+		<Package name="debugger" pattern="dorado-js" depends="base-widget,debugger-skin">
 			scripts/dorado/debugger
 		</Package>
 	</Packages>

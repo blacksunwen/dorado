@@ -36,7 +36,9 @@
 	 * @name dorado.debug
 	 * @namespace Debugger使用的命名空间。
 	 */
-	dorado.debug = {};
+	dorado.debug = {
+		initProcedures: []
+	};
 
 	/**
 	 * @author Frank Zhang (mailto:frank.zhang@bstek.com)
@@ -161,11 +163,20 @@
 		 * 显示dorado.Debugger。
 		 */
 		show: function() {
-			var deb = dorado.Debugger;
-			if (!deb.inited) {
-				deb.init();
-			}
-			deb.dialog.show();
+			$import("tree-grid", function() {
+				if (dorado.debug.initProcedures) {
+					dorado.debug.initProcedures.each(function(proc) {
+						proc.call();
+					});
+					delete dorado.debug.initProcedures;
+				}
+				
+				var deb = dorado.Debugger;
+				if (!deb.inited) {
+					deb.init();
+				}
+				deb.dialog.show();
+			});
 		}
 	};
 
