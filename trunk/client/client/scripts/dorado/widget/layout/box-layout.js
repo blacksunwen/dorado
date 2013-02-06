@@ -132,11 +132,7 @@
 			var domCache = this.domCache || {}, newDomCache = this.domCache = {};
 			
 			var padding = parseInt(this._padding) || 0, regionPadding = this._regionPadding || 0;
-			if (dorado.Browser.msie && dorado.Browser.version < 8) {
-				table.style.margin = padding + "px";
-			} else {
-				table.style.padding = padding + "px";
-			}
+			table.style.margin = padding + "px";
 			
 			var realContainerWidth = parentDom.clientWidth - padding * 2;
 			var realContainerHeight = parentDom.clientHeight - padding * 2;
@@ -359,11 +355,7 @@
 			var domCache = this.domCache || {}, newDomCache = this.domCache = {};
 			
 			var padding = parseInt(this._padding) || 0, regionPadding = this._regionPadding || 0;
-			if (dorado.Browser.msie && dorado.Browser.version < 8) {
-				table.style.margin = padding + "px";
-			} else {
-				table.style.padding = padding + "px";
-			}
+			table.style.margin = padding + "px";
 			
 			var realContainerWidth = parentDom.clientWidth - padding * 2;
 			var realContainerHeight = parentDom.clientHeight - padding * 2;
