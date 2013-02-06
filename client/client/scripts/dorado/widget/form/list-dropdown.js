@@ -204,6 +204,9 @@
 				config.stretchColumnsMode = "stretchableColumns";
 				config.columns = this._columns;
 				config.readOnly = true;
+				if (!dorado.widget.Grid) {
+					throw new dorado.ResourceException("dorado.core.packageMissingError", "grid");
+				}
 				rowList = new dorado.widget.Grid(config);
 			} else {
 				config.width = "100%";
@@ -391,8 +394,7 @@
 			var realFilterValue;
 			if (filterValue != arg.filterValue) {
 				realFilterValue != arg.filterValue
-			}
-			else if (filterValue) {
+			} else if (filterValue) {
 				realFilterValue = filterValue.toLowerCase();
 			}
 			

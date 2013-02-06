@@ -405,14 +405,14 @@ var _NULL_FUNCTION = function(){};
 		markRequestLoaded(request);
 	}
 
-	function loadResources(requests, options) {
+	function doLoadResources(requests, options) {
 		for (var i = 0; i < requests.length; i++) {
 			var request = requests[i];
 			loadResource(request, options);
 		}
 	}
 
-	function doLoadResources(requests, options, callback) {
+	function loadResources(requests, options, callback) {
 		try {
 			if (callback) {
 				var scope = options ? options.scope : null;
@@ -423,9 +423,9 @@ var _NULL_FUNCTION = function(){};
 				}
 			} else if (requests.length) {
 				if (!(/loaded|complete/.test($readyState || document.readyState))) {
-					loadResources(requests, options);
+					doLoadResources(requests, options);
 				} else {
-					throw new Error("Can not load script synchronous after the document is loaded.");
+					throw new Error("Can not load script synchronous after the document is ready.");
 				}
 			}
 		}
@@ -538,7 +538,7 @@ var _NULL_FUNCTION = function(){};
 		}
 
 		pkgs = getNeededs(pkgs);
-		doLoadResources(getRequests(pkgs), options, callback);
+		loadResources(getRequests(pkgs), options, callback);
 	};
 
 	/**
@@ -623,6 +623,6 @@ var _NULL_FUNCTION = function(){};
 				contentType: contentType || options.contentType || $packagesConfig.defaultContentType
 			});
 		}
-		doLoadResources(requests, options, callback);
+		loadResources(requests, options, callback);
 	};
 })();

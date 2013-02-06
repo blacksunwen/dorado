@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Map;
 
 import com.bstek.dorado.annotation.DataProvider;
+import com.bstek.dorado.view.loader.Package;
+import com.bstek.dorado.view.loader.PackagesConfig;
+import com.bstek.dorado.view.loader.PackagesConfigManager;
 import com.bstek.dorado.web.DoradoContext;
-import com.bstek.dorado.web.loader.Package;
-import com.bstek.dorado.web.loader.PackagesConfig;
-import com.bstek.dorado.web.loader.PackagesConfigManager;
 
 /**
  * Packages Config Service
@@ -32,7 +32,7 @@ public class PackagesConfigService {
 		Iterator<String> iterator = map.keySet().iterator();
 		while (iterator.hasNext()) {
 			String name = (String) iterator.next();
-			doradoPackage=new DoradoPackage(map.get(name));
+			doradoPackage = new DoradoPackage(map.get(name));
 			list.add(doradoPackage);
 		}
 

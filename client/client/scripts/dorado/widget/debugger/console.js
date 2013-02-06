@@ -10,7 +10,7 @@
  * at http://www.bstek.com/contact.
  */
 
-(function() {
+dorado.debug.initProcedures.push(function() {
 	var LOG_LEVELS = {
 		debug: 10,
 		info: 9,
@@ -376,4 +376,4 @@
             }
         }
     }
-})();
+});
