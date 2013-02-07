@@ -164,7 +164,6 @@ jQuery.fn.shadow = function(options) {
 					shadow = new dorado.util.Shadow(options);
 					jQuery.data(element, "blockShadow", shadow);
 					element.onresize = function() {
-						//ie9 will get left == 0 && top == 0 in this event
 						var disabled = jQuery.data(element, "blockShadowDisabled");
 						if (!disabled) {
 							setTimeout(function() {
