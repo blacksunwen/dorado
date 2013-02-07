@@ -320,7 +320,7 @@
         $.event.special[virtualEventNames[i]] = getSpecialEventObject(virtualEventNames[i]);
     }
 
-    if (false && eventCaptureSupported) {//基本上手机浏览器都支持
+    if (eventCaptureSupported) {	//基本上手机浏览器都支持
         document.addEventListener("click", function (e) {
             var cnt = clickBlockList.length, target = e.target, x, y, ele, i, o, touchID;
             if (cnt) {
