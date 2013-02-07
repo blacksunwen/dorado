@@ -482,7 +482,7 @@ dorado.widget.toolbar.Button = $extend(dorado.widget.Button, {
 	$className: "dorado.widget.toolbar.Button",
 
 	constructor: function(config) {
-		var items = config.items;
+		var items = config ? config.items : null;
 		if (items) {
 			delete config.items;
 		}

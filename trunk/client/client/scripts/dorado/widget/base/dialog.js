@@ -249,7 +249,7 @@
 					}
 
 					if (dialog._draggable) {
-						$dom.addClass("i-dialog-resizeable d-dialog-draggable").draggable("enable");
+						$dom.addClass("i-dialog-draggable d-dialog-draggable").draggable("enable");
 					}
 				}
 			}
@@ -317,7 +317,7 @@
 				}
 
 				if (dialog._draggable) {
-					domEl.removeClass("i-dialog-resizeable d-dialog-draggable").draggable("disable");
+					domEl.removeClass("i-dialog-draggable d-dialog-draggable").draggable("disable");
 				}
 
 				dialog.fireEvent("onMaximize", dialog);
