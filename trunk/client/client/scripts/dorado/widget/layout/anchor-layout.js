@@ -161,7 +161,7 @@
 			}
 		},
 		
-		processOverflow: function(dom) {			
+		processOverflow: function(dom) {
 			var overflowed = false, padding = parseInt(this._padding) || 0;
 			var width = this._maxRagionRight;
 			if (width > 0 && width > dom.offsetWidth) {
@@ -213,9 +213,7 @@
 				}
 			} else {
 				var oldWidth = region.realWidth, oldHeight = region.realHeight;
-				if (controlDom.parentNode != dom ||
-				controlDom.offsetWidth != oldWidth ||
-				controlDom.offsetHeight != oldHeight) {
+				if (controlDom.parentNode != dom || controlDom.offsetWidth != oldWidth || controlDom.offsetHeight != oldHeight) {
 					this.refresh();
 				}
 			}
@@ -276,18 +274,14 @@
 				if (l.constructor == String && l.match('%')) {
 					var rate = lp = parseInt(l);
 					if (!isNaN(rate)) {
-						left = rate * realContainerWidth / 100 +
-						regionPadding;
+						left = rate * realContainerWidth / 100 + regionPadding;
 					}
 				}
 				if (left < 0) {
 					var anchorRegion = getAnchorRegion.call(this, region, "anchorLeft");
 					if (anchorRegion) {
 						var anchorDom = anchorRegion.control.getDom();
-						left = anchorDom.offsetLeft +
-						anchorRegion.realWidth +
-						regionPadding +
-						parseInt(l);
+						left = anchorDom.offsetLeft + anchorRegion.realWidth + regionPadding + parseInt(l);
 					} else {
 						left = parseInt(l) + padding + regionPadding;
 					}
@@ -302,17 +296,14 @@
 				if (r.constructor == String && r.match('%')) {
 					var rate = rp = parseInt(r);
 					if (!isNaN(rate)) {
-						right = rate * realContainerWidth / 100 +
-						regionPadding;
+						right = rate * realContainerWidth / 100 + regionPadding;
 					}
 				}
 				if (right < 0) {
 					var anchorRegion = getAnchorRegion.call(this, region, "anchorRight");
 					if (anchorRegion) {
 						var anchorDom = anchorRegion.control.getDom();
-						right = clientWidth - anchorDom.offsetLeft +
-						regionPadding +
-						parseInt(r);
+						right = clientWidth - anchorDom.offsetLeft + regionPadding + parseInt(r);
 					} else {
 						right = parseInt(r) + padding + regionPadding;
 					}
@@ -327,18 +318,14 @@
 				if (t.constructor == String && t.match('%')) {
 					var rate = tp = parseInt(t);
 					if (!isNaN(rate)) {
-						top = rate * realContainerHeight / 100 +
-						regionPadding;
+						top = rate * realContainerHeight / 100 + regionPadding;
 					}
 				}
 				if (top < 0) {
 					var anchorRegion = getAnchorRegion.call(this, region, "anchorTop");
 					if (anchorRegion) {
 						var anchorDom = anchorRegion.control.getDom();
-						top = anchorDom.offsetTop +
-						anchorRegion.realHeight +
-						regionPadding +
-						parseInt(t);
+						top = anchorDom.offsetTop + anchorRegion.realHeight + regionPadding + parseInt(t);
 					} else {
 						top = parseInt(t) + padding + regionPadding;
 					}
@@ -353,17 +340,14 @@
 				if (b.constructor == String && b.match('%')) {
 					var rate = bp = parseInt(b);
 					if (!isNaN(rate)) {
-						bottom = rate * realContainerWidth / 100 +
-						regionPadding;
+						bottom = rate * realContainerWidth / 100 + regionPadding;
 					}
 				}
 				if (bottom < 0) {
 					var anchorRegion = getAnchorRegion.call(this, region, "anchorBottom");
 					if (anchorRegion) {
 						var anchorDom = anchorRegion.control.getDom();
-						bottom = clientHeight - anchorDom.offsetTop +
-						regionPadding +
-						parseInt(b);
+						bottom = clientHeight - anchorDom.offsetTop + regionPadding + parseInt(b);
 					} else {
 						bottom = parseInt(b) + padding + regionPadding;
 					}
@@ -459,10 +443,8 @@
 			
 			if (left >= 0 || right >= 0 || top >= 0 || bottom >= 0) {
 				if (padding > 0) {
-					if ((left >= 0 || right >= 0) && top < 0 &&
-					bottom < 0) top = padding + regionPadding;
-					if ((top >= 0 || bottom >= 0) && left < 0 &&
-					right < 0) left = padding + regionPadding;
+					if ((left >= 0 || right >= 0) && top < 0 &&bottom < 0) top = padding + regionPadding;
+					if ((top >= 0 || bottom >= 0) && left < 0 &&right < 0) left = padding + regionPadding;
 				}
 			} else if (padding > 0) {
 				left = top = padding + regionPadding;

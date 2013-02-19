@@ -226,7 +226,7 @@ dorado.widget.GroupBox = $extend(dorado.widget.AbstractPanel, /** @scope dorado.
                         button.setActualVisible(false);
                     }
                 }
-                $fly(doms.body).css("display", "none");
+                //$fly(doms.body).css("display", "none");
             }
         }
 

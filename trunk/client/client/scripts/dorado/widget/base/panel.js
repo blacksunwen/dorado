@@ -236,8 +236,8 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
                             collapseButton.set("iconClass", "expand-icon");
                         }
                         beforeCollapsedChange(panel, collapsed);
-                        onCollapsedChange(panel, collapsed);
                         $fly(doms.body).css("display", "none");
+                        onCollapsedChange(panel, collapsed);
                     } else {
                         $fly(doms.body).safeSlideOut({
                             direction: "b2t",
@@ -266,8 +266,8 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
                             collapseButton.set("iconClass", "collapse-icon");
                         }
                         beforeCollapsedChange(panel, collapsed);
-                        onCollapsedChange(panel, collapsed);
                         $fly(doms.body).css("display", "");
+                        onCollapsedChange(panel, collapsed);
                     } else {
                         $fly(doms.body).safeSlideIn({
                             direction: "t2b",
@@ -561,9 +561,11 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 	},
 
     doOnAttachToDocument: function() {
+		/* 似乎不需要此代码 Benny 13/2/19
         if (this._collapseable && this._collapsed) {
             this.doSetCollapsed(true, false);
         }
+        */
         if (this._maximizeable && this._maximized) {
             this.maximize();
         }
