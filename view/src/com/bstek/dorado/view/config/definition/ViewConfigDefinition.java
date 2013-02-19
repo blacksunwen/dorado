@@ -58,6 +58,8 @@ public class ViewConfigDefinition extends ListenableObjectDefinition {
 	private static final String[] DEFAULT_PROPERTIES = new String[] {
 			"caption", "label", "title" };
 	private static final Class<?>[] CONSTRUCTOR_ARG_TYPES = new Class<?>[] { String.class };
+	private static final String VIEW_STATE_ATTRIBUTE_KEY = ViewState.class
+			.getName();
 
 	public static final String ARGUMENT = "argument";
 	public static final String RESOURCE_RELATIVE_DEFINITION = "resourceRelativeDefinition";
@@ -285,7 +287,7 @@ public class ViewConfigDefinition extends ListenableObjectDefinition {
 			Object[] constuctorArgs, MethodInterceptor[] methodInterceptors,
 			CreationContext context) throws Exception {
 		ViewState viewState = (ViewState) Context.getCurrent().getAttribute(
-				ViewState.class.getName());
+				VIEW_STATE_ATTRIBUTE_KEY);
 		if (viewState == null || viewState == ViewState.rendering) {
 			if (viewContext != null && !viewContext.isEmpty()) {
 				DoradoContext doradoContext = DoradoContext.getCurrent();
