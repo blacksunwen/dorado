@@ -16,7 +16,6 @@
 
 		<Package name="jquery-plugins" pattern="dorado-js" depends="jquery">
 			scripts/jquery/jquery.easing.1.3,
-			scripts/jquery/jquery.mousewheel,
 			scripts/jquery/jquery.hotkeys,
 			scripts/jquery/jquery-ui-1.9.3.custom,
 			scripts/jquery/jquery.swfobject.1-1-1,
