@@ -160,7 +160,7 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 		
 		checkable: {
 			getter: function() {
-				return (this._checkable === null) ? this._bindingConfig.checkable : this._checkable;
+				return (this._checkable === undefined) ? this._bindingConfig.checkable : this._checkable;
 			}
 		},
 		

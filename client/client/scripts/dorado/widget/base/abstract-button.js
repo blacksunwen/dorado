@@ -113,5 +113,12 @@ dorado.widget.AbstractButton = $extend([dorado.widget.Control, dorado.widget.Act
 			button.set("toggled", !button._toggled);
 		}
 		return false;
+	},
+	
+	/**
+	 * 模拟按钮的点击动作。
+	 */
+	click: function() {
+		this.onClick();
 	}
 });
