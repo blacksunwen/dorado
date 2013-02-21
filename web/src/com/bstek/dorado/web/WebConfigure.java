@@ -209,8 +209,12 @@ class ConfigureWrapper extends ConfigureStore {
 				.getAttribute(DoradoContext.REQUEST, WebConfigure.STORE_KEY);
 		if (localConfigureMap != null) {
 			Object value = localConfigureMap.get(key);
-			if (value == WebConfigure.NULL) {
-				return null;
+			if (value != null) {
+				if (value == WebConfigure.NULL) {
+					return null;
+				} else {
+					return value;
+				}
 			}
 		}
 
@@ -218,8 +222,12 @@ class ConfigureWrapper extends ConfigureStore {
 				DoradoContext.SESSION, WebConfigure.STORE_KEY);
 		if (localConfigureMap != null) {
 			Object value = localConfigureMap.get(key);
-			if (value == WebConfigure.NULL) {
-				return null;
+			if (value != null) {
+				if (value == WebConfigure.NULL) {
+					return null;
+				} else {
+					return value;
+				}
 			}
 		}
 
