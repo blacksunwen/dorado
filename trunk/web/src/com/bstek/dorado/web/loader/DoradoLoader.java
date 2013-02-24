@@ -366,10 +366,16 @@ public class DoradoLoader {
 			}
 
 			packageInfo.setLoaded(true);
+		}
 
-			if (packageListener != null) {
-				packageListener.afterLoadPackage(packageInfo, resourceLoader);
-			}
+		// 再次装载dorado-home下的properties，以覆盖addon中的设置。
+		configureLocation = HOME_LOCATION_PREFIX + "configure.properties";
+		loadConfigureProperties(configureStore, resourceLoader,
+				configureLocation, true);
+		if (StringUtils.isNotEmpty(runMode)) {
+			loadConfigureProperties(configureStore, resourceLoader,
+					HOME_LOCATION_PREFIX + "configure-" + runMode
+							+ ".properties", true);
 		}
 
 		Resource resource;
