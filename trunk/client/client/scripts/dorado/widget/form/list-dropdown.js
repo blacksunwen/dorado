@@ -167,6 +167,11 @@
 			onFilterItem: {}
 		},
 		
+		constructor: function() {
+			$invokeSuper.call(this, arguments);
+			$import("list", dorado._NULL_FUNCTION);
+		},
+		
 		getSelectedValue: function() {
 			var rowList = this.get("box.control");
 			if (!this._rowSelected) return;
@@ -201,12 +206,13 @@
 				}
 			};
 			if (this._columns) {
-				config.stretchColumnsMode = "stretchableColumns";
-				config.columns = this._columns;
-				config.readOnly = true;
 				if (!dorado.widget.Grid) {
 					throw new dorado.ResourceException("dorado.core.packageMissingError", "grid");
 				}
+				
+				config.stretchColumnsMode = "stretchableColumns";
+				config.columns = this._columns;
+				config.readOnly = true;
 				rowList = new dorado.widget.Grid(config);
 			} else {
 				config.width = "100%";
