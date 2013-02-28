@@ -147,6 +147,7 @@ dorado.util.Shadow = $class({
  * @param {Object} [options] 选项。
  * @param {String} [options.mode="drop"] 阴影类型，目前有drop、sides、frame这三种类型供选择。
  * @param {int} [options.offset=4] 阴影大小。
+ * @param {String} [options.color=#444444] 阴影颜色。
  * @return {jQuery} 调用此方法的jQuery对象自身。
  * @see jQuery#unshadow
  */
@@ -188,17 +189,37 @@ jQuery.fn.shadow = function(options) {
 			}
 		} else {
 			options = options || {};
-			var mode = options.mode || "drop";
-			switch (mode.toLowerCase()) {
-				case "drop":
-					this.addClass("i-shadow-drop d-shadow-drop");
-					break;
-				case "sides":
-					this.addClass("i-shadow-sides d-shadow-sides");
-					break;
-				case "frame":
-					this.addClass("i-shadow-frame d-shadow-frame");
-					break;
+			var mode = options.mode || "drop", offset = options.offset;
+			if (offset != undefined && offset != 4) {
+				var styleStr, color = options.color || "#bbbbbb";
+				switch (mode.toLowerCase()) {
+					case "drop":
+						styleStr = Math.ceil(offset / 4) + "px " + Math.ceil(offset / 4) + "px " + offset + "px " + color;
+						break;
+					case "sides":
+						styleStr = "0 " + Math.ceil(offset / 4) + "px " + offset + "px " + color;
+						break;
+					case "frame":
+						styleStr = "0 0 " + offset + "px " + color;
+						break;
+				}
+				this.css({
+					"-webkit-box-shadow": styleStr,
+					"-moz-box-shadow": styleStr,
+					"box-shadow": styleStr
+				});
+			} else {
+				switch (mode.toLowerCase()) {
+					case "drop":
+						this.addClass("d-shadow-drop");
+						break;
+					case "sides":
+						this.addClass("d-shadow-sides");
+						break;
+					case "frame":
+						this.addClass("d-shadow-frame");
+						break;
+				}
 			}
 		}
 	}
@@ -226,6 +247,13 @@ jQuery.fn.unshadow = function() {
 				shadow.hide();
 				jQuery.data(element, "blockShadow", null);
 			}
+		} else {
+			this.removeClass("d-shadow-drop").removeClass("d-shadow-sides").removeClass("d-shadow-frame");
+			this.css({
+				"-webkit-box-shadow": "",
+				"-moz-box-shadow": "",
+				"box-shadow": ""
+			});
 		}
 	}
 	return this;
