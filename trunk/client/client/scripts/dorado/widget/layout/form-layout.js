@@ -439,7 +439,7 @@
 			if (!(containerWidth >= 0)) containerWidth = 0;
 			
 			var adjust = 0;
-			if (dorado.Browser.webkit) adjust = padding * 2;
+			// if (dorado.Browser.webkit) adjust = padding * 2; 较新版的Chrome下似乎不用这么干了
 			
 			if (this._stretchWidth || this.dynaColCount > 0) {
 				table.style.width = (containerWidth + adjust) + "px";

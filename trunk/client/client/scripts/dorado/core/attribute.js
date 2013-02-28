@@ -197,7 +197,7 @@
 		},
 		
 		doGet: function(attr) {
-			var def = this.ATTRIBUTES[attr];
+			var def = this.ATTRIBUTES[attr] || (this.PRIVATE_ATTRIBUTES && this.PRIVATE_ATTRIBUTES[attr]);
 			if (def) {
 				if (def.writeOnly) {
 					throw new dorado.AttributeException(
@@ -334,16 +334,23 @@
 						else if (p == "DEFINITION") {
 							if (v) {
 								if (v.ATTRIBUTES) {
+									if (!this.PRIVATE_ATTRIBUTES) this.PRIVATE_ATTRIBUTES = {};
 									for (var defName in v.ATTRIBUTES) {
 										if (v.ATTRIBUTES.hasOwnProperty(defName)) {
-											overrideDefinition(this.ATTRIBUTES, v.ATTRIBUTES[defName], defName);
+											var def = v.ATTRIBUTES[defName];
+											overrideDefinition(this.PRIVATE_ATTRIBUTES, def, defName);
+											if (def && def.defaultValue != undefined && this['_' + p] == undefined) {
+												var dv = def.defaultValue;
+												this['_' + p] = (typeof dv == "function" && !def.dontEvalDefaultValue) ? dv() : dv;
+											}
 										}
 									}
 								}
 								if (v.EVENTS) {
+									if (!this.PRIVATE_EVENTS) this.PRIVATE_EVENTS = {};
 									for (var defName in v.EVENTS) {
 										if (v.EVENTS.hasOwnProperty(defName)) {
-											overrideDefinition(this.EVENTS, v.EVENTS[defName], defName);
+											overrideDefinition(this.PRIVATE_EVENTS, v.EVENTS[defName], defName);
 										}
 									}
 								}
@@ -409,7 +416,7 @@
 			if (attr.indexOf('.') > 0) {
 				path = attr;
 			} else {
-				def = this.ATTRIBUTES[attr];
+				def = this.ATTRIBUTES[attr] || (this.PRIVATE_ATTRIBUTES && this.PRIVATE_ATTRIBUTES[attr]);
 				if (def) path = def.path;
 			}
 
@@ -460,7 +467,8 @@
 						});
 					}
 				} else {
-					if (value instanceof Object && dorado.Object.isInstanceOf(this, dorado.EventSupport) && this.EVENTS[attr]) {
+					if (value instanceof Object && dorado.Object.isInstanceOf(this, dorado.EventSupport) &&
+						(this.EVENTS[attr] || (this.PRIVATE_EVENTS && this.PRIVATE_EVENTS[attr]))) {
 						if (typeof value == "function") this.addListener(attr, value);
 						else if (value.listener) this.addListener(attr, value.listener, value.options);
 					} else if (!skipUnknownAttribute) {
