@@ -324,7 +324,7 @@ dorado.EventSupport = $class(/** @scope dorado.EventSupport.prototype */{
 	 * @return {Object} 返回宿主对象自身。
 	 */
 	addListener: function(name, listener, options) {
-		var def = this.EVENTS[name];
+		var def = this.EVENTS[name] || (this.PRIVATE_EVENTS && this.PRIVATE_EVENTS[name]);
 		if (!def) throw new dorado.ResourceException("dorado.core.UnknownEvent", name);
 		
 		var handler = dorado.Object.apply({}, options);
@@ -347,7 +347,7 @@ dorado.EventSupport = $class(/** @scope dorado.EventSupport.prototype */{
 	 * @param {Function} [listener] 事件监听器。如果不指定此参数则表示移除该事件中的所有监听器
 	 */
 	removeListener: function(name, listener) {
-		var def = this.EVENTS[name];
+		var def = this.EVENTS[name] || (this.PRIVATE_EVENTS && this.PRIVATE_EVENTS[name]);
 		if (!def) throw new dorado.ResourceException("dorado.core.UnknownEvent", name);
 		
 		if (!this._events) return;
@@ -395,7 +395,7 @@ dorado.EventSupport = $class(/** @scope dorado.EventSupport.prototype */{
 	 * @return {boolean} 返回事件队列的触发过程是否正常的执行结束。
 	 */
 	fireEvent: function(name) {
-		var def = this.EVENTS[name];
+		var def = this.EVENTS[name] || (this.PRIVATE_EVENTS && this.PRIVATE_EVENTS[name]);
 		if (!def) throw new dorado.ResourceException("dorado.core.UnknownEvent", name);
 		
 		var handlers = (this._events) ? this._events[name] : null;

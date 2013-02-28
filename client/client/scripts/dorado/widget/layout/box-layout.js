@@ -139,6 +139,7 @@
 			if (realContainerWidth < 0) realContainerWidth = 0;
 			if (realContainerHeight < 0) realContainerHeight = 0;
 			
+			// 较新版的Chrome下似乎不用这么干了，见form-layout.js
 			if (dorado.Browser.webkit) {
 				realContainerHeight -= padding * 2; // 搞不懂为什么Webkit中一定要重复的减去一次padding后才刚好 2012/3/14
 			}
