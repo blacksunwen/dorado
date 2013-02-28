@@ -168,8 +168,8 @@
 		},
 		
 		constructor: function() {
-			$invokeSuper.call(this, arguments);
 			$import("list", dorado._NULL_FUNCTION);
+			$invokeSuper.call(this, arguments);
 		},
 		
 		getSelectedValue: function() {
