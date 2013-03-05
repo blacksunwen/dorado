@@ -117,7 +117,7 @@
 		var fn = $.fn["outer" + name];
 
 		$.fn["outer" + name] = function(arg) {
-			if (arg != null && arg.constructor != Boolean) {
+			if (arg != null && (arg.constructor != Boolean || arguments.length > 1)) {
 				if (arg.constructor == String) {
 					if (arg == "auto" || arg.match('%')) {
 						return this[name.toLowerCase()](arg);
@@ -126,9 +126,17 @@
 					}
 				} else {
 					var n = parseInt(arg);
-					n = n - num(this, "padding" + tl) - num(this, "padding" + br) -
-					num(this, "border" + tl + "Width") -
-					num(this, "border" + br + "Width");
+
+					if (arguments[1] === true) {
+						n = n - num(this, "padding" + tl) - num(this, "padding" + br) -
+						    num(this, "border" + tl + "Width") - num(this, "border" + br + "Width") -
+							num(this, "margin" + tl) - num(this, "margin" + br);
+					} else {
+						n = n - num(this, "padding" + tl) - num(this, "padding" + br) -
+						    num(this, "border" + tl + "Width") -
+						    num(this, "border" + br + "Width");
+					}
+
 					return this[name.toLowerCase()](n);
 				}
 				return this;
