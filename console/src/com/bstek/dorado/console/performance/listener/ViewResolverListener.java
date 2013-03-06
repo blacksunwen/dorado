@@ -1,25 +1,48 @@
+/*
+ * This file is part of Dorado 7.x (http://dorado7.bsdn.org).
+ * 
+ * Copyright (c) 2002-2012 BSTEK Corp. All rights reserved.
+ * 
+ * This file is dual-licensed under the AGPLv3 (http://www.gnu.org/licenses/agpl-3.0.html) 
+ * and BSDN commercial (http://www.bsdn.org/licenses) licenses.
+ * 
+ * If you are unsure which license is appropriate for your use, please contact the sales department
+ * at http://www.bstek.com/contact.
+ */
+
 package com.bstek.dorado.console.performance.listener;
 
 import com.bstek.dorado.console.Constants;
-import com.bstek.dorado.console.Logger;
+import com.bstek.dorado.console.performance.ExecuteLogOutputter;
 import com.bstek.dorado.console.performance.PerformanceMonitor;
-import com.bstek.dorado.console.security.HtmlViewSecurityInterceptor;
-import com.bstek.dorado.console.utils.ExecuteLogUtils;
 import com.bstek.dorado.util.PathUtils;
 import com.bstek.dorado.view.View;
 import com.bstek.dorado.web.DoradoContext;
 
 /**
- * Dorado Console 全局 拦截器
+ * Dorado Console ViewResolver 监听器
+ * 
  * 
  * @author Alex Tong(mailto:alex.tong@bstek.com)
  * 
  */
 public class ViewResolverListener implements
 		com.bstek.dorado.view.resolver.ViewResolverListener {
-	private static final Logger logger = Logger
-			.getLog(HtmlViewSecurityInterceptor.class);
+	private static final String TYPE = "Create View";
+
 	private String viewNamePattern;
+	/**
+	 * 执行日志输出器
+	 */
+	private ExecuteLogOutputter executeLogOutputter;
+
+	/**
+	 * @param executeLogOutputter
+	 *            the executeLogOutputter to set
+	 */
+	public void setExecuteLogOutputter(ExecuteLogOutputter executeLogOutputter) {
+		this.executeLogOutputter = executeLogOutputter;
+	}
 
 	public String getViewNamePattern() {
 		return viewNamePattern;
@@ -34,10 +57,8 @@ public class ViewResolverListener implements
 		if (!PathUtils.match(viewNamePattern, viewName.replace('/', '.'))) {
 			DoradoContext.getAttachedRequest().setAttribute(
 					Constants.R_DORADO_CONSOLE_REQUEST_STARTTIME, startTime);
-			logger.info(ExecuteLogUtils.start("Create Dorado View ", viewName,
-					"request uri="
-							+ DoradoContext.getAttachedRequest()
-									.getRequestURI()));
+			executeLogOutputter.outStartLog(TYPE, viewName, "request uri="
+					+ DoradoContext.getAttachedRequest().getRequestURI());
 		}
 	}
 
@@ -48,10 +69,8 @@ public class ViewResolverListener implements
 					.getAttribute(Constants.R_DORADO_CONSOLE_REQUEST_STARTTIME);
 			PerformanceMonitor.getInstance().monitoredProcess(viewName,
 					startTime, endTime, "CreateDoradoView");
-			logger.info(ExecuteLogUtils.end("Create Dorado View ", viewName,
-					"request uri="
-							+ DoradoContext.getAttachedRequest()
-									.getRequestURI()));
+			executeLogOutputter.outEndLog(TYPE, viewName, "request uri="
+					+ DoradoContext.getAttachedRequest().getRequestURI());
 		}
 	}
 

@@ -1,3 +1,14 @@
+/*
+ * This file is part of Dorado 7.x (http://dorado7.bsdn.org).
+ * 
+ * Copyright (c) 2002-2012 BSTEK Corp. All rights reserved.
+ * 
+ * This file is dual-licensed under the AGPLv3 (http://www.gnu.org/licenses/agpl-3.0.html) 
+ * and BSDN commercial (http://www.bsdn.org/licenses) licenses.
+ * 
+ * If you are unsure which license is appropriate for your use, please contact the sales department
+ * at http://www.bstek.com/contact.
+ */
 package com.bstek.dorado.console.performance.interceptor;
 
 import org.aopalliance.intercept.MethodInvocation;
@@ -8,9 +19,8 @@ import org.codehaus.jackson.node.ObjectNode;
 import com.bstek.dorado.common.proxy.PatternMethodInterceptor;
 import com.bstek.dorado.common.service.ExposedService;
 import com.bstek.dorado.common.service.ExposedServiceManager;
-import com.bstek.dorado.console.Logger;
+import com.bstek.dorado.console.performance.ExecuteLogOutputter;
 import com.bstek.dorado.console.performance.PerformanceMonitor;
-import com.bstek.dorado.console.utils.ExecuteLogUtils;
 import com.bstek.dorado.data.JsonUtils;
 import com.bstek.dorado.util.PathUtils;
 import com.bstek.dorado.web.DoradoContext;
@@ -18,14 +28,23 @@ import com.bstek.dorado.web.DoradoContext;
 /**
  * Dorado Console RemoteService 拦截器
  * 
+ * <pre>
+ * 主要记录运行日志以及运行性能信息
+ * </pre>
+ * 
  * @author Alex Tong(mailto:alex.tong@bstek.com)
  * 
  */
 public class RemoteServiceMethodInterceptor extends PatternMethodInterceptor {
-	private static final Logger logger = Logger
-			.getLog(RemoteServiceMethodInterceptor.class);
-
+	private static final String TYPE = "service";
+	/**
+	 * 拦截DataProvidater 规则
+	 */
 	private String namePattern;
+	/**
+	 * 执行日志输出器
+	 */
+	private ExecuteLogOutputter executeLogOutputter;
 
 	public String getNamePattern() {
 		return namePattern;
@@ -33,6 +52,14 @@ public class RemoteServiceMethodInterceptor extends PatternMethodInterceptor {
 
 	public void setNamePattern(String namePattern) {
 		this.namePattern = namePattern;
+	}
+
+	/**
+	 * @param executeLogOutputter
+	 *            the executeLogOutputter to set
+	 */
+	public void setExecuteLogOutputter(ExecuteLogOutputter executeLogOutputter) {
+		this.executeLogOutputter = executeLogOutputter;
 	}
 
 	public Object invoke(MethodInvocation invocation) throws Throwable {
@@ -72,10 +99,10 @@ public class RemoteServiceMethodInterceptor extends PatternMethodInterceptor {
 		if (StringUtils.isNotEmpty(serviceName)
 				&& !PathUtils.match(namePattern, serviceName)) {
 
-			logger.info(ExecuteLogUtils.start("service", serviceName, String
-					.format("parameter=%s,metaData=%s", parameter, metaData)));
+			executeLogOutputter.outStartLog(TYPE, serviceName, String.format(
+					"parameter=%s,metaData=%s", parameter, metaData));
 			object = invocation.proceed();
-			logger.info(ExecuteLogUtils.end("service", serviceName, ""));
+			executeLogOutputter.outStartLog(TYPE, serviceName, "");
 
 			long endTime = System.currentTimeMillis();
 

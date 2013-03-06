@@ -1,3 +1,15 @@
+/*
+ * This file is part of Dorado 7.x (http://dorado7.bsdn.org).
+ * 
+ * Copyright (c) 2002-2012 BSTEK Corp. All rights reserved.
+ * 
+ * This file is dual-licensed under the AGPLv3 (http://www.gnu.org/licenses/agpl-3.0.html) 
+ * and BSDN commercial (http://www.bsdn.org/licenses) licenses.
+ * 
+ * If you are unsure which license is appropriate for your use, please contact the sales department
+ * at http://www.bstek.com/contact.
+ */
+
 package com.bstek.dorado.console.performance;
 
 import java.util.ArrayList;
@@ -18,6 +30,7 @@ import org.springframework.beans.factory.InitializingBean;
 import com.bstek.dorado.annotation.DataProvider;
 import com.bstek.dorado.annotation.DataResolver;
 import com.bstek.dorado.annotation.Expose;
+import com.bstek.dorado.console.Logger;
 import com.bstek.dorado.console.performance.dao.PerformanceDao;
 import com.bstek.dorado.console.performance.view.MonitoredTargetVO;
 import com.bstek.dorado.console.performance.view.ProcessVO;
@@ -25,7 +38,15 @@ import com.bstek.dorado.data.provider.Page;
 import com.bstek.dorado.view.View;
 import com.bstek.dorado.web.DoradoContext;
 
+/**
+ * 
+ * 
+ * @author Alex Tong(mailto:alex.tong@bstek.com)
+ * @since 2013-3-4
+ */
 public class PerformanceController implements InitializingBean {
+	private static final Logger logger = Logger
+			.getLog(PerformanceController.class);
 	private final static String V_PERFORMANCEDATATYPE = "dorado.console.performance.current.view.data.type";
 
 	private PerformanceDao performanceDao;
@@ -99,7 +120,7 @@ public class PerformanceController implements InitializingBean {
 		try {
 			monitor.saveProcessListToDB();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e, e);
 		}
 		performanceDao.getProcessList(page, name);
 	}
