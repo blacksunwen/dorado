@@ -61,7 +61,7 @@
   </Model>
   <View>
     <DataSet id="dsAddon">
-      <Property name="dataProvider">dorado.console.addonService#getAddonList</Property>
+      <Property name="dataProvider">dorado.console.addonController#getAddonList</Property>
       <Property name="dataType">[dtAddon]</Property>
       <Property name="readOnly">true</Property>
     </DataSet>
