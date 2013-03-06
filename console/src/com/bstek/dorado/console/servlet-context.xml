@@ -10,22 +10,23 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
 		http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dorado-7.0.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
-	<bean class="com.bstek.dorado.console.resolver.ConsoleUrlResolverMapping">
+	<bean class="com.bstek.dorado.console.resolver.URLResolverMapping">
 		<property name="order" value="1" />
 		<property name="mappings">
 			<props>
-				<prop key="/console">dorado.console.viewResolver</prop>
+				<prop key="/console">dorado.console.accessPathResolver</prop>
 			</props>
 		</property>
 	</bean>
-	<bean id="dorado.console.viewResolver" class="com.bstek.dorado.console.resolver.ConsoleViewResolver" />
-
+	<bean id="dorado.console.accessPathResolver" class="com.bstek.dorado.console.resolver.AccessPathResolver" />
+    <bean id="dorado.console.DefaultExecuteLogOutputter" class="com.bstek.dorado.console.performance.DefaultExecuteLogOutputter"/>
 	<!-- View ResolverListener -->
 	<bean parent="dorado.viewResolverListenerRegister">
 		<property name="listener">
 			<bean
 				class="com.bstek.dorado.console.performance.listener.ViewResolverListener">
 				<property name="viewNamePattern" value="*.dorado.console.*"></property>
+				<property name="executeLogOutputter" ref="dorado.console.DefaultExecuteLogOutputter"></property>
 			</bean>
 		</property>
 	</bean>
@@ -37,6 +38,7 @@
 				class="com.bstek.dorado.console.performance.interceptor.RemoteServiceMethodInterceptor">
 				<property name="order" value="0" />
 				<property name="namePattern" value="dorado.console.*"></property>
+				<property name="executeLogOutputter" ref="dorado.console.DefaultExecuteLogOutputter"></property>
 			</bean>
 		</property>
 	</bean>
@@ -48,6 +50,8 @@
 				class="com.bstek.dorado.console.performance.interceptor.DataProviderGetResultMethodInterceptor">
 				<property name="order" value="0" />
 				<property name="namePattern" value="dorado.console.*"></property>
+				<property name="executeLogOutputter" ref="dorado.console.DefaultExecuteLogOutputter"></property>
+			
 			</bean>
 		</property>
 	</bean>
@@ -59,6 +63,7 @@
 				class="com.bstek.dorado.console.performance.interceptor.DataResolveMethodInterceptor">
 				<property name="order" value="0" />
 				<property name="namePattern" value="dorado.console.*"></property>
+				<property name="executeLogOutputter" ref="dorado.console.DefaultExecuteLogOutputter"></property>
 			</bean>
 		</property>
 	</bean>
