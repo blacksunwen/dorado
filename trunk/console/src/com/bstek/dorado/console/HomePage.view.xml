@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Arguments/>
+  <Context/>
+  <Model/>
+  <View layout="anchor">
+    <HtmlContainer layoutConstraint="left:150;top:100">
+      <Property name="style">
+        <Property name="background-image">url(./dorado/console/images/dorado7.png)</Property>
+        <Property name="background-repeat">no-repeat</Property>
+      </Property>
+      <Property name="width">550</Property>
+      <Property name="height">130</Property>
+      <Property name="contentOverflow">hidden</Property>
+    </HtmlContainer>
+    <HtmlContainer layoutConstraint="anchorTop:previous;top:100;left:40">
+      <Property name="content">
+&lt;h1>产品简介&lt;/h1>
+&lt;p>
+Dorado Management Console 基于Dorado架构的管理控制台,为管理员和系统开发者提供管理与监视功能。
+&lt;/p>
+&lt;p>
+主要功能有运行环境监视、运行日志查看、Parser Tree、性能监控、Dorado日志强化、资源文件查看……等。
+&lt;/p>
+</Property>
+    </HtmlContainer>
+  </View>
+</ViewConfig>
