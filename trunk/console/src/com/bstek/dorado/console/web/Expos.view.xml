@@ -3,8 +3,8 @@
   <Arguments/>
   <Context/>
   <Model>
-    <DataType name="dtDoradoLocation">
-      <Property name="creationType">com.bstek.dorado.console.web.DoradoLocation</Property>
+    <DataType name="dtDoradoObject">
+      <Property name="creationType">com.bstek.dorado.console.web.DoradoObject</Property>
       <PropertyDef name="name">
         <Property name="dataType">String</Property>
         <Property name="label">Name</Property>
@@ -21,8 +21,8 @@
   </Model>
   <View>
     <DataSet id="dsExposedService">
-      <Property name="dataProvider">dorado.console.doradoObjectService#getExposedServiceList</Property>
-      <Property name="dataType">[dtDoradoLocation]</Property>
+      <Property name="dataProvider">dorado.console.doradoObjectController#getExposedServiceList</Property>
+      <Property name="dataType">[dtDoradoObject]</Property>
       <Property name="readOnly">true</Property>
     </DataSet>
     <DataGrid>

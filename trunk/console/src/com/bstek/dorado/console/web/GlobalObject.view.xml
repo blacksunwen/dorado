@@ -3,8 +3,8 @@
   <Arguments/>
   <Context/>
   <Model>
-    <DataType name="dtDoradoLocation">
-      <Property name="creationType">com.bstek.dorado.console.web.DoradoLocation</Property>
+    <DataType name="dtDoradoObject">
+      <Property name="creationType">com.bstek.dorado.console.web.DoradoObject</Property>
       <PropertyDef name="name">
         <Property name="dataType">String</Property>
         <Property name="label">Name</Property>
@@ -59,18 +59,18 @@
       </ControlTab>
     </TabControl>
     <DataSet id="dsDataType">
-      <Property name="dataProvider">dorado.console.doradoObjectService#getDataTypeList</Property>
-      <Property name="dataType">[dtDoradoLocation]</Property>
+      <Property name="dataProvider">dorado.console.doradoObjectController#getDataTypeList</Property>
+      <Property name="dataType">[dtDoradoObject]</Property>
       <Property name="readOnly">true</Property>
     </DataSet>
     <DataSet id="dsDataProvider">
-      <Property name="dataProvider">dorado.console.doradoObjectService#getDataProviderList</Property>
-      <Property name="dataType">[dtDoradoLocation]</Property>
+      <Property name="dataProvider">dorado.console.doradoObjectController#getDataProviderList</Property>
+      <Property name="dataType">[dtDoradoObject]</Property>
       <Property name="readOnly">true</Property>
     </DataSet>
     <DataSet id="dsDataResolver">
-      <Property name="dataProvider">dorado.console.doradoObjectService#getDataResolverList</Property>
-      <Property name="dataType">[dtDoradoLocation]</Property>
+      <Property name="dataProvider">dorado.console.doradoObjectController#getDataResolverList</Property>
+      <Property name="dataType">[dtDoradoObject]</Property>
       <Property name="readOnly">true</Property>
     </DataSet>
   </View>

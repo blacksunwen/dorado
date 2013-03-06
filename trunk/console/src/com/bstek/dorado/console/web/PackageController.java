@@ -1,3 +1,15 @@
+/*
+ * This file is part of Dorado 7.x (http://dorado7.bsdn.org).
+ * 
+ * Copyright (c) 2002-2012 BSTEK Corp. All rights reserved.
+ * 
+ * This file is dual-licensed under the AGPLv3 (http://www.gnu.org/licenses/agpl-3.0.html) 
+ * and BSDN commercial (http://www.bsdn.org/licenses) licenses.
+ * 
+ * If you are unsure which license is appropriate for your use, please contact the sales department
+ * at http://www.bstek.com/contact.
+ */
+
 package com.bstek.dorado.console.web;
 
 import java.util.ArrayList;
@@ -19,20 +31,20 @@ import com.bstek.dorado.web.DoradoContext;
  * @since 2012-12-27
  */
 
-public class PackagesConfigService {
+public class PackageController {
 	@DataProvider
-	public Collection<DoradoPackage> getPackageList() throws Exception {
+	public Collection<PackageVO> getPackageList() throws Exception {
 		PackagesConfigManager manager = (PackagesConfigManager) DoradoContext
 				.getAttachedWebApplicationContext().getBean(
 						"dorado.packagesConfigManager");
 		PackagesConfig config = manager.getPackagesConfig();
 		Map<String, Package> map = config.getPackages();
-		List<DoradoPackage> list = new ArrayList<DoradoPackage>();
-		DoradoPackage doradoPackage;
+		List<PackageVO> list = new ArrayList<PackageVO>();
+		PackageVO doradoPackage;
 		Iterator<String> iterator = map.keySet().iterator();
 		while (iterator.hasNext()) {
 			String name = (String) iterator.next();
-			doradoPackage = new DoradoPackage(map.get(name));
+			doradoPackage = new PackageVO(map.get(name));
 			list.add(doradoPackage);
 		}
 

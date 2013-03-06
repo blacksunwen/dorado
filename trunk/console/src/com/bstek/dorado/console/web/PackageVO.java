@@ -1,3 +1,15 @@
+/*
+ * This file is part of Dorado 7.x (http://dorado7.bsdn.org).
+ * 
+ * Copyright (c) 2002-2012 BSTEK Corp. All rights reserved.
+ * 
+ * This file is dual-licensed under the AGPLv3 (http://www.gnu.org/licenses/agpl-3.0.html) 
+ * and BSDN commercial (http://www.bsdn.org/licenses) licenses.
+ * 
+ * If you are unsure which license is appropriate for your use, please contact the sales department
+ * at http://www.bstek.com/contact.
+ */
+
 package com.bstek.dorado.console.web;
 
 import java.util.LinkedHashSet;
@@ -12,11 +24,11 @@ import com.bstek.dorado.view.loader.Package;
  * @since 2012-12-27
  */
 
-public class DoradoPackage extends Package {
+public class PackageVO extends Package {
 	private Set<String> depends = new LinkedHashSet<String>();
 	private Set<String> dependedBy = new LinkedHashSet<String>();
 
-	public DoradoPackage() {
+	public PackageVO() {
 		super(null);
 	}
 
@@ -39,7 +51,7 @@ public class DoradoPackage extends Package {
 		return dependedBy;
 	}
 
-	public DoradoPackage(Package package1) {
+	public PackageVO(Package package1) {
 		super(package1.getName());
 		this.setBaseUri(package1.getBaseUri());
 		this.setCharset(package1.getCharset());

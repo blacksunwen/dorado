@@ -39,12 +39,12 @@
   </Model>
   <View>
     <DataSet id="dsCategory">
-      <Property name="dataProvider">dorado.console.outputterService#getCategoryList</Property>
+      <Property name="dataProvider">dorado.console.outputterController#getCategoryList</Property>
       <Property name="dataType">[dtCategory]</Property>
     </DataSet>
     <DataSet id="dsPropertyConfig">
       <Property name="dataType">[dtPropertyConfig]</Property>
-      <Property name="dataProvider">dorado.console.outputterService#getPropertyConfigs</Property>
+      <Property name="dataProvider">dorado.console.outputterController#getPropertyConfigs</Property>
     </DataSet>
     <SplitPanel id="splitPanel1">
       <Property name="height">100%</Property>

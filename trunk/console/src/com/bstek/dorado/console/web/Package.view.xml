@@ -4,7 +4,7 @@
   <Context/>
   <Model>
     <DataType name="dtPackage">
-      <Property name="creationType">com.bstek.dorado.console.web.DoradoPackage</Property>
+      <Property name="creationType">com.bstek.dorado.console.web.PackageVO</Property>
       <PropertyDef name="name">
         <Property name="dataType">String</Property>
       </PropertyDef>
@@ -34,7 +34,7 @@
   <View>
     <DataSet id="dsPackage">
       <Property name="dataType">[dtPackage]</Property>
-      <Property name="dataProvider">dorado.console.packagesConfigService#getPackageList</Property>
+      <Property name="dataProvider">dorado.console.packageController#getPackageList</Property>
       <Property name="readOnly">true</Property>
     </DataSet>
     <DataGrid>
