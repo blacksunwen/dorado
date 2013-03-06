@@ -1,13 +1,23 @@
-
+dorado.console = {};
 /**
- *  Dorado 控制台 格式化辅助
- *  Alex Tong (mailto:alex.tong@bstek.com)
+ * Dorado 控制台辅助 Alex Tong (mailto:alex.tong@bstek.com)
  */
-FormaterUtils = {
-	_size : function(value) {
-		var _format = function(value, unit) {
+dorado.console.util = {
+	/**
+	 * 格式化文件大小
+	 * @param {Number} value 文件大小。
+	 * @return {String} 格式化后得到的字符串。
+	 * @example
+	 * var $formatFileSize = dorado.console.util.formatFileSize;
+	 * $formatFileSize(1024); // 1KB
+	 * $formatFileSize(1048576); // 1MB
+	 * $formatFileSize(1073741824); // 1GB
+	 * 
+	 */
+	formatFileSize : function(value) {
+		function _format(value, unit) {
 			return (value.toFixed(1) + ' ' + unit).replace('.0', '');
-		};
+		}
 		var K = 1024, M = K * K, G = M * K, T = G * K;
 		var dividers = [ T, G, M, K, 1 ], units = [ 'TB', 'GB', 'MB', 'KB', 'B' ];
 		if (value == 0) {
@@ -32,9 +42,18 @@ FormaterUtils = {
 		}
 		return result;
 	},
-	_date : function(date, fmt) {
-		// "yyyy-MM-dd hh:mm:ss.S"==> 2006-07-02 08:09:04.423
-		// "yyyy-M-d h:m:s.S" ==> 2006-7-2 8:9:4.18
+	/**
+	 * 格式化日期
+	 * @param {Date} date 日期。
+	 * @param {String} format 格式化字符串。
+	 * @return {String} 格式化后得到的字符串。
+	 * @example
+	 * var $formatDate = dorado.console.util.formatDate;
+	 * var date=new Date();
+	 * $formatDate(date,"yyyy-MM-dd hh:mm:ss.S"); // 2013-01-02 08:09:04.423
+	 * $formatDate(date,"yyyy-M-d h:m:s.S"); // 2013-1-2 8:9:4.18
+	 */
+	formatDate : function(date, fmt) {
 		var o = {
 			"M+" : date.getMonth() + 1,
 			"d+" : date.getDate(),
@@ -53,11 +72,34 @@ FormaterUtils = {
 						: (("00" + o[k]).substr(("" + o[k]).length)));
 		return fmt;
 	},
-	_time : function(time) {
-		return this._date(new Date(time), "yyyy-MM-dd hh:mm:ss.S");
+	/**
+	 * 格式化时间
+	 * <p>
+	 * 默认格式化格式位yyyy-M-d h:m:s.S
+	 * </p>
+	 * @param {String/Number/Date} time 时间。
+	 * @return {String} 格式化后得到的字符串。
+	 * @example
+	 * var $formatTime = dorado.console.util.formatTime;
+	 * var date=new Date();
+	 * $formatTime(date); //2013-1-2 8:9:4.18
+	 */
+	formatTime : function(time) {
+		var format = "yyyy-MM-dd hh:mm:ss.S";
+		return this.formatDate(new Date(time), format);
 	},
-	_timeLength : function(time) {
-		time = Math.floor(time);
+	/**
+	 * 格式化时间长度
+	 * @param {Number} time 时间。
+	 * @return {String} 格式化后得到的字符串。
+	 * @example
+	 * var $formatTimeLength = dorado.console.util.formatTimeLength;
+	 * $formatTimeLength(45); //45s
+	 * $formatTimeLength(105); //1m45s
+	 * $formatTimeLength(3645); //1h0m45s
+	 */
+	formatTimeLength : function(time) {
+		time = Math.round(time);
 		var tmpTime = Math.floor(time / 1000), h, m, s, sf, value;
 		h = Math.floor(tmpTime / 3600);
 		m = Math.floor((tmpTime % 3600) / 60);
@@ -65,15 +107,15 @@ FormaterUtils = {
 		sf = (time - h * 60 * 60 * 1000 - m * 60 * 1000 - s * 1000) / 1000;
 		value = h > 0 ? h + 'h' + m + 'm' : '';
 		value = h <= 0 && m > 0 ? m + 'm' : '';
-		value = value + (s + sf)+'s';
+		value = value + (s + sf) + 's';
 		return value;
-	}
-}
-/**
- *  Dorado 控制台数学算法辅助
- */
-ALG_Utils = {
-	_avg : function(nums) {
+	},
+	/**
+	 * 求数组平均值
+	 * @param {Array} nums 数组。
+	 * @return {String} 平均值。
+	 */
+	avg : function(nums) {
 		var sum = 0;
 		for ( var i = 0; i < nums.length; i++) {
 			sum += nums[i];
@@ -82,7 +124,13 @@ ALG_Utils = {
 		return value.indexOf(".") > 0 ? value.substring(0, value.indexOf("."))
 				: value;
 	},
-	_percent : function(num, total) {
+	/**
+	 * 求百分比函数
+	 * @param {Number} num 除数
+	 * @param {Number} total 合计
+	 * @return {String} 保留两位小数点
+	 */
+	percent : function(num, total) {
 		num = parseFloat(num);
 		total = parseFloat(total);
 		if (isNaN(num) || isNaN(total)) {
@@ -92,6 +140,7 @@ ALG_Utils = {
 				: (Math.round(num / total * 10000) / 100.00 + "%");
 	}
 }
+
 
 /**
  * 解决小数科学计数法的问题
