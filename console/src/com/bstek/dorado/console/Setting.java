@@ -1,10 +1,18 @@
+/*
+ * This file is part of Dorado 7.x (http://dorado7.bsdn.org).
+ * 
+ * Copyright (c) 2002-2012 BSTEK Corp. All rights reserved.
+ * 
+ * This file is dual-licensed under the AGPLv3 (http://www.gnu.org/licenses/agpl-3.0.html) 
+ * and BSDN commercial (http://www.bsdn.org/licenses) licenses.
+ * 
+ * If you are unsure which license is appropriate for your use, please contact the sales department
+ * at http://www.bstek.com/contact.
+ */
+
 package com.bstek.dorado.console;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import com.bstek.dorado.console.login.ConsoleLogin;
-import com.bstek.dorado.core.Context;
+import com.bstek.dorado.console.authentication.AuthenticationManager;
 
 /**
  * Dorado Console Setting
@@ -13,44 +21,48 @@ import com.bstek.dorado.core.Context;
  * @since 2012-12-27
  */
 public final class Setting {
-	private static Log logger = LogFactory.getLog(Setting.class);
 
-	private static ConsoleLogin consoleLogin;
+	private static AuthenticationManager authenticationManager;
 	private static long startTime;
-	private static boolean listenerActiveState;
-
-	public static ConsoleLogin getConsoleLogin() {
-		if (consoleLogin == null) {
-			Context ctx = Context.getCurrent();
-			ConsoleLogin configed = null;
-			try {
-				configed = (ConsoleLogin) ctx.getServiceBean("consoleLogin");
-				consoleLogin = configed;
-			} catch (Exception e) {
-				logger.error(e, e);
-			}
-		}
-		return consoleLogin;
+	private static boolean listenerActiveState = false;
+	/**
+	 * @return the authenticationManager
+	 */
+	public static AuthenticationManager getAuthenticationManager() {
+		return authenticationManager;
 	}
-
+	/**
+	 * @param authenticationManager the authenticationManager to set
+	 */
+	public static void setAuthenticationManager(
+			AuthenticationManager authenticationManager) {
+		Setting.authenticationManager = authenticationManager;
+	}
+	/**
+	 * @return the startTime
+	 */
 	public static long getStartTime() {
 		return startTime;
 	}
-
+	/**
+	 * @param startTime the startTime to set
+	 */
 	public static void setStartTime(long startTime) {
 		Setting.startTime = startTime;
 	}
-
+	/**
+	 * @return the listenerActiveState
+	 */
 	public static boolean getListenerActiveState() {
 		return listenerActiveState;
 	}
-
+	/**
+	 * @param listenerActiveState the listenerActiveState to set
+	 */
 	public static void setListenerActiveState(boolean listenerActiveState) {
 		Setting.listenerActiveState = listenerActiveState;
 	}
-
-	public static void setConsoleLogin(ConsoleLogin consoleLogin) {
-		Setting.consoleLogin = consoleLogin;
-	}
+	
+	
 
 }
