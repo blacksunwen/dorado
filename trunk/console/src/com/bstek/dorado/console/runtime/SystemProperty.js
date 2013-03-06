@@ -12,7 +12,7 @@ var userDate, systemInfo, runtime;
 	keys.each(function(key) {
 		elid = '#' + key;
 		 if (key.indexOf('Memory') >= 0) {
-			$(elid).html(FormaterUtils._size(params[key]));
+			$(elid).html(dorado.console.util.formatFileSize(params[key]));
 		} else {
 			$(elid).html(params[key]);
 		}
