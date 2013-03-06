@@ -1,5 +1,5 @@
 //日志队列
-var logArray = new Array(), logArrayMaxLength = 10, isAutoFlush = false;
+var logArray = new Array(), logArrayMaxLength = 1000, isAutoFlush = false;
 
 // @Bind view.onReady
 !function(self, arg) {
@@ -11,6 +11,8 @@ var logArray = new Array(), logArrayMaxLength = 10, isAutoFlush = false;
 	}
 	view.get('#outCheckBox').set('value', true);
 	view.get('#errCheckBox').set('value', true);
+	logArrayMaxLength = view.get('#maxLineSize').get('text');
+	view.get("#retrieveLogAction").execute();
 
 }
 
@@ -55,7 +57,7 @@ var logArray = new Array(), logArrayMaxLength = 10, isAutoFlush = false;
 // @Bind #flushBtn.onClick
 !function(self, arg) {
 	logArrayMaxLength = view.get('#maxLineSize').get('text');
-	view.get("#retrieveLogAction").execute()
+	view.get("#retrieveLogAction").execute();
 }
 // @Bind #autoFlushBtn.onClick
 !function(self, arg) {
