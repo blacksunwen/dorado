@@ -62,19 +62,19 @@ var StatusCellRenderer = $extend(DefaultCellRenderer, {
 });
 var TimeLengthCellRenderer = $extend(DefaultCellRenderer, {
 	format : function(text) {
-		return FormaterUtils._timeLength(text);
+		return dorado.console.util.formatTimeLength(text);
 	}
 });
 
 var DateCellRenderer = $extend(DefaultCellRenderer, {
 	format : function(text) {
-		return FormaterUtils._time(text);
+		return dorado.console.util.formatTime(text);
 	}
 });
 
 var MemoryCellRenderer = $extend(DefaultCellRenderer, {
 	format : function(text) {
-		return FormaterUtils._size(text);
+		return dorado.console.util.formatFileSize(text);
 	}
 });
 
@@ -297,14 +297,15 @@ function createTimeBar(value, width) {
 		className : 'time_bar',
 		content : {
 			tagName : 'DIV',
-			style : 'width: ' + ALG_Utils._percent(value, maxSpendTime)
+			style : 'width: '
+					+ dorado.console.util.percent(value, maxSpendTime)
 					+ ';background-color: #006030;'
 		}
 	});
 }
 function createCountDom(category, lastProcess) {
-	var totalTime = lastProcess.get('time') - category.firstProcess.time, frequency = FormaterUtils
-			._timeLength(totalTime / category.count);
+	var totalTime = lastProcess.get('time') - category.firstProcess.time, frequency = dorado.console.util
+			.formatTimeLength(totalTime / category.count);
 	return $DomUtils.xCreate({
 		tagName : "tr",
 		content : [ {
@@ -361,7 +362,8 @@ function createTimeInfoDom(arg) {
 					content : {
 						tagName : 'span',
 						className : 'content',
-						content : FormaterUtils._timeLength(arg.value)
+						content : dorado.console.util
+								.formatTimeLength(arg.value)
 					}
 				},
 				{
@@ -373,7 +375,7 @@ function createTimeInfoDom(arg) {
 						content : {
 							tagName : 'div',
 							style : 'width: '
-									+ ALG_Utils._percent(arg.value,
+									+ dorado.console.util.percent(arg.value,
 											arg.maxValue)
 									+ ';background-color: ' + arg.color + ';'
 						}
@@ -382,47 +384,60 @@ function createTimeInfoDom(arg) {
 	});
 }
 function createProcessDom(arg) {
-	return $DomUtils.xCreate({
-		tagName : 'div',
-		className : 'process_info',
-		content : {
-			tagName : "table",
-			content : [ {
-				tagName : "tr",
-				content : [ {
-					tagName : "td",
+	return $DomUtils
+			.xCreate({
+				tagName : 'div',
+				className : 'process_info',
+				content : {
+					tagName : "table",
 					content : [ {
-						tagName : 'span',
-						className : 'label',
-						content : '${res.time}：'
-					}, {
-						tagName : 'span',
-						content : FormaterUtils._time(arg.time)
+						tagName : "tr",
+						content : [
+								{
+									tagName : "td",
+									content : [
+											{
+												tagName : 'span',
+												className : 'label',
+												content : '${res.time}：'
+											},
+											{
+												tagName : 'span',
+												content : dorado.console.util
+														.formatTime(arg.time)
+											} ]
+								},
+								{
+									tagName : "td",
+									content : [
+											{
+												tagName : 'span',
+												className : 'label',
+												content : '${res.spendTime}:'
+											},
+											{
+												tagName : 'span',
+												content : dorado.console.util
+														.formatTimeLength(arg.spendTime)
+											} ]
+								},
+								{
+									tagName : "td",
+									content : [
+											{
+												tagName : 'span',
+												className : 'label',
+												content : '${res.freeMemory}:'
+											},
+											{
+												tagName : 'span',
+												content : dorado.console.util
+														.formatFileSize(arg.freeMemory)
+											} ]
+								} ]
 					} ]
-				}, {
-					tagName : "td",
-					content : [ {
-						tagName : 'span',
-						className : 'label',
-						content : '${res.spendTime}:'
-					}, {
-						tagName : 'span',
-						content : FormaterUtils._timeLength(arg.spendTime)
-					} ]
-				}, {
-					tagName : "td",
-					content : [ {
-						tagName : 'span',
-						className : 'label',
-						content : '${res.freeMemory}:'
-					}, {
-						tagName : 'span',
-						content : FormaterUtils._size(arg.freeMemory)
-					} ]
-				} ]
-			} ]
-		}
-	});
+				}
+			});
 }
 
 // =====================================================================================
@@ -524,23 +539,23 @@ function doChangeButton() {
 // @Bind #dsMonitoredTarget.onDataLoad
 !function(self, arg) {
 	var data = self.get('data'), avgTime;
-	maxSpendTime=0;
+	maxSpendTime = 0;
 	data.each(function(item) {
 		avgTime = item.get('avgTime');
 		maxSpendTime = avgTime >= maxSpendTime ? avgTime : maxSpendTime;
 	});
-	maxSpendTime=maxSpendTime*1.5;
+	maxSpendTime = maxSpendTime * 1.5;
 }
 
 // @Bind #dsLastProcess.onDataLoad
 !function(self, arg) {
 	var data = self.get('data'), spendTime;
-	maxSpendTime=0;
+	maxSpendTime = 0;
 	data.each(function(item) {
 		spendTime = item.get('spendTime');
 		maxSpendTime = spendTime >= maxSpendTime ? spendTime : maxSpendTime;
 	});
-	maxSpendTime=maxSpendTime*1.5;
+	maxSpendTime = maxSpendTime * 1.5;
 }
 // @Bind #flushDsMonitoredTarget.onClick
 !function(self, arg) {

@@ -1,12 +1,23 @@
+/*
+ * This file is part of Dorado 7.x (http://dorado7.bsdn.org).
+ * 
+ * Copyright (c) 2002-2012 BSTEK Corp. All rights reserved.
+ * 
+ * This file is dual-licensed under the AGPLv3 (http://www.gnu.org/licenses/agpl-3.0.html) 
+ * and BSDN commercial (http://www.bsdn.org/licenses) licenses.
+ * 
+ * If you are unsure which license is appropriate for your use, please contact the sales department
+ * at http://www.bstek.com/contact.
+ */
+
 package com.bstek.dorado.console.performance.interceptor;
 
 import java.util.Collection;
 
 import org.aopalliance.intercept.MethodInvocation;
 
-import com.bstek.dorado.console.Logger;
+import com.bstek.dorado.console.performance.ExecuteLogOutputter;
 import com.bstek.dorado.console.performance.PerformanceMonitor;
-import com.bstek.dorado.console.utils.ExecuteLogUtils;
 import com.bstek.dorado.core.el.Expression;
 import com.bstek.dorado.data.provider.AbstractDataProviderGetResultMethodInterceptor;
 import com.bstek.dorado.data.provider.DataProvider;
@@ -15,11 +26,28 @@ import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.util.PathUtils;
 
+/**
+ * Dorado DataProvider 性能拦截器
+ * 
+ * <pre>
+ * 主要记录运行日志以及运行性能信息
+ * </pre>
+ * 
+ * @author Alex Tong(mailto:alex.tong@bstek.com)
+ * @since 2013-3-4
+ */
 public class DataProviderGetResultMethodInterceptor extends
 		AbstractDataProviderGetResultMethodInterceptor {
-	private static final Logger logger = Logger
-			.getLog(DataProviderGetResultMethodInterceptor.class);
+
+	private static final String TYPE = "DataProvider";
+	/**
+	 * 拦截DataProvidater 规则
+	 */
 	private String namePattern;
+	/**
+	 * 执行日志输出器
+	 */
+	private ExecuteLogOutputter executeLogOutputter;
 
 	public String getNamePattern() {
 		return namePattern;
@@ -29,12 +57,20 @@ public class DataProviderGetResultMethodInterceptor extends
 		this.namePattern = namePattern;
 	}
 
+	/**
+	 * @param executeLogOutputter
+	 *            the executeLogOutputter to set
+	 */
+	public void setExecuteLogOutputter(ExecuteLogOutputter executeLogOutputter) {
+		this.executeLogOutputter = executeLogOutputter;
+	}
+
 	@SuppressWarnings("rawtypes")
 	@Override
 	protected Object invokeGetResult(MethodInvocation methodinvocation,
 			DataProvider dataprovider, Object obj, DataType datatype)
 			throws Throwable {
-		
+
 		if (PathUtils.match(namePattern, dataprovider.getName())) {
 			return methodinvocation.proceed();
 		}
@@ -46,9 +82,9 @@ public class DataProviderGetResultMethodInterceptor extends
 				break;
 			}
 		}
-		logger.info(ExecuteLogUtils.start("DataProvider GetResult",
-				dataprovider.getName(),
-				String.format("parameter={ %s }", parameter)));
+		executeLogOutputter.outStartLog(TYPE, dataprovider.getName(),
+				String.format("parameter={ %s }", parameter));
+
 		Object object = methodinvocation.proceed();
 		Object result = object;
 		if (result instanceof Expression) {
@@ -57,8 +93,8 @@ public class DataProviderGetResultMethodInterceptor extends
 			result = String.format("{%s , size = %s}",
 					Collection.class.getName(), ((Collection) result).size());
 		}
-		logger.info(ExecuteLogUtils.end("DataProvider GetResult",
-				dataprovider.getName(), String.format("result= %s ", result)));
+		executeLogOutputter.outEndLog(TYPE, dataprovider.getName(),
+				String.format("result= %s ", result));
 
 		long endTime = System.currentTimeMillis();
 		PerformanceMonitor.getInstance().monitoredProcess(
@@ -82,17 +118,17 @@ public class DataProviderGetResultMethodInterceptor extends
 				parameter = (Record) arg;
 			}
 		}
-		logger.info(ExecuteLogUtils.start("DataProvider GetPagingResult",
+		executeLogOutputter.outStartLog("DataProvider GetPagingResult",
 				dataprovider.getName(), String.format(
 						"parameter= %s ,page={ pageNo = %s , pageSize = %s}",
-						parameter, page.getPageNo(), page.getPageSize())));
+						parameter, page.getPageNo(), page.getPageSize()));
 
 		Object object = methodinvocation.proceed();
-		logger.info(ExecuteLogUtils.end(
+		executeLogOutputter.outEndLog(
 				"DataProvider GetPagingResult",
 				dataprovider.getName(),
 				String.format("{Entities Size= %s ,pageCount= %s}",
-						page.getEntityCount(), page.getPageCount())));
+						page.getEntityCount(), page.getPageCount()));
 
 		long endTime = System.currentTimeMillis();
 		PerformanceMonitor.getInstance().monitoredProcess(
