@@ -40,7 +40,7 @@ public class Tip extends Control implements FloatControl {
 	private boolean modal;
 	private ModalType modalType = ModalType.dark;
 	private FloatControlShadowMode shadowMode = FloatControlShadowMode.drop;
-	private boolean focusAfterShow = true;
+	private boolean focusAfterShow = false;
 	private boolean continuedFocus = true;
 
 	private String caption;
@@ -143,7 +143,7 @@ public class Tip extends Control implements FloatControl {
 		this.shadowMode = shadowMode;
 	}
 
-	@ClientProperty(escapeValue = "true")
+	@ClientProperty(escapeValue = "false")
 	public boolean isFocusAfterShow() {
 		return focusAfterShow;
 	}
