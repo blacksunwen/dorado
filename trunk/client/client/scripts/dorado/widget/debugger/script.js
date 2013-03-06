@@ -47,7 +47,8 @@ dorado.debug.initProcedures.push(function(){
 					tip: "Run Code",
 					listener: {
 						onClick: function() {
-							var code = codeTextArea.get("text");
+							var code = "var $it = $topView._children.iterator(), view; while($it.hasNext()) { var control = $it.next(); if (control instanceof dorado.widget.View) { view = control; break; } }"
+							code += codeTextArea.get("text");
 							if (dorado.Debugger.trapError) {
 								try {
 									eval(code);
@@ -70,7 +71,7 @@ dorado.debug.initProcedures.push(function(){
 									panel.fireEvent("onRunCodeError", panel, {
 										errorMsg: errorMsg
 									});
-								}
+							}
 							} else {
 								eval(code);
 							}
