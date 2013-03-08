@@ -645,8 +645,16 @@
 					caption: $resource("dorado.baseWidget.DatePickerConfirm"),
 					listener: {
 						onClick: function() {
+							var date;
+							debugger;
+							if (picker._showTimeSpinner && picker._timeSpinner) {
+								var pickerDate = picker._date, spinner = picker._timeSpinner;
+								date = new Date(pickerDate.getFullYear(), pickerDate.getMonth(), pickerDate.getDate(), spinner.get("hours"), spinner.get("minutes"), spinner.get("seconds"))
+							} else {
+								date = new Date(picker._date.getTime());
+							}
 							picker.fireEvent("onConfirm", picker, {
-								date: new Date(picker._date.getTime())
+								date: date
 							});
 						}
 					}
@@ -765,6 +773,7 @@
 					type: "time",
 					width: 100,
 					listener: {
+						//此事件暂时不生效
 						onPost: function() {
 							var date = picker._date;
 							date.setHours(spinner.get("hours"));
