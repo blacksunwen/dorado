@@ -12,12 +12,9 @@
 
 package com.bstek.dorado.console.parser;
 
-import static org.junit.Assert.*;
-
 import org.junit.Before;
 import org.junit.Test;
 
-import com.bstek.dorado.core.ContextTestCase;
 import com.bstek.dorado.view.ViewContextTestCase;
 
 /**
