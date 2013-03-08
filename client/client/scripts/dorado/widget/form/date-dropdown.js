@@ -646,7 +646,6 @@
 					listener: {
 						onClick: function() {
 							var date;
-							debugger;
 							if (picker._showTimeSpinner && picker._timeSpinner) {
 								var pickerDate = picker._date, spinner = picker._timeSpinner;
 								date = new Date(pickerDate.getFullYear(), pickerDate.getMonth(), pickerDate.getDate(), spinner.get("hours"), spinner.get("minutes"), spinner.get("seconds"))
