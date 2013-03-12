@@ -511,6 +511,10 @@
 				if(this._isInnerControl) this._parent.unregisterInnerControl(this);
 				else this._parent.removeChild(this);
 			}
+			
+			if (this._modernScrolled) {
+				this._modernScrolled.destroy();
+			}
 
 			var dom = this._dom;
 			if(dom) {
@@ -650,6 +654,8 @@
 							this.refreshDom(dom);
 							this.fireEvent("onRefreshDom", this, arg);
 						}
+						
+						this.updateModernScroller();
 					} finally {
 						this._duringRefreshDom = false;
 					}
@@ -671,6 +677,8 @@
 						this.refreshDom(dom);
 						this.fireEvent("onRefreshDom", this, arg);
 					}
+					
+					this.updateModernScroller();
 				} finally {
 					this._duringRefreshDom = false;
 				}
@@ -730,8 +738,14 @@
 			this.applyDraggable(dom);
 			this.applyDroppable(dom);
 			$invokeSuper.call(this, [dom]);
-
+			
 			this._currentVisible = !!this._visible;
+		},
+		
+		updateModernScroller: function() {
+			if (this._modernScrolled) {
+				this._modernScrolled.update();
+			}
 		},
 		
 		getRealWidth : function() {
@@ -757,16 +771,11 @@
 		
 		/**
 		 * 向控件所在的布局管理器通知本控件的尺寸已经发生了变化。
+		 * @param {boolean} immediately
 		 * @protected
 		 */
-		notifySizeChange : function() {
-			if(!this._parent || !this._rendered) return;
-			var layout = this._parent._layout;
-			if(layout && layout._attached && layout.onControlSizeChange) {
-				dorado.Toolkits.setDelayedAction(this, "$notifySizeChangeTimerId", function() {
-					layout.onControlSizeChange(this);
-				}, 200);
-			}
+		notifySizeChange : function(immediately) {
+			if (this._parent && this._parent.onContentSizeChange) this._parent.onContentSizeChange(this, immediately);
 		},
 		
 		/**
@@ -997,6 +1006,7 @@
 					this.onResize();
 				}
 			
+				this.updateModernScroller();
 				if (!this._ready) {
 					this.onReady();
 				}
