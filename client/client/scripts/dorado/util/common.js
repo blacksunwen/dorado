@@ -104,7 +104,7 @@ dorado.util.Common = {
 			}
 			return prefix + r.split('').reverse().join('');
 		}
-		
+	
 		function formatDecimal(n, format) {
 			var nfs = (format) ? format.match(/[\#0]/g) : null;
 			if (nfs === null) {
@@ -114,14 +114,11 @@ dorado.util.Common = {
 				n = (parseInt(n, 10) + 1) + '';
 				var overflow = n.length > nfs.length;
 				if (overflow) {
-					n = n.substring(n.length > nfs.length);
-				}
-				
-				var leadingZero = '';
-				for (var i = 0; i < n.length; i++) {
-					if (n.charAt(i) == '0') {
+					n = n.substring(n.length - nfs.length);
+				} else {
+					var leadingZero = '';
+					for (var i = n.length; i < nfs.length; i++) {
 						leadingZero += '0';
-						break;
 					}
 				}
 				n = leadingZero + n;
