@@ -424,42 +424,23 @@
 		},
 		
 		doOnResize: function() {
-			var container = this;
-			dorado.Toolkits.cancelDelayedAction(container, "$notifySizeChangeTimerId");
-			
-			var layout = container._layout;
-			if (container._contentContainerVisible && layout && layout._attached) {
-				var overflowX = (!container._contentOverflowX) ? container._contentOverflow : container._contentOverflowX;
-				var overflowY = (!container._contentOverflowY) ? container._contentOverflow : container._contentOverflowY;
+			var layout = this._layout;
+			if (this._contentContainerVisible && layout && layout._attached) {
+				var overflowX = (!this._contentOverflowX) ? this._contentOverflow : this._contentOverflowX;
+				var overflowY = (!this._contentOverflowY) ? this._contentOverflow : this._contentOverflowY;
 				overflowX = overflowX || "auto";
 				overflowY = overflowY || "auto";
-				var contentCt = container.getContentContainer();
+				var contentCt = this.getContentContainer();
 			
 				var overflowedX = false, overflowedY = false;
 				if (overflowX == "scroll" || overflowX == "auto") overflowedX = (contentCt.scrollWidth > contentCt.clientWidth);
 				if (overflowY == "scroll" || overflowY == "auto") overflowedY = (contentCt.scrollHeight > contentCt.clientHeight);
 					
 				layout.onResize();
-			}
-		},
-		
-		onContentSizeChange: function(control, immediately) {
-			if (!this._rendered) return;
-			
-			var container = this, layout = container._layout;
-			dorado.Toolkits.cancelDelayedAction(container, "$notifySizeChangeTimerId");
-			
-			if(layout && layout._attached && layout.onControlSizeChange) {
-				if (layout._regions.get(control._id)) {
-					var fn = function() {
-						layout.onControlSizeChange(control);
-						container.updateModernScroller();
-					};
-					if (immediately) {
-						fn();
-					}
-					else {
-						dorado.Toolkits.setDelayedAction(container, "$notifySizeChangeTimerId", fn, 200);
+					
+				if (overflowY == "scroll" || overflowY == "auto") {
+					if (overflowedY != (contentCt.scrollHeight > contentCt.clientHeight)) {
+						layout.onResize();
 					}
 				}
 				else if (overflowX == "scroll" || overflowX == "auto") {
