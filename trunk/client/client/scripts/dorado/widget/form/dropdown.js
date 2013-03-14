@@ -261,7 +261,14 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 	},
 
 	createDropDownBox : function() {
-		return new dorado.widget.DropDownBox();
+		var config = {
+			dropDown : this,
+			hideAnimateType : "none"
+		};
+		if (dorado.Browser.msie && dorado.Browser.version < 9) {
+			config.showAnimateType =  "none";
+		}
+		return new dorado.widget.DropDownBox(config);
 	},
 
 	initDropDownBox : dorado._NULL_FUNCTION,
@@ -310,7 +317,6 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 		$setTimeout(this, function() {
 			delete this._skipExecute;
 		}, 300);
-		
 		if (this.get("opened")) {
 			this.close();
 		} else {
@@ -354,18 +360,26 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 		var box = boxCache ? boxCache[dorado.id + '$' + dropdown._id] : null;
 		if (!box) {
 			box = dropdown.createDropDownBox();
-			box.set({
-				onDropDownBoxShow: function() {
-					if (dropdown.onDropDownBoxShow) dropdown.onDropDownBoxShow();
-				}
+			box.addListener("onDropDownBoxShow", function() {
+				if (dropdown.onDropDownBoxShow) dropdown.onDropDownBoxShow();
 			});
 			(dropdown._view || $topView).registerInnerControl(box);
 			
+			/*
+			var viewElement;
+			if (!(dorado.Browser.msie && dorado.Browser.version < 9)) {
+				var view = editor._view;
+				while (view) {
+					if (view._rendered) viewElement = view.getContentContainer();
+					view = view._view;
+				}
+			}
+			box.render(viewElement || win.document.body);
+			*/
 			box.render(win.document.body);
 			
 			if (boxCache) boxCache[dorado.id + '$' + dropdown._id] = box;
 		}
-		box._dropdown = dropdown;
 		box._editor = editor;
 		dropdown._box = box;
 
@@ -404,9 +418,9 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 		if (!box || !editor) return;
 
 		var editorDom = editor.getDom(), boxDom = box.getDom(), boxContainer = boxDom.parentNode;
-		var $boxDom= $fly(boxDom), edgeWidth = $boxDom.edgeWidth(), edgeHeight = $boxDom.edgeHeight();
-		var boxContainerHeight = boxContainer.clientHeight, realMaxHeight = boxContainerHeight, boxVisible = box.get("visible");
-
+		var realMaxHeight, boxContainerHeight = boxContainer.clientHeight, boxVisible = box.get("visible");
+		realMaxHeight = boxContainerHeight;
+		
 		var currentEditorOffset = $fly(editorDom).offset();
 		dropdown._currentEditorOffsetLeft = currentEditorOffset.left; 
 		dropdown._currentEditorOffsetTop = currentEditorOffset.top;   
@@ -433,29 +447,36 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 		if (boxHeight > dropdown._realMaxHeight) boxHeight = dropdown._realMaxHeight;
 		if (boxHeight < dropdown._minHeight) boxHeight = dropdown._minHeight;
 
+		var containerElement = box.getContainerElement();
 		if (!boxVisible) {
-			boxDom.style.visibility = "hidden";
-			boxDom.style.display = "";
+			with (boxDom.style) {
+				left = -screen.availWidth + "px";
+				top = 0;
+				width = boxWidth + "px";
+				height = boxHeight + "px";
+				visibility = "hidden";
+				display = '';
+			}
 		}
-		box._visible = true;	// 避免内部的onResize逻辑被跳过
-		box.set({
-			width: boxWidth + edgeWidth,
-			height: boxHeight + edgeHeight
-		}).refresh();
-		box._visible = false;
-		
-		var currentBoxWidth = boxWidth, currentBoxHeight = boxHeight;
+		else {
+			with (boxDom.style) {
+				width = boxWidth + "px";
+				height = boxHeight + "px";
+			}
+		}
 
+		box.init(editor);
 		dropdown.initDropDownBox(box, editor);
 		
-		var controlElement = box.get("control").getDom();
 		if (!dropdown._width) {
-			boxWidth = controlElement.offsetWidth;
+			boxWidth = (dorado.Browser.mozilla) ? containerElement.firstChild.offsetWidth
+					: containerElement.scrollWidth;
 			if (boxWidth > dropdown._realMaxWidth) boxWidth = dropdown._realMaxWidth;
 			if (boxWidth < dropdown._minWidth) boxWidth = dropdown._minWidth;
 		}
 		if (!dropdown._height) {
-			boxHeight = controlElement.offsetHeight;
+			boxHeight = (dorado.Browser.mozilla) ? containerElement.firstChild.offsetHeight
+					: containerElement.scrollHeight;
 			if (boxHeight > dropdown._realMaxHeight) boxHeight = dropdown._realMaxHeight;
 			if (boxHeight < dropdown._minHeight) boxHeight = dropdown._minHeight;
 		}
@@ -468,18 +489,11 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 			vAlign = "bottom";
 		}
 		
-		var widthOverflow = boxDom.parentNode.clientWidth - ($fly(editorDom).offset().left + boxWidth);
+		var widthOverflow = boxDom.offsetParent.clientWidth - ($fly(editorDom).offset().left + boxWidth);
 		if (widthOverflow > 0) widthOverflow = 0;
-		
-		if (currentBoxWidth != boxWidth || currentBoxHeight != boxHeight) {
-			box._visible = true; // 避免内部的onResize逻辑被跳过
-			box.set({
-				width: boxWidth + edgeWidth,
-				height: boxHeight + edgeHeight
-			}).refresh();
-			box._visible = false;
-		}
-		
+
+		boxDom.style.width = boxWidth + "px";
+		boxDom.style.height = boxHeight + "px";
 		if (boxVisible) {
 			$DomUtils.dockAround(boxDom, editorDom, {
 				align: align,
@@ -487,9 +501,6 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 				autoAdjustPosition: false
 			});
 		} else {
-			boxDom.style.visibility = "hidden";
-			boxDom.style.display = "none";
-			
 			dropdown._duringShowAnimation = true;
 			box.addListener("afterShow", function() {
 				dropdown._duringShowAnimation = false;
@@ -502,8 +513,6 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 				anchorTarget: editor,
 				editor: editor,
 				align: align,
-				gapX: $setting["widget.dropDownBox.offsetX"] || 0,
-				gapY: $setting["widget.dropDownBox.offsetY"] || 0,
 				offsetLeft: widthOverflow,
 				vAlign: vAlign,
 				autoAdjustPosition: false
@@ -627,7 +636,8 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
  * 例如：我们在自定义下拉框中放置了一个关闭按钮，该关闭按钮需要知道自己关闭的哪个下拉框，此时即可使用此方法查找其所属的下拉框。
  * </p>
  * 
- * @param {dorado.widget.Control} control 任意的控件。
+ * @param {dorado.widget.Control}
+ *            control 任意的控件。
  * @return {dorado.widget.DropDown} 所属的下拉框。
  * 
  * @example // 例如自定义下拉框中的关闭按钮可以这样定义 new dorado.widget.Button({ caption: "Close",
@@ -638,3 +648,110 @@ dorado.widget.DropDown.findDropDown = function(control) {
 	var box = control.findParent(dorado.widget.DropDownBox);
 	return box ? box.get("dropDown") : null;
 };
+
+dorado.widget.DropDownBox = $extend([ dorado.widget.Control, dorado.widget.FloatControl ], /** @scope dorado.widget.DropDownBox.prototype */
+{
+	$className : "dorado.widget.DropDownBox",
+	_inherentClassName : "i-drop-down-box",
+
+	ATTRIBUTES : /** @scope dorado.widget.DropDownBox.prototype */
+	{
+		className : {
+			defaultValue : "d-drop-down-box"
+		},
+
+		showAnimateType : {
+			defaultValue : "safeSlide"
+		},
+
+		hideAnimateType : {
+			defaultValue : "safeSlide"
+		},
+		
+		focusAfterShow: {
+			defaultValue : false
+		},
+
+		visible : {
+			defaultValue : false
+		},
+
+		editor : {},
+
+		dropDown : {},
+
+		control : {
+			writeOnce : true,
+			setter : function(control) {
+				if (this._control == control) return;
+				this._control = control;
+				if (control) {
+					this.registerInnerControl(control);
+				}
+			}
+		}
+	},
+
+	EVENTS : /** @scope dorado.widget.DropDownBox.prototype */
+	{
+		onDropDownBoxShow : {}
+	},
+
+	createDom : function() {
+		var json = {
+			tagName : "DIV",
+			style : {
+				position : "absolute",
+				display : "none"
+			},
+			content : {
+				tagName : "DIV",
+				style : {
+					overflow : "visible",
+					height: "100%"
+				}
+			}
+		};
+		if (dorado.Browser.msie && dorado.Browser.version < 7) {
+			json.content.style.width = "100%";
+			json.content.style.height = "100%";
+		}
+		return $DomUtils.xCreate(json);
+	},
+
+	init : function(editor) {
+		if (this._control) {
+			this._control.render(this.getContainerElement());
+		}
+	},
+
+	getContainerElement : function() {
+		return this.getDom().firstChild;
+	},
+
+	doBeforeShow : function(editor) {
+		$invokeSuper.call(this, arguments);
+		this.refresh();
+	},
+
+	doAfterShow : function(editor) {
+		$invokeSuper.call(this, arguments);
+		this.fireEvent("onDropDownBoxShow", this);
+	},
+
+	doBeforeHide : function() {
+		$invokeSuper.call(this, arguments);
+		this._closed = true;
+	}
+});
+
+dorado.widget.View.registerDefaultComponent("triggerClear", function() {
+	return new dorado.widget.Trigger({
+		exClassName : "d-trigger-clear",
+		iconClass : "d-trigger-icon-clear",
+		onExecute : function(self, arg) {
+			arg.editor.set("text", "");
+			arg.editor.post();
+		}
+	});
+});
