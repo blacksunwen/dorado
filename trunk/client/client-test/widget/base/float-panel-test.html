@@ -39,6 +39,14 @@
                             widget.show();
                         }
                     }
+                },
+                {
+                    caption: "Zoom Test",
+                    listener: {
+                        onClick: function(self) {
+                            zoomControl.show();
+                        }
+                    }
                 }
             ]
         });
@@ -52,7 +60,7 @@
             animateTarget: "#target1",
             center: true,
 			caption: "Test",
-            modal: true,
+            //modal: true,
 			maximizeable: true,
             children: [new dorado.widget.IFrame({
                 path: "http://www.baidu.com",
@@ -93,48 +101,42 @@
         });
         view.addChild(panel2);
 
-		var panel3= new dorado.widget.Panel({
-			caption: "abc",
-			tools: [{
-				onClick: function() {
-					var docWidth = $fly(document).width(), docHeight = $fly(document).height();
-						var dom = panel3._dom;
-						var containBlock = dom.parentNode;
-						while(containBlock != document.body) {
-							console.log("position:" + $fly(containBlock).css("position"));
-							if ($fly(containBlock).css("position") != "static") {
-								break;
-							}
-							containBlock = containBlock.parentNode;
-						}
-						panel3.set({
-							width: docWidth,
-							height: docHeight
-						});
-						panel3.refresh();
-						var poffset = $fly(containBlock).offset() || {left: 0, top: 0};
-						console.log(poffset);
-						var offset = $fly(panel3._dom).offset();
-						panel3._dom.style.position = "absolute";
-						panel3._dom.style.left = -poffset.left + "px";
-						panel3._dom.style.top =  -poffset.top + "px";
-						panel3._dom.style.zIndex = 1;
-				}
-			}]
-		});
-
-		view.addChild(panel3);
-
 		var html3 = new dorado.widget.HtmlContainer("html3");
 		html3.set("content", {
 			tagName: "LABEL",
-			content: "World World<br/>Hello Hello"
+			content: "World World<br/>Hello Hello<br/>Hello Hello<br/>Hello Hello"
 		});
+
+        view.addChild(html3);
+
+        var zoomControl = new dorado.widget.FloatContainer({
+            showAnimateType: "zoom",
+            width: 400,
+            height: 300,
+            left: 100,
+            top: 100,
+            style: {
+                background: "#ddd"
+            }
+        });
+
+        var container = new dorado.widget.Container({
+            width: 600,
+            height: 400,
+            style: {
+                background: "yellow"
+            },
+            children: [zoomControl]
+        });
+
+        zoomControl.set("renderTo", panel1);
 
 		var widget = new dorado.widget.desktop.Widget({
 			control: html3,
 			center: true
 		});
+
+        view.addChild(container);
 
         $(document).ready(function() {
             view.render(document.body);

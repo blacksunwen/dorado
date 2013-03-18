@@ -442,6 +442,12 @@
 		var position = options.position, animTarget = options.animateTarget,
 			startLeft, startTop, endLeft, endTop, offset, isTypeIn = (type != "out"), elWidth, elHeight;
 
+		if (position) {
+			var oldLeft = element.style.left, oldTop = element.style.top;
+			position = $fly(element).css(position).offset();
+			$fly(element).css({ "left": oldLeft || "", "top": oldTop || "" });
+		}
+
 		if (typeof animTarget == "string") {
 			animTarget = jQuery(animTarget)[0];
 		} else if(animTarget instanceof dorado.widget.Control){
