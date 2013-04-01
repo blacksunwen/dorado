@@ -46,7 +46,7 @@
 			}
 			return textDom;
 		},
-		
+
 		refreshTriggerDoms: function() {
 			var triggerButtons = this._triggerButtons, triggerButton, triggerPanel = this._triggerPanel;
 			if (triggerButtons && triggerPanel) {
@@ -56,7 +56,7 @@
 					this.unregisterInnerControl(triggerButton);
 				}
 			}
-			
+
 			var triggers = this.get("trigger");
 			if (triggers) {
 				if (!triggerPanel) {
@@ -64,7 +64,8 @@
 					triggerPanel.className = "i-trigger-panel d-trigger-panel";
 					this._dom.appendChild(triggerPanel);
 				}
-				
+				triggerPanel.style.display = "";
+
 				if (!(triggers instanceof Array)) triggers = [triggers];
 				var trigger;
 				this._triggerButtons = triggerButtons = [];
@@ -82,7 +83,7 @@
 				this.doOnResize = this.resizeTextDom;
 				this.resizeTextDom();
 			} else {
-				if (this._triggerPanel) this._triggerPanel.style.display = "none";
+				if (triggerPanel) triggerPanel.style.display = "none";
 				if (dorado.Browser.msie && dorado.Browser.version < 9) {
 					this.doOnResize = this.resizeTextDom;
 					this.resizeTextDom();
