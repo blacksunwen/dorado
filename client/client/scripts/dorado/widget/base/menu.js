@@ -863,7 +863,7 @@
 			if (focusParent instanceof dorado.widget.Menu) {
 				focusParent.notifyOpenerOnMouseLeave();
 			} else if (focusParent instanceof dorado.widget.AbstractButton) {
-				focusParent.doHideMenuOnMouseLeave();
+				focusParent.doHideMenuOnMouseLeave && focusParent.doHideMenuOnMouseLeave();
 			}
 		}
 	});
