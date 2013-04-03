@@ -854,7 +854,7 @@
 			if (focusParent instanceof dorado.widget.Menu) {
 				focusParent.notifyOpenerOnMouseEnter();
 			} else if (focusParent instanceof dorado.widget.AbstractButton) {
-				focusParent.doCancelHideMenuOnMouseEnter();
+				focusParent.doCancelHideMenuOnMouseEnter && focusParent.doCancelHideMenuOnMouseEnter();
 			}
 		},
 
