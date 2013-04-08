@@ -107,6 +107,9 @@
             });
 
             var testMenu = new dorado.widget.Menu({
+                onClick: function(self, arg) {
+                    if (arg.item) console.log(arg.item.get("caption"));
+                },
                 floating: false,
                 width: 200,
                 height: 200,
