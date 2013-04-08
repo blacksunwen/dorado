@@ -554,7 +554,8 @@
 				if (item.hasSubmenu()) {
 					action.execute && action.execute();
 					item.fireEvent("onClick", item);
-					event.stopImmediatePropagation();
+					//注：为了修复dorado7-2367把这句给屏蔽了，记不清为什么要添加这句了。
+					//event.stopImmediatePropagation();
 				} else {
 					action.execute && action.execute();
 					item.fireEvent("onClick", item);

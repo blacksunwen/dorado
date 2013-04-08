@@ -742,7 +742,31 @@
 					}
 				}
 			}).click(function(event) {
+				if (!menu.processDefaultMouseListener()) return;
+				var defaultReturnValue;
+				if (menu.onClick) {
+					defaultReturnValue = menu.onClick(event);
+				}
+				var arg = {
+					button: event.button,
+					event: event,
+					returnValue: defaultReturnValue
+				}
+				var target = event.target, item;
+				if (target) {
+					var items = menu._items;
+					for (var i = 0, j = items.size; i < j; i++) {
+						var temp = items.get(i);
+						if (temp._dom == target || jQuery.contains(temp._dom, target)) {
+							item = temp;
+							arg.item = item;
+							break;
+						}
+					}
+				}
+				menu.fireEvent("onClick", menu, arg);
 				event.stopImmediatePropagation();
+				return arg.returnValue;
 			});
 			
 			$fly(groupContent).mousewheel(function(event, delta) {
