@@ -137,7 +137,22 @@
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
 			 */
-			onHideTopMenu: {}
+			onHideTopMenu: {},
+
+			/**
+			 * 当控件被点击时触发的事件。
+			 * @param {Object} self 事件的发起者，即组件本身。
+			 * @param {Object} arg 事件参数。
+			 * @param {int} arg.button 表示用户按下的是哪个按钮，具体请参考DHTML的相关文档。
+			 * @param {Event} arg.event DHTML中的事件event参数。
+			 * @param {Event} arg.item 点击的MenuItem对象，注意item有可能是空，因为Menu可以定义高度，可以有地方没有MenuItem。
+			 * @param {boolean} #arg.returnValue 表示是否要终止该鼠标事件的冒泡处理机制。
+			 * 如果返回false相当于调用了系统event的preventDefault()和stopPropagation()方法。
+			 * 不定义此参数表示交由系统自行判断。
+			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+			 * @event
+			 */
+			onClick : {}
 		},
 		
 		doGet: function(attr) {
