@@ -877,17 +877,17 @@ dorado.util.AjaxResult = $class(/** @scope dorado.util.AjaxResult.prototype */
 			this.text = conn.responseText;
 
 			var exception, contentType = this.getResponseHeaders()["content-type"];
-			if(contentType && contentType.indexOf("text/runnable") >= 0) {
+			if(contentType && contentType.indexOf("text/dorado-exception") >= 0) {
+				exception = this._parseException(conn.responseText, connObj);
+			}
+			else if(contentType && contentType.indexOf("text/runnable") >= 0) {
 				exception = this._parseRunnableException(conn.responseText, connObj);
-			} else if(conn.status < 200 || conn.status >= 400) {
-				if(conn.status == 487) {
-					exception = this._parseException(conn.responseText, connObj);
+			}
+			else if(conn.status < 200 || conn.status >= 400) {
+				if (dorado.windowClosed && conn.status == 0) {
+					exception = new dorado.AbortException();
 				} else {
-					if (dorado.windowClosed && conn.status == 0) {
-						exception = new dorado.AbortException();
-					} else {
-						exception = new dorado.util.AjaxException("HTTP " + conn.status + " " + conn.statusText, null, connObj);
-					}
+					exception = new dorado.util.AjaxException("HTTP " + conn.status + " " + conn.statusText, null, connObj);
 				}
 			}
 			if(exception) this._setException(exception);
