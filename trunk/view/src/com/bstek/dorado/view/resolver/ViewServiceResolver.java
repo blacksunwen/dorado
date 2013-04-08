@@ -60,7 +60,6 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 
 	private static final String JAVASCRIPT_TOKEN = "javascript";
 	private static final String XML_TOKEN = "xml";
-	private static final int EXCEPTION_STATUS_CODE = 487;
 	private static final int BUFFER_SIZE = 4096;
 	private static final String ACTION_ATTRIBUTE = ViewServiceResolver.class
 			.getName() + ".action";
@@ -208,6 +207,7 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 
 				ObjectNode objectNode = (ObjectNode) JsonUtils
 						.getObjectMapper().readTree(buf.toString());
+
 				processTask(writer, objectNode, context);
 			} else if (contentType != null && contentType.contains(XML_TOKEN)) {
 				Document document = getXmlDocumentBuilder(context)
@@ -255,7 +255,6 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 			}
 		} catch (Exception e) {
 			in.close();
-			response.setStatus(EXCEPTION_STATUS_CODE);
 
 			Throwable t = e;
 			while (t.getCause() != null) {
@@ -266,8 +265,10 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 				response.setContentType("text/runnable");
 				writer.write(((ClientRunnableException) t).getScript());
 			} else {
+				response.setContentType("text/dorado-exception");
 				outputException(jsonBuilder, e);
 			}
+
 			logger.error(e, e);
 		} finally {
 			writer.flush();
