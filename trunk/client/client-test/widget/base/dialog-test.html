@@ -10,6 +10,7 @@
         var view = new dorado.widget.View({ layout: "Anchor" });
 
         var dialog = new dorado.widget.Dialog({
+            id: "dialog1",
 			visible: true,
 			//showCaptionBar: false,
             //maximized: true,
@@ -72,7 +73,8 @@
         dialog.addChild(new dorado.widget.Container({
             height: 1000,
             style: {
-                "background-color": "#ddd"
+                "background-color": "#ddd",
+                margin: 20
             }
         }));
 
@@ -98,6 +100,7 @@
         });
 
         var toolbar = new dorado.widget.ToolBar({
+            id: "toolbar1",
             items: [
                 {
                     caption: "显示Dialog",

@@ -43,8 +43,8 @@
                 caption: "Change TabPlacement",
                 listener: {
                     onClick: function(self) {
-                        var tabpage1 = this.id("tabcontrol");
-                        tabpage1.set("tabPlacement", tabpage1._tabPlacement == "left" ? "right" : "left");
+                        var tabcontrol = this.id("tabcontrol");
+                        tabcontrol.set("tabPlacement", tabcontrol._tabPlacement == "left" ? "right" : "left");
                     }
                 }
             }]
@@ -71,7 +71,7 @@
                 caption: "Close",
                 listener: {
                     onClick: function() {
-                        var tabbar = this.id("tabbar1");
+                        var tabbar = this.id("tabcontrol");
                         if (tabbar) {
                             var tab = tabbar.get("contextMenuTab");
                             tabbar.closeTab(tab);
@@ -83,7 +83,7 @@
                 caption: "Close All",
                 listener: {
                     onClick: function() {
-                        var tabbar = this.id("tabbar1");
+                        var tabbar = this.id("tabcontrol");
                         if (tabbar) {
                             tabbar.closeAllTabs();
                         }
@@ -94,7 +94,7 @@
                 caption: "Close Others",
                 listener: {
                     onClick: function() {
-                        var tabbar = this.id("tabbar1");
+                        var tabbar = this.id("tabcontrol");
                         if (tabbar) {
                             var contextMenuTab = tabbar.get("contextMenuTab");
                             tabbar.closeOtherTabs(contextMenuTab);
@@ -110,7 +110,7 @@
         tabcontrol.set({
             width: 600,
             height: 400,
-            tabPlacement: "right",
+            //tabPlacement: "right",
             tabs: [
                 {
                     $type: "Control",
@@ -156,6 +156,7 @@
                 }
             ],
             tabMinWidth: 100,
+            verticalText: true,
             listener: {
                 onTabContextMenu: function(self, arg) {
                     var tab = arg.tab;
@@ -176,6 +177,6 @@
         });
     </script>
 </head>
-<body style="margin: 0;padding: 0;overflow: hidden;">
+<body style="margin: 0;padding: 10px;overflow: hidden;">
 </body>
 </html>

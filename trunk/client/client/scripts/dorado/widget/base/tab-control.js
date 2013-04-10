@@ -289,9 +289,8 @@ dorado.widget.VerticalTabControl = $extend(dorado.widget.TabColumn, /** @scope d
 
         $fly(tabcolumnDom).css({
             "height": "auto",
-            width: tabColumnWidth,
             "float": "left"
-        });
+        }).css("width", tabcolumnControl._verticalText ? "" : tabColumnWidth);
 
         $fly(cardDom).css("float", "left");
 
