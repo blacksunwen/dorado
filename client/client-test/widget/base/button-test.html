@@ -121,6 +121,23 @@
             buttonToggle.set("toggleable", true);
             buttonToggle.set("caption", "可以按下的按钮");
             buttonToggle.addListener("onClick", function(self) {
+                var tip = new dorado.widget.Tip({
+                    text: "测试测试测试测试<br />测试测试测试测试<br />测试测试测试测试<br />",
+                    /**
+                     anchorTarget: "#tip-target6",
+                     arrowDirection: "left",
+                     align: "right",
+                     vAlign: "center",
+                     */
+                    closeable: true,
+                    offsetTop: 10,
+                    offsetLeft: 50,
+                    onBlur: function(self) {
+                        self.hide();
+                    },
+                    focusAfterShow: true
+                });
+                tip.show();
             });
             
             view.addChild(buttonToggle);

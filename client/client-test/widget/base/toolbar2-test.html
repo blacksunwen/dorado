@@ -170,7 +170,7 @@
                             f(view);
                             return view;
                         })()}, "icon":"url(skin>common\/icons.gif) -200px -120px", "caption":"\u5B50\u89C6\u56FE"}
-                    ], "height":"400", "width":"500"}
+                    ], "height":"400", "width1":"600"}
                 ]);
             }
 
@@ -188,6 +188,11 @@
                 ], "id":"v:com.bstek.dorado.sample.data.SimpleCRUD$ProductType", "name":"ProductType"}
             ]);
             f(view);
+            view.addChild(new dorado.widget.Button({
+                caption: "change width",
+                onClick: function(self, arg) {
+                }
+            }));
             AUTO_APPEND_TO_TOPVIEW = true;
             var doradoView = document.getElementById("doradoView");
             if (doradoView) view.replace(doradoView);

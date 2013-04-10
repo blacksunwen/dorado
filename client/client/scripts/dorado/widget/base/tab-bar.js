@@ -551,7 +551,9 @@
             tabPlacement: {
                 skipRefresh: true,
                 defaultValue: "left"
-            }
+            },
+
+	        verticalText: {}
         },
 
         createDom: function() {
@@ -608,6 +610,10 @@
                 }
             });
 
+	        if (tabcolumn._verticalText) {
+		        $fly(dom).addClass("i-tabcolumn-vtext " + tabcolumn._className + "-vtext");
+	        }
+
             return dom;
         },
 
@@ -624,6 +630,23 @@
             tabbar.onToolButtonVisibleChange();
             tabbar.refreshNavButtons();
         },
+
+	    /**
+	     * @private
+	     */
+	    doChangeTabPlacement: function(value) {
+		    var tabgroup = this, cls = tabgroup._className, doms = tabgroup._doms, tabbarDom = doms.tabbar;
+		    if (tabbarDom) {
+			    var oldValue = tabgroup._tabPlacement;
+			    $fly(tabbarDom).addClass("i-tabcolumn-" + value + " " + cls + "-" + value);
+			    if (oldValue) {
+				    $fly(tabbarDom).removeClass("i-tabcolumn-" + oldValue + " " + cls + "-" + oldValue);
+			    }
+		    }
+		    tabgroup._tabPlacement = value;
+
+		    return true;
+	    },
 
         refreshDom: function(dom) {
             $invokeSuper.call(this, arguments);
@@ -1064,6 +1087,7 @@
 		createDom: function() {
 			var tabbar = this, tabs = tabbar._tabs, doms = {}, dom = $DomUtils.xCreate({
 				tagName: "div",
+				className: "i-tabbar " + tabbar._className,
 				contextKey: "tabbar",
 				content: [{
 					tagName: "div",
