@@ -291,8 +291,8 @@
 			var backupStyle = {
 				position: dom.style.position,
 				left: dom.style.left,
-				top: dom.style.top,
-				zIndex: dom.style.zIndex
+				top: dom.style.top
+				//,zIndex: dom.style.zIndex
 			};
 			
 			var poffset = jQuery(containBlock).offset() || {
