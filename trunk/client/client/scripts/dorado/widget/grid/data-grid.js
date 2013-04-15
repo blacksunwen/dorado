@@ -353,8 +353,10 @@
 				}
 				
 				var oldItems = this._itemModel.getItems();
-				if (oldItems != entityList || (entityList && entityList.pageNo != this._selectionPageNo)) {
+				if (oldItems != entityList ||
+					(entityList && (entityList.pageNo != this._selectionPageNo || entityList.pageSize != this._selectionPageSize))) {
 					this._selectionPageNo = entityList ? entityList.pageNo : 0;
+					this._selectionPageSize = entityList ? entityList.pageSize : 0;
 					if (this._itemModel.criterions && this._filterMode == "clientSide") {
 						this.get("filterEntity").clearData();
 					}
@@ -938,7 +940,10 @@
 		EVENTS: {
 			onSelectionChange: {
 				interceptor: function(superFire, self, arg) {
-					var retval = superFire(self, arg), grid = self.grid;
+					var grid = self.grid;
+					if (this._duringRefreshDom || grid._duringRefreshDom) return;
+
+					var retval = superFire(self, arg);
 					if (!self.fixed && grid._rowSelectionProperty && !grid._processingSelectionChange) {
 						grid._processingSelectionChange = true;
 						var property = grid._rowSelectionProperty, removed = arg.removed, added = arg.added;
