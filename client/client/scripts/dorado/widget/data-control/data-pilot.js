@@ -554,8 +554,13 @@
 		EVENTS: {
 			onAction: {
 				interceptor: function(superFire, self, arg) {
-					this._pageNo = arg.pageNo;
-					return superFire(self, arg);
+					if (arg.pageNo > 0) {
+						this._pageNo = arg.pageNo;
+						return superFire(self, arg);
+					}
+					else {
+						this._spinner.set("value", this._currentPageNo);
+					}
 				}
 			}
 		},
@@ -590,9 +595,11 @@
 				onKeyDown: function(self, arg) {
 					if (arg.keyCode == 13) {
 						spinner.post();
-						gotoPage.fireEvent("onAction", gotoPage, {
-							pageNo: spinner.get("value")
-						});
+						if (gotoPage._currentPageNo != spinner.get("value")) {
+							gotoPage.fireEvent("onAction", gotoPage, {
+								pageNo: spinner.get("value")
+							});
+						}
 					}
 					arg.returnValue = true;
 				},
