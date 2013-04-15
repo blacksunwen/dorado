@@ -353,7 +353,8 @@
 				}
 				
 				var oldItems = this._itemModel.getItems();
-				if (oldItems != entityList) {
+				if (oldItems != entityList || (entityList && entityList.pageNo != this._selectionPageNo)) {
+					this._selectionPageNo = entityList ? entityList.pageNo : 0;
 					if (this._itemModel.criterions && this._filterMode == "clientSide") {
 						this.get("filterEntity").clearData();
 					}
