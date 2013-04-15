@@ -170,6 +170,7 @@ dorado.widget.Trigger = $extend(dorado.widget.Component, /** @scope dorado.widge
 			icon: trigger._icon,
 			iconClass: trigger._iconClass,
 			onMouseDown: function(self, arg) {
+				dorado.widget.setFocusedControl(self);
 				arg.returnValue = false;
 			},
 			onClick: function(self, arg) {

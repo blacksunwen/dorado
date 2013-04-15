@@ -599,7 +599,7 @@
 		 * @return boolean 编辑器中的内容是否得到了确认。
 		 */
 		post: function(force, silent) {
-			if (!this._editorFocused) return false;
+			if (!this._focused) return false;
 			
 			try {
 				var text = this.get("text"), state, result, modified = (this._lastPost != text), validationResults;
