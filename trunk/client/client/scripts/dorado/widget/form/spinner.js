@@ -707,8 +707,8 @@
 							//if (digit && (value + '').length == digit) {
 							//	ignore = true;
 							//} else {
-								value = value * 10 + number;
-								if (maxValue != null && value > maxValue) value = number;
+							value = value * 10 + number;
+							if (maxValue != null && value > maxValue) value = number;
 								//ignore = (maxValue != null && value > maxValue);
 							//}
 							if (!ignore) spinner.doSetSlotValue(currentSlotIndex, value);
