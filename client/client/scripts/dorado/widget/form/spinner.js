@@ -703,12 +703,14 @@
 							if (!digit && maxValue != null) {
 								digit = (maxValue + '').length;
 							}
-							if (digit && (value + '').length == digit) {
-								ignore = true;
-							} else {
+							//Modified by Frank 修复http://www.bsdn.org/projects/dorado7/issue/dorado7-2433
+							//if (digit && (value + '').length == digit) {
+							//	ignore = true;
+							//} else {
 								value = value * 10 + number;
-								ignore = (maxValue != null && value > maxValue);
-							}
+								if (maxValue != null && value > maxValue) value = number;
+								//ignore = (maxValue != null && value > maxValue);
+							//}
 							if (!ignore) spinner.doSetSlotValue(currentSlotIndex, value);
 							retval = false;
 						}
