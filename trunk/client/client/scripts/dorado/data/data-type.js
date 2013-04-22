@@ -523,6 +523,18 @@
 				return $invokeSuper.call(this, [attr]);
 			}
 		},
+
+		fireEvent: function() {
+			// 对于那些Ajax懒装载的DataType，其中view可能是空的
+			var view = this.get("view"), oldView = window.view;
+			window.view = view;
+			try {
+				return $invokeSuper.call(this, arguments);
+			}
+			finally {
+				window.view = oldView;
+			}
+		},
 		
 		/**
 		 * 向实体类型中添加一个属性声明。
