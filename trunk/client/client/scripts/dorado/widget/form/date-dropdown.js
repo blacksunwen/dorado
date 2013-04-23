@@ -610,7 +610,7 @@
 						onClick: function() {
                             var now = new Date();
                             picker.set("date", now);
-                            if (now.getFullYear() === date.getFullYear() && now.getMonth() === date.getMonth()) {
+                            if (now.getFullYear() === picker._date.getFullYear() && now.getMonth() === picker._date.getMonth()) {
                                 picker.fireEvent("onPick", picker, {
                                     date: new Date(picker._date.getTime())
                                 });
