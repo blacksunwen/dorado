@@ -127,7 +127,8 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 					panel.doSetCollapsed(value);
 				} else {
 					panel._collapsed = value;
-					panel.setContentContainerVisible(!value);
+					if (panel._collapseable)
+						panel.setContentContainerVisible(!value);
 				}
 			}
 		}
