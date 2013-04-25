@@ -429,8 +429,11 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 									pipe.getAsync({
 										scope : this,
 										callback: function(success, result) {
-											var dummyData = this._data[property];
-											this._data[property] = null;
+											var dummyData = this._data[property], dummyValue;
+											if (dummyData.isDataPipeWrapper) {
+												dummyValue = dummyData.value;
+											}
+											this._data[property] = dummyValue || null;
 											if (isNewPipe) {
 												this.sendMessage(dorado.Entity._MESSAGE_LOADING_END, eventArg);
 												this._data[property] = dummyData;
@@ -440,12 +443,17 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 												eventArg.data = result;
 												
 												if (propertyDef.get("cacheable")) {
-													result = transferAndReplaceIf(this, propertyDef, result, true);
-													this.sendMessage(dorado.Entity._MESSAGE_DATA_CHANGED, {
-														entity: this,
-														property: property,
-														newValue: result
-													});
+													if (!(result === null &&
+														(dummyValue instanceof dorado.EntityList || dummyValue instanceof dorado.Entity) &&
+														dummyValue.isNull)) {
+														this._data[property] = result;
+														result = transferAndReplaceIf(this, propertyDef, result, true);
+														this.sendMessage(dorado.Entity._MESSAGE_DATA_CHANGED, {
+															entity: this,
+															property: property,
+															newValue: result
+														});
+													}
 												}
 												
 												propertyDef.fireEvent("onLoadData", propertyDef, eventArg);
