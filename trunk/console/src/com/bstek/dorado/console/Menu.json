@@ -58,7 +58,7 @@
 		"owner" : 3 ,
 		"icon" : ">dorado/console/images/dorado7.jpg"
 	}, {
-		"label" : "Expos",
+		"label" : "Expose",
 		"path" : "web.Expos.d",
 		"owner" : 3 ,
 		"icon" : ">dorado/console/images/dorado7.jpg"
