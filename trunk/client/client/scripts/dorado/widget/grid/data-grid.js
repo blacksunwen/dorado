@@ -425,7 +425,7 @@
 			switch (evt.keyCode) {
 				case 36:{ /* home */
 					if (evt.ctrlKey) {
-						items.first();
+						items.first(this._supportsPaging);
 					} else {
 						this.setCurrentColumn(this._columnsInfo.dataColumns[0]);
 					}
@@ -433,7 +433,7 @@
 				}
 				case 35:{ /* end */
 					if (evt.ctrlKey) {
-						items.last();
+						items.last(this._supportsPaging);
 					} else {
 						var columns = this._columnsInfo.dataColumns;
 						this.setCurrentColumn(columns[columns.length - 1]);
@@ -441,12 +441,12 @@
 					break;
 				}
 				case 38:{ /* up */
-					items.previous();
+					items.previous(this._supportsPaging);
 					retValue = false;
 					break;
 				}
 				case 40:{ /* down */
-					items.next();
+					items.next(this._supportsPaging);
 					retValue = false;
 					break;
 				}
@@ -458,13 +458,13 @@
 						if (evt.shiftKey) {
 							if (i > 0) i--;
 							else if (items.hasPrevious()) {
-								items.previous();
+								items.previous(this._supportsPaging);
 								i = columns.length - 1;
 							} else retValue = true;
 						} else {
 							if (i < columns.length - 1) i++;
 							else if (items.hasNext()) {
-								items.next();
+								items.next(this._supportsPaging);
 								i = 0;
 							} else if (this._appendOnLastEnter && items.current) {
 								items.insert();
@@ -694,6 +694,7 @@
 				for (var i = 0; i < requiredPages.length; i++) {
 					items.getPage(requiredPages[i], true, dorado._NULL_FUNCTION);
 				}
+				this._skipScrollCurrentIntoView = true;
 			}, timeout || 20);
 		},
 		
@@ -985,7 +986,7 @@
 		
 		getCurrentItem: DataListBoxProtoType.getCurrentItem,
 		getCurrentItemId: DataListBoxProtoType.getCurrentItemId,
-		getCurrentItemIdForRefresh: DataListBoxProtoType.getCurrentItemIdForRefresh,
+		getRealCurrentItemId: DataListBoxProtoType.getRealCurrentItemId,
 		refreshEntity: DataListBoxProtoType.refreshEntity,
 		refreshItemDom: DataListBoxProtoType.refreshItemDom,
 		onEntityDeleted: DataListBoxProtoType.onEntityDeleted,
@@ -1031,12 +1032,33 @@
 			}
 			$fly(row).toggleClass("dummy-row", !!row.dummy);
 		},
+
+		refreshContent: function(container) {
+			this._requiredPages = [];
+			$invokeSuper.call(this, arguments);
+			for (var i = 0; i < this._requiredPages.length; i++) {
+				this.grid._requirePage(this._requiredPages[i]);
+			}
+		},
 		
 		refreshViewPortContent: function(container) {
 			this._requiredPages = [];
 			$invokeSuper.call(this, arguments);
 			for (var i = 0; i < this._requiredPages.length; i++) {
 				this.grid._requirePage(this._requiredPages[i]);
+			}
+		},
+
+		doOnYScroll: function() {
+			if (this._scrollMode == "lazyRender") {
+				this._requiredPages = [];
+				$invokeSuper.call(this, arguments);
+				for (var i = 0; i < this._requiredPages.length; i++) {
+					this.grid._requirePage(this._requiredPages[i]);
+				}
+			}
+			else {
+				$invokeSuper.call(this, arguments);
 			}
 		}
 		

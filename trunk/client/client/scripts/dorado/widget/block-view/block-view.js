@@ -84,7 +84,7 @@ dorado.widget.BlockView = $extend(dorado.widget.AbstractBlockView, /** @scope do
 		return this._currentIndex;
 	},
 	
-	getCurrentItemIdForRefresh: function() {
+	getRealCurrentItemId: function() {
 		return this.getCurrentItemId();
 	},
 	

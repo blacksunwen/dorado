@@ -373,7 +373,7 @@
 			}
 		},
 		
-		getCurrentItemIdForRefresh: function() {
+		getRealCurrentItemId: function() {
 			return this.getCurrentItemId();
 		},
 		
@@ -408,7 +408,7 @@
 			
 			if (!row._lazyRender) {
 				$row.toggleClass("odd-row", (!this._itemModel.groups && (index % 2) == 1));
-				if (itemId == this.getCurrentItemIdForRefresh()) {
+				if (itemId == this.getRealCurrentItemId()) {
 					this.setCurrentRow(row);
 				}
 				if (this._selectionMode != "none") {
@@ -459,6 +459,7 @@
 					return i <= count;
 				};
 			}
+
 			this.refreshItemDoms(this._dataTBody, false, fn);
 		},
 		
@@ -662,8 +663,16 @@
 				this.onYScroll();
 			}
 			this._currentScrollMode = this._scrollMode;
-			
-			if (this._currentRow) this.scrollItemDomIntoView(this._currentRow);
+
+			if (!this._skipScrollCurrentIntoView) {
+				if (this._currentRow) {
+					this.scrollItemDomIntoView(this._currentRow);
+				}
+				else {
+					this.scrollCurrentIntoView();
+				}
+			}
+			delete this._skipScrollCurrentIntoView;
 			
 			if (dorado.Browser.msie) {
 				$DomUtils.fixMsieYScrollBar(dom);
@@ -699,7 +708,7 @@
 		},
 		
 		scrollCurrentIntoView: function() {
-			var currentItemId = this.getCurrentItemId();
+			var currentItemId = this.getRealCurrentItemId();
 			if (currentItemId != null) {
 				var row = this._currentRow;
 				if (row) {
@@ -713,6 +722,9 @@
 					itemModel.setReverse(index >= this.startIndex);
 					this.refresh();
 					itemModel.setReverse(oldReverse);
+				} else {
+					row = this._itemDomMap[currentItemId];
+					if (row) this.setCurrentItemDom(row);
 				}
 			}
 		},

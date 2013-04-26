@@ -503,7 +503,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 						}
 					}
 
-					if ((value == undefined || value == null) && dorado.Entity.ALWAYS_RETURN_VALID_ENTITY_LIST) {
+					if ((value === undefined || value === null) && dorado.Entity.ALWAYS_RETURN_VALID_ENTITY_LIST) {
 						var aggregationDataType = propertyDef.get("dataType");
 						if (aggregationDataType instanceof dorado.AggregationDataType) {
 							value = transferAndReplaceIf(this, propertyDef, [], false);

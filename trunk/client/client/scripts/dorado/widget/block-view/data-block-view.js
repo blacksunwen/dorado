@@ -37,7 +37,7 @@ dorado.widget.DataBlockView = $extend([dorado.widget.AbstractBlockView, dorado.w
 		return current ? this._itemModel.getItemId(current) : null;
 	},
 	
-	getCurrentItemIdForRefresh: function() {
+	getRealCurrentItemId: function() {
 		var items = this._itemModel.getItems(), current = items ? items.current : null;
 		return current ? this._itemModel.getItemId(current) : null;
 	},

@@ -175,7 +175,7 @@
 				if (!previous) {
 					if (pageNo > 1) {
 						pageNo--;
-						if (this.isPageLoaded(pageNo)) {
+						if (loadPage || this.isPageLoaded(pageNo)) {
 							previous = this.getPage(pageNo, loadPage).last;
 						}
 					}
@@ -195,7 +195,7 @@
 				if (!next) {
 					if (pageNo < this.pageCount) {
 						pageNo++;
-						if (this.isPageLoaded(pageNo)) {
+						if (loadPage || this.isPageLoaded(pageNo)) {
 							next = this.getPage(pageNo, loadPage).first;
 						}
 					}
@@ -371,8 +371,10 @@
 		hasPrevious: function() {
 			if (this.current) {
 				var page = this.current.page;
+				if (page > 1) return true;
+
 				var entry = page.findEntry(this.current);
-				entry = this._findPreviousEntry(entry, true);
+				entry = this._findPreviousEntry(entry, false);
 				return entry != null;
 			} else if (this.entityCount > 0) {
 				this._throwNoCurrent();
@@ -386,8 +388,10 @@
 		hasNext: function() {
 			if (this.current) {
 				var page = this.current.page;
+				if (page < this.pageCount) return true;
+
 				var entry = page.findEntry(this.current);
-				entry = this._findNextEntry(entry, true);
+				entry = this._findNextEntry(entry, false);
 				return entry != null;
 			} else if (this.entityCount > 0) {
 				this._throwNoCurrent();
@@ -416,10 +420,11 @@
 		
 		/**
 		 * 将集合中的第一个数据实体设置为当前数据实体。
+		 * @param [loadPage] {boolean} 如果有需要，是否自动装载尚未被加载的数据页。
 		 * @return {dorado.Entity} 返回第一个数据实体。
 		 */
-		first: function() {
-			var entry = this._findNextEntry(null, true, 0);
+		first: function(loadPage) {
+			var entry = this._findNextEntry(null, loadPage, 0);
 			var entity = (entry) ? entry.data : null;
 			this.setCurrent(entity);
 			return entity;
@@ -427,13 +432,14 @@
 		
 		/**
 		 * 将当前数据实体的前一个数据实体设置为当前数据实体。
+		 * @param [loadPage] {boolean} 如果有需要，是否自动装载尚未被加载的数据页。
 		 * @return {dorado.Entity} 返回前一个数据实体。
 		 */
-		previous: function() {
+		previous: function(loadPage) {
 			if (this.current) {
 				var page = this.current.page;
 				var entry = page.findEntry(this.current);
-				entry = this._findPreviousEntry(entry, true);
+				entry = this._findPreviousEntry(entry, loadPage);
 				if (entry) {
 					this.setCurrent(entry.data);
 					return entry.data;
@@ -446,13 +452,14 @@
 		
 		/**
 		 * 将当前数据实体的下一个数据实体设置为当前数据实体。
+		 * @param [loadPage] {boolean} 如果有需要，是否自动装载尚未被加载的数据页。
 		 * @return {dorado.Entity} 返回下一个数据实体。
 		 */
-		next: function() {
+		next: function(loadPage) {
 			if (this.current) {
 				var page = this.current.page;
 				var entry = page.findEntry(this.current);
-				entry = this._findNextEntry(entry, true);
+				entry = this._findNextEntry(entry, loadPage);
 				if (entry) {
 					this.setCurrent(entry.data);
 					return entry.data;
@@ -465,10 +472,11 @@
 		
 		/**
 		 * 将集合中的最后一个数据实体设置为当前数据实体。
+		 * @param [loadPage] {boolean} 如果有需要，是否自动装载尚未被加载的数据页。
 		 * @return {dorado.Entity} 返回最后一个数据实体。
 		 */
-		last: function() {
-			var entry = this._findPreviousEntry(null, true, this.pageCount + 1);
+		last: function(loadPage) {
+			var entry = this._findPreviousEntry(null, loadPage, this.pageCount + 1);
 			var entity = (entry) ? entry.data : null;
 			this.setCurrent(entity);
 			return entity;
