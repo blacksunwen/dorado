@@ -2923,7 +2923,16 @@
 
 			var grid = this.grid;
 			if (!this.fixed) {
-				if (this._currentRow) this.scrollItemDomIntoView(this._currentRow);
+				if (!grid._skipScrollCurrentIntoView) {
+					if (this._currentRow) {
+						this.scrollItemDomIntoView(this._currentRow);
+					}
+					else {
+						this.scrollCurrentIntoView();
+					}
+				}
+				delete grid._skipScrollCurrentIntoView;
+
 				if (grid._rowHeightInfos) {
 					with (grid._rowHeightInfos) {
 						var p = (dorado.Browser.mozilla || dorado.Browser.opera) ? "offsetHeight" : "clientHeight";

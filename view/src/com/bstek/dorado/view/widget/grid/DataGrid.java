@@ -70,7 +70,7 @@ public class DataGrid extends AbstractGrid implements DataControl {
 		return supportsPaging;
 	}
 
-	public void setSupportsPaging(Boolean supportsPaging) {
+	public void setSupportsPaging(boolean supportsPaging) {
 		this.supportsPaging = supportsPaging;
 	}
 

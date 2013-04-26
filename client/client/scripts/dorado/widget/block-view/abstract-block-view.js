@@ -626,7 +626,7 @@
 			if (hoverDecorator) itemDomContainer.insertBefore(hoverDecorator.getDom(), itemDomContainer.firstChild);
 			if (currentDecorator) itemDomContainer.insertBefore(currentDecorator.getDom(), itemDomContainer.firstChild);
 			
-			var currentItemId = this.getCurrentItemIdForRefresh();
+			var currentItemId = this.getRealCurrentItemId();
 			if (currentItemId) {
 				var itemDom = this._itemDomMap[currentItemId];
 				if (itemDom) this.setCurrentBlock(itemDom);

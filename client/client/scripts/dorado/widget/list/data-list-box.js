@@ -38,8 +38,8 @@ dorado.widget.DataListBox = $extend([dorado.widget.AbstractListBox, dorado.widge
 		return current ? this._itemModel.getItemId(current) : null;
 	},
 	
-	getCurrentItemIdForRefresh: function() {
-		var current = this._itemModel.getItems().current;
+	getRealCurrentItemId: function() {
+		var current = this._itemModel.getItems() ? this._itemModel.getItems().current : null;
 		return current ? this._itemModel.getItemId(current) : null;
 	},
 	
@@ -55,8 +55,6 @@ dorado.widget.DataListBox = $extend([dorado.widget.AbstractListBox, dorado.widge
 		}
 		return false;
 	},
-	
-	
 	
 	/**
 	 * 刷新某数据实体对应的行中的数据。
@@ -95,7 +93,7 @@ dorado.widget.DataListBox = $extend([dorado.widget.AbstractListBox, dorado.widge
 		var itemId = entity ? this._itemModel.getItemId(entity) : null;
 		var row = this._itemDomMap[itemId];
 		this.setCurrentRow(row);
-		if (row) this.scrollCurrentIntoView();
+		this.scrollCurrentIntoView();
 		this.fireEvent("onCurrentChange", this);
 	},
 	
