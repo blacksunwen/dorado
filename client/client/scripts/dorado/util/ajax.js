@@ -382,9 +382,9 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 						var success = (exceptionEl.size() == 0);
 						if(success) {
 							var responseEl = el.children("response");
-							result.text = unescape(responseEl.text());
+							result.text = responseEl.text();
 						} else {
-							result.text = unescape(exceptionEl.text());
+							result.text = exceptionEl.text();
 							if(exceptionEl.attr("type") == "runnable") {
 								result._parseRunnableException(result.text);
 							} else {
@@ -603,6 +603,7 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 		connObj.conn.open(method, url, async);
 		this._setHeader(connObj, options);
 	},
+
 	_getSendData : function(options) {
 		if(!options)
 			return null;
