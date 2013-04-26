@@ -373,15 +373,17 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 
 				if (replaceValue) {
 					var oldValue = entity._data[propertyDef._name];
-					if (oldValue && oldValue.isDataPipeWrapper) {
-						oldValue = oldValue.value;
+					if (oldValue !== value)  {
+						if (oldValue && oldValue.isDataPipeWrapper) {
+							oldValue = oldValue.value;
+						}
+						if (oldValue instanceof dorado.Entity || oldValue instanceof dorado.EntityList) {
+							oldValue.parent = null;
+							oldValue._setObserver(null);
+						}
+
+						entity._data[propertyDef._name] = value;
 					}
-					if (oldValue instanceof dorado.Entity || oldValue instanceof dorado.EntityList) {
-						oldValue.parent = null;
-						oldValue._setObserver(null);
-					}
-					
-					entity._data[propertyDef._name] = value;
 					
 					var eventArg = {};
 					if (value instanceof dorado.Entity) {
@@ -441,7 +443,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 													
 											if (success) {
 												eventArg.data = result;
-												
+
 												if (propertyDef.get("cacheable")) {
 													if (!(result === null &&
 														(dummyValue instanceof dorado.EntityList || dummyValue instanceof dorado.Entity) &&
