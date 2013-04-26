@@ -436,29 +436,36 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 												dummyValue = dummyData.value;
 											}
 											this._data[property] = dummyValue || null;
+
 											if (isNewPipe) {
 												this.sendMessage(dorado.Entity._MESSAGE_LOADING_END, eventArg);
-												this._data[property] = dummyData;
 											}
 													
 											if (success) {
 												eventArg.data = result;
 
-												if (propertyDef.get("cacheable")) {
-													if (!(result === null &&
-														(dummyValue instanceof dorado.EntityList || dummyValue instanceof dorado.Entity) &&
-														dummyValue.isNull)) {
-														this._data[property] = result;
-														result = transferAndReplaceIf(this, propertyDef, result, true);
-														this.sendMessage(dorado.Entity._MESSAGE_DATA_CHANGED, {
-															entity: this,
-															property: property,
-															newValue: result
-														});
+												if (isNewPipe) {
+													if (propertyDef.get("cacheable")) {
+														if (result === null &&
+															(dummyValue instanceof dorado.EntityList || dummyValue instanceof dorado.Entity) &&
+															dummyValue.isNull) {
+															if (dummyData.isDataPipeWrapper) {
+
+															}
+														}
+														else {
+															this._data[property] = result;
+															result = transferAndReplaceIf(this, propertyDef, result, true);
+															this.sendMessage(dorado.Entity._MESSAGE_DATA_CHANGED, {
+																entity: this,
+																property: property,
+																newValue: result
+															});
+														}
 													}
+
+													propertyDef.fireEvent("onLoadData", propertyDef, eventArg);
 												}
-												
-												propertyDef.fireEvent("onLoadData", propertyDef, eventArg);
 
 												if (propertyDef.getListenerCount("onGet")) {
 													eventArg = {
@@ -469,7 +476,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 													result = eventArg.value;
 												}
 											}
-											else {
+											else if (isNewPipe) {
 												this._data[property] = null;
 											}
 											if (callback) $callback(callback, success, result);
