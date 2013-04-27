@@ -64,6 +64,7 @@ public abstract class PropertyDef implements Ignorable, TagSupport,
 	private Object defaultValue;
 	private String displayFormat;
 	private Mapping mapping;
+	private boolean acceptUnknownMapKey;
 	private boolean readOnly;
 	private boolean visible = true;
 	private boolean required;
@@ -161,6 +162,14 @@ public abstract class PropertyDef implements Ignorable, TagSupport,
 
 	public void setMapping(Mapping mapping) {
 		this.mapping = mapping;
+	}
+
+	public boolean isAcceptUnknownMapKey() {
+		return acceptUnknownMapKey;
+	}
+
+	public void setAcceptUnknownMapKey(boolean acceptUnknownMapKey) {
+		this.acceptUnknownMapKey = acceptUnknownMapKey;
 	}
 
 	public boolean isReadOnly() {

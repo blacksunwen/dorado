@@ -424,7 +424,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 							};
 							propertyDef.fireEvent("beforeLoadData", propertyDef, eventArg);
 							if (eventArg.value !== undefined) {
-								if (propertyDef._cacheable) this._data[property] = value;
+								this._data[property] = value;
 							} else {
 								if (callback || loadMode == "auto") {
 									var isNewPipe = (pipe.runningProcNum == 0);
@@ -445,27 +445,26 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 												eventArg.data = result;
 
 												if (isNewPipe) {
-													if (propertyDef.get("cacheable")) {
-														if (result === null &&
-															(dummyValue instanceof dorado.EntityList || dummyValue instanceof dorado.Entity) &&
-															dummyValue.isNull) {
-															if (dummyData.isDataPipeWrapper) {
-
-															}
+													if (result === null &&
+														(dummyValue instanceof dorado.EntityList || dummyValue instanceof dorado.Entity) &&
+														dummyValue.isNull) {
+														if (dummyData.isDataPipeWrapper) {
+															result =  this._data[property];
 														}
-														else {
-															this._data[property] = result;
-															result = transferAndReplaceIf(this, propertyDef, result, true);
-															this.sendMessage(dorado.Entity._MESSAGE_DATA_CHANGED, {
-																entity: this,
-																property: property,
-																newValue: result
-															});
-														}
+													}
+													else {
+														this._data[property] = result;
+														result = transferAndReplaceIf(this, propertyDef, result, true);
 													}
 
 													propertyDef.fireEvent("onLoadData", propertyDef, eventArg);
 												}
+
+												this.sendMessage(dorado.Entity._MESSAGE_DATA_CHANGED, {
+													entity: this,
+													property: property,
+													newValue: result
+												});
 
 												if (propertyDef.getListenerCount("onGet")) {
 													eventArg = {
@@ -495,9 +494,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 									eventArg.data = value;
 									propertyDef.fireEvent("onLoadData", propertyDef, eventArg);
 
-									if (propertyDef._cacheable) {
-										value = transferAndReplaceIf(this, propertyDef, value, true);
-									}
+									value = transferAndReplaceIf(this, propertyDef, value, true);
 								}
 							}
 						}
@@ -840,7 +837,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 
 			if (propertyDef._mapping && value !== undefined && value !== null && value !== "") {
 				var mappedValue = propertyDef.getMappedValue(value);
-				if (propertyDef._acceptUnknownMapKey && mappedValue === undefined) {
+				if (!propertyDef._acceptUnknownMapKey && mappedValue === undefined) {
 					messages.push({
 						state: "error",
 						text: $resource("dorado.data.UnknownMapKey", value)

@@ -166,17 +166,14 @@
 			},
 			
 			/**
-			 * 是否允许向此属性设置mapping的键值中未声明的值。默认为true，即不允许设置mapping的键值中未声明的值。
+			 * 是否允许向此属性设置mapping的键值中未声明的值。即不允许设置mapping的键值中未声明的值。
 			 * <p>
 			 * 注意：此属性只在mapping属性确实有值时才有效。
 			 * </p>
 			 * @type boolean
 			 * @attribute
-			 * @default true
 			 */
-			acceptUnknownMapKey: {
-				defaultValue: true
-			},
+			acceptUnknownMapKey: {},
 			
 			/**
 			 * 该属性中的内容默认情况是否需要向服务端提交。
@@ -248,13 +245,6 @@
 				},
 				readOnly: true
 			},
-			
-			/**
-			 * 是否缓存数据提供者返回的数据。
-			 * @type boolean
-			 * @attribute
-			 */
-			cacheable: {},
 			
 			/**
 			 * 用户自定义数据。
@@ -454,16 +444,6 @@
 			 * @attribute
 			 */
 			pageSize: {},
-			
-			/**
-			 * 是否缓存数据提供者返回的数据。
-			 * @type boolean
-			 * @attribute
-			 * @default true
-			 */
-			cacheable: {
-				defaultValue: true
-			},
 			
 			/**
 			 * 对于新增的数据实体是否有效，及是否为新增的数据实体装载此属性中的子数据。
