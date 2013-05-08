@@ -303,7 +303,7 @@
 					skipUnknownAttribute: true,
 					tryNextOnError: true,
 					preventOverwriting: true,
-					lockWritingTimes: true
+					lockWritingTimes: (this instanceof dorado.widget.FormElement)
 				});
 			}
 		}
