@@ -362,8 +362,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				var originValue = value; 
 				value = dataType.parse(originValue, propertyDef.get("typeFormat"));
 				replaceValue = replaceValue &&
-					(originValue !== value ||
-						((value instanceof dorado.Entity || value instanceof dorado.EntityList) && value.parent !== entity));
+					((value instanceof dorado.Entity || value instanceof dorado.EntityList) && value.parent !== entity);
 
 				if ((value instanceof dorado.Entity || value instanceof dorado.EntityList) && value.parent != this) {
 					value.parent = entity;
@@ -453,7 +452,6 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 														}
 													}
 													else {
-														this._data[property] = result;
 														result = transferAndReplaceIf(this, propertyDef, result, true);
 													}
 
