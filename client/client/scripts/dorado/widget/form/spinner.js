@@ -600,7 +600,7 @@
 			}
 			
 			var value = spinner.doGetSlotValue(currentSlotIndex) + spinner._step;
-			var config = spinner.slotConfigs[currentSlotIndex], range = config.range || [], minValue = range[0], maxValue = range[1];
+			var config = spinner.slotConfigs[currentSlotIndex], range = spinner.doGetSlotRange(currentSlotIndex), minValue = range[0], maxValue = range[1];
 			if (value == null) value = minValue;
 			else if (maxValue != null && value > maxValue) return;
 			spinner.doSetSlotValue(currentSlotIndex, value || 0);
@@ -618,7 +618,7 @@
 			}
 			
 			var value = spinner.doGetSlotValue(currentSlotIndex) - spinner._step;
-			var config = spinner.slotConfigs[currentSlotIndex], range = config.range || [], minValue = range[0], maxValue = range[1];
+			var config = spinner.slotConfigs[currentSlotIndex], range = spinner.doGetSlotRange(currentSlotIndex), minValue = range[0], maxValue = range[1];
 			if (value == null) value = maxValue;
 			if (minValue != null && value < minValue) return;
 			spinner.doSetSlotValue(currentSlotIndex, value || 0);
