@@ -257,7 +257,7 @@
 	$.fn.fullWindow = function(options) {
 		var self = this;
 		if (self.length == 1) {
-			var dom = self[0], containBlock = dom.parentNode, parentsOverflow = [];
+			var dom = self[0], containBlock = dom.parentNode, parentsOverflow = [], parentsPositioned = false, parentsPosition = [];
 
 			function doFilter() {
 				if (this == document.body || (/(auto|scroll|hidden)/).test(jQuery.css(this, 'overflow') + jQuery.css(this, 'overflow-y'))) {
@@ -272,6 +272,16 @@
 						overflow: overflowValue,
 						overflowY: overflowValue
 					}).mousewheel(disableMouseWheel);
+				}
+
+				if (!parentsPositioned  && dorado.Browser.msie && dorado.Browser.version <= 7) {
+					if (this == document.body || (/(relative|absolute)/).test(jQuery.css(this, 'position'))) {
+						if (jQuery.css(this, "z-index") == "") {
+							parentsPosition.push(this);
+							parentsPositioned = true;
+							jQuery(this).css("z-index", 100);
+						}
+					}
 				}
 			}
 			
@@ -327,6 +337,7 @@
 			
 			jQuery.data(dom, "fullWindow.backupStyle", backupStyle);
 			jQuery.data(dom, "fullWindow.parentsOverflow", parentsOverflow);
+			jQuery.data(dom, "fullWindow.parentsPosition", parentsPosition);
 			jQuery.data(dom, "fullWindow.backupSize", {
 				width: self.outerWidth(),
 				height: self.outerHeight()
@@ -360,7 +371,8 @@
 		if (self.length == 1) {
 			options = options || {};
 			var dom = self[0], callback = options.callback;
-			var backupStyle = jQuery.data(dom, "fullWindow.backupStyle"), backupSize = jQuery.data(dom, "fullWindow.backupSize"), parentsOverflow = jQuery.data(dom, "fullWindow.parentsOverflow");
+			var backupStyle = jQuery.data(dom, "fullWindow.backupStyle"), backupSize = jQuery.data(dom, "fullWindow.backupSize"),
+				parentsOverflow = jQuery.data(dom, "fullWindow.parentsOverflow"), parentsPosition = jQuery.data(dom, "fullWindow.parentsPosition");
 			
 			if (backupStyle) {
 				self.css(backupStyle);
@@ -377,6 +389,13 @@
 						overflow: parentOverflow.overflow,
 						overflowY: parentOverflow.overflowY
 					}).prop("scrollTop", parentOverflow.scrollTop).unmousewheel(disableMouseWheel);
+				}
+			}
+
+			if (parentsPosition) {
+				for (var i = 0, j = parentsPosition.length; i < j; i++) {
+					var parentPosition = parentsPosition[i];
+					jQuery(parentPosition).css("z-index", "");
 				}
 			}
 
