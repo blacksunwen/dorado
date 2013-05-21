@@ -164,7 +164,7 @@
 				if (ie6) control.getDom().style.display = "none";
 			}
 			
-			var cell = this.cell, label = $fly(cell).find(".label");
+			var cell = this.cell, label = $fly(cell).find(".node-label");
 			var offset = $fly(cell).offset(), lp = label.offset().left;
 			var l = offset.left, t = offset.top, w = cell.offsetWidth, h = cell.offsetHeight;
 			if (this.minWidth && this.minWidth > w) w = this.minWidth;
@@ -172,7 +172,7 @@
 			$fly(dom).css({
 				left: lp,
 				top: t
-			}).outerWidth(w - (lp - l)).outerHeight(h);
+			}).outerWidth(w - (lp - l)).outerHeight(h).bringToFront();
 			
 			if (control) {
 				var w = dom.clientWidth, h = dom.clientHeight;

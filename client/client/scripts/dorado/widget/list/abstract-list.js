@@ -532,7 +532,7 @@ dorado.widget.ViewPortList = $extend(dorado.widget.AbstractList, /** @scope dora
 	},
 	
 	removeItemDom: function(dom) {
-		if (this._itemDomMap[dom.itemId] == dom) delete this._itemDomMap[dom.itemId];
+		if (this._itemDomMap[dom._itemId] == dom) delete this._itemDomMap[dom._itemId];
 		$fly(dom).remove();
 	},
 	

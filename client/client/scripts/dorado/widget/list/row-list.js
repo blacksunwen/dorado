@@ -383,7 +383,7 @@
 				var i = index;
 				if (prepend) i = tbody.childNodes.length - i - 1;
 				row = tbody.childNodes[i];
-				if (this._itemDomMap[row.itemId] == row) delete this._itemDomMap[row.itemId];
+				if (this._itemDomMap[row._itemId] == row) delete this._itemDomMap[row._itemId];
 			} else {
 				row = this.createItemDom(item);
 				prepend ? tbody.insertBefore(row, tbody.firstChild) : tbody.appendChild(row);
@@ -395,7 +395,7 @@
 			var itemId = this._itemModel.getItemId(item, index);
 			this._itemDomMap[itemId] = row;
 			row.itemIndex = index;
-			row.itemId = itemId;
+			row._itemId = itemId;
 			
 			var $row = $fly(row);
 			$row.data("item", item);
