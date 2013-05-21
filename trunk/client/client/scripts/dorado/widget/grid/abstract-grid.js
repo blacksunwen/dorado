@@ -2688,7 +2688,7 @@
 		setDraggingOverItemDom: function(itemDom) {
 			this._innerGrid.setDraggingOverItemDom(itemDom);
 			if (this._fixedInnerGrid) {
-				if (itemDom) itemDom = this._fixedInnerGrid._itemDomMap[itemDom.itemId];
+				if (itemDom) itemDom = this._fixedInnerGrid._itemDomMap[itemDom._itemId];
 				this._fixedInnerGrid.setDraggingOverItemDom(itemDom);
 			}
 		},
@@ -3476,7 +3476,7 @@
 			
 			if (grid._domMode != 2 || grid._processingSetHoverRow) return;
 			grid._processingSetHoverRow = true;
-			(this == grid._innerGrid ? grid._fixedInnerGrid : grid._innerGrid).setHoverRow(row ? row.itemId : null);
+			(this == grid._innerGrid ? grid._fixedInnerGrid : grid._innerGrid).setHoverRow(row ? row._itemId : null);
 			grid._processingSetHoverRow = false;
 		},
 

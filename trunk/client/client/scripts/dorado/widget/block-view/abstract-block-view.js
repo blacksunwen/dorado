@@ -668,7 +668,7 @@
 				itemDom = this.createItemDom(item);
 				itemDomContainer.appendChild(itemDom);
 				this._itemDomMap[itemId] = itemDom;
-				itemDom.itemId = itemId;
+				itemDom._itemId = itemId;
 			}
 			itemDom.itemIndex = index;
 			

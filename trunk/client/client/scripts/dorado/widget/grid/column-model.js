@@ -607,7 +607,7 @@
 		doRender: function(row, arg) {
 			if (row._lazyRender) return;
 			var grid = arg.grid, innerGrid = arg.innerGrid, entity = arg.data, dataColumns = innerGrid._columnsInfo.dataColumns;
-			var rowHeightInfos = grid._rowHeightInfos, itemId = row.itemId, oldHeight;
+			var rowHeightInfos = grid._rowHeightInfos, itemId = row._itemId, oldHeight;
 			if (grid._dynaRowHeight) {
 				if (innerGrid.fixed) {
 					if (dorado.Browser.webkit || (dorado.Browser.msie && dorado.Browser.version > 8)) {
