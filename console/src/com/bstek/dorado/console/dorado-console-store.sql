@@ -6,7 +6,7 @@ CREATE TABLE T_MONITOREDTARGET (F_ID  VARCHAR(50) PRIMARY KEY,
                         F_STATUS BOOLEAN,
                         F_DESCRIPTION VARCHAR(100),
                         F_TYPE VARCHAR(30));
-DROP TABLE IF EXISTS T_PROCESSINFO ;
+DROP TABLE IF EXISTS T_PROCESS ;
 CREATE TABLE T_PROCESS (
                         F_NAME VARCHAR(100),
                         F_TIME LONG,
