@@ -376,7 +376,7 @@
           <Tools/>
         </Panel>
         <Container id="historyProcessListContainer">
-          <Property name="hideMode">display</Property>
+          <Property name="hideMode">visibility</Property>
           <Panel>
             <Property name="width">900</Property>
             <Property name="caption">${res.requestDetails}</Property>

@@ -102,10 +102,10 @@ var OperationCellRenderer = $extend(
 											name : name
 										});
 										action.execute();
-										view
-												.get(
-														'#historyProcessListContainer')
-												.set('visible', status);
+										var container=view.get('#historyProcessListContainer');
+										container.set('visible', status);
+										container.refresh();
+										
 										view.get('#processDetailDialog').show();
 										view.get('#processNameLabel').set(
 												'text', name);
