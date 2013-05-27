@@ -908,11 +908,21 @@
 			selection: {
 				getter: function() {
 					if (this._innerGrid) return this._innerGrid.get("selection");
-					else return ("multiRows" == this._selectionMode) ? [] : null;
+					else if (this._selection) {
+						return this._selection;
+					}
+					else {
+						return ("multiRows" == this._selectionMode) ? [] : null;
+					}
 				},
-				setter: function(v) {
-					if (v == null && ["multiRows", "multiCells"].indexOf(this._selectionMode) >= 0) v = [];
-					if (this._innerGrid) this._innerGrid.set("selection", v);
+				setter: function(selection) {
+					if (selection == null && ["multiRows", "multiCells"].indexOf(this._selectionMode) >= 0) selection = [];
+					if (this._innerGrid) {
+						this._innerGrid.set("selection", selection);
+					}
+					else {
+						this._selection = selection;
+					}
 				}
 			},
 
@@ -1324,6 +1334,7 @@
 				innerGrid.set({
 					allowNoCurrent: this._allowNoCurrent,
 					selectionMode: this._selectionMode,
+					selection: this._selection,
 					onCurrentChange: function(innerGrid, arg) {
 						self.fireEvent("onCurrentChange", self, arg);
 					},
@@ -1334,6 +1345,8 @@
 						self.fireEvent("onSelectionChange", self, arg);
 					}
 				});
+				delete this._selection;
+				
 				registerInnerControl.call(this, innerGrid);
 				this._innerGridDom = innerGrid.getDom();
 				return innerGrid;
