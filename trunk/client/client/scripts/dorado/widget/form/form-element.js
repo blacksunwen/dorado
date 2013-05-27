@@ -12,7 +12,7 @@
 
 (function() {
 
-	var specialFormConfigProps = ["formProfile", "width", "height", "className", "exClassName", "visible", "hideMode", "layoutConstriant", "readOnly"];
+	var specialFormConfigProps = ["view", "tags", "formProfile", "width", "height", "className", "exClassName", "visible", "hideMode", "layoutConstriant", "readOnly"];
 	
 	var DEFAULT_OK_MESSAGES = [{
 		state: "ok"
@@ -276,7 +276,7 @@
 					}
 					
 					var def = attrs[attr];
-					if (def.writeOnly || (!attrWatcher.getWritingTimes(attr) && typeof def.defaultValue != "function")) {
+					if (def.readOnly || def.writeOnly || (!attrWatcher.getWritingTimes(attr) && typeof def.defaultValue != "function")) {
 						continue;
 					}
 					
