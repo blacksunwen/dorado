@@ -966,7 +966,7 @@
 				skipRefresh: true,
 				getter: function() {
 					var text = (this._editorFocused) ? this.doGetText() : this._text;
-					if (this._value !== undefined && text === this._valueText) {
+					if (this._value !== undefined && (!this._editorFocused || text === this._valueText)) {
 						return this._value;
 					} else {
 						if (text && this._mapping) text = this.getMappedKey(text);

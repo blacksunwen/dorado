@@ -174,7 +174,7 @@
 			 */
 			visible : {
 				defaultValue : true,
-				setter : function(visible) {
+				setter : function(visible) {					
 					if (visible == null) visible = true;
 					if(this._visible != visible) {
 						this._visible = visible;
@@ -588,8 +588,14 @@
 		},
 		
 		isActualVisible : function() {
-			return this._parentActualVisible && this._actualVisible && 
-				(this._visible || this._layoutConstraint != dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT);
+			var actualVisible = this._parentActualVisible && this._actualVisible;
+			if (this._floating && dorado.Object.isInstanceOf(this, dorado.widget.FloatControl)) {
+				return actualVisible && this._visible === true;
+			}
+			else {
+				return actualVisible && this._visible !== false &&
+					this._layoutConstraint != dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT;
+			}
 		},
 		
 		onActualVisibleChange : function() {
