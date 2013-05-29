@@ -492,9 +492,10 @@ dorado.dequeue = function(namespace) {
 				//anim = false;
 				handleModal = false;
 			}
-			
+
 			control._visible = true;
 			control.setActualVisible(true);
+			
 			$fly(dom).css({
 				display: "",
 				visibility: "hidden"
@@ -687,10 +688,10 @@ dorado.dequeue = function(namespace) {
 				if (control._modal) {
 					dorado.ModalManager.hide(dom);
 				}
-				
+
 				control._visible = false;
-				
 				control.setActualVisible(false);
+				
 				dorado.widget.FloatControl.VISIBLE_FLOAT_CONTROLS.remove(control);
 				
 				var animateType = options.animateType || control._hideAnimateType || control._animateType;

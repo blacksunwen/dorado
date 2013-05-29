@@ -28,7 +28,6 @@
 		$className : "dorado.widget.Control",
 
 		_ignoreRefresh : 1,
-		_actualVisible : true,
 		_parentActualVisible : true,
 		
 		/**
@@ -473,6 +472,8 @@
 		},
 
 		constructor : function(config) {
+			this._actualVisible = !dorado.Object.isInstanceOf(this, dorado.widget.FloatControl);
+			
 			dorado.widget.Component.prototype.constructor.call(this, config);
 			
 			var renderTo = this._renderTo, renderOn = this._renderOn;
@@ -487,8 +488,9 @@
 			}
 		},
 		
-		onReady : function() {
+		onReady : function() {			
 			$invokeSuper.call(this);
+			
 			if(this._innerControls) {
 				jQuery.each(this._innerControls, function(i, control) {
 					if(!( control instanceof dorado.widget.Control) && !control._ready)
@@ -578,22 +580,22 @@
 		},
 		
 		setActualVisible : function(actualVisible) {
-			if(this._actualVisible != actualVisible) {
-				var oldVisible = this.isActualVisible();
+			var currentActualVisible = this.isActualVisible();
+			if (currentActualVisible != actualVisible) {
 				this._actualVisible = actualVisible;
-				if(oldVisible != this.isActualVisible()) {
-					this.onActualVisibleChange();
-				}
+				this.onActualVisibleChange();
 			}
 		},
 		
 		isActualVisible : function() {
-			var actualVisible = this._parentActualVisible && this._actualVisible;
+			var actualVisible = this._actualVisible;
+			if (!actualVisible) return false;
+			
 			if (this._floating && dorado.Object.isInstanceOf(this, dorado.widget.FloatControl)) {
 				return actualVisible && this._visible === true;
 			}
 			else {
-				return actualVisible && this._visible !== false &&
+				return actualVisible && this._parentActualVisible && this._visible !== false &&
 					this._layoutConstraint != dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT;
 			}
 		},
@@ -603,7 +605,7 @@
 			function notifyChildren(control, actualVisible) {
 				if(control._innerControls) {
 					jQuery.each(control._innerControls, function(i, child) {
-						if(child._parentActualVisible == actualVisible || !(child instanceof dorado.widget.Control)) return;
+						if (child._parentActualVisible == actualVisible || !(child instanceof dorado.widget.Control)) return;
 						child._parentActualVisible = actualVisible;
 						child.onActualVisibleChange();
 					});
@@ -625,7 +627,7 @@
 		
 		refresh : function(delay) {
 			if (this._duringRefreshDom || !this._rendered || (!this._attached && this.renderUtilAttached)) return;
-
+			
 			if (!this.isActualVisible() && !(!this._currentVisible && this._visible) && !this._forceRefresh) {
 				this._shouldRefreshOnVisible = !!this._rendered;
 				return;
@@ -1078,11 +1080,11 @@
 		},
 		
 		parentChanged : function() {
+			if (!this._ready || this._floating && dorado.Object.isInstanceOf(this, dorado.widget.FloatControl)) return;
+			
 			var parent = this._parent;
 			var parentActualVisible = (parent) ? parent.isActualVisible() : true;
-			if(parentActualVisible != this._parentActualVisible) {
-				this.onActualVisibleChange();
-			}
+			if (parentActualVisible != this._parentActualVisible) this.onActualVisibleChange();
 		},
 		
 		/**
