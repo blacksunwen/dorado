@@ -598,9 +598,7 @@
 		 * @param {boolean} [silent] 是否要在确认数据失败是禁止Dorado7抛出异常信息。
 		 * @return boolean 编辑器中的内容是否得到了确认。
 		 */
-		post: function(force, silent) {
-			if (!this._editorFocused) return false;
-			
+		post: function(force, silent) {			
 			try {
 				var text = this.get("text"), state, result, modified = (this._lastPost != text), validationResults;
 				if (force || modified || (this._validationState == "none" && text == '')) {
@@ -966,7 +964,7 @@
 				skipRefresh: true,
 				getter: function() {
 					var text = (this._editorFocused) ? this.doGetText() : this._text;
-					if (this._value !== undefined && (!this._editorFocused || text === this._valueText)) {
+					if (this._value !== undefined && text === this._valueText) {
 						return this._value;
 					} else {
 						if (text && this._mapping) text = this.getMappedKey(text);

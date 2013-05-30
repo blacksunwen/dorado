@@ -580,55 +580,50 @@
 		},
 		
 		setActualVisible : function(actualVisible) {
-			var currentActualVisible = this.isActualVisible();
-			if (currentActualVisible != actualVisible) {
+			if (this._actualVisible != actualVisible) {
 				this._actualVisible = actualVisible;
 				this.onActualVisibleChange();
 			}
 		},
 		
 		isActualVisible : function() {
-			var actualVisible = this._actualVisible;
+			var actualVisible = this._visible && this._actualVisible;
 			if (!actualVisible) return false;
 			
 			if (this._floating && dorado.Object.isInstanceOf(this, dorado.widget.FloatControl)) {
-				return actualVisible && this._visible === true;
+				return true;
 			}
 			else {
-				return actualVisible && this._parentActualVisible && this._visible !== false &&
+				return this._parentActualVisible &&
 					this._layoutConstraint != dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT;
 			}
 		},
 		
 		onActualVisibleChange : function() {
 
-			function notifyChildren(control, actualVisible) {
+			function notifyChildren(control, parentActualVisible) {
 				if(control._innerControls) {
 					jQuery.each(control._innerControls, function(i, child) {
-						if (child._parentActualVisible == actualVisible || !(child instanceof dorado.widget.Control)) return;
-						child._parentActualVisible = actualVisible;
+						if (child._parentActualVisible == parentActualVisible || !(child instanceof dorado.widget.Control)) return;
+						child._parentActualVisible = parentActualVisible;
 						child.onActualVisibleChange();
 					});
 				}
 			}
 
 			var actualVisible = this.isActualVisible();
-			if (actualVisible) {
-				if (!this._currentVisible || this._shouldRefreshOnVisible) {
-					this._skipResize = !this._currentVisible || this._shouldResizeOnVisible;
-					this.refresh();
-					this._skipResize = false;
-				}
-				else if(this._shouldResizeOnVisible) this.onResize();
-			}
-
 			notifyChildren(this, actualVisible);
+			
+			if (actualVisible && this._shouldRefreshOnVisible) {
+				this.refresh();
+			}
 		},
 		
 		refresh : function(delay) {
 			if (this._duringRefreshDom || !this._rendered || (!this._attached && this.renderUtilAttached)) return;
-			
-			if (!this.isActualVisible() && !(!this._currentVisible && this._visible) && !this._forceRefresh) {
+
+			if (!this.isActualVisible() && !this._forceRefresh
+					 && !(this._currentVisible !== undefined && this._currentVisible != this._visible) ) {
 				this._shouldRefreshOnVisible = !!this._rendered;
 				return;
 			}
@@ -640,7 +635,8 @@
 					try {
 						dorado.Toolkits.cancelDelayedAction(this, "$refreshDelayTimerId");
 
-						if(!this.isActualVisible()) {
+						if (!this.isActualVisible() && !this._forceRefresh
+								 && !(this._currentVisible !== undefined && this._currentVisible != this._visible) ) {
 							this._shouldRefreshOnVisible = true;
 							return;
 						}
@@ -697,7 +693,6 @@
 
 			try {
 				dom.doradoUniqueId = this._uniqueId;
-
 				if(this._currentVisible !== undefined) {
 					if(this._currentVisible != this._visible) {
 						if(this._hideMode == "display") {
@@ -753,9 +748,9 @@
 		},
 		
 		resetDimension : function(forced) {
-			if (this._skipResetDimension) return;
+			if (this._skipResetDimension || !this.isActualVisible()) return;
 			var changed = $invokeSuper.call(this, [forced]) || !this._fixedWidth || !this._fixedHeight;
-			if ((changed || !this._currentVisible) && this._visible) {
+			if (changed || !this._currentVisible) {
 				this._skipResetDimension = true;
 				this.onResize();
 				this._skipResetDimension = false;
@@ -1101,10 +1096,9 @@
 			if (this._skipResize) return;
 
 			if (!this.isActualVisible()) {
-				this._shouldResizeOnVisible = true;
+				this._shouldRefreshOnVisible = true;
 				return;
 			}
-			this._shouldResizeOnVisible = false;
 
 			if(this.doOnResize) this.doOnResize.apply(this, arguments);
 		},
