@@ -915,6 +915,8 @@
 
 					$fly(doms.splitter).draggable('option', 'containment', range);
 				}
+			} else {
+				$fly(doms.splitter).draggable("disable");
 			}
 		},
 	
