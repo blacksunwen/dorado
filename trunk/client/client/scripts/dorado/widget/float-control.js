@@ -296,7 +296,7 @@ dorado.dequeue = function(namespace) {
 			},
 			
 			/**
-			 * 是否在显示之后延续之前的焦点管理状态，默认值为true。
+			 * 是否在显示之后延续之前的焦点管理状态，默认值是由Modal属性决定的，当modal为true的时候，continuedFocus为true，反之亦然。
 			 * <p>
 			 * 此属性仅在focusAfterShow为true是有实际意义。
 			 * <ul>
@@ -309,12 +309,9 @@ dorado.dequeue = function(namespace) {
 			 * </ul>
 			 * </p>
 			 * @attribute
-			 * @default true
 			 * @type boolean
 			 */
-			continuedFocus: {
-				defaultValue: true
-			}
+			continuedFocus: {}
 		},
 		
 		EVENTS: /** @scope dorado.widget.FloatControl.prototype */ {
@@ -547,8 +544,10 @@ dorado.dequeue = function(namespace) {
 					visibility: "",
 					display: ""
 				}).bringToFront();
-				
-				if (control._continuedFocus) {
+
+				var continuedFocus = control._continuedFocus === undefined ? control._modal : !!control._continuedFocus;
+
+				if (continuedFocus) {
 					var focusParent = dorado.widget.getFocusedControl();
 					var parent = focusParent;
 					while (parent) {
@@ -723,8 +722,10 @@ dorado.dequeue = function(namespace) {
 			control.fireEvent("afterHide", control);
 			dorado.dequeue(control._id + SHOWHIDE_SUFFIX);
 			//log.debug("dorado.dequeue after hide：" + control._id);
-			
-			if (control._continuedFocus) {
+
+			var continuedFocus = control._continuedFocus === undefined ? control._modal : !!control._continuedFocus;
+
+			if (continuedFocus) {
 				control._focusParent = null;
 			}
 		}
