@@ -671,6 +671,10 @@ dorado.widget.DropDownBox = $extend([ dorado.widget.Control, dorado.widget.Float
 		focusAfterShow: {
 			defaultValue : false
 		},
+		
+		continuedFocus: {
+			defaultValue : true
+		},
 
 		visible : {
 			defaultValue : false

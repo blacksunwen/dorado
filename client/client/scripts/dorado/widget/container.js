@@ -253,20 +253,19 @@
 		
 		onActualVisibleChange: function() {
 			
-			function notifyChildren(control, actualVisible) {
+			function notifyChildren(control, parentActualVisible) {
 				control._children.each(function(child) {
-					if (child._parentActualVisible == actualVisible || !(child instanceof dorado.widget.Control)) {
+					if (child._parentActualVisible == parentActualVisible || !(child instanceof dorado.widget.Control)) {
 						return;
 					}
-					child._parentActualVisible = actualVisible;
+					child._parentActualVisible = parentActualVisible;
 					child.onActualVisibleChange();
 				});
 			}
-			
-			$invokeSuper.call(this);
-			notifyChildren(this, this.isActualVisible());
-		},
 
+			notifyChildren(this, this.isActualVisible());
+			$invokeSuper.call(this);
+		},
 
 		doRenderToOrReplace: function(replace, element, nextChildElement) {
 			if (replace && this._children.size == 0 && element.childNodes.length > 0) {
