@@ -1,4 +1,4 @@
-//日志队列
+
 var logArray = new Array(), logArrayMaxLength = 1000, isAutoFlush = false;
 
 // @Bind view.onReady
@@ -6,7 +6,7 @@ var logArray = new Array(), logArrayMaxLength = 1000, isAutoFlush = false;
 	var listenerActiveState = view.get('userData').listenerActiveState, tip = view
 			.get('#listeneTip');
 	if (!listenerActiveState) {
-		tip.set("anchorTarget", view.get('#logPanel'));// 利用FloatControl控件的anchorTarget特性Tip浮动的目标控件
+		tip.set("anchorTarget", view.get('#logPanel'));
 		tip.show();
 	}
 	view.get('#outCheckBox').set('value', true);

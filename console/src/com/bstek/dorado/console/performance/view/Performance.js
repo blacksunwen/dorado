@@ -124,7 +124,7 @@ var OperationCellRenderer = $extend(
 // @Bind @dtProcess.onCurrentChange
 !function(self, arg, gridLastProcess) {
 	if (arg.newCurrent && arg.oldCurrent && arg.newCurrent.get("status")) {
-		dorado.widget.NotifyTipManager.notify("此记录已被监听... 请查看详细", {
+		dorado.widget.NotifyTipManager.notify("${res.recordINFO}", {
 			showDuration : 2,
 			icon : "INFO"
 		});
