@@ -53,14 +53,16 @@ public abstract class SingletonBeanFactory {
 	 * @throws IllegalAccessException
 	 * @throws InstantiationException
 	 */
-	public synchronized static Object getInstance(Class<?> type)
+	public static Object getInstance(Class<?> type)
 			throws IllegalAccessException, InstantiationException {
 		Assert.notNull(type, "\"type\" is required");
-		Object instance = instances.get(type);
-		if (instance == null) {
-			instance = type.newInstance();
-			instances.put(type, instance);
+		synchronized (type) {
+			Object instance = instances.get(type);
+			if (instance == null) {
+				instance = type.newInstance();
+				instances.put(type, instance);
+			}
+			return instance;
 		}
-		return instance;
 	}
 }

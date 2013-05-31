@@ -151,7 +151,7 @@ public abstract class ReloadableDataConfigManagerSupport extends
 			throws IOException {
 		Set<Resource> resources = getResources();
 		synchronized (resources) {
-			Set<RefreshableResource> refreshableResources = new LinkedHashSet<RefreshableResource>();
+			Set<RefreshableResource> refreshableResources = new LinkedHashSet<RefreshableResource>(resources.size());
 			for (Resource resource : resources) {
 				RefreshableResource refreshableResource;
 				if (resource instanceof RefreshableResource) {

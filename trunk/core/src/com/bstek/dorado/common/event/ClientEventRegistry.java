@@ -78,7 +78,7 @@ public class ClientEventRegistry {
 		return typeMap.get(type);
 	}
 
-	private synchronized static void collectClientEventRegisterInfos(
+	private static void collectClientEventRegisterInfos(
 			Map<String, ClientEventRegisterInfo> eventMap, Class<?> type) {
 		Class<?> superType = type.getSuperclass();
 		if (superType != null) {
@@ -141,15 +141,18 @@ public class ClientEventRegistry {
 	@SuppressWarnings("unchecked")
 	public static Map<String, ClientEventRegisterInfo> getClientEventRegisterInfos(
 			Class<? extends ClientEventSupported> type) {
-		Map<String, ClientEventRegisterInfo> eventMap = typeMapCache.get(type);
-		if (eventMap == null) {
-			eventMap = new HashMap<String, ClientEventRegisterInfo>();
-			collectClientEventRegisterInfos(eventMap, type);
-			eventMap = (eventMap.isEmpty()) ? EMPTY_MAP : UnmodifiableMap
-					.decorate(eventMap);
-			typeMapCache.put(type, eventMap);
+		synchronized (type) {
+			Map<String, ClientEventRegisterInfo> eventMap = typeMapCache
+					.get(type);
+			if (eventMap == null) {
+				eventMap = new HashMap<String, ClientEventRegisterInfo>();
+				collectClientEventRegisterInfos(eventMap, type);
+				eventMap = (eventMap.isEmpty()) ? EMPTY_MAP : UnmodifiableMap
+						.decorate(eventMap);
+				typeMapCache.put(type, eventMap);
+			}
+			return eventMap;
 		}
-		return eventMap;
 	}
 
 	/**
