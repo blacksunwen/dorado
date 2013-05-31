@@ -133,75 +133,74 @@ public class ClientOutputHelper {
 
 	private Map<Class<?>, Map<String, PropertyConfig>> propertyConfigsCache = new HashMap<Class<?>, Map<String, PropertyConfig>>();
 
-	private static Outputter getCachedOutputter(Class<?> beanType) {
-		return OUTPUTTER_MAP.get(beanType);
-	}
 
-	public synchronized Outputter getOutputter(Class<?> beanType)
+	public Outputter getOutputter(Class<?> beanType)
 			throws Exception {
 		beanType = ProxyBeanUtils.getProxyTargetType(beanType);
 
-		Outputter outputter = getCachedOutputter(beanType);
-		if (outputter != null) {
-			return outputter;
-		}
-
-		ClientObjectInfo clientObjectInfo = getClientObjectInfo(beanType);
-		String outputterExpr = null;
-		if (clientObjectInfo != null) {
-			outputterExpr = clientObjectInfo.getOutputter();
-		}
-		if (StringUtils.isEmpty(outputterExpr)) {
-			outputterExpr = DEFAULT_OBJECT_OUTPUTTER;
-		}
-		BeanWrapper beanWrapper = BeanFactoryUtils.getBean(outputterExpr,
-				Scope.instant);
-		outputter = (Outputter) beanWrapper.getBean();
-
-		if (outputter instanceof ObjectOutputter) {
-			ObjectOutputter objectOutputter = (ObjectOutputter) outputter;
+		synchronized (beanType) {
+			Outputter outputter = OUTPUTTER_MAP.get(beanType);
+			if (outputter != null) {
+				return outputter;
+			}
+	
+			ClientObjectInfo clientObjectInfo = getClientObjectInfo(beanType);
+			String outputterExpr = null;
 			if (clientObjectInfo != null) {
-				objectOutputter.setEscapeMode(clientObjectInfo.getEscapeMode());
+				outputterExpr = clientObjectInfo.getOutputter();
 			}
-
-			Map<String, PropertyConfig> propertyConfigs = objectOutputter
-					.getPropertieConfigs();
-			if (propertyConfigs.get(WILCARD) == null) {
-				PropertyConfig propertyConfig = new PropertyConfig();
-				beanWrapper = BeanFactoryUtils.getBean(
-						DEFAULT_PROPERTY_OUTPUTTER, Scope.instant);
-				propertyConfig.setOutputter(beanWrapper.getBean());
-				propertyConfigs.put(WILCARD, propertyConfig);
+			if (StringUtils.isEmpty(outputterExpr)) {
+				outputterExpr = DEFAULT_OBJECT_OUTPUTTER;
 			}
-
-			if (objectOutputter instanceof ClientObjectOutputter) {
-				ClientObjectOutputter clientObjectOutputter = (ClientObjectOutputter) objectOutputter;
+			BeanWrapper beanWrapper = BeanFactoryUtils.getBean(outputterExpr,
+					Scope.instant);
+			outputter = (Outputter) beanWrapper.getBean();
+	
+			if (outputter instanceof ObjectOutputter) {
+				ObjectOutputter objectOutputter = (ObjectOutputter) outputter;
 				if (clientObjectInfo != null) {
-					clientObjectOutputter.setUsePrototype(clientObjectInfo
-							.isUsePrototype());
-					clientObjectOutputter.setPrototype(clientObjectInfo
-							.getPrototype());
-					clientObjectOutputter.setShortTypeName(clientObjectInfo
-							.getShortTypeName());
+					objectOutputter.setEscapeMode(clientObjectInfo.getEscapeMode());
 				}
-
-				if (ClientEventSupported.class.isAssignableFrom(beanType)) {
+	
+				Map<String, PropertyConfig> propertyConfigs = objectOutputter
+						.getPropertieConfigs();
+				if (propertyConfigs.get(WILCARD) == null) {
 					PropertyConfig propertyConfig = new PropertyConfig();
 					beanWrapper = BeanFactoryUtils.getBean(
-							CLIENT_EVENT_LISTENERS_OUTPUTTER, Scope.instant);
+							DEFAULT_PROPERTY_OUTPUTTER, Scope.instant);
 					propertyConfig.setOutputter(beanWrapper.getBean());
-					propertyConfigs.put(LISTENER, propertyConfig);
+					propertyConfigs.put(WILCARD, propertyConfig);
+				}
+	
+				if (objectOutputter instanceof ClientObjectOutputter) {
+					ClientObjectOutputter clientObjectOutputter = (ClientObjectOutputter) objectOutputter;
+					if (clientObjectInfo != null) {
+						clientObjectOutputter.setUsePrototype(clientObjectInfo
+								.isUsePrototype());
+						clientObjectOutputter.setPrototype(clientObjectInfo
+								.getPrototype());
+						clientObjectOutputter.setShortTypeName(clientObjectInfo
+								.getShortTypeName());
+					}
+	
+					if (ClientEventSupported.class.isAssignableFrom(beanType)) {
+						PropertyConfig propertyConfig = new PropertyConfig();
+						beanWrapper = BeanFactoryUtils.getBean(
+								CLIENT_EVENT_LISTENERS_OUTPUTTER, Scope.instant);
+						propertyConfig.setOutputter(beanWrapper.getBean());
+						propertyConfigs.put(LISTENER, propertyConfig);
+					}
+				}
+	
+				Map<String, PropertyConfig> configs = getPropertyConfigs(beanType);
+				if (configs != null) {
+					propertyConfigs.putAll(configs);
 				}
 			}
-
-			Map<String, PropertyConfig> configs = getPropertyConfigs(beanType);
-			if (configs != null) {
-				propertyConfigs.putAll(configs);
-			}
+	
+			OUTPUTTER_MAP.put(beanType, outputter);
+			return outputter;
 		}
-
-		OUTPUTTER_MAP.put(beanType, outputter);
-		return outputter;
 	}
 
 	protected ClientObjectInfo getClientObjectInfo(Class<?> beanType) {

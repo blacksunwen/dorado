@@ -148,8 +148,10 @@ public class HtmlViewResolver extends AbstractTextualResolver {
 		String viewName = extractViewName(uri);
 
 		if (listeners != null) {
-			for (ViewResolverListener listener : listeners) {
-				listener.beforeResolveView(viewName);
+			synchronized (listeners) {
+				for (ViewResolverListener listener : listeners) {
+					listener.beforeResolveView(viewName);
+				}
 			}
 		}
 
@@ -195,8 +197,10 @@ public class HtmlViewResolver extends AbstractTextualResolver {
 		}
 
 		if (listeners != null) {
-			for (ViewResolverListener listener : listeners) {
-				listener.afterResolveView(viewName, view);
+			synchronized (listeners) {
+				for (ViewResolverListener listener : listeners) {
+					listener.afterResolveView(viewName, view);
+				}
 			}
 		}
 	}

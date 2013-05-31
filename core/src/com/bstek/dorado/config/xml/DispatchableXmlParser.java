@@ -375,19 +375,11 @@ public class DispatchableXmlParser implements XmlParser {
 }
 
 class PathSection {
-	private static Map<String, PathSection> cache = new HashMap<String, PathSection>(
-			0);
-
 	private String nodeName;
 	private Map<String, String> fixedProperties;
 
-	public synchronized static PathSection parse(String expression) {
-		PathSection pathSection = cache.get(expression);
-		if (pathSection == null) {
-			pathSection = new PathSection(expression);
-			cache.put(expression, pathSection);
-		}
-		return pathSection;
+	public static PathSection parse(String expression) {
+		return new PathSection(expression);
 	}
 
 	private PathSection(String expression) {

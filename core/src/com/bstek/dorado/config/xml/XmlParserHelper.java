@@ -261,23 +261,25 @@ public class XmlParserHelper implements BeanFactoryAware {
 		this.textParserHelper = textParserHelper;
 	}
 
-	public synchronized List<XmlParserInfo> getXmlParserInfos(Class<?> beanType)
+	public List<XmlParserInfo> getXmlParserInfos(Class<?> beanType)
 			throws Exception {
-		if (xmlParserInfoCache.containsKey(beanType)) {
-			return xmlParserInfoCache.get(beanType);
-		}
-
-		Context context = new Context();
-		List<XmlParserInfo> xmlParserInfos = getSubNodeXmlParserInfosByPropertyType(
-				context, beanType);
-		for (XmlParserInfo xmlParserInfo : xmlParserInfos) {
-			XmlParser parser = xmlParserInfo.getParser();
-			if (parser instanceof DispatchableXmlParser) {
-				processMockParsers(context, (DispatchableXmlParser) parser);
+		synchronized (beanType) {
+			if (xmlParserInfoCache.containsKey(beanType)) {
+				return xmlParserInfoCache.get(beanType);
 			}
+	
+			Context context = new Context();
+			List<XmlParserInfo> xmlParserInfos = getSubNodeXmlParserInfosByPropertyType(
+					context, beanType);
+			for (XmlParserInfo xmlParserInfo : xmlParserInfos) {
+				XmlParser parser = xmlParserInfo.getParser();
+				if (parser instanceof DispatchableXmlParser) {
+					processMockParsers(context, (DispatchableXmlParser) parser);
+				}
+			}
+			return (xmlParserInfos == null) ? EMPTY_XML_PARSER_INFOS
+					: xmlParserInfos;
 		}
-		return (xmlParserInfos == null) ? EMPTY_XML_PARSER_INFOS
-				: xmlParserInfos;
 	}
 
 	public XmlParser getXmlParser(Class<?> beanType) throws Exception {
