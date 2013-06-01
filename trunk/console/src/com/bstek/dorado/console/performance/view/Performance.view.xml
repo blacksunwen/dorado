@@ -388,7 +388,7 @@
             <Children>
               <DataGrid id="gridHistory">
                 <Property name="dataSet">dsHistoryProcess</Property>
-                <Property name="height">400</Property>
+                <Property name="height">240</Property>
                 <RowNumColumn/>
                 <DataColumn>
                   <Property name="property">time</Property>
