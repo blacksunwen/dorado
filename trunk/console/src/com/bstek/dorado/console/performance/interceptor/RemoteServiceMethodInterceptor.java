@@ -19,6 +19,7 @@ import org.codehaus.jackson.node.ObjectNode;
 import com.bstek.dorado.common.proxy.PatternMethodInterceptor;
 import com.bstek.dorado.common.service.ExposedService;
 import com.bstek.dorado.common.service.ExposedServiceManager;
+import com.bstek.dorado.console.Logger;
 import com.bstek.dorado.console.performance.ExecuteLogOutputter;
 import com.bstek.dorado.console.performance.PerformanceMonitor;
 import com.bstek.dorado.data.JsonUtils;
@@ -66,12 +67,13 @@ public class RemoteServiceMethodInterceptor extends PatternMethodInterceptor {
 		String serviceName = null, parameter = null, metaData = null;
 		Object object = null;
 		long startTime = System.currentTimeMillis();
+		int logLevel = Logger.getLogLevel();
 		for (Object arg : invocation.getArguments()) {
 			if (arg instanceof ObjectNode) {
 				ObjectNode objectNode = (ObjectNode) arg;
 				try {
 					serviceName = JsonUtils.getString(objectNode, "service");
-					if (StringUtils.isNotEmpty(serviceName)) {
+					if (StringUtils.isNotEmpty(serviceName) && logLevel < 4) {
 						ExposedServiceManager exposedServiceManager = (ExposedServiceManager) DoradoContext
 								.getCurrent().getServiceBean(
 										"exposedServiceManager");
@@ -84,9 +86,9 @@ public class RemoteServiceMethodInterceptor extends PatternMethodInterceptor {
 						}
 						JsonNode paramJson = objectNode.get("parameter"), metaJson = objectNode
 								.get("sysParameter");
-						parameter = paramJson == null ? "null" : paramJson
+						parameter = paramJson == null ? "" : paramJson
 								.toString();
-						metaData = metaJson == null ? "null" : metaJson
+						metaData = metaJson == null ? "" : metaJson
 								.toString();
 
 						break;
@@ -96,13 +98,17 @@ public class RemoteServiceMethodInterceptor extends PatternMethodInterceptor {
 
 			}
 		}
+
 		if (StringUtils.isNotEmpty(serviceName)
 				&& !PathUtils.match(namePattern, serviceName)) {
 
-			executeLogOutputter.outStartLog(TYPE, serviceName, String.format(
-					"parameter=%s,metaData=%s", parameter, metaData));
+			if (logLevel < 4)
+				executeLogOutputter.outStartLog(TYPE, serviceName,
+						String.format("parameter=%s,metaData=%s", parameter,
+								metaData));
 			object = invocation.proceed();
-			executeLogOutputter.outStartLog(TYPE, serviceName, "");
+			if (logLevel < 4)
+				executeLogOutputter.outEndLog(TYPE, serviceName, "");
 
 			long endTime = System.currentTimeMillis();
 

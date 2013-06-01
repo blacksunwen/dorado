@@ -20,13 +20,14 @@
 	</bean>
 	<bean id="dorado.console.accessPathResolver" class="com.bstek.dorado.console.resolver.AccessPathResolver" />
     <bean id="dorado.console.DefaultExecuteLogOutputter" class="com.bstek.dorado.console.performance.DefaultExecuteLogOutputter"/>
+    <bean id="dorado.console.CreateViewLogOutputter" class="com.bstek.dorado.console.performance.CreateViewLogOutputter"/>
 	<!-- View ResolverListener -->
 	<bean parent="dorado.viewResolverListenerRegister">
 		<property name="listener">
 			<bean
 				class="com.bstek.dorado.console.performance.listener.ViewResolverListener">
 				<property name="viewNamePattern" value="*.dorado.console.*"></property>
-				<property name="executeLogOutputter" ref="dorado.console.DefaultExecuteLogOutputter"></property>
+				<property name="executeLogOutputter" ref="dorado.console.CreateViewLogOutputter"></property>
 			</bean>
 		</property>
 	</bean>

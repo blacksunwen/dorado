@@ -16,6 +16,7 @@ import java.util.Collection;
 
 import org.aopalliance.intercept.MethodInvocation;
 
+import com.bstek.dorado.console.Logger;
 import com.bstek.dorado.console.performance.ExecuteLogOutputter;
 import com.bstek.dorado.console.performance.PerformanceMonitor;
 import com.bstek.dorado.core.el.Expression;
@@ -70,36 +71,41 @@ public class DataProviderGetResultMethodInterceptor extends
 	protected Object invokeGetResult(MethodInvocation methodinvocation,
 			DataProvider dataprovider, Object obj, DataType datatype)
 			throws Throwable {
-
-		if (PathUtils.match(namePattern, dataprovider.getName())) {
+		String providerName = dataprovider.getName();
+		if (PathUtils.match(namePattern, providerName)) {
 			return methodinvocation.proceed();
 		}
 		long startTime = System.currentTimeMillis();
-		Object parameter = null;
-		for (Object arg : methodinvocation.getArguments()) {
-			if (arg instanceof Record) {
-				parameter = (Record) arg;
-				break;
+		int logLevel = Logger.getLogLevel();
+		if (logLevel < 4) {
+			Object parameter = null;
+			for (Object arg : methodinvocation.getArguments()) {
+				if (arg instanceof Record) {
+					parameter = (Record) arg;
+					break;
+				}
 			}
-		}
-		executeLogOutputter.outStartLog(TYPE, dataprovider.getName(),
-				String.format("parameter={ %s }", parameter));
+			executeLogOutputter.outStartLog(TYPE, providerName,
+					String.format("parameter={ %s }", parameter));
 
-		Object object = methodinvocation.proceed();
-		Object result = object;
-		if (result instanceof Expression) {
-			result = String.format("{%s}", Expression.class.getName());
-		} else if (result instanceof Collection) {
-			result = String.format("{%s , size = %s}",
-					Collection.class.getName(), ((Collection) result).size());
 		}
-		executeLogOutputter.outEndLog(TYPE, dataprovider.getName(),
-				String.format("result= %s ", result));
+		Object object = methodinvocation.proceed();
+		if (logLevel < 4) {
+			Object result = object;
+			if (result instanceof Expression) {
+				result = String.format("{%s}", Expression.class.getName());
+			} else if (result instanceof Collection) {
+				result = String.format("{%s , size = %s}",
+						Collection.class.getName(),
+						((Collection) result).size());
+			}
+			executeLogOutputter.outEndLog(TYPE, providerName,
+					String.format("result= %s ", result));
+		}
 
 		long endTime = System.currentTimeMillis();
-		PerformanceMonitor.getInstance().monitoredProcess(
-				dataprovider.getName(), startTime, endTime,
-				"DataProviderGetResult");
+		PerformanceMonitor.getInstance().monitoredProcess(providerName,
+				startTime, endTime, "DataProviderGetResult");
 		return object;
 	}
 
@@ -108,33 +114,37 @@ public class DataProviderGetResultMethodInterceptor extends
 	protected Object invokeGetPagingResult(MethodInvocation methodinvocation,
 			DataProvider dataprovider, Object obj, Page page, DataType datatype)
 			throws Throwable {
-		if (PathUtils.match(namePattern, dataprovider.getName())) {
+		String providerName = dataprovider.getName();
+		int logLevel = Logger.getLogLevel();
+		if (PathUtils.match(namePattern, providerName)) {
 			return methodinvocation.proceed();
 		}
 		long startTime = System.currentTimeMillis();
-		Object parameter = null;
-		for (Object arg : methodinvocation.getArguments()) {
-			if (arg instanceof Record) {
-				parameter = (Record) arg;
+		String message;
+		if (logLevel < 4) {
+			Object parameter = null;
+			for (Object arg : methodinvocation.getArguments()) {
+				if (arg instanceof Record) {
+					parameter = (Record) arg;
+				}
 			}
+			message = String.format(
+					"parameter= %s ,page={ pageNo = %s , pageSize = %s}",
+					parameter, page.getPageNo(), page.getPageSize());
+			executeLogOutputter.outStartLog("DataProvider GetPagingResult",
+					providerName, message);
 		}
-		executeLogOutputter.outStartLog("DataProvider GetPagingResult",
-				dataprovider.getName(), String.format(
-						"parameter= %s ,page={ pageNo = %s , pageSize = %s}",
-						parameter, page.getPageNo(), page.getPageSize()));
-
 		Object object = methodinvocation.proceed();
-		executeLogOutputter.outEndLog(
-				"DataProvider GetPagingResult",
-				dataprovider.getName(),
-				String.format("{Entities Size= %s ,pageCount= %s}",
-						page.getEntityCount(), page.getPageCount()));
+		if (logLevel < 4) {
+			message = String.format("{Entities Size= %s ,pageCount= %s}",
+					page.getEntityCount(), page.getPageCount());
+			executeLogOutputter.outEndLog("DataProvider GetPagingResult",
+					providerName, message);
+		}
 
 		long endTime = System.currentTimeMillis();
-		PerformanceMonitor.getInstance().monitoredProcess(
-				dataprovider.getName(), startTime, endTime,
-				"DataProviderGetResult");
+		PerformanceMonitor.getInstance().monitoredProcess(providerName,
+				startTime, endTime, "DataProviderGetResult");
 		return object;
 	}
-
 }

@@ -14,6 +14,7 @@ package com.bstek.dorado.console.performance;
 
 /**
  * View创建过程日志输出器
+ * 
  * @author Alex Tong(mailto:alex.tong@bstek.com)
  * @since 2013-3-1
  */
@@ -23,8 +24,8 @@ public class CreateViewLogOutputter extends ExecuteLogOutputter {
 	protected String doOutStartLog(String type, String serviceName,
 			String message) {
 		// TODO Auto-generated method stub
-		return String.format("Processing [%s] , %s. [Start]", serviceName,
-				message);
+		return String.format(" Processing %s , request url=%s. [Start]",
+				serviceName, message);
 	}
 
 	@Override
