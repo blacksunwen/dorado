@@ -87,6 +87,10 @@ public class Logger {
 
 	private Logger() {
 	}
+    
+	public static int getLogLevel() {
+		return logLevel;
+	}
 
 	/**
 	 * Convenience method to return a named logger, without the application

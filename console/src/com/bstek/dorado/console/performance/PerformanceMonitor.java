@@ -24,6 +24,7 @@ import org.apache.commons.lang.StringUtils;
 import com.bstek.dorado.console.performance.dao.PerformanceDao;
 import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.web.DoradoContext;
+
 /**
  * 性能监视器类
  * 
@@ -123,7 +124,7 @@ public class PerformanceMonitor {
 			try {
 				registerProcess(process);
 			} catch (Exception e) {
-		
+
 			}
 		}
 	}
@@ -175,7 +176,9 @@ class ProcessBase {
 	private int maxProcess;
 
 	public ProcessBase() {
-		maxProcess=Long.valueOf(Configure.getLong("dorado.console.performance.maxProcess", 100)).intValue();
+		Long value = Configure.getLong("dorado.console.performance.maxProcess",
+				300);
+		maxProcess = Long.valueOf(value).intValue();
 		processList = new Vector<Process>(maxProcess);
 	}
 
@@ -184,11 +187,12 @@ class ProcessBase {
 	 * <p>
 	 * 当性能数据设定数量时保存到数据库中并重置数据队列
 	 * </p>
+	 * 2013-06-01 性能优化 打开 synchronized
 	 * 
 	 * @param process
 	 * @throws Exception
 	 */
-	public synchronized void pushProcess(Process process) throws Exception {
+	public void pushProcess(Process process) throws Exception {
 		if (processList.size() >= maxProcess) {
 			saveToDB();
 		}

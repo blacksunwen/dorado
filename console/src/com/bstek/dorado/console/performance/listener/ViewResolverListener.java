@@ -13,6 +13,7 @@
 package com.bstek.dorado.console.performance.listener;
 
 import com.bstek.dorado.console.Constants;
+import com.bstek.dorado.console.Logger;
 import com.bstek.dorado.console.performance.ExecuteLogOutputter;
 import com.bstek.dorado.console.performance.PerformanceMonitor;
 import com.bstek.dorado.util.PathUtils;
@@ -57,8 +58,9 @@ public class ViewResolverListener implements
 		if (!PathUtils.match(viewNamePattern, viewName.replace('/', '.'))) {
 			DoradoContext.getAttachedRequest().setAttribute(
 					Constants.R_DORADO_CONSOLE_REQUEST_STARTTIME, startTime);
-			executeLogOutputter.outStartLog(TYPE, viewName, "request uri="
-					+ DoradoContext.getAttachedRequest().getRequestURI());
+			if (Logger.getLogLevel() < 4)
+				executeLogOutputter.outStartLog(TYPE, viewName, DoradoContext
+						.getAttachedRequest().getRequestURI());
 		}
 	}
 
@@ -69,8 +71,9 @@ public class ViewResolverListener implements
 					.getAttribute(Constants.R_DORADO_CONSOLE_REQUEST_STARTTIME);
 			PerformanceMonitor.getInstance().monitoredProcess(viewName,
 					startTime, endTime, "CreateDoradoView");
-			executeLogOutputter.outEndLog(TYPE, viewName, "request uri="
-					+ DoradoContext.getAttachedRequest().getRequestURI());
+			if (Logger.getLogLevel() < 4)
+				executeLogOutputter.outEndLog(TYPE, viewName, null);
+
 		}
 	}
 
