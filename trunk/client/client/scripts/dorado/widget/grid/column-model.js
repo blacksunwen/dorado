@@ -1477,12 +1477,13 @@
 				}
 				else {
 					editorControl = this.createEditorControl();
-					if (this.cachable) this._editorControl = editorControl;
 				}
+				if (this.cachable) this._editorControl = editorControl;
 				
 				if (editorControl instanceof dorado.widget.TextArea) {
-					this.minWidth = 120;
-					this.minHeight = 40;
+					var attrWatcher = editorControl.getAttributeWatcher();
+					this.minWidth = (attrWatcher.getWritingTimes("width")) ? editorControl.get("width") : 120;
+					this.minHeight = (attrWatcher.getWritingTimes("height")) ? editorControl.get("height") : 40;
 				}
 			}
 				
