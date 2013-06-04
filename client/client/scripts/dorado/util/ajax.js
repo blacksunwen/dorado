@@ -622,7 +622,7 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 			var i = 0;
 			for(var p in parameter) {
 				if(parameter.hasOwnProperty(p)) {
-					data += (i > 0 ? '&' : '') + p + '=' + encodeURI(parameters[p]);
+					data += (i > 0 ? '&' : '') + p + '=' + encodeURI(parameter[p]);
 					i++;
 				}
 			}
