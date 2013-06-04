@@ -654,8 +654,13 @@
 						this._evaluateSectionOnEntity(context, data);
 					}
 				}
-				if(!context.possibleMultiResult && context.results && context.results.length == 1) {
-					context.results = context.results[0];
+				if(!context.possibleMultiResult && context.results) {
+					if (context.results.length == 0) {
+						context.results = null;
+					}
+					eles if (context.results.length == 1) {
+						context.results = context.results[0];
+					}
 				}
 				return context.results;
 			} catch (e) {
