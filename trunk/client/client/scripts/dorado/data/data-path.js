@@ -658,7 +658,7 @@
 					if (context.results.length == 0) {
 						context.results = null;
 					}
-					eles if (context.results.length == 1) {
+					else if (context.results.length == 1) {
 						context.results = context.results[0];
 					}
 				}
