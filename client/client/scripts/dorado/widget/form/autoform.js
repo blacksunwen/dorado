@@ -427,8 +427,7 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 	},
 	
 	createDom: function() {
-		var attrWatcher = this.getAttributeWatcher();
-		if (attrWatcher.getWritingTimes("formProfile") == 0) {
+		if (!this._formProfile) {
 			var view = this.get("view") || dorado.widget.View.TOP;
 			this.set("formProfile", view.id("defaultFormProfile"));
 		}
