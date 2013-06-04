@@ -679,7 +679,7 @@ dorado.validator.AjaxValidator = $extend(dorado.validator.RemoteValidator, /** @
 		};
 		if (this._executingMessage) config.executingMessage = this._executingMessage;
 		if (this._service) config.service = this._service;
-		if (eventArg.parameter) config.parameter = eventArg.parameter;
+		config.parameter = eventArg.parameter;
 		
 		ajaxAction.set(config);
 		var retval = ajaxAction.execute(this._async ? callback : null);
