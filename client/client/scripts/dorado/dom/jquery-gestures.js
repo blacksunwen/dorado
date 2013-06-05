@@ -11,7 +11,7 @@
  */
 
 (function ($, window, document, undefined) {
-    if (!("ontouchstart" in window)) return;
+    if (!dorado.Browser.isTouch) return;
 
     var dataPropertyName = "virtualMouseBindings", touchTargetPropertyName = "virtualTouchID",
         virtualEventNames = "mouseover mousedown mousemove mouseup click mouseout mousecancel".split(" "),
