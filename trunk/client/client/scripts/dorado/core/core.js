@@ -78,6 +78,9 @@ var dorado = {
 		browser.android = (/android/gi).test(navigator.appVersion);
 		browser.iOS = (/iphone|ipad/gi).test(navigator.appVersion);
 		browser.isTouch = "ontouchstart" in window;
+		if (browser.chrome) {
+			try { document.createEvent("TouchEvent"); }	 catch(e) { browser.isTouch = false; }
+		}
 		browser.version = parseInt(browser.version);
 		return browser;
 	})(),
