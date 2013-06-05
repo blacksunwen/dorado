@@ -80,6 +80,21 @@
             }]
         });
 
+        var action = new dorado.widget.Action({
+            caption: "Action Binded",
+            icon: "del.gif",
+            listener: {
+                beforeExecute: function() {
+                    alert("execute success");
+                }
+            }
+        });
+
+        var item0 = new dorado.widget.toolbar.Button({
+            caption: "菜单栏____",
+            disabled: true
+        });
+
         var toolbar = new dorado.widget.ToolBar({
             showMenuOnHover: true,
             fixRight: true,
@@ -91,10 +106,11 @@
             }, {
                 caption: "Button2",
                 menu: testMenu2
-            }, "-", {
+            }, "-", new dorado.widget.Button({
                 caption: "菜单栏1",
-                toggleable: true
-            }, {
+                toggleable: true,
+                className: "d-toolbar-button"
+            }), {
                 caption: "菜单栏",
                 icon: "del.gif",
                 disabled: true,
@@ -107,79 +123,8 @@
             }, {
                 caption: "菜单栏5"
             }, "-", {
-                action: new dorado.widget.Action({
-                    caption: "Action Binded",
-                    icon: "del.gif",
-                    listener: {
-                        beforeExecute: function() {
-                            alert("execute success");
-                        }
-                    }
-                })
-            }, {
-                caption: "菜单栏0",
-                disabled: true,
-                showMenuOnHover: false,
-                menu: new dorado.widget.Menu({
-                    items: [
-                        {
-                            items: [
-                                {
-                                    caption: "菜单项11"
-                                },
-                                {
-                                    $type: "Control",
-                                    caption: "Control Menu Item",
-                                    control: panel
-                                },
-                                {
-                                    items: [
-                                        {
-                                            caption: "菜单项121"
-                                        },
-                                        {
-                                            caption: "菜单项122"
-                                        },
-                                        {
-                                            caption: "菜单项123"
-                                        }
-                                    ],
-
-                                    caption: "菜单项12"
-                                },
-                                {
-                                    caption: "菜单项13"
-                                }
-                            ],
-                            caption: "菜单项1"
-                        },
-                        {
-                            caption: "菜单项2"
-                        },
-                        {
-                            items: [
-                                {
-                                    caption: "菜单项31"
-                                },
-                                {
-                                    caption: "菜单项32"
-                                },
-                                {
-                                    caption: "菜单项33"
-                                }
-                            ],
-
-                            caption: "菜单项3"
-                        },
-                        {
-                            caption: "菜单项4"
-                        },
-                        {
-                            caption: "菜单项5"
-                        }
-                    ]
-                })
-            }, {
+                action: action
+            }, item0 , {
                 $type: "Label",
                 text: "中文加english+123"
             }, new dorado.widget.TextEditor({
@@ -195,10 +140,17 @@
                 caption: "菜单栏9",
 				toolTip: "菜单栏9测试提示"
             }],
-			layoutConstraint: {width: "100%"}
+			layoutConstraint: { width: "100%" }
         });
 
         view.addChild(toolbar);
+
+        view.addChild(new dorado.widget.Button({
+            caption: "Set item0 disable",
+            onClick: function() {
+                item0.set("disabled", !item0.get("disabled"));
+            }
+        }));
 
         $(document).ready(function() {
             view.render(document.body);
