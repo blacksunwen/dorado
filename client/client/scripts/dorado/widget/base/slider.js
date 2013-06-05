@@ -141,6 +141,7 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
         onValueChange: {}
     },
 	constructor: function(config) {
+		config = config || {};
 		var value = config.value;
 		delete config.value;
 
