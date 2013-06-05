@@ -70,6 +70,7 @@ dorado.dequeue = function(namespace) {
 						this._visible = !floating;
 					}
 					this._floating = floating;
+					this.onActualVisibleChange();
 				}
 			},
 			
