@@ -54,7 +54,8 @@
                     caption: "2"
                 }, {
                     caption: "3"
-                }]
+                }],
+                width: 300
             });
 
             var listener = {
@@ -118,6 +119,7 @@
 					height: 200
 				},
                 listener: listener,
+                visible: true,
             	items: [{
             		action: action
             	}, {
@@ -184,7 +186,6 @@
             	items: [{
             		id: "buttonAddItem",
             		caption: "add Item at last",
-                    menu: testMenu,
             		listener: {
             			onClick: function() {
             				testMenu.addItem(new dorado.widget.menu.MenuItem({
