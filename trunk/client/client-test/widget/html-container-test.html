@@ -68,6 +68,11 @@
 			var child3 = div4.childNodes[2];
 			assertHTMLEquals("Child 3", child3.innerHTML || child3.nodeValue);
 		}
+
+        function testSetContent() {
+            html1.set("content", "<div id='test'>test</div>");
+            console.log(document.getElementById("test"));
+        }
 		</script>
 	</head>
 	<body>
@@ -75,5 +80,6 @@
 		<div id="div2"></div>
 		<div id="div3"></div>
 		<div id="div4"></div>
+        <button onclick="testSetContent()">SetContent</button>
 	</body>
 </html>

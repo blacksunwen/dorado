@@ -221,8 +221,9 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 	},
 	
 	hideOverflowItem: function(item, overflowMenu) {
+		var menuItem;
 		if (item instanceof dorado.widget.Button) {
-			overflowMenu.addItem({
+			menuItem = overflowMenu.addItem({
 				caption: item._caption,
 				visible: item._visible,
 				submenu: item._menu,
@@ -283,6 +284,7 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 			}
 		}
 		item._visibleByOverflow = false;
+		item._bindingMenuItem = menuItem;
 		if (item._hideMode == "display") {
 			$fly(item._dom).css({
 				display: "none"
@@ -297,6 +299,7 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 	showUnoverflowItem: function(item) {
 		item._visibleByOverflow = true;
 		var visible = item._visible;
+		item._bindingMenuItem = null;
 		if (item._hideMode == "display") {
 			$fly(item._dom).css({
 				display: visible ? "" : "none"
@@ -336,10 +339,12 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 			
 			overflow = leftRealWidth > leftVisibleWidth;
 		}
-		
+
+		toolbar._overflowItems = [];
+
 		if (overflow) {
 			$fly(dom).addClass("i-toolbar-overflow " + toolbar._className + "-overflow");
-			
+
 			if (!overflowMenu) {
 				overflowMenu = toolbar._overflowMenu = new dorado.widget.Menu();
 				
@@ -538,6 +543,25 @@ dorado.widget.toolbar.Button = $extend(dorado.widget.Button, {
 		 */
 		hideMenuOnMouseLeaveDelay: {
 			defaultValue: 300
+		}
+	},
+
+	doSet: function(attr, value, skipUnknownAttribute, lockWritingTimes) {
+		$invokeSuper.call(this, [attr, value, skipUnknownAttribute, lockWritingTimes]);
+
+		if (this._parent instanceof dorado.widget.ToolBar) {
+			var menuItem = this._bindingMenuItem;
+			if (menuItem) {
+				menuItem.set({
+					caption: this._caption,
+					visible: this._visible,
+					submenu: this._menu,
+					action: this._action,
+					disabled: this._disabled,
+					icon: this._icon,
+					iconClass: this._iconClass
+				});
+			}
 		}
 	},
 

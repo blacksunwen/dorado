@@ -86,10 +86,11 @@
 		},
 
 		/**
-		 * 为Menu插入MenuItem。
+		 * 为Menu添加MenuItem。
 		 * @param {Object|dorado.widget.menu.AbstractMenuItem} item 可以是MenuItem或者MenuItem的Json配置信息。
 		 * @param {int} [index] 可以是整数或者MenuItem。
 		 *                      如果是整数，代表插入以后该Item的位置。如果是MenuItem，则代表要插入到该MenuItem之前。
+		 * @return {dorado.widget.menu.AbstractMenuItem} 返回刚刚添加的MenuItem。
 		 */
 		addItem: function(item, index) {
 			var menu = this, items = menu._items, doms = menu._doms, refItem;
@@ -121,6 +122,8 @@
 			}
 
 			menu.refresh();
+
+			return item;
 		},
 
 		/**

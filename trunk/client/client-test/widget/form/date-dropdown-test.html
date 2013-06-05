@@ -7,8 +7,11 @@
 
         var dp = new dorado.widget.DatePicker({
             showClearButton: false,
-            showConfirmButton: false,
+            showConfirmButton: true,
             showTimeSpinner: true,
+            onConfirm: function(self, arg) {
+                console.log(arg.date);
+            },
             onRefreshDateCell: function(self, arg) {
                 var date = arg.date, cell = arg.cell;
 
