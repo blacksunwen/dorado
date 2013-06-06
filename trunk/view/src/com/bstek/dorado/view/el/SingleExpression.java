@@ -33,7 +33,7 @@ public class SingleExpression extends com.bstek.dorado.core.el.SingleExpression
 
 	@Override
 	protected Object internalEvaluate() {
-		if (this.getEvaluateMode() == EvaluateMode.onRead
+		if (this.getEvaluateMode() != EvaluateMode.onInstantiate
 				&& OutputableExpressionUtils.isOutputableExpressionDisabled()) {
 			OutputableExpressionUtils.setSkipedExpression(this);
 			return null;

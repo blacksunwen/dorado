@@ -35,4 +35,5 @@ public class PropertyDefDefinition extends GenericObjectDefinition {
 	public void setName(String name) {
 		setProperty("name", name);
 	}
+
 }
