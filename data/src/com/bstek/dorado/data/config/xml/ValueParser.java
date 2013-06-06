@@ -38,8 +38,9 @@ public class ValueParser extends DataElementParserSupport {
 		for (int i = 0; i < len; ++i) {
 			Node item = nl.item(i);
 			if ((((!(item instanceof CharacterData)) || (item instanceof Comment)))
-					&& (!(item instanceof EntityReference)))
+					&& (!(item instanceof EntityReference))) {
 				continue;
+			}
 			if (item instanceof CDATASection && len <= 3) {
 				value.setLength(0);
 				value.append(item.getNodeValue());

@@ -24,7 +24,7 @@ public class Mapping {
 	private String keyProperty;
 	private String valueProperty;
 
-	@XmlProperty
+	@XmlProperty(parser = "spring:dorado.mapValuesParser")
 	@IdeProperty(editor = "collection[pojo]")
 	public Object getMapValues() {
 		return mapValues;

@@ -189,7 +189,7 @@ public class ExpressionMethodInterceptor implements MethodInterceptor {
 						Expression expression = getExpressionProperties().get(
 								methodDescriptor.getProperty());
 						Object value = evaluateExpression(methodDescriptor);
-						if (expression.getEvaluateMode() == EvaluateMode.onInstantiate) {
+						if (expression.getEvaluateMode() != EvaluateMode.onRead) {
 							PropertyUtils.setSimpleProperty(object,
 									methodDescriptor.getProperty(), value);
 						}

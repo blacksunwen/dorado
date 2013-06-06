@@ -17,5 +17,5 @@ package com.bstek.dorado.core.el;
  * @since 2010-7-8
  */
 public enum EvaluateMode {
-	onInstantiate, onRead
+	onInstantiate, onRead, onFirstRead
 }
