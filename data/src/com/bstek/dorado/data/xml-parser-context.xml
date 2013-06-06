@@ -105,7 +105,7 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 	</bean>
 
 	<bean id="dorado.mapValuesParser" class="com.bstek.dorado.data.config.xml.MapValuesParser"
-		parent="dorado.propertyParser" />
+		parent="dorado.preloadDataParser" />
 
 	<!-- Validator Parser -->
 	<bean id="dorado.validatorParserDispatcher" parent="dorado.genericParser"
