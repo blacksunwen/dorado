@@ -1720,7 +1720,7 @@
 		updateScroller: function(info) {
 			if (this._divScroll) {
 				var divScroll = this._divScroll, divViewPort = this._divViewPort;
-				var ratio = info.clientHeight ? (divScroll.clientHeight / info.clientHeight) : 0;
+				var ratio = info.clientHeight ? (divScroll.clientHeight / (info.clientHeight || 1)) : 0;
 				if (this.yScroll) {
 					divViewPort.style.height = Math.round(info.scrollHeight * ratio) + "px";
 				}
@@ -1734,7 +1734,7 @@
 				if (this._innerGridWrapper) {
 					var innerGridWrapper = this._innerGridWrapper;
 					if (innerGridWrapper.offsetLeft <= divScroll.clientWidth) {
-						var ratio = (divScroll.clientWidth / innerGridWrapper.clientWidth) || 1;
+						var ratio = (divScroll.clientWidth / (innerGridWrapper.clientWidth || 1)) || 1;
 						var viewPortWidth = Math.round(innerGridWrapper.scrollWidth * ratio);
 						divViewPort.style.width = viewPortWidth + "px";
 						divScroll.scrollLeft = this._scrollLeft = Math.round(innerGridWrapper.scrollLeft * ratio);
