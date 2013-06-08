@@ -651,7 +651,9 @@
 							this.fireEvent("beforeRefreshDom", this, arg);
 						}
 						if (arg.processDefault) {
-							this.refreshDom(dom);
+							if (!(dorado.Browser.msie && dorado.Browser.version < 7 && dom.offsetWidth > 10000)) {							
+								this.refreshDom(dom);
+							}
 							this.fireEvent("onRefreshDom", this, arg);
 						}
 					} finally {
@@ -672,7 +674,9 @@
 						this.fireEvent("beforeRefreshDom", this, arg);
 					}
 					if (arg.processDefault) {
-						this.refreshDom(dom);
+						if (!(dorado.Browser.msie && dorado.Browser.version < 7 && dom.offsetWidth > 10000)) {	
+							this.refreshDom(dom);
+						}
 						this.fireEvent("onRefreshDom", this, arg);
 					}
 				} finally {
@@ -689,7 +693,7 @@
 		 * @param {HTMLElement} dom 控件对应的DOM对象。
 		 */
 		refreshDom : function(dom) {
-			if(!this.selectable) $DomUtils.disableUserSelection(dom);
+			if (!this.selectable) $DomUtils.disableUserSelection(dom);
 
 			try {
 				dom.doradoUniqueId = this._uniqueId;
@@ -982,7 +986,9 @@
 						this.fireEvent("beforeRefreshDom", this, arg);
 					}
 					if (arg.processDefault) {
-						this.refreshDom(dom);
+						if (!(dorado.Browser.msie && dorado.Browser.version < 7 && dom.offsetWidth > 10000)) {						
+							this.refreshDom(dom);
+						}
 						this.fireEvent("onRefreshDom", this, arg);
 					}
 					this._skipResize = false;
