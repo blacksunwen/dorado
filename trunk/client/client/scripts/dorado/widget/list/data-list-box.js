@@ -204,30 +204,36 @@ dorado.widget.DataListBox = $extend([dorado.widget.AbstractListBox, dorado.widge
 		
 		var tbody = this._dataTBody;
 		if (this._scrollMode != "viewport") {
-			var row = this.createItemDom(entity);
+			var row;
 			switch (mode) {
 				case "begin":{
+					row = this.createItemDom(entity);
 					tbody.insertBefore(row, tbody.firstChild);
 					break;
 				}
 				case "before":{
 					var refRow = this._itemDomMap[this._itemModel.getItemId(refEntity)];
+					row = this.createItemDom(entity);
 					tbody.insertBefore(row, refRow);
 					break;
 				}
 				case "after":{
 					var refRow = this._itemDomMap[this._itemModel.getItemId(refEntity)];
 					if (refRow.nextSibling) {
+						row = this.createItemDom(entity);
 						tbody.insertBefore(row, refRow.nextSibling);
 						break;
 					}
 				}
 				default:
 					{
+						row = this.createItemDom(entity);
 						tbody.appendChild(row);
 					}
 			}
+			
 			this.refreshItemDom(tbody, entity, row.sectionRowIndex);
+			
 			if (this._forceRefreshRearRows != false) {
 				row = row.nextSibling;
 				while (row) {
