@@ -316,9 +316,11 @@
 					}
 					if (passed) filtered.push(item);
 				}
+				this.filtered = true;
 				this._items = filtered;
 				this._filterParams = filterParams;
 			} else if (this._originItems) {
+				this.filtered = false;
 				this._items = this._originItems;
 				delete this._originItems;
 				delete this._filterParams;

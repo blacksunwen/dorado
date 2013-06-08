@@ -403,7 +403,6 @@
 			if (!this._shouldSkipRender && row._lazyRender) {
 				this.createItemDomDetail(row, item);
 				row._lazyRender = undefined;
-
 			}
 			
 			if (!row._lazyRender) {
