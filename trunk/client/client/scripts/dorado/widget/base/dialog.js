@@ -390,13 +390,13 @@
 					$fly(doms.contentPanel).outerHeight(height - headerHeight - footerHeight - captionBarHeight - buttonPanelHeight);
 					//$fly(doms.bodyWrap).outerHeight(height - headerHeight - bottomHeight);
 					if (dorado.Browser.msie && dorado.Browser.version == 6) {
-						$fly(doms.bodyWrap).css("zoom", 1);
+						$fly([doms.bodyWrap, doms.header, dialog.footer, doms.headerCenter, doms.bodyLeft, doms.bodyRight]).css("zoom", "").css("zoom", 1);
 					}
 				}
 			} else {
 				$fly(doms.contentPanel).css("height", "");
 				if (dorado.Browser.msie && dorado.Browser.version == 6) {
-					$fly(doms.bodyWrap).css("zoom", 1);
+					$fly([doms.bodyWrap, doms.header, dialog.footer, doms.headerCenter, doms.bodyLeft, doms.bodyRight]).css("zoom", "").css("zoom", 1);
 				}
 			}
 			$fly(dom).css("height", "");
