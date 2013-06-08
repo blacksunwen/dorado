@@ -11,7 +11,8 @@
 
         var dialog = new dorado.widget.Dialog({
             id: "dialog1",
-			visible: true,
+            floating: false,
+			//visible: true,
 			//showCaptionBar: false,
             //maximized: true,
             //collapsed: true,
@@ -156,6 +157,8 @@
         });
 
         view.addChild(toolbar);
+
+        view.addChild(dialog);
 
         $(document).ready(function() {
             view.render(document.body);

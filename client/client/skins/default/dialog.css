@@ -73,13 +73,13 @@
 
 .d-dialog .dialog-body-wrap .dialog-body-left{
 	background: url(base/dialog-vert-bg-blur.gif);
-	filter: alpha( opacity = 50);
+	filter: alpha(opacity = 50);
 	opacity: 0.5;
 }
 
 .d-dialog .dialog-body-wrap .dialog-body-right{
 	background: url(base/dialog-vert-bg-blur.gif) -8px 0;
-	filter: alpha( opacity = 50);
+	filter: alpha(opacity = 50);
 	opacity: 0.5;
 }
 
@@ -97,19 +97,19 @@
 
 .d-dialog .dialog-footer .dialog-footer-left{
 	background: url(base/dialog-hori-bg-blur.gif) 0 -16px;
-	filter: alpha( opacity = 50);
+	filter: alpha(opacity = 50);
 	opacity: 0.5;
 }
 
 .d-dialog .dialog-footer .dialog-footer-right{
 	background: url(base/dialog-hori-bg-blur.gif) 0 -24px;
-	filter: alpha( opacity = 50);
+	filter: alpha(opacity = 50);
 	opacity: 0.5;
 }
 
 .d-dialog .dialog-footer .dialog-footer-center{
 	background: url(base/dialog-hori-bg-blur.gif) 0 -40px;
-	filter: alpha( opacity = 50);
+	filter: alpha(opacity = 50);
 	opacity: 0.5;
 }
 
@@ -139,6 +139,19 @@
 
 .d-dialog-draggable .d-dialog-caption-bar{
 	cursor: move;
+}
+
+.d-ie6 .d-dialog .dialog-header .dialog-header-left, .d-ie6 .d-dialog .dialog-header .dialog-header-right, .d-ie6 .d-dialog .dialog-header .dialog-header-center,
+.d-ie6 .d-dialog .dialog-footer .dialog-footer-left, .d-ie6 .d-dialog .dialog-footer .dialog-footer-right, .d-ie6 .d-dialog .dialog-footer .dialog-footer-center,
+.d-ie6 .d-dialog-focused .dialog-header .dialog-header-left, .d-ie6 .d-dialog-focused .dialog-header .dialog-header-right, .d-ie6 .d-dialog-focused .dialog-header .dialog-header-center,
+.d-ie6 .d-dialog-focused .dialog-footer .dialog-footer-left, .d-ie6 .d-dialog-focused .dialog-footer .dialog-footer-right, .d-ie6 .d-dialog-focused .dialog-footer .dialog-footer-center{
+    filter: "";
+    background-image: url(base/dialog-hori-bg-blur.gif);
+}
+
+.d-ie6 .d-dialog .dialog-body-wrap .dialog-body-left, .d-ie6 .d-dialog .dialog-body-wrap .dialog-body-right {
+    filter: "";
+    background-image: url(base/dialog-vert-bg-blur.gif);
 }
 
 .d-dialog-drag-proxy{
