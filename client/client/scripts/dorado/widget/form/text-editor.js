@@ -325,7 +325,7 @@
 					
 					if (timestamp != this.timestamp) {
 						this.set("value", value);
-						if (this._editorFocused) this._lastPost = this.get("text");
+						this._lastPost = this.get("text");
 						this.timestamp = timestamp;
 					}
 					this.setValidationState(state, messages);
