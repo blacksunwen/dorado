@@ -275,8 +275,10 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 	
 	onEditorMouseDown: function(editor) {
 		if (this._autoOpen && !editor._realReadOnly && !this.get("opened")) {
-			this._skipEditorOnFocusProcedure= true;
-			this.execute(editor);
+			$setTimeout(this, function() {
+				this._skipEditorOnFocusProcedure= true;
+				this.execute(editor);
+			}, 100);
 		}
 	},
 
