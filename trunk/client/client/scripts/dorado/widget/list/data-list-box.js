@@ -198,11 +198,30 @@ dorado.widget.DataListBox = $extend([dorado.widget.AbstractListBox, dorado.widge
 	 * @see dorado.widget.DataSet.MESSAGE_INSERTED
 	 */
 	onEntityInserted: function(arg) {
+		
+		function findFontNearestRow(entity) {
+			var entity = entity.getPrevious(), row, itemDomMap = this._itemDomMap, itemModel = this._itemModel;
+			while (entity) {
+				row = itemDomMap[itemModel.getItemId(entity)];
+				if (row) return row;
+				entity = entity.getPrevious();
+			}
+		}
+		
+		function findBackNearestRow(entity) {
+			var entity = entity.getNext(), row, itemDomMap = this._itemDomMap, itemModel = this._itemModel;
+			while (entity) {
+				row = itemDomMap[itemModel.getItemId(entity)];
+				if (row) return row;
+				entity = entity.getNext();
+			}
+		}
+		
 		var entity = arg.entity;
 		var mode = arg.insertMode;
 		var refEntity = arg.refEntity;
 		
-		var tbody = this._dataTBody;
+		var tbody = this._dataTBody, itemDomMap = this._itemDomMap, itemModel = this._itemModel;
 		if (this._scrollMode != "viewport") {
 			var row;
 			switch (mode) {
@@ -211,20 +230,43 @@ dorado.widget.DataListBox = $extend([dorado.widget.AbstractListBox, dorado.widge
 					tbody.insertBefore(row, tbody.firstChild);
 					break;
 				}
-				case "before":{
-					var refRow = this._itemDomMap[this._itemModel.getItemId(refEntity)];
+				
+				case "before": {
 					row = this.createItemDom(entity);
-					tbody.insertBefore(row, refRow);
+				    var refRow = itemDomMap[itemModel.getItemId(refEntity)], inserted;
+				    if (!refRow) {
+				    	refRow = findBackNearestRow.call(this, refEntity);
+				    	if (!refRow) {
+				    		tbody.appendChild(row);
+				    		inserted = true;
+				    	}
+				    }
+				    if (!inserted) tbody.insertBefore(row, refRow);
+				    break;
+				}
+				
+				case "after": {
+					row = this.createItemDom(entity);
+					var refRow = itemDomMap[itemModel.getItemId(refEntity)], inserted;
+					if (!refRow) {
+						refRow = findFontNearestRow.call(this, refEntity);
+				    	if (!refRow) {
+				    		tbody.insertBefore(row, tbody.firstChild);
+				    		inserted = true;
+				    	}
+					}
+					
+					if (!inserted) {
+						if (refRow.nextSibling) {
+							tbody.insertBefore(row, refRow.nextSibling);
+						}
+						else {
+				    		tbody.appendChild(row);
+						}
+					}
 					break;
 				}
-				case "after":{
-					var refRow = this._itemDomMap[this._itemModel.getItemId(refEntity)];
-					if (refRow.nextSibling) {
-						row = this.createItemDom(entity);
-						tbody.insertBefore(row, refRow.nextSibling);
-						break;
-					}
-				}
+				
 				default:
 					{
 						row = this.createItemDom(entity);
@@ -243,7 +285,6 @@ dorado.widget.DataListBox = $extend([dorado.widget.AbstractListBox, dorado.widge
 			}
 			this.notifySizeChange();
 		} else {
-			var itemModel = this._itemModel;
 			var i = itemModel.getItemIndex(entity);
 			if (i >= 0) {
 				if (i < this.startIndex) {

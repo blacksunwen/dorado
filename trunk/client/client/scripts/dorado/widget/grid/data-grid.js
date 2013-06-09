@@ -562,7 +562,7 @@
 			switch (messageCode) {
 				case dorado.widget.DataSet.MESSAGE_REFRESH:{
 					this.hideCellEditor();
-					if (this._itemModel.filtered || this._itemModel.groups) this.setDirtyMode(true);
+					if (this._itemModel.groups) this.setDirtyMode(true);
 					else this.refresh(true);
 					break;
 				}
@@ -630,7 +630,7 @@
 					if (!items || items._observer != this._dataSet) {
 						this.refresh(true);
 					} else {
-						if (this._itemModel.filtered || this._itemModel.groups) this.setDirtyMode(true);
+						if (this._itemModel.groups) this.setDirtyMode(true);
 						else this.refreshEntity(arg.entity);
 					}
 					break;
@@ -640,7 +640,7 @@
 					break;
 				}
 				case dorado.widget.DataSet.MESSAGE_DELETED:{
-					if (this._itemModel.filtered || this._itemModel.groups) {
+					if (this._itemModel.groups) {
 						this.setDirtyMode(true);
 					} else {
 						var items = this._itemModel.getItems();
@@ -654,7 +654,7 @@
 					break;
 				}
 				case dorado.widget.DataSet.MESSAGE_INSERTED:{
-					if (this._itemModel.filtered || this._itemModel.groups) this.setDirtyMode(true);
+					if (this._itemModel.groups) this.setDirtyMode(true);
 					else {
 						this.onEntityInserted(arg);
 						this.refreshSummary();
