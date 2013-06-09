@@ -38,13 +38,14 @@ public class MapValuesParser extends PreloadDataElementParser {
 
 		if (StringUtils.isNotEmpty(text)) {
 			Expression expression = getExpressionHandler().compile(text);
-			if (expression != null
-					&& expression.getEvaluateMode() == EvaluateMode.onInstantiate
-					&& expression instanceof AbstractExpression) {
-				((AbstractExpression) expression)
-						.setEvaluateMode(EvaluateMode.onFirstRead);
+			if (expression != null) {
+				if (expression.getEvaluateMode() == EvaluateMode.onInstantiate
+						&& expression instanceof AbstractExpression) {
+					((AbstractExpression) expression)
+							.setEvaluateMode(EvaluateMode.onFirstRead);
+				}
+				return expression;
 			}
-			return expression;
 		}
 
 		return super.doParse(node, context);
