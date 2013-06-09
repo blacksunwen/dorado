@@ -50,7 +50,7 @@ public class DoradoConfigController implements InitializingBean {
 	private Set<String> properties;
 	private Map<String, Object> cacheWebConfigMap = null;
 	private static final String DEFAULT_LOCALE = "zh_CN";
-	private static final String VARIABLE_PROPERTIES_KEY = "dorado.console.webConfigure.variable.properties";
+	private static final String VARIABLE_PROPERTIES_KEY = "dorado.console.web.configurations";
 
 	public void onViewInit(Label description, Container buttonsContainer,
 			AutoForm propertiesConfigAutoForm, View view) {
