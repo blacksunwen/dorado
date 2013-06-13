@@ -104,7 +104,7 @@
 				<file name="drag-drop/dragging-indicator.js" />
 				<file name="drag-drop/drag-drop.js" />
                 <file name="dom/jquery-gestures.js" />
-                <file name="touch/iscroll.js" />
+                <file name="dom/iscroll.js" />
 			</filelist>
 		</concat>
 
