@@ -321,6 +321,7 @@
 				case "goto":
 					item = new GotoPageControl({
 						onAction: function(self, arg) {
+							if (arg.pageNo < 1) arg.pageNo = 1;
 							if (!fireOnActionEvent.call(pilot, itemCode.code, self)) return;
 							
 							item.set("disabled", true);
@@ -337,6 +338,7 @@
 				case "pageSize":
 					item = new PageSizeControl({
 						onAction: function(self, arg) {
+							if (arg.pageSize < 1) arg.pageSize = 10;
 							if (!fireOnActionEvent.call(pilot, itemCode.code, self)) return;
 							
 							item.set("disabled", true);
