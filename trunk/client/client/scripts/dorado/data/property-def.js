@@ -314,6 +314,18 @@
 		getListenerScope: function() {
 			return this.get("view");
 		},
+
+		fireEvent: function() {
+			// 对于那些Ajax懒装载的DataType，其中view可能是空的
+			var view = this.get("view"), oldView = window.view;
+			window.view = view;
+			try {
+				return $invokeSuper.call(this, arguments);
+			}
+			finally {
+				window.view = oldView;
+			}
+		},
 		
 		getDataType: function(loadMode) {
 			return dorado.LazyLoadDataType.dataTypeGetter.call(this, loadMode);
