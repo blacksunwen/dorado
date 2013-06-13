@@ -1,4 +1,4 @@
-var homePage = '>/dorado/console';
+var homePage = './dorado/console';
 // @Bind view.onReady
 !function(self, arg) {
 	if (window != top) {
