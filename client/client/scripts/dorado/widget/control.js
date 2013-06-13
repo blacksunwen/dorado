@@ -651,9 +651,7 @@
 							this.fireEvent("beforeRefreshDom", this, arg);
 						}
 						if (arg.processDefault) {
-							if (!(dorado.Browser.msie && dorado.Browser.version < 7 && dom.offsetWidth > 10000)) {							
-								this.refreshDom(dom);
-							}
+							this.refreshDom(dom);
 							this.fireEvent("onRefreshDom", this, arg);
 						}
 					} finally {
@@ -674,9 +672,7 @@
 						this.fireEvent("beforeRefreshDom", this, arg);
 					}
 					if (arg.processDefault) {
-						if (!(dorado.Browser.msie && dorado.Browser.version < 7 && dom.offsetWidth > 10000)) {	
-							this.refreshDom(dom);
-						}
+						this.refreshDom(dom);
 						this.fireEvent("onRefreshDom", this, arg);
 					}
 				} finally {
@@ -986,9 +982,7 @@
 						this.fireEvent("beforeRefreshDom", this, arg);
 					}
 					if (arg.processDefault) {
-						if (!(dorado.Browser.msie && dorado.Browser.version < 7 && dom.offsetWidth > 10000)) {						
-							this.refreshDom(dom);
-						}
+						this.refreshDom(dom);
 						this.fireEvent("onRefreshDom", this, arg);
 					}
 					this._skipResize = false;
