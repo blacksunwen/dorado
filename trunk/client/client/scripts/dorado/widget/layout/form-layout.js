@@ -436,7 +436,7 @@
 			
 			var table = this.getDom(), padding = parseInt(this._padding) || 0, colPadding = this._colPadding || 0;
 			var containerWidth = (table.parentNode) ? (jQuery(table.parentNode).width() - padding * 2) : 0;
-			if (!(containerWidth >= 0)) containerWidth = 0;
+			if (!(containerWidth >= 0) || containerWidth > 10000) containerWidth = 0;
 			
 			var adjust = 0;
 			// if (dorado.Browser.webkit) adjust = padding * 2; 较新版的Chrome下似乎不用这么干了

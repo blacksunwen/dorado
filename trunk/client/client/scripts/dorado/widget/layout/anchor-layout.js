@@ -265,8 +265,11 @@
 			
 			var padding = (parseInt(this._padding) || 0);
 			var regionPadding = (parseInt(this._regionPadding) || 0) + (parseInt(constraint.padding) || 0);
-			var clientWidth = containerDom.clientWidth, realContainerWidth = clientWidth - 	padding * 2;
-			var clientHeight = containerDom.clientHeight, realContainerHeight = clientHeight - padding * 2;
+			var clientWidth = containerDom.clientWidth, clientHeight = containerDom.clientHeight;
+			if (clientWidth > 10000) clientWidth = 0;
+			if (clientHeight > 10000) clientHeight = 0;
+			
+			var realContainerWidth = clientWidth - 	padding * 2, realContainerHeight = clientHeight - padding * 2;
 			
 			if (constraint.anchorLeft == "previous" && constraint.left == null) constraint.left = 0;
 			if (constraint.left != null && constraint.anchorLeft != "none") {

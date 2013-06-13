@@ -134,8 +134,12 @@
 			var padding = parseInt(this._padding) || 0, regionPadding = this._regionPadding || 0;
 			table.style.margin = padding + "px";
 			
-			var realContainerWidth = parentDom.clientWidth - padding * 2;
-			var realContainerHeight = parentDom.clientHeight - padding * 2;
+			var clientWidth = containerDom.clientWidth, clientHeight = containerDom.clientHeight;
+			if (clientWidth > 10000) clientWidth = 0;
+			if (clientHeight > 10000) clientHeight = 0;
+			
+			var realContainerWidth = clientWidth - padding * 2;
+			var realContainerHeight = clientHeight - padding * 2;
 			if (realContainerWidth < 0) realContainerWidth = 0;
 			if (realContainerHeight < 0) realContainerHeight = 0;
 			
@@ -358,8 +362,12 @@
 			var padding = parseInt(this._padding) || 0, regionPadding = this._regionPadding || 0;
 			table.style.margin = padding + "px";
 			
-			var realContainerWidth = parentDom.clientWidth - padding * 2;
-			var realContainerHeight = parentDom.clientHeight - padding * 2;
+			var clientWidth = containerDom.clientWidth, clientHeight = containerDom.clientHeight;
+			if (clientWidth > 10000) clientWidth = 0;
+			if (clientHeight > 10000) clientHeight = 0;
+			
+			var realContainerWidth = clientWidth - padding * 2;
+			var realContainerHeight = clientHeight - padding * 2;
 			if (realContainerWidth < 0) realContainerWidth = 0;
 			if (realContainerHeight < 0) realContainerHeight = 0;
 			
