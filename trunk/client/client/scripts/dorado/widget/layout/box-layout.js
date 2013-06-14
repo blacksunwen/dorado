@@ -134,6 +134,7 @@
 			var padding = parseInt(this._padding) || 0, regionPadding = this._regionPadding || 0;
 			table.style.margin = padding + "px";
 			
+			var containerDom = dom.parentNode;
 			var clientWidth = containerDom.clientWidth, clientHeight = containerDom.clientHeight;
 			if (clientWidth > 10000) clientWidth = 0;
 			if (clientHeight > 10000) clientHeight = 0;
@@ -362,6 +363,7 @@
 			var padding = parseInt(this._padding) || 0, regionPadding = this._regionPadding || 0;
 			table.style.margin = padding + "px";
 			
+			var containerDom = dom.parentNode;
 			var clientWidth = containerDom.clientWidth, clientHeight = containerDom.clientHeight;
 			if (clientWidth > 10000) clientWidth = 0;
 			if (clientHeight > 10000) clientHeight = 0;
