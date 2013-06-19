@@ -777,7 +777,7 @@
 		
 		initEditorConfig: function(config) {
 			if (this._trigger !== undefined) config.trigger = this._trigger;
-			if (!this._editable) config.editable = false;
+			if (this._editable !== undefined) config.editable = this._editable;
 			config.readOnly = this._readOnly || this._realReadOnly;
 			if (this._dataSet && this._property) {
 				config.dataSet = this._dataSet;
