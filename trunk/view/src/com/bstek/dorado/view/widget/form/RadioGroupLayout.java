@@ -17,5 +17,5 @@ package com.bstek.dorado.view.widget.form;
  * @since 2009-12-16
  */
 public enum RadioGroupLayout {
-	vertical, flow
+	vertical, flow, grid
 }

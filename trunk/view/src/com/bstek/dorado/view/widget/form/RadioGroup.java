@@ -38,7 +38,8 @@ public class RadioGroup extends AbstractDataEditor {
 	private Object value;
 	private RadioGroupLayout layout = RadioGroupLayout.flow;
 	private List<RadioButton> radioButtons = new ArrayList<RadioButton>();
-
+	private int columnCount = 3; 
+	
 	@XmlProperty
 	@ClientProperty
 	public Object getValue() {
@@ -67,4 +68,14 @@ public class RadioGroup extends AbstractDataEditor {
 	public List<RadioButton> getRadioButtons() {
 		return radioButtons;
 	}
+
+	@ClientProperty( escapeValue = "3" )
+	public int getColumnCount() {
+		return columnCount;
+	}
+
+	public void setColumnCount(int columnCount) {
+		this.columnCount = columnCount;
+	}
+		
 }
