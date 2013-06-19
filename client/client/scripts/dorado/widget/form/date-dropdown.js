@@ -120,7 +120,7 @@
 		EVENTS: /** @scope dorado.widget.DatePicker.prototype */ {
 			/**
 			 * 当用户点击日期表格上的日期时触发此事件。
-			 * 注意：也就是说onPick无法捕获点击确定按钮时的操作。
+			 * 注意：也就是说onPick无法捕获点击确定按钮时的操作，也无法捕获点击清除按钮时的操作。
 			 * @param {Object} self 事件的发起者，即组件本身。
 			 * @param {Object} arg 事件参数。
 			 * @param {Object} arg.date 用户选择的日期。
@@ -128,6 +128,15 @@
 			 * @event
 			 */
 			onPick: {},
+
+			/**
+			 * 当用户点击Clear按钮的时候触发的事件。
+			 * @param {Object} self 事件的发起者，即组件本身。
+			 * @param {Object} arg 事件参数。
+			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+			 * @event
+			 */
+			onClear: {},
 
 			/**
 			 * 当用户点击确定按钮时触发此事件。
@@ -608,9 +617,9 @@
 					caption: $resource("dorado.baseWidget.DatePickerToday"),
 					listener: {
 						onClick: function() {
-                            var now = new Date();
+                            var now = new Date(), oldDate = picker._date;
                             picker.set("date", now);
-                            if (now.getFullYear() === picker._date.getFullYear() && now.getMonth() === picker._date.getMonth()) {
+                            if (now.getFullYear() === oldDate.getFullYear() && now.getMonth() === oldDate.getMonth()) {
                                 picker.fireEvent("onPick", picker, {
                                     date: new Date(picker._date.getTime())
                                 });
@@ -627,9 +636,7 @@
 					caption: $resource("dorado.baseWidget.DatePickerClear"),
 					listener: {
 						onClick: function() {
-							picker.fireEvent("onPick", picker, {
-                                date: null
-                            });
+							picker.fireEvent("onClear", picker, {});
 						}
 					}
 				});
@@ -944,6 +951,9 @@
 					onPick: function(picker, value) {
 						if (!dropDown._showTimeSpinner)
 							dropDown.close(value.date);
+					},
+					onClear: function(picker) {
+						dropDown.close(null);
 					},
 					onConfirm: function(picker, value) {
 						dropDown.close(value.date);

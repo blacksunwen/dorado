@@ -831,7 +831,7 @@
 		slotConfigTemplate: {
 			year: {
 				name: "year",
-				range: [1, 9999],
+				range: [0, 9999],
 				defaultValue: now.getFullYear()
 			},
 			month: {
@@ -1008,7 +1008,7 @@
 					return new Date(year, month, date, hours, minutes, seconds);
 				},
 				setter: function(d) {
-					var year = 0, month = 1, date = 1, hours = 0, minutes = 1, seconds = 1;
+					var year = 0, month = 1, date = 1, hours = 0, minutes = 0, seconds = 0;
 					if (d) {
 						year = d.getFullYear();
 						month = d.getMonth() + 1;
