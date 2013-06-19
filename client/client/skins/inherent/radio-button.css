@@ -14,10 +14,12 @@
 	overflow: hidden;
 	cursor: default;
 	height: 20px;
+    white-space: nowrap;
 }
 
 .i-radio .icon{
 	float: left;
+    *float: none;
 	display: inline-block;
 	width: 16px;
 	height: 20px;
@@ -27,11 +29,20 @@
 	line-height: 20px;
 	vertical-align: middle;
 	margin-right: 8px;
-	white-space: nowrap;
 }
 
 .i-radiogroup{
 	overflow: visible;
+    *zoom: 1;
+}
+
+.i-radiogroup:before, .i-radiogroup:after {
+    content: "";
+    display: table;
+}
+
+.i-radiogroup:after {
+    clear: both;
 }
 
 .i-radiogroup-flow .i-radio{
