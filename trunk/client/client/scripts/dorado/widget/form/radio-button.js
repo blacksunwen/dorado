@@ -140,8 +140,9 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 		/**
 		 * 单选框的排列方式。目前具有以下几种取值:
 		 * <ul>
-		 * <li>vertical - 垂直布局。每个单选框各占一行。</li>
-		 * <li>flow - 流式布局。</li>
+		 *  <li>vertical - 垂直布局。每个单选框各占一行。</li>
+		 *  <li>flow - 流式布局。</li>
+		 *  <li>grid - 类表格布局，会从左到右依次排列，根据columnCount属性决定有多少行。</li>
 		 * </ul>
 		 * 默认的布局方式为vertical。
 		 * @type String
@@ -150,6 +151,16 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 		 */
 		layout: /** @scope dorado.widget.RadioGroup.prototype */ {
 			defaultValue: "flow"
+		},
+
+		/**
+		 * RadioGroup展现的列数，此属性只有当layout属性为grid的时候生效，默认值为3。
+		 * @type int
+		 * @default 3
+		 * @attribute
+		 */
+		columnCount: {
+			defaultValue: 3
 		},
 		
 		/**
@@ -228,7 +239,12 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 		}
 		radioGroup._value = value;
 	},
-	
+
+	/**
+	 * 为RadioGroup添加RadioButton。
+	 * @param {Object|dorado.widget.RadioButton} radioButton 要添加的RadioButton。
+	 * @param {int} [index] 添加的RadioButton的index。
+	 */
 	addRadioButton: function(radioButton, index) {
 		var radioGroup = this, radioButtons = radioGroup._radioButtons, dom = radioGroup._dom, refDom;
 		if (!radioButtons) {
@@ -256,7 +272,11 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 		}
 		radioGroup.registerInnerControl(radioButton);
 	},
-	
+
+	/**
+	 * 删除指定的RadioButton。
+	 * @param {int|dorado.widget.RadioButton} radioButton 可以是RadioButton所在的索引，也可以是RadioButton。
+	 */
 	removeRadioButton: function(radioButton) {
 		var radioGroup = this, radioButtons = radioGroup._radioButtons, index;
 		if (!radioButtons) return;
@@ -277,7 +297,10 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 			}
 		}
 	},
-	
+
+	/**
+	 * 清空RadioButton。
+	 */
 	clearRadioButtons: function() {
 		var radioGroup = this, radioButtons = radioGroup._radioButtons || [], radioButton;
 		for (var i = 0; i < radioButtons.length; i++) {
@@ -391,9 +414,34 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 			group.setDirty(dirty);
 		}
 		
-		if (layout == "flow") {
+		if (layout == "flow" || layout == "grid") {
 			$fly(dom).addClass("i-radiogroup-flow " + group._className + "-flow");
+		} else {
+			$fly(dom).removeClass("i-radiogroup-flow " + group._className + "-flow");
 		}
+	},
+
+	doOnResize: function() {
+		var group = this, radioButtons = group._radioButtons, layout = group._layout, columnCount = group._columnCount || 3;
+		if (radioButtons) {
+			if (layout == "grid") {
+				var width = group.getRealWidth(), averageWidth = Math.floor(width / columnCount);
+				for (var i = 0, j = radioButtons.length; i < j; i++) {
+					var radioButton = radioButtons[i];
+					radioButton._width = averageWidth;
+					radioButton.resetDimension();
+				}
+			} else {
+				for (var i = 0, j = radioButtons.length; i < j; i++) {
+					var radioButton = radioButtons[i];
+					radioButton._width = "auto";
+					radioButton.resetDimension();
+				}
+			}
+		}
+
+
+		$invokeSuper.call(this, arguments);
 	},
 	
 	doOnKeyDown: function(event) {

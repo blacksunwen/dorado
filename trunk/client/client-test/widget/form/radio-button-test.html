@@ -4,20 +4,10 @@
 		<title>Radio Button Test</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 		<script type="text/javascript" src="../../include-all.js"></script>
-        <style type="text/css">
-            .test {
-                height: 100px;
-            }
-            .test .icon {
-                height: 100px;
-            }
-            .test .text {
-                line-height: 100px;
-            }
-        </style>
+
 		<script type="text/javascript">
 			
-			var view = new dorado.widget.View({});
+			var view = new dorado.widget.View({ layout: "Native" });
 			
 			var panel = new dorado.widget.Panel({
 				layout: new dorado.widget.layout.DockLayout(),
@@ -42,7 +32,8 @@
 			
 			var radioGroup = new dorado.widget.RadioGroup({
 				id: "rg1",
-				layout: "flow",
+				layout: "grid",
+                width: 800,
 				radioButtons: [radioButton1, radioButton2, radioButton3],
 				value: 'test1',
                 readOnly: true,
@@ -72,7 +63,8 @@
 				caption: "Set FlowLayout",
 				listener: {
 					onClick: function() {
-						radioGroup.set("layout", radioGroup._flowLayout ? "flow" : "vertical");
+                        debugger;
+						radioGroup.set("layout", radioGroup._layout == "vertical" ? "flow" : "vertical");
 					}
 				},
 				layoutConstraint: "left"
@@ -137,7 +129,42 @@
 			});
 			view.addChild(rg2);
 			
-			
+
+            var rg3 = new dorado.widget.RadioGroup({
+                id: "rg3",
+                width: "302",
+                layout: "grid",
+                radioButtons: [{
+                    value: 0,
+                    text: "FemaleFemaleFemaleFemale"
+                }, {
+                    value: 1,
+                    text: "Male"
+                }, {
+                    value: 2,
+                    text: "Female"
+                }, {
+                    value: 3,
+                    text: "Male"
+                }, {
+                    value: 4,
+                    text: "Female"
+                }, {
+                    value: 5,
+                    text: "Male"
+                }, {
+                    value: 6,
+                    text: "MaleMaleMaleMaleMaleMale"
+                }],
+                value: 0,
+                listener: {
+                    onValueChange: function(radioGroup) {
+                        //alert(radioGroup.get("value"));
+                    }
+                }
+            });
+            view.addChild(rg3);
+
 			$(document).ready(function() {
 				view.render(document.body);
 			});
@@ -148,5 +175,28 @@
             }
         </style>
 	</head>
-	<body></body>
+	<body>
+        <style type="text/css">
+            .test {
+                height: 100px;
+            }
+            .test .icon {
+                height: 100px;
+            }
+            .test .text {
+                line-height: 100px;
+            }
+
+            .i-radio {
+                white-space: nowrap;
+            }
+
+                /* IE 6/7 */
+            .i-radiogroup { *zoom: 1; }
+
+            .i-radiogroup:before, .i-radiogroup:after { content: ""; display: table; }
+
+            .i-radiogroup:after { clear: both; }
+        </style>
+	</body>
 </html>
