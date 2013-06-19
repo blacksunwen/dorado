@@ -399,7 +399,7 @@
 			
 			var realFilterValue;
 			if (filterValue != arg.filterValue) {
-				realFilterValue != arg.filterValue
+				realFilterValue = arg.filterValue
 			} else if (filterValue) {
 				realFilterValue = filterValue.toLowerCase();
 			}
