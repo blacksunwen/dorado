@@ -947,40 +947,41 @@
 					var retval = superFire(self, arg);
 					if (!self.fixed && grid._rowSelectionProperty && !grid._processingSelectionChange) {
 						grid._processingSelectionChange = true;
-						var property = grid._rowSelectionProperty, removed = arg.removed, added = arg.added;
-						var selectionMode = grid._selectionMode;
-						switch (selectionMode) {
-							case "singleRow":{
-								removed = self.get("selection");
-								if (removed) removed.set(property, false);
-								if (added) added.set(property, true);
-								break;
-							}
-							case "multiRows":{
-								if (removed instanceof Array && removed.length == 0) removed = null;
-								if (added instanceof Array && added.length == 0) added = null;
-								if (removed == added) {
-									grid._processingSelectionChange = false;
-									return;
+						try {
+							var property = grid._rowSelectionProperty, removed = arg.removed, added = arg.added;
+							var selectionMode = grid._selectionMode;
+							switch (selectionMode) {
+								case "singleRow":{
+									removed = self.get("selection");
+									if (removed) removed.set(property, false);
+									if (added) added.set(property, true);
+									break;
 								}
-								
-								if (removed) {
-									if (!(removed instanceof Array)) {
-										removed = [removed];
+								case "multiRows":{
+									if (removed instanceof Array && removed.length == 0) removed = null;
+									if (added instanceof Array && added.length == 0) added = null;
+									if (removed == added) return;
+									
+									if (removed) {
+										if (!(removed instanceof Array)) {
+											removed = [removed];
+										}
+										for (var i = 0; i < removed.length; i++) {
+											removed[i].set(property, false);
+										}
 									}
-									for (var i = 0; i < removed.length; i++) {
-										removed[i].set(property, false);
+									if (added) {
+										for (var i = 0; i < added.length; i++) {
+											added[i].set(property, true);
+										}
 									}
+									break;
 								}
-								if (added) {
-									for (var i = 0; i < added.length; i++) {
-										added[i].set(property, true);
-									}
-								}
-								break;
 							}
 						}
-						grid._processingSelectionChange = false;
+						finally {
+							grid._processingSelectionChange = false;
+						}
 					}
 					return retval;
 				}
