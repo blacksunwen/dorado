@@ -414,11 +414,11 @@
 					var selection = this._selectionCache || this.get("selection");
 					switch (this._selectionMode) {
 						case "singleRow":{
-							$row.toggleClass("selected-row", selection == item);
+							$row.toggleClass("selected-row", (selection == item) && this._highlightSelectedRow);
 							break;
 						}
 						case "multiRows":{
-							$row.toggleClass("selected-row", !!(selection && selection.indexOf(item) >= 0));
+							$row.toggleClass("selected-row", !!(selection && selection.indexOf(item) >= 0) && this._highlightSelectedRow);
 							break;
 						}
 					}
