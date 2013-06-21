@@ -959,7 +959,10 @@
 							case "multiRows":{
 								if (removed instanceof Array && removed.length == 0) removed = null;
 								if (added instanceof Array && added.length == 0) added = null;
-								if (removed == added) return;
+								if (removed == added) {
+									grid._processingSelectionChange = false;
+									return;
+								}
 								
 								if (removed) {
 									if (!(removed instanceof Array)) {
