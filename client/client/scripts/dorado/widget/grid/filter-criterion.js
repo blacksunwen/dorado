@@ -258,9 +258,11 @@
 			var text = "", pd = column._propertyDef, dataType = column.get("dataType");		
 			var defaultOperator = dorado.widget.grid.DataColumn.getDefaultOperator(column);	
 			for (var i = 0; i < criterions.length; i++) {
+				var criterion = criterions[i], operator = criterion.operator;
+				if (!criterion.value) continue;
+				
 				if (text != "") text += ", ";
 				
-				var criterion = criterions[i], operator = criterion.operator;
 				if (operator && operator != defaultOperator && operator.indexOf("like") < 0) {
 					text += operator;
 				}
