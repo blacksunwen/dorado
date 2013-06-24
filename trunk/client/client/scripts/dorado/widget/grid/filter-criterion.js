@@ -690,6 +690,8 @@
 				} else if (dtCode == dorado.DataType.DATETIME) {
 					trigger = "defaultDateTimeDropDown";
 				}
+			} else if (pd && pd._mapping) {
+				mapping = pd._mapping;
 			}
 			
 			valueEditor.set({
