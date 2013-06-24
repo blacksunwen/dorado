@@ -499,6 +499,7 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 		if (boxVisible) {
 			$DomUtils.dockAround(boxDom, editorDom, {
 				align: align,
+				offsetLeft: widthOverflow,
 				vAlign: vAlign,
 				autoAdjustPosition: false
 			});
