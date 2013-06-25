@@ -345,7 +345,7 @@ dorado.util.TaskGroupPanel = $extend(dorado.RenderableElement, { /** @scope dora
 		} else {
 			$fly(panel._dom).css("display", "").css("visibility", "");
 		}
-		if (taskGroupConfig.modal) {
+		if (panel.tasks.size == 0 && taskGroupConfig.modal) {
 			dorado.ModalManager.show(panel._dom);
 		}
 		$fly(panel._dom).bringToFront();
