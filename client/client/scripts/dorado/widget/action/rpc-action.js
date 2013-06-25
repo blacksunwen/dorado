@@ -595,7 +595,7 @@
 						errorMessage += $resource("dorado.baseWidget.SubmitValidationSummary", validateContext.error.length, validateContext.warn.length);
 					}
 					throw new dorado.widget.UpdateAction.ValidateException(errorMessage, validateContext);
-				} else if(validateContext.result == "executing") {
+				} else if(validateContext.executing.length > 0) {
 					throw new dorado.ResourceException("dorado.baseWidget.SubmitValidatingData", validateContext.executing.length);
 				}
 			}
