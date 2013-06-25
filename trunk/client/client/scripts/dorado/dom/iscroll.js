@@ -151,6 +151,18 @@
 		// User defined options
 		for (i in options) scroll.options[i] = options[i];
 
+		if (options.scrollSize) {
+			scroll.scrollSize = options.scrollSize;
+		}
+
+		if (options.viewportSize) {
+			scroll.viewportSize = options.viewportSize;
+		}
+
+		if (options.resumeHelper) {
+			scroll.resumeHelper = options.resumeHelper;
+		}
+
 		// Set starting position
 		scroll.x = scroll.options.x;
 		scroll.y = scroll.options.y;
@@ -174,7 +186,8 @@
 
 		if (scroll.options.useTransform)
 			styles['transform'] = trnOpen + scroll.x + 'px,' + scroll.y + 'px' + trnClose;
-		else
+		else if (scroll.options.notMoveElement) {
+		} else
 			merge(styles, { position: "absolute", top: scroll.y, left: scroll.x });
 
 		if (scroll.options.useTransition) scroll.options.fixedScrollbar = true;
@@ -371,6 +384,9 @@
 
 			if (this.options.useTransform) {
 				this.updateChildrenStyle('transform', trnOpen + x + 'px,' + y + 'px' + trnClose);
+			} else if (this.options.notMoveElement) {
+				x = mround(x);
+				y = mround(y);
 			} else {
 				x = mround(x);
 				y = mround(y);
@@ -385,6 +401,12 @@
 
 			this._refreshScrollbarDom('hori');
 			this._refreshScrollbarDom('vert');
+
+			if (this.options.notMoveElement && this.vertBar.wrapper) {
+				this.vertBar.wrapper.style["height"] = this.element.clientHeight + "px";
+				this.vertBar.wrapper.style["top"] = this.element.scrollTop + "px";
+				this.vertBar.wrapper.style["bottom"] = "";
+			}
 		},
 
 		_start: function (event) {
@@ -419,6 +441,13 @@
 					y = matrix[5] * 1;
 					if (isNaN(x)) x = 0;
 					if (isNaN(y)) y = 0;
+				} else if (scroll.options.notMoveElement) {
+					if (scroll.resumeHelper) {
+						var pos = scroll.resumeHelper();
+						//console.log("x:" + pos.x + "\ty:" + pos.y);
+						x = pos.x;
+						y = pos.y;
+					}
 				} else {
 					x = getComputedStyle(firstChild, null).left.replace(/[^0-9-]/g, '') * 1;
 					y = getComputedStyle(firstChild, null).top.replace(/[^0-9-]/g, '') * 1;
@@ -773,6 +802,10 @@
 			if (scroll.options.onDestroy) scroll.options.onDestroy.call(scroll);
 		},
 
+		viewportSize: function(dir) {
+			return (dir == "h" ? this.element.clientWidth : this.element.clientHeight) || 1;
+		},
+
 		scrollSize: function(dir) {
 			var cache = this.getChildrenTransform();
 			this.updateChildrenStyle('transform', '');
@@ -790,8 +823,8 @@
 		refresh: function () {
 			var scroll = this, offset;
 
-			scroll.elementWidth = scroll.element.clientWidth || 1;
-			scroll.elementHeight = scroll.element.clientHeight || 1;
+			scroll.elementWidth = scroll.viewportSize("h");
+			scroll.elementHeight = scroll.viewportSize("v");
 
 			scroll.minScrollY = -scroll.options.topOffset || 0;
 			scroll.scrollTargetWidth = mround(scroll.scrollSize("h"));
