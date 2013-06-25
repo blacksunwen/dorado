@@ -338,7 +338,10 @@
 				case "pageSize":
 					item = new PageSizeControl({
 						onAction: function(self, arg) {
-							if (arg.pageSize < 1) arg.pageSize = 10;
+							if (!arg.pageSize || arg.pageSize < 1) {
+								self._pageSize = 10;
+								arg.pageSize = 10;
+							}
 							if (!fireOnActionEvent.call(pilot, itemCode.code, self)) return;
 							
 							item.set("disabled", true);
@@ -356,6 +359,8 @@
 									pilot._dataSet.set("pageSize", arg.pageSize);
 									pilot._dataSet.flushAsync();
 								}
+							} else {
+								item.set("disabled", false);
 							}
 						}
 					});
