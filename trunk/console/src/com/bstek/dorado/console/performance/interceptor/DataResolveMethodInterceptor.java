@@ -85,7 +85,7 @@ public class DataResolveMethodInterceptor extends
 					buffer.append(",");
 				}
 				buffer.append(key).append(" = ");
-				if (EntityUtils.isSimpleType(object.getClass())) {
+				if (object == null || EntityUtils.isSimpleType(object.getClass())) {
 					buffer.append(object);
 				} else if (object instanceof Collection) {
 					Collection list = (Collection) object;
@@ -96,7 +96,7 @@ public class DataResolveMethodInterceptor extends
 				}
 			}
 			executeLogOutputter.outStartLog(TYPE, resolverName,
-					String.format("dataitems=[ %s ],parameter={ %s }", buffer,
+					String.format("dataitems=[ %s ], parameter={ %s }", buffer,
 							obj));
 		}
 		Object object = methodinvocation.proceed();
