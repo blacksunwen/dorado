@@ -12,12 +12,12 @@
 
 
 		nextFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame
-			|| window.oRequestAnimationFrame || window.msRequestAnimationFrame || function (callback) { return setTimeout(callback, 1); },
+			            || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function (callback) { return setTimeout(callback, 1); },
 
 		cancelFrame = window.cancelRequestAnimationFrame || window.webkitCancelAnimationFrame || window.webkitCancelRequestAnimationFrame
-			|| window.mozCancelRequestAnimationFrame || window.oCancelRequestAnimationFrame || window.msCancelRequestAnimationFrame || clearTimeout,
+			              || window.mozCancelRequestAnimationFrame || window.oCancelRequestAnimationFrame || window.msCancelRequestAnimationFrame || clearTimeout,
 
-		// Events
+	// Events
 		START_EV = hasTouch ? 'touchstart' : 'mousedown', MOVE_EV = hasTouch ? 'touchmove' : 'mousemove', END_EV = hasTouch ? 'touchend' : 'mouseup',
 		RESIZE_EV = 'onorientationchange' in window ? 'orientationchange' : 'resize', CANCEL_EV = hasTouch ? 'touchcancel' : 'mouseup', WHEEL_EV = vendor == 'Moz' ? 'DOMMouseScroll' : 'mousewheel',
 
@@ -127,7 +127,7 @@
 
 			// Scrollbar
 			showHoriScrollbar: true,
-			showVertScrollbar: true,			
+			showVertScrollbar: true,
 			fixedScrollbar: isAndroid,
 			hideScrollbar: isIDevice,
 			fadeScrollbar: isIDevice && has3d,
@@ -231,7 +231,7 @@
 				if (child.nodeType == 3 || child.className.indexOf("ignored") != -1 || child.className.indexOf("scroll-bar") != -1) continue;
 				result.push({
 					element: child,
-	                value: child.style[vendor + "Transform"] || child.style["transform"]
+					value: child.style[vendor + "Transform"] || child.style["transform"]
 				});
 			}
 
@@ -242,6 +242,9 @@
 			var scroll = this;
 			switch (event.type) {
 				case START_EV:
+					if (scroll.checkInputs(event.target.tagName)) {
+						return;
+					}
 					if (!hasTouch && event.button !== 0) return;
 					scroll._start(event);
 					break;
@@ -264,6 +267,14 @@
 				case transitionEndEvent:
 					scroll._transitionEnd(event);
 					break;
+			}
+		},
+
+		checkInputs: function(tagName) {
+			if (tagName === 'INPUT' || tagName === 'TEXTFIELD' || tagName === 'SELECT') {
+				return true;
+			} else {
+				return false;
 			}
 		},
 
@@ -411,7 +422,9 @@
 
 		_start: function (event) {
 			var scroll = this, point = hasTouch ? event.touches[0] : event, matrix, x, y;
-
+			if (point.target.nodeName.toLowerCase() == "input") {
+				return;
+			}
 			if (!scroll.enabled) return;
 
 			if (scroll.options.onBeforeScrollStart) scroll.options.onBeforeScrollStart.call(scroll, event);
@@ -596,9 +609,9 @@
 			if (resetX == scroll.x && resetY == scroll.y) {
 
 				//if (scroll.moved) {//注释此处是为了解决在momentum过程中按下页面不再滚动，然后onScrollEnd不再触发的bug。
-					scroll.moved = false;
-					if (scroll.options.onScrollEnd)
-						scroll.options.onScrollEnd.call(scroll);// Execute custom code on scroll end
+				scroll.moved = false;
+				if (scroll.options.onScrollEnd)
+					scroll.options.onScrollEnd.call(scroll);// Execute custom code on scroll end
 				//}
 
 				if (scroll.showHoriScrollbar && scroll.options.hideScrollbar) {
@@ -606,7 +619,7 @@
 						setStyle(scroll.horiBar.wrapper, 'transition-delay', '300ms');
 					scroll.horiBar.wrapper.style.opacity = '0';
 				}
-				
+
 				if (scroll.showVertScrollbar && scroll.options.hideScrollbar) {
 					if (vendor == 'webkit')
 						setStyle(scroll.vertBar.wrapper, 'transition-delay', '300ms');
