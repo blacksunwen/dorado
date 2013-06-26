@@ -360,6 +360,9 @@
 					if (this._itemModel.criterions && this._filterMode == "clientSide") {
 						this.get("filterEntity").clearData();
 					}
+					if (this._itemModel.footerEntity && this._itemModel.footerEntity.get("$expired") === undefined) {
+						this.get("footerEntity").set("$expired", true);
+					}
 					this._itemModel.setItems(entityList);
 					if (!this._rowSelectionProperty) {
 						this.set("selection", null);
