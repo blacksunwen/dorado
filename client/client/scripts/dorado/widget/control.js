@@ -573,7 +573,7 @@
 				}
 				
 				if (!this._rendered) return;
-				if (!this._duringRefreshDom && (this._visible || attr == "visible") && this._ignoreRefresh < 1 && def && !def.skipRefresh) {
+				if (!this._duringRefreshDom && this._ignoreRefresh < 1 && def && !def.skipRefresh) {
 					this.refresh(true);
 				}
 			}
