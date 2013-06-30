@@ -572,6 +572,7 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 		selectedValue = eventArg.selectedValue;
 		entityForAssignment = entityForAssignment || selectedValue;
 		
+		var shouldPostEditor = true;
 		var targetEntity = (editor._entity || editor._cellEditor && editor._cellEditor.data);
 		if (this._assignmentMap && entityForAssignment && entityForAssignment instanceof Object && targetEntity && targetEntity instanceof Object) {
 			var assignmentMap = this._assignmentMap, maps = [];
@@ -616,6 +617,7 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 					for (var i = 0; i < maps.length; i++) {
 						if (maps[i].writeProperty == editor._property) {
 							shouldSetEditor = false;
+							shouldPostEditor = false;
 							break;
 						}
 					}
@@ -627,7 +629,7 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 				}
 				editor.set("value", selectedValue);
 			}
-		if (this._postValueOnSelect) editor.post();
+		if (shouldPostEditor && this._postValueOnSelect) editor.post();
 	}
 
 });
