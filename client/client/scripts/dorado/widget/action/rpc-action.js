@@ -635,11 +635,11 @@
 					}
 				}
 					
-				if ((data === null || data === undefined || !data.$isWrapper) && updateItem.dataSet && updateItem.dataPath) {
+				if (!data.$isWrapper && updateItem.dataSet) {
 					options.acceptAggregationDataType = true;
 					var dataType = updateItem.dataSet.getDataType(updateItem.dataPath, options);
 					if (dataType) {
-						if (dataType instanceof dorado.AggregationDataType && data && !(data instanceof Array)) {
+						if (dataType instanceof dorado.AggregationDataType && !data && !(data instanceof Array)) {
 							dataType = dataType.get("elementDataType");
 						}
 						data = {

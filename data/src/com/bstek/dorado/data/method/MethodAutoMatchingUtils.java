@@ -448,7 +448,7 @@ public abstract class MethodAutoMatchingUtils {
 	private static MethodDescriptor describMethodIfMatching(Method method,
 			String[] requiredParameterNames, String[] optionalParameterNames,
 			String[] extraParameterNames) throws SecurityException,
-			NoSuchMethodException { 
+			NoSuchMethodException {
 		String[] methodParameterNames = getParameterNames(method);
 		if (methodParameterNames.length > requiredParameterNames.length
 				+ optionalParameterNames.length) {
@@ -788,8 +788,7 @@ public abstract class MethodAutoMatchingUtils {
 	public static Type getTypeForMatching(Object object) {
 		if (object == null) {
 			return null;
-		} else if (object instanceof Collection<?>
-				&& object instanceof EntityCollection) {
+		} else if (object instanceof EntityCollection) {
 			AggregationDataType dataType = ((EntityCollection<?>) object)
 					.getDataType();
 			if (dataType != null) {
@@ -802,13 +801,13 @@ public abstract class MethodAutoMatchingUtils {
 					if (elementType != null
 							&& !Object.class.equals(elementType)) {
 						return new ParameterizedCollectionType(
-								(Class<Collection<?>>) object.getClass(),
-								elementType);
+								(Class<Collection<?>>) ProxyBeanUtils.getProxyTargetType(object
+										.getClass()), elementType);
 					}
 				}
 			}
 		}
-		return object.getClass();
+		return ProxyBeanUtils.getProxyTargetType(object.getClass());
 	}
 
 	@SuppressWarnings("unchecked")
