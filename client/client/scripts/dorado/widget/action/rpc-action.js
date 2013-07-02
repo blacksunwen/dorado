@@ -635,7 +635,7 @@
 					}
 				}
 					
-				if (!data.$isWrapper && updateItem.dataSet) {
+				if ((!data || data.$isWrapper) && updateItem.dataSet) {
 					options.acceptAggregationDataType = true;
 					var dataType = updateItem.dataSet.getDataType(updateItem.dataPath, options);
 					if (dataType) {
