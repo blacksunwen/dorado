@@ -860,7 +860,7 @@
 					dorado.MessageBox.confirm(confirmMessage, {
 						detailCallback: function(buttonId) {
 							if (buttonId == "yes") {
-								doUpdate.call(self, context, dataResolverArg);
+								return doUpdate.call(self, context, dataResolverArg);
 							}
 							else {
 								$callback(callback, false);
@@ -868,7 +868,7 @@
 						}
 					});
 				} else {
-					doUpdate.call(this, context, dataResolverArg);
+					return doUpdate.call(this, context, dataResolverArg);
 				}
 			} else {
 				if (!this._alwaysExecute && this._updateItems.length && !context.hasUpdateData) {
