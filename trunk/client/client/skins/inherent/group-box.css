@@ -32,6 +32,7 @@
     height: 20px;
     width: 17px;
     margin-right: 2px;
+    float: left;
 }
 
 .i-field-set .field-set-legend .caption {

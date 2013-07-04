@@ -127,8 +127,7 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 					panel.doSetCollapsed(value);
 				} else {
 					panel._collapsed = value;
-					if (panel._collapseable)
-						panel.setContentContainerVisible(!value);
+					panel.setContentContainerVisible(!value);
 				}
 			}
 		}
@@ -168,13 +167,15 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 	},
 	
 	setContentContainerVisible: function(collapsed) {
-		var panel = this, buttons = panel._buttons;
+		var panel = this, buttons = panel._buttons, doms = panel._doms;
 		if (buttons) {
 			for (var i = 0, j = buttons.length; i < j; i++) {
 				var button = buttons[i];
 				button.setActualVisible(collapsed);
 			}
 		}
+		if (doms && dorado.Browser.msie && dorado.Browser.version == 6)
+			$fly(doms.body).css("zoom", "1");
 		$invokeSuper.call(this, arguments);
 	},
 	
@@ -669,9 +670,9 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 			
 			if (panel._collapseable) {
 				panel._createCollapseButton();
-				if (panel._collapsed) {
-					$fly(doms.body).css("display", "none");
-				}
+			}
+			if (panel._collapsed) {
+				$fly(doms.body).css("display", "none");
 			}
 		}
 		
