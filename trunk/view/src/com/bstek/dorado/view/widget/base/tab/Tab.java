@@ -16,6 +16,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 
+import com.bstek.dorado.annotation.ClientEvent;
+import com.bstek.dorado.annotation.ClientEvents;
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.IdeProperty;
@@ -24,6 +26,7 @@ import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.common.Ignorable;
 import com.bstek.dorado.common.MetaDataSupport;
 import com.bstek.dorado.common.TagSupport;
+import com.bstek.dorado.common.event.ClientEventSupportedObject;
 import com.bstek.dorado.view.View;
 import com.bstek.dorado.view.ViewElement;
 import com.bstek.dorado.view.ViewElementUtils;
@@ -35,7 +38,8 @@ import com.bstek.dorado.view.widget.RenderableElement;
  */
 @XmlNode(isPublic = false)
 @ClientObject(prototype = "dorado.widget.tab.Tab", shortTypeName = "Tab")
-public class Tab implements RenderableElement, Ignorable, TagSupport,
+@ClientEvents({ @ClientEvent(name = "beforeClose"), @ClientEvent(name = "onClose") })
+public class Tab extends ClientEventSupportedObject implements RenderableElement, Ignorable, TagSupport,
 		MetaDataSupport, ViewElement {
 	private ViewElement parent;
 	private String name;
