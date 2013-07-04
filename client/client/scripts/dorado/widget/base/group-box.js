@@ -88,22 +88,23 @@ dorado.widget.FieldSet = $extend(dorado.widget.AbstractPanel, /** @scope dorado.
 
         if (fieldset._collapseable) {
             fieldset._createCollapseButton();
-            if (fieldset._collapsed) {
-                fieldset._children.each(function(child) {
-                    if (child instanceof dorado.widget.Control) {
-                        child.setActualVisible(false);
-                    }
-                });
-                var buttons = fieldset._buttons;
-                if (buttons) {
-                    for (var i = 0, j = buttons.length; i < j; i++) {
-                        var button = buttons[i];
-                        button.setActualVisible(false);
-                    }
-                }
-                $fly(doms.body).css("display", "none");
-            }
         }
+
+		if (fieldset._collapsed) {
+			fieldset._children.each(function(child) {
+				if (child instanceof dorado.widget.Control) {
+					child.setActualVisible(false);
+				}
+			});
+			var buttons = fieldset._buttons;
+			if (buttons) {
+				for (var i = 0, j = buttons.length; i < j; i++) {
+					var button = buttons[i];
+					button.setActualVisible(false);
+				}
+			}
+			$fly(doms.body).css("display", "none");
+		}
 
 		return dom;
 	},
@@ -123,8 +124,7 @@ dorado.widget.FieldSet = $extend(dorado.widget.AbstractPanel, /** @scope dorado.
 	refreshDom: function(dom) {
 		$invokeSuper.call(this, arguments);
 		var fieldset = this;
-        if (fieldset._collapseable)
-		    $fly(dom)[fieldset._collapsed ? "addClass" : "removeClass"]("i-field-set-collapsed " + fieldset._className + "-collapsed");
+	    $fly(dom)[fieldset._collapsed ? "addClass" : "removeClass"]("i-field-set-collapsed " + fieldset._className + "-collapsed");
 
 		$fly(fieldset._doms.caption).text(fieldset._caption);
 	},
@@ -135,7 +135,7 @@ dorado.widget.FieldSet = $extend(dorado.widget.AbstractPanel, /** @scope dorado.
 			if (collapsed == undefined) {
 				collapsed = fieldset._collapsed;
 			}
-			if (fieldset._collapseable && collapsed) {
+			if (collapsed) {
 				$fly(dom).height("auto");
 			} else {
                 if (collapsed === false && fieldset._heightBeforeCollapse) {
@@ -243,22 +243,23 @@ dorado.widget.GroupBox = $extend(dorado.widget.AbstractPanel, /** @scope dorado.
 
         if (groupBox._collapseable) {
             groupBox._createCollapseButton();
-            if (groupBox._collapsed) {
-                groupBox._children.each(function(child) {
-                    if (child instanceof dorado.widget.Control) {
-                        child.setActualVisible(false);
-                    }
-                });
-                var buttons = groupBox._buttons;
-                if (buttons) {
-                    for (var i = 0, j = buttons.length; i < j; i++) {
-                        var button = buttons[i];
-                        button.setActualVisible(false);
-                    }
-                }
-                //$fly(doms.body).css("display", "none");
-            }
         }
+
+		if (groupBox._collapsed) {
+			groupBox._children.each(function(child) {
+				if (child instanceof dorado.widget.Control) {
+					child.setActualVisible(false);
+				}
+			});
+			var buttons = groupBox._buttons;
+			if (buttons) {
+				for (var i = 0, j = buttons.length; i < j; i++) {
+					var button = buttons[i];
+					button.setActualVisible(false);
+				}
+			}
+			$fly(doms.body).css("display", "none");
+		}
 
 		return dom;
 	},
@@ -278,8 +279,7 @@ dorado.widget.GroupBox = $extend(dorado.widget.AbstractPanel, /** @scope dorado.
 
 	refreshDom: function(dom){
 		var groupBox = this;
-        if (groupBox._collapseable)
-		    $fly(dom)[groupBox._collapsed ? "addClass" : "removeClass"](groupBox._className + "-collapsed");
+	    $fly(dom)[groupBox._collapsed ? "addClass" : "removeClass"](groupBox._className + "-collapsed");
 		$fly(groupBox._doms.caption).text(groupBox._caption);
         $invokeSuper.call(this, arguments);
 	},
@@ -290,7 +290,7 @@ dorado.widget.GroupBox = $extend(dorado.widget.AbstractPanel, /** @scope dorado.
 			if (collapsed == undefined) {
 				collapsed = groupbox._collapsed;
 			}
-			if (groupbox._collapseable && collapsed) {
+			if (collapsed) {
 				$fly(dom).height("auto");
 			} else {
                 if (collapsed === false && groupbox._heightBeforeCollapse) {

@@ -64,7 +64,8 @@
             layoutConstraint: "top",
             caption: "测试测试",
             width: 500,
-            //collapsed: true,
+            collapseable: true,
+            collapsed: true,
             children: [new dorado.widget.Button({
                 caption: "测试子组件",
                 listener: {
@@ -96,8 +97,8 @@
             caption: "GroupBox",
             width: 300,
             height: 200,
-            collapseable: false,
-            collapsed: true,
+            collapseable: true,
+            collapsed: false,
             children: [grid1],
             layout: { $type: "Native" },
             buttons: [new dorado.widget.Button({
