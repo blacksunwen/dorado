@@ -103,7 +103,14 @@
                 onClick: function(){
                     tabbar1.addTab({
                         caption: "我觉得我会超过100px" + ++count,
-                        closeable: true
+                        closeable: true,
+                        onClose: function() {
+                            console.log("onClose");
+                        },
+                        beforeClose: function(self, arg) {
+                            console.log("beforeClose");
+                            arg.processDefault = Math.random() > 0.5;
+                        }
                     }, null, true);
                 }
             }
