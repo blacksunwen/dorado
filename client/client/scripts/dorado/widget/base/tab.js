@@ -22,9 +22,9 @@
      * @author Frank Zhang (mailto:frank.zhang@bstek.com)
      * @class TabBar、TabColumn中使用的标签页。
      * @shortTypeName Default
-     * @extends dorado.RenderableElement
+     * @extends dorado.RenderableElement, dorado.EventSupport
      */
-    dorado.widget.tab.Tab = $extend(dorado.RenderableElement, /** @scope dorado.widget.tab.Tab.prototype */ {
+    dorado.widget.tab.Tab = $extend([dorado.RenderableElement, dorado.EventSupport], /** @scope dorado.widget.tab.Tab.prototype */ {
         $className: "dorado.widget.tab.Tab",
 
         ATTRIBUTES: /** @scope dorado.widget.tab.Tab.prototype */ {
@@ -131,6 +131,28 @@
 		        skipRefresh : true
 	        }
         },
+
+	    EVENTS: /** @scope dorado.widget.tab.Tab.prototype */ {
+		    /**
+		     * 在Tab关闭之前触发。
+		     *
+		     * @param {Object} self 事件的发起者，即组件本身。
+		     * @param {Object} arg 事件参数。
+		     * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+		     * @event
+		     */
+		    beforeClose: {},
+
+		    /**
+		     * 在Tab关闭之后触发。
+		     *
+		     * @param {Object} self 事件的发起者，即组件本身。
+		     * @param {Object} arg 事件参数。
+		     * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+		     * @event
+		     */
+		    onClose: {}
+	    },
 
         constructor: function(config) {
             $invokeSuper.call(this, arguments);
@@ -243,10 +265,13 @@
          * 关闭并移除该Tab。
          */
         close: function() {
-            var tab = this, tabbar = tab._parent;
-            if (tabbar) {
-                tabbar.removeTab(tab);
-            }
+            var tab = this, tabbar = tab._parent, eventArg = {};
+	        if (tabbar) {
+		        tab.fireEvent("beforeClose", tab, eventArg);
+		        if (eventArg.processDefault === false) return;
+		        tabbar.removeTab(tab);
+		        tab.fireEvent("onClose", tab);
+	        }
         },
 
         /**
