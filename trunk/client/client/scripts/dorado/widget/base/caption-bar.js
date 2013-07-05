@@ -140,7 +140,7 @@ dorado.widget.CaptionBar = $extend(dorado.widget.Control, /** @scope dorado.widg
 	
 	/**
 	 * 取得工具栏上的按钮。
-	 * @param {String|int|dorado.widget.SimpleButton} button 要删除的按钮的索引、id或者按钮本身。
+	 * @param {String|int|dorado.widget.SimpleButton} button 要取得的按钮的索引、id或者按钮本身。
 	 */
 	getButton: function(button) {
 		var bar = this, buttons = bar._buttons;
