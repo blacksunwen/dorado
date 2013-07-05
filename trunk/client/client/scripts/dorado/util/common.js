@@ -120,8 +120,8 @@ dorado.util.Common = {
 					for (var i = n.length; i < nfs.length; i++) {
 						leadingZero += '0';
 					}
+					n = leadingZero + n;
 				}
-				n = leadingZero + n;
 			}
 			
 			var f, r = '', j = 0;
