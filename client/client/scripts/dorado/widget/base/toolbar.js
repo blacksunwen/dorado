@@ -546,6 +546,15 @@ dorado.widget.toolbar.Button = $extend(dorado.widget.Button, {
 		}
 	},
 
+	doGet: function(attr) {
+		var c = attr.charAt(0);
+		if ((c == '#' || c == '&') && this._menu) {
+			return this._menu.get(attr);
+		} else {
+			return $invokeSuper.call(this, [attr]);
+		}
+	}
+
 	doSet: function(attr, value, skipUnknownAttribute, lockWritingTimes) {
 		$invokeSuper.call(this, [attr, value, skipUnknownAttribute, lockWritingTimes]);
 
