@@ -423,6 +423,8 @@
 									section.visibility = 7;
 								} else if (condition == "#none") {
 									section.visibility = 8;
+								} else if (condition == "#visible") {
+									section.visibility = 9;
 								} else {
 									this._throw("Unknown token \"" + condition + "\".");
 								}
