@@ -553,7 +553,7 @@ dorado.widget.toolbar.Button = $extend(dorado.widget.Button, {
 		} else {
 			return $invokeSuper.call(this, [attr]);
 		}
-	}
+	},
 
 	doSet: function(attr, value, skipUnknownAttribute, lockWritingTimes) {
 		$invokeSuper.call(this, [attr, value, skipUnknownAttribute, lockWritingTimes]);
