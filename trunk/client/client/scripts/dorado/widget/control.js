@@ -1183,8 +1183,13 @@
 			dorado._LAST_FOCUS_CONTROL = control;
 			dorado.Toolkits.setDelayedAction(window, "$setFocusTimerId", function() {
 				if (dorado._LAST_FOCUS_CONTROL === control && dorado.widget.focusedControl.peek() !== self) {
-					control.doSetFocus();
-					dorado.widget.onControlGainedFocus(control);
+					try {
+						control.doSetFocus();
+						dorado.widget.onControlGainedFocus(control);
+					} 
+					catch (e) {
+						// do nothing
+					}
 				}
 				dorado._LAST_FOCUS_CONTROL = null;
 			}, 0);
