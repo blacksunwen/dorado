@@ -19,7 +19,6 @@ import org.apache.commons.jexl2.JexlContext;
 import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.config.definition.Definition;
-import com.bstek.dorado.core.Context;
 import com.bstek.dorado.core.el.ExpressionHandler;
 import com.bstek.dorado.core.io.Resource;
 import com.bstek.dorado.data.type.DataType;
@@ -31,6 +30,8 @@ import com.bstek.dorado.view.manager.ViewConfig;
 import com.bstek.dorado.view.output.OutputContext;
 import com.bstek.dorado.view.output.Outputter;
 import com.bstek.dorado.view.widget.ContainerOutputter;
+import com.bstek.dorado.web.DoradoContext;
+import com.bstek.dorado.web.DoradoContextUtils;
 
 /**
  * 视图对象的输出器。
@@ -80,12 +81,16 @@ public class ViewOutputter extends ContainerOutputter {
 			}
 		}
 
-		Context doradoContext = Context.getCurrent();
+		DoradoContext doradoContext = DoradoContext.getCurrent();
 
 		JexlContext jexlContext = null;
 		Definition resourceRelativeDefinition = null;
 		ViewConfig viewConfig = view.getViewConfig();
 		if (viewConfig != null) {
+			Map<String, Object> viewContext = DoradoContextUtils
+					.getViewContextByBindingObject(doradoContext, viewConfig);
+			DoradoContextUtils.pushNewViewContext(doradoContext, viewContext);
+
 			ViewConfigDefinition viewConfigDefinition = (ViewConfigDefinition) BeanExtender
 					.getExProperty(viewConfig, "viewConfigDefinition");
 			if (viewConfigDefinition != null) {
@@ -154,6 +159,10 @@ public class ViewOutputter extends ContainerOutputter {
 				jexlContext.set(
 						ViewConfigDefinition.RESOURCE_RELATIVE_DEFINITION,
 						resourceRelativeDefinition);
+			}
+
+			if (viewConfig != null) {
+				DoradoContextUtils.popViewContext(doradoContext);
 			}
 		}
 	}
