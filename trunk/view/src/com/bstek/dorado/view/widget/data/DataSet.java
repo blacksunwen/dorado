@@ -43,8 +43,8 @@ import com.bstek.dorado.view.widget.Component;
 		properties = @ClientProperty(propertyName = "data",
 				outputter = "spring:dorado.dataSetDataPropertyOutputter"))
 @ClientEvents({ @ClientEvent(name = "beforeLoadData"),
-		@ClientEvent(name = "onLoadData", deprecated = true),
-		@ClientEvent(name = "onDataLoad") })
+		@ClientEvent(name = "onLoadData"),
+		@ClientEvent(name = "onDataLoad", deprecated = true) })
 public class DataSet extends Component {
 	private DataType dataType;
 	private DataProvider dataProvider;
