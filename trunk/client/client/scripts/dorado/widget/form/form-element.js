@@ -867,6 +867,7 @@
 			
 			var dom = this._dom, editorEl = this._editorEl, labelEl = this._labelEl, hintEl = this._hintEl, editor = this.getEditor(true);
 			var domWidth = dom.offsetWidth || this._realWidth || 0, domHeight = dom.offsetHeight || this._realHeight || 0;
+
 			if (this._showLabel) {
 				labelEl.style.display = '';
 				labelEl.style.textAlign = this._labelAlign || "left";
