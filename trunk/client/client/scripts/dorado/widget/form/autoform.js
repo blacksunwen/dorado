@@ -465,10 +465,10 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 		configs = {};
 		if (this._cols) configs.cols = this._cols;
 		if (this._rowHeight) configs.rowHeight = this._rowHeight;
-		if (this._colPadding) configs.colPadding = this._colPadding;
-		if (this._rowPadding) configs.rowPadding = this._rowPadding;
+		if (this._colPadding  !== undefined) configs.colPadding = this._colPadding;
+		if (this._rowPadding  !== undefined) configs.rowPadding = this._rowPadding;
 		if (this._stretchWidth) configs.stretchWidth = this._stretchWidth;
-		if (this._padding) configs.padding = this._padding;
+		if (this._padding  !== undefined) configs.padding = this._padding;
 		layout.set(configs);
 	},
 	
