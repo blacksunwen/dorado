@@ -385,7 +385,7 @@
 					}
 				}
 				var w = this._dom.clientWidth - this._triggersWidth + 1;
-				this._textDom.style.width = (w > 0 ? w : 0) + "px";
+				if (w > 0) this._textDom.style.width = w + "px";
 			}
 		},
 		
