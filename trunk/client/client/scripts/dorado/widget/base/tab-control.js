@@ -181,10 +181,10 @@ dorado.widget.VerticalTabControl = $extend(dorado.widget.TabColumn, /** @scope d
     },
 
     constructor: function() {
-        $invokeSuper.call(this, arguments);
-
         this._cardBook = new dorado.widget.CardBook();
         this.registerInnerControl(this._cardBook);
+		
+        $invokeSuper.call(this, arguments);
     },
 
     doOnTabChange: function(eventArg) {
