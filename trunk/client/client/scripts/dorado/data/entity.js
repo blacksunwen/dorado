@@ -812,25 +812,37 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		_validateProperty: function(dataType, propertyDef, propertyInfo, value, preformAsyncValidator) {
 			var messages = [], property = propertyDef._name, validating, propertyDataType = propertyDef.get("dataType");
 			if (propertyDef._required && !dataType._validatorsDisabled) {
-				if (typeof value == "string") value = jQuery.trim(value);
-				var blank = false;				
-				if (value === undefined || value === null || value === "") {
-					if (propertyDataType && propertyDataType._code == dorado.DataType.STRING) {
-						blank = !value;
+				var hasRequiredValidator = false;
+				if (propertyDef._validators) {
+					for (var i = 0; i < propertyDef._validators.length; i++) {
+						if (propertyDef._validators[i] instanceof dorado.validator.RequiredValidator) {
+							hasRequiredValidator = true;
+							break;
+						}
 					}
-					else {
-						blank = true;
-					}
-				}
-				else if (value instanceof dorado.EntityList && propertyDataType instanceof dorado.AggregationDataType) {
-					blank = !value.entityCount;
 				}
 				
-				if (blank) {
-					messages.push({
-						state: "error",
-						text: $resource("dorado.data.ErrorContentRequired")
-					});
+				if (!hasRequiredValidator) {
+					if (typeof value == "string") value = jQuery.trim(value);
+					var blank = false;				
+					if (value === undefined || value === null || value === "") {
+						if (propertyDataType && propertyDataType._code == dorado.DataType.STRING) {
+							blank = !value;
+						}
+						else {
+							blank = true;
+						}
+					}
+					else if (value instanceof dorado.EntityList && propertyDataType instanceof dorado.AggregationDataType) {
+						blank = !value.entityCount;
+					}
+					
+					if (blank) {
+						messages.push({
+							state: "error",
+							text: $resource("dorado.data.ErrorContentRequired")
+						});
+					}
 				}
 			}
 
