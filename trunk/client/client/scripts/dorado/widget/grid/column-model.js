@@ -2511,7 +2511,7 @@
 				},
 				onKeyDown: function(textEditor, arg) {
 					if (arg.keyCode == 13) {
-						textEditor.post();
+						textEditor.post(true);
 					}
 				},
 				onTextEdit: function(textEditor) {
