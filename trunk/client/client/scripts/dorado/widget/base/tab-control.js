@@ -28,10 +28,10 @@ dorado.widget.TabControl = $extend(dorado.widget.TabBar, /** @scope dorado.widge
 	},
 	
 	constructor: function() {
+		$invokeSuper.call(this, arguments);
+
 		this._cardBook = new dorado.widget.CardBook();
 		this.registerInnerControl(this._cardBook);
-		
-		$invokeSuper.call(this, arguments);
 	},
 	
     doOnTabChange: function(eventArg) {
@@ -116,7 +116,7 @@ dorado.widget.TabControl = $extend(dorado.widget.TabBar, /** @scope dorado.widge
         if (currentTab) {
             card._currentControl = currentTab.getControl();
         }
-		//card.set("controls", controls);
+		card.set("controls", controls);
 		card.render(dom);
 
 		if (tabPlacement == "bottom") {
@@ -144,8 +144,6 @@ dorado.widget.TabControl = $extend(dorado.widget.TabBar, /** @scope dorado.widge
 			card._currentControl = card._controls.get(currentTabIndex);
 		}
 		card.refreshDom(cardDom);
-
-
 	},
 	
 	getFocusableSubControls: function() {
