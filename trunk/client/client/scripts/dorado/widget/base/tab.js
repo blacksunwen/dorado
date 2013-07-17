@@ -450,10 +450,17 @@
 			 */
 			control: {
 				setter: function(control) {
+					var oldValue = this._control;
 					if (control && control.constructor == Object.prototype.constructor) {
 						control = dorado.Toolkits.createInstance("widget", control);
 					}
 					this._control = control;
+					if (oldValue) {
+						var tabgroup = this._parent;
+						if (tabgroup && tabgroup._cardBook) {
+							tabgroup._cardBook.replaceControl(oldValue, control);
+						}
+					}
 				}
 			}
 		},

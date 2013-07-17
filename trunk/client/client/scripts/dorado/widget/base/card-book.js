@@ -232,6 +232,20 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 			card.removeControl(item);
 		}
 	},
+
+	replaceControl: function(oldControl, newControl) {
+		if (!oldControl || !newControl) return;
+		var result = this._controls.replace(oldControl, newControl);
+		if (result == -1) return;
+		if (this._rendered) {
+			if (oldControl == this._currentControl) {
+				this.set("currentControl", newControl);
+			}
+			if (oldControl._rendered) {
+				oldControl.destroy();
+			}
+		}
+	},
 	
 	/**
 	 * 取得Card中的组件。
