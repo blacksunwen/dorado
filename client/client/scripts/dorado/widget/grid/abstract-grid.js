@@ -2749,7 +2749,7 @@
 				}
 				showColumnDropIndicator(this, dropPosition);
 				draggingInfo.dropPosition = dropPosition;
-				draggingInfo.set("accept", dropPosition != null);
+				draggingInfo.set("accept", (dropPosition != null) && (this==column.get("grid")));
 			}
 		},
 		
