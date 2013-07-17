@@ -2749,14 +2749,15 @@
 				}
 				showColumnDropIndicator(this, dropPosition);
 				draggingInfo.dropPosition = dropPosition;
-				draggingInfo.set("accept", (dropPosition != null) && (this==column.get("grid")));
+				draggingInfo.set("accept", dropPosition != null);
 			}
 		},
 		
 		onDraggingSourceMove: function(draggingInfo, evt) {
 			var pos = this.getMousePosition(evt);
 			if (pos.y < this._innerGrid._frameTBody.offsetTop) {
-				if (draggingInfo.isDropAcceptable(["grid-column"])) {
+				var column = draggingInfo.get("object");
+				if (draggingInfo.isDropAcceptable(["grid-column"]) && column && this==column.get("grid")) {
 					this.showDraggingInsertIndicator();
 					this.onHeaderDragMove(draggingInfo, evt);
 				}
