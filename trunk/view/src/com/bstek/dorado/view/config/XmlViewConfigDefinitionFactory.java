@@ -163,7 +163,7 @@ public class XmlViewConfigDefinitionFactory implements
 			for (String prefix : StringUtils.split(pathPrefix, ';')) {
 				String path = getResourcePath(viewName, prefix, pathSubfix);
 				Resource resource = ResourceUtils.getResource(path);
-				if (resource.exists()) {
+				if (null != resource && resource.exists()) {
 					return path;
 				}
 			}
