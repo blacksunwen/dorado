@@ -17,6 +17,24 @@
  * @static
  */
 dorado.util.Common = {
+	parseExponential: function(n) {
+		n = n + '';
+		var cv = n.split("e-");
+		var leadingZero = "";
+		var fl = parseInt(cv[1]);
+		for(var i = 0; fl > 1 && i < fl-1; i++){
+			leadingZero +="0";
+		}
+		
+		var es = cv[0];
+		var pi = es.indexOf(".");
+		if (pi > 0){
+			es = es.substring(0, pi) + es.substring(pi+1);
+		}
+		n = "0."+leadingZero + es;
+		return n;
+	},
+	
 	/**
 	 * 格式化输出数字的方法。
 	 * <p>
@@ -142,8 +160,10 @@ dorado.util.Common = {
 		
 		if (n == null || isNaN(n)) return "";
 		n = n + '';
+		if (n.indexOf("e-") > 0){
+			n = dorado.util.Common.parseExponential(n);
+		}
 		if (!format) return n;
-		
 		var n1, n2, f1, f2, i;
 		i = n.indexOf('.');
 		if (i > 0) {
@@ -168,7 +188,7 @@ dorado.util.Common = {
 			n1 = (parseInt(n1, 10) + ((n1.charAt(0) == '-') ? -1 : 1)) + '';
 		}
 		return formatInt(n1, f1, dec) + ((dec) ? ('.' + dec) : '');
-	},
+	},	
 	
 	/**
 	 * 尝试将一段字符串中包含的数字转换成一个浮点数。 如果转换失败将返回Number.NaN。
@@ -177,8 +197,12 @@ dorado.util.Common = {
 	 */
 	parseFloat: function(s) {
 		if (s === 0) return 0;
-		if (!s) return Number.NaN;
-		var ns = (s + '').match(/[-\d\.]/g);
+		if (!s) return Number.NaN;		
+		s = s + '';
+		if (s.indexOf("e-") > 0){
+			s = dorado.util.Common.parseExponential(s);
+		}
+		var ns = s.match(/[-\d\.]/g);
 		if (!ns) return Number.NaN;
 		var n = parseFloat(ns.join(''));
 		if (n > 9007199254740991) {
