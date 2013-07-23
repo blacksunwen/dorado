@@ -259,7 +259,7 @@
 			var defaultOperator = dorado.widget.grid.DataColumn.getDefaultOperator(column);	
 			for (var i = 0; i < criterions.length; i++) {
 				var criterion = criterions[i], operator = criterion.operator;
-				if (!criterion.value) continue;
+				if (criterion.value == undefined) continue;
 				
 				if (text != "") text += ", ";
 				
