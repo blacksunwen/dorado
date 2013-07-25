@@ -531,6 +531,9 @@
 					options.includeDeletedEntity = true;
 					CASCADE_NOT_DRITY_ENTITYS = {};
 				} else if(updateItem.submitSimplePropertyOnly) {
+					if (dataPath.indexOf("!CASCADE_DIRTY") >= 0 || dataPath.indexOf("[#all]") >= 0) {
+						options.includeDeletedEntity = true;
+					}
 					options.entityFilter = filterCascadeDrityEntity;
 					CASCADE_NOT_DRITY_ENTITYS = {};
 				}
