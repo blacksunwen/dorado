@@ -294,6 +294,7 @@
 					if (selection == null) this.setSelection(selection = []);
 					if (added) {
 						for (var i = 0; i < added.length; i++) {
+							if (selection.indexOf(added[i]) > -1) continue;
 							selection.push(added[i]);
 							this.toggleItemSelection(added[i], true);
 						}
