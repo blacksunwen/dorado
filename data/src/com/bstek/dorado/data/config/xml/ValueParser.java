@@ -41,11 +41,6 @@ public class ValueParser extends DataElementParserSupport {
 					&& (!(item instanceof EntityReference))) {
 				continue;
 			}
-			if (item instanceof CDATASection && len <= 3) {
-				value.setLength(0);
-				value.append(item.getNodeValue());
-				break;
-			}
 			value.append(item.getNodeValue());
 		}
 		return value.toString();
