@@ -432,7 +432,11 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 			}
 
 			sendData.push("<request type=\"" + type + "\"><![CDATA[");
-			sendData.push(this._getSendData(options));
+			
+			var data = this._getSendData(options);
+			if (data) data = data.replace(/]]>/g, "]]]]><![CDATA[>");
+			sendData.push(data);
+			
 			sendData.push("]]></request>\n");
 		}
 		sendData.push("</batch>");

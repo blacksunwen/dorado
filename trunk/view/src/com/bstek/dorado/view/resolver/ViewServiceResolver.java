@@ -14,7 +14,6 @@ package com.bstek.dorado.view.resolver;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.lang.reflect.Method;
@@ -25,10 +24,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.aopalliance.intercept.MethodInterceptor;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.node.ObjectNode;
+import org.h2.util.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -190,7 +189,9 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
-		PrintWriter writer = getWriter(request, response);
+		XmlEscapeWriter writer = new XmlEscapeWriter(getWriter(request,
+				response));
+
 		JsonBuilder jsonBuilder = new JsonBuilder(writer);
 		ServletInputStream in = request.getInputStream();
 		DoradoContext context = DoradoContext.getCurrent();
@@ -218,39 +219,48 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 				writer.append("<?xml version=\"1.0\" encoding=\""
 						+ Constants.DEFAULT_CHARSET + "\"?>\n");
 				writer.append("<result>\n");
-				// Writer escapeWriter = new XmlEscapeWriter(writer);
+
+				Writer escapeWriter = new XmlEscapeWriter(writer);
 				for (Element element : DomUtils.getChildElements(document
 						.getDocumentElement())) {
 					writer.append("<request>\n");
 					writer.append("<response type=\"json\"><![CDATA[\n");
+					writer.setEscapeEnabled(true);
+					
 					String textContent = DomUtils.getTextContent(element);
 
 					ObjectNode objectNode = (ObjectNode) JsonUtils
 							.getObjectMapper().readTree(textContent);
 					try {
-						// processTask(escapeWriter, objectNode, context);
-						processTask(writer, objectNode, context);
+						processTask(escapeWriter, objectNode, context);
+						writer.setEscapeEnabled(false);
+						
 						writer.append("\n]]></response>\n");
 					} catch (Exception e) {
 						Throwable t = e;
 						while (t.getCause() != null) {
 							t = t.getCause();
 						}
+						writer.setEscapeEnabled(false);
 
 						writer.append("\n]]></response>\n");
 						if (t instanceof ClientRunnableException) {
 							writer.append("<exception type=\"runnable\"><![CDATA[");
+							writer.setEscapeEnabled(true);
 							writer.append(((ClientRunnableException) t)
 									.getScript());
 						} else {
 							writer.append("<exception><![CDATA[\n");
+							writer.setEscapeEnabled(true);
 							outputException(jsonBuilder, e);
 						}
+						writer.setEscapeEnabled(false);
 						writer.append("\n]]></exception>\n");
 						logger.error(e, e);
 					}
 					writer.append("</request>\n");
 				}
+
 				writer.append("</result>");
 			}
 		} catch (Exception e) {
@@ -279,9 +289,25 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 
 class XmlEscapeWriter extends Writer {
 	private Writer writer;
+	private boolean escapeEnabled;
 
 	public XmlEscapeWriter(Writer writer) {
 		this.writer = writer;
+	}
+
+	public boolean isEscapeEnabled() {
+		return escapeEnabled;
+	}
+
+	public void setEscapeEnabled(boolean escapeEnabled) {
+		this.escapeEnabled = escapeEnabled;
+	}
+
+	public String escapeCDataContent(String str) {
+		if (str == null) {
+			return null;
+		}
+		return StringUtils.replaceAll(str, "]]>", "]]]]><![CDATA[>");
 	}
 
 	@Override
@@ -296,47 +322,63 @@ class XmlEscapeWriter extends Writer {
 
 	@Override
 	public Writer append(char c) throws IOException {
-		return writer.append(StringEscapeUtils.escapeXml(String.valueOf(c)));
+		return writer.append(c);
 	}
 
 	@Override
 	public Writer append(CharSequence csq, int start, int end)
 			throws IOException {
-		if (csq == null) {
-			return writer.append(null);
+		if (escapeEnabled) {
+			if (csq == null) {
+				return writer.append(null, start, end);
+			} else {
+				return super.append(escapeCDataContent(csq.toString()), start,
+						end);
+			}
 		} else {
-			return super.append(StringEscapeUtils.escapeXml(csq.toString()),
-					start, end);
+			return writer.append(csq, start, end);
 		}
 	}
 
 	@Override
 	public Writer append(CharSequence csq) throws IOException {
-		if (csq == null) {
-			return writer.append(null);
+		if (escapeEnabled) {
+			if (csq == null) {
+				return writer.append(null);
+			} else {
+				return super.append(escapeCDataContent(csq.toString()));
+			}
 		} else {
-			return super.append(StringEscapeUtils.escapeXml(csq.toString()));
+			return writer.append(csq);
 		}
 	}
 
 	@Override
 	public void write(char[] cbuf, int off, int len) throws IOException {
-		writer.write(StringEscapeUtils.escapeXml(new String(cbuf)), off, len);
+		writer.write(cbuf, off, len);
 	}
 
 	@Override
 	public void write(char[] cbuf) throws IOException {
-		writer.write(StringEscapeUtils.escapeXml(new String(cbuf)));
+		writer.write(cbuf);
 	}
 
 	@Override
 	public void write(String str, int off, int len) throws IOException {
-		writer.write(StringEscapeUtils.escapeXml(str), off, len);
+		if (escapeEnabled) {
+			writer.write(escapeCDataContent(str), off, len);
+		} else {
+			writer.write(str, off, len);
+		}
 	}
 
 	@Override
 	public void write(String str) throws IOException {
-		writer.write(StringEscapeUtils.escapeXml(str));
+		if (escapeEnabled) {
+			writer.write(escapeCDataContent(str));
+		} else {
+			writer.write(str);
+		}
 	}
 
 	@Override
