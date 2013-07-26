@@ -121,7 +121,7 @@
 					entityStates: result.entityStates
 				};
 			} else {
-				throw result.error;
+				throw result.exception;
 			}
 		},
 
