@@ -22,6 +22,7 @@ import com.bstek.dorado.view.widget.InnerElementList;
 
 @ClientEvents({ @ClientEvent(name = "beforeTabChange"),
 		@ClientEvent(name = "onTabChange"),
+		@ClientEvent(name = "onTabRemove"),
 		@ClientEvent(name = "onTabContextMenu") })
 @ResourceInjection(subObjectMethod = "getTab")
 public abstract class AbstractTabControl extends Control {
