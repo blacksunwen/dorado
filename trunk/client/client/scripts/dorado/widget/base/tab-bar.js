@@ -172,6 +172,17 @@
              */
             onTabChange: {},
 
+	        /**
+	         * 在Tab被移除后触发的事件，用户点击关闭按钮或者调用removeTab方法都会触发此事件。
+	         * 注意：此事件只有当TabGroup渲染以后才会触发。
+	         * @param {Object} self 事件的发起者，即组件本身。
+	         * @param {Object} arg 事件参数。
+	         * @param {dorado.widget.tab.Tab} arg.tab 被移除的Tab。
+	         * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+	         * @event
+	         */
+	        onTabRemove: {},
+
             /**
              * 在Tab上点击右键触发的事件。
              * @param {Object} self 事件的发起者，即组件本身。
@@ -353,6 +364,7 @@
                 }
                 tab.set("parent", null);
                 tabgroup.doRemoveTab(tab);
+	            tabgroup.fireEvent("onTabRemove", self, { tab: tab });
             }
         },
 
@@ -1173,6 +1185,12 @@
 		refreshDom: function(dom) {
 			$invokeSuper.call(this, arguments);
             this.refreshTabBar();
+		},
+
+		doOnTabChange: function(eventArg) {
+			var tabbar = this;
+			tabbar.fireEvent("onTabChange", tabbar, eventArg);
+			tabbar.doRefreshGap();
 		},
 
 		doRefreshGap: function() {

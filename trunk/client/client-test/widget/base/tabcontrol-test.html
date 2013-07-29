@@ -178,6 +178,10 @@
                 onTabChange: function(self, arg) {
                     var tab = arg.newTab;
                     //console.log(tab.get("control"));
+                },
+                onTabRemove: function(self, arg) {
+                    var tab = arg.tab;
+                    console.log("onTabRemove", tab, tab.get("name"));
                 }
             }
         });
