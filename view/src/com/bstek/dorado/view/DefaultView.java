@@ -28,15 +28,8 @@ import com.bstek.dorado.view.manager.ViewConfig;
  * @since Jan 18, 2008
  */
 @Widget(name = "View", category = "General", dependsPackage = "base-widget")
-@XmlNode(nodeName = "View", label = "View")
-@ClientObject(
-		usePrototype = true,
-		prototype = "dorado.widget.View",
-		shortTypeName = "View",
-		outputter = "spring:dorado.viewOutputter",
-		properties = @ClientProperty(
-				propertyName = "context",
-				outputter = "com.bstek.dorado.view.ViewContextPropertyOutputter"))
+@XmlNode(nodeName = "View", label = "View", isPublic = false)
+@ClientObject(usePrototype = true, prototype = "dorado.widget.View", shortTypeName = "View", outputter = "spring:dorado.viewOutputter", properties = @ClientProperty(propertyName = "context", outputter = "com.bstek.dorado.view.ViewContextPropertyOutputter"))
 public class DefaultView extends View {
 	public DefaultView(ViewConfig viewConfig) {
 		super(viewConfig);
