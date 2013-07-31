@@ -312,7 +312,13 @@
 			component.set("view", (this instanceof dorado.widget.View) ? this : this.get("view"));
 			if (fireParentChanged && component.parentChanged) component.parentChanged();
 			
-			if (component instanceof dorado.widget.Control) {				
+			if (component instanceof dorado.widget.Control) {	
+				var parentActualVisible = this.isActualVisible();
+				if (component._parentActualVisible != parentActualVisible) {
+					component._parentActualVisible = parentActualVisible;
+					component.onActualVisibleChange();
+				}
+				
 				var layout = this.get("layout");
 				if (layout) {
 					if (!(dorado.Object.isInstanceOf(component, dorado.widget.FloatControl) && component._floating)) {
