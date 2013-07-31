@@ -15,17 +15,21 @@ package com.bstek.dorado.view.widget.blockview;
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
 import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.common.ClientType;
 import com.bstek.dorado.view.widget.list.AbstractList;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-2-11
  */
-@ClientEvents({ @ClientEvent(name = "onRenderBlock"),
+@ClientEvents({
+		@ClientEvent(name = "onRenderBlock"),
+		@ClientEvent(name = "onBlockClick", clientTypes = ClientType.DESKTOP),
+		@ClientEvent(name = "onBlockDoubleClick", clientTypes = ClientType.DESKTOP),
 		@ClientEvent(name = "onBlockMouseDown"),
 		@ClientEvent(name = "onBlockMouseUp"),
-		@ClientEvent(name = "onBlockClick"),
-		@ClientEvent(name = "onBlockDoubleClick") })
+		@ClientEvent(name = "onBlockTap", clientTypes = ClientType.TOUCH),
+		@ClientEvent(name = "onBlockTapHold", clientTypes = ClientType.TOUCH) })
 public abstract class AbstractBlockView extends AbstractList {
 	private BlockLayout blockLayout = BlockLayout.vertical;
 	private int lineSize;

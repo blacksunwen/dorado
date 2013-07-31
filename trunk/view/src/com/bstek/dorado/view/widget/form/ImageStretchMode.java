@@ -10,12 +10,12 @@
  * at http://www.bstek.com/contact.
  */
 
-package com.bstek.dorado.view;
+package com.bstek.dorado.view.widget.form;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
- * @since 2010-7-23
+ * @since 2013-6-19
  */
-public enum ViewState {
-	rendering, servicing
+public enum ImageStretchMode {
+	keepRatio, fit, none
 }

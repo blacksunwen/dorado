@@ -6,7 +6,6 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 	<import resource="loader-parser-context.xml" />
 	<import resource="parser-context.xml" />
 	<import resource="outputter-context.xml" />
-	<import resource="components-context.xml" />
 
 	<bean parent="dorado.dataConfigLoader">
 		<property name="configLocation"
@@ -137,11 +136,6 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 	<bean id="dorado.packagesConfigManager" class="com.bstek.dorado.view.loader.PackagesConfigManager">
 		<property name="xmlDocumentBuilder" ref="dorado.xmlDocumentBuilder" />
 		<property name="xmlParser" ref="dorado.packagesConfigParser" />
-		<property name="configLocations">
-			<list>
-				<value>com/bstek/dorado/view/loader/packages-config.xml</value>
-			</list>
-		</property>
 	</bean>
 	<bean id="dorado.packagesConfigLoader" abstract="true"
 		class="com.bstek.dorado.view.loader.PackagesConfigLoader">

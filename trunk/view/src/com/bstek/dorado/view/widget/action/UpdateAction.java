@@ -37,26 +37,23 @@ import com.bstek.dorado.view.annotation.Widget;
 @XmlNode(parser = "spring:dorado.updateActionParser")
 @ClientEvents({ @ClientEvent(name = "onGetUpdateData") })
 public class UpdateAction extends Action {
-	private boolean async = true;
 	private DataResolver dataResolver;
 	private List<UpdateItem> UpdateItems = new ArrayList<UpdateItem>();
 	private boolean alwaysExecute;
+	
+	public UpdateAction() {
+		setAsync(true);
+	}
 
+	@ClientProperty(escapeValue = "true")
+	public boolean isAsync() {
+		return super.isAsync();
+	}
+	
 	@Override
 	@ClientProperty(alwaysOutput = true)
 	public String getExecutingMessage() {
 		return super.getExecutingMessage();
-	}
-
-	@Override
-	@ClientProperty(escapeValue = "true")
-	public boolean isAsync() {
-		return async;
-	}
-
-	@Override
-	public void setAsync(boolean async) {
-		this.async = async;
 	}
 
 	@XmlProperty(ignored = true)

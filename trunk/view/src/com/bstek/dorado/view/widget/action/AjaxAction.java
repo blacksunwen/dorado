@@ -21,27 +21,21 @@ import com.bstek.dorado.view.annotation.Widget;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-8-10
  */
-@Widget(name = "AjaxAction", category = "Action",
-		dependsPackage = "base-widget", autoGenerateId = true)
-@ClientObject(prototype = "dorado.widget.AjaxAction",
-		shortTypeName = "AjaxAction")
+@Widget(name = "AjaxAction", category = "Action", dependsPackage = "base-widget", autoGenerateId = true)
+@ClientObject(prototype = "dorado.widget.AjaxAction", shortTypeName = "AjaxAction")
 public class AjaxAction extends Action {
-	private boolean async = true;
 	private long timeout;
-	private boolean modal = true;
 	private boolean batchable = true;
 	private String service;
 	private boolean supportsEntity = true;
 
-	@Override
-	@ClientProperty(escapeValue = "true")
-	public boolean isAsync() {
-		return async;
+	public AjaxAction() {
+		setAsync(true);
 	}
 
-	@Override
-	public void setAsync(boolean async) {
-		this.async = async;
+	@ClientProperty(escapeValue = "true")
+	public boolean isAsync() {
+		return super.isAsync();
 	}
 
 	public long getTimeout() {
@@ -50,17 +44,6 @@ public class AjaxAction extends Action {
 
 	public void setTimeout(long timeout) {
 		this.timeout = timeout;
-	}
-
-	@Override
-	@ClientProperty(escapeValue = "true")
-	public boolean isModal() {
-		return modal;
-	}
-
-	@Override
-	public void setModal(boolean modal) {
-		this.modal = modal;
 	}
 
 	@ClientProperty(escapeValue = "true")

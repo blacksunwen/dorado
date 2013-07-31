@@ -33,6 +33,7 @@ public class Package {
 	private Set<String> dependedBy = new LinkedHashSet<String>();
 	private String baseUri;
 	private boolean mergeRequests = true;
+	private int clientType;
 
 	/**
 	 * @param name
@@ -142,4 +143,11 @@ public class Package {
 		this.mergeRequests = mergeRequests;
 	}
 
+	public int getClientType() {
+		return clientType;
+	}
+
+	public void setClientType(int clientType) {
+		this.clientType = clientType;
+	}
 }

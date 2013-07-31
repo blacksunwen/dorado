@@ -22,7 +22,7 @@ import com.bstek.dorado.view.annotation.Widget;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Feb 16, 2009
  */
-@Widget(name = "Button", category = "General", dependsPackage = "base-widget")
+@Widget(name = "Button", category = "General", dependsPackage = "base-widget-desktop")
 @ClientObject(prototype = "dorado.widget.Button", shortTypeName = "Button")
 @ClientEvents({ @ClientEvent(name = "onTriggerClick") })
 public class Button extends AbstractButton {

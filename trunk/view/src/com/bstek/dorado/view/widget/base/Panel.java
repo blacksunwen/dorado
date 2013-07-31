@@ -29,7 +29,7 @@ import com.bstek.dorado.view.widget.InnerElementList;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Feb 2, 2008
  */
-@Widget(name = "Panel", category = "General", dependsPackage = "base-widget")
+@Widget(name = "Panel", category = "General", dependsPackage = "base-widget-desktop")
 @ClientObject(prototype = "dorado.widget.Panel", shortTypeName = "Panel")
 @ClientEvents({ @ClientEvent(name = "beforeMaximize"),
 		@ClientEvent(name = "onMaximize") })

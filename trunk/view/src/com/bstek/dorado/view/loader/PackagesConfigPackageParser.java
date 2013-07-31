@@ -15,10 +15,12 @@ package com.bstek.dorado.view.loader;
 import java.util.Map;
 
 import org.apache.commons.beanutils.BeanMap;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import com.bstek.dorado.common.ClientType;
 import com.bstek.dorado.config.ConfigUtils;
 import com.bstek.dorado.config.ParseContext;
 import com.bstek.dorado.config.xml.ConfigurableDispatchableXmlParser;
@@ -40,7 +42,16 @@ public class PackagesConfigPackageParser extends
 		Element element = (Element) node;
 		String name = element.getAttribute("name");
 		Assert.notEmpty(name);
-		Package pkg = new Package(name);
+
+		Package pkg;
+		PackagesConfig packagesConfig = ((PackagesConfigParseContext) context)
+				.getPackagesConfig();
+		Map<String, Package> packages = packagesConfig.getPackages();
+		pkg = packages.get(name);
+		if (pkg == null) {
+			pkg = new Package(name);
+			packages.put(name, pkg);
+		}
 
 		Map<String, Object> properties = parseProperties(element, context);
 		if (!properties.containsKey("fileNames")) {
@@ -53,7 +64,13 @@ public class PackagesConfigPackageParser extends
 		String fileNamesText = StringUtils.trim((String) properties
 				.remove("fileNames"));
 		fileNamesText = StringUtils.defaultIfEmpty(fileNamesText, NONE_FILE);
-		pkg.setFileNames(fileNamesText.split(","));
+		String[] oldFileNames = pkg.getFileNames();
+		String[] newFileNames = fileNamesText.split(",");
+		if (oldFileNames != null && oldFileNames.length > 0) {
+			newFileNames = (String[]) ArrayUtils.addAll(oldFileNames,
+					newFileNames);
+		}
+		pkg.setFileNames(newFileNames);
 
 		String dependsText = (String) properties.remove("depends");
 		if (StringUtils.isNotEmpty(dependsText)) {
@@ -69,6 +86,11 @@ public class PackagesConfigPackageParser extends
 			for (String dependedBy : dependedByArray) {
 				pkg.getDependedBy().add(dependedBy);
 			}
+		}
+
+		String clientTypeText = (String) properties.remove("clientType");
+		if (StringUtils.isNotEmpty(clientTypeText)) {
+			pkg.setClientType(ClientType.parseClientTypes(clientTypeText));
 		}
 
 		((Map<String, Object>) new BeanMap(pkg)).putAll(properties);

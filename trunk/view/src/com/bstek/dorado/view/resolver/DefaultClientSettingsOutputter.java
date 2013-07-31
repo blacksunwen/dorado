@@ -17,6 +17,7 @@ import java.io.Writer;
 
 import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.web.DoradoContext;
+import com.bstek.dorado.web.WebConfigure;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -41,6 +42,8 @@ public class DefaultClientSettingsOutputter extends ClientSettingsOutputter {
 				false);
 
 		writeSetting(writer, "widget.skinRoot", ">dorado/client/skins/", true);
+		writeSetting(writer, "widget.skin",
+				WebConfigure.getString("view.skin"), true);
 	}
 
 }

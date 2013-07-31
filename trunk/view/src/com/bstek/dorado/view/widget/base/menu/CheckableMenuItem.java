@@ -15,6 +15,8 @@ package com.bstek.dorado.view.widget.base.menu;
 import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
 import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.common.ClientType;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -23,6 +25,7 @@ import com.bstek.dorado.annotation.ClientObject;
 @ClientObject(prototype = "dorado.widget.menu.CheckableMenuItem",
 		shortTypeName = "Checkable")
 @ClientEvents({ @ClientEvent(name = "onCheckedChange") })
+@XmlNode(clientTypes = ClientType.DESKTOP)
 public class CheckableMenuItem extends MenuItem {
 	private boolean checked;
 	private String group;

@@ -18,42 +18,43 @@ import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.common.ClientType;
 import com.bstek.dorado.view.annotation.Widget;
+import com.bstek.dorado.view.widget.datacontrol.AbstractPropertyDataControl;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
- * @since 2010-9-24
+ * @since 2013-6-19
  */
-@Widget(name = "CustomSpinner", category = "Form",
-		dependsPackage = "base-widget-desktop")
-@ClientObject(prototype = "dorado.widget.CustomSpinner",
-		shortTypeName = "CustomSpinner")
+@Widget(name = "Image", category = "Form", dependsPackage = "base-widget")
+@ClientObject(prototype = "dorado.widget.Image", shortTypeName = "Image")
 @XmlNode(clientTypes = { ClientType.DESKTOP, ClientType.TOUCH })
-public class CustomSpinner extends Spinner {
-	private String value;
-	private String pattern;
-
-	@Override
-	@IdeProperty(visible = false)
-	public String getText() {
-		return super.getText();
-	}
-
-	@ClientProperty(
-			outputter = "class:com.bstek.dorado.view.widget.form.CustomSpinnerValueOutputter")
-	public String getValue() {
-		return value;
-	}
-
-	public void setValue(String value) {
-		this.value = value;
-	}
+public class Image extends AbstractPropertyDataControl {
+	private String image;
+	private String blankImage;
+	private ImageStretchMode stretchMode = ImageStretchMode.keepRatio;
 
 	@IdeProperty(highlight = 1)
-	public String getPattern() {
-		return pattern;
+	public String getImage() {
+		return image;
 	}
 
-	public void setPattern(String pattern) {
-		this.pattern = pattern;
+	public void setImage(String image) {
+		this.image = image;
+	}
+
+	public String getBlankImage() {
+		return blankImage;
+	}
+
+	public void setBlankImage(String blankImage) {
+		this.blankImage = blankImage;
+	}
+
+	public ImageStretchMode getStretchMode() {
+		return stretchMode;
+	}
+
+	@ClientProperty(escapeValue = "keepRatio")
+	public void setStretchMode(ImageStretchMode stretchMode) {
+		this.stretchMode = stretchMode;
 	}
 }

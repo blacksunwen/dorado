@@ -14,16 +14,17 @@ package com.bstek.dorado.view.widget.base;
 
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.IdeProperty;
+import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.common.ClientType;
 import com.bstek.dorado.view.annotation.Widget;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-8-1
  */
-@Widget(name = "SimpleIconButton", category = "General",
-		dependsPackage = "base-widget")
-@ClientObject(prototype = "dorado.widget.SimpleIconButton",
-		shortTypeName = "SimpleIconButton")
+@Widget(name = "SimpleIconButton", category = "General", dependsPackage = "base-widget-desktop")
+@ClientObject(prototype = "dorado.widget.SimpleIconButton", shortTypeName = "SimpleIconButton")
+@XmlNode(clientTypes = { ClientType.DESKTOP, ClientType.TOUCH })
 public class SimpleIconButton extends SimpleButton {
 	private String icon;
 	private String iconClass;
@@ -45,7 +46,7 @@ public class SimpleIconButton extends SimpleButton {
 	public void setIconClass(String iconClass) {
 		this.iconClass = iconClass;
 	}
-	
+
 	public boolean getShowTrigger() {
 		return showTrigger;
 	}

@@ -17,6 +17,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
 
+import com.bstek.dorado.common.ClientType;
 import com.bstek.dorado.view.widget.layout.Layout;
 import com.bstek.dorado.view.widget.layout.LayoutConstraintSupport;
 
@@ -34,6 +35,7 @@ public class LayoutTypeRegister implements InitializingBean {
 	private String type;
 	private String classType;
 	private String constraintClassType;
+	private String clientTypes;
 
 	/**
 	 * 返回布局管理器类型的注册管理器。
@@ -60,6 +62,10 @@ public class LayoutTypeRegister implements InitializingBean {
 		this.constraintClassType = constraintClassType;
 	}
 
+	public void setClientTypes(String clientTypes) {
+		this.clientTypes = clientTypes;
+	}
+
 	@SuppressWarnings("unchecked")
 	public void afterPropertiesSet() throws Exception {
 		try {
@@ -76,6 +82,12 @@ public class LayoutTypeRegister implements InitializingBean {
 
 			LayoutTypeRegisterInfo registerInfo = new LayoutTypeRegisterInfo(
 					type, cl, constraintCl);
+			
+			int clientTypesValue = ClientType.parseClientTypes(clientTypes);
+			if (clientTypesValue > 0) {
+				registerInfo.setClientTypes(clientTypesValue);
+			}
+			
 			layoutTypeRegistry.registerType(registerInfo);
 		} catch (ClassNotFoundException e) {
 			logger.equals(e);

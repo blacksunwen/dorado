@@ -25,7 +25,7 @@ import com.bstek.dorado.view.widget.InnerElementList;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-8-9
  */
-@Widget(name = "ToolBar", category = "General", dependsPackage = "base-widget")
+@Widget(name = "ToolBar", category = "General", dependsPackage = "base-widget-desktop")
 @ClientObject(prototype = "dorado.widget.ToolBar", shortTypeName = "ToolBar")
 public class ToolBar extends Control {
 	private List<Control> items = new InnerElementList<Control>(this);

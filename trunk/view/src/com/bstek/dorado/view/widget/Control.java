@@ -20,6 +20,7 @@ import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
+import com.bstek.dorado.common.ClientType;
 
 /**
  * 控件的抽象类。
@@ -27,27 +28,36 @@ import com.bstek.dorado.annotation.XmlProperty;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Feb 4, 2008
  */
-@XmlNode(
-		definitionType = "com.bstek.dorado.view.config.definition.ControlDefinition",
-		parser = "spring:dorado.controlParser")
-@ClientObject(prototype = "dorado.widget.Control", shortTypeName = "Control",
-		outputter = "spring:dorado.controlOutputter")
-@ClientEvents({ @ClientEvent(name = "onCreateDom"),
+@XmlNode(definitionType = "com.bstek.dorado.view.config.definition.ControlDefinition", parser = "spring:dorado.controlParser")
+@ClientObject(prototype = "dorado.widget.Control", shortTypeName = "Control", outputter = "spring:dorado.controlOutputter")
+@ClientEvents({
+		@ClientEvent(name = "onCreateDom"),
 		@ClientEvent(name = "beforeRefreshDom"),
-		@ClientEvent(name = "onRefreshDom"), @ClientEvent(name = "onClick"),
-		@ClientEvent(name = "onDoubleClick"),
-		@ClientEvent(name = "onMouseDown"), @ClientEvent(name = "onMouseUp"),
-		@ClientEvent(name = "onFocus"), @ClientEvent(name = "onBlur"),
-		@ClientEvent(name = "onKeyDown"), @ClientEvent(name = "onKeyPress"),
+		@ClientEvent(name = "onRefreshDom"),
+		@ClientEvent(name = "onClick", clientTypes = ClientType.DESKTOP),
+		@ClientEvent(name = "onDoubleClick", clientTypes = ClientType.DESKTOP),
+		@ClientEvent(name = "onMouseDown"),
+		@ClientEvent(name = "onMouseUp"),
+		@ClientEvent(name = "onFocus"),
+		@ClientEvent(name = "onBlur"),
+		@ClientEvent(name = "onKeyDown"),
+		@ClientEvent(name = "onKeyPress"),
 		@ClientEvent(name = "onContextMenu"),
 		@ClientEvent(name = "onGetDraggingIndicator"),
-		@ClientEvent(name = "onDragStart"), @ClientEvent(name = "onDragStop"),
+		@ClientEvent(name = "onDragStart"),
+		@ClientEvent(name = "onDragStop"),
 		@ClientEvent(name = "onDragMove"),
 		@ClientEvent(name = "onDraggingSourceOver"),
 		@ClientEvent(name = "onDraggingSourceOut"),
 		@ClientEvent(name = "onDraggingSourceMove"),
 		@ClientEvent(name = "beforeDraggingSourceDrop"),
-		@ClientEvent(name = "onDraggingSourceDrop") })
+		@ClientEvent(name = "onDraggingSourceDrop"),
+		@ClientEvent(name = "onTap", clientTypes = ClientType.TOUCH),
+		@ClientEvent(name = "onSwipe", clientTypes = ClientType.TOUCH),
+		@ClientEvent(name = "onTapHold", clientTypes = ClientType.TOUCH),
+		@ClientEvent(name = "onTransformStart", clientTypes = ClientType.TOUCH),
+		@ClientEvent(name = "onTransform", clientTypes = ClientType.TOUCH),
+		@ClientEvent(name = "onTransformEnd", clientTypes = ClientType.TOUCH) })
 public abstract class Control extends Component implements HtmlElement,
 		RenderableElement {
 	private Object layoutConstraint;
@@ -55,6 +65,7 @@ public abstract class Control extends Component implements HtmlElement,
 	private String height;
 	private String className;
 	private String exClassName;
+	private String ui = "default";
 	private Map<String, Object> style;
 	private String renderTo;
 	private String renderOn;
@@ -67,8 +78,7 @@ public abstract class Control extends Component implements HtmlElement,
 	private String droppableTags;
 
 	@XmlProperty(parser = "spring:dorado.layoutConstraintParser")
-	@ClientProperty(
-			outputter = "spring:dorado.layoutConstraintPropertyOutputter")
+	@ClientProperty(outputter = "spring:dorado.layoutConstraintPropertyOutputter")
 	public Object getLayoutConstraint() {
 		return layoutConstraint;
 	}
@@ -107,6 +117,15 @@ public abstract class Control extends Component implements HtmlElement,
 
 	public void setExClassName(String exClassName) {
 		this.exClassName = exClassName;
+	}
+
+	@ClientProperty(escapeValue = "default")
+	public String getUi() {
+		return ui;
+	}
+
+	public void setUi(String ui) {
+		this.ui = ui;
 	}
 
 	@XmlProperty(parser = "spring:dorado.styleParser", composite = true)

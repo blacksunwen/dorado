@@ -24,7 +24,7 @@ import com.bstek.dorado.view.widget.Control;
  * @since 2010-8-7
  */
 @Widget(name = "YearMonthPicker", category = "General",
-		dependsPackage = "base-widget")
+		dependsPackage = "base-widget-desktop")
 @XmlNode(nodeName = "YearMonthPicker")
 @ClientObject(prototype = "dorado.widget.YearMonthPicker",
 		shortTypeName = "YearMonthPicker")

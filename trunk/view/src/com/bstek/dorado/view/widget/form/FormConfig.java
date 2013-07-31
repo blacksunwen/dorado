@@ -34,6 +34,10 @@ public interface FormConfig {
 	String getExClassName();
 
 	void setExClassName(String exClassName);
+	
+	String getUi();
+
+	void setUi(String ui);
 
 	String getLabelSeparator();
 

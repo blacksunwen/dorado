@@ -23,14 +23,13 @@ import com.bstek.dorado.view.widget.FloatControlShadowMode;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-6-2
  */
-@Widget(name = "Dialog", category = "Floatable", dependsPackage = "base-widget")
+@Widget(name = "Dialog", category = "Floatable", dependsPackage = "base-widget-desktop")
 @ClientObject(prototype = "dorado.widget.Dialog", shortTypeName = "Dialog")
 @ClientEvents({ @ClientEvent(name = "beforeMinimize"),
 		@ClientEvent(name = "onMinimize") })
 public class Dialog extends FloatPanel {
 	private int minWidth;
 	private int minHeight;
-	private boolean draggable = true;
 	private boolean dragOutside;
 	private boolean resizeable = true;
 
@@ -40,6 +39,33 @@ public class Dialog extends FloatPanel {
 	public Dialog() {
 		setShadowMode(FloatControlShadowMode.frame);
 		setCloseable(true);
+		setDraggable(true);
+		setCenter(true);
+		setModal(true);
+	}
+
+	@Override
+	@ClientProperty(escapeValue = "true")
+	public boolean isDraggable() {
+		return super.isDraggable();
+	}
+
+	@Override
+	@ClientProperty(escapeValue = "true")
+	public boolean isCloseable() {
+		return super.isCloseable();
+	}
+
+	@Override
+	@ClientProperty(escapeValue = "true")
+	public boolean isCenter() {
+		return super.isCenter();
+	}
+
+	@Override
+	@ClientProperty(escapeValue = "true")
+	public boolean isModal() {
+		return super.isModal();
 	}
 
 	@Override
@@ -62,17 +88,6 @@ public class Dialog extends FloatPanel {
 
 	public void setMinHeight(int minHeight) {
 		this.minHeight = minHeight;
-	}
-
-	@Override
-	@ClientProperty(escapeValue = "true")
-	public boolean isDraggable() {
-		return draggable;
-	}
-
-	@Override
-	public void setDraggable(boolean draggable) {
-		this.draggable = draggable;
 	}
 
 	@ClientProperty(escapeValue = "true")
@@ -113,12 +128,6 @@ public class Dialog extends FloatPanel {
 	 */
 	public void setDragOutside(boolean dragOutside) {
 		this.dragOutside = dragOutside;
-	}
-
-	@Override
-	@ClientProperty(escapeValue = "true")
-	public boolean isCloseable() {
-		return super.isCloseable();
 	}
 
 }

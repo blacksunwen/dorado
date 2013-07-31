@@ -20,7 +20,7 @@ import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.view.annotation.Widget;
 
 @Widget(name = "TabColumn", category = "General",
-		dependsPackage = "base-widget")
+		dependsPackage = "base-widget-desktop")
 @ClientObject(prototype = "dorado.widget.TabColumn",
 		shortTypeName = "TabColumn")
 public class TabColumn extends AbstractTabControl {

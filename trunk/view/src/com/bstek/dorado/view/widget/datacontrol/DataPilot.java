@@ -16,8 +16,6 @@ import com.bstek.dorado.annotation.ClientEvent;
 import com.bstek.dorado.annotation.ClientEvents;
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.IdeProperty;
-import com.bstek.dorado.annotation.XmlNode;
-import com.bstek.dorado.common.ClientType;
 import com.bstek.dorado.view.annotation.Widget;
 
 /**
@@ -30,7 +28,6 @@ import com.bstek.dorado.view.annotation.Widget;
 		shortTypeName = "DataPilot")
 @ClientEvents({ @ClientEvent(name = "onSubControlRefresh"),
 		@ClientEvent(name = "onSubControlAction") })
-@XmlNode(clientTypes = { ClientType.DESKTOP, ClientType.TOUCH })
 public class DataPilot extends AbstractDataControl {
 	private String itemCodes;
 

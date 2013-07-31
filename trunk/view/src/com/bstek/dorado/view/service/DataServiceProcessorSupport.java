@@ -105,7 +105,7 @@ public abstract class DataServiceProcessorSupport implements ServiceProcessor,
 			DoradoContext context) throws Exception {
 		ViewState originViewState = (ViewState) context
 				.getAttribute(VIEW_STATE_ATTRIBUTE_KEY);
-		context.setAttribute(VIEW_STATE_ATTRIBUTE_KEY, ViewState.servcing);
+		context.setAttribute(VIEW_STATE_ATTRIBUTE_KEY, ViewState.servicing);
 
 		Map<String, Object> viewContext = new HashMap<String, Object>();
 		JsonNode rudeContext = objectNode.get("context");

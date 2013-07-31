@@ -28,7 +28,7 @@ import com.bstek.dorado.view.widget.ModalType;
  * @since 2010-6-2
  */
 @Widget(name = "FloatPanel", category = "Floatable",
-		dependsPackage = "base-widget")
+		dependsPackage = "base-widget-desktop")
 @ClientObject(prototype = "dorado.widget.FloatPanel",
 		shortTypeName = "FloatPanel")
 public class FloatPanel extends Panel implements FloatControl {

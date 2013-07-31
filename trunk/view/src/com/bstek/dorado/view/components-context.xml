@@ -2,6 +2,10 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:d="http://www.bstek.com/dorado/schema"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
 http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dorado-7.0.xsd">
+	<bean parent="dorado.packagesConfigLoader">
+		<property name="configLocation" value="com/bstek/dorado/view/packages-config.xml" />
+	</bean>
+
 	<bean parent="dorado.validatorTypeRegister">
 		<property name="type" value="required" />
 		<property name="classType" value="com.bstek.dorado.view.type.property.validator.RequiredValidator" />
@@ -108,6 +112,8 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 	<bean id="com.bstek.dorado.view.widget.form.Label" parent="dorado.defaultComponentTypeRegister" />
 	<bean id="com.bstek.dorado.view.widget.form.DataLabel" parent="dorado.defaultComponentTypeRegister" />
 	<bean id="com.bstek.dorado.view.widget.form.Link" parent="dorado.defaultComponentTypeRegister" />
+	<bean id="com.bstek.dorado.view.widget.form.Image" parent="dorado.defaultComponentTypeRegister" />
+	<bean id="com.bstek.dorado.view.widget.form.TemplateField" parent="dorado.defaultComponentTypeRegister" />
 	<bean id="com.bstek.dorado.view.widget.form.TextEditor" parent="dorado.defaultComponentTypeRegister" />
 	<bean id="com.bstek.dorado.view.widget.form.PasswordEditor" parent="dorado.defaultComponentTypeRegister" />
 	<bean id="com.bstek.dorado.view.widget.form.TextArea" parent="dorado.defaultComponentTypeRegister" />

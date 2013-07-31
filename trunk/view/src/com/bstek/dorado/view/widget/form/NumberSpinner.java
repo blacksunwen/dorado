@@ -23,7 +23,7 @@ import com.bstek.dorado.view.annotation.Widget;
  * @since 2010-9-24
  */
 @Widget(name = "NumberSpinner", category = "Form",
-		dependsPackage = "base-widget")
+		dependsPackage = "base-widget-desktop")
 @ClientObject(prototype = "dorado.widget.NumberSpinner",
 		shortTypeName = "NumberSpinner")
 @XmlNode(clientTypes = { ClientType.DESKTOP, ClientType.TOUCH })

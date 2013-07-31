@@ -27,7 +27,7 @@ import com.bstek.dorado.view.widget.InnerElementReference;
  * @since 2010-8-7
  */
 @Widget(name = "SplitPanel", category = "General",
-		dependsPackage = "base-widget")
+		dependsPackage = "base-widget-desktop")
 @ClientObject(prototype = "dorado.widget.SplitPanel",
 		shortTypeName = "SplitPanel")
 public class SplitPanel extends Control {

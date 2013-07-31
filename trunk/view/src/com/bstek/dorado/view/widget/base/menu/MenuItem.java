@@ -16,7 +16,9 @@ import java.util.List;
 
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlSubNode;
+import com.bstek.dorado.common.ClientType;
 import com.bstek.dorado.view.widget.InnerElementList;
 
 /**
@@ -25,6 +27,7 @@ import com.bstek.dorado.view.widget.InnerElementList;
  */
 @ClientObject(prototype = "dorado.widget.menu.MenuItem",
 		shortTypeName = "Default")
+@XmlNode(clientTypes = ClientType.DESKTOP)
 public class MenuItem extends TextMenuItem implements MenuItemGroup {
 
 	private List<BaseMenuItem> menuItems = new InnerElementList<BaseMenuItem>(

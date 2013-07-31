@@ -16,6 +16,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,14 +24,19 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 
+import com.bstek.dorado.common.ClientType;
 import com.bstek.dorado.core.Constants;
 import com.bstek.dorado.core.resource.LocaleResolver;
+import com.bstek.dorado.data.variant.VariantUtils;
 import com.bstek.dorado.view.View;
 import com.bstek.dorado.view.config.attachment.AttachedResourceManager;
 import com.bstek.dorado.view.config.attachment.JavaScriptContent;
+import com.bstek.dorado.view.loader.Package;
+import com.bstek.dorado.view.loader.PackagesConfigManager;
 import com.bstek.dorado.view.output.OutputContext;
 import com.bstek.dorado.view.output.Outputter;
 import com.bstek.dorado.web.DoradoContext;
+import com.bstek.dorado.web.WebConfigure;
 import com.bstek.dorado.web.resolver.CacheBusterUtils;
 
 /**
@@ -42,6 +48,7 @@ public class PageHeaderOutputter implements Outputter {
 	private LocaleResolver localeResolver;
 	private AttachedResourceManager javaScriptResourceManager;
 	private AttachedResourceManager styleSheetResourceManager;
+	private PackagesConfigManager packagesConfigManager;
 	private List<ClientSettingsOutputter> clientSettingsOutputters = new ArrayList<ClientSettingsOutputter>();
 
 	public PageHeaderOutputter() {
@@ -69,13 +76,51 @@ public class PageHeaderOutputter implements Outputter {
 		this.styleSheetResourceManager = styleSheetResourceManager;
 	}
 
+	public void setPackagesConfigManager(
+			PackagesConfigManager packagesConfigManager) {
+		this.packagesConfigManager = packagesConfigManager;
+	}
+
 	public void addClientSettingsOutputter(
 			ClientSettingsOutputter clientSettingsOutputter) {
 		clientSettingsOutputters.add(clientSettingsOutputter);
 	}
 
+	protected String getBasePackageNames(Object object, int clientType,
+			OutputContext context) throws Exception {
+		Map<String, Package> packages = packagesConfigManager
+				.getPackagesConfig().getPackages();
+
+		String clientTypeName = ClientType.toString(clientType);
+
+		StringBuffer buf = new StringBuffer(12);
+		buf.append(clientTypeName).append("-support,");
+
+		String patchPlatform = clientTypeName + "-patch";
+		if (packages.get(patchPlatform) != null) {
+			buf.append(patchPlatform).append(',');
+		}
+
+		buf.append("widget");
+
+		String widgetPlatform = "widget-" + clientTypeName;
+		if (packages.get(widgetPlatform) != null) {
+			buf.append(',').append(widgetPlatform);
+		}
+
+		return buf.toString();
+	}
+
 	public void output(Object object, OutputContext context) throws Exception {
 		View view = (View) object;
+
+		DoradoContext doradoContext = DoradoContext.getCurrent();
+		int currentClientType = VariantUtils.toInt(doradoContext
+				.getAttribute(ClientType.CURRENT_CLIENT_TYPE_KEY));
+		if (currentClientType == 0) {
+			currentClientType = ClientType.DESKTOP;
+		}
+
 		Writer writer = context.getWriter();
 		HttpServletRequest request = DoradoContext.getAttachedRequest();
 
@@ -97,10 +142,15 @@ public class PageHeaderOutputter implements Outputter {
 		writer.append(
 				"<script language=\"javascript\" type=\"text/javascript\" charset=\"UTF-8\" src=\"")
 				.append(request.getContextPath())
-				.append("/dorado/client/boot.dpkg?cacheBuster="
-						+ CacheBusterUtils
-								.getCacheBuster((locale != null) ? locale
-										.toString() : null) + "\"></script>\n")
+				.append("/dorado/client/boot.dpkg?clientType=")
+				.append(ClientType.toString(currentClientType))
+				.append("&skin=")
+				.append(WebConfigure.getString("view.skin"))
+				.append("&cacheBuster=")
+				.append(CacheBusterUtils
+						.getCacheBuster((locale != null) ? locale.toString()
+								: null))
+				.append("\"></script>\n")
 				.append("<script language=\"javascript\" type=\"text/javascript\">\n");
 
 		writer.append("window.$setting={\n");
@@ -109,8 +159,10 @@ public class PageHeaderOutputter implements Outputter {
 		}
 		writer.append("\n};\n");
 
-		writer.append("$import(\"widget\");\n</script>\n").append(
-				"<script language=\"javascript\" type=\"text/javascript\">\n");
+		writer.append("$import(\"")
+				.append(getBasePackageNames(object, currentClientType, context))
+				.append("\");\n</script>\n")
+				.append("<script language=\"javascript\" type=\"text/javascript\">\n");
 		topViewOutputter.output(view, context);
 		writer.append("</script>\n");
 

@@ -14,6 +14,7 @@ package com.bstek.dorado.view.widget;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.output.ObjectOutputterDispatcher;
 import com.bstek.dorado.view.output.OutputContext;
 import com.bstek.dorado.view.registry.ComponentTypeRegisterInfo;
@@ -37,11 +38,21 @@ public class ComponentOutputterDispatcher extends ObjectOutputterDispatcher {
 		super.outputObject(object, context);
 
 		if (object instanceof Component) {
+			String dependsPackage = null;
 			ComponentTypeRegisterInfo registerInfo = componentTypeRegistry
 					.getRegisterInfo(object.getClass());
-			if (registerInfo != null
-					&& StringUtils.isNotEmpty(registerInfo.getDependsPackage())) {
-				context.addDependsPackage(registerInfo.getDependsPackage());
+			if (registerInfo != null) {
+				dependsPackage = registerInfo.getDependsPackage();
+			} else {
+				Widget widget = object.getClass().getAnnotation(Widget.class);
+				if (widget != null) {
+					dependsPackage = widget.dependsPackage();
+				}
+			}
+
+			if (dependsPackage != null
+					&& StringUtils.isNotEmpty(dependsPackage)) {
+				context.addDependsPackage(dependsPackage);
 			}
 		}
 	}
