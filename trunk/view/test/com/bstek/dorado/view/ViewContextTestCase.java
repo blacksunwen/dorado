@@ -28,6 +28,7 @@ import com.bstek.dorado.view.manager.ViewConfigManager;
 public abstract class ViewContextTestCase extends DataContextTestCase {
 	public ViewContextTestCase() {
 		addExtensionContextConfigLocation("com/bstek/dorado/view/context.xml");
+		addExtensionContextConfigLocation("com/bstek/dorado/view/components-context.xml");
 		addExtensionContextConfigLocation("com/bstek/dorado/view/test-context.xml");
 	}
 

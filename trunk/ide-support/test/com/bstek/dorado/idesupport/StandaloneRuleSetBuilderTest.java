@@ -202,7 +202,7 @@ public class StandaloneRuleSetBuilderTest extends IdeSupportContextTestCase {
 	}
 
 	public void testLoadRuleFile() throws Exception {
-		InputStream in = new FileInputStream("e:/temp/.rules.xml");
+		InputStream in = new FileInputStream("e:/temp/rules.xml");
 		StandaloneRuleSetBuilder.getRuleSet(in);
 	}
 }
