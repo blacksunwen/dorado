@@ -145,7 +145,8 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 				scope = "protected";
 			}
 		}
-		if (StringUtils.isNotEmpty(scope)) {
+		if (StringUtils.isNotEmpty(scope)
+				&& "public".equals(ruleTemplate.getScope())) {
 			ruleTemplate.setScope(scope);
 		}
 
