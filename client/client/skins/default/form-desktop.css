@@ -1,0 +1,140 @@
+/*
+ * This file is part of Dorado 7.x (http://dorado7.bsdn.org).
+ * 
+ * Copyright (c) 2002-2012 BSTEK Corp. All rights reserved.
+ * 
+ * This file is dual-licensed under the AGPLv3 (http://www.gnu.org/licenses/agpl-3.0.html) 
+ * and BSDN commercial (http://www.bsdn.org/licenses) licenses.
+ * 
+ * If you are unsure which license is appropriate for your use, please contact the sales department
+ * at http://www.bstek.com/contact.
+ */
+
+/* multislots-spinner */
+.d-text-box .slots-container .text {
+	line-height: 16px;
+	height: 18px;
+}
+
+.d-ie .d-text-box .slots-container .text {
+	padding-top: 1px;
+}
+
+.d-text-box .slots-container .slot {
+	line-height: 16px;
+	height: 18px;
+	cursor: pointer;
+	background: url(form/spinner-slot-bg.gif);
+	padding: 0 1px 0 1px;
+}
+
+.d-text-box .slots-container .slot-selected {
+	background: url(form/spinner-selected-slot-bg.gif);
+	color: white;
+}
+
+/* drop-down */
+.d-drop-down-box {
+	border: 1px #A1A1A1 solid;
+	background-color: #FFFFFF;
+}
+
+/* year-month-picker */
+.d-year-month-picker{
+	border: 0;
+	background: #FFFFFF url(base/date-picker-bg.gif) 0 -200px repeat-x;
+}
+
+.d-year-month-picker .year-table{
+	border-left: 1px dotted #325573;
+}
+
+.d-year-month-picker .year-table .prev-year-button, .d-year-month-picker .year-table .next-year-button{
+	background: url(common/icons.gif) no-repeat -60px -280px;
+}
+
+.d-year-month-picker .year-table .prev-year-button{
+	background-position: -40px -280px;
+}
+
+.d-year-month-picker .year-table td.hover, .d-year-month-picker .month-table td.hover,{
+	background: url(base/ym-picker-hover-cell.gif) no-repeat center center;
+}
+
+.d-year-month-picker .year-table td:hover, .d-year-month-picker .month-table td:hover{
+	background: url(base/ym-picker-hover-cell.gif) no-repeat center center;
+}
+
+.d-year-month-picker .year-table .btn-row td:hover{
+	background-image: none;
+}
+
+.d-year-month-picker .year-table td.selected, .d-year-month-picker .month-table td.selected{
+	background: url(base/ym-picker-current-cell.gif) no-repeat center center;
+}
+
+/* date-picker */
+.d-date-picker .year-month-block{
+	border-width: 0;
+	background: url(base/date-picker-bg.gif);
+	font-weight: bold;
+}
+
+.d-date-picker .year-month-block .pre-year-button, .d-date-picker .year-month-block .pre-month-button,
+.d-date-picker .year-month-block .next-year-button, .d-date-picker .year-month-block .next-month-button{
+	background: url(common/icons.gif) no-repeat;
+}
+
+.d-date-picker .year-month-block .pre-year-button{
+	background-position: -80px -280px;
+}
+
+.d-date-picker .year-month-block .pre-month-button{
+	background-position: -40px -280px;
+}
+
+.d-date-picker .year-month-block .next-year-button{
+	background-position: -100px -280px;
+}
+
+.d-date-picker .year-month-block .next-month-button{
+	background-position: -60px -280px;
+}
+
+.d-date-picker .date-header{
+	border-color: gray;
+	border-bottom: 1px #B7B7B7 solid;
+	background: url(base/date-picker-bg.gif) 0 -29px;
+}
+
+.d-date-picker .date-block .date-table{
+	border-color: gray;
+	background: url(base/date-picker-bg.gif) 0 -48px;
+}
+
+.d-date-picker .date-block .date-table .hover, .d-date-picker .date-block .date-table td:hover{
+	background: url(base/date-picker-hover-cell.gif) no-repeat center center;
+}
+
+.d-date-picker .date-block .date-table td.selected-date{
+	background: url(base/date-picker-current-cell.gif) no-repeat center center;
+}
+
+.d-date-picker .date-block .date-table td.pre-month{
+	color: #CFCFCF;
+	background-color: #FFFFFF;
+}
+
+.d-date-picker .date-block .date-table td.next-month{
+	color: #CFCFCF;
+	background-color: #FFFFFF;
+}
+
+.d-date-picker .d-year-month-picker{
+	border: 0;
+}
+
+.d-date-picker .time-block{
+	border-width: 0;
+}
+

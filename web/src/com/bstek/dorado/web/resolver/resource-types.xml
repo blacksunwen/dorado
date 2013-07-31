@@ -20,4 +20,9 @@
 	<resource-type type=".wav" content-type="audio/x-wav" compressible="false" />
 	<resource-type type=".mp3" content-type="audio/mpeg" compressible="false" />
 	<resource-type type=".xap" content-type="application/x-silverlight-2" compressible="false" />
+	<resource-type type=".svg" content-type="image/svg+xml" compressible="true" />
+	<resource-type type=".ttf" content-type="application/x-font-ttf" compressible="false" />
+	<resource-type type=".eot" content-type="application/vnd.ms-fontobject" compressible="false" />
+	<resource-type type=".otf" content-type="application/x-font-opentype" compressible="false" />
+	<resource-type type=".woff" content-type="application/x-font-woff" compressible="false" />
 </resource-types>

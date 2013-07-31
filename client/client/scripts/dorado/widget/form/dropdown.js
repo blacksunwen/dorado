@@ -261,14 +261,7 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 	},
 
 	createDropDownBox : function() {
-		var config = {
-			dropDown : this,
-			hideAnimateType : "none"
-		};
-		if (dorado.Browser.msie && dorado.Browser.version < 9) {
-			config.showAnimateType =  "none";
-		}
-		return new dorado.widget.DropDownBox(config);
+		return new dorado.widget.DropDownBox();
 	},
 
 	initDropDownBox : dorado._NULL_FUNCTION,
@@ -319,6 +312,7 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 		$setTimeout(this, function() {
 			delete this._skipExecute;
 		}, 300);
+		
 		if (this.get("opened")) {
 			this.close();
 		} else {
@@ -362,72 +356,87 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 		var box = boxCache ? boxCache[dorado.id + '$' + dropdown._id] : null;
 		if (!box) {
 			box = dropdown.createDropDownBox();
-			box.addListener("onDropDownBoxShow", function() {
-				if (dropdown.onDropDownBoxShow) dropdown.onDropDownBoxShow();
+			box.set({
+				onDropDownBoxShow: function() {
+					if (dropdown.onDropDownBoxShow) dropdown.onDropDownBoxShow();
+				}
 			});
 			(dropdown._view || $topView).registerInnerControl(box);
-			
-			/*
-			var viewElement;
-			if (!(dorado.Browser.msie && dorado.Browser.version < 9)) {
-				var view = editor._view;
-				while (view) {
-					if (view._rendered) viewElement = view.getContentContainer();
-					view = view._view;
-				}
-			}
-			box.render(viewElement || win.document.body);
-			*/
+
 			box.render(win.document.body);
-			
+			var boxDom = box.getDom(), containerDom = box.get("containerDom");
+			box._edgeWidth = boxDom.offsetWidth - containerDom.offsetWidth;
+			box._edgeHeight = boxDom.offsetHeight - containerDom.offsetHeight;
+
 			if (boxCache) boxCache[dorado.id + '$' + dropdown._id] = box;
 		}
+		box._dropDown = dropdown;
 		box._editor = editor;
 		dropdown._box = box;
 
 		box._onBlurListener = function() {
 			dropdown.close();
 		};
+
 		editor.addListener("onBlur", box._onBlurListener, {
 			once : true
 		});
-		
+
+		dropdown._duringShowAnimation = true;		
 		box.addListener("afterShow", function() {
-			dropdown._relocateTimeId = setInterval(function() {
-				var editorDom = dropdown._editor && dropdown._editor.getDom();
-				if (editorDom) {
-					var offset = $fly(editorDom).offset();
-					if (offset.left != dropdown._currentEditorOffsetLeft ||
-					offset.top != dropdown._currentEditorOffsetTop ||
-					editorDom.offsetWidth != dropdown._currentEditorOffsetWidth ||
-					editorDom.offsetHeight != dropdown._currentEditorOffsetHeight) {
-						dropdown.locate();
-					}
-				}
-			}, 300);
+			dropdown._duringShowAnimation = false;
 			
-			dropdown._relocateListener = function() {
-				dropdown.locate();
-			};
-			$fly(window).bind("resize", dropdown._relocateListener);
+			if (dropdown.shouldAutoRelocate()) {
+				dropdown._relocateTimeId = setInterval(function() {
+					var editorDom = dropdown._editor && dropdown._editor.getDom();
+					if (editorDom) {
+						var offset = $fly(editorDom).offset();
+						if (offset.left != dropdown._currentEditorOffsetLeft ||
+						offset.top != dropdown._currentEditorOffsetTop ||
+						editorDom.offsetWidth != dropdown._currentEditorOffsetWidth ||
+						editorDom.offsetHeight != dropdown._currentEditorOffsetHeight) {
+							dropdown.locate();
+						}
+					}
+				}, 300);
+				
+				dropdown._relocateListener = function() {
+					dropdown.locate();
+				};
+				$fly(window).bind("resize", dropdown._relocateListener);
+			}
+			
+			if (dropdown._shouldRelocate) dropdown.locate();
 		});
 		
 		dropdown.locate();
 	},
 	
+	shouldAutoRelocate: function() {
+		return true;
+	},
+	
 	locate: function() {
+		if (!this._box || !this._editor) return;
+		this.doLocate();
+	},
+	
+	getDefaultWidth: function(editor) {
+		return $fly(editor.getDom()).outerWidth();
+	},
+	
+	doLocate: function() {
 		var dropdown = this, box = dropdown._box, editor = dropdown._editor;
-		if (!box || !editor) return;
-
 		var editorDom = editor.getDom(), boxDom = box.getDom(), boxContainer = boxDom.parentNode;
-		var realMaxHeight, boxContainerHeight = boxContainer.clientHeight, boxVisible = box.get("visible");
-		realMaxHeight = boxContainerHeight;
+		var $boxDom= $fly(boxDom);
+		var boxContainerHeight = boxContainer.clientHeight, realMaxHeight = boxContainerHeight;
 		
 		var currentEditorOffset = $fly(editorDom).offset();
 		dropdown._currentEditorOffsetLeft = currentEditorOffset.left; 
 		dropdown._currentEditorOffsetTop = currentEditorOffset.top;   
 		dropdown._currentEditorOffsetWidth = editorDom.offsetWidth; 
-		dropdown._currentEditorOffsetHeight = editorDom.offsetHeight; 
+		dropdown._currentEditorOffsetHeight = editorDom.offsetHeight;
+		dropdown._boxVisible = box.get("visible"); 
 		
 		var offsetTargetTop = dropdown._currentEditorOffsetTop;
 		var offsetTargetBottom = boxContainerHeight - offsetTargetTop - dropdown._currentEditorOffsetHeight;
@@ -442,43 +451,41 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 		dropdown._realMaxWidth = dropdown._maxWidth;
 		dropdown._realMaxHeight = (realMaxHeight < dropdown._maxHeight) ? realMaxHeight : dropdown._maxHeight;
 
-		var boxWidth = dropdown._width || $fly(editorDom).outerWidth();
-		if (boxWidth > dropdown._realMaxWidth) boxWidth = dropdown._realMaxWidth;
+		var boxWidth = dropdown._width || dropdown.getDefaultWidth(editor);
+		if (dropdown._realMaxWidth > 0 && boxWidth > dropdown._realMaxWidth) boxWidth = dropdown._realMaxWidth;
 		if (boxWidth < dropdown._minWidth) boxWidth = dropdown._minWidth;
+		if (boxWidth < box._edgeWidth) boxWidth = box._edgeWidth;
 		var boxHeight = dropdown._height || 0;
-		if (boxHeight > dropdown._realMaxHeight) boxHeight = dropdown._realMaxHeight;
+		if (dropdown._realMaxHeight > 0 && boxHeight > dropdown._realMaxHeight) boxHeight = dropdown._realMaxHeight;
 		if (boxHeight < dropdown._minHeight) boxHeight = dropdown._minHeight;
+		if (boxHeight < box._edgeHeight) boxHeight = box._edgeHeight;
 
-		var containerElement = box.getContainerElement();
-		if (!boxVisible) {
-			with (boxDom.style) {
-				left = -screen.availWidth + "px";
-				top = 0;
-				width = boxWidth + "px";
-				height = boxHeight + "px";
-				visibility = "hidden";
-				display = '';
-			}
+		if (!dropdown._boxVisible) {
+			boxDom.style.visibility = "hidden";
+			boxDom.style.display = "";
 		}
-		else {
-			with (boxDom.style) {
-				width = boxWidth + "px";
-				height = boxHeight + "px";
-			}
-		}
-
-		box.init(editor);
-		dropdown.initDropDownBox(box, editor);
+		box._visible = true;	// 避免内部的onResize逻辑被跳过
+		box._actualVisible = true;
+		box.set({
+			width: boxWidth,
+			height: boxHeight
+		}).refresh();
+		box._visible = false;
+		box._actualVisible = false;
 		
+		var currentBoxWidth = boxWidth, currentBoxHeight = boxHeight;
+		dropdown.initDropDownBox(box, editor);
+
+		var containerDom = box.get("containerDom"), controlDom = box.get("control").getDom();
 		if (!dropdown._width) {
-			boxWidth = (dorado.Browser.mozilla) ? containerElement.firstChild.offsetWidth
-					: containerElement.scrollWidth;
+			var edgeWidth = boxDom.offsetWidth - containerDom.offsetWidth;
+			boxWidth = controlDom.offsetWidth + edgeWidth;
 			if (boxWidth > dropdown._realMaxWidth) boxWidth = dropdown._realMaxWidth;
 			if (boxWidth < dropdown._minWidth) boxWidth = dropdown._minWidth;
 		}
 		if (!dropdown._height) {
-			boxHeight = (dorado.Browser.mozilla) ? containerElement.firstChild.offsetHeight
-					: containerElement.scrollHeight;
+			var edgeHeight = boxDom.offsetHeight - containerDom.offsetHeight;
+			boxHeight =  controlDom.offsetHeight + edgeHeight;
 			if (boxHeight > dropdown._realMaxHeight) boxHeight = dropdown._realMaxHeight;
 			if (boxHeight < dropdown._minHeight) boxHeight = dropdown._minHeight;
 		}
@@ -486,17 +493,23 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 		if (dropdown._currentEditorOffsetWidth > boxWidth) {
 			align = "innerRight";
 		}
-		
 		if (vAlign == "top" && boxHeight < offsetTargetBottom) {
 			vAlign = "bottom";
 		}
-		
-		var widthOverflow = boxDom.offsetParent.clientWidth - ($fly(editorDom).offset().left + boxWidth);
-		if (widthOverflow > 0) widthOverflow = 0;
 
-		boxDom.style.width = boxWidth + "px";
-		boxDom.style.height = boxHeight + "px";
-		if (boxVisible) {
+		if (currentBoxWidth < boxWidth || currentBoxHeight != boxHeight) {
+			var config = {};
+			if (currentBoxWidth < boxWidth) config.width = boxWidth;
+			if (currentBoxHeight != boxHeight) config.height = boxHeight;
+			
+			box._visible = true; // 避免内部的onResize逻辑被跳过
+			box._actualVisible = true;
+			box.set(config).refresh();
+			box._visible = false;
+			box._actualVisible = false;
+		}
+		
+		if (dropdown._boxVisible) {
 			$DomUtils.dockAround(boxDom, editorDom, {
 				align: align,
 				offsetLeft: widthOverflow,
@@ -504,13 +517,20 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 				autoAdjustPosition: false
 			});
 		} else {
-			dropdown._duringShowAnimation = true;
-			box.addListener("afterShow", function() {
-				dropdown._duringShowAnimation = false;
-				if (dropdown._shouldRelocate) dropdown.locate();
-			}, {
-				once: true
-			});
+			var widthOverflow = boxDom.parentNode.clientWidth - ($fly(editorDom).offset().left + boxWidth);
+			if (widthOverflow > 0) widthOverflow = 0;
+
+			/* for Debug
+			boxDom.style.position = "absolute";
+			boxDom.style.left = "200px";
+			boxDom.style.top = "200px";
+			boxDom.style.visibility = "";
+			boxDom.style.display = "";
+			*/
+
+			boxDom.style.visibility = "hidden";
+			boxDom.style.display = "none";
+
 			box.show({
 				animateType: (boxHeight > 10) ? undefined : "none",
 				anchorTarget: editor,
@@ -595,40 +615,40 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 			for (var i = 0; i < maps.length; i++) {
 				var map = maps[i], value;
 				if (map.readProperty == "$this") {
-						value = entityForAssignment;
-					} else {
-						value = (entityForAssignment instanceof dorado.Entity) ? entityForAssignment.get(map.readProperty) : entityForAssignment[map.readProperty];
-					}
-					
-					if (value instanceof dorado.Entity) {
-						if (value.isEmptyItem) {
-							value = null;
-						} else {
-							value = dorado.Core.clone(value);
-						}
-					}
-					
-					if (targetEntity instanceof dorado.Entity) targetEntity.set(map.writeProperty, value);
-					else targetEntity[map.writeProperty] = value;
+					value = entityForAssignment;
+				} else {
+					value = (entityForAssignment instanceof dorado.Entity) ? entityForAssignment.get(map.readProperty) : entityForAssignment[map.readProperty];
 				}
 				
-				var shouldSetEditor = true;
-				if (editor._property && editor._dataSet) {
-					for (var i = 0; i < maps.length; i++) {
-						if (maps[i].writeProperty == editor._property) {
-							shouldSetEditor = false;
-							shouldPostEditor = false;
-							break;
-						}
+				if (value instanceof dorado.Entity) {
+					if (value.isEmptyItem) {
+						value = null;
+					} else {
+						value = dorado.Core.clone(value);
 					}
 				}
-				if (shouldSetEditor) editor.set("value", selectedValue);
-			} else {
-				if (selectedValue instanceof dorado.Entity || selectedValue instanceof dorado.EntityList) {
-					selectedValue = dorado.Core.clone(selectedValue);
-				}
-				editor.set("value", selectedValue);
+				
+				if (targetEntity instanceof dorado.Entity) targetEntity.set(map.writeProperty, value);
+				else targetEntity[map.writeProperty] = value;
 			}
+			
+			var shouldSetEditor = true;
+			if (editor._property && editor._dataSet) {
+				for (var i = 0; i < maps.length; i++) {
+					if (maps[i].writeProperty == editor._property) {
+						shouldSetEditor = false;
+						shouldPostEditor = false;
+						break;
+					}
+				}
+			}
+			if (shouldSetEditor) editor.set("value", selectedValue);
+		} else {
+			if (selectedValue instanceof dorado.Entity || selectedValue instanceof dorado.EntityList) {
+				selectedValue = dorado.Core.clone(selectedValue);
+			}
+			editor.set("value", selectedValue);
+		}
 		if (shouldPostEditor && this._postValueOnSelect) editor.post();
 	}
 
@@ -641,8 +661,7 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
  * 例如：我们在自定义下拉框中放置了一个关闭按钮，该关闭按钮需要知道自己关闭的哪个下拉框，此时即可使用此方法查找其所属的下拉框。
  * </p>
  * 
- * @param {dorado.widget.Control}
- *            control 任意的控件。
+ * @param {dorado.widget.Control} control 任意的控件。
  * @return {dorado.widget.DropDown} 所属的下拉框。
  * 
  * @example // 例如自定义下拉框中的关闭按钮可以这样定义 new dorado.widget.Button({ caption: "Close",
@@ -653,114 +672,3 @@ dorado.widget.DropDown.findDropDown = function(control) {
 	var box = control.findParent(dorado.widget.DropDownBox);
 	return box ? box.get("dropDown") : null;
 };
-
-dorado.widget.DropDownBox = $extend([ dorado.widget.Control, dorado.widget.FloatControl ], /** @scope dorado.widget.DropDownBox.prototype */
-{
-	$className : "dorado.widget.DropDownBox",
-	_inherentClassName : "i-drop-down-box",
-
-	ATTRIBUTES : /** @scope dorado.widget.DropDownBox.prototype */
-	{
-		className : {
-			defaultValue : "d-drop-down-box"
-		},
-
-		showAnimateType : {
-			defaultValue : "safeSlide"
-		},
-
-		hideAnimateType : {
-			defaultValue : "safeSlide"
-		},
-		
-		focusAfterShow: {
-			defaultValue : false
-		},
-		
-		continuedFocus: {
-			defaultValue : true
-		},
-
-		visible : {
-			defaultValue : false
-		},
-
-		editor : {},
-
-		dropDown : {},
-
-		control : {
-			writeOnce : true,
-			setter : function(control) {
-				if (this._control == control) return;
-				this._control = control;
-				if (control) {
-					this.registerInnerControl(control);
-				}
-			}
-		}
-	},
-
-	EVENTS : /** @scope dorado.widget.DropDownBox.prototype */
-	{
-		onDropDownBoxShow : {}
-	},
-
-	createDom : function() {
-		var json = {
-			tagName : "DIV",
-			style : {
-				position : "absolute",
-				display : "none"
-			},
-			content : {
-				tagName : "DIV",
-				style : {
-					overflow : "visible",
-					height: "100%"
-				}
-			}
-		};
-		if (dorado.Browser.msie && dorado.Browser.version < 7) {
-			json.content.style.width = "100%";
-			json.content.style.height = "100%";
-		}
-		return $DomUtils.xCreate(json);
-	},
-
-	init : function(editor) {
-		if (this._control) {
-			this._control.render(this.getContainerElement());
-		}
-	},
-
-	getContainerElement : function() {
-		return this.getDom().firstChild;
-	},
-
-	doBeforeShow : function(editor) {
-		$invokeSuper.call(this, arguments);
-		this.refresh();
-	},
-
-	doAfterShow : function(editor) {
-		$invokeSuper.call(this, arguments);
-		this.fireEvent("onDropDownBoxShow", this);
-	},
-
-	doBeforeHide : function() {
-		$invokeSuper.call(this, arguments);
-		this._closed = true;
-	}
-});
-
-dorado.widget.View.registerDefaultComponent("triggerClear", function() {
-	return new dorado.widget.Trigger({
-		exClassName : "d-trigger-clear",
-		iconClass : "d-trigger-icon-clear",
-		onExecute : function(self, arg) {
-			arg.editor.set("text", "");
-			arg.editor.post();
-		}
-	});
-});

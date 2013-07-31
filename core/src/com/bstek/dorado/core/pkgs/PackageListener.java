@@ -22,5 +22,5 @@ public interface PackageListener {
 
 	public void beforeLoadPackage(PackageInfo packageInfo,
 			ResourceLoader resourceLoader) throws Exception;
-
+	
 }

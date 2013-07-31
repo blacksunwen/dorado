@@ -362,6 +362,8 @@ public final class PackageManager {
 						.getProperty("propertiesConfigLocations"));
 				packageInfo.setContextLocations(properties
 						.getProperty("contextConfigLocations"));
+				packageInfo.setComponentLocations(properties
+						.getProperty("componentConfigLocations"));
 				packageInfo.setServletContextLocations(properties
 						.getProperty("servletContextConfigLocations"));
 
@@ -427,20 +429,9 @@ public final class PackageManager {
 			calculateDepends(packageInfo, calculatedPackages, packageMap);
 		}
 
-		int addonNumber = 0;
 		packageInfosMap.clear();
 		for (PackageInfo packageInfo : calculatedPackages) {
 			packageInfosMap.put(packageInfo.getName(), packageInfo);
-
-			String packageName = packageInfo.getName();
-			if (!packageName.equals("dorado-core")
-					&& !packageName.equals("dorado-hibernate")
-					&& !packageName.equals("dorado-jdbc")) {
-				addonNumber++;
-				if (addonNumber > 9999) {
-					packageInfo.setEnabled(false);
-				}
-			}
 		}
 	}
 

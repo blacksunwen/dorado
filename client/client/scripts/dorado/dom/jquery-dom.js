@@ -126,17 +126,14 @@
 					}
 				} else {
 					var n = parseInt(arg);
-
 					if (arguments[1] === true) {
 						n = n - num(this, "padding" + tl) - num(this, "padding" + br) -
 						    num(this, "border" + tl + "Width") - num(this, "border" + br + "Width") -
 							num(this, "margin" + tl) - num(this, "margin" + br);
 					} else {
 						n = n - num(this, "padding" + tl) - num(this, "padding" + br) -
-						    num(this, "border" + tl + "Width") -
-						    num(this, "border" + br + "Width");
+						    num(this, "border" + tl + "Width") - num(this, "border" + br + "Width");
 					}
-
 					return this[name.toLowerCase()](n);
 				}
 				return this;
@@ -144,6 +141,28 @@
 			return fn.apply(this, arguments);
 		};
 	});
+	
+	// Extend edgeLeft edgeTop edgeRight and edgeBottom methods
+	$.each(["Left", "Top", "Right", "Bottom"], function(i, name) {
+		$.fn["edge" + name] = function(includeMargin) {
+			var n = num(this, "padding" + name) +
+				num(this, "border" + name + "Width");
+			if (includeMargin) {
+				n += num(this, "margin" + name);
+			}
+			return n;
+		};
+	});
+	
+	// Extend edgeWidth
+	$.fn.edgeWidth = function(includeMargin) {
+		return this.edgeLeft(includeMargin) + this.edgeRight(includeMargin);
+	}
+	
+	// Extend edgeHeight
+	$.fn.edgeHeight = function(includeMargin) {
+		return this.edgeTop(includeMargin) + this.edgeBottom(includeMargin);
+	}
 	
 	/**
 	 * @name jQuery#addClassOnHover
@@ -244,9 +263,7 @@
 	
 	var disableMouseWheel = function(event) {
 		event.preventDefault();
-	};
-	
-	
+	};	
 	
 	/**
 	 * @name jQuery#fullWindow
@@ -268,10 +285,16 @@
 						scrollTop: this.scrollTop
 					});
 					var overflowValue = this == document.body ? "hidden" : "visible";
-					jQuery(this).prop("scrollTop", 0).css({
+					
+					var $this = jQuery(this);
+					$this.prop("scrollTop", 0).css({
 						overflow: overflowValue,
 						overflowY: overflowValue
-					}).mousewheel(disableMouseWheel);
+					});
+					
+					if ($this.mousewheel) {
+						$this.mousewheel(disableMouseWheel);
+					}
 				}
 
 				if (!parentsPositioned  && dorado.Browser.msie && dorado.Browser.version <= 7) {
@@ -385,10 +408,14 @@
 			if (parentsOverflow) {
 				for (var i = 0, j = parentsOverflow.length; i < j; i++) {
 					var parentOverflow = parentsOverflow[i];
-					jQuery(parentOverflow.parent).css({
+					var $parent = jQuery(parentOverflow.parent);
+					$parent.css({
 						overflow: parentOverflow.overflow,
 						overflowY: parentOverflow.overflowY
-					}).prop("scrollTop", parentOverflow.scrollTop).unmousewheel(disableMouseWheel);
+					}).prop("scrollTop", parentOverflow.scrollTop);
+					if ($parent.unmousewhee) {
+						$parent.unmousewheel(disableMouseWheel);
+					}
 				}
 			}
 

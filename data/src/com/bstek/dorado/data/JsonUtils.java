@@ -282,7 +282,6 @@ public final class JsonUtils {
 				Class<?> type = null;
 				PropertyDef propertyDef = null;
 				DataType propertyDataType = null;
-				
 				type = entity.getPropertyType(property);
 				if (dataType != null) {
 					propertyDef = dataType.getPropertyDef(property);
@@ -292,10 +291,11 @@ public final class JsonUtils {
 				}
 
 				if (jsonNode instanceof ContainerNode) {
-					value = toJavaObject(jsonNode,
-							propertyDataType, type, proxy, context);
+					value = toJavaObject(jsonNode, propertyDataType, type,
+							proxy, context);
 				} else if (jsonNode instanceof ValueNode) {
-					value = toJavaValue((ValueNode) jsonNode, propertyDataType, null);
+					value = toJavaValue((ValueNode) jsonNode, propertyDataType,
+							null);
 				} else {
 					throw new IllegalArgumentException(
 							"Value type mismatch. expect [JSON Value].");
@@ -310,7 +310,7 @@ public final class JsonUtils {
 										(String) value);
 							}
 						} else {
-							 propertyDataType = getDataTypeManager()
+							propertyDataType = getDataTypeManager()
 									.getDataType(type);
 							if (propertyDataType != null) {
 								value = propertyDataType.fromObject(value);
@@ -353,12 +353,17 @@ public final class JsonUtils {
 				while (oldFields.hasNext()) {
 					Entry<String, JsonNode> entry = oldFields.next();
 					String property = entry.getKey();
-					
 					PropertyDef propertyDef = null;
 					DataType propertyDataType = null;
-					Object value;
+					Object value;					
 					
-					
+					if (dataType != null) {
+						propertyDef = dataType.getPropertyDef(property);
+						if (propertyDef != null) {
+							propertyDataType = propertyDef.getDataType();
+						}
+					}
+
 					if (dataType != null) {
 						propertyDef = dataType.getPropertyDef(property);
 						if (propertyDef != null) {
@@ -369,11 +374,11 @@ public final class JsonUtils {
 					JsonNode jsonNode = entry.getValue();
 					if (jsonNode instanceof ContainerNode) {
 						Class<?> type = entity.getPropertyType(property);
-						value = toJavaObject(
-								jsonNode,propertyDataType, type, proxy,
-								context);
+						value = toJavaObject(jsonNode, propertyDataType, type,
+								proxy, context);
 					} else if (jsonNode instanceof ValueNode) {
-						value = toJavaValue((ValueNode) jsonNode, propertyDataType, null);
+						value = toJavaValue((ValueNode) jsonNode,
+								propertyDataType, null);
 					} else {
 						throw new IllegalArgumentException(
 								"Value type mismatch. expect [JSON Value].");
@@ -450,8 +455,7 @@ public final class JsonUtils {
 					String dataTypeName = JsonUtils.getString(objectNode,
 							DATATYPE_PROPERTY);
 					if (StringUtils.isNotEmpty(dataTypeName)) {
-						elementDataType = getDataType(
-								dataTypeName, context);
+						elementDataType = getDataType(dataTypeName, context);
 					}
 				}
 				collection

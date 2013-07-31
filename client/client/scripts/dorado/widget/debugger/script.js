@@ -56,17 +56,9 @@ dorado.debug.initProcedures.push(function(){
 								catch (e) {
 									var errorMsg;
 									if (!dorado.Browser.msie) {
-										errorMsg = "name: " + e.name +
-										"\nmessage: " +
-										e.message +
-										"\nstack: " +
-										e.stack;
+										errorMsg = "name: " + e.name + "\nmessage: " + e.message + "\nstack: " + e.stack;
 									} else {
-										errorMsg = "name: " + e.name +
-										"\nerrorNumber: " +
-										(e.number & 0xFFFF) +
-										"\nmessage: " +
-										e.message;
+										errorMsg = "name: " + e.name + "\nerrorNumber: " + (e.number & 0xFFFF) + "\nmessage: " + e.message;
 									}
 									panel.fireEvent("onRunCodeError", panel, {
 										errorMsg: errorMsg

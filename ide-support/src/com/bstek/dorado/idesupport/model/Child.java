@@ -36,6 +36,7 @@ public class Child {
 	private boolean fixed;
 	private boolean aggregated;
 	private int clientTypes;
+	private boolean deprecated;
 	private String reserve;
 	private Object userData;
 
@@ -81,6 +82,14 @@ public class Child {
 
 	public void setClientTypes(int clientTypes) {
 		this.clientTypes = clientTypes;
+	}
+
+	public boolean isDeprecated() {
+		return deprecated;
+	}
+
+	public void setDeprecated(boolean deprecated) {
+		this.deprecated = deprecated;
 	}
 
 	public String getReserve() {

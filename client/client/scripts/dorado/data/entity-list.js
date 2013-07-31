@@ -933,7 +933,14 @@
 		 * 此属性对于{@link dorado.EntityList}的toJSON而言是没有意义的，但是由于options参数会自动被传递到集合中{@link dorado.Entity}的toJSON方法中，
 		 * 因此它会影响内部{@link dorado.Entity}的处理过程。
 		 * @param {boolean} [options.includeReferenceProperties=true] 是否转换实体对象中{@link dorado.Reference}类型的属性。默认按true进行处理。
-		 * @param {boolean} [options.includeUnloadPage=true] 是否转换{@link dorado.EntityList}中尚未装载的页中的数据。默认按false进行处理。
+		 * @param {String} [options.loadMode="never"] 数据装载模式，此属性仅在options.includeReferenceProperties=true为true时有效。<br>
+		 * 包含下列三种取值:
+		 * <ul>
+		 * <li>always	-	如果有需要总是装载尚未装载的延时数据。</li>
+		 * <li>auto	-	如果有需要则自动启动异步的数据装载过程，但对于本次方法调用将返回数据的当前值。</li>
+		 * <li>never	-	不会激活数据装载过程，直接返回数据的当前值。</li>
+		 * </ul>
+		 * @param {boolean} [options.includeUnloadPage=true] 是否转换{@link dorado.EntityList}中尚未装载的页中的数据。默认按true进行处理。
 		 * @param {boolean} [options.includeDeletedEntity] 是否转换那些被标记为"已删除"的数据实体。
 		 * @param {boolean} [options.simplePropertyOnly] 是否只生成简单类型的属性到JSON中。
 		 * 此属性对于{@link dorado.EntityList}的toJSON而言是没有意义的，但是由于options参数会自动被传递到集合中{@link dorado.Entity}的toJSON方法中，
@@ -1000,7 +1007,20 @@
 				result.push(entity);
 			});
 			return result;
-			
+		},
+		
+		/**
+		 * 将所有数据实体转换成代理对象并放置到一个数组中。
+		 * @param {Object} [options] 转换选项。
+		 * @return {Object} 得到的代理对象数组。
+		 * @see dorado.Entity#getWrapper
+		 */
+		getWrapper: function(options) {
+			var result = [];
+			this.each(function(entity) {
+				result.push(entity.getWrapper(options));
+			});
+			return result;
 		},
 		
 		/**

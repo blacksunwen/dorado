@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.core.io.Resource;
 import com.bstek.dorado.util.PathUtils;
 import com.bstek.dorado.web.DoradoContext;
@@ -27,6 +28,8 @@ import com.bstek.dorado.web.DoradoContext;
  * @since Sep 24, 2008
  */
 public class WebFileResolver extends AbstractWebFileResolver {
+	private static final String RESOURCE_PREFIX_DELIM = ";,\n\r";
+
 	String baseUri;
 	String resourcePrefix;
 
@@ -77,10 +80,41 @@ public class WebFileResolver extends AbstractWebFileResolver {
 	protected Resource[] getResourcesByFileName(DoradoContext context,
 			String resourcePrefix, String fileName, String resourceSuffix)
 			throws Exception {
-		fileName = PathUtils.concatPath(resourcePrefix, fileName);
-		if (resourceSuffix != null) {
-			fileName = fileName + resourceSuffix;
+		String path;
+		Resource[] resources = null;
+		if ("debug".equals(Configure.getString("core.runMode"))
+				&& resourcePrefix != null
+				&& StringUtils
+						.indexOfAny(resourcePrefix, RESOURCE_PREFIX_DELIM) >= 0) {
+			String[] prefixs = StringUtils.split(resourcePrefix,
+					RESOURCE_PREFIX_DELIM);
+			for (String prefix : prefixs) {
+				boolean allExists = true;
+				path = PathUtils.concatPath(prefix, fileName);
+				if (resourceSuffix != null) {
+					path = path + resourceSuffix;
+				}
+				resources = context.getResources(path);
+				if (resources != null && resources.length > 0) {
+					for (int i = 0; i < resources.length; i++) {
+						Resource resource = resources[i];
+						if (!resource.exists()) {
+							allExists = false;
+							break;
+						}
+					}
+				}
+				if (allExists) {
+					break;
+				}
+			}
+		} else {
+			path = PathUtils.concatPath(resourcePrefix, fileName);
+			if (resourceSuffix != null) {
+				path = path + resourceSuffix;
+			}
+			resources = context.getResources(path);
 		}
-		return context.getResources(fileName);
+		return resources;
 	}
 }

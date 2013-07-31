@@ -72,53 +72,7 @@
 	dorado.widget.layout.AnchorLayout = $extend(dorado.widget.layout.Layout, /** @scope dorado.widget.layout.AnchorLayout.prototype */
 	{
 		$className: "dorado.widget.layout.AnchorLayout",
-		
-		ATTRIBUTES: /** @scope dorado.widget.layout.AnchorLayout.prototype */ {
-		
-			className: {
-				defaultValue: "d-anchor-layout"
-			},
-			
-			/**
-			 * 横向溢出模式。
-			 * <p>
-			 * 即当布局管理器中的内容的位置或尺寸超出布局管理器的边界时，布局管理器应该如何处理。
-			 * 此属性的值通常是由使用该布局管理器的容器控件来自动维护的，所以通常您不必主动的修改此属性。
-			 * </p>
-			 * <p>
-			 * 可选的值包括：
-			 * <ul>
-			 * <li>hidden - 当内容超出边界时，超出的部分将不可见。</li>
-			 * <li>visible - 当内容超出边界时，尝试调整布局管理器的尺寸使其依然可见。
-			 * 这样很可能也会引起使用此布局管理器的容器控件的尺寸发生变化。</li>
-			 * <li>auto - 交由系统自动判断。</li>
-			 * </ul>
-			 * </p>
-			 *
-			 * @attribute
-			 */
-			overflowX: {},
-			
-			/**
-			 * 纵向溢出模式。
-			 * <p>
-			 * 即当布局管理器中的内容的位置或尺寸超出布局管理器的边界时，布局管理器应该如何处理。
-			 * 此属性的值通常是由使用该布局管理器的容器控件来自动维护的，所以通常您不必主动的修改此属性。
-			 * </p>
-			 * <p>
-			 * 可选的值包括：
-			 * <ul>
-			 * <li>hidden - 当内容超出边界时，超出的部分将不可见。</li>
-			 * <li>visible - 当内容超出边界时，尝试调整布局管理器的尺寸使其依然可见。
-			 * 这样很可能也会引起使用此布局管理器的容器控件的尺寸发生变化。</li>
-			 * <li>auto - 交由系统自动判断。</li>
-			 * </ul>
-			 * </p>
-			 *
-			 * @attribute
-			 */
-			overflowY: {}
-		},
+		_className: "i-anchor-layout d-anchor-layout",
 		
 		createDom: function() {
 			var dom = document.createElement("DIV");
@@ -127,9 +81,8 @@
 		},
 		
 		refreshDom: function(dom) {
-			var overflowX = this._overflowX, overflowY = this._overflowY;
-			dom.style.width = "";
-			dom.style.height = "";
+			dom.style.width = "100%";
+			dom.style.height = "100%";
 			this.doRefreshDom(dom);
 		},
 		
@@ -150,12 +103,12 @@
 			var controlDom = region.control.getDom();
 			if (controlDom.style.position == "absolute") {
 				if (region.right === undefined) {
-					var right = (region.left || 0) + region.realWidth;
+					var right = (region.left || 0) + region.realWidth + region.regionPadding;
 					if (right > this._maxRagionRight) this._maxRagionRight = right;
 				}
 				
 				if (region.bottom === undefined) {
-					var bottom = (region.top || 0) + region.realHeight;
+					var bottom = (region.top || 0) + region.realHeight + region.regionPadding;
 					if (bottom > this._maxRagionBottom) this._maxRagionBottom = bottom;
 				}
 			}
@@ -164,13 +117,15 @@
 		processOverflow: function(dom) {
 			var overflowed = false, padding = parseInt(this._padding) || 0;
 			var width = this._maxRagionRight;
-			if (width > 0 && width > dom.offsetWidth) {
+			if (width < dom.scrollWidth) width = dom.scrollWidth;
+			if (width > 0 && (width > this._containerWidth || (width == dom.offsetWidth && dom.style.width == ""))) {
 				dom.style.width = (width + padding) + "px";
 				overflowed = true;
 			}
 			
 			var height = this._maxRagionBottom;
-			if (height > 0 && height > dom.offsetHeight) {
+			if (height < dom.scrollHeight) height = dom.scrollHeight;
+			if (height > 0 && (height > this._containerHeight || (height == dom.offsetHeight && dom.style.height == ""))) {
 				dom.style.height = (height + padding) + "px";
 				overflowed = true;
 			}
@@ -213,7 +168,8 @@
 				}
 			} else {
 				var oldWidth = region.realWidth, oldHeight = region.realHeight;
-				if (controlDom.parentNode != dom || controlDom.offsetWidth != oldWidth || controlDom.offsetHeight != oldHeight) {
+				var $controlDom = $fly(controlDom);
+				if (controlDom.parentNode != dom || $controlDom.outerWidth() != oldWidth || $controlDom.outerHeight() != oldHeight) {
 					this.refresh();
 				}
 			}
@@ -265,7 +221,8 @@
 			
 			var padding = (parseInt(this._padding) || 0);
 			var regionPadding = (parseInt(this._regionPadding) || 0) + (parseInt(constraint.padding) || 0);
-			var clientWidth = containerDom.clientWidth, clientHeight = containerDom.clientHeight;
+			var clientWidth = this._containerWidth = containerDom.clientWidth;
+			var clientHeight = this._containerHeight = containerDom.clientHeight;
 			if (clientWidth > 10000) clientWidth = 0;
 			if (clientHeight > 10000) clientHeight = 0;
 			
@@ -291,10 +248,8 @@
 				}
 			}
 			
-			if (constraint.anchorRight == "previous" &&
-			constraint.right == null) constraint.right = 0;
-			if (constraint.right != null &&
-			constraint.anchorRight != "none") {
+			if (constraint.anchorRight == "previous" && constraint.right == null) constraint.right = 0;
+			if (constraint.right != null && constraint.anchorRight != "none") {
 				var r = constraint.right;
 				if (r.constructor == String && r.match('%')) {
 					var rate = rp = parseInt(r);
@@ -313,10 +268,8 @@
 				}
 			}
 			
-			if (constraint.anchorTop == "previous" &&
-			constraint.top == null) constraint.top = 0;
-			if (constraint.top != null &&
-			constraint.anchorTop != "none") {
+			if (constraint.anchorTop == "previous" && constraint.top == null) constraint.top = 0;
+			if (constraint.top != null && constraint.anchorTop != "none") {
 				var t = constraint.top;
 				if (t.constructor == String && t.match('%')) {
 					var rate = tp = parseInt(t);
@@ -335,10 +288,8 @@
 				}
 			}
 			
-			if (constraint.anchorBottom == "previous" &&
-			constraint.bottom == null) constraint.bottom = 0;
-			if (constraint.bottom != null &&
-			constraint.anchorBottom != "none") {
+			if (constraint.anchorBottom == "previous" && constraint.bottom == null) constraint.bottom = 0;
+			if (constraint.bottom != null && constraint.anchorBottom != "none") {
 				var b = constraint.bottom;
 				if (b.constructor == String && b.match('%')) {
 					var rate = bp = parseInt(b);
@@ -458,7 +409,8 @@
 			region.bottom = (bottom >= 0) ? bottom - (parseInt(constraint.topOffset) || 0) : undefined;
 			region.width = (width >= 0) ? width + (parseInt(constraint.widthOffset) || 0) : undefined;
 			region.height = (height >= 0) ? height + (parseInt(constraint.heightOffset) || 0) : undefined;
-			
+			region.regionPadding = regionPadding || 0;
+
 			var dom = this._dom;
 			if (region.right >= 0 && !dom.style.width) {
 				dom.style.width = (clientWidth) ? (clientWidth + "px") : "";
@@ -470,8 +422,9 @@
 			
 			var controlDom = region.control.getDom();
 			if (controlDom) {
-				region.realWidth = controlDom.offsetWidth;
-				region.realHeight = controlDom.offsetHeight;
+				var $controlDom = $fly(controlDom);
+				region.realWidth = $controlDom.outerWidth();
+				region.realHeight = $controlDom.outerHeight();
 			} else {
 				region.realWidth = region.control.getRealWidth() || 0;
 				region.realHeight = region.control.getRealHeight() || 0;
@@ -489,10 +442,10 @@
 			
 			var constraint = region.constraint, containerDom = this._dom.parentNode;
 			var padding = (parseInt(this._padding) || 0);
-			var regionPadding = (parseInt(this._regionPadding) || 0) + (parseInt(constraint.padding) || 0);
+			var regionPadding = region.regionPadding;
 			var clientWidth = containerDom.clientWidth, realContainerWidth = clientWidth - padding * 2;
 			var clientHeight = containerDom.clientHeight, realContainerHeight = clientHeight - padding * 2;
-			
+
 			if (realignArg.left) {
 				left = Math.round((realContainerWidth - region.realWidth -
 					(region.right > 0 ? region.right : 0)) *
@@ -546,6 +499,4 @@
 		}
 		
 	});
-	
-	dorado.Toolkits.registerPrototype("layout", "Default", dorado.widget.layout.AnchorLayout);
 })();

@@ -18,8 +18,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.bstek.dorado.common.ClientType;
-
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2011-11-11
@@ -47,7 +45,7 @@ public @interface XmlNode {
 
 	boolean isPublic() default true;
 
-	int[] clientTypes() default { ClientType.DESKTOP };
+	int[] clientTypes() default {};
 
 	boolean deprecated() default false;
 

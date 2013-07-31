@@ -34,4 +34,5 @@ public abstract class HttpConstants {
 
 	public static final String CACHE_CONTROL = "Cache-Control";
 	public static final String NO_CACHE = "no-cache, no-store";
+	public static final String MAX_AGE = "max-age=";
 }

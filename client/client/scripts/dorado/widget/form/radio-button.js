@@ -337,15 +337,13 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 			return;
 		}
 		
-		radioGroup._lastPost = radioGroup._value;
+		var currentValue = radioGroup._value;
 		radioGroup._value = value;
-		radioGroup._dirty = true;
 		try {
 			radioGroup.post();
 		} 
 		catch (e) {
-			radioGroup._value = radioGroup._lastPost;
-			radioGroup._dirty = false;
+			radioGroup._value = currentValue;
 			if (radioButton) {
 				radioButton._checked = false;
 				radioButton.refresh();
@@ -382,34 +380,34 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 	refreshDom: function(dom) {
 		$invokeSuper.call(this, arguments);
 		
+		this.refreshExternalReadOnly();
+		
 		var group = this, layout = group._layout;
 		if (group._dataSet) {
-			var value, dirty, readOnly = this._dataSet._readOnly;
+			var value, dirty;
 			if (group._property) {
 				var bindingInfo = group._bindingInfo;
 				if (bindingInfo.entity instanceof dorado.Entity) {
 					value = bindingInfo.entity.get(group._property);
 					dirty = bindingInfo.entity.isDirty(group._property);
 				}
-				readOnly = readOnly || (bindingInfo.entity == null) || bindingInfo.propertyDef.get("readOnly");
 				
-				if (!group._radioButtons || !group._radioButtons.length) {
-					var radioButtons = [], mapping = bindingInfo.propertyDef._mapping;
-					if (mapping) {
-						for (var i = 0; i < mapping.length; i++) {
-							var item = mapping[i];
-							radioButtons.push({
-								value: item.key,
-								text: item.value
-							});
+				if (bindingInfo.propertyDef) {
+					if (!group._radioButtons || !group._radioButtons.length) {
+						var radioButtons = [], mapping = bindingInfo.propertyDef._mapping;
+						if (mapping) {
+							for (var i = 0; i < mapping.length; i++) {
+								var item = mapping[i];
+								radioButtons.push({
+									value: item.key,
+									text: item.value
+								});
+							}
 						}
+						if (radioButtons.length) group.set("radioButtons", radioButtons);
 					}
-					if (radioButtons.length) group.set("radioButtons", radioButtons);
 				}
-			} else {
-				readOnly = true;
 			}
-			group._readOnly2 = readOnly;
 			group.setValue(value);
 			group.setDirty(dirty);
 		}
@@ -480,21 +478,5 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 			group._valueChange(newRadioButton);
 		}
 		return retValue;
-	},
-	
-	post: function() {
-		if (!this._dirty) {
-			return false;
-		}
-		var eventArg = {
-			processDefault: true
-		};
-		this.fireEvent("beforePost", this, eventArg);
-		if (eventArg.processDefault === false) return false;
-		this.doPost();
-		this._lastPost = this._value;
-		this._dirty = false;
-		this.fireEvent("onPost", this, eventArg); // 此事件已被声明为不能抛出异常
-		return true;
 	}
 });

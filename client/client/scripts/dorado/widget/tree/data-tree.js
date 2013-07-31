@@ -75,7 +75,10 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 								hasChild = (pd.getDataPipe && pd.getDataPipe(entity) != null);
 							}
 						} else if (value) {
-							if (value.isDataPipeWrapper || typeof value == "object" && !(value instanceof Date)) {
+							if (value instanceof dorado.EntityList) {
+								hasChild = (!value.isNull && value.entityCount);
+							}
+							else if (value.isDataPipeWrapper || typeof value == "object" && !(value instanceof Date)) {
 								hasChild = true;
 							}
 						}
@@ -741,10 +744,12 @@ dorado.widget.DataTree = $extend([dorado.widget.Tree, dorado.widget.DataControl]
 				}
 				break;
 			}
+
 			case dorado.widget.DataSet.MESSAGE_LOADING_START:{
 				this.showLoadingTip();
 				break;
 			}
+
 			case dorado.widget.DataSet.MESSAGE_LOADING_END:{
 				this.hideLoadingTip();
 				break;

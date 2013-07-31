@@ -85,7 +85,7 @@
 	 * @extends dorado.widget.blockview.DefaultBlockRenderer
 	 * @param {Object}
 	 *            [options] 包含配置信息的JSON对象。<br>
-	 *            该对象中的子属性将在初始化的过程中被复制到渲染器中，此处支持的具体的属性见本对象文旦的Properties段落。
+	 *            该对象中的子属性将在初始化的过程中被复制到渲染器中，此处支持的具体的属性见本对象文档的Properties段落。
 	 */
 	dorado.widget.blockview.ImageBlockRenderer = $extend(dorado.widget.blockview.DefaultBlockRenderer, /** @scope dorado.widget.blockview.ImageBlockRenderer.prototype */ {
 	
@@ -200,7 +200,7 @@
 				labelDom.firstChild.innerText = label;
 			}
 			
-			if (this.tipProperty) {
+			if (this.tipProperty && dorado.TipManager) {
 				var tip = (entity instanceof dorado.Entity) ? entity.get(this.tipProperty) : entity[this.tipProperty];
 				if (tip) {
 					dorado.TipManager.initTip(dom, {
@@ -249,12 +249,52 @@
 	
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
+	 * @class 模板块的渲染器。
+	 * @extends dorado.widget.blockview.DefaultBlockRenderer
+	 * @param {Object}
+	 *            [options] 包含配置信息的JSON对象。
+	 */
+	dorado.widget.blockview.TemplateBlockRenderer = $extend(dorado.widget.blockview.DefaultBlockRenderer, /** @scope dorado.widget.blockview.ImageBlockRenderer.prototype */ {
+	
+		/**
+		 * 用于从数据实体中读取图片文字标签的属性名。
+		 *
+		 * @type String
+		 * @default "caption"
+		 */
+		template: "Template",
+		
+		constructor: function(options) {
+			dorado.Object.apply(this, options);
+		},
+		
+		render: function(dom, arg) {
+			var item = arg.data, html = '', context = {
+				control: arg.control,
+				dom: dom,
+				item: item
+			};
+			if (item != null) {
+				if (item instanceof dorado.Entity) {
+					context.data = item.getWrapper({ textMode: true, readOnly: true });
+				} else {
+					context.data = item;
+				}
+				html = _.template(this.template, context);
+			}
+			dom.innerHTML = html;
+		}
+	});
+	
+	/**
+	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @class 块状列表控件的抽象类。
 	 * @abstract
 	 * @extends dorado.widget.ViewPortList
 	 */
 	dorado.widget.AbstractBlockView = $extend(dorado.widget.ViewPortList, /** @scope dorado.widget.AbstractBlockView.prototype */ {
 		$className: "dorado.widget.AbstractBlockView",
+		_inherentClassName: "i-block-view",
 		
 		ATTRIBUTES: /** @scope dorado.widget.AbstractBlockView.prototype */ {
 			className: {
@@ -269,10 +309,11 @@
 			 * </ul>
 			 *
 			 * @type String
-			 * @attribute
+			 * @attribute writeBeforeReady
 			 * @default "vertical"
 			 */
 			blockLayout: {
+				writeBeforeReady: true,
 				defaultValue: "vertical"
 			},
 			
@@ -472,7 +513,10 @@
 			 *         是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
 			 */
-			onBlockDoubleClick: {}
+			onBlockDoubleClick: {},
+			
+			onBlockTap: {},
+			onBlockTapHold: {}
 		},
 		
 		createItemModel: function() {
@@ -480,30 +524,75 @@
 		},
 		
 		createDom: function() {
-			var dom = $invokeSuper.call(this, arguments);
-			var container = this._container = $DomUtils.xCreate({
+			var dom = $DomUtils.xCreate({
 				tagName: "DIV",
-				style: {
-					position: "relative",
-					overflow: "hidden"
+				content: {
+					tagName: "DIV",
+					style: {
+						width: "100%",
+						height: "100%"
+					},
+					content: "^DIV"
 				}
 			});
-			dom.appendChild(container);
+
+			var blockView = this;
+			var scroller = blockView._scroller = dom.firstChild;
+			var container = blockView._container = scroller.firstChild;
+			blockView._modernScrolled = dorado.util.Dom.modernScroll(scroller);			
 			
-			$fly(dom).bind("scroll", $scopify(this, this.onScroll)).mouseover($scopify(this, function(evt) {
-				if ($DomUtils.isDragging()) return;
-				var blockDom = $DomUtils.findParent(evt.target, function(node) {
-					return node.parentNode == container &&
-					$fly(node).hasClass("block");
+			var $scroller = $(scroller);
+			$scroller.bind("scroll", $scopify(blockView, blockView.onScroll));
+			
+			if (dorado.Browser.isTouch || $setting["common.simulateTouch"]) {
+				$fly(dom).bind("tap", function(evt) {
+					var blockDom = blockView._findBlockDom(evt);
+					if (blockDom) {
+						var data = $fly(blockDom).data("item");
+						if (data) {
+							blockView.fireEvent("onBlockTap", blockView, {
+								data: data
+							});
+						}
+					}
+				}).bind("taphold", function(evt) {
+					var blockDom = blockView._findBlockDom(evt);
+					if (blockDom) {
+						var data = $fly(blockDom).data("item");
+						if (data) {
+							blockView.fireEvent("onBlockTapHold", blockView, {
+								data: data
+							});
+						}
+					}
 				});
-				this.setHoverBlock(blockDom);
-			})).mouseleave($scopify(this, function(evt) {
-				this.setHoverBlock(null);
-			}));
+			}
+			else {
+				$scroller.mouseover($scopify(blockView, function(evt) {
+					if ($DomUtils.isDragging()) return;
+					var blockDom = $DomUtils.findParent(evt.target, function(node) {
+						return node.parentNode == container &&
+						$fly(node).hasClass("block");
+					});
+					blockView.setHoverBlock(blockDom);
+				})).mouseleave($scopify(blockView, function(evt) {
+					blockView.setHoverBlock(null);
+				}));
+			}
 			return dom;
 		},
 		
 		refreshDom: function(dom) {
+			var dynaSize, oldSize;
+			if (this._blockLayout == "vertical") {
+				dynaSize = this.hasRealHeight();
+				if (dynaSize) oldSize = dom.offsetHeight;
+			}
+			else {
+				dynaSize = this.hasRealWidth();
+				if (dynaSize) oldSize = dom.offsetWidth;
+			}
+			
 			$invokeSuper.call(this, arguments);
 			
 			var lineSize = this._lineSize, blockWidth = this._blockWidth, blockHeight = this._blockHeight;
@@ -520,15 +609,7 @@
 			this._itemModel.setLineSize(lineSize);
 			this._lineCount = this._itemModel.getLineCount();
 			
-			var width, height, $container = jQuery(this._container);
-			if (this._blockLayout == "vertical") {
-				dom.style.overflowX = "hidden";
-				dom.style.overflowY = "auto";
-			} else {
-				dom.style.overflowX = "auto";
-				dom.style.overflowY = "hidden";
-			}
-			
+			var width, height, container = this._container, $container = jQuery(container);			
 			var pos = this._getContainerSize();
 			if (this._blockLayout == "vertical") {
 				$container.height(pos[1]).width(dom.clientWidth);
@@ -556,6 +637,15 @@
 				this.refreshViewPortContent(this._container);
 			} else {
 				this.refreshContent(this._container);
+			}
+			
+			if (dynaSize) {
+				if (this._blockLayout == "vertical") {
+					if (oldSize != dom.offsetHeight) this.notifySizeChange();
+				}
+				else {
+					if (oldSize != dom.offsetWidth) this.notifySizeChange();
+				}
 			}
 		},
 		
@@ -734,14 +824,25 @@
 		getHoverBlockDecorator: function() {
 			var decorator = this._hoverDecorator;
 			if (!decorator) {
-				this._hoverDecorator = decorator = new dorado.widget.Panel({
-					className: "block-decorator",
-					border: "curve"
-				});
+				if (dorado.widget.Panel) {
+					decorator = new dorado.widget.Panel({
+						className: "block-decorator",
+						border: "curve"
+					});
+				}
+				else {
+					decorator = new dorado.widget.Control({
+						className: "block-decorator"
+					});
+				}
+				this._hoverDecorator = decorator;
+				
 				var refDom;
 				if (this._currentDecorator) refDom = this._currentDecorator.getDom();
-				this.registerInnerControl(decorator);
+				
+				$fly(decorator.getDom()).addClass("hover-decorator");
 				decorator.render(this._container, refDom);
+				this.registerInnerControl(decorator);
 			}
 			return decorator;
 		},
@@ -783,12 +884,20 @@
 		getCurrentBlockDecorator: function() {
 			var decorator = this._currentDecorator;
 			if (!decorator) {
-				this._currentDecorator = decorator = new dorado.widget.Panel({
-					className: "block-decorator",
-					border: "curve"
-				});
-				$fly(decorator.getDom()).addClass("current-decorator");
+				if (dorado.widget.Panel) {
+					decorator = new dorado.widget.Panel({
+						className: "block-decorator",
+						border: "curve"
+					});
+				}
+				else {
+					decorator = new dorado.widget.Control({
+						className: "block-decorator"
+					});
+				}
+				this._currentDecorator = decorator;
 				
+				$fly(decorator.getDom()).addClass("current-decorator");
 				decorator.render(this._container);
 				this.registerInnerControl(decorator);
 			}
@@ -1196,10 +1305,10 @@
 		
 		onDraggingSourceDrop: function(draggingInfo, evt) {
 			this.showDraggingInsertIndicator();
-			dorado.widget.RowList.prototype.onDraggingSourceDrop.apply(this, arguments);
+			dorado.widget.AbstractList.prototype.onDraggingSourceDrop.apply(this, arguments);
 		},
 		
-		processItemDrop: dorado.widget.RowList.prototype.processItemDrop
+		processItemDrop: dorado.widget.AbstractList.prototype.processItemDrop
 	});
 	
 	dorado.widget.blockview.getDraggingInsertIndicator = function(direction) {

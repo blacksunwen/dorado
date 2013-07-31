@@ -503,7 +503,6 @@
 	window.$extend = dorado.Object.extend;
 	
 	/**
-	 * @deprecated
 	 * @name $getSuperClass
 	 * @function
 	 * @description 返回当前对象的超类。对于多重继承而言，此方法返回第一个超类。
@@ -519,7 +518,6 @@
 	};
 	
 	/**
-	 * @deprecated
 	 * @name $getSuperClasses
 	 * @function
 	 * @description 返回当前对象的超类的数组。
@@ -538,7 +536,6 @@
 	};
 	
 	/**
-	 * @deprecated
 	 * @name $invokeSuper
 	 * @function
 	 * @description 调用当前方法在超类中的实现逻辑。

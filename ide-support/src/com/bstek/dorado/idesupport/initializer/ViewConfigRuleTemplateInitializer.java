@@ -85,6 +85,12 @@ public class ViewConfigRuleTemplateInitializer implements
 				layoutRuleTemplate.setType(registerInfo.getClassType()
 						.getName());
 			}
+			
+			if (registerInfo.getClientTypes() != 0) {
+				layoutRuleTemplate
+						.setClientTypes(registerInfo.getClientTypes());
+			}
+			
 			layoutRuleTemplate.setSortFactor(++sortFactor);
 			ruleTemplateManager.addRuleTemplate(layoutRuleTemplate);
 			layoutHolderTemplate.addChild(new AutoChildTemplate(type,

@@ -404,14 +404,12 @@
 			if (this._domMode == 2) this._fixedInnerGrid.onEntityInserted(arg);
 			this._innerGrid.onEntityInserted(arg);
 			this.updateScroller(this._innerGrid._container);
-			this.fixSizeBugs();
 		},
 		
 		onEntityDeleted: function(arg) {
 			if (this._domMode == 2) this._fixedInnerGrid.onEntityDeleted(arg);
 			this._innerGrid.onEntityDeleted(arg);
 			this.updateScroller(this._innerGrid._container);
-			this.fixSizeBugs();
 		},
 		
 		shouldEditing: function(column) {

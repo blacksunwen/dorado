@@ -56,6 +56,7 @@ public class Rule {
 	private String reserve;
 	private Object userData;
 	private boolean deprecated;
+	private boolean visible = true;
 
 	private Map<String, Property> primitiveProperties = new TreeMap<String, Property>(
 			propertyComparator);
@@ -313,5 +314,13 @@ public class Rule {
 
 	public void setDeprecated(boolean deprecated) {
 		this.deprecated = deprecated;
+	}
+
+	public boolean isVisible() {
+		return visible;
+	}
+
+	public void setVisible(boolean visible) {
+		this.visible = visible;
 	}
 }

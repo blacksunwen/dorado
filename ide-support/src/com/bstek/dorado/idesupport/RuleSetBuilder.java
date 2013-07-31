@@ -139,7 +139,7 @@ public class RuleSetBuilder {
 		applyProperties(
 				ruleTemplate,
 				rule,
-				"label,abstract,nodeName,type,category,robots,icon,labelProperty,autoGenerateId,clientTypes,reserve,deprecated");
+				"label,abstract,nodeName,type,category,robots,icon,labelProperty,autoGenerateId,clientTypes,reserve,deprecated,visible");
 
 		if (StringUtils.isEmpty(rule.getNodeName())) {
 			if (StringUtils.isNotEmpty(rule.getType())) {
@@ -163,9 +163,6 @@ public class RuleSetBuilder {
 		if (!primitiveProperties.isEmpty()) {
 			for (PropertyTemplate propertyTemplate : primitiveProperties
 					.values()) {
-				if (Boolean.TRUE.equals(propertyTemplate.getIgnored())) {
-					continue;
-				}
 				Property property = new Property();
 				applyTemplateToProperty(propertyTemplate, property, ruleSet);
 				rule.addPrimitiveProperty(property);
@@ -176,9 +173,6 @@ public class RuleSetBuilder {
 				.getFinalProperties();
 		if (!properties.isEmpty()) {
 			for (PropertyTemplate propertyTemplate : properties.values()) {
-				if (Boolean.TRUE.equals(propertyTemplate.getIgnored())) {
-					continue;
-				}
 				Property property = new Property();
 				applyTemplateToProperty(propertyTemplate, property, ruleSet);
 				rule.addProperty(property);
@@ -195,9 +189,6 @@ public class RuleSetBuilder {
 				.values();
 		if (!children.isEmpty()) {
 			for (ChildTemplate childTemplate : children) {
-				if (childTemplate.isIgnored()) {
-					continue;
-				}
 				addChildrenByChildTemplate(rule, childTemplate, ruleSet);
 			}
 		}
@@ -224,7 +215,7 @@ public class RuleSetBuilder {
 			for (Map.Entry<String, PropertyTemplate> entry : properties
 					.entrySet()) {
 				PropertyTemplate subPopertyTemplate = entry.getValue();
-				if (Boolean.TRUE.equals(subPopertyTemplate.getIgnored())) {
+				if (!subPopertyTemplate.isVisible()) {
 					continue;
 				}
 
@@ -259,16 +250,19 @@ public class RuleSetBuilder {
 
 	protected void addChildrenByChildTemplate(Rule rule,
 			ChildTemplate childTemplate, RuleSet ruleSet) throws Exception {
+		RuleTemplate childRuleTemplate = childTemplate.getRuleTemplate();
+		// if (!childTemplate.isVisible() || !childRuleTemplate.isVisible()) {
+		// return;
+		// }
+
 		Child child = new Child(childTemplate.getName());
 		applyTemplateToChild(childTemplate, child, ruleSet);
 		rule.addChild(child);
 
 		Set<Rule> concreteRules = child.getConcreteRules();
-		RuleTemplate childRuleTemplate = childTemplate.getRuleTemplate();
 		if (!childRuleTemplate.isAbstract()) {
 			concreteRules.add(exportRule(childRuleTemplate, ruleSet));
 		}
-
 		findConcreteRules(childRuleTemplate, concreteRules, ruleSet, true);
 	}
 
@@ -276,7 +270,11 @@ public class RuleSetBuilder {
 			Child child, RuleSet ruleSet) throws Exception {
 		Rule rule = exportRule(childTemplate.getRuleTemplate(), ruleSet);
 		child.setRule(rule);
-		applyProperties(childTemplate, child, "fixed,aggregated,clientTypes,reserve");
+		applyProperties(childTemplate, child,
+				"fixed,aggregated,clientTypes,deprecated,reserve");
+		if (childTemplate.isDeprecated()) {
+			child.setDeprecated(true);
+		}
 	}
 
 	private void applyProperties(Object source, Object target,

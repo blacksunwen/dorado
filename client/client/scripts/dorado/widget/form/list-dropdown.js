@@ -9,6 +9,7 @@
  * If you are unsure which license is appropriate for your use, please contact the sales department
  * at http://www.bstek.com/contact.
  */
+
 (function() {
 
 	DropDownFilterTrigger = $extend(dorado.widget.Trigger, {
@@ -94,7 +95,8 @@
 			 * @type boolean
 			 * @attribute
 			 */
-			dynaFilter: {},
+			dynaFilter: {
+			},
 			
 			editable: {
 				getter: function() {
@@ -215,13 +217,9 @@
 				config.readOnly = true;
 				rowList = new dorado.widget.Grid(config);
 			} else {
-				config.width = "100%";
 				rowList = new dorado.widget.ListBox(config);
 			}
 			box.set({
-				style: {
-					overflow: "hidden"
-				},
 				control: rowList
 			});
 			return box;
@@ -271,7 +269,7 @@
 			$invokeSuper.call(this, arguments);
 			
 			var rowList = box.get("control");
-			if (!box.get("visible") && this.initDropDownData) {
+			if (!this._boxVisible && this.initDropDownData) {
 				rowList._ignoreRefresh++;
 				this.initDropDownData(box, editor);
 				rowList._ignoreRefresh--;
@@ -285,8 +283,7 @@
 			
 			if (!this._height) {
 				var useMaxHeight = true, refreshed = false;
-				if (this._realMaxHeight &&
-				(!itemCount || (this._realMaxHeight / (rowList._rowHeight + 2) > (itemCount + 1)))) {
+				if (this._realMaxHeight && (!itemCount || (this._realMaxHeight / (rowList._rowHeight + 2) > (itemCount + 1)))) {
 					rowList.set({
 						height: "auto",
 						scrollMode: "simple"
@@ -301,7 +298,7 @@
 					if (height <= this._realMaxHeight) useMaxHeight = false;
 				}
 				
-				if (useMaxHeight) {
+				if (useMaxHeight && this._realMaxHeight) {
 					rowList.set({
 						height: this._realMaxHeight,
 						scrollMode: ((cellCount > 300) ? "viewport" : "lazyRender")

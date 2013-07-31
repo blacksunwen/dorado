@@ -18,12 +18,6 @@
 	var attributesRelativeWithTrigger = ["dataSet", "dataType", "trigger", "dataPath", "property"];
 	
 	/**
-	 * @name dorado.widget.editor
-	 * @namespace 编辑器所使用的一些相关类的命名空间。
-	 */
-	dorado.widget.editor = {};
-	
-	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @class 来自外部系统的异常信息。
 	 * @extends dorado.Exception
@@ -295,15 +289,16 @@
 		
 		refreshDom: function(dom) {
 			$invokeSuper.call(this, [dom]);
+			
+			this.refreshExternalReadOnly();
+			this.resetReadOnly();
+			
 			if (this._dataSet) {
-				var value, dirty, timestamp = 0, readOnly;
+				var value, dirty, timestamp = 0;
 				this._entity = null;
 				if (this._property) {
-					readOnly = this._dataSet._readOnly;
 					var bindingInfo = this._bindingInfo, propertyDef = bindingInfo.propertyDef, state, messages;
 					if (propertyDef) {
-						readOnly = (bindingInfo.entity == null) || readOnly || propertyDef._readOnly;
-						
 						var watcher = this.getAttributeWatcher();
 						if (!watcher.getWritingTimes("displayFormat")) this._displayFormat = propertyDef._displayFormat;
 						if (!watcher.getWritingTimes("inputFormat")) this._inputFormat = propertyDef._inputFormat;
@@ -330,15 +325,9 @@
 					}
 					this.setValidationState(state, messages);
 					this.setDirty(dirty);
-				} else {
-					readOnly = true;
 				}
-				this._readOnly2 = readOnly;
-			} else {
-				this._readOnly2 = false;
-				var dom = this._dom, textDom = this._textDom;
 			}
-			this.resetReadOnly();
+			
 			if (this._triggerChanged) {
 				this._triggerChanged = false;
 				this.refreshTriggerDoms();
@@ -358,14 +347,16 @@
 			if (this._rendered) {
 				var dom = this._dom, warnCls = this._className + "-warn", errorCls = this._className + "-error";
 				$fly(dom).toggleClass(warnCls, state == "warn").toggleClass(errorCls, state == "error");
-				
-				if ((state == "warn" || state == "error") && messages) {
-					var message = dorado.Toolkits.getTopMessage(messages);
-					dorado.TipManager.initTip(dom, {
-						text: message.text
-					});
-				} else {
-					dorado.TipManager.deleteTip(dom);
+
+				if (dorado.TipManager) {
+					if ((state == "warn" || state == "error") && messages) {
+						var message = dorado.Toolkits.getTopMessage(messages);
+						dorado.TipManager.initTip(dom, {
+							text: message.text
+						});
+					} else {
+						dorado.TipManager.deleteTip(dom);
+					}
 				}
 			}
 			this.fireEvent("onValidationStateChange", this);
@@ -402,7 +393,7 @@
 		},
 		
 		doSetFocus: function() {
-			if (this._textDom) this._textDom.focus();
+			if (!dorado.Browser.isTouch && this._textDom) this._textDom.focus();
 		},
 		
 		doOnFocus: function() {
@@ -488,7 +479,7 @@
 		 * @param {dorado.widget.Trigger} trigger 被点击的触发器。
 		 */
 		onTriggerClick: function(trigger) {
-			if (this._readOnly || this._readOnly2) return;
+			if (this._realReadOnly) return;
 			
 			var eventArg = {
 				processDefault: true
@@ -498,9 +489,11 @@
 				trigger.execute(this);
 			}
 			
-			$setTimeout(this, function() {
-				this._textDom.focus();
-			}, 0);
+			if (!dorado.Browser.isTouch) {
+				$setTimeout(this, function() {
+					this._textDom.focus();
+				}, 0);
+			}
 		},
 		
 		doOnKeyDown: function(evt) {
@@ -577,18 +570,24 @@
 		
 		setDirty: function(dirty) {
 			if (!this._supportsDirtyFlag) return;
-			var dirtyFlag = this._dirtyFlag;
-			if (dirty) {
-				if (!dirtyFlag) {
-					this._dirtyFlag = dirtyFlag = $DomUtils.xCreate({
-						tagName: "LABEL",
-						className: "dirty-flag"
-					});
-					this._dom.appendChild(dirtyFlag);
+
+			if (!dorado.Browser.isTouch) {
+				var dirtyFlag = this._dirtyFlag;
+				if (dirty) {
+					if (!dirtyFlag) {
+						this._dirtyFlag = dirtyFlag = $DomUtils.xCreate({
+							tagName: "LABEL",
+							className: "dirty-flag"
+						});
+						this._dom.appendChild(dirtyFlag);
+					}
+					dirtyFlag.style.display = '';
+				} else {
+					if (dirtyFlag) dirtyFlag.style.display = 'none';
 				}
-				dirtyFlag.style.display = '';
-			} else {
-				if (dirtyFlag) dirtyFlag.style.display = 'none';
+			}
+			else {
+				$invokeSuper.call(this, arguments);
 			}
 		},
 		
@@ -730,7 +729,7 @@
 			 * @attribute
 			 */
 			selectTextOnFocus: {
-				defaultValue: true
+				defaultValue: !dorado.Browser.isTouch
 			},
 			
 			/**
@@ -892,7 +891,7 @@
 		
 		doOnFocus: function() {
 			$invokeSuper.call(this);
-			if (this._selectTextOnFocus) {
+			if (this._selectTextOnFocus && this._realEditable) {
 				var self = this;
 				setTimeout(function() {
 					if (self.get("focused") && self._editorFocused) {
@@ -1098,13 +1097,27 @@
 		createTextDom: function() {
 			var textDom = document.createElement("INPUT");
 			textDom.className = "editor";
-			if (this._password) textDom.type = "password";
+			if (this._password) {
+				textDom.type = "password";
+			}
+			else {
+				var dataType = this.get("dataType");
+				if (dataType && dataType.code >= dorado.DataType.PRIMITIVE_INT && dataType.code <= dorado.DataType.FLOAT) {
+					textDom.type = "number";
+				}
+			}
+
 			if (dorado.Browser.msie && dorado.Browser.version > 7) {
 				textDom.style.top = 0;
 				textDom.style.position = "absolute";
 			} else {
 				textDom.style.padding = 0;
 			}
+
+			if (dorado.Browser.isTouch) {
+				textDom.setAttribute("form", dorado.widget.editor.GET_DEAMON_FORM().id);
+			}
+
 			return textDom;
 		},
 		
@@ -1115,7 +1128,7 @@
 					if (this._mapping && this.getMappedKey(text) === undefined) {
 						validationResults.push({
 							state: "error",
-							text: $resource("dorado.baseWidget.InputTextOutOfMapping")
+							text: $resource("dorado.form.InputTextOutOfMapping")
 						});
 					}
 				}
@@ -1249,8 +1262,7 @@
 		ATTRIBUTES: /** @scope dorado.widget.PasswordEditor.prototype */ {
 		
 			width: {
-				defaultValue: 150,
-				independent: true
+				defaultValue: 150
 			},
 			
 			height: {

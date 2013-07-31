@@ -311,7 +311,7 @@
 					if (customFilter) {
 						passed = customFilter(item, filterParams);
 					}
-					if (passed == null) {
+					if (passed === undefined || passed === null) {
 						passed = processFilterParams(filterParams, "and");
 					}
 					if (passed) filtered.push(item);

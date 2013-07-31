@@ -19,17 +19,14 @@ import com.bstek.dorado.annotation.XmlProperty;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2009-11-18
  */
-@XmlNode(nodeName = "ClientEvent",
-		parser = "spring:dorado.idesupport.childTemplateParser",
-		properties = @XmlProperty(propertyName = "*",
-				parser = "spring:dorado.staticPropertyParser"))
+@XmlNode(nodeName = "ClientEvent", parser = "spring:dorado.idesupport.childTemplateParser", properties = @XmlProperty(propertyName = "*", parser = "spring:dorado.staticPropertyParser"))
 public class ClientEvent {
 	private String name;
 	private String[] parameters;
 	private int clientTypes;
+	private boolean deprecated;
 	private String reserve;
 	private Object userData;
-	private boolean deprecated;
 
 	public String getName() {
 		return name;
@@ -55,6 +52,14 @@ public class ClientEvent {
 		this.clientTypes = clientTypes;
 	}
 
+	public boolean isDeprecated() {
+		return deprecated;
+	}
+
+	public void setDeprecated(boolean deprecated) {
+		this.deprecated = deprecated;
+	}
+
 	public String getReserve() {
 		return reserve;
 	}
@@ -69,13 +74,5 @@ public class ClientEvent {
 
 	public void setUserData(Object userData) {
 		this.userData = userData;
-	}
-
-	public boolean isDeprecated() {
-		return deprecated;
-	}
-
-	public void setDeprecated(boolean deprecated) {
-		this.deprecated = deprecated;
 	}
 }

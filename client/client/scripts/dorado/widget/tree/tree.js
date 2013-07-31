@@ -97,8 +97,10 @@
 		
 		_insertChildNodes: function(node, row, animated, callback) {
 		
-			function invokdCallback(refRow, callback, node) {
+			function invokeCallback(refRow, callback, node) {
 				this._refreshRearRows(refRow);
+				this.updateModernScroller();
+				this.notifySizeChange();
 				if (callback) $callback(callback, true, node);
 			}
 			
@@ -133,23 +135,23 @@
 						var child = it.next(), childRow = self._itemDomMap[child._id];
 						if (childRow) childRow.style.display = "";
 					}
-					self.notifySizeChange();
-					invokdCallback.call(self, refRow, callback, node);
+					invokeCallback.call(self, refRow, callback, node);
 					self._duringAnimation = false;
 				});
 			} else {
-				this.notifySizeChange();
-				invokdCallback.call(this, refRow, callback, node);
+				invokeCallback.call(this, refRow, callback, node);
 			}
 		},
 		
 		_removeChildNodes: function(node, animated, callback) {
 		
-			function invokdCallback(node, callback) {
+			function invokeCallback(node, callback) {
 				if (this._forceRefreshRearRows !== false) {
 					var row = this._itemDomMap[node._id];
 					if (row) this._refreshRearRows(row);
 				}
+				this.updateModernScroller();
+				this.notifySizeChange();
 				if (callback) $callback(callback, true, node);
 			}
 			
@@ -183,14 +185,12 @@
 						"height": 0
 					}, 200, "swing", function() {
 						$fly(indicator).remove();
-						self.notifySizeChange();
-						invokdCallback.call(self, node, callback);
+						invokeCallback.call(self, node, callback);
 						self._duringAnimation = false;
 					});
 				}
 			} else {
-				this.notifySizeChange();
-				invokdCallback.call(this, node, callback);
+				invokeCallback.call(this, node, callback);
 			}
 		},
 		

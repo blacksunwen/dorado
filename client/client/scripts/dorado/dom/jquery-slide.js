@@ -299,7 +299,7 @@
                 start.call(element);
             }
 
-			$fly(element).disableShadow().dockable(type == "in" ? slideInDockDirMap[direction] : slideOutDockDirMap[direction], safe);
+			$fly(element).dockable(type == "in" ? slideInDockDirMap[direction] : slideOutDockDirMap[direction], safe);
 
 			animConfig = getAnimateConfig(type, direction, element, safe);
 			animEl = jQuery(safe ? animElement : jQuery.data(element, DOCK_DATA).wrap);
@@ -335,12 +335,12 @@
 
 		options.complete = function() {
 			$fly(element).undockable(safe);
-			$fly(element).enableShadow().css("display", type == "out" ? "none" : "");
+			$fly(element).css("display", type == "out" ? "none" : "");
 			if (typeof callback == "function") {
 				callback.apply(null, []);
 			}
 		};
-		options.duration = options.duration ? options.duration : 300;
+		options.duration =  options.duration ? options.duration : 300;
 
 		$fly(element).animate({
 			dummy: 1

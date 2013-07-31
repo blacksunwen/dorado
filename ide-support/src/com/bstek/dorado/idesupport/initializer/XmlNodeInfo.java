@@ -29,6 +29,7 @@ import com.bstek.dorado.annotation.XmlSubNode;
 public class XmlNodeInfo {
 	private List<Class<?>> sourceTypes;
 
+	private String scope;
 	private String nodeName;
 	private String label;
 	private String icon;
@@ -38,6 +39,7 @@ public class XmlNodeInfo {
 	private boolean inheritable;
 	private int[] clientTypes;
 	private boolean deprecated;
+	private boolean visible = true;
 	private Map<String, String> fixedProperties = new HashMap<String, String>();
 	private Map<String, XmlProperty> properties = new HashMap<String, XmlProperty>();
 	private Set<XmlSubNode> subNodes = new HashSet<XmlSubNode>();
@@ -51,6 +53,14 @@ public class XmlNodeInfo {
 
 	public List<Class<?>> getSourceTypes() {
 		return sourceTypes;
+	}
+
+	public String getScope() {
+		return scope;
+	}
+
+	public void setScope(String scope) {
+		this.scope = scope;
 	}
 
 	public String getNodeName() {
@@ -103,6 +113,14 @@ public class XmlNodeInfo {
 
 	public void setInheritable(boolean inheritable) {
 		this.inheritable = inheritable;
+	}
+
+	public boolean isVisible() {
+		return visible;
+	}
+
+	public void setVisible(boolean visible) {
+		this.visible = visible;
 	}
 
 	public int[] getClientTypes() {

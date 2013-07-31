@@ -923,7 +923,11 @@
 		
 		ATTRIBUTES: /** @scope dorado.widget.DateDropDown.prototype */ {
 			width: {
-				defaultValue: dorado.Browser.isTouch ? 360 : 260
+				defaultValue: 260
+			},
+			
+			height: {
+				defaultValue: 200
 			},
 			
 			iconClass: {
@@ -965,18 +969,12 @@
 			});
 			dropDown._picker = picker;
 			
-			box.set({
-				style: {
-					overflow: "hidden",
-					height: 200
-				},
-				control: picker
-			});
+			box.set("control", picker);
 			return box;
 		},
 		
 		doOnKeyPress: function(evt) {
-			var dropDown = this, retValue = true, datePicker = this.get("box.control"), ymPicker = datePicker._yearMonthPicker;
+			var dropDown = this, retValue = true, datePicker = this._picker, ymPicker = datePicker._yearMonthPicker;
 			switch (evt.keyCode) {
 				case 27: // esc
 					dropDown.close();

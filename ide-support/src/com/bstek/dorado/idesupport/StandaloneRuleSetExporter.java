@@ -57,6 +57,8 @@ public class StandaloneRuleSetExporter {
 	private static final Log logger = LogFactory
 			.getLog(StandaloneRuleSetExporter.class);
 
+	private static final String RUN_MODE = "export-rules";
+	private static final String CORE_PROPERTIES_LOCATION_PREFIX = "classpath:com/bstek/dorado/core/";
 	private static final String HOME_LOCATION_PREFIX = "home:";
 	private static final int HOME_LOCATION_PREFIX_LEN = HOME_LOCATION_PREFIX
 			.length();
@@ -188,7 +190,7 @@ public class StandaloneRuleSetExporter {
 		// 处理DoradoHome
 		configureStore.set(HOME_PROPERTY, doradoHome);
 		ConsoleUtils
-				.outputLoadingInfo("[dorado home: "
+				.outputLoadingInfo("[home: "
 						+ StringUtils.defaultString(doradoHome,
 								"<not assigned>") + "]");
 
@@ -204,22 +206,39 @@ public class StandaloneRuleSetExporter {
 					+ "configure.properties";
 			loadConfigureProperties(configureStore, resourceLoader,
 					configureLocation, false);
+			configureStore.set("core.runMode", RUN_MODE);
 
-			configureLocation = HOME_LOCATION_PREFIX
-					+ "configure-debug.properties";
 			loadConfigureProperties(configureStore, resourceLoader,
-					configureLocation, false);
+					CORE_PROPERTIES_LOCATION_PREFIX + "configure-" + RUN_MODE
+							+ ".properties", true);
+			loadConfigureProperties(configureStore, resourceLoader,
+					HOME_LOCATION_PREFIX + "configure-" + RUN_MODE
+							+ ".properties", true);
 		}
 
 		List<String> contextLocations = new ArrayList<String>();
 		// findPackages
 		for (PackageInfo packageInfo : PackageManager.getPackageInfoMap()
 				.values()) {
-			ConsoleUtils.outputLoadingInfo("Package [" + packageInfo.getName()
-					+ " - " + packageInfo.getVersion() + "] found.");
+			String packageName = packageInfo.getName();
+			ConsoleUtils.outputLoadingInfo("Package [" + packageName + " - "
+					+ packageInfo.getVersion() + "] found.");
 
 			// 处理Spring的配置文件
-			pushLocations(contextLocations, packageInfo.getContextLocations());
+			String addonVersion = packageInfo.getAddonVersion();
+			if ("dorado-core".equals(packageName)) {
+				pushLocations(contextLocations,
+						packageInfo.getContextLocations());
+				pushLocations(contextLocations,
+						packageInfo.getComponentLocations());
+			} else if (StringUtils.isEmpty(addonVersion)
+					|| "2.0".compareTo(addonVersion) > 0) {
+				pushLocations(contextLocations,
+						packageInfo.getContextLocations());
+			} else {
+				pushLocations(contextLocations,
+						packageInfo.getComponentLocations());
+			}
 		}
 
 		String contextLocationsFromProperties = configureStore

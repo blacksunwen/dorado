@@ -84,6 +84,9 @@
 			
 			/**
 			 * 是否默认情况下使用异步方式执行。
+			 * <p>
+			 * 注意：异步的执行方式仅对Ajax类的Action有意义，例如AjaxAction和UpdateAction。
+			 * </p>
 			 * @type boolean
 			 * @attribute
 			 */
@@ -246,12 +249,14 @@
 		 * @protected
 		 * @param {Function|dorado.Callback} callback 回调对象，传入回调对象的参数即为命令执行后的返回结果。
 		 */
-		doExecuteAsync: dorado._NULL_FUNCTION,
+		doExecuteAsync: function(callback) {
+			$callback(callback);
+		},
 		
 		/**
 		 * 执行命令。系统将根据async来决定使用同步还是异步方式执行命令。
 		 * <p>
-		 * 需要注意的是如果定义了此方法的callback参数，即使选择使用同步方式执行回调机制仍可以执行成功的情况下生效。
+		 * 需要注意的是如果定义了此方法的callback参数，即使选择使用同步方式执行回调机制仍可以在执行成功的情况下生效。
 		 * </p>
 		 * @function
 		 * @param {Function|dorado.Callback} callback 回调对象，传入回调对象的参数即为命令执行后的返回结果。
@@ -271,22 +276,13 @@
 				};
 				if (self._async) {
 					var taskId;
-					if (self._executingMessage) {
-						taskId = dorado.util.TaskIndicator.showTaskIndicator(self._executingMessage, this._modal ? "main" : "daemon");
+					if (self._executingMessage || this._modal) {
+						taskId = dorado.util.TaskIndicator.showTaskIndicator(self._executingMessage || $resource("dorado.core.DefaultTaskMessage"), this._modal ? "main" : "daemon");
 					}
 					
 					var hasIcon, oldIcon, oldIconClass;
 					if (this._modal) {
 						this.set("disabled", true);
-						hasIcon = this._icon || this._iconClass;
-						if (hasIcon) {
-							oldIcon = this._icon;
-							oldIconClass = this._iconClass;
-							this.set({
-								icon: "url(skin>common/loading-small.gif) no-repeat center center",
-								iconClass: null
-							});
-						}
 					}
 					
 					try {
@@ -313,13 +309,6 @@
 								if (success && eventArg.processDefault && self._successMessage) {
 									dorado.widget.NotifyTipManager.notify(self._successMessage);
 								}
-								
-								if (self._modal && hasIcon) {
-									self.set({
-										icon: oldIcon,
-										iconClass: oldIconClass
-									});
-								}
 							}
 						});
 					} 
@@ -328,13 +317,6 @@
 						
 						if (self._modal) {
 							self.set("disabled", false);
-							
-							if (hasIcon) {
-								self.set({
-									icon: oldIcon,
-									iconClass: oldIconClass
-								});
-							}
 						}
 						
 						if (!(e instanceof dorado.AbstractException)) {

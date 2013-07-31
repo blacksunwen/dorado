@@ -294,6 +294,7 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 				});
 			}
 		}
+		control.refresh();
 	},
 
 	createDom: function() {

@@ -23,7 +23,9 @@ public class ChildTemplate {
 	private RuleTemplate ruleTemplate;
 	private boolean fixed;
 	private boolean aggregated;
-	private boolean ignored;
+	private boolean deprecated;
+	private boolean visible = true;
+
 	private boolean isPublic = true;
 	private int clientTypes;
 	private String reserve;
@@ -70,12 +72,20 @@ public class ChildTemplate {
 		this.aggregated = aggregated;
 	}
 
-	public boolean isIgnored() {
-		return ignored;
+	public boolean isDeprecated() {
+		return deprecated;
 	}
 
-	public void setIgnored(boolean ignored) {
-		this.ignored = ignored;
+	public void setDeprecated(boolean deprecated) {
+		this.deprecated = deprecated;
+	}
+
+	public boolean isVisible() {
+		return visible;
+	}
+
+	public void setVisible(boolean visible) {
+		this.visible = visible;
 	}
 
 	public boolean isPublic() {

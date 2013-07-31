@@ -26,6 +26,7 @@
 	dorado.widget.Control = $extend([dorado.widget.Component, dorado.RenderableElement, dorado.Draggable, dorado.Droppable], /** @scope dorado.widget.Control.prototype */
 	{
 		$className : "dorado.widget.Control",
+		_inherentClassName: "i-control",
 
 		_ignoreRefresh : 1,
 		_parentActualVisible : true,
@@ -86,6 +87,13 @@
 
 		ATTRIBUTES : /** @scope dorado.widget.Control.prototype */
 		{
+			className: {
+				defaultValue:  "d-control"
+			},
+			
+			ui: {
+				defaultValue: "default"
+			},
 
 			/**
 			 * 宽度。
@@ -468,13 +476,24 @@
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
 			 */
-			onKeyPress : {}
+			onKeyPress : {},
+
+			onTap: {},
+			onSwipe: {},
+			onTapHold: {},
+			onTransformStart: {},
+			onTransform: {},
+			onTransformEnd: {}
 		},
 
 		constructor : function(config) {
 			this._actualVisible = !dorado.Object.isInstanceOf(this, dorado.widget.FloatControl);
 			
 			dorado.widget.Component.prototype.constructor.call(this, config);
+			
+			if (dorado.Object.isInstanceOf(this, dorado.widget.FloatControl) && this._floating) {
+				this._actualVisible = false;
+			}
 			
 			var renderTo = this._renderTo, renderOn = this._renderOn;
 			if(renderTo || renderOn) {
@@ -512,6 +531,10 @@
 			if(!isClosed && this._parent) {
 				if(this._isInnerControl) this._parent.unregisterInnerControl(this);
 				else this._parent.removeChild(this);
+			}
+			
+			if (this._modernScrolled) {
+				this._modernScrolled.destroy();
 			}
 
 			var dom = this._dom;
@@ -654,6 +677,8 @@
 							this.refreshDom(dom);
 							this.fireEvent("onRefreshDom", this, arg);
 						}
+						
+						this.updateModernScroller();
 					} finally {
 						this._duringRefreshDom = false;
 					}
@@ -675,6 +700,8 @@
 						this.refreshDom(dom);
 						this.fireEvent("onRefreshDom", this, arg);
 					}
+					
+					this.updateModernScroller();
 				} finally {
 					this._duringRefreshDom = false;
 				}
@@ -733,8 +760,14 @@
 			this.applyDraggable(dom);
 			this.applyDroppable(dom);
 			$invokeSuper.call(this, [dom]);
-
+			
 			this._currentVisible = !!this._visible;
+		},
+		
+		updateModernScroller: function() {
+			if (this._modernScrolled) {
+				this._modernScrolled.update();
+			}
 		},
 		
 		getRealWidth : function() {
@@ -745,11 +778,16 @@
 		getRealHeight : function() {
 			if(this._height == "none") return null;
 			return (this._realHeight == null) ? this._height : this._realHeight;
+		}, 
+		
+		doResetDimension: function(force) {
+			return dorado.RenderableElement.prototype.resetDimension.call(this, force);
 		},
 		
 		resetDimension : function(forced) {
 			if (this._skipResetDimension || !this.isActualVisible()) return;
-			var changed = $invokeSuper.call(this, [forced]) || !this._fixedWidth || !this._fixedHeight;
+			
+			var changed = this.doResetDimension(forced) || !this._fixedWidth || !this._fixedHeight;			
 			if (changed || !this._currentVisible) {
 				this._skipResetDimension = true;
 				this.onResize();
@@ -760,15 +798,12 @@
 		
 		/**
 		 * 向控件所在的布局管理器通知本控件的尺寸已经发生了变化。
+		 * @param {boolean} delay
 		 * @protected
 		 */
-		notifySizeChange : function() {
-			if(!this._parent || !this._rendered) return;
-			var layout = this._parent._layout;
-			if(layout && layout._attached && layout.onControlSizeChange) {
-				dorado.Toolkits.setDelayedAction(this, "$notifySizeChangeTimerId", function() {
-					layout.onControlSizeChange(this);
-				}, 200);
+		notifySizeChange : function(delay) {
+			if (this._parentLayout && this._parentLayout.onControlSizeChange) {
+				this._parentLayout.onControlSizeChange(this, delay);
 			}
 		},
 		
@@ -787,6 +822,12 @@
 				var className = (this._inherentClassName) ? this._inherentClassName : "";
 				if (this._className) className += (" " + this._className);
 				if (this._exClassName) className += (" " + this._exClassName);
+				if (this._ui) {
+					var uis = this._ui.split(',');
+					for (var i = 0; i < uis.length; i++) {
+						className += (" " + this._className + "-" + uis[i]);
+					}
+				}
 				if (className) $dom.addClass(className);
 				
 				var classNames = [];
@@ -807,7 +848,7 @@
 				$dom.mousedown(function(evt) {
 					if (!self._eventBinded) {
 						self._eventBinded = true;
-						
+
 						jQuery(this).click(function(evt) {
 							if (!self.processDefaultMouseListener()) return;
 							var defaultReturnValue;
@@ -864,7 +905,7 @@
 							}
 						});
 					}
-					
+
 					if (evt.srcElement != lastMouseDownTarget || (new Date() - lastMouseDownTimestamp) > 500) {
 						if (dorado.Browser.msie) {
 							var nodeName = evt.srcElement && evt.srcElement.nodeName.toLowerCase();
@@ -1000,6 +1041,7 @@
 					this.onResize();
 				}
 			
+				this.updateModernScroller();
 				if (!this._ready) {
 					this.onReady();
 				}

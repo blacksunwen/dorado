@@ -38,6 +38,8 @@ public @interface XmlSubNode {
 
 	boolean aggregated() default false;
 
+	boolean deprecated() default false;
+
 	String parser() default "";
 
 	boolean resultProcessed() default false;

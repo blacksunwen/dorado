@@ -40,12 +40,9 @@
 	 */
 	dorado.widget.layout.FormLayout = $extend(dorado.widget.layout.Layout, /** @scope dorado.widget.layout.FormLayout.prototype */ {
 		$className: "dorado.widget.layout.FormLayout",
+		_className: "i-form-layout d-form-layout",
 		
 		ATTRIBUTES: /** @scope dorado.widget.layout.FormLayout.prototype */ {
-		
-			className: {
-				defaultValue: "d-form-layout"
-			},
 			
 			regionClassName: {
 				defaultValue: "d-form-layout-region"
@@ -126,6 +123,7 @@
 		createDom: function() {
 			return $DomUtils.xCreate({
 				tagName: "TABLE",
+				className: this._className,
 				cellSpacing: 0,
 				cellPadding: 0,
 				content: "^TBODY"
@@ -209,6 +207,12 @@
 				var tr;
 				if (structureChanged) {
 					tr = document.createElement("TR");
+					if (row == 0) {
+						tr.className = "d-form-layout-row first-row";
+					}
+					else {
+						tr.className = "d-form-layout-row";
+					}
 					tbody.appendChild(tr);
 				} else {
 					tr = tbody.childNodes[row + rowIndexOffset];
@@ -317,6 +321,7 @@
 			if (region) {
 				var $dom = $fly(dom), constraint = region.constraint;
 				if (constraint.className) $dom.addClass(constraint.className);
+				if (region.colIndex == 0) $dom.addClass("first-cell");
 				if (constraint.align) dom.align = constraint.align;
 				if (constraint.vAlign) dom.vAlign = constraint.vAlign;
 				var css = dorado.Object.apply({}, constraint, function(p, v) {
@@ -442,10 +447,10 @@
 			// if (dorado.Browser.webkit) adjust = padding * 2; 较新版的Chrome下似乎不用这么干了
 			
 			if (this._stretchWidth || this.dynaColCount > 0) {
-				table.style.width = (containerWidth + adjust) + "px";
+				table.style.width = (containerWidth + adjust - $fly(table).edgeWidth()) + "px";
 			}
 			table.style.margin = padding + "px";
-
+			
 			containerWidth -= colPadding * (this._colWidths.length - 1);
 			var self = this, changedCols = [];
 			for (var i = 0; i < this._colWidths.length; i++) {

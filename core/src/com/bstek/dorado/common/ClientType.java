@@ -20,6 +20,8 @@ import org.apache.commons.lang.StringUtils;
  * @since 2012-11-20
  */
 public final class ClientType {
+	public static final String CURRENT_CLIENT_TYPE_KEY = ClientType.class
+			.getName() + ".current";
 
 	public static final int DESKTOP = 0x00000001;
 
@@ -29,8 +31,10 @@ public final class ClientType {
 
 	public static final String TOUCH_NAME = "touch";
 
+	public static int ALL_CLIENT_TYPES = DESKTOP + TOUCH;
+
 	public static boolean supports(int types, int targetType) {
-		return (types & targetType) != 0;
+		return types == 0 || (types & targetType) != 0;
 	}
 
 	public static boolean supportsDesktop(int types) {
@@ -38,7 +42,7 @@ public final class ClientType {
 	}
 
 	public static boolean supportsTouch(int types) {
-		return (types & TOUCH) != 0;
+		return types == 0 || (types & TOUCH) != 0;
 	}
 
 	public static int parseClientTypes(String clientTypes) {

@@ -26,6 +26,9 @@ public interface PackageConfigurer {
 	public String[] getContextConfigLocations(ResourceLoader resourceLoader)
 			throws Exception;
 
+	public String[] getComponentConfigLocations(ResourceLoader resourceLoader)
+			throws Exception;
+
 	public String[] getServletContextConfigLocations(
 			ResourceLoader resourceLoader) throws Exception;
 }

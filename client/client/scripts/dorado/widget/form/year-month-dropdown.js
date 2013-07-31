@@ -384,6 +384,9 @@
 			width: {
 				defaultValue: 260
 			},
+			height: {
+				defaultValue: 190
+			},
 			iconClass: {
 				defaultValue: "d-trigger-icon-date"
 			}
@@ -404,13 +407,7 @@
 				}
 			});
 			
-			box.set({
-				style: {
-					overflow: "hidden",
-					height: 190
-				},
-				control: picker
-			});
+			box.set("control", picker);
 			return box;
 		},
 
