@@ -13,7 +13,6 @@
 package com.bstek.dorado.common.event;
 
 import org.apache.commons.lang.StringUtils;
-import org.w3c.dom.CDATASection;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Element;

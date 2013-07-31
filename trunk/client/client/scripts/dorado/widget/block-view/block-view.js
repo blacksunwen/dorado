@@ -158,7 +158,7 @@ dorado.widget.BlockView = $extend(dorado.widget.AbstractBlockView, /** @scope do
 		if (block) {
 			$fly(block).effect("pulsate", {
 				times: 3
-			}, speed || 300);
+			}, speed || 600);
 		}
 	}
 });

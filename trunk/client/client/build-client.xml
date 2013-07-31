@@ -4,63 +4,15 @@
 
 	<target name="copySkin">
 		<mkdir dir="${dist}/skins/${skinName}" />
-
-		<copy todir="${dist}/skins/${skinName}">
-			<fileset dir="${src}/skins/${skinName}">
-				<include name="common.css" />
-				<include name="widget.css" />
-				<include name="list.css" />
-				<include name="grid.css" />
-				<include name="tree.css" />
-				<include name="block-view.css" />
-				<include name="debugger.css" />
-			</fileset>
-		</copy>
-
-		<concat destfile="${dist}/skins/${skinName}/base-widget.css" fixlastline="true" encoding="utf-8">
-			<filelist dir="${src}/skins/${skinName}">
-				<file name="button.css" />
-				<file name="tab-bar.css" />
-				<file name="tabcolumn.css" />
-				<file name="panel.css" />
-				<file name="iframe.css" />
-				<file name="caption-bar.css" />
-				<file name="slider.css" />
-				<file name="tip.css" />
-				<file name="progress-bar.css" />
-				<file name="toolbar.css" />
-				<file name="accordion.css" />
-				<file name="split-panel.css" />
-				<file name="ym-picker.css" />
-				<file name="date-picker.css" />
-				<file name="group-box.css" />
-				<file name="float-panel.css" />
-				<file name="dialog.css" />
-				<file name="menu.css" />
-				<file name="data-pilot.css" />
-				<file name="spinner.css" />
-				<file name="text-editor.css" />
-				<file name="trigger.css" />
-				<file name="checkbox.css" />
-				<file name="radio-button.css" />
-				<file name="form.css" />
-			</filelist>
-		</concat>
-
+		
 		<echo message="copy ${src}/skins/${skinName} --> ${dist}/skins/${skinName}" />
 		<copy todir="${dist}/skins/${skinName}">
-			<fileset dir="${src}/skins/${skinName}">
-				<exclude name="*.css" />
-				<exclude name="advance/**/*" />
-			</fileset>
+			<fileset dir="${src}/skins/${skinName}" />
 		</copy>
 	</target>
 
 	<target name="copySkins">
-		<foreach list="${skinNames}"
-		         param="skinName"
-		         target="copySkin"
-		         inheritall="true" />
+		<foreach list="${skinNames}" param="skinName" target="copySkin" inheritall="true" />
 	</target>
 
 	<target name="copyJavaScript">
@@ -78,9 +30,9 @@
 				<file name="core/exception.js" />
 				<file name="core/attribute.js" />
 				<file name="core/event.js" />
-				<file name="core/tag-manager.js" />
 				<file name="core/renderer.js" />
 				<file name="core/renderable-element.js" />
+				<file name="core/tag-manager.js" />
 				<file name="core/toolkits.js" />
 				<file name="util/util.js" />
 				<file name="util/date.js" />
@@ -98,13 +50,25 @@
 				<file name="dom/jquery-dom.js" />
 				<file name="dom/jquery-x-create.js" />
 				<file name="dom/jquery-slide.js" />
-				<file name="dom/jquery-dragdrop.js" />
 				<file name="dom/modal-manager.js" />
 				<file name="dom/task-indicator.js" />
+				<file name="dom/jquery-dragdrop.js" />
+				<file name="dom/scroller.js" />
 				<file name="drag-drop/dragging-indicator.js" />
 				<file name="drag-drop/drag-drop.js" />
-                <file name="dom/jquery-gestures.js" />
-                <file name="dom/iscroll.js" />
+			</filelist>
+		</concat>
+
+		<concat destfile="${dist}/scripts/dorado/desktop-support.js" fixlastline="true" encoding="utf-8">
+			<filelist dir="${src}/scripts/dorado">
+				<file name="core/exception-dialog.js" />
+			</filelist>
+		</concat>
+		
+		<concat destfile="${dist}/scripts/dorado/touch-patch.js" fixlastline="true" encoding="utf-8">
+			<filelist dir="${src}/scripts/dorado">
+				<file name="dom/iscroll.js" />
+				<file name="dom/jquery-gestures.js" />
 			</filelist>
 		</concat>
 
@@ -118,30 +82,63 @@
 				<file name="property-def.js" />
 				<file name="entity.js" />
 				<file name="entity-list.js" />
-				<file name="validator.js" />
 				<file name="data-path.js" />
 				<file name="data-util.js" />
+				<file name="validator.js" />
 			</filelist>
 		</concat>
 
-		<concat destfile="${dist}/scripts/dorado/widget.js" fixlastline="true" encoding="utf-8">
+		<concat destfile="${dist}/scripts/dorado/widget-support.js" fixlastline="true" encoding="utf-8">
 			<filelist dir="${src}/scripts/dorado/widget">
 				<file name="component.js" />
 				<file name="data-set.js" />
+				<file name="data-control.js" />
+				<file name="property-data-control.js" />
 				<file name="control.js" />
 				<file name="float-control.js" />
 				<file name="container.js" />
 				<file name="view.js" />
 				<file name="controller.js" />
 				<file name="sub-view-holder.js" />
-				<file name="html-container.js" />
-				<file name="data-control/data-control.js" />
-				<file name="data-control/property-data-control.js" />
 				<file name="layout/layout.js" />
-				<file name="layout/anchor-layout.js" />
-				<file name="layout/dock-layout.js" />
-				<file name="layout/box-layout.js" />
-				<file name="layout/form-layout.js" />
+			</filelist>
+		</concat>
+
+		<concat destfile="${dist}/scripts/dorado/layout.js" fixlastline="true" encoding="utf-8">
+			<filelist dir="${src}/scripts/dorado/widget/layout">
+				<file name="anchor-layout.js" />
+				<file name="dock-layout.js" />
+				<file name="box-layout.js" />
+				<file name="form-layout.js" />
+			</filelist>
+		</concat>
+
+		<concat destfile="${dist}/scripts/dorado/form.js" fixlastline="true" encoding="utf-8">
+			<filelist dir="${src}/scripts/dorado/widget/form">
+				<file name="label.js" />
+				<file name="abstract-editor.js" />
+				<file name="check-box.js" />
+				<file name="radio-button.js" />
+				<file name="text-editor.js" />
+				<file name="text-area.js" />
+				<file name="trigger.js" />
+				<file name="dropdown.js" />
+				<file name="data-message.js" />
+				<file name="form-element.js" />
+				<file name="autoform.js" />
+			</filelist>
+		</concat>
+
+		<concat destfile="${dist}/scripts/dorado/form-desktop.js" fixlastline="true" encoding="utf-8">
+			<filelist dir="${src}/scripts/dorado/widget/form">
+				<file name="dropdown-box.js" />
+				<file name="list-dropdown.js" />
+				<file name="dataset-dropdown.js" />
+				<file name="custom-dropdown.js" />
+				<file name="year-month-dropdown.js" />
+				<file name="date-dropdown.js" />
+				<file name="custom-dropdown.js" />
+				<file name="spinner.js" />
 			</filelist>
 		</concat>
 
@@ -150,54 +147,50 @@
 				<file name="action/action.js" />
 				<file name="action/rpc-action.js" />
 				<file name="action/form-action.js" />
+				<file name="base/html-container.js" />
 				<file name="base/abstract-button.js" />
 				<file name="base/simple-button.js" />
-				<file name="base/button.js" />
 				<file name="base/iframe.js" />
+				<file name="base/card-book.js" />
+				<file name="base/slider.js" />
+				<file name="base/progress-bar.js" />
+				<file name="base/tip.js" />
+				<file name="base/float-container.js" />
+				<file name="base/menu-item.js" />
+				<file name="base/menu.js" />
+			</filelist>
+		</concat>
+
+		<concat destfile="${dist}/scripts/dorado/base-widget-desktop.js" fixlastline="true" encoding="utf-8">
+			<filelist dir="${src}/scripts/dorado/widget">
+				<file name="action/rpc-action-plus.js" />
+				<file name="base/button.js" />
 				<file name="base/tab.js" />
 				<file name="base/tab-bar.js" />
 				<file name="base/panel.js" />
 				<file name="base/group-box.js" />
-				<file name="base/card-book.js" />
 				<file name="base/tab-control.js" />
 				<file name="base/caption-bar.js" />
 				<file name="base/msgbox.js" />
 				<file name="base/split-panel.js" />
-				<file name="base/progress-bar.js" />
-				<file name="base/slider.js" />
-				<file name="base/tip.js" />
+				<file name="base/tooltip.js" />
 				<file name="base/accordion.js" />
 				<file name="base/toolbar.js" />
-				<file name="base/float-container.js" />
 				<file name="base/float-panel.js" />
 				<file name="base/dialog.js" />
-				<file name="base/menu-item.js" />
-				<file name="base/menu.js" />
 				<file name="data-control/data-pilot.js" />
-				<file name="form/label.js" />
-				<file name="form/abstract-editor.js" />
-				<file name="form/trigger.js" />
-				<file name="form/dropdown.js" />
-				<file name="form/list-dropdown.js" />
-				<file name="form/dataset-dropdown.js" />
-				<file name="form/custom-dropdown.js" />
-				<file name="form/text-editor.js" />
-				<file name="form/text-area.js" />
-				<file name="form/check-box.js" />
-				<file name="form/radio-button.js" />
-				<file name="form/data-message.js" />
-				<file name="form/year-month-dropdown.js" />
-				<file name="form/date-dropdown.js" />
-				<file name="form/form-element.js" />
-				<file name="form/autoform.js" />
-				<file name="form/spinner.js" />
+			</filelist>
+		</concat>
+
+		<concat destfile="${dist}/scripts/dorado/list-support.js" fixlastline="true" encoding="utf-8">
+			<filelist dir="${src}/scripts/dorado/widget/list">
+				<file name="abstract-list.js" />
+				<file name="item-model.js" />
 			</filelist>
 		</concat>
 
 		<concat destfile="${dist}/scripts/dorado/list.js" fixlastline="true" encoding="utf-8">
 			<filelist dir="${src}/scripts/dorado/widget/list">
-				<file name="abstract-list.js" />
-				<file name="item-model.js" />
 				<file name="row-list.js" />
 				<file name="list-box.js" />
 				<file name="data-list-box.js" />
@@ -258,7 +251,7 @@
 				<include name="jquery.easing.1.3.js" />
 				<include name="jquery.mousewheel.js" />
 				<include name="jquery.hotkeys.js" />
-				<include name="jquery-ui-1.9.3.custom.js" />
+				<include name="jquery-ui-1.9.2.custom.js" />
 				<include name="jquery.swfobject.1-1-1.js" />
 				<include name="jquery.textarea.js" />
 			</fileset>
@@ -268,6 +261,13 @@
 		<copy todir="${dist}/scripts/json">
 			<fileset dir="${src}/scripts/json">
 				<include name="json2.js" />
+			</fileset>
+		</copy>
+
+		<mkdir dir="${dist}/scripts/underscore" />
+		<copy todir="${dist}/scripts/underscore">
+			<fileset dir="${src}/scripts/underscore">
+				<include name="underscore.js" />
 			</fileset>
 		</copy>
 	</target>

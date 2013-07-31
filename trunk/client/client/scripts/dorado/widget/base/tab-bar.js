@@ -79,7 +79,7 @@
              * 可以使用Tab对象或者Tab的配置信息来设置，当设置该属性的时候，原来的tabs会被清空。
              * 在设置的时候，数据类型为Array，在取得的时候，数据类型为dorado.util.KeyedArray。
              *
-             * @type dorado.util.KeyedArray
+             * @type dorado.util.KeyedArray|Array
              * @attribute
              */
             tabs: {

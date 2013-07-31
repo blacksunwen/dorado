@@ -1384,9 +1384,16 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		 * @param {String[]} [options.properties] 属性名数组，表示只转换该数组中列举过的属性。如果不指定此属性表示转换实体对象中的所有属性。
 		 * @param {boolean} [options.includeUnsubmittableProperties=true] 是否转换实体对象中那么submittable=false的属性（见{@link dorado.PropertyDef#attribute:submittable}）。默认按true进行处理。
 		 * @param {boolean} [options.includeReferenceProperties=true] 是否转换实体对象中{@link dorado.Reference}类型的属性。默认按true进行处理。
+		 * @param {String} [options.loadMode="never"] 数据装载模式，此属性仅在options.includeReferenceProperties=true为true时有效。<br>
+		 * 包含下列三种取值:
+		 * <ul>
+		 * <li>always	-	如果有需要总是装载尚未装载的延时数据。</li>
+		 * <li>auto	-	如果有需要则自动启动异步的数据装载过程，但对于本次方法调用将返回数据的当前值。</li>
+		 * <li>never	-	不会激活数据装载过程，直接返回数据的当前值。</li>
+		 * </ul>
 		 * @param {boolean} [options.includeUnloadPage=true] 是否转换{@link dorado.EntityList}中尚未装载的页中的数据。
 		 * 此属性对于{@link dorado.Entity}的toJSON而言是没有意义的，但是由于options参数会自动被传递到实体对象内部{@link dorado.EntityList}的toJSON方法中，
-		 * 因此它会影响内部{@link dorado.EntityList}的处理过程。 默认按false进行处理。
+		 * 因此它会影响内部{@link dorado.EntityList}的处理过程。 默认按true进行处理。
 		 * @param {boolean} [options.includeDeletedEntity] 是否转换那些被标记为"已删除"的数据实体。
 		 * 此属性对于{@link dorado.Entity}的toJSON而言是没有意义的，但是由于options参数会自动被传递到实体对象内部{@link dorado.EntityList}的toJSON方法中，
 		 * 因此它会影响内部{@link dorado.EntityList}的处理过程。 默认按false进行处理。
@@ -1403,15 +1410,15 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		 */
 		toJSON: function(options, context) {
 			var result = {};
-			var includeUnsubmittableProperties, includeReferenceProperties, includeLookupProperties, simplePropertyOnly, generateDataType, generateState, generateEntityId, generateOldData, properties, entityFilter;
-			includeUnsubmittableProperties = includeReferenceProperties = includeLookupProperties = true;
+			var includeUnsubmittableProperties, includeReferenceProperties, simplePropertyOnly, generateDataType, generateState, generateEntityId, generateOldData, properties, entityFilter;
+			includeUnsubmittableProperties = includeReferenceProperties = true, loadMode = "never";
 			simplePropertyOnly = generateDataType = generateState = generateEntityId = generateOldData = false;
 			properties = entityFilter = null;
 			
 			if (options != null) {
 				if (options.includeUnsubmittableProperties === false) includeUnsubmittableProperties = false;
 				if (options.includeReferenceProperties === false) includeReferenceProperties = false;
-				if (options.includeLookupProperties === false) includeLookupProperties = false;
+				if (options.loadMode) loadMode = options.loadMode;
 				simplePropertyOnly = options.simplePropertyOnly;
 				generateDataType = options.generateDataType;
 				generateState = options.generateState;
@@ -1439,7 +1446,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					if (!includeReferenceProperties) continue;
 				}
 				
-				var value = this._get(property, propertyDef);
+				var value = this._get(property, propertyDef, null, loadMode);
 				if (value != null) {
 					if (value instanceof dorado.Entity) {
 						if (simplePropertyOnly) continue;
@@ -1468,6 +1475,66 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 
 			if (context && context.entities) context.entities.push(this);
 			return result;
+		},
+		
+		/**
+		 * 将实体对象转换成一个可以以类似JSON方式来读写的代理对象。
+		 * @param {Object} [options] 转换选项。
+		 * @param {boolean} [options.textMode=false] 是否代理Entity的getText方法。该选项默认值为false，表示代理Entity的get方法。 
+		 * @param {boolean} [options.readOnly=false] 是否以只读方式代理Entity。该选项默认值为false。 
+		 * @param {boolean} [options.includeUnloadPage=false] 是否处理{@link dorado.EntityList}中尚未装载的页中的数据。
+		 * 此属性对于{@link dorado.Entity}的getWrapper而言是没有意义的，但是由于options参数会自动被传递到实体对象内部{@link dorado.EntityList}的getWrapper方法中，
+		 * 因此它会影响内部{@link dorado.EntityList}的处理过程。 默认按false进行处理。
+		 * @return {Object} 得到的代理对象。
+		 */
+		getWrapper: function(options) {
+			if (this.acceptUnknownProperty) {
+				wrapperType = function(entity, options) {
+					this._entity = entity;
+					this._options = options;
+					this._textMode = options && options.textMode;
+					this._readOnly = options && options.readOnly;
+				}, wrapperPrototype = wrapperType.prototype;
+				
+				var data = this._data, textMode = options && options.textMode;
+				for (var property in data) {
+					if (!data.hasOwnProperty(property)) continue;
+					
+					var getter = function() {
+						var value;
+						if (this._textMode) {
+							value = this._entity.getText(property);
+						}
+						else {
+							value = this._entity.get(property);
+						}
+						if (value instanceof dorado.Entity || value instanceof dorado.EntityList) {
+							value = value.getWrapper(this._options);
+						}
+						return value;
+					};
+					var setter = function(value) {
+						if (this._readOnly) {
+							throw new dorado.Exception("Wrapper is readOnly.");
+						}
+						this._entity.set(property, value);
+					};
+					
+					try {
+						wrapperPrototype.__defineGetter__(property, getter);	
+						wrapperPrototype.__defineSetter__(property, setter);		
+					} catch (e) {
+						Object.defineProperty(wrapperPrototype, property, {  
+					        get: getter,
+					        set: setter
+					    });
+					}
+				}
+			}
+			else {
+				wrapperType = this.dataType.getWrapperType();
+			}
+			return new wrapperType(this, options);
 		},
 		
 		getData: function() {

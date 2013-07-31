@@ -39,7 +39,55 @@ dorado.dequeue = function(namespace) {
 
 (function() {
 	var SHOWHIDE_SUFFIX = "_SHOWHIDE";
-	
+
+	var queue = [], needUseModal = dorado.Browser.isTouch && (dorado.Browser.iOS || dorado.Browser.android), modalKey = "DORADO_TOUCH_MODAL";
+	jQuery(function() {
+		document.onclick = function() {
+			if (queue.length > 0) {
+				queue.forEach(function(fn) {
+					setTimeout(function() {
+						fn && fn();
+					}, 400);
+				});
+				queue.splice(0, queue.length);
+			}
+		};
+	});
+
+	dorado.doOnBodyClick = function(fn) {
+		queue.push(fn);
+	};
+
+	var layerModalPool = new dorado.util.ObjectPool({
+		makeObject: function() {
+			var dom = document.createElement("div"), width = $fly(document).width(), height = $fly(document).height();
+			$fly(dom).css({
+				position: "absolute",
+				left: 0,
+				top: 0,
+				width: width,
+				height: height,
+				opacity: 0.5,
+				background: "transparent",
+				zIndex: 1000,
+				display: "none"
+			}).click(function() {
+				layerModalPool.returnObject(this);
+			});
+
+			document.body.appendChild(dom);
+
+			return dom;
+		},
+		passivateObject: function(dom) {
+			var control = jQuery.data(dom, modalKey);
+			if (control) {
+				control._modalDom = null;
+			}
+			$fly(dom).css("display", "none");
+		}
+	});
+
 	/**
 	 * @class 浮动控件的接口。
 	 * <p>
@@ -404,20 +452,23 @@ dorado.dequeue = function(namespace) {
 		 * 若不指定anchorTarget，也不指定position，则会判断用户是不是设置了center、left、top属性，根据这几个属性计算出组件显示的位置。
 		 * </p>
 		 *
-		 * @param {Object|Function} options 传入的Json参数，下面的参数不会被设置为组件的显示属性。<br />
+		 * @param {Object|Function} [options] 传入的Json参数，下面的参数不会被设置为组件的显示属性。<br />
 		 *        如果组件每次显示使用的都是不同的参数，不建议使用组件属性里面的显示参数，建议每次在调用show方法的时候动态指定Json参数。<br />
 		 *        如果options类型为Function，则会被当做options.callback使用，与onShow事件调用的时间相同。
-		 * @param {Object} options.position 组件显示的位置，该参数应该为Object，用left、top属性表示绝对值。
-		 * @param {HTMLElement|dorado.widget.Control} options.anchorTarget anchorTarget 锚定对象，如果是window，则表示该要停靠的DOM元素相对于当前可视范围进行停靠。<br />
+		 * @param {Object} [options.position] 组件显示的位置，该参数应该为Object，用left、top属性表示绝对值。
+		 * @param {HTMLElement|dorado.widget.Control} [options.anchorTarget] 锚定对象，如果是window，则表示该要停靠的DOM元素相对于当前可视范围进行停靠。<br />
 		 *              如果是组件或者HTMLElement，则是相对于组件的dom元素或HTMLElement进行停靠。
-		 * @param {String} options.align 在水平方向上，组件停靠在anchorTarget的位置。可选值为left、innerleft、center、innerright、top。
-		 * @param {String} options.vAlign 在垂直方向上，组件停靠在anchorTarget的位置。可选值为top、innertop、center、innerbottom、bottom。
-		 * @param {Array} options.positionOffset 使用align、vAlign计算出组件的位置的偏移量，索引0为水平偏移量，索引1为垂直偏移量，两个值都是可以为正，可以为负。
-		 * @param {boolean} options.autoAdjustPosition 当使用默认的align、vAlign计算的位置超出屏幕可见范围以后，是否要对停靠DOM对象的位置进行调整，默认为true，即进行调整。
-		 * @param {boolean} options.handleOverflow 当自动调整以后也无法使得组件显示在屏幕范围以内以后，认为组件的超出触发了，该属性用来标示是否对这种情况进行处理，默认会对这种情况进行处理。
-		 * @param {Function} options.overflowHandler 当组件的超出触发以后，要触发的函数，如果不指定，会去判断组件是否存在doHandleOverflow方法，如果存在，则会触发改方法。
-		 * @param {String} options.animateType 动画类型。
-		 * @param {Function} options.callback 在FloatControl显示完成之后，调用的回调函数，与onShow事件调用的时间相同。
+		 * @param {String} [options.align=innerleft] 在水平方向上，组件停靠在anchorTarget的位置。可选值为left、innerleft、center、innerright、top。
+		 * @param {String} [options.vAlign=innertop] 在垂直方向上，组件停靠在anchorTarget的位置。可选值为top、innertop、center、innerbottom、bottom。
+		 * @param {int} [options.gapX=0] 在水平方向上，停靠的DOM对象与固定位置的DOM对象之间的间隙大小，可以为正，可以为负。
+		 * @param {int} [options.gapY=0] 在垂直方向上，停靠的DOM对象与固定位置的DOM对象之间的间隙大小，可以为正，可以为负。
+		 * @param {int} [options.offsetLeft=0] 使用align计算出组件的位置的水平偏移量，可以为正，可以为负。
+		 * @param {int} [options.offsetTop=0] 使用vAlign计算出组件的位置的垂直偏移量，可以为正，可以为负。
+		 * @param {boolean} [options.autoAdjustPosition=true] 当使用默认的align、vAlign计算的位置超出屏幕可见范围以后，是否要对停靠DOM对象的位置进行调整，默认为true，即进行调整。
+		 * @param {boolean} [options.handleOverflow=true] 当自动调整以后也无法使得组件显示在屏幕范围以内以后，认为组件的超出触发了，该属性用来标示是否对这种情况进行处理，默认会对这种情况进行处理。
+		 * @param {Function} [options.overflowHandler] 当组件的超出触发以后，要触发的函数，如果不指定，会去判断组件是否存在doHandleOverflow方法，如果存在，则会触发改方法。
+		 * @param {String} [options.animateType] 动画类型。
+		 * @param {Function} [options.callback] 在FloatControl显示完成之后，调用的回调函数，与onShow事件调用的时间相同。
 		 */
 		show: function(options) {
 			if (typeof options == "function") {
@@ -430,7 +481,14 @@ dorado.dequeue = function(namespace) {
 			}
 			var control = this;
 			
-			var attrs = ["center", "autoAdjustPosition", "handleOverflow", "offsetLeft", "offsetTop", "align", "vAlign", "handleOverflow", "anchorTarget"];
+			var oldVisible = control._visible, oldActualVisible = control._actualVisible;
+			control._visible = true;
+			control._actualVisible = true;
+			control.refresh();
+			control._visible = oldVisible;
+			control._actualVisible = oldActualVisible;
+			
+			var attrs = ["center", "autoAdjustPosition", "handleOverflow", "gapX", "gapY", "offsetLeft", "offsetTop", "align", "vAlign", "handleOverflow", "anchorTarget"];
 			for (var i = 0; i < attrs.length; i++) {
 				var attr = attrs[i], value = options[attr];
 				if (value === undefined) {
@@ -452,11 +510,13 @@ dorado.dequeue = function(namespace) {
 						else if (typeof renderTo == "string") renderTo = jQuery(document.body).find(renderTo)[0];
 						else if (!renderTo.nodeName) renderTo = null;
 					}
-					
-					var oldVisible = control._visible;
+
+					var oldVisible = control._visible, oldActualVisible = control._actualVisible;
 					control._visible = true;
+					control._actualVisible = true;
 					control.render(renderTo);
 					control._visible = oldVisible;
+					control._actualVisible = oldActualVisible;
 				}
 				control.doShow.apply(control, [options]);
 			});
@@ -494,17 +554,31 @@ dorado.dequeue = function(namespace) {
 
 			control._visible = true;
 			control.setActualVisible(true);
-			
-			$fly(dom).css({
+			var $dom = $fly(dom);
+			$dom.css({
 				display: "",
 				visibility: "hidden"
 			});
-			
+			if (control._shadowMode != "none") {
+				$dom.shadow({
+					mode: control._shadowMode || "sides"
+				});
+			}
+	
 			var position = control.getShowPosition(options);
 			
 			options.position = position;
 			options.animateTarget = control._animateTarget;
-			
+
+			if (needUseModal) {
+				if (!control._modalDom) {
+					control._modalDom = layerModalPool.borrowObject();
+					jQuery.data(control._modalDom, modalKey, control);
+				}
+
+				control._modalDom.style.display = "";
+			}
+
 			if (handleModal && control._modal) {
 				dorado.ModalManager.show(dom, dorado.widget.FloatControl.modalTypeClassName[control._modalType]);
 			}
@@ -542,7 +616,7 @@ dorado.dequeue = function(namespace) {
 			}
 			
 			if (dom) {
-				$fly(dom).css({
+				jQuery(dom).css({
 					visibility: "",
 					display: ""
 				}).bringToFront();
@@ -567,12 +641,6 @@ dorado.dequeue = function(namespace) {
 				}
 				
 				control.fireEvent("afterShow", control);
-				
-				if (control._shadowMode != "none" && (!dorado.Browser.msie || dorado.Browser.version >= 9)) {
-					$fly(dom).shadow({
-						mode: control._shadowMode || "sides"
-					});
-				}
 			}
 			dorado.dequeue(control._id + SHOWHIDE_SUFFIX);
 		},
@@ -656,13 +724,13 @@ dorado.dequeue = function(namespace) {
 				
 				var focused = control._focused;
 				if (focused) {
-					var focuseParent = control._focusParent || control._parent;
-					while (focuseParent) {
-						if (focuseParent.isFocusable()) {
-							focuseParent.setFocus();
+					var focusParent = control._focusParent || control._parent;
+					while (focusParent) {
+						if (focusParent.isFocusable()) {
+							dorado.widget.setFocusedControl(focusParent);
 							break;
 						}
-						focuseParent = focuseParent._focusParent || focuseParent._parent;
+						focusParent = focusParent._focusParent || focusParent._parent;
 					}
 				}
 				
@@ -690,6 +758,15 @@ dorado.dequeue = function(namespace) {
 					dorado.ModalManager.hide(dom);
 				}
 
+				if (needUseModal) {
+					dorado.doOnBodyClick(function() {
+						if (control._modalDom) {
+							control._modalDom.style.display = "none";
+							layerModalPool.returnObject(control._modalDom);
+							control._modalDom = null;
+						}
+					});
+				}
 				control._visible = false;
 				control.setActualVisible(false);
 				
@@ -716,7 +793,7 @@ dorado.dequeue = function(namespace) {
 		doAfterHide: function() {
 			var control = this, dom = control._dom;
 			control.fireEvent("onHide", control);
-			jQuery(dom).css({
+			jQuery(dom).unshadow().css({
 				visibility: "hidden",
 				display: "none"
 			});
@@ -888,7 +965,7 @@ dorado.dequeue = function(namespace) {
 		fade: {
 			show: function(options) {
 				var control = this, dom = control._dom;
-				jQuery(dom).disableShadow().bringToFront().css({
+				jQuery(dom).bringToFront().css({
 					visibility: "",
 					opacity: 0
 				}).animate({
@@ -901,13 +978,13 @@ dorado.dequeue = function(namespace) {
 							opacity: ""
 						});
 						control.doAfterShow.apply(control, [options]);
-						$fly(dom).enableShadow();
+						$fly(dom);
 					}
 				});
 			},
 			hide: function(options) {
 				var control = this, dom = control._dom;
-				jQuery(dom).disableShadow().animate({
+				jQuery(dom).animate({
 					opacity: 0
 				}, {
 					duration: options.animateDuration || 200,
@@ -917,7 +994,7 @@ dorado.dequeue = function(namespace) {
 							opacity: ""
 						});
 						control.doAfterHide.apply(control, arguments);
-						$fly(dom).enableShadow();
+						$fly(dom);
 					}
 				});
 			}

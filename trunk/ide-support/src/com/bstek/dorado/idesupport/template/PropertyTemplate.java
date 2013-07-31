@@ -27,8 +27,7 @@ public class PropertyTemplate {
 	private String editor;
 	private Integer highlight;
 	private ReferenceTemplate reference;
-	private Boolean ignored;
-	private Boolean visible;
+	private boolean visible = true;
 	private CompositeType compositeType = CompositeType.Unsupport;
 	private Map<String, PropertyTemplate> properties;
 	private int clientTypes;
@@ -106,19 +105,11 @@ public class PropertyTemplate {
 		this.reference = reference;
 	}
 
-	public Boolean getIgnored() {
-		return ignored;
-	}
-
-	public void setIgnored(Boolean ignored) {
-		this.ignored = ignored;
-	}
-
-	public Boolean getVisible() {
+	public boolean isVisible() {
 		return visible;
 	}
 
-	public void setVisible(Boolean visible) {
+	public void setVisible(boolean visible) {
 		this.visible = visible;
 	}
 

@@ -16,7 +16,7 @@
  * @extends dorado.Renderer
  */
 dorado.widget.list.ListBoxRowRenderer = $extend(dorado.Renderer, /** @scope dorado.widget.list.ListBoxRowRenderer.prototype */{
-	$className: "dorado.ListBoxRowRenderer",
+	$className: "dorado.widget.list.ListBoxRowRenderer",
 	
 	/**
 	 * 渲染。

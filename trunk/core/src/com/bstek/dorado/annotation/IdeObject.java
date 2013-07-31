@@ -26,5 +26,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Inherited
 public @interface IdeObject {
+	boolean visible() default true;
+	
 	String labelProperty() default "";
 }

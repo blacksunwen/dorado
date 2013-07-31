@@ -280,27 +280,27 @@
 	$.ui.draggable.prototype.options.useShim = true;
 
     //修复this.options.axis不能设置为空的问题。
-//    $.ui.draggable.prototype._mouseDrag = function(event, noPropagation) {
-//
-//		//Compute the helpers position
-//		this.position = this._generatePosition(event);
-//		this.positionAbs = this._convertPositionTo("absolute");
-//
-//		//Call plugins and callbacks and use the resulting position if something is returned
-//		if (!noPropagation) {
-//			var ui = this._uiHash();
-//			if(this._trigger('drag', event, ui) === false) {
-//				this._mouseUp({});
-//				return false;
-//			}
-//			this.position = ui.position;
-//		}
-//
-//		if(!this.options.axis || this.options.axis == "x") this.helper[0].style.left = this.position.left+'px';
-//		if(!this.options.axis || this.options.axis == "y") this.helper[0].style.top = this.position.top+'px';
-//		if($.ui.ddmanager) $.ui.ddmanager.drag(this, event);
-//
-//		return false;
-//	};
+	//    $.ui.draggable.prototype._mouseDrag = function(event, noPropagation) {
+	//
+	//		//Compute the helpers position
+	//		this.position = this._generatePosition(event);
+	//		this.positionAbs = this._convertPositionTo("absolute");
+	//
+	//		//Call plugins and callbacks and use the resulting position if something is returned
+	//		if (!noPropagation) {
+	//			var ui = this._uiHash();
+	//			if(this._trigger('drag', event, ui) === false) {
+	//				this._mouseUp({});
+	//				return false;
+	//			}
+	//			this.position = ui.position;
+	//		}
+	//
+	//		if(!this.options.axis || this.options.axis == "x") this.helper[0].style.left = this.position.left+'px';
+	//		if(!this.options.axis || this.options.axis == "y") this.helper[0].style.top = this.position.top+'px';
+	//		if($.ui.ddmanager) $.ui.ddmanager.drag(this, event);
+	//
+	//		return false;
+	//	};
 
 })(jQuery);

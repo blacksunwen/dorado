@@ -247,7 +247,7 @@
                 }
             }
 
-	        if(this._tip) {
+	        if(this._tip && dorado.TipManager) {
 		        this._currentTip = this._tip;
 		        dorado.TipManager.initTip(dom, {
 			        text : this._tip

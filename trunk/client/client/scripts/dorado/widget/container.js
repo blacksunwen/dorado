@@ -22,6 +22,7 @@
 	 */
 	dorado.widget.Container = $extend(dorado.widget.Control, /** @scope dorado.widget.Container.prototype */ {
 		$className: "dorado.widget.Container",
+		_inherentClassName: "i-container",
 		
 		ATTRIBUTES: /** @scope dorado.widget.Container.prototype */ {
 		
@@ -156,8 +157,7 @@
 			 * @type String
 			 */
 			contentOverflow: {
-				writeBeforeReady: true,
-				defaultValue: dorado.Browser.isTouch ? "hidden" : undefined
+				writeBeforeReady: true
 			},
 			
 			/**
@@ -166,8 +166,7 @@
 			 * @type String
 			 */
 			contentOverflowX: {
-				writeBeforeReady: true,
-				defaultValue: dorado.Browser.isTouch ? "hidden" : undefined
+				writeBeforeReady: true
 			},
 
 			/**
@@ -176,8 +175,7 @@
 			 * @type String
 			 */
 			contentOverflowY: {
-				writeBeforeReady: true,
-				defaultValue: dorado.Browser.isTouch ? "hidden" : undefined
+				writeBeforeReady: true
 			},
 			
 			view: {
@@ -197,6 +195,10 @@
 					if (!this._dom) this.getDom();
 					return this.getContentContainer();
 				}
+			},
+			
+			containerUi: {
+				defaultValue: "default"
 			}
 		},
 		
@@ -273,10 +275,16 @@
 				for (var i = 0; i < element.childNodes.length; i++) {
 					children.push(element.childNodes[i]);
 				}
-				var htmlContrainer = new dorado.widget.HtmlContainer({
-					content: children
-				});
-				this.addChild(htmlContrainer);
+				
+				if (dorado.widget.HtmlContainer) {
+					var htmlContrainer = new dorado.widget.HtmlContainer({
+						content: children
+					});
+					this.addChild(htmlContrainer);
+				}
+				else {
+					$fly(this.getContentContainer()).append(children);
+				}
 			}
 				
 			if (!this._ready) {
@@ -354,6 +362,28 @@
 			}
 		},
 		
+		createDom: function() {
+			var dom = $DomUtils.xCreate({
+				tagName: "DIV",
+				content: {
+					tagName: "DIV",
+					style: {
+						width: "100%",
+						height: "100%"
+					}
+				}
+			});
+			this._container = dom.firstChild;
+			return dom;
+		},
+		
+		refreshDom : function(dom) {
+			$invokeSuper.call(this, [dom]);
+			if (this._currentVisible) {
+				this.processContentSize();
+			}
+		},
+		
 		/**
 		 * 返回用于容纳子控件的DOM对象。
 		 * @return {HTMLElement} DOM对象。
@@ -386,34 +416,22 @@
 			if (contentCt.nodeType && contentCt.nodeType == 1 && !contentCt.style.overflow) {
 				contentCt.style.overflowX = overflowX;
 				contentCt.style.overflowY = overflowY;
+				this._modernScrolled = $DomUtils.modernScroll(contentCt, {
+					autoDisable: true
+				});
 			}
 			
 			if (dorado.Browser.msie && dorado.Browser.version < 8) {
 				$fly(contentCt).addClass("d-relative");
 			}
 			
+			if (this._containerUi) {
+				$fly(contentCt).addClass("d-container-ui-" + this._containerUi);
+			}
+			
 			var layout = this._layout;
-			if (layout) {
-				layout._overflowX = (overflowX == "scroll") ? "visible" : overflowX;
-				layout._overflowY = (overflowY == "scroll") ? "visible" : overflowY;
-				if (this._contentContainerVisible && !(layout._regions.size == 0 && !layout._rendered)) {
-					var overflowedX = false, overflowedY = false;
-					if (overflowX == "scroll" || overflowX == "auto") overflowedX = contentCt.scrollWidth > contentCt.clientWidth;
-					if (overflowY == "scroll" || overflowY == "auto") overflowedY = contentCt.scrollHeight > contentCt.clientHeight;
-
-					layout.onAttachToDocument(contentCt);
-					
-					if (overflowY == "scroll" || overflowY == "auto") {
-						if (overflowedY != (contentCt.scrollHeight > contentCt.clientHeight)) {
-							layout.onResize();
-						}
-					}
-					else if (overflowX == "scroll" || overflowX == "auto") {
-						if (overflowedX != (contentCt.scrollWidth > contentCt.clientWidth)) {
-							layout.onResize();
-						}
-					}
-				}
+			if (this._contentContainerVisible && layout && !(layout._regions.size == 0 && !layout._rendered)) {
+				layout.onAttachToDocument(contentCt);
 			}
 		},
 		
@@ -422,31 +440,96 @@
 			if (layout) layout.onDetachToDocument();
 		},
 		
+		doResetDimension: function(force) {
+			var changed = $invokeSuper.call(this, [force]), dom = this._dom;
+			this._useOriginalWidth = this._useOriginalHeight = true;
+			this._currentOffsetWidth = dom.offsetWidth;
+			this._currentOffsetHeight = dom.offsetHeight;
+			return changed;
+		},
+		
 		doOnResize: function() {
-			var layout = this._layout;
-			if (this._contentContainerVisible && layout && layout._attached) {
-				var overflowX = (!this._contentOverflowX) ? this._contentOverflow : this._contentOverflowX;
-				var overflowY = (!this._contentOverflowY) ? this._contentOverflow : this._contentOverflowY;
-				overflowX = overflowX || "auto";
-				overflowY = overflowY || "auto";
-				var contentCt = this.getContentContainer();
+			var container = this;
+			dorado.Toolkits.cancelDelayedAction(container, "$notifySizeChangeTimerId");
 			
-				var overflowedX = false, overflowedY = false;
-				if (overflowX == "scroll" || overflowX == "auto") overflowedX = (contentCt.scrollWidth > contentCt.clientWidth);
-				if (overflowY == "scroll" || overflowY == "auto") overflowedY = (contentCt.scrollHeight > contentCt.clientHeight);
-					
+			var layout = container._layout;
+			if (container._contentContainerVisible && layout && layout._attached) {
 				layout.onResize();
-					
-				if (overflowY == "scroll" || overflowY == "auto") {
-					if (overflowedY != (contentCt.scrollHeight > contentCt.clientHeight)) {
-						layout.onResize();
+			}
+		},
+		
+		onContentSizeChange: function() {
+			if (!this._rendered || !this._layout || !this._layout._attached) return;
+			this.processContentSize();
+			this.updateModernScroller();
+		},
+		
+		processContentSize: function() {
+			if (!this._layout) return;
+
+			var dom = this._dom, containerDom = this.getContentContainer(), layoutDom = this._layout.getDom();
+			var overflowX = (!this._contentOverflowX) ? this._contentOverflow : this._contentOverflowX;
+			var overflowY = (!this._contentOverflowY) ? this._contentOverflow : this._contentOverflowY;
+
+			var newWidth, newHeight;
+			if (overflowX == "visible") {
+				var edgeWidth = dom.offsetWidth - containerDom.offsetWidth;
+				var width = layoutDom.offsetWidth + edgeWidth; 
+				if (width > this._currentOffsetWidth) {
+					newWidth = width;
+				} else if (width < this._currentOffsetWidth && !this._useOriginalWidth) {
+					var parent = this._parent, containerToRefresh = this;
+					while (parent) {
+						if (!parent._useOriginalWidth) {
+							containerToRefresh = parent;
+							parent = parent._parent;
+						}
+						else {
+							break;
+						}
+					}
+					if (containerToRefresh) {
+						containerToRefresh.refresh();
+						return;
 					}
 				}
-				else if (overflowX == "scroll" || overflowX == "auto") {
-					if (overflowedX != (contentCt.scrollWidth > contentCt.clientWidth)) {
-						layout.onResize();
+			}
+			if (overflowY == "visible") {
+				var edgeHeight = dom.offsetHeight - containerDom.offsetHeight;
+				var height = layoutDom.offsetHeight + edgeHeight; 
+				if (height > this._currentOffsetHeight) {
+					newHeight = height;
+				} else if (height < this._currentOffsetHeight && !this._useOriginalHeight) {
+					var parent = this._parent, containerToRefresh = this;
+					while (parent) {
+						if (!parent._useOriginalHeight) {
+							containerToRefresh = parent;
+							parent = parent._parent;
+						}
+						else {
+							break;
+						}
+					}
+					if (containerToRefresh) {
+						containerToRefresh.refresh();
+						return;
 					}
 				}
+			}
+			
+			var sizeChanged = false;
+			if (newWidth !== undefined) {
+				$fly(dom).outerWidth(newWidth);
+				sizeChanged = true;
+				this._useOriginalWidth = false;
+			}
+			if (newHeight !== undefined) {
+				$fly(dom).outerHeight(newHeight);
+				sizeChanged = true;
+				this._useOriginalHeight = false;
+			}
+			if (sizeChanged) {
+				this.notifySizeChange();
 			}
 		},
 		

@@ -43,6 +43,8 @@ public class PackageInfo {
 	private ServletContextListener servletContextListener;
 	private String propertiesLocations;
 	private String contextLocations;
+	private String componentLocations;
+
 	private String servletContextLocations;
 
 	private boolean loaded;
@@ -166,6 +168,14 @@ public class PackageInfo {
 
 	public void setContextLocations(String contextLocations) {
 		this.contextLocations = contextLocations;
+	}
+
+	public String getComponentLocations() {
+		return componentLocations;
+	}
+
+	public void setComponentLocations(String componentLocations) {
+		this.componentLocations = componentLocations;
 	}
 
 	public String getServletContextLocations() {

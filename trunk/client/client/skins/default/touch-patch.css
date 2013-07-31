@@ -1,0 +1,55 @@
+/*
+ * This file is part of Dorado 7.x (http://dorado7.bsdn.org).
+ * 
+ * Copyright (c) 2002-2012 BSTEK Corp. All rights reserved.
+ * 
+ * This file is dual-licensed under the AGPLv3 (http://www.gnu.org/licenses/agpl-3.0.html) 
+ * and BSDN commercial (http://www.bsdn.org/licenses) licenses.
+ * 
+ * If you are unsure which license is appropriate for your use, please contact the sales department
+ * at http://www.bstek.com/contact.
+ */
+
+.vscroll-wrap {
+    position: absolute;
+    z-index: 100;
+    width: 7px;
+    bottom: 1px;
+    top: 1px;
+    right: 1px;
+    overflow: hidden;
+}
+
+.vscroll-wrap .scrollbar {
+    position: absolute;
+    top: 0;
+    right: 1px;
+    width: 7px;
+    min-height: 7px;
+    z-index: 2147483647;
+    -webkit-transform: translate3d(0, 0, 0);
+    -webkit-box-sizing: border-box;
+    -webkit-border-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAUhJREFUeNp0Ur1OwzAQtt1CaZQQgUjDhuicrEwoqjJlzpBAXoIHywtkcwfECyQPwIgKQkoyFJWq5k6cJcsUS5/sO993/1wpxazjAU4BJyR/A3aA0TSaGu85kbSO0y0AM/pH8lYr8ZwBLpBUluVtGIaPjuM8IYIgeEAdObwkB4xTqgv8iOP4vuu6lZEFRkUDHkWRbNv2mVJ/x4g+1pPn+RJICRlzk4Q3/lVVdUP1nwtqgpJSYqQJGbMj96RpmhXJM01kwzBcWU2x36zv+wXppro5TAihvat/HCjxa6R0V7FY5rruhx3BTtfzvDeS95rI0zSVcB+MpijL0SHLsjW9d3ocIRZvjINbKSsYx5rGsQdsNHFOC8CKolhCh+/GcbxG2ff9TZIkL3Vdv5KjT8AXN3b12MqZi4yRBiTZu7olmEvOacH/LPmPAAMA2bZzzeYUC40AAAAASUVORK5CYII=") 6 2 6 2 / 3px 1px 3px 1px round round;
+}
+
+.hscroll-wrap {
+    position: absolute;
+    z-index: 100;
+    height: 7px;
+    bottom: 1px;
+    left: 1px;
+    right: 1px;
+    overflow: hidden;
+}
+
+.hscroll-wrap .scrollbar {
+    position: absolute;
+    left: 0;
+    bottom: 1px;
+    height: 7px;
+    min-width: 7px;
+    z-index: 2147483647;
+    -webkit-transform: translate3d(0, 0, 0);
+    -webkit-box-sizing: border-box;
+    -webkit-border-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAUhJREFUeNp0Ur1OwzAQtt1CaZQQgUjDhuicrEwoqjJlzpBAXoIHywtkcwfECyQPwIgKQkoyFJWq5k6cJcsUS5/sO993/1wpxazjAU4BJyR/A3aA0TSaGu85kbSO0y0AM/pH8lYr8ZwBLpBUluVtGIaPjuM8IYIgeEAdObwkB4xTqgv8iOP4vuu6lZEFRkUDHkWRbNv2mVJ/x4g+1pPn+RJICRlzk4Q3/lVVdUP1nwtqgpJSYqQJGbMj96RpmhXJM01kwzBcWU2x36zv+wXppro5TAihvat/HCjxa6R0V7FY5rruhx3BTtfzvDeS95rI0zSVcB+MpijL0SHLsjW9d3ocIRZvjINbKSsYx5rGsQdsNHFOC8CKolhCh+/GcbxG2ff9TZIkL3Vdv5KjT8AXN3b12MqZi4yRBiTZu7olmEvOacH/LPmPAAMA2bZzzeYUC40AAAAASUVORK5CYII=") 2 6 2 6 / 1px 3px 1px 3px round round;
+}

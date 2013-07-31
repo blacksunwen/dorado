@@ -225,6 +225,7 @@ var _NULL_FUNCTION = function(){};
 				charset = def.charset;
 			} else {
 				alert("Unknown package [" + pkg + "].");
+				continue;
 			}
 			pattern = pattern || defaultPattern;
 			if (!fileNames) fileNames = pkg;

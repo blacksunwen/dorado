@@ -1,0 +1,1304 @@
+/*
+ * This file is part of Dorado 7.x (http://dorado7.bsdn.org).
+ * 
+ * Copyright (c) 2002-2012 BSTEK Corp. All rights reserved.
+ * 
+ * This file is dual-licensed under the AGPLv3 (http://www.gnu.org/licenses/agpl-3.0.html) 
+ * and BSDN commercial (http://www.bsdn.org/licenses) licenses.
+ * 
+ * If you are unsure which license is appropriate for your use, please contact the sales department
+ * at http://www.bstek.com/contact.
+ */
+
+/* button */
+.i-button {
+	position: relative;
+	white-space: nowrap;
+	display: inline-block;
+	height: 22px;
+	cursor: pointer;
+	overflow: hidden;
+	background-repeat: no-repeat;
+}
+
+.i-button .button-left {
+	float: left;
+	height: 22px;
+	line-height: 22px;
+	display: inline-block;
+	overflow: hidden;
+	margin: 0 3px 0 3px;
+	padding: 0 4px;
+	cursor: pointer;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.d-ie6 .i-button .button-left {
+	margin-left: 0;
+	margin-right: 6px;
+	left: 3px;
+}
+
+.i-button .button-left .icon {
+	background-repeat: no-repeat;
+	display: inline-block;
+	padding-left: 20px;
+	width: 0;
+	height: 22px;
+	line-height: 22px;
+	margin: 0 1px;
+}
+
+.i-button .button-left .caption {
+	line-height: 22px;
+}
+
+.d-ie .i-button .button-left .caption {
+	vertical-align: baseline;
+}
+
+.i-button .button-right {
+	position: absolute;
+	top: 0;
+	right: 0;
+	display: inline-block;
+	width: 3px;
+	height: 22px;
+	background-repeat: no-repeat;
+}
+
+.i-button-disabled {
+	cursor: default;
+}
+
+.i-button-trigger .button-left {
+	margin: 0 19px 0 3px;
+}
+
+.d-ie6 .i-button-trigger .button-left {
+	margin-left: 0;
+	margin-right: 22px;
+	left: 3px;
+}
+
+.i-button-trigger .button-right {
+	width: 19px;
+}
+
+/* menu */
+.i-menu{
+	cursor: default;
+	overflow: hidden;
+}
+
+.i-menu .group-content{
+	position: relative;
+	overflow: hidden;
+	list-style: none;
+	display: block;
+	cursor: pointer;
+	margin: 0;
+	padding: 1px;
+	line-height: 100%;
+}
+
+.i-menu .group-content .menu-item{
+	display: block;
+	cursor: pointer;
+	margin: 0;
+	padding: 1px;
+}
+
+.i-menu .group-content .menu-item-hover{
+	padding: 0;
+}
+
+.i-menu .group-content .menu-item .menu-item-content{
+	display: block;
+	white-space: nowrap;
+	line-height: 16px;
+	padding: 2px 10px 2px 3px;
+}
+
+.i-menu .group-content .menu-item .menu-item-content .caption{
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.i-menu .group-content .menu-item .menu-item-content .icon{
+    background-repeat: no-repeat;
+	display: inline-block;
+	height: 18px;
+	padding-left: 16px;
+}
+
+.i-menu .group-content .menu-item-separator{
+	padding: 0;
+	font-size: 1pt;
+	margin-left: 25px;
+	margin-top: 3px;
+	margin-bottom: 3px;
+}
+
+.i-menu-icon-top .group-content .menu-item .menu-item-content{
+	text-align: center;
+}
+
+.i-menu-icon-top .group-content .menu-item .menu-item-content .icon{
+	display: inline-block;
+	width: 32px;
+	height: 32px;
+}
+
+.i-menu-icon-top .group-content .menu-item .menu-item-content .caption{
+	display: block;
+	width: auto;
+	text-align: center;
+}
+
+.i-menu .no-content-group{
+	display: none;
+	float: left;
+	vertical-align: middle;
+	height: 50px;
+	line-height: 50px;
+	padding: 0 10px 0 10px;
+}
+
+.i-menu-no-content .no-content-group{
+	display: block;
+}
+
+.i-menu .overflow-top-arrow{
+	display: none;
+	cursor: pointer;
+	font-size: 1%;
+	height: 10px;
+}
+
+.i-menu .overflow-bottom-arrow{
+	display: none;
+	cursor: pointer;
+	font-size: 1%;
+	height: 10px;
+}
+
+.i-menu-overflow .overflow-top-arrow, .i-menu-overflow .overflow-bottom-arrow{
+	display: block;
+}
+
+.d-ie6 .i-menu .overflow-top-arrow, .d-ie6 .i-menu .overflow-bottom-arrow{
+	width: 1px;
+}
+
+/* cardbook */
+.i-cardbook {
+    position: relative;
+}
+
+.i-cardbook .card-item {
+    position: absolute;
+    left: 0;
+    top: 0;
+    visibility: hidden;
+}
+
+.i-cardbook .card-item-active {
+    visibility: visible;
+    z-index: 9999;
+}
+
+/* tabbar */
+.i-tabbar {
+	position: relative;
+	height: 27px;
+}
+
+.i-tabbar .tabs-wrap {
+	position: relative;
+	overflow: hidden;
+	height: 27px;
+}
+
+.i-tabbar .tabs-wrap .tabs {
+	position: absolute;
+	left: 0;
+	top: 0;
+	padding: 0 0 0 4px;
+	margin: 0;
+	width: 5000px;
+	height: 27px;
+}
+
+.i-tabbar .tabs-wrap .tabs li {
+	list-style-type: none;
+}
+
+.i-tabbar .tab {
+	float: left;
+	position: relative;
+	cursor: default;
+	padding-left: 7px;
+}
+
+.i-tabbar .tab .tab-left {
+	display: inline-block;
+	position: relative;
+	float: left;
+	margin-right: 7px;
+	line-height: 26px;
+	height: 26px;
+}
+
+.i-tabbar .tab-closeable .tab-left {
+	padding-right: 17px;
+}
+
+.i-tabbar .tab .icon {
+	float: left;
+	display: inline-block;
+	margin: 2px 0 0 2px;
+	width: 20px;
+	height: 20px;
+}
+
+.i-tabbar .tab .caption {
+	float: left;
+	display: inline-block;
+	white-space: nowrap;
+	overflow: hidden;
+	height: 24px;
+	line-height: 24px;
+	padding: 0px 4px 0 4px;
+}
+
+.i-tabbar .tab .tab-right {
+	position: absolute;
+	right: 0;
+	top: 0;
+	display: inline-block;
+	padding-left: 7px;
+	height: 26px;
+}
+
+.i-tabbar .tab .close {
+	position: absolute;
+	right: 0;
+	top: 3px;
+	cursor: pointer;
+	width: 18px;
+	height: 18px;
+}
+
+.i-tabbar-bottom .tab .close {
+	top: 5px;
+}
+
+.i-tabbar .left-button {
+	display: inline;
+	cursor: pointer;
+	margin-top: 1px;
+	margin-right: 2px;
+	width: 20px;
+	height: 22px;
+}
+
+.i-tabbar .right-button {
+	display: inline;
+	cursor: pointer;
+	margin: 1px 1px 0 2px;
+	width: 20px;
+	height: 22px;
+}
+
+.i-tabbar .menu-button {
+	display: inline;
+	cursor: pointer;
+	width: 20px;
+}
+
+.i-tabbar-bottom .left-button,.i-tabbar-bottom .right-button,.i-tabbar-bottom .menu-button
+	{
+	margin-top: 4px;
+}
+
+.i-tabbar .left-button {
+	position: absolute;
+	left: 0;
+}
+
+.i-tabbar .right-button,.i-tabbar .menu-button {
+	position: absolute;
+	right: 0;
+	top: 1px;
+}
+
+.i-tabbar .i-icon-button,.i-tabbar .i-icon-button-trigger {
+	top: 1px;
+}
+
+.i-tabbar-bottom .i-icon-button {
+	top: 5px;
+}
+
+/* tabcolumn */
+.i-tabcolumn {
+    position: relative;
+}
+
+.i-tabcolumn .tabs-wrap {
+    position: relative;
+    overflow: hidden;
+}
+
+.i-tabcolumn .tabs-wrap .tabs {
+    position: absolute;
+    left: 0;
+    top: 0;
+    padding: 0;
+    margin: 0;
+    height: 5000px;
+    width: 100%;
+}
+
+.i-tabcolumn .tabs-wrap .tabs li {
+    list-style-type: none;
+}
+
+.i-tabcolumn .tab {
+    position: relative;
+    cursor: default;
+    padding-left: 7px;
+    margin-bottom: 2px;
+}
+
+.i-tabcolumn .tab .tab-left {
+    display: block;
+    position: relative;
+    margin-right: 7px;
+    line-height: 26px;
+    height: 26px;
+    overflow: hidden;
+}
+
+.i-tabcolumn .tab-closeable .tab-left {
+    padding-right: 17px;
+}
+
+.i-tabcolumn .tab .icon {
+    float: left;
+    display: inline-block;
+    padding: 0px 10px;
+    height: 20px;
+    margin: 3px 0;
+}
+
+.i-tabcolumn .tab .caption {
+    float: left;
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    height: 26px;
+    line-height: 26px;
+    padding: 0px 4px 0 4px;
+}
+
+.i-tabcolumn .tab .tab-right {
+    position: absolute;
+    right: 0;
+    top: 0;
+    display: inline-block;
+    padding-left: 7px;
+    height: 26px;
+}
+
+.i-tabcolumn .tab .close {
+    position: absolute;
+    right: 7px;
+    top: 3px;
+    cursor: pointer;
+    width: 18px;
+    height: 18px;
+}
+
+.i-tabcolumn-left .tab .close {
+    top: 3px;
+}
+
+.i-tabcolumn-right .tab .close {
+    top: 3px;
+}
+
+.i-tabcolumn .top-button {
+    background: url("base/tabcolumn-overflowbuttons.png") center top no-repeat;
+    cursor: pointer;
+    margin: 0;
+    width: 100%;
+    height: 26px;
+}
+
+.i-tabcolumn .bottom-button {
+    background: url("base/tabcolumn-overflowbuttons.png") center bottom no-repeat;
+    cursor: pointer;
+    margin: 0;
+    width: 100%;
+    height: 26px;
+}
+
+.i-tabcolumn .i-icon-button,
+.i-tabcolumn .i-icon-button-trigger {
+    top: 1px;
+}
+
+.i-tabcolumn-right .i-icon-button {
+    top: 5px;
+}
+
+.i-tabcolumn-vtext {
+    height: auto;
+    width: 26px;
+    float: left;
+    padding: 0;
+}
+
+.i-tabcolumn-vtext .top-button, .i-tabcolumn-vtext .bottom-button {
+    background-image: url(base/vtabcolumn-overflowbuttons.png);
+}
+
+.i-tabcolumn-vtext.d-tabcolumn-left .top-button {
+    background-position: left top;
+}
+
+.i-tabcolumn-vtext.d-tabcolumn-left .bottom-button {
+    background-position: left bottom;
+}
+
+.i-tabcolumn-vtext.d-tabcolumn-right .top-button {
+    background-position: right top;
+}
+
+.i-tabcolumn-vtext.d-tabcolumn-right .bottom-button {
+    background-position: right bottom;
+}
+
+.i-tabcolumn-vtext .tabs-wrap {
+    width: 26px;
+}
+
+.i-tabcolumn-vtext.d-tabcolumn-left .tabs-wrap {
+    background-position: 25px 0;
+}
+
+.i-tabcolumn-vtext .tabs-wrap .tabs {
+    left: 0;
+    top: 0;
+    height: 5000px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+    width: 26px;
+}
+
+.i-tabcolumn-vtext .tab {
+    padding-top: 7px;
+    padding-left: 0;
+    margin-bottom: 2px;
+}
+
+.i-tabcolumn-vtext .tab .tab-left {
+    margin-right: 7px;
+    line-height: 16px;
+    height: auto;
+    width: 26px;
+    padding-right: 0;
+}
+
+.i-tabcolumn-vtext .tab-closeable .tab-left {
+    padding-bottom: 17px;/** confirm this */
+    padding-right: 0;
+    height: auto;
+    width: 26px;
+}
+
+.i-tabcolumn-vtext .tab .icon {
+    padding: 0 10px;
+    height: 20px;
+    margin:  0 3px;
+}
+
+.i-tabcolumn-vtext .tab .caption {
+    width: 15px;
+    height: auto;
+    line-height: 20px;
+    padding: 0 4px 0 4px;
+    white-space: normal;
+}
+
+.i-tabcolumn-vtext .tab .tab-right {
+    display: block;
+    position: static;
+    height: 7px;
+    width: 100%;
+    padding: 0;
+}
+
+.i-tabcolumn-vtext .tab .close {
+    right: 3px;
+    top: auto;
+    bottom: 3px;
+    width: 18px;
+    height: 18px;
+}
+
+.i-tabcolumn-vtext.i-tabcolumn-left .tab {
+    background-image: url(base/vtabcolumn.png);
+    background-position: 0 0;
+}
+
+.i-tabcolumn-vtext.i-tabcolumn-left .tab-left {
+    background-image: url(base/vtabcolumn.png);
+    background-position: -78px 0;
+    background-repeat: repeat-y;
+}
+
+.i-tabcolumn-vtext.i-tabcolumn-left .tab .caption {
+}
+
+.i-tabcolumn-vtext.i-tabcolumn-left .tab .tab-right {
+    background-image: url(base/vtabcolumn.png);
+    background-position: 0 bottom;
+    background-repeat: no-repeat;
+}
+
+.i-tabcolumn-vtext.d-tabcolumn-left .tab {
+    background: transparent url(base/vtabcolumn.png) no-repeat -26px 0;
+}
+
+.i-tabcolumn-vtext.d-tabcolumn-left .tab .tab-left {
+    background: url(base/vtabcolumn.png) repeat-y -104px 0;
+}
+
+.i-tabcolumn-vtext.d-tabcolumn-left .tab .tab-right {
+    background: url(base/vtabcolumn.png) no-repeat -26px bottom;
+}
+
+.i-tabcolumn-vtext.i-tabcolumn-right .tab {
+    background-image: url(base/vtabcolumn-right.png);
+    background-position: 0 0;
+}
+
+.i-tabcolumn-vtext.i-tabcolumn-right .tab-left {
+    background-image: url(base/vtabcolumn-right.png);
+    background-position: -78px 0;
+    background-repeat: repeat-y;
+}
+
+.i-tabcolumn-vtext.i-tabcolumn-right .tab .caption {
+}
+
+.i-tabcolumn-vtext.i-tabcolumn-right .tab .tab-right {
+    background-image: url(base/vtabcolumn-right.png);
+    background-position: 0 bottom;
+    background-repeat: no-repeat;
+}
+
+.i-tabcolumn-vtext.d-tabcolumn-right .tab {
+    background: transparent url(base/vtabcolumn-right.png) no-repeat -26px 0;
+}
+
+.i-tabcolumn-vtext.d-tabcolumn-right .tab .tab-left {
+    background: url(base/vtabcolumn-right.png) repeat-y -104px 0;
+}
+
+.i-tabcolumn-vtext.d-tabcolumn-right .tab .tab-right {
+    background: url(base/vtabcolumn-right.png) no-repeat -26px bottom;
+}
+
+.i-tabcolumn-vtext.d-tabcolumn-left .tab-hover, .i-tabcolumn-vtext.d-tabcolumn-right .tab-hover {
+    background-position: -52px 0;
+}
+
+.i-tabcolumn-vtext.d-tabcolumn-left .tab-selected, .i-tabcolumn-vtext.d-tabcolumn-right .tab-selected  {
+    background-position: 0 0;
+}
+
+.i-tabcolumn-vtext.d-tabcolumn-left .tab-hover .tab-left, .i-tabcolumn-vtext.d-tabcolumn-right .tab-hover .tab-left {
+    background-position: -130px 0 ;
+}
+
+.i-tabcolumn-vtext.d-tabcolumn-left .tab-hover .tab-right, .i-tabcolumn-vtext.d-tabcolumn-right .tab-hover .tab-right {
+    background-position: -52px bottom;
+}
+
+.i-tabcolumn-vtext.d-tabcolumn-left .tab-selected .tab-left, .i-tabcolumn-vtext.d-tabcolumn-right .tab-selected .tab-left {
+    background-position: -78px 0 ;
+}
+
+.i-tabcolumn-vtext.d-tabcolumn-left .tab-selected .tab-right, .i-tabcolumn-vtext.d-tabcolumn-right .tab-selected .tab-right {
+    background-position: 0 bottom;
+}
+
+/* caption-bar */
+.i-caption-bar {
+	overflow: hidden;
+	height: 24px;
+	padding: 1px;
+}
+
+.i-caption-bar .caption {
+	padding-left: 6px;
+	line-height: 22px;
+	height: 24px;
+	font-size: 12px;
+}
+
+.i-caption-bar .caption-bar-icon {
+	float: left;
+	margin-left: 6px;
+	margin-top: 1px;
+	width: 20px;
+	height: 20px;
+	background-repeat: no-repeat;
+}
+
+.i-caption-bar .button-group {
+	float: right;
+	margin: 1px 4px 0 0;
+	height: 20px;
+	padding: 0;
+}
+
+.i-caption-bar .button-group div {
+	float: left;
+}
+
+/* panel */
+.i-panel {
+	overflow: hidden;
+}
+
+.i-panel .content-panel {
+	overflow: auto;
+	*zoom: 1;
+}
+
+.i-panel .button-panel {
+	padding: 2px 5px 5px 2px;
+	text-align: center;
+	height: 24px;
+}
+
+.d-touch .i-panel .button-panel {
+	height: 50px;
+}
+
+.d-touch .i-panel .button-panel .button {
+	margin-right: 8px;
+}
+
+.i-panel .button-panel-left {
+	text-align: left;
+}
+
+.i-panel .button-panel-right {
+	text-align: right;
+}
+
+.i-panel .button-panel .i-button {
+	margin-right: 3px;
+}
+
+.i-panel-curveborder .caption-bar {
+	-moz-border-radius-topright: 3px;
+	-webkit-border-top-right-radius: 3px;
+	border-top-right-radius: 3px;
+	-moz-border-radius-topleft: 3px;
+	-webkit-border-top-left-radius: 3px;
+	border-top-left-radius: 3px;
+}
+
+.i-panel-curveborder .panel-body {
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+}
+
+.i-panel-showcaptionbar .panel-body {
+	-moz-border-radius-topright: 0;
+	-webkit-border-top-right-radius: 0;
+	border-top-right-radius: 0;
+	-moz-border-radius-topleft: 0;
+	-webkit-border-top-left-radius: 0;
+	border-top-left-radius: 0;
+}
+
+.i-panel-curveborder .caption-bar .button-group {
+	margin-top: 2px;
+}
+
+.i-panel-curveborder .panel-header-left {
+	font-size: 0;
+	line-height: 0;
+	margin-right: 2px;
+}
+
+.i-panel-curveborder .panel-header-right {
+	position: relative;
+	font-size: 0;
+	line-height: 0;
+	padding: 2px 0 0 0;
+	margin-right: -2px;
+}
+
+.i-panel-curveborder .panel-body-left {
+	padding-left: 2px;
+}
+
+.i-panel-curveborder .panel-body-right {
+	padding-right: 2px;
+}
+
+.i-panel-curveborder .panel-body {
+	overflow: hidden;
+	margin: 0;
+	padding: 0;
+}
+
+.i-panel-curveborder .panel-footer-left {
+	margin-right: 2px;
+}
+
+.i-panel-curveborder .panel-footer-right {
+	position: relative;
+	font-size: 0;
+	margin-right: -2px;
+	padding: 2px 0 0 0;
+	line-height: 0;
+}
+
+.i-panel-curveborder .content-panel {
+	padding: 0 3px;
+}
+
+.i-panel-curveborder .caption-bar .button-group {
+	margin-top: 0;
+}
+
+.i-panel-collapsed .panel-footer-left {
+	display: none;
+}
+
+.i-panel-normalborder {
+	-moz-box-shadow: 0;
+	-webkit-box-shadow: 0;
+	border-radius: 0;
+}
+
+/* toolbar */
+.i-toolbar {
+	position: relative;
+	height: 24px;
+}
+
+.i-toolbar .toolbar-left-wrap {
+	position: relative;
+	overflow: hidden;
+	height: 24px;
+}
+
+.i-toolbar .toolbar-left {
+	position: absolute;
+	left: 0;
+	top: 1px;
+	width: 3000px;
+}
+
+.i-toolbar .toolbar-right {
+	display: inline-block;
+	position: absolute;
+	height: 23px;
+	right: 0;
+	top: 1px;
+}
+
+.i-toolbar .overflow-button {
+	display: none;
+	position: absolute;
+	right: 0;
+	top: -2px;
+	width: 15px;
+	height: 25px;
+}
+
+.i-toolbar-overflow .overflow-button {
+	display: block;
+}
+
+.i-toolbar-overflow .toolbar-right {
+	padding-right: 17px;
+}
+
+.i-toolbar-fixright .overflow-button {
+	left: 0;
+	right: auto;
+}
+
+.i-toolbar-fixright .toolbar-right {
+	padding-left: 17px;
+	padding-right: 0;
+}
+
+.i-toolbar-item {
+	display: inline-block;
+	float: left;
+}
+
+.i-toolbar-sep {
+	cursor: default;
+	width: 10px;
+	height: 22px;
+}
+
+.i-toolbar-label {
+	display: inline-block;
+	*display: inline;
+	zoom: 1;
+	cursor: default;
+	vertical-align: baseline;
+	height: 22px;
+	line-height: 20px;
+}
+
+.i-toolbar .i-text-editor {
+	margin-top: 1px;
+}
+
+.i-toolbar-button-disabled {
+	cursor: default;
+}
+
+/* accordion */
+.i-section {
+	overflow: hidden;
+	cursor: default;
+	font-size: 9pt;
+	width: 100%;
+}
+
+.i-accordion {
+	padding: 0 1px 1px 1px;
+	overflow: hidden;
+}
+
+.i-accordion .i-section {
+	margin-top: 1px;
+}
+
+.i-accordion .i-section .container {
+	display: none;
+}
+
+.i-accordion .current-section .container {
+	display: block;
+}
+
+.i-accordion .i-menu {
+	position: relative;
+	padding: 0;
+}
+
+/* split-panel */
+.i-split-panel {
+	position: relative;
+	overflow: hidden;
+}
+
+.i-split-panel .side-panel {
+	position: absolute;
+	overflow: hidden;
+}
+
+.i-split-panel .main-panel {
+	position: absolute;
+	overflow: hidden;
+}
+
+.i-split-panel .splitter {
+	position: absolute;
+	font-size: 1px;
+}
+
+.i-split-panel .splitter-left,.i-split-panel .splitter-right {
+	width: 5px;
+	height: 100%;
+	line-height: 100%;
+	vertical-align: middle;
+}
+
+.i-split-panel .splitter-top,.i-split-panel .splitter-bottom {
+	line-height: 5px;
+	height: 5px;
+	width: 100%;
+}
+
+.i-split-panel .splitter-h-resizeable {
+	cursor: w-resize;
+}
+
+.i-split-panel .splitter-v-resizeable {
+	cursor: n-resize;
+}
+
+.i-split-panel-collapsed .splitter-h-resizeable,.i-split-panel-collapsed .splitter-v-resizeable
+	{
+	cursor: default;
+}
+
+.i-split-panel .splitter-left .button,.i-split-panel .splitter-right .button
+	{
+	cursor: pointer;
+	width: 5px;
+	height: 51px;
+	font-size: 0%;
+	position: relative;
+	left: 0;
+	top: 50%;
+	margin: -24px 0px;
+}
+
+.i-split-panel .splitter-top .button,.i-split-panel .splitter-bottom .button
+	{
+	cursor: pointer;
+	width: 51px;
+	height: 5px;
+	position: relative;
+	left: 50%;
+	top: 0;
+	margin: 0px -24px;
+}
+
+.i-split-panel .collapse-bar {
+	position: absolute;
+}
+
+.i-split-panel .collapse-bar-left,.i-split-panel .collapse-bar-right {
+	width: 19px;
+}
+
+.i-split-panel .collapse-bar-top,.i-split-panel .collapse-bar-bottom {
+	height: 19px;
+}
+
+.i-split-panel .collapse-bar .button {
+	cursor: pointer;
+	width: 17px;
+	height: 17px;
+	margin: 3px;
+}
+
+.i-split-panel .collapse-bar-left .button {
+	margin-left: 1px;
+}
+
+.i-split-panel .collapse-bar-left .button-hover {
+	margin-left: 1px;
+}
+
+.i-split-panel .collapse-bar-right .button {
+	margin-left: 1px;
+}
+
+.i-split-panel .collapse-bar-right .button-hover {
+	margin-left: 1px;
+}
+
+.i-split-panel .collapse-bar-top .button {
+	float: right;
+	margin-top: 1px;
+}
+
+.i-split-panel .collapse-bar-top .button-hover {
+	float: right;
+	margin-top: 1px;
+}
+
+.i-split-panel .collapse-bar-bottom .button {
+	float: right;
+	margin-top: 1px;
+}
+
+.i-split-panel .collapse-bar-bottom .button-hover {
+	float: right;
+	margin-top: 1px;
+}
+
+/* field-set */
+.i-field-set {
+    padding: 0 10px 10px 10px;
+    margin: 0;
+}
+
+.i-field-set-collapsed {
+    padding: 0 11px 11px 11px;
+}
+
+.i-field-set .field-set-legend {
+    line-height: 19px;
+    font-size: 160%;
+    padding: 0 3px 0 0;
+    vertical-align: middle;
+}
+
+.i-field-set .field-set-legend .collapse-button {
+    display: inline-block;
+    cursor: pointer;
+    height: 20px;
+    width: 17px;
+    margin-right: 2px;
+    float: left;
+}
+
+.i-field-set .field-set-legend .caption {
+    font-size: 62.5%;
+    vertical-align: middle;
+}
+
+.i-field-set .content-panel {
+    display: block;
+    overflow: hidden;
+}
+
+.i-field-set .button-panel {
+    text-align: center;
+    padding: 2px 5px 5px 2px;
+    height: 24px;
+}
+
+.i-field-set .button-panel-left {
+    text-align: left;
+}
+
+.i-field-set .button-panel-right {
+    text-align: right;
+}
+
+.i-field-set .button-panel .i-button {
+    margin-right: 3px;
+}
+
+/* group-box */
+.i-group-box {
+    padding: 0;
+}
+
+.i-group-box .caption-bar {
+    overflow: hidden;
+    height: 20px;
+    line-height: 20px;
+    padding-left: 10px;
+}
+
+.i-group-box .caption-bar .bar-right {
+    float: right;
+    height: 20px;
+    width: 100px;
+}
+
+.i-group-box .caption-bar .caption {
+    float: left;
+    overflow: hidden;
+    height: 20px;
+    line-height: 20px;
+    padding: 0 6px 0 2px;
+}
+
+.i-group-box .caption-bar .collapse-button {
+    float: left;
+    cursor: pointer;
+    height: 20px;
+    width: 17px;
+}
+
+.i-group-box .content-panel {
+    display: block;
+}
+
+.i-group-box .button-panel {
+    padding: 2px 5px 5px 2px;
+    text-align: center;
+    height: 24px;
+}
+
+.i-group-box .button-panel-left {
+    text-align: left;
+}
+
+.i-group-box .button-panel-right {
+    text-align: right;
+}
+
+.i-group-box .button-panel .i-button {
+    margin-right: 3px;
+}
+
+
+/* dialog */
+.i-dialog {
+	margin: 0;
+	overflow: hidden;
+	padding: 0;
+}
+
+.i-dialog .dialog-header {
+	font-size: 0%;
+	height: 8px;
+	position: relative;
+}
+
+.i-dialog .dialog-header .dialog-header-left {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 8px;
+	height: 8px;
+	margin: 0;
+}
+
+.i-dialog .dialog-header .dialog-header-right {
+	position: absolute;
+	right: 0;
+	top: 0;
+	width: 8px;
+	height: 8px;
+	margin: 0;
+}
+
+.i-dialog .dialog-header .dialog-header-center {
+	margin: 0 8px 0 8px;
+	height: 8px;
+}
+
+.i-dialog-resizeable .dialog-header .dialog-header-left {
+	cursor: nw-resize;
+}
+
+.i-dialog-resizeable .dialog-header .dialog-header-right {
+	cursor: ne-resize;
+}
+
+.i-dialog-resizeable .dialog-header .dialog-header-center {
+	cursor: n-resize;
+}
+
+.i-dialog .dialog-body-wrap {
+	position: relative;
+	overflow: hidden;
+}
+
+.i-dialog .dialog-body-wrap .dialog-body-left {
+	position: absolute;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	width: 8px;
+}
+
+.i-dialog .dialog-body-wrap .dialog-body-right {
+	position: absolute;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	width: 8px;
+}
+
+.d-ie6 .i-dialog .dialog-body-wrap .dialog-body-left,.d-ie6 .i-dialog .dialog-body-wrap .dialog-body-right
+	{
+	height: expression(this.parentNode.clientHeight +     "px");
+}
+
+.i-dialog .dialog-body-wrap .dialog-body {
+	padding: 0;
+	margin: 0 8px 0 8px;
+}
+
+.i-dialog-resizeable .dialog-body-wrap .dialog-body-left {
+	cursor: w-resize;
+}
+
+.i-dialog-resizeable .dialog-body-wrap .dialog-body-right {
+	cursor: e-resize;
+}
+
+.i-dialog .dialog-body-wrap .dialog-body .content-panel {
+	padding: 0;
+	*zoom: 1;
+}
+
+.i-dialog .dialog-footer {
+	font-size: 0%;
+	height: 8px;
+	position: relative;
+}
+
+.i-dialog .dialog-footer .dialog-footer-left {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 8px;
+	height: 8px;
+}
+
+.i-dialog .dialog-footer .dialog-footer-right {
+	position: absolute;
+	right: 0;
+	top: 0;
+	width: 8px;
+	height: 8px;
+}
+
+.i-dialog .dialog-footer .dialog-footer-center {
+	height: 8px;
+	margin: 0 8px 0 8px;
+}
+
+.i-dialog .dialog-body-wrap .dialog-body .button-panel {
+	padding: 12px 8px 12px 8px;
+	text-align: center;
+	height: 22px;
+}
+
+.i-dialog .dialog-body-wrap .dialog-body .button-panel-left {
+	text-align: left;
+}
+
+.i-dialog .dialog-body-wrap .dialog-body .button-panel-right {
+	text-align: right;
+}
+
+.i-dialog .dialog-body-wrap .dialog-body .button-panel .i-button {
+	margin-left: 1px;
+	margin-right: 1px;
+}
+
+.i-dialog-resizeable .dialog-footer .dialog-footer-left {
+	cursor: sw-resize;
+}
+
+.i-dialog-resizeable .dialog-footer .dialog-footer-right {
+	cursor: se-resize;
+}
+
+.i-dialog-resizeable .dialog-footer .dialog-footer-center {
+	cursor: s-resize;
+}
+
+.i-dialog-drag-proxy {
+	position: absolute;
+}
+
+.i-dialog-helper {
+	left: -9999px;
+	top: -9999px;
+}

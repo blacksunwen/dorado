@@ -81,6 +81,14 @@
 			dragOutside: {
 				defaultValue: false
 			},
+			
+			center: {
+				defaultValue: true
+			},
+			
+			modal: {
+				defaultValue: true
+			},
 
 			/**
 			 * 对话框是否可以改变尺寸。
@@ -593,7 +601,7 @@
 					start: function(event, ui) {
 						var helper = ui.helper;
 						helper.css({ display: "", visibility: "" }).bringToFront();
-						$fly(dom).addClass("d-dialog-dragging").css("visibility", "hidden").disableShadow();
+						$fly(dom).addClass("d-dialog-dragging").css("visibility", "hidden");
 					},
 					stop: function(event, ui) {
 						var helper = ui.helper, left = parseInt(helper.css("left"), 10), top = parseInt(helper.css("top"), 10);
@@ -601,7 +609,7 @@
 							visibility: "",
 							left: left,
 							top: top
-						}).enableShadow();
+						});
 						dialog._left = left;
 						dialog._top = top;
 

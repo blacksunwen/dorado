@@ -50,6 +50,7 @@ public class RuleTemplate {
 	private int clientTypes;
 	private String reserve;
 	private boolean deprecated;
+	private boolean visible = true;
 
 	private boolean global;
 	private boolean autoInitialize = true;
@@ -458,5 +459,13 @@ public class RuleTemplate {
 
 	public void setDeprecated(boolean deprecated) {
 		this.deprecated = deprecated;
+	}
+
+	public boolean isVisible() {
+		return visible;
+	}
+
+	public void setVisible(boolean visible) {
+		this.visible = visible;
 	}
 }

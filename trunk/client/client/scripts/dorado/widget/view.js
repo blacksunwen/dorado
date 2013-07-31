@@ -455,24 +455,31 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 		dorado.fireBeforeInit();
 		
 		var lastFocusedControl;
+		$fly(document).mousedown(function(evt) {
+			var element = evt.target;
+			if (!element || !element.style || element.style.tabIndex < 0) return;
+
+			var nodeName = element.nodeName.toLowerCase();
+			var ignorePhyscialFocus = (nodeName == "input" || nodeName == "textarea")
+
+			var control = getControlByElement(element);
+			if (control == null) {
+				dorado.widget.setFocusedControl(null, ignorePhyscialFocus);
+			}
+			else {
+				dorado.widget.setFocusedControl(control, ignorePhyscialFocus);
+			}
+		});
 		if (!dorado.Browser.isTouch) {
-            $fly(document).mousedown(function(evt) {
-                var element = evt.target;
-                if (!element || !element.style || element.style.tabIndex < 0) return;
-				
-				var nodeName = element.nodeName.toLowerCase();
-				var ignorePhyscialFocus = (nodeName == "input" || nodeName == "textarea")
-					
-                var control = getControlByElement(element);
-                if (control == null) {
-                    dorado.widget.setFocusedControl(null, ignorePhyscialFocus);
-                }
-                else {
-                    dorado.widget.setFocusedControl(control, ignorePhyscialFocus);
-                }
-            }).keydown(function(evt) {
+            $fly(document).keydown(function(evt) {
                 var b, c = dorado.widget.getFocusedControl();
                 if (c) b = c.onKeyDown(evt);
+                
+                if ((dorado.widget.HtmlContainer && c instanceof dorado.widget.HtmlContainer) ||
+					(dorado.widget.TemplateField && c instanceof dorado.widget.TemplateField)){
+                	return true;
+				}
+                
                 if (b === false) {
                     evt.preventDefault();
                     evt.cancelBubble = true;
@@ -499,17 +506,12 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 								}
 								break;
 							}
-                            case 9: {	// Tab
-								var control = dorado.widget.findParentControl(evt.srcElement);
-								if (control && control instanceof dorado.widget.HtmlContainer){
-									// do nothing
-								} else {
-									var c = (evt.shiftKey) ? dorado.widget.findPreviousFocusableControl() : dorado.widget.findNextFocusableControl();
-									if (c) c.setFocus();
-									evt.preventDefault();
-									evt.cancelBubble = true;
-									return false;
-								}
+                            case 9: {
+								var c = (evt.shiftKey) ? dorado.widget.findPreviousFocusableControl() : dorado.widget.findNextFocusableControl();
+								if (c) c.setFocus();
+								evt.preventDefault();
+								evt.cancelBubble = true;
+								return false;
                             }
                         }
                     }
@@ -529,25 +531,36 @@ var AUTO_APPEND_TO_TOPVIEW = true;
         }
 
 		var cls = "d-unknown-browser", b = dorado.Browser, v = b.version;
-		if (b.msie) {
-			cls = "d-ie";
-		} else if (b.mozilla) {
-			cls = "d-mozilla";
-		} else if (b.chrome) {
-			cls = "d-chrome";
-		} else if (b.safari) {
-			cls = "d-safari";
-		} else if (b.opera) {
-			cls = "d-opera";
+		if (b.isTouch) {
+			if (b.android) {
+				cls = "d-android";
+			} else if (b.iOS) {
+				cls = "d-ios";
+			} else if (b.chrome) {
+				cls = "d-chrome";
+			}
+
+			if ($setting["common.simulateTouch"]) {
+				cls += " d-touch";
+			}
+		}
+		else {
+			if (b.msie) {
+				cls = "d-ie";
+			} else if (b.mozilla) {
+				cls = "d-mozilla";
+			} else if (b.chrome) {
+				cls = "d-chrome";
+			} else if (b.safari) {
+				cls = "d-safari";
+			} else if (b.opera) {
+				cls = "d-opera";
+			}
 		}
 		if (v) {
 			cls += " " + cls + v;
 		}
-		
-		if (dorado.Browser.isTouch || $setting["common.simulateTouch"]) {
-			cls += " d-touch";
-		} 
-		
+
 		$fly(document.body).addClass(cls);
         if (!dorado.Browser.isTouch) {
             $fly(document.body).focusin(function(evt) {
@@ -558,12 +571,12 @@ var AUTO_APPEND_TO_TOPVIEW = true;
                 }
             });
         }
-		
+
 		var doInitDorado = function() {
 			dorado.fireOnInit();
-			
+
 			topView.onReady();
-			
+
 			$fly(window).unload(function() {
 				dorado.windowClosed = true;
 				if (!topView._destroyed) topView.destroy();
@@ -572,7 +585,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 					clearTimeout(topView.onResizeTimerId);
 					delete topView.onResizeTimerId;
 				}
-				
+
 				topView.onResizeTimerId = setTimeout(function() {
 					delete topView.onResizeTimerId;
 					topView._children.each(function(child) {
@@ -580,10 +593,10 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 					});
 				}, 200);
 			});
-			
+
 			dorado.fireAfterInit();
 		};
-		
+
 		if (dorado.Browser.chrome) {
 			setTimeout(doInitDorado, 10);
 		}

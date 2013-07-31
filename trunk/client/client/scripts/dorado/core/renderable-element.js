@@ -159,7 +159,7 @@ dorado.RenderableElement = $extend(dorado.AttributeSupport, /** @scope dorado.Re
 				el.width("");
 			} else {
 				this._currentWidth = width;
-				el.outerWidth(width);
+				el.outerWidth(width, true);
 			}
 			changed = true;
 		}
@@ -169,7 +169,7 @@ dorado.RenderableElement = $extend(dorado.AttributeSupport, /** @scope dorado.Re
 				el.height("");
 			} else {
 				this._currentHeight = height;
-				el.outerHeight(height);
+				el.outerHeight(height, true);
 			}
 			changed = true;
 		}
@@ -233,12 +233,11 @@ dorado.RenderableElement = $extend(dorado.AttributeSupport, /** @scope dorado.Re
 		if (!this._dom) {
 			this._dom = this.createDom();
 			var $dom = $fly(this._dom);
-			if (this._inherentClassName) {
-				$dom.addClass(this._inherentClassName);
-			}
-			if (this._className) {
-				$dom.addClass(this._className);
-			}
+			
+			var className = (this._inherentClassName) ? this._inherentClassName : "";
+			if (this._className) className += (" " + this._className);
+			if (this._exClassName) className += (" " + this._exClassName);
+			if (className) $dom.addClass(className);
 			
 			this.applyStyle(this._dom);
 		}

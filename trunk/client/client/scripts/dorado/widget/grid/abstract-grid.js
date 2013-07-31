@@ -1156,16 +1156,6 @@
 			$invokeSuper.call(this, arguments);
 		},
 		
-		hasRealWidth: function() {
-			var width = this.getRealWidth();
-			return width != null && width != "none" && width != "auto";
-		},
-		
-		hasRealHeight: function() {
-			var height = this.getRealHeight();
-			return height != null && height != "none" && height != "auto";
-		},
-		
 		doGet: function(attr) {
 			var c = attr.charAt(0);
 			if (c == '#' || c == '&') {
@@ -1195,11 +1185,34 @@
 		createDom: function() {
 			var dom = $invokeSuper.call(this, arguments);
 			$fly(dom).mousewheel($scopify(this, function(evt, delta) {
-				if (this._divScroll) {
-					this._divScroll.scrollTop -= delta * this._rowHeight * 2;
+				var divScroll = this._divScroll;
+				if (divScroll.scrollHeight > divScroll.clientHeight) {
+					var scrollTop = divScroll.scrollTop - delta * this._rowHeight * 2;
+					if (scrollTop <= 0) {
+						scrollTop = 0;
+					} else if (scrollTop + divScroll.clientHeight > divScroll.scrollHeight) {
+						scrollTop = divScroll.scrollHeight - divScroll.clientHeight;
+					}
+					if (scrollTop != divScroll.scrollTop) {
+						divScroll.scrollTop = scrollTop;
+						this.hideCellEditor();
+						return false;
+					}
 				}
-				this.hideCellEditor();
-				return false;
+
+				if (divScroll.scrollWidth > divScroll.clientWidth) {
+					var scrollLeft = divScroll.scrollLeft - delta * this._rowHeight * 2;
+					if (scrollLeft <= 0) {
+						scrollLeft = 0;
+					} else if (scrollLeft + divScroll.clientWidth > divScroll.scrollWidth) {
+						scrollLeft = divScroll.scrollWidth - divScroll.clientWidth;
+					}
+					if (scrollLeft != divScroll.scrollLeft) {
+						divScroll.scrollLeft = scrollLeft;
+						this.hideCellEditor();
+						return false;
+					}
+				}
 			}));
 			return dom;
 		},
@@ -1224,6 +1237,7 @@
 					};
 				} else {
 					style = {
+						overflow: "scroll",
 						width: "100%",
 						height: "100%"
 					};
@@ -1274,6 +1288,9 @@
 						});
 						grid._scroller = scroller;
 					}, 0);
+				}
+				else {
+					this._modernScrolled = $DomUtils.modernScroll(div);
 				}
 				
 				return div;
@@ -1358,6 +1375,7 @@
 						overflowX = "visible";
 						position = "absolute";
 						left = top = 0;
+						height = "100%";
 					}
 					dom.appendChild(wrapper);
 				}
@@ -1371,6 +1389,7 @@
 					with (wrapper.style) {
 						position = "absolute";
 						left = top = 0;
+						height = "100%";
 					}
 					dom.appendChild(wrapper);
 				}
@@ -1429,8 +1448,9 @@
 				domMode = yScroll ? 1 : 0;
 			}
 
-			var oldHeight;
+			var oldWidth, oldHeight;
 			if (!this.xScroll || !this.yScroll) {
+				oldWidth = dom.offsetWidth;
 				oldHeight = dom.offsetHeight;
 			}
 
@@ -1461,8 +1481,8 @@
 						if (fixedInnerGridWrapper) $fly(fixedInnerGridWrapper).hide();
 
 						var innerGridWrapper = getInnerGridWrapper.call(this);
-						innerGridWrapper.style.overflowX = (this.hasRealWidth()) ? "hidden" : (this.hasRealHeight() ? "scroll" : "visible");
-						innerGridWrapper.style.overflowY = (this.hasRealHeight()) ? "hidden" : (this.hasRealWidth() ? "scroll" : "visible");
+						innerGridWrapper.style.overflowX = (this.hasRealWidth()) ? "hidden" : "visible";
+						innerGridWrapper.style.overflowY = (this.hasRealHeight()) ? "hidden" : "visible";
 						with (this._innerGridDom.style) {
 							position = top = left = width = '';
 						}
@@ -1497,15 +1517,6 @@
 					}
 				}
 			}
-			
-			if (domMode != 0 && this._divScroll) {
-				if (!dorado.Browser.isTouch) {
-					$fly(this._divScroll).css({
-						overflowX: (xScroll && domMode == 0) ? "scroll" : "hidden",
-						overflowY: yScroll ? "scroll" : "hidden"
-					});
-				}
-			}
 
 			if (this._currentScrollMode != this._scrollMode && this._scrollMode != "viewport") {
 				itemModel.setScrollPos(0);
@@ -1517,7 +1528,6 @@
 			if (domMode == 2) {
 				with (fixedInnerGridWrapper.style) {
 					overflowX = width = '';
-					if (yScroll) height = divScroll.clientHeight + "px";
 				}
 
 				fixedInnerGrid._scrollMode = this._scrollMode;
@@ -1541,7 +1551,6 @@
 				} else {
 					with (innerGridWrapper.style) {
 						width = (divScroll.clientWidth - scrollLeft) + "px";
-						if (yScroll) height = divScroll.clientHeight + "px";
 					}
 					innerGridWrapper.style.left = scrollLeft + "px";
 				}
@@ -1550,7 +1559,6 @@
 					with (innerGridWrapper.style) {
 						left = 0;
 						width = divScroll.clientWidth + "px";
-						height = divScroll.clientHeight + "px";
 					}
 				}
 			}
@@ -1571,10 +1579,9 @@
 			innerGrid._ignoreItemTimestamp = ignoreItemTimestamp;
 			innerGrid.refreshDom(innerGrid.getDom());
 
-			this.fixSizeBugs();
 			if (!this._groupProperty && itemModel.footerEntity && itemModel.footerEntity.get("$expired")) this.refreshSummary();
 			
-			if ((!this.xScroll || !this.yScroll) && oldHeight != dom.offsetHeight) {
+			if ((!this.xScroll || !this.yScroll) && oldWidth != dom.offsetWidth && oldHeight != dom.offsetHeight) {
 				this.notifySizeChange();
 			}
 		},
@@ -1668,53 +1675,6 @@
 			if (this._domMode == 2) this._fixedInnerGrid.syncroRowHeights(scrollInfo);
 		},
 
-		fixSizeBugs: function() {
-			var dom = this.getDom(), domMode = this._domMode;
-			var xScroll = this.xScroll = this.hasRealWidth();
-			var yScroll = this.yScroll = this.hasRealHeight();
-
-			if (!xScroll) {
-				// 修正最外层DIV的宽度被内容撑破的BUG
-				if (dom.firstChild.offsetWidth) $fly(dom).width(dom.firstChild.offsetWidth);
-			} else {
-				// 根据内容自动隐藏HoriScrollBar
-				if (domMode != 0) {
-					var divScroll = this._divScroll;
-					var fixedInnerGrid = this._fixedInnerGrid;
-					var fixedInnerGridWrapper = this._fixedInnerGridWrapper;
-					var innerGrid = this._innerGrid;
-					var innerGridWrapper = this._innerGridWrapper;
-
-					var useOffsetWidth = !this._hScrollBarFixed && dorado.Browser.webkit;
-					var ofx = (divScroll.scrollWidth > (useOffsetWidth ? divScroll.offsetWidth : divScroll.clientWidth)) ? "scroll" : "hidden";
-					this._hScrollBarFixed = true;
-					if (divScroll.style.overflowX != ofx) {
-						divScroll.style.overflowX = ofx;
-						if (this.yScroll) {
-							if (ofx == "scroll") {
-								if (fixedInnerGridWrapper) {
-									fixedInnerGridWrapper.style.height = divScroll.clientHeight + "px";
-									fixedInnerGrid.updateContainerHeight(fixedInnerGrid._container);
-								}
-								innerGridWrapper.style.height = divScroll.clientHeight + "px";
-								this.updateScroller(innerGrid._container);
-								innerGrid.updateContainerHeight(innerGrid._container);
-							} else {
-								this._ignoreItemTimestamp = true;
-								this.refreshDom(dom);
-								return;
-							}
-						}
-					}
-				}
-			}
-
-			if (domMode == 0 && dorado.Browser.msie && !yScroll) {
-				// 用于修正以及显示HoriScrollBar之后总是显示多余的VertScrollBar的BUG
-				$DomUtils.fixMsieXScrollBar(dom);
-			}
-		},
-
 		updateScroller: function(info) {
 			if (this._divScroll) {
 				var divScroll = this._divScroll, divViewPort = this._divViewPort;
@@ -1741,7 +1701,8 @@
 					}
 				}
 			}
-			if (this._scroller) {
+			
+			if (dorado.Browser.isTouch && this._scroller) {
 				this._scroller.refresh();
 			}
 		},
@@ -2669,7 +2630,7 @@
 			});
 		},
 		
-		getDraggingInsertIndicator: dorado.widget.RowList.prototype.getDraggingInsertIndicator,
+		getDraggingInsertIndicator: dorado.widget.AbstractList.prototype.getDraggingInsertIndicator,
 		
 		onDragStart: function() {
 			$invokeSuper.call(this, arguments);
@@ -2682,7 +2643,7 @@
 		},
 		
 		showDraggingInsertIndicator: function(draggingInfo, insertMode, itemDom) {
-			var insertIndicator = dorado.widget.RowList.getDraggingInsertIndicator();
+			var insertIndicator = dorado.widget.AbstractList.getDraggingInsertIndicator();
 			if (insertMode) {
 				var dom = this._dom;
 				var width = dom.firstChild.offsetWidth;
@@ -2766,15 +2727,15 @@
 				}
 			} else {
 				hideColumnDropIndicator();
-				return dorado.widget.RowList.prototype.onDraggingSourceMove.apply(this, arguments);
+				return dorado.widget.AbstractList.prototype.onDraggingSourceMove.apply(this, arguments);
 			}
 		},		
 		
-		doOnDraggingSourceMove: dorado.widget.RowList.prototype.doOnDraggingSourceMove,
+		doOnDraggingSourceMove: dorado.widget.AbstractList.prototype.doOnDraggingSourceMove,
 		
 		onDraggingSourceOut: function(draggingInfo, evt) {
 			hideColumnDropIndicator();
-			return dorado.widget.RowList.prototype.onDraggingSourceOut.apply(this, arguments);
+			return dorado.widget.AbstractList.prototype.onDraggingSourceOut.apply(this, arguments);
 		},
 		
 		onHeaderDragDrop: function(draggingInfo, evt) {
@@ -2820,11 +2781,11 @@
 			if (pos.y < this._innerGrid._frameTBody.offsetTop) {
 				this.onHeaderDragDrop(draggingInfo, evt);
 			} else {
-				dorado.widget.RowList.prototype.onDraggingSourceDrop.apply(this, arguments);
+				dorado.widget.AbstractList.prototype.onDraggingSourceDrop.apply(this, arguments);
 			}
 		},
 			
-		processItemDrop: dorado.widget.RowList.prototype.processItemDrop,
+		processItemDrop: dorado.widget.AbstractList.prototype.processItemDrop,
 		
 		initDraggingIndicator: function() {},
 		
@@ -2957,9 +2918,12 @@
 				if (grid._rowHeightInfos) grid.syncroRowHeights(this._container);
 				var oldScrollTop = grid._scrollTop || 0;
 				grid.updateScroller(this._container);
+				
+				/* TODO: may no need for modernScroller
 				if (grid._ready && oldScrollTop != grid._scrollTop) {
 					grid.onYScroll();
 				}
+				*/
 			}
 		},
 
@@ -3262,8 +3226,7 @@
 			} else {
 				this.refreshContent(container);
 			}
-			if (this._scrollMode && this._scrollMode != this._scrollMode &&
-			!this.getCurrentItemId()) {
+			if (this._scrollMode && this._scrollMode != this._scrollMode && !this.getCurrentItemId()) {
 				this.onYScroll();
 			}
 		},

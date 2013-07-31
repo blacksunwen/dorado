@@ -569,6 +569,8 @@
 	
 			propertyDef._parent = this;
 			this._propertyDefs.append(propertyDef);
+			
+			if (this._wrapperType) this.updateWrapperType();
 			return propertyDef;
 		},
 		
@@ -633,7 +635,60 @@
 				newDataType.addPropertyDef(dorado.Core.clone(pd));
 			});
 			return newDataType;
-		}
+		},
+		
+		updateWrapperType: function() {
+			var wrapperType = this._wrapperType, wrapperPrototype = wrapperType.prototype;
+			this._propertyDefs.each(function(pd) {
+				var name = pd._name;
+				if (wrapperType._definedProperties[name]) return;
+				wrapperType._definedProperties[name] = true;
+				
+				var getter = function() {
+					var value;
+					if (this._textMode) {
+						value = this._entity.getText(name);
+					}
+					else {
+						value = this._entity.get(name);
+					}
+					if (value instanceof dorado.Entity || value instanceof dorado.EntityList) {
+						value = value.getWrapper(this._options);
+					}
+					return value;
+				};
+				var setter = function(value) {
+					if (this._readOnly) {
+						throw new dorado.Exception("Wrapper is readOnly.");
+					}
+					this._entity.set(name, value);
+				};
+				
+				try {
+					wrapperPrototype.__defineGetter__(name, getter);	
+					wrapperPrototype.__defineSetter__(name, setter);		
+				} catch (e) {
+					Object.defineProperty(wrapperPrototype, name, {  
+				        get: getter,
+				        set: setter
+				    });
+				}
+			});
+		},
+		
+		getWrapperType: function(){
+			if (!this._wrapperType) {
+				this._wrapperType = function(entity, options) {
+					this._entity = entity;
+					this._options = options;
+					this._textMode = options && options.textMode;
+					this._readOnly = options && options.readOnly;
+				};
+				this._wrapperType._definedProperties = {};
+				this.updateWrapperType();
+			}
+			return this._wrapperType;
+		},
 	}); 
 
 	/**

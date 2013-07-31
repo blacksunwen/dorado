@@ -117,7 +117,10 @@ public class RuleSetOutputter {
 		setElementAttributes(
 				element,
 				ruleTemplate,
-				"label,abstract,nodeName,type,scope,sortFactor,category,robots,icon,labelProperty,autoGenerateId,clientTypes,reserve,deprecated");
+				"label,abstract,nodeName,type,scope,sortFactor,category,robots,icon,labelProperty,autoGenerateId,clientTypes,deprecated,reserve");
+		if (!ruleTemplate.isVisible()) {
+			element.addAttribute("visible", "false");
+		}
 
 		xmlWriter.writeOpen(element);
 
@@ -173,9 +176,9 @@ public class RuleSetOutputter {
 		setElementAttributes(
 				element,
 				property,
-				"name,defaultValue,ignored,visible,highlight,fixed,enumValues,editor,clientTypes,reserve,deprecated");
-		if (property.getVisible() != null) {
-			element.addAttribute("visible", property.getVisible().toString());
+				"name,defaultValue,highlight,fixed,enumValues,editor,clientTypes,deprecated,reserve");
+		if (!property.isVisible()) {
+			element.addAttribute("visible", "false");
 		}
 
 		if (StringUtils.isNotEmpty(property.getType())) {
@@ -220,7 +223,7 @@ public class RuleSetOutputter {
 			ClientEvent clientEvent, OutputContext context) throws Exception {
 		Element element = DocumentHelper.createElement("ClientEvent");
 		setElementAttributes(element, clientEvent,
-				"name,parameters,clientTypes,reserve,deprecated");
+				"name,parameters,clientTypes,deprecated,reserve");
 		xmlWriter.write(element);
 	}
 
@@ -236,9 +239,12 @@ public class RuleSetOutputter {
 		}
 
 		setElementAttributes(element, childTemplate,
-				"name,fixed,aggregated,ignored,clientTypes,reserve");
+				"name,fixed,aggregated,clientTypes,deprecated,reserve");
 		if (!childTemplate.isPublic()) {
 			element.addAttribute("public", Boolean.FALSE.toString());
+		}
+		if (!childTemplate.isVisible()) {
+			element.addAttribute("visible", "false");
 		}
 		xmlWriter.writeOpen(element);
 

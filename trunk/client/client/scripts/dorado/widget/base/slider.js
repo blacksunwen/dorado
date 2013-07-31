@@ -28,7 +28,7 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
 		},
 
 		height: {
-			defaultValue: 20
+			independent: true
 		},
 
 		/**
@@ -98,9 +98,6 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
 				};
 
                 slider.fireEvent("beforeValueChange", slider, eventArg);
-                if(eventArg.processDefault === false){
-                    slider.refresh();
-                }
                 slider._value = value;
                 slider.fireEvent("onValueChange", slider);
             }
@@ -189,10 +186,14 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
 		slider._doms = doms;
 
 		var axis = (orientation == "vertical") ? "y" : "x";
-		var tip = new dorado.widget.Tip({
-			animateType: "none",
-			showDelay: ""
-		});
+		
+		var tip;
+		if (!dorado.Browser.isTouch) {
+			tip = new dorado.widget.Tip({
+				animateType: "none",
+				showDelay: ""
+			});
+		}
 
 		jQuery(doms.thumb).addClassOnHover("slider-thumb-hover").addClassOnClick("slider-thumb-click").draggable({
 			addClasses: false,
@@ -213,7 +214,7 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
 
                 slider.set("value", (maxValue - minValue) * offset / size + minValue);
 
-				tip.hide();
+				if (tip) tip.hide();
 			},
 			drag: function(event, ui) {
 				var helper = ui.helper[0], minValue = slider._minValue, maxValue = slider._maxValue, offset, size, thumbSize;
@@ -229,24 +230,28 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
 					$fly(doms.current).css("height", offset + thumbSize / 2);
 				}
 
-				tip.set("text", slider.getValidValue((maxValue - minValue) * offset / size) + minValue);
-				tip.refresh();
-				if (!tip._dom) return;
-				if (orientation == "horizontal") {
-					$DomUtils.dockAround(tip._dom, slider._doms.thumb, {
-						align: "center",
-						vAlign: "top",
-                        offsetTop: -10
-					});
-				} else {
-					$DomUtils.dockAround(tip._dom, slider._doms.thumb, {
-						align: "right",
-						vAlign: "center",
-                        offsetLeft: 10
-					});
+				if (tip) {
+					tip.set("text", slider.getValidValue((maxValue - minValue) * offset / size) + minValue);
+					tip.refresh();
+					if (!tip._dom) return;
+				
+					if (orientation == "horizontal") {
+						$DomUtils.dockAround(tip._dom, slider._doms.thumb, {
+							align: "center",
+							vAlign: "top",
+	                        offsetTop: -10
+						});
+					} else {
+						$DomUtils.dockAround(tip._dom, slider._doms.thumb, {
+							align: "right",
+							vAlign: "center",
+	                        offsetLeft: 10
+						});
+					}
 				}
 			},
 			start: function(event, ui){
+				if (!tip) return;
 				tip.set("text", slider._value);
 				tip.show({
 					anchorTarget: ui.helper[0],

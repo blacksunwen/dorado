@@ -79,8 +79,7 @@
 			anchorLeft: getLastRegionFuncs.left,
 			anchorRight: getLastRegionFuncs.right,
 			anchorTop: getLastRegionFuncs.top,
-			anchorBottom: getLastRegionFuncs.bottom,
-			overFlow: "auto"
+			anchorBottom: getLastRegionFuncs.bottom
 		}
 	};
 	
@@ -127,12 +126,9 @@
 	 */
 	dorado.widget.layout.DockLayout = $extend(dorado.widget.layout.AnchorLayout, /** @scope dorado.widget.layout.DockLayout.prototype */ {
 		$className: "dorado.widget.layout.DockLayout",
+		_className: "i-dock-layout d-dock-layout",
 		
 		ATTRIBUTES: /** @scope dorado.widget.layout.DockLayout.prototype */ {
-		
-			className: {
-				defaultValue: "d-dock-layout"
-			},
 			
 			/**
 			 * 布局区域之间空隙的大小。
@@ -142,21 +138,6 @@
 			regionPadding: {
 				defaultValue: defaultRegionPadding
 			}
-		},
-		
-		doRefreshDom: function(dom) {
-			// 这两句是完全是用来做性能优化的，避免在containerDom计算过程中（由大变小时）出现临时滚动条，引起二次重算。
-			var container = this._container;
-			if (!container._contentOverflow) {
-				var containerDom = this._dom.parentNode;
-				if (!container._contentOverflowX) {
-					containerDom.style.overflowX = "visible";
-				}
-				if (!container._contentOverflowY) {
-					containerDom.style.overflowY = "visible";
-				}
-			}
-			$invokeSuper.call(this, [dom]);
 		},
 		
 		preprocessLayoutConstraint: function(layoutConstraint, control) {
@@ -209,6 +190,7 @@
 				region.previousRegion = lastRegion;
 				regions.insert(region);
 			}
+			control._parentLayout = this;
 			if (this.onAddControl) this.onAddControl(control);
 		},
 		

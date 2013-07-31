@@ -321,7 +321,7 @@ dorado.widget.DataBlockView = $extend([dorado.widget.AbstractBlockView, dorado.w
 		if (block) {
 			$fly(block).effect("pulsate", {
 				times: 3
-			}, speed || 300);
+			}, speed || 600);
 		}
 	}
 });

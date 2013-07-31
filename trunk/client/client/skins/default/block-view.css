@@ -21,7 +21,6 @@
 
 .d-block-view .block {
 	border: 1px #E0E0E0 solid;
-	z-index: 1;
 }
 
 .d-block-view .block-hover {
@@ -36,11 +35,6 @@
 
 .d-block-view .block-drag-over {
     background: #EFEFEF;
-}
-
-.d-block-view .block-decorator-curveborder {
-	position: absolute;
-	z-index: 0;
 }
 
 .d-block-view .block-decorator-curveborder .panel-header-left{
@@ -108,11 +102,9 @@
 .d-block-dragging-insert-indicator-v {
 	width: 2px;
     background: #FF8040;
-	position: absolute;
 }
 
 .d-block-dragging-insert-indicator-h {
 	height: 2px;
     background: #FF8040;
-	position: absolute;
 }

@@ -90,16 +90,9 @@
 	 */
 	dorado.widget.layout.HBoxLayout = $extend(dorado.widget.layout.AbstractBoxLayout, /** @scope dorado.widget.layout.HBoxLayout.prototype */ {
 		$className: "dorado.widget.layout.HBoxLayout",
+		_className: "i-hbox-layout d-hbox-layout",
 		
 		ATTRIBUTES: /** @scope dorado.widget.layout.HBoxLayout.prototype */ {
-		
-			className: {
-				defaultValue: "d-hbox-layout"
-			},
-			
-			regionClassName: {
-				defaultValue: "d-hbox-layout-region"
-			},
 			
 			/**
 			 * top、center、bottom
@@ -132,7 +125,11 @@
 			var domCache = this.domCache || {}, newDomCache = this.domCache = {};
 			
 			var padding = parseInt(this._padding) || 0, regionPadding = this._regionPadding || 0;
-			table.style.margin = padding + "px";
+			if (dorado.Browser.msie && dorado.Browser.version < 8) {
+				table.style.margin = padding + "px";
+			} else {
+				table.style.padding = padding + "px";
+			}
 			
 			var containerDom = dom.parentNode;
 			var clientWidth = containerDom.clientWidth, clientHeight = containerDom.clientHeight;
@@ -228,7 +225,7 @@
 				}
 				region.height = h;
 				
-				if (i > 0) cell.style.paddingLeft = regionPadding + "px";
+				if (i > 0) cell.style.paddingLeft = (region.constraint.padding || regionPadding) + "px";
 				if (isNewCell) this.renderControl(region, cell, true, this._stretch);
 				else this.resetControlDimension(region, cell, true, this._stretch);
 				i++;
@@ -276,17 +273,10 @@
 	 * @extends dorado.widget.layout.AbstractBoxLayout
 	 */
 	dorado.widget.layout.VBoxLayout = $extend(dorado.widget.layout.AbstractBoxLayout, /** @scope dorado.widget.layout.VBoxLayout.prototype */ {
-		$className: "dorado.widget.layout.HBoxLayout",
+		$className: "dorado.widget.layout.VBoxLayout",
+		_className: "i-vbox-layout d-vbox-layout",
 		
 		ATTRIBUTES: /** @scope dorado.widget.layout.VBoxLayout.prototype */ {
-		
-			className: {
-				defaultValue: "d-vbox-layout"
-			},
-			
-			regionClassName: {
-				defaultValue: "d-vbox-layout-region"
-			},
 			
 			/**
 			 * left、center、right
@@ -361,7 +351,11 @@
 			var domCache = this.domCache || {}, newDomCache = this.domCache = {};
 			
 			var padding = parseInt(this._padding) || 0, regionPadding = this._regionPadding || 0;
-			table.style.margin = padding + "px";
+			if (dorado.Browser.msie && dorado.Browser.version < 8) {
+				table.style.margin = padding + "px";
+			} else {
+				table.style.padding = padding + "px";
+			}
 			
 			var containerDom = dom.parentNode;
 			var clientWidth = containerDom.clientWidth, clientHeight = containerDom.clientHeight;
@@ -462,7 +456,7 @@
 				region.height = h;
 				
 				cell.align = constraint.align || VBOX_ALIGNS[this._align];
-				if (i > 0) cell.style.paddingTop = regionPadding + "px";
+				if (i > 0) cell.style.paddingTop = (region.constraint.padding || regionPadding) + "px";
 				
 				if (isNewRow) {
 					this.renderControl(region, div, true, true);

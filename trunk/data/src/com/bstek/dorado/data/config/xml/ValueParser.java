@@ -12,7 +12,6 @@
 
 package com.bstek.dorado.data.config.xml;
 
-import org.w3c.dom.CDATASection;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Element;

@@ -25,6 +25,7 @@ import javax.servlet.ServletContext;
 
 import org.apache.commons.jexl2.JexlContext;
 import org.apache.commons.jexl2.MapContext;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -55,6 +56,7 @@ import com.bstek.dorado.web.servlet.ServletContextResourceLoader;
 public class DoradoLoader {
 	private static final Log logger = LogFactory.getLog(DoradoLoader.class);
 
+	private static final String CORE_PROPERTIES_LOCATION_PREFIX = "classpath:com/bstek/dorado/core/";
 	private static final String HOME_LOCATION_PREFIX = "home:";
 	private static final int HOME_LOCATION_PREFIX_LEN = HOME_LOCATION_PREFIX
 			.length();
@@ -210,7 +212,7 @@ public class DoradoLoader {
 		// 输出版本信息
 		ConsoleUtils.outputLoadingInfo("Initializing "
 				+ DoradoAbout.getProductTitle() + " engine...");
-		ConsoleUtils.outputLoadingInfo("[Vendor: " + DoradoAbout.getVendor()
+		ConsoleUtils.outputLoadingInfo("[vendor: " + DoradoAbout.getVendor()
 				+ "]");
 
 		ConfigureStore configureStore = Configure.getStore();
@@ -228,7 +230,7 @@ public class DoradoLoader {
 
 		configureStore.set(HOME_PROPERTY, doradoHome);
 		ConsoleUtils
-				.outputLoadingInfo("[Dorado Home: "
+				.outputLoadingInfo("[home: "
 						+ StringUtils.defaultString(doradoHome,
 								"<not assigned>") + "]");
 
@@ -236,7 +238,7 @@ public class DoradoLoader {
 		if ((tempDir.exists() && tempDir.isDirectory()) || tempDir.mkdir()) {
 			TempFileUtils.setTempDir(tempDir);
 		}
-		ConsoleUtils.outputLoadingInfo("[Dorado TempDir: "
+		ConsoleUtils.outputLoadingInfo("[TempDir: "
 				+ TempFileUtils.getTempDir().getPath() + "]");
 
 		// 创建一个临时的ResourceLoader
@@ -265,9 +267,15 @@ public class DoradoLoader {
 		String runMode = configureStore.getString("core.runMode");
 		if (StringUtils.isNotEmpty(runMode)) {
 			loadConfigureProperties(configureStore, resourceLoader,
+					CORE_PROPERTIES_LOCATION_PREFIX + "configure-" + runMode
+							+ ".properties", true);
+			loadConfigureProperties(configureStore, resourceLoader,
 					HOME_LOCATION_PREFIX + "configure-" + runMode
 							+ ".properties", true);
 		}
+
+		ConsoleUtils.outputConfigureItem("core.runMode");
+		ConsoleUtils.outputConfigureItem("core.addonLoadMode");
 
 		// 选择一个存储目录
 		File storeDir;
@@ -285,12 +293,43 @@ public class DoradoLoader {
 			storeDir = new File(tempDir, "dorado-store");
 			configureStore.set("core.storeDir", storeDir.getAbsolutePath());
 		}
-		ConsoleUtils.outputLoadingInfo("[Dorado StoreDir: "
+		ConsoleUtils.outputLoadingInfo("[storeDir: "
 				+ storeDir.getAbsolutePath() + "]");
 
-		// print packages
+		// gothrough packages
+		String addonLoadMode = Configure.getString("core.addonLoadMode");
+		String[] enabledAddons = StringUtils.split(
+				Configure.getString("core.enabledAddons"), ",; \n\r");
+		String[] disabledAddon = StringUtils.split(
+				Configure.getString("core.disabledAddon"), ",; \n\r");
+
 		Collection<PackageInfo> packageInfos = PackageManager
 				.getPackageInfoMap().values();
+		int addonNumber = 0;
+		for (PackageInfo packageInfo : packageInfos) {
+			String packageName = packageInfo.getName();
+			if (packageName.equals("dorado-core")) {
+				continue;
+			}
+
+			if (addonNumber > 9999) {
+				packageInfo.setEnabled(false);
+			} else if (StringUtils.isEmpty(addonLoadMode)
+					|| "positive".equals(addonLoadMode)) {
+				packageInfo.setEnabled(!ArrayUtils.contains(disabledAddon,
+						packageName));
+			} else {
+				// addonLoadMode == negative
+				packageInfo.setEnabled(ArrayUtils.contains(enabledAddons,
+						packageName));
+			}
+
+			if (packageInfo.isEnabled()) {
+				addonNumber++;
+			}
+		}
+
+		// print packages
 		int i = 0;
 		for (PackageInfo packageInfo : packageInfos) {
 			ConsoleUtils.outputLoadingInfo(StringUtils.rightPad(
@@ -307,6 +346,8 @@ public class DoradoLoader {
 		// load packages
 		for (PackageInfo packageInfo : packageInfos) {
 			if (!packageInfo.isEnabled()) {
+				pushLocations(contextLocations,
+						packageInfo.getComponentLocations());
 				continue;
 			}
 
@@ -341,7 +382,6 @@ public class DoradoLoader {
 
 			// 处理Spring的配置文件
 			pushLocations(contextLocations, packageInfo.getContextLocations());
-
 			if (packageConfigurer != null) {
 				locations = packageConfigurer
 						.getContextConfigLocations(resourceLoader);
@@ -352,9 +392,19 @@ public class DoradoLoader {
 				}
 			}
 
+			pushLocations(contextLocations, packageInfo.getComponentLocations());
+			if (packageConfigurer != null) {
+				locations = packageConfigurer
+						.getComponentConfigLocations(resourceLoader);
+				if (locations != null) {
+					for (String location : locations) {
+						pushLocation(contextLocations, location);
+					}
+				}
+			}
+
 			pushLocations(servletContextLocations,
 					packageInfo.getServletContextLocations());
-
 			if (packageConfigurer != null) {
 				locations = packageConfigurer
 						.getServletContextConfigLocations(resourceLoader);
@@ -373,6 +423,9 @@ public class DoradoLoader {
 		loadConfigureProperties(configureStore, resourceLoader,
 				configureLocation, true);
 		if (StringUtils.isNotEmpty(runMode)) {
+			loadConfigureProperties(configureStore, resourceLoader,
+					CORE_PROPERTIES_LOCATION_PREFIX + "configure-" + runMode
+							+ ".properties", true);
 			loadConfigureProperties(configureStore, resourceLoader,
 					HOME_LOCATION_PREFIX + "configure-" + runMode
 							+ ".properties", true);

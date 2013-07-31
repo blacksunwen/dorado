@@ -1,15 +1,14 @@
 /*
  * This file is part of Dorado 7.x (http://dorado7.bsdn.org).
- * 
+ *
  * Copyright (c) 2002-2012 BSTEK Corp. All rights reserved.
- * 
- * This file is dual-licensed under the AGPLv3 (http://www.gnu.org/licenses/agpl-3.0.html) 
+ *
+ * This file is dual-licensed under the AGPLv3 (http://www.gnu.org/licenses/agpl-3.0.html)
  * and BSDN commercial (http://www.bsdn.org/licenses) licenses.
- * 
+ *
  * If you are unsure which license is appropriate for your use, please contact the sales department
  * at http://www.bstek.com/contact.
  */
-
 (function() {
 
 	/**
@@ -35,16 +34,62 @@
 			
 			className: {
 				defaultValue: "d-text-area"
+			},
+			
+			selectTextOnFocus: {
+				defaultValue: false
 			}
 		},
 		
-		createTextDom: function() {
-			var textDom = document.createElement("TEXTAREA");
-			textDom.className = "textarea";
+		createDom: function() {
+			var doms = this._doms = {};
+			var dom = $DomUtils.xCreate({
+				tagName: "DIV",
+				style: {
+					position: "relative",
+					whiteSpace: "nowrap",
+					overflow: "hidden"
+				},
+				content: {
+					tagName: "DIV",
+					contextKey: "textDomWrapper",
+					style: {
+						width: "100%",
+						height: "100%"
+					},
+					content: {
+						tagName: "TEXTAREA",
+						contextKey: "textDom",
+						className: "textarea",
+						style: {
+							width: "100%",
+							height: "100%"
+						}
+					}
+				}
+			}, null, doms);
+			
+			this._textDomWrapper = doms.textDomWrapper;
+			this._textDom = doms.textDom;
+			
+			var self = this;
+			jQuery(dom).addClassOnHover(this._className + "-hover", null, function() {
+				return !self._realReadOnly;
+			}).mousedown(function(evt) {
+				evt.stopPropagation();
+			});
+			
+			if (this._text) this.doSetText(this._text);
+			
+			if (!dorado.Browser.isTouch) {
+				this._modernScrolled = $DomUtils.modernScroll(this._textDom, {
+					listenContentSize: true
+				});
+			}
 			if (dorado.Browser.msie && dorado.Browser.version < 8) {
 				this.doOnAttachToDocument = this.doOnResize;
 			}
-			return textDom;
+			return dom;
 		},
 
 		refreshTriggerDoms: function() {
@@ -88,7 +133,7 @@
 					this.doOnResize = this.resizeTextDom;
 					this.resizeTextDom();
 				} else {
-					this._textDom.style.width = "100%";
+					this._textDomWrapper.style.width = "100%";
 					delete this.doOnResize;
 				}
 			}
@@ -113,8 +158,12 @@
 			if (this._triggerPanel) {
 				w -= this._triggerPanel.offsetWidth;
 			}
-			this._textDom.style.width = (w < 0 ? 0 : w) + "px";
-			this._textDom.style.height = h + "px";
+			this._textDomWrapper.style.width = (w < 0 ? 0 : w) + "px";
+			this._textDomWrapper.style.height = h + "px";
+			
+			if (dorado.Browser.msie && dorado.Browser.version < 8) {
+				this._textDom.style.height = h + "px";
+			}
 		},
 		
 		doOnKeyDown: function(evt) {
@@ -129,7 +178,7 @@
 		},
 		
 		doOnBlur: function() {
-			if (this.get("readOnly")) return;
+			if (this._realReadOnly) return;
 			try {
 				$invokeSuper.call(this, arguments);
 			}

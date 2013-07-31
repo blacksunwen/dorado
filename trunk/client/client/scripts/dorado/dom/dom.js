@@ -429,40 +429,6 @@
 			$fly(toRemove).remove();
 		},
 		
-		fixMsieYScrollBar: function(container) {
-			// 用于修正IE不自动显示DIV+TABLE(100%)的ScrollBar，以及显示多余的HoriScrollBar的BUG
-			var content = findValidContent(container);
-			if (!content) return;
-			
-			container.style.overflowX = "auto";
-			container.style.overflowY = (dorado.Browser.version < 7) ? 'scroll' : "";
-			
-			var offsetWidth = content.offsetWidth;
-			if (offsetWidth > container.clientWidth) {
-				if (offsetWidth == $fly(container).width()) {
-					$fly(content).outerWidth(container.clientWidth);
-					if (content.offsetWidth > container.clientWidth) {
-						container.style.overflowX = "scroll";
-					} else {
-						container.style.overflowX = "hidden";
-						if (content.offsetHeight > container.clientHeight) container.style.overflowY = "scroll";
-					}
-					content.style.width = '';
-				}
-			}
-		},
-		
-		fixMsieXScrollBar: function(container) {
-			// 用于修正以及显示HoriScrollBar之后总是显示多余的VertScrollBar的BUG
-			var content = findValidContent(container);
-			if (!content) return;
-			
-			if (content.offsetWidth > container.clientWidth && content.offsetHeight > container.clientHeight) {
-				var $container = $fly(container);
-				$container.height(content.offsetHeight + ($container.height() - container.clientHeight));
-			}
-		},
-		
 		isDragging: function() {
 			var currentDraggable = jQuery.ui.ddmanager.current;
 			return (currentDraggable && currentDraggable._mouseStarted);
@@ -521,13 +487,15 @@
 		 *     此DOM对象是绝对定位的(style.position=absolute)并且其DOM树处于顶层位置(即其父节点是document.body)。
 		 * @param {HTMLElement|window} fixedElement 固定位置的DOM对象，如果是window，则表示该要停靠的DOM元素相对于当前可视范围进行停靠。
 		 * @param {Object} options 以JSON方式定义的选项。
-		 * @param {String} options.align 在水平方向上，停靠的DOM对象停靠在固定位置的DOM对象的位置。可选值为left、innerleft、center、innerright、top。
-		 * @param {String} options.vAlign 在垂直方向上，停靠的DOM对象停靠在固定位置的DOM对象的位置。可选值为top、innertop、center、innerbottom、bottom。
-		 * @param {int} options.offsetLeft 使用align、vAlign计算出组件的位置的水平偏移量，可以为正，可以为负。
-		 * @param {int} options.offsetTop 使用align、vAlign计算出组件的位置的垂直偏移量，可以为正，可以为负。
-		 * @param {boolean} options.autoAdjustPosition=true 当使用默认的align、vAlign计算的位置超出屏幕可见范围以后，是否要对停靠DOM对象的位置进行调整，默认为true，即进行调整。
-		 * @param {boolean} options.handleOverflow=true 当组件无法显示在屏幕范围以内以后，就认为停靠的DOM对象的超出触发了，该属性用来标示是否对这种情况进行处理，默认会对这种情况进行处理。
-		 * @param {Function} options.overflowHandler 当停靠的DOM的超出触发以后，要调用的函数。
+		 * @param {String} [options.align=innerleft] 在水平方向上，停靠的DOM对象停靠在固定位置的DOM对象的位置。可选值为left、innerleft、center、innerright、top。
+		 * @param {String} [options.vAlign=innertop] 在垂直方向上，停靠的DOM对象停靠在固定位置的DOM对象的位置。可选值为top、innertop、center、innerbottom、bottom。
+		 * @param {int} [options.gapX=0] 在水平方向上，停靠的DOM对象与固定位置的DOM对象之间的间隙大小，可以为正，可以为负。
+		 * @param {int} [options.gapY=0] 在垂直方向上，停靠的DOM对象与固定位置的DOM对象之间的间隙大小，可以为正，可以为负。
+		 * @param {int} [options.offsetLeft=0] 使用align计算出组件的位置的水平偏移量，可以为正，可以为负。
+		 * @param {int} [options.offsetTop=0] 使用vAlign计算出组件的位置的垂直偏移量，可以为正，可以为负。
+		 * @param {boolean} [options.autoAdjustPosition=true] 当使用默认的align、vAlign计算的位置超出屏幕可见范围以后，是否要对停靠DOM对象的位置进行调整，默认为true，即进行调整。
+		 * @param {boolean} [options.handleOverflow=true] 当组件无法显示在屏幕范围以内以后，就认为停靠的DOM对象的超出触发了，该属性用来标示是否对这种情况进行处理，默认会对这种情况进行处理。
+		 * @param {Function} [options.overflowHandler] 当停靠的DOM的超出触发以后，要调用的函数。
 		 *
 		 * @return {Object} 计算出来的位置。
 		 */
@@ -548,6 +516,15 @@
 
 			if (fixedElement) {
 				rect = getRect(fixedElement);
+				if (options.gapX) {
+					rect.left -= options.gapX;
+					rect.right += options.gapX;
+				}
+				if (options.gapY) {
+					rect.top -= options.gapY;
+					rect.bottom += options.gapY;
+				}
+				
 				if (align) {
 					left = getLeft(rect, element, align);
 
@@ -677,7 +654,6 @@
 		 *     此DOM对象是绝对定位的(style.position=absolute)并且其DOM树处于顶层位置(即其父节点是document.body)。
 		 * @param {Object} options 以JSON方式定义的选项。
 		 * @param {HTMLElement} options.parent 作为容器的DOM对象（并不是指DOM结构上的父节点，仅指视觉上的关系）。如果不指定此属性则表示放置在屏幕可见区域内。
-		 * @param {Object} options.position DOM对象显示位置，相对于parent对象的位置。
 		 * @param {int} options.offsetLeft 水平偏移量，可以为正，可以为负。
 		 * @param {int} options.offsetTop 垂直偏移量，可以为正，可以为负。
 		 * @param {boolean} options.autoAdjustPosition 当使用指定的position计算的位置超出屏幕可见范围以后，是否要对停靠DOM对象的位置进行调整，默认为true，即进行调整。

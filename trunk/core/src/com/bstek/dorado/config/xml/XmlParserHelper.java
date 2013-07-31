@@ -34,6 +34,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.beans.factory.ListableBeanFactory;
 import org.w3c.dom.Node;
 
 import com.bstek.dorado.annotation.ExpressionMode;
@@ -156,6 +157,7 @@ public class XmlParserHelper implements BeanFactoryAware {
 	}
 
 	protected static class XmlNodeInfo {
+		private Class<?> type;
 		private List<Class<?>> sourceTypes;
 
 		private String nodeName;
@@ -167,6 +169,14 @@ public class XmlParserHelper implements BeanFactoryAware {
 		private Map<String, String> fixedProperties = new HashMap<String, String>();
 		private Map<String, XmlProperty> properties = new HashMap<String, XmlProperty>();
 		private Set<XmlSubNode> subNodes = new HashSet<XmlSubNode>();
+
+		public XmlNodeInfo(Class<?> type) {
+			this.type = type;
+		}
+
+		public Class<?> getType() {
+			return type;
+		}
 
 		public void addSourceType(Class<?> sourceType) {
 			if (sourceTypes == null) {
@@ -284,15 +294,18 @@ public class XmlParserHelper implements BeanFactoryAware {
 
 	public XmlParser getXmlParser(Class<?> beanType) throws Exception {
 		List<XmlParserInfo> xmlParserInfos = getXmlParserInfos(beanType);
-		return (xmlParserInfos != null && !xmlParserInfos.isEmpty()) ? xmlParserInfos
-				.get(0).getParser() : null;
+		if (xmlParserInfos != null && !xmlParserInfos.isEmpty()) {
+			return xmlParserInfos.get(0).getParser();
+		} else {
+			return null;
+		}
 	}
 
-	public void initObjectParser(ObjectParser objectParser) throws Exception {
+	void initObjectParser(ObjectParser objectParser) throws Exception {
 		initObjectParser(objectParser, null);
 	}
 
-	public void initObjectParser(ObjectParser objectParser, Class<?> beanType)
+	protected void initObjectParser(ObjectParser objectParser, Class<?> beanType)
 			throws Exception {
 		if (initializedObjectParsers.contains(objectParser)) {
 			return;
@@ -316,7 +329,7 @@ public class XmlParserHelper implements BeanFactoryAware {
 			return xmlNodeInfoCache.get(type);
 		}
 
-		XmlNodeInfo xmlNodeInfo = new XmlNodeInfo();
+		XmlNodeInfo xmlNodeInfo = new XmlNodeInfo(type);
 		doGetXmlNodeInfo(xmlNodeInfo, type);
 		if (StringUtils.isEmpty(xmlNodeInfo.getNodeName())
 				|| "#className".equals(xmlNodeInfo.getNodeName())) {
@@ -353,11 +366,15 @@ public class XmlParserHelper implements BeanFactoryAware {
 		if (StringUtils.isNotEmpty(xmlNode.nodeName())) {
 			xmlNodeInfo.setNodeName(xmlNode.nodeName());
 		}
-		for (String implType : xmlNode.implTypes()) {
-			if (StringUtils.isNotEmpty(implType)) {
-				xmlNodeInfo.getImplTypes().add(implType);
+
+		if (type.equals(xmlNodeInfo.getType())) {
+			for (String implType : xmlNode.implTypes()) {
+				if (StringUtils.isNotEmpty(implType)) {
+					xmlNodeInfo.getImplTypes().add(implType);
+				}
 			}
 		}
+
 		if (StringUtils.isNotEmpty(xmlNode.definitionType())) {
 			xmlNodeInfo.setDefinitionType(xmlNode.definitionType());
 		}
@@ -762,6 +779,12 @@ public class XmlParserHelper implements BeanFactoryAware {
 			((ObjectParserInitializationAware) objectParser)
 					.postObjectParserInitialized(objectParser);
 		}
+
+		Map<String, XmlParserHelperListener> listenerMap = ((ListableBeanFactory) beanFactory)
+				.getBeansOfType(XmlParserHelperListener.class);
+		for (XmlParserHelperListener listener : listenerMap.values()) {
+			listener.onInitParser(this, objectParser, beanType);
+		}
 	}
 
 	protected XmlParserInfo getPropertyXmlParserInfo(Context context,
@@ -943,8 +966,8 @@ public class XmlParserHelper implements BeanFactoryAware {
 			List<XmlParserInfo> xmlParserInfos, Set<Class<?>> blackTypes)
 			throws Exception {
 		if (implExpression.indexOf(WILCARD) >= 0) {
-			Set<Class<?>> implTypes = ClassUtils.findClassTypes(
-					implExpression, targetType);
+			Set<Class<?>> implTypes = ClassUtils.findClassTypes(implExpression,
+					targetType);
 			for (Class<?> implType : implTypes) {
 				if (blackTypes == null || !blackTypes.contains(implType)) {
 					collectConcereteXmlParsersByClassName(context, targetType,

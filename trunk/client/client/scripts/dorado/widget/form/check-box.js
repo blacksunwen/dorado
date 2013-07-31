@@ -154,7 +154,7 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 			return;
 		}
 		
-		checkBox._lastPostChecked = checkBox._checked;
+		var checked = checkBox._checked;
 		if (checkBox._triState) {
 			if (checkBox._checked === null || checkBox._checked === undefined) {
 				checkBox._checked = true;
@@ -167,13 +167,11 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 			checkBox._checked = !checkBox._checked;
 		}
 		
-		checkBox._dirty = true;
 		try {
 			checkBox.post();
 		} 
 		catch (e) {
-			checkBox._checked = checkBox._lastPostChecked;
-			checkBox._dirty = false;
+			checkBox._checked = checked;
 			throw e;
 		}
 		checkBox.refresh();
@@ -184,10 +182,13 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 		$invokeSuper.call(this, arguments);
 		
 		var checkBox = this, checked = checkBox._checked, caption = checkBox._caption || '';
+		
+		this.refreshExternalReadOnly();
 		$fly(dom)[checkBox._readOnly || checkBox._readOnly2 ? "addClass" : "removeClass"](checkBox._className + "-readonly");
+		
 		if (checkBox._dataSet) {
 			checked = undefined;
-			var value, dirty, readOnly = this._dataSet._readOnly;
+			var value, dirty;
 			if (checkBox._property) {
 				var bindingInfo = checkBox._bindingInfo;
 				var dt = bindingInfo.dataType;
@@ -229,9 +230,6 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 					value = bindingInfo.entity.get(checkBox._property);
 					dirty = bindingInfo.entity.isDirty(checkBox._property);
 				}
-				readOnly = readOnly || (bindingInfo.entity == null) || bindingInfo.propertyDef.get("readOnly");
-			} else {
-				readOnly = true;
 			}
 			
 			value += '';
@@ -241,7 +239,6 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 				checked = false;
 			}
 			checkBox._checked = checked;
-			checkBox._readOnly2 = readOnly;
 			checkBox.setDirty(dirty);
 		}
 		
@@ -284,7 +281,7 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 				className: checkBox._className
 			});
 			$fly(dom).hover(function() {
-				if (!checkBox._readOnly) {
+				if (!(checkBox._readOnly || checkBox._readOnly2)) {
 					if (checkBox._checked) {
 						$fly(dom).removeClass("d-checkbox-checked").addClass("d-checkbox-checked-hover");
 					} else if (checkBox._checked == null) {
@@ -318,34 +315,13 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 			});
 			
 			jQuery(dom).addClassOnHover(checkBox._className + "-hover", null, function() {
-				return !checkBox._readOnly;
+				return !(checkBox._readOnly || checkBox._readOnly2);
 			}).addClassOnClick(checkBox._className + "-click", null, function() {
-				return !checkBox._readOnly;
+				return !(checkBox._readOnly || checkBox._readOnly2);
 			});
 		}
 		
 		return dom;
-	},
-	
-	post: function() {
-		try {
-			if (!this._dirty) {
-				return false;
-			}
-			var eventArg = {
-				processDefault: true
-			};
-			this.fireEvent("beforePost", this, eventArg);
-			if (eventArg.processDefault === false) return false;
-			this.doPost();
-			this._lastPostChecked = this._checked;
-			this._dirty = false;
-			this.fireEvent("onPost", this);
-			return true;
-		} 
-		catch (e) {
-			dorado.Exception.processException(e);
-		}
 	},
 	
 	doOnKeyDown: function(evt) {

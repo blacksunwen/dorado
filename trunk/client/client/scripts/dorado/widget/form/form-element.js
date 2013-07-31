@@ -10,14 +10,14 @@
  * at http://www.bstek.com/contact.
  */
 
-(function() {
+(function () {
 
 	var specialFormConfigProps = ["view", "tags", "formProfile", "width", "height", "className", "exClassName", "visible", "hideMode", "layoutConstriant", "readOnly"];
 	
 	var DEFAULT_OK_MESSAGES = [{
 		state: "ok"
 	}];
-	
+
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @class 包含表单项中主要配置信息的抽象类。
@@ -25,37 +25,39 @@
 	 */
 	dorado.widget.FormConfig = $class(/** @scope dorado.widget.FormConfig.prototype */{
 		$className: "dorado.widget.FormConfig",
-		
+
 		ATTRIBUTES: /** @scope dorado.widget.FormConfig.prototype */ {
-		
+
 			/**
 			 * 宽度。
 			 * @type int
 			 * @attribute
 			 */
 			width: {},
-			
+
 			/**
 			 * 高度。
 			 * @type int
 			 * @attribute
 			 */
 			height: {},
-			
+
 			/**
 			 * CSS类名。
 			 * @type String
 			 * @attribute
 			 */
 			className: {},
-			
+
 			/**
 			 * 扩展CSS类名。
 			 * @type String
 			 * @attribute
 			 */
 			exClassName: {},
-			
+
+			ui: {},
+
 			/**
 			 * 表单项类型。
 			 * <p>
@@ -76,7 +78,7 @@
 			editorType: {
 				writeBeforeReady: true
 			},
-			
+
 			/**
 			 * 绑定的数据实体。
 			 * @type Object|dorado.Entity
@@ -84,7 +86,7 @@
 			 * @see dorado.widget.AbstractEditor#attribute:entity
 			 */
 			entity: {},
-			
+
 			/**
 			 * 绑定的数据集。
 			 * @type dorado.widget.DataSet
@@ -93,7 +95,7 @@
 			dataSet: {
 				componentReference: true
 			},
-			
+
 			/**
 			 * 数据路径，用于指定数据控件与数据集中的哪些数据节点进行关联。
 			 * @type String
@@ -103,17 +105,14 @@
 			dataPath: {
 				writeBeforeReady: true
 			},
-			
+
 			/**
 			 * 文本标签与编辑器之间的分隔字符。
 			 * @type String
 			 * @attribute
-			 * @default ":"
 			 */
-			labelSeparator: {
-				defaultValue: ":"
-			},
-			
+			labelSeparator: {},
+
 			/**
 			 * 文本标签是否可见。
 			 * @type boolean
@@ -123,7 +122,7 @@
 			showLabel: {
 				defaultValue: true
 			},
-			
+
 			/**
 			 * 文本标签的宽度。
 			 * @type int
@@ -134,7 +133,7 @@
 				defaultValue: 80,
 				writeBeforeReady: true
 			},
-			
+
 			/**
 			 * 文本标签与编辑框之间空隙的宽度。
 			 * @type int
@@ -145,7 +144,7 @@
 				defaultValue: 3,
 				writeBeforeReady: true
 			},
-			
+
 			/**
 			 * 文本标签的显示位置。
 			 * <p>
@@ -161,7 +160,7 @@
 			labelPosition: {
 				writeBeforeReady: true
 			},
-			
+
 			/**
 			 * 文本标签的水平对齐方式。
 			 * <p>
@@ -177,7 +176,7 @@
 			labelAlign: {
 				writeBeforeReady: true
 			},
-			
+
 			/**
 			 * 编辑器的宽度。
 			 * @type int
@@ -186,7 +185,7 @@
 			editorWidth: {
 				writeBeforeReady: true
 			},
-			
+
 			/**
 			 * 是否显示提示信息区。
 			 * @type boolean
@@ -197,8 +196,8 @@
 				writeBeforeReady: true,
 				defaultValue: true
 			},
-			
-			
+
+
 			/**
 			 * 提示信息区的宽度。
 			 * @type int
@@ -209,7 +208,7 @@
 				defaultValue: 22,
 				writeBeforeReady: true
 			},
-			
+
 			/**
 			 * 提示信息区与编辑框之间的空隙的宽度。
 			 * @type int
@@ -220,7 +219,7 @@
 				defaultValue: 3,
 				writeBeforeReady: true
 			},
-			
+
 			/**
 			 * 是否将提示信息的文本消息直接显示在界面中。
 			 * <p>
@@ -232,7 +231,7 @@
 			showHintMessage: {
 				writeBeforeReady: true
 			},
-			
+
 			/**
 			 * 提示信息区的显示位置。
 			 * <p>
@@ -248,7 +247,7 @@
 			hintPosition: {
 				writeBeforeReady: true
 			},
-			
+
 			/**
 			 * 内部使用的信息提示控件。
 			 * @type dorado.widget.dorado.widget.DataMessage
@@ -257,16 +256,23 @@
 			hintControl: {
 				readOnly: true
 			},
-			
+
 			/**
 			 * 是否只读。
 			 * @type boolean
 			 * @attribute
 			 */
 			readOnly: {}
-		},
-		
-		onProfileChange: function() {
+		}
+	});
+
+	/**
+	 * @author Benny Bao (mailto:benny.bao@bstek.com)
+	 * @class 支持绑定表单配置的对象的抽象类。
+	 * @abstract
+	 */
+	dorado.widget.FormProfileSupport = $class(/** @scope dorado.widget.FormProfileSupport.prototype */{
+		onProfileChange: function () {
 			var formProfile = this._formProfile;
 			if (dorado.Object.isInstanceOf(formProfile, dorado.widget.FormProfile)) {
 				var attrs = formProfile.ATTRIBUTES, attrWatcher = formProfile.getAttributeWatcher(), config = {};
@@ -274,31 +280,31 @@
 					if (!attrs.hasOwnProperty(attr)) {
 						continue;
 					}
-					
+
 					var def = attrs[attr];
 					if (def.readOnly || def.writeOnly || (!attrWatcher.getWritingTimes(attr) && typeof def.defaultValue != "function")) {
 						continue;
 					}
-					
+
 					if (specialFormConfigProps.indexOf(attr) >= 0 && formProfile instanceof dorado.widget.Control) {
 						continue;
 					}
-					
+
 					var value = formProfile.get(attr);
 					if (def.componentReference && !(value instanceof dorado.widget.Component)) {
 						continue;
 					}
-					
+
 					if (value !== undefined) config[attr] = value;
 				}
-				
+
 				if (config.dataSet) delete config.entity;
-				
+
 				var readOnly = formProfile.get("readOnly");
 				if (this._realReadOnly != readOnly) {
 					this._realReadOnly = readOnly;
 				}
-				
+
 				this.set(config, {
 					skipUnknownAttribute: true,
 					tryNextOnError: true,
@@ -308,7 +314,7 @@
 			}
 		}
 	});
-	
+
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @component Form
@@ -329,7 +335,7 @@
 	 */
 	dorado.widget.FormProfile = $extend([dorado.widget.Component, dorado.widget.FormConfig], /** @scope dorado.widget.FormConfig.prototype */ {
 		$className: "dorado.widget.FormProfile",
-		
+
 		ATTRIBUTES: /** @scope dorado.widget.FormProfile.prototype */ {
 			/**
 			 * 绑定的数据实体。
@@ -338,37 +344,37 @@
 			 * @see dorado.widget.AbstractEditor#attribute:entity
 			 */
 			entity: {
-				defaultValue: function() {
+				defaultValue: function () {
 					return new dorado.widget.FormProfile.DefaultEntity();
 				}
 			}
 		},
-		
-		constructor: function() {
+
+		constructor: function () {
 			this._bindingElements = new dorado.ObjectGroup();
 			$invokeSuper.call(this, arguments);
-			this.addListener("onAttributeChange", function(self, arg) {
+			this.addListener("onAttributeChange", function (self, arg) {
 				var attr = arg.attribute;
 				if (!dorado.widget.Control.prototype.ATTRIBUTES[attr] &&
-				dorado.widget.FormConfig.prototype.ATTRIBUTES[attr]) {
-					dorado.Toolkits.setDelayedAction(self, "$profileChangeTimerId", function() {
+					dorado.widget.FormConfig.prototype.ATTRIBUTES[attr]) {
+					dorado.Toolkits.setDelayedAction(self, "$profileChangeTimerId", function () {
 						self._bindingElements.invoke("onProfileChange");
 					}, 20);
 				}
 			});
 		},
-		
-		addBindingElement: function(element) {
+
+		addBindingElement: function (element) {
 			this._bindingElements.objects.push(element);
 		},
-		
-		removeBindingElement: function(element) {
+
+		removeBindingElement: function (element) {
 			this._bindingElements.objects.push(element);
 		}
 	});
-	
+
 	dorado.widget.FormProfile.DefaultEntity = $class({});
-	
+
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @class 表单元素。
@@ -382,37 +388,31 @@
 	 * </p>
 	 * @extends dorado.widget.Control
 	 * @extends dorado.widget.PropertyDataControl
-	 * @extends dorado.widget.FormConfig
+	 * @extends dorado.widget.FormProfileSupport
+	 * @abstract
 	 * @see dorado.widget.FormProfile
 	 */
-	dorado.widget.FormElement = $extend([dorado.widget.Control, dorado.widget.PropertyDataControl, dorado.widget.FormConfig], /** @scope dorado.widget.FormElement.prototype */ {
-		$className: "dorado.widget.FormElement",
-		
-		ATTRIBUTES: /** @scope dorado.widget.FormElement.prototype */ {
-			/**
-			 * 宽度。
-			 * @type int
-			 * @attribute writeBeforeReady
-			 * @default 260
-			 */
-			width: {
-				defaultValue: 260,
-				writeBeforeReady: true
-			},
-			
-			/**
-			 * 高度。
-			 * @type int
-			 * @attribute writeBeforeReady
-			 */
-			height: {
-				writeBeforeReady: true
-			},
-			
-			className: {
-				defaultValue: "d-form-element"
-			},
-			
+	dorado.widget.AbstractFormElement = $extend([dorado.widget.Control, dorado.widget.PropertyDataControl, dorado.widget.FormProfileSupport], /** @scope dorado.widget.AbstractFormElement.prototype */ {
+		/**
+		 * @name dorado.widget.AbstractFormElement#resetBinding
+		 * @function
+		 * @protected
+		 * @description 重置表单元素内部的绑定关系。
+		 */
+
+		/**
+		 * @name dorado.widget.AbstractFormElement#refreshData
+		 * @function
+		 * @protected
+		 * @description 刷新其中表单元素中的数据。
+		 * <p>
+		 * 该方法通常只对那么未通过DataSet建立数据绑定的使用场景有效。
+		 * 例如我们将一个FormElement与一个数据实体进行了数据关联，当数据实体中的属性值发生变化时FormElement并不会自动刷新。
+		 * 此时我们需要调用refreshData()方法，手工的通知FormElement进行数据刷新。
+		 * </p>
+		 */
+
+		ATTRIBUTES: /** @scope dorado.widget.AbstractFormElement.prototype */ {
 			/**
 			 * 绑定的表单配置。
 			 * @type dorado.widget.FormPorfile
@@ -420,7 +420,7 @@
 			 */
 			formProfile: {
 				componentReference: true,
-				setter: function(formProfile) {
+				setter: function (formProfile) {
 					if (dorado.Object.isInstanceOf(this._formProfile, dorado.widget.FormProfile)) {
 						this._formProfile.removeBindingElement(this);
 					}
@@ -435,23 +435,23 @@
 					}
 				}
 			},
-			
+
 			dataSet: {
-				setter: function(dataSet, attr) {
+				setter: function (dataSet, attr) {
 					dorado.widget.DataControl.prototype.ATTRIBUTES.dataSet.setter.call(this, dataSet, attr);
 					delete this._propertyDef;
 					this.resetBinding();
 				}
 			},
-			
+
 			dataPath: {
-				setter: function(v) {
+				setter: function (v) {
 					this._dataPath = v;
 					delete this._propertyDef;
 					this.resetBinding();
 				}
 			},
-			
+
 			/**
 			 * 绑定的属性名。
 			 * @type String
@@ -460,20 +460,74 @@
 			 */
 			property: {
 				writeBeforeReady: true,
-				setter: function(v) {
+				setter: function (v) {
 					this._property = v;
 					delete this._propertyDef;
 					this.resetBinding();
 				}
 			},
-			
+
+			entity: {}
+		},
+
+		destroy: function () {
+			if (this._destroyed) return;
+			this.set("formProfile", null);
+			$invokeSuper.call(this, arguments);
+		}
+	});
+
+	/**
+	 * @author Benny Bao (mailto:benny.bao@bstek.com)
+	 * @class 表单元素。
+	 * <p>
+	 * 表单元素是一种组合式的控件，提供此组件的目的是为了使表单的定义变得更加简单。 一般而言，一个表单元素包含文本标签、编辑器、提示信息三个部分。
+	 * 我们在实际应用中所见的大部分输入域都是由这三个部分组成的。
+	 * </p>
+	 * <p>
+	 * 由于表单元素的属性较多，并且往往一组表单元素都拥有相似的属性设置。
+	 * 为了使用户能够更加方便的对表单元素的属性进行批量的设置，dorado特别提供了FormProfile组件来对表单元素进行增强。 其具体用法请参考{@link dorado.widget.FormProfile}的说明。
+	 * </p>
+	 * @extends dorado.widget.AbstractFormElement
+	 * @extends dorado.widget.FormConfig
+	 * @see dorado.widget.FormProfile
+	 */
+	dorado.widget.FormElement = $extend([dorado.widget.AbstractFormElement, dorado.widget.FormConfig], /** @scope dorado.widget.FormElement.prototype */ {
+		$className: "dorado.widget.FormElement",
+		_inherentClassName: "i-form-element",
+
+		ATTRIBUTES: /** @scope dorado.widget.FormElement.prototype */ {
+			/**
+			 * 宽度。
+			 * @type int
+			 * @attribute writeBeforeReady
+			 * @default 260
+			 */
+			width: {
+				defaultValue: 260,
+				writeBeforeReady: true
+			},
+
+			/**
+			 * 高度。
+			 * @type int
+			 * @attribute writeBeforeReady
+			 */
+			height: {
+				writeBeforeReady: true
+			},
+
+			className: {
+				defaultValue: "d-form-element"
+			},
+
 			/**
 			 * 文本标签的内容。
 			 * @type String
 			 * @attribute
 			 */
 			label: {},
-			
+
 			/**
 			 * 提示信息的内容。
 			 * <p>
@@ -481,30 +535,32 @@
 			 * 但在读取时系统会统一的返回消息数组的形式。
 			 * 该数组中的每一项是一个JSON对象，包含下列两个子属性：
 			 * <ul>
-			 * <li>level	-	{String} 信息级别。取值范围包括：info、warn、error。默认值为error。</li>
-			 * <li>text	-	{String} 信息内容。</li>
+			 * <li>level    -    {String} 信息级别。取值范围包括：info、warn、error。默认值为error。</li>
+			 * <li>text    -    {String} 信息内容。</li>
 			 * </ul>
 			 * </p>
 			 * @type String|Object|[String]|[Object]
 			 * @attribute
 			 */
 			hint: {
-				setter: function(hint) {
-				
+				setter: function (hint) {
+
 					function trimSingleHint(hint) {
 						if (!hint) return null;
 						if (typeof hint == "string") {
-							hint = [{
-								level: "info",
-								text: hint
-							}];
+							hint = [
+								{
+									level: "info",
+									text: hint
+								}
+							];
 						} else {
 							hint.level = hint.level || "info";
 							hint = [hint];
 						}
 						return hint;
 					}
-					
+
 					function trimHints(hint) {
 						if (!hint) return null;
 						if (hint instanceof Array) {
@@ -520,11 +576,11 @@
 						}
 						return hint;
 					}
-					
+
 					this._hint = trimHints(hint);
 				}
 			},
-			
+
 			/**
 			 * 内部使用的编辑器。
 			 * @type dorado.widget.Control
@@ -534,14 +590,14 @@
 				writeBeforeReady: true,
 				innerComponent: "TextEditor"
 			},
-			
+
 			/**
 			 * 关联的编辑框触发器。下拉框也是一种特殊的编辑框触发器。
 			 * @type dorado.widget.EditorTrigger
 			 * @attribute
 			 */
 			trigger: {},
-			
+
 			/**
 			 * 关联的文本编辑器是否可以编辑。
 			 * 此属性仅在关联的编辑器为TextEditor或TextArea是有效，用于定义文本编辑器是否可以编辑。因为有时我们希望仅允许用户通过下拉框进行选择。
@@ -552,7 +608,7 @@
 			editable: {
 				defaultValue: true
 			},
-			
+
 			/**
 			 * 内部使用的编辑器的值。 此属性相当于一个访问内部使用的编辑器中值的快捷方式。
 			 * @type Object
@@ -561,9 +617,9 @@
 			value: {
 				path: "editor.value"
 			},
-			
+
 			entity: {
-				setter: function(entity) {
+				setter: function (entity) {
 					this._entity = entity;
 					if (this._rendered) {
 						var hintControl = this.getHintControl(false);
@@ -573,101 +629,116 @@
 					}
 				}
 			},
-			
+
 			readOnly: {
 				skipRefresh: true,
-				setter: function(v) {
+				setter: function (v) {
 					this._readOnly = v;
 					this.resetEditorReadOnly();
 				}
 			}
 		},
-		
-		destroy: function() {
-			if (this._destroyed) return;
-			this.set("formProfile", null);
-			$invokeSuper.call(this, arguments);
-		},
-		
-		createDom: function() {
-			if (!this._formProfile) {
+
+		createDom: function () {
+			var attrWatcher = this.getAttributeWatcher();
+			if (!this._formProfile && attrWatcher.getWritingTimes("formProfile") == 0) {
 				var view = this.get("view") || dorado.widget.View.TOP;
 				this.set("formProfile", view.id("defaultFormProfile"));
 			}
-			
-			var labelConfig, editorConfig = {
-				tagName: "DIV",
-				className: "form-editor"
-			};
+
+			var config = [], content = [];
+
+			if (this._showLabel) {
+				var labelClass = " form-label-align-" + (this._labelAlign || "left");
+
+				if (this._labelPosition == "top") {
+					config.push({
+						contextKey: "labelEl",
+						tagName: "DIV",
+						className: "form-label form-label-top" + labelClass
+					});
+				} else {
+					config.push({
+						contextKey: "labelEl",
+						tagName: "DIV",
+						className: "form-label form-label-left" + labelClass
+					});
+				}
+			}
+
 			if (this._labelPosition == "top") {
-				labelConfig = {
+				var contentConfig = {
+					contextKey: "contentEl",
 					tagName: "DIV",
-					className: "form-label form-label-top",
-					style: {
-						position: "absolute"
-					}
+					className: "form-content form-content-bottom",
+					content: content
 				};
-				if (this._labelAlign == "right") {
-					labelConfig.style.right = 0;
-				} else {
-					labelConfig.style.left = 0;
+				if (this._showLabel) {
+					contentConfig.style = {
+						marginTop: this._labelSpacing + "px"
+					};
 				}
-				editorConfig.style = {
-					width: "100%",
-					overflow: "hidden"
-				};
+				config.push(contentConfig);
 			} else {
-				labelConfig = {
+				var contentConfig = {
+					contextKey: "contentEl",
 					tagName: "DIV",
-					className: "form-label form-label-left" + ((this._labelAlign == "right") ? " form-label-align-right" : ""),
-					style: {
-						position: "absolute",
-						top: 0,
-						width: this._labelWidth
-					}
+					className: "form-content form-content-right",
+					content: content
 				};
-				editorConfig.style = {
-					paddingLeft: this._labelWidth + this._labelSpacing + "px",
-					height: "100%",
-					overflow: "hidden"
-				};
+				if (this._showLabel) {
+					contentConfig.style = {
+						marginLeft: this._labelSpacing + "px"
+					};
+				}
+				config.push(contentConfig);
 			}
-			if (!this._showLabel) labelConfig.style.display = "none";
-			
+
+			if (this._hintPosition == "bottom") {
+				content.push({
+					contextKey: "editorEl",
+					tagName: "DIV",
+					className: "form-editor form-editor-top"
+				});
+			} else {
+				content.push({
+					contextKey: "editorEl",
+					tagName: "DIV",
+					className: "form-editor form-editor-left"
+				});
+			}
+
 			if (this._showHint) {
-				var hintConfig = {
-					tagName: "DIV",
-					className: "form-hint"
-				};
-				editorConfig.content = [hintConfig];
 				if (this._hintPosition == "bottom") {
-					hintConfig.style = {
-						width: "100%"
-					};
+					content.push({
+						contextKey: "hintEl",
+						tagName: "DIV",
+						className: "form-hint form-hint-bottom",
+						style: {
+							marginTop: this._hintSpacing + "px"
+						}
+					});
 				} else {
-					hintConfig.style = {
-						position: "absolute",
-						right: 0,
-						top: 0
-					};
+					content.push({
+						contextKey: "hintEl",
+						tagName: "DIV",
+						className: "form-hint form-hint-right"
+					});
 				}
 			}
-			
-			var dom = $DomUtils.xCreate({
+
+			var doms = {}, dom = $DomUtils.xCreate({
 				tagName: "DIV",
-				content: [labelConfig, editorConfig],
-				style: {
-					position: "relative",
-					overflow: "hidden"
-				}
-			});
-			this._labelEl = dom.firstChild;
-			this._editorEl = dom.lastChild;
-			this._hintEl = this._editorEl.firstChild;
+				content: config
+			}, null, doms);
+			this._labelEl = doms.labelEl;
+			this._contentEl = doms.contentEl;
+			this._editorEl = doms.editorEl;
+			this._hintEl = doms.hintEl;
 			return dom;
 		},
-		
-		setFocus: function() {
+
+		setFocus: function () {
 			var editor = this.getEditor(false);
 			if (editor) {
 				editor.setFocus();
@@ -676,15 +747,15 @@
 				$invokeSuper.call(this);
 			}
 		},
-		
-		createEditor: function(editorType) {
-			var editor = dorado.Toolkits.createInstance("widget", editorType, function() {
+
+		createEditor: function (editorType) {
+			var editor = dorado.Toolkits.createInstance("widget", editorType, function () {
 				return dorado.Toolkits.getPrototype("widget", editorType) || dorado.widget.TextEditor;
 			});
 			return editor;
 		},
-		
-		getEditor: function(create) {
+
+		getEditor: function (create) {
 			var control = this._editor;
 			if (this._controlRegistered) {
 				var config1 = {}, config2 = {}, attrs = control.ATTRIBUTES;
@@ -701,7 +772,7 @@
 				});
 				return control;
 			}
-			
+
 			if (!control && create) {
 				var propertyDef = this.getBindingPropertyDef();
 				if (propertyDef) {
@@ -713,7 +784,7 @@
 							}
 						}
 					}
-					
+
 					if (this._trigger === undefined && propertyDef._mapping) {
 						if ((!this._editorType || this._editorType == "TextEditor")) {
 							this._trigger = new dorado.widget.AutoMappingDropDown({
@@ -722,7 +793,7 @@
 						}
 					}
 				}
-				
+
 				var originEditor = this._editor;
 				this._editor = control = this.createEditor(this._editorType);
 				if (originEditor != control) {
@@ -730,7 +801,7 @@
 					if (control) this.registerInnerControl(control);
 				}
 			}
-			
+
 			if (control) {
 				var config = {};
 				this.initEditorConfig(config);
@@ -740,7 +811,7 @@
 					preventOverwriting: true,
 					lockWritingTimes: true
 				});
-				
+
 				this._controlRegistered = true;
 				if (this._showHint && control instanceof dorado.widget.AbstractEditor) {
 					if (control instanceof dorado.widget.AbstractTextBox) {
@@ -752,8 +823,8 @@
 			}
 			return control;
 		},
-		
-		getHintControl: function(create) {
+
+		getHintControl: function (create) {
 			var control = this._hintControl;
 			if (!control && create) {
 				var config = {
@@ -764,18 +835,18 @@
 					config.dataSet = this._dataSet;
 					config.property = this._property;
 				}
-				
+
 				this._hintControl = control = new dorado.widget.DataMessage(config);
 			}
-			
+
 			if (control && !this._hintControlRegistered) {
 				this._hintControlRegistered = true;
 				this.registerInnerControl(control);
 			}
 			return control;
 		},
-		
-		initEditorConfig: function(config) {
+
+		initEditorConfig: function (config) {
 			if (this._trigger !== undefined) config.trigger = this._trigger;
 			if (this._editable !== undefined) config.editable = this._editable;
 			config.readOnly = this._readOnly || this._realReadOnly;
@@ -787,27 +858,27 @@
 			if (this._dataPath) config.dataPath = this._dataPath;
 			if (this._property) config.property = this._property;
 		},
-		
-		resetEditorReadOnly: function() {
+
+		resetEditorReadOnly: function () {
 			if (this._editor && this._editor instanceof dorado.widget.AbstractEditor) {
 				this._editor.set("readOnly", this._readOnly || this._realReadOnly);
 			}
 		},
-		
-		onEditorStateChange: function(editor, arg) {
+
+		onEditorStateChange: function (editor, arg) {
 			var hintControl = this.getHintControl(false);
 			if (hintControl) hintControl.set("messages", editor.get("validationMessages"));
 		},
-		
-		onEditorPost: function(editor, arg) {
+
+		onEditorPost: function (editor, arg) {
 			var hintControl = this.getHintControl(false);
 			if (hintControl) {
 				messages = editor.get("validationMessages");
 				hintControl.set("messages", messages || DEFAULT_OK_MESSAGES);
 			}
 		},
-		
-		onEditorPostFailed: function(editor, arg) {
+
+		onEditorPostFailed: function (editor, arg) {
 			if (!this._dataSet && !this._property) {
 				var exception = arg.exception;
 				if (exception instanceof dorado.widget.editor.PostException) {
@@ -817,40 +888,40 @@
 			}
 			arg.processDefault = false;
 		},
-		
-		getBindingPropertyDef: function() {
+
+		getBindingPropertyDef: function () {
 			var p = this._propertyDef;
 			if (p === undefined) {
 				this._propertyDef = p = ($invokeSuper.call(this) || null);
 			}
 			return p;
 		},
-		
-		getLabel: function() {
+
+		getLabel: function () {
 			var label = this._label;
 			if (!label && this._dataSet && this._property) {
 				var p = this.getBindingPropertyDef();
 				if (p) label = p._label || p._name;
 			}
-			return label || this._property;
+			return label || this._property || "";
 		},
-		
-		isRequired: function() {
+
+		isRequired: function () {
 			var p;
 			if (this._dataSet && this._property) p = this.getBindingPropertyDef();
 			var required = p ? p._required : false;
 			if (!required) {
 				var editor = this._editor;
 				required = (editor &&
-				editor instanceof dorado.widget.TextEditor &&
-				editor.get("required"));
+					editor instanceof dorado.widget.TextEditor &&
+					editor.get("required"));
 			}
 			return required;
 		},
-		
-		resetBinding: function() {
+
+		resetBinding: function () {
 			if (!this._ready) return;
-			
+
 			var config = {
 				dataSet: this._dataSet,
 				dataPath: this._dataPath,
@@ -860,112 +931,122 @@
 			if (editor) editor.set(config);
 			if (hintControl) hintControl.set(config);
 		},
-		
-		refreshDom: function(dom) {
+
+		refreshDom: function (dom) {
 			var height = this._height || this._realHeight;
 			$invokeSuper.call(this, arguments);
-			
-			var dom = this._dom, editorEl = this._editorEl, labelEl = this._labelEl, hintEl = this._hintEl, editor = this.getEditor(true);
-			var domWidth = dom.offsetWidth || this._realWidth || 0, domHeight = dom.offsetHeight || this._realHeight || 0;
 
-			if (this._showLabel) {
-				labelEl.style.display = '';
-				labelEl.style.textAlign = this._labelAlign || "left";
+			var dom = this._dom, labelEl = this._labelEl, contentEl = this._contentEl, editorEl = this._editorEl, hintEl = this._hintEl;
+			var domWidth = dom.offsetWidth || this._realWidth || 0, domHeight = dom.offsetHeight || this._realHeight || 0;
+			if (labelEl) {
 				var label = this.getLabel();
-				labelEl.innerText = (label || '') + ((this._labelSeparator && label) ? this._labelSeparator : '');
+				labelEl.innerText = label + ((this._labelSeparator && label) ? this._labelSeparator : '');
 				$fly(labelEl).toggleClass("form-label-required", !!this.isRequired());
-			} else if (labelEl) {
-				labelEl.style.display = "none";
 			}
-			
-			var labelWidth = 0, labelHeight = 0, editorWidth = 0, hintSize = 0;
-			if (this._labelPosition == "top") {
-				labelHeight = labelEl.offsetHeight + this._labelSpacing;
-				editorEl.style.paddingTop = labelHeight + "px";
-				editorWidth = domWidth;
-				if (height) editorEl.style.height = (domHeight - labelHeight) + "px";
-			} else {
-				labelWidth = this._labelWidth + this._labelSpacing;
-				editorWidth = domWidth - labelWidth;
-				if (editorWidth > 0) editorEl.style.width = editorWidth + "px";
-			}
-			
-			if (editor) {
-				var config = {};
-				if (hintEl) {
-					var autoHeight = !editor.ATTRIBUTES.height.independent;
-					if (this._hintPosition == "bottom") {
-						config.width = domWidth - labelWidth;
-						if (height && autoHeight) {
-							config.height = editorEl.offsetHeight - labelHeight - hintEl.offsetHeight;
-						}
-					} else {
-						if (autoHeight) config.height = editorEl.offsetHeight - labelHeight;
-						if (this._editorWidth > 0) {
-							config.width = this._editorWidth;
-						} else {
-							hintSize = this._hintWidth + this._hintSpacing;
-							config.width = editorWidth - hintSize;
-						}
+
+			var labelWidth = 0, labelHeight = 0, contentWidth = 0, contentHeight = 0, editorWidth = 0, editorHeight = 0, hintWidth = 0, hintHeight = 0;
+			if (labelEl) {
+				if (this._labelPosition == "top") {
+					contentWidth = domWidth;
+					if (height) {
+						labelHeight = (labelEl) ? ($fly(labelEl).outerHeight() + this._labelSpacing) : 0;
+						contentHeight = domHeight - labelHeight;
+						$fly(contentEl).outerHeight(contentHeight);
 					}
 				} else {
-					config.width = domWidth - labelWidth;
+					labelWidth = this._labelWidth + this._labelSpacing;
+					contentWidth = domWidth - labelWidth;
+					contentHeight = domHeight;
+					$fly(labelEl).outerWidth(this._labelWidth);
+					$fly(contentEl).outerWidth(contentWidth);
 				}
-				
-				if (config.width > 0) editor._realWidth = config.width;
-				else editor._realWidth = 2;
-				
-				// 导致IE9下自定义Editor的高度异常
-				// if (config.height > 0) editor._realHeight = config.height;
-				if (config.height > 0 && this._height) editor._realHeight = config.height;
-				
-				if (!editor.get("rendered")) editor.render(editorEl, editorEl.firstChild);
-				else editor.refresh();
 			}
-			
+			else {
+				contentWidth = domWidth;
+				contentHeight = domHeight;
+			}
+
 			if (hintEl) {
 				var hintControl = this.getHintControl(true);
-				if (this._hintPosition != "bottom") {
-					if (this._labelPosition == "top") hintEl.style.top = labelHeight + "px";
-					if (this._editorWidth > 0) {
-						var hintWidth = editorWidth - this._editorWidth - this._hintSpacing;
-						hintEl.style.width = ((hintWidth > 0) ? hintWidth : 0) + "px";
-					} else {
-						hintEl.style.width = this._hintWidth + "px";
+				if (this._hintPosition == "bottom") {
+					if (height) {
+						hintHeight = (hintEl) ? ($fly(hintEl).outerHeight() + this._hintSpacing) : 0;
 					}
-					if (editorEl.clientHeight) hintEl.style.height = editorEl.clientHeight + "px";
+				}
+				else {
+					var realHintWidth;
+					if (this._editorWidth > 0) {
+						realHintWidth = domWidth - this._editorWidth - this._hintSpacing;
+					} else {
+						realHintWidth = this._hintWidth;
+					}
+					hintWidth = realHintWidth + this._hintSpacing;
+					$fly(hintEl).outerWidth(realHintWidth);
 				}
 				if (!hintControl.get("rendered")) hintControl.render(hintEl);
 			}
+
+			if (this._editorWidth > 0 && this._hintPosition == "right") {
+				editorWidth = this._editorWidth;
+			}
+			else {
+				editorWidth = contentWidth - hintWidth;
+			}
+			editorHeight = contentHeight - hintHeight;
+
+			if (!(this._labelPosition == "top" && this._hintPosition == "bottom")) {
+				if (editorWidth >= 0) editorEl.style.width = editorWidth + "px";
+			}
+			if (height) {
+				if (editorHeight >= 0) editorEl.style.height = editorHeight + "px";
+			}
+
+			var editor = this.getEditor(true);
+			if (editor) {
+				var attrWatcher = editor.getAttributeWatcher();
+				var config = {};
+				var autoHeight = !editor.ATTRIBUTES.height.independent &&
+					!attrWatcher.getWritingTimes("height") &&
+					this.getAttributeWatcher().getWritingTimes("height");
+				config.width = editorWidth;
+				if (this._labelPosition == "top") {
+					if (height && autoHeight) config.height = editorHeight;
+				} else {
+					if (autoHeight) config.height = editorHeight;
+				}
+
+				if (!editor.ATTRIBUTES.width.independent && !attrWatcher.getWritingTimes("width")) {
+					editor._realWidth = (config.width > 0) ? config.width : 2;
+				}
+
+				// 导致IE9下自定义Editor的高度异常
+				if (config.height > 0) editor._realHeight = config.height;
+				// if (config.height > 0 && height) editor._realHeight = config.height;
+
+				if (!editor.get("rendered")) editor.render(editorEl);
+				else editor.refresh();
+			}
 		},
-		
-		/**
-		 * 刷新其中编辑器中的数据。
-		 * <p>
-		 * 该方法通常只对那么未通过DataSet建立数据绑定的使用场景有效。
-		 * 例如我们将一个FormElement与一个数据实体进行了数据关联，当数据实体中的属性值发生变化时FormElement并不会自动刷新。
-		 * 此时我们需要调用refreshData()方法，手工的通知FormElement进行数据刷新。
-		 * </p>
-		 */
-		refreshData: function() {
+
+		refreshData: function () {
 			var editor = this.getEditor(false);
 			if (editor != null && dorado.Object.isInstanceOf(editor, dorado.widget.AbstractEditor)) {
 				editor.refreshData();
 			}
 		},
-		
-		isFocusable: function() {
+
+		isFocusable: function () {
 			var editor = this._editor;
 			return $invokeSuper.call(this) && editor && editor.isFocusable();
 		},
-		
-		getFocusableSubControls: function() {
+
+		getFocusableSubControls: function () {
 			return [this._editor];
 		}
 	});
-	
-	dorado.widget.View.registerDefaultComponent("defaultFormProfile", function() {
+
+	dorado.widget.View.registerDefaultComponent("defaultFormProfile", function () {
 		return new dorado.widget.FormProfile();
 	});
-	
+
 })();

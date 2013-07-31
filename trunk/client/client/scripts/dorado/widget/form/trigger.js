@@ -194,3 +194,14 @@ dorado.widget.Trigger = $extend(dorado.widget.Component, /** @scope dorado.widge
 		});
 	}
 });
+
+dorado.widget.View.registerDefaultComponent("triggerClear", function() {
+	return new dorado.widget.Trigger({
+		exClassName : "d-trigger-clear",
+		iconClass : "d-trigger-icon-clear",
+		onExecute : function(self, arg) {
+			arg.editor.set("text", "");
+			arg.editor.post();
+		}
+	});
+});

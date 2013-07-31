@@ -104,9 +104,6 @@ public class StandaloneRuleSetBuilderTest extends IdeSupportContextTestCase {
 		Rule viewRule = ruleSet.getRule("View");
 		assertNotNull(viewRule);
 
-		Rule defaultViewRule = ruleSet.getRule("DefaultView");
-		assertNotNull(defaultViewRule);
-
 		assertNotNull(ruleSet.getRule("AnchorLayout"));
 		assertNotNull(ruleSet.getRule("LayoutHolder"));
 		assertNotNull(ruleSet.getRule("DataSet"));
@@ -137,7 +134,7 @@ public class StandaloneRuleSetBuilderTest extends IdeSupportContextTestCase {
 		assertNotNull(layoutProperty);
 		assertFalse(layoutProperty.isVisible());
 
-		Property idProperty = defaultViewRule.getPrimitiveProperty("id");
+		Property idProperty = viewRule.getPrimitiveProperty("id");
 		assertNotNull(idProperty);
 		assertFalse(idProperty.isVisible());
 
@@ -145,7 +142,7 @@ public class StandaloneRuleSetBuilderTest extends IdeSupportContextTestCase {
 
 		Set<Rule> componentRules = containerRule.getChild("Children")
 				.getConcreteRules();
-		assertFalse(componentRules.contains(defaultViewRule));
+		assertFalse(componentRules.contains(viewRule));
 
 		Rule label1Rule = ruleSet.getRule("Label_1");
 		assertNotNull(label1Rule);
@@ -199,6 +196,9 @@ public class StandaloneRuleSetBuilderTest extends IdeSupportContextTestCase {
 
 		Rule menuButtonRule = ruleSet.getRule("MenuButton");
 		assertFalse(menuButtonRule.getProperty("menu").isVisible());
+
+		Rule dataLabelRule = ruleSet.getRule("DataLabel");
+		assertTrue(dataLabelRule.isDeprecated());
 	}
 
 	public void testLoadRuleFile() throws Exception {

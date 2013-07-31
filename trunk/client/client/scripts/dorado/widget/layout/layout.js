@@ -85,20 +85,6 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 	// =====
 	
 	ATTRIBUTES: /** @scope dorado.widget.layout.Layout.prototype */ {
-	
-		/**
-		 * CSS类名。
-		 * @type String
-		 * @attribute
-		 */
-		className: {},
-		
-		/**
-		 * 布局管理器中每一个子区域的默认CSS类名。
-		 * @type String
-		 * @attribute
-		 */
-		regionClassName: {},
 		
 		/**
 		 * 四周的留白大小。像素值。
@@ -106,22 +92,6 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 		 * @attribute
 		 */
 		padding: {},
-		
-		/**
-		 * 设置控件的style属性。此对象是一个结构与HTMLElement的style相似的JavaScript对象。
-		 * @type Object
-		 * @attribute writeOnly
-		 *
-		 * @example
-		 * // 当我们需要为布局管理器对应的HTMLElement对象指定背景色和字体颜色时可以使用这样的style
-		 * layout.setStyle( {
-		 * 	color : "yellow",
-		 * 	backgroundColor : "blue"
-		 * });
-		 */
-		style: {
-			writeOnly: true
-		},
 		
 		/**
 		 * 此布局管理器所隶属的容器控件。
@@ -266,6 +236,7 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 			constraint: this.preprocessLayoutConstraint(control._layoutConstraint, control)
 		};
 		this._regions.insert(region);
+		control._parentLayout = this;
 		if (this.onAddControl) this.onAddControl(control);
 	},
 	
@@ -274,6 +245,7 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 	 * @param {dorado.widget.Control} control 要移除的子控件。
 	 */
 	removeControl: function(control) {
+		control._parentLayout = null;
 		if (this.onRemoveControl) this.onRemoveControl(control);
 		this._regions.removeKey(control._id);
 	},
@@ -347,6 +319,7 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 				this._ignoreControlSizeChange = false;
 			}
 			else {
+				this._container.isActualVisible()
 				this._container.refresh(); // 由于container目前不可见，因此本次刷新动作实际会被搁置到可见时再执行。
 			}
 		}
@@ -361,7 +334,7 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 	onResize: function() {
 		if (this._ignoreControlSizeChange || !this.doOnResize) return;
 		var containerDom = this.getDom();
-		if (containerDom.offsetWidth == 0 /* || containerDom.offsetHeight == 0*/) return;
+		if (containerDom.offsetWidth == 0  || containerDom.offsetHeight == 0) return;
 		this.doOnResize();
 	},
 	
@@ -382,10 +355,27 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 	 * 此方法一般不应在子类中复写，如有需要子类应该复写本类中的doOnControlSizeChange方法。
 	 * @protected
 	 * @param {dorado.widget.Control} control 尺寸发生改变的控件
+	 * @param {boolean} delay 尺寸发生改变的控件
 	 */
-	onControlSizeChange: function(control) {
+	onControlSizeChange: function(control, delay) {
 		if (this._ignoreControlSizeChange || !this.doOnControlSizeChange) return;
-		this.doOnControlSizeChange(control);
+		dorado.Toolkits.cancelDelayedAction(this, "$notifySizeChangeTimerId");
+		
+		var dom = this._dom, container = this._container;
+		var fn = function() {
+			var currentWidth = dom.offsetWidth, currentHeight = dom.offsetHeight;
+			if (this.doOnControlSizeChange) this.doOnControlSizeChange(control);
+			if (currentWidth != dom.offsetWidth || currentHeight != dom.offsetHeight) {
+				container.onContentSizeChange();
+			}
+		}
+		
+		if (delay) {
+			dorado.Toolkits.setDelayedAction(this, "$onControlSizeChangeTimerId", fn, 200);
+		}
+		else {
+			fn.call(this);
+		}
 	}
 });
 
@@ -398,15 +388,16 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT = "none";
 
 /**
+ * @author Benny Bao (mailto:benny.bao@bstek.com)
+ * @class 系统原生布局管理器。
+ * @extends dorado.widget.layout.Layout
+ * @param {Object} [config] 包含对布局管理器的配置信息的JSON对象。
  */
 dorado.widget.layout.NativeLayout = $extend(dorado.widget.layout.Layout, /** @scope dorado.widget.layout.NativeLayout.prototype */ {
 	$className: "dorado.widget.layout.NativeLayout",
+	_className: "i-native-layout d-native-layout",
 	
 	ATTRIBUTES: /** @scope dorado.widget.layout.NativeLayout.prototype */ {
-	
-		className: {
-			defaultValue: "native-layout"
-		},
 		
 		/**
 		 * 用于简化DOM元素style属性设置过程的虚拟属性。
@@ -442,6 +433,8 @@ dorado.widget.layout.NativeLayout = $extend(dorado.widget.layout.Layout, /** @sc
 	},
 	
 	refreshDom: function(dom) {
+		$fly(dom).css("padding", this._padding);
+		
 		if (this._style) {
 			var style = this._style;
 			if (typeof this._style == "string") {
@@ -456,6 +449,7 @@ dorado.widget.layout.NativeLayout = $extend(dorado.widget.layout.Layout, /** @sc
 			$fly(dom).css(style);
 			delete this._style;
 		}
+		
 		for (var it = this._regions.iterator(); it.hasNext();) {
 			var region = it.next();
 			var constraint = region.constraint;
@@ -474,7 +468,5 @@ dorado.widget.layout.NativeLayout = $extend(dorado.widget.layout.Layout, /** @sc
 		if (!this._attached/* || this._disableRendering 此判断导致removeAllChildren()不能生效 */) return;
 		var region = this._regions.get(control._id);
 		control.unrender();
-	},
-	
-	doOnResize: null
+	}
 });

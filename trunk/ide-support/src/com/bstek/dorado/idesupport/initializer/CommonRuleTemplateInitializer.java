@@ -32,6 +32,7 @@ import org.apache.commons.lang.StringUtils;
 import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.IdeObject;
 import com.bstek.dorado.annotation.IdeProperty;
+import com.bstek.dorado.annotation.IdeSubObject;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlNodeWrapper;
 import com.bstek.dorado.annotation.XmlProperty;
@@ -66,6 +67,7 @@ import com.bstek.dorado.util.clazz.TypeInfo;
 import com.bstek.dorado.view.annotation.ComponentReference;
 import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Component;
+import com.bstek.dorado.view.widget.Control;
 import com.bstek.dorado.view.widget.datacontrol.DataControl;
 
 /**
@@ -125,6 +127,28 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 		}
 
 		XmlNodeInfo xmlNodeInfo = getXmlNodeInfo(type);
+
+		String scope = xmlNodeInfo.getScope();
+		if (StringUtils.isEmpty(scope)
+				&& Component.class.isAssignableFrom(type)) {
+			Widget widget = type.getAnnotation(Widget.class);
+			if (widget != null) {
+				if (StringUtils.isNotEmpty(widget.name())
+						&& !widget.name().equals(ruleTemplate.getName())) {
+					ruleTemplate.setLabel(widget.name());
+				}
+			}
+			if (!(widget != null
+					&& ArrayUtils
+							.indexOf(type.getDeclaredAnnotations(), widget) >= 0 && !Modifier
+						.isAbstract(type.getModifiers()))) {
+				scope = "protected";
+			}
+		}
+		if (StringUtils.isNotEmpty(scope)) {
+			ruleTemplate.setScope(scope);
+		}
+
 		String nodeName = xmlNodeInfo.getNodeName();
 		if (StringUtils.isNotEmpty(nodeName)) {
 			ruleTemplate.setNodeName(nodeName);
@@ -147,6 +171,9 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 				.getClientTypes());
 		if (clientTypes > 0) {
 			ruleTemplate.setClientTypes(clientTypes);
+		} else if (Control.class.isAssignableFrom(type)
+				&& "public".equals(ruleTemplate.getScope())) {
+			ruleTemplate.setClientTypes(ClientType.DESKTOP);
 		}
 
 		if (!ruleTemplate.isDeprecated() && xmlNodeInfo.isDeprecated()) {
@@ -159,6 +186,7 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 			if (StringUtils.isNotEmpty(ideObject.labelProperty())) {
 				ruleTemplate.setLabelProperty(ideObject.labelProperty());
 			}
+			ruleTemplate.setVisible(ideObject.visible());
 		}
 
 		// search icon
@@ -239,17 +267,6 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 			name = tempName + '_' + (++tryCount);
 		}
 
-		String scope = null;
-		if (Component.class.isAssignableFrom(type)) {
-			Widget widget = type.getAnnotation(Widget.class);
-			if (!(widget != null
-					&& ArrayUtils
-							.indexOf(type.getDeclaredAnnotations(), widget) >= 0 && !Modifier
-						.isAbstract(type.getModifiers()))) {
-				scope = "protected";
-			}
-		}
-
 		RuleTemplate newRuleTemplate = new AutoRuleTemplate(name,
 				type.getName());
 		if (parentRuleTemplate != null) {
@@ -257,9 +274,6 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 					.setParents(new RuleTemplate[] { parentRuleTemplate });
 		}
 		newRuleTemplate.setLabel(label);
-		if (scope != null) {
-			newRuleTemplate.setScope(scope);
-		}
 
 		ruleTemplateManager.addRuleTemplate(newRuleTemplate);
 		return newRuleTemplate;
@@ -313,10 +327,13 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 		if (!xmlNodeInfo.isInheritable() && xmlNode.inheritable()) {
 			xmlNodeInfo.setInheritable(true);
 		}
+		if (!xmlNode.isPublic()) {
+			xmlNodeInfo.setScope("protected");
+		}
 
 		int[] clientTypes = xmlNode.clientTypes();
 		if (clientTypes != null) {
-			if (!(clientTypes.length == 0 || (clientTypes.length == 1 && clientTypes[0] == ClientType.DESKTOP))) {
+			if (clientTypes.length > 0) {
 				xmlNodeInfo.setClientTypes(clientTypes);
 			}
 		}
@@ -324,6 +341,7 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 		if (!xmlNodeInfo.isDeprecated() && xmlNode.deprecated()) {
 			xmlNodeInfo.setDeprecated(true);
 		}
+
 		if (StringUtils.isNotEmpty(xmlNode.fixedProperties())) {
 			Map<String, String> fixedProperties = xmlNodeInfo
 					.getFixedProperties();
@@ -692,6 +710,7 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 					}
 				}
 
+				List<AutoChildTemplate> childTemplatesBySubNode = null;
 				XmlSubNode xmlSubNode = readMethod
 						.getAnnotation(XmlSubNode.class);
 				if (xmlSubNode != null) {
@@ -706,13 +725,22 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 					} else {
 						propertyTypeInfo = new TypeInfo(propertyType, false);
 					}
-					List<AutoChildTemplate> childTemplatesBySubNode = getChildTemplatesBySubNode(
+
+					childTemplatesBySubNode = getChildTemplatesBySubNode(
 							ruleTemplate, typeInfo,
 							propertyDescriptor.getName(), xmlSubNode,
 							propertyTypeInfo, initializerContext);
-					if (childTemplatesBySubNode != null) {
-						childTemplates.addAll(childTemplatesBySubNode);
+				}
+
+				if (childTemplatesBySubNode != null) {
+					IdeSubObject ideSubObject = readMethod
+							.getAnnotation(IdeSubObject.class);
+					if (ideSubObject != null && !ideSubObject.visible()) {
+						for (AutoChildTemplate childTemplate : childTemplatesBySubNode) {
+							childTemplate.setVisible(false);
+						}
 					}
+					childTemplates.addAll(childTemplatesBySubNode);
 				}
 			}
 		}
@@ -858,6 +886,7 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 				ruleTemplate, xmlSubNode);
 		childTemplate.setAggregated(aggregated);
 		childTemplate.setFixed(xmlSubNode.fixed());
+		childTemplate.setFixed(xmlSubNode.deprecated());
 		return childTemplate;
 	}
 

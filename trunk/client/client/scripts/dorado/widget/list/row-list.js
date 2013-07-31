@@ -523,8 +523,7 @@
 				with (endBlankRow) {
 					if ((itemDomCount + startIndex) < itemCount) {
 						firstChild.colSpan = cols;
-						firstChild.style.height = Math.round((itemCount - itemDomCount - startIndex) * rowHeightAverage) +
-						"px";
+						firstChild.style.height = Math.round((itemCount - itemDomCount - startIndex) * rowHeightAverage) + "px";
 						parentNode.style.display = "";
 					} else {
 						parentNode.style.display = "none";
@@ -641,22 +640,24 @@
 		createDom: function() {
 			var dom = $invokeSuper.call(this, arguments);
 			if (dorado.Browser.msie && dorado.Browser.version >= 8) dom.hideFocus = true;
-			$fly(dom).bind("scroll", $scopify(this, this.onScroll));
+			$fly(this._container).bind("scroll", $scopify(this, this.onScroll));
 			return dom;
 		},
 		
 		refreshDom: function(dom) {
-			var dynaHeight = !dom.style.height || !dom.style.width, oldHeight;
-			if (dynaHeight) {
+			var hasRealWidth = !!this._width, hasRealHeight = !!this._height, oldWidth, oldHeight;
+			if (!hasRealWidth || !hasRealHeight) {
+				oldWidth = dom.offsetWidth;
 				oldHeight = dom.offsetHeight;
 			}
 			
 			$invokeSuper.call(this, arguments);
 			
+			var container = this._container;
 			if (this._scrollMode == "viewport") {
-				this.refreshViewPortContent(dom);
+				this.refreshViewPortContent(container);
 			} else {
-				this.refreshContent(dom);
+				this.refreshContent(container);
 			}
 			
 			if (this._currentScrollMode && this._currentScrollMode != this._scrollMode && !this.getCurrentItemId()) {
@@ -674,22 +675,11 @@
 			}
 			delete this._skipScrollCurrentIntoView;
 			
-			if (dorado.Browser.msie) {
-				$DomUtils.fixMsieYScrollBar(dom);
-				if (!this._itemModelFixed && this._scrollMode == "viewport") {
-					this._itemModel.setScrollSize(dom.clientHeight, dom.scrollHeight);
-				}
-			}
-			
-			if (dynaHeight && oldHeight != dom.offsetHeight) {
+			if ((!hasRealWidth || !hasRealHeight) && (oldWidth != dom.offsetWidth || oldHeight != dom.offsetHeight)) {
 				this.notifySizeChange();
 			}
 			
 			delete this._ignoreItemTimestamp;
-		},
-		
-		notifySizeChange: function() {
-			if (!this._dom.style.height || !this._dom.style.width) $invokeSuper.call(this, arguments);
 		},
 		
 		scrollItemDomIntoView: function(row) {
@@ -759,182 +749,7 @@
 				}
 			}
 			return row;
-		},
-		
-		setDraggingOverItemDom: function(itemDom) {
-			if (this._draggingOverItemDom == itemDom) return;
-			if (this._draggingOverItemDom) $fly(this._draggingOverItemDom).removeClass("drag-over-row");
-			this._draggingOverItemDom = itemDom;
-			if (itemDom) $fly(itemDom).addClass("drag-over-row");
-		},
-		
-		showDraggingInsertIndicator: function(draggingInfo, insertMode, itemDom) {
-			var insertIndicator = dorado.widget.RowList.getDraggingInsertIndicator();
-			var $insertIndicator = $fly(insertIndicator);
-			if (insertMode) {
-				var dom = this._dom;
-				var width = dom.offsetWidth;
-				var top = (insertMode == "before") ? itemDom.offsetTop : (itemDom.offsetTop + itemDom.offsetHeight);
-				if (dom.clientWidth < width) width = dom.clientWidth;
-				$insertIndicator.width(width).height(2).left(0).top(top - 1).show().appendTo(dom);
-			} else {
-				$insertIndicator.hide();
-			}
-		},
-		
-		doOnDraggingSourceMove: function(draggingInfo, evt, targetObject, insertMode, refObject, itemDom) {
-			var accept = (draggingInfo.isDropAcceptable(this._droppableTags) && !(this._dropMode == "onItem" && targetObject == null));
-			draggingInfo.set({
-				targetObject: targetObject,
-				insertMode: insertMode,
-				refObject: refObject,
-				accept: accept
-			});
-			
-			var eventArg = {
-				draggingInfo: draggingInfo,
-				event: evt,
-				processDefault: true
-			};
-			this.fireEvent("onDraggingSourceMove", this, eventArg);
-			
-			if (accept && eventArg.processDefault) {
-				this.showDraggingInsertIndicator(draggingInfo, insertMode, itemDom);
-				this.setDraggingOverItemDom((accept && !insertMode) ? itemDom : null);
-			}
-			return eventArg.processDefault;
-		},
-		
-		onDraggingSourceMove: function(draggingInfo, evt) {
-			var dropMode = this._dropMode;
-			var targetObject = draggingInfo.get("targetObject");
-			var insertMode, refObject, itemDom;
-			if (dropMode != "onControl") {
-				var pos = this.getMousePosition(evt);
-				itemDom = this.findItemDomByPosition(pos);
-				if (itemDom && $fly(itemDom).data("item") == draggingInfo.get("object")) {
-					itemDom = null;
-				}
-				
-				if (itemDom) {
-					if (dropMode == "insertItems") {
-						var dropY = itemDom._dropY;
-						var halfHeight = itemDom.offsetHeight / 2;
-						insertMode = (dropY < halfHeight) ? "before" : "after";
-					} else if (dropMode == "onOrInsertItems") {
-						var dropY = itemDom._dropY;
-						if (dropY <= 4) insertMode = "before";
-						else if ((itemDom.offsetHeight - dropY) <= 4) insertMode = "after";
-					}
-				}
-				
-				refObject = itemDom ? $fly(itemDom).data("item") : null;
-				if (!refObject) {
-					targetObject = (dropMode == "onAnyWhere") ? this : null;
-				} else {
-					targetObject = refObject;
-				}
-			}
-			if (itemDom) {
-				return this.doOnDraggingSourceMove(draggingInfo, evt, targetObject, insertMode, refObject, itemDom);
-			} else {
-				return false;
-			}
-		},
-		
-		onDraggingSourceOut: function(draggingInfo, evt) {
-			$invokeSuper.call(this, arguments);
-			this.setDraggingOverItemDom();
-			this.showDraggingInsertIndicator();
-		},
-		
-		processItemDrop: function(draggingInfo, evt) {
-		
-			function getItemList(control, entity) {
-				var list;
-				if (entity instanceof dorado.Entity) {
-					list = entity.parent;
-				} else if (control.ATTRIBUTES.itemModel) {
-					var itemModel = control.get("itemModel");
-					if (itemModel) list = itemModel.getItems();
-				}
-				return list;
-			}
-			
-			var object = draggingInfo.get("object");
-			var insertMode = draggingInfo.get("insertMode");
-			var refObject = draggingInfo.get("refObject");
-			var sourceControl = draggingInfo.get("sourceControl");
-			if (insertMode && refObject || this._dropMode == "insertItems" || this._dropMode == "onOrInsertItems" || this._dropMode == "onAnyWhere") {
-				var sourceList = getItemList(sourceControl, object), oldState = object.state;
-				if (sourceList) {
-					sourceList.remove(object, true);
-					if (!dorado.Object.isInstanceOf(sourceControl, dorado.widget.DataControl)) {
-						sourceControl.refresh();
-					}
-				}
-				
-				if (object instanceof dorado.Entity) {
-					object.setState((oldState == dorado.Entity.STATE_NEW) ? dorado.Entity.STATE_NEW : dorado.Entity.STATE_MOVED);
-				}
-				
-				var targetList = this.get("itemModel").getItems(), highlight;
-				if (!targetList) {
-					if (!dorado.Object.isInstanceOf(this, dorado.widget.DataControl)) {
-						if (this.ATTRIBUTES.items) {
-							targetList = [];
-							this.set("items", targetList);
-						}
-					}
-					else {
-						targetList = this.getBindingData();
-					}
-				}
-				
-				if (targetList) {
-					if (targetList instanceof dorado.EntityList) {
-						targetList.insert(object, insertMode, refObject);
-						highlight = object;
-					} else {
-						var i = refObject ? targetList.indexOf(refObject) : -1;
-						if (i < 0) {
-							targetList.push(object);
-							highlight = targetList.length - 1;
-						} else {
-							if (insertMode == "after") i++;
-							targetList.insert(object, i);
-							highlight = i;
-						}
-					}
-					if (!dorado.Object.isInstanceOf(this, dorado.widget.DataControl)) {
-						this.refresh();
-					}
-					if (highlight != null) {
-						this.highlightItem(highlight);
-					}
-					return true;
-				}
-			}
-			return false;
-		},
-		
-		onDraggingSourceDrop: function(draggingInfo, evt) {
-			if (this.processItemDrop(draggingInfo, evt)) {
-				$invokeSuper.call(this, arguments);
-			}
 		}
 	});
-	
-	dorado.widget.RowList.getDraggingInsertIndicator = function() {
-		var indicator = this._draggingInsertIndicator;
-		if (indicator == null) {
-			indicator = $DomUtils.xCreate({
-				tagName: "div",
-				className: "i-list-dragging-insert-indicator d-list-dragging-insert-indicator"
-			});
-			this._draggingInsertIndicator = indicator;
-		}
-		return indicator;
-	};
 	
 })();

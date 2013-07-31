@@ -452,7 +452,9 @@
 						throw new dorado.AttributeException(
 								"dorado.core.AttributeWriteOnce", attr);
 					}
-					if (!lockWritingTimes) attributeWatcher.incWritingTimes(attr);
+					if (!lockWritingTimes) {
+						attributeWatcher.incWritingTimes(attr);
+					}
 
 					if (def.setter) {
 						def.setter.call(this, value, attr);

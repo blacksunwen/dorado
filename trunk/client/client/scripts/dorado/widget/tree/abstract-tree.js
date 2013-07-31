@@ -865,7 +865,7 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 		}
 
 		if (insertMode) {
-			var insertIndicator = dorado.widget.RowList.getDraggingInsertIndicator();
+			var insertIndicator = dorado.widget.AbstractList.getDraggingInsertIndicator();
 			var dom = this._dom, node = $fly(itemDom).data("item");
 
 			var left = getNodeContentOffsetLeft(itemDom);

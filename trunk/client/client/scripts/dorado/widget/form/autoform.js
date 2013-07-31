@@ -2,7 +2,7 @@
  * This file is part of Dorado 7.x (http://dorado7.bsdn.org).
  * 
  * Copyright (c) 2002-2012 BSTEK Corp. All rights reserved.
- * 
+ *
  * This file is dual-licensed under the AGPLv3 (http://www.gnu.org/licenses/agpl-3.0.html) 
  * and BSDN commercial (http://www.bsdn.org/licenses) licenses.
  * 
@@ -61,8 +61,9 @@ dorado.widget.autoform.AutoFormElement = $extend(dorado.widget.FormElement, /** 
  * </p>
  * @extends dorado.widget.Control
  * @extends dorado.widget.FormProfile
+ * @extends dorado.widget.FormProfileSupport
  */
-dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfile], /** @scope dorado.widget.AutoForm.prototype */ {
+dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfile, dorado.widget.FormProfileSupport], /** @scope dorado.widget.AutoForm.prototype */ {
 	$className: "dorado.widget.AutoForm",
 	_inherentClassName: "i-auto-form",
 	
@@ -275,33 +276,47 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 	},
 	
 	constructor: function() {
-		this._elements = new dorado.util.KeyedArray(function(element) {
+		var autoform = this;
+		autoform._elements = new dorado.util.KeyedArray(function(element) {
 			return (element instanceof dorado.widget.autoform.AutoFormElement) ? element._name : element._id;
 		});
-		this._container = new dorado.widget.Container({
+		
+		var container = autoform._container = new dorado.widget.Container({
 			layout: "Form",
-			contentOverflow: "visible"
-		});
-		this.registerInnerControl(this._container);
-		this._bindingElements = new dorado.ObjectGroup();
-		
-		this._skipOnCreateListeners = (this._skipOnCreateListeners || 0) + 1;
-		$invokeSuper.call(this, arguments);
-		this._skipOnCreateListeners --;
-
-		if (this._createOwnEntity && this.getAttributeWatcher().getWritingTimes("entity") == 0) {
-			this.set("entity", new dorado.widget.FormProfile.DefaultEntity());
-		}
-		
-		if (this._elementConfigs) {
-			var configs = this._elementConfigs;
-			for (var i = 0; i < configs.length; i++) {
-				this.addElement(configs[i]);
+			contentOverflow: "visible",
+			style: {
+				width: "100%",
+				height: "100%"
 			}
-			delete this._elementConfigs;
+		});
+		
+		var notifySizeChange = container.notifySizeChange;
+		container.notifySizeChange = function() {
+			notifySizeChange.apply(container, arguments);
+			autoform.notifySizeChange.apply(autoform, arguments);
 		}
 		
-		this.addListener("onAttributeChange", function(self, arg) {
+		autoform.registerInnerControl(autoform._container);
+		autoform._bindingElements = new dorado.ObjectGroup();
+		
+		autoform._skipOnCreateListeners = (autoform._skipOnCreateListeners || 0) + 1;
+		$invokeSuper.call(autoform, arguments);
+		autoform._skipOnCreateListeners --;
+
+		if (autoform._createOwnEntity && autoform.getAttributeWatcher().getWritingTimes("entity") == 0) {
+			var defaultEntity = new dorado.widget.FormProfile.DefaultEntity();
+			autoform.set("entity", defaultEntity);
+		}
+		
+		if (autoform._elementConfigs) {
+			var configs = autoform._elementConfigs;
+			for (var i = 0; i < configs.length; i++) {
+				autoform.addElement(configs[i]);
+			}
+			delete autoform._elementConfigs;
+		}
+		
+		autoform.addListener("onAttributeChange", function(self, arg) {
 			var attr = arg.attribute;
 			if (attr == "readOnly") {
 				var readOnly = self._readOnly, objects = self._bindingElements.objects;
@@ -319,8 +334,8 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 			}
 		});
 		
-		if (!(this._skipOnCreateListeners > 0) && this.getListenerCount("onCreate")) {
-			this.fireEvent("onCreate", this);
+		if (!(autoform._skipOnCreateListeners > 0) && autoform.getListenerCount("onCreate")) {
+			autoform.fireEvent("onCreate", autoform);
 		}
 	},
 	
@@ -337,7 +352,7 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 	addBindingElement: function(element) {
 		if (!this._privateDataSetInited) {
 			this._privateDataSetInited = true;
-			
+
 			if (!this._dataSet && this._createPrivateDataSet) {
 				var dataType = this.get("dataType");
 				var dataSet = new dorado.widget.DataSet({
@@ -356,6 +371,7 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 				if (parentControl && parentControl instanceof dorado.widget.Container) {
 					parentControl.addChild(dataSet);
 				}
+				dataSet.onReady();
 				this.set({
 					dataSet: dataSet,
 					dataPath: null
@@ -427,7 +443,8 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 	},
 	
 	createDom: function() {
-		if (!this._formProfile) {
+		var attrWatcher = this.getAttributeWatcher();
+		if (!this._formProfile && attrWatcher.getWritingTimes("formProfile") == 0) {
 			var view = this.get("view") || dorado.widget.View.TOP;
 			this.set("formProfile", view.id("defaultFormProfile"));
 		}
@@ -464,11 +481,11 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 	initLayout: function(layout) {
 		configs = {};
 		if (this._cols) configs.cols = this._cols;
-		if (this._rowHeight) configs.rowHeight = this._rowHeight;
-		if (this._colPadding  !== undefined) configs.colPadding = this._colPadding;
-		if (this._rowPadding  !== undefined) configs.rowPadding = this._rowPadding;
+		if (this._rowHeight >= 0) configs.rowHeight = this._rowHeight;
+		if (this._colPadding >= 0) configs.colPadding = this._colPadding;
+		if (this._rowPadding >= 0) configs.rowPadding = this._rowPadding;
 		if (this._stretchWidth) configs.stretchWidth = this._stretchWidth;
-		if (this._padding  !== undefined) configs.padding = this._padding;
+		if (this._padding >= 0) configs.padding = this._padding;
 		layout.set(configs);
 	},
 	
@@ -568,7 +585,7 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 	 */
 	refreshData: function() {
 		this._elements.each(function(element) {
-			if (element instanceof dorado.widget.FormElement) {
+			if (element instanceof dorado.widget.AbstractFormElement) {
 				element.refreshData();
 			}
 		});

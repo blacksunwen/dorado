@@ -1,5 +1,5 @@
 <ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
-	<info organisation="com.bstek.dorado" module="dorado-core" status="integration" />
+	<info organisation="com.bstek.dorado" module="dorado-core-dev" status="integration" />
 
 	<configurations>
 		<include file="../ivy/ivy-configurations.xml" />

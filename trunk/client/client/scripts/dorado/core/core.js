@@ -46,7 +46,9 @@ var dorado = {
 		for (var p in jQuery.browser) {
 			if (jQuery.browser.hasOwnProperty(p)) browser[p] = jQuery.browser[p];
 		}
-		if (browser.chrome) browser.webkit = true; // jQuery 1.8.0不再认为chrome属于webkit
+		
+		// if (browser.chrome) browser.webkit = true; // jQuery 1.8.0不再认为chrome属于webkit
+		// jQuery 1.8.3又恢复认为chrome属于webkit
 
 		function detect(ua){
 			var os = {}, android = ua.match(/(Android)\s+([\d.]+)/),
@@ -72,12 +74,20 @@ var dorado = {
 		if (os.iphone) {
 			browser.isPhone = os.iphone;
 		} else if (os.android) {
-			browser.isPhone = window.screen.width < 600;
+			var screenSize = window.screen.width;
+			if (screenSize > window.screen.height) screenSize = window.screen.height;
+			browser.isPhone = (screenSize / window.devicePixelRatio) < 768;
 		}
 
-		browser.android = (/android/gi).test(navigator.appVersion);
-		browser.iOS = (/iphone|ipad/gi).test(navigator.appVersion);
-		browser.isTouch = "ontouchstart" in window;
+		if (browser.safari) {
+			browser.android = (/android/gi).test(navigator.appVersion);
+			browser.iOS = (/iphone|ipad/gi).test(navigator.appVersion);
+		}
+
+		browser.isTouch = !!("ontouchstart" in window || (window["$setting"] && $setting["common.simulateTouch"]));
+		if (browser.chrome) {
+			try { document.createEvent("TouchEvent"); }	 catch(e) { browser.isTouch = false; }
+		}
 		if (browser.chrome) {
 			try { document.createEvent("TouchEvent"); }	 catch(e) { browser.isTouch = false; }
 		}
@@ -261,16 +271,6 @@ var dorado = {
 		};
 	}
 };
-
-if (dorado.Browser.webkit) {
-	var ua = navigator.userAgent.toLowerCase();
-	
-	dorado.Browser.chrome = /chrome/.test(ua);
-	if (dorado.Browser.chrome) {
-		var match = /(chrome)[ \/]([\w.]+)/.exec(ua);
-		dorado.Browser.version = parseInt(match[2]);
-	}
-}
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)

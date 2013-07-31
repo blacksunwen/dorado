@@ -86,12 +86,14 @@
 			dom.className = "d-message d-message-" + (state || "none");
 			if (!this._showIconOnly) {
 				dom.innerText = text || ' ';
-			} else if (text) {
-				dorado.TipManager.initTip(dom, {
-					text: text
-				});
-			} else {
-				dorado.TipManager.deleteTip(dom);
+			} else if (dorado.TipManager) {
+				if (text) {
+					dorado.TipManager.initTip(dom, {
+						text: text
+					});
+				} else {
+					dorado.TipManager.deleteTip(dom);
+				}
 			}
 		},
 		

@@ -13,13 +13,13 @@
 package com.bstek.dorado.core;
 
 import com.bstek.dorado.core.io.ResourceLoader;
-import com.bstek.dorado.core.pkgs.PackageConfigurer;
+import com.bstek.dorado.core.pkgs.AbstractPackageConfigurer;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2013-6-9
  */
-public class CorePackageConfigurer implements PackageConfigurer {
+public class CorePackageConfigurer extends AbstractPackageConfigurer {
 
 	public String[] getPropertiesConfigLocations(ResourceLoader resourceLoader)
 			throws Exception {
@@ -31,6 +31,11 @@ public class CorePackageConfigurer implements PackageConfigurer {
 		if (Configure.getBoolean("console.enabled", true)) {
 			return new String[] { "classpath:com/bstek/dorado/console/context.xml" };
 		}
+		return null;
+	}
+
+	public String[] getComponentConfigLocations(ResourceLoader resourceLoader)
+			throws Exception {
 		return null;
 	}
 

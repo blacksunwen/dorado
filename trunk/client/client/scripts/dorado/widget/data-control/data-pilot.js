@@ -323,11 +323,15 @@
 						onAction: function(self, arg) {
 							if (arg.pageNo < 1) arg.pageNo = 1;
 							if (!fireOnActionEvent.call(pilot, itemCode.code, self)) return;
-							
-							item.set("disabled", true);
+
 							var list = pilot.getBindingData();
-							if (list instanceof dorado.EntityList && list.pageNo != arg.pageNo) {
+							if (list instanceof dorado.EntityList && list.pageNo != arg.pageNo &&
+								arg.pageNo > 0 && arg.pageNo <= list.pageCount) {
+								item.set("disabled", true);
 								list.gotoPage(arg.pageNo, callback);
+							}
+							else {
+								pilot.refreshItems();
 							}
 						}
 					});
@@ -343,25 +347,31 @@
 								arg.pageSize = 10;
 							}
 							if (!fireOnActionEvent.call(pilot, itemCode.code, self)) return;
-							
-							item.set("disabled", true);
-							var list = pilot.getBindingData();
-							if (list instanceof dorado.EntityList && list.pageSize != arg.pageSize) {
-								var parent = list.parent;
-								if (parent && parent instanceof dorado.Entity && list.parentProperty) {
-									var pd = pilot.getBindingPropertyDef();
-									if (pd) {
-										pd.set("pageSize", arg.pageSize);
-										parent.reset(list.parentProperty);
+
+							if (arg.pageSize > 0) {
+								var list = pilot.getBindingData();
+								if (list instanceof dorado.EntityList && list.pageSize != arg.pageSize) {
+									var parent = list.parent;
+									if (parent && parent instanceof dorado.Entity && list.parentProperty) {
+										var pd = pilot.getBindingPropertyDef();
+										if (pd) {
+											item.set("disabled", true);
+											pd.set("pageSize", arg.pageSize);
+											parent.reset(list.parentProperty);
+											return;
+										}
 									}
-								}
-								else if (!pilot._dataPath && pilot._dataSet) {
-									pilot._dataSet.set("pageSize", arg.pageSize);
-									pilot._dataSet.flushAsync();
+									else if (!pilot._dataPath && pilot._dataSet) {
+										item.set("disabled", true);
+										pilot._dataSet.set("pageSize", arg.pageSize);
+										pilot._dataSet.flushAsync();
+										return;
+									}
 								}
 							} else {
 								item.set("disabled", false);
 							}
+							pilot.refreshItems();
 						}
 					});
 					break;
@@ -608,14 +618,6 @@
 							});
 						}
 					}
-					arg.returnValue = true;
-				},
-				onBlur: function(self, arg) {
-					if (gotoPage._currentPageNo != spinner.get("value")) {
-						gotoPage.fireEvent("onAction", gotoPage, {
-							pageNo: spinner.get("value")
-						});
-					}
 				},
 				width: 40,
 				style: "float: left; margin-top: 1px"
@@ -689,31 +691,10 @@
 			
 			var spinner = this._spinner = new dorado.widget.NumberSpinner({
 				min: 1,
-//				trigger: {
-//					$type: "Trigger",
-//					icon: ">skin>base/goto-page.gif",
-//					onExecute: function(self, arg) {
-//						spinner.post();
-//						pageSizeControl.fireEvent("onAction", pageSizeControl, {
-//							pageSize: spinner.get("value")
-//						});
-//					}
-//				},
-				onKeyDown: function(self, arg) {
-					if (arg.keyCode == 13) {
-						spinner.post();
-						pageSizeControl.fireEvent("onAction", pageSizeControl, {
-							pageSize: spinner.get("value")
-						});
-					}
-					arg.returnValue = true;
-				},
-				onBlur: function(self, arg) {
-					if (pageSizeControl._currentPageSize != spinner.get("value")) {
-						pageSizeControl.fireEvent("onAction", pageSizeControl, {
-							pageSize: spinner.get("value")
-						});
-					}
+				onPost: function(self, arg) {
+					pageSizeControl.fireEvent("onAction", pageSizeControl, {
+						pageSize: spinner.get("value")
+					});
 				},
 				width: 45,
 				style: "float: left; margin-top: 1px"

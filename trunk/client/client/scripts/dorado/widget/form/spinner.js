@@ -80,8 +80,7 @@
 		ATTRIBUTES: /** @scope dorado.widget.Spinner.prototype */ {
 		
 			width: {
-				defaultValue: 150,
-				independent: true
+				defaultValue: 150
 			},
 			
 			height: {
