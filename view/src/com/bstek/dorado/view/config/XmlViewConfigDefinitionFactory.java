@@ -218,7 +218,11 @@ public class XmlViewConfigDefinitionFactory implements
 		return getResource(viewName, pathSubfix);
 	}
 
-	public ViewConfigInfo getViewConfigInfo(String viewName) throws Exception {
+	public final ViewConfigInfo getViewConfigInfo(String viewName) throws Exception {
+		return doGetViewConfigInfo(viewName);
+	}
+
+	protected ViewConfigInfo doGetViewConfigInfo(String viewName) throws Exception {
 		Resource resource = getResource(viewName);
 		if (!resource.exists()) {
 			throw new ViewNotFoundException(viewName, resource);
@@ -267,7 +271,11 @@ public class XmlViewConfigDefinitionFactory implements
 		return new ViewConfigInfo(viewName, resource, document);
 	}
 
-	public ViewConfigDefinition create(String viewName) throws Exception {
+	public final ViewConfigDefinition create(String viewName) throws Exception {
+		return doCreate(viewName);
+	}
+	
+	protected ViewConfigDefinition doCreate(String viewName) throws Exception {
 		ViewConfigInfo viewConfigInfo = getViewConfigInfo(viewName);
 		Document document = (Document) viewConfigInfo.getConfigModel();
 

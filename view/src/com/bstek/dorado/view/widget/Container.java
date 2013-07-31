@@ -33,13 +33,9 @@ import com.bstek.dorado.view.widget.layout.Layout;
  * @since Feb 23, 2008
  */
 @Widget(name = "Container", category = "General", dependsPackage = "widget")
-@XmlNode(
-		definitionType = "com.bstek.dorado.view.config.definition.ContainerDefinition",
-		parser = "spring:dorado.containerParser", clientTypes = {
-				ClientType.DESKTOP, ClientType.TOUCH })
-@ClientObject(prototype = "dorado.widget.Container",
-		shortTypeName = "Container",
-		outputter = "spring:dorado.containerOutputter")
+@XmlNode(definitionType = "com.bstek.dorado.view.config.definition.ContainerDefinition", parser = "spring:dorado.containerParser", clientTypes = {
+		ClientType.DESKTOP, ClientType.TOUCH })
+@ClientObject(prototype = "dorado.widget.Container", shortTypeName = "Container", outputter = "spring:dorado.containerOutputter")
 public class Container extends Control {
 
 	private class ChildrenList<E> extends ChildrenListSupport<E> {
@@ -65,6 +61,7 @@ public class Container extends Control {
 	private Overflow contentOverflow;
 	private Overflow contentOverflowX;
 	private Overflow contentOverflowY;
+	private String containerUi = "default";
 
 	/**
 	 * 返回布局管理对象。
@@ -105,6 +102,16 @@ public class Container extends Control {
 
 	public void setContentOverflowY(Overflow contentOverflowY) {
 		this.contentOverflowY = contentOverflowY;
+	}
+
+	@ClientProperty(escapeValue = "default")
+	@IdeProperty(enumValues = "default,optional1")
+	public String getContainerUi() {
+		return containerUi;
+	}
+
+	public void setContainerUi(String containerUi) {
+		this.containerUi = containerUi;
 	}
 
 	/**

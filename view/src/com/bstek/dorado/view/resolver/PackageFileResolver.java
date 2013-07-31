@@ -32,7 +32,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 
-import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.core.Context;
 import com.bstek.dorado.core.io.FileResource;
 import com.bstek.dorado.core.io.Resource;
@@ -45,6 +44,7 @@ import com.bstek.dorado.view.loader.PackagesConfigManager;
 import com.bstek.dorado.view.loader.Pattern;
 import com.bstek.dorado.view.output.JsonBuilder;
 import com.bstek.dorado.web.DoradoContext;
+import com.bstek.dorado.web.WebConfigure;
 import com.bstek.dorado.web.resolver.HttpConstants;
 import com.bstek.dorado.web.resolver.ResourcesWrapper;
 import com.bstek.dorado.web.resolver.WebFileResolver;
@@ -372,7 +372,7 @@ public class PackageFileResolver extends WebFileResolver {
 				resourceSuffix);
 	}
 
-	protected String getCacheKey(String resourcePrefix, String fileName,
+	protected String getFileCacheKey(String resourcePrefix, String fileName,
 			String resourceSuffix, Object... params) {
 		StringBuffer key = new StringBuffer();
 		if (resourcePrefix != null) {
@@ -393,7 +393,7 @@ public class PackageFileResolver extends WebFileResolver {
 			FileInfo fileInfo, String resourcePrefix, String resourceSuffix)
 			throws Exception {
 		Locale locale = localeResolver.resolveLocale();
-		String cacheKey = getCacheKey(resourcePrefix, fileInfo.getFileName(),
+		String cacheKey = getFileCacheKey(resourcePrefix, fileInfo.getFileName(),
 				resourceSuffix, locale);
 		synchronized (resourcesCache) {
 			Resource[] resources = resourcesCache.get(cacheKey);
@@ -455,9 +455,10 @@ public class PackageFileResolver extends WebFileResolver {
 	protected Resource[] getJavaScriptResources(DoradoContext context,
 			FileInfo fileInfo, String resourcePrefix, String resourceSuffix)
 			throws Exception {
-		boolean useMinJs = Configure.getBoolean("view.useMinifiedJavaScript");
+		boolean useMinJs = WebConfigure
+				.getBoolean("view.useMinifiedJavaScript");
 		String fileName = fileInfo.getFileName();
-		String cacheKey = getCacheKey(resourcePrefix, fileName, resourceSuffix,
+		String cacheKey = getFileCacheKey(resourcePrefix, fileName, resourceSuffix,
 				useMinJs);
 		synchronized (resourcesCache) {
 			Resource[] resources = resourcesCache.get(cacheKey);
@@ -484,9 +485,10 @@ public class PackageFileResolver extends WebFileResolver {
 	protected Resource[] getStyleSheetResources(DoradoContext context,
 			FileInfo fileInfo, String resourcePrefix, String resourceSuffix)
 			throws Exception {
-		boolean useMinCss = Configure.getBoolean("view.useMinifiedStyleSheet");
+		boolean useMinCss = WebConfigure
+				.getBoolean("view.useMinifiedStyleSheet");
 		String fileName = fileInfo.getFileName();
-		String cacheKey = getCacheKey(resourcePrefix, fileName, resourceSuffix,
+		String cacheKey = getFileCacheKey(resourcePrefix, fileName, resourceSuffix,
 				useMinCss);
 		synchronized (resourcesCache) {
 			Resource[] resources = resourcesCache.get(cacheKey);

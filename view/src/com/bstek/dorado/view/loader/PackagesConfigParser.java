@@ -58,12 +58,7 @@ public class PackagesConfigParser extends ConfigurableDispatchableXmlParser {
 
 		Element packagesElem = DomUtils.getChildByTagName(element, "Packages");
 		if (packagesElem != null) {
-			Map<String, Package> packages = packagesConfig.getPackages();
-			List<?> list = dispatchChildElements(packagesElem, context);
-			for (Object e : list) {
-				Package pkg = (Package) e;
-				packages.put(pkg.getName(), pkg);
-			}
+			dispatchChildElements(packagesElem, context);
 		}
 
 		neatenPackagesConfig(packagesConfig);
@@ -79,27 +74,29 @@ public class PackagesConfigParser extends ConfigurableDispatchableXmlParser {
 			String patternName = pkg.getPattern(), baseUri = pkg.getBaseUri(), patternBaseUri = null;
 			if (StringUtils.isNotEmpty(patternName)) {
 				pattern = patterns.get(patternName);
-				patternBaseUri = pattern.getBaseUri();
+				if (pattern != null) {
+					patternBaseUri = pattern.getBaseUri();
 
-				if (pattern != null && baseUri != null
-						&& !baseUri.equals(patternBaseUri)) {
-					String key = patternName + '$' + baseUri;
-					Pattern pattern2 = patternMap.get(key);
-					if (pattern2 == null) {
-						String newPatternName;
-						int i = 2;
-						do {
-							newPatternName = pattern.getName() + '$' + i;
-							i++;
-						} while (patterns.containsKey(newPatternName));
+					if (pattern != null && baseUri != null
+							&& !baseUri.equals(patternBaseUri)) {
+						String key = patternName + '$' + baseUri;
+						Pattern pattern2 = patternMap.get(key);
+						if (pattern2 == null) {
+							String newPatternName;
+							int i = 2;
+							do {
+								newPatternName = pattern.getName() + '$' + i;
+								i++;
+							} while (patterns.containsKey(newPatternName));
 
-						pattern2 = new Pattern(newPatternName);
-						PropertyUtils.copyProperties(pattern2, pattern);
-						pattern2.setBaseUri(baseUri);
-						patternMap.put(key, pattern2);
-						patterns.put(newPatternName, pattern2);
+							pattern2 = new Pattern(newPatternName);
+							PropertyUtils.copyProperties(pattern2, pattern);
+							pattern2.setBaseUri(baseUri);
+							patternMap.put(key, pattern2);
+							patterns.put(newPatternName, pattern2);
+						}
+						pkg.setPattern(pattern2.getName());
 					}
-					pkg.setPattern(pattern2.getName());
 				}
 			}
 		}

@@ -37,7 +37,7 @@ public class EnumValidator extends BaseValidator {
 
 	@XmlProperty
 	@ClientProperty
-	@IdeProperty(editor = "collection[pojo]", highlight = 1)
+	@IdeProperty(editor = "collection[value]", highlight = 1)
 	public List<?> getEnumValues() {
 		return enumValues;
 	}

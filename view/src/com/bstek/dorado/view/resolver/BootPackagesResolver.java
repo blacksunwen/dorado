@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.beanutils.PropertyUtils;
 
+import com.bstek.dorado.common.ClientType;
 import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.core.io.FileResource;
 import com.bstek.dorado.core.io.Resource;
@@ -38,6 +39,7 @@ import com.bstek.dorado.view.loader.Pattern;
 import com.bstek.dorado.view.output.JsonBuilder;
 import com.bstek.dorado.view.output.OutputUtils;
 import com.bstek.dorado.web.DoradoContext;
+import com.bstek.dorado.web.WebConfigure;
 import com.bstek.dorado.web.resolver.CacheBusterUtils;
 import com.bstek.dorado.web.resolver.ResourcesWrapper;
 import com.bstek.dorado.web.resolver.WebFileResolver;
@@ -74,11 +76,10 @@ public class BootPackagesResolver extends WebFileResolver {
 	@Override
 	protected String getResourceCacheKey(HttpServletRequest request)
 			throws Exception {
-		Locale locale = localeResolver.resolveLocale();
-		return (new StringBuffer(getRelativeRequestURI(request))).append('+')
-				.append(Configure.getString("view.useMinifiedJavaScript"))
-				.append('+')
-				.append((locale != null) ? locale.toString() : null).toString();
+		StringBuffer buf = new StringBuffer(getRelativeRequestURI(request));
+		buf.append('-').append(request.getParameter("clientType")).append('-')
+				.append(Configure.getString("view.useMinifiedJavaScript"));
+		return buf.toString();
 	}
 
 	/**
@@ -99,7 +100,7 @@ public class BootPackagesResolver extends WebFileResolver {
 	protected Resource[] getResourcesByFileName(DoradoContext context,
 			String resourcePrefix, String fileName, String resourceSuffix)
 			throws Exception {
-		if (Configure.getBoolean("view.useMinifiedJavaScript")) {
+		if (WebConfigure.getBoolean("view.useMinifiedJavaScript")) {
 			resourceSuffix = MIN_JAVASCRIPT_SUFFIX;
 		}
 		return super.getResourcesByFileName(context, resourcePrefix, fileName,
@@ -109,7 +110,22 @@ public class BootPackagesResolver extends WebFileResolver {
 	@Override
 	protected ResourcesWrapper createResourcesWrapper(
 			HttpServletRequest request, DoradoContext context) throws Exception {
-		File file = TempFileUtils.createTempFile("packages-config-",
+		String clientTypeText = request.getParameter("clientType");
+		int clientType = ClientType.parseClientTypes(clientTypeText);
+		if (clientType == 0) {
+			clientType = ClientType.DESKTOP;
+		}
+
+		String skin = request.getParameter("skin");
+		WebConfigure.set(DoradoContext.REQUEST, "view.skin", skin);
+
+		StringBuffer buf = new StringBuffer("packages-config-");
+		buf.append(ClientType.toString(clientType)).append('-').append(skin)
+				.append('-');
+		if (WebConfigure.getBoolean("view.useMinifiedJavaScript")) {
+			buf.append("min-");
+		}
+		File file = TempFileUtils.createTempFile(buf.toString(),
 				JAVASCRIPT_SUFFIX);
 
 		PackagesConfig packagesConfig = getPackagesConfigManager()
@@ -118,7 +134,7 @@ public class BootPackagesResolver extends WebFileResolver {
 		FileOutputStream fos = new FileOutputStream(file);
 		Writer writer = new OutputStreamWriter(fos);
 		try {
-			outputPackagesConfig(writer, packagesConfig);
+			outputPackagesConfig(writer, packagesConfig, clientType);
 		} finally {
 			writer.flush();
 			writer.close();
@@ -165,7 +181,8 @@ public class BootPackagesResolver extends WebFileResolver {
 	 * @throws IOException
 	 */
 	protected void outputPackagesConfig(Writer writer,
-			PackagesConfig packagesConfig) throws Exception {
+			PackagesConfig packagesConfig, int targetClientType)
+			throws Exception {
 		String contextPath = DoradoContext.getAttachedRequest()
 				.getContextPath();
 		writer.append(CLIENT_PACKAGES_CONFIG + ".contextPath=\"" + contextPath
@@ -199,8 +216,16 @@ public class BootPackagesResolver extends WebFileResolver {
 			writer.append(CLIENT_PACKAGES_CONFIG).append(".packages=");
 			jsonBuilder.object();
 			for (Map.Entry<String, Package> entry : packages.entrySet()) {
+				Package pkg = entry.getValue();
+				if (pkg.getClientType() != 0) {
+					if (!ClientType.supports(pkg.getClientType(),
+							targetClientType)) {
+						continue;
+					}
+				}
 				jsonBuilder.key(entry.getKey());
-				outputPackage(jsonBuilder, entry.getValue());
+				outputPackage(jsonBuilder, packagesConfig, pkg,
+						targetClientType);
 			}
 			jsonBuilder.endObject();
 			writer.append(";\n");
@@ -217,14 +242,24 @@ public class BootPackagesResolver extends WebFileResolver {
 			jsonBuilder.key("charset").value(pattern.getCharset());
 		}
 		Locale locale = localeResolver.resolveLocale();
-		jsonBuilder
-				.key("url")
-				.value(PathUtils.concatPath(
-						pattern.getBaseUri(),
-						"${fileName}.dpkg?cacheBuster="
-								+ CacheBusterUtils
-										.getCacheBuster((locale != null) ? locale
-												.toString() : null)));
+
+		StringBuffer parameters = new StringBuffer();
+		String patternName = pattern.getName();
+		if (patternName.equals("dorado-js")) {
+			parameters.append("skin=")
+					.append(WebConfigure.getString("view.skin")).append('&');
+		}
+		parameters.append("cacheBuster=").append(
+				CacheBusterUtils.getCacheBuster((locale != null) ? locale
+						.toString() : null));
+
+		String baseUri = pattern.getBaseUri();
+		if (baseUri != null && patternName.equals("dorado-css")) {
+			baseUri = baseUri.replace("~current", WebConfigure.getString("view.skin"));
+		}
+		jsonBuilder.key("url").value(
+				PathUtils.concatPath(baseUri, "${fileName}.dpkg?"
+						+ parameters));
 		if (pattern.isMergeRequests()) {
 			jsonBuilder.escapeableKey("mergeRequests").value(
 					pattern.isMergeRequests());
@@ -232,7 +267,8 @@ public class BootPackagesResolver extends WebFileResolver {
 		jsonBuilder.endObject();
 	}
 
-	protected void outputPackage(JsonBuilder jsonBuilder, Package pkg)
+	protected void outputPackage(JsonBuilder jsonBuilder,
+			PackagesConfig packagesConfig, Package pkg, int targetClientType)
 			throws Exception {
 		jsonBuilder.object();
 		if (!OutputUtils.isEscapeValue(pkg.getContentType())) {
@@ -246,8 +282,16 @@ public class BootPackagesResolver extends WebFileResolver {
 		}
 		Set<String> depends = pkg.getDepends();
 		if (depends != null && depends.size() > 0) {
+			Map<String, Package> packageMap = packagesConfig.getPackages();
 			jsonBuilder.key("depends").array();
 			for (String depend : depends) {
+				Package dependPkg = packageMap.get(depend);
+				if (dependPkg.getClientType() != 0) {
+					if (!ClientType.supports(dependPkg.getClientType(),
+							targetClientType)) {
+						continue;
+					}
+				}
 				jsonBuilder.value(depend);
 			}
 			jsonBuilder.endArray();

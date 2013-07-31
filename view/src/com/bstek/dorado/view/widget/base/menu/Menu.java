@@ -20,7 +20,9 @@ import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.ResourceInjection;
+import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlSubNode;
+import com.bstek.dorado.common.ClientType;
 import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Control;
 import com.bstek.dorado.view.widget.FloatControl;
@@ -37,11 +39,12 @@ import com.bstek.dorado.view.widget.ModalType;
  * @since 2009-11-4
  */
 
-@Widget(name = "Menu", category = "Floatable", dependsPackage = "base-widget",
+@Widget(name = "Menu", category = "Floatable", dependsPackage = "base-widget-desktop",
 		autoGenerateId = true)
 @ClientObject(prototype = "dorado.widget.Menu", shortTypeName = "Menu")
 @ResourceInjection(subObjectMethod = "getItem")
 @ClientEvents({ @ClientEvent(name = "onHideTopMenu") })
+@XmlNode(clientTypes = ClientType.DESKTOP)
 public class Menu extends Control implements MenuItemGroup, FloatControl {
 	private FloatControlAnimateType animateType = FloatControlAnimateType.zoom;
 	private FloatControlAnimateType showAnimateType = FloatControlAnimateType.slide;

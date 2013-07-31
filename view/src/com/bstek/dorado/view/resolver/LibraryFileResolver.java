@@ -18,33 +18,30 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.core.io.Resource;
 import com.bstek.dorado.util.PathUtils;
 import com.bstek.dorado.web.DoradoContext;
 import com.bstek.dorado.web.WebConfigure;
 
-public class LibraryFileResolver extends
-		com.bstek.dorado.view.resolver.PackageFileResolver {
+public class LibraryFileResolver extends PackageFileResolver {
 	private static final String I18N_PREFIX = "resources/i18n/";
-	private static final String DEFAULT_SKIN = "default";
 	private static final String INHERENT_SKIN = "inherent";
+	private static final String DEFAULT_SKIN = "default";
+	private static final String DEFAULT_SKIN_PREFIX = DEFAULT_SKIN + '.';
 	private static final String CURRENT_SKIN = "~current";
 	private static final String CURRENT_SKIN_PREFIX = "skins/" + CURRENT_SKIN
 			+ '/';
 
 	private Set<String> absolutePaths = new HashSet<String>();
 
-	/**
-	 * 返回客户端使用的皮肤的名称。
-	 */
-	protected String getSkin() {
-		String skin = WebConfigure.getString("view.skin");
-		if (INHERENT_SKIN.equals(skin)) {
-			throw new IllegalArgumentException("\"" + INHERENT_SKIN
-					+ "\" is not a valid dorado skin.");
+	private String getDefaultPlatformSkin(String currentSkin) {
+		int i = currentSkin.indexOf('.');
+		if (i > 0) {
+			return DEFAULT_SKIN_PREFIX
+					+ StringUtils.substringAfter(currentSkin, ".");
+		} else {
+			return DEFAULT_SKIN;
 		}
-		return StringUtils.defaultIfEmpty(skin, DEFAULT_SKIN);
 	}
 
 	@Override
@@ -137,26 +134,39 @@ public class LibraryFileResolver extends
 			FileInfo fileInfo, String resourcePrefix, String resourceSuffix)
 			throws Exception {
 		String fileName = fileInfo.getFileName();
-		String skin = getSkin();
-		boolean useMinJs = Configure.getBoolean("view.useMinifiedJavaScript");
-		String cacheKey = getCacheKey(resourcePrefix, fileName, resourceSuffix,
-				skin, useMinJs);
+		boolean useMinJs = WebConfigure
+				.getBoolean("view.useMinifiedJavaScript");
+		boolean isSkinFile = fileName.startsWith(CURRENT_SKIN_PREFIX);
+		String cacheKey, skin = null;
+
+		if (isSkinFile) {
+			skin = context.getRequest().getParameter("skin");
+			cacheKey = getFileCacheKey(resourcePrefix, fileName,
+					resourceSuffix, useMinJs, skin);
+		} else {
+			cacheKey = getFileCacheKey(resourcePrefix, fileName,
+					resourceSuffix, useMinJs);
+		}
+
 		synchronized (resourcesCache) {
 			Resource[] resources = resourcesCache.get(cacheKey);
 			if (resources == null) {
-				boolean isSkinFile = fileName.startsWith(CURRENT_SKIN_PREFIX);
 				if (isSkinFile) {
 					fileName = fileName.replace(CURRENT_SKIN, skin);
 				}
+
 				resources = doGetJavaScriptResources(context, resourcePrefix,
 						resourceSuffix, fileName, useMinJs, resources);
-				if (isSkinFile && !skin.equals(DEFAULT_SKIN)
-						&& !resources[0].exists()) {
-					fileName = fileInfo.getFileName().replace(CURRENT_SKIN,
-							DEFAULT_SKIN);
-					resources = doGetJavaScriptResources(context,
-							resourcePrefix, resourceSuffix, fileName, useMinJs,
-							resources);
+				if (isSkinFile && !resources[0].exists()) {
+					if (!skin.equals(DEFAULT_SKIN)
+							&& !skin.startsWith(DEFAULT_SKIN_PREFIX)) {
+						String defaultPlatformSkin = getDefaultPlatformSkin(skin);
+						fileName = fileInfo.getFileName().replace(CURRENT_SKIN,
+								defaultPlatformSkin);
+						resources = doGetJavaScriptResources(context,
+								resourcePrefix, resourceSuffix, fileName,
+								useMinJs, resources);
+					}
 				}
 				resourcesCache.put(cacheKey, resources);
 			}
@@ -186,10 +196,16 @@ public class LibraryFileResolver extends
 			FileInfo fileInfo, String resourcePrefix, String resourceSuffix)
 			throws Exception {
 		String fileName = fileInfo.getFileName();
-		String skin = getSkin();
-		boolean useMinCss = Configure.getBoolean("view.useMinifiedStyleSheet");
-		String cacheKey = getCacheKey(resourcePrefix, fileName, resourceSuffix,
-				skin, useMinCss);
+
+		String uri = context.getRequest().getRequestURI();
+		int i2 = uri.lastIndexOf('/');
+		int i1 = uri.lastIndexOf('/', i2 - 1);
+		String skin = uri.substring(i1 + 1, i2);
+
+		boolean useMinCss = WebConfigure
+				.getBoolean("view.useMinifiedStyleSheet");
+		String cacheKey = getFileCacheKey(resourcePrefix, fileName,
+				resourceSuffix, skin, useMinCss);
 		synchronized (resourcesCache) {
 			Resource[] resources = resourcesCache.get(cacheKey);
 			if (resources == null) {
@@ -214,10 +230,6 @@ public class LibraryFileResolver extends
 					if (useMinCss) {
 						concreteResource = doGetResourcesByFileName(context,
 								resourcePrefix, fileName, MIN_STYLESHEET_SUFFIX)[0];
-						if (!concreteResource.exists()) {
-							throw new FileNotFoundException(
-									concreteResource.getPath());
-						}
 					}
 					if (concreteResource == null) {
 						concreteResource = doGetResourcesByFileName(context,
@@ -226,22 +238,51 @@ public class LibraryFileResolver extends
 
 					if (!skin.equals(DEFAULT_SKIN)
 							&& !concreteResource.exists()) {
-						fileName = template.replace(CURRENT_SKIN, DEFAULT_SKIN);
-						Resource defaultResource = null;
-						if (useMinCss) {
-							defaultResource = doGetResourcesByFileName(context,
-									resourcePrefix, fileName,
-									MIN_STYLESHEET_SUFFIX)[0];
-							if (!defaultResource.exists()) {
-								defaultResource = null;
+						boolean shouldTryDefaultSkin = true;
+						if (!skin.startsWith(DEFAULT_SKIN_PREFIX)) {
+							String defaultPlatformSkin = getDefaultPlatformSkin(skin);
+							fileName = template.replace(CURRENT_SKIN,
+									defaultPlatformSkin);
+							Resource defaultResource = null;
+							if (useMinCss) {
+								defaultResource = doGetResourcesByFileName(
+										context, resourcePrefix, fileName,
+										MIN_STYLESHEET_SUFFIX)[0];
+								if (!defaultResource.exists()) {
+									defaultResource = null;
+								}
+							}
+							if (defaultResource == null) {
+								defaultResource = doGetResourcesByFileName(
+										context, resourcePrefix, fileName,
+										resourceSuffix)[0];
+							}
+							if (defaultResource.exists()) {
+								shouldTryDefaultSkin = false;
+								concreteResource = defaultResource;
 							}
 						}
-						if (defaultResource == null) {
-							defaultResource = doGetResourcesByFileName(context,
-									resourcePrefix, fileName, resourceSuffix)[0];
-						}
-						if (defaultResource.exists()) {
-							concreteResource = defaultResource;
+
+						if (shouldTryDefaultSkin) {
+							fileName = template.replace(CURRENT_SKIN,
+									DEFAULT_SKIN);
+							Resource defaultResource = null;
+							if (useMinCss) {
+								defaultResource = doGetResourcesByFileName(
+										context, resourcePrefix, fileName,
+										MIN_STYLESHEET_SUFFIX)[0];
+								if (!defaultResource.exists()) {
+									defaultResource = null;
+								}
+							}
+							if (defaultResource == null) {
+								defaultResource = doGetResourcesByFileName(
+										context, resourcePrefix, fileName,
+										resourceSuffix)[0];
+							}
+							if (defaultResource.exists()) {
+								concreteResource = defaultResource;
+							}
 						}
 					}
 

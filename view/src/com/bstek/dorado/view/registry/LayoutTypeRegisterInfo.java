@@ -26,7 +26,8 @@ public class LayoutTypeRegisterInfo {
 	private String type;
 	private Class<? extends Layout> classType;
 	private Class<? extends LayoutConstraintSupport> constraintClassType;
-
+	private int clientTypes;
+	
 	public LayoutTypeRegisterInfo(String type,
 			Class<? extends Layout> classType,
 			Class<? extends LayoutConstraintSupport> constraintClassType) {
@@ -72,6 +73,14 @@ public class LayoutTypeRegisterInfo {
 	public void setConstraintClassType(
 			Class<? extends LayoutConstraintSupport> constraintClassType) {
 		this.constraintClassType = constraintClassType;
+	}
+
+	public int getClientTypes() {
+		return clientTypes;
+	}
+
+	public void setClientTypes(int clientTypes) {
+		this.clientTypes = clientTypes;
 	}
 
 }

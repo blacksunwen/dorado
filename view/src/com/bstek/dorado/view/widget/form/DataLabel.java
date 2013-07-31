@@ -23,8 +23,8 @@ import com.bstek.dorado.view.widget.datacontrol.AbstractPropertyDataControl;
  * @since 2009-12-30
  */
 @Widget(name = "DataLabel", category = "Form", dependsPackage = "base-widget")
-@ClientObject(prototype = "dorado.widget.DataLabel",
-		shortTypeName = "DataLabel")
-@XmlNode(clientTypes = { ClientType.DESKTOP, ClientType.TOUCH })
+@ClientObject(prototype = "dorado.widget.Label", shortTypeName = "Label")
+@XmlNode(clientTypes = { ClientType.DESKTOP, ClientType.TOUCH }, deprecated = true)
+@Deprecated
 public class DataLabel extends AbstractPropertyDataControl {
 }

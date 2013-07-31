@@ -25,7 +25,7 @@ import com.bstek.dorado.view.annotation.Widget;
  */
 
 @Widget(name = "VerticalTabControl", category = "General",
-		dependsPackage = "base-widget")
+		dependsPackage = "base-widget-desktop")
 @ClientObject(prototype = "dorado.widget.VerticalTabControl",
 		shortTypeName = "VerticalTabControl")
 public class VerticalTabControl extends TabColumn {

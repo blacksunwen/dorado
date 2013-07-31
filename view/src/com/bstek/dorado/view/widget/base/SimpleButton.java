@@ -22,7 +22,7 @@ import com.bstek.dorado.view.annotation.Widget;
  * @since 2010-8-1
  */
 @Widget(name = "SimpleButton", category = "General",
-		dependsPackage = "base-widget")
+		dependsPackage = "base-widget-desktop")
 @ClientObject(prototype = "dorado.widget.SimpleButton",
 		shortTypeName = "SimpleButton")
 @XmlNode(clientTypes = { ClientType.DESKTOP, ClientType.TOUCH })

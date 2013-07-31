@@ -27,7 +27,7 @@ import com.bstek.dorado.view.widget.Control;
  * @since 2010-8-7
  */
 @Widget(name = "DatePicker", category = "General",
-		dependsPackage = "base-widget")
+		dependsPackage = "base-widget-desktop")
 @XmlNode(nodeName = "DatePicker")
 @ClientObject(prototype = "dorado.widget.DatePicker",
 		shortTypeName = "DatePicker")

@@ -17,6 +17,8 @@ import com.bstek.dorado.annotation.ClientEvents;
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.IdeProperty;
+import com.bstek.dorado.annotation.XmlNode;
+import com.bstek.dorado.common.ClientType;
 import com.bstek.dorado.view.annotation.ComponentReference;
 import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.datacontrol.PropertyDataControl;
@@ -25,19 +27,18 @@ import com.bstek.dorado.view.widget.datacontrol.PropertyDataControl;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-8-10
  */
-@Widget(name = "DataSetDropDown", category = "Trigger",
-		dependsPackage = "base-widget,grid", autoGenerateId = true)
+@Widget(name = "DataSetDropDown", category = "Trigger", 
+		dependsPackage = "base-widget-desktop,grid", autoGenerateId = true)
 @ClientObject(prototype = "dorado.widget.DataSetDropDown",
 		shortTypeName = "DataSetDropDown")
 @ClientEvents({ @ClientEvent(name = "onSetFilterParameter") })
+@XmlNode(clientTypes = ClientType.DESKTOP)
 public class DataSetDropDown extends RowListDropDown implements
 		PropertyDataControl {
 	private String dataSet;
 	private String dataPath;
-	private String property;
 	private boolean useDataBinding = true;
 	private FilterMode filterMode = FilterMode.serverSide;
-	private boolean filterOnTyping;
 	private boolean reloadDataOnOpen;
 
 	@ComponentReference("DataSet")
@@ -62,12 +63,7 @@ public class DataSetDropDown extends RowListDropDown implements
 	@Override
 	@IdeProperty(highlight = 1)
 	public String getProperty() {
-		return property;
-	}
-
-	@Override
-	public void setProperty(String property) {
-		this.property = property;
+		return super.getProperty();
 	}
 
 	@ClientProperty(escapeValue = "true")
@@ -86,16 +82,6 @@ public class DataSetDropDown extends RowListDropDown implements
 
 	public void setFilterMode(FilterMode filterMode) {
 		this.filterMode = filterMode;
-	}
-
-	@Override
-	public boolean isFilterOnTyping() {
-		return filterOnTyping;
-	}
-
-	@Override
-	public void setFilterOnTyping(boolean filterOnTyping) {
-		this.filterOnTyping = filterOnTyping;
 	}
 
 	public boolean isReloadDataOnOpen() {

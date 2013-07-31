@@ -17,17 +17,18 @@ import java.util.List;
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.IdeProperty;
+import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
+import com.bstek.dorado.common.ClientType;
 import com.bstek.dorado.view.annotation.Widget;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-2-11
  */
-@Widget(name = "BlockView", category = "Collection",
-		dependsPackage = "block-view")
-@ClientObject(prototype = "dorado.widget.BlockView",
-		shortTypeName = "BlockView")
+@Widget(name = "BlockView", category = "Collection", dependsPackage = "block-view")
+@ClientObject(prototype = "dorado.widget.BlockView", shortTypeName = "BlockView")
+@XmlNode(clientTypes = { ClientType.DESKTOP, ClientType.TOUCH })
 public class BlockView extends AbstractBlockView {
 	private List<?> items;
 

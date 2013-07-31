@@ -29,7 +29,7 @@ import com.bstek.dorado.view.widget.InnerElementList;
  * @since 2010-8-9
  */
 @Widget(name = "Accordion", category = "General",
-		dependsPackage = "base-widget")
+		dependsPackage = "base-widget-desktop")
 @ClientObject(prototype = "dorado.widget.Accordion",
 		shortTypeName = "Accordion")
 @ClientEvents({ @ClientEvent(name = "beforeCurrentSectionChange"),

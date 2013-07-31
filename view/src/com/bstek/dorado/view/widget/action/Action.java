@@ -38,7 +38,7 @@ public class Action extends Component {
 	private String tip;
 	private boolean disabled;
 	private Object parameter;
-	private boolean async = true;
+	private boolean async;
 	private boolean modal = true;
 	private String hotkey;
 	private String confirmMessage;
@@ -96,7 +96,6 @@ public class Action extends Component {
 		this.parameter = parameter;
 	}
 
-	@ClientProperty(escapeValue = "true")
 	public boolean isAsync() {
 		return async;
 	}

@@ -13,6 +13,7 @@
 package com.bstek.dorado.view.widget.form;
 
 import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.common.ClientType;
@@ -29,6 +30,12 @@ public class TextArea extends AbstractTextEditor {
 	private boolean required;
 	private int minLength;
 	private int maxLength;
+
+	@ClientProperty(escapeValue = "false")
+	@Override
+	public boolean isSelectTextOnFocus() {
+		return super.isSelectTextOnFocus();
+	}
 
 	@IdeProperty(editor = "multiLines")
 	@Override

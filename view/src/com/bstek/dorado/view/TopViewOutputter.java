@@ -17,8 +17,11 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.bstek.dorado.common.ClientType;
+import com.bstek.dorado.data.variant.VariantUtils;
 import com.bstek.dorado.view.output.ClientOutputHelper;
 import com.bstek.dorado.view.output.OutputContext;
+import com.bstek.dorado.web.DoradoContext;
 import com.bstek.dorado.web.WebConfigure;
 
 /**
@@ -58,7 +61,11 @@ public class TopViewOutputter extends ViewOutputter {
 		// .append("dorado.Exception.processException(e);}\n");
 		writer.append("});\n");
 
-		if (WebConfigure.getBoolean("view.debugEnabled")) {
+		DoradoContext doradoContext = DoradoContext.getCurrent();
+		int currentClientType = VariantUtils.toInt(doradoContext
+				.getAttribute(ClientType.CURRENT_CLIENT_TYPE_KEY));
+		if ((currentClientType == 0 || ClientType.supports(currentClientType, ClientType.DESKTOP))
+				&& WebConfigure.getBoolean("view.debugEnabled")) {
 			context.addDependsPackage("debugger");
 		}
 

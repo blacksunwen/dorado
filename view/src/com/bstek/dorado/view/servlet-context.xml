@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:d="http://www.bstek.com/dorado/schema"
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:d="http://www.bstek.com/dorado/schema"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	<bean id="dorado.abstractVelocityResolver" abstract="true"
+		class="com.bstek.dorado.view.registry.AbstractVelocityResolver">
+		<property name="velocityHelper" ref="dorado.velocityHelper" />
+	</bean>
+	<bean id="dorado.viewResolverListenerRegister" abstract="true"
+		class="com.bstek.dorado.view.resolver.ViewResolverListenerRegister">
+		<property name="viewResolver" ref="dorado.htmlViewResolver" />
+	</bean>
+
 	<bean parent="dorado.resolverRegister">
 		<property name="order" value="10" />
 		<property name="url" value="/dorado/client/**/*.dpkg" />
@@ -43,7 +53,7 @@
 		<property name="order" value="50" />
 		<property name="url" value="/dorado/client/resources/**" />
 		<property name="resolver">
-			<bean class="com.bstek.dorado.web.resolver.WebFileResolver">
+			<bean class="com.bstek.dorado.web.resolver.ResourceFileResolver">
 				<property name="baseUri" value="/dorado/client" />
 				<property name="resourcePrefix" value="${view.libraryRoot}" />
 			</bean>
@@ -53,7 +63,7 @@
 		<property name="order" value="60" />
 		<property name="url" value="/dorado/res/**" />
 		<property name="resolver">
-			<bean class="com.bstek.dorado.web.resolver.WebFileResolver">
+			<bean class="com.bstek.dorado.web.resolver.ResourceFileResolver">
 				<property name="baseUri" value="/dorado/res" />
 				<property name="resourcePrefix" value="classpath:" />
 			</bean>
@@ -72,16 +82,11 @@
 	</bean>
 
 	<bean id="dorado.htmlViewResolver" class="com.bstek.dorado.view.resolver.HtmlViewResolver">
-		<property name="templateFile" value="home:w3c-html4-template.html" />
+		<property name="templateFile"
+			value="home:w3c-html4-template.html,classpath:com/bstek/dorado/view/resolver/w3c-html4-template.html" />
 		<property name="dataConfigManager" ref="dorado.dataConfigManager" />
 		<property name="viewConfigManager" ref="dorado.viewConfigManager" />
 		<property name="velocityHelper" ref="dorado.velocityHelper" />
 		<property name="uriSuffix" value=".d" />
 	</bean>
-
-	<bean id="dorado.viewResolverListenerRegister" abstract="true" class="com.bstek.dorado.view.resolver.ViewResolverListenerRegister">
-		<property name="viewResolver" ref="dorado.htmlViewResolver" />
-	</bean>
-
-
 </beans>

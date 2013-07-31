@@ -30,10 +30,7 @@ import com.bstek.dorado.view.manager.ViewConfig;
 import com.bstek.dorado.view.widget.Component;
 import com.bstek.dorado.view.widget.Container;
 
-@XmlNode(
-		definitionType = "com.bstek.dorado.view.config.definition.ViewDefinition",
-		parser = "spring:dorado.viewParser",
-		implTypes = "com.bstek.dorado.view.*")
+@XmlNode(definitionType = "com.bstek.dorado.view.config.definition.ViewDefinition", parser = "spring:dorado.viewParser", implTypes = "com.bstek.dorado.view.*")
 @ClientEvents({ @ClientEvent(name = "onDataLoaded"),
 		@ClientEvent(name = "onComponentRegistered"),
 		@ClientEvent(name = "onComponentUnregistered") })
@@ -46,6 +43,7 @@ public abstract class View extends Container {
 	private String title;
 	private String javaScriptFile;
 	private String styleSheetFile;
+	private String skin;
 
 	public View(ViewConfig viewConfig) {
 		this.viewConfig = viewConfig;
@@ -160,6 +158,14 @@ public abstract class View extends Container {
 
 	public void setStyleSheetFile(String styleSheetFile) {
 		this.styleSheetFile = styleSheetFile;
+	}
+
+	public String getSkin() {
+		return skin;
+	}
+
+	public void setSkin(String skin) {
+		this.skin = skin;
 	}
 
 	@Override

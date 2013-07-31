@@ -10,38 +10,32 @@
  * at http://www.bstek.com/contact.
  */
 
-package com.bstek.dorado.view.widget.form.trigger;
-
-import java.util.List;
+package com.bstek.dorado.view.widget.form;
 
 import com.bstek.dorado.annotation.ClientObject;
-import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
-import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.common.ClientType;
 import com.bstek.dorado.view.annotation.Widget;
+import com.bstek.dorado.view.widget.datacontrol.AbstractDataControl;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
- * @since 2010-8-10
+ * @since 2013-6-19
  */
-@Widget(name = "ListDropDown", category = "Trigger",
-		dependsPackage = "base-widget-desktop", autoGenerateId = true)
-@ClientObject(prototype = "dorado.widget.ListDropDown",
-		shortTypeName = "ListDropDown")
-@XmlNode(clientTypes = ClientType.DESKTOP)
-public class ListDropDown extends RowListDropDown {
-	private List<?> items;
+@Widget(name = "TemplateField", category = "Form", dependsPackage = "base-widget")
+@ClientObject(prototype = "dorado.widget.TemplateField", shortTypeName = "TemplateField")
+@XmlNode(clientTypes = { ClientType.DESKTOP, ClientType.TOUCH })
+public class TemplateField extends AbstractDataControl {
+	private String template;
 
-	@XmlProperty
-	@ClientProperty
-	@IdeProperty(editor = "collection[any]", highlight = 1)
-	public List<?> getItems() {
-		return items;
+	@IdeProperty(highlight = 1, editor = "multiLines")
+	public String getTemplate() {
+		return template;
 	}
 
-	public void setItems(List<?> items) {
-		this.items = items;
+	public void setTemplate(String template) {
+		this.template = template;
 	}
+
 }

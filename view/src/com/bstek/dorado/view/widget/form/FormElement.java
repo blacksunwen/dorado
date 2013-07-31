@@ -30,9 +30,8 @@ import com.bstek.dorado.view.widget.datacontrol.PropertyDataControl;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-8-10
  */
-@Widget(name = "FormElement", category = "Form", dependsPackage = "base-widget")
-@ClientObject(prototype = "dorado.widget.FormElement",
-		shortTypeName = "FormElement")
+@Widget(name = "FormElement", category = "Form", dependsPackage = "base-widget-platform")
+@ClientObject(prototype = "dorado.widget.FormElement", shortTypeName = "FormElement")
 @XmlNode(clientTypes = { ClientType.DESKTOP, ClientType.TOUCH })
 public class FormElement extends Control implements FormConfig,
 		PropertyDataControl {
@@ -48,16 +47,16 @@ public class FormElement extends Control implements FormConfig,
 	private String property;
 	private String trigger;
 	private boolean editable = true;
-	private String labelSeparator = ":";
+	private String labelSeparator;
 	private boolean showLabel = true;
-	private int labelWidth = 80;
-	private int labelSpacing = 3;
+	private int labelWidth;
+	private int labelSpacing;
 	private FormElementLabelPosition labelPosition = FormElementLabelPosition.left;
 	private Align labelAlign = Align.left;
 	private int editorWidth;
 	private boolean showHint = true;
-	private int hintWidth = 22;
-	private int hintSpacing = 3;
+	private int hintWidth;
+	private int hintSpacing;
 	private boolean showHintMessage;
 	private FormElementHintPosition hintPosition = FormElementHintPosition.right;
 	private boolean readOnly;
@@ -140,8 +139,7 @@ public class FormElement extends Control implements FormConfig,
 	}
 
 	@ComponentReference("Trigger")
-	@IdeProperty(
-			enumValues = "triggerClear,autoMappingDropDown1,autoMappingDropDown2,autoOpenMappingDropDown1,autoOpenMappingDropDown2,defaultDateDropDown,defaultDateTimeDropDown,defaultYearMonthDropDown")
+	@IdeProperty(enumValues = "triggerClear,autoMappingDropDown1,autoMappingDropDown2,autoOpenMappingDropDown1,autoOpenMappingDropDown2,defaultDateDropDown,defaultDateTimeDropDown,defaultYearMonthDropDown")
 	public String getTrigger() {
 		return trigger;
 	}
@@ -159,7 +157,6 @@ public class FormElement extends Control implements FormConfig,
 		this.editable = editable;
 	}
 
-	@ClientProperty(escapeValue = ":")
 	public String getLabelSeparator() {
 		return labelSeparator;
 	}
@@ -177,7 +174,6 @@ public class FormElement extends Control implements FormConfig,
 		this.showLabel = showLabel;
 	}
 
-	@ClientProperty(escapeValue = "80")
 	public int getLabelWidth() {
 		return labelWidth;
 	}
@@ -186,7 +182,6 @@ public class FormElement extends Control implements FormConfig,
 		this.labelWidth = labelWidth;
 	}
 
-	@ClientProperty(escapeValue = "3")
 	public int getLabelSpacing() {
 		return labelSpacing;
 	}
@@ -230,7 +225,6 @@ public class FormElement extends Control implements FormConfig,
 		this.showHint = showHint;
 	}
 
-	@ClientProperty(escapeValue = "22")
 	public int getHintWidth() {
 		return hintWidth;
 	}
@@ -239,7 +233,6 @@ public class FormElement extends Control implements FormConfig,
 		this.hintWidth = hintWidth;
 	}
 
-	@ClientProperty(escapeValue = "3")
 	public int getHintSpacing() {
 		return hintSpacing;
 	}
@@ -282,9 +275,7 @@ public class FormElement extends Control implements FormConfig,
 		this.formProfile = formProfile;
 	}
 
-	@IdeProperty(
-			highlight = 1,
-			enumValues = "TextEditor,PasswordEditor,TextArea,CheckBox,RadioGroup,DataLabel,NumberSpinner")
+	@IdeProperty(highlight = 1, enumValues = "TextEditor,PasswordEditor,TextArea,CheckBox,RadioGroup,Label,NumberSpinner")
 	public String getEditorType() {
 		return editorType;
 	}
@@ -293,8 +284,7 @@ public class FormElement extends Control implements FormConfig,
 		this.editorType = editorType;
 	}
 
-	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "Editor",
-			icon = "/com/bstek/dorado/view/widget/form/Editor.png"))
+	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "Editor", icon = "/com/bstek/dorado/view/widget/form/Editor.png"))
 	@ClientProperty
 	public Control getEditor() {
 		return editorRef.get();

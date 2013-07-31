@@ -29,14 +29,14 @@ import com.bstek.dorado.view.widget.Component;
  * @since 2010-8-10
  */
 @Widget(name = "FormProfile", category = "Form", dependsPackage = "base-widget")
-@ClientObject(prototype = "dorado.widget.FormProfile",
-		shortTypeName = "FormProfile")
+@ClientObject(prototype = "dorado.widget.FormProfile", shortTypeName = "FormProfile")
 @XmlNode(clientTypes = { ClientType.DESKTOP, ClientType.TOUCH })
 public class FormProfile extends Component implements FormConfig {
 	private String width;
 	private String height;
 	private String className;
 	private String exClassName;
+	private String ui;
 	private FormElementType type = FormElementType.text;
 	private String trigger;
 	private String labelSeparator;
@@ -89,6 +89,14 @@ public class FormProfile extends Component implements FormConfig {
 		this.exClassName = exClassName;
 	}
 
+	public String getUi() {
+		return ui;
+	}
+
+	public void setUi(String ui) {
+		this.ui = ui;
+	}
+
 	@ClientProperty(escapeValue = "text")
 	public FormElementType getType() {
 		return type;
@@ -99,8 +107,7 @@ public class FormProfile extends Component implements FormConfig {
 	}
 
 	@ComponentReference("Trigger")
-	@IdeProperty(
-			enumValues = "triggerClear,autoMappingDropDown1,autoMappingDropDown2,defaultDateDropDown,defaultDateTimeDropDown,defaultYearMonthDropDown")
+	@IdeProperty(enumValues = "triggerClear,autoMappingDropDown1,autoMappingDropDown2,defaultDateDropDown,defaultDateTimeDropDown,defaultYearMonthDropDown")
 	public String getTrigger() {
 		return trigger;
 	}

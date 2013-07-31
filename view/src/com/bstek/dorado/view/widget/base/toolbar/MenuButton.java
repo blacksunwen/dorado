@@ -31,10 +31,8 @@ import com.bstek.dorado.view.widget.base.menu.Menu;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2011-8-8
  */
-@Widget(name = "MenuButton", category = "ToolBar",
-		dependsPackage = "base-widget")
-@ClientObject(prototype = "dorado.widget.toolbar.ToolBarButton",
-		shortTypeName = "ToolBarButton")
+@Widget(name = "MenuButton", category = "ToolBar")
+@ClientObject(prototype = "dorado.widget.toolbar.ToolBarButton", shortTypeName = "ToolBarButton")
 @XmlNode(nodeName = "MenuButton")
 public class MenuButton extends com.bstek.dorado.view.widget.base.Button {
 	private InnerElementReference<Menu> embededMenuRef = new InnerElementReference<Menu>(

@@ -34,9 +34,9 @@ public class CacheableXmlViewConfigDefinitionFactory extends
 
 		private RefreshableResource refreshableResource;
 
-		public DefinitionCacheElement(String viewName,
+		public DefinitionCacheElement(Object cacheKey,
 				ViewConfigDefinition defintion) throws IOException {
-			super(viewName, defintion);
+			super(cacheKey, defintion);
 
 			Resource resource = defintion.getResource();
 			if (resource != null) {
@@ -70,17 +70,22 @@ public class CacheableXmlViewConfigDefinitionFactory extends
 	}
 
 	@Override
-	public ViewConfigDefinition create(String viewName) throws Exception {
+	protected ViewConfigDefinition doCreate(String viewName) throws Exception {
 		ViewConfigDefinition definition;
-		Element element = cache.get(viewName);
+		Object definitionCacheKey = getDefinitionCacheKey(viewName);
+		Element element = cache.get(definitionCacheKey);
 		if (element != null) {
 			definition = (ViewConfigDefinition) element.getObjectValue();
 		} else {
-			definition = super.create(viewName);
-			element = new DefinitionCacheElement(viewName, definition);
+			definition = super.doCreate(viewName);
+			element = new DefinitionCacheElement(definitionCacheKey, definition);
 			cache.put(element);
 		}
 		return definition;
+	}
+	
+	protected Object getDefinitionCacheKey(String viewName) throws Exception {
+		return viewName;
 	}
 
 }
