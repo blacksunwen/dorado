@@ -174,9 +174,13 @@ public abstract class EntityDataTypeSupport extends NonAggregationDataType
 
 	protected void doCreatePropertyDefinitons() throws Exception {
 		Class<?> type = getMatchType();
+		if (type == null) {
+			type = getCreationType();
+		}
 		if (type == null || type.isPrimitive() || type.isArray()
-				|| Map.class.isAssignableFrom(type))
+				|| Map.class.isAssignableFrom(type)) {
 			return;
+		}
 
 		PropertyDescriptor[] propertyDescriptors = PropertyUtils
 				.getPropertyDescriptors(type);

@@ -353,8 +353,9 @@ public class DataTypeDefinition extends ListenableObjectDefinition implements
 
 			Class<?> matchType = (Class<?>) creationInfo
 					.getUserData("matchType");
-			if (matchType != null)
+			if (matchType != null && !Object.class.equals(matchType)) {
 				rudeDataType.setMatchType(matchType);
+			}
 
 			Class<?> creationType = (Class<?>) creationInfo
 					.getUserData("creationType");
@@ -482,8 +483,7 @@ public class DataTypeDefinition extends ListenableObjectDefinition implements
 
 				ObjectDefinition parentProperty = allPropertyDefs.get(name);
 				if (parentProperty != null) {
-					propertyDef = CloneUtils
-							.clone(propertyDef);
+					propertyDef = CloneUtils.clone(propertyDef);
 					Definition[] originParents = propertyDef.getParents();
 					Definition[] parents;
 					if (originParents == null) {
