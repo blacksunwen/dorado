@@ -1333,7 +1333,7 @@
 			$fly(dom).css({
 				left: l,
 				top: t
-			}).outerWidth(w).outerHeight(h).bringToFront();;
+			}).outerWidth(w).outerHeight(h);
 		},
 		
 		/**
