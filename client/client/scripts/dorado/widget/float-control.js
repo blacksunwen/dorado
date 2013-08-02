@@ -483,10 +483,12 @@ dorado.dequeue = function(namespace) {
 			
 			var oldVisible = control._visible, oldActualVisible = control._actualVisible;
 			control._visible = true;
-			control._actualVisible = true;
+			dorado.widget.Control.SKIP_REFRESH_ON_VISIBLE = true;
+			control.setActualVisible(true);
 			control.refresh();
 			control._visible = oldVisible;
-			control._actualVisible = oldActualVisible;
+			dorado.widget.Control.SKIP_REFRESH_ON_VISIBLE = false;
+			control.setActualVisible(oldActualVisible);
 			
 			var attrs = ["center", "autoAdjustPosition", "handleOverflow", "gapX", "gapY", "offsetLeft", "offsetTop", "align", "vAlign", "handleOverflow", "anchorTarget"];
 			for (var i = 0; i < attrs.length; i++) {
@@ -513,10 +515,12 @@ dorado.dequeue = function(namespace) {
 
 					var oldVisible = control._visible, oldActualVisible = control._actualVisible;
 					control._visible = true;
-					control._actualVisible = true;
+					dorado.widget.Control.SKIP_REFRESH_ON_VISIBLE = true;
+					control.setActualVisible(true);
 					control.render(renderTo);
 					control._visible = oldVisible;
-					control._actualVisible = oldActualVisible;
+					dorado.widget.Control.SKIP_REFRESH_ON_VISIBLE = false;
+					control.setActualVisible(oldActualVisible);
 				}
 				control.doShow.apply(control, [options]);
 			});

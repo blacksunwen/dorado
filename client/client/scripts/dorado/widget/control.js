@@ -637,7 +637,7 @@
 			var actualVisible = this.isActualVisible();
 			notifyChildren(this, actualVisible);
 			
-			if (actualVisible && this._shouldRefreshOnVisible) {
+			if (actualVisible && this._shouldRefreshOnVisible && !dorado.widget.Control.SKIP_REFRESH_ON_VISIBLE) {
 				this.refresh();
 			}
 		},

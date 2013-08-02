@@ -760,6 +760,9 @@
 				this._itemDomMap[itemId] = itemDom;
 				itemDom._itemId = itemId;
 			}
+			else if (!itemDom.parentNode) {
+				itemDomContainer.appendChild(itemDom);
+			}
 			itemDom.itemIndex = index;
 			
 			var pos = this._getBlockPos(index);
