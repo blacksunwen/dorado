@@ -19,14 +19,13 @@ import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.common.Ignorable;
-import com.bstek.dorado.common.TagSupport;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2009-9-30
  */
 @XmlNode
-public class BindingConfig implements Ignorable, TagSupport {
+public class BindingConfig implements Ignorable {
 	private String name;
 	private String childrenProperty;
 	private boolean recursive;
@@ -45,7 +44,6 @@ public class BindingConfig implements Ignorable, TagSupport {
 	private Boolean hasChild;
 	private String hasChildProperty;
 	private boolean ignored;
-	private String tags;
 
 	private List<BindingConfig> childBindingConfigs = new ArrayList<BindingConfig>();
 
@@ -202,13 +200,5 @@ public class BindingConfig implements Ignorable, TagSupport {
 
 	public void setIgnored(boolean ignored) {
 		this.ignored = ignored;
-	}
-
-	public String getTags() {
-		return tags;
-	}
-
-	public void setTags(String tags) {
-		this.tags = tags;
 	}
 }

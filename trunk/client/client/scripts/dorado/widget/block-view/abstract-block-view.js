@@ -626,13 +626,6 @@
 			this._realBlockWidth = blockWidth = (blockWidth < 1) ? 1 : parseInt(blockWidth);
 			this._realBlockHeight = blockHeight = (blockHeight < 1) ? 1 : parseInt(blockHeight);
 			
-			var blockDom = this._container.firstChild;
-			while (blockDom) {
-				var next = blockDom.nextSibling;
-				if (blockDom._isBlock) this.removeItemDom(blockDom);
-				blockDom = next;
-			}
-			
 			if (this._scrollMode == "viewport") {
 				this.refreshViewPortContent(this._container);
 			} else {
@@ -759,9 +752,6 @@
 				itemDomContainer.appendChild(itemDom);
 				this._itemDomMap[itemId] = itemDom;
 				itemDom._itemId = itemId;
-			}
-			else if (!itemDom.parentNode) {
-				itemDomContainer.appendChild(itemDom);
 			}
 			itemDom.itemIndex = index;
 			

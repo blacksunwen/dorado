@@ -29,7 +29,7 @@ import com.bstek.dorado.view.widget.ModalType;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2011-1-15
  */
-@Widget(name = "Tip", category = "Floatable", dependsPackage = "base-widget")
+@Widget(name = "Tip", category = "Floatable", dependsPackage = "base-widget-desktop")
 @ClientObject(prototype = "dorado.widget.Tip", shortTypeName = "Tip")
 public class Tip extends Control implements FloatControl {
 	private FloatControlAnimateType animateType = FloatControlAnimateType.fade;

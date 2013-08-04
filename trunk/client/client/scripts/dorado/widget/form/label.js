@@ -34,7 +34,6 @@ dorado.widget.Label = $extend([dorado.widget.Control, dorado.widget.PropertyData
 		},
 		
 		width: {
-			defaultValue: 100
 		},
 		
 		/**

@@ -11,7 +11,7 @@
  */
 (function($) {
 
-	var SCROLLER_SIZE = 3, ACTIVE_SCROLLER_SIZE = 11, SCROLLER_PADDING = 0, MIN_SLIDER_SIZE = ACTIVE_SCROLLER_SIZE, MIN_SPILLAGE = 2;
+	var SCROLLER_SIZE = 3, ACTIVE_SCROLLER_SIZE = 15, SCROLLER_PADDING = 0, MIN_SLIDER_SIZE = ACTIVE_SCROLLER_SIZE, MIN_SPILLAGE = 2;
 	
 	function insertAfter(element, refElement) {
 		var parent = refElement.parentNode;

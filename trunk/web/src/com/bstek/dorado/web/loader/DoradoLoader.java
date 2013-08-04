@@ -212,7 +212,7 @@ public class DoradoLoader {
 		// 输出版本信息
 		ConsoleUtils.outputLoadingInfo("Initializing "
 				+ DoradoAbout.getProductTitle() + " engine...");
-		ConsoleUtils.outputLoadingInfo("[vendor: " + DoradoAbout.getVendor()
+		ConsoleUtils.outputLoadingInfo("[Vendor: " + DoradoAbout.getVendor()
 				+ "]");
 
 		ConfigureStore configureStore = Configure.getStore();
@@ -230,7 +230,7 @@ public class DoradoLoader {
 
 		configureStore.set(HOME_PROPERTY, doradoHome);
 		ConsoleUtils
-				.outputLoadingInfo("[home: "
+				.outputLoadingInfo("[Home: "
 						+ StringUtils.defaultString(doradoHome,
 								"<not assigned>") + "]");
 
@@ -293,8 +293,7 @@ public class DoradoLoader {
 			storeDir = new File(tempDir, "dorado-store");
 			configureStore.set("core.storeDir", storeDir.getAbsolutePath());
 		}
-		ConsoleUtils.outputLoadingInfo("[storeDir: "
-				+ storeDir.getAbsolutePath() + "]");
+		ConsoleUtils.outputConfigureItem("core.storeDir");
 
 		// gothrough packages
 		String addonLoadMode = Configure.getString("core.addonLoadMode");

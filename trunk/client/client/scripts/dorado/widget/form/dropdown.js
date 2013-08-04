@@ -465,20 +465,26 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 			boxDom.style.display = "";
 		}
 		
-		
 		box.set({
 			width: boxWidth,
 			height: boxHeight
 		});
 		
-		box._visible = true;	// 避免内部的onResize逻辑被跳过
-		box.setActualVisible(true);
+		if (!dropdown._boxVisible) {
+			box._visible = true;	// 避免内部的onResize逻辑被跳过
+			box.setActualVisible(true);
+		}
+		else {
+			box.refresh();
+		}
 		
 		var currentBoxWidth = boxWidth, currentBoxHeight = boxHeight;
 		dropdown.initDropDownBox(box, editor);
 		
-		box._visible = false;
-		box.setActualVisible(false);
+		if (!dropdown._boxVisible) {
+			box._visible = false;
+			box.setActualVisible(false);
+		}
 
 		var containerDom = box.get("containerDom"), controlDom = box.get("control").getDom();
 		if (!dropdown._width) {
@@ -506,13 +512,18 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 			if (currentBoxWidth < boxWidth) config.width = boxWidth;
 			if (currentBoxHeight != boxHeight) config.height = boxHeight;
 
-			box._visible = true;	// 避免内部的onResize逻辑被跳过
-			dorado.widget.Control.SKIP_REFRESH_ON_VISIBLE = true;
-			box.setActualVisible(true);
-			box.set(config).refresh();
-			box._visible = false;
-			dorado.widget.Control.SKIP_REFRESH_ON_VISIBLE = false;
-			box.setActualVisible(false);
+			if (!dropdown._boxVisible) {
+				box._visible = true;	// 避免内部的onResize逻辑被跳过
+				dorado.widget.Control.SKIP_REFRESH_ON_VISIBLE = true;
+				box.setActualVisible(true);
+				box.set(config).refresh();
+				box._visible = false;
+				dorado.widget.Control.SKIP_REFRESH_ON_VISIBLE = false;
+				box.setActualVisible(false);
+			}
+			else {
+				box.set(config).refresh();
+			}
 		}
 		
 		if (dropdown._boxVisible) {

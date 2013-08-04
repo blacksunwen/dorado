@@ -480,7 +480,7 @@ dorado.dequeue = function(namespace) {
 				options = options || {};
 			}
 			var control = this;
-			
+
 			var oldVisible = control._visible, oldActualVisible = control._actualVisible;
 			control._visible = true;
 			dorado.widget.Control.SKIP_REFRESH_ON_VISIBLE = true;
