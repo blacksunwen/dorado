@@ -475,6 +475,26 @@
 		}
 	});
 	
+	var getRegionOffsets = function(region1, region2) {
+		return {
+			top: Math.max(region1['top'], region2['top']),
+			right: Math.min(region1['right'], region2['right']),
+			bottom: Math.min(region1['bottom'], region2['bottom']),
+			left: Math.max(region1['left'], region2['left'])
+		};
+	};
+	
+	var intersect = function(element1, element2) {
+		var region1 = $fly(element1).region(), region2;
+		if (element2.nodeType) {
+			region2 = $fly(element2).region();
+		} else {
+			region2 = element2;
+		}
+		var offset = getRegionOffsets(region1, region2);
+		return offset['bottom'] >= offset['top'] && offset['right'] >= offset['left'];
+	};
+	
 	/**
 	 * @author Frank Zhang (mailto:frank.zhang@bstek.com)
 	 * @class 提醒信息管理器。
