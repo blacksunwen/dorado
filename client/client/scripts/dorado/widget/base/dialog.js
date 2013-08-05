@@ -22,7 +22,17 @@
 		"dialog-footer-center": { cursor: "s-resize", horiStyle: "", vertStyle: "height", widthRatio: 1, heightRatio: 1 }
 	};
 
-	var fakeDialog;
+	var fakeDialog, fullWindowDialogs = [];
+
+	$fly(window).bind(dorado.Browser.isTouch ? "orientationchange" : "resize", function() {
+		var docWidth = jQuery(window).width(), docHeight = jQuery(window).height();
+		for (var i = 0, j = fullWindowDialogs.length; i < j; i++) {
+			var dialog = fullWindowDialogs[i];
+			if (dialog && !dialog._maximizeTarget) {
+				dialog.set({ width: docWidth, height: docHeight });
+			}
+		}
+	});
 
 	/**
 	 * @author Frank Zhang (mailto:frank.zhang@bstek.com)
@@ -211,10 +221,6 @@
 		},
 
         doOnAttachToDocument: function() {
-            //TODO 暂时没考虑清楚。
-//            if (this._minimizeable && this._minimized) {
-//                this.minimize();
-//            }
             $invokeSuper.call(this, arguments);
         },
 
@@ -259,6 +265,8 @@
 					if (dialog._draggable) {
 						$dom.addClass("i-dialog-draggable d-dialog-draggable").draggable("enable");
 					}
+
+					fullWindowDialogs.remove(dialog);
 				}
 			}
 		},
@@ -328,6 +336,7 @@
 					domEl.removeClass("i-dialog-draggable d-dialog-draggable").draggable("disable");
 				}
 
+				fullWindowDialogs.push(dialog);
 				dialog.fireEvent("onMaximize", dialog);
 			}
 		},
