@@ -53,7 +53,7 @@
 			},
 			
 			animateType: {
-				defaultValue: "fade",
+				defaultValue: dorado.Browser.msie ? "none" : "fade",
 				skipRefresh: true
 			},
 			
