@@ -14,22 +14,6 @@
 	var BUTTON_HOVER_CLASS = "-hover", BUTTON_CLICK_CLASS = "-click", BUTTON_TOGGLED_CLASS = "-toggled", BUTTON_TRIGGER_CLASS = "-trigger", ICON_CLASS = "icon";
 
 	/**
-	 * button是否存在onClick的listener，这是判断是否要分割button左右事件的一个条件。
-	 */
-	function hasClickListener(button) {
-		return !!(button._events && button._events["onClick"] && button._events["onClick"].length > 0);
-	}
-
-	/**
-	 * 是否需要分割Button的左右事件(hover、click)。 两个条件：
-	 * 1. 该button存在onClick的Listener。
-	 * 2. 该button绑定了menu。
-	 */
-	function needSplit(button) {
-		return button._showTrigger !== false && (button._splitButton === true || (button._splitButton !== false && !!(hasClickListener(button) && button._menu)));
-	}
-
-	/**
      * @author Frank Zhang (mailto:frank.zhang@bstek.com)
 	 * @component Base
 	 * @class 按钮。
@@ -133,6 +117,15 @@
 			onTriggerClick: {}
 		},
 
+		/**
+		 * 是否需要分割Button的左右事件(hover、click)。 两个条件：
+		 * 1. 该button存在onClick的Listener。
+		 * 2. 该button绑定了menu。
+		 */
+		needSplit: function () {
+			return this._showTrigger !== false && (this._splitButton === true || (this._splitButton !== false && !!(this.hasClickListener() && this._menu)));
+		},
+
 		doOnKeyDown: function(event) {
 			var button = this;
 			if (event.keyCode == 32 || event.keyCode == 13) {
@@ -150,7 +143,7 @@
 				if (button._toggled) {
                     $fly(dom).addClass(cls + BUTTON_TOGGLED_CLASS);
                     $fly(doms.buttonLeft).addClass("button-left-toggled");
-                    $fly(doms.buttonRight).addClass(needSplit(button) ? "" : "button-right-toggled");
+                    $fly(doms.buttonRight).addClass(button.needSplit() ? "" : "button-right-toggled");
 				} else {
                     $fly(dom).removeClass(cls + BUTTON_TOGGLED_CLASS);
                     $fly(doms.buttonLeft).removeClass("button-left-toggled");
@@ -169,7 +162,7 @@
 			if (menu) {
 				menu.addListener("onShow", function() {
 					if (button._toggleOnShowMenu && !button._triggerToggled) {
-                        if (!needSplit(button)) {
+                        if (!button.needSplit()) {
                             $fly(dom).addClass(cls + BUTTON_TOGGLED_CLASS);
                             $fly(doms.buttonLeft).addClass("button-left-toggled");
                             $fly(doms.buttonRight).addClass("button-right-toggled");
@@ -206,7 +199,7 @@
 		doAfterMenuHide: function(){
 			var button = this, dom = button._dom;
 			if (button._toggleOnShowMenu) {
-                if (!needSplit(button)) {
+                if (!button.needSplit()) {
                     $fly(dom).removeClass(button._className + BUTTON_TOGGLED_CLASS);
                     $fly(button._doms.buttonLeft).removeClass("button-left-toggled");
                     $fly(button._doms.buttonRight).removeClass("button-right-toggled");
@@ -237,7 +230,7 @@
 			var button = this, action = button._action || {}, disabled = button._disabled || action._disabled;
 			if (!disabled) {
 				$invokeSuper.call(this, arguments);
-				if (this._menu && !hasClickListener(this)) {
+				if (this._menu && !this.hasClickListener()) {
 					this.doShowMenu();
 				}
 			}
@@ -298,7 +291,7 @@
 				if (!disabled && !button._toggled) {
                     $fly(dom).addClass(cls + BUTTON_HOVER_CLASS);
                     $fly(doms.buttonLeft).addClass("button-left-hover");
-                    $fly(doms.buttonRight).addClass(needSplit(button) ? "" : "button-right-hover");
+                    $fly(doms.buttonRight).addClass(button.needSplit() ? "" : "button-right-hover");
 				}
 			}, function() {
                 $fly(dom).removeClass(cls + BUTTON_HOVER_CLASS);
@@ -310,7 +303,7 @@
 				if (!disabled) {
                     $fly(dom).addClass(cls + BUTTON_CLICK_CLASS);
                     $fly(doms.buttonLeft).addClass("button-left-click");
-                    $fly(doms.buttonRight).addClass(needSplit(button) ? "" : "button-right-click");
+                    $fly(doms.buttonRight).addClass(button.needSplit() ? "" : "button-right-click");
 					$fly(document).one("mouseup", function() {
                         $fly(dom).removeClass(cls + BUTTON_CLICK_CLASS);
                         $fly(doms.buttonLeft).removeClass("button-left-click");
@@ -322,8 +315,8 @@
 			$fly(doms.buttonRight).hover(function() {
 				var action = button._action || {}, disabled = button._disabled || action._disabled;
 				if (!disabled) {
-                    $fly(dom).addClass(needSplit(button) ? "" : cls + BUTTON_HOVER_CLASS);
-                    $fly(doms.buttonLeft).addClass(needSplit(button) ? "" : "button-left-hover");
+                    $fly(dom).addClass(button.needSplit() ? "" : cls + BUTTON_HOVER_CLASS);
+                    $fly(doms.buttonLeft).addClass(button.needSplit() ? "" : "button-left-hover");
                     $fly(doms.buttonRight).addClass("button-right-hover");
 				}
 			}, function() {
@@ -333,8 +326,8 @@
 			}).mousedown(function() {
 				var action = button._action || {}, disabled = button._disabled || action._disabled;
 				if (!disabled) {
-                    $fly(dom).addClass(needSplit(button) ? "" : cls + BUTTON_CLICK_CLASS);
-                    $fly(doms.buttonLeft).addClass(needSplit(button) ? "" : "button-left-click");
+                    $fly(dom).addClass(button.needSplit() ? "" : cls + BUTTON_CLICK_CLASS);
+                    $fly(doms.buttonLeft).addClass(button.needSplit() ? "" : "button-left-click");
                     $fly(doms.buttonRight).addClass("button-right-click");
 					$fly(document).one("mouseup", function() {
 						$fly(dom).removeClass(cls + BUTTON_CLICK_CLASS);
@@ -363,7 +356,7 @@
 				if (button._toggled) {
                     $fly(dom).addClass(button._className + BUTTON_TOGGLED_CLASS);
                     $fly(doms.buttonLeft).addClass("button-left-toggled");
-                    $fly(doms.buttonRight).addClass(needSplit(button) ? "" : "button-right-toggled");
+                    $fly(doms.buttonRight).addClass(button.needSplit() ? "" : "button-right-toggled");
 				} else {
                     $fly(dom).removeClass(button._className + BUTTON_TOGGLED_CLASS);
                     $fly(doms.buttonLeft).removeClass("button-left-toggled");
@@ -397,14 +390,14 @@
                 if (button._toggled) {
                     $fly(dom).addClass(cls + BUTTON_TOGGLED_CLASS);
                     $fly(doms.buttonLeft).addClass("button-left-toggled");
-                    $fly(doms.buttonRight).addClass(needSplit(button) ? "" : "button-right-toggled");
+                    $fly(doms.buttonRight).addClass(button.needSplit() ? "" : "button-right-toggled");
                 } else {
                     $fly(dom).removeClass(cls + BUTTON_TOGGLED_CLASS);
                     $fly(doms.buttonLeft).removeClass("button-left-toggled");
                     $fly(doms.buttonRight).removeClass("button-right-toggled");
                 }
             } else {
-                if (!needSplit(button)) {
+                if (!button.needSplit()) {
                     $fly(dom).toggleClass(cls + BUTTON_TOGGLED_CLASS, !!button._triggerToggled);
                     $fly(doms.buttonLeft).toggleClass("button-left-toggled", !!button._triggerToggled);
                     $fly(doms.buttonRight).toggleClass("button-right-toggled", !!button._triggerToggled);

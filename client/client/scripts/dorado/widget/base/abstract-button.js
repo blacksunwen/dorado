@@ -103,10 +103,18 @@ dorado.widget.AbstractButton = $extend([dorado.widget.Control, dorado.widget.Act
 
 	/**
 	 * @protected
+	 * button是否存在onClick的listener，这是判断是否要分割button左右事件的一个条件。
+	 */
+	hasClickListener: function() {
+		return !!(this._events && this._events["onClick"] && this._events["onClick"].length > 0);
+	},
+
+	/**
+	 * @protected
 	 */
 	onClick: function() {
 		var button = this, action = button._action;
-		if (action) {
+		if (!this.hasClickListener() && action) {
 			action.execute && action.execute();
 		}
 		if (button._toggleable) {
