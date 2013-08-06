@@ -182,7 +182,7 @@ public class StandaloneRuleSetExporter {
 		// 输出版本信息
 		ConsoleUtils.outputLoadingInfo("Initializing "
 				+ DoradoAbout.getProductTitle() + " engine...");
-		ConsoleUtils.outputLoadingInfo("[vendor: " + DoradoAbout.getVendor()
+		ConsoleUtils.outputLoadingInfo("[Vendor: " + DoradoAbout.getVendor()
 				+ "]");
 
 		ConfigureStore configureStore = Configure.getStore();
@@ -190,7 +190,7 @@ public class StandaloneRuleSetExporter {
 		// 处理DoradoHome
 		configureStore.set(HOME_PROPERTY, doradoHome);
 		ConsoleUtils
-				.outputLoadingInfo("[home: "
+				.outputLoadingInfo("[Home: "
 						+ StringUtils.defaultString(doradoHome,
 								"<not assigned>") + "]");
 
