@@ -29,11 +29,6 @@ public class AbstractPackageConfigurer implements PackageConfigurer {
 		return null;
 	}
 
-	public String[] getComponentConfigLocations(ResourceLoader resourceLoader)
-			throws Exception {
-		return null;
-	}
-
 	public String[] getServletContextConfigLocations(
 			ResourceLoader resourceLoader) throws Exception {
 		return null;
