@@ -391,17 +391,6 @@ public class DoradoLoader {
 				}
 			}
 
-			pushLocations(contextLocations, packageInfo.getComponentLocations());
-//			if (packageConfigurer != null) {
-//				locations = packageConfigurer
-//						.getComponentConfigLocations(resourceLoader);
-//				if (locations != null) {
-//					for (String location : locations) {
-//						pushLocation(contextLocations, location);
-//					}
-//				}
-//			}
-
 			pushLocations(servletContextLocations,
 					packageInfo.getServletContextLocations());
 			if (packageConfigurer != null) {
