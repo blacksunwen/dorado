@@ -226,8 +226,7 @@ public class StandaloneRuleSetExporter {
 
 			// 处理Spring的配置文件
 			String addonVersion = packageInfo.getAddonVersion();
-			if ("dorado-core".equals(packageName)
-					|| StringUtils.isEmpty(addonVersion)
+			if (StringUtils.isEmpty(addonVersion)
 					|| "2.0".compareTo(addonVersion) > 0) {
 				pushLocations(contextLocations,
 						packageInfo.getContextLocations());
