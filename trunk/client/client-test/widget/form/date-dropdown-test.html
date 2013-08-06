@@ -16,10 +16,17 @@
                 var date = arg.date, cell = arg.cell;
 
                 if (date.getDate() == 3 || date.getDate() == 5) {
-                    cell.style.color = "red";
+                    //cell.style.color = "red";
                 } else {
-                    cell.style.color = "";
+                    //cell.style.color = "";
                 }
+            },
+            onFilterDate: function(self, arg) {
+                var date = arg.date, cell = arg.cell;
+                if (date.getDate() == 3 || date.getDate() == 5) {
+                    arg.selectable = false;
+                }
+                if (date.getMonth() == 8) arg.selectable = false;
             }
         });
         view.addChild(dp);

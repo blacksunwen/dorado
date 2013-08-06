@@ -41,7 +41,9 @@
 			return temp.getDay();
 		}
 	};
-	
+
+	var CELL_UNSELECTABLE_CLASS = "unselectable", CELL_SELECTED_CLASS = "selected-date", PREV_MONTH_CLASS = "pre-month", NEXT_MONTH_CLASS = "next-month";
+
 	/**
 	 * @author Frank Zhang (mailto:frank.zhang@bstek.com)
 	 * @class DatePicker
@@ -64,7 +66,11 @@
 			 * @type Date
 			 */
 			date: {
-				defaultValue: new Date()
+				defaultValue: new Date(),
+				setter: function(value) {
+					this._date = value;
+					this.refreshButtonOnFilterDate();
+				}
 			},
 			
 			/**
@@ -120,7 +126,7 @@
 		EVENTS: /** @scope dorado.widget.DatePicker.prototype */ {
 			/**
 			 * 当用户点击日期表格上的日期时触发此事件。
-			 * 注意：也就是说onPick无法捕获点击确定按钮时的操作，也无法捕获点击清除按钮时的操作。
+			 * 注意：也就是说onPick无法捕获点击『确定』按钮时的操作，也无法捕获点击『清除』按钮时的操作。
 			 * @param {Object} self 事件的发起者，即组件本身。
 			 * @param {Object} arg 事件参数。
 			 * @param {Object} arg.date 用户选择的日期。
@@ -166,7 +172,18 @@
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
 			 */
-			onRefreshDateCell: {}
+			onRefreshDateCell: {},
+
+			/**
+			 * 当日期单元格要刷新的时候会触发此事件。
+			 * @param {Object} self 事件的发起者，即组件本身。
+			 * @param {Object} arg 事件参数。
+			 * @param {Date} arg.date 要过滤的日期。
+			 * @param {Date} arg.selectable 该日期是否可选，默认为true，如果要过滤该日期，返回false即可。
+			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+			 * @event
+			 */
+			onFilterDate: {}
 		},
 		
 		/**
@@ -205,6 +222,8 @@
 					picker.doMonthAnimate(source, date);
 				}
 			}
+
+			picker.refreshButtonOnFilterDate();
 		},
 		
 		/**
@@ -355,6 +374,8 @@
 					picker.doMonthAnimate(source, date);
 				}
 			}
+
+			picker.refreshButtonOnFilterDate();
 		},
 		
 		/**
@@ -386,8 +407,53 @@
 			if (refresh) {
 				picker.refresh();
 			}
+
+			picker.refreshButtonOnFilterDate();
 		},
-		
+
+		refreshButtonOnFilterDate: function () {
+			if (this.isActualVisible()) {
+				if (this._todayButton) {
+					this._todayButton.set("disabled", !this.isDateSelectable(new Date()));
+				}
+				if (this._confirmButton) {
+					this._confirmButton.set("disabled", !this.isDateSelectable(this._date));
+				}
+			}
+		},
+
+		refreshDateCell: function (date, cell) {
+			var picker = this;
+			picker.fireEvent("onRefreshDateCell", picker, {
+				date: date,
+				cell: cell
+			});
+
+			var selectable = picker.isDateSelectable(date);
+
+			if (selectable) {
+				$fly(cell).removeClass(CELL_UNSELECTABLE_CLASS);
+			} else {
+				$fly(cell).addClass(CELL_UNSELECTABLE_CLASS);
+			}
+		},
+
+		/**
+		 * @protected
+		 * 判断某个日期是否可以选择。
+		 * @param {Date} date 要判断的日期。
+		 * @returns {boolean} 返回传入的日期是否可以选择。
+		 */
+		isDateSelectable: function(date) {
+			var picker = this, filterArg = {
+				date: date,
+				selectable: true
+			};
+			picker.fireEvent("onFilterDate", picker, filterArg);
+
+			return filterArg.selectable;
+		},
+
 		refreshDate: function(target, region) {
 			var picker = this, doms = picker._doms, date = target || picker._date, count = 1, day = DateHelper.getFirstDayOfMonth(date), maxDay = DateHelper.getDayCountOfMonth(date.getFullYear(), date.getMonth()), dateTable = doms.dateTable, selectDay = date.getDate(), lastMonthDay = DateHelper.getDayCountOfMonth(date.getFullYear(), (date.getMonth() == 0 ? 11 : date.getMonth() - 1));
 			
@@ -414,44 +480,40 @@
 					var cell = dateTable.rows[i].cells[j];
 					if (i == startI) {
 						if (j - startJ >= day) {
-							if (count == selectDay) {
-								cell.className = "selected-date";
-							} else {
-								cell.className = null;
-							}
 							cell.innerHTML = count++;
-							picker.fireEvent("onRefreshDateCell", picker, {
-								date: new Date(date.getFullYear(), date.getMonth(), parseInt(cell.innerHTML, 10)),
-								cell: cell
-							});
+							this.refreshDateCell(new Date(date.getFullYear(), date.getMonth(), parseInt(cell.innerHTML, 10)), cell);
+							if (count - 1 == selectDay) {
+								if (!$fly(cell).hasClass(CELL_UNSELECTABLE_CLASS)) {
+									cell.className = CELL_SELECTED_CLASS;
+								} else {
+									cell.className = CELL_UNSELECTABLE_CLASS;
+								}
+							} else {
+								$fly(cell).removeClass(CELL_SELECTED_CLASS).removeClass(NEXT_MONTH_CLASS).removeClass(PREV_MONTH_CLASS);
+							}
 						} else {
 							cell.innerHTML = lastMonthDay - (day - j % 7) + 1;
 							
-							cell.className = "pre-month";
-							picker.fireEvent("onRefreshDateCell", picker, {
-								date: new Date(date.getFullYear(), date.getMonth() - 1, parseInt(cell.innerHTML, 10)),
-								cell: cell
-							});
+							cell.className = PREV_MONTH_CLASS;
+							this.refreshDateCell(new Date(date.getFullYear(), date.getMonth() - 1, parseInt(cell.innerHTML, 10)), cell);
 						}
 					} else {
 						if (count <= maxDay) {
-							if (count == selectDay) {
-								cell.className = "selected-date";
-							} else {
-								cell.className = null;
-							}
 							cell.innerHTML = count++;
-							picker.fireEvent("onRefreshDateCell", picker, {
-								date: new Date(date.getFullYear(), date.getMonth(), parseInt(cell.innerHTML, 10)),
-								cell: cell
-							});
+							this.refreshDateCell(new Date(date.getFullYear(), date.getMonth(), parseInt(cell.innerHTML, 10)), cell);
+							if (count - 1 == selectDay) {
+								if (!$fly(cell).hasClass(CELL_UNSELECTABLE_CLASS)) {
+									cell.className = CELL_SELECTED_CLASS;
+								} else {
+									cell.className = CELL_UNSELECTABLE_CLASS;
+								}
+							} else {
+								$fly(cell).removeClass(CELL_SELECTED_CLASS).removeClass(NEXT_MONTH_CLASS).removeClass(PREV_MONTH_CLASS);
+							}
 						} else {
 							cell.innerHTML = count++ - maxDay;
-							cell.className = "next-month";
-							picker.fireEvent("onRefreshDateCell", picker, {
-								date: new Date(date.getFullYear(), date.getMonth() + 1, parseInt(cell.innerHTML, 10)),
-								cell: cell
-							});
+							cell.className = NEXT_MONTH_CLASS;
+							this.refreshDateCell(new Date(date.getFullYear(), date.getMonth() + 1, parseInt(cell.innerHTML, 10)), cell);
 						}
 					}
 				}
@@ -484,7 +546,8 @@
 			
 			picker.refreshDate();
 			picker.refreshYearMonth();
-			
+			picker.refreshButtonOnFilterDate();
+
 			if (picker._showTimeSpinner) {
 				picker.doShowTimeSpinner();
 				picker.refreshSpinner();
@@ -628,6 +691,7 @@
 					}
 				});
 				todayButton.render(doms.buttonBlock);
+				picker._todayButton = todayButton;
 				picker.registerInnerControl(todayButton);
 			}
 			
@@ -663,6 +727,7 @@
 					}
 				});
 				confirmButton.render(doms.buttonBlock);
+				picker._confirmButton = confirmButton;
 				picker.registerInnerControl(confirmButton);
 			}
 			
@@ -695,6 +760,7 @@
 				
 				if (position && element) {
 					var className = element.className;
+					if (className.indexOf(CELL_UNSELECTABLE_CLASS) != -1) return;
 					if (className.indexOf("next-month") != -1) {
 						picker.setMonth(date.getMonth() + 1);
 					} else {
@@ -982,7 +1048,9 @@
 					break;
 				case 13: // enter
 					if (!ymPicker || !ymPicker._opened) {
-						datePicker.fireEvent("onPick", datePicker, new Date(datePicker._date.getTime()));
+						if (datePicker.isDateSelectable(datePicker._date)) {
+							datePicker.fireEvent("onPick", datePicker, new Date(datePicker._date.getTime()));
+						}
 						retValue = false;
 					}
 					break;

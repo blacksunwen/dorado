@@ -121,13 +121,22 @@
 }
 
 .d-date-picker .date-block .date-table td.pre-month{
-	color: #CFCFCF;
+	color: #BCBCBC;
 	background-color: #FFFFFF;
 }
 
 .d-date-picker .date-block .date-table td.next-month{
-	color: #CFCFCF;
+	color: #BCBCBC;
 	background-color: #FFFFFF;
+}
+
+.d-date-picker .date-block .date-table td.unselectable {
+    cursor: default;
+    color: #E1E1E1;
+}
+
+.d-date-picker .date-block .date-table .hover.unselectable, .d-date-picker .date-block .date-table td.unselectable:hover{
+    background-image: none;
 }
 
 .d-date-picker .d-year-month-picker{
