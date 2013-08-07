@@ -241,9 +241,8 @@
 			var button = this, cls = button._className, action = button._action || {}, icon = button._icon || action._icon, iconClass = button._iconClass || action._iconClass;
 			
 			var iconEl = dom.firstChild;
-			if (icon) {
-				$DomUtils.setBackgroundImage(iconEl, icon);
-			} else if (iconClass) {
+			$DomUtils.setBackgroundImage(iconEl, icon);
+			if (iconClass) {
 				iconEl.className = "icon " + iconClass;
 			}
 			$fly(dom).toggleClass(cls + "-disabled", !!(button._disabled || action._disabled));
