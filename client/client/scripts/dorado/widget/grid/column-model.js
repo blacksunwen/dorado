@@ -1323,11 +1323,12 @@
 		 * @protected
 		 */
 		resize: function() {
-			var dom = this.getDom(), cell = this.cell;
+			var dom = this.getDom(), cell = this.cell, $gridDom = jQuery(this.grid.getDom());
 			if (!dom ||!cell) return;
 			
-			var offset = $fly(cell).offset();
-			var l = offset.left, t = offset.top, w = cell.offsetWidth, h = cell.offsetHeight;
+			var offsetGrid = $gridDom.offset(), offsetCell = $fly(cell).offset();;
+			var l = offsetCell.left - offsetGrid.left - $gridDom.edgeLeft(), t = offsetCell.top - offsetGrid.top - $gridDom.edgeTop(),
+				w = cell.offsetWidth, h = cell.offsetHeight;
 			if (this.minWidth && this.minWidth > w) w = this.minWidth;
 			if (this.minHeight && this.minHeight > h) h = this.minHeight;
 			$fly(dom).css({
@@ -1353,9 +1354,8 @@
 		show: function(parent, cell) {
 			this.cell = cell;
 			var dom = this.getDom();
-			document.body.appendChild(dom);
+			this.grid.getDom().appendChild(dom);
 			this.initDom(dom);
-			$fly(dom).bringToFront();
 			this.refresh();
 			
 			var self = this;
