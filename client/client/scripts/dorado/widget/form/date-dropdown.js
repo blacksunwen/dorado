@@ -175,7 +175,7 @@
 			onRefreshDateCell: {},
 
 			/**
-			 * 当日期单元格要刷新的时候会触发此事件。
+			 * 当日期需要判断是否可选择的时候会触发此事件。
 			 * @param {Object} self 事件的发起者，即组件本身。
 			 * @param {Object} arg 事件参数。
 			 * @param {Date} arg.date 要过滤的日期。
@@ -559,7 +559,7 @@
 		},
 		
 		createDom: function() {
-			var allWeeks = $resource("dorado.baseWidget.AllWeeks"), weeks = allWeeks.split(",");
+			var allWeeks = $resource("dorado.baseWidget.AllWeeks") || "", weeks = allWeeks.split(",");
 			
 			var dateRows = [];
 			
@@ -1013,6 +1013,20 @@
 				}
 			}
 		},
+
+		EVENTS:  /** @scope dorado.widget.DateDropDown.prototype */ {
+
+			/**
+			 * 当日期需要判断是否可选择的时候会触发此事件。
+			 * @param {Object} self 事件的发起者，即组件本身。
+			 * @param {Object} arg 事件参数。
+			 * @param {Date} arg.date 要过滤的日期。
+			 * @param {Date} arg.selectable 该日期是否可选，默认为true，如果要过滤该日期，返回false即可。
+			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+			 * @event
+			 */
+			onFilterDate: {}
+		},
 		
 		createDropDownBox: function() {
 			var dropDown = this, box = $invokeSuper.call(this, arguments), picker = new dorado.widget.DatePicker({
@@ -1030,6 +1044,9 @@
 					},
 					onCancel: function() {
 						dropDown.close();
+					},
+					onFilterDate: function(picker, arg) {
+						dropDown.fireEvent("onFilterDate", dropDown, arg);
 					}
 				}
 			});
@@ -1074,7 +1091,7 @@
 	});
 	
 	dorado.widget.View.registerDefaultComponent("defaultDateDropDown", function() {
-		return new dorado.widget.DateDropDown();
+		return new dorado.widget.DateDropDown({});
 	});
 	dorado.widget.View.registerDefaultComponent("defaultDateTimeDropDown", function() {
 		return new dorado.widget.DateDropDown({

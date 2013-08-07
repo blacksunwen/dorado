@@ -150,7 +150,7 @@
 		},
 
 		createDom: function() {
-			var monthLabel = $resource("dorado.baseWidget.AllMonths"), month_label = monthLabel.split(",");
+			var monthLabel = $resource("dorado.baseWidget.AllMonths") || "", month_label = monthLabel.split(",");
 			var picker = this, doms = {}, dom = $DomUtils.xCreate({
 				tagName: "div",
 				content: [{
