@@ -55,7 +55,7 @@ public class DoradoContext extends SpringContextSupport {
 	/**
 	 * 表示Web会话的范围。
 	 */
-	public static final String SESSION = "seesion";
+	public static final String SESSION = "session";
 
 	/**
 	 * 表示整个Web应用的范围。
