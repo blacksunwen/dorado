@@ -1355,6 +1355,7 @@
 			var dom = this.getDom();
 			document.body.appendChild(dom);
 			this.initDom(dom);
+			$fly(dom).bringToFront();
 			this.refresh();
 			
 			var self = this;
