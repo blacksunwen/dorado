@@ -631,7 +631,7 @@
 			}
 
 			if (dialog._resizeable) {
-				var dialogXY, dialogSize, dialogHelperOffset;
+				var dialogXY, dialogSize, dialogHelperOffset, bodyRect;
 
 				jQuery(dom).addClass("i-dialog-resizeable d-dialog-resizeable").find(".dialog-resize-handle").each(function(index, handle) {
 					var className = handle.className.split(" ")[0], config = handleConfigMap[className];
@@ -668,6 +668,13 @@
 						},
 
 						start: function(event, ui) {
+							var bodyEl = $fly(document.body), width = bodyEl.outerWidth(true), height = bodyEl.outerHeight(true), offset = bodyEl.offset();
+							bodyRect = {
+								left: offset.left,
+								top: offset.top,
+								right: offset.left + width,
+								bottom: offset.top + height
+							};
 						},
 
 						drag: function(event, ui) {
@@ -680,46 +687,69 @@
 							};
 
 							var inst = jQuery.data(this, "draggable"), horiChange = event.pageX - inst.originalPageX,
-								vertChange = event.pageY - inst.originalPageY, width, height, horiOverflow, vertOverflow;
+								vertChange = event.pageY - inst.originalPageY, width, height, horiOverflowOffset, vertOverflowOffset;
+
+							var helper = ui.helper, position = ui.position;
+
+							position.left += dialogHelperOffset.left;
+							position.top += dialogHelperOffset.top;
 
 							if (horiStyle.indexOf("width") != -1) {
 								width = dialogSize[0] + widthRatio * horiChange;
-								if (width >= minWidth) {
-									ui.helper.outerWidth(width);
-								} else {
-									horiOverflow = width - minWidth;
-									ui.helper.outerWidth(minWidth);
+								if (width < minWidth) {
+									horiOverflowOffset = width - minWidth;
+									width = minWidth;
 								}
 							}
 
 							if (vertStyle.indexOf("height") != -1) {
 								height = dialogSize[1] + heightRatio * vertChange;
-								if (height >= minHeight) {
-									ui.helper.outerHeight(height);
-								} else {
-									vertOverflow = height - minHeight;
-									ui.helper.outerHeight(minHeight);
+								if (height < minHeight) {
+									vertOverflowOffset = height - minHeight;
+									height = minHeight;
 								}
 							}
 
 							if (horiStyle.indexOf("left") != -1) {
 								if (width >= minWidth) {
-									ui.position.left = dialogXY.left + horiChange;
+									position.left = dialogXY.left + horiChange;
 								} else {
-									ui.position.left = dialogXY.left + horiChange + horiOverflow;
+									position.left = dialogXY.left + horiChange + horiOverflowOffset;
 								}
 							}
 
 							if (vertStyle.indexOf("top") != -1) {
 								if (height >= minHeight) {
-									ui.position.top = dialogXY.top + vertChange;
+									position.top = dialogXY.top + vertChange;
 								} else {
-									ui.position.top = dialogXY.top + vertChange + vertOverflow;
+									position.top = dialogXY.top + vertChange + vertOverflowOffset;
 								}
 							}
 
-							ui.position.left += dialogHelperOffset.left;
-							ui.position.top += dialogHelperOffset.top;
+							if (!dialog._dragOutside) {
+								var helperRect = {
+									left: position.left,
+									top: position.top,
+									right: position.left + width,
+									bottom: position.top + height
+								};
+
+								if (helperRect.left < bodyRect.left) {
+									position.left = bodyRect.left;
+									width = helperRect.right - bodyRect.left;
+								} else if (helperRect.right >= bodyRect.right) {
+									width = bodyRect.right - helperRect.left;
+								}
+
+								if (helperRect.top < bodyRect.top) {
+									position.top = bodyRect.top;
+									height = helperRect.bottom - bodyRect.top;
+								} else if (helperRect.bottom >= bodyRect.bottom) {
+									height = bodyRect.bottom - helperRect.top;
+								}
+							}
+
+							helper.outerWidth(width).outerHeight(height);
 						},
 
 						stop: function(event, ui) {
