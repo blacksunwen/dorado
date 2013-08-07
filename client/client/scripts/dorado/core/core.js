@@ -79,10 +79,9 @@ var dorado = {
 			browser.isPhone = (screenSize / window.devicePixelRatio) < 768;
 		}
 
-		if (browser.safari) {
-			browser.android = (/android/gi).test(navigator.appVersion);
-			browser.iOS = (/iphone|ipad/gi).test(navigator.appVersion);
-		}
+		browser.android = os.android;
+		browser.iOS = os.ios;
+		browser.osVersion = os.version;
 
 		browser.isTouch = !!("ontouchstart" in window || (window["$setting"] && $setting["common.simulateTouch"]));
 		if (browser.chrome) {
