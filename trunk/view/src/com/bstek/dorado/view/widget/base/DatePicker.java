@@ -32,7 +32,7 @@ import com.bstek.dorado.view.widget.Control;
 @ClientObject(prototype = "dorado.widget.DatePicker",
 		shortTypeName = "DatePicker")
 @ClientEvents({ @ClientEvent(name = "onPick"), @ClientEvent(name = "onClear"), @ClientEvent(name = "onConfirm"), @ClientEvent(name = "onCancel"),
-		@ClientEvent(name = "onRefreshDateCell") })
+		@ClientEvent(name = "onRefreshDateCell"), @ClientEvent(name = "onFilterDate") })
 public class DatePicker extends Control {
 	private Date date;
 	private boolean showTimeSpinner = false;
