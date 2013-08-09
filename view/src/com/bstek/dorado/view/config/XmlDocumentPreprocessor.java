@@ -24,6 +24,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import com.bstek.dorado.config.xml.XmlConstants;
 import com.bstek.dorado.config.xml.XmlParseException;
@@ -145,6 +146,19 @@ public class XmlDocumentPreprocessor {
 		}
 	}
 
+	private void gothroughElement(Element element) {
+		// Xerces的DOM不是线程安全的，需通过此方法规避
+		NodeList childNodes = element.getChildNodes();
+		for (int i = 0; i < childNodes.getLength(); i++) {
+			Node child = childNodes.item(i);
+			if (child != null && child instanceof Element) {
+				gothroughElement((Element) child);
+			} else {
+				// do nothing;
+			}
+		}
+	}
+
 	@SuppressWarnings("unchecked")
 	private void postProcessNodeReplacement(Element element) {
 		Document ownerDocument = element.getOwnerDocument();
@@ -157,8 +171,10 @@ public class XmlDocumentPreprocessor {
 							.getUserData("dorado.replace");
 					if (replaceContent != null) {
 						for (Element el : replaceContent) {
-							element.insertBefore(
-									ownerDocument.importNode(el, true), child);
+							Element clonedElement = (Element) ownerDocument
+									.importNode(el, true);
+							gothroughElement(clonedElement);
+							element.insertBefore(clonedElement, child);
 						}
 						child.setUserData("dorado.replace", null, null);
 					}
@@ -462,8 +478,10 @@ public class XmlDocumentPreprocessor {
 			String propertyName = propertyElement
 					.getAttribute(XmlConstants.ATTRIBUTE_NAME);
 			if (!specialMergeProperties.contains(propertyName)) {
-				templteViewElement.appendChild(templateDocument.importNode(
-						propertyElement, true));
+				Element clonedElement = (Element) templateDocument.importNode(
+						propertyElement, true);
+				gothroughElement(clonedElement);
+				templteViewElement.appendChild(clonedElement);
 			}
 		}
 
@@ -487,8 +505,10 @@ public class XmlDocumentPreprocessor {
 				continue;
 			}
 			if (componentTypeRegistry.getRegisterInfo(nodeName) == null) {
-				templteViewElement.appendChild(templateDocument.importNode(
-						element, true));
+				Element clonedElement = (Element) templateDocument.importNode(
+						element, true);
+				gothroughElement(clonedElement);
+				templteViewElement.appendChild(clonedElement);
 			}
 		}
 
@@ -518,8 +538,10 @@ public class XmlDocumentPreprocessor {
 
 			for (Element metaPropertyElement : DomUtils.getChildrenByTagName(
 					metaDataElement, XmlConstants.PROPERTY)) {
-				templateMetaDataElement.appendChild(templateDocument
-						.importNode(metaPropertyElement, true));
+				Element clonedElement = (Element) templateDocument.importNode(
+						metaPropertyElement, true);
+				gothroughElement(clonedElement);
+				templateMetaDataElement.appendChild(clonedElement);
 			}
 		}
 	}
@@ -566,9 +588,10 @@ public class XmlDocumentPreprocessor {
 				if (templateArgumentMap == null
 						|| !templateArgumentMap.containsKey(name)) {
 					Element element = entry.getValue();
-					element = (Element) element.cloneNode(true);
-					argumentsElement.appendChild(templateDocument.importNode(
-							element, true));
+					Element clonedElement = (Element) templateDocument
+							.importNode(element, true);
+					gothroughElement(clonedElement);
+					argumentsElement.appendChild(clonedElement);
 				}
 			}
 		}
@@ -600,8 +623,10 @@ public class XmlDocumentPreprocessor {
 				}
 
 				for (Element model : modelElements) {
-					templateModelElement.appendChild(templateDocument
-							.importNode(model, true));
+					Element clonedElement = (Element) templateDocument
+							.importNode(model, true);
+					gothroughElement(clonedElement);
+					templateModelElement.appendChild(clonedElement);
 				}
 			}
 		}
@@ -617,36 +642,42 @@ public class XmlDocumentPreprocessor {
 		}
 
 		Document templateDocument = (Document) viewConfigInfo.getConfigModel();
-		templateDocument = (Document) templateDocument.cloneNode(true);
+		synchronized (templateDocument) {
+			templateDocument = (Document) templateDocument.cloneNode(true);
 
-		mergeMetaData(templateDocument, templateDocument.getDocumentElement(),
-				templateContext.getSourceDocument().getDocumentElement());
+			mergeMetaData(templateDocument,
+					templateDocument.getDocumentElement(), templateContext
+							.getSourceDocument().getDocumentElement());
 
-		mergeArguments(templateDocument, templateContext);
-		mergeModels(templateDocument, templateContext);
-		gothroughPlaceHolders(templateDocument, templateContext);
+			mergeArguments(templateDocument, templateContext);
+			mergeModels(templateDocument, templateContext);
+			gothroughPlaceHolders(templateDocument, templateContext);
+		}
 		return templateDocument;
 	}
 
 	public Document process(String viewName, Document document)
 			throws Exception {
-		PreparseContext preparseContext = new PreparseContext(viewName);
-		Element documentElement = document.getDocumentElement();
+		synchronized (document) {
+			PreparseContext preparseContext = new PreparseContext(viewName);
+			Element documentElement = document.getDocumentElement();
 
-		Element viewElement = ViewConfigParserUtils.findViewElement(
-				documentElement, preparseContext.getResource());
+			Element viewElement = ViewConfigParserUtils.findViewElement(
+					documentElement, preparseContext.getResource());
 
-		String templateSrc = documentElement
-				.getAttribute(ViewXmlConstants.ATTRIBUTE_TEMPALTE);
-		if (StringUtils.isNotEmpty(templateSrc)) {
-			TemplateContext templateContext = new TemplateContext(templateSrc,
-					preparseContext, document);
-			Document templateDocument = loadTemplate(templateSrc,
-					templateContext);
-			document = templateDocument;
+			String templateSrc = documentElement
+					.getAttribute(ViewXmlConstants.ATTRIBUTE_TEMPALTE);
+			if (StringUtils.isNotEmpty(templateSrc)) {
+				TemplateContext templateContext = new TemplateContext(
+						templateSrc, preparseContext, document);
+				Document templateDocument = loadTemplate(templateSrc,
+						templateContext);
+				document = templateDocument;
+			}
+
+			processImports(viewElement, preparseContext);
+
 		}
-
-		processImports(viewElement, preparseContext);
 		return document;
 	}
 
