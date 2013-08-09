@@ -54,7 +54,8 @@
 			},
 
 			/**
-			 * 对话框的最小宽度，建议不要小于200。
+			 * 对话框的最小宽度，建议不要小于200。<br />
+			 * 注意：该属性不会在通过设置width、height的时候生效，只会在resize的生效。
 			 * @attribute
 			 * @default 200
 			 * @type int
@@ -64,7 +65,8 @@
 			},
 
 			/**
-			 * 对话框的最小高度，建议不要小于100。
+			 * 对话框的最小高度，建议不要小于100。<br />
+			 * 注意：该属性不会在通过设置width、height的时候生效，只会在resize的生效。
 			 * @attribute
 			 * @default 100
 			 * @type int
@@ -72,6 +74,22 @@
 			minHeight: {
 				defaultValue: 100
 			},
+
+			/**
+			 * 对话框的最大宽度，默认不限制。<br />
+			 * 注意：该属性不会在通过设置width、height的时候生效，只会在resize的生效。
+			 * @attribute
+			 * @type int
+			 */
+			maxWidth: {},
+
+			/**
+			 * 对话框的最大高度，默认不限制。<br />
+			 * 注意：该属性不会在通过设置width、height的时候生效，只会在resize的生效。
+			 * @attribute
+			 * @type int
+			 */
+			maxHeight: {},
 
 			/**
 			 * 对话框是否可拖拽。
@@ -85,6 +103,7 @@
 
 			/**
 			 * 对话框是否可以拖出window。
+			 * 该属性在7.3.0版本以后，在对话框进行resize的时候，也可以控制对话框是否可以拖出当前窗口。
 			 * @attribute writeBeforeReady
 			 * @type boolean
 			 */
@@ -679,7 +698,7 @@
 
 						drag: function(event, ui) {
 							var horiStyle = config.horiStyle, vertStyle = config.vertStyle, heightRatio = config.heightRatio, widthRatio = config.widthRatio,
-								minWidth = dialog._minWidth || 200, minHeight = dialog._minHeight || 100;
+								minWidth = dialog._minWidth || 200, minHeight = dialog._minHeight || 100, maxWidth = dialog._maxWidth, maxHeight = dialog._maxHeight;
 
 							ui.position = {
 								left: $fly(dom).offset().left,
@@ -689,7 +708,7 @@
 							var inst = jQuery.data(this, "draggable"), horiChange = event.pageX - inst.originalPageX,
 								vertChange = event.pageY - inst.originalPageY, width, height, horiOverflowOffset, vertOverflowOffset;
 
-							var helper = ui.helper, position = ui.position;
+							var helper = ui.helper, position = ui.position, widthFlag = false, heightFlag = false;
 
 							position.left += dialogHelperOffset.left;
 							position.top += dialogHelperOffset.top;
@@ -699,6 +718,13 @@
 								if (width < minWidth) {
 									horiOverflowOffset = width - minWidth;
 									width = minWidth;
+									widthFlag = true;
+								}
+
+								if (maxWidth && width > maxWidth) {
+									horiOverflowOffset = width - maxWidth;
+									width = maxWidth;
+									widthFlag = true;
 								}
 							}
 
@@ -707,11 +733,18 @@
 								if (height < minHeight) {
 									vertOverflowOffset = height - minHeight;
 									height = minHeight;
+									heightFlag = true;
+								}
+
+								if (maxHeight && height > maxHeight) {
+									vertOverflowOffset = height - maxHeight;
+									height = maxHeight;
+									heightFlag = true;
 								}
 							}
 
 							if (horiStyle.indexOf("left") != -1) {
-								if (width >= minWidth) {
+								if (!widthFlag) {
 									position.left = dialogXY.left + horiChange;
 								} else {
 									position.left = dialogXY.left + horiChange + horiOverflowOffset;
@@ -719,7 +752,7 @@
 							}
 
 							if (vertStyle.indexOf("top") != -1) {
-								if (height >= minHeight) {
+								if (!heightFlag) {
 									position.top = dialogXY.top + vertChange;
 								} else {
 									position.top = dialogXY.top + vertChange + vertOverflowOffset;
