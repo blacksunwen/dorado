@@ -30,6 +30,8 @@ import com.bstek.dorado.view.widget.FloatControlShadowMode;
 public class Dialog extends FloatPanel {
 	private int minWidth;
 	private int minHeight;
+	private int maxWidth;
+	private int maxHeight;
 	private boolean dragOutside;
 	private boolean resizeable = true;
 
@@ -88,6 +90,22 @@ public class Dialog extends FloatPanel {
 
 	public void setMinHeight(int minHeight) {
 		this.minHeight = minHeight;
+	}	
+
+	public int getMaxWidth() {
+		return maxWidth;
+	}
+
+	public void setMaxWidth(int maxWidth) {
+		this.maxWidth = maxWidth;
+	}
+
+	public int getMaxHeight() {
+		return maxHeight;
+	}
+
+	public void setMaxHeight(int maxHeight) {
+		this.maxHeight = maxHeight;
 	}
 
 	@ClientProperty(escapeValue = "true")
