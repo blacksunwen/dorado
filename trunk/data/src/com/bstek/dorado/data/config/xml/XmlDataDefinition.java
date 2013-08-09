@@ -51,16 +51,18 @@ public class XmlDataDefinition extends Definition {
 	public XmlDataDefinition(Node node,
 			DefinitionReference<DataTypeDefinition> dataTypeDefinition,
 			XmlParser parser) throws Exception {
-		Document newDocument = getXmlDocumentBuilder().newDocument();
-		Node clonedNode = newDocument.importNode(node, true);
+		synchronized (node) {
+			Document newDocument = getXmlDocumentBuilder().newDocument();
+			Node clonedNode = newDocument.importNode(node, true);
 
-		this.node = clonedNode;
-		this.dataTypeDefinition = dataTypeDefinition;
-		this.parser = parser;
+			this.node = clonedNode;
+			this.dataTypeDefinition = dataTypeDefinition;
+			this.parser = parser;
 
-		if (clonedNode != null && clonedNode instanceof Element) {
-			// http://bsdn.org/projects/dorado7/issue/dorado7-1258
-			gothroughElement((Element) clonedNode);
+			if (clonedNode != null && clonedNode instanceof Element) {
+				// http://bsdn.org/projects/dorado7/issue/dorado7-1258
+				gothroughElement((Element) clonedNode);
+			}
 		}
 	}
 
@@ -70,8 +72,8 @@ public class XmlDataDefinition extends Definition {
 	}
 
 	@Override
-	protected Object doCreate(CreationContext context,
-			Object[] constructorArgs) throws Exception {
+	protected Object doCreate(CreationContext context, Object[] constructorArgs)
+			throws Exception {
 		Object data = null;
 		if (node != null) {
 			DataCreationContext createContext = (DataCreationContext) context;
