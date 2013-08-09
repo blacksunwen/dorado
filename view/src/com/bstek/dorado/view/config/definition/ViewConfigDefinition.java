@@ -288,7 +288,7 @@ public class ViewConfigDefinition extends ListenableObjectDefinition {
 			CreationContext context) throws Exception {
 		ViewState viewState = (ViewState) Context.getCurrent().getAttribute(
 				VIEW_STATE_ATTRIBUTE_KEY);
-		if (viewState == null || viewState == ViewState.rendering) {
+		if (viewState == null || ViewState.rendering.equals(viewState)) {
 			if (viewContext != null && !viewContext.isEmpty()) {
 				DoradoContext doradoContext = DoradoContext.getCurrent();
 				for (Map.Entry<String, Object> entry : viewContext.entrySet()) {
@@ -331,7 +331,7 @@ public class ViewConfigDefinition extends ListenableObjectDefinition {
 
 			ViewState viewState = (ViewState) Context.getCurrent()
 					.getAttribute(ViewState.class.getName());
-			if (viewState == null || viewState == ViewState.rendering) {
+			if (viewState == null || ViewState.rendering.equals(viewState)) {
 				viewDefinition.create(context, new Object[] { viewConfig });
 			}
 
