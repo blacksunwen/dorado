@@ -17,5 +17,10 @@ package com.bstek.dorado.view;
  * @since 2010-7-23
  */
 public enum ViewState {
-	rendering, servicing
+	rendering,
+	
+	servicing,
+	
+	@Deprecated
+	servcing
 }
