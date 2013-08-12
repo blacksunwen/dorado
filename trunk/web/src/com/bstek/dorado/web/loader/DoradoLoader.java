@@ -234,13 +234,6 @@ public class DoradoLoader {
 						+ StringUtils.defaultString(doradoHome,
 								"<not assigned>") + "]");
 
-		File tempDir = new File(WebUtils.getTempDir(servletContext), ".dorado");
-		if ((tempDir.exists() && tempDir.isDirectory()) || tempDir.mkdir()) {
-			TempFileUtils.setTempDir(tempDir);
-		}
-		ConsoleUtils.outputLoadingInfo("[TempDir: "
-				+ TempFileUtils.getTempDir().getPath() + "]");
-
 		// 创建一个临时的ResourceLoader
 		ResourceLoader resourceLoader = new ServletContextResourceLoader(
 				servletContext) {
@@ -276,6 +269,20 @@ public class DoradoLoader {
 
 		ConsoleUtils.outputConfigureItem("core.runMode");
 		ConsoleUtils.outputConfigureItem("core.addonLoadMode");
+
+		File tempDir;
+		String tempDirPath = configureStore.getString("core.tempDir");
+		if (StringUtils.isNotBlank(tempDirPath)) {
+			tempDir = new File(tempDirPath);
+		} else {
+			tempDir = new File(WebUtils.getTempDir(servletContext), ".dorado");
+		}
+
+		if ((tempDir.exists() && tempDir.isDirectory()) || tempDir.mkdir()) {
+			TempFileUtils.setTempDir(tempDir);
+		}
+		ConsoleUtils.outputLoadingInfo("[TempDir: "
+				+ TempFileUtils.getTempDir().getPath() + "]");
 
 		// 选择一个存储目录
 		File storeDir;
