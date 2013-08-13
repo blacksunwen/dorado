@@ -24,7 +24,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import com.bstek.dorado.config.xml.XmlConstants;
 import com.bstek.dorado.config.xml.XmlParseException;
@@ -146,19 +145,6 @@ public class XmlDocumentPreprocessor {
 		}
 	}
 
-	private void gothroughElement(Element element) {
-		// Xerces的DOM不是线程安全的，需通过此方法规避
-		NodeList childNodes = element.getChildNodes();
-		for (int i = 0; i < childNodes.getLength(); i++) {
-			Node child = childNodes.item(i);
-			if (child != null && child instanceof Element) {
-				gothroughElement((Element) child);
-			} else {
-				// do nothing;
-			}
-		}
-	}
-
 	@SuppressWarnings("unchecked")
 	private void postProcessNodeReplacement(Element element) {
 		Document ownerDocument = element.getOwnerDocument();
@@ -173,7 +159,6 @@ public class XmlDocumentPreprocessor {
 						for (Element el : replaceContent) {
 							Element clonedElement = (Element) ownerDocument
 									.importNode(el, true);
-							gothroughElement(clonedElement);
 							element.insertBefore(clonedElement, child);
 						}
 						child.setUserData("dorado.replace", null, null);
@@ -480,7 +465,6 @@ public class XmlDocumentPreprocessor {
 			if (!specialMergeProperties.contains(propertyName)) {
 				Element clonedElement = (Element) templateDocument.importNode(
 						propertyElement, true);
-				gothroughElement(clonedElement);
 				templteViewElement.appendChild(clonedElement);
 			}
 		}
@@ -507,7 +491,6 @@ public class XmlDocumentPreprocessor {
 			if (componentTypeRegistry.getRegisterInfo(nodeName) == null) {
 				Element clonedElement = (Element) templateDocument.importNode(
 						element, true);
-				gothroughElement(clonedElement);
 				templteViewElement.appendChild(clonedElement);
 			}
 		}
@@ -540,7 +523,6 @@ public class XmlDocumentPreprocessor {
 					metaDataElement, XmlConstants.PROPERTY)) {
 				Element clonedElement = (Element) templateDocument.importNode(
 						metaPropertyElement, true);
-				gothroughElement(clonedElement);
 				templateMetaDataElement.appendChild(clonedElement);
 			}
 		}
@@ -590,7 +572,6 @@ public class XmlDocumentPreprocessor {
 					Element element = entry.getValue();
 					Element clonedElement = (Element) templateDocument
 							.importNode(element, true);
-					gothroughElement(clonedElement);
 					argumentsElement.appendChild(clonedElement);
 				}
 			}
@@ -625,7 +606,6 @@ public class XmlDocumentPreprocessor {
 				for (Element model : modelElements) {
 					Element clonedElement = (Element) templateDocument
 							.importNode(model, true);
-					gothroughElement(clonedElement);
 					templateModelElement.appendChild(clonedElement);
 				}
 			}
