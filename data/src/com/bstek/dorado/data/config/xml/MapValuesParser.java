@@ -26,7 +26,7 @@ import com.bstek.dorado.util.xml.DomUtils;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2013-6-6
  */
-public class MapValuesParser extends PreloadDataElementParser {
+public class MapValuesParser extends DataElementParser {
 	@Override
 	protected Object doParse(Node node, ParseContext context) throws Exception {
 		String text;

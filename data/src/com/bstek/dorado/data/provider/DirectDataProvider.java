@@ -36,7 +36,7 @@ public class DirectDataProvider extends AbstractDataProvider {
 	private Object result;
 
 	@Override
-	@XmlProperty(parser = "spring:dorado.preloadDataParser")
+	@XmlProperty(parser = "spring:dorado.dataParser")
 	@IdeProperty(editor = "pojo")
 	public Object getResult() throws Exception {
 		return super.getResult();

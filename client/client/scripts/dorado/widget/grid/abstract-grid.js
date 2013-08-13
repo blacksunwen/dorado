@@ -1895,8 +1895,15 @@
 					}
 				}
 			} else {
-				this._editing = false;
-				this.setCurrentColumn(null);
+				var clickOnCellEditor = false;
+				if (this._currentCellEditor) {
+					var cellEditorDom = this._currentCellEditor.getDom();
+					clickOnCellEditor = ($DomUtils.isOwnerOf(evt.target, cellEditorDom));
+				}
+				if (!clickOnCellEditor) {
+					this._editing = false;
+					this.setCurrentColumn(null);
+				}
 			}
 			
 			return $invokeSuper.call(this, arguments);

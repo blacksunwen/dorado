@@ -265,8 +265,8 @@
 				});
 			}
 
-			notifyChildren(this, this.isActualVisible());
 			$invokeSuper.call(this);
+			notifyChildren(this, this.isActualVisible());
 		},
 
 		doRenderToOrReplace: function(replace, element, nextChildElement) {

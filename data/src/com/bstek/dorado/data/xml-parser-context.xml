@@ -39,12 +39,14 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 		parent="dorado.genericObjectParser" />
 
 	<!-- Data Parser -->
+	<!-- 
 	<bean id="dorado.preloadDataParser"
 		class="com.bstek.dorado.data.config.xml.PreloadDataElementParser"
 		parent="dorado.genericParser">
 		<property name="dataParser" ref="dorado.dataParser" />
 		<d:property-parser key="dataType" value-ref="dorado.ignoreParser" />
 	</bean>
+	-->
 	<bean id="dorado.dataParser" class="com.bstek.dorado.data.config.xml.DataElementParser"
 		parent="dorado.genericParser">
 		<d:sub-parser key="List,Collection" value-ref="dorado.listParser" />
@@ -75,7 +77,7 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 	</bean>
 
 	<!-- Common Parser -->
-	<bean id="dorado.dataPropertyParser" parent="dorado.preloadDataParser" />
+	<bean id="dorado.dataPropertyParser" parent="dorado.dataParser" />
 	<bean id="dorado.staticDataPropertyParser" parent="dorado.genericParser"
 		class="com.bstek.dorado.data.config.xml.StaticPropertyParser" />
 
@@ -105,7 +107,7 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 	</bean>
 
 	<bean id="dorado.mapValuesParser" class="com.bstek.dorado.data.config.xml.MapValuesParser"
-		parent="dorado.preloadDataParser" />
+		parent="dorado.dataParser" />
 
 	<!-- Validator Parser -->
 	<bean id="dorado.validatorParserDispatcher" parent="dorado.genericParser"

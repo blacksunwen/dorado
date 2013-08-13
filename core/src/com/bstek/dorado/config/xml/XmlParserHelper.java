@@ -66,7 +66,7 @@ public class XmlParserHelper implements BeanFactoryAware {
 	private static final String COMPOSITE_PROPERTY_PARSER = "dorado.prototype.compositePropertyParser";
 	private static final String CLASS_TYPE_PROPERTY_PARSER = "dorado.classTypePropertyParser";
 	private static final String STRING_ARRAY_PROPERTY_PARSER = "dorado.stringArrayPropertyParser";
-	private static final String DATA_PROPERTY_PARSER = "dorado.preloadDataParser";
+	private static final String DATA_PROPERTY_PARSER = "dorado.dataParser";
 	private static final String STATIC_PROPERTY_PARSER = "dorado.staticPropertyParser";
 
 	private static final String CLIENT_EVENT_PARSER = "dorado.clientEventParser";

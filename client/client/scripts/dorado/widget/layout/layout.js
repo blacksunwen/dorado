@@ -332,9 +332,15 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 	 * @see dorado.widget.Control#onResize
 	 */
 	onResize: function() {
-		if (this._ignoreControlSizeChange || !this.doOnResize) return;
-		var containerDom = this.getDom();
-		if (containerDom.offsetWidth == 0  || containerDom.offsetHeight == 0) return;
+		if (!this._attached || this._ignoreControlSizeChange || !this.doOnResize) return;
+
+		var containerDom = this._dom.parentNode;
+		var clientWidth = this._containerWidth = containerDom.clientWidth;
+		var clientHeight = this._containerHeight = containerDom.clientHeight;
+		if (clientWidth > 10000) clientWidth = 0;
+		if (clientHeight > 10000) clientHeight = 0;
+		if (clientWidth == 0 && clientHeight == 0) return;
+		
 		this.doOnResize();
 	},
 	
