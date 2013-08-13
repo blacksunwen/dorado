@@ -15,14 +15,14 @@ package com.bstek.dorado.idesupport.robot;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import com.bstek.dorado.core.xml.DefaultXmlDocumentBuilder;
+import com.bstek.dorado.core.xml.XercesXmlDocumentBuilder;
 import com.bstek.dorado.idesupport.IdeSupportContextTestCase;
 import com.bstek.dorado.util.xml.DomUtils;
 
 public class EntityDataTypeReflectionRobotTest extends
 		IdeSupportContextTestCase {
 	public void test() throws Exception {
-		Document document = new DefaultXmlDocumentBuilder().newDocument();
+		Document document = new XercesXmlDocumentBuilder().newDocument();
 		Element dataTypeElement = document.createElement("DataType");
 		dataTypeElement.setAttribute("matchType",
 				"com.bstek.dorado.view.widget.base.Button");

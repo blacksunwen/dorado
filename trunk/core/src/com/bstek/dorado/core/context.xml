@@ -15,7 +15,7 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 		</property>
 	</bean>
 
-	<bean id="dorado.xmlDocumentBuilder" class="com.bstek.dorado.core.xml.DefaultXmlDocumentBuilder" />
+	<bean id="dorado.xmlDocumentBuilder" class="com.bstek.dorado.core.xml.XercesXmlDocumentBuilder" />
 
 	<!-- Bean Implementation -->
 	<bean id="dorado.scopeManager" class="com.bstek.dorado.core.bean.ScopeManager" />

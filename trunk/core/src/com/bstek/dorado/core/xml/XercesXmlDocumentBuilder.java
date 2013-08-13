@@ -35,9 +35,9 @@ import com.bstek.dorado.core.io.Resource;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Feb 15, 2007
  */
-public class DefaultXmlDocumentBuilder implements XmlDocumentBuilder {
+public class XercesXmlDocumentBuilder implements XmlDocumentBuilder {
 	private static final Log logger = LogFactory
-			.getLog(DefaultXmlDocumentBuilder.class);
+			.getLog(XercesXmlDocumentBuilder.class);
 
 	protected DocumentBuilder getDocumentBuilder()
 			throws ParserConfigurationException {
