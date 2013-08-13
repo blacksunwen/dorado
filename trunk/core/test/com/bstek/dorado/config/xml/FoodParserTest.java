@@ -22,16 +22,16 @@ import com.bstek.dorado.config.xml.XmlParserHelper.XmlParserInfo;
 import com.bstek.dorado.core.Context;
 import com.bstek.dorado.core.ContextTestCase;
 import com.bstek.dorado.core.io.Resource;
-import com.bstek.dorado.core.xml.DefaultXmlDocumentBuilder;
+import com.bstek.dorado.core.xml.XercesXmlDocumentBuilder;
 
 public class FoodParserTest extends ContextTestCase {
 	private static final String MOCK_XML = "com/bstek/dorado/config/xml/Food.xml";
-	private DefaultXmlDocumentBuilder xmlDocumentBuilder = null;
+	private XercesXmlDocumentBuilder xmlDocumentBuilder = null;
 
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		xmlDocumentBuilder = new DefaultXmlDocumentBuilder();
+		xmlDocumentBuilder = new XercesXmlDocumentBuilder();
 	}
 
 	@Override
