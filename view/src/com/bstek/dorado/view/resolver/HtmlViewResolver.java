@@ -28,6 +28,7 @@ import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.ResourceNotFoundException;
 
 import com.bstek.dorado.common.ClientType;
+import com.bstek.dorado.core.Context;
 import com.bstek.dorado.core.io.Resource;
 import com.bstek.dorado.data.config.ConfigurableDataConfigManager;
 import com.bstek.dorado.data.config.DataConfigManager;
@@ -66,7 +67,9 @@ public class HtmlViewResolver extends AbstractTextualResolver {
 	private int uriPrefixLen;
 	private String uriSuffix;
 	private int uriSuffixLen;
+	private String touchUserAgents;
 
+	private String[] touchUserAgentArray;
 	private boolean shouldAutoLoadDataConfigResources;
 	private long lastValidateTimestamp;
 	private List<ViewResolverListener> listeners;
@@ -121,6 +124,20 @@ public class HtmlViewResolver extends AbstractTextualResolver {
 		uriSuffixLen = (uriSuffix != null) ? uriSuffix.length() : 0;
 	}
 
+	public String getTouchUserAgents() {
+		return touchUserAgents;
+	}
+
+	public void setTouchUserAgents(String touchUserAgents) {
+		this.touchUserAgents = touchUserAgents;
+
+		if (StringUtils.isEmpty(touchUserAgents)) {
+			touchUserAgentArray = null;
+		} else {
+			touchUserAgentArray = StringUtils.split(touchUserAgents, ",;");
+		}
+	}
+
 	public synchronized void addViewResolverListener(
 			ViewResolverListener listener) {
 		if (listeners == null) {
@@ -139,6 +156,17 @@ public class HtmlViewResolver extends AbstractTextualResolver {
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
+		if (touchUserAgentArray != null) {
+			String userAgent = request.getHeader("user-agent");
+			for (String mobile : touchUserAgentArray) {
+				if (StringUtils.containsIgnoreCase(userAgent, mobile)) {
+					Context context = Context.getCurrent();
+					context.setAttribute("com.bstek.dorado.view.resolver.HtmlViewResolver.isTouch", true);
+					break;
+				}
+			}
+		}
+
 		String uri = getRelativeRequestURI(request);
 		if (!PathUtils.isSafePath(uri)) {
 			throw new PageAccessDeniedException("[" + request.getRequestURI()
