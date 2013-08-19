@@ -50,15 +50,6 @@
 			resources/i18n/core
 		</Package>
 
-		<Package name="desktop-support-skin" pattern="dorado-css"
-			clientType="desktop">
-			skins/~current/desktop-support
-		</Package>
-		<Package name="desktop-support" pattern="dorado-js"
-			depends="jquery-plugins,core,desktop-support-skin" clientType="desktop">
-			scripts/dorado/desktop-support
-		</Package>
-
 		<Package name="touch-patch-skin" pattern="dorado-css">
 			skins/~current/touch-patch
 		</Package>
@@ -66,20 +57,31 @@
 			scripts/dorado/touch-patch
 		</Package>
 
+		<Package name="desktop-support-skin" pattern="dorado-css"
+			clientType="desktop">
+			skins/~current/desktop-support
+		</Package>
+		<Package name="desktop-support" pattern="dorado-js"
+			depends="jquery-plugins,core,touch-patch,desktop-support-skin" clientType="desktop">
+			scripts/dorado/desktop-support
+		</Package>
+
 		<Package name="data" pattern="dorado-js" depends="core">
 			scripts/dorado/data,
 			resources/i18n/data
 		</Package>
 
-		<Package name="widget-skin" pattern="dorado-css">		
+		<Package name="widget-support-skin" pattern="dorado-css">		
 			skins/~current/widget-support,
 			skins/~current/layout
 		</Package>
-		<Package name="widget" pattern="dorado-js" depends="data,widget-skin">
+		<Package name="widget-support" pattern="dorado-js" depends="data,widget-support-skin">
 			scripts/dorado/widget-support,
 			skins/~current/support,
 			scripts/dorado/layout
 		</Package>
+		
+		<Package name="widget" pattern="dorado-js" depends="widget-support" />
 
 		<Package name="base-widget-skin" pattern="dorado-css">
 			skins/~current/base-widget,

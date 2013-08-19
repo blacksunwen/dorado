@@ -82,6 +82,8 @@
 	</bean>
 
 	<bean id="dorado.htmlViewResolver" class="com.bstek.dorado.view.resolver.HtmlViewResolver">
+		<property name="touchUserAgents"
+			value="iPad,iPhone,Android,BlackBerry,Windows Phone,WebOS,Meego" />
 		<property name="templateFile"
 			value="home:w3c-html4-template.html,classpath:com/bstek/dorado/view/resolver/w3c-html4-template.html" />
 		<property name="dataConfigManager" ref="dorado.dataConfigManager" />

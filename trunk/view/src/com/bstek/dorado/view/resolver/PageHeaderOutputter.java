@@ -16,7 +16,6 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,8 +30,6 @@ import com.bstek.dorado.data.variant.VariantUtils;
 import com.bstek.dorado.view.View;
 import com.bstek.dorado.view.config.attachment.AttachedResourceManager;
 import com.bstek.dorado.view.config.attachment.JavaScriptContent;
-import com.bstek.dorado.view.loader.Package;
-import com.bstek.dorado.view.loader.PackagesConfigManager;
 import com.bstek.dorado.view.output.OutputContext;
 import com.bstek.dorado.view.output.Outputter;
 import com.bstek.dorado.web.DoradoContext;
@@ -48,7 +45,6 @@ public class PageHeaderOutputter implements Outputter {
 	private LocaleResolver localeResolver;
 	private AttachedResourceManager javaScriptResourceManager;
 	private AttachedResourceManager styleSheetResourceManager;
-	private PackagesConfigManager packagesConfigManager;
 	private List<ClientSettingsOutputter> clientSettingsOutputters = new ArrayList<ClientSettingsOutputter>();
 
 	public PageHeaderOutputter() {
@@ -76,11 +72,6 @@ public class PageHeaderOutputter implements Outputter {
 		this.styleSheetResourceManager = styleSheetResourceManager;
 	}
 
-	public void setPackagesConfigManager(
-			PackagesConfigManager packagesConfigManager) {
-		this.packagesConfigManager = packagesConfigManager;
-	}
-
 	public void addClientSettingsOutputter(
 			ClientSettingsOutputter clientSettingsOutputter) {
 		clientSettingsOutputters.add(clientSettingsOutputter);
@@ -88,25 +79,11 @@ public class PageHeaderOutputter implements Outputter {
 
 	protected String getBasePackageNames(Object object, int clientType,
 			OutputContext context) throws Exception {
-		Map<String, Package> packages = packagesConfigManager
-				.getPackagesConfig().getPackages();
-
 		String clientTypeName = ClientType.toString(clientType);
 
 		StringBuffer buf = new StringBuffer(12);
 		buf.append(clientTypeName).append("-support,");
-
-		String patchPlatform = clientTypeName + "-patch";
-		if (packages.get(patchPlatform) != null) {
-			buf.append(patchPlatform).append(',');
-		}
-
 		buf.append("widget");
-
-		String widgetPlatform = "widget-" + clientTypeName;
-		if (packages.get(widgetPlatform) != null) {
-			buf.append(',').append(widgetPlatform);
-		}
 
 		return buf.toString();
 	}
