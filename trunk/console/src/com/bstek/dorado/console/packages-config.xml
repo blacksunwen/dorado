@@ -1,17 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
-	<Patterns>
-		<Pattern name="js" contentType="text/javascript" charset="UTF-8"
-			mergeRequests='${configure["view.mergeJavaScript"]}' resourceSuffix=".js" />
-		<Pattern name="css" contentType="text/css" charset="UTF-8"
-			mergeRequests='${configure["view.mergeStyleSheet"]}' resourceSuffix=".css" />
-	</Patterns>
 	<Packages>
 		<!-- google code prettify -->
-		<Package name="console-utils-js" pattern="js"
+		<Package name="console-utils-js" pattern="res-js"
 			baseUri=">dorado/client/skins/console">
 			classpath:dorado/console/scripts/console-utils
 		</Package>
-		
 	</Packages>
 </config>
