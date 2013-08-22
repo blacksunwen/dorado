@@ -125,16 +125,29 @@
             height: 400,
             tabs: [
                 {
+                    $type: "IFrame",
+                    caption: "测试5",
+                    closeable: true,
+                    path: "http://www.weibo.com"
+                },
+                {
                     $type: "Control",
                     name: "tab1",
                     caption: "测试1",
                     tip: "TEst",
-                    control: new dorado.widget.Control({
+                    control: new dorado.widget.Container({
                         width: 400,
                         height: 200,
                         style: {
-                            border: "5px black dotted"
-                        }
+                            border: "1px black dotted"
+                        },
+                        children: [{
+                            $type: "TextEditor"
+                        }, {
+                            $type: "TextEditor"
+                        }, {
+                            $type: "TextEditor"
+                        }]
                     })
                 },
                 {
@@ -160,12 +173,6 @@
                             border: "2px red dotted"
                         }
                     })
-                },
-                {
-                    $type: "IFrame",
-                    caption: "测试5",
-                    closeable: true,
-                    path: "http://www.bsdn.org"
                 }
             ],
             tabMinWidth: 100,
