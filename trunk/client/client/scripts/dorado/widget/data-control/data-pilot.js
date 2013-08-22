@@ -609,14 +609,18 @@
 //						});
 //					}
 //				},
+				onPost:function (self, arg) {
+					gotoPage.fireEvent("onAction", gotoPage, {pageNo:spinner.get("value")});
+				},
 				onKeyDown: function(self, arg) {
 					if (arg.keyCode == 13) {
 						spinner.post();
-						if (gotoPage._currentPageNo != spinner.get("value")) {
-							gotoPage.fireEvent("onAction", gotoPage, {
-								pageNo: spinner.get("value")
-							});
-						}
+						arg.returnValue = true;
+//						if (gotoPage._currentPageNo != spinner.get("value")) {
+//							gotoPage.fireEvent("onAction", gotoPage, {
+//								pageNo: spinner.get("value")
+//							});
+//						}
 					}
 				},
 				width: 40,
@@ -695,6 +699,12 @@
 					pageSizeControl.fireEvent("onAction", pageSizeControl, {
 						pageSize: spinner.get("value")
 					});
+				},
+				onKeyDown: function(self, arg) {
+					if (arg.keyCode == 13) {
+						spinner.post();
+						arg.returnValue = true;
+					}
 				},
 				width: 45,
 				style: "float: left; margin-top: 1px"
