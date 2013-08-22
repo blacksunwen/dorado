@@ -688,7 +688,7 @@
 				this.updateWrapperType();
 			}
 			return this._wrapperType;
-		},
+		}
 	}); 
 
 	/**

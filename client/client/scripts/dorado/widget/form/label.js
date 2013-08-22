@@ -260,7 +260,7 @@ dorado.widget.Image = $extend([dorado.widget.Control, dorado.widget.PropertyData
 			$imageDom.css({
 				position: "",
 				width: "100%",
-				height: "100%",
+				height: "100%"
 			});
 		}
 		return dom;
@@ -297,7 +297,7 @@ dorado.widget.Image = $extend([dorado.widget.Control, dorado.widget.PropertyData
 			$imageDom.css({
 				position: "absolute",
 				width: "",
-				height: "",
+				height: ""
 			});
 		}
 		$imageDom.attr("src", $url(imgUrl));
