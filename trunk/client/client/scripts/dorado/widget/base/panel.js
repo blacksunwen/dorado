@@ -223,10 +223,12 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 			if (collapseButton) {
 				collapseButton.set("iconClass", collapsed ? ("expand-icon-" + direction) : ("collapse-icon-" + direction));
 			}
-			panel._parent.doSetCollapsed(collapsed, function() {
-                beforeCollapsedChange(panel, collapsed);
-				onCollapsedChange(panel, collapsed);
-			}, true);
+			if (!panel._splitPanelCascade) {
+				panel._parent.doSetCollapsed(collapsed, function() {
+					beforeCollapsedChange(panel, collapsed);
+					onCollapsedChange(panel, collapsed);
+				}, true);
+			}
 		} else {
 			panel._collapsed = collapsed;
 				

@@ -172,6 +172,24 @@
 		},
 
 		EVENTS: /** @scope dorado.widget.SplitPanel.prototype*/ {
+			/**
+			 * 在容器折叠或者展开之前触发，只有当collapseable为true的时候才会触发该事件。
+			 *
+			 * @param {Object} self 事件的发起者，即组件本身。
+			 * @param {Object} arg 事件参数。
+			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+			 * @event
+			 */
+			beforeCollapsedChange: {},
+			/**
+			 * 在容器折叠或者展开之后触发，只有当collapseable为true的时候才会触发该事件。
+			 *
+			 * @param {Object} self 事件的发起者，即组件本身。
+			 * @param {Object} arg 事件参数。
+			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+			 * @event
+			 */
+			onCollapsedChange: {}
 		},
 
 		_openPreview: function() {
@@ -402,7 +420,10 @@
 		},
 
 		doSetCollapsed: function(collapsed, callback, slience) {
-			var panel = this, dom = panel._dom, doms = panel._doms;
+			var panel = this, dom = panel._dom, doms = panel._doms, eventArg = {};
+			panel.fireEvent("beforeCollapsedChange", panel, eventArg);
+			if (eventArg.processDefault === false) return;
+
 			if (dom) {
 				var width = $fly(dom).width(), height = $fly(dom).height(), direction = panel._direction, left;
 
@@ -412,6 +433,7 @@
                     }
                     panel._collapsed = collapsed;
                     panel.refresh();
+	                panel.fireEvent("onCollapsedChange", panel);
                     $fly(doms.sidePanel).css("z-index", "");
                     if (typeof callback == "function") {
                         callback.apply(null, []);
@@ -498,11 +520,14 @@
 				}
 			} else {
 				panel._collapsed = collapsed;
+				panel.fireEvent("onCollapsedChange", panel);
 			}
 
-			if (!slience) {
+			if (slience !== true) {
 				if (panel._sideControl instanceof dorado.widget.AbstractPanel) {
+					panel._sideControl._splitPanelCascade = true;
 					panel._sideControl.set("collapsed", collapsed);
+					panel._sideControl._splitPanelCascade = false;
 				}
 			}
 		},
