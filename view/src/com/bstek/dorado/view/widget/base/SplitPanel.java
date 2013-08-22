@@ -12,6 +12,8 @@
 
 package com.bstek.dorado.view.widget.base;
 
+import com.bstek.dorado.annotation.ClientEvent;
+import com.bstek.dorado.annotation.ClientEvents;
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.IdeProperty;
@@ -30,6 +32,8 @@ import com.bstek.dorado.view.widget.InnerElementReference;
 		dependsPackage = "base-widget-desktop")
 @ClientObject(prototype = "dorado.widget.SplitPanel",
 		shortTypeName = "SplitPanel")
+@ClientEvents({ @ClientEvent(name = "beforeCollapsedChange"),
+		@ClientEvent(name = "onCollapsedChange") })
 public class SplitPanel extends Control {
 	private Direction direction = Direction.left;
 	private InnerElementReference<Control> sideControlRef = new InnerElementReference<Control>(
