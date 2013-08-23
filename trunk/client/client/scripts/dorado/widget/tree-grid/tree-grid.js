@@ -54,8 +54,8 @@
 	 */
 	dorado.widget.treegrid.RowRenderer = $extend(dorado.widget.grid.DefaultRowRenderer, /** @scope dorado.widget.treegrid.RowRenderer.prototype */ {
 		renderCell: function(cellRenderer, dom, arg) {
-			var node = arg.node = arg.data;
-			arg.data = (node instanceof dorado.widget.tree.DataNode) ? node._data : node;
+			var node = arg.node = arg.data._node;
+			//arg.data = (node instanceof dorado.widget.tree.DataNode) ? node._data : node;
 			arg.dataForSelection = node;
 			dorado.widget.grid.DefaultRowRenderer.prototype.renderCell.call(this, cellRenderer, dom, arg);
 		}
@@ -692,6 +692,10 @@
 					grid.doInnerGridSetCurrentRow(this, currentNode ? currentNode._id : null);
 				}
 			}
+		},
+
+		refreshItemDomData: function(row, item) {
+			$invokeSuper.call(this, [row, item.get("data")]);
 		},
 		
 		getCurrentItem: function() {
