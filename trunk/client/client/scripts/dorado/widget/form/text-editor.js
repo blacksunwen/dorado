@@ -739,7 +739,7 @@
 			 * 	<ul>
 			 * 	<li>直接放入一个校验器的实例对象。</li>
 			 * 	<li>放入含校验器信息的JSON对象。<br>
-			 * 此时可以使用子控件类型名称中"dorado."和"Validator"之间的部分作为$type的简写。
+			 * 此时可以使用子控件类型名称中"dorado.validator."和"Validator"之间的部分作为$type的简写。
 			 * 	</li>
 			 * 	<li>直接放入一个字符串代表$type的简写。</li>
 			 * 	</ul>
