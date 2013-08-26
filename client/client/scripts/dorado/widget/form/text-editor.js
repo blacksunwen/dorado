@@ -829,12 +829,12 @@
 					maxLength: this._maxLength
 				});
 				var results = validator.validate(text);
-				if (results) validationResults.concat(results);
+				if (results) validationResults = validationResults.concat(results);
 				
 				if (this._validators) {
 					jQuery.each(this._validators, function(i, validator) {
 						results = validator.validate(text);
-						if (results) validationResults.concat(results);
+						if (results) validationResults = validationResults.concat(results);
 					});
 				}
 			}
