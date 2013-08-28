@@ -142,6 +142,7 @@
 			onScrollStart: null,
 			onBeforeScrollMove: null,
 			onScrollMove: null,
+			onScrolling: null,
 			onBeforeScrollEnd: null,
 			onScrollEnd: null,
 			onTouchEnd: null,
@@ -729,6 +730,7 @@
 				newY = (step.y - startY) * easeOut + startY;
 				scroll._pos(newX, newY);
 				if (scroll.animating) scroll.aniTime = nextFrame(animate);
+				if (scroll.options.onScrolling) scroll.options.onScrolling.call(scroll);
 			};
 
 			animate();
