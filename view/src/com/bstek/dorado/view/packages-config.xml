@@ -62,7 +62,7 @@
 			skins/~current/desktop-support
 		</Package>
 		<Package name="desktop-support" pattern="dorado-js"
-			depends="jquery-plugins,core,touch-patch,desktop-support-skin" clientType="desktop">
+			depends="jquery-plugins,core,desktop-support-skin" clientType="desktop">
 			scripts/dorado/desktop-support
 		</Package>
 
@@ -75,7 +75,7 @@
 			skins/~current/widget-support,
 			skins/~current/layout
 		</Package>
-		<Package name="widget-support" pattern="dorado-js" depends="data,widget-support-skin">
+		<Package name="widget-support" pattern="dorado-js" depends="touch-patch,data,widget-support-skin">
 			scripts/dorado/widget-support,
 			skins/~current/support,
 			scripts/dorado/layout
