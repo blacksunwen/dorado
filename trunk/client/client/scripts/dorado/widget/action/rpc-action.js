@@ -831,6 +831,9 @@
 						return result.returnValue;
 					}
 				}
+				else {
+					$callback(callback, true);
+				}
 			}
 
 			var context;

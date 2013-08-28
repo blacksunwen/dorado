@@ -199,18 +199,22 @@ public class StandaloneRuleSetExporter {
 
 		// 读取configure.properties
 		loadConfigureProperties(configureStore, resourceLoader,
-				WEB_CONFIGURE_LOCATION, false);
+				WEB_CONFIGURE_LOCATION, true);
 
 		if (StringUtils.isNotEmpty(doradoHome)) {
 			String configureLocation = HOME_LOCATION_PREFIX
 					+ "configure.properties";
 			loadConfigureProperties(configureStore, resourceLoader,
 					configureLocation, false);
-			configureStore.set("core.runMode", RUN_MODE);
+		}
 
-			loadConfigureProperties(configureStore, resourceLoader,
-					CORE_PROPERTIES_LOCATION_PREFIX + "configure-" + RUN_MODE
-							+ ".properties", true);
+		configureStore.set("core.runMode", RUN_MODE);
+
+		loadConfigureProperties(configureStore, resourceLoader,
+				CORE_PROPERTIES_LOCATION_PREFIX + "configure-" + RUN_MODE
+						+ ".properties", true);
+
+		if (StringUtils.isNotEmpty(doradoHome)) {
 			loadConfigureProperties(configureStore, resourceLoader,
 					HOME_LOCATION_PREFIX + "configure-" + RUN_MODE
 							+ ".properties", true);

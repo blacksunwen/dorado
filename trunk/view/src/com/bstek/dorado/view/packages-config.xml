@@ -112,8 +112,6 @@
 			scripts/dorado/list,
 			resources/i18n/list
 		</Package>
-		
-		<Package name="base-widget-platform" pattern="dorado-js" depends="base-widget,base-widget-desktop" />
 
 		<Package name="grid-skin" pattern="dorado-css" clientType="desktop">
 			skins/~current/grid
@@ -154,7 +152,7 @@
 			resources/i18n/debugger
 		</Package>
 		
-		<!--  -->
+		<!-- Deprecated -->
 		<Package name="list" pattern="dorado-js" depends="base-widget-desktop" />
 	</Packages>
 </config>

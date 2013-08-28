@@ -411,7 +411,10 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 						if (startIndex == 0) self._hasChild = false;
 					}
 					finally {
-						if (tree) tree.enableAutoRefresh();
+						if (tree) {
+							tree.enableAutoRefresh();
+							tree.refresh(true);
+						}
 					}
 				}
 				if (callback) $callback(callback, success, result);

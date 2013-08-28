@@ -1186,6 +1186,7 @@
 			var dom = $invokeSuper.call(this, arguments);
 			$fly(dom).mousewheel($scopify(this, function(evt, delta) {
 				var divScroll = this._divScroll;
+				if (!divScroll) return;
 				if (divScroll.scrollHeight > divScroll.clientHeight) {
 					var scrollTop = divScroll.scrollTop - delta * this._rowHeight * 2;
 					if (scrollTop <= 0) {

@@ -20,6 +20,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.core.ConfigureStore;
+import com.bstek.dorado.core.Context;
 import com.bstek.dorado.core.MapConfigureStore;
 
 /**
@@ -203,34 +204,36 @@ class ConfigureWrapper extends ConfigureStore {
 	@SuppressWarnings("unchecked")
 	@Override
 	public Object get(String key) {
-		DoradoContext context = DoradoContext.getCurrent();
+		Context context = Context.getCurrent();
 
-		Map<String, Object> localConfigureMap = (Map<String, Object>) context
-				.getAttribute(DoradoContext.REQUEST, WebConfigure.STORE_KEY);
-		if (localConfigureMap != null) {
-			Object value = localConfigureMap.get(key);
-			if (value != null) {
-				if (value == WebConfigure.NULL) {
-					return null;
-				} else {
-					return value;
+		if (context instanceof DoradoContext) {
+			DoradoContext doradoContext = (DoradoContext) context;
+			Map<String, Object> localConfigureMap = (Map<String, Object>) doradoContext
+					.getAttribute(DoradoContext.REQUEST, WebConfigure.STORE_KEY);
+			if (localConfigureMap != null) {
+				Object value = localConfigureMap.get(key);
+				if (value != null) {
+					if (value == WebConfigure.NULL) {
+						return null;
+					} else {
+						return value;
+					}
+				}
+			}
+
+			localConfigureMap = (Map<String, Object>) doradoContext
+					.getAttribute(DoradoContext.SESSION, WebConfigure.STORE_KEY);
+			if (localConfigureMap != null) {
+				Object value = localConfigureMap.get(key);
+				if (value != null) {
+					if (value == WebConfigure.NULL) {
+						return null;
+					} else {
+						return value;
+					}
 				}
 			}
 		}
-
-		localConfigureMap = (Map<String, Object>) context.getAttribute(
-				DoradoContext.SESSION, WebConfigure.STORE_KEY);
-		if (localConfigureMap != null) {
-			Object value = localConfigureMap.get(key);
-			if (value != null) {
-				if (value == WebConfigure.NULL) {
-					return null;
-				} else {
-					return value;
-				}
-			}
-		}
-
 		return store.get(key);
 	}
 
