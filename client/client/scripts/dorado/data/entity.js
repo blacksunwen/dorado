@@ -402,7 +402,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				return value;
 			}
 			
-			var value = this._data[property];
+			var value = this._data[property], invokeCallback = true;
 			if (value === undefined) {
 				if (propertyDef) {
 					var dataPipeWrapper = null;
@@ -485,7 +485,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 										pipe : pipe
 									};	
 									if (isNewPipe) this.sendMessage(dorado.Entity._MESSAGE_LOADING_START, eventArg);
-									if (callback) return;
+									invokeCallback = false;
 								} else {
 									value = pipe.get();
 
@@ -515,9 +515,10 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			} else if (value != null && value.isDataPipeWrapper) {
 				var pipe = value.pipe;
 				if (loadMode != "never") {
-					pipe.getAsync(callback);
-					if (loadMode == "auto") {
+					if (loadMode == "auto" || callback) {
+						pipe.getAsync(callback);
 						value = undefined;
+						invokeCallback = false;
 					} else {
 						var shouldAbortAsyncProcedures = dorado.Setting["common.abortAsyncLoadingOnSyncLoading"];
 						if (pipe.runningProcNum > 0 && !shouldAbortAsyncProcedures) {
@@ -557,7 +558,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				propertyDef.fireEvent("onGet", propertyDef, eventArg);
 				value = eventArg.value;
 			}
-			if (callback) $callback(callback, true, value);
+			if (invokeCallback && callback) $callback(callback, true, value);
 			return value;
 		},
 		

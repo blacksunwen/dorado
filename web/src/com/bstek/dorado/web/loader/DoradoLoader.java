@@ -251,20 +251,28 @@ public class DoradoLoader {
 
 		// 读取configure.properties
 		loadConfigureProperties(configureStore, resourceLoader,
-				WEB_CONFIGURE_LOCATION, false);
+				WEB_CONFIGURE_LOCATION, true);
 
-		String configureLocation = HOME_LOCATION_PREFIX
-				+ "configure.properties";
-		loadConfigureProperties(configureStore, resourceLoader,
-				configureLocation, false);
-		String runMode = configureStore.getString("core.runMode");
+		String runMode = null;
+		if (StringUtils.isNotEmpty(doradoHome)) {
+			String configureLocation = HOME_LOCATION_PREFIX
+					+ "configure.properties";
+			loadConfigureProperties(configureStore, resourceLoader,
+					configureLocation, false);
+		}
+
+		runMode = configureStore.getString("core.runMode");
+
 		if (StringUtils.isNotEmpty(runMode)) {
 			loadConfigureProperties(configureStore, resourceLoader,
 					CORE_PROPERTIES_LOCATION_PREFIX + "configure-" + runMode
 							+ ".properties", true);
-			loadConfigureProperties(configureStore, resourceLoader,
-					HOME_LOCATION_PREFIX + "configure-" + runMode
-							+ ".properties", true);
+
+			if (StringUtils.isNotEmpty(doradoHome)) {
+				loadConfigureProperties(configureStore, resourceLoader,
+						HOME_LOCATION_PREFIX + "configure-" + runMode
+								+ ".properties", true);
+			}
 		}
 
 		ConsoleUtils.outputConfigureItem("core.runMode");
@@ -350,6 +358,7 @@ public class DoradoLoader {
 		}
 
 		// load packages
+
 		for (PackageInfo packageInfo : packageInfos) {
 			if (!packageInfo.isEnabled()) {
 				pushLocations(contextLocations,
@@ -414,16 +423,19 @@ public class DoradoLoader {
 		}
 
 		// 再次装载dorado-home下的properties，以覆盖addon中的设置。
-		configureLocation = HOME_LOCATION_PREFIX + "configure.properties";
-		loadConfigureProperties(configureStore, resourceLoader,
-				configureLocation, true);
-		if (StringUtils.isNotEmpty(runMode)) {
+		if (StringUtils.isNotEmpty(doradoHome)) {
+			String configureLocation = HOME_LOCATION_PREFIX
+					+ "configure.properties";
 			loadConfigureProperties(configureStore, resourceLoader,
-					CORE_PROPERTIES_LOCATION_PREFIX + "configure-" + runMode
-							+ ".properties", true);
-			loadConfigureProperties(configureStore, resourceLoader,
-					HOME_LOCATION_PREFIX + "configure-" + runMode
-							+ ".properties", true);
+					configureLocation, true);
+			if (StringUtils.isNotEmpty(runMode)) {
+				loadConfigureProperties(configureStore, resourceLoader,
+						CORE_PROPERTIES_LOCATION_PREFIX + "configure-"
+								+ runMode + ".properties", true);
+				loadConfigureProperties(configureStore, resourceLoader,
+						HOME_LOCATION_PREFIX + "configure-" + runMode
+								+ ".properties", true);
+			}
 		}
 
 		Resource resource;

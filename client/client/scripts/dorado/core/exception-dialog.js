@@ -89,7 +89,7 @@
 				beforeShow: function(dialog) {
 					exceptionDialogOpening = true;
 					
-					var dom = dialog._dom;
+					var dom = exceptionDialog._dom;
 					var $dom = jQuery(dom), $contentDom = jQuery(contentDom);
 					
 					var contentWidth = $fly(doms.iconDom).outerWidth() + $fly(doms.textDom).outerWidth();
@@ -99,7 +99,7 @@
 						contentWidth = exceptionDialogMaxWidth;
 					}
 					var dialogWidth = $dom.width(), panelWidth = $contentDom.width();
-					dialog._width = contentWidth + dialogWidth - panelWidth;
+					exceptionDialog._width = contentWidth + dialogWidth - panelWidth;
 					
 					var contentHeight = $contentDom.outerHeight();
 					if (contentHeight > exceptionDialogMaxHeight) {
@@ -109,10 +109,10 @@
 					}
 					if (contentHeight) {
 						var dialogHeight = $dom.height(), panelHeight = $contentDom.height();
-						dialog._height = contentHeight + dialogHeight - panelHeight;
+						exceptionDialog._height = contentHeight + dialogHeight - panelHeight;
 					}
 					
-					dialog.doOnResize();
+					exceptionDialog.doOnResize();
 				},
 				onHide: function(dialog) {
 					setTimeout(function() {

@@ -12,7 +12,7 @@
 
 package com.bstek.dorado.view.loader;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -25,8 +25,8 @@ public class PackagesConfig {
 	private String contextPath;
 	private String defaultContentType;
 	private String defaultCharset;
-	private Map<String, Pattern> patterns = new HashMap<String, Pattern>();
-	private Map<String, Package> packages = new HashMap<String, Package>();
+	private Map<String, Pattern> patterns = new LinkedHashMap<String, Pattern>();
+	private Map<String, Package> packages = new LinkedHashMap<String, Package>();
 
 	/**
 	 * 返回应用的根路径。
