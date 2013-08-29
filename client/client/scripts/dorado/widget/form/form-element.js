@@ -535,7 +535,7 @@
 			 * 但在读取时系统会统一的返回消息数组的形式。
 			 * 该数组中的每一项是一个JSON对象，包含下列两个子属性：
 			 * <ul>
-			 * <li>level    -    {String} 信息级别。取值范围包括：info、warn、error。默认值为error。</li>
+			 * <li>state    -    {String} 信息级别。取值范围包括：info、warn、error。默认值为error。</li>
 			 * <li>text    -    {String} 信息内容。</li>
 			 * </ul>
 			 * </p>
@@ -550,12 +550,12 @@
 						if (typeof hint == "string") {
 							hint = [
 								{
-									level: "info",
+									state: "info",
 									text: hint
 								}
 							];
 						} else {
-							hint.level = hint.level || "info";
+							hint.state = hint.state || "info";
 							hint = [hint];
 						}
 						return hint;
@@ -578,6 +578,10 @@
 					}
 
 					this._hint = trimHints(hint);
+					var hintControl = this.getHintControl(true);
+					if (hintControl) {
+						hintControl.set("messages", this._hint);
+					}					
 				}
 			},
 
