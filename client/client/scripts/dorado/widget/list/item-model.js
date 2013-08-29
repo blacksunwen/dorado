@@ -240,7 +240,7 @@
 		 * @param {Object} filterParams.value 过滤条件值。
 		 * @param {String} filterParams.junction 子过滤条件的连接方式，有"and"和"or"两种取值。
 		 * <p>
-		 * 当此属性的值不为空时filterParams.property、filterParams.operator、filterParams.value这些子属性都将被忽略，系统会进一步处理filterParams.filterParams属性。
+		 * 当此属性的值不为空时filterParams.property、filterParams.operator、filterParams.value这些子属性都将被忽略，系统会进一步处理filterParams.criterions属性。
 		 * </p>
 		 * @param {[Object]} filterParams.filterParams 子过滤条件数组。此参数仅在filterParams.junction不为空时有效。
 		 */
