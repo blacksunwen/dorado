@@ -214,11 +214,11 @@
                         dorado.MessageBox.updateText(dorado.MessageBox._lastText, dorado.MessageBox._lastIcon, dorado.MessageBox._lastIconClass, dorado.MessageBox._lastEditor, dorado.MessageBox._lastValue);
                     }
 
-                    dialog.addListener("beforeShow", function(dialog) {
-                        var dom = dialog._dom;
+                    dialog.addListener("beforeShow", function(self) {
+                        var dom = self._dom;
                         $fly(dom).width(dorado.MessageBox.maxWidth);
 
-                        var doms = dialog._doms, contentWidth = $fly(doms.msgText).outerWidth(true) + $fly(doms.msgContent).outerWidth() - $fly(doms.msgContent).width();
+                        var doms = self._doms, contentWidth = $fly(doms.msgText).outerWidth(true) + $fly(doms.msgContent).outerWidth() - $fly(doms.msgContent).width();
 
                         if (contentWidth < dorado.MessageBox.minWidth) {
                             contentWidth = dorado.MessageBox.minWidth;
@@ -226,14 +226,14 @@
                             contentWidth = dorado.MessageBox.maxWidth;
                         }
                         var dialogWidth = $fly(dom).width(), panelWidth = $fly(doms.contentPanel).width();
-                        dialog._width = contentWidth + dialogWidth - panelWidth;
-                        $fly(dom).width(dialog._width);
-                        dialog._height = null;
-                        dialog.doOnResize();
+                        self._width = contentWidth + dialogWidth - panelWidth;
+                        $fly(dom).width(self._width);
+                        self._height = null;
+                        self.doOnResize();
 
                         var options = dorado.MessageBox._runStack[0];
                         var buttons = options.buttons || [], buttonCount = buttons.length, editor = options.editor || "none",
-                            dlgButtons = dialog._buttons;
+                            dlgButtons = self._buttons;
 
                         if (editor != "none") {
                             dorado.MessageBox.resetEditorWidth(editor);
@@ -258,8 +258,8 @@
                         }
                     });
 
-                    dialog.addListener("afterShow", function(dialog) {
-                        var buttons = dialog._buttons, button;
+                    dialog.addListener("afterShow", function(self) {
+                        var buttons = self._buttons, button;
                         if(buttons){
                             button = buttons[0];
                             if(button && button._dom.style.display != "none") {

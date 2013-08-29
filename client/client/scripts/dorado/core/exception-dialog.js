@@ -86,7 +86,7 @@
 				},
 				buttonAlign: "right",
 				buttons: buttons,
-				beforeShow: function(dialog) {
+				beforeShow: function() {
 					exceptionDialogOpening = true;
 					
 					var dom = exceptionDialog._dom;
@@ -114,7 +114,7 @@
 					
 					exceptionDialog.doOnResize();
 				},
-				onHide: function(dialog) {
+				onHide: function() {
 					setTimeout(function() {
 						exceptionDialogOpening = false;
 						doShowExceptionDialog(); // Show next exception
@@ -222,10 +222,10 @@
 						editor: messsageTextArea
 					}]
 				}, tabControl],
-				beforeShow: function(dialog) {
+				beforeShow: function() {
 					exceptionDialogDetailOpening = true;
 				},
-				onHide: function(dialog) {
+				onHide: function() {
 					exceptionDialogDetailOpening = false;
 				}
 			});
