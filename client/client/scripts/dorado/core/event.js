@@ -485,10 +485,10 @@ dorado.EventSupport = $class(/** @scope dorado.EventSupport.prototype */{
 						if (object == null) {
 							object = scope.getDataType(param);
 						}
-						if (!object) {
-							if (i == 0) object = args[0];
-							else if (i == 1) object = args[1];
-						}
+						//if (!object) {
+						//	if (i == 0) object = args[0];
+						//	else if (i == 1) object = args[1];
+						//}
 						customArgs.push(object);
 					}
 				}
