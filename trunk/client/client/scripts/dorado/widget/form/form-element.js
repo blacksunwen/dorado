@@ -981,7 +981,7 @@
 				else {
 					var realHintWidth;
 					if (this._editorWidth > 0) {
-						realHintWidth = domWidth - this._editorWidth - this._hintSpacing;
+						realHintWidth = contentWidth - this._editorWidth - this._hintSpacing;
 					} else {
 						realHintWidth = this._hintWidth;
 					}
