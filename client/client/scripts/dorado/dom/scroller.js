@@ -361,35 +361,38 @@
 			this.update();
 			
 			var modernScrolled = this;
-			$container.mousewheel(function(evt, delta) {
-				if (container.scrollHeight > container.clientHeight) {
-					var scrollTop = container.scrollTop - delta * 25;
-					if (scrollTop <= 0) {
-						scrollTop = 0;
-					} else if (scrollTop + container.clientHeight > container.scrollHeight) {
-						scrollTop = container.scrollHeight - container.clientHeight;
+			if ($container.mousewheel) {
+				$container.mousewheel(function(evt, delta) {
+					if (container.scrollHeight > container.clientHeight) {
+						var scrollTop = container.scrollTop - delta * 25;
+						if (scrollTop <= 0) {
+							scrollTop = 0;
+						} else if (scrollTop + container.clientHeight > container.scrollHeight) {
+							scrollTop = container.scrollHeight - container.clientHeight;
+						}
+						var gap = container.scrollTop - scrollTop
+						if (gap) {
+							container.scrollTop = scrollTop;
+							if (Math.abs(gap) > MIN_SPILLAGE) return false;
+						}
 					}
-					var gap = container.scrollTop - scrollTop
-					if (gap) {
-						container.scrollTop = scrollTop;
-						if (Math.abs(gap) > MIN_SPILLAGE) return false;
+	
+					if (container.scrollWidth > container.clientWidth) {
+						var scrollLeft = container.scrollLeft - delta * 25;
+						if (scrollLeft <= 0) {
+							scrollLeft = 0;
+						} else if (scrollLeft + container.clientWidth > container.scrollWidth) {
+							scrollLeft = container.scrollWidth - container.clientWidth;
+						}
+						var gap = container.scrollLeft - scrollLeft
+						if (gap) {
+							container.scrollLeft = scrollLeft;
+							if (Math.abs(gap) > MIN_SPILLAGE) return false;
+						}
 					}
-				}
-
-				if (container.scrollWidth > container.clientWidth) {
-					var scrollLeft = container.scrollLeft - delta * 25;
-					if (scrollLeft <= 0) {
-						scrollLeft = 0;
-					} else if (scrollLeft + container.clientWidth > container.scrollWidth) {
-						scrollLeft = container.scrollWidth - container.clientWidth;
-					}
-					var gap = container.scrollLeft - scrollLeft
-					if (gap) {
-						container.scrollLeft = scrollLeft;
-						if (Math.abs(gap) > MIN_SPILLAGE) return false;
-					}
-				}
-			}).bind("scroll", function(evt) {
+				});
+			}
+			$container.bind("scroll", function(evt) {
 				modernScrolled.update();
 			}).resize(function(evt) {
 				modernScrolled.update();
