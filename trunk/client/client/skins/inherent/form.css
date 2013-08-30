@@ -152,6 +152,14 @@
 	display: inline;
 }
 
+.i-form-element .form-label-align-center {
+	text-align: center;
+}
+
+.i-form-element .form-label-align-right {
+	text-align: right;
+}
+
 .i-form-element .form-content {
 	zoom: 1;
 }
