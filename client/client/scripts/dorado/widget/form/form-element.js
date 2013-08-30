@@ -116,7 +116,7 @@
 			/**
 			 * 文本标签是否可见。
 			 * @type boolean
-			 * @attribute
+			 * @attribute writeBeforeReady
 			 * @default true
 			 */
 			showLabel: {
