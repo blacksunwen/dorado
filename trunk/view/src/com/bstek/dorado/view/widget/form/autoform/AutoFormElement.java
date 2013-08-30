@@ -23,7 +23,7 @@ import com.bstek.dorado.view.widget.form.FormElement;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-9-3
  */
-@Widget(name = "AutoFormElement", category = "AutoForm", dependsPackage = "base-widget-platform")
+@Widget(name = "AutoFormElement", category = "AutoForm", dependsPackage = "base-widget")
 @ClientObject(prototype = "dorado.widget.autoform.AutoFormElement", shortTypeName = "Default")
 @IdeObject(labelProperty = "id,name,property")
 @XmlNode(clientTypes = { ClientType.DESKTOP, ClientType.TOUCH })
