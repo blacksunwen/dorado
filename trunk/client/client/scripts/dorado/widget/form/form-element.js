@@ -120,7 +120,8 @@
 			 * @default true
 			 */
 			showLabel: {
-				defaultValue: true
+				defaultValue: true,
+				writeBeforeReady: true
 			},
 
 			/**
