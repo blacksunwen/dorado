@@ -30,7 +30,7 @@ import com.bstek.dorado.view.widget.datacontrol.PropertyDataControl;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-8-10
  */
-@Widget(name = "FormElement", category = "Form", dependsPackage = "base-widget-platform")
+@Widget(name = "FormElement", category = "Form", dependsPackage = "base-widget")
 @ClientObject(prototype = "dorado.widget.FormElement", shortTypeName = "FormElement")
 @XmlNode(clientTypes = { ClientType.DESKTOP, ClientType.TOUCH })
 public class FormElement extends Control implements FormConfig,

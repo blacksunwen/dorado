@@ -36,7 +36,7 @@ import com.bstek.dorado.view.widget.form.FormElementLabelPosition;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-9-3
  */
-@Widget(name = "AutoForm", category = "Form", dependsPackage = "base-widget-platform")
+@Widget(name = "AutoForm", category = "Form", dependsPackage = "base-widget")
 @ClientObject(prototype = "dorado.widget.AutoForm", shortTypeName = "AutoForm")
 @XmlNode(clientTypes = { ClientType.DESKTOP, ClientType.TOUCH })
 public class AutoForm extends Control implements FormConfig {
