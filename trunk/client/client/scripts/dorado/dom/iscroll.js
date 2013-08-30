@@ -605,15 +605,15 @@
 		_resetPosition: function (time) {
 			var scroll = this,
 				resetX = scroll.x >= 0 ? 0 : scroll.x < scroll.maxScrollX ? scroll.maxScrollX : scroll.x,
-				resetY = scroll.y >= scroll.minScrollY || scroll.maxScrollY > 0 ? scroll.minScrollY : scroll.y < scroll.maxScrollY ? scroll.maxScrollY : scroll.y;
+				resetY = scroll.y >= scroll.minScrollY || scroll.minScrollY > 0 ? scroll.minScrollY : scroll.y < scroll.maxScrollY ? scroll.maxScrollY : scroll.y;
 
 			if (resetX == scroll.x && resetY == scroll.y) {
 
-				//if (scroll.moved) {//注释此处是为了解决在momentum过程中按下页面不再滚动，然后onScrollEnd不再触发的bug。
-				scroll.moved = false;
-				if (scroll.options.onScrollEnd)
-					scroll.options.onScrollEnd.call(scroll);// Execute custom code on scroll end
-				//}
+				if (scroll.moved) { // 注释此处是为了解决在momentum过程中按下页面不再滚动，然后onScrollEnd不再触发的bug。
+					scroll.moved = false;
+					if (scroll.options.onScrollEnd)
+						scroll.options.onScrollEnd.call(scroll);// Execute custom code on scroll end
+				}
 
 				if (scroll.showHoriScrollbar && scroll.options.hideScrollbar) {
 					if (vendor == 'webkit')
@@ -691,7 +691,7 @@
 			if (scroll.animating) return;
 
 			if (!scroll.steps.length) {
-				scroll._resetPosition(400);
+				scroll._resetPosition(200);
 				return;
 			}
 
@@ -700,7 +700,7 @@
 			if (step.x == startX && step.y == startY) step.time = 0;
 
 			scroll.animating = true;
-			scroll.moved = true;
+			//scroll.moved = true;
 
 			if (scroll.options.useTransition) {
 				scroll._transitionTime(step.time);
@@ -719,7 +719,7 @@
 				if (now >= startTime + step.time) {
 					scroll._pos(step.x, step.y);
 					scroll.animating = false;
-					if (scroll.options.onAnimationEnd) scroll.options.onAnimationEnd.call(scroll); // Execute custom code on animation end
+					if (scroll.options.onScrollingEnd) scroll.options.onScrollingEnd.call(scroll); // Execute custom code on animation end
 					scroll._startAnimate();
 					return;
 				}
@@ -822,10 +822,14 @@
 		},
 
 		scrollSize: function(dir) {
+			return dir == "h" ? this.element.scrollWidth : this.element.scrollHeight;
+		},
+
+		doScrollSize: function(dir) {
 			var cache = this.getChildrenTransform();
 			this.updateChildrenStyle('transform', '');
 
-			var result = dir == "h" ? this.element.scrollWidth : this.element.scrollHeight;
+			var result = this.scrollSize(dir);
 
 			for (var i = 0; i < cache.length; i++) {
 				var config = cache[i];
@@ -842,8 +846,8 @@
 			scroll.elementHeight = scroll.viewportSize("v");
 
 			scroll.minScrollY = -scroll.options.topOffset || 0;
-			scroll.scrollTargetWidth = mround(scroll.scrollSize("h"));
-			scroll.scrollTargetHeight = mround((scroll.scrollSize("v") + scroll.minScrollY));
+			scroll.scrollTargetWidth = mround(scroll.doScrollSize("h"));
+			scroll.scrollTargetHeight = mround((scroll.doScrollSize("v") + scroll.minScrollY));
 			scroll.maxScrollX = scroll.elementWidth - scroll.scrollTargetWidth;
 			scroll.maxScrollY = scroll.elementHeight - scroll.scrollTargetHeight + scroll.minScrollY;
 			scroll.movingX = 0;
@@ -922,7 +926,7 @@
 			else
 				cancelFrame(this.aniTime);
 			this.steps = [];
-			this.moved = false;
+			//this.moved = false;
 			this.animating = false;
 		},
 
