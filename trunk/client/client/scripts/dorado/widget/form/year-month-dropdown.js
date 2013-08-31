@@ -395,10 +395,10 @@
 		createDropDownBox: function(editor) {
 			var dropDown = this, box = $invokeSuper.call(this, arguments), picker = new dorado.widget.YearMonthPicker({
 				listener: {
-					onPick: function(picker) {
-						var retval = new Date(picker._year, picker._month);
-						retval.year = picker._year;
-						retval.month = picker._month;
+					onPick: function(self) {
+						var retval = new Date(self._year, self._month);
+						retval.year = self._year;
+						retval.month = self._month;
 						dropDown.close(retval);
 					},
 					onCancel: function() {
