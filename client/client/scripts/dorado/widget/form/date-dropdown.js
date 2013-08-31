@@ -1032,20 +1032,20 @@
 			var dropDown = this, box = $invokeSuper.call(this, arguments), picker = new dorado.widget.DatePicker({
 				showTimeSpinner: this._showTimeSpinner,
 				listener: {
-					onPick: function(picker, value) {
+					onPick: function(self, arg) {
 						if (!dropDown._showTimeSpinner)
-							dropDown.close(value.date);
+							dropDown.close(arg.date);
 					},
-					onClear: function(picker) {
+					onClear: function(self) {
 						dropDown.close(null);
 					},
-					onConfirm: function(picker, value) {
-						dropDown.close(value.date);
+					onConfirm: function(self, arg) {
+						dropDown.close(arg.date);
 					},
 					onCancel: function() {
 						dropDown.close();
 					},
-					onFilterDate: function(picker, arg) {
+					onFilterDate: function(self, arg) {
 						dropDown.fireEvent("onFilterDate", dropDown, arg);
 					}
 				}
