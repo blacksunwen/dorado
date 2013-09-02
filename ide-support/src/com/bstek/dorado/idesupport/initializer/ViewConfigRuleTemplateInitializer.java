@@ -85,12 +85,12 @@ public class ViewConfigRuleTemplateInitializer implements
 				layoutRuleTemplate.setType(registerInfo.getClassType()
 						.getName());
 			}
-			
+
 			if (registerInfo.getClientTypes() != 0) {
 				layoutRuleTemplate
 						.setClientTypes(registerInfo.getClientTypes());
 			}
-			
+
 			layoutRuleTemplate.setSortFactor(++sortFactor);
 			ruleTemplateManager.addRuleTemplate(layoutRuleTemplate);
 			layoutHolderTemplate.addChild(new AutoChildTemplate(type,
@@ -110,6 +110,7 @@ public class ViewConfigRuleTemplateInitializer implements
 		List<RuleTemplate> componentRuleTemplates = new ArrayList<RuleTemplate>();
 		for (ComponentTypeRegisterInfo registerInfo : componentTypeRegistry
 				.getRegisterInfos()) {
+			boolean isAssembledComponent = registerInfo instanceof AssembledComponentTypeRegisterInfo;
 			String name = registerInfo.getName();
 			Class<? extends Component> classType = registerInfo.getClassType();
 
@@ -118,7 +119,7 @@ public class ViewConfigRuleTemplateInitializer implements
 					.getRuleTemplate(name);
 			if (componentRuleTemplate == null) {
 				componentRuleTemplate = new AutoRuleTemplate(name,
-						classType.getName());
+						(isAssembledComponent) ? null : classType.getName());
 				componentRuleTemplate.setLabel(name);
 				componentRuleTemplate.setGlobal(true);
 				componentRuleTemplate.setAutoInitialize(false);
@@ -135,7 +136,7 @@ public class ViewConfigRuleTemplateInitializer implements
 			componentRuleTemplate.setSortFactor(++sortFactor);
 			componentRuleTemplate.setCategory(registerInfo.getCategory());
 
-			if (registerInfo instanceof AssembledComponentTypeRegisterInfo) {
+			if (isAssembledComponent) {
 				componentRuleTemplate.setNodeName(name);
 
 				AssembledComponentTypeRegisterInfo assembledComponentTypeRegisterInfo = (AssembledComponentTypeRegisterInfo) registerInfo;
