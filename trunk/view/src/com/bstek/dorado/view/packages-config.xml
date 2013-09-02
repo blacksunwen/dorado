@@ -104,7 +104,7 @@
 			skins/~current/list
 		</Package>
 		<Package name="base-widget-desktop" pattern="dorado-js"
-			depends="base-widget,base-widget-desktop-skin"
+			depends="desktop-support,base-widget,base-widget-desktop-skin"
 			clientType="desktop">
 			scripts/dorado/base-widget-desktop,
 			resources/i18n/base-widget-desktop,
