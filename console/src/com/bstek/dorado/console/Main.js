@@ -13,7 +13,7 @@
 	}
 	view.get('#framePanel').set('caption', "${res.homePage}")
 }
-//@Bind ^menuBtn.onReady
+//@Bind ^menuBtn.onCreate
 !function(self, arg) {
 	self.set("renderer", new dorado.widget.blockview.ImageBlockRenderer({
 		captionProperty : "label",
