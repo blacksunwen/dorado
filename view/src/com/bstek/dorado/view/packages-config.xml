@@ -85,7 +85,6 @@
 
 		<Package name="base-widget-skin" pattern="dorado-css">
 			skins/~current/base-widget,
-			skins/~current/list,
 			skins/~current/form
 		</Package>
 		<Package name="base-widget" pattern="dorado-js"
