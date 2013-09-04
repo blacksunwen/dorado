@@ -124,6 +124,7 @@
 			useTransform: true,
 			useTransition: false,
 			topOffset: 0,
+			bottomOffset: 0,
 
 			// Scrollbar
 			showHoriScrollbar: true,
@@ -605,7 +606,7 @@
 		_resetPosition: function (time) {
 			var scroll = this,
 				resetX = scroll.x >= 0 ? 0 : scroll.x < scroll.maxScrollX ? scroll.maxScrollX : scroll.x,
-				resetY = scroll.y >= scroll.minScrollY || scroll.minScrollY > 0 ? scroll.minScrollY : scroll.y < scroll.maxScrollY ? scroll.maxScrollY : scroll.y;
+				resetY = scroll.y >= scroll.minScrollY || scroll.maxScrollY > 0 ? scroll.minScrollY : scroll.y < scroll.maxScrollY ? scroll.maxScrollY : scroll.y;
 
 			if (resetX == scroll.x && resetY == scroll.y) {
 
@@ -849,7 +850,7 @@
 			scroll.scrollTargetWidth = mround(scroll.doScrollSize("h"));
 			scroll.scrollTargetHeight = mround((scroll.doScrollSize("v") + scroll.minScrollY));
 			scroll.maxScrollX = scroll.elementWidth - scroll.scrollTargetWidth;
-			scroll.maxScrollY = scroll.elementHeight - scroll.scrollTargetHeight + scroll.minScrollY;
+			scroll.maxScrollY = scroll.elementHeight - scroll.scrollTargetHeight + scroll.minScrollY + ( -scroll.options.bottomOffset || 0 );
 			scroll.movingX = 0;
 			scroll.movingY = 0;
 
