@@ -763,13 +763,16 @@ dorado.dequeue = function(namespace) {
 				}
 
 				if (needUseModal) {
-					dorado.doOnBodyClick(function() {
+					var hideModalLayer = function() {
 						if (control._modalDom) {
 							control._modalDom.style.display = "none";
 							layerModalPool.returnObject(control._modalDom);
 							control._modalDom = null;
 						}
-					});
+					};
+					dorado.doOnBodyClick(hideModalLayer);
+					//此处是为了解决用户没有点击页面上的按钮而隐藏了FloatControl的导致无法隐藏穿透层问题，比如嵌入某个App
+					setTimeout(hideModalLayer, 1000);
 				}
 				control._visible = false;
 				control.setActualVisible(false);
