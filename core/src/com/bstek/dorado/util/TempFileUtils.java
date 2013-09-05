@@ -27,10 +27,20 @@ public final class TempFileUtils {
 	private static final String TEMP_DIR_PREFIX = "instance-";
 	private static final String LOCK_FILE = "lock";
 
+	private static boolean supportsTempFile = true;
+
 	private static File rootDir;
 	private static File tempDir;
 
 	private TempFileUtils() {
+	}
+
+	public static boolean isSupportsTempFile() {
+		return supportsTempFile;
+	}
+
+	public static void setSupportsTempFile(boolean supportsTempFile) {
+		TempFileUtils.supportsTempFile = supportsTempFile;
 	}
 
 	private static File getRootDir() throws IOException {
@@ -98,6 +108,10 @@ public final class TempFileUtils {
 	}
 
 	public static File getTempDir() throws IOException {
+		if (!supportsTempFile) {
+			throw new IOException("Temp file is forbidden.");
+		}
+
 		if (tempDir == null) {
 			File rootDir = getRootDir();
 
@@ -139,6 +153,10 @@ public final class TempFileUtils {
 
 	public static File createTempFile(String fileNamePrefix,
 			String fileNamesuffix) throws IOException {
+		if (!supportsTempFile) {
+			throw new IOException("Temp file is forbidden.");
+		}
+
 		File file = File.createTempFile(fileNamePrefix, fileNamesuffix,
 				getTempDir());
 		file.deleteOnExit();

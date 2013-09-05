@@ -259,6 +259,7 @@ public class StandaloneRuleSetExporter {
 
 		CommonContext.init();
 		try {
+			// TODO: 此句可考虑删除
 			EngineStartupListenerManager.notifyStartup();
 
 			RuleTemplateManager ruleTemplateManager = getRuleTemplateBuilder()

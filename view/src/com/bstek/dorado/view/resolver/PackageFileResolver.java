@@ -12,6 +12,8 @@
 
 package com.bstek.dorado.view.resolver;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -67,99 +69,120 @@ public class PackageFileResolver extends WebFileResolver {
 	protected Map<String, Resource[]> resourcesCache = new HashMap<String, Resource[]>();
 
 	private static class I18NResource implements Resource {
-		protected Resource cachedResource;
-		private static Map<Resource, Resource> cacheFileMap = new HashMap<Resource, Resource>();
+		protected Resource adapteeResource;
 
 		public I18NResource(Context context, String packageName,
 				Resource resource) throws IOException {
-			synchronized (cacheFileMap) {
-				cachedResource = cacheFileMap.get(resource);
-				if (cachedResource == null) {
-					Properties properties = new Properties();
-					properties.load(resource.getInputStream());
+			if (TempFileUtils.isSupportsTempFile()) {
+				File file = TempFileUtils.createTempFile("client-i18n-"
+						+ packageName + '-', JAVASCRIPT_SUFFIX);
 
-					File file = TempFileUtils.createTempFile("client-i18n-"
-							+ packageName + '-', JAVASCRIPT_SUFFIX);
-
-					FileOutputStream fos = new FileOutputStream(file);
-					Writer writer = new OutputStreamWriter(fos);
-					try {
-						String namespace = properties.getProperty("namespace");
-						properties.remove("namespace");
-						writer.append("dorado.util.Resource.append(");
-						if (StringUtils.isEmpty(namespace)) {
-							writer.append("\n");
-						} else {
-							writer.append("\"")
-									.append(StringEscapeUtils
-											.escapeJavaScript(namespace))
-									.append("\",\n");
-						}
-
-						JsonBuilder jsonBuilder = new JsonBuilder(writer);
-						jsonBuilder.object();
-						for (Map.Entry<?, ?> entry : properties.entrySet()) {
-							String value = (String) entry.getValue();
-							if (value != null) {
-								jsonBuilder.key((String) entry.getKey());
-								jsonBuilder.beginValue();
-								writer.append('\"')
-										.append(StringEscapeUtils
-												.escapeJavaScript(value))
-										.append('\"');
-								jsonBuilder.endValue();
-							}
-						}
-						jsonBuilder.endObject();
-
-						writer.append("\n);");
-					} finally {
-						writer.flush();
-						writer.close();
-						fos.flush();
-						fos.close();
-					}
-
-					cachedResource = new FileResource(file);
-					cacheFileMap.put(resource, cachedResource);
+				FileOutputStream fos = new FileOutputStream(file);
+				Writer writer = new OutputStreamWriter(fos);
+				try {
+					outputI18N(writer, resource);
+				} finally {
+					writer.flush();
+					writer.close();
+					fos.flush();
+					fos.close();
 				}
+
+				adapteeResource = new FileResource(file);
+			} else {
+				adapteeResource = resource;
 			}
 		}
 
+		/**
+		 * @param writer
+		 * @param resource
+		 * @param fos
+		 * @throws IOException
+		 */
+		private void outputI18N(Writer writer, Resource resource)
+				throws IOException {
+			Properties properties = new Properties();
+			properties.load(resource.getInputStream());
+
+			String namespace = properties.getProperty("namespace");
+			properties.remove("namespace");
+			writer.append("dorado.util.Resource.append(");
+			if (StringUtils.isEmpty(namespace)) {
+				writer.append("\n");
+			} else {
+				writer.append("\"")
+						.append(StringEscapeUtils.escapeJavaScript(namespace))
+						.append("\",\n");
+			}
+
+			JsonBuilder jsonBuilder = new JsonBuilder(writer);
+			jsonBuilder.object();
+			for (Map.Entry<?, ?> entry : properties.entrySet()) {
+				String value = (String) entry.getValue();
+				if (value != null) {
+					jsonBuilder.key((String) entry.getKey());
+					jsonBuilder.beginValue();
+					writer.append('\"')
+							.append(StringEscapeUtils.escapeJavaScript(value))
+							.append('\"');
+					jsonBuilder.endValue();
+				}
+			}
+			jsonBuilder.endObject();
+
+			writer.append("\n);");
+		}
+
 		public Resource createRelative(String relativePath) throws IOException {
-			return cachedResource.createRelative(relativePath);
+			return adapteeResource.createRelative(relativePath);
 		}
 
 		public boolean exists() {
-			return cachedResource.exists();
+			return adapteeResource.exists();
 		}
 
 		public String getDescription() {
-			return cachedResource.getDescription();
+			return adapteeResource.getDescription();
 		}
 
 		public File getFile() throws IOException {
-			return cachedResource.getFile();
+			return adapteeResource.getFile();
 		}
 
 		public String getFilename() {
-			return cachedResource.getFilename();
+			return adapteeResource.getFilename();
 		}
 
 		public InputStream getInputStream() throws IOException {
-			return cachedResource.getInputStream();
+			if (TempFileUtils.isSupportsTempFile()) {
+				return adapteeResource.getInputStream();
+			} else {
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				Writer writer = new OutputStreamWriter(baos);
+				try {
+					outputI18N(writer, adapteeResource);
+				} finally {
+					writer.flush();
+					writer.close();
+					baos.flush();
+					baos.close();
+				}
+
+				return new ByteArrayInputStream(baos.toByteArray());
+			}
 		}
 
 		public String getPath() {
-			return cachedResource.getPath();
+			return adapteeResource.getPath();
 		}
 
 		public long getTimestamp() throws IOException {
-			return cachedResource.getTimestamp();
+			return adapteeResource.getTimestamp();
 		}
 
 		public URL getURL() throws IOException {
-			return cachedResource.getURL();
+			return adapteeResource.getURL();
 		}
 	}
 
@@ -393,8 +416,8 @@ public class PackageFileResolver extends WebFileResolver {
 			FileInfo fileInfo, String resourcePrefix, String resourceSuffix)
 			throws Exception {
 		Locale locale = localeResolver.resolveLocale();
-		String cacheKey = getFileCacheKey(resourcePrefix, fileInfo.getFileName(),
-				resourceSuffix, locale);
+		String cacheKey = getFileCacheKey(resourcePrefix,
+				fileInfo.getFileName(), resourceSuffix, locale);
 		synchronized (resourcesCache) {
 			Resource[] resources = resourcesCache.get(cacheKey);
 			if (resources == null) {
@@ -458,8 +481,8 @@ public class PackageFileResolver extends WebFileResolver {
 		boolean useMinJs = WebConfigure
 				.getBoolean("view.useMinifiedJavaScript");
 		String fileName = fileInfo.getFileName();
-		String cacheKey = getFileCacheKey(resourcePrefix, fileName, resourceSuffix,
-				useMinJs);
+		String cacheKey = getFileCacheKey(resourcePrefix, fileName,
+				resourceSuffix, useMinJs);
 		synchronized (resourcesCache) {
 			Resource[] resources = resourcesCache.get(cacheKey);
 			if (resources == null) {
@@ -488,8 +511,8 @@ public class PackageFileResolver extends WebFileResolver {
 		boolean useMinCss = WebConfigure
 				.getBoolean("view.useMinifiedStyleSheet");
 		String fileName = fileInfo.getFileName();
-		String cacheKey = getFileCacheKey(resourcePrefix, fileName, resourceSuffix,
-				useMinCss);
+		String cacheKey = getFileCacheKey(resourcePrefix, fileName,
+				resourceSuffix, useMinCss);
 		synchronized (resourcesCache) {
 			Resource[] resources = resourcesCache.get(cacheKey);
 			if (resources == null) {
