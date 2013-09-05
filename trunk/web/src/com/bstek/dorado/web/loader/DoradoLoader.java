@@ -286,11 +286,18 @@ public class DoradoLoader {
 			tempDir = new File(WebUtils.getTempDir(servletContext), ".dorado");
 		}
 
-		if ((tempDir.exists() && tempDir.isDirectory()) || tempDir.mkdir()) {
-			TempFileUtils.setTempDir(tempDir);
+		boolean supportsTempFile = configureStore
+				.getBoolean("core.supportsTempFile");
+		TempFileUtils.setSupportsTempFile(supportsTempFile);
+		if (supportsTempFile) {
+			if ((tempDir.exists() && tempDir.isDirectory()) || tempDir.mkdir()) {
+				TempFileUtils.setTempDir(tempDir);
+			}
+			ConsoleUtils.outputLoadingInfo("[TempDir: "
+					+ TempFileUtils.getTempDir().getPath() + "]");
+		} else {
+			ConsoleUtils.outputLoadingInfo("Temp file is forbidden.");
 		}
-		ConsoleUtils.outputLoadingInfo("[TempDir: "
-				+ TempFileUtils.getTempDir().getPath() + "]");
 
 		// 选择一个存储目录
 		File storeDir;
