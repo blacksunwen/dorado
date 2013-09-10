@@ -148,6 +148,7 @@
 				content: [ {
 					tagName: "iframe",
 					contextKey: "iframe",
+		            scrolling: "no",
 					frameBorder: 0,
 					className: "hidden"
 				}, {
@@ -218,6 +219,15 @@
         cancelLoad: function() {
 			this.replaceUrl(BLANK_PATH);
         },
+
+		doOnResize: function() {
+			if (dorado.Browser.isTouch) {
+				$fly(this._doms.iframe).css({
+					width: this._dom.clientWidth,
+					height: this._dom.clientHeight
+				});
+			}
+		},
 
         /**
          * 重新载入页面。
