@@ -2066,6 +2066,34 @@
 		 * </p>
 		 * @param {[Object]} criterions.criterions 子过滤条件数组。此参数仅在criterions.junction不为空时有效。
 		 * @see dorado.widget.list.ItemModel#filter
+		 * 
+		 * @example
+		 * var criterions = [
+		 * 	{
+		 * 		property:"label",
+		 * 		operator:"like",
+		 * 		value："apple"
+		 * 	}
+		 * ];
+		 * grid.filter(criterions);
+		 * 
+		 * @example
+		 * var criterions = [
+		 * 	{
+		 * 		junction:"or",
+		 * 		criterions:[
+		 * 		{
+		 * 			property:"age",
+		 * 			operator:"<",
+		 * 			value：20
+		 * 		},{
+		 * 			property:"age",
+		 * 			operator:">",
+		 * 			value：50
+		 * 		}]
+		 * 	}
+		 * ];
+		 * grid.filter(criterions);
 		 */
 		filter: function(criterions) {
 		

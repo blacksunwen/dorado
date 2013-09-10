@@ -131,8 +131,7 @@
 		iterator: function(startIndex) {
 			var items = this._items;
 			if (!items) return this.EMPTY_ITERATOR;
-			var index = startIndex;
-			if (index == null) index = this._startIndex || 0;
+			var index = startIndex || this._startIndex || 0;
 			if (items instanceof Array) {
 				return new dorado.util.ArrayIterator(this._items, index);
 			} else {

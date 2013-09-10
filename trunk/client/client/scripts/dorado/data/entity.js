@@ -1200,8 +1200,8 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		 * @param {String} [property] 要重置的引用属性的属性名。如果需要定义多个，可以用“,”分隔。
 		 */
 		reset: function(property) {
+			var data = this._data;
 			if (property) {
-				var data = this._data;
 				var props = property.split(',');
 				for (var i = 0; i < props.length; i++) {
 					var prop = props[i];
@@ -1218,6 +1218,10 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				}
 				this.timestamp = dorado.Core.getTimestamp();
 			} else {
+				this._propertyDefs.each(function(propertyDef) {
+					if (propertyDef instanceof dorado.Reference) delete data[prop];
+				});
+				
 				this._propertyInfoMap = {};
 				delete this._messages;
 				delete this._messageState;
