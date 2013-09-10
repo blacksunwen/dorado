@@ -572,27 +572,48 @@ var AUTO_APPEND_TO_TOPVIEW = true;
             });
         }
 
+		var resizeTopView = function() {
+			if (topView.onResizeTimerId) {
+				clearTimeout(topView.onResizeTimerId);
+				delete topView.onResizeTimerId;
+			}
+
+			topView.onResizeTimerId = setTimeout(function() {
+				delete topView.onResizeTimerId;
+				topView._children.each(function(child) {
+					if (child.resetDimension && child._rendered && child._visible) child.resetDimension();
+				});
+			}, 200);
+		};
+
 		var doInitDorado = function() {
 			dorado.fireOnInit();
 
 			topView.onReady();
 
+			var oldWidth, oldHeight;
+
 			$fly(window).unload(function() {
 				dorado.windowClosed = true;
 				if (!topView._destroyed) topView.destroy();
-			}).bind(dorado.Browser.isTouch ? "orientationchange" : "resize", function() {
-				if (topView.onResizeTimerId) {
-					clearTimeout(topView.onResizeTimerId);
-					delete topView.onResizeTimerId;
+			}).bind("resize", function() {
+				if (dorado.Browser.isTouch) {
+					var width = $fly(window).width(), height = $fly(window).height();
+					if ((oldWidth === undefined && oldHeight === undefined) || (width !== oldWidth && height !== oldHeight)) {
+						resizeTopView();
+					}
+					oldWidth = width;
+					oldHeight = height;
+				} else {
+					resizeTopView();
 				}
-
-				topView.onResizeTimerId = setTimeout(function() {
-					delete topView.onResizeTimerId;
-					topView._children.each(function(child) {
-						if (child.resetDimension && child._rendered && child._visible) child.resetDimension();
-					});
-				}, 200);
 			});
+
+			if (dorado.Browser.isTouch) {
+				$fly(window).bind("orientationchange", function() {
+					resizeTopView();
+				});
+			}
 
 			dorado.fireAfterInit();
 		};
