@@ -4,13 +4,16 @@
   <Context/>
   <Model/>
   <View layout="anchor">
-    <HtmlContainer layoutConstraint="left:150;top:50">
-      <Property name="style">
-        <Property name="background-image">url(./dorado/console/images/dorado7.png)</Property>
-        <Property name="background-repeat">no-repeat</Property>
-      </Property>
-      <Property name="width">550</Property>
-      <Property name="height">130</Property>
+    <HtmlContainer layoutConstraint="left:0;top:0">
+      <ClientEvent name="onCreate">var dom=$DomUtils.xCreate({&#xD;
+	tagName: &quot;img&quot;,&#xD;
+	src:$url(&quot;>dorado/console/images/background.png&quot;)&#xD;
+&#xD;
+});&#xD;
+self.set('content',dom);&#xD;
+</ClientEvent>
+      <Property name="width">640</Property>
+      <Property name="height">250</Property>
       <Property name="contentOverflow">hidden</Property>
     </HtmlContainer>
     <Label layoutConstraint="left:40;top:90;anchorTop:previous">
