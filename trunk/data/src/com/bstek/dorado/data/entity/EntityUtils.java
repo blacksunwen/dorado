@@ -345,8 +345,10 @@ public abstract class EntityUtils {
 		// !isEntity(object)
 		if (entity instanceof Collection) {
 			List list = new ArrayList();
-			for (Object element : (Collection) entity) {
-				list.add(toPureData(element));
+			for (Object e : (Collection) entity) {
+				if (EntityUtils.getState(e) != EntityState.DELETED) {
+					list.add(toPureData(e));
+				}
 			}
 			return (T) list;
 		} else {
