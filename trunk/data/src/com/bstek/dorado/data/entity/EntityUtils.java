@@ -370,8 +370,8 @@ public abstract class EntityUtils {
 
 				try {
 					for (String property : propertySet) {
-						Object value = entityEnhancer.readProperty(
-								entityEnhancer, property, false);
+						Object value = entityEnhancer.readProperty(entity,
+								property, false);
 						if (!isSimpleValue(value)) {
 							value = toPureData(value);
 						}
