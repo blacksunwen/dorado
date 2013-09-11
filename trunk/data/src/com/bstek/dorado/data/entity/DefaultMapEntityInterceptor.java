@@ -25,12 +25,12 @@ import com.bstek.dorado.data.type.EntityDataType;
  * @since 2010-12-19
  */
 @SuppressWarnings({ "unchecked", "rawtypes" })
-public class MapEntityInterceptor extends AbstractMapEntityEnhancer implements
+public class DefaultMapEntityInterceptor extends MapEntityEnhancer implements
 		MethodInterceptor {
 	private static final String GET = "get";
 	private static final String PUT = "put";
 
-	public MapEntityInterceptor(EntityDataType dataType) {
+	public DefaultMapEntityInterceptor(EntityDataType dataType) {
 		super(dataType);
 	}
 

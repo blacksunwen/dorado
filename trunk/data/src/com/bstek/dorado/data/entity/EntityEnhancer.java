@@ -190,11 +190,12 @@ public abstract class EntityEnhancer {
 		this.stateLocked = stateLocked;
 	}
 
-	protected abstract Set<String> doGetPropertySet(Object entity);
+	protected abstract Set<String> doGetPropertySet(Object entity,
+			boolean excludeExProperties);
 
-	public Set<String> getPropertySet(Object entity) {
-		if (dataType.isAcceptUnknownProperty()) {
-			return doGetPropertySet(entity);
+	public Set<String> getPropertySet(Object entity, boolean excludeExProperties) {
+		if (dataType == null || dataType.isAcceptUnknownProperty()) {
+			return doGetPropertySet(entity, excludeExProperties);
 		} else {
 			return dataType.getPropertyDefs().keySet();
 		}
@@ -204,6 +205,10 @@ public abstract class EntityEnhancer {
 		if (exProperties == null && create) {
 			exProperties = new HashMap<String, Object>();
 		}
+		return exProperties;
+	}
+
+	public Map<String, Object> getExProperties() {
 		return exProperties;
 	}
 
@@ -370,8 +375,8 @@ public abstract class EntityEnhancer {
 		String propertyPath = propertyDef.getPropertyPath();
 		String name = propertyDef.getName();
 		if (propertyPath.equals(name) || propertyPath.startsWith(name + '.')) {
-			throw new IllegalArgumentException(
-					resourceManager.getString("dorado.common/invalidatePropertyPath", name, propertyPath));
+			throw new IllegalArgumentException(resourceManager.getString(
+					"dorado.common/invalidatePropertyPath", name, propertyPath));
 		}
 	}
 

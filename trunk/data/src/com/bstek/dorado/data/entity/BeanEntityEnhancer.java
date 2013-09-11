@@ -26,7 +26,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 
 import com.bstek.dorado.data.type.EntityDataType;
 
-public abstract class AbstractBeanEntityEnhancer extends EntityEnhancer {
+public abstract class BeanEntityEnhancer extends EntityEnhancer {
 	private static Set<Class<?>> cachedTypes = Collections
 			.synchronizedSet(new HashSet<Class<?>>());
 	private static Map<Class<?>, Map<String, Boolean>> propertiesCache = new Hashtable<Class<?>, Map<String, Boolean>>();
@@ -40,11 +40,15 @@ public abstract class AbstractBeanEntityEnhancer extends EntityEnhancer {
 	protected Map<Method, String> readMethods;
 	protected Map<Method, String> writeMethods;
 
-	public AbstractBeanEntityEnhancer(EntityDataType dataType, Class<?> beanType)
+	public BeanEntityEnhancer(EntityDataType dataType, Class<?> beanType)
 			throws Exception {
 		super(dataType);
 		this.beanType = beanType;
 		buildReflectionCahce();
+	}
+
+	public Class<?> getBeanType() {
+		return beanType;
 	}
 
 	protected synchronized void buildReflectionCahce() throws Exception {
@@ -100,20 +104,23 @@ public abstract class AbstractBeanEntityEnhancer extends EntityEnhancer {
 	}
 
 	@Override
-	protected Set<String> doGetPropertySet(Object entity) {
+	protected Set<String> doGetPropertySet(Object entity,
+			boolean excludeExProperties) {
 		Map<String, Object> exProperties = getExProperties(false);
-		if (exProperties == null || exProperties.isEmpty()) {
+		if (excludeExProperties || exProperties == null
+				|| exProperties.isEmpty()) {
 			return properties.keySet();
 		} else {
 			Set<String> propertySet = new HashSet<String>(properties.keySet());
 			propertySet.addAll(exProperties.keySet());
-			return propertySet;
+			return Collections.unmodifiableSet(propertySet);
 		}
 	}
 
 	protected BeanMap getBeanMap(Object entity) {
-		if (entity == this.entity && beanMap != null)
+		if (entity == this.entity && beanMap != null) {
 			return beanMap;
+		}
 
 		this.entity = entity;
 		beanMap = BeanMap.create(entity);

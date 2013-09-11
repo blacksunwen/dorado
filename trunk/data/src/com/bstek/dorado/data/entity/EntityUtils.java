@@ -12,8 +12,10 @@
 
 package com.bstek.dorado.data.entity;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -135,7 +137,7 @@ public abstract class EntityUtils {
 	}
 
 	private static void throwNotValidEntity() {
-		throw new IllegalArgumentException(
+		throw new IllegalStateException(
 				"The object is not a valid dorado entity.");
 	}
 
@@ -334,6 +336,69 @@ public abstract class EntityUtils {
 		return (T) object;
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static <T> T toPureData(Object entity) throws Exception {
+		if (isSimpleValue(entity)) {
+			return (T) entity;
+		}
+
+		// !isEntity(object)
+		if (entity instanceof Collection) {
+			List list = new ArrayList();
+			for (Object element : (Collection) entity) {
+				list.add(toPureData(element));
+			}
+			return (T) list;
+		} else {
+			T object;
+			EntityEnhancer entityEnhancer = getEntityEnhancer(entity);
+			if (entityEnhancer != null) {
+				Map newMap;
+				Set<String> propertySet;
+
+				if (entityEnhancer instanceof BeanEntityEnhancer) {
+					Class<?> beanType = ((BeanEntityEnhancer) entityEnhancer)
+							.getBeanType();
+					object = (T) beanType.newInstance();
+					newMap = BeanMap.create(object);
+					propertySet = entityEnhancer.getPropertySet(entity, false);
+				} else {
+					newMap = new HashMap();
+					object = (T) newMap;
+					propertySet = entityEnhancer.getPropertySet(entity, true);
+				}
+
+				try {
+					for (String property : propertySet) {
+						Object value = entityEnhancer.readProperty(
+								entityEnhancer, property, false);
+						if (!isSimpleValue(value)) {
+							value = toPureData(value);
+						}
+						newMap.put(property, value);
+					}
+				} catch (Exception e) {
+					throw e;
+				} catch (Throwable t) {
+					throw new IllegalStateException(t);
+				}
+			} else {
+				Map oldMap, newMap;
+				if (entity instanceof Map) {
+					oldMap = (Map) entity;
+					newMap = new HashMap();
+					object = (T) newMap;
+				} else {
+					oldMap = BeanMap.create(entity);
+					object = (T) entity.getClass().newInstance();
+					newMap = BeanMap.create(object);
+				}
+				newMap.putAll(oldMap);
+			}
+			return object;
+		}
+	}
+
 	public static void markDeleted(Object entity) {
 		EntityEnhancer entityEnhancer = getEntityEnhancer(entity);
 		if (entityEnhancer != null) {
@@ -431,10 +496,16 @@ public abstract class EntityUtils {
 	}
 
 	public static boolean loadIfNecessary(Object entity, String property)
-			throws Throwable {
+			throws Exception {
 		EntityEnhancer entityEnhancer = getEntityEnhancer(entity);
 		if (entityEnhancer != null) {
-			return entityEnhancer.loadIfNecessary(entity, property);
+			try {
+				return entityEnhancer.loadIfNecessary(entity, property);
+			} catch (Exception e) {
+				throw e;
+			} catch (Throwable e) {
+				throw new IllegalStateException(e);
+			}
 		} else {
 			throwNotValidEntity();
 			return false;

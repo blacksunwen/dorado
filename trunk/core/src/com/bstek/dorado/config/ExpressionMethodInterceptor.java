@@ -227,8 +227,7 @@ class MapEntry implements Map.Entry {
 	}
 
 	public Object setValue(Object value) {
-		map.put(key, value);
-		return value;
+		return map.put(key, value);
 	}
 
 }

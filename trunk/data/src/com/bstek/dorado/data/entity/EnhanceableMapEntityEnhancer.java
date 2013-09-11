@@ -18,7 +18,7 @@ import com.bstek.dorado.data.type.EntityDataType;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-12-19
  */
-public class EnhanceableMapEntityEnhancer extends AbstractMapEntityEnhancer {
+public class EnhanceableMapEntityEnhancer extends MapEntityEnhancer {
 
 	public EnhanceableMapEntityEnhancer(EntityDataType dataType) {
 		super(dataType);

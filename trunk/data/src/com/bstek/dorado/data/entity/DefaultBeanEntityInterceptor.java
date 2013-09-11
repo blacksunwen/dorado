@@ -24,10 +24,10 @@ import com.bstek.dorado.util.proxy.ChainedMethodInvocation;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-12-19
  */
-public class BeanEntityInterceptor extends AbstractBeanEntityEnhancer implements
+public class DefaultBeanEntityInterceptor extends BeanEntityEnhancer implements
 		MethodInterceptor {
 
-	public BeanEntityInterceptor(EntityDataType dataType, Class<?> beanType)
+	public DefaultBeanEntityInterceptor(EntityDataType dataType, Class<?> beanType)
 			throws Exception {
 		super(dataType, beanType);
 	}
