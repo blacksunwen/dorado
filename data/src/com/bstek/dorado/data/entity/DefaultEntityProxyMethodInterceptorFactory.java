@@ -29,9 +29,9 @@ public class DefaultEntityProxyMethodInterceptorFactory implements
 			Class<?> classType, Object entity) throws Exception {
 		MethodInterceptor mi;
 		if (Map.class.isAssignableFrom(classType)) {
-			mi = new MapEntityInterceptor(dataType);
+			mi = new DefaultMapEntityInterceptor(dataType);
 		} else {
-			mi = new BeanEntityInterceptor(dataType, classType);
+			mi = new DefaultBeanEntityInterceptor(dataType, classType);
 		}
 		return new MethodInterceptor[] { mi };
 	}

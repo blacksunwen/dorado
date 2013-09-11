@@ -18,7 +18,7 @@ import com.bstek.dorado.data.type.EntityDataType;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-12-20
  */
-public class EnhanceableBeanEntityEnhancer extends AbstractBeanEntityEnhancer {
+public class EnhanceableBeanEntityEnhancer extends BeanEntityEnhancer {
 
 	public EnhanceableBeanEntityEnhancer(EntityDataType dataType,
 			Class<?> beanType) throws Exception {

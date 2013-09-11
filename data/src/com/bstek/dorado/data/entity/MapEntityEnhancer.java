@@ -12,6 +12,7 @@
 
 package com.bstek.dorado.data.entity;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -22,23 +23,25 @@ import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.data.type.EntityDataType;
 import com.bstek.dorado.data.type.property.PropertyDef;
 
-public abstract class AbstractMapEntityEnhancer extends EntityEnhancer {
+public abstract class MapEntityEnhancer extends EntityEnhancer {
 
-	public AbstractMapEntityEnhancer(EntityDataType dataType) {
+	public MapEntityEnhancer(EntityDataType dataType) {
 		super(dataType);
 	}
 
 	@Override
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	protected Set<String> doGetPropertySet(Object entity) {
+	protected Set<String> doGetPropertySet(Object entity,
+			boolean excludeExProperties) {
 		Map<String, Object> exProperties = getExProperties(false);
-		if (exProperties == null || exProperties.isEmpty()) {
+		if (!excludeExProperties || exProperties == null
+				|| exProperties.isEmpty()) {
 			return ((Map) entity).keySet();
 		} else {
 			Set<String> propertySet = new HashSet<String>(
 					((Map) entity).keySet());
 			propertySet.addAll(exProperties.keySet());
-			return propertySet;
+			return Collections.unmodifiableSet(propertySet);
 		}
 	}
 

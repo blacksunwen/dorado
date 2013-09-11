@@ -340,12 +340,16 @@ public class EntityWrapper {
 		}
 	}
 
-	public Set<String> getPropertySet() {
+	public Set<String> getPropertySet(boolean excludeExProperties) {
 		if (entityEnhancer != null) {
-			return entityEnhancer.getPropertySet(entity);
+			return entityEnhancer.getPropertySet(entity, excludeExProperties);
 		} else {
 			return map.keySet();
 		}
+	}
+
+	public Set<String> getPropertySet() {
+		return getPropertySet(false);
 	}
 
 	public void markDelete() {

@@ -13,10 +13,18 @@
 package com.bstek.dorado.data.variant;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -100,6 +108,120 @@ public class MetaData extends HashMap<String, Object> implements VariantSet,
 		}
 	}
 
+	@Override
+	public int size() {
+		if (entityEnhancer != null) {
+			return keySet().size();
+		} else {
+			return super.size();
+		}
+	}
+
+	@Override
+	public boolean isEmpty() {
+		if (entityEnhancer != null) {
+			return keySet().isEmpty();
+		} else {
+			return super.isEmpty();
+		}
+	}
+
+	@Override
+	public boolean containsKey(Object key) {
+		if (entityEnhancer != null) {
+			return keySet().contains(key);
+		} else {
+			return super.containsKey(key);
+		}
+	}
+
+	@Override
+	public Object remove(Object key) {
+		if (entityEnhancer != null) {
+			return put((String) key, null);
+		} else {
+			return super.remove(key);
+		}
+	}
+
+	@Override
+	public void clear() {
+		if (entityEnhancer != null) {
+			for (String property : keySet()) {
+				put(property, null);
+			}
+		} else {
+			super.clear();
+		}
+	}
+
+	@Override
+	public boolean containsValue(Object value) {
+		if (entityEnhancer != null) {
+			for (Entry<String, Object> entry : doGetEntrySet()) {
+				if (ObjectUtils.equals(value, entry.getValue())) {
+					return true;
+				}
+			}
+			return false;
+		} else {
+			return super.containsValue(value);
+		}
+	}
+
+	@Override
+	public Object clone() {
+		if (entityEnhancer != null) {
+			MetaData cloned = new MetaData();
+			for (Entry<String, Object> entry : doGetEntrySet()) {
+				cloned.put(entry.getKey(), entry.getValue());
+			}
+			return cloned;
+		} else {
+			return super.clone();
+		}
+	}
+
+	@Override
+	public Set<String> keySet() {
+		if (entityEnhancer != null) {
+			Map<String, Object> exProperties = entityEnhancer.getExProperties();
+			if (exProperties != null) {
+				Set<String> keySet = new HashSet<String>(super.keySet());
+				keySet.addAll(exProperties.keySet());
+				return Collections.unmodifiableSet(keySet);
+			}
+		}
+		return super.keySet();
+	}
+
+	@Override
+	public Collection<Object> values() {
+		List<Object> values = new ArrayList<Object>();
+		for (Entry<String, Object> entry : doGetEntrySet()) {
+			values.add(entry.getValue());
+		}
+		return Collections.unmodifiableList(values);
+	}
+
+	@Override
+	public Set<Entry<String, Object>> entrySet() {
+		if (entityEnhancer != null) {
+			return Collections.unmodifiableSet(doGetEntrySet());
+		} else {
+			return super.entrySet();
+		}
+	}
+
+	protected Set<Entry<String, Object>> doGetEntrySet() {
+		Set<Entry<String, Object>> entrySet = new HashSet<Entry<String, Object>>();
+		for (String property : keySet()) {
+			MapEntry entry = new MapEntry(this, property);
+			entrySet.add(entry);
+		}
+		return entrySet;
+	}
+
 	public String getString(String key) {
 		return getVariantConvertor().toString(super.get(key));
 	}
@@ -175,4 +297,27 @@ public class MetaData extends HashMap<String, Object> implements VariantSet,
 	public Map<String, Object> toMap() {
 		return this;
 	}
+}
+
+class MapEntry implements Map.Entry<String, Object> {
+	private MetaData metaData;
+	private String key;
+
+	public MapEntry(MetaData metaData, String key) {
+		this.metaData = metaData;
+		this.key = key;
+	}
+
+	public String getKey() {
+		return key;
+	}
+
+	public Object getValue() {
+		return metaData.get(key);
+	}
+
+	public Object setValue(Object value) {
+		return metaData;
+	}
+
 }
