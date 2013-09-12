@@ -87,9 +87,6 @@ var dorado = {
 		if (browser.chrome) {
 			try { document.createEvent("TouchEvent"); }	 catch(e) { browser.isTouch = false; }
 		}
-		if (browser.chrome) {
-			try { document.createEvent("TouchEvent"); }	 catch(e) { browser.isTouch = false; }
-		}
 		browser.version = parseInt(browser.version);
 		return browser;
 	})(),
