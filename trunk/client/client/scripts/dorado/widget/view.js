@@ -618,6 +618,56 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			dorado.fireAfterInit();
 		};
 
+		var rootViewport = {
+			init: function(fn, scope) {
+				var me = this, stretchSize = Math.max(window.innerHeight, window.innerWidth) * 2,
+					body = document.body;
+
+				document.addEventListener('touchstart', function() {
+					me.scrollTop();
+				}, true);
+
+				document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
+
+				this.initialHeight = window.innerHeight;
+
+				jQuery(body).height(stretchSize);
+
+				this.scrollToTop();
+
+				// These 2 timers here are ugly but it's the only way to make address bar hiding works on all the devices we have including the new Galaxy Tab
+				setTimeout(function() {
+					me.scrollToTop();
+					setTimeout(function() {
+						me.scrollToTop();
+						me.initialHeight = Math.max(me.initialHeight, window.innerHeight);
+
+						me.updateBodySize();
+						if (fn) {
+							fn.apply(scope || window);
+						}
+					}, 50);
+				}, 50);
+			},
+			scrollToTop: function() {
+				if (dorado.Browser.iOS) {
+					if (dorado.Browser.isPhone) {
+						document.body.scrollTop = document.body.scrollHeight;
+					}
+				} else {
+					window.scrollTo(0, 1);
+				}
+			},
+			updateBodySize: function() {
+				jQuery(document.body).height(window.innerHeight).width(window.innerWidth);
+			}
+		};
+
+		if (dorado.Browser.isTouch) {
+			rootViewport.init(function() { doInitDorado(); });
+			return;
+		}
+
 		if (dorado.Browser.chrome) {
 			setTimeout(doInitDorado, 10);
 		}
