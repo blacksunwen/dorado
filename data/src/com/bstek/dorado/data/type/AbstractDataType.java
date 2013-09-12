@@ -102,7 +102,9 @@ public abstract class AbstractDataType implements RudeDataType {
 		}
 
 		Class<?> targetType = this.getMatchType();
-		if (targetType != null && targetType.isAssignableFrom(value.getClass())) {
+		if (targetType == null) {
+			return value;
+		} else if (targetType.isAssignableFrom(value.getClass())) {
 			return value;
 		}
 
