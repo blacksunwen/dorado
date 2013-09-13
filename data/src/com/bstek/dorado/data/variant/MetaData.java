@@ -129,10 +129,12 @@ public class MetaData extends HashMap<String, Object> implements VariantSet,
 	@Override
 	public boolean containsKey(Object key) {
 		if (entityEnhancer != null) {
-			return keySet().contains(key);
-		} else {
-			return super.containsKey(key);
+			Map<String, Object> exProperties = entityEnhancer.getExProperties();
+			if (exProperties != null) {
+				return keySet().contains(key);
+			}
 		}
+		return super.containsKey(key);
 	}
 
 	@Override
@@ -190,9 +192,12 @@ public class MetaData extends HashMap<String, Object> implements VariantSet,
 				Set<String> keySet = new HashSet<String>(super.keySet());
 				keySet.addAll(exProperties.keySet());
 				return Collections.unmodifiableSet(keySet);
+			} else {
+				return Collections.unmodifiableSet(super.keySet());
 			}
+		} else {
+			return super.keySet();
 		}
-		return super.keySet();
 	}
 
 	@Override
@@ -207,7 +212,7 @@ public class MetaData extends HashMap<String, Object> implements VariantSet,
 	@Override
 	public Set<Entry<String, Object>> entrySet() {
 		if (entityEnhancer != null) {
-			return Collections.unmodifiableSet(doGetEntrySet());
+			return doGetEntrySet();
 		} else {
 			return super.entrySet();
 		}
@@ -219,7 +224,7 @@ public class MetaData extends HashMap<String, Object> implements VariantSet,
 			MapEntry entry = new MapEntry(this, property);
 			entrySet.add(entry);
 		}
-		return entrySet;
+		return Collections.unmodifiableSet(entrySet);
 	}
 
 	public String getString(String key) {
@@ -317,7 +322,7 @@ class MapEntry implements Map.Entry<String, Object> {
 	}
 
 	public Object setValue(Object value) {
-		return metaData;
+		return metaData.put(key, value);
 	}
 
 }
