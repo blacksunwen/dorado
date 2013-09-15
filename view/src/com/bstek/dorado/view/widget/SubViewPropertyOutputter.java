@@ -59,6 +59,7 @@ public class SubViewPropertyOutputter extends ObjectOutputterDispatcher
 			ViewConfig viewConfig = viewConfigManager.getViewConfig(viewName);
 			View view = null;
 			JsonBuilder jsonBuilder = context.getJsonBuilder();
+			jsonBuilder.key(property);
 			jsonBuilder.beginValue();
 			if (viewConfig != null) {
 				view = viewConfig.getView();
